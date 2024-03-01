@@ -1,132 +1,274 @@
-Return-Path: <linux-kernel+bounces-89152-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89153-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3FCE86EB43
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 22:34:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7AED86EB46
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 22:35:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D812828CDA8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:34:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B76E28D1F5
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:35:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E71C75823B;
-	Fri,  1 Mar 2024 21:34:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 811D758AB2;
+	Fri,  1 Mar 2024 21:35:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MADJW/jh"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="HT5uddga"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 589BC5810A;
-	Fri,  1 Mar 2024 21:34:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0E152575F;
+	Fri,  1 Mar 2024 21:35:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709328845; cv=none; b=iEJT9BTIxGNPLMojCFuM7764u/4GjbNxdiH0PEZIcNePPeak1bBgFllty8kofxMNnLh362f6DtEH2nNG3GvGS1GNRdSkPleVwV1t42C30Y/bd1I/yOaLhL5hjkiDR2+3N1v4JG6Xger0A6b+0KaZl+KZ6TDdt7hcuOldqX8ZPJc=
+	t=1709328933; cv=none; b=lcqg4yYbZZOBAp1SNA3K9jlwhnY6CgEUoDCXjlRd1LWpgRQCniXsAOKIIfJInFXKqOgOGwgsS165duZFjfFWuG+o9bnYBuRpJGX5kf5/7P0175OYGU1mSO9ZG03BGsXOnxRt4b0/z3fw9SBmeblrhTqRomlwyDAl90VkZZQtzyU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709328845; c=relaxed/simple;
-	bh=fmzH+mIOkDmds9+eATlKSe8d+juA8+VlJyocy1nJWyA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=krkW/kPsAxBJlZ2/IwMioC48aqDiL384vNRZ+dIMC7lbAyH16ErRijjx+dzbz/8tzy+7LrwzIDStfb2vqdR4dFcBLRk1XjtSwTDGU8MhHfY27TMdvpNf0wKfq/qClbn8nMoO9wKDeO0F5S7566uY7BVvvlELlFczTigqWcVqp74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MADJW/jh; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709328843; x=1740864843;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=fmzH+mIOkDmds9+eATlKSe8d+juA8+VlJyocy1nJWyA=;
-  b=MADJW/jh6Sgjh7ljNQvFzvS5VY8hu4p1WAZUGE4TLTZApHC3859P17Gz
-   PWrIGV89EjAqk9QP9B1RqdxRS2zQp7qY6FPqjTTxPymPqrIcyMmO5Q2Rt
-   Q2AalUTE/QqCJ891ogLZZ1XSCtmdRSNrKI6sIJnTvf8HR2heX1b3Pi3qE
-   zvzR8BvTI/bzMDXvV45273wYd8nQsiIB0FP6PXTWbAHA6rY1DZTqaGFEd
-   ydTVqJDI6cQ5hqpzUhahNCjojp1k7qQAL+2Ajf0/ZqG/GgabE+g7K1ARc
-   3sSncHITGifd6ggHCPgWypeXtPFwJNeusNgT207E/DMq6GnOww6kNMYUz
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11000"; a="3751066"
-X-IronPort-AV: E=Sophos;i="6.06,197,1705392000"; 
-   d="scan'208";a="3751066"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 13:34:02 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,197,1705392000"; 
-   d="scan'208";a="8459173"
-Received: from tassilo.jf.intel.com (HELO tassilo) ([10.54.38.190])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 13:34:02 -0800
-Date: Fri, 1 Mar 2024 13:34:00 -0800
-From: Andi Kleen <ak@linux.intel.com>
-To: Ian Rogers <irogers@google.com>
-Cc: Perry Taylor <perry.taylor@intel.com>,
-	Samantha Alt <samantha.alt@intel.com>,
-	Caleb Biggers <caleb.biggers@intel.com>,
-	Weilin Wang <weilin.wang@intel.com>,
-	Edward Baker <edward.baker@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	John Garry <john.g.garry@oracle.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Jing Zhang <renyu.zj@linux.alibaba.com>,
-	Thomas Richter <tmricht@linux.ibm.com>,
-	James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org,
-	Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH v1 02/20] perf jevents: Add idle metric for Intel models
-Message-ID: <ZeJJyCmXO9GxpDiF@tassilo>
-References: <20240229001806.4158429-1-irogers@google.com>
- <20240229001806.4158429-3-irogers@google.com>
- <ZeIVQhfDMP7_bSJ8@tassilo>
- <CAP-5=fWpXHXd8Dd39o_KEcVaBkQKk=aXjYSVTWCitaY6Xm-T4A@mail.gmail.com>
+	s=arc-20240116; t=1709328933; c=relaxed/simple;
+	bh=ovQaWvkaGZ/LnYGPrkBjG38YueW5tZyWNmaAd4cJT+M=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eqXI9iaYyk3ehd02QYhkvi2fUD2vE2qdhDE4ch85W8KmVnLhkRMg1cRT7FCzY/H2r1+nQRtybogDcwaEjhXjgfmanonrA1ndfzeR0SWmcR36gj1ZF+JIGorwr+RvbSKNWJ+MRG4JEM3BIPZfNYgYcLTUwHLu9v/87VTG4Vj6s9k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=HT5uddga; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709328929;
+	bh=ovQaWvkaGZ/LnYGPrkBjG38YueW5tZyWNmaAd4cJT+M=;
+	h=From:To:Cc:Subject:Date:From;
+	b=HT5uddgaUVon2LEaN6yJDtC6YitYrB2ajbiq0KSRqv5VzTTaeGvVz53y07xxY2l9R
+	 QJ/spXcam/3piLZHkPcrBxRAv4BouXNJW3gxcreJUReEgaQx6APmN9tyqhueOb1zZT
+	 oRYZ0EMQGZMZu8pC4lI9Syuq/h2iXTfXA9srOHZQAE7JbzfNG3h1zIlmrNwt180Lkb
+	 aSwOJBLeXLfNk8PNYOBrVUweqG5yqOgWb3aQwPIamWdLDoBXo0rOalDVOGAIuX46FV
+	 4Uzqg+sC8pmb0L/cbffytNEuLO9JtHw8Utf0Lg0TbKM9mrz8QQGowphB3RQZA0AoEt
+	 3OGPljWk4gk8g==
+Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: aratiu)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 09BB7378208B;
+	Fri,  1 Mar 2024 21:35:28 +0000 (UTC)
+From: Adrian Ratiu <adrian.ratiu@collabora.com>
+To: linux-fsdevel@vger.kernel.org
+Cc: kernel@collabora.com,
+	linux-security-module@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	Adrian Ratiu <adrian.ratiu@collabora.com>,
+	Guenter Roeck <groeck@chromium.org>,
+	Doug Anderson <dianders@chromium.org>,
+	Kees Cook <keescook@chromium.org>,
+	Jann Horn <jannh@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Mike Frysinger <vapier@chromium.org>
+Subject: [PATCH v2] proc: allow restricting /proc/pid/mem writes
+Date: Fri,  1 Mar 2024 23:34:42 +0200
+Message-ID: <20240301213442.198443-1-adrian.ratiu@collabora.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAP-5=fWpXHXd8Dd39o_KEcVaBkQKk=aXjYSVTWCitaY6Xm-T4A@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 
-> 
-> I see some of the gains as:
->  - metrics that are human intelligible,
->  - metrics for models that are no longer being updated,
->  - removing copy-paste of metrics like tsx and smi across each model's
-> metric json (less lines-of-code),
->  - validation of events in a metric expression being in the event json
-> for a model,
->  - removal of forward porting metrics to a new model if the event
-> names of the new model line up with those of previous,
->  - in this patch kit there are metrics added that don't currently
-> exist (more metrics should be better for users - yes there can always
-> be bugs).
+Prior to v2.6.39 write access to /proc/<pid>/mem was restricted,
+after which it got allowed in commit 198214a7ee50 ("proc: enable
+writing to /proc/pid/mem"). Famous last words from that patch:
+"no longer a security hazard". :)
 
-But then we have two ways to do things, and we already have a lot 
-of problems with regressions from complexity and a growing
-bug backlog that nobody fixes. 
+Afterwards exploits appeared started causing drama like [1]. The
+/proc/*/mem exploits can be rather sophisticated like [2] which
+installed an arbitrary payload from noexec storage into a running
+process then exec'd it, which itself could include an ELF loader
+to run arbitrary code off noexec storage.
 
-Multiple ways to do basic operations seems just a recipe for
-more and more fragmentation and similar problems.
+As part of hardening against these types of attacks, distrbutions
+can restrict /proc/*/mem to only allow writes when they makes sense,
+like in case of debuggers which have ptrace permissions, as they
+are able to access memory anyway via PTRACE_POKEDATA and friends.
 
-The JSON format is certainly not perfect and has its share 
-of issues, but at least it's a standard now that is supported
-by many vendors and creating new standards just because
-you don't like some minor aspects doesn't seem like 
-a good approach. I'm sure the next person will come around
-why wants Ruby metrics and the third would prefer to write
-them in Rust. Who knows where it will stop.
+Dropping the mode bits disables write access for non-root users.
+Trying to `chmod` the paths back fails as the kernel rejects it.
 
-Also in my experience this python stuff is unreliable because
-half the people who build perf forget to install the python
-libraries. Json at least works always.
+For users with CAP_DAC_OVERRIDE (usually just root) we have to
+disable the mem_write callback to avoid bypassing the mode bits.
 
-Incrementional improvements are usually the way to do these
-things.
+Writes can be used to bypass permissions on memory maps, even if a
+memory region is mapped r-x (as is a program's executable pages),
+the process can open its own /proc/self/mem file and write to the
+pages directly.
 
--Andi
+Even if seccomp filters block mmap/mprotect calls with W|X perms,
+they often cannot block open calls as daemons want to read/write
+their own runtime state and seccomp filters cannot check file paths.
+Write calls also can't be blocked in general via seccomp.
+
+Since the mem file is part of the dynamic /proc/<pid>/ space, we
+can't run chmod once at boot to restrict it (and trying to react
+to every process and run chmod doesn't scale, and the kernel no
+longer allows chmod on any of these paths).
+
+SELinux could be used with a rule to cover all /proc/*/mem files,
+but even then having multiple ways to deny an attack is useful in
+case on layer fails.
+
+[1] https://lwn.net/Articles/476947/
+[2] https://issues.chromium.org/issues/40089045
+
+Based on an initial patch by Mike Frysinger <vapier@chromium.org>.
+
+Cc: Guenter Roeck <groeck@chromium.org>
+Cc: Doug Anderson <dianders@chromium.org>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Jann Horn <jannh@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Cc: Christian Brauner <brauner@kernel.org>
+Co-developed-by: Mike Frysinger <vapier@chromium.org>
+Signed-off-by: Mike Frysinger <vapier@chromium.org>
+Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
+---
+Changes in v2:
+ * Added boot time parameter with default kconfig option
+ * Moved check earlier in mem_open() instead of mem_write()
+ * Simplified implementation branching
+ * Removed dependency on CONFIG_MEMCG
+---
+ .../admin-guide/kernel-parameters.txt         |  4 ++
+ fs/proc/base.c                                | 47 ++++++++++++++++++-
+ security/Kconfig                              | 22 +++++++++
+ 3 files changed, 71 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 460b97a1d0da..0647e2f54248 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -5618,6 +5618,10 @@
+ 	reset_devices	[KNL] Force drivers to reset the underlying device
+ 			during initialization.
+ 
++	restrict_proc_mem_write= [KNL]
++			Enable or disable write access to /proc/*/mem files.
++			Default is SECURITY_PROC_MEM_RESTRICT_WRITE_DEFAULT_ON.
++
+ 	resume=		[SWSUSP]
+ 			Specify the partition device for software suspend
+ 			Format:
+diff --git a/fs/proc/base.c b/fs/proc/base.c
+index 98a031ac2648..92f668191312 100644
+--- a/fs/proc/base.c
++++ b/fs/proc/base.c
+@@ -152,6 +152,30 @@ struct pid_entry {
+ 		NULL, &proc_pid_attr_operations,	\
+ 		{ .lsmid = LSMID })
+ 
++#ifdef CONFIG_SECURITY_PROC_MEM_RESTRICT_WRITE
++DEFINE_STATIC_KEY_MAYBE_RO(CONFIG_SECURITY_PROC_MEM_RESTRICT_WRITE_DEFAULT_ON,
++			   restrict_proc_mem_write);
++static int __init early_restrict_proc_mem_write(char *buf)
++{
++	int ret;
++	bool bool_result;
++
++	ret = kstrtobool(buf, &bool_result);
++	if (ret)
++		return ret;
++
++	if (bool_result)
++		static_branch_enable(&restrict_proc_mem_write);
++	else
++		static_branch_disable(&restrict_proc_mem_write);
++	return 0;
++}
++early_param("restrict_proc_mem_write", early_restrict_proc_mem_write);
++# define PROC_PID_MEM_MODE S_IRUSR
++#else
++# define PROC_PID_MEM_MODE (S_IRUSR|S_IWUSR)
++#endif
++
+ /*
+  * Count the number of hardlinks for the pid_entry table, excluding the .
+  * and .. links.
+@@ -829,6 +853,25 @@ static int mem_open(struct inode *inode, struct file *file)
+ {
+ 	int ret = __mem_open(inode, file, PTRACE_MODE_ATTACH);
+ 
++#ifdef CONFIG_SECURITY_PROC_MEM_RESTRICT_WRITE
++	struct mm_struct *mm = file->private_data;
++	struct task_struct *task = get_proc_task(inode);
++
++	if (mm && task) {
++		/* Only allow writes by processes already ptracing the target task */
++		if (file->f_mode & FMODE_WRITE &&
++		    static_branch_maybe(CONFIG_SECURITY_PROC_MEM_RESTRICT_WRITE_DEFAULT_ON,
++					&restrict_proc_mem_write)) {
++			rcu_read_lock();
++			if (!ptracer_capable(current, mm->user_ns) ||
++			    current != ptrace_parent(task))
++				ret = -EACCES;
++			rcu_read_unlock();
++		}
++		put_task_struct(task);
++	}
++#endif
++
+ 	/* OK to pass negative loff_t, we can catch out-of-range */
+ 	file->f_mode |= FMODE_UNSIGNED_OFFSET;
+ 
+@@ -3281,7 +3324,7 @@ static const struct pid_entry tgid_base_stuff[] = {
+ #ifdef CONFIG_NUMA
+ 	REG("numa_maps",  S_IRUGO, proc_pid_numa_maps_operations),
+ #endif
+-	REG("mem",        S_IRUSR|S_IWUSR, proc_mem_operations),
++	REG("mem",        PROC_PID_MEM_MODE, proc_mem_operations),
+ 	LNK("cwd",        proc_cwd_link),
+ 	LNK("root",       proc_root_link),
+ 	LNK("exe",        proc_exe_link),
+@@ -3631,7 +3674,7 @@ static const struct pid_entry tid_base_stuff[] = {
+ #ifdef CONFIG_NUMA
+ 	REG("numa_maps", S_IRUGO, proc_pid_numa_maps_operations),
+ #endif
+-	REG("mem",       S_IRUSR|S_IWUSR, proc_mem_operations),
++	REG("mem",       PROC_PID_MEM_MODE, proc_mem_operations),
+ 	LNK("cwd",       proc_cwd_link),
+ 	LNK("root",      proc_root_link),
+ 	LNK("exe",       proc_exe_link),
+diff --git a/security/Kconfig b/security/Kconfig
+index 412e76f1575d..ffee9e847ed9 100644
+--- a/security/Kconfig
++++ b/security/Kconfig
+@@ -19,6 +19,28 @@ config SECURITY_DMESG_RESTRICT
+ 
+ 	  If you are unsure how to answer this question, answer N.
+ 
++config SECURITY_PROC_MEM_RESTRICT_WRITE
++	bool "Restrict /proc/*/mem write access"
++	default n
++	help
++	  This restricts writes to /proc/<pid>/mem, except when the current
++	  process ptraces the /proc/<pid>/mem task, because a ptracer already
++	  has write access to the tracee memory.
++
++	  Write access to this file allows bypassing memory map permissions,
++	  such as modifying read-only code.
++
++	  If you are unsure how to answer this question, answer N.
++
++config SECURITY_PROC_MEM_RESTRICT_WRITE_DEFAULT_ON
++	bool "Default state of /proc/*/mem write restriction"
++	depends on SECURITY_PROC_MEM_RESTRICT_WRITE
++	default y
++	help
++	  /proc/*/mem write access is controlled by kernel boot param
++	  "restrict_proc_mem_write" and this config chooses the default
++	  boot state.
++
+ config SECURITY
+ 	bool "Enable different security models"
+ 	depends on SYSFS
+-- 
+2.30.2
+
 
