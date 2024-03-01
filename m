@@ -1,80 +1,114 @@
-Return-Path: <linux-kernel+bounces-88068-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88071-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCDC686DCF9
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:23:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15ACA86DCFF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 09:25:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C70B1F26FEC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:23:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 46EFE1C22B21
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 08:25:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90A6969D2C;
-	Fri,  1 Mar 2024 08:23:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A3AE69D28;
+	Fri,  1 Mar 2024 08:25:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="saBpVX3z"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="aexe0ZLN"
+Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAFBC69DE2;
-	Fri,  1 Mar 2024 08:23:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F44B69D25;
+	Fri,  1 Mar 2024 08:25:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709281416; cv=none; b=PoOb4nNb15FdCtwbV4M3tWOspRR3+50XamTChdhsDPhkJ5NM9MTgzIXN6+WcaLqecoNx8qrqsM3Eo0AlRRrs9OIgvo0hNlSAeniZBoUTsfCKJYwcqiIpJnQqzIN0QjdU7mPi+ok/Flk78qRTLiCFPfJJ+Hfi9/pXJ2o57tXcfN8=
+	t=1709281511; cv=none; b=ixQJIui6eeL5woPjJDOn5fHdvroVDBIHY+ExjcA7IgTbg1x0uBj1hSVRo++R+KRGiTWzgIPEgIHtO9viNLzeMgxPAEJ2WyQSzJCkp2nSSA9fq2QENS5OeuyTtDiTkQGziH2c/1zZOYDTJnYRoDj+3SQWlWKDLAj36OV+nYDVUTM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709281416; c=relaxed/simple;
-	bh=1KUKyW1krKHFz7wOeRii9DJH+wRpbx28AS7tGIgwrJI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SJ9Hmmu/PfDaYHOzf+jbWOadnGgGAirWunioSdBY4Axl6DteR+lXaJHIKOcPB9pD3JfyMynnWdXC6xxvPe5d/89M9p0E6Cjmji3yXeh8d3y/bZJEorPYaPOgnPL1rBucRR7/f5xv2kLnsezeTjbarxUaZxJkbl09oux1e0WIH2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=saBpVX3z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 604EBC433F1;
-	Fri,  1 Mar 2024 08:23:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709281416;
-	bh=1KUKyW1krKHFz7wOeRii9DJH+wRpbx28AS7tGIgwrJI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=saBpVX3zewhhJIKVr385W4szyasUTa34y2yUnj49UH98LSYnHy/bSEnvBmk+xwSWV
-	 n1dmU9Z9SsVAG/nAlsqdTZBs0vOWWlevy86MzXuE7YyB5gV5Wwe7bgPZcuzwc88Xcs
-	 v7BnJZBVsuUUyNVMMEHCnW1i4E5JCMw/lSACUsHqoipYo6UcrMsAsqTj0INTAdORmb
-	 AYRuPMnv9gsytc+1FhP67FXX7ObiDLD3m+uMQMcH+PQTpOYZw4aq8mPjl8fLMWopkK
-	 HmWm7d3qQ8bsgZPhA8bfA7HyE1sSQC08lo5eP01fJat3OZxY2lSSVfemFDsXaXu2hc
-	 Gl/mz4LNfiYkQ==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rfyBH-000000006k4-0UHr;
-	Fri, 01 Mar 2024 09:23:47 +0100
-Date: Fri, 1 Mar 2024 09:23:47 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH] gpio: fix resource unwinding order in error path
-Message-ID: <ZeGQk82bOZA7H5kS@hovoldconsulting.com>
-References: <20240229172549.444227-1-brgl@bgdev.pl>
+	s=arc-20240116; t=1709281511; c=relaxed/simple;
+	bh=X4RuAEbCwi7LK+wrIeZK9w07Qub5Uxb8j6kTg3iOLfI=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=ZHEkuOJ7V1g7+Nip2+Nyi8lkiXfR33Onq25XdjFs25GiYKkCkiip0K5LB/eO7UrSANGo/tOT/sYsnr02VMDTwHLdbSer/1OlIGftcn51bR64AR4i4k6PvsJ3/bpYw3L1Fi/2EXgAIrZIKxHCdvGHs0FpHc1joPXVFq7OqwucQE4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=aexe0ZLN; arc=none smtp.client-ip=116.203.91.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240229172549.444227-1-brgl@bgdev.pl>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+	t=1709281507;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PML2KXW2NNHKig0QUJIbOqrTp9cjXhSc3Xi08SDJ2+4=;
+	b=aexe0ZLNbDKkg3CyRRdMeFW2hP8JVq3Si/3axw4AXvBM5sKWsTH0ZeW8kptyRFqeP7y/gl
+	SuX1UIlzo6PjaFE17g7+ohi8JC+ld5kGeyiAJOYBl6BzJIfPDJQy4WnbL4S6bLSwb4gQnL
+	hAuk0bf1UcQb9BUGltiQytmPW+uyBksKZpcoGVuRgsHdqpVOn/IJhX+cuSszim35vG0cXN
+	oFo7Nmex0agyQnFEyrXqcSredmgCUzcO87JTcoDZxPjGiwovxLiGihVAQ3PJToCMad2M/7
+	LNsD2KCiWBqe1lGazWjpUxdye3+DAf4661WuIdh/YTnqMok+IyaRehDPaHcpog==
+Date: Fri, 01 Mar 2024 09:25:07 +0100
+From: Dragan Simic <dsimic@manjaro.org>
+To: Alexey Charkov <alchark@gmail.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Heiko Stuebner <heiko@sntech.de>, Daniel Lezcano
+ <daniel.lezcano@linaro.org>, Viresh Kumar <viresh.kumar@linaro.org>, Chen-Yu
+ Tsai <wens@kernel.org>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/5] arm64: dts: rockchip: enable automatic active
+ cooling on Rock 5B
+In-Reply-To: <a8ebe39b28a34c3544481a4e43e61d2b@manjaro.org>
+References: <20240229-rk-dts-additions-v3-0-6afe8473a631@gmail.com>
+ <20240229-rk-dts-additions-v3-2-6afe8473a631@gmail.com>
+ <823379825559bb76088c31f44f998dd3@manjaro.org>
+ <CABjd4YybaQnKm+VpU_xVrCb=pxQ7oQXPHGZzn_u1w_h3yn7gwg@mail.gmail.com>
+ <a8ebe39b28a34c3544481a4e43e61d2b@manjaro.org>
+Message-ID: <b16f1d40549554598a3658679ceba9bf@manjaro.org>
+X-Sender: dsimic@manjaro.org
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
 
-On Thu, Feb 29, 2024 at 06:25:49PM +0100, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On 2024-03-01 07:17, Dragan Simic wrote:
+> On 2024-03-01 06:21, Alexey Charkov wrote:
+>> On Fri, Mar 1, 2024 at 1:25 AM Dragan Simic <dsimic@manjaro.org> 
+>> wrote:
+>>> On 2024-02-29 20:26, Alexey Charkov wrote:
+>>> > This links the PWM fan on Radxa Rock 5B as an active cooling device
+>>> > managed automatically by the thermal subsystem, with a target SoC
+>>> > temperature of 65C and a minimum-spin interval from 55C to 65C to
+>>> > ensure airflow when the system gets warm
+>>> 
+>>> I'd suggest that you replace "automatic active cooling" with "active
+>>> cooling" in the patch subject.  I know, it may seem like more of the
+>>> unnecessary nitpicking, :) but I hope you'll agree that "automatic"
+>>> is actually redundant there.  It would also make the patch subject
+>>> a bit shorter.
+>>> 
+>>> Another option would be to replace "automatic active cooling" with
+>>> "automatic fan control", which may actually be a better choice.
+>>> I'd be happy with whichever one you prefer. :)
+>> 
+>> Sounds good to me, thanks!
 > 
-> Hogs are added *after* ACPI so should be removed *before* in error path.
+> I'm glad that you like it. :)
 > 
-> Fixes: 6d86750ce623 ("gpio: fix gpio leak in gpiochip_add error path")
+>>> Otherwise, please feel free to add:
+>>> 
+>>> Reviewed-by: Dragan Simic <dsimic@manjaro.org>
+>> 
+>> Thank you Dragan, much appreciated!
+> 
+> Thank you for putting up with my nitpicking. :)
 
-This Fixes tag is not correct. Back then hogs were only implemented by
-OF so you need to find another commit to blame here.
+Perhaps the following tag would also be deserved for this patch:
 
-	git grep -pW '^int gpiochip_add(' 6d86750ce62391f5a0a7985d5c050c2e3c823ab9
+Helped-by: Dragan Simic <dsimic@manjaro.org>
 
-Johan
+I hope you agree. :)
 
