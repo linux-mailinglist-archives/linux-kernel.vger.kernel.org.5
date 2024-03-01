@@ -1,176 +1,181 @@
-Return-Path: <linux-kernel+bounces-89113-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89118-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34EEF86EA9F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:48:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E6D2B86EAAC
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:49:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A2C1B1F2300A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:48:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5BFAA1F26162
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:49:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2CC1535C7;
-	Fri,  1 Mar 2024 20:48:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 872B756B6E;
+	Fri,  1 Mar 2024 20:48:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="JHtXErIc"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="QTN+HlnB";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="3z3WOrnR"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F60B5337B;
-	Fri,  1 Mar 2024 20:48:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A62E535DF;
+	Fri,  1 Mar 2024 20:48:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709326126; cv=none; b=gwV9JxjeljWkORO34wWRWIS3VEHrmM3JKrbDDoDD64juq1NxmcJ5q/jmHGOuemR8wZquQ+XGOCkzNCctxXtfTNIYaKDV1Eu7eKpYKt+XxWHFHEU72Imssjyo1gEOoxhdIKLh8GAHQj9sMwY+0LzaKzUfmuYdI/9tdgGjus1m9EI=
+	t=1709326129; cv=none; b=dg6vdc2ntbaBV1jN39J2dhf0/RsNWk1GRch88nhuM9eA3EMt7vSuD/nq1QBZPd8wDs2AmlqD7WKnBagHgxOiF/AFtHqAw08lNDnM5y46CExZu7aNBbjyxGSGXa+QRwIH55e0Tl/v20mCPjrY1RKFJcNnA6x2cV5Ycu6vqWo5SCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709326126; c=relaxed/simple;
-	bh=+ebwOYoTVz9opdDkPoQlWXYXH71gZ3PmbdRZzQLy1B4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=n57YIgjYCK2WnCSlamHiopWj7vQa6tNdW9gDYPaAMcHgmeKECfqaHqa+IzjN73abEmQBRGtkmrN2/Sb7xqzkycPNC5hqCu0C5l+LWAO0LLaM+UkgpN797KYmk/FUDy0/SKseZyndtzGXdkTXbqb+rnS4OqzkHJud8f8Xf0iDEbQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=JHtXErIc; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 421KTx7x006699;
-	Fri, 1 Mar 2024 20:48:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=Gjs+X61ERp7aMcqKFOVF5kpM2JM+Tyj248qb3Xu8te4=;
- b=JHtXErIc3I1iLV8fHrv48r2RNTH7FPYCSUahGo0oG4ush0lJk9/mRb5C78D06AAZohQh
- ZF1Y5UGPJX3zeoyF0HAVWlfYP5kHUrkgIS8paheNzfnFRzltR/UNhllTF/gZ2fhkMFZ9
- CAwmXIWFP7Wpi1f7ZgKZVPW0aDi6UIBCMQpgbKymlmnnmQ9umUvWLtDZtptmD94QJGk/
- JCsv6iH5kC4BCuHc5fFJqIdchUPMXn/hTvSQ/nZs7XAZcgcC3OKMIT8skkRDaFzLBKUj
- 7YrbrKOFg00KaSE9BeaoF32QdzYsGlfEuURBm0PJ0qdjhmRiuGXha8ZQdctdDJl99WkK dw== 
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wknpu0vw4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 01 Mar 2024 20:48:33 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 421J3RI5021762;
-	Fri, 1 Mar 2024 20:48:32 GMT
-Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wfu60q3dm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 01 Mar 2024 20:48:32 +0000
-Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
-	by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 421KmUq44063768
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 1 Mar 2024 20:48:32 GMT
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0650B5805B;
-	Fri,  1 Mar 2024 20:48:30 +0000 (GMT)
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id DDC065806A;
-	Fri,  1 Mar 2024 20:48:28 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Fri,  1 Mar 2024 20:48:28 +0000 (GMT)
-Message-ID: <8d33a745-ac77-4965-8d1d-35061b027f33@linux.ibm.com>
-Date: Fri, 1 Mar 2024 15:48:28 -0500
+	s=arc-20240116; t=1709326129; c=relaxed/simple;
+	bh=cRvXMa+HiUdQCI7oCuhee7TQ71oyfaiMhTtdJ1DwZ7k=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=qRnhMRMTJ8AiTgYWkXXY7LwE7QXuuZZLGHBtwHGygzrKNbn2ClNDMskOb/1XXO45koDeakWsqrbGDfGiaq5zQ6OeTOitatQ0YpZLEMx9PIMNsQ6b9SrDYZH70IyDdmDphHAD1hEnTH3AqlO2b/hr7cqat9Dy33Xw+ivPJo8OPPg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=QTN+HlnB; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=3z3WOrnR; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Fri, 01 Mar 2024 20:48:39 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1709326121;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=M9H3lpdsOdOgobAjbpYohIUvcrULTxKy8/5jJJrx0Ts=;
+	b=QTN+HlnBx1WgRtGwYF1kULQMOwzw0hyIbdtcAfFwi4MqNx8aM5Ebwn/KutBuGvovV9gcoC
+	Lw/ZZKmvd/q5peol6/rd9gbYZM7aOQdLG/psHMp9i1Zfym64tqVhouE/2BPa7QjKTx+PN6
+	bX+eKvuIGdNLojrd5D7fIpHgJL7ukl/ke3csWHlV5PU1cCYF4nHFLdZwe8SnuubtaESjzG
+	Vgp68PxxXMNMhmmCasKg2RFEY1LiTl3APtrVfJJv2KmrjH/XsFR86qYn6iZOqfROhv4kHI
+	nV8Gu5Qb6Alwfr25fxNbuSyLAMy/iif5SUXFUm5WVQhtCg4W0JStBgRKyekeGQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1709326121;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=M9H3lpdsOdOgobAjbpYohIUvcrULTxKy8/5jJJrx0Ts=;
+	b=3z3WOrnR3l/uK22KoyXP+qRJEWenhprxUpw/K6wANAVKx8lsfelyAaJuOn6WF9ntt7ChK5
+	Th2tISzIdfUIYrDA==
+From: "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/core] x86/idle: Select idle routine only once
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+ "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <87edcu6vaq.ffs@tglx>
+References: <87edcu6vaq.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 01/10] crypto: ecdsa - Convert byte arrays with key
- coordinates to digits
-Content-Language: en-US
-To: Jarkko Sakkinen <jarkko@kernel.org>, Lukas Wunner <lukas@wunner.de>
-Cc: keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        linux-kernel@vger.kernel.org, saulo.alessandre@tse.jus.br
-References: <20240223204149.4055630-1-stefanb@linux.ibm.com>
- <20240223204149.4055630-2-stefanb@linux.ibm.com>
- <20240229091105.GA29363@wunner.de>
- <aabeec7b-618c-4d15-b033-4162b6e54f6a@linux.ibm.com>
- <CZIOY02QS2QC.LV0A0HNT7VKM@suppilovahvero>
-From: Stefan Berger <stefanb@linux.ibm.com>
-In-Reply-To: <CZIOY02QS2QC.LV0A0HNT7VKM@suppilovahvero>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Message-ID: <170932611993.398.17268708078847688756.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: lE8FWyWYQ6cGIPHuEQWRNiN7etT_4rpv
-X-Proofpoint-GUID: lE8FWyWYQ6cGIPHuEQWRNiN7etT_4rpv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-01_21,2024-03-01_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- mlxlogscore=999 clxscore=1015 adultscore=0 spamscore=0 phishscore=0
- bulkscore=0 suspectscore=0 mlxscore=0 malwarescore=0 priorityscore=1501
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2403010173
 
+The following commit has been merged into the x86/core branch of tip:
 
+Commit-ID:     25525edd9c99d3aa799e80a8e98bdd62ed1639f9
+Gitweb:        https://git.kernel.org/tip/25525edd9c99d3aa799e80a8e98bdd62ed1639f9
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Wed, 28 Feb 2024 23:20:32 +01:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Fri, 01 Mar 2024 21:34:55 +01:00
 
-On 3/1/24 15:26, Jarkko Sakkinen wrote:
-> On Thu Feb 29, 2024 at 4:57 PM EET, Stefan Berger wrote:
->>
->>
->> On 2/29/24 04:11, Lukas Wunner wrote:
->>> On Fri, Feb 23, 2024 at 03:41:40PM -0500, Stefan Berger wrote:
->>>> +static inline void ecc_digits_from_bytes(const u8 *in, unsigned int nbytes,
->>>> +					 u64 *out, unsigned int ndigits)
->>>> +{
->>>> +	unsigned int sz = ndigits << ECC_DIGITS_TO_BYTES_SHIFT;
->>>> +	u8 tmp[ECC_MAX_DIGITS << ECC_DIGITS_TO_BYTES_SHIFT];
->>>> +	unsigned int o = sz - nbytes;
->>>> +
->>>> +	memset(tmp, 0, o);
->>>> +	memcpy(&tmp[o], in, nbytes);
->>>> +	ecc_swap_digits(tmp, out, ndigits);
->>>> +}
->>>
->>> Copying the whole key into tmp seems inefficient.  You only need
->>> special handling for the first few bytes of "in" (6 bytes in the
->>> P521 case) and could use ecc_swap_digits() to convert the rest
->>> of "in" directly to "out" without using tmp.
->>>
->>> So it would be sufficient to allocate the first digit on the stack,
->>> memset + memcpy, then convert that to native byte order into "in[0]"
->>> and use ecc_swap_digits() for the rest.
->>>
->>> And the special handling would be conditional on "!o", so is skipped
->>> for existing curves.
->>
->> Thanks. It looks like this now:
->>
->> static inline void ecc_digits_from_bytes(const u8 *in, unsigned int nbytes,
->>                                            u64 *out, unsigned int ndigits)
->> {
->>           unsigned int o = nbytes & 7;
->>           u64 msd = 0;
->>           size_t i;
->>
->>           if (o == 0) {
->>                   ecc_swap_digits(in, out, ndigits);
->>           } else {
->>                   for (i = 0; i < o; i++)
->>                           msd = (msd << 8) | in[i];
->>                   out[ndigits - 1] = msd;
->>                   ecc_swap_digits(&in[o], out, ndigits - 1);
-> 
-> This would be more stream-lined IMHO:
-> 
->          unsigned int o = nbytes & 7;
-> 	unsigned int n = ndigits;
->          u64 msd = 0;
->          size_t i;
-> 
->          if (o != 0) {
->                  for (i = 0; i < o; i++)
->                          msd = (msd << 8) | in[i];
-> 
->                  out[--n] = msd;
->          }
-> 
->          ecc_swap_digits(in, out, n);
+x86/idle: Select idle routine only once
 
-You forgot to advance 'in'.
+The idle routine selection is done on every CPU bringup operation and
+has a guard in place which is effective after the first invocation,
+which is a pointless exercise.
 
-> 
-> BR, Jarkko
-> 
+Invoke it once on the boot CPU and mark the related functions __init.
+The guard check has to stay as xen_set_default_idle() runs early.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/r/87edcu6vaq.ffs@tglx
+---
+ arch/x86/include/asm/processor.h | 2 +-
+ arch/x86/kernel/cpu/common.c     | 4 ++--
+ arch/x86/kernel/process.c        | 8 +++++---
+ 3 files changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+index 1188e8b..523c466 100644
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -558,7 +558,7 @@ static inline void load_sp0(unsigned long sp0)
+ 
+ unsigned long __get_wchan(struct task_struct *p);
+ 
+-extern void select_idle_routine(const struct cpuinfo_x86 *c);
++extern void select_idle_routine(void);
+ extern void amd_e400_c1e_apic_setup(void);
+ 
+ extern unsigned long		boot_option_idle_override;
+diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+index 8f367d3..5c72af1 100644
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -1938,8 +1938,6 @@ static void identify_cpu(struct cpuinfo_x86 *c)
+ 	/* Init Machine Check Exception if available. */
+ 	mcheck_cpu_init(c);
+ 
+-	select_idle_routine(c);
+-
+ #ifdef CONFIG_NUMA
+ 	numa_add_cpu(smp_processor_id());
+ #endif
+@@ -2344,6 +2342,8 @@ void __init arch_cpu_finalize_init(void)
+ {
+ 	identify_boot_cpu();
+ 
++	select_idle_routine();
++
+ 	/*
+ 	 * identify_boot_cpu() initialized SMT support information, let the
+ 	 * core code know.
+diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
+index 2d51cbd..ac34342 100644
+--- a/arch/x86/kernel/process.c
++++ b/arch/x86/kernel/process.c
+@@ -853,8 +853,9 @@ void __noreturn stop_this_cpu(void *dummy)
+  * Do not prefer MWAIT if MONITOR instruction has a bug or idle=nomwait
+  * is passed to kernel commandline parameter.
+  */
+-static bool prefer_mwait_c1_over_halt(const struct cpuinfo_x86 *c)
++static __init bool prefer_mwait_c1_over_halt(void)
+ {
++	const struct cpuinfo_x86 *c = &boot_cpu_data;
+ 	u32 eax, ebx, ecx, edx;
+ 
+ 	/* If override is enforced on the command line, fall back to HALT. */
+@@ -908,7 +909,7 @@ static __cpuidle void mwait_idle(void)
+ 	__current_clr_polling();
+ }
+ 
+-void select_idle_routine(const struct cpuinfo_x86 *c)
++void __init select_idle_routine(void)
+ {
+ 	if (boot_option_idle_override == IDLE_POLL) {
+ 		if (IS_ENABLED(CONFIG_SMP) && smp_num_siblings > 1)
+@@ -916,10 +917,11 @@ void select_idle_routine(const struct cpuinfo_x86 *c)
+ 		return;
+ 	}
+ 
++	/* Required to guard against xen_set_default_idle() */
+ 	if (x86_idle_set())
+ 		return;
+ 
+-	if (prefer_mwait_c1_over_halt(c)) {
++	if (prefer_mwait_c1_over_halt()) {
+ 		pr_info("using mwait in idle threads\n");
+ 		static_call_update(x86_idle, mwait_idle);
+ 	} else if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST)) {
 
