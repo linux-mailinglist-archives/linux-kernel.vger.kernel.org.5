@@ -1,176 +1,275 @@
-Return-Path: <linux-kernel+bounces-87798-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-87799-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECDEE86D928
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 02:50:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6EE386D92F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 02:51:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81019286A0A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:50:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1058CB23B58
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 01:51:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DB8E36120;
-	Fri,  1 Mar 2024 01:50:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FFC5376FE;
+	Fri,  1 Mar 2024 01:51:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="glCVKYIT"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gJfiRkYk"
+Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA42A2C85F
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 01:50:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66A903399B
+	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 01:51:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709257845; cv=none; b=tqHsQKQmNx4Mtalx/de2Up0utxd820w2Yi0pbsxxnm0c1MSQZuUKgzAVyPt7m/EF1LcW+EHMzTgymQvOFSEaIWBx2d/Osj4SwRyTKCsZFLUF7CeDLSJkyG9WhNhD5+N5T991g9XWiWDh6a6/4b13eaKfca6Q4eRKL0KaMz2HOCw=
+	t=1709257882; cv=none; b=BGP6agbefxfcexrjBjqnvm1Wl+Jayw6muY1Xmemjij3UvfiPMKUvYL2vvb+u8/sxuC18v+3xVxsJIFGI7O6WiYBmWA+dPtjIda4DgGN9PhqCH2jZAV3xTdrzn/bdKAyR/uekgj8CgqtcHfEA8tNjgzt60jqe2pjxlGDSPludbV4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709257845; c=relaxed/simple;
-	bh=nNsEDn3Vls0jVQChE/FavePc/zLPW+1eOfz7dPTgXYs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jlHMlBABuFk5unmKJ8uf1U8ohzICNEhN+Uqln0K+iwyi4SW7K+DjvxcdhwAIQGvq8INRh40j8+aqzX+hE0QKY7xWltJUekEUS2xVr9kBrPnSJw5t5buWLMt8X991TeolwPTEisml4vSeQmpTz+Ku7PAlQOZYIMIOKF6uKhUOJhM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=glCVKYIT; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709257844; x=1740793844;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=nNsEDn3Vls0jVQChE/FavePc/zLPW+1eOfz7dPTgXYs=;
-  b=glCVKYITTn+OruAOFaPUX+I9YQOW24zQMww/86LAaAKU7lhNeHu1Vz4W
-   NA2cpSYsq8wTZmCeVYG8geX5Wn77URlPLntnQrc+fZsvBDT+pdWLns1+S
-   Mz22O1QyWZ60DNc0Io/Cb1l2HwT6dsWwpsWTrPEpxDUBwBlKjiXPeTz/L
-   2zg4ePAehKMUr2BfhEdVQ76SY76Q8bjsBmlb6hPPqu6tRum5xkyl40kdx
-   v1ukiNe+jCen0VshCSOk6a9bUPu2J+nPgpaWhaeD2a6eMtkgM8dSEBN71
-   xd9WYnIpskrqv6sPni98wlZGntii99Hz/BiO8vwLAGKBYHZh64X5YLLQr
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="15211651"
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="15211651"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 17:50:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="45581280"
-Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.124.229.115]) ([10.124.229.115])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 17:50:40 -0800
-Message-ID: <f258426b-cfbe-42c8-9c6a-42452837c73c@linux.intel.com>
-Date: Fri, 1 Mar 2024 09:50:36 +0800
+	s=arc-20240116; t=1709257882; c=relaxed/simple;
+	bh=QyxP1iqPDjfvyIjGdmhxdRhklCVEPt8HipFJGmMfadc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=KN8pcYl8c6Za83n++fhA5z5oG70fPWo4pIu3dAZsPOELKNcF7hm/B2eKFdNwu8tGwV1DzrziC/KQZwb73jgz86zv04dSRIIvSSpZragNZPvXST9tGRxT5UcLaN1YVykZMluRQTNKRfDc3YjS4wmndU5n/BbOb2EoocGAdI5ZzBo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gJfiRkYk; arc=none smtp.client-ip=209.85.160.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-21ec3ca9ab9so737168fac.3
+        for <linux-kernel@vger.kernel.org>; Thu, 29 Feb 2024 17:51:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709257879; x=1709862679; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=89qGbY61adiDC0jI07VuVZZvVnnxUhSYInpzriInm0g=;
+        b=gJfiRkYkBAwFyoIN5ftwqtT55gqG2FTFjwBNuZeAfLL2g+s14xeHO7v3V7xm8flIEh
+         ifDr4Pn7g9nsKg0ifppwgY5VK/28VMhr+p7ljKxa7Y5igg62U5tGnTAUepLkm4vBWUcr
+         oMhzmCxL8vzcyvJIV3bC4LassFDXREG1RtgP9Mc61gX+FGsq/+TsGI3szHaK2sUyPW64
+         Z6NsvgS2WPFfOSggR0x1bBmyfew+jwB9qSmcHMaqtBSBLMNKAEELLHMJXJMEXrLd4Pp+
+         uvlQw8fC8RcY6E0H0M1eCUiRJ+1opTBKyAaU24scevYpHrCtPNB8cJsoazuX6aZxJS5E
+         5R3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709257879; x=1709862679;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=89qGbY61adiDC0jI07VuVZZvVnnxUhSYInpzriInm0g=;
+        b=tVIprsUISCIGwa7GAbGki47UkA6SwyhqCNmH1JWI1s9UbJx1jVj3W1PudJ2jISb6BC
+         WuMhM6JRINKc2xUYbajJpCknk8OYGKnPVIHrRvYHUV8rVi/DYU8oD/2MviSfX7CXLboH
+         L2kbmXirQAUZk0j1w7i/rXS4akVSEKkungRBBzFCP/1aeKbhmJJiGhad+aF3w0mAz/Xf
+         ZguvP0niGs1sZSZ+yaGBnLyK+awvRQGi6Al+bV/2gB8IQvF/d+OPO36tZOYXQBbsI7YF
+         6OhuLvdZ/R0gzpJ5KOZ6Is6NETqUj4++P1arIqf5ds9lzm8yFWQ8eRIgUN5VOCrI5eKt
+         LTrQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXvnw90OlkfjHFq12hSpRA9jhEJ4GQBc8q+on4IzX7qJoT/Lr2QDjxFiWOpjTtVMgBg9xw+JiJRhAO/69Njsh21IGyGnhnB6ZTkG1vd
+X-Gm-Message-State: AOJu0YyJZC+MB1A2dLS3GAn7EDfb5+iabCIPFLuF/4c5X0dwzX72X+Ma
+	ynWGVQ5eHBVqDuxpky49ziPb0sCeTIUF9gZS3CffWxp8lHWSooVkwKTDzm7biVg=
+X-Google-Smtp-Source: AGHT+IG5WbMLsAps1Rv/qERBYELMrznbY8kTNQafWroXqqjZ8VoicEyOJ2ngKFP8bSF/qa4S6YfGXQ==
+X-Received: by 2002:a05:6870:1652:b0:21e:b096:2494 with SMTP id c18-20020a056870165200b0021eb0962494mr335586oae.50.1709257879454;
+        Thu, 29 Feb 2024 17:51:19 -0800 (PST)
+Received: from localhost ([136.62.192.75])
+        by smtp.gmail.com with ESMTPSA id ux11-20020a056870af0b00b0021fd54aba16sm754686oab.48.2024.02.29.17.51.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Feb 2024 17:51:19 -0800 (PST)
+From: Sam Protsenko <semen.protsenko@linaro.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>,
+	Chanwoo Choi <cw00.choi@samsung.com>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Tomasz Figa <tomasz.figa@gmail.com>,
+	linux-samsung-soc@vger.kernel.org,
+	linux-clk@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v4 1/3] clk: samsung: Implement manual PLL control for ARM64 SoCs
+Date: Thu, 29 Feb 2024 19:51:16 -0600
+Message-Id: <20240301015118.30072-1-semen.protsenko@linaro.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] iommu/vt-d: avoid sending explicit ATS invalidation
- request to released device
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: baolu.lu@linux.intel.com, bhelgaas@google.com, robin.murphy@arm.com,
- jgg@ziepe.ca, kevin.tian@intel.com, dwmw2@infradead.org, will@kernel.org,
- lukas@wunner.de, yi.l.liu@intel.com, dan.carpenter@linaro.org,
- iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20240229210640.GA362869@bhelgaas>
-From: Ethan Zhao <haifeng.zhao@linux.intel.com>
-In-Reply-To: <20240229210640.GA362869@bhelgaas>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+Some ARM64 Exynos chips are capable to control PLL clocks automatically.
+For those chips, whether the PLL is controlled automatically or manually
+is chosen in PLL_CON1 register with next bits:
 
-On 3/1/2024 5:06 AM, Bjorn Helgaas wrote:
-> On Wed, Feb 28, 2024 at 10:31:38PM -0500, Ethan Zhao wrote:
->> The introduction of per iommu device rbtree also defines the lifetime of
->> interoperation between iommu and devices, if the device has been released
->> from device rbtree, no need to send ATS invalidation request to it anymore,
->> thus avoid the possibility of later ITE fault to be triggered.
->>
->> This is part of the followup of prior proposed patchset
->>
->> https://do-db2.lkml.org/lkml/2024/2/22/350
-> Please use https://lore.kernel.org/ URLs instead.  This one looks like
-> https://lore.kernel.org/r/20240222090251.2849702-1-haifeng.zhao@linux.intel.com/
->
->> To make sure all the devTLB entries to be invalidated in the device release
->> path, do implict invalidation by fapping the E bit of ATS control register.
->> see PCIe spec v6.2, sec 10.3.7 implicit invalidation events.
-> s/implict/implicit/
->
-> s/fapping/?/  (no idea :)  "flipping"?  Oh, probably "flapping" per the
-> comment below.  But I think "flapping" is ambiguous; "setting" would be
-> better)
+    [28]  ENABLE_AUTOMATIC_CLKGATING
+    [1]   MANUAL_PLL_CTRL
+    [0]   AUTO_PLL_CTRL
 
-Yup, like the memory bit flipping, no idea what is the right word,
-setting one bit to 0, then 1, then back to 0. perhaps details the
-setting action 0-->1-->0 ?
+The bl2 bootloader sets 0x10000001 value for some PLL_CON1 registers,
+which means any attempt to control those PLLs manually (e.g.
+disabling/enabling those PLLs or changing MUX parent clocks) would lead
+to PLL lock timeout with error message like this:
 
-> s/v6.2/r6.2/ (also below in comment)
+    Could not lock PLL ...
 
-got it.
+At the moment, all Samsung clock drivers implement manual clock control.
+So in order to make it possible to control PLLs, corresponding PLL_CON1
+registers should be set to 0x2 first.
 
->
->> Fixes: 6f7db75e1c46 ("iommu/vt-d: Add second level page table interface")
->> Signed-off-by: Ethan Zhao <haifeng.zhao@linux.intel.com>
->> ---
->>   drivers/iommu/intel/iommu.c | 6 ++++++
->>   drivers/iommu/intel/pasid.c | 7 +++++++
->>   2 files changed, 13 insertions(+)
->>
->> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
->> index 6743fe6c7a36..b85d88ccb4b0 100644
->> --- a/drivers/iommu/intel/iommu.c
->> +++ b/drivers/iommu/intel/iommu.c
->> @@ -1368,6 +1368,12 @@ static void iommu_disable_pci_caps(struct device_domain_info *info)
->>   	pdev = to_pci_dev(info->dev);
->>   
->>   	if (info->ats_enabled) {
->> +		pci_disable_ats(pdev);
->> +		/*
->> +		 * flap the E bit of ATS control register to do implicit
->> +		 * ATS invlidation, see PCIe spec v6.2, sec 10.3.7
-> s/invlidation/invalidation/
->
-> I would put the comment above the pci_disable_ats(), so it looks like
-> this:
->
->    /* comment ... */
->    pci_disable_ats(pdev);
->    pci_enable_ats(pdev, VTD_PAGE_SHIFT);
->
->    pci_disable_ats(pdev);
->
-> because the spec says the E field must change from Clear to Set to
-> cause invalidation of all ATC entries, so it's important to see that
-> we clear E first, then set it.
+Some older ARM64 chips don't implement the automatic clock control
+though. It also might be desirable to configure some PLLs for manual
+control, while keeping the default configuration for the rest. So it'd
+convenient to choose this PLL mode for each CMU separately. Introduce
+manual_plls field to CMU structure to choose the PLL control mode.
+Because it'll be initialized with "false" in all existing CMU
+structures by default, it won't affect any existing clock drivers,
+allowing for this feature to be enabled gradually when it's needed with
+no change for the rest of users. In case .manual_plls is set, set
+PLL_CON1 registers to manual control, akin to what's already done for
+gate clocks in exynos_arm64_init_clocks(). Of course, PLL_CON1 registers
+should be added to corresponding struct samsung_cmu_info::clk_regs array
+to make sure they get initialized.
 
-Great, will correct.
+No functional change. This patch adds a feature, but doesn't enable it
+for any users.
 
-Thanks,
-Ethan
+Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+---
+Changes in v4:
+  - Turned register checking macros into static functions
 
->
->> +		 */
->> +		pci_enable_ats(pdev, VTD_PAGE_SHIFT);
->>   		pci_disable_ats(pdev);
->>   		info->ats_enabled = 0;
->>   		domain_update_iotlb(info->domain);
->> diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
->> index 108158e2b907..5f13e017a12c 100644
->> --- a/drivers/iommu/intel/pasid.c
->> +++ b/drivers/iommu/intel/pasid.c
->> @@ -215,6 +215,13 @@ devtlb_invalidation_with_pasid(struct intel_iommu *iommu,
->>   		return;
->>   
->>   	sid = info->bus << 8 | info->devfn;
->> +	/*
->> +	 * If device has been released from rbtree, no need to send ATS
->> +	 * Invalidation	request anymore, that could cause ITE fault.
->> +	 */
->> +	if (!device_rbtree_find(iommu, sid))
->> +		return;
->> +
->>   	qdep = info->ats_qdep;
->>   	pfsid = info->pfsid;
->>   
->> -- 
->> 2.31.1
->>
+Changes in v3:
+  - none
+
+Changes in v2:
+  - none
+
+ drivers/clk/samsung/clk-exynos-arm64.c | 56 +++++++++++++++++++-------
+ drivers/clk/samsung/clk.h              |  4 ++
+ 2 files changed, 45 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/clk/samsung/clk-exynos-arm64.c b/drivers/clk/samsung/clk-exynos-arm64.c
+index 6fb7194df7ab..bf7de21f329e 100644
+--- a/drivers/clk/samsung/clk-exynos-arm64.c
++++ b/drivers/clk/samsung/clk-exynos-arm64.c
+@@ -17,10 +17,17 @@
+ 
+ #include "clk-exynos-arm64.h"
+ 
++/* PLL register bits */
++#define PLL_CON1_MANUAL		BIT(1)
++
+ /* Gate register bits */
+ #define GATE_MANUAL		BIT(20)
+ #define GATE_ENABLE_HWACG	BIT(28)
+ 
++/* PLL_CONx_PLL register offsets range */
++#define PLL_CON_OFF_START	0x100
++#define PLL_CON_OFF_END		0x600
++
+ /* Gate register offsets range */
+ #define GATE_OFF_START		0x2000
+ #define GATE_OFF_END		0x2fff
+@@ -38,17 +45,36 @@ struct exynos_arm64_cmu_data {
+ 	struct samsung_clk_provider *ctx;
+ };
+ 
++/* Check if the register offset is a GATE register */
++static bool is_gate_reg(unsigned long off)
++{
++	return off >= GATE_OFF_START && off <= GATE_OFF_END;
++}
++
++/* Check if the register offset is a PLL_CONx register */
++static bool is_pll_conx_reg(unsigned long off)
++{
++	return off >= PLL_CON_OFF_START && off <= PLL_CON_OFF_END;
++}
++
++/* Check if the register offset is a PLL_CON1 register */
++static bool is_pll_con1_reg(unsigned long off)
++{
++	return is_pll_conx_reg(off) && (off & 0xf) == 0x4 && !(off & 0x10);
++}
++
+ /**
+  * exynos_arm64_init_clocks - Set clocks initial configuration
+- * @np:			CMU device tree node with "reg" property (CMU addr)
+- * @reg_offs:		Register offsets array for clocks to init
+- * @reg_offs_len:	Number of register offsets in reg_offs array
++ * @np:		CMU device tree node with "reg" property (CMU addr)
++ * @cmu:	CMU data
+  *
+- * Set manual control mode for all gate clocks.
++ * Set manual control mode for all gate and PLL clocks.
+  */
+ static void __init exynos_arm64_init_clocks(struct device_node *np,
+-		const unsigned long *reg_offs, size_t reg_offs_len)
++					    const struct samsung_cmu_info *cmu)
+ {
++	const unsigned long *reg_offs = cmu->clk_regs;
++	size_t reg_offs_len = cmu->nr_clk_regs;
+ 	void __iomem *reg_base;
+ 	size_t i;
+ 
+@@ -60,14 +86,14 @@ static void __init exynos_arm64_init_clocks(struct device_node *np,
+ 		void __iomem *reg = reg_base + reg_offs[i];
+ 		u32 val;
+ 
+-		/* Modify only gate clock registers */
+-		if (reg_offs[i] < GATE_OFF_START || reg_offs[i] > GATE_OFF_END)
+-			continue;
+-
+-		val = readl(reg);
+-		val |= GATE_MANUAL;
+-		val &= ~GATE_ENABLE_HWACG;
+-		writel(val, reg);
++		if (cmu->manual_plls && is_pll_con1_reg(reg_offs[i])) {
++			writel(PLL_CON1_MANUAL, reg);
++		} else if (is_gate_reg(reg_offs[i])) {
++			val = readl(reg);
++			val |= GATE_MANUAL;
++			val &= ~GATE_ENABLE_HWACG;
++			writel(val, reg);
++		}
+ 	}
+ 
+ 	iounmap(reg_base);
+@@ -177,7 +203,7 @@ void __init exynos_arm64_register_cmu(struct device *dev,
+ 		pr_err("%s: could not enable bus clock %s; err = %d\n",
+ 		       __func__, cmu->clk_name, err);
+ 
+-	exynos_arm64_init_clocks(np, cmu->clk_regs, cmu->nr_clk_regs);
++	exynos_arm64_init_clocks(np, cmu);
+ 	samsung_cmu_register_one(np, cmu);
+ }
+ 
+@@ -224,7 +250,7 @@ int __init exynos_arm64_register_cmu_pm(struct platform_device *pdev,
+ 		       __func__, cmu->clk_name, ret);
+ 
+ 	if (set_manual)
+-		exynos_arm64_init_clocks(np, cmu->clk_regs, cmu->nr_clk_regs);
++		exynos_arm64_init_clocks(np, cmu);
+ 
+ 	reg_base = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(reg_base))
+diff --git a/drivers/clk/samsung/clk.h b/drivers/clk/samsung/clk.h
+index a763309e6f12..a70bd7cce39f 100644
+--- a/drivers/clk/samsung/clk.h
++++ b/drivers/clk/samsung/clk.h
+@@ -330,6 +330,7 @@ struct samsung_clock_reg_cache {
+  * @suspend_regs: list of clock registers to set before suspend
+  * @nr_suspend_regs: count of clock registers in @suspend_regs
+  * @clk_name: name of the parent clock needed for CMU register access
++ * @manual_plls: Enable manual control for PLL clocks
+  */
+ struct samsung_cmu_info {
+ 	const struct samsung_pll_clock *pll_clks;
+@@ -354,6 +355,9 @@ struct samsung_cmu_info {
+ 	const struct samsung_clk_reg_dump *suspend_regs;
+ 	unsigned int nr_suspend_regs;
+ 	const char *clk_name;
++
++	/* ARM64 Exynos CMUs */
++	bool manual_plls;
+ };
+ 
+ struct samsung_clk_provider *samsung_clk_init(struct device *dev,
+-- 
+2.39.2
+
 
