@@ -1,154 +1,160 @@
-Return-Path: <linux-kernel+bounces-88608-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88609-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5271D86E417
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:13:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D10CF86E419
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 16:13:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B2A27B21875
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:13:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73157285E72
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 15:13:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69E1A6BFDE;
-	Fri,  1 Mar 2024 15:13:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9719E6E2BD;
+	Fri,  1 Mar 2024 15:13:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Soh8tyeI"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="cFr943yl"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 593DE67E8E
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 15:13:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 368F11C33;
+	Fri,  1 Mar 2024 15:13:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709306013; cv=none; b=dlDXiNibhJjf1g/jDSZwzSS3otsidNzoUjhQh0GnuEIb8RXAgK7pA9UCSPytFZ3NqlWohk6hD2hRfr9oS213iyn98d8EB/qMRey91wJ4rxvWSIIZEBFww173JczTqIqfyVC6Y+rca7tGgJlLlhEqSBbrYocZVM9ljmw7ZeqY1/k=
+	t=1709306028; cv=none; b=LUlP7HmGxd0uwIqs0mdYHfkInLEIDlhOUKnwzmseCCw9w1qsSCjmV4jj35RzTGwxzy5vdzxTNUJ92XW5osNnlAjNyO9X7ePoShRxyBa+bMj2FTrEH/pQ1DCrStAvBwUJaoLb9JvzC7a3+iCOQfXYrRcTRFmjiVCVYrs/jUJFu7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709306013; c=relaxed/simple;
-	bh=PebnkUuVTIKrTfkdeZeFzM4Bp/iInDLtHpeJBmzIpLc=;
+	s=arc-20240116; t=1709306028; c=relaxed/simple;
+	bh=4rZ9IbsP+jzXlyf93oCqikrl4goIvycpLqfPlaupifE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KYU2MRmT+UdZd3I/2T0QA7jjpMlPfuhixk9r3WCazhjSdZHYIE0ckdU0nzcBBSSbHI5fgZ1qERFaZfUjYw9n8fzBQbimqrXFqlf9RYChMMtfZLUILevfVrUxNJmYZQn8WXRH9ZgMcSyH3MYSFLjoWtgCbzsEToXsEd62rk8I670=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Soh8tyeI; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a44665605f3so212050066b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 07:13:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1709306009; x=1709910809; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HDkjb/3ycOtyX9DruBw4yM0aFf/SrD3+DOAhw0JNHrc=;
-        b=Soh8tyeI0D7FXPUk4acDygDR8rdIBeb6zQgZTzYXsTP7oHd5AEwkoA4fWYOUQgUdfe
-         RvVvvfnsYMZyj06Z7dVxBLTznRdBjoNXbuwLuiF0gsdmX/6p/aBaZmluF+UkXFT2p8Sy
-         5Vjmv/wbIwUnlKFXmibUeHY3f6i+oJvVIPZfFQ2j5LOiR9PUlJM/xI6ILnZg+OZ699dv
-         ZUQsX1x7f0dvbua260VRBrkS5tDYm1fEzSe87ahz8ZpyTJg0QajpIKYeKg/FH4yZuN4/
-         lCo9LjBN4t8VP3DGZARGtdNM5LLB6vgNvNnObjyaE70RCqUYRwWnbxsIwi7xTnYGPU66
-         CfaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709306009; x=1709910809;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HDkjb/3ycOtyX9DruBw4yM0aFf/SrD3+DOAhw0JNHrc=;
-        b=gJ3G7Li0bY83XOmI/Yp478sLuSisqpTnDz3Fwi0hdvznWc7zFtlynlAj/zdI+Uta5j
-         RDpHJJWutXtA5ylgi2DzrH8JRpMzohpQg70BSAfH84gW841ZBTu1sH3xkpA1gCj0DGCl
-         toNafnoejIzV8XriPFM0Gdr3LEBaYqOIgoDJlr4PVh15D1KuVPl0SLU8VcGxKC+hvEim
-         +bT84YOrRQLtlq/K/DhFt1VxJaFxC5XxajxrZCFfzVGPi6lTJ/HQUQ3p0aDKhtPnwmcp
-         TiHToEH6VGr0Kr9oztV8C9vQ/nFv7zcuzZSlUiJ8ov9p4ABwVPn5xQ0T1Ek2VZRcCoVw
-         cE5A==
-X-Forwarded-Encrypted: i=1; AJvYcCXEc+8iCLDTk4c0bkYrKZFrdPMQ1U1DeoYr62RJRlkErMwyuUuhQjR/IMqUDvlL/C2OI69Lktl/IzYBVSyPDFJ8B3aSH5HfBGeh6GCB
-X-Gm-Message-State: AOJu0YzFG/XZtzx/FpczkhQJoZXYOe2phSZSPLdbqykdaPz6NFxHngWY
-	oB+2y+ElN0p07Obg3pP5esF7Ma7+FP3oK5+iKtgkPxcdTCKK3jK+EIg4nF6hNWk=
-X-Google-Smtp-Source: AGHT+IFTY55Wj25m0rpyyfxtHm3gpdleYksn/7veTld3RUy8XLWRBDSXZuFQrny/q9cL7tsHEE6O/g==
-X-Received: by 2002:a17:906:6ac7:b0:a44:9aea:779f with SMTP id q7-20020a1709066ac700b00a449aea779fmr1132507ejs.44.1709306009182;
-        Fri, 01 Mar 2024 07:13:29 -0800 (PST)
-Received: from alley ([176.114.240.50])
-        by smtp.gmail.com with ESMTPSA id le6-20020a170906ae0600b00a449b4f4aefsm488987ejb.178.2024.03.01.07.13.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 07:13:28 -0800 (PST)
-Date: Fri, 1 Mar 2024 16:13:27 +0100
-From: Petr Mladek <pmladek@suse.com>
-To: John Ogness <john.ogness@linutronix.de>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org
-Subject: Re: [PATCH printk v2 25/26] rcu: Mark emergency section in rcu stalls
-Message-ID: <ZeHwl63uXDZ9ZBtt@alley>
-References: <20240218185726.1994771-1-john.ogness@linutronix.de>
- <20240218185726.1994771-26-john.ogness@linutronix.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=inMTS4ubitbJCqb9QNCPn8aypX80f36JWaWgU7aRylFQUoaidhlwCLr6YozTjRj1RfBXRzAu/EuFu+k8qP5xkk0EZBmcQkXEM2HjHNdi9mWY+d3fZdyBtWy8GCUdxWJHD/X13Tyxbeixdg3vjnBKOH02hIfqK7evkxOcuSztyIo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=cFr943yl; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709306025;
+	bh=4rZ9IbsP+jzXlyf93oCqikrl4goIvycpLqfPlaupifE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cFr943yljX1l29kjUPcrBU5FIpLB198EJMjLvS/ryE6Ezqbx+OR9RUYD7cFXVaTsy
+	 eKe5Undn9T2NKbYG4IyGD5kPHTNaJx+DjzDYPcJZzmYYyi2SrK0b9xPkU41enEk5Jz
+	 Qtezyhl+v/PPqcKZez9sNs/GCjZ4QW6qhH4t5OUZxQgTilW00/9uUsa73MIgfAD3jB
+	 HGgsE+kt8PlKqC9YeYh1QUJvSJAo0b3vzP/ZYmL+VStaMcL9NqZPkWFjhusC7w/BCJ
+	 uyPf/p9mYObaazGC1OdSdU2vo6N1qn+sNFYUMqRG+HWtBTZfqYbHqaWbIBHZD0LaGI
+	 imZWsQW0Jag9w==
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: sebastianfricke)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 1253437803EE;
+	Fri,  1 Mar 2024 15:13:45 +0000 (UTC)
+Date: Fri, 1 Mar 2024 16:13:44 +0100
+From: Sebastian Fricke <sebastian.fricke@collabora.com>
+To: Irui Wang <irui.wang@mediatek.com>
+Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Tiffany Lin <tiffany.lin@mediatek.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	angelogioacchino.delregno@collabora.com,
+	nicolas.dufresne@collabora.com,
+	Yunfei Dong <yunfei.dong@mediatek.com>,
+	Longfei Wang <longfei.wang@mediatek.com>,
+	Maoguang Meng <maoguang.meng@mediatek.com>,
+	Project_Global_Chrome_Upstream_Group@mediatek.com,
+	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v2] media: mediatek: vcodec: Handle VP9 superframe
+ bitstream with 8 sub-frames
+Message-ID: <20240301151344.o7khwhbasnncw2cc@basti-XPS-13-9310>
+References: <20240229030249.3404-1-irui.wang@mediatek.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20240218185726.1994771-26-john.ogness@linutronix.de>
+In-Reply-To: <20240229030249.3404-1-irui.wang@mediatek.com>
 
-On Sun 2024-02-18 20:03:25, John Ogness wrote:
-> Mark an emergency section within print_other_cpu_stall(), where
-> RCU stall information is printed. In this section, the CPU will
-> not perform console output for the printk() calls. Instead, a
-> flushing of the console output is triggered when exiting the
-> emergency section.
+Hey Irui,
+
+On 29.02.2024 11:02, Irui Wang wrote:
+>The VP9 bitstream has 8 sub-frames into one superframe, the superframe
+>index validate failed when reach 8, modify the index checking so that the
+>last sub-frame can be decoded normally with stateful vp9 decoder.
+
+I find this commit message a bit confusing, you say that you couldn't
+index the last superframe, but then you say that you modify the index
+checking so that you can access the last sub-frame.
+
+I would reword this section, here is my suggestion:
+
+The VP9 bitstream uses superframes, which each contain 8 sub-frames,
+enable accessing the last superframe by increasing the range of the
+index validation as the maximum number of superframes is 8 and not 7.
+
+The rest looks good as already mentioned by Nicolas.
+
+Greetings,
+Sebastian
+
 >
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
-
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-
-I was just curious about one thing. But it seems to work well.
-
-print_other_cpu_stall() print backtraces on other CPUs via NMI.
-The other CPUs would not see the emergency context. They would
-call defer_console_output() because they are in NMI. As a result:
-
-  + Legacy consoles might be flushed on other CPUs even before
-    nbcon_cpu_emergency_exit() gets called.
-
-  + nbcon consoles might still be flushed by the printk kthread
-    until all messages get flushed directly by nbcon_cpu_emergency_exit()
-
-As I wrote. The behavior is corrent. It was just not obvious to me.
-
-
-> --- a/kernel/rcu/tree_stall.h
-> +++ b/kernel/rcu/tree_stall.h
-> @@ -9,6 +9,7 @@
->  
->  #include <linux/kvm_para.h>
->  #include <linux/rcu_notifier.h>
-> +#include <linux/console.h>
->  
->  //////////////////////////////////////////////////////////////////////////////
->  //
-> @@ -604,6 +605,8 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
->  	if (rcu_stall_is_suppressed())
->  		return;
->  
-> +	nbcon_cpu_emergency_enter();
-> +
->  	/*
->  	 * OK, time to rat on our buddy...
->  	 * See Documentation/RCU/stallwarn.rst for info on how to debug
-> @@ -658,6 +661,8 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
->  	panic_on_rcu_stall();
->  
->  	rcu_force_quiescent_state();  /* Kick them all. */
-> +
-> +	nbcon_cpu_emergency_exit();
->  }
->  
->  static void print_cpu_stall(unsigned long gps)
-
-Best Regards,
-Petr
+>Signed-off-by: Irui Wang <irui.wang@mediatek.com>
+>---
+>changed with v1:
+> - add a new define 'VP9_MAX_SUPER_FRAMES_NUM' for superframes.
+>---
+> .../mediatek/vcodec/decoder/vdec/vdec_vp9_if.c        | 11 ++++++-----
+> 1 file changed, 6 insertions(+), 5 deletions(-)
+>
+>diff --git a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_if.c b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_if.c
+>index 55355fa70090..039082f600c8 100644
+>--- a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_if.c
+>+++ b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_if.c
+>@@ -16,6 +16,7 @@
+> #include "../vdec_drv_base.h"
+> #include "../vdec_vpu_if.h"
+>
+>+#define VP9_MAX_SUPER_FRAMES_NUM 8
+> #define VP9_SUPER_FRAME_BS_SZ 64
+> #define MAX_VP9_DPB_SIZE	9
+>
+>@@ -133,11 +134,11 @@ struct vp9_sf_ref_fb {
+>  */
+> struct vdec_vp9_vsi {
+> 	unsigned char sf_bs_buf[VP9_SUPER_FRAME_BS_SZ];
+>-	struct vp9_sf_ref_fb sf_ref_fb[VP9_MAX_FRM_BUF_NUM-1];
+>+	struct vp9_sf_ref_fb sf_ref_fb[VP9_MAX_SUPER_FRAMES_NUM];
+> 	int sf_next_ref_fb_idx;
+> 	unsigned int sf_frm_cnt;
+>-	unsigned int sf_frm_offset[VP9_MAX_FRM_BUF_NUM-1];
+>-	unsigned int sf_frm_sz[VP9_MAX_FRM_BUF_NUM-1];
+>+	unsigned int sf_frm_offset[VP9_MAX_SUPER_FRAMES_NUM];
+>+	unsigned int sf_frm_sz[VP9_MAX_SUPER_FRAMES_NUM];
+> 	unsigned int sf_frm_idx;
+> 	unsigned int sf_init;
+> 	struct vdec_fb fb;
+>@@ -526,7 +527,7 @@ static void vp9_swap_frm_bufs(struct vdec_vp9_inst *inst)
+> 	/* if this super frame and it is not last sub-frame, get next fb for
+> 	 * sub-frame decode
+> 	 */
+>-	if (vsi->sf_frm_cnt > 0 && vsi->sf_frm_idx != vsi->sf_frm_cnt - 1)
+>+	if (vsi->sf_frm_cnt > 0 && vsi->sf_frm_idx != vsi->sf_frm_cnt)
+> 		vsi->sf_next_ref_fb_idx = vp9_get_sf_ref_fb(inst);
+> }
+>
+>@@ -735,7 +736,7 @@ static void get_free_fb(struct vdec_vp9_inst *inst, struct vdec_fb **out_fb)
+>
+> static int validate_vsi_array_indexes(struct vdec_vp9_inst *inst,
+> 		struct vdec_vp9_vsi *vsi) {
+>-	if (vsi->sf_frm_idx >= VP9_MAX_FRM_BUF_NUM - 1) {
+>+	if (vsi->sf_frm_idx > VP9_MAX_SUPER_FRAMES_NUM) {
+> 		mtk_vdec_err(inst->ctx, "Invalid vsi->sf_frm_idx=%u.", vsi->sf_frm_idx);
+> 		return -EIO;
+> 	}
+>-- 
+>2.18.0
+>
+>
 
