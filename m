@@ -1,138 +1,133 @@
-Return-Path: <linux-kernel+bounces-89081-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89082-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E23E986EA48
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:26:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 781BF86EA4A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 21:26:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71155B26DB0
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:26:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3060928A769
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 20:26:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 547703D3BD;
-	Fri,  1 Mar 2024 20:25:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31DF33C6BA;
+	Fri,  1 Mar 2024 20:26:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="i6GOcPL8"
-Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="suEoBXOv"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 044593C689
-	for <linux-kernel@vger.kernel.org>; Fri,  1 Mar 2024 20:25:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AF793C470;
+	Fri,  1 Mar 2024 20:26:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709324753; cv=none; b=Q6F4jVhxQSLk/CuAAZ4STSEMDD9/9svTtaOCNgYpY5OKWr+WzHunnUD3uSkMdSg3KlMSArBpxe0erxx+yZ4jNGJPMDj9mIWH103cFYc02W7gdGE7yZUrW7Rk7tTVdNu4eE/J5ldwgomBIeBXpA7W4V6VhA2gJ/Cgx959x6A68uw=
+	t=1709324793; cv=none; b=UoiBNmCzEtkhMUqNfXEkb2iUzsvMa46q8KELJrapP9Mdv8ZOXI3oR05eugQqmZFSg5ezs6iApAgB30HT4hXxRTDIsRJe+K4opcvMPsQ6p8necIHzdCqShe8yI/wxBK/4T3XJTwVcP2vnXj/QYaGzlgcU6whYHL0dONoZXxtm6uE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709324753; c=relaxed/simple;
-	bh=r0GlreGLsYtbA/Nea/FJMUIpPOXUZxD98Y/U+q/kZ/k=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=C8DE90rJw6J4LJsXx+0vvScxRYcC8Sf9Qoxzoj+zWiIFvbxjdXRLPPKlwOL0j19go7EUDCNpgBluk6g3xD4lpxUvd0fci+fgRBTo+9MrubAvHsetEmRoOxOdpb7Umv8cwc1IjpGY01dXYRKqZstUr24Tmh3tSM8+JVXHm1+vdsg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=i6GOcPL8; arc=none smtp.client-ip=209.85.210.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6e45ef83c54so1660742a34.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 12:25:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1709324751; x=1709929551; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=r4uxZbt0qin0Wn8Pr+rE6EDCFD41pXx3sQye6WwUWzw=;
-        b=i6GOcPL8AT1LAVXkhE7YUVgaLtFy2ynvq0/1YkUBJArcYTcaZkv6pMXSXoHiagensk
-         G7h0+i4TW0z6uNSqwrp4tX9krzlD9+3ppTYXmQR/1JpwqCD12PfGhwNaUdutGJN4pgzl
-         oHC062+S1jK8DA2IZkB7H4dyLthluYAr/0PeoJAXJ2Be+HfbQ8DIw75OiqUsjPSp/g3x
-         VerqdUwMuORqDfOwFkzqDZEcb475OVihaVC7rlNkaewqViRLEhR7z4CnljE4t7A+FEsJ
-         wx4grYg7cNZwWKhhdjmcf0pNG5MiMWDuw88f5zbt1wMcDGtzxxAsByD8KEXwuX60Edmq
-         z21Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709324751; x=1709929551;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=r4uxZbt0qin0Wn8Pr+rE6EDCFD41pXx3sQye6WwUWzw=;
-        b=BaflZagflUkTAHQiM8PHfOhAC1Xiu/HSU6guP+h5Icie0cIkN5XJroDN+oSx2Xrigd
-         4lsiXHSMhy3GhInKzJxHv2Wr/0t1fUEyFlNdrSQqup4Imb0fPz+WOaRfxjtkNclCWLQD
-         I1o6WB03Lb0/8Ws05W+1KXgxTxd+qCVfOAm9pFvpxMEFT2BaNfgcziCqxgGk1YN1pKbQ
-         7CU32mHm5XQv1dXwkGOg7XdnsQdxqmRoGGqpxwdCQt1z0WGRoSNKSedJK8UXei+WyYgV
-         ilUmu921U3dl5tGwJYL+dHAe4rbY3VCrjDM7uDzBZYDDlpNcmwK2CliHBQQI2w7lYiFO
-         dqzg==
-X-Forwarded-Encrypted: i=1; AJvYcCUpU0sc5/OtT7QoKC2ezo2pv5PqzX3HlFFQNwyc3HwdFAc3s9+mVFhV0/A0clUEmHvK0LA6LzNskIqQiG5l+v3ickvVNMAh+oy1HwMD
-X-Gm-Message-State: AOJu0YxpzRWNHEFuj4hDBdgLYEUhRQi64zDUhDWitWNR0N478EaeuJsR
-	0RK9xlLutNdnX4wtuonEHCx+2H7BJPXsnRlsYRVTRs1jf7LEzytskRns2TcqVy8=
-X-Google-Smtp-Source: AGHT+IGOIf9N2e0j0sOh4gWwieqF/orAK7lWNJdnsL4VsiGKxZBiUNq+AipTLP8PSCm9ay/w98JPVg==
-X-Received: by 2002:a9d:6215:0:b0:6e2:baa2:42c8 with SMTP id g21-20020a9d6215000000b006e2baa242c8mr2925611otj.28.1709324751180;
-        Fri, 01 Mar 2024 12:25:51 -0800 (PST)
-Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
-        by smtp.gmail.com with ESMTPSA id f10-20020a9d6c0a000000b006e454aa54d1sm806213otq.56.2024.03.01.12.25.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 12:25:50 -0800 (PST)
-From: David Lechner <dlechner@baylibre.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: David Lechner <dlechner@baylibre.com>,
-	Michael Hennerich <michael.hennerich@analog.com>,
-	=?utf-8?q?Nuno_S=C3=A1?= <nuno.sa@analog.com>,
-	Kees Cook <keescook@chromium.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	linux-spi@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH 3/3] spi: axi-spi-engine: use struct_size() macro
-Date: Fri,  1 Mar 2024 14:25:20 -0600
-Message-ID: <20240301-mainline-axi-spi-engine-small-cleanups-v1-3-241dfd2a79f7@baylibre.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240301-mainline-axi-spi-engine-small-cleanups-v1-0-241dfd2a79f7@baylibre.com>
-References: <20240301-mainline-axi-spi-engine-small-cleanups-v1-0-241dfd2a79f7@baylibre.com>
+	s=arc-20240116; t=1709324793; c=relaxed/simple;
+	bh=PrJ3aVeOXXr6ChkhosX0KQsUPRlQeGLh2zV6DSxUaAw=;
+	h=Mime-Version:Content-Type:Date:Subject:From:To:Cc:Message-Id:
+	 References:In-Reply-To; b=CgCjJ+4b6gZA30WFxzOJfl3Jp1pvzHLBwlXCpXB+gXuTp9kdIFu+s2A2EMCEe8Kg6Dbf7RmZtiEoCe9UKu9iDpX1C+7+4zORMpgA7qCyfvp93tuFjwqu7a8byw9YMwBp/S3hAiteewwrqYsyxQIBbtnt2D8tX9JZiogMw+tj960=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=suEoBXOv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96EAEC433F1;
+	Fri,  1 Mar 2024 20:26:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709324793;
+	bh=PrJ3aVeOXXr6ChkhosX0KQsUPRlQeGLh2zV6DSxUaAw=;
+	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+	b=suEoBXOvlqG4qAZ3jekNNeljlAYHrPsJh6fR6LYNf/nXwWORCnJ90dMd+VgUybDla
+	 LUWLkUUn7sIPKDhK54MQZoTOMNtmWdySLbBDM7ziR5xEJ8eK0OxZHY+jaQOk+TDJmw
+	 a0wqaGOAbG65tmeI/W7VNls4nyTpWx1Sr4skloCYei7/jBFRQESWhaVkSVc/3Tn6G6
+	 MfxgKWbb65y3xQHVFxmRmAb5woFOk3JI05GkF1+wFFLJGbTCcE6+5C/P2VAreW2kub
+	 mq8vTYMgeHp+gRYF29A/6uaqutoIRlUX+kxSNQYhnbXuiEb4KV0z3ztp9Pvf6XujJu
+	 q7TL/Ss+pvcKg==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Mailer: b4 0.12.4
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Fri, 01 Mar 2024 22:26:29 +0200
+Subject: Re: [PATCH v3 01/10] crypto: ecdsa - Convert byte arrays with key
+ coordinates to digits
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Stefan Berger" <stefanb@linux.ibm.com>, "Lukas Wunner"
+ <lukas@wunner.de>
+Cc: <keyrings@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+ <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+ <linux-kernel@vger.kernel.org>, <saulo.alessandre@tse.jus.br>
+Message-Id: <CZIOY02QS2QC.LV0A0HNT7VKM@suppilovahvero>
+X-Mailer: aerc 0.15.2
+References: <20240223204149.4055630-1-stefanb@linux.ibm.com>
+ <20240223204149.4055630-2-stefanb@linux.ibm.com>
+ <20240229091105.GA29363@wunner.de>
+ <aabeec7b-618c-4d15-b033-4162b6e54f6a@linux.ibm.com>
+In-Reply-To: <aabeec7b-618c-4d15-b033-4162b6e54f6a@linux.ibm.com>
 
-This makes use of the struct_size() macro to calculate the size of the
-struct axi_spi_engine when allocating it.
+On Thu Feb 29, 2024 at 4:57 PM EET, Stefan Berger wrote:
+>
+>
+> On 2/29/24 04:11, Lukas Wunner wrote:
+> > On Fri, Feb 23, 2024 at 03:41:40PM -0500, Stefan Berger wrote:
+> >> +static inline void ecc_digits_from_bytes(const u8 *in, unsigned int n=
+bytes,
+> >> +					 u64 *out, unsigned int ndigits)
+> >> +{
+> >> +	unsigned int sz =3D ndigits << ECC_DIGITS_TO_BYTES_SHIFT;
+> >> +	u8 tmp[ECC_MAX_DIGITS << ECC_DIGITS_TO_BYTES_SHIFT];
+> >> +	unsigned int o =3D sz - nbytes;
+> >> +
+> >> +	memset(tmp, 0, o);
+> >> +	memcpy(&tmp[o], in, nbytes);
+> >> +	ecc_swap_digits(tmp, out, ndigits);
+> >> +}
+> >=20
+> > Copying the whole key into tmp seems inefficient.  You only need
+> > special handling for the first few bytes of "in" (6 bytes in the
+> > P521 case) and could use ecc_swap_digits() to convert the rest
+> > of "in" directly to "out" without using tmp.
+> >=20
+> > So it would be sufficient to allocate the first digit on the stack,
+> > memset + memcpy, then convert that to native byte order into "in[0]"
+> > and use ecc_swap_digits() for the rest.
+> >=20
+> > And the special handling would be conditional on "!o", so is skipped
+> > for existing curves.
+>
+> Thanks. It looks like this now:
+>
+> static inline void ecc_digits_from_bytes(const u8 *in, unsigned int nbyte=
+s,
+>                                           u64 *out, unsigned int ndigits)
+> {
+>          unsigned int o =3D nbytes & 7;
+>          u64 msd =3D 0;
+>          size_t i;
+>
+>          if (o =3D=3D 0) {
+>                  ecc_swap_digits(in, out, ndigits);
+>          } else {
+>                  for (i =3D 0; i < o; i++)
+>                          msd =3D (msd << 8) | in[i];
+>                  out[ndigits - 1] =3D msd;
+>                  ecc_swap_digits(&in[o], out, ndigits - 1);
 
-Suggested-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: David Lechner <dlechner@baylibre.com>
----
- drivers/spi/spi-axi-spi-engine.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+This would be more stream-lined IMHO:
 
-diff --git a/drivers/spi/spi-axi-spi-engine.c b/drivers/spi/spi-axi-spi-engine.c
-index e801eed820df..9646764b0042 100644
---- a/drivers/spi/spi-axi-spi-engine.c
-+++ b/drivers/spi/spi-axi-spi-engine.c
-@@ -12,6 +12,7 @@
- #include <linux/io.h>
- #include <linux/of.h>
- #include <linux/module.h>
-+#include <linux/overflow.h>
- #include <linux/platform_device.h>
- #include <linux/spi/spi.h>
- 
-@@ -501,15 +502,13 @@ static irqreturn_t spi_engine_irq(int irq, void *devid)
- static int spi_engine_optimize_message(struct spi_message *msg)
- {
- 	struct spi_engine_program p_dry, *p;
--	size_t size;
- 
- 	spi_engine_precompile_message(msg);
- 
- 	p_dry.length = 0;
- 	spi_engine_compile_message(msg, true, &p_dry);
- 
--	size = sizeof(*p->instructions) * (p_dry.length + 1);
--	p = kzalloc(sizeof(*p) + size, GFP_KERNEL);
-+	p = kzalloc(struct_size(p, instructions, p_dry.length + 1), GFP_KERNEL);
- 	if (!p)
- 		return -ENOMEM;
- 
+        unsigned int o =3D nbytes & 7;
+	unsigned int n =3D ndigits;
+        u64 msd =3D 0;
+        size_t i;
 
--- 
-2.43.2
+        if (o !=3D 0) {
+                for (i =3D 0; i < o; i++)
+                        msd =3D (msd << 8) | in[i];
 
+                out[--n] =3D msd;
+        }
+
+        ecc_swap_digits(in, out, n);
+
+BR, Jarkko
 
