@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-88274-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88272-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13C6286DF83
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:45:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6DB086DF7A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 11:43:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A760B1F23394
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:45:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A584283841
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 10:43:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 294E26F070;
-	Fri,  1 Mar 2024 10:43:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B3E76CDA8;
+	Fri,  1 Mar 2024 10:43:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uSYTX+tw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I8pnK0O6"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64A446BFA5;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 532EE6BFA3;
 	Fri,  1 Mar 2024 10:42:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709289779; cv=none; b=r6PGwHTFlsLSC90Z7PsXd+NyEo4VLrxApqYDN6Y+cz6pZDILl0UX7C3BELa1GXCOhhyLLkDCs0ae+ehIuxZyTAaeAZb3LGy+/jekHgmB5P05cb7hPGmroIzHgChSko2aWeC+wz0/+WDL1SL+pxfYPyQ5DmkhspO4hI2hsXZbKVM=
+	t=1709289779; cv=none; b=ek6h404bPtUXgFp+pstPd6aKR9uvKH7YOl2mFwMYZoV+jAU+0O/HM/bY9/rJhjSHITcnda+4iWScOrRIbJOTLJVcSttbusgh0z8GcIYLAcXDdBcU7g5FY6ud/dvApXoze2z65VT3RzVALMuOvtXGBpuL3KOF5l3SOBI9blSvzT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709289779; c=relaxed/simple;
-	bh=kX85+BHUILFIoP4X6xIr9jJ6kAHMS4KcDN2tshuSuHQ=;
+	bh=bdj2sXbKKEcSVYU72hwdKppcUWhM0GPYmoe4dwmAPtA=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=HxZZf5wKoZYXYgI4GDOfnxc456ZZsl72JJcdR5MgHefPVKZ7VTwynJGzI0JoiCKwfXd+OxwYFu6pWHMnAY7egCqaW9KpZSS1FrgkWX1lAQbPepxes9abaxe65w10m0R7QnZ/sgIsj1Xy63SwhMsrUZCFhKfgqPgN4EXVbXq4Ifw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uSYTX+tw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 0C25DC43609;
+	 In-Reply-To:To:Cc; b=GWhv8iQ0Y4J9dDNInQC+etWULp+5SwXaWbQOCnbBrY9WhfqS4XjZpz++OXWWxE5j1XREMylb0mK+3kQd2JnwIT+9cduHoVzrF0C/JOlOldps9iyRFgATMIQM12kMv7v9qD2IuTBx2ox+98Cd/hbsiCJ4zcmHdy7suPRmPI2Mknk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I8pnK0O6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 19053C43142;
 	Fri,  1 Mar 2024 10:42:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1709289779;
-	bh=kX85+BHUILFIoP4X6xIr9jJ6kAHMS4KcDN2tshuSuHQ=;
+	bh=bdj2sXbKKEcSVYU72hwdKppcUWhM0GPYmoe4dwmAPtA=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=uSYTX+twQJfmMJBIippEzWC8M8R2zkbkT8fF/X4cxDCledXVZ3G6FuwEOuj/5m8G4
-	 OGagzDS6BsU+CKbEoeQV1CguLIO7Tm7SkfY04qEZOeTXGgo1eUOfERF/AvEIT2vEQf
-	 cE2criWG4dS6eMgJlBdHWfG3U0SKeWAxqMJvZBjSX0xFlIzP+T2q0WCjtDSOzk1g43
-	 Lhw1zhaFDK4XatcCqJz9W3JBBDR9dcuLecaSFyR8s/vTczL332QqT510V2Oi/Go/UU
-	 JcL2pmp4TFfnqhQdUgj406XrAzSHviwVG2aR7uI47gfJhNacvCBIcyMBSTlSuZ1fM5
-	 /nafAIahokwJw==
+	b=I8pnK0O6SunHZxJiOSjoPzu6eLrP/erBBlrYjVIt9YA+hIs1pPWabn56SSzh5DK8Q
+	 W6yfvcM+9gWMXKH3rWOIXjrgPxzbcIS4LrnPdUZu9Y+Mt1Hfjq12APfcJAKIlz4RBk
+	 akfIgkZBR/6ZW0KotndncFGPKuSCKA6YcX2km6VPMVu0CgYrA+hFxKxv0JpgvYq6Io
+	 mwybjn1zxwhkAE1xw/hbpn87cmULjWhfqtxMEaBX3cJQhJmnneYUSASgMyOFqD0gJV
+	 ig2I7GdDEuN8npR8zGWBITMZhseJlbZdtGG7RJGsAnTMqo1/M5qA3N3n47o211KcPC
+	 t+/9UCEEgT15g==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ECBF0C5475B;
-	Fri,  1 Mar 2024 10:42:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 05C52C54E41;
+	Fri,  1 Mar 2024 10:42:59 +0000 (UTC)
 From: =?utf-8?b?QXLEsW7DpyDDnE5BTA==?= via B4 Relay
  <devnull+arinc.unal.arinc9.com@kernel.org>
-Date: Fri, 01 Mar 2024 12:43:02 +0200
-Subject: [PATCH net-next v3 6/9] net: dsa: mt7530: get rid of
- mt753x_mac_config()
+Date: Fri, 01 Mar 2024 12:43:03 +0200
+Subject: [PATCH net-next v3 7/9] net: dsa: mt7530: put initialising PCS
+ devices code back to original order
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,7 +57,7 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Message-Id:
- <20240301-for-netnext-mt7530-improvements-3-v3-6-449f4f166454@arinc9.com>
+ <20240301-for-netnext-mt7530-improvements-3-v3-7-449f4f166454@arinc9.com>
 References:
  <20240301-for-netnext-mt7530-improvements-3-v3-0-449f4f166454@arinc9.com>
 In-Reply-To:
@@ -77,11 +77,11 @@ Cc: mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
  linux-mediatek@lists.infradead.org, 
  =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1709289776; l=1494;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1709289776; l=1570;
  i=arinc.unal@arinc9.com; s=arinc9-Xeront; h=from:subject:message-id;
- bh=8u7euwYTcc58UJEZ934iSyhrRKaOIduS6lOdsKOd2oQ=;
- b=CuKSG8ZKfZXUavxJ8+US5J8hRU3RJR/w4dge8UOfky7+xPVutxnu5IricMLLQQWyejQQOG5+g
- 6kgpOcLdoJiBe6485TrqwGcf1yu5j/s0HRJPH2k+UYkVhi87eHDrPkE
+ bh=/2CkKGukm0R4V69WhBvbbIMKcr0CwYye/LAy2VcbSV0=;
+ b=jhj5rpVeLTk6pp6nZ74IqJOF62xtP/gZRjxzV6gmsJ/mCB/nP34kSs028tQQ0/2WrX6tvkMGJ
+ ykUTxIRPKOhARn1bax3sYOsUZQsHfG6i6H4204OyFLMD8QH9wvCic4L
 X-Developer-Key: i=arinc.unal@arinc9.com; a=ed25519;
  pk=z49tLn29CyiL4uwBTrqH9HO1Wu3sZIuRp4DaLZvtP9M=
 X-Endpoint-Received:
@@ -91,47 +91,55 @@ Reply-To: <arinc.unal@arinc9.com>
 
 From: Arınç ÜNAL <arinc.unal@arinc9.com>
 
-There is no need for a separate function to call
-priv->info->mac_port_config(). Call it from mt753x_phylink_mac_config()
-instead and remove mt753x_mac_config().
+The commit fae463084032 ("net: dsa: mt753x: fix pcs conversion regression")
+fixes regression caused by cpu_port_config manually calling phylink
+operations. cpu_port_config was deemed useless and was removed. Therefore,
+put initialising PCS devices code back to its original order.
 
 Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
 ---
- drivers/net/dsa/mt7530.c | 14 ++------------
- 1 file changed, 2 insertions(+), 12 deletions(-)
+ drivers/net/dsa/mt7530.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index 80b65f064310..e353c03dd1db 100644
+index e353c03dd1db..5c8ad41ce8cd 100644
 --- a/drivers/net/dsa/mt7530.c
 +++ b/drivers/net/dsa/mt7530.c
-@@ -2634,16 +2634,6 @@ mt7531_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
- 	}
- }
- 
--static void
--mt753x_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
--		  const struct phylink_link_state *state)
--{
--	struct mt7530_priv *priv = ds->priv;
--
--	if (priv->info->mac_port_config)
--		priv->info->mac_port_config(ds, port, mode, state->interface);
--}
--
- static struct phylink_pcs *
- mt753x_phylink_mac_select_pcs(struct dsa_switch *ds, int port,
- 			      phy_interface_t interface)
-@@ -2669,8 +2659,8 @@ mt753x_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
+@@ -2812,17 +2812,9 @@ static int
+ mt753x_setup(struct dsa_switch *ds)
+ {
  	struct mt7530_priv *priv = ds->priv;
- 	u32 mcr_cur, mcr_new;
+-	int i, ret;
+-
+-	/* Initialise the PCS devices */
+-	for (i = 0; i < priv->ds->num_ports; i++) {
+-		priv->pcs[i].pcs.ops = priv->info->pcs_ops;
+-		priv->pcs[i].pcs.neg_mode = true;
+-		priv->pcs[i].priv = priv;
+-		priv->pcs[i].port = i;
+-	}
++	int ret = priv->info->sw_setup(ds);
++	int i;
  
--	if (port == 5 || port == 6)
--		mt753x_mac_config(ds, port, mode, state);
-+	if ((port == 5 || port == 6) && priv->info->mac_port_config)
-+		priv->info->mac_port_config(ds, port, mode, state->interface);
+-	ret = priv->info->sw_setup(ds);
+ 	if (ret)
+ 		return ret;
  
- 	mcr_cur = mt7530_read(priv, MT7530_PMCR_P(port));
- 	mcr_new = mcr_cur;
+@@ -2834,6 +2826,14 @@ mt753x_setup(struct dsa_switch *ds)
+ 	if (ret && priv->irq)
+ 		mt7530_free_irq_common(priv);
+ 
++	/* Initialise the PCS devices */
++	for (i = 0; i < priv->ds->num_ports; i++) {
++		priv->pcs[i].pcs.ops = priv->info->pcs_ops;
++		priv->pcs[i].pcs.neg_mode = true;
++		priv->pcs[i].priv = priv;
++		priv->pcs[i].port = i;
++	}
++
+ 	if (priv->create_sgmii) {
+ 		ret = priv->create_sgmii(priv);
+ 		if (ret && priv->irq)
 
 -- 
 2.40.1
