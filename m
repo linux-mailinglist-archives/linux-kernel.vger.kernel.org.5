@@ -1,115 +1,248 @@
-Return-Path: <linux-kernel+bounces-89194-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89195-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1292F86EBCB
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 23:23:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DEF986EBCD
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 23:23:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BEA28289FCC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 22:23:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A29C9B276D9
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 22:23:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A348D5A10E;
-	Fri,  1 Mar 2024 22:21:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58E9F58AC7;
+	Fri,  1 Mar 2024 22:23:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gv3Aatpn"
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="2DZIEMSj"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2075.outbound.protection.outlook.com [40.107.243.75])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EBE859B52;
-	Fri,  1 Mar 2024 22:21:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709331697; cv=none; b=ZLiDAz6uFc7CBgxcDB601PTpq5knGc+UBYqrlec/aQPIiVxadTy7nDnhJf7RNOQoRr67Akzu+zBvf+m2cddccYA5x6wtix0v2X4vDUEuHTDrU+ehbFKTVcWKUp79ydNwryJ5qOU25CdnRxFT/CmtZCYz6Lw32Xqy4twkICVnR8g=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709331697; c=relaxed/simple;
-	bh=QHD6wdc2FcjJAuPr9twXZPAxgmO6Qo4sSe6LZC/0f8Y=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=qLoFKDrH1D1V+RXwWRkh1119p5XpEGdv9ZhNeSuRoRxBH5JeIqL3lGsDINC7zgI5GN5/0Cgoqmoa4F2WtVAB16bH80TNNDiOf6eqPsE8Ytnnx60ctFRrPWR3ODeZ+YTPYy8tFNKen2Qyt5lkq7znY3vQZK09O7iwb2LvsU/X81Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gv3Aatpn; arc=none smtp.client-ip=209.85.160.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-42ea808d0f8so18426241cf.0;
-        Fri, 01 Mar 2024 14:21:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709331694; x=1709936494; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Z7JfMhQCQePfKKf1uRWjRuFfK5uAA07CGHpzBysCxmM=;
-        b=gv3Aatpnyzjx9YuW+U6KWZBdYkauwPCd/ZVVsksPKK4xAXnXH2rLcRUeN3ZhHOILVY
-         idaLPQWTMdxhvh1q9LZA2SUAd9TmbiaNpNRFAeJqHWRX1LVRT6CV8JOA8UZqcA23YbF5
-         ivhgslC0Ihl2yaCDsqcbN+u+vQ2s9ffUHLAjOpW3p2IOPGcRkGEO7u7RxXW5LD0ms4Nh
-         ji3AjGeon8tCrj7wx6eWbNsh18drmvZZ+w4W1cuHQOYV4a3PhiaLYM2dvHJIlQxxEaqU
-         1OyPEk4cQZE9RXbFgGvEgj4hDXHnAdt1qixtH0wkSZR5dhMniNp5XsrAe7LuD37zQYjk
-         CL6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709331694; x=1709936494;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Z7JfMhQCQePfKKf1uRWjRuFfK5uAA07CGHpzBysCxmM=;
-        b=VmJSaoxmiheRLmZPOD0BkMo7+0kQboTvrBtOmOHXQbbABDhM9xOaGbWd4svdtdQSyH
-         jj854btLguT69MMrVh3XqWAwBi4Pm5FYak+p2vtMNinGgezDDwhrJqrkaySvytNqMZ9P
-         BMWQ0vt/XsncoGOjpFUrHPUaki5aFkYJ6YXsSRFbP8lWvbpVCG8dih/DGDyJejUNhzOE
-         ZpMg3BaJgOXgKVBvApFMd18ImVTUJYnUj07+4mRIQK4yBQ7QNNjjonmi0COunHRiQrfy
-         wUCfHyRO0k+eAwH4xtyfKiEwN6dzwzo1JAKGhuPNNAUl2Bgn3/j5NVNKXATx0y0II2vZ
-         LfMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUa9RlWnBGs+MK8S3YuniImmfx54t/Ij52QsX7qKWNSbURsiIApFJIG2tdI1DlCeTLatRmqSnVc5v2gyK713bPA9h0+CdOmjOuz+lmYwO/aIKt4ETJVds1kHG6XmL6VA5nk8Vkv
-X-Gm-Message-State: AOJu0Yw3t9NXWkkDHpXjdd1Qbc4FLT3D5pSU7o5RZwGg7XVRZdFgr7Cm
-	XFcyuvwg/h4PuY33hkCAs+YgyLcDnyuIcYEuNFn9xLB8mTD83n3O
-X-Google-Smtp-Source: AGHT+IEMamr5yhLIGtxKwdhU5Qrbui94T6NRT6UrZ40ZHM5rj/1zsN5YOMk/Iqb49nY4xzg3m29UlA==
-X-Received: by 2002:ac8:5715:0:b0:42e:dad2:fc58 with SMTP id 21-20020ac85715000000b0042edad2fc58mr89942qtw.5.1709331694494;
-        Fri, 01 Mar 2024 14:21:34 -0800 (PST)
-Received: from localhost (56.148.86.34.bc.googleusercontent.com. [34.86.148.56])
-        by smtp.gmail.com with ESMTPSA id m15-20020ac8688f000000b0042eae33debfsm2081296qtq.89.2024.03.01.14.21.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 14:21:34 -0800 (PST)
-Date: Fri, 01 Mar 2024 17:21:33 -0500
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Abhishek Chauhan <quic_abchauha@quicinc.com>, 
- "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- Andrew Halaney <ahalaney@redhat.com>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- Martin KaFai Lau <martin.lau@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>
-Cc: kernel@quicinc.com
-Message-ID: <65e254edea4d2_15e0d629462@willemb.c.googlers.com.notmuch>
-In-Reply-To: <20240301201348.2815102-1-quic_abchauha@quicinc.com>
-References: <20240301201348.2815102-1-quic_abchauha@quicinc.com>
-Subject: Re: [PATCH net-next v4] net: Re-use and set mono_delivery_time bit
- for userspace tstamp packets
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50CA238DCD;
+	Fri,  1 Mar 2024 22:23:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.75
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709331807; cv=fail; b=b40Sd2r1knge2roD/dV5+OC6TvKfmJ833noS/yCOG95CfjXpZd9kBAobHIFhUnsi8ActWAe99ZiVypiPUwUjiJa96cwWbAnJriQb7xRaYsL1b+XO4jQ2T4aOydEf8ddJ1i0J7XvuF7c2/Xz5ipSDlbKNPRg9WN6iB50hTV5G+cQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709331807; c=relaxed/simple;
+	bh=Br0dHaPf/zsyKdse6NF7ocDjkDTzt0I3+DcZanQwJVs=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=BJoj8cPckaghauS1ygzbFaCbpGLmfqOTGp+FItF/hb3L+ANXvaROOK2J3lA2dWNlrk50yBxni+YQvKuo4E99mzv0TBkmJGPqSJ8JsVQbncrOv4IVjLV4PVqOgYHU0PkMsXNVXkqr1x18FYdlc1A7bW4C3BbwTZay6lrnBmmOlDI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=2DZIEMSj; arc=fail smtp.client-ip=40.107.243.75
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bqetMl6oCr26vfhs0lz+YhNQ1VJfN5E2AWSv+L4FLnUHhvG+98D1Y4zYfZWD0QD/jnyZe34hVAQntQwE5XjfAO9DZVZPQiacPCTC2lv+SvmUbVRJhsWbXq6Wq1OiVzq45hQbphhP323pcwbksUIi93q2xuK1eHn/o7vBBvkvTLy3kkQB6Be7XPZXfiphIcZv1BlnzLZRlLWrz3wbHugmuCe0zh5B5C6nUok/1gsj3Wcb7ZwhAAB7IDbSkYLXUWDZCyvW2kf0o59+GWwpA63dCJU4VtN0HExAuCqNUt0awyOJSKr9qriXY1ITsulNlHumzoP/q5l7fcz735AFsljLSA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RL4dEJAlIwDlPYlI9vmoWjrrkKiS5cF0OL/agpmraM8=;
+ b=d/ugIZRhMmw432ymwIj4QA7y+6a+NU4r+dqdBTd2caYA+3sK+CcEvUSBtq3xUbmU7qe34IP23N057UfDAXYtH6B3BNuqcCQuO5lp7I6ttpfHP4WNRwiHUxgr8kg8dvvP0n9dOmBcZvse7+N5biTV6QAUR22rA5tTY0oOr7r3CR8N7lQTbN3GHY46YLjEXepaieECHjqc1RsikRmAOECEgpPfm1Y43hpVtZdaZDd0kMvOZjQt6jWSOHhml0qTkCbzfBHbEi9UOjVEnH25irkezWJnQKDDdXZ+5U82vg0nCl3+PphxifQmT50CxeQw66sZfsJsjoTRwgfP51yt3aGd0w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=jms.id.au smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RL4dEJAlIwDlPYlI9vmoWjrrkKiS5cF0OL/agpmraM8=;
+ b=2DZIEMSjh9zG2NhtAABOsW3XsmEpMWHSZ7hVpsyawwO7WzNZEM3AZHYZAG1lp5BJU2P5TWD28JSOHAfQ+Ynt6M8HaAdRkulzwqn8jgW3UnseMvPXuWTPS96szBZ158cnjc0zmTzrxSr/8uMXf+xb5MmZ8My6q9U0B1AbV1AIIe8=
+Received: from CY5P221CA0030.NAMP221.PROD.OUTLOOK.COM (2603:10b6:930:b::36) by
+ SJ2PR12MB9139.namprd12.prod.outlook.com (2603:10b6:a03:564::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7316.36; Fri, 1 Mar 2024 22:23:23 +0000
+Received: from CY4PEPF0000EDD6.namprd03.prod.outlook.com
+ (2603:10b6:930:b:cafe::e) by CY5P221CA0030.outlook.office365.com
+ (2603:10b6:930:b::36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.34 via Frontend
+ Transport; Fri, 1 Mar 2024 22:23:22 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CY4PEPF0000EDD6.mail.protection.outlook.com (10.167.241.210) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7362.11 via Frontend Transport; Fri, 1 Mar 2024 22:23:22 +0000
+Received: from BMCDEV-TH3.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 1 Mar
+ 2024 16:23:21 -0600
+From: Supreeth Venkatesh <supreeth.venkatesh@amd.com>
+To: <joel@jms.id.au>, <andrew@aj.id.au>, <devicetree@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-aspeed@lists.ozlabs.org>,
+	<linux-kernel@vger.kernel.org>, <openbmc@lists.ozlabs.org>,
+	<robh+dt@kernel.org>
+CC: <supreeth.venkatesh@amd.com>
+Subject: [PATCH v2 1/1] ARM:dts:aspeed: Initial device tree for AMD Onyx Platform
+Date: Fri, 1 Mar 2024 16:22:57 -0600
+Message-ID: <20240301222257.3309541-1-supreeth.venkatesh@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EDD6:EE_|SJ2PR12MB9139:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6f1db55a-2123-4c51-2687-08dc3a3e34c8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	J1B2IjjjbE2bpoQwbYV1+ZmVsVjjunF8+Zr9TIXTBVQtMtO/LPOiyOh82n3BJgagzZ1IlCK9pdsUlXD5tVf87Zz1FdVmGuh8WfFaP7VVE/SLSR6bvUDEsKgSWyiI20JVMT60gDrl+tmEW8HmfAn2o/zTEMo2BiNU2jS9gvcsPB2NKvCTsz3qYbRnM5Z640NTN8gVh/yLZKmc0xq5oi956aeUc/f5qaAf8FH9Iosa3Wk9S01aaDBaW6p9QWa3Z073fV2hmqyv7xkhZLafuyJ3Jy0FqIPt87Aj1E/DescSQ1PT8h1PaEQsJi8IxJrn3+OJ8cf/YqGL4uPX9Y3U0uy1k6J2LXJQx02OX4MizvKYLz0ECMzI5pKbDZbXEfe8td3t3UwD5DfJvCzy5COWXeZZyP/dlBtamkuGnpBA4Y4kT1lrI/ETxOvzWAqlB1uqqEQ3J6HhOAe5DXA5wZGCA+NEkvXsUNMIt3h1FqIml5eQ68/8jQis829qpZsK/oc6A3fe8Yd72amP3XBg+v0nd88C6wWCsI3ZE+EYrcThLaAixCtZH5Cosg7xkxo85l4rvSNde15iGJS6wXuurV227/L2t2NGi11fj9LL4bZgbU+MfPchOZX0Fh8hhwdunFOkZcMWFtJGSzIj4cnNCSN4kbRbQ7ymxNuJEtstc1FhwoYQOV9PJr6PGn+6mWpPu+Hf2TVySFD20P1w0TzBzu56/c8M38i5Qr9HGvzEY69+OIvxcocvG6lK6Owunq+NBNj0pg3f
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(82310400014);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2024 22:23:22.6589
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6f1db55a-2123-4c51-2687-08dc3a3e34c8
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CY4PEPF0000EDD6.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB9139
 
-Abhishek Chauhan wrote:
-> Bridge driver today has no support to forward the userspace timestamp
-> packets and ends up resetting the timestamp. ETF qdisc checks the
-> packet coming from userspace and encounters to be 0 thereby dropping
-> time sensitive packets. These changes will allow userspace timestamps
-> packets to be forwarded from the bridge to NIC drivers.
-> 
-> Setting the same bit (mono_delivery_time) to avoid dropping of
-> userspace tstamp packets in the forwarding path.
-> 
-> Existing functionality of mono_delivery_time remains unaltered here,
-> instead just extended with userspace tstamp support for bridge
-> forwarding path.
-> 
-> Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
+Add initial device tree and makefile updates for
+AMD Onyx platform.
 
-Reviewed-by: Willem de Bruijn <willemb@google.com>
+AMD Onyx platform is an AMD customer reference board with an Aspeed
+ast2600 BMC manufactured by AMD.
+It describes I2C devices, UARTs, MAC, FMC, etc.
+present on AMD Onyx platform.
+
+Signed-off-by: Supreeth Venkatesh <supreeth.venkatesh@amd.com>
+---
+Changes since v1:
+* Incorporate review comments
+* Update commit message
+* Remove vmalloc and earlyprintk
+---
+ arch/arm/boot/dts/aspeed/Makefile             |  1 +
+ .../boot/dts/aspeed/aspeed-bmc-amd-onyx.dts   | 94 +++++++++++++++++++
+ 2 files changed, 95 insertions(+)
+ create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-amd-onyx.dts
+
+diff --git a/arch/arm/boot/dts/aspeed/Makefile b/arch/arm/boot/dts/aspeed/Makefile
+index fb9cc95f1b60..2b27d377aae2 100644
+--- a/arch/arm/boot/dts/aspeed/Makefile
++++ b/arch/arm/boot/dts/aspeed/Makefile
+@@ -5,6 +5,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
+ 	aspeed-ast2600-evb.dtb \
+ 	aspeed-bmc-amd-daytonax.dtb \
+ 	aspeed-bmc-amd-ethanolx.dtb \
++	aspeed-bmc-amd-onyx.dtb \
+ 	aspeed-bmc-ampere-mtjade.dtb \
+ 	aspeed-bmc-ampere-mtmitchell.dtb \
+ 	aspeed-bmc-arm-stardragon4800-rep2.dtb \
+diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-amd-onyx.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-amd-onyx.dts
+new file mode 100644
+index 000000000000..1831b8d18db2
+--- /dev/null
++++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-amd-onyx.dts
+@@ -0,0 +1,94 @@
++// SPDX-License-Identifier: GPL-2.0+
++// Copyright (c) 2021 - 2024 AMD Inc.
++// Author: Supreeth Venkatesh <supreeth.venkatesh@amd.com>
++
++/dts-v1/;
++
++#include "aspeed-g6.dtsi"
++#include <dt-bindings/gpio/aspeed-gpio.h>
++
++/ {
++	model = "AMD Onyx BMC";
++	compatible = "amd,onyx-bmc", "aspeed,ast2600";
++
++	aliases {
++		serial0 = &uart1;
++		serial4 = &uart5;
++	};
++
++	chosen {
++		stdout-path = &uart5;
++		bootargs = "console=ttyS4,115200n8";
++	};
++
++	memory@80000000 {
++		device_type = "memory";
++		reg = <0x80000000 0x80000000>;
++	};
++
++};
++
++&mdio0 {
++	status = "okay";
++	ethphy0: ethernet-phy@0 {
++		compatible = "ethernet-phy-ieee802.3-c22";
++		reg = <0>;
++	};
++};
++
++&mac3 {
++	status = "okay";
++	phy-mode = "rgmii";
++	phy-handle = <&ethphy0>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_rgmii4_default>;
++};
++
++&fmc {
++	status = "okay";
++	flash@0 {
++		compatible = "jedec,spi-nor";
++		status = "okay";
++		#include "openbmc-flash-layout-128.dtsi"
++	};
++};
++
++//Host Console
++&uart1 {
++	status = "okay";
++};
++
++//BMC Console
++&uart5 {
++	status = "okay";
++};
++
++&gpio0 {
++gpio-line-names =
++	/*A0-A7*/	"","","","","","","","",
++	/*B0-B7*/	"","","","","MON_POST_COMPLETE","P0_PRESENT_L","","",
++	/*C0-C7*/	"","","","","","","","",
++	/*D0-D7*/	"","","","","","","","",
++	/*E0-E7*/	"","","","","","","","",
++	/*F0-F7*/	"","","","","","","","",
++	/*G0-G7*/	"","","","","","","","",
++	/*H0-H7*/	"","ASSERT_WARM_RST_BTN_L","ASSERT_SOC_RST_BTN_L","","","","","",
++	/*I0-I7*/	"","","","","","","","P0_I3C_APML_ALERT_L",
++	/*J0-J7*/	"","","","","","","","",
++	/*K0-K7*/	"","","","","","","","",
++	/*L0-L7*/	"","","","","","","","",
++	/*M0-M7*/	"","","","","","","","",
++	/*N0-N7*/	"","","","","","","PSP_SOFT_FUSE_NOTIFY","ASSERT_BMC_READY",
++	/*O0-O7*/	"","","HDT_SEL","HDT_XTRIG5","HDT_XTRIG6","JTAG_TRST_N","","",
++	/*P0-P7*/	"MON_RST_BTN_L","ASSERT_RST_BTN_L","MON_PWR_BTN_L","ASSERT_PWR_BTN_L","HPM_FPGA_LOCKOUT","ASSERT_NMI_BTN_L","MON_PWR_GOOD","",
++	/*Q0-Q7*/	"","","HDT_DBREQ_L","","BIOS_SPD_MUX_CTRL_RELEASED_L","","","",
++	/*R0-R7*/	"","","","","","","","",
++	/*S0-S7*/	"","","","","","","P0_DIMM_AF_ERROR","P0_DIMM_GL_ERROR",
++	/*T0-T7*/	"","","","","","","","",
++	/*U0-U7*/	"","","","","","","","",
++	/*V0-V7*/	"","","","","","","","",
++	/*W0-W7*/	"","","","","","","","",
++	/*X0-X7*/	"","","","","","","","",
++	/*Y0-Y7*/	"","","","","","","","",
++	/*Z0-Z7*/	"","","","","","","","";
++};
+--
+2.34.1
+
 
