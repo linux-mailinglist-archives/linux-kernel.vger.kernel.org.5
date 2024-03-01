@@ -1,66 +1,77 @@
-Return-Path: <linux-kernel+bounces-88877-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-88878-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 436BF86E7DD
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:57:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A24086E7DF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 18:57:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7441A1C25385
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:57:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E0591C25515
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Mar 2024 17:57:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A180538DCD;
-	Fri,  1 Mar 2024 17:56:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BF7818624;
+	Fri,  1 Mar 2024 17:57:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d9hn+JQI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TzY11SU8"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA21137705;
-	Fri,  1 Mar 2024 17:56:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62AA711C88;
+	Fri,  1 Mar 2024 17:57:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709315816; cv=none; b=iRVk1y9rwKGX+vXJbINlZibQt6pf6SX7x9IF4HUEt6XI9bDlUyH3piyIQ8E2DcuC7z1FjY9o9WWPMhhVnw02Dox5HbDYp4Nd9v/9Ieoj3a++xMuU/0HlPrBLMfe4MRHvvfbvonlCts8tY6278hZNNEMqioM0r73XfJIxFpWmcY4=
+	t=1709315871; cv=none; b=Lk0WgXgz0ZO9VblXO3IfUqRW8WLRHavNg/ZTs2vqNGRMldIo741VB2+fc6bBt2MyRPlfb4bSD9X3ebuVZRc3hei9d4m1996hG4AkFUkrMCyQ0B+elBdRt4yA1Rx9lDm8mWrnbSqe0VRpN8onzb5AYcn1XFYLqhDMJdUvCn8APtg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709315816; c=relaxed/simple;
-	bh=UmK8sxWHdvXqQrq6yVG8FKBXn33bDgOtlshuAqAxznU=;
+	s=arc-20240116; t=1709315871; c=relaxed/simple;
+	bh=9U32FfVz5GFyN0u7mqtk0ZDcyLH33VVSuTSZTCpEwG0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QdXP/fLxYtqaa+5pnaFJBfsWq7S+PoDn26ouQnvMuqiFMQMtlvN4Z1+ILp6eyLY013s8LmqdGFORsNsc6j9xHT6QBnrppGzpNSt/4ugOxw7ItlNWBKo2qnHouq8GNLvRYZRlVVn9O/kKchQeOBJXHXSpd+YcTJCUY7TmPBs3Tpc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d9hn+JQI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19005C433C7;
-	Fri,  1 Mar 2024 17:56:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709315815;
-	bh=UmK8sxWHdvXqQrq6yVG8FKBXn33bDgOtlshuAqAxznU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=d9hn+JQIOgUbaIs1I+C2YIFcyyswjIPzUWJoyiVEaqZLsGLx9TBMCrUS9tIaoI0QS
-	 K21bkP1ERcXbumhNOhgHHI8qXG5q6vy3uNXHdMInXos9erU7BqcXcXxDYfL+2wE8FV
-	 z1CwrC+LgPQXdm5eoviDxU5LVlKnb79LCKJb3fe5XtnAWIZXVkZEQTJVXhx+ZqPFpi
-	 MqiHQoC4q4O7fW0dsBkSY9U8VLQeBSc1bGtrwX2M3YMJ2AqVPQ7f9lY7IkOwDCYY3e
-	 6LwcFnYa2wDNsJEyMR+3WHDysa8Q1pI+MKPIhxge+504UUwcFZno7UMstr1BRwvHq8
-	 1W2TVF8wz63Lw==
-Date: Fri, 1 Mar 2024 11:56:53 -0600
-From: Rob Herring <robh@kernel.org>
-To: Stephen Boyd <swboyd@chromium.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-	devicetree@vger.kernel.org,
-	Douglas Anderson <dianders@chromium.org>,
-	Pin-yen Lin <treapking@chromium.org>,
-	Herve Codina <herve.codina@bootlin.com>,
-	Alan Stern <stern@rowland.harvard.edu>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=bDZ2oaVZBSP76gb0qi0210vpKgYeL6OmW08Fb0VVuVMeOXRm/KjPEs6EhJ5P5TF3gy/MHWMiMjnVUaKP70sA5RLlNLYWodAwenwPLoyyAE7ObKZw8EGnflOgEVu6m+mJgSfkPlg2r7V32xjVKIAw/p6m+D8OIgyc+RFDViJSqNg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TzY11SU8; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709315870; x=1740851870;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=9U32FfVz5GFyN0u7mqtk0ZDcyLH33VVSuTSZTCpEwG0=;
+  b=TzY11SU8jKfyxbWzv+qDxzu1HF1P4MX6vbA++8fIsPTqBexi2KqaRzZA
+   PEfeJMdT0thuzV3zfaryicinmpxrP2zizOpf2ee9imDcJGWflJo+sLMwq
+   bGpgK9ceT3BJfhONErJqrieWBa+vGUBeTOTI7bynnrRL8JgQANlJIduX0
+   liIkHOWiZm708TxeOKADaNVav1/Sge9fe7KCyA2WHJMv+HWQXbXfcirKn
+   2Yg/JfBnRTX7qaHwCnB+v0qe1/LE+EVuQjdtqjCfUrnBjG5FOxzhPmD1D
+   +fmAFVSqpmu6bRx+GYDDt8Kfrip1eY1exmdgOd7iPQqwEwX2qvdKZbrTm
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11000"; a="3727023"
+X-IronPort-AV: E=Sophos;i="6.06,196,1705392000"; 
+   d="scan'208";a="3727023"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 09:57:49 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11000"; a="914021689"
+X-IronPort-AV: E=Sophos;i="6.06,196,1705392000"; 
+   d="scan'208";a="914021689"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 09:57:46 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rg78h-000000091Mk-0p4G;
+	Fri, 01 Mar 2024 19:57:43 +0200
+Date: Fri, 1 Mar 2024 19:57:42 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Sakari Ailus <sakari.ailus@linux.intel.com>,
+	linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Daniel Scally <djrscally@gmail.com>,
 	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	Roy Luo <royluo@google.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Matthias Kaehlcke <mka@chromium.org>, linux-usb@vger.kernel.org,
-	maciek swiech <drmasquatch@google.com>
-Subject: Re: [PATCH v2 1/2] dt-bindings: usb: Add downstream facing ports to
- realtek binding
-Message-ID: <20240301175653.GA2469610-robh@kernel.org>
-References: <20240223005823.3074029-1-swboyd@chromium.org>
- <20240223005823.3074029-2-swboyd@chromium.org>
+	Len Brown <lenb@kernel.org>, Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v3 0/4] driver core & device property: clean up APIs
+Message-ID: <ZeIXFqwe_bcUmRCY@smile.fi.intel.com>
+References: <20240229162741.3854912-1-andriy.shevchenko@linux.intel.com>
+ <2024022958-motocross-abdominal-e709@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,29 +80,30 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240223005823.3074029-2-swboyd@chromium.org>
+In-Reply-To: <2024022958-motocross-abdominal-e709@gregkh>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Thu, Feb 22, 2024 at 04:58:20PM -0800, Stephen Boyd wrote:
-> Add a graph with 4 output endpoints to this hub binding to support the
-> scenario where a downstream facing port is connected to a device that
-> isn't a connector or a USB device with a VID:PID. This will be used to
-> connect downstream facing ports to USB type-c switches so the USB
-> superspeed and high speed lanes can be put onto USB connectors.
+On Thu, Feb 29, 2024 at 07:46:15PM +0100, Greg Kroah-Hartman wrote:
+> On Thu, Feb 29, 2024 at 06:23:42PM +0200, Andy Shevchenko wrote:
+> > There are two, but dependent pair of patches that:
+> > - makes some of devlink APIs static
+> > - removes 'proxy' header use
+> > 
+> > This is rebased on top of latest patches from Jonathan as it has a minor
+> > conflict in property.h. The series can be applied directly to driver
+> > core tree with reduced context, but it may be better just to route it
+> > via IIO. Greg, which way do you prefer?
 > 
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-> Cc: Conor Dooley <conor+dt@kernel.org>
-> Cc: Matthias Kaehlcke <mka@chromium.org>
-> Cc: <linux-usb@vger.kernel.org>
-> Cc: <devicetree@vger.kernel.org>
-> Cc: Pin-yen Lin <treapking@chromium.org>
-> Cc: maciek swiech <drmasquatch@google.com>
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> ---
->  .../bindings/usb/realtek,rts5411.yaml         | 55 +++++++++++++++++++
->  1 file changed, 55 insertions(+)
+> Why would IIO mess with driver core stuff?
+> 
+> I can just take it in my driver core tree, thanks.
 
-I think we need a usb-hub.yaml schema... For now,
+Let me base on your driver-core-testing then.
+Thank you!
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
