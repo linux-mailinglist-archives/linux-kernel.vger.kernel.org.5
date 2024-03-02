@@ -1,160 +1,253 @@
-Return-Path: <linux-kernel+bounces-89466-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89468-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FAD686F0B4
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 15:57:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9CA686F0C2
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 16:04:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8FAD1F2142C
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 14:57:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 800E628386A
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 15:04:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 959CD17C62;
-	Sat,  2 Mar 2024 14:57:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BEFB29A1;
+	Sat,  2 Mar 2024 15:04:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ieee.org header.i=@ieee.org header.b="Lv79n+GI"
-Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="WMcUGTgG"
+Received: from out203-205-221-240.mail.qq.com (out203-205-221-240.mail.qq.com [203.205.221.240])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A57D17BA2
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 14:57:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A4D31877
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 15:04:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.240
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709391442; cv=none; b=Hgkzs+D48iSNPDeNlcvxNQUz2jy4fBKQsdpistF9AXeBVCltFrQUWeM+0bVVzBQpERA/NjtARJG3dyGqahsKWuo4DvcawOymQVHUyd7CqkKUuUz+zAPVT5szOLkv3KsQMSzMWEZetOb/9u8ruIYKxmwpS/VORvgXmF1THkWnNfc=
+	t=1709391859; cv=none; b=h103KkNqpf0ZbGAi13wK6FvZe+jx3700c9d+NsJ//vMfH4ASRHusFTyvvkiGZgMjNQE10+XAK7IaVTnW/8GWDINBmDM2XyNwiRLIE2xvNRI7kXJCCnFxX3U++mWGXDau2IWS3RHwbmNWcKAc1fDfpOrqVoohB6MpLpl2zcElEjE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709391442; c=relaxed/simple;
-	bh=vsDO370P9L0eb7fcWgulrtTqYp1omUqwzrlkY+TsrEw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NNhUYGLx5uO4rM8Ssmh07Wn18Nf2T5Ly4uG4Vosd7mk/73B8uk77tklp16jWD2SYpPjBzFBrnWRFwRBaLF4ZMf48ozTer09A6oBq1Iyyjci9pW85kOm8Yo4SiFF6Fci83NxQPvVoNKZMFDJtoeyIzWvAuKTqkwugiLRg3b6d/Ow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ieee.org; spf=pass smtp.mailfrom=ieee.org; dkim=pass (1024-bit key) header.d=ieee.org header.i=@ieee.org header.b=Lv79n+GI; arc=none smtp.client-ip=209.85.219.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ieee.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ieee.org
-Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-6905d51fdfbso9742776d6.0
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Mar 2024 06:57:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google; t=1709391438; x=1709996238; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wfIgoTdA9N+MeIiEy0xWNsxv5l2fuvtP53bPZ++Mceg=;
-        b=Lv79n+GIukZYNqW1yCfnmacMqZztGlrqCYXSwWvvghpWzeYdvbqeVPIjwy8U1+UEIU
-         1spN8WqMdkyDUTg//9erJCwQZ9AdfixlaejrMNJYpDeMhaEgkWHzh11uOEiyDKu9cv0C
-         8d6baKt65vEglCpqT7adkjYN5CKrZW5CWZVtM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709391438; x=1709996238;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wfIgoTdA9N+MeIiEy0xWNsxv5l2fuvtP53bPZ++Mceg=;
-        b=Ql5FxwekMGSjdQs/BPj8lqe0FdF3d+zQAgRoMshQcps8p3NUGR16J77BK5cTJCzHZ5
-         lsd465UM07Gu/8k1NfuVnauaJkSg1DXjtsJAHE8AEV2AnLhW+U/Wj7W9iWK/IBrMBmAO
-         GJAO8y7Zr0rw+4RyfCR15LaUBBDj9cQ47mGDMro617Q7MSoUhDpagFTJM09EhJyr0L6W
-         wHSv6GpKyXfmXzIa6O6QA+flS2X1+KbEmOXNjIOUazqeYCPKzw+qk8Z6zyrkF0ghaXDM
-         pqqO70cMlRkC0XQIj0rGF5peB6O1ZqDDw+luP1iFPXGDsat0Ex6juHtN8NEEGsAbjtjw
-         jFEA==
-X-Forwarded-Encrypted: i=1; AJvYcCW9AmxQUiikuBq444IoFe7F2NpuyXl66hB2/3kKW2s/jnbSQ5UVam7ziWsDH93j35dlUlkq1YTWKe0wpwb7DOteX2bMCgMXnz/YyNV1
-X-Gm-Message-State: AOJu0Yw+OGcKVzXV7+MzMV2uKOQo8eMppI7KJyEjNDQG8kW/j/og6G2o
-	Ta1zpI6ijx5KU2km+8jPYkRUnNcvd9YnYJSyoLxPjb1YkJLu+IJ0/xGCOkriRQ==
-X-Google-Smtp-Source: AGHT+IG9qW7IYS8D4z4TN+vHi467Y/Zi72+/DehK/Phj0uWp6/CbVvutRoW9BsGBwd53MOe9t8x0Hw==
-X-Received: by 2002:a0c:da84:0:b0:690:5ff8:cc0 with SMTP id z4-20020a0cda84000000b006905ff80cc0mr2942320qvj.11.1709391438501;
-        Sat, 02 Mar 2024 06:57:18 -0800 (PST)
-Received: from [10.211.55.3] (c-73-228-159-35.hsd1.mn.comcast.net. [73.228.159.35])
-        by smtp.googlemail.com with ESMTPSA id or33-20020a05621446a100b0068f455083fbsm3018169qvb.63.2024.03.02.06.57.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 02 Mar 2024 06:57:18 -0800 (PST)
-Message-ID: <36a4d208-9945-4a65-bdf1-d8309d779e63@ieee.org>
-Date: Sat, 2 Mar 2024 08:57:17 -0600
+	s=arc-20240116; t=1709391859; c=relaxed/simple;
+	bh=m73e+2MqGvs4gmpRYL8WGDwBq851Ng6wBqDejLN06fg=;
+	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=pbsTQP2E653weOfPZYpST8uCWgkDfU3vRl1uN0+y/DxtzS9QTr0mua+VjA765FqcJ+i0VWygmRqTPjOhXkZMj6hc+QGNI4Z265IZljXq0QiXtsb32x+xc4DzvIbso16vgh+ys1TdYYhxssCvv+nNsy2NSZhxluAxthERcm7bsoc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=WMcUGTgG; arc=none smtp.client-ip=203.205.221.240
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1709391840;
+	bh=flCSkjm8nfxOMgB/T8eCfmJzMmizL75i09vf3K97ajI=;
+	h=From:To:Cc:Subject:Date;
+	b=WMcUGTgGDwO9bVwWfHBkFLu0yMeBJZtNlS3CYsRnvizBfR2xlinZ5KB/59xwzt/yF
+	 WS/S9JvdMbBBNWQ05d5XHzC6Y43Ar+2jzZOOcN2NayEIL7u50AxAKOtnYAXlsi9c9u
+	 ztfRqenMSvfJHeyCkq6sDGobfbfMHyg0u73DkdNA=
+Received: from localhost.localdomain ([2409:8a60:2a61:ef40:643:4925:a13c:f154])
+	by newxmesmtplogicsvrszb9-1.qq.com (NewEsmtp) with SMTP
+	id F9AA099; Sat, 02 Mar 2024 23:03:57 +0800
+X-QQ-mid: xmsmtpt1709391837tsij0uqqu
+Message-ID: <tencent_F4E6583FBF67A22A436AA020A5C9A7F44207@qq.com>
+X-QQ-XMAILINFO: N3l5ASPewLWqIr31YICvIFYmkQ1uvZnKT9+0d2DtKhdPGnfEufz9TDuSjWY2hh
+	 65fUrBCYfi9eUYVAlD2Kc8CAcX/LlaoA2psnP9YBRWxnB+JzMlr/FfasDPiKWrHrbFZIyV/4bzeo
+	 lUKd3sfuFrjsWmF70rboPUkT+Pc/AWQ/snBgoV5m/J7W7elNiNJh/Np3rOrWUk4fDf4Dz4jALbea
+	 hbZyFpxWeVIxfq+guCvs+AXZwdSiq6bpZ4WB5bC387D4w9pt/ZUtNBJxYOcErWyVXiBpm+rr2Mxm
+	 ZPHyRaGPkbiY5YyiybnHFtVJ8QGR4qjQVULTk9MRA9hJmy1OEOV+FcombZOijAmw+eFD5RpHezpG
+	 BzlHtJda2qznyYku2ts3kd2gIvsFvm2BtcR4jGHELhDzqrNwkFDz+ASC4dEEd/hjxX3fetPvVZyC
+	 XFAPmTShMBBbdUqjbDvNgOL3C/yJnP/9hT6PygqR9gAAEZXKkJbTPx4KGmMYiBXIbNbOUKXlBKAO
+	 Bn0XOfIZw4H0gZsuVzZ3T00e3KLETOd5NPPvW5WV+0FaVJADU+oPQP5zRM/Y5uJTd8bDWyHgY7bH
+	 FsRlbv5a5hFlOXlrl4hfPMYC+SnwARUV7DfFxvMnmdgqz22l0Ui8omV3eFHYD0vAwHojXxijqLJs
+	 A8++QyLruooYxxPh7AJbcZwgDbmUcF3f0EDHFmehQg2XNyO4DrPRcZ522pAsV5daXdtCw3kYLvw9
+	 ePekcNcwmvclL2AN7v3k44VociuPJ8mC97kHYtD3XBp90oF2FTH2zjINOPE2Fkog1qQ+dfh0QiWG
+	 E4DZb3qIUlZvZrqPkGZ+hfVuKE/9MwAeNyhP1UOuW5Cc06ti2IVw4WMHB4/nBkRwpl30IuUU70od
+	 L8sOUWKD+dOh3DdQgu+y/+uzDq8OYMLGqS3tiHtm6aGiVqLO44WH8OTLnwmOpB/t4wnIJE5GyOfx
+	 TeI95tTm6svuDbD5rfYonHra7u3frgbvA7cFNV3FBB0Auy0/VlLziFN4kDF40U+Tz74twvAE1iqR
+	 V52TQP+ZzAltnTkz5RkMOIYL0J37I=
+X-QQ-XMRINFO: NS+P29fieYNw95Bth2bWPxk=
+From: wenyang.linux@foxmail.com
+To: Luis Chamberlain <mcgrof@kernel.org>,
+	Kees Cook <keescook@chromium.org>,
+	Joel Granados <j.granados@samsung.com>,
+	Christian Brauner <brauner@kernel.org>
+Cc: Wen Yang <wenyang.linux@foxmail.com>,
+	"Eric W . Biederman" <ebiederm@xmission.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] sysctl: move the extra1/2 boundary check of u8 to sysctl_check_table_array
+Date: Sat,  2 Mar 2024 23:03:43 +0800
+X-OQ-MSGID: <20240302150343.111766-1-wenyang.linux@foxmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [greybus-dev] Re: [PATCH] greybus: Fix deref of NULL in
- __gb_lights_flash_brightness_set
-Content-Language: en-US
-To: Dan Carpenter <dan.carpenter@linaro.org>,
- Mikhail Lobanov <m.lobanov@rosalinux.ru>, rmfrfs@gmail.com
-Cc: greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
- linux-kernel@vger.kernel.org
-References: <20240301190425.120605-1-m.lobanov@rosalinux.ru>
- <7ef732ad-a50f-4cf5-8322-376f42eb051b@moroto.mountain>
-From: Alex Elder <elder@ieee.org>
-In-Reply-To: <7ef732ad-a50f-4cf5-8322-376f42eb051b@moroto.mountain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 3/2/24 3:59 AM, Dan Carpenter wrote:
-> On Fri, Mar 01, 2024 at 02:04:24PM -0500, Mikhail Lobanov wrote:
->> Dereference of null pointer in the __gb_lights_flash_brightness_set function.
->> Assigning the channel the result of executing the get_channel_from_mode function
->> without checking for NULL may result in an error.
-> 
-> get_channel_from_mode() can only return NULL when light->channels_count
-> is zero.
-> 
-> Although get_channel_from_mode() seems buggy to me.  If it can't
-> find the correct mode, it just returns the last channel.  So potentially
-> it should be made to return NULL.
+From: Wen Yang <wenyang.linux@foxmail.com>
 
-I agree with you.  This looks quite wrong to me, and I
-like your fix, *except* there is also no need to check
-whether the channel pointer is null inside the loop.
-It's the address of an object, and will always be non-null.
+The boundary check of u8's extra is currently performed at runtime.
+This may result in some kernel modules that can be loaded normally without
+any errors, but not works, as follows:
 
-     static struct gb_channel *
-     get_channel_from_mode(struct gb_light *light, u32 mode)
-     {
-         struct gb_channel *channel;
-         u32 i;
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/sysctl.h>
 
-         for (i = 0; i < light->channels_count; i++) {
-             channel = &light->channels[i];
-             if (channel->mode == mode)
-                 return channel;
-         }
-         return NULL;
-     }
+static struct ctl_table_header *_table_header;
+unsigned char _data = 0;
+struct ctl_table table[] = {
+	{
+		.procname       = "foo",
+		.data           = &_data,
+		.maxlen         = sizeof(u8),
+		.mode           = 0644,
+		.proc_handler   = proc_dou8vec_minmax,
+		.extra1         = SYSCTL_ZERO,
+		.extra2         = SYSCTL_ONE_THOUSAND,
+	},
+	{}
+};
 
+static int init_demo(void) {
+	if (!_table_header)
+		_table_header = register_sysctl("kernel", table);
 
-Rui, could you please confirm what Dan says (and his
-proposed change) was your intention?
+	pr_info("test: init module.\n");
+	return 0;
+}
 
-If so (and assuming you also fix the check for a null
-channel pointer inside the loop):
+static void cleanup_demo(void) {
+	if (_table_header) {
+		unregister_sysctl_table(_table_header);
+	}
 
-Reviewed-by: Alex Elder <elder@linaro.org>
+	pr_info("test: cleanup module.\n");
+}
 
-					-Alex
+module_init(init_demo);
+module_exit(cleanup_demo);
+MODULE_LICENSE("GPL");
 
-> 
-> diff --git a/drivers/staging/greybus/light.c b/drivers/staging/greybus/light.c
-> index d62f97249aca..acd435f5d25d 100644
-> --- a/drivers/staging/greybus/light.c
-> +++ b/drivers/staging/greybus/light.c
-> @@ -95,15 +95,15 @@ static struct led_classdev *get_channel_cdev(struct gb_channel *channel)
->   static struct gb_channel *get_channel_from_mode(struct gb_light *light,
->   						u32 mode)
->   {
-> -	struct gb_channel *channel = NULL;
-> +	struct gb_channel *channel;
->   	int i;
->   
->   	for (i = 0; i < light->channels_count; i++) {
->   		channel = &light->channels[i];
->   		if (channel && channel->mode == mode)
-> -			break;
-> +			return channel;
->   	}
-> -	return channel;
-> +	return NULL;
->   }
->   
->   static int __gb_lights_flash_intensity_set(struct gb_channel *channel,
-> _______________________________________________
-> greybus-dev mailing list -- greybus-dev@lists.linaro.org
-> To unsubscribe send an email to greybus-dev-leave@lists.linaro.org
+ # insmod test.ko
+ # cat /proc/sys/kernel/foo
+ cat: /proc/sys/kernel/foo: Invalid argument
+ # echo 1 >  /proc/sys/kernel/foo
+ -bash: echo: write error: Invalid argument
+
+This patch moves the boundary check forward to module loading and
+also adds a kunit test case.
+
+Signed-off-by: Wen Yang <wenyang.linux@foxmail.com>
+Cc: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Joel Granados <j.granados@samsung.com>
+Cc: Eric W. Biederman <ebiederm@xmission.com>
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+---
+ fs/proc/proc_sysctl.c | 12 ++++++++++++
+ kernel/sysctl-test.c  | 30 ++++++++++++++++++++++++++++++
+ kernel/sysctl.c       | 14 ++++----------
+ 3 files changed, 46 insertions(+), 10 deletions(-)
+
+diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
+index 37cde0efee57..136e3f8966c3 100644
+--- a/fs/proc/proc_sysctl.c
++++ b/fs/proc/proc_sysctl.c
+@@ -1096,6 +1096,7 @@ static int sysctl_err(const char *path, struct ctl_table *table, char *fmt, ...)
+ 
+ static int sysctl_check_table_array(const char *path, struct ctl_table *table)
+ {
++	unsigned int extra;
+ 	int err = 0;
+ 
+ 	if ((table->proc_handler == proc_douintvec) ||
+@@ -1107,6 +1108,17 @@ static int sysctl_check_table_array(const char *path, struct ctl_table *table)
+ 	if (table->proc_handler == proc_dou8vec_minmax) {
+ 		if (table->maxlen != sizeof(u8))
+ 			err |= sysctl_err(path, table, "array not allowed");
++
++		if (table->extra1) {
++			extra = *(unsigned int *) table->extra1;
++			if (extra > 255U)
++				err |= sysctl_err(path, table, "array not allowed");
++		}
++		if (table->extra2) {
++			extra = *(unsigned int *) table->extra2;
++			if (extra > 255U)
++				err |= sysctl_err(path, table, "array not allowed");
++		}
+ 	}
+ 
+ 	if (table->proc_handler == proc_dobool) {
+diff --git a/kernel/sysctl-test.c b/kernel/sysctl-test.c
+index 6ef887c19c48..3918c9310220 100644
+--- a/kernel/sysctl-test.c
++++ b/kernel/sysctl-test.c
+@@ -367,6 +367,35 @@ static void sysctl_test_api_dointvec_write_single_greater_int_max(
+ 	KUNIT_EXPECT_EQ(test, 0, *((int *)table.data));
+ }
+ 
++/*
++ * Test that registering an invalid extra value is not allowed.
++ */
++static void sysctl_test_register_sysctl_sz_invalid_extra_value(
++		struct kunit *test)
++{
++	unsigned char data = 0;
++	struct ctl_table table[] = {
++		{
++			.procname	= "foo",
++			.data		= &data,
++			.maxlen		= sizeof(u8),
++			.mode		= 0644,
++			.proc_handler	= proc_dou8vec_minmax,
++			.extra1		= SYSCTL_ZERO,
++			.extra2		= SYSCTL_ONE_THOUSAND,
++		},
++		{}
++	};
++	unsigned int size = ARRAY_SIZE(table);
++
++	KUNIT_EXPECT_NULL(test, register_sysctl_sz("foo", table, size));
++	table[0].extra1 = SYSCTL_ONE_THOUSAND;
++	KUNIT_EXPECT_NOT_NULL(test, register_sysctl_sz("foo", table, size));
++	table[0].extra1 = SYSCTL_ONE_HUNDRED;
++	table[0].extra2 = SYSCTL_TWO_HUNDRED;
++	KUNIT_EXPECT_NOT_NULL(test, register_sysctl_sz("foo", table, size));
++}
++
+ static struct kunit_case sysctl_test_cases[] = {
+ 	KUNIT_CASE(sysctl_test_api_dointvec_null_tbl_data),
+ 	KUNIT_CASE(sysctl_test_api_dointvec_table_maxlen_unset),
+@@ -378,6 +407,7 @@ static struct kunit_case sysctl_test_cases[] = {
+ 	KUNIT_CASE(sysctl_test_dointvec_write_happy_single_negative),
+ 	KUNIT_CASE(sysctl_test_api_dointvec_write_single_less_int_min),
+ 	KUNIT_CASE(sysctl_test_api_dointvec_write_single_greater_int_max),
++	KUNIT_CASE(sysctl_test_register_sysctl_sz_invalid_extra_value),
+ 	{}
+ };
+ 
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index f67b39d3d6e5..28888744626a 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -977,16 +977,10 @@ int proc_dou8vec_minmax(struct ctl_table *table, int write,
+ 	if (table->maxlen != sizeof(u8))
+ 		return -EINVAL;
+ 
+-	if (table->extra1) {
+-		min = *(unsigned int *) table->extra1;
+-		if (min > 255U)
+-			return -EINVAL;
+-	}
+-	if (table->extra2) {
+-		max = *(unsigned int *) table->extra2;
+-		if (max > 255U)
+-			return -EINVAL;
+-	}
++	if (table->extra1)
++		min = *(unsigned char *) table->extra1;
++	if (table->extra2)
++		max = *(unsigned char *) table->extra2;
+ 
+ 	tmp = *table;
+ 
+-- 
+2.25.1
 
 
