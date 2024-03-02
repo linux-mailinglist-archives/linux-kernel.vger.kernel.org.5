@@ -1,216 +1,231 @@
-Return-Path: <linux-kernel+bounces-89266-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89267-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 960E886ED8A
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 01:44:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D20786ED93
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 01:47:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9BFD1C21D72
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 00:44:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51F492824D1
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 00:47:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D91A23A0;
-	Sat,  2 Mar 2024 00:44:47 +0000 (UTC)
-Received: from fgw20-7.mail.saunalahti.fi (fgw20-7.mail.saunalahti.fi [62.142.5.81])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24CEE16FF59;
+	Sat,  2 Mar 2024 00:47:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UmVmFWU5"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15095EBE
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 00:44:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.142.5.81
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709340286; cv=none; b=Y4FSVhUoT5noNH6Ccdr6047Hfb3kwKbAxy44sR/jFY9MzlEHDxuSdiCBD82oQeXhhJMyE41UCGeMun8cntjjUgSo+ossHTymZvHIP/xTZ4Wdafiz/NvbxQNLd/keH+N7JP5l0NrQouLpZfVXHOXjRRPrHJgXxZnKq2ax9QEA+3w=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709340286; c=relaxed/simple;
-	bh=N7aLsipkDvipYuH/b5r8b2CKLMOVSg0u+ObIwgGk21s=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MqT0emLYK3mdPM70WQMwhCatJ8m2KR3qsRyZ6ZCAKpkGMVyVeaw99CyLwS8koLk7Aqozcf6EzSLusrENd7AxGL+/LOvwrsqA2z/I1ctN0EVSCciF6nADVI/58fc5eDcxKVfqJGHVjLrJhBRA7YwlmHbO7nkdral4a9kXOLLFMds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=62.142.5.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
-Received: from localhost (88-113-26-217.elisa-laajakaista.fi [88.113.26.217])
-	by fgw20.mail.saunalahti.fi (Halon) with ESMTP
-	id 0e94cdf9-d82e-11ee-b3cf-005056bd6ce9;
-	Sat, 02 Mar 2024 02:44:42 +0200 (EET)
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-To: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	=?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
-	linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>,
-	Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v2 1/1] gpio: nomadik: Finish conversion to use firmware node APIs
-Date: Sat,  2 Mar 2024 02:44:18 +0200
-Message-ID: <20240302004439.197232-1-andy.shevchenko@gmail.com>
-X-Mailer: git-send-email 2.44.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06DB1EBE;
+	Sat,  2 Mar 2024 00:47:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.16
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709340439; cv=fail; b=kBBiS71JKJm/55RBNcYloo+H0GaNoQoa6u1Nmot8ZM0ClOvUn/MEXdM1GtQA4Ci3WLRVNJ0mEbgrGa/nzHZDvvJ8gHZsep2upHMV+RPeVhHzO9KWqJfBOZhWtlIlp3eriNcLdRyhjjvQoKl5AgzXDgdRZ82hDPQ1lLv9FGcovzc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709340439; c=relaxed/simple;
+	bh=fU3zMZKXIIVa75m9eCEI6HQaJLFDn0+uWgPSHwH8wT0=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=k600ksWKYZ160tdG+bCNlKq2HbEJStWsmZN1yAWOe72Ab6rdWb7r8WJDeAVfhMUt342FsFN9NtqBmOYmP1wEdgPAI9R3uRwbf8wZxACdqv51/k6c8BKHdOekpjhTsw5712fRvw0QbYdtc4qG8jrZuLa2q9tDKPw6Aq1cglxhdzg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UmVmFWU5; arc=fail smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709340437; x=1740876437;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=fU3zMZKXIIVa75m9eCEI6HQaJLFDn0+uWgPSHwH8wT0=;
+  b=UmVmFWU5h+YoK8fQvfQM8AfCIXvDPQX9KQux47ovhbmDbQLZHKuRIrVU
+   2SYwz+FSAM4Hg/6yDulv3ZhPE1oM6NQXhpXrTlLJ6PVSZaU4Hka7dhPOx
+   iID9D7OOb0VEGtk5XaH+eNz4p+nayBLwRj6VGxeRpqsO1QzFA7y54J1uk
+   4zoK/dXEtWUQ/H4OBgsupP8jLBiaOIpSKbtee5HgvJlxSLcUI+BcM9chL
+   I7YGo9OtYPRMhVLDFQo/lzCXiXtVIC8HJePs8gJhVWuAwgh4MYqXMapU9
+   xkvElzAblxAKAD0Aj52l0EMQoVpScso5U5yx27EQScMWimTb08xssH4rA
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11000"; a="4020151"
+X-IronPort-AV: E=Sophos;i="6.06,197,1705392000"; 
+   d="scan'208";a="4020151"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 16:47:16 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,197,1705392000"; 
+   d="scan'208";a="8790612"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orviesa006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 01 Mar 2024 16:47:17 -0800
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 1 Mar 2024 16:47:15 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Fri, 1 Mar 2024 16:47:15 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.169)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 1 Mar 2024 16:47:15 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fxPoi+1G92wpmUjqPc4dlseVIOOJAu3HcJASSlfPHmpYGyiUlrR8HVquUFKVjcp/tvmF2GBAsezbcNEcQcm1zMz/rJ54j4FVJIFvpVHg+o+CtuxB8CRMUg5GB5VwBLMhDHCgjj533okOZijMUHWmb5O5IkedfZ1lkqgUGi0LuoPbrvhHkQ/inw7QFXhG4fy7cKsa1V33ksZ+vzVu4eDRHxnun8codxILlGWq/+h0gm3vgRGoL6nvFMRqvkdInv/Qgyh1A5A7sLLjzz0reSAu7Kt4WvfUvOhLpSrCeNFTpZUyj6UfW9ogr0bqjUugpUFAnUiuu8zzI4HcO9iSVdudYg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=fU3zMZKXIIVa75m9eCEI6HQaJLFDn0+uWgPSHwH8wT0=;
+ b=EoYLlN9bZb91F0Dv682pbUxP4UA3L+7jEA/ct9030+CxbpAZnNFgRvw7iseF89jJnQP4yrpYLeB1LqHNhXbvgE+/CQCfgTtCkiCEiGu6EWpJOuMUbtRpc6YlwBe76+gQJrQYvKlxCxFIu3IOqpd4ePllEsbip8rP02B2VNzfE/ZwumoYQG10t6tazayRt1JNRpedLsI7ccia56YVV/xLrogXhbcmAdrSU95aGGBBiFXfjr9kMbH5kOsWMEi3n+g9z44BRXGN9EpKIx6RQMlTXjgaRLTw1z7QL5vAwA9JAAAZGqsWqWCgP5bpBQkcUArX98PZcb9eWdEdMOg7MHml+Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from MN0PR11MB5963.namprd11.prod.outlook.com (2603:10b6:208:372::10)
+ by CY8PR11MB7946.namprd11.prod.outlook.com (2603:10b6:930:7e::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.14; Sat, 2 Mar
+ 2024 00:47:08 +0000
+Received: from MN0PR11MB5963.namprd11.prod.outlook.com
+ ([fe80::fc9e:b72f:eeb5:6c7b]) by MN0PR11MB5963.namprd11.prod.outlook.com
+ ([fe80::fc9e:b72f:eeb5:6c7b%5]) with mapi id 15.20.7362.017; Sat, 2 Mar 2024
+ 00:47:08 +0000
+From: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+To: "keescook@chromium.org" <keescook@chromium.org>,
+	"christophe.leroy@csgroup.eu" <christophe.leroy@csgroup.eu>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"x86@kernel.org" <x86@kernel.org>, "luto@kernel.org" <luto@kernel.org>,
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+	"debug@rivosinc.com" <debug@rivosinc.com>, "akpm@linux-foundation.org"
+	<akpm@linux-foundation.org>, "linux-sh@vger.kernel.org"
+	<linux-sh@vger.kernel.org>, "linux-csky@vger.kernel.org"
+	<linux-csky@vger.kernel.org>, "mingo@redhat.com" <mingo@redhat.com>,
+	"kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+	"tglx@linutronix.de" <tglx@linutronix.de>, "linux-parisc@vger.kernel.org"
+	<linux-parisc@vger.kernel.org>, "loongarch@lists.linux.dev"
+	<loongarch@lists.linux.dev>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>,
+	"Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>, "hpa@zytor.com"
+	<hpa@zytor.com>, "peterz@infradead.org" <peterz@infradead.org>,
+	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+	"bp@alien8.de" <bp@alien8.de>, "linux-s390@vger.kernel.org"
+	<linux-s390@vger.kernel.org>, "linux-alpha@vger.kernel.org"
+	<linux-alpha@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "linux-mips@vger.kernel.org"
+	<linux-mips@vger.kernel.org>, "sparclinux@vger.kernel.org"
+	<sparclinux@vger.kernel.org>, "broonie@kernel.org" <broonie@kernel.org>
+Subject: Re: [PATCH v2 5/9] mm: Initialize struct vm_unmapped_area_info
+Thread-Topic: [PATCH v2 5/9] mm: Initialize struct vm_unmapped_area_info
+Thread-Index: AQHaaOdsOIuf9v8cz0SXVaOI9gIdJbEdxC+AgAC5pQCAAAKPgIAAJA2AgAEcBICAAELjgIADoSeA
+Date: Sat, 2 Mar 2024 00:47:08 +0000
+Message-ID: <ac04c9aa134807bbc00e6086e7a14a58a682f221.camel@intel.com>
+References: <20240226190951.3240433-1-rick.p.edgecombe@intel.com>
+	 <20240226190951.3240433-6-rick.p.edgecombe@intel.com>
+	 <94a2b919-e03b-4ade-b13e-7774849dc02b@csgroup.eu>
+	 <202402271004.7145FDB53F@keescook>
+	 <8265f804-4540-4858-adc3-a09c11a677eb@csgroup.eu>
+	 <91384b505cb78b9d9b71ad58e037c1ed8dfb10d1.camel@intel.com>
+	 <def71a27-2d5f-40da-867e-979648afc4cf@csgroup.eu>
+	 <202402280912.33AEE7A9CF@keescook>
+In-Reply-To: <202402280912.33AEE7A9CF@keescook>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Evolution 3.44.4-0ubuntu2 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MN0PR11MB5963:EE_|CY8PR11MB7946:EE_
+x-ms-office365-filtering-correlation-id: 42ff17d8-e0db-4ec2-5b64-08dc3a524a4c
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: hIrCIX4BDlrvI59cK2SUeog4x7E7GsgdML7XuMofF1qUamt3wAsW/pxFthjrD2Je/Yzw2lkfQV1UcWCixkVDuE2D/kzcvNqOPPYsh1HVUM095oqIV4O37EQe7SztoD/nxhrQX2KuOfS6KP3xum145hlXaTcFkB6joZqcmMSsArJuQdB4isr5gQYzVsQnOFgxxqY4yboxPE0+YzipR2Vj4dcOaBWsbEwGRyGpjh6/hUGXQ5k5e6KB7PA15NtL4enOYRLXih7jjZeiz/YkN+3ZrNLTp1dnmshSVF7xWkX/BBcKZngNFfjAbdFw0YW1kIoHKt9KID0Ypg5Sz7RoKYW3WGQROeQehFKElpwMcn2PGukottGEoZbTPw6bMluHEfKHMXwLdBrpMPqeeoEgM8UJvmGgzh0aj09UIAb9avMU+rrDmgo3AkSt3zt7DxRQYHvre39J/kQnoE9IE6l2Uz8wTYPlx4NyZCMXaTzbsX4J9g8b9s31GGAlaeAFNQUeHHjxGU3KOnKyBjQQKL063ZFceXwnhs15e2b7h6oIa/qz+CETVkVj+22Ny18REfAyMDZMrv9WlDJ42gcRJQsLfi2m8UDGg9bFBvGHTsOrSBfF91NYsvACU1v2cn+nW2lECNOeIlcavD1MWYGyo774vCUTE4xwVMwQR7e8UOwtNl+ZL61hoLYNfJj4qSV9KqnX6eKMjf31at1rGE138FTqhQBNBfP3AbFCQAGE2djsdZ0VK6E=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB5963.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?RlhtbTdBQ0pQZ0U2TXM0RmJLeXVwa0Y1cW1XV3pqRTU1Tkh0cWRKd05XM3RO?=
+ =?utf-8?B?eDNGeUdCMTRmOHdjSzBrNnBiQXJkeXQreUNFRWJNRUF5c3ppYnE1azdRdERp?=
+ =?utf-8?B?K3B1MVJvUC9ITFNnRjFUbmFseEJBZ2wzWi9RMWF6cSt6bkNLMm1KV2RjQTNn?=
+ =?utf-8?B?M2tzVllwSGc2VjQ0eks0Yzl1bmVHVHl5bXJ2K1B3ZzNzajg0dG9KUHVKNUcr?=
+ =?utf-8?B?Zzl5ZzVyd0Z4dWg0eHJlVzcrckJTMzRseFlic0NFbjk4ZzA3YzE4L0dLR3BH?=
+ =?utf-8?B?MTN1TEh1RmJsa0ExN1p0QXIyNW5lMVdURFA2SHd2Umk4cDdka0p0YlFNbVYx?=
+ =?utf-8?B?SytWaGNRdG5oM1V6azgrZ2Z2SjlWaEZtaVFSWWdFNy9DRE96V2hOeEdyOCtt?=
+ =?utf-8?B?ekswM1JMNHRmbEo4MXV3M3ZHSnlTcWF0NFpjZmEyNktwQVF1dDB5eWF6c0Jo?=
+ =?utf-8?B?UG9rVzFjWEk5UGhkOHBycUVGeVFWdzg4U2Y1STdzcEJHYUNTSTVuRTZUWUdl?=
+ =?utf-8?B?MjZPT3hSc1A3NTcvaExYdUFFUzN4OVZZZGF3Q0FEVlVnUGdWTVI3TTFDWDVH?=
+ =?utf-8?B?VFJTdXRQUEVHVUF6MUZBVnZLR1k2N2VsWkJyR0J4enpUMy9ET3dYM1M0bWhv?=
+ =?utf-8?B?MnU3VGhjODNBc3hSQkJRNzB0Y1RmZTd2djdhSjM3cmVqUk9sWkJPVkFnaWRU?=
+ =?utf-8?B?WDVQdGJrYWtkWGRKTEdIL2RieDBuWDJySjNzdFkxalQ3THpjL2MvVzUxeTg5?=
+ =?utf-8?B?SWhSTy84K3ZlbnVQblVWc2szNWR1NWxJSjMyVkdRcXdIdG4wZWhqMmVMT016?=
+ =?utf-8?B?RHh3a2JoR2pITnZOT0ljUGRYV3hhekx2MWhEamxPM3BiQ2JWQ1dCNU9jdUl0?=
+ =?utf-8?B?WkVYV2FZcnY1d0dHeDZkWkFPcVFEUnhXWjZsTVhDeG80eERPRWhHd0grSzJo?=
+ =?utf-8?B?eE9LYS9rTXVhdDdqUGxsZE1GdXdlRUFXYmdPKzVDY2FhOERFOEpRL0hMelBO?=
+ =?utf-8?B?VUM4b3lMdlN6NHZFblZPR2crN3VTSW1EeSsxWFNISzBobzFjbDdaZ1pJZjJQ?=
+ =?utf-8?B?b2ZmMXh0cWRvSHlEbjZpMXJvc3JGajk1ZjA1THJ6S09hMjNHRVRSM29BWTNE?=
+ =?utf-8?B?anVkR3dWODhNY0hSMENlalJRY3dEMlNtYXliZWRsRVZ2SUlyTHp4MUZCbkpo?=
+ =?utf-8?B?dit0SkNyc05JMHViQ0pQekR5amNhZVc2MWQ3bVdwR2ZSUE1kWUJpN0dUWXFF?=
+ =?utf-8?B?ZHFiYkw3ejByaWdNZm5IRzNRdjdHQzVuM1dyU1drR2lpWjVOYXlJajVBc3d0?=
+ =?utf-8?B?NHNCVXdZRS9kZ2M0NDNieU1BaVZSSDYrM0JOb1NjOVF2TW9GOXNid091NG92?=
+ =?utf-8?B?MWlrMWxZb3ZxZk1KeG92WmRPL085SmlZRElMSTJKWVZQQjBBaElxVk9IUndt?=
+ =?utf-8?B?N29DbThSb1JaaW8zLzRERDBKaVNOZk9lbnYwNDFnWHI0YjFFWm5oUGd6dUMr?=
+ =?utf-8?B?bDRJOVRGNTk5bWY0WXVnYWlyVWFiWFZ6QnZrRHZWSTBXNHZkZ0RrUitVV3p6?=
+ =?utf-8?B?V1BWWFNuWU0vRlk0SkpRUVBsK3htNGp2ZE05M2thOXpzSkJNQXFCeVhnVVND?=
+ =?utf-8?B?ZjZtMno2NWZxbGNGdSs4ZkhvUjB3N2xySWU5YWlHVmxEaVVtSVZuc2VxZnFs?=
+ =?utf-8?B?blJ6K0RlOG56OEpRSHhnTjUrR1V4NkpTNzBDSDVORFB1MlZTQUsxMFFoMWIv?=
+ =?utf-8?B?eEhPYjZ2L2RlOGsxVnMweDE5RTZSR3BhT2UvTzYrR3duNzFOUHIrNXpCd08z?=
+ =?utf-8?B?ckZBOVNCeGROSWFRYjdLSElmTTRVZk9KOWlQT2VRZDVCTUwrQzc2VTh6djho?=
+ =?utf-8?B?dmYybjBrR1pmUEdEWkFWNTFhVSttZ2lDMGJvemJKdFE5bDMvaUdqcVFYN3hS?=
+ =?utf-8?B?K2tDeXcvd0FmQ2JsaEhJSFpUMDJvQ1dKWWgraGFWb01kMUlaSmxZakV0SHpI?=
+ =?utf-8?B?Q0JSQ1JwTU8yYVREcVprRGpEeE50WkpXaXVvdXZoemtJN1lKZFRHTXMrR2x2?=
+ =?utf-8?B?MCtFSDM3RjBsMUFySzl5L085cDFTSk5KZFhhMmd6SWczeFU3L0dpVWxnUVRJ?=
+ =?utf-8?B?enE0N1I2VElNQlM4ck5haS93bXR0NHRwei9iaXZ0d2FvVnYyd2N2VXNZYnhq?=
+ =?utf-8?B?QXc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <AC29F0F9A536C448850B919550CCE475@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB5963.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 42ff17d8-e0db-4ec2-5b64-08dc3a524a4c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Mar 2024 00:47:08.7873
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: GplDLNiBT0ocQcYZzLJ4TVH7fzSXdmgXN4+p/D/ZDbn/i7tNKlpqe0UJusDV2r1BlaNfeMY2tgDHx1DbR0ly95DcfPlq43Fx5121eeB53Lo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7946
+X-OriginatorOrg: intel.com
 
-Previously driver got a few updates in order to replace OF APIs by
-respective firmware node, however it was not finished to the logical
-end, e.g., some APIs that has been used are still require OF node
-to be passed. Finish that job by converting leftovers to use firmware
-node APIs.
-
-Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
----
-v2: also update necessary parts in the respective pin control driver
- drivers/gpio/Kconfig                      |  1 -
- drivers/gpio/gpio-nomadik.c               | 13 ++++++------
- drivers/pinctrl/nomadik/pinctrl-nomadik.c | 25 +++++++++++------------
- include/linux/gpio/gpio-nomadik.h         |  4 +++-
- 4 files changed, 21 insertions(+), 22 deletions(-)
-
-diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-index f633be517654..ef20ab921010 100644
---- a/drivers/gpio/Kconfig
-+++ b/drivers/gpio/Kconfig
-@@ -481,7 +481,6 @@ config GPIO_MXS
- config GPIO_NOMADIK
- 	bool "Nomadik GPIO driver"
- 	depends on ARCH_U8500 || ARCH_NOMADIK || MACH_EYEQ5 || COMPILE_TEST
--	depends on OF_GPIO
- 	select GPIOLIB_IRQCHIP
- 	help
- 	  Say yes here to support the Nomadik SoC GPIO block. This block is also
-diff --git a/drivers/gpio/gpio-nomadik.c b/drivers/gpio/gpio-nomadik.c
-index c9fd6631e0aa..483086deb397 100644
---- a/drivers/gpio/gpio-nomadik.c
-+++ b/drivers/gpio/gpio-nomadik.c
-@@ -23,10 +23,10 @@
- #include <linux/gpio/driver.h>
- #include <linux/interrupt.h>
- #include <linux/kernel.h>
--#include <linux/of_device.h>
--#include <linux/of_platform.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/pinctrl/pinctrl.h>
- #include <linux/platform_device.h>
-+#include <linux/property.h>
- #include <linux/reset.h>
- #include <linux/seq_file.h>
- #include <linux/slab.h>
-@@ -504,7 +504,7 @@ static inline void nmk_gpio_dbg_show_one(struct seq_file *s,
-  * it is the pin controller or GPIO driver. However we need to use the right
-  * platform device when looking up resources so pay attention to pdev.
-  */
--struct nmk_gpio_chip *nmk_gpio_populate_chip(struct device_node *np,
-+struct nmk_gpio_chip *nmk_gpio_populate_chip(struct fwnode_handle *fwnode,
- 					     struct platform_device *pdev)
- {
- 	struct nmk_gpio_chip *nmk_chip;
-@@ -517,9 +517,9 @@ struct nmk_gpio_chip *nmk_gpio_populate_chip(struct device_node *np,
- 	u32 id, ngpio;
- 	int ret;
- 
--	gpio_dev = bus_find_device_by_of_node(&platform_bus_type, np);
-+	gpio_dev = bus_find_device_by_fwnode(&platform_bus_type, fwnode);
- 	if (!gpio_dev) {
--		pr_err("populate \"%pOFn\": device not found\n", np);
-+		dev_err(&pdev->dev, "populate \"%pfwP\": device not found\n", fwnode);
- 		return ERR_PTR(-ENODEV);
- 	}
- 	gpio_pdev = to_platform_device(gpio_dev);
-@@ -624,7 +624,6 @@ static const struct irq_chip nmk_irq_chip = {
- static int nmk_gpio_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
--	struct device_node *np = dev->of_node;
- 	struct nmk_gpio_chip *nmk_chip;
- 	struct gpio_irq_chip *girq;
- 	bool supports_sleepmode;
-@@ -632,7 +631,7 @@ static int nmk_gpio_probe(struct platform_device *pdev)
- 	int irq;
- 	int ret;
- 
--	nmk_chip = nmk_gpio_populate_chip(np, pdev);
-+	nmk_chip = nmk_gpio_populate_chip(dev_fwnode(dev), pdev);
- 	if (IS_ERR(nmk_chip)) {
- 		dev_err(dev, "could not populate nmk chip struct\n");
- 		return PTR_ERR(nmk_chip);
-diff --git a/drivers/pinctrl/nomadik/pinctrl-nomadik.c b/drivers/pinctrl/nomadik/pinctrl-nomadik.c
-index 7849144b3b80..b89b2609fdfd 100644
---- a/drivers/pinctrl/nomadik/pinctrl-nomadik.c
-+++ b/drivers/pinctrl/nomadik/pinctrl-nomadik.c
-@@ -1190,8 +1190,8 @@ static int nmk_pinctrl_resume(struct device *dev)
- 
- static int nmk_pinctrl_probe(struct platform_device *pdev)
- {
--	struct device_node *np = pdev->dev.of_node;
--	struct device_node *prcm_np;
-+	struct device_node *fwnode = dev_fwnode(&pdev->dev);
-+	struct device_node *prcm_fwnode;
- 	struct nmk_pinctrl *npct;
- 	uintptr_t version = 0;
- 	int i;
-@@ -1216,28 +1216,27 @@ static int nmk_pinctrl_probe(struct platform_device *pdev)
- 	 * or after this point: it shouldn't matter as the APIs are orthogonal.
- 	 */
- 	for (i = 0; i < NMK_MAX_BANKS; i++) {
--		struct device_node *gpio_np;
-+		struct fwnode_handle *gpio_fwnode;
- 		struct nmk_gpio_chip *nmk_chip;
- 
--		gpio_np = of_parse_phandle(np, "nomadik-gpio-chips", i);
--		if (!gpio_np)
-+		gpio_fwnode = fwnode_find_reference(fwnode, "nomadik-gpio-chips", i);
-+		if (IS_ERR(gpio_fwnode))
- 			continue;
- 
--		dev_info(&pdev->dev, "populate NMK GPIO %d \"%pOFn\"\n",
--			 i, gpio_np);
--		nmk_chip = nmk_gpio_populate_chip(gpio_np, pdev);
-+		dev_info(&pdev->dev, "populate NMK GPIO %d \"%pfwP\"\n", i, gpio_fwnode);
-+		nmk_chip = nmk_gpio_populate_chip(gpio_fwnode, pdev);
- 		if (IS_ERR(nmk_chip))
- 			dev_err(&pdev->dev,
- 				"could not populate nmk chip struct - continue anyway\n");
--		of_node_put(gpio_np);
-+		fwnode_handle_put(gpio_fwnode);
- 		/* We are NOT compatible with mobileye,eyeq5-gpio. */
- 		BUG_ON(nmk_chip->is_mobileye_soc);
- 	}
- 
--	prcm_np = of_parse_phandle(np, "prcm", 0);
--	if (prcm_np) {
--		npct->prcm_base = of_iomap(prcm_np, 0);
--		of_node_put(prcm_np);
-+	prcm_fwnode = fwnode_find_reference(fwnode, "prcm", 0);
-+	if (!IS_ERR(prcm_fwnode)) {
-+		npct->prcm_base = fwnode_iomap(prcm_fwnode, 0);
-+		fwnode_handle_put(prcm_fwnode);
- 	}
- 	if (!npct->prcm_base) {
- 		if (version == PINCTRL_NMK_STN8815) {
-diff --git a/include/linux/gpio/gpio-nomadik.h b/include/linux/gpio/gpio-nomadik.h
-index 9bdb09fda4c9..4a95ea7935fb 100644
---- a/include/linux/gpio/gpio-nomadik.h
-+++ b/include/linux/gpio/gpio-nomadik.h
-@@ -2,6 +2,8 @@
- #ifndef __LINUX_GPIO_NOMADIK_H
- #define __LINUX_GPIO_NOMADIK_H
- 
-+struct fwnode_handle;
-+
- /* Package definitions */
- #define PINCTRL_NMK_STN8815	0
- #define PINCTRL_NMK_DB8500	1
-@@ -263,7 +265,7 @@ void __nmk_gpio_make_output(struct nmk_gpio_chip *nmk_chip,
- 			    unsigned int offset, int val);
- void __nmk_gpio_set_slpm(struct nmk_gpio_chip *nmk_chip, unsigned int offset,
- 			 enum nmk_gpio_slpm mode);
--struct nmk_gpio_chip *nmk_gpio_populate_chip(struct device_node *np,
-+struct nmk_gpio_chip *nmk_gpio_populate_chip(struct fwnode_handle *fwnode,
- 					     struct platform_device *pdev);
- 
- /* Symbols declared in pinctrl-nomadik used by gpio-nomadik. */
--- 
-2.44.0
-
+T24gV2VkLCAyMDI0LTAyLTI4IGF0IDA5OjIxIC0wODAwLCBLZWVzIENvb2sgd3JvdGU6DQo+IEkg
+dG90YWxseSB1bmRlcnN0YW5kLiBJZiB0aGUgInVuaW5pdGlhbGl6ZWQiIHdhcm5pbmdzIHdlcmUg
+YWN0dWFsbHkNCj4gcmVsaWFibGUsIEkgd291bGQgYWdyZWUuIEkgbG9vayBhdCBpdCB0aGlzIHdh
+eToNCj4gDQo+IC0gaW5pdGlhbGl6YXRpb25zIGNhbiBiZSBtaXNzZWQgZWl0aGVyIGluIHN0YXRp
+YyBpbml0aWFsaXplcnMgb3IgdmlhDQo+IMKgIHJ1biB0aW1lIGluaXRpYWxpemVycy4gKFNvIHRo
+ZSByaXNrIG9mIG1pc3Rha2UgaGVyZSBpcyBtYXRjaGVkIC0tDQo+IMKgIHRob3VnaCBJJ2QgYXJn
+dWUgaXQncyBlYXNpZXIgdG8gKmZpbmQqIHN0YXRpYyBpbml0aWFsaXplcnMgd2hlbg0KPiBhZGRp
+bmcNCj4gwqAgbmV3IHN0cnVjdCBtZW1iZXJzLikNCj4gLSB1bmluaXRpYWxpemVkIHdhcm5pbmdz
+IGFyZSBpbmNvbnNpc3RlbnQgKHRoaXMgYmVjb21lcyBhbiB1bmtub3duDQo+IHJpc2spDQo+IC0g
+d2hlbiBhIHJ1biB0aW1lIGluaXRpYWxpemVyIGlzIG1pc3NlZCwgdGhlIGNvbnRlbnRzIGFyZSB3
+aGF0ZXZlcg0KPiB3YXMNCj4gwqAgb24gdGhlIHN0YWNrIChoaWdoIHJpc2spDQo+IC0gd2hhdCBh
+IHN0YXRpYyBpbml0aWFsaXplciBpcyBtaXNzZWQsIHRoZSBjb250ZW50IGlzIDAgKGxvdyByaXNr
+KQ0KPiANCj4gSSB0aGluayB1bmFtYmlndW91cyBzdGF0ZSAoYWx3YXlzIDApIGlzIHNpZ25pZmlj
+YW50bHkgbW9yZSBpbXBvcnRhbnQNCj4gZm9yDQo+IHRoZSBzYWZldHkgb2YgdGhlIHN5c3RlbSBh
+cyBhIHdob2xlLiBZZXMsIGluZGl2aWR1YWwgY2FzZXMgbWF5YmUgYmFkDQo+ICgid2hhdCB1aWQg
+c2hvdWxkIHRoaXMgYmU/IHJvb3Q/ISIpIGJ1dCBmcm9tIGEgZ2VuZXJhbCBtZW1vcnkgc2FmZXR5
+DQo+IHBlcnNwZWN0aXZlIHRoZSB2YWx1ZSBkb2Vzbid0IGJlY29tZSBwb3RlbnRpYWxseSBpbmZs
+dWVuY2VkIGJ5IG9yZGVyDQo+IG9mDQo+IG9wZXJhdGlvbnMsIGxlZnRvdmVyIHN0YWNrIG1lbW9y
+eSwgZXRjLg0KPiANCj4gSSdkIGFncmVlLCBsaWZ0aW5nIGV2ZXJ5dGhpbmcgaW50byBhIHN0YXRp
+YyBpbml0aWFsaXplciBkb2VzIHNlZW0NCj4gY2xlYW5lc3Qgb2YgYWxsIHRoZSBjaG9pY2VzLg0K
+DQpIaSBLZWVzLA0KDQpXZWxsLCBJIGp1c3QgZ2F2ZSB0aGlzIGEgdHJ5LiBJdCBpcyBnaXZpbmcg
+bWUgZmxhc2hiYWNrcyBvZiB3aGVuIEkgbGFzdA0KaGFkIHRvIGRvIGEgdHJlZSB3aWRlIGNoYW5n
+ZSB0aGF0IEkgY291bGRuJ3QgZnVsbHkgdGVzdCBhbmQgdGhlDQpicmVha2FnZSB3YXMgY2F1Z2h0
+IGJ5IExpbnVzLg0KDQpDb3VsZCB5b3UgbGV0IG1lIGtub3cgaWYgeW91IHRoaW5rIHRoaXMgaXMg
+YWRkaXRpb25hbGx5IHdvcnRod2hpbGUNCmNsZWFudXAgb3V0c2lkZSBvZiB0aGUgZ3VhcmQgZ2Fw
+IGltcHJvdmVtZW50cyBvZiB0aGlzIHNlcmllcz8gQmVjYXVzZSBJDQp3YXMgdGhpbmtpbmcgYSBt
+b3JlIGNvd2FyZGx5IGFwcHJvYWNoIGNvdWxkIGJlIGEgbmV3IHZtX3VubWFwcGVkX2FyZWEoKQ0K
+dmFyaWFudCB0aGF0IHRha2VzIHRoZSBuZXcgc3RhcnQgZ2FwIG1lbWJlciBhcyBhIHNlcGFyYXRl
+IGFyZ3VtZW50DQpvdXRzaWRlIG9mIHN0cnVjdCB2bV91bm1hcHBlZF9hcmVhX2luZm8uIEl0IHdv
+dWxkIGJlIGtpbmQgb2Ygc3RyYW5nZSB0bw0Ka2VlcCB0aGVtIHNlcGFyYXRlLCBidXQgaXQgd291
+bGQgYmUgbGVzcyBsaWtlbHkgdG8gYnVtcCBzb21ldGhpbmcuDQoNClRoYW5rcywNCg0KUmljaw0K
 
