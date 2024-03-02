@@ -1,100 +1,189 @@
-Return-Path: <linux-kernel+bounces-89432-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39F2486F047
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 12:42:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0BA786F055
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 12:47:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BCA52284CFC
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 11:42:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 37178B23C68
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 11:47:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3E2417548;
-	Sat,  2 Mar 2024 11:42:27 +0000 (UTC)
-Received: from mail-il1-f171.google.com (mail-il1-f171.google.com [209.85.166.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFE491756D;
+	Sat,  2 Mar 2024 11:46:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I4tMOrHK"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A8CF376;
-	Sat,  2 Mar 2024 11:42:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23436171BF;
+	Sat,  2 Mar 2024 11:46:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709379747; cv=none; b=J+DfQcJ3/srqAtB5JDAC0fYLo+UKHPG9Wtl0YkTI7B4/gCG9m4YaROMtHKiLMxrSatAB/9cdUWRSu8vpeh9lsHSlHnppfzWRw9IGA45fm6QsI4+lwcOpD7AkwBAdLvH9sidgSrzZrbtLk9JmiVyelqT/M3eNLoGW7OclYrvT1bY=
+	t=1709380008; cv=none; b=XN9ResLvqMm4Lo1fntqb8x6+4WydDF+XYjpmWeyabBKinN5J3VeVvInFVjB1mt/dhZ/VXVbCAl5dVSVEa6dy9KwjcP84lW5hTxg7vQhUGDc058YEng2swVNIvC+1DgUx+G90k3UBcr0BDfneAU55rAv7pNfcMPt1HrZTayapFFQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709379747; c=relaxed/simple;
-	bh=8T1xxnqxA4Cn7ZALmW7k2vXmJDpc3Ja/SWJ6xwaLSSU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Sb8e5h/71CWHatm/BPRZIgTGXjZapWA82aUwk73829pAi14yN1TFhoMNMa4b2+uM26EfyQsQt/tPKP5AEhmS5Yw6hV0tUBYhFaYtljQwcflWi5o8DIw+t+NAXCnLGWsw/pPeCbaoOy+gklrxlmX53PdYazxi0V056jNCRyd5msE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=csie.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.166.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=csie.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-364f794f237so16020815ab.1;
-        Sat, 02 Mar 2024 03:42:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709379744; x=1709984544;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8T1xxnqxA4Cn7ZALmW7k2vXmJDpc3Ja/SWJ6xwaLSSU=;
-        b=GYfBSgJyOUG5dIrxsx7F7ngSAdY0uR67Kr4S2ArzeptoF1DnE5doFfGuBiNxkAGc5C
-         NQjmk8tvSl7BtMWwVfeBVVnhNGI8/qXtIbIOplfFqqfX2gKL/RH03KTdMgMjWmINYbI0
-         UWXx2lZkPB6T1Rrrvnjt4M+91kdWU9nrwd47xFn6fCpetZSZl5OyCvjezUcValhi94MS
-         FdP2MtEXCvp9RgZSqESKBXtj7+LqznIpkX56zGUlFxHA4vjQHLAJarOrUnvSxg//jg8U
-         FIhs546Ok8RSy7BmJHYK+7M8nbYtHRHCFkXE+3K1py35pOFFvmayzyNAtRGKoye3RAPy
-         g+0w==
-X-Forwarded-Encrypted: i=1; AJvYcCVu2W28iIQHc0gbW4l69djqD8RFLYgaxM/AgdRiSwQCjRG1RLhMYE78tI3hntHshS7A6dSV3MQ0GnjU4+WRfl3WNN57I07U06DnUD2WR6Z9PyXmI1uWIHRmUnfARzIVZtnQ/FSj8i7k
-X-Gm-Message-State: AOJu0YzvANwD1eX52s60ok8o010RR+uFhGcK8YO+GCSvayCT/aKSeL4q
-	EaHWAoPprdmDvlcZqpJj0tpo4iGl5QQvPB+pZhZ4rKPcUZyxHymLW5iGZ4kMCsg=
-X-Google-Smtp-Source: AGHT+IFs99ciz34AgjU6tYTk8CBGIC0GwTWWtLgku/rr7RbRwZVEX4po93RZ7o6KdJhKXMJF9GaRxg==
-X-Received: by 2002:a05:6e02:144c:b0:363:d9eb:c2e0 with SMTP id p12-20020a056e02144c00b00363d9ebc2e0mr5361535ilo.28.1709379744409;
-        Sat, 02 Mar 2024 03:42:24 -0800 (PST)
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com. [209.85.210.173])
-        by smtp.gmail.com with ESMTPSA id fh8-20020a056a00390800b006e4e600d15esm4374906pfb.160.2024.03.02.03.42.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 02 Mar 2024 03:42:24 -0800 (PST)
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6da4a923b1bso2630985b3a.2;
-        Sat, 02 Mar 2024 03:42:24 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVsQBV9jd5jNQGYjVjM4ZoJ6XgRr/hQCEyxco9yrnDkHB7M4UgS9lyTuGDCiCwMD8RcOZDVFwYzBxQbvyxfW2z2meahrLDl5rutxeYwQpOGl+ObYV5lMp7ZvAs5ekidl+NoUwiy4mkM
-X-Received: by 2002:a05:6a20:8e01:b0:1a1:e75:477c with SMTP id
- y1-20020a056a208e0100b001a10e75477cmr5238403pzj.9.1709379743994; Sat, 02 Mar
- 2024 03:42:23 -0800 (PST)
+	s=arc-20240116; t=1709380008; c=relaxed/simple;
+	bh=6ybbMazjaeBS8YeBDGv/Cm5reWpCfIW0IWKWohJFMZo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y4XaGO742MEBw9qxHOudVocV3Vxdv8RpwJ6fwPYKW9ijR3hcJaoifXtYEMMz5Z6yN6oGsyDUs++I1Rhaq0odDgdNvalDXWVeK6b/IM1UQDN7apNm+BRAF/Pntt1Q7B8n07Mb2VR9C/lqKBO2A+s8N+FV0cZGsShkrXunlpaLGWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I4tMOrHK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5DB5C433F1;
+	Sat,  2 Mar 2024 11:46:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709380007;
+	bh=6ybbMazjaeBS8YeBDGv/Cm5reWpCfIW0IWKWohJFMZo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=I4tMOrHK23Pkkn1kDxMqBt0gfVxve00K9dk6+AN7WC3lM5MEh6L9QJj2Ghj7A42fz
+	 k93yrwr8rXsSvSP7EkDVl5Epmtup3GeBjC35GAxnbDpu4xLUFBf9uAvkn2feBhZwIQ
+	 muSESoyxAg6humaLYqA2iY/RR92SFJB0HRUeKGgI7bhSEQHvvVcG051dpZnvAwyCUr
+	 AI6G/4ttXvFbcbRF7sT1CFgpDv0ZakY1kyXw6MdB9AbWnf/MmYP8eIHzRNgELWV2L7
+	 /0amtXNG6C1bOELcdUltZ73hN3XPrrhoViHwgQ6vlV9l5z5mjdVwwtaZK4MOUDiNvp
+	 nxPXRM9P3mpEQ==
+Date: Sat, 2 Mar 2024 12:46:41 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Luis Henriques <lhenriques@suse.de>, 
+	Eric Sandeen <sandeen@sandeen.net>
+Cc: Theodore Ts'o <tytso@mit.edu>, 
+	Andreas Dilger <adilger.kernel@dilger.ca>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Jan Kara <jack@suse.cz>, Miklos Szeredi <miklos@szeredi.hu>, 
+	Amir Goldstein <amir73il@gmail.com>, linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] fs_parser: handle parameters that can be empty and
+ don't have a value
+Message-ID: <20240302-avancieren-sehtest-90eb364bfcd5@brauner>
+References: <20240229163011.16248-1-lhenriques@suse.de>
+ <20240229163011.16248-2-lhenriques@suse.de>
+ <20240301-gegossen-seestern-683681ea75d1@brauner>
+ <87il269crs.fsf@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231013181712.2128037-1-jernej.skrabec@gmail.com>
-In-Reply-To: <20231013181712.2128037-1-jernej.skrabec@gmail.com>
-Reply-To: wens@csie.org
-From: Chen-Yu Tsai <wens@csie.org>
-Date: Sat, 2 Mar 2024 19:42:11 +0800
-X-Gmail-Original-Message-ID: <CAGb2v651T28yrkaAbX3ckV8gEsYXdGgHMgCb3Jdmbej2OnNyLQ@mail.gmail.com>
-Message-ID: <CAGb2v651T28yrkaAbX3ckV8gEsYXdGgHMgCb3Jdmbej2OnNyLQ@mail.gmail.com>
-Subject: Re: [PATCH] clk: sunxi-ng: h6: Reparent CPUX during PLL CPUX rate change
-To: Jernej Skrabec <jernej.skrabec@gmail.com>
-Cc: samuel@sholland.org, sboyd@kernel.org, linux-clk@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, Chad Wagner <wagnerch42@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <87il269crs.fsf@suse.de>
 
-On Sat, Oct 14, 2023 at 2:17=E2=80=AFAM Jernej Skrabec <jernej.skrabec@gmai=
-l.com> wrote:
->
-> While PLL CPUX clock rate change when CPU is running from it works in
-> vast majority of cases, now and then it causes instability. This leads
-> to system crashes and other undefined behaviour. After a lot of testing
-> (30+ hours) while also doing a lot of frequency switches, we can't
-> observe any instability issues anymore when doing reparenting to stable
-> clock like 24 MHz oscillator.
->
-> Fixes: 524353ea480b ("clk: sunxi-ng: add support for the Allwinner H6 CCU=
-")
-> Reported-by: Chad Wagner <wagnerch42@gmail.com>
-> Link: https://forum.libreelec.tv/thread/27295-orange-pi-3-lts-freezes/
-> Tested-by: Chad Wagner <wagnerch42@gmail.com>
-> Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+On Fri, Mar 01, 2024 at 03:45:27PM +0000, Luis Henriques wrote:
+> Christian Brauner <brauner@kernel.org> writes:
+> 
+> > On Thu, Feb 29, 2024 at 04:30:08PM +0000, Luis Henriques wrote:
+> >> Currently, only parameters that have the fs_parameter_spec 'type' set to
+> >> NULL are handled as 'flag' types.  However, parameters that have the
+> >> 'fs_param_can_be_empty' flag set and their value is NULL should also be
+> >> handled as 'flag' type, as their type is set to 'fs_value_is_flag'.
+> >> 
+> >> Signed-off-by: Luis Henriques <lhenriques@suse.de>
+> >> ---
+> >>  fs/fs_parser.c | 3 ++-
+> >>  1 file changed, 2 insertions(+), 1 deletion(-)
+> >> 
+> >> diff --git a/fs/fs_parser.c b/fs/fs_parser.c
+> >> index edb3712dcfa5..53f6cb98a3e0 100644
+> >> --- a/fs/fs_parser.c
+> >> +++ b/fs/fs_parser.c
+> >> @@ -119,7 +119,8 @@ int __fs_parse(struct p_log *log,
+> >>  	/* Try to turn the type we were given into the type desired by the
+> >>  	 * parameter and give an error if we can't.
+> >>  	 */
+> >> -	if (is_flag(p)) {
+> >> +	if (is_flag(p) ||
+> >> +	    (!param->string && (p->flags & fs_param_can_be_empty))) {
+> >>  		if (param->type != fs_value_is_flag)
+> >>  			return inval_plog(log, "Unexpected value for '%s'",
+> >>  				      param->key);
+> >
+> > If the parameter was derived from FSCONFIG_SET_STRING in fsconfig() then
+> > param->string is guaranteed to not be NULL. So really this is only
+> > about:
+> >
+> > FSCONFIG_SET_FD
+> > FSCONFIG_SET_BINARY
+> > FSCONFIG_SET_PATH
+> > FSCONFIG_SET_PATH_EMPTY
+> >
+> > and those values being used without a value. What filesystem does this?
+> > I don't see any.
+> >
+> > The tempting thing to do here is to to just remove fs_param_can_be_empty
+> > from every helper that isn't fs_param_is_string() until we actually have
+> > a filesystem that wants to use any of the above as flags. Will lose a
+> > lot of code that isn't currently used.
+> 
+> Right, I find it quite confusing and I may be fixing the issue in the
+> wrong place.  What I'm seeing with ext4 when I mount a filesystem using
+> the option '-o usrjquota' is that fs_parse() will get:
+> 
+>  * p->type is set to fs_param_is_string
+>    ('p' is a struct fs_parameter_spec, ->type is a function)
+>  * param->type is set to fs_value_is_flag
+>    ('param' is a struct fs_parameter, ->type is an enum)
+> 
+> This is because ext4 will use the __fsparam macro to set define a
+> fs_param_spec as a fs_param_is_string but will also set the
+> fs_param_can_be_empty; and the fsconfig() syscall will get that parameter
+> as a flag.  That's why param->string will be NULL in this case.
 
-Reviewed-by: Chen-Yu Tsai <wens@csie.org>
+Thanks for the details. Let me see if I get this right. So you're saying that
+someone is doing:
+
+fsconfig(..., FSCONFIG_SET_FLAG, "usrjquota", NULL, 0); // [1]
+
+? Is so that is a vital part of the explanation. So please put that in the
+commit message.
+
+Then ext4 defines:
+
+	fsparam_string_empty ("usrjquota",		Opt_usrjquota),
+
+So [1] gets us:
+
+        param->type == fs_value_is_flag
+        param->string == NULL
+
+Now we enter into
+fs_parse()
+-> __fs_parse()
+   -> fs_lookup_key() for @param and that does:
+
+        bool want_flag = param->type == fs_value_is_flag;
+
+        *negated = false;
+        for (p = desc; p->name; p++) {
+                if (strcmp(p->name, name) != 0)
+                        continue;
+                if (likely(is_flag(p) == want_flag))
+                        return p;
+                other = p;
+        }
+
+So we don't have a flag parameter defined so the only real match we get is
+@other for:
+
+        fsparam_string_empty ("usrjquota",		Opt_usrjquota),
+
+What happens now is that you call p->type == fs_param_is_string() and that
+rejects it as bad parameter because param->type == fs_value_is_flag !=
+fs_value_is_string as required. So you dont end up getting Opt_userjquota
+called with param->string NULL, right? So there's not NULL deref or anything,
+right?
+
+You just fail to set usrjquota. Ok, so I think the correct fix is to do
+something like the following in ext4:
+
+        fsparam_string_empty ("usrjquota",      Opt_usrjquota),
+        fs_param_flag        ("usrjquota",      Opt_usrjquota_flag),
+
+and then in the switch you can do:
+
+switch (opt)
+case Opt_usrjquota:
+        // string thing
+case Opt_usrjquota_flag:
+        // flag thing
+
+And I really think we should kill all empty handling for non-string types and
+only add that when there's a filesystem that actually needs it.
 
