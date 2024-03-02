@@ -1,172 +1,160 @@
-Return-Path: <linux-kernel+bounces-89467-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89466-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C64C186F0C1
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 16:03:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FAD686F0B4
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 15:57:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A65728380A
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 15:03:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8FAD1F2142C
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 14:57:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A20D17C79;
-	Sat,  2 Mar 2024 15:03:16 +0000 (UTC)
-Received: from port70.net (port70.net [81.7.13.123])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7488713FFA;
-	Sat,  2 Mar 2024 15:03:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=81.7.13.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 959CD17C62;
+	Sat,  2 Mar 2024 14:57:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ieee.org header.i=@ieee.org header.b="Lv79n+GI"
+Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A57D17BA2
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 14:57:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709391795; cv=none; b=AMYLg8N/4qrCqPw9ORGMPbZKu1LN5Sj6BdazhNyb8woUDMZAxjiSGspc+v8Ui5RMNu2eaLVacXZ2tLjjPjQqXlyMefomQ8Xw6+cuV1pk4Ut+2CirNqFKLMNypLKrk0898DM233sZizazGYmzwPN1393SOHfw9oXfc8Y9s3JemcU=
+	t=1709391442; cv=none; b=Hgkzs+D48iSNPDeNlcvxNQUz2jy4fBKQsdpistF9AXeBVCltFrQUWeM+0bVVzBQpERA/NjtARJG3dyGqahsKWuo4DvcawOymQVHUyd7CqkKUuUz+zAPVT5szOLkv3KsQMSzMWEZetOb/9u8ruIYKxmwpS/VORvgXmF1THkWnNfc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709391795; c=relaxed/simple;
-	bh=F+Ft9ySflUOsjYRoTJD/SuxsOSEZzbIMaYW9w/glpJY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a0bMNapnZQa0/quYl7TDYybdZwf7CKj/0H0By6h7DqP9XawkWoSR+aIAMtq+XjSHGR1rjjEv7UbIHlii3pDBhvTZ+9nv5StBR3EHYqegB8MTHSfmLOJ6yzI5bt7hKDvjcTu39UnB1emDFSOJCsxwqSL1njDZSzUwlJnIcGug/gA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=port70.net; spf=pass smtp.mailfrom=port70.net; arc=none smtp.client-ip=81.7.13.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=port70.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=port70.net
-Received: by port70.net (Postfix, from userid 1002)
-	id 691CEABEC0C7; Sat,  2 Mar 2024 15:57:02 +0100 (CET)
-Date: Sat, 2 Mar 2024 15:57:02 +0100
-From: Szabolcs Nagy <nsz@port70.net>
-To: Mark Brown <broonie@kernel.org>
-Cc: "dalias@libc.org" <dalias@libc.org>,
-	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-	"suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
-	"Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>,
-	"musl@lists.openwall.com" <musl@lists.openwall.com>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
-	"corbet@lwn.net" <corbet@lwn.net>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-	"oliver.upton@linux.dev" <oliver.upton@linux.dev>,
-	"palmer@dabbelt.com" <palmer@dabbelt.com>,
-	"debug@rivosinc.com" <debug@rivosinc.com>,
-	"aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-	"shuah@kernel.org" <shuah@kernel.org>,
-	"arnd@arndb.de" <arnd@arndb.de>, "maz@kernel.org" <maz@kernel.org>,
-	"oleg@redhat.com" <oleg@redhat.com>,
-	"fweimer@redhat.com" <fweimer@redhat.com>,
-	"keescook@chromium.org" <keescook@chromium.org>,
-	"james.morse@arm.com" <james.morse@arm.com>,
-	"ebiederm@xmission.com" <ebiederm@xmission.com>,
-	"will@kernel.org" <will@kernel.org>,
-	"brauner@kernel.org" <brauner@kernel.org>,
-	"hjl.tools@gmail.com" <hjl.tools@gmail.com>,
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-	"paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-	"ardb@kernel.org" <ardb@kernel.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"thiago.bauermann@linaro.org" <thiago.bauermann@linaro.org>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"sorear@fastmail.com" <sorear@fastmail.com>,
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
-Subject: Re: [musl] Re: [PATCH v8 00/38] arm64/gcs: Provide support for GCS
- in userspace
-Message-ID: <20240302145702.GD1884416@port70.net>
-Mail-Followup-To: Mark Brown <broonie@kernel.org>,
-	"dalias@libc.org" <dalias@libc.org>,
-	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-	"suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
-	"Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>,
-	"musl@lists.openwall.com" <musl@lists.openwall.com>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
-	"corbet@lwn.net" <corbet@lwn.net>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-	"oliver.upton@linux.dev" <oliver.upton@linux.dev>,
-	"palmer@dabbelt.com" <palmer@dabbelt.com>,
-	"debug@rivosinc.com" <debug@rivosinc.com>,
-	"aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-	"shuah@kernel.org" <shuah@kernel.org>,
-	"arnd@arndb.de" <arnd@arndb.de>, "maz@kernel.org" <maz@kernel.org>,
-	"oleg@redhat.com" <oleg@redhat.com>,
-	"fweimer@redhat.com" <fweimer@redhat.com>,
-	"keescook@chromium.org" <keescook@chromium.org>,
-	"james.morse@arm.com" <james.morse@arm.com>,
-	"ebiederm@xmission.com" <ebiederm@xmission.com>,
-	"will@kernel.org" <will@kernel.org>,
-	"brauner@kernel.org" <brauner@kernel.org>,
-	"hjl.tools@gmail.com" <hjl.tools@gmail.com>,
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-	"paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-	"ardb@kernel.org" <ardb@kernel.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"thiago.bauermann@linaro.org" <thiago.bauermann@linaro.org>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"sorear@fastmail.com" <sorear@fastmail.com>,
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
-References: <22a53b78-10d7-4a5a-a01e-b2f3a8c22e94@app.fastmail.com>
- <4c7bdf8fde9cc45174f10b9221fa58ffb450b755.camel@intel.com>
- <20240220185714.GO4163@brightrain.aerifal.cx>
- <9fc9c45ff6e14df80ad023e66ff7a978bd4ec91c.camel@intel.com>
- <20240220235415.GP4163@brightrain.aerifal.cx>
- <a57d6c7eada4b9a7c35addbc8556f5b53a0c3e6f.camel@intel.com>
- <20240221012736.GQ4163@brightrain.aerifal.cx>
- <d18f060d-37ac-48b1-9f67-a5c5db79b34e@sirena.org.uk>
- <20240221145800.GR4163@brightrain.aerifal.cx>
- <4a3809e8-61b2-4341-a868-292ba6e64e8a@sirena.org.uk>
+	s=arc-20240116; t=1709391442; c=relaxed/simple;
+	bh=vsDO370P9L0eb7fcWgulrtTqYp1omUqwzrlkY+TsrEw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NNhUYGLx5uO4rM8Ssmh07Wn18Nf2T5Ly4uG4Vosd7mk/73B8uk77tklp16jWD2SYpPjBzFBrnWRFwRBaLF4ZMf48ozTer09A6oBq1Iyyjci9pW85kOm8Yo4SiFF6Fci83NxQPvVoNKZMFDJtoeyIzWvAuKTqkwugiLRg3b6d/Ow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ieee.org; spf=pass smtp.mailfrom=ieee.org; dkim=pass (1024-bit key) header.d=ieee.org header.i=@ieee.org header.b=Lv79n+GI; arc=none smtp.client-ip=209.85.219.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ieee.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ieee.org
+Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-6905d51fdfbso9742776d6.0
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Mar 2024 06:57:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ieee.org; s=google; t=1709391438; x=1709996238; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wfIgoTdA9N+MeIiEy0xWNsxv5l2fuvtP53bPZ++Mceg=;
+        b=Lv79n+GIukZYNqW1yCfnmacMqZztGlrqCYXSwWvvghpWzeYdvbqeVPIjwy8U1+UEIU
+         1spN8WqMdkyDUTg//9erJCwQZ9AdfixlaejrMNJYpDeMhaEgkWHzh11uOEiyDKu9cv0C
+         8d6baKt65vEglCpqT7adkjYN5CKrZW5CWZVtM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709391438; x=1709996238;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wfIgoTdA9N+MeIiEy0xWNsxv5l2fuvtP53bPZ++Mceg=;
+        b=Ql5FxwekMGSjdQs/BPj8lqe0FdF3d+zQAgRoMshQcps8p3NUGR16J77BK5cTJCzHZ5
+         lsd465UM07Gu/8k1NfuVnauaJkSg1DXjtsJAHE8AEV2AnLhW+U/Wj7W9iWK/IBrMBmAO
+         GJAO8y7Zr0rw+4RyfCR15LaUBBDj9cQ47mGDMro617Q7MSoUhDpagFTJM09EhJyr0L6W
+         wHSv6GpKyXfmXzIa6O6QA+flS2X1+KbEmOXNjIOUazqeYCPKzw+qk8Z6zyrkF0ghaXDM
+         pqqO70cMlRkC0XQIj0rGF5peB6O1ZqDDw+luP1iFPXGDsat0Ex6juHtN8NEEGsAbjtjw
+         jFEA==
+X-Forwarded-Encrypted: i=1; AJvYcCW9AmxQUiikuBq444IoFe7F2NpuyXl66hB2/3kKW2s/jnbSQ5UVam7ziWsDH93j35dlUlkq1YTWKe0wpwb7DOteX2bMCgMXnz/YyNV1
+X-Gm-Message-State: AOJu0Yw+OGcKVzXV7+MzMV2uKOQo8eMppI7KJyEjNDQG8kW/j/og6G2o
+	Ta1zpI6ijx5KU2km+8jPYkRUnNcvd9YnYJSyoLxPjb1YkJLu+IJ0/xGCOkriRQ==
+X-Google-Smtp-Source: AGHT+IG9qW7IYS8D4z4TN+vHi467Y/Zi72+/DehK/Phj0uWp6/CbVvutRoW9BsGBwd53MOe9t8x0Hw==
+X-Received: by 2002:a0c:da84:0:b0:690:5ff8:cc0 with SMTP id z4-20020a0cda84000000b006905ff80cc0mr2942320qvj.11.1709391438501;
+        Sat, 02 Mar 2024 06:57:18 -0800 (PST)
+Received: from [10.211.55.3] (c-73-228-159-35.hsd1.mn.comcast.net. [73.228.159.35])
+        by smtp.googlemail.com with ESMTPSA id or33-20020a05621446a100b0068f455083fbsm3018169qvb.63.2024.03.02.06.57.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 02 Mar 2024 06:57:18 -0800 (PST)
+Message-ID: <36a4d208-9945-4a65-bdf1-d8309d779e63@ieee.org>
+Date: Sat, 2 Mar 2024 08:57:17 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4a3809e8-61b2-4341-a868-292ba6e64e8a@sirena.org.uk>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [greybus-dev] Re: [PATCH] greybus: Fix deref of NULL in
+ __gb_lights_flash_brightness_set
+Content-Language: en-US
+To: Dan Carpenter <dan.carpenter@linaro.org>,
+ Mikhail Lobanov <m.lobanov@rosalinux.ru>, rmfrfs@gmail.com
+Cc: greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+References: <20240301190425.120605-1-m.lobanov@rosalinux.ru>
+ <7ef732ad-a50f-4cf5-8322-376f42eb051b@moroto.mountain>
+From: Alex Elder <elder@ieee.org>
+In-Reply-To: <7ef732ad-a50f-4cf5-8322-376f42eb051b@moroto.mountain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-* Mark Brown <broonie@kernel.org> [2024-02-21 17:36:12 +0000]:
-
-> On Wed, Feb 21, 2024 at 09:58:01AM -0500, dalias@libc.org wrote:
-> > On Wed, Feb 21, 2024 at 01:53:10PM +0000, Mark Brown wrote:
-> > > On Tue, Feb 20, 2024 at 08:27:37PM -0500, dalias@libc.org wrote:
-> > > > On Wed, Feb 21, 2024 at 12:35:48AM +0000, Edgecombe, Rick P wrote:
+On 3/2/24 3:59 AM, Dan Carpenter wrote:
+> On Fri, Mar 01, 2024 at 02:04:24PM -0500, Mikhail Lobanov wrote:
+>> Dereference of null pointer in the __gb_lights_flash_brightness_set function.
+>> Assigning the channel the result of executing the get_channel_from_mode function
+>> without checking for NULL may result in an error.
 > 
-> > > > > (INCSSP, RSTORSSP, etc). These are a collection of instructions that
-> > > > > allow limited control of the SSP. When shadow stack gets disabled,
-> > > > > these suddenly turn into #UD generating instructions. So any other
-> > > > > threads executing those instructions when shadow stack got disabled
-> > > > > would be in for a nasty surprise.
+> get_channel_from_mode() can only return NULL when light->channels_count
+> is zero.
 > 
-> > > > This is the kernel's problem if that's happening. It should be
-> > > > trapping these and returning immediately like a NOP if shadow stack
-> > > > has been disabled, not generating SIGILL.
+> Although get_channel_from_mode() seems buggy to me.  If it can't
+> find the correct mode, it just returns the last channel.  So potentially
+> it should be made to return NULL.
+
+I agree with you.  This looks quite wrong to me, and I
+like your fix, *except* there is also no need to check
+whether the channel pointer is null inside the loop.
+It's the address of an object, and will always be non-null.
+
+     static struct gb_channel *
+     get_channel_from_mode(struct gb_light *light, u32 mode)
+     {
+         struct gb_channel *channel;
+         u32 i;
+
+         for (i = 0; i < light->channels_count; i++) {
+             channel = &light->channels[i];
+             if (channel->mode == mode)
+                 return channel;
+         }
+         return NULL;
+     }
+
+
+Rui, could you please confirm what Dan says (and his
+proposed change) was your intention?
+
+If so (and assuming you also fix the check for a null
+channel pointer inside the loop):
+
+Reviewed-by: Alex Elder <elder@linaro.org>
+
+					-Alex
+
 > 
-> > > I'm not sure that's going to work out well, all it takes is some code
-> > > that's looking at the shadow stack and expecting something to happen as
-> > > a result of the instructions it's executing and we run into trouble.  A
-> 
-> > I said NOP but there's no reason it strictly needs to be a NOP. It
-> > could instead do something reasonable to convey the state of racing
-> > with shadow stack being disabled.
-> 
-> This feels like it's getting complicated and I fear it may be an uphill
-> struggle to get such code merged, at least for arm64.  My instinct is
-
-the aarch64 behaviour is already nop
-for gcs instructions when gcs is disabled.
-the isa was designed so async disable is
-possible.
-
-only x86 linux would have to emulate this.
-
-> that it's going to be much more robust and generally tractable to let
-> things run to some suitable synchronisation point and then disable
-> there, but if we're going to do that then userspace can hopefully
-> arrange to do the disabling itself through the standard disable
-> interface anyway.  Presumably it'll want to notice things being disabled
-> at some point anyway?  TBH that's been how all the prior proposals for
-> process wide disable I've seen were done.
-
+> diff --git a/drivers/staging/greybus/light.c b/drivers/staging/greybus/light.c
+> index d62f97249aca..acd435f5d25d 100644
+> --- a/drivers/staging/greybus/light.c
+> +++ b/drivers/staging/greybus/light.c
+> @@ -95,15 +95,15 @@ static struct led_classdev *get_channel_cdev(struct gb_channel *channel)
+>   static struct gb_channel *get_channel_from_mode(struct gb_light *light,
+>   						u32 mode)
+>   {
+> -	struct gb_channel *channel = NULL;
+> +	struct gb_channel *channel;
+>   	int i;
+>   
+>   	for (i = 0; i < light->channels_count; i++) {
+>   		channel = &light->channels[i];
+>   		if (channel && channel->mode == mode)
+> -			break;
+> +			return channel;
+>   	}
+> -	return channel;
+> +	return NULL;
+>   }
+>   
+>   static int __gb_lights_flash_intensity_set(struct gb_channel *channel,
+> _______________________________________________
+> greybus-dev mailing list -- greybus-dev@lists.linaro.org
+> To unsubscribe send an email to greybus-dev-leave@lists.linaro.org
 
 
