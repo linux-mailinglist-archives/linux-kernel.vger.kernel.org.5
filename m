@@ -1,261 +1,143 @@
-Return-Path: <linux-kernel+bounces-89317-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89318-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 768D086EE43
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 04:00:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4E2B86EE46
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 04:05:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 054BF1F22366
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 03:00:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54B37B22395
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 03:05:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BA1710976;
-	Sat,  2 Mar 2024 02:59:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BCB08BFD;
+	Sat,  2 Mar 2024 03:05:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="PiUIIedC"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mmIr4pis"
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA2356AD6
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 02:59:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AB526FC7;
+	Sat,  2 Mar 2024 03:05:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709348392; cv=none; b=og2HFesfl+NXHkeOegj0D9iU0NtRM/bFRc5xPgqChgnXMU2l9zbFpmiB/lRjO0MUyuTQb5fhPz1GmmqAu+qWHWoqjuv/i4gtct9pEgFQkgJptGf1K19W5f/pdcjdyuwoSL7O2bEAn0HO5QR61OvcFoG5/XUt5rTy4LK85hjMhlg=
+	t=1709348701; cv=none; b=UPds5TwgQCuwmiE1AY6RNZ0V8eIbtSoTR1h6xQs6hWg+3I8wAsKauJFBj14Ibgz/x2nqUaEiWJjcO6Wfj13Ku31Bo3jvbzRGNEyb3zwGsjQR2L1oOYg+XkM46qa4AK/oTLqlFVbuPGwjOqbgvgQMsulXopXO5Hyx9GxPgPabL1k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709348392; c=relaxed/simple;
-	bh=wcNPoo7bbe8Q2KGr6zjYKhQPrtkysYbLY4IjeJ9sPR4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eh1rBE5sZjrFjBLXLfyxwprFM/5cwL+LXtRZbkUFm2DnUREM1scLhCtWngxNlg9F1a5yYhlJ0redBvMpQigG378+XMbuYjvwmcy27b9y6FRyFwzXXVcEgpSBcc6Hsx1s7sy/gqVJeH4ensYcOkxpbIRYOoAleM2Gqxp2SIIOTlY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=PiUIIedC; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-56648955ac5so3875047a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 18:59:50 -0800 (PST)
+	s=arc-20240116; t=1709348701; c=relaxed/simple;
+	bh=LjRdtml+TWkAxLUN2QLF1D+9eq3HZY+GgDjZ4XrSTSQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=A1KcRmNvL+/aT6QOdVnqiygWIrRX+pjhfskeiEodzxjrdpB+m8HbQI+rY0/cBxH9Eg7lxKYGV9OSXYPMkRkJ9hSulscSm7T1ERfPyLGZFhYNgwHwTLodL1A01A8zFcdgEhttYe1khejOMJ6QOsBdNhQPnrJkpC30qYs3j2rnVgQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mmIr4pis; arc=none smtp.client-ip=209.85.216.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-29b2f10454aso543362a91.3;
+        Fri, 01 Mar 2024 19:05:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1709348389; x=1709953189; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z172ARkWy4CrNdjX0Z199syeSzJdWbGHBapXPagpL/g=;
-        b=PiUIIedCtA2Y4JQnyWQVOP6JRhU7IAEWDP+qZ6HvMlSbT4GBpThwHgJyHH9OHtGifk
-         G6DKZ6/WEotxIWBBRS37YHxecKD7W+ldHgbPA+jYbF75RRCB9ZE4mVRkKvkscs7H+5c+
-         gUsUyaTDiN+INbBCwDVkPpOP/D6R6Mkat1+iE=
+        d=gmail.com; s=20230601; t=1709348699; x=1709953499; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+Z6p65/mjNFQPH7dw5+cTMNx3ec1jAPgpJTpAMLhs/A=;
+        b=mmIr4pisOMa+SPojjyr5XwjZ0MieduDYku+KzzyYdedC2QxBDnRSiYASU2jegxLGA4
+         7v8vRpOVjSMARpcMe++TEmrwHCD9I2U7IozFn5KqPizIQ+RowXsa9D+5GRkwIZRLXTKM
+         Z2mcPkhO3cb1fzIK+8BMZGmz9mqYAALtQxSeHgvnrlzJ/lJALgFzNOnlGGXjmahPfPUU
+         hQXqdltkDLaLga+vCiM37wSTX24j/4qNcjoIuVWUCnz6UvdLmAyeXwALHsM5JQHFRSyl
+         9EPkXCzufC8o+iSfi0baiyB83xT1adGX8MbjhBx0iuPldmv1n2ii4UEaPEYhaYcp9bWM
+         lbIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709348389; x=1709953189;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Z172ARkWy4CrNdjX0Z199syeSzJdWbGHBapXPagpL/g=;
-        b=EBfiVLpCXcSC9dP2P5x0htnGL/QToGJRH0mF/H4qYEfgZc64WWM4SzZeV/cqPRy45g
-         9eg2BllzJ+zAfw7XHz9Ju9yyMzi2a8nBJxTknm1Nnm12fOMGuSBAHJ/Nv/eVLZYFj0Fh
-         An5rSie2NukPrTJbKo78tm5A9ty/V4o95M2EJwFeuzb5SGdwq8ZikeevNk9nND/1Vn6S
-         oJfokmTQoDqcO+hrWUJ2lqubhuP4RvCXsZx0YlQUIC6Leq1SFMiuMk6pPR62reSFfSM2
-         ekeM2GsGHxOlVUAMl+djDCoi3ZIvApYHUO7HTXKmj13DRUi6sk5tqOP3by3xzi8QpWKH
-         AZRg==
-X-Forwarded-Encrypted: i=1; AJvYcCUl0UDCqBWyHtZ2Wvme2CM/KEFEN5GP23ljti8TT2MtPwmAFZXNsM0Ip1zHq4NcsuFgCFBuulquDpiRxPZeOZ2v9sspf4U2kQliI56Q
-X-Gm-Message-State: AOJu0YzIOgJJrDcFjUKDoOaeClF1zwlnxAheUqPeNtlzhzWbQcoMRscn
-	sfk/czhBfwL0JXcVea8ZQDlYe0Eg4RzaNKRFYX8o53BqfOYe4voVz9hK7racwMnXtRX/tL2dxUj
-	TJmaS7A==
-X-Google-Smtp-Source: AGHT+IFo/5x9JqVmWFkD0V7RNdE1VVoQ2/p0XVAl4XG6eLV4iv0vwBiQHyQXvRAh0zVZHRjJSSlY3g==
-X-Received: by 2002:a50:cbc8:0:b0:563:ccd1:26bd with SMTP id l8-20020a50cbc8000000b00563ccd126bdmr2689599edi.2.1709348389177;
-        Fri, 01 Mar 2024 18:59:49 -0800 (PST)
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com. [209.85.218.51])
-        by smtp.gmail.com with ESMTPSA id n24-20020a05640204d800b00566f92f1facsm424086edw.36.2024.03.01.18.59.46
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Mar 2024 18:59:46 -0800 (PST)
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a44d4519e7eso19109766b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 18:59:46 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUHFRK6DMJfEO2+Voz1TzWZuiMjOV7G8ZPeShQ/xbd+D1+/fEy3Nr7CtPWopS584qsFwd/xy4X1qeQurEYxmXK3IEwXe+L9XnkD9eEI
-X-Received: by 2002:a17:906:f989:b0:a44:27e8:f514 with SMTP id
- li9-20020a170906f98900b00a4427e8f514mr2273960ejb.38.1709348385722; Fri, 01
- Mar 2024 18:59:45 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709348699; x=1709953499;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+Z6p65/mjNFQPH7dw5+cTMNx3ec1jAPgpJTpAMLhs/A=;
+        b=Efw96Kd4U12VmS0QkO6Z23sLcUwpEWbGxSL4hhw4zwR61DMeZzAUKXdc1PqUOB8g3v
+         /TQVyWLSdn3erWQA2uWLfNiwNq57PuAlVwbnvm92CDor3RfkqeEmP1pqhFe52MbkoLhL
+         Psajh8501OQschBcObSWF8MObw2ym/AERURUKqdLSff2zIo8j5GbeRG0sbsYFvXcbjf8
+         Z2UXBKfvwM7gprbhfIkT1jJsc0CcRl0FLtnIciJ9ks3kohiyKq+GLluUkq0/0fJpERLW
+         8y5sOUXzk+Q2LvS08aApUDdOpFGp/oN0hi5k+wX2V8xXlzZjWR/ZNXmyxEqB8/ds0Jeu
+         lP2A==
+X-Forwarded-Encrypted: i=1; AJvYcCWW8LUFz2WBZXLH3guWqaoUHCMYQyPvBr3vdMZACpI6dEuMYxfjbk0tP/NAb5PB7fbHGLRldZWJE5J4C5UzT/mk8jfVYXx6sE6a1JIydl6xdlxwBXcFOIYbUjR4qsPlOPMhXJxbEyUfKGe4iOaoEPKmdGzpQzeLM2wJOdLnnoB9Wp1qvywD9Fg=
+X-Gm-Message-State: AOJu0YzWZo3hEFzJh3oGG5oDjEQEr5VeCviqoTh5RF9P/KxWCoOEBySe
+	dc6GJkl8TXQq/8GCOM//JHwiFZJPePr9UiWNp3/6PuIzu8w0lar4ozpY0f3WdBtgGQ==
+X-Google-Smtp-Source: AGHT+IGVEmDcDGBZB8FBm1UyVE1F5P3FauUqNd7CNcpFCUyzo1/wS7jz144FjWLtV/HlqgVh8Lw5xA==
+X-Received: by 2002:a17:90a:df92:b0:29a:f9ad:a096 with SMTP id p18-20020a17090adf9200b0029af9ada096mr3092641pjv.35.1709348699363;
+        Fri, 01 Mar 2024 19:04:59 -0800 (PST)
+Received: from HP-Probook ([103.149.249.227])
+        by smtp.gmail.com with ESMTPSA id l5-20020a170902d34500b001d9bd8fa492sm4152232plk.211.2024.03.01.19.04.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Mar 2024 19:04:58 -0800 (PST)
+Date: Sat, 2 Mar 2024 11:05:05 +0800
+From: Jianhua Lu <lujianhua000@gmail.com>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: qcom: sm8250-xiaomi-elish: add usb pd
+ negotiation support
+Message-ID: <ZeKWc6rCJBLasn-h@HP-Probook>
+References: <20240227124529.12926-1-lujianhua000@gmail.com>
+ <2f6a5c83-69a4-480b-a235-c0d51feac31e@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230925120309.1731676-1-dhowells@redhat.com> <20230925120309.1731676-8-dhowells@redhat.com>
- <4e80924d-9c85-f13a-722a-6a5d2b1c225a@huawei.com> <CAHk-=whG+4ag+QLU9RJn_y47f1DBaK6b0qYq_6_eLkO=J=Mkmw@mail.gmail.com>
- <CAHk-=wjSjuDrS9gc191PTEDDow7vHy6Kd3DKDaG+KVH0NQ3v=w@mail.gmail.com>
- <e985429e-5fc4-a175-0564-5bb4ca8f662c@huawei.com> <CAHk-=wh06M-1c9h7wZzZ=1KqooAmazy_qESh2oCcv7vg-sY6NQ@mail.gmail.com>
-In-Reply-To: <CAHk-=wh06M-1c9h7wZzZ=1KqooAmazy_qESh2oCcv7vg-sY6NQ@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Fri, 1 Mar 2024 18:59:28 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiBJRgA3iNqihR7uuft=5rog425X_b3uvgroG3fBhktwQ@mail.gmail.com>
-Message-ID: <CAHk-=wiBJRgA3iNqihR7uuft=5rog425X_b3uvgroG3fBhktwQ@mail.gmail.com>
-Subject: Re: [bug report] dead loop in generic_perform_write() //Re: [PATCH v7
- 07/12] iov_iter: Convert iterate*() to inline funcs
-To: Tong Tiangen <tongtiangen@huawei.com>, Al Viro <viro@kernel.org>
-Cc: David Howells <dhowells@redhat.com>, Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>, 
-	Christian Brauner <christian@brauner.io>, David Laight <David.Laight@aculab.com>, 
-	Matthew Wilcox <willy@infradead.org>, Jeff Layton <jlayton@kernel.org>, linux-fsdevel@vger.kernel.org, 
-	linux-block@vger.kernel.org, linux-mm@kvack.org, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Kefeng Wang <wangkefeng.wang@huawei.com>
-Content-Type: multipart/mixed; boundary="0000000000005434e50612a4af27"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2f6a5c83-69a4-480b-a235-c0d51feac31e@linaro.org>
 
---0000000000005434e50612a4af27
-Content-Type: text/plain; charset="UTF-8"
+On Sat, Mar 02, 2024 at 12:58:57AM +0100, Konrad Dybcio wrote:
+> On 27.02.2024 13:45, Jianhua Lu wrote:
+> > Add usb pd negotiation, but charging is controlled by pm8150b pmic,
+> > so it can only charge battery with 5W,
+> > 
+> > Signed-off-by: Jianhua Lu <lujianhua000@gmail.com>
+> > ---
+> >  arch/arm64/boot/dts/qcom/sm8250-xiaomi-elish-common.dtsi | 9 ++++++++-
+> >  1 file changed, 8 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/arm64/boot/dts/qcom/sm8250-xiaomi-elish-common.dtsi b/arch/arm64/boot/dts/qcom/sm8250-xiaomi-elish-common.dtsi
+> > index 6f54f50a70b0..ed103b90f4e6 100644
+> > --- a/arch/arm64/boot/dts/qcom/sm8250-xiaomi-elish-common.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/sm8250-xiaomi-elish-common.dtsi
+> > @@ -636,7 +636,8 @@ &pm8150b_typec {
+> >  	connector {
+> >  		compatible = "usb-c-connector";
+> >  
+> > -		power-role = "source";
+> > +		op-sink-microwatt = <10000000>;
+> 
+> Is 10W really the minimum value for this tablet to function as a sink?
+> 
+> Is that what the downstream kernel sets?
 
-On Thu, 29 Feb 2024 at 09:32, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> One option might be to make a failed memcpy_from_iter_mc() set another
-> flag in the iter, and then make fault_in_iov_iter_readable() test that
-> flag and return 'len' if that flag is set.
->
-> Something like that (wild handwaving) should get the right error handling.
->
-> The simpler alternative is maybe something like the attached.
-> COMPLETELY UNTESTED. Maybe I've confused myself with all the different
-> indiraction mazes in the iov_iter code.
+This value is taken from other device, I will adjust it to minimum
+value in Patch v2.
+> 
+> > +		power-role = "dual";
+> >  		data-role = "dual";
+> >  		self-powered;
+> >  
+> > @@ -645,6 +646,12 @@ PDO_FIXED_DUAL_ROLE |
+> >  					 PDO_FIXED_USB_COMM |
+> >  					 PDO_FIXED_DATA_SWAP)>;
+> >  
+> > +		sink-pdos = <PDO_FIXED(5000, 3000,
+> > +					 PDO_FIXED_DUAL_ROLE |
+> 
+> Please align the PDO_.. against the open brace
 
-Actually, I think the right model is to get rid of that horrendous
-copy_mc field entirely.
-
-We only have one single place that uses it - that nasty core dumping
-code. And that code is *not* performance critical.
-
-And not only isn't it performance-critical, it already does all the
-core dumping one page at a time because it doesn't want to write pages
-that were never mapped into user space.
-
-So what we can do is
-
- (a) make the core dumping code *copy* the page to a good location
-with copy_mc_to_kernel() first
-
- (b) remove this horrendous .copy_mc crap entirely from iov_iter
-
-This is slightly complicated by the fact that copy_mc_to_kernel() may
-not even exist, and architectures that don't have it don't want the
-silly extra copy. So we need to abstract the "copy to temporary page"
-code a bit. But that's probably a good thing anyway in that it forces
-us to have nice interfaces.
-
-End result: something like the attached.
-
-AGAIN: THIS IS ENTIRELY UNTESTED.
-
-But hey, so was clearly all the .copy_mc code too that this removes, so...
-
-               Linus
-
---0000000000005434e50612a4af27
-Content-Type: text/x-patch; charset="US-ASCII"; name="patch.diff"
-Content-Disposition: attachment; filename="patch.diff"
-Content-Transfer-Encoding: base64
-Content-ID: <f_lt9huhmx0>
-X-Attachment-Id: f_lt9huhmx0
-
-IGZzL2NvcmVkdW1wLmMgICAgICAgfCA0MSArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKy0tLQogaW5jbHVkZS9saW51eC91aW8uaCB8IDE2IC0tLS0tLS0tLS0tLS0tLS0KIGxp
-Yi9pb3ZfaXRlci5jICAgICAgfCAyMyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogMyBmaWxlcyBj
-aGFuZ2VkLCAzOCBpbnNlcnRpb25zKCspLCA0MiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9m
-cy9jb3JlZHVtcC5jIGIvZnMvY29yZWR1bXAuYwppbmRleCBmMjU4YzE3YzE4NDEuLjZhOWI5ZjMy
-ODBkOCAxMDA2NDQKLS0tIGEvZnMvY29yZWR1bXAuYworKysgYi9mcy9jb3JlZHVtcC5jCkBAIC04
-NzIsNiArODcyLDkgQEAgc3RhdGljIGludCBkdW1wX2VtaXRfcGFnZShzdHJ1Y3QgY29yZWR1bXBf
-cGFyYW1zICpjcHJtLCBzdHJ1Y3QgcGFnZSAqcGFnZSkKIAlsb2ZmX3QgcG9zOwogCXNzaXplX3Qg
-bjsKIAorCWlmICghcGFnZSkKKwkJcmV0dXJuIDA7CisKIAlpZiAoY3BybS0+dG9fc2tpcCkgewog
-CQlpZiAoIV9fZHVtcF9za2lwKGNwcm0sIGNwcm0tPnRvX3NraXApKQogCQkJcmV0dXJuIDA7CkBA
-IC04ODQsNyArODg3LDYgQEAgc3RhdGljIGludCBkdW1wX2VtaXRfcGFnZShzdHJ1Y3QgY29yZWR1
-bXBfcGFyYW1zICpjcHJtLCBzdHJ1Y3QgcGFnZSAqcGFnZSkKIAlwb3MgPSBmaWxlLT5mX3BvczsK
-IAlidmVjX3NldF9wYWdlKCZidmVjLCBwYWdlLCBQQUdFX1NJWkUsIDApOwogCWlvdl9pdGVyX2J2
-ZWMoJml0ZXIsIElURVJfU09VUkNFLCAmYnZlYywgMSwgUEFHRV9TSVpFKTsKLQlpb3ZfaXRlcl9z
-ZXRfY29weV9tYygmaXRlcik7CiAJbiA9IF9fa2VybmVsX3dyaXRlX2l0ZXIoY3BybS0+ZmlsZSwg
-Jml0ZXIsICZwb3MpOwogCWlmIChuICE9IFBBR0VfU0laRSkKIAkJcmV0dXJuIDA7CkBAIC04OTUs
-MTAgKzg5Nyw0MCBAQCBzdGF0aWMgaW50IGR1bXBfZW1pdF9wYWdlKHN0cnVjdCBjb3JlZHVtcF9w
-YXJhbXMgKmNwcm0sIHN0cnVjdCBwYWdlICpwYWdlKQogCXJldHVybiAxOwogfQogCisvKgorICog
-SWYgd2UgbWlnaHQgZ2V0IG1hY2hpbmUgY2hlY2tzIGZyb20ga2VybmVsIGFjY2Vzc2VzIGR1cmlu
-ZyB0aGUKKyAqIGNvcmUgZHVtcCwgbGV0J3MgZ2V0IHRob3NlIGVycm9ycyBlYXJseSByYXRoZXIg
-dGhhbiBkdXJpbmcgdGhlCisgKiBJTy4gVGhpcyBpcyBub3QgcGVyZm9ybWFuY2UtY3JpdGljYWwg
-ZW5vdWdoIHRvIHdhcnJhbnQgaGF2aW5nCisgKiBhbGwgdGhlIG1hY2hpbmUgY2hlY2sgbG9naWMg
-aW4gdGhlIGlvdmVjIHBhdGhzLgorICovCisjaWZkZWYgY29weV9tY190b19rZXJuZWwKKworI2Rl
-ZmluZSBkdW1wX3BhZ2VfYWxsb2MoKSBhbGxvY19wYWdlKEdGUF9LRVJORUwpCisjZGVmaW5lIGR1
-bXBfcGFnZV9mcmVlKHgpIF9fZnJlZV9wYWdlKHgpCitzdGF0aWMgc3RydWN0IHBhZ2UgKmR1bXBf
-cGFnZV9jb3B5KHN0cnVjdCBwYWdlICpzcmMsIHN0cnVjdCBwYWdlICpkc3QpCit7CisJdm9pZCAq
-YnVmID0ga21hcF9sb2NhbF9wYWdlKHNyYyk7CisJc2l6ZV90IGxlZnQgPSBjb3B5X21jX3RvX2tl
-cm5lbChwYWdlX2FkZHJlc3MoZHN0KSwgYnVmLCBQQUdFX1NJWkUpOworCWt1bm1hcF9sb2NhbChi
-dWYpOworCXJldHVybiBsZWZ0ID8gTlVMTCA6IGRzdDsKK30KKworI2Vsc2UKKworI2RlZmluZSBk
-dW1wX3BhZ2VfYWxsb2MoKSAoKHN0cnVjdCBwYWdlICopOCkgLy8gTm90IE5VTEwKKyNkZWZpbmUg
-ZHVtcF9wYWdlX2ZyZWUoeCkgZG8geyB9IHdoaWxlICgwKQorI2RlZmluZSBkdW1wX3BhZ2VfY29w
-eShzcmMsZHN0KSAoKGRzdCksKHNyYykpCisKKyNlbmRpZgorCiBpbnQgZHVtcF91c2VyX3Jhbmdl
-KHN0cnVjdCBjb3JlZHVtcF9wYXJhbXMgKmNwcm0sIHVuc2lnbmVkIGxvbmcgc3RhcnQsCiAJCSAg
-ICB1bnNpZ25lZCBsb25nIGxlbikKIHsKIAl1bnNpZ25lZCBsb25nIGFkZHI7CisJc3RydWN0IHBh
-Z2UgKmR1bXBfcGFnZSA9IGR1bXBfcGFnZV9hbGxvYygpOworCisJaWYgKCFkdW1wX3BhZ2UpCisJ
-CXJldHVybiAwOwogCiAJZm9yIChhZGRyID0gc3RhcnQ7IGFkZHIgPCBzdGFydCArIGxlbjsgYWRk
-ciArPSBQQUdFX1NJWkUpIHsKIAkJc3RydWN0IHBhZ2UgKnBhZ2U7CkBAIC05MTIsMTQgKzk0NCwx
-NyBAQCBpbnQgZHVtcF91c2VyX3JhbmdlKHN0cnVjdCBjb3JlZHVtcF9wYXJhbXMgKmNwcm0sIHVu
-c2lnbmVkIGxvbmcgc3RhcnQsCiAJCSAqLwogCQlwYWdlID0gZ2V0X2R1bXBfcGFnZShhZGRyKTsK
-IAkJaWYgKHBhZ2UpIHsKLQkJCWludCBzdG9wID0gIWR1bXBfZW1pdF9wYWdlKGNwcm0sIHBhZ2Up
-OworCQkJaW50IHN0b3AgPSAhZHVtcF9lbWl0X3BhZ2UoY3BybSwgZHVtcF9wYWdlX2NvcHkocGFn
-ZSwgZHVtcF9wYWdlKSk7CiAJCQlwdXRfcGFnZShwYWdlKTsKLQkJCWlmIChzdG9wKQorCQkJaWYg
-KHN0b3ApIHsKKwkJCQlkdW1wX3BhZ2VfZnJlZShkdW1wX3BhZ2UpOwogCQkJCXJldHVybiAwOwor
-CQkJfQogCQl9IGVsc2UgewogCQkJZHVtcF9za2lwKGNwcm0sIFBBR0VfU0laRSk7CiAJCX0KIAl9
-CisJZHVtcF9wYWdlX2ZyZWUoZHVtcF9wYWdlKTsKIAlyZXR1cm4gMTsKIH0KICNlbmRpZgpkaWZm
-IC0tZ2l0IGEvaW5jbHVkZS9saW51eC91aW8uaCBiL2luY2x1ZGUvbGludXgvdWlvLmgKaW5kZXgg
-YmVhOWM4OTkyMmQ5Li4wMGNlYmUyYjcwZGUgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvbGludXgvdWlv
-LmgKKysrIGIvaW5jbHVkZS9saW51eC91aW8uaApAQCAtNDAsNyArNDAsNiBAQCBzdHJ1Y3QgaW92
-X2l0ZXJfc3RhdGUgewogCiBzdHJ1Y3QgaW92X2l0ZXIgewogCXU4IGl0ZXJfdHlwZTsKLQlib29s
-IGNvcHlfbWM7CiAJYm9vbCBub2ZhdWx0OwogCWJvb2wgZGF0YV9zb3VyY2U7CiAJc2l6ZV90IGlv
-dl9vZmZzZXQ7CkBAIC0yNDgsMjIgKzI0Nyw4IEBAIHNpemVfdCBfY29weV9mcm9tX2l0ZXJfZmx1
-c2hjYWNoZSh2b2lkICphZGRyLCBzaXplX3QgYnl0ZXMsIHN0cnVjdCBpb3ZfaXRlciAqaSk7CiAK
-ICNpZmRlZiBDT05GSUdfQVJDSF9IQVNfQ09QWV9NQwogc2l6ZV90IF9jb3B5X21jX3RvX2l0ZXIo
-Y29uc3Qgdm9pZCAqYWRkciwgc2l6ZV90IGJ5dGVzLCBzdHJ1Y3QgaW92X2l0ZXIgKmkpOwotc3Rh
-dGljIGlubGluZSB2b2lkIGlvdl9pdGVyX3NldF9jb3B5X21jKHN0cnVjdCBpb3ZfaXRlciAqaSkK
-LXsKLQlpLT5jb3B5X21jID0gdHJ1ZTsKLX0KLQotc3RhdGljIGlubGluZSBib29sIGlvdl9pdGVy
-X2lzX2NvcHlfbWMoY29uc3Qgc3RydWN0IGlvdl9pdGVyICppKQotewotCXJldHVybiBpLT5jb3B5
-X21jOwotfQogI2Vsc2UKICNkZWZpbmUgX2NvcHlfbWNfdG9faXRlciBfY29weV90b19pdGVyCi1z
-dGF0aWMgaW5saW5lIHZvaWQgaW92X2l0ZXJfc2V0X2NvcHlfbWMoc3RydWN0IGlvdl9pdGVyICpp
-KSB7IH0KLXN0YXRpYyBpbmxpbmUgYm9vbCBpb3ZfaXRlcl9pc19jb3B5X21jKGNvbnN0IHN0cnVj
-dCBpb3ZfaXRlciAqaSkKLXsKLQlyZXR1cm4gZmFsc2U7Ci19CiAjZW5kaWYKIAogc2l6ZV90IGlv
-dl9pdGVyX3plcm8oc2l6ZV90IGJ5dGVzLCBzdHJ1Y3QgaW92X2l0ZXIgKik7CkBAIC0zNTUsNyAr
-MzQwLDYgQEAgc3RhdGljIGlubGluZSB2b2lkIGlvdl9pdGVyX3VidWYoc3RydWN0IGlvdl9pdGVy
-ICppLCB1bnNpZ25lZCBpbnQgZGlyZWN0aW9uLAogCVdBUk5fT04oZGlyZWN0aW9uICYgfihSRUFE
-IHwgV1JJVEUpKTsKIAkqaSA9IChzdHJ1Y3QgaW92X2l0ZXIpIHsKIAkJLml0ZXJfdHlwZSA9IElU
-RVJfVUJVRiwKLQkJLmNvcHlfbWMgPSBmYWxzZSwKIAkJLmRhdGFfc291cmNlID0gZGlyZWN0aW9u
-LAogCQkudWJ1ZiA9IGJ1ZiwKIAkJLmNvdW50ID0gY291bnQsCmRpZmYgLS1naXQgYS9saWIvaW92
-X2l0ZXIuYyBiL2xpYi9pb3ZfaXRlci5jCmluZGV4IGUwYWE2YjQ0MGNhNS4uY2YyZWIyYjJmOTgz
-IDEwMDY0NAotLS0gYS9saWIvaW92X2l0ZXIuYworKysgYi9saWIvaW92X2l0ZXIuYwpAQCAtMTY2
-LDcgKzE2Niw2IEBAIHZvaWQgaW92X2l0ZXJfaW5pdChzdHJ1Y3QgaW92X2l0ZXIgKmksIHVuc2ln
-bmVkIGludCBkaXJlY3Rpb24sCiAJV0FSTl9PTihkaXJlY3Rpb24gJiB+KFJFQUQgfCBXUklURSkp
-OwogCSppID0gKHN0cnVjdCBpb3ZfaXRlcikgewogCQkuaXRlcl90eXBlID0gSVRFUl9JT1ZFQywK
-LQkJLmNvcHlfbWMgPSBmYWxzZSwKIAkJLm5vZmF1bHQgPSBmYWxzZSwKIAkJLmRhdGFfc291cmNl
-ID0gZGlyZWN0aW9uLAogCQkuX19pb3YgPSBpb3YsCkBAIC0yNDQsMjcgKzI0Myw5IEBAIHNpemVf
-dCBfY29weV9tY190b19pdGVyKGNvbnN0IHZvaWQgKmFkZHIsIHNpemVfdCBieXRlcywgc3RydWN0
-IGlvdl9pdGVyICppKQogRVhQT1JUX1NZTUJPTF9HUEwoX2NvcHlfbWNfdG9faXRlcik7CiAjZW5k
-aWYgLyogQ09ORklHX0FSQ0hfSEFTX0NPUFlfTUMgKi8KIAotc3RhdGljIF9fYWx3YXlzX2lubGlu
-ZQotc2l6ZV90IG1lbWNweV9mcm9tX2l0ZXJfbWModm9pZCAqaXRlcl9mcm9tLCBzaXplX3QgcHJv
-Z3Jlc3MsCi0JCQkgICBzaXplX3QgbGVuLCB2b2lkICp0bywgdm9pZCAqcHJpdjIpCi17Ci0JcmV0
-dXJuIGNvcHlfbWNfdG9fa2VybmVsKHRvICsgcHJvZ3Jlc3MsIGl0ZXJfZnJvbSwgbGVuKTsKLX0K
-LQotc3RhdGljIHNpemVfdCBfX2NvcHlfZnJvbV9pdGVyX21jKHZvaWQgKmFkZHIsIHNpemVfdCBi
-eXRlcywgc3RydWN0IGlvdl9pdGVyICppKQotewotCWlmICh1bmxpa2VseShpLT5jb3VudCA8IGJ5
-dGVzKSkKLQkJYnl0ZXMgPSBpLT5jb3VudDsKLQlpZiAodW5saWtlbHkoIWJ5dGVzKSkKLQkJcmV0
-dXJuIDA7Ci0JcmV0dXJuIGl0ZXJhdGVfYnZlYyhpLCBieXRlcywgYWRkciwgTlVMTCwgbWVtY3B5
-X2Zyb21faXRlcl9tYyk7Ci19Ci0KIHN0YXRpYyBfX2Fsd2F5c19pbmxpbmUKIHNpemVfdCBfX2Nv
-cHlfZnJvbV9pdGVyKHZvaWQgKmFkZHIsIHNpemVfdCBieXRlcywgc3RydWN0IGlvdl9pdGVyICpp
-KQogewotCWlmICh1bmxpa2VseShpb3ZfaXRlcl9pc19jb3B5X21jKGkpKSkKLQkJcmV0dXJuIF9f
-Y29weV9mcm9tX2l0ZXJfbWMoYWRkciwgYnl0ZXMsIGkpOwogCXJldHVybiBpdGVyYXRlX2FuZF9h
-ZHZhbmNlKGksIGJ5dGVzLCBhZGRyLAogCQkJCSAgIGNvcHlfZnJvbV91c2VyX2l0ZXIsIG1lbWNw
-eV9mcm9tX2l0ZXIpOwogfQpAQCAtNjMzLDcgKzYxNCw2IEBAIHZvaWQgaW92X2l0ZXJfa3ZlYyhz
-dHJ1Y3QgaW92X2l0ZXIgKmksIHVuc2lnbmVkIGludCBkaXJlY3Rpb24sCiAJV0FSTl9PTihkaXJl
-Y3Rpb24gJiB+KFJFQUQgfCBXUklURSkpOwogCSppID0gKHN0cnVjdCBpb3ZfaXRlcil7CiAJCS5p
-dGVyX3R5cGUgPSBJVEVSX0tWRUMsCi0JCS5jb3B5X21jID0gZmFsc2UsCiAJCS5kYXRhX3NvdXJj
-ZSA9IGRpcmVjdGlvbiwKIAkJLmt2ZWMgPSBrdmVjLAogCQkubnJfc2VncyA9IG5yX3NlZ3MsCkBA
-IC02NTAsNyArNjMwLDYgQEAgdm9pZCBpb3ZfaXRlcl9idmVjKHN0cnVjdCBpb3ZfaXRlciAqaSwg
-dW5zaWduZWQgaW50IGRpcmVjdGlvbiwKIAlXQVJOX09OKGRpcmVjdGlvbiAmIH4oUkVBRCB8IFdS
-SVRFKSk7CiAJKmkgPSAoc3RydWN0IGlvdl9pdGVyKXsKIAkJLml0ZXJfdHlwZSA9IElURVJfQlZF
-QywKLQkJLmNvcHlfbWMgPSBmYWxzZSwKIAkJLmRhdGFfc291cmNlID0gZGlyZWN0aW9uLAogCQku
-YnZlYyA9IGJ2ZWMsCiAJCS5ucl9zZWdzID0gbnJfc2VncywKQEAgLTY3OSw3ICs2NTgsNiBAQCB2
-b2lkIGlvdl9pdGVyX3hhcnJheShzdHJ1Y3QgaW92X2l0ZXIgKmksIHVuc2lnbmVkIGludCBkaXJl
-Y3Rpb24sCiAJQlVHX09OKGRpcmVjdGlvbiAmIH4xKTsKIAkqaSA9IChzdHJ1Y3QgaW92X2l0ZXIp
-IHsKIAkJLml0ZXJfdHlwZSA9IElURVJfWEFSUkFZLAotCQkuY29weV9tYyA9IGZhbHNlLAogCQku
-ZGF0YV9zb3VyY2UgPSBkaXJlY3Rpb24sCiAJCS54YXJyYXkgPSB4YXJyYXksCiAJCS54YXJyYXlf
-c3RhcnQgPSBzdGFydCwKQEAgLTcwMyw3ICs2ODEsNiBAQCB2b2lkIGlvdl9pdGVyX2Rpc2NhcmQo
-c3RydWN0IGlvdl9pdGVyICppLCB1bnNpZ25lZCBpbnQgZGlyZWN0aW9uLCBzaXplX3QgY291bnQp
-CiAJQlVHX09OKGRpcmVjdGlvbiAhPSBSRUFEKTsKIAkqaSA9IChzdHJ1Y3QgaW92X2l0ZXIpewog
-CQkuaXRlcl90eXBlID0gSVRFUl9ESVNDQVJELAotCQkuY29weV9tYyA9IGZhbHNlLAogCQkuZGF0
-YV9zb3VyY2UgPSBmYWxzZSwKIAkJLmNvdW50ID0gY291bnQsCiAJCS5pb3Zfb2Zmc2V0ID0gMAo=
---0000000000005434e50612a4af27--
+Acked
+> 
+> > +					 PDO_FIXED_USB_COMM |
+> > +					 PDO_FIXED_DATA_SWAP)
+> > +					 PDO_VAR(5000, 12000, 5000)>;
+> 
+> 60W max? This is not unheard of, but I'm just making sure you know..
+downstream kernel's pd adapter allowance is 5v or 9v-12v and vendor
+charger allowance is 5v-20v...6.2A-3.25A (67W max), so I set it to 60W.
+> 
+> Konrad
+> 
 
