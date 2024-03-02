@@ -1,124 +1,433 @@
-Return-Path: <linux-kernel+bounces-89404-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89405-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C804A86EFEA
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 10:49:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 236A686EFED
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 10:50:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 64C661F22586
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 09:49:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 916531F21AAB
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 09:50:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35D1314298;
-	Sat,  2 Mar 2024 09:49:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D1A214284;
+	Sat,  2 Mar 2024 09:50:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="VGVz1U2W"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="KWPblACq"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62D0D1428E;
-	Sat,  2 Mar 2024 09:49:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B2A517557
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 09:49:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709372975; cv=none; b=LU+wcLCBEsvXJXbrnePK4C5bFAgn/U03JkxZysvoFjbtnNV5Y+/uEvWWnGcCbJLASchZhdcR4KpvNA5vvGF8GwwlmAlM3eZe5Knk92TgUsNp1Ho4Hkj+SrUkO3yaCnQRnjint6qWkxmtB5o3gyIyxqcUbVg3c1pEn9nHmTuCM5g=
+	t=1709373001; cv=none; b=uQR5PjCHuSYmuXqJjg1QVwIkmfg87wGyc0d9Tzhdrq+O0/uhBcCNkOcn8bb0uJECFYIb87H6JCrk/an1vPYGlwcT+d8hj2I3pQldCnJuSp2v3OzIAKrJuyXS74hG9H4JjHtIcDodj7fbLdheLMDOf83U1TwxqpukfCzbEh60OkE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709372975; c=relaxed/simple;
-	bh=4bOVk3Jsi+XgVSsjNQU0nnIrGaxrtw2pZNas2Q+Oqak=;
+	s=arc-20240116; t=1709373001; c=relaxed/simple;
+	bh=RiU0GNndXz1+AC1vHdV6IBJsZG2KbseocNgOWoClmt0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kj+sXedLdSi27F9NScwESJ1X0F6w0tldmNQXJF8hJ9gIaw7qlzNaeJ67FKHOKGznhRHRnty2XNyhH3SbmKExHNKZxHAT8oZHHI02+XX5mzPm3Mv2AhUgOrojwZZ/JGjwWoeA6QRgCdQMapO+RqfG+F/Vh88+bjCkzDblw8KkRKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=VGVz1U2W; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id EBB0640E0185;
-	Sat,  2 Mar 2024 09:49:26 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 6G_Eqa0qWae7; Sat,  2 Mar 2024 09:49:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1709372964; bh=LkqWu/QTwwhlYcmHJp3Psffz8XCiVniXghlgoEdJxlg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VGVz1U2W6jvB+glKnu+odzzgts2hD+fzHROWCQ0i7dsQurnerlhzJW6YIfEh7eTg1
-	 XWUh+bu2kfOitHORJuVbfm+roA2g9BkGplYqldD92wSN9UxuXh4bGMhfpwYtrFWH5Z
-	 rBzIB8hV6vdJWyoHeOvFZPLcjg78EF6wILwwozPIKXuFClN5IHPyuVLG/qLEym2VOa
-	 Z9jEhQYaQ3VseEqVxO+4GFcBfesNHtPVnXXwWImSR1PtGmDqXoR1gDQqax8FasRTSG
-	 PpwMfU8EQdpd4avs1z5bIUoTIYu/2QDHY+eJF3jGlBjYUTxIsQo+j5kub6gvPXA2Qu
-	 zbQ3DGHq0obvR02ozQU1hEuxUSYRwZUl5Yx2Y9O9i5MqMjFTk6KO27t7o4fmMJ0DRr
-	 3wzxJUYMnaTofncQ70hRgpf1WrnzJFiTMax5ir8+gFcjhFMLIIsimo/xOavkUfnbb0
-	 kfk7K35R6FuOV0pXkDqgAczTwWhCF2I7tksqS2Qz9pDcLGSU3KacOkef5tz6GKVqET
-	 mDmEwZPq9ZfIBtUOAxPWdvVOV+9QgECJ9rb+qF6/6RE5RyIdeJaJ9kcjI1WrUrkyRI
-	 kWUIQ7IujhVh0rrggMLocyaaTUT3VdI7b5mEAX5B2Xs7ZWqH01MaY+Q221Ks9PGMVS
-	 g6k2cuYuFgIWBi5b7CnV0TBA=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id ED13F40E016C;
-	Sat,  2 Mar 2024 09:49:14 +0000 (UTC)
-Date: Sat, 2 Mar 2024 10:49:08 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Yazen Ghannam <yazen.ghannam@amd.com>
-Cc: tony.luck@intel.com, linux-edac@vger.kernel.org,
-	linux-kernel@vger.kernel.org, avadhut.naik@amd.com,
-	john.allen@amd.com, muralidhara.mk@amd.com, sathyapriya.k@amd.com,
-	naveenkrishna.chatradhi@amd.com
-Subject: Re: [PATCH v2 0/3] FMPM Debug Updates
-Message-ID: <20240302094908.GAZeL2FAON8R00Cyzt@fat_crate.local>
-References: <20240301143748.854090-1-yazen.ghannam@amd.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=KPVqYiL4gtehIb73ESYNBGxkhC0laCgDtepV659PXQD/2aSc6x8ZTmSSj4UVKpkTqpxH2EiY2/Xiu/2hQeILKlURRawpdjIHdtUH9ag0UY+WU++qtFQOTf1aMLSrT5nVRP4XduEkuBSTor9ALrtyjipIMKGpiVEfQaia+olKbIU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=KWPblACq; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33d118a181fso1751558f8f.1
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Mar 2024 01:49:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1709372998; x=1709977798; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2Z3LzFf9VRf1lGIqA8b3o/Ez+UTotALtn0tutD59vVE=;
+        b=KWPblACqzz17FMRnhEqgFIf+WWAI5zFOVVG2Yrbv4cuY56pT0gtKDzofX871WSGmcs
+         ydRZIedF3kPzSMOexlzvtWQjkg0cBOgwaNOaHI8oSCS+a/j0AiR7yCDVYqT0PlRDrIcB
+         vg85oLOAyGIzZ5DI342IvysTZS7Y2RqQw2J6yDdaBaMOrG15x2mu9ppMvxtQclTCnwWV
+         gKZ2ZSyH5MoiO7S7la0NA8IEt3tX+EabABtfAGCk4EYq6jSTDE66xUQujlLtgiHe94zq
+         zbPdYjpcxRdtDLLTI16NKulVe6+X+faEGzHDcG0uAhwS1JEgagt0idPddRYC+XlCuNWT
+         oKhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709372998; x=1709977798;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2Z3LzFf9VRf1lGIqA8b3o/Ez+UTotALtn0tutD59vVE=;
+        b=VS526s9qFG2D/hxSCc2J7hl+o1hGXIISHUP1BtifTnlZNhXRi71ZhCQPYdhJL9Ai1b
+         mOSdLZBF8ANgDENztsCYdkZSSIMcB88hx6Syrx6mNV5UH92avkF/v6Yu/xRcHsxqRNDi
+         qQFgmokJaKWTtenGcE6A70TGHqS9R6yo8bZRPg5hbueW8LGbvgCiA4up0HPCcmKA1+dn
+         z54NkbF2JkZckaKbiLNlD18UKcCrqa/CO1QQirsu2HYmmmmb4FuNteXuHR83hfXoK9Zw
+         XRJZ8XkSxQVjmN8JEaInIkPiyRnUScQK3Wk5andsOV28vimoGiujFjiA/y3SD3bWUcUM
+         gN1A==
+X-Gm-Message-State: AOJu0YwG+6kR9+pnR+UfkOfrZvCgP7b0bJQTvEzz3GQTtlX2/piXBku0
+	NAKE9hQtYTreD/qiUJD/IH9rl9vbhsYZQXoHCyn5oWHlx7j9JkQVRJg7aUSn+V0=
+X-Google-Smtp-Source: AGHT+IFDdArCEhZ1GnuRGqnWpGlf2p5WOqgRZB/YDv1RrvRia0g3bwZ7PeHbQPwJRZhIVi6EIgeGfg==
+X-Received: by 2002:a5d:5f53:0:b0:33d:a185:17ed with SMTP id cm19-20020a5d5f53000000b0033da18517edmr3634796wrb.56.1709372997430;
+        Sat, 02 Mar 2024 01:49:57 -0800 (PST)
+Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
+        by smtp.gmail.com with ESMTPSA id ck4-20020a5d5e84000000b0033e2b9f647asm919468wrb.31.2024.03.02.01.49.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Mar 2024 01:49:57 -0800 (PST)
+Date: Sat, 2 Mar 2024 10:49:56 +0100
+From: Andrew Jones <ajones@ventanamicro.com>
+To: Atish Patra <atishp@rivosinc.com>
+Cc: linux-kernel@vger.kernel.org, Anup Patel <anup@brainfault.org>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alexghiti@rivosinc.com>, 
+	Atish Patra <atishp@atishpatra.org>, Conor Dooley <conor.dooley@microchip.com>, 
+	Guo Ren <guoren@kernel.org>, Icenowy Zheng <uwu@icenowy.me>, kvm-riscv@lists.infradead.org, 
+	kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	Mark Rutland <mark.rutland@arm.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Shuah Khan <shuah@kernel.org>, Will Deacon <will@kernel.org>
+Subject: Re: [PATCH v4 08/15] RISC-V: KVM: Implement SBI PMU Snapshot feature
+Message-ID: <20240302-6ae8fe37b90f127bc9be737f@orel>
+References: <20240229010130.1380926-1-atishp@rivosinc.com>
+ <20240229010130.1380926-9-atishp@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240301143748.854090-1-yazen.ghannam@amd.com>
+In-Reply-To: <20240229010130.1380926-9-atishp@rivosinc.com>
 
-On Fri, Mar 01, 2024 at 08:37:45AM -0600, Yazen Ghannam wrote:
-> Hi all,
+On Wed, Feb 28, 2024 at 05:01:23PM -0800, Atish Patra wrote:
+> PMU Snapshot function allows to minimize the number of traps when the
+> guest access configures/access the hpmcounters. If the snapshot feature
+> is enabled, the hypervisor updates the shared memory with counter
+> data and state of overflown counters. The guest can just read the
+> shared memory instead of trap & emulate done by the hypervisor.
 > 
-> This set adds two pieces of debug functionality.
-> 1) Saving the system physical address of a recorded error.
-> 2) Printing record entries through a debugfs file.
+> This patch doesn't implement the counter overflow yet.
 > 
-> I'd like to include Murali, Naveen, and Sathya as co-developers, since
-> this is based on their previous work from here:
-> https://lore.kernel.org/r/20231129075034.2159223-4-muralimk@amd.com
+> Reviewed-by: Anup Patel <anup@brainfault.org>
+> Signed-off-by: Atish Patra <atishp@rivosinc.com>
+> ---
+>  arch/riscv/include/asm/kvm_vcpu_pmu.h |   7 ++
+>  arch/riscv/kvm/vcpu_pmu.c             | 120 +++++++++++++++++++++++++-
+>  arch/riscv/kvm/vcpu_sbi_pmu.c         |   3 +
+>  drivers/perf/riscv_pmu_sbi.c          |   2 +-
+>  4 files changed, 129 insertions(+), 3 deletions(-)
 > 
-> v1 Link:
-> https://lore.kernel.org/r/20240226152941.2615007-1-yazen.ghannam@amd.com
-> 
-> v1->v2:
-> * Patch 1 replaced with suggested patch from Boris.
-> * Patch 2 update variable names and some code flow.
-> * Patch 3 rebase on changes from 1 and 2.
-> 
-> Thanks,
-> Yazen
-> 
-> Borislav Petkov (AMD) (1):
->   RAS: Export helper to get ras_debugfs_dir
-> 
-> Yazen Ghannam (2):
->   RAS/AMD/FMPM: Save SPA values
->   RAS/AMD/FMPM: Add debugfs interface to print record entries
-> 
->  drivers/ras/amd/fmpm.c | 199 +++++++++++++++++++++++++++++++++++++++++
->  drivers/ras/cec.c      |  10 ++-
->  drivers/ras/debugfs.c  |   8 +-
->  drivers/ras/debugfs.h  |   2 +-
->  4 files changed, 215 insertions(+), 4 deletions(-)
+> diff --git a/arch/riscv/include/asm/kvm_vcpu_pmu.h b/arch/riscv/include/asm/kvm_vcpu_pmu.h
+> index 395518a1664e..586bab84be35 100644
+> --- a/arch/riscv/include/asm/kvm_vcpu_pmu.h
+> +++ b/arch/riscv/include/asm/kvm_vcpu_pmu.h
+> @@ -50,6 +50,10 @@ struct kvm_pmu {
+>  	bool init_done;
+>  	/* Bit map of all the virtual counter used */
+>  	DECLARE_BITMAP(pmc_in_use, RISCV_KVM_MAX_COUNTERS);
+> +	/* The address of the counter snapshot area (guest physical address) */
+> +	gpa_t snapshot_addr;
+> +	/* The actual data of the snapshot */
+> +	struct riscv_pmu_snapshot_data *sdata;
+>  };
+>  
+>  #define vcpu_to_pmu(vcpu) (&(vcpu)->arch.pmu_context)
+> @@ -85,6 +89,9 @@ int kvm_riscv_vcpu_pmu_ctr_cfg_match(struct kvm_vcpu *vcpu, unsigned long ctr_ba
+>  int kvm_riscv_vcpu_pmu_ctr_read(struct kvm_vcpu *vcpu, unsigned long cidx,
+>  				struct kvm_vcpu_sbi_return *retdata);
+>  void kvm_riscv_vcpu_pmu_init(struct kvm_vcpu *vcpu);
+> +int kvm_riscv_vcpu_pmu_setup_snapshot(struct kvm_vcpu *vcpu, unsigned long saddr_low,
+> +				      unsigned long saddr_high, unsigned long flags,
+> +				      struct kvm_vcpu_sbi_return *retdata);
 
-Applied, thanks.
+I prefer to name this function
 
--- 
-Regards/Gruss,
-    Boris.
+kvm_riscv_vcpu_pmu_snapshot_set_shmem
 
-https://people.kernel.org/tglx/notes-about-netiquette
+>  void kvm_riscv_vcpu_pmu_deinit(struct kvm_vcpu *vcpu);
+>  void kvm_riscv_vcpu_pmu_reset(struct kvm_vcpu *vcpu);
+>  
+> diff --git a/arch/riscv/kvm/vcpu_pmu.c b/arch/riscv/kvm/vcpu_pmu.c
+> index 29bf4ca798cb..74865e6050a1 100644
+> --- a/arch/riscv/kvm/vcpu_pmu.c
+> +++ b/arch/riscv/kvm/vcpu_pmu.c
+> @@ -311,6 +311,81 @@ int kvm_riscv_vcpu_pmu_read_hpm(struct kvm_vcpu *vcpu, unsigned int csr_num,
+>  	return ret;
+>  }
+>  
+> +static void kvm_pmu_clear_snapshot_area(struct kvm_vcpu *vcpu)
+> +{
+> +	struct kvm_pmu *kvpmu = vcpu_to_pmu(vcpu);
+> +	int snapshot_area_size = sizeof(struct riscv_pmu_snapshot_data);
+> +
+> +	if (kvpmu->sdata) {
+> +		memset(kvpmu->sdata, 0, snapshot_area_size);
+> +		if (kvpmu->snapshot_addr != INVALID_GPA)
+
+It's a KVM bug if we have non-null sdata but snapshot_addr is INVALID_GPA,
+right? Maybe we should warn if we see that. We can also move the memset
+inside the if block.
+
+> +			kvm_vcpu_write_guest(vcpu, kvpmu->snapshot_addr,
+> +					     kvpmu->sdata, snapshot_area_size);
+> +		kfree(kvpmu->sdata);
+> +		kvpmu->sdata = NULL;
+> +	}
+> +	kvpmu->snapshot_addr = INVALID_GPA;
+> +}
+> +
+> +int kvm_riscv_vcpu_pmu_setup_snapshot(struct kvm_vcpu *vcpu, unsigned long saddr_low,
+> +				      unsigned long saddr_high, unsigned long flags,
+> +				      struct kvm_vcpu_sbi_return *retdata)
+> +{
+> +	struct kvm_pmu *kvpmu = vcpu_to_pmu(vcpu);
+> +	int snapshot_area_size = sizeof(struct riscv_pmu_snapshot_data);
+> +	int sbiret = 0;
+> +	gpa_t saddr;
+> +	unsigned long hva;
+> +	bool writable;
+> +
+> +	if (!kvpmu) {
+> +		sbiret = SBI_ERR_INVALID_PARAM;
+> +		goto out;
+> +	}
+
+Need to check that flags is zero or return SBI_ERR_INVALID_PARAM.
+
+> +
+> +	if (saddr_low == -1 && saddr_high == -1) {
+
+We introduced SBI_STA_SHMEM_DISABLE for these magic -1's for STA. Since
+SBI is using the -1 approach for all its shmem, then maybe we should
+rename SBI_STA_SHMEM_DISABLE to SBI_SHMEM_DISABLE and then use them here
+too.
+
+> +		kvm_pmu_clear_snapshot_area(vcpu);
+> +		return 0;
+> +	}
+> +
+> +	saddr = saddr_low;
+> +
+> +	if (saddr_high != 0) {
+> +		if (IS_ENABLED(CONFIG_32BIT))
+> +			saddr |= ((gpa_t)saddr << 32);
+> +		else
+> +			sbiret = SBI_ERR_INVALID_ADDRESS;
+> +		goto out;
+> +	}
+> +
+> +	if (kvm_is_error_gpa(vcpu->kvm, saddr)) {
+> +		sbiret = SBI_ERR_INVALID_PARAM;
+> +		goto out;
+> +	}
+
+Does the check above provide anything more than what the check below does?
+
+> +
+> +	hva = kvm_vcpu_gfn_to_hva_prot(vcpu, saddr >> PAGE_SHIFT, &writable);
+> +	if (kvm_is_error_hva(hva) || !writable) {
+> +		sbiret = SBI_ERR_INVALID_ADDRESS;
+> +		goto out;
+> +	}
+> +
+> +	kvpmu->snapshot_addr = saddr;
+> +	kvpmu->sdata = kzalloc(snapshot_area_size, GFP_ATOMIC);
+> +	if (!kvpmu->sdata)
+
+Should reset snapshot_addr to INVALID_GPA here on error. Or maybe we
+should just set snapshot_addr to saddr at the bottom of this function if
+we make it.
+
+> +		return -ENOMEM;
+> +
+> +	if (kvm_vcpu_write_guest(vcpu, saddr, kvpmu->sdata, snapshot_area_size)) {
+> +		kfree(kvpmu->sdata);
+> +		kvpmu->snapshot_addr = INVALID_GPA;
+> +		sbiret = SBI_ERR_FAILURE;
+
+I agree we should return this SBI error for this case, but unfortunately
+the spec is missing the
+
+ SBI_ERR_FAILED - The request failed for unspecified or unknown other reasons.
+
+that we have for other SBI functions. I guess we should keep the code like
+this and open a PR to the spec.
+
+> +	}
+> +
+> +out:
+> +	retdata->err_val = sbiret;
+> +
+> +	return 0;
+> +}
+> +
+>  int kvm_riscv_vcpu_pmu_num_ctrs(struct kvm_vcpu *vcpu,
+>  				struct kvm_vcpu_sbi_return *retdata)
+>  {
+> @@ -344,20 +419,33 @@ int kvm_riscv_vcpu_pmu_ctr_start(struct kvm_vcpu *vcpu, unsigned long ctr_base,
+>  	int i, pmc_index, sbiret = 0;
+>  	struct kvm_pmc *pmc;
+>  	int fevent_code;
+> +	bool snap_flag_set = flags & SBI_PMU_START_FLAG_INIT_FROM_SNAPSHOT;
+
+This function should confirm no undefined bits are set in flags and the
+spec should specify that the reserved flags must be zero otherwise an
+invalid param will be returned.
+
+Also here would should confirm that only one of the two flags is set,
+otherwise return invalid param, as they've specified to be mutually
+exclusive.
+
+Regarding the spec, the note about the counter value not being modified
+unless SBI_PMU_START_SET_INIT_VALUE is set should be modified to state
+unless either of the two flags are set (so I think we need another spec
+PR).
+
+(The same flags checking/specifying comments apply to the other functions
+with flags too.)
+
+>  
+>  	if (kvm_pmu_validate_counter_mask(kvpmu, ctr_base, ctr_mask) < 0) {
+>  		sbiret = SBI_ERR_INVALID_PARAM;
+>  		goto out;
+>  	}
+>  
+> +	if (snap_flag_set && kvpmu->snapshot_addr == INVALID_GPA) {
+> +		sbiret = SBI_ERR_NO_SHMEM;
+> +		goto out;
+> +	}
+> +
+>  	/* Start the counters that have been configured and requested by the guest */
+>  	for_each_set_bit(i, &ctr_mask, RISCV_MAX_COUNTERS) {
+>  		pmc_index = i + ctr_base;
+>  		if (!test_bit(pmc_index, kvpmu->pmc_in_use))
+>  			continue;
+>  		pmc = &kvpmu->pmc[pmc_index];
+> -		if (flags & SBI_PMU_START_FLAG_SET_INIT_VALUE)
+> +		if (flags & SBI_PMU_START_FLAG_SET_INIT_VALUE) {
+>  			pmc->counter_val = ival;
+> +		} else if (snap_flag_set) {
+> +			kvm_vcpu_read_guest(vcpu, kvpmu->snapshot_addr, kvpmu->sdata,
+> +					    sizeof(struct riscv_pmu_snapshot_data));
+
+The snapshot read should be outside the for_each_set_bit() loop and we
+should warn and abort the counter starting if the read fails.
+
+> +			/* The counter index in the snapshot are relative to the counter base */
+> +			pmc->counter_val = kvpmu->sdata->ctr_values[i];
+> +		}
+> +
+>  		if (pmc->cinfo.type == SBI_PMU_CTR_TYPE_FW) {
+>  			fevent_code = get_event_code(pmc->event_idx);
+>  			if (fevent_code >= SBI_PMU_FW_MAX) {
+> @@ -398,14 +486,21 @@ int kvm_riscv_vcpu_pmu_ctr_stop(struct kvm_vcpu *vcpu, unsigned long ctr_base,
+>  {
+>  	struct kvm_pmu *kvpmu = vcpu_to_pmu(vcpu);
+>  	int i, pmc_index, sbiret = 0;
+> +	u64 enabled, running;
+>  	struct kvm_pmc *pmc;
+>  	int fevent_code;
+> +	bool snap_flag_set = flags & SBI_PMU_STOP_FLAG_TAKE_SNAPSHOT;
+>  
+> -	if (kvm_pmu_validate_counter_mask(kvpmu, ctr_base, ctr_mask) < 0) {
+> +	if ((kvm_pmu_validate_counter_mask(kvpmu, ctr_base, ctr_mask) < 0)) {
+
+Added unnecessary () here.
+
+>  		sbiret = SBI_ERR_INVALID_PARAM;
+>  		goto out;
+>  	}
+>  
+> +	if (snap_flag_set && kvpmu->snapshot_addr == INVALID_GPA) {
+> +		sbiret = SBI_ERR_NO_SHMEM;
+> +		goto out;
+> +	}
+> +
+>  	/* Stop the counters that have been configured and requested by the guest */
+>  	for_each_set_bit(i, &ctr_mask, RISCV_MAX_COUNTERS) {
+>  		pmc_index = i + ctr_base;
+> @@ -438,9 +533,28 @@ int kvm_riscv_vcpu_pmu_ctr_stop(struct kvm_vcpu *vcpu, unsigned long ctr_base,
+>  		} else {
+>  			sbiret = SBI_ERR_INVALID_PARAM;
+>  		}
+> +
+> +		if (snap_flag_set && !sbiret) {
+> +			if (pmc->cinfo.type == SBI_PMU_CTR_TYPE_FW)
+> +				pmc->counter_val = kvpmu->fw_event[fevent_code].value;
+> +			else if (pmc->perf_event)
+> +				pmc->counter_val += perf_event_read_value(pmc->perf_event,
+> +									  &enabled, &running);
+> +			/* TODO: Add counter overflow support when sscofpmf support is added */
+> +			kvpmu->sdata->ctr_values[i] = pmc->counter_val;
+> +			kvm_vcpu_write_guest(vcpu, kvpmu->snapshot_addr, kvpmu->sdata,
+> +					     sizeof(struct riscv_pmu_snapshot_data));
+
+Should just set a boolean here saying that the snapshot needs an update
+and then do the update outside the for_each_set_bit loop.
+
+> +		}
+> +
+>  		if (flags & SBI_PMU_STOP_FLAG_RESET) {
+>  			pmc->event_idx = SBI_PMU_EVENT_IDX_INVALID;
+>  			clear_bit(pmc_index, kvpmu->pmc_in_use);
+> +			if (snap_flag_set) {
+> +				/* Clear the snapshot area for the upcoming deletion event */
+> +				kvpmu->sdata->ctr_values[i] = 0;
+> +				kvm_vcpu_write_guest(vcpu, kvpmu->snapshot_addr, kvpmu->sdata,
+> +						     sizeof(struct riscv_pmu_snapshot_data));
+
+The spec isn't clear on this (so we should clarify it), but I'd expect
+that a caller who set both the reset and the snapshot flag would want
+the snapshot from before the reset when this call completes and then
+assume that when they start counting again, and look at the snapshot
+again, that those new counts would be from the reset values. Or maybe
+not :-) Maybe they want to do a reset and take a snapshot in order to
+look at the snapshot and confirm the reset happened? Either way, it
+seems we should only do one of the two here. Either update the snapshot
+before resetting, and not again after reset, or reset and then update
+the snapshot (with no need to update before).
+
+> +			}
+>  		}
+>  	}
+>  
+> @@ -566,6 +680,7 @@ void kvm_riscv_vcpu_pmu_init(struct kvm_vcpu *vcpu)
+>  	kvpmu->num_hw_ctrs = num_hw_ctrs + 1;
+>  	kvpmu->num_fw_ctrs = SBI_PMU_FW_MAX;
+>  	memset(&kvpmu->fw_event, 0, SBI_PMU_FW_MAX * sizeof(struct kvm_fw_event));
+> +	kvpmu->snapshot_addr = INVALID_GPA;
+>  
+>  	if (kvpmu->num_hw_ctrs > RISCV_KVM_MAX_HW_CTRS) {
+>  		pr_warn_once("Limiting the hardware counters to 32 as specified by the ISA");
+> @@ -625,6 +740,7 @@ void kvm_riscv_vcpu_pmu_deinit(struct kvm_vcpu *vcpu)
+>  	}
+>  	bitmap_zero(kvpmu->pmc_in_use, RISCV_MAX_COUNTERS);
+>  	memset(&kvpmu->fw_event, 0, SBI_PMU_FW_MAX * sizeof(struct kvm_fw_event));
+> +	kvm_pmu_clear_snapshot_area(vcpu);
+>  }
+>  
+>  void kvm_riscv_vcpu_pmu_reset(struct kvm_vcpu *vcpu)
+> diff --git a/arch/riscv/kvm/vcpu_sbi_pmu.c b/arch/riscv/kvm/vcpu_sbi_pmu.c
+> index b70179e9e875..9f61136e4bb1 100644
+> --- a/arch/riscv/kvm/vcpu_sbi_pmu.c
+> +++ b/arch/riscv/kvm/vcpu_sbi_pmu.c
+> @@ -64,6 +64,9 @@ static int kvm_sbi_ext_pmu_handler(struct kvm_vcpu *vcpu, struct kvm_run *run,
+>  	case SBI_EXT_PMU_COUNTER_FW_READ:
+>  		ret = kvm_riscv_vcpu_pmu_ctr_read(vcpu, cp->a0, retdata);
+>  		break;
+> +	case SBI_EXT_PMU_SNAPSHOT_SET_SHMEM:
+> +		ret = kvm_riscv_vcpu_pmu_setup_snapshot(vcpu, cp->a0, cp->a1, cp->a2, retdata);
+> +		break;
+>  	default:
+>  		retdata->err_val = SBI_ERR_NOT_SUPPORTED;
+>  	}
+> diff --git a/drivers/perf/riscv_pmu_sbi.c b/drivers/perf/riscv_pmu_sbi.c
+> index 8de5721e8019..1a22ce1ff8c8 100644
+> --- a/drivers/perf/riscv_pmu_sbi.c
+> +++ b/drivers/perf/riscv_pmu_sbi.c
+> @@ -802,7 +802,7 @@ static noinline void pmu_sbi_start_ovf_ctrs_snapshot(struct cpu_hw_events *cpu_h
+>  	struct riscv_pmu_snapshot_data *sdata = cpu_hw_evt->snapshot_addr;
+>  
+>  	for_each_set_bit(idx, cpu_hw_evt->used_hw_ctrs, RISCV_MAX_COUNTERS) {
+> -		if (ctr_ovf_mask & (1 << idx)) {
+> +		if (ctr_ovf_mask & (BIT(idx))) {
+>  			event = cpu_hw_evt->events[idx];
+>  			hwc = &event->hw;
+>  			max_period = riscv_pmu_ctr_get_width_mask(event);
+> -- 
+> 2.34.1
+>
+
+Thanks,
+drew
 
