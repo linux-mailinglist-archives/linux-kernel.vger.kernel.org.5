@@ -1,225 +1,104 @@
-Return-Path: <linux-kernel+bounces-89385-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89386-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5245D86EFAF
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 09:53:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 642C086EFB2
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 09:57:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07CD92830C8
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 08:53:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9466C1C216DD
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 08:57:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED0C413AE8;
-	Sat,  2 Mar 2024 08:53:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ev8+Gzx/"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 174E612E52;
+	Sat,  2 Mar 2024 08:57:29 +0000 (UTC)
+Received: from bmailout3.hostsharing.net (bmailout3.hostsharing.net [176.9.242.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21C7E134A1
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 08:53:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7DBB134A1;
+	Sat,  2 Mar 2024 08:57:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=176.9.242.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709369595; cv=none; b=Jy7npFqfpc0DOZprcXqy1N5Ipa0PNWinsnZMtZv3eHoJfaak5N0N+7gQ81fI9cRmmVfmPr4+I+D302l4JyVmR9y3qBHu3IsPpD0teyipB/gRy6DAAJe7kxnlP8+tvNkf6PoHEmoblSLpi0V71Mrc3+9RrylOOvmdV33QGdmYsQU=
+	t=1709369848; cv=none; b=ZIfaqkkU6ogWC/3ckN6QfOyfAxH084S5PqjeZFv5cay4Vz7wkKLRo8Bv0IXmF2SiRz05N8RjLDuvTki/nNTpFYVEcHYmYd46rqnDn8pUkP+wKim7ZKaMWqjUsp3j+8Rjh84NaXBO6ZGsWgwON14Kc/cZjoqJ6c+yr4Lt4oNpPH8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709369595; c=relaxed/simple;
-	bh=aV8Ei542Y0UmrXH0f/tijllGgB4z8I12/eGvGgGnZ14=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=okwvPs75PQM8+NaK3HU/J372npm4+hQJejc5w5G6NATeBkfYNtguuucDhcnLKFBpeWsMlb3RQaV+fEZOzIku2+78BQay/wwPU36B1lcwiP8QdxG2sdsEleKytCr+OuXrSv9JsM8e+xKqq+VZzU1Fkd8ay0SDo0oFvVoO7oomzU8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ev8+Gzx/; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709369593; x=1740905593;
-  h=date:from:to:cc:subject:message-id;
-  bh=aV8Ei542Y0UmrXH0f/tijllGgB4z8I12/eGvGgGnZ14=;
-  b=ev8+Gzx/JcOSAJDbDYQwwvye5EoO1C1+0ebwqN32TiKxuMrarEJRCllA
-   7lMVrTaqzRZ9dRZ7kJQL7vlNKo+wFbtq+0A5PAZ+SeeOKJT/LqhHLdtK7
-   q1sCthp7+/O0Rtgx2pHGnAWeXI4L33CEB5Qyq92XPVuDfgL4gTW0lsBzv
-   mtLPto0Q42n4WQqGIkQkMPjYt8jJ1egnoT+n8Qvq7ErT/h5Wvf6/68OS8
-   fw4Dlvr0mR7nNSB0E/HCJpnust0F8asZ7OshBTAZKmJ2dh66fmG/7r9hm
-   /bZE70LvYN6rhF5NQSUdDh09oFTQXjOlrtHwcnuZaJ0LO4M85fbJPrwlG
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11000"; a="3777635"
-X-IronPort-AV: E=Sophos;i="6.06,199,1705392000"; 
-   d="scan'208";a="3777635"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2024 00:53:12 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,199,1705392000"; 
-   d="scan'208";a="31618205"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by fmviesa002.fm.intel.com with ESMTP; 02 Mar 2024 00:53:11 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rgL7F-000EUD-1P;
-	Sat, 02 Mar 2024 08:53:09 +0000
-Date: Sat, 02 Mar 2024 16:53:03 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:x86/core] BUILD SUCCESS
- 25525edd9c99d3aa799e80a8e98bdd62ed1639f9
-Message-ID: <202403021659.DK6F6h5g-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1709369848; c=relaxed/simple;
+	bh=KET+C1+pfLWG4caZqUFEt1d4ZyQE5G3G8vMo+wIeGCU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AiUjDTm36kq13yusSp+7/ZgcR2TGBGTs4Gfb3zYO6Iy1O2crtz0dVRgccx5NicNOP0crwYNa2PCDPszOlnHaUEsyr4DzFh7WDBhBjeQYp27Q+/gl5cajjgSIqshcmTGWdJEFlDwM5MnV287m8m5P1qexlKFBvInYKigPYBMGo1k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de; spf=none smtp.mailfrom=h08.hostsharing.net; arc=none smtp.client-ip=176.9.242.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
+Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
+	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
+	by bmailout3.hostsharing.net (Postfix) with ESMTPS id 661B7100D9401;
+	Sat,  2 Mar 2024 09:57:17 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+	id 1AFF52DB06; Sat,  2 Mar 2024 09:57:17 +0100 (CET)
+Date: Sat, 2 Mar 2024 09:57:17 +0100
+From: Lukas Wunner <lukas@wunner.de>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Saurabh Sengar <ssengar@linux.microsoft.com>, bhelgaas@google.com,
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+	alexander.stein@ew.tq-group.com, decui@microsoft.com,
+	Krzysztof Wilczy??ski <kwilczynski@kernel.org>
+Subject: Re: [PATCH] PCI/sysfs: Fix race in pci sysfs creation
+Message-ID: <20240302085717.GA8140@wunner.de>
+References: <1702093576-30405-1-git-send-email-ssengar@linux.microsoft.com>
+ <20240206220715.GA884075@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240206220715.GA884075@bhelgaas>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/core
-branch HEAD: 25525edd9c99d3aa799e80a8e98bdd62ed1639f9  x86/idle: Select idle routine only once
+On Tue, Feb 06, 2024 at 04:07:15PM -0600, Bjorn Helgaas wrote:
+> Krzysztof has done a ton of work to convert these files to static
+> attributes, where the device model prevents most of these races:
+> 
+>   506140f9c06b ("PCI/sysfs: Convert "index", "acpi_index", "label" to static attributes")
+>   d93f8399053d ("PCI/sysfs: Convert "vpd" to static attribute")
+>   f42c35ea3b13 ("PCI/sysfs: Convert "reset" to static attribute")
+>   527139d738d7 ("PCI/sysfs: Convert "rom" to static attribute")
+>   e1d3f3268b0e ("PCI/sysfs: Convert "config" to static attribute")
+> 
+> and he even posted a series to do the same for the resource files:
+> 
+>   https://lore.kernel.org/linux-pci/20210910202623.2293708-1-kw@linux.com/
+> 
+> I can't remember why we didn't apply that at the time, and it no
+> longer applies cleanly, but I think that's the direction we should go.
 
-elapsed time: 732m
+When I brought up resource sysfs files in October, Bjorn said:
 
-configs tested: 137
-configs skipped: 3
+    I think the reason pci_sysfs_init() exists in the first place is
+    because those resources may be assigned after pci_device_add(), and
+    (my memory is hazy here) it seems like changing the size of binary
+    attributes is hard, which might fit with the
+    pci_remove_resource_files() and pci_create_resource_files() in the
+    resource##n##_resize_store() macro
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+    https://lore.kernel.org/all/20231019200110.GA1410324@bhelgaas/
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240302   gcc  
-arc                   randconfig-002-20240302   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm                   randconfig-001-20240302   gcc  
-arm                   randconfig-002-20240302   gcc  
-arm                   randconfig-003-20240302   gcc  
-arm                   randconfig-004-20240302   clang
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240302   gcc  
-arm64                 randconfig-002-20240302   gcc  
-arm64                 randconfig-003-20240302   clang
-arm64                 randconfig-004-20240302   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240302   gcc  
-csky                  randconfig-002-20240302   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240302   clang
-hexagon               randconfig-002-20240302   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240302   clang
-i386         buildonly-randconfig-002-20240302   gcc  
-i386         buildonly-randconfig-003-20240302   gcc  
-i386         buildonly-randconfig-004-20240302   clang
-i386         buildonly-randconfig-005-20240302   gcc  
-i386         buildonly-randconfig-006-20240302   gcc  
-i386                                defconfig   clang
-i386                  randconfig-001-20240302   clang
-i386                  randconfig-002-20240302   gcc  
-i386                  randconfig-003-20240302   clang
-i386                  randconfig-004-20240302   gcc  
-i386                  randconfig-005-20240302   gcc  
-i386                  randconfig-006-20240302   clang
-i386                  randconfig-011-20240302   gcc  
-i386                  randconfig-012-20240302   gcc  
-i386                  randconfig-013-20240302   gcc  
-i386                  randconfig-014-20240302   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240302   gcc  
-loongarch             randconfig-002-20240302   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240302   gcc  
-nios2                 randconfig-002-20240302   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240302   gcc  
-parisc                randconfig-002-20240302   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc               randconfig-001-20240302   clang
-powerpc               randconfig-002-20240302   clang
-powerpc               randconfig-003-20240302   gcc  
-powerpc64             randconfig-001-20240302   clang
-powerpc64             randconfig-002-20240302   gcc  
-powerpc64             randconfig-003-20240302   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-riscv                 randconfig-001-20240302   gcc  
-riscv                 randconfig-002-20240302   gcc  
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-001-20240302   gcc  
-s390                  randconfig-002-20240302   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                    randconfig-001-20240302   gcc  
-sh                    randconfig-002-20240302   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240302   gcc  
-sparc64               randconfig-002-20240302   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20240302   gcc  
-um                    randconfig-002-20240302   clang
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64                              defconfig   gcc  
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
-xtensa                randconfig-001-20240302   gcc  
-xtensa                randconfig-002-20240302   gcc  
+I'm wondering in how far Krzysztof's above-mentioned patches
+address the issue of late-appearing resources?
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+In the meantime I've learned of the existence of sysfs_update_group().
+It would seem to me that if resources such as the ROM appear late,
+we should just call sysfs_update_group() to make them show up in sysfs
+(or correct the size of their sysfs files).
+
+But that requires that we identify the places where resources
+are unhidden.  Do we know where this happens?
+
+Thanks,
+
+Lukas
 
