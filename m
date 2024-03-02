@@ -1,157 +1,123 @@
-Return-Path: <linux-kernel+bounces-89256-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89258-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7EBA86ED48
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 01:17:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B33286ED50
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 01:17:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F05328163B
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 00:17:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9B372880E8
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 00:17:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC8151877;
-	Sat,  2 Mar 2024 00:14:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 507E2A95E;
+	Sat,  2 Mar 2024 00:16:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="gOkPtCKn"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Uc0F4Ca6"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 965B010E6
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 00:14:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C73D110E3
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 00:16:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709338490; cv=none; b=Wb6zDeOj7tzxFmyrFXxq+b9nNm8k/jGGcntpDNLQlPo9VwWulEHanvMjiEung8MHrR0HCDVe6ve/EV01mtmxtDeVsKI18BGQo4WAMxM+kG5LA0HP+AuVNgaFBRoJpj0VPJHhexaB7/nioi+j+5g8e/Xb9JHMFbVFYONeHwrg668=
+	t=1709338617; cv=none; b=K4vHjT3EN7dy0Lek3FjcVyO8b5zstbqHT6rLL+L05276+Y9jNsAGHiGodRM6aRv8yM8RLKZYZTE4Wo/aQGTkmWFJgQyYPjkLwc84OeNONvD7ejLcak2SwwlyAFAPtT+loXHnoo6MGyFS24MZ2oRoAmvrJ01lpa9ORSogROTeQok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709338490; c=relaxed/simple;
-	bh=J9RecM11zoh+0vCDfzEiQKHVBWqECX6ysWPdITOtwpg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n2ubKgqnH15s27loEP0dtxVAyHGaK8LainqeffrS0sl6II7zBtqocfdjJnVrc25BiUMtDX7zGzvTLvw6kfX5YegFSipC7rVAezutgzicgOjcad2fjw2s1r2zfv63vgOOf7+gpu5eBRbBp4pe2e9ryI5xFCE/bjSUWXfuqu7Y6tg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=gOkPtCKn; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e5760eeb7aso2370592b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 16:14:48 -0800 (PST)
+	s=arc-20240116; t=1709338617; c=relaxed/simple;
+	bh=pgSiW+xTZmFhlX83o7Jy94TLdmZvLPZgS0gnfRjbOfE=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=K9+RlpTjsgyBpA5FNjDLYbV24LNZywXio+DnpxXm2DkgmAthiwhevykjY93pe3FsG4sfws1jFvcaZwcKltr974kDamQH4XaZioKJSxpdwSCL0QVEIK+7+L9o4PI9bCbrDd7Z5KqGApnQTsMDhtl034rQC5BREBAcEOqjan/GtHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ipylypiv.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Uc0F4Ca6; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ipylypiv.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dcbee93a3e1so4694612276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 16:16:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709338488; x=1709943288; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FF4IiXm7A+T8Frcn1xhwOocDaZJ/4WKQwj1y8lgr4F8=;
-        b=gOkPtCKnpB1O7rMJ+Q7MkzCYfrC0Wn69S0rpH6FJKIwtblME4dUFVbWIl4EddOq/dh
-         3CdOIeZ0NkfIpc89Q2u4BDeZ2B9azSNDl9OOPCoeLU/qTTvQTHj8X0O1nn40rqm8n7um
-         p9oXDZuOFCJDgP0i/u1VtIg4d6ymgM4cN5AnQ=
+        d=google.com; s=20230601; t=1709338614; x=1709943414; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=XJVqfGzfplRxpO5E0p6+cO7VAdJkT8FDhuCSfsmbM5I=;
+        b=Uc0F4Ca6r8FXVZSUSeciJODpxecUFJ/UH7kkvl3HBmmg/tnNFI76oedrrciyfRf6Y1
+         E1jOXF4ihLc1zmwvOgWN3Kl0aOyJ0azxqpHreaSEc0Kj3upVwVp/bNvz/RZbgnC395Ij
+         rDPZbS8QSTFTYfvOb0Oww8lruD1oaiyIeaJFTbosCz0/MNWm4qlH0ug/svU9uYhijzzg
+         d8pugB0guCjYycedqAJ4bDhh8DzbBrJq0EkbDjnfKc/oFjFQNAjZwpz6NHfLbnOEY7EY
+         c02pkEpj/IaNrWg2F4jabQYmXd1XzgD11FSLo/qjcUh3ZB+i2nWmIfqVtMpnPUeWLI9z
+         JXhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709338488; x=1709943288;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FF4IiXm7A+T8Frcn1xhwOocDaZJ/4WKQwj1y8lgr4F8=;
-        b=GyR4QGDJr55CiU7d0P+ls9dblc2x2EiHMd0y9tY/uuoTI2j0V7Hetkw2ptyrTgeEiJ
-         ZoipsbFilUPrJVurcuietz0vyvVB/jm/9AyjJaYCeG2n+GFF61qNDIXXTQaAcGJJzcfi
-         9bvL03+XfrCwk1WVDIKwanroIJGi9jUrBTQ0pnOgt+IaQ/wyq4Thqf95rcRptzdC0Qbd
-         812ly9/Cj3zKMa+jnrR3eIihen4ja8wzKKKSuLA7isiZdv6/DpaCQlwutN36sUNhMvM3
-         uaHpX4/U4Z1BT5sDWabABfN3eoZcmYd7sxSv/hc5MKCjBta79f2MX6430JWWYKX0o6JK
-         prNw==
-X-Forwarded-Encrypted: i=1; AJvYcCXnBZtMsjwXGtaGZsQdrmqgOtK616SPZnrw15j/mRGjgltHefIRdNN6C0T0hzCAJUDfxBpke3zvpmaONP181NDq1JF/TcAdLs4vgcuO
-X-Gm-Message-State: AOJu0Yz6eKSBrqoQZUMaX+mKHxSxt9Nr6h/1ErE/hRcfKlKbqHx1jO/m
-	s0wLkOJXC5fOYvdANf9KUVPgOlKLklPSAFcM2G/DtEXX2d2NdEr4ouKpCRrjlQ==
-X-Google-Smtp-Source: AGHT+IEQo2qIPhB9LTmigxSPC/z8GP5w2KmXdHPe4k2dtlqi/60ZWzje2+zCus9dKjUyCYKc5QJ4pA==
-X-Received: by 2002:a05:6a00:1916:b0:6e5:e8ee:38f2 with SMTP id y22-20020a056a00191600b006e5e8ee38f2mr628578pfi.23.1709338488017;
-        Fri, 01 Mar 2024 16:14:48 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id e29-20020aa7981d000000b006e592a2d073sm3423740pfl.161.2024.03.01.16.14.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 16:14:47 -0800 (PST)
-Date: Fri, 1 Mar 2024 16:14:46 -0800
-From: Kees Cook <keescook@chromium.org>
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-	linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] RDMA/uverbs: Avoid -Wflex-array-member-not-at-end
- warnings
-Message-ID: <202403011613.BB548211F3@keescook>
-References: <ZeIgeZ5Sb0IZTOyt@neat>
+        d=1e100.net; s=20230601; t=1709338614; x=1709943414;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XJVqfGzfplRxpO5E0p6+cO7VAdJkT8FDhuCSfsmbM5I=;
+        b=vSW/cGhNh56lyPpuQp2iAGNHyDOW6aUJbY52AkuTOvXQeoOLl5nuA0XmP+XZVqeS/J
+         F7we83eR8S7fxcL5gqhcYZ9q7g3U7NzEuw817QkC8bx1uj+Z5PYKTkg84VAkw2DreTdj
+         vhxdU7XInFqeyxf5lzFrSHM6hs+Yi/ViKwYF+2OYqkcsUDxPkiJDtRCqxXQr5wnSUFKP
+         OwpqoWP7kg4ek9MfPDBHZf3rY7jzhq0s7MC8zwhCncxHM+944wii7qF39d8cpTjt6q8t
+         3QEGo8JKM9JZapYeQdRxggNzRFKzAPd96MjRcDr2OTkFH2AJc1gXQJMVBrm1WVKQBk6F
+         Anzg==
+X-Forwarded-Encrypted: i=1; AJvYcCWCHJ+P90Pji8kmmUZWHKF/8d/mQfxQsE3AzR76IRBa5lYZSsDFkkWb3gYzOkbJXEjFt38AFvUQNbnLLDdXpj5vhRnT4CN3EdO2FwwZ
+X-Gm-Message-State: AOJu0YydH8dF6uKPoH5knSJr+/n5Ctu/Kgm9igCsEfBOSd5pHeu9Uoe3
+	KdKkIatXtYE33rnhNLtyBPro8pKKpnAt1/ooTWSGcYwgw2VagcPJdxuSs/nhctjOO6srmWlSyPh
+	L4CHydzIA0g==
+X-Google-Smtp-Source: AGHT+IF8MBkXR+4X6PdgrM7IJa8RzUArE+pN73OYsy0OYujkB856aRXm5tQ58UhSH5oUu5ad9tsySL5EyAhqGQ==
+X-Received: from ipylypiv.svl.corp.google.com ([2620:15c:2c5:13:2afe:1a8e:f846:999f])
+ (user=ipylypiv job=sendgmr) by 2002:a05:6902:1209:b0:dc6:e20f:80cb with SMTP
+ id s9-20020a056902120900b00dc6e20f80cbmr115663ybu.3.1709338613902; Fri, 01
+ Mar 2024 16:16:53 -0800 (PST)
+Date: Fri,  1 Mar 2024 16:15:57 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZeIgeZ5Sb0IZTOyt@neat>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
+Message-ID: <20240302001603.1012084-1-ipylypiv@google.com>
+Subject: [PATCH v2 0/5] NCQ Priority sysfs sttributes for libsas
+From: Igor Pylypiv <ipylypiv@google.com>
+To: Damien Le Moal <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>, 
+	John Garry <john.g.garry@oracle.com>, Jason Yan <yanaijie@huawei.com>, 
+	"James E.J. Bottomley" <jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, 
+	Jack Wang <jinpu.wang@cloud.ionos.com>, Hannes Reinecke <hare@suse.de>
+Cc: TJ Adams <tadamsjr@google.com>, linux-ide@vger.kernel.org, 
+	linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Igor Pylypiv <ipylypiv@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Mar 01, 2024 at 12:37:45PM -0600, Gustavo A. R. Silva wrote:
-> -Wflex-array-member-not-at-end is coming in GCC-14, and we are getting
-> ready to enable it globally.
-> 
-> There are currently a couple of objects (`alloc_head` and `bundle`) in
-> `struct bundle_priv` that contain a couple of flexible structures:
-> 
-> struct bundle_priv {
->         /* Must be first */
->         struct bundle_alloc_head alloc_head;
-> 
-> 	...
-> 
->         /*
->          * Must be last. bundle ends in a flex array which overlaps
->          * internal_buffer.
->          */
->         struct uverbs_attr_bundle bundle;
->         u64 internal_buffer[32];
-> };
-> 
-> So, in order to avoid ending up with a couple of flexible-array members
-> in the middle of a struct, we use the `struct_group_tagged()` helper to
-> separate the flexible array from the rest of the members in the flexible
-> structures:
-> 
-> struct uverbs_attr_bundle {
->         struct_group_tagged(uverbs_attr_bundle_hdr, hdr,
-> 		... the rest of the members
->         );
->         struct uverbs_attr attrs[];
-> };
-> 
-> With the change described above, we now declare objects of the type of
-> the tagged struct without embedding flexible arrays in the middle of
-> another struct:
-> 
-> struct bundle_priv {
->         /* Must be first */
->         struct bundle_alloc_head_hdr alloc_head;
-> 
->         ...
-> 
->         struct uverbs_attr_bundle_hdr bundle;
->         u64 internal_buffer[32];
-> };
-> 
-> We also use `container_of()` whenever we need to retrieve a pointer
-> to the flexible structures.
-> 
-> Notice that the `bundle_size` computed in `uapi_compute_bundle_size()`
-> remains the same.
-> 
-> So, with these changes, fix the following warnings:
-> 
-> drivers/infiniband/core/uverbs_ioctl.c:45:34: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
->    45 |         struct bundle_alloc_head alloc_head;
->       |                                  ^~~~~~~~~~
-> drivers/infiniband/core/uverbs_ioctl.c:67:35: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
->    67 |         struct uverbs_attr_bundle bundle;
->       |                                   ^~~~~~
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+This patch series adds sas_ncq_prio_supported and sas_ncq_prio_enable
+sysfs sttributes for libsas managed SATA devices. Existing libata sysfs
+attributes cannot be used directly because the ata_port location is
+different for libsas.
 
-This looks complex, but I think it's simpler that other changes that
-would have much more collateral impact. Thanks for figuring out a
-workable solution!
+Changes since v1:
+- Dropped the "sas_" prefix to align sysfs sttributes naming with AHCI.
+- Dropped ternary operators to make the code more readable.
+- Corrected the formatting %u -> %d in sysfs_emit().
+- Changed kstrtol() to kstrtobool() in [ata|sas]_ncq_prio_enable_store().
+- Changed comments to use the "/* */" style instead of "//".
+- Added libsas SATA sysfs attributes to mvsas and hisi_sas.
+- Dropped the 'Reviewed-by' tags because they were not sent in-reply
+  to the patch emails.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Igor Pylypiv (5):
+  ata: libata-sata: Factor out NCQ Priority configuration helpers
+  scsi: libsas: Define NCQ Priority sysfs attributes for SATA devices
+  scsi: pm80xx: Add libsas SATA sysfs attributes group
+  scsi: mvsas: Add libsas SATA sysfs attributes group
+  scsi: hisi_sas: Add libsas SATA sysfs attributes group
+
+ drivers/ata/libata-sata.c              | 139 ++++++++++++++++++-------
+ drivers/scsi/hisi_sas/hisi_sas_v1_hw.c |   6 ++
+ drivers/scsi/hisi_sas/hisi_sas_v2_hw.c |   6 ++
+ drivers/scsi/hisi_sas/hisi_sas_v3_hw.c |   6 ++
+ drivers/scsi/libsas/sas_ata.c          |  92 ++++++++++++++++
+ drivers/scsi/mvsas/mv_init.c           |   7 ++
+ drivers/scsi/pm8001/pm8001_ctl.c       |   5 +
+ drivers/scsi/pm8001/pm8001_init.c      |   1 +
+ drivers/scsi/pm8001/pm8001_sas.h       |   1 +
+ include/linux/libata.h                 |   4 +
+ include/scsi/sas_ata.h                 |   6 ++
+ 11 files changed, 233 insertions(+), 40 deletions(-)
 
 -- 
-Kees Cook
+2.44.0.278.ge034bb2e1d-goog
+
 
