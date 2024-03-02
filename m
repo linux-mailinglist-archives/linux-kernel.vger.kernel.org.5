@@ -1,168 +1,138 @@
-Return-Path: <linux-kernel+bounces-89380-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89381-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3F3A86EF9C
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 09:28:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8119B86EFA2
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 09:31:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63D631F23841
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 08:28:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C7D92853DF
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 08:31:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B49302BAFF;
-	Sat,  2 Mar 2024 08:26:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A10C9134C9;
+	Sat,  2 Mar 2024 08:30:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="heSkk9//"
-Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com [209.85.222.45])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IYmCr8Ja"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6505A2BAE0
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 08:26:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 016D012B77
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 08:30:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709368009; cv=none; b=pCp9wECqsWg8yiiuw5F0MD5XRaM+Wfy+C3YxBp3NaUrHVFo/8JUTlxpSNGqG9clfYE2xjgO5USbS7mGW8dwbT8iS4reFoyghrFYMqhrXI4In0WtJZef/KqGdxCtCWp87e/to7zdQdzDpHrSlofbE4CfO6HfXZ0UohB1K8IUiq1g=
+	t=1709368252; cv=none; b=Mo0hiuCXk6gbyiLt737ubheFc/0rs37qmjYqn4IPozJ0dkecaLFqzQYgr0GjIkQCVJPCVFi1n/V462o5kUjdF81J7QOtlEOr8r0OcIYuY3LSK2YO3IoJ+9ZwJfKT4UMAZ33/jKyfds/JiTAcdDoMiTZqwH1Hz/AMIlkO51lfdF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709368009; c=relaxed/simple;
-	bh=4qiWT7px/XZ61aJzZ0nqVgLgmGGalrlbHU97QpvMhqA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nZeIQlZMR/dkMmmQfL6u2sWNLveP1TZqHNBJGukyCLGtt3zKKfmhAQ/lHVGRPx8MlaxDsvMvWxQ8Fot6bS6+maj2GQq211yIyJ9BZsTIMS08FMWGiX/YFS0btHPxXGU8A1B50xcmOfZ/iRZipUaCiczfw09WPabuypYdFPK5AYg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=heSkk9//; arc=none smtp.client-ip=209.85.222.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f45.google.com with SMTP id a1e0cc1a2514c-7db1a2c1f96so332776241.0
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Mar 2024 00:26:47 -0800 (PST)
+	s=arc-20240116; t=1709368252; c=relaxed/simple;
+	bh=FhJw75e257Az8mxXeRR41uutfZ0ZnhQWt5by0FdTv/U=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=g3WTk0JdWFxfbEl4m7Eq6IvKxfgrygSxcgx0/MJhTLMa7LV6vdKu7Qu92ks0oEMjYfeekVq4C3wrcMlyqv3pKP6GJSZv94rPVU/LBrtNrTkLJX/Xi7JCiLkNXStqD1p/qJqh1SekwRUOo2KNJzFeU+sNJnl2QFBWgTRodKyHOrU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IYmCr8Ja; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-412cb54f086so6039215e9.3
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Mar 2024 00:30:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709368006; x=1709972806; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aCMoo3vztN3na2tFmCH4My0IcdECSTBM8qQWswwsWag=;
-        b=heSkk9//pDjfv7GVfAf3o1XqkNjKgToClwAlz8dnYfxc2aS6lP8CbY0B3HZvaWuje5
-         BDKllJGYpcttnxikpdPgo4kjjozdxMwzdgW04oml8Z36aV4KfYCJNzTIhO1MuSbuwlRW
-         vntknIrUp6NTvzzX89997EQSako3e89J+v/2432X2MZ+OHEU4403I4s+YfRcd7SiP2nw
-         ZyUw8J6r/Rr4i9mIlPAguLP8zJUb+TycwWqWg58Q6mFcSfj14jbjpb8B1nJ2YjxIJUGr
-         FATGYZ3Dl6ZvNT8FjYQznqajwp+LQMcY7vqyaCjigtQJvYOs99J+Lsn9boGyNC6ErS/N
-         QflQ==
+        d=linaro.org; s=google; t=1709368248; x=1709973048; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LOcsM9bK++g0t5d/3L0FrYxkOtpdjx7QFD2VwrE7ApY=;
+        b=IYmCr8JasAluwetgH8FdyW04hsAf/kM8vPOMOBVoifM86/Xfpyf1q23pRefkYNGJDe
+         eNt2WrAxLdnrmYkZbgg5hy8DH2Qma/0MhQtk83N8wDljaXCTcdC66LdZB+TjGilVUZrG
+         oQV4+Dst8vVFS5niFD596zOlKvtfRcSvIMCZthO0LsX7boiX5Tw/DjX+efTRSrJqpXd0
+         s4EHHzKhSCJvG1DrqwW9sbs2/hmD8iGddO0NMjqbw0wlgyTvyMtSQhVAE0clDCjiJufg
+         NN+uuFVu4DBqv8B5s3jmF6p7gmcbSFKxVQgjHnnY180KnsmkbzqgOKfxxBkeJ/kPLIEn
+         gMkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709368006; x=1709972806;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aCMoo3vztN3na2tFmCH4My0IcdECSTBM8qQWswwsWag=;
-        b=T2oj2lXpJK/72o6kugcqB4A//1sWcKxFoBwEpKmDuhWEc+fr7aT7TmI7iot2vurxtx
-         4+sP01XiEcSZj5nkxCBK0mk1rKy/UwdSKjrJs8K7GW8z4iHkR6O/jm+GQJRTxZdNA8E+
-         563dTDqwnIWLpLHg3566S5ntHMGHYK/Ot85xnkCd/WPYG/4tpXLj1xu0wzjRnpFB6UqG
-         G5S6IDme5QMfGJbw1WZ8cOj2lFJwQA9/qbq2nB2WYNIlPKCzuzO0Q3HW9oJ5Ywm0v2ZV
-         IkCpXE+Do3cp9+oUCU83lLeuwIourmZF1an68S3SldEBHaxGFpc0kngaj7jY05HedgFw
-         F7qg==
-X-Forwarded-Encrypted: i=1; AJvYcCVdDl29QT2biW7ziMU2HJ15IRIDtW2BOHfMXDiu7n5UCkUqoMtwVgRdtcDnC7botY9Eo/XU2AZZJhaonDo72dUL5Y0+rwh1q3KrAWk9
-X-Gm-Message-State: AOJu0YzZCbFI9vg7B7P3AitLmkd+QLxvOgPpZZkzfKvvTb64Md3MnNX9
-	75wZP7ps6nry2I2/AYfyriD3rR9BpPKL3tiSEOd17VZv7AA1TQYNVPmFgYAOz7tAD5bnum6VR9u
-	I/fXZRgxZxbp/xtR+lnQJnnCWJ6o=
-X-Google-Smtp-Source: AGHT+IFqx0qgBmdSXOzrwh75qX4iDbV7BZR5YjTGsFCbKVpAiusLHNUf4MD2rYjnWbwFihmjN1BYW/gvMWrjGeY8kRs=
-X-Received: by 2002:a05:6102:2a68:b0:472:aa04:7648 with SMTP id
- hp8-20020a0561022a6800b00472aa047648mr685795vsb.27.1709368006223; Sat, 02 Mar
- 2024 00:26:46 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709368248; x=1709973048;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LOcsM9bK++g0t5d/3L0FrYxkOtpdjx7QFD2VwrE7ApY=;
+        b=soSOyw2jus5ZHQQIsyLjb5KdvA5DX20ZYR9YCihrxXNnjxjSF6aYp7MA1706jR/N9y
+         3a5LRQw8i+MqNnFzTCvTIgbbbf+3nu7UflIrHCq40xjheJcs528TfUlkcUJ5FGfiknmL
+         kVerVcR/7X6fzsMVswdQkqhQuc11FuUPLBuP2GF8TmCVdc4cCbKhKVaPcXEGNWohgj9b
+         rVQ7Y/DkQoPPFTxNMAK2vL4zPWPS/WicWk+bYZezq9MEQN9K9LqfM1E3gLTXNPI3xBJa
+         1ngO0POazuff/ARup9oz4dbrvbEG2Jx+fSlMuwQ7qD9KRVnfi3ZX+m7vZkgF00sMkt69
+         xowQ==
+X-Forwarded-Encrypted: i=1; AJvYcCURgvzkqL/pXjTsvQ50w5salqbmTfhbTIYv0htbWHRTC9U9nfwZGXo5TeQulaJqFUVS4b9+ypzjjS9sfgsp9Z+JMp0EDAI0r6o04Khn
+X-Gm-Message-State: AOJu0YyQUhS3yz7RVuW2X2A278t54PT3BnKAjRWFKWb/QXIlQU6vHXBn
+	ZethMaTQdKmmIIgVQdjI1nZ1wW8qHKI0ouvXE2AeXnyRylA4o5mONsBqLfy96Ys=
+X-Google-Smtp-Source: AGHT+IGHC6HfBXM5nrYJHQLRoXksV5gxN2hyd8vm2fltZWuTwZWskF98EeISwQKVDYPxh9Y3tIt5Ng==
+X-Received: by 2002:a05:600c:5024:b0:412:d0ab:a6f2 with SMTP id n36-20020a05600c502400b00412d0aba6f2mr1129766wmr.39.1709368248431;
+        Sat, 02 Mar 2024 00:30:48 -0800 (PST)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id l18-20020adfb112000000b0033d4deb2356sm6729168wra.56.2024.03.02.00.30.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Mar 2024 00:30:47 -0800 (PST)
+Date: Sat, 2 Mar 2024 11:30:43 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc: Marcel Holtmann <marcel@holtmann.org>,
+	Johan Hedberg <johan.hedberg@gmail.com>,
+	linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
+Subject: [PATCH] Bluetooth: ISO: Clean up returns values in iso_connect_ind()
+Message-ID: <5f73d9d7-61d7-49ab-a5e3-adda72685122@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240301230908.7507-1-21cnbao@gmail.com> <ZeKrx8g3DSHaVWhv@gondor.apana.org.au>
-In-Reply-To: <ZeKrx8g3DSHaVWhv@gondor.apana.org.au>
-From: Barry Song <21cnbao@gmail.com>
-Date: Sat, 2 Mar 2024 21:26:34 +1300
-Message-ID: <CAGsJ_4y3xmja7RFd2OUP7V+_sJPj9fqfqDc4TMsie5JSyj2Kzg@mail.gmail.com>
-Subject: Re: [PATCH] iov_iter: call kmap on each page even for lowmem if
- CONFIG_DEBUG_KMAP_LOCAL_FORCE_MAP is enabled
-To: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: viro@zeniv.linux.org.uk, akpm@linux-foundation.org, 
-	linux-kernel@vger.kernel.org, Barry Song <v-songbaohua@oppo.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
 
-On Sat, Mar 2, 2024 at 5:32=E2=80=AFPM Herbert Xu <herbert@gondor.apana.org=
-au> wrote:
->
-> On Sat, Mar 02, 2024 at 12:09:08PM +1300, Barry Song wrote:
-> > From: Barry Song <v-songbaohua@oppo.com>
-> >
-> > copy_page_from_iter_atomic() has the assumption lowmem will only
-> > need one kmap to get start page_address() for all pages. This is
-> > wrong if the debug option CONFIG_DEBUG_KMAP_LOCAL_FORCE_MAP is
-> > enabled. This patch fixes it in the same way with skbuff.h by
-> > always applying kmap one by one even for lowmem,
-> >
-> >  static inline bool skb_frag_must_loop(struct page *p)
-> >  {
-> >  #if defined(CONFIG_HIGHMEM)
-> >       if (IS_ENABLED(CONFIG_DEBUG_KMAP_LOCAL_FORCE_MAP) || PageHighMem(=
-p))
-> >               return true;
-> >  #endif
-> >       return false;
-> >  }
->
-> Thanks for the patch.  Perhaps this could be moved into highmem.h
-> as a helper (kmap_is_highmem)?
+This function either returns 0 or HCI_LM_ACCEPT.  Make it clearer which
+returns are which and delete the "lm" variable because it is no longer
+required.
 
-makes sense. OTOH,  is skb_frag_must_loop even correct as
-DEBUG_KMAP_LOCAL_FORCE_MAP
-is for non-highmem pages and on non-highmem systems.
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+---
+ net/bluetooth/iso.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-config DEBUG_KMAP_LOCAL_FORCE_MAP
-        bool "Enforce kmap_local temporary mappings"
-        depends on DEBUG_KERNEL && ARCH_SUPPORTS_KMAP_LOCAL_FORCE_MAP
-        select KMAP_LOCAL
-        select DEBUG_KMAP_LOCAL
-        help
-          This option enforces temporary mappings through the kmap_local
-          mechanism for non-highmem pages and on non-highmem systems.
-          Disable this for production systems!
+diff --git a/net/bluetooth/iso.c b/net/bluetooth/iso.c
+index 30c777c469f9..8af75d37b14c 100644
+--- a/net/bluetooth/iso.c
++++ b/net/bluetooth/iso.c
+@@ -1910,7 +1910,6 @@ int iso_connect_ind(struct hci_dev *hdev, bdaddr_t *bdaddr, __u8 *flags)
+ 	struct hci_evt_le_big_info_adv_report *ev2;
+ 	struct hci_ev_le_per_adv_report *ev3;
+ 	struct sock *sk;
+-	int lm = 0;
+ 
+ 	bt_dev_dbg(hdev, "bdaddr %pMR", bdaddr);
+ 
+@@ -1954,7 +1953,7 @@ int iso_connect_ind(struct hci_dev *hdev, bdaddr_t *bdaddr, __u8 *flags)
+ 
+ 			if (sk && test_bit(BT_SK_PA_SYNC_TERM,
+ 					   &iso_pi(sk)->flags))
+-				return lm;
++				return 0;
+ 		}
+ 
+ 		if (sk) {
+@@ -2041,16 +2040,14 @@ int iso_connect_ind(struct hci_dev *hdev, bdaddr_t *bdaddr, __u8 *flags)
+ 
+ done:
+ 	if (!sk)
+-		return lm;
+-
+-	lm |= HCI_LM_ACCEPT;
++		return 0;
+ 
+ 	if (test_bit(BT_SK_DEFER_SETUP, &bt_sk(sk)->flags))
+ 		*flags |= HCI_PROTO_DEFER;
+ 
+ 	sock_put(sk);
+ 
+-	return lm;
++	return HCI_LM_ACCEPT;
+ }
+ 
+ static void iso_connect_cfm(struct hci_conn *hcon, __u8 status)
+-- 
+2.43.0
 
-And highmem.c also shows it doesn't depend on CONFIG_HIGHMEM at all,
-
-void *__kmap_local_page_prot(struct page *page, pgprot_t prot)
-{
-        void *kmap;
-        /*
-         * To broaden the usage of the actual kmap_local() machinery always=
- map
-         * pages when debugging is enabled and the architecture has no prob=
-lems
-         * with alias mappings.
-         */
-        if (!IS_ENABLED(CONFIG_DEBUG_KMAP_LOCAL_FORCE_MAP) &&
-!PageHighMem(page))
-                return page_address(page);
-        ...
-}
-EXPORT_SYMBOL(__kmap_local_page_prot);
-
-
-but skb_frag_must_loop is checking it under if defined(CONFIG_HIGHMEM).
-so I guess it is wrong too. Never has a bug been reported.  Probably that i=
-s
-because nobody is really using CONFIG_DEBUG_KMAP_LOCAL_FORCE_MAP,
-I guess :-)
-
-I think the correct skb_frag_must_loop() should be
-
-static inline bool skb_frag_must_loop(struct page *p)
-{
-       return IS_ENABLED(CONFIG_DEBUG_KMAP_LOCAL_FORCE_MAP) || PageHighMem(=
-p);
-}
-
-Thus, kmap_is_highmem() can entirely replace it :-)
-
-> --
-> Email: Herbert Xu <herbert@gondor.apana.org.au>
-> Home Page: http://gondor.apana.org.au/~herbert/
-> PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
-
-Thanks
-Barry
 
