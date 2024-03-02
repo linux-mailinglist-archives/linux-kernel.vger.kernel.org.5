@@ -1,190 +1,313 @@
-Return-Path: <linux-kernel+bounces-89427-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89428-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E05686F03B
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 12:24:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7887F86F03D
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 12:25:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A656284952
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 11:24:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F3CF71F22309
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 11:25:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EBD017557;
-	Sat,  2 Mar 2024 11:23:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="ITZAyO9M"
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44E2E15E9C;
-	Sat,  2 Mar 2024 11:23:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.50.219
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 603C71754E;
+	Sat,  2 Mar 2024 11:25:50 +0000 (UTC)
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB0AB79C8;
+	Sat,  2 Mar 2024 11:25:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709378633; cv=none; b=Szf5GvlJCYKrixjE7f6VrBPqiyYN8tjcqRsD5FGGPEn6vus3QMqLDxpuB0RvW1uqPLRKSzBMQhjnUZu2B8Buk1wfV+9Fj4PaOWriuq6kTeNvQr8HRehTt1V77GEUgWpVNMisXBzp1Ralf9wMIshU8GeXfTMOMMHyeXZTcI/3HJ8=
+	t=1709378749; cv=none; b=ZI4kgepFtQA0Kukq5BOztKcKJxCngasqlDOMpbJgn9C7DtoARR0cKicdWqlvlrchZ+/HoLCuCxtNqxrZ1d++69btvWdnrX+EAgykPhp6mO9Oi0XuMpFkDTaBF6JYqJxgPNzY5lajle1c9dDMPgJy86Vi711Cg8EKhFhv8O//RRk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709378633; c=relaxed/simple;
-	bh=vz0STiFuGpGIPB7MVHeAstWUf1yFWHgemuVe+gtmqWU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=czsRsQS0MPzjYJLmaGMkd+wuNivq6/0Qigw8pltkodyyViBevIfr4+JEA7OJ8Sw2eil3kGl3y3nxy8jDlHc/CG1x6iJu0uBxck+g1LaTmE+WxA+LoDkYUx8QpjQ9ZBpr36j50bi43pNG3kKVEMb1MxzLpNqnacMv0F9wRWOlhBU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=ITZAyO9M; arc=none smtp.client-ip=45.254.50.219
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=txL5b
-	BbeQ7LPGE1ean4mj7MJFW+6ma0NRx/geVN9Ohg=; b=ITZAyO9Mi5oRSYWvIU5Cj
-	ouxPJsiPzLkYVzJpaNC5ncmbR9bMxeh+e9Lrg9upHMdaxL5SZvrKpb2cqaqROQyZ
-	UZkd9luMTsi9zgpKxe1YSSs0HuoX/VDNnm8WsmkwmcAczWGr64yY9+Zn49Sme1Ah
-	nXrIlsSfjWo0GUpZ2nlpb0=
-Received: from hpl-virtual-machine.. (unknown [117.173.176.146])
-	by gzga-smtp-mta-g0-5 (Coremail) with SMTP id _____wD3H9nlC+NloshVFA--.24235S2;
-	Sat, 02 Mar 2024 19:22:13 +0800 (CST)
-From: He Peilin <peilinhe2020@163.com>
-To: rostedt@goodmis.org
-Cc: davem@davemloft.net,
-	dsahern@kernel.org,
-	edumazet@google.com,
-	he.peilin@zte.com.cn,
-	jiang.xuexin@zte.com.cn,
-	kuba@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	liu.chun2@zte.com.cn,
-	mhiramat@kernel.org,
-	netdev@vger.kernel.org,
-	xu.xin16@zte.com.cn,
-	yang.yang29@zte.com.cn,
-	zhang.yunkai@zte.com.cn
-Subject: Re: Re: [PATCH] net/ipv4: add tracepoint for icmp_send
-Date: Sat,  2 Mar 2024 06:22:12 -0500
-Message-Id: <20240302112212.8962-1-peilinhe2020@163.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240227090705.1ed08b64@gandalf.local.home>
-References: <20240227090705.1ed08b64@gandalf.local.home>
+	s=arc-20240116; t=1709378749; c=relaxed/simple;
+	bh=sMqS1fumc/mbQ7Gx2OwAlS8gdIKqwndhQBFUGCp6lfw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=k8DlZr9FV12bli4+hSGHkFxo3lqZ41ac/nmgPHOHgak1cw2VvqJXiJ02Rj/6hDzLiOBPwb1e7SRuPdbqzyB8NhLBYmQOUPvOhxFTc9x0uFJQRe9WCI8jjGN0WxiLyxoBtX/QWXAg9I/ugqF+gcGqFvHb+oVdyizffnwZQKEE+7Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
+Received: from [194.95.143.137] (helo=phil.localnet)
+	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <heiko@sntech.de>)
+	id 1rgNUb-0004tX-MU; Sat, 02 Mar 2024 12:25:25 +0100
+From: Heiko Stuebner <heiko@sntech.de>
+To: Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Alexey Charkov <alchark@gmail.com>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Dragan Simic <dsimic@manjaro.org>, Viresh Kumar <viresh.kumar@linaro.org>,
+ Chen-Yu Tsai <wens@kernel.org>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Alexey Charkov <alchark@gmail.com>
+Subject:
+ Re: [PATCH v3 1/5] arm64: dts: rockchip: enable built-in thermal monitoring
+ on RK3588
+Date: Sat, 02 Mar 2024 12:25:24 +0100
+Message-ID: <6279836.31r3eYUQgx@phil>
+In-Reply-To: <20240229-rk-dts-additions-v3-1-6afe8473a631@gmail.com>
+References:
+ <20240229-rk-dts-additions-v3-0-6afe8473a631@gmail.com>
+ <20240229-rk-dts-additions-v3-1-6afe8473a631@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD3H9nlC+NloshVFA--.24235S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxAw4fWFWUur43WF4kGr43trb_yoW5AF15pF
-	1DAFZYgFZ7Jr47uw1Svw1ft3ZIv348uryUKr42ga4jk3Z2yr1xJr4qgr90kF95Ars0kryY
-	vF42v3sxG3WYqrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jf0ePUUUUU=
-X-CM-SenderInfo: xshlzxhqkhjiisq6il2tof0z/1tbiGAuVsWVOBFnVRQAAsR
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-> >  include/trace/events/icmp.h | 57 +++++++++++++++++++++++++++++++++++++++++++++
-> >  net/ipv4/icmp.c             |  4 ++++
-> >  2 files changed, 61 insertions(+)
-> >  create mode 100644 include/trace/events/icmp.h
-> > 
-> > diff --git a/include/trace/events/icmp.h b/include/trace/events/icmp.h
-> > new file mode 100644
-> > index 000000000000..3d9af5769bc3
-> > --- /dev/null
-> > +++ b/include/trace/events/icmp.h
-> > @@ -0,0 +1,57 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +#undef TRACE_SYSTEM
-> > +#define TRACE_SYSTEM icmp
-> > +
-> > +#if !defined(_TRACE_ICMP_H) || defined(TRACE_HEADER_MULTI_READ)
-> > +#define _TRACE_ICMP_H
-> > +
-> > +#include <linux/icmp.h>
-> > +#include <linux/tracepoint.h>
-> > +
-> > +TRACE_EVENT(icmp_send,
-> > +
-> > +		TP_PROTO(const struct sk_buff *skb, int type, int code),
-> > +
-> > +		TP_ARGS(skb, type, code),
-> > +
-> > +		TP_STRUCT__entry(
-> > +				__field(__u16, sport)
+Am Donnerstag, 29. Februar 2024, 20:26:32 CET schrieb Alexey Charkov:
+> Include thermal zones information in device tree for RK3588 variants.
 > 
-> 2 bytes
+> This also enables the TSADC controller unconditionally on all boards
+> to ensure that thermal protections are in place via throttling and
+> emergency reset, once OPPs are added to enable CPU DVFS.
 > 
-> > +				__field(__u16, dport)
+> The default settings (using CRU as the emergency reset mechanism)
+> should work on all boards regardless of their wiring, as CRU resets
+> do not depend on any external components. Boards that have the TSHUT
+> signal wired to the reset line of the PMIC may opt to switch to GPIO
+> tshut mode instead (rockchip,hw-tshut-mode = <1>;)
 > 
-> 2 bytes
+> It seems though that downstream kernels don't use that, even for
+> those boards where the wiring allows for GPIO based tshut, such as
+> Radxa Rock 5B [1], [2], [3]
 > 
-> > +				__field(unsigned short, ulen)
+> [1] https://github.com/radxa/kernel/blob/stable-5.10-rock5/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts#L540
+> [2] https://github.com/radxa/kernel/blob/stable-5.10-rock5/arch/arm64/boot/dts/rockchip/rk3588s.dtsi#L5433
+> [3] https://dl.radxa.com/rock5/5b/docs/hw/radxa_rock_5b_v1423_sch.pdf page 11 (TSADC_SHUT_H)
 > 
-> 2 bytes
+> Signed-off-by: Alexey Charkov <alchark@gmail.com>
+> ---
+>  arch/arm64/boot/dts/rockchip/rk3588s.dtsi | 176 +++++++++++++++++++++++++++++-
+>  1 file changed, 175 insertions(+), 1 deletion(-)
 > 
-> [ 2 byte hole for alignment ]
-> 
-> > +				__field(const void *, skbaddr)
-> 
-> 4/8 bytes
-> 
-> It's best to keep the holes at the end of the TP_STRUCT__entry().
-> 
-> That is, I would move ulen to the end of the structure. It doesn't affect
-> anything else.
-> 
-> -- Steve
-Thank you for pointing that out. The next step is to move __field(unsigned short, ulen) to the end of TP_STRUCT__entry().
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> index 36b1b7acfe6a..9bf197358642 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+> @@ -10,6 +10,7 @@
+>  #include <dt-bindings/reset/rockchip,rk3588-cru.h>
+>  #include <dt-bindings/phy/phy.h>
+>  #include <dt-bindings/ata/ahci.h>
+> +#include <dt-bindings/thermal/thermal.h>
+>  
+>  / {
+>  	compatible = "rockchip,rk3588";
+> @@ -2225,7 +2226,180 @@ tsadc: tsadc@fec00000 {
+>  		pinctrl-1 = <&tsadc_shut>;
+>  		pinctrl-names = "gpio", "otpout";
+>  		#thermal-sensor-cells = <1>;
+> -		status = "disabled";
+> +		status = "okay";
+> +	};
 
+so I've skimmed over the general discussion, though don't have a hard
+opinion in either direction yet. Still there are some low-hanging fruit:
+
+- having the thermal-zones addition in a separate patch would allow to
+  merge the obvious stuff, while this discussion is still ongoing
+- status=okay in a soc dtsi is wrong, because okay is the default status
+  so if anything the status property should be removed
+
+In general I'm not that much of a fan of things just working implicitly.
+So somehow, when someone submits a board devicetree, I expect them to
+having ensured stuff is enabled somewhat ok. So even seeing a simple
+
+	&tsadc {
+		status = "okay"
+	};
+
+suggests that they have at least noticed the existence of thermal stuff.
+
+
+At least that is where my thought-process is at the moment ;-)
+
+
+Heiko
+
+> +	thermal_zones: thermal-zones {
+> +		/* sensor near the center of the SoC */
+> +		package_thermal: package-thermal {
+> +			polling-delay-passive = <0>;
+> +			polling-delay = <0>;
+> +			thermal-sensors = <&tsadc 0>;
+> +
+> +			trips {
+> +				package_crit: package-crit {
+> +					temperature = <115000>;
+> +					hysteresis = <0>;
+> +					type = "critical";
+> +				};
+> +			};
+> +		};
+> +
+> +		/* sensor between A76 cores 0 and 1 */
+> +		bigcore0_thermal: bigcore0-thermal {
+> +			polling-delay-passive = <100>;
+> +			polling-delay = <0>;
+> +			thermal-sensors = <&tsadc 1>;
+> +
+> +			trips {
+> +				/* threshold to start collecting temperature
+> +				 * statistics e.g. with the IPA governor
+> +				 */
+> +				bigcore0_alert0: bigcore0-alert0 {
+> +					temperature = <75000>;
+> +					hysteresis = <2000>;
+> +					type = "passive";
+> +				};
+> +				/* actual control temperature */
+> +				bigcore0_alert1: bigcore0-alert1 {
+> +					temperature = <85000>;
+> +					hysteresis = <2000>;
+> +					type = "passive";
+> +				};
+> +				bigcore0_crit: bigcore0-crit {
+> +					temperature = <115000>;
+> +					hysteresis = <0>;
+> +					type = "critical";
+> +				};
+> +			};
+> +			cooling-maps {
+> +				map0 {
+> +					trip = <&bigcore0_alert1>;
+> +					cooling-device =
+> +						<&cpu_b0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+> +						<&cpu_b1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+> +				};
+> +			};
+> +		};
+> +
+> +		/* sensor between A76 cores 2 and 3 */
+> +		bigcore2_thermal: bigcore2-thermal {
+> +			polling-delay-passive = <100>;
+> +			polling-delay = <0>;
+> +			thermal-sensors = <&tsadc 2>;
+> +
+> +			trips {
+> +				/* threshold to start collecting temperature
+> +				 * statistics e.g. with the IPA governor
+> +				 */
+> +				bigcore2_alert0: bigcore2-alert0 {
+> +					temperature = <75000>;
+> +					hysteresis = <2000>;
+> +					type = "passive";
+> +				};
+> +				/* actual control temperature */
+> +				bigcore2_alert1: bigcore2-alert1 {
+> +					temperature = <85000>;
+> +					hysteresis = <2000>;
+> +					type = "passive";
+> +				};
+> +				bigcore2_crit: bigcore2-crit {
+> +					temperature = <115000>;
+> +					hysteresis = <0>;
+> +					type = "critical";
+> +				};
+> +			};
+> +			cooling-maps {
+> +				map0 {
+> +					trip = <&bigcore2_alert1>;
+> +					cooling-device =
+> +						<&cpu_b2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+> +						<&cpu_b3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+> +				};
+> +			};
+> +		};
+> +
+> +		/* sensor between the four A55 cores */
+> +		little_core_thermal: littlecore-thermal {
+> +			polling-delay-passive = <100>;
+> +			polling-delay = <0>;
+> +			thermal-sensors = <&tsadc 3>;
+> +
+> +			trips {
+> +				/* threshold to start collecting temperature
+> +				 * statistics e.g. with the IPA governor
+> +				 */
+> +				littlecore_alert0: littlecore-alert0 {
+> +					temperature = <75000>;
+> +					hysteresis = <2000>;
+> +					type = "passive";
+> +				};
+> +				/* actual control temperature */
+> +				littlecore_alert1: littlecore-alert1 {
+> +					temperature = <85000>;
+> +					hysteresis = <2000>;
+> +					type = "passive";
+> +				};
+> +				littlecore_crit: littlecore-crit {
+> +					temperature = <115000>;
+> +					hysteresis = <0>;
+> +					type = "critical";
+> +				};
+> +			};
+> +			cooling-maps {
+> +				map0 {
+> +					trip = <&littlecore_alert1>;
+> +					cooling-device =
+> +						<&cpu_l0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+> +						<&cpu_l1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+> +						<&cpu_l2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
+> +						<&cpu_l3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+> +				};
+> +			};
+> +		};
+> +
+> +		/* sensor near the PD_CENTER power domain */
+> +		center_thermal: center-thermal {
+> +			polling-delay-passive = <0>;
+> +			polling-delay = <0>;
+> +			thermal-sensors = <&tsadc 4>;
+> +
+> +			trips {
+> +				center_crit: center-crit {
+> +					temperature = <115000>;
+> +					hysteresis = <0>;
+> +					type = "critical";
+> +				};
+> +			};
+> +		};
+> +
+> +		gpu_thermal: gpu-thermal {
+> +			polling-delay-passive = <0>;
+> +			polling-delay = <0>;
+> +			thermal-sensors = <&tsadc 5>;
+> +
+> +			trips {
+> +				gpu_crit: gpu-crit {
+> +					temperature = <115000>;
+> +					hysteresis = <0>;
+> +					type = "critical";
+> +				};
+> +			};
+> +		};
+> +
+> +		npu_thermal: npu-thermal {
+> +			polling-delay-passive = <0>;
+> +			polling-delay = <0>;
+> +			thermal-sensors = <&tsadc 6>;
+> +
+> +			trips {
+> +				npu_crit: npu-crit {
+> +					temperature = <115000>;
+> +					hysteresis = <0>;
+> +					type = "critical";
+> +				};
+> +			};
+> +		};
+>  	};
+>  
+>  	saradc: adc@fec10000 {
 > 
-> > +				__field(int, type)
-> > +				__field(int, code)
-> > +				__array(__u8, saddr, 4)
-> > +				__array(__u8, daddr, 4)
-> > +		),
-> > +
-> > +		TP_fast_assign(
-> > +				// Get UDP header
-> > +				struct udphdr *uh = udp_hdr(skb);
-> > +				struct iphdr *iph = ip_hdr(skb);
-> > +				__be32 *p32;
-> > +
-> > +				__entry->sport = ntohs(uh->source);
-> > +				__entry->dport = ntohs(uh->dest);
-> > +				__entry->ulen = ntohs(uh->len);
-> > +				__entry->skbaddr = skb;
-> > +				__entry->type = type;
-> > +				__entry->code = code;
-> > +
-> > +				p32 = (__be32 *) __entry->saddr;
-> > +				*p32 = iph->saddr;
-> > +
-> > +				p32 = (__be32 *) __entry->daddr;
-> > +				*p32 =  iph->daddr;
-> > +		),
-> > +
-> > +		TP_printk("icmp_send: type=%d, code=%d. From %pI4:%u to %pI4:%u ulen=%d skbaddr=%p",
-> > +			__entry->type, __entry->code,
-> > +			__entry->saddr, __entry->sport, __entry->daddr,
-> > +			__entry->dport, __entry->ulen, __entry->skbaddr)
-> > +);
-> > +
-> > +#endif /* _TRACE_ICMP_H */
-> > +
-> > +/* This part must be outside protection */
-> > +#include <trace/define_trace.h>
-> > diff --git a/net/ipv4/icmp.c b/net/ipv4/icmp.c
-> > index e63a3bf99617..437bdb7e2650 100644
-> > --- a/net/ipv4/icmp.c
-> > +++ b/net/ipv4/icmp.c
-> > @@ -92,6 +92,8 @@
-> >  #include <net/inet_common.h>
-> >  #include <net/ip_fib.h>
-> >  #include <net/l3mdev.h>
-> > +#define CREATE_TRACE_POINTS
-> > +#include <trace/events/icmp.h>
-> > 
-> >  /*
-> >   *	Build xmit assembly blocks
-> > @@ -599,6 +601,8 @@ void __icmp_send(struct sk_buff *skb_in, int type, int code, __be32 info,
-> >  	struct net *net;
-> >  	struct sock *sk;
-> > 
-> > +	trace_icmp_send(skb_in, type, code);
-> > +
-> >  	if (!rt)
-> >  		goto out;
-> >  
+> 
+
+
+
 
 
