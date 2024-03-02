@@ -1,312 +1,123 @@
-Return-Path: <linux-kernel+bounces-89329-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89328-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 074B586EE73
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 05:02:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AE3786EE6F
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 05:02:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81D091F218E3
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 04:02:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD8A82812DD
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 04:02:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C57F17C6B;
-	Sat,  2 Mar 2024 04:01:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="f1kXHz4N"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 232DA17BDA;
+	Sat,  2 Mar 2024 04:01:07 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C42F1179BC;
-	Sat,  2 Mar 2024 04:01:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 205EE1799E
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 04:01:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709352067; cv=none; b=Sy3/duhyLy7Y/rUf68A2zmp5m218IE+i7CM4FDCcomwNTMmMfcgLwpgoezS+aRgfrlu51kd4KhJ2QVcgWIzVuBA1Dep/h/vpvx2bcKTkw6j/B9w51/KIjyWq21bzaYZB7jzPNjrZ4Xqi82D3GyZ33O6kwYNxKD5Yxk3XbjAJcEw=
+	t=1709352066; cv=none; b=VyRIT8fFtcNPd3JG98vrbgGwgZnjfNfv+cGdy4Qbr0zaiQz4qtG1jFtxiW+I0Ggnd5HXjjShMIrmAjwT0+mGwjFdyuLizn/bfl/NHkgKjzXNXDQgOh1ZLY5G/GgLtIh3s0GcMFQn2byiUs7AbXHWq8a7+srz3HnLz91TpKTl3+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709352067; c=relaxed/simple;
-	bh=QUJ+uyOOht+Lnc6Y4adY/bs8ZcDhOvU50AmkDpCQsfQ=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
-	 In-Reply-To:To:CC; b=afqf6Xm9OnKHmcRPphzIesGuq++POjQeHN0YAkzMZrA1lnPi9mvBMfGOVNz0277IpxO0mbzX/UirwJM2VnEMpGcdgt8iJSvEYIXIWIkEDLuxfBBatZegnzHKJHWtGzDf0nyjyL1oqPkFKRoQ3arAaIkbOlH01UyaPIW6J72jo5c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=f1kXHz4N; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4223k3oR016757;
-	Sat, 2 Mar 2024 04:00:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:date:subject:mime-version:content-type
-	:content-transfer-encoding:message-id:references:in-reply-to:to
-	:cc; s=qcppdkim1; bh=UgXdaho2g1wAGEkx5lrs8R4Q61U+T3fkNPkjg6bs7M4
-	=; b=f1kXHz4N7n9Aak90wcQ+U+760SkFTu0zlkdH+9rpwa3Qx99B6dN7ik9LmpK
-	LFnfLbw47rqvqz2pMzuclBixdyXS6LuuSV/A0WU2+m9fwFpmtf23sFdsqXgyJKxY
-	fW9b1Xc48F4+tT1dgbGbFe2hMl2ItIOEbddtTugAweZ6Ev4a0woNW8bonysH0ZTU
-	GdWrTCWS5BxMDaRGECYRw+0LjmaJ7PTB1aWvCLyknJPqypAdIlynfnzmR7XrG5DZ
-	wIzrQVaSSR4aXDTzkObd1fewCdevns0UZ29PV0+1Ra+/E9J+DawKGR5Y9og5sa3p
-	LXsjCdfzpXof1GV0CXAeikHhLnA==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wkvb700v2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 02 Mar 2024 04:00:58 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42240v8c022368
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 2 Mar 2024 04:00:57 GMT
-Received: from hu-krichai-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 1 Mar 2024 20:00:51 -0800
-From: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-Date: Sat, 2 Mar 2024 09:30:01 +0530
-Subject: [PATCH v8 7/7] PCI: qcom: Add OPP support to scale performance
- state of power domain
+	s=arc-20240116; t=1709352066; c=relaxed/simple;
+	bh=hBzsYWOZ9hwVRXW6geWH07Rr3cKQIp/xHP8NxOBSE6I=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=iPsI9AIz3pGICAs0uS3ypGL45TQgzl9I6GjNB8xZ2R/jIcaK3kHeOJKTzYM6wPfTSoCDNCqMUBXxNYjhCpq6ZmFoVmxarhX+DS4BriAEyZ5oIN50ieSFiHd39/buRuEH1hRD2Qtbqvnqx5ub/NE3TDYO6Tu3LHGeHyL6SRsmoDc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7c7c4065282so366766439f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 20:01:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709352064; x=1709956864;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AmhzJqAXV+V57NGkxV+UmRMvCvOpY6avUDCxlJj3E2s=;
+        b=SW8Z4Pg8y8na5GGJpMe34g1VKAABplosCpOugf5IsnAq4nONqVfP7gdIo6kg6NhYjO
+         SG3v/GM7cgxWze/uDgrQ9wkpGe2XchlkowhOxF8yRIIR+EAaOqBZTpTGqBorVqXsT0eX
+         ovDArla8nKEimUm0wd+LC9EtwX4TB8/7HPo55L4adbGMn0yEvCotSnr2/CIhlc7IlbTM
+         4NwyV9shMNlSVbB7GjVUSUYGo+l3Ud+EtYUR9Shu4Ti6zuYMvy6/YGkToEtteYd//bD7
+         JWp+K7MMM64nWHm5mkmkdRhk19TJbpNDi2qwmSi/+KSfkRFov7CQK+s99Ojvlu0S7FEf
+         NIGA==
+X-Forwarded-Encrypted: i=1; AJvYcCVsMR8D/1KRQlHj7knm3YZPvVHcVFNAVdXgQtInInpxcLqQHaNMoNryA0ARMOmjmIqWU4d295ZEnzWinsOJzIkdmD87TDVpNCo5MMZV
+X-Gm-Message-State: AOJu0YwOeBQTAxrrotmt1w1nPqNYbM4jLQQPEA+pr2m7MGc1UjCuzQBc
+	osAv2Ud1ZcU2a68iHnDTWFfenN4ecgG9sTqcBzlSuTmpF3Ed8wjOF/2DGUQ7cDHNticGwMdUnnW
+	H0NXrnAR3mAPvGxQvyaplxzwtD1tslzHO9oa27q6/z3n/twjd7cNe64E=
+X-Google-Smtp-Source: AGHT+IFRUPmPplefbtK78IRnZ5w2Y8t+CinCnvRdEIVgWapklblAFrEUL2DNokXKruJqxz68JUXw4NlF+Na97JF2EwECkee1Xbso
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20240302-opp_support-v8-7-158285b86b10@quicinc.com>
-References: <20240302-opp_support-v8-0-158285b86b10@quicinc.com>
-In-Reply-To: <20240302-opp_support-v8-0-158285b86b10@quicinc.com>
-To: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring
-	<robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Rob Herring
-	<robh+dt@kernel.org>,
-        Johan Hovold <johan+linaro@kernel.org>,
-        Brian Masney
-	<bmasney@redhat.com>, Georgi Djakov <djakov@kernel.org>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <vireshk@kernel.org>, <quic_vbadigan@quicinc.com>,
-        <quic_skananth@quicinc.com>, <quic_nitegupt@quicinc.com>,
-        <quic_parass@quicinc.com>,
-        Krishna chaitanya chundru
-	<quic_krichai@quicinc.com>
-X-Mailer: b4 0.13-dev-83828
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1709352004; l=5942;
- i=quic_krichai@quicinc.com; s=20230907; h=from:subject:message-id;
- bh=QUJ+uyOOht+Lnc6Y4adY/bs8ZcDhOvU50AmkDpCQsfQ=;
- b=hW7ITjW6G5LvtaqTuJ34NeeUYCWzHiMfeFprZaObeexidG+hGigmIx//ij8DAZ0EZVd7NgK1+
- Sb7gRxYjNI7B+iIK3DWlCVI0HKfrNZ3wGYeUrRERqZuR99URx8KejEH
-X-Developer-Key: i=quic_krichai@quicinc.com; a=ed25519;
- pk=10CL2pdAKFyzyOHbfSWHCD0X0my7CXxj8gJScmn1FAg=
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: ksJOpkJ0QGO-ZZOAlhlqsbEcauEdec9Q
-X-Proofpoint-ORIG-GUID: ksJOpkJ0QGO-ZZOAlhlqsbEcauEdec9Q
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-01_24,2024-03-01_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- bulkscore=0 adultscore=0 mlxlogscore=999 lowpriorityscore=0 phishscore=0
- malwarescore=0 impostorscore=0 clxscore=1015 spamscore=0 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403020031
+X-Received: by 2002:a05:6638:3795:b0:474:d271:9ee7 with SMTP id
+ w21-20020a056638379500b00474d2719ee7mr84168jal.3.1709352063321; Fri, 01 Mar
+ 2024 20:01:03 -0800 (PST)
+Date: Fri, 01 Mar 2024 20:01:03 -0800
+In-Reply-To: <tencent_DAEC42CF7878366DC42DD16D289568E95E0A@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000087ddf70612a58a19@google.com>
+Subject: Re: [syzbot] [rds?] WARNING in rds_conn_connect_if_down
+From: syzbot <syzbot+d4faee732755bba9838e@syzkaller.appspotmail.com>
+To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-QCOM Resource Power Manager-hardened (RPMh) is a hardware block which
-maintains hardware state of a regulator by performing max aggregation of
-the requests made by all of the clients.
+Hello,
 
-PCIe controller can operate on different RPMh performance state of power
-domain based on the speed of the link. And this performance state varies
-from target to target, like some controllers support GEN3 in NOM (Nominal)
-voltage corner, while some other supports GEN3 in low SVS (static voltage
-scaling).
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+WARNING in rds_conn_connect_if_down
 
-The SoC can be more power efficient if we scale the performance state
-based on the aggregate PCIe link bandwidth.
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 5694 at net/rds/connection.c:933 rds_conn_connect_if_down+0x95/0xb0 net/rds/connection.c:933
+Modules linked in:
+CPU: 1 PID: 5694 Comm: syz-executor.0 Not tainted 6.8.0-rc6-syzkaller-g5ad3cb0ed525-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+RIP: 0010:rds_conn_connect_if_down+0x95/0xb0 net/rds/connection.c:933
+Code: 00 4c 89 f0 48 c1 e8 03 42 80 3c 38 00 74 08 4c 89 f7 e8 ee f8 43 f7 49 8b 3e 5b 41 5e 41 5f e9 f1 fa ff ff e8 2c db e1 f6 90 <0f> 0b 90 eb cb 89 d9 80 e1 07 38 c1 7c a9 48 89 df e8 35 f8 43 f7
+RSP: 0018:ffffc900050c78a0 EFLAGS: 00010293
+RAX: ffffffff8ab19224 RBX: 0000000000000002 RCX: ffff88807f89bb80
+RDX: 0000000000000000 RSI: 0000000000000002 RDI: 0000000000000000
+RBP: ffffc900050c7ad0 R08: ffffffff8ab191eb R09: ffffffff8ab2b261
+R10: 0000000000000002 R11: ffff88807f89bb80 R12: ffff8880218c2800
+R13: ffff88802b6d9740 R14: ffff8880182f2000 R15: dffffc0000000000
+FS:  00007f22049de6c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020d10000 CR3: 000000006ea98000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ rds_sendmsg+0x1409/0x2280 net/rds/send.c:1319
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg+0x221/0x270 net/socket.c:745
+ ____sys_sendmsg+0x525/0x7d0 net/socket.c:2584
+ ___sys_sendmsg net/socket.c:2638 [inline]
+ __sys_sendmsg+0x2b0/0x3a0 net/socket.c:2667
+ do_syscall_64+0xf9/0x240
+ entry_SYSCALL_64_after_hwframe+0x6f/0x77
+RIP: 0033:0x7f2204e7dda9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f22049de0c8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00007f2204fac120 RCX: 00007f2204e7dda9
+RDX: 0000000000000000 RSI: 0000000020000800 RDI: 0000000000000003
+RBP: 00007f2204eca47a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000006e R14: 00007f2204fac120 R15: 00007ffff6293078
+ </TASK>
 
-Add Operating Performance Points (OPP) support to vote for RPMh state based
-on the aggregate link bandwidth.
 
-OPP can handle ICC bw voting also, so move ICC bw voting through OPP
-framework if OPP entries are present.
+Tested on:
 
-Different link configurations may share the same aggregate bandwidth,
-e.g., a 2.5 GT/s x2 link and a 5.0 GT/s x1 link have the same bandwidth
-and share the same OPP entry.
-
-As we are moving ICC voting as part of OPP, don't initialize ICC if OPP
-is supported.
-
-Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
----
- drivers/pci/controller/dwc/pcie-qcom.c | 81 +++++++++++++++++++++++++++-------
- 1 file changed, 66 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-index a0266bfe71f1..2ec14bfafcfc 100644
---- a/drivers/pci/controller/dwc/pcie-qcom.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom.c
-@@ -22,6 +22,7 @@
- #include <linux/of.h>
- #include <linux/of_gpio.h>
- #include <linux/pci.h>
-+#include <linux/pm_opp.h>
- #include <linux/pm_runtime.h>
- #include <linux/platform_device.h>
- #include <linux/phy/pcie.h>
-@@ -244,6 +245,7 @@ struct qcom_pcie {
- 	const struct qcom_pcie_cfg *cfg;
- 	struct dentry *debugfs;
- 	bool suspended;
-+	bool opp_supported;
- };
- 
- #define to_qcom_pcie(x)		dev_get_drvdata((x)->dev)
-@@ -1405,15 +1407,13 @@ static int qcom_pcie_icc_init(struct qcom_pcie *pcie)
- 	return 0;
- }
- 
--static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
-+static void qcom_pcie_icc_opp_update(struct qcom_pcie *pcie)
- {
- 	struct dw_pcie *pci = pcie->pci;
--	u32 offset, status;
-+	u32 offset, status, freq;
-+	struct dev_pm_opp *opp;
- 	int speed, width;
--	int ret;
--
--	if (!pcie->icc_mem)
--		return;
-+	int ret, mbps;
- 
- 	offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
- 	status = readw(pci->dbi_base + offset + PCI_EXP_LNKSTA);
-@@ -1425,11 +1425,30 @@ static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
- 	speed = FIELD_GET(PCI_EXP_LNKSTA_CLS, status);
- 	width = FIELD_GET(PCI_EXP_LNKSTA_NLW, status);
- 
--	ret = icc_set_bw(pcie->icc_mem, 0, width * QCOM_PCIE_LINK_SPEED_TO_BW(speed));
--	if (ret) {
--		dev_err(pci->dev, "failed to set interconnect bandwidth: %d\n",
--			ret);
-+	if (pcie->opp_supported) {
-+		mbps = pcie_link_speed_to_mbps(pcie_link_speed[speed]);
-+		if (mbps < 0)
-+			return;
-+
-+		freq = mbps * 1000;
-+		opp = dev_pm_opp_find_freq_exact(pci->dev, freq * width, true);
-+		if (!IS_ERR(opp)) {
-+			ret = dev_pm_opp_set_opp(pci->dev, opp);
-+			if (ret)
-+				dev_err(pci->dev, "Failed to set opp: freq %ld ret %d\n",
-+					dev_pm_opp_get_freq(opp), ret);
-+			dev_pm_opp_put(opp);
-+		}
-+	} else {
-+		ret = icc_set_bw(pcie->icc_mem, 0,
-+				 width * QCOM_PCIE_LINK_SPEED_TO_BW(speed));
-+		if (ret) {
-+			dev_err(pci->dev,
-+				"failed to set interconnect bandwidth for pcie-mem: %d\n", ret);
-+		}
- 	}
-+
-+	return;
- }
- 
- static int qcom_pcie_link_transition_count(struct seq_file *s, void *data)
-@@ -1472,8 +1491,10 @@ static void qcom_pcie_init_debugfs(struct qcom_pcie *pcie)
- static int qcom_pcie_probe(struct platform_device *pdev)
- {
- 	const struct qcom_pcie_cfg *pcie_cfg;
-+	unsigned long max_freq = INT_MAX;
- 	struct device *dev = &pdev->dev;
- 	struct qcom_pcie *pcie;
-+	struct dev_pm_opp *opp;
- 	struct dw_pcie_rp *pp;
- 	struct resource *res;
- 	struct dw_pcie *pci;
-@@ -1540,9 +1561,36 @@ static int qcom_pcie_probe(struct platform_device *pdev)
- 		goto err_pm_runtime_put;
- 	}
- 
--	ret = qcom_pcie_icc_init(pcie);
--	if (ret)
-+	 /* OPP table is optional */
-+	ret = devm_pm_opp_of_add_table(dev);
-+	if (ret && ret != -ENODEV) {
-+		dev_err_probe(dev, ret, "Failed to add OPP table\n");
- 		goto err_pm_runtime_put;
-+	}
-+
-+	/*
-+	 * Use highest OPP here if the OPP table is present. At the end of
-+	 * the probe(), OPP will be updated using qcom_pcie_icc_opp_update().
-+	 */
-+	if (ret != -ENODEV) {
-+		opp = dev_pm_opp_find_freq_floor(dev, &max_freq);
-+		if (!IS_ERR(opp)) {
-+			ret = dev_pm_opp_set_opp(dev, opp);
-+			if (ret)
-+				dev_err_probe(pci->dev, ret,
-+					      "Failed to set opp: freq %ld\n",
-+					      dev_pm_opp_get_freq(opp));
-+			dev_pm_opp_put(opp);
-+		}
-+		pcie->opp_supported = true;
-+	}
-+
-+	/* Skip ICC init if OPP is supported as ICC bw is handled by OPP */
-+	if (!pcie->opp_supported) {
-+		ret = qcom_pcie_icc_init(pcie);
-+		if (ret)
-+			goto err_pm_runtime_put;
-+	}
- 
- 	ret = pcie->cfg->ops->get_resources(pcie);
- 	if (ret)
-@@ -1562,7 +1610,7 @@ static int qcom_pcie_probe(struct platform_device *pdev)
- 		goto err_phy_exit;
- 	}
- 
--	qcom_pcie_icc_update(pcie);
-+	qcom_pcie_icc_opp_update(pcie);
- 
- 	if (pcie->mhi)
- 		qcom_pcie_init_debugfs(pcie);
-@@ -1621,10 +1669,13 @@ static int qcom_pcie_suspend_noirq(struct device *dev)
- 			qcom_pcie_host_init(&pcie->pci->pp);
- 			pcie->suspended = false;
- 		}
--		qcom_pcie_icc_update(pcie);
-+		qcom_pcie_icc_opp_update(pcie);
- 		return ret;
- 	}
- 
-+	if (pcie->opp_supported)
-+		dev_pm_opp_set_opp(pcie->pci->dev, NULL);
-+
- 	return 0;
- }
- 
-@@ -1647,7 +1698,7 @@ static int qcom_pcie_resume_noirq(struct device *dev)
- 		pcie->suspended = false;
- 	}
- 
--	qcom_pcie_icc_update(pcie);
-+	qcom_pcie_icc_opp_update(pcie);
- 
- 	return 0;
- }
-
--- 
-2.42.0
+commit:         5ad3cb0e Merge tag 'for-v6.8-rc2' of git://git.kernel...
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=120ebcf2180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fad652894fc96962
+dashboard link: https://syzkaller.appspot.com/bug?extid=d4faee732755bba9838e
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=107427ac180000
 
 
