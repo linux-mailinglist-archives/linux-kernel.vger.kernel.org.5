@@ -1,311 +1,187 @@
-Return-Path: <linux-kernel+bounces-89510-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89511-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73BF786F15E
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 17:37:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1828286F161
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 17:40:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 97AB51C20D8A
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 16:37:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 97A301F220D2
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 16:40:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F40AC2375F;
-	Sat,  2 Mar 2024 16:37:25 +0000 (UTC)
-Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A82B22627;
+	Sat,  2 Mar 2024 16:40:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="RJ8jLgvP"
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2071.outbound.protection.outlook.com [40.107.8.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B19F17BDA
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 16:37:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709397445; cv=none; b=VkknFLovJ+j2xacQ/JNFMLL9UDz77Gm6cuvEWN4RbTsQn9cqpQCbkmSXTMAOX5URanZPDZzGOCyPwCVi7K2ccOKUE9VJLn/23dELn6hWnofFAKfySvjrvLaHLJEW/ZRvhAHtL/KH8R0/RIj5lfqyodLWpunVS/h+vp0utQLvNbk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709397445; c=relaxed/simple;
-	bh=9IC3fMEoEfXo3NNBOsCfC/33CDE0noCZBrsTmZNyk4k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=L6DsKwe52AmBH8VzZV48EbnUHF07ZHzmAzTpP/mIsrsRE4fFUvgldp4TTCxtS5WfLdiTOB/ee/T0jMM1/gcmP1VWuLExs+/ZgIOQPcrxZomsCs67GzITGtaChWKdCX4GPbwsHN6ovVxq+LZT/+0puzFOh7jZOtMAzfesTXMIXg8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=redhat.com; arc=none smtp.client-ip=209.85.219.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-68f51c5f9baso18153916d6.3
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Mar 2024 08:37:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709397441; x=1710002241;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1bU93HGrxoKEjIsJ9NGLvb4RDQbkWY7Y2iFs9PS//8I=;
-        b=EpzJcNCisOt84BJ1TSZFK6H+F5rPb5eVXWe211LfM5pnx1Ca6cGVRTaMqxz6Y5GnpN
-         qb8gvtBtA7AOtPQVelnAWyJE4yDnDBzaRvFVLYZGPf1yUoeVfQ+O8wmLu73f1KUjtmrg
-         Updxpk68SbVRh566eldyrpcaRhoPdWiG+cZ2Sdj4IP/YZZD3uXVqSckdbx+iS1LILOdi
-         sPoeIostrTiabD3u9NTZhcH63Lji7/Ld/2ez+S3S2qy4P+v7i2TKWCraUSGZ8QTrIpB6
-         HHI4aPjM51LyskhMZsTeydgGKMKDDwq5GGfGV5HXdJVODv/6ves6gTDcQDNOz/K/nbV4
-         T2Yw==
-X-Forwarded-Encrypted: i=1; AJvYcCWAYSP1DaShL7cCkHoa3wJ9zDD9GGhoNWvRkfw8dSmVhfXD/HuYCKSMoH3+G4BVChUkjIFi1tnaJg5yicOpbp0BJSaKY3hw9p9ju5J4
-X-Gm-Message-State: AOJu0YyP9vC/K2KZGKSJS1Kw7SavfsVGBVIn84DW50e3o5l/3XjNbsWQ
-	wy4rSv7wyfkN46qTGljzMCBhtAh2ghyrQNhG/l5zLxNVtCCvSO4LWEOPxrvR3A==
-X-Google-Smtp-Source: AGHT+IGWfJd4hsp4cquzrMgFaq/8ztZK/NQH0jQErvnt6KcdvzJSodCboJ3PnepuNNUxb0g3iW3fHA==
-X-Received: by 2002:a0c:f885:0:b0:690:4916:4de9 with SMTP id u5-20020a0cf885000000b0069049164de9mr4614368qvn.34.1709397441567;
-        Sat, 02 Mar 2024 08:37:21 -0800 (PST)
-Received: from localhost (pool-68-160-141-91.bstnma.fios.verizon.net. [68.160.141.91])
-        by smtp.gmail.com with ESMTPSA id ks30-20020a056214311e00b0068ffde5efb0sm3123189qvb.49.2024.03.02.08.37.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Mar 2024 08:37:21 -0800 (PST)
-Date: Sat, 2 Mar 2024 11:37:20 -0500
-From: Mike Snitzer <snitzer@kernel.org>
-To: Fan Wu <wufan@linux.microsoft.com>
-Cc: corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
-	serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org,
-	axboe@kernel.dk, agk@redhat.com, eparis@redhat.com,
-	paul@paul-moore.com, linux-doc@vger.kernel.org,
-	linux-integrity@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
-	dm-devel@lists.linux.dev, audit@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Deven Bowers <deven.desai@linux.microsoft.com>
-Subject: Re: [RFC PATCH v13 14/20] dm verity: consume root hash digest and
- signature data via LSM hook
-Message-ID: <ZeNVwBkbw2HlMRfa@redhat.com>
-References: <1709168102-7677-1-git-send-email-wufan@linux.microsoft.com>
- <1709168102-7677-15-git-send-email-wufan@linux.microsoft.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6232E1754F;
+	Sat,  2 Mar 2024 16:40:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.71
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709397612; cv=fail; b=rzGrMp7qAHpW1LtHne0m13JTL/skKKOEwYEvB3xE/kJaw/loFBQ0TeeEPAxM/4sD6lW8GowbLpnHki/h8+0oonXcSRyd8p4Scup4sFvzZupKdIROcqvZonTYupM9Xst+1/V8VKUfKUjwTzCdbG1uItxl5fS0O8z6diBEt60GgkM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709397612; c=relaxed/simple;
+	bh=XCe3KPVgdneoGej/3RXbzsV8BVEoTdzIZyC8DA0UlbI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=lKw3m+7TDyHuqosVvTNZPN0keHYShuQRip56XcGmnW6JvgNC7F43udk/mCU8JGfC710llFY51mUFlpFa7XIJ+4uijksD3Er/q4kfAppLW4g2NcQsUn9ba/QEjOr/ViTOVyrDYd0DjfAHmb9yuGk+vkPvHWVNiWxuHmM1LODnC3M=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=RJ8jLgvP; arc=fail smtp.client-ip=40.107.8.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KmleEuNkFh+1MNMgONOX1B9QoQtes6IJR6Y/Sofb21yD8Hg8548669S16Gr2SoWeYBidCBSSttfTziY0Kz9v9sO2NvNLhVtVmpAGVJJVPU9O97clF9K+vo8e8pi/NK6HmLVLIlebOGzA6v0/V9KkFcVxCrhQu16YqEYR2hVTe6MYy3h5CA40apxphUJysbYFuHddYoQUhhQSClKoYdSD62HVM4M3ByCyFEiPoTnH1fPRIlW2aqGqGfnFRtxhb63nlOiSoh8K1QUfPYUn1IrHfniO1GzrGope9bBwZB7u1Ncc6irk8WhjVPnC9okKJ3ohO4x/ihbqvv3UGOZ5aeFFWw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wjKx/qym+vxobIAFTS0TUlpBqF6gTkkvt3HSxHaSUgE=;
+ b=DAjEUk6neyciYzoGfasHzcvEisafCJYp14oEHPIhfOBEfB+5Hp2OVW6fEw1mQEn6vHIWC+L4hqFVJBnLpoWrPzGIXH9PO63YtkXBBnocNeCfQmMXMGnmzUwyjrWBu8hlZclWxVwrULz78Jj8D8CsqwNwdzmIpfN1aJ/Kzk/SMpdTUW2QX5Jt+tmSWyqqR33Ub5cMN6Dxk+LhwP5OQAKy0Y5o5U4rixetNxKzc8uAg5cu1yjNtN3Q5qyi+4XTJh5ZRHP85WPrmGjn7e8nTvPHFnx78PTcRSGIfQq9elOgeuAaw6qblH0MgrEuEarjw3UHzJNMMCETZ/PFJCpVG5d87Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wjKx/qym+vxobIAFTS0TUlpBqF6gTkkvt3HSxHaSUgE=;
+ b=RJ8jLgvPFXGswnRhBRHdSSXuFlhSZ/M89qmRUGZuXvGecQSzmGZKg2PvhQLIJBH3QY5qA/Sky2MnMSAdq749VNfhENMpNWt1lHvZfTQjGTmWSpoSZPgadnNQh1wML2EX8r64eMAFO7XS8HG0vm+7psA8z/u/ht356VcLh+bdBXo=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by AM9PR04MB7681.eurprd04.prod.outlook.com (2603:10a6:20b:286::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.34; Sat, 2 Mar
+ 2024 16:40:07 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6%3]) with mapi id 15.20.7339.033; Sat, 2 Mar 2024
+ 16:40:07 +0000
+Date: Sat, 2 Mar 2024 11:39:59 -0500
+From: Frank Li <Frank.li@nxp.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: conor+dt@kernel.org, devicetree@vger.kernel.org,
+	dmaengine@vger.kernel.org, imx@lists.linux.dev,
+	krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
+	peng.fan@nxp.com, robh@kernel.org, vkoul@kernel.org
+Subject: Re: [PATCH v2 2/2] dt-bindings: dma: fsl-edma: allow 'power-domains'
+ property
+Message-ID: <ZeNWXxzFBzNj0gM1@lizhi-Precision-Tower-5810>
+References: <20240301214536.958869-1-Frank.Li@nxp.com>
+ <20240301214536.958869-2-Frank.Li@nxp.com>
+ <885501b5-0364-48bd-bc1d-3bc486d1b4c6@linaro.org>
+ <ZeNI1nG1dmbwOqbb@lizhi-Precision-Tower-5810>
+ <31e62acf-d605-4786-80a1-df52c8490913@linaro.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <31e62acf-d605-4786-80a1-df52c8490913@linaro.org>
+X-ClientProxiedBy: SJ0PR05CA0193.namprd05.prod.outlook.com
+ (2603:10b6:a03:330::18) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1709168102-7677-15-git-send-email-wufan@linux.microsoft.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AM9PR04MB7681:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5180ad05-b4b9-4f9b-5759-08dc3ad76b3b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	oY9qpMeKlWqLXfYoxF+liSwsC91ik1TvhD/eEyn8q1OZKBFoA22DJr483FTdG0uFJw8VuZ8hfSzpYItKZf+O7pYIyzdY3jw1VbHzNfIp50vjTvg940qE5+p2YnbtXMS1/Aw2RWv2e9OdKSLxMgQZpsr8LVsPl1cKnXk1/0ID5lnmajRtXbegXY4ynQCWicVpoCsOMRYaCoNo1wkOGtkDBvIW3kLz+ORmXGW57MloDSxm5AM1OzUkbRDJH5Om5WRPF2Ur6z5o0UXEgzHpmC3Y9tEifsY0whpfLJm5Kfm9fR8ZbzdyKCfXMkIUkqOgcmkpBr6KmntTgN6jgzbODLr2vtQbB9ODEdLFLg7P7sIs+YCI5g6ibcYFB5tIf/I1gwphnKqsHLHPuWg0mVQfnydVxlFlWjoQsTB2NpmteMZiIYhXbInf7LsAKTMGexctoRC5sBDfLnivYydmpHnzUpUBBGemDYElbXwrb/eExrecUokI0WsxI1Jz+DNx6v5yyt0LrvQIqVy7VgHkUjoNimWMPYZ0wLMipsixoQaR9Mjn32MXRvNmUna/IdOupPdO/mSaghxdeEv5W7Z8ZMo3JAmiA21SnRCPrZPMXwak+zjPk6O4kvAIG/OuM1K/kHaJNCH7Fa7O1oNg7E5VlLmaD15sDPgEMxr6R1AxbfayjR4oqNLsvckaEsxeXmWO9zycGD7L6JEybsQplLSXMB2xtn3dbw==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?EGdiLv5QlrAvOg2QzoYK1arYbMoARDDK4riXBFx9CV3ZC/HNcIf7PPTjYEjp?=
+ =?us-ascii?Q?2KpPtRhgw8QnP9z42TBhlUv2l6Gww9Nkwb+vB3eD8DMBP3uNGD0di2E5ufRb?=
+ =?us-ascii?Q?zBHWdwEi3iC5nWOestsE48HW+nPrYpcUG6NrVNHZ4JkobhfMGPaazbxMIWVH?=
+ =?us-ascii?Q?ChkVfc0Dv7N6tQrsfstzAj1Rv6GAhnZ/Fsw6rFyldF+bTniJlLDNrTVfzTcL?=
+ =?us-ascii?Q?v8An7xB3yPSPZsnKiRfg70xPueExIcqUDhqX8yxPH2Br8ESsuwvBkN16RyyQ?=
+ =?us-ascii?Q?UMmu4VKk4dRpKpSiD2zsi2x0yatqKKG9x0VbE1oBULc9A6OqTjo4gMnBu+Vq?=
+ =?us-ascii?Q?CSf0MSq5/Hhfxvp43XI+MHmTcPRrWG8wIXBsMAxg3l8QxBatTykcEKcWDk1R?=
+ =?us-ascii?Q?ryHuQ0YEnihpa4g4jF7P5Q4OgC+tHutE2/0fOkfmP9jH3GNtQ/70BJs/ekpD?=
+ =?us-ascii?Q?362BNvnuu87QTCeTtuLM8j4wVilsvLMIcx3PluA3a31MB3f4TQTLSDQeKwF3?=
+ =?us-ascii?Q?POJX6TTEpXNo7q81G4O9n+gzxKlHRDYUengrBg5Gn73stXChIrUUQU2L7moV?=
+ =?us-ascii?Q?ITAJUSUaa0AbNcY73VAZc78lIVgGSbjifqBTKbRYGyFNHL/OwsrDSwV5roRn?=
+ =?us-ascii?Q?wKaC6NSoUPEsTBGpCv4mGf0V3b7Cb6/rQmJJGww2KmVcwX0YtPSJ/qrWY7sy?=
+ =?us-ascii?Q?PeS43Gt3/1ISgSJD1QmJqdh+FERsOvJk/hewDK1ci6OGuNIcLE/8gxLtW7nV?=
+ =?us-ascii?Q?rSMxJC0LK39MkHbWFqY+cXbKJF1KhAzp+4rp95HVK01mGgqq8XMeprPVELke?=
+ =?us-ascii?Q?Qy0PA6jVJ1vuZnsQAO4rtFK/k9//mENiAfpF0Ylr9FBaA9kVj3kRmmu0+ijd?=
+ =?us-ascii?Q?5mHz3AgecHPJONefP5sFhh7AXP0SA8wcLrYYHImHVsy9O6sY+16tu5iJX9d5?=
+ =?us-ascii?Q?E5EVwWrIrakE+atp6Sg5sLtDw4sszYm4MeeV+JpkYOMAnMtryNmK6SFYWbvF?=
+ =?us-ascii?Q?JFaSNJK288+C1qkHbjhleHI98/nm0wq5CDsm+smvJh+/9IM1sRor61rTZk2e?=
+ =?us-ascii?Q?I1BStFe8LdjNUaiGSAt0SHuNh/sYVTIsYakFEG84GAccIjFrCYVSoUExzaYA?=
+ =?us-ascii?Q?twmWugENR/6Vfcd0lVZtFy7ncwEPLpEbzlbSp3RoZ4N7KzlZnA3NYi9RLpU+?=
+ =?us-ascii?Q?fd2x7oL2XY3fo3bfvFTCvI8HqHNKkm5pP3CahkBeFyOBCfHTiITlXqzl3rqh?=
+ =?us-ascii?Q?k9fhTH4F+cIGTk+mL7JEHpl+NuFfgsn74B2LRpIOwe/Fl8QN705t+uu41ddc?=
+ =?us-ascii?Q?JGcK4bD6/br6Mf8Fz4NYdQktMtNKdisvRr/qFDSNw+VEFrw7kDZsGax7+6FV?=
+ =?us-ascii?Q?Zz47Y5NEaHb82Lv3hLwOQKHDPBE7JNpEMTU5MVDbot9HZ1tNrPtK8c14dpns?=
+ =?us-ascii?Q?3WmGusSa1VpRKWd1IRGNz5Jq/qz2vnqTdlqIzjynPUhR026yJmXJGI69n4vr?=
+ =?us-ascii?Q?sJvQkbIyWPpE+82idbvishEEyzCGZLAshLOS5VvdZ5vqLtWmfG1UbmL0dubX?=
+ =?us-ascii?Q?Q+hysh5X/P0fjxGNzkvwdg45ivV4Y0jsniSAPvec?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5180ad05-b4b9-4f9b-5759-08dc3ad76b3b
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Mar 2024 16:40:07.2508
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tDVOQp/ZCij5Z9flzpCpt/wfBe/UFKIeo+Ab8XabjjQbdaCEdCM/EhoWkg6CaoLrdQDugNafFHs7uDszz46ffA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB7681
 
-On Wed, Feb 28 2024 at  7:54P -0500,
-Fan Wu <wufan@linux.microsoft.com> wrote:
+On Sat, Mar 02, 2024 at 05:20:42PM +0100, Krzysztof Kozlowski wrote:
+> On 02/03/2024 16:42, Frank Li wrote:
+> > On Sat, Mar 02, 2024 at 02:59:39PM +0100, Krzysztof Kozlowski wrote:
+> >> On 01/03/2024 22:45, Frank Li wrote:
+> >>> Allow 'power-domains' property because i.MX8DXL i.MX8QM and i.MX8QXP need
+> >>> it.
+> >>>
+> >>> Fixed below DTB_CHECK warning:
+> >>>   dma-controller@599f0000: Unevaluated properties are not allowed ('power-domains' was unexpected)
+> >>>
+> >>> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> >>> ---
+> >>>
+> >>> Notes:
+> >>>     Change from v1 to v2
+> >>>     - using maxitem: 64. Each channel have one power domain. Max 64 dmachannel.
+> >>>     - add power-domains to 'required' when compatible string is fsl,imx8qm-adma
+> >>>     or fsl,imx8qm-edma
+> >>>
+> >>>  .../devicetree/bindings/dma/fsl,edma.yaml         | 15 +++++++++++++++
+> >>>  1 file changed, 15 insertions(+)
+> >>>
+> >>> diff --git a/Documentation/devicetree/bindings/dma/fsl,edma.yaml b/Documentation/devicetree/bindings/dma/fsl,edma.yaml
+> >>> index cf0aa8e6b9ec3..76c1716b8b95c 100644
+> >>> --- a/Documentation/devicetree/bindings/dma/fsl,edma.yaml
+> >>> +++ b/Documentation/devicetree/bindings/dma/fsl,edma.yaml
+> >>> @@ -59,6 +59,10 @@ properties:
+> >>>      minItems: 1
+> >>>      maxItems: 2
+> >>>  
+> >>> +  power-domains:
+> >>> +    minItems: 1
+> >>> +    maxItems: 64
+> >>
+> >> Hm, this is odd. Blocks do not belong to almost infinite number of power
+> >> domains.
+> > 
+> > Sorry, what's your means? 'power-domains' belong to 'properties'. 
+> > 'maxItems' belong to 'power-domains'.It is similar with 'clocks'. what's
+> > wrong? 
+> 
+> That one device belong to 64 power domains. That's just random code...
 
-> From: Deven Bowers <deven.desai@linux.microsoft.com>
-> 
-> dm-verity provides a strong guarantee of a block device's integrity. As
-> a generic way to check the integrity of a block device, it provides
-> those integrity guarantees to its higher layers, including the filesystem
-> level.
-> 
-> An LSM that control access to a resource on the system based on the
-> available integrity claims can use this transitive property of
-> dm-verity, by querying the underlying block_device of a particular
-> file.
-> 
-> The digest and signature information need to be stored in the block
-> device to fulfill the next requirement of authorization via LSM policy.
-> This will enable the LSM to perform revocation of devices that are still
-> mounted, prohibiting execution of files that are no longer authorized
-> by the LSM in question.
-> 
-> This patch added two security hook calls in dm-verity to save the
-> dm-verity roothash and the roothash signature to the block device's
-> LSM blobs. The hook calls are depended on CONFIG_IPE_PROP_DM_VERITY,
-> which will be introduced in the next commit.
-> 
-> Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
-> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
-> ---
-> v2:
->   + No Changes
-> 
-> v3:
->   + No changes
-> 
-> v4:
->   + No changes
-> 
-> v5:
->   + No changes
-> 
-> v6:
->   + Fix an improper cleanup that can result in
->     a leak
-> 
-> v7:
->   + Squash patch 08/12, 10/12 to [11/16]
->   + Use part0 for block_device, to retrieve the block_device, when
->     calling security_bdev_setsecurity
-> 
-> v8:
->   + Undo squash of 08/12, 10/12 - separating drivers/md/ from
->     security/ & block/
->   + Use common-audit function for dmverity_signature.
->   + Change implementation for storing the dm-verity digest to use the
->     newly introduced dm_verity_digest structure introduced in patch
->     14/20.
->   + Create new structure, dm_verity_digest, containing digest algorithm,
->     size, and digest itself to pass to the LSM layer. V7 was missing the
->     algorithm.
->   + Create an associated public header containing this new structure and
->     the key values for the LSM hook, specific to dm-verity.
->   + Additional information added to commit, discussing the layering of
->     the changes and how the information passed will be used.
-> 
-> v9:
->   + No changes
-> 
-> v10:
->   + No changes
-> 
-> v11:
->   + Add an optional field to save signature
->   + Move the security hook call to the new finalize hook
-> 
-> v12:
->   + No changes
-> 
-> v13:
->   + No changes
-> ---
->  drivers/md/dm-verity-target.c | 71 +++++++++++++++++++++++++++++++++++
->  drivers/md/dm-verity.h        |  6 +++
->  include/linux/dm-verity.h     | 19 ++++++++++
->  3 files changed, 96 insertions(+)
->  create mode 100644 include/linux/dm-verity.h
-> 
-> diff --git a/drivers/md/dm-verity-target.c b/drivers/md/dm-verity-target.c
-> index a99ef30e45ca..e7bc6afae708 100644
-> --- a/drivers/md/dm-verity-target.c
-> +++ b/drivers/md/dm-verity-target.c
-> @@ -13,6 +13,7 @@
->   * access behavior.
->   */
->  
-> +#include "dm-core.h"
->  #include "dm-verity.h"
->  #include "dm-verity-fec.h"
->  #include "dm-verity-verify-sig.h"
+Yes, each dma channel have one power domain. Total 64 dma channel. So
+there are 64 power-domains.
 
-Why are you including dm-core.h? (DM targets really shouldn't need it).
-
-And from that header:
-
-/*
- * DM core internal structures used directly by dm.c, dm-rq.c and dm-table.c.
- * DM targets must _not_ deference a mapped_device or dm_table to directly
- * access their members!
- */
-
-> @@ -22,6 +23,9 @@
->  #include <linux/scatterlist.h>
->  #include <linux/string.h>
->  #include <linux/jump_label.h>
-> +#include <linux/security.h>
-> +#include <linux/dm-verity.h>
-> +#include <crypto/hash_info.h>
->  
->  #define DM_MSG_PREFIX			"verity"
->  
-> @@ -990,6 +994,17 @@ static void verity_io_hints(struct dm_target *ti, struct queue_limits *limits)
->  	blk_limits_io_min(limits, limits->logical_block_size);
->  }
->  
-> +#ifdef CONFIG_IPE_PROP_DM_VERITY
-> +static void verity_free_sig(struct dm_verity *v)
-> +{
-> +	kfree(v->root_digest_sig);
-> +}
-> +#else
-> +static inline void verity_free_sig(struct dm_verity *v)
-> +{
-> +}
-> +#endif /* CONFIG_IPE_PROP_DM_VERITY */
-> +
->  static void verity_dtr(struct dm_target *ti)
->  {
->  	struct dm_verity *v = ti->private;
-> @@ -1008,6 +1023,7 @@ static void verity_dtr(struct dm_target *ti)
->  	kfree(v->salt);
->  	kfree(v->root_digest);
->  	kfree(v->zero_digest);
-> +	verity_free_sig(v);
->  
->  	if (v->tfm)
->  		crypto_free_ahash(v->tfm);
-> @@ -1199,6 +1215,25 @@ static int verity_parse_opt_args(struct dm_arg_set *as, struct dm_verity *v,
->  	return r;
->  }
->  
-> +#ifdef CONFIG_IPE_PROP_DM_VERITY
-> +static int verity_init_sig(struct dm_verity *v, const void *sig,
-> +			   size_t sig_size)
-> +{
-> +	v->sig_size = sig_size;
-> +	v->root_digest_sig = kmalloc(v->sig_size, GFP_KERNEL);
-> +	if (!v->root_digest)
-> +		return -ENOMEM;
-> +
-> +	return 0;
-> +}
-> +#else
-> +static inline int verity_init_sig(struct dm_verity *v, const void *sig,
-> +				  size_t sig_size)
-> +{
-> +	return 0;
-> +}
-> +#endif /* CONFIG_IPE_PROP_DM_VERITY */
-> +
->  /*
->   * Target parameters:
->   *	<version>	The current format is version 1.
-> @@ -1407,6 +1442,13 @@ static int verity_ctr(struct dm_target *ti, unsigned int argc, char **argv)
->  		ti->error = "Root hash verification failed";
->  		goto bad;
->  	}
-> +
-> +	r = verity_init_sig(v, verify_args.sig, verify_args.sig_size);
-> +	if (r < 0) {
-> +		ti->error = "Cannot allocate root digest signature";
-> +		goto bad;
-> +	}
-> +
->  	v->hash_per_block_bits =
->  		__fls((1 << v->hash_dev_block_bits) / v->digest_size);
->  
-> @@ -1557,6 +1599,32 @@ int dm_verity_get_root_digest(struct dm_target *ti, u8 **root_digest, unsigned i
->  	return 0;
->  }
->  
-> +#ifdef CONFIG_IPE_PROP_DM_VERITY
-> +static int verity_finalize(struct dm_target *ti)
-> +{
-> +	struct block_device *bdev;
-> +	struct dm_verity_digest root_digest;
-> +	struct dm_verity *v;
-> +	int r;
-> +
-> +	v = ti->private;
-> +	bdev = dm_table_get_md(ti->table)->disk->part0;
-
-Must be for dereferencing mapped_device struct here ^
-
-Please remove the dm-core.h include and use this instead:
-
-struct gendisk *disk = dm_disk(dm_table_get_md(ti->table));
-
-Mike
-
-> +	root_digest.digest = v->root_digest;
-> +	root_digest.digest_len = v->digest_size;
-> +	root_digest.alg = v->alg_name;
-> +
-> +	r = security_bdev_setsecurity(bdev, DM_VERITY_ROOTHASH_SEC_NAME, &root_digest,
-> +				      sizeof(root_digest));
-> +	if (r)
-> +		return r;
-> +
-> +	return security_bdev_setsecurity(bdev,
-> +					 DM_VERITY_SIGNATURE_SEC_NAME,
-> +					 v->root_digest_sig,
-> +					 v->sig_size);
-> +}
-> +#endif /* CONFIG_IPE_PROP_DM_VERITY */
-> +
->  static struct target_type verity_target = {
->  	.name		= "verity",
->  	.features	= DM_TARGET_SINGLETON | DM_TARGET_IMMUTABLE,
+Frank
+> 
+> Best regards,
+> Krzysztof
+> 
 
