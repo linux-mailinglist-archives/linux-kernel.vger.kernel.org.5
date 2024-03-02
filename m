@@ -1,57 +1,60 @@
-Return-Path: <linux-kernel+bounces-89455-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89459-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FD2186F098
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 15:01:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 051C686F09C
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 15:01:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF682283D2C
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 14:01:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A8DA1F222B9
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 14:01:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 258F817C79;
-	Sat,  2 Mar 2024 14:00:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A57B1BC47;
+	Sat,  2 Mar 2024 14:00:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="XcOmshdW"
+	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="wKYf2ij8"
 Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33348179B7;
-	Sat,  2 Mar 2024 14:00:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C34417BAB;
+	Sat,  2 Mar 2024 14:00:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709388051; cv=none; b=RVu98FeISx5eywYZhifWG/2gOeedBic9J2QY+IhuqEhuQ6OSPFXXmo4T8uIt7cgIdeOt3eCo5pyl1Z0/Nc+fNAB5J1XcxyUhZSeWNnoZ9TeJ0cHBrApyXqdwgDFwtCYIvtNfn8sRWCq7ylwXDunqxcR4O7xsEKxtqryRepyRIBY=
+	t=1709388053; cv=none; b=f2NY0Qi3CTBvbJKd8/FM8KZofo9kbuqU+JNJgrKlRZvM+UF3OcnKWc6lnk7PO9yHojaSxSJOgZHyelrb1xPbhqyuEgEZkA210xnJ7r5A5XdoXpTPm27wDD3T5gkakw7LmNmKeLHWPR/A1DrXjExpbR7fqBvYePb4CBZajCSuhCY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709388051; c=relaxed/simple;
-	bh=uiQdKioW5Q8/qfRyAEscHhnKqRIHa/efSN+ljmC4lok=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=G6Fe/PBY7drqVOiNO8F37wnZs/AXmgTrsB2ejxcwiGCok1VwkUpiW1/+CClCXTdp16z3UnxRAIdagiwB2sa6wIITNqBqWR93CeRfT7eO6A15hjIE1Xna8a063KBUUbrFmB9t46iuFMdeRbUOqLB4t4QIoQXucFeTOQ1bDT09SNA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=XcOmshdW; arc=none smtp.client-ip=195.181.215.36
+	s=arc-20240116; t=1709388053; c=relaxed/simple;
+	bh=Z28QC5gcB/zs8Hn8IrbI18nN31MND5p/CuLpPPG6++U=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=RzppvI+sEgZbMV686MDpbeG+4hQlGweYRDN2fO+weZBSOl2MVRByv+5thH+cIZ4Az+k4u/x4Siet/QY8jVqNX0RgEvYw/fRpPJ7G/cRq/qezXDlZHUvijPpGYWnW1dLayKytHyC7SwIUzBEL2pyoKIrqPfo6/9EyB+mKH1f2/e0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=wKYf2ij8; arc=none smtp.client-ip=195.181.215.36
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
-	t=1709388045; bh=uiQdKioW5Q8/qfRyAEscHhnKqRIHa/efSN+ljmC4lok=;
-	h=From:To:Cc:Subject:Date:From;
-	b=XcOmshdWXvExDVy4K+zxIZF+CaaHhfMsi5Ewmy+e3mozM0igrri0ZlA0bSxdUbRga
-	 kjqGrvQnU6QfAwjWqHMtsW4HfwsWF1PRAi/Ao03SEhUo7JdrGlJsUBwtY4iIeE2FCs
-	 wv8bpWOwevP5sOG9hxs0c+3O4yvxbjl2a53t7/F8=
+	t=1709388045; bh=Z28QC5gcB/zs8Hn8IrbI18nN31MND5p/CuLpPPG6++U=;
+	h=From:To:Cc:Subject:Date:References:From;
+	b=wKYf2ij8vG7DwafJasLhwAaCtBDnoIscdrv85dfXjKfXM+C95rP8MM901ftzykFDb
+	 Zx5//2lV7HVji/zlfazVO1zhkhPf6/vN42HqVwuOcmSRZOr+ucGV6UJEzpNsRWDn81
+	 TByo+g2iIcJY4VNimrmv9KdTuJaxorjEvN78NMNw=
 From: =?UTF-8?q?Ond=C5=99ej=20Jirman?= <megi@xff.cz>
 To: linux-kernel@vger.kernel.org,
 	Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
 	Jaroslav Kysela <perex@perex.cz>,
 	Takashi Iwai <tiwai@suse.com>
-Cc: Ondrej Jirman <megi@xff.cz>,
+Cc: Samuel Holland <samuel@sholland.org>,
 	Chen-Yu Tsai <wens@csie.org>,
 	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
+	Ondrej Jirman <megi@xff.cz>,
 	Arnaud Ferraris <arnaud.ferraris@collabora.com>,
 	linux-sound@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-sunxi@lists.linux.dev
-Subject: [PATCH v3 0/4] Add support for jack detection to codec present in A64 SoC
-Date: Sat,  2 Mar 2024 15:00:34 +0100
-Message-ID: <20240302140042.1990256-1-megi@xff.cz>
+Subject: [PATCH v3 1/4] ASoC: sun50i-codec-analog: Move suspend/resume to set_bias_level
+Date: Sat,  2 Mar 2024 15:00:35 +0100
+Message-ID: <20240302140042.1990256-2-megi@xff.cz>
+In-Reply-To: <20240302140042.1990256-1-megi@xff.cz>
+References: <20240302140042.1990256-1-megi@xff.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,50 +64,71 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Ondrej Jirman <megi@xff.cz>
+From: Samuel Holland <samuel@sholland.org>
 
-This series adds support for jack detection to this codec. I used
-and tested this on Pinephone. It works quite nicely. I tested it
-against Android headset mic button resistor specification.
+With idle_bias_on and suspend_bias_off, there are bias level transitions
+that match the suspend/resume callbacks. However, there are also
+transitions during probe (OFF => STANDBY) and removal (STANDBY => OFF).
 
-The patches are a rewritten and debugged version of the original
-ones from Arnaud Ferraris and Samuel Holland, improved to better
-handle headset button presses and with more robust plug-in/out
-event debouncing, and to use set_jack API instead of sniffing
-the sound card widget names, to detect the type of jack connector.
+By using the set_bias_level hook, the driver can have one copy of code
+that would otherwise be duplicated between the probe/resume and
+suspend/remove hooks.
 
-Please take a look. :)
+Signed-off-by: Samuel Holland <samuel@sholland.org>
+Signed-off-by: Ondřej Jirman <megi@xff.cz>
+---
+ sound/soc/sunxi/sun50i-codec-analog.c | 29 +++++++++++++++++----------
+ 1 file changed, 18 insertions(+), 11 deletions(-)
 
-v3:
-- removed all device-tree related code
-  (it's not necessary for core functionality, it only helps make the jack detect
-  functionality of the codec be usable from simple-sound-card driver, and I'll
-  send it spearately, because it will apparently need several more rounds
-  of review)
-
-v2:
-- use set_jack/get_jack_type
-- get rid of some custom poking inside card internals to figure
-  out what kind of jack port we should setup the codec for
-- read jack-type from OF as suggested here: 
-  https://elixir.bootlin.com/linux/latest/source/sound/soc/soc-component.c#L288
-- add DT bindings
-
-Thank you very much,
-	Ondřej Jirman
-
-Arnaud Ferraris (2):
-  ASoC: sun50i-codec-analog: Enable jack detection on startup
-  ASoC: sun8i-codec: Implement jack and accessory detection
-
-Samuel Holland (2):
-  ASoC: sun50i-codec-analog: Move suspend/resume to set_bias_level
-  ASoC: sun8i-codec: Enable bus clock at STANDBY and higher bias
-
- sound/soc/sunxi/sun50i-codec-analog.c |  73 +++++-
- sound/soc/sunxi/sun8i-codec.c         | 346 +++++++++++++++++++++++++-
- 2 files changed, 399 insertions(+), 20 deletions(-)
-
+diff --git a/sound/soc/sunxi/sun50i-codec-analog.c b/sound/soc/sunxi/sun50i-codec-analog.c
+index 8a32d05e23e1..cedd4de42d1a 100644
+--- a/sound/soc/sunxi/sun50i-codec-analog.c
++++ b/sound/soc/sunxi/sun50i-codec-analog.c
+@@ -471,17 +471,23 @@ static const struct snd_soc_dapm_route sun50i_a64_codec_routes[] = {
+ 	{ "EARPIECE", NULL, "Earpiece Amp" },
+ };
+ 
+-static int sun50i_a64_codec_suspend(struct snd_soc_component *component)
++static int sun50i_a64_codec_set_bias_level(struct snd_soc_component *component,
++					   enum snd_soc_bias_level level)
+ {
+-	return regmap_update_bits(component->regmap, SUN50I_ADDA_HP_CTRL,
+-				  BIT(SUN50I_ADDA_HP_CTRL_PA_CLK_GATE),
+-				  BIT(SUN50I_ADDA_HP_CTRL_PA_CLK_GATE));
+-}
++	switch (level) {
++	case SND_SOC_BIAS_OFF:
++		regmap_set_bits(component->regmap, SUN50I_ADDA_HP_CTRL,
++				BIT(SUN50I_ADDA_HP_CTRL_PA_CLK_GATE));
++		break;
++	case SND_SOC_BIAS_STANDBY:
++		regmap_clear_bits(component->regmap, SUN50I_ADDA_HP_CTRL,
++				   BIT(SUN50I_ADDA_HP_CTRL_PA_CLK_GATE));
++		break;
++	default:
++		break;
++	}
+ 
+-static int sun50i_a64_codec_resume(struct snd_soc_component *component)
+-{
+-	return regmap_update_bits(component->regmap, SUN50I_ADDA_HP_CTRL,
+-				  BIT(SUN50I_ADDA_HP_CTRL_PA_CLK_GATE), 0);
++	return 0;
+ }
+ 
+ static const struct snd_soc_component_driver sun50i_codec_analog_cmpnt_drv = {
+@@ -491,8 +497,9 @@ static const struct snd_soc_component_driver sun50i_codec_analog_cmpnt_drv = {
+ 	.num_dapm_widgets	= ARRAY_SIZE(sun50i_a64_codec_widgets),
+ 	.dapm_routes		= sun50i_a64_codec_routes,
+ 	.num_dapm_routes	= ARRAY_SIZE(sun50i_a64_codec_routes),
+-	.suspend		= sun50i_a64_codec_suspend,
+-	.resume			= sun50i_a64_codec_resume,
++	.set_bias_level		= sun50i_a64_codec_set_bias_level,
++	.idle_bias_on		= true,
++	.suspend_bias_off	= true,
+ };
+ 
+ static const struct of_device_id sun50i_codec_analog_of_match[] = {
 -- 
 2.44.0
 
