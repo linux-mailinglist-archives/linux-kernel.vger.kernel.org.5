@@ -1,198 +1,225 @@
-Return-Path: <linux-kernel+bounces-89384-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89385-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC71586EFAC
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 09:52:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5245D86EFAF
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 09:53:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 915BE283ACF
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 08:52:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07CD92830C8
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 08:53:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 028B213FFA;
-	Sat,  2 Mar 2024 08:52:27 +0000 (UTC)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E776134A1;
-	Sat,  2 Mar 2024 08:52:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED0C413AE8;
+	Sat,  2 Mar 2024 08:53:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ev8+Gzx/"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21C7E134A1
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 08:53:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709369546; cv=none; b=mLFYiGFTII72p0m1nZg2ar8hIP9dGthfEDjIhe3ntSsHXkqyue83OWoc5/DckjYY5E8lacVj0SqwIS7jhDQeLWJQ5Ib58vvCFwROAbKHUtwUBHlqlEcGV3dCmjADGPcmm7jeQWz4T7K9f+LWe6yzgHBW5JcJcvnR65JjBotFutQ=
+	t=1709369595; cv=none; b=Jy7npFqfpc0DOZprcXqy1N5Ipa0PNWinsnZMtZv3eHoJfaak5N0N+7gQ81fI9cRmmVfmPr4+I+D302l4JyVmR9y3qBHu3IsPpD0teyipB/gRy6DAAJe7kxnlP8+tvNkf6PoHEmoblSLpi0V71Mrc3+9RrylOOvmdV33QGdmYsQU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709369546; c=relaxed/simple;
-	bh=uWd20OmnGGkC/WUqVx0PlYE+cxIPNqyxSaBrmZQb9V0=;
-	h=Subject:From:To:Cc:References:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=bgVlOGxHUqjtRi2dOr3uY5bGQ+/IAMN3JkmE/CO5JkT5+42zzKhJ+E4PFxddAeUA8LWnCKtpIIi1fy8NJo9ZwgIKpbtxM8IC3IYv/0Pxrn1q+ZD0Ob4aRiJjtbEJvD4UqASGYwJXQuTalxtqcDrTHz6cZgOjlZPC5j4lPzzGRww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.20.42.173])
-	by gateway (Coremail) with SMTP id _____8CxbevE6OJlZYsTAA--.49281S3;
-	Sat, 02 Mar 2024 16:52:20 +0800 (CST)
-Received: from [10.20.42.173] (unknown [10.20.42.173])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8Cxbs296OJlGVxMAA--.4105S3;
-	Sat, 02 Mar 2024 16:52:15 +0800 (CST)
-Subject: Re: [PATCH v6 0/7] LoongArch: Add pv ipi support on LoongArch VM
-From: maobibo <maobibo@loongson.cn>
-To: Huacai Chen <chenhuacai@kernel.org>,
- Tianrui Zhao <zhaotianrui@loongson.cn>, Juergen Gross <jgross@suse.com>,
- Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>
-Cc: loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
- virtualization@lists.linux.dev, kvm@vger.kernel.org,
- linux-doc@vger.kernel.org
-References: <20240302075120.1414999-1-maobibo@loongson.cn>
-Message-ID: <b2084dbd-3ea6-736a-293e-2309e828a960@loongson.cn>
-Date: Sat, 2 Mar 2024 16:52:12 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+	s=arc-20240116; t=1709369595; c=relaxed/simple;
+	bh=aV8Ei542Y0UmrXH0f/tijllGgB4z8I12/eGvGgGnZ14=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=okwvPs75PQM8+NaK3HU/J372npm4+hQJejc5w5G6NATeBkfYNtguuucDhcnLKFBpeWsMlb3RQaV+fEZOzIku2+78BQay/wwPU36B1lcwiP8QdxG2sdsEleKytCr+OuXrSv9JsM8e+xKqq+VZzU1Fkd8ay0SDo0oFvVoO7oomzU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ev8+Gzx/; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709369593; x=1740905593;
+  h=date:from:to:cc:subject:message-id;
+  bh=aV8Ei542Y0UmrXH0f/tijllGgB4z8I12/eGvGgGnZ14=;
+  b=ev8+Gzx/JcOSAJDbDYQwwvye5EoO1C1+0ebwqN32TiKxuMrarEJRCllA
+   7lMVrTaqzRZ9dRZ7kJQL7vlNKo+wFbtq+0A5PAZ+SeeOKJT/LqhHLdtK7
+   q1sCthp7+/O0Rtgx2pHGnAWeXI4L33CEB5Qyq92XPVuDfgL4gTW0lsBzv
+   mtLPto0Q42n4WQqGIkQkMPjYt8jJ1egnoT+n8Qvq7ErT/h5Wvf6/68OS8
+   fw4Dlvr0mR7nNSB0E/HCJpnust0F8asZ7OshBTAZKmJ2dh66fmG/7r9hm
+   /bZE70LvYN6rhF5NQSUdDh09oFTQXjOlrtHwcnuZaJ0LO4M85fbJPrwlG
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11000"; a="3777635"
+X-IronPort-AV: E=Sophos;i="6.06,199,1705392000"; 
+   d="scan'208";a="3777635"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2024 00:53:12 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,199,1705392000"; 
+   d="scan'208";a="31618205"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by fmviesa002.fm.intel.com with ESMTP; 02 Mar 2024 00:53:11 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rgL7F-000EUD-1P;
+	Sat, 02 Mar 2024 08:53:09 +0000
+Date: Sat, 02 Mar 2024 16:53:03 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:x86/core] BUILD SUCCESS
+ 25525edd9c99d3aa799e80a8e98bdd62ed1639f9
+Message-ID: <202403021659.DK6F6h5g-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <20240302075120.1414999-1-maobibo@loongson.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8Cxbs296OJlGVxMAA--.4105S3
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoW3Gw45Wr47Aw43Cr4rWw13Jrc_yoW7WFy7pa
-	yUurn3WFs5Gr93Zwnxtas5ur98Aw1xG3yaq3WayrW8CFZFqFyUZr48Kryqyas5Jw4rJFW0
-	qF1rGw1Yg3WUAabCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUBab4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-	xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-	AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-	AVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
-	8JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_
-	Jr0_Gr1l4IxYO2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
-	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
-	cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8V
-	AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWxJVW8Jr1lIxAIcVC2z280aVCY1x02
-	67AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07jFE__UUUUU=
 
-Sorry for the noise. It seems that there is some problem with my mail
-client when batch method.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/core
+branch HEAD: 25525edd9c99d3aa799e80a8e98bdd62ed1639f9  x86/idle: Select idle routine only once
 
-Please ignore this series, will send one by one manually.
+elapsed time: 732m
 
-Regards
-Bibo Mao
+configs tested: 137
+configs skipped: 3
 
-On 2024/3/2 下午3:51, Bibo Mao wrote:
-> On physical machine, ipi HW uses IOCSR registers, however there is trap
-> into hypervisor when vcpu accesses IOCSR registers if system is in VM
-> mode. SWI is a interrupt mechanism like SGI on ARM, software can send
-> interrupt to CPU, only that on LoongArch SWI can only be sent to local CPU
-> now. So SWI can not used for IPI on real HW system, however it can be used
-> on VM when combined with hypercall method. IPI can be sent with hypercall
-> method and SWI interrupt is injected to vcpu, vcpu can treat SWI
-> interrupt as IPI.
-> 
-> With PV IPI supported, there is one trap with IPI sending, however with IPI
-> receiving there is no trap. with IOCSR HW ipi method, there will be one
-> trap with IPI sending and two trap with ipi receiving.
-> 
-> Also IPI multicast support is added for VM, the idea comes from x86 PV ipi.
-> IPI can be sent to 128 vcpus in one time. With IPI multicast support, trap
-> will be reduced greatly.
-> 
-> Here is the microbenchmarck data with "perf bench futex wake" testcase on
-> 3C5000 single-way machine, there are 16 cpus on 3C5000 single-way machine,
-> VM has 16 vcpus also. The benchmark data is ms time unit to wakeup 16
-> threads, the performance is better if data is smaller.
-> 
-> physical machine                     0.0176 ms
-> VM original                          0.1140 ms
-> VM with pv ipi patch                 0.0481 ms
-> 
-> It passes to boot with 128/256 vcpus, runltp command in package ltp-20230516
-> passes to run with 16 cores.
-> 
-> ---
-> Change in V6:
->    1. Add privilege checking when emulating cpucfg at index 0x4000000 --
-> 0x400000FF, return 0 if not executed at kernel mode.
->    2. Add document about LoongArch pv ipi with new creatly directory
-> Documentation/virt/kvm/loongarch/
->    3. Fix pv ipi handling in kvm backend function kvm_pv_send_ipi(),
-> where min should plus BITS_PER_LONG with second bitmap, otherwise
-> VM with more than 64 vpus fails to boot.
->    4. Adjust patch order and code refine with review comments.
->   
-> Change in V5:
->    1. Refresh function/macro name from review comments.
-> 
-> Change in V4:
->    1. Modfiy pv ipi hook function name call_func_ipi() and
-> call_func_single_ipi() with send_ipi_mask()/send_ipi_single(), since pv
-> ipi is used for both remote function call and reschedule notification.
->    2. Refresh changelog.
-> 
-> Change in V3:
->    1. Add 128 vcpu ipi multicast support like x86
->    2. Change cpucfg base address from 0x10000000 to 0x40000000, in order
-> to avoid confliction with future hw usage
->    3. Adjust patch order in this patchset, move patch
-> Refine-ipi-ops-on-LoongArch-platform to the first one.
-> 
-> Change in V2:
->    1. Add hw cpuid map support since ipi routing uses hw cpuid
->    2. Refine changelog description
->    3. Add hypercall statistic support for vcpu
->    4. Set percpu pv ipi message buffer aligned with cacheline
->    5. Refine pv ipi send logic, do not send ipi message with if there is
-> pending ipi message.
-> ---
-> Bibo Mao (7):
->    LoongArch/smp: Refine some ipi functions on LoongArch platform
->    LoongArch: KVM: Add hypercall instruction emulation support
->    LoongArch: KVM: Add cpucfg area for kvm hypervisor
->    LoongArch: KVM: Add vcpu search support from physical cpuid
->    LoongArch: KVM: Add pv ipi support on kvm side
->    LoongArch: Add pv ipi support on guest kernel side
->    Documentation: KVM: Add hypercall for LoongArch
-> 
->   Documentation/virt/kvm/index.rst              |   1 +
->   .../virt/kvm/loongarch/hypercalls.rst         |  79 +++++++++
->   Documentation/virt/kvm/loongarch/index.rst    |  10 ++
->   arch/loongarch/Kconfig                        |   9 +
->   arch/loongarch/include/asm/Kbuild             |   1 -
->   arch/loongarch/include/asm/hardirq.h          |   5 +
->   arch/loongarch/include/asm/inst.h             |   1 +
->   arch/loongarch/include/asm/irq.h              |  10 +-
->   arch/loongarch/include/asm/kvm_host.h         |  27 +++
->   arch/loongarch/include/asm/kvm_para.h         | 156 ++++++++++++++++++
->   arch/loongarch/include/asm/kvm_vcpu.h         |   1 +
->   arch/loongarch/include/asm/loongarch.h        |  11 ++
->   arch/loongarch/include/asm/paravirt.h         |  27 +++
->   .../include/asm/paravirt_api_clock.h          |   1 +
->   arch/loongarch/include/asm/smp.h              |  31 ++--
->   arch/loongarch/include/uapi/asm/Kbuild        |   2 -
->   arch/loongarch/kernel/Makefile                |   1 +
->   arch/loongarch/kernel/irq.c                   |  24 +--
->   arch/loongarch/kernel/paravirt.c              | 151 +++++++++++++++++
->   arch/loongarch/kernel/perf_event.c            |  14 +-
->   arch/loongarch/kernel/smp.c                   |  62 ++++---
->   arch/loongarch/kernel/time.c                  |  12 +-
->   arch/loongarch/kvm/exit.c                     | 141 ++++++++++++++--
->   arch/loongarch/kvm/vcpu.c                     |  94 ++++++++++-
->   arch/loongarch/kvm/vm.c                       |  11 ++
->   25 files changed, 780 insertions(+), 102 deletions(-)
->   create mode 100644 Documentation/virt/kvm/loongarch/hypercalls.rst
->   create mode 100644 Documentation/virt/kvm/loongarch/index.rst
->   create mode 100644 arch/loongarch/include/asm/kvm_para.h
->   create mode 100644 arch/loongarch/include/asm/paravirt.h
->   create mode 100644 arch/loongarch/include/asm/paravirt_api_clock.h
->   delete mode 100644 arch/loongarch/include/uapi/asm/Kbuild
->   create mode 100644 arch/loongarch/kernel/paravirt.c
-> 
-> 
-> base-commit: 87adedeba51a822533649b143232418b9e26d08b
-> 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240302   gcc  
+arc                   randconfig-002-20240302   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                   randconfig-001-20240302   gcc  
+arm                   randconfig-002-20240302   gcc  
+arm                   randconfig-003-20240302   gcc  
+arm                   randconfig-004-20240302   clang
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240302   gcc  
+arm64                 randconfig-002-20240302   gcc  
+arm64                 randconfig-003-20240302   clang
+arm64                 randconfig-004-20240302   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240302   gcc  
+csky                  randconfig-002-20240302   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240302   clang
+hexagon               randconfig-002-20240302   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240302   clang
+i386         buildonly-randconfig-002-20240302   gcc  
+i386         buildonly-randconfig-003-20240302   gcc  
+i386         buildonly-randconfig-004-20240302   clang
+i386         buildonly-randconfig-005-20240302   gcc  
+i386         buildonly-randconfig-006-20240302   gcc  
+i386                                defconfig   clang
+i386                  randconfig-001-20240302   clang
+i386                  randconfig-002-20240302   gcc  
+i386                  randconfig-003-20240302   clang
+i386                  randconfig-004-20240302   gcc  
+i386                  randconfig-005-20240302   gcc  
+i386                  randconfig-006-20240302   clang
+i386                  randconfig-011-20240302   gcc  
+i386                  randconfig-012-20240302   gcc  
+i386                  randconfig-013-20240302   gcc  
+i386                  randconfig-014-20240302   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240302   gcc  
+loongarch             randconfig-002-20240302   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240302   gcc  
+nios2                 randconfig-002-20240302   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240302   gcc  
+parisc                randconfig-002-20240302   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc               randconfig-001-20240302   clang
+powerpc               randconfig-002-20240302   clang
+powerpc               randconfig-003-20240302   gcc  
+powerpc64             randconfig-001-20240302   clang
+powerpc64             randconfig-002-20240302   gcc  
+powerpc64             randconfig-003-20240302   gcc  
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+riscv                 randconfig-001-20240302   gcc  
+riscv                 randconfig-002-20240302   gcc  
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+s390                  randconfig-001-20240302   gcc  
+s390                  randconfig-002-20240302   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                    randconfig-001-20240302   gcc  
+sh                    randconfig-002-20240302   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240302   gcc  
+sparc64               randconfig-002-20240302   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240302   gcc  
+um                    randconfig-002-20240302   clang
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64                              defconfig   gcc  
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+xtensa                randconfig-001-20240302   gcc  
+xtensa                randconfig-002-20240302   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
