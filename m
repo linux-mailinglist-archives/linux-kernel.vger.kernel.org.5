@@ -1,201 +1,183 @@
-Return-Path: <linux-kernel+bounces-89486-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89488-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1C3B86F0F6
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 16:50:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 39A8B86F0FC
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 16:53:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C90C1C20B2C
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 15:50:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D8CA1C20A94
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 15:53:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1634A18C19;
-	Sat,  2 Mar 2024 15:50:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="M5Qh4XVd"
-Received: from smtp.smtpout.orange.fr (smtp-30.smtpout.orange.fr [80.12.242.30])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B21461B274;
+	Sat,  2 Mar 2024 15:53:16 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 771E518657
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 15:50:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F2101947E
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 15:53:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709394631; cv=none; b=deReMYnJBFSssXkZrMHBf5bftVAsQxVzMsfjPAF/HFtzsbg0k+gRV+vYRhV/tpfdTu278mnjovzeaibEJi5Z07Cm8oC+73HBc6fJKUtjmdQGkUor09FB1gy4BXEFnTHpkgovPjICXExcA6aeMab236x+436DNtOuGnY1WcbS1ns=
+	t=1709394796; cv=none; b=PCIejuRbhSLpAx5A0JZhptJ5mWimPmcvhT431yQw4/L+Y7UC5wn2QSq203r2MSUIVUcmQVZTK3YQMpwO7zymBunFMLKVtFNZNHegjGa++j6/XS05hnXtEJ2n9EIf7fXbHj087DLJefV7X8F1U5omqM1UUuH8xoMiIXm/hzaVc3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709394631; c=relaxed/simple;
-	bh=mN2LAc9j8pitp4/pP5rakUYeQUXvQd/UY0ksJb5F/AY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pJkem1w21m3sLGtE46aRiwaNmCt9MHv8BCTH+WtzQgSct7TSwZxcGKGOM/fg+m7tn4PE1X4Mklv33qMSc6dTdrjqj03is79uMSb9F7M6RSxNCE8ZhQBh7/aoKTtxk9eI0gEH17G3DfBhrPAfq6fhRWG41lCFRrOIMGobiFa1NV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=M5Qh4XVd; arc=none smtp.client-ip=80.12.242.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from [192.168.1.18] ([92.140.202.140])
-	by smtp.orange.fr with ESMTPA
-	id gRbkrY9aBQ6QsgRd4rNOK9; Sat, 02 Mar 2024 16:50:27 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1709394627;
-	bh=Qv/ssscVV7fGs0JMzWV8vaTZi3w3mSOL334YpDMghuU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=M5Qh4XVdS6CPVQ81wW+vqU6fBYIuJCy8mfyGplrusU67MKNuulUnmada7l0zc574r
-	 xvDL/a5djesp7qHh6m3Khpe0DA1+qArKAQrROkYAY+8IwnDRM9sg6HwUAvtnG4W4nz
-	 3a9UftEkSeZbjVo0abo+ByJDl/+JcYoqMwNSaHAJwSb47dbcPVAW2CJTtidonOWjtW
-	 wRbWYlH8dliC/a+3hXdLGmLpbbRb/RXZqa/ixorXOuZz7GWC4HoeOjRb7hNWeYGtrQ
-	 QIDKmL0Ri1Dgk4eCl3o5Xvf5DyQXOY47I5XmDtheOlbAJrm4NtdS3SYV+vf2ULFNXV
-	 zrXr+L+f4Ff4g==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 02 Mar 2024 16:50:27 +0100
-X-ME-IP: 92.140.202.140
-Message-ID: <52158bf6-16fe-4ce2-b9b6-bbc6550a6e14@wanadoo.fr>
-Date: Sat, 2 Mar 2024 16:50:26 +0100
+	s=arc-20240116; t=1709394796; c=relaxed/simple;
+	bh=gx+oBh4okljPT/oHkZ+fsQuFULuA9YFsCcX+6c1c4lw=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=ozsfSaqTF0pxMbSFYvrqcjZhp05JFasqfHeRZsSkOzD9WDxjWbc/4oXxYpDY5cxDDa2SMXIP7Zn/ax7m0gwXlOuUA/JlDLjJfBkh4psQaBjy26X+gDIp2EK/y5xkRVsERGS7rdMPPRa2lcMncqM1M8hrrS7pvyCMRQHfXsAaHy4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A833C433C7;
+	Sat,  2 Mar 2024 15:53:14 +0000 (UTC)
+Date: Sat, 2 Mar 2024 10:55:25 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Sachin Sant <sachinp@linux.ibm.com>
+Subject: [for-linus][PATCH] tracing: Prevent trace_marker being bigger than
+ unsigned short
+Message-ID: <20240302105525.4972c026@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 3/4] usb: dwc3: exynos: Use
- devm_regulator_bulk_get_enable() helper function
-Content-Language: en-MW
-To: Anand Moon <linux.amoon@gmail.com>,
- Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Alim Akhtar <alim.akhtar@samsung.com>
-Cc: linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240301193831.3346-1-linux.amoon@gmail.com>
- <20240301193831.3346-4-linux.amoon@gmail.com>
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20240301193831.3346-4-linux.amoon@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Le 01/03/2024 à 20:38, Anand Moon a écrit :
-> Use devm_regulator_bulk_get_enable() instead of open coded
-> 'devm_regulator_get(), regulator_enable(), regulator_disable().
-> 
-> Signed-off-by: Anand Moon <linux.amoon@gmail.com>
-> ---
->   drivers/usb/dwc3/dwc3-exynos.c | 49 +++-------------------------------
->   1 file changed, 4 insertions(+), 45 deletions(-)
-> 
-> diff --git a/drivers/usb/dwc3/dwc3-exynos.c b/drivers/usb/dwc3/dwc3-exynos.c
-> index 5d365ca51771..7c77f3c69825 100644
-> --- a/drivers/usb/dwc3/dwc3-exynos.c
-> +++ b/drivers/usb/dwc3/dwc3-exynos.c
-> @@ -32,9 +32,6 @@ struct dwc3_exynos {
->   	struct clk		*clks[DWC3_EXYNOS_MAX_CLOCKS];
->   	int			num_clks;
->   	int			suspend_clk_idx;
-> -
-> -	struct regulator	*vdd33;
-> -	struct regulator	*vdd10;
->   };
->   
->   static int dwc3_exynos_probe(struct platform_device *pdev)
-> @@ -44,6 +41,7 @@ static int dwc3_exynos_probe(struct platform_device *pdev)
->   	struct device_node	*node = dev->of_node;
->   	const struct dwc3_exynos_driverdata *driver_data;
->   	int			i, ret;
-> +	static const char * const regulators[] = { "vdd33", "vdd10" };
->   
->   	exynos = devm_kzalloc(dev, sizeof(*exynos), GFP_KERNEL);
->   	if (!exynos)
-> @@ -78,27 +76,9 @@ static int dwc3_exynos_probe(struct platform_device *pdev)
->   	if (exynos->suspend_clk_idx >= 0)
->   		clk_prepare_enable(exynos->clks[exynos->suspend_clk_idx]);
->   
-> -	exynos->vdd33 = devm_regulator_get(dev, "vdd33");
-> -	if (IS_ERR(exynos->vdd33)) {
-> -		ret = PTR_ERR(exynos->vdd33);
-> -		goto vdd33_err;
-> -	}
-> -	ret = regulator_enable(exynos->vdd33);
-> -	if (ret) {
-> -		dev_err(dev, "Failed to enable VDD33 supply\n");
-> -		goto vdd33_err;
-> -	}
-> -
-> -	exynos->vdd10 = devm_regulator_get(dev, "vdd10");
-> -	if (IS_ERR(exynos->vdd10)) {
-> -		ret = PTR_ERR(exynos->vdd10);
-> -		goto vdd10_err;
-> -	}
-> -	ret = regulator_enable(exynos->vdd10);
-> -	if (ret) {
-> -		dev_err(dev, "Failed to enable VDD10 supply\n");
-> -		goto vdd10_err;
-> -	}
-> +	ret = devm_regulator_bulk_get_enable(dev, ARRAY_SIZE(regulators), regulators);
-> +	if (ret)
-> +		return dev_err_probe(dev, ret, "Failed to enable regulators\n");
->   
->   	if (node) {
->   		ret = of_platform_populate(node, NULL, NULL, dev);
-> @@ -115,10 +95,6 @@ static int dwc3_exynos_probe(struct platform_device *pdev)
->   	return 0;
->   
->   populate_err:
-> -	regulator_disable(exynos->vdd10);
-> -vdd10_err:
-> -	regulator_disable(exynos->vdd33);
-> -vdd33_err:
->   	for (i = exynos->num_clks - 1; i >= 0; i--)
->   		clk_disable_unprepare(exynos->clks[i]);
->   
-> @@ -140,9 +116,6 @@ static void dwc3_exynos_remove(struct platform_device *pdev)
->   
->   	if (exynos->suspend_clk_idx >= 0)
->   		clk_disable_unprepare(exynos->clks[exynos->suspend_clk_idx]);
-> -
-> -	regulator_disable(exynos->vdd33);
-> -	regulator_disable(exynos->vdd10);
->   }
->   
->   static const struct dwc3_exynos_driverdata exynos5250_drvdata = {
-> @@ -196,9 +169,6 @@ static int dwc3_exynos_suspend(struct device *dev)
->   	for (i = exynos->num_clks - 1; i >= 0; i--)
->   		clk_disable_unprepare(exynos->clks[i]);
->   
-> -	regulator_disable(exynos->vdd33);
-> -	regulator_disable(exynos->vdd10);
 
-Hi,
 
-Same here, I don't think that removing regulator_[en|dis]able from the 
-suspend and resume function is correct.
+Tracing fix for 6.8-rc6:
 
-The goal is to stop some hardware when the system is suspended, in order 
-to save some power.
+- The change to allow trace_marker writes to be as big as the trace_seq can
+  hold, and also the change that increases the size of the trace_seq to two
+  pages, caused PowerPC kselftest trace_marker test to fail. The trace_marker
+  kselftest writes up to subbuffer size which is determined by PAGE_SIZE.
+  On PowerPC, the PAGE_SIZE can be 64K, which means the selftest will write
+  a string that is around 64K in size. The output of the trace_marker is
+  performed with a vsnprintf("%.*s", size, string), but this write would make
+  the size greater than 32K, which is the max precision of "%.*s", and that
+  causes a kernel warning. The fix is simply to keep the write of trace_marker
+  less than or equal to max signed short.
 
-Why did you removed it?
 
-CJ
+Steven Rostedt (Google) (1):
+      tracing: Prevent trace_marker being bigger than unsigned short
 
-> -
->   	return 0;
->   }
->   
-> @@ -207,17 +177,6 @@ static int dwc3_exynos_resume(struct device *dev)
->   	struct dwc3_exynos *exynos = dev_get_drvdata(dev);
->   	int i, ret;
->   
-> -	ret = regulator_enable(exynos->vdd33);
-> -	if (ret) {
-> -		dev_err(dev, "Failed to enable VDD33 supply\n");
-> -		return ret;
-> -	}
-> -	ret = regulator_enable(exynos->vdd10);
-> -	if (ret) {
-> -		dev_err(dev, "Failed to enable VDD10 supply\n");
-> -		return ret;
-> -	}
-> -
->   	for (i = 0; i < exynos->num_clks; i++) {
->   		ret = clk_prepare_enable(exynos->clks[i]);
->   		if (ret) {
+----
+ kernel/trace/trace.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
+---------------------------
+commit 6e77fd570deda96cf3696a10c5bd7cc26cf0f687
+Author: Steven Rostedt (Google) <rostedt@goodmis.org>
+Date:   Tue Feb 27 12:57:06 2024 -0500
 
+    tracing: Prevent trace_marker being bigger than unsigned short
+    
+    The trace_marker write goes into the ring buffer. A test was added to
+    write a string as big as the sub-buffer of the ring buffer to see if it
+    would work. A sub-buffer is typically PAGE_SIZE in length.
+    
+    On PowerPC architecture, the ftrace selftest for trace_marker started to
+    fail. This was due to PowerPC having a PAGE_SIZE of 65536 and not 4096. It
+    would try to write a string that was around 63000 bytes in size. This gave
+    the following warning:
+    
+    ------------[ cut here ]------------
+    precision 63492 too large
+    WARNING: CPU: 15 PID: 2538829 at lib/vsprintf.c:2721 set_precision+0x68/0xa4
+    Modules linked in:
+    CPU: 15 PID: 2538829 Comm: awk Tainted: G M O K 6.8.0-rc5-gfca7526b7d89 #1
+    Hardware name: IBM,9080-HEX POWER10 (raw) 0x800200 0xf000006 of:IBM,FW1060.00 (NH1060_018) hv:phyp pSeries
+    NIP: c000000000f57c34 LR: c000000000f57c30 CTR: c000000000f5cdf0
+    REGS: c000000a58e4f5f0 TRAP: 0700 Tainted: G M O K (6.8.0-rc5-gfca7526b7d89)
+    MSR: 8000000002029033 <SF,VEC,EE,ME,IR,DR,RI,LE> CR: 48000824 XER: 00000005
+    CFAR: c00000000016154c IRQMASK: 0
+    GPR00: c000000000f57c30 c000000a58e4f890 c000000001482800 0000000000000019
+    GPR04: 0000000100011559 c000000a58e4f660 c000000a58e4f658 0000000000000027
+    GPR08: c000000e84e37c10 0000000000000001 0000000000000027 c000000002a47e50
+    GPR12: 0000000000000000 c000000e87bf7300 0000000000000000 0000000000000000
+    GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
+    GPR20: c0000004a43ec590 0000000000400cc0 0000000000000003 c0000000012c3e65
+    GPR24: c000000a58e4fa18 0000000000000025 0000000000000020 000000000001ff97
+    GPR28: c0000001168a00dd c0000001168c0074 c000000a58e4f920 000000000000f804
+    NIP [c000000000f57c34] set_precision+0x68/0xa4
+    LR [c000000000f57c30] set_precision+0x64/0xa4
+    Call Trace:
+    [c000000a58e4f890] [c000000000f57c30] set_precision+0x64/0xa4 (unreliable)
+    [c000000a58e4f900] [c000000000f5ccc4] vsnprintf+0x198/0x4c8
+    [c000000a58e4f980] [c000000000f53228] seq_buf_vprintf+0x50/0xa0
+    [c000000a58e4f9b0] [c00000000031cec0] trace_seq_printf+0x60/0xe0
+    [c000000a58e4f9e0] [c00000000031b5f0] trace_print_print+0x78/0xa4
+    [c000000a58e4fa60] [c0000000003133a4] print_trace_line+0x2ac/0x6d8
+    [c000000a58e4fb20] [c0000000003145c0] s_show+0x58/0x2c0
+    [c000000a58e4fba0] [c0000000005dfb2c] seq_read_iter+0x448/0x618
+    [c000000a58e4fc70] [c0000000005dfe08] seq_read+0x10c/0x174
+    [c000000a58e4fd10] [c00000000059a7e0] vfs_read+0xe0/0x39c
+    [c000000a58e4fdc0] [c00000000059b59c] ksys_read+0x7c/0x140
+    [c000000a58e4fe10] [c000000000035d74] system_call_exception+0x134/0x330
+    [c000000a58e4fe50] [c00000000000d6a0] system_call_common+0x160/0x2e4
+    
+    The problem was that in trace_print_print() that reads the trace_marker
+    write data had the following code:
+    
+            int max = iter->ent_size - offsetof(struct print_entry, buf);
+    
+            [..]
+            trace_seq_printf(s, ": %.*s", max, field->buf);
+    
+    Where "max" was the size of the entry. Now that the write to trace_marker
+    can be as big as what the sub-buffer can hold, and the sub-buffer for
+    powerpc is 64K in size, the "max" value was: 63492, and that was passed to
+    trace_seq_printf() which eventually calls vsnprintf() with the same format
+    and parameters.
+    
+    The max "precision" that "%.*s" can be is max signed short (32767) where
+    63492 happens to be greater than.
+    
+    Prevent the max size written by trace_marker to be greater than what a
+    signed short can hold.
+    
+    Link: https://lore.kernel.org/all/C7E7AF1A-D30F-4D18-B8E5-AF1EF58004F5@linux.ibm.com/
+    Link: https://lore.kernel.org/linux-trace-kernel/20240227125706.04279ac2@gandalf.local.home
+    
+    Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+    Reported-by: Sachin Sant <sachinp@linux.ibm.com>
+    Tested-by: Sachin Sant <sachinp@linux.ibm.com>
+    Fixes: 8ec90be7f15f ("tracing: Allow for max buffer data size trace_marker writes")
+    Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+    Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 8198bfc54b58..1606fa99367b 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -7310,7 +7310,9 @@ tracing_mark_write(struct file *filp, const char __user *ubuf,
+ /* Used in tracing_mark_raw_write() as well */
+ #define FAULTED_STR "<faulted>"
+ #define FAULTED_SIZE (sizeof(FAULTED_STR) - 1) /* '\0' is already accounted for */
+-
++#ifndef SHORT_MAX
++#define SHORT_MAX	((1<<15) - 1)
++#endif
+ 	if (tracing_disabled)
+ 		return -EINVAL;
+ 
+@@ -7328,6 +7330,16 @@ tracing_mark_write(struct file *filp, const char __user *ubuf,
+ 	if (cnt < FAULTED_SIZE)
+ 		size += FAULTED_SIZE - cnt;
+ 
++	/*
++	 * trace_print_print() uses vsprintf() to determine the size via
++	 * the precision format "%.*s" which can not be greater than
++	 * a signed short.
++	 */
++	if (size > SHORT_MAX) {
++		cnt -= size - SHORT_MAX;
++		goto again;
++	}
++
+ 	if (size > TRACE_SEQ_BUFFER_SIZE) {
+ 		cnt -= size - TRACE_SEQ_BUFFER_SIZE;
+ 		goto again;
 
