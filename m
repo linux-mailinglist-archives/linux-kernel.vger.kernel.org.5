@@ -1,151 +1,127 @@
-Return-Path: <linux-kernel+bounces-89611-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89612-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B56686F2AC
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 23:11:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D16D886F2AD
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 23:15:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BA0F282A26
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 22:11:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 666C71F21D1B
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 22:15:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4358A45941;
-	Sat,  2 Mar 2024 22:11:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3F734AEE5;
+	Sat,  2 Mar 2024 22:15:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="RsU+kwd1"
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YbuDlEox"
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 018EB42072
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 22:11:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C000B4176C
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 22:15:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709417466; cv=none; b=Ywg77Jzv1sG4hTpcSp2n2t8zaS+VcMj8dJBUST+DiKThzcNj1sqXsS8gc+6L8BJoicBkHAkNZIyuI/jO8U/qtiF8qxX4RWaRNVJHeQD6yxq0jy+7rAuYQCqXfDAiJKWFf1Bo2bT1s6/dF4TnsYJTUNQW/3o7L2rUYH51vN4KFq8=
+	t=1709417708; cv=none; b=AwanMP1qETtc/JLwQ26ohS2sgl2vEBzgSD2z/lSXHPYENsfjSzqHSU2QUmoRCeG5p9EfdtH6TS/h8W4jlJAsUKgZZVLvgJ25Qo2SFdtYAI0/T9DkQPh89Kk+4+EeDWtI25P7N0pC7jf3vrumUw8CQjka9wTO2cDIoDsKatxAcvs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709417466; c=relaxed/simple;
-	bh=0ALp7TDIJwRAUZcjpLYIfdcASuV8IswcwZ6HVohQkd0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=c1U38vNgwKSIV5BKIROoiin4S+K55UMbRmXoR+s7MO+PRug6+9ba4C69DQW7e+4hto4U3Xpn35hfKVAOkNjv87Cv4aRKMCVc3VuCqefQOvkOUkA5L3DMRgPU/0PGPriSQs39cbdt210S2u1kSd4SgSUq/BfzvNT0YIDsVeUTSaQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=RsU+kwd1; arc=none smtp.client-ip=209.85.160.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-42ee0c326e8so63681cf.0
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Mar 2024 14:11:04 -0800 (PST)
+	s=arc-20240116; t=1709417708; c=relaxed/simple;
+	bh=hPV1W9NNCdPmUe/gre4zixpiDH0DuSLGUPz541ul5bA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=kS6AAfOcOxf4WsOtYADT0+0rUGzpW+kai/UdK/9g5nxfsvnKz2tQKlMJ6j//xWCjYvpLEAqSMveu4AcA8PPew5qeS6TAvn7wgNX1K59o6VoMlLa3ROHbEht2r2QXANJt6bvfUsIkCsWXX13tJ5BE+fB0ehEaYWwiF65ZT2vNZG4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YbuDlEox; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-51326436876so3264624e87.1
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Mar 2024 14:15:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709417464; x=1710022264; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wTM56c3VIZxbBTne5xJnHplyY03OBsavmsip+EQ4Ouw=;
-        b=RsU+kwd1G4XsANOtVcaBKq5gPGdyLSAai33oYbVuOKOjwu+0LsRnsL1GV0CCHxzWr6
-         kgX2FREDlXF0YaOhBaVe5prpOBZWlN5W9YoAHdf4tVW0/kwXPoxEVY93s6BR88JpuYwf
-         I67mwRZAft5W7VOzEU8V/NxBstPJjTaarhUTquNZEhi381f3btYi/mHyVWSngPyoVW98
-         Kzc9pb5Eisk3LRWbwCLj+zP4plXml3/0sKQTUP5wdqn8cDWumXLENSwmh3x8yIy52qBu
-         2eFo4E2K3Ix3L2UxMsGOyIfxQhBa67YdXcqZ1XyXmltLWnwEa5lqi0aheGGs/C0JwLlv
-         wzUA==
+        d=gmail.com; s=20230601; t=1709417705; x=1710022505; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bJIX0deRA6RFRMpGp+Bsyln5k9lSvt9jo763ilTvMpc=;
+        b=YbuDlEoxp7t5zSAwUZhjTGU4UvWKJhFfRYExNksSp+i6+p7xUNSrDEf0NCPl78JrTR
+         jDVN1DgU/RSnF47FIqPJRWSUoGpmFotpptJGhvS9DG98m+RLIStg6aUjf5urt+7LEyAL
+         BWN2YfRVWS3Yttuo2y+vMWtehOqCt5BZzNBu1/UY1UhuLV/ZHqo2YR6y0MwWvwxLSJuw
+         cjd4AmirdlPP2M9PrpKCXTgIqbhZmGVFjaLCudzkp/lVXGhGLHZm0TTqqvE+ykvdIMH6
+         pFJZ1NJ9+VvhnVElT4TmuVjK+ehd02FruFtXv1OikNUhXMVW4cpKKbg7DpVZVxnufMpT
+         URTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709417464; x=1710022264;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wTM56c3VIZxbBTne5xJnHplyY03OBsavmsip+EQ4Ouw=;
-        b=YBjDiRD7MC6pPZ0ycpW6eI2VjEHnlgE3dJL7wesPlxqGR+HjCIUWkrVL2/lruuXjtg
-         aAcDRqQ2WB3TQAevCWUxzJ0qbQ35vNsQNCaMlBhJB7ohKt0M780NnyjhZ4qDsLghQuuH
-         ywEBH3PApJHgP4sqpMZXrPgRAfMWgYllomuxGAwtArf2OEipL+tDG2H59ZnbXFFKh+l+
-         vXVjp4pJyRrmU0+h6GlwGfEoU8Hr8K2M3GxgP369WnebJp0+0VBB1g3T3QRDr6qeJyNa
-         z0a4Ssp2/BwA9Jh3d3McLnp4gVmQk9p6kdMO0qLUSFQGnHSYmuRFY28l2ZH7Fsl8Nvcd
-         OUzw==
-X-Forwarded-Encrypted: i=1; AJvYcCWdzBd2WN8G9zKYuvulMDQ0ZWVEku8YIailEzrCNqYXBgEoPCFhuZn66m8gQa8c7JGwKiQv++YQPZerZbjZ3GO/hgeRjo9UCWIZeTEd
-X-Gm-Message-State: AOJu0YwXUUigAS9gQelVyEPNLaoyO6Cgani88WhsK9YgEOtilAoJI0KA
-	kxQ4b/bCydCQKq0+ExlwY3uLQJq/B1XlMXr4fCmQnwJUbyRMQWskSQuJo8YYf/WfnOCfWRYAR8e
-	zTJwZU9pQvnrbR4hDTpIFauJMHwySYkyJq6/K
-X-Google-Smtp-Source: AGHT+IH9sc7BkUOA/MoUZBJgDctjPHOF2trLohxTQjAjH4xi/HZsF8GyNQXPUzk/gDR+MwNciAkndO1CuKQxBDT3R0k=
-X-Received: by 2002:a05:622a:1989:b0:42e:e1d9:6df8 with SMTP id
- u9-20020a05622a198900b0042ee1d96df8mr52100qtc.23.1709417463845; Sat, 02 Mar
- 2024 14:11:03 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709417705; x=1710022505;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bJIX0deRA6RFRMpGp+Bsyln5k9lSvt9jo763ilTvMpc=;
+        b=NlQV/DPx19MSPonPO6FHNlIpdPIpCgqnN9SXgE1HWSO1llm4emMPX+qp9plgwY+q3t
+         NS4KdgDu64hRE58fkVWfyKO7IZy6CFCSpRmbVzDOrDhJ2ZbCxaY6+OoGFboLXCKVifbX
+         McV9Ul/jFcXE8v1anE8DLwf1tu25IOW6UEmblFdH6BT9W63OMbZzI3HHxEhTdBOyd4oj
+         CVqeQ1svABRRcJLMV8VcyCmtrQDEH02g0F/mHD5A4iyhAjVH7UfMx0YkRdKuWvA7FXgW
+         IOpMkPBAbuWe6WgPLDZ/Qd6w9d/TtYZXQYPIFevsPvEeYw9W3tB/KK5DdrV+4HunYtYw
+         CpLw==
+X-Gm-Message-State: AOJu0Yy1WzmpURWFztG/tKvtKlQNl86Fev7m70N+m+FN4AGuebZDtiHy
+	9HCDh4WMMaIzhI5O2X5u0quOGpbL6SjD/KZU6gjpfSCZJtCh6ZLq
+X-Google-Smtp-Source: AGHT+IGX1rOU+9w1Eo79CHkqn1XHgAtvHUGw0KG5VmcYkiGwpH2Z5E/Hmi8gIMo7SU+eNx9sZ/RJ1g==
+X-Received: by 2002:a05:6512:1599:b0:513:17a4:c8c1 with SMTP id bp25-20020a056512159900b0051317a4c8c1mr4803546lfb.49.1709417704690;
+        Sat, 02 Mar 2024 14:15:04 -0800 (PST)
+Received: from localhost.localdomain (c83-255-24-248.bredband.tele2.se. [83.255.24.248])
+        by smtp.googlemail.com with ESMTPSA id a23-20020a195f57000000b0051333e2f55dsm648975lfj.159.2024.03.02.14.15.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Mar 2024 14:15:04 -0800 (PST)
+From: Jonathan Bergh <bergh.jonathan@gmail.com>
+To: gregkh@linuxfoundation.org
+Cc: linux-kernel@vger.kernel.org,
+	linux-staging@lists.linux.dev,
+	Jonathan Bergh <bergh.jonathan@gmail.com>
+Subject: [PATCH] staging: vme_user: Ensure blank lines after variable declarations and fix misaligned */ comment formatting issues
+Date: Sat,  2 Mar 2024 23:14:54 +0100
+Message-Id: <20240302221454.141649-1-bergh.jonathan@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240228225527.1052240-1-helen.koike@collabora.com>
- <20240228225527.1052240-2-helen.koike@collabora.com> <20240229-dancing-laughing-groundhog-d85161@houat>
- <5d7ed81b-37f9-48e9-ab7e-484b74ca886c@gmail.com> <CAHk-=wixVy3WYvjbt43ZSrCqPDsS76QJQSkXFbbPsAOs1MCSAQ@mail.gmail.com>
-In-Reply-To: <CAHk-=wixVy3WYvjbt43ZSrCqPDsS76QJQSkXFbbPsAOs1MCSAQ@mail.gmail.com>
-From: Guenter Roeck <groeck@google.com>
-Date: Sat, 2 Mar 2024 14:10:51 -0800
-Message-ID: <CABXOdTeT2ip1uS2EG2w8pW7254Tnd=ZDNz-KC61-G-yqDTVgJA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] kci-gitlab: Introducing GitLab-CI Pipeline for Kernel Testing
-To: Linus Torvalds <torvalds@linuxfoundation.org>
-Cc: Nikolai Kondrashov <spbnick@gmail.com>, Maxime Ripard <mripard@kernel.org>, 
-	Helen Koike <helen.koike@collabora.com>, linuxtv-ci@linuxtv.org, 
-	dave.pigott@collabora.com, linux-kernel@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org, 
-	gustavo.padovan@collabora.com, pawiecz@collabora.com, 
-	tales.aparecida@gmail.com, workflows@vger.kernel.org, 
-	kernelci@lists.linux.dev, skhan@linuxfoundation.org, 
-	kunit-dev@googlegroups.com, nfraprado@collabora.com, davidgow@google.com, 
-	cocci@inria.fr, Julia.Lawall@inria.fr, laura.nao@collabora.com, 
-	ricardo.canuelo@collabora.com, kernel@collabora.com, 
-	gregkh@linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 29, 2024 at 12:21=E2=80=AFPM Linus Torvalds
-<torvalds@linuxfoundation.org> wrote:
->
-> On Thu, 29 Feb 2024 at 01:23, Nikolai Kondrashov <spbnick@gmail.com> wrot=
-e:
-> >
-> > However, I think a better approach would be *not* to add the .gitlab-ci=
-yaml
-> > file in the root of the source tree, but instead change the very same r=
-epo
-> > setting to point to a particular entry YAML, *inside* the repo (somewhe=
-re
-> > under "ci" directory) instead.
->
-> I really don't want some kind of top-level CI for the base kernel project=
-.
->
-> We already have the situation that the drm people have their own ci
-> model. II'm ok with that, partly because then at least the maintainers
-> of that subsystem can agree on the rules for that one subsystem.
->
-> I'm not at all interested in having something that people will then
-> either fight about, or - more likely - ignore, at the top level
-> because there isn't some global agreement about what the rules are.
->
-> For example, even just running checkpatch is often a stylistic thing,
-> and not everybody agrees about all the checkpatch warnings.
->
+This patch fixes the following issues:
+ * Ensures a blank line after declarations
+ * Ensures */ is aligned with its correct opening /*
 
-While checkpatch is indeed of arguable value, I think it would help a
-lot not having to bother about the persistent _build_ failures on
-32-bit systems. You mentioned the fancy drm CI system above, but they
-don't run tests and not even test builds on 32-bit targets, which has
-repeatedly caused (and currently does cause) build failures in drm
-code when trying to build, say, arm:allmodconfig in linux-next. Most
-trivial build failures in linux-next (and, yes, sometimes mainline)
-could be prevented with a simple generic CI.
+Signed-off-by: Jonathan Bergh <bergh.jonathan@gmail.com>
+---
+ drivers/staging/vme_user/vme_tsi148.h | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-Sure, argue against checkpatch as much as you like, but the code
-should at least _build_, and it should not be necessary for random
-people to report build failures to the submitters.
+diff --git a/drivers/staging/vme_user/vme_tsi148.h b/drivers/staging/vme_user/vme_tsi148.h
+index 4dd224d0b86e..674d83325e42 100644
+--- a/drivers/staging/vme_user/vme_tsi148.h
++++ b/drivers/staging/vme_user/vme_tsi148.h
+@@ -34,6 +34,7 @@ struct tsi148_driver {
+ 	void __iomem *base;	/* Base Address of device registers */
+ 	wait_queue_head_t dma_queue[2];
+ 	wait_queue_head_t iack_queue;
++
+ 	void (*lm_callback[4])(void *);	/* Called in interrupt handler */
+ 	void *lm_data[4];
+ 	void *crcsr_kernel;
+@@ -691,8 +692,7 @@ static const int TSI148_GCSR_MBOX[4] = { TSI148_GCSR_MBOX0,
+ 
+ #define TSI148_LCSR_VMCTRL_RMWEN       BIT(20)	/* RMW Enable */
+ 
+-#define TSI148_LCSR_VMCTRL_ATO_M       (7 << 16)	/* Master Access Time-out Mask
+-						 */
++#define TSI148_LCSR_VMCTRL_ATO_M       (7 << 16)	/* Master Access Time-out Mask*/
+ #define TSI148_LCSR_VMCTRL_ATO_32      (0 << 16)	/* 32 us */
+ #define TSI148_LCSR_VMCTRL_ATO_128     BIT(16)	/* 128 us */
+ #define TSI148_LCSR_VMCTRL_ATO_512     (2 << 16)	/* 512 us */
+@@ -753,8 +753,7 @@ static const int TSI148_GCSR_MBOX[4] = { TSI148_GCSR_MBOX0,
+ #define TSI148_LCSR_VCTRL_DLT_16384    (0xB << 24)	/* 16384 VCLKS */
+ #define TSI148_LCSR_VCTRL_DLT_32768    (0xC << 24)	/* 32768 VCLKS */
+ 
+-#define TSI148_LCSR_VCTRL_NERBB        BIT(20)	/* No Early Release of Bus Busy
+-						 */
++#define TSI148_LCSR_VCTRL_NERBB        BIT(20)	/* No Early Release of Bus Busy*/
+ 
+ #define TSI148_LCSR_VCTRL_SRESET       BIT(17)	/* System Reset */
+ #define TSI148_LCSR_VCTRL_LRESET       BIT(16)	/* Local Reset */
+-- 
+2.40.1
 
-Guenter
-
-> I would suggest the CI project be separate from the kernel.
->
-> And having that slack channel that is restricted to particular
-> companies is just another sign of this whole disease.
->
-> If you want to make a google/microsoft project to do kernel CI, then
-> more power to you, but don't expect it to be some kind of agreed-upon
-> kernel project when it's a closed system.
->
->                Linus
->
 
