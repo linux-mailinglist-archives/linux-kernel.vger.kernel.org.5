@@ -1,135 +1,153 @@
-Return-Path: <linux-kernel+bounces-89470-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89471-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8459F86F0CE
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 16:17:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2358586F0D1
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 16:18:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B64961C212FB
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 15:17:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8EC81F221C1
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 15:18:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C43F317C6C;
-	Sat,  2 Mar 2024 15:17:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26B3017C6B;
+	Sat,  2 Mar 2024 15:18:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="au6KlRyQ"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fS67Z4Pg"
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15EA21877
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 15:17:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36D318464
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 15:18:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709392662; cv=none; b=lZkhfme0+PIpY3SdERfXbnDX4MSxNoU31H0ijir4yii7dw4sRsh18KX01jFqJPKGp2TakFaEC/YQ0gCorlDCeLf1ZjK2GqcVJYR9IqRhLm5xruEVebPP/tX4Ti9Wuuv5Paey6pOl8Ob8W6jBBKu/fO6uc1Tir9uequINxZUXues=
+	t=1709392700; cv=none; b=jjzYhTLEzUmgLV9Yo8Ggx4+xzsWetz3YCLSMROCqRtHem8Sd/PvN+HtQWhv8KjQnV5hqxz1GjldZ+xEGjhf+6qY7eBaO8ZC9/3lZmI+1FzdQ2VyhAwiWgPuqNlnPvLy9h4G9fMgSMKyobE0TZixz5BnVSnsjQjOkXJDSLisKgqo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709392662; c=relaxed/simple;
-	bh=+4DxlXAr2bcwwv32GNptZjq5oulifv6jE1ztlPLVCOA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BKi5UyB4/SH07WQ8WdFH6YhbSyL30EXCWu+IpDNQdJIWGuEW9evFj0DE+obprjLirNBgly6CjFJJO0xKZKB2CPDAbc6wZtr85xlr1oThO6+ZHMwdcCpjT5FZWk+iitXfW5ZkeoFOqXTOhqsabpNMTO3Tg78PKJYzooXhD20bhYk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=au6KlRyQ; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id E1F4B40E0196;
-	Sat,  2 Mar 2024 15:17:37 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 38mnU481oU_D; Sat,  2 Mar 2024 15:17:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1709392655; bh=K3Kw3CUcyNinUo124xeF1fxQvq3zM9z+wwGah5A3W8A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=au6KlRyQXk1A6il3jXsRafVFjXrTG21nZ/Es3MD//LC+Wg5W+ASYmUDSS6/Ll+bKb
-	 qtJQWgJMkJwPtg7iPLLlKOXj7bPFkj3N+V/E+cuZRfRXsHe/J81T5NBDY7CUWyhnLP
-	 Np5SRuCYTIPPJhOz8K9QYfv6XukOPfbXo3f1XRNBsfu9+QXomhPkEl6aG027Qkrh5i
-	 j0mPCIW75y/ewJPswyjg/6dmwahOyMGilh9/3lC8wWD9smKQfOgBtAlX4iMv5oDvc2
-	 fqQegg4tS0wnCDd69vB6oUMHxRBxCXzBdTUievAM0R4iUp0wEtzn4m/0/ZAADQ9Ukr
-	 V5ILYRiAzk72d0GHB4gNhHd4DgJHgEIqKDTwg4sOC4vTfhU7cunf336TOcZ+uI+Wsn
-	 8wSO0wjPPp/0/Sh+6Vx3l6yIV8IfAtrQ5FfTr8IWd9CAMvIEcsGCseReBSq4KZSHaF
-	 TV3COrhSDtBrUBLOkAm31a7Be4D2ZMvvA3I8FyYFbJ5FjSIjRqCHNRK3GQXEOSyAGJ
-	 CZntbGYxo2X/V42fdLPJsJ7fHgKwtIGezT5Jt6/qkbJM3w+4Om4+plpxrgnfBLbjfl
-	 9KZbI+F3k2E29HQxAPMppVaLs1pEdp2uXrx5eQFReyRr3vhVl0lgpq3/xRGPeA3cSo
-	 LsTGY+VFRS4cZcVRBmEZCFHY=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B3B1840E0185;
-	Sat,  2 Mar 2024 15:17:25 +0000 (UTC)
-Date: Sat, 2 Mar 2024 16:17:20 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Ard Biesheuvel <ardb@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Kevin Loughlin <kevinloughlin@google.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Dionna Glaze <dionnaglaze@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Andy Lutomirski <luto@kernel.org>, Brian Gerst <brgerst@gmail.com>
-Subject: Re: [PATCH v7 9/9] x86/startup_64: Drop global variables keeping
- track of LA57 state
-Message-ID: <20240302151720.GCZeNDAGBUuv2Pemf6@fat_crate.local>
-References: <20240227151907.387873-11-ardb+git@google.com>
- <20240227151907.387873-20-ardb+git@google.com>
- <20240301192017.GOZeIqcbI9S69zdBYW@fat_crate.local>
- <CAMj1kXFoYR6rD6GZ6NFLuCXE-q8G4HV0htEcx1omjymbfxVyAg@mail.gmail.com>
+	s=arc-20240116; t=1709392700; c=relaxed/simple;
+	bh=iXFz7A/Is1Avr+n6fjouD8BGhLiy6XGPUswE1I3G+6A=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=LBa0who/9IMtcZv0eQ+KmkibO6QMMNyLr0O5Hd4gaPRydu7vtGbeCnGUWdzoecB13566dAAmPivoWxXxPrQTt/vbk0M0iSdFFEL7kXfh6nW4DJp9WxeFqXpIoN+bFVrsvm8YLOltYOFVD6225q6XSylgqx72716A7hC08yjYWnk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fS67Z4Pg; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-412bb23e5c5so16724795e9.1
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Mar 2024 07:18:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709392695; x=1709997495; darn=vger.kernel.org;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=d3tsMku+8+1/N/PLDjGS+jqwA4yTKYJa9xvpuCgVhy4=;
+        b=fS67Z4PgIKz1QY8xYpBMHx2z1sM3dMhKRx/aDqxFHbPX4mhfVZ+vc2W2L6A80kFvWC
+         D2BNHJiuMj5Qv1i5uPFQBMMIM1d4jqnfiVTfe4mbLEtzGKc9Ebr9/2TYCDfrzADTlEY7
+         V2TtnhNmtEXD+X3Z86RCz6GB3p0nDqt3gK9NS1QAkCFTZ3bOWFl6QdpK+pGPHcxS53H0
+         vZOMDl+KnPCzoewlagCDlrFTUmVoztWYLa75uJXiC4ETOQ7VUQUvHMxO7wLT6ThsK6VT
+         uMlY9Xv4PQM54WJkbLf3WFb4hPNzIuvJLjfIZBrGk8f//Dr7YTB7qtBG5c4tGHSM/hdF
+         u4Sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709392695; x=1709997495;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=d3tsMku+8+1/N/PLDjGS+jqwA4yTKYJa9xvpuCgVhy4=;
+        b=BzJnu5s3b+Rc90XMlI2ByzZBys6ExoWrqAjeFUzFqlo/qNM9k2gXYGFHMWU94K8k7g
+         1HsyCaP1p6g2DuoKgwCTIGA4X2xYtJqxJqwIW6UTmERJoXU+sWXH1nbWcm9nB2YyCvfV
+         YZDE4G0Kf5PGwg6gjMvMV7XMxqk6mYJUbvlqYGc+BrN77NsPt94+waOcJ06isUfqgtKn
+         MhBA1HptT3jzFFMOtwDdIZq6WM6sX6kgV51QcEVM3UrE5S5eYcDurcrzvEVTE97ejq9q
+         MtECruNIesAqb9n/e4h3b7QB/kkRRwkDFw4xIvi6Ng9VycCU8FI2BZLc0tyQ/pMZfQWP
+         4/Jw==
+X-Forwarded-Encrypted: i=1; AJvYcCVt5BFZk1B+HUPUQ0jgRpWiXcICxOUr4gbTPAXQDyOQTeDhF3uMgCekgZDzJIb7n5jh3NJgD+6KMF8YvQWAGvMhjSM3VvHDm3PqWT+O
+X-Gm-Message-State: AOJu0YyPBgrhXuCPMs2WuEEK8NnkqRrYc0DwdUB8ULemGcDBWrA9VwUY
+	2jKoPBazEOx468mFlzxvYlODOhsNS26OaFcZO2kltsac878KFP7wpE3Hz5PU
+X-Google-Smtp-Source: AGHT+IHMGqcaebuU5XjaJPHEn0KuC12L6kxnnC++HraoFBZmu+7GOQj+YVKjoRWrraAtMf/akjrVOw==
+X-Received: by 2002:adf:ca8a:0:b0:33e:1505:9463 with SMTP id r10-20020adfca8a000000b0033e15059463mr5508436wrh.13.1709392695236;
+        Sat, 02 Mar 2024 07:18:15 -0800 (PST)
+Received: from localhost (a109-49-32-45.cpe.netcabo.pt. [109.49.32.45])
+        by smtp.gmail.com with ESMTPSA id p18-20020adf9d92000000b0033e18f5714esm5454212wre.59.2024.03.02.07.18.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Mar 2024 07:18:14 -0800 (PST)
+From: Rui Miguel Silva <rmfrfs@gmail.com>
+To: Mikhail Lobanov <m.lobanov@rosalinux.ru>
+Cc: Mikhail Lobanov <m.lobanov@rosalinux.ru>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, greybus-dev@lists.linaro.org,
+ linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] greybus: Fix deref of NULL in
+ __gb_lights_flash_brightness_set
+In-Reply-To: <20240301190425.120605-1-m.lobanov@rosalinux.ru>
+References: <20240301190425.120605-1-m.lobanov@rosalinux.ru>
+Date: Sat, 02 Mar 2024 15:18:13 +0000
+Message-ID: <m31q8smzm2.fsf@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXFoYR6rD6GZ6NFLuCXE-q8G4HV0htEcx1omjymbfxVyAg@mail.gmail.com>
+Content-Type: text/plain
 
-On Sat, Mar 02, 2024 at 12:55:14AM +0100, Ard Biesheuvel wrote:
-> Today, pgtable_l5_enabled() is used in many places, most of which
-> resolve to cpu_feature_enabled(), and I don't think you are suggesting
-> to replace all of those with a variable load, right?
+Hi Mikhail,
+Thanks for your patch.
 
-pgtable_l5_enabled() is the odd one out, special thing which should
-have been cpu_feature_enabled() as latter is the default interface we
-use to query what features the CPU supports. But 5level got done long
-ago and we hadn't decided upon cpu_feature_enabled() back then.
+Mikhail Lobanov <m.lobanov@rosalinux.ru> writes:
 
-So should we replace it with it?
+> Dereference of null pointer in the __gb_lights_flash_brightness_set function.
+> Assigning the channel the result of executing the get_channel_from_mode function
+> without checking for NULL may result in an error.
+>
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+>
+> Fixes: 2870b52bae4c ("greybus: lights: add lights implementation")
+> Signed-off-by: Mikhail Lobanov <m.lobanov@rosalinux.ru>
 
-Yap, eventually.
+Yeah, at the time when this was implemented I recall that we could only
+set the brightness of the torch mode in a flash led, not in the flash
+only mode. So, if we were getting here was that for sure we had a torch
+channel and get_channel_from_mode will always find a channel, so never
+returning null here.
 
-> So that means we'll have to stick with early and late variants of
-> pgtable_l5_enabled() like we have today,
+but yeah, this is safer. but maybe just do something like the bellow
+would be simpler:
+modified   drivers/staging/greybus/light.c
+@@ -147,6 +147,9 @@ static int __gb_lights_flash_brightness_set(struct gb_channel *channel)
+ 		channel = get_channel_from_mode(channel->light,
+ 						GB_CHANNEL_MODE_TORCH);
+ 
++	if (!channel)
++		return -EINVAL;
++
+ 	/* For not flash we need to convert brightness to intensity */
+ 	intensity = channel->intensity_uA.min +
+ 			(channel->intensity_uA.step * channel->led->brightness);
 
-I don't mind at all if we had a
+what do you think?
 
-	early_pgtable_l5_enabled()
+Cheers,
+    Rui
 
-which does the RIP_REL_REF() thing and it should be used only in 1:1
-mapping code and the late stuff should start to get replaced with
-cpu_feature_enabled() until pgtable_l5_enabled() is completely gone.
-
-And then we even see whether we can opencode the handful places.
-
-> and we should just drop this patch instead - I put it at the end of
-> the series for a reason.
-
-Yeah, we can leave that one aside for now but use it to start a cleanup
-series.
-
-If you're bored and feel like doing it, be my guest but for the next
-cycle. Or I'll put it on my evergrowing TODO and get to it eventually.
-
-For now, lemme test your set without this one and see whether we can
-queue them even now.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> ---
+>  drivers/staging/greybus/light.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/staging/greybus/light.c b/drivers/staging/greybus/light.c
+> index 87d36948c610..929514350947 100644
+> --- a/drivers/staging/greybus/light.c
+> +++ b/drivers/staging/greybus/light.c
+> @@ -148,10 +148,15 @@ static int __gb_lights_flash_brightness_set(struct gb_channel *channel)
+>  						GB_CHANNEL_MODE_TORCH);
+>  
+>  	/* For not flash we need to convert brightness to intensity */
+> -	intensity = channel->intensity_uA.min +
+> +
+> +	if (channel) {
+> +		intensity = channel->intensity_uA.min +
+>  			(channel->intensity_uA.step * channel->led->brightness);
+>  
+> -	return __gb_lights_flash_intensity_set(channel, intensity);
+> +		return __gb_lights_flash_intensity_set(channel, intensity);
+> +	}
+> +
+> +	return 0;
+>  }
+>  #else
+>  static struct gb_channel *get_channel_from_cdev(struct led_classdev *cdev)
+> -- 
+> 2.43.0
 
