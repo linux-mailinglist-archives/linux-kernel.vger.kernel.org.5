@@ -1,117 +1,135 @@
-Return-Path: <linux-kernel+bounces-89273-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89274-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B6E486EDA5
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 01:57:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A107086EDAF
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 02:00:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A53891C21D29
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 00:57:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D1FB286BAB
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 01:00:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9D225244;
-	Sat,  2 Mar 2024 00:57:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10821CA50;
+	Sat,  2 Mar 2024 01:00:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="T1NvoCAM"
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="R+CAmh6g"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A544A32
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 00:57:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9545AD31
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 00:59:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709341052; cv=none; b=FXfDklfiC324zzym5EkAXKmsDnvubs8bDrXT6xv+i3CcwgL7Z9xcQxecpuK9WVmH1eeIueFPzklMmOERqAK3qDm+YqVsLm8VTlp8IbH6+MnmV3zjo/XsTGIb8HcHRNoC25Svz5KzUZwS+ZVoUQteDFinZ+9Zl7w42ka3oZluzgE=
+	t=1709341200; cv=none; b=Jd9Ecc8H35ibKz864JCTmXiW+1ocAGn1HoXGI/PpUNe/at1d/9VmqpQUdI4IC6SMQFzkiG6rl0VFe2xO52VfTl0iosPnYQbBc9e4YZeGkiqhgKNrdczTW2RuIJcF6RC4a1JYu3cY8eimljx6lfLeXu6A694lEJwbUPcgX+N4HwQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709341052; c=relaxed/simple;
-	bh=5NeWRhfqhllmCD9mFMx/PgmwIdXK3vIcl4ByQ0zu5TU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=uFT8QZQTa9OQs0UL3kd4MfGYcMAe/Jg/h9prG6nbRVCdu8a9YTTXhBg/7M/D0v7cZE5HghZNAD2t+NpgSfFy+NlV6zezpPMQlNANPC4S4y/KNTRVonHY3nFUEd9ItP4nDvGzAbLZP6nuPh5Nd/UcD9ZLjzzcs9FlAhpu06fa2fM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=T1NvoCAM; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a3122b70439so459080166b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 16:57:30 -0800 (PST)
+	s=arc-20240116; t=1709341200; c=relaxed/simple;
+	bh=dM3Ag5y8je1vuduwF1EimvGz+cnswEd1t+PuSA61ShM=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=d00BGf1M2C8t09xS1mk7faghS2jYnbPrucGvTnfuL7hu3qukx0LNEdh1kuCDlnO8AxX02b0K/prfodN2z97ATg0dy2na4qXO8zOR7hy4Xk5FAu4KOfTfHB7RwONqYaoUNod/9SYmzgZpvgnRR1C+ZZOARG6OdSwfu8b4WIrZpF8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=R+CAmh6g; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcbee93a3e1so4731093276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 16:59:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1709341049; x=1709945849; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=XfkelKUHIIHCQK6GQkZSqQAl8iGPsieC5jUUCHXhVW0=;
-        b=T1NvoCAMttmKhyE1F7y7Eq7lqUO1/dtKM2PWUxAxP2AkqEDhTQJ/kLpclmIRY1rXX4
-         2DrR3Jd5/5w8Iyzo73Fdjgb6c7ZE+jvblkYmAy/pr4n4hALFoy8beCUUEKm98YjWHwG0
-         Sf55qoers/6KUoLWls2Ojhl0cigdnW0S1ZXUMy7IBCxZR7idVJRDtIHHcKXr9N6jLIx5
-         TFe7HLytSjP6gwTcVh+E0aoyrfdZWR3PwM0oEYSdY1DkDtkMjMcyO9IWzGbAnuWmYRlG
-         HXzvcaOhI56vCNcgzd7bcKKP2FtwSZpctGWEuiaNRckWSmy9KQSmiBFWtDwQRCg2tHEn
-         bAyw==
+        d=google.com; s=20230601; t=1709341198; x=1709945998; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=j4G9FOR5nbZkYqaq4dewtp5LXznD7NrLAFoLOjYCkLY=;
+        b=R+CAmh6gesYrwXCwzWNrE5VjqM5ToKzSdf+RtjVrR5OQoRSjrHWSVSGHAZp1O0hio4
+         CdCD8p9VnA0l61q4MfX+eKB1iIewxHkW7/tazK5wwHGbvqHdUpVxXixJdY6epuXP3QGy
+         47E2oEW98bOG9ZIQz3MV+D8AJ/HbdI9j30hNykvD0o7AdXMeybFVLY2sGxhs8LTDHhxY
+         NTOrY4430b+gbdixLBrUqRaBDGHdonvPIeUIW3QmM1+maQ99NahIOCzgo1FljdAWrlTm
+         +UOXU7oF5YLuQHxc4LdV0i1AG0WHt7tHbk8zai6OT8onSwbFiNGWqoLvxwubjzYLG/YF
+         /Nzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709341049; x=1709945849;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XfkelKUHIIHCQK6GQkZSqQAl8iGPsieC5jUUCHXhVW0=;
-        b=ABsk9QeN6wl0j2A/3LQbT1AtdJuGHp2iZc2Cl1CPw05xMx+HbsdLogJXRsmU++o69q
-         IbUorlXspsaziGT1R8qzqDaApvRazeMcEj+SyBQ8XnLntgrMptpvWIQbRV/VCensB3hC
-         tyC1t4DIt5dA82zP3FqKrcu0nN7McpJh0bYmLTNedTu2hWg4FeK52sYtPxjOI67A8xhb
-         ouEbHDD4YHwxAGsod6WxMcJ9m/siZ2K/gJnJf1lDrfwdNjI5+kl0ZBF7kVfiiooqNsbR
-         bC3EKbJ9NUAcKxgHvNZyZd4H+WMatAhswyrMJgOf7W1c5qX/LGhK9qOCg8jr9v10LolW
-         oIDg==
-X-Forwarded-Encrypted: i=1; AJvYcCWrLlFSfroqp87gtNOjuZ2bAB5zh6YwXqeJuvaKKknG8sH4yGngJ4gdPmonoVao7XDlLluLY0ve9ImOeHqTBNF2IHG+RNb9GREgx4pp
-X-Gm-Message-State: AOJu0Yz5O/661QwWe3Jqt+EjL2H/TN9mcD6CAbolOYMZ/MhScFJt7vSs
-	xxd2aS91fDMe8P4CxBjjYXxqBkJNhrb1dhuYxAdIix0h7r2VxQL3Ty7bTNIsKlY=
-X-Google-Smtp-Source: AGHT+IHCSp7S1z3p2QExM8xCWQEwzBwSLu1JprvqTg2FQC64lmgA38holXeFo9lsrS/n5MuIyoc8Tg==
-X-Received: by 2002:a17:906:a84c:b0:a44:9a5d:2be2 with SMTP id dx12-20020a170906a84c00b00a449a5d2be2mr2186969ejb.56.1709341048786;
-        Fri, 01 Mar 2024 16:57:28 -0800 (PST)
-Received: from fedora.fritz.box (aftr-82-135-80-35.dynamic.mnet-online.de. [82.135.80.35])
-        by smtp.gmail.com with ESMTPSA id u22-20020a1709067d1600b00a3d2d81daafsm2215372ejo.172.2024.03.01.16.57.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 16:57:28 -0800 (PST)
-From: Thorsten Blum <thorsten.blum@toblux.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Thorsten Blum <thorsten.blum@toblux.com>
-Subject: [PATCH] libbpf: Remove unneeded conversion to bool
-Date: Sat,  2 Mar 2024 01:54:54 +0100
-Message-ID: <20240302005453.305015-2-thorsten.blum@toblux.com>
-X-Mailer: git-send-email 2.44.0
+        d=1e100.net; s=20230601; t=1709341198; x=1709945998;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=j4G9FOR5nbZkYqaq4dewtp5LXznD7NrLAFoLOjYCkLY=;
+        b=JsTkec+Oz82HDxYSuAJH6b7a2w39jSuiZtKBat+wGnzFjc5ceBfZBQ/JBttzX5iJAw
+         0BVtiaemRJoKwJkDGp2fx81QUv88omFqPrkDKdcnuJUL/Mwlpn43wNGTZSVtVyrhI+tG
+         APpFOYueK5YenNZ0PD1Ls21faUV4BsOsoIcu9f39hcpZNKg5+jDqfwcCJUpX0puhcTgK
+         UHyHuy2oYMVvs+Nc2isWx5BrN+2ZtiOKs1yUSUTmzY37GWAaQcAzyfjeC4riPbvdBXmK
+         UmNwQ0cr1BtvWzZKqP2lBIa2hPgD5rwrLOjuthMIkB/fX96gwquHRngnHHeM8o3UO/Bw
+         x4+w==
+X-Forwarded-Encrypted: i=1; AJvYcCVUYyFQqNGJ+J9urRlhHokvBu76IzK+mjsEZUOXopAtFndTuM5udKe5EjiZ1UrKE4Jf5eqasnaP4kyAxvIiEIfITV8zThlfnBJHeOd0
+X-Gm-Message-State: AOJu0YxMAfm0n9Ai+SlHUn33JTnfnyA6j3d33qllisKEMFQFX65etbdD
+	1SLAmiV9g4MBd65LRABEYOeOMPe8tiMuzOuX1DtA3kzVF8hhdFEqc7ZwffReXJ4Fjnr14uqL/Ft
+	+vZCTCw==
+X-Google-Smtp-Source: AGHT+IFGtI8mI+6WnpJiE0oUqp0/9/mqYd9m4o9lxj10uVFie/ybfRNZD7jc4ad0HnjcIsE3sXC85e/rUjyV
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:aba7:66c5:3365:7114])
+ (user=irogers job=sendgmr) by 2002:a05:6902:72c:b0:dbe:a0c2:df25 with SMTP id
+ l12-20020a056902072c00b00dbea0c2df25mr113432ybt.8.1709341197908; Fri, 01 Mar
+ 2024 16:59:57 -0800 (PST)
+Date: Fri,  1 Mar 2024 16:59:38 -0800
+Message-Id: <20240302005950.2847058-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
+Subject: [PATCH v2 00/12] Foundations for metric generation with Python
+From: Ian Rogers <irogers@google.com>
+To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	John Garry <john.g.garry@oracle.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	Jing Zhang <renyu.zj@linux.alibaba.com>, Thomas Richter <tmricht@linux.ibm.com>, 
+	James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, Andi Kleen <ak@linux.intel.com>, 
+	Kajol Jain <kjain@linux.ibm.com>, Sandipan Das <sandipan.das@amd.com>, 
+	Ravi Bangoria <ravi.bangoria@amd.com>, Perry Taylor <perry.taylor@intel.com>, 
+	Samantha Alt <samantha.alt@intel.com>, Caleb Biggers <caleb.biggers@intel.com>, 
+	Weilin Wang <weilin.wang@intel.com>, Edward Baker <edward.baker@intel.com>, 
+	Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Fixes Coccinelle/coccicheck warning reported by boolconv.cocci.
+Metrics in the perf tool come in via json. Json doesn't allow
+comments, line breaks, etc. making it an inconvenient way to write
+metrics. Further, it is useful to detect when writing a metric that
+the event specified is supported within the event json for a model.
 
-Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
----
- tools/lib/bpf/libbpf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+These patches introduce infrastructure and fixes for the addition of
+metrics written in python for Arm64, AMD Zen and Intel CPUs. Later
+patches will introduce the metrics split apart by the vendor.
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index afd09571c482..2dda7a6c6f85 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -1801,7 +1801,7 @@ static int set_kcfg_value_tri(struct extern_desc *ext, void *ext_val,
- 				ext->name, value);
- 			return -EINVAL;
- 		}
--		*(bool *)ext_val = value == 'y' ? true : false;
-+		*(bool *)ext_val = value == 'y';
- 		break;
- 	case KCFG_TRISTATE:
- 		if (value == 'y')
+v2. Fixes two type issues in the python code but no functional or
+    output changes.
+
+Ian Rogers (12):
+  perf jevents: Allow multiple metricgroups.json files
+  perf jevents: Update metric constraint support
+  perf jevents: Add descriptions to metricgroup abstraction
+  perf jevents: Allow metric groups not to be named
+  perf jevents: Support parsing negative exponents
+  perf jevents: Term list fix in event parsing
+  perf jevents: Add threshold expressions to Metric
+  perf jevents: Move json encoding to its own functions
+  perf jevents: Drop duplicate pending metrics
+  perf jevents: Skip optional metrics in metric group list
+  perf jevents: Build support for generating metrics from python
+  perf jevents: Add load event json to verify and allow fallbacks
+
+ tools/perf/.gitignore                  |   2 +
+ tools/perf/Makefile.perf               |  17 ++-
+ tools/perf/pmu-events/Build            |  60 ++++++++-
+ tools/perf/pmu-events/amd_metrics.py   |  22 ++++
+ tools/perf/pmu-events/arm64_metrics.py |  23 ++++
+ tools/perf/pmu-events/intel_metrics.py |  22 ++++
+ tools/perf/pmu-events/jevents.py       |   6 +-
+ tools/perf/pmu-events/metric.py        | 162 +++++++++++++++++++++----
+ tools/perf/pmu-events/metric_test.py   |   4 +
+ 9 files changed, 282 insertions(+), 36 deletions(-)
+ create mode 100755 tools/perf/pmu-events/amd_metrics.py
+ create mode 100755 tools/perf/pmu-events/arm64_metrics.py
+ create mode 100755 tools/perf/pmu-events/intel_metrics.py
+
 -- 
-2.44.0
+2.44.0.278.ge034bb2e1d-goog
 
 
