@@ -1,94 +1,144 @@
-Return-Path: <linux-kernel+bounces-89331-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA3DB86EE7A
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 05:13:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0462C86EE90
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 05:18:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 60F981F218EB
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 04:13:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 50812B24615
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 04:18:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B3281119A;
-	Sat,  2 Mar 2024 04:13:06 +0000 (UTC)
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4494A1173F;
+	Sat,  2 Mar 2024 04:18:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="cPe2no9m"
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD54D10A05
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 04:13:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EFC5B662
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 04:18:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709352786; cv=none; b=fsUe02+ORMgP2F23khMzsyJWbET55xeT3kklHYmw/d7HbfmInX5Ukyt4Goq9YDzurwW32E4WsMaueRHddkOuduWG13UMqrthj6nOGCUx++mCCWZG8SXzWu4wT3svsy3FYviGbMjw3LcxIYKfcvTLyvyyTFOmmkU32k9c2XfH6kQ=
+	t=1709353123; cv=none; b=LQi2AVDmwCeoHG3HjMnQN3uMX7okCa73fpvDkRQNg7jmt7l+qrHAtyaMBC4BH+MHvpwOSMwzo6s6a+03+P1qhds59xLqsTVXMHykb/11hw6NpDJvt4/Rr7NLTuWYlIzgSB5m4zIgjTVOC1EXDtROIgW4PTuhGHcflV5DxoqnVuM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709352786; c=relaxed/simple;
-	bh=xXL3eGNtx4fKbLGwUddCJ6Z89zxBZxOIhwZ1upx7U7o=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=ZMhwv6iHl1v9ictgA9QSxDsZ/ppaR3sWb85m8q5T9C3MwnxTz15sxiHDrHywz0WnTYazL8VscpEaM8+xAcVQj/RgwDCpeW3hvd5wwkSYwag5pQ+BtYpWYgCrCUA11sOWGi+IetEf31WlkPNq5/fwh6nu8PQbpTB/glRaVsKvuMY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7bec4b24a34so344458139f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 20:13:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709352784; x=1709957584;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IdmhwINwWJtxlnecMtQfHBtNVjXurznaLwVzNHPbLS8=;
-        b=rZTqDvKfls2YjtzAwZBdbGPT/0LhEL5S5OBwR+Jeo/UYF1IycvVZCyC9MzeTwwZ/ek
-         9uEQth1YTe2dFS/04y0YHmKNLfbY/TAHmuM4BSp8I/ciMCutq7rQVh9bLI7ahHFSQeVY
-         Y5UT88hYjRmHXrJKsYkRcN0aaar+Z59jh6WOqJd27skumqYLD+gvX2QWEpSJkb8crZ/Z
-         Bl9Vy1nFUllYk6nEe8010T9aPwW7cR3CravxGOdPjy197BVF3sYLDO4psQoUMNnSfrAt
-         shQj1/CUjUvfzVuYVRwk58OWuAvKdm5YSojBExppp5zp6o/hzImxk8yYibQ8KEpPdgB7
-         3S9g==
-X-Forwarded-Encrypted: i=1; AJvYcCVT+0/gg4IzRRBTc/MzX0Q/mEQyhAXSm5uDu7i29VVRHb+D1KcPNDfA7UhFsN01YjDcJYDI+JQrnV11VtLxbT3dO58NoxRZKI2HuhlN
-X-Gm-Message-State: AOJu0YxsVFS1MAe/bSFH2Jbd4gJsBSzxbZ/CgeZBPF6OiphJHvY08xEO
-	pKvlKKi+eQaxnx8RTbrwz3e3DVptcSc90znFKK5DjAjvxdNzAG6pyjIdFZgg9XvDZPO7ecgbeoX
-	WwO1t7RKzcKvIHBOJYDT7TQSyqO04UZplXNRvg02l9fZ/fQLglOUrwBM=
-X-Google-Smtp-Source: AGHT+IFeNymewDoQQ2b72fsvKz5+EwmHM6NPkihOCvhrd4QX5nncJm2ScXvMMyOAUFsw2cegVJkFRege49tbor9AsksLq7WQhdRg
+	s=arc-20240116; t=1709353123; c=relaxed/simple;
+	bh=Ujmcpy2dB7P+XYqqlVtvlzsrGz012Xd/azkbDPGDSzM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JKTyecr5nvV+plKuFBu1vhnWoYuYJVYS29qKrHoJQct/ifcDvKxL/gMa/f6bDd8tsU6KOmrKV7CUk9BkfvmS/RJKVmwnSpvmJkv0XSoNAknJxoDWLZ8E3uTC/gNMNG1Ihce5xIWjDrsv/bSIuAVlO+8H4+ugDVx+639f4CCbBGU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=cPe2no9m; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [192.168.7.187] ([71.202.166.45])
+	(authenticated bits=0)
+	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 4224HjZX3764965
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Fri, 1 Mar 2024 20:17:46 -0800
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 4224HjZX3764965
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2024021201; t=1709353066;
+	bh=zkH9jdOm9lyQ5evGJsoOR0OkpIqw0UDM+K1wsPFRox4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=cPe2no9mszrnzVala+OgOyDQNIVm0rLeH3QmJzE339wXl+UHwys9tQJ4gPkGL8P6G
+	 4gdXsgZTvcbfhqzV1lfEXVp7Ux7X+YWAhSrfpE+rhrFGFZhTzXWTxXb0ynvLtw8Lc3
+	 YglhPeCXvLE7xM6EC2pbsGX58d9DRMUbhA0SZc4XqFXla2H65izhXgVsM4muy9y93w
+	 DZX/OK8f+gSmmL6+9Q/kmp9nXgKvjH20bza8zP+ldFXkaselIxUDexTAh2FVg60wY+
+	 DqcAo9KajsYPXyQE1RIbQaWtZbX1PpMX0/6/fsIOnt7gnafVEEeQuXcqNvVjl2TFf6
+	 XuUSUvPvUsdTg==
+Message-ID: <c4fb7c39-c99c-4e4c-bd85-470f5d0dc4dd@zytor.com>
+Date: Fri, 1 Mar 2024 20:17:44 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:411c:b0:474:d1b9:10d9 with SMTP id
- ay28-20020a056638411c00b00474d1b910d9mr140269jab.2.1709352784115; Fri, 01 Mar
- 2024 20:13:04 -0800 (PST)
-Date: Fri, 01 Mar 2024 20:13:04 -0800
-In-Reply-To: <0000000000009a7f2105ff02d381@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007e3d4a0612a5b5a7@google.com>
-Subject: Re: [syzbot] [reiserfs?] [mm?] general protection fault in
- unlink_file_vma (2)
-From: syzbot <syzbot+7fbdbd17a5bd6d01bc65@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, axboe@kernel.dk, brauner@kernel.org, 
-	jack@suse.cz, linkinjeon@kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	reiserfs-devel@vger.kernel.org, sj1557.seo@samsung.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/1] x86/fred: Fix init_task thread stack pointer
+ initialization
+To: Brian Gerst <brgerst@gmail.com>
+Cc: linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com
+References: <20240301084046.3370376-1-xin@zytor.com>
+ <CAMzpN2j7xKcGx=+z8mu_2z2RsqjB-mpODdrOH7N1J2_OzuyEUQ@mail.gmail.com>
+Content-Language: en-US
+From: Xin Li <xin@zytor.com>
+Autocrypt: addr=xin@zytor.com; keydata=
+ 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
+ l75w1xInsg==
+In-Reply-To: <CAMzpN2j7xKcGx=+z8mu_2z2RsqjB-mpODdrOH7N1J2_OzuyEUQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-syzbot suspects this issue was fixed by commit:
+On 3/1/2024 5:15 AM, Brian Gerst wrote:
+> On Fri, Mar 1, 2024 at 3:41 AM Xin Li (Intel) <xin@zytor.com> wrote:
+> There is another spot in head_64.S that also needs this offset:
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+I checked all references to __end_init_task before sending out this
+patch, and I doubt we need to make more similar changes.
 
-    fs: Block writes to mounted block devices
+First of all, "movq    TASK_threadsp(%rcx), %rsp" you added in 
+3adee777ad0d ("x86/smpboot: Remove initial_stack on 64-bit") is exactly
+what we need to set up %rsp for the init task.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12d80bba180000
-start commit:   547cc9be86f4 Merge tag 'perf_urgent_for_v6.4' of git://git..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2cbd298d0aff1140
-dashboard link: https://syzkaller.appspot.com/bug?extid=7fbdbd17a5bd6d01bc65
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13a58757280000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=134a0f1f280000
+> /* Set up the stack for verify_cpu() */
+> leaq (__end_init_task - PTREGS_SIZE)(%rip), %rsp
 
-If the result looks correct, please mark the issue as fixed by replying with:
+As the comment says, it's a _temporary_ stack for calling verify_cpu()
+(but only for BSP, as APs use a different bring up stack), at which
+stage the concept of "task" has not formed. I'm thinking maybe it's
+better to do:
 
-#syz fix: fs: Block writes to mounted block devices
+/* Set up the stack for verify_cpu() */
+leaq __end_init_task(%rip), %rsp
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Previously it was "leaq    (__end_init_task - FRAME_SIZE)(%rip), %rsp",
+but the kernel unwinder goes up only to secondary_startup_64_no_verify()
+after the new way you introduced to set up %rsp for the init task, and
+it seems to me that there is no point to subtract FRAME_SIZE or
+PTREGS_SIZE.
+
+On the other hand, TOP_OF_KERNEL_STACK_PADDING is required for x86_32,
+but probably not for x86_64 (defined as 0 before FRED). The most
+important usage of TOP_OF_KERNEL_STACK_PADDING is to get the pt_regs
+pointer for a task, i.e., task_pt_regs(task), which assumes a fixed
+offset from the top of a task stack, but also limits the space that
+could be used by future hardware above the pt_regs structure. Thus I
+prefer to limit the usage of TOP_OF_KERNEL_STACK_PADDING on x86_64.
+
+Thanks!
+     Xin
 
