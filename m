@@ -1,147 +1,217 @@
-Return-Path: <linux-kernel+bounces-89535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89536-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC29786F1AF
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 18:33:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8732186F1B1
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 18:34:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9212F28356A
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 17:33:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3CEF8283618
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 17:34:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 977662BB12;
-	Sat,  2 Mar 2024 17:33:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="Q7cc409v"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0DA42BB16;
+	Sat,  2 Mar 2024 17:34:08 +0000 (UTC)
+Received: from fgw22-7.mail.saunalahti.fi (fgw22-7.mail.saunalahti.fi [62.142.5.83])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C453D2576E;
-	Sat,  2 Mar 2024 17:33:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 795272BB08
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 17:34:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.142.5.83
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709400828; cv=none; b=vFHFLni5t/9mqQZrVafb606YoVm/ThKUKUjKgjUjBVqrL6pTCsofKBmz9QByBRulgS2+BmipjepMsz7lEu1HKcYUton3iQZ3XBCTaqgGWSn8rmBJrzNpN0pzX1BjeUSyjF33shIOL4tlCif3cEKVRfcS4vDSiq9Exz0VSRfpOjU=
+	t=1709400848; cv=none; b=S9D/84L5lkg55djgJ1IcwmGfgHOy4sDfFflIq4b+2cv4lZnkUEAg+yJUlhfvXjuUAiY1UdhjfogkqC5aYuNslmcSq/+i+IlG3hMv860epBVF4qVdFUstsaObSfKXtd5GX/BcTGCayntOrQRfDyHXRs34a95lpup1HlOBxs+kgpw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709400828; c=relaxed/simple;
-	bh=7wzKlRr3KNoyYV+XJySI9N+Suy6+yQ4gF1JspQ+dKgs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SyHrKNf4Uyz+GruAm/Bkhdwya4SgaxNmPXY0o/uJPWac1Kqx6Iy78Rraw3vc9V6JGiJvreKaKchFFHgtBOMPu8WJqHgybtNns4b6hp7vrPdOs7NEJzlXpWqN2Nf3sL2xgaSi80aFkjLta6chWpfJJKUvo1oe4DnP1KOkucZF0lo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=Q7cc409v; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=SCSvTS84dtDPixkR5UknuDrt5ZxGw8Irc52+regEcFc=; b=Q7cc409vjN3T4oKQsoWEker1H4
-	ihswIy+PKzLflbmvDzFw9rL3tEx0LSq3SRznJGoJneHaACzJYOhq37zR3aI6fR5kMv9d79aJgzFAY
-	WRHhlqbug1shcyQ+SojkZmUAxvn9iGCOjao52aHHEsmL3POhjqibA1ZPTRFLmHkODFITQaEJg8BTj
-	82ICoDNChrJ0M4pRUnXIAgIfBIFiQoUOImwWKMiK5Mm5zEIfXUEvlsK7KVvM44j9RKELdvLe1Z0AR
-	MFdU8i4kP8RtWldorVIyQz/MOh4maLHE/1S0/3l6jMPH+1Mx37uPMyIUCFhDRS2dj1B1eAjCr8Jpz
-	cWxmokKg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:48120)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rgT7N-0002nv-2e;
-	Sat, 02 Mar 2024 17:25:49 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rgT7K-0002oq-1G; Sat, 02 Mar 2024 17:25:46 +0000
-Date: Sat, 2 Mar 2024 17:25:45 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Heiner Kallweit <hkallweit1@gmail.com>
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>, Wei Fang <wei.fang@nxp.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	kernel@pengutronix.de, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, Shenwei Wang <shenwei.wang@nxp.com>,
-	Clark Wang <xiaoning.wang@nxp.com>,
-	NXP Linux Team <linux-imx@nxp.com>
-Subject: Re: [PATCH net-next v8 3/8] net: phy: Add helper to set EEE Clock
- stop enable bit
-Message-ID: <ZeNhGURTEfzwhikL@shell.armlinux.org.uk>
-References: <20240301100153.927743-1-o.rempel@pengutronix.de>
- <20240301100153.927743-4-o.rempel@pengutronix.de>
- <d550b591-cd83-4ac6-8fd5-f5e0e2ad71d9@gmail.com>
+	s=arc-20240116; t=1709400848; c=relaxed/simple;
+	bh=7lMDGIvGwXibQCEU/9v4neE2aHOgpDfb49iMvtJT3sM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TRv9iy3Rjs+vu5tinNdqzvSp40AMyIulnGvV3pns6p7fHJEAOV7EMWfGVuLxWiNgsNpT0i9YAFR5ZMUxT+UrT59Tb2Jc0H4KUR//o6WzL/Q8Rx7edrnMHmNBGp1PrQ6hX36A447capmACmdu6NFAXCPhCKOoJMwBdDkMclTk1D4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=62.142.5.83
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
+Received: from localhost (88-113-26-217.elisa-laajakaista.fi [88.113.26.217])
+	by fgw22.mail.saunalahti.fi (Halon) with ESMTP
+	id 0f9e5cfb-d8bb-11ee-a9de-005056bdf889;
+	Sat, 02 Mar 2024 19:34:03 +0200 (EET)
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+To: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	=?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
+	linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>,
+	Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH v3 1/1] gpio: nomadik: Finish conversion to use firmware node APIs
+Date: Sat,  2 Mar 2024 19:33:29 +0200
+Message-ID: <20240302173401.217830-1-andy.shevchenko@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d550b591-cd83-4ac6-8fd5-f5e0e2ad71d9@gmail.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
 
-On Sat, Mar 02, 2024 at 06:16:34PM +0100, Heiner Kallweit wrote:
-> On 01.03.2024 11:01, Oleksij Rempel wrote:
-> > From: Andrew Lunn <andrew@lunn.ch>
-> > 
-> > The MAC driver can request that the PHY stops the clock during EEE
-> > LPI. This has normally been does as part of phy_init_eee(), however
-> > that function is overly complex and often wrongly used. Add a
-> > standalone helper, to aid removing phy_init_eee().
-> > 
-> > Signed-off-by: Andrew Lunn <andrew@lunn.ch>
-> > Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
-> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> > ---
-> >  drivers/net/phy/phy.c | 20 ++++++++++++++++++++
-> >  include/linux/phy.h   |  1 +
-> >  2 files changed, 21 insertions(+)
-> > 
-> > diff --git a/drivers/net/phy/phy.c b/drivers/net/phy/phy.c
-> > index 2bc0a7d51c63f..ab18b0d9beb47 100644
-> > --- a/drivers/net/phy/phy.c
-> > +++ b/drivers/net/phy/phy.c
-> > @@ -1579,6 +1579,26 @@ void phy_mac_interrupt(struct phy_device *phydev)
-> >  }
-> >  EXPORT_SYMBOL(phy_mac_interrupt);
-> >  
-> > +/**
-> > + * phy_eee_clk_stop_enable - Clock should stop during LIP
-> > + * @phydev: target phy_device struct
-> > + *
-> > + * Description: Program the MMD register 3.0 setting the "Clock stop enable"
-> > + * bit.
-> > + */
-> > +int phy_eee_clk_stop_enable(struct phy_device *phydev)
-> > +{
-> > +	int ret;
-> > +
-> > +	mutex_lock(&phydev->lock);
-> > +	ret = phy_set_bits_mmd(phydev, MDIO_MMD_PCS, MDIO_CTRL1,
-> > +			       MDIO_PCS_CTRL1_CLKSTOP_EN);
-> > +	mutex_unlock(&phydev->lock);
-> > +
-> > +	return ret;
-> > +}
-> > +EXPORT_SYMBOL_GPL(phy_eee_clk_stop_enable);
-> > +
-> I don't see a user of this function in the series.
-> Based on the commit description, wouldn't it be better to
-> make this patch part of a future series removing
-> phy_init_eee()?
+Previously driver got a few updates in order to replace OF APIs by
+respective firmware node, however it was not finished to the logical
+end, e.g., some APIs that has been used are still require OF node
+to be passed. Finish that job by converting leftovers to use firmware
+node APIs.
 
-That depends who is going to do that work. If it's individual driver
-maintainers, then I think we want this to go in along with this series
-so that we don't end up with individual driver maintainers having to
-carry this patch, and submissions ending up with multiple copies of
-this patch or depending on other maintainers submissions.
+Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+---
+v3: used correct types for fwnode (LKP)
+v2: also update necessary parts in the respective pin control driver 
+ drivers/gpio/Kconfig                      |  1 -
+ drivers/gpio/gpio-nomadik.c               | 13 ++++++------
+ drivers/pinctrl/nomadik/pinctrl-nomadik.c | 25 +++++++++++------------
+ include/linux/gpio/gpio-nomadik.h         |  4 +++-
+ 4 files changed, 21 insertions(+), 22 deletions(-)
 
-On the other hand, if someone is going to go through all the network
-drivers and update them as one series, then it probably makes more
-sense to move this to that series.
-
+diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+index f633be517654..ef20ab921010 100644
+--- a/drivers/gpio/Kconfig
++++ b/drivers/gpio/Kconfig
+@@ -481,7 +481,6 @@ config GPIO_MXS
+ config GPIO_NOMADIK
+ 	bool "Nomadik GPIO driver"
+ 	depends on ARCH_U8500 || ARCH_NOMADIK || MACH_EYEQ5 || COMPILE_TEST
+-	depends on OF_GPIO
+ 	select GPIOLIB_IRQCHIP
+ 	help
+ 	  Say yes here to support the Nomadik SoC GPIO block. This block is also
+diff --git a/drivers/gpio/gpio-nomadik.c b/drivers/gpio/gpio-nomadik.c
+index c9fd6631e0aa..483086deb397 100644
+--- a/drivers/gpio/gpio-nomadik.c
++++ b/drivers/gpio/gpio-nomadik.c
+@@ -23,10 +23,10 @@
+ #include <linux/gpio/driver.h>
+ #include <linux/interrupt.h>
+ #include <linux/kernel.h>
+-#include <linux/of_device.h>
+-#include <linux/of_platform.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/pinctrl/pinctrl.h>
+ #include <linux/platform_device.h>
++#include <linux/property.h>
+ #include <linux/reset.h>
+ #include <linux/seq_file.h>
+ #include <linux/slab.h>
+@@ -504,7 +504,7 @@ static inline void nmk_gpio_dbg_show_one(struct seq_file *s,
+  * it is the pin controller or GPIO driver. However we need to use the right
+  * platform device when looking up resources so pay attention to pdev.
+  */
+-struct nmk_gpio_chip *nmk_gpio_populate_chip(struct device_node *np,
++struct nmk_gpio_chip *nmk_gpio_populate_chip(struct fwnode_handle *fwnode,
+ 					     struct platform_device *pdev)
+ {
+ 	struct nmk_gpio_chip *nmk_chip;
+@@ -517,9 +517,9 @@ struct nmk_gpio_chip *nmk_gpio_populate_chip(struct device_node *np,
+ 	u32 id, ngpio;
+ 	int ret;
+ 
+-	gpio_dev = bus_find_device_by_of_node(&platform_bus_type, np);
++	gpio_dev = bus_find_device_by_fwnode(&platform_bus_type, fwnode);
+ 	if (!gpio_dev) {
+-		pr_err("populate \"%pOFn\": device not found\n", np);
++		dev_err(&pdev->dev, "populate \"%pfwP\": device not found\n", fwnode);
+ 		return ERR_PTR(-ENODEV);
+ 	}
+ 	gpio_pdev = to_platform_device(gpio_dev);
+@@ -624,7 +624,6 @@ static const struct irq_chip nmk_irq_chip = {
+ static int nmk_gpio_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+-	struct device_node *np = dev->of_node;
+ 	struct nmk_gpio_chip *nmk_chip;
+ 	struct gpio_irq_chip *girq;
+ 	bool supports_sleepmode;
+@@ -632,7 +631,7 @@ static int nmk_gpio_probe(struct platform_device *pdev)
+ 	int irq;
+ 	int ret;
+ 
+-	nmk_chip = nmk_gpio_populate_chip(np, pdev);
++	nmk_chip = nmk_gpio_populate_chip(dev_fwnode(dev), pdev);
+ 	if (IS_ERR(nmk_chip)) {
+ 		dev_err(dev, "could not populate nmk chip struct\n");
+ 		return PTR_ERR(nmk_chip);
+diff --git a/drivers/pinctrl/nomadik/pinctrl-nomadik.c b/drivers/pinctrl/nomadik/pinctrl-nomadik.c
+index 7849144b3b80..47d5484f6bdf 100644
+--- a/drivers/pinctrl/nomadik/pinctrl-nomadik.c
++++ b/drivers/pinctrl/nomadik/pinctrl-nomadik.c
+@@ -1190,8 +1190,8 @@ static int nmk_pinctrl_resume(struct device *dev)
+ 
+ static int nmk_pinctrl_probe(struct platform_device *pdev)
+ {
+-	struct device_node *np = pdev->dev.of_node;
+-	struct device_node *prcm_np;
++	struct fwnode_handle *fwnode = dev_fwnode(&pdev->dev);
++	struct fwnode_handle *prcm_fwnode;
+ 	struct nmk_pinctrl *npct;
+ 	uintptr_t version = 0;
+ 	int i;
+@@ -1216,28 +1216,27 @@ static int nmk_pinctrl_probe(struct platform_device *pdev)
+ 	 * or after this point: it shouldn't matter as the APIs are orthogonal.
+ 	 */
+ 	for (i = 0; i < NMK_MAX_BANKS; i++) {
+-		struct device_node *gpio_np;
++		struct fwnode_handle *gpio_fwnode;
+ 		struct nmk_gpio_chip *nmk_chip;
+ 
+-		gpio_np = of_parse_phandle(np, "nomadik-gpio-chips", i);
+-		if (!gpio_np)
++		gpio_fwnode = fwnode_find_reference(fwnode, "nomadik-gpio-chips", i);
++		if (IS_ERR(gpio_fwnode))
+ 			continue;
+ 
+-		dev_info(&pdev->dev, "populate NMK GPIO %d \"%pOFn\"\n",
+-			 i, gpio_np);
+-		nmk_chip = nmk_gpio_populate_chip(gpio_np, pdev);
++		dev_info(&pdev->dev, "populate NMK GPIO %d \"%pfwP\"\n", i, gpio_fwnode);
++		nmk_chip = nmk_gpio_populate_chip(gpio_fwnode, pdev);
+ 		if (IS_ERR(nmk_chip))
+ 			dev_err(&pdev->dev,
+ 				"could not populate nmk chip struct - continue anyway\n");
+-		of_node_put(gpio_np);
++		fwnode_handle_put(gpio_fwnode);
+ 		/* We are NOT compatible with mobileye,eyeq5-gpio. */
+ 		BUG_ON(nmk_chip->is_mobileye_soc);
+ 	}
+ 
+-	prcm_np = of_parse_phandle(np, "prcm", 0);
+-	if (prcm_np) {
+-		npct->prcm_base = of_iomap(prcm_np, 0);
+-		of_node_put(prcm_np);
++	prcm_fwnode = fwnode_find_reference(fwnode, "prcm", 0);
++	if (!IS_ERR(prcm_fwnode)) {
++		npct->prcm_base = fwnode_iomap(prcm_fwnode, 0);
++		fwnode_handle_put(prcm_fwnode);
+ 	}
+ 	if (!npct->prcm_base) {
+ 		if (version == PINCTRL_NMK_STN8815) {
+diff --git a/include/linux/gpio/gpio-nomadik.h b/include/linux/gpio/gpio-nomadik.h
+index 9bdb09fda4c9..4a95ea7935fb 100644
+--- a/include/linux/gpio/gpio-nomadik.h
++++ b/include/linux/gpio/gpio-nomadik.h
+@@ -2,6 +2,8 @@
+ #ifndef __LINUX_GPIO_NOMADIK_H
+ #define __LINUX_GPIO_NOMADIK_H
+ 
++struct fwnode_handle;
++
+ /* Package definitions */
+ #define PINCTRL_NMK_STN8815	0
+ #define PINCTRL_NMK_DB8500	1
+@@ -263,7 +265,7 @@ void __nmk_gpio_make_output(struct nmk_gpio_chip *nmk_chip,
+ 			    unsigned int offset, int val);
+ void __nmk_gpio_set_slpm(struct nmk_gpio_chip *nmk_chip, unsigned int offset,
+ 			 enum nmk_gpio_slpm mode);
+-struct nmk_gpio_chip *nmk_gpio_populate_chip(struct device_node *np,
++struct nmk_gpio_chip *nmk_gpio_populate_chip(struct fwnode_handle *fwnode,
+ 					     struct platform_device *pdev);
+ 
+ /* Symbols declared in pinctrl-nomadik used by gpio-nomadik. */
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+2.44.0
+
 
