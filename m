@@ -1,391 +1,261 @@
-Return-Path: <linux-kernel+bounces-89316-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89317-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FA6586EE37
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 03:58:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 768D086EE43
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 04:00:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 559CBB2235C
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 02:58:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 054BF1F22366
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 03:00:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4482A1119A;
-	Sat,  2 Mar 2024 02:58:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BA1710976;
+	Sat,  2 Mar 2024 02:59:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="VLG/PPyn"
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2099.outbound.protection.outlook.com [40.107.95.99])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="PiUIIedC"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AD68BA45;
-	Sat,  2 Mar 2024 02:58:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.95.99
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709348285; cv=fail; b=RKt5mTcmQtf2T2R8RVWJI8nnwqTC2xSqxQYmoGvk2ISfv63xDZuv27mz+PZUrb8QOTFpieNFLVplWOYHB0O1jVb9kBFmtAw6tgbIfP2xx0uqbjokUezd/EM4B3Pfx09zFfrycpJwt+QMX7ZVQB82H+ITAdTn4LuS+0UAOInOtkU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709348285; c=relaxed/simple;
-	bh=FgvfsdKABg+Lo22c77gu+JIdCXRuakBSwYNVgqZwJPc=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=g69MmJEwsRoYIVkB1OEda2C53qU59Lu6iPFPyQ+zu7UnNsgBaAeeNUrJwCoFZQqFAHJ8Y8/nqHO64EofDGrUzyaNwoL+Dr9AEQfEPttVQpDg3+Lh02GwuBzZPv+Xri3a3hz3qKj/ACpL1GRx6phBi94A68Z29JUP/F0rMHd/gwA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=VLG/PPyn; arc=fail smtp.client-ip=40.107.95.99
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mCx0s+qwyrEuvAFk2dj/B5dFG2ivrfUfQOgVU7vi/qMWZ2v3BxDEYM7uQ3hO5M7rhqGLZVV0nphNNio4b85JtBKV914kf8aCGybG7yv0Ij+aEza0LA/8xNBmQKgTwUEItM3+2wtxr6Tlmz6xoPfs2IoqX0XzO3Ho5eb/Jj0Pjnpwgr4b99hK0abI1rNEMFkAkDoFO2Mw+seru0Yrc/mOar7eMu2C7n5EKHoCfIRhjaoJFS1Kpl/nTmsQRzRx9hS7WEzyxXRmCYt0LhsjuEwbvaffdscUtVQBK1HplG27IM+3FbKKVsjVEYRXJCmzaLHFimPR+TxSueaZdQpGp2HZEg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2+j/jlyc4Xawg6AfLiRLLLouhXbucqyqut9+zAHcHEI=;
- b=VMYv9re7XYAHDnZqMRjzDXV8fWZcSYSw7L/y3nCjXZZdjhvTeb4eKFSwl9reR8RGH9fn+ZV9QILp3SVnEWjlH7qlaYRUA4K+rj1rNBAWX5xChB4VeUzgugrCBFsfjfxza3n2G8BS9Xz7IVwZpGiEP4AyRuxaJB2tsgdOAQphVaesmj1oK9Gx9S4+9E4Ms0RE99ZDS+K7Rrx1AvzUZRMVlgs3Cu5txsVEwahgwuz2TkVGRxDWbg+5YgOq3O4Ub4ToYzNZnKOUtV/FdBKeypf7hE3+NxLXbIVXyCOLBmPXYpQ/tMcfDzXg0LZPBt8ILyyDejGpb620Q9qak4WCShwQng==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2+j/jlyc4Xawg6AfLiRLLLouhXbucqyqut9+zAHcHEI=;
- b=VLG/PPynyyFgaN+JBfaMM77GwlfnA5NBdBoM1E+j/EaC+IM8y7Nxkbt8Go5tgevHZ0iHAS9iKTAR0gDn4qYqKcTv0I30h+2DuwrlV41oNI0NcK3qjhUMNYWyKM9noOUZ9+N3Kfr5Uq5BRKEonXlRpqf+P81buMk+H5kIDAl+JX8=
-Received: from SJ1PR21MB3457.namprd21.prod.outlook.com (2603:10b6:a03:453::5)
- by SJ1PR21MB3528.namprd21.prod.outlook.com (2603:10b6:a03:454::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.17; Sat, 2 Mar
- 2024 02:58:00 +0000
-Received: from SJ1PR21MB3457.namprd21.prod.outlook.com
- ([fe80::70f:687e:92e6:45b7]) by SJ1PR21MB3457.namprd21.prod.outlook.com
- ([fe80::70f:687e:92e6:45b7%4]) with mapi id 15.20.7362.017; Sat, 2 Mar 2024
- 02:58:00 +0000
-From: Long Li <longli@microsoft.com>
-To: Konstantin Taranov <kotaranov@linux.microsoft.com>, Konstantin Taranov
-	<kotaranov@microsoft.com>, "sharmaajay@microsoft.com"
-	<sharmaajay@microsoft.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org"
-	<leon@kernel.org>
-CC: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH rdma-next v2 2/2] RDMA/mana_ib: Use virtual address in dma
- regions for MRs
-Thread-Topic: [PATCH rdma-next v2 2/2] RDMA/mana_ib: Use virtual address in
- dma regions for MRs
-Thread-Index: AQHaaIUJDd9nmAvQZky1S7+zCOe6Q7EjyPqw
-Date: Sat, 2 Mar 2024 02:57:59 +0000
-Message-ID:
- <SJ1PR21MB3457D7E2DE4C06C9C5D2C625CE5D2@SJ1PR21MB3457.namprd21.prod.outlook.com>
-References: <1708932339-27914-1-git-send-email-kotaranov@linux.microsoft.com>
- <1708932339-27914-3-git-send-email-kotaranov@linux.microsoft.com>
-In-Reply-To: <1708932339-27914-3-git-send-email-kotaranov@linux.microsoft.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=f03f0774-6a73-4eaa-8790-40d8d41ec645;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2024-03-02T02:54:56Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ1PR21MB3457:EE_|SJ1PR21MB3528:EE_
-x-ms-office365-filtering-correlation-id: 5075939c-b060-47d4-96b6-08dc3a6491e8
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- YKn8s44/+b0KO8WeF3sMMEfUokN9VPsk4WNvkVvT3iae2oFOrVqZMMuhVPVap6osY4Nuhg4Fw5x+yeZ5TR+tsIIQSwTOgqxgYlGriDfLm0yUV2iktpb1gcNOHGkNiV0UBnSucb+dtiLovkh7vdQbyj0LtPlRRXxQ9nMbEnMb51EfDp1ClF2I5eGKu3aQm/LP4YTXNHv7DayomJJOk2nIFak3f9ZTcBwVMWAkjQmYnGNxEhBSFAEU19sYfc9hGZFj6+BJsS78roqnpZxJSQaRt+L0dAbOqON53yOy2mgcrwOaJhzekfpntzrWHa3W9letmXyoytiFdNulbP3KwD/9Jx7GIBaTRY3Fs+3HA5h/yijfIAcOVdeuXTyYmjOXSXmE8JUx9eNvsiuXunm8mcwq0kUorIxh1rs4xfbjIKuEtMvdbndpK2ibhm2XP3Hz+rPvpvJH+CP4lseq/DkalcKgrM5P/lQrrdAvIgeKVhRcLTcaBMWBJAVU1zNIU3fRREfH1gMWwwdLG8mejq3qYXXOPiJgYyEGn4PP2WxfHm+lxbndf+jP/se1O0gmlM8zpuDPJCySe1Jj1BOl6IzrTpiZsPZLw3shdPs/Gylait2D9b7sLZaMmGeA/0XWMwPro1aoVyivMRBO01ZNXyCYq9vTKkLu56GcojyQBWwryuB4YvUHVcf0Ps7KoBqIrKxxfEiTsSVoR453HFGpttiDhfgBSw==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR21MB3457.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?blvMDYEeNUwTu//+LqidbHL6J9bbKUgQ+g4qKmmBjpZtr5vYiuO1I77KEKCZ?=
- =?us-ascii?Q?uNrA/TzSeFJWnvgWCYe79GcSauWKRRILeIr5kUMjaxhgJX3thHsHWn86WZnl?=
- =?us-ascii?Q?3hi+liFY1ylgchWKKQZKljN4EB/iTUpYYPC6ySLQL+LbUOM2n8w/8S582hgu?=
- =?us-ascii?Q?gAizu4xSuXzEWxrlHzwNNijaUnoUqMX8WfbWRgQz3+IKPVgs1hr8bnSgACeD?=
- =?us-ascii?Q?rwyEXTMm/+tpG4wdViAqhU8/O8bbxlgLdVrxOtGpAHRTnVQ61LjUdK2Hbsn2?=
- =?us-ascii?Q?4PyD3e9RnJE5xJ+GA8JnXXU4/DDqEIBq85w37lA95m9YOEjrtLd+Jut/cL+K?=
- =?us-ascii?Q?D3VXpHlHuetFIFImljFtin8/778PfnI/WWkuh4yAriyAQ/Zto1VvzwYFUW1+?=
- =?us-ascii?Q?QtQ79FtHvGat3FMCBoiXKqfRefthHwELMS/luo91WcYHu7R0OZl10SL6EGzu?=
- =?us-ascii?Q?3Sj0m6rMP0Vw63vv4mZ4HYIf51Hkqu8WTScokkdeRS/gQSlWAU3myJluGDzD?=
- =?us-ascii?Q?jdTVnBiIk1v7OUufsyyTBUdrwmtG2xxG5P7kBpCEBATanojnFTwi65AbKqux?=
- =?us-ascii?Q?As05ZWxK/NB53j2pr/j8AFNzHfl5+K1uNPwwcg86LNpot4F21vscUmPYIbuC?=
- =?us-ascii?Q?fjXdRXb3Z/hJn3+Ouh/H+3hGsc+258E6BzGo+b5SFsc4KEouC1BeJCu8LIMk?=
- =?us-ascii?Q?ifekLcTFS1SesrfN9W6Mp7vE1zYROjcSpDTrzHZeyBO+AoCaUykHuwjOKPqv?=
- =?us-ascii?Q?2caKYMTS4kVtkat5LJBqU1q8HnGqwAPvj09zUEqQyDgr7HunVEBH+a1Iv702?=
- =?us-ascii?Q?AKTalx4J4pBKTGRT24Ugl6dRgdiqLzvnkn+6YDisYeXCerDX5fP5lSRyVAFc?=
- =?us-ascii?Q?N5pFmXD0O7eOs+QyAvx89dxtB82V/OOxSqD9Vv8oEIy1q8IcK8dgJolZJp6a?=
- =?us-ascii?Q?EyQeLrdnw5SjjfRZdemaoqcugxVL+jmorPViwPonsN3bO0kQX9sNrtnzfehM?=
- =?us-ascii?Q?fDMn4SAxMZEBjPI2mYPd/KUboxHBvGx09s/Y5rgyzEbfNx/bzrGLXzn/iKpa?=
- =?us-ascii?Q?VLMx3LuF+yMnSfcpyPqExKtq0rRCMF4niFdjc+t9usxS0z7UmYv2xwQWzagv?=
- =?us-ascii?Q?aWAWBm6GLmQGRRFPUxtlBOkdML/et3bBu0V1WJCfkG9PbCplocbGm0SezUao?=
- =?us-ascii?Q?9FhAcANL20oDUbv7l9O6Sq1FqwfNgwoma7YAkj9gtuJW0hsh9c8JkeM3bHH3?=
- =?us-ascii?Q?B3QNhpX7b/rYEI4MLDRz+1BOLuGKgXN/fuYJIiSSC4Q2ibI9W7rS+sJExa1G?=
- =?us-ascii?Q?QLX1j/wy3vJGBhi4BXR2vIM+6Sk5mklmv4/lXofnKh9APeJAMyOG3MZ50l+K?=
- =?us-ascii?Q?hbDjZ8MtKY+XRfqmp2GXpEJxAd9dqFu7FtEMWytBHl42LZuDzWsVvuAjSnf6?=
- =?us-ascii?Q?D5o5FjfkYj5Jdofa3hzmwrDzD9wcHXrpdgeo7im0mZ1C27nzx+42BO3b0R4a?=
- =?us-ascii?Q?BAH9cpqQNq6niEquHyDVMLmuxo0powIPb7vz6XVpLmRZo54iw7HXKzztumgO?=
- =?us-ascii?Q?Yn8Q85liEMRriNkmz+LkkkPceb8lAsXcNVmy+K4o?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA2356AD6
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 02:59:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709348392; cv=none; b=og2HFesfl+NXHkeOegj0D9iU0NtRM/bFRc5xPgqChgnXMU2l9zbFpmiB/lRjO0MUyuTQb5fhPz1GmmqAu+qWHWoqjuv/i4gtct9pEgFQkgJptGf1K19W5f/pdcjdyuwoSL7O2bEAn0HO5QR61OvcFoG5/XUt5rTy4LK85hjMhlg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709348392; c=relaxed/simple;
+	bh=wcNPoo7bbe8Q2KGr6zjYKhQPrtkysYbLY4IjeJ9sPR4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=eh1rBE5sZjrFjBLXLfyxwprFM/5cwL+LXtRZbkUFm2DnUREM1scLhCtWngxNlg9F1a5yYhlJ0redBvMpQigG378+XMbuYjvwmcy27b9y6FRyFwzXXVcEgpSBcc6Hsx1s7sy/gqVJeH4ensYcOkxpbIRYOoAleM2Gqxp2SIIOTlY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=PiUIIedC; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-56648955ac5so3875047a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 18:59:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1709348389; x=1709953189; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z172ARkWy4CrNdjX0Z199syeSzJdWbGHBapXPagpL/g=;
+        b=PiUIIedCtA2Y4JQnyWQVOP6JRhU7IAEWDP+qZ6HvMlSbT4GBpThwHgJyHH9OHtGifk
+         G6DKZ6/WEotxIWBBRS37YHxecKD7W+ldHgbPA+jYbF75RRCB9ZE4mVRkKvkscs7H+5c+
+         gUsUyaTDiN+INbBCwDVkPpOP/D6R6Mkat1+iE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709348389; x=1709953189;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Z172ARkWy4CrNdjX0Z199syeSzJdWbGHBapXPagpL/g=;
+        b=EBfiVLpCXcSC9dP2P5x0htnGL/QToGJRH0mF/H4qYEfgZc64WWM4SzZeV/cqPRy45g
+         9eg2BllzJ+zAfw7XHz9Ju9yyMzi2a8nBJxTknm1Nnm12fOMGuSBAHJ/Nv/eVLZYFj0Fh
+         An5rSie2NukPrTJbKo78tm5A9ty/V4o95M2EJwFeuzb5SGdwq8ZikeevNk9nND/1Vn6S
+         oJfokmTQoDqcO+hrWUJ2lqubhuP4RvCXsZx0YlQUIC6Leq1SFMiuMk6pPR62reSFfSM2
+         ekeM2GsGHxOlVUAMl+djDCoi3ZIvApYHUO7HTXKmj13DRUi6sk5tqOP3by3xzi8QpWKH
+         AZRg==
+X-Forwarded-Encrypted: i=1; AJvYcCUl0UDCqBWyHtZ2Wvme2CM/KEFEN5GP23ljti8TT2MtPwmAFZXNsM0Ip1zHq4NcsuFgCFBuulquDpiRxPZeOZ2v9sspf4U2kQliI56Q
+X-Gm-Message-State: AOJu0YzIOgJJrDcFjUKDoOaeClF1zwlnxAheUqPeNtlzhzWbQcoMRscn
+	sfk/czhBfwL0JXcVea8ZQDlYe0Eg4RzaNKRFYX8o53BqfOYe4voVz9hK7racwMnXtRX/tL2dxUj
+	TJmaS7A==
+X-Google-Smtp-Source: AGHT+IFo/5x9JqVmWFkD0V7RNdE1VVoQ2/p0XVAl4XG6eLV4iv0vwBiQHyQXvRAh0zVZHRjJSSlY3g==
+X-Received: by 2002:a50:cbc8:0:b0:563:ccd1:26bd with SMTP id l8-20020a50cbc8000000b00563ccd126bdmr2689599edi.2.1709348389177;
+        Fri, 01 Mar 2024 18:59:49 -0800 (PST)
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com. [209.85.218.51])
+        by smtp.gmail.com with ESMTPSA id n24-20020a05640204d800b00566f92f1facsm424086edw.36.2024.03.01.18.59.46
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Mar 2024 18:59:46 -0800 (PST)
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a44d4519e7eso19109766b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 18:59:46 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUHFRK6DMJfEO2+Voz1TzWZuiMjOV7G8ZPeShQ/xbd+D1+/fEy3Nr7CtPWopS584qsFwd/xy4X1qeQurEYxmXK3IEwXe+L9XnkD9eEI
+X-Received: by 2002:a17:906:f989:b0:a44:27e8:f514 with SMTP id
+ li9-20020a170906f98900b00a4427e8f514mr2273960ejb.38.1709348385722; Fri, 01
+ Mar 2024 18:59:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ1PR21MB3457.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5075939c-b060-47d4-96b6-08dc3a6491e8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Mar 2024 02:57:59.8537
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: RzsnEdPNicnhfoytuZgCacsP/tN4NJEZLJ49wyHdjlcCN3Wi8hCpvgD4xsF8hBfGKKXGNiOHSRm5TaIayWZJgg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR21MB3528
+References: <20230925120309.1731676-1-dhowells@redhat.com> <20230925120309.1731676-8-dhowells@redhat.com>
+ <4e80924d-9c85-f13a-722a-6a5d2b1c225a@huawei.com> <CAHk-=whG+4ag+QLU9RJn_y47f1DBaK6b0qYq_6_eLkO=J=Mkmw@mail.gmail.com>
+ <CAHk-=wjSjuDrS9gc191PTEDDow7vHy6Kd3DKDaG+KVH0NQ3v=w@mail.gmail.com>
+ <e985429e-5fc4-a175-0564-5bb4ca8f662c@huawei.com> <CAHk-=wh06M-1c9h7wZzZ=1KqooAmazy_qESh2oCcv7vg-sY6NQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wh06M-1c9h7wZzZ=1KqooAmazy_qESh2oCcv7vg-sY6NQ@mail.gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 1 Mar 2024 18:59:28 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiBJRgA3iNqihR7uuft=5rog425X_b3uvgroG3fBhktwQ@mail.gmail.com>
+Message-ID: <CAHk-=wiBJRgA3iNqihR7uuft=5rog425X_b3uvgroG3fBhktwQ@mail.gmail.com>
+Subject: Re: [bug report] dead loop in generic_perform_write() //Re: [PATCH v7
+ 07/12] iov_iter: Convert iterate*() to inline funcs
+To: Tong Tiangen <tongtiangen@huawei.com>, Al Viro <viro@kernel.org>
+Cc: David Howells <dhowells@redhat.com>, Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>, 
+	Christian Brauner <christian@brauner.io>, David Laight <David.Laight@aculab.com>, 
+	Matthew Wilcox <willy@infradead.org>, Jeff Layton <jlayton@kernel.org>, linux-fsdevel@vger.kernel.org, 
+	linux-block@vger.kernel.org, linux-mm@kvack.org, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Kefeng Wang <wangkefeng.wang@huawei.com>
+Content-Type: multipart/mixed; boundary="0000000000005434e50612a4af27"
 
-> Subject: [PATCH rdma-next v2 2/2] RDMA/mana_ib: Use virtual address in
-> dma regions for MRs
->=20
-> From: Konstantin Taranov <kotaranov@microsoft.com>
->=20
-> Introduce mana_ib_create_dma_region() to create dma regions with iova for
-> MRs.
->=20
-> For dma regions that must have a zero dma offset (e.g., for queues),
-> mana_ib_create_zero_offset_dma_region() is added.
-> To get the zero offset, ib_umem_find_best_pgoff() is used with zero
-> pgoff_bitmask.
->=20
-> Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+--0000000000005434e50612a4af27
+Content-Type: text/plain; charset="UTF-8"
 
-Do you need a "Fixes:" for this patch?
+On Thu, 29 Feb 2024 at 09:32, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> One option might be to make a failed memcpy_from_iter_mc() set another
+> flag in the iter, and then make fault_in_iov_iter_readable() test that
+> flag and return 'len' if that flag is set.
+>
+> Something like that (wild handwaving) should get the right error handling.
+>
+> The simpler alternative is maybe something like the attached.
+> COMPLETELY UNTESTED. Maybe I've confused myself with all the different
+> indiraction mazes in the iov_iter code.
 
-Also, you need to include a "change log" in the cover letter 0/2 since this=
- is a v2 seires.
+Actually, I think the right model is to get rid of that horrendous
+copy_mc field entirely.
 
-Long
+We only have one single place that uses it - that nasty core dumping
+code. And that code is *not* performance critical.
 
-> ---
->  drivers/infiniband/hw/mana/cq.c      |  4 +--
->  drivers/infiniband/hw/mana/main.c    | 40 +++++++++++++++++++++-------
->  drivers/infiniband/hw/mana/mana_ib.h |  7 +++--
->  drivers/infiniband/hw/mana/mr.c      |  4 +--
->  drivers/infiniband/hw/mana/qp.c      |  6 ++---
->  drivers/infiniband/hw/mana/wq.c      |  4 +--
->  6 files changed, 45 insertions(+), 20 deletions(-)
->=20
-> diff --git a/drivers/infiniband/hw/mana/cq.c
-> b/drivers/infiniband/hw/mana/cq.c index 83d20c3f0..4a71e678d 100644
-> --- a/drivers/infiniband/hw/mana/cq.c
-> +++ b/drivers/infiniband/hw/mana/cq.c
-> @@ -48,7 +48,7 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct
-> ib_cq_init_attr *attr,
->  		return err;
->  	}
->=20
-> -	err =3D mana_ib_gd_create_dma_region(mdev, cq->umem, &cq-
-> >gdma_region);
-> +	err =3D mana_ib_create_zero_offset_dma_region(mdev, cq->umem,
-> +&cq->gdma_region);
->  	if (err) {
->  		ibdev_dbg(ibdev,
->  			  "Failed to create dma region for create cq, %d\n",
-> @@ -57,7 +57,7 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct
-> ib_cq_init_attr *attr,
->  	}
->=20
->  	ibdev_dbg(ibdev,
-> -		  "mana_ib_gd_create_dma_region ret %d gdma_region
-> 0x%llx\n",
-> +		  "create_dma_region ret %d gdma_region 0x%llx\n",
->  		  err, cq->gdma_region);
->=20
->  	/*
-> diff --git a/drivers/infiniband/hw/mana/main.c
-> b/drivers/infiniband/hw/mana/main.c
-> index dd570832d..30b874938 100644
-> --- a/drivers/infiniband/hw/mana/main.c
-> +++ b/drivers/infiniband/hw/mana/main.c
-> @@ -301,8 +301,8 @@ mana_ib_gd_add_dma_region(struct mana_ib_dev
-> *dev, struct gdma_context *gc,
->  	return 0;
->  }
->=20
-> -int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct
-> ib_umem *umem,
-> -				 mana_handle_t *gdma_region)
-> +static int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct
-> ib_umem *umem,
-> +					mana_handle_t *gdma_region,
-> unsigned long page_sz)
->  {
->  	struct gdma_dma_region_add_pages_req *add_req =3D NULL;
->  	size_t num_pages_processed =3D 0, num_pages_to_handle; @@ -314,7
-> +314,6 @@ int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev,
-> struct ib_umem *umem,
->  	size_t max_pgs_create_cmd;
->  	struct gdma_context *gc;
->  	size_t num_pages_total;
-> -	unsigned long page_sz;
->  	unsigned int tail =3D 0;
->  	u64 *page_addr_list;
->  	void *request_buf;
-> @@ -323,12 +322,6 @@ int mana_ib_gd_create_dma_region(struct
-> mana_ib_dev *dev, struct ib_umem *umem,
->  	gc =3D mdev_to_gc(dev);
->  	hwc =3D gc->hwc.driver_data;
->=20
-> -	/* Hardware requires dma region to align to chosen page size */
-> -	page_sz =3D ib_umem_find_best_pgsz(umem, PAGE_SZ_BM, 0);
-> -	if (!page_sz) {
-> -		ibdev_dbg(&dev->ib_dev, "failed to find page size.\n");
-> -		return -ENOMEM;
-> -	}
->  	num_pages_total =3D ib_umem_num_dma_blocks(umem, page_sz);
->=20
->  	max_pgs_create_cmd =3D
-> @@ -414,6 +407,35 @@ int mana_ib_gd_create_dma_region(struct
-> mana_ib_dev *dev, struct ib_umem *umem,
->  	return err;
->  }
->=20
-> +int mana_ib_create_dma_region(struct mana_ib_dev *dev, struct ib_umem
-> *umem,
-> +			      mana_handle_t *gdma_region, u64 virt) {
-> +	unsigned long page_sz;
-> +
-> +	page_sz =3D ib_umem_find_best_pgsz(umem, PAGE_SZ_BM, virt);
-> +	if (!page_sz) {
-> +		ibdev_dbg(&dev->ib_dev, "Failed to find page size.\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	return mana_ib_gd_create_dma_region(dev, umem, gdma_region,
-> page_sz);
-> +}
-> +
-> +int mana_ib_create_zero_offset_dma_region(struct mana_ib_dev *dev,
-> struct ib_umem *umem,
-> +					  mana_handle_t *gdma_region)
-> +{
-> +	unsigned long page_sz;
-> +
-> +	/* Hardware requires dma region to align to chosen page size */
-> +	page_sz =3D ib_umem_find_best_pgoff(umem, PAGE_SZ_BM, 0);
-> +	if (!page_sz) {
-> +		ibdev_dbg(&dev->ib_dev, "Failed to find page size.\n");
-> +		return -ENOMEM;
-> +	}
-> +
-> +	return mana_ib_gd_create_dma_region(dev, umem, gdma_region,
-> page_sz);
-> +}
-> +
->  int mana_ib_gd_destroy_dma_region(struct mana_ib_dev *dev, u64
-> gdma_region)  {
->  	struct gdma_context *gc =3D mdev_to_gc(dev); diff --git
-> a/drivers/infiniband/hw/mana/mana_ib.h
-> b/drivers/infiniband/hw/mana/mana_ib.h
-> index 6a03ae645..f83390eeb 100644
-> --- a/drivers/infiniband/hw/mana/mana_ib.h
-> +++ b/drivers/infiniband/hw/mana/mana_ib.h
-> @@ -160,8 +160,11 @@ static inline struct net_device
-> *mana_ib_get_netdev(struct ib_device *ibdev, u32
->=20
->  int mana_ib_install_cq_cb(struct mana_ib_dev *mdev, struct mana_ib_cq
-> *cq);
->=20
-> -int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct
-> ib_umem *umem,
-> -				 mana_handle_t *gdma_region);
-> +int mana_ib_create_zero_offset_dma_region(struct mana_ib_dev *dev,
-> struct ib_umem *umem,
-> +					  mana_handle_t *gdma_region);
-> +
-> +int mana_ib_create_dma_region(struct mana_ib_dev *dev, struct ib_umem
-> *umem,
-> +			      mana_handle_t *gdma_region, u64 virt);
->=20
->  int mana_ib_gd_destroy_dma_region(struct mana_ib_dev *dev,
->  				  mana_handle_t gdma_region);
-> diff --git a/drivers/infiniband/hw/mana/mr.c
-> b/drivers/infiniband/hw/mana/mr.c index ee4d4f834..b70b13484 100644
-> --- a/drivers/infiniband/hw/mana/mr.c
-> +++ b/drivers/infiniband/hw/mana/mr.c
-> @@ -127,7 +127,7 @@ struct ib_mr *mana_ib_reg_user_mr(struct ib_pd
-> *ibpd, u64 start, u64 length,
->  		goto err_free;
->  	}
->=20
-> -	err =3D mana_ib_gd_create_dma_region(dev, mr->umem,
-> &dma_region_handle);
-> +	err =3D mana_ib_create_dma_region(dev, mr->umem,
-> &dma_region_handle,
-> +iova);
->  	if (err) {
->  		ibdev_dbg(ibdev, "Failed create dma region for user-mr,
-> %d\n",
->  			  err);
-> @@ -135,7 +135,7 @@ struct ib_mr *mana_ib_reg_user_mr(struct ib_pd
-> *ibpd, u64 start, u64 length,
->  	}
->=20
->  	ibdev_dbg(ibdev,
-> -		  "mana_ib_gd_create_dma_region ret %d gdma_region
-> %llx\n", err,
-> +		  "create_dma_region ret %d gdma_region %llx\n", err,
->  		  dma_region_handle);
->=20
->  	mr_params.pd_handle =3D pd->pd_handle;
-> diff --git a/drivers/infiniband/hw/mana/qp.c
-> b/drivers/infiniband/hw/mana/qp.c index 5d4c05dcd..6e7627745 100644
-> --- a/drivers/infiniband/hw/mana/qp.c
-> +++ b/drivers/infiniband/hw/mana/qp.c
-> @@ -357,8 +357,8 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp,
-> struct ib_pd *ibpd,
->  	}
->  	qp->sq_umem =3D umem;
->=20
-> -	err =3D mana_ib_gd_create_dma_region(mdev, qp->sq_umem,
-> -					   &qp->sq_gdma_region);
-> +	err =3D mana_ib_create_zero_offset_dma_region(mdev, qp->sq_umem,
-> +						    &qp->sq_gdma_region);
->  	if (err) {
->  		ibdev_dbg(&mdev->ib_dev,
->  			  "Failed to create dma region for create qp-raw,
-> %d\n", @@ -367,7 +367,7 @@ static int mana_ib_create_qp_raw(struct ib_qp
-> *ibqp, struct ib_pd *ibpd,
->  	}
->=20
->  	ibdev_dbg(&mdev->ib_dev,
-> -		  "mana_ib_gd_create_dma_region ret %d gdma_region
-> 0x%llx\n",
-> +		  "create_dma_region ret %d gdma_region 0x%llx\n",
->  		  err, qp->sq_gdma_region);
->=20
->  	/* Create a WQ on the same port handle used by the Ethernet */ diff -
-> -git a/drivers/infiniband/hw/mana/wq.c b/drivers/infiniband/hw/mana/wq.c
-> index 372d36151..7c9c69962 100644
-> --- a/drivers/infiniband/hw/mana/wq.c
-> +++ b/drivers/infiniband/hw/mana/wq.c
-> @@ -46,7 +46,7 @@ struct ib_wq *mana_ib_create_wq(struct ib_pd *pd,
->  	wq->wq_buf_size =3D ucmd.wq_buf_size;
->  	wq->rx_object =3D INVALID_MANA_HANDLE;
->=20
-> -	err =3D mana_ib_gd_create_dma_region(mdev, wq->umem, &wq-
-> >gdma_region);
-> +	err =3D mana_ib_create_zero_offset_dma_region(mdev, wq->umem,
-> +&wq->gdma_region);
->  	if (err) {
->  		ibdev_dbg(&mdev->ib_dev,
->  			  "Failed to create dma region for create wq, %d\n",
-> @@ -55,7 +55,7 @@ struct ib_wq *mana_ib_create_wq(struct ib_pd *pd,
->  	}
->=20
->  	ibdev_dbg(&mdev->ib_dev,
-> -		  "mana_ib_gd_create_dma_region ret %d gdma_region
-> 0x%llx\n",
-> +		  "create_dma_region ret %d gdma_region 0x%llx\n",
->  		  err, wq->gdma_region);
->=20
->  	/* WQ ID is returned at wq_create time, doesn't know the value yet */
-> --
-> 2.43.0
+And not only isn't it performance-critical, it already does all the
+core dumping one page at a time because it doesn't want to write pages
+that were never mapped into user space.
 
+So what we can do is
+
+ (a) make the core dumping code *copy* the page to a good location
+with copy_mc_to_kernel() first
+
+ (b) remove this horrendous .copy_mc crap entirely from iov_iter
+
+This is slightly complicated by the fact that copy_mc_to_kernel() may
+not even exist, and architectures that don't have it don't want the
+silly extra copy. So we need to abstract the "copy to temporary page"
+code a bit. But that's probably a good thing anyway in that it forces
+us to have nice interfaces.
+
+End result: something like the attached.
+
+AGAIN: THIS IS ENTIRELY UNTESTED.
+
+But hey, so was clearly all the .copy_mc code too that this removes, so...
+
+               Linus
+
+--0000000000005434e50612a4af27
+Content-Type: text/x-patch; charset="US-ASCII"; name="patch.diff"
+Content-Disposition: attachment; filename="patch.diff"
+Content-Transfer-Encoding: base64
+Content-ID: <f_lt9huhmx0>
+X-Attachment-Id: f_lt9huhmx0
+
+IGZzL2NvcmVkdW1wLmMgICAgICAgfCA0MSArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKy0tLQogaW5jbHVkZS9saW51eC91aW8uaCB8IDE2IC0tLS0tLS0tLS0tLS0tLS0KIGxp
+Yi9pb3ZfaXRlci5jICAgICAgfCAyMyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQogMyBmaWxlcyBj
+aGFuZ2VkLCAzOCBpbnNlcnRpb25zKCspLCA0MiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9m
+cy9jb3JlZHVtcC5jIGIvZnMvY29yZWR1bXAuYwppbmRleCBmMjU4YzE3YzE4NDEuLjZhOWI5ZjMy
+ODBkOCAxMDA2NDQKLS0tIGEvZnMvY29yZWR1bXAuYworKysgYi9mcy9jb3JlZHVtcC5jCkBAIC04
+NzIsNiArODcyLDkgQEAgc3RhdGljIGludCBkdW1wX2VtaXRfcGFnZShzdHJ1Y3QgY29yZWR1bXBf
+cGFyYW1zICpjcHJtLCBzdHJ1Y3QgcGFnZSAqcGFnZSkKIAlsb2ZmX3QgcG9zOwogCXNzaXplX3Qg
+bjsKIAorCWlmICghcGFnZSkKKwkJcmV0dXJuIDA7CisKIAlpZiAoY3BybS0+dG9fc2tpcCkgewog
+CQlpZiAoIV9fZHVtcF9za2lwKGNwcm0sIGNwcm0tPnRvX3NraXApKQogCQkJcmV0dXJuIDA7CkBA
+IC04ODQsNyArODg3LDYgQEAgc3RhdGljIGludCBkdW1wX2VtaXRfcGFnZShzdHJ1Y3QgY29yZWR1
+bXBfcGFyYW1zICpjcHJtLCBzdHJ1Y3QgcGFnZSAqcGFnZSkKIAlwb3MgPSBmaWxlLT5mX3BvczsK
+IAlidmVjX3NldF9wYWdlKCZidmVjLCBwYWdlLCBQQUdFX1NJWkUsIDApOwogCWlvdl9pdGVyX2J2
+ZWMoJml0ZXIsIElURVJfU09VUkNFLCAmYnZlYywgMSwgUEFHRV9TSVpFKTsKLQlpb3ZfaXRlcl9z
+ZXRfY29weV9tYygmaXRlcik7CiAJbiA9IF9fa2VybmVsX3dyaXRlX2l0ZXIoY3BybS0+ZmlsZSwg
+Jml0ZXIsICZwb3MpOwogCWlmIChuICE9IFBBR0VfU0laRSkKIAkJcmV0dXJuIDA7CkBAIC04OTUs
+MTAgKzg5Nyw0MCBAQCBzdGF0aWMgaW50IGR1bXBfZW1pdF9wYWdlKHN0cnVjdCBjb3JlZHVtcF9w
+YXJhbXMgKmNwcm0sIHN0cnVjdCBwYWdlICpwYWdlKQogCXJldHVybiAxOwogfQogCisvKgorICog
+SWYgd2UgbWlnaHQgZ2V0IG1hY2hpbmUgY2hlY2tzIGZyb20ga2VybmVsIGFjY2Vzc2VzIGR1cmlu
+ZyB0aGUKKyAqIGNvcmUgZHVtcCwgbGV0J3MgZ2V0IHRob3NlIGVycm9ycyBlYXJseSByYXRoZXIg
+dGhhbiBkdXJpbmcgdGhlCisgKiBJTy4gVGhpcyBpcyBub3QgcGVyZm9ybWFuY2UtY3JpdGljYWwg
+ZW5vdWdoIHRvIHdhcnJhbnQgaGF2aW5nCisgKiBhbGwgdGhlIG1hY2hpbmUgY2hlY2sgbG9naWMg
+aW4gdGhlIGlvdmVjIHBhdGhzLgorICovCisjaWZkZWYgY29weV9tY190b19rZXJuZWwKKworI2Rl
+ZmluZSBkdW1wX3BhZ2VfYWxsb2MoKSBhbGxvY19wYWdlKEdGUF9LRVJORUwpCisjZGVmaW5lIGR1
+bXBfcGFnZV9mcmVlKHgpIF9fZnJlZV9wYWdlKHgpCitzdGF0aWMgc3RydWN0IHBhZ2UgKmR1bXBf
+cGFnZV9jb3B5KHN0cnVjdCBwYWdlICpzcmMsIHN0cnVjdCBwYWdlICpkc3QpCit7CisJdm9pZCAq
+YnVmID0ga21hcF9sb2NhbF9wYWdlKHNyYyk7CisJc2l6ZV90IGxlZnQgPSBjb3B5X21jX3RvX2tl
+cm5lbChwYWdlX2FkZHJlc3MoZHN0KSwgYnVmLCBQQUdFX1NJWkUpOworCWt1bm1hcF9sb2NhbChi
+dWYpOworCXJldHVybiBsZWZ0ID8gTlVMTCA6IGRzdDsKK30KKworI2Vsc2UKKworI2RlZmluZSBk
+dW1wX3BhZ2VfYWxsb2MoKSAoKHN0cnVjdCBwYWdlICopOCkgLy8gTm90IE5VTEwKKyNkZWZpbmUg
+ZHVtcF9wYWdlX2ZyZWUoeCkgZG8geyB9IHdoaWxlICgwKQorI2RlZmluZSBkdW1wX3BhZ2VfY29w
+eShzcmMsZHN0KSAoKGRzdCksKHNyYykpCisKKyNlbmRpZgorCiBpbnQgZHVtcF91c2VyX3Jhbmdl
+KHN0cnVjdCBjb3JlZHVtcF9wYXJhbXMgKmNwcm0sIHVuc2lnbmVkIGxvbmcgc3RhcnQsCiAJCSAg
+ICB1bnNpZ25lZCBsb25nIGxlbikKIHsKIAl1bnNpZ25lZCBsb25nIGFkZHI7CisJc3RydWN0IHBh
+Z2UgKmR1bXBfcGFnZSA9IGR1bXBfcGFnZV9hbGxvYygpOworCisJaWYgKCFkdW1wX3BhZ2UpCisJ
+CXJldHVybiAwOwogCiAJZm9yIChhZGRyID0gc3RhcnQ7IGFkZHIgPCBzdGFydCArIGxlbjsgYWRk
+ciArPSBQQUdFX1NJWkUpIHsKIAkJc3RydWN0IHBhZ2UgKnBhZ2U7CkBAIC05MTIsMTQgKzk0NCwx
+NyBAQCBpbnQgZHVtcF91c2VyX3JhbmdlKHN0cnVjdCBjb3JlZHVtcF9wYXJhbXMgKmNwcm0sIHVu
+c2lnbmVkIGxvbmcgc3RhcnQsCiAJCSAqLwogCQlwYWdlID0gZ2V0X2R1bXBfcGFnZShhZGRyKTsK
+IAkJaWYgKHBhZ2UpIHsKLQkJCWludCBzdG9wID0gIWR1bXBfZW1pdF9wYWdlKGNwcm0sIHBhZ2Up
+OworCQkJaW50IHN0b3AgPSAhZHVtcF9lbWl0X3BhZ2UoY3BybSwgZHVtcF9wYWdlX2NvcHkocGFn
+ZSwgZHVtcF9wYWdlKSk7CiAJCQlwdXRfcGFnZShwYWdlKTsKLQkJCWlmIChzdG9wKQorCQkJaWYg
+KHN0b3ApIHsKKwkJCQlkdW1wX3BhZ2VfZnJlZShkdW1wX3BhZ2UpOwogCQkJCXJldHVybiAwOwor
+CQkJfQogCQl9IGVsc2UgewogCQkJZHVtcF9za2lwKGNwcm0sIFBBR0VfU0laRSk7CiAJCX0KIAl9
+CisJZHVtcF9wYWdlX2ZyZWUoZHVtcF9wYWdlKTsKIAlyZXR1cm4gMTsKIH0KICNlbmRpZgpkaWZm
+IC0tZ2l0IGEvaW5jbHVkZS9saW51eC91aW8uaCBiL2luY2x1ZGUvbGludXgvdWlvLmgKaW5kZXgg
+YmVhOWM4OTkyMmQ5Li4wMGNlYmUyYjcwZGUgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvbGludXgvdWlv
+LmgKKysrIGIvaW5jbHVkZS9saW51eC91aW8uaApAQCAtNDAsNyArNDAsNiBAQCBzdHJ1Y3QgaW92
+X2l0ZXJfc3RhdGUgewogCiBzdHJ1Y3QgaW92X2l0ZXIgewogCXU4IGl0ZXJfdHlwZTsKLQlib29s
+IGNvcHlfbWM7CiAJYm9vbCBub2ZhdWx0OwogCWJvb2wgZGF0YV9zb3VyY2U7CiAJc2l6ZV90IGlv
+dl9vZmZzZXQ7CkBAIC0yNDgsMjIgKzI0Nyw4IEBAIHNpemVfdCBfY29weV9mcm9tX2l0ZXJfZmx1
+c2hjYWNoZSh2b2lkICphZGRyLCBzaXplX3QgYnl0ZXMsIHN0cnVjdCBpb3ZfaXRlciAqaSk7CiAK
+ICNpZmRlZiBDT05GSUdfQVJDSF9IQVNfQ09QWV9NQwogc2l6ZV90IF9jb3B5X21jX3RvX2l0ZXIo
+Y29uc3Qgdm9pZCAqYWRkciwgc2l6ZV90IGJ5dGVzLCBzdHJ1Y3QgaW92X2l0ZXIgKmkpOwotc3Rh
+dGljIGlubGluZSB2b2lkIGlvdl9pdGVyX3NldF9jb3B5X21jKHN0cnVjdCBpb3ZfaXRlciAqaSkK
+LXsKLQlpLT5jb3B5X21jID0gdHJ1ZTsKLX0KLQotc3RhdGljIGlubGluZSBib29sIGlvdl9pdGVy
+X2lzX2NvcHlfbWMoY29uc3Qgc3RydWN0IGlvdl9pdGVyICppKQotewotCXJldHVybiBpLT5jb3B5
+X21jOwotfQogI2Vsc2UKICNkZWZpbmUgX2NvcHlfbWNfdG9faXRlciBfY29weV90b19pdGVyCi1z
+dGF0aWMgaW5saW5lIHZvaWQgaW92X2l0ZXJfc2V0X2NvcHlfbWMoc3RydWN0IGlvdl9pdGVyICpp
+KSB7IH0KLXN0YXRpYyBpbmxpbmUgYm9vbCBpb3ZfaXRlcl9pc19jb3B5X21jKGNvbnN0IHN0cnVj
+dCBpb3ZfaXRlciAqaSkKLXsKLQlyZXR1cm4gZmFsc2U7Ci19CiAjZW5kaWYKIAogc2l6ZV90IGlv
+dl9pdGVyX3plcm8oc2l6ZV90IGJ5dGVzLCBzdHJ1Y3QgaW92X2l0ZXIgKik7CkBAIC0zNTUsNyAr
+MzQwLDYgQEAgc3RhdGljIGlubGluZSB2b2lkIGlvdl9pdGVyX3VidWYoc3RydWN0IGlvdl9pdGVy
+ICppLCB1bnNpZ25lZCBpbnQgZGlyZWN0aW9uLAogCVdBUk5fT04oZGlyZWN0aW9uICYgfihSRUFE
+IHwgV1JJVEUpKTsKIAkqaSA9IChzdHJ1Y3QgaW92X2l0ZXIpIHsKIAkJLml0ZXJfdHlwZSA9IElU
+RVJfVUJVRiwKLQkJLmNvcHlfbWMgPSBmYWxzZSwKIAkJLmRhdGFfc291cmNlID0gZGlyZWN0aW9u
+LAogCQkudWJ1ZiA9IGJ1ZiwKIAkJLmNvdW50ID0gY291bnQsCmRpZmYgLS1naXQgYS9saWIvaW92
+X2l0ZXIuYyBiL2xpYi9pb3ZfaXRlci5jCmluZGV4IGUwYWE2YjQ0MGNhNS4uY2YyZWIyYjJmOTgz
+IDEwMDY0NAotLS0gYS9saWIvaW92X2l0ZXIuYworKysgYi9saWIvaW92X2l0ZXIuYwpAQCAtMTY2
+LDcgKzE2Niw2IEBAIHZvaWQgaW92X2l0ZXJfaW5pdChzdHJ1Y3QgaW92X2l0ZXIgKmksIHVuc2ln
+bmVkIGludCBkaXJlY3Rpb24sCiAJV0FSTl9PTihkaXJlY3Rpb24gJiB+KFJFQUQgfCBXUklURSkp
+OwogCSppID0gKHN0cnVjdCBpb3ZfaXRlcikgewogCQkuaXRlcl90eXBlID0gSVRFUl9JT1ZFQywK
+LQkJLmNvcHlfbWMgPSBmYWxzZSwKIAkJLm5vZmF1bHQgPSBmYWxzZSwKIAkJLmRhdGFfc291cmNl
+ID0gZGlyZWN0aW9uLAogCQkuX19pb3YgPSBpb3YsCkBAIC0yNDQsMjcgKzI0Myw5IEBAIHNpemVf
+dCBfY29weV9tY190b19pdGVyKGNvbnN0IHZvaWQgKmFkZHIsIHNpemVfdCBieXRlcywgc3RydWN0
+IGlvdl9pdGVyICppKQogRVhQT1JUX1NZTUJPTF9HUEwoX2NvcHlfbWNfdG9faXRlcik7CiAjZW5k
+aWYgLyogQ09ORklHX0FSQ0hfSEFTX0NPUFlfTUMgKi8KIAotc3RhdGljIF9fYWx3YXlzX2lubGlu
+ZQotc2l6ZV90IG1lbWNweV9mcm9tX2l0ZXJfbWModm9pZCAqaXRlcl9mcm9tLCBzaXplX3QgcHJv
+Z3Jlc3MsCi0JCQkgICBzaXplX3QgbGVuLCB2b2lkICp0bywgdm9pZCAqcHJpdjIpCi17Ci0JcmV0
+dXJuIGNvcHlfbWNfdG9fa2VybmVsKHRvICsgcHJvZ3Jlc3MsIGl0ZXJfZnJvbSwgbGVuKTsKLX0K
+LQotc3RhdGljIHNpemVfdCBfX2NvcHlfZnJvbV9pdGVyX21jKHZvaWQgKmFkZHIsIHNpemVfdCBi
+eXRlcywgc3RydWN0IGlvdl9pdGVyICppKQotewotCWlmICh1bmxpa2VseShpLT5jb3VudCA8IGJ5
+dGVzKSkKLQkJYnl0ZXMgPSBpLT5jb3VudDsKLQlpZiAodW5saWtlbHkoIWJ5dGVzKSkKLQkJcmV0
+dXJuIDA7Ci0JcmV0dXJuIGl0ZXJhdGVfYnZlYyhpLCBieXRlcywgYWRkciwgTlVMTCwgbWVtY3B5
+X2Zyb21faXRlcl9tYyk7Ci19Ci0KIHN0YXRpYyBfX2Fsd2F5c19pbmxpbmUKIHNpemVfdCBfX2Nv
+cHlfZnJvbV9pdGVyKHZvaWQgKmFkZHIsIHNpemVfdCBieXRlcywgc3RydWN0IGlvdl9pdGVyICpp
+KQogewotCWlmICh1bmxpa2VseShpb3ZfaXRlcl9pc19jb3B5X21jKGkpKSkKLQkJcmV0dXJuIF9f
+Y29weV9mcm9tX2l0ZXJfbWMoYWRkciwgYnl0ZXMsIGkpOwogCXJldHVybiBpdGVyYXRlX2FuZF9h
+ZHZhbmNlKGksIGJ5dGVzLCBhZGRyLAogCQkJCSAgIGNvcHlfZnJvbV91c2VyX2l0ZXIsIG1lbWNw
+eV9mcm9tX2l0ZXIpOwogfQpAQCAtNjMzLDcgKzYxNCw2IEBAIHZvaWQgaW92X2l0ZXJfa3ZlYyhz
+dHJ1Y3QgaW92X2l0ZXIgKmksIHVuc2lnbmVkIGludCBkaXJlY3Rpb24sCiAJV0FSTl9PTihkaXJl
+Y3Rpb24gJiB+KFJFQUQgfCBXUklURSkpOwogCSppID0gKHN0cnVjdCBpb3ZfaXRlcil7CiAJCS5p
+dGVyX3R5cGUgPSBJVEVSX0tWRUMsCi0JCS5jb3B5X21jID0gZmFsc2UsCiAJCS5kYXRhX3NvdXJj
+ZSA9IGRpcmVjdGlvbiwKIAkJLmt2ZWMgPSBrdmVjLAogCQkubnJfc2VncyA9IG5yX3NlZ3MsCkBA
+IC02NTAsNyArNjMwLDYgQEAgdm9pZCBpb3ZfaXRlcl9idmVjKHN0cnVjdCBpb3ZfaXRlciAqaSwg
+dW5zaWduZWQgaW50IGRpcmVjdGlvbiwKIAlXQVJOX09OKGRpcmVjdGlvbiAmIH4oUkVBRCB8IFdS
+SVRFKSk7CiAJKmkgPSAoc3RydWN0IGlvdl9pdGVyKXsKIAkJLml0ZXJfdHlwZSA9IElURVJfQlZF
+QywKLQkJLmNvcHlfbWMgPSBmYWxzZSwKIAkJLmRhdGFfc291cmNlID0gZGlyZWN0aW9uLAogCQku
+YnZlYyA9IGJ2ZWMsCiAJCS5ucl9zZWdzID0gbnJfc2VncywKQEAgLTY3OSw3ICs2NTgsNiBAQCB2
+b2lkIGlvdl9pdGVyX3hhcnJheShzdHJ1Y3QgaW92X2l0ZXIgKmksIHVuc2lnbmVkIGludCBkaXJl
+Y3Rpb24sCiAJQlVHX09OKGRpcmVjdGlvbiAmIH4xKTsKIAkqaSA9IChzdHJ1Y3QgaW92X2l0ZXIp
+IHsKIAkJLml0ZXJfdHlwZSA9IElURVJfWEFSUkFZLAotCQkuY29weV9tYyA9IGZhbHNlLAogCQku
+ZGF0YV9zb3VyY2UgPSBkaXJlY3Rpb24sCiAJCS54YXJyYXkgPSB4YXJyYXksCiAJCS54YXJyYXlf
+c3RhcnQgPSBzdGFydCwKQEAgLTcwMyw3ICs2ODEsNiBAQCB2b2lkIGlvdl9pdGVyX2Rpc2NhcmQo
+c3RydWN0IGlvdl9pdGVyICppLCB1bnNpZ25lZCBpbnQgZGlyZWN0aW9uLCBzaXplX3QgY291bnQp
+CiAJQlVHX09OKGRpcmVjdGlvbiAhPSBSRUFEKTsKIAkqaSA9IChzdHJ1Y3QgaW92X2l0ZXIpewog
+CQkuaXRlcl90eXBlID0gSVRFUl9ESVNDQVJELAotCQkuY29weV9tYyA9IGZhbHNlLAogCQkuZGF0
+YV9zb3VyY2UgPSBmYWxzZSwKIAkJLmNvdW50ID0gY291bnQsCiAJCS5pb3Zfb2Zmc2V0ID0gMAo=
+--0000000000005434e50612a4af27--
 
