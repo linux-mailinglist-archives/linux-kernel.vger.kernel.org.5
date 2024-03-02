@@ -1,76 +1,70 @@
-Return-Path: <linux-kernel+bounces-89617-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89614-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B28986F31B
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 00:19:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C499B86F315
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 00:07:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD6241C21336
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 23:19:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 385CBB22A4E
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 23:07:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5096353E39;
-	Sat,  2 Mar 2024 23:19:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7727537FF;
+	Sat,  2 Mar 2024 23:07:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J8WsILe/"
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="i84v561M"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29E981EB3F;
-	Sat,  2 Mar 2024 23:19:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9E3742AAA
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 23:07:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709421588; cv=none; b=AzFRuI2MVDY/WYVv50KfZJuDI/YVfKSP3izAaKA1jIsCnweDiUlo6nntlIImqv6zLfkHPtRsCqRnQgCAmPoX0m8lwrYuYllQ0PhsUlodaYf/DVElPI9hZsCIlzg+Q+zTr435/joFZT3eJqu1P5UGNAo1yFdpvZSspfMoAeKPyLE=
+	t=1709420827; cv=none; b=OnC5h9liW1spe5HmMUpx6xU7F6astN6UH5FO3hbYjsF89b2aboQ9OQGIJQyTFHxkDtRKOjtzDClkGi+UnGSFGYUDZIpQFxsmevnc0FBMGmreFYs7vhWvZJiG2TZvpt+36hN1ieNJSTdVLIV6p53lgHyxnCj+8XiDeb/XLORADLM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709421588; c=relaxed/simple;
-	bh=vPP3p9GGRRGZegKNSobm2wNf5DV/YCF3ypsLBCmSIdw=;
+	s=arc-20240116; t=1709420827; c=relaxed/simple;
+	bh=TWqGFGIQh4CaKG/pDmbZgvDsne3caRK+p6T5cRiz1ec=;
 	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=oD3U0fWO6G1+sYnaKxQUxROftZk7qo1jCsVgCQS9vzmiUlMwK+1w0VCuu3Mc/gsdn5wAtF0bLr3PcVPcMtoje3opjt2hCttQ94zUQMwm2XBajVS005p5uDms4Ol1pbuepRtkcQ49WG4kvQDbsxF/Z/tYQDqG2VTZ8jI2rkYGm8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J8WsILe/; arc=none smtp.client-ip=209.85.160.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-42e78c39ff0so39808111cf.0;
-        Sat, 02 Mar 2024 15:19:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709421586; x=1710026386; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yl9YhJ9Pat9I4841GAOwQcUbovZDN591i7vJgihLH04=;
-        b=J8WsILe/c0lxtcCKQQ/0R2OH3stc/HlsnH+PpbuTa3bzXSbYECsURyZ9OYW12x193e
-         f0uR1c0q4NgkE0SrCDCWa9kKZLTvsiHVmkQ+n611oGCbAH0aQ3LRV/zVP0AzugW93MsE
-         ybDVfU0BNnB2XZJUrzQhnZgWI5PmOmXMM3qy5w8OEPYFPIpZKt/wgssVnsUBi79mTi8r
-         MZo0SiwfIu7C9HdwrQlV5LJRr8abFTPQnKabX3CwZC2bGoZpCozPzWahQLmirNGDtUkD
-         97u2n6cqunBELdpH8ZaIgXuGI0h8wWxcxN2orgxPfu2CoDtZiLj9Lm6f8RPQ/hgz0Sas
-         GNFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709421586; x=1710026386;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yl9YhJ9Pat9I4841GAOwQcUbovZDN591i7vJgihLH04=;
-        b=j6I6xnSKVPZNL29TptI0XvNw2fTmKReDia9KZLcO7xIXpNuWdcdQL1QimqiVicreWf
-         MVC81wgHR1OBuofdmKMeHAZXqts7yJrhQ5WjT2mZkkm+H4dknm0YEnU12sTx9eL37ZgX
-         DZJSbD4zPai9CdcfwftAKG6RzVdwSxTObZAf2/2uLtQRw+XpMKEVu1A9S8hFgQRXiQTY
-         JTW3bCpph4I4DwysjPipOm53c/YNzdMK/ERfSHNMUdzMZlwpMyvPDtfChOBoxwKYSlim
-         iMha+KEDtPCFy8Q+4YsCT8W8nHT8bMH8/KrR2F0felmzZVkMEGX5NBpJkW7Aryx28AE5
-         UD2A==
-X-Forwarded-Encrypted: i=1; AJvYcCX4rvRFQ2It8hC7Y4NzpLyGG7Gy9hvC+VK3O8pEX+yieGQ7tonRZI14MsxkNVx76Qdt/bLhVJuzZ+CyeT7Uu8FxzjEUHF9RxFAdd3wBh2Hdmto2YoRQUWMl7sCNZsqNBFfu
-X-Gm-Message-State: AOJu0YwkOdO9kqhP1a9R8hRiQLrHMHhmNjePFLGjAFJVfoyT7UrT+KdC
-	KNjtzYla7hI94F9+HDVHoE4jLQV3hxrJfMGHj8LK2JFNw3auySN9wmOYPAT7
-X-Google-Smtp-Source: AGHT+IF2R0RJsIJvVpl1bvm8wghq1conzqkpFu40cOsz9Pou4iTg2Ord2Jc4YemBxx9LHR+Lm28KYA==
-X-Received: by 2002:ac8:5a41:0:b0:42e:ca55:e89a with SMTP id o1-20020ac85a41000000b0042eca55e89amr8281122qta.34.1709421585966;
-        Sat, 02 Mar 2024 15:19:45 -0800 (PST)
-Received: from localhost ([2601:8c:502:14f0:acdd:1182:de4a:7f88])
-        by smtp.gmail.com with ESMTPSA id nw5-20020a0562143a0500b0068f2d2f64d1sm3422697qvb.32.2024.03.02.15.19.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Mar 2024 15:19:45 -0800 (PST)
-Date: Sat, 2 Mar 2024 13:19:42 -0500
-From: Oliver Crumrine <ozlinuxc@gmail.com>
-To: alx@kernel.org
-Cc: linux-kernel@vger.kernel.org, linux-man@vger.kernel.org, 
-	netdev@vger.kernel.org
-Subject: [PATCH] ip.7: Add not supported by SOCK_STREAM to socket options
-Message-ID: <hxiq3upwxs3j5mc5arwlx4jriqm7fq5z54wroc4h4kqcq4gq7m@uwnoq2vnkhup>
+	 Content-Disposition; b=k0unsm7uOiV0p2P14U3zCMdHIpzLvF66HJGKQbTjXfJB5IfjX/f+4IU/brccvfrPSZjXVX/ymw5xblEuyARG9kMrJfY9Tu77h5yqAJXh4T/ecleQKPtYKjTcK/s99TSNqTGVS+G1STJe21mOfeYZAML13Ke0kwSpT2gaJWOLgvs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=i84v561M; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709420825; x=1740956825;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=TWqGFGIQh4CaKG/pDmbZgvDsne3caRK+p6T5cRiz1ec=;
+  b=i84v561MzLsh05mYgHUqlsJ5D6SYFF03N3R06Bdl68OvXZQa81cWZtA5
+   G6IDUkTw/smSyOzlchCQgKnNfXTPvHTmoz4XID/21SHSUO0/5q5DR/zCo
+   EQyYVUcnyKPnGbqx8l5+pCJVevvmfPwS0zMbjGxVNSVwPYikCYMBuJIPm
+   AIs1h4rt4QZSWR4xAkV3p28OB+VijEqEWq9Ll9WiS/8cU4/qZM9mRG0kx
+   vLNtI1/3rmyIDqzDg3kH44sMI0dTpGxNjLZBUtwsG9qOG2xwqPorcpn+F
+   4u5Zg9B6hc4GTtUSzTr2vXW6Jocm38Ew1BviVL6RN+C2+c9ozQ/cc9fXA
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11001"; a="26407837"
+X-IronPort-AV: E=Sophos;i="6.06,200,1705392000"; 
+   d="scan'208";a="26407837"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2024 15:07:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,200,1705392000"; 
+   d="scan'208";a="9018283"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by orviesa006.jf.intel.com with ESMTP; 02 Mar 2024 15:07:02 -0800
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rgYRY-0000Lo-0d;
+	Sat, 02 Mar 2024 23:07:00 +0000
+Date: Sun, 3 Mar 2024 07:06:29 +0800
+From: kernel test robot <lkp@intel.com>
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	"Steven Rostedt (Google)" <rostedt@goodmis.org>,
+	Florent Revest <revest@chromium.org>
+Subject: vmlinux.o: warning: objtool: set_ftrace_ops_ro+0x28: relocation to
+ !ENDBR: arch_arm_kprobe+0x53
+Message-ID: <202403030647.nbsj0FqZ-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -80,54 +74,67 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-It was not made clear in several socket options that they were not
-supported by SOCK_STREAM; this patch fixes that.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   4640e2be3920168f6b26512466562accb783423a
+commit: fee86a4ed536f4e521f3a4530242e152dd2a466b ftrace: selftest: remove broken trace_direct_tramp
+date:   12 months ago
+config: x86_64-randconfig-121-20240302 (https://download.01.org/0day-ci/archive/20240303/202403030647.nbsj0FqZ-lkp@intel.com/config)
+compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240303/202403030647.nbsj0FqZ-lkp@intel.com/reproduce)
 
-Socket options not supported by SOCK_STREAM are handled in the
-ip_cmsg_recv_offset function in net/ipv4/ip_sockglue.c. The function is
-called for udp sockets, and indirectly by ping and raw sockets, but not
-for TCP sockets, as they don't support these options.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403030647.nbsj0FqZ-lkp@intel.com/
 
-Signed-off-by: Oliver Crumrine <ozlinuxc@gmail.com>
----
- man7/ip.7 | 9 +++++++++
- 1 file changed, 9 insertions(+)
+All warnings (new ones prefixed by >>):
 
-diff --git a/man7/ip.7 b/man7/ip.7
-index 2b4b06324..104e65feb 100644
---- a/man7/ip.7
-+++ b/man7/ip.7
-@@ -828,6 +828,9 @@ is not zero, the primary local address of the interface specified by the
- index overwrites
- .I ipi_spec_dst
- for the routing table lookup.
-+Not supported for
-+.B SOCK_STREAM
-+sockets.
- .TP
- .BR IP_RECVERR " (since Linux 2.2)"
- .\" Precisely: since Linux 2.1.15
-@@ -989,6 +992,9 @@ in which the kernel returns the original destination address
- of the datagram being received.
- The ancillary message contains a
- .IR "struct sockaddr_in" .
-+Not supported for
-+.B SOCK_STREAM
-+sockets.
- .TP
- .BR IP_RECVTOS " (since Linux 2.2)"
- .\" Precisely: since Linux 2.1.68
-@@ -998,6 +1004,9 @@ ancillary message is passed with incoming packets.
- It contains a byte which specifies the Type of Service/Precedence
- field of the packet header.
- Expects a boolean integer flag.
-+Not supported for
-+.B SOCK_STREAM
-+sockets.
- .TP
- .BR IP_RECVTTL " (since Linux 2.2)"
- .\" Precisely: since Linux 2.1.68
+>> vmlinux.o: warning: objtool: set_ftrace_ops_ro+0x28: relocation to !ENDBR: arch_arm_kprobe+0x53
+
+
+objdump-func vmlinux.o set_ftrace_ops_ro:
+0000 00000000000492c0 <set_ftrace_ops_ro>:
+0000    492c0:	f3 0f 1e fa          	endbr64
+0004    492c4:	41 57                	push   %r15
+0006    492c6:	41 56                	push   %r14
+0008    492c8:	41 54                	push   %r12
+000a    492ca:	53                   	push   %rbx
+000b    492cb:	48 8b 1d 00 00 00 00 	mov    0x0(%rip),%rbx        # 492d2 <set_ftrace_ops_ro+0x12>	492ce: R_X86_64_PC32	ftrace_ops_list-0x4
+0012    492d2:	e8 00 00 00 00       	call   492d7 <set_ftrace_ops_ro+0x17>	492d3: R_X86_64_PLT32	debug_lockdep_rcu_enabled-0x4
+0017    492d7:	49 c7 c6 00 00 00 00 	mov    $0x0,%r14	492da: R_X86_64_32S	ftrace_list_end
+001e    492de:	48 c7 c0 00 00 00 00 	mov    $0x0,%rax	492e1: R_X86_64_32S	ftrace_regs_caller
+0025    492e5:	48 f7 d8             	neg    %rax
+0028    492e8:	4c 8d 3c 05 00 00 00 00 	lea    0x0(,%rax,1),%r15	492ec: R_X86_64_32S	ftrace_regs_caller_end+0x1008
+0030    492f0:	49 c1 ef 0c          	shr    $0xc,%r15
+0034    492f4:	48 c7 c0 00 00 00 00 	mov    $0x0,%rax	492f7: R_X86_64_32S	ftrace_caller
+003b    492fb:	48 f7 d8             	neg    %rax
+003e    492fe:	4c 8d 24 05 00 00 00 00 	lea    0x0(,%rax,1),%r12	49302: R_X86_64_32S	ftrace_caller_end+0x1008
+0046    49306:	49 c1 ec 0c          	shr    $0xc,%r12
+004a    4930a:	48 8b 43 10          	mov    0x10(%rbx),%rax
+004e    4930e:	a9 00 08 00 00       	test   $0x800,%eax
+0053    49313:	74 15                	je     4932a <set_ftrace_ops_ro+0x6a>
+0055    49315:	a8 04                	test   $0x4,%al
+0057    49317:	48 8b bb 90 01 00 00 	mov    0x190(%rbx),%rdi
+005e    4931e:	44 89 fe             	mov    %r15d,%esi
+0061    49321:	41 0f 44 f4          	cmove  %r12d,%esi
+0065    49325:	e8 00 00 00 00       	call   4932a <set_ftrace_ops_ro+0x6a>	49326: R_X86_64_PLT32	set_memory_ro-0x4
+006a    4932a:	48 8b 5b 08          	mov    0x8(%rbx),%rbx
+006e    4932e:	e8 00 00 00 00       	call   49333 <set_ftrace_ops_ro+0x73>	4932f: R_X86_64_PLT32	debug_lockdep_rcu_enabled-0x4
+0073    49333:	48 85 db             	test   %rbx,%rbx
+0076    49336:	74 05                	je     4933d <set_ftrace_ops_ro+0x7d>
+0078    49338:	4c 39 f3             	cmp    %r14,%rbx
+007b    4933b:	75 cd                	jne    4930a <set_ftrace_ops_ro+0x4a>
+007d    4933d:	5b                   	pop    %rbx
+007e    4933e:	41 5c                	pop    %r12
+0080    49340:	41 5e                	pop    %r14
+0082    49342:	41 5f                	pop    %r15
+0084    49344:	c3                   	ret
+0085    49345:	66 66 66 66 66 66 2e 0f 1f 84 00 00 00 00 00 	data16 data16 data16 data16 data16 cs nopw 0x0(%rax,%rax,1)
+0094    49354:	66 66 66 66 66 66 2e 0f 1f 84 00 00 00 00 00 	data16 data16 data16 data16 data16 cs nopw 0x0(%rax,%rax,1)
+00a3    49363:	66 66 66 66 66 66 2e 0f 1f 84 00 00 00 00 00 	data16 data16 data16 data16 data16 cs nopw 0x0(%rax,%rax,1)
+00b2    49372:	66 66 66 66 66 2e 0f 1f 84 00 00 00 00 00 	data16 data16 data16 data16 cs nopw 0x0(%rax,%rax,1)
+
 -- 
-2.44.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
