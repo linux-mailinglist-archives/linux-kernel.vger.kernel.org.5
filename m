@@ -1,118 +1,125 @@
-Return-Path: <linux-kernel+bounces-89544-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89545-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0462386F1D1
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 19:12:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F72986F1D3
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 19:17:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 97CB91F21C7E
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 18:12:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB31A2823F6
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 18:17:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32AD13613B;
-	Sat,  2 Mar 2024 18:12:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72BC62CCAD;
+	Sat,  2 Mar 2024 18:17:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="KK1s3AKS"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HegcN9C2"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A79912C69A
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 18:12:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2FEB2C697
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 18:16:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709403127; cv=none; b=eNHRx/JOWrWNZqrVk5ws4IDpeRFfQ8mFkjNHzO6Es1IqyGYaFE/UqN09soUNpjG3ShuJzplxnRsaSEs+w5X9EueKyevhjr6mjOVsFLOBtNbdk+Eo2YkR9ubPrR/LFYVMDa6E+aywYybHlrd3CCUCwRVQxBxiFpnxfRq5ARf5qbE=
+	t=1709403419; cv=none; b=pk14Tip7TMuC/5uaduNXjPqfQC3JfvYNEXjjKlA9YxKK4M+cCPz1e+wPs4pEhZ1EO3sQ920hd5yEC5smqgQdw2YGSmL8q9Vjjwhto1EahRYE9/P/UTYh2qWWqTGRFA8zy+9EDDP9OXYRe8pr6Acpq4M7QW5dvRVoTjP7ptawluc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709403127; c=relaxed/simple;
-	bh=UaTnZY8Awdcgt8ZW0ePFAWj+b5DkUlXvw9yVNGy7EKk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pRAvsAj+jafgjH7Y9kosl+ER7dStxyUAp8Oaj7vhMPYNXbHvR28L+LMkwVHWjX3qAdec66JQSrQKzSB9V7Xgl7najDsAVTodwD6xN+q3meXOWAbsXES+LcCwEIeCwyQ5LozZJQZQrvYdZSk43DgbapmIpdWHr0wuu1uZq9s97nI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=KK1s3AKS; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5643ae47cd3so4551570a12.3
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Mar 2024 10:12:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1709403124; x=1710007924; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=mpxtfMFdGHdZ3KBLFHI8lmN/KThAgx7c0/ntlIOIqzY=;
-        b=KK1s3AKS9QI5zO1IM+w3Ch6ZpCoQI7Ipd/X5JmGtv/iVdozGaSoSvQwDJf3cgS44IH
-         VY/1+kgJiiMNw/Td/Xi8N7sm5B1mmBFNEOYr8Ck964UUWpIGf8l0K5yZeXps7qC2aguF
-         yL4QldbtYQFPnquyuaP877/tuSCkdc5K+BZ9k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709403124; x=1710007924;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mpxtfMFdGHdZ3KBLFHI8lmN/KThAgx7c0/ntlIOIqzY=;
-        b=U2CtreBg1dH0d5G8UOcE2kNSaoVIQUJt8+eQ+xri8fQjwsLOBE+7C+iMqSgdHtOAxV
-         a3OL+6UBKjprdYmjBGd0NQy+a/lWPg8zuu0jzxAWxadwsEFHRfkoU4ppnJtwLwN1fZ+J
-         toUG7hP3yzdlY4a6ZHdT8du302hbCFoQMJZvyajYRQvZrff2PFwbZdhiZgjRoJMP3Tvu
-         Q1wAOg2DuAL7ajis9YetZKov9F4VTR+6bJ7/O1d212eEmJVxdxF/GervdioYcmFlIqGa
-         F25pdB9FJWnzJU70KFQgAIxn9nCfvyWaZ4nDECkc3NvrYwrQ6cZxdHxaJxM/qQFo6BAX
-         wD2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUZtJGni6Y8vGbh2m/czF/SVrgUCbJFDjHo8ca0V8Fa20anUuW7Oh+d9aGcOOYZ+Y+vm6QpU0zVtEPfZZMwCd+msmZql8du9BondpH1
-X-Gm-Message-State: AOJu0YxfDXc9RaA9eM/x/79oqoIepQPW/0RHltYqBG8IJ9XOgi6Nedbk
-	SIu7594nizFCXY1KMp/+HjfCCzeEw5gjcwJPb0ahJ7w8z0SxvR9v2sqlbgLO9iAB4tgvJTtA7Um
-	3G6vDSg==
-X-Google-Smtp-Source: AGHT+IHtre6vSHyORRGM9LkOhgu5uRFQz40FIkEWzkd8snwmHvEkgA4fPbXM7A99/tmGtJOfkjCihA==
-X-Received: by 2002:a50:cc4d:0:b0:566:806c:690e with SMTP id n13-20020a50cc4d000000b00566806c690emr3222261edi.5.1709403123974;
-        Sat, 02 Mar 2024 10:12:03 -0800 (PST)
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com. [209.85.218.52])
-        by smtp.gmail.com with ESMTPSA id p8-20020a056402500800b005648d0eebdbsm2776259eda.96.2024.03.02.10.12.03
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 02 Mar 2024 10:12:03 -0800 (PST)
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a3f893ad5f4so497278966b.2
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Mar 2024 10:12:03 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVRw2TbF5S8rmfg8JGcmiDMDRGRLDaxxo/RBdAlhrUcXe3B5XasSyTkLYwNkkwg+p9iNqY/+0ey0FC9yVP9lhhPGkVu3TvBOFfmLJDl
-X-Received: by 2002:a17:906:f190:b0:a44:2134:cba9 with SMTP id
- gs16-20020a170906f19000b00a442134cba9mr3296518ejb.69.1709403123040; Sat, 02
- Mar 2024 10:12:03 -0800 (PST)
+	s=arc-20240116; t=1709403419; c=relaxed/simple;
+	bh=dhpC1z1VlOjYv5PCibNXLQn4/9V+7BuN441NiWBMd68=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=KN0TlcpPw/qxOGk8tXnpUIu9nXgWrcQHa4mc9v5lwJW4BXD4Hh22ML29Va2H9Y3SN0b/VuyQJm/VPDEearMbAKgRHFgLLLgzuQRkG2/GaZeOjQEMS9w906SOBQk6s6PB7j/t1L+2agieM7a4ow+VrY3lO25b6wkDH0o31ly26Z0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HegcN9C2; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709403418; x=1740939418;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=dhpC1z1VlOjYv5PCibNXLQn4/9V+7BuN441NiWBMd68=;
+  b=HegcN9C22YDjJfzUYiwd5BMYErKollyhPityRkTEcEgXsPtnfi00Omc8
+   WBmumuAyk+w5SPOrgkAJFI/GpNkQmf1GbV5jbjuYglTFbJRXaB7YrGqnx
+   XPuhhEOl3MPZA+lZERDym6u1b0LyIImMFgFcJk7egatDQ/M+eb3L2HFbR
+   dWIf9wEIqC8ySJGOwqAO48ep9tNd7nb841GQqPJVreV4ZOC2TtzVZaY7z
+   txqk+4vyVi9mppn9Uu4qQJMW6tInav7g1JKtEY1/GcAUfNlz6n+uTtVU5
+   dWlw1ln+ZDSUw+meC7ElCOvkz/DiVcdpNsC4ETx4lMRmlioCNi9VCHay/
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11001"; a="14510789"
+X-IronPort-AV: E=Sophos;i="6.06,199,1705392000"; 
+   d="scan'208";a="14510789"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2024 10:16:57 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,199,1705392000"; 
+   d="scan'208";a="8755118"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by fmviesa006.fm.intel.com with ESMTP; 02 Mar 2024 10:16:56 -0800
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rgTuo-0000DI-06;
+	Sat, 02 Mar 2024 18:16:54 +0000
+Date: Sun, 3 Mar 2024 02:16:31 +0800
+From: kernel test robot <lkp@intel.com>
+To: Kees Cook <keescook@chromium.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: WARNING: modpost: "strncat" [lib/strcat_kunit.ko] has no CRC!
+Message-ID: <202403030236.qOy0rBIN-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230925120309.1731676-1-dhowells@redhat.com> <20230925120309.1731676-8-dhowells@redhat.com>
- <4e80924d-9c85-f13a-722a-6a5d2b1c225a@huawei.com> <CAHk-=whG+4ag+QLU9RJn_y47f1DBaK6b0qYq_6_eLkO=J=Mkmw@mail.gmail.com>
- <CAHk-=wjSjuDrS9gc191PTEDDow7vHy6Kd3DKDaG+KVH0NQ3v=w@mail.gmail.com>
- <e985429e-5fc4-a175-0564-5bb4ca8f662c@huawei.com> <CAHk-=wh06M-1c9h7wZzZ=1KqooAmazy_qESh2oCcv7vg-sY6NQ@mail.gmail.com>
- <CAHk-=wiBJRgA3iNqihR7uuft=5rog425X_b3uvgroG3fBhktwQ@mail.gmail.com>
- <f914a48b-741c-e3fe-c971-510a07eefb91@huawei.com> <CAHk-=whBw1EtCgfx0dS4u5piViXA3Q2fuGO64ZuGfC1eH_HNKg@mail.gmail.com>
-In-Reply-To: <CAHk-=whBw1EtCgfx0dS4u5piViXA3Q2fuGO64ZuGfC1eH_HNKg@mail.gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sat, 2 Mar 2024 10:11:46 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjvkP3P9+mAmkQTteRgeHOjxku4XEvZTSq6tAVPJSrOHg@mail.gmail.com>
-Message-ID: <CAHk-=wjvkP3P9+mAmkQTteRgeHOjxku4XEvZTSq6tAVPJSrOHg@mail.gmail.com>
-Subject: Re: [bug report] dead loop in generic_perform_write() //Re: [PATCH v7
- 07/12] iov_iter: Convert iterate*() to inline funcs
-To: Tong Tiangen <tongtiangen@huawei.com>
-Cc: Al Viro <viro@kernel.org>, David Howells <dhowells@redhat.com>, Jens Axboe <axboe@kernel.dk>, 
-	Christoph Hellwig <hch@lst.de>, Christian Brauner <christian@brauner.io>, 
-	David Laight <David.Laight@aculab.com>, Matthew Wilcox <willy@infradead.org>, 
-	Jeff Layton <jlayton@kernel.org>, linux-fsdevel@vger.kernel.org, 
-	linux-block@vger.kernel.org, linux-mm@kvack.org, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Kefeng Wang <wangkefeng.wang@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Sat, 2 Mar 2024 at 10:06, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> In other words, it's the usual "Enterprise Hardware" situation. Looks
-> fancy on paper, costs an arm and a leg, and the reality is just sad,
-> sad, sad.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   5ad3cb0ed525b80c7f66c32b49a68c1f3510bec9
+commit: 3bf301e1ab85e18ed0e337ce124dc71d6d7b5fd7 string: Add Kunit tests for strcat() family
+date:   10 months ago
+config: alpha-randconfig-r024-20230814 (https://download.01.org/0day-ci/archive/20240303/202403030236.qOy0rBIN-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240303/202403030236.qOy0rBIN-lkp@intel.com/reproduce)
 
-Don't get me wrong. I'm sure large companies are more than willing to
-sell other large companies very expensive support contracts and have
-engineers that they fly out to deal with the problems all these
-enterprise solutions have.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403030236.qOy0rBIN-lkp@intel.com/
 
-The problem *will* get fixed somehow, it's just going to cost you. A lot.
+All warnings (new ones prefixed by >>, old ones prefixed by <<):
 
-Because THAT is what Enterprise Hardware is all about.
+WARNING: modpost: vmlinux.o: EXPORT_SYMBOL used for init/exit symbol: page_is_ram (section: .init.text)
+WARNING: modpost: EXPORT symbol "strcpy" [vmlinux] version generation failed, symbol will not be versioned.
+Is "strcpy" prototyped in <asm/asm-prototypes.h>?
+WARNING: modpost: EXPORT symbol "strcat" [vmlinux] version generation failed, symbol will not be versioned.
+Is "strcat" prototyped in <asm/asm-prototypes.h>?
+WARNING: modpost: EXPORT symbol "strncpy" [vmlinux] version generation failed, symbol will not be versioned.
+Is "strncpy" prototyped in <asm/asm-prototypes.h>?
+WARNING: modpost: EXPORT symbol "strncat" [vmlinux] version generation failed, symbol will not be versioned.
+Is "strncat" prototyped in <asm/asm-prototypes.h>?
+WARNING: modpost: "strcpy" [fs/ecryptfs/ecryptfs.ko] has no CRC!
+WARNING: modpost: "strncpy" [fs/ecryptfs/ecryptfs.ko] has no CRC!
+WARNING: modpost: "strncpy" [security/keys/encrypted-keys/encrypted-keys.ko] has no CRC!
+WARNING: modpost: "strncat" [lib/kunit/kunit.ko] has no CRC!
+>> WARNING: modpost: "strncat" [lib/strcat_kunit.ko] has no CRC!
+WARNING: modpost: "strcpy" [drivers/video/fbdev/mmp/fb/mmpfb.ko] has no CRC!
+WARNING: modpost: "strcpy" [drivers/video/fbdev/cyber2000fb.ko] has no CRC!
+WARNING: modpost: "strncpy" [drivers/char/ipmi/ipmi_msghandler.ko] has no CRC!
+WARNING: modpost: "strcpy" [drivers/char/ipmi/ipmi_watchdog.ko] has no CRC!
+WARNING: modpost: "strncpy" [drivers/tty/n_gsm.ko] has no CRC!
+WARNING: modpost: "strcpy" [drivers/base/regmap/regmap-kunit.ko] has no CRC!
+WARNING: modpost: "strcpy" [drivers/nfc/pn544/pn544_i2c.ko] has no CRC!
+WARNING: modpost: "strcpy" [drivers/mtd/devices/phram.ko] has no CRC!
+WARNING: modpost: "strcpy" [drivers/mtd/nand/raw/r852.ko] has no CRC!
+WARNING: modpost: "strncpy" [drivers/auxdisplay/panel.ko] has no CRC!
+WARNING: modpost: "strcpy" [drivers/usb/misc/usbsevseg.ko] has no CRC!
+WARNING: modpost: "strncpy" [drivers/input/rmi4/rmi_core.ko] has no CRC!
+WARNING: modpost: "strncpy" [drivers/power/supply/bq24190_charger.ko] has no CRC!
+WARNING: modpost: "strcpy" [drivers/mmc/core/mmc_core.ko] has no CRC!
+WARNING: modpost: "strncpy" [drivers/crypto/cavium/nitrox/n5pf.ko] has no CRC!
+WARNING: modpost: "strncpy" [drivers/hid/uhid.ko] has no CRC!
+WARNING: modpost: "strcpy" [drivers/iio/test/iio-test-rescale.ko] has no CRC!
+WARNING: modpost: "strcpy" [net/bluetooth/bluetooth.ko] has no CRC!
 
-                  Linus
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
