@@ -1,144 +1,78 @@
-Return-Path: <linux-kernel+bounces-89332-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89333-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0462C86EE90
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 05:18:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C2A086EE95
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 05:32:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 50812B24615
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 04:18:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 99D26B24608
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 04:32:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4494A1173F;
-	Sat,  2 Mar 2024 04:18:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="cPe2no9m"
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C4B818E;
+	Sat,  2 Mar 2024 04:32:06 +0000 (UTC)
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EFC5B662
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 04:18:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D25AA138C
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 04:32:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709353123; cv=none; b=LQi2AVDmwCeoHG3HjMnQN3uMX7okCa73fpvDkRQNg7jmt7l+qrHAtyaMBC4BH+MHvpwOSMwzo6s6a+03+P1qhds59xLqsTVXMHykb/11hw6NpDJvt4/Rr7NLTuWYlIzgSB5m4zIgjTVOC1EXDtROIgW4PTuhGHcflV5DxoqnVuM=
+	t=1709353925; cv=none; b=l0fI1MIQe5ZVDMwzhqu7jmU4STn8OZlVZjLoXwrovuEmlagsLP0dWLKr88QW7CcepFiZvYoqQD6WcgQcvznE0ACJ43Q9x+pZkV1sHPPus9uRKvr7BcRTxzyJ2lP9c7sP7wBgzO2O+TBpw7sdYNou5sOFKrVEiOz58d5xVlsWFrI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709353123; c=relaxed/simple;
-	bh=Ujmcpy2dB7P+XYqqlVtvlzsrGz012Xd/azkbDPGDSzM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JKTyecr5nvV+plKuFBu1vhnWoYuYJVYS29qKrHoJQct/ifcDvKxL/gMa/f6bDd8tsU6KOmrKV7CUk9BkfvmS/RJKVmwnSpvmJkv0XSoNAknJxoDWLZ8E3uTC/gNMNG1Ihce5xIWjDrsv/bSIuAVlO+8H4+ugDVx+639f4CCbBGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=cPe2no9m; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Received: from [192.168.7.187] ([71.202.166.45])
-	(authenticated bits=0)
-	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 4224HjZX3764965
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Fri, 1 Mar 2024 20:17:46 -0800
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 4224HjZX3764965
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2024021201; t=1709353066;
-	bh=zkH9jdOm9lyQ5evGJsoOR0OkpIqw0UDM+K1wsPFRox4=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=cPe2no9mszrnzVala+OgOyDQNIVm0rLeH3QmJzE339wXl+UHwys9tQJ4gPkGL8P6G
-	 4gdXsgZTvcbfhqzV1lfEXVp7Ux7X+YWAhSrfpE+rhrFGFZhTzXWTxXb0ynvLtw8Lc3
-	 YglhPeCXvLE7xM6EC2pbsGX58d9DRMUbhA0SZc4XqFXla2H65izhXgVsM4muy9y93w
-	 DZX/OK8f+gSmmL6+9Q/kmp9nXgKvjH20bza8zP+ldFXkaselIxUDexTAh2FVg60wY+
-	 DqcAo9KajsYPXyQE1RIbQaWtZbX1PpMX0/6/fsIOnt7gnafVEEeQuXcqNvVjl2TFf6
-	 XuUSUvPvUsdTg==
-Message-ID: <c4fb7c39-c99c-4e4c-bd85-470f5d0dc4dd@zytor.com>
-Date: Fri, 1 Mar 2024 20:17:44 -0800
+	s=arc-20240116; t=1709353925; c=relaxed/simple;
+	bh=vQchi1TTL15oq4jYxRN5apV/fAD7MwpF4crsKotq5Eo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=etEQT/jpvjNGV+haNnIpdMRdTtUnipK2Zl66yG247HHDQ2PB6ZwRcZyhsWH34Na2TUmT7EEeeWlzOsCO9DRIGet269+1aXFyGHC+wmUVKIhemacfsLfmR3x9tmwVWvcIsOCvNU3QmCe0hRaPpnGpTIwYorKZbjTenCW7vpuQU0Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+	id 1rgH2N-002ZLV-N3; Sat, 02 Mar 2024 12:31:52 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sat, 02 Mar 2024 12:32:07 +0800
+Date: Sat, 2 Mar 2024 12:32:07 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Barry Song <21cnbao@gmail.com>
+Cc: viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+	linux-kernel@vger.kernel.org, Barry Song <v-songbaohua@oppo.com>
+Subject: Re: [PATCH] iov_iter: call kmap on each page even for lowmem if
+ CONFIG_DEBUG_KMAP_LOCAL_FORCE_MAP is enabled
+Message-ID: <ZeKrx8g3DSHaVWhv@gondor.apana.org.au>
+References: <20240301230908.7507-1-21cnbao@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/1] x86/fred: Fix init_task thread stack pointer
- initialization
-To: Brian Gerst <brgerst@gmail.com>
-Cc: linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com
-References: <20240301084046.3370376-1-xin@zytor.com>
- <CAMzpN2j7xKcGx=+z8mu_2z2RsqjB-mpODdrOH7N1J2_OzuyEUQ@mail.gmail.com>
-Content-Language: en-US
-From: Xin Li <xin@zytor.com>
-Autocrypt: addr=xin@zytor.com; keydata=
- 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
- l75w1xInsg==
-In-Reply-To: <CAMzpN2j7xKcGx=+z8mu_2z2RsqjB-mpODdrOH7N1J2_OzuyEUQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240301230908.7507-1-21cnbao@gmail.com>
 
-On 3/1/2024 5:15 AM, Brian Gerst wrote:
-> On Fri, Mar 1, 2024 at 3:41 AM Xin Li (Intel) <xin@zytor.com> wrote:
-> There is another spot in head_64.S that also needs this offset:
+On Sat, Mar 02, 2024 at 12:09:08PM +1300, Barry Song wrote:
+> From: Barry Song <v-songbaohua@oppo.com>
+> 
+> copy_page_from_iter_atomic() has the assumption lowmem will only
+> need one kmap to get start page_address() for all pages. This is
+> wrong if the debug option CONFIG_DEBUG_KMAP_LOCAL_FORCE_MAP is
+> enabled. This patch fixes it in the same way with skbuff.h by
+> always applying kmap one by one even for lowmem,
+> 
+>  static inline bool skb_frag_must_loop(struct page *p)
+>  {
+>  #if defined(CONFIG_HIGHMEM)
+>  	if (IS_ENABLED(CONFIG_DEBUG_KMAP_LOCAL_FORCE_MAP) || PageHighMem(p))
+>   		return true;
+>  #endif
+>  	return false;
+>  }
 
-I checked all references to __end_init_task before sending out this
-patch, and I doubt we need to make more similar changes.
-
-First of all, "movq    TASK_threadsp(%rcx), %rsp" you added in 
-3adee777ad0d ("x86/smpboot: Remove initial_stack on 64-bit") is exactly
-what we need to set up %rsp for the init task.
-
-> /* Set up the stack for verify_cpu() */
-> leaq (__end_init_task - PTREGS_SIZE)(%rip), %rsp
-
-As the comment says, it's a _temporary_ stack for calling verify_cpu()
-(but only for BSP, as APs use a different bring up stack), at which
-stage the concept of "task" has not formed. I'm thinking maybe it's
-better to do:
-
-/* Set up the stack for verify_cpu() */
-leaq __end_init_task(%rip), %rsp
-
-Previously it was "leaq    (__end_init_task - FRAME_SIZE)(%rip), %rsp",
-but the kernel unwinder goes up only to secondary_startup_64_no_verify()
-after the new way you introduced to set up %rsp for the init task, and
-it seems to me that there is no point to subtract FRAME_SIZE or
-PTREGS_SIZE.
-
-On the other hand, TOP_OF_KERNEL_STACK_PADDING is required for x86_32,
-but probably not for x86_64 (defined as 0 before FRED). The most
-important usage of TOP_OF_KERNEL_STACK_PADDING is to get the pt_regs
-pointer for a task, i.e., task_pt_regs(task), which assumes a fixed
-offset from the top of a task stack, but also limits the space that
-could be used by future hardware above the pt_regs structure. Thus I
-prefer to limit the usage of TOP_OF_KERNEL_STACK_PADDING on x86_64.
-
-Thanks!
-     Xin
+Thanks for the patch.  Perhaps this could be moved into highmem.h
+as a helper (kmap_is_highmem)?
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
