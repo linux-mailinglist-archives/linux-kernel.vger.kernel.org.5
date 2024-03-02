@@ -1,519 +1,170 @@
-Return-Path: <linux-kernel+bounces-89287-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89288-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FE4186EDC0
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 02:03:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBA2686EDC1
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 02:16:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6391B1C21534
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 01:03:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 08EBFB21A54
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 01:16:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C76BAB647;
-	Sat,  2 Mar 2024 01:01:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C543253AC;
+	Sat,  2 Mar 2024 01:16:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="akoefP/A"
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oJEoBVqA"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 732237483
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 01:01:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0193810E3
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 01:16:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709341309; cv=none; b=HQ/E5CId0yaYmqVQF4hqK/8xwNr2N9ibErHNxmMq4LFQeJYYrihlvCQV4TLjB9LHFWKlHrPTF0sVXcFihoAgH+9bPOFKXwsPkINRNLSohNddwQSqp1W2/3ARz5gX1GOqwQNL2M9NKqLoNE5kmzgvH9pSsBEzdWT3RkCoxB0KTtY=
+	t=1709342195; cv=none; b=rx/utdSRFLRvbU6DQFU5HO4b3CwltBUQvGZBtsEfpy5F+Co61lQNKhU+6OGFxm4i4XBOX5bt/pcwjY1q1WMfA1T1vobdelzinVegWFdbzfcq+4JItA2t1agxcRfh9YQ1peBNUxJt+dSp7czz/+GAK+iax441UZH09tFRN/yg5qw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709341309; c=relaxed/simple;
-	bh=GwPcVVLbj2MMAd6Z1gdTCPL3uoeB5dkTqJWECZ59g1U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YV7OLvwuDuWTmcgMBuCCEpdWC1m8G0fDmUNuz5mNG09yZMxdwPUwN783rtR99Jgmr3PL3JwRujW1kxZYBJQa6QZZeYsBeCa/yTg2CC8FsGFioFc4f3A48coaoDXmyPN80l6j+gL0rwRPUIZdz+iabH38p+LYVd+veCi5C8u3k2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=akoefP/A; arc=none smtp.client-ip=209.85.167.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-5101cd91017so3453771e87.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 17:01:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1709341305; x=1709946105; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rNsNUmNsB3DHgU+D56n3/8yttfwCGWOdve4uEYNjPrg=;
-        b=akoefP/AXUptl1QQVi2T6ozZSdBknzKrt97GkG76aXtJTvyDpdadC/7P3WAImCeQuT
-         3GXayDa6uTusZ/DDZ4uzgW9KDKOO8KMkCgcIPsLgvZp3cZiBMtEUUR8RO/t7zUF59okY
-         v7hPe1BGaqvUuqyrQfjEVCfFYU6CQw556gjNffMrCXMxaL8cbAUIIxI0rpByeHeUa8CB
-         NGg3DToHWglBEhNcOyYtbePvYBpfxP2sz0ChNigvzRhKmF6MAe+MsQl49Huk4T8VhXsd
-         XksFBTZWubAi21ZVyrueWY3+bKaxziJlHMnhb66TGtuY2bmjZ2lGr0p+KsNvAf0AJVr+
-         Kgag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709341305; x=1709946105;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rNsNUmNsB3DHgU+D56n3/8yttfwCGWOdve4uEYNjPrg=;
-        b=njUw+BDVBopTtSX+g99OHhwOVCjVVV/TXDp/4fbMNIDJvFY9scISPH5nOArHi6QYpr
-         NE0NWSPhIZ5iEfhXWN4jO+2aGyna8U0WtYHTKrEluKyuAId0WUjIBnL3yTa2kkgOerKk
-         ZGe1XnqsN8xK5iVtBv3223EzsZbHQv85qPyLUiWdnM6jTPwKwSxUl4aCvjIoyCT0r8Md
-         HvxuI6VbQxmIubEEEW6BjsRXqMnTBjHufm1Nr9hfrXevu85OOPfpUrVd8WILbI1paql4
-         Z68RdJzRgeYK6YkxBu5rVuIonWJ/JMYf2sR8ueNzHGzOEDgsRSLo3V9gYO+sisei5Uwn
-         LS2w==
-X-Gm-Message-State: AOJu0YwcIAT5bqPAvmuX3o0k+rSMwSbUiO4UDFx0EXNKXcz2RX1nEUSS
-	th2ng1iCFITznioMev6s1sTDmWTr7l+vX03NO+1Y8fJujpkTDIMK7r6E8McYapgvbkAxZHp9SJF
-	PRBUdKu5GvzzFbQIC7yqxYuravKGzay+YoOTQWw==
-X-Google-Smtp-Source: AGHT+IFkMZmpJbAJcB7zaT8/GZd7++yGoS+DQetYD+qcioQPLE9PKZGGc/uSwHR7RgEn2Rjbj7sEJfD+WcQ0nZ9fPoA=
-X-Received: by 2002:a05:6512:2214:b0:512:f7e0:47ce with SMTP id
- h20-20020a056512221400b00512f7e047cemr2845402lfu.44.1709341305475; Fri, 01
- Mar 2024 17:01:45 -0800 (PST)
+	s=arc-20240116; t=1709342195; c=relaxed/simple;
+	bh=USATP74KI+XzG2soiQE5kgdb5/VxlCqpaYbTagyTRCk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lfiIYcMAiL8ItFlY5BunEfW0fvzRPGgP3iXSbq9k+QkcQ/XrqqT/DAy9W2U6BwBSHtZOBO5h3P2xCTBDTlD9IVKfi0sPB7d98YcwTcItI0WbPnWxQB0r3ifDNFN7LC0JyeY6vEZBEccC53mHaNAVElHOj/Puvwwds2ezVX4SJtQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oJEoBVqA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DC43C433C7;
+	Sat,  2 Mar 2024 01:16:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709342194;
+	bh=USATP74KI+XzG2soiQE5kgdb5/VxlCqpaYbTagyTRCk=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=oJEoBVqAesdyYp0ftv4LNZ2PSoPLVrt9JZolcsGssxjesJcbs8je0BzziPOgzWVZK
+	 +jpVEZXeTRpRLUaWvzdTOpOMhg/1MM9FCkRi6yP0lRorEv7gDIklOjUa6QcL+RUfCG
+	 IKLbjcTj8LYTBCMcisDaEf7q2j5Upd1cDkxL59ZqnL45RLluHeRDG6DQT+iegHXM73
+	 ekhspmtZR/Tr0YAQQZ6BskDD5B7VLBxYP9alF75TqFairOqfXziNDrWJf1nQf4FtUz
+	 4uiAPW3lwkE//2csNwBo0lrHtTr/ZVDS5t4y6/MNKo37K2JcamvCGPjLJjuBFozEE4
+	 5hmEXzFOZQQaA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id D5A7DCE140C; Fri,  1 Mar 2024 17:16:33 -0800 (PST)
+Date: Fri, 1 Mar 2024 17:16:33 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	Ankur Arora <ankur.a.arora@oracle.com>,
+	linux-kernel@vger.kernel.org, tglx@linutronix.de,
+	peterz@infradead.org, torvalds@linux-foundation.org,
+	akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+	dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+	juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	willy@infradead.org, mgorman@suse.de, jpoimboe@kernel.org,
+	jgross@suse.com, andrew.cooper3@citrix.com, bristot@kernel.org,
+	mathieu.desnoyers@efficios.com, glaubitz@physik.fu-berlin.de,
+	anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+	krypton@ulrich-teichert.org, David.Laight@aculab.com,
+	richard@nod.at, jon.grimm@amd.com, bharata@amd.com,
+	boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
+Subject: Re: [PATCH 00/30] PREEMPT_AUTO: support lazy rescheduling
+Message-ID: <91437fa8-c192-4a71-8073-bdd9c3889926@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <7db5c057-8bd4-4209-8484-3a0f9f3cd02d@paulmck-laptop>
+ <2b735ba4-8081-4ddb-9397-4fe83143d97f@paulmck-laptop>
+ <20240221131901.69c80c47@gandalf.local.home>
+ <8f30ecd8-629b-414e-b6ea-b526b265b592@paulmck-laptop>
+ <20240221151157.042c3291@gandalf.local.home>
+ <53020731-e9a9-4561-97db-8848c78172c7@paulmck-laptop>
+ <ZddtKszRH5Ak5tZ7@FVFF77S0Q05N>
+ <1ec4dc29-8868-4d82-8c5e-c17ad025bc22@paulmck-laptop>
+ <Zdh8CdrtbL9LgOLG@FVFF77S0Q05N>
+ <5641c2f4-3453-4b04-ab0d-db9e5b464b9c@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240229010130.1380926-1-atishp@rivosinc.com> <20240229010130.1380926-14-atishp@rivosinc.com>
- <CAAhSdy3HYzc1fPBg88-7cYogT5y1Y9+4-syx4-7scxZsbmBeuQ@mail.gmail.com>
-In-Reply-To: <CAAhSdy3HYzc1fPBg88-7cYogT5y1Y9+4-syx4-7scxZsbmBeuQ@mail.gmail.com>
-From: Atish Kumar Patra <atishp@rivosinc.com>
-Date: Fri, 1 Mar 2024 17:01:34 -0800
-Message-ID: <CAHBxVyH_91dgZcSQDJ8E1=Fre-+JZiGz2QOVrJqDay7jfdD80g@mail.gmail.com>
-Subject: Re: [PATCH v4 13/15] KVM: riscv: selftests: Add SBI PMU selftest
-To: Anup Patel <anup@brainfault.org>
-Cc: linux-kernel@vger.kernel.org, Albert Ou <aou@eecs.berkeley.edu>, 
-	Alexandre Ghiti <alexghiti@rivosinc.com>, Andrew Jones <ajones@ventanamicro.com>, 
-	Atish Patra <atishp@atishpatra.org>, Conor Dooley <conor.dooley@microchip.com>, 
-	Guo Ren <guoren@kernel.org>, Icenowy Zheng <uwu@icenowy.me>, kvm-riscv@lists.infradead.org, 
-	kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, Mark Rutland <mark.rutland@arm.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Shuah Khan <shuah@kernel.org>, 
-	Will Deacon <will@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5641c2f4-3453-4b04-ab0d-db9e5b464b9c@paulmck-laptop>
 
-On Thu, Feb 29, 2024 at 8:47=E2=80=AFPM Anup Patel <anup@brainfault.org> wr=
-ote:
->
-> On Thu, Feb 29, 2024 at 6:32=E2=80=AFAM Atish Patra <atishp@rivosinc.com>=
- wrote:
-> >
-> > This test implements basic sanity test and cycle/instret event
-> > counting tests.
-> >
-> > Signed-off-by: Atish Patra <atishp@rivosinc.com>
->
-> I feel the test should have been called sbi_pmu_test but no need to
-> revise this series. I will take care of it at the time of merging.
->
+On Fri, Feb 23, 2024 at 07:31:50AM -0800, Paul E. McKenney wrote:
+> On Fri, Feb 23, 2024 at 11:05:45AM +0000, Mark Rutland wrote:
+> > On Thu, Feb 22, 2024 at 11:11:34AM -0800, Paul E. McKenney wrote:
+> > > On Thu, Feb 22, 2024 at 03:50:02PM +0000, Mark Rutland wrote:
+> > > > On Wed, Feb 21, 2024 at 12:22:35PM -0800, Paul E. McKenney wrote:
+> > > > > On Wed, Feb 21, 2024 at 03:11:57PM -0500, Steven Rostedt wrote:
+> > > > > > On Wed, 21 Feb 2024 11:41:47 -0800
+> > > > > > "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> > > > > > 
+> > > > > > > > I wonder if we can just see if the instruction pointer at preemption is at
+> > > > > > > > something that was allocated? That is, if it __is_kernel(addr) returns
+> > > > > > > > false, then we need to do more work. Of course that means modules will also
+> > > > > > > > trigger this. We could check __is_module_text() but that does a bit more
+> > > > > > > > work and may cause too much overhead. But who knows, if the module check is
+> > > > > > > > only done if the __is_kernel() check fails, maybe it's not that bad.  
+> > > > > > > 
+> > > > > > > I do like very much that idea, but it requires that we be able to identify
+> > > > > > > this instruction pointer perfectly, no matter what.  It might also require
+> > > > > > > that we be able to perfectly identify any IRQ return addresses as well,
+> > > > > > > for example, if the preemption was triggered within an interrupt handler.
+> > > > > > > And interrupts from softirq environments might require identifying an
+> > > > > > > additional level of IRQ return address.  The original IRQ might have
+> > > > > > > interrupted a trampoline, and then after transitioning into softirq,
+> > > > > > > another IRQ might also interrupt a trampoline, and this last IRQ handler
+> > > > > > > might have instigated a preemption.
+> > > > > > 
+> > > > > > Note, softirqs still require a real interrupt to happen in order to preempt
+> > > > > > executing code. Otherwise it should never be running from a trampoline.
+> > > > > 
+> > > > > Yes, the first interrupt interrupted a trampoline.  Then, on return,
+> > > > > that interrupt transitioned to softirq (as opposed to ksoftirqd).
+> > > > > While a softirq handler was executing within a trampoline, we got
+> > > > > another interrupt.  We thus have two interrupted trampolines.
+> > > > > 
+> > > > > Or am I missing something that prevents this?
+> > > > 
+> > > > Surely the problematic case is where the first interrupt is taken from a
+> > > > trampoline, but the inner interrupt is taken from not-a-trampoline? If the
+> > > > innermost interrupt context is a trampoline, that's the same as that without
+> > > > any nesting.
+> > > 
+> > > It depends.  If we wait for each task to not have a trampoline in effect
+> > > then yes, we only need to know whether or not a given task has at least
+> > > one trampoline in use.  One concern with this approach is that a given
+> > > task might have at least one trampoline in effect every time it is
+> > > checked, unlikely though that might seem.
+> > > 
+> > > If this is a problem, one way around it is to instead ask whether the
+> > > current task still has a reference to one of a set of trampolines that
+> > > has recently been removed.  This avoids the problem of a task always
+> > > being one some trampoline or another, but requires exact identification
+> > > of any and all trampolines a given task is currently using.
+> > >
+> > > Either way, we need some way of determining whether or not a given
+> > > PC value resides in a trampoline.  This likely requires some data
+> > > structure (hash table?  tree?  something else?) that must be traversed
+> > > in order to carry out that determination.  Depending on the traversal
+> > > overhead, it might (or might not) be necessary to make sure that the
+> > > traversal is not on the entry/exit/scheduler fast paths.  It is also
+> > > necessary to keep the trampoline-use overhead low and the trampoline
+> > > call points small.
+> > 
+> > Thanks; I hadn't thought about that shape of livelock problem; with that in
+> > mind my suggestion using flags was inadequate.
+> > 
+> > I'm definitely in favour of just using Tasks RCU! That's what arm64 does today,
+> > anyhow!
+> 
+> Full speed ahead, then!!!  But if you come up with a nicer solution,
+> please do not keep it a secret!
 
-Sure. I am going to send v5 anyway. I have changed the name there.
+The networking NAPI code ends up needing special help to avoid starving
+Tasks RCU grace periods [1].  I am therefore revisiting trying to make
+Tasks RCU directly detect trampoline usage, but without quite as much
+need to identify specific trampolines...
 
-> Reviewed-by: Anup Patel <anup@brainfault.org>
->
-> Regards,
-> Anup
->
-> > ---
-> >  tools/testing/selftests/kvm/Makefile        |   1 +
-> >  tools/testing/selftests/kvm/riscv/sbi_pmu.c | 340 ++++++++++++++++++++
-> >  2 files changed, 341 insertions(+)
-> >  create mode 100644 tools/testing/selftests/kvm/riscv/sbi_pmu.c
-> >
-> > diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selft=
-ests/kvm/Makefile
-> > index 426f85798aea..b2dce6843b9e 100644
-> > --- a/tools/testing/selftests/kvm/Makefile
-> > +++ b/tools/testing/selftests/kvm/Makefile
-> > @@ -195,6 +195,7 @@ TEST_GEN_PROGS_riscv +=3D kvm_create_max_vcpus
-> >  TEST_GEN_PROGS_riscv +=3D kvm_page_table_test
-> >  TEST_GEN_PROGS_riscv +=3D set_memory_region_test
-> >  TEST_GEN_PROGS_riscv +=3D steal_time
-> > +TEST_GEN_PROGS_riscv +=3D riscv/sbi_pmu
-> >
-> >  SPLIT_TESTS +=3D arch_timer
-> >  SPLIT_TESTS +=3D get-reg-list
-> > diff --git a/tools/testing/selftests/kvm/riscv/sbi_pmu.c b/tools/testin=
-g/selftests/kvm/riscv/sbi_pmu.c
-> > new file mode 100644
-> > index 000000000000..fc1fc5eea99e
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/kvm/riscv/sbi_pmu.c
-> > @@ -0,0 +1,340 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * arch_timer.c - Tests the riscv64 sstc timer IRQ functionality
-> > + *
-> > + * The test validates the sstc timer IRQs using vstimecmp registers.
-> > + * It's ported from the aarch64 arch_timer test.
-> > + *
-> > + * Copyright (c) 2024, Rivos Inc.
-> > + */
-> > +
-> > +#include <stdio.h>
-> > +#include <stdlib.h>
-> > +#include <string.h>
-> > +#include <unistd.h>
-> > +#include <sys/types.h>
-> > +#include "kvm_util.h"
-> > +#include "test_util.h"
-> > +#include "processor.h"
-> > +
-> > +/* Maximum counters (firmware + hardware)*/
-> > +#define RISCV_MAX_PMU_COUNTERS 64
-> > +union sbi_pmu_ctr_info ctrinfo_arr[RISCV_MAX_PMU_COUNTERS];
-> > +
-> > +/* Cache the available counters in a bitmask */
-> > +static unsigned long counter_mask_available;
-> > +
-> > +unsigned long pmu_csr_read_num(int csr_num)
-> > +{
-> > +#define switchcase_csr_read(__csr_num, __val)          {\
-> > +       case __csr_num:                                 \
-> > +               __val =3D csr_read(__csr_num);            \
-> > +               break; }
-> > +#define switchcase_csr_read_2(__csr_num, __val)                {\
-> > +       switchcase_csr_read(__csr_num + 0, __val)        \
-> > +       switchcase_csr_read(__csr_num + 1, __val)}
-> > +#define switchcase_csr_read_4(__csr_num, __val)                {\
-> > +       switchcase_csr_read_2(__csr_num + 0, __val)      \
-> > +       switchcase_csr_read_2(__csr_num + 2, __val)}
-> > +#define switchcase_csr_read_8(__csr_num, __val)                {\
-> > +       switchcase_csr_read_4(__csr_num + 0, __val)      \
-> > +       switchcase_csr_read_4(__csr_num + 4, __val)}
-> > +#define switchcase_csr_read_16(__csr_num, __val)       {\
-> > +       switchcase_csr_read_8(__csr_num + 0, __val)      \
-> > +       switchcase_csr_read_8(__csr_num + 8, __val)}
-> > +#define switchcase_csr_read_32(__csr_num, __val)       {\
-> > +       switchcase_csr_read_16(__csr_num + 0, __val)     \
-> > +       switchcase_csr_read_16(__csr_num + 16, __val)}
-> > +
-> > +       unsigned long ret =3D 0;
-> > +
-> > +       switch (csr_num) {
-> > +       switchcase_csr_read_32(CSR_CYCLE, ret)
-> > +       switchcase_csr_read_32(CSR_CYCLEH, ret)
-> > +       default :
-> > +               break;
-> > +       }
-> > +
-> > +       return ret;
-> > +#undef switchcase_csr_read_32
-> > +#undef switchcase_csr_read_16
-> > +#undef switchcase_csr_read_8
-> > +#undef switchcase_csr_read_4
-> > +#undef switchcase_csr_read_2
-> > +#undef switchcase_csr_read
-> > +}
-> > +
-> > +static inline void dummy_func_loop(int iter)
-> > +{
-> > +       int i =3D 0;
-> > +
-> > +       while (i < iter) {
-> > +               asm volatile("nop");
-> > +               i++;
-> > +       }
-> > +}
-> > +
-> > +static void guest_illegal_exception_handler(struct ex_regs *regs)
-> > +{
-> > +       __GUEST_ASSERT(regs->cause =3D=3D EXC_INST_ILLEGAL,
-> > +                      "Unexpected exception handler %lx\n", regs->caus=
-e);
-> > +
-> > +       /* skip the trapping instruction */
-> > +       regs->epc +=3D 4;
-> > +}
-> > +
-> > +static unsigned long get_counter_index(unsigned long cbase, unsigned l=
-ong cmask,
-> > +                                      unsigned long cflags,
-> > +                                      unsigned long event)
-> > +{
-> > +       struct sbiret ret;
-> > +
-> > +       ret =3D sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_CFG_MATCH, c=
-base, cmask,
-> > +                       cflags, event, 0, 0);
-> > +       __GUEST_ASSERT(ret.error =3D=3D 0, "config matching failed %ld\=
-n", ret.error);
-> > +       GUEST_ASSERT((ret.value < RISCV_MAX_PMU_COUNTERS) &&
-> > +                   ((1UL << ret.value) & counter_mask_available));
-> > +
-> > +       return ret.value;
-> > +}
-> > +
-> > +static unsigned long get_num_counters(void)
-> > +{
-> > +       struct sbiret ret;
-> > +
-> > +       ret =3D sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_NUM_COUNTERS, 0, 0, =
-0, 0, 0, 0);
-> > +
-> > +       __GUEST_ASSERT(ret.error =3D=3D 0, "Unable to retrieve number o=
-f counters from SBI PMU");
-> > +
-> > +       __GUEST_ASSERT(ret.value < RISCV_MAX_PMU_COUNTERS,
-> > +                      "Invalid number of counters %ld\n", ret.value);
-> > +
-> > +       return ret.value;
-> > +}
-> > +
-> > +static void update_counter_info(int num_counters)
-> > +{
-> > +       int i =3D 0;
-> > +       struct sbiret ret;
-> > +
-> > +       for (i =3D 0; i < num_counters; i++) {
-> > +               ret =3D sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_GET_=
-INFO, i, 0, 0, 0, 0, 0);
-> > +
-> > +               /* There can be gaps in logical counter indicies*/
-> > +               if (!ret.error)
-> > +                       GUEST_ASSERT_NE(ret.value, 0);
-> > +
-> > +               ctrinfo_arr[i].value =3D ret.value;
-> > +               counter_mask_available |=3D BIT(i);
-> > +       }
-> > +
-> > +       GUEST_ASSERT(counter_mask_available > 0);
-> > +}
-> > +
-> > +static unsigned long read_counter(int idx, union sbi_pmu_ctr_info ctri=
-nfo)
-> > +{
-> > +       unsigned long counter_val =3D 0;
-> > +       struct sbiret ret;
-> > +
-> > +       __GUEST_ASSERT(ctrinfo.type < 2, "Invalid counter type %d", ctr=
-info.type);
-> > +
-> > +       if (ctrinfo.type =3D=3D SBI_PMU_CTR_TYPE_HW) {
-> > +               counter_val =3D pmu_csr_read_num(ctrinfo.csr);
-> > +       } else if (ctrinfo.type =3D=3D SBI_PMU_CTR_TYPE_FW) {
-> > +               ret =3D sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_FW_R=
-EAD, idx, 0, 0, 0, 0, 0);
-> > +               GUEST_ASSERT(ret.error =3D=3D 0);
-> > +               counter_val =3D ret.value;
-> > +       }
-> > +
-> > +       return counter_val;
-> > +}
-> > +
-> > +static void start_counter(unsigned long counter, unsigned long start_f=
-lags,
-> > +                         unsigned long ival)
-> > +{
-> > +       struct sbiret ret;
-> > +
-> > +       ret =3D sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_START, count=
-er, 1, start_flags,
-> > +                       ival, 0, 0);
-> > +       __GUEST_ASSERT(ret.error =3D=3D 0, "Unable to start counter %ld=
-\n", counter);
-> > +}
-> > +
-> > +static void stop_counter(unsigned long counter, unsigned long stop_fla=
-gs)
-> > +{
-> > +       struct sbiret ret;
-> > +
-> > +       ret =3D sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_STOP, counte=
-r, 1, stop_flags,
-> > +                       0, 0, 0);
-> > +       if (stop_flags & SBI_PMU_STOP_FLAG_RESET)
-> > +               __GUEST_ASSERT(ret.error =3D=3D SBI_ERR_ALREADY_STOPPED=
-,
-> > +                              "Unable to stop counter %ld\n", counter)=
-;
-> > +       else
-> > +               __GUEST_ASSERT(ret.error =3D=3D 0, "Unable to stop coun=
-ter %ld error %ld\n",
-> > +                              counter, ret.error);
-> > +}
-> > +
-> > +static void test_pmu_event(unsigned long event)
-> > +{
-> > +       unsigned long counter;
-> > +       unsigned long counter_value_pre, counter_value_post;
-> > +       unsigned long counter_init_value =3D 100;
-> > +
-> > +       counter =3D get_counter_index(0, counter_mask_available, 0, eve=
-nt);
-> > +       counter_value_pre =3D read_counter(counter, ctrinfo_arr[counter=
-]);
-> > +
-> > +       /* Do not set the initial value */
-> > +       start_counter(counter, 0, counter_init_value);
-> > +       dummy_func_loop(10000);
-> > +
-> > +       stop_counter(counter, 0);
-> > +
-> > +       counter_value_post =3D read_counter(counter, ctrinfo_arr[counte=
-r]);
-> > +       __GUEST_ASSERT(counter_value_post > counter_value_pre,
-> > +                      "counter_value_post %lx counter_value_pre %lx\n"=
-,
-> > +                      counter_value_post, counter_value_pre);
-> > +
-> > +       /* Now set the initial value and compare */
-> > +       start_counter(counter, SBI_PMU_START_FLAG_SET_INIT_VALUE, count=
-er_init_value);
-> > +       dummy_func_loop(10000);
-> > +
-> > +       stop_counter(counter, 0);
-> > +
-> > +       counter_value_post =3D read_counter(counter, ctrinfo_arr[counte=
-r]);
-> > +       __GUEST_ASSERT(counter_value_post > counter_init_value,
-> > +                      "counter_value_post %lx counter_init_value %lx\n=
-",
-> > +                      counter_value_post, counter_init_value);
-> > +
-> > +       stop_counter(counter, SBI_PMU_STOP_FLAG_RESET);
-> > +}
-> > +
-> > +static void test_invalid_event(void)
-> > +{
-> > +       struct sbiret ret;
-> > +       unsigned long event =3D 0x1234; /* A random event */
-> > +
-> > +       ret =3D sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_CFG_MATCH, 0=
-,
-> > +                       counter_mask_available, 0, event, 0, 0);
-> > +       GUEST_ASSERT_EQ(ret.error, SBI_ERR_NOT_SUPPORTED);
-> > +}
-> > +
-> > +static void test_pmu_events(int cpu)
-> > +{
-> > +       int num_counters =3D 0;
-> > +
-> > +       /* Get the counter details */
-> > +       num_counters =3D get_num_counters();
-> > +       update_counter_info(num_counters);
-> > +
-> > +       /* Sanity testing for any random invalid event */
-> > +       test_invalid_event();
-> > +
-> > +       /* Only these two events are guranteed to be present */
-> > +       test_pmu_event(SBI_PMU_HW_CPU_CYCLES);
-> > +       test_pmu_event(SBI_PMU_HW_INSTRUCTIONS);
-> > +
-> > +       GUEST_DONE();
-> > +}
-> > +
-> > +static void test_pmu_basic_sanity(int cpu)
-> > +{
-> > +       long out_val =3D 0;
-> > +       bool probe;
-> > +       struct sbiret ret;
-> > +       int num_counters =3D 0, i;
-> > +       unsigned long counter_val =3D -1;
-> > +       union sbi_pmu_ctr_info ctrinfo;
-> > +
-> > +       probe =3D guest_sbi_probe_extension(SBI_EXT_PMU, &out_val);
-> > +       GUEST_ASSERT(probe && out_val =3D=3D 1);
-> > +
-> > +       num_counters =3D get_num_counters();
-> > +
-> > +       for (i =3D 0; i < num_counters; i++) {
-> > +               ret =3D sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_GET_=
-INFO, i,
-> > +                               0, 0, 0, 0, 0);
-> > +
-> > +               /* There can be gaps in logical counter indicies*/
-> > +               if (!ret.error)
-> > +                       GUEST_ASSERT_NE(ret.value, 0);
-> > +               else
-> > +                       continue;
-> > +
-> > +               ctrinfo.value =3D ret.value;
-> > +
-> > +               /* Accesibility check of hardware and read capability o=
-f firmware counters */
-> > +               counter_val =3D read_counter(i, ctrinfo);
-> > +               /* The spec doesn't mandate any initial value. Verify i=
-f a sane value */
-> > +               GUEST_ASSERT_NE(counter_val, -1);
-> > +       }
-> > +
-> > +       GUEST_DONE();
-> > +}
-> > +
-> > +static void run_vcpu(struct kvm_vcpu *vcpu)
-> > +{
-> > +       struct ucall uc;
-> > +
-> > +       vcpu_run(vcpu);
-> > +       switch (get_ucall(vcpu, &uc)) {
-> > +       case UCALL_ABORT:
-> > +               REPORT_GUEST_ASSERT(uc);
-> > +               break;
-> > +       case UCALL_DONE:
-> > +       case UCALL_SYNC:
-> > +               break;
-> > +       default:
-> > +               TEST_FAIL("Unknown ucall %lu", uc.cmd);
-> > +               break;
-> > +       }
-> > +}
-> > +
-> > +void test_vm_destroy(struct kvm_vm *vm)
-> > +{
-> > +       memset(ctrinfo_arr, 0, sizeof(union sbi_pmu_ctr_info) * RISCV_M=
-AX_PMU_COUNTERS);
-> > +       counter_mask_available =3D 0;
-> > +       kvm_vm_free(vm);
-> > +}
-> > +
-> > +static void test_vm_basic_test(void *guest_code)
-> > +{
-> > +       struct kvm_vm *vm;
-> > +       struct kvm_vcpu *vcpu;
-> > +
-> > +       vm =3D vm_create_with_one_vcpu(&vcpu, guest_code);
-> > +       __TEST_REQUIRE(__vcpu_has_ext(vcpu, RISCV_ISA_EXT_REG(KVM_RISCV=
-_SBI_EXT_PMU)),
-> > +                                  "SBI PMU not available, skipping tes=
-t");
-> > +       vm_init_vector_tables(vm);
-> > +       /* Illegal instruction handler is required to verify read acces=
-s without configuration */
-> > +       vm_install_exception_handler(vm, EXC_INST_ILLEGAL, guest_illega=
-l_exception_handler);
-> > +
-> > +       vcpu_init_vector_tables(vcpu);
-> > +       vcpu_args_set(vcpu, 1, 0);
-> > +       run_vcpu(vcpu);
-> > +
-> > +       test_vm_destroy(vm);
-> > +}
-> > +
-> > +static void test_vm_events_test(void *guest_code)
-> > +{
-> > +       struct kvm_vm *vm =3D NULL;
-> > +       struct kvm_vcpu *vcpu =3D NULL;
-> > +
-> > +       vm =3D vm_create_with_one_vcpu(&vcpu, guest_code);
-> > +       __TEST_REQUIRE(__vcpu_has_ext(vcpu, RISCV_ISA_EXT_REG(KVM_RISCV=
-_SBI_EXT_PMU)),
-> > +                                  "SBI PMU not available, skipping tes=
-t");
-> > +       vcpu_args_set(vcpu, 1, 0);
-> > +       run_vcpu(vcpu);
-> > +
-> > +       test_vm_destroy(vm);
-> > +}
-> > +
-> > +int main(void)
-> > +{
-> > +       test_vm_basic_test(test_pmu_basic_sanity);
-> > +       pr_info("SBI PMU basic test : PASS\n");
-> > +
-> > +       test_vm_events_test(test_pmu_events);
-> > +       pr_info("SBI PMU event verification test : PASS\n");
-> > +
-> > +       return 0;
-> > +}
-> > --
-> > 2.34.1
-> >
+I am putting this information in a Google document for future
+reference [2].
+
+Thoughts?
+
+								Thanx, Paul
+
+[1] https://lore.kernel.org/all/Zd4DXTyCf17lcTfq@debian.debian/
+[2] https://docs.google.com/document/d/1kZY6AX-AHRIyYQsvUX6WJxS1LsDK4JA2CHuBnpkrR_U/edit?usp=sharing
 
