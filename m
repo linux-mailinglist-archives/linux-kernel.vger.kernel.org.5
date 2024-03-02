@@ -1,204 +1,138 @@
-Return-Path: <linux-kernel+bounces-89353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89354-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AFF486EF48
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 08:45:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DFD4B86EF4A
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 08:47:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8398AB25332
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 07:45:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64332B21982
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 07:47:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5765E23758;
-	Sat,  2 Mar 2024 07:43:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9478D125D7;
+	Sat,  2 Mar 2024 07:47:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fm123pWv"
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="n/wzdBv/"
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10A3B24A0E;
-	Sat,  2 Mar 2024 07:43:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3931911717
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 07:47:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709365382; cv=none; b=Sl1EU2gNlYpVyZ4vv98ffrFr1xrbhqkp5SP5sDjIAWZX8lMvtDZ9drRgslnKL1dV02rBjWDpQmmB9hKAPjmwkUopHopRm2fvxRNQYQsnC5cJAhRUtBvqbqZTabdXcgC2shDuDKuRKdLvUL11tXzuLoIzvz3Zjr1Q5+zvOg8N/H0=
+	t=1709365663; cv=none; b=hosLpFb2jnjmc3YW1HE6WnBmFkQFo6VZeozXvsBp7gUalpcuxvP2do/6Lf/3uwf73cSufk6FfLCwHwXez8Ubq4IM6shE6SfvmlL8IyDRwUb45JkmAFQ4joPIz49msl8HPpxYJhfV0QhhaDX0wuF+iFS+16KXnGz1vwhEIEQhoeU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709365382; c=relaxed/simple;
-	bh=4GgXxZs/mglWIRYd9/bl71jA6REtfHyAlcztG0gdRX8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CudLb6oUBEuYQ+8IoXDgfdMs4qGYUgKR+IixDJQyEZ4d9HIgaIl/fRzIp3D+pngXwQkdxW2JA/Gk/CxLZ9eZus+SxM5v+Q0Eup/qAVgqKxlTK9oSn30kpcw1Mr+EybkW73tWvtiM0JocFCUnlCtYyRO6WBOdHqR1wBB/LcILUYY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fm123pWv; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6e5d7f1f15bso863636b3a.2;
-        Fri, 01 Mar 2024 23:43:00 -0800 (PST)
+	s=arc-20240116; t=1709365663; c=relaxed/simple;
+	bh=HdbsxiJhiXPHCyAoIFfaT7i4095x8iDZOuT2JzlDoBc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=geczd8F9HBNSfeoXVVo9fNDd51/EL1+d49hYMqzqCT17qTd6i8A/veJFzdzwh/VNBrfA1bCR2SJ2BWCJgmA6RWcx4cPrn4OJMiMZl4kgc818Ec6Dedm5ltkdPgzrQGEM/4ap07Yx0VctTAkJGe4r9bRjfkA+h9WRQxOui/3O1Kg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=n/wzdBv/; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-412da818207so159505e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 23:47:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709365379; x=1709970179; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iROnnUQAIrn8DnCE9YGkqkSmP3qnk0ncEloJYBFiPVY=;
-        b=fm123pWvIxbYCJCah26aQGuboZ93+hVunMqnSIXQ4lr3fLAEi6Yn+uKS64CA80Z/dO
-         PoBV0+p088i8HXpKkKMWoA04fTRYDMivD8n+U7VeMCJj0vTIBg4540Nxz3tBjf7amHlQ
-         bOeOudMdAbGR92DdyVf+KhRXetd2yULG5rIRYfovLLemSgYrxxoiL1XpDQMaXZbUa9pT
-         Mh8Iq1MMkYU9tSsPVzjw5o5lLzVIWmDVhMWY1OVxk39FGnwA4+NwwkYk6fDcEnUjqovW
-         88ZBbGJmP+YDBcSSWqxA2Vl3eVUYniLJAMt552l93nAuwBVot/C5GTxEpjquvBc+41jn
-         6LZg==
+        d=ventanamicro.com; s=google; t=1709365660; x=1709970460; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y+Ib+i/7ul2383kueBaIr1KAZdgCE/S8URkt4mrWqYE=;
+        b=n/wzdBv/vRTE+VfO+6JIyiITqK2ST0LxYXZ0bW2qwxU6VJXlYTMk8TpY+uYuaE1sA/
+         WFmkmW5SH8JAWMHkslnUXx4inPxPHkHtSo61pJF4NC5d9jVXGSl4V1wrJLO0nGXlIyPr
+         svWFbcQw7+p30ettygHQlCUeEDqk4UOISLfWAfHTKdmtuVkWKmKvESypsWTS32NMNNXn
+         vVfmLdZrOiUpXFL0zBn+Fjpxtyl/Lvqmd0VFbAwFDwW1LE/zjKM8cAzxnIj7SuNTXcW6
+         nqK+2pcB5jgfEZ15HLZmpzuC46GxgqAaR4K5Ng0v3Fqwugse4ysDWir9ZsxhxyYRTYF5
+         Kutw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709365379; x=1709970179;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iROnnUQAIrn8DnCE9YGkqkSmP3qnk0ncEloJYBFiPVY=;
-        b=V8XgKrkDOpE7qP8xwGrQortvzhIj/QMeCBP3cq2HI0WXm+2URaeeSR+D2h2QXHOwPd
-         ngP65cpSWfTKpLn8F11gVWdTbVKEKjNXQFghYLIO3J7mOrmMAvIS9ZxXby1gYWn2e+w4
-         CmjKk9yoApZLI0mDbKnuPcygOiOUpAQR6e3no8MKnj7EaHyT4P0MfO6Rk2N9fWOAEgKj
-         hC3MR5bAgJTU5ZxmpercpbherJFyYD4v7doGJbePwIjhGsajPjjrWjHWJilm/tx/DCuK
-         U07kcmWFrWXVPKyWujvQ4CBUVTIxiB2EVDSgzO7WAbPEsWVdNdjMP1tMzH1En4WOiIi0
-         eOkQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVl1Ncu8T9rDMt7mqpgGvUf9DjWSi1tI1g+wSSEiNfaNZiyhVSdGRAWG2NoD/WcD9UkdWU3PnhbxVXPf/Q2sZ8m3Mvbpee2tCzJEkhpM56U5oOTL2yscaswgFZawX2OvivcZRJvtjH+vw==
-X-Gm-Message-State: AOJu0YzS74zH2fqTuR5WGeM2i7p+bAisXjOjENEowzQoL6vj09+pXCir
-	znGXN59lK89zyUadzIM276PMCjxmoK0ADuif4Gygl0rP0cBZLPlaa9dBQ1K4
-X-Google-Smtp-Source: AGHT+IFPpIE1yMNr/ZCVoN5pvHpYmcwWC5rH1/HSKdLic7af17QTNikWfEa+xeGlN1Lyzwgs/tWXjA==
-X-Received: by 2002:a05:6a00:852:b0:6e5:736e:cc8 with SMTP id q18-20020a056a00085200b006e5736e0cc8mr4513372pfk.33.1709365379431;
-        Fri, 01 Mar 2024 23:42:59 -0800 (PST)
-Received: from dw-tp.. ([49.205.218.89])
-        by smtp.gmail.com with ESMTPSA id x11-20020aa784cb000000b006e45c5d7720sm4138206pfn.93.2024.03.01.23.42.55
+        d=1e100.net; s=20230601; t=1709365660; x=1709970460;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Y+Ib+i/7ul2383kueBaIr1KAZdgCE/S8URkt4mrWqYE=;
+        b=iRmr+2IFoMrE/RfXvH/PAZxHVxce3YL5SYbZCwkBJuQttbbvcOXNqm1MQSvB7fIkUN
+         VqZOqQKDCJFPh5YeYAPN6GYEuvszkbGKP8IMfJ6Oo8bt0yRuLBwgVTSlFY4OjYp+x1Y5
+         k5IVHaaC8H5qp2bJ416SMARCE1pvEnbVKKwwnj1DnSrgZHs5BXxzZBPN11aPBWZhPMbb
+         8vAzCn1PPvla0rK/gklFJBj956QSxQmxlFw9ObAOzdUgb45znCe9THJ1rf3HZ2KDQu7o
+         /vgX2tn8hfLsCG0XQK+y5Kc6h9fCLGvS5AevJ83uzJu0NLraUs7LivcvHX29IHJZCeoP
+         d9BQ==
+X-Gm-Message-State: AOJu0YxT5712aNsCK3Zn+X2LQvjY0ruUH8NTtVZ/JAm8bFz5ynXTZhdm
+	nE1iarutEsH0eKlhmbJQnbok0MQDeKlkZnx2H/HR3QmAn0t3LCJuXo+bl8xZQpwXFharSe1x2Tx
+	K
+X-Google-Smtp-Source: AGHT+IEVoW7uokoz89spH9xj6f+lmKJjEsvkGZk/n4AsgiYDjM2F+XJU0nnyceOxTlFgpo153Zwm1Q==
+X-Received: by 2002:a05:600c:3107:b0:412:b8cf:150b with SMTP id g7-20020a05600c310700b00412b8cf150bmr3321506wmo.10.1709365660476;
+        Fri, 01 Mar 2024 23:47:40 -0800 (PST)
+Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
+        by smtp.gmail.com with ESMTPSA id l33-20020a05600c1d2100b00412ca88537dsm3348026wms.0.2024.03.01.23.47.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 23:42:58 -0800 (PST)
-From: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-To: linux-fsdevel@vger.kernel.org,
-	linux-ext4@vger.kernel.org
-Cc: Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-	Jan Kara <jack@suse.cz>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Matthew Wilcox <willy@infradead.org>,
-	"Darrick J . Wong" <djwong@kernel.org>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	John Garry <john.g.garry@oracle.com>,
-	linux-kernel@vger.kernel.org,
-	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Subject: [RFC 9/9] e2fsprogs/chattr: Supports atomic writes attribute
-Date: Sat,  2 Mar 2024 13:12:06 +0530
-Message-ID: <646de2f0f9ba8fb8a486dc388ae0748999d1ed2d.1709356319.git.ritesh.list@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1709356594.git.ritesh.list@gmail.com>
-References: <cover.1709356594.git.ritesh.list@gmail.com>
+        Fri, 01 Mar 2024 23:47:39 -0800 (PST)
+Date: Sat, 2 Mar 2024 08:47:33 +0100
+From: Andrew Jones <ajones@ventanamicro.com>
+To: Atish Patra <atishp@rivosinc.com>
+Cc: linux-kernel@vger.kernel.org, Anup Patel <anup@brainfault.org>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alexghiti@rivosinc.com>, 
+	Atish Patra <atishp@atishpatra.org>, Conor Dooley <conor.dooley@microchip.com>, 
+	Guo Ren <guoren@kernel.org>, Icenowy Zheng <uwu@icenowy.me>, kvm-riscv@lists.infradead.org, 
+	kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	Mark Rutland <mark.rutland@arm.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Shuah Khan <shuah@kernel.org>, Will Deacon <will@kernel.org>
+Subject: Re: [PATCH v4 06/15] RISC-V: KVM: No need to update the counter
+ value during reset
+Message-ID: <20240302-a82f4ba5d90bc3d85f3ed83b@orel>
+References: <20240229010130.1380926-1-atishp@rivosinc.com>
+ <20240229010130.1380926-7-atishp@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240229010130.1380926-7-atishp@rivosinc.com>
 
-This adds 'W' which is atomic write attribute to chattr.
+On Wed, Feb 28, 2024 at 05:01:21PM -0800, Atish Patra wrote:
+> The virtual counter value is updated during pmu_ctr_read. There is no need
+> to update it in reset case. Otherwise, it will be counted twice which is
+> incorrect.
+> 
+> Fixes: 0cb74b65d2e5 ("RISC-V: KVM: Implement perf support without sampling")
+> Reviewed-by: Anup Patel <anup@brainfault.org>
+> Signed-off-by: Atish Patra <atishp@rivosinc.com>
+> ---
+>  arch/riscv/kvm/vcpu_pmu.c | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/riscv/kvm/vcpu_pmu.c b/arch/riscv/kvm/vcpu_pmu.c
+> index 86391a5061dd..b1574c043f77 100644
+> --- a/arch/riscv/kvm/vcpu_pmu.c
+> +++ b/arch/riscv/kvm/vcpu_pmu.c
+> @@ -397,7 +397,6 @@ int kvm_riscv_vcpu_pmu_ctr_stop(struct kvm_vcpu *vcpu, unsigned long ctr_base,
+>  {
+>  	struct kvm_pmu *kvpmu = vcpu_to_pmu(vcpu);
+>  	int i, pmc_index, sbiret = 0;
+> -	u64 enabled, running;
+>  	struct kvm_pmc *pmc;
+>  	int fevent_code;
+>  
+> @@ -432,12 +431,9 @@ int kvm_riscv_vcpu_pmu_ctr_stop(struct kvm_vcpu *vcpu, unsigned long ctr_base,
+>  				sbiret = SBI_ERR_ALREADY_STOPPED;
+>  			}
+>  
+> -			if (flags & SBI_PMU_STOP_FLAG_RESET) {
+> -				/* Relase the counter if this is a reset request */
+> -				pmc->counter_val += perf_event_read_value(pmc->perf_event,
+> -									  &enabled, &running);
+> +			if (flags & SBI_PMU_STOP_FLAG_RESET)
+> +				/* Release the counter if this is a reset request */
+>  				kvm_pmu_release_perf_event(pmc);
+> -			}
+>  		} else {
+>  			sbiret = SBI_ERR_INVALID_PARAM;
+>  		}
+> -- 
+> 2.34.1
+>
 
-Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
----
- lib/e2p/pf.c         |  1 +
- lib/ext2fs/ext2_fs.h |  2 +-
- misc/chattr.1.in     | 18 ++++++++++++++----
- misc/chattr.c        |  3 ++-
- 4 files changed, 18 insertions(+), 6 deletions(-)
-
-diff --git a/lib/e2p/pf.c b/lib/e2p/pf.c
-index 81e3bb26..9b311477 100644
---- a/lib/e2p/pf.c
-+++ b/lib/e2p/pf.c
-@@ -45,6 +45,7 @@ static struct flags_name flags_array[] = {
- 	{ EXT4_EXTENTS_FL, "e", "Extents" },
- 	{ FS_NOCOW_FL, "C", "No_COW" },
- 	{ FS_DAX_FL, "x", "DAX" },
-+	{ FS_ATOMICWRITES_FL, "W", "ATOMIC_WRITES" },
- 	{ EXT4_CASEFOLD_FL, "F", "Casefold" },
- 	{ EXT4_INLINE_DATA_FL, "N", "Inline_Data" },
- 	{ EXT4_PROJINHERIT_FL, "P", "Project_Hierarchy" },
-diff --git a/lib/ext2fs/ext2_fs.h b/lib/ext2fs/ext2_fs.h
-index 0fc9c09a..f9dcf71f 100644
---- a/lib/ext2fs/ext2_fs.h
-+++ b/lib/ext2fs/ext2_fs.h
-@@ -346,7 +346,7 @@ struct ext2_dx_tail {
- #define EXT4_EA_INODE_FL	        0x00200000 /* Inode used for large EA */
- /* EXT4_EOFBLOCKS_FL 0x00400000 was here */
- #define FS_NOCOW_FL			0x00800000 /* Do not cow file */
--#define EXT4_SNAPFILE_FL		0x01000000  /* Inode is a snapshot */
-+#define FS_ATOMICWRITES_FL		0x01000000  /* Inode can do atomic writes */
- #define FS_DAX_FL			0x02000000 /* Inode is DAX */
- #define EXT4_SNAPFILE_DELETED_FL	0x04000000  /* Snapshot is being deleted */
- #define EXT4_SNAPFILE_SHRUNK_FL		0x08000000  /* Snapshot shrink has completed */
-diff --git a/misc/chattr.1.in b/misc/chattr.1.in
-index 50c54e7d..22757123 100644
---- a/misc/chattr.1.in
-+++ b/misc/chattr.1.in
-@@ -26,7 +26,7 @@ changes the file attributes on a Linux file system.
- The format of a symbolic
- .I mode
- is
--.BR +-= [ aAcCdDeFijmPsStTux ].
-+.BR +-= [ aAcCdDeFijmPsStTuxW ].
- .PP
- The operator
- .RB ' + '
-@@ -38,7 +38,7 @@ causes them to be removed; and
- causes them to be the only attributes that the files have.
- .PP
- The letters
--.RB ' aAcCdDeFijmPsStTux '
-+.RB ' aAcCdDeFijmPsStTuxW '
- select the new attributes for the files:
- append only
- .RB ( a ),
-@@ -74,8 +74,10 @@ top of directory hierarchy
- .RB ( T ),
- undeletable
- .RB ( u ),
--and direct access for files
--.RB ( x ).
-+direct access for files
-+.RB ( x ),
-+and atomic writes for files.
-+.RB ( W ).
- .PP
- The following attributes are read-only, and may be listed by
- .BR lsattr (1)
-@@ -263,6 +265,14 @@ directory.  If an existing directory has contained some files and
- subdirectories, modifying the attribute on the parent directory doesn't
- change the attributes on these files and subdirectories.
- .TP
-+.B W
-+The 'W' attribute can only be set on a regular file. A file which has this
-+attribute set can do untorn writes i.e. if an atomic write is requested by
-+user with proper alignment and atomic flags set (such as RWF_ATOMIC), then
-+a subsequent read to that block(s) will either read entire new data or entire
-+old data (in case of a power failure). The block(s) written can never contain
-+mix of both.
-+.TP
- .B V
- A file with the 'V' attribute set has fs-verity enabled.  It cannot be
- written to, and the file system will automatically verify all data read
-diff --git a/misc/chattr.c b/misc/chattr.c
-index c7382a37..24db790e 100644
---- a/misc/chattr.c
-+++ b/misc/chattr.c
-@@ -86,7 +86,7 @@ static unsigned long sf;
- static void usage(void)
- {
- 	fprintf(stderr,
--		_("Usage: %s [-RVf] [-+=aAcCdDeijPsStTuFx] [-p project] [-v version] files...\n"),
-+		_("Usage: %s [-RVf] [-+=aAcCdDeijPsStTuFxW] [-p project] [-v version] files...\n"),
- 		program_name);
- 	exit(1);
- }
-@@ -114,6 +114,7 @@ static const struct flags_char flags_array[] = {
- 	{ EXT2_TOPDIR_FL, 'T' },
- 	{ FS_NOCOW_FL, 'C' },
- 	{ FS_DAX_FL, 'x' },
-+	{ FS_ATOMICWRITES_FL, 'W' },
- 	{ EXT4_CASEFOLD_FL, 'F' },
- 	{ 0, 0 }
- };
---
-2.39.2
-
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
 
