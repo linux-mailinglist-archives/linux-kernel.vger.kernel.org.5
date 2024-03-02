@@ -1,220 +1,161 @@
-Return-Path: <linux-kernel+bounces-89552-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89551-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4BBA86F1E9
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 19:39:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64E7E86F1E0
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 19:38:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 75E751F21C33
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 18:39:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F4F1282F9C
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 18:38:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FD5936B02;
-	Sat,  2 Mar 2024 18:39:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58C6936AEB;
+	Sat,  2 Mar 2024 18:38:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="IyNRGGdk"
-Received: from smtp.smtpout.orange.fr (smtp-20.smtpout.orange.fr [80.12.242.20])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39FC536B04
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 18:39:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.20
+	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="aVO2U4iy"
+Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5755374DB;
+	Sat,  2 Mar 2024 18:38:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709404743; cv=none; b=U0l8XCtv3OKKctKtBseWeQUv3EXJJlyoNVV4wl7u1m5IDhbBNrZgPkML2aFgtBehKI73+J88oAgpbWWJiUcY8B0Nc/LdpwwH7AXeRL+AK8TnNOy4w8HSg0VQDMaZ9cTjpDaBRClX86byM2DT+U5r7fLabZX3v84YRXqMMKJ5dmA=
+	t=1709404707; cv=none; b=ke6wENniZRfZvboOzvhNZzymIPULypRi8xeYVDQWekXnhjbQnRf+eaDbZdfMKcSAH4x9Nl+CAGDx20e6+9QvQn13m3xpnepCTAge1wrawu0QVBDBaqRYkF03TDx7skSqPBohiarmHqM2kFsGNIXz74oKUndwEIXv0j+i3igqrBQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709404743; c=relaxed/simple;
-	bh=Jcr/+AJ6YoN/mVbX0QObePyIKSu1yomlBHR+PE564ks=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UQCwBaSiAcxAUmKoKgvjP2dC2zlXTFHGgdmN+dQyoISK+wcXw7+j6FdEj+VS8+PJpwgXREPGRr0OAfqsHccIqK3UyPyi8aaDw4j5rk1z0gICr6LyKtgRc3dd0hkeSdJ5Wm96w7cVd7IM5efYlOmfYSWudD/Lnk6qK6+HtlPBOlc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=IyNRGGdk; arc=none smtp.client-ip=80.12.242.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from [192.168.1.18] ([92.140.202.140])
-	by smtp.orange.fr with ESMTPA
-	id gUF1r9tB5hB2WgUF1rzJz1; Sat, 02 Mar 2024 19:37:50 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1709404670;
-	bh=4WSTihlA8apdaaO/0BzgYPCsmCNNnVvwhlLXTpRmpLU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=IyNRGGdk4u/WLVlIqptD3EGHPIVWNMQ85mJNnIaiNWeI1UlO71kFPNRVoicmLrL8/
-	 lVErBkAqiJcaXsIvMj1PEvhTHXD+LWg5FEg0NaW0csuctQxsE/Uj8ma7hubHCvwu7A
-	 rxTiXHPbXpwgE6ZiERKhD+ncUjh70yY0vcdjcjfevkXl/1fTrnWlD8eonKp4t/q+ub
-	 5Z3IcAME3MzoEdfPDlaIK6/f1jhNM8qTWZF2bsa5H8+mb6sfDQPR0pWCmmR1IHQgqF
-	 +az1AWweAEZyWL/jk7qIPe75NXqNpGBPqiEu09qxnq+EqPDsPxFI3icF8mVlIRIYZT
-	 kfS4jfL9Hb6Hw==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 02 Mar 2024 19:37:50 +0100
-X-ME-IP: 92.140.202.140
-Message-ID: <e85ad80f-af7d-4eaf-9d14-dff13451f7e5@wanadoo.fr>
-Date: Sat, 2 Mar 2024 19:37:47 +0100
+	s=arc-20240116; t=1709404707; c=relaxed/simple;
+	bh=DxMieUdGbPoFEJAzv8g2IGm2lj3iuTaFDdXF9YJKqnY=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=fxPBrjNd3wVXtKPtD9dRoZpI3UmT+DTQunrhBVWZfWyxU1oBaB1rOU+NsKzB88WNaPSPFLcM8rYJrALMJQ5FbsFElecs4xTyRToPSqKstxLgxP2bb0FHEFxISItHCyxDd+a+l0DMLQ+uNiHdu37EUbsIAuok86fDSwoSl1CGRLg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=aVO2U4iy; arc=none smtp.client-ip=116.203.91.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 3/4] usb: dwc3: exynos: Use
- devm_regulator_bulk_get_enable() helper function
-Content-Language: en-MW
-To: Anand Moon <linux.amoon@gmail.com>
-Cc: Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Alim Akhtar <alim.akhtar@samsung.com>, linux-usb@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+	t=1709404695;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=g8ZlwO6znWmhb0i3vL98mOnE4UFnlmkSb9Ze7dDbIvw=;
+	b=aVO2U4iyixRmN8pxd49qgP99L5UhCddPgPtNq8RIiNWeg6l8r1BUftxz9RgrDpQT778eCk
+	ks4k3prN2Bb8e7SZNg+w5ypo/sTvkfwBIzdbdMMRnd75FLxasKhkWTxBDjmyxv0D6v/nP8
+	fsqRR5WQaDPso4IYQv/BYzq6/3z8qvYsCko3wfdpzbZ8+wAIOvogabY5hvTnoUxOJ2jdxG
+	N/HoC4I9ozA1MwXONMEfC0tevvu8BExiFIHDYIDlkPVEPek1FogRQkva+xLIB5PYVOsmlD
+	SecLkbeFJ0N+1Mskhvn5/yD+PEqYk7zO8sN5Cr40zOTtnr3DdInkrptklCPQQw==
+Date: Sat, 02 Mar 2024 19:38:14 +0100
+From: Dragan Simic <dsimic@manjaro.org>
+To: Heiko Stuebner <heiko@sntech.de>
+Cc: Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Alexey Charkov <alchark@gmail.com>, Daniel Lezcano
+ <daniel.lezcano@linaro.org>, Viresh Kumar <viresh.kumar@linaro.org>, Chen-Yu
+ Tsai <wens@kernel.org>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
  linux-kernel@vger.kernel.org
-References: <20240301193831.3346-1-linux.amoon@gmail.com>
- <20240301193831.3346-4-linux.amoon@gmail.com>
- <52158bf6-16fe-4ce2-b9b6-bbc6550a6e14@wanadoo.fr>
- <CANAwSgTCaSSMN2QCw5fr=RBp0WwWaLuebzQDO=scnABNFNctJQ@mail.gmail.com>
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <CANAwSgTCaSSMN2QCw5fr=RBp0WwWaLuebzQDO=scnABNFNctJQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v3 1/5] arm64: dts: rockchip: enable built-in thermal
+ monitoring on RK3588
+In-Reply-To: <6279836.31r3eYUQgx@phil>
+References: <20240229-rk-dts-additions-v3-0-6afe8473a631@gmail.com>
+ <20240229-rk-dts-additions-v3-1-6afe8473a631@gmail.com>
+ <6279836.31r3eYUQgx@phil>
+Message-ID: <3f73d847fbe9d7f6dd05802eb7e47d49@manjaro.org>
+X-Sender: dsimic@manjaro.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
 
-Le 02/03/2024 à 17:48, Anand Moon a écrit :
-> Hi Christophe,
-> 
-> On Sat, 2 Mar 2024 at 21:20, Christophe JAILLET
-> <christophe.jaillet@wanadoo.fr> wrote:
->>
->> Le 01/03/2024 à 20:38, Anand Moon a écrit :
->>> Use devm_regulator_bulk_get_enable() instead of open coded
->>> 'devm_regulator_get(), regulator_enable(), regulator_disable().
->>>
->>> Signed-off-by: Anand Moon <linux.amoon@gmail.com>
->>> ---
->>>    drivers/usb/dwc3/dwc3-exynos.c | 49 +++-------------------------------
->>>    1 file changed, 4 insertions(+), 45 deletions(-)
->>>
->>> diff --git a/drivers/usb/dwc3/dwc3-exynos.c b/drivers/usb/dwc3/dwc3-exynos.c
->>> index 5d365ca51771..7c77f3c69825 100644
->>> --- a/drivers/usb/dwc3/dwc3-exynos.c
->>> +++ b/drivers/usb/dwc3/dwc3-exynos.c
->>> @@ -32,9 +32,6 @@ struct dwc3_exynos {
->>>        struct clk              *clks[DWC3_EXYNOS_MAX_CLOCKS];
->>>        int                     num_clks;
->>>        int                     suspend_clk_idx;
->>> -
->>> -     struct regulator        *vdd33;
->>> -     struct regulator        *vdd10;
->>>    };
->>>
->>>    static int dwc3_exynos_probe(struct platform_device *pdev)
->>> @@ -44,6 +41,7 @@ static int dwc3_exynos_probe(struct platform_device *pdev)
->>>        struct device_node      *node = dev->of_node;
->>>        const struct dwc3_exynos_driverdata *driver_data;
->>>        int                     i, ret;
->>> +     static const char * const regulators[] = { "vdd33", "vdd10" };
->>>
->>>        exynos = devm_kzalloc(dev, sizeof(*exynos), GFP_KERNEL);
->>>        if (!exynos)
->>> @@ -78,27 +76,9 @@ static int dwc3_exynos_probe(struct platform_device *pdev)
->>>        if (exynos->suspend_clk_idx >= 0)
->>>                clk_prepare_enable(exynos->clks[exynos->suspend_clk_idx]);
->>>
->>> -     exynos->vdd33 = devm_regulator_get(dev, "vdd33");
->>> -     if (IS_ERR(exynos->vdd33)) {
->>> -             ret = PTR_ERR(exynos->vdd33);
->>> -             goto vdd33_err;
->>> -     }
->>> -     ret = regulator_enable(exynos->vdd33);
->>> -     if (ret) {
->>> -             dev_err(dev, "Failed to enable VDD33 supply\n");
->>> -             goto vdd33_err;
->>> -     }
->>> -
->>> -     exynos->vdd10 = devm_regulator_get(dev, "vdd10");
->>> -     if (IS_ERR(exynos->vdd10)) {
->>> -             ret = PTR_ERR(exynos->vdd10);
->>> -             goto vdd10_err;
->>> -     }
->>> -     ret = regulator_enable(exynos->vdd10);
->>> -     if (ret) {
->>> -             dev_err(dev, "Failed to enable VDD10 supply\n");
->>> -             goto vdd10_err;
->>> -     }
->>> +     ret = devm_regulator_bulk_get_enable(dev, ARRAY_SIZE(regulators), regulators);
->>> +     if (ret)
->>> +             return dev_err_probe(dev, ret, "Failed to enable regulators\n");
->>>
->>>        if (node) {
->>>                ret = of_platform_populate(node, NULL, NULL, dev);
->>> @@ -115,10 +95,6 @@ static int dwc3_exynos_probe(struct platform_device *pdev)
->>>        return 0;
->>>
->>>    populate_err:
->>> -     regulator_disable(exynos->vdd10);
->>> -vdd10_err:
->>> -     regulator_disable(exynos->vdd33);
->>> -vdd33_err:
->>>        for (i = exynos->num_clks - 1; i >= 0; i--)
->>>                clk_disable_unprepare(exynos->clks[i]);
->>>
->>> @@ -140,9 +116,6 @@ static void dwc3_exynos_remove(struct platform_device *pdev)
->>>
->>>        if (exynos->suspend_clk_idx >= 0)
->>>                clk_disable_unprepare(exynos->clks[exynos->suspend_clk_idx]);
->>> -
->>> -     regulator_disable(exynos->vdd33);
->>> -     regulator_disable(exynos->vdd10);
->>>    }
->>>
->>>    static const struct dwc3_exynos_driverdata exynos5250_drvdata = {
->>> @@ -196,9 +169,6 @@ static int dwc3_exynos_suspend(struct device *dev)
->>>        for (i = exynos->num_clks - 1; i >= 0; i--)
->>>                clk_disable_unprepare(exynos->clks[i]);
->>>
->>> -     regulator_disable(exynos->vdd33);
->>> -     regulator_disable(exynos->vdd10);
->>
->> Hi,
->>
->> Same here, I don't think that removing regulator_[en|dis]able from the
->> suspend and resume function is correct.
->>
->> The goal is to stop some hardware when the system is suspended, in order
->> to save some power.
-> Ok,
->>
->> Why did you removed it?
-> 
-> As per the description of the function  devm_regulator_bulk_get_enable
-> 
-> * This helper function allows drivers to get several regulator
->   * consumers in one operation with management, the regulators will
->   * automatically be freed when the device is unbound.  If any of the
->   * regulators cannot be acquired then any regulators that were
->   * allocated will be freed before returning to the caller.
+Hello Heiko,
 
-The code in suspend/resume is not about freeing some resources. It is 
-about enabling/disabling some hardware to save some power.
-
-Think to the probe/remove functions as the software in the kernel that 
-knows how to handle some hardawre, and the suspend/resume as the on/off 
-button to power-on and off the electrical chips.
-
-When the system is suspended, the software is still around. But some 
-hardware can be set in a low consumption mode to save some power.
-
-IMHO, part of the code you removed changed this behaviour and increase 
-the power consumption when the system is suspended.
-
-CJ
-
+On 2024-03-02 12:25, Heiko Stuebner wrote:
+> Am Donnerstag, 29. Februar 2024, 20:26:32 CET schrieb Alexey Charkov:
+>> Include thermal zones information in device tree for RK3588 variants.
+>> 
+>> This also enables the TSADC controller unconditionally on all boards
+>> to ensure that thermal protections are in place via throttling and
+>> emergency reset, once OPPs are added to enable CPU DVFS.
+>> 
+>> The default settings (using CRU as the emergency reset mechanism)
+>> should work on all boards regardless of their wiring, as CRU resets
+>> do not depend on any external components. Boards that have the TSHUT
+>> signal wired to the reset line of the PMIC may opt to switch to GPIO
+>> tshut mode instead (rockchip,hw-tshut-mode = <1>;)
+>> 
+>> It seems though that downstream kernels don't use that, even for
+>> those boards where the wiring allows for GPIO based tshut, such as
+>> Radxa Rock 5B [1], [2], [3]
+>> 
+>> [1] 
+>> https://github.com/radxa/kernel/blob/stable-5.10-rock5/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts#L540
+>> [2] 
+>> https://github.com/radxa/kernel/blob/stable-5.10-rock5/arch/arm64/boot/dts/rockchip/rk3588s.dtsi#L5433
+>> [3] https://dl.radxa.com/rock5/5b/docs/hw/radxa_rock_5b_v1423_sch.pdf 
+>> page 11 (TSADC_SHUT_H)
+>> 
+>> Signed-off-by: Alexey Charkov <alchark@gmail.com>
+>> ---
+>>  arch/arm64/boot/dts/rockchip/rk3588s.dtsi | 176 
+>> +++++++++++++++++++++++++++++-
+>>  1 file changed, 175 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi 
+>> b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+>> index 36b1b7acfe6a..9bf197358642 100644
+>> --- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+>> +++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
+>> @@ -10,6 +10,7 @@
+>>  #include <dt-bindings/reset/rockchip,rk3588-cru.h>
+>>  #include <dt-bindings/phy/phy.h>
+>>  #include <dt-bindings/ata/ahci.h>
+>> +#include <dt-bindings/thermal/thermal.h>
+>> 
+>>  / {
+>>  	compatible = "rockchip,rk3588";
+>> @@ -2225,7 +2226,180 @@ tsadc: tsadc@fec00000 {
+>>  		pinctrl-1 = <&tsadc_shut>;
+>>  		pinctrl-names = "gpio", "otpout";
+>>  		#thermal-sensor-cells = <1>;
+>> -		status = "disabled";
+>> +		status = "okay";
+>> +	};
 > 
-> [0] https://elixir.bootlin.com/linux/latest/source/drivers/regulator/devres.c#L330
+> so I've skimmed over the general discussion, though don't have a hard
+> opinion in either direction yet. Still there are some low-hanging 
+> fruit:
 > 
-> I have tested with rtc suspend resume and did not find any issue with
-> this.patch.
-> 
->>
->> CJ
->>
-> Thanks
-> -Anand
-> 
-> 
+> - having the thermal-zones addition in a separate patch would allow to
+>   merge the obvious stuff, while this discussion is still ongoing
 
+Very good suggestion.
+
+> - status=okay in a soc dtsi is wrong, because okay is the default 
+> status
+>   so if anything the status property should be removed
+> 
+> In general I'm not that much of a fan of things just working 
+> implicitly.
+> So somehow, when someone submits a board devicetree, I expect them to
+> having ensured stuff is enabled somewhat ok. So even seeing a simple
+> 
+> 	&tsadc {
+> 		status = "okay"
+> 	};
+> 
+> suggests that they have at least noticed the existence of thermal 
+> stuff.
+
+I agree that having such additional "signed-off markers", so to speak, 
+in
+a board dts is quite assuring.  I mean, someone implementing a new dts 
+file
+for a new board should simply know what needs to be done there, and 
+there
+should be no excuses for not checking the thermal throttling stuff.
 
