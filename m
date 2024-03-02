@@ -1,105 +1,258 @@
-Return-Path: <linux-kernel+bounces-89594-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89595-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD2D086F26E
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 21:55:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E20686F273
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 21:59:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 18C60B22CC5
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 20:55:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F0481C20BCB
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 20:59:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D9063AC16;
-	Sat,  2 Mar 2024 20:55:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 337C540C09;
+	Sat,  2 Mar 2024 20:58:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="MkrmYQ8b"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="UgMqkU+n"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB96B290A
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 20:55:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C5BD21100;
+	Sat,  2 Mar 2024 20:58:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709412931; cv=none; b=GhJZYZhf3ZxCNXLzRcQatGCp+5UXxiFseNEiYYysKQf312SGHawIR3x6yF0hp96Z5POn2WrJzaFIwk2nHMNA7X5yym4D5vRTftgn8QGukpj4RvK0uE8TreH19zJl/KY9G2ySXgS6ZF0bwRurmjKTPAt0j4tdIuA8MJs9kztn45g=
+	t=1709413136; cv=none; b=RL1W7TPOlvVdeq/i/17WErlKCUGdjYrqa7P5sYJAijEmhJH9+TOmh/pTseTTF/giw3AhOhcJ0py9e9CX17TpioPQNRImyyIG5EMRcZp8nBjXFA4yxmv6jvE97SpOe3cP6+uFGW3dLCRseH3QE/b/pQJkjIMChrGW+oluT3arx3c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709412931; c=relaxed/simple;
-	bh=/QVxWrdYsSXRBS7b8mXmlIY/6mM9aW5HigWoXPzuTn0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZRQJwVMp/vdxN/YLk09NCkdShAZt2sUSgp/64zD3mMvLuvnaRnlBv8qrikenkltKad0q82NLEqcrAe3pD55XeiPqu3+lz8IXVm6bFDn8SYAwOTZVp6LwzQ+io2yzwQYC+ADGJCCzLmVSncGeZgFZ4TohvaJ4+VWg7nqzwRiQSFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=MkrmYQ8b; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a3ddc13bbb3so727900966b.0
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Mar 2024 12:55:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1709412928; x=1710017728; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Obv4uKrlrUZYJu+9I1ptVHxDKBrZGgW7K/LB2+1toSc=;
-        b=MkrmYQ8bHXOGf1w9/cJiHGXOwDvjm17kwf8Qcp7yLAxOJoPUI/bXvDtRZo4RsZcfO0
-         oTfqD+5A+GXZKWzuNIfdYUBosAmyG+VSsCJGBN50aesQy4pIUeM9vnCOj00r+DYN3PhH
-         05N0HOhgMRVCgDq089S5IMtPhC2yrnM2xcO3c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709412928; x=1710017728;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Obv4uKrlrUZYJu+9I1ptVHxDKBrZGgW7K/LB2+1toSc=;
-        b=LhOaSiN7M8xZGM5NSx67j2PyY5hw5fcMf7kpv6C3WTnXTE4mN7zr/Y0yZV2CKDt+sL
-         q5uC6a4W6Z16ruMPeK1g55DLO+ODQo9R/aoWeI7MOjhoPXM5Ltm3Plaiavg5C0D+J91W
-         fmZIeSeMdIQh8sjMgMWXqWiD2Jte0YBUWFMPa3Jc/9hnHsSnFvSFxUatbGX12OpR+TWA
-         aSEuegzqB93ANtMtaDaJQ/BEZQvjzT0e5WFN5hiG1LgufZrzFSPZuh/ECE101tKQywH3
-         nDPRmK6X0IRjO1Vdi9BvrKccI7fQnWSUAuTw/zqVDsZ2YWQDOtQdhzvxruBkkFZpPmRF
-         i3nA==
-X-Gm-Message-State: AOJu0YxY990UI6LcNMxXdm1Ka4l5euTEA+Aodw3NBzCiA5/9IDBqPZ53
-	dZgz5ozLCnuw/AQjLRwQrytUuzR8xJYYdoqWtR86bj0CQ7m4/mF/UH1lExPeRm/IuXHi3sLz59F
-	/k5tsFA==
-X-Google-Smtp-Source: AGHT+IFeqg7onW2fP/6Xi2w1kzQaBfw/J+tjktVpT5zH/T353jF1kI49wsGfOwYAspLwFr7BRfSKlA==
-X-Received: by 2002:a17:906:e08d:b0:a43:f924:d63 with SMTP id gh13-20020a170906e08d00b00a43f9240d63mr4202069ejb.26.1709412927891;
-        Sat, 02 Mar 2024 12:55:27 -0800 (PST)
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com. [209.85.218.41])
-        by smtp.gmail.com with ESMTPSA id un8-20020a170907cb8800b00a445044287bsm2789777ejc.123.2024.03.02.12.55.27
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 02 Mar 2024 12:55:27 -0800 (PST)
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a446b5a08f0so355566866b.1
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Mar 2024 12:55:27 -0800 (PST)
-X-Received: by 2002:a17:906:3445:b0:a44:99ef:8645 with SMTP id
- d5-20020a170906344500b00a4499ef8645mr4227052ejb.14.1709412926876; Sat, 02 Mar
- 2024 12:55:26 -0800 (PST)
+	s=arc-20240116; t=1709413136; c=relaxed/simple;
+	bh=o+tr4CCbud8uzLtDh5MolTBCwG3kPTB0Bhx8jY/shKs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JbE6KLWzmiHcXOSerGOSKsJQHzyrjoW3R6CPXiEKodUUvA/lxDYe9Gw/I+j9+vGtSDe3PFNmQX0O+k7kFI3JZ68hz8/s8VQaxKBtPzF9vh3/KCpmmzaSfq266QlwWeD1TnMhM/vj6GJQpXNvwJ3S/4UOkeXs5/fP21XjQ21tHQw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=UgMqkU+n; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 485ABC433C7;
+	Sat,  2 Mar 2024 20:58:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1709413135;
+	bh=o+tr4CCbud8uzLtDh5MolTBCwG3kPTB0Bhx8jY/shKs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=UgMqkU+niNfrrsJKR325G2D+2tAy9twT34HdNKjDPPnzNigNMvu3vA2hb62A57nq0
+	 PEMsKrj7r3EL2UOTajmaknqRQV/d2JCtFJ9pWYRVcF/57lRl/p8lzob7OmHi5mEfNC
+	 4qrR2eTAghx7wO456Nvia8+/Eo8/UCKAhz4WW+Ok=
+Date: Sat, 2 Mar 2024 21:58:53 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+	linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-aspeed@lists.ozlabs.org, linux-rpi-kernel@lists.infradead.org,
+	linux-mips@vger.kernel.org, linux-tegra@vger.kernel.org,
+	Jiri Slaby <jirislaby@kernel.org>, Joel Stanley <joel@jms.id.au>,
+	Andrew Jeffery <andrew@codeconstruct.com.au>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+	Al Cooper <alcooperx@gmail.com>,
+	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Paul Cercueil <paul@crapouillou.net>,
+	Vladimir Zapolskiy <vz@mleia.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [PATCH v2 03/14] serial: port: Introduce a common helper to read
+ properties
+Message-ID: <2024030259-playback-starlit-a472@gregkh>
+References: <20240226142514.1485246-1-andriy.shevchenko@linux.intel.com>
+ <20240226142514.1485246-4-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240302111244.3a1674be@gandalf.local.home> <CAHk-=wj376WMgZ24wKGEWDs_ojNtod-LDZBedPzDYRRcY60UYA@mail.gmail.com>
- <20240302145958.05aabdd2@rorschach.local.home> <CAHk-=wgjhdRj1V847NTF4veMN_tCbrySiEHXO8RO3n05cNeXeA@mail.gmail.com>
- <20240302154713.71e29402@rorschach.local.home>
-In-Reply-To: <20240302154713.71e29402@rorschach.local.home>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sat, 2 Mar 2024 12:55:10 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wioeo5vyEWUZcGBKMsf3jnjrnnHc3uJiV=JjSKPdvZOEw@mail.gmail.com>
-Message-ID: <CAHk-=wioeo5vyEWUZcGBKMsf3jnjrnnHc3uJiV=JjSKPdvZOEw@mail.gmail.com>
-Subject: Re: [GIT PULL] tracing: Prevent trace_marker being bigger than
- unsigned short
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Sachin Sant <sachinp@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240226142514.1485246-4-andriy.shevchenko@linux.intel.com>
 
-On Sat, 2 Mar 2024 at 12:47, Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> I'm fine with just making it 4K with a comment saying that "4K is the
-> minimum page size on most archs, and to keep this consistent for crazy
-> architectures like PowerPC and it's 64K pages, we hard code 4K to keep
-> all architectures acting the same".
+On Mon, Feb 26, 2024 at 04:19:19PM +0200, Andy Shevchenko wrote:
+> Several serial drivers want to read the same or similar set of
+> the port properties. Make a common helper for them.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/tty/serial/serial_port.c | 134 +++++++++++++++++++++++++++++++
+>  include/linux/serial_core.h      |   1 +
+>  2 files changed, 135 insertions(+)
+> 
+> diff --git a/drivers/tty/serial/serial_port.c b/drivers/tty/serial/serial_port.c
+> index 88975a4df306..ecc980e9dba6 100644
+> --- a/drivers/tty/serial/serial_port.c
+> +++ b/drivers/tty/serial/serial_port.c
+> @@ -8,7 +8,10 @@
+>  
+>  #include <linux/device.h>
+>  #include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/platform_device.h>
+>  #include <linux/pm_runtime.h>
+> +#include <linux/property.h>
+>  #include <linux/serial_core.h>
+>  #include <linux/spinlock.h>
+>  
+> @@ -82,6 +85,137 @@ void uart_remove_one_port(struct uart_driver *drv, struct uart_port *port)
+>  }
+>  EXPORT_SYMBOL(uart_remove_one_port);
+>  
+> +/**
+> + * uart_read_port_properties - read firmware properties of the given UART port
 
-4k is at least a somewhat sane limit, and yes, being hw-independent is
-a good idea.
+I like, but:
 
-We have other strings that have that limit for similar reasons (ie PATH_MAX).
+> + * @port: corresponding port
+> + * @use_defaults: apply defaults (when %true) or validate the values (when %false)
 
-                Linus
+Using random booleans in a function is horrid.  Every time you see the
+function call, or want to call it, you need to go and look up what the
+boolean is and means.
+
+Make 2 public functions here, one that does it with use_defaults=true
+and one =false and then have them both call this one static function,
+that way the function names themselves are easy to read and understand
+and maintain over time.
+
+thanks,
+
+greg k-h
+
+
+> + *
+> + * The following device properties are supported:
+> + *   - clock-frequency (optional)
+> + *   - fifo-size (optional)
+> + *   - no-loopback-test (optional)
+> + *   - reg-shift (defaults may apply)
+> + *   - reg-offset (value may be validated)
+> + *   - reg-io-width (defaults may apply or value may be validated)
+> + *   - interrupts (OF only)
+> + *   - serial [alias ID] (OF only)
+> + *
+> + * If the port->dev is of struct platform_device type the interrupt line
+> + * will be retrieved via platform_get_irq() call against that device.
+> + * Otherwise it will be assigned by fwnode_irq_get() call. In both cases
+> + * the index 0 of the resource is used.
+> + *
+> + * The caller is responsible to initialize the following fields of the @port
+> + *   ->dev (must be valid)
+> + *   ->flags
+> + *   ->mapbase
+> + *   ->mapsize
+> + *   ->regshift (if @use_defaults is false)
+> + * before calling this function. Alternatively the above mentioned fields
+> + * may be zeroed, in such case the only ones, that have associated properties
+> + * found, will be set to the respective values.
+> + *
+> + * If no error happened, the ->irq, ->mapbase, ->mapsize will be altered.
+> + * The ->iotype is always altered.
+> + *
+> + * When @use_defaults is true and the respective property is not found
+> + * the following values will be applied:
+> + *   ->regshift = 0
+> + * In this case IRQ must be provided, otherwise an error will be returned.
+> + *
+> + * When @use_defaults is false and the respective property is found
+> + * the following values will be validated:
+> + *   - reg-io-width (->iotype)
+> + *   - reg-offset (->mapsize against ->mapbase)
+> + *
+> + * Returns: 0 on success or negative errno on failure
+> + */
+> +int uart_read_port_properties(struct uart_port *port, bool use_defaults)
+> +{
+> +	struct device *dev = port->dev;
+> +	u32 value;
+> +	int ret;
+> +
+> +	/* Read optional UART functional clock frequency */
+> +	device_property_read_u32(dev, "clock-frequency", &port->uartclk);
+> +
+> +	/* Read the registers alignment (default: 8-bit) */
+> +	ret = device_property_read_u32(dev, "reg-shift", &value);
+> +	if (ret)
+> +		port->regshift = use_defaults ? 0 : port->regshift;
+> +	else
+> +		port->regshift = value;
+> +
+> +	/* Read the registers I/O access type (default: MMIO 8-bit) */
+> +	ret = device_property_read_u32(dev, "reg-io-width", &value);
+> +	if (ret) {
+> +		port->iotype = UPIO_MEM;
+> +	} else {
+> +		switch (value) {
+> +		case 1:
+> +			port->iotype = UPIO_MEM;
+> +			break;
+> +		case 2:
+> +			port->iotype = UPIO_MEM16;
+> +			break;
+> +		case 4:
+> +			port->iotype = device_is_big_endian(dev) ? UPIO_MEM32BE : UPIO_MEM32;
+> +			break;
+> +		default:
+> +			if (!use_defaults) {
+> +				dev_err(dev, "Unsupported reg-io-width (%u)\n", value);
+> +				return -EINVAL;
+> +			}
+> +			port->iotype = UPIO_UNKNOWN;
+> +			break;
+> +		}
+> +	}
+> +
+> +	/* Read the address mapping base offset (default: no offset) */
+> +	ret = device_property_read_u32(dev, "reg-offset", &value);
+> +	if (ret)
+> +		value = 0;
+> +
+> +	/* Check for shifted address mapping overflow */
+> +	if (!use_defaults && port->mapsize < value) {
+> +		dev_err(dev, "reg-offset %u exceeds region size %pa\n", value, &port->mapsize);
+> +		return -EINVAL;
+> +	}
+> +
+> +	port->mapbase += value;
+> +	port->mapsize -= value;
+> +
+> +	/* Read optional FIFO size */
+> +	device_property_read_u32(dev, "fifo-size", &port->fifosize);
+> +
+> +	if (device_property_read_bool(dev, "no-loopback-test"))
+> +		port->flags |= UPF_SKIP_TEST;
+> +
+> +	/* Get index of serial line, if found in DT aliases */
+> +	ret = of_alias_get_id(dev_of_node(dev), "serial");
+> +	if (ret >= 0)
+> +		port->line = ret;
+> +
+> +	if (dev_is_platform(dev))
+> +		ret = platform_get_irq(to_platform_device(dev), 0);
+> +	else
+> +		ret = fwnode_irq_get(dev_fwnode(dev), 0);
+> +	if (ret == -EPROBE_DEFER)
+> +		return ret;
+> +	if (ret > 0)
+> +		port->irq = ret;
+> +	else if (use_defaults)
+> +		/* By default IRQ support is mandatory */
+> +		return ret;
+> +	else
+> +		port->irq = 0;
+> +
+> +	port->flags |= UPF_SHARE_IRQ;
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL(uart_read_port_properties);
+
+EXPORT_SYMBOL_GPL()?  I have to ask :)
+
+thanks,
+
+greg k-h
 
