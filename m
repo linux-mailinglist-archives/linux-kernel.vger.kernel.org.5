@@ -1,245 +1,128 @@
-Return-Path: <linux-kernel+bounces-89342-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89343-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6291986EF27
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 08:31:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81EA286EF2A
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 08:35:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DEDB2861DB
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 07:31:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D5DCAB23EEF
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 07:35:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98C8612B77;
-	Sat,  2 Mar 2024 07:31:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69E12125AC;
+	Sat,  2 Mar 2024 07:35:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ElNTMh7f"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="dQF1fnFC"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 797A9C2E6;
-	Sat,  2 Mar 2024 07:31:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3DDA8479
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 07:35:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709364678; cv=none; b=SaxB7F/UyCyJMT5doqOrS8jN1wLAsTYhdSr+KNIjv6G0hvd0Duqquw2xTC0vrPXxD6ohGXb6SwvtGYLbBBA/2N0szabpW3Gj6WIVaZw9Iui1HvcxfN5i38JB3A74797gX9haWuQDUVaqb8Tzqx7mX5CJlUvfRsqPqExotJtvZj8=
+	t=1709364915; cv=none; b=bgaZkSqB/WI+GUNBIADbzulFpvSUaEmZTZlN++9VKMpG38g7ep7/kqCfRNvYFI75M+tpfsHvtDNCIv9ZzGC8/AQd+INKhjZJCeHIbHzwbWV2hbhmRSnmxkzp08iCk7VXumxiyVWgTb4SrINf459h3oQCjmTy1JgXefJm0ztb8AM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709364678; c=relaxed/simple;
-	bh=TN3SmDf8ga5MSo8DFjBXH+p7ASw4GxfM0zrVwvSxZl8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Tru2jcD7jvW2x9SyjSDkFZOiVxQgtr0RVJN6pCAytK9SvRpB73o0lvZA8Gs5WesZgVV0SZ8u2Spuo5Dq9MInKueOgosODwPJ/vDyxZxJKUOL9eV2m2bIfRdkkzmrEDgCqP14tu6MJlpy6QNMTPuYpL5Vqzlf9urdb0fjPwn87lE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ElNTMh7f; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709364677; x=1740900677;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=TN3SmDf8ga5MSo8DFjBXH+p7ASw4GxfM0zrVwvSxZl8=;
-  b=ElNTMh7fEK6blwaE0Ujk+JCpbTKJ+uNnK+/BN7AN9sfAk/4SQw+1Z7Gs
-   3jaRKHs0USo3Pr6eB0GU6hC2tHfQ1EaZrUmMitYzr06aj4ykCXWvP0Xj/
-   P4IG+9NZAAgNyxt8VsEdBWaSm5/Ma5wnySDxWskrWEi71CBWgUyeOWiiX
-   TsCXvr5udwqEUlkz+7QeQ2rabFQEmvV3gpGHwOp7ASVDbJ8d5wNMqJKf6
-   H4Rvy/41KGhNgyL/rNbZ4oEF8RzgjZhSmR5JwzqtnXDSV5f5RWjGmSo+W
-   2JhN3tWLlNCE3mD/OjkpIvQWoFKWHoXF4z6a4XyDoCzLO5JcATHfoLmF4
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11000"; a="4033594"
-X-IronPort-AV: E=Sophos;i="6.06,199,1705392000"; 
-   d="scan'208";a="4033594"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 23:31:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,199,1705392000"; 
-   d="scan'208";a="39255742"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.125.242.247]) ([10.125.242.247])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 23:31:11 -0800
-Message-ID: <1f9d2b41-95ad-42ca-b1e5-70212b93a9c1@linux.intel.com>
-Date: Sat, 2 Mar 2024 15:31:07 +0800
+	s=arc-20240116; t=1709364915; c=relaxed/simple;
+	bh=9RsFIsdj7Go63hLLcVGb1lWnHU7y1xrBgOTr1PK/ZMw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Fkh5eLeRdkpvzyRuY0Z/hgzmsWGD+REeT2r4rE3UMCKUfITEfAx/Kn+tgRNvbA/mONbRvgR9/8XwQwv7e/ZDdlTZau19tx9GVHu+PZqSA6FaygbyHzUxsLztAlwUjHPqgrUCiS7k2khFAJpO/5grMjl1RfZXfBYDEpi2hQ/3uYU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=dQF1fnFC; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-412cc617b68so6412545e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 23:35:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1709364912; x=1709969712; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RVIp+bkmfXEEH5Z3CqG36argyLkv9jlPldmOAvVHXfk=;
+        b=dQF1fnFCHjKIWAm4Jvg5DN+77ZJciqfa8E/cDq2XX0qXue9OEFmDK7rPNdV5XvKJjC
+         7KRZ3DFaQ9Xq8jooWk+GR+B5Y6CZAqUivknPSpx2KzDsi39gcrx/Xx0PQJ2mor/to4xH
+         cC6kxJMiYJNiGjXHFllPHXpFSQpz6VGJ7IiL+bfWxVmlq43jUyHcuORypu7/Hm8p/q5B
+         Y+V7eLKjAlEPRT/8NanO4zOTZCIkuAN01sGELDhKca5cC7kYfcZbt2oHfkIevV+giVTw
+         jPtzJWswLakPPvU/4b/Xc2JjH6NTQ49CV6WvHD2Is54EWlfBwLydC2NjRcE3xfjr6NVy
+         cAdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709364912; x=1709969712;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RVIp+bkmfXEEH5Z3CqG36argyLkv9jlPldmOAvVHXfk=;
+        b=l9ye73lxm7ahaf91X2gQTNqXhHVGjv1ypwEzOHwzEhQDE6u2DFW5PzlCwKQt0so603
+         DoBeElTBQW/UK2fpVVYz8z430lEnXokaD7yXr7Q02tzRwVidShx+vmkkaVMQdI87UhRu
+         xjWKmxRRQ2AOw0S4UnpVwuIEBP6XSHl2gDBqLirxfafWWcJCPzgGL4eC5ENjcoIC1YAX
+         CWD6eBO5gUfLcgJYSwcLWgNeLbVm5AIPiHvsqTKUgzAfWEo4x6P3V6fpUivCdD7HeiCy
+         DkNnpSNwk2AQAGCniEwAIwBMSB4O4nsNLgrkicinALa8yxu5IL3zInVsiXv3a3oKR2VM
+         Zvpg==
+X-Forwarded-Encrypted: i=1; AJvYcCX6dNnYQJAGFrB5YyRj3LL5SFDJaSq1IVc+W5UzbvNirUAXMJMjOe1suVf5lpWzO79DSaSUEeGuFvOeqo8qjs7wcYwKMOuwWZi3mSQl
+X-Gm-Message-State: AOJu0YzFeMlOuDCFyEE6VrRX0m1/jBwB1ffXOkgrsqFjy4G7I7mNR7Y0
+	4ye8/IqSOK3jbjhDI95F5CJcWMlaaNdltwanTVO8E2+sbpHox7Wz7gO+O69Gtoc=
+X-Google-Smtp-Source: AGHT+IE5p/dElV8MPvX5Z+KxId+N7DYaOhQnGAen5y2yV1ICqZ5gVRXXzuefdWRfCisV+ymJmgjFfw==
+X-Received: by 2002:a05:600c:35cd:b0:412:989a:f6f5 with SMTP id r13-20020a05600c35cd00b00412989af6f5mr3420946wmq.38.1709364912110;
+        Fri, 01 Mar 2024 23:35:12 -0800 (PST)
+Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
+        by smtp.gmail.com with ESMTPSA id u22-20020a05600c139600b0040fdf5e6d40sm7942900wmf.20.2024.03.01.23.35.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Mar 2024 23:35:11 -0800 (PST)
+Date: Sat, 2 Mar 2024 08:35:10 +0100
+From: Andrew Jones <ajones@ventanamicro.com>
+To: Samuel Holland <samuel.holland@sifive.com>
+Cc: linux-riscv@lists.infradead.org, Albert Ou <aou@eecs.berkeley.edu>, 
+	Alexandre Ghiti <alexghiti@rivosinc.com>, Anup Patel <apatel@ventanamicro.com>, 
+	Dylan Jhong <dylan@andestech.com>, Jisheng Zhang <jszhang@kernel.org>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Sergey Matyukevich <sergey.matyukevich@syntacore.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] riscv: mm: Fix prototype to avoid discarding const
+Message-ID: <20240302-84b126d91dac9f73f5efebaa@orel>
+References: <20240301201837.2826172-1-samuel.holland@sifive.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v5 16/29] KVM: selftests: TDX: Add TDX HLT exit test
-To: Sagi Shahar <sagis@google.com>
-Cc: linux-kselftest@vger.kernel.org, Ackerley Tng <ackerleytng@google.com>,
- Ryan Afranji <afranji@google.com>, Erdem Aktas <erdemaktas@google.com>,
- Isaku Yamahata <isaku.yamahata@intel.com>,
- Sean Christopherson <seanjc@google.com>, Paolo Bonzini
- <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
- Peter Gonda <pgonda@google.com>, Haibo Xu <haibo1.xu@intel.com>,
- Chao Peng <chao.p.peng@linux.intel.com>,
- Vishal Annapurve <vannapurve@google.com>, Roger Wang <runanwang@google.com>,
- Vipin Sharma <vipinsh@google.com>, jmattson@google.com, dmatlack@google.com,
- linux-kernel@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org
-References: <20231212204647.2170650-1-sagis@google.com>
- <20231212204647.2170650-17-sagis@google.com>
-From: Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <20231212204647.2170650-17-sagis@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240301201837.2826172-1-samuel.holland@sifive.com>
 
-
-
-On 12/13/2023 4:46 AM, Sagi Shahar wrote:
-> The test verifies that the guest runs TDVMCALL<INSTRUCTION.HLT> and the
-> guest vCPU enters to the halted state.
->
-> Signed-off-by: Erdem Aktas <erdemaktas@google.com>
-> Signed-off-by: Sagi Shahar <sagis@google.com>
-> Signed-off-by: Ackerley Tng <ackerleytng@google.com>
-> Signed-off-by: Ryan Afranji <afranji@google.com>
+On Fri, Mar 01, 2024 at 12:18:32PM -0800, Samuel Holland wrote:
+> __flush_tlb_range() does not modify the provided cpumask, so its cmask
+> parameter can be pointer-to-const. This avoids the unsafe cast of
+> cpu_online_mask.
+> 
+> Fixes: 54d7431af73e ("riscv: Add support for BATCHED_UNMAP_TLB_FLUSH")
+> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
 > ---
->   .../selftests/kvm/include/x86_64/tdx/tdx.h    |  2 +
->   .../selftests/kvm/lib/x86_64/tdx/tdx.c        | 10 +++
->   .../selftests/kvm/x86_64/tdx_vm_tests.c       | 78 +++++++++++++++++++
->   3 files changed, 90 insertions(+)
+> 
+>  arch/riscv/mm/tlbflush.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
+> index 893566e004b7..07d743f87b3f 100644
+> --- a/arch/riscv/mm/tlbflush.c
+> +++ b/arch/riscv/mm/tlbflush.c
+> @@ -99,7 +99,7 @@ static void __ipi_flush_tlb_range_asid(void *info)
+>  	local_flush_tlb_range_asid(d->start, d->size, d->stride, d->asid);
+>  }
+>  
+> -static void __flush_tlb_range(struct cpumask *cmask, unsigned long asid,
+> +static void __flush_tlb_range(const struct cpumask *cmask, unsigned long asid,
+>  			      unsigned long start, unsigned long size,
+>  			      unsigned long stride)
+>  {
+> @@ -200,7 +200,7 @@ void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
+>  
+>  void flush_tlb_kernel_range(unsigned long start, unsigned long end)
+>  {
+> -	__flush_tlb_range((struct cpumask *)cpu_online_mask, FLUSH_TLB_NO_ASID,
+> +	__flush_tlb_range(cpu_online_mask, FLUSH_TLB_NO_ASID,
+>  			  start, end - start, PAGE_SIZE);
+>  }
+>  
+> -- 
+> 2.43.1
 >
-> diff --git a/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h b/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h
-> index 85ba6aab79a7..b18e39d20498 100644
-> --- a/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h
-> +++ b/tools/testing/selftests/kvm/include/x86_64/tdx/tdx.h
-> @@ -8,6 +8,7 @@
->   #define TDG_VP_VMCALL_GET_TD_VM_CALL_INFO 0x10000
->   #define TDG_VP_VMCALL_REPORT_FATAL_ERROR 0x10003
->   
-> +#define TDG_VP_VMCALL_INSTRUCTION_HLT 12
->   #define TDG_VP_VMCALL_INSTRUCTION_IO 30
->   #define TDG_VP_VMCALL_INSTRUCTION_RDMSR 31
->   #define TDG_VP_VMCALL_INSTRUCTION_WRMSR 32
-> @@ -20,5 +21,6 @@ uint64_t tdg_vp_vmcall_get_td_vmcall_info(uint64_t *r11, uint64_t *r12,
->   					uint64_t *r13, uint64_t *r14);
->   uint64_t tdg_vp_vmcall_instruction_rdmsr(uint64_t index, uint64_t *ret_value);
->   uint64_t tdg_vp_vmcall_instruction_wrmsr(uint64_t index, uint64_t value);
-> +uint64_t tdg_vp_vmcall_instruction_hlt(uint64_t interrupt_blocked_flag);
->   
->   #endif // SELFTEST_TDX_TDX_H
-> diff --git a/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c
-> index 88ea6f2a6469..9485bafedc38 100644
-> --- a/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c
-> +++ b/tools/testing/selftests/kvm/lib/x86_64/tdx/tdx.c
-> @@ -114,3 +114,13 @@ uint64_t tdg_vp_vmcall_instruction_wrmsr(uint64_t index, uint64_t value)
->   
->   	return __tdx_hypercall(&args, 0);
->   }
-> +
-> +uint64_t tdg_vp_vmcall_instruction_hlt(uint64_t interrupt_blocked_flag)
-> +{
-> +	struct tdx_hypercall_args args = {
-> +		.r11 = TDG_VP_VMCALL_INSTRUCTION_HLT,
-> +		.r12 = interrupt_blocked_flag,
-> +	};
-> +
-> +	return __tdx_hypercall(&args, 0);
-> +}
-> diff --git a/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c b/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c
-> index 5db3701cc6d9..5fae4c6e5f95 100644
-> --- a/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c
-> +++ b/tools/testing/selftests/kvm/x86_64/tdx_vm_tests.c
-> @@ -721,6 +721,83 @@ void verify_guest_msr_writes(void)
->   	printf("\t ... PASSED\n");
->   }
->   
-> +/*
-> + * Verifies HLT functionality.
-> + */
-> +void guest_hlt(void)
-> +{
-> +	uint64_t ret;
-> +	uint64_t interrupt_blocked_flag;
-> +
-> +	interrupt_blocked_flag = 0;
-> +	ret = tdg_vp_vmcall_instruction_hlt(interrupt_blocked_flag);
-> +	if (ret)
-> +		tdx_test_fatal(ret);
-> +
-> +	tdx_test_success();
-> +}
-> +
-> +void _verify_guest_hlt(int signum);
-> +
-> +void wake_me(int interval)
-> +{
-> +	struct sigaction action;
-> +
-> +	action.sa_handler = _verify_guest_hlt;
-> +	sigemptyset(&action.sa_mask);
-> +	action.sa_flags = 0;
-> +
-> +	TEST_ASSERT(sigaction(SIGALRM, &action, NULL) == 0,
-> +		    "Could not set the alarm handler!");
-> +
-> +	alarm(interval);
-> +}
-> +
-> +void _verify_guest_hlt(int signum)
-> +{
-> +	struct kvm_vm *vm;
-> +	static struct kvm_vcpu *vcpu;
-> +
-> +	/*
-> +	 * This function will also be called by SIGALRM handler to check the
-> +	 * vCPU MP State. If vm has been initialized, then we are in the signal
-> +	 * handler. Check the MP state and let the guest run again.
-> +	 */
-> +	if (vcpu != NULL) {
 
-What if the following case if there is a bug in KVM so that:
-
-In guest, execution of tdg_vp_vmcall_instruction_hlt() return 0, but the
-vcpu is not actually halted. Then guest will call tdx_test_success().
-
-And the first call of _verify_guest_hlt() will call kvm_vm_free(vm) to free
-the vm, which also frees the vcpu, and 1 second later, in this path vcpu 
-will
-be accessed after free.
-
-> +		struct kvm_mp_state mp_state;
-> +
-> +		vcpu_mp_state_get(vcpu, &mp_state);
-> +		TEST_ASSERT_EQ(mp_state.mp_state, KVM_MP_STATE_HALTED);
-> +
-> +		/* Let the guest to run and finish the test.*/
-> +		mp_state.mp_state = KVM_MP_STATE_RUNNABLE;
-> +		vcpu_mp_state_set(vcpu, &mp_state);
-> +		return;
-> +	}
-> +
-> +	vm = td_create();
-> +	td_initialize(vm, VM_MEM_SRC_ANONYMOUS, 0);
-> +	vcpu = td_vcpu_add(vm, 0, guest_hlt);
-> +	td_finalize(vm);
-> +
-> +	printf("Verifying HLT:\n");
-> +
-> +	printf("\t ... Running guest\n");
-> +
-> +	/* Wait 1 second for guest to execute HLT */
-> +	wake_me(1);
-> +	td_vcpu_run(vcpu);
-> +
-> +	TDX_TEST_ASSERT_SUCCESS(vcpu);
-> +
-> +	kvm_vm_free(vm);
-> +	printf("\t ... PASSED\n");
-> +}
-> +
-> +void verify_guest_hlt(void)
-> +{
-> +	_verify_guest_hlt(0);
-> +}
->   
->   int main(int argc, char **argv)
->   {
-> @@ -740,6 +817,7 @@ int main(int argc, char **argv)
->   	run_in_new_process(&verify_guest_reads);
->   	run_in_new_process(&verify_guest_msr_writes);
->   	run_in_new_process(&verify_guest_msr_reads);
-> +	run_in_new_process(&verify_guest_hlt);
->   
->   	return 0;
->   }
-
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
 
