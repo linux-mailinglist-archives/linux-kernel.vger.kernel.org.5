@@ -1,155 +1,188 @@
-Return-Path: <linux-kernel+bounces-89309-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89310-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D594E86EE1F
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 03:22:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0ED4986EE22
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 03:23:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 899A12869B6
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 02:22:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 721DE1F23B21
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 02:23:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC5958F45;
-	Sat,  2 Mar 2024 02:22:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB1B779F9;
+	Sat,  2 Mar 2024 02:22:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yRa9NqxB"
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OFh612UP"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5428C7483
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 02:22:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3812979D0
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 02:22:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709346161; cv=none; b=ZIbchJTwG+mH9p4+zUVILI4VzgwfvIDyNAd7IjxbDqGDmzaAneNUYZg9Kga3UYDDmvATqaFGLETmrdnB7vNtoZtA5m7B7TWugsUIuHkgQPfdhC3gD+lw9qZoEvJCkL73FDH0iq3QKATvP2WAO0Ei3F4H4NRdeWi0yBtxrc8s2pI=
+	t=1709346176; cv=none; b=DJsDGUOdGKfMpNWGX5zwMtJfQzCYMiGgICTtczl8WFtfwZ7b3ZYp9+g1g2fn+mBCdrhX0q7uxE0HGInMMFTaO65uSJLKAOV1yp1FeRQ/dgZWnPeNEd53cwjwRyeGF9In2VPbzbED2cRNAuGMaX2Nq/bAsPbq4FNGZKJdkestAZg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709346161; c=relaxed/simple;
-	bh=+vcuOjMgyX3GXLrby3bKMf/a767VWPWJZQ2IjjlKxbQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bnDhutIyNf4RFkJHB3NxqTK+fyZ9zsvEcf9/tl+KwbCOHnMsJid0P8cD40k1ecfWfRY2QFoeDS02ZAbj1IyjrpwxpSl7c/0s1tsXcONOh3v3ZIVeHkAmJFjtzDSuROtN8HmsVyR0GEkxPo+YPXOjHnTY6VdVmJ8DQ8x/oXu1m04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yRa9NqxB; arc=none smtp.client-ip=209.85.208.46
+	s=arc-20240116; t=1709346176; c=relaxed/simple;
+	bh=+TPfVjFogzNReOpfUhnNpXtp/FYtnnphNfnHE/uHRDQ=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=dn9sPvnhkTyoxy/Srj6h2XbbxARJJTR1wRRfKuqq6c/HajUNne6LlEfQrTCWobvherE59ymMvpAXUzn5Bnb+gdpWjtm2yfEPTfud3+y8v7F3pxpb7VoXq2kNbSz9onvgmRuViOPZT6o0U9M5IwQQiKShwz/Ueyt+5F5KCrdruTU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OFh612UP; arc=none smtp.client-ip=209.85.218.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-564fc495d83so3577311a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 18:22:39 -0800 (PST)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a26ed1e05c7so497258966b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 18:22:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709346157; x=1709950957; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kdTUSkVwl2tMINjrlSdiTdWGU31m8cJzam5nmke77Bg=;
-        b=yRa9NqxBRS6Qybyj2MFdaf1f56dIpYPIpG6jAwOLfeo9RXzMW1gwrsaNsZXPyzBVOv
-         e2QW3Hb9Ae18SK0KmQg7jZYGc3MIylC8x2XspCmQ5CTi8REGLpn5lYH3WnVRtj46CXQn
-         USVDISU3LxxfQdGbHNr2G74Eh2bMW9BuWIKxTfZKPd08Hzp+L63shg+DYv/0Y3K0eEeT
-         NnZDFzRUmCZ5W8dinqdqNJNPfJNRBTK8GlDwu3UMp6gXkXxNb5xa0hfGP7fHlJrr1iU0
-         DpsBE1NpHyJ1GgMXJ/7NKPfstBEO9Fr7uwWFwLEj2897x04g9PzJ8KRAUhYaGX6bdveW
-         jV4g==
+        d=linaro.org; s=google; t=1709346172; x=1709950972; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=dZvUgYXHOYOKAIGSRrva5Qq5ru4WipUXtpvetm5o08c=;
+        b=OFh612UPFVbhfc70mA8B4JrgSpPnCqkLmCvHZKsDI22v4/peb+AWYHagr0qVHaYC3N
+         l6/tK/nop0OMBJVc8UeO//rKM1iq3wtpF6WeOAOiQGzbLBgp9rNNgsTyhR3rKtTg+l4i
+         43O0FroKrGPLiT6J+1V6M9xNiOgHhPnxBgjT2UxaCZCHKcPQexS3RmseWTDBbnu4YOZ7
+         w9gfNmtFqPsh6AFQg630y+VdA5KSQeU/CYn+HVdxqMSAjuBwuTdmx1m4bq0IJpECuNUw
+         Wps9Pa2VSKcjWqAVV3HdUGrIb+BLFjczOJLxGNcR/lkEakRhm4zFAoxMHxC6mPFevNZI
+         sdmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709346157; x=1709950957;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kdTUSkVwl2tMINjrlSdiTdWGU31m8cJzam5nmke77Bg=;
-        b=sddOIUTe9trmm+XuY/g5tdj9urQu5OchAhsfztcdcOuHALdkq4MimOpv9Z1qIv17xE
-         MFrBo7tz54UsJxeeclwtudvxQ3U87KEWgKaFQUOaTH3ozMIhAEzV6qctxdaMIIvRUEjX
-         rbWcfGgJsV3krnVarxMby2sbsnsEAXB+P9jkt7/AhFA7om/ACMAvNOpxB7JriNzMhkMz
-         i0TOLpX1VpgvFzK58m8YynBCXLQmWWc/GpoObeeAa/1x+i7I4ugpE8rfL2lj2kzONaND
-         SAvoCvg+/vZ4ioG1Gzyf21xpa1xf/dKkHjhjGMvpoLlxQ6v6pfOTfVKh321NnU1cUnxU
-         4Mgg==
-X-Forwarded-Encrypted: i=1; AJvYcCUOeOTBIaxIL0M9Et0kHDROeWcKYm/sz6++EHCJRjsiJdcav+0olTY5leMbcllyr8hcnFxA3X0fFxfSIWXrC5GlIu+4QgTTFccsGdfE
-X-Gm-Message-State: AOJu0YyIzvwVMiDOfk3bNqd6xaS3fRQCmb1Sz71pm0y9JSLofGKN8iFN
-	+tEEvTqOMzLlgvSq0anY3TNJCDY106qiA/zErfgoUdV7EB8kmUvWFHepqRBthMg=
-X-Google-Smtp-Source: AGHT+IFeYLcTkjFHUMJRTsdqrsQ5qiDABIkQoO5ACOCWl8iqixjPyJ4gmXbZ53fgBi+gi9zJ2HGs2Q==
-X-Received: by 2002:a17:906:5fc1:b0:a44:512e:9e42 with SMTP id k1-20020a1709065fc100b00a44512e9e42mr1886274ejv.2.1709346156636;
-        Fri, 01 Mar 2024 18:22:36 -0800 (PST)
-Received: from [192.168.216.32] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id bq5-20020a170906d0c500b00a43bf243342sm2242197ejb.24.2024.03.01.18.22.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Mar 2024 18:22:36 -0800 (PST)
-Message-ID: <6f329b93-1bea-4222-bbf2-e08ae7329283@linaro.org>
-Date: Sat, 2 Mar 2024 03:22:33 +0100
+        d=1e100.net; s=20230601; t=1709346172; x=1709950972;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dZvUgYXHOYOKAIGSRrva5Qq5ru4WipUXtpvetm5o08c=;
+        b=ZWa7L27Jd6DoksVjBrCfrs9DzehzWqzpEw21ezSVi7SPeC4AQFIOxC8Kltre/jR/pd
+         +TXOwvUpXPEph7dMB4r3HF8rNb+XTLWc8+KkUbAXbpy2ywi/IE7NmgnnNfPAbORWxkvV
+         b3wN1EdYtJxP+OHbgdy3tim31HmD83TzwOwjQjP+GrPg9UN+0eO27wkR6y27Fe4CGeZW
+         ajl9F3e8s0jYSCnfQXkLCzWhRNpI/dc1Nv5AYS7SntmySf1egJ4ct5kicUrhcvvXc2IQ
+         q9h7WJBn7Q+k9MkLbtOdmK76TE1uwE6XjMwdCHIGfEEUeyC6U+5eiV+YZNfLmRmKgvvy
+         gEHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWAg0ia6vm/aPqUeKpwtyJ3PtoaFm+synSgr817XmVoWKQwezGs6yhXqkADm2Kd2SU8wnqTiTOJvfJb6+tNuu3rB0St40nR6nNp9K/h
+X-Gm-Message-State: AOJu0Yy8pcxpO4ArADQYctZzZxEozk9pANhqBPArdhFl+IoUbke5O8VR
+	kSl8dCs9yJYOyTNFoSDJO0hT1FOZXODQKDdEIq5Y7R0aKz7/qKBiEiInLUjqtoA=
+X-Google-Smtp-Source: AGHT+IE8RbV+EyI/CHCqqMAK9d77rj4AJodP1gAIw2tErl1logb+yYZchP2Vjyv75hb2/UtdXJoplw==
+X-Received: by 2002:a17:906:ce29:b0:a44:2218:4817 with SMTP id sd9-20020a170906ce2900b00a4422184817mr2245935ejb.39.1709346172136;
+        Fri, 01 Mar 2024 18:22:52 -0800 (PST)
+Received: from [10.167.154.1] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id ch14-20020a170906c2ce00b00a42ea946917sm2224924ejb.130.2024.03.01.18.22.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Mar 2024 18:22:51 -0800 (PST)
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Date: Sat, 02 Mar 2024 03:22:49 +0100
+Subject: [PATCH] interconnect: qcom: x1e80100: Remove inexistent ACV_PERF
+ BCM
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V5 1/5] dt-bindings: arm: cpus: Add qcom,oryon compatible
-Content-Language: en-US
-To: Sibi Sankar <quic_sibis@quicinc.com>, andersson@kernel.org,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- catalin.marinas@arm.com, ulf.hansson@linaro.org
-Cc: agross@kernel.org, conor+dt@kernel.org, ayan.kumar.halder@amd.com,
- j@jannau.net, dmitry.baryshkov@linaro.org, nfraprado@collabora.com,
- m.szyprowski@samsung.com, u-kumar1@ti.com, peng.fan@nxp.com,
- lpieralisi@kernel.org, quic_rjendra@quicinc.com, abel.vesa@linaro.org,
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- quic_tsoni@quicinc.com, neil.armstrong@linaro.org
-References: <20231205062403.14848-1-quic_sibis@quicinc.com>
- <20231205062403.14848-2-quic_sibis@quicinc.com>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20231205062403.14848-2-quic_sibis@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Message-Id: <20240302-topic-faux_bcm_x1e-v1-1-c40fab7c4bc5@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAHiN4mUC/x2N0QqDMAwAf0XyvEBax5j7lTEkbdMZcFVaHQXx3
+ 1f2eAfHHVAkqxR4dAdk+WrRJTUwlw78xOktqKExWLJX6snitqzqMfJeR+c/YzWC91s/cIhDIEP
+ QQsdF0GVOfmpp2ue5yTVL1Po/PV/n+QNBPlC0eQAAAA==
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Georgi Djakov <djakov@kernel.org>, Abel Vesa <abel.vesa@linaro.org>, 
+ Sibi Sankar <quic_sibis@quicinc.com>, 
+ Rajendra Nayak <quic_rjendra@quicinc.com>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>, 
+ linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Mike Tipton <quic_mdtipton@quicinc.com>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1709346170; l=2702;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=+TPfVjFogzNReOpfUhnNpXtp/FYtnnphNfnHE/uHRDQ=;
+ b=zi58sy0kKdm53JaXN9XU5z5Im/i8Hz47TaQYkUIUzQ776WqFvixIrJG/ndQNhJQ+C/iFrLi6k
+ dYYIlRSZPCjAv69OnpP8fBJm0f9nOkO1xF77QFxDa7TuY1yjEi1akVJ
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 
-On 5.12.2023 07:23, Sibi Sankar wrote:
-> From: Rajendra Nayak <quic_rjendra@quicinc.com>
-> 
-> Oryon is the custom ARM CPU core implementation used in Qualcomm's
-> X1E80100 SoC, document it.
-> 
-> Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
-> Co-developed-by: Sibi Sankar <quic_sibis@quicinc.com>
-> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
-> ---
+Booting the kernel on X1E results in a message like:
 
-Chiming in on an old thread, please check with those in the know whether
-these cores are Spectre-v3a/4-safe, and if so, add the MIDR to the
-corresponding white/blacklists in arch/arm64/kernel/proton-pack.c
+[    2.561524] qnoc-x1e80100 interconnect-0: ACV_PERF could not find RPMh address
 
-Also, please check for any erratas and supported-but-not-advertized-for-
--reasons features that may need to be implemented.
-Doing this early will ensure we will all spend less % of our time
-pulling out what remains of our hair when the platform suddenly
-crashes for no reason!
+And indeed, taking a look at cmd-db, no such BCM exists. Remove it.
 
-Konrad
+Fixes: 9f196772841e ("interconnect: qcom: Add X1E80100 interconnect provider driver")
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+ drivers/interconnect/qcom/x1e80100.c | 26 --------------------------
+ 1 file changed, 26 deletions(-)
+
+diff --git a/drivers/interconnect/qcom/x1e80100.c b/drivers/interconnect/qcom/x1e80100.c
+index 99824675ee3f..654abb9ce08e 100644
+--- a/drivers/interconnect/qcom/x1e80100.c
++++ b/drivers/interconnect/qcom/x1e80100.c
+@@ -116,15 +116,6 @@ static struct qcom_icc_node xm_sdc2 = {
+ 	.links = { X1E80100_SLAVE_A2NOC_SNOC },
+ };
+ 
+-static struct qcom_icc_node ddr_perf_mode_master = {
+-	.name = "ddr_perf_mode_master",
+-	.id = X1E80100_MASTER_DDR_PERF_MODE,
+-	.channels = 1,
+-	.buswidth = 4,
+-	.num_links = 1,
+-	.links = { X1E80100_SLAVE_DDR_PERF_MODE },
+-};
+-
+ static struct qcom_icc_node qup0_core_master = {
+ 	.name = "qup0_core_master",
+ 	.id = X1E80100_MASTER_QUP_CORE_0,
+@@ -688,14 +679,6 @@ static struct qcom_icc_node qns_a2noc_snoc = {
+ 	.links = { X1E80100_MASTER_A2NOC_SNOC },
+ };
+ 
+-static struct qcom_icc_node ddr_perf_mode_slave = {
+-	.name = "ddr_perf_mode_slave",
+-	.id = X1E80100_SLAVE_DDR_PERF_MODE,
+-	.channels = 1,
+-	.buswidth = 4,
+-	.num_links = 0,
+-};
+-
+ static struct qcom_icc_node qup0_core_slave = {
+ 	.name = "qup0_core_slave",
+ 	.id = X1E80100_SLAVE_QUP_CORE_0,
+@@ -1377,12 +1360,6 @@ static struct qcom_icc_bcm bcm_acv = {
+ 	.nodes = { &ebi },
+ };
+ 
+-static struct qcom_icc_bcm bcm_acv_perf = {
+-	.name = "ACV_PERF",
+-	.num_nodes = 1,
+-	.nodes = { &ddr_perf_mode_slave },
+-};
+-
+ static struct qcom_icc_bcm bcm_ce0 = {
+ 	.name = "CE0",
+ 	.num_nodes = 1,
+@@ -1583,18 +1560,15 @@ static const struct qcom_icc_desc x1e80100_aggre2_noc = {
+ };
+ 
+ static struct qcom_icc_bcm * const clk_virt_bcms[] = {
+-	&bcm_acv_perf,
+ 	&bcm_qup0,
+ 	&bcm_qup1,
+ 	&bcm_qup2,
+ };
+ 
+ static struct qcom_icc_node * const clk_virt_nodes[] = {
+-	[MASTER_DDR_PERF_MODE] = &ddr_perf_mode_master,
+ 	[MASTER_QUP_CORE_0] = &qup0_core_master,
+ 	[MASTER_QUP_CORE_1] = &qup1_core_master,
+ 	[MASTER_QUP_CORE_2] = &qup2_core_master,
+-	[SLAVE_DDR_PERF_MODE] = &ddr_perf_mode_slave,
+ 	[SLAVE_QUP_CORE_0] = &qup0_core_slave,
+ 	[SLAVE_QUP_CORE_1] = &qup1_core_slave,
+ 	[SLAVE_QUP_CORE_2] = &qup2_core_slave,
+
+---
+base-commit: 1870cdc0e8dee32e3c221704a2977898ba4c10e8
+change-id: 20240302-topic-faux_bcm_x1e-8639adf9d010
+
+Best regards,
+-- 
+Konrad Dybcio <konrad.dybcio@linaro.org>
 
 
