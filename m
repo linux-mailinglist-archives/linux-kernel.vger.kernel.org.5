@@ -1,125 +1,172 @@
-Return-Path: <linux-kernel+bounces-89465-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75B8086F0B2
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 15:52:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C64C186F0C1
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 16:03:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 318661F215FD
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 14:52:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A65728380A
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 15:03:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CC4517BB2;
-	Sat,  2 Mar 2024 14:52:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BFEbfMiN"
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A17423A6
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 14:52:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A20D17C79;
+	Sat,  2 Mar 2024 15:03:16 +0000 (UTC)
+Received: from port70.net (port70.net [81.7.13.123])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7488713FFA;
+	Sat,  2 Mar 2024 15:03:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=81.7.13.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709391151; cv=none; b=Zjr9eW7R6OxDP/SOvgnowwGuNjhvf23ZuWIMf80tM3FnZQjjpKALtTNtBne8dWoQVyU9+AYQqeZ+s/bGdZf3V5FiaarS86N0GB9A0kKhfv6WBwpDBeSsfthn3OCGWqM1dzl5gMuPiuY6Ba9ddPqgoo98bKGwk34IqJBVYyGV0XI=
+	t=1709391795; cv=none; b=AMYLg8N/4qrCqPw9ORGMPbZKu1LN5Sj6BdazhNyb8woUDMZAxjiSGspc+v8Ui5RMNu2eaLVacXZ2tLjjPjQqXlyMefomQ8Xw6+cuV1pk4Ut+2CirNqFKLMNypLKrk0898DM233sZizazGYmzwPN1393SOHfw9oXfc8Y9s3JemcU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709391151; c=relaxed/simple;
-	bh=Ef+N4vGlqlUybLHJPcdwa+UvNP8PKIs+Su40x32riHc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=prTDx2IPuPVyFVU8YhwVVNW8KzOcpxIXZadc/E8ZrUK3i9eW+NGNmxUSFKiEtWBjxlRBBX0y0e758m5kvYuHlCstlXQkCHaTf4rsu4+jZl1T9EAu1WQaVZN54ogV9Gm6agP/q0Lt7FCCIVuJNerBEU1XYFKv4+JjbN6KeRbkQp4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BFEbfMiN; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-33e1878e357so1158343f8f.3
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Mar 2024 06:52:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709391148; x=1709995948; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q/ES2FJW4PaZ/LjH5h1eFhluoaUopAjREsxQYkJ4pLs=;
-        b=BFEbfMiNTg06ruIKknCk72Svv74Ra0YjvuZfQa1gpMP1xF7Ssmrli8Wbgo2MA9dtUW
-         /KvmhGoEL50BWesqyoI45Rr8rM9UThLvXA8xrMs1DqkU2dqU4S2Op7bFRQ8DP7tYfGJe
-         9kUvJGJrtRjjUfUpp7UKY4x1JA8whuXH4rye+6FuHBEQsGKRRjgZYWe2wSw0rYQLHOAC
-         Kyqvc8INz2piCQgIWUG/9uOGkRTFZHEDY7LVeZpn11lDAKcH/lWzlWtF77YWl1/cqTOO
-         9udKD0czFSD3nUf+jyu8BTs1VdHWkC3RIX4RDTy85lQA5g4R0N5g6aW5CwJosgRrCcHQ
-         Q7JQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709391148; x=1709995948;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Q/ES2FJW4PaZ/LjH5h1eFhluoaUopAjREsxQYkJ4pLs=;
-        b=YV9NBrfJjpdxHcFkH9XUk/jOuRghnhsxAPexMCVlvW9RmauLQqy9LjEWHJJXKXxjJn
-         crayWAp6WCIkj8jr71cXHY1rqloXRhR3crkBzVfhvvnMiB9zhI3Uc+grSXSUIUcmxI20
-         Qe+pp1EkkQoHxPxeMtZCgPHpXBaA8f8klrERitBMPPZc1dIKAfx9z2ZxZMsvl5EqUjeZ
-         37i7Wi5msF3huOHIZvgxpAOppnlINNkqDBDYQgXZM/C1+j4u4at/q3dYvkhUL9l6Agyh
-         Xob6gYoflGNRDVBTxT74/XAhlP7zHmJHmW6HsC0z7ybXLV8IF0DN/frtd5WBnKnO8GbJ
-         OD2w==
-X-Forwarded-Encrypted: i=1; AJvYcCUPg3/q4CJiNXcQ03Z0TapfGNLt8h1LKCSBftH34aA4d160M+ZSVhddEpQHlGBodhl1woVfIiDyPzFWLta6/tIQQkOqeKF0Ut71ZHkn
-X-Gm-Message-State: AOJu0Yy3IS0nTPkla88Xc/kUk6j5Cx8W4aGmIcOkucK6KD9mwjgxMFt4
-	ms0ajrP20sJba4faq2dlaHMf/J0f5s5GBb7vrnmou+1aQXed3ltE
-X-Google-Smtp-Source: AGHT+IGxWNMD5uOCujmqbxrHNDAoUpOevGETa2GqEm4G+m57sD9n+m4Qie72K4Nv3xJ1eUz1tMjDHw==
-X-Received: by 2002:adf:9d83:0:b0:33d:d7be:3bec with SMTP id p3-20020adf9d83000000b0033dd7be3becmr3254953wre.58.1709391148038;
-        Sat, 02 Mar 2024 06:52:28 -0800 (PST)
-Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
-        by smtp.gmail.com with ESMTPSA id by1-20020a056000098100b0033e22341942sm4085502wrb.78.2024.03.02.06.52.27
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 02 Mar 2024 06:52:27 -0800 (PST)
-From: Puranjay Mohan <puranjay12@gmail.com>
-To: catalin.marinas@arm.com,
-	will@kernel.org,
-	anshuman.khandual@arm.com,
-	mark.rutland@arm.com,
-	ardb@kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: puranjay12@gmail.com
-Subject: [PATCH] arm64: head: remove unnecessary instructions from __relocate_kernel
-Date: Sat,  2 Mar 2024 14:52:10 +0000
-Message-Id: <20240302145210.65919-1-puranjay12@gmail.com>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1709391795; c=relaxed/simple;
+	bh=F+Ft9ySflUOsjYRoTJD/SuxsOSEZzbIMaYW9w/glpJY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=a0bMNapnZQa0/quYl7TDYybdZwf7CKj/0H0By6h7DqP9XawkWoSR+aIAMtq+XjSHGR1rjjEv7UbIHlii3pDBhvTZ+9nv5StBR3EHYqegB8MTHSfmLOJ6yzI5bt7hKDvjcTu39UnB1emDFSOJCsxwqSL1njDZSzUwlJnIcGug/gA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=port70.net; spf=pass smtp.mailfrom=port70.net; arc=none smtp.client-ip=81.7.13.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=port70.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=port70.net
+Received: by port70.net (Postfix, from userid 1002)
+	id 691CEABEC0C7; Sat,  2 Mar 2024 15:57:02 +0100 (CET)
+Date: Sat, 2 Mar 2024 15:57:02 +0100
+From: Szabolcs Nagy <nsz@port70.net>
+To: Mark Brown <broonie@kernel.org>
+Cc: "dalias@libc.org" <dalias@libc.org>,
+	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+	"suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+	"Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>,
+	"musl@lists.openwall.com" <musl@lists.openwall.com>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+	"corbet@lwn.net" <corbet@lwn.net>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+	"oliver.upton@linux.dev" <oliver.upton@linux.dev>,
+	"palmer@dabbelt.com" <palmer@dabbelt.com>,
+	"debug@rivosinc.com" <debug@rivosinc.com>,
+	"aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+	"shuah@kernel.org" <shuah@kernel.org>,
+	"arnd@arndb.de" <arnd@arndb.de>, "maz@kernel.org" <maz@kernel.org>,
+	"oleg@redhat.com" <oleg@redhat.com>,
+	"fweimer@redhat.com" <fweimer@redhat.com>,
+	"keescook@chromium.org" <keescook@chromium.org>,
+	"james.morse@arm.com" <james.morse@arm.com>,
+	"ebiederm@xmission.com" <ebiederm@xmission.com>,
+	"will@kernel.org" <will@kernel.org>,
+	"brauner@kernel.org" <brauner@kernel.org>,
+	"hjl.tools@gmail.com" <hjl.tools@gmail.com>,
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+	"paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+	"ardb@kernel.org" <ardb@kernel.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"thiago.bauermann@linaro.org" <thiago.bauermann@linaro.org>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"sorear@fastmail.com" <sorear@fastmail.com>,
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+Subject: Re: [musl] Re: [PATCH v8 00/38] arm64/gcs: Provide support for GCS
+ in userspace
+Message-ID: <20240302145702.GD1884416@port70.net>
+Mail-Followup-To: Mark Brown <broonie@kernel.org>,
+	"dalias@libc.org" <dalias@libc.org>,
+	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+	"linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+	"suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+	"Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>,
+	"musl@lists.openwall.com" <musl@lists.openwall.com>,
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+	"corbet@lwn.net" <corbet@lwn.net>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+	"oliver.upton@linux.dev" <oliver.upton@linux.dev>,
+	"palmer@dabbelt.com" <palmer@dabbelt.com>,
+	"debug@rivosinc.com" <debug@rivosinc.com>,
+	"aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+	"shuah@kernel.org" <shuah@kernel.org>,
+	"arnd@arndb.de" <arnd@arndb.de>, "maz@kernel.org" <maz@kernel.org>,
+	"oleg@redhat.com" <oleg@redhat.com>,
+	"fweimer@redhat.com" <fweimer@redhat.com>,
+	"keescook@chromium.org" <keescook@chromium.org>,
+	"james.morse@arm.com" <james.morse@arm.com>,
+	"ebiederm@xmission.com" <ebiederm@xmission.com>,
+	"will@kernel.org" <will@kernel.org>,
+	"brauner@kernel.org" <brauner@kernel.org>,
+	"hjl.tools@gmail.com" <hjl.tools@gmail.com>,
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+	"paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+	"ardb@kernel.org" <ardb@kernel.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"thiago.bauermann@linaro.org" <thiago.bauermann@linaro.org>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"sorear@fastmail.com" <sorear@fastmail.com>,
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+References: <22a53b78-10d7-4a5a-a01e-b2f3a8c22e94@app.fastmail.com>
+ <4c7bdf8fde9cc45174f10b9221fa58ffb450b755.camel@intel.com>
+ <20240220185714.GO4163@brightrain.aerifal.cx>
+ <9fc9c45ff6e14df80ad023e66ff7a978bd4ec91c.camel@intel.com>
+ <20240220235415.GP4163@brightrain.aerifal.cx>
+ <a57d6c7eada4b9a7c35addbc8556f5b53a0c3e6f.camel@intel.com>
+ <20240221012736.GQ4163@brightrain.aerifal.cx>
+ <d18f060d-37ac-48b1-9f67-a5c5db79b34e@sirena.org.uk>
+ <20240221145800.GR4163@brightrain.aerifal.cx>
+ <4a3809e8-61b2-4341-a868-292ba6e64e8a@sirena.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4a3809e8-61b2-4341-a868-292ba6e64e8a@sirena.org.uk>
 
-Formerly, we had to access the RELA and RELR tables via the kernel
-mapping that was being relocated, and so deriving the start and end
-addresses was done by loading __rela_offset in x9 and then adding the
-actual virtual offset of the kernel to it.
+* Mark Brown <broonie@kernel.org> [2024-02-21 17:36:12 +0000]:
 
-d7bea550279d ("arm64: head: use relative references to the RELA and RELR
-tables") changed this to load the entries via the ID map as we map the
-entire kernel image via the ID map.
+> On Wed, Feb 21, 2024 at 09:58:01AM -0500, dalias@libc.org wrote:
+> > On Wed, Feb 21, 2024 at 01:53:10PM +0000, Mark Brown wrote:
+> > > On Tue, Feb 20, 2024 at 08:27:37PM -0500, dalias@libc.org wrote:
+> > > > On Wed, Feb 21, 2024 at 12:35:48AM +0000, Edgecombe, Rick P wrote:
+> 
+> > > > > (INCSSP, RSTORSSP, etc). These are a collection of instructions that
+> > > > > allow limited control of the SSP. When shadow stack gets disabled,
+> > > > > these suddenly turn into #UD generating instructions. So any other
+> > > > > threads executing those instructions when shadow stack got disabled
+> > > > > would be in for a nasty surprise.
+> 
+> > > > This is the kernel's problem if that's happening. It should be
+> > > > trapping these and returning immediately like a NOP if shadow stack
+> > > > has been disabled, not generating SIGILL.
+> 
+> > > I'm not sure that's going to work out well, all it takes is some code
+> > > that's looking at the shadow stack and expecting something to happen as
+> > > a result of the instructions it's executing and we run into trouble.  A
+> 
+> > I said NOP but there's no reason it strictly needs to be a NOP. It
+> > could instead do something reasonable to convey the state of racing
+> > with shadow stack being disabled.
+> 
+> This feels like it's getting complicated and I fear it may be an uphill
+> struggle to get such code merged, at least for arm64.  My instinct is
 
-The two instructions for finding the actual virtual offset were left by
-that commit, so remove them now as they are unnecessary and add runtime
-overhead.
+the aarch64 behaviour is already nop
+for gcs instructions when gcs is disabled.
+the isa was designed so async disable is
+possible.
 
-Fixes: d7bea550279d ("arm64: head: use relative references to the RELA and RELR tables")
-Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
----
- arch/arm64/kernel/head.S | 2 --
- 1 file changed, 2 deletions(-)
+only x86 linux would have to emulate this.
 
-diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
-index cab7f91949d8..90db196f7c19 100644
---- a/arch/arm64/kernel/head.S
-+++ b/arch/arm64/kernel/head.S
-@@ -787,8 +787,6 @@ SYM_FUNC_START_LOCAL(__relocate_kernel)
- 	 */
- 	adr_l	x9, __rela_start
- 	adr_l	x10, __rela_end
--	mov_q	x11, KIMAGE_VADDR		// default virtual offset
--	add	x11, x11, x23			// actual virtual offset
- 
- 0:	cmp	x9, x10
- 	b.hs	1f
+> that it's going to be much more robust and generally tractable to let
+> things run to some suitable synchronisation point and then disable
+> there, but if we're going to do that then userspace can hopefully
+> arrange to do the disabling itself through the standard disable
+> interface anyway.  Presumably it'll want to notice things being disabled
+> at some point anyway?  TBH that's been how all the prior proposals for
+> process wide disable I've seen were done.
 
-base-commit: 5ad3cb0ed525b80c7f66c32b49a68c1f3510bec9
--- 
-2.42.0
 
 
