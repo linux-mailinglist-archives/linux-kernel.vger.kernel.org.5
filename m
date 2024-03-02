@@ -1,118 +1,154 @@
-Return-Path: <linux-kernel+bounces-89412-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89413-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2781D86F003
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 11:23:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 328BB86F004
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 11:28:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB34F1F22113
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 10:23:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8EC4283CB8
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 10:28:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F140156E4;
-	Sat,  2 Mar 2024 10:23:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D9011642F;
+	Sat,  2 Mar 2024 10:28:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S2lqwERC"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RQGCCzLt"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 451CD17567;
-	Sat,  2 Mar 2024 10:23:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A2D714F7A;
+	Sat,  2 Mar 2024 10:28:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709374988; cv=none; b=niKKLUXFLJ5wjdMA2Ynn/aYIOx9AxskHLwKCBBC2Agd8n4SBEWCZcML4RpC/nM3AqIm0I6SwomYiZTrkKeFbritMtSAzky3dT3OPw865wuBuWlVdWoMhhq7C7QITCR29mHbZvVDh9shPIyRJ9XDhkayYzcLRsZ+tv3ySQVJAvI4=
+	t=1709375304; cv=none; b=CZ59KYncEF2T9Xaujkkx/zgjjVLENvJ7QYIYdJLvHS+iXbw9I/C77eJcO37yxBxsBiAm340MfK2Enr5P37Z32MotFC9jq7Asl6HF5vBxO/HzwRO/HG/Nvvs/Xn3vbbxb0YSLe3mM7T5h1bWtZ8Pl6qkEysHsQx1MdrUO+rl5DUU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709374988; c=relaxed/simple;
-	bh=1lLSSvoCrJfxIs6CmgAu4Yn8SWy84czRL+/AcPJF23s=;
-	h=MIME-Version:In-Reply-To:References:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=c6UzDmI0YxrskUyrQ9AgLZaT78OUXr3ZGpfsKpYKVZHhkVz8Y//PzqjXraAYpCn6CGNLyE7yZ85jAwYYisx6LQFo694GTiuCHsDCCmQHEI91rFLyh9M9hXg8eLE045/wBgVTUMIEG9a2b66UZGblEJA4R7m8yDHG4xHHwkxKEo0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S2lqwERC; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a44ee48fcf5so15694466b.3;
-        Sat, 02 Mar 2024 02:23:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709374985; x=1709979785; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=LBV9h1xsuZcwlMzBeiT8nBrrdb8gAPnxFwKnUXtUNJU=;
-        b=S2lqwERCBM5UC2lyIWcXLUeSaN9Rv09280zTIkuGVxu+fIEbCN5jsKbk2MHSwzveEZ
-         cSlDuaK4s/0HoqU56Ikumc3SsB6mt4xbZRBCcsQAkz+EzbBnReY04relrlY0octe6v/w
-         JJBXk40hmJ+/Lq4n3ze5W2V8en7UkzqnKtPKxOseaxa9bG4gU79bFWu3GnYy0/BkdH3j
-         7bOv1ncbr+l/h/FX2rfTMjtlsF+P78xzvec1Bo2/dNoH/yPAMBzEJF6g7ydKJGNwZFnb
-         0xt2wyqc605MBOtV/t3C/6xjikLmXQ1agzhLDb3OnITOE1AfbgjOd+o3Wijf12hIHH1D
-         3TNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709374985; x=1709979785;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LBV9h1xsuZcwlMzBeiT8nBrrdb8gAPnxFwKnUXtUNJU=;
-        b=EwFZF0czlfr//+SScMbv970HiatxL3Q4E5KkFJchuIBWOJbh0h2d6FJPg8ZXanEH1j
-         POPOm2CsuFA9bwK5I01gxk+Vd0YfPuQfm6KT+5iKKMS3V8OWKCfZUNqmRWaeVMIj1MtW
-         J/XFpddk2Ek03pxg3L/Iu0pWxvaMu+b4qlDZfv+YjBI25sby7Owni1+LHvbEqZ0E6H8d
-         /p2D+TsgGLv+Rxn3eK4GkOwydM6ag0ITbi6UTJZD6CX2kMs6NrVGdWJ19SdGg7g2IbS6
-         17vwCdu2WUNdn+tTpCuCJ6icd2p5IDrIeQg0xwwabKkiAkYqWZUb69YgJIBpYnHwwJlo
-         v+ug==
-X-Forwarded-Encrypted: i=1; AJvYcCXCBME0wU6QMPNlM+n/enjD4CxbV1Ag53OpVYib+aztF5YZ8mqlFolbOWr3hxvZjR+6mDI9GcvvQ5fIerGYkJJqLJKZVUCvE7BUk0RvUVZoWudAEb8n2Oiqng63gtS1wg8Gr9YR7cWCRYlXYTzb8z8uLmAw
-X-Gm-Message-State: AOJu0Yzds89aeJl0HeGXauu6hibd0FiyKQXFz/qsGcR3gesAHIzVvKVl
-	riNaXY8/cuUAG4mRtMi8fuMp3jQ56d5+UlGEdMNB1Zmb10i4OKsgL1Kw08v09AQ6b0KP985bUjM
-	qT+qGPh7NIgCrJwFSlg073Qzz/Jw=
-X-Google-Smtp-Source: AGHT+IHj8ONhpi9AB+guG4N/2SKtmitcDyxljlr4elD+4OZN9rDfDcisQjCg1lWLGsGDFnsviiu26cPYDF/qdmHQeko=
-X-Received: by 2002:a17:906:b09:b0:a44:2634:5c1e with SMTP id
- u9-20020a1709060b0900b00a4426345c1emr3307282ejg.74.1709374985238; Sat, 02 Mar
- 2024 02:23:05 -0800 (PST)
+	s=arc-20240116; t=1709375304; c=relaxed/simple;
+	bh=kRNWOYU8T+ZFbq5usH3n+8N5CzZwfz8CMOtijDS/0aw=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=QsC5IrBjy3hnyXKtb89bdTYbYQchQZg8qh/A5vjYuoubzolflY9WrSuMNWVFB6EmsJcQnnjjvR+tTYAhKZRvXctyA2BBC99YllQjSSb9dP8DGPm8fiQ6XRRBTSOoqZOT8QOQPH/1qP0sUqijxdhfyrmVIE5xidHkUAHy072f8dA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RQGCCzLt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2BFEC433C7;
+	Sat,  2 Mar 2024 10:28:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709375303;
+	bh=kRNWOYU8T+ZFbq5usH3n+8N5CzZwfz8CMOtijDS/0aw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=RQGCCzLttX84RHusWIlDSxVWEgvr+tWVds3hVN5QO819Y3k7qGK8p+drrUpCsnUjf
+	 N1k4fPme84VrtbEbXB9yUsqHkpgbIrnqexDOYECwp8bZhPzL5DGMwHW49/gfMdYaqs
+	 iZOuXFsOVI5C7tJXBBr/V+JHDapJh3qXnvU5emEypvZNTqMcvByXGEazzCPuifcX0L
+	 /TpQHXN/FNQvq33b01cprDZDZs6k7VrOpT9PVc6iqNPvI+RQFkV/PmKAqoupkXQft5
+	 oSDNHfK/zXMOTKzdJh42OA0pCSRkV76Cv5LRDfp0ZO9zqsjfvTbQ3Y9XRSLD4tK5/I
+	 ByXR9x9CKs4aQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rgMbN-008l2V-C6;
+	Sat, 02 Mar 2024 10:28:21 +0000
+Date: Sat, 02 Mar 2024 10:28:18 +0000
+Message-ID: <86zfvh0vy5.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Joey Gouly <joey.gouly@arm.com>,
+	linux-arm-kernel@lists.infradead.org,
+	kvmarm@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: arm64: Only save S1PIE registers when dirty
+In-Reply-To: <562f5e62-c26c-41d9-9ab9-aac02c91c7ae@sirena.org.uk>
+References: <20240301-kvm-arm64-defer-regs-v1-1-401e3de92e97@kernel.org>
+	<ZeItTLQxdxxICw01@linux.dev>
+	<562f5e62-c26c-41d9-9ab9-aac02c91c7ae@sirena.org.uk>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Received: by 2002:a05:6f02:840e:b0:65:85ee:340a with HTTP; Sat, 2 Mar 2024
- 02:23:04 -0800 (PST)
-In-Reply-To: <4871a305-5d45-47d2-85f2-d718c423db80@canonical.com>
-References: <f184a2d6-7892-4e43-a0cd-cab638c3d5c2@amd.com> <096178c9-91de-4752-bdc4-6a31bcdcbaf8@amd.com>
- <4871a305-5d45-47d2-85f2-d718c423db80@canonical.com>
-From: Mateusz Guzik <mjguzik@gmail.com>
-Date: Sat, 2 Mar 2024 11:23:04 +0100
-Message-ID: <CAGudoHFkDmGuPQDLf6rfiJxUdqFxjeeM-_9rFCApSrBYzfyRmA@mail.gmail.com>
-Subject: Re: [RFC 0/9] Nginx refcount scalability issue with Apparmor enabled
- and potential solutions
-To: John Johansen <john.johansen@canonical.com>
-Cc: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>, paul@paul-moore.com, jmorris@namei.org, 
-	serge@hallyn.com, linux-security-module@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, "Gautham R. Shenoy" <gautham.shenoy@amd.com>, 
-	"Shukla, Santosh" <Santosh.Shukla@amd.com>, "Narayan, Ananth" <Ananth.Narayan@amd.com>, 
-	raghavendra.kodsarathimmappa@amd.com, koverstreet@google.com, 
-	paulmck@kernel.org, boqun.feng@gmail.com, vinicius.gomes@intel.com
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: broonie@kernel.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, joey.gouly@arm.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On 2/9/24, John Johansen <john.johansen@canonical.com> wrote:
-> On 2/6/24 20:40, Neeraj Upadhyay wrote:
->> Gentle ping.
->>
->> John,
->>
->> Could you please confirm that:
->>
->> a. The AppArmor refcount usage described in the RFC is correct?
->> b. Approach taken to fix the scalability issue is valid/correct?
->>
->
-> Hi Neeraj,
->
-> I know your patchset has been waiting on review for a long time.
-> Unfortunately I have been very, very busy lately. I will try to
-> get to it this weekend, but I can't promise that I will be able
-> to get the review fully done.
->
+On Fri, 01 Mar 2024 21:13:26 +0000,
+Mark Brown <broonie@kernel.org> wrote:
+> 
+> [1  <text/plain; us-ascii (7bit)>]
+> On Fri, Mar 01, 2024 at 07:32:28PM +0000, Oliver Upton wrote:
+> > On Fri, Mar 01, 2024 at 06:05:53PM +0000, Mark Brown wrote:
+> 
+> > > I don't have a good sense if this is a good idea or not, or if this is a
+> > > desirable implementation of the concept - the patch is based on some
+> > > concerns about the cost of the system register context switching.  We
+> > > should be able to do something similar for some of the other registers.
+> 
+> > Is there any data beyond a microbenchmark to suggest save elision
+> > benefits the VM at all? The idea of baking the trap configuration based
+> > on what KVM _thinks_ the guest will do isn't particularly exciting. This
+> > doesn't seem to be a one-size-fits-all solution.
+> 
+> No, and as I said above I'm really not confident about this.  There's no
+> hardware with these registers yet as far as I know so I don't know how
+> meaningful any benchmark would be anyway, and as you suggest even with a
+> benchmark a new guest could always come along and blow performance up
+> with a change in access patterns.
+> 
+> > The overheads of guest exits are extremely configuration dependent, and
+> > on VHE the save/restore of EL1 state happens at vcpu_load() / vcpu_put()
+> > rather than every exit. There isn't a whole lot KVM can do to lessen the
+> > blow of sharing EL1 in the nVHE configuration.
+> 
+> > Looking a bit further out, the cost of traps will be dramatically higher
+> > when running as a guest hypervisor, so we'd want to avoid them if
+> > possible...
+> 
+> Indeed, but OTOH I got some complaints about adding more system register
 
-Gentle prod.
+Complains from whom? I can't see anything in my inbox, so it my
+conclusion that these "issues" are not serious enough to be publicly
+mentioned.
 
-Any chances of this getting reviewed in the foreseeable future? Would
-be a real bummer if the patchset fell through the cracks.
+> switching in __sysreg_save_el1_state() for one of my other serieses that
+> specifically mentioned nested virt and there don't seem to be a huge
+> range of other options for reducing what we're doing with context
+> switching without using traps to figure out what's in use, especially in
+> the nVHE case.  I figured I'd send the patch so the idea could be
+> considered.
+
+nVHE has a cost. If someone finds it too slow, they can use VHE. If
+they rely on nVHE for isolation, then they know exactly what they are
+paying for.
+
+They can also avoid exposing the feature to the guest, which will
+remove *any* save/restore. because *that* is the right thing to do if
+you want to minimise the impact of additional features.
+
+If anything, I'm actually minded to remove existing instances of this
+stupid trapping, such as PAuth, which is entirely pointless.
+
+Sysreg access should essentially be free. 90% of it is done out of
+context, and requires no synchronisation. If someone has HW that is so
+badly affected by something that should have the same cost as a NOP,
+they can borrow a hammer from my toolbox and put this HW out of its
+misery.
+
+The only case where this sort of trap can be beneficial is when the
+cost of the trap (over 60 64bit registers being saved/restored --
+that's host and guest's GPRs) is small compared to the cost of the
+context switch of the trapped state. This may make sense for FP, SVE
+and the like. Doesn't make much sense for anything else.
+
+	M.
 
 -- 
-Mateusz Guzik <mjguzik gmail.com>
+Without deviation from the norm, progress is not possible.
 
