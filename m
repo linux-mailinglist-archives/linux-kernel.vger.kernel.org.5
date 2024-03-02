@@ -1,134 +1,118 @@
-Return-Path: <linux-kernel+bounces-89411-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89412-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 229EA86F001
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 11:23:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2781D86F003
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 11:23:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 434911C2187B
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 10:23:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB34F1F22113
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 10:23:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FBE215EB0;
-	Sat,  2 Mar 2024 10:22:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F140156E4;
+	Sat,  2 Mar 2024 10:23:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="F++qLLeN"
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S2lqwERC"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8622413FFA
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 10:22:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 451CD17567;
+	Sat,  2 Mar 2024 10:23:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709374977; cv=none; b=S83kbJsn/cNhR/UUFaWvRj7v6rpt5wJ+gniQvH5FhBsTePQOBQ26DbKshALMBJ22fmvosHWUBAYRGpCaAJn8nDnPwwmxiu1wDqQiR4s9fH+UaaLw6c/fK0c1nN8kQ6/kmPlGBbh47OR/7heA5GbU5sI94vOzbmP8n3fbnRBHVwI=
+	t=1709374988; cv=none; b=niKKLUXFLJ5wjdMA2Ynn/aYIOx9AxskHLwKCBBC2Agd8n4SBEWCZcML4RpC/nM3AqIm0I6SwomYiZTrkKeFbritMtSAzky3dT3OPw865wuBuWlVdWoMhhq7C7QITCR29mHbZvVDh9shPIyRJ9XDhkayYzcLRsZ+tv3ySQVJAvI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709374977; c=relaxed/simple;
-	bh=/0QmJ9fSROWFqfGEyhsejzGlrxyZAkEvZidBoUr+Jm4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gdVjRsVL71hspTQMaHDZ4KxSz1ghY2mWmk2pYRUiJnroNtIDkt6gh0TQa8TY3s6wxM3qzkIokFT7oT3PNJ+4Mqd5/idN3Ka6SBKTBia3a7aDdP2pDufvvyzq7H6MQIY9mhIzjEAKdVr2qZBcqbh65feXpbbANoIMKM3SLQMH3kQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=F++qLLeN; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-412d67e4e91so1259015e9.2
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Mar 2024 02:22:55 -0800 (PST)
+	s=arc-20240116; t=1709374988; c=relaxed/simple;
+	bh=1lLSSvoCrJfxIs6CmgAu4Yn8SWy84czRL+/AcPJF23s=;
+	h=MIME-Version:In-Reply-To:References:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=c6UzDmI0YxrskUyrQ9AgLZaT78OUXr3ZGpfsKpYKVZHhkVz8Y//PzqjXraAYpCn6CGNLyE7yZ85jAwYYisx6LQFo694GTiuCHsDCCmQHEI91rFLyh9M9hXg8eLE045/wBgVTUMIEG9a2b66UZGblEJA4R7m8yDHG4xHHwkxKEo0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S2lqwERC; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a44ee48fcf5so15694466b.3;
+        Sat, 02 Mar 2024 02:23:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709374974; x=1709979774; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pMdekztujkt4AzA7D7S8LzaTnjsciXQ/ToTUP2Gu6E0=;
-        b=F++qLLeN+9acaQqFBJyIQMsRmZakTD+nQ2ahzgW6VebDxp8TQxMgDl4G6+wPE0Q9Zo
-         BKXs5ycBRvia6rd7IO3uYgYd8ZKNSmFn9AjKd2nAVkmlFROw9y2pzLn+i0tKBNJt+q/3
-         wkqfXu4vi+n8i0w8gSvvi6a0+t6UTHQPfTnaUDMG1fiqT5264JtKfeurtOLlxUlzODZR
-         HTH2zeUVzmIIwOA3zSjZfp706RQLAynjcCOtXMVQx0MFVJb96qlM9DOsSOuZ7sLBy5fb
-         At/Z5N8XIKzpqf9PC6rAxCAd0TaP8XJbtoFDEpXAtjc78NtMO4OxGXF3Jg+6kMLnvc3H
-         079g==
+        d=gmail.com; s=20230601; t=1709374985; x=1709979785; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=LBV9h1xsuZcwlMzBeiT8nBrrdb8gAPnxFwKnUXtUNJU=;
+        b=S2lqwERCBM5UC2lyIWcXLUeSaN9Rv09280zTIkuGVxu+fIEbCN5jsKbk2MHSwzveEZ
+         cSlDuaK4s/0HoqU56Ikumc3SsB6mt4xbZRBCcsQAkz+EzbBnReY04relrlY0octe6v/w
+         JJBXk40hmJ+/Lq4n3ze5W2V8en7UkzqnKtPKxOseaxa9bG4gU79bFWu3GnYy0/BkdH3j
+         7bOv1ncbr+l/h/FX2rfTMjtlsF+P78xzvec1Bo2/dNoH/yPAMBzEJF6g7ydKJGNwZFnb
+         0xt2wyqc605MBOtV/t3C/6xjikLmXQ1agzhLDb3OnITOE1AfbgjOd+o3Wijf12hIHH1D
+         3TNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709374974; x=1709979774;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pMdekztujkt4AzA7D7S8LzaTnjsciXQ/ToTUP2Gu6E0=;
-        b=BhXB+LrwesZHOOKHkp8vouFQq/+y/+RxOerklTX7iclsGUowhbZ/d2MVJeJ3DzV5iv
-         VlYOuDOIKmytJNUBqobBcIyuLUJeiYioy37oVSHf8VF4wNQAhZorElQzRLrek+ig+Lsz
-         iH+F5KfxA3y6eKu7i8W/NG/mE3dQ+MMrYwAQMVaRV8REe1eueK/a9Ep4dh/piO18rsBp
-         hjYZXaEAcR5z7ufgSuYWRTnUK/pgVRcnFJIjjr0iV47d6B8lKPXG9HKsFVCrBm9QexJs
-         Xgzss6vMtn+HI8Lb91wncAlcf1oZYaBSCGu4xYelKvexjZ11cu+qGP3VsQaT2bylIprX
-         anzg==
-X-Forwarded-Encrypted: i=1; AJvYcCX1ewDosjFhCjcCIyClwKgtUhZdekpHetZ03x7GFiaZVUAjwUGBVqlVMFfiw2XogugRT7WXShmZMOcNqF7QmlVbNVlbHPIGxjBJN163
-X-Gm-Message-State: AOJu0Yz/oOHB8t+uR6SnxyPWv7os1C7H8o4FTXc4Kh1Re+QkaDeJL2Te
-	5AoNGUTNwMPywc7cm/18l5RtowEYPND04AdSAO2YTBEHQfLU0o+L8rRIpaXnctU=
-X-Google-Smtp-Source: AGHT+IGto6zf48uW6nzQNBBDCaj4Rx9fjM8ygjSJUN3ZcpzxRro+pdXUvseP3v/8bDsBxgZ2BNgAPA==
-X-Received: by 2002:a05:600c:3149:b0:412:b652:27b7 with SMTP id h9-20020a05600c314900b00412b65227b7mr4001193wmo.33.1709374973835;
-        Sat, 02 Mar 2024 02:22:53 -0800 (PST)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id jl24-20020a05600c6a9800b004126732390asm11126200wmb.37.2024.03.02.02.22.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Mar 2024 02:22:53 -0800 (PST)
-Date: Sat, 2 Mar 2024 13:22:49 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: oe-kbuild@lists.linux.dev, Xi Pardee <xi.pardee@intel.com>
-Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev,
-	linux-kernel@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-	Rajvi Jingar <rajvi.jingar@linux.intel.com>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: Re: drivers/platform/x86/intel/pmc/core.c:500
- pmc_core_send_ltr_ignore() error: uninitialized symbol 'map'.
-Message-ID: <047a3af2-682b-4a2a-89ea-ab2112e0cdea@moroto.mountain>
-References: <cdae87ea-ad8b-44d4-936a-c3b698186932@moroto.mountain>
+        d=1e100.net; s=20230601; t=1709374985; x=1709979785;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LBV9h1xsuZcwlMzBeiT8nBrrdb8gAPnxFwKnUXtUNJU=;
+        b=EwFZF0czlfr//+SScMbv970HiatxL3Q4E5KkFJchuIBWOJbh0h2d6FJPg8ZXanEH1j
+         POPOm2CsuFA9bwK5I01gxk+Vd0YfPuQfm6KT+5iKKMS3V8OWKCfZUNqmRWaeVMIj1MtW
+         J/XFpddk2Ek03pxg3L/Iu0pWxvaMu+b4qlDZfv+YjBI25sby7Owni1+LHvbEqZ0E6H8d
+         /p2D+TsgGLv+Rxn3eK4GkOwydM6ag0ITbi6UTJZD6CX2kMs6NrVGdWJ19SdGg7g2IbS6
+         17vwCdu2WUNdn+tTpCuCJ6icd2p5IDrIeQg0xwwabKkiAkYqWZUb69YgJIBpYnHwwJlo
+         v+ug==
+X-Forwarded-Encrypted: i=1; AJvYcCXCBME0wU6QMPNlM+n/enjD4CxbV1Ag53OpVYib+aztF5YZ8mqlFolbOWr3hxvZjR+6mDI9GcvvQ5fIerGYkJJqLJKZVUCvE7BUk0RvUVZoWudAEb8n2Oiqng63gtS1wg8Gr9YR7cWCRYlXYTzb8z8uLmAw
+X-Gm-Message-State: AOJu0Yzds89aeJl0HeGXauu6hibd0FiyKQXFz/qsGcR3gesAHIzVvKVl
+	riNaXY8/cuUAG4mRtMi8fuMp3jQ56d5+UlGEdMNB1Zmb10i4OKsgL1Kw08v09AQ6b0KP985bUjM
+	qT+qGPh7NIgCrJwFSlg073Qzz/Jw=
+X-Google-Smtp-Source: AGHT+IHj8ONhpi9AB+guG4N/2SKtmitcDyxljlr4elD+4OZN9rDfDcisQjCg1lWLGsGDFnsviiu26cPYDF/qdmHQeko=
+X-Received: by 2002:a17:906:b09:b0:a44:2634:5c1e with SMTP id
+ u9-20020a1709060b0900b00a4426345c1emr3307282ejg.74.1709374985238; Sat, 02 Mar
+ 2024 02:23:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cdae87ea-ad8b-44d4-936a-c3b698186932@moroto.mountain>
+Received: by 2002:a05:6f02:840e:b0:65:85ee:340a with HTTP; Sat, 2 Mar 2024
+ 02:23:04 -0800 (PST)
+In-Reply-To: <4871a305-5d45-47d2-85f2-d718c423db80@canonical.com>
+References: <f184a2d6-7892-4e43-a0cd-cab638c3d5c2@amd.com> <096178c9-91de-4752-bdc4-6a31bcdcbaf8@amd.com>
+ <4871a305-5d45-47d2-85f2-d718c423db80@canonical.com>
+From: Mateusz Guzik <mjguzik@gmail.com>
+Date: Sat, 2 Mar 2024 11:23:04 +0100
+Message-ID: <CAGudoHFkDmGuPQDLf6rfiJxUdqFxjeeM-_9rFCApSrBYzfyRmA@mail.gmail.com>
+Subject: Re: [RFC 0/9] Nginx refcount scalability issue with Apparmor enabled
+ and potential solutions
+To: John Johansen <john.johansen@canonical.com>
+Cc: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>, paul@paul-moore.com, jmorris@namei.org, 
+	serge@hallyn.com, linux-security-module@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, "Gautham R. Shenoy" <gautham.shenoy@amd.com>, 
+	"Shukla, Santosh" <Santosh.Shukla@amd.com>, "Narayan, Ananth" <Ananth.Narayan@amd.com>, 
+	raghavendra.kodsarathimmappa@amd.com, koverstreet@google.com, 
+	paulmck@kernel.org, boqun.feng@gmail.com, vinicius.gomes@intel.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Sat, Mar 02, 2024 at 01:05:45PM +0300, Dan Carpenter wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   5ad3cb0ed525b80c7f66c32b49a68c1f3510bec9
-> commit: 2bcef4529222424559ac9b45948ee9d82c09d9b5 platform/x86:intel/pmc: Enable debugfs multiple PMC support
-> config: i386-randconfig-141-20240302 (https://download.01.org/0day-ci/archive/20240302/202403021544.6qtkaAly-lkp@intel.com/config)
-> compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> | Closes: https://lore.kernel.org/r/202403021544.6qtkaAly-lkp@intel.com/
-> 
-> New smatch warnings:
-> drivers/platform/x86/intel/pmc/core.c:500 pmc_core_send_ltr_ignore() error: uninitialized symbol 'map'.
-> 
-> Old smatch warnings:
-> drivers/platform/x86/intel/pmc/core.c:500 pmc_core_send_ltr_ignore() error: uninitialized symbol 'pmc'.
-> 
-> vim +/map +500 drivers/platform/x86/intel/pmc/core.c
-> 
-> 92f530edd7c955 drivers/platform/x86/intel/pmc/core.c Gayatri Kammela   2022-11-14  463  int pmc_core_send_ltr_ignore(struct pmc_dev *pmcdev, u32 value)
-> 9c2ee19987ef02 drivers/platform/x86/intel_pmc_core.c Rajneesh Bhardwaj 2016-10-07  464  {
-> 2bcef452922242 drivers/platform/x86/intel/pmc/core.c Xi Pardee         2023-06-13  465  	struct pmc *pmc;
-> 2bcef452922242 drivers/platform/x86/intel/pmc/core.c Xi Pardee         2023-06-13  466  	const struct pmc_reg_map *map;
-> 36974daf53888e drivers/platform/x86/intel_pmc_core.c David E. Box      2021-03-19  467  	u32 reg;
-> 2bcef452922242 drivers/platform/x86/intel/pmc/core.c Xi Pardee         2023-06-13  468  	int pmc_index, ltr_index;
-> 9592438886756c drivers/platform/x86/intel_pmc_core.c Andy Shevchenko   2019-12-18  469  
-> 2bcef452922242 drivers/platform/x86/intel/pmc/core.c Xi Pardee         2023-06-13  470  	ltr_index = value;
-> 2bcef452922242 drivers/platform/x86/intel/pmc/core.c Xi Pardee         2023-06-13  471  	/* For platforms with multiple pmcs, ltr index value given by user
-> 2bcef452922242 drivers/platform/x86/intel/pmc/core.c Xi Pardee         2023-06-13  472  	 * is based on the contiguous indexes from ltr_show output.
-> 2bcef452922242 drivers/platform/x86/intel/pmc/core.c Xi Pardee         2023-06-13  473  	 * pmc index and ltr index needs to be calculated from it.
-> 2bcef452922242 drivers/platform/x86/intel/pmc/core.c Xi Pardee         2023-06-13  474  	 */
-> 2bcef452922242 drivers/platform/x86/intel/pmc/core.c Xi Pardee         2023-06-13  475  	for (pmc_index = 0; pmc_index < ARRAY_SIZE(pmcdev->pmcs) && ltr_index > 0; pmc_index++) {
-> 
-> 
-> ltr_index comes from the user via pmc_core_ltr_ignore_write()  Assume
-> that it is zero.
+On 2/9/24, John Johansen <john.johansen@canonical.com> wrote:
+> On 2/6/24 20:40, Neeraj Upadhyay wrote:
+>> Gentle ping.
+>>
+>> John,
+>>
+>> Could you please confirm that:
+>>
+>> a. The AppArmor refcount usage described in the RFC is correct?
+>> b. Approach taken to fix the scalability issue is valid/correct?
+>>
+>
+> Hi Neeraj,
+>
+> I know your patchset has been waiting on review for a long time.
+> Unfortunately I have been very, very busy lately. I will try to
+> get to it this weekend, but I can't promise that I will be able
+> to get the review fully done.
+>
 
-Never mind.  This was fixed in fbcf67ce5a9e ("platform/x86/intel/pmc:
-Fix hang in pmc_core_send_ltr_ignore()").
+Gentle prod.
 
-regards,
-dan carpenter
+Any chances of this getting reviewed in the foreseeable future? Would
+be a real bummer if the patchset fell through the cracks.
 
+-- 
+Mateusz Guzik <mjguzik gmail.com>
 
