@@ -1,190 +1,159 @@
-Return-Path: <linux-kernel+bounces-89246-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89247-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CC7486ED36
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 01:08:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B216486ED39
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 01:09:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA2B21F22C3E
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 00:08:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 341361F22409
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 00:09:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4254510E5;
-	Sat,  2 Mar 2024 00:08:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27B031396;
+	Sat,  2 Mar 2024 00:09:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="sGwhEaA/"
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2047.outbound.protection.outlook.com [40.107.100.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="MOuTRwXE"
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3606F382;
-	Sat,  2 Mar 2024 00:08:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.100.47
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709338118; cv=fail; b=KozcAuxqlBhes5XQVvu3BbQbdF1WS05IrRbkYW2CpOX3U7tYdF2KSiif5qp4tajuClJSh+uaoDXjJhDPyc/I5ZCZEl8SkDqXiJ+KdwZiuEk3l3wN6rlV49fr6F+4LsffguiTop/SpnHSrzs/y99W9sDKbGAUKZNyeal0tx+JjGo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709338118; c=relaxed/simple;
-	bh=wOYdh3BD5/xxi16cr+GlxcUoXt27nTOqn74VaZPNuS0=;
-	h=Date:From:To:Cc:Subject:Message-ID:Content-Type:
-	 Content-Disposition:MIME-Version; b=QbFCldfCvwU44gmvxuevUxkRZkLo80iSZNDV7HCMtTv42mt4EV0l5gGp8oeKU99AQ3ptxpsNG2xBjs+8na9UB07nCe5Pc2x5Pmlh/+R1dnwpnZG/+dP+Tm0oweomRw5QK9Ydy0MxZnOFgY5OUuaD78Xpv+XAa750K1dE2uMkfnk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=sGwhEaA/; arc=fail smtp.client-ip=40.107.100.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZG25MXWi4xdj4bzt5G+6shW7j6eHN9lGpXS4Fr3UjVXA5UPpG8twXcVYinvkfyfiq5god/OXkb4LTsQXyaNFZJ8bhEVhIF1ykDcA1hH68SE6YVLSIdPD+Qap4BxBlP6VPQ9DE3zmmE2ljOT4gBwFUHlYWAf4kvDqBWVuGHPvalAnbO617bJOE3zgEoCp/fVYbc2frxaMUlheADesOTDM3mBnUplt9Mg0OxwsLNawRh0opKmyGc0iPK8T+sOTdIn5GzRikkcT7kiDA75/+znlXTpuLepNOOUN7X5z1J5VURR7tX+uph7lVJq5qKNs3gJMhQp/IlfgLsOy+QSXcJ2bTw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oZj/nrGhw/916OyJeuqdthRW2pWOTF68Zi4GcoFZmEU=;
- b=XdyZd8IKRFiL9fELOtO2AP6hQTfHT3/Y+XUM8+6XQUQ0g80nuVbruFmWCcDHhnTQlYaYMxEKDTL3gp+L0lt4ehDv2MoTOyHqsJVllwrDJqnPQ37pnGOWzrC1lLrGDRdO6FcbgsinGOFre3avmW5IA4nCSNYvC8o5RrccnS7XNgATyoFfMzxL6q4HYQQAC4F66XdAyaYVJ6k5k/Cfxtvv3Vs+us3kRrMF7LvNG/lZHjMHaT+ShEreORj8u+WnVpQA6HEvucx8H4vN6Adjw6/MNPy25XuSwDOayjRM0tv/FrjCHQxVClPbhrKg1PmYQHCl481tkIpgSqlKM2Clbw8lXQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oZj/nrGhw/916OyJeuqdthRW2pWOTF68Zi4GcoFZmEU=;
- b=sGwhEaA/zdNUZdX7844M6jsS3fR2ER1MBd/9tMtcM4fukL40TWMD/L/eok8voi8MoWAq8cqsEnvAjA4gId8aq4k9OtkYKf7r5ScxocQjW9hi2YiYkeRaMOhXq4949Cpzfs/X3g8DEqHZ/cK6Sg6cOp5Eud0XjEYpE9fDXjA4sqYRww2rSC5YpScdIPscTYSmOONZdO7WHBRJoOTwDSf3QM+uB6vmcjdUFz6l+2TJnMEGI4bhsAUTqF0a5gbf9W6mXpxn5VmNSZC1opAnSh2A2XKS9y2e2TQXp/UlgF1IJ4A+swgugNCdNSB+9TP+tmQUP4lhsadvGRAQ+T9iPnofWg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BY5PR12MB3843.namprd12.prod.outlook.com (2603:10b6:a03:1a4::17)
- by BY5PR12MB4113.namprd12.prod.outlook.com (2603:10b6:a03:207::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.34; Sat, 2 Mar
- 2024 00:08:31 +0000
-Received: from BY5PR12MB3843.namprd12.prod.outlook.com
- ([fe80::95bf:7984:9cab:ddda]) by BY5PR12MB3843.namprd12.prod.outlook.com
- ([fe80::95bf:7984:9cab:ddda%7]) with mapi id 15.20.7339.033; Sat, 2 Mar 2024
- 00:08:31 +0000
-Date: Fri, 1 Mar 2024 20:08:29 -0400
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: iommu@lists.linux.dev, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Kevin Tian <kevin.tian@intel.com>
-Subject: [GIT PULL] Please pull IOMMUFD subsystem changes
-Message-ID: <20240302000829.GA749229@nvidia.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="vzwSBGxv4TfS5vgB"
-Content-Disposition: inline
-X-ClientProxiedBy: DS7PR07CA0003.namprd07.prod.outlook.com
- (2603:10b6:5:3af::11) To BY5PR12MB3843.namprd12.prod.outlook.com
- (2603:10b6:a03:1a4::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB1215680
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 00:09:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709338174; cv=none; b=NhE5ynPYFOVsrDko2euf9iAouoDefEFs+N5jt9WLG/b0phCxqVaTDGWWMkyBzHRZw45TLxdB+FCz/NEptSdYk1z/7Zly5xiKzRt1uocbld/4hdEQcxlDLEMx8kEfia0HPTvBmIwP2MYA3D5SzYVePOrrVH+QHxEez8M3t3xbjGE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709338174; c=relaxed/simple;
+	bh=dH+R3CHq13HZg3o2FiRpD3Sc4l20ml1BM78TmQhj43s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qmXQaXWhKX9mNlF5opSINCCbv8bsDh6ma5AesW0xG42x/GVCWiFD8m8qxiOsNKQ6888+Dcffsl3m6OHuuIcvTlI3bFnYE4CrpnvMzLC1r37xkHIK8cj9sN4XrIKoHdmJMEvbWyHsf3AmzJKBTpPBdcvsmbalfMbml29tBW+wYxw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=MOuTRwXE; arc=none smtp.client-ip=209.85.215.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5cdbc4334edso1958950a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 16:09:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1709338171; x=1709942971; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=PlEMlXrKVoQ/VI5q1b4zpBL3OsqlVw7CAlvaBiVG6mY=;
+        b=MOuTRwXEhIPRWgSif23piWeAVFPc+vdnbxKruPntORcbsZe7Ootk7sViJ1qaDdgx2M
+         F3cD09TiuqgzusAKPhmQtslpHuPNr8SczIuJMXdnnZ9haIVfdI5Vs3KAVlvjNTx8pfTd
+         yhjULxFjOZValpASY13e1gED6NXKg4FVa6fj8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709338171; x=1709942971;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PlEMlXrKVoQ/VI5q1b4zpBL3OsqlVw7CAlvaBiVG6mY=;
+        b=Pfo9OPBVp3cQysYzffDBZItd8SSDNtr4bKTB+1yTMv9eocfyPybgqH0yXowSDP/Jcj
+         URifFwCUbDsao1CaIpyp8h75gqkSmA1yEmEAiPAtaG7FXXCxp/h37AWTvPCpyTifu0jl
+         HkKD3gJvT1zXQJqT0pxJNkiBzStGXxMbe7DxYRxuPB788DU4mgxsjfs/4N5LcH+8ueRV
+         hTFJlY/3Bgclbw8VhkYKAK00ViaUHdjkCSKML7ntH47Vv58L1fK0MxeFudKT5bBN1zzR
+         vxfvBI/P5uVobKtA9dxQyQEPqEr58tCT0SXgRI0qO6X4kgjjbx72eG/OsWf1v6lMV7gY
+         V8mQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXiW3eq3hA4sRpYAHqD4RD+sPC1TSUz/V1mvUBGLNTjPXZ1vb8ioi47TztmFzsYN387l/7Oh2OWXfsrG0U27TNT4jQl7j2nvFKeJ6en
+X-Gm-Message-State: AOJu0YyC38Cju0NMLEIek+eTBEJPWR7lhAngrMXxd/WQaudnQy83nIiv
+	U2z1EURR1eayB8soScMy83z9GbLUMDbN6gQ7pP4xXPcGIQFncTYDxHw3dkPUog==
+X-Google-Smtp-Source: AGHT+IHKe06QTxKDNmVjUj7y4VmLN7+kjewYOtUfSzwCo6UhE83ZK5FaGcdZDV0lptWbQ2W8F/RMaA==
+X-Received: by 2002:a05:6a20:6a22:b0:1a1:461a:36ac with SMTP id p34-20020a056a206a2200b001a1461a36acmr494126pzk.11.1709338171344;
+        Fri, 01 Mar 2024 16:09:31 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id x11-20020aa784cb000000b006e45c5d7720sm3611474pfn.93.2024.03.01.16.09.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Mar 2024 16:09:30 -0800 (PST)
+Date: Fri, 1 Mar 2024 16:09:29 -0800
+From: Kees Cook <keescook@chromium.org>
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Wenjia Zhang <wenjia@linux.ibm.com>, Jan Karcher <jaka@linux.ibm.com>,
+	"D. Wythe" <alibuda@linux.alibaba.com>,
+	Tony Lu <tonylu@linux.alibaba.com>,
+	Wen Gu <guwen@linux.alibaba.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] net/smc: Avoid -Wflex-array-member-not-at-end
+ warnings
+Message-ID: <202403011607.8E903049@keescook>
+References: <ZeIhOT44ON5rjPiP@neat>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BY5PR12MB3843:EE_|BY5PR12MB4113:EE_
-X-MS-Office365-Filtering-Correlation-Id: a9ac4da7-2cfd-409b-8abe-08dc3a4ce508
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	ZIh97tfc/QCZDI8DBpV5r67E56/2xX9z6XvYXDn0R0EDAq4b2M7xJZanCAiC8/r7nXY18TtzxhQwMRo3u1ZN4SoseiUokwoF8Oi91TuSHKIGvmyyRmKPlzprJXhIiFuv5+RHplZ+c/Y/8SeZTGBFmxYV96RzUZiJNXQ0Bm705aSNLycCS79KZrebkyj70m4r54NBrYpv0D5WPTInJ9sOH7BmggchK85wcffEqJWDQu5dVQXn+0yeGDRgEfuLhkR6EEoO2z6V9mhAe2vG3eLlOxYJ9epwA2vc3ubASn+53AqFK4IIs4hX+0apRkaMvjoIoSrCI/89YEEafSW77w2FOAVSAwKlNWmpxylZNYhldkWIY/G3cyBMDx+T0MGA2RAEe5qjbkiRuF4eLW1Mcss4S9VUkWt1GrGypv4a1uiUDGh0zRt83SiipaNM5kvY7pH2yW3dTYuDTFvPzAl5qHCHVhoOHG6R40hyhu/jXxKbvOL0OZELoxPpXBYnS7BgZPxvRSmZxc0lhXeuTACXf4dtvYoUsW88Pir74p878s5scc71Z0gmvp7Nq5Ko11X2aNOEZOoBInCA9ueA6fK/7W33MuxykS55O3SYsgNn0ePSg1xJVBUPV+XGsTYOfTspCjNvFX1ILc6njPr5MyTbfTPBsg==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB3843.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?SxXkarRs8lXc676b1NFAChUSmrj8yz5Mbhd4BnGNvRQXSKPVlXUXcqZ+5YvF?=
- =?us-ascii?Q?JxR7Wh/IVq0YmHJnOuWBnv+HlVv6MkVhRihheEHNjaqQ6KB/plA41cIIV/nu?=
- =?us-ascii?Q?KgXGHjCgtFpcACipfvpwULGSTAfS+TfNES35QrDf6uJZXIHD1Mty7FO++1Vs?=
- =?us-ascii?Q?y8GyIK4/QK8wRmQZ0im9KYBQox83gfBzbfuzgiyaahRUJsGnlYsAYw6c+0+i?=
- =?us-ascii?Q?GOuhk3LiOWbcWE7mAMOKwzQ8rpPlU+FTvhAvGHmg/KWt+Tf8Zfeq87zt7Eb1?=
- =?us-ascii?Q?Qb3Rsyrm/6vEAAhDQuKoNQ6gN5W6vvTCSo9B8rVo3qN/UGI4a2OFoTcOo+rh?=
- =?us-ascii?Q?7IzmOib4KlA9TYppdABHUOHwumm3qWaQRSn6ExnUY/eWDqjS+QmWwKrTETc3?=
- =?us-ascii?Q?3LVCOvv8+Q48165Vr/9AxGDM5bsyIpF2pyntARgHSNKCDe+9ID3yPlm5km96?=
- =?us-ascii?Q?dI970VMi2a1FbTe5Ao3ZcIGfFlfVFes7vMYd6FUcCX5KRYVvxCR6EuCeBb6x?=
- =?us-ascii?Q?fYgy8L64TG8RAKHXeAJIw89pMmY43luLRJOxcEiyWMFAbZGKdN8FAOKczUBh?=
- =?us-ascii?Q?b/Sm+V2szsAolHAx+DaFKmpCRVAk0FBvjvtJYuFiCXJdvS991fGvmCuvEEax?=
- =?us-ascii?Q?Opd6yj7/kUegM+KTj3fYiPhrkbUiaG9LRtP4WIQYkeCzZv9o0FCQYEjHJR7T?=
- =?us-ascii?Q?1fM9hRuAQ5HepQL8cX1wW/c8U+GCRH4pyVauM/s+GnalddHSA/5De3erLr+u?=
- =?us-ascii?Q?3a9cdWEYbBD0AuoMXBb3t+IUAcgyNJLfX4z6qffxcph+37g4p9gHM6kqLbZq?=
- =?us-ascii?Q?/pbip6ckJXh/ICaVY7YUtSW5SQ7uoR0QYrUhT7Cw7bxllXQPSjpVV42TZ3rO?=
- =?us-ascii?Q?5ehI/sR4EJnMUWpD2h+Unyl49+17kaSF6SSaTf2/9v6mBYAgrsmrGtrR1jaa?=
- =?us-ascii?Q?oDzcaRqrO+8GPbFbZPpVK/X/P9hnhFVVe/1ONEuLLLazzuIEZ65iPsCMNeBW?=
- =?us-ascii?Q?iWwTy/gl4g7P84X69QjGPN4OiInQbEh5TE5opJ6aFj1u4i6Bgx/AHCAkvkXg?=
- =?us-ascii?Q?vWTvaKIZrXUuS7mrR9bIf1YYehuFmT5yVjUqqLrsHV7q1qmD9YL/asAoQoBG?=
- =?us-ascii?Q?voLoIZ+4yui4pcQeIwNF0od2j4ouW8M6oOpP1kcyagv+dtsNOqevJPjHU0ra?=
- =?us-ascii?Q?MOtuBQCw0rHlYULDTASP/WeEKSvGestb9avVU7YUq5Qf7HBoR589p9zi1Ehb?=
- =?us-ascii?Q?MOYfp4XZOKbPJFFKUlhlR7lyY2IBRuuW4UCwVTqLQpOTkFSLx3YZHR0cyYOW?=
- =?us-ascii?Q?YzyE8dEEYpMRHPp1V7hXgnPKw92RAS5GIZInadeA8/63uk3FduGlPHpaWF3y?=
- =?us-ascii?Q?lEu70a9erSOfXR7B8fIp6Tvb64T2PYeVQK6bEEq4ItxVWMpQ0JCO4HdASC/m?=
- =?us-ascii?Q?okvgPTClyFV68jjkfCyHeNPhWSwQpUvheAjfoDe2p3OBAIuFMtG8EIlqLNVI?=
- =?us-ascii?Q?VSuyCtQ88r18sdUjcMVBm1mfBWjk/OlXSoaGHw5PT5lUmneuO7BW8v3VEXqS?=
- =?us-ascii?Q?+m8ajmYryTmGr26NuR4=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a9ac4da7-2cfd-409b-8abe-08dc3a4ce508
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB3843.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Mar 2024 00:08:31.5527
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: R0lfkIIVR+8RPN4VGO/4IONLw6m8QM3ldMZbzMM0uDu12Fjbmb9VGzOmZX3i8yme
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4113
-
---vzwSBGxv4TfS5vgB
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <ZeIhOT44ON5rjPiP@neat>
 
-Hi Linus,
+On Fri, Mar 01, 2024 at 12:40:57PM -0600, Gustavo A. R. Silva wrote:
+> -Wflex-array-member-not-at-end is coming in GCC-14, and we are getting
+> ready to enable it globally.
+> 
+> There are currently a couple of objects in `struct smc_clc_msg_proposal_area`
+> that contain a couple of flexible structures:
+> 
+> struct smc_clc_msg_proposal_area {
+> 	...
+> 	struct smc_clc_v2_extension             pclc_v2_ext;
+> 	...
+> 	struct smc_clc_smcd_v2_extension        pclc_smcd_v2_ext;
+> 	...
+> };
+> 
+> So, in order to avoid ending up with a couple of flexible-array members
+> in the middle of a struct, we use the `struct_group_tagged()` helper to
+> separate the flexible array from the rest of the members in the flexible
+> structure:
+> 
+> struct smc_clc_smcd_v2_extension {
+>         struct_group_tagged(smc_clc_smcd_v2_extension_hdr, hdr,
+>                             u8 system_eid[SMC_MAX_EID_LEN];
+>                             u8 reserved[16];
+>         );
+>         struct smc_clc_smcd_gid_chid gidchid[];
+> };
+> 
+> With the change described above, we now declare objects of the type of
+> the tagged struct without embedding flexible arrays in the middle of
+> another struct:
+> 
+> struct smc_clc_msg_proposal_area {
+>         ...
+>         struct smc_clc_v2_extension_hdr		pclc_v2_ext;
+>         ...
+>         struct smc_clc_smcd_v2_extension_hdr	pclc_smcd_v2_ext;
+>         ...
+> };
+> 
+> We also use `container_of()` when we need to retrieve a pointer to the
+> flexible structures.
+> 
+> So, with these changes, fix the following warnings:
+> 
+> In file included from net/smc/af_smc.c:42:
+> net/smc/smc_clc.h:186:49: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
+>   186 |         struct smc_clc_v2_extension             pclc_v2_ext;
+>       |                                                 ^~~~~~~~~~~
+> net/smc/smc_clc.h:188:49: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
+>   188 |         struct smc_clc_smcd_v2_extension        pclc_smcd_v2_ext;
+>       |                                                 ^~~~~~~~~~~~~~~~
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-The fixes for the new syzkaller bugs I mentioned before.
+I think this is a nice way to deal with these flex-array cases. Using
+the struct_group() and container_of() means there is very little
+collateral impact. Since this is isolated to a single file, I wonder if
+it's easy to check that there are no binary differences too? I wouldn't
+expect any -- container_of() is all constant expressions, so the
+assignment offsets should all be the same, etc.
 
-Thanks,
-Jason
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-The following changes since commit d206a76d7d2726f3b096037f2079ce0bd3ba329b:
+-Kees
 
-  Linux 6.8-rc6 (2024-02-25 15:46:06 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/jgg/iommufd.git tags/for-linus-iommufd
-
-for you to fetch changes up to bb04d13353885f81c87879b2deb296bd2adb6cab:
-
-  iommufd/selftest: Don't check map/unmap pairing with HUGE_PAGES (2024-02-26 16:59:12 -0400)
-
-----------------------------------------------------------------
-iommufd for 6.8 rc
-
-Four syzkaller found bugs:
-
-- Corruption during error unwind in iommufd_access_change_ioas()
-
-- Overlapping IDs in the test suite due to out of order destruction
-
-- Missing locking for access->ioas in the test suite
-
-- False failures in the test suite validation logic with huge pages
-
-----------------------------------------------------------------
-Jason Gunthorpe (1):
-      iommufd/selftest: Don't check map/unmap pairing with HUGE_PAGES
-
-Nicolin Chen (3):
-      iommufd: Fix iopt_access_list_id overwrite bug
-      iommufd/selftest: Fix mock_dev_num bug
-      iommufd: Fix protection fault in iommufd_test_syz_conv_iova
-
- drivers/iommu/iommufd/io_pagetable.c |  9 +++--
- drivers/iommu/iommufd/selftest.c     | 69 +++++++++++++++++++++++++-----------
- 2 files changed, 54 insertions(+), 24 deletions(-)
-
---vzwSBGxv4TfS5vgB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRRRCHOFoQz/8F5bUaFwuHvBreFYQUCZeJt+wAKCRCFwuHvBreF
-YS32AQCGnBAKvxKIky4W1ejxXTF6Fju64Nf2DRUOCN6qtfxO+wD/fhhMqOUUW12I
-kn7EPF1LIvkZemhb3VXoEAONqZqAewo=
-=i8Gv
------END PGP SIGNATURE-----
-
---vzwSBGxv4TfS5vgB--
+-- 
+Kees Cook
 
