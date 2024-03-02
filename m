@@ -1,128 +1,192 @@
-Return-Path: <linux-kernel+bounces-89343-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89344-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81EA286EF2A
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 08:35:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A898E86EF2D
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 08:42:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D5DCAB23EEF
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 07:35:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 324362842D0
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 07:42:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69E12125AC;
-	Sat,  2 Mar 2024 07:35:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0670812E42;
+	Sat,  2 Mar 2024 07:42:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="dQF1fnFC"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NVYKv2ZE"
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3DDA8479
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 07:35:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6014125B2;
+	Sat,  2 Mar 2024 07:42:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709364915; cv=none; b=bgaZkSqB/WI+GUNBIADbzulFpvSUaEmZTZlN++9VKMpG38g7ep7/kqCfRNvYFI75M+tpfsHvtDNCIv9ZzGC8/AQd+INKhjZJCeHIbHzwbWV2hbhmRSnmxkzp08iCk7VXumxiyVWgTb4SrINf459h3oQCjmTy1JgXefJm0ztb8AM=
+	t=1709365348; cv=none; b=u4sYg5pArqXVw2k7BVUYWEtAgRjmXKaaADK1QsEe6GQaEFH0BcYsA93Y376IB+yVlsg9+iCiLsJ3zxkbzPbCE5vltsRu6V9xDPrjbTmjzlRl1OiBuQC45UgMabf5Kr1N6p7eL11zgQkF5CeUMfbcO5rfyLn6lxczc85+0BeqxXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709364915; c=relaxed/simple;
-	bh=9RsFIsdj7Go63hLLcVGb1lWnHU7y1xrBgOTr1PK/ZMw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Fkh5eLeRdkpvzyRuY0Z/hgzmsWGD+REeT2r4rE3UMCKUfITEfAx/Kn+tgRNvbA/mONbRvgR9/8XwQwv7e/ZDdlTZau19tx9GVHu+PZqSA6FaygbyHzUxsLztAlwUjHPqgrUCiS7k2khFAJpO/5grMjl1RfZXfBYDEpi2hQ/3uYU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=dQF1fnFC; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-412cc617b68so6412545e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 23:35:13 -0800 (PST)
+	s=arc-20240116; t=1709365348; c=relaxed/simple;
+	bh=egQfzR9n2T7+euYgtQ2R2+NxC3oTiAP1hGg0IqRUGhE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=K4JO7ujDm4Zy5G9NxNrZfLlbGYnGHZ62jEbuD0rb538qp/yU1v9Ewljpusnldel9mM6MnF8FKmnI9vdXi8EAYPtrwW2Tg2WIqMlgMihkwgNbKsBhELBJsgUJsESBrLvmY1VTmAK5qzPdrPuaTDCStpjxnhgaX+yT6fhPPY0KIBQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NVYKv2ZE; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6e5629d5237so2911984b3a.3;
+        Fri, 01 Mar 2024 23:42:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1709364912; x=1709969712; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RVIp+bkmfXEEH5Z3CqG36argyLkv9jlPldmOAvVHXfk=;
-        b=dQF1fnFCHjKIWAm4Jvg5DN+77ZJciqfa8E/cDq2XX0qXue9OEFmDK7rPNdV5XvKJjC
-         7KRZ3DFaQ9Xq8jooWk+GR+B5Y6CZAqUivknPSpx2KzDsi39gcrx/Xx0PQJ2mor/to4xH
-         cC6kxJMiYJNiGjXHFllPHXpFSQpz6VGJ7IiL+bfWxVmlq43jUyHcuORypu7/Hm8p/q5B
-         Y+V7eLKjAlEPRT/8NanO4zOTZCIkuAN01sGELDhKca5cC7kYfcZbt2oHfkIevV+giVTw
-         jPtzJWswLakPPvU/4b/Xc2JjH6NTQ49CV6WvHD2Is54EWlfBwLydC2NjRcE3xfjr6NVy
-         cAdw==
+        d=gmail.com; s=20230601; t=1709365345; x=1709970145; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=x1MHxTCslTHTnx3xWuCfr0MVVso4bcAgE6PXu4BxIrE=;
+        b=NVYKv2ZEotGBbAEDq36kFWUt798Vu8ae9eY4NdoD9arZSSIfia7+WBMrwBQhdBVA6P
+         eDg1IjiQwoDbPwcWj5Pd5Tdy5sNWJlRbrik+szNIRR3A0ygBJfX3WdE9t1SUy4QeQ2p9
+         U0hnZGToZj0BCgGs+xudUhRTMFZisQsk11lB1cMYjWs6wZzA8XMGxHY18pZMTya3cLbR
+         NdacDTF8KNyeTgemlsekrhbjqFDrklUZt610ICJhPlsu+7BC7FHCcvzUo9z7PZ/CoMw4
+         tjVVy/cWlap7XiHdEp7qd7eSVcQDlIOPdyyRTeE6f49EdmaeKMOulFoc4BfsMSZPBsf0
+         cRYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709364912; x=1709969712;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RVIp+bkmfXEEH5Z3CqG36argyLkv9jlPldmOAvVHXfk=;
-        b=l9ye73lxm7ahaf91X2gQTNqXhHVGjv1ypwEzOHwzEhQDE6u2DFW5PzlCwKQt0so603
-         DoBeElTBQW/UK2fpVVYz8z430lEnXokaD7yXr7Q02tzRwVidShx+vmkkaVMQdI87UhRu
-         xjWKmxRRQ2AOw0S4UnpVwuIEBP6XSHl2gDBqLirxfafWWcJCPzgGL4eC5ENjcoIC1YAX
-         CWD6eBO5gUfLcgJYSwcLWgNeLbVm5AIPiHvsqTKUgzAfWEo4x6P3V6fpUivCdD7HeiCy
-         DkNnpSNwk2AQAGCniEwAIwBMSB4O4nsNLgrkicinALa8yxu5IL3zInVsiXv3a3oKR2VM
-         Zvpg==
-X-Forwarded-Encrypted: i=1; AJvYcCX6dNnYQJAGFrB5YyRj3LL5SFDJaSq1IVc+W5UzbvNirUAXMJMjOe1suVf5lpWzO79DSaSUEeGuFvOeqo8qjs7wcYwKMOuwWZi3mSQl
-X-Gm-Message-State: AOJu0YzFeMlOuDCFyEE6VrRX0m1/jBwB1ffXOkgrsqFjy4G7I7mNR7Y0
-	4ye8/IqSOK3jbjhDI95F5CJcWMlaaNdltwanTVO8E2+sbpHox7Wz7gO+O69Gtoc=
-X-Google-Smtp-Source: AGHT+IE5p/dElV8MPvX5Z+KxId+N7DYaOhQnGAen5y2yV1ICqZ5gVRXXzuefdWRfCisV+ymJmgjFfw==
-X-Received: by 2002:a05:600c:35cd:b0:412:989a:f6f5 with SMTP id r13-20020a05600c35cd00b00412989af6f5mr3420946wmq.38.1709364912110;
-        Fri, 01 Mar 2024 23:35:12 -0800 (PST)
-Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
-        by smtp.gmail.com with ESMTPSA id u22-20020a05600c139600b0040fdf5e6d40sm7942900wmf.20.2024.03.01.23.35.11
+        d=1e100.net; s=20230601; t=1709365345; x=1709970145;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=x1MHxTCslTHTnx3xWuCfr0MVVso4bcAgE6PXu4BxIrE=;
+        b=B+xGaHLUMGzFM6JwBmYsOO0+e0fQ0Rqzu5oV+zHFXAMG4q5pbtolSwlM830ekJMQmQ
+         ZMPI1NBcbiy4pnU/0at+pU2RW7AbxW9y1s9w1sLbTALuxmItUxI/GcE8O6zFxuO9vzu/
+         wfBPgUh1Zxsz9OLwq9aWTMopkNzO2RfuF1ArsyVTvG4pTgVKvI3AD9RL1qqeMG0Z2fWH
+         CUnlDnNjwWOpwTUF1sM/fdPvRA1Z8BEAfvah3YDcKtAA0tXEwnCaQtW303FL5y/d+xmN
+         U9kej5jZTARe1SdaGjutX2OtSqx/EEeLa7SwJ0KEdAf4YW88ezxYs1fuHGOUQhQFgQJ8
+         j0+A==
+X-Forwarded-Encrypted: i=1; AJvYcCWtqZgYJfJLiMrACjnremjB1CPcPBAf2Haecmxap+eC73rpzT/RbCUMQJwKBq7uYYk9g338Pg8laPuQE8Mkq0ynC3r8k5G0Fp8va+Nwbzz0y8lvFbYAiFB6t+chK2WTJnuJDAw5ePgUJA==
+X-Gm-Message-State: AOJu0YyLUWeDPmWi4t3Rx9p1re7hcvN/HIHkoeoVxl5pjt4EIjAmyU9s
+	qTB7Oe8Hb9zopjcbamaYd8HvdcD0AgZARu7Rz9RPkybF2Rcp0HlypKeoQQLy
+X-Google-Smtp-Source: AGHT+IGxEAGHU8iFmIkI9IaatCGYlh3vesVByMqHYIf1eRM4W0xbZ2kigB146iIWUsC6lWBgkMnO2A==
+X-Received: by 2002:a05:6a00:2354:b0:6e4:6ca5:30b7 with SMTP id j20-20020a056a00235400b006e46ca530b7mr4173722pfj.34.1709365344807;
+        Fri, 01 Mar 2024 23:42:24 -0800 (PST)
+Received: from dw-tp.. ([49.205.218.89])
+        by smtp.gmail.com with ESMTPSA id x11-20020aa784cb000000b006e45c5d7720sm4138206pfn.93.2024.03.01.23.42.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 23:35:11 -0800 (PST)
-Date: Sat, 2 Mar 2024 08:35:10 +0100
-From: Andrew Jones <ajones@ventanamicro.com>
-To: Samuel Holland <samuel.holland@sifive.com>
-Cc: linux-riscv@lists.infradead.org, Albert Ou <aou@eecs.berkeley.edu>, 
-	Alexandre Ghiti <alexghiti@rivosinc.com>, Anup Patel <apatel@ventanamicro.com>, 
-	Dylan Jhong <dylan@andestech.com>, Jisheng Zhang <jszhang@kernel.org>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Sergey Matyukevich <sergey.matyukevich@syntacore.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] riscv: mm: Fix prototype to avoid discarding const
-Message-ID: <20240302-84b126d91dac9f73f5efebaa@orel>
-References: <20240301201837.2826172-1-samuel.holland@sifive.com>
+        Fri, 01 Mar 2024 23:42:24 -0800 (PST)
+From: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+To: linux-fsdevel@vger.kernel.org,
+	linux-ext4@vger.kernel.org
+Cc: Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+	Jan Kara <jack@suse.cz>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Matthew Wilcox <willy@infradead.org>,
+	"Darrick J . Wong" <djwong@kernel.org>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	John Garry <john.g.garry@oracle.com>,
+	linux-kernel@vger.kernel.org,
+	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+Subject: [RFC 0/9] ext4: Add direct-io atomic write support using fsawu
+Date: Sat,  2 Mar 2024 13:11:57 +0530
+Message-ID: <cover.1709356594.git.ritesh.list@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240301201837.2826172-1-samuel.holland@sifive.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 01, 2024 at 12:18:32PM -0800, Samuel Holland wrote:
-> __flush_tlb_range() does not modify the provided cpumask, so its cmask
-> parameter can be pointer-to-const. This avoids the unsafe cast of
-> cpu_online_mask.
-> 
-> Fixes: 54d7431af73e ("riscv: Add support for BATCHED_UNMAP_TLB_FLUSH")
-> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
-> ---
-> 
->  arch/riscv/mm/tlbflush.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-> index 893566e004b7..07d743f87b3f 100644
-> --- a/arch/riscv/mm/tlbflush.c
-> +++ b/arch/riscv/mm/tlbflush.c
-> @@ -99,7 +99,7 @@ static void __ipi_flush_tlb_range_asid(void *info)
->  	local_flush_tlb_range_asid(d->start, d->size, d->stride, d->asid);
->  }
->  
-> -static void __flush_tlb_range(struct cpumask *cmask, unsigned long asid,
-> +static void __flush_tlb_range(const struct cpumask *cmask, unsigned long asid,
->  			      unsigned long start, unsigned long size,
->  			      unsigned long stride)
->  {
-> @@ -200,7 +200,7 @@ void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
->  
->  void flush_tlb_kernel_range(unsigned long start, unsigned long end)
->  {
-> -	__flush_tlb_range((struct cpumask *)cpu_online_mask, FLUSH_TLB_NO_ASID,
-> +	__flush_tlb_range(cpu_online_mask, FLUSH_TLB_NO_ASID,
->  			  start, end - start, PAGE_SIZE);
->  }
->  
-> -- 
-> 2.43.1
->
+Hello all,
 
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+This RFC series adds support for atomic writes to ext4 direct-io using
+filesystem atomic write unit. It's built on top of John's "block atomic
+write v5" series which adds RWF_ATOMIC flag interface to pwritev2() and enables
+atomic write support in underlying device driver and block layer.
+
+This series uses the same RWF_ATOMIC interface for adding atomic write support
+to ext4's direct-io path. One can utilize it by 2 of the methods explained below.
+((1)mkfs.ext4 -b <BS>, (2) with bigalloc).
+
+Filesystem atomic write unit (fsawu):
+============================================
+Atomic writes within ext4 can be supported using below 3 methods -
+1. On a large pagesize system (e.g. Power with 64k pagesize or aarch64 with 64k pagesize),
+   we can mkfs using different blocksizes. e.g. mkfs.ext4 -b <4k/8k/16k/32k/64k).
+   Now if the underlying HW device supports atomic writes, than a corresponding
+   blocksize can be chosen as a filesystem atomic write unit (fsawu) which
+   should be within the underlying hw defined [awu_min, awu_max] range.
+   For such filesystem, fsawu_[min|max] both are equal to blocksize (e.g. 16k)
+
+   On a smaller pagesize system this can be utilized when support for LBS is
+   complete (on ext4).
+
+2. EXT4 already supports a feature called bigalloc. In that ext4 can handle
+   allocation in cluster size units. So for e.g. we can create a filesystem with
+   4k blocksize but with 64k clustersize. Such a configuration can also be used
+   to support atomic writes if the underlying hw device supports it.
+   In such case the fsawu_min will most likely be the filesystem blocksize and
+   fsawu_max will mostly likely be the cluster size.
+
+   So a user can do an atomic write of any size between [fsawu_min, fsawu_max]
+   range as long as it satisfies other constraints being laid out by HW device
+   (or by software stack) to support atomic writes.
+   e.g. len should be a power of 2, pos % len should be naturally
+   aligned and [start | end] (phys offsets) should not straddle over
+   an atomic write boundary.
+
+3. EXT4 mballoc can be made aware of doing aligned block allocation for e.g. by
+   utilizing cr-0 allocation criteria. With this support, we won't be needing
+   to format a new filesystem and hopefully when the support for this in mballoc
+   is done, it can utilize the same interface/helper routines laid out in this
+   patch series. There is work going on in this aspect too in parallel [2]
+
+
+Purpose of an early RFC:
+(note only minimal testing has been done on this).
+========================
+Other than getting early review comments on the design, hopefully it should also
+help folks in their discussion at LSFMM since there are various topic proposals
+out there regarding atomic write support in xfs and ext4 [3][4].
+
+
+How to utilize this support:
+===========================
+1. mkfs.ext4 -b 4096 -C 65536 /dev/<sdb> (scsi_debug or device with atomic write)
+   or mkfs.ext4 -b <BS=16k> if your platform supports it.
+2. mount /dev/sdb /mnt
+3. touch /mnt/f1
+4. chattr +W /mnt/f1
+5. xfs_io -dc "pwrite <pos> <len>" /mnt/f1
+
+
+References:
+===========
+[1]: https://lore.kernel.org/all/20240226173612.1478858-1-john.g.garry@oracle.com/
+[2]: https://lore.kernel.org/linux-ext4/cover.1701339358.git.ojaswin@linux.ibm.com/
+[3]: https://www.spinics.net/lists/linux-xfs/msg81086.html
+[4]: https://www.spinics.net/lists/linux-fsdevel/msg265226.html
+
+John Garry (1):
+  fs: Add FS_XFLAG_ATOMICWRITES flag
+
+Ritesh Harjani (IBM) (7):
+  fs: Reserve inode flag FS_ATOMICWRITES_FL for atomic writes
+  iomap: Add atomic write support for direct-io
+  ext4: Add statx and other atomic write helper routines
+  ext4: Adds direct-io atomic writes checks
+  ext4: Add an inode flag for atomic writes
+  ext4: Enable FMODE_CAN_ATOMIC_WRITE in open for direct-io
+  ext4: Adds atomic writes using fsawu
+
+Ritesh Harjani (IBM) (1):
+  e2fsprogs/chattr: Supports atomic writes attribute
+
+ fs/ext4/ext4.h           | 87 +++++++++++++++++++++++++++++++++++++++-
+ fs/ext4/file.c           | 38 ++++++++++++++++--
+ fs/ext4/inode.c          | 16 ++++++++
+ fs/ext4/ioctl.c          | 11 +++++
+ fs/ext4/super.c          |  1 +
+ fs/ioctl.c               |  4 ++
+ fs/iomap/direct-io.c     | 75 ++++++++++++++++++++++++++++++++--
+ fs/iomap/trace.h         |  3 +-
+ include/linux/fileattr.h |  4 +-
+ include/linux/iomap.h    |  1 +
+ include/uapi/linux/fs.h  |  2 +
+ 11 files changed, 232 insertions(+), 10 deletions(-)
+
+--
+2.39.2
+
 
