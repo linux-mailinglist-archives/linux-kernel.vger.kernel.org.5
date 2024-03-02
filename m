@@ -1,460 +1,459 @@
-Return-Path: <linux-kernel+bounces-89415-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89416-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6512186F009
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 11:32:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2586486F00C
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 11:33:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8913F1C20C09
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 10:32:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 490091C20BCA
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 10:33:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B210716439;
-	Sat,  2 Mar 2024 10:31:49 +0000 (UTC)
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1479B14296;
+	Sat,  2 Mar 2024 10:33:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="mxsoKWpf"
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B5D514275;
-	Sat,  2 Mar 2024 10:31:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C17C016FF4F
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 10:33:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709375508; cv=none; b=fOZNE0Q23KT2ACUCJxzMKVrpwvMqzSJwgqHbdQ6ccfbDexKvy9I+Eh1yWKUEuDgox/xRT2PmzB8KJzFwfe13X6k9EIw4J8zyEOtMUSozWgj6xS+4kcAqy9ZmrtqOqViPOPrADY6iA+jTFpNElTESt5h//R+iyxZeo55aw40JXTs=
+	t=1709375589; cv=none; b=RkFu60qL09/AYuLpRCAItI9NvV6eUr8aHGsr+8/AcD9qeW2QEBOU3NcvsObGmD46+H5mc8xuuplHQZb13iehcaFxJgbMa4H+2NQ4NZcR+B9PGixI04H9IrM//7FCgVLMVYctBZkWfrM+dPk6DvTTdwgQ6IunEoHiZRlb+Rjl1Hk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709375508; c=relaxed/simple;
-	bh=beDdbXEFaSG4DXuS5QVb0tO5/w8BENgdJ6p8YrVG+SU=;
-	h=From:In-Reply-To:Content-Type:References:Date:Cc:To:MIME-Version:
-	 Message-ID:Subject; b=OXm5w5KKiM5AkOxYaIBmHbtKaPvI3Qmpy+IXiZKoNIBIfKUbbQxtl42o0cfBugsP0mocWKyUmltre9BtH9/q5zwnEKHnHyWcyDBO+N9jw8iWoksGFHyUSmdtWbNzndxd9rJEwLscQHWLp247cfnKWzDa3lXK/XUsq3Yy0ZBj2/M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-Received: from harlem.collaboradmins.com (harlem.collaboradmins.com [IPv6:2a01:4f8:1c0c:5936::1])
-	by madrid.collaboradmins.com (Postfix) with ESMTP id 9C3A337802F2;
-	Sat,  2 Mar 2024 10:31:37 +0000 (UTC)
-From: "Adrian Ratiu" <adrian.ratiu@collabora.com>
-In-Reply-To: <202403011451.C236A38@keescook>
-Content-Type: text/plain; charset="utf-8"
-X-Forward: 127.0.0.1
-References: <20240301213442.198443-1-adrian.ratiu@collabora.com> <202403011451.C236A38@keescook>
-Date: Sat, 02 Mar 2024 10:31:37 +0000
-Cc: linux-fsdevel@vger.kernel.org, kernel@collabora.com, linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org, linux-doc@vger.kernel.org, "Guenter Roeck" <groeck@chromium.org>, "Doug Anderson" <dianders@chromium.org>, "Jann Horn" <jannh@google.com>, "Andrew Morton" <akpm@linux-foundation.org>, "Randy Dunlap" <rdunlap@infradead.org>, "Christian Brauner" <brauner@kernel.org>, "Mike Frysinger" <vapier@chromium.org>
-To: "Kees Cook" <keescook@chromium.org>
+	s=arc-20240116; t=1709375589; c=relaxed/simple;
+	bh=K7Iisr1MKC16KKcX1TxmeK0WbAx/XArzjU3blDvI6EI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DuzzKRX1ZTukyRIY7V4S/T5WyYu2y2B09Oqy1346r6mSnWHehJEW2m5K+LYP8k9dugbW7vmp9XvDKGfU/NkFRThPHzHU8iZDVu5/7QtFnstzfyDPx0NN7eL/2qBNyHggzvWg1zShe6+O15bqMRBVOHYCn6EG4yVyBatOB6ieQTs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=mxsoKWpf; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-33e12916565so1464462f8f.1
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Mar 2024 02:33:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1709375586; x=1709980386; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=vOwQz5S2SL2KQrZjN2YZMd83aZlPaEVwU2SMEfIW6Xk=;
+        b=mxsoKWpfJPkkEVQ1oiPXh/JJGt1/WM0MQCxlQDeuBXT0R1qoEOfscz1T2lATutmwK8
+         DiSqMn+j2ISv4i0NIjwo7zCV07kFe9CL4Hr4HLy8vebYQIvX3q4HMjlh9q3KiAWIcHwC
+         Y3fkYtvDoMhSvxa8cCyERVTcyghGbScTEtwFMAiji8GEJ0+EYeBCxvQlQW+ytdnBfKMY
+         Uixp9ClLQDH6hJ8HQ+Xi8AYxIDAk/wSwAP5FxhMaHiku/1v4jKnvq67y8E7citfD5BT0
+         Gqq6d7xoPaxv0RPkfR7/9Wqkh+ryqxkgbQyBXWH2Kry7RCcbvuViXK3pMF2gfREna7eY
+         Kr7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709375586; x=1709980386;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vOwQz5S2SL2KQrZjN2YZMd83aZlPaEVwU2SMEfIW6Xk=;
+        b=uXQ9sSq0+3KhQtjWLxb16NxL8q0yUs9+GKBtnjCktAfJhFlXYhjycv6pDdTtc+0pb/
+         l4NkXmD8dSK2AjcD7fZlbB6aSdy8WJ2iZaTQ82osKjTDusiGsVJBZrVUhYtEGkeIaSPh
+         C/28o5CcVYgQH/cOl1yPH6QqmkIyyigzm14/jUacPsfwyhs1ZlhEo0U5BIRTZZPRVqm4
+         QGkqne4IP4e3S25NJlxclUULBrgM6M1Wsd1spbhwAYs88XT+MqbOA7kS40dY5VePkhJd
+         xHgF0kREUa0AoZwKrN4GiOXQW23W4xvbNBkfiY9TxMNn001DeGfZgTj4VUwvHuWjpGnG
+         +6nA==
+X-Gm-Message-State: AOJu0YxVH4NiCNybXK13x3WRL9Lnk9x4jmYU50BmxUgLYoY1VcdPG223
+	qoGB+wJ+De8yGwf76mjcXWgKqngv0ZGM3V53HyMEKAb/H1hBoUmBtMgZS7SYv6o=
+X-Google-Smtp-Source: AGHT+IGQe54+BqXhVQUGubJaW6dLQB+JNDjRKy7Ghawz1YYSOd5GSyVMIwm09hvQMSqTt63dZbBkKA==
+X-Received: by 2002:adf:cb8a:0:b0:33d:90c2:c7f4 with SMTP id q10-20020adfcb8a000000b0033d90c2c7f4mr5445684wrh.14.1709375585902;
+        Sat, 02 Mar 2024 02:33:05 -0800 (PST)
+Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
+        by smtp.gmail.com with ESMTPSA id bv16-20020a0560001f1000b0033e0523b829sm7177928wrb.13.2024.03.02.02.33.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Mar 2024 02:33:05 -0800 (PST)
+Date: Sat, 2 Mar 2024 11:33:04 +0100
+From: Andrew Jones <ajones@ventanamicro.com>
+To: Atish Patra <atishp@rivosinc.com>
+Cc: linux-kernel@vger.kernel.org, Anup Patel <anup@brainfault.org>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alexghiti@rivosinc.com>, 
+	Atish Patra <atishp@atishpatra.org>, Conor Dooley <conor.dooley@microchip.com>, 
+	Guo Ren <guoren@kernel.org>, Icenowy Zheng <uwu@icenowy.me>, kvm-riscv@lists.infradead.org, 
+	kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	Mark Rutland <mark.rutland@arm.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Shuah Khan <shuah@kernel.org>, Will Deacon <will@kernel.org>
+Subject: Re: [PATCH v4 09/15] RISC-V: KVM: Add perf sampling support for
+ guests
+Message-ID: <20240302-f9732d962e5f7c7760059f2e@orel>
+References: <20240229010130.1380926-1-atishp@rivosinc.com>
+ <20240229010130.1380926-10-atishp@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <158ea-65e30000-105-38e7da00@91796698>
-Subject: =?utf-8?q?Re=3A?= [PATCH v2] =?utf-8?q?proc=3A?= allow restricting 
- /proc/pid/mem writes
-User-Agent: SOGoMail 5.10.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240229010130.1380926-10-atishp@rivosinc.com>
 
-On Saturday, March 02, 2024 01:55 EET, Kees Cook <keescook@chromium.org=
-> wrote:
+On Wed, Feb 28, 2024 at 05:01:24PM -0800, Atish Patra wrote:
+> KVM enables perf for guest via counter virtualization. However, the
+> sampling can not be supported as there is no mechanism to enabled
+> trap/emulate scountovf in ISA yet. Rely on the SBI PMU snapshot
+> to provide the counter overflow data via the shared memory.
+> 
+> In case of sampling event, the host first guest the LCOFI interrupt
+       
+s/guest the LCOFI/sets the guest's LCOFI/
 
-> On Fri, Mar 01, 2024 at 11:34:42PM +0200, Adrian Ratiu wrote:
-> > Prior to v2.6.39 write access to /proc/<pid>/mem was restricted,
-> > after which it got allowed in commit 198214a7ee50 ("proc: enable
-> > writing to /proc/pid/mem"). Famous last words from that patch:
-> > "no longer a security hazard". :)
-> >=20
-> > Afterwards exploits appeared started causing drama like [1]. The
->=20
-> nit: I think "appeared" can be dropped here.
->=20
-> > /proc/*/mem exploits can be rather sophisticated like [2] which
-> > installed an arbitrary payload from noexec storage into a running
-> > process then exec'd it, which itself could include an ELF loader
-> > to run arbitrary code off noexec storage.
-> >=20
-> > As part of hardening against these types of attacks, distrbutions
-> > can restrict /proc/*/mem to only allow writes when they makes sense=
-,
-> > like in case of debuggers which have ptrace permissions, as they
-> > are able to access memory anyway via PTRACE=5FPOKEDATA and friends.
-> >=20
-> > Dropping the mode bits disables write access for non-root users.
-> > Trying to `chmod` the paths back fails as the kernel rejects it.
-> >=20
-> > For users with CAP=5FDAC=5FOVERRIDE (usually just root) we have to
-> > disable the mem=5Fwrite callback to avoid bypassing the mode bits.
-> >=20
-> > Writes can be used to bypass permissions on memory maps, even if a
-> > memory region is mapped r-x (as is a program's executable pages),
-> > the process can open its own /proc/self/mem file and write to the
-> > pages directly.
-> >=20
-> > Even if seccomp filters block mmap/mprotect calls with W|X perms,
-> > they often cannot block open calls as daemons want to read/write
-> > their own runtime state and seccomp filters cannot check file paths=
-.
-> > Write calls also can't be blocked in general via seccomp.
-> >=20
-> > Since the mem file is part of the dynamic /proc/<pid>/ space, we
-> > can't run chmod once at boot to restrict it (and trying to react
-> > to every process and run chmod doesn't scale, and the kernel no
-> > longer allows chmod on any of these paths).
-> >=20
-> > SELinux could be used with a rule to cover all /proc/*/mem files,
-> > but even then having multiple ways to deny an attack is useful in
-> > case on layer fails.
->=20
-> Everything above here is good to keep in the commit log, but it's all
-> the "background". Please also write here what has been done to addres=
-s
-> the background above it. e.g.:
->=20
-> "Introduce a CONFIG and a =5F=5Fro=5Fafter=5Finit runtime toggle to m=
-ake
-> it so only processes that are already tracing the task to write to
-> /proc/<pid>/mem." etc
->=20
-> >=20
-> > [1] https://lwn.net/Articles/476947/
-> > [2] https://issues.chromium.org/issues/40089045
->=20
-> These can be:
->=20
-> Link: https://lwn.net/Articles/476947/ [1]
-> Link: https://issues.chromium.org/issues/40089045 [2]
->=20
-> > Based on an initial patch by Mike Frysinger <vapier@chromium.org>.
-> >=20
-> > Cc: Guenter Roeck <groeck@chromium.org>
-> > Cc: Doug Anderson <dianders@chromium.org>
-> > Cc: Kees Cook <keescook@chromium.org>
-> > Cc: Jann Horn <jannh@google.com>
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: Randy Dunlap <rdunlap@infradead.org>
-> > Cc: Christian Brauner <brauner@kernel.org>
-> > Co-developed-by: Mike Frysinger <vapier@chromium.org>
-> > Signed-off-by: Mike Frysinger <vapier@chromium.org>
-> > Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
-> > ---
-> > Changes in v2:
-> >  * Added boot time parameter with default kconfig option
-> >  * Moved check earlier in mem=5Fopen() instead of mem=5Fwrite()
-> >  * Simplified implementation branching
-> >  * Removed dependency on CONFIG=5FMEMCG
->=20
-> Can you mention in the commit log what behaviors have been tested wit=
-h
-> this patch? For example, I assume gdb still works with
-> restrict=5Fproc=5Fmem=5Fwrite=3Dy ?
->=20
+> and injects to the guest via irq filtering mechanism defined in AIA
+> specification. Thus, ssaia must be enabled in the host in order to
+> use perf sampling in the guest. No other AIA dpeendancy w.r.t kernel
 
-Thanks, I will address all the above commit message feedback in v3.
+dependency
 
-Yes, gdb and gdbserver work with restrict=5Fproc=5Fmem=5Fwrite=3Dy. My =
-testing is
-focused on the correct functioning of GDB and gdbserver (lldb/server us=
-e=20
-ptrace POKEDATA so they work regardless of restrict=5Fproc=5Fmem=5Fwrit=
-e).
+> is required.
+> 
+> Reviewed-by: Anup Patel <anup@brainfault.org>
+> Signed-off-by: Atish Patra <atishp@rivosinc.com>
+> ---
+>  arch/riscv/include/asm/csr.h          |  3 +-
+>  arch/riscv/include/asm/kvm_vcpu_pmu.h |  3 ++
+>  arch/riscv/include/uapi/asm/kvm.h     |  1 +
+>  arch/riscv/kvm/aia.c                  |  5 ++
+>  arch/riscv/kvm/vcpu.c                 | 14 ++++--
+>  arch/riscv/kvm/vcpu_onereg.c          |  9 +++-
+>  arch/riscv/kvm/vcpu_pmu.c             | 72 ++++++++++++++++++++++++---
+>  7 files changed, 96 insertions(+), 11 deletions(-)
+> 
+> diff --git a/arch/riscv/include/asm/csr.h b/arch/riscv/include/asm/csr.h
+> index 603e5a3c61f9..c0de2fd6c564 100644
+> --- a/arch/riscv/include/asm/csr.h
+> +++ b/arch/riscv/include/asm/csr.h
+> @@ -168,7 +168,8 @@
+>  #define VSIP_TO_HVIP_SHIFT	(IRQ_VS_SOFT - IRQ_S_SOFT)
+>  #define VSIP_VALID_MASK		((_AC(1, UL) << IRQ_S_SOFT) | \
+>  				 (_AC(1, UL) << IRQ_S_TIMER) | \
+> -				 (_AC(1, UL) << IRQ_S_EXT))
+> +				 (_AC(1, UL) << IRQ_S_EXT) | \
+> +				 (_AC(1, UL) << IRQ_PMU_OVF))
+>  
+>  /* AIA CSR bits */
+>  #define TOPI_IID_SHIFT		16
+> diff --git a/arch/riscv/include/asm/kvm_vcpu_pmu.h b/arch/riscv/include/asm/kvm_vcpu_pmu.h
+> index 586bab84be35..8cb21a4f862c 100644
+> --- a/arch/riscv/include/asm/kvm_vcpu_pmu.h
+> +++ b/arch/riscv/include/asm/kvm_vcpu_pmu.h
+> @@ -36,6 +36,7 @@ struct kvm_pmc {
+>  	bool started;
+>  	/* Monitoring event ID */
+>  	unsigned long event_idx;
+> +	struct kvm_vcpu *vcpu;
+>  };
+>  
+>  /* PMU data structure per vcpu */
+> @@ -50,6 +51,8 @@ struct kvm_pmu {
+>  	bool init_done;
+>  	/* Bit map of all the virtual counter used */
+>  	DECLARE_BITMAP(pmc_in_use, RISCV_KVM_MAX_COUNTERS);
+> +	/* Bit map of all the virtual counter overflown */
+> +	DECLARE_BITMAP(pmc_overflown, RISCV_KVM_MAX_COUNTERS);
+>  	/* The address of the counter snapshot area (guest physical address) */
+>  	gpa_t snapshot_addr;
+>  	/* The actual data of the snapshot */
+> diff --git a/arch/riscv/include/uapi/asm/kvm.h b/arch/riscv/include/uapi/asm/kvm.h
+> index 7499e88a947c..e8b7545f1803 100644
+> --- a/arch/riscv/include/uapi/asm/kvm.h
+> +++ b/arch/riscv/include/uapi/asm/kvm.h
+> @@ -166,6 +166,7 @@ enum KVM_RISCV_ISA_EXT_ID {
+>  	KVM_RISCV_ISA_EXT_ZVFH,
+>  	KVM_RISCV_ISA_EXT_ZVFHMIN,
+>  	KVM_RISCV_ISA_EXT_ZFA,
+> +	KVM_RISCV_ISA_EXT_SSCOFPMF,
+>  	KVM_RISCV_ISA_EXT_MAX,
+>  };
+>  
+> diff --git a/arch/riscv/kvm/aia.c b/arch/riscv/kvm/aia.c
+> index a944294f6f23..0f0a9d11bb5f 100644
+> --- a/arch/riscv/kvm/aia.c
+> +++ b/arch/riscv/kvm/aia.c
+> @@ -545,6 +545,9 @@ void kvm_riscv_aia_enable(void)
+>  	enable_percpu_irq(hgei_parent_irq,
+>  			  irq_get_trigger_type(hgei_parent_irq));
+>  	csr_set(CSR_HIE, BIT(IRQ_S_GEXT));
+> +	/* Enable IRQ filtering for overflow interrupt only if sscofpmf is present */
+> +	if (__riscv_isa_extension_available(NULL, RISCV_ISA_EXT_SSCOFPMF))
+> +		csr_write(CSR_HVIEN, BIT(IRQ_PMU_OVF));
+>  }
+>  
+>  void kvm_riscv_aia_disable(void)
+> @@ -558,6 +561,8 @@ void kvm_riscv_aia_disable(void)
+>  		return;
+>  	hgctrl = get_cpu_ptr(&aia_hgei);
+>  
+> +	if (__riscv_isa_extension_available(NULL, RISCV_ISA_EXT_SSCOFPMF))
+> +		csr_clear(CSR_HVIEN, BIT(IRQ_PMU_OVF));
+>  	/* Disable per-CPU SGEI interrupt */
+>  	csr_clear(CSR_HIE, BIT(IRQ_S_GEXT));
+>  	disable_percpu_irq(hgei_parent_irq);
+> diff --git a/arch/riscv/kvm/vcpu.c b/arch/riscv/kvm/vcpu.c
+> index b5ca9f2e98ac..fcd8ad4de4d2 100644
+> --- a/arch/riscv/kvm/vcpu.c
+> +++ b/arch/riscv/kvm/vcpu.c
+> @@ -365,6 +365,12 @@ void kvm_riscv_vcpu_sync_interrupts(struct kvm_vcpu *vcpu)
+>  		}
+>  	}
+>  
+> +	/* Sync up the HVIP.LCOFIP bit changes (only clear) by the guest */
+> +	if ((csr->hvip ^ hvip) & (1UL << IRQ_PMU_OVF)) {
+> +		if (!test_and_set_bit(IRQ_PMU_OVF, v->irqs_pending_mask))
+> +			clear_bit(IRQ_PMU_OVF, v->irqs_pending);
+> +	}
+> +
+>  	/* Sync-up AIA high interrupts */
+>  	kvm_riscv_vcpu_aia_sync_interrupts(vcpu);
+>  
+> @@ -382,7 +388,8 @@ int kvm_riscv_vcpu_set_interrupt(struct kvm_vcpu *vcpu, unsigned int irq)
+>  	if (irq < IRQ_LOCAL_MAX &&
+>  	    irq != IRQ_VS_SOFT &&
+>  	    irq != IRQ_VS_TIMER &&
+> -	    irq != IRQ_VS_EXT)
+> +	    irq != IRQ_VS_EXT &&
+> +	    irq != IRQ_PMU_OVF)
+>  		return -EINVAL;
+>  
+>  	set_bit(irq, vcpu->arch.irqs_pending);
+> @@ -397,14 +404,15 @@ int kvm_riscv_vcpu_set_interrupt(struct kvm_vcpu *vcpu, unsigned int irq)
+>  int kvm_riscv_vcpu_unset_interrupt(struct kvm_vcpu *vcpu, unsigned int irq)
+>  {
+>  	/*
+> -	 * We only allow VS-mode software, timer, and external
+> +	 * We only allow VS-mode software, timer, counter overflow and external
+>  	 * interrupts when irq is one of the local interrupts
+>  	 * defined by RISC-V privilege specification.
+>  	 */
+>  	if (irq < IRQ_LOCAL_MAX &&
+>  	    irq != IRQ_VS_SOFT &&
+>  	    irq != IRQ_VS_TIMER &&
+> -	    irq != IRQ_VS_EXT)
+> +	    irq != IRQ_VS_EXT &&
+> +	    irq != IRQ_PMU_OVF)
+>  		return -EINVAL;
+>  
+>  	clear_bit(irq, vcpu->arch.irqs_pending);
+> diff --git a/arch/riscv/kvm/vcpu_onereg.c b/arch/riscv/kvm/vcpu_onereg.c
+> index 5f7355e96008..a072910820c2 100644
+> --- a/arch/riscv/kvm/vcpu_onereg.c
+> +++ b/arch/riscv/kvm/vcpu_onereg.c
+> @@ -36,6 +36,7 @@ static const unsigned long kvm_isa_ext_arr[] = {
+>  	/* Multi letter extensions (alphabetically sorted) */
+>  	KVM_ISA_EXT_ARR(SMSTATEEN),
+>  	KVM_ISA_EXT_ARR(SSAIA),
+> +	KVM_ISA_EXT_ARR(SSCOFPMF),
+>  	KVM_ISA_EXT_ARR(SSTC),
+>  	KVM_ISA_EXT_ARR(SVINVAL),
+>  	KVM_ISA_EXT_ARR(SVNAPOT),
+> @@ -115,6 +116,7 @@ static bool kvm_riscv_vcpu_isa_disable_allowed(unsigned long ext)
+>  	case KVM_RISCV_ISA_EXT_I:
+>  	case KVM_RISCV_ISA_EXT_M:
+>  	case KVM_RISCV_ISA_EXT_SSTC:
+> +	case KVM_RISCV_ISA_EXT_SSCOFPMF:
 
-This all started from my attempt to fix gdbserver by adding a ptrace fa=
-llback
-in case /proc/pid/mem writes are blocked without any exception, because
-that breaks basic functionality like setting breakpoints.
+It should go above SSTC to keep the alphabet happy,
 
-GDB upstream NAK'ed my ptrace fallback approach because it's doesn't
-work well with their /proc/pid/mem focused design required for non-stop=20
-mode (the default all-stop mode is emulated on top of non-stop), as wel=
-l
-as ptrace peek/poke requiring a live task which can cause memory access
-problems if the ptraced task dies.
+but it should be possible for the VMM to disable this extension in the
+guest. We just need to change all the checks in KVM of the host's ISA
+for RISCV_ISA_EXT_SSCOFPMF to checking the guest's ISA instead. Maybe
+it's not worth it, though, if the guest PMU isn't useful without overflow.
+But, sometimes it's nice to be able to disable stuff for debug and
+workarounds.
 
-Other solutions were considered by GDB upstream, including using the=20
-process=5Fvm=5Fwritev & co, but they respect page permissions and GDB h=
-as
-to write RO pages to set breakpoints.
+>  	case KVM_RISCV_ISA_EXT_SVINVAL:
+>  	case KVM_RISCV_ISA_EXT_SVNAPOT:
+>  	case KVM_RISCV_ISA_EXT_ZBA:
+> @@ -171,8 +173,13 @@ void kvm_riscv_vcpu_setup_isa(struct kvm_vcpu *vcpu)
+>  	for (i = 0; i < ARRAY_SIZE(kvm_isa_ext_arr); i++) {
+>  		host_isa = kvm_isa_ext_arr[i];
+>  		if (__riscv_isa_extension_available(NULL, host_isa) &&
+> -		    kvm_riscv_vcpu_isa_enable_allowed(i))
+> +		    kvm_riscv_vcpu_isa_enable_allowed(i)) {
+> +			/* Sscofpmf depends on interrupt filtering defined in ssaia */
+> +			if (host_isa == RISCV_ISA_EXT_SSCOFPMF &&
+> +			    !__riscv_isa_extension_available(NULL, RISCV_ISA_EXT_SSAIA))
+> +				continue;
 
-In the end GDB maintainers directed me to do a proper kernel fix with a=
-n
-exception for tasks already ptracing others, because from a security
-perspective, they can already access tracee memory regardless of
-/proc/pid/mem restrictions, so here we are. :)
+We shouldn't need to change kvm_riscv_vcpu_setup_isa(). We just need to
+add a case for KVM_RISCV_ISA_EXT_SSCOFPMF to
+kvm_riscv_vcpu_isa_enable_allowed().
 
-> When this is enabled, what =5Fdoes=5F break that people might expect =
-to
-> work?
+>  			set_bit(host_isa, vcpu->arch.isa);
+> +		}
+>  	}
+>  }
+>  
+> diff --git a/arch/riscv/kvm/vcpu_pmu.c b/arch/riscv/kvm/vcpu_pmu.c
+> index 74865e6050a1..a02f7b981005 100644
+> --- a/arch/riscv/kvm/vcpu_pmu.c
+> +++ b/arch/riscv/kvm/vcpu_pmu.c
+> @@ -39,7 +39,7 @@ static u64 kvm_pmu_get_sample_period(struct kvm_pmc *pmc)
+>  	u64 sample_period;
+>  
+>  	if (!pmc->counter_val)
+> -		sample_period = counter_val_mask + 1;
+> +		sample_period = counter_val_mask;
 
-With the current iteration, all things I tested work as expected. It is=
- rather
-hard to come up with things that break with restrict=5Fproc=5Fmem=5Fwri=
-te=3Dy,
-because other than debuggers and exploits I don't have other use-cases.
+This change looks unrelated.
 
-Obvious things like "echo >/proc/self/mem" get permission denied, but
-that is expected with restrict=5Fproc=5Fmem=5Fwrite=3Dy, so I wouldn't =
-classify
-it as breakage.
+>  	else
+>  		sample_period = (-pmc->counter_val) & counter_val_mask;
+>  
+> @@ -229,6 +229,47 @@ static int kvm_pmu_validate_counter_mask(struct kvm_pmu *kvpmu, unsigned long ct
+>  	return 0;
+>  }
+>  
+> +static void kvm_riscv_pmu_overflow(struct perf_event *perf_event,
+> +				   struct perf_sample_data *data,
+> +				   struct pt_regs *regs)
+> +{
+> +	struct kvm_pmc *pmc = perf_event->overflow_handler_context;
+> +	struct kvm_vcpu *vcpu = pmc->vcpu;
+> +	struct kvm_pmu *kvpmu = vcpu_to_pmu(vcpu);
+> +	struct riscv_pmu *rpmu = to_riscv_pmu(perf_event->pmu);
+> +	u64 period;
+> +
+> +	/*
+> +	 * Stop the event counting by directly accessing the perf_event.
+> +	 * Otherwise, this needs to deferred via a workqueue.
+> +	 * That will introduce skew in the counter value because the actual
+> +	 * physical counter would start after returning from this function.
+> +	 * It will be stopped again once the workqueue is scheduled
+> +	 */
+> +	rpmu->pmu.stop(perf_event, PERF_EF_UPDATE);
+> +
+> +	/*
+> +	 * The hw counter would start automatically when this function returns.
+> +	 * Thus, the host may continue to interrupt and inject it to the guest
+> +	 * even without the guest configuring the next event. Depending on the hardware
+> +	 * the host may have some sluggishness only if privilege mode filtering is not
+> +	 * available. In an ideal world, where qemu is not the only capable hardware,
+> +	 * this can be removed.
+> +	 * FYI: ARM64 does this way while x86 doesn't do anything as such.
+> +	 * TODO: Should we keep it for RISC-V ?
+> +	 */
+> +	period = -(local64_read(&perf_event->count));
+> +
+> +	local64_set(&perf_event->hw.period_left, 0);
+> +	perf_event->attr.sample_period = period;
+> +	perf_event->hw.sample_period = period;
+> +
+> +	set_bit(pmc->idx, kvpmu->pmc_overflown);
+> +	kvm_riscv_vcpu_set_interrupt(vcpu, IRQ_PMU_OVF);
+> +
+> +	rpmu->pmu.start(perf_event, PERF_EF_RELOAD);
+> +}
+> +
+>  static long kvm_pmu_create_perf_event(struct kvm_pmc *pmc, struct perf_event_attr *attr,
+>  				      unsigned long flags, unsigned long eidx,
+>  				      unsigned long evtdata)
+> @@ -248,7 +289,7 @@ static long kvm_pmu_create_perf_event(struct kvm_pmc *pmc, struct perf_event_att
+>  	 */
+>  	attr->sample_period = kvm_pmu_get_sample_period(pmc);
+>  
+> -	event = perf_event_create_kernel_counter(attr, -1, current, NULL, pmc);
+> +	event = perf_event_create_kernel_counter(attr, -1, current, kvm_riscv_pmu_overflow, pmc);
+>  	if (IS_ERR(event)) {
+>  		pr_err("kvm pmu event creation failed for eidx %lx: %ld\n", eidx, PTR_ERR(event));
+>  		return PTR_ERR(event);
+> @@ -436,6 +477,8 @@ int kvm_riscv_vcpu_pmu_ctr_start(struct kvm_vcpu *vcpu, unsigned long ctr_base,
+>  		pmc_index = i + ctr_base;
+>  		if (!test_bit(pmc_index, kvpmu->pmc_in_use))
+>  			continue;
+> +		/* The guest started the counter again. Reset the overflow status */
+> +		clear_bit(pmc_index, kvpmu->pmc_overflown);
+>  		pmc = &kvpmu->pmc[pmc_index];
+>  		if (flags & SBI_PMU_START_FLAG_SET_INIT_VALUE) {
+>  			pmc->counter_val = ival;
+> @@ -474,6 +517,10 @@ int kvm_riscv_vcpu_pmu_ctr_start(struct kvm_vcpu *vcpu, unsigned long ctr_base,
+>  		}
+>  	}
+>  
+> +	/* The guest have serviced the interrupt and starting the counter again */
+> +	if (test_bit(IRQ_PMU_OVF, vcpu->arch.irqs_pending))
+> +		kvm_riscv_vcpu_unset_interrupt(vcpu, IRQ_PMU_OVF);
+> +
+>  out:
+>  	retdata->err_val = sbiret;
+>  
+> @@ -540,7 +587,13 @@ int kvm_riscv_vcpu_pmu_ctr_stop(struct kvm_vcpu *vcpu, unsigned long ctr_base,
+>  			else if (pmc->perf_event)
+>  				pmc->counter_val += perf_event_read_value(pmc->perf_event,
+>  									  &enabled, &running);
+> -			/* TODO: Add counter overflow support when sscofpmf support is added */
+> +			/*
+> +			 * The counter and overflow indicies in the snapshot region are w.r.to
+> +			 * cbase. Modify the set bit in the counter mask instead of the pmc_index
+> +			 * which indicates the absolute counter index.
+> +			 */
+> +			if (test_bit(pmc_index, kvpmu->pmc_overflown))
+> +				kvpmu->sdata->ctr_overflow_mask |= (1UL << i);
 
-In theory there might be some weird/legacy apps which might break, so
-that is why I suggest we land the mechanism as default off, and later,
-after it gets tested in various distributions, pull the trigger to make=
- it
-default on.
+Just in case you missed this one; BIT()
 
->=20
-> > ---
-> >  .../admin-guide/kernel-parameters.txt         |  4 ++
-> >  fs/proc/base.c                                | 47 +++++++++++++++=
-+++-
-> >  security/Kconfig                              | 22 +++++++++
-> >  3 files changed, 71 insertions(+), 2 deletions(-)
-> >=20
-> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Docu=
-mentation/admin-guide/kernel-parameters.txt
-> > index 460b97a1d0da..0647e2f54248 100644
-> > --- a/Documentation/admin-guide/kernel-parameters.txt
-> > +++ b/Documentation/admin-guide/kernel-parameters.txt
-> > @@ -5618,6 +5618,10 @@
-> >  	reset=5Fdevices	[KNL] Force drivers to reset the underlying devic=
-e
-> >  			during initialization.
-> > =20
-> > +	restrict=5Fproc=5Fmem=5Fwrite=3D [KNL]
->=20
-> Please add here:
->=20
-> 			Format: <bool>
->=20
+>  			kvpmu->sdata->ctr_values[i] = pmc->counter_val;
+>  			kvm_vcpu_write_guest(vcpu, kvpmu->snapshot_addr, kvpmu->sdata,
+>  					     sizeof(struct riscv_pmu_snapshot_data));
+> @@ -549,15 +602,20 @@ int kvm_riscv_vcpu_pmu_ctr_stop(struct kvm_vcpu *vcpu, unsigned long ctr_base,
+>  		if (flags & SBI_PMU_STOP_FLAG_RESET) {
+>  			pmc->event_idx = SBI_PMU_EVENT_IDX_INVALID;
+>  			clear_bit(pmc_index, kvpmu->pmc_in_use);
+> +			clear_bit(pmc_index, kvpmu->pmc_overflown);
+>  			if (snap_flag_set) {
+>  				/* Clear the snapshot area for the upcoming deletion event */
+>  				kvpmu->sdata->ctr_values[i] = 0;
+> +				/*
+> +				 * Only clear the given counter as the caller is responsible to
+> +				 * validate both the overflow mask and configured counters.
+> +				 */
+> +				kvpmu->sdata->ctr_overflow_mask &= ~(1UL << i);
 
-Ack, will do in v3.
+And another BIT()
 
-> > +			Enable or disable write access to /proc/*/mem files.
-> > +			Default is SECURITY=5FPROC=5FMEM=5FRESTRICT=5FWRITE=5FDEFAULT=5F=
-ON.
-> > +
-> >  	resume=3D		[SWSUSP]
-> >  			Specify the partition device for software suspend
-> >  			Format:
-> > diff --git a/fs/proc/base.c b/fs/proc/base.c
-> > index 98a031ac2648..92f668191312 100644
-> > --- a/fs/proc/base.c
-> > +++ b/fs/proc/base.c
-> > @@ -152,6 +152,30 @@ struct pid=5Fentry {
-> >  		NULL, &proc=5Fpid=5Fattr=5Foperations,	\
-> >  		{ .lsmid =3D LSMID })
-> > =20
-> > +#ifdef CONFIG=5FSECURITY=5FPROC=5FMEM=5FRESTRICT=5FWRITE
->=20
-> Please drop this CONFIG entirely -- it should be always available for
-> all builds of the kernel. Only CONFIG=5FSECURITY=5FPROC=5FMEM=5FRESTR=
-ICT=5FWRITE=5FDEFAULT=5FON
-> needs to remain.
->=20
+>  				kvm_vcpu_write_guest(vcpu, kvpmu->snapshot_addr, kvpmu->sdata,
+>  						     sizeof(struct riscv_pmu_snapshot_data));
+>  			}
+>  		}
+>  	}
+> -
+>  out:
+>  	retdata->err_val = sbiret;
+>  
+> @@ -700,6 +758,7 @@ void kvm_riscv_vcpu_pmu_init(struct kvm_vcpu *vcpu)
+>  		pmc = &kvpmu->pmc[i];
+>  		pmc->idx = i;
+>  		pmc->event_idx = SBI_PMU_EVENT_IDX_INVALID;
+> +		pmc->vcpu = vcpu;
+>  		if (i < kvpmu->num_hw_ctrs) {
+>  			pmc->cinfo.type = SBI_PMU_CTR_TYPE_HW;
+>  			if (i < 3)
+> @@ -732,13 +791,14 @@ void kvm_riscv_vcpu_pmu_deinit(struct kvm_vcpu *vcpu)
+>  	if (!kvpmu)
+>  		return;
+>  
+> -	for_each_set_bit(i, kvpmu->pmc_in_use, RISCV_MAX_COUNTERS) {
+> +	for_each_set_bit(i, kvpmu->pmc_in_use, RISCV_KVM_MAX_COUNTERS) {
+>  		pmc = &kvpmu->pmc[i];
+>  		pmc->counter_val = 0;
+>  		kvm_pmu_release_perf_event(pmc);
+>  		pmc->event_idx = SBI_PMU_EVENT_IDX_INVALID;
+>  	}
+> -	bitmap_zero(kvpmu->pmc_in_use, RISCV_MAX_COUNTERS);
+> +	bitmap_zero(kvpmu->pmc_in_use, RISCV_KVM_MAX_COUNTERS);
 
-Ack, will do in v3.
+Ideally the RISCV_MAX_COUNTERS change would go in a separate patch,
+but 64 == 64, so OK.
 
-> > +DEFINE=5FSTATIC=5FKEY=5FMAYBE=5FRO(CONFIG=5FSECURITY=5FPROC=5FMEM=5F=
-RESTRICT=5FWRITE=5FDEFAULT=5FON,
-> > +			   restrict=5Fproc=5Fmem=5Fwrite);
-> > +static int =5F=5Finit early=5Frestrict=5Fproc=5Fmem=5Fwrite(char *=
-buf)
-> > +{
-> > +	int ret;
-> > +	bool bool=5Fresult;
-> > +
-> > +	ret =3D kstrtobool(buf, &bool=5Fresult);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	if (bool=5Fresult)
-> > +		static=5Fbranch=5Fenable(&restrict=5Fproc=5Fmem=5Fwrite);
-> > +	else
-> > +		static=5Fbranch=5Fdisable(&restrict=5Fproc=5Fmem=5Fwrite);
-> > +	return 0;
-> > +}
-> > +early=5Fparam("restrict=5Fproc=5Fmem=5Fwrite", early=5Frestrict=5F=
-proc=5Fmem=5Fwrite);
-> > +# define PROC=5FPID=5FMEM=5FMODE S=5FIRUSR
-> > +#else
-> > +# define PROC=5FPID=5FMEM=5FMODE (S=5FIRUSR|S=5FIWUSR)
-> > +#endif
->=20
-> PROC=5FPID=5FMEM=5FMODE will need to be a =5F=5Fro=5Fafter=5Finit var=
-iable, set by
-> early=5Frestrict=5Fproc=5Fmem=5Fwrite, otherwise the mode won't chang=
-e based on
-> the runtime setting. e.g.:
->=20
-> #ifdef CONFIG=5FSECURITY=5FPROC=5FMEM=5FRESTRICT=5FWRITE=5FDEFAULT=5F=
-ON
-> mode=5Ft proc=5Fpid=5Fmem=5Fmode =5F=5Fro=5Fafter=5Finit =3D S=5FIRUS=
-R;
-> #else
-> mode=5Ft proc=5Fpid=5Fmem=5Fmode =5F=5Fro=5Fafter=5Finit =3D (S=5FIRU=
-SR|S=5FIWUSR);
-> #endif
->=20
-> DEFINE=5FSTATIC=5FKEY=5FMAYBE=5FRO(CONFIG=5FSECURITY=5FPROC=5FMEM=5FR=
-ESTRICT=5FWRITE=5FDEFAULT=5FON,
-> 			   restrict=5Fproc=5Fmem=5Fwrite);
-> ...
-> 	if (bool=5Fresult) {
-> 		static=5Fbranch=5Fenable(&restrict=5Fproc=5Fmem=5Fwrite);
-> 		proc=5Fpid=5Fmem=5Fmode =3D S=5FIRUSR;
-> 	} else {
-> 		static=5Fbranch=5Fdisable(&restrict=5Fproc=5Fmem=5Fwrite);
-> 		proc=5Fpid=5Fmem=5Fmode =3D (S=5FIRUSR|S=5FIWUSR);
-> 	}
-> ...
-> 	REG("mem",        proc=5Fpid=5Fmem=5Fmode, proc=5Fmem=5Foperations),
->=20
->=20
+> +	bitmap_zero(kvpmu->pmc_overflown, RISCV_KVM_MAX_COUNTERS);
+>  	memset(&kvpmu->fw_event, 0, SBI_PMU_FW_MAX * sizeof(struct kvm_fw_event));
+>  	kvm_pmu_clear_snapshot_area(vcpu);
+>  }
+> -- 
+> 2.34.1
+> 
 
-Ack, will do in v3.
-
-> > +
-> >  /*
-> >   * Count the number of hardlinks for the pid=5Fentry table, exclud=
-ing the .
-> >   * and .. links.
-> > @@ -829,6 +853,25 @@ static int mem=5Fopen(struct inode *inode, str=
-uct file *file)
-> >  {
-> >  	int ret =3D =5F=5Fmem=5Fopen(inode, file, PTRACE=5FMODE=5FATTACH)=
-;
-> > =20
-> > +#ifdef CONFIG=5FSECURITY=5FPROC=5FMEM=5FRESTRICT=5FWRITE
->=20
-> Drop this ifdef (as mentioned above).
->=20
-> > +	struct mm=5Fstruct *mm =3D file->private=5Fdata;
-> > +	struct task=5Fstruct *task =3D get=5Fproc=5Ftask(inode);
-> > +
-> > +	if (mm && task) {
-> > +		/* Only allow writes by processes already ptracing the target ta=
-sk */
-> > +		if (file->f=5Fmode & FMODE=5FWRITE &&
-> > +		    static=5Fbranch=5Fmaybe(CONFIG=5FSECURITY=5FPROC=5FMEM=5FRES=
-TRICT=5FWRITE=5FDEFAULT=5FON,
-> > +					&restrict=5Fproc=5Fmem=5Fwrite)) {
->=20
-> Do we need to also do an mm=5Faccess() on the task to verify that the=
- task
-> we're about to check has its mm still matching file->private=5Fdata? =
-The
-> PID can change out from under us (but the mm cannot).
->=20
-
-Likely yes, will look into this for v3.
-
-> > +			rcu=5Fread=5Flock();
-> > +			if (!ptracer=5Fcapable(current, mm->user=5Fns) ||
-> > +			    current !=3D ptrace=5Fparent(task))
->=20
-> If you're just allowing "already ptracing", why include the
-> ptracer=5Fcapable() check?
->=20
-
-It is a very good observation that the check is redundant. :)
-
-It is a remnant from a previous iteration of this patch, from
-when I was proposing solutions to GDB upstream. I left it there
-because it doesn't do much harm to verify capability as well,
-more of a precaution / test invariant than anything else.
-
-I'll remove it in v3 since it might cause confusion.
-
-> > +				ret =3D -EACCES;
-> > +			rcu=5Fread=5Funlock();
-> > +		}
-> > +		put=5Ftask=5Fstruct(task);
-> > +	}
-> > +#endif
-> > +
-> >  	/* OK to pass negative loff=5Ft, we can catch out-of-range */
-> >  	file->f=5Fmode |=3D FMODE=5FUNSIGNED=5FOFFSET;
-> > =20
-> > @@ -3281,7 +3324,7 @@ static const struct pid=5Fentry tgid=5Fbase=5F=
-stuff[] =3D {
-> >  #ifdef CONFIG=5FNUMA
-> >  	REG("numa=5Fmaps",  S=5FIRUGO, proc=5Fpid=5Fnuma=5Fmaps=5Foperati=
-ons),
-> >  #endif
-> > -	REG("mem",        S=5FIRUSR|S=5FIWUSR, proc=5Fmem=5Foperations),
-> > +	REG("mem",        PROC=5FPID=5FMEM=5FMODE, proc=5Fmem=5Foperation=
-s),
-> >  	LNK("cwd",        proc=5Fcwd=5Flink),
-> >  	LNK("root",       proc=5Froot=5Flink),
-> >  	LNK("exe",        proc=5Fexe=5Flink),
-> > @@ -3631,7 +3674,7 @@ static const struct pid=5Fentry tid=5Fbase=5F=
-stuff[] =3D {
-> >  #ifdef CONFIG=5FNUMA
-> >  	REG("numa=5Fmaps", S=5FIRUGO, proc=5Fpid=5Fnuma=5Fmaps=5Foperatio=
-ns),
-> >  #endif
-> > -	REG("mem",       S=5FIRUSR|S=5FIWUSR, proc=5Fmem=5Foperations),
-> > +	REG("mem",       PROC=5FPID=5FMEM=5FMODE, proc=5Fmem=5Foperations=
-),
-> >  	LNK("cwd",       proc=5Fcwd=5Flink),
-> >  	LNK("root",      proc=5Froot=5Flink),
-> >  	LNK("exe",       proc=5Fexe=5Flink),
-> > diff --git a/security/Kconfig b/security/Kconfig
-> > index 412e76f1575d..ffee9e847ed9 100644
-> > --- a/security/Kconfig
-> > +++ b/security/Kconfig
-> > @@ -19,6 +19,28 @@ config SECURITY=5FDMESG=5FRESTRICT
-> > =20
-> >  	  If you are unsure how to answer this question, answer N.
-> > =20
-> > +config SECURITY=5FPROC=5FMEM=5FRESTRICT=5FWRITE
-> > +	bool "Restrict /proc/*/mem write access"
-> > +	default n
-> > +	help
-> > +	  This restricts writes to /proc/<pid>/mem, except when the curre=
-nt
-> > +	  process ptraces the /proc/<pid>/mem task, because a ptracer alr=
-eady
-> > +	  has write access to the tracee memory.
-> > +
-> > +	  Write access to this file allows bypassing memory map permissio=
-ns,
-> > +	  such as modifying read-only code.
-> > +
-> > +	  If you are unsure how to answer this question, answer N.
-> > +
-> > +config SECURITY=5FPROC=5FMEM=5FRESTRICT=5FWRITE=5FDEFAULT=5FON
-> > +	bool "Default state of /proc/*/mem write restriction"
-> > +	depends on SECURITY=5FPROC=5FMEM=5FRESTRICT=5FWRITE
-> > +	default y
-> > +	help
-> > +	  /proc/*/mem write access is controlled by kernel boot param
-> > +	  "restrict=5Fproc=5Fmem=5Fwrite" and this config chooses the def=
-ault
-> > +	  boot state.
->=20
-> As mentioned, I'd say merge the help texts here, but drop
-> SECURITY=5FPROC=5FMEM=5FRESTRICT=5FWRITE.
->=20
-
-Ack, will do in v3.
-
-> > +
-> >  config SECURITY
-> >  	bool "Enable different security models"
-> >  	depends on SYSFS
-> > --=20
-> > 2.30.2
-> >=20
->=20
-> Thanks for this! I look forward to turning it on. :)
->
-
-Thank you very much for all your feedback!
-It is much appreciated.
-
-I'll wait a few more days before sending v3 to let others
-comment, then address everything.
-=20
-> -Kees
->=20
-> --=20
-> Kees Cook
-
+Thanks,
+drew
 
