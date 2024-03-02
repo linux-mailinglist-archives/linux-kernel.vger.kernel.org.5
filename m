@@ -1,142 +1,111 @@
-Return-Path: <linux-kernel+bounces-89454-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89455-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B38F86F097
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 15:00:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FD2186F098
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 15:01:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C3DECB225AF
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 14:00:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF682283D2C
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 14:01:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4C7F17C69;
-	Sat,  2 Mar 2024 14:00:07 +0000 (UTC)
-Received: from bmailout1.hostsharing.net (bmailout1.hostsharing.net [83.223.95.100])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 258F817C79;
+	Sat,  2 Mar 2024 14:00:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="XcOmshdW"
+Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40C7D134C9;
-	Sat,  2 Mar 2024 14:00:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.223.95.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33348179B7;
+	Sat,  2 Mar 2024 14:00:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709388007; cv=none; b=u9+wgqKkfEkZExqTXCpldrZ/Hc9Duif1h1f4tEp3zt5OPcBHms5x9HuUvqY9sVAc8woRRaxv0fK9bPzVFpNqiw9ePs43mrCswylRDtCLW3c4+OjaqoqgNy5eYFkg19Og7wuWPSp4GgnSfTvuS19kJFMj3hVUbuKnIDDzXhpfrPE=
+	t=1709388051; cv=none; b=RVu98FeISx5eywYZhifWG/2gOeedBic9J2QY+IhuqEhuQ6OSPFXXmo4T8uIt7cgIdeOt3eCo5pyl1Z0/Nc+fNAB5J1XcxyUhZSeWNnoZ9TeJ0cHBrApyXqdwgDFwtCYIvtNfn8sRWCq7ylwXDunqxcR4O7xsEKxtqryRepyRIBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709388007; c=relaxed/simple;
-	bh=5KUV8TszCFXRHWuLCnbMeuU3FypeFbMaSg6NAJFWi4Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KFIRGAibNUzHGtA7D5xKv6IwEZ1C6gcKEgw8y6MiXPmshf6oSfQuVvbqNd7Zyo/4Nd2m+Yct0fi8+azWT+iYw2BGvMzZ4OhJuQM9Mo1N6oxZ2zH+/G3q6Qvk193RwEh30yc+ci+pcQE37zaMIGS/uD/jDK9ts0MTb4TCk1DkvLw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de; spf=none smtp.mailfrom=h08.hostsharing.net; arc=none smtp.client-ip=83.223.95.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
-	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
-	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
-	by bmailout1.hostsharing.net (Postfix) with ESMTPS id E7B0030008A00;
-	Sat,  2 Mar 2024 15:00:01 +0100 (CET)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-	id C66D82DB1C; Sat,  2 Mar 2024 15:00:01 +0100 (CET)
-Date: Sat, 2 Mar 2024 15:00:01 +0100
-From: Lukas Wunner <lukas@wunner.de>
-To: Jarkko Sakkinen <jarkko@kernel.org>
-Cc: Stefan Berger <stefanb@linux.ibm.com>, keyrings@vger.kernel.org,
-	linux-crypto@vger.kernel.org, herbert@gondor.apana.org.au,
-	davem@davemloft.net, linux-kernel@vger.kernel.org,
-	saulo.alessandre@tse.jus.br
-Subject: Re: [PATCH v3 01/10] crypto: ecdsa - Convert byte arrays with key
- coordinates to digits
-Message-ID: <20240302140001.GA3095@wunner.de>
-References: <20240223204149.4055630-1-stefanb@linux.ibm.com>
- <20240223204149.4055630-2-stefanb@linux.ibm.com>
- <20240229091105.GA29363@wunner.de>
- <aabeec7b-618c-4d15-b033-4162b6e54f6a@linux.ibm.com>
- <CZIOY02QS2QC.LV0A0HNT7VKM@suppilovahvero>
+	s=arc-20240116; t=1709388051; c=relaxed/simple;
+	bh=uiQdKioW5Q8/qfRyAEscHhnKqRIHa/efSN+ljmC4lok=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=G6Fe/PBY7drqVOiNO8F37wnZs/AXmgTrsB2ejxcwiGCok1VwkUpiW1/+CClCXTdp16z3UnxRAIdagiwB2sa6wIITNqBqWR93CeRfT7eO6A15hjIE1Xna8a063KBUUbrFmB9t46iuFMdeRbUOqLB4t4QIoQXucFeTOQ1bDT09SNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=XcOmshdW; arc=none smtp.client-ip=195.181.215.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
+	t=1709388045; bh=uiQdKioW5Q8/qfRyAEscHhnKqRIHa/efSN+ljmC4lok=;
+	h=From:To:Cc:Subject:Date:From;
+	b=XcOmshdWXvExDVy4K+zxIZF+CaaHhfMsi5Ewmy+e3mozM0igrri0ZlA0bSxdUbRga
+	 kjqGrvQnU6QfAwjWqHMtsW4HfwsWF1PRAi/Ao03SEhUo7JdrGlJsUBwtY4iIeE2FCs
+	 wv8bpWOwevP5sOG9hxs0c+3O4yvxbjl2a53t7/F8=
+From: =?UTF-8?q?Ond=C5=99ej=20Jirman?= <megi@xff.cz>
+To: linux-kernel@vger.kernel.org,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Cc: Ondrej Jirman <megi@xff.cz>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Arnaud Ferraris <arnaud.ferraris@collabora.com>,
+	linux-sound@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-sunxi@lists.linux.dev
+Subject: [PATCH v3 0/4] Add support for jack detection to codec present in A64 SoC
+Date: Sat,  2 Mar 2024 15:00:34 +0100
+Message-ID: <20240302140042.1990256-1-megi@xff.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CZIOY02QS2QC.LV0A0HNT7VKM@suppilovahvero>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 01, 2024 at 10:26:29PM +0200, Jarkko Sakkinen wrote:
-> On Thu Feb 29, 2024 at 4:57 PM EET, Stefan Berger wrote:
-> >
-> >
-> > On 2/29/24 04:11, Lukas Wunner wrote:
-> > > On Fri, Feb 23, 2024 at 03:41:40PM -0500, Stefan Berger wrote:
-> > >> +static inline void ecc_digits_from_bytes(const u8 *in, unsigned int nbytes,
-> > >> +					 u64 *out, unsigned int ndigits)
-> > >> +{
-> > >> +	unsigned int sz = ndigits << ECC_DIGITS_TO_BYTES_SHIFT;
-> > >> +	u8 tmp[ECC_MAX_DIGITS << ECC_DIGITS_TO_BYTES_SHIFT];
-> > >> +	unsigned int o = sz - nbytes;
-> > >> +
-> > >> +	memset(tmp, 0, o);
-> > >> +	memcpy(&tmp[o], in, nbytes);
-> > >> +	ecc_swap_digits(tmp, out, ndigits);
-> > >> +}
-> > > 
-> > > Copying the whole key into tmp seems inefficient.  You only need
-> > > special handling for the first few bytes of "in" (6 bytes in the
-> > > P521 case) and could use ecc_swap_digits() to convert the rest
-> > > of "in" directly to "out" without using tmp.
-> > > 
-> > > So it would be sufficient to allocate the first digit on the stack,
-> > > memset + memcpy, then convert that to native byte order into "in[0]"
-> > > and use ecc_swap_digits() for the rest.
-> > > 
-> > > And the special handling would be conditional on "!o", so is skipped
-> > > for existing curves.
-> >
-> > Thanks. It looks like this now:
-> >
-> > static inline void ecc_digits_from_bytes(const u8 *in, unsigned int nbytes,
-> >                                           u64 *out, unsigned int ndigits)
-> > {
-> >          unsigned int o = nbytes & 7;
-> >          u64 msd = 0;
-> >          size_t i;
-> >
-> >          if (o == 0) {
-> >                  ecc_swap_digits(in, out, ndigits);
-> >          } else {
-> >                  for (i = 0; i < o; i++)
-> >                          msd = (msd << 8) | in[i];
-> >                  out[ndigits - 1] = msd;
-> >                  ecc_swap_digits(&in[o], out, ndigits - 1);
-> 
-> This would be more stream-lined IMHO:
-> 
->         unsigned int o = nbytes & 7;
->         unsigned int n = ndigits;
->         u64 msd = 0;
->         size_t i;
-> 
->         if (o != 0) {
->                 for (i = 0; i < o; i++)
->                         msd = (msd << 8) | in[i];
-> 
->                 out[--n] = msd;
->         }
-> 
->         ecc_swap_digits(in, out, n);
+From: Ondrej Jirman <megi@xff.cz>
 
-Maybe eliminate the for-loop as well?
+This series adds support for jack detection to this codec. I used
+and tested this on Pinephone. It works quite nicely. I tested it
+against Android headset mic button resistor specification.
 
-	unsigned int o = nbytes & 7;
-	u64 msd = 0;
+The patches are a rewritten and debugged version of the original
+ones from Arnaud Ferraris and Samuel Holland, improved to better
+handle headset button presses and with more robust plug-in/out
+event debouncing, and to use set_jack API instead of sniffing
+the sound card widget names, to detect the type of jack connector.
 
-	if (o != 0) {
-		/* if key length is not a multiple of 64 bits (NIST P521) */
-		memcpy((u8 *)&msd + sizeof(msd) - o, in, o);
-		out[--ndigits] = be64_to_cpu(msd);
-		in += o;
-	}
+Please take a look. :)
 
-	ecc_swap_digits(in, out, ndigits);
+v3:
+- removed all device-tree related code
+  (it's not necessary for core functionality, it only helps make the jack detect
+  functionality of the codec be usable from simple-sound-card driver, and I'll
+  send it spearately, because it will apparently need several more rounds
+  of review)
+
+v2:
+- use set_jack/get_jack_type
+- get rid of some custom poking inside card internals to figure
+  out what kind of jack port we should setup the codec for
+- read jack-type from OF as suggested here: 
+  https://elixir.bootlin.com/linux/latest/source/sound/soc/soc-component.c#L288
+- add DT bindings
+
+Thank you very much,
+	Ondřej Jirman
+
+Arnaud Ferraris (2):
+  ASoC: sun50i-codec-analog: Enable jack detection on startup
+  ASoC: sun8i-codec: Implement jack and accessory detection
+
+Samuel Holland (2):
+  ASoC: sun50i-codec-analog: Move suspend/resume to set_bias_level
+  ASoC: sun8i-codec: Enable bus clock at STANDBY and higher bias
+
+ sound/soc/sunxi/sun50i-codec-analog.c |  73 +++++-
+ sound/soc/sunxi/sun8i-codec.c         | 346 +++++++++++++++++++++++++-
+ 2 files changed, 399 insertions(+), 20 deletions(-)
+
+-- 
+2.44.0
+
 
