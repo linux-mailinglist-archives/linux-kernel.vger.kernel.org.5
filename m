@@ -1,265 +1,163 @@
-Return-Path: <linux-kernel+bounces-89312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A69386EE26
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 03:36:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4394486EE2B
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 03:44:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F28751C21BFD
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 02:36:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E3861F23DE8
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 02:44:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA11A3D64;
-	Sat,  2 Mar 2024 02:36:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1998379D0;
+	Sat,  2 Mar 2024 02:44:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AEQVqEC5"
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="mgqrISUd"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2044.outbound.protection.outlook.com [40.107.94.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1531384
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 02:36:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709346992; cv=none; b=IKJKHcsCqlifxfMMN0ByFIUFfaI7SwODlEj2pg9d7QQ8ZIQFfWpkt1R8oG7eVY8CA9cBux8TzMl6VlN21gtAc2Ym1RRS3/+sT+KKrtoe98Q3pSAhwS2cxqWaOANMav08PqlEgpsNuI3Ppwr4mPQYU/cIlcDL/NML5WQ/FiQpLBw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709346992; c=relaxed/simple;
-	bh=h85jpT5VMKAmcwx8xjty1pBSWn4rm7EQTJbenc1Kkn0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KMP91d4ZzsOhQ235gglkZXWa2oZVz6NLCvnvJongM/SoEf2fRS2bdnUaLEksKPWRQC5676wNcys7pUGDM3IOJ9hQvzzXaamFzsyXXi8TvgbFJJc1CeBC/qtKB0680fkWqvgWGBYmd00N9UrSB3fpWDhKPl5zxxQEXc6x42AhpZ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=AEQVqEC5; arc=none smtp.client-ip=209.85.167.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-513298d6859so2420749e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 18:36:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709346989; x=1709951789; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5POyl/4677bPTPLA6iBYKpbwNy+pWBIIcesnixttt5A=;
-        b=AEQVqEC5nf1iFueyyhc+O04VZuj1elvrxJeWGCkza2zAoM3MiztoDLOPi5f/n/2wR6
-         hC9efIkyjB7iv4lLdIcGLLvROmqid3hM6rZ6RCcyPwhGgRxY8dQwHbxHRCHsYEeYSPGQ
-         cHxmNXWZp1W12cv1ddVUHBrTg50IrObQdpxXcy4pSVkK4Pdv0jmex+I85mwhpv11wiKe
-         qqe883ElcA/L3lNJeCwknscbzUHOiyviS0yslp3Z/flE8or51RrQJ45RVoEExzgtVU72
-         rwnx87KlApWEeGBzfrkVZm3ADStVPpujkAThgSmdzKcc9/8inwGY1WKRsvcUP2Cmqk0R
-         UbTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709346989; x=1709951789;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5POyl/4677bPTPLA6iBYKpbwNy+pWBIIcesnixttt5A=;
-        b=SIwGDbHXpRryhqtAop7IRnW+uchArp2cTeNslNH59t1Q1BIngeIt8bkEivSnpyVpKi
-         lc+2H7AGWmoGEHMGJlfA01S+rhoAFUKj5WRnEEsGaV/rEZ2dFkse9NKsGnmxVctVQ54C
-         ZR4p0gSYFHxh5YPXpUxGF6v+kpZZAf0OQOFNs08NvpcPs2bliYer9Ba/arehSeb9seg1
-         /WkFrJ+gkWO6ahQvDUCCTpKX+Mpysnp4DWYNddIe5A4HP033tu/3+wTgzCJ+6xBjn9by
-         YxzaoHxFJEAb8TvBSArXe53YYDY9LREo7vumhp+YnAFb9cz6UA8Py3h8+4ucjkzLwQIb
-         wlcA==
-X-Forwarded-Encrypted: i=1; AJvYcCXH7ZaycuCNnTS5nI+sr7R3Kj+3dIDpmFT5LjAkOR2tyvlreHYUcypUKasrhSpA5FG9s+4lv0v4z4NucbO1NymXFHOFxQZ2MlHxDY2F
-X-Gm-Message-State: AOJu0Yw9W5z7ZrAN9tcyOncGQ+VUe1lF7E7lehhcI7/e9OMBsjOvNnKk
-	UlWBXfckRvv9MeaXwMui9Ki/Dwn4+NrJ94AWfuwZm0ablNz5tLLanbBRra3rvVQE9hM0jX6WA0B
-	pj9fPEF+zhhUuDQTSF+ClZUattcekaeC5wqAing==
-X-Google-Smtp-Source: AGHT+IHXwCc1btbgWjvxQYTUfULNjSSVQiId0NmekC+LhMs5EOmKYO9wVZMGd6O430V2MhOPIxRmQzaxlI79b0yDRl4=
-X-Received: by 2002:a05:6512:78d:b0:512:d575:4745 with SMTP id
- x13-20020a056512078d00b00512d5754745mr2199873lfr.1.1709346988970; Fri, 01 Mar
- 2024 18:36:28 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1A607489;
+	Sat,  2 Mar 2024 02:44:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.44
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709347456; cv=fail; b=GCTERmXjHwbeQ7ju8jW0njTlyOw8mpSFi/ox6jOfIb+c1y2l5OvKw+FhxuDyizcW/BkHFLWJzKzD1E+s27CqDtcu4P/bOcAs2QLo6NyQeJf0+zOM2RgqqyATYlmORkOA7oG5Iv3gOb5ZBHmNI5LS+XBe2StbZR+VXFFgvkXF0d8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709347456; c=relaxed/simple;
+	bh=e+Mhn8+65s+E2W6B47W6sFCuClcftgTT2vdhQwG+86g=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=rN23CogyKf0SrbFM0+wpv4H5NyCC+gNpsI2wwTiB1NPyRoJcMyN0+7XCLrVKcm2un8leYnBdOEHleGnzmubbta8s92qTI0ak8RM70BHNqO2ASYF2Wn5veKeUMej0hESkjtmpFyTsDDmkNdVyfAc6SGY61Shp1t05PRnpjEML80U=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=mgqrISUd; arc=fail smtp.client-ip=40.107.94.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EQHOlsn1d/bwLh83S0p3854qV1VP+gXugN+syrSyPYqstha65C00Y3wtnI/4EwWJEmVpmE6N93kXsNz33KybbGMaaoae2TW1nsNbuRW2Q5aQP22twKUlqJroid0+PzmgMV3dh4aADOX3P8xBUBDlsmDffHUFf2CxdZo7qAg32q1w18aM0vJRd7b4VZSHhp0Pn0LKfCgWZpYpyVZkPvnR/K1Ixqwdtvk1zhAumtxTSdKEVeevKq1a0Bw2AiBHDuFHSwlxM61vKtU/djxqt4fm1As9L2teVAMZCIiqsbIPffvtQ1NaRu505OnASgzIBKVliOojn1IJaMl/kCkwzB5cDQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RG/i2zQXQTxQLSDqG1RiGcj8jgijg4dCpiJMsqguz2A=;
+ b=XLPQLHktl/JfVapap/95io/Pk3KxS+UjBfOiM2YJSjSucqq1bIpBob3KIEMWkIwwoMiAshxGnKEkNeFOc30bFMXbYRnz1wHyFEGFvwGvGSabAydQWQOscajGP6KgTMjCKzKfTVoZ1BnZPT37SP00UBlOivnhyLEsKMmR+dbW51eplE0I1//+LCkfhD6t5u59LhqcM/Z6uUIpGPBNXyvIOlBedeFX2xFexOrrcJ0umPDnYB/JXnbCIZKWujYA7HKJSgH0fgJqNJkElzBzE3y/XE+z2eZLo5RUS77d1Rlu0F8cXwn1xRu0i7mg3yKpgqw/S+8k9c1HU6NdC4/aqdMzsg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RG/i2zQXQTxQLSDqG1RiGcj8jgijg4dCpiJMsqguz2A=;
+ b=mgqrISUdkOM0WLVFBesHpDIAmP9Nu7f8po1YUVarQF0aFhIX+9rq6WSogThLZGIqBQrphZ6AjjVf1aMm/bJdczXjGPXJqbufrQjgl9NcMp48FigV9dvoy9z43DVpi4xEpFyMrAimnt6ha7G1dgl+Wor/tO29UjaIIgoc+zgdqtSIxfB4P6R1iv1O1jmpimFxTtqSogv6V8QrSPgX096ObQ2B/Hgr51x2PZGf9V4Msllta5El2VJpeqMFvcwtcPDzbcbfp5OWiZG9oYKWeVdMejSBVbERVaE8GdnnYVaZe5dq7y8Noo/2UWm+JNvBh+Iq2UjuQYCNc+Q/mfpTkcyo0A==
+Received: from SJ1PR12MB6339.namprd12.prod.outlook.com (2603:10b6:a03:454::10)
+ by SN7PR12MB8604.namprd12.prod.outlook.com (2603:10b6:806:273::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.39; Sat, 2 Mar
+ 2024 02:44:11 +0000
+Received: from SJ1PR12MB6339.namprd12.prod.outlook.com
+ ([fe80::ae74:c645:b13d:3d8c]) by SJ1PR12MB6339.namprd12.prod.outlook.com
+ ([fe80::ae74:c645:b13d:3d8c%7]) with mapi id 15.20.7316.012; Sat, 2 Mar 2024
+ 02:44:11 +0000
+From: Akhil R <akhilrajeev@nvidia.com>
+To: Herbert Xu <herbert@gondor.apana.org.au>
+CC: "davem@davemloft.net" <davem@davemloft.net>, "robh+dt@kernel.org"
+	<robh+dt@kernel.org>, "krzysztof.kozlowski+dt@linaro.org"
+	<krzysztof.kozlowski+dt@linaro.org>, "conor+dt@kernel.org"
+	<conor+dt@kernel.org>, "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+	Jon Hunter <jonathanh@nvidia.com>, "catalin.marinas@arm.com"
+	<catalin.marinas@arm.com>, "will@kernel.org" <will@kernel.org>, Mikko
+ Perttunen <mperttunen@nvidia.com>, "linux-crypto@vger.kernel.org"
+	<linux-crypto@vger.kernel.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "linux-tegra@vger.kernel.org"
+	<linux-tegra@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "krzk@kernel.org" <krzk@kernel.org>
+Subject: RE: [PATCH v5 3/5] crypto: tegra: Add Tegra Security Engine driver
+Thread-Topic: [PATCH v5 3/5] crypto: tegra: Add Tegra Security Engine driver
+Thread-Index: AQHaY1jZwFltH5yLb0OQSiEEFOMbgrEhGKTAgAAIigCAAq5Q8A==
+Date: Sat, 2 Mar 2024 02:44:11 +0000
+Message-ID:
+ <SJ1PR12MB63398B52A8FB2978636FAF8DC05D2@SJ1PR12MB6339.namprd12.prod.outlook.com>
+References: <20240219172530.20517-1-akhilrajeev@nvidia.com>
+ <20240219172530.20517-4-akhilrajeev@nvidia.com>
+ <SJ1PR12MB63392983F30CA57CBCB69B93C05F2@SJ1PR12MB6339.namprd12.prod.outlook.com>
+ <ZeBSEviAw/JVpICl@gondor.apana.org.au>
+In-Reply-To: <ZeBSEviAw/JVpICl@gondor.apana.org.au>
+Accept-Language: en-IN, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ1PR12MB6339:EE_|SN7PR12MB8604:EE_
+x-ms-office365-filtering-correlation-id: c880b022-389b-41a3-7f7c-08dc3a62a435
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ YDHy9uoNNg2sOpfQ5xFy6GhdlBrw5a1NMOyayv4W1lRbsOOv/JBkWfCpDVsDdxx4veZ8cpYaMuYbMk52HofxS6IIVOodKkUwXMO4iP95tnFGVpsucfeu1iYUyl1X0p/gvC0emfecTnPkxlXzXenWp/8piBmgcsSQrztOdzXn3DS8Lx56umzt510ii8U2IxHf6n1o8TnfDV5zahqyt+G834BSYS5rHUevmJwbsuLvLiwjCIwxy+V49Q5kEgj6qOZXXzykdktstiOyHtj7ZIDo7gGQWKWDa03yYvf/PfEDBe5tvcZSrmOJUwZQhoYpBOLO55agDUNLHIi8+ZT3ECDwJu+o5qFOT7xLVU1BBctsqg65xapERYZeqRqA6bmcz4aJN+jINsQ19xHIAuhNluGv1/+uXCMfIsOpsi7O4YNQneYwX3WoNk0lFO/HqdRV6ox6Dk71Ka7L7snKtArf0j/BhwVaDrG5kxpoCl6kQOJAAMVgXtfzISipt7kWZ44jzGYK13sSrxdqLF5CNhA/9qfsYrUiQjEDEAbAitZCDnDgFkUHlgNm/iTxJnxWYQO4f71TZOYxecw+meqekSN4YDJRBjK96ORftn5+3gKETkp7Mc/Xusvoc4DX5bQF5oLckA2k3lxuSz6wFH2e1R8xd1aObBytlAsgrEJCKkv0pqq9+8oTeZFT9uZb2blrIfKmLPTgscJBJZ3sxVPXPjlBPHQQzQ==
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR12MB6339.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?gOhxFziD+xt1gEs//TYsFdzQbnbfjG952L5/H+Nb1kPxrOrch3tuse49Ujww?=
+ =?us-ascii?Q?qHmgk2phjj54UZJr7cVDW74bcsdH7PTfh5GIh2+HI7EYhZMv4i0U3OnNgeqi?=
+ =?us-ascii?Q?b2DjS+rllU5XK9MHQ11XUTvVEURAgVR3HLmFYQ9FS0bV871eb5zSeD1qWY5/?=
+ =?us-ascii?Q?mMdSKjToueAExVZKnol0iX9l5qh4nvGF9Lcs+6Ny9xvI8xpCjVrT1DF0Mh6F?=
+ =?us-ascii?Q?mObONGvaV1QY3mWNASvn+A2VQIL1klS0ODjBR85Tixfvy0LC5OSF4O6M4SZd?=
+ =?us-ascii?Q?S7duroShPH9DRb161o3/trVN4kYw6Q8J6ioS281VaRkXn7+eRJa2tt1cWR7w?=
+ =?us-ascii?Q?2jDB7wc6v5afmq4TpWdjvUyehgJXHiOXghC6KO/eTuYaEScOW+oSqYNj3Zsb?=
+ =?us-ascii?Q?YdlxawM+49v7u5bvPOcqogrxMSalODZHiYftj64Z6yzs/Sl3WN36Psfs4Lw+?=
+ =?us-ascii?Q?cblxJag5jnVZp9lYxYODPzoIJUspy1MU9R7SwTZdbPz09vhcDqr9FMNGrjrb?=
+ =?us-ascii?Q?xKnHWxxPz6f+aKuBphbRNgWJ85nax9WGdRu+KBVJIopdz1zymv7s9h9IfvOT?=
+ =?us-ascii?Q?26CONm9kHS/wE/SBnqRG42KC5PxX3ethq8UANrFSR3HxVP1ykd7bqhP3hZqD?=
+ =?us-ascii?Q?ouY7clv0WNYfEcBF3/Rr61KgHCQ4eEZ/+FH2b3iqhthJvQudCwcJPfT1o5vl?=
+ =?us-ascii?Q?RnJgzruiqlwuWT2WbeaF5YDEJpRKsxnPIez8L53Pi678DBhzEr4GZTAU15vY?=
+ =?us-ascii?Q?To9+VSD/tLlVYxUQGjlkfr/idh+qgDNNOjXZZf9ihZQOlZIw0y+d3uGPCIIb?=
+ =?us-ascii?Q?UrUvGiQed7CRquDRfXStrtjyg9jREA/YpsGvFEZgK53ve/1nYHapPf4QCemw?=
+ =?us-ascii?Q?Dj3z5A8V1pJcJTBaIthLpO2YZ1jxYQCaq6+LLqqkT2v7LnftdOmboxua3nYu?=
+ =?us-ascii?Q?bhc7N6BHycKdbdPLNkqqgElo0EIxZAMkf7DPwK6A2y1RWWFOFLi9Ewy7QGDV?=
+ =?us-ascii?Q?jkuhH/yWjMl6Ev0PuZE4QPKzet6xvYyex1Pgv0Al7s8HyFJ3YddJHjcToKd5?=
+ =?us-ascii?Q?bFWWuQSFxTMo1yRJKkYLU2pHiEpEo16ftgiIpXJxQJOEzosaE96sioQnuDNu?=
+ =?us-ascii?Q?xD+SK7EM4IGBypyszELzrTNZ0ASNnJbkAco7Vmvfgkpcj7ZtpJgus1QAJUXl?=
+ =?us-ascii?Q?vEEtX1McCUtXw1LzakuteY3J2vayijsDZigfZyZBTetCpq0wpwbGZbXkqVfJ?=
+ =?us-ascii?Q?nNdqO+0rSJ9eGB94LDKHa1LLee8UQ7ndWZGWDOo+8cmyJIty6zKZNI5rMV/l?=
+ =?us-ascii?Q?tiLCciEADt+LOn2awoG6cMtfdsUif254pPsH64LlqTbTuwb10BZL/yFajVun?=
+ =?us-ascii?Q?2GYfGdKso4D1yqLSurXfEKwkiHZFsQ7EnPx7GUDnF+93OPoW83cl1g25LZ/m?=
+ =?us-ascii?Q?9sXpaHj2+bTwEQ6zwhx5GyXATUx7ulHb7JzsYlKxzbUWEavxTl3DWaKSTAD8?=
+ =?us-ascii?Q?P0OfUCjOUPq3/YFlMH6okgn2sgIk7UEnk8V2uOkqc9Zk2QdPCXT0oCHQVMmt?=
+ =?us-ascii?Q?AQRAkYxWATgwM9XVIW7p+6GvguxBA0GbMiWvEXXRRHkQi/Rqw65TOL3wYhe6?=
+ =?us-ascii?Q?uV8wzMsh66AnUg3hTluRPTawf3Plj+R6fM9EbvXMpmgb?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240122073903.24406-1-baolu.lu@linux.intel.com> <20240122073903.24406-6-baolu.lu@linux.intel.com>
-In-Reply-To: <20240122073903.24406-6-baolu.lu@linux.intel.com>
-From: Zhangfei Gao <zhangfei.gao@linaro.org>
-Date: Sat, 2 Mar 2024 10:36:17 +0800
-Message-ID: <CABQgh9FwOVsFe3+5VG0_rDruJVW0ueHTcsnxUcVAvFqrF4Vz6Q@mail.gmail.com>
-Subject: Re: [PATCH v3 5/8] iommufd: Associate fault object with iommufd_hw_pgtable
-To: Lu Baolu <baolu.lu@linux.intel.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Kevin Tian <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>, 
-	Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>, 
-	Jean-Philippe Brucker <jean-philippe@linaro.org>, Nicolin Chen <nicolinc@nvidia.com>, 
-	Yi Liu <yi.l.liu@intel.com>, Jacob Pan <jacob.jun.pan@linux.intel.com>, 
-	Joel Granados <j.granados@samsung.com>, iommu@lists.linux.dev, 
-	virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ1PR12MB6339.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c880b022-389b-41a3-7f7c-08dc3a62a435
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Mar 2024 02:44:11.5748
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ODaZFAU826DqgmyMdh5ZyX5k1C8WfDVQfijaufh+r6MOLbmwRxCDHHIMTekN0FynZhvHpsg3p9QHXLJo4LRRFg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB8604
 
-On Mon, 22 Jan 2024 at 15:46, Lu Baolu <baolu.lu@linux.intel.com> wrote:
->
-> When allocating a user iommufd_hw_pagetable, the user space is allowed to
-> associate a fault object with the hw_pagetable by specifying the fault
-> object ID in the page table allocation data and setting the
-> IOMMU_HWPT_FAULT_ID_VALID flag bit.
->
-> On a successful return of hwpt allocation, the user can retrieve and
-> respond to page faults by reading and writing the file interface of the
-> fault object.
->
-> Once a fault object has been associated with a hwpt, the hwpt is
-> iopf-capable, indicated by fault_capable set to true. Attaching,
-> detaching, or replacing an iopf-capable hwpt to an RID or PASID will
-> differ from those that are not iopf-capable. The implementation of these
-> will be introduced in the next patch.
->
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> ---
->  drivers/iommu/iommufd/iommufd_private.h | 11 ++++++++
->  include/uapi/linux/iommufd.h            |  6 +++++
->  drivers/iommu/iommufd/fault.c           | 14 ++++++++++
->  drivers/iommu/iommufd/hw_pagetable.c    | 36 +++++++++++++++++++------
->  4 files changed, 59 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/iommu/iommufd/iommufd_private.h b/drivers/iommu/iommufd/iommufd_private.h
-> index 52d83e888bd0..2780bed0c6b1 100644
-> --- a/drivers/iommu/iommufd/iommufd_private.h
-> +++ b/drivers/iommu/iommufd/iommufd_private.h
-> @@ -293,6 +293,8 @@ int iommufd_check_iova_range(struct io_pagetable *iopt,
->  struct iommufd_hw_pagetable {
->         struct iommufd_object obj;
->         struct iommu_domain *domain;
-> +       struct iommufd_fault *fault;
-> +       bool fault_capable : 1;
->  };
->
->  struct iommufd_hwpt_paging {
-> @@ -446,8 +448,17 @@ struct iommufd_fault {
->         struct wait_queue_head wait_queue;
->  };
->
-> +static inline struct iommufd_fault *
-> +iommufd_get_fault(struct iommufd_ucmd *ucmd, u32 id)
-> +{
-> +       return container_of(iommufd_get_object(ucmd->ictx, id,
-> +                                              IOMMUFD_OBJ_FAULT),
-> +                           struct iommufd_fault, obj);
-> +}
-> +
->  int iommufd_fault_alloc(struct iommufd_ucmd *ucmd);
->  void iommufd_fault_destroy(struct iommufd_object *obj);
-> +int iommufd_fault_iopf_handler(struct iopf_group *group);
->
->  #ifdef CONFIG_IOMMUFD_TEST
->  int iommufd_test(struct iommufd_ucmd *ucmd);
-> diff --git a/include/uapi/linux/iommufd.h b/include/uapi/linux/iommufd.h
-> index c32d62b02306..7481cdd57027 100644
-> --- a/include/uapi/linux/iommufd.h
-> +++ b/include/uapi/linux/iommufd.h
-> @@ -357,10 +357,13 @@ struct iommu_vfio_ioas {
->   *                                the parent HWPT in a nesting configuration.
->   * @IOMMU_HWPT_ALLOC_DIRTY_TRACKING: Dirty tracking support for device IOMMU is
->   *                                   enforced on device attachment
-> + * @IOMMU_HWPT_FAULT_ID_VALID: The fault_id field of hwpt allocation data is
-> + *                             valid.
->   */
->  enum iommufd_hwpt_alloc_flags {
->         IOMMU_HWPT_ALLOC_NEST_PARENT = 1 << 0,
->         IOMMU_HWPT_ALLOC_DIRTY_TRACKING = 1 << 1,
-> +       IOMMU_HWPT_FAULT_ID_VALID = 1 << 2,
->  };
->
->  /**
-> @@ -411,6 +414,8 @@ enum iommu_hwpt_data_type {
->   * @__reserved: Must be 0
->   * @data_type: One of enum iommu_hwpt_data_type
->   * @data_len: Length of the type specific data
-> + * @fault_id: The ID of IOMMUFD_FAULT object. Valid only if flags field of
-> + *            IOMMU_HWPT_FAULT_ID_VALID is set.
->   * @data_uptr: User pointer to the type specific data
->   *
->   * Explicitly allocate a hardware page table object. This is the same object
-> @@ -441,6 +446,7 @@ struct iommu_hwpt_alloc {
->         __u32 __reserved;
->         __u32 data_type;
->         __u32 data_len;
-> +       __u32 fault_id;
->         __aligned_u64 data_uptr;
->  };
->  #define IOMMU_HWPT_ALLOC _IO(IOMMUFD_TYPE, IOMMUFD_CMD_HWPT_ALLOC)
-> diff --git a/drivers/iommu/iommufd/fault.c b/drivers/iommu/iommufd/fault.c
-> index 9844a85feeb2..e752d1c49dde 100644
-> --- a/drivers/iommu/iommufd/fault.c
-> +++ b/drivers/iommu/iommufd/fault.c
-> @@ -253,3 +253,17 @@ int iommufd_fault_alloc(struct iommufd_ucmd *ucmd)
->
->         return rc;
->  }
-> +
-> +int iommufd_fault_iopf_handler(struct iopf_group *group)
-> +{
-> +       struct iommufd_hw_pagetable *hwpt = group->cookie->domain->fault_data;
-> +       struct iommufd_fault *fault = hwpt->fault;
-> +
-> +       mutex_lock(&fault->mutex);
-> +       list_add_tail(&group->node, &fault->deliver);
-> +       mutex_unlock(&fault->mutex);
-> +
-> +       wake_up_interruptible(&fault->wait_queue);
-> +
-> +       return 0;
-> +}
-> diff --git a/drivers/iommu/iommufd/hw_pagetable.c b/drivers/iommu/iommufd/hw_pagetable.c
-> index 3f3f1fa1a0a9..2703d5aea4f5 100644
-> --- a/drivers/iommu/iommufd/hw_pagetable.c
-> +++ b/drivers/iommu/iommufd/hw_pagetable.c
-> @@ -8,6 +8,15 @@
->  #include "../iommu-priv.h"
->  #include "iommufd_private.h"
->
-> +static void __iommufd_hwpt_destroy(struct iommufd_hw_pagetable *hwpt)
-> +{
-> +       if (hwpt->domain)
-> +               iommu_domain_free(hwpt->domain);
-> +
-> +       if (hwpt->fault)
-> +               iommufd_put_object(hwpt->fault->ictx, &hwpt->fault->obj);
-> +}
-> +
->  void iommufd_hwpt_paging_destroy(struct iommufd_object *obj)
->  {
->         struct iommufd_hwpt_paging *hwpt_paging =
-> @@ -22,9 +31,7 @@ void iommufd_hwpt_paging_destroy(struct iommufd_object *obj)
->                                          hwpt_paging->common.domain);
->         }
->
-> -       if (hwpt_paging->common.domain)
-> -               iommu_domain_free(hwpt_paging->common.domain);
-> -
-> +       __iommufd_hwpt_destroy(&hwpt_paging->common);
->         refcount_dec(&hwpt_paging->ioas->obj.users);
->  }
->
-> @@ -49,9 +56,7 @@ void iommufd_hwpt_nested_destroy(struct iommufd_object *obj)
->         struct iommufd_hwpt_nested *hwpt_nested =
->                 container_of(obj, struct iommufd_hwpt_nested, common.obj);
->
-> -       if (hwpt_nested->common.domain)
-> -               iommu_domain_free(hwpt_nested->common.domain);
-> -
-> +       __iommufd_hwpt_destroy(&hwpt_nested->common);
->         refcount_dec(&hwpt_nested->parent->common.obj.users);
->  }
->
-> @@ -213,7 +218,8 @@ iommufd_hwpt_nested_alloc(struct iommufd_ctx *ictx,
->         struct iommufd_hw_pagetable *hwpt;
->         int rc;
->
-> -       if (flags || !user_data->len || !ops->domain_alloc_user)
-> +       if ((flags & ~IOMMU_HWPT_FAULT_ID_VALID) ||
-> +           !user_data->len || !ops->domain_alloc_user)
->                 return ERR_PTR(-EOPNOTSUPP);
->         if (parent->auto_domain || !parent->nest_parent)
->                 return ERR_PTR(-EINVAL);
-> @@ -227,7 +233,7 @@ iommufd_hwpt_nested_alloc(struct iommufd_ctx *ictx,
->         refcount_inc(&parent->common.obj.users);
->         hwpt_nested->parent = parent;
->
-> -       hwpt->domain = ops->domain_alloc_user(idev->dev, flags,
-> +       hwpt->domain = ops->domain_alloc_user(idev->dev, 0,
->                                               parent->common.domain, user_data);
+> >
+> > Do we have any other concerns with the driver currently, which I can
+> > address in the next revision?
+>=20
+> The sha export/import code looks good now.  Does it pass all the self-tes=
+ts,
+> including extra fuzzing?
+>=20
+> The same export/import issue still exists with cmac so please fix that.
+>=20
+I do see some warnings for some AES algorithms with extra fuzzing.
+Will send a new version with the CMAC import/export update and the
+extra fuzzing warning fixes.
 
-Why remove flags? typo or any reason?
-arm_smmu_domain_alloc_user  can not get flags from the user app.
-User should set IOMMU_HWPT_FAULT_ID_VALID, right?
-
-Thanks
+Thanks,
+Akhil
 
