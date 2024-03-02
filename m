@@ -1,104 +1,138 @@
-Return-Path: <linux-kernel+bounces-89386-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89387-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 642C086EFB2
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 09:57:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B12F86EFB4
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 10:00:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9466C1C216DD
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 08:57:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3969A283C4F
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 09:00:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 174E612E52;
-	Sat,  2 Mar 2024 08:57:29 +0000 (UTC)
-Received: from bmailout3.hostsharing.net (bmailout3.hostsharing.net [176.9.242.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD32112E52;
+	Sat,  2 Mar 2024 09:00:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="HypS2qBO"
+Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com [209.85.222.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7DBB134A1;
-	Sat,  2 Mar 2024 08:57:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=176.9.242.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E874125C4
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 09:00:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709369848; cv=none; b=ZIfaqkkU6ogWC/3ckN6QfOyfAxH084S5PqjeZFv5cay4Vz7wkKLRo8Bv0IXmF2SiRz05N8RjLDuvTki/nNTpFYVEcHYmYd46rqnDn8pUkP+wKim7ZKaMWqjUsp3j+8Rjh84NaXBO6ZGsWgwON14Kc/cZjoqJ6c+yr4Lt4oNpPH8=
+	t=1709370004; cv=none; b=p93r6NJnztnNF/zWo1lcK9POjmjsylzkOh/3Ukj64aF7S3Q7+R6URCd+Okpkvz0trRWgWhR6QTPBT8b3KWVATkBYrHlgj0kpVEd1K0IrdRGzRlJ0zt6GeeyZUn9Ns9JORPAX3mhDfIITQxM4fFNR+zfRnQuY3mZnXHb+xVC18Ks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709369848; c=relaxed/simple;
-	bh=KET+C1+pfLWG4caZqUFEt1d4ZyQE5G3G8vMo+wIeGCU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AiUjDTm36kq13yusSp+7/ZgcR2TGBGTs4Gfb3zYO6Iy1O2crtz0dVRgccx5NicNOP0crwYNa2PCDPszOlnHaUEsyr4DzFh7WDBhBjeQYp27Q+/gl5cajjgSIqshcmTGWdJEFlDwM5MnV287m8m5P1qexlKFBvInYKigPYBMGo1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de; spf=none smtp.mailfrom=h08.hostsharing.net; arc=none smtp.client-ip=176.9.242.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
-	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
-	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
-	by bmailout3.hostsharing.net (Postfix) with ESMTPS id 661B7100D9401;
-	Sat,  2 Mar 2024 09:57:17 +0100 (CET)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-	id 1AFF52DB06; Sat,  2 Mar 2024 09:57:17 +0100 (CET)
-Date: Sat, 2 Mar 2024 09:57:17 +0100
-From: Lukas Wunner <lukas@wunner.de>
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Saurabh Sengar <ssengar@linux.microsoft.com>, bhelgaas@google.com,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	alexander.stein@ew.tq-group.com, decui@microsoft.com,
-	Krzysztof Wilczy??ski <kwilczynski@kernel.org>
-Subject: Re: [PATCH] PCI/sysfs: Fix race in pci sysfs creation
-Message-ID: <20240302085717.GA8140@wunner.de>
-References: <1702093576-30405-1-git-send-email-ssengar@linux.microsoft.com>
- <20240206220715.GA884075@bhelgaas>
+	s=arc-20240116; t=1709370004; c=relaxed/simple;
+	bh=eCQzoCFbOFPzXODq2rUOGKdBd463E6JRcHrunmqfO4A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Y8ananriPDWlooXX5Yno5grHSnDHdCYuHHecLiAqjtkfdGXjAwD6Z874852GkaddB08mbfK0+mIW3DMp3+MdVMN66dOEA9fa5kDnfu1JnnoDGn31JFWaiS97RwBEzeZDzvFtYTnDlAHCZIXtU58WYKiBvPB/WuldWQlHIfreUkA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=HypS2qBO; arc=none smtp.client-ip=209.85.222.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-ua1-f49.google.com with SMTP id a1e0cc1a2514c-7d5bbbe592dso1623157241.0
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Mar 2024 01:00:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1709370001; x=1709974801; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eCQzoCFbOFPzXODq2rUOGKdBd463E6JRcHrunmqfO4A=;
+        b=HypS2qBO7mdDDipmFt5k2cJmciuoo0hTjTSE2Lsvem+lZcjwWRwu3DxOAjvYCmjije
+         CbKFLV9ZW+qKDwmPV5X0TnHsieS6wJdF68VNwhMgur26xkCado2NTijI1phm9pd3CbVH
+         fVHfz/0WSbbadsvdcAvWyRBZdZf4n/nNA7AfxNRpmeIWeDlQ0NmoGlHC1SR2n3fXdZdW
+         O3XbvERVOFdTYvvAhExN46Dpw0YbdK0eTW66y3BLon9WPIrXpz+fcIPh9I1yEQFNT9fQ
+         dxrZ+6PYav4432iQD4uFLAVgSN3qudP+52oKFsjWPs1/nmxKe+q4qOSUNdOfihLhc4gG
+         aO+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709370001; x=1709974801;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eCQzoCFbOFPzXODq2rUOGKdBd463E6JRcHrunmqfO4A=;
+        b=IRjfnnvmbTRU2rQ1CM0NE2b4P412bqru4REZ3/BVFIi1XK0qRlDC+L4N/FODPZUTwS
+         6nJ3KfE09ubmtueCj5ImgZjMBlZtfgQSI+OqB7cwW1+V7dTIk4yMsYdZu6gE1+LX5WxK
+         cPauz418nuIzEan81eg6E+BSTGmdK6w4LmInUjDBUrg4moIFjNUPThp1VKB6gAwEY43a
+         ZaXXsD8kU1GcZdwfgdrFmH9usYnvoXtzZ5iPYvUTSj8jD1WQCWJWW9oNHD/5Ce16Dl+/
+         QIZY7ObJbdrPBsIgbRP52BTchP8mIrGOIfnUCkpakkbU8kuRBS7hxS/CR+1Vwg/L4vX2
+         1Nfw==
+X-Forwarded-Encrypted: i=1; AJvYcCWW5B/aBdCEDqdnSCrEU0Vbx/1KAY9lRnCPw+M3uBDXLpiv0AQHNhyyUAn1Dgq2xkJ1i8nl4sX28HV4FY/GMXGY1PfaBYTLdJkVTKbz
+X-Gm-Message-State: AOJu0YwqmdkfBmtFqCVUtAbtuFJ9pJdeo46/iX1SLMssCFzMjpUUhwdE
+	62gXQJ+ivO100E9V+N0FuHIdvgiMuSZzeoKn5cuqhodXU0K0U6Ykj3V303O2v2vlKIIyjuYBC7v
+	H7AyjKJK9FdZMMg+W3b0CNL3lmjEbq5KESkOVCQ==
+X-Google-Smtp-Source: AGHT+IGTFC6f7wUdK+L9p4HEQkbr21KxcwtfSbwfdHJXskErtbV5zw1A2Mcf/B5CrvjSLLpmMODnMnLjoM/0CR/ddF4=
+X-Received: by 2002:ac5:cccd:0:b0:4c0:24e6:f49d with SMTP id
+ j13-20020ac5cccd000000b004c024e6f49dmr3136575vkn.1.1709370001367; Sat, 02 Mar
+ 2024 01:00:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240206220715.GA884075@bhelgaas>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20240227113426.253232-1-herve.codina@bootlin.com>
+ <CAMRc=MeSMTnPUYGyJir4fc=6=Gnw_MVP9wfEKMQ6Ck33FYCrRA@mail.gmail.com>
+ <CACRpkdZbGUd-u3ZcmmK1POSEq8z9J1aDhbGPAbcR6guKuEpEFQ@mail.gmail.com>
+ <CAMRc=MeqiYZv3ViHRKKUsXTqG5Pc8Ev2jUcN=A4VuX3RU7dDtw@mail.gmail.com> <CACRpkdYWDzu+VMQOYO_Sh1NM2ei=VRC-0df4teAZjirfrTB67A@mail.gmail.com>
+In-Reply-To: <CACRpkdYWDzu+VMQOYO_Sh1NM2ei=VRC-0df4teAZjirfrTB67A@mail.gmail.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Sat, 2 Mar 2024 09:59:50 +0100
+Message-ID: <CAMRc=MdLmU3uezKSg2d83HSZ3wYXFx68oGshx_yJyvJToN261Q@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] gpio-cdev: Release IRQ used by gpio-cdev on gpio
+ chip removal
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: Herve Codina <herve.codina@bootlin.com>, Kent Gibson <warthog618@gmail.com>, 
+	Saravana Kannan <saravanak@google.com>, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Luca Ceresoli <luca.ceresoli@bootlin.com>, 
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 06, 2024 at 04:07:15PM -0600, Bjorn Helgaas wrote:
-> Krzysztof has done a ton of work to convert these files to static
-> attributes, where the device model prevents most of these races:
-> 
->   506140f9c06b ("PCI/sysfs: Convert "index", "acpi_index", "label" to static attributes")
->   d93f8399053d ("PCI/sysfs: Convert "vpd" to static attribute")
->   f42c35ea3b13 ("PCI/sysfs: Convert "reset" to static attribute")
->   527139d738d7 ("PCI/sysfs: Convert "rom" to static attribute")
->   e1d3f3268b0e ("PCI/sysfs: Convert "config" to static attribute")
-> 
-> and he even posted a series to do the same for the resource files:
-> 
->   https://lore.kernel.org/linux-pci/20210910202623.2293708-1-kw@linux.com/
-> 
-> I can't remember why we didn't apply that at the time, and it no
-> longer applies cleanly, but I think that's the direction we should go.
+On Fri, Mar 1, 2024 at 9:15=E2=80=AFPM Linus Walleij <linus.walleij@linaro.=
+org> wrote:
+>
+> On Fri, Mar 1, 2024 at 8:21=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl=
+> wrote:
+>
+> > Agreed and the big picture - just like with the reason behind the SRCU
+> > rework - is the fact that even static GPIO chips defined in ACPI or DT
+> > can be unbound. Unless you want to make the decision that we
+> > arbitrarily suppress_bind_attrs for all GPIO chips which I don't think
+> > you do.
+> >
+> > I have shown in the discussion under the previous iteration that a
+> > static GPIO chip defined in DT that is also marked as an
+> > interrupt-controller may have interrupts requested directly from its
+> > irq domain bypassing the .to_irq() callback. As long as this GPIO chip
+> > may be unbound (and we do not restrict this) it means the splat
+> > mentioned here can be triggered from user-space with a simple rmmod
+> > because a requested irq does not increase the module reference count
+> > nor do device links seem to work for interrupts not associated with a
+> > struct device explicitly.
+> >
+> > I DO want to fix it, don't get me wrong. I don't want to just leave it
+> > like this, especially since we've made so much progress with
+> > hotpluggability recently. I just don't believe this is the right fix,
+> > I will try to come up with a solution that addresses the issue
+> > globally.
+>
+> OK I trust you to come up with something better for sure!
+>
+> With regards to the ability to unbind/rebind drivers from sysfs, true.
+> I have heard about that as a counterargument to many things.
+>
+> The problem is that I have never heard about a user unbinding/binding
+> a driver from sysfs for anything but debugging a drivers ability to
+> bind/unbind. Partly I feel that thing should just be moved
+> to debugfs given the usecase and because it just looks like a way for
+> attackers to provoke crashes given how some drivers look.
+>
+> Yours,
+> Linus Walleij
 
-When I brought up resource sysfs files in October, Bjorn said:
+That's not the only thing - device unbind can also be triggered by
+removing the module providing the driver which is a completely normal
+operation for user-space.
 
-    I think the reason pci_sysfs_init() exists in the first place is
-    because those resources may be assigned after pci_device_add(), and
-    (my memory is hazy here) it seems like changing the size of binary
-    attributes is hard, which might fit with the
-    pci_remove_resource_files() and pci_create_resource_files() in the
-    resource##n##_resize_store() macro
-
-    https://lore.kernel.org/all/20231019200110.GA1410324@bhelgaas/
-
-I'm wondering in how far Krzysztof's above-mentioned patches
-address the issue of late-appearing resources?
-
-In the meantime I've learned of the existence of sysfs_update_group().
-It would seem to me that if resources such as the ROM appear late,
-we should just call sysfs_update_group() to make them show up in sysfs
-(or correct the size of their sysfs files).
-
-But that requires that we identify the places where resources
-are unhidden.  Do we know where this happens?
-
-Thanks,
-
-Lukas
+Bart
 
