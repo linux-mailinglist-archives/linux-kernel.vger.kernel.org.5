@@ -1,183 +1,155 @@
-Return-Path: <linux-kernel+bounces-89488-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89489-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39A8B86F0FC
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 16:53:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 599FB86F101
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 16:56:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D8CA1C20A94
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 15:53:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 64EB91C20C67
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 15:56:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B21461B274;
-	Sat,  2 Mar 2024 15:53:16 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 392A71B599;
+	Sat,  2 Mar 2024 15:56:42 +0000 (UTC)
+Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F2101947E
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 15:53:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0978418643
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 15:56:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709394796; cv=none; b=PCIejuRbhSLpAx5A0JZhptJ5mWimPmcvhT431yQw4/L+Y7UC5wn2QSq203r2MSUIVUcmQVZTK3YQMpwO7zymBunFMLKVtFNZNHegjGa++j6/XS05hnXtEJ2n9EIf7fXbHj087DLJefV7X8F1U5omqM1UUuH8xoMiIXm/hzaVc3w=
+	t=1709395001; cv=none; b=OCafYTiOnWs+Ez0ItUtIaenDanibcwdnHMqVkYjcdjniq5BpfDk2VV+5hPnl6YLZzlMNGjCKeZJu892HtxltzQ47+kB7WB7o7LEW6O40T6OAMHObEJqpVE4LRwDbksD5neTI7D4B0NBZv1nRFBJK4/QgV2O2HvW3GD89stKs3/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709394796; c=relaxed/simple;
-	bh=gx+oBh4okljPT/oHkZ+fsQuFULuA9YFsCcX+6c1c4lw=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=ozsfSaqTF0pxMbSFYvrqcjZhp05JFasqfHeRZsSkOzD9WDxjWbc/4oXxYpDY5cxDDa2SMXIP7Zn/ax7m0gwXlOuUA/JlDLjJfBkh4psQaBjy26X+gDIp2EK/y5xkRVsERGS7rdMPPRa2lcMncqM1M8hrrS7pvyCMRQHfXsAaHy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A833C433C7;
-	Sat,  2 Mar 2024 15:53:14 +0000 (UTC)
-Date: Sat, 2 Mar 2024 10:55:25 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Sachin Sant <sachinp@linux.ibm.com>
-Subject: [for-linus][PATCH] tracing: Prevent trace_marker being bigger than
- unsigned short
-Message-ID: <20240302105525.4972c026@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1709395001; c=relaxed/simple;
+	bh=tOzXpNQWLz0juiDSZXUtTc4HgdtWNEWArA6UdqSXuKw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HUOp5syT294BmTYKzCsY3G2qZQOZNFE1rgTHO3ifu1RYI6M6bpo+iOPfLmIGD++Yhu3UNIIoBi2IkAmtsX5Y+BQO6+GAXaI5fyWq/4Z0d/KjVQNPuyryAAy7KmL4ogPB3P63FF6y1VS0klEbOUrODZfD2fZqCye8ZJNtzHCIJaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=redhat.com; arc=none smtp.client-ip=209.85.219.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-6901114742bso11589966d6.2
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Mar 2024 07:56:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709394999; x=1709999799;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=icKYTn52wa+mcprh0aki+jO+Yd8UpG0vdGaXhjIHp5s=;
+        b=DiMdXbx42mNzOQ7w9+6yGVaNv7lBzUnIC/HoEi3dUkk1PjeNxysHoj4NVkKgSEotUy
+         exG8XnouWsdPuEFqt++c0AEq8ZMwUWpERZpIw04ThAdXDDyQR3jLAtIeSEOYIFcxbb8a
+         BTtYwSRQHuS2hoG2h8zWCABTes5ZlzNLbBOKMDO49SWgLIRWymrt0KNo2cTUxs9NA5up
+         VS+bnhEIGrCVJ44vjAiraUyowXNFTZCPcHsVxGR/qK8hfZrto6F6/0RVLvMOdvARaOeh
+         zMN/8y0rv7Bw5WWVMZiTwhIJzx8VN+eaMMvHJcjIvWr4hqlcWNqrfycDLPJ9U/my2OXh
+         kG2A==
+X-Forwarded-Encrypted: i=1; AJvYcCVTk0AGCkO+u+RIeYN92Is3fiAw3IiOQ/TqFXaN99FuCgcGFO+1xPPmzMKHmlrRQyYLq3BIPewCciJjiBu4hBPG1846G7OVpLUy80tp
+X-Gm-Message-State: AOJu0Yx4mLA0cZh8j6W/i1Nm3lYYMW7fZqVSsh0a/HbbUHGZYdgoHjlR
+	mzKr4ehZHF6VvctN+rdIBSqAccT0hrANT+8yDP6vC5F26NjtnU4k7gLF2OhRvQ==
+X-Google-Smtp-Source: AGHT+IEAn6vl09QtIrIrE2pXAETZzU5zEPKFbADR7msfSHAsTteuTr1kQ0suhD2aw3ZxwvOgvWJIdw==
+X-Received: by 2002:a0c:9c49:0:b0:690:4c7f:7d57 with SMTP id w9-20020a0c9c49000000b006904c7f7d57mr4795316qve.29.1709394998966;
+        Sat, 02 Mar 2024 07:56:38 -0800 (PST)
+Received: from localhost (pool-68-160-141-91.bstnma.fios.verizon.net. [68.160.141.91])
+        by smtp.gmail.com with ESMTPSA id pa7-20020a056214480700b0068f8a21a065sm3103794qvb.13.2024.03.02.07.56.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Mar 2024 07:56:38 -0800 (PST)
+Date: Sat, 2 Mar 2024 10:56:35 -0500
+From: Mike Snitzer <snitzer@kernel.org>
+To: Song Liu <song@kernel.org>
+Cc: Yu Kuai <yukuai1@huaweicloud.com>, Jens Axboe <axboe@kernel.dk>,
+	zkabelac@redhat.com, xni@redhat.com, agk@redhat.com,
+	mpatocka@redhat.com, dm-devel@lists.linux.dev, yukuai3@huawei.com,
+	heinzm@redhat.com, neilb@suse.de, jbrassow@redhat.com,
+	linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
+	yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH -next 0/9] dm-raid, md/raid: fix v6.7 regressions part2
+Message-ID: <ZeNMM5mt5Tgpg3MP@redhat.com>
+References: <20240301095657.662111-1-yukuai1@huaweicloud.com>
+ <CAPhsuW5B8EOakkqeewNL7jXHH-wa=7b=ko3zZ_zcigTV9ptCoA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPhsuW5B8EOakkqeewNL7jXHH-wa=7b=ko3zZ_zcigTV9ptCoA@mail.gmail.com>
 
+On Fri, Mar 01 2024 at  5:36P -0500,
+Song Liu <song@kernel.org> wrote:
 
+> On Fri, Mar 1, 2024 at 2:03 AM Yu Kuai <yukuai1@huaweicloud.com> wrote:
+> >
+> > From: Yu Kuai <yukuai3@huawei.com>
+> >
+> > link to part1: https://lore.kernel.org/all/CAPhsuW7u1UKHCDOBDhD7DzOVtkGemDz_QnJ4DUq_kSN-Q3G66Q@mail.gmail.com/
+> >
+> > part1 contains fixes for deadlocks for stopping sync_thread
+> >
+> > This set contains fixes:
+> >  - reshape can start unexpected, cause data corruption, patch 1,5,6;
+> >  - deadlocks that reshape concurrent with IO, patch 8;
+> >  - a lockdep warning, patch 9;
+> >
+> > I'm runing lvm2 tests with following scripts with a few rounds now,
+> >
+> > for t in `ls test/shell`; do
+> >         if cat test/shell/$t | grep raid &> /dev/null; then
+> >                 make check T=shell/$t
+> >         fi
+> > done
+> >
+> > There are no deadlock and no fs corrupt now, however, there are still four
+> > failed tests:
+> >
+> > ###       failed: [ndev-vanilla] shell/lvchange-raid1-writemostly.sh
+> > ###       failed: [ndev-vanilla] shell/lvconvert-repair-raid.sh
+> > ###       failed: [ndev-vanilla] shell/lvcreate-large-raid.sh
+> > ###       failed: [ndev-vanilla] shell/lvextend-raid.sh
+> >
+> > And failed reasons are the same:
+> >
+> > ## ERROR: The test started dmeventd (147856) unexpectedly
+> >
+> > I have no clue yet, and it seems other folks doesn't have this issue.
+> >
+> > Yu Kuai (9):
+> >   md: don't clear MD_RECOVERY_FROZEN for new dm-raid until resume
+> >   md: export helpers to stop sync_thread
+> >   md: export helper md_is_rdwr()
+> >   md: add a new helper reshape_interrupted()
+> >   dm-raid: really frozen sync_thread during suspend
+> >   md/dm-raid: don't call md_reap_sync_thread() directly
+> >   dm-raid: add a new helper prepare_suspend() in md_personality
+> >   dm-raid456, md/raid456: fix a deadlock for dm-raid456 while io
+> >     concurrent with reshape
+> >   dm-raid: fix lockdep waring in "pers->hot_add_disk"
+> 
+> This set looks good to me and passes the tests: reshape tests from
+> lvm2, mdadm tests, and the reboot test that catches some issue in
+> Xiao's version.
+> 
+> DM folks, please help review and test this set. If it looks good, we
+> can route it either via the md tree (I am thinking about md-6.8
+> branch) or the dm tree.
 
-Tracing fix for 6.8-rc6:
+Please send these changes through md-6.8.
 
-- The change to allow trace_marker writes to be as big as the trace_seq can
-  hold, and also the change that increases the size of the trace_seq to two
-  pages, caused PowerPC kselftest trace_marker test to fail. The trace_marker
-  kselftest writes up to subbuffer size which is determined by PAGE_SIZE.
-  On PowerPC, the PAGE_SIZE can be 64K, which means the selftest will write
-  a string that is around 64K in size. The output of the trace_marker is
-  performed with a vsnprintf("%.*s", size, string), but this write would make
-  the size greater than 32K, which is the max precision of "%.*s", and that
-  causes a kernel warning. The fix is simply to keep the write of trace_marker
-  less than or equal to max signed short.
+There are a few typos in patch subjects and headers but:
 
+Acked-by: Mike Snitzer <snitzer@kernel.org>
 
-Steven Rostedt (Google) (1):
-      tracing: Prevent trace_marker being bigger than unsigned short
+> CC Jens,
+> 
+> I understand it is already late in the release cycle for 6.8 kernel.
+> Please let us know your thoughts on this set. These patches fixes
+> a crash when running lvm2 tests that are related to md-raid
+> reshape.
 
-----
- kernel/trace/trace.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
----------------------------
-commit 6e77fd570deda96cf3696a10c5bd7cc26cf0f687
-Author: Steven Rostedt (Google) <rostedt@goodmis.org>
-Date:   Tue Feb 27 12:57:06 2024 -0500
+Would be good to get these into 6.8, but worst case if they slip to
+the 6.9 merge is they'll go to relevant stable kernels (due to
+"Fixes:" tags, though not all commits have Fixes).
 
-    tracing: Prevent trace_marker being bigger than unsigned short
-    
-    The trace_marker write goes into the ring buffer. A test was added to
-    write a string as big as the sub-buffer of the ring buffer to see if it
-    would work. A sub-buffer is typically PAGE_SIZE in length.
-    
-    On PowerPC architecture, the ftrace selftest for trace_marker started to
-    fail. This was due to PowerPC having a PAGE_SIZE of 65536 and not 4096. It
-    would try to write a string that was around 63000 bytes in size. This gave
-    the following warning:
-    
-    ------------[ cut here ]------------
-    precision 63492 too large
-    WARNING: CPU: 15 PID: 2538829 at lib/vsprintf.c:2721 set_precision+0x68/0xa4
-    Modules linked in:
-    CPU: 15 PID: 2538829 Comm: awk Tainted: G M O K 6.8.0-rc5-gfca7526b7d89 #1
-    Hardware name: IBM,9080-HEX POWER10 (raw) 0x800200 0xf000006 of:IBM,FW1060.00 (NH1060_018) hv:phyp pSeries
-    NIP: c000000000f57c34 LR: c000000000f57c30 CTR: c000000000f5cdf0
-    REGS: c000000a58e4f5f0 TRAP: 0700 Tainted: G M O K (6.8.0-rc5-gfca7526b7d89)
-    MSR: 8000000002029033 <SF,VEC,EE,ME,IR,DR,RI,LE> CR: 48000824 XER: 00000005
-    CFAR: c00000000016154c IRQMASK: 0
-    GPR00: c000000000f57c30 c000000a58e4f890 c000000001482800 0000000000000019
-    GPR04: 0000000100011559 c000000a58e4f660 c000000a58e4f658 0000000000000027
-    GPR08: c000000e84e37c10 0000000000000001 0000000000000027 c000000002a47e50
-    GPR12: 0000000000000000 c000000e87bf7300 0000000000000000 0000000000000000
-    GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
-    GPR20: c0000004a43ec590 0000000000400cc0 0000000000000003 c0000000012c3e65
-    GPR24: c000000a58e4fa18 0000000000000025 0000000000000020 000000000001ff97
-    GPR28: c0000001168a00dd c0000001168c0074 c000000a58e4f920 000000000000f804
-    NIP [c000000000f57c34] set_precision+0x68/0xa4
-    LR [c000000000f57c30] set_precision+0x64/0xa4
-    Call Trace:
-    [c000000a58e4f890] [c000000000f57c30] set_precision+0x64/0xa4 (unreliable)
-    [c000000a58e4f900] [c000000000f5ccc4] vsnprintf+0x198/0x4c8
-    [c000000a58e4f980] [c000000000f53228] seq_buf_vprintf+0x50/0xa0
-    [c000000a58e4f9b0] [c00000000031cec0] trace_seq_printf+0x60/0xe0
-    [c000000a58e4f9e0] [c00000000031b5f0] trace_print_print+0x78/0xa4
-    [c000000a58e4fa60] [c0000000003133a4] print_trace_line+0x2ac/0x6d8
-    [c000000a58e4fb20] [c0000000003145c0] s_show+0x58/0x2c0
-    [c000000a58e4fba0] [c0000000005dfb2c] seq_read_iter+0x448/0x618
-    [c000000a58e4fc70] [c0000000005dfe08] seq_read+0x10c/0x174
-    [c000000a58e4fd10] [c00000000059a7e0] vfs_read+0xe0/0x39c
-    [c000000a58e4fdc0] [c00000000059b59c] ksys_read+0x7c/0x140
-    [c000000a58e4fe10] [c000000000035d74] system_call_exception+0x134/0x330
-    [c000000a58e4fe50] [c00000000000d6a0] system_call_common+0x160/0x2e4
-    
-    The problem was that in trace_print_print() that reads the trace_marker
-    write data had the following code:
-    
-            int max = iter->ent_size - offsetof(struct print_entry, buf);
-    
-            [..]
-            trace_seq_printf(s, ": %.*s", max, field->buf);
-    
-    Where "max" was the size of the entry. Now that the write to trace_marker
-    can be as big as what the sub-buffer can hold, and the sub-buffer for
-    powerpc is 64K in size, the "max" value was: 63492, and that was passed to
-    trace_seq_printf() which eventually calls vsnprintf() with the same format
-    and parameters.
-    
-    The max "precision" that "%.*s" can be is max signed short (32767) where
-    63492 happens to be greater than.
-    
-    Prevent the max size written by trace_marker to be greater than what a
-    signed short can hold.
-    
-    Link: https://lore.kernel.org/all/C7E7AF1A-D30F-4D18-B8E5-AF1EF58004F5@linux.ibm.com/
-    Link: https://lore.kernel.org/linux-trace-kernel/20240227125706.04279ac2@gandalf.local.home
-    
-    Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-    Reported-by: Sachin Sant <sachinp@linux.ibm.com>
-    Tested-by: Sachin Sant <sachinp@linux.ibm.com>
-    Fixes: 8ec90be7f15f ("tracing: Allow for max buffer data size trace_marker writes")
-    Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-    Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 8198bfc54b58..1606fa99367b 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -7310,7 +7310,9 @@ tracing_mark_write(struct file *filp, const char __user *ubuf,
- /* Used in tracing_mark_raw_write() as well */
- #define FAULTED_STR "<faulted>"
- #define FAULTED_SIZE (sizeof(FAULTED_STR) - 1) /* '\0' is already accounted for */
--
-+#ifndef SHORT_MAX
-+#define SHORT_MAX	((1<<15) - 1)
-+#endif
- 	if (tracing_disabled)
- 		return -EINVAL;
- 
-@@ -7328,6 +7330,16 @@ tracing_mark_write(struct file *filp, const char __user *ubuf,
- 	if (cnt < FAULTED_SIZE)
- 		size += FAULTED_SIZE - cnt;
- 
-+	/*
-+	 * trace_print_print() uses vsprintf() to determine the size via
-+	 * the precision format "%.*s" which can not be greater than
-+	 * a signed short.
-+	 */
-+	if (size > SHORT_MAX) {
-+		cnt -= size - SHORT_MAX;
-+		goto again;
-+	}
-+
- 	if (size > TRACE_SEQ_BUFFER_SIZE) {
- 		cnt -= size - TRACE_SEQ_BUFFER_SIZE;
- 		goto again;
+Mike
 
