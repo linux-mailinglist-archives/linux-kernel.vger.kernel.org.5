@@ -1,123 +1,232 @@
-Return-Path: <linux-kernel+bounces-89419-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89420-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC37486F014
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 11:41:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF26C86F018
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 11:52:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 615E41F217B7
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 10:41:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F4701C2124A
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 10:52:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6285C171A5;
-	Sat,  2 Mar 2024 10:40:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B91A168BD;
+	Sat,  2 Mar 2024 10:52:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="w4QQ4ma1"
-Received: from mout.web.de (mout.web.de [212.227.15.3])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="LJp/2Ft2"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BA5F79F0;
-	Sat,  2 Mar 2024 10:40:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6881779F0
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 10:52:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709376052; cv=none; b=LX/W4fEKNzs7pMJLKBpQaI5QzlzrWuu0NwMfHdtw/N7qVWJknVefHNRVtTKZcuVZJ6SjrM2gFnecGnBtYkyP9g+UCT3H6phqkeU6RDV+sc/LaJ7QtIVMPDLPsjA7g/GTBAnbJYKo4+ay4RdJuhnOcF1cRZ94ucv0JAAc5UFEENQ=
+	t=1709376727; cv=none; b=Jte6VXWgq/BD1RLainTc08XwTJC+hJZOpTjeNzEWpn/B7108JHLtFQD1sN1g0N8YsPeRBp7s97cVIvfHaHyyzlLw056OjMdHGmHM52g+2/SPiJx7Bvn6d2+VecdKkQLbtKbaOS3a5JCBJPhrW/70Y937COMQk2raV/JiFFXpg8g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709376052; c=relaxed/simple;
-	bh=5KEwfwfpBtHKd/mMoh+MO4I0djnrDy1f2e5WKqE/N+Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XXxFDl0+gNpS+uMw6iyKkfizHwKzXMdPRhF26+kaCJ4bdPe/izlCWEnrtap8Pxpckn0Djb8D6gXPOlEimhLAAyCgi40RJ5vX/T5toyN6aRUITyaOHDml5k181MmZR+AhdLW5XwmPMhIO+gXb/ogPbD4I6pqME9DGlGQEE6pmr0w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=w4QQ4ma1; arc=none smtp.client-ip=212.227.15.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1709376027; x=1709980827; i=markus.elfring@web.de;
-	bh=5KEwfwfpBtHKd/mMoh+MO4I0djnrDy1f2e5WKqE/N+Y=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=w4QQ4ma1DcUJNf1607MwmUiWq1VEwhfUtnHjOxpuJ57dgm104lqxEk3tuLs+ASHV
-	 9yU5+PCLDPII4m3KlfLFhUy/NmlbbNat23dHJDPRsFBXm1KiXD64gugniF1qTqnXW
-	 p9bl0BVIVm1/xW7RvepilXKQ8GpEItCCbkUVhyvhEfUCbEKkjcHxrbNX7ugq6xtkK
-	 wEc+udSFuzhCUDa17vl1PU9EwT647Z9Aj2nMzL7sxo7vINMC7ExYm6lllP4UW3jUO
-	 i2GXQmCxBcNhcna/RIeF1GEl9G4H9wK5LJFrPVOqzKIKei0VrtS2PKD9ZVig8aCef
-	 oeJzFtzmJxhdT6OwGA==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.86.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MgibY-1rF2Ji44NQ-00h3sN; Sat, 02
- Mar 2024 11:40:27 +0100
-Message-ID: <f451ffba-db26-4a3b-a4b3-186c31f2ad64@web.de>
-Date: Sat, 2 Mar 2024 11:40:26 +0100
+	s=arc-20240116; t=1709376727; c=relaxed/simple;
+	bh=XBSHM22vHMNsyJdf8IF+rdpTefstfNWgsuzTwp/4C0U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q05hjYdFnRXS37SE3p25dU9CceaskrMsHcg4LKOMYL04zo+rzYRKBr/r3sdUg2/4eCnu045TGL/tem01f8uCgKVeYQHyp98CXgFXGG3yQxF14cvEJnHiwCYgqT7otraGNlMGrz7eEe6oMyxt3gFEcIhDk1BhubEBcQ04ZX1RJIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=LJp/2Ft2; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a26ed1e05c7so535151266b.2
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Mar 2024 02:52:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1709376724; x=1709981524; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9EpHJ3vXoVYx3z3WiPBm0nq7L3LHn09T6f5KhziK9jw=;
+        b=LJp/2Ft2wrjc6pY7V8n0DwCDVqTBg6ZL5hln7mvzDB/xNaSBFO3xtmqvdyPlyY2B1X
+         CZk0UhIL4BaCpILz1PGdsFC4Uogn0LwDaLnED5uy2qsft0tlMNwmoeb+Edy82kGORv3A
+         exx9Hc/Aqz6sIqXyxc+zqAaPZY1KSjqZzjOaSUkzvrm7BSWLtTSHYshY2MDGtxjZv8/s
+         n1SOr/PEzH1WIPkKa2SBIeh3Gkz4CtiUF1qPRll+t40nYYC5M5tJYU2JhSxR+cJwhSTz
+         ueBLuFyRy2tZcWKd+6GD66g6DnegorWnrDw/N6AN1dhuP3/HdYmDASwtOFweRv2MrtGm
+         pDlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709376724; x=1709981524;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9EpHJ3vXoVYx3z3WiPBm0nq7L3LHn09T6f5KhziK9jw=;
+        b=FOoTN1D36Xvb7hbCkbqO2aEmy7i7lylM2FyiEwylSUASPAtLaH3UKUic478eR7jY7c
+         KnL3DSXraj9HzJ2t/V3bZOzFZEAAoHOZXGR+pAbiSKY0OgfhxicX+VtCX5skR14jLVst
+         EKCbqzSysGjh2gwHQ9/o3fJ9i++pZeMF1JJaOeWOD1ZncmNX6uceBaolZbC/sCtAITsK
+         dL6NE4Uq7z6Vt+TSlMZUcIiBN2DPzF8ser8/w5YZA4hcjuetW+ajELCsmStw44At/iS4
+         E6g38szIVrymVR4jIrgl2kgTXi4wvejziHaCLg4/dvb+hocY1Hzf3hkR1iniUFuO+aU/
+         381g==
+X-Gm-Message-State: AOJu0YxyxQEMcMYpBnr0rcphrd2DXtPNQkjOutqgUHZjNShhDeZXbIRt
+	rglpEwcmPt5cjxsSCNklItRb7gF98ZTy4mrrKE5L1JQxzXDcoGqopbHaRB3UEI0=
+X-Google-Smtp-Source: AGHT+IHCev5tUtcI53kDoYHkl5lWdh3t/37ee1Ru+I9oZgloBvL0ICNc3Zq0ypsxSf+vVr5Y6SFE0Q==
+X-Received: by 2002:a17:906:e211:b0:a3e:3a1d:f4b5 with SMTP id gf17-20020a170906e21100b00a3e3a1df4b5mr3140237ejb.65.1709376723783;
+        Sat, 02 Mar 2024 02:52:03 -0800 (PST)
+Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
+        by smtp.gmail.com with ESMTPSA id h17-20020a1709063c1100b00a42da3b6518sm2609577ejg.18.2024.03.02.02.52.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Mar 2024 02:52:03 -0800 (PST)
+Date: Sat, 2 Mar 2024 11:52:02 +0100
+From: Andrew Jones <ajones@ventanamicro.com>
+To: Atish Patra <atishp@rivosinc.com>
+Cc: linux-kernel@vger.kernel.org, Anup Patel <anup@brainfault.org>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alexghiti@rivosinc.com>, 
+	Atish Patra <atishp@atishpatra.org>, Conor Dooley <conor.dooley@microchip.com>, 
+	Guo Ren <guoren@kernel.org>, Icenowy Zheng <uwu@icenowy.me>, kvm-riscv@lists.infradead.org, 
+	kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	Mark Rutland <mark.rutland@arm.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Shuah Khan <shuah@kernel.org>, Will Deacon <will@kernel.org>
+Subject: Re: [PATCH v4 10/15] RISC-V: KVM: Support 64 bit firmware counters
+ on RV32
+Message-ID: <20240302-7679c8f67984ccae734926ba@orel>
+References: <20240229010130.1380926-1-atishp@rivosinc.com>
+ <20240229010130.1380926-11-atishp@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: staging: media: tegra-video: Use common error handling code in
- tegra_vi_graph_parse_one()
-Content-Language: en-GB
-To: Dan Carpenter <dan.carpenter@linaro.org>,
- Luca Ceresoli <luca.ceresoli@bootlin.com>, linux-staging@lists.linux.dev,
- linux-tegra@vger.kernel.org, linux-media@vger.kernel.org,
- kernel-janitors@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jonathan Hunter <jonathanh@nvidia.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Sowjanya Komatineni <skomatineni@nvidia.com>,
- Thierry Reding <thierry.reding@gmail.com>,
- LKML <linux-kernel@vger.kernel.org>
-References: <dbebaea7-289c-47d9-ba06-cd58a10ea662@web.de>
- <20240301183936.505fcc72@booty>
- <9f1b617f-06cb-4b22-a050-325424720c57@moroto.mountain>
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <9f1b617f-06cb-4b22-a050-325424720c57@moroto.mountain>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:8EIFhDOXNVZRFR7rb6IKMJFkCMFDb06oUAxZG70fjR9PxT9vVDb
- ygwmriYITR6G3+mDegwySoLWOaFOrKIdvdfLLtx7Npk3lEV/2yhpzaPrHsOg54hr9fLjXQk
- AzjYhdKxoeGucPy0nUXqkKVuDA3LPFMYyENkuKlBs2M1tOv2hAqXwKOkUXsa7C1+5NUialp
- +CSqHePTqHSMCthsLr/LA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:KfSN83dN8vM=;ZZe12Cqx8Lnelg3dRbEv//XtPa+
- Ov5CSeXzzv6A+QTt5mCYp1fCKAAagNqF5ynAnwrPI4m1jOoE2ypRSpp4/NG2d2XDKQQBiuBv2
- eEc09zFfUiqqUAVJQkQD7Ft+7us/UUJXYYGbArKJFJ3z7nry/qPmgmLmLWbhAYHQbYwAoLE9L
- EKxS5/RONLgDwqzQNt1MFXDptC+PGHk8VMVGkSShxKAmKfuWupdMgKXR/Nk2EoJJ9Gwotc5EL
- aPP+Pe/YU0Sn79UFH2OjecwDHmILfSwP+DUQj+StufPEwPOwI7CcV5HZ1J941hs8uW6MoLDYR
- rZtwx/vPeWJLoQlLTv46aHJNZziFOCtx1EBP3zUNX59nHJ0MYh40KZFiiPqlHShjGoSM+JU7W
- qyltlenXBPC17tldyORFY+2FdWH0M4uobbLeL1JlrScsD8A3b+ph63jnju8CMdu9qedNzQkbk
- QmiKxOb7FJqTGwycqUC3EMnoMUBbiZXFlXLkfqDiUlKzSK2V9JFmsf+BFzXah6ADjVPdfJ7Ui
- MFy/Y80NR/NZMnop2mleoGV06F67SDirHovQC+LUMNSnt19WomGwHZJjm2mb24gcNp8edIXEA
- imvcusWfDabNucAvhU6MCv5cEo1SLoHzR0S9pGPt8rpsB6Bf4iEsAj5CBsGL/LQ8N0pZ4Hfj2
- u/3kEbrMY6tZMQrL7ggvg8W0OO7QegEIt2fWcP77IcwIBXplzVBPrjxO8CFYzYygw0jWnWcKR
- 7qCkT181QQ2ZCz/4Mz/bdK44hJYyJVcJsW+L3MrHJ4+pKpfAZWo6tNyq3KSHQ4pd+N6Nk5HR/
- piduLI8jjzlFyEsJW6Tdnzf608wMZhps3Qnp2fMTqo9QM=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240229010130.1380926-11-atishp@rivosinc.com>
 
->>> Add a jump target so that a bit of exception handling can be better re=
-used
->>> at the end of this function implementation.
-=E2=80=A6
->> Reviewed-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
->
-> These patches make the code worse.  If we're in the middle of a loop,
-> then we should clean up the partial loop before doing the goto.
-> Otherwise it creates a mess when we add a new allocation function after
-> the end of the loop.
+On Wed, Feb 28, 2024 at 05:01:25PM -0800, Atish Patra wrote:
+> The SBI v2.0 introduced a fw_read_hi function to read 64 bit firmware
+> counters for RV32 based systems.
+> 
+> Add infrastructure to support that.
+> 
+> Reviewed-by: Anup Patel <anup@brainfault.org>
+> Signed-off-by: Atish Patra <atishp@rivosinc.com>
+> ---
+>  arch/riscv/include/asm/kvm_vcpu_pmu.h |  4 ++-
+>  arch/riscv/kvm/vcpu_pmu.c             | 37 ++++++++++++++++++++++++++-
+>  arch/riscv/kvm/vcpu_sbi_pmu.c         |  6 +++++
+>  3 files changed, 45 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/riscv/include/asm/kvm_vcpu_pmu.h b/arch/riscv/include/asm/kvm_vcpu_pmu.h
+> index 8cb21a4f862c..e0ad27dea46c 100644
+> --- a/arch/riscv/include/asm/kvm_vcpu_pmu.h
+> +++ b/arch/riscv/include/asm/kvm_vcpu_pmu.h
+> @@ -20,7 +20,7 @@ static_assert(RISCV_KVM_MAX_COUNTERS <= 64);
+>  
+>  struct kvm_fw_event {
+>  	/* Current value of the event */
+> -	unsigned long value;
+> +	u64 value;
+>  
+>  	/* Event monitoring status */
+>  	bool started;
+> @@ -91,6 +91,8 @@ int kvm_riscv_vcpu_pmu_ctr_cfg_match(struct kvm_vcpu *vcpu, unsigned long ctr_ba
+>  				     struct kvm_vcpu_sbi_return *retdata);
+>  int kvm_riscv_vcpu_pmu_ctr_read(struct kvm_vcpu *vcpu, unsigned long cidx,
+>  				struct kvm_vcpu_sbi_return *retdata);
+> +int kvm_riscv_vcpu_pmu_fw_ctr_read_hi(struct kvm_vcpu *vcpu, unsigned long cidx,
+> +				      struct kvm_vcpu_sbi_return *retdata);
+>  void kvm_riscv_vcpu_pmu_init(struct kvm_vcpu *vcpu);
+>  int kvm_riscv_vcpu_pmu_setup_snapshot(struct kvm_vcpu *vcpu, unsigned long saddr_low,
+>  				      unsigned long saddr_high, unsigned long flags,
+> diff --git a/arch/riscv/kvm/vcpu_pmu.c b/arch/riscv/kvm/vcpu_pmu.c
+> index a02f7b981005..469bb430cf97 100644
+> --- a/arch/riscv/kvm/vcpu_pmu.c
+> +++ b/arch/riscv/kvm/vcpu_pmu.c
+> @@ -196,6 +196,29 @@ static int pmu_get_pmc_index(struct kvm_pmu *pmu, unsigned long eidx,
+>  	return kvm_pmu_get_programmable_pmc_index(pmu, eidx, cbase, cmask);
+>  }
+>  
+> +static int pmu_fw_ctr_read_hi(struct kvm_vcpu *vcpu, unsigned long cidx,
+> +			      unsigned long *out_val)
+> +{
+> +	struct kvm_pmu *kvpmu = vcpu_to_pmu(vcpu);
+> +	struct kvm_pmc *pmc;
+> +	int fevent_code;
+> +
+> +	if (!IS_ENABLED(CONFIG_32BIT))
 
-How does such a feedback fit to another known information source?
+Let's remove the CONFIG_32BIT check in kvm_sbi_ext_pmu_handler() and then
+set *out_val to zero here and return success. Either that, or we should
+WARN or something here since it's a KVM bug to get here with
+!CONFIG_32BIT.
 
-Section =E2=80=9C7) Centralized exiting of functions=E2=80=9D
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
-cumentation/process/coding-style.rst?h=3Dv6.8-rc6#n526
+> +		return -EINVAL;
+> +
+> +	pmc = &kvpmu->pmc[cidx];
 
+Uh oh! We're missing range validation of cidx! And I see we're missing it
+in pmu_ctr_read() too. We need the same check we have in
+kvm_riscv_vcpu_pmu_ctr_info(). I think the other SBI functions are OK,
+but it's worth a triple check.
 
-> Someone is going to add a _scoped() loop which uses cleanup.h magic to
-> call _put automatically.  This is a good option.
+> +
+> +	if (pmc->cinfo.type != SBI_PMU_CTR_TYPE_FW)
+> +		return -EINVAL;
+> +
+> +	fevent_code = get_event_code(pmc->event_idx);
+> +	pmc->counter_val = kvpmu->fw_event[fevent_code].value;
+> +
+> +	*out_val = pmc->counter_val >> 32;
+> +
+> +	return 0;
+> +}
+> +
+>  static int pmu_ctr_read(struct kvm_vcpu *vcpu, unsigned long cidx,
+>  			unsigned long *out_val)
+>  {
+> @@ -702,6 +725,18 @@ int kvm_riscv_vcpu_pmu_ctr_cfg_match(struct kvm_vcpu *vcpu, unsigned long ctr_ba
+>  	return 0;
+>  }
+>  
+> +int kvm_riscv_vcpu_pmu_fw_ctr_read_hi(struct kvm_vcpu *vcpu, unsigned long cidx,
+> +				      struct kvm_vcpu_sbi_return *retdata)
+> +{
+> +	int ret;
+> +
+> +	ret = pmu_fw_ctr_read_hi(vcpu, cidx, &retdata->out_val);
+> +	if (ret == -EINVAL)
+> +		retdata->err_val = SBI_ERR_INVALID_PARAM;
+> +
+> +	return 0;
 
-I became also curious how scope-based resource management will influence
-Linux coding styles further.
-Will various collateral evolution become more interesting?
+I see this follows the pattern we have with kvm_riscv_vcpu_pmu_ctr_read
+and pmu_ctr_read, but I wonder if we really need the
+kvm_riscv_vcpu_pmu_ctr_read() and kvm_riscv_vcpu_pmu_fw_ctr_read_hi()
+wrapper functions?
 
-Regards,
-Markus
+> +}
+> +
+>  int kvm_riscv_vcpu_pmu_ctr_read(struct kvm_vcpu *vcpu, unsigned long cidx,
+>  				struct kvm_vcpu_sbi_return *retdata)
+>  {
+> @@ -775,7 +810,7 @@ void kvm_riscv_vcpu_pmu_init(struct kvm_vcpu *vcpu)
+>  			pmc->cinfo.csr = CSR_CYCLE + i;
+>  		} else {
+>  			pmc->cinfo.type = SBI_PMU_CTR_TYPE_FW;
+> -			pmc->cinfo.width = BITS_PER_LONG - 1;
+> +			pmc->cinfo.width = 63;
+>  		}
+>  	}
+>  
+> diff --git a/arch/riscv/kvm/vcpu_sbi_pmu.c b/arch/riscv/kvm/vcpu_sbi_pmu.c
+> index 9f61136e4bb1..58a0e5587e2a 100644
+> --- a/arch/riscv/kvm/vcpu_sbi_pmu.c
+> +++ b/arch/riscv/kvm/vcpu_sbi_pmu.c
+> @@ -64,6 +64,12 @@ static int kvm_sbi_ext_pmu_handler(struct kvm_vcpu *vcpu, struct kvm_run *run,
+>  	case SBI_EXT_PMU_COUNTER_FW_READ:
+>  		ret = kvm_riscv_vcpu_pmu_ctr_read(vcpu, cp->a0, retdata);
+>  		break;
+> +	case SBI_EXT_PMU_COUNTER_FW_READ_HI:
+> +		if (IS_ENABLED(CONFIG_32BIT))
+> +			ret = kvm_riscv_vcpu_pmu_fw_ctr_read_hi(vcpu, cp->a0, retdata);
+> +		else
+> +			retdata->out_val = 0;
+> +		break;
+>  	case SBI_EXT_PMU_SNAPSHOT_SET_SHMEM:
+>  		ret = kvm_riscv_vcpu_pmu_setup_snapshot(vcpu, cp->a0, cp->a1, cp->a2, retdata);
+>  		break;
+> -- 
+> 2.34.1
+> 
+
+Thanks,
+drew
 
