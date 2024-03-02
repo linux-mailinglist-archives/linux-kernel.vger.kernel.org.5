@@ -1,64 +1,54 @@
-Return-Path: <linux-kernel+bounces-89426-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89392-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48C3F86F02F
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 12:03:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D56386EFC5
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 10:21:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CFD61C21AF5
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 11:03:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49ACD284B27
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 09:21:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27035171D8;
-	Sat,  2 Mar 2024 11:03:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="F1ruERiJ"
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.4])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62B371119A;
-	Sat,  2 Mar 2024 11:03:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A7AA15EB0;
+	Sat,  2 Mar 2024 09:21:24 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1197134A1;
+	Sat,  2 Mar 2024 09:21:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709377406; cv=none; b=qZVEfmSKHm6Dt/SyUU+Bymiu/O16Bkw8IArwDbpSuyNeZwZneg4lopEE9lk5I687cuWeN2ga4Y53Inmt0yGobui2bJ7df+Yww+3la/ReP2Hb8pTAs7S/U3q8axFlbO2myQDGGPgiD1qPV4DN7tzIGUXWixj2ZO9pivC88RQ5QOY=
+	t=1709371283; cv=none; b=EWMCeCdkUWyLPZYZRZyE82GH5QsvFwD8Douq9+9FD46Grwxy5R8TIMIg6HVxXAOBytoD6JoD2HHxgkmmicAygIvh6SBJKzPd/qODUVSrVHXK51e62VsT/5NqYG6yu+dL/eIODkB6qU4TqNvqdzN6o327CRC+79TNXyb0xwGZmhU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709377406; c=relaxed/simple;
-	bh=StM8jCcuLIUhEXyA+Kx/oOlysO2RAZR6KO06K2kCibA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=hBEEt23tUAN52/MIyqcI9FS2Py8IQD2Q5FpgSGYh6Mkt3BLN5d4w6q4e8uwpdM8bbwx56OYW16AB0Dpoahvn2IdsYwu7S5Xd5+4zkE6U+g85NupBhSgcC/Xa2P131QIWRk8tSI/O86O2mvCkUGX/olmPYBkeG6ZL/RXdRW7ZM8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=F1ruERiJ; arc=none smtp.client-ip=220.197.31.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=5sI/Q
-	17YHnDgZ7jjFmoiztGvtNafvTpgOVQgThSAgDQ=; b=F1ruERiJH0Tl+SEoli0Py
-	UySZ7fSbsYc9uix3evr+rQXRMjHItzJ7a+9lLr6Sb6N69olegmH/fHSgF2QJ78SP
-	Ji6nEPVIa/7rlSuszGk9XUIHccE+fA1e4po6EhEmR10cJ2CbiYM42+uhN7+xY6qe
-	0IEZg3QEmIkE61N8VUH0bI=
-Received: from hpl-virtual-machine.. (unknown [117.173.176.146])
-	by gzga-smtp-mta-g2-0 (Coremail) with SMTP id _____wD3n8ozB+NlgyMPBg--.36598S2;
-	Sat, 02 Mar 2024 19:02:12 +0800 (CST)
-From: He Peilin <peilinhe2020@163.com>
-To: edumazet@google.com
-Cc: davem@davemloft.net,
-	dsahern@kernel.org,
-	he.peilin@zte.com.cn,
-	jiang.xuexin@zte.com.cn,
-	kuba@kernel.org,
+	s=arc-20240116; t=1709371283; c=relaxed/simple;
+	bh=qdezucad5cPvzaEjmiAU3jX0Q8SyunCIEy72jkWfi5E=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=PTeAxagwl1gSW02SMjEgTvh7BPeL7/noelLj+Dar1bT1OOEmBqwsCqMqJnAIo2JiUITutE4AM2JBv5kntPsT6HOXB8OegsDdemlsxozO3xcpdcPRZ2R85h/R5gEZu4ENTB89G/bJC6vLI312DyDUxNnFdpy5H94fLN2tOyuRvkY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TmzwJ4J3sz4f3lg8;
+	Sat,  2 Mar 2024 17:21:04 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 072411A0C43;
+	Sat,  2 Mar 2024 17:21:12 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.101.6])
+	by APP4 (Coremail) with SMTP id gCh0CgA3imyE7+Jld1cqFw--.52350S2;
+	Sat, 02 Mar 2024 17:21:10 +0800 (CST)
+From: Kemeng Shi <shikemeng@huaweicloud.com>
+To: tytso@mit.edu,
+	adilger.kernel@dilger.ca
+Cc: linux-ext4@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	liu.chun2@zte.com.cn,
-	mhiramat@kernel.org,
-	netdev@vger.kernel.org,
-	rostedt@goodmis.org,
-	xu.xin16@zte.com.cn,
-	yang.yang29@zte.com.cn,
-	zhang.yunkai@zte.com.cn
-Subject: Re: Re: [PATCH] net/ipv4: add tracepoint for icmp_send
-Date: Sat,  2 Mar 2024 06:02:11 -0500
-Message-Id: <20240302110211.6967-1-peilinhe2020@163.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <CANn89iL-y9e_VFpdw=sZtRnKRu_tnUwqHuFQTJvJsv-nz1xPDw@mail.gmail.com>
-References: <CANn89iL-y9e_VFpdw=sZtRnKRu_tnUwqHuFQTJvJsv-nz1xPDw@mail.gmail.com>
+	naresh.kamboju@linaro.org,
+	daniel.diaz@linaro.org,
+	linux@roeck-us.net,
+	brauner@kernel.org
+Subject: [PATCH v3 0/3] Fix crashes and warning in ext4 unit test
+Date: Sun,  3 Mar 2024 02:17:52 +0800
+Message-Id: <20240302181755.9192-1-shikemeng@huaweicloud.com>
+X-Mailer: git-send-email 2.30.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,123 +56,49 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD3n8ozB+NlgyMPBg--.36598S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxAw4fWFy7Zw1ktF47Xw17trb_yoW5tw4rpF
-	1UAFZ5WFZ7Jr47u34fZw1fJ3Zav3y8uryUKrW2ga4jkF1vyr1xJrs2gr90kryrArs0krya
-	vF4jv345G3Z0q3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jfmi_UUUUU=
-X-CM-SenderInfo: xshlzxhqkhjiisq6il2tof0z/1tbiYxaVsWV4G2+JpQAAsU
+X-CM-TRANSID:gCh0CgA3imyE7+Jld1cqFw--.52350S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7XF1DZF47ZFWfXry5Kr4fGrg_yoWfGrb_GF
+	W8Z3s5JrWxJ3WjyFWxtryFqry8Kay2yry8ZF47JFW3GrWxZw17Aa4kGr1vy3Z8Ww45Ar9I
+	q3Wvkr1fZwnFqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUb7kYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l87I20VAvwVAaII0Ic2I_JFv_Gryl8c
+	AvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWD
+	JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oV
+	Cq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG
+	8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2js
+	IE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY
+	0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I
+	0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAI
+	cVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcV
+	CF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280
+	aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUIf-PUUUUU
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-> >  include/trace/events/icmp.h | 57 +++++++++++++++++++++++++++++++++++++++++++++
-> >  net/ipv4/icmp.c             |  4 ++++
-> >  2 files changed, 61 insertions(+)
-> >  create mode 100644 include/trace/events/icmp.h
-> >
-> > diff --git a/include/trace/events/icmp.h b/include/trace/events/icmp.h
-> > new file mode 100644
-> > index 000000000000..3d9af5769bc3
-> > --- /dev/null
-> > +++ b/include/trace/events/icmp.h
-> > @@ -0,0 +1,57 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +#undef TRACE_SYSTEM
-> > +#define TRACE_SYSTEM icmp
-> > +
-> > +#if !defined(_TRACE_ICMP_H) || defined(TRACE_HEADER_MULTI_READ)
-> > +#define _TRACE_ICMP_H
-> > +
-> > +#include <linux/icmp.h>
-> > +#include <linux/tracepoint.h>
-> > +
-> > +TRACE_EVENT(icmp_send,
-> > +
-> > +               TP_PROTO(const struct sk_buff *skb, int type, int code),
-> > +
-> > +               TP_ARGS(skb, type, code),
-> > +
-> > +               TP_STRUCT__entry(
-> > +                               __field(__u16, sport)
-> > +                               __field(__u16, dport)
-> > +                               __field(unsigned short, ulen)
-> > +                               __field(const void *, skbaddr)
-> > +                               __field(int, type)
-> > +                               __field(int, code)
-> > +                               __array(__u8, saddr, 4)
-> > +                               __array(__u8, daddr, 4)
-> > +               ),
-> > +
-> > +               TP_fast_assign(
-> > +                               // Get UDP header
-> > +                               struct udphdr *uh = udp_hdr(skb);
-> > +                               struct iphdr *iph = ip_hdr(skb);
-> > +                               __be32 *p32;
-> > +
-> > +                               __entry->sport = ntohs(uh->source);
-> > +                               __entry->dport = ntohs(uh->dest);
-> > +                               __entry->ulen = ntohs(uh->len);
-> > +                               __entry->skbaddr = skb;
-> > +                               __entry->type = type;
-> > +                               __entry->code = code;
-> > +
-> > +                               p32 = (__be32 *) __entry->saddr;
-> > +                               *p32 = iph->saddr;
-> > +
-> > +                               p32 = (__be32 *) __entry->daddr;
-> > +                               *p32 =  iph->daddr;
-> > +               ),
-> > +
-> 
-> FYI, ICMP can be generated for many other protocols than UDP.
+v2->v3:
+-fix warning that sb->s_umount is still held when unit test finishs
+-fix warning that sbi->s_freeclusters_counter is used before
+initialization.
 
-We have noted this issue. Therefore, a UDP judgment confition has been added in TP_fast_assign.This condition will only track abnormal messages when icmp_send is called with the UDP protocol. Otherwise, it will simply print the abnormal type and code.
+v1->v2:
+-properly handle error from sget()
 
-As follows:
-if(proto_4 == IPPROTO_UDP) {
-	struct udphdr *uh = udp_hdr(skb);
-	__entry->sport = nthos(uh->source);
-	__entry_dport = nthos(uh->dest);
-	__entry->ulen = nthos(uh->len);
-} else {
-	__entry->sport = 0;
-	__entry_dport = 0;
-	__entry->ulen = 0;
-}
+Previously, the new mballoc unit tests are only tested by running
+"./tools/testing/kunit/kunit.py run ..." in which case only rare configs
+are enabled.
+This series fixes issues when more debug configs are enabled. Fixes are
+tested with and without kunit_tool [1].
 
-> 
-> > +               TP_printk("icmp_send: type=%d, code=%d. From %pI4:%u to %pI4:%u ulen=%d skbaddr=%p",
-> > +                       __entry->type, __entry->code,
-> > +                       __entry->saddr, __entry->sport, __entry->daddr,
-> > +                       __entry->dport, __entry->ulen, __entry->skbaddr)
-> > +);
-> > +
-> > +#endif /* _TRACE_ICMP_H */
-> > +
-> > +/* This part must be outside protection */
-> > +#include <trace/define_trace.h>
-> > diff --git a/net/ipv4/icmp.c b/net/ipv4/icmp.c
-> > index e63a3bf99617..437bdb7e2650 100644
-> > --- a/net/ipv4/icmp.c
-> > +++ b/net/ipv4/icmp.c
-> > @@ -92,6 +92,8 @@
-> >  #include <net/inet_common.h>
-> >  #include <net/ip_fib.h>
-> >  #include <net/l3mdev.h>
-> > +#define CREATE_TRACE_POINTS
-> > +#include <trace/events/icmp.h>
-> >
-> >  /*
-> >   *     Build xmit assembly blocks
-> > @@ -599,6 +601,8 @@ void __icmp_send(struct sk_buff *skb_in, int type, int code, __be32 info,
-> >         struct net *net;
-> >         struct sock *sk;
-> >
-> > +       trace_icmp_send(skb_in, type, code);
-> 
-> I think you missed many sanity checks between lines 622 and 676
-Thank you for the reminder. The next step is to move the trace point to line 676.
+[1] https://docs.kernel.org/dev-tools/kunit/run_manual.html
 
-> Honestly, a kprobe BPF based solution would be less risky, and less
-> maintenance for us.
-emm, yeah, but tracepoints has advantages on its convienice, especially for those Embedded Linux which doesn't support EBPF.
+Kemeng Shi (3):
+  ext4: alloc test super block from sget
+  ext4: hold group lock in ext4 kunit test
+  ext4: initialize sbi->s_freeclusters_counter before use in kunit test
+
+ fs/ext4/mballoc-test.c | 77 ++++++++++++++++++++++++++++++++----------
+ 1 file changed, 60 insertions(+), 17 deletions(-)
+
+-- 
+2.30.0
 
 
