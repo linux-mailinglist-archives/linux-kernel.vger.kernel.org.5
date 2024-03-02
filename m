@@ -1,30 +1,30 @@
-Return-Path: <linux-kernel+bounces-89571-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89573-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D1CC86F228
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 20:53:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA87886F22F
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 20:54:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC00D1C20EEF
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 19:53:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5EC891F22000
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 19:54:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2889F41C89;
-	Sat,  2 Mar 2024 19:53:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEC7146549;
+	Sat,  2 Mar 2024 19:53:23 +0000 (UTC)
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2DC63FE54
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 19:53:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA39F40859
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 19:53:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709409201; cv=none; b=JWyGvqvUTRf8zzhsLEjqJmg9VATQtYivKVVNw2iV+wXtOg2FfKcqgs2QwYFdBEdgyqf4hIput6SgkZA4jxM5fi4ThCu6I/0F7uqkP1eD5zm+TgHeTYb4dVhtH7NjgPYq6lK0ieCbXwEdiNIVLbOmx4o0KJxW0N0DHIqRKBc5iTI=
+	t=1709409203; cv=none; b=dMZ0dQVJzalkILiOOLkRco/ji8S0C99J3wlKyrUqKOcIUjxWeRZuquYptWnpQ8XbdMxVt8x+rhLa7QHy2oTOVoBDWci5jJbJK5ri3ggk6SZEUM/wnbU4c37tkjergVBj89HsRr4AGtrl+lHGo89E6v1dpogf6t4ykv4u+Vm2cBs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709409201; c=relaxed/simple;
-	bh=JO8ieonndskihpfJzOJE8oPTytpJgtmq3zUd6sxNeYM=;
+	s=arc-20240116; t=1709409203; c=relaxed/simple;
+	bh=zi9g+OpMxoJsipyIh0jSxJiyN/227S9V/hTBfIK19hA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=CuJDj0q7oq+hP135mfDe4gwiefiFcB5IQnrLqmcr39ABNMuGoTvSByvrpCX9m7Wybpgoa5Rj0QboQ+cosz8anSLgd7Te1xX164P918hsXb/rm6njBGLmHOQ0cYHaAjvKcTcOJn1cZ7ncoz6Ds8625/gHhTXhP4TwX0j0vuZM0mg=
+	 MIME-Version; b=QlF83VqNb4TlkJma5W1VbskBoB9S+XzcFTUBJg+brurHw2NBJBZQZ+FdU1GPNUN6V2+JTROACKFgWTzjy4uIKave1Bsda4IAvVwisUcX+mNV4L+Y2Up5oMLcAoyEEz2cBHvOORqFeUxKvFNWl7xj8+h16d1uDuaaDVYmvA+SYUM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
@@ -32,15 +32,15 @@ Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
 	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <ore@pengutronix.de>)
-	id 1rgVPx-0007Gu-MZ; Sat, 02 Mar 2024 20:53:09 +0100
+	id 1rgVPx-0007Gw-Me; Sat, 02 Mar 2024 20:53:09 +0100
 Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <ore@pengutronix.de>)
-	id 1rgVPv-0041mD-OJ; Sat, 02 Mar 2024 20:53:07 +0100
+	id 1rgVPv-0041mF-Py; Sat, 02 Mar 2024 20:53:07 +0100
 Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
 	(envelope-from <ore@pengutronix.de>)
-	id 1rgVPv-00DSUD-2D;
+	id 1rgVPv-00DSUN-2H;
 	Sat, 02 Mar 2024 20:53:07 +0100
 From: Oleksij Rempel <o.rempel@pengutronix.de>
 To: Wei Fang <wei.fang@nxp.com>,
@@ -51,7 +51,8 @@ To: Wei Fang <wei.fang@nxp.com>,
 	Andrew Lunn <andrew@lunn.ch>,
 	Heiner Kallweit <hkallweit1@gmail.com>,
 	Russell King <linux@armlinux.org.uk>
-Cc: Florian Fainelli <florian.fainelli@broadcom.com>,
+Cc: Russell King <rmk+kernel@armlinux.org.uk>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
 	Oleksij Rempel <o.rempel@pengutronix.de>,
 	kernel@pengutronix.de,
 	linux-kernel@vger.kernel.org,
@@ -59,9 +60,9 @@ Cc: Florian Fainelli <florian.fainelli@broadcom.com>,
 	Shenwei Wang <shenwei.wang@nxp.com>,
 	Clark Wang <xiaoning.wang@nxp.com>,
 	NXP Linux Team <linux-imx@nxp.com>
-Subject: [PATCH net-next v9 2/7] net: phy: Add phydev->enable_tx_lpi to simplify adjust link callbacks
-Date: Sat,  2 Mar 2024 20:53:01 +0100
-Message-Id: <20240302195306.3207716-3-o.rempel@pengutronix.de>
+Subject: [PATCH net-next v9 3/7] net: phy: Keep track of EEE configuration
+Date: Sat,  2 Mar 2024 20:53:02 +0100
+Message-Id: <20240302195306.3207716-4-o.rempel@pengutronix.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240302195306.3207716-1-o.rempel@pengutronix.de>
 References: <20240302195306.3207716-1-o.rempel@pengutronix.de>
@@ -79,71 +80,80 @@ X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
 From: Andrew Lunn <andrew@lunn.ch>
 
-MAC drivers which support EEE need to know the results of the EEE
-auto-neg in order to program the hardware to perform EEE or not.  The
-oddly named phy_init_eee() can be used to determine this, it returns 0
-if EEE should be used, or a negative error code,
-e.g. -EOPPROTONOTSUPPORT if the PHY does not support EEE or negotiate
-resulted in it not being used.
+Have phylib keep track of the EEE configuration. This simplifies the
+MAC drivers, in that they don't need to store it.
 
-However, many MAC drivers get this wrong. Add phydev->enable_tx_lpi
-which indicates the result of the autoneg for EEE, including if EEE is
-administratively disabled with ethtool. The MAC driver can then access
-this in the same way as link speed and duplex in the adjust link
-callback. If enable_tx_lpi is true, the MAC should send low power
-indications and does not need to consider anything else with respect
-to EEE.
+Future patches to phylib will also make use of this information to
+further simplify the MAC drivers.
 
-Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Andrew Lunn <andrew@lunn.ch>
+Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
-v2: Check for errors from genphy_c45_eee_is_active
-v5: Rename to enable_tx_lpi to fit better with phylink changes
-v6: enable_tx_lpi = !!err
+v6: add @ in front of eee_cfg
 ---
- drivers/net/phy/phy.c | 7 +++++++
- include/linux/phy.h   | 2 ++
- 2 files changed, 9 insertions(+)
+ drivers/net/phy/phy.c | 7 +++++--
+ include/linux/phy.h   | 3 +++
+ 2 files changed, 8 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/phy/phy.c b/drivers/net/phy/phy.c
-index 14224e06d69fa..2bc0a7d51c63f 100644
+index 2bc0a7d51c63f..95c4ef5d4e97f 100644
 --- a/drivers/net/phy/phy.c
 +++ b/drivers/net/phy/phy.c
-@@ -983,9 +983,16 @@ static int phy_check_link_status(struct phy_device *phydev)
- 	if (phydev->link && phydev->state != PHY_RUNNING) {
- 		phy_check_downshift(phydev);
- 		phydev->state = PHY_RUNNING;
-+		err = genphy_c45_eee_is_active(phydev,
-+					       NULL, NULL, NULL);
-+		if (err < 0)
-+			phydev->enable_tx_lpi = false;
-+		else
-+			phydev->enable_tx_lpi = !!err;
- 		phy_link_up(phydev);
- 	} else if (!phydev->link && phydev->state != PHY_NOLINK) {
- 		phydev->state = PHY_NOLINK;
-+		phydev->enable_tx_lpi = false;
- 		phy_link_down(phydev);
- 	}
+@@ -1640,8 +1640,8 @@ EXPORT_SYMBOL(phy_get_eee_err);
+  * @phydev: target phy_device struct
+  * @data: ethtool_keee data
+  *
+- * Description: it reportes the Supported/Advertisement/LP Advertisement
+- * capabilities.
++ * Description: reports the Supported/Advertisement/LP Advertisement
++ * capabilities, etc.
+  */
+ int phy_ethtool_get_eee(struct phy_device *phydev, struct ethtool_keee *data)
+ {
+@@ -1652,6 +1652,7 @@ int phy_ethtool_get_eee(struct phy_device *phydev, struct ethtool_keee *data)
  
+ 	mutex_lock(&phydev->lock);
+ 	ret = genphy_c45_ethtool_get_eee(phydev, data);
++	eeecfg_to_eee(data, &phydev->eee_cfg);
+ 	mutex_unlock(&phydev->lock);
+ 
+ 	return ret;
+@@ -1674,6 +1675,8 @@ int phy_ethtool_set_eee(struct phy_device *phydev, struct ethtool_keee *data)
+ 
+ 	mutex_lock(&phydev->lock);
+ 	ret = genphy_c45_ethtool_set_eee(phydev, data);
++	if (!ret)
++		eee_to_eeecfg(&phydev->eee_cfg, data);
+ 	mutex_unlock(&phydev->lock);
+ 
+ 	return ret;
 diff --git a/include/linux/phy.h b/include/linux/phy.h
-index e3ab2c347a598..a880f6d7170ea 100644
+index a880f6d7170ea..695e366bd75c1 100644
 --- a/include/linux/phy.h
 +++ b/include/linux/phy.h
-@@ -594,6 +594,7 @@ struct macsec_ops;
-  * @supported_eee: supported PHY EEE linkmodes
+@@ -30,6 +30,7 @@
+ #include <linux/refcount.h>
+ 
+ #include <linux/atomic.h>
++#include <net/eee.h>
+ 
+ #define PHY_DEFAULT_FEATURES	(SUPPORTED_Autoneg | \
+ 				 SUPPORTED_TP | \
+@@ -595,6 +596,7 @@ struct macsec_ops;
   * @advertising_eee: Currently advertised EEE linkmodes
   * @eee_enabled: Flag indicating whether the EEE feature is enabled
-+ * @enable_tx_lpi: When True, MAC should transmit LPI to PHY
+  * @enable_tx_lpi: When True, MAC should transmit LPI to PHY
++ * @eee_cfg: User configuration of EEE
   * @lp_advertising: Current link partner advertised linkmodes
   * @host_interfaces: PHY interface modes supported by host
   * @eee_broken_modes: Energy efficient ethernet modes which should be prohibited
-@@ -713,6 +714,7 @@ struct phy_device {
- 
+@@ -715,6 +717,7 @@ struct phy_device {
  	/* Energy efficient ethernet modes which should be prohibited */
  	u32 eee_broken_modes;
-+	bool enable_tx_lpi;
+ 	bool enable_tx_lpi;
++	struct eee_config eee_cfg;
  
  #ifdef CONFIG_LED_TRIGGER_PHY
  	struct phy_led_trigger *phy_led_triggers;
