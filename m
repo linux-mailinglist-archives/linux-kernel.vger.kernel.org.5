@@ -1,56 +1,56 @@
-Return-Path: <linux-kernel+bounces-89252-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89253-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7680A86ED3E
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 01:12:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8180286ED41
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 01:12:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0EA091F22044
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 00:12:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A52DB1C21901
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 00:12:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 983235680;
-	Sat,  2 Mar 2024 00:11:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50F8F8C15;
+	Sat,  2 Mar 2024 00:11:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HgHB9W6q"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EVCnQ9xp"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42207A48;
-	Sat,  2 Mar 2024 00:11:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B33251854;
+	Sat,  2 Mar 2024 00:11:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709338310; cv=none; b=MVoHzN0m3DsoHEvUm86QbvURSeRUgrduK9xwPVPS0GOyceDlWIhsjOP2uzejVePiEkcpBXVnyNfSIsa8RTxe08Ztaw8sG9NcIFfFqtyu6aMHafDaS2tgH79e47GHeDhd2mh6TCUioM9fitkZiQyusb0Wc1gAY+lZ4RCiPgxnpcg=
+	t=1709338312; cv=none; b=gCRoHy7x90YFSYR0xWJKqO2V/NANDu5Me5Hid5sob8Vm90KMigFTIzFrK7QisVWPn/eQnTLidA/x61weJJq21qBP9xmNZijxn+W/+Y1NieGfUmsNoZ2dYC3bW5S+Yx0Uj0CV78i77XXXy5ujAb+e+VIjaHN7T82ORqGJCfddByw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709338310; c=relaxed/simple;
-	bh=6wo/+6fc+LTd+YM3oQ6kkcsi6l7BgZUng26rp9OSpk8=;
+	s=arc-20240116; t=1709338312; c=relaxed/simple;
+	bh=WvnrJC58zvSrxJ8X4Aj5CwSK0eSjYIRrEgdXF3P5wG4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=c4lkNAaPw4tRTlsMBJX7OBa0irxv94GQr+0KINP1xXS/Aoo3/Mj3aA1CZp/lUluVJ0CulNZdUHWVcwJ0K3W2WG8WolSmAs7SlYrGCDVyboEnAqmnnffbq0ZYQYyhCUZAyW2aS+PVT23Oeq2w6e7BZFIv7APqZl5JUUaugMgiS+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HgHB9W6q; arc=none smtp.client-ip=192.198.163.16
+	 MIME-Version; b=hP4PdnAFL8uBJffXpUhyZlUuah8RhQchltqF0f2CYlViszsoe1IgNWecws4kWmyUT4QsAh/49NKyVwuJz53PgAl3ou1Jk745ZgkWpCqs1fgr2t3Xqia0RkyDNpK4xI4Am2Y1k4/bXhmXuoczYwahpRl/0f0OJsc8Y8Q+bVNKQvA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EVCnQ9xp; arc=none smtp.client-ip=192.198.163.16
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709338309; x=1740874309;
+  t=1709338311; x=1740874311;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=6wo/+6fc+LTd+YM3oQ6kkcsi6l7BgZUng26rp9OSpk8=;
-  b=HgHB9W6qxZSeo/ZNmUhChY2WRkRrAnH1Ew2+pUAyCf8rflLek/78sgoa
-   aXZGnXaK7smj8K7xmnfTmlnTJXq4R/ii9r2PbfgqylslW1MOzD66zCsaY
-   W2UuDSPBPrLsHO8miN9Egz1HVs3Ss0rIdIj8MXUCkxEfPqXsat15zZFK7
-   6N/pwILUlBqHoGy+gCRYNac4mqJkUGQcpWp4wKXkkruOGxniNlMVwYHz4
-   imQGIJZqA4wDXmdy+kRM+2ZZ6n8nuBJSaRRQpVwrtvoUZV+zp/N8+vh2C
-   vc7rgHJIaE/M1cu/FEtuL+5FHQ7lyx5bWXBQt278OcKyM/DO9Fkb7rswn
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11000"; a="4476148"
+  bh=WvnrJC58zvSrxJ8X4Aj5CwSK0eSjYIRrEgdXF3P5wG4=;
+  b=EVCnQ9xpY0zRuQ38QJ6Nq6/H/ejzkbT6ozO9xTFtEtuQXUnQnJkc6K/j
+   JNg6xVb8NeoOsiNQT1QOddq9gZVpV9kaYMBQh215Djx+FcwCwsSOidYCl
+   rwZtZlg/V7scq0GQucDL+hNpeR/oLo9S6Q/GIVk5u2wUFBkSKyjObQAVB
+   VdLdoFDajmlrd9feFjDGomMu5+kyMSHefXM3rAfE0ZISBihdC3RKQnhvi
+   7jWJhdY1JImrPm01Bz6+/woCaYAauvIa+u8y4Rg/vzlxwBeCeYFVc+oGa
+   4o6pDi3QNz/sGhznng3qw/ikCom+zohQDKuFumBtvtgl7m4QCLBUFgOJu
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11000"; a="4476153"
 X-IronPort-AV: E=Sophos;i="6.06,197,1705392000"; 
-   d="scan'208";a="4476148"
+   d="scan'208";a="4476153"
 Received: from orviesa005.jf.intel.com ([10.64.159.145])
   by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 16:11:47 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.06,197,1705392000"; 
-   d="scan'208";a="13054641"
+   d="scan'208";a="13054645"
 Received: from fl31ca102ks0602.deacluster.intel.com (HELO gnr-bkc.deacluster.intel.com) ([10.75.133.163])
   by orviesa005.jf.intel.com with ESMTP; 01 Mar 2024 16:11:46 -0800
 From: weilin.wang@intel.com
@@ -69,9 +69,9 @@ Cc: linux-perf-users@vger.kernel.org,
 	Perry Taylor <perry.taylor@intel.com>,
 	Samantha Alt <samantha.alt@intel.com>,
 	Caleb Biggers <caleb.biggers@intel.com>
-Subject: [RFC PATCH v3 3/6] perf stat: Add retire latency values into the expr_parse_ctx to prepare for final metric calculation
-Date: Fri,  1 Mar 2024 19:11:35 -0500
-Message-ID: <20240302001139.604829-4-weilin.wang@intel.com>
+Subject: [RFC PATCH v3 4/6] perf stat: Create another thread for sample data processing
+Date: Fri,  1 Mar 2024 19:11:36 -0500
+Message-ID: <20240302001139.604829-5-weilin.wang@intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240302001139.604829-1-weilin.wang@intel.com>
 References: <20240302001139.604829-1-weilin.wang@intel.com>
@@ -85,76 +85,129 @@ Content-Transfer-Encoding: 8bit
 
 From: Weilin Wang <weilin.wang@intel.com>
 
-Retire latency values of events are used in metric formulas. This update adds
-code to process data from perf record for required retire latency values.
+Another thread is required to synchronize between perf stat and perf record
+when we pass data through pipe.
 
 Signed-off-by: Weilin Wang <weilin.wang@intel.com>
 ---
- tools/perf/builtin-stat.c     |  1 +
- tools/perf/util/metricgroup.h |  1 +
- tools/perf/util/stat-shadow.c | 18 ++++++++++++++++++
- 3 files changed, 20 insertions(+)
+ tools/perf/builtin-stat.c | 58 +++++++++++++++++++++++----------------
+ 1 file changed, 34 insertions(+), 24 deletions(-)
 
 diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index 3890a579349e..3e5865572266 100644
+index 3e5865572266..2372175d3408 100644
 --- a/tools/perf/builtin-stat.c
 +++ b/tools/perf/builtin-stat.c
-@@ -792,6 +792,7 @@ static int process_sample_event(struct perf_tool *tool,
- 		if (!strcmp(evname, t->name)) {
- 			t->count += 1;
- 			t->sum += sample->retire_lat;
-+			t->val = t->count > 0 ? t->sum/t->count : 0;
- 			break;
- 		}
- 	}
-diff --git a/tools/perf/util/metricgroup.h b/tools/perf/util/metricgroup.h
-index 1fa12cc3294e..08af0f447550 100644
---- a/tools/perf/util/metricgroup.h
-+++ b/tools/perf/util/metricgroup.h
-@@ -77,6 +77,7 @@ struct tpebs_retire_lat {
- 	const char *tpebs_name;
- 	size_t count;
- 	int sum;
-+	double val;
- };
+@@ -777,7 +777,6 @@ static int process_sample_event(struct perf_tool *tool,
+ 	const char *evname;
+ 	struct tpebs_retire_lat *t;
  
- struct metric_event *metricgroup__lookup(struct rblist *metric_events,
-diff --git a/tools/perf/util/stat-shadow.c b/tools/perf/util/stat-shadow.c
-index 3466aa952442..c63ba52004fc 100644
---- a/tools/perf/util/stat-shadow.c
-+++ b/tools/perf/util/stat-shadow.c
-@@ -355,6 +355,19 @@ static void print_nsecs(struct perf_stat_config *config,
- 		print_metric(config, ctxp, NULL, NULL, "CPUs utilized", 0);
+-	pr_debug("entering function %s\n ", __func__);
+ 	evname = evsel__name(evsel);
+ 
+ 	pr_debug("[%03d] ", sample->cpu);
+@@ -808,9 +807,9 @@ static int process_feature_event(struct perf_session *session,
+ 	return 0;
  }
  
-+static int prepare_retire_lat(struct expr_parse_ctx *pctx,
-+			     struct list_head *retire_lats)
-+{
-+	int ret = 0;
-+	struct tpebs_retire_lat *t;
-+	list_for_each_entry(t, retire_lats, nd) {
-+		ret = expr__add_id_val(pctx, strdup(t->tpebs_name), t->val);
-+		if (ret < 0)
-+			return ret;
-+	}
-+	return ret;
-+}
+-static int __cmd_script(struct child_process *cmd __maybe_unused)
++static void *__cmd_script(void *arg __maybe_unused)
+ {
+-	int err = 0;
++	struct child_process *cmd = arg;
+ 	struct perf_session *session;
+ 	struct perf_data data = {
+ 		.mode = PERF_DATA_MODE_READ,
+@@ -826,29 +825,15 @@ static int __cmd_script(struct child_process *cmd __maybe_unused)
+ 		.attr		 = perf_event__process_attr,
+ 		},
+ 	};
+-	struct tpebs_event *e;
+-
+-	list_for_each_entry(e, &stat_config.tpebs_events, nd) {
+-		struct tpebs_retire_lat *new = malloc(sizeof(struct tpebs_retire_lat));
+-
+-		if (!new)
+-			return -1;
+-		new->name = strdup(e->name);
+-		new->tpebs_name = strdup(e->tpebs_name);
+-		new->count = 0;
+-		new->sum = 0;
+-		list_add_tail(&new->nd, &stat_config.tpebs_results);
+-	}
+ 
+-	kill(cmd->pid, SIGTERM);
+ 	session = perf_session__new(&data, &script.tool);
+ 	if (IS_ERR(session))
+-		return PTR_ERR(session);
++		return NULL;
+ 	script.session = session;
+-	err = perf_session__process_events(session);
++	perf_session__process_events(session);
+ 	perf_session__delete(session);
+ 
+-	return err;
++	return NULL;
+ }
+ 
+ static int __run_perf_stat(int argc, const char **argv, int run_idx)
+@@ -868,15 +853,37 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
+ 	int err;
+ 	bool second_pass = false;
+ 	struct child_process cmd;
++	pthread_t thread_script;
+ 
+ 	//Prepare perf record for sampling event retire_latency before fork and prepare workload
+ 	if (stat_config.tpebs_event_size > 0) {
+ 		int ret;
+ 
++		struct tpebs_event *e;
+ 		pr_debug("perf stat pid = %d\n", getpid());
+ 		ret = prepare_perf_record(&cmd);
+ 		if (ret)
+ 			return ret;
 +
- static int prepare_metric(const struct metric_expr *mexp,
- 			  const struct evsel *evsel,
- 			  struct expr_parse_ctx *pctx,
-@@ -486,6 +499,11 @@ static void generic_metric(struct perf_stat_config *config,
- 		pctx->sctx.user_requested_cpu_list = strdup(config->user_requested_cpu_list);
- 	pctx->sctx.runtime = runtime;
- 	pctx->sctx.system_wide = config->system_wide;
-+	i = prepare_retire_lat(pctx, &config->tpebs_results);
-+	if (i < 0) {
-+		expr__ctx_free(pctx);
-+		return;
-+	}
- 	i = prepare_metric(mexp, evsel, pctx, aggr_idx);
- 	if (i < 0) {
- 		expr__ctx_free(pctx);
++		list_for_each_entry(e, &stat_config.tpebs_events, nd) {
++			struct tpebs_retire_lat *new = malloc(sizeof(struct tpebs_retire_lat));
++
++			if (!new)
++				return -1;
++			new->name = strdup(e->name);
++			new->tpebs_name = strdup(e->tpebs_name);
++			new->count = 0;
++			new->sum = 0;
++			list_add_tail(&new->nd, &stat_config.tpebs_results);
++		}
++
++		if (pthread_create(&thread_script, NULL, __cmd_script, &cmd)) {
++			kill(cmd.pid, SIGTERM);
++			close(cmd.out);
++			pr_err("Could not create thread to process sample data.\n");
++			return -1;
++		}
++		sleep(2);
+ 	}
+ 
+ 	if (forks) {
+@@ -1087,12 +1094,15 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
+ 	if (stat_config.tpebs_event_size > 0) {
+ 		int ret;
+ 
+-		pr_debug("pid = %d\n", getpid());
+-		pr_debug("cmd.pid = %d\n", cmd.pid);
++		pr_debug("Workload finished, finishing record\n");
++		pr_debug("Perf stat pid = %d, Perf record pid = %d\n", getpid(), cmd.pid);
+ 
+-		ret = __cmd_script(&cmd);
++		kill(cmd.pid, SIGTERM);
++		pthread_join(thread_script, NULL);
+ 		close(cmd.out);
+-		pr_debug("%d\n", ret);
++		ret = finish_command(&cmd);
++		if (ret != -ERR_RUN_COMMAND_WAITPID_SIGNAL)
++			return ret;
+ 	}
+ 
+ 	if (stat_config.walltime_run_table)
 -- 
 2.43.0
 
