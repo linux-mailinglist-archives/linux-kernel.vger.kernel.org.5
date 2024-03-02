@@ -1,145 +1,151 @@
-Return-Path: <linux-kernel+bounces-89610-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89611-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43DAF86F2A9
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 23:02:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B56686F2AC
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 23:11:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75BF71C20A8C
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 22:02:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BA0F282A26
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 22:11:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11F9D45944;
-	Sat,  2 Mar 2024 22:02:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4358A45941;
+	Sat,  2 Mar 2024 22:11:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mJf2tL9q"
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="RsU+kwd1"
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDEDC44C87
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 22:02:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 018EB42072
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 22:11:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709416938; cv=none; b=EFfCDbmpV+H6PK3YldAGz2VSwWzM/Vs/rF9n0XO8VoSuFQfSwg3eiNZdidUicssAmbx2Ton1+JetRGfGR/qVleWjeASy+deyTjkdM3YpW+eYo7qxdHkxezHrnXBMiB/PXSt5YW1qOW4eridsrPBCe7z9rowkeKm++v4ZwzwI4zE=
+	t=1709417466; cv=none; b=Ywg77Jzv1sG4hTpcSp2n2t8zaS+VcMj8dJBUST+DiKThzcNj1sqXsS8gc+6L8BJoicBkHAkNZIyuI/jO8U/qtiF8qxX4RWaRNVJHeQD6yxq0jy+7rAuYQCqXfDAiJKWFf1Bo2bT1s6/dF4TnsYJTUNQW/3o7L2rUYH51vN4KFq8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709416938; c=relaxed/simple;
-	bh=D3XN16M6Y57uWxVwLnlF9xADST6YeevavrFwllCfXWQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EawjLdOeNW554ZUBhT4zMDGIy6n6IYf5uwKYYO1YLwJvUZ4L6k/QskkilCoKyWAM6J+AgWqlm5P1YP2j6cjwsRNRGqcPMFECPVUgLYKTPWp95xOJzKVbkuKTgyoUNbykXp77hwm052YFp/zt/PYZOWz0s7SCAu5KEINSe1yTUU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mJf2tL9q; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1709416934;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=aqe1bsXqpWMOsaSaAwaBLUQoehzaMA/zwKYXylUSUEI=;
-	b=mJf2tL9qJVNFMI5UHcD3vg9GZUQH6OCyFLF9wtJHzwJPuNkRtKo5Pz4nagtiMAa6kNdzMy
-	hHC7/Teu0KO0RxPW0Yo9pwdNixmvQmt9Xs3KeGDhSZ44q7Da5CZMNbgBHmM3S36Vt5V27V
-	C29Oodz0kJ7tlOMG9Bq3eu8FoWPmQBw=
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: linux-bcachefs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	Josef Bacik <josef@toxicpanda.com>,
-	Miklos Szeredi <mszeredi@redhat.com>,
-	Christian Brauner <brauner@kernel.org>,
-	David Howells <dhowells@redhat.com>
-Subject: [PATCH] statx: stx_vol
-Date: Sat,  2 Mar 2024 17:02:03 -0500
-Message-ID: <20240302220203.623614-1-kent.overstreet@linux.dev>
+	s=arc-20240116; t=1709417466; c=relaxed/simple;
+	bh=0ALp7TDIJwRAUZcjpLYIfdcASuV8IswcwZ6HVohQkd0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=c1U38vNgwKSIV5BKIROoiin4S+K55UMbRmXoR+s7MO+PRug6+9ba4C69DQW7e+4hto4U3Xpn35hfKVAOkNjv87Cv4aRKMCVc3VuCqefQOvkOUkA5L3DMRgPU/0PGPriSQs39cbdt210S2u1kSd4SgSUq/BfzvNT0YIDsVeUTSaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=RsU+kwd1; arc=none smtp.client-ip=209.85.160.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-42ee0c326e8so63681cf.0
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Mar 2024 14:11:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709417464; x=1710022264; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wTM56c3VIZxbBTne5xJnHplyY03OBsavmsip+EQ4Ouw=;
+        b=RsU+kwd1G4XsANOtVcaBKq5gPGdyLSAai33oYbVuOKOjwu+0LsRnsL1GV0CCHxzWr6
+         kgX2FREDlXF0YaOhBaVe5prpOBZWlN5W9YoAHdf4tVW0/kwXPoxEVY93s6BR88JpuYwf
+         I67mwRZAft5W7VOzEU8V/NxBstPJjTaarhUTquNZEhi381f3btYi/mHyVWSngPyoVW98
+         Kzc9pb5Eisk3LRWbwCLj+zP4plXml3/0sKQTUP5wdqn8cDWumXLENSwmh3x8yIy52qBu
+         2eFo4E2K3Ix3L2UxMsGOyIfxQhBa67YdXcqZ1XyXmltLWnwEa5lqi0aheGGs/C0JwLlv
+         wzUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709417464; x=1710022264;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wTM56c3VIZxbBTne5xJnHplyY03OBsavmsip+EQ4Ouw=;
+        b=YBjDiRD7MC6pPZ0ycpW6eI2VjEHnlgE3dJL7wesPlxqGR+HjCIUWkrVL2/lruuXjtg
+         aAcDRqQ2WB3TQAevCWUxzJ0qbQ35vNsQNCaMlBhJB7ohKt0M780NnyjhZ4qDsLghQuuH
+         ywEBH3PApJHgP4sqpMZXrPgRAfMWgYllomuxGAwtArf2OEipL+tDG2H59ZnbXFFKh+l+
+         vXVjp4pJyRrmU0+h6GlwGfEoU8Hr8K2M3GxgP369WnebJp0+0VBB1g3T3QRDr6qeJyNa
+         z0a4Ssp2/BwA9Jh3d3McLnp4gVmQk9p6kdMO0qLUSFQGnHSYmuRFY28l2ZH7Fsl8Nvcd
+         OUzw==
+X-Forwarded-Encrypted: i=1; AJvYcCWdzBd2WN8G9zKYuvulMDQ0ZWVEku8YIailEzrCNqYXBgEoPCFhuZn66m8gQa8c7JGwKiQv++YQPZerZbjZ3GO/hgeRjo9UCWIZeTEd
+X-Gm-Message-State: AOJu0YwXUUigAS9gQelVyEPNLaoyO6Cgani88WhsK9YgEOtilAoJI0KA
+	kxQ4b/bCydCQKq0+ExlwY3uLQJq/B1XlMXr4fCmQnwJUbyRMQWskSQuJo8YYf/WfnOCfWRYAR8e
+	zTJwZU9pQvnrbR4hDTpIFauJMHwySYkyJq6/K
+X-Google-Smtp-Source: AGHT+IH9sc7BkUOA/MoUZBJgDctjPHOF2trLohxTQjAjH4xi/HZsF8GyNQXPUzk/gDR+MwNciAkndO1CuKQxBDT3R0k=
+X-Received: by 2002:a05:622a:1989:b0:42e:e1d9:6df8 with SMTP id
+ u9-20020a05622a198900b0042ee1d96df8mr52100qtc.23.1709417463845; Sat, 02 Mar
+ 2024 14:11:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240228225527.1052240-1-helen.koike@collabora.com>
+ <20240228225527.1052240-2-helen.koike@collabora.com> <20240229-dancing-laughing-groundhog-d85161@houat>
+ <5d7ed81b-37f9-48e9-ab7e-484b74ca886c@gmail.com> <CAHk-=wixVy3WYvjbt43ZSrCqPDsS76QJQSkXFbbPsAOs1MCSAQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wixVy3WYvjbt43ZSrCqPDsS76QJQSkXFbbPsAOs1MCSAQ@mail.gmail.com>
+From: Guenter Roeck <groeck@google.com>
+Date: Sat, 2 Mar 2024 14:10:51 -0800
+Message-ID: <CABXOdTeT2ip1uS2EG2w8pW7254Tnd=ZDNz-KC61-G-yqDTVgJA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] kci-gitlab: Introducing GitLab-CI Pipeline for Kernel Testing
+To: Linus Torvalds <torvalds@linuxfoundation.org>
+Cc: Nikolai Kondrashov <spbnick@gmail.com>, Maxime Ripard <mripard@kernel.org>, 
+	Helen Koike <helen.koike@collabora.com>, linuxtv-ci@linuxtv.org, 
+	dave.pigott@collabora.com, linux-kernel@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org, 
+	gustavo.padovan@collabora.com, pawiecz@collabora.com, 
+	tales.aparecida@gmail.com, workflows@vger.kernel.org, 
+	kernelci@lists.linux.dev, skhan@linuxfoundation.org, 
+	kunit-dev@googlegroups.com, nfraprado@collabora.com, davidgow@google.com, 
+	cocci@inria.fr, Julia.Lawall@inria.fr, laura.nao@collabora.com, 
+	ricardo.canuelo@collabora.com, kernel@collabora.com, 
+	gregkh@linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add a new statx field for (sub)volume identifiers.
+On Thu, Feb 29, 2024 at 12:21=E2=80=AFPM Linus Torvalds
+<torvalds@linuxfoundation.org> wrote:
+>
+> On Thu, 29 Feb 2024 at 01:23, Nikolai Kondrashov <spbnick@gmail.com> wrot=
+e:
+> >
+> > However, I think a better approach would be *not* to add the .gitlab-ci=
+yaml
+> > file in the root of the source tree, but instead change the very same r=
+epo
+> > setting to point to a particular entry YAML, *inside* the repo (somewhe=
+re
+> > under "ci" directory) instead.
+>
+> I really don't want some kind of top-level CI for the base kernel project=
+.
+>
+> We already have the situation that the drm people have their own ci
+> model. II'm ok with that, partly because then at least the maintainers
+> of that subsystem can agree on the rules for that one subsystem.
+>
+> I'm not at all interested in having something that people will then
+> either fight about, or - more likely - ignore, at the top level
+> because there isn't some global agreement about what the rules are.
+>
+> For example, even just running checkpatch is often a stylistic thing,
+> and not everybody agrees about all the checkpatch warnings.
+>
 
-This includes bcachefs support; we'll definitely want btrfs support as
-well.
+While checkpatch is indeed of arguable value, I think it would help a
+lot not having to bother about the persistent _build_ failures on
+32-bit systems. You mentioned the fancy drm CI system above, but they
+don't run tests and not even test builds on 32-bit targets, which has
+repeatedly caused (and currently does cause) build failures in drm
+code when trying to build, say, arm:allmodconfig in linux-next. Most
+trivial build failures in linux-next (and, yes, sometimes mainline)
+could be prevented with a simple generic CI.
 
-Link: https://lore.kernel.org/linux-fsdevel/2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq/
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Josef Bacik <josef@toxicpanda.com>
-Cc: Miklos Szeredi <mszeredi@redhat.com>
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: David Howells <dhowells@redhat.com>
----
- fs/bcachefs/fs.c          | 3 +++
- fs/stat.c                 | 1 +
- include/linux/stat.h      | 1 +
- include/uapi/linux/stat.h | 4 +++-
- 4 files changed, 8 insertions(+), 1 deletion(-)
+Sure, argue against checkpatch as much as you like, but the code
+should at least _build_, and it should not be necessary for random
+people to report build failures to the submitters.
 
-diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
-index 3f073845bbd7..d82f7f3f0670 100644
---- a/fs/bcachefs/fs.c
-+++ b/fs/bcachefs/fs.c
-@@ -840,6 +840,9 @@ static int bch2_getattr(struct mnt_idmap *idmap,
- 	stat->blksize	= block_bytes(c);
- 	stat->blocks	= inode->v.i_blocks;
- 
-+	stat->vol	= inode->ei_subvol;
-+	stat->result_mask |= STATX_VOL;
-+
- 	if (request_mask & STATX_BTIME) {
- 		stat->result_mask |= STATX_BTIME;
- 		stat->btime = bch2_time_to_timespec(c, inode->ei_inode.bi_otime);
-diff --git a/fs/stat.c b/fs/stat.c
-index 77cdc69eb422..80d5f7502d99 100644
---- a/fs/stat.c
-+++ b/fs/stat.c
-@@ -658,6 +658,7 @@ cp_statx(const struct kstat *stat, struct statx __user *buffer)
- 	tmp.stx_mnt_id = stat->mnt_id;
- 	tmp.stx_dio_mem_align = stat->dio_mem_align;
- 	tmp.stx_dio_offset_align = stat->dio_offset_align;
-+	tmp.stx_vol = stat->vol;
- 
- 	return copy_to_user(buffer, &tmp, sizeof(tmp)) ? -EFAULT : 0;
- }
-diff --git a/include/linux/stat.h b/include/linux/stat.h
-index 52150570d37a..9dc1b493ef1f 100644
---- a/include/linux/stat.h
-+++ b/include/linux/stat.h
-@@ -53,6 +53,7 @@ struct kstat {
- 	u32		dio_mem_align;
- 	u32		dio_offset_align;
- 	u64		change_cookie;
-+	u64		vol;
- };
- 
- /* These definitions are internal to the kernel for now. Mainly used by nfsd. */
-diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
-index 2f2ee82d5517..ae090d67946d 100644
---- a/include/uapi/linux/stat.h
-+++ b/include/uapi/linux/stat.h
-@@ -126,8 +126,9 @@ struct statx {
- 	__u64	stx_mnt_id;
- 	__u32	stx_dio_mem_align;	/* Memory buffer alignment for direct I/O */
- 	__u32	stx_dio_offset_align;	/* File offset alignment for direct I/O */
-+	__u64	stx_vol;	/* Subvolume identifier */
- 	/* 0xa0 */
--	__u64	__spare3[12];	/* Spare space for future expansion */
-+	__u64	__spare3[11];	/* Spare space for future expansion */
- 	/* 0x100 */
- };
- 
-@@ -155,6 +156,7 @@ struct statx {
- #define STATX_MNT_ID		0x00001000U	/* Got stx_mnt_id */
- #define STATX_DIOALIGN		0x00002000U	/* Want/got direct I/O alignment info */
- #define STATX_MNT_ID_UNIQUE	0x00004000U	/* Want/got extended stx_mount_id */
-+#define STATX_VOL		0x00008000U	/* Want/got stx_vol */
- 
- #define STATX__RESERVED		0x80000000U	/* Reserved for future struct statx expansion */
- 
--- 
-2.43.0
+Guenter
 
+> I would suggest the CI project be separate from the kernel.
+>
+> And having that slack channel that is restricted to particular
+> companies is just another sign of this whole disease.
+>
+> If you want to make a google/microsoft project to do kernel CI, then
+> more power to you, but don't expect it to be some kind of agreed-upon
+> kernel project when it's a closed system.
+>
+>                Linus
+>
 
