@@ -1,76 +1,77 @@
-Return-Path: <linux-kernel+bounces-89529-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89530-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AD8886F19B
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 18:07:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2084F86F19E
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 18:07:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A62851F210CC
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 17:07:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A3FD81F22260
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 17:07:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BC1B376F9;
-	Sat,  2 Mar 2024 17:06:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82C0E383AD;
+	Sat,  2 Mar 2024 17:06:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="HB34JzSy"
-Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="ZWWsmq+c"
+Received: from mail-io1-f47.google.com (mail-io1-f47.google.com [209.85.166.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24ACD3717A;
-	Sat,  2 Mar 2024 17:06:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E07D2BAF6;
+	Sat,  2 Mar 2024 17:06:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709399178; cv=none; b=mUyOixlSuiaA6LZ6NoF+JeH9jAP5oi+UPuI82cRvFf0yOTZtf7o/hiiKPTLm9CWsx4OZ/eZLfS/RQrj+Aer2YaWMjKvNDuoTj878ojMqWtcRFflL5M5CTpum26j06bKoGTNUG/7o3I6RmZHgAYlGK/KKqpTuqOKBtI3Lc4bTsJY=
+	t=1709399181; cv=none; b=QUl8WFkujw3xHLiw/zZ44vbueTX2+8mD1JvWVL8Ndy6Egix7SDd56yfaq8WWZc3dDjjXpJ6vpsrsxU/gIrksJ6eSA+sS8FUYYVW072dyAkjk7fAlAQIo0CLinItPUt07VJ2dYTZPwpmYD+nqrB6Jl7i58hag614Swfo5kuZuEHY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709399178; c=relaxed/simple;
-	bh=T5RHgTXkjqfFzaWYcAqOoCPHNlVX677Ll7gcmiR/4d4=;
+	s=arc-20240116; t=1709399181; c=relaxed/simple;
+	bh=S0SNqxhR+Qde3qiIJKcqBx5TILtF21c2fHB6D4dCT7s=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=bLkS2ssAdqAY7fUzQdT/DDhXj+WY+f7s2sKROis84mD6YaZOv0nXR6Hsoi03C4aSzXvHnC7YH8thqdBJ1YgJdGEhrWnRCAOcJ1LMkjcsHKyKSToJM9QDYKrYRw3LDTxIHrjuP1i7pn2wf1Q0G+EGJFEn+nw54pDHeMsH81QqdVY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=HB34JzSy; arc=none smtp.client-ip=209.85.166.45
+	 In-Reply-To:To:Cc; b=PQSbzagBbl6gAKhrog99kAdMuJgSZVTevQspai+KwaKD8654jHb3GvnNRG8Ed3xMaWJ53LTlBxzMdyAoutAYC0+F6uvJgqXBUChF3w3gj6GA7MrHdQy5Qrdsxh6hUgKw+edTyj6ayXYaAGiahytzsf1H5A8kN6PxB0xTr9QWO00=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=ZWWsmq+c; arc=none smtp.client-ip=209.85.166.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-7c7ee7fa1d8so140411139f.1;
-        Sat, 02 Mar 2024 09:06:16 -0800 (PST)
+Received: by mail-io1-f47.google.com with SMTP id ca18e2360f4ac-7c8357ec478so24007639f.2;
+        Sat, 02 Mar 2024 09:06:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709399176; x=1710003976;
+        d=1e100.net; s=20230601; t=1709399179; x=1710003979;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:dkim-signature:from:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=b8KHE2YH607pBREjJO3u7sJ6tDIBnjDyXQnIFsVTeqY=;
-        b=LfbuZZeQeGJ5d9wkcCPBL0Oq6zsRLn01b7r6Tc48hYZ8Zkf5/+RSqDaDTMtLLVGquq
-         RltPWchQ0RIIKdhxz0wH7KJFDIMdjG0Q22SNeMq7U48I8PF54/0LI9FkYRXRDxic8wh6
-         JmdyG4OQNiNNm7+SRvoMKR+RPk5EqrlRhh8/pHGMRR21D4QRZjOzyRcClMUTidqV7v/E
-         C2HyVCazfFihm2ED/M2Qb/ODbMmml5cDBpMLyGfysZ2ODF3bBJaXUM4MZQwe4E7+qYkN
-         J12Y/FntkNdclSjf37NZRKMFeJwTula+sfOTatfYoru3PEg9MJIulilWJ2QnmOJ1pDcm
-         uk5A==
-X-Forwarded-Encrypted: i=1; AJvYcCXAljaP6nM3Oc+7If+J4aDqgksihDh1WQO2jgEn1E0Yk/K/ZzeOHHltedrdbsOxiCeMA6/OBjVWDjfUux+H2ag45WohrHCnvqXkTO93KDnsvK+0Ew9Ohsmv6gJRpGokSkiCOxJVXBSAaifh0YRaf0aX6VBwxUUkvlULhjq0xUHX
-X-Gm-Message-State: AOJu0YwQ6D5cT9Xxtw4blUzuK4ehqAbPaMIZD3intGV0Vhp0+1VAz85y
-	XmQtuF3iMR5qML+lRyoskxUke8/KASaZ6dsjSitoy9uDe5IKBg8D
-X-Google-Smtp-Source: AGHT+IGVpHlEAfc56PmD4qt6WtuhWaH3SeIK+MD+sx+501qtfzHvsBRUKn8NzTidX1rkmcc4roOfiQ==
-X-Received: by 2002:a5e:8a0c:0:b0:7c8:3580:a484 with SMTP id d12-20020a5e8a0c000000b007c83580a484mr1816606iok.5.1709399176188;
-        Sat, 02 Mar 2024 09:06:16 -0800 (PST)
+        bh=f42hWAkceI9x+ucGKynLa/O9HVdUbJVbey5+2rTsSyI=;
+        b=ScwJzZdRSpJk2pOcv9oGH7tG4uetNZO9ujhh1+jyJdCrXm0DFebKRtZuwlBXvHDlrZ
+         GXMEuMZgE6jsco/B3aBRyYQVwRyvqf1hJkHScpziiRyyaH9hkFviMinR3SximFxKjVL5
+         liabChzMy6MjHYc5SvNppcX7yToHomCbGLpTQ2c+miZcHi9CghhVeNuPfOGxmXJDzXAP
+         xC6dfN9rJo+UOOiCg1X7j1v82IdLK3XbN1fBTkCmm5sgABibru/d+K0BG4Rl4z5nWjuc
+         ZGDvQ6NXs8T3KJjBePKofIz9/mshjeXOGcq/MkMhu8kmVsvWv2baesvBumRafvik7GEw
+         qZkQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUfS0RfKj6invCc7TDKWkcE2wapIvb5lh/uh3JA+Zj5HHIBUthrcG4VFf2/8wC/vHnA/kOy/lsROxuIJp0ValDLePOW11lI2NPf11dsDMOUnxMDfoWFJ5dKOzNdEgIPadftC3bl6w5Djgfz5EONRn6sMKIQACE2oGlgiGAPXySY
+X-Gm-Message-State: AOJu0YzkuUfp5EBKKUCKgUZ4i6RYW1h6nDn54s/FmGfE/foq/BsYhun7
+	R3flwXqIFI0rc0mYI7Pb44XRdt1wgTP8lriqYjhKkDmsFWdYSxHz
+X-Google-Smtp-Source: AGHT+IH6DiLAG+yoxNyadLBjdMZLlZWW/rQdF0n+2lzz76Z/yD77v+WTgmwEaBRLE45cHVaFqfAiwg==
+X-Received: by 2002:a05:6602:4f98:b0:7c8:3eac:2e22 with SMTP id gr24-20020a0566024f9800b007c83eac2e22mr1138664iob.17.1709399179416;
+        Sat, 02 Mar 2024 09:06:19 -0800 (PST)
 Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id t11-20020a056638348b00b00474d0d15c8esm794499jal.151.2024.03.02.09.06.15
+        by smtp.gmail.com with ESMTPSA id p13-20020a02b38d000000b004747b3a095bsm1398226jan.72.2024.03.02.09.06.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Mar 2024 09:06:15 -0800 (PST)
+        Sat, 02 Mar 2024 09:06:19 -0800 (PST)
 From: "Ricardo B. Marliere" <ricardo@marliere.net>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1709399174;
+	s=2024; t=1709399177;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=b8KHE2YH607pBREjJO3u7sJ6tDIBnjDyXQnIFsVTeqY=;
-	b=HB34JzSyq2N83bfG+mR604/U75HzFPLqDySYvjvgLfkPpe2z/Tf5PfC8d0zTcIpYT2+vYj
-	2QLTibjmLNhd0u1SDYAHGSyTGlCSzSRTe+Kgzj12dC2olzgPHLTxaQ2hSbXfuDtHG/+trI
-	04Fr+RfLszvAUB9KqUQvuUp22znJOh9X2Cl1jkiTYSbv9o3j7ZY0jHU+OmMkSO1DiC2wp3
-	iqNmPjr7a4G0o1PcEDHVPujywpbLR9hZPNHmyroSy2m3LG1IERq4nFa6UqBHc1bfmKWzgT
-	3krpFy1JfA/aniBvVi7L0alRZHvp9GHrJ0rzFEZyJpXYsjzIGLbZzlPCb3uFEg==
+	bh=f42hWAkceI9x+ucGKynLa/O9HVdUbJVbey5+2rTsSyI=;
+	b=ZWWsmq+c1nnTfC4U9vrH0zk9vxnWsQmeVQbM6MLmkzDnrW75RrwgelLEak9xberCI6nXsd
+	T+uhrG6UDFMaeAWY3ly0qh9IR2dLaCq+ftYtaqp3UFEJejofdk83VwJVb8lUYMkZ+9A/UF
+	TJS5ae5XvVX78L8HwThhGYI/iHlzG4+NVONW91xIiTjZgzPSJv1Aad0C8dLdbEkyCpoXtW
+	9gEXrdH0QsPrN+/NjD6O+HA1iUg88D3yyo/7IvpdOGXruAQtdT2lvEjK9ImIm6U8nAXxOq
+	KlLT++RZqbRSVSI8w27gtTk+Vyd80KjoVwf7U5OesunWUq3uTFsWuBDtljv2qA==
 Authentication-Results: ORIGINATING;
 	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Sat, 02 Mar 2024 14:05:59 -0300
-Subject: [PATCH net-next 3/6] net: ppp: make ppp_class constant
+Date: Sat, 02 Mar 2024 14:06:00 -0300
+Subject: [PATCH net-next 4/6] net: wwan: hwsim: make wwan_hwsim_class
+ constant
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,7 +80,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240302-class_cleanup-net-next-v1-3-8fa378595b93@marliere.net>
+Message-Id: <20240302-class_cleanup-net-next-v1-4-8fa378595b93@marliere.net>
 References: <20240302-class_cleanup-net-next-v1-0-8fa378595b93@marliere.net>
 In-Reply-To: <20240302-class_cleanup-net-next-v1-0-8fa378595b93@marliere.net>
 To: Yisen Zhuang <yisen.zhuang@huawei.com>, 
@@ -93,26 +94,26 @@ To: Yisen Zhuang <yisen.zhuang@huawei.com>,
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, netdev@vger.kernel.org, 
  linux-kernel@vger.kernel.org, linux-ppp@vger.kernel.org, 
  "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2263; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=T5RHgTXkjqfFzaWYcAqOoCPHNlVX677Ll7gcmiR/4d4=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl41x6r2Q+NxH/tGuFTIUpuCbT5vFEjCgvKhnle
- OTiQs5XXR6JAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZeNcegAKCRDJC4p8Y4ZY
- pjcAD/9Ocxcjd9VCBOdPx2sCmFRHlXr5EkMe1h+E54GC5DKLQVjEEaGe9WMHvHK6QAZY/wBTAnO
- CygXOsLNmbDxU3n/0oD6NH2VQVOzXjHAcZQvPzIaN+f4iWrELfIGUJUHJH8P6wPHXjaMDpsLZkq
- S4zhcFvvGmNIXfsUifj7JaIEZL7MkSQQMHbBROzJmy5M4x8IvlqZCpS9iT9WCpEY5TV66BLRACT
- rp+67mwLveb6mV37ST+5jPiMhmQfQv7RAftuBTg98KXJ1ERF1jwaWZ7QRJsh/NP3O124KfJa4hx
- VRdRQCEI9cBbUPfbKhevhOS+Ybq8nRab3wljyZQD2AQN+n/jVd23VKVwJldz9peTnJet7+/rNE+
- S58ee2JieVFMvv3G7A2GQVi+h94Zp5gxr8IotiSCIK1aUpAIfMLNM9Ld6fbh01vT5eL+KdoQfzM
- ylm1EvPEB6dsH3uC68Dp4972IVtfzUv/+jFIvTsvA9OGU8e/F82isGAg8A1fgQ8a19Isrog2zd5
- 0BhPcsvq0i7aqv0o/J3uMGiatLDoXKdzAHglougN5mTchCwY9IjgOmNLMcrSx00DHl39KHiqnNd
- DirBsWhuuxr5tfn3OFD29Y2fEVL8AxDzw8NcJ9yqUiJiJpNdYQtzUbiQ1hlqF8VIvh0e3dTTMOR
- AnhbHzf7P3W2L3Q==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2613; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=S0SNqxhR+Qde3qiIJKcqBx5TILtF21c2fHB6D4dCT7s=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl41x7PIn9h6DiIn4p0ZhBbaWhSshotQp6jbG0k
+ zCYQwu7CheJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZeNcewAKCRDJC4p8Y4ZY
+ pssED/9/BSsDoMJUMcQTtRddN3E0h5+/iGPBIJI9CMiHKRv12vxJsVPkGCrD9QOXyQIhHl7krpp
+ /Op8uKVMD9U+Gf+y/8qsB3MMYuHznJJ5UTdXsklJECEM/oQvpok3oEWlPrwb9yZZkzPySI15rc4
+ BmUNQpvOIySiCSk1hixiAB9bepsZnQzi50xzgfsODG3y8Bo+tjaiGVkMD66C+pbWcs+Ri4L6khq
+ IZaK5J/7cB/1ZlFuB8IguXJ2g8NJrt13sxIO7v3iwn2J2hlms/UMW0Ja0FJTaoTaJk8IXP6tnDu
+ dOkXJZPU0AzV7qigCi3HhhaAVEPKd+d7/Zhq6pTfqA8YpcSAynURsEDFSqGDVeiOAg+VFp9LnUL
+ Qqj+G+bHy4eIXcrT5NA4fHQ52/cNbopm9+UyKZa6Hcq/RKgLWU/nhzlB/8eRtIZl557KIagOFX7
+ +VE+OtdCDj/+y7gh749z8DsnRlzIHfRj0RLuInMPzVmxhjqQ4J2PEtwOuv1HJSfkLB/duNyoC5b
+ 9OT+xSF28Uvs/4pMphSKVaa3hVIvu0C+k1YPA+ImWdgl2eZa3RtAHg+rourMcLbdkknnPvxY7bV
+ AnpALrO5c+AL8h9ZUF1FXUEJ0jQ+einKLFa4wF80si47OFxp+M4droDg1F1k4myc1Fsp7jzgzyu
+ HaPBHeSkdAqEpeA==
 X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
  fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
 Since commit 43a7206b0963 ("driver core: class: make class_register() take
 a const *"), the driver core allows for struct class to be in read-only
-memory, so move the ppp_class structure to be declared at build time
+memory, so move the wwan_hwsim_class structure to be declared at build time
 placing it into read-only memory, instead of having to be dynamically
 allocated at boot time.
 
@@ -120,62 +121,63 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
 ---
- drivers/net/ppp/ppp_generic.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ drivers/net/wwan/wwan_hwsim.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/ppp/ppp_generic.c b/drivers/net/ppp/ppp_generic.c
-index db1d11ae817b..fe380fe196e7 100644
---- a/drivers/net/ppp/ppp_generic.c
-+++ b/drivers/net/ppp/ppp_generic.c
-@@ -295,7 +295,9 @@ static void ppp_setup(struct net_device *dev);
+diff --git a/drivers/net/wwan/wwan_hwsim.c b/drivers/net/wwan/wwan_hwsim.c
+index ff3dd24ddb33..b02befd1b6fb 100644
+--- a/drivers/net/wwan/wwan_hwsim.c
++++ b/drivers/net/wwan/wwan_hwsim.c
+@@ -25,7 +25,9 @@ static int wwan_hwsim_devsnum = 2;
+ module_param_named(devices, wwan_hwsim_devsnum, int, 0444);
+ MODULE_PARM_DESC(devices, "Number of simulated devices");
  
- static const struct net_device_ops ppp_netdev_ops;
- 
--static struct class *ppp_class;
-+static const struct class ppp_class = {
-+	.name = "ppp",
+-static struct class *wwan_hwsim_class;
++static const struct class wwan_hwsim_class = {
++	.name = "wwan_hwsim",
 +};
  
- /* per net-namespace data */
- static inline struct ppp_net *ppp_pernet(struct net *net)
-@@ -1394,11 +1396,9 @@ static int __init ppp_init(void)
- 		goto out_net;
- 	}
+ static struct dentry *wwan_hwsim_debugfs_topdir;
+ static struct dentry *wwan_hwsim_debugfs_devcreate;
+@@ -277,7 +279,7 @@ static struct wwan_hwsim_dev *wwan_hwsim_dev_new(void)
+ 	spin_unlock(&wwan_hwsim_devs_lock);
  
--	ppp_class = class_create("ppp");
--	if (IS_ERR(ppp_class)) {
--		err = PTR_ERR(ppp_class);
-+	err = class_register(&ppp_class);
+ 	dev->dev.release = wwan_hwsim_dev_release;
+-	dev->dev.class = wwan_hwsim_class;
++	dev->dev.class = &wwan_hwsim_class;
+ 	dev_set_name(&dev->dev, "hwsim%u", dev->id);
+ 
+ 	spin_lock_init(&dev->ports_lock);
+@@ -511,11 +513,9 @@ static int __init wwan_hwsim_init(void)
+ 	if (!wwan_wq)
+ 		return -ENOMEM;
+ 
+-	wwan_hwsim_class = class_create("wwan_hwsim");
+-	if (IS_ERR(wwan_hwsim_class)) {
+-		err = PTR_ERR(wwan_hwsim_class);
++	err = class_register(&wwan_hwsim_class);
 +	if (err)
- 		goto out_chrdev;
+ 		goto err_wq_destroy;
 -	}
  
- 	err = rtnl_link_register(&ppp_link_ops);
- 	if (err) {
-@@ -1407,12 +1407,12 @@ static int __init ppp_init(void)
- 	}
+ 	wwan_hwsim_debugfs_topdir = debugfs_create_dir("wwan_hwsim", NULL);
+ 	wwan_hwsim_debugfs_devcreate =
+@@ -534,7 +534,7 @@ static int __init wwan_hwsim_init(void)
+ 	wwan_hwsim_free_devs();
+ 	flush_workqueue(wwan_wq);	/* Wait deletion works completion */
+ 	debugfs_remove(wwan_hwsim_debugfs_topdir);
+-	class_destroy(wwan_hwsim_class);
++	class_unregister(&wwan_hwsim_class);
+ err_wq_destroy:
+ 	destroy_workqueue(wwan_wq);
  
- 	/* not a big deal if we fail here :-) */
--	device_create(ppp_class, NULL, MKDEV(PPP_MAJOR, 0), NULL, "ppp");
-+	device_create(&ppp_class, NULL, MKDEV(PPP_MAJOR, 0), NULL, "ppp");
- 
- 	return 0;
- 
- out_class:
--	class_destroy(ppp_class);
-+	class_unregister(&ppp_class);
- out_chrdev:
- 	unregister_chrdev(PPP_MAJOR, "ppp");
- out_net:
-@@ -3549,8 +3549,8 @@ static void __exit ppp_cleanup(void)
- 		pr_err("PPP: removing module but units remain!\n");
- 	rtnl_link_unregister(&ppp_link_ops);
- 	unregister_chrdev(PPP_MAJOR, "ppp");
--	device_destroy(ppp_class, MKDEV(PPP_MAJOR, 0));
--	class_destroy(ppp_class);
-+	device_destroy(&ppp_class, MKDEV(PPP_MAJOR, 0));
-+	class_unregister(&ppp_class);
- 	unregister_pernet_device(&ppp_net_ops);
+@@ -547,7 +547,7 @@ static void __exit wwan_hwsim_exit(void)
+ 	wwan_hwsim_free_devs();
+ 	flush_workqueue(wwan_wq);	/* Wait deletion works completion */
+ 	debugfs_remove(wwan_hwsim_debugfs_topdir);
+-	class_destroy(wwan_hwsim_class);
++	class_unregister(&wwan_hwsim_class);
+ 	destroy_workqueue(wwan_wq);
  }
  
 
