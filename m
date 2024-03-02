@@ -1,430 +1,460 @@
-Return-Path: <linux-kernel+bounces-89414-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89415-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2617886F005
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 11:30:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6512186F009
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 11:32:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D32C1283E2F
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 10:30:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8913F1C20C09
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 10:32:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4460F566A;
-	Sat,  2 Mar 2024 10:30:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jQLQzwDD"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B210716439;
+	Sat,  2 Mar 2024 10:31:49 +0000 (UTC)
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4133315AD9;
-	Sat,  2 Mar 2024 10:30:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B5D514275;
+	Sat,  2 Mar 2024 10:31:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709375408; cv=none; b=DeR4joN0By7YT4vyaGC3Ze6NbmH39+cThvKQl0gqx8iuJH6SNvLGGVsaXNz/KKejwxE/cbAL8DeE8UEDxq5Zc3iJmZmv7pwAF74A1uyT5RPkjC8Va2fOexQdQw+6pn45KJDUfTyKsYG5Y9NM+HYls/qOO3HZ2sIML5/Equ+30tI=
+	t=1709375508; cv=none; b=fOZNE0Q23KT2ACUCJxzMKVrpwvMqzSJwgqHbdQ6ccfbDexKvy9I+Eh1yWKUEuDgox/xRT2PmzB8KJzFwfe13X6k9EIw4J8zyEOtMUSozWgj6xS+4kcAqy9ZmrtqOqViPOPrADY6iA+jTFpNElTESt5h//R+iyxZeo55aw40JXTs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709375408; c=relaxed/simple;
-	bh=oskbBhd1QuLrvDzAqj5rxcDFeE9FOLJHQL9jxXrcCmY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RlSBFXGBu/ysrsInkFRKr3j5Hm85HRGFpfWwrZdSe1CvmyDXvZ/YVntlfTipEkqI9mF/LiQGd61qokGnWQMYgohxjYxHsRZJWiSU5MPIldu/ncPMZdfNlcmFFhN8S+jtS0RIWcctKthyj/17mXmwWlq3wnzPolR3hfajn2uWqvw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jQLQzwDD; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-566adfeced4so3094377a12.1;
-        Sat, 02 Mar 2024 02:30:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709375404; x=1709980204; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EPyz20ce9KB0sHiKYK3GUodj8fA6Cyr+ENCVPRgV4y4=;
-        b=jQLQzwDDQyIET+qKfhYdyemnXQ+xt7FdWzqRgRrF3iVApLJ8I2Cfw/4YRY7vxOnV/v
-         jYBTh/KNB/GlHFsDHpyVMi8M3Y451RFal3PAsJJ1ZuhtMCr/V69bkH2B/P3OfRjKbunR
-         hB97mOKCbDGn9bpuE0RvZ9VYdRAn/s4KDh+EdiFh4Eov+gnAiWnFj7uEkiU5AajEMWiR
-         NymXkHUNrjdsETAmDwBivDHHC6SnhM3F3YnLqPn5PTuzv5BTliknQoqr+l7aa/pL8zoy
-         jNDFO0z5QfbmcY0PNEFdSmyLvvAc9Mq8+vzZorhEg2tu66k881DQR0P6BDatV44F4Ywi
-         hS2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709375404; x=1709980204;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EPyz20ce9KB0sHiKYK3GUodj8fA6Cyr+ENCVPRgV4y4=;
-        b=h++zAjt5YAMbMvxdDcYswDaENcZxE5UvH3LoLiBQawXnpr8o8WTbchkKFVkJtMdUdt
-         LfRj9Bjy4kt2YkkHITaSVwyjyZXeQXwK4EfBvYmnQM9IIhknABHocwidWwnUs6RnYApX
-         oA5wbO0u8v8gdN1vggMtsG49HGOZbph6iUaxvFU8KaibMDygtWPNgeQhW0k3lsI2mqsK
-         JMIKXs9zPth7fI40ERmKYLehAKNg5P/nAVpBM7l+5pldnzwU2k6fyMFXjG37vk7vFOkJ
-         Z1ww0jZXHBFcBJW3TycbHZYefSmlBCC/vqwS93fBqg9SDn1AYgUKo4FHc8BvGJdpkQso
-         B1XQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVmfmhVRGFVh/WvVS6PR9E3seQD09fmncrrAXLgXJL2Lr784V3tpNXODHASH25Ld8fM01tKWwkV0355Lb+mADYtYKpiKC611LII1KqJIfUN+DvkUWBP1THllX0PiEE20DPHfUcmkN61UAoS6Jk=
-X-Gm-Message-State: AOJu0YxYcqRz/stEOT6hgD3hZF+LhvPrM0w/GnD2FhFKKafa0C0mRgZ7
-	CJXH0BToMYkBs3BPxuqkn8xnqO50YYVjuAvl1rq4jTHpcVblWS4XqtC3csT5txEL3Nvayoql2wc
-	26K+baDMxAFidoTv9/zfrW7vV7lmSgXQR3/byAQ==
-X-Google-Smtp-Source: AGHT+IGsfWk1Di8Ec9x1m5F46yQlvDVONiRhXLFVAV64psd0Ulw5dSuRexqmM353cYb98JLxV6LK1VG4mJvrTxoBwSc=
-X-Received: by 2002:a05:6402:176b:b0:566:9437:c89c with SMTP id
- da11-20020a056402176b00b005669437c89cmr3127286edb.22.1709375404346; Sat, 02
- Mar 2024 02:30:04 -0800 (PST)
+	s=arc-20240116; t=1709375508; c=relaxed/simple;
+	bh=beDdbXEFaSG4DXuS5QVb0tO5/w8BENgdJ6p8YrVG+SU=;
+	h=From:In-Reply-To:Content-Type:References:Date:Cc:To:MIME-Version:
+	 Message-ID:Subject; b=OXm5w5KKiM5AkOxYaIBmHbtKaPvI3Qmpy+IXiZKoNIBIfKUbbQxtl42o0cfBugsP0mocWKyUmltre9BtH9/q5zwnEKHnHyWcyDBO+N9jw8iWoksGFHyUSmdtWbNzndxd9rJEwLscQHWLp247cfnKWzDa3lXK/XUsq3Yy0ZBj2/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+Received: from harlem.collaboradmins.com (harlem.collaboradmins.com [IPv6:2a01:4f8:1c0c:5936::1])
+	by madrid.collaboradmins.com (Postfix) with ESMTP id 9C3A337802F2;
+	Sat,  2 Mar 2024 10:31:37 +0000 (UTC)
+From: "Adrian Ratiu" <adrian.ratiu@collabora.com>
+In-Reply-To: <202403011451.C236A38@keescook>
+Content-Type: text/plain; charset="utf-8"
+X-Forward: 127.0.0.1
+References: <20240301213442.198443-1-adrian.ratiu@collabora.com> <202403011451.C236A38@keescook>
+Date: Sat, 02 Mar 2024 10:31:37 +0000
+Cc: linux-fsdevel@vger.kernel.org, kernel@collabora.com, linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org, linux-doc@vger.kernel.org, "Guenter Roeck" <groeck@chromium.org>, "Doug Anderson" <dianders@chromium.org>, "Jann Horn" <jannh@google.com>, "Andrew Morton" <akpm@linux-foundation.org>, "Randy Dunlap" <rdunlap@infradead.org>, "Christian Brauner" <brauner@kernel.org>, "Mike Frysinger" <vapier@chromium.org>
+To: "Kees Cook" <keescook@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240301-rust-locks-get-mut-v5-1-c5131dbbd3c4@gmail.com> <ZeJcTl0WuegYHe2h@boqun-archlinux>
-In-Reply-To: <ZeJcTl0WuegYHe2h@boqun-archlinux>
-From: Mathys Gasnier <mathys35.gasnier@gmail.com>
-Date: Sat, 2 Mar 2024 11:29:53 +0100
-Message-ID: <CAAZKF4ACqr7W+nwDJyaXLy9V2_zQyR8ATemBJFKWAcSw=UmbFA@mail.gmail.com>
-Subject: Re: [PATCH v5] rust: locks: Add `get_mut` method to `Lock`
-To: Boqun Feng <boqun.feng@gmail.com>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Alice Ryhl <aliceryhl@google.com>, rust-for-linux@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <158ea-65e30000-105-38e7da00@91796698>
+Subject: =?utf-8?q?Re=3A?= [PATCH v2] =?utf-8?q?proc=3A?= allow restricting 
+ /proc/pid/mem writes
+User-Agent: SOGoMail 5.10.0
 Content-Transfer-Encoding: quoted-printable
 
-Le ven. 1 mars 2024 =C3=A0 23:53, Boqun Feng <boqun.feng@gmail.com> a =C3=
-=A9crit :
->
-> On Fri, Mar 01, 2024 at 06:33:23PM +0100, Mathys-Gasnier via B4 Relay wro=
-te:
-> > From: Mathys-Gasnier <mathys35.gasnier@gmail.com>
-> >
-> > Having a mutable reference guarantees that no other threads have
-> > access to the lock, so we can take advantage of that to grant callers
-> > access to the protected data without the cost of acquiring and
-> > releasing the locks. Since the lifetime of the data is tied to the
-> > mutable reference, the borrow checker guarantees that the usage is safe=
+On Saturday, March 02, 2024 01:55 EET, Kees Cook <keescook@chromium.org=
+> wrote:
+
+> On Fri, Mar 01, 2024 at 11:34:42PM +0200, Adrian Ratiu wrote:
+> > Prior to v2.6.39 write access to /proc/<pid>/mem was restricted,
+> > after which it got allowed in commit 198214a7ee50 ("proc: enable
+> > writing to /proc/pid/mem"). Famous last words from that patch:
+> > "no longer a security hazard". :)
+> >=20
+> > Afterwards exploits appeared started causing drama like [1]. The
+>=20
+> nit: I think "appeared" can be dropped here.
+>=20
+> > /proc/*/mem exploits can be rather sophisticated like [2] which
+> > installed an arbitrary payload from noexec storage into a running
+> > process then exec'd it, which itself could include an ELF loader
+> > to run arbitrary code off noexec storage.
+> >=20
+> > As part of hardening against these types of attacks, distrbutions
+> > can restrict /proc/*/mem to only allow writes when they makes sense=
+,
+> > like in case of debuggers which have ptrace permissions, as they
+> > are able to access memory anyway via PTRACE=5FPOKEDATA and friends.
+> >=20
+> > Dropping the mode bits disables write access for non-root users.
+> > Trying to `chmod` the paths back fails as the kernel rejects it.
+> >=20
+> > For users with CAP=5FDAC=5FOVERRIDE (usually just root) we have to
+> > disable the mem=5Fwrite callback to avoid bypassing the mode bits.
+> >=20
+> > Writes can be used to bypass permissions on memory maps, even if a
+> > memory region is mapped r-x (as is a program's executable pages),
+> > the process can open its own /proc/self/mem file and write to the
+> > pages directly.
+> >=20
+> > Even if seccomp filters block mmap/mprotect calls with W|X perms,
+> > they often cannot block open calls as daemons want to read/write
+> > their own runtime state and seccomp filters cannot check file paths=
 .
-> >
-> > Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-> > Reviewed-by: Alice Ryhl <aliceryhl@google.com>
-> > Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
-> > Signed-off-by: Mathys-Gasnier <mathys35.gasnier@gmail.com>
+> > Write calls also can't be blocked in general via seccomp.
+> >=20
+> > Since the mem file is part of the dynamic /proc/<pid>/ space, we
+> > can't run chmod once at boot to restrict it (and trying to react
+> > to every process and run chmod doesn't scale, and the kernel no
+> > longer allows chmod on any of these paths).
+> >=20
+> > SELinux could be used with a rule to cover all /proc/*/mem files,
+> > but even then having multiple ways to deny an attack is useful in
+> > case on layer fails.
+>=20
+> Everything above here is good to keep in the commit log, but it's all
+> the "background". Please also write here what has been done to addres=
+s
+> the background above it. e.g.:
+>=20
+> "Introduce a CONFIG and a =5F=5Fro=5Fafter=5Finit runtime toggle to m=
+ake
+> it so only processes that are already tracing the task to write to
+> /proc/<pid>/mem." etc
+>=20
+> >=20
+> > [1] https://lwn.net/Articles/476947/
+> > [2] https://issues.chromium.org/issues/40089045
+>=20
+> These can be:
+>=20
+> Link: https://lwn.net/Articles/476947/ [1]
+> Link: https://issues.chromium.org/issues/40089045 [2]
+>=20
+> > Based on an initial patch by Mike Frysinger <vapier@chromium.org>.
+> >=20
+> > Cc: Guenter Roeck <groeck@chromium.org>
+> > Cc: Doug Anderson <dianders@chromium.org>
+> > Cc: Kees Cook <keescook@chromium.org>
+> > Cc: Jann Horn <jannh@google.com>
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: Randy Dunlap <rdunlap@infradead.org>
+> > Cc: Christian Brauner <brauner@kernel.org>
+> > Co-developed-by: Mike Frysinger <vapier@chromium.org>
+> > Signed-off-by: Mike Frysinger <vapier@chromium.org>
+> > Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
 > > ---
-> > Changes in v5:
-> > - Adding example
-> > - Link to v4: https://lore.kernel.org/r/20240226-rust-locks-get-mut-v4-=
-1-24abf57707a8@gmail.com
-> >
-> > Changes in v4:
-> > - Improved documentation
-> > - Link to v3: https://lore.kernel.org/r/20240222-rust-locks-get-mut-v3-=
-1-d38a6f4bde3d@gmail.com
-> >
-> > Changes in v3:
-> > - Changing the function to take a `Pin<&mut self>` instead of a `&mut s=
-elf`
-> > - Removed reviewed-by's since big changes were made. Please take anothe=
-r
-> >   look.
-> > - Link to v2: https://lore.kernel.org/r/20240212-rust-locks-get-mut-v2-=
-1-5ccd34c2b70b@gmail.com
-> >
 > > Changes in v2:
-> > - Improved doc comment.
-> > - Link to v1: https://lore.kernel.org/r/20240209-rust-locks-get-mut-v1-=
-1-ce351fc3de47@gmail.com
+> >  * Added boot time parameter with default kconfig option
+> >  * Moved check earlier in mem=5Fopen() instead of mem=5Fwrite()
+> >  * Simplified implementation branching
+> >  * Removed dependency on CONFIG=5FMEMCG
+>=20
+> Can you mention in the commit log what behaviors have been tested wit=
+h
+> this patch? For example, I assume gdb still works with
+> restrict=5Fproc=5Fmem=5Fwrite=3Dy ?
+>=20
+
+Thanks, I will address all the above commit message feedback in v3.
+
+Yes, gdb and gdbserver work with restrict=5Fproc=5Fmem=5Fwrite=3Dy. My =
+testing is
+focused on the correct functioning of GDB and gdbserver (lldb/server us=
+e=20
+ptrace POKEDATA so they work regardless of restrict=5Fproc=5Fmem=5Fwrit=
+e).
+
+This all started from my attempt to fix gdbserver by adding a ptrace fa=
+llback
+in case /proc/pid/mem writes are blocked without any exception, because
+that breaks basic functionality like setting breakpoints.
+
+GDB upstream NAK'ed my ptrace fallback approach because it's doesn't
+work well with their /proc/pid/mem focused design required for non-stop=20
+mode (the default all-stop mode is emulated on top of non-stop), as wel=
+l
+as ptrace peek/poke requiring a live task which can cause memory access
+problems if the ptraced task dies.
+
+Other solutions were considered by GDB upstream, including using the=20
+process=5Fvm=5Fwritev & co, but they respect page permissions and GDB h=
+as
+to write RO pages to set breakpoints.
+
+In the end GDB maintainers directed me to do a proper kernel fix with a=
+n
+exception for tasks already ptracing others, because from a security
+perspective, they can already access tracee memory regardless of
+/proc/pid/mem restrictions, so here we are. :)
+
+> When this is enabled, what =5Fdoes=5F break that people might expect =
+to
+> work?
+
+With the current iteration, all things I tested work as expected. It is=
+ rather
+hard to come up with things that break with restrict=5Fproc=5Fmem=5Fwri=
+te=3Dy,
+because other than debuggers and exploits I don't have other use-cases.
+
+Obvious things like "echo >/proc/self/mem" get permission denied, but
+that is expected with restrict=5Fproc=5Fmem=5Fwrite=3Dy, so I wouldn't =
+classify
+it as breakage.
+
+In theory there might be some weird/legacy apps which might break, so
+that is why I suggest we land the mechanism as default off, and later,
+after it gets tested in various distributions, pull the trigger to make=
+ it
+default on.
+
+>=20
 > > ---
-> >  rust/kernel/sync/lock.rs | 38 +++++++++++++++++++++++++++++++++++++-
-> >  1 file changed, 37 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/rust/kernel/sync/lock.rs b/rust/kernel/sync/lock.rs
-> > index f12a684bc957..345ca7be9d9f 100644
-> > --- a/rust/kernel/sync/lock.rs
-> > +++ b/rust/kernel/sync/lock.rs
-> > @@ -7,7 +7,11 @@
-> >
-> >  use super::LockClassKey;
-> >  use crate::{bindings, init::PinInit, pin_init, str::CStr, types::Opaqu=
-e, types::ScopeGuard};
-> > -use core::{cell::UnsafeCell, marker::PhantomData, marker::PhantomPinne=
-d};
-> > +use core::{
-> > +    cell::UnsafeCell,
-> > +    marker::{PhantomData, PhantomPinned},
-> > +    pin::Pin,
-> > +};
-> >  use macros::pin_data;
-> >
-> >  pub mod mutex;
-> > @@ -121,6 +125,38 @@ pub fn lock(&self) -> Guard<'_, T, B> {
-> >          // SAFETY: The lock was just acquired.
-> >          unsafe { Guard::new(self, state) }
-> >      }
+> >  .../admin-guide/kernel-parameters.txt         |  4 ++
+> >  fs/proc/base.c                                | 47 +++++++++++++++=
++++-
+> >  security/Kconfig                              | 22 +++++++++
+> >  3 files changed, 71 insertions(+), 2 deletions(-)
+> >=20
+> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Docu=
+mentation/admin-guide/kernel-parameters.txt
+> > index 460b97a1d0da..0647e2f54248 100644
+> > --- a/Documentation/admin-guide/kernel-parameters.txt
+> > +++ b/Documentation/admin-guide/kernel-parameters.txt
+> > @@ -5618,6 +5618,10 @@
+> >  	reset=5Fdevices	[KNL] Force drivers to reset the underlying devic=
+e
+> >  			during initialization.
+> > =20
+> > +	restrict=5Fproc=5Fmem=5Fwrite=3D [KNL]
+>=20
+> Please add here:
+>=20
+> 			Format: <bool>
+>=20
+
+Ack, will do in v3.
+
+> > +			Enable or disable write access to /proc/*/mem files.
+> > +			Default is SECURITY=5FPROC=5FMEM=5FRESTRICT=5FWRITE=5FDEFAULT=5F=
+ON.
 > > +
-> > +    /// Gets the data contained in the lock.
-> > +    ///
-> > +    /// Having a mutable reference to the lock guarantees that no othe=
-r threads have access to the
-> > +    /// lock. And because `data` is not structurally pinned, it is saf=
-e to get a mutable reference
-> > +    /// to the lock content.
-> > +    ///
-> > +    /// # Example
-> > +    ///
->
-> Thanks! But please see below:
->
-> > +    /// Using `get_mut` with a mutex.
-> > +    ///
-> > +    /// ```
->
-> The example looks good, however, I was thinking about something like:
->
->     /// ```
->     /// use kernel::sync::{new_mutex, Mutex};
->     ///
->     /// let mut m =3D Box::pin_init(new_mutex!(None))?;
->     ///
->     /// assert_eq!(*(m.lock()), None);
->     ///
->     /// Mutex::get_mut(m.as_mut()).replace(42i32);
->     ///
->     /// assert_eq!(*(m.lock()), Some(42));
->     ///
->     /// # Ok::<(), Error>(())
->     /// ```
->
-> because, this will also run something instead of just compiling a
-> function.
->
-> > +    /// use kernel::sync::Mutex;
-> > +    ///
-> > +    /// struct Example {
-> > +    ///     a: u32,
-> > +    ///     b: u32,
-> > +    /// }
-> > +    ///
-> > +    /// fn example(m: Pin<&mut Mutex<Example>>) {
-> > +    ///     // Calling from Mutex to avoid conflict with Pin::get_mut(=
-).
-> > +    ///     let mut data =3D Mutex::get_mut(m);
->
-> The other thing I notice when I try to make the above example work is:
-> `Pin` also has a `get_mut`[1] function, so seems we have to use
-> `Mutex::get_mut` to invoke the correct function, I personally want the
-> following just works:
->
->         m.as_mut().get_mut().replace(42i32);
->
-> and looks to me the simplest way is to change the function's name (for
-> example `get_data_mut`), and we can do:
->
->         m.as_mut().get_data_mut().replace(42i32);
->
-> Thoughts?
+> >  	resume=3D		[SWSUSP]
+> >  			Specify the partition device for software suspend
+> >  			Format:
+> > diff --git a/fs/proc/base.c b/fs/proc/base.c
+> > index 98a031ac2648..92f668191312 100644
+> > --- a/fs/proc/base.c
+> > +++ b/fs/proc/base.c
+> > @@ -152,6 +152,30 @@ struct pid=5Fentry {
+> >  		NULL, &proc=5Fpid=5Fattr=5Foperations,	\
+> >  		{ .lsmid =3D LSMID })
+> > =20
+> > +#ifdef CONFIG=5FSECURITY=5FPROC=5FMEM=5FRESTRICT=5FWRITE
+>=20
+> Please drop this CONFIG entirely -- it should be always available for
+> all builds of the kernel. Only CONFIG=5FSECURITY=5FPROC=5FMEM=5FRESTR=
+ICT=5FWRITE=5FDEFAULT=5FON
+> needs to remain.
+>=20
 
-I don't understand why `Pin::get_mut` creates a conflict as it should
-be behind a where close forcing the type to be `UnPin`.
-The name of the function was chosen to be the same as rust std
-`Mutex::get_mut` [1],
-but you are right renaming this to something else might be the easiest
-way of fixing it
+Ack, will do in v3.
 
-Regards,
-Mathys Gasnier
-
-[1]: https://doc.rust-lang.org/std/sync/struct.Mutex.html#method.get_mut
-
-> Regards,
-> Boqun
->
->
-> [1]: https://doc.rust-lang.org/core/pin/struct.Pin.html#method.get_mut
->
->
->
-> > +    ///     data.a +=3D 10;
-> > +    ///     data.b +=3D 20;
-> > +    /// }
-> > +    /// ```
-> > +    pub fn get_mut(self: Pin<&mut Self>) -> &mut T {
-> > +        // SAFETY: The lock will only be used to get a reference to th=
-e data, therefore self won't
-> > +        // get moved.
-> > +        let lock =3D unsafe { self.get_unchecked_mut() };
-> > +        lock.data.get_mut()
-> > +    }
-> >  }
-> >
-> >  /// A lock guard.
-> >
-> > ---
-> > base-commit: 711cbfc717650532624ca9f56fbaf191bed56e67
-> > change-id: 20240118-rust-locks-get-mut-c42072101d7a
-> >
-> > Best regards,
-> > --
-> > Mathys-Gasnier <mathys35.gasnier@gmail.com>
-> >
-> >
-
-Le ven. 1 mars 2024 =C3=A0 23:53, Boqun Feng <boqun.feng@gmail.com> a =C3=
-=A9crit :
->
-> On Fri, Mar 01, 2024 at 06:33:23PM +0100, Mathys-Gasnier via B4 Relay wro=
-te:
-> > From: Mathys-Gasnier <mathys35.gasnier@gmail.com>
-> >
-> > Having a mutable reference guarantees that no other threads have
-> > access to the lock, so we can take advantage of that to grant callers
-> > access to the protected data without the cost of acquiring and
-> > releasing the locks. Since the lifetime of the data is tied to the
-> > mutable reference, the borrow checker guarantees that the usage is safe=
-.
-> >
-> > Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-> > Reviewed-by: Alice Ryhl <aliceryhl@google.com>
-> > Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
-> > Signed-off-by: Mathys-Gasnier <mathys35.gasnier@gmail.com>
-> > ---
-> > Changes in v5:
-> > - Adding example
-> > - Link to v4: https://lore.kernel.org/r/20240226-rust-locks-get-mut-v4-=
-1-24abf57707a8@gmail.com
-> >
-> > Changes in v4:
-> > - Improved documentation
-> > - Link to v3: https://lore.kernel.org/r/20240222-rust-locks-get-mut-v3-=
-1-d38a6f4bde3d@gmail.com
-> >
-> > Changes in v3:
-> > - Changing the function to take a `Pin<&mut self>` instead of a `&mut s=
-elf`
-> > - Removed reviewed-by's since big changes were made. Please take anothe=
-r
-> >   look.
-> > - Link to v2: https://lore.kernel.org/r/20240212-rust-locks-get-mut-v2-=
-1-5ccd34c2b70b@gmail.com
-> >
-> > Changes in v2:
-> > - Improved doc comment.
-> > - Link to v1: https://lore.kernel.org/r/20240209-rust-locks-get-mut-v1-=
-1-ce351fc3de47@gmail.com
-> > ---
-> >  rust/kernel/sync/lock.rs | 38 +++++++++++++++++++++++++++++++++++++-
-> >  1 file changed, 37 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/rust/kernel/sync/lock.rs b/rust/kernel/sync/lock.rs
-> > index f12a684bc957..345ca7be9d9f 100644
-> > --- a/rust/kernel/sync/lock.rs
-> > +++ b/rust/kernel/sync/lock.rs
-> > @@ -7,7 +7,11 @@
-> >
-> >  use super::LockClassKey;
-> >  use crate::{bindings, init::PinInit, pin_init, str::CStr, types::Opaqu=
-e, types::ScopeGuard};
-> > -use core::{cell::UnsafeCell, marker::PhantomData, marker::PhantomPinne=
-d};
-> > +use core::{
-> > +    cell::UnsafeCell,
-> > +    marker::{PhantomData, PhantomPinned},
-> > +    pin::Pin,
-> > +};
-> >  use macros::pin_data;
-> >
-> >  pub mod mutex;
-> > @@ -121,6 +125,38 @@ pub fn lock(&self) -> Guard<'_, T, B> {
-> >          // SAFETY: The lock was just acquired.
-> >          unsafe { Guard::new(self, state) }
-> >      }
+> > +DEFINE=5FSTATIC=5FKEY=5FMAYBE=5FRO(CONFIG=5FSECURITY=5FPROC=5FMEM=5F=
+RESTRICT=5FWRITE=5FDEFAULT=5FON,
+> > +			   restrict=5Fproc=5Fmem=5Fwrite);
+> > +static int =5F=5Finit early=5Frestrict=5Fproc=5Fmem=5Fwrite(char *=
+buf)
+> > +{
+> > +	int ret;
+> > +	bool bool=5Fresult;
 > > +
-> > +    /// Gets the data contained in the lock.
-> > +    ///
-> > +    /// Having a mutable reference to the lock guarantees that no othe=
-r threads have access to the
-> > +    /// lock. And because `data` is not structurally pinned, it is saf=
-e to get a mutable reference
-> > +    /// to the lock content.
-> > +    ///
-> > +    /// # Example
-> > +    ///
+> > +	ret =3D kstrtobool(buf, &bool=5Fresult);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	if (bool=5Fresult)
+> > +		static=5Fbranch=5Fenable(&restrict=5Fproc=5Fmem=5Fwrite);
+> > +	else
+> > +		static=5Fbranch=5Fdisable(&restrict=5Fproc=5Fmem=5Fwrite);
+> > +	return 0;
+> > +}
+> > +early=5Fparam("restrict=5Fproc=5Fmem=5Fwrite", early=5Frestrict=5F=
+proc=5Fmem=5Fwrite);
+> > +# define PROC=5FPID=5FMEM=5FMODE S=5FIRUSR
+> > +#else
+> > +# define PROC=5FPID=5FMEM=5FMODE (S=5FIRUSR|S=5FIWUSR)
+> > +#endif
+>=20
+> PROC=5FPID=5FMEM=5FMODE will need to be a =5F=5Fro=5Fafter=5Finit var=
+iable, set by
+> early=5Frestrict=5Fproc=5Fmem=5Fwrite, otherwise the mode won't chang=
+e based on
+> the runtime setting. e.g.:
+>=20
+> #ifdef CONFIG=5FSECURITY=5FPROC=5FMEM=5FRESTRICT=5FWRITE=5FDEFAULT=5F=
+ON
+> mode=5Ft proc=5Fpid=5Fmem=5Fmode =5F=5Fro=5Fafter=5Finit =3D S=5FIRUS=
+R;
+> #else
+> mode=5Ft proc=5Fpid=5Fmem=5Fmode =5F=5Fro=5Fafter=5Finit =3D (S=5FIRU=
+SR|S=5FIWUSR);
+> #endif
+>=20
+> DEFINE=5FSTATIC=5FKEY=5FMAYBE=5FRO(CONFIG=5FSECURITY=5FPROC=5FMEM=5FR=
+ESTRICT=5FWRITE=5FDEFAULT=5FON,
+> 			   restrict=5Fproc=5Fmem=5Fwrite);
+> ...
+> 	if (bool=5Fresult) {
+> 		static=5Fbranch=5Fenable(&restrict=5Fproc=5Fmem=5Fwrite);
+> 		proc=5Fpid=5Fmem=5Fmode =3D S=5FIRUSR;
+> 	} else {
+> 		static=5Fbranch=5Fdisable(&restrict=5Fproc=5Fmem=5Fwrite);
+> 		proc=5Fpid=5Fmem=5Fmode =3D (S=5FIRUSR|S=5FIWUSR);
+> 	}
+> ...
+> 	REG("mem",        proc=5Fpid=5Fmem=5Fmode, proc=5Fmem=5Foperations),
+>=20
+>=20
+
+Ack, will do in v3.
+
+> > +
+> >  /*
+> >   * Count the number of hardlinks for the pid=5Fentry table, exclud=
+ing the .
+> >   * and .. links.
+> > @@ -829,6 +853,25 @@ static int mem=5Fopen(struct inode *inode, str=
+uct file *file)
+> >  {
+> >  	int ret =3D =5F=5Fmem=5Fopen(inode, file, PTRACE=5FMODE=5FATTACH)=
+;
+> > =20
+> > +#ifdef CONFIG=5FSECURITY=5FPROC=5FMEM=5FRESTRICT=5FWRITE
+>=20
+> Drop this ifdef (as mentioned above).
+>=20
+> > +	struct mm=5Fstruct *mm =3D file->private=5Fdata;
+> > +	struct task=5Fstruct *task =3D get=5Fproc=5Ftask(inode);
+> > +
+> > +	if (mm && task) {
+> > +		/* Only allow writes by processes already ptracing the target ta=
+sk */
+> > +		if (file->f=5Fmode & FMODE=5FWRITE &&
+> > +		    static=5Fbranch=5Fmaybe(CONFIG=5FSECURITY=5FPROC=5FMEM=5FRES=
+TRICT=5FWRITE=5FDEFAULT=5FON,
+> > +					&restrict=5Fproc=5Fmem=5Fwrite)) {
+>=20
+> Do we need to also do an mm=5Faccess() on the task to verify that the=
+ task
+> we're about to check has its mm still matching file->private=5Fdata? =
+The
+> PID can change out from under us (but the mm cannot).
+>=20
+
+Likely yes, will look into this for v3.
+
+> > +			rcu=5Fread=5Flock();
+> > +			if (!ptracer=5Fcapable(current, mm->user=5Fns) ||
+> > +			    current !=3D ptrace=5Fparent(task))
+>=20
+> If you're just allowing "already ptracing", why include the
+> ptracer=5Fcapable() check?
+>=20
+
+It is a very good observation that the check is redundant. :)
+
+It is a remnant from a previous iteration of this patch, from
+when I was proposing solutions to GDB upstream. I left it there
+because it doesn't do much harm to verify capability as well,
+more of a precaution / test invariant than anything else.
+
+I'll remove it in v3 since it might cause confusion.
+
+> > +				ret =3D -EACCES;
+> > +			rcu=5Fread=5Funlock();
+> > +		}
+> > +		put=5Ftask=5Fstruct(task);
+> > +	}
+> > +#endif
+> > +
+> >  	/* OK to pass negative loff=5Ft, we can catch out-of-range */
+> >  	file->f=5Fmode |=3D FMODE=5FUNSIGNED=5FOFFSET;
+> > =20
+> > @@ -3281,7 +3324,7 @@ static const struct pid=5Fentry tgid=5Fbase=5F=
+stuff[] =3D {
+> >  #ifdef CONFIG=5FNUMA
+> >  	REG("numa=5Fmaps",  S=5FIRUGO, proc=5Fpid=5Fnuma=5Fmaps=5Foperati=
+ons),
+> >  #endif
+> > -	REG("mem",        S=5FIRUSR|S=5FIWUSR, proc=5Fmem=5Foperations),
+> > +	REG("mem",        PROC=5FPID=5FMEM=5FMODE, proc=5Fmem=5Foperation=
+s),
+> >  	LNK("cwd",        proc=5Fcwd=5Flink),
+> >  	LNK("root",       proc=5Froot=5Flink),
+> >  	LNK("exe",        proc=5Fexe=5Flink),
+> > @@ -3631,7 +3674,7 @@ static const struct pid=5Fentry tid=5Fbase=5F=
+stuff[] =3D {
+> >  #ifdef CONFIG=5FNUMA
+> >  	REG("numa=5Fmaps", S=5FIRUGO, proc=5Fpid=5Fnuma=5Fmaps=5Foperatio=
+ns),
+> >  #endif
+> > -	REG("mem",       S=5FIRUSR|S=5FIWUSR, proc=5Fmem=5Foperations),
+> > +	REG("mem",       PROC=5FPID=5FMEM=5FMODE, proc=5Fmem=5Foperations=
+),
+> >  	LNK("cwd",       proc=5Fcwd=5Flink),
+> >  	LNK("root",      proc=5Froot=5Flink),
+> >  	LNK("exe",       proc=5Fexe=5Flink),
+> > diff --git a/security/Kconfig b/security/Kconfig
+> > index 412e76f1575d..ffee9e847ed9 100644
+> > --- a/security/Kconfig
+> > +++ b/security/Kconfig
+> > @@ -19,6 +19,28 @@ config SECURITY=5FDMESG=5FRESTRICT
+> > =20
+> >  	  If you are unsure how to answer this question, answer N.
+> > =20
+> > +config SECURITY=5FPROC=5FMEM=5FRESTRICT=5FWRITE
+> > +	bool "Restrict /proc/*/mem write access"
+> > +	default n
+> > +	help
+> > +	  This restricts writes to /proc/<pid>/mem, except when the curre=
+nt
+> > +	  process ptraces the /proc/<pid>/mem task, because a ptracer alr=
+eady
+> > +	  has write access to the tracee memory.
+> > +
+> > +	  Write access to this file allows bypassing memory map permissio=
+ns,
+> > +	  such as modifying read-only code.
+> > +
+> > +	  If you are unsure how to answer this question, answer N.
+> > +
+> > +config SECURITY=5FPROC=5FMEM=5FRESTRICT=5FWRITE=5FDEFAULT=5FON
+> > +	bool "Default state of /proc/*/mem write restriction"
+> > +	depends on SECURITY=5FPROC=5FMEM=5FRESTRICT=5FWRITE
+> > +	default y
+> > +	help
+> > +	  /proc/*/mem write access is controlled by kernel boot param
+> > +	  "restrict=5Fproc=5Fmem=5Fwrite" and this config chooses the def=
+ault
+> > +	  boot state.
+>=20
+> As mentioned, I'd say merge the help texts here, but drop
+> SECURITY=5FPROC=5FMEM=5FRESTRICT=5FWRITE.
+>=20
+
+Ack, will do in v3.
+
+> > +
+> >  config SECURITY
+> >  	bool "Enable different security models"
+> >  	depends on SYSFS
+> > --=20
+> > 2.30.2
+> >=20
+>=20
+> Thanks for this! I look forward to turning it on. :)
 >
-> Thanks! But please see below:
->
-> > +    /// Using `get_mut` with a mutex.
-> > +    ///
-> > +    /// ```
->
-> The example looks good, however, I was thinking about something like:
->
->     /// ```
->     /// use kernel::sync::{new_mutex, Mutex};
->     ///
->     /// let mut m =3D Box::pin_init(new_mutex!(None))?;
->     ///
->     /// assert_eq!(*(m.lock()), None);
->     ///
->     /// Mutex::get_mut(m.as_mut()).replace(42i32);
->     ///
->     /// assert_eq!(*(m.lock()), Some(42));
->     ///
->     /// # Ok::<(), Error>(())
->     /// ```
->
-> because, this will also run something instead of just compiling a
-> function.
->
-> > +    /// use kernel::sync::Mutex;
-> > +    ///
-> > +    /// struct Example {
-> > +    ///     a: u32,
-> > +    ///     b: u32,
-> > +    /// }
-> > +    ///
-> > +    /// fn example(m: Pin<&mut Mutex<Example>>) {
-> > +    ///     // Calling from Mutex to avoid conflict with Pin::get_mut(=
-).
-> > +    ///     let mut data =3D Mutex::get_mut(m);
->
-> The other thing I notice when I try to make the above example work is:
-> `Pin` also has a `get_mut`[1] function, so seems we have to use
-> `Mutex::get_mut` to invoke the correct function, I personally want the
-> following just works:
->
->         m.as_mut().get_mut().replace(42i32);
->
-> and looks to me the simplest way is to change the function's name (for
-> example `get_data_mut`), and we can do:
->
->         m.as_mut().get_data_mut().replace(42i32);
->
-> Thoughts?
->
-> Regards,
-> Boqun
->
->
-> [1]: https://doc.rust-lang.org/core/pin/struct.Pin.html#method.get_mut
->
->
->
-> > +    ///     data.a +=3D 10;
-> > +    ///     data.b +=3D 20;
-> > +    /// }
-> > +    /// ```
-> > +    pub fn get_mut(self: Pin<&mut Self>) -> &mut T {
-> > +        // SAFETY: The lock will only be used to get a reference to th=
-e data, therefore self won't
-> > +        // get moved.
-> > +        let lock =3D unsafe { self.get_unchecked_mut() };
-> > +        lock.data.get_mut()
-> > +    }
-> >  }
-> >
-> >  /// A lock guard.
-> >
-> > ---
-> > base-commit: 711cbfc717650532624ca9f56fbaf191bed56e67
-> > change-id: 20240118-rust-locks-get-mut-c42072101d7a
-> >
-> > Best regards,
-> > --
-> > Mathys-Gasnier <mathys35.gasnier@gmail.com>
-> >
-> >
+
+Thank you very much for all your feedback!
+It is much appreciated.
+
+I'll wait a few more days before sending v3 to let others
+comment, then address everything.
+=20
+> -Kees
+>=20
+> --=20
+> Kees Cook
+
 
