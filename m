@@ -1,103 +1,106 @@
-Return-Path: <linux-kernel+bounces-89430-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89431-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE1FC86F041
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 12:31:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1E3986F043
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 12:37:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A84EB1C2154E
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 11:31:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 59D3EB23D2B
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 11:37:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49947171A5;
-	Sat,  2 Mar 2024 11:30:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04131171BF;
+	Sat,  2 Mar 2024 11:37:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dA3hpWMg"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="D+k8uPyE";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="C2g7laN4"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CECF323C;
-	Sat,  2 Mar 2024 11:30:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56F9E17562
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 11:37:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709379054; cv=none; b=X8eecy4sOpFzFiaVA5LzntNlzOJck+S1bxR6Ozer991d3W3y/wtR3vqrqlPMC9LUIj99qrbwF4j81sGzaoyj3/KagSJEXTBnFU3MGhcZBge0RvXGjqKrcK+8B6QxmQYcxBvgBpCCryMAgZnootBHZOfGBEFMMvz6SoiYkXhvz0g=
+	t=1709379455; cv=none; b=oLvye2Cuog9SzJp6N4G8isZPMKEeMEgvB+up92cGnMRw+4NmXx7As1K9XM9QGczAtDCFois8avUQO80fCU7vsnDQZ3ddUHpt2EgkzGZaDzmCskkPA1XZ98SUD9lpy9puzY6Xu2br6TitMyJzp/+iRmQ6LWKRAWLHSjzrXXqvYdg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709379054; c=relaxed/simple;
-	bh=oQ+DxDSSOmlUj3fhF7GDj4r02Xb+mjiohzUCcRJFJ0o=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rPJKkFLD3uW06+DEn5Q5jsI0qKunyZJnWlG0gz7WlYZXkMNH6FRxf3xw7klIxIwVsS5gotaV7897Hk/xt7bbsvtcVVNNcbwsmAgcV9dRXfY/ta7hJGj5nRMRwp1am8bP+YibCmwSRh6Lfjd6IZMt0YZDgZpAwj4kK6npP5rjBXc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dA3hpWMg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10A5BC433F1;
-	Sat,  2 Mar 2024 11:30:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709379054;
-	bh=oQ+DxDSSOmlUj3fhF7GDj4r02Xb+mjiohzUCcRJFJ0o=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=dA3hpWMg0saKPgHbbyBZk8IzLnWTeqRvXU2aavzMLNQhEI8vCOPq7RpquUVLzeEXz
-	 Tzb7JMHSlJAQg5CNV0nt4UPRp6TxKehG8xIQc/MlWQ/z9+b59DtNZsJ31jch/Hu6fI
-	 pMxoT4mgbRXyks/Ywzh2zCvD1KgtnxjCz/0u730Jr+0ICIMW4ILAPPU/1O2JZsG1Ea
-	 z2aqCOkDWskh0R36Vm6UhEQrWmlvkfNrFt+DH9x0mMcMzNicKn5JXU2hOsr3Stiqta
-	 X+QGi8/YeQ6xtRm4S5kQQzcwpVLTlchcb2AMoL97fd+x6U8I5lX3b7h6XR85mG/h93
-	 MJkenmFOogbRQ==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rgNZr-008lX5-Rm;
-	Sat, 02 Mar 2024 11:30:51 +0000
-Date: Sat, 02 Mar 2024 11:30:51 +0000
-Message-ID: <86y1b027mc.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Oliver Upton <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	kvmarm@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] KVM: arm64: Reuse struct cpu_fp_state to track the guest FP state
-In-Reply-To: <20240229-kvm-arm64-group-fp-data-v2-2-276de0d550e8@kernel.org>
-References: <20240229-kvm-arm64-group-fp-data-v2-0-276de0d550e8@kernel.org>
-	<20240229-kvm-arm64-group-fp-data-v2-2-276de0d550e8@kernel.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1709379455; c=relaxed/simple;
+	bh=lK4U4ZLcWMRofj4C36viEsAPI2ibBqPBg1dl/C+Vbbc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=OsIkAjRZpyagtvleq20eimt6+D7piJ3cjIK+NJWgpxpRE0Poo5z05gWdulO+nJmohlvlpjTH/W5oU27BI3IrRFwDNDFN1I1Q9Jcq3L4kHyrvweE/9WLLbSKV5Qq9GRF2rcoiMQWJyf4hI++I0HfkpA+J92PJO1PGJR6UNTdMJVo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=D+k8uPyE; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=C2g7laN4; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1709379450;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kg/HWn0RBgyKR0X6ry85czEeS/YqxSOJwvJfCZhfBZE=;
+	b=D+k8uPyEfOjyY7Y0Omj3cDddiEEu8SaBgIHTay1QinYalGHInnrklrlVczSIpdy/E7rQPi
+	m6EDAtJ0M/MAisOkml9qRxBTCn5oTE4q3uHL/+ZveRqpuWWIYebRWPokmgQizgjHSs/pEi
+	TYKEDPzd04wuvLmlN/XdYx1YV6KsdQ1zKiER/uf/GcyJhY2ktmA2HoBlbj2pqo3LQj4mIQ
+	zc2BqjxQMWImomdPstx38eNXjg10lLEj53Vm4c5B2Y7ZK2Pj8ebKn2d85Bg2iHGtHwTZmj
+	b5a45iReS/WDwdDzEc46RVscRi9YHSi6pPJNpogyYU8tzATG+wdn2PQODJ/GsQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1709379450;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kg/HWn0RBgyKR0X6ry85czEeS/YqxSOJwvJfCZhfBZE=;
+	b=C2g7laN4Pmwh8tpWg9OdccAbRvdNL0XIMpX8TyeXV/MolAmcZZRzkxZ8/SBG5y2yIHM3/C
+	1rqICYqY6avmkXCQ==
+To: kernel test robot <lkp@intel.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org, Arjan van
+ de Ven <arjan@linux.intel.com>, x86@kernel.org
+Subject: Re: arch/x86/include/asm/processor.h:698:16: sparse: sparse:
+ incorrect type in initializer (different address spaces)
+In-Reply-To: <87a5nhwpus.ffs@tglx>
+References: <202403020457.RCJoQ3ts-lkp@intel.com> <87edctwr6y.ffs@tglx>
+ <87a5nhwpus.ffs@tglx>
+Date: Sat, 02 Mar 2024 12:37:29 +0100
+Message-ID: <87y1b0vp8m.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: broonie@kernel.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: text/plain
 
-On Thu, 29 Feb 2024 21:47:35 +0000,
-Mark Brown <broonie@kernel.org> wrote:
-> 
-> At present we store the various bits of floating point state individually
-> in struct kvm_vcpu_arch and construct a struct cpu_fp_state to share with
-> the host each time we exit the guest. Let's simplify this a little by
-> having a struct cpu_fp_state in the struct kvm_vcpu_arch and initialising
-> this while initialising the guest.
+On Fri, Mar 01 2024 at 23:26, Thomas Gleixner wrote:
+> Sorry, my fault. I can reproduce now but it still does not make any
+> sense. The code is correct...
+>
+> Let me put something together which the sparse folks can digest.
 
-This structure is only useful to the physical CPU we run on, and does
-not capture anything that is related to the guest state. Why should it
-live in the vcpu structure, duplicating things we already have?
+Bah. sparse is actually right. I completely missed the fact that this is
+an UP build which has:
 
-This is just making things even more opaque.
+extern struct cpuinfo_x86	boot_cpu_data;
 
-If you need to add such a structure so that you can know what to
-save/restore on context switch, then attach it to the per-CPU data
-structure we already have.
+#define cpu_info		boot_cpu_data
 
-	M.
+So any access with this_cpu*(), per_cpu*() etc. is actually incorrect from
+sparse's point of view.
 
--- 
-Without deviation from the norm, progress is not possible.
+From a compiler point of view it just works because __percpu dissolves
+and the whole thing produces correct code magically.
+
+Most places in x86 use cpu_data(cpu) to access per cpu data which is
+defined as per_cpu(cpu_info, cpu) for SMP and boot_cpu_info for UP.
+
+That's fine, but there are places like the MCE code which really needs
+raw_cpu_ptr(). Sure we can write ugly wrappers for that and for some
+other accessors. But that's all just wrong and ugly.
+
+The proper solution would be to force SMP for x86, but Linus shot it
+down when I wanted to do that last time.
+
+Let me think about it.
+
+Thanks,
+
+        tglx
 
