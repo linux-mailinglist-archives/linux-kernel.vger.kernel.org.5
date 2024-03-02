@@ -1,281 +1,112 @@
-Return-Path: <linux-kernel+bounces-89463-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89464-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26FC086F0A9
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 15:14:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DAAAC86F0B1
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 15:51:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D130E2849EF
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 14:14:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 230892834E5
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 14:51:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5997017BD9;
-	Sat,  2 Mar 2024 14:14:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D07517BD3;
+	Sat,  2 Mar 2024 14:51:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="PQTq4rXU"
-Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="LO/1jTjv"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A90617BA2
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 14:14:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52EA61119A
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 14:51:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709388891; cv=none; b=Wo74L35blvJnAbBHqZPqSi8MOl9aP7rZighoyK9lRAunJgzEHoNURglYPAFmniUd7FsETtD0OqnR+mC292YJ/EoN80zEXrydnYwV1ndy0wtZVmtTzxUkMQCIDG13FG85GC3j4CfSEwDOPLVPjq7l5W7hZKWcdbo132QEaxf8chA=
+	t=1709391089; cv=none; b=XwLdUXWeDuVJXSuzxqiC2RfeCiNIzukG+cS8QeueDDXi1tEMHu0yjbUuoCrJkRpaIc0kvUwfcZE4+EYbkTlNxs8hmhNjQmYjD+pglmzUsuuk9t6LCa4WRZo+k/NQXHl/sWbkD0iW6YUWyR76S2ap9AIYnVNqEPzABhifD7ZlY+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709388891; c=relaxed/simple;
-	bh=5B887/YzHTP+xGbj5UZLvqN6oKQPELOG/LwxVfcghlM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Kj5oogyO97a89ImO0poX2/r3NUrF+rum634RmpSI/pdO3mIiVRGIL1eZ1XfSIYM/2AFssGof2a/DI18180wi4dEWG6uEFjDlRw5aonzNVmzRjQs9eMcgF0RuqP6dvC1zBVda1YlnHzkHMEs8Wi41ZhZE9MZ1dNyRGaMoErMsaUQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=PQTq4rXU; arc=none smtp.client-ip=198.252.153.129
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
-Received: from fews01-sea.riseup.net (fews01-sea-pn.riseup.net [10.0.1.109])
+	s=arc-20240116; t=1709391089; c=relaxed/simple;
+	bh=vCjOYdZrlow9Fh9Eo5hPpoetgcXRQ+wgnMSRa8HLqyk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZRrPfWRqN08E4VcUdoyTngo1yV6hHWxpZeLmeL1hLnBYX3E5d9NuDR1PRx1IUeyBvO0kYaX1LPXHCe2B2qY6YOfcZbY/CNQpZhzGWGibZCwPlwuI+gR+RzfobxyoqvaROxmSmeGeBa+LL4i8gaPGgQAOeXn6KPLY/edMuU6i3LM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=LO/1jTjv; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 54CF940E0196;
+	Sat,  2 Mar 2024 14:51:23 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 8duGGvQcoF7b; Sat,  2 Mar 2024 14:51:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1709391081; bh=6WUfrxKv6mHowLI4AAR+hzZkx4Uudlh3Fp7Bv1CiWNo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=LO/1jTjvqHtpHJJoTibVH85FoweayWeRVbS35i8mjLpuOEtcAsaMJGiY+cLRrHYJQ
+	 F9InVfcZZ9cGcKSzad4NjfvW/VDQ3ZJP5LkpiclJ8dL7ilUkOK6nB+wnOTUsvGoOBT
+	 Jd9ipymrD1LvsNieq2ISzvQZeKRutYO2fAlg+jqk2+x5t3DuyNgKzqsyd6TUK1O+c9
+	 QPQ2+TareHk//USpbOmd0foNVC3JqVn7v0A7g8pQWSJcNQeY/Uic67IeMpMwyn4eHe
+	 OE8QtgdDjyU3dJ6eNo/JYOflb59drubGTVVLt95ir36KLHStBZfKsbiVBCJgdztlI1
+	 t6zR/Gwre0F4zEhxcWwuQbE30X3KF7bcxEjPlyl2iXETRjt1Zmf6jTVgLGykKBJR1M
+	 zNOYetk0BkeAliN7ZxP4O2v4R6CMEnPRKz8SiaazFv9v+V0zeqRE0FkNWgOVMNVjx5
+	 WfNkbM/ktBn2KRqAWMmtiOdjQ5VBkdw2zeqyamIa7Uiw8oXBRZA5K86gqzPwrnI7sW
+	 UaF8abNnwUXjcSmaxMvdvm84lXk0QYTszE3AWQSKHgXTUCU3DDJA6M9g/T00UDPAf2
+	 J0tr0toA27Qm8hkAXvJCtKQg43nvx5tB1veMIpfLrBMfB29fkoUukHkJIehcUx5Olx
+	 c+AeB76DzVVw+MUymaoa+074=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
 	(No client certificate requested)
-	by mx1.riseup.net (Postfix) with ESMTPS id 4Tn6R65KmSzDqLl;
-	Sat,  2 Mar 2024 14:14:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-	t=1709388883; bh=5B887/YzHTP+xGbj5UZLvqN6oKQPELOG/LwxVfcghlM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=PQTq4rXUQYJimfxdmG1ubZ+6eereGvDuMi0koUUOhoZCIZvTDkoULbm1i7Gkpez9C
-	 GPdStJeDDFykJ5EmMRN3emEMTcz+lUb/cDt+jvvig+1yIblE22EbHd1zGLpdk54qzy
-	 ZXZpAHJUSUHrrkT8IMGdUA62S9f3jQxVchveyaAQ=
-X-Riseup-User-ID: B70142BE40204FCEECD727AA0B0A5BF7A1D779D9CD1D828502538BE16079DACE
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	 by fews01-sea.riseup.net (Postfix) with ESMTPSA id 4Tn6R123BdzJsbL;
-	Sat,  2 Mar 2024 14:14:37 +0000 (UTC)
-Message-ID: <551e74f7-3df9-42b8-8221-c51191dbc6b6@riseup.net>
-Date: Sat, 2 Mar 2024 11:14:35 -0300
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C30F840E016B;
+	Sat,  2 Mar 2024 14:51:09 +0000 (UTC)
+Date: Sat, 2 Mar 2024 15:51:03 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org,
+	Kevin Loughlin <kevinloughlin@google.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Dionna Glaze <dionnaglaze@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Andy Lutomirski <luto@kernel.org>, Brian Gerst <brgerst@gmail.com>
+Subject: Re: [PATCH v7 6/9] x86/boot: Move mem_encrypt= parsing to the
+ decompressor
+Message-ID: <20240302145103.GBZeM81zHoBy922BhE@fat_crate.local>
+References: <20240227151907.387873-11-ardb+git@google.com>
+ <20240227151907.387873-17-ardb+git@google.com>
+ <20240301191640.GNZeIpmAU3iM1EIg4S@fat_crate.local>
+ <CAMj1kXHnXRBke1P5nqLwuprJzyKk36bZQPNfwSerAYunvPAzMA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 6/9] drm/vkms: Add YUV support
-To: Pekka Paalanen <pekka.paalanen@collabora.com>
-Cc: Louis Chauvet <louis.chauvet@bootlin.com>,
- Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
- Melissa Wen <melissa.srw@gmail.com>, =?UTF-8?Q?Ma=C3=ADra_Canal?=
- <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
- thomas.petazzoni@bootlin.com
-References: <20240223-yuv-v2-0-aa6be2827bb7@bootlin.com>
- <20240223-yuv-v2-6-aa6be2827bb7@bootlin.com>
- <20240226141916.1627bbbd.pekka.paalanen@collabora.com>
- <Zd35c_CJbhY46TjQ@localhost.localdomain>
- <b23da076-0bfb-48b2-9386-383a6dec1868@riseup.net>
- <8fc07f0f-f14d-4878-9884-2bc4b4c6f426@riseup.net>
- <20240229141238.51891cad.pekka.paalanen@collabora.com>
- <5a45e133-d554-4252-a223-dadced383443@riseup.net>
- <20240301135327.22efe0dd.pekka.paalanen@collabora.com>
-Content-Language: en-US
-From: Arthur Grillo <arthurgrillo@riseup.net>
-In-Reply-To: <20240301135327.22efe0dd.pekka.paalanen@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXHnXRBke1P5nqLwuprJzyKk36bZQPNfwSerAYunvPAzMA@mail.gmail.com>
+
+On Sat, Mar 02, 2024 at 12:46:06AM +0100, Ard Biesheuvel wrote:
+> Yeah that seems unnecessary to me. They are only used by kexec, and
+> only for cases where you want to kexec a [much] older kernel that
+> cannot deal with 5-level paging at all. AFAICT 5-level support was
+> added in v4.13.
+
+Yeah, I can't imagine a use case where you'd do two different kernels
+- one for normal boot and one for kexec and they'd differ in the .config
+and one would support 5level pagetables and the other wouldn't...
+
+> So I think we might be able to drop these entirely, no?
+
+Yeah:
+
+https://lore.kernel.org/r/20240301185618.19663-1-bp@alien8.de
 
 
+-- 
+Regards/Gruss,
+    Boris.
 
-On 01/03/24 08:53, Pekka Paalanen wrote:
-> On Thu, 29 Feb 2024 14:57:06 -0300
-> Arthur Grillo <arthurgrillo@riseup.net> wrote:
-> 
->> On 29/02/24 09:12, Pekka Paalanen wrote:
->>> On Wed, 28 Feb 2024 22:52:09 -0300
->>> Arthur Grillo <arthurgrillo@riseup.net> wrote:
->>>   
->>>> On 27/02/24 17:01, Arthur Grillo wrote:  
->>>>>
->>>>>
->>>>> On 27/02/24 12:02, Louis Chauvet wrote:    
->>>>>> Hi Pekka,
->>>>>>
->>>>>> For all the comment related to the conversion part, maybe Arthur have an 
->>>>>> opinion on it, I took his patch as a "black box" (I did not want to 
->>>>>> break (and debug) it).
->>>>>>
->>>>>> Le 26/02/24 - 14:19, Pekka Paalanen a écrit :    
->>>>>>> On Fri, 23 Feb 2024 12:37:26 +0100
->>>>>>> Louis Chauvet <louis.chauvet@bootlin.com> wrote:
->>>>>>>    
->>>>>>>> From: Arthur Grillo <arthurgrillo@riseup.net>
->>>>>>>>
->>>>>>>> Add support to the YUV formats bellow:
->>>>>>>>
->>>>>>>> - NV12
->>>>>>>> - NV16
->>>>>>>> - NV24
->>>>>>>> - NV21
->>>>>>>> - NV61
->>>>>>>> - NV42
->>>>>>>> - YUV420
->>>>>>>> - YUV422
->>>>>>>> - YUV444
->>>>>>>> - YVU420
->>>>>>>> - YVU422
->>>>>>>> - YVU444
->>>>>>>>
->>>>>>>> The conversion matrices of each encoding and range were obtained by
->>>>>>>> rounding the values of the original conversion matrices multiplied by
->>>>>>>> 2^8. This is done to avoid the use of fixed point operations.
->>>>>>>>
->>>>>>>> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
->>>>>>>> [Louis Chauvet: Adapted Arthur's work and implemented the read_line_t
->>>>>>>> callbacks for yuv formats]
->>>>>>>> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
->>>>>>>> ---
->>>>>>>>  drivers/gpu/drm/vkms/vkms_composer.c |   2 +-
->>>>>>>>  drivers/gpu/drm/vkms/vkms_drv.h      |   6 +-
->>>>>>>>  drivers/gpu/drm/vkms/vkms_formats.c  | 289 +++++++++++++++++++++++++++++++++--
->>>>>>>>  drivers/gpu/drm/vkms/vkms_formats.h  |   4 +
->>>>>>>>  drivers/gpu/drm/vkms/vkms_plane.c    |  14 +-
->>>>>>>>  5 files changed, 295 insertions(+), 20 deletions(-)
-> 
-> ...
-> 
->>>> diff --git a/drivers/gpu/drm/vkms/tests/vkms_format_test.c b/drivers/gpu/drm/vkms/tests/vkms_format_test.c
->>>> index f66584549827..4cee3c2d8d84 100644
->>>> --- a/drivers/gpu/drm/vkms/tests/vkms_format_test.c
->>>> +++ b/drivers/gpu/drm/vkms/tests/vkms_format_test.c
->>>> @@ -59,7 +59,7 @@ static struct yuv_u8_to_argb_u16_case yuv_u8_to_argb_u16_cases[] = {
->>>>  			{"white", {0xff, 0x80, 0x80}, {0x0000, 0xffff, 0xffff, 0xffff}},
->>>>  			{"gray",  {0x80, 0x80, 0x80}, {0x0000, 0x8000, 0x8000, 0x8000}},
->>>>  			{"black", {0x00, 0x80, 0x80}, {0x0000, 0x0000, 0x0000, 0x0000}},
->>>> -			{"red",   {0x35, 0x63, 0xff}, {0x0000, 0xffff, 0x0000, 0x0000}},
->>>> +			{"red",   {0x36, 0x63, 0xff}, {0x0000, 0xffff, 0x0000, 0x0000}},
->>>>  			{"green", {0xb6, 0x1e, 0x0c}, {0x0000, 0x0000, 0xffff, 0x0000}},
->>>>  			{"blue",  {0x12, 0xff, 0x74}, {0x0000, 0x0000, 0x0000, 0xffff}},
->>>>  		},
->>>> diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkms/vkms_formats.c
->>>> index e06bbd7c0a67..043f23dbf80d 100644
->>>> --- a/drivers/gpu/drm/vkms/vkms_formats.c
->>>> +++ b/drivers/gpu/drm/vkms/vkms_formats.c
->>>> @@ -121,10 +121,12 @@ static void RGB565_to_argb_u16(u8 **src_pixels, struct pixel_argb_u16 *out_pixel
->>>>  	out_pixel->b = drm_fixp2int_round(drm_fixp_mul(fp_b, fp_rb_ratio));
->>>>  }
->>>>  
->>>> -static void ycbcr2rgb(const s16 m[3][3], u8 y, u8 cb, u8 cr, u8 y_offset, u8 *r, u8 *g, u8 *b)
->>>> +#define BIT_DEPTH 32
->>>> +
->>>> +static void ycbcr2rgb(const s64 m[3][3], u8 y, u8 cb, u8 cr, u8 y_offset, u8 *r, u8 *g, u8 *b)
->>>>  {
->>>> -	s32 y_16, cb_16, cr_16;
->>>> -	s32 r_16, g_16, b_16;
->>>> +	s64 y_16, cb_16, cr_16;
->>>> +	s64 r_16, g_16, b_16;
->>>>  
->>>>  	y_16 =  y - y_offset;
->>>>  	cb_16 = cb - 128;
->>>> @@ -134,9 +136,18 @@ static void ycbcr2rgb(const s16 m[3][3], u8 y, u8 cb, u8 cr, u8 y_offset, u8 *r,
->>>>  	g_16 = m[1][0] * y_16 + m[1][1] * cb_16 + m[1][2] * cr_16;
->>>>  	b_16 = m[2][0] * y_16 + m[2][1] * cb_16 + m[2][2] * cr_16;
->>>>  
->>>> -	*r = clamp(r_16, 0, 0xffff) >> 8;
->>>> -	*g = clamp(g_16, 0, 0xffff) >> 8;
->>>> -	*b = clamp(b_16, 0, 0xffff) >> 8;
->>>> +	// rounding the values
->>>> +	r_16 = r_16 + (1LL << (BIT_DEPTH - 4));
->>>> +	g_16 = g_16 + (1LL << (BIT_DEPTH - 4));
->>>> +	b_16 = b_16 + (1LL << (BIT_DEPTH - 4));
->>>> +
->>>> +	r_16 = clamp(r_16, 0, (1LL << (BIT_DEPTH + 8)) - 1);
->>>> +	g_16 = clamp(g_16, 0, (1LL << (BIT_DEPTH + 8)) - 1);
->>>> +	b_16 = clamp(b_16, 0, (1LL << (BIT_DEPTH + 8)) - 1);  
->>>
->>> Where do the BIT_DEPTH - 4 and BIT_DEPTH + 8 come from?  
->>
->> Basically, the numbers are in this form in hex:
->>
->> 0xsspppppppp
->>
->> In the end, we only want the 's' bits.
->>
->> The matrix multiplication is not giving us perfect results, making some
->> of KUnit test not pass, This is because the values end up a little bit
->> off. KUnit expects 0xfe, but this functions is returning 0xfd.
->>
->> I noticed that before shifting the values to get the 's' bytes the
->> values were a lot close to what is expected, something like:
->>
->> 0xfdfe287312
->>     ^
->> So the rounding part adds 1 to this marked 'f' to round a bit the values
->> (drm_fixed.h does something similar on drm_fixp2int_round).
->> Like that:
->>
->>    0xfdfe287312
->> +  0x0010000000
->>    ------------
->>    0xfe0e287312
->>
->> That's why the BIT_DEPTH - 4.
-> 
-> I have a hard time deciphering this. There is some sort of strange
-> combination of UNORM and fixed-point going on here, where you process
-> the range 0.0 - 255.0 including 32-bit fraction. All variables being
-> named "_16" does not help, I've no idea what that refers to.
-
-Totally forgot to rename that, sorry.
-
-> 
-> Usually when you have unsigned pixel format type, it's UNORM, that is
-> an unsigned integer representation that maps to [0.0, 1.0]. When
-> converting UNORM properly to e.g. fixed-point, you don't have to
-> consider the UNORM bit depth when computing in fixed-point.
-> 
-> There is a catch: since 0xff maps to 1.0, the divisor is 0xff, and not
-> a bit shift by 8. This must be taken into account when converting
-> between different depths of UNORM, or between UNORM and fixed-point.
-> Converting between different depths of fixed-point does not have this
-> problem.
-> 
-> If you want to proper rounding, meaning that 0.5 rounds up to 1.0 and
-> 0.4999 rounds down to 0.0 when rounding to integers, you have to add
-> 0.5 before truncating.
-> 
-> So in this case you need to add 0x0100_0000 / 2 = 0x0080_0000, not
-> 0x0010_0000.
-
-Thanks for the explanations, I will try to take all this into account.
-
-> 
-> I don't understand what drm_fixp2int_round() is even doing. The offset
-> is not 0.5, it's 0.0000076.
-> 
->> After that, the values need to be clamped to not get wrong results when
->> shifting this s64 and casting it to u8. We clamp it to the minimum
->> allowed value: 0, and to the maximum allowed value, which in this case
->> is all the (BIT_DEPTH + 8) bits set to 1, The '+ 8' is to account for
->> the size of the 's' bits.
-> 
-> Ok. You could also shift with >> BIT_DEPTH first, and then clamp to 0,
-> 255.
-
-Great idea! This makes more sense.
-
-Best Regards,
-~Arthur Grillo
-
-> 
-> 
-> Thanks,
-> pq
-> 
->> After writing this, I think that maybe it would be good to add this
->> explanation as a comment on the code.
->>
->>>   
->>>> +
->>>> +	*r = r_16 >> BIT_DEPTH;
->>>> +	*g = g_16 >> BIT_DEPTH;
->>>> +	*b = b_16 >> BIT_DEPTH;
->>>>  }  
+https://people.kernel.org/tglx/notes-about-netiquette
 
