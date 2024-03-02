@@ -1,156 +1,111 @@
-Return-Path: <linux-kernel+bounces-89607-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89608-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D42286F2A1
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 22:55:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A7F486F2A3
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 23:00:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8310F2828F6
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 21:55:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D1031C20986
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 22:00:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 485D243147;
-	Sat,  2 Mar 2024 21:55:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4117544C6B;
+	Sat,  2 Mar 2024 22:00:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CploIfIk"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ewgVKbLY";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="YirNMqNi"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D7D641211;
-	Sat,  2 Mar 2024 21:55:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE80B40C15;
+	Sat,  2 Mar 2024 22:00:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709416504; cv=none; b=mC7NoTSDU+urZcwa8FMg1829+N4UYUy7xTfr1b0sTpE/mMsTvCCDEGDK9dM3XkE+RLDrcNhjpODXYpBJV1DiZ1QVHqan2ZkI30jnq0DG/eoL/l+TulWlx+D6LOvmPeklQLzNLBE7UARd9aVaNG2X8d31V6/q7uT6M8OHFuxYBM4=
+	t=1709416808; cv=none; b=rpsmsw9UgnKG2wMUOG5t9uVLqVRpauNDONbxtCbPHpEHOegtkx+8+ErwrW4j2Ata0nRDU9zC1gKyDb2y/ttD3ZsPPX0Paw0k9bdqllch9Ax8huVgrB3l3H0oFbB9Bqi/apSD9TU1Y5L2UN75xLQEgZ2ekQu32Ut/dYGqqSvQV9Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709416504; c=relaxed/simple;
-	bh=+r4eXVhR3+ABrstefGAz7F5xG813E6/x5+a8CRWLllc=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=KpoUmoZPR6IH7uqWCsEx+KPsUx7Rj9ailj6ojwAr6fsw8eL41+QqAdnIRguHFpmQ9uTfE+WDiy8Y+Dcfb5qNw87HKfZgU5LzDWWNKzClaotEPZq8gd+xdFKFBoZyz7SAYwUGeHkQLltaGadmB0UhSkw3Oirc93HPWh9MO4U0YSc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CploIfIk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97435C433F1;
-	Sat,  2 Mar 2024 21:55:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709416504;
-	bh=+r4eXVhR3+ABrstefGAz7F5xG813E6/x5+a8CRWLllc=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=CploIfIkYMNllumUJd5Fd6jigHRMXKzFPeVPcIQQ+vyyYJvceU4skH76OjezIKH4m
-	 TWIPQRFFWN+l9DmlHKf/jRfHjSnT+Nygl1AWAWtINxMlzsnDu0utL5R+O8zY06rHqK
-	 EOJI56bQQXq4l1/cB8mo3X68ob+Sw8cx7Oqp7+d3zc/n+I0UH0i9YVPQCeRKLeO1RF
-	 SQusxmXZdr/VZT+K7W7TNuVVcmruRs/h7riwUnb9ScaI7P+WMtA1dp3Avb9JU8e4eo
-	 CASg3QIAE1RV8LAFDHheZIsKBPkKfkC8rnMhvZRsz4jGwwaK1GEUhFEExv5ICuOzz+
-	 etbyP37NwPzUA==
+	s=arc-20240116; t=1709416808; c=relaxed/simple;
+	bh=zWKT+oNajnMzt9Fl6KPPxH36WSUCatc6JE36hWWiOck=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=iLp4kRlvD3DZGG4wV1oKXU1Xu+6atJpiaLS4G72MxXeI7yS2RloJjNhm83UEbCXc7mhHW4aPXSb7OVkKcKYTMacZsySolbwoPkey3dN2HYWQZHxjlVjT1n3e8mEszcev8GYZcyJZ7HpwsX0BiLXQ7mBSRfDaWB3N1aL4iZ9VSIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ewgVKbLY; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=YirNMqNi; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1709416804;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=H0/udQZS8D3srIlBNduJy2BLkagOGri68M14lN+zuX8=;
+	b=ewgVKbLYVjkNzCylZSIHHDavRx8w3P41dzwEhb5XOLx9mtrAzCOo98bo0EpJ1dyBGjRe42
+	iYAfqCnOOHxTWcdXiC4Zx/d6bb0NLM2BBvSw6J7bPG76i1HFFV9U37mmN3zikVta3UCr23
+	xcA0svRMG6aJakndl5GwvkBpJVsnAijEjXCicx94vtIFd6MDbAXH2SeCyyuwHD+W0aiGJ6
+	N/XG7IEzTvxn8XDGrokM5wZIKigkDtRdCPPn5zLvjGSiyDwlQHLGqe1m3U4qeDs1uDAsl4
+	mrtwyQU6noY+03mu4VsI25rQ6AV/05SsnYcP4T7iLBnwkFgQw4xzHIbogundyg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1709416804;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=H0/udQZS8D3srIlBNduJy2BLkagOGri68M14lN+zuX8=;
+	b=YirNMqNin/MrKqMpeXOCvdk2XeOLGXb3z8Ioh8EqZIQWch31R99UJ0cGa/BKgJtAsW+FRq
+	k4ETOoiUkjzOQ2Cg==
+To: kernel test robot <lkp@intel.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org, Arjan van
+ de Ven <arjan@linux.intel.com>, x86@kernel.org, Luc Van Oostenryck
+ <luc.vanoostenryck@gmail.com>, Sparse Mailing-list
+ <linux-sparse@vger.kernel.org>
+Subject: Re: arch/x86/include/asm/processor.h:698:16: sparse: sparse:
+ incorrect type in initializer (different address spaces)
+In-Reply-To: <87sf18vdsq.ffs@tglx>
+References: <202403020457.RCJoQ3ts-lkp@intel.com> <87edctwr6y.ffs@tglx>
+ <87a5nhwpus.ffs@tglx> <87y1b0vp8m.ffs@tglx> <87sf18vdsq.ffs@tglx>
+Date: Sat, 02 Mar 2024 23:00:03 +0100
+Message-ID: <87le70uwf0.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Sat, 02 Mar 2024 23:55:00 +0200
-Message-Id: <CZJLKR6WDPJJ.1QMHE8BSHP3UH@suppilovahvero>
-Cc: "Stefan Berger" <stefanb@linux.ibm.com>, <keyrings@vger.kernel.org>,
- <linux-crypto@vger.kernel.org>, <herbert@gondor.apana.org.au>,
- <davem@davemloft.net>, <linux-kernel@vger.kernel.org>,
- <saulo.alessandre@tse.jus.br>
-Subject: Re: [PATCH v3 01/10] crypto: ecdsa - Convert byte arrays with key
- coordinates to digits
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Lukas Wunner" <lukas@wunner.de>
-X-Mailer: aerc 0.15.2
-References: <20240223204149.4055630-1-stefanb@linux.ibm.com>
- <20240223204149.4055630-2-stefanb@linux.ibm.com>
- <20240229091105.GA29363@wunner.de>
- <aabeec7b-618c-4d15-b033-4162b6e54f6a@linux.ibm.com>
- <CZIOY02QS2QC.LV0A0HNT7VKM@suppilovahvero>
- <20240302140001.GA3095@wunner.de>
-In-Reply-To: <20240302140001.GA3095@wunner.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 
-On Sat Mar 2, 2024 at 4:00 PM EET, Lukas Wunner wrote:
-> On Fri, Mar 01, 2024 at 10:26:29PM +0200, Jarkko Sakkinen wrote:
-> > On Thu Feb 29, 2024 at 4:57 PM EET, Stefan Berger wrote:
-> > >
-> > >
-> > > On 2/29/24 04:11, Lukas Wunner wrote:
-> > > > On Fri, Feb 23, 2024 at 03:41:40PM -0500, Stefan Berger wrote:
-> > > >> +static inline void ecc_digits_from_bytes(const u8 *in, unsigned i=
-nt nbytes,
-> > > >> +					 u64 *out, unsigned int ndigits)
-> > > >> +{
-> > > >> +	unsigned int sz =3D ndigits << ECC_DIGITS_TO_BYTES_SHIFT;
-> > > >> +	u8 tmp[ECC_MAX_DIGITS << ECC_DIGITS_TO_BYTES_SHIFT];
-> > > >> +	unsigned int o =3D sz - nbytes;
-> > > >> +
-> > > >> +	memset(tmp, 0, o);
-> > > >> +	memcpy(&tmp[o], in, nbytes);
-> > > >> +	ecc_swap_digits(tmp, out, ndigits);
-> > > >> +}
-> > > >=20
-> > > > Copying the whole key into tmp seems inefficient.  You only need
-> > > > special handling for the first few bytes of "in" (6 bytes in the
-> > > > P521 case) and could use ecc_swap_digits() to convert the rest
-> > > > of "in" directly to "out" without using tmp.
-> > > >=20
-> > > > So it would be sufficient to allocate the first digit on the stack,
-> > > > memset + memcpy, then convert that to native byte order into "in[0]=
-"
-> > > > and use ecc_swap_digits() for the rest.
-> > > >=20
-> > > > And the special handling would be conditional on "!o", so is skippe=
-d
-> > > > for existing curves.
-> > >
-> > > Thanks. It looks like this now:
-> > >
-> > > static inline void ecc_digits_from_bytes(const u8 *in, unsigned int n=
-bytes,
-> > >                                           u64 *out, unsigned int ndig=
-its)
-> > > {
-> > >          unsigned int o =3D nbytes & 7;
-> > >          u64 msd =3D 0;
-> > >          size_t i;
-> > >
-> > >          if (o =3D=3D 0) {
-> > >                  ecc_swap_digits(in, out, ndigits);
-> > >          } else {
-> > >                  for (i =3D 0; i < o; i++)
-> > >                          msd =3D (msd << 8) | in[i];
-> > >                  out[ndigits - 1] =3D msd;
-> > >                  ecc_swap_digits(&in[o], out, ndigits - 1);
-> >=20
-> > This would be more stream-lined IMHO:
-> >=20
-> >         unsigned int o =3D nbytes & 7;
-> >         unsigned int n =3D ndigits;
-> >         u64 msd =3D 0;
-> >         size_t i;
-> >=20
-> >         if (o !=3D 0) {
-> >                 for (i =3D 0; i < o; i++)
-> >                         msd =3D (msd << 8) | in[i];
-> >=20
-> >                 out[--n] =3D msd;
-> >         }
-> >=20
-> >         ecc_swap_digits(in, out, n);
+On Sat, Mar 02 2024 at 16:44, Thomas Gleixner wrote:
+> On Sat, Mar 02 2024 at 12:37, Thomas Gleixner wrote:
+> The below addresses _all_ percpu related sparse warnings except
+> the ones in arch/x86/cpu/bugs.o but that's a sparse problem:
 >
-> Maybe eliminate the for-loop as well?
+>    The following is handled correctly:
 >
-> 	unsigned int o =3D nbytes & 7;
-> 	u64 msd =3D 0;
+> 	DECLARE_PER_CPU(u64, foo);
+> 	this_cpu_read(foo);
 >
-> 	if (o !=3D 0) {
-> 		/* if key length is not a multiple of 64 bits (NIST P521) */
-> 		memcpy((u8 *)&msd + sizeof(msd) - o, in, o);
-> 		out[--ndigits] =3D be64_to_cpu(msd);
-> 		in +=3D o;
-> 	}
+>    But this is not:
 >
-> 	ecc_swap_digits(in, out, ndigits);
+> 	DECLARE_PER_CPU(u64, foo);
+> 	DEFINE_PER_CPU(u64, foo);
+> 	this_cpu_read(foo);
+>
+> arch/x86/kernel/cpu/bugs.c:71:9: sparse: warning: incorrect type in initializer (different address spaces)
+> arch/x86/kernel/cpu/bugs.c:71:9: sparse:    expected void const [noderef] __percpu *__vpp_verify
+> arch/x86/kernel/cpu/bugs.c:71:9: sparse:    got unsigned long long *
+>
+> Commenting out the DEFINE_PER_CPU(u64, x86_spec_ctrl_current) in that
+> file makes sparse happy, but that's obviously not a solution :)
 
-+1
+Correction. I found the real issue:
 
-BR, Jarkko
+DEFINE_PER_CPU(u64, x86_spec_ctrl_current);
+EXPORT_SYMBOL_GPL(x86_spec_ctrl_current);
+
+I had commented out both. But the real reason is the EXPORT_SYMBOL,
+which obviously wants to be EXPORT_PER_CPU_SYMBOL_GPL...
+
+So sparse was right. Nothing to see here.
+
+Thanks,
+
+        tglx
+
 
