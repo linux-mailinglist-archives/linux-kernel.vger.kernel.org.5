@@ -1,179 +1,115 @@
-Return-Path: <linux-kernel+bounces-89339-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89340-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40EBA86EEFA
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 07:42:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E078986EEFB
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 07:44:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B7401C21ACC
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 06:42:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9CD10283824
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 06:44:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B846101E8;
-	Sat,  2 Mar 2024 06:42:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dFAJcLZs"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D576111724;
+	Sat,  2 Mar 2024 06:44:04 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C154E10A29;
-	Sat,  2 Mar 2024 06:42:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7910C11711
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 06:44:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709361755; cv=none; b=Gw41KfWOnn3RsgttwsyFtC8XoLamh1QNHvHRq8DIF/RcHnzCG9MqkOwJjDdxc2M47CBq9eVFZv5FqQaDgRnCoSsYuxVts9S6fWj9cGcAi4HoXhWH0UwxYFGnmuwP6WtOeD6cqLXPZ00xMK87NrtwOuSGM15vI8tH4+7c23+fHwg=
+	t=1709361844; cv=none; b=n6SfngA6yBpcKJ46t+WZU7OdM4bCuITPGlpVCRi1P4S8mnFICl0PagrZF1kgulkOd/kQ5II82qD8YAXM5iPLa9WQ5tCppeYa/XO7MiZ8LIGJxbfv8+VGOwoA3gKSyetXdqqX+Uw2clJihBXAxmTLMgaS8fjSPDj8zMQrdoyCD8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709361755; c=relaxed/simple;
-	bh=WOrN/31hQS95FJ2zZMbYPpH4RM3lD/JLzm3qpLPy3YU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CmF6DVcHu+wLHjby3aXfy1H89b49HkpQoNQSe4b6J9IKt6AXVn6BSaiimYaizs3P3WH/TMk+9e2SHDWIm9yXB4XQkIH+Jg05peBOSrcFLkKxjL6IZSvuXWfvGlGFdi4Ch6gGpIgTvnjUlNjjo+35EaicKX5lHB7UJr8LBW7WBK0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dFAJcLZs; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709361754; x=1740897754;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=WOrN/31hQS95FJ2zZMbYPpH4RM3lD/JLzm3qpLPy3YU=;
-  b=dFAJcLZsYWYRse+R69Cn6VxPlAVLYryvA66cvUUC1kUrWo65qM7sJ3p1
-   Psj3un2HvZ3OKrU0KFzdQYcF+L+Zddd2RYf+FFfGlRJOqBAuKon27+Z55
-   V/5h1MhXjSsoBFKyRlJ9D8m/XZ/RWSny1xKwuXZCqTKs35DrwYFDwMbjx
-   CBtjvkTQ0xDGqBAX4etznJfhiziL0e1v9NECa8d+fDdoi7N9E7vGhzDfZ
-   WtP/hI1tI4ch7ClcxX8p0yKfeKnrVA0vTajSlNtHzEMJYdDR9JvxChI8H
-   zPzmD5z1Zdfe0RBx0SonXq5ve9nFYin5idsK8/ZDSc1so9CTNISaHKAKT
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11000"; a="3839789"
-X-IronPort-AV: E=Sophos;i="6.06,199,1705392000"; 
-   d="scan'208";a="3839789"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 22:42:34 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,199,1705392000"; 
-   d="scan'208";a="39423969"
-Received: from doney-mobl.amr.corp.intel.com (HELO [10.209.53.18]) ([10.209.53.18])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 22:42:32 -0800
-Message-ID: <18564c1f-f676-4cb8-9549-a9b87f853a3e@linux.intel.com>
-Date: Fri, 1 Mar 2024 22:42:31 -0800
+	s=arc-20240116; t=1709361844; c=relaxed/simple;
+	bh=lgkmANJ9GjhUxs6fepVIKeywrq1p1C99rLUgiB21uuo=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=CYCdid48+mpqzeBKEcYJAbSnLuhslr2S4s++Mf+F1IFITfMmE3j3KOkzHizEGtHs5wsxrkImXYrD5iLnKDh72CsuCYCbF4r9JCYJ1IlIB2/LuuYHt1bWjNXCS5g8ZHqyBi8qUEb12xMCUDjGY4rj1zY924LE+WVGoAcr7gqKSy0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TmwQx31LTz1FLPf;
+	Sat,  2 Mar 2024 14:43:53 +0800 (CST)
+Received: from dggpemm100001.china.huawei.com (unknown [7.185.36.93])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0BFFB140120;
+	Sat,  2 Mar 2024 14:43:57 +0800 (CST)
+Received: from localhost.localdomain (10.175.112.125) by
+ dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Sat, 2 Mar 2024 14:43:56 +0800
+From: Kefeng Wang <wangkefeng.wang@huawei.com>
+To: Andrew Morton <akpm@linux-foundation.org>, <linux-kernel@vger.kernel.org>
+CC: <linux-mm@kvack.org>, Lorenzo Stoakes <lstoakes@gmail.com>, Kefeng Wang
+	<wangkefeng.wang@huawei.com>, Yue Sun <samsun1006219@gmail.com>
+Subject: [PATCH] mm: memory: fix shift-out-of-bounds in fault_around_bytes_set
+Date: Sat, 2 Mar 2024 14:43:12 +0800
+Message-ID: <20240302064312.2358924-1-wangkefeng.wang@huawei.com>
+X-Mailer: git-send-email 2.27.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/3] PCI/DPC: Remove CONFIG_PCIE_EDR
-Content-Language: en-US
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
- Matthew W Carlis <mattc@purestorage.com>, Keith Busch <kbusch@kernel.org>,
- Lukas Wunner <lukas@wunner.de>,
- Mika Westerberg <mika.westerberg@linux.intel.com>,
- Jesse Brandeburg <jesse.brandeburg@intel.com>,
- Bjorn Helgaas <bhelgaas@google.com>
-References: <20240301230604.GA368825@bhelgaas>
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20240301230604.GA368825@bhelgaas>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm100001.china.huawei.com (7.185.36.93)
 
+The rounddown_pow_of_two(0) is undefined, so val = 0 is not allowed in
+the fault_around_bytes_set(), and leads to shift-out-of-bounds,
 
-On 3/1/24 3:06 PM, Bjorn Helgaas wrote:
-> On Sun, Feb 25, 2024 at 12:05:12PM -0800, Kuppuswamy Sathyanarayanan wrote:
->> On 2/22/24 2:15 PM, Bjorn Helgaas wrote:
->>> From: Bjorn Helgaas <bhelgaas@google.com>
->>>
->>> Previous Kconfig allowed the possibility of enabling CONFIG_PCIE_DPC
->>> without CONFIG_PCIE_EDR.  The PCI Firmware Spec, r3.3, sec 4.5.1,
->>> table 4-5, says an ACPI OS that requests control of DPC must also
->>> advertise support for EDR.
->>>
->>> Remove CONFIG_PCIE_EDR and enable the EDR code with CONFIG_PCIE_DPC so that
->>> enabling DPC also enables EDR for ACPI systems.  Since EDR is an ACPI
->>> feature, build edr.o only when CONFIG_ACPI is enabled.  Stubs cover the
->>> case when DPC is enabled without ACPI.
->>>
->>> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
->>> ---
->>>  drivers/acpi/pci_root.c   |  2 +-
->>>  drivers/pci/pcie/Kconfig  | 14 ++++----------
->>>  drivers/pci/pcie/Makefile |  5 ++++-
->>>  drivers/pci/pcie/dpc.c    | 10 ----------
->>>  include/linux/pci-acpi.h  |  4 ++--
->>>  5 files changed, 11 insertions(+), 24 deletions(-)
->>>
->>> diff --git a/drivers/acpi/pci_root.c b/drivers/acpi/pci_root.c
->>> index efc292b6214e..bcaf3d3a5e05 100644
->>> --- a/drivers/acpi/pci_root.c
->>> +++ b/drivers/acpi/pci_root.c
->>> @@ -448,7 +448,7 @@ static u32 calculate_support(void)
->>>  		support |= OSC_PCI_ASPM_SUPPORT | OSC_PCI_CLOCK_PM_SUPPORT;
->>>  	if (pci_msi_enabled())
->>>  		support |= OSC_PCI_MSI_SUPPORT;
->>> -	if (IS_ENABLED(CONFIG_PCIE_EDR))
->>> +	if (IS_ENABLED(CONFIG_PCIE_DPC))	/* DPC => EDR support */
->>>  		support |= OSC_PCI_EDR_SUPPORT;
->> Since EDR internally touches AER registers, I still think we should
->> make sure OS enables AER support before advertising the EDR support.
-> I guess you're suggesting that we should make it look like this?
->
->   if (host_bridge->native_aer && IS_ENABLED(CONFIG_PCIE_DPC))
->
-> That doesn't seem right to me because the implementation note in PCI
-> Firmware r3.3, sec 4.6.12, shows the EDR flow when firmware maintains
-> control of AER and DPC, i.e., "host_bridge->native_aer" would be
-> false.
+UBSAN: shift-out-of-bounds in include/linux/log2.h:67:13
+shift exponent 4294967295 is too large for 64-bit type 'long unsigned int'
+CPU: 7 PID: 107 Comm: sh Not tainted 6.8.0-rc6-next-20240301 #294
+Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0 02/06/2015
+Call trace:
+ dump_backtrace+0x94/0xec
+ show_stack+0x18/0x24
+ dump_stack_lvl+0x78/0x90
+ dump_stack+0x18/0x24
+ ubsan_epilogue+0x10/0x44
+ __ubsan_handle_shift_out_of_bounds+0x98/0x134
+ fault_around_bytes_set+0xa4/0xb0
+ simple_attr_write_xsigned.isra.0+0xe4/0x1ac
+ simple_attr_write+0x18/0x24
+ debugfs_attr_write+0x4c/0x98
+ vfs_write+0xd0/0x4b0
+ ksys_write+0x6c/0xfc
+ __arm64_sys_write+0x1c/0x28
+ invoke_syscall+0x44/0x104
+ el0_svc_common.constprop.0+0x40/0xe0
+ do_el0_svc+0x1c/0x28
+ el0_svc+0x34/0xdc
+ el0t_64_sync_handler+0xc0/0xc4
+ el0t_64_sync+0x190/0x194
+---[ end trace ]---
 
-No, my idea is to check for something like below:
+Fix it by setting the minimum val to PAGE_SIZE.
 
-if (IS_ENABLED(CONFIG_PCIEAER) && IS_ENABLED(CONFIG_PCIE_DPC)) or if (pci_aer_available() && IS_ENABLED(CONFIG_PCIE_DPC) to ensure AER is not disabled by noaer command line option. Since EDR handler depends on AER routines (like pci_aer_raw_clear_status()) to |clear AER registers, we need to ensure AER is enabled in kernel before advertising suppor for EDR.
+Reported-by: Yue Sun <samsun1006219@gmail.com>
+Closes: https://lore.kernel.org/all/CAEkJfYPim6DQqW1GqCiHLdh2-eweqk1fGyXqs3JM+8e1qGge8w@mail.gmail.com/
+Fixes: 53d36a56d8c4 ("mm: prefer fault_around_pages to fault_around_bytes")
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+---
+ mm/memory.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-
->
->>>  	return support;
->>> diff --git a/drivers/pci/pcie/Kconfig b/drivers/pci/pcie/Kconfig
->>> index 8999fcebde6a..21e98289fbe9 100644
->>> --- a/drivers/pci/pcie/Kconfig
->>> +++ b/drivers/pci/pcie/Kconfig
->>> @@ -137,6 +137,10 @@ config PCIE_DPC
->>>  	  have this capability or you do not want to use this feature,
->>>  	  it is safe to answer N.
->>>  
->>> +	  On ACPI systems, this includes Error Disconnect Recover support,
->>> +	  the hybrid model that uses both firmware and OS to implement DPC,
->>> +	  as specified in the PCI Firmware Specification r3.3.
->> Nit: Include some section reference?
-> I basically copied this from the PCIE_EDR help and updated the
-> revision number.  But I don't think the firmware spec is a very good
-> reference because EDR is defined by ACPI.  There's very little text in
-> the ACPI spec about EDR, but the firmware spec does assume you know
-> what *is* there.  And the ACPI spec is available to anybody, unlike
-> the PCI firmware spec.
->
-> +         On ACPI systems, this includes Error Disconnect Recover support,
-> +         the hybrid model that uses both firmware and OS to implement DPC,
-> +         as specified in ACPI r6.5, sec 5.6.6.
->
->>>  config PCIE_PTM
->>>  	bool "PCI Express Precision Time Measurement support"
->>>  	help
->>> @@ -145,13 +149,3 @@ config PCIE_PTM
->>>  
->>>  	  This is only useful if you have devices that support PTM, but it
->>>  	  is safe to enable even if you don't.
->>> -
->>> -config PCIE_EDR
->>> -	bool "PCI Express Error Disconnect Recover support"
->>> -	depends on PCIE_DPC && ACPI
->>> -	help
->>> -	  This option adds Error Disconnect Recover support as specified
->>> -	  in the Downstream Port Containment Related Enhancements ECN to
->>> -	  the PCI Firmware Specification r3.2.  Enable this if you want to
->>> -	  support hybrid DPC model which uses both firmware and OS to
->>> -	  implement DPC.
-
+diff --git a/mm/memory.c b/mm/memory.c
+index abd4f33d62c9..e17669d4f72f 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -4776,7 +4776,8 @@ static int fault_around_bytes_set(void *data, u64 val)
+ 	 * The minimum value is 1 page, however this results in no fault-around
+ 	 * at all. See should_fault_around().
+ 	 */
+-	fault_around_pages = max(rounddown_pow_of_two(val) >> PAGE_SHIFT, 1UL);
++	val = max(val, PAGE_SIZE);
++	fault_around_pages = rounddown_pow_of_two(val) >> PAGE_SHIFT;
+ 
+ 	return 0;
+ }
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+2.27.0
 
 
