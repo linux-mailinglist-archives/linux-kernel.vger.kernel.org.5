@@ -1,194 +1,196 @@
-Return-Path: <linux-kernel+bounces-89514-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89515-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0C4C86F16A
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 17:48:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D80BB86F16B
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 17:48:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF9B628320E
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 16:47:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63EE0283183
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 16:48:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A4A22BB10;
-	Sat,  2 Mar 2024 16:47:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01E902BB13;
+	Sat,  2 Mar 2024 16:47:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="Upd2qR4P"
-Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="gRgoImfW"
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2077.outbound.protection.outlook.com [40.107.6.77])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EBB222F14;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1991422F0D;
 	Sat,  2 Mar 2024 16:47:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.49
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709398053; cv=none; b=LVJKcvtkbu9oROr7PokWUqwoCMKMZ3BBA+wQrWHus+C20td9mQQIUp19e1TzSpM6u6nAsvFSS2QVFWNCIHCPaNDs9g5YhWStFUHYHa1Y8EGeIaEtln9uei0mnkJu85yUu73G0Hxa6y7GvSqyxMHDLd9ZYD1u2/M9thauy4nnDGI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709398053; c=relaxed/simple;
-	bh=5fFFl+NQvKIKgg15BuOC5SNCW60DHjH9gv71w7SxkWk=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=aMob70jiD+wUvBJgQ0n3BeFBDNe7wC1Hg1KbPxTo5YmIY2Yo9uRSZrhddkQNnPwlrqvlYD3xOiGf0spmNEfGBGICpasNp1lrj/IMK6FlTtka3q5D7w8TG94Y9dEqsuRKUq5xzWCzW9VcZ3Lt8R14GoiedbiIwEkFXZCCGuQG5CQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=Upd2qR4P; arc=none smtp.client-ip=209.85.166.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7c835b36e9dso16845139f.3;
-        Sat, 02 Mar 2024 08:47:31 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709398051; x=1710002851;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:dkim-signature:from:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VKp49xShFivIZ3FSVYH7CTAL/TfZjGtj5hihj2WnRpY=;
-        b=UWLMp9nGZQYzpvdMM2zyrpkrh88U19TZuTxk0yFUgMj5sILuztkui34zbgg0IB/SgY
-         p1JP2+OLgoiSGEnyIpNvfDsolPx2pkdKvcfuiTagQlF8uLLEwHXE98HDGumosyQUvllp
-         IX7Jt4dNRJ5Az2sKLRAjmmaRH+c7OOyl7cEb148gNKkxEC8pWuC7QY4lHN7SyuvrtBXb
-         jxwIvvOeTt3jtqMDnSrtDRr9xCLUcF6HRviKssYw7/PkRVMK00I8WZFSTb2Q/Tewgift
-         5x9aVfTJwiZ/g2Tri/fjrpUZ5VD7C/0Uxh2Tcu3tPwyeAfe8DlZ/cp4BbRIexOhCH9Uy
-         E4Fg==
-X-Forwarded-Encrypted: i=1; AJvYcCW5meGs67klaA8A3kRy+eTnFtR61LAazBbXLzybeintVxp/quxtdpSbRgo0uxtw2W3+NLmuDXekfkF/PifqhuQLy8HK3gbhD4O32l93
-X-Gm-Message-State: AOJu0YzHJLi2s0lfiLf7VnRtbVR1JvYVvGBY28QTaodD0KJRJKUPejrC
-	Gx1U6ajZ1zZj/xxhk9KAxmQ2zwltGuj2SsdSWq1pZBEpiSnWn+iV
-X-Google-Smtp-Source: AGHT+IEp2RDU3Zd9t11xhj78W40lqahskTWojefoSXhk8+kyTEU8UOQRJGdPPdJy8RDxESofWyUcjA==
-X-Received: by 2002:a5e:c702:0:b0:7c8:2bb3:ebb4 with SMTP id f2-20020a5ec702000000b007c82bb3ebb4mr3145859iop.6.1709398051264;
-        Sat, 02 Mar 2024 08:47:31 -0800 (PST)
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id g10-20020a02b70a000000b00474558a20a3sm1385930jam.140.2024.03.02.08.47.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Mar 2024 08:47:30 -0800 (PST)
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1709398049;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VKp49xShFivIZ3FSVYH7CTAL/TfZjGtj5hihj2WnRpY=;
-	b=Upd2qR4Pnm++Aph61tfJnBVo5fGiwg5YIqJqx+nygIMq2XZlIGT7HHyUKX/6BPfTaywNNR
-	MqpdPzIGwPHCi+mRGFMtdtnuFR2SFSDq5iGla+YzDcnukgQRlKv950pbHLJsR7LA/No6QP
-	jFJJL2iavDe/DvHMSuGkGrRspFOmCljLMAEstqoK5/4vwpWPssbL1KdVJkdCikYnvQu0Ay
-	ZX1MAK5FEMoliNEOzOcBo/xyyNGlI0mwJ7WST+hwnYu5vsdnTIcHXJypJSQmijWiv7D9xS
-	mURMKfnDKEAEEc3mFgL6h4eF8IhFxWlyDtd8W57W4WdIi+jSAcs5kF9mrabN9g==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Sat, 02 Mar 2024 13:47:22 -0300
-Subject: [PATCH 1/5] scsi: sg: make sg_sysfs_class constant
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.6.77
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709398054; cv=fail; b=CwhvM7Lj3f/JTg7Cz4fBZQQRlF7MVRLpLKiLWulT8QLDi8Yjfw4yqkthB7R3jMYlf6K14rMDqSfgKk90htJYQQF/0DG9gJgw4h4MaWtU0/OA/z5nAfpkzktwX7ZW6FGAxG206D2tc3qTWlIJSkQ4gLhKGT6ANlzBq3s+eK2IuU4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709398054; c=relaxed/simple;
+	bh=YNqgsgdJaGIjc5HGvVaaIsctI2PDohhUrI1s8ZEfWEU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=lppMt0dcFchfZSj42R1mt0d7ptlq/kaW6bbKezWoVGLs3q8QWPGISTzNqGN+48AdAE6AFwtjPJm7xEntaYg9mYw4w220h5YUZQRncTdYGQlD+VwwQaROifWCqTvl3LQzL2xee5qf4it2mQ+Lz/0srUUl4C1K8BlNj6La9kbCOBk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=gRgoImfW; arc=fail smtp.client-ip=40.107.6.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eLH4Eww6RsTnTJseSxPxr/KeBMJyGqn09AC2kviQkgR2WxdpYVqpLCvJfpYs2wsOP2EdZPtZ1+Rx8egWibvhInqisnqAf42iL5tw6lCkwNILIe3t4NbVr0OCD8hcB9j/XnUC6NZKf83+APWBIpzq8gG59gvWzcxq4AnuD1Mopqrop9w9WfSQMV+8DKveadKacVb9KXPfYkZnKTViqZcffsF84SiBx+VfZxQWUeQxkqQB4VBCnW1irD241gCdBSK2OoszAX6ImU7UXRuyz3VnuSODwh7TzFfMgBwVCTyxDLVLrepg3LtbpV3obqaWz12P01TulwEzA5V5+bd5O3A8Bw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KgW/qoL6g24dEqlgq99jl3UBJgS7x6x4PL2921EJrH4=;
+ b=Ach62UIvEwqekVz7UhY5cAH5u64qa+ZtR1cuLeOaUYKVvTZp5vjRLBhH7CAOVWE5M2sai24XcAOY3aIk+lQLXMPwg0i+QVaB1VIIyf6Ibr078novnU3AQlhdxttwevbA5yaxBHOM12PlO4n77YAaPwimmoDYEdtjw4uHaSo4UYI5tND3oaj0I9leuA1NjFK3DDB5y/285r4vO+3MzNSkNj5ka7SF74PnvplT544w4s9n3dUXtcIhqYpe3LNl3zKDeMISYXlnyOztpQCuU4q7d9l0b+AL4X721rhWF2INCATpdLnCc0mseh3q8iRYCGTi4w3hyh7/cRDJGZXMIKgUHg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KgW/qoL6g24dEqlgq99jl3UBJgS7x6x4PL2921EJrH4=;
+ b=gRgoImfWFPaoW5Ah4Ph6RXdjv8O2iSDEsF2IykGf1X8kGry6nFrW1F+zy2yIAucNksNYh/8RvgnDupQHScir22hSjqcSW5Ibp8Lqux7R2BomRyGd81a6XgvCtyrXKAg+HiRFJiC1P+YkaNDuvQ3gy3cfyjfwd5CkBxOIaFg2R2M=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by PA4PR04MB9638.eurprd04.prod.outlook.com (2603:10a6:102:273::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.37; Sat, 2 Mar
+ 2024 16:47:28 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6%3]) with mapi id 15.20.7339.033; Sat, 2 Mar 2024
+ 16:47:28 +0000
+Date: Sat, 2 Mar 2024 11:47:23 -0500
+From: Frank Li <Frank.li@nxp.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: conor+dt@kernel.org, devicetree@vger.kernel.org,
+	dmaengine@vger.kernel.org, imx@lists.linux.dev,
+	krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
+	peng.fan@nxp.com, robh@kernel.org, vkoul@kernel.org
+Subject: Re: [PATCH v2 2/2] dt-bindings: dma: fsl-edma: allow 'power-domains'
+ property
+Message-ID: <ZeNYG1IUfniWkhcp@lizhi-Precision-Tower-5810>
+References: <20240301214536.958869-1-Frank.Li@nxp.com>
+ <20240301214536.958869-2-Frank.Li@nxp.com>
+ <885501b5-0364-48bd-bc1d-3bc486d1b4c6@linaro.org>
+ <ZeNI1nG1dmbwOqbb@lizhi-Precision-Tower-5810>
+ <31e62acf-d605-4786-80a1-df52c8490913@linaro.org>
+ <ZeNWXxzFBzNj0gM1@lizhi-Precision-Tower-5810>
+ <e1d0aafe-e54f-4331-8505-135b9a8f9bff@linaro.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e1d0aafe-e54f-4331-8505-135b9a8f9bff@linaro.org>
+X-ClientProxiedBy: SA1P222CA0090.NAMP222.PROD.OUTLOOK.COM
+ (2603:10b6:806:35e::22) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240302-class_cleanup-scsi-v1-1-b9096b990e27@marliere.net>
-References: <20240302-class_cleanup-scsi-v1-0-b9096b990e27@marliere.net>
-In-Reply-To: <20240302-class_cleanup-scsi-v1-0-b9096b990e27@marliere.net>
-To: Doug Gilbert <dgilbert@interlog.com>, 
- "James E.J. Bottomley" <jejb@linux.ibm.com>, 
- "Martin K. Petersen" <martin.petersen@oracle.com>, 
- "Manoj N. Kumar" <manoj@linux.ibm.com>, 
- "Matthew R. Ochs" <mrochs@linux.ibm.com>, 
- Uma Krishnan <ukrishn@linux.ibm.com>, 
- =?utf-8?q?Kai_M=C3=A4kisara?= <Kai.Makisara@kolumbus.fi>
-Cc: linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2750; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=5fFFl+NQvKIKgg15BuOC5SNCW60DHjH9gv71w7SxkWk=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl41gcO4omM5O9dpvOdRQNcf0ToXQGw1Slh668i
- 1BBGJ1CLI+JAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZeNYHAAKCRDJC4p8Y4ZY
- pkfFEACCudsWo/MlDFnP2LfTWScW1Wxiezy5M1HYiFJB72XHRkqW9Ih8+tJdSV0q3G/aNhFtDlL
- nYjrXoxe/dwTMZbMZq8ryWsy4S1B7ubqN8OlfyWMe/agHgguYY/NiuGBaZGFaOeINChw1oJo+2/
- t/Gk4ki7BYwfHh5TYuJPYxkjNyJsszsZiU/uNNg0itso0u4I46AqU3tnqJYCz051k+wcuylxEiN
- 4YnSVUc3tezYRscFAhmKgZo6uOQev/h/V82teVD7eShaIiifMetP6IrxjRfkIgl6dEsD+yzWsVB
- mfR+tEIWZa/rZqCp5BXeXMLB4TV4A/jpH26Q5z/N/XMuMxuidZePw8Nv/k1Ja+PGGS2eZJpUipi
- g7opERg54T02As/Rqjb0mK6GiqWUj3MOa/vfYLx5raPBpSEzQsNItqpPBDgytSXsWTyFQGm4Kqv
- RcNIkXcmUIKhs8wbx8C9YMU43liBagiTHicukYgr2WkjKs2tk91f6MvVLSirq6EsS71+vsxKa2J
- MxzfLRInj5j6c8UeMMhCOIlKFd3a28593zLZO7lbWd5xDoFHlWeqqsIGHZFPcZko86CpUk3myhg
- GZmPb5JTxAOSrGoOqbd1bgU6IgFcUfZBOzushN8tylwA0I5lcrUQHfBLQkWe8x+Jc8kA3pVSTkk
- I323B26ftPh/ZYQ==
-X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|PA4PR04MB9638:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4b7cf3ba-162f-49e3-14de-08dc3ad87255
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	KAWa+1T4JY1vz5JfKVFXM4WvPH3Y4Qi+3t3LgmapdrmB3APF30Mb/RDB9fNkTzhjrYUNzX0y2hh6bkysZ6X1fY5TmeUSRp+bv6qDetIoPcV8jeXCsrEuPVWlTNJsAZt9ePodv3N1tLKP81Gsqx3to5iUYttqeqeIyWa3HvcKpvr27KSSM3xXO2RsBDUaFDYThBkcMfd1jUk4XGxf8SqFpoeC3kgifC1zkIQb82Y4sBdEoIwraYQE4UtUmvGhzf1EAxhXiBPwjKYzmR2QSyYwPDD5TgOEvQjAwR3L3WbPbCk8wrbsekf/dERlW0QlETOtzhTY/G1uvEgB4Zy810/T5gP5D3LCHRv/74tkU9fNU3pbBouP6LGBOKdN38sc3dQFPZ+EN0R4U9m2uEI0kVSKe9cufErl99F7BI1+/7T7ap1QEF0X5JCmA0+qaJCTfPBl7wv17kLEHOZUCOdkrt6VWp5LwoJlDdAnywXUSaKUoouojKlcrG5cX/SmVV0g3/Qzezp2GdXp46uFsAgztUk0KWufIFJOoDT2zrmi8FAqNrlFf3TyfTWUyKHZjIr6rZ+kb4i6PV8H9FbOp3HPfRcR622JCsKDNxxsdwioTX/yFlFFV8hOHnDcIA1Kqcy52ALGZy22E5V6j7mnGjmjqbugoYShFvCbvD2O0kE77fvIq/pAt9hwspEI0iQeFZgVGEFHqKLcz1n29VcyMthvAjPz9g==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?fnwftEcSHsFCm+96hnmZ85eQ+jDoRgN+48xZ0ZAHhQTFjoYAGd5JvK8XPnTl?=
+ =?us-ascii?Q?kJyfZiELcjdyBwZLUX51DMkUzEmeJnfpl69WQRdZBo7BRxfh+BlE43XCDsoQ?=
+ =?us-ascii?Q?Qf5rDjqRVsv4JAw5Tt/T5kaOnfiWxxtSpEa7w1eeHq6ydxRbgA42Lb2mOebg?=
+ =?us-ascii?Q?NHkvsLKl+17qiz8ULVNx0p6/UfhzQ6PbgLuZZPXQy5xL6W2dV6iPbpyjUY7U?=
+ =?us-ascii?Q?8PRJw4X+W4PKsFyGr95W9FajMtBOrcXYjc7RU+HiTohzh54kxOSeThlXp0+o?=
+ =?us-ascii?Q?PrVCrYiuBNBil573bREEmVSEphZ96QQv5JCfJK4ksdYemDdYXRmdJ7Mx4o2A?=
+ =?us-ascii?Q?5mjJSp0eNrKIFE11/oR4AAtoDW2fSy5it75OL/CL3Kvf9kXKzczLhOUsIL45?=
+ =?us-ascii?Q?BV6+B8b5vpn1aY1HwAL9QKat1/ohdQxh2M7W3HGAIDBHcf4rRc24nDM6NEAR?=
+ =?us-ascii?Q?qGuNzj4Hhr+kWjFF3ToQRu4L1HFvfpFxK8l1F64smPbLnlzOCWwr+amZ/WJd?=
+ =?us-ascii?Q?SBfVOHQEp5apHt3HSG9kKALV+rONp3s3ObYHMjr7tyT5eiagyYZKxTCnlD4A?=
+ =?us-ascii?Q?vrLhD+e4vV1MAJHYmdBDaqqkCfK/x6n/I8G6GsfmGATXEHAdoUbwSBI0Ozsi?=
+ =?us-ascii?Q?wwv2uPUZi2a38bwgIGR4VBpjgbgxYDMpqDqqluKewZmA4OYlK/wby4zPFQRO?=
+ =?us-ascii?Q?7MWyi/WpAhEODdci5hNlJHW4V26iMv2jP8g+rAuVxMFKnayZtCEjnwkNkZze?=
+ =?us-ascii?Q?Vr+VgRfcaRLsB+FtNohFcb+FwNGUuoo0iE7M9Z7PdDMQjiNYDgz8ehpZHRmU?=
+ =?us-ascii?Q?nHusBS/H+m39V/5DMgSCEQCFTH1pu3GJpbwRad1x/S2sUmxiS8rbis323J0J?=
+ =?us-ascii?Q?BJo6JQ8LIwxQoxhy0WYAYJEP7CVq9CNEfKUXUAVAFA72DmeAAZ8nsc55/Sjc?=
+ =?us-ascii?Q?sywibICEcTbD78VK5FvZrJ5igIgRQU1nEa6FXrotbXdwmp1RcwYM89vd9VWz?=
+ =?us-ascii?Q?xOO/hz1fMFU8o7uWZQWIfMYUTiuI/DIOrbFb8Y9hUpLxO4afILlo2qpjdKL0?=
+ =?us-ascii?Q?yAgXxcr9Fiyy7AdW9P/qFRxe/Gz4+8XpoPHruN84IUPtGAHxpGivtFLrXK04?=
+ =?us-ascii?Q?eO12Bax0LZ16UEIQvYsh2J0Qh1gJIonanyjwDwi+8vZqx2I24OxYB315kd2G?=
+ =?us-ascii?Q?hEC7FKO6N5a5/ku6GaLZ5zx0QmTN3yyzswHgnrlyq89HMDSQRPkeRgOAm/7O?=
+ =?us-ascii?Q?TQBnFG0UcMga7j+nSqZQib+Fujgy7LZaL+nf1lY6LxvsZOd9oFApZPAPweID?=
+ =?us-ascii?Q?4vQhdkAbA9BZhgp6soTWs7Z1SVqnZiPaq7hQywANgQ0NpXJfDma4us+TdsAT?=
+ =?us-ascii?Q?W9vp+yvez9fLGxCFLxfAJn9dKJ87GEbNuXtEdHPABkDoi6ttGbhT5c2KatHF?=
+ =?us-ascii?Q?oxrnQYWHLsPoPYhaNwwHgm+lJsg1RapkijVEjUCGi+LT5qvt/PLG7uuvO9X7?=
+ =?us-ascii?Q?2TpdsP2Eq+czpP2FZljYpeqcnqWxixvjQdi4b8iO85KwUysa51883PQc9yLI?=
+ =?us-ascii?Q?SkIP9S7RkIrLcvgVoErqmgZ3HQ0LxNtums2jMNUi?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4b7cf3ba-162f-49e3-14de-08dc3ad87255
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Mar 2024 16:47:28.6768
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lkQGvqsrIpBy6CVSNd97MpHihEXNFdb1nHHzf36od2wX1uKfOJ+P4UwMw21Zxs1sOHSDIZLUIb3rLKmaYxk/mg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB9638
 
-Since commit 43a7206b0963 ("driver core: class: make class_register() take
-a const *"), the driver core allows for struct class to be in read-only
-memory, so move the sg_sysfs_class structure to be declared at build time
-placing it into read-only memory, instead of having to be dynamically
-allocated at boot time.
+On Sat, Mar 02, 2024 at 05:43:01PM +0100, Krzysztof Kozlowski wrote:
+> On 02/03/2024 17:39, Frank Li wrote:
+> > On Sat, Mar 02, 2024 at 05:20:42PM +0100, Krzysztof Kozlowski wrote:
+> >> On 02/03/2024 16:42, Frank Li wrote:
+> >>> On Sat, Mar 02, 2024 at 02:59:39PM +0100, Krzysztof Kozlowski wrote:
+> >>>> On 01/03/2024 22:45, Frank Li wrote:
+> >>>>> Allow 'power-domains' property because i.MX8DXL i.MX8QM and i.MX8QXP need
+> >>>>> it.
+> >>>>>
+> >>>>> Fixed below DTB_CHECK warning:
+> >>>>>   dma-controller@599f0000: Unevaluated properties are not allowed ('power-domains' was unexpected)
+> >>>>>
+> >>>>> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> >>>>> ---
+> >>>>>
+> >>>>> Notes:
+> >>>>>     Change from v1 to v2
+> >>>>>     - using maxitem: 64. Each channel have one power domain. Max 64 dmachannel.
+> >>>>>     - add power-domains to 'required' when compatible string is fsl,imx8qm-adma
+> >>>>>     or fsl,imx8qm-edma
+> >>>>>
+> >>>>>  .../devicetree/bindings/dma/fsl,edma.yaml         | 15 +++++++++++++++
+> >>>>>  1 file changed, 15 insertions(+)
+> >>>>>
+> >>>>> diff --git a/Documentation/devicetree/bindings/dma/fsl,edma.yaml b/Documentation/devicetree/bindings/dma/fsl,edma.yaml
+> >>>>> index cf0aa8e6b9ec3..76c1716b8b95c 100644
+> >>>>> --- a/Documentation/devicetree/bindings/dma/fsl,edma.yaml
+> >>>>> +++ b/Documentation/devicetree/bindings/dma/fsl,edma.yaml
+> >>>>> @@ -59,6 +59,10 @@ properties:
+> >>>>>      minItems: 1
+> >>>>>      maxItems: 2
+> >>>>>  
+> >>>>> +  power-domains:
+> >>>>> +    minItems: 1
+> >>>>> +    maxItems: 64
+> >>>>
+> >>>> Hm, this is odd. Blocks do not belong to almost infinite number of power
+> >>>> domains.
+> >>>
+> >>> Sorry, what's your means? 'power-domains' belong to 'properties'. 
+> >>> 'maxItems' belong to 'power-domains'.It is similar with 'clocks'. what's
+> >>> wrong? 
+> >>
+> >> That one device belong to 64 power domains. That's just random code...
+> > 
+> > Yes, each dma channel have one power domain. Total 64 dma channel. So
+> > there are 64 power-domains.
+> 
+> OK, then how about extending the example to be complete?
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
----
- drivers/scsi/sg.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+Let's add 8qxp example at next version.
 
-diff --git a/drivers/scsi/sg.c b/drivers/scsi/sg.c
-index 86210e4dd0d3..6ef6256246df 100644
---- a/drivers/scsi/sg.c
-+++ b/drivers/scsi/sg.c
-@@ -1424,7 +1424,9 @@ static const struct file_operations sg_fops = {
- 	.llseek = no_llseek,
- };
- 
--static struct class *sg_sysfs_class;
-+static const struct class sg_sysfs_class = {
-+	.name = "scsi_generic"
-+};
- 
- static int sg_sysfs_valid = 0;
- 
-@@ -1526,7 +1528,7 @@ sg_add_device(struct device *cl_dev)
- 	if (sg_sysfs_valid) {
- 		struct device *sg_class_member;
- 
--		sg_class_member = device_create(sg_sysfs_class, cl_dev->parent,
-+		sg_class_member = device_create(&sg_sysfs_class, cl_dev->parent,
- 						MKDEV(SCSI_GENERIC_MAJOR,
- 						      sdp->index),
- 						sdp, "%s", sdp->name);
-@@ -1616,7 +1618,7 @@ sg_remove_device(struct device *cl_dev)
- 	read_unlock_irqrestore(&sdp->sfd_lock, iflags);
- 
- 	sysfs_remove_link(&scsidp->sdev_gendev.kobj, "generic");
--	device_destroy(sg_sysfs_class, MKDEV(SCSI_GENERIC_MAJOR, sdp->index));
-+	device_destroy(&sg_sysfs_class, MKDEV(SCSI_GENERIC_MAJOR, sdp->index));
- 	cdev_del(sdp->cdev);
- 	sdp->cdev = NULL;
- 
-@@ -1687,11 +1689,9 @@ init_sg(void)
- 				    SG_MAX_DEVS, "sg");
- 	if (rc)
- 		return rc;
--        sg_sysfs_class = class_create("scsi_generic");
--        if ( IS_ERR(sg_sysfs_class) ) {
--		rc = PTR_ERR(sg_sysfs_class);
-+	rc = class_register(&sg_sysfs_class);
-+	if (rc)
- 		goto err_out;
--        }
- 	sg_sysfs_valid = 1;
- 	rc = scsi_register_interface(&sg_interface);
- 	if (0 == rc) {
-@@ -1700,7 +1700,7 @@ init_sg(void)
- #endif				/* CONFIG_SCSI_PROC_FS */
- 		return 0;
- 	}
--	class_destroy(sg_sysfs_class);
-+	class_unregister(&sg_sysfs_class);
- 	register_sg_sysctls();
- err_out:
- 	unregister_chrdev_region(MKDEV(SCSI_GENERIC_MAJOR, 0), SG_MAX_DEVS);
-@@ -1715,7 +1715,7 @@ exit_sg(void)
- 	remove_proc_subtree("scsi/sg", NULL);
- #endif				/* CONFIG_SCSI_PROC_FS */
- 	scsi_unregister_interface(&sg_interface);
--	class_destroy(sg_sysfs_class);
-+	class_unregister(&sg_sysfs_class);
- 	sg_sysfs_valid = 0;
- 	unregister_chrdev_region(MKDEV(SCSI_GENERIC_MAJOR, 0),
- 				 SG_MAX_DEVS);
+Frank
 
--- 
-2.43.0
-
+> 
+> Best regards,
+> Krzysztof
+> 
 
