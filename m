@@ -1,170 +1,199 @@
-Return-Path: <linux-kernel+bounces-89493-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89494-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CC9586F11B
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 17:13:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 820EC86F11D
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 17:13:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DACA128341A
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 16:13:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E535A1F21EF6
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 16:13:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD9631BC47;
-	Sat,  2 Mar 2024 16:13:17 +0000 (UTC)
-Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2B54224EE;
+	Sat,  2 Mar 2024 16:13:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hbV96z/U"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20F901947E
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 16:13:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9340210FE
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 16:13:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709395997; cv=none; b=oyyAFCJCXYJ3BOxoWtS+e/FWDOrQT2gZrSl789zXsP1qeVvwFbAWBJMOP0kKYeHgS8YVI9c4YgQhRZA3u3Mcr78YzBXWgizZI64T7ahTsnXiLbe5uSNaBt7HHHPQ0+av2RT933jfltTIh70pRQKDewNTjxe/lIp5e/mqmCkczJo=
+	t=1709396005; cv=none; b=vFv3v2Jt2BqzYBVq3cc8HTYZsINvaKlroyhh7x03Qenyy3RBBkCyeONKfNuI8NKlZvIbtndDZ8T6wYk87YUKfsfHfLjWLgVATT7rDDU8JRy11D54mdBGqeO6A6cNFrFDmuMHO5j4skpPvHuutAFibF2OdG9ELwqSenL0wmiP+y0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709395997; c=relaxed/simple;
-	bh=FbjTuTWqBDQsWRS0dZyGAKYtWVxCCDP+Jy5p1Tkb6xY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MLcFhPpft+TrN5oU4LQxl10oRlj0Pm7ktHUWLRaX/Bfi782CzkqNAIyZs/4lZ/Z+HL+bUYfOm8bR3D8OUVigOPemCNHhm8Ua2EKHQhdsH+q6WEex053R0kARpILGm8HB2UC3GfY1XCR2RXZVTc/cWqHGjq0mVqn+OPvP1/wN2jM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=redhat.com; arc=none smtp.client-ip=209.85.161.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-59fd6684316so1170043eaf.0
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Mar 2024 08:13:13 -0800 (PST)
+	s=arc-20240116; t=1709396005; c=relaxed/simple;
+	bh=JeLgVGxq4GQg42VTNAyIVdsz1jUfH/1+h0YLlwMB8kU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JZ1tKgzeQeJfWRwr0nLwah7r7JSj7dudC8XuVGYhpIhEZZoNEsfeLKpgq1YldjgC4EdY5119PQ7st3qui/c2zaCDNay4Gc9W9EwQj8ttE7/DGjrx1cePOXI0GqBc0iwWRcskxi0UE63Xp6LmAz4AmBLlvICqxrUCOZOOcbifFCQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hbV96z/U; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-412a9e9c776so24760815e9.0
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Mar 2024 08:13:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709396002; x=1710000802; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bvQGYtN2vRBi+QYnwAZtvXa2o7whVTvKnKEEFe1E4KQ=;
+        b=hbV96z/UID9eG8YgjJCqXW00rt2Ed4n3iUZjJl6k52dlu6n5SWnBQh1L0ZuTahsvjk
+         1ba8QTm6KApkvDUH6YTlm7fdvbFWj4apSlorKbNE4Q1Ak1jky7X6q3ScclxagR0lX+Yq
+         6JebDQahDpRpnBJOWjdl7n8vWtQJHf1M/GMfWMd/wRmOrqsVApwnEpVvZKnqWUMr9LjH
+         JT8ZWYvJdj2sQ4rLa3fqG5oJ++cSwEqZvdbOX7RFr1SWUTbs903ZxwHsGWyBRrQQSYL3
+         g22ejuBdfSL9rwz3HpDvIU3NAQGLc3kvjNAQyNWmVsLKmDOr9AgabjtBCliXgqsLsA47
+         9gsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709395993; x=1710000793;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9z4aaL+eoV7uAuWVMK9/aYASmrv+Wksdp8IvJ6mzxpQ=;
-        b=bv/HvKNg5WHyFpIBp/pEWLQDPEOmFSnJT/LEFYAsCCKc1o9XoeJ+Zw/wWGM2gHTT+f
-         RB6JB/RCIGyX/6sHmo/OqpOdxg1WuvYmMoM9RmlAE6tbTTbRdygUkjEQzppB9fZDpCTy
-         vPAfmbOAGSQsyLNCrGrZp/dgaAzCgii6C20Tmmffl2jmy0E9tVSVZ7ppJ6L/jhvbA3+1
-         Z9OGECVyUnU/Obug+t61EX3e2lLm0UOWyVbAbelu4OrWURHXJyy8ZPehzR6QKBpsILlH
-         NZv9X9Oc0XpHAlB2lMlBeCi+X/G9pPu62avUQbhbBYYrkJtZoyL2ti6BjjGqaqC02YP4
-         DjBQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV0ynA1wHcoHJh+fQJUSVMfrOk561j4wSU8+vVrsLpNgASvkGIN6XJI/ibFUuqAaHcX9mAnF41xCfE/aPWNVn1J0qAldiumHmfsbRJU
-X-Gm-Message-State: AOJu0Ywop3coxy/L2bOh3rLMK2vZqRR0eUCRzKGaSf/a48ILVG91qFI4
-	qUhqaKmUMO/Hi7EGDNx+XZHQ7HlpBzC/g7/2uFWde5NyFF4L5Yt0lLtbs/BpNA==
-X-Google-Smtp-Source: AGHT+IGf9jgOeoj362uKhi105PtehqMD4txWWxwWyWfRjF/hG3odid6G8dwTAJ8IfpCY0YN3OcPPAA==
-X-Received: by 2002:a05:6358:181:b0:17b:eec9:8ee8 with SMTP id d1-20020a056358018100b0017beec98ee8mr4991319rwa.12.1709395993108;
-        Sat, 02 Mar 2024 08:13:13 -0800 (PST)
-Received: from localhost (pool-68-160-141-91.bstnma.fios.verizon.net. [68.160.141.91])
-        by smtp.gmail.com with ESMTPSA id kr9-20020a0562142b8900b0068fcd643b9dsm3093596qvb.22.2024.03.02.08.13.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Mar 2024 08:13:12 -0800 (PST)
-Date: Sat, 2 Mar 2024 11:13:10 -0500
-From: Mike Snitzer <snitzer@kernel.org>
-To: Fan Wu <wufan@linux.microsoft.com>
-Cc: corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
-	serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org,
-	axboe@kernel.dk, agk@redhat.com, eparis@redhat.com,
-	paul@paul-moore.com, linux-doc@vger.kernel.org,
-	linux-integrity@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
-	dm-devel@lists.linux.dev, audit@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v13 13/20] dm: add finalize hook to target_type
-Message-ID: <ZeNQFlw74KJ9Spdr@redhat.com>
-References: <1709168102-7677-1-git-send-email-wufan@linux.microsoft.com>
- <1709168102-7677-14-git-send-email-wufan@linux.microsoft.com>
+        d=1e100.net; s=20230601; t=1709396002; x=1710000802;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bvQGYtN2vRBi+QYnwAZtvXa2o7whVTvKnKEEFe1E4KQ=;
+        b=rsIKJJZm1fxBMsBUSw0ok/afhLD8VjpRUYDeR+v0DXmT5OWCgEzXROxzJK6OCFqKmz
+         OOQDOYcrbWZUe9XvfeAxqq+VR2Xwcz2PHx/eNJq8R/qN0u9ClrX6/z6MZc612n//k4dP
+         PtZQA7EWOoGhUJsNHJXAxGdnUE7J00IogQMQpu7+QgeLdgRZpoOnpiJBuKKsK+ZX416/
+         lD6nvnZosAhI5pShsyqzZ1R89k4H5aepAF4Xre+xN9eHVSNHwE+uGDPur95tP6Wq4vXx
+         5q3Jc7wAfIvsT2M/JdNS7kpK826BA49k3paBb33fM3NkzymqOzozX4TiTEcBY7+I8ppe
+         a+zA==
+X-Forwarded-Encrypted: i=1; AJvYcCX/+X2AHrxdRWGHbaxEZJoWJrERudw56G6eJ1lJHHPue8ahX9Hp0HL8i6HhMvXqlCy31M1DWVKWgtqz0+18GPanFsRBNEYHa368Exyg
+X-Gm-Message-State: AOJu0YwYCg4/sn7Ee1BOfIOYTXI5DoBCJw1+kozF1bDtZNrI4tHCNRg6
+	lIBj4i783umqz/fMrKyyA9tcITD3NkEfpgecMJu52WlFbQasrufHuiEQVl717E8=
+X-Google-Smtp-Source: AGHT+IEL9BKhdhIVjKmro2+K35KM05pC7dvn53IR+o/01gtD6rpiQa7LHmKF00AWVjh8Nm0NJ+w8Eg==
+X-Received: by 2002:adf:d009:0:b0:33e:152a:6b3d with SMTP id t9-20020adfd009000000b0033e152a6b3dmr4871168wrh.31.1709396002115;
+        Sat, 02 Mar 2024 08:13:22 -0800 (PST)
+Received: from [192.168.0.58] ([176.61.106.68])
+        by smtp.gmail.com with ESMTPSA id bu28-20020a056000079c00b0033dc7e50488sm7796549wrb.96.2024.03.02.08.13.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 02 Mar 2024 08:13:21 -0800 (PST)
+Message-ID: <18567989-fb60-49ae-92e6-94e1bc2fa1c7@linaro.org>
+Date: Sat, 2 Mar 2024 16:13:19 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1709168102-7677-14-git-send-email-wufan@linux.microsoft.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/5] clk: qcom: Add camera clock controller driver for
+ SM8150
+Content-Language: en-US
+To: Satya Priya Kakitapalli <quic_skakitap@quicinc.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Abhishek Sahu <absahu@codeaurora.org>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: Stephen Boyd <sboyd@codeaurora.org>, linux-arm-msm@vger.kernel.org,
+ linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, Ajit Pandey <quic_ajipan@quicinc.com>,
+ Imran Shaik <quic_imrashai@quicinc.com>, Taniya Das <quic_tdas@quicinc.com>,
+ Jagadeesh Kona <quic_jkona@quicinc.com>
+References: <20240229-camcc-support-sm8150-v1-0-8c28c6c87990@quicinc.com>
+ <20240229-camcc-support-sm8150-v1-4-8c28c6c87990@quicinc.com>
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20240229-camcc-support-sm8150-v1-4-8c28c6c87990@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 28 2024 at  7:54P -0500,
-Fan Wu <wufan@linux.microsoft.com> wrote:
+On 29/02/2024 5:38 a.m., Satya Priya Kakitapalli wrote:
+> Add support for the camera clock controller for camera clients
+> to be able to request for camcc clocks on SM8150 platform.
+> 
+> Signed-off-by: Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
+> ---
 
-> This patch adds a target finalize hook.
-> 
-> The hook is triggered just before activating an inactive table of a
-> mapped device. If it returns an error the __bind get cancelled.
-> 
-> The dm-verity target will use this hook to attach the dm-verity's
-> roothash metadata to the block_device struct of the mapped device.
-> 
-> Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
-> 
-> ---
-> v1-v10:
->   + Not present
-> 
-> v11:
->   + Introduced
-> 
-> v12:
->   + No changes
-> 
-> v13:
->   + No changes
-> ---
->  drivers/md/dm.c               | 12 ++++++++++++
->  include/linux/device-mapper.h |  7 +++++++
->  2 files changed, 19 insertions(+)
-> 
-> diff --git a/drivers/md/dm.c b/drivers/md/dm.c
-> index 8dcabf84d866..15b46edae49f 100644
-> --- a/drivers/md/dm.c
-> +++ b/drivers/md/dm.c
-> @@ -2266,6 +2266,18 @@ static struct dm_table *__bind(struct mapped_device *md, struct dm_table *t,
->  		goto out;
->  	}
->  
-> +	for (unsigned int i = 0; i < t->num_targets; i++) {
-> +		struct dm_target *ti = dm_table_get_target(t, i);
+> +static int cam_cc_sm8150_probe(struct platform_device *pdev)
+> +{
+> +	struct regmap *regmap;
+> +	int ret;
 > +
-> +		if (ti->type->finalize) {
-> +			ret = ti->type->finalize(ti);
-> +			if (ret) {
-> +				old_map = ERR_PTR(ret);
-> +				goto out;
-> +			}
-> +		}
+> +	ret = devm_pm_runtime_enable(&pdev->dev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = pm_runtime_resume_and_get(&pdev->dev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	regmap = qcom_cc_map(pdev, &cam_cc_sm8150_desc);
+> +	if (IS_ERR(regmap)) {
+> +		pm_runtime_put(&pdev->dev);
+> +		return PTR_ERR(regmap);
 > +	}
 > +
->  	old_map = rcu_dereference_protected(md->map, lockdep_is_held(&md->suspend_lock));
->  	rcu_assign_pointer(md->map, (void *)t);
->  	md->immutable_target_type = dm_table_get_immutable_target_type(t);
-> diff --git a/include/linux/device-mapper.h b/include/linux/device-mapper.h
-> index 772ab4d74d94..627400b2d9af 100644
-> --- a/include/linux/device-mapper.h
-> +++ b/include/linux/device-mapper.h
-> @@ -160,6 +160,12 @@ typedef int (*dm_dax_zero_page_range_fn)(struct dm_target *ti, pgoff_t pgoff,
->   */
->  typedef size_t (*dm_dax_recovery_write_fn)(struct dm_target *ti, pgoff_t pgoff,
->  		void *addr, size_t bytes, struct iov_iter *i);
-> +/*
-> + * Returns:
-> + *  < 0 : error
-> + *  = 0 : success
-> + */
-> +typedef int (*dm_finalize_fn) (struct dm_target *target);
+> +	clk_trion_pll_configure(&cam_cc_pll0, regmap, &cam_cc_pll0_config);
+> +	clk_trion_pll_configure(&cam_cc_pll1, regmap, &cam_cc_pll1_config);
+> +	clk_regera_pll_configure(&cam_cc_pll2, regmap, &cam_cc_pll2_config);
+> +	clk_trion_pll_configure(&cam_cc_pll3, regmap, &cam_cc_pll3_config);
+> +	clk_trion_pll_configure(&cam_cc_pll4, regmap, &cam_cc_pll4_config);
+> +
+> +	/* Keep the critical clock always-on */
+> +	qcom_branch_set_clk_en(regmap, 0xc1e4); /* cam_cc_gdsc_clk */
 
-This needs some documentation, e.g.: this hook allows DM targets in an
-inactive table to complete their setup before the table is made
-active.
+Does this clock need to be specified this way ?
 
-Mike
+drivers/clk/qcom/camcc-sc8280xp.c::camcc_gdsc_clk specifies the gdsc 
+clock as a shared op clock.
 
->  
->  void dm_error(const char *message);
->  
-> @@ -210,6 +216,7 @@ struct target_type {
->  	dm_dax_direct_access_fn direct_access;
->  	dm_dax_zero_page_range_fn dax_zero_page_range;
->  	dm_dax_recovery_write_fn dax_recovery_write;
-> +	dm_finalize_fn finalize;
->  
->  	/* For internal device-mapper use. */
->  	struct list_head list;
-> -- 
-> 2.43.1
-> 
-> 
+Actually it looks to be register compatible, please try defining 
+titan_top_gdsc as per the example in 8280xp.
+
+> +
+> +	ret = qcom_cc_really_probe(pdev, &cam_cc_sm8150_desc, regmap);
+> +
+> +	pm_runtime_put(&pdev->dev);
+> +
+> +	return ret;
+> +}
+
+So this is a pattern we keep repeating in the clock probe() functions 
+which I am writing a series to address. There's no need to continue to 
+replicate the bug in new code though.
+
+Only switch on always-on clocks if probe succeeds.
+
+	ret = qcom_cc_really_probe(pdev, &cam_cc_sm8150_desc, regmap);
+	if (ret)
+		goto probe_err;
+
+	qcom_branch_set_clk_en(regmap, 0xc1e4); /* cam_cc_gdsc_clk */
+
+	pm_runtime_put(&pdev->dev);
+
+	return 0;
+
+probe_err:
+	pm_runtime_put_sync(&pdev->dev);
+
+Alternatively switch on the always-on clocks before the really_probe() 
+but then roll back in a probe_err: goto
+
+probe_err:
+	remap_bits_update(regmap, 0xc1e4, BIT(0), 0);
+	pm_runtime_put_sync(&pdev->dev);
+
+There may be corner cases where always-on has to happen before 
+really_probe() I suppose but as a general pattern the above should be 
+how we go.
+
+Anyway I suspect the right thing to do is to define a titan_top_gdsc_clk 
+with shared ops to "park" the GDSC clock to 19.2 MHz instead of turning 
+it off.
+
+You can get rid of the hard-coded always-on and indeed represent the 
+clock in /sysfs - which is preferable IMO to just whacking registers to 
+keep clocks always-on in probe anyway.
+
+Please try to define the titan_top_gdsc_clk as a shared_ops clock 
+instead of hard coding to always on.
+
+If that doesn't work for some reason, then please fix your always-on 
+logic in probe() to only make the clock fixed on, if really_probe() 
+succeeds.
+
+---
+bod
 
