@@ -1,101 +1,103 @@
-Return-Path: <linux-kernel+bounces-89429-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89430-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0248286F040
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 12:26:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE1FC86F041
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 12:31:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 826301F21C32
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 11:26:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A84EB1C2154E
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 11:31:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52E1D17561;
-	Sat,  2 Mar 2024 11:26:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49947171A5;
+	Sat,  2 Mar 2024 11:30:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="aXCy6Sxw"
-Received: from mout.web.de (mout.web.de [212.227.17.11])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dA3hpWMg"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C821017593;
-	Sat,  2 Mar 2024 11:26:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CECF323C;
+	Sat,  2 Mar 2024 11:30:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709378764; cv=none; b=mRL2OhLxZ2kZJgk3URMOnpphZ5Z6MvyLMtPNOAiivG/QcvLrSW5y9sqU4EoMLwc7WQapxvJ7tLvvYo8q24RxhdAqd1V3CLmSdO8VRbc3hocrNt4LLx29Xa1qjlTQckD8qjXddyw7oqObBYjKPOOeccVD8mcofmTEMNmjUcww55w=
+	t=1709379054; cv=none; b=X8eecy4sOpFzFiaVA5LzntNlzOJck+S1bxR6Ozer991d3W3y/wtR3vqrqlPMC9LUIj99qrbwF4j81sGzaoyj3/KagSJEXTBnFU3MGhcZBge0RvXGjqKrcK+8B6QxmQYcxBvgBpCCryMAgZnootBHZOfGBEFMMvz6SoiYkXhvz0g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709378764; c=relaxed/simple;
-	bh=OUTrGAUUb83ehkuew994F0ovDeCHlzF87rm1EoH0du4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=crNONbYlj8yX2EbmvO4kzksH9SN6G69XsykgNz+XvintSvuDIyTcpivXa+obL6IrUS7FFtDztUbVa1UNCTqa/vGhPshKAP8oCvX6q5a6f1MHiGXt3NNAEVSEZMra/Mxyz4wKlbFQLGA7GplRpboIqqlkaA6tkQfjg3x7PZtBh+k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=aXCy6Sxw; arc=none smtp.client-ip=212.227.17.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1709378739; x=1709983539; i=markus.elfring@web.de;
-	bh=OUTrGAUUb83ehkuew994F0ovDeCHlzF87rm1EoH0du4=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=aXCy6SxwmIowIzZrMg0w+a9rBfVupG/Hihlj0+1CFt20ewJU+b3RpC3JrSJNTux2
-	 ws7d1tfAKLe+O6zrNk6P5/sVKQ18pzawuVw30ggiXPMWfbwwN8dcDOyjufGhGQl5r
-	 GuFz+8fk8LhUnuI/pzXfjZFLPT2I4sxbxU6HJPIQ1q8fNY+IHkbBewkC9mLg+CU6b
-	 YHxpTJYKYa4r2pJMHWyWon1U15oF0XW2DXeejR/Z8VIAv2IpHmFQ2HB03Yqh/SzcZ
-	 iPH4hcWytxjq7Yic4pfb1ZUCIm2cuG6MzxOkEuhUfmMcYeVi95Q1Zbip0svgCn/mv
-	 Ixu+b9vD8ug+G4bX0w==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.86.95]) by smtp.web.de (mrweb106
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MGgNU-1rbTvs3eVe-00EIP2; Sat, 02
- Mar 2024 12:25:38 +0100
-Message-ID: <5b2ac08c-cede-44f3-af7f-1bd1b89d113e@web.de>
-Date: Sat, 2 Mar 2024 12:25:37 +0100
+	s=arc-20240116; t=1709379054; c=relaxed/simple;
+	bh=oQ+DxDSSOmlUj3fhF7GDj4r02Xb+mjiohzUCcRJFJ0o=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=rPJKkFLD3uW06+DEn5Q5jsI0qKunyZJnWlG0gz7WlYZXkMNH6FRxf3xw7klIxIwVsS5gotaV7897Hk/xt7bbsvtcVVNNcbwsmAgcV9dRXfY/ta7hJGj5nRMRwp1am8bP+YibCmwSRh6Lfjd6IZMt0YZDgZpAwj4kK6npP5rjBXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dA3hpWMg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10A5BC433F1;
+	Sat,  2 Mar 2024 11:30:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709379054;
+	bh=oQ+DxDSSOmlUj3fhF7GDj4r02Xb+mjiohzUCcRJFJ0o=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=dA3hpWMg0saKPgHbbyBZk8IzLnWTeqRvXU2aavzMLNQhEI8vCOPq7RpquUVLzeEXz
+	 Tzb7JMHSlJAQg5CNV0nt4UPRp6TxKehG8xIQc/MlWQ/z9+b59DtNZsJ31jch/Hu6fI
+	 pMxoT4mgbRXyks/Ywzh2zCvD1KgtnxjCz/0u730Jr+0ICIMW4ILAPPU/1O2JZsG1Ea
+	 z2aqCOkDWskh0R36Vm6UhEQrWmlvkfNrFt+DH9x0mMcMzNicKn5JXU2hOsr3Stiqta
+	 X+QGi8/YeQ6xtRm4S5kQQzcwpVLTlchcb2AMoL97fd+x6U8I5lX3b7h6XR85mG/h93
+	 MJkenmFOogbRQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rgNZr-008lX5-Rm;
+	Sat, 02 Mar 2024 11:30:51 +0000
+Date: Sat, 02 Mar 2024 11:30:51 +0000
+Message-ID: <86y1b027mc.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	linux-arm-kernel@lists.infradead.org,
+	kvmarm@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] KVM: arm64: Reuse struct cpu_fp_state to track the guest FP state
+In-Reply-To: <20240229-kvm-arm64-group-fp-data-v2-2-276de0d550e8@kernel.org>
+References: <20240229-kvm-arm64-group-fp-data-v2-0-276de0d550e8@kernel.org>
+	<20240229-kvm-arm64-group-fp-data-v2-2-276de0d550e8@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] media: i2c: ds90ub960: Delete duplicate source code in
- ub960_parse_dt_rxports()
-Content-Language: en-GB
-To: Dan Carpenter <dan.carpenter@linaro.org>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- linux-media@vger.kernel.org, kernel-janitors@vger.kernel.org
-Cc: Sakari Ailus <sakari.ailus@linux.intel.com>,
- Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- LKML <linux-kernel@vger.kernel.org>
-References: <79fa4854-976d-4aad-86ac-c156b0c4937e@web.de>
- <ZeGV_siWFkfqSEgZ@kekkonen.localdomain>
- <db1d7227-f9a4-42fa-89ba-b484e1260e0b@ideasonboard.com>
- <ZeGZsRtH6YLx2FiM@kekkonen.localdomain> <ZeISEYXTaiyA-b4K@smile.fi.intel.com>
- <8ece4c88-dbc7-4327-ac2a-0a097fc990d0@moroto.mountain>
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <8ece4c88-dbc7-4327-ac2a-0a097fc990d0@moroto.mountain>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:2f5M1q42L5ZXnK64WgtMumJwOpZhYCe7tAAq+BvQzoMSUfSjy2P
- d87nDiGvj4rLSyfGkbCgRu71ZSV4a9VzsKQB4NX3Y23HcwulkC55LWYn1eUHgDFBLEl1xNy
- 8i0rY+bWT75o58AwhdCQnazlDw0tSPs6UN8V8vSZf7OLQiHu+Kw+yXaM1fVygId+m/ET6QF
- 577BEdO954NNg+Co4Upeg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:VGhGnEHWso4=;IsBx7aGkzCw3jSEWa5tjcGrRH8P
- zlnwb9yarrgkzR2Ur2L67ka0yCnsCS0wR3EnI5BYn9Bd6AH62wr5LaAqma7iH1FKzQWjg5Hav
- +3HMmsrdRzLy1KnijjuI/jrsoKNBrsDVTSMztdao3pDxuVVmin2YxE2Sln9B7DZfZOu1V7vzd
- g24BOXh5mTMQ4FEyjGBpDT8U72uUP1skgglXbKjiKtW5G5e6Gn2KjXSor4Y93xfGwOw/I9T4g
- rJtRPWj7dlbJQf24qNx1ITAsc3M4wP++fmX88diGjLEILmpYfOgu9Dd6H+R5LLrYtnIgvcopa
- q5vxHTATBmpBKCesU1r09pr7Z0MEZZae0/+UivKTog9r/l4zVQyn8ZWRX+RF2lk/f643oLdEm
- E6AGqWWipDOeZQCZGu4B4uXetntU2iZ4ifl3fZQXC4JzvHO8Ixq5oHukc8RtSdYCp/+oRLb0N
- DmsW5OPZ4nwp6A5itWjluM0f3YQEovJUX6gyV2wKeqLwukwrEGR3PSDd/c8RBV6ne6jBs+lE7
- c6nn9b0sIsG7thM+dCEcDfRDfVytCu+TxMjrYxYuWZiRr1JheVtCmVACj6rv7VKryphGxAqFk
- zEts5mDXs2/TzHg671pDSfjdTZ7NQnAfxvmtc6PG6+wyjB7lu0NxAeTjGVBoNIxFdoFb9hugx
- aYRqfA4lLp+te0axijvp8f6K/n6lKKUrJwxidoSpvJZ2XLyWcf30QM4YW0IZqoLI01BXA1N9I
- haWLPL+GrG/b6Tj4cuPhJZhTd//cmk4NNtU4kc6+0Oqr7zBKPd6Za6JpQJyeT2ffaqJBL+ZWx
- vAW5cLjWSS6+AON4wLvC1FytND+pQYWMcvJF++1n2T0eE=
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: broonie@kernel.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-> The __free(fwnode_handle) stuff has already been merged.
+On Thu, 29 Feb 2024 21:47:35 +0000,
+Mark Brown <broonie@kernel.org> wrote:
+> 
+> At present we store the various bits of floating point state individually
+> in struct kvm_vcpu_arch and construct a struct cpu_fp_state to share with
+> the host each time we exit the guest. Let's simplify this a little by
+> having a struct cpu_fp_state in the struct kvm_vcpu_arch and initialising
+> this while initialising the guest.
 
-Would you like to point a corresponding commit out?
+This structure is only useful to the physical CPU we run on, and does
+not capture anything that is related to the guest state. Why should it
+live in the vcpu structure, duplicating things we already have?
 
-Regards,
-Markus
+This is just making things even more opaque.
+
+If you need to add such a structure so that you can know what to
+save/restore on context switch, then attach it to the per-CPU data
+structure we already have.
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
 
