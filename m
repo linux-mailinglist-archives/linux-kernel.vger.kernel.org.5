@@ -1,93 +1,178 @@
-Return-Path: <linux-kernel+bounces-89302-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89303-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D99586EDFA
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 02:51:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 633D986EE01
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 02:51:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49B021F227E6
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 01:51:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A1342850CE
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 01:51:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2887748F;
-	Sat,  2 Mar 2024 01:51:05 +0000 (UTC)
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FC8A6FCC;
+	Sat,  2 Mar 2024 01:51:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="TIc1hC1B"
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D06A66FB2
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 01:51:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E352BC8FF
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 01:51:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709344265; cv=none; b=mLkUVDvqu+rlkQvRD2QjLbgTSgnXIjUvdW4OGZjkXcMzf+XLZkCkp5ivvUyb+1AGWh1P+66RGynXCImYoPP59TjN0H19czA28LVTeHxyeqy5g7EhT6C1nqszcIX0n/EG8DuFpU7lE9RGJocQ7D79u3X22yXGX2xgvlLkuHk3PfI=
+	t=1709344271; cv=none; b=iN21llWYanXQgN+yerFXKrmDKRDV5EHGOTYhJBKyVuVCtZ8686tNbOzhguYSqj5mpaaoIYJWwBBgH+TfiaKI/cT8ZOBY9jvoYkc+H8DBcCd+0g20ZsLD0k3w+jn+ZsxiO8ny+9V2LIBqdOhOkLPfDfOaMsFkQ+7mKFUalVO8GbE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709344265; c=relaxed/simple;
-	bh=j/JB2jyENDKPMzsPZBblzk98S3i8gV/N1pLSReCqPhY=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=Y09nSqkQs3fzMXdljVLIdVsfbvPsYB2SSFmRqQoZKN+HrRD2eibphMvn2LPO9Zw6uwXkWMBEXDxKwO6mcruHGiygWdeBUeU5HlkVnbn29+L26A9r+NacibErS0Jwxszf+GkI6WxuXMKATwZL6PyZ6suZgcg9a1sfKD2BAXIXN6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7c7ee7fa1caso307200439f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 17:51:03 -0800 (PST)
+	s=arc-20240116; t=1709344271; c=relaxed/simple;
+	bh=/8oSmkPc0IaP5CM6+fKqf9jvC9DwK8RXxd3zPN60QIw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tTvt9NzdZYaqDy1HBpP0ZMUmeU3wyhb2kexzrpizgf1Q6gagNN2cnEpwCR/EbADhQjTP+NHOU+KAFZhZeXN3r7Fvn8JNMB8K4m4OWiMaurnVQGHdQGbKlS5jkDVRit0r0+ummEoCP3dszezeYtxjjKpq8dm5jODJ4r6Ddad/YxI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=TIc1hC1B; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6da9c834646so2390172b3a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 17:51:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1709344269; x=1709949069; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=1JOHRODJmattJBY3YtQ+51tfBSOEI55kux6+SckPNNk=;
+        b=TIc1hC1BaG2C6O48gHCVwqAMREqybRwL/38QZkQjs8birZpqFdZpqCIImbYMYW7Eiv
+         jRPIv6GZBhjfsVtfypwxiChRkpef7DVwQMyj5nOOLNLueAgFL8DiRBb4+OjSwCy83w58
+         nhEfdX/lBy3gXtmcU7KGWUmYplpKX5RVOBkGM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709344263; x=1709949063;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
+        d=1e100.net; s=20230601; t=1709344269; x=1709949069;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LvJsx84GDRR3sGeQWUlw8maTlVsrsS8sB6uzDnbyywA=;
-        b=lmpBV+6Zh8o4Cnk1+0+B/zZg/4jDZKVRWo1QGOuj0InJmDc/0/mosRc52isUVE+Rxs
-         qWYzcZuKAMcq2BPEy/iWV5aOVreNbWZaEBRMWV3TBqTeL5REp9nizrj4/AfrN+rq2wGE
-         nEtj1txClHeP320waeXGR6yg5dbxVHGyuRe8UNKB3sEAfujBUqlRWfbsaQJmaNb1ZSzw
-         DztLkBeOvPHqlUCmIKxUoAOUDFMd3MzVkOp5KqCi5Zb2jP7ldWnTeMqGEtbLKfwusmp7
-         3YWETTgE3u4mOArvTV38562zQW34KexG6icQet9xpyo+pK/2Pr5p1PwDU2BYGSMcoE5z
-         UvBg==
-X-Forwarded-Encrypted: i=1; AJvYcCWIUaIls388EPgb/wviIFk+5XiDayETNX5uygu8JvxEbY7f3DlnxeyVZXrVvfiQ8swGfaBLpLWQxGWdFyS3RiUOeDtY+rjC1WSe/Yk0
-X-Gm-Message-State: AOJu0YwqL5k0FrcTS559FvXyrj3kMLsTnASnT16npSXrdIr0OqGTepJz
-	tHzNE15fCZ++31h/kfKWNEfuBqMNOzzPu7G6PvjoDzral4UHB6hQ+BOF/GSPpkw93DfRW+v2D/1
-	Ors/KIbQLE2ddTcaFGkvX4zGl2yA87/PWCj+kuDfIPiwz60ncPskJTxw=
-X-Google-Smtp-Source: AGHT+IHuZLEai30Vbe4B0f25cUi3TWUjAJVlZiXgrG7JjlW0Eoir/37IyGI70zz2FHDwFteKbxHcLXnIYeVoRrWtAVl2bbv76tjQ
+        bh=1JOHRODJmattJBY3YtQ+51tfBSOEI55kux6+SckPNNk=;
+        b=o0H9NbZwsTE94e8TAnRGZqp9fBdejTGTtC1LxEonK6Gn96zK0K5a/Xeny0wfeQI7jS
+         yi6LOVzTotJ6UKkhhEgA1X6mCnZ2nKxYIgAs9OZwIGDcIdnGGzLo+8acEYB3ETbEUv0a
+         hf5Ye53ianxumChwacDWRuEumvwf7A4+5n2S8qUqnxGilDbk+IAI7EmLX31rYLhyZDpD
+         SMnFvfdfAntPpzgjYXqcnMPURh4kkQ5CtFY8yiP66WB6i8rVpDC/sVLP5dOeL0uqos2o
+         d0crsb5pmJYwO6nhft38PEm6J/itNSnf6NP9aF1gHf78PmG/5V3opDy+PyMkA8CeVSfJ
+         LpCA==
+X-Forwarded-Encrypted: i=1; AJvYcCXPsKmVymDCOaG/xt2rORiyp57hCNb8H+54fWwP0U9QKsxGwoiu7zxdfYwlT26LP3BNvT40R8NJ6mPhJA1onmRp7p1fnXSIJiIcbRtx
+X-Gm-Message-State: AOJu0YyMDJwA9vX/aACvuJjgt5lU9vlE0/4xfWcBQgFA93MQ03+W1tz+
+	de9aFPPOiXmDILUJSue/aLeVs852igVoq1gnGi0RFsd3NIPLiqQW2/U1G7Q4Fg==
+X-Google-Smtp-Source: AGHT+IHRDk8dRy87orC5sOO0fLYLW475IUp9U1sSARPtPvgR8uAOkuMFjfqikjpTM+PGmCnZ+zOW8Q==
+X-Received: by 2002:a05:6a20:e11f:b0:1a0:ef1e:a5a7 with SMTP id kr31-20020a056a20e11f00b001a0ef1ea5a7mr3447528pzb.4.1709344269211;
+        Fri, 01 Mar 2024 17:51:09 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id rm12-20020a17090b3ecc00b002993f72ed02sm3845854pjb.34.2024.03.01.17.51.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Mar 2024 17:51:08 -0800 (PST)
+Date: Fri, 1 Mar 2024 17:51:08 -0800
+From: Kees Cook <keescook@chromium.org>
+To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc: "christophe.leroy@csgroup.eu" <christophe.leroy@csgroup.eu>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"x86@kernel.org" <x86@kernel.org>,
+	"luto@kernel.org" <luto@kernel.org>,
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+	"debug@rivosinc.com" <debug@rivosinc.com>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
+	"linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
+	"mingo@redhat.com" <mingo@redhat.com>,
+	"kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+	"tglx@linutronix.de" <tglx@linutronix.de>,
+	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+	"loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>,
+	"Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>,
+	"hpa@zytor.com" <hpa@zytor.com>,
+	"peterz@infradead.org" <peterz@infradead.org>,
+	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+	"bp@alien8.de" <bp@alien8.de>,
+	"linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+	"linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+	"sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+	"broonie@kernel.org" <broonie@kernel.org>
+Subject: Re: [PATCH v2 5/9] mm: Initialize struct vm_unmapped_area_info
+Message-ID: <202403011747.9ECFAD060B@keescook>
+References: <20240226190951.3240433-1-rick.p.edgecombe@intel.com>
+ <20240226190951.3240433-6-rick.p.edgecombe@intel.com>
+ <94a2b919-e03b-4ade-b13e-7774849dc02b@csgroup.eu>
+ <202402271004.7145FDB53F@keescook>
+ <8265f804-4540-4858-adc3-a09c11a677eb@csgroup.eu>
+ <91384b505cb78b9d9b71ad58e037c1ed8dfb10d1.camel@intel.com>
+ <def71a27-2d5f-40da-867e-979648afc4cf@csgroup.eu>
+ <202402280912.33AEE7A9CF@keescook>
+ <ac04c9aa134807bbc00e6086e7a14a58a682f221.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:629a:b0:474:8177:31c9 with SMTP id
- fh26-20020a056638629a00b00474817731c9mr111536jab.5.1709344263133; Fri, 01 Mar
- 2024 17:51:03 -0800 (PST)
-Date: Fri, 01 Mar 2024 17:51:03 -0800
-In-Reply-To: <00000000000094d9bd05eb190572@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009a64380612a3b99e@google.com>
-Subject: Re: [syzbot] [reiserfs?] kernel BUG in reiserfs_in_journal
-From: syzbot <syzbot+79bf80830388272ba2f9@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, axboe@kernel.dk, brauner@kernel.org, 
-	bvanassche@acm.org, jack@suse.cz, jlayton@kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, neilb@suse.de, 
-	reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
-	willy@infradead.org, yi.zhang@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ac04c9aa134807bbc00e6086e7a14a58a682f221.camel@intel.com>
 
-syzbot suspects this issue was fixed by commit:
+On Sat, Mar 02, 2024 at 12:47:08AM +0000, Edgecombe, Rick P wrote:
+> On Wed, 2024-02-28 at 09:21 -0800, Kees Cook wrote:
+> > I totally understand. If the "uninitialized" warnings were actually
+> > reliable, I would agree. I look at it this way:
+> > 
+> > - initializations can be missed either in static initializers or via
+> >   run time initializers. (So the risk of mistake here is matched --
+> >   though I'd argue it's easier to *find* static initializers when
+> > adding
+> >   new struct members.)
+> > - uninitialized warnings are inconsistent (this becomes an unknown
+> > risk)
+> > - when a run time initializer is missed, the contents are whatever
+> > was
+> >   on the stack (high risk)
+> > - what a static initializer is missed, the content is 0 (low risk)
+> > 
+> > I think unambiguous state (always 0) is significantly more important
+> > for
+> > the safety of the system as a whole. Yes, individual cases maybe bad
+> > ("what uid should this be? root?!") but from a general memory safety
+> > perspective the value doesn't become potentially influenced by order
+> > of
+> > operations, leftover stack memory, etc.
+> > 
+> > I'd agree, lifting everything into a static initializer does seem
+> > cleanest of all the choices.
+> 
+> Hi Kees,
+> 
+> Well, I just gave this a try. It is giving me flashbacks of when I last
+> had to do a tree wide change that I couldn't fully test and the
+> breakage was caught by Linus.
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+Yeah, testing isn't fun for these kinds of things. This is traditionally
+why the "obviously correct" changes tend to have an easier time landing
+(i.e. adding "= {}" to all of them).
 
-    fs: Block writes to mounted block devices
+> Could you let me know if you think this is additionally worthwhile
+> cleanup outside of the guard gap improvements of this series? Because I
+> was thinking a more cowardly approach could be a new vm_unmapped_area()
+> variant that takes the new start gap member as a separate argument
+> outside of struct vm_unmapped_area_info. It would be kind of strange to
+> keep them separate, but it would be less likely to bump something.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16e80bba180000
-start commit:   611da07b89fd Merge tag 'acpi-6.6-rc8' of git://git.kernel...
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=174a257c5ae6b4fd
-dashboard link: https://syzkaller.appspot.com/bug?extid=79bf80830388272ba2f9
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13ca8c63680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16dae351680000
+I think you want a new member -- AIUI, that's what that struct is for.
 
-If the result looks correct, please mark the issue as fixed by replying with:
+Looking at this resulting set of patches, I do kinda think just adding
+the "= {}" in a single patch is more sensible. Having to split things
+that are know at the top of the function from the stuff known at the
+existing initialization time is rather awkward.
 
-#syz fix: fs: Block writes to mounted block devices
+Personally, I think a single patch that sets "= {}" for all of them and
+drop the all the "= 0" or "= NULL" assignments would be the cleanest way
+to go.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+-Kees
+
+-- 
+Kees Cook
 
