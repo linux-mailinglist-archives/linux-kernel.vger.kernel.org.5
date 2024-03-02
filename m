@@ -1,188 +1,226 @@
-Return-Path: <linux-kernel+bounces-89310-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89311-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0ED4986EE22
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 03:23:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE31886EE24
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 03:24:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 721DE1F23B21
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 02:23:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5C5228710F
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 02:24:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB1B779F9;
-	Sat,  2 Mar 2024 02:22:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EC99BA45;
+	Sat,  2 Mar 2024 02:24:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OFh612UP"
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="ndJiAJi0"
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3812979D0
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 02:22:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8821749F
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 02:24:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709346176; cv=none; b=DJsDGUOdGKfMpNWGX5zwMtJfQzCYMiGgICTtczl8WFtfwZ7b3ZYp9+g1g2fn+mBCdrhX0q7uxE0HGInMMFTaO65uSJLKAOV1yp1FeRQ/dgZWnPeNEd53cwjwRyeGF9In2VPbzbED2cRNAuGMaX2Nq/bAsPbq4FNGZKJdkestAZg=
+	t=1709346274; cv=none; b=ifpfUGIQUIMmdPKZKWafq/xXaPLfZqxnQHPJV8NY6QwDekG/5/LgFSrDiQgsYKdyj5qj0SGKtkR5en9JNzdyx4LEhhHtnOlWFet45crVq6I8dHv1nz4UAC+KAjDBtq4897kHGCwjKc0l0GgB2gbWfA313vUciu5TFWCDAzzkNtE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709346176; c=relaxed/simple;
-	bh=+TPfVjFogzNReOpfUhnNpXtp/FYtnnphNfnHE/uHRDQ=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=dn9sPvnhkTyoxy/Srj6h2XbbxARJJTR1wRRfKuqq6c/HajUNne6LlEfQrTCWobvherE59ymMvpAXUzn5Bnb+gdpWjtm2yfEPTfud3+y8v7F3pxpb7VoXq2kNbSz9onvgmRuViOPZT6o0U9M5IwQQiKShwz/Ueyt+5F5KCrdruTU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OFh612UP; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a26ed1e05c7so497258966b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 18:22:53 -0800 (PST)
+	s=arc-20240116; t=1709346274; c=relaxed/simple;
+	bh=ZbRjRfGgsE7JtMXZ7+GBMuqAIJuCRArBk/R4UQi4fa8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=E5QnDjFncTZNW/aIoqBT4sN6xsqa7GzIe2ho7VUl58gcECrvx66v05Hn0FajTCmZVrt3NV4hll1nYyYuFiCbjOPrvGmpt8EB9pDwcCUKRaZNf1951pIhJqkmX1YEDqgyfhNMJ/CETvX/wCPDTqSDm1t6HPYQAfcI+j+pJoZhSH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=ndJiAJi0; arc=none smtp.client-ip=209.85.208.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2d1094b5568so30981581fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 18:24:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709346172; x=1709950972; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=dZvUgYXHOYOKAIGSRrva5Qq5ru4WipUXtpvetm5o08c=;
-        b=OFh612UPFVbhfc70mA8B4JrgSpPnCqkLmCvHZKsDI22v4/peb+AWYHagr0qVHaYC3N
-         l6/tK/nop0OMBJVc8UeO//rKM1iq3wtpF6WeOAOiQGzbLBgp9rNNgsTyhR3rKtTg+l4i
-         43O0FroKrGPLiT6J+1V6M9xNiOgHhPnxBgjT2UxaCZCHKcPQexS3RmseWTDBbnu4YOZ7
-         w9gfNmtFqPsh6AFQg630y+VdA5KSQeU/CYn+HVdxqMSAjuBwuTdmx1m4bq0IJpECuNUw
-         Wps9Pa2VSKcjWqAVV3HdUGrIb+BLFjczOJLxGNcR/lkEakRhm4zFAoxMHxC6mPFevNZI
-         sdmg==
+        d=joelfernandes.org; s=google; t=1709346271; x=1709951071; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0BPRTmka5fJv1/6kKHd7XoCtkBtwYqpJPZBGmWQG3Mo=;
+        b=ndJiAJi0ZLdzKkVqWLckKAG83dKa+i7ZKFjdJe0u7P+lBwSBg8A9ySV49jg0W+LXCr
+         jhS0IXEegG6x7obSBiB1C5eX0qcVW2NRK7Su0qxhn4iLl1Oix6ukPLVDGNtc5XPDXyrU
+         qgvwY52pPfR9IhbMgXGZvX+1Cn5WkakYmhBQQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709346172; x=1709950972;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dZvUgYXHOYOKAIGSRrva5Qq5ru4WipUXtpvetm5o08c=;
-        b=ZWa7L27Jd6DoksVjBrCfrs9DzehzWqzpEw21ezSVi7SPeC4AQFIOxC8Kltre/jR/pd
-         +TXOwvUpXPEph7dMB4r3HF8rNb+XTLWc8+KkUbAXbpy2ywi/IE7NmgnnNfPAbORWxkvV
-         b3wN1EdYtJxP+OHbgdy3tim31HmD83TzwOwjQjP+GrPg9UN+0eO27wkR6y27Fe4CGeZW
-         ajl9F3e8s0jYSCnfQXkLCzWhRNpI/dc1Nv5AYS7SntmySf1egJ4ct5kicUrhcvvXc2IQ
-         q9h7WJBn7Q+k9MkLbtOdmK76TE1uwE6XjMwdCHIGfEEUeyC6U+5eiV+YZNfLmRmKgvvy
-         gEHQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWAg0ia6vm/aPqUeKpwtyJ3PtoaFm+synSgr817XmVoWKQwezGs6yhXqkADm2Kd2SU8wnqTiTOJvfJb6+tNuu3rB0St40nR6nNp9K/h
-X-Gm-Message-State: AOJu0Yy8pcxpO4ArADQYctZzZxEozk9pANhqBPArdhFl+IoUbke5O8VR
-	kSl8dCs9yJYOyTNFoSDJO0hT1FOZXODQKDdEIq5Y7R0aKz7/qKBiEiInLUjqtoA=
-X-Google-Smtp-Source: AGHT+IE8RbV+EyI/CHCqqMAK9d77rj4AJodP1gAIw2tErl1logb+yYZchP2Vjyv75hb2/UtdXJoplw==
-X-Received: by 2002:a17:906:ce29:b0:a44:2218:4817 with SMTP id sd9-20020a170906ce2900b00a4422184817mr2245935ejb.39.1709346172136;
-        Fri, 01 Mar 2024 18:22:52 -0800 (PST)
-Received: from [10.167.154.1] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id ch14-20020a170906c2ce00b00a42ea946917sm2224924ejb.130.2024.03.01.18.22.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Mar 2024 18:22:51 -0800 (PST)
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Date: Sat, 02 Mar 2024 03:22:49 +0100
-Subject: [PATCH] interconnect: qcom: x1e80100: Remove inexistent ACV_PERF
- BCM
+        d=1e100.net; s=20230601; t=1709346271; x=1709951071;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0BPRTmka5fJv1/6kKHd7XoCtkBtwYqpJPZBGmWQG3Mo=;
+        b=ZsKB7pNX+ifdoHAwNKhbEjCzeIFk3KsIs344bDJSRiES8eX5f3EHwPD/lqS46SgBqg
+         PzoMxo2U+ZKvw/5IaEKTTI2oRVfIkAIC9AajqfcBlpCW4L5/J6cwL662MrkOnHDy9VWN
+         TcMgzJOj1KtDZa3o3PCx/gOML9TcQ9POPxSS3p5/b89KBW/K0N8PijWEYKV49d1I6jhq
+         0duvWzyX5NgjwxFGyuJ0NGbXpOpBwNbRnZfh063/GZ6TRiC2pGC5Q8YRUreIFBuIAYxK
+         raXWacRUtKnmKkxim0kZJShYNCJzcg3ZA3bPQQH8kgVybAISj1cSIbiug/PnJC9M6N1z
+         zz1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVU9BeZIQdR4moAyxu3sJ/whjoImKaIJwjELbzZFyoq7WZKXg5cUAs9joePav/CxLPZTUhYVjSTHwWsZ6zJX+xa2tnp6CJ2uZqWHwmb
+X-Gm-Message-State: AOJu0YynlLSWN0NVvKGn+nZ/AOUTZG/vwojHNJXihKVu+KW+CEaLamAB
+	yG8YNMiDS5QBeboPUF/J3YIUOBEMlpP5g3cWNsN2CAxGBP3Qh/j/HV6QgU5zOWuL/HKTRcN01tm
+	u88sqrUvVjuKCFZ56pEfZaxYUH6Jl2PR1TYUDRA==
+X-Google-Smtp-Source: AGHT+IH98YLZnMxBAG59okgQ+PyTSyL2rsPj7i9rV8TY6srfxIhgylxvaw0NdCb2O9sVvrFMBArv71G6Pgzuxs54Gso=
+X-Received: by 2002:a2e:a688:0:b0:2d2:a9d6:c435 with SMTP id
+ q8-20020a2ea688000000b002d2a9d6c435mr2033116lje.34.1709346270566; Fri, 01 Mar
+ 2024 18:24:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240302-topic-faux_bcm_x1e-v1-1-c40fab7c4bc5@linaro.org>
-X-B4-Tracking: v=1; b=H4sIAHiN4mUC/x2N0QqDMAwAf0XyvEBax5j7lTEkbdMZcFVaHQXx3
- 1f2eAfHHVAkqxR4dAdk+WrRJTUwlw78xOktqKExWLJX6snitqzqMfJeR+c/YzWC91s/cIhDIEP
- QQsdF0GVOfmpp2ue5yTVL1Po/PV/n+QNBPlC0eQAAAA==
-To: Bjorn Andersson <andersson@kernel.org>, 
- Georgi Djakov <djakov@kernel.org>, Abel Vesa <abel.vesa@linaro.org>, 
- Sibi Sankar <quic_sibis@quicinc.com>, 
- Rajendra Nayak <quic_rjendra@quicinc.com>
-Cc: Marijn Suijten <marijn.suijten@somainline.org>, 
- linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Mike Tipton <quic_mdtipton@quicinc.com>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1709346170; l=2702;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=+TPfVjFogzNReOpfUhnNpXtp/FYtnnphNfnHE/uHRDQ=;
- b=zi58sy0kKdm53JaXN9XU5z5Im/i8Hz47TaQYkUIUzQ776WqFvixIrJG/ndQNhJQ+C/iFrLi6k
- dYYIlRSZPCjAv69OnpP8fBJm0f9nOkO1xF77QFxDa7TuY1yjEi1akVJ
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
+References: <55900c6a-f181-4c5c-8de2-bca640c4af3e@paulmck-laptop>
+ <10FC3F5F-AA33-4F81-9EB6-87EB2D41F3EE@joelfernandes.org> <99b2ccae-07f6-4350-9c55-25ec7ae065c0@paulmck-laptop>
+In-Reply-To: <99b2ccae-07f6-4350-9c55-25ec7ae065c0@paulmck-laptop>
+From: Joel Fernandes <joel@joelfernandes.org>
+Date: Fri, 1 Mar 2024 21:24:15 -0500
+Message-ID: <CAEXW_YQ+40a1-hk5ZP+QJ54xniSutosC7MjMscJJy8fen-gU9Q@mail.gmail.com>
+Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
+To: paulmck@kernel.org
+Cc: Steven Rostedt <rostedt@goodmis.org>, Network Development <netdev@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org, 
+	kernel-team <kernel-team@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Booting the kernel on X1E results in a message like:
+(Shrinking CC a bit)
 
-[    2.561524] qnoc-x1e80100 interconnect-0: ACV_PERF could not find RPMh address
+On Thu, Feb 29, 2024 at 1:29=E2=80=AFPM Paul E. McKenney <paulmck@kernel.or=
+g> wrote:
+>
+> On Thu, Feb 29, 2024 at 12:41:55PM -0500, Joel Fernandes wrote:
+> > > On Feb 29, 2024, at 11:57=E2=80=AFAM, Paul E. McKenney <paulmck@kerne=
+l.org> wrote:
+> > > =EF=BB=BFOn Thu, Feb 29, 2024 at 09:21:48AM -0500, Joel Fernandes wro=
+te:
+> > >>> On 2/28/2024 5:58 PM, Paul E. McKenney wrote:
+> > >>> On Wed, Feb 28, 2024 at 02:48:44PM -0800, Alexei Starovoitov wrote:
+> > >>>> On Wed, Feb 28, 2024 at 2:31=E2=80=AFPM Steven Rostedt <rostedt@go=
+odmis.org> wrote:
+> > >>>>>
+> > >>>>> On Wed, 28 Feb 2024 14:19:11 -0800
+> > >>>>> "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> > >>>>>
+> > >>>>>>>>
+> > >>>>>>>> Well, to your initial point, cond_resched() does eventually in=
+voke
+> > >>>>>>>> preempt_schedule_common(), so you are quite correct that as fa=
+r as
+> > >>>>>>>> Tasks RCU is concerned, cond_resched() is not a quiescent stat=
+e.
+> > >>>>>>>
+> > >>>>>>> Thanks for confirming. :-)
+> > >>>>>>
+> > >>>>>> However, given that the current Tasks RCU use cases wait for tra=
+mpolines
+> > >>>>>> to be evacuated, Tasks RCU could make the choice that cond_resch=
+ed()
+> > >>>>>> be a quiescent state, for example, by adjusting rcu_all_qs() and
+> > >>>>>> .rcu_urgent_qs accordingly.
+> > >>>>>>
+> > >>>>>> But this seems less pressing given the chance that cond_resched(=
+) might
+> > >>>>>> go away in favor of lazy preemption.
+> > >>>>>
+> > >>>>> Although cond_resched() is technically a "preemption point" and n=
+ot truly a
+> > >>>>> voluntary schedule, I would be happy to state that it's not allow=
+ed to be
+> > >>>>> called from trampolines, or their callbacks. Now the question is,=
+ does BPF
+> > >>>>> programs ever call cond_resched()? I don't think they do.
+> > >>>>>
+> > >>>>> [ Added Alexei ]
+> > >>>>
+> > >>>> I'm a bit lost in this thread :)
+> > >>>> Just answering the above question.
+> > >>>> bpf progs never call cond_resched() directly.
+> > >>>> But there are sleepable (aka faultable) bpf progs that
+> > >>>> can call some helper or kfunc that may call cond_resched()
+> > >>>> in some path.
+> > >>>> sleepable bpf progs are protected by rcu_tasks_trace.
+> > >>>> That's a very different one vs rcu_tasks.
+> > >>>
+> > >>> Suppose that the various cond_resched() invocations scattered throu=
+ghout
+> > >>> the kernel acted as RCU Tasks quiescent states, so that as soon as =
+a
+> > >>> given task executed a cond_resched(), synchronize_rcu_tasks() might
+> > >>> return or call_rcu_tasks() might invoke its callback.
+> > >>>
+> > >>> Would that cause BPF any trouble?
+> > >>>
+> > >>> My guess is "no", because it looks like BPF is using RCU Tasks (as =
+you
+> > >>> say, as opposed to RCU Tasks Trace) only to wait for execution to l=
+eave a
+> > >>> trampoline.  But I trust you much more than I trust myself on this =
+topic!
+> > >>
+> > >> But it uses RCU Tasks Trace as well (for sleepable bpf programs), no=
+t just
+> > >> Tasks? Looks like that's what Alexei said above as well, and I confi=
+rmed it in
+> > >> bpf/trampoline.c
+> > >>
+> > >>        /* The trampoline without fexit and fmod_ret progs doesn't ca=
+ll original
+> > >>         * function and doesn't use percpu_ref.
+> > >>         * Use call_rcu_tasks_trace() to wait for sleepable progs to =
+finish.
+> > >>         * Then use call_rcu_tasks() to wait for the rest of trampoli=
+ne asm
+> > >>         * and normal progs.
+> > >>         */
+> > >>        call_rcu_tasks_trace(&im->rcu, __bpf_tramp_image_put_rcu_task=
+s);
+> > >>
+> > >> The code comment says it uses both.
+> > >
+> > > BPF does quite a few interesting things with these.
+> > >
+> > > But would you like to look at the update-side uses of RCU Tasks Rude
+> > > to see if lazy preemption affects them?  I don't believe that there
+> > > are any problems here, but we do need to check.
+> >
+> > Sure I will be happy to. I am planning look at it in detail over the 3 =
+day weekend. Too much fun! ;-)
+>
+> Thank you, and looking forward to seeing what you come up with!
+>
+> The canonical concern would be that someone somewhere is using either
+> call_rcu_tasks_rude() or synchronize_rcu_tasks_rude() to wait for
+> non-preemptible regions of code that does not account for the possibility
+> of preemption in CONFIG_PREEMPT_NONE or PREEMPT_PREEMPT_VOLUNTARY kernels=
+.
+>
+> I *think* that these are used only to handle the possibility
+> of tracepoints on functions on the entry/exit path and on the
+> RCU-not-watching portions of the idle loop.  If so, then there is no
+> difference in behavior for lazy preemption.  But who knows?
 
-And indeed, taking a look at cmd-db, no such BCM exists. Remove it.
+Hi Paul, regarding CONFIG_PREEMPT_AUTO, for Tasks RCU rude, I think
+the following patch will address your concern about quiescent states
+on CPUs spinning away in kernel mode:
 
-Fixes: 9f196772841e ("interconnect: qcom: Add X1E80100 interconnect provider driver")
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
----
- drivers/interconnect/qcom/x1e80100.c | 26 --------------------------
- 1 file changed, 26 deletions(-)
+"sched/fair: handle tick expiry under lazy preemption"
+Link: https://lore.kernel.org/all/20240213055554.1802415-24-ankur.a.arora@o=
+racle.com/
 
-diff --git a/drivers/interconnect/qcom/x1e80100.c b/drivers/interconnect/qcom/x1e80100.c
-index 99824675ee3f..654abb9ce08e 100644
---- a/drivers/interconnect/qcom/x1e80100.c
-+++ b/drivers/interconnect/qcom/x1e80100.c
-@@ -116,15 +116,6 @@ static struct qcom_icc_node xm_sdc2 = {
- 	.links = { X1E80100_SLAVE_A2NOC_SNOC },
- };
- 
--static struct qcom_icc_node ddr_perf_mode_master = {
--	.name = "ddr_perf_mode_master",
--	.id = X1E80100_MASTER_DDR_PERF_MODE,
--	.channels = 1,
--	.buswidth = 4,
--	.num_links = 1,
--	.links = { X1E80100_SLAVE_DDR_PERF_MODE },
--};
--
- static struct qcom_icc_node qup0_core_master = {
- 	.name = "qup0_core_master",
- 	.id = X1E80100_MASTER_QUP_CORE_0,
-@@ -688,14 +679,6 @@ static struct qcom_icc_node qns_a2noc_snoc = {
- 	.links = { X1E80100_MASTER_A2NOC_SNOC },
- };
- 
--static struct qcom_icc_node ddr_perf_mode_slave = {
--	.name = "ddr_perf_mode_slave",
--	.id = X1E80100_SLAVE_DDR_PERF_MODE,
--	.channels = 1,
--	.buswidth = 4,
--	.num_links = 0,
--};
--
- static struct qcom_icc_node qup0_core_slave = {
- 	.name = "qup0_core_slave",
- 	.id = X1E80100_SLAVE_QUP_CORE_0,
-@@ -1377,12 +1360,6 @@ static struct qcom_icc_bcm bcm_acv = {
- 	.nodes = { &ebi },
- };
- 
--static struct qcom_icc_bcm bcm_acv_perf = {
--	.name = "ACV_PERF",
--	.num_nodes = 1,
--	.nodes = { &ddr_perf_mode_slave },
--};
--
- static struct qcom_icc_bcm bcm_ce0 = {
- 	.name = "CE0",
- 	.num_nodes = 1,
-@@ -1583,18 +1560,15 @@ static const struct qcom_icc_desc x1e80100_aggre2_noc = {
- };
- 
- static struct qcom_icc_bcm * const clk_virt_bcms[] = {
--	&bcm_acv_perf,
- 	&bcm_qup0,
- 	&bcm_qup1,
- 	&bcm_qup2,
- };
- 
- static struct qcom_icc_node * const clk_virt_nodes[] = {
--	[MASTER_DDR_PERF_MODE] = &ddr_perf_mode_master,
- 	[MASTER_QUP_CORE_0] = &qup0_core_master,
- 	[MASTER_QUP_CORE_1] = &qup1_core_master,
- 	[MASTER_QUP_CORE_2] = &qup2_core_master,
--	[SLAVE_DDR_PERF_MODE] = &ddr_perf_mode_slave,
- 	[SLAVE_QUP_CORE_0] = &qup0_core_slave,
- 	[SLAVE_QUP_CORE_1] = &qup1_core_slave,
- 	[SLAVE_QUP_CORE_2] = &qup2_core_slave,
+In this patch Ankur makes sure that the scheduling-clock interrupt
+will reschedule the CPU after a tick and not let queued tasks starve
+due to lazy re-scheduling. So my impression is the
+"schedule_on_each_cpu()" should schedule a worker thread in time to
+apply the implied Tasks RCU quiescent state even if the rescheduling
+was a LAZY-reschedule.
 
----
-base-commit: 1870cdc0e8dee32e3c221704a2977898ba4c10e8
-change-id: 20240302-topic-faux_bcm_x1e-8639adf9d010
+Also, not sure if the "voluntary mode" of CONFIG_PREEMPT_AUTO behaves
+differently. My feeling is regardless of preemption mode,
+CONFIG_PREEMPT_AUTO should always preempt after a tick if something
+else needs to run. It just will not preempt immediately like before
+(although CFS did already have some wakeup preemption logic to slow it
+down a bit). I am reviewing Ankur's patches more to confirm that and
+also reviewing his patches more to see how it could affect.
 
-Best regards,
--- 
-Konrad Dybcio <konrad.dybcio@linaro.org>
+thanks,
 
+ - Joel
 
