@@ -1,122 +1,201 @@
-Return-Path: <linux-kernel+bounces-89487-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89486-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E560D86F0FA
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 16:52:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F1C3B86F0F6
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 16:50:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C0CD1C20AA6
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 15:52:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C90C1C20B2C
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 15:50:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B4BC1B599;
-	Sat,  2 Mar 2024 15:52:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1634A18C19;
+	Sat,  2 Mar 2024 15:50:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="vM8rwEgN"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="M5Qh4XVd"
+Received: from smtp.smtpout.orange.fr (smtp-30.smtpout.orange.fr [80.12.242.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F27A918643
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 15:52:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 771E518657
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 15:50:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709394752; cv=none; b=NNQxINOM5OWyj3aGKoiDceQgPUI1pdQ9mfR0BoVJU+6Ak/U9TbbF/4neUHk1Uyh1CEDGN63hK2cuzLuPzctzXp9WViUF0dL9bFkcOSgriNM6JtZ3voh3ShJEPJmDAqDIp9vDToy5TBAKaAiquTfMRqDaDd+PaP/OpXkHH8kV7SU=
+	t=1709394631; cv=none; b=deReMYnJBFSssXkZrMHBf5bftVAsQxVzMsfjPAF/HFtzsbg0k+gRV+vYRhV/tpfdTu278mnjovzeaibEJi5Z07Cm8oC+73HBc6fJKUtjmdQGkUor09FB1gy4BXEFnTHpkgovPjICXExcA6aeMab236x+436DNtOuGnY1WcbS1ns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709394752; c=relaxed/simple;
-	bh=IpeQuxZYHbOib0UXMdpmSgRLjR8MvxoaSxSpZYZToPE=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 MIME-Version:Content-Type; b=IWrHj9vjvGpHCdw1uP5Y1Ro11H/79abOoWPRd+sp0oPA2LmXWJZjs9Z7ZfYLF6zMOr3lmOfzAKLj5eLnN+qilbuWJUPLM8ZNdXQZ4H3H0Au3kSsYpxPew4V48mD6A3EmBZFxm0YL3I9vI+sD9Hs85HR3pYFHAOgJaQJ2feNgRvQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=vM8rwEgN; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-412cc617b68so8533015e9.0
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Mar 2024 07:52:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1709394748; x=1709999548; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:in-reply-to:date
-         :subject:cc:to:from:user-agent:references:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HFHn5+gTrYvZdU2UMo/5Uu0slaoxEdGH237gIhxi8Fk=;
-        b=vM8rwEgNt86TgO93LZO8zpZ26DtyGOWECruz/CQ5hcynxeX/kKPL0C1+E4se/yGGH3
-         eKswlZSk+eq5N5NcBmR349G4cvIscSztS1QM11ZmMm8GSrBHJj9F3nMxDbV1LpKKNVPl
-         4YmGtOzA8k4x/yuLLij1ngC1fq6PHGOZLc1NhCMNnepvsrmezHeyCbPrlUnBhM5yDyDZ
-         TQiMXjVkPpxFS0O54cvmZs/Gi8MBHlfOUfi0OeYipBMPsP9BJaq6SZ9tfE/OuMShV1tg
-         WX1bO0m8UEEP54bEXS67GQ+hgeTINRCOvjnCO8bGPFxbfBlJCCnYqXIU6TvYfhI1CfQS
-         Mk0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709394748; x=1709999548;
-        h=content-transfer-encoding:mime-version:message-id:in-reply-to:date
-         :subject:cc:to:from:user-agent:references:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=HFHn5+gTrYvZdU2UMo/5Uu0slaoxEdGH237gIhxi8Fk=;
-        b=ZPSm35MKzwZwiYChDDc5KQRJTWST6xSksG+GUoOw2jjhzNJbN71u2JtoLD1kQMQIpR
-         jEMIimRWghbgwJv/UEfnnbfGyaZA15H/UftaFZve2ig9dS3Ny9WQZ24H/y6xUCyHZAK9
-         xC6vxQ5/UNYagnRHsp+VgR+upDDYW87/kGtIKMBVulpeAhov+1252pmsOHacEkiAMnem
-         WQz14oEQnsXeHdc+hOE2k2xPKXQZeoUPgB4gfhFeog0Y5Ri+mWMR5tzslOMJunHu5ubn
-         1A7KVB06NOuZgXPnkhrgGIpsrFJGw4gloTG4c3qDNqGiE+2wIVWzKbez2MXENq3rYB32
-         TkXg==
-X-Forwarded-Encrypted: i=1; AJvYcCVm4a1Ca5L00v/s3RTZ131c8Qp0HjYl63TCSuLCHjDJAqWsEmD8qCcaC1fVMhHumfqi2vwuGZ99xpCZN5L59gsbaaUr/7v+wTDGmmnJ
-X-Gm-Message-State: AOJu0YyalyWUNfo7tfRuT/QxXbSnkcEzL1uTN5eaSzMtK4/KEiyt/RYt
-	JSGVcsf6AEabfhIWCWupMVrsBppFNCXx3R7fi+uShHNNlzfUc52teTIvnGGkcIE=
-X-Google-Smtp-Source: AGHT+IHPEsKg9YL345VNJehawUEGJqX6jI1a45uLPxbSI3cJXqB9wbFooKxQnCv4HflprTmT7kTmXA==
-X-Received: by 2002:a05:600c:4f44:b0:412:a5ed:bb57 with SMTP id m4-20020a05600c4f4400b00412a5edbb57mr4177808wmq.31.1709394747993;
-        Sat, 02 Mar 2024 07:52:27 -0800 (PST)
-Received: from localhost ([2a01:e0a:3c5:5fb1:a62b:dc91:b659:dbf5])
-        by smtp.gmail.com with ESMTPSA id d22-20020a05600c34d600b00412d6357945sm2015404wmq.27.2024.03.02.07.52.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Mar 2024 07:52:27 -0800 (PST)
-References: <20240221151154.26452-1-jbrunet@baylibre.com>
- <b6jyherdfnehu3xrg6ulkxlcfknfej6ali2om27d7rjmwncwxz@3wrtx6sv4xm7>
-User-agent: mu4e 1.10.8; emacs 29.1
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Jerome Brunet <jbrunet@baylibre.com>, Neil Armstrong
- <neil.armstrong@linaro.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, Kevin Hilman <khilman@baylibre.com>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-amlogic@lists.infradead.org, linux-pwm@vger.kernel.org, JunYi Zhao
- <junyi.zhao@amlogic.com>
-Subject: Re: [PATCH v5 0/5] pwm: meson: dt-bindings fixup
-Date: Sat, 02 Mar 2024 16:50:11 +0100
-In-reply-to: <b6jyherdfnehu3xrg6ulkxlcfknfej6ali2om27d7rjmwncwxz@3wrtx6sv4xm7>
-Message-ID: <1jsf18skat.fsf@starbuckisacylon.baylibre.com>
+	s=arc-20240116; t=1709394631; c=relaxed/simple;
+	bh=mN2LAc9j8pitp4/pP5rakUYeQUXvQd/UY0ksJb5F/AY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pJkem1w21m3sLGtE46aRiwaNmCt9MHv8BCTH+WtzQgSct7TSwZxcGKGOM/fg+m7tn4PE1X4Mklv33qMSc6dTdrjqj03is79uMSb9F7M6RSxNCE8ZhQBh7/aoKTtxk9eI0gEH17G3DfBhrPAfq6fhRWG41lCFRrOIMGobiFa1NV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=M5Qh4XVd; arc=none smtp.client-ip=80.12.242.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from [192.168.1.18] ([92.140.202.140])
+	by smtp.orange.fr with ESMTPA
+	id gRbkrY9aBQ6QsgRd4rNOK9; Sat, 02 Mar 2024 16:50:27 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1709394627;
+	bh=Qv/ssscVV7fGs0JMzWV8vaTZi3w3mSOL334YpDMghuU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=M5Qh4XVdS6CPVQ81wW+vqU6fBYIuJCy8mfyGplrusU67MKNuulUnmada7l0zc574r
+	 xvDL/a5djesp7qHh6m3Khpe0DA1+qArKAQrROkYAY+8IwnDRM9sg6HwUAvtnG4W4nz
+	 3a9UftEkSeZbjVo0abo+ByJDl/+JcYoqMwNSaHAJwSb47dbcPVAW2CJTtidonOWjtW
+	 wRbWYlH8dliC/a+3hXdLGmLpbbRb/RXZqa/ixorXOuZz7GWC4HoeOjRb7hNWeYGtrQ
+	 QIDKmL0Ri1Dgk4eCl3o5Xvf5DyQXOY47I5XmDtheOlbAJrm4NtdS3SYV+vf2ULFNXV
+	 zrXr+L+f4Ff4g==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 02 Mar 2024 16:50:27 +0100
+X-ME-IP: 92.140.202.140
+Message-ID: <52158bf6-16fe-4ce2-b9b6-bbc6550a6e14@wanadoo.fr>
+Date: Sat, 2 Mar 2024 16:50:26 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 3/4] usb: dwc3: exynos: Use
+ devm_regulator_bulk_get_enable() helper function
+Content-Language: en-MW
+To: Anand Moon <linux.amoon@gmail.com>,
+ Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Alim Akhtar <alim.akhtar@samsung.com>
+Cc: linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240301193831.3346-1-linux.amoon@gmail.com>
+ <20240301193831.3346-4-linux.amoon@gmail.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20240301193831.3346-4-linux.amoon@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
+Le 01/03/2024 à 20:38, Anand Moon a écrit :
+> Use devm_regulator_bulk_get_enable() instead of open coded
+> 'devm_regulator_get(), regulator_enable(), regulator_disable().
+> 
+> Signed-off-by: Anand Moon <linux.amoon@gmail.com>
+> ---
+>   drivers/usb/dwc3/dwc3-exynos.c | 49 +++-------------------------------
+>   1 file changed, 4 insertions(+), 45 deletions(-)
+> 
+> diff --git a/drivers/usb/dwc3/dwc3-exynos.c b/drivers/usb/dwc3/dwc3-exynos.c
+> index 5d365ca51771..7c77f3c69825 100644
+> --- a/drivers/usb/dwc3/dwc3-exynos.c
+> +++ b/drivers/usb/dwc3/dwc3-exynos.c
+> @@ -32,9 +32,6 @@ struct dwc3_exynos {
+>   	struct clk		*clks[DWC3_EXYNOS_MAX_CLOCKS];
+>   	int			num_clks;
+>   	int			suspend_clk_idx;
+> -
+> -	struct regulator	*vdd33;
+> -	struct regulator	*vdd10;
+>   };
+>   
+>   static int dwc3_exynos_probe(struct platform_device *pdev)
+> @@ -44,6 +41,7 @@ static int dwc3_exynos_probe(struct platform_device *pdev)
+>   	struct device_node	*node = dev->of_node;
+>   	const struct dwc3_exynos_driverdata *driver_data;
+>   	int			i, ret;
+> +	static const char * const regulators[] = { "vdd33", "vdd10" };
+>   
+>   	exynos = devm_kzalloc(dev, sizeof(*exynos), GFP_KERNEL);
+>   	if (!exynos)
+> @@ -78,27 +76,9 @@ static int dwc3_exynos_probe(struct platform_device *pdev)
+>   	if (exynos->suspend_clk_idx >= 0)
+>   		clk_prepare_enable(exynos->clks[exynos->suspend_clk_idx]);
+>   
+> -	exynos->vdd33 = devm_regulator_get(dev, "vdd33");
+> -	if (IS_ERR(exynos->vdd33)) {
+> -		ret = PTR_ERR(exynos->vdd33);
+> -		goto vdd33_err;
+> -	}
+> -	ret = regulator_enable(exynos->vdd33);
+> -	if (ret) {
+> -		dev_err(dev, "Failed to enable VDD33 supply\n");
+> -		goto vdd33_err;
+> -	}
+> -
+> -	exynos->vdd10 = devm_regulator_get(dev, "vdd10");
+> -	if (IS_ERR(exynos->vdd10)) {
+> -		ret = PTR_ERR(exynos->vdd10);
+> -		goto vdd10_err;
+> -	}
+> -	ret = regulator_enable(exynos->vdd10);
+> -	if (ret) {
+> -		dev_err(dev, "Failed to enable VDD10 supply\n");
+> -		goto vdd10_err;
+> -	}
+> +	ret = devm_regulator_bulk_get_enable(dev, ARRAY_SIZE(regulators), regulators);
+> +	if (ret)
+> +		return dev_err_probe(dev, ret, "Failed to enable regulators\n");
+>   
+>   	if (node) {
+>   		ret = of_platform_populate(node, NULL, NULL, dev);
+> @@ -115,10 +95,6 @@ static int dwc3_exynos_probe(struct platform_device *pdev)
+>   	return 0;
+>   
+>   populate_err:
+> -	regulator_disable(exynos->vdd10);
+> -vdd10_err:
+> -	regulator_disable(exynos->vdd33);
+> -vdd33_err:
+>   	for (i = exynos->num_clks - 1; i >= 0; i--)
+>   		clk_disable_unprepare(exynos->clks[i]);
+>   
+> @@ -140,9 +116,6 @@ static void dwc3_exynos_remove(struct platform_device *pdev)
+>   
+>   	if (exynos->suspend_clk_idx >= 0)
+>   		clk_disable_unprepare(exynos->clks[exynos->suspend_clk_idx]);
+> -
+> -	regulator_disable(exynos->vdd33);
+> -	regulator_disable(exynos->vdd10);
+>   }
+>   
+>   static const struct dwc3_exynos_driverdata exynos5250_drvdata = {
+> @@ -196,9 +169,6 @@ static int dwc3_exynos_suspend(struct device *dev)
+>   	for (i = exynos->num_clks - 1; i >= 0; i--)
+>   		clk_disable_unprepare(exynos->clks[i]);
+>   
+> -	regulator_disable(exynos->vdd33);
+> -	regulator_disable(exynos->vdd10);
 
-On Sat 02 Mar 2024 at 11:04, Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutr=
-onix.de> wrote:
+Hi,
 
-> [[PGP Signed Part:Undecided]]
-> Hello Jerome,
->
-> On Wed, Feb 21, 2024 at 04:11:46PM +0100, Jerome Brunet wrote:
->> Jerome Brunet (5):
->>   dt-bindings: pwm: amlogic: fix s4 bindings
->>   dt-bindings: pwm: amlogic: Add a new binding for meson8 pwm types
->>   pwm: meson: generalize 4 inputs clock on meson8 pwm type
->>   pwm: meson: don't carry internal clock elements around
->>   pwm: meson: add generic compatible for meson8 to sm1
->
-> I applied patches #1 to #3. This doesn't mean #4 and #5 are bad, just
-> that I need some more time for review.
+Same here, I don't think that removing regulator_[en|dis]able from the 
+suspend and resume function is correct.
 
-No worries. The change in those, especially #5, are pretty simple but
-the diff are indeed hard to read :/
+The goal is to stop some hardware when the system is suspended, in order 
+to save some power.
 
->
-> Best regards
-> Uwe
+Why did you removed it?
 
+CJ
 
---=20
-Jerome
+> -
+>   	return 0;
+>   }
+>   
+> @@ -207,17 +177,6 @@ static int dwc3_exynos_resume(struct device *dev)
+>   	struct dwc3_exynos *exynos = dev_get_drvdata(dev);
+>   	int i, ret;
+>   
+> -	ret = regulator_enable(exynos->vdd33);
+> -	if (ret) {
+> -		dev_err(dev, "Failed to enable VDD33 supply\n");
+> -		return ret;
+> -	}
+> -	ret = regulator_enable(exynos->vdd10);
+> -	if (ret) {
+> -		dev_err(dev, "Failed to enable VDD10 supply\n");
+> -		return ret;
+> -	}
+> -
+>   	for (i = 0; i < exynos->num_clks; i++) {
+>   		ret = clk_prepare_enable(exynos->clks[i]);
+>   		if (ret) {
+
 
