@@ -1,150 +1,155 @@
-Return-Path: <linux-kernel+bounces-89308-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89309-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B7DC86EE16
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 03:13:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D594E86EE1F
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 03:22:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3BA2286654
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 02:13:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 899A12869B6
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 02:22:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3E638C04;
-	Sat,  2 Mar 2024 02:13:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC5958F45;
+	Sat,  2 Mar 2024 02:22:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="l3FLu5C3"
-Received: from out203-205-221-205.mail.qq.com (out203-205-221-205.mail.qq.com [203.205.221.205])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yRa9NqxB"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A945963AE;
-	Sat,  2 Mar 2024 02:13:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.205
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5428C7483
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 02:22:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709345605; cv=none; b=DKv6kJKEDW7E+RJfCszEmbbc7w4bgDFhT4D936pFMdY5huCt5gk1824elzraIvPuCmrQy3LeCc4eaKJr5/W6cPc7BBILt/L9Yz3QqvlQLPYLwrq5JsdGz9+VA7kGP4m0ObLteCMzRFzwk+DDKiswtIdoA1jcDK+977aK1hOJyF0=
+	t=1709346161; cv=none; b=ZIbchJTwG+mH9p4+zUVILI4VzgwfvIDyNAd7IjxbDqGDmzaAneNUYZg9Kga3UYDDmvATqaFGLETmrdnB7vNtoZtA5m7B7TWugsUIuHkgQPfdhC3gD+lw9qZoEvJCkL73FDH0iq3QKATvP2WAO0Ei3F4H4NRdeWi0yBtxrc8s2pI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709345605; c=relaxed/simple;
-	bh=ypnpNuK5U8spfWm1zPCpA2bMMUH6x+EuFKD46vnbfk0=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=U6VQhC6yW8k294dQIWlZWK0N4yTxQ9x+v+u2KC/QNPXs/g/P4lIbnaa7NObyGBsERiPeAwDTfD1qwMEjy3d55Cayru67VJKzH24dNHm4113uhyeSLPB+omwafw+rivde4lQuQ7b9FTyAlJ1e8V6jST5uHYRzaWt+fTKCYykm7GQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=l3FLu5C3; arc=none smtp.client-ip=203.205.221.205
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1709345291; bh=0aswDH86I9wagW7/7Q0JXkWwKqH263XZZbniRb/t2yQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=l3FLu5C3XyS+9UaEvWvhv0VxGaeGt3gAa9HonoopH9exEULXkb9cmZCJHumi5+xGr
-	 rzwxWYcf2nHkFimDgRIemP0OsdpHJihl135+v+o2C309RpmilLTVHojKkL/yt2WDdR
-	 Osn2iNcKpQ5l2Rw2eVXWOxwNZY+8PBvUSA876+HY=
-Received: from pek-lxu-l1.wrs.com ([111.198.228.140])
-	by newxmesmtplogicsvrszb9-1.qq.com (NewEsmtp) with SMTP
-	id 2031FAC0; Sat, 02 Mar 2024 10:08:03 +0800
-X-QQ-mid: xmsmtpt1709345283t23zykfnc
-Message-ID: <tencent_9DB5A7EFC6D152E3065489A46EDF6EE24C06@qq.com>
-X-QQ-XMAILINFO: M/NR0wiIuy70cja9QE9nCnfOWrA2FZnAhHTZYnKXNAV0RdJY6uByilpN9MMhfW
-	 UVpb8vWL80Xw/3jE6G0SB1uIfRPTfY/zORFiZK2H56o6c5ayykji0SCX1ZNf4owXRYkaG2QR5Rnc
-	 xmwcSBoGB531zjnAd6MUAfywjNuwrAQCgu+Dok+ZlvbMTNHsHa0RUQ0CkYrnf0mtDfms18tMRcsP
-	 YkRNvkErTfH0jD53Jz4jLgf/5uFQ8Uodibc3JK+N91eYir8LhLI7VfEedDVx8kI1WW343dcADQv2
-	 oJ6PNAhUuc0OqJFaB7ynvQg9wyfesSjtIdkNmUI3gXbtJhhMZL2X0A2v1xNJe56fiJZt3uvs7Wwt
-	 EJXj3o4Q7bIB1JQWrwN8sx7BbpHPo1ovp897pqaPe+HfE+weBR006JFMuhLbi2qEDhPLt/eHazA9
-	 EKQkKQvqBc3Euop65y/agXpUXMfgEVadmcEdI5KiQkb2BCeOWKZ/f9b7cYo+PlZlKHh3Dc2qAaz3
-	 qpplDnHz6PTLjm0+Xez3YUce8yhhudP5QVDyzfJOI/4zCeaqR+hMfJfKUO8REGusj38kU55Mvx/4
-	 Zir66OOUAtfVujwvASeYCl+OCc0a6cx9LTXGYq0BYUk3irbTEVEN5ZoCDXB508HEjVZCF8vcTm6+
-	 EwHcEFDnkqaM6+Eu7GaYW9bY+Nl16NjF7QISEFpHgva1EGP2aaGGVwTXFSDfD9FBcQFSIoyABnxw
-	 DFVtR189FbS+UR/2OcxHxufiXdRTsbhD3hMUCyh5DysKNj8S0yb/gqtSwhbsynYQ2nN27BrJEQnQ
-	 8UWWzD7U0otb7zHfeNJkYj48QMz++RGHaUuNOS2cZaUqGdIy03YgA9CD9NQFhtwogW5cT8WKS0Pa
-	 eoxdOvAlRYHONpgQAdF/pdYWxnoM1Fw7Hc2gW6xWHpxemaz+0b3cNr/IpIqot9KyJPFQFG0podUT
-	 Kp3Egbq8s=
-X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
-From: Edward Adam Davis <eadavis@qq.com>
-To: greg@kroah.com
-Cc: eadavis@qq.com,
-	isely@pobox.com,
-	linux-kernel@vger.kernel.org,
-	linux-media@vger.kernel.org,
-	linux-usb@vger.kernel.org,
-	mchehab@kernel.org,
-	pvrusb2-owner@isely.net,
-	pvrusb2@isely.net,
-	syzbot+ce750e124675d4599449@syzkaller.appspotmail.com,
-	syzkaller-bugs@googlegroups.com
-Subject: [PATCH usb V2] media/pvrusb2: fix uaf in pvr2_context_set_notify
-Date: Sat,  2 Mar 2024 10:08:03 +0800
-X-OQ-MSGID: <20240302020802.2858149-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <2024021716-accent-islamist-6a87@gregkh>
-References: <2024021716-accent-islamist-6a87@gregkh>
+	s=arc-20240116; t=1709346161; c=relaxed/simple;
+	bh=+vcuOjMgyX3GXLrby3bKMf/a767VWPWJZQ2IjjlKxbQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bnDhutIyNf4RFkJHB3NxqTK+fyZ9zsvEcf9/tl+KwbCOHnMsJid0P8cD40k1ecfWfRY2QFoeDS02ZAbj1IyjrpwxpSl7c/0s1tsXcONOh3v3ZIVeHkAmJFjtzDSuROtN8HmsVyR0GEkxPo+YPXOjHnTY6VdVmJ8DQ8x/oXu1m04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yRa9NqxB; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-564fc495d83so3577311a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 18:22:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709346157; x=1709950957; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kdTUSkVwl2tMINjrlSdiTdWGU31m8cJzam5nmke77Bg=;
+        b=yRa9NqxBRS6Qybyj2MFdaf1f56dIpYPIpG6jAwOLfeo9RXzMW1gwrsaNsZXPyzBVOv
+         e2QW3Hb9Ae18SK0KmQg7jZYGc3MIylC8x2XspCmQ5CTi8REGLpn5lYH3WnVRtj46CXQn
+         USVDISU3LxxfQdGbHNr2G74Eh2bMW9BuWIKxTfZKPd08Hzp+L63shg+DYv/0Y3K0eEeT
+         NnZDFzRUmCZ5W8dinqdqNJNPfJNRBTK8GlDwu3UMp6gXkXxNb5xa0hfGP7fHlJrr1iU0
+         DpsBE1NpHyJ1GgMXJ/7NKPfstBEO9Fr7uwWFwLEj2897x04g9PzJ8KRAUhYaGX6bdveW
+         jV4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709346157; x=1709950957;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kdTUSkVwl2tMINjrlSdiTdWGU31m8cJzam5nmke77Bg=;
+        b=sddOIUTe9trmm+XuY/g5tdj9urQu5OchAhsfztcdcOuHALdkq4MimOpv9Z1qIv17xE
+         MFrBo7tz54UsJxeeclwtudvxQ3U87KEWgKaFQUOaTH3ozMIhAEzV6qctxdaMIIvRUEjX
+         rbWcfGgJsV3krnVarxMby2sbsnsEAXB+P9jkt7/AhFA7om/ACMAvNOpxB7JriNzMhkMz
+         i0TOLpX1VpgvFzK58m8YynBCXLQmWWc/GpoObeeAa/1x+i7I4ugpE8rfL2lj2kzONaND
+         SAvoCvg+/vZ4ioG1Gzyf21xpa1xf/dKkHjhjGMvpoLlxQ6v6pfOTfVKh321NnU1cUnxU
+         4Mgg==
+X-Forwarded-Encrypted: i=1; AJvYcCUOeOTBIaxIL0M9Et0kHDROeWcKYm/sz6++EHCJRjsiJdcav+0olTY5leMbcllyr8hcnFxA3X0fFxfSIWXrC5GlIu+4QgTTFccsGdfE
+X-Gm-Message-State: AOJu0YyIzvwVMiDOfk3bNqd6xaS3fRQCmb1Sz71pm0y9JSLofGKN8iFN
+	+tEEvTqOMzLlgvSq0anY3TNJCDY106qiA/zErfgoUdV7EB8kmUvWFHepqRBthMg=
+X-Google-Smtp-Source: AGHT+IFeYLcTkjFHUMJRTsdqrsQ5qiDABIkQoO5ACOCWl8iqixjPyJ4gmXbZ53fgBi+gi9zJ2HGs2Q==
+X-Received: by 2002:a17:906:5fc1:b0:a44:512e:9e42 with SMTP id k1-20020a1709065fc100b00a44512e9e42mr1886274ejv.2.1709346156636;
+        Fri, 01 Mar 2024 18:22:36 -0800 (PST)
+Received: from [192.168.216.32] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id bq5-20020a170906d0c500b00a43bf243342sm2242197ejb.24.2024.03.01.18.22.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Mar 2024 18:22:36 -0800 (PST)
+Message-ID: <6f329b93-1bea-4222-bbf2-e08ae7329283@linaro.org>
+Date: Sat, 2 Mar 2024 03:22:33 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V5 1/5] dt-bindings: arm: cpus: Add qcom,oryon compatible
+Content-Language: en-US
+To: Sibi Sankar <quic_sibis@quicinc.com>, andersson@kernel.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ catalin.marinas@arm.com, ulf.hansson@linaro.org
+Cc: agross@kernel.org, conor+dt@kernel.org, ayan.kumar.halder@amd.com,
+ j@jannau.net, dmitry.baryshkov@linaro.org, nfraprado@collabora.com,
+ m.szyprowski@samsung.com, u-kumar1@ti.com, peng.fan@nxp.com,
+ lpieralisi@kernel.org, quic_rjendra@quicinc.com, abel.vesa@linaro.org,
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ quic_tsoni@quicinc.com, neil.armstrong@linaro.org
+References: <20231205062403.14848-1-quic_sibis@quicinc.com>
+ <20231205062403.14848-2-quic_sibis@quicinc.com>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20231205062403.14848-2-quic_sibis@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-[Syzbot reported]
-BUG: KASAN: slab-use-after-free in pvr2_context_set_notify+0x2c4/0x310 drivers/media/usb/pvrusb2/pvrusb2-context.c:35
-Read of size 4 at addr ffff888113aeb0d8 by task kworker/1:1/26
+On 5.12.2023 07:23, Sibi Sankar wrote:
+> From: Rajendra Nayak <quic_rjendra@quicinc.com>
+> 
+> Oryon is the custom ARM CPU core implementation used in Qualcomm's
+> X1E80100 SoC, document it.
+> 
+> Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
+> Co-developed-by: Sibi Sankar <quic_sibis@quicinc.com>
+> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
+> ---
 
-CPU: 1 PID: 26 Comm: kworker/1:1 Not tainted 6.8.0-rc1-syzkaller-00046-gf1a27f081c1f #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-Workqueue: usb_hub_wq hub_event
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:377 [inline]
- print_report+0xc4/0x620 mm/kasan/report.c:488
- kasan_report+0xda/0x110 mm/kasan/report.c:601
- pvr2_context_set_notify+0x2c4/0x310 drivers/media/usb/pvrusb2/pvrusb2-context.c:35
- pvr2_context_notify drivers/media/usb/pvrusb2/pvrusb2-context.c:95 [inline]
- pvr2_context_disconnect+0x94/0xb0 drivers/media/usb/pvrusb2/pvrusb2-context.c:272
+Chiming in on an old thread, please check with those in the know whether
+these cores are Spectre-v3a/4-safe, and if so, add the MIDR to the
+corresponding white/blacklists in arch/arm64/kernel/proton-pack.c
 
-Freed by task 906:
-kasan_save_stack+0x33/0x50 mm/kasan/common.c:47
-kasan_save_track+0x14/0x30 mm/kasan/common.c:68
-kasan_save_free_info+0x3f/0x60 mm/kasan/generic.c:640
-poison_slab_object mm/kasan/common.c:241 [inline]
-__kasan_slab_free+0x106/0x1b0 mm/kasan/common.c:257
-kasan_slab_free include/linux/kasan.h:184 [inline]
-slab_free_hook mm/slub.c:2121 [inline]
-slab_free mm/slub.c:4299 [inline]
-kfree+0x105/0x340 mm/slub.c:4409
-pvr2_context_check drivers/media/usb/pvrusb2/pvrusb2-context.c:137 [inline]
-pvr2_context_thread_func+0x69d/0x960 drivers/media/usb/pvrusb2/pvrusb2-context.c:158
+Also, please check for any erratas and supported-but-not-advertized-for-
+-reasons features that may need to be implemented.
+Doing this early will ensure we will all spend less % of our time
+pulling out what remains of our hair when the platform suddenly
+crashes for no reason!
 
-[Analyze]
-Task A set disconnect_flag = !0, which resulted in Task B's condition being met
-and releasing mp, leading to this issue.
-
-[Fix]
-Place the disconnect_flag assignment operation after all code in pvr2_context_disconnect()
-to avoid this issue.
-
-Reported-and-tested-by: syzbot+ce750e124675d4599449@syzkaller.appspotmail.com
-Fixes: e5be15c63804 ("V4L/DVB (7711): pvrusb2: Fix race on module unload")
-cc: stable@vger.kernel.org
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
----
- drivers/media/usb/pvrusb2/pvrusb2-context.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/media/usb/pvrusb2/pvrusb2-context.c b/drivers/media/usb/pvrusb2/pvrusb2-context.c
-index 1764674de98b..e93bca93ce4c 100644
---- a/drivers/media/usb/pvrusb2/pvrusb2-context.c
-+++ b/drivers/media/usb/pvrusb2/pvrusb2-context.c
-@@ -267,9 +267,9 @@ static void pvr2_context_exit(struct pvr2_context *mp)
- void pvr2_context_disconnect(struct pvr2_context *mp)
- {
- 	pvr2_hdw_disconnect(mp->hdw);
--	mp->disconnect_flag = !0;
- 	if (!pvr2_context_shutok())
- 		pvr2_context_notify(mp);
-+	mp->disconnect_flag = !0;
- }
- 
- 
--- 
-2.43.0
+Konrad
 
 
