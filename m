@@ -1,106 +1,223 @@
-Return-Path: <linux-kernel+bounces-89431-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1E3986F043
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 12:37:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F23586F04F
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 12:44:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 59D3EB23D2B
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 11:37:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35979284BC4
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 11:44:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04131171BF;
-	Sat,  2 Mar 2024 11:37:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBBF41754E;
+	Sat,  2 Mar 2024 11:44:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="D+k8uPyE";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="C2g7laN4"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lKD7pmZR"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56F9E17562
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 11:37:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 170AE15E9C;
+	Sat,  2 Mar 2024 11:44:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709379455; cv=none; b=oLvye2Cuog9SzJp6N4G8isZPMKEeMEgvB+up92cGnMRw+4NmXx7As1K9XM9QGczAtDCFois8avUQO80fCU7vsnDQZ3ddUHpt2EgkzGZaDzmCskkPA1XZ98SUD9lpy9puzY6Xu2br6TitMyJzp/+iRmQ6LWKRAWLHSjzrXXqvYdg=
+	t=1709379853; cv=none; b=p+0LepFMWpyE8Tw3o09gYvEgS7IiYWy97ac1tw4MNlXCYWV4WMtafFB3BZbg23ytlaQueoWZm3W9d7fnci+DnTgt/EiVrCtwIeTrsBIbjJRXBWUs+ShCwxlgkYIYjtwN5dTrhiuDx5QGjXlV9C7hcfxxvzQZAmWIWykIJsCSRpQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709379455; c=relaxed/simple;
-	bh=lK4U4ZLcWMRofj4C36viEsAPI2ibBqPBg1dl/C+Vbbc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=OsIkAjRZpyagtvleq20eimt6+D7piJ3cjIK+NJWgpxpRE0Poo5z05gWdulO+nJmohlvlpjTH/W5oU27BI3IrRFwDNDFN1I1Q9Jcq3L4kHyrvweE/9WLLbSKV5Qq9GRF2rcoiMQWJyf4hI++I0HfkpA+J92PJO1PGJR6UNTdMJVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=D+k8uPyE; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=C2g7laN4; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1709379450;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kg/HWn0RBgyKR0X6ry85czEeS/YqxSOJwvJfCZhfBZE=;
-	b=D+k8uPyEfOjyY7Y0Omj3cDddiEEu8SaBgIHTay1QinYalGHInnrklrlVczSIpdy/E7rQPi
-	m6EDAtJ0M/MAisOkml9qRxBTCn5oTE4q3uHL/+ZveRqpuWWIYebRWPokmgQizgjHSs/pEi
-	TYKEDPzd04wuvLmlN/XdYx1YV6KsdQ1zKiER/uf/GcyJhY2ktmA2HoBlbj2pqo3LQj4mIQ
-	zc2BqjxQMWImomdPstx38eNXjg10lLEj53Vm4c5B2Y7ZK2Pj8ebKn2d85Bg2iHGtHwTZmj
-	b5a45iReS/WDwdDzEc46RVscRi9YHSi6pPJNpogyYU8tzATG+wdn2PQODJ/GsQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1709379450;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kg/HWn0RBgyKR0X6ry85czEeS/YqxSOJwvJfCZhfBZE=;
-	b=C2g7laN4Pmwh8tpWg9OdccAbRvdNL0XIMpX8TyeXV/MolAmcZZRzkxZ8/SBG5y2yIHM3/C
-	1rqICYqY6avmkXCQ==
-To: kernel test robot <lkp@intel.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org, Arjan van
- de Ven <arjan@linux.intel.com>, x86@kernel.org
-Subject: Re: arch/x86/include/asm/processor.h:698:16: sparse: sparse:
- incorrect type in initializer (different address spaces)
-In-Reply-To: <87a5nhwpus.ffs@tglx>
-References: <202403020457.RCJoQ3ts-lkp@intel.com> <87edctwr6y.ffs@tglx>
- <87a5nhwpus.ffs@tglx>
-Date: Sat, 02 Mar 2024 12:37:29 +0100
-Message-ID: <87y1b0vp8m.ffs@tglx>
+	s=arc-20240116; t=1709379853; c=relaxed/simple;
+	bh=TNT3Rx25q+66RksmLIf8H3eVPQJ5mFxDycrmZ1FMbNU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bZwjoMeH8kWy1hOFAy3BY0USNm8LcHSdpAQdpnCmYz+WEVTU3tU3HnVnIuphF3FomdEp6EVa203xa9gJN/galPVT3D5xrD57iM6syWeMzvmyabinvnzB8W8NlOiRzp6d7NKh1dN+3ZAzNWotTKG+m40vCtkAb/RMlaoGFg2Wagk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lKD7pmZR; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709379851; x=1740915851;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=TNT3Rx25q+66RksmLIf8H3eVPQJ5mFxDycrmZ1FMbNU=;
+  b=lKD7pmZRIdXmq05J8qAewl2p2IHr1/0Mt6OMQ7sxR9dDmTirVITFgv5R
+   cWSQWFl6Xt+7mPyafI8Lw/SotXTzD6Ns3mb+nK2oLPEqhVwsQKmODHSdb
+   tIXjchQVn5KSpv+UahRSowox8kKVUZX3OPTFTRPVknoGqs5ZZyAlwdQss
+   BBikFc7DN6yq/SuSibmZsS/hTdo4g6tR1laAR2vI3yEbKYiMBxQAwzRwa
+   b6jvDNvZNvAOL8RcEOU+E7rYQb76K18EF1SjkqODvBTU7mt11ync4J3oP
+   /srhXXD0qEPsSneMMlaatKufywVN643cyXCzCiABW88/7B0/KMMqsoSnW
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11000"; a="15364420"
+X-IronPort-AV: E=Sophos;i="6.06,199,1705392000"; 
+   d="scan'208";a="15364420"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2024 03:44:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,199,1705392000"; 
+   d="scan'208";a="12990824"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by fmviesa005.fm.intel.com with ESMTP; 02 Mar 2024 03:44:08 -0800
+Date: Sat, 2 Mar 2024 19:39:59 +0800
+From: Xu Yilun <yilun.xu@linux.intel.com>
+To: matthew.gerlach@linux.intel.com
+Cc: hao.wu@intel.com, trix@redhat.com, mdf@kernel.org, yilun.xu@intel.com,
+	linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] fpga: dfl: afu: support Rev 2 of DFL Port feature
+Message-ID: <ZeMQD+PH8lUfbVKa@yilunxu-OptiPlex-7050>
+References: <ZbjHl8ptQG5FdHvC@yilunxu-OptiPlex-7050>
+ <alpine.DEB.2.22.394.2401300948590.112016@sj-4150-psse-sw-opae-dev2>
+ <Zbnd8W1ciTKeoKc4@yilunxu-OptiPlex-7050>
+ <alpine.DEB.2.22.394.2401311610020.112016@sj-4150-psse-sw-opae-dev2>
+ <ZcBIjcFJjGKf0qcO@yilunxu-OptiPlex-7050>
+ <alpine.DEB.2.22.394.2402051600190.122158@sj-4150-psse-sw-opae-dev2>
+ <ZdF4JvYQQL8irnbW@yilunxu-OptiPlex-7050>
+ <alpine.DEB.2.22.394.2402201658400.191484@sj-4150-psse-sw-opae-dev2>
+ <ZdYhUK5yFFlhVV62@yilunxu-OptiPlex-7050>
+ <alpine.DEB.2.22.394.2403011142350.240045@sj-4150-psse-sw-opae-dev2>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.22.394.2403011142350.240045@sj-4150-psse-sw-opae-dev2>
 
-On Fri, Mar 01 2024 at 23:26, Thomas Gleixner wrote:
-> Sorry, my fault. I can reproduce now but it still does not make any
-> sense. The code is correct...
->
-> Let me put something together which the sparse folks can digest.
+On Fri, Mar 01, 2024 at 12:39:24PM -0800, matthew.gerlach@linux.intel.com wrote:
+> 
+> 
+> [snip]
+> 
+> > > 
+> > > Hi Yilun,
+> > > 
+> > > I think this conversation has gotten a little off track. This patch only
+> > > changes the port reset behavior at driver initialization for revision 2 of
+> > > the port IP. The behavior and the requirements of port reset during run time
+> > > have not changed. The existing implementation requires the user performing
+> > > the port reset to ensure appropriate SW was quiesced. This patch does not
+> > > change this requirement.
+> > 
+> > You are actually adding support to the new devices behavior defined by
+> > revision 2.  Previously the user requires the management PF driver to do port
+> > reset, and this only affects some logic in the PF itself and the impact could
+> > be handled inside the driver.  The current PF driver doesn't actually do anything
+> > because it (or any kernel component) never touches the disabled logic, and the
+> > user accessing of the mmapped but disabled logic won't cause system issues.
+> 
+> I'm wondering about the use case when Virtual Functions (VFs) are enabled
+> with the current driver. If partial reconfiguration of the port occurs,
+> which includes a reset, what happens to the user software attached to the
+> VFs when the hardware has changed out from under it? While the current port
 
-Bah. sparse is actually right. I completely missed the fact that this is
-an UP build which has:
+Ah, yes. That may be the problem for user, you can fix it.  But the fix
+could actually be easier, cause the port driver is fully aware of the
+reset request and the reset flow is under its control.
 
-extern struct cpuinfo_x86	boot_cpu_data;
+> implementation won't cause PCIe errors when the logic is disable, something
+> has to notify the user software that the hardware changed. I think the user
+> space software would be typically notified of the change by the
+> orchestration software performing the partial reconfiguration. I think the
+> use case of VFs with the original port implementation is logically
+> equivalent to the new port implementation with multiple PFs/VFs.
 
-#define cpu_info		boot_cpu_data
+The difference is that, the original port driver is fully responsible for the
+reset flow and the AFU mapping, while the new port implementation has no
+control to the to-be-resetted logic, it blindly does the reset.
 
-So any access with this_cpu*(), per_cpu*() etc. is actually incorrect from
-sparse's point of view.
+> 
+> > 
+> > But the new management PF does port reset and affect other PFs, and may
+> > cause disorder in other drivers. so you need extra code to support the
+> > behavior.
+> 
+> I think the real problem is that the new port is not doing as good of a job
+> preventing PCIe errors during port reset as the previous version.
 
-From a compiler point of view it just works because __percpu dissolves
-and the whole thing produces correct code magically.
-
-Most places in x86 use cpu_data(cpu) to access per cpu data which is
-defined as per_cpu(cpu_info, cpu) for SMP and boot_cpu_info for UP.
-
-That's fine, but there are places like the MCE code which really needs
-raw_cpu_ptr(). Sure we can write ugly wrappers for that and for some
-other accessors. But that's all just wrong and ugly.
-
-The proper solution would be to force SMP for x86, but Linus shot it
-down when I wanted to do that last time.
-
-Let me think about it.
+Even if the reset won't cause PCIe errors, the other PF/VF drivers may
+still meet HW access issues not understandable by themselves and cause
+kernel level panic.
 
 Thanks,
+Yilun
 
-        tglx
+> 
+> Matthew
+> > 
+> > This patch does make some progress, as you said, "With revision 2,the
+> > initial state of the logic inside the port is guaranteed to be valid, and
+> > a port reset is not required during driver initialization".  But it
+> > should not be the only patch to enable the new port reset behavior.
+> > 
+> > > 
+> > > > 
+> > > > > 
+> > > > > > 
+> > > > > > > image. I don't think the driver performing the port_reset() can know all the
+> > > > > > 
+> > > > > > Other PF drivers should know their own components. They should be aware
+> > > > > > that their devices are being reset.
+> > > > > 
+> > > > > The other PF drivers depend on the actual FPGA image being run.
+> > > > > 
+> > > > > > 
+> > > > > > > components to be able to provide any meaningful management.
+> > > > > > 
+> > > > > > If the reset provider and reset consumer are not in the same driver,
+> > > > > > they should interact with each other. IIRC, some reset controller class
+> > > > > > works for this purpose.
+> > > > > 
+> > > > > The other PFs in many cases can present as standard devices with existing
+> > > > > drivers like virtio-net or virtio-blk. It does not seem desireable to have
+> > > > > to change existing drivers for a particular FPGA implementation
+> > > > 
+> > > > If you have to use a specific method for reset, it is not a standard virtio
+> > > > pci device, and you have to make some change.
+> > > 
+> > > From the perspective of the PCI PF/VF implementing the virtio or other
+> > > standard device, the pci endpoint is completely compliant to the standard,
+> > > and no driver changes should be required. As mentioned above, this patch
+> > > does nothing to change any of this behavior. Consider a port reset that is
+> > > part of a partial configuration flow. The virtio endpoint can become
+> > > something completely different with a completely different driver. This
+> > 
+> > Then how could the virtio driver stop and remove itself to avoid crashing the
+> > kernel, and how could the new driver be probed.  If the answer is still
+> > userspace responsible for everything, that's not good to me.
+> > 
+> > Thanks,
+> > Yilun
+> > 
+> > > patch does not affect this flow either.
+> > > 
+> > > Thanks,
+> > > Matthew
+> > > 
+> > > > 
+> > > > Thanks,
+> > > > Yilun
+> > > > 
+> > > > > 
+> > > > > Thanks,
+> > > > > Matthew
+> > > > > > 
+> > > > > > Thanks,
+> > > > > > Yilun
+> > > > > > 
+> > > > > > > 
+> > > > > > > Thanks,
+> > > > > > > Matthew
+> > > > > > > 
+> > > > > > > > 
+> > > > > > > > Thanks,
+> > > > > > > > Yilun
+> > > > > > > > 
+> > > > > > > > > 
+> > > > > > > > > Do you want me to update the commit message with this information?
+> > > > > > > > > 
+> > > > > > > > > Thanks,
+> > > > > > > > > Matthew
+> > > > > > > > 
+> > > > > > > > 
+> > > > > > 
+> > > > > > 
+> > > > 
+> > 
 
