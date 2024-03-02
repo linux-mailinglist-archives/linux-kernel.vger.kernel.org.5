@@ -1,131 +1,147 @@
-Return-Path: <linux-kernel+bounces-89534-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89535-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E97B86F1AA
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 18:25:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC29786F1AF
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 18:33:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF7DB1F21F4B
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 17:25:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9212F28356A
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 17:33:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82AA32BAFF;
-	Sat,  2 Mar 2024 17:25:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 977662BB12;
+	Sat,  2 Mar 2024 17:33:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="bFn6PqM8"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="Q7cc409v"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8938622F14
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 17:24:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C453D2576E;
+	Sat,  2 Mar 2024 17:33:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709400299; cv=none; b=Fc/67/BhJt2vuXQ7h+bYp8iwmdOAOVM6v0txczM/U78QT9m7Km3CptHK87lUDoYp9FiIJk/hYP1y9DOHCpTnqwqLU8Cj9gB6gni55V9V0NnNY658H+3eUItJ6buzhSFgWB7z/QUbQfTeZ/mmp47qnon/Kk1sX5ZH6N8RqNFK5zQ=
+	t=1709400828; cv=none; b=vFHFLni5t/9mqQZrVafb606YoVm/ThKUKUjKgjUjBVqrL6pTCsofKBmz9QByBRulgS2+BmipjepMsz7lEu1HKcYUton3iQZ3XBCTaqgGWSn8rmBJrzNpN0pzX1BjeUSyjF33shIOL4tlCif3cEKVRfcS4vDSiq9Exz0VSRfpOjU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709400299; c=relaxed/simple;
-	bh=vl266v+DWxspHYSP5ObZ8S+P5zUYhXz+/kT1sIGtMm4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kT9bKxLcBvcm/6uEAfcwICvfIFrl82vhxiiHqv5lL9xCIuG6/ZFWL/G2HgH9c2Ve40U4wA8MK8hCiHOGOOH5Ga/oU5Xc09bWBvahSJcaWzMnwnmVVQblyyInlNBPLivGqiiUPJW8XTKx35GkKyuNVTCy2hZpQE+BqUYZXY0klac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=bFn6PqM8; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-564fc495d83so4052834a12.0
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Mar 2024 09:24:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1709400296; x=1710005096; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=LjK6wKdnzd4oQb5xoo5+khVVVZu7kTYhRXWNaWHDaW4=;
-        b=bFn6PqM8NKwr/2dbFE6Y2yb4J8zvPJbSUY/UBA8rb4h47xM/u84F/e/MtXcNO0Vdtu
-         7khuwt4TMIBSIGnJLvlETvDLA/gPMLVD5GRdWKyHZKgaWQ/N7c2iF0TpOjZ104nGaQ+j
-         KXuzI4E4Be2ZTgNdErxOHk7ae+THnzaGuHWjI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709400296; x=1710005096;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LjK6wKdnzd4oQb5xoo5+khVVVZu7kTYhRXWNaWHDaW4=;
-        b=Eqwi2+gibgL5FEDNZZMjV+bZpewU9GFpRhAQeXImhWGCM3DH37csg/2F6qw0lXg0vf
-         Cz4JYvEQMbcN/41qSn+hke/0t/s6Lo2gXX7Bw9Zi8Wx8gEwMUvLsHMiMVJMkb4A2dyx8
-         1wI7MQTD8QaWaXpwNSq7PWK0BKMEkcIrUWBZjdFyMN978x1vuqWJ4xERMOUxYqAhcNx0
-         Ex4FkrIXMP10P7+h2zaL/dIeWnCCbBjRUGtnG3lACpHPJJKiBcF4uJZrVpvKJIrWVtKX
-         RlEVhacMEF78Y9yE1CXUaFvQHirJaaW5FnF6avMcZuToF9AyLispUYGPaaKD1ZMx8n9L
-         M/AQ==
-X-Gm-Message-State: AOJu0YzY/WBi8XyOZwg0SCJ6vb1IUG4o2+M327TRACjDQBK2qdNXPFHe
-	qrGsc0IdT31MH4miPFqSJLHpqFmGeSDrprpR5NKkNTtMbaa10XCBUdUz/bm2ml0EMN65mu23gQT
-	//XbYRA==
-X-Google-Smtp-Source: AGHT+IG01ceSOIl08D70sRTbnuPcAwPbBMo5S19TGVGAETS49TgI2uq/kCnqI5Dn6I6ClyXwj8MTKQ==
-X-Received: by 2002:a17:906:c44c:b0:a3f:804f:c1a4 with SMTP id ck12-20020a170906c44c00b00a3f804fc1a4mr3574404ejb.74.1709400295683;
-        Sat, 02 Mar 2024 09:24:55 -0800 (PST)
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com. [209.85.208.48])
-        by smtp.gmail.com with ESMTPSA id pv25-20020a170907209900b00a3ee9305b02sm2883821ejb.20.2024.03.02.09.24.54
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 02 Mar 2024 09:24:54 -0800 (PST)
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-55a5e7fa471so4881685a12.1
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Mar 2024 09:24:54 -0800 (PST)
-X-Received: by 2002:a17:906:a3d8:b0:a44:c2e5:8055 with SMTP id
- ca24-20020a170906a3d800b00a44c2e58055mr2003778ejb.1.1709400294161; Sat, 02
- Mar 2024 09:24:54 -0800 (PST)
+	s=arc-20240116; t=1709400828; c=relaxed/simple;
+	bh=7wzKlRr3KNoyYV+XJySI9N+Suy6+yQ4gF1JspQ+dKgs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SyHrKNf4Uyz+GruAm/Bkhdwya4SgaxNmPXY0o/uJPWac1Kqx6Iy78Rraw3vc9V6JGiJvreKaKchFFHgtBOMPu8WJqHgybtNns4b6hp7vrPdOs7NEJzlXpWqN2Nf3sL2xgaSi80aFkjLta6chWpfJJKUvo1oe4DnP1KOkucZF0lo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=Q7cc409v; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=SCSvTS84dtDPixkR5UknuDrt5ZxGw8Irc52+regEcFc=; b=Q7cc409vjN3T4oKQsoWEker1H4
+	ihswIy+PKzLflbmvDzFw9rL3tEx0LSq3SRznJGoJneHaACzJYOhq37zR3aI6fR5kMv9d79aJgzFAY
+	WRHhlqbug1shcyQ+SojkZmUAxvn9iGCOjao52aHHEsmL3POhjqibA1ZPTRFLmHkODFITQaEJg8BTj
+	82ICoDNChrJ0M4pRUnXIAgIfBIFiQoUOImwWKMiK5Mm5zEIfXUEvlsK7KVvM44j9RKELdvLe1Z0AR
+	MFdU8i4kP8RtWldorVIyQz/MOh4maLHE/1S0/3l6jMPH+1Mx37uPMyIUCFhDRS2dj1B1eAjCr8Jpz
+	cWxmokKg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:48120)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rgT7N-0002nv-2e;
+	Sat, 02 Mar 2024 17:25:49 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rgT7K-0002oq-1G; Sat, 02 Mar 2024 17:25:46 +0000
+Date: Sat, 2 Mar 2024 17:25:45 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Heiner Kallweit <hkallweit1@gmail.com>
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>, Wei Fang <wei.fang@nxp.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org, Shenwei Wang <shenwei.wang@nxp.com>,
+	Clark Wang <xiaoning.wang@nxp.com>,
+	NXP Linux Team <linux-imx@nxp.com>
+Subject: Re: [PATCH net-next v8 3/8] net: phy: Add helper to set EEE Clock
+ stop enable bit
+Message-ID: <ZeNhGURTEfzwhikL@shell.armlinux.org.uk>
+References: <20240301100153.927743-1-o.rempel@pengutronix.de>
+ <20240301100153.927743-4-o.rempel@pengutronix.de>
+ <d550b591-cd83-4ac6-8fd5-f5e0e2ad71d9@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240302111244.3a1674be@gandalf.local.home>
-In-Reply-To: <20240302111244.3a1674be@gandalf.local.home>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sat, 2 Mar 2024 09:24:37 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wj376WMgZ24wKGEWDs_ojNtod-LDZBedPzDYRRcY60UYA@mail.gmail.com>
-Message-ID: <CAHk-=wj376WMgZ24wKGEWDs_ojNtod-LDZBedPzDYRRcY60UYA@mail.gmail.com>
-Subject: Re: [GIT PULL] tracing: Prevent trace_marker being bigger than
- unsigned short
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d550b591-cd83-4ac6-8fd5-f5e0e2ad71d9@gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Sat, 2 Mar 2024 at 08:10, Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> - The change to allow trace_marker writes to be as big as the trace_seq can
->   hold, and also the change that increases the size of the trace_seq to two
->   pages, caused PowerPC kselftest trace_marker test to fail. The trace_marker
->   kselftest writes up to subbuffer size which is determined by PAGE_SIZE.
->   On PowerPC, the PAGE_SIZE can be 64K, which means the selftest will write
->   a string that is around 64K in size. The output of the trace_marker is
->   performed with a vsnprintf("%.*s", size, string), but this write would make
->   the size greater than 32K, which is the max precision of "%.*s", and that
->   causes a kernel warning. The fix is simply to keep the write of trace_marker
->   less than or equal to max signed short.
+On Sat, Mar 02, 2024 at 06:16:34PM +0100, Heiner Kallweit wrote:
+> On 01.03.2024 11:01, Oleksij Rempel wrote:
+> > From: Andrew Lunn <andrew@lunn.ch>
+> > 
+> > The MAC driver can request that the PHY stops the clock during EEE
+> > LPI. This has normally been does as part of phy_init_eee(), however
+> > that function is overly complex and often wrongly used. Add a
+> > standalone helper, to aid removing phy_init_eee().
+> > 
+> > Signed-off-by: Andrew Lunn <andrew@lunn.ch>
+> > Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> > ---
+> >  drivers/net/phy/phy.c | 20 ++++++++++++++++++++
+> >  include/linux/phy.h   |  1 +
+> >  2 files changed, 21 insertions(+)
+> > 
+> > diff --git a/drivers/net/phy/phy.c b/drivers/net/phy/phy.c
+> > index 2bc0a7d51c63f..ab18b0d9beb47 100644
+> > --- a/drivers/net/phy/phy.c
+> > +++ b/drivers/net/phy/phy.c
+> > @@ -1579,6 +1579,26 @@ void phy_mac_interrupt(struct phy_device *phydev)
+> >  }
+> >  EXPORT_SYMBOL(phy_mac_interrupt);
+> >  
+> > +/**
+> > + * phy_eee_clk_stop_enable - Clock should stop during LIP
+> > + * @phydev: target phy_device struct
+> > + *
+> > + * Description: Program the MMD register 3.0 setting the "Clock stop enable"
+> > + * bit.
+> > + */
+> > +int phy_eee_clk_stop_enable(struct phy_device *phydev)
+> > +{
+> > +	int ret;
+> > +
+> > +	mutex_lock(&phydev->lock);
+> > +	ret = phy_set_bits_mmd(phydev, MDIO_MMD_PCS, MDIO_CTRL1,
+> > +			       MDIO_PCS_CTRL1_CLKSTOP_EN);
+> > +	mutex_unlock(&phydev->lock);
+> > +
+> > +	return ret;
+> > +}
+> > +EXPORT_SYMBOL_GPL(phy_eee_clk_stop_enable);
+> > +
+> I don't see a user of this function in the series.
+> Based on the commit description, wouldn't it be better to
+> make this patch part of a future series removing
+> phy_init_eee()?
 
-Please don't just add random limits that are based on other random limits.
+That depends who is going to do that work. If it's individual driver
+maintainers, then I think we want this to go in along with this series
+so that we don't end up with individual driver maintainers having to
+carry this patch, and submissions ending up with multiple copies of
+this patch or depending on other maintainers submissions.
 
-That printk warning is for "you did something obviously crazy".
+On the other hand, if someone is going to go through all the network
+drivers and update them as one series, then it probably makes more
+sense to move this to that series.
 
-That does NOT MEAN that you now should limit your strings to something
-JUST BORDERLINE CRAZY.
-
-See?
-
-There is not a way in hell that printing a 32kB string in tracing is
-valid. EVER.
-
-So stop it. Stop making limits be some random implementation detail.
-Make limits *sane*.
-
-Make a *sane* limit for tracing. Not a "avoid being called crazy" limit.
-
-Honestly, I suspect that a sane limit for tracing strings is likely on
-the order of tens or maybe hundreds of bytes. Not some kind of "fits
-in a short" that is just printk saying "I refuse to waste memory on
-the stack".
-
-Side note: for similar reasons the field-width is a 24-bit integer.
-And no, if you think that passing a 16MB field width is sane, you need
-to rethink your life. Again, that's a small implementation detail, not
-a "let's explore how stupid we can be".
-
-          Linus
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
