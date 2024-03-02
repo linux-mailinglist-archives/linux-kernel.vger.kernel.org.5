@@ -1,158 +1,230 @@
-Return-Path: <linux-kernel+bounces-89508-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89509-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1008686F154
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 17:35:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A3FA86F157
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 17:36:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41E741C20CDB
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 16:35:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B23D1F220AB
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 16:36:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FCBF1DFF3;
-	Sat,  2 Mar 2024 16:35:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BF352261F;
+	Sat,  2 Mar 2024 16:36:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lnQ3bLjR"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h2R0DoYH"
+Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 039DA17578
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 16:35:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2445E249E4;
+	Sat,  2 Mar 2024 16:36:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709397350; cv=none; b=HgXhE7NxgRUl9YMQhh4o5/u0/0kV/QinoS3Bk7fd2rSKRvDU+XXc6LHJyPEVSrhhM8k0xxWsHWnish7ZS7XHvZS1dqHzfOj5Iueqyq7dPaX3U50ajEXOMFZJzdrPF6hVoadKWANkq1DNrO3cqpqo5xKlvoijgaw6RNj2OaQohZ4=
+	t=1709397363; cv=none; b=l1kRNFNYNglTbaOHaX3nBnWKKijmHg64cLo7gpGcazd2IZyejno3voTJMdMsy6SCQKXWIjCZTSROGuIWqW3LRTX4mKrTX6r/edhPh/bg9EX7qqn2CkryDwOsL2VGZMJc8JTXUs2RC4b/skfMrMus/I9F+ED8qM8AFXAy3WfrUfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709397350; c=relaxed/simple;
-	bh=mfv1HfdmPI8fdPhYbBPOAH1fIt9nLhFaV8nxKi5LH8M=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=V+GLOBLad2G3iNwbnt07U6XnvrABDmm3CmEWBSokPj9ztg4/mHglyLcfZ8GSyEkVLoPSIhNHrM6iWnaYYFStJU64vqF6kvtA5QiZ45PYvCGa4a/130lpTMrv55DZ/6GSLJPZGOmszC3+FY8I6tu+nItpBuaQ+8jwsHgnteseSuA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lnQ3bLjR; arc=none smtp.client-ip=209.85.208.176
+	s=arc-20240116; t=1709397363; c=relaxed/simple;
+	bh=Xtbx2nuYQWaCxqLgTDSpprolfWKnQ7oHy+aJnjiL7EY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UKloqYGtnHBdX97odUSGhgEOCF69dz62scld/NM/9Mt/dSVwDvonJTW0KDzamX8VK7b0M5YQYbPeVj6wrrVAk2dEHc7fubUFVpcNO0CHFfCyLbjDcNErXQODwVKjFQnk4QswaDn0pziP827SyUYJvWkouN4VXsO0Ma+LP0nDRO0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h2R0DoYH; arc=none smtp.client-ip=209.85.167.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d27184197cso41478661fa.1
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Mar 2024 08:35:47 -0800 (PST)
+Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3c1e7a92a8eso121843b6e.1;
+        Sat, 02 Mar 2024 08:36:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709397346; x=1710002146; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=6e6z+3MaXoTllC5shSsv//DVSc5oQDrjOWLS3+A7iL8=;
-        b=lnQ3bLjRJp9EAwHTY+wzHdIbIvG5igDT61GFILteH9ykzmacVIm+wQ3sf9ZUKcPfBd
-         0qx+AaLN52h3gtppgLRlDuQpB1a/IfBO+diF8gTykxSZUGk7Ce3DU2KhjfiLI7+iMdOx
-         3D3srQ4rdB4IRnkAesaNLbFM4AfsAzk3V37aZ9w4XX1z+FGgr6Icw42NbNhWimc+xGhz
-         wco8EkKHl9D4yvWRdxV4w6kDoDcB27S/VZH3AJVhEfDAezMj74lw2YoWZtCcc3dBJobE
-         sVQEr955ngaCaJaxNuUle09QaUEpSJ92pFwMmoFYYwpXwUrv29qlpsQq3UOliNiw4uQL
-         Upjw==
+        d=gmail.com; s=20230601; t=1709397361; x=1710002161; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AmozHj9JCHaLBysyp3+5vSLKONfn8+Lx9doGoqfw5j0=;
+        b=h2R0DoYHItdrYUwjW2TRFddUILhfpIKa+Adv2BAcqVPWbwAHm1zsYZceqCA4CFHNcK
+         jhpFKJ/MDqmGDLEbR0fj5Jy1Sc7O3WtaOl9rqf2AOMRDFAKk4JFOg8il9nvsUTt1p+vM
+         n16e4PIuAoEzxyQdCU//eJdF/ObA01P3Yb6xJwhqur2W+dfBFGeQr3MJ+91/u4/EJO2l
+         C8rq6XWlmDmOn2QQs9OHqTuO/jbEVs9t1Swf2jVDk0gXg99bRK9vjMN7HLZlWiOe2eO8
+         sfsH1VJYlsJd5qOlnk+lNd6NXh3EEvhrJtUclMWNGrQBHDbfB6uEq7S5TPsazz0qhG6h
+         y3Ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709397346; x=1710002146;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6e6z+3MaXoTllC5shSsv//DVSc5oQDrjOWLS3+A7iL8=;
-        b=ZZRheM4jIqbWjw7GFNXqr+6I7QYk7Wa3mc1puwS2n0UeI/sVqkvhu54NAI/2c4mHpe
-         76/niQbAEH1GFfF9trhNJ9uFNe/ZZcFBSysuNSjNvkqlReZfHh2Wu/qDS45LURtEN7bp
-         4jtM8kCokdPqUrMJ/iPIOJuFJRy1GGKAGshwnqVsXKjk70+uGU0eLUSEyFqh3xjYt7V0
-         Gf4l4MCYRX3WnilYV3RK17Ps6o8QxfBr4M+Lmp1XAy1nwvJindevPOw0Z+o56LzV24E3
-         B6Kf30215wfeDouwKavSjPpuPr1+rTIo6kZ+nPFdOBaTBZEnpev2iE+gYuFV9QffmkSc
-         eCcA==
-X-Forwarded-Encrypted: i=1; AJvYcCVMGTAEijWmVOorAwcROt4hGcn3k9nsyuitqdPOzvVFV68s/0HL6DebWw4Fr4wKzCw3teb/Vp0KZkHz1+XF8yEvSVfvI9imLo7Q/DD2
-X-Gm-Message-State: AOJu0YwL2WJtaD3lA4f2724Of0AbAUqgoC2eQOJBTV8g/p9cOdHUZwD6
-	AuSivftqFC5H5i7vZO9/y2I3KymIzkohB2QM7ILHxGSkH7i3sisRIPMXWcEH
-X-Google-Smtp-Source: AGHT+IGlJ+hdrGnK505esCOHxSvoTG61Z0gG/nTd2nIOanMWktVOwVeoJcG+AgB9uxz6FKki/HgveQ==
-X-Received: by 2002:a2e:3801:0:b0:2d2:a9f8:c436 with SMTP id f1-20020a2e3801000000b002d2a9f8c436mr2881143lja.53.1709397345851;
-        Sat, 02 Mar 2024 08:35:45 -0800 (PST)
-Received: from localhost (a109-49-32-45.cpe.netcabo.pt. [109.49.32.45])
-        by smtp.gmail.com with ESMTPSA id p7-20020a05600c358700b00412b6fbb9b5sm41816wmq.8.2024.03.02.08.35.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Mar 2024 08:35:45 -0800 (PST)
-From: Rui Miguel Silva <rmfrfs@gmail.com>
-To: Alex Elder <elder@ieee.org>, Mikhail Lobanov <m.lobanov@rosalinux.ru>
-Cc: greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
- linux-kernel@vger.kernel.org
-Subject: Re: [greybus-dev] [PATCH] greybus: Fix deref of NULL in
- __gb_lights_flash_brightness_set
-In-Reply-To: <07df4b96-70c2-41de-9d76-1deb80447a79@ieee.org>
-References: <20240301190425.120605-1-m.lobanov@rosalinux.ru>
- <07df4b96-70c2-41de-9d76-1deb80447a79@ieee.org>
-Date: Sat, 02 Mar 2024 16:35:44 +0000
-Message-ID: <m3o7bwlhgf.fsf@gmail.com>
+        d=1e100.net; s=20230601; t=1709397361; x=1710002161;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AmozHj9JCHaLBysyp3+5vSLKONfn8+Lx9doGoqfw5j0=;
+        b=fWKdcX5jobD3UO3bUXEHjnkrFuXbdHCIQ6eI35Y6KAwvc4gxedeUJVdkc9H4u2sV9+
+         lw1R9ciqtTcHy+kghvcc1Ax4rNjXoCe/pErJXD17n0x96ShiHeh310WGZZPHvqNygVW2
+         BjeEzpQaqwgD7SaCgcw6ouULLETlx4nDKlcAQP6iodL1/H0f/sk+nBqppyv1pCQKn0Zw
+         mh9qv/KDcVIEjDVVWdIHKUZ59yYABXpC5RuO2Xc/CfAtr7DcsGpH5LrEVRozd9etqhk6
+         AeoHKhKXttCl3BrBK0WWuu/lvYr6gmcEal9m5XxouXcJN0dzge6fzRiv+kb+a0nTw6Ti
+         EssQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUyrQXIJAudwca12PXttSI8Te7z5pGK5fwjc1AK/omc6G6MWsAp2mz1cbA+iMPADu7XwB4REYtaqtpsx8Ae91MGWuUj9IpQNy6kG4PxBtqG1W5ZfzsmDNibEAx49rSrjTE9qEZ3VVopKS7E+4RrFZrYCLsLXRYZ3oODKm/wjvWPHSGOz7VhfFaVkF4=
+X-Gm-Message-State: AOJu0YzX18pqWQSg8ntkTmHtINwUdiaBj4rhveFMj6Zxa1wFaxIKXglt
+	5PZGqKBlPu3dtE5gY7e2E6iom9KZAhD/jNtHmRi9JEj9eqCZxE+PEeeZZgLoWuq3m3oXqWoxTnb
+	e5Racy6ciUKLaqbHEz1dUzOIFKU4=
+X-Google-Smtp-Source: AGHT+IE/hmhDISfbeu6Of94WJBDXm80DHpfhb3KQdUwmZi1drGckce+BfkYWP75tx/tTTDDdE89FUa+AnizRUXo9G1U=
+X-Received: by 2002:a05:6870:e305:b0:21e:e583:25e1 with SMTP id
+ z5-20020a056870e30500b0021ee58325e1mr5567366oad.32.1709397361171; Sat, 02 Mar
+ 2024 08:36:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20240301193831.3346-1-linux.amoon@gmail.com> <20240301193831.3346-2-linux.amoon@gmail.com>
+ <3d1c7682-d163-4bcf-bd41-d7db0c8f61d1@wanadoo.fr>
+In-Reply-To: <3d1c7682-d163-4bcf-bd41-d7db0c8f61d1@wanadoo.fr>
+From: Anand Moon <linux.amoon@gmail.com>
+Date: Sat, 2 Mar 2024 22:05:46 +0530
+Message-ID: <CANAwSgR0aQ7nt1y5xknvVjHSnfvTaC8JZMLWurb8z2D0Oxg6Rw@mail.gmail.com>
+Subject: Re: [PATCH v1 1/4] usb: ehci-exynos: Use devm_clk_get_enabled() helpers
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: Alan Stern <stern@rowland.harvard.edu>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Alim Akhtar <alim.akhtar@samsung.com>, 
+	linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Alex,
-Alex Elder <elder@ieee.org> writes:
+Hi Christophe,
 
-> On 3/1/24 1:04 PM, Mikhail Lobanov wrote:
->> Dereference of null pointer in the __gb_lights_flash_brightness_set function.
->> Assigning the channel the result of executing the get_channel_from_mode function
->> without checking for NULL may result in an error.
->> 
->> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+On Sat, 2 Mar 2024 at 21:19, Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
 >
-> I think this is an actual problem but this might not be the
-> right fix.
+> Le 01/03/2024 =C3=A0 20:38, Anand Moon a =C3=A9crit :
+> > The devm_clk_get_enabled() helpers:
+> >      - call devm_clk_get()
+> >      - call clk_prepare_enable() and register what is needed in order t=
+o
+> >       call clk_disable_unprepare() when needed, as a managed resource.
+> >
+> > This simplifies the code and avoids the calls to clk_disable_unprepare(=
+).
+> >
+> > While at it, use dev_err_probe consistently, and use its return value
+> > to return the error code.
+> >
+> > Signed-off-by: Anand Moon <linux.amoon@gmail.com>
+> > ---
+> >   drivers/usb/host/ehci-exynos.c | 30 +++++-------------------------
+> >   1 file changed, 5 insertions(+), 25 deletions(-)
+> >
+> > diff --git a/drivers/usb/host/ehci-exynos.c b/drivers/usb/host/ehci-exy=
+nos.c
+> > index f644b131cc0b..05aa3d9c2a3b 100644
+> > --- a/drivers/usb/host/ehci-exynos.c
+> > +++ b/drivers/usb/host/ehci-exynos.c
+> > @@ -159,19 +159,12 @@ static int exynos_ehci_probe(struct platform_devi=
+ce *pdev)
+> >
+> >       err =3D exynos_ehci_get_phy(&pdev->dev, exynos_ehci);
+> >       if (err)
+> > -             goto fail_clk;
+> > -
+> > -     exynos_ehci->clk =3D devm_clk_get(&pdev->dev, "usbhost");
+> > -
+> > -     if (IS_ERR(exynos_ehci->clk)) {
+> > -             dev_err(&pdev->dev, "Failed to get usbhost clock\n");
+> > -             err =3D PTR_ERR(exynos_ehci->clk);
+> > -             goto fail_clk;
+> > -     }
+> > +             goto fail_io;
+> >
+> > -     err =3D clk_prepare_enable(exynos_ehci->clk);
+> > -     if (err)
+> > -             goto fail_clk;
+> > +     exynos_ehci->clk =3D devm_clk_get_enabled(&pdev->dev, "usbhost");
+> > +     if (IS_ERR(exynos_ehci->clk))
+> > +             return dev_err_probe(&pdev->dev, PTR_ERR(exynos_ehci->clk=
+),
+> > +                               "Failed to get usbhost clock\n");
+> >
+> >       hcd->regs =3D devm_platform_get_and_ioremap_resource(pdev, 0, &re=
+s);
+> >       if (IS_ERR(hcd->regs)) {
+> > @@ -223,8 +216,6 @@ static int exynos_ehci_probe(struct platform_device=
+ *pdev)
+> >       exynos_ehci_phy_disable(&pdev->dev);
+> >       pdev->dev.of_node =3D exynos_ehci->of_node;
+> >   fail_io:
+> > -     clk_disable_unprepare(exynos_ehci->clk);
+> > -fail_clk:
+> >       usb_put_hcd(hcd);
+> >       return err;
+> >   }
+> > @@ -240,8 +231,6 @@ static void exynos_ehci_remove(struct platform_devi=
+ce *pdev)
+> >
+> >       exynos_ehci_phy_disable(&pdev->dev);
+> >
+> > -     clk_disable_unprepare(exynos_ehci->clk);
+> > -
+> >       usb_put_hcd(hcd);
+> >   }
+> >
+> > @@ -249,7 +238,6 @@ static void exynos_ehci_remove(struct platform_devi=
+ce *pdev)
+> >   static int exynos_ehci_suspend(struct device *dev)
+> >   {
+> >       struct usb_hcd *hcd =3D dev_get_drvdata(dev);
+> > -     struct exynos_ehci_hcd *exynos_ehci =3D to_exynos_ehci(hcd);
+> >
+> >       bool do_wakeup =3D device_may_wakeup(dev);
+> >       int rc;
+> > @@ -260,25 +248,17 @@ static int exynos_ehci_suspend(struct device *dev=
+)
+> >
+> >       exynos_ehci_phy_disable(dev);
+> >
+> > -     clk_disable_unprepare(exynos_ehci->clk);
 >
-> The point of the call to get_channel_from_mode() is to get
-> the attached torch channel if the passed-in channel is a
-> flash channel.  It's *possible* that any flash channel will
-> *always* have an attached torch channel, but if so there
-> ought to be a comment to that effect near this call (to
-> explain why there's no need for the null pointer check).
+> Hi,
 >
-> I think Dan's suggestion should be implemented as well.
-> It's possible the intention really *was* to have
-> get_channel_from_mode() return the original channel pointer
-> if there is no attached channel with the requested mode.
-> But if so, that should be done differently.  I.e., Dan's
-> suggestion should be taken, and the callers should use the
-> passed-in channel if the call to get_channel_from_mode()
-> returns NULL.  (I hope that's clear.)
+> I don't think that removing clk_[en|dis]abble from the suspend and
+> resume function is correct.
 >
-> So anyway, I think this (and Dan's suggestion) should be
-> addressed, but your fix might not be correct.
+> The goal is to stop some hardware when the system is suspended, in order
+> to save some power.
+Yes correct,
 >
-> Rui, can you please shed some light on the situation?
+> Why did you removed it?
+>
 
-As we talked,  this email was sent at the same time as my replies to
-this thread and you think I addressed your concerns in that replies.
-If not, just go ahead and ask again.
+devm_clk_get_enabled  function register callback for clk_prepare_enable
+and clk_disable_unprepare, so when the clock resource is not used it should=
+ get
+disabled.
 
-Cheers,
-   Rui
+[0] https://elixir.bootlin.com/linux/latest/source/drivers/clk/clk-devres.c=
+#L75
+
+I have also tested with rtc suspend & resume and did not find any issue.
+
+> CJ
+
+Thanks
+-Anand
 >
-> 					-Alex
+> > -
+> >       return rc;
+> >   }
+> >
+> >   static int exynos_ehci_resume(struct device *dev)
+> >   {
+> >       struct usb_hcd *hcd =3D dev_get_drvdata(dev);
+> > -     struct exynos_ehci_hcd *exynos_ehci =3D to_exynos_ehci(hcd);
+> >       int ret;
+> >
+> > -     ret =3D clk_prepare_enable(exynos_ehci->clk);
+> > -     if (ret)
+> > -             return ret;
+> > -
+> >       ret =3D exynos_ehci_phy_enable(dev);
+> >       if (ret) {
+> >               dev_err(dev, "Failed to enable USB phy\n");
+> > -             clk_disable_unprepare(exynos_ehci->clk);
+> >               return ret;
+> >       }
+> >
 >
->> 
->> Fixes: 2870b52bae4c ("greybus: lights: add lights implementation")
->> Signed-off-by: Mikhail Lobanov <m.lobanov@rosalinux.ru>
->> ---
->>   drivers/staging/greybus/light.c | 9 +++++++--
->>   1 file changed, 7 insertions(+), 2 deletions(-)
->> 
->> diff --git a/drivers/staging/greybus/light.c b/drivers/staging/greybus/light.c
->> index 87d36948c610..929514350947 100644
->> --- a/drivers/staging/greybus/light.c
->> +++ b/drivers/staging/greybus/light.c
->> @@ -148,10 +148,15 @@ static int __gb_lights_flash_brightness_set(struct gb_channel *channel)
->>   						GB_CHANNEL_MODE_TORCH);
->>   
->>   	/* For not flash we need to convert brightness to intensity */
->> -	intensity = channel->intensity_uA.min +
->> +
->> +	if (channel) {
->> +		intensity = channel->intensity_uA.min +
->>   			(channel->intensity_uA.step * channel->led->brightness);
->>   
->> -	return __gb_lights_flash_intensity_set(channel, intensity);
->> +		return __gb_lights_flash_intensity_set(channel, intensity);
->> +	}
->> +
->> +	return 0;
->>   }
->>   #else
->>   static struct gb_channel *get_channel_from_cdev(struct led_classdev *cdev)
 
