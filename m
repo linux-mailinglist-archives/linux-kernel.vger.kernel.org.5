@@ -1,226 +1,265 @@
-Return-Path: <linux-kernel+bounces-89311-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89312-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE31886EE24
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 03:24:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A69386EE26
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 03:36:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5C5228710F
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 02:24:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F28751C21BFD
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 02:36:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EC99BA45;
-	Sat,  2 Mar 2024 02:24:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA11A3D64;
+	Sat,  2 Mar 2024 02:36:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="ndJiAJi0"
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AEQVqEC5"
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8821749F
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 02:24:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1531384
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 02:36:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709346274; cv=none; b=ifpfUGIQUIMmdPKZKWafq/xXaPLfZqxnQHPJV8NY6QwDekG/5/LgFSrDiQgsYKdyj5qj0SGKtkR5en9JNzdyx4LEhhHtnOlWFet45crVq6I8dHv1nz4UAC+KAjDBtq4897kHGCwjKc0l0GgB2gbWfA313vUciu5TFWCDAzzkNtE=
+	t=1709346992; cv=none; b=IKJKHcsCqlifxfMMN0ByFIUFfaI7SwODlEj2pg9d7QQ8ZIQFfWpkt1R8oG7eVY8CA9cBux8TzMl6VlN21gtAc2Ym1RRS3/+sT+KKrtoe98Q3pSAhwS2cxqWaOANMav08PqlEgpsNuI3Ppwr4mPQYU/cIlcDL/NML5WQ/FiQpLBw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709346274; c=relaxed/simple;
-	bh=ZbRjRfGgsE7JtMXZ7+GBMuqAIJuCRArBk/R4UQi4fa8=;
+	s=arc-20240116; t=1709346992; c=relaxed/simple;
+	bh=h85jpT5VMKAmcwx8xjty1pBSWn4rm7EQTJbenc1Kkn0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=E5QnDjFncTZNW/aIoqBT4sN6xsqa7GzIe2ho7VUl58gcECrvx66v05Hn0FajTCmZVrt3NV4hll1nYyYuFiCbjOPrvGmpt8EB9pDwcCUKRaZNf1951pIhJqkmX1YEDqgyfhNMJ/CETvX/wCPDTqSDm1t6HPYQAfcI+j+pJoZhSH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=ndJiAJi0; arc=none smtp.client-ip=209.85.208.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2d1094b5568so30981581fa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 18:24:32 -0800 (PST)
+	 To:Cc:Content-Type; b=KMP91d4ZzsOhQ235gglkZXWa2oZVz6NLCvnvJongM/SoEf2fRS2bdnUaLEksKPWRQC5676wNcys7pUGDM3IOJ9hQvzzXaamFzsyXXi8TvgbFJJc1CeBC/qtKB0680fkWqvgWGBYmd00N9UrSB3fpWDhKPl5zxxQEXc6x42AhpZ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=AEQVqEC5; arc=none smtp.client-ip=209.85.167.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-513298d6859so2420749e87.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Mar 2024 18:36:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1709346271; x=1709951071; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0BPRTmka5fJv1/6kKHd7XoCtkBtwYqpJPZBGmWQG3Mo=;
-        b=ndJiAJi0ZLdzKkVqWLckKAG83dKa+i7ZKFjdJe0u7P+lBwSBg8A9ySV49jg0W+LXCr
-         jhS0IXEegG6x7obSBiB1C5eX0qcVW2NRK7Su0qxhn4iLl1Oix6ukPLVDGNtc5XPDXyrU
-         qgvwY52pPfR9IhbMgXGZvX+1Cn5WkakYmhBQQ=
+        d=linaro.org; s=google; t=1709346989; x=1709951789; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=5POyl/4677bPTPLA6iBYKpbwNy+pWBIIcesnixttt5A=;
+        b=AEQVqEC5nf1iFueyyhc+O04VZuj1elvrxJeWGCkza2zAoM3MiztoDLOPi5f/n/2wR6
+         hC9efIkyjB7iv4lLdIcGLLvROmqid3hM6rZ6RCcyPwhGgRxY8dQwHbxHRCHsYEeYSPGQ
+         cHxmNXWZp1W12cv1ddVUHBrTg50IrObQdpxXcy4pSVkK4Pdv0jmex+I85mwhpv11wiKe
+         qqe883ElcA/L3lNJeCwknscbzUHOiyviS0yslp3Z/flE8or51RrQJ45RVoEExzgtVU72
+         rwnx87KlApWEeGBzfrkVZm3ADStVPpujkAThgSmdzKcc9/8inwGY1WKRsvcUP2Cmqk0R
+         UbTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709346271; x=1709951071;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0BPRTmka5fJv1/6kKHd7XoCtkBtwYqpJPZBGmWQG3Mo=;
-        b=ZsKB7pNX+ifdoHAwNKhbEjCzeIFk3KsIs344bDJSRiES8eX5f3EHwPD/lqS46SgBqg
-         PzoMxo2U+ZKvw/5IaEKTTI2oRVfIkAIC9AajqfcBlpCW4L5/J6cwL662MrkOnHDy9VWN
-         TcMgzJOj1KtDZa3o3PCx/gOML9TcQ9POPxSS3p5/b89KBW/K0N8PijWEYKV49d1I6jhq
-         0duvWzyX5NgjwxFGyuJ0NGbXpOpBwNbRnZfh063/GZ6TRiC2pGC5Q8YRUreIFBuIAYxK
-         raXWacRUtKnmKkxim0kZJShYNCJzcg3ZA3bPQQH8kgVybAISj1cSIbiug/PnJC9M6N1z
-         zz1Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVU9BeZIQdR4moAyxu3sJ/whjoImKaIJwjELbzZFyoq7WZKXg5cUAs9joePav/CxLPZTUhYVjSTHwWsZ6zJX+xa2tnp6CJ2uZqWHwmb
-X-Gm-Message-State: AOJu0YynlLSWN0NVvKGn+nZ/AOUTZG/vwojHNJXihKVu+KW+CEaLamAB
-	yG8YNMiDS5QBeboPUF/J3YIUOBEMlpP5g3cWNsN2CAxGBP3Qh/j/HV6QgU5zOWuL/HKTRcN01tm
-	u88sqrUvVjuKCFZ56pEfZaxYUH6Jl2PR1TYUDRA==
-X-Google-Smtp-Source: AGHT+IH98YLZnMxBAG59okgQ+PyTSyL2rsPj7i9rV8TY6srfxIhgylxvaw0NdCb2O9sVvrFMBArv71G6Pgzuxs54Gso=
-X-Received: by 2002:a2e:a688:0:b0:2d2:a9d6:c435 with SMTP id
- q8-20020a2ea688000000b002d2a9d6c435mr2033116lje.34.1709346270566; Fri, 01 Mar
- 2024 18:24:30 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709346989; x=1709951789;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5POyl/4677bPTPLA6iBYKpbwNy+pWBIIcesnixttt5A=;
+        b=SIwGDbHXpRryhqtAop7IRnW+uchArp2cTeNslNH59t1Q1BIngeIt8bkEivSnpyVpKi
+         lc+2H7AGWmoGEHMGJlfA01S+rhoAFUKj5WRnEEsGaV/rEZ2dFkse9NKsGnmxVctVQ54C
+         ZR4p0gSYFHxh5YPXpUxGF6v+kpZZAf0OQOFNs08NvpcPs2bliYer9Ba/arehSeb9seg1
+         /WkFrJ+gkWO6ahQvDUCCTpKX+Mpysnp4DWYNddIe5A4HP033tu/3+wTgzCJ+6xBjn9by
+         YxzaoHxFJEAb8TvBSArXe53YYDY9LREo7vumhp+YnAFb9cz6UA8Py3h8+4ucjkzLwQIb
+         wlcA==
+X-Forwarded-Encrypted: i=1; AJvYcCXH7ZaycuCNnTS5nI+sr7R3Kj+3dIDpmFT5LjAkOR2tyvlreHYUcypUKasrhSpA5FG9s+4lv0v4z4NucbO1NymXFHOFxQZ2MlHxDY2F
+X-Gm-Message-State: AOJu0Yw9W5z7ZrAN9tcyOncGQ+VUe1lF7E7lehhcI7/e9OMBsjOvNnKk
+	UlWBXfckRvv9MeaXwMui9Ki/Dwn4+NrJ94AWfuwZm0ablNz5tLLanbBRra3rvVQE9hM0jX6WA0B
+	pj9fPEF+zhhUuDQTSF+ClZUattcekaeC5wqAing==
+X-Google-Smtp-Source: AGHT+IHXwCc1btbgWjvxQYTUfULNjSSVQiId0NmekC+LhMs5EOmKYO9wVZMGd6O430V2MhOPIxRmQzaxlI79b0yDRl4=
+X-Received: by 2002:a05:6512:78d:b0:512:d575:4745 with SMTP id
+ x13-20020a056512078d00b00512d5754745mr2199873lfr.1.1709346988970; Fri, 01 Mar
+ 2024 18:36:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <55900c6a-f181-4c5c-8de2-bca640c4af3e@paulmck-laptop>
- <10FC3F5F-AA33-4F81-9EB6-87EB2D41F3EE@joelfernandes.org> <99b2ccae-07f6-4350-9c55-25ec7ae065c0@paulmck-laptop>
-In-Reply-To: <99b2ccae-07f6-4350-9c55-25ec7ae065c0@paulmck-laptop>
-From: Joel Fernandes <joel@joelfernandes.org>
-Date: Fri, 1 Mar 2024 21:24:15 -0500
-Message-ID: <CAEXW_YQ+40a1-hk5ZP+QJ54xniSutosC7MjMscJJy8fen-gU9Q@mail.gmail.com>
-Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
-To: paulmck@kernel.org
-Cc: Steven Rostedt <rostedt@goodmis.org>, Network Development <netdev@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org, 
-	kernel-team <kernel-team@cloudflare.com>
+References: <20240122073903.24406-1-baolu.lu@linux.intel.com> <20240122073903.24406-6-baolu.lu@linux.intel.com>
+In-Reply-To: <20240122073903.24406-6-baolu.lu@linux.intel.com>
+From: Zhangfei Gao <zhangfei.gao@linaro.org>
+Date: Sat, 2 Mar 2024 10:36:17 +0800
+Message-ID: <CABQgh9FwOVsFe3+5VG0_rDruJVW0ueHTcsnxUcVAvFqrF4Vz6Q@mail.gmail.com>
+Subject: Re: [PATCH v3 5/8] iommufd: Associate fault object with iommufd_hw_pgtable
+To: Lu Baolu <baolu.lu@linux.intel.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, Kevin Tian <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>, 
+	Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>, 
+	Jean-Philippe Brucker <jean-philippe@linaro.org>, Nicolin Chen <nicolinc@nvidia.com>, 
+	Yi Liu <yi.l.liu@intel.com>, Jacob Pan <jacob.jun.pan@linux.intel.com>, 
+	Joel Granados <j.granados@samsung.com>, iommu@lists.linux.dev, 
+	virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-(Shrinking CC a bit)
-
-On Thu, Feb 29, 2024 at 1:29=E2=80=AFPM Paul E. McKenney <paulmck@kernel.or=
-g> wrote:
+On Mon, 22 Jan 2024 at 15:46, Lu Baolu <baolu.lu@linux.intel.com> wrote:
 >
-> On Thu, Feb 29, 2024 at 12:41:55PM -0500, Joel Fernandes wrote:
-> > > On Feb 29, 2024, at 11:57=E2=80=AFAM, Paul E. McKenney <paulmck@kerne=
-l.org> wrote:
-> > > =EF=BB=BFOn Thu, Feb 29, 2024 at 09:21:48AM -0500, Joel Fernandes wro=
-te:
-> > >>> On 2/28/2024 5:58 PM, Paul E. McKenney wrote:
-> > >>> On Wed, Feb 28, 2024 at 02:48:44PM -0800, Alexei Starovoitov wrote:
-> > >>>> On Wed, Feb 28, 2024 at 2:31=E2=80=AFPM Steven Rostedt <rostedt@go=
-odmis.org> wrote:
-> > >>>>>
-> > >>>>> On Wed, 28 Feb 2024 14:19:11 -0800
-> > >>>>> "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> > >>>>>
-> > >>>>>>>>
-> > >>>>>>>> Well, to your initial point, cond_resched() does eventually in=
-voke
-> > >>>>>>>> preempt_schedule_common(), so you are quite correct that as fa=
-r as
-> > >>>>>>>> Tasks RCU is concerned, cond_resched() is not a quiescent stat=
-e.
-> > >>>>>>>
-> > >>>>>>> Thanks for confirming. :-)
-> > >>>>>>
-> > >>>>>> However, given that the current Tasks RCU use cases wait for tra=
-mpolines
-> > >>>>>> to be evacuated, Tasks RCU could make the choice that cond_resch=
-ed()
-> > >>>>>> be a quiescent state, for example, by adjusting rcu_all_qs() and
-> > >>>>>> .rcu_urgent_qs accordingly.
-> > >>>>>>
-> > >>>>>> But this seems less pressing given the chance that cond_resched(=
-) might
-> > >>>>>> go away in favor of lazy preemption.
-> > >>>>>
-> > >>>>> Although cond_resched() is technically a "preemption point" and n=
-ot truly a
-> > >>>>> voluntary schedule, I would be happy to state that it's not allow=
-ed to be
-> > >>>>> called from trampolines, or their callbacks. Now the question is,=
- does BPF
-> > >>>>> programs ever call cond_resched()? I don't think they do.
-> > >>>>>
-> > >>>>> [ Added Alexei ]
-> > >>>>
-> > >>>> I'm a bit lost in this thread :)
-> > >>>> Just answering the above question.
-> > >>>> bpf progs never call cond_resched() directly.
-> > >>>> But there are sleepable (aka faultable) bpf progs that
-> > >>>> can call some helper or kfunc that may call cond_resched()
-> > >>>> in some path.
-> > >>>> sleepable bpf progs are protected by rcu_tasks_trace.
-> > >>>> That's a very different one vs rcu_tasks.
-> > >>>
-> > >>> Suppose that the various cond_resched() invocations scattered throu=
-ghout
-> > >>> the kernel acted as RCU Tasks quiescent states, so that as soon as =
-a
-> > >>> given task executed a cond_resched(), synchronize_rcu_tasks() might
-> > >>> return or call_rcu_tasks() might invoke its callback.
-> > >>>
-> > >>> Would that cause BPF any trouble?
-> > >>>
-> > >>> My guess is "no", because it looks like BPF is using RCU Tasks (as =
-you
-> > >>> say, as opposed to RCU Tasks Trace) only to wait for execution to l=
-eave a
-> > >>> trampoline.  But I trust you much more than I trust myself on this =
-topic!
-> > >>
-> > >> But it uses RCU Tasks Trace as well (for sleepable bpf programs), no=
-t just
-> > >> Tasks? Looks like that's what Alexei said above as well, and I confi=
-rmed it in
-> > >> bpf/trampoline.c
-> > >>
-> > >>        /* The trampoline without fexit and fmod_ret progs doesn't ca=
-ll original
-> > >>         * function and doesn't use percpu_ref.
-> > >>         * Use call_rcu_tasks_trace() to wait for sleepable progs to =
-finish.
-> > >>         * Then use call_rcu_tasks() to wait for the rest of trampoli=
-ne asm
-> > >>         * and normal progs.
-> > >>         */
-> > >>        call_rcu_tasks_trace(&im->rcu, __bpf_tramp_image_put_rcu_task=
-s);
-> > >>
-> > >> The code comment says it uses both.
-> > >
-> > > BPF does quite a few interesting things with these.
-> > >
-> > > But would you like to look at the update-side uses of RCU Tasks Rude
-> > > to see if lazy preemption affects them?  I don't believe that there
-> > > are any problems here, but we do need to check.
-> >
-> > Sure I will be happy to. I am planning look at it in detail over the 3 =
-day weekend. Too much fun! ;-)
+> When allocating a user iommufd_hw_pagetable, the user space is allowed to
+> associate a fault object with the hw_pagetable by specifying the fault
+> object ID in the page table allocation data and setting the
+> IOMMU_HWPT_FAULT_ID_VALID flag bit.
 >
-> Thank you, and looking forward to seeing what you come up with!
+> On a successful return of hwpt allocation, the user can retrieve and
+> respond to page faults by reading and writing the file interface of the
+> fault object.
 >
-> The canonical concern would be that someone somewhere is using either
-> call_rcu_tasks_rude() or synchronize_rcu_tasks_rude() to wait for
-> non-preemptible regions of code that does not account for the possibility
-> of preemption in CONFIG_PREEMPT_NONE or PREEMPT_PREEMPT_VOLUNTARY kernels=
-.
+> Once a fault object has been associated with a hwpt, the hwpt is
+> iopf-capable, indicated by fault_capable set to true. Attaching,
+> detaching, or replacing an iopf-capable hwpt to an RID or PASID will
+> differ from those that are not iopf-capable. The implementation of these
+> will be introduced in the next patch.
 >
-> I *think* that these are used only to handle the possibility
-> of tracepoints on functions on the entry/exit path and on the
-> RCU-not-watching portions of the idle loop.  If so, then there is no
-> difference in behavior for lazy preemption.  But who knows?
+> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+> ---
+>  drivers/iommu/iommufd/iommufd_private.h | 11 ++++++++
+>  include/uapi/linux/iommufd.h            |  6 +++++
+>  drivers/iommu/iommufd/fault.c           | 14 ++++++++++
+>  drivers/iommu/iommufd/hw_pagetable.c    | 36 +++++++++++++++++++------
+>  4 files changed, 59 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/iommu/iommufd/iommufd_private.h b/drivers/iommu/iommufd/iommufd_private.h
+> index 52d83e888bd0..2780bed0c6b1 100644
+> --- a/drivers/iommu/iommufd/iommufd_private.h
+> +++ b/drivers/iommu/iommufd/iommufd_private.h
+> @@ -293,6 +293,8 @@ int iommufd_check_iova_range(struct io_pagetable *iopt,
+>  struct iommufd_hw_pagetable {
+>         struct iommufd_object obj;
+>         struct iommu_domain *domain;
+> +       struct iommufd_fault *fault;
+> +       bool fault_capable : 1;
+>  };
+>
+>  struct iommufd_hwpt_paging {
+> @@ -446,8 +448,17 @@ struct iommufd_fault {
+>         struct wait_queue_head wait_queue;
+>  };
+>
+> +static inline struct iommufd_fault *
+> +iommufd_get_fault(struct iommufd_ucmd *ucmd, u32 id)
+> +{
+> +       return container_of(iommufd_get_object(ucmd->ictx, id,
+> +                                              IOMMUFD_OBJ_FAULT),
+> +                           struct iommufd_fault, obj);
+> +}
+> +
+>  int iommufd_fault_alloc(struct iommufd_ucmd *ucmd);
+>  void iommufd_fault_destroy(struct iommufd_object *obj);
+> +int iommufd_fault_iopf_handler(struct iopf_group *group);
+>
+>  #ifdef CONFIG_IOMMUFD_TEST
+>  int iommufd_test(struct iommufd_ucmd *ucmd);
+> diff --git a/include/uapi/linux/iommufd.h b/include/uapi/linux/iommufd.h
+> index c32d62b02306..7481cdd57027 100644
+> --- a/include/uapi/linux/iommufd.h
+> +++ b/include/uapi/linux/iommufd.h
+> @@ -357,10 +357,13 @@ struct iommu_vfio_ioas {
+>   *                                the parent HWPT in a nesting configuration.
+>   * @IOMMU_HWPT_ALLOC_DIRTY_TRACKING: Dirty tracking support for device IOMMU is
+>   *                                   enforced on device attachment
+> + * @IOMMU_HWPT_FAULT_ID_VALID: The fault_id field of hwpt allocation data is
+> + *                             valid.
+>   */
+>  enum iommufd_hwpt_alloc_flags {
+>         IOMMU_HWPT_ALLOC_NEST_PARENT = 1 << 0,
+>         IOMMU_HWPT_ALLOC_DIRTY_TRACKING = 1 << 1,
+> +       IOMMU_HWPT_FAULT_ID_VALID = 1 << 2,
+>  };
+>
+>  /**
+> @@ -411,6 +414,8 @@ enum iommu_hwpt_data_type {
+>   * @__reserved: Must be 0
+>   * @data_type: One of enum iommu_hwpt_data_type
+>   * @data_len: Length of the type specific data
+> + * @fault_id: The ID of IOMMUFD_FAULT object. Valid only if flags field of
+> + *            IOMMU_HWPT_FAULT_ID_VALID is set.
+>   * @data_uptr: User pointer to the type specific data
+>   *
+>   * Explicitly allocate a hardware page table object. This is the same object
+> @@ -441,6 +446,7 @@ struct iommu_hwpt_alloc {
+>         __u32 __reserved;
+>         __u32 data_type;
+>         __u32 data_len;
+> +       __u32 fault_id;
+>         __aligned_u64 data_uptr;
+>  };
+>  #define IOMMU_HWPT_ALLOC _IO(IOMMUFD_TYPE, IOMMUFD_CMD_HWPT_ALLOC)
+> diff --git a/drivers/iommu/iommufd/fault.c b/drivers/iommu/iommufd/fault.c
+> index 9844a85feeb2..e752d1c49dde 100644
+> --- a/drivers/iommu/iommufd/fault.c
+> +++ b/drivers/iommu/iommufd/fault.c
+> @@ -253,3 +253,17 @@ int iommufd_fault_alloc(struct iommufd_ucmd *ucmd)
+>
+>         return rc;
+>  }
+> +
+> +int iommufd_fault_iopf_handler(struct iopf_group *group)
+> +{
+> +       struct iommufd_hw_pagetable *hwpt = group->cookie->domain->fault_data;
+> +       struct iommufd_fault *fault = hwpt->fault;
+> +
+> +       mutex_lock(&fault->mutex);
+> +       list_add_tail(&group->node, &fault->deliver);
+> +       mutex_unlock(&fault->mutex);
+> +
+> +       wake_up_interruptible(&fault->wait_queue);
+> +
+> +       return 0;
+> +}
+> diff --git a/drivers/iommu/iommufd/hw_pagetable.c b/drivers/iommu/iommufd/hw_pagetable.c
+> index 3f3f1fa1a0a9..2703d5aea4f5 100644
+> --- a/drivers/iommu/iommufd/hw_pagetable.c
+> +++ b/drivers/iommu/iommufd/hw_pagetable.c
+> @@ -8,6 +8,15 @@
+>  #include "../iommu-priv.h"
+>  #include "iommufd_private.h"
+>
+> +static void __iommufd_hwpt_destroy(struct iommufd_hw_pagetable *hwpt)
+> +{
+> +       if (hwpt->domain)
+> +               iommu_domain_free(hwpt->domain);
+> +
+> +       if (hwpt->fault)
+> +               iommufd_put_object(hwpt->fault->ictx, &hwpt->fault->obj);
+> +}
+> +
+>  void iommufd_hwpt_paging_destroy(struct iommufd_object *obj)
+>  {
+>         struct iommufd_hwpt_paging *hwpt_paging =
+> @@ -22,9 +31,7 @@ void iommufd_hwpt_paging_destroy(struct iommufd_object *obj)
+>                                          hwpt_paging->common.domain);
+>         }
+>
+> -       if (hwpt_paging->common.domain)
+> -               iommu_domain_free(hwpt_paging->common.domain);
+> -
+> +       __iommufd_hwpt_destroy(&hwpt_paging->common);
+>         refcount_dec(&hwpt_paging->ioas->obj.users);
+>  }
+>
+> @@ -49,9 +56,7 @@ void iommufd_hwpt_nested_destroy(struct iommufd_object *obj)
+>         struct iommufd_hwpt_nested *hwpt_nested =
+>                 container_of(obj, struct iommufd_hwpt_nested, common.obj);
+>
+> -       if (hwpt_nested->common.domain)
+> -               iommu_domain_free(hwpt_nested->common.domain);
+> -
+> +       __iommufd_hwpt_destroy(&hwpt_nested->common);
+>         refcount_dec(&hwpt_nested->parent->common.obj.users);
+>  }
+>
+> @@ -213,7 +218,8 @@ iommufd_hwpt_nested_alloc(struct iommufd_ctx *ictx,
+>         struct iommufd_hw_pagetable *hwpt;
+>         int rc;
+>
+> -       if (flags || !user_data->len || !ops->domain_alloc_user)
+> +       if ((flags & ~IOMMU_HWPT_FAULT_ID_VALID) ||
+> +           !user_data->len || !ops->domain_alloc_user)
+>                 return ERR_PTR(-EOPNOTSUPP);
+>         if (parent->auto_domain || !parent->nest_parent)
+>                 return ERR_PTR(-EINVAL);
+> @@ -227,7 +233,7 @@ iommufd_hwpt_nested_alloc(struct iommufd_ctx *ictx,
+>         refcount_inc(&parent->common.obj.users);
+>         hwpt_nested->parent = parent;
+>
+> -       hwpt->domain = ops->domain_alloc_user(idev->dev, flags,
+> +       hwpt->domain = ops->domain_alloc_user(idev->dev, 0,
+>                                               parent->common.domain, user_data);
 
-Hi Paul, regarding CONFIG_PREEMPT_AUTO, for Tasks RCU rude, I think
-the following patch will address your concern about quiescent states
-on CPUs spinning away in kernel mode:
+Why remove flags? typo or any reason?
+arm_smmu_domain_alloc_user  can not get flags from the user app.
+User should set IOMMU_HWPT_FAULT_ID_VALID, right?
 
-"sched/fair: handle tick expiry under lazy preemption"
-Link: https://lore.kernel.org/all/20240213055554.1802415-24-ankur.a.arora@o=
-racle.com/
-
-In this patch Ankur makes sure that the scheduling-clock interrupt
-will reschedule the CPU after a tick and not let queued tasks starve
-due to lazy re-scheduling. So my impression is the
-"schedule_on_each_cpu()" should schedule a worker thread in time to
-apply the implied Tasks RCU quiescent state even if the rescheduling
-was a LAZY-reschedule.
-
-Also, not sure if the "voluntary mode" of CONFIG_PREEMPT_AUTO behaves
-differently. My feeling is regardless of preemption mode,
-CONFIG_PREEMPT_AUTO should always preempt after a tick if something
-else needs to run. It just will not preempt immediately like before
-(although CFS did already have some wakeup preemption logic to slow it
-down a bit). I am reviewing Ankur's patches more to confirm that and
-also reviewing his patches more to see how it could affect.
-
-thanks,
-
- - Joel
+Thanks
 
