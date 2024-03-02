@@ -1,143 +1,144 @@
-Return-Path: <linux-kernel+bounces-89620-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89621-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E01B86F322
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 00:32:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C97C86F325
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 00:34:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 944081F22117
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 23:32:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 539C71F2129B
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Mar 2024 23:34:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11AFA53E3E;
-	Sat,  2 Mar 2024 23:32:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YlUMlZvr"
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4973B54737;
+	Sat,  2 Mar 2024 23:34:24 +0000 (UTC)
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C12144C85
-	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 23:32:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B40D259C
+	for <linux-kernel@vger.kernel.org>; Sat,  2 Mar 2024 23:34:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709422357; cv=none; b=E/Vhco5jUkpbadvu/0UfJuB0FATnaWTCvuGFym72Fy9hhJsY5Requiy8h20bnpuDgVAb2R+OaZU1t92ezL7a+hFgUObczOHE4BtSZMItczUUnpzHmCrr9ZseACpbTRPUVrJFvWAOW1+HPgpoltMxVhIYXxJXOjmMXnrcjsoO4To=
+	t=1709422463; cv=none; b=UKauICmBVWuhI6qyKEc1sub1d7c2Q6b0SlOOr/HLp/MsENlwjbZ6AYjSeB857ZpgkJ7pGB8vOZSh2Bi9z29Ynl0K0wdCRtz/rUaJHweWgPPzlGQMQ6oJIwIbgEEzZB84ugO0KSn7U2wBdv38aqk213GHv7vasR/obkgKseo7zkE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709422357; c=relaxed/simple;
-	bh=ilr6PnvyjkOM4v70Hd+kVvbi7WJfxMXJh+DgYm1FJkE=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=rH2oJDhdLg3mIdJD1LjoOnDm02iRCIxRs0jwH3P51FfA0MYvxPAOVKqC0BuRYg0s2EcouHL3NQ9w7BiTEW4tYu3aiMu9nf4468o/PiPpUHvHFKyeM6qgWhmqOtoZzfewOgcvHOGJ25At7ODTJB+7wCyD0biMh/Zoy/IUOwYCu1M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YlUMlZvr; arc=none smtp.client-ip=209.85.167.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-513056fe2b0so1104720e87.0
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Mar 2024 15:32:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709422354; x=1710027154; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=4mPvliG0dt9rHz01RD3Gj/gHYtffBEQ9/E8ecI4CxY0=;
-        b=YlUMlZvrD4i57ph9snk0fBpiJL9btUMPrBB1/UjWy3MN+VWLV3BYMpX3jXXZj8pJPe
-         a0T1lxcqS7ZY2sf7M3Iu4WlKNta6/ZqfMjnCL7yc9N4EqwZYU+vWMzMWY0+FGXnG01Fi
-         DCpzzATeT8bx93xAsaOeLQIEk+YR9FnVZZQt45WKfWw/w3b9Sfb8YafYcRQ/mgS67Mbk
-         Yz4YXjyarBswCqzin/h9CZXFBhDDU4DZl+/TU04bvI3kDXEICjcwQGNRxFQbGTlJ5XOF
-         gCV/ARw4uagRMOfDprA3aKm0RjbJHhp5QXH6lo9K1+JD6PQlf4+1Ek1T2Dd/TvUY7y+i
-         DkQg==
+	s=arc-20240116; t=1709422463; c=relaxed/simple;
+	bh=6PZPyZuJdSMqkug1hsGSq24Xi//ToATAhXUILGMcENk=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=bMRsCThEnx/kCZMLHuqbrdvFDWvFMJaycpPifUUmzUxnNTPPplJB5/EN/KgcaUvEU+le5OgNrzF1tbdKoWx1UYN/mrRP/M96JxuSE6Y94tb0HQAdpu8eiM1M40hHWXx/LkUgWpAzcIrjWUvioCumJgL7RNNHrpvZmxwUeREtAZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3657bb7b9d2so51231175ab.2
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Mar 2024 15:34:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709422354; x=1710027154;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1709422461; x=1710027261;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4mPvliG0dt9rHz01RD3Gj/gHYtffBEQ9/E8ecI4CxY0=;
-        b=R9ct46rSmVs8srLrxZLLO6c2GDz5VnkBUIW0W1IgbgwHnT6Mi4HdiidOL9w5X5weiz
-         NCiC01Jc7Lj1yyFTjmy4ZnSrhtOirdHrIUS7I9G0spfMbSdR/qQqH9l2Rp97ELQfkcJf
-         VQIekdmsIMxy06duRIdOocs+NMLIbtVwD+2SlkDreTEsgS7cMDX+OvNMq+eJ/rZwq/Z0
-         gWPwyovZ6UifG/0RGyfBaE7jI2H4w81NmC20HbJu86vsi6E80GeSNr84MKIHgX0F2ZYK
-         KqNnqjJF9ofxyCAPFanQ7AXwbWaWBdalF1YvYnyv6K7wjY+FLolOJAxBr/PnagAcUPDP
-         Hwhg==
-X-Forwarded-Encrypted: i=1; AJvYcCUZY0IbU4SNnTcMcfji1zFISnEA5WhHl9OuqMdhywGhoOW4shHJXnobHWroFzzq5XuZCS/FAKz1mwepm9OkTZ6VjL/hYJ+BckfahMyJ
-X-Gm-Message-State: AOJu0Yztx1f7br7NxLjgknCKI9XlDiNyCprsG0NGPDFIb+f1JgUDlGX7
-	TgbH4tJGZVBSDkyJucAdx/Jln0zzOhzwmR534BeTq+uFNmqQWgAsQKzVmKebvDE=
-X-Google-Smtp-Source: AGHT+IGvsd9RXSx2de7PE8W+Uv1OJDjbRwGPktI1j/KtV+TeV3VbABqVT3gysdEY5SbCwwFKkTQ+Mg==
-X-Received: by 2002:a05:6512:3e1b:b0:512:fab6:6df7 with SMTP id i27-20020a0565123e1b00b00512fab66df7mr3471091lfv.3.1709422353740;
-        Sat, 02 Mar 2024 15:32:33 -0800 (PST)
-Received: from [192.168.1.102] (88-112-131-206.elisa-laajakaista.fi. [88.112.131.206])
-        by smtp.gmail.com with ESMTPSA id i10-20020a056512340a00b00513409c4472sm153119lfr.31.2024.03.02.15.32.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 02 Mar 2024 15:32:33 -0800 (PST)
-Message-ID: <2aa5d81b-c7fe-14e0-40b8-80ef5ba364cb@linaro.org>
-Date: Sun, 3 Mar 2024 01:32:32 +0200
+        bh=WIzFmH0YBizjIO8ZRQOccZP2IZa33IlKny7K5qjbqrg=;
+        b=AU8ROfoYwTBgM+k4LAA4XRGjv+QbKcPzGRUEkuDLqse6jWIeJBkTOLGHb8EADfXEbl
+         HKWt/ouetqx+cl9/keMVNCsjJtxPJNONyUpsLC+9DUr3GVYp8Y0DMxpZfF6g4yIeqtaR
+         iZVEPqUlbYjptVIuk2cx1hfIoUhTZgrH0OHOPs8jZ6FyWJbHVciEr5XwUSXON3r7jH7Z
+         p6SA5e5C3eu1g1amvUsvLYW14VYBLpyY+bbUSzSGSzD3FLVYbaYCnRxp4GKiDZPMMXdY
+         g5iRGGIjXxE57D7hBvAf/JBRV8t0vsbk7yr1SDYcs9WzA1xMt3rJlE3VwvU+2jzNNpNg
+         QX8A==
+X-Forwarded-Encrypted: i=1; AJvYcCWY27mWzcys7FPvLMaInY7F3nIt47wAPBuumANOdfH+U4zRGb889//QTyTQHL6jdi0M0TlK5FY489q2OjtQEw/Uss9l4qRAiu3YSO4o
+X-Gm-Message-State: AOJu0YwnooFg+hldaFL4SvGix1GWhk+dF4avWnqTUERi+AlvNtCC898F
+	9WrYrlO15urTmyCgo70JJrXkvIUhjw/0XQmvKhkq91mVHjWDbPVX70h0dlcaBfX0r8wWk+HRigS
+	CYWrxNMqXJzi6iTYWIqExMsQA4yaztQrYnhfwfpppv/IoFUO0ubR/Z8w=
+X-Google-Smtp-Source: AGHT+IGh9LEyiTbPAqJx8bYBmip5EndG+8B/OVOYErXDx4fRGuIxR/mL5D39RcT04pgP+SqkaMaKui9KHcAFueUx1ZGJjnYhjQn9
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.0.2
-From: Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
-Subject: Re: [PATCH 3/3] arch: arm64: dts: sm8650-hdk: add support for the
- Display Card overlay
-To: Neil Armstrong <neil.armstrong@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240223-topic-sm8650-upstream-hdk-v1-0-ccca645cd901@linaro.org>
- <20240223-topic-sm8650-upstream-hdk-v1-3-ccca645cd901@linaro.org>
-Content-Language: en-US
-In-Reply-To: <20240223-topic-sm8650-upstream-hdk-v1-3-ccca645cd901@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:1a68:b0:365:1f2b:7be8 with SMTP id
+ w8-20020a056e021a6800b003651f2b7be8mr449997ilv.5.1709422461627; Sat, 02 Mar
+ 2024 15:34:21 -0800 (PST)
+Date: Sat, 02 Mar 2024 15:34:21 -0800
+In-Reply-To: <0000000000004d5e29060e94b998@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000098b3700612b5ee0f@google.com>
+Subject: Re: [syzbot] [hfs?] KMSAN: uninit-value in hfs_cat_keycmp (2)
+From: syzbot <syzbot+04486d87f6240a004c85@syzkaller.appspotmail.com>
+To: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Neil,
+syzbot has found a reproducer for the following issue on:
 
-On 2/23/24 10:52, Neil Armstrong wrote:
-> With the SM8650-HDK, a Display Card kit can be connected to provide
-> a VTDR6130 display with Goodix Berlin Touch controller.
-> 
-> In order to route the DSI lanes to the connector for the Display
-> Card kit, a switch must be changed on the board.
-> 
-> The HDMI nodes are disabled since the DSI lanes are shared with
-> the DSI to HDMI transceiver.
-> 
-> Add support for this card as an overlay and apply it it at
-> build-time to the sm8650-hdk dtb.
-> 
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> ---
+HEAD commit:    5ad3cb0ed525 Merge tag 'for-v6.8-rc2' of git://git.kernel...
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=14fa7b8c180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=80c7a82a572c0de3
+dashboard link: https://syzkaller.appspot.com/bug?extid=04486d87f6240a004c85
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=116f5a6a180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16cb9306180000
 
-<snip>
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/a148235ac5b1/disk-5ad3cb0e.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/4b06f4d02ad6/vmlinux-5ad3cb0e.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/7fff06beed25/bzImage-5ad3cb0e.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/0c762eef88b9/mount_0.gz
 
-> +	mdp_vsync_active: mdp-vsync-active-state {
-> +		pins = "gpio86";
-> +		function = "mdp_vsync";
-> +		drive-strength = <2>;
-> +		bias-pull-down;
-> +	};
-> +
-> +	mdp_vsync_suspend: mdp-vsync-suspend-state {
-> +		pins = "gpio86";
-> +		function = "mdp_vsync";
-> +		drive-strength = <2>;
-> +		bias-pull-down;
-> +	};
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+04486d87f6240a004c85@syzkaller.appspotmail.com
 
-If you have a single pin configuration for active and suspend states,
-then likely you may have only one device tree node here.
+loop0: detected capacity change from 0 to 64
+hfs: filesystem is marked locked, mounting read-only.
+=====================================================
+BUG: KMSAN: uninit-value in hfs_cat_keycmp+0x154/0x210 fs/hfs/catalog.c:178
+ hfs_cat_keycmp+0x154/0x210 fs/hfs/catalog.c:178
+ __hfs_brec_find+0x250/0x820 fs/hfs/bfind.c:75
+ hfs_brec_find+0x436/0x970 fs/hfs/bfind.c:138
+ hfs_brec_read+0x3f/0x1a0 fs/hfs/bfind.c:165
+ hfs_cat_find_brec+0xe6/0x400 fs/hfs/catalog.c:194
+ hfs_fill_super+0x1f27/0x23c0 fs/hfs/super.c:419
+ mount_bdev+0x38f/0x510 fs/super.c:1658
+ hfs_mount+0x4d/0x60 fs/hfs/super.c:456
+ legacy_get_tree+0x110/0x290 fs/fs_context.c:662
+ vfs_get_tree+0xa5/0x560 fs/super.c:1779
+ do_new_mount+0x71f/0x15e0 fs/namespace.c:3352
+ path_mount+0x73d/0x1f20 fs/namespace.c:3679
+ do_mount fs/namespace.c:3692 [inline]
+ __do_sys_mount fs/namespace.c:3898 [inline]
+ __se_sys_mount+0x725/0x810 fs/namespace.c:3875
+ __x64_sys_mount+0xe4/0x140 fs/namespace.c:3875
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-Reviewed-by: Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
+Uninit was created at:
+ slab_post_alloc_hook mm/slub.c:3819 [inline]
+ slab_alloc_node mm/slub.c:3860 [inline]
+ __do_kmalloc_node mm/slub.c:3980 [inline]
+ __kmalloc+0x919/0xf80 mm/slub.c:3994
+ kmalloc include/linux/slab.h:594 [inline]
+ hfs_find_init+0x91/0x250 fs/hfs/bfind.c:21
+ hfs_fill_super+0x1eb9/0x23c0 fs/hfs/super.c:416
+ mount_bdev+0x38f/0x510 fs/super.c:1658
+ hfs_mount+0x4d/0x60 fs/hfs/super.c:456
+ legacy_get_tree+0x110/0x290 fs/fs_context.c:662
+ vfs_get_tree+0xa5/0x560 fs/super.c:1779
+ do_new_mount+0x71f/0x15e0 fs/namespace.c:3352
+ path_mount+0x73d/0x1f20 fs/namespace.c:3679
+ do_mount fs/namespace.c:3692 [inline]
+ __do_sys_mount fs/namespace.c:3898 [inline]
+ __se_sys_mount+0x725/0x810 fs/namespace.c:3875
+ __x64_sys_mount+0xe4/0x140 fs/namespace.c:3875
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-I don't add my Tested-by tag, since I don't get a panel working on 6.8.0-rc6,
-while in runtime MSM and DSI are enabled, the panel driver is not initialized:
+CPU: 1 PID: 5019 Comm: syz-executor380 Not tainted 6.8.0-rc6-syzkaller-00238-g5ad3cb0ed525 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+=====================================================
 
-   panel-visionox-vtdr6130 ae94000.dsi.0: Failed to initialize panel: -22
 
---
-Best wishes,
-Vladimir
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
