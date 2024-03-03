@@ -1,130 +1,178 @@
-Return-Path: <linux-kernel+bounces-89945-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89946-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75FD486F7E2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 00:40:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AB1D86F7E4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 00:49:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2A11B20AA5
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 23:40:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB84E1C20A8C
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 23:49:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B81447AE72;
-	Sun,  3 Mar 2024 23:40:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C673E7AE75;
+	Sun,  3 Mar 2024 23:49:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZuFc6xfb"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="b6hPQNSO";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="oQFmOUAz"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 895B97AE4F
-	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 23:40:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75A3A2C1B1;
+	Sun,  3 Mar 2024 23:49:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709509234; cv=none; b=BI+4Vax+26g5BH7IRsodL4K0sCSPxS44iO0MwHB0YKT6R+hbYP/BoKXbMk0EP3LOhJsr/7MGTUMvL1dNM0rEjIBA8ZFQLfKYF3aTFa1ETCr7bTuwJBA8U4g49UfkFsniBVZGqIPWNHwGu6LrtIoJkF5yPn/i/raHS2IZicf2bZA=
+	t=1709509763; cv=none; b=djAStygAmbycZ7mtNUwRzafscTx4Jwxy6hiCgOXaZxBV1NC8GEqoYVEAXidI57yla5QF86yxtCy4sv4/nlWRrup4hBBku3JQ/W5mREZypW9atYf7aIDYttypbCaSwDfc7R8B07LS8cS1MR3JLm9tIOs3Rcf2jzLMGLjDJABCghc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709509234; c=relaxed/simple;
-	bh=7tve0kpBJ+naqulnh63PEkBZkSUf/HWjpqhRAzMG9Wk=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=aMusPj69i3tvwfCoblfbMAISOQ9z4HTOFOnszZwowd/642dMrG2W8WE2cvJldwH9rZErxcofO76Jdwu9PF4if2jbOEEHh4D0S5n4a0Ce562sb8p9ViiTUorYktnmlUD+qnzBc6pb0L3nbpYTI5Btdj6P/eU/IdTgyuwFM5TG9tk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZuFc6xfb; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709509232; x=1741045232;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=7tve0kpBJ+naqulnh63PEkBZkSUf/HWjpqhRAzMG9Wk=;
-  b=ZuFc6xfbvxilfBzU0tWPzWyTV6u2OjBfo6stjIZ+73vkXUU0H+HDvzjN
-   ZSiZJFKtN0CD9smh2U35AR4DtFwM4SBeZcFD0awGmLRaZ12pRsx4kDaNL
-   gPMDYMY50Gkjy0N25e7/LbUgcA0a6T+y80Z8io+lPcF/onIW2oQ1fpIAS
-   wesD5Kv2GttGMRPDoiqnDQFzwN8WsUxUpTdA8/4yuCJQw5boG8bfvL9+b
-   jUZ104cCeXTHU16MOK8nbjH6meLPJVbFUwlv8Mw+TGDsQGYpVqOskOiQa
-   dXnExvoDG1JSmRhFrt2cVvOuny5qKQ5ZP5gYPCNDaAjmXvge+/htmWmfT
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="26451746"
-X-IronPort-AV: E=Sophos;i="6.06,201,1705392000"; 
-   d="scan'208";a="26451746"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2024 15:40:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,201,1705392000"; 
-   d="scan'208";a="13501308"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by orviesa005.jf.intel.com with ESMTP; 03 Mar 2024 15:40:30 -0800
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rgvRT-0002B0-1G;
-	Sun, 03 Mar 2024 23:40:27 +0000
-Date: Mon, 4 Mar 2024 07:39:41 +0800
-From: kernel test robot <lkp@intel.com>
-To: Patricia Alfonso <trishalfonso@google.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Richard Weinberger <richard@nod.at>,
-	Vincent Whitchurch <vincent.whitchurch@axis.com>,
-	David Gow <davidgow@google.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>
-Subject: mm/kasan/kasan.h:485:2: error: #error kasan_arch_is_ready only works
- in KASAN generic outline mode!
-Message-ID: <202403040748.giLq1yf5-lkp@intel.com>
+	s=arc-20240116; t=1709509763; c=relaxed/simple;
+	bh=v5ar+tdN7/lYRRRUenodLkDikwASd1JhTisMy47kCzU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=R3hicFenP1/L9E9aWYmLpHvT9n7RDF7joBycNHlddE/IYZ1I1BiopNOtLrzIWkLY6rxXu7UgApDrELpL+Z4dxO1lbKmctDZlqDShSV2Dr7pSl0KJVPbyYdqvc8wAyqhC0inLl20RviwFGo37QNH6WQvgaJqa8ghigBbgkbpBnKw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=b6hPQNSO; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=oQFmOUAz; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1709509759;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NIqVj5QDEFMwPaAVH8zc/FziwYScHdoN6hh4zSkLtiM=;
+	b=b6hPQNSOv9Xd2HqKeB9R7CvmHIvdYEU5vg5UMHXIY0KaUDjknpJXr8pU4fB80nnr9KIesf
+	KLiWQCSGoo8oRcXAqPmeU3H5S/6Yxh4e2mlHSPceM2khm7C6KVC99NBjhOIMM+4yy5I3JR
+	Q2y5NZ/h6XuWJSzqy4u0xSLYbVPLzpEMfGV0jQcOAbn1NTIV+YXh740bnn6Xdl+F/sDVGD
+	KteJtHrLKdMUZ6K7Ne/91jK08CeMluba3R2CDkuPHct6cs/qxAPOMJu0mP6f5K5Zu8cDpI
+	Uzpo4M019waBhrVENLc215bNxxKKC1mxi8gn6RSDw9OdtCygIB+2M9NbzVI2rg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1709509759;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NIqVj5QDEFMwPaAVH8zc/FziwYScHdoN6hh4zSkLtiM=;
+	b=oQFmOUAzNABJMPQ1wG1zUHQ+0PjksQAHfuYGGkDf0PD7+YmJCQ8/8ntg8xcS6Gs3tHOj2Z
+	rKSxQAP0HZtS/HCQ==
+To: Uros Bizjak <ubizjak@gmail.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, kernel test robot
+ <lkp@intel.com>, oe-kbuild-all@lists.linux.dev,
+ linux-kernel@vger.kernel.org, Arjan van de Ven <arjan@linux.intel.com>,
+ x86@kernel.org, Luc Van Oostenryck <luc.vanoostenryck@gmail.com>, Sparse
+ Mailing-list <linux-sparse@vger.kernel.org>, "Paul E. McKenney"
+ <paulmck@kernel.org>
+Subject: Re: arch/x86/include/asm/processor.h:698:16: sparse: sparse:
+ incorrect type in initializer (different address spaces)
+In-Reply-To: <CAFULd4b0HN6eUJsOW6po8Hf16T3eMhjdKUvw-TS8yncNn-+Vyw@mail.gmail.com>
+References: <202403020457.RCJoQ3ts-lkp@intel.com> <87edctwr6y.ffs@tglx>
+ <87a5nhwpus.ffs@tglx> <87y1b0vp8m.ffs@tglx> <87sf18vdsq.ffs@tglx>
+ <87le70uwf0.ffs@tglx>
+ <CAHk-=wiWhfdc4Sw2VBq_2nL2NDxmZS32xG4P7mBVwABGqUoJnw@mail.gmail.com>
+ <87edcruvja.ffs@tglx>
+ <CAFULd4bVEUBEidTLbHNzRaJbSjXm99yC8LT=jdzFWb7xnuFH7g@mail.gmail.com>
+ <87bk7vuldh.ffs@tglx>
+ <CAFULd4arHT+_fy9_oUNpmsvyfVPGaeB_pdeuqVS3UTpP5R757A@mail.gmail.com>
+ <CAFULd4b0HN6eUJsOW6po8Hf16T3eMhjdKUvw-TS8yncNn-+Vyw@mail.gmail.com>
+Date: Mon, 04 Mar 2024 00:49:18 +0100
+Message-ID: <87bk7ux4e9.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi Patricia,
+On Sun, Mar 03 2024 at 21:24, Uros Bizjak wrote:
+> On Sun, Mar 3, 2024 at 9:21=E2=80=AFPM Uros Bizjak <ubizjak@gmail.com> wr=
+ote:
+>> On Sun, Mar 3, 2024 at 9:10=E2=80=AFPM Thomas Gleixner <tglx@linutronix.=
+de> wrote:
+>> > That's so sad because it would provide us compiler based __percpu
+>> > validation.
+>>
+>> Unfortunately, the c compiler can't strip qualifiers, so typeof() is
+>> of limited use also when const and volatile qualifiers are used.
+>> Perhaps some extension could be introduced to c standard to provide an
+>> unqualified type, e.g. typeof_unqual().
+>
+> Oh, there is one in C23 [1].
 
-FYI, the error/warning still remains.
+Yes. I found it right after ranting.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   58c806d867bf265c6fd16fc3bc62e2d3c156b5c9
-commit: 5b301409e8bc5d7fad2ee138be44c5c529dd0874 UML: add support for KASAN under x86_64
-date:   1 year, 8 months ago
-config: um-randconfig-r133-20240225 (https://download.01.org/0day-ci/archive/20240304/202403040748.giLq1yf5-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240304/202403040748.giLq1yf5-lkp@intel.com/reproduce)
+gcc >=3D 14 and clang >=3D 16 have support for it of course only when adding
+-std=3Dc2x to the command line.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403040748.giLq1yf5-lkp@intel.com/
+Sigh. The name space qualifiers are non standard and then the thing
+which makes them more useful is hidden behind a standard.
 
-All errors (new ones prefixed by >>):
+Why can't we have useful tools?
 
-   In file included from lib/test_kasan_module.c:16:
->> lib/../mm/kasan/kasan.h:485:2: error: #error kasan_arch_is_ready only works in KASAN generic outline mode!
-     485 | #error kasan_arch_is_ready only works in KASAN generic outline mode!
-         |  ^~~~~
---
-   In file included from mm/kasan/report_generic.c:30:
->> mm/kasan/kasan.h:485:2: error: #error kasan_arch_is_ready only works in KASAN generic outline mode!
-     485 | #error kasan_arch_is_ready only works in KASAN generic outline mode!
-         |  ^~~~~
+Though the whole thing looks worthwhile:
 
+#define verify_per_cpu_ptr(ptr)						\
+do {									\
+	const void __seg_gs *__vpp_verify =3D (typeof((ptr) + 0))NULL;    \
+	(void)__vpp_verify;						\
+} while (0)
 
-vim +485 mm/kasan/kasan.h
+#define per_cpu_ptr(ptr, cpu)						\
+({									\
+	verify_per_cpu_ptr(ptr);					\
+	(typeof_unqual(*(ptr)) *)(uintptr_t)ptr + per_cpu_offset(cpu);	\
+})
 
-e2db1a9aa38149 Andrey Konovalov 2021-02-25  481  
-af3751f3c2b628 Daniel Axtens    2021-06-28  482  #ifndef kasan_arch_is_ready
-af3751f3c2b628 Daniel Axtens    2021-06-28  483  static inline bool kasan_arch_is_ready(void)	{ return true; }
-af3751f3c2b628 Daniel Axtens    2021-06-28  484  #elif !defined(CONFIG_KASAN_GENERIC) || !defined(CONFIG_KASAN_OUTLINE)
-af3751f3c2b628 Daniel Axtens    2021-06-28 @485  #error kasan_arch_is_ready only works in KASAN generic outline mode!
-af3751f3c2b628 Daniel Axtens    2021-06-28  486  #endif
-af3751f3c2b628 Daniel Axtens    2021-06-28  487  
+unsigned int __seg_gs test;
 
-:::::: The code at line 485 was first introduced by commit
-:::::: af3751f3c2b6282bebcb56c35bbe4c8b671f80aa kasan: allow architectures to provide an outline readiness check
+unsigned int foo1(unsigned int cpu)
+{
+	return *per_cpu_ptr(&test, cpu);
+}
 
-:::::: TO: Daniel Axtens <dja@axtens.net>
-:::::: CC: Linus Torvalds <torvalds@linux-foundation.org>
+unsigned int foo2(unsigned int cpu)
+{
+	unsigned int x, *p =3D per_cpu_ptr(&x, cpu);
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+	return *p;
+}
+
+x.c:29:23: error: initializing 'const __attribute__((address_space(256))) v=
+oid *' with an expression of type 'typeof ((&x) + 0)' (aka 'unsigned int *'=
+) changes address space of pointer
+        unsigned int x, *p =3D per_cpu_ptr(&x, cpu);
+
+That's exactly what we want. It would have caught all the long standing
+and ignored __percpu sparse warnings right away.
+
+This also simplifies all the other per cpu accessors. The most trivial
+is read()
+
+#define verify_per_cpu(variable)					\
+{									\
+	const unsigned int __s =3D sizeof(variable);			\
+									\
+	verify_per_cpu_ptr(&(variable));				\
+	BUILD_BUG_ON(__s =3D=3D 1 || __s =3D=3D 2 || __s =3D=3D 4 || __s =3D=3D 8,=
+	\
+		     "Wrong size for per CPU variable");		\
+}
+
+#define __pcpu_read(variable)						\
+({									\
+	verify_per_cpu(variable);					\
+	READ_ONCE(variable);						\
+})
+
+which in turn catches all the mistakes, i.e. wrong namespace and wrong
+size.
+
+I'm really tempted to implement this as an alternative to the current
+pile of macro horrors. Of course this requires to figure out first what
+kind of damage -std=3Dc2x will do.
+
+I get to that in my copious spare time some day.
+
+Thanks,
+
+        tglx
 
