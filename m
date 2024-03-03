@@ -1,171 +1,160 @@
-Return-Path: <linux-kernel+bounces-89924-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89925-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6798886F75C
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 23:10:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 579B186F75D
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 23:10:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD264281229
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 22:10:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C164128157B
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 22:10:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FA127A709;
-	Sun,  3 Mar 2024 22:10:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EDC27A722;
+	Sun,  3 Mar 2024 22:10:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="UG1mG1Hs"
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="XUCxMCjQ"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EDD143AB5;
-	Sun,  3 Mar 2024 22:10:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93EA07A706
+	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 22:10:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709503830; cv=none; b=FhGT2xMS3g3skGgMgVj0Wkiw4mPdt78EImRZ5nsl6/LZVBKkWPHKfMUGixyXNjWgeEZZsGg/04FwaAU+albJdk7suY2uo3VLsqtXsgetOjY4Ox9mQBetAyHtyg+eqTtSiGxKLysj/qBErKQ+xFh6/opheJflZ7ACUbtjHNEN6RM=
+	t=1709503846; cv=none; b=nmfXl7IGu8PQ7wqI05Qadg+YQDCPTlhHARea11vkih90PBen/DckLk40FeYDYdgoZ5rmOc+/YAQIi2FP4laCEVPXARu2VgDHzkpdCBhDe0FVwn0I4PdDlJftp0xWXroxaHu4Y9td0dzo/uiVhhL9TGgvc5s/YSTqSDDIfu8mF7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709503830; c=relaxed/simple;
-	bh=VAh4dIkTENU2/QEjIcjwE+UuoxnSUGcJoPqGUDx5MCc=;
+	s=arc-20240116; t=1709503846; c=relaxed/simple;
+	bh=6Qn0zxJQ9XzUSYuTh6t2EXz0z4JIHfAZlvSKfLWHBoc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YyH6nHowzT2uhUIJLJ2V5mdSqTDV7sJ8sLNselTEGt1AI/z+De1UL0sFKJyYR3MyDzTaLMFfx0ZIXLWvJDKJzEBLGm+dWZ73vQ4Plt3r/mvSLo92fyKt084mJS+vaHdj4RBP3u0U7q9x44mi0UYhNwA/2OdANUrIy8Dj/K7tq7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=UG1mG1Hs; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=0g5zoVT+JVW02GwsTEDCm7DmiF1qRMx3Unb0+lN7s4c=; b=UG1mG1HsZor8kvPgUKPIAi3Dsx
-	ytA6TJVPQOsJZSxzVIrKu2ZwVYh3Plp8NRL9ZDnpJInBen1kxyXw/BQWWU+d/N6BBfgriWQCRDrS+
-	kJ7fF7YJyIk8lZ2IZYtPg/xsgDCL0TEfbAAIV2z2avyiG2AGeyutPjVvRCEgCcP2oUjW09tIDxtXe
-	ya0rgkq5N0PQvthdHeegJcveWc85bJZBfYmwGj+nJ3exIxKlT8laS0MlPT8wJ+gW0w3xVavZYFBNK
-	ftPQfPvSy6OQ8Wph7eUzAprdMvcl+4ylrDWFmEkUVHI3n8TpK33bDd+OZBWxESZddtiZiDrUU1L3N
-	YYUyqtsw==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rgu2D-002GxX-0S;
-	Sun, 03 Mar 2024 22:10:17 +0000
-Date: Sun, 3 Mar 2024 22:10:17 +0000
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: kernel test robot <lkp@intel.com>
-Cc: Jing Cai <jing.cai@mediatek.com>, oe-kbuild-all@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-	Chris Lu <chris.lu@mediatek.com>,
-	Sean Wang <sean.wang@mediatek.com>
-Subject: Re: WARNING: modpost: "strcpy" [drivers/bluetooth/btmtk.ko] has no
- CRC!
-Message-ID: <20240303221017.GB524366@ZenIV>
-References: <202403040552.0iyr20St-lkp@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=oqtLMdW82SZhJ2o1IhKFYy13htUaccuR5x04XpV/fyCPLalcDqKDBv3DrQ4TCW6VHnQSwf/hzCn8xHylQJeEDJNjJRs83abIcy/srZMGccvIn16Z8zd9Ap0lK2i+SD/uvYnRvZvcDK+pGzPBS2+Cf09hKZfDuZomLMOTnvFFgo8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=XUCxMCjQ; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id C09C440E0185;
+	Sun,  3 Mar 2024 22:10:39 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id HTi674Zwq0-y; Sun,  3 Mar 2024 22:10:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1709503837; bh=pQ905fKNiJSh+Bs2XBMZTLixhWliqu9uqSB+rX4FcrI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=XUCxMCjQG5VLupIrlCjqVnbq52vsOMpagh1DslLjyOjzCxQq5gUusxKBuVPnHW1/u
+	 eZtrYvLgpuMMzRlueURr8vY/BlrtaYxhFwKzw+ZRdy8m5F5U6tp3DUwKZ8GKIpYn2U
+	 QKMOzmyd3nf852idj8wZXShCD+r7Om7NrcXapv7P5OXuXj2uPrZaMSftmUkWrFgfJb
+	 y1oCNF+Qikaw57WCXQuUzeBTgzF+pos41FCSUUh07/DqL5M6p3Ac/gEDV/ZMETT7Hc
+	 a5T5SEk5rObL/kKOAm7uhyCIXruoAbM804Mt0SgptveOLyunCVOrdpvARwoBJKoQ1C
+	 UQaWBFlNd6JxHgpT7KEr7SU897wdQVWiBt6kFx5uxVOs3NvsARw6FTEJ8xzrvpK029
+	 LFHdp48ilxLonGla37rLDZH5ykuCahiSNF4zVaWXcYw2Tn5KZiYc/TVmetdSkX7QX/
+	 d7dLKN6Smx7fygCgxgS5PGHSs8SWKOTHf0JfhJHpyZo61oRC9deK4rMnPTKrsoFBH3
+	 sDZs5CN/zUub8qwhUR6vXKBvh8FdgId5Tacdhs2FV24wc8Og0e04HcXu1nOXfKtxHP
+	 SdTLGrPFlNAZz24rc9ql9ropCxlSWIAxf16Mpdpsisd1pls+40P1BfRC5emEPEl+yp
+	 TqUNZTHaOfgGvR/WyvJqcixU=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 301B640E016C;
+	Sun,  3 Mar 2024 22:10:26 +0000 (UTC)
+Date: Sun, 3 Mar 2024 23:10:19 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org,
+	Kevin Loughlin <kevinloughlin@google.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Dionna Glaze <dionnaglaze@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Andy Lutomirski <luto@kernel.org>, Brian Gerst <brgerst@gmail.com>
+Subject: Re: [PATCH v7 2/9] x86/startup_64: Defer assignment of 5-level
+ paging global variables
+Message-ID: <20240303221019.GBZeT1S4295Y3MVuBG@fat_crate.local>
+References: <20240227151907.387873-11-ardb+git@google.com>
+ <20240227151907.387873-13-ardb+git@google.com>
+ <20240228205540.GIZd-dzFYIBbtfIAo3@fat_crate.local>
+ <CAMj1kXGhZU+FE2gE262Q8_vZEFHicsRtVPzXT-dhhCvBuiMjUA@mail.gmail.com>
+ <20240301160921.GBZeH9sZhp73xX40ze@fat_crate.local>
+ <CAMj1kXFJwEUExy7+Snh3QHVn-ATj0C+sYje22Qmc+y=cCtAV7g@mail.gmail.com>
+ <20240301173323.GDZeIRY_BVBqpudkEo@fat_crate.local>
+ <20240303192654.GAZeTO_nxJ4bE2A2zD@fat_crate.local>
+ <CAMj1kXEmNWNH8ZRXcMQ=NKyvOWd4=K5kC4mZMzH-8BmBtvmw+A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <202403040552.0iyr20St-lkp@intel.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <CAMj1kXEmNWNH8ZRXcMQ=NKyvOWd4=K5kC4mZMzH-8BmBtvmw+A@mail.gmail.com>
 
-On Mon, Mar 04, 2024 at 06:02:08AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   58c806d867bf265c6fd16fc3bc62e2d3c156b5c9
-> commit: 0b70151328781a89c89e4cf3fae21fc0e98d869e Bluetooth: btusb: mediatek: add MediaTek devcoredump support
-> date:   7 months ago
-> config: alpha-buildonly-randconfig-r004-20220321 (https://download.01.org/0day-ci/archive/20240304/202403040552.0iyr20St-lkp@intel.com/config)
-> compiler: alpha-linux-gcc (GCC) 13.2.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240304/202403040552.0iyr20St-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202403040552.0iyr20St-lkp@intel.com/
+On Sun, Mar 03, 2024 at 10:56:49PM +0100, Ard Biesheuvel wrote:
+> How are you passing the root device to the kernel? Via root= on the
+> command line?
 
-commit 8a4a2705ed98c33c2ad5f3e504efe2d379cf72d7
-Author: Al Viro <viro@zeniv.linux.org.uk>
-Date:   Mon Dec 18 22:59:26 2023 -0500
+Yeah:
 
-    alpha: fix modversions for strcpy() et.al.
-    
-            On alpha str{n,}{cpy,cat}() implementations are playing
-    fun games with shared chunks of code.  The problem is, they are
-    using direct branches and need to be next to each other.
-            Currently it's done by building them in separate object
-    files, then using ld -r to link those together.  Unfortunately,
-    genksyms machinery has no idea what to do with that - we have
-    generated in arch/alpha/lib/.strcat.S.cmd, but there's nothing
-    to propagate that into .stycpy.S.cmd, so modpost doesn't find
-    anything for those symbols, resulting in
-    WARNING: modpost: EXPORT symbol "strcpy" [vmlinux] version generation failed, symbol will not be versioned.
-    Is "strcpy" prototyped in <asm/asm-prototypes.h>?
-    WARNING: modpost: EXPORT symbol "strcat" [vmlinux] version generation failed, symbol will not be versioned.
-    Is "strcat" prototyped in <asm/asm-prototypes.h>?
-    WARNING: modpost: EXPORT symbol "strncpy" [vmlinux] version generation failed, symbol will not be versioned.
-    Is "strncpy" prototyped in <asm/asm-prototypes.h>?
-    WARNING: modpost: EXPORT symbol "strncat" [vmlinux] version generation failed, symbol will not be versioned.
-    Is "strncat" prototyped in <asm/asm-prototypes.h>?
-    spew on modversion-enabled builds (all 4 functions in question
-    are in fact prototyped in asm-prototypes.h)
-    
-            Fixing doesn't require messing with kbuild, thankfully -
-    just build one object (i.e. have sty{n,}cpy.S with includes of relevant
-    *.S instead of playing with ld -r) and that's it.
-    
-    Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+qemu
+..
+-kernel arch/x86/boot/bzImage
+-append "root=/dev/sda2 resume=/dev/sda3 ...
 
-diff --git a/arch/alpha/lib/Makefile b/arch/alpha/lib/Makefile
-index 6a779b9018fd..84046e730e6d 100644
---- a/arch/alpha/lib/Makefile
-+++ b/arch/alpha/lib/Makefile
-@@ -44,17 +44,3 @@ AFLAGS___remlu.o =       -DREM -DINTSIZE
- $(addprefix $(obj)/,__divqu.o __remqu.o __divlu.o __remlu.o): \
- 						$(src)/$(ev6-y)divide.S FORCE
- 	$(call if_changed_rule,as_o_S)
--
--# There are direct branches between {str*cpy,str*cat} and stx*cpy.
--# Ensure the branches are within range by merging these objects.
--
--LDFLAGS_stycpy.o := -r
--LDFLAGS_styncpy.o := -r
--
--$(obj)/stycpy.o: $(obj)/strcpy.o $(obj)/$(ev67-y)strcat.o \
--		 $(obj)/$(ev6-y)stxcpy.o FORCE
--	$(call if_changed,ld)
--
--$(obj)/styncpy.o: $(obj)/strncpy.o $(obj)/$(ev67-y)strncat.o \
--		 $(obj)/$(ev6-y)stxncpy.o FORCE
--	$(call if_changed,ld)
-diff --git a/arch/alpha/lib/stycpy.S b/arch/alpha/lib/stycpy.S
-new file mode 100644
-index 000000000000..32ecd9c5f90d
---- /dev/null
-+++ b/arch/alpha/lib/stycpy.S
-@@ -0,0 +1,11 @@
-+#include "strcpy.S"
-+#ifdef CONFIG_ALPHA_EV67
-+#include "ev67-strcat.S"
-+#else
-+#include "strcat.S"
-+#endif
-+#ifdef CONFIG_ALPHA_EV6
-+#include "ev6-stxcpy.S"
-+#else
-+#include "stxcpy.S"
-+#endif
-diff --git a/arch/alpha/lib/styncpy.S b/arch/alpha/lib/styncpy.S
-new file mode 100644
-index 000000000000..72fc2754eb57
---- /dev/null
-+++ b/arch/alpha/lib/styncpy.S
-@@ -0,0 +1,11 @@
-+#include "strncpy.S"
-+#ifdef CONFIG_ALPHA_EV67
-+#include "ev67-strncat.S"
-+#else
-+#include "strncat.S"
-+#endif
-+#ifdef CONFIG_ALPHA_EV6
-+#include "ev6-stxncpy.S"
-+#else
-+#include "stxncpy.S"
-+#endif
+> and this is OVMF.
+
+Yap.
+
+> I have tried both of these, with i440fx as well as q35, and they all
+> work happily with my Debian guest image passed via -hda to QEMU, and
+> with root=/dev/sda2 on the kernel command line.
+
+Interesting. I'm not passing any machine type. Maybe I should even
+thought I've never done it before.
+
+/me goes and tries machine type.
+
+Well, I'll be damned!
+
+-machine type=pc-i440fx-2.8 - no workie BUT
+
+-machine type=pc-q35-2.8
+
+booted.
+
+Now on to figure out what's different with q35 and why it is magical and
+it finds the root device just fine:
+
+[    2.732908] mount_root_generic: i: 2, fs_name: ext4
+[    2.734275] do_mount_root: name: /dev/root
+[    2.735093] kern_path: filename: ffff88800d4de000 of name: /root
+[    2.736954] kern_path: ret: 0
+[    2.737727] init_mount: kern_path(/root), ret: 0
+[    2.738964] path_mount: will do_new_mount
+[    2.739784] do_new_mount: 1, fc source: (null)
+[    2.740961] do_new_mount: 2, err: 0
+[    2.741722] do_new_mount: 3, err: 0
+[    2.742448] do_new_mount: 4, err: 0
+[    2.743164] vfs_get_tree: fc->root: 0000000000000000
+[    2.744095] kern_path: filename: ffff88800d4de000 of name: /dev/root
+[    2.745352] kern_path: ret: 0
+[    2.745994] lookup_bdev: kern_path(/dev/root, , path: ffff88800cf163c0), error: 0
+[    2.747288] lookup_bdev: inode->i_rdev: 0x800002
+[    2.748163] get_tree_bdev: lookup_bdev(/dev/root, dev: 0x800002), error: 0
+							  ^^^^^^^^^
+
+> How did you get this output? Are these debug printk()s you added yourself?
+
+Yeah, the good old "sprinkle printks" debugging method. Figured I should
+look at the VFS code out of interest. :-)
+
+Thanks a lot for the suggestions, especially about q35!
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
