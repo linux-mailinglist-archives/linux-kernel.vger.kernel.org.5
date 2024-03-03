@@ -1,239 +1,255 @@
-Return-Path: <linux-kernel+bounces-89861-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89862-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 167C186F6A5
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 20:03:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1916B86F6A7
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 20:04:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9882D1F21432
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 19:03:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2203D1C2092B
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 19:04:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD97179B6C;
-	Sun,  3 Mar 2024 19:03:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B0067994B;
+	Sun,  3 Mar 2024 19:04:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Kh41KAoW"
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g+a5ypPK"
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FC5D1DFD8;
-	Sun,  3 Mar 2024 19:03:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D863E76417;
+	Sun,  3 Mar 2024 19:04:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709492627; cv=none; b=JPSVned//soGLeXQtPXnN7T2KhVEoqh/40iSEbpE/08h4Dwcks4K5I8MrhvKE3SqJIDNrhCQQN9Z2j8TvCT+70XP70StgPXO3fCSLsjTsr8ORPVeVvpT2rphTxZQV0c1eQB3sQnJNvn1QQJHSwQ33wU892t6P9JkhFZWSkDV95o=
+	t=1709492651; cv=none; b=Xw3FEHbt6UcbdDbVD7FpQupJnNIOXPm0MFsb93QNDcB3C+LlnDyCGVF+x3TADTmZWU7x9Wq81Blbbr26pPQssCo3PitzZaHg0/aVs8CNH3/T62nqR525Y8DQmz+ktOqY3GOGQcdpdtVHa2iyC+kv2HCDjMCInG7dQTShnlLCm9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709492627; c=relaxed/simple;
-	bh=iTOfN+tgqF6RXUgkv5aPdbWw0doQRHF+0VQ+rOX/H74=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=s5a+L6r3Eas4Nh6t522dvwx2b3glx69JAi2voVwYL3RtHXt3wyHegMoYdproOag4aNWq3uAicgG8b0xUNAjtyg11Q513KpevcBsQpSzFdeGODyKD47+QJcYJ/SE2KftrArvRGERmINUPYjHasV8Wkl2V8ziEH2a7whem3JUYki8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Kh41KAoW; arc=none smtp.client-ip=209.85.128.41
+	s=arc-20240116; t=1709492651; c=relaxed/simple;
+	bh=XcvvUXceBSb176i0TRf9vtM0/PGGD8QMPdQJXgBDrGM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=k5cF//b39Ihxsc7F2r6JXkdwUimX8A4R3k9FQmIHqDio6EceWUW1w8KcL9uEhQYLCWJPQQu9vLVJoFcjoe/kA+ONytlTE9k0Y71YUaiWRoDYsHS8krLPePjuj4HV6nSciL6Jlafxf2Y9vQqSGUfW5XxhX93PPXakRB/z+44cDEA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g+a5ypPK; arc=none smtp.client-ip=209.85.208.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-412e22315d8so2547175e9.1;
-        Sun, 03 Mar 2024 11:03:44 -0800 (PST)
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d27fef509eso51989561fa.3;
+        Sun, 03 Mar 2024 11:04:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709492623; x=1710097423; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+Q6tqq+YHMrtRDD0QwVDNeMhXDLukwoqe/1azYB8u5U=;
-        b=Kh41KAoW9MeIsawH3KrleaRw4MBuce0SVIH6iXmpAvkUfmhtKkjKBiDgjzBEFj9YAD
-         eL+k26UjyTQWnpkmw6DPRLkbXEd5JuFgnuuaqiiLOweyWXjRll6ZqqSwCYMde6tjKM4M
-         NNDMOK557dzie9EuTigVDgQD2b+vrhOymvXJxOFL3iJshQlrERF+0ubIaHl4JIrF0cvx
-         zzEhbQi+12BVFOP+1kBOMDluoHBBIGbbHguni/ae6jasOybr8ps8HyTwqBiVRvd2h652
-         qdgHoy7zqdM9z2oeQ0M0s5rpVesxFmEDXaCO0WOS2IlAEF+L0Nja7KyXnrocSkaLSCv5
-         QG4w==
+        d=gmail.com; s=20230601; t=1709492648; x=1710097448; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1DVCx1/HHcWKKtGLW0BdzytODfQzaAANbwcrDliILZk=;
+        b=g+a5ypPKj39pLt0g100sovnhYOjmmpKRjj5SOMZzfM0X5JFz6Q9fjQ/i6lsZV6nr4z
+         3EiKITfu0Lxkjmi2b0EzFOTpZzKI3Br8AFbaHd3GI6BNnaqjU+yu8LUNVtWB+oCSNJtN
+         uFFNQZSkRl/hhL6zNI1Hk9L+ae0jZw81Rc+LfB1wJQvMd2WEe/ywWHab9Zvpfszb1MhT
+         YC5+JEk4BZZYCCmUW5sPHJ+IA8TlB7HJfOilhiLr+qNbpsM0XJIPmNmimTTgiH2XwWBY
+         fasCUXyWFFmfXZpkUbJY2DM6IolgmNWIStw2nx1vwRM8dARZMdu1J84l5T9aq61RPRUb
+         NVDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709492623; x=1710097423;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+Q6tqq+YHMrtRDD0QwVDNeMhXDLukwoqe/1azYB8u5U=;
-        b=fDSsXsTS786W/qAsYjeXIuaoc7yRG7F0oWG91BgCYIgzdGfqhD3KbTrM1km7WuxoCc
-         JTNiYhAFOgZwCZ8DqsiwtCUbKGsJJV6AcpZLuXrDkVxsylzRbCS765F0PmTnIhdnnEbq
-         VTDB8XMyqLbcOj1y0GXAE7s4VAMvqtwoOMjVh37+Jg4nR6B4PNdXP1OsFu6intKqcZsu
-         VauFO/rimpUtQZbzvH2hW/NCggcwmjo2Mu5Evc1vlZwt/qaqUamwU/nXdoJl+5lRyk7d
-         RKOWVMzpNBGdXXi4u5m6lpzOaU893n7FyUEp5T2X5zKRCwontyqAy2RM/9K9HjxUPl1m
-         QQ1g==
-X-Forwarded-Encrypted: i=1; AJvYcCXX3I9ZknNkrxbDxhXNrHzT8ElTtVgzbaDpgnrJGmLi3R5jMdiJVIX8NNCHLm7IGN9lcK2B33gkkgbbPLDw5NZCbRd0ceZGDqtkfSpJYsachf1MqWiEstCPSMVRx/IyFyVBPWEL
-X-Gm-Message-State: AOJu0Ywc/whg3edjpLOODBjqHjAEndr2MjsQNt1yG2OBxhX/I9R5w9v6
-	tznvUVGghgTGjAvjE/IBawmSWhJCDihPupdijZk4rUGiG3m9rvnvmy9xryW3FfE=
-X-Google-Smtp-Source: AGHT+IGg4+GTgKpcocRSHWqddDrc+rrpm/34o839Hkj+OJRCyujj5Z/0OpTcDzfW6PMDiFO0ZbZYoA==
-X-Received: by 2002:a05:600c:354b:b0:412:bca2:1680 with SMTP id i11-20020a05600c354b00b00412bca21680mr5891715wmq.35.1709492623332;
-        Sun, 03 Mar 2024 11:03:43 -0800 (PST)
-Received: from localhost.localdomain ([2a01:e0a:a92:c660:e318:3b1a:c27a:9905])
-        by smtp.gmail.com with ESMTPSA id fk6-20020a05600c0cc600b00412e2ccdc97sm1265674wmb.17.2024.03.03.11.03.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Mar 2024 11:03:42 -0800 (PST)
-From: Piotr Wejman <piotrwejman90@gmail.com>
-To: Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	netdev@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: Piotr Wejman <piotrwejman90@gmail.com>
-Subject: [PATCH v3] net: stmmac: fix rx queue priority assignment
-Date: Sun,  3 Mar 2024 20:03:38 +0100
-Message-Id: <20240303190339.52496-1-piotrwejman90@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        d=1e100.net; s=20230601; t=1709492648; x=1710097448;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1DVCx1/HHcWKKtGLW0BdzytODfQzaAANbwcrDliILZk=;
+        b=qWoYJ5XlqUCVi89M0gyhWTuEhblZvD0h7eXDFCCFN1/dzCUNgunf3rp2hkHKhEjNky
+         V2FGZrSjxqWjDgUvgUqwhA6hBAa4035GaMsuk8gJQTLpttYkDjTK+/Latekqi0Jzs+91
+         c6bn59s8LXFVJ7CcOyagtj8Tya8BzoCG5vZtz0ugGPneGJrKfrbdp3jV1ea/u6RLm6Qd
+         /Iibf1kqbU5OiFZqBipeX6pBYgpGkDVM1JD7yjSp4r53M+HcPSvlJ6SGEebN6gnGE5iT
+         R6xeFMgUKiJqcsKihyp8GoNpYQLIoFiJdExNspQ62tmy8wtc4/3SH7DdIxNFbb23Hh+F
+         lOzw==
+X-Forwarded-Encrypted: i=1; AJvYcCVaafcDldWlfWmcORKFO05QtFtkJe/jUVaOM+4kCu9/aXVhkoHQ5OmG0hp9fQSmz1VVkV8xIVYQ5hSzuvMmx6HpBbx+d7fkf1JpjOI1/50XnzMoGSHqoXash4P180IQe+el+snEJxnTZuEM
+X-Gm-Message-State: AOJu0Ywlfu1Ok96Ud8KQ50E+zFRhrI32f/mcml3490SO45Wfo7Lk9T5/
+	RsiK8O61T9nTJOTgajVVuPl48yyA+q4ru6WeofguIObPkDuFxtsCZDYa6R8aVC+JC/HLAOW2+IA
+	s/dRaolKJQFQHOKq0iHDtspUHXtQSyxt62/U=
+X-Google-Smtp-Source: AGHT+IFCSdD6OHt6bljSwkVkmweyQrmbR5W6Rf3Y/xTV8dRYMkGvWt4G0Q4Zm0KA/B2fjDQRxo5V6x5AwJlIy4MUrgI=
+X-Received: by 2002:a2e:6e10:0:b0:2d2:8fb4:46cf with SMTP id
+ j16-20020a2e6e10000000b002d28fb446cfmr4825247ljc.15.1709492647620; Sun, 03
+ Mar 2024 11:04:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <202403020457.RCJoQ3ts-lkp@intel.com> <87edctwr6y.ffs@tglx>
+ <87a5nhwpus.ffs@tglx> <87y1b0vp8m.ffs@tglx> <87sf18vdsq.ffs@tglx>
+ <87le70uwf0.ffs@tglx> <CAHk-=wiWhfdc4Sw2VBq_2nL2NDxmZS32xG4P7mBVwABGqUoJnw@mail.gmail.com>
+ <87edcruvja.ffs@tglx>
+In-Reply-To: <87edcruvja.ffs@tglx>
+From: Uros Bizjak <ubizjak@gmail.com>
+Date: Sun, 3 Mar 2024 20:03:56 +0100
+Message-ID: <CAFULd4bVEUBEidTLbHNzRaJbSjXm99yC8LT=jdzFWb7xnuFH7g@mail.gmail.com>
+Subject: Re: arch/x86/include/asm/processor.h:698:16: sparse: sparse:
+ incorrect type in initializer (different address spaces)
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, kernel test robot <lkp@intel.com>, 
+	oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	Arjan van de Ven <arjan@linux.intel.com>, x86@kernel.org, 
+	Luc Van Oostenryck <luc.vanoostenryck@gmail.com>, 
+	Sparse Mailing-list <linux-sparse@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The driver should ensure that same priority is not mapped to multiple
-rx queues. Currently rx_queue_priority() function is adding
-priorities for a queue without clearing them from others.
+On Sun, Mar 3, 2024 at 5:31=E2=80=AFPM Thomas Gleixner <tglx@linutronix.de>=
+ wrote:
+>
+> On Sat, Mar 02 2024 at 14:49, Linus Torvalds wrote:
+> > On Sat, 2 Mar 2024 at 14:00, Thomas Gleixner <tglx@linutronix.de> wrote=
+:
+> >>
+> >> I had commented out both. But the real reason is the EXPORT_SYMBOL,
+> >> which obviously wants to be EXPORT_PER_CPU_SYMBOL_GPL...
+> >
+> > Side note: while it's nice to hear that sparse kind of got this right,
+> > I wonder what gcc does when we start using the named address spaces
+> > for percpu variables.
+> >
+> > We actively make EXPORT_PER_CPU_SYMBOL_XYZ be a no-op for sparse
+> > exactly because sparse ended up warning about the regular
+> > EXPORT_SYMBOL, and we didn't have any "real" per-cpu export model.
+>
+> Right.
+>
+> > So EXPORT_PER_CPU_SYMBOL_GPL() is kind of an artificial "shut up
+> > sparse".
+>
+> Aside of that it's also making it clear what this is about. So I don't
+> think it's purely artifical.
+>
+> > But with __seg_gs/fs support for native percpu symbols with
+> > gcc, I wonder if we'll hit the same thing. Or is there something that
+> > makes gcc not warn about the named address spaces?
+>
+> Right now the pending code in tip does not complain about the
+> EXPORT_PER_CPU_SYMBOL_GPL() part because our current macro maze is
+> hideous. Here is the preprocessor output.
+>
+> This is DECLARE_PER_CPU() in the header:
+>
+> extern __attribute__((section(".data..percpu" ""))) __typeof__(u64) x86_s=
+pec_ctrl_current;
+>
+> Here is DEFINE_PER_CPU():
+>
+> __attribute__((section(".data..percpu" ""))) __typeof__(u64) x86_spec_ctr=
+l_current;
+>
+> And the EXPORT:
+>
+> extern typeof(x86_spec_ctrl_current) x86_spec_ctrl_current;
+>
+> static void * __attribute__((__used__))
+>    __attribute__((__section__(".discard.addressable")))
+>    __UNIQUE_ID___addressable_x86_spec_ctrl_current804 =3D (void *)(uintpt=
+r_t)&x86_spec_ctrl_current;
+>
+>    asm(".section \".export_symbol\",\"a\" ;
+>        __export_symbol_x86_spec_ctrl_current: ;
+>        .asciz \"GPL\" ; .asciz \"\" ; .balign 8 ; .quad x86_spec_ctrl_cur=
+rent ; .previous");
+>
+> And the __seg_gs magic happens only in the per CPU accessor itself:
+>
+> __attribute__((__noinline__)) __attribute__((no_instrument_function))
+>  __attribute((__section__(".noinstr.text")))
+>  __attribute__((__no_sanitize_address__))
+>  __attribute__((__no_profile_instrument_function__))
+>  u64 spec_ctrl_current(void)
+> {
+>  return ({
+>     // this_cpu_read(x86_spec_ctrl_current)
+>
+>     typeof(x86_spec_ctrl_current) pscr_ret__;
+>
+>     do { const void *__vpp_verify =3D (typeof((&(x86_spec_ctrl_current)) =
++ 0))((void *)0); (void)__vpp_verify;
+>     } while (0);
+>
+>     switch(sizeof(x86_spec_ctrl_current))
+>     {
+>     case 1: pscr_ret__ =3D ({
+>             *(volatile typeof(x86_spec_ctrl_current) __seg_gs *)(typeof(*=
+&(x86_spec_ctrl_current)) __seg_gs *)(uintptr_t)(&(x86_spec_ctrl_current));=
+ });
+>             break;
+>     case 2: pscr_ret__ =3D ({
+>             *(volatile typeof(x86_spec_ctrl_current) __seg_gs *)(typeof(*=
+&(x86_spec_ctrl_current)) __seg_gs *)(uintptr_t)(&(x86_spec_ctrl_current));=
+ });
+>             break;
+>     case 4: pscr_ret__ =3D ({
+>             *(volatile typeof(x86_spec_ctrl_current) __seg_gs *)(typeof(*=
+&(x86_spec_ctrl_current)) __seg_gs *)(uintptr_t)(&(x86_spec_ctrl_current));=
+ });
+>             break;
+>     case 8: pscr_ret__ =3D ({
+>             *(volatile typeof(x86_spec_ctrl_current) __seg_gs *)(typeof(*=
+&(x86_spec_ctrl_current)) __seg_gs *)(uintptr_t)(&(x86_spec_ctrl_current));=
+ });
+>             break;
+>
+>     default: __bad_size_call_parameter(); break;
+>     }
+>
+>     pscr_ret__;
+>   });
+> }
+>
+> So all the export etc. just works because it all operates on a plain
+> data type and the __seg_gs is only bolted on via type casts in the
+> accessors.
+>
+> As the per cpu variables are in the .data..percpu section the linker
+> puts them at address 0 and upwards. So the cast to a __seg_gs pointer
+> makes it end up at the real kernel address because of GSBASE + "offset".
+>
+> The compiler converts this to RIP relative addressing:
+>
+>   movq   $0x0,%gs:0x7e14169f(%rip)        # 1ba08 <fpu_fpregs_owner_ctx>
+>
+> This obviously has a downside. If I do:
+>
+>    u64 foo;
+>
+>    this_cpu_read(foo);
+>
+> the compiler is just happy to build that w/o complaining and it will
+> only explode at runtime because foo is a kernel data address which added
+> to GSBASE will result in accessing some random address:
+>
+>   mov    %gs:0x15d08d4(%rip),%rax        # ffffffff834aac60 <x86_spec_ctr=
+l_base>
+>
+> This is not at all different from the inline ASM based version which is
+> in your tree. The only difference is that the macro maze is pure C and
+> the __set_gs cast allows the compiler to (micro) optimize, e.g. 'mov
+> %gs:...; movzbl' into a single 'movzbl'.
+>
+> IOW, right now the only defense against such a mistake is actually the
+> sparse check. Maybe one of the coccinelle scripts has something similar,
+> I don't know.
+>
+> I did not follow the __set_gs work closely, so I don't know whether Uros
+> ever tried to actually mark the per CPU variable __set_gs right away,
+> which would obviously catch the above 'foo' nonsense.
 
-From DesignWare Cores Ethernet Quality-of-Service
-Databook, section 17.1.29 MAC_RxQ_Ctrl2:
-"[...]The software must ensure that the content of this field is
-mutually exclusive to the PSRQ fields for other queues, that is,
-the same priority is not mapped to multiple Rx queues[...]"
+No, because [1]:
 
-After this patch, rx_queue_priority() function will:
-- assign desired priorities to a queue
-- remove those priorities from all other queues
-The write sequence of CTRL2 and CTRL3 registers is done in the way to
-ensure this order.
+"gcc does not provide a way to remove segment qualifiers, which is needed
+to use typeof() to create local instances of the per-cpu variable. For
+this reason, do not use the segment qualifier for per-cpu variables, and
+do casting using the segment qualifier instead."
 
-Signed-off-by: Piotr Wejman <piotrwejman90@gmail.com>
----
-Changes in v2:
-  - Add some comments
-  - Apply same changes to dwxgmac2_rx_queue_prio()
-  - Revert "Rename prio argument to prio_mask"
-  - Link to v1: https://lore.kernel.org/netdev/20240219102405.32015-1-piotrwejman90@gmail.com/T/#u
+[1] https://lore.kernel.org/lkml/20190823224424.15296-3-namit@vmware.com/
 
-Changes in v3:
-  - Fix trailing whitespace
-  - Link to v2: https://lore.kernel.org/netdev/20240226093144.31965-1-piotrwejman90@gmail.com/
+Uros.
 
- .../net/ethernet/stmicro/stmmac/dwmac4_core.c | 42 +++++++++++++++----
- .../ethernet/stmicro/stmmac/dwxgmac2_core.c   | 40 ++++++++++++++----
- 2 files changed, 66 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
-index 6b6d0de09619..a0e6d33ca87e 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
-@@ -92,19 +92,43 @@ static void dwmac4_rx_queue_priority(struct mac_device_info *hw,
- 				     u32 prio, u32 queue)
- {
- 	void __iomem *ioaddr = hw->pcsr;
--	u32 base_register;
--	u32 value;
-+	u32 clear_mask = 0;
-+	u32 ctrl2, ctrl3;
-+	int i;
- 
--	base_register = (queue < 4) ? GMAC_RXQ_CTRL2 : GMAC_RXQ_CTRL3;
--	if (queue >= 4)
--		queue -= 4;
-+	ctrl2 = readl(ioaddr + GMAC_RXQ_CTRL2);
-+	ctrl3 = readl(ioaddr + GMAC_RXQ_CTRL3);
- 
--	value = readl(ioaddr + base_register);
-+	/* The software must ensure that the same priority
-+	 * is not mapped to multiple Rx queues.
-+	 */
-+	for (i = 0; i < 4; i++)
-+		clear_mask |= ((prio << GMAC_RXQCTRL_PSRQX_SHIFT(i)) &
-+						GMAC_RXQCTRL_PSRQX_MASK(i));
-+
-+	ctrl2 &= ~clear_mask;
-+	ctrl3 &= ~clear_mask;
-+
-+	/* Assign new priorities to a queue and
-+	 * clear them from others queues.
-+	 * The CTRL2 and CTRL3 registers write sequence is done
-+	 * in the way to ensure this order.
-+	 */
-+	if (queue < 4) {
-+		ctrl2 |= (prio << GMAC_RXQCTRL_PSRQX_SHIFT(queue)) &
-+						GMAC_RXQCTRL_PSRQX_MASK(queue);
- 
--	value &= ~GMAC_RXQCTRL_PSRQX_MASK(queue);
--	value |= (prio << GMAC_RXQCTRL_PSRQX_SHIFT(queue)) &
-+		writel(ctrl2, ioaddr + GMAC_RXQ_CTRL2);
-+		writel(ctrl3, ioaddr + GMAC_RXQ_CTRL3);
-+	} else {
-+		queue -= 4;
-+
-+		ctrl3 |= (prio << GMAC_RXQCTRL_PSRQX_SHIFT(queue)) &
- 						GMAC_RXQCTRL_PSRQX_MASK(queue);
--	writel(value, ioaddr + base_register);
-+
-+		writel(ctrl3, ioaddr + GMAC_RXQ_CTRL3);
-+		writel(ctrl2, ioaddr + GMAC_RXQ_CTRL2);
-+	}
- }
- 
- static void dwmac4_tx_queue_priority(struct mac_device_info *hw,
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-index 1af2f89a0504..d15752823d93 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwxgmac2_core.c
-@@ -105,17 +105,43 @@ static void dwxgmac2_rx_queue_prio(struct mac_device_info *hw, u32 prio,
- 				   u32 queue)
- {
- 	void __iomem *ioaddr = hw->pcsr;
--	u32 value, reg;
-+	u32 clear_mask = 0;
-+	u32 ctrl2, ctrl3;
-+	int i;
- 
--	reg = (queue < 4) ? XGMAC_RXQ_CTRL2 : XGMAC_RXQ_CTRL3;
--	if (queue >= 4)
-+	ctrl2 = readl(ioaddr + XGMAC_RXQ_CTRL2);
-+	ctrl3 = readl(ioaddr + XGMAC_RXQ_CTRL3);
-+
-+	/* The software must ensure that the same priority
-+	 * is not mapped to multiple Rx queues.
-+	 */
-+	for (i = 0; i < 4; i++)
-+		clear_mask |= ((prio << XGMAC_PSRQ_SHIFT(i)) &
-+						XGMAC_PSRQ(i));
-+
-+	ctrl2 &= ~clear_mask;
-+	ctrl3 &= ~clear_mask;
-+
-+	/* Assign new priorities to a queue and
-+	 * clear them from others queues.
-+	 * The CTRL2 and CTRL3 registers write sequence is done
-+	 * in the way to ensure this order.
-+	 */
-+	if (queue < 4) {
-+		ctrl2 |= (prio << XGMAC_PSRQ_SHIFT(queue)) &
-+						XGMAC_PSRQ(queue);
-+
-+		writel(ctrl2, ioaddr + XGMAC_RXQ_CTRL2);
-+		writel(ctrl3, ioaddr + XGMAC_RXQ_CTRL3);
-+	} else {
- 		queue -= 4;
- 
--	value = readl(ioaddr + reg);
--	value &= ~XGMAC_PSRQ(queue);
--	value |= (prio << XGMAC_PSRQ_SHIFT(queue)) & XGMAC_PSRQ(queue);
-+		ctrl3 |= (prio << XGMAC_PSRQ_SHIFT(queue)) &
-+						XGMAC_PSRQ(queue);
- 
--	writel(value, ioaddr + reg);
-+		writel(ctrl3, ioaddr + XGMAC_RXQ_CTRL3);
-+		writel(ctrl2, ioaddr + XGMAC_RXQ_CTRL2);
-+	}
- }
- 
- static void dwxgmac2_tx_queue_prio(struct mac_device_info *hw, u32 prio,
--- 
-2.25.1
-
+>
+> I think this should just work, but that would obviously require to do
+> the type cast magic at the EXPORT_SYMBOL side and in some other places.
+>
+> Thanks,
+>
+>         tglx
+>
+>
 
