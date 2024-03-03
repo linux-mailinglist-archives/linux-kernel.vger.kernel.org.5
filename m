@@ -1,80 +1,80 @@
-Return-Path: <linux-kernel+bounces-89870-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89871-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E72686F6BD
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 20:21:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41C7986F6BE
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 20:21:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A227D1C210F5
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 19:21:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC8B01F2103C
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 19:21:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DBD07A131;
-	Sun,  3 Mar 2024 19:20:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34FEB7A70D;
+	Sun,  3 Mar 2024 19:21:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MhRN/cHQ"
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Mn12UnbD"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F239679DB0;
-	Sun,  3 Mar 2024 19:20:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA14779DCD;
+	Sun,  3 Mar 2024 19:20:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709493658; cv=none; b=HQo5AU6dTVv4k0lUF8+swAwIsIVLirkzY3d901/UNAYqPT/+GiYvM9nupLxdFxOA4VIIuTYPaC9LSiXKRq8zURDErNtW/e6aoTHGWuQp/e90D9FPl/5Vp0bUSfIk5vaJvRmTNHmL96A3g/Fx7ryV2LPb7H7yh1iCuaRyNSB+ns8=
+	t=1709493660; cv=none; b=VLN6ZKZruhfH92yUNdc/Au/0V0NQyxJcFjrJMu8P4g8IR+3pEvWsxbIOeIE7z7rhuYcmWIXoGxLdR53LqllgF/xEM/xtli9eOFZpZepz0oZeaJX9JqLwVO0u3ettMpq00bMChvGrAxhBnpKpo3gk8vU8VTDQaq6rrOnDu3Dteyo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709493658; c=relaxed/simple;
-	bh=e3jkG39/MQTGX4+KXnyNp32ca12vDfkXIz0Uhjzrt4w=;
+	s=arc-20240116; t=1709493660; c=relaxed/simple;
+	bh=ZgYDrj0YYvD+dXTAAy8LDU2DHLTSdomYNZmOn8qNHto=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=hXiuX3mxHpAIr9T62dPCrHC5kNyDmUUUZq302WxHLxx9eXRlLifWasWl7LJAW/tm+fdz/EnpRFoJwdqYdQN78ZBiE05ehHmg2BjDD8EomJ/cRbiLcgDE7V189NA+fJvWDqlsX+baVZ17hia4Kxrs4X6osOLa7sRUq8nrqWSeXeY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MhRN/cHQ; arc=none smtp.client-ip=209.85.208.180
+	 MIME-Version; b=a9Bn04GESpcveOrfTkrGWEfuWdUcs/pR3NCTSMWsttc70ivfOaVr1CTa7xAd/1svuA6h48TewFYdlxyG9IvY+r5Jk0iKapMzg+N9osrEQameOXNpn5Gh2XLFVCnoeu1zfZsLgrXS8niBwxJtXXBJgl9CCoRs+dYronR1AFj3Pcw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Mn12UnbD; arc=none smtp.client-ip=209.85.208.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d382a78c38so10937281fa.1;
-        Sun, 03 Mar 2024 11:20:56 -0800 (PST)
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d2991e8c12so37475391fa.0;
+        Sun, 03 Mar 2024 11:20:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709493655; x=1710098455; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1709493657; x=1710098457; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UtWCQrC9j37ooCM7Gh68I6DWbQnrPcqv9tFDtfEFLtM=;
-        b=MhRN/cHQgjItArs7bmAIxwbUIZNXigYC/AJ4HvzChLlW2hnooFp+yrdHarcgBtOv90
-         pt26ysUULgUp8eyBB1e+03K+JOLMaZmREibKJAp7MQ605wshyIYNo71Wo/ZtlJI1o9fe
-         yfXhwphu1aFIcPHbO9H9jL9wGQaw2IVv8DR+qLitf03bM9zNpexEBwQ3r0YLsrNujhxp
-         +O+6sI6QcbrCvsrVCn04/2lT7q/m6cvKem5Jqp26q+7khOn9kSOM7plcd4RzLx4ZbmRF
-         CdeVQV0OC3NMIOGJSdndDHIWDc0YfzmJRquI8LAc5+K5h8zfuJ07mE3OiJzaI5WFSz5g
-         RR9g==
+        bh=acUUqPyDOG3LFbF39uA3RbQi0wyLKzhv/SV7pzsE7a4=;
+        b=Mn12UnbDjOiyJymPzVsOC4nTFVAZ2B0yqu79QmWKB3Y/EDHEC8+MAqBwC+K80VNrdC
+         EyxzzV2Vx82CZeoz/uRcwp3YvuNA+P/cktJ+kyXgvVnV3sjTqIk8AaPF7qAHZdarxJ4C
+         Kt0XWfsCgPKljwQRQ+lC9fvIDAFL0O9ody5q2zMoF55GYqydNC8fR1VTXW08PwK9nCgd
+         F3f+RRvMdJjGzSArPig2Q2jpVub0aCJ8D2Xq1P93JGaeBBldSNacjXqdqaC98nxs02d2
+         BSGWnHxsIRXuTfi0Nbemr8rFw8yLf/NLdxJniBQEjBZB18Fwtkxag//dtInr4oAElahS
+         OdyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709493655; x=1710098455;
+        d=1e100.net; s=20230601; t=1709493657; x=1710098457;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UtWCQrC9j37ooCM7Gh68I6DWbQnrPcqv9tFDtfEFLtM=;
-        b=ST7pKBcDLDwa8MU+4MySWucLPZ+vlF0IArWrR2Rc8uDRpRQVsyL4cUZConm07Elo2y
-         HXHJLBzVbNaACCj1foOvhcluUchWHjgyku77psOpyD8+0RyA/xj/gxJf77B201o8PQ9P
-         +y/z7WT1bLPhsjzTIHNw1GuWjCp56CAKQO5Vt4Hb3oXIk6flf1WW0EM09AyNBdai/zob
-         yqA1tVEwxyZzx/fy9xIls7hpzh4WH9Zulu+/T2D6DD12QXynb1wwSwCPxGGpuy8vifZZ
-         J5P78QF9DElF7jCzjKdys5aWy6iPzR228lO+M9vO5pSeryRxQSmMitgPh7tZ9MlFgCZy
-         mn3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUm6kZGQFnPEI5jUGaBBVC+Bp9mBLAZ2ocHoZ+RUoD/A5AiBoSPCvMIxwbZRKHwhyqAm4JMC/XYDPSnHNh/ZFiqaUquQ/BkBXx1FwtWHza5eemiuOJ+r/oFjcrqwMMNrDWWF5VZa2kHW/0=
-X-Gm-Message-State: AOJu0YybFJhWpNEshgCTLDhspNIgyrx8U6iU1k8w0SxOkIbzv7u7SQfH
-	vChZMYuI7jucno2oMRSYjoFPOTX5+UBN76IzbgUSd8Joe8ZEaMJ5
-X-Google-Smtp-Source: AGHT+IEUZlhp9TKb+6k0Am/Sy+zZ2uIxRoBnY61fu9pVrtqAb2D5S1+DDQO5q6cO14Jzpc8DVbZbHw==
-X-Received: by 2002:a2e:7801:0:b0:2d2:ccb0:c6c7 with SMTP id t1-20020a2e7801000000b002d2ccb0c6c7mr4914035ljc.8.1709493654953;
-        Sun, 03 Mar 2024 11:20:54 -0800 (PST)
+        bh=acUUqPyDOG3LFbF39uA3RbQi0wyLKzhv/SV7pzsE7a4=;
+        b=OMJ2TOvpDZwf/28nw8to9Abd1VSuJOrXcaF9s5Iod49WVlEWpow9Dxgl8Yv7PeK3tp
+         Zjg9gzUd1hfYVTfXFwdArMLdjVdaESp/57yyT4DPlve8SCKsdLIOUnN8Wpdt9Nypkxtz
+         e/4vNod+T2N84hsMYLnL9XbekzwKK4WwW3pZtO87KdFRxFTCGWv3nGdOtKlnWvPEoBAa
+         849IH2F95i1ZpcgFx8IDIHlTurUdV+JjkpFwH0KSsBVk5gyq1WuU+tCt4tMJmUYDiMbD
+         ahZeX7Ws6WVDO62PZKrhRbAiNM8STuaJW4f0pCmFz9p2iv47/qC3sHDkC7R5SvUqj3Ce
+         HEfQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXrNtFiqluj4gGerruZKOAHx7agH+bWFlfLyb7REFv0c9ue5vUfTBJkxSmEznd6O+h7LVp4tqI3ziTv8mET3O1Q59cdxzEpjV4JfJPE8qNK6/Pv6WML2DTgtwn7MR48G2Hrx4oFsadl1Tc=
+X-Gm-Message-State: AOJu0YxuGz2hLM3HATrDsAiB2XP3daovu4RIqo25wy1DO9QE310mcBug
+	rRXT8NcR3VoTVewmgUYYLFJ0cMeXCfcMR/dzc0d/pPyPNVqSZq4eJKqdtjpb7I5zig==
+X-Google-Smtp-Source: AGHT+IFEkey3XDjrh3yGBXOYsA99qGQ33aOIkyZKj28WKcllyhS3hRxdC3Vn8Kz4k3cdTgqQz1Qnbw==
+X-Received: by 2002:a2e:b0f0:0:b0:2d0:af40:7058 with SMTP id h16-20020a2eb0f0000000b002d0af407058mr2952956ljl.14.1709493656728;
+        Sun, 03 Mar 2024 11:20:56 -0800 (PST)
 Received: from localhost.localdomain (c83-255-24-248.bredband.tele2.se. [83.255.24.248])
-        by smtp.googlemail.com with ESMTPSA id y10-20020a2e9d4a000000b002d3c466adc7sm68438ljj.15.2024.03.03.11.20.54
+        by smtp.googlemail.com with ESMTPSA id y10-20020a2e9d4a000000b002d3c466adc7sm68438ljj.15.2024.03.03.11.20.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Mar 2024 11:20:54 -0800 (PST)
+        Sun, 03 Mar 2024 11:20:56 -0800 (PST)
 From: Jonathan Bergh <bergh.jonathan@gmail.com>
 To: mchehab@kernel.org
 Cc: mcgrof@kernel.org,
 	linux-media@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Jonathan Bergh <bergh.jonathan@gmail.com>
-Subject: [PATCH 1/9] staging: media: av7110: Fix formatting problem where trailing statements should be on a new line
-Date: Sun,  3 Mar 2024 20:20:32 +0100
-Message-Id: <20240303192040.8116-2-bergh.jonathan@gmail.com>
+Subject: [PATCH 2/9] staging: media: av7110: Remove braces for single line statement blocks
+Date: Sun,  3 Mar 2024 20:20:33 +0100
+Message-Id: <20240303192040.8116-3-bergh.jonathan@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240303192040.8116-1-bergh.jonathan@gmail.com>
 References: <20240303192040.8116-1-bergh.jonathan@gmail.com>
@@ -86,59 +86,32 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch makes the following change:
- * Ensures trailing statements are always on a new line as per kernel
-   code style guidelines
+This patch fixes the following issues:
+ * Removes braces for single statement conditional code blocks
 
 Signed-off-by: Jonathan Bergh <bergh.jonathan@gmail.com>
 ---
- drivers/staging/media/av7110/sp8870.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ drivers/staging/media/av7110/sp8870.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/staging/media/av7110/sp8870.c b/drivers/staging/media/av7110/sp8870.c
-index abf5c72607b6..83685443976d 100644
+index 83685443976d..2c30582191d4 100644
 --- a/drivers/staging/media/av7110/sp8870.c
 +++ b/drivers/staging/media/av7110/sp8870.c
-@@ -248,7 +248,8 @@ static int sp8870_set_frontend_parameters(struct dvb_frontend *fe)
- 	// set tuner parameters
- 	if (fe->ops.tuner_ops.set_params) {
- 		fe->ops.tuner_ops.set_params(fe);
--		if (fe->ops.i2c_gate_ctrl) fe->ops.i2c_gate_ctrl(fe, 0);
-+		if (fe->ops.i2c_gate_ctrl)
-+			fe->ops.i2c_gate_ctrl(fe, 0);
- 	}
+@@ -529,11 +529,10 @@ static int sp8870_i2c_gate_ctrl(struct dvb_frontend* fe, int enable)
+ {
+ 	struct sp8870_state* state = fe->demodulator_priv;
  
- 	// sample rate correction bit [23..17]
-@@ -296,7 +297,8 @@ static int sp8870_init (struct dvb_frontend* fe)
- 	const struct firmware *fw = NULL;
+-	if (enable) {
++	if (enable)
+ 		return sp8870_writereg(state, 0x206, 0x001);
+-	} else {
++	else
+ 		return sp8870_writereg(state, 0x206, 0x000);
+-	}
+ }
  
- 	sp8870_wake_up(state);
--	if (state->initialised) return 0;
-+	if (state->initialised)
-+		return 0;
- 	state->initialised = 1;
- 
- 	dprintk ("%s\n", __func__);
-@@ -549,7 +551,8 @@ struct dvb_frontend* sp8870_attach(const struct sp8870_config* config,
- 
- 	/* allocate memory for the internal state */
- 	state = kzalloc(sizeof(struct sp8870_state), GFP_KERNEL);
--	if (state == NULL) goto error;
-+	if (state == NULL)
-+		goto error;
- 
- 	/* setup the state */
- 	state->config = config;
-@@ -557,7 +560,8 @@ struct dvb_frontend* sp8870_attach(const struct sp8870_config* config,
- 	state->initialised = 0;
- 
- 	/* check if the demod is there */
--	if (sp8870_readreg(state, 0x0200) < 0) goto error;
-+	if (sp8870_readreg(state, 0x0200) < 0)
-+		goto error;
- 
- 	/* create dvb_frontend */
- 	memcpy(&state->frontend.ops, &sp8870_ops, sizeof(struct dvb_frontend_ops));
+ static void sp8870_release(struct dvb_frontend* fe)
 -- 
 2.40.1
 
