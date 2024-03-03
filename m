@@ -1,172 +1,197 @@
-Return-Path: <linux-kernel+bounces-89686-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89687-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D4F586F42A
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 10:31:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 930D986F42B
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 10:32:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0EBAEB22057
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 09:31:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C59A51C20A1D
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 09:32:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0D1DB645;
-	Sun,  3 Mar 2024 09:31:13 +0000 (UTC)
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDD37AD5C;
+	Sun,  3 Mar 2024 09:32:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="oJ+ydgQQ"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43644AD2C;
-	Sun,  3 Mar 2024 09:31:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA7D8AD35
+	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 09:32:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709458273; cv=none; b=bqyLeZIxiQopckT7CDbYOIHzrjGYFdaSekqsvLmQveE2x0oAHQsCwkxF6R7iDxJ06Pz6ZjOtoOqgs3cUYMCdfRRH/qoLDva/+Xhn7+Ts5c5Qn2JhpIz4h7g03ehxitkcWNva84TRJz1CiRnSee32mIRNR9GunC4ZVSBEMk7Hpk0=
+	t=1709458368; cv=none; b=aCaWly6mYBlwM55M2F7StY4BEE7aOaHFuMEcKxd2WcfE/BaBY/qSK9uREx4LflkIkfsqy6H24/B3b4gAqhf0lTqfhA9mLtOEauSpEVW6Sm7u5v+ttruJZaFy/tKdAOUJXK8Xvg1uGJZ4JJJxr+jgDyt8WBcR7olLyXLMHBv6qLg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709458273; c=relaxed/simple;
-	bh=qNRnfHzytu7FlNcNip2StOGlbTwoZ8fM8RaPRfKvn7A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UuYoBAVonfL07ymm7IAwl9oWyFxA4ce7832rMtp9sq2xNnsl+oW3vMz4di2H+7THlOmHEUbSnha0YGQN0CdO7T4BQGBdkNgGnooMsXC1ErEN92/8YMW07iC7ajjSzt2ydUimajCK+OEs5LHhDIPtqGfjDHUcuuRyTlXR+5Ot8IM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-60978e6f9a3so31982327b3.3;
-        Sun, 03 Mar 2024 01:31:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709458269; x=1710063069;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+h+cxR9Zi+zZIFamlmv2ivpOejR06HV/J+RWDkEaK2g=;
-        b=bWVWXdd32OV9jL7z3RuckYbX6ZjpfdArx9zOZ8uoaUl69VnVPtIIO86irJvyzoDj53
-         oJve3PEtiDG2ojA0SdD1d4YmW3BiAj4gAp0e34rgU29U/I6KQX59N5Gcixg9LBdcEa6l
-         YHiq1v4uWx6p4chSLnH/NhMezMePocu8ZvEmwLUvEoR0umw21QHMHxx/YIHMyFN0pzfv
-         oiDVWxxJbob+hr2i/3KHjuWlI7c6vu5pgNaD/hoagvi4n+Bvh+KTxJ8goTU71+EGQa3u
-         6Y0tZcIvOlJaWcyClQaH9mvHlmQYWnWcpCFYhfRTNN80Bhfp7F12qpoAvjSAI2MT8guN
-         UeUQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWajYu4PJxdrfWjRDBeN/YTkaBScq40drY3jl9sULh3GWPR4bI1sU1XFuiNmJPvgFi/B/3B6LwJG4OHi3MMbRuC1qt9c0rG+YEcSNTsl7rFC4zu0hRoTqrdggveCwFDVCl6qP8QnRudCOOJNfFD31T3+XKQX/TZXn0jmxrTem2mlzmuDb4BLBu/
-X-Gm-Message-State: AOJu0YwkP+KxkS4qcG/kgoa308HZgM5+V/RcxWXTvymqUkErrVBgs19z
-	t9fnTH4WSUXVjBskqfW2x4gHP2h2NGONEM+X5msmFposUtApQAJaSJ5kzC8HuJE=
-X-Google-Smtp-Source: AGHT+IF3gJ5Cr9PLyLFUiKhGAWk1QYjh/+IegJPCZUkNk0jRj2EtLZ8vLHRb0EU5PB7vLcze5FtwVA==
-X-Received: by 2002:a05:690c:ed4:b0:607:ca2e:f23e with SMTP id cs20-20020a05690c0ed400b00607ca2ef23emr7699212ywb.30.1709458269560;
-        Sun, 03 Mar 2024 01:31:09 -0800 (PST)
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
-        by smtp.gmail.com with ESMTPSA id y17-20020a81a111000000b00607a42af275sm1970289ywg.48.2024.03.03.01.31.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 03 Mar 2024 01:31:09 -0800 (PST)
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dcd94fb9e4dso3465830276.2;
-        Sun, 03 Mar 2024 01:31:09 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCW4zK6VTmLYkkTT+/T6EMMR6Dyp3J+IBWkSt9Vd6g+ha2WniTyk3wH8etVFe5fprffD7pF1h1Z2Wf0H8svOCv+RiLjUdWPEuaOJ2mxAvWanUHqipP6AVFwdOZZgw9d0nLS8FfvgvDswkdC6b3FIKjTkPuaeV0VneSzyxhNGfLVE8Q/PyngNcm3B
-X-Received: by 2002:a81:8494:0:b0:604:9b50:e973 with SMTP id
- u142-20020a818494000000b006049b50e973mr5488306ywf.44.1709458269052; Sun, 03
- Mar 2024 01:31:09 -0800 (PST)
+	s=arc-20240116; t=1709458368; c=relaxed/simple;
+	bh=bEmtJZ/Iwe/+dMt2LldCtxBZpGDPZYUILKfOfWxZRWs=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=toJ8RiVVEQ+Z5QMcwU58LdlfsaMHKxoSUnUjsRsKxz4vU1TWff2j443hZnybR4VBfHBhFUyRhzGcKz98iWmfYK8Z/yNhJ1qlYJI5mVLSeTaioWHWMoNtwf9Tx8xpa5BbUaXYRqou6Hbk1TaL366FQunoVzP62rI/KXDBas7yQKM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=oJ+ydgQQ; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709458366; x=1740994366;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=bEmtJZ/Iwe/+dMt2LldCtxBZpGDPZYUILKfOfWxZRWs=;
+  b=oJ+ydgQQvzPCdHCgJXgfWTJW+vRVDLh2UjLy+65j0b/15PULeSI4ohF5
+   Y+E2cl+ugeqGq4VSAUzD3VfV5W6KLmwBPaW80aXhx353YmTHwplopDgRy
+   qTlgDsfWp0M4Cg9DoevzKijaEfc2lfHoEsRyX5/qO8AENH/ahbQ4ssHZ+
+   x3Fkt7OKkKo31meCVPtyUQ6TmEm/brmSE1/FJkzv4LL7+MnN6iAmR+jLW
+   CrdhQA7WBRhtG8kEsKT43F5RRSHZeMI6Rtvf05vKKbCGAmy89AQX+9WX+
+   Dv5/+SAl/b9ft2XQkGP7TMGfcCuN7W7ZHRnai0fl3crgQxNbrmsVbgXw0
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11001"; a="14536220"
+X-IronPort-AV: E=Sophos;i="6.06,200,1705392000"; 
+   d="scan'208";a="14536220"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2024 01:32:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,200,1705392000"; 
+   d="scan'208";a="13171665"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by fmviesa005.fm.intel.com with ESMTP; 03 Mar 2024 01:32:44 -0800
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rgiD4-0001fI-0R;
+	Sun, 03 Mar 2024 09:32:42 +0000
+Date: Sun, 3 Mar 2024 17:32:11 +0800
+From: kernel test robot <lkp@intel.com>
+To: Willem de Bruijn <willemb@google.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Florian Westphal <fw@strlen.de>
+Subject: WARNING: modpost: "strcpy" [net/core/gso_test.ko] has no CRC!
+Message-ID: <202403031752.dwXgZG8e-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240228225527.1052240-1-helen.koike@collabora.com>
- <20240228225527.1052240-2-helen.koike@collabora.com> <20240229-dancing-laughing-groundhog-d85161@houat>
- <5d7ed81b-37f9-48e9-ab7e-484b74ca886c@gmail.com> <CAHk-=wixVy3WYvjbt43ZSrCqPDsS76QJQSkXFbbPsAOs1MCSAQ@mail.gmail.com>
- <CABXOdTeT2ip1uS2EG2w8pW7254Tnd=ZDNz-KC61-G-yqDTVgJA@mail.gmail.com> <269232e6-41c9-4aa1-9320-662beabcd69b@infradead.org>
-In-Reply-To: <269232e6-41c9-4aa1-9320-662beabcd69b@infradead.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Sun, 3 Mar 2024 10:30:56 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXuXV9WV3aANFTteuP8Q3JY6R5OWsVBedGOP7e_JguxqA@mail.gmail.com>
-Message-ID: <CAMuHMdXuXV9WV3aANFTteuP8Q3JY6R5OWsVBedGOP7e_JguxqA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] kci-gitlab: Introducing GitLab-CI Pipeline for Kernel Testing
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: Guenter Roeck <groeck@google.com>, Linus Torvalds <torvalds@linuxfoundation.org>, 
-	Nikolai Kondrashov <spbnick@gmail.com>, Maxime Ripard <mripard@kernel.org>, 
-	Helen Koike <helen.koike@collabora.com>, linuxtv-ci@linuxtv.org, 
-	dave.pigott@collabora.com, linux-kernel@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org, 
-	gustavo.padovan@collabora.com, pawiecz@collabora.com, 
-	tales.aparecida@gmail.com, workflows@vger.kernel.org, 
-	kernelci@lists.linux.dev, skhan@linuxfoundation.org, 
-	kunit-dev@googlegroups.com, nfraprado@collabora.com, davidgow@google.com, 
-	cocci@inria.fr, Julia.Lawall@inria.fr, laura.nao@collabora.com, 
-	ricardo.canuelo@collabora.com, kernel@collabora.com, 
-	gregkh@linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Sun, Mar 3, 2024 at 3:30=E2=80=AFAM Randy Dunlap <rdunlap@infradead.org>=
- wrote:
-> On 3/2/24 14:10, Guenter Roeck wrote:
-> > On Thu, Feb 29, 2024 at 12:21=E2=80=AFPM Linus Torvalds
-> > <torvalds@linuxfoundation.org> wrote:
-> >> On Thu, 29 Feb 2024 at 01:23, Nikolai Kondrashov <spbnick@gmail.com> w=
-rote:
-> >>>
-> >>> However, I think a better approach would be *not* to add the .gitlab-=
-ci.yaml
-> >>> file in the root of the source tree, but instead change the very same=
- repo
-> >>> setting to point to a particular entry YAML, *inside* the repo (somew=
-here
-> >>> under "ci" directory) instead.
-> >>
-> >> I really don't want some kind of top-level CI for the base kernel proj=
-ect.
-> >>
-> >> We already have the situation that the drm people have their own ci
-> >> model. II'm ok with that, partly because then at least the maintainers
-> >> of that subsystem can agree on the rules for that one subsystem.
-> >>
-> >> I'm not at all interested in having something that people will then
-> >> either fight about, or - more likely - ignore, at the top level
-> >> because there isn't some global agreement about what the rules are.
-> >>
-> >> For example, even just running checkpatch is often a stylistic thing,
-> >> and not everybody agrees about all the checkpatch warnings.
-> >
-> > While checkpatch is indeed of arguable value, I think it would help a
-> > lot not having to bother about the persistent _build_ failures on
-> > 32-bit systems. You mentioned the fancy drm CI system above, but they
-> > don't run tests and not even test builds on 32-bit targets, which has
-> > repeatedly caused (and currently does cause) build failures in drm
-> > code when trying to build, say, arm:allmodconfig in linux-next. Most
-> > trivial build failures in linux-next (and, yes, sometimes mainline)
-> > could be prevented with a simple generic CI.
->
-> Yes, definitely. Thanks for bringing that up.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   04b8076df2534f08bb4190f90a24e0f7f8930aca
+commit: 1b4fa28a8b07eb331aeb7fbfc806c0d2e3dc3627 net: parametrize skb_segment unit test to expand coverage
+date:   5 months ago
+config: alpha-randconfig-s032-20220318 (https://download.01.org/0day-ci/archive/20240303/202403031752.dwXgZG8e-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240303/202403031752.dwXgZG8e-lkp@intel.com/reproduce)
 
-+1
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403031752.dwXgZG8e-lkp@intel.com/
 
-> > Sure, argue against checkpatch as much as you like, but the code
-> > should at least _build_, and it should not be necessary for random
-> > people to report build failures to the submitters.
->
-> I do 110 randconfig builds nightly (10 each of 11 $ARCH/$BITS).
-> That's about all the horsepower that I have. and I am not a CI.  :)
->
-> So I see quite a bit of what you are saying. It seems that Arnd is
-> in the same boat.
+All warnings (new ones prefixed by >>, old ones prefixed by <<):
 
-You don't even have to do your own builds (although it does help),
-and can look at e.g. http://kisskb.ellerman.id.au/kisskb/
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-winfast.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-winfast-usbii-deluxe.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-x96max.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-xbox-360.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-xbox-dvd.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-zx-irdec.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/rc-core.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/pci/saa7134/saa7134-empress.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/pci/saa7134/saa7134-dvb.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mmc/host/of_mmc_spi.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mmc/core/mmc_core.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mmc/core/sdio_uart.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-a4tech.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-apple.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-belkin.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-cherry.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-dr.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-ezkey.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-vivaldi-common.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-gyration.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-kensington.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-keytouch.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-kye.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-lcpower.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-lenovo.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-magicmouse.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-mf.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-microsoft.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-monterey.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-ortek.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-pl.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-petalynx.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-saitek.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-semitek.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-speedlink.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-sunplus.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-gaff.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-topseed.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-twinhan.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-zydacron.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-viewsonic.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/platform/goldfish/goldfish_pipe.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/parport/parport.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/input/touchscreen/cyttsp_i2c_common.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/input/matrix-keymap.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/input/vivaldi-fmap.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/input/tests/input_test.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/iio/buffer/kfifo_buf.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/siox/siox-bus-gpio.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/core/dev_addr_lists_test.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/802/mrp.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/8021q/8021q.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/packet/af_packet.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/packet/af_packet_diag.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/nfc/nci/nci.o
+WARNING: modpost: EXPORT symbol "strcpy" [vmlinux] version generation failed, symbol will not be versioned.
+Is "strcpy" prototyped in <asm/asm-prototypes.h>?
+WARNING: modpost: EXPORT symbol "strcat" [vmlinux] version generation failed, symbol will not be versioned.
+Is "strcat" prototyped in <asm/asm-prototypes.h>?
+WARNING: modpost: EXPORT symbol "strncpy" [vmlinux] version generation failed, symbol will not be versioned.
+Is "strncpy" prototyped in <asm/asm-prototypes.h>?
+WARNING: modpost: EXPORT symbol "strncat" [vmlinux] version generation failed, symbol will not be versioned.
+Is "strncat" prototyped in <asm/asm-prototypes.h>?
+WARNING: modpost: "strcat" [kernel/rcu/refscale.ko] has no CRC!
+WARNING: modpost: "strcat" [fs/overlayfs/overlay.ko] has no CRC!
+WARNING: modpost: "strncpy" [drivers/char/ipmi/ipmi_msghandler.ko] has no CRC!
+WARNING: modpost: "strncpy" [drivers/char/ipmi/ipmi_ssif.ko] has no CRC!
+WARNING: modpost: "strncpy" [drivers/tty/n_gsm.ko] has no CRC!
+WARNING: modpost: "strcpy" [drivers/gpu/drm/tests/drm_cmdline_parser_test.ko] has no CRC!
+WARNING: modpost: "strcpy" [drivers/gpu/drm/tests/drm_connector_test.ko] has no CRC!
+WARNING: modpost: "strcpy" [drivers/gpu/drm/tests/drm_dp_mst_helper_test.ko] has no CRC!
+WARNING: modpost: "strcpy" [drivers/gpu/drm/tests/drm_framebuffer_test.ko] has no CRC!
+WARNING: modpost: "strcpy" [drivers/gpu/drm/tests/drm_plane_helper_test.ko] has no CRC!
+WARNING: modpost: "strcpy" [drivers/gpu/drm/tests/drm_probe_helper_test.ko] has no CRC!
+WARNING: modpost: "strcpy" [drivers/gpu/drm/drm.ko] has no CRC!
+WARNING: modpost: "strncpy" [drivers/gpu/drm/drm.ko] has no CRC!
+WARNING: modpost: "strcpy" [drivers/gpu/drm/amd/amdgpu/amdgpu.ko] has no CRC!
+WARNING: modpost: "strcpy" [drivers/base/regmap/regmap-kunit.ko] has no CRC!
+WARNING: modpost: "strncpy" [drivers/misc/eeprom/idt_89hpesx.ko] has no CRC!
+WARNING: modpost: "strncpy" [drivers/misc/ti-st/st_drv.ko] has no CRC!
+WARNING: modpost: "strncpy" [drivers/misc/c2port/core.ko] has no CRC!
+WARNING: modpost: "strcpy" [drivers/nfc/s3fwrn5/s3fwrn5.ko] has no CRC!
+WARNING: modpost: "strcpy" [drivers/mtd/ubi/ubi.ko] has no CRC!
+WARNING: modpost: "strncpy" [drivers/net/wireless/broadcom/brcm80211/brcmfmac/brcmfmac.ko] has no CRC!
+WARNING: modpost: "strcpy" [drivers/net/wireless/marvell/mwifiex/mwifiex.ko] has no CRC!
+WARNING: modpost: "strcpy" [drivers/net/wireless/marvell/mwifiex/mwifiex_sdio.ko] has no CRC!
+WARNING: modpost: "strcpy" [drivers/net/plip/plip.ko] has no CRC!
+WARNING: modpost: "strncat" [drivers/net/ieee802154/adf7242.ko] has no CRC!
+WARNING: modpost: "strncpy" [drivers/auxdisplay/panel.ko] has no CRC!
+WARNING: modpost: "strcpy" [drivers/w1/slaves/w1_ds28e17.ko] has no CRC!
+WARNING: modpost: "strncpy" [drivers/power/supply/bq24190_charger.ko] has no CRC!
+WARNING: modpost: "strncpy" [drivers/power/supply/bq2515x_charger.ko] has no CRC!
+WARNING: modpost: "strncpy" [drivers/hwmon/pmbus/pmbus_core.ko] has no CRC!
+WARNING: modpost: "strcpy" [drivers/mmc/core/mmc_core.ko] has no CRC!
+WARNING: modpost: "strncpy" [drivers/leds/leds-lp3952.ko] has no CRC!
+WARNING: modpost: "strcpy" [drivers/parport/parport.ko] has no CRC!
+WARNING: modpost: "strncpy" [drivers/input/rmi4/rmi_core.ko] has no CRC!
+WARNING: modpost: "strncpy" [drivers/iio/proximity/sx9324.ko] has no CRC!
+WARNING: modpost: "strcpy" [drivers/thunderbolt/thunderbolt.ko] has no CRC!
+>> WARNING: modpost: "strcpy" [net/core/gso_test.ko] has no CRC!
+WARNING: modpost: "strcpy" [net/can/can-bcm.ko] has no CRC!
+WARNING: modpost: "strcpy" [net/rfkill/rfkill.ko] has no CRC!
 
-Kisskb can send out email when builds get broken, and when they get
-fixed again.  I receive such emails for the m68k builds.
-I have the feeling this is not used up to its full potential yet.
-My initial plan with the "Build regressions/improvements in ..." emails
-[1] was to fully automate this, and enable it for the other daily builds
-(e.g. linux-next), too, but there are only so many hours in a day...
-
-[1] https://lore.kernel.org/all/20240226081253.3688538-1-geert@linux-m68k.o=
-rg/
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
