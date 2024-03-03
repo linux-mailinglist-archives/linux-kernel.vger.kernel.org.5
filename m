@@ -1,66 +1,65 @@
-Return-Path: <linux-kernel+bounces-89887-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89888-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FDCA86F6E7
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 20:50:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F8E986F6EB
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 20:50:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D76092824D2
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 19:50:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD295B20F38
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 19:50:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5175079DD2;
-	Sun,  3 Mar 2024 19:50:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EC5D7A711;
+	Sun,  3 Mar 2024 19:50:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hgp6oR0f"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HAGNpe4v"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FDE279DB5;
-	Sun,  3 Mar 2024 19:50:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBA227A12E;
+	Sun,  3 Mar 2024 19:50:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709495425; cv=none; b=C491nMHhgra9VVgHmVZm1aOGXrcSTnR0lhNrUFr3AfAfUxNJMxBwR/KqPwXGywwo18Uzkf5UEevOvaJ5/IVAIk0cbiPsBCIeKux86TVXo9Ke0JyGtMktVtQ1hB/bkLt7BrEOY7BshHxL0RmhtdMVYR5stXbR2mQn5De+S1sCUZw=
+	t=1709495426; cv=none; b=TJv++ktxGfRj22Eu198VvIDaugT1H219v024FIIFcfuvaUrW5O2poIwrrT4ZXWNrbusCMiRratt8sNXXKXx/FdpHSKNqqiK6EnSh314VWkWbUcxD3ARCjlD+m0jKH1kAIcu5qGe1m8UdvjbMlInhGx7GuTNVFljvAW6o5jrfU0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709495425; c=relaxed/simple;
-	bh=iBwmipl1/hUhuGVHK7DoLKTJPzEyRbBjJNTKDMKdf3k=;
+	s=arc-20240116; t=1709495426; c=relaxed/simple;
+	bh=NqOpHNUkPpcXOLnh/QWRufn/Ytxmtgs9sizhlMM6yUU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Mbc7mCYjiQOaUUTiiUBqYo7b+W2W9GCNq1Yg+B7gFlr0ePfTmi8YyrJwEVZruOrWFxj45opstMevxSnxC+xdHzcB21kCDqWaumEvWYpdsKiHRf9L6+KLY37zsyTw8tg58oh8Y+6OM7zYoPFU5r895HcunynJ9SrEbAtjjcDY6YM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hgp6oR0f; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B12EC43390;
-	Sun,  3 Mar 2024 19:50:23 +0000 (UTC)
+	 MIME-Version:Content-Type; b=rmHHnoHpJdiPaRRKuKDDsVS58YqV9eU+0geFtz4CW6hMPfmbg1rJKX/vBIQvrlcpQ36eDM3H9TEV07RqphxFkbjNJf/I5oFmuP8CkinNqn8bz1L4WUxGtO245QdHeSS+V2B1uLa6LujoG/q9WW0xc7D4Vq99ojluWDnUzHbsyVs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HAGNpe4v; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 849B9C433B1;
+	Sun,  3 Mar 2024 19:50:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709495425;
-	bh=iBwmipl1/hUhuGVHK7DoLKTJPzEyRbBjJNTKDMKdf3k=;
+	s=k20201202; t=1709495426;
+	bh=NqOpHNUkPpcXOLnh/QWRufn/Ytxmtgs9sizhlMM6yUU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hgp6oR0f6qoUMm2JArOqNP4pvydYZAefJXdnWKl8XqqDd2KBhQNKpOJyg35KMqd4i
-	 W43aVj85k7sAOpVZ7+rTVy2BcGDdk94PXh+8JKgudm95hvM9auiG4381d1emUsli/F
-	 atyrrMMt1l/VVnm/GnqbDHhzFPUPpdDx4CAxRVXNo2FTVxp6gan9DPq2AM0wb57K/X
-	 1UtciSXM3CT69U4sykcFBuPmw6+fehfznoy3bO2/XLkkbDynQuT210K1nNu/CzDX+D
-	 BUGoud6zgVc15DdsCixoggBy7BVV9plivGlZOavLfGEL2DL9eed0IEE0or9gfN+kPJ
-	 kAYeO807eDRsA==
+	b=HAGNpe4vbmCT1lk0B4Ggv5UAZaXI/dje2Dg2hpGp03ESpBowujBmH4jQDaxPIFdZW
+	 mV05WggJJz+JLN4/eE47tWNX2sMbmi9aaHsFkBZocU6jWRx8nA4GVE1fJCdr+SlDTa
+	 f7OA5ay7cvWttsVjGxAYh+iu5b8XvAZBLGqJoE7Lo3wGMmsqIBOe9DEcCoZ9PpRukN
+	 8Y4S+DIVqhZQZXsbnm2VGDljEhN2eYjlTjokfamd/9qbyky71NjEN50Pe8VKtwehao
+	 NCYpbfv8DO9sz6ZdvWylP9Olyde5H4JBXB64ooYa7uBJF9HRIV01kM0mh896st8caw
+	 i7W7iqbID8UJg==
 From: Bjorn Andersson <andersson@kernel.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Sricharan Ramabadhran <quic_srichara@quicinc.com>,
-	Varadarajan Narayanan <quic_varada@quicinc.com>,
-	Gokul Sriram Palanisamy <quic_gokulsri@quicinc.com>,
-	Devi Priya <quic_devipriy@quicinc.com>,
-	Anusha Rao <quic_anusha@quicinc.com>,
-	Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-	Georgi Djakov <gdjakov@mm-sol.com>,
-	Gabor Juhos <j4g8y7@gmail.com>
-Cc: linux-arm-msm@vger.kernel.org,
-	linux-clk@vger.kernel.org,
+To: Bjorn Helgaas <bhelgaas@google.com>,
+	Johan Hovold <johan+linaro@kernel.org>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	linux-arm-msm@vger.kernel.org,
+	linux-pci@vger.kernel.org,
+	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/7] clk: qcom: fix frequency table termination in several drivers
-Date: Sun,  3 Mar 2024 13:50:19 -0600
-Message-ID: <170949540959.78121.7121935387305237731.b4-ty@kernel.org>
+Subject: Re: (subset) [PATCH v2 00/12] arm64: dts: qcom: sc8280xp: PCIe fixes and GICv3 ITS enable
+Date: Sun,  3 Mar 2024 13:50:20 -0600
+Message-ID: <170949540962.78121.423418904639454445.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240229-freq-table-terminator-v1-0-074334f0905c@gmail.com>
-References: <20240229-freq-table-terminator-v1-0-074334f0905c@gmail.com>
+In-Reply-To: <20240223152124.20042-1-johan+linaro@kernel.org>
+References: <20240223152124.20042-1-johan+linaro@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,32 +70,24 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Thu, 29 Feb 2024 19:07:45 +0100, Gabor Juhos wrote:
-> Add missing terminating entry to frequency table arrays in
-> several drivers. There are separate independent patches for
-> each affected driver.
+On Fri, 23 Feb 2024 16:21:12 +0100, Johan Hovold wrote:
+> This series addresses a few problems with the sc8280xp PCIe
+> implementation.
 > 
-> The series is based on v6.8-rc6.
-> 
+> The DWC PCIe controller can either use its internal MSI controller or an
+> external one such as the GICv3 ITS. Enabling the latter allows for
+> assigning affinity to individual interrupts, but results in a large
+> amount of Correctable Errors being logged on both the Lenovo ThinkPad
+> X13s and the sc8280xp-crd reference design.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/7] clk: qcom: gcc-ipq5018: fix terminating of frequency table arrays
-      commit: 90ad946fff70f312b8d23226afc38c13ddd88c4b
-[2/7] clk: qcom: gcc-ipq6018: fix terminating of frequency table arrays
-      commit: cdbc6e2d8108bc47895e5a901cfcaf799b00ca8d
-[3/7] clk: qcom: gcc-ipq8074: fix terminating of frequency table arrays
-      commit: 1040ef5ed95d6fd2628bad387d78a61633e09429
-[4/7] clk: qcom: gcc-ipq9574: fix terminating of frequency table arrays
-      commit: bd2b6395671d823caa38d8e4d752de2448ae61e1
-[5/7] clk: qcom: camcc-sc8280xp: fix terminating of frequency table arrays
-      commit: 6a3d70f7802a98e6c28a74f997a264118b9f50cd
-[6/7] clk: qcom: mmcc-apq8084: fix terminating of frequency table arrays
-      commit: a903cfd38d8dee7e754fb89fd1bebed99e28003d
-[7/7] clk: qcom: mmcc-msm8974: fix terminating of frequency table arrays
-      commit: e2c02a85bf53ae86d79b5fccf0a75ac0b78e0c96
+[06/12] arm64: dts: qcom: sc8280xp-crd: limit pcie4 link speed
+        commit: db8138845cebcdd0c709570b8217bd052757b8df
+[07/12] arm64: dts: qcom: sc8280xp-x13s: limit pcie4 link speed
+        commit: 7a1c6a8bf47b0b290c79b9cc3ba6ee68be5522e8
 
 Best regards,
 -- 
