@@ -1,253 +1,141 @@
-Return-Path: <linux-kernel+bounces-89633-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89634-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 934DC86F350
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 02:59:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A486F86F35D
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 03:26:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 137D91F222A4
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 01:59:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31D30283E94
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 02:26:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B31245684;
-	Sun,  3 Mar 2024 01:59:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E671567D;
+	Sun,  3 Mar 2024 02:26:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WIbZ+SQG"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="JcMxFgGz"
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5093A320D;
-	Sun,  3 Mar 2024 01:59:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1F7D1FB2;
+	Sun,  3 Mar 2024 02:26:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709431146; cv=none; b=KF/pMgpdetBrem+5AJCcWVsBQdkqwq9X1QYMZFHlGdkf3Gx7kGrLNiqG9jh02FgPeQG06P6SCVBAYdoyK94Z/Jb4McbieBV6YcLXwTxxGrIdNDH0BaKblvf2sDUW6WEGiTzn6UkxqsPGkg3LVjIivuB1UI1R7jYlhheciDvYBOY=
+	t=1709432790; cv=none; b=MHeXD/2qnYivmj3j93Zjl+sthRgPdW6DxHp2K7l9g0HM0h3rFRc2z1Rs8zc+N5X13pxf10HmDwG7EWzZgBGsyUo8ubqmWadaK587ON2IGT4BpwFPhV8K97nWUje0D97m+CcrR9wNAzxh5heCf0BePX9mqe241L0Sz85qO9/LW2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709431146; c=relaxed/simple;
-	bh=VPKjqVkiDmVkBIeBeqx8NRfhQo/wESr9jrOroTLiZ9I=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=GSIweWTum6qlxMcTk//37VV1UESLsMAp0UqU6F4Cc8ka62wahfy7XaDSRdhySZrp44nchP/UmylKR+0qyTlGx6eAh3UVip5WWYgG83a9cMusRZuM2PQAvzMQd7U+jv4DkdnLahxfVIZBwWYPWCgTTfTrvMUqS9Vqff4ErQ4D6VY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WIbZ+SQG; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1dc3b4b9b62so29742765ad.1;
-        Sat, 02 Mar 2024 17:59:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709431144; x=1710035944; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WrThd3AbGp2L2TbdibjncZIHTv9jShOpMlQ84CCLklk=;
-        b=WIbZ+SQGsy0aAkHhgzoet6DSzci2c3BPgnIZQO74G0J/u0qTY1gEzNoBHiNuKTXQmc
-         /1cfrCjwLAtmeWIr5SwBcKbEAovO2Qvr001iFR+y5jOmXWFwim9nJIHRh8oDFvXHNZ2T
-         DpgKLTRutVdwBTS0i2i+Nrf4W1ZDwVkaCtFXFvB64qzB7f+OLUydvQtKGnhBgCrNSdAm
-         ru0qE+4+C+afpVce6GE/WOvxF8u/WN/umV2sCEUc48ULOCiX94/JmjysWwA+j9USf/rG
-         xKr/yUynkgH7D4g1cgwABjcOFWQC7b6KQ+2o7Y6g9+GGxoDxRpQmvnbvfdUMB0VpgBbx
-         wFcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709431144; x=1710035944;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=WrThd3AbGp2L2TbdibjncZIHTv9jShOpMlQ84CCLklk=;
-        b=BGNpy+z/jSRPLqjZ8ji6d4hbgsVyABkCKdhll2hCHAF2ZuMQr6HgFh0ONoZwraSpFB
-         X1WFkwscnkloelX5+57WCfVjwmMkaIb8j9zjgpwXnkPjbmFPLzvyAImdX1gfe+7+/oz/
-         JeCkRpS1x94EwnAooLPwuH8mHyuG7WzwgNSpGxEJWlJB1ehF9V2pBtBHOLfa11BKrK8Z
-         xW36yw8e34PDDilaLLw5TCZ4OQq3PkWFU+ab1NdM4JpZoOLo2RYDOCCiLUjZZiNwlSaq
-         /bjgoV6WOwHoSLFxXA356lZQCcUtFXvZbiLB4up3MK3anoBP1vSkynKBNr4HNeZO0Fa2
-         jS6A==
-X-Forwarded-Encrypted: i=1; AJvYcCUQi4hkm1gKZe4PqC9Waqog3mOppmtITk7JHo/K3GVOhBaqOfqKLgpWXvRsWQTG7UYYNmQfdzh5vcT9zhdat/0OUOLcyj3kcKfUga9C89aAeXyKUWTtS08J4/NWKrT2Fz6iPIKfKM7/DkyC61y3Oy7PbODFj4dPXq5Nslg1eWJ5MjtKbdDjLPSmuoKx84FWj06EEqZ52ZoViFS2
-X-Gm-Message-State: AOJu0YwZpwyWY913VX7wtrzz5HR8yGIdyq2vraY+6lDsqq2ZtouJtupc
-	hBck0t1N5Iv0N+2EcvpEniutJ+L2m1xPmGX/GJUyKZX4k0etItbc
-X-Google-Smtp-Source: AGHT+IEpcJ1ppLdYI3v6PLpHlNkGd8s29BlMzJkoxyiUaoL1N4wuBSlJRKARDn+uAIHWuZ2lCr5vRA==
-X-Received: by 2002:a17:902:a513:b0:1dc:b77e:1978 with SMTP id s19-20020a170902a51300b001dcb77e1978mr10346412plq.28.1709431144407;
-        Sat, 02 Mar 2024 17:59:04 -0800 (PST)
-Received: from localhost (071-084-162-223.res.spectrum.com. [71.84.162.223])
-        by smtp.gmail.com with ESMTPSA id l5-20020a170903120500b001dc3ef7aa2bsm5827341plh.49.2024.03.02.17.59.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Mar 2024 17:59:03 -0800 (PST)
-Date: Sat, 02 Mar 2024 17:58:59 -0800
-From: John Fastabend <john.fastabend@gmail.com>
-To: "Song, Yoong Siang" <yoong.siang.song@intel.com>, 
- John Fastabend <john.fastabend@gmail.com>, 
- "Brandeburg, Jesse" <jesse.brandeburg@intel.com>, 
- "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>, 
- "David S . Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- Richard Cochran <richardcochran@gmail.com>, 
- Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- Jesper Dangaard Brouer <hawk@kernel.org>, 
- Stanislav Fomichev <sdf@google.com>, 
- "Gomes, Vinicius" <vinicius.gomes@intel.com>, 
- "Bezdeka, Florian" <florian.bezdeka@siemens.com>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Eduard Zingerman <eddyz87@gmail.com>, 
- Mykola Lysenko <mykolal@fb.com>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- KP Singh <kpsingh@kernel.org>, 
- Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, 
- Shuah Khan <shuah@kernel.org>
-Cc: "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>, 
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
- "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>, 
- "xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>
-Message-ID: <65e3d963c6dc0_8ee3b20879@john.notmuch>
-In-Reply-To: <PH0PR11MB58305CA6B9ECA2005DC315CCD85D2@PH0PR11MB5830.namprd11.prod.outlook.com>
-References: <20240301162348.898619-1-yoong.siang.song@intel.com>
- <20240301162348.898619-3-yoong.siang.song@intel.com>
- <65e2165a89ed0_5dcfe20823@john.notmuch>
- <PH0PR11MB58305CA6B9ECA2005DC315CCD85D2@PH0PR11MB5830.namprd11.prod.outlook.com>
-Subject: RE: [PATCH iwl-next,v2 2/2] igc: Add Tx hardware timestamp request
- for AF_XDP zero-copy packet
+	s=arc-20240116; t=1709432790; c=relaxed/simple;
+	bh=VHhOwGgKehTkXLHsKsR4w5PYWBrDzh9YtNkW1xnnd6o=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=MzlUnvSVZrEvRZ9QbEYdSLVgTdsEiaie03+u1H0Mn3ihJeScCHrulXj0LJR1KLcHJ5chluWgtLZAc2Xc5FLqoanaqeg3dWi19hpw08r1byPZIWO24d2HAenyMFkBj3XXh4Y8dEIcLmgm64xQ5IMbasxCLDXwwNNV+I7riYtMV5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=JcMxFgGz; arc=none smtp.client-ip=60.244.123.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: 68ffba7cd90511eeb8927bc1f75efef4-20240303
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=hpmBaMt1Dkaty0Jefpa9C3rhyTYy3rtZZM/Xf71Nj84=;
+	b=JcMxFgGze9lunnzue68of3ZYWbG0BEr/SyaBVQkQ5M7aYC4wyF/XqBDWetzQQ7OWZFFrUv9iPt82jqU+KYzq0wsdGWFLGRu1gxzEIJxTaXxd8NbDbvBqDOUo2K2QlYHs0cduS0eOtkB3tANSTxytytbsSjJkRiZBMxIKJ9rSoos=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:982da1a6-856d-4ce6-bf56-013039596f95,IP:0,U
+	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:-25
+X-CID-META: VersionHash:6f543d0,CLOUDID:9914f18f-e2c0-40b0-a8fe-7c7e47299109,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
+	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
+X-UUID: 68ffba7cd90511eeb8927bc1f75efef4-20240303
+Received: from mtkmbs14n1.mediatek.inc [(172.21.101.75)] by mailgw01.mediatek.com
+	(envelope-from <zhi.mao@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 153455764; Sun, 03 Mar 2024 10:26:15 +0800
+Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
+ mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Sun, 3 Mar 2024 10:26:13 +0800
+Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
+ mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Sun, 3 Mar 2024 10:26:12 +0800
+From: Zhi Mao <zhi.mao@mediatek.com>
+To: <mchehab@kernel.org>, <robh+dt@kernel.org>,
+	<krzysztof.kozlowski+dt@linaro.org>, <sakari.ailus@linux.intel.com>
+CC: <laurent.pinchart@ideasonboard.com>, <shengnan.wang@mediatek.com>,
+	<yaya.chang@mediatek.com>, <10572168@qq.com>,
+	<Project_Global_Chrome_Upstream_Group@mediatek.com>, <yunkec@chromium.org>,
+	<conor+dt@kernel.org>, <matthias.bgg@gmail.com>,
+	<angelogioacchino.delregno@collabora.com>, <jacopo.mondi@ideasonboard.com>,
+	<zhi.mao@mediatek.com>, <hverkuil-cisco@xs4all.nl>, <heiko@sntech.de>,
+	<jernej.skrabec@gmail.com>, <macromorgan@hotmail.com>,
+	<linus.walleij@linaro.org>, <hdegoede@redhat.com>,
+	<tomi.valkeinen@ideasonboard.com>, <gerald.loacker@wolfvision.net>,
+	<andy.shevchenko@gmail.com>, <bingbu.cao@intel.com>,
+	<dan.scally@ideasonboard.com>, <linux-media@vger.kernel.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
+Subject: [PATCH v7 0/2] media: i2c: Add support for GC08A3 sensor
+Date: Sun, 3 Mar 2024 10:26:07 +0800
+Message-ID: <20240303022609.26263-1-zhi.mao@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK: N
 
-Song, Yoong Siang wrote:
-> On Saturday, March 2, 2024 1:55 AM, John Fastabend <john.fastabend@gmail.com> wrote:
-> >Song Yoong Siang wrote:
-> >> This patch adds support to per-packet Tx hardware timestamp request to
-> >> AF_XDP zero-copy packet via XDP Tx metadata framework. Please note that
-> >> user needs to enable Tx HW timestamp capability via igc_ioctl() with
-> >> SIOCSHWTSTAMP cmd before sending xsk Tx hardware timestamp request.
-> >>
-> >> Same as implementation in RX timestamp XDP hints kfunc metadata, Timer 0
-> >> (adjustable clock) is used in xsk Tx hardware timestamp. i225/i226 have
-> >> four sets of timestamping registers. Both *skb and *xsk_tx_buffer pointers
-> >> are used to indicate whether the timestamping register is already occupied.
-> >>
-> >> Furthermore, a boolean variable named xsk_pending_ts is used to hold the
-> >> transmit completion until the tx hardware timestamp is ready. This is
-> >> because, for i225/i226, the timestamp notification event comes some time
-> >> after the transmit completion event. The driver will retrigger hardware irq
-> >> to clean the packet after retrieve the tx hardware timestamp.
-> >>
-> >> Besides, xsk_meta is added into struct igc_tx_timestamp_request as a hook
-> >> to the metadata location of the transmit packet. When the Tx timestamp
-> >> interrupt is fired, the interrupt handler will copy the value of Tx hwts
-> >> into metadata location via xsk_tx_metadata_complete().
-> >>
-> >> Co-developed-by: Lai Peter Jun Ann <jun.ann.lai@intel.com>
-> >> Signed-off-by: Lai Peter Jun Ann <jun.ann.lai@intel.com>
-> >> Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
-> >> ---
-> >
-> >[...]
-> >
-> >>
-> >> +static void igc_xsk_request_timestamp(void *_priv)
-> >> +{
-> >> +	struct igc_metadata_request *meta_req = _priv;
-> >> +	struct igc_ring *tx_ring = meta_req->tx_ring;
-> >> +	struct igc_tx_timestamp_request *tstamp;
-> >> +	u32 tx_flags = IGC_TX_FLAGS_TSTAMP;
-> >> +	struct igc_adapter *adapter;
-> >> +	unsigned long lock_flags;
-> >> +	bool found = false;
-> >> +	int i;
-> >> +
-> >> +	if (test_bit(IGC_RING_FLAG_TX_HWTSTAMP, &tx_ring->flags)) {
-> >> +		adapter = netdev_priv(tx_ring->netdev);
-> >> +
-> >> +		spin_lock_irqsave(&adapter->ptp_tx_lock, lock_flags);
-> >> +
-> >> +		/* Search for available tstamp regs */
-> >> +		for (i = 0; i < IGC_MAX_TX_TSTAMP_REGS; i++) {
-> >> +			tstamp = &adapter->tx_tstamp[i];
-> >> +
-> >> +			if (tstamp->skb)
-> >> +				continue;
-> >> +
-> >> +			found = true;
-> >> +			break;
-> >
-> >Not how I would have written this loop construct seems a bit odd
-> >to default break but it works.
-> 
-> Hi John,
-> First of all, thank you for reviewing the patch.
-> I agree that we can make the loop better. 
-> How about I change the loop to below:
+This series adds YAML DT binding and V4L2 sub-device driver for Galaxycore's
+GC08A3 8-megapixel 10-bit RAW CMOS 1/4" sensor, with an MIPI CSI-2 image data
+interface and the I2C control bus.
 
-That is more natural to me, but whatever reads best for you
-is probably ok.
+The driver is implemented with V4L2 framework.
+ - Async registered as a V4L2 sub-device.
+ - As the first component of camera system including Seninf, ISP pipeline.
+ - A media entity that provides one source pad in common.
+ - Used in camera features on ChromeOS application.
 
-> 
-> for (i = 0; i < IGC_MAX_TX_TSTAMP_REGS; i++) {
-> 	tstamp = &adapter->tx_tstamp[i];
-> 
-> 	if (!tstamp->skb) {
-> 		found = true;
-> 		break;
-> 	}
-> }
-> 
-> >
-> >> +		}
-> >> +
-> >> +		/* Return if no available tstamp regs */
-> >> +		if (!found) {
-> >> +			adapter->tx_hwtstamp_skipped++;
-> >> +			spin_unlock_irqrestore(&adapter->ptp_tx_lock,
-> >> +					       lock_flags);
-> >> +			return;
-> >> +		}
-> >
-> >[...]
-> >
-> >>
-> >> +static void igc_ptp_free_tx_buffer(struct igc_adapter *adapter,
-> >> +				   struct igc_tx_timestamp_request *tstamp)
-> >> +{
-> >> +	if (tstamp->buffer_type == IGC_TX_BUFFER_TYPE_XSK) {
-> >> +		/* Release the transmit completion */
-> >> +		tstamp->xsk_tx_buffer->xsk_pending_ts = false;
-> >> +		tstamp->xsk_tx_buffer = NULL;
-> >> +		tstamp->buffer_type = 0;
-> >> +
-> >> +		/* Trigger txrx interrupt for transmit completion */
-> >> +		igc_xsk_wakeup(adapter->netdev, tstamp->xsk_queue_index, 0);
-> >
-> >Just curious because I didn't find it. Fairly sure I just need to look more,
-> >but don't you want to still 'tstamp->skb = NULL' in this path somewhere?
-> >It looks like triggering the tx interrupt again with buffer_type == 0 wouldn't
-> >do the null.
-> >
-> >I suspect I just missed it.
-> 
-> Since the timestamp register will only be used by either skb or xsk,
-> So we make tstamp->xsk_tx_buffer and tstamp->skb as union,
-> Then based on tstamp->buffer_type to decide whether
-> tstamp->xsk_tx_buffer or tstamp->skb should be used.
-> 
-> My thought is, by setting tstamp->xsk_tx_buffer=NULL,
-> tstamp->skb will become NULL as well, and vice versa.
+Also this driver supports following features:
+ - manual exposure and analog gain control support
+ - vertical blanking control support
+ - test pattern support
+ - media controller support
+ - runtime PM support
+ - support resolution: 3264x2448@30fps, 1920x1080@60fps
 
-Seems good to me. Maybe a comment though? Otherwise I suspect next
-person to read the code will have to spend the extra time to track
-it down as well.
+Previous versions of this patch-set can be found here:
+v6: https://lore.kernel.org/linux-media/20240227013221.21512-1-zhi.mao@mediatek.com/
+v5: https://lore.kernel.org/linux-media/20240220012540.10607-1-zhi.mao@mediatek.com/
+v4: https://lore.kernel.org/linux-media/20240204061538.2105-1-zhi.mao@mediatek.com/
+v3: https://lore.kernel.org/linux-media/20240109022715.30278-1-zhi.mao@mediatek.com/
+v2: https://lore.kernel.org/linux-media/20231207052016.25954-1-zhi.mao@mediatek.com/
+v1: https://lore.kernel.org/linux-media/20231123115104.32094-1-zhi.mao@mediatek.com/
 
-> 
-> Thanks & Regards
-> Siang
+This series is based on linux-next, tag: next-20240229
+Changes in v7:
+- gc08a3 sensor driver:
+-- refine header files in driver code follow iwyu rules
+-- modify some commets to match code style and english grammar and punctuation
+-- use the default case for assign variable in function: gc08a3_test_pattern
+-- use DEFINE_* PM macro for runtime pm ops
 
-Also feel free to carry my ack into the v2 if you make the couple
-small nitpick changes.
+Thanks
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+Zhi Mao (2):
+  media: dt-bindings: i2c: add GalaxyCore GC08A3 image sensor
+  media: i2c: Add GC08A3 image sensor driver
+
+ .../bindings/media/i2c/galaxycore,gc08a3.yaml |  112 ++
+ drivers/media/i2c/Kconfig                     |   10 +
+ drivers/media/i2c/Makefile                    |    1 +
+ drivers/media/i2c/gc08a3.c                    | 1339 +++++++++++++++++
+ 4 files changed, 1462 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/i2c/galaxycore,gc08a3.yaml
+ create mode 100644 drivers/media/i2c/gc08a3.c
+
+-- 
+2.25.1
+
 
 
