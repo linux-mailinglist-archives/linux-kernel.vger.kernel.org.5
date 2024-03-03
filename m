@@ -1,168 +1,144 @@
-Return-Path: <linux-kernel+bounces-89681-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89683-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC29E86F41A
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 09:48:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0722286F41E
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 09:50:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70962282FDC
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 08:48:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 89D03283056
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 08:50:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A836FAD32;
-	Sun,  3 Mar 2024 08:48:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45C25AD48;
+	Sun,  3 Mar 2024 08:50:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="ZtIUucJH"
-Received: from xry111.site (xry111.site [89.208.246.23])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="URdqFMO/"
+Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46F0D10E6;
-	Sun,  3 Mar 2024 08:48:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 267A69463;
+	Sun,  3 Mar 2024 08:50:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709455690; cv=none; b=Oxt1sDs713I01w5XnsAKzize7tONQ8YzUgjL940uyvY5AIEVZCYnveOuH2mV7jj/2QfSwtkL38IV1OvtNGJAhXgcaeP0ehzEmexUNM/9G588zimTJyNRPYvL0bfzlPWApXqzzedL7x4IaT64K8NPI0JgHh2EfdGl3EfGOhdI5H4=
+	t=1709455807; cv=none; b=b/izIhpN0mRTpI84OFvXHWVk5ttpIfNyIWsCbP3lvYYEfJ5SbNsQQ/oAyEacl4koK3NB91sNcXsrD9MpQMzs8bD9iHMGGLfah1biMhi4Jg9Pz6/XoHpJ3EQCIIwsgkBDaH+2P36l4hHp0DKLbU8Fe/3DQEwAEchKBBVZL1KjgUk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709455690; c=relaxed/simple;
-	bh=Gv1iB9/klBsQcszgsagn4nngUZ9spriYr0Hq9I0tzrg=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=SlWM2RWLaKp4voZAUkDnwIRAJMNytKtcvOkG+vhsZ8qVYI6TvVdRhLXVDXBxHUypg6geBdrYLPaRVhmCaEbNlIzI/QN0K6BOXPuHs3c7gSv6s17xxXWL0UOOR5Uw7xaznqV6/JJ/Iju4iRDqysFkUlkM5gpXO97KFlG8NwJxVW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=ZtIUucJH; arc=none smtp.client-ip=89.208.246.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
-	s=default; t=1709455686;
-	bh=Gv1iB9/klBsQcszgsagn4nngUZ9spriYr0Hq9I0tzrg=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=ZtIUucJHPHIWN1FbeK3l5zBEN1OBLmLEjcmlrRBPBtGVdLB8Zo6oZLCNhBgReurbe
-	 IO0A85mv8Re0QTITHPBXofwwesV/AHOL1WfNQ5OkTiJSvFkESirJtW1bHsfYOWa/JJ
-	 2HRCuJ1dKFd6t8eH6tWR4yGUOJNNSnsRR6SaSA5o=
-Received: from [127.0.0.1] (unknown [IPv6:2001:470:683e::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
-	(Client did not present a certificate)
-	(Authenticated sender: xry111@xry111.site)
-	by xry111.site (Postfix) with ESMTPSA id CA38F66FDE;
-	Sun,  3 Mar 2024 03:48:03 -0500 (EST)
-Message-ID: <64b50846602e0c4474edee2f3aaafa107527c93e.camel@xry111.site>
-Subject: Re: [PATCH v8 4/4] riscv: dts: thead: Enable LicheePi 4A eMMC and
- microSD
-From: Xi Ruoyao <xry111@xry111.site>
-To: Drew Fustini <dfustini@tenstorrent.com>
-Cc: Drew Fustini <dfustini@baylibre.com>, Paul Walmsley
- <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
- <aou@eecs.berkeley.edu>, Jisheng Zhang <jszhang@kernel.org>, Guo Ren
- <guoren@kernel.org>, Fu Wei <wefu@redhat.com>, Conor Dooley
- <conor@kernel.org>,  Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Jason Kridner
- <jkridner@beagleboard.org>, Robert Nelson <robertcnelson@beagleboard.org>, 
- linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
- devicetree@vger.kernel.org
-Date: Sun, 03 Mar 2024 16:48:02 +0800
-In-Reply-To: <ZeNS/g97JetYgXny@x1>
-References: <20231206-th1520_mmc_dts-v8-0-69220e373e8f@baylibre.com>
-	 <20231206-th1520_mmc_dts-v8-4-69220e373e8f@baylibre.com>
-	 <110fa8d6be78a26ca21cd97c55903f5d62776430.camel@xry111.site>
-	 <ZeNS/g97JetYgXny@x1>
-Autocrypt: addr=xry111@xry111.site; prefer-encrypt=mutual;
- keydata=mDMEYnkdPhYJKwYBBAHaRw8BAQdAsY+HvJs3EVKpwIu2gN89cQT/pnrbQtlvd6Yfq7egugi0HlhpIFJ1b3lhbyA8eHJ5MTExQHhyeTExMS5zaXRlPoiTBBMWCgA7FiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQrKrSDhnnEOPHFgD8D9vUToTd1MF5bng9uPJq5y3DfpcxDp+LD3joA3U2TmwA/jZtN9xLH7CGDHeClKZK/ZYELotWfJsqRcthOIGjsdAPuDgEYnkdPhIKKwYBBAGXVQEFAQEHQG+HnNiPZseiBkzYBHwq/nN638o0NPwgYwH70wlKMZhRAwEIB4h4BBgWCgAgFiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwwACgkQrKrSDhnnEOPjXgD/euD64cxwqDIqckUaisT3VCst11RcnO5iRHm6meNIwj0BALLmWplyi7beKrOlqKfuZtCLbiAPywGfCNg8LOTt4iMD
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 
+	s=arc-20240116; t=1709455807; c=relaxed/simple;
+	bh=Yj6iX0LL5X90eG+2pDyO+Qzz9M+jP/NmAc3mleyIkZQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=OuR/6RFFgi2gi5e/ZPoZUt2AQz8+hk7ykU90YUqXwet8575v8tHE09t5suTAePcz2IjsQ5wyi5oe3033CFQIoj31QohomVoH6Iii9+IO0wrTG0IYNlbKs/6JFA9Ax04JH53RNYjjm+9YTU2leky1rkoiXCy2cRDnt3d/lh2VXug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=URdqFMO/; arc=none smtp.client-ip=209.85.161.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5a127c1feb0so242787eaf.2;
+        Sun, 03 Mar 2024 00:50:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709455805; x=1710060605; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=urYDUe+DtMbYmGQD/lY83L/cyDLHJDDpcAruR8ELVew=;
+        b=URdqFMO/AbYQH/M/+VNWONSUfdcCT6L8m0Xp83S5ivtp3fDIZmYZdQ1U8+DfjdLoZC
+         G4CMZjXZlDa+Qycgq+6UK8GBKfs6LZdEyvkq72f3cN1lt+EIK122dIAIuWE3x6XlyLZt
+         +D56BkqSKE4bt3C8Leb2U0OMajVuzQUCDnB86esxSMfXn+7KwZiSU/rUZbAv50aMFdLy
+         G48+9JeuDIpal3s4V6wVi5uOHUH8AXhXhWmnMPA9nZZVxwlNSMDaDsv56Qfd+AyedXPR
+         xqOAnFRmSmpiVPCFiVGNuoyJNQ7xNCQSP2dfP7iNBfB3se84crmZizxV4gxVkFbZL+4s
+         fdQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709455805; x=1710060605;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=urYDUe+DtMbYmGQD/lY83L/cyDLHJDDpcAruR8ELVew=;
+        b=rv79DucLbmjBKO2358n/rLdSWosAwTCm5VzL6bIkdUkEpshKmaSh1a4GXkpUmWcpfj
+         DbI2Ood0eJzimKROY6iRmEIw4VnUyCT3UBmEZ7MMJil+lpSCBdAJKbkXgaxNx718c+BI
+         fZOgUQzGDl50Pq9XbOPWzVNX/7J4/zklr6mXIfj73Psnf5+JbeiPupJzm2BL2v2diFLt
+         fqT7IyKucrStkyAaBRV2dmZLi3xoNtAu41o4cHyPE6Rwd81RI/Imhr5Qm27U/O4R5pGi
+         s7l3LTPCAliKtY6VHL/2LY4qP+HVACePdyhk/lbAZEHhlCtGaMDGRDrfTqftV5VbQcjK
+         bdbg==
+X-Forwarded-Encrypted: i=1; AJvYcCWPbv9ihlyEIs59mewSYQ1/b1tvkBoU/4F6QZSrhleDGdQZyn0xtXIZ9g9VKqPH+HVQ5fC9gtC9jQq/0GgBCyBClp/vIkZWATUeGqPc
+X-Gm-Message-State: AOJu0YyDLHNTQX1hl0z9CbJr0gmrAp0wS7pkt0VN0cqfSZ5oFqTmeZxz
+	cOQ7EcbKZHnmAE9o18aY1Sng6Vc+VuHs7zLJlQtBNN3ovXidvFuN
+X-Google-Smtp-Source: AGHT+IHC1+8NHI84yDKUlYRB3brf7bA+Jl7CeCimrpD66l5vgEewW+qff+2s9REMJE9X/qcmw/NlWg==
+X-Received: by 2002:a05:6808:13d1:b0:3c1:c36e:9ed2 with SMTP id d17-20020a05680813d100b003c1c36e9ed2mr8644542oiw.36.1709455805180;
+        Sun, 03 Mar 2024 00:50:05 -0800 (PST)
+Received: from VM-147-239-centos.localdomain ([43.132.141.8])
+        by smtp.gmail.com with ESMTPSA id o8-20020a17090a744800b00299d061656csm5738592pjk.41.2024.03.03.00.50.02
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 03 Mar 2024 00:50:04 -0800 (PST)
+From: hyper <hyperlyzcs@gmail.com>
+To: shannon.nelson@amd.com,
+	brett.creeley@amd.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com
+Cc: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	jitxie@tencent.com,
+	huntazhang@tencent.com,
+	hyper <hyperlyzcs@gmail.com>
+Subject: [PATCH net V2] net: pds_core: Fix possible double free in error handling path
+Date: Sun,  3 Mar 2024 16:49:54 +0800
+Message-Id: <20240303084954.14498-1-hyperlyzcs@gmail.com>
+X-Mailer: git-send-email 2.36.1
+In-Reply-To: <333dca5e-fae7-4684-afa8-10b8fdd48bf6@amd.com>
+References: <333dca5e-fae7-4684-afa8-10b8fdd48bf6@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Sat, 2024-03-02 at 08:25 -0800, Drew Fustini wrote:
-> On Sat, Mar 02, 2024 at 10:13:55PM +0800, Xi Ruoyao wrote:
-> > On Wed, 2023-12-06 at 00:09 -0800, Drew Fustini wrote:
-> > > Add emmc node properties for the eMMC device and add sdio0 node
-> > > properties for the microSD slot. Set the frequency for the sdhci
-> > > reference clock.
-> >=20
-> > Hi Drew,
-> >=20
-> > I've been using the emmc on LicheePi 4A for a while without any problem=
-,
-> > but when I try the microSD slot I get:
-> >=20
-> > [=C2=A0=C2=A0=C2=A0 0.531804] mmc1: SDHCI controller on ffe7090000.mmc =
-[ffe7090000.mmc] using ADMA 64-bit
-> > [=C2=A0=C2=A0=C2=A0 0.842674] mmc1: Tuning failed, falling back to fixe=
-d sampling clock
-> > [=C2=A0=C2=A0=C2=A0 0.855139] mmc1: tuning execution failed: -5
-> > [=C2=A0=C2=A0=C2=A0 0.859609] mmc1: error -5 whilst initialising SD car=
-d
-> > [=C2=A0=C2=A0 11.359879] mmc1: Timeout waiting for hardware cmd interru=
-pt.
-> > [=C2=A0=C2=A0 11.365661] mmc1: sdhci: =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D SDHCI REGISTER DUMP =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > [=C2=A0=C2=A0 11.372105] mmc1: sdhci: Sys addr:=C2=A0 0x00000001 | Vers=
-ion:=C2=A0 0x00000005
-> > [=C2=A0=C2=A0 11.378547] mmc1: sdhci: Blk size:=C2=A0 0x00007040 | Blk =
-cnt:=C2=A0 0x00000000
-> > [=C2=A0=C2=A0 11.384989] mmc1: sdhci: Argument:=C2=A0 0x00000000 | Trn =
-mode: 0x00000010
-> > [=C2=A0=C2=A0 11.391432] mmc1: sdhci: Present:=C2=A0=C2=A0 0x03ff0000 |=
- Host ctl: 0x00000017
-> > [=C2=A0=C2=A0 11.397873] mmc1: sdhci: Power:=C2=A0=C2=A0=C2=A0=C2=A0 0x=
-0000000f | Blk gap:=C2=A0 0x00000000
-> > [=C2=A0=C2=A0 11.404312] mmc1: sdhci: Wake-up:=C2=A0=C2=A0 0x00000000 |=
- Clock:=C2=A0=C2=A0=C2=A0 0x0000000f
-> > [=C2=A0=C2=A0 11.410753] mmc1: sdhci: Timeout:=C2=A0=C2=A0 0x00000004 |=
- Int stat: 0x00000000
-> > [=C2=A0=C2=A0 11.417192] mmc1: sdhci: Int enab:=C2=A0 0x00000020 | Sig =
-enab: 0x00000020
-> > [=C2=A0=C2=A0 11.423633] mmc1: sdhci: ACmd stat: 0x00000000 | Slot int:=
- 0x00000000
-> > [=C2=A0=C2=A0 11.430073] mmc1: sdhci: Caps:=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 0x3f69c881 | Caps_1:=C2=A0=C2=A0 0x08008177
-> > [=C2=A0=C2=A0 11.436513] mmc1: sdhci: Cmd:=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 0x00000102 | Max curr: 0x00191919
-> > [=C2=A0=C2=A0 11.442954] mmc1: sdhci: Resp[0]:=C2=A0=C2=A0 0x00000900 |=
- Resp[1]:=C2=A0 0x07725f7f
-> > [=C2=A0=C2=A0 11.449394] mmc1: sdhci: Resp[2]:=C2=A0=C2=A0 0x32db7900 |=
- Resp[3]:=C2=A0 0x00400e00
-> > [=C2=A0=C2=A0 11.455835] mmc1: sdhci: Host ctl2: 0x0000300b
-> > [=C2=A0=C2=A0 11.460280] mmc1: sdhci: ADMA Err:=C2=A0 0x00000000 | ADMA=
- Ptr: 0x0000000000882220
-> > [=C2=A0=C2=A0 11.467416] mmc1: sdhci: =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D
-> > [=C2=A0=C2=A0 11.563828] mmc1: Tuning failed, falling back to fixed sam=
-pling clock
-> > [=C2=A0=C2=A0 11.576053] mmc1: tuning execution failed: -5
-> > [=C2=A0=C2=A0 11.646438] mmc1: new high speed SDXC card at address aaaa
-> > [=C2=A0=C2=A0 11.653170] mmcblk1: mmc1:aaaa SR256 238 GiB
-> >=20
-> > I can write something into the SD card and read it back though.=C2=A0 B=
-ut
-> > this makes me reluctant to use the SD card for "some real thing" afraid
-> > of a data loss.
-> >=20
-> > The SD card is a SanDisk Extreme Pro 256GB (rated "U3, A2, V30").
-> >=20
-> > Any idea how to debug this issue further?=C2=A0 (Maybe I should try cha=
-nge
-> > the SD card first but I'd like to discuss the issue before paying money
-> > for another card.)
->=20
-> Revy informed me that downclocking from 198 MHz to 100 MHz [1] has been
-> observed to solve this problem. Could you try the following dts patch?
+When auxiliary_device_add() returns error and then calls
+auxiliary_device_uninit(), Callback function pdsc_auxbus_dev_release
+calls kfree(padev) to free memory. We shouldn't call kfree(padev)
+again in the error handling path.
 
-I'm still getting the same error.
+Fix this by cleaning up the redundant kfree() and putting
+the error handling back to where the errors happened.
 
-> Also, I have noticed the T-Head's 5.10 vendor kernel does have some
-> updates in sdhci-of-dwcmshc.c related to tuning. I'll look at porting
-> those to the upstream driving.
+Fixes: 4569cce43bc6 ("pds_core: add auxiliary_bus devices")
+Signed-off-by: hyper <hyperlyzcs@gmail.com>
+---
+ drivers/net/ethernet/amd/pds_core/auxbus.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-Maybe to solve the problem we need both the downclocking and these
-changes then...
+diff --git a/drivers/net/ethernet/amd/pds_core/auxbus.c b/drivers/net/ethernet/amd/pds_core/auxbus.c
+index 11c23a7f3172..fd1a5149c003 100644
+--- a/drivers/net/ethernet/amd/pds_core/auxbus.c
++++ b/drivers/net/ethernet/amd/pds_core/auxbus.c
+@@ -160,23 +160,19 @@ static struct pds_auxiliary_dev *pdsc_auxbus_dev_register(struct pdsc *cf,
+ 	if (err < 0) {
+ 		dev_warn(cf->dev, "auxiliary_device_init of %s failed: %pe\n",
+ 			 name, ERR_PTR(err));
+-		goto err_out;
++		kfree(padev);
++		return ERR_PTR(err);
+ 	}
+ 
+ 	err = auxiliary_device_add(aux_dev);
+ 	if (err) {
+ 		dev_warn(cf->dev, "auxiliary_device_add of %s failed: %pe\n",
+ 			 name, ERR_PTR(err));
+-		goto err_out_uninit;
++		auxiliary_device_uninit(aux_dev);
++		return ERR_PTR(err);
+ 	}
+ 
+ 	return padev;
+-
+-err_out_uninit:
+-	auxiliary_device_uninit(aux_dev);
+-err_out:
+-	kfree(padev);
+-	return ERR_PTR(err);
+ }
+ 
+ int pdsc_auxbus_dev_del(struct pdsc *cf, struct pdsc *pf)
+-- 
+2.36.1
 
---=20
-Xi Ruoyao <xry111@xry111.site>
-School of Aerospace Science and Technology, Xidian University
 
