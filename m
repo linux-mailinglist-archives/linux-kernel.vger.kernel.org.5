@@ -1,197 +1,127 @@
-Return-Path: <linux-kernel+bounces-89687-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89688-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 930D986F42B
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 10:32:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D05A586F434
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 10:49:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C59A51C20A1D
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 09:32:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D9821F21C35
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 09:49:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDD37AD5C;
-	Sun,  3 Mar 2024 09:32:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="oJ+ydgQQ"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2D32B653;
+	Sun,  3 Mar 2024 09:48:53 +0000 (UTC)
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA7D8AD35
-	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 09:32:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CB09AD4C;
+	Sun,  3 Mar 2024 09:48:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709458368; cv=none; b=aCaWly6mYBlwM55M2F7StY4BEE7aOaHFuMEcKxd2WcfE/BaBY/qSK9uREx4LflkIkfsqy6H24/B3b4gAqhf0lTqfhA9mLtOEauSpEVW6Sm7u5v+ttruJZaFy/tKdAOUJXK8Xvg1uGJZ4JJJxr+jgDyt8WBcR7olLyXLMHBv6qLg=
+	t=1709459333; cv=none; b=U8RMRZ7QLORiT2QbPV5Y/Zz4yYJ7Yh7N9AD8dR9KsgUfs2nqUjM/dEXnPMQtmzDVnGyV9k/PJnmeKDITsG113KWFPdAS15fBvnKmcB4hKSByKXf+kFYk0M67zpFUDbnlBi6/Xg+3KF5YPcySU+ALddi03VmWiwlAQWEw/32PLsw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709458368; c=relaxed/simple;
-	bh=bEmtJZ/Iwe/+dMt2LldCtxBZpGDPZYUILKfOfWxZRWs=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=toJ8RiVVEQ+Z5QMcwU58LdlfsaMHKxoSUnUjsRsKxz4vU1TWff2j443hZnybR4VBfHBhFUyRhzGcKz98iWmfYK8Z/yNhJ1qlYJI5mVLSeTaioWHWMoNtwf9Tx8xpa5BbUaXYRqou6Hbk1TaL366FQunoVzP62rI/KXDBas7yQKM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=oJ+ydgQQ; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709458366; x=1740994366;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=bEmtJZ/Iwe/+dMt2LldCtxBZpGDPZYUILKfOfWxZRWs=;
-  b=oJ+ydgQQvzPCdHCgJXgfWTJW+vRVDLh2UjLy+65j0b/15PULeSI4ohF5
-   Y+E2cl+ugeqGq4VSAUzD3VfV5W6KLmwBPaW80aXhx353YmTHwplopDgRy
-   qTlgDsfWp0M4Cg9DoevzKijaEfc2lfHoEsRyX5/qO8AENH/ahbQ4ssHZ+
-   x3Fkt7OKkKo31meCVPtyUQ6TmEm/brmSE1/FJkzv4LL7+MnN6iAmR+jLW
-   CrdhQA7WBRhtG8kEsKT43F5RRSHZeMI6Rtvf05vKKbCGAmy89AQX+9WX+
-   Dv5/+SAl/b9ft2XQkGP7TMGfcCuN7W7ZHRnai0fl3crgQxNbrmsVbgXw0
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11001"; a="14536220"
-X-IronPort-AV: E=Sophos;i="6.06,200,1705392000"; 
-   d="scan'208";a="14536220"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2024 01:32:46 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,200,1705392000"; 
-   d="scan'208";a="13171665"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by fmviesa005.fm.intel.com with ESMTP; 03 Mar 2024 01:32:44 -0800
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rgiD4-0001fI-0R;
-	Sun, 03 Mar 2024 09:32:42 +0000
-Date: Sun, 3 Mar 2024 17:32:11 +0800
-From: kernel test robot <lkp@intel.com>
-To: Willem de Bruijn <willemb@google.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Florian Westphal <fw@strlen.de>
-Subject: WARNING: modpost: "strcpy" [net/core/gso_test.ko] has no CRC!
-Message-ID: <202403031752.dwXgZG8e-lkp@intel.com>
+	s=arc-20240116; t=1709459333; c=relaxed/simple;
+	bh=bjK/QpzZZjmi5O8zqPA7HxcV0JNdTcW4PUAupyqpja0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QqhVLtbXtlrCDBogEBwp3XMVd6NlMEAyUz/7t+IB8bo/V7vnmd621F3yfAzDUGzm1jAr5OuVcw6PijDts4dVSr5Pd3ckX+a9Pwa5ahmjwWEnMuH+zbHmR/euodXj7ObWAVJHBMB9+aQItQzo7zO/bTow3Bf4kjTmOLXuMaHmbkI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-6098bf69909so13179067b3.1;
+        Sun, 03 Mar 2024 01:48:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709459329; x=1710064129;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EDfgszw4BmF3vxq2jfZyuRkGTM2CQmFgMgyb+UG5yqk=;
+        b=Or7dz3PbbmePczUFECf5hPYpgt89fJmRA5ugWhCcIndHyh/xbk/hvdy2f3Px4/3jVd
+         HX6XsmgvycNHV0wpa42Bf5GE+rUaWMfrbJ6ChLHM5pdqiuB6jshzxf1uXPBT2qjjlvUy
+         zz8P/9dYchNJc/bTaW1kBdC3DWTBDrfbAIGv83B/5NvgLh744CP0NMyLjy6s6aqKsQGo
+         REmFDeINZoz5vaqnCkPi3SOCMUsc1I2LfkHxm2vpPYD5SpU6ECBkwE8fAR9NKCDpo+vO
+         DQKoLEdauPLU1REcrApJTug8OtTYi+6MsGBgIR7XAGmANxJ8H8EPFMAt2sIdp2BeOE/h
+         p6dg==
+X-Forwarded-Encrypted: i=1; AJvYcCV/Coc3EryfPPaBH0fWI1bMap3bUfgatlj1Gt6df24T1iTVjjVREhmJBhq2NHB8hUVBXIKg7xJDb5LJiYUOm76nzrAOM0vCkzVOnWQ78TNr4N38twhem/EhfxnLu3edFSvXu/IHItUNNiWSz653eWeDTTgIm31/D+gio6F7dgX5Oc1KZ54=
+X-Gm-Message-State: AOJu0Yy2eVfoinZvp0fHjcgaNujYOswZJTdB80Wv3u0gE2TAuVeoHjpI
+	1UrqTbHVZE138DYXqV9LkU2x0PJ3QWyLoDW+YV7QCHGoBIqcCESxhwPX2NEk/sI=
+X-Google-Smtp-Source: AGHT+IG8V5hUPDxaLY0W7edk8QCeOsetzRPwBli4qomB6GBeOBqnFE7vQ0HwriFQwxsF96zDuSFNbg==
+X-Received: by 2002:a0d:d746:0:b0:608:cc10:f4f4 with SMTP id z67-20020a0dd746000000b00608cc10f4f4mr4225764ywd.16.1709459329501;
+        Sun, 03 Mar 2024 01:48:49 -0800 (PST)
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
+        by smtp.gmail.com with ESMTPSA id t19-20020a81b513000000b0060894d466ffsm1973001ywh.121.2024.03.03.01.48.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 03 Mar 2024 01:48:49 -0800 (PST)
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dbed179f0faso3189625276.1;
+        Sun, 03 Mar 2024 01:48:48 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUC8fVvFQ00B6Owx/lxfZbA8iZLQBjzMgMEjF62IzjpBLoMJalqKCwku842dMhRZAmSE19QhEz3b/A9erg0tZyIWRdFQ3gfjXK0xC4QIopIzJ0qiUeyCYFbK2L0VzQq3wH2vkuD3zjxCQ2NhQWq0GR95Zgknyl/qBxoJKedxW5KQSsgAJo=
+X-Received: by 2002:a25:8301:0:b0:dc6:ab85:ba89 with SMTP id
+ s1-20020a258301000000b00dc6ab85ba89mr3783078ybk.25.1709459328258; Sun, 03 Mar
+ 2024 01:48:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240301014203.2033844-1-chris.packham@alliedtelesis.co.nz>
+ <20240301014203.2033844-5-chris.packham@alliedtelesis.co.nz> <ZeIdXIx5zYjKQiSO@smile.fi.intel.com>
+In-Reply-To: <ZeIdXIx5zYjKQiSO@smile.fi.intel.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Sun, 3 Mar 2024 10:48:36 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVJiWtB4MSGHXXz=OAEvu-+b9Xp-jQ_NXWck+hwKGK4TQ@mail.gmail.com>
+Message-ID: <CAMuHMdVJiWtB4MSGHXXz=OAEvu-+b9Xp-jQ_NXWck+hwKGK4TQ@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] ARM: dts: marvell: Indicate USB activity on x530
+To: Andy Shevchenko <andy@kernel.org>
+Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, andrew@lunn.ch, 
+	gregory.clement@bootlin.com, sebastian.hesselbarth@gmail.com, pavel@ucw.cz, 
+	lee@kernel.org, linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   04b8076df2534f08bb4190f90a24e0f7f8930aca
-commit: 1b4fa28a8b07eb331aeb7fbfc806c0d2e3dc3627 net: parametrize skb_segment unit test to expand coverage
-date:   5 months ago
-config: alpha-randconfig-s032-20220318 (https://download.01.org/0day-ci/archive/20240303/202403031752.dwXgZG8e-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240303/202403031752.dwXgZG8e-lkp@intel.com/reproduce)
+Hi Andy,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403031752.dwXgZG8e-lkp@intel.com/
+On Fri, Mar 1, 2024 at 7:24=E2=80=AFPM Andy Shevchenko <andy@kernel.org> wr=
+ote:
+> On Fri, Mar 01, 2024 at 02:42:03PM +1300, Chris Packham wrote:
+> > Use the dot on the 7-segment LED block to indicate USB access on the
+> > x530.
+>
+> As I said, I'm not going to apply this even with Acks.
 
-All warnings (new ones prefixed by >>, old ones prefixed by <<):
+I guess you should not apply any of the dts patches to the
+auxdisplay tree anyway?
 
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-winfast.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-winfast-usbii-deluxe.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-x96max.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-xbox-360.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-xbox-dvd.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/keymaps/rc-zx-irdec.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/rc/rc-core.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/pci/saa7134/saa7134-empress.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/media/pci/saa7134/saa7134-dvb.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mmc/host/of_mmc_spi.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mmc/core/mmc_core.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/mmc/core/sdio_uart.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-a4tech.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-apple.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-belkin.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-cherry.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-dr.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-ezkey.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-vivaldi-common.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-gyration.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-kensington.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-keytouch.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-kye.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-lcpower.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-lenovo.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-magicmouse.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-mf.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-microsoft.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-monterey.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-ortek.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-pl.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-petalynx.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-saitek.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-semitek.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-speedlink.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-sunplus.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-gaff.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-topseed.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-twinhan.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-zydacron.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/hid/hid-viewsonic.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/platform/goldfish/goldfish_pipe.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/parport/parport.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/input/touchscreen/cyttsp_i2c_common.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/input/matrix-keymap.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/input/vivaldi-fmap.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/input/tests/input_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/iio/buffer/kfifo_buf.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in drivers/siox/siox-bus-gpio.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/core/dev_addr_lists_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/802/mrp.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/8021q/8021q.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/packet/af_packet.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/packet/af_packet_diag.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/nfc/nci/nci.o
-WARNING: modpost: EXPORT symbol "strcpy" [vmlinux] version generation failed, symbol will not be versioned.
-Is "strcpy" prototyped in <asm/asm-prototypes.h>?
-WARNING: modpost: EXPORT symbol "strcat" [vmlinux] version generation failed, symbol will not be versioned.
-Is "strcat" prototyped in <asm/asm-prototypes.h>?
-WARNING: modpost: EXPORT symbol "strncpy" [vmlinux] version generation failed, symbol will not be versioned.
-Is "strncpy" prototyped in <asm/asm-prototypes.h>?
-WARNING: modpost: EXPORT symbol "strncat" [vmlinux] version generation failed, symbol will not be versioned.
-Is "strncat" prototyped in <asm/asm-prototypes.h>?
-WARNING: modpost: "strcat" [kernel/rcu/refscale.ko] has no CRC!
-WARNING: modpost: "strcat" [fs/overlayfs/overlay.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/char/ipmi/ipmi_msghandler.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/char/ipmi/ipmi_ssif.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/tty/n_gsm.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/gpu/drm/tests/drm_cmdline_parser_test.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/gpu/drm/tests/drm_connector_test.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/gpu/drm/tests/drm_dp_mst_helper_test.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/gpu/drm/tests/drm_framebuffer_test.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/gpu/drm/tests/drm_plane_helper_test.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/gpu/drm/tests/drm_probe_helper_test.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/gpu/drm/drm.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/gpu/drm/drm.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/gpu/drm/amd/amdgpu/amdgpu.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/base/regmap/regmap-kunit.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/misc/eeprom/idt_89hpesx.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/misc/ti-st/st_drv.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/misc/c2port/core.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/nfc/s3fwrn5/s3fwrn5.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/mtd/ubi/ubi.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/net/wireless/broadcom/brcm80211/brcmfmac/brcmfmac.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/net/wireless/marvell/mwifiex/mwifiex.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/net/wireless/marvell/mwifiex/mwifiex_sdio.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/net/plip/plip.ko] has no CRC!
-WARNING: modpost: "strncat" [drivers/net/ieee802154/adf7242.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/auxdisplay/panel.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/w1/slaves/w1_ds28e17.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/power/supply/bq24190_charger.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/power/supply/bq2515x_charger.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/hwmon/pmbus/pmbus_core.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/mmc/core/mmc_core.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/leds/leds-lp3952.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/parport/parport.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/input/rmi4/rmi_core.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/iio/proximity/sx9324.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/thunderbolt/thunderbolt.ko] has no CRC!
->> WARNING: modpost: "strcpy" [net/core/gso_test.ko] has no CRC!
-WARNING: modpost: "strcpy" [net/can/can-bcm.ko] has no CRC!
-WARNING: modpost: "strcpy" [net/rfkill/rfkill.ko] has no CRC!
+> The problem here as I see it is the future decision on how DP should
+> behave like.  If you put this into DT, we will to support this to the end
+> of the platform.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+As there exist 7-seg displays (and wirings) with and without DP,
+the 7-seg driver and DT bindings should handle both cases.  How to
+wire/use the DP LED is up to the hardware designer / DTS writer.
+
+I agree it's a thin boundary between hardware description and software
+policy, though.  Is that your main concern?
+
+> So, drop this from the next version. You may try afterwards to apply it v=
+ia
+> different routes (will be not my problem :-).
+
+Exactly ;-)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
