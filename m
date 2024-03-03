@@ -1,160 +1,129 @@
-Return-Path: <linux-kernel+bounces-89822-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89823-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BC6E86F61E
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 17:32:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D28786F621
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 17:32:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B06761F21066
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 16:32:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDFE3283FEE
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 16:32:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75A226D52F;
-	Sun,  3 Mar 2024 16:32:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 260E467E66;
+	Sun,  3 Mar 2024 16:32:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="tHI62Hum"
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="V72ISdt/"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23C1067C53;
-	Sun,  3 Mar 2024 16:31:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DD9D67A15;
+	Sun,  3 Mar 2024 16:32:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709483519; cv=none; b=Rukedr/ceOa74q5o98/KrVEcCWDz+GwvzYC2ey2VCps6UvM+WIkx/1KmHDaLQUy0iNI1hjsvDt7BUSF/bxhbUW1KxL+XGx/h8v9K9xaT+Jh5AprP7Dc0yyI1UhQbXZFVfuBlSJbbb1CorU8rYZqP607vGEFmKY5i/OhPyvui5a0=
+	t=1709483549; cv=none; b=azWhxMkekpCVH1k49m+6X738FUtwcYWL0Lie2sf8b5v3nOvkQZ+nTFbrDNmaDvOJmNkE4eAltt/BwlBdd8CGnnGlYC0bob8Mu2hbdIwifDKWh5VcL12rGkwG0AIjxKhwwGSU+ZsmSoDGOxyQH4wXA3Uizjz+v+0yHKkTN28S4WI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709483519; c=relaxed/simple;
-	bh=6Yvhhe2kjbUCk6x50Jaz3f46pJmaSnkE5sEIvbMqGzM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ErrUoO5KZ6dkMqY7BCWSjIsiF3X4agazCsEYSWoVjCkQGs/sd8rzeNMGveTy3dgPViATw7N9C07lfvvGomT7jeaOPWLRQ7ONustNpEHU5rN6fesNUJDtXlT23152nooF59YwTjNBroFdCDzCehMdLNGLbDukS0PLyhs1vzB8VNs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=tHI62Hum; arc=none smtp.client-ip=45.79.88.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 4A1C9418B6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1709483517; bh=RZ9QyPPIEU1uTzfgh2H7LHMcSBo6RADiP6Tsyr7H0jE=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=tHI62HumxKmk0icQ7uEOX6tt5aOVeBDD6Q02eKLt4aUFCyiazduBLsZJrntHEUjdv
-	 Qk9XmtYSHw6nT31aHQeug8j6DzUuSHJWj2xiKvoz1ASLLoB5+7EKhoYpkWTuXgTf21
-	 0BRQUyO0Pegvbu8rjmt+93t0MwIzsgTbEZykWGQwNLNnoYiJiGDEG8BUkfGZs5dRLY
-	 KgsheT4iebUvC+FF1bP5EVmo9gIAHLxgy3NQG4ign94DE+HFb8ktEQaP315xbB8apn
-	 zfbYICVjO/Jy2pqEhq6Ch4Yq8ckZQM8STXpGiODKyG17Jlp7K03TYvSJwW61BMSvio
-	 ts0bPDx/snxAQ==
-Received: from localhost (mdns.lwn.net [45.79.72.68])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id 4A1C9418B6;
-	Sun,  3 Mar 2024 16:31:57 +0000 (UTC)
-From: Jonathan Corbet <corbet@lwn.net>
-To: Lukas Bulwahn <lukas.bulwahn@gmail.com>, workflows@vger.kernel.org,
- linux-doc@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Lukas
- Bulwahn <lukas.bulwahn@gmail.com>
-Subject: Re: [PATCH 0/3] Towards a re-organized submitting patches
-In-Reply-To: <20240301134637.27880-1-lukas.bulwahn@gmail.com>
-References: <20240301134637.27880-1-lukas.bulwahn@gmail.com>
-Date: Sun, 03 Mar 2024 09:31:56 -0700
-Message-ID: <87plwbxon7.fsf@meer.lwn.net>
+	s=arc-20240116; t=1709483549; c=relaxed/simple;
+	bh=SKj+VnHOUfyEr19GbAiqSGhuJ8zLHTnLNigbNj40on8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YAhylLfrmhCzyKjhbYBzCZdBoeTV8UZkT1k9X2ICervBQOurtEGBVn0C2w3kjy1m7pjlywUhHRqxXHegrLSnjJ0HgHhPWEVMkuUoFDnToug1d55YljAJuUbxSwtR47Yk5AwrZ4M4uzhz4VjuOt+IbX608QSDPRCwDXrqrQARkak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=V72ISdt/; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 423GRNwH000409;
+	Sun, 3 Mar 2024 16:32:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=opxkQnDDAmub1KG6kyMupLiC97U3WYNkEGs85W0ALvg=;
+ b=V72ISdt/h4iCAUcKEeo0xYMJZqGfq4OUSKexZHoxwSKVq0gapnfG/CDkuBPZV2a5iAwF
+ EKl4+jIFa1jZUBbUu1nc2Z7w8PzSdypNZhiM1y4xBhDSEOcDKvkfz2dhyC09bY5ZWQGH
+ n7CN4jTDwxPHJvEnPQzLxBE43oNFbCcsl3sOFnZU9P05ZJ2eXIeJp5E+Vpm64pCi5CiC
+ Wnyvuz8hKo3Q7volS0IP/YzBNAEHt1SrJ8G+hJxXZGnda0shNIAgxuAvCDe+iqDdp8hP
+ HlUGu6c9znxXmOS4/7fzc0gUowpitKz/DbD1IDLQMTH4CnzCU0gK0Mpg4gXnDdyNO6H+ gg== 
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wmvr0r32w-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 03 Mar 2024 16:32:22 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 423GQK45026296;
+	Sun, 3 Mar 2024 16:32:21 GMT
+Received: from smtprelay04.dal12v.mail.ibm.com ([172.16.1.6])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wmfenbgm6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 03 Mar 2024 16:32:21 +0000
+Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
+	by smtprelay04.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 423GWIFo8389338
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Sun, 3 Mar 2024 16:32:20 GMT
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 4CBF058066;
+	Sun,  3 Mar 2024 16:32:18 +0000 (GMT)
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9C2615805B;
+	Sun,  3 Mar 2024 16:32:17 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Sun,  3 Mar 2024 16:32:17 +0000 (GMT)
+Message-ID: <8ef01d48-2f42-4764-b256-e5cfd922022c@linux.ibm.com>
+Date: Sun, 3 Mar 2024 11:32:17 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 05/12] crypto: ecc - Add nbits field to ecc_curve
+ structure
+Content-Language: en-US
+To: Lukas Wunner <lukas@wunner.de>
+Cc: keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, saulo.alessandre@tse.jus.br
+References: <20240301022007.344948-1-stefanb@linux.ibm.com>
+ <20240301022007.344948-6-stefanb@linux.ibm.com>
+ <20240303110705.GB394@wunner.de>
+From: Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <20240303110705.GB394@wunner.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: PiAJCathCHs0XnT_4GCHsRpq9FyUAxoK
+X-Proofpoint-ORIG-GUID: PiAJCathCHs0XnT_4GCHsRpq9FyUAxoK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-03_07,2024-03-01_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ phishscore=0 mlxlogscore=866 spamscore=0 malwarescore=0 priorityscore=1501
+ impostorscore=0 bulkscore=0 mlxscore=0 clxscore=1015 adultscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2403030139
 
-Lukas Bulwahn <lukas.bulwahn@gmail.com> writes:
 
-> Dear Jonathan,
->
-> I wanted to clean up the development-process documentation. There is
-> however no easy way to break the ice here:
->
-> The elephant in the room is that there is some unclear relation between
-> 5.Posting.rst, 6.Followthrough.rst and submitting-patches.rst.
-> (Yes, I know each document has its own history...; but let us put the
-> history aside for now.)
 
-FWIW, the objective of those two documents is quite different; one is a
-high-level overview of how the development process as a whole works, the
-other is a detailed guide to submitting work for consideration.
-
-> Submitting-patches.rst contains information largely put together from
-> different initial starting points and is partly outdated due to common
-> workflows with git format-patch and git send-email.
-
-You should have seen it before I thrashed it a few years back :)
-
-> For a simple experiment, I moved the larger parts on the tags
-> (signed-off-by, co-developed-by, acked-by, reported-by, etc.) into a
-> separate document and then ran the numbers on submitting-patches again:
->
->   4329 submitting-patches.rst
->
-> Nowt, the size of submitting-patches is actually below Posting and
-> Followthrough.
-
-I don't think we should be driven by word counts.  I do think that
-moving a bunch of information on tags to its own document could make
-sense.
-
-> So, the difficult task to reach a coherent process description is to see
-> some relation between these documents and then go through the editorial
-> changes. I have come up with this kind of vision:
->
-> Phase 1: Clean up submitting patches
->
->   Topics/Statements that can be easily cleaned up first do not get in
->   the way (at least mentally) when trying to understand the next steps.
->   
->   E.g., as an experiment I moved the details on tags into a separate
->   document.
-
-Fine.
-
-> Phase 2: Make submitting-patches have one clear temporal flow.
->
->   The top-level structure should basically be along the temporal order of
->   things: Prepare a patch, Post a patch, Respond to review, Send reworked
->   patches, Be patient before resending
-
-This makes sense as well.  I wonder if splitting the document along some
-of those lines might also be a good idea, with submitting-patches.rst
-becoming a relatively short overview deferring details to the others.
-This is one of the most important docs we have, and it's far too much
-for people to engage with all at once.
-
-> Phase 3: Merge the pieces of content from Posting and Followthrough into
-> submitting patches if it adds something to that document.
->
->   When both documents roughly cover the topics of similar depth, we look
->   fine-grained into how to construct the one document that has the best
->   from both documents.
->   
-> Phase 4: Remove Posting and Followthrough and simply replace it in the
-> process description with submitting patches.
-
-In broad terms, this seems like a good direction to me.
-
-Again, let's remember the different purposes of these documents.  The
-development-process document is an overall description of the process,
-so it doesn't need the details.  But when you say:
-
-> Posting will not be missed.
-
-I don't entirely agree.  But I don't doubt it could be a fraction of
-what it is now.
-
-> So, here are some first changes to Phase 1 and Phase 2.
-
-At a first glance, these changes seem fine.  I think I'll hold them
-until after the merge window so that others can think about what you're
-up to, but I suspect there will be no reason not to apply this first set
-then.
-
-Thanks for working on this material; it's some of the most important we
-have and it definitely needs some attention.
-
-jon
+On 3/3/24 06:07, Lukas Wunner wrote:
+> On Thu, Feb 29, 2024 at 09:20:00PM -0500, Stefan Berger wrote:
+>> Add the number of bits a curve has to the ecc_curve definition and set it
+>> on all cruve definitions.
+> 
+> Nit: s/cruve/curve/
+> 
+> 
+>> --- a/include/crypto/ecc_curve.h
+>> +++ b/include/crypto/ecc_curve.h
+>> @@ -23,6 +23,8 @@ struct ecc_point {
+>>    * struct ecc_curve - definition of elliptic curve
+>>    *
+>>    * @name:	Short name of the curve.
+>> + * @nbits:      Curves that do not use all bits in their ndigits must specify
+>> + *              their number of bits here, otherwise can leave at 0.
+>>    * @g:		Generator point of the curve.
+>>    * @p:		Prime number, if Barrett's reduction is used for this curve
+>>    *		pre-calculated value 'mu' is appended to the @p after ndigits.
+> 
+> Nit: Looks like this kernel-doc uses 1 tab instead of blanks.
+> 
+Fixed.
 
