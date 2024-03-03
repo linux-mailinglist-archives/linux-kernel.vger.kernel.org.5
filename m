@@ -1,95 +1,142 @@
-Return-Path: <linux-kernel+bounces-89888-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89889-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F8E986F6EB
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 20:50:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 600EF86F6EE
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 20:53:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD295B20F38
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 19:50:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1464C1F21087
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 19:53:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EC5D7A711;
-	Sun,  3 Mar 2024 19:50:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D220E79DA5;
+	Sun,  3 Mar 2024 19:53:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HAGNpe4v"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="V+MADzLc"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBA227A12E;
-	Sun,  3 Mar 2024 19:50:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 823AE6CDC0
+	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 19:53:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709495426; cv=none; b=TJv++ktxGfRj22Eu198VvIDaugT1H219v024FIIFcfuvaUrW5O2poIwrrT4ZXWNrbusCMiRratt8sNXXKXx/FdpHSKNqqiK6EnSh314VWkWbUcxD3ARCjlD+m0jKH1kAIcu5qGe1m8UdvjbMlInhGx7GuTNVFljvAW6o5jrfU0I=
+	t=1709495597; cv=none; b=YgqgQ2J8Ixf15yPlc/2HMRwXeJyRFQ+xatQepa9dA0+iDqRC5/OlvQRTMktTjRviV0rwLlQ2DEpokZ4nFILozsN/ZIaLkri5w3wC1TJ0KbKYVLnzoptGYIphw3M+zlYBb6kTSWybvIvk69Yme4b8obwuU0DaKXkzY7UPkkGxGM0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709495426; c=relaxed/simple;
-	bh=NqOpHNUkPpcXOLnh/QWRufn/Ytxmtgs9sizhlMM6yUU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rmHHnoHpJdiPaRRKuKDDsVS58YqV9eU+0geFtz4CW6hMPfmbg1rJKX/vBIQvrlcpQ36eDM3H9TEV07RqphxFkbjNJf/I5oFmuP8CkinNqn8bz1L4WUxGtO245QdHeSS+V2B1uLa6LujoG/q9WW0xc7D4Vq99ojluWDnUzHbsyVs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HAGNpe4v; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 849B9C433B1;
-	Sun,  3 Mar 2024 19:50:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709495426;
-	bh=NqOpHNUkPpcXOLnh/QWRufn/Ytxmtgs9sizhlMM6yUU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HAGNpe4vbmCT1lk0B4Ggv5UAZaXI/dje2Dg2hpGp03ESpBowujBmH4jQDaxPIFdZW
-	 mV05WggJJz+JLN4/eE47tWNX2sMbmi9aaHsFkBZocU6jWRx8nA4GVE1fJCdr+SlDTa
-	 f7OA5ay7cvWttsVjGxAYh+iu5b8XvAZBLGqJoE7Lo3wGMmsqIBOe9DEcCoZ9PpRukN
-	 8Y4S+DIVqhZQZXsbnm2VGDljEhN2eYjlTjokfamd/9qbyky71NjEN50Pe8VKtwehao
-	 NCYpbfv8DO9sz6ZdvWylP9Olyde5H4JBXB64ooYa7uBJF9HRIV01kM0mh896st8caw
-	 i7W7iqbID8UJg==
-From: Bjorn Andersson <andersson@kernel.org>
-To: Bjorn Helgaas <bhelgaas@google.com>,
-	Johan Hovold <johan+linaro@kernel.org>
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	linux-arm-msm@vger.kernel.org,
-	linux-pci@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: (subset) [PATCH v2 00/12] arm64: dts: qcom: sc8280xp: PCIe fixes and GICv3 ITS enable
-Date: Sun,  3 Mar 2024 13:50:20 -0600
-Message-ID: <170949540962.78121.423418904639454445.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240223152124.20042-1-johan+linaro@kernel.org>
-References: <20240223152124.20042-1-johan+linaro@kernel.org>
+	s=arc-20240116; t=1709495597; c=relaxed/simple;
+	bh=N8AdG+bpHRuthiZLw9I1zjuqHwMT7szV3BMkquNxpxE=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=WQc/eD2hFKWla/OoB2allA43JYOlVpLcPUGWT5MD4SbrxcbIhw2QNUy0nkkGZfgzxDfLbsbD8/tRtwp10iTL5jXL1p2uOBKAc5F7ypCSnzTMVhjHwPB/ew5C6r3U105N+4AL37oJJm9c7O2s0jymGkzaudJRQLykoqUCgcMCKnE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=V+MADzLc; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709495594;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=N8AdG+bpHRuthiZLw9I1zjuqHwMT7szV3BMkquNxpxE=;
+	b=V+MADzLcl8KSbKHvPChtC0mktEunmg1KRlXfyYi5bXXJMlIjebkurgjrJbyh1ZlYVDX5PC
+	cb4IrjD4cLMTNuD0VrDdpPmJBcAk8IFLiHoIt5YUCuZ4sh1zj6Sj+J2jShipiMx/Yb7BCf
+	Cu/2J8cu2pkYALsk8mSOAxPHx53CF+4=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-416-fv9OpHqyPgC8ouGSY96VbA-1; Sun, 03 Mar 2024 14:53:13 -0500
+X-MC-Unique: fv9OpHqyPgC8ouGSY96VbA-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a3fb52f121eso265282866b.0
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 11:53:12 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709495592; x=1710100392;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=N8AdG+bpHRuthiZLw9I1zjuqHwMT7szV3BMkquNxpxE=;
+        b=NlfvsFU7nENcG3JAPR5C98zoXiFD14Cg8WisEup9ysDVXZsosI1PO1BbF3IkAh5z3d
+         k/qiR5wQGdrbSRf/n+eXAyJQLfByTFF/8NxUNODmxZivNaIeU9c7Q0LeOS8yzRSbl9TI
+         dbyoZ6jelKbr3rc5W6+hujfmdxk/tavYDBI743zIvRN60wH91SWDdTrDWl0Vvhkv8oAb
+         fz8nfxHaveH42h/w909J1IBErBh4exSTU2FTikmrdTAh4OU/iKYy0BWARRdfDglNclKx
+         TJNMwKyX+g3dxR6iNYXkqeu15PUIGBMdHesh89IZeY8VWDPOXjBFF89UqrSTrhDfnWVV
+         VSyA==
+X-Forwarded-Encrypted: i=1; AJvYcCWcCFK+LkKqbhhKNbGnBbEmjx2cXcya6gTwINffd7M6XaxYlduM5URkSxATVC+9QcHRYU7ez8aH5+9zzBmZuG9TNz/oLIvgsi5cA0ww
+X-Gm-Message-State: AOJu0YzaYVYFDrhavf/t9NM71YRujXXI4Id78wwTIxkVZoe9klbHF+w3
+	nza+U3FJya3tN3uo5EkDvkziMN4qOju79D/MAYi/dzaORUJWz/Rf4wezmxiXeeV7ngJTV1PQSjs
+	6yAvGpjmkC42sKFdXlIYUZJ6WJW0Rs3rjd5n2oYiJS3cUgrjN/TwYTZL4N1Vo1w==
+X-Received: by 2002:a17:906:55a:b0:a44:cf37:1908 with SMTP id k26-20020a170906055a00b00a44cf371908mr3025830eja.1.1709495592001;
+        Sun, 03 Mar 2024 11:53:12 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGRoNqehCT/8xh1OvRTbgJ/QangHT/d9acrbziW6l1F9rth43/MHUyDxdKEQKud6wA2jW+Dzw==
+X-Received: by 2002:a17:906:55a:b0:a44:cf37:1908 with SMTP id k26-20020a170906055a00b00a44cf371908mr3025822eja.1.1709495591638;
+        Sun, 03 Mar 2024 11:53:11 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id gz11-20020a170906f2cb00b00a44cdb21d53sm1980134ejb.36.2024.03.03.11.53.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 03 Mar 2024 11:53:11 -0800 (PST)
+Message-ID: <010ea3a0-929e-4912-ad22-9f0cf5b1a3e2@redhat.com>
+Date: Sun, 3 Mar 2024 20:53:10 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US, nl
+To: Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker
+ <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-sh@vger.kernel.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux PM <linux-pm@vger.kernel.org>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: pm_runtime_early_init() defined but not used, except on SuperH which
+ has its own definition ?
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+Hi All,
+
+I noticed that drivers/base/power/power.h defines pm_runtime_early_init()
+but nothing under drivers/base uses this.
+
+A grep over the entire tree shows that arch/sh/drivers/platform_early.c
+does use pm_runtime_early_init() but rather then including
+drivers/base/power/power.h it has its own definition / private copy
+of both device_pm_init_common() and pm_runtime_early_init() from
+drivers/base/power/power.h ???
+
+Also the private copy of pm_runtime_early_init() in
+arch/sh/drivers/platform_early.c differs from the unused one
+in drivers/base/power/power.h, but only when CONFIG_PM is not set.
+
+When CONFIG_PM is not set then the pm_runtime_early_init() in
+arch/sh/drivers/platform_early.c is a no-op, where as the one in
+drivers/base/power/power.h still calls device_pm_init_common()
+in this case ...
+
+I also wonder if given that pm_runtime_early_init() is not
+used with the exception of arch/sh/drivers/platform_early.c
+if the dev->power.early_init flag check in
+device_pm_init_common() is really necessary ?
+
+On non SuperH the only (1) caller of device_pm_init_common()
+is device_pm_init(), so it seems to me that the code to
+avoid doing device_pm_init_common() twice is unnecessary.
+
+Actually it seems to me that the entire contents of
+device_pm_init_common() can be moved inside device_pm_init()
+and the dev->power.early_init can be completely dropped (2).
+
+Regards,
+
+Hans
 
 
-On Fri, 23 Feb 2024 16:21:12 +0100, Johan Hovold wrote:
-> This series addresses a few problems with the sc8280xp PCIe
-> implementation.
-> 
-> The DWC PCIe controller can either use its internal MSI controller or an
-> external one such as the GICv3 ITS. Enabling the latter allows for
-> assigning affinity to individual interrupts, but results in a large
-> amount of Correctable Errors being logged on both the Lenovo ThinkPad
-> X13s and the sc8280xp-crd reference design.
-> 
-> [...]
+1) Well pm_runtime_early_init() calls it too, but that itself
+is unused and can be removed, removing it is even ok-ish
+for SuperH since that has its own copy anyways.
 
-Applied, thanks!
+2) With the exception that all of this is still necessary
+for SuperH I guess.
 
-[06/12] arm64: dts: qcom: sc8280xp-crd: limit pcie4 link speed
-        commit: db8138845cebcdd0c709570b8217bd052757b8df
-[07/12] arm64: dts: qcom: sc8280xp-x13s: limit pcie4 link speed
-        commit: 7a1c6a8bf47b0b290c79b9cc3ba6ee68be5522e8
 
-Best regards,
--- 
-Bjorn Andersson <andersson@kernel.org>
 
