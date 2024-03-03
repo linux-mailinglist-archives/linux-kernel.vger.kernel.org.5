@@ -1,114 +1,127 @@
-Return-Path: <linux-kernel+bounces-89738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B52486F4E9
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 13:57:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE13F86F4EA
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 13:59:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D89422834D1
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 12:57:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D0522834F5
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 12:59:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A73AC2FE;
-	Sun,  3 Mar 2024 12:57:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lMXJ7i86"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39BEAC153;
+	Sun,  3 Mar 2024 12:59:41 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCC4928E7;
-	Sun,  3 Mar 2024 12:57:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8F52947B
+	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 12:59:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709470662; cv=none; b=iLBtp7RMjpqghrAk3krp2cq2Heouf76oBSkOTXhic8ewToxHfWBtvhp5gVa4zEYs5vQdq+5MLLmEAnwijqedKhWH/srOpksuWvGwwFvZ5sJwPj5Ccb2WMAAkp2p5Ik0m3dM5OW3DKqL3HAlRb4sF3nfxfID/gGBFWj00D+sdTR8=
+	t=1709470780; cv=none; b=EK8ZxWsXfBWgxzU3ycP9oe3pE8xviFMhTO/gUyMYr/2ksFVPyOFbMlYuW7tV2SMuKe9EkqFmlF+mtXFKEj2ON9PpBC06GdgNHtBSdJEPBid/i3i4yqRohqqFAJKzsiOWXvzj7k1ZuDdYC9loTAv8Z8cnH6UfRrMQimczgA6MPsw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709470662; c=relaxed/simple;
-	bh=4ch5aMF3KIky3EvroYwtOum5t1jE63gLQZEJ509AYzY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=daHiCzEileCc0MEA5lsxyAP9LYtzC9Lvud2pgVLnvlNVF4JfOBe7xNH1uqb4DkznXOAyTkZPQ19H8vbKqUz8DMur4LSqpdoppnKapXrhCKXE1UQFwoFUi+C9NhmKfmTT+LCwXH/AhHx2EtDy5G0K8kfAOvwoEQYlOQNPCJk96uk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lMXJ7i86; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8A27C433C7;
-	Sun,  3 Mar 2024 12:57:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709470662;
-	bh=4ch5aMF3KIky3EvroYwtOum5t1jE63gLQZEJ509AYzY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lMXJ7i86uTVPjCDa/06YKBiPyBc+9L0b2PktC0RdAo1btyVBO7MHBEQzlxSPKALNc
-	 OIT+9gcE//pT/oH2FTm2l42YUA+J2/t4L6v0XhnBWeJIpKB0mp47bcv1+SuE7PWP+/
-	 3PPDBqyrZQiIbA/c83B33EAHdJUzQ7MWoIrh8QADscA3+VpyV84ojV2xYTEq4mGn0b
-	 cMhEdOiih1QScHPg/TOXuxK60EYbhJRVO0s7/k4pKNlWhmvRBJqxskrnQtnd3YDzGs
-	 gzIfOtBiAHSsLLmNneEuvEkKuFBF+MBf3sA/yALf3mCXn4jlMSG/eSqRV861dtyTp7
-	 PqsF+LDKcsAkg==
-Date: Sun, 3 Mar 2024 14:57:37 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Wenchao Hao <haowenchao2@huawei.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] RDMA/restrack: Fix potential invalid address access
-Message-ID: <20240303125737.GB112581@unreal>
-References: <20240301095514.3598280-1-haowenchao2@huawei.com>
+	s=arc-20240116; t=1709470780; c=relaxed/simple;
+	bh=efOaSPpHNMKkGkKPOPd5Oo42Pwvrx70v2nA/t76V7XQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=oO9J5iqFYTUv3CPorFxvSqWkVkSsb/StQxf1LPjP6OcBdzQRmWkWtnwfqUf6iICPk9cfgAAjizhxTCIdHFFfg5rucjBS0PkdZ7zAHhXxJqscw0zZDvepAVuRiHsD4IYjnKun8NEGGFIih9o4LaRDzzvQET3sPNxsUBarr8G7D24=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74B8CC433F1;
+	Sun,  3 Mar 2024 12:59:39 +0000 (UTC)
+Date: Sun, 3 Mar 2024 07:59:37 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Sachin Sant <sachinp@linux.ibm.com>
+Subject: Re: [GIT PULL] tracing: Prevent trace_marker being bigger than
+ unsigned short
+Message-ID: <20240303075937.36fc6043@rorschach.local.home>
+In-Reply-To: <CAHk-=wioeo5vyEWUZcGBKMsf3jnjrnnHc3uJiV=JjSKPdvZOEw@mail.gmail.com>
+References: <20240302111244.3a1674be@gandalf.local.home>
+	<CAHk-=wj376WMgZ24wKGEWDs_ojNtod-LDZBedPzDYRRcY60UYA@mail.gmail.com>
+	<20240302145958.05aabdd2@rorschach.local.home>
+	<CAHk-=wgjhdRj1V847NTF4veMN_tCbrySiEHXO8RO3n05cNeXeA@mail.gmail.com>
+	<20240302154713.71e29402@rorschach.local.home>
+	<CAHk-=wioeo5vyEWUZcGBKMsf3jnjrnnHc3uJiV=JjSKPdvZOEw@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240301095514.3598280-1-haowenchao2@huawei.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Fri, Mar 01, 2024 at 05:55:15PM +0800, Wenchao Hao wrote:
-> struct rdma_restrack_entry's kern_name was set to KBUILD_MODNAME
-> in ib_create_cq(), while if the module exited but forgot del this
-> rdma_restrack_entry, it would cause a invalid address access in
-> rdma_restrack_clean() when print the owner of this rdma_restrack_entry.
+On Sat, 2 Mar 2024 12:55:10 -0800
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-How is it possible to exit owner module without cleaning the resources?
+> On Sat, 2 Mar 2024 at 12:47, Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > I'm fine with just making it 4K with a comment saying that "4K is the
+> > minimum page size on most archs, and to keep this consistent for crazy
+> > architectures like PowerPC and it's 64K pages, we hard code 4K to keep
+> > all architectures acting the same".  
+> 
+> 4k is at least a somewhat sane limit, and yes, being hw-independent is
+> a good idea.
+> 
+> We have other strings that have that limit for similar reasons (ie PATH_MAX).
+> 
 
-Thanks
+I believe I was trying to solve this wrong. The vsprintf() is called on
+reading of the ring buffer, and I was trying to fix it on the write
+side. I believe that the fix should be on the read side where the
+vsprintf() is called.
 
-> 
-> Fix this issue by using kstrdup() to set rdma_restrack_entry's
-> kern_name.
-> 
-> Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
-> ---
->  drivers/infiniband/core/restrack.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/infiniband/core/restrack.c b/drivers/infiniband/core/restrack.c
-> index 01a499a8b88d..6605011c4edc 100644
-> --- a/drivers/infiniband/core/restrack.c
-> +++ b/drivers/infiniband/core/restrack.c
-> @@ -177,7 +177,8 @@ static void rdma_restrack_attach_task(struct rdma_restrack_entry *res,
->  void rdma_restrack_set_name(struct rdma_restrack_entry *res, const char *caller)
->  {
->  	if (caller) {
-> -		res->kern_name = caller;
-> +		kfree(res->kern_name);
-> +		res->kern_name = kstrdup(caller, GFP_KERNEL);
->  		return;
->  	}
->  
-> @@ -195,7 +196,7 @@ void rdma_restrack_parent_name(struct rdma_restrack_entry *dst,
->  			       const struct rdma_restrack_entry *parent)
->  {
->  	if (rdma_is_kernel_res(parent))
-> -		dst->kern_name = parent->kern_name;
-> +		dst->kern_name = kstrdup(parent->kern_name, GFP_KERNEL);
->  	else
->  		rdma_restrack_attach_task(dst, parent->task);
->  }
-> @@ -306,6 +307,7 @@ static void restrack_release(struct kref *kref)
->  		put_task_struct(res->task);
->  		res->task = NULL;
->  	}
-> +	kfree(res->kern_name);
->  	complete(&res->comp);
->  }
->  
-> -- 
-> 2.32.0
-> 
+Sachin, can you try this patch.
+
+diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+index 3e7fa44dc2b2..5c7962d612de 100644
+--- a/kernel/trace/trace_output.c
++++ b/kernel/trace/trace_output.c
+@@ -1588,11 +1588,20 @@ static enum print_line_t trace_print_print(struct trace_iterator *iter,
+ 	struct print_entry *field;
+ 	struct trace_seq *s = &iter->seq;
+ 	int max = iter->ent_size - offsetof(struct print_entry, buf);
++	const char *p;
+ 
+ 	trace_assign_type(field, iter->ent);
+ 
+ 	seq_print_ip_sym(s, field->ip, flags);
+-	trace_seq_printf(s, ": %.*s", max, field->buf);
++	trace_seq_puts(s, ": ");
++	/* Write 1K chunks at a time */
++	p = field->buf;
++	do {
++		int pre = max > 1024 ? 1024 : max;
++		trace_seq_printf(s, "%.*s", pre, p);
++		max -= pre;
++		p += pre;
++	} while (max > 0);
+ 
+ 	return trace_handle_return(s);
+ }
+@@ -1602,10 +1611,19 @@ static enum print_line_t trace_print_raw(struct trace_iterator *iter, int flags,
+ {
+ 	struct print_entry *field;
+ 	int max = iter->ent_size - offsetof(struct print_entry, buf);
++	const char *p;
+ 
+ 	trace_assign_type(field, iter->ent);
+ 
+-	trace_seq_printf(&iter->seq, "# %lx %.*s", field->ip, max, field->buf);
++	trace_seq_printf(&iter->seq, "# %lx", field->ip);
++	/* Write 1K chunks at a time */
++	p = field->buf;
++	do {
++		int pre = max > 1024 ? 1024 : max;
++		trace_seq_printf(&iter->seq, "%.*s", pre, p);
++		max -= pre;
++		p += pre;
++	} while (max > 0);
+ 
+ 	return trace_handle_return(&iter->seq);
+ }
 
