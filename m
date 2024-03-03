@@ -1,191 +1,133 @@
-Return-Path: <linux-kernel+bounces-89626-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89627-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FB0C86F330
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 01:00:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 94DEC86F333
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 01:01:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 253151C20D3B
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 00:00:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2FC81C2190A
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 00:01:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 117FED26D;
-	Sun,  3 Mar 2024 00:00:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 073CE2F2E;
+	Sun,  3 Mar 2024 00:01:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VTwn+z2y"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="d8uKepr1"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC7864A19
-	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 00:00:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E60D063A;
+	Sun,  3 Mar 2024 00:01:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709424011; cv=none; b=sn0t934YY3B/pWCKxKcnpYqldwEgJKNXSwQyIZXswnmrFAysHbgLDNG93PzGiLZnnZSna+eKgA1aDkSs4Rx5VmB2J3is0c///dFA23KwVBl9/q6fg1skfdkADTjC1FReSQ/GopzIK9942NKDRO4eTPzcDMvWF4VUCZpX2slkKek=
+	t=1709424096; cv=none; b=NXVMot2yWfZfsj++idc4tC2RMYY5PCdpfWy7KLL/QdZddj3u+se5dUxDXUS+siIb/XJY9WkAdNlSSDdE7BBOD5xPmOjoZMLqs6JS26Sfw8049Yn/Po9qnmmaZ/0EYTbhfZs0Yrd+65jcEoGFA9III5QygFCyzdsDCrF/u2uYtWs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709424011; c=relaxed/simple;
-	bh=J6lqD5tPBpfsKE9gR0kW41bi8JlBl/s/g4TtD6cOmJk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=I2kkkJFcT+dcrsQuKmKQvmiWStrXRPH03ZnFnSAHeqg4Fa9EQ4hh82N/5tJ53LX2VbpDxixTCzST7WkNjff2YUFJ4d/5aJoNiV20KhHPcD+pL9h5p/IJqbqft9pS9ORuKK4lnQk65t+Ke0suWlxbXOUBItDSBKQoSn2XxAoeqUk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VTwn+z2y; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709424007;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oNn4AYHDxOyYCw1sWBQwABamqz8kdnNfjo/jO2yqNzo=;
-	b=VTwn+z2yp8ZYyEwebcEiy2Yhd/A0Lg6F0jgLxFqIe/zBOCHdXTjLqNR7bp1WQ3xiSAt47j
-	QbPeLZPIuJ+ZjUF2W+HF+W1H4HiLBxkLup1KIOYoi6Z0Hee5LGotBf2mgKHo7bRhR+24SZ
-	EYuPVvRu1hLIYUqUXVTvvI4ZLm55ZM8=
-Received: from mail-ua1-f71.google.com (mail-ua1-f71.google.com
- [209.85.222.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-695--YSL0tcKOoS_cYmtm0Lu_g-1; Sat, 02 Mar 2024 19:00:06 -0500
-X-MC-Unique: -YSL0tcKOoS_cYmtm0Lu_g-1
-Received: by mail-ua1-f71.google.com with SMTP id a1e0cc1a2514c-7d302c6a708so2427354241.0
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Mar 2024 16:00:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709424005; x=1710028805;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oNn4AYHDxOyYCw1sWBQwABamqz8kdnNfjo/jO2yqNzo=;
-        b=e7Q6AFRDFNM7CXbukSe8+fjDJjBQLtK41YLxS9+RjMC3N45lMqU1oFWN9mEbx9Dx4F
-         gCs7BU7TNZ4zf+QjJ1lTsjMMFvLIShzq+XiYLggPVDtPNqAAoUZOIS/cn058fj0bKNCu
-         a+POI5/5caKpzuxVB7Hi2oHScwkknt6mjKYLKT0kocfXGKxIZ5bitZbZEYTkqS6ifm0v
-         mADTXnq5Dsfjvic8JZt7eD/67Y7x332OiknmqWVIRii8DhLTnQiGOpyvnXyn1c9qVgOZ
-         /P6E2VHz0HCQuHomoNXBdOoVxGKBMKnt/RLw+M9YCl8JMdIlqrPn32lAQRjXvCBj5etD
-         Cb4w==
-X-Gm-Message-State: AOJu0YzvDdQTsT3sEQGqJhU/3URbVrM1JHfnUNNmAUPXuu+KURf0m+du
-	aaFIgPZSmpdaLu46dmlt0twdRdzcJVYInX8HH79bVKHXWvhp/nJ+E+oNE6JnVihcQ2Spd+YJWx0
-	G+kGHtz7nGyFClCl69ehoutd5ZAZYS40R0ZG4HtWtAsiXy/GwIUFse5tZ6U8SFSfH7UZTpgRkl3
-	YPfnxQQWwsnnIVe64a67MnuWb35UKQwbK45OfS
-X-Received: by 2002:a05:6102:2e6:b0:472:7619:1a63 with SMTP id j6-20020a05610202e600b0047276191a63mr3804555vsj.35.1709424005599;
-        Sat, 02 Mar 2024 16:00:05 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFByXUW6H7RopND/l/85n7vhh3nESgMcc0/78odRPIE36Mxfh25xt5RnW/nCFHDtnaXb5pilZ920//jFoIFzNY=
-X-Received: by 2002:a05:6102:2e6:b0:472:7619:1a63 with SMTP id
- j6-20020a05610202e600b0047276191a63mr3804545vsj.35.1709424005271; Sat, 02 Mar
- 2024 16:00:05 -0800 (PST)
+	s=arc-20240116; t=1709424096; c=relaxed/simple;
+	bh=9Lv2JIlrEK7ISwNL1lIjOiH9V4PIOwaJ2IrJ7e9d/6g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=E7/FtHv5E1sskbaYe6UUrygJZwPLqvTBJD+cHhZnTkyXdrtrvkvnFNKuUIN9Ob7bFIkNv80tqonQOj5HbvOIIEwoMFa7FZAEGYntWNw178okgTxeUAzCAYNGddMA0dVe/wgElOcwvlT7OCgAaAq9HKKgLPQ3Xz2vy7GPYVFUE08=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=d8uKepr1; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=+aCuWJupLOSBvXZ0Gqv1AfJ8CcEKqmKcXL3V2MU5aTk=; b=d8uKepr1Y9jfM0QamhrwgEl1k9
+	W/c5LBCk8dnhi6V7AgrsiTI5agLEqtyhEovG9WaxiD6nMO1orH8h+spv/dYO8TXTFKaM1ra6NVM3z
+	/uBemi+3Y3nqWlYqq7YM3VZOakq1XLpnDQTHpkrGBj2bd6Kwqvq9QD5pWH4h6gyRG0E6ELSpOafQS
+	XlS4elHdFbb9GQJEszeTJULt8iuyjWz99fqqfi/ziJI/1hqcJ9ibLmdjj66+eqkbBRXIOOkdAJrNJ
+	kGyHF0FCLj9yWYR8JgkE/c+yOVrHaXOWtkiWhCSkrADZAtHBOdk+jsSK53dgT1tEen6N21ws6sKXg
+	YbmrVAxA==;
+Received: from [50.53.50.0] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rgZIJ-00000004hUf-0Qa7;
+	Sun, 03 Mar 2024 00:01:31 +0000
+Message-ID: <269232e6-41c9-4aa1-9320-662beabcd69b@infradead.org>
+Date: Sat, 2 Mar 2024 16:01:30 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240301203023.2197451-1-jsavitz@redhat.com> <87cysdfsef.fsf@mail.lhotse>
-In-Reply-To: <87cysdfsef.fsf@mail.lhotse>
-From: Joel Savitz <jsavitz@redhat.com>
-Date: Sat, 2 Mar 2024 18:59:49 -0500
-Message-ID: <CAL1p7m7nHfLM=koNaFZ0MrrcC6Lyj3VWdC9i8rOWGmrijKR3+Q@mail.gmail.com>
-Subject: Re: [PATCH] powerpc: align memory_limit to 16MB in early_parse_mem
-To: Michael Ellerman <mpe@ellerman.id.au>
-Cc: linux-kernel@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>, 
-	Christophe Leroy <christophe.leroy@csgroup.eu>, "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, 
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, Benjamin Gray <bgray@linux.ibm.com>, 
-	Paul Mackerras <paulus@ozlabs.org>, linuxppc-dev@lists.ozlabs.org, 
-	Gonzalo Siero <gsierohu@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] kci-gitlab: Introducing GitLab-CI Pipeline for Kernel
+ Testing
+Content-Language: en-US
+To: Guenter Roeck <groeck@google.com>,
+ Linus Torvalds <torvalds@linuxfoundation.org>
+Cc: Nikolai Kondrashov <spbnick@gmail.com>, Maxime Ripard
+ <mripard@kernel.org>, Helen Koike <helen.koike@collabora.com>,
+ linuxtv-ci@linuxtv.org, dave.pigott@collabora.com,
+ linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-kselftest@vger.kernel.org, gustavo.padovan@collabora.com,
+ pawiecz@collabora.com, tales.aparecida@gmail.com, workflows@vger.kernel.org,
+ kernelci@lists.linux.dev, skhan@linuxfoundation.org,
+ kunit-dev@googlegroups.com, nfraprado@collabora.com, davidgow@google.com,
+ cocci@inria.fr, Julia.Lawall@inria.fr, laura.nao@collabora.com,
+ ricardo.canuelo@collabora.com, kernel@collabora.com,
+ gregkh@linuxfoundation.org
+References: <20240228225527.1052240-1-helen.koike@collabora.com>
+ <20240228225527.1052240-2-helen.koike@collabora.com>
+ <20240229-dancing-laughing-groundhog-d85161@houat>
+ <5d7ed81b-37f9-48e9-ab7e-484b74ca886c@gmail.com>
+ <CAHk-=wixVy3WYvjbt43ZSrCqPDsS76QJQSkXFbbPsAOs1MCSAQ@mail.gmail.com>
+ <CABXOdTeT2ip1uS2EG2w8pW7254Tnd=ZDNz-KC61-G-yqDTVgJA@mail.gmail.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <CABXOdTeT2ip1uS2EG2w8pW7254Tnd=ZDNz-KC61-G-yqDTVgJA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 1, 2024 at 6:23=E2=80=AFPM Michael Ellerman <mpe@ellerman.id.au=
-> wrote:
->
-> Hi Joel,
->
-> Joel Savitz <jsavitz@redhat.com> writes:
-> > On 64-bit powerpc, usage of a non-16MB-aligned value for the mem=3D ker=
-nel
-> > cmdline parameter results in a system hang at boot.
->
-> Can you give us any more details on that? It might be a bug we can fix.
 
-The console freezes after the following output:
 
-  Booting a command list
+On 3/2/24 14:10, Guenter Roeck wrote:
+> On Thu, Feb 29, 2024 at 12:21 PM Linus Torvalds
+> <torvalds@linuxfoundation.org> wrote:
+>>
+>> On Thu, 29 Feb 2024 at 01:23, Nikolai Kondrashov <spbnick@gmail.com> wrote:
+>>>
+>>> However, I think a better approach would be *not* to add the .gitlab-ci.yaml
+>>> file in the root of the source tree, but instead change the very same repo
+>>> setting to point to a particular entry YAML, *inside* the repo (somewhere
+>>> under "ci" directory) instead.
+>>
+>> I really don't want some kind of top-level CI for the base kernel project.
+>>
+>> We already have the situation that the drm people have their own ci
+>> model. II'm ok with that, partly because then at least the maintainers
+>> of that subsystem can agree on the rules for that one subsystem.
+>>
+>> I'm not at all interested in having something that people will then
+>> either fight about, or - more likely - ignore, at the top level
+>> because there isn't some global agreement about what the rules are.
+>>
+>> For example, even just running checkpatch is often a stylistic thing,
+>> and not everybody agrees about all the checkpatch warnings.
+>>
+> 
+> While checkpatch is indeed of arguable value, I think it would help a
+> lot not having to bother about the persistent _build_ failures on
+> 32-bit systems. You mentioned the fancy drm CI system above, but they
+> don't run tests and not even test builds on 32-bit targets, which has
+> repeatedly caused (and currently does cause) build failures in drm
+> code when trying to build, say, arm:allmodconfig in linux-next. Most
+> trivial build failures in linux-next (and, yes, sometimes mainline)
+> could be prevented with a simple generic CI.
 
-OF stdout device is: /vdevice/vty@30000000
-Preparing to boot Linux version 6.8.0-rc6.memNOfix-00120-g87adedeba51a
-(root@ibm-p9z-26-lp11.virt.pnr.lab.eng.rdu2.redhat.com) (gcc (GCC)
-11.4.1 20231218 (Red Hat 11.4.1-3), GNU ld version 2.35.2-43.el9) #3
-SMP Fri Mar  1 10:45:45 EST 2024
-Detected machine type: 0000000000000101
-command line: BOOT_IMAGE=3D(ieee1275//vdevice/v-scsi@30000003/disk@81000000=
-00000000,msdos2)/vmlinuz-6.8.0-rc6.memNOfix-00120-g87adedeba51a
-root=3D/dev/mapper/rhel_ibm--p9z--26--lp11-root ro
-crashkernel=3D2G-4G:384M,4G-16G:512M,16G-64G:1G,64G-128G:2G,128G-:4G
-rd.lvm.lv=3Drhel_ibm-p9z-26-lp11/root
-rd.lvm.lv=3Drhel_ibm-p9z-26-lp11/swap mem=3D4198400K
-Max number of cores passed to firmware: 256 (NR_CPUS =3D 2048)
-Calling ibm,client-architecture-support... done
-Ignoring mem=3D0000000101000000 >=3D ram_top.
-memory layout at init:
-  memory_limit : 0000000000000000 (16 MB aligned)
-  alloc_bottom : 00000000114f0000
-  alloc_top    : 0000000020000000
-  alloc_top_hi : 0000000020000000
-  rmo_top      : 0000000020000000
-  ram_top      : 0000000020000000
-instantiating rtas at 0x000000001ecb0000... done
-prom_hold_cpus: skipped
-copying OF device tree...
-Building dt strings...
-Building dt structure...
-Device tree strings 0x0000000011500000 -> 0x00000000115017b7
-Device tree struct  0x0000000011510000 -> 0x0000000011520000
-Quiescing Open Firmware ...
-Booting Linux via __start() @ 0x000000000a6e0000 ...
+Yes, definitely. Thanks for bringing that up.
 
->
-> > For example, using 'mem=3D4198400K' will always reproduce this issue.
-> >
-> > This patch fixes the problem by aligning any argument to mem=3D to 16MB
-> > corresponding with the large page size on powerpc.
->
-> The large page size depends on the MMU, with Radix it's 2MB or 1GB. So
-> depending on what's happening 16MB may not be enough.
->
-> What system are you testing on?
+> Sure, argue against checkpatch as much as you like, but the code
+> should at least _build_, and it should not be necessary for random
+> people to report build failures to the submitters.
 
-I'm running a virtual system in PowerVM on an IBM Z mainframe, 8375-42A mod=
-el.
+I do 110 randconfig builds nightly (10 each of 11 $ARCH/$BITS).
+That's about all the horsepower that I have. and I am not a CI.  :)
 
-Best,
-Joel Savitz
+So I see quite a bit of what you are saying. It seems that Arnd is
+in the same boat.
 
->
-> cheers
->
-> > Fixes: 2babf5c2ec2f ("[PATCH] powerpc: Unify mem=3D handling")
-> > Co-developed-by: Gonzalo Siero <gsierohu@redhat.com>
-> > Signed-off-by: Gonzalo Siero <gsierohu@redhat.com>
-> > Signed-off-by: Joel Savitz <jsavitz@redhat.com>
-> > ---
-> >  arch/powerpc/kernel/prom.c | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.c
-> > index 0b5878c3125b..8cd3e2445d8a 100644
-> > --- a/arch/powerpc/kernel/prom.c
-> > +++ b/arch/powerpc/kernel/prom.c
-> > @@ -82,8 +82,12 @@ static int __init early_parse_mem(char *p)
-> >  {
-> >       if (!p)
-> >               return 1;
-> > -
-> > +#ifdef CONFIG_PPC64
-> > +     /* Align to 16 MB =3D=3D size of ppc64 large page */
-> > +     memory_limit =3D ALIGN(memparse(p, &p), 0x1000000);
-> > +#else
-> >       memory_limit =3D PAGE_ALIGN(memparse(p, &p));
-> > +#endif
-> >       DBG("memory limit =3D 0x%llx\n", memory_limit);
-> >
-> >       return 0;
-> > --
-> > 2.43.0
->
-
+-- 
+#Randy
 
