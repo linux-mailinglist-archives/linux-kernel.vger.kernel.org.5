@@ -1,161 +1,125 @@
-Return-Path: <linux-kernel+bounces-89670-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89671-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7EDC86F3F9
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 09:09:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36D2786F3FB
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 09:22:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A8071F2219E
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 08:09:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 299AC1C20FA7
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 08:22:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2B11947A;
-	Sun,  3 Mar 2024 08:09:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="OIsDPnXO"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CBFE10E6;
-	Sun,  3 Mar 2024 08:09:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CCB9A957;
+	Sun,  3 Mar 2024 08:22:10 +0000 (UTC)
+Received: from regular1-03.263.net (regular1-03.263.net [211.150.70.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C205D945A;
+	Sun,  3 Mar 2024 08:22:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=211.150.70.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709453351; cv=none; b=oyhqdgVWfmtoUdTjGBP2ImE6NfGuKkIfJr7TYmV/jsmMeUJbqqfWtyrrOsN1LSihzeJU0wO7Z4KBd0KZl24cl9MNywcrRpC64iGH9sijZrctldfEnWwo/KYpVJqPjBSFIsikLWcFBReF+GHDQYJMfLP+8vZ4pcIz1F3eFlLztOI=
+	t=1709454129; cv=none; b=Iq8M0GBDBDQaTSkfI5FAxWef4kWJ+128K/1+55J4Z+YD2CHi/BR/wvYjn0T70cazTOvANaJ81QJtTCIsKIyyjM8rdLaCuswxYWtyNmVPCw7davVnDVSf37PA84U2RM9vZf5X2MSbKP2o6wqjJMISVe/b9CUWJgREMvHJYklBmck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709453351; c=relaxed/simple;
-	bh=ivElpwwJNVf3hcpUOWwZJYI9eam2vDVE9K7L0MERDe8=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=uaoa744XhRtT0B4QrcIlGI10a9c9/Rz9wN3YSfya/HYA3rrovtg8J9muypyYKK9LjvoqitTVO8ESIHGUDOa8QZyVgYyHFeYU4JtAnbSqwQIcMre6SpG+u5GcPa4VvznlsE17kh+529r3Znxu0CsR+oMBQLYEYtvAqVAKIrGYj34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=OIsDPnXO; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 8AC4020B74C0;
-	Sun,  3 Mar 2024 00:01:40 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8AC4020B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1709452900;
-	bh=vUSOzIGgBi9vYkWUcajyjOx2gIH11Ew6VEiuY9yENd0=;
-	h=From:To:Cc:Subject:Date:From;
-	b=OIsDPnXOkFlauUZSv9FIsebaC3NeqaZU/thWQfGuhz77QVgm/yh44AQzvm4GJR5tb
-	 kv/ZsCnLU79/5y9Zug5jS6sxtY7wzRD5YAke3RCKSo+XS6uSGQ+nyin7AyjR18Rcix
-	 3/g1Xwfz8FjhP3W9eHM3HIwk2xBoSWZs2ybvzlv0=
-From: Saurabh Sengar <ssengar@linux.microsoft.com>
-To: kys@microsoft.com,
-	haiyangz@microsoft.com,
-	wei.liu@kernel.org,
-	decui@microsoft.com,
-	tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	x86@kernel.org,
-	hpa@zytor.com,
-	dwmw@amazon.co.uk,
-	peterz@infradead.org,
-	linux-hyperv@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: ssengar@microsoft.com,
-	mhklinux@outlook.com
-Subject: [PATCH v3] x86/hyperv: Use per cpu initial stack for vtl context
-Date: Sun,  3 Mar 2024 00:01:36 -0800
-Message-Id: <1709452896-13342-1-git-send-email-ssengar@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
+	s=arc-20240116; t=1709454129; c=relaxed/simple;
+	bh=qO9SV8llceR6KpdDQN8ljn/YpWs1GR0zI28k4g9IsJE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NxolZPSjPndlYLumwhs6cBMWiw37mhkqwpJo9CBFhAZ+mqg37WH0pzy3ansfE+QZaWIrcgQU6FgTIFB+PG7Q924ybYxhRNe3a39DwJsb1OdEE0zw1IvW6SHTZqEseRjgzlz/L9PYVMXwPjSo4qXAj5G1O6KHpnzcA5cpl7sR1To=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=techyauld.com; spf=pass smtp.mailfrom=techyauld.com; arc=none smtp.client-ip=211.150.70.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=techyauld.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=techyauld.com
+Received: from localhost (unknown [192.168.167.32])
+	by regular1-03.263.net (Postfix) with ESMTP id BA0F01BCA;
+	Sun,  3 Mar 2024 16:18:17 +0800 (CST)
+X-MAIL-GRAY:0
+X-MAIL-DELIVERY:1
+X-ADDR-CHECKED4:1
+X-SKE-CHECKED:1
+X-ABS-CHECKED:1
+X-ANTISPAM-LEVEL:2
+Received: from localhost (unknown [118.193.106.122])
+	by smtp.263.net (postfix) whith ESMTP id P6063T140435683841792S1709453896918313_;
+	Sun, 03 Mar 2024 16:18:17 +0800 (CST)
+X-IP-DOMAINF:1
+X-RL-SENDER:yzheng@techyauld.com
+X-SENDER:yzheng@techyauld.com
+X-LOGIN-NAME:yzheng@techyauld.com
+X-FST-TO:rogerq@kernel.org
+X-RCPT-COUNT:7
+X-LOCAL-RCPT-COUNT:1
+X-MUTI-DOMAIN-COUNT:0
+X-SENDER-IP:118.193.106.122
+X-ATTACHMENT-NUM:0
+X-UNIQUE-TAG:<fb985bd55e43264275113590ea1f06ac>
+X-System-Flag:0
+Date: Sun, 3 Mar 2024 16:18:17 +0800
+From: Brock Zheng <yzheng@techyauld.com>
+To: Roger Quadros <rogerq@kernel.org>
+Cc: Andreas Kemnade <andreas@kemnade.info>, 
+	Tony Lindgren <tony@atomide.com>, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+	linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] memory: omap-gpmc: fixup wrongly hierarchy of the sub-devices
+Message-ID: <yxefg4ie4vxblxvr272jvzncxvj2t6xjfuisvmkt2jk663xgsu@o2ogbyepmg3z>
+References: <6fftq2zlkpaf7xptyff6ky63cinr76ziyvdbm5jhj2apubr5vf@l4gvbdax3l2e>
+ <f45b3195-38a9-4c49-b873-01e5a0b275a3@kernel.org>
+ <20240301133809.0d26865e@aktux>
+ <f59c9450-2784-46fa-afc9-4f194055cb24@kernel.org>
+ <laqqencookmgwesfaetd5xw5wfmjdffmjvyjitapfehmu7zy5y@k7gsdexf3jcv>
+ <beacb55c-951b-4177-83ab-94fda44cd2b7@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <beacb55c-951b-4177-83ab-94fda44cd2b7@kernel.org>
 
-Currently, the secondary CPUs in Hyper-V VTL context lack support for
-parallel startup. Therefore, relying on the single initial_stack fetched
-from the current task structure suffices for all vCPUs.
+On TI-AM335x，FPGA under GPMC local-bus can not work on 6.x kernel.
 
-However, common initial_stack risks stack corruption when parallel startup
-is enabled. In order to facilitate parallel startup, use the initial_stack
-from the per CPU idle thread instead of the current task.
+GPMC <--> FPGA  <--> sub-devices....
 
-Fixes: 18415f33e2ac ("cpu/hotplug: Allow "parallel" bringup up to CPUHP_BP_KICK_AP_STATE")
-Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
-Reviewed-by: Michael Kelley <mhklinux@outlook.com>
+I found that the platform sub-devices are in wrongly organized
+hierarchy.  The grandchildren are now under the GPMC device directly,
+not under it's father(FPGA).
+
+Signed-off-by: Brock.Zheng <yzheng@techyauld.com>
 ---
-[V3]
- - Added the VTL code dependency on SMP to fix kernel build error
-   when SMP is disabled.
+ drivers/memory/omap-gpmc.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
- arch/x86/hyperv/hv_vtl.c | 19 +++++++++++++++----
- drivers/hv/Kconfig       |  1 +
- 2 files changed, 16 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/hyperv/hv_vtl.c b/arch/x86/hyperv/hv_vtl.c
-index 804b629ea49d..b4e233954d0f 100644
---- a/arch/x86/hyperv/hv_vtl.c
-+++ b/arch/x86/hyperv/hv_vtl.c
-@@ -12,6 +12,7 @@
- #include <asm/i8259.h>
- #include <asm/mshyperv.h>
- #include <asm/realmode.h>
-+#include <../kernel/smpboot.h>
+diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
+index 80d038884207..1f2568e43086 100644
+--- a/drivers/memory/omap-gpmc.c
++++ b/drivers/memory/omap-gpmc.c
+@@ -2175,6 +2175,7 @@ static int gpmc_probe_generic_child(struct platform_device *pdev,
+ 	int ret, cs;
+ 	u32 val;
+ 	struct gpmc_device *gpmc = platform_get_drvdata(pdev);
++	struct platform_device *child_pdev = NULL;
  
- extern struct boot_params boot_params;
- static struct real_mode_header hv_vtl_real_mode_header;
-@@ -58,7 +59,7 @@ static void hv_vtl_ap_entry(void)
- 	((secondary_startup_64_fn)secondary_startup_64)(&boot_params, &boot_params);
- }
+ 	if (of_property_read_u32(child, "reg", &cs) < 0) {
+ 		dev_err(&pdev->dev, "%pOF has no 'reg' property\n",
+@@ -2330,11 +2331,12 @@ static int gpmc_probe_generic_child(struct platform_device *pdev,
+ no_timings:
  
--static int hv_vtl_bringup_vcpu(u32 target_vp_index, u64 eip_ignored)
-+static int hv_vtl_bringup_vcpu(u32 target_vp_index, int cpu, u64 eip_ignored)
- {
- 	u64 status;
- 	int ret = 0;
-@@ -72,7 +73,9 @@ static int hv_vtl_bringup_vcpu(u32 target_vp_index, u64 eip_ignored)
- 	struct ldttss_desc *ldt;
- 	struct desc_struct *gdt;
+ 	/* create platform device, NULL on error or when disabled */
+-	if (!of_platform_device_create(child, NULL, &pdev->dev))
++	child_pdev = of_platform_device_create(child, NULL, &pdev->dev);
++	if (!child_pdev)
+ 		goto err_child_fail;
  
--	u64 rsp = current->thread.sp;
-+	struct task_struct *idle = idle_thread_get(cpu);
-+	u64 rsp = (unsigned long)idle->thread.sp;
-+
- 	u64 rip = (u64)&hv_vtl_ap_entry;
+ 	/* create children and other common bus children */
+-	if (of_platform_default_populate(child, NULL, &pdev->dev))
++	if (of_platform_default_populate(child, NULL, &child_pdev->dev))
+ 		goto err_child_fail;
  
- 	native_store_gdt(&gdt_ptr);
-@@ -199,7 +202,15 @@ static int hv_vtl_apicid_to_vp_id(u32 apic_id)
- 
- static int hv_vtl_wakeup_secondary_cpu(u32 apicid, unsigned long start_eip)
- {
--	int vp_id;
-+	int vp_id, cpu;
-+
-+	/* Find the logical CPU for the APIC ID */
-+	for_each_present_cpu(cpu) {
-+		if (arch_match_cpu_phys_id(cpu, apicid))
-+			break;
-+	}
-+	if (cpu >= nr_cpu_ids)
-+		return -EINVAL;
- 
- 	pr_debug("Bringing up CPU with APIC ID %d in VTL2...\n", apicid);
- 	vp_id = hv_vtl_apicid_to_vp_id(apicid);
-@@ -213,7 +224,7 @@ static int hv_vtl_wakeup_secondary_cpu(u32 apicid, unsigned long start_eip)
- 		return -EINVAL;
- 	}
- 
--	return hv_vtl_bringup_vcpu(vp_id, start_eip);
-+	return hv_vtl_bringup_vcpu(vp_id, cpu, start_eip);
- }
- 
- int __init hv_vtl_early_init(void)
-diff --git a/drivers/hv/Kconfig b/drivers/hv/Kconfig
-index 00242107d62e..862c47b191af 100644
---- a/drivers/hv/Kconfig
-+++ b/drivers/hv/Kconfig
-@@ -16,6 +16,7 @@ config HYPERV
- config HYPERV_VTL_MODE
- 	bool "Enable Linux to boot in VTL context"
- 	depends on X86_64 && HYPERV
-+	depends on SMP
- 	default n
- 	help
- 	  Virtual Secure Mode (VSM) is a set of hypervisor capabilities and
+ 	return 0;
 -- 
-2.34.1
+2.44.0
+
+
 
 
