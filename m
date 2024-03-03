@@ -1,128 +1,128 @@
-Return-Path: <linux-kernel+bounces-89708-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89709-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30D9786F47D
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 11:49:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A76B886F488
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 11:53:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0EF72835D3
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 10:49:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4AFBF1F21CDD
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 10:53:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE70EBA46;
-	Sun,  3 Mar 2024 10:49:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09EBABA33;
+	Sun,  3 Mar 2024 10:53:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="yyGQN/T3"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="H6k8g3vg"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51419B64C
-	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 10:48:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A689BB65C
+	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 10:53:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709462942; cv=none; b=QfVMazjRYbA0G6OYGBWLSgR/4QETXhDdlk5IucEkrn2d5byirH4bk8+fUuvaCp2uqo6Qx7/7x+aYUXVTvG8/WkFumWVJSyz4uSNgllm2j5kY81cHvA5i+a0dsed7CShtAelt8xIDoJb0CclktWlswBE0R0PX7tp8DOhlFjn41qI=
+	t=1709463202; cv=none; b=fdx44MpGGZCaM2znhx69MKzxdAFmWfa6aIBD2C0+XP9TDtwssMu4Z5mMTPPVBQDjUanhcNvLVrFaKhwQPffOqqygHoTmpMfF84rEsAnUDnhM1b+Sm7tqAHc008B29WUya98P7jCPxPNkPrjxczqdIiXAXYtptSnL3wLduQYy1b4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709462942; c=relaxed/simple;
-	bh=wdMZvlY9a5pjvdej/k7MCIk+lVgoJHMV1KhOOpZkf8I=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=PC2/BUSjIeKn+muSlrZhcEsxgQo72CTiagNIJuQYWrZ78WQV4xH32p6umfDwQs5pZANlB+qQbl8Uu8tEt3YzbUfPm+P5gEhKiMnB+oPGKZbB7LHlSxCEYlB0iO13K6xu0OLVu+O7ukmTUcTcsfQjCm/3vN24id2WjO9WxKNmcSg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=yyGQN/T3; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a446b5a08f0so403098666b.1
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 02:48:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1709462937; x=1710067737; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=qntDsCq8rgJuk7hdQSQYmfEUmAPY9qw4QwTul/rj/lU=;
-        b=yyGQN/T3j++gHMHFi+q96mX9ZYpLRXZHUtxxVLrSfY4jPIzs4FBiHMO7v27ugR4dAM
-         1UjVs383IAWeFD7qt4qIdbI8XBzLrlTtvhYvS34X01jFQLeXA4UZOpaciWbQiKWPtKey
-         aOBLp8NkSH6Noh/5qAywHzIh4gVpnluzTbVTIySJdTjoy0fxQDknTqKVYepxt8v/Vl8z
-         R3lvZDhnBd1I+cDwEZiQvTS+DswITDf4n/1T7UvsbT0RuvD8IVO0onooq6XKdXkGQ431
-         YsZWai15/A4qYLmnfVfy4mLbL8JPh7MNgpG6QLBrSVnZ6Eo8xk/P57k8mXyLpLFYIn8N
-         VRew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709462937; x=1710067737;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qntDsCq8rgJuk7hdQSQYmfEUmAPY9qw4QwTul/rj/lU=;
-        b=dTYmLpB2/ffi884BMVnJSzIwKD9stJe3XZ4kRtMi6efzjJ3LkX5aUAYbVzLiJ2g8FP
-         mnZtMccc1LQwBAFjvCy16ukpBhzHZPsDrEPeJc3bD7lw/GZ6UfUJ0bpwnLlAgfZL9mO8
-         tzHYjojBD0jInFU1EaKuxtR0qz361ej41J7hGTUxQ5qxF4dndpeCMP49wHkuKBz/+xee
-         I+CySf5NuvrnVwaP+hvOtU2qMJGkyoJICWq2ATMCo9ymNl6q+qv2uyowHtWEhCyYl5jp
-         n54bG3+YhyoCjdbmjZY07mV1INUgAW692mgbe9mErk3/qcFzeymC1Xe4RCDFSd0Ld6lT
-         02iw==
-X-Forwarded-Encrypted: i=1; AJvYcCVQY056skEZItmD7PKa2EUVx0wTvfjTgM7tkoTogkIT3RzObpm70R6jf/vI84oE1Acrif4WVO/WGzUHwQ7OI+2Oyt3n/zNnlI2QdU6m
-X-Gm-Message-State: AOJu0YxfhuC9ZNtSBOfMtWoLshVHATFrTd3qsiMFi3bewYMOXvA7LMpM
-	Kg+Yan4s5CIVC3HMfPtysnnb8aTvzYyoriO++HJOWO6ooBcmNtdHYlrgZR/veLs=
-X-Google-Smtp-Source: AGHT+IFpd7/0A8HZA8X0BaCKoqokGmayqMEq28RDQ2RuXymWMt5xBJCQfQZs2Qv/VI3r31VlyOkWcA==
-X-Received: by 2002:a17:906:6c97:b0:a45:2cf3:6c65 with SMTP id s23-20020a1709066c9700b00a452cf36c65mr445528ejr.25.1709462937430;
-        Sun, 03 Mar 2024 02:48:57 -0800 (PST)
-Received: from brgl-uxlite.. (5-226-109-134.static.ip.netia.com.pl. [5.226.109.134])
-        by smtp.gmail.com with ESMTPSA id he44-20020a1709073dac00b00a4323d1b18fsm3582303ejc.34.2024.03.03.02.48.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Mar 2024 02:48:57 -0800 (PST)
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-To: Rob Herring <robh+dt@kernel.org>,
-	Frank Rowand <frowand.list@gmail.com>
-Cc: devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH] of: make for_each_property_of_node() available to to !OF
-Date: Sun,  3 Mar 2024 11:48:53 +0100
-Message-Id: <20240303104853.31511-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1709463202; c=relaxed/simple;
+	bh=wI4SKiW9XGcYzr0DP68rQ1sMkcqlqq03Ki50dXLEyDs=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=ZI3xaDHLrA1CqS67LQPtz4mNIzLbHW+Ouh4/1g83id6RlCfPf+HIsohNeeSCSLbrU92W7ss7UroBQO2xQM4pqnJshs2YzDz04TUlP2VABsAJzNM/QT/BxqRinifBVCevRqOf/THralRD6E6GviWuORJGUqRDNqXQ1fuRI8+6jaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=H6k8g3vg; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 12D0840E0196;
+	Sun,  3 Mar 2024 10:53:17 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id UPCERyjmOdvP; Sun,  3 Mar 2024 10:53:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1709463193; bh=yzCITtHvXH1Imu68iSDIhhg9QvZ8rYfdfo2tZEbUclw=;
+	h=Date:From:To:Cc:Subject:From;
+	b=H6k8g3vgDoA1N1HOZVSHqenx1MrtPKG5h0jPNFiCyldDbeT/uzcaZmArESQeO32/H
+	 vFgrzWB+afX/mIEHyHSlmsbRiddS5Xjev4EWAwqIGPrcSjWS2NFfA5Qj0gnAdNV1e+
+	 fokZIKsgLQgrWa+8lfd6v0EHY7y1oXqqVgcSGCBAU1MSWCRQ7Ow35et2fhJNnnjn6O
+	 fAmEAMLAXdz9s+CqxKgJ6yIl5G+tft9ni8JiSvUFj683P9MGrOa2wN29zdA7LKAlnA
+	 p/2kam88w7FgVK+KCF+XYJ4BfKrQzOyA9ZVgRr7jAHJ8lBuon9kwc2C3sLW8WQogI1
+	 +tlMqcXHKMsFA3pLVzB6n6/0F8xU+gdyfFnPnJS4sAPihFPRBVM2RCDDR7D5rPGlRJ
+	 aMOHKg6gzJt/O9tO19/2/seftc52Qn52D+pFObTJMrmwLgvgXb7XebgkdbylFZFzik
+	 rTuyX46mHFvhDEH3FLZJRU2PBogTqIy4Aj6YuqXGxrn5HxdHtUE1y0iUItWa65SehP
+	 FdX+Rq1/T5wgtRE7iiZjdif0mZdqDJ5iUmMxBlLcmUnsrz+77QC6PTofNfxRLuCuWk
+	 oPMkaDpMXH9pkk5hXaEYbLYPaE9OmqFi6z+cx2m6BE7k/GQ0LnjAPuX7lstPfa5J1V
+	 2JcFTYrYEwCT3UfLEQorgwmI=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A8A6040E016B;
+	Sun,  3 Mar 2024 10:53:10 +0000 (UTC)
+Date: Sun, 3 Mar 2024 11:53:04 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] x86/urgent for v6.8-rc7
+Message-ID: <20240303105304.GAZeRWkNr8xmllFHr1@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Hi Linus,
 
-for_each_property_of_node() is a macro and so doesn't have a stub inline
-function for !OF. Move it out of the relevant #ifdef to make it available
-to all users.
+please pull some x86/urgent fixes for v6.8-rc7.
 
-Fixes: 611cad720148 ("dt: add of_alias_scan and of_alias_get_id")
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Thx.
+
 ---
-I have an upcoming driver that will use this but which can also be built
-on non-DT systems. I'd like to get that in as a fix to avoid inter-tree
-dependencies later.
 
- include/linux/of.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+The following changes since commit 43fb862de8f628c5db5e96831c915b9aebf62d33:
 
-diff --git a/include/linux/of.h b/include/linux/of.h
-index 6a9ddf20e79a..a3e8e429ad7f 100644
---- a/include/linux/of.h
-+++ b/include/linux/of.h
-@@ -362,9 +362,6 @@ extern struct device_node *of_get_cpu_state_node(struct device_node *cpu_node,
- 						 int index);
- extern u64 of_get_cpu_hwid(struct device_node *cpun, unsigned int thread);
- 
--#define for_each_property_of_node(dn, pp) \
--	for (pp = dn->properties; pp != NULL; pp = pp->next)
--
- extern int of_n_addr_cells(struct device_node *np);
- extern int of_n_size_cells(struct device_node *np);
- extern const struct of_device_id *of_match_node(
-@@ -892,6 +889,9 @@ static inline int of_prop_val_eq(struct property *p1, struct property *p2)
- 	       !memcmp(p1->value, p2->value, (size_t)p1->length);
- }
- 
-+#define for_each_property_of_node(dn, pp) \
-+	for (pp = dn->properties; pp != NULL; pp = pp->next)
-+
- #if defined(CONFIG_OF) && defined(CONFIG_NUMA)
- extern int of_node_to_nid(struct device_node *np);
- #else
+  KVM/VMX: Move VERW closer to VMentry for MDS mitigation (2024-02-19 16:31:59 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_v6.8_rc7
+
+for you to fetch changes up to 7fd817c906503b6813ea3b41f5fdf4192449a707:
+
+  x86/e820: Don't reserve SETUP_RNG_SEED in e820 (2024-03-01 10:27:20 -0800)
+
+----------------------------------------------------------------
+- Do not reserve SETUP_RNG_SEED setup data in the e820 map as it should
+  be used by kexec only
+
+- Make sure MKTME feature detection happens at an earlier time in the
+  boot process so that the physical address size supported by the CPU is
+  properly corrected and MTRR masks are programmed properly, leading to
+  TDX systems booting without disable_mtrr_cleanup on the cmdline
+
+- Make sure the different address sizes supported by the CPU are read
+  out as early as possible
+
+----------------------------------------------------------------
+Jiri Bohac (1):
+      x86/e820: Don't reserve SETUP_RNG_SEED in e820
+
+Paolo Bonzini (2):
+      x86/cpu: Allow reducing x86_phys_bits during early_identify_cpu()
+      x86/cpu/intel: Detect TME keyid bits before setting MTRR mask registers
+
+ arch/x86/kernel/cpu/common.c |   4 +-
+ arch/x86/kernel/cpu/intel.c  | 178 ++++++++++++++++++++++---------------------
+ arch/x86/kernel/e820.c       |   8 +-
+ 3 files changed, 98 insertions(+), 92 deletions(-)
+
+
 -- 
-2.40.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
 
