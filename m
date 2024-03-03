@@ -1,122 +1,163 @@
-Return-Path: <linux-kernel+bounces-89879-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89880-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85FEF86F6CE
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 20:23:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36F1E86F6D3
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 20:27:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E157D281A6D
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 19:23:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB82D1F21107
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 19:27:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AD8079DA8;
-	Sun,  3 Mar 2024 19:21:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97D3B76C68;
+	Sun,  3 Mar 2024 19:27:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RKNnq8jc"
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="IrvUukiR"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2248479DA2
-	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 19:21:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C55FC43AB3
+	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 19:27:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709493718; cv=none; b=ora4Iak//1/j2piFhJGaw9dvTKzb9V2u9hUEUkjoRgszI9Z9tAyAeThEX8nwdY5YinPFXQkCg+oy0fiMMCVmpi+4Sfh0heAspvsoL/FRIqh9aJ3y4Dz2sJuvVgaKu+bQc66rMV6cMlnTwb0DiGlYb3RecCZkBKohpox4A5ByKBA=
+	t=1709494055; cv=none; b=oh3XjXkTc/MRORmFBYfPJb2K40+YdD2fk6liS/HVx5BY2oyWuLALd6gXrl7PvfyY6lkRHqvZIgrjOXY43qDqNBlYCKy/eYo2N2UMQmzE5yNpGuFYr6ysJHekK7vLwo/Y7YnLv/zDhaNE8FFFzemGEzh1Gd6X5OX0K7ZaPFCKmlw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709493718; c=relaxed/simple;
-	bh=Z4ARjctXdInaTulfH0l39W/5hUBT3Mx6CnyDsRwi5AI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VOeWJV1yOyeQxxgDeaE2GnE2CON5RTuaThDyCCr9d65KIlNOV3lHztK87G6mUQk2mOptZCnwu5/FX6PxRubz7sqU4+h/lkkIOjO/H20nlcDVuQxoqhWq4Kdz02HgD06wRYeFqUzO+em1Ezmf2S1NiZlMEzaSkl9d7zCPF64WMFM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RKNnq8jc; arc=none smtp.client-ip=209.85.167.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-5132444ac00so1235610e87.1
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 11:21:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709493715; x=1710098515; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=T/48/JKby1GAL8JfgGJx3fO2g/mkSQ2r0j63ahzXbQY=;
-        b=RKNnq8jcnKDjQMKcGXicW54JgAXyuACC+rvoF8yNR4StyWc9tT/XJfP/fYdiChv3sa
-         T/2YaE7qxqAoHBJetnJ1haqBzCtGCTC5sG6LoMVJ0VGh5B+sarpGRsmlVJKFe0a6SU1y
-         Lh9drQaB+kezcSWnj5Opscx8qSPQGFZ5t+jjD9WGU3J0MzTZrzVwQKsNTZCud7LP+w5t
-         Vmg7o/6vw1oq7XgUpdTY6MzM70KCIW/tmdKo7n9Tw1azSlCanXHe1DQsRuJP4xOzozUr
-         uaEUaoqx+wH3wzybvwAykzy6iTH8041Dkuo8D7LE76TCmjJ1L7eotS1Nx7R/rt0TtDXf
-         fSBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709493715; x=1710098515;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=T/48/JKby1GAL8JfgGJx3fO2g/mkSQ2r0j63ahzXbQY=;
-        b=phkRQvG335KdKE3iub2g1APBaksoaCh/EmgbGOUSyiXgO4w/jZcFALmk5uUM+iBoLF
-         dpr67mTN/Hb9MFZJQaH4tdSYZm4dYF/OoJSb+8Pzv+UeKwRQukiYxqqivKxoJ+A694GK
-         VVNd7b5u+Md4XjN6g0uM63Y/eXQIEXWT753FVDttf7+fGXEhPgcIQb8NgeBr9annjw1h
-         BRCWi8XRkrBaH9g63vhVSiWXPWzpBkpNdgdpQdlgGpcMeEC/6Z951mVjqqrJK6BnyNZu
-         XwwU31DOR0olV1LcBXlVyffw7eXVZwZmwsAqlyOV6cA4DOlnPKC5XZfPCEqROuQuY8cG
-         7zow==
-X-Forwarded-Encrypted: i=1; AJvYcCUSN+rHTmLekE1WAfQuUEiJhBB+QUANLEjGJs23cuDcbfOqYblhQM5sqgSELrHbt6QyM/8uyUKcF3yx+G5j6l2n7v5KwfwVw+BJWEn9
-X-Gm-Message-State: AOJu0YymC9cy1I1N37mEXXPrlCUbhZ7loBFqqRcDGAxJzTeNPJy68Xhz
-	EAXmVyq6H2DSQBGuGKQ5I1PHZ7lj4ODTYFteppTmwds8lplxku4ELPBemcTvaD0=
-X-Google-Smtp-Source: AGHT+IEdzvGOfJaJFfR6dGZMvCX4xDWmbnCege8hFqnLHxzPzMwPajFoJC8GzvkolyvM5Mem/j1Bxw==
-X-Received: by 2002:ac2:4648:0:b0:513:2fcb:da02 with SMTP id s8-20020ac24648000000b005132fcbda02mr3710173lfo.2.1709493714917;
-        Sun, 03 Mar 2024 11:21:54 -0800 (PST)
-Received: from [192.168.0.101] (p54a07fa0.dip0.t-ipconnect.de. [84.160.127.160])
-        by smtp.gmail.com with ESMTPSA id cm29-20020a170906f59d00b00a3ce60b003asm4035741ejd.176.2024.03.03.11.21.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 03 Mar 2024 11:21:54 -0800 (PST)
-Message-ID: <2df748b9-9a7f-4ae7-b871-a4a9df9297f3@gmail.com>
-Date: Sun, 3 Mar 2024 20:21:53 +0100
+	s=arc-20240116; t=1709494055; c=relaxed/simple;
+	bh=XwxzVyKmED83ZL+4yFCYapZmwY2na4dJIvwKR0llUv0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QvoK6dNgA37ltHLsWoar3M8ONgPuCI1q+bw5+fLFhACc4wKUCUDz1aMrKGOD5r1sy6mdsloByd9J8kCyyl6rWqYVqv1af0m/DT884y+br0p2r/hzOUwR32cH4v968trCKGOHVslPEEY1a45Y1ovmYZqLnBLSYgQWUbmm1cQIAlg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=IrvUukiR; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 2B10A40E019B;
+	Sun,  3 Mar 2024 19:27:22 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id vE_d3cBpokka; Sun,  3 Mar 2024 19:27:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1709494039; bh=8Ho+q4kIRBEDDcBYfwDDw2iENT8f/OLBpqH2DKALBHA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IrvUukiRaRTZ6TBIx4lec5bVxzGI3gmZNsndJIsEfgQOYHB9hOqmdxuId6bdgv+fW
+	 KnzJSqCDSezTcxRghIR/GAvRRuzqel5JlpQWqcIni41rynv0nkcr3gq9bMnLySwo0+
+	 6ZcJJujQL78rGA7+CNoD17LqmcQJGOuyhAwXpMFQXJsaC1pzqgVEg0NhgGXqsr6hLa
+	 83yFF5W/BKYSGJ+LlecgvyIyS3V3/bJKqdKar4GYBUxl3kh679sBgX8rZTyh9dsrqf
+	 VBCmvhmHxLTtuzMT3Nwjxo9LPPOkVJG+0b4mwxdjEYxM3MKmdgq25EbiVt0v9BJQCt
+	 k0py0SMVydjbydsWF92w5KFuKZArPoyTYs/oswwzBEatrme7S8NYpZ2EjMJUPCzqE6
+	 3urAvN1WgB5X2SMRCKo34/3KunDwKq7HKN77x/LlSy/DEZELrqEJKfeI/NPOy4f+cm
+	 MUZW66MgiUf/fmHQOtRV0qOtCH4h+Q9XOetbC4msJ5moel6X7ndcdPbb2x8+HYPi3s
+	 u6Ws9FL5R4FL+kRXexLQl2ML+IAW8Z2TU4vM2uPJlO8zdvyKh1FPquobVmsEnLxRwy
+	 ysNwND2qt6IVW74fCpyrTXM0ABtWDcImLtWfaHI45O7VFKvMu+ea8My8Kn3xXETQmW
+	 2zzq9rMNLkvKRsA6sQB4zBOY=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D4A2440E016C;
+	Sun,  3 Mar 2024 19:27:07 +0000 (UTC)
+Date: Sun, 3 Mar 2024 20:26:54 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org,
+	Kevin Loughlin <kevinloughlin@google.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Dionna Glaze <dionnaglaze@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Andy Lutomirski <luto@kernel.org>, Brian Gerst <brgerst@gmail.com>
+Subject: Re: [PATCH v7 2/9] x86/startup_64: Defer assignment of 5-level
+ paging global variables
+Message-ID: <20240303192654.GAZeTO_nxJ4bE2A2zD@fat_crate.local>
+References: <20240227151907.387873-11-ardb+git@google.com>
+ <20240227151907.387873-13-ardb+git@google.com>
+ <20240228205540.GIZd-dzFYIBbtfIAo3@fat_crate.local>
+ <CAMj1kXGhZU+FE2gE262Q8_vZEFHicsRtVPzXT-dhhCvBuiMjUA@mail.gmail.com>
+ <20240301160921.GBZeH9sZhp73xX40ze@fat_crate.local>
+ <CAMj1kXFJwEUExy7+Snh3QHVn-ATj0C+sYje22Qmc+y=cCtAV7g@mail.gmail.com>
+ <20240301173323.GDZeIRY_BVBqpudkEo@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Staging: rtl8192e: Declare variable with static
-To: Ariel Silver <arielsilver77@gmail.com>, gregkh@linuxfoundation.org,
- yogi.kernel@gmail.com, dan.carpenter@linaro.org, straube.linux@gmail.com,
- garyrookard@fastmail.org
-Cc: linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20240301153128.13974-1-arielsilver77@gmail.com>
-Content-Language: en-US
-From: Philipp Hortmann <philipp.g.hortmann@gmail.com>
-In-Reply-To: <20240301153128.13974-1-arielsilver77@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240301173323.GDZeIRY_BVBqpudkEo@fat_crate.local>
 
-On 3/1/24 16:31, Ariel Silver wrote:
-> Fixed sparse warning:
-> "'dm_rx_path_sel_table' was not declared. Should it be static?"
-> As dm_rx_path_sel_table is used only in rtl_dm.c it should be static.
+On Fri, Mar 01, 2024 at 06:33:23PM +0100, Borislav Petkov wrote:
+> > I've built a debug OVMF image using the latest version of the series,
+> > and put it at [0]
+> > 
+> > Run like this
+> > 
+> > qemu-system-x86_64 -M q35 \
+> >   -cpu qemu64,+la57 -smp 4 \
+> >   -bios OVMF-5level.fd \
+> >   -kernel arch/x86/boot/bzImage \
+> >   -append console=ttyS0\ earlyprintk=ttyS0 \
+> >   -vga none -nographic -m 1g \
+> >   -initrd <initrd.img>
+> > 
+> > and you will get loads of DEBUG output from the firmware first, and
+> > then boot into Linux. (initrd can be omitted)
+> > 
+> > Right before entering, it will print
+> > 
+> > CpuDxe: 5-Level Paging = 1
+> > 
+> > which confirms that the firmware is running with 5 levels of paging.
+> > 
+> > I've confirmed that this boots happily with this series applied,
+> > including when using 'no5lvl' on the command line, or when disabling
+> > CONFIG_X86_5LEVEL [confirmed by inspecting
+> > /sys/kernel/debug/page_tables/kernel].
+> > 
+> > 
+> > [0] http://files.workofard.com/OVMF-5level.fd.gz
 > 
-> Signed-off-by: Ariel Silver <arielsilver77@gmail.com>
-> ---
->   drivers/staging/rtl8192e/rtl8192e/rtl_dm.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c b/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
-> index 92143c50c149..850ee6ae1f02 100644
-> --- a/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
-> +++ b/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
-> @@ -144,7 +144,7 @@ const u8 dm_cck_tx_bb_gain_ch14[CCK_TX_BB_GAIN_TABLE_LEN][8] = {
->   /*------------------------Define global variable-----------------------------*/
->   struct dig_t dm_digtable;
->   
-> -struct drx_path_sel dm_rx_path_sel_table;
-> +static struct drx_path_sel dm_rx_path_sel_table;
->   /*------------------------Define global variable-----------------------------*/
->   
->   
+> Nice, that might come in handy for other testing too.
 
-Hi Ariel,
+Btw, on a semi-related note, do you have an idea whether a normal guest
+kernel using OVMF istead of seabios would be even able to boot a kernel
+supplied with -kernel like above but without an -initrd?
 
-I need to tell you that you need a change history. There is also the v2 
-missing in the subject. Please make a v3 with change history.
+I have everything builtin and the same kernel boots fine in a guest with
+a
+[    0.000000] SMBIOS 3.0.0 present.
+[    0.000000] DMI: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
 
-Thanks
+but if I try to boot the respective guest installed with the OVMF BIOS
+from the debian package:
 
-Bye Philipp
+[    0.000000] efi: EFI v2.7 by Debian distribution of EDK II
+[    0.000000] efi: SMBIOS=0x7f788000 SMBIOS 3.0=0x7f786000 ACPI=0x7f97e000 ACPI 2.0=0x7f97e014 MEMATTR=0x7ddfe018
+
+it fails looking up the /dev/root device major/minor deep in the bowels
+of the vfs:
+
+[    2.565651] do_new_mount:
+[    2.566380] vfs_get_tree: fc->root: 0000000000000000
+[    2.567298] kern_path: filename: ffff88800d666000 of name: /dev/root
+[    2.568418] kern_path: ret: 0
+[    2.569009] lookup_bdev: kern_path(/dev/root, , path: ffff88800e537380), error: 0
+[    2.571645] lookup_bdev: inode->i_rdev: 0x0
+[    2.572417] get_tree_bdev: lookup_bdev(/dev/root, dev: 0x0), error: 0
+						     ^^^^^^^^^
+
+That dev_t should be 0x800002 - the major and minor of /dev/sda2 but it
+looks like something else is missing in this case...
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
