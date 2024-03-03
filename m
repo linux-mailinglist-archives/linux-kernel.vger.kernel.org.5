@@ -1,157 +1,115 @@
-Return-Path: <linux-kernel+bounces-89661-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89662-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41AA286F3CC
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 07:18:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BBCC86F3D0
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 07:37:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8AA51F220C7
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 06:18:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 141041F22051
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 06:37:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 601C4A958;
-	Sun,  3 Mar 2024 06:17:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 868AA9463;
+	Sun,  3 Mar 2024 06:37:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jnh71ZnL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="K1qlQmq2";
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="K1qlQmq2"
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1B9EA93A
-	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 06:17:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE7B78BF3;
+	Sun,  3 Mar 2024 06:37:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.44.175.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709446678; cv=none; b=C4i+qRWvGPD9NTGhdWUXsF0xMGsCBAuD5efV+b1e3EMSNJGe9sdnYRe1ngOdKs9DXRxe3wIJNkyJ5jcTcqdZVAUF7ikQvxmuCIOKBap+9n2pcIQCgqNXBRi9t7ULdcLlMkrsLGGbMZJwmxLlvXEe5AfT6pmwvx1o0OLYz9ZZ/6Q=
+	t=1709447843; cv=none; b=Dd9DiNZh/b/OBn0BGNyP9qPCePdhhlgnf9URlYBLKgPxhSAP0dgnis4gQ/nJsJDEIfF7kJYXwZFhnJB+UWgCcttDUpPK4bB4Zvi7Ww0uiqPsszor2yTSdhBH/cTmY0Y6tA0K5eeusQfme/LqEB9gVhmQkq9Hh8jdcnTwGXhHrJ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709446678; c=relaxed/simple;
-	bh=bDEK6c2BjoMhmUAk+RQsAlhDmAN/H7P6w4YunFmCdYI=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=KumGG7AyASLZdoCggldRxZ0opzVZKLzSrNO28eOp8ByeZQ6jEDUSeeXuZvXKd+65gqTuDX8MBnfGHDtOI4kzseiqIVJVRqGlpGDnk0yQTfmPRYpP9Z3iSwA8UE2ow4vN9eptDaWTX4X8jvLPE5CtATedTscMBt/ZKraBmDOIImQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jnh71ZnL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57AB3C433C7;
-	Sun,  3 Mar 2024 06:17:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709446678;
-	bh=bDEK6c2BjoMhmUAk+RQsAlhDmAN/H7P6w4YunFmCdYI=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=Jnh71ZnLqC9WXN3z6qJc1CKgt7N3C//7qq9exzhPmlknaIdEn2eHqQCs/RQppJeEx
-	 kZs6Iy/bADDiN+2S+0ayWEAuQeWUKZAVQUjRzFtLxhOpafXsq83uhpZJZsKQvfcXIo
-	 OlCtVmUQf5CD+vF+A9PoL0h3TEYWNGZAVPkksB6cgFwUfOu9a/ShxhTEnnsobZIh0F
-	 3wkDHTfqTKHYLz9z30eVS/lWQZzGMSdX7tZeEBp2MeDh64kcyMSE14JZp0+S34fB2A
-	 CwGZwmuI32T3O+UC6MPw4rhPI7QeOIMCLymLmbOzC4OCTO9aDBFE8HFzc3ePOQCdqJ
-	 mKe7UI7PvEBLQ==
-X-Mailer: emacs 29.2 (via feedmail 11-beta-1 I)
-From: Aneesh Kumar K.V <aneesh.kumar@kernel.org>
-To: Michal Hocko <mhocko@suse.com>, "Huang, Ying" <ying.huang@intel.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Donet Tom <donettom@linux.ibm.com>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Mel Gorman <mgorman@suse.de>,
-	Ben Widawsky <ben.widawsky@intel.com>,
-	Feng Tang <feng.tang@intel.com>,
-	Andrea Arcangeli <aarcange@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>, Rik van Riel <riel@surriel.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Mike Kravetz <mike.kravetz@oracle.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Hugh Dickins <hughd@google.com>,
-	Kefeng Wang <wangkefeng.wang@huawei.com>,
-	Suren Baghdasaryan <surenb@google.com>
-Subject: Re: [PATCH 1/3] mm/mempolicy: Use the already fetched local variable
-In-Reply-To: <ZdRq9EM1mDFXBiiO@tiehlicka>
-References: <9c3f7b743477560d1c5b12b8c111a584a2cc92ee.1708097962.git.donettom@linux.ibm.com>
- <20240218133851.22c22b55460e866a099be5ce@linux-foundation.org>
- <63a0f7c4-3c3f-4097-9a24-d1e3fc7b6030@linux.ibm.com>
- <20240219172130.82a16c1ebecbf8ba86a8987d@linux-foundation.org>
- <21f343fa-84a7-4539-91e2-6fc963dbfb62@kernel.org>
- <87frxnps8w.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <7097ff95-6077-4744-a770-b90d224c0c9b@kernel.org>
- <b599bfe5-1c4d-4750-b0d6-a086e1c8a34c@kernel.org>
- <8734tnppls.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <ZdRq9EM1mDFXBiiO@tiehlicka>
-Date: Sun, 03 Mar 2024 11:47:47 +0530
-Message-ID: <875xy3ltys.fsf@kernel.org>
+	s=arc-20240116; t=1709447843; c=relaxed/simple;
+	bh=Mi/1sj0+EwyDTN7bDczKsKPQ5d8sXsTdgkNDwNjo7u8=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=UJGfj7nNLrh0XcV8uhaK6juq/t1I+WmqLf6RnE67jrmECTO8qAjL3WyDHEnpdxutILIEQALcNpuxm341qMBz1YYzikjcwJMNR9Fmu7hYqxr8ru9mdt3WBmIKNdvQRwTzinnKDbxF1PTUnwrkgikBLtP8lEAijHCxZQ1LwjNOhRc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=K1qlQmq2; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=K1qlQmq2; arc=none smtp.client-ip=96.44.175.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=hansenpartnership.com; s=20151216; t=1709447840;
+	bh=Mi/1sj0+EwyDTN7bDczKsKPQ5d8sXsTdgkNDwNjo7u8=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+	b=K1qlQmq2ZgLYGQE2Y7p53QE3LjGwYBigLKKyz6tlNIlQ24KGyL5boMI4CMkmH6EL9
+	 HnFt619DD4D8mfzxGTuC78ShdKZdyDA6+DLoq4cBWP5+9jMKMtZtm2Fv9nILFS2alg
+	 PA71UbUk2w/x9IZAIslQBYA7Qt/t9vVOa7S3y+M4=
+Received: from localhost (localhost [127.0.0.1])
+	by bedivere.hansenpartnership.com (Postfix) with ESMTP id BF3B712864AB;
+	Sun,  3 Mar 2024 01:37:20 -0500 (EST)
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+ by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
+ with ESMTP id NNLYqV4Cspjy; Sun,  3 Mar 2024 01:37:20 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=hansenpartnership.com; s=20151216; t=1709447840;
+	bh=Mi/1sj0+EwyDTN7bDczKsKPQ5d8sXsTdgkNDwNjo7u8=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+	b=K1qlQmq2ZgLYGQE2Y7p53QE3LjGwYBigLKKyz6tlNIlQ24KGyL5boMI4CMkmH6EL9
+	 HnFt619DD4D8mfzxGTuC78ShdKZdyDA6+DLoq4cBWP5+9jMKMtZtm2Fv9nILFS2alg
+	 PA71UbUk2w/x9IZAIslQBYA7Qt/t9vVOa7S3y+M4=
+Received: from [10.0.15.72] (unknown [49.231.15.39])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 9AFF5128646B;
+	Sun,  3 Mar 2024 01:37:17 -0500 (EST)
+Message-ID: <5227f58bb2caf9ce76e131b4d775df4755a0cafb.camel@HansenPartnership.com>
+Subject: Re: [PATCH v4 01/12] crypto: ecdsa - Convert byte arrays with key
+ coordinates to digits
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+To: Lukas Wunner <lukas@wunner.de>, Stefan Berger <stefanb@linux.ibm.com>
+Cc: keyrings@vger.kernel.org, linux-crypto@vger.kernel.org, 
+ herbert@gondor.apana.org.au, davem@davemloft.net,
+ linux-kernel@vger.kernel.org,  saulo.alessandre@tse.jus.br
+Date: Sun, 03 Mar 2024 13:37:10 +0700
+In-Reply-To: <20240302213427.GA30938@wunner.de>
+References: <20240301022007.344948-1-stefanb@linux.ibm.com>
+	 <20240301022007.344948-2-stefanb@linux.ibm.com>
+	 <20240302213427.GA30938@wunner.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-Michal Hocko <mhocko@suse.com> writes:
+On Sat, 2024-03-02 at 22:34 +0100, Lukas Wunner wrote:
+> On Thu, Feb 29, 2024 at 09:19:56PM -0500, Stefan Berger wrote:
+[...]
+> > @@ -238,12 +237,17 @@ static int ecdsa_set_pub_key(struct
+> > crypto_akcipher *tfm, const void *key, unsig
+> >                 return -EINVAL;
+> >  
+> >         keylen--;
+> > -       ndigits = (keylen >> 1) / sizeof(u64);
+> > +       digitlen = keylen >> 1;
+> > +
+> > +       ndigits = DIV_ROUND_UP(digitlen, sizeof(u64));
+> 
+> Instead of introducing an additional digitlen variable, you could
+> just use keylen.  It seems it's not used in the remainder of the
+> function, so modifying it is harmless:
+> 
+>         keylen--;
+> +       keylen >>= 1;
+> -       ndigits = (keylen >> 1) / sizeof(u64);
+> +       ndigits = DIV_ROUND_UP(digitlen, sizeof(u64));
+> 
+> Just a suggestion.
 
-> On Tue 20-02-24 15:22:07, Huang, Ying wrote:
-> [...]
->> This isn't an issue now, because mpol_misplaced() are always called with
->> PTL held.  And, we can still keep thiscpu local variable.
->
-> yes, this is the case but it would be better if we made that assumption
-> official by lockdep_assert_held
->
+The compiler will optimize the variables like this anyway (reuse
+registers or frames after a current consumer becomes unused) so there's
+no requirement to do this for efficiency, the only real question is
+whether using digitlen is clearer than reusing keylen, which I'll leave
+to the author.
 
-How about this folded into this patch?
+James
 
-2 files changed, 12 insertions(+), 4 deletions(-)
-mm/memory.c    |  6 ++++--
-mm/mempolicy.c | 10 ++++++++--
-
-modified   mm/memory.c
-@@ -4879,9 +4879,11 @@ static vm_fault_t do_fault(struct vm_fault *vmf)
- 	return ret;
- }
- 
--int numa_migrate_prep(struct folio *folio, struct vm_area_struct *vma,
-+int numa_migrate_prep(struct folio *folio, struct vm_fault *vmf,
- 		      unsigned long addr, int page_nid, int *flags)
- {
-+	struct vm_area_struct *vma = vmf->vma;
-+
- 	folio_get(folio);
- 
- 	/* Record the current PID acceesing VMA */
-@@ -4893,7 +4895,7 @@ int numa_migrate_prep(struct folio *folio, struct vm_area_struct *vma,
- 		*flags |= TNF_FAULT_LOCAL;
- 	}
- 
--	return mpol_misplaced(folio, vma, addr);
-+	return mpol_misplaced(folio, vmf, addr);
- }
- 
- static vm_fault_t do_numa_page(struct vm_fault *vmf)
-modified   mm/mempolicy.c
-@@ -2495,18 +2495,24 @@ static inline bool mpol_preferred_should_numa_migrate(int exec_node, int folio_n
-  * Return: NUMA_NO_NODE if the page is in a node that is valid for this
-  * policy, or a suitable node ID to allocate a replacement folio from.
-  */
--int mpol_misplaced(struct folio *folio, struct vm_area_struct *vma,
-+int mpol_misplaced(struct folio *folio, struct vm_fault *vmf,
- 		   unsigned long addr)
- {
- 	struct mempolicy *pol;
- 	pgoff_t ilx;
- 	struct zoneref *z;
- 	int curnid = folio_nid(folio);
-+	struct vm_area_struct *vma = vmf->vma;
- 	int thiscpu = raw_smp_processor_id();
--	int thisnid = cpu_to_node(thiscpu);
-+	int thisnid = numa_node_id();
- 	int polnid = NUMA_NO_NODE;
- 	int ret = NUMA_NO_NODE;
- 
-+	/*
-+	 * Make sure ptl is held so that we don't preempt and we
-+	 * have a stable smp processor id
-+	 */
-+	lockdep_assert_held(vmf->ptl);
- 	pol = get_vma_policy(vma, addr, folio_order(folio), &ilx);
- 	if (!(pol->flags & MPOL_F_MOF))
- 		goto out;
-
-[back]
- 
 
