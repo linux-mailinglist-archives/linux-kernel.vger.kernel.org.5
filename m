@@ -1,130 +1,128 @@
-Return-Path: <linux-kernel+bounces-89853-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89854-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DD0886F687
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 19:06:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EC2286F68D
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 19:20:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 940BB28165E
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 18:06:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 167A02818AA
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 18:20:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 769877641C;
-	Sun,  3 Mar 2024 18:06:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D720768F6;
+	Sun,  3 Mar 2024 18:20:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="jnuDn6pM"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="22aNaIbi"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F051267C51
-	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 18:06:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEE81B654;
+	Sun,  3 Mar 2024 18:19:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709489183; cv=none; b=W790kdk7YMgmjFm//KJFA8oHGkSbdRXhK4iDFGdSvlAGtyznSObd3OPsXfA2HIKcKEZKEL9NE9kpBeaUkscSYCh40OUha8+ULsFXkqw5WXpDlTMifYEdbXPIm53M+M3D6FWtWt/XXg18kLGjeTURpwDErJUTr5P0P0kuP66WZSs=
+	t=1709490000; cv=none; b=Q18EmG47ltar6s/M5ct1T8yblumlHD/aBpOvbgHWbzp+ZgMCZIqN/4zEJ/l9iwhAXW8IUrw+pkAjf33awHyTgUVpDafzQWXxqtKuSJUj4iMmnTWvUVJ1BdjT8Pg0+MYwrTUl050OIDiSUboAFwPuPQR3FVDxshe8zulsUiEndY8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709489183; c=relaxed/simple;
-	bh=Exg7GvXinQtPYAvj+8NQ3g6/WOwIFv0U9/wMieXJOhI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NTLnF3kBmKoiJmI3IgZDnTQVWMIdG3kplToZeJ2TWxW1W0KulUTk5QUvdyPcxZoA+Cda7o5qV1F/gYr8v5IUJhIc5UFxLktNKctq0+2Ee8dtgHCdxLjszsIRYmj/FhLhCi5SVT0dcr/1YbesldFG0MyxHN8HGxHmKbxYrHPuGaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=jnuDn6pM; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-412e2dfa58eso1291285e9.0
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 10:06:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1709489180; x=1710093980; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=DrEkKMmOl//LEQLxPzRf+ffrBlSy+ppQFC5nF5w2lHE=;
-        b=jnuDn6pMlCjkwdxp3dEUMxXY1+v6xeW7Wq/wO1KG/wRcmtz9Te2UGv1GwG6R3496xq
-         xM5066/tuNxuDqSJmmY4ew0JwORwIhGoQDEeIUWNwNHnKi9yxJdfo5k+j804NYA7dndz
-         4kDwlk/Q9imZFZqP/y/LsPq56C3SQnncPHRe2CWOUHb28S5AooKehjIBQ6ngv6iCPaU+
-         DXzCOD9dzSo2aBcmGePfkVWxngkHBoUy1n/T1/+TZJ1QLA0kZZWyaUCLt61O1bGim27Z
-         UArDCmFUIflFTzX3x+e6BEZDKfwDDfFa+pjaoOsYNy+GT7zd92OVSlhNum3d94ubLpQq
-         JgvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709489180; x=1710093980;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DrEkKMmOl//LEQLxPzRf+ffrBlSy+ppQFC5nF5w2lHE=;
-        b=jFg3lxgIFFS+V8iepx2WrQNKe+2XUtCh9QyLYMGoKbHJmvPua9rehKqpRcHK6PfI1h
-         GyIE5CJJ2Wj68YIjt9D0XpEs6y/uUkrfIbu8k9ctgZlBNZZ/+UynFjk2t82HkwFuCvNQ
-         0Dw2rv2f2bUMn0oInm3Pi6EZI+o0roWuL3I9JjozMzHii90gcZ+bN67mqGomCm09FxON
-         ydNIf9CdQEqU/E31oWUwFVFDDxNIIHm+5v1mduHN+ofZCy4izLbXfQv2Y72D7iZzY1A1
-         +trtorygDxbRmVHcV/6u2kpi3fydxcm+KPJn0bw+Ye9kirxiUfAKa9OvuUcYlXDc6PxP
-         2fww==
-X-Forwarded-Encrypted: i=1; AJvYcCXYTrJoPzitZzirqEI+og/dkS1qPJTf8+PRDL4FlgXjSowPrjYaqChLy+8pV1eIS2NOw2kLnDxK0/KBZci5SG4d12CjWmhNL7czzsWx
-X-Gm-Message-State: AOJu0Yzh7DHZNTm9E+JkuEw3Wkp0wB9qoduGBJlpbVAWCae4Cyaxc56I
-	v9mKSxBLnJlor3NTKoQ1o2thx3cva6RvqbShYySKFHZsKg/HP5sETTCgyG70F2g=
-X-Google-Smtp-Source: AGHT+IF95YFMtRBk2d9rsEE6b3wJCR8hzirTwui5b9L/i8nxKjtn34cTKJEYydsX1dGXzNsjXQlzng==
-X-Received: by 2002:a05:600c:1991:b0:412:c1d4:dd0d with SMTP id t17-20020a05600c199100b00412c1d4dd0dmr7363452wmq.3.1709489180144;
-        Sun, 03 Mar 2024 10:06:20 -0800 (PST)
-Received: from airbuntu (host109-154-46-208.range109-154.btcentralplus.com. [109.154.46.208])
-        by smtp.gmail.com with ESMTPSA id q11-20020a05600c46cb00b00412b4dca795sm12392525wmo.7.2024.03.03.10.06.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Mar 2024 10:06:19 -0800 (PST)
-Date: Sun, 3 Mar 2024 18:06:18 +0000
-From: Qais Yousef <qyousef@layalina.io>
-To: Shrikanth Hegde <sshegde@linux.ibm.com>
-Cc: mingo@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org,
-	yu.c.chen@intel.com, dietmar.eggemann@arm.com,
-	linux-kernel@vger.kernel.org, nysal@linux.ibm.com,
-	aboorvad@linux.ibm.com, srikar@linux.vnet.ibm.com,
-	vschneid@redhat.com, pierre.gondois@arm.com,
-	morten.rasmussen@arm.com
-Subject: Re: [PATCH v2 0/2] sched/fair: Limit access to overutilized
-Message-ID: <20240303180618.mgpdr5bydaeh5l6z@airbuntu>
-References: <20240228071621.602596-1-sshegde@linux.ibm.com>
- <20240229000817.n2bnr4kioigaqtct@airbuntu>
- <ff18e64e-d444-40a4-91a7-778d3a523050@linux.ibm.com>
+	s=arc-20240116; t=1709490000; c=relaxed/simple;
+	bh=OpFUZkht/kNkK1sffj4iZQMCp1wCBtb91Rpt3Ft7ccA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AFwlgYuYwcc22MhGGl996cGQwhCJxUvyk9JdQaVyUQrwRSPdnHmy/b458w+oEjd/9YH6PXtAUqyZx0yf9fFx28eONzDnW/+M/cH3zyVq1MxjMdzgt0efqTj59JKONUTZqM5ov1SVHIjpx/zKhE9s2j/pvGH9Rnmtbbisw4A98Sk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=22aNaIbi; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=4Zprqxh0tqZFACIsoF0C+/8aiRekfRqNvxtqcVAY67w=; b=22aNaIbicw0tEK5jEEVEjslKJT
+	cvZ6D2p0pwLk7niNKqQNrnSlCS88e2po8vaO1wtQKIiutVD9GNp3lBxxTZmIq4jMKo+bmZL83RnMr
+	Ho///zFagi5/fdPZsReW1qUxHwAQ6x6tdewFaEOXBNaUAiEDoCDxQw+G9cgsXYmxiFp8M3pg6fSpE
+	pVA26IeTPBK/P83hPMtIVRmySELsumRYukFcU0zlYIE6tNaH5sQrairFuMx+zompNAxO1dLZhBPHA
+	fJ2TZd+dAdRpISKjYpHA35hTVnLen4Jb5j4piT1niUZoGvO7aHZLSDGgG8abqp3ZD6eUR420gDAAh
+	S1z9Pjeg==;
+Received: from [50.53.50.0] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rgqRG-00000006SaN-2aT9;
+	Sun, 03 Mar 2024 18:19:54 +0000
+Message-ID: <04c07ca9-6377-4326-b9b5-4a4ed49c2f66@infradead.org>
+Date: Sun, 3 Mar 2024 10:19:54 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ff18e64e-d444-40a4-91a7-778d3a523050@linux.ibm.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] docs: submit-checklist: change to autonumbered
+ lists
+Content-Language: en-US
+To: Jonathan Corbet <corbet@lwn.net>, Akira Yokosawa <akiyks@gmail.com>,
+ lukas.bulwahn@gmail.com
+Cc: jani.nikula@intel.com, kernel-janitors@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ workflows@vger.kernel.org
+References: <20240229030743.9125-4-lukas.bulwahn@gmail.com>
+ <8df0c587-8f5b-4523-89d7-dc458ab2c1df@gmail.com>
+ <8734t7z4vs.fsf@meer.lwn.net>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <8734t7z4vs.fsf@meer.lwn.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 02/29/24 10:16, Shrikanth Hegde wrote:
 
-> > Is the fact these two share the cacheline is part of the problem? From patch
-> > 1 it seems the fact that overutlized is updated often on different cpus is the
-> > problem? Did you try to move overutlized to different places to see if this
-> > alternatively helps?
-> > 
-> > The patches look fine to me. I am just trying to verify that indeed the access
-> > to overutilzed is the problem, not something else being on the same cacheline
-> > is accidentally being slowed down, which means the problem can resurface in the
-> > future.
-> > 
+
+On 3/3/24 07:55, Jonathan Corbet wrote:
+> Akira Yokosawa <akiyks@gmail.com> writes:
 > 
-> We did explicit cachealign for overload. By doing that newidle_balance goes away from
-> perf profile. But enqueue_task_fair still remains. That because there is load-store 
+>>> -1) If you use a facility then #include the file that defines/declares
+>>> +#. If you use a facility then #include the file that defines/declares
+>>>     that facility.  Don't depend on other header files pulling in ones
+>>>     that you use.
+>>
+>> Wait.  This will render the list starting from:
+>>
+>>     1. If you use ...
+>>
 
-I don't have a solution, but this accidental dependency is something to ponder
-for the future..
+I have already said that Stephen Rothwell wanted this #1 item to be at the
+top of the checklist. That makes it easy to tell people to "see submit-checklist
+item #1".
 
-> tearing happening on overutilized field alone due to different CPUs accessing and 
-> updating it at the same time. 
+
+>> In patch 1/1, you didn't change the ")".
+>>
+>> It was Jani who suggested "#.", but "#)" would work just fine.
 > 
-> We have also verified that rq->rd->overutilized in enqueue_task_fair path is the reason
-> for it showing up in perf profile. 
+> So I'm a little confused.  Is the objection that it renders the number
+> as "1." rather than "1)"?  That doesn't seem like the biggest of deals,
+> somehow, but am I missing something?
+> 
+> A bigger complaint I might raise is that auto-numbering restarts the
+> enumeration in each subsection, so we have a lot of steps #1, which is a
+> definite change from before.
 
-Something to ponder as well. Maybe this is better converted to a per-cpu
-variable if it can cause such cacheline bouncing. But that's probably not good
-enough on its own.
+ack
 
-Anyway. Something to ponder for the future too. I think the current definition
-of overutilized is due for a revisit and I'll keep this problem in mind if we
-can introduce a friendlier pattern.
+> That, of course, can be fixed by giving an explicit starting number in
+> each subsection, partially defeating the point of the change in the
+> first place.
 
+ack
 
-Thanks
+> I honestly have to wonder: does this document need the enumerated list
+> at all?  We don't refer to the numbers anywhere, so I don't think there
+> is much useful information there.  How about just using regular bulleted
+> lists instead?
 
---
-Qais Yousef
+That also works.
+
+> That said, I don't have strong feelings one way or the other, and can
+> certainly apply it as-is if that's the consensus on what we should do.
+
+My preference is to leave the submit-checklist numbered from 1 to N,
+without a repeated #1 in each section. But I'm not hung up on it.
+
+thanks.
+-- 
+#Randy
 
