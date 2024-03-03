@@ -1,336 +1,78 @@
-Return-Path: <linux-kernel+bounces-89848-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89849-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55ABB86F67E
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 18:44:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC15986F680
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 18:51:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 646031C20881
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 17:44:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 553F41F214BE
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 17:51:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB19F76418;
-	Sun,  3 Mar 2024 17:44:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E19C768E4;
+	Sun,  3 Mar 2024 17:51:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="DztJ/s26"
-Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LQ4Y8UY4"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7627D1EF12
-	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 17:44:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB30941A80
+	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 17:51:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709487864; cv=none; b=njDmXrhJMdoi/piVtGIDWg1KIIz9QBRaO57XEFUoOaIy36nfum+G4g2IeXJqLyNVfi3g5aJQz2oU1KbI7FrjQEU1/jmTNhTZ4i0RVvfSO4iRVKUQK66IrNVmYGOnTouYOSfziYmUkL/iz+28ECExMhv2c3KS5ic3S9AgaAP8DtA=
+	t=1709488285; cv=none; b=bU/EkP7ukbxF9xiZdfLoNagugI0UB9v7PwWlQ0MgojQVldG/ii9wPVM1jLIB0hlZyBAMDRAJrL3gb8VQ0MeUbf/PsY5nm+fuVlZAzs/KM01IbdbWYQzmRWuqyrggx6SUjkEB51xqF3FGqjCkk79XmpIVAt1KZD9sFFP9P02V6Ig=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709487864; c=relaxed/simple;
-	bh=rT+iiep2fYMD43AzQaEzY+9SAledfPiCXPw8ymsohm4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VLJTRR/qR9s/g1AZSayHVwQQ9HqMa8HQSgnkgIhBduktO0MwIeKHut3V8apI7XOPDFtE39t3l9yMySEF1Vm8PH4YuW1ATNYDlm3NujcAsxioS5OOATQ4tS0hEQgfLJzgGskynvW7L//+uN73SZhdxyc3+bvJsNdZGif1VL5RADY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=DztJ/s26; arc=none smtp.client-ip=209.85.167.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
-Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3c19b7d9de7so2505794b6e.2
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 09:44:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1709487861; x=1710092661; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZxXc88lXS2TTkCAEAGfmLOWn5W+HcMoNJd/RUqUodc0=;
-        b=DztJ/s26/5pv2YIfmADVmSY+aM3ksWnkDMHp8y+ERZI2cbpVd4T6SzksrFhJc/Npzl
-         s0hMgvlbpBmKp1Qi7D9jnDOvPD468gZLaxEjeyEPrU50hPfsVrDqVHzFvZB8PUkGuw5X
-         tBeBfnXCMRkdrYYHL6WB1jvgicylqjziGG53kfUfIjOtcnAlKWYI4cSXmwWCEQ1qYsHH
-         HQexZUW7UQfCaxXGTGhTE+nKgzolhlGyKF7aCHhb6He1z+pYrVdH88AVe+80TylSSI/d
-         FWHxQejusp7FfEjYEdGBOU89F55jJd+mYNc7zGZodbZB5fk8X4RXCVsTtVVjK83ZuxXm
-         P6Gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709487861; x=1710092661;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZxXc88lXS2TTkCAEAGfmLOWn5W+HcMoNJd/RUqUodc0=;
-        b=ZYmuyaucmRHWsXlIMLbL58vvQ4oYsmjibrUO6iZYetVwHvGOYpnTEC9dL8bPmsqRik
-         rmCCoCfBYISgHTvsdsritQR5f+RRjvibpbUbekEDZ5azE+CTCZ+aQBB/7wqYdkulIQPB
-         7yNX0BMG/anUR2LsdwgKS2tPyJm1VsMr2qHdqQPRbkxLJqA4NL3WDejKyapn0JrRrNMv
-         o4ogPOKid+FzoXIDnMkc3REJcAFx0HzY1x0yUaLQModx7Dpif3h5dnxM5Erzpo8RFO/a
-         Pea+wYBxm9qOPilnmh3tACDyjgDp1RyELeOZEOtefdbG7cIF4WVq4pXBYa792OEsWcKA
-         yqLQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV0IhfNFGxKhyaC+dyNpWKpyKLKGNpdLWEogmHW4FuQxMAIxoQDMGpkF05X4UTXlA7XciD7iqsCSfU6zRM2eQMfPSieAU3JCekhhIQQ
-X-Gm-Message-State: AOJu0YwvClsSY65T3ueDWZEUTciwvZReujxZ7PD2QqOLAGUSkCFZYHVD
-	aYNKxXEsSTUIeqcCuPMd1MWSZ+DYnzefHIdVWHrPu/yILwb0/UkHVrXU0J2QmfE=
-X-Google-Smtp-Source: AGHT+IEnb+HPcxyRpDUIIoj+gIynLCwzn0hqbdCz7ezvnD7rCfRMVGVx8BTIgfbWibszFIkHWQffyg==
-X-Received: by 2002:a05:6808:13c4:b0:3c1:8412:eac6 with SMTP id d4-20020a05680813c400b003c18412eac6mr9146236oiw.18.1709487861372;
-        Sun, 03 Mar 2024 09:44:21 -0800 (PST)
-Received: from airbuntu (host109-154-46-208.range109-154.btcentralplus.com. [109.154.46.208])
-        by smtp.gmail.com with ESMTPSA id c11-20020a056a00008b00b006e5ce366f0csm3596605pfj.89.2024.03.03.09.44.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Mar 2024 09:44:20 -0800 (PST)
-Date: Sun, 3 Mar 2024 17:44:16 +0000
-From: Qais Yousef <qyousef@layalina.io>
-To: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	linux-kernel@vger.kernel.org,
-	Pierre Gondois <Pierre.Gondois@arm.com>
-Subject: Re: [PATCH v6 2/4] sched/fair: Check a task has a fitting cpu when
- updating misfit
-Message-ID: <20240303174416.7m3gv5wywcmedov4@airbuntu>
-References: <20240220225622.2626569-1-qyousef@layalina.io>
- <20240220225622.2626569-3-qyousef@layalina.io>
- <d6699c3a-3df6-46a3-98db-e07c8722f106@arm.com>
+	s=arc-20240116; t=1709488285; c=relaxed/simple;
+	bh=2uvuRaWkLrGESmenV903LCAfTK3BJdqWUG1Xl119G38=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=eXZTsNSNyxPCh21OQ0Y504qL7D0NIRJ5mzbGmUQ0tpkxGF/umIfx9153aZdEL2Ok1bkZMsLRnG/9tpfWVKSnATUdvTdtdvY9Z4Thq/ZtuhynUkVVYRGfA2BfW/nzkj6NtUKaOmdxp4uVHo7oe8dGpQkFBTMiNrSv3j9Gq+f98ag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LQ4Y8UY4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id BD57AC433F1;
+	Sun,  3 Mar 2024 17:51:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709488285;
+	bh=2uvuRaWkLrGESmenV903LCAfTK3BJdqWUG1Xl119G38=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=LQ4Y8UY4b7ZnofFGk+rti4u6IHB+psCXAxhez6UZ/Rg3e2d9loT5E74SfhEV2XrTb
+	 UmcmY5s/L2tErZ150GkiL6c5ikNSBagLfRCa+v4KUqhjTJZmeU0kEj6qx20+4bF4qK
+	 3mEF59MsI8shS27uIW1HtPsW8kPQq6+/z/3YT6GxbYyNY3STnptxr4J1+VvyLx8vGd
+	 mmjBG9pGohNBRRyW5pTl9uDDh5PGD6BlW6civ3AivD169YxY7XaFpaStEH3jPCRI/z
+	 JZGEZoW/R0muojR5Ax3mJnMOzSdNkKunCG/ioyJ9lssbE9yH+33MpmEpG1Xx31p+Aw
+	 Q0fpY1HRpZ50g==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A8B36C39563;
+	Sun,  3 Mar 2024 17:51:25 +0000 (UTC)
+Subject: Re: [GIT PULL] Please pull powerpc/linux.git powerpc-6.8-5 tag
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <877cijfqk4.fsf@mail.lhotse>
+References: <877cijfqk4.fsf@mail.lhotse>
+X-PR-Tracked-List-Id: Linux on PowerPC Developers Mail List <linuxppc-dev.lists.ozlabs.org>
+X-PR-Tracked-Message-Id: <877cijfqk4.fsf@mail.lhotse>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-6.8-5
+X-PR-Tracked-Commit-Id: 380cb2f4df78433f64847cbc655fad2650e4769c
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: e4f79000952e819d58b1edf56466413e7081e6ed
+Message-Id: <170948828568.18009.13363747961648679635.pr-tracker-bot@kernel.org>
+Date: Sun, 03 Mar 2024 17:51:25 +0000
+To: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, nathanl@linux.ibm.com, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, gbatra@linux.vnet.ibm.com
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <d6699c3a-3df6-46a3-98db-e07c8722f106@arm.com>
 
-On 02/27/24 10:42, Dietmar Eggemann wrote:
-> On 20/02/2024 23:56, Qais Yousef wrote:
-> > If a misfit task is affined to a subset of the possible cpus, we need to
-> > verify that one of these cpus can fit it. Otherwise the load balancer
-> > code will continuously trigger needlessly leading the balance_interval
-> > to increase in return and eventually end up with a situation where real
-> > imbalances take a long time to address because of this impossible
-> > imbalance situation.
-> > 
-> > This can happen in Android world where it's common for background tasks
-> > to be restricted to little cores.
-> > 
-> > Similarly if we can't fit the biggest core, triggering misfit is
-> > pointless as it is the best we can ever get on this system.
-> > 
-> > To be able to detect that; we use asym_cap_list to iterate through
-> > capacities in the system to see if the task is able to run at a higher
-> > capacity level based on its p->cpus_ptr. We do that when the affinity
-> > change, a fair task is forked, or when a task switched to fair policy.
-> > We store the max_allowed_capacity in task_struct to allow for cheap
-> > comparison in the fast path.
-> > 
-> > Improve check_misfit_status() function by removing redundant checks.
-> > misfit_task_load will be 0 if the task can't move to a bigger CPU. And
-> > nohz_load_balance() already checks for cpu_check_capacity() before
-> 
-> s/nohz_load_balance()/nohz_balancer_kick() ?
+The pull request you sent on Sun, 03 Mar 2024 23:27:55 +1100:
 
-Yes.
+> https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-6.8-5
 
-> 
-> > calling check_misfit_status().
-> 
-> Isn't there an issue with CPU hotplug.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/e4f79000952e819d58b1edf56466413e7081e6ed
 
-Sigh, yes. Thanks for catching it.
+Thank you!
 
-This should fix it, if you're willing to give a try it before I post v8, that'd
-be appreciated. Otherwise I'll send v8 later in the week.
-
-	diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-	index 174687252e1a..b0e60a565945 100644
-	--- a/kernel/sched/fair.c
-	+++ b/kernel/sched/fair.c
-	@@ -8260,6 +8260,8 @@ static void set_task_max_allowed_capacity(struct task_struct *p)
-			cpumask_t *cpumask;
-	 
-			cpumask = cpu_capacity_span(entry);
-	+		if (!cpumask_intersects(cpu_active_mask, cpumask))
-	+			continue;
-			if (!cpumask_intersects(p->cpus_ptr, cpumask))
-				continue;
-	 
-	@@ -8269,6 +8271,53 @@ static void set_task_max_allowed_capacity(struct task_struct *p)
-		rcu_read_unlock();
-	 }
-	 
-	+static void __update_tasks_max_allowed_capacity(unsigned long capacity)
-	+{
-	+	struct task_struct *g, *p;
-	+
-	+	for_each_process_thread(g, p) {
-	+		if (fair_policy(p->policy) && p->max_allowed_capacity == capacity)
-	+			set_task_max_allowed_capacity(p);
-	+	}
-	+}
-	+
-	+/*
-	+ * Handle a cpu going online/offline changing the available capacity levels.
-	+ */
-	+static void update_tasks_max_allowed_capacity(int cpu, bool online)
-	+{
-	+	struct asym_cap_data *entry;
-	+	bool do_update = false;
-	+
-	+	if (!sched_asym_cpucap_active())
-	+		return;
-	+
-	+	if (cpuhp_tasks_frozen)
-	+		return;
-	+
-	+	rcu_read_lock();
-	+	/* Did a capacity level appear/disappear? */
-	+	list_for_each_entry_rcu(entry, &asym_cap_list, link) {
-	+		unsigned int nr_active;
-	+		cpumask_t *cpumask;
-	+
-	+		cpumask = cpu_capacity_span(entry);
-	+
-	+		if (!cpumask_test_cpu(cpu, cpumask))
-	+			continue;
-	+
-	+		nr_active = cpumask_weight_and(cpu_active_mask, cpumask);
-	+		if (online)
-	+			do_update = nr_active == 1;
-	+		else
-	+			do_update = !nr_active;
-	+		break;
-	+	}
-	+	if (do_update)
-	+		__update_tasks_max_allowed_capacity(entry->capacity);
-	+	rcu_read_unlock();
-	+}
-	+
-	 static void set_cpus_allowed_fair(struct task_struct *p, struct affinity_context *ctx)
-	 {
-		set_cpus_allowed_common(p, ctx);
-	@@ -12500,6 +12549,8 @@ static void rq_online_fair(struct rq *rq)
-		update_sysctl();
-	 
-		update_runtime_enabled(rq);
-	+
-	+	update_tasks_max_allowed_capacity(cpu_of(rq), true);
-	 }
-	 
-	 static void rq_offline_fair(struct rq *rq)
-	@@ -12511,6 +12562,8 @@ static void rq_offline_fair(struct rq *rq)
-	 
-		/* Ensure that we remove rq contribution to group share: */
-		clear_tg_offline_cfs_rqs(rq);
-	+
-	+	update_tasks_max_allowed_capacity(cpu_of(rq), false);
-	 }
-	 
-	 #endif /* CONFIG_SMP */
 -- 
-2.34.1
-
-
-> 
-> On a tri-geared Juno:
-> 
-> root@juno:~# cat /sys/devices/system/cpu/cpu*/cpu_capacity
-> 513
-> 1024
-> 1024
-> 513
-> 256
-> 256
-> 
-> root@juno:~# taskset -pc 0,3-5 $$
-> 
-> [  108.248425] set_task_max_allowed_capacity() [bash 1636]
-> max_allowed_capacity=513 nr_cpus_allowed=4 cpus_mask=0,3-5
-> 
-> echo 0 > /sys//devices/system/cpu/cpu0/online
-> echo 0 > /sys//devices/system/cpu/cpu3/online
-> 
-> [  134.136887] set_task_max_allowed_capacity() [bash 1639]
-> max_allowed_capacity=513 nr_cpus_allowed=4 cpus_mask=0,3-5
-> 
-> 
-> Cpuset seems to be fine since it set task's cpumask.
-> 
-> [...]
-> 
-> > +/*
-> > + * Check the max capacity the task is allowed to run at for misfit detection.
-> 
-> Nitpick: It's rather a setter function so s/check/set here ?
-> 
-> > + */
-> > +static void set_task_max_allowed_capacity(struct task_struct *p)
-> > +{
-> > +	struct asym_cap_data *entry;
-> > +
-> > +	if (!sched_asym_cpucap_active())
-> > +		return;
-> > +
-> > +	rcu_read_lock();
-> > +	list_for_each_entry_rcu(entry, &asym_cap_list, link) {
-> > +		cpumask_t *cpumask;
-> > +
-> > +		cpumask = cpu_capacity_span(entry);
-> > +		if (!cpumask_intersects(p->cpus_ptr, cpumask))
-> > +			continue;
-> > +
-> > +		p->max_allowed_capacity = entry->capacity;
-> > +		break;
-> > +	}
-> > +	rcu_read_unlock();
-> > +}
-> 
-> [...]
-> 
-> > @@ -9601,16 +9644,10 @@ check_cpu_capacity(struct rq *rq, struct sched_domain *sd)
-> >  				(arch_scale_cpu_capacity(cpu_of(rq)) * 100));
-> >  }
-> >  
-> > -/*
-> > - * Check whether a rq has a misfit task and if it looks like we can actually
-> > - * help that task: we can migrate the task to a CPU of higher capacity, or
-> > - * the task's current CPU is heavily pressured.
-> > - */
-> > -static inline int check_misfit_status(struct rq *rq, struct sched_domain *sd)
-> > +/* Check if the rq has a misfit task */
-> > +static inline bool check_misfit_status(struct rq *rq, struct sched_domain *sd)
-> 
-> `struct sched_domain *sd` is not needed anymore.
-> 
-> Since there is only 1 user of check_misfit_status() you might remove it
-> entirely and use `rq->rq->misfit_task_load` directly in
-> nohz_balancer_kick() ?
-
-I think it's better to keep the access encapsulated.
-
-I have this fixup diff
-
-	diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-	index 593e85f90a36..1ac7dc8784b5 100644
-	--- a/kernel/sched/fair.c
-	+++ b/kernel/sched/fair.c
-	@@ -8246,7 +8246,7 @@ static void task_dead_fair(struct task_struct *p)
-	 }
-
-	 /*
-	- * Check the max capacity the task is allowed to run at for misfit detection.
-	+ * Set the max capacity the task is allowed to run at for misfit detection.
-	  */
-	 static void set_task_max_allowed_capacity(struct task_struct *p)
-	 {
-	@@ -9638,7 +9638,7 @@ check_cpu_capacity(struct rq *rq, struct sched_domain *sd)
-	 }
-
-	 /* Check if the rq has a misfit task */
-	-static inline bool check_misfit_status(struct rq *rq, struct sched_domain *sd)
-	+static inline bool check_misfit_status(struct rq *rq)
-	 {
-		return rq->misfit_task_load;
-	 }
-	@@ -11952,7 +11952,7 @@ static void nohz_balancer_kick(struct rq *rq)
-			 * When ASYM_CPUCAPACITY; see if there's a higher capacity CPU
-			 * to run the misfit task on.
-			 */
-	-               if (check_misfit_status(rq, sd)) {
-	+               if (check_misfit_status(rq)) {
-				flags = NOHZ_STATS_KICK | NOHZ_BALANCE_KICK;
-				goto unlock;
-			}
-
-
-Thanks!
-
---
-Qais Yousef
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
