@@ -1,198 +1,263 @@
-Return-Path: <linux-kernel+bounces-89745-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89743-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34DBC86F501
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 14:11:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3550C86F4F5
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 14:06:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DEFF0282832
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 13:11:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6A0D1F215DF
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 13:06:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67C12C2C6;
-	Sun,  3 Mar 2024 13:11:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3B5EC154;
+	Sun,  3 Mar 2024 13:06:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=valentinobst.de header.i=kernel@valentinobst.de header.b="sv+TsEdx"
-Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.73])
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="RqGth0QL"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2C11CA73;
-	Sun,  3 Mar 2024 13:11:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.72.192.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62B079470;
+	Sun,  3 Mar 2024 13:06:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709471476; cv=none; b=T3C7xibDzFBuUuUxxuKHJVnGl0FGS103eUw3uQB8aOYeBlUbEelswcteNdbbe1ITruo6kCE8N3Cv5CF885jst3oZc+CIvK2RuFQutzp0vA9j1RDEUi7ohBHXCCA9pXXQzT8dl39WQh1ZCrVcBdr2N8r5V+O2iZ4iGvk2XHckDsE=
+	t=1709471162; cv=none; b=pIbd8yr4ONFnX39si3oVEX5IBio8YBDUUTKRj4nZx90UCVUlONyHbvGrb5JslpJdinBECDemA0mZ1yXG3q2IWezG0ovHa8xD4QhvYgCVATrG0m0Q+CrEX78GIt6QYd7S6ADwzm4ej0JDmQZ8xkHBX3jf5sjAhRw1uWLjTJUeBhs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709471476; c=relaxed/simple;
-	bh=PYafNNhjJMBNjwpI8k3yoMSKo6rMOK3JKkJ6SSwHO/c=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=cDfuEZAjRYsaCsgUk7n02O7ePGL0/OlfVvK4h9K4WQswt8cseZlyGNPF2fz8eANGMYCH/hiFD2xkvuQaUwxKAXVumXZMWoKpgfN6NGDPy80HcOJwa++y3t7OXsidMhwuMQ9Rstt7yPZVlSjPOjzDJysM1aJ/mjhVOBxDPqpZtbY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=valentinobst.de; spf=pass smtp.mailfrom=valentinobst.de; dkim=pass (2048-bit key) header.d=valentinobst.de header.i=kernel@valentinobst.de header.b=sv+TsEdx; arc=none smtp.client-ip=217.72.192.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=valentinobst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=valentinobst.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=valentinobst.de;
-	s=s1-ionos; t=1709471466; x=1710076266; i=kernel@valentinobst.de;
-	bh=PYafNNhjJMBNjwpI8k3yoMSKo6rMOK3JKkJ6SSwHO/c=;
-	h=X-UI-Sender-Class:From:Date:Subject:To:Cc;
-	b=sv+TsEdxulpP6xxBh3w2qqlA/lfQr9iE+QyomVvKB9E9gm4XPQpo5dJ/Nmx0XTaO
-	 qMIHS2fm/+wT4ramoa1MW6Zii10EdHYDCDyiysaqZNdZ4NIxEhIdOPdN2e51Q0bh9
-	 Rrbo9kIqPwEpeFlBAMmkWPpr95zUBzVawsWaJQ4Ys71MzL0dbwvAOneA+lHlkSsgW
-	 e2k+FNTLV/t0DZeEU0/FLXxpg9+C1b/Zf8m/4H++5RmlIdgVab4dBhpwFat46B09u
-	 N5ynokZbx6ZFroKpEqTeV5LT6ESqQU1jTIYUHFWzRXdYgVA/H4M+hbnW5hDwKLzvb
-	 Wzkbp7Oz7l8/AdBV6w==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from [192.168.2.229] ([80.133.137.1]) by mrelayeu.kundenserver.de
- (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis) id
- 1MWAay-1rNOzJ37xi-00XgKM; Sun, 03 Mar 2024 13:44:59 +0100
-From: Valentin Obst <kernel@valentinobst.de>
-Date: Sun, 03 Mar 2024 13:44:36 +0100
-Subject: [PATCH RFC] selftests: default to host arch for LLVM builds
+	s=arc-20240116; t=1709471162; c=relaxed/simple;
+	bh=GwzdYwwd9vKZRoG8vCcbFUhvwndoPO51vpUj+MhqH+Q=;
+	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version; b=pmYB2LbamE9vJCYtP+B8u6Z5Rv9uiEmbhw1kRTDXBgDY7owEKibIBLj3ReP54vj2Th4RbAx1HrmZqaDSWVV3X+vYXij6NR5qiIvaH76Fs9gFveg9NQ2n5FQx6xIh/sUD6MWia3EnbsmibMiqGI8DwVA7UtJ9Xv0zyKGbZMZ18xs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=RqGth0QL; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:MIME-Version:
+	Content-Type:Message-ID:Date:Subject:To:From:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=g/N+evvegUr5SmxCbvwZGklpSQjm33lIyoj6PNfHopc=; t=1709471160; x=1709903160;
+	 b=RqGth0QL6uFf2uAtKIWhmrZev3hjKPZlsLXJOAMUJrDZONe0NpzCJ4mh/FWoPPvg+SjYVfA2Qk
+	PK4qoxLVCA4du+DWH9KX//zo+i+5W0N6UR//ZNvEnRqCWUDRwpcR6vrxv99pV23YWwb+ZpFqtxDiY
+	S4z35HULJyQkDC/LWf8vjfBwKLAr+c4J+JVmguB9pR7r2pz8Vr6u9Txy1XifKktzUAUNWdTuxd7I9
+	o/aIEy55Hl1OFM6m5/iRJ/N3GZ97g1snOD2GXYPacZlsn0wvxCEk5b6XPh7KblHVpdeWQNdocNbG5
+	b1l2TUWc/L4M8HohfYc2vdP+jvpYB6S4fJRFQ==;
+Received: from [2a02:8108:8980:2478:5054:ff:feb3:8f48] (helo=regzbot.fritz.box); authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	id 1rglXS-0001eC-4K; Sun, 03 Mar 2024 14:05:58 +0100
+From: "Regzbot (on behalf of Thorsten Leemhuis)" <regressions@leemhuis.info>
+To: LKML <linux-kernel@vger.kernel.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: Linux regressions report  for mainline [2024-03-03]
+Date: Sun,  3 Mar 2024 13:05:55 +0000
+Message-ID: <170947112079.436664.2969102323110743234@leemhuis.info>
+X-Mailer: git-send-email 2.44.0
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <20240303-selftests-libmk-llvm-rfc-v1-1-9ab53e365e31@valentinobst.de>
-X-B4-Tracking: v=1; b=H4sIALNw5GUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDYwNj3eLUnLSS1OKSYt2czKTcbN2cnLJc3aK0ZF3TtFTj5LREyzQDSxM
- loPaCotS0zAqw0dFKQW7OSrG1tQA8nkx2bwAAAA==
-To: Shuah Khan <shuah@kernel.org>
-Cc: Anders Roxell <anders.roxell@linaro.org>, 
- Benjamin Poirier <bpoirier@nvidia.com>, 
- Guillaume Tucker <guillaume.tucker@collabora.com>, 
- John Hubbard <jhubbard@nvidia.com>, 
- Marcos Paulo de Souza <mpdesouza@suse.com>, Mark Brown <broonie@kernel.org>, 
- Nathan Chancellor <nathan@kernel.org>, Sasha Levin <sashal@kernel.org>, 
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
- Valentin Obst <kernel@valentinobst.de>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1709469899; l=4000;
- i=kernel@valentinobst.de; s=20240131; h=from:subject:message-id;
- bh=yZzV08YOvoeLyJJ85Mn+deJxF5jyLGkheHCV3AY3Ufs=;
- b=TSN9jyLjY6bKdK+NLS7g1B8qOvrNCSBg8JOwMdTGuEH/NmHm11YJWG+eHr+U7CQMkaHgHO8id
- 5nbK2BFfjh8ABJuP+6uaorPV+sBQssX/76EHtCTvre8y/PTwgfmYMvs
-X-Developer-Key: i=kernel@valentinobst.de; a=ed25519;
- pk=3s7U8y0mqkaiurgHSQQTYWOo2tw5HgzCg5vnJVfw37Y=
-X-Provags-ID: V03:K1:Sz5F4HnDlLJMIKupiDJCbYrM2nc8zUpYRbGOYYRMiddrKjStcw/
- 7V1Vf7oZPMHDJla9MJDzF50E2SsmkBk8MyFa51I8SIkUHNjyfTUIbiyOjYKlXSmfZs6+4i+
- J9bGyVj07bHh7iqUEIXrXQvsJhufztJxHDS5uA8tOykeY7LZ9RkI+wEOBOmh7YUsT/7tyxz
- Z19I4Xx70anfa2xxF7+BA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:/CEI+nyxZus=;PvNMHw0P8TdM9bclnRLsNCwmtWm
- qzi2i0QYj3wTVzmHuEm3Jws0S1FtDwbYkByzou1DMeLFGHYdXFXyTQ1P+OTBNcj6nDYIwiIVV
- oqVFJjzCU6ZwVjVvTsUP7FRASskasGhy0K4z8jrmf9bKE/XzhQcz2GYPD00l1AfMD0TsB9BSR
- Vviu0/MFFQ0AvTuoxEGneDrf5ffFF7GEXkYewC59V4ALVqY/cC29FtC3ILu7dK71P6rnWTLpG
- JHDCQHz+zBeEqKphOJaYBIXRNC0rykQ0vbu3x+4B2o2GWWd+Le3fBzYn+0Mc0dD6nLVCXWriQ
- K9PKOFqNT2jUlgDZGqiPRytgMH4Syvrw60bdMl/cqlnRToPH8ZHvEOLF3dScr6foGxGVwbRAM
- n5hlv7Or+wrrYefzxXVtoqMCleJ4ZOW1AFUOFhM6fD7+k0/iebjx+Jv4XPJQ2Phh+nyYApBHP
- u3rsrfgHLMa8Hx1XFEaT6Pi83jHazAC39TaPSglzekwassWue8S8dgb+kxW7Ss33VZFeF1O02
- fnF6UGnWbRjvuNeOGiKR0DuG/MHtULGix0X/uH/fTH8a9kwUM32SV1kryzCUJDu4oiLbPDlvX
- mkulJZOQvzYBTbSChQIIQGZbUuZQyppPjBFiAdU7fBMyPGcnK2bfJcbG8xEz2C1hYBZ1dY8gu
- B+6hC2lU30bYXm071ALFt7AwdatS81m4z7UYiYzr2dRan5IY+y5YJmZeglFSZe99Lu4vev9Vc
- t/DpYFPrhVkZWKs5CNZ55UBjw8b3bKtG+Q2axAb1Eno0VWVCfdeJCo=
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1709471160;a9bbae3e;
+X-HE-SMSGID: 1rglXS-0001eC-4K
 
-When using gcc without cross compiling, i.e., `CROSS_COMPILE` unset or
-empty, the selftests build defaults to the host architecture, i.e., it use=
-s
-plain gcc. However, when compiling with clang an unset `ARCH` variable in
-combination with an unset `CROSS_COMPILE` variable, i.e., compiling for
-the host architecture, leads to compilation failures since `lib.mk` can
-not determine the clang target triple. In this case, the following error
-message is displayed for each subsystem that does not set `ARCH` in its
-own Makefile before including `lib.mk` (lines wrapped at 75 chrs):
+Hi Linus, things are mostly normal. Sadly normal as so often means that
+fixes for some regressions are out there, just not yet in mainline.
 
-  make[1]: Entering directory '/mnt/build/linux/tools/testing/selftests/
-   sysctl'
-  ../lib.mk:33: *** Specify CROSS_COMPILE or add '--target=3D' option to
-   lib.mk.  Stop.
-  make[1]: Leaving directory '/mnt/build/linux/tools/testing/selftests/
-   sysctl'
+ * A fix for "MXSFB error: -ENODEV: Cannot connect bridge"(*) appeared
+in next-20240226 as d2f8795d9e50aa ("ARM: dts: imx7: remove DSI port
+endpoints").
+https://lore.kernel.org/lkml/34yzygh3mbwpqr2re7nxmhyxy3s7qmqy4vhxvoyxnoguktriur@z66m7gvpqlia/
 
-Align the behavior for gcc and clang builds by interpreting unset
-`ARCH` and `CROSS_COMPILE` variables in `LLVM` builds as a sign that the
-user wants to build for the host architecture.
+ * A fix for "sc7180 lazor: Image corruption regression for DP"(*)
+appeared in next-20240227 as 0d7dfc79fb9b4b ("drm/msm/a6xx: specify UBWC
+config for sc7180".
+https://lore.kernel.org/regressions/85581fad-da8f-4550
+a1c8-8f2996425dcd@lausen.nl/
 
-This preserves the property that setting the `ARCH` variable to an
-unknown value will trigger an error that complains about insufficient
-information.
+ * A fix for warnings during suspend from a misc driver from Hans is
+waiting for a review since 12 days.
+https://lore.kernel.org/lkml/5fc6da74-af0a-4aac-b4d5-a000b39a63a5@molgen.mpg.de/
+https://lore.kernel.org/lkml/20240220190035.53402-1-hdegoede@redhat.com/
 
-RFC since I am not entirely sure if this behavior is in fact known and
-intended, and whether the way to obtain the host target triple is
-sufficiently general. (The flag was introduced in llvm-8 with [1], it
-will be an error for older clang versions, however, currently 13.0.1 is th=
-e
-minimal version required to build the kernel. For some clang binaries it
-prints the 'unknown' instead of the 'linux' version of the target, e.g.,
-mips [2]). An alternative could be to simply do:
+A few other things of note:
 
-  ARCH ?=3D $(shell uname -m)
+ * A lockdep splat in the stmmac code is not really making progress,
+will prod tomorrow:
+https://lore.kernel.org/lkml/ea1567d9-ce66-45e6-8168-ac40a47d1821@roeck-us.net/
 
-before using it to select the target. Possibly with some post processing,
-but at that point we would likely be replicating `scripts/subarch.include`=
-.
+ * Johan Hovold meanwhile continues a quest to fix various regressions
+that affect the Lenovo ThinkPad X13s; some of the fixes have already
+reached you, some are still under discussion.
 
-Also unsure if it needs a 'Fixes: 795285ef2425 ("selftests: Fix clang
-cross compilation")'. Furthermore, this change might make it possible to
-remove the explicit setting of `ARCH` from the few subsystem Makefiles
-that do it.
+ * The list still includes the "decreased network outgoing performance
+due to IRQ sharing that happened after a xhci change" I brought up a few
+days ago; I'll remove that from the tracking, as you didn't reply.
+Likewise for the 6.7 regression "user can't set the minimum power limit
+of their Radeon graphic cards as low as before". For details, see:
+https://lore.kernel.org/all/f2eaf931-8488-48e3-b008-1cedeba24f12@leemhuis.info/
 
-Would be happy to get some feedback on those points. If it looks OK I
-can also send it as a patch.
+ * There are a kexec and a nouveau regression from this cycle that are
+brand new.
 
-Link: https://reviews.llvm.org/D50755 [1]
-Link: https://godbolt.org/z/r7Gn9bvv1 [2]
-Signed-off-by: Valentin Obst <kernel@valentinobst.de>
-=2D--
- tools/testing/selftests/lib.mk | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+Ciao, Thorsten
 
-diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.=
-mk
-index aa646e0661f3..a8f0442a36bc 100644
-=2D-- a/tools/testing/selftests/lib.mk
-+++ b/tools/testing/selftests/lib.mk
-@@ -7,6 +7,8 @@ else ifneq ($(filter -%,$(LLVM)),)
- LLVM_SUFFIX :=3D $(LLVM)
- endif
+---
 
-+CLANG :=3D $(LLVM_PREFIX)clang$(LLVM_SUFFIX)
-+
- CLANG_TARGET_FLAGS_arm          :=3D arm-linux-gnueabi
- CLANG_TARGET_FLAGS_arm64        :=3D aarch64-linux-gnu
- CLANG_TARGET_FLAGS_hexagon      :=3D hexagon-linux-musl
-@@ -18,7 +20,13 @@ CLANG_TARGET_FLAGS_riscv        :=3D riscv64-linux-gnu
- CLANG_TARGET_FLAGS_s390         :=3D s390x-linux-gnu
- CLANG_TARGET_FLAGS_x86          :=3D x86_64-linux-gnu
- CLANG_TARGET_FLAGS_x86_64       :=3D x86_64-linux-gnu
--CLANG_TARGET_FLAGS              :=3D $(CLANG_TARGET_FLAGS_$(ARCH))
-+
-+# Default to host architecture if ARCH is not explicitly given.
-+ifeq ($(ARCH),)
-+CLANG_TARGET_FLAGS :=3D $(shell $(CLANG) -print-target-triple)
-+else
-+CLANG_TARGET_FLAGS :=3D $(CLANG_TARGET_FLAGS_$(ARCH))
-+endif
+Hi, this is regzbot, the Linux kernel regression tracking bot.
 
- ifeq ($(CROSS_COMPILE),)
- ifeq ($(CLANG_TARGET_FLAGS),)
-@@ -30,7 +38,7 @@ else
- CLANG_FLAGS     +=3D --target=3D$(notdir $(CROSS_COMPILE:%-=3D%))
- endif # CROSS_COMPILE
+Currently I'm aware of 8 regressions in linux-mainline. Find the
+current status below and the latest on the web:
 
--CC :=3D $(LLVM_PREFIX)clang$(LLVM_SUFFIX) $(CLANG_FLAGS) -fintegrated-as
-+CC :=3D $(CLANG) $(CLANG_FLAGS) -fintegrated-as
- else
- CC :=3D $(CROSS_COMPILE)gcc
- endif # LLVM
+https://linux-regtracking.leemhuis.info/regzbot/mainline/
 
-=2D--
-base-commit: d206a76d7d2726f3b096037f2079ce0bd3ba329b
-change-id: 20240303-selftests-libmk-llvm-rfc-5fe3cfa9f094
+Bye bye, hope to see you soon for the next report.
+   Regzbot (on behalf of Thorsten Leemhuis)
 
-Best regards,
-=2D-
-Valentin Obst <kernel@valentinobst.de>
 
+======================================================
+current cycle (v6.7.. aka v6.8-rc), culprit identified
+======================================================
+
+
+[ *NEW* ] x86/mm/ident_map: kexec now leads to reboot
+-----------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/3a1b9909-45ac-4f97-ad68-d16ef1ce99db@pavinjoseph.com/
+https://lore.kernel.org/stable/3a1b9909-45ac-4f97-ad68-d16ef1ce99db@pavinjoseph.com/
+
+By Pavin Joseph; 1 days ago; 9 activities, latest 0 days ago.
+Introduced in d794734c9bbf (v6.8-rc5)
+
+Recent activities from: Pavin Joseph (5), Linux regression tracking
+  (Thorsten Leemhuis) (2), Thorsten Leemhuis (1), Steve Wahl (1)
+
+
+`lis3lv02d_i2c_suspend()` causes `unbalanced disables for regulator-dummy` and `Failed to disable Vdd_IO: -EIO`
+---------------------------------------------------------------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/5fc6da74-af0a-4aac-b4d5-a000b39a63a5@molgen.mpg.de/
+https://lore.kernel.org/lkml/5fc6da74-af0a-4aac-b4d5-a000b39a63a5@molgen.mpg.de/
+
+By Paul Menzel; 30 days ago; 13 activities, latest 2 days ago.
+Introduced in 2f189493ae32 (v6.8-rc1)
+
+Recent activities from: Linux regression tracking (Thorsten
+  Leemhuis) (2), Paul Menzel (1)
+
+Noteworthy links:
+* [PATCH regression fix] misc: lis3lv02d_i2c: Fix regulators getting en-/dis-abled twice on suspend/resume
+  https://lore.kernel.org/lkml/20240220190035.53402-1-hdegoede@redhat.com/
+  11 days ago, by Hans de Goede; thread monitored.
+
+
+[ *NEW* ] drm/nouveau: rendering freezes with multi-GPU setup
+-------------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/20240229175822.30613-1-sidpranjale127@protonmail.com/
+https://lore.kernel.org/dri-devel/20240229175822.30613-1-sidpranjale127@protonmail.com/
+
+By Sid Pranjale; 2 days ago; 1 activities, latest 2 days ago.
+Introduced in 042b5f83841f (v6.8-rc4)
+
+Recent activities from: Sid Pranjale (1)
+
+One patch associated with this regression:
+* [PATCH] drm/nouveau: keep DMA buffers required for suspend/resume
+  https://lore.kernel.org/dri-devel/20240229175822.30613-1-sidpranjale127@protonmail.com/
+  2 days ago, by Sid Pranjale
+
+
+irq/net/usb: performance decrease now that network device and xhci share IRQs
+-----------------------------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/CABXGCsNnUfCCYVSb_-j-a-cAdONu1r6Fe8p2OtQ5op_wskOfpw@mail.gmail.com/
+https://lore.kernel.org/lkml/CABXGCsNnUfCCYVSb_-j-a-cAdONu1r6Fe8p2OtQ5op_wskOfpw@mail.gmail.com/
+
+By Mikhail Gavrilov; 29 days ago; 29 activities, latest 3 days ago.
+Introduced in f977f4c9301c (v6.8-rc1)
+
+Recent activities from: mikhail.v.gavrilov (2), Thomas Gleixner (2),
+  Mathias Nyman (2), Mikhail Gavrilov (1), Linux regression tracking
+  (Thorsten Leemhuis) (1)
+
+
+[ *NEW* ] Inconsistent lock state in stmmac code
+------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/ea1567d9-ce66-45e6-8168-ac40a47d1821@roeck-us.net/
+https://lore.kernel.org/lkml/ea1567d9-ce66-45e6-8168-ac40a47d1821@roeck-us.net/
+
+By Guenter Roeck; 20 days ago; 8 activities, latest 4 days ago.
+Introduced in 38cc3c6dcc09 (v6.8-rc4)
+
+Recent activities from: Petr Tesařík (1), Linux regression tracking
+  (Thorsten Leemhuis) (1), Alexis Lothoré (1)
+
+
+[ *NEW* ] drm/msm: DisplayPort hard-reset on hotplug regression in 6.8-rc1
+--------------------------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/Zd3kvD02Qvsh2Sid@hovoldconsulting.com/
+https://lore.kernel.org/lkml/Zd3kvD02Qvsh2Sid@hovoldconsulting.com/
+
+By Johan Hovold; 4 days ago; 1 activities, latest 4 days ago.
+Introduced in 5814b8bf086a (v6.8-rc1)
+
+Recent activities from: Johan Hovold (1)
+
+
+[ *NEW* ] sc7180 lazor: Image corruption regression for DP with v6.8-rc4
+------------------------------------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/drm/msm/49/
+https://gitlab.freedesktop.org/drm/msm/-/issues/49
+https://lore.kernel.org/regressions/85581fad-da8f-4550-a1c8-8f2996425dcd@lausen.nl/
+
+By Leonard Lausen and Leonard Lausen; 20 days ago; 9 activities, latest 5 days ago.
+Introduced in 8814455a0e54 (v6.8-rc1)
+
+Fix incoming:
+* drm/msm/a6xx: specify UBWC config for sc7180
+  https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?h=master&id=0d7dfc79fb9b4b81f642f84796111f2bae8427e2
+
+
+MXSFB error: -ENODEV: Cannot connect bridge
+-------------------------------------------
+https://linux-regtracking.leemhuis.info/regzbot/regression/lore/34yzygh3mbwpqr2re7nxmhyxy3s7qmqy4vhxvoyxnoguktriur@z66m7gvpqlia/
+https://lore.kernel.org/lkml/34yzygh3mbwpqr2re7nxmhyxy3s7qmqy4vhxvoyxnoguktriur@z66m7gvpqlia/
+https://lore.kernel.org/regressions/20240214110822.GA81133@francesco-nb/
+
+By Hiago De Franco and Francesco Dolcini; 23 days ago; 8 activities, latest 6 days ago.
+Introduced in edbbae7fba49 (v6.8-rc1)
+
+Fix incoming:
+* ARM: dts: imx7: remove DSI port endpoints
+  https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?h=master&id=d2f8795d9e50aa33c1e2bc0fcbb98ba4a7795749
+
+
+=============
+End of report
+=============
+
+All regressions marked '[ *NEW* ]' were added since the previous report,
+which can be found here:
+https://lore.kernel.org/r/170886726066.1516351.14377022830495300698@leemhuis.info
+
+Thanks for your attention, have a nice day!
+
+  Regzbot, your hard working Linux kernel regression tracking robot
+
+
+P.S.: Wanna know more about regzbot or how to use it to track regressions
+for your subsystem? Then check out the getting started guide or the
+reference documentation:
+
+https://gitlab.com/knurd42/regzbot/-/blob/main/docs/getting_started.md
+https://gitlab.com/knurd42/regzbot/-/blob/main/docs/reference.md
+
+The short version: if you see a regression report you want to see
+tracked, just send a reply to the report where you Cc
+regressions@lists.linux.dev with a line like this:
+
+#regzbot introduced: v5.13..v5.14-rc1
+
+If you want to fix a tracked regression, just do what is expected
+anyway: add a 'Link:' tag with the url to the report, e.g.:
+
+Link: https://lore.kernel.org/all/30th.anniversary.repost@klaava.Helsinki.FI/
 
