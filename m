@@ -1,70 +1,71 @@
-Return-Path: <linux-kernel+bounces-89640-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89642-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D305D86F376
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 04:04:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DBCA86F37C
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 04:14:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E9A21F21D4B
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 03:04:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE34C283A52
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 03:14:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B67B5CB5;
-	Sun,  3 Mar 2024 03:04:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 974555CB5;
+	Sun,  3 Mar 2024 03:14:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="yD03v/WP"
-Received: from out203-205-221-153.mail.qq.com (out203-205-221-153.mail.qq.com [203.205.221.153])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="C8UF+y9x"
+Received: from out162-62-57-49.mail.qq.com (out162-62-57-49.mail.qq.com [162.62.57.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 198F87F
-	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 03:04:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.153
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44A787F
+	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 03:14:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709435054; cv=none; b=UH18Tqzt5cb/vPI8zP3iKq8YLzWuRLT0iv1lX/QFHAE1FMDgraNE0OtrBDqNZGLI6r8k7HDX8SjaRA0ej566vRoedPgEZxO3q4pQ1Y3wgVh7iMAoBb0+qJh2iR8+6j1msUq7EKb/IqRQh5lRyFvI9GSWkhSsiGtHEMMbcDOCmF8=
+	t=1709435663; cv=none; b=HLK0sMAXZtIdfl/yuELgx4/JgCONmK3ma5Vck3LXQMRtqseYu4lujwpFt3Bxvzvxoco7qlLDGxL7wf+vvC7DbSat+bCOvspNVxyUb3Ak4HbANA1+3sbSkaEk+VNoJuS9jHOGXZ8URE4vfwmofWwxUaXiLfOjTTQvacfliYo0vf4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709435054; c=relaxed/simple;
-	bh=bvsAFbdOceGaJh/xNDTlqquJ5u9tn/gHWjotlPelnzM=;
+	s=arc-20240116; t=1709435663; c=relaxed/simple;
+	bh=5OCH4ubpafnoDYSK1m9V4em9FxgzMYJjrO1TpLlSxS4=;
 	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=jy7INOUVAmtolUDvJvvBZD1N4zdXo2aleu5AMBv5raP/JuH5lPPBEH7h/+mzmo5qymwpjf7NbUw7wqixnmGgGYSO2TQhijLsB15D0BpkMhrYZN44zxAG6Wi6lY+fhcKomwBIooetAAYROHSXw+hwe63+4XTM7whYwu9QqZz6nIc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=yD03v/WP; arc=none smtp.client-ip=203.205.221.153
+	 MIME-Version; b=ZQsRrSbtVJeXS+qzUuQmkb7/a8yxyqfMxVOr2+rO1HSd/HrXRgHdLfbDQi8v6LRD2eFMs2oVWgsG6aTf8Vb/Yyw9T/aIzWOzc/I+gGYPFKWZbQftz2weS36/3zeXGGphekQT4ouuG/1Qn/n7XKzAj/vxS9vdG1sVNRI0oIDp/N4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=C8UF+y9x; arc=none smtp.client-ip=162.62.57.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1709434742; bh=4B6VFs/HdgVIfEnBI1FSGNUsahA/M0i8oBqkPIYLPag=;
+	t=1709435351; bh=v3WpzfiMBJXywrT2erFA2ns2yDgHUiWRul3btSHpFJ0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=yD03v/WPlaErEnpfI5PNHSYH+Y7wOPPee3525Ozc0jSldElAfWTQLzvFFzuWr2za2
-	 aoEcAIBVkANH4gvpunIXjESZ+ZRP2mAUMv5asn6UCO0Bl4734rJSbKjzUCYFsqYZal
-	 B46McZRu8+Tj1fSrADPKPRU0Ivh95x/Acu71IjI8=
+	b=C8UF+y9xFH8wmeXc9Ki2hzIEYByIK0j2CJL0JQTyH4uKs7yjKFALQMxRvUAEIwh+f
+	 /cLodqG7cu79k9oBSJ8hlA8EpKvb0f14Xe/g6WEBOtEeM5LVrQo5k6mnXCDiXb+QEx
+	 pqlZ6IIgTOiKy40dzJuZxbsYtY+IASDDwuydSWuY=
 Received: from pek-lxu-l1.wrs.com ([111.198.228.140])
-	by newxmesmtplogicsvrsza1-0.qq.com (NewEsmtp) with SMTP
-	id EC13B6E5; Sun, 03 Mar 2024 10:59:01 +0800
-X-QQ-mid: xmsmtpt1709434741tgzo8cvpx
-Message-ID: <tencent_5436144A4A74DD76DD66D03C89363E96E009@qq.com>
-X-QQ-XMAILINFO: MZ4XH1L85f1rlgDm9Gp5U1REGCZSds9b2g9BlnK9NcipZXWOW/wMRNuRJknsAO
-	 GcIJhAr/SaxzbHWFQypeoIfWsgj/9043XknIvZ9jcpU2Nxihy1f87UtBMeSI1gGQvjCI7kwuUQR0
-	 K62r1qvUcm4kfXeWVOsMyWGTvWdxETQKfrOxlhGMtxnhfEQnOvH8JGgU1j2/pAA/eNxr8RkC0zgG
-	 RuzYIi7ZaHmNz0qaDHRd2jd7IW0IJ23gBSMyzWkq2ju/uZ7/KO469jNRqYWB5sAs2Dqbqrxh4Faj
-	 pOIh9TrHHLBQEywRm5vSz7pgIDMJEOZrfqF0kfTTK9zAsTUnejJN+uMo3POpSnzIVhevQKVqSr+s
-	 ZmgrmGEcIwk5XFYNxYZ84wBNDonvKe/hgyAqlz0CmWkHhZbZLF8yVXqkB8HTrEl8n9mY6ZKRQiqi
-	 xKtiEDSOlnSt0Dyb7rp5rq41qwtUfsN1WGqz+6okHFIUdMiCh3DrgDa/3O3Pql5aWBnQ+EYDCRng
-	 9Q2Lrdui4DxNGYLutiItFtrIOMLuOqMlpKndYYkJGvv9iQg0zl22X6IzqghhcF9S1k7OkezEIThk
-	 bmNoMAVG3WR0qdTNCv7t2ueW1NXhWoOHIp9WnhpDTx5rTf5Eul9aoDIOslyJyGN7OvKKOy32UjOX
-	 FixcLQbkXzBqMqfHmTANUf+dUBE30CeYRI0aRJQsx7CeqLxKP3DbgpEwIq0BczvaOhxgy9a11Fd8
-	 +mXYawHLjPRblvHQdmZdQARXUOU+2stkQDMFlif4CVgcicLOprPj9LsYXbsu2Y1RRW7zfIsKZp/L
-	 924KM0xDrwKoyo4+/EIuCkSd/2nz2pG1cu+KYVzIO+gkqJIBudYJPs71Uby6XsihjK+v0Oh7GTcr
-	 +QLj74Ic2CJn6Rieu3AKEMhapXWqkV3be6ULNErrXXlJhTX7bUjS0YcTeRKbgPAW0nmFMmhMKO
-X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
+	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
+	id 249A4A0D; Sun, 03 Mar 2024 11:09:09 +0800
+X-QQ-mid: xmsmtpt1709435349t4qjp5ka6
+Message-ID: <tencent_8C9B67BC3CDF3618963837324B3874D17709@qq.com>
+X-QQ-XMAILINFO: NojR6Ao/DkEDVDit6y81s9TWIncZk1a8zeWyLZjjfhzjFG9K8fpSUnX3uBhXWB
+	 3AYB8wuFAy6KxP9JsS0YBqdH/IuI6ClMCsUeN5gwPDlFzI+XUC8S92TkFfL9CDR8KMvd97BTg1Ja
+	 xQ1ftGERyst92+xi9LBv91GpXaIwDSSbHMOU5WE+Rrtjyg9TZ1UYfAJdyMmsdgz9dYwRf/Nthd1/
+	 jeK3Bzu26G6hqVmdcegiOaDtPAbRlBIZj0SNQqGSj5bv7FLc5gW8iq7UBLUhCfBNLOXD1pEoGrJC
+	 agw0wjSWef5enjDHK2hvnoGhPrTvdzXqi7S78M429E8j/PMDrLgzZgCQRdGwNQ9cTlhXbhvOh7Pp
+	 IEwg14QTuLizM/qGrrUR8Psv9nSEgDh0SA+YiMNYDgRreURTP80dmVLmJXl5oxqpET5yEjOX/jT/
+	 5YDiS4p+uq2rkL8hntJJpme2+ajdnuHkeO8kGXZ7ICX3VX4hr2d7o0bS10Pg6SYQOcxWUDin87MO
+	 FPTeyJVwT0XCciJ6HdEx7tXeHWorV4+KMrxUXMv63P42xKmMEWTpyIP4tSKs3k2uXeST4CSASmwa
+	 9U4cqhe20Ea1Z4F6/7Hq/Da7tEUH7iCF8veH6S8AKXGZgC/Cru4G/8Uo8rpljh09/n5LUMG/nM7o
+	 U15FUHbCCL7N/uWWdZF/eZ9F4WWf/45haPvissOoql3Gq2NlJP+GhE4fviyp7wO7KSWf+jHnk+xr
+	 iNgVN2vli4knbpbHnqVAjOK5zsMyzwPC5gf/wApWAjinK3LFGf3GKLhgFGUp+yDhFMy2A9b9aUuX
+	 y+NhOWG/UFmm7qchyC9Vp8bQ208qehNt44xxjPS40WFr2iiEQsT0LAYLINF8qOCKgPRoCuzqSQ1c
+	 pZbzcRSZ/a74n/uCCypTaicgXf8G6k8/D9/TGswfKYhLJcMonK4JVzax3F+VmGr8nQJq8MgYKcXs
+	 dA9VgHXH80fpDUgVk95AITPnQc3/ISLd91NvfnF9c=
+X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
 From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+d4faee732755bba9838e@syzkaller.appspotmail.com
+To: syzbot+04486d87f6240a004c85@syzkaller.appspotmail.com
 Cc: linux-kernel@vger.kernel.org,
 	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [rds?] WARNING in rds_conn_connect_if_down
-Date: Sun,  3 Mar 2024 10:59:02 +0800
-X-OQ-MSGID: <20240303025901.4139828-2-eadavis@qq.com>
+Subject: Re: [syzbot] [hfs?] KMSAN: uninit-value in hfs_cat_keycmp (2)
+Date: Sun,  3 Mar 2024 11:09:10 +0800
+X-OQ-MSGID: <20240303030909.4147285-2-eadavis@qq.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <000000000000c0550506125e4118@google.com>
-References: <000000000000c0550506125e4118@google.com>
+In-Reply-To: <00000000000098b3700612b5ee0f@google.com>
+References: <00000000000098b3700612b5ee0f@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,38 +74,22 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-please test mp capable for rds
+please test uninit-value in hfs_cat_keycmp
 
 #syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 
-diff --git a/net/rds/rdma.c b/net/rds/rdma.c
-index fba82d36593a..7fe1a79bd63d 100644
---- a/net/rds/rdma.c
-+++ b/net/rds/rdma.c
-@@ -301,6 +301,10 @@ static int __rds_rdma_map(struct rds_sock *rs, struct rds_get_mr_args *args,
- 			kfree(sg);
- 		}
- 		ret = PTR_ERR(trans_private);
-+		printk("ret: %d, %s\n", ret, __func__);
-+		/* Trigger connection so that its ready for the next retry */
-+		if (ret == -ENODEV)
-+			rds_conn_connect_if_down(cp->cp_conn);
- 		goto out;
- 	}
+diff --git a/fs/hfs/bfind.c b/fs/hfs/bfind.c
+index ef9498a6e88a..c74d864bc29e 100644
+--- a/fs/hfs/bfind.c
++++ b/fs/hfs/bfind.c
+@@ -18,7 +18,7 @@ int hfs_find_init(struct hfs_btree *tree, struct hfs_find_data *fd)
  
-diff --git a/net/rds/send.c b/net/rds/send.c
-index 5e57a1581dc6..9efda3283753 100644
---- a/net/rds/send.c
-+++ b/net/rds/send.c
-@@ -1314,9 +1314,6 @@ int rds_sendmsg(struct socket *sock, struct msghdr *msg, size_t payload_len)
- 	/* Parse any control messages the user may have included. */
- 	ret = rds_cmsg_send(rs, rm, msg, &allocated_mr, &vct);
- 	if (ret) {
--		/* Trigger connection so that its ready for the next retry */
--		if (ret ==  -EAGAIN)
--			rds_conn_connect_if_down(conn);
- 		goto out;
- 	}
- 
+ 	fd->tree = tree;
+ 	fd->bnode = NULL;
+-	ptr = kmalloc(tree->max_key_len * 2 + 4, GFP_KERNEL);
++	ptr = kzalloc(tree->max_key_len * 2 + 4, GFP_KERNEL);
+ 	if (!ptr)
+ 		return -ENOMEM;
+ 	fd->search_key = ptr;
 
 
