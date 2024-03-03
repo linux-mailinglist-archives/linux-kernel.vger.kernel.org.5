@@ -1,203 +1,161 @@
-Return-Path: <linux-kernel+bounces-89669-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89670-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E0B386F3F6
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 08:55:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7EDC86F3F9
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 09:09:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B05C1C20F9E
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 07:55:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A8071F2219E
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 08:09:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC11BB642;
-	Sun,  3 Mar 2024 07:55:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2B11947A;
+	Sun,  3 Mar 2024 08:09:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pJJsykrt"
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E762CAD22
-	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 07:55:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="OIsDPnXO"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CBFE10E6;
+	Sun,  3 Mar 2024 08:09:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709452517; cv=none; b=GjrjCllMT21BxkRe258wtMTWGi1c5io+/Cm8EolOfsJw0N8GOJhSV1hDb78cYnPPDRcG02rguJ9RTVev2asc4V6UT/J/3I19NBh+Z0xlaTprR4KfC93G5Uhpu2gjZUeaFokQ3Z2igAV9E21X+EwUXTvUzmbT78+f3jrfNNHI4fU=
+	t=1709453351; cv=none; b=oyhqdgVWfmtoUdTjGBP2ImE6NfGuKkIfJr7TYmV/jsmMeUJbqqfWtyrrOsN1LSihzeJU0wO7Z4KBd0KZl24cl9MNywcrRpC64iGH9sijZrctldfEnWwo/KYpVJqPjBSFIsikLWcFBReF+GHDQYJMfLP+8vZ4pcIz1F3eFlLztOI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709452517; c=relaxed/simple;
-	bh=oW0AjmAtjBrSwOTqpTjHMx8tQhpUyxf3kPzUkMxfoC0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eZ6a0FFD4ZNcpTdiiYjHyGbgSfbHIESsoAt8lfYjjsactxViw1xTy4wNxmoouQxKu5vYDgHRullNqV/qEyqdyzTpvi5CEYDXK/9leWbXQL9BsyeYtgwcmtKPsUcv5BcQf7xRFIhLq7TfHi5Xkhi8V+grLStdfDiMneWTfxE6dUk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=pJJsykrt; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-565a2c4cc1aso4993101a12.2
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Mar 2024 23:55:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709452513; x=1710057313; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=SQNFQBzA7HljQkmYb4b/pcadMolSbwCDgZaouB8ODCI=;
-        b=pJJsykrtOLzKBojr0YLsQ+lA5LODwLtC6hYpOu8J7ZcMZwWU95v8ttBvrB5NjLCcrM
-         GqKJ0ITLDeucrbCLFebPuV+s23eXf+/chie9MB6ZzhHXlzR6aIbhgZl35FIT0Q9sXZqt
-         1aZL5W+rQGjhkGlpUngcOPQiEYdRSqtCW0bK2A5zyePOMnSGLIOkz0uyaRCxdwmODSHs
-         4AGge5YN6n7vWN6pbQC7A8GqiVspsxJ4k4ewIRyKeOLn8tryAKVogBXSAwdWEp6KhQxI
-         /5qW/xaGWh1cfIB3IcbljMoLNxINb6D5EcRl0d1CaYhhaPRRmOGRGHf330Dv21zqthPn
-         m+OQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709452513; x=1710057313;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SQNFQBzA7HljQkmYb4b/pcadMolSbwCDgZaouB8ODCI=;
-        b=ZNziiMHIdd7wtaYFslKpAliXdzH/EHz1cArbV4YaaxfRxtmRNACnjwAJ4nXoTeC2mD
-         vzTCY5JnxTe0qjks/GyhFan+3Y1YBpVag6qSTDs7AmPFmsv/Uu7PzuSZetiKSVKWM/y1
-         CO6V0Y5kXyEHpCBCaPV+MLu64RMa4VsQCkheNDYSK0lh5qyxJZsu9TWnKN1pgogyHLLJ
-         GPdsaIcb1Hv4UsqCb9x1cdIZ4NbIXmOEOdjji114B3VuRdnStxg+FU9MuTC/EMRw6Yfa
-         /H31ufH+XFtYRMcbgGZkjKk966ZM2W2Tzbehz6qJRe+Lf7PlsYDLL6JJi5jjxpq9nn6L
-         L8lA==
-X-Forwarded-Encrypted: i=1; AJvYcCW4iKqBfLi2iMtobvVWtkdSB5HQ0gYFxQV+/TQVYsm9H/WlmyuIyHZNjWwSl6E3xR+OiZJDqJlOvNtpeZYqMNv3KGrbXkCqS08x8Sn3
-X-Gm-Message-State: AOJu0Yyj8kl0i+YSAmaRPMdn68JIEzTbjQQzG80u3mUI44zhpKp47aHd
-	fQaObMQUJP8062Zxb382p9KIIHq7rbpKbPrx3iIBuVhOvlGguMgYxFBvGhm+IHQ=
-X-Google-Smtp-Source: AGHT+IHEAqXQKJXxGsaNlMtq1WbKfpUdzg5MTjoIVtAUErcrScVKbviFS9z6h4/qaWFjiiEy9oErbg==
-X-Received: by 2002:aa7:ce0a:0:b0:567:285b:db1d with SMTP id d10-20020aa7ce0a000000b00567285bdb1dmr745453edv.42.1709452513283;
-        Sat, 02 Mar 2024 23:55:13 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id c28-20020a50d65c000000b00565a9c11987sm3410520edj.76.2024.03.02.23.55.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 02 Mar 2024 23:55:12 -0800 (PST)
-Message-ID: <32d4a6c9-1cc3-4e9a-81a6-744a33bc6bee@linaro.org>
-Date: Sun, 3 Mar 2024 08:55:10 +0100
+	s=arc-20240116; t=1709453351; c=relaxed/simple;
+	bh=ivElpwwJNVf3hcpUOWwZJYI9eam2vDVE9K7L0MERDe8=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=uaoa744XhRtT0B4QrcIlGI10a9c9/Rz9wN3YSfya/HYA3rrovtg8J9muypyYKK9LjvoqitTVO8ESIHGUDOa8QZyVgYyHFeYU4JtAnbSqwQIcMre6SpG+u5GcPa4VvznlsE17kh+529r3Znxu0CsR+oMBQLYEYtvAqVAKIrGYj34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=OIsDPnXO; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net (linux.microsoft.com [13.77.154.182])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 8AC4020B74C0;
+	Sun,  3 Mar 2024 00:01:40 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8AC4020B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1709452900;
+	bh=vUSOzIGgBi9vYkWUcajyjOx2gIH11Ew6VEiuY9yENd0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=OIsDPnXOkFlauUZSv9FIsebaC3NeqaZU/thWQfGuhz77QVgm/yh44AQzvm4GJR5tb
+	 kv/ZsCnLU79/5y9Zug5jS6sxtY7wzRD5YAke3RCKSo+XS6uSGQ+nyin7AyjR18Rcix
+	 3/g1Xwfz8FjhP3W9eHM3HIwk2xBoSWZs2ybvzlv0=
+From: Saurabh Sengar <ssengar@linux.microsoft.com>
+To: kys@microsoft.com,
+	haiyangz@microsoft.com,
+	wei.liu@kernel.org,
+	decui@microsoft.com,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	hpa@zytor.com,
+	dwmw@amazon.co.uk,
+	peterz@infradead.org,
+	linux-hyperv@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: ssengar@microsoft.com,
+	mhklinux@outlook.com
+Subject: [PATCH v3] x86/hyperv: Use per cpu initial stack for vtl context
+Date: Sun,  3 Mar 2024 00:01:36 -0800
+Message-Id: <1709452896-13342-1-git-send-email-ssengar@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] dt-bindings: dma: fsl-edma: allow 'power-domains'
- property
-To: Frank Li <Frank.li@nxp.com>
-Cc: conor+dt@kernel.org, devicetree@vger.kernel.org,
- dmaengine@vger.kernel.org, imx@lists.linux.dev,
- krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
- peng.fan@nxp.com, robh@kernel.org, vkoul@kernel.org
-References: <20240301214536.958869-1-Frank.Li@nxp.com>
- <20240301214536.958869-2-Frank.Li@nxp.com>
- <885501b5-0364-48bd-bc1d-3bc486d1b4c6@linaro.org>
- <ZeNI1nG1dmbwOqbb@lizhi-Precision-Tower-5810>
- <31e62acf-d605-4786-80a1-df52c8490913@linaro.org>
- <ZeNWXxzFBzNj0gM1@lizhi-Precision-Tower-5810>
- <e1d0aafe-e54f-4331-8505-135b9a8f9bff@linaro.org>
- <ZeNYG1IUfniWkhcp@lizhi-Precision-Tower-5810>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <ZeNYG1IUfniWkhcp@lizhi-Precision-Tower-5810>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
-On 02/03/2024 17:47, Frank Li wrote:
-> On Sat, Mar 02, 2024 at 05:43:01PM +0100, Krzysztof Kozlowski wrote:
->> On 02/03/2024 17:39, Frank Li wrote:
->>> On Sat, Mar 02, 2024 at 05:20:42PM +0100, Krzysztof Kozlowski wrote:
->>>> On 02/03/2024 16:42, Frank Li wrote:
->>>>> On Sat, Mar 02, 2024 at 02:59:39PM +0100, Krzysztof Kozlowski wrote:
->>>>>> On 01/03/2024 22:45, Frank Li wrote:
->>>>>>> Allow 'power-domains' property because i.MX8DXL i.MX8QM and i.MX8QXP need
->>>>>>> it.
->>>>>>>
->>>>>>> Fixed below DTB_CHECK warning:
->>>>>>>   dma-controller@599f0000: Unevaluated properties are not allowed ('power-domains' was unexpected)
->>>>>>>
->>>>>>> Signed-off-by: Frank Li <Frank.Li@nxp.com>
->>>>>>> ---
->>>>>>>
->>>>>>> Notes:
->>>>>>>     Change from v1 to v2
->>>>>>>     - using maxitem: 64. Each channel have one power domain. Max 64 dmachannel.
->>>>>>>     - add power-domains to 'required' when compatible string is fsl,imx8qm-adma
->>>>>>>     or fsl,imx8qm-edma
->>>>>>>
->>>>>>>  .../devicetree/bindings/dma/fsl,edma.yaml         | 15 +++++++++++++++
->>>>>>>  1 file changed, 15 insertions(+)
->>>>>>>
->>>>>>> diff --git a/Documentation/devicetree/bindings/dma/fsl,edma.yaml b/Documentation/devicetree/bindings/dma/fsl,edma.yaml
->>>>>>> index cf0aa8e6b9ec3..76c1716b8b95c 100644
->>>>>>> --- a/Documentation/devicetree/bindings/dma/fsl,edma.yaml
->>>>>>> +++ b/Documentation/devicetree/bindings/dma/fsl,edma.yaml
->>>>>>> @@ -59,6 +59,10 @@ properties:
->>>>>>>      minItems: 1
->>>>>>>      maxItems: 2
->>>>>>>  
->>>>>>> +  power-domains:
->>>>>>> +    minItems: 1
->>>>>>> +    maxItems: 64
->>>>>>
->>>>>> Hm, this is odd. Blocks do not belong to almost infinite number of power
->>>>>> domains.
->>>>>
->>>>> Sorry, what's your means? 'power-domains' belong to 'properties'. 
->>>>> 'maxItems' belong to 'power-domains'.It is similar with 'clocks'. what's
->>>>> wrong? 
->>>>
->>>> That one device belong to 64 power domains. That's just random code...
->>>
->>> Yes, each dma channel have one power domain. Total 64 dma channel. So
->>> there are 64 power-domains.
->>
->> OK, then how about extending the example to be complete?
-> 
-> Let's add 8qxp example at next version.
+Currently, the secondary CPUs in Hyper-V VTL context lack support for
+parallel startup. Therefore, relying on the single initial_stack fetched
+from the current task structure suffices for all vCPUs.
 
-You have already enough of examples there and your change here claims
-they user power domains, so why this cannot be added to existing examples?
+However, common initial_stack risks stack corruption when parallel startup
+is enabled. In order to facilitate parallel startup, use the initial_stack
+from the per CPU idle thread instead of the current task.
 
-Best regards,
-Krzysztof
+Fixes: 18415f33e2ac ("cpu/hotplug: Allow "parallel" bringup up to CPUHP_BP_KICK_AP_STATE")
+Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
+Reviewed-by: Michael Kelley <mhklinux@outlook.com>
+---
+[V3]
+ - Added the VTL code dependency on SMP to fix kernel build error
+   when SMP is disabled.
+
+ arch/x86/hyperv/hv_vtl.c | 19 +++++++++++++++----
+ drivers/hv/Kconfig       |  1 +
+ 2 files changed, 16 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/hyperv/hv_vtl.c b/arch/x86/hyperv/hv_vtl.c
+index 804b629ea49d..b4e233954d0f 100644
+--- a/arch/x86/hyperv/hv_vtl.c
++++ b/arch/x86/hyperv/hv_vtl.c
+@@ -12,6 +12,7 @@
+ #include <asm/i8259.h>
+ #include <asm/mshyperv.h>
+ #include <asm/realmode.h>
++#include <../kernel/smpboot.h>
+ 
+ extern struct boot_params boot_params;
+ static struct real_mode_header hv_vtl_real_mode_header;
+@@ -58,7 +59,7 @@ static void hv_vtl_ap_entry(void)
+ 	((secondary_startup_64_fn)secondary_startup_64)(&boot_params, &boot_params);
+ }
+ 
+-static int hv_vtl_bringup_vcpu(u32 target_vp_index, u64 eip_ignored)
++static int hv_vtl_bringup_vcpu(u32 target_vp_index, int cpu, u64 eip_ignored)
+ {
+ 	u64 status;
+ 	int ret = 0;
+@@ -72,7 +73,9 @@ static int hv_vtl_bringup_vcpu(u32 target_vp_index, u64 eip_ignored)
+ 	struct ldttss_desc *ldt;
+ 	struct desc_struct *gdt;
+ 
+-	u64 rsp = current->thread.sp;
++	struct task_struct *idle = idle_thread_get(cpu);
++	u64 rsp = (unsigned long)idle->thread.sp;
++
+ 	u64 rip = (u64)&hv_vtl_ap_entry;
+ 
+ 	native_store_gdt(&gdt_ptr);
+@@ -199,7 +202,15 @@ static int hv_vtl_apicid_to_vp_id(u32 apic_id)
+ 
+ static int hv_vtl_wakeup_secondary_cpu(u32 apicid, unsigned long start_eip)
+ {
+-	int vp_id;
++	int vp_id, cpu;
++
++	/* Find the logical CPU for the APIC ID */
++	for_each_present_cpu(cpu) {
++		if (arch_match_cpu_phys_id(cpu, apicid))
++			break;
++	}
++	if (cpu >= nr_cpu_ids)
++		return -EINVAL;
+ 
+ 	pr_debug("Bringing up CPU with APIC ID %d in VTL2...\n", apicid);
+ 	vp_id = hv_vtl_apicid_to_vp_id(apicid);
+@@ -213,7 +224,7 @@ static int hv_vtl_wakeup_secondary_cpu(u32 apicid, unsigned long start_eip)
+ 		return -EINVAL;
+ 	}
+ 
+-	return hv_vtl_bringup_vcpu(vp_id, start_eip);
++	return hv_vtl_bringup_vcpu(vp_id, cpu, start_eip);
+ }
+ 
+ int __init hv_vtl_early_init(void)
+diff --git a/drivers/hv/Kconfig b/drivers/hv/Kconfig
+index 00242107d62e..862c47b191af 100644
+--- a/drivers/hv/Kconfig
++++ b/drivers/hv/Kconfig
+@@ -16,6 +16,7 @@ config HYPERV
+ config HYPERV_VTL_MODE
+ 	bool "Enable Linux to boot in VTL context"
+ 	depends on X86_64 && HYPERV
++	depends on SMP
+ 	default n
+ 	help
+ 	  Virtual Secure Mode (VSM) is a set of hypervisor capabilities and
+-- 
+2.34.1
 
 
