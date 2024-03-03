@@ -1,128 +1,180 @@
-Return-Path: <linux-kernel+bounces-89894-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89895-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1798C86F6FA
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 21:12:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B80686F700
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 21:17:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ACEDAB20E8C
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 20:12:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D61C1C20AC2
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 20:17:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C42F79DC2;
-	Sun,  3 Mar 2024 20:12:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6E1A79DD2;
+	Sun,  3 Mar 2024 20:17:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="mhWOQBAk"
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WaISdvOo"
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0159768E5
-	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 20:11:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE04B79DB2
+	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 20:17:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709496722; cv=none; b=Bl9JGe8vT83wnbeFkP8nUU/qQqrohxq3gjEFH8lGZK3vc2lPXkEPpYJYxYz0TV/3vcAmN4vrjLcz0ZpL+IPXdSjE2RZlZ3hgfr1KyxZx2kx66QNqUpdeWkzsjJ3TshsD9/zhsQzwWuB0TEJoYMGnlVz6LBsRks8uFceG0VqWH2o=
+	t=1709497062; cv=none; b=L3m3V4bhqDNEUcAvT7P7jII7ZHpjKlBkLJTOdFDLDDBr3AX9RdpU2XU/yvv0OB1sH1ug00mnA+yhXIddLCcIrUs3iHEua/lszmnBVnXN6sCglWZ9pPdOdAFCYYtofqmxNcY15Otr0RnBqDe/Mgr6JeEPFyHglCZilmmqtydNIvM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709496722; c=relaxed/simple;
-	bh=D5OGeOVlSMJFlPOZTuFHfjaOK2r326Q2K1gwABPtfFY=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=UG9Y3+s51NMlbs+sKoVB1jOn/j5sTLiRfT8mjWhcMx+EPipwT8pN0a40U5ZRYhNJLIhweGOesMepDCfvLV0LzJwGTjTOEdvcHKnYUQAnRvu71s+8fVgKY4qVOA+m/BGRvzVD2vWfA1ppXcvvNkyMjXODZ+E1X+QDvL61CEujvP0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=mhWOQBAk; arc=none smtp.client-ip=202.36.163.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id C0A8B2C05EA;
-	Mon,  4 Mar 2024 09:11:57 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1709496717;
-	bh=D5OGeOVlSMJFlPOZTuFHfjaOK2r326Q2K1gwABPtfFY=;
-	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-	b=mhWOQBAkr2eARYcr/1YYJLYVRchHZB5mGYvYsXMbHcd2u9dNDMik+79ob3gek3Sbn
-	 kc69Vff/ZbhZTX/EgLpPsOGVlrx9rLVoMvhU96PTqt3J/rAMyzpYfPIkUR/E4SOcYo
-	 AbtJl+8msnUvGb/llae2aVT9xnqTeOE5tF4cgFgvryjqUPYoN3H6VXo/pYAcNXurCY
-	 T7I67LLYMcBHOVIhnIeSiqYPOIuhSVweRWn/boS/peNz7TZpRlztJhBrPRz9BZi1l5
-	 h5opVHchzfex5Sfg/e+x2mHOhuIC+sE/K/mvZb8cwRuAd6fPbFeEC0cT513t7FrYql
-	 WvxrRL1HHFNuA==
-Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B65e4d98d0001>; Mon, 04 Mar 2024 09:11:57 +1300
-Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8:f753:6de:11c0:a008) by
- svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8:f753:6de:11c0:a008) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 4 Mar 2024 09:11:57 +1300
-Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
- svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
- 15.02.1118.040; Mon, 4 Mar 2024 09:11:57 +1300
-From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To: Geert Uytterhoeven <geert@linux-m68k.org>, Andy Shevchenko
-	<andy@kernel.org>
-CC: "robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"conor+dt@kernel.org" <conor+dt@kernel.org>, "andrew@lunn.ch"
-	<andrew@lunn.ch>, "gregory.clement@bootlin.com"
-	<gregory.clement@bootlin.com>, "sebastian.hesselbarth@gmail.com"
-	<sebastian.hesselbarth@gmail.com>, "pavel@ucw.cz" <pavel@ucw.cz>,
-	"lee@kernel.org" <lee@kernel.org>, "linux-leds@vger.kernel.org"
-	<linux-leds@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v3 4/4] ARM: dts: marvell: Indicate USB activity on x530
-Thread-Topic: [PATCH v3 4/4] ARM: dts: marvell: Indicate USB activity on x530
-Thread-Index: AQHaa3mtyWWtVlg2vEC72XlMinhTXbEiWoIAgAKUiACAAK4qgA==
-Date: Sun, 3 Mar 2024 20:11:57 +0000
-Message-ID: <7248b6f6-86e7-4df1-8c48-c53f70c909b9@alliedtelesis.co.nz>
-References: <20240301014203.2033844-1-chris.packham@alliedtelesis.co.nz>
- <20240301014203.2033844-5-chris.packham@alliedtelesis.co.nz>
- <ZeIdXIx5zYjKQiSO@smile.fi.intel.com>
- <CAMuHMdVJiWtB4MSGHXXz=OAEvu-+b9Xp-jQ_NXWck+hwKGK4TQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdVJiWtB4MSGHXXz=OAEvu-+b9Xp-jQ_NXWck+hwKGK4TQ@mail.gmail.com>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <3FEBCA6EDEF9754691E92F9FAC177CD3@atlnz.lc>
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1709497062; c=relaxed/simple;
+	bh=Pr/EGbS52tudhJ/h/9+tZQSoXN2fkwJrEeJMk/YQ648=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tHhf9/E7rHrBiv41HkLN2G8Ddb2F6ITkkE95ZRMJGKVjWBCisbJnyxkvIL7dGh6jXMpbNwr6TFMFovJz2mD31IJ2QG6oct7yNwpCsHnPM+qYvl0yRL7Ptg6Br3wugnX7fbjufjmWyuM2p5PfL4Wk+tM+L3/cs7iSHvu3QsDjzJw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WaISdvOo; arc=none smtp.client-ip=209.85.219.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dcbcea9c261so3830392276.3
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 12:17:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709497060; x=1710101860; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0oLMJ7QyQW9M1dcmvX6Tku2vCY05PL1Xxf4L46VwXmk=;
+        b=WaISdvOoxG3aBepSnEyZUPAWYtz/cshUCQKS7IoB/uq3FfvAZdKXObpIwdLPf9BHtk
+         1bHDpWL/QfiGLTLfDvrUQLtUgRovgSMf4xJKKOReHp6swyzOIXSGDey/7sqcRdlnY98V
+         TEqDcy2LqRpx4EBnXfYZt1wi21I54LeBllBmORD5VukpFoqVWk8ZbpEeQZFIzwHI3YIb
+         V9dva1VV8/bX9GF1vtPVLCj0AdpFwG4J0mYMhtFrOAT90+4dqJt1k9BBHjiO+lvCaurB
+         w4slsIHibjSDRYRjC7zg3M2OT2Mr6QKta1XAKd0a83s6gdEAbrciFX+p5kzbPGTyN7Hm
+         gfAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709497060; x=1710101860;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0oLMJ7QyQW9M1dcmvX6Tku2vCY05PL1Xxf4L46VwXmk=;
+        b=t7UPCtlmqXrkD+6TnDx+ia+irHLCQxMsN41iqp9dSik+Fsatqt+cVijuBqrst5TyT0
+         LSa40UANAv98yCMytCrfCGXv4ahaIpAkerzw5AQ8Yh+aNdG+4hBUfqmqkTBXvUccFcFy
+         7zW84No7W5CXHykzALhpBk8sWb8uTew5AgS4zbfmNhTPwNSbJf3pcrdk5OvThoHmRtuD
+         SongHUCPQGwPI62i3KIqMgK2SJxY8BIE/c0eL/eMOrSIV6HyWmFFRoHmyupg2BGL4E7m
+         z1iXMLUUFka3ToydT3/OP+NGrHOvr2T9S43U76zfQv2DhILb5knieF/wJSQ8e/OdXgDl
+         toqA==
+X-Forwarded-Encrypted: i=1; AJvYcCVIVI1D9NIbsSqSqGKwg/zujiI6Qj5W4mOiy1lttt79uaGHKgMmmSPxFrlpnPrgIqSn91bhUv0dhRT57cHaJTzfti71q5yssB5itFAe
+X-Gm-Message-State: AOJu0YyitTHEXrbgo+lufrhO5owlCaBov7ebEr1hntvxCwU3Zbscq2Pp
+	DuvPQQ/9jelhio01TO3tkDAA3SE3n57+Pmu+DCeKqt8tXhvmh+mQR3kP0yI04ptl7oBBvYTw21y
+	Q5PLeoc795aY2/SfV9ftvvt4ChNrkiTst88FsdA==
+X-Google-Smtp-Source: AGHT+IFPY9ZyADmDsmR9SjEm5ehQQZqmjmvwRGcwPSo1nZrtoYE3mGo81maMBFS4xRF5pgWyRBvOsVR35VN7iVyETrc=
+X-Received: by 2002:a81:4744:0:b0:608:b5e4:9576 with SMTP id
+ u65-20020a814744000000b00608b5e49576mr4921561ywa.45.1709497059898; Sun, 03
+ Mar 2024 12:17:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.4 cv=BKkQr0QG c=1 sm=1 tr=0 ts=65e4d98d a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=K6JAEmCyrfEA:10 a=VwQbUJbxAAAA:8 a=_l-1M7-265V4-iQ9KdUA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 a=AjGcO6oz07-iQ99wixmX:22
-X-SEG-SpamProfiler-Score: 0
+References: <20240222-x1e80100-display-refactor-connector-v2-0-bd4197dfceab@linaro.org>
+ <20240222-x1e80100-display-refactor-connector-v2-1-bd4197dfceab@linaro.org>
+ <a90dcd83-d158-4ec1-9186-0658c108afef@linaro.org> <20240301175205.GB2438612-robh@kernel.org>
+In-Reply-To: <20240301175205.GB2438612-robh@kernel.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Sun, 3 Mar 2024 22:17:28 +0200
+Message-ID: <CAA8EJppVhMyA_QK_RzC_+M3dniBrm5wxUKeoeh0Dg2w++JoZ2g@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] dt-bindings: display: msm: dp-controller: document
+ X1E80100 compatible
+To: Rob Herring <robh@kernel.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Abel Vesa <abel.vesa@linaro.org>, 
+	Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Kuogee Hsieh <quic_khsieh@quicinc.com>, Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Johan Hovold <johan@kernel.org>, 
+	linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	freedreno@lists.freedesktop.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-DQpPbiAzLzAzLzI0IDIyOjQ4LCBHZWVydCBVeXR0ZXJob2V2ZW4gd3JvdGU6DQo+IEhpIEFuZHks
-DQo+DQo+IE9uIEZyaSwgTWFyIDEsIDIwMjQgYXQgNzoyNOKAr1BNIEFuZHkgU2hldmNoZW5rbyA8
-YW5keUBrZXJuZWwub3JnPiB3cm90ZToNCj4+IE9uIEZyaSwgTWFyIDAxLCAyMDI0IGF0IDAyOjQy
-OjAzUE0gKzEzMDAsIENocmlzIFBhY2toYW0gd3JvdGU6DQo+Pj4gVXNlIHRoZSBkb3Qgb24gdGhl
-IDctc2VnbWVudCBMRUQgYmxvY2sgdG8gaW5kaWNhdGUgVVNCIGFjY2VzcyBvbiB0aGUNCj4+PiB4
-NTMwLg0KPj4gQXMgSSBzYWlkLCBJJ20gbm90IGdvaW5nIHRvIGFwcGx5IHRoaXMgZXZlbiB3aXRo
-IEFja3MuDQoNCkknbGwgZHJvcCB0aGlzIG9uZSBmb3IgdGhlIG5leHQgcm91bmQuDQoNCj4gSSBn
-dWVzcyB5b3Ugc2hvdWxkIG5vdCBhcHBseSBhbnkgb2YgdGhlIGR0cyBwYXRjaGVzIHRvIHRoZQ0K
-PiBhdXhkaXNwbGF5IHRyZWUgYW55d2F5Pw0KDQpUaGF0J3MgT0sgYnkgbWUuIEkndmUganVzdCBi
-ZWVuIGluY2x1ZGluZyB0aGVtIHNvIHRoZXJlIGlzIGFuIGluLXRyZWUgDQp1c2VyIG9mIHRoZSBk
-cml2ZXIuIEl0IGFsc28gc2hvd3MgaG93IEkndmUgYmVlbiB0ZXN0aW5nIHRoaW5ncy4NCg0KSSBj
-YW4gc2VuZCB0aGVtIHZpYSB0aGUgQVJNIG1haW50YWluZXJzIG9uY2UgdGhlIGR1c3Qgc2V0dGxl
-cyBvbiB0aGUgDQpmaXJzdCB0d28gcGF0Y2hlcy4NCg0KPg0KPj4gVGhlIHByb2JsZW0gaGVyZSBh
-cyBJIHNlZSBpdCBpcyB0aGUgZnV0dXJlIGRlY2lzaW9uIG9uIGhvdyBEUCBzaG91bGQNCj4+IGJl
-aGF2ZSBsaWtlLiAgSWYgeW91IHB1dCB0aGlzIGludG8gRFQsIHdlIHdpbGwgdG8gc3VwcG9ydCB0
-aGlzIHRvIHRoZSBlbmQNCj4+IG9mIHRoZSBwbGF0Zm9ybS4NCj4gQXMgdGhlcmUgZXhpc3QgNy1z
-ZWcgZGlzcGxheXMgKGFuZCB3aXJpbmdzKSB3aXRoIGFuZCB3aXRob3V0IERQLA0KPiB0aGUgNy1z
-ZWcgZHJpdmVyIGFuZCBEVCBiaW5kaW5ncyBzaG91bGQgaGFuZGxlIGJvdGggY2FzZXMuICBIb3cg
-dG8NCj4gd2lyZS91c2UgdGhlIERQIExFRCBpcyB1cCB0byB0aGUgaGFyZHdhcmUgZGVzaWduZXIg
-LyBEVFMgd3JpdGVyLg0KPg0KPiBJIGFncmVlIGl0J3MgYSB0aGluIGJvdW5kYXJ5IGJldHdlZW4g
-aGFyZHdhcmUgZGVzY3JpcHRpb24gYW5kIHNvZnR3YXJlDQo+IHBvbGljeSwgdGhvdWdoLiAgSXMg
-dGhhdCB5b3VyIG1haW4gY29uY2Vybj8NCg0KSW4gdGhpcyBzcGVjaWZpYyBjYXNlIEknZCBqdXN0
-aWZ5IHRoZSAoYWIpdXNlIG9mIHRoZSBEUCBMRUQgb24gdGhpcyANCnByb2R1Y3QgYXMgYW4gb3B0
-aW1pemF0aW9uIHNvIHdlIGRvbid0IGhhdmUgdG8gZmluZCBib2FyZCBzcGFjZSBmb3IgYSANCnNl
-cGFyYXRlIExFRCB0byBpbmRpY2F0ZSBVU0IgYWN0aXZpdHkuDQoNCkkgZG8gaGF2ZSBhbiBpZGVh
-IGZvciBoYW5kbGluZyB0aGUgRFAgZm9yIHRoZSBtb3JlIGdlbmVyYWwgY2FzZS4gDQpCYXNpY2Fs
-bHkgaWYgOCBzZWdtZW50IEdQSU9zIGFyZSBzdXBwbGllZCB3ZSBjYW4gdXNlIGEgc2xpZ2h0bHkg
-DQpkaWZmZXJlbnQgc2VnbWVudMKgbWFwIChtYXA3cGx1czE/KSBzbyB0aGF0IGNoYXJhY3RlcnMg
-dGhhdCBhcmUgYmV0dGVyIA0KcmVwcmVzZW50ZWQgYXMgZG90cyB1c2UgdGhhdCBpbnN0ZWFkLg0K
-DQo=
+On Fri, 1 Mar 2024 at 19:52, Rob Herring <robh@kernel.org> wrote:
+>
+> On Tue, Feb 27, 2024 at 04:45:25PM +0100, Krzysztof Kozlowski wrote:
+> > On 22/02/2024 16:55, Abel Vesa wrote:
+> > > Add the X1E80100 to the list of compatibles and document the is-edp
+> > > flag. The controllers are expected to operate in DP mode by default,
+> > > and this flag can be used to select eDP mode.
+> > >
+> > > Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> > > ---
+> > >  Documentation/devicetree/bindings/display/msm/dp-controller.yaml | 6 ++++++
+> > >  1 file changed, 6 insertions(+)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/display/msm/dp-controller.yaml b/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
+> > > index ae53cbfb2193..ed11852e403d 100644
+> > > --- a/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
+> > > +++ b/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
+> > > @@ -27,6 +27,7 @@ properties:
+> > >            - qcom,sdm845-dp
+> > >            - qcom,sm8350-dp
+> > >            - qcom,sm8650-dp
+> > > +          - qcom,x1e80100-dp
+> > >        - items:
+> > >            - enum:
+> > >                - qcom,sm8150-dp
+> > > @@ -73,6 +74,11 @@ properties:
+> > >        - description: phy 0 parent
+> > >        - description: phy 1 parent
+> > >
+> > > +  is-edp:
+> > > +    $ref: /schemas/types.yaml#/definitions/flag
+> > > +    description:
+> > > +      Tells the controller to switch to eDP mode
+> >
+> >
+> > DP controller cannot be edp, so property "is-edp" is confusing. Probably
+> > you want to choose some phy mode, so you should rather use "phy-mode"
+> > property. I am sure we've been here...
+>
+> phy-mode belongs in the phy node though. Not that you couldn't look in
+> the phy node and see, but everyone likes all the properties they need
+> nicely packaged up in their driver's node.
+>
+> > Anyway, if you define completely new property without vendor prefix,
+> > that's a generic property, so you need to put it in some common schema
+> > for all Display Controllers, not only Qualcomm.
+
+Is there a generic schema for DisplayPort controllers? I think there
+is none at this point. We can probably add it, declaring is-edp
+property, link-frequencies, etc.
+However Mediatek already uses a different option to specify supported
+link frequencies.
+
+>
+> I'm trying to unsee what the driver is doing... Hard-coding the
+> connector type and some instance indices. Uhhhh! I'm sure I'm to blame
+> for rejecting those in DT.
+
+Once this patchset is accepted (in this or that or whatever else
+form), we will cleanup most of those hardcoded types.
+
+>
+> I've suggested connector nodes in the past. More generally, whatever is
+> attached at the other end (as it could be a bridge rather than a
+> connector) knows what mode is needed. It's simple negotiation. Each end
+> presents what they support. You take the union of the list(s) and get
+> the mode. If there's more than one, then the kernel or user gets to
+> choose.
+
+It's not that easy. First, probing of the bridge chain differs
+slightly depending on whether the controller is eDP or DP controller.
+eDP should use AUX BUS, while DP (currently) doesn't use it. More
+importantly, error conditions differ too. For example, in the DP case
+it is perfectly fine to have nothing attached to the controller. It
+just means that the display chain needs no additional handling and the
+HPD pin will be handled by the controller itself. In the eDP case if
+neither a panel nor a bridge are attached, it is considered to be an
+error and thus the driver will return probe error.
+
+> Qualcomm is not the only one with this problem. Solve it for everyone...
+
+-- 
+With best wishes
+Dmitry
 
