@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-89783-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89784-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93A1086F5A3
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 16:01:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8754A86F5A6
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 16:02:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49C03286101
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 15:01:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB08B1C20E4A
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 15:02:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C62467E61;
-	Sun,  3 Mar 2024 15:01:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FE8967E99;
+	Sun,  3 Mar 2024 15:01:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="P1AO/Fye"
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="urwBMzJM"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9E1167C49
-	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 15:01:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF92167C53
+	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 15:01:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709478089; cv=none; b=n25LvpMhKrjLvY7zRPFwFmoIwypK1Mk6Yb7OGxy2/ICG6E/nNNGVFDLNIHRb3SYF09O4/NrAzkDQc84nmh+lpFW13dUyt8SJlx2dw7YNiqoli4fjTGXk3DiAH/9iA5it88aIsCOZzilL7enKpEi7LOM8sSb89wm3ZdP2E/3nb4c=
+	t=1709478090; cv=none; b=tAO7mk0P8kW5c0Ebmr+LK9ryMU6CcTelDjxz9kjfcizjeDbCQwGKS9ewVoA7gQdro4tOK4e6pQTLH1+dWkZ7A5Hr67+/Gz15UiY6NfFhCwK3KVw03nrqUJjn6oJOw5LH8BQGpk63W+70oa4iTHmp5Xy13XHHxrsmZqhXWs+MgOk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709478089; c=relaxed/simple;
-	bh=pS036l+x82Llg2p1uvJEt9ipJarTOiZ0UoUxwLijsek=;
+	s=arc-20240116; t=1709478090; c=relaxed/simple;
+	bh=nvJK9T5GO6zsqKvJQk5I8mIr+ZutUY0oMGz3rgd//xw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=pFl2Db0VIoa0zGjFIMgiN1JLWNsuutXpYlZcF9fo9faPbVS+MuW6m5+SuX0yh6mKyIMU1sLKmxhhRNSpCF5cF7q2nYQqCpWsdtIEKedz2al9w5Ndsks1vwTAVYXgeZX3KPaLs4oHhbWK+RtQ49Gf1rG66qnJCXm888XbnC/rS0Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=P1AO/Fye; arc=none smtp.client-ip=209.85.218.50
+	 MIME-Version; b=QVFVi4n71fyQ14XJheLpiWodfIMS7oS+Rl0W3mXZP5fcPG0JRnegP8FR3Psv+N7aj3q8d26xgufnNPFWLlkVS8E8PiFuQwViKd1SmF3GNkz5AMlakm+hZEK7Bt2iAJSojidjBJJ6qOFm4C0ClYlITgm9srnSjBfcS2klJdff7o0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=urwBMzJM; arc=none smtp.client-ip=209.85.208.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a3ddc13bbb3so787965266b.0
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 07:01:27 -0800 (PST)
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-565a2c4cc1aso5195161a12.2
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 07:01:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1709478086; x=1710082886; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1709478087; x=1710082887; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+rx6WhoOKHd930tN5aNHnayXx6/+P2ppH5dnNIXc394=;
-        b=P1AO/Fye0PHA7KtHk8tlNl6Z+z9KesP3NaUOBiFIRSyyagcaSlzCHX8ElJu9KuuLFU
-         2Q3dOZfvIg7xJhpxceC6qoCf7GaUAGmvTPJc7GDdwQQJlEzKZiHXlMSvyCyem3sYQYw/
-         UTSL8pvdpU0duuOd2E9w7B8GX6eW+B0Yux8iRbAxIk7AylwAVLizJwN2KAoEoDaZ8DE/
-         BMXFLXKjq2QYFSFtWE782YW4Ac9SXJ9UsGBVRNqtSjJ9DLl46ep8gPSpTH7LWXfr5XaW
-         IPjyk/wCfEg7uRrPa1cFN00eenj5IcC6oF+Mtn2z4weeBkK0vrRO6OhauR8e5oSkhsOf
-         r8lA==
+        bh=nzSTJ0rdnj8Y8S9Xc/5yNamLOwhLIILlmWUgX3JwXEY=;
+        b=urwBMzJM6cRTeC4YT/NXsx4fMHmC+WRvnsflEwqVr0GiCvy9tlXXVcrTbPm2PAEbZA
+         MiqvcMiu38ItUSDXpxEwDQAItxUY+XQGAmE0xbSBsLVGmRA7Q6OkaXZ5+oNEoKDPJD80
+         YTOBr3b+AqGYa2Cp//ocR6CJQJsX6Ba2uF3UKzOByamsbY3sY3o2Y5p3LlUd2H3I0LbG
+         si6L4dvqhA/qbY9fB2A/+LvLCwJLdh2jDu5N9CvObavY4vH3U9wwzxhbcSlStpFH9P5R
+         181EuSdGN4GXB1k70RtX5cx7vXfoha4NMrpUo66Gynm7ENfS87JW7nfnQLjr8R98KWiW
+         KQcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709478086; x=1710082886;
+        d=1e100.net; s=20230601; t=1709478087; x=1710082887;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+rx6WhoOKHd930tN5aNHnayXx6/+P2ppH5dnNIXc394=;
-        b=r8GrgyGd1TkIFnFWP76DSr2/4B690Y1I19RdTtbL2MY7Q00K5zvQiybdyMICY9Y2dQ
-         YDgVvf72AnEETeHHOcYZqQ0ksekj0t1/ifeOkeG/Vpt6Jw96NniUYo56sII6tiRTr5GN
-         qAuGzCwT7F5lZaxbOuKy+F3S/NlrIwEWph0kLt+cRTDy5tb+NICFP9EMB6NtFpngK5mA
-         BNPblwrmxBacwQkV4gcwPbdPmOoh1ADuO9TBV99GvRjRH8/Gqusn8wGQmngnAkmW6Rjz
-         LHfY/H5TVg3BvFv+CwdRazadMtRs1bhN81ikSjATP9SKgbegIc0HqCMaVZtzVtgn/gev
-         zsPw==
-X-Forwarded-Encrypted: i=1; AJvYcCXW7wkrxAtjp+fCJnwKyB0vN7GzbBuM0sbqd6reMn9zjVowVDRYK9iLGuNKodNbXDMrLx4Axg5ZlOZObUz5muNSTPX6DS4D5mBHAj3r
-X-Gm-Message-State: AOJu0YxT7a3y4/zadQq+YLWJ380UzEvmmWcpzpzGcKCkB6fsbQF+qaMy
-	GFmUndAtpVz9IkRfNPkrBwvpd3kGu58uBovdaH4QattygKXgnn7CHgIgYX2jPOs=
-X-Google-Smtp-Source: AGHT+IEFw76mgrpMh6IeOkCj0OFPooV98kmqRrBujSc3qj3cEutdadkohNDk2tLT2hL3o3DDycNy9Q==
-X-Received: by 2002:a17:906:2c12:b0:a43:acbd:db59 with SMTP id e18-20020a1709062c1200b00a43acbddb59mr6020253ejh.3.1709478086154;
-        Sun, 03 Mar 2024 07:01:26 -0800 (PST)
+        bh=nzSTJ0rdnj8Y8S9Xc/5yNamLOwhLIILlmWUgX3JwXEY=;
+        b=UNyi8zVlqrNSivG04nG27X+fqArfRp/FcHSaqDuBVKOhYrr9cohSfOdyX82qK0hWGi
+         LQT1W3v2iWhWEjc0jYMvqWzDh+70GPeP4HsSdqw3qi5YdTBb3ri2uWKx8/AiOxJmGjya
+         MZWImN3nS6Tg8tmgd0ykkwWp0ExGYQzVL7pCDPeIS6w6hl5I7H5JsEnRjucgMt6A1k4c
+         eZIL8y0UFegVv3CV/yd3x4+iVitTfOvRHh/RxiAkYHKTxE0lL/neHRnU7ObtZMrZztB2
+         OesPrI335YEVBld2VpMn5fga0GXGFHtowsBsa30glbDE1W+lIk4NEWLoAw0Oob5FNbTM
+         RQ8Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVV7FZ9OVLuPOdQgOv5AObcJKjN2+61gq0ZkKPmJyStNhxLoPQ8+MWo1dfO2uJJMLczmB/qYkcX1V2ZMPh4HHTvLV80N6YZW0gRKV3X
+X-Gm-Message-State: AOJu0YzywTNHcmXlSns0NNAR4evZqzzHCmBR8ruKCgLzgdlULC2DerVZ
+	vUELo3zfG+Fhtb6wU/rOCI5K/OtRsy2v4mZ+d2+QliYSBHWHBMUaK+Fq+Vvrxtw=
+X-Google-Smtp-Source: AGHT+IELTVpJwgFZ6SW6fstDB0Y1lIR0GrHp4KSOgdjkJcUeO5vl1ra+4gBL3VDeUw40ofJY2F9+og==
+X-Received: by 2002:a17:906:3846:b0:a3d:ed30:11c8 with SMTP id w6-20020a170906384600b00a3ded3011c8mr5033827ejc.15.1709478087088;
+        Sun, 03 Mar 2024 07:01:27 -0800 (PST)
 Received: from brgl-uxlite.. ([77.241.232.10])
-        by smtp.gmail.com with ESMTPSA id ch14-20020a170906c2ce00b00a42ea946917sm3740293ejb.130.2024.03.03.07.01.25
+        by smtp.gmail.com with ESMTPSA id ch14-20020a170906c2ce00b00a42ea946917sm3740293ejb.130.2024.03.03.07.01.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Mar 2024 07:01:25 -0800 (PST)
+        Sun, 03 Mar 2024 07:01:26 -0800 (PST)
 From: Bartosz Golaszewski <brgl@bgdev.pl>
 To: Andy Gross <agross@kernel.org>,
 	Bjorn Andersson <andersson@kernel.org>,
@@ -84,9 +84,9 @@ Cc: linux-arm-msm@vger.kernel.org,
 	kernel@quicinc.com,
 	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
 	Deepti Jaggi <quic_djaggi@quicinc.com>
-Subject: [PATCH v8 03/12] firmware: qcom: scm: smc: switch to using the SCM allocator
-Date: Sun,  3 Mar 2024 16:01:06 +0100
-Message-Id: <20240303150115.133633-4-brgl@bgdev.pl>
+Subject: [PATCH v8 04/12] firmware: qcom: scm: make qcom_scm_assign_mem() use the TZ allocator
+Date: Sun,  3 Mar 2024 16:01:07 +0100
+Message-Id: <20240303150115.133633-5-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240303150115.133633-1-brgl@bgdev.pl>
 References: <20240303150115.133633-1-brgl@bgdev.pl>
@@ -100,14 +100,8 @@ Content-Transfer-Encoding: 8bit
 
 From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-We need to allocate, map and pass a buffer to the trustzone if we have
-more than 4 arguments for a given SCM call. Let's use the new TrustZone
-allocator for that memory and shrink the code in process.
-
-As this code lives in a different compilation unit than the rest of the
-SCM code, we need to provide a helper in the form of
-qcom_scm_get_tzmem_pool() that allows the SMC low-level routines to
-access the SCM memory pool.
+Let's use the new TZ memory allocator to obtain a buffer for this call
+instead of using dma_alloc_coherent().
 
 Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
@@ -115,122 +109,60 @@ Tested-by: Andrew Halaney <ahalaney@redhat.com> # sc8280xp-lenovo-thinkpad-x13s
 Tested-by: Deepti Jaggi <quic_djaggi@quicinc.com> #sa8775p-ride
 Reviewed-by: Elliot Berman <quic_eberman@quicinc.com>
 ---
- drivers/firmware/qcom/qcom_scm-smc.c | 30 ++++++++--------------------
- drivers/firmware/qcom/qcom_scm.c     |  5 +++++
- drivers/firmware/qcom/qcom_scm.h     |  3 +++
- 3 files changed, 16 insertions(+), 22 deletions(-)
+ drivers/firmware/qcom/qcom_scm.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/firmware/qcom/qcom_scm-smc.c b/drivers/firmware/qcom/qcom_scm-smc.c
-index 16cf88acfa8e..dca5f3f1883b 100644
---- a/drivers/firmware/qcom/qcom_scm-smc.c
-+++ b/drivers/firmware/qcom/qcom_scm-smc.c
-@@ -2,6 +2,7 @@
- /* Copyright (c) 2015,2019 The Linux Foundation. All rights reserved.
-  */
- 
-+#include <linux/cleanup.h>
- #include <linux/io.h>
- #include <linux/errno.h>
- #include <linux/delay.h>
-@@ -9,6 +10,7 @@
- #include <linux/slab.h>
- #include <linux/types.h>
- #include <linux/firmware/qcom/qcom_scm.h>
-+#include <linux/firmware/qcom/qcom_tzmem.h>
- #include <linux/arm-smccc.h>
- #include <linux/dma-mapping.h>
- 
-@@ -150,11 +152,10 @@ int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
- 		   enum qcom_scm_convention qcom_convention,
- 		   struct qcom_scm_res *res, bool atomic)
- {
-+	struct qcom_tzmem_pool *mempool = qcom_scm_get_tzmem_pool();
- 	int arglen = desc->arginfo & 0xf;
- 	int i, ret;
--	dma_addr_t args_phys = 0;
--	void *args_virt = NULL;
--	size_t alloc_len;
-+	void *args_virt __free(qcom_tzmem) = NULL;
- 	gfp_t flag = atomic ? GFP_ATOMIC : GFP_KERNEL;
- 	u32 smccc_call_type = atomic ? ARM_SMCCC_FAST_CALL : ARM_SMCCC_STD_CALL;
- 	u32 qcom_smccc_convention = (qcom_convention == SMC_CONVENTION_ARM_32) ?
-@@ -172,9 +173,9 @@ int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
- 		smc.args[i + SCM_SMC_FIRST_REG_IDX] = desc->args[i];
- 
- 	if (unlikely(arglen > SCM_SMC_N_REG_ARGS)) {
--		alloc_len = SCM_SMC_N_EXT_ARGS * sizeof(u64);
--		args_virt = kzalloc(PAGE_ALIGN(alloc_len), flag);
--
-+		args_virt = qcom_tzmem_alloc(mempool,
-+					     SCM_SMC_N_EXT_ARGS * sizeof(u64),
-+					     flag);
- 		if (!args_virt)
- 			return -ENOMEM;
- 
-@@ -192,25 +193,10 @@ int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
- 						      SCM_SMC_FIRST_EXT_IDX]);
- 		}
- 
--		args_phys = dma_map_single(dev, args_virt, alloc_len,
--					   DMA_TO_DEVICE);
--
--		if (dma_mapping_error(dev, args_phys)) {
--			kfree(args_virt);
--			return -ENOMEM;
--		}
--
--		smc.args[SCM_SMC_LAST_REG_IDX] = args_phys;
-+		smc.args[SCM_SMC_LAST_REG_IDX] = qcom_tzmem_to_phys(args_virt);
- 	}
- 
--	/* ret error check follows after args_virt cleanup*/
- 	ret = __scm_smc_do(dev, &smc, &smc_res, atomic);
--
--	if (args_virt) {
--		dma_unmap_single(dev, args_phys, alloc_len, DMA_TO_DEVICE);
--		kfree(args_virt);
--	}
--
- 	if (ret)
- 		return ret;
- 
 diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
-index 2245ec8278e0..c1c4809b154c 100644
+index c1c4809b154c..054b538828d5 100644
 --- a/drivers/firmware/qcom/qcom_scm.c
 +++ b/drivers/firmware/qcom/qcom_scm.c
-@@ -201,6 +201,11 @@ static void qcom_scm_bw_disable(void)
- enum qcom_scm_convention qcom_scm_convention = SMC_CONVENTION_UNKNOWN;
- static DEFINE_SPINLOCK(scm_query_lock);
+@@ -4,6 +4,7 @@
+  */
  
-+struct qcom_tzmem_pool *qcom_scm_get_tzmem_pool(void)
-+{
-+	return __scm->mempool;
-+}
+ #include <linux/arm-smccc.h>
++#include <linux/cleanup.h>
+ #include <linux/clk.h>
+ #include <linux/completion.h>
+ #include <linux/cpumask.h>
+@@ -998,14 +999,13 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
+ 	struct qcom_scm_mem_map_info *mem_to_map;
+ 	phys_addr_t mem_to_map_phys;
+ 	phys_addr_t dest_phys;
+-	dma_addr_t ptr_phys;
++	phys_addr_t ptr_phys;
+ 	size_t mem_to_map_sz;
+ 	size_t dest_sz;
+ 	size_t src_sz;
+ 	size_t ptr_sz;
+ 	int next_vm;
+ 	__le32 *src;
+-	void *ptr;
+ 	int ret, i, b;
+ 	u64 srcvm_bits = *srcvm;
+ 
+@@ -1015,10 +1015,13 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
+ 	ptr_sz = ALIGN(src_sz, SZ_64) + ALIGN(mem_to_map_sz, SZ_64) +
+ 			ALIGN(dest_sz, SZ_64);
+ 
+-	ptr = dma_alloc_coherent(__scm->dev, ptr_sz, &ptr_phys, GFP_KERNEL);
++	void *ptr __free(qcom_tzmem) = qcom_tzmem_alloc(__scm->mempool,
++							ptr_sz, GFP_KERNEL);
+ 	if (!ptr)
+ 		return -ENOMEM;
+ 
++	ptr_phys = qcom_tzmem_to_phys(ptr);
 +
- static enum qcom_scm_convention __get_convention(void)
- {
- 	unsigned long flags;
-diff --git a/drivers/firmware/qcom/qcom_scm.h b/drivers/firmware/qcom/qcom_scm.h
-index 4532907e8489..aa7d06939f8e 100644
---- a/drivers/firmware/qcom/qcom_scm.h
-+++ b/drivers/firmware/qcom/qcom_scm.h
-@@ -5,6 +5,7 @@
- #define __QCOM_SCM_INT_H
+ 	/* Fill source vmid detail */
+ 	src = ptr;
+ 	i = 0;
+@@ -1047,7 +1050,6 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
  
- struct device;
-+struct qcom_tzmem_pool;
- 
- enum qcom_scm_convention {
- 	SMC_CONVENTION_UNKNOWN,
-@@ -78,6 +79,8 @@ int scm_legacy_call_atomic(struct device *dev, const struct qcom_scm_desc *desc,
- int scm_legacy_call(struct device *dev, const struct qcom_scm_desc *desc,
- 		    struct qcom_scm_res *res);
- 
-+struct qcom_tzmem_pool *qcom_scm_get_tzmem_pool(void);
-+
- #define QCOM_SCM_SVC_BOOT		0x01
- #define QCOM_SCM_BOOT_SET_ADDR		0x01
- #define QCOM_SCM_BOOT_TERMINATE_PC	0x02
+ 	ret = __qcom_scm_assign_mem(__scm->dev, mem_to_map_phys, mem_to_map_sz,
+ 				    ptr_phys, src_sz, dest_phys, dest_sz);
+-	dma_free_coherent(__scm->dev, ptr_sz, ptr, ptr_phys);
+ 	if (ret) {
+ 		dev_err(__scm->dev,
+ 			"Assign memory protection call failed %d\n", ret);
 -- 
 2.40.1
 
