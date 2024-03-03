@@ -1,172 +1,157 @@
-Return-Path: <linux-kernel+bounces-89865-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89866-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 244E386F6B1
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 20:10:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EF0B86F6B4
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 20:11:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72BA71F21465
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 19:10:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF8481C2094A
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 19:11:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ACFE79B6C;
-	Sun,  3 Mar 2024 19:10:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3982879B98;
+	Sun,  3 Mar 2024 19:11:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hyUCackn"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b="TOlJJ8VH"
+Received: from mail.manjaro.org (mail.manjaro.org [116.203.91.91])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5E21BE49
-	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 19:10:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CB316CDC0;
+	Sun,  3 Mar 2024 19:10:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=116.203.91.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709493005; cv=none; b=dd8NLN+u6yH50OQtY4HC3NFXDMOWKD0WEojsRRcxsQ285+NrXoeChYn8V18jxR/rJzCi8cEvFmgGvwTdZFfgk0E2INlwLZyjF75Q3/5InnlOLy2JWEgjZIRfD/oQyjX6KuhjdjjDCujeTJP7wOhJO3ZWSfF+B5ufCY+XtJLwtFc=
+	t=1709493059; cv=none; b=m0uijOIiftTCC/LPgCZXjLWuqSFliwXGQanZU/XqNcxtBd1KYVlabib6lENeI+oC7LI51WWn8az7QqNw3QqR6D8xPHSupBIU29bYgL21YQmfHLCTSkoCEYibWhsvHwGSdps4HFtlKET4zUt084vlpl7SF/beTcm6+7Fk2uQMKkQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709493005; c=relaxed/simple;
-	bh=Hba6oGgosc6iwpGMmhuvvHdDdH9qXw51Goup0NOi2RI=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=IIaE9WjWtXaAXi3Fu2BjVzY9bwmbeQAWpdCBXFuERpzZEJNgeaYY0TUWuRzkBGrgOXoL3q0VZKsqVQF+aLkULGx5/NeZvLFFyj3WqmdeFMipeuh/wQ8gw8A3Q31yYXVSHf9c88qMElR5PVvtISh4Q5HDULT8AeK0q4gD7E/gq5I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hyUCackn; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709493004; x=1741029004;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=Hba6oGgosc6iwpGMmhuvvHdDdH9qXw51Goup0NOi2RI=;
-  b=hyUCackn4pnVr3NJjAVsxO9vzg5n4oAeVeHoAHkAIqTSEAd7zwvuVpgA
-   SAGtKSmEWMcI+7qJVG/1cTOS+gxN4XZq3P6BNfxFJ/MLXX0UZzZUUKpfG
-   +7FZU5528pOWJKk5eE384HyN6v5o9pvCPnD+3Iw7brtPY/DYyr8X7j42x
-   ydpHPeIdKhZnfmFIftAA/3+oy3h438ALFgUGk1vwtONK7C2ESVnbrckE1
-   +RvZyhz30g6n3DQ50t8a528q1+x0H50J0aojYqtLYQ7zUDrbUP+X1Oq8e
-   V51Qn9l7GuVa9Eny3k/YADnf+JnPHjJZCl5mVCRUY0hWECDQi4WGiqiRu
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="7795067"
-X-IronPort-AV: E=Sophos;i="6.06,201,1705392000"; 
-   d="scan'208";a="7795067"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2024 11:10:00 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,201,1705392000"; 
-   d="scan'208";a="13441951"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by orviesa004.jf.intel.com with ESMTP; 03 Mar 2024 11:09:59 -0800
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rgrDg-00022K-10;
-	Sun, 03 Mar 2024 19:09:56 +0000
-Date: Mon, 4 Mar 2024 03:09:04 +0800
-From: kernel test robot <lkp@intel.com>
-To: Kees Cook <keescook@chromium.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: WARNING: modpost: "strcat" [lib/strcat_kunit.ko] has no CRC!
-Message-ID: <202403040332.AgBq81MC-lkp@intel.com>
+	s=arc-20240116; t=1709493059; c=relaxed/simple;
+	bh=gGx3jX5ZlsiFiMZEU4HNH80BafPHn2SaRicDJFtox1E=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=R64Oi34EIey0rbwQ/g0WmybG1JGfKWEfQwQhMJvaQqtOjw1JjDqkyijOwJLYpSzXS9CRCAeTyzURlgEN4hDNpldzSXMHWtoAECZDfwoZnCKQ5d4ZeHdHxjeuSC8g95ZKvFBb1qILy7t27pxpm67/niufS/G+Lw+x0bcZJDTrp7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org; spf=pass smtp.mailfrom=manjaro.org; dkim=pass (2048-bit key) header.d=manjaro.org header.i=@manjaro.org header.b=TOlJJ8VH; arc=none smtp.client-ip=116.203.91.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manjaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manjaro.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manjaro.org; s=2021;
+	t=1709493055;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8hNRWVJno8AKrSg17qcfRn/w8+KSTZ6aFzgs/r3ObuA=;
+	b=TOlJJ8VHpsOa61znsLHbSBW0mYcpkpgfqCfGjFUJ3KWEo/4o5Ln7vKaN3z0AuQnJv4quUo
+	bOPmsjwXXleK2DsJg4h6jTUye86v/KTo+sB9qG9sJ+x99SAWOjEJ7Fczklii2CKp2U/eeV
+	roRVSuZ2T+refguesiecIN8IgdMKO8X1qRPv7DRVl5BlN9XStc0H7Cv4Cy0hB53kjAL66b
+	JicZ37BduwHUNvLAHicib9fx7N+rlQf8wHumw4femJMovgCZgbG9I+cusHcb//hzTi4IkD
+	nO+roPN3a9uIH48a8NkP49gmG2vwUpgESBwp73ozjlW1ixbCPnGI/CZoPqGCKw==
+Date: Sun, 03 Mar 2024 20:10:55 +0100
+From: Dragan Simic <dsimic@manjaro.org>
+To: Anand Moon <linux.amoon@gmail.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Heiko Stuebner <heiko@sntech.de>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] arm64: dts: rockchip: Add cache information to the
+ Rockchip RK3566 and RK3568 SoC
+In-Reply-To: <31ad86c4e2e3f8f46016227b0d204c8b@manjaro.org>
+References: <20240226182310.4032-1-linux.amoon@gmail.com>
+ <8ceea100f2ef7cce296943ce1397161a@manjaro.org>
+ <CANAwSgQnoBx+th6s254sML+Zw+RZQC6WU9TjfMoWgHxmCqbDcw@mail.gmail.com>
+ <4676da62ec0fc0fe89318baea0678e0c@manjaro.org>
+ <8eb17d05ff857d154169e62b1f04413f@manjaro.org>
+ <31ad86c4e2e3f8f46016227b0d204c8b@manjaro.org>
+Message-ID: <e6951decd632141ab7f08bda6f5569be@manjaro.org>
+X-Sender: dsimic@manjaro.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=dsimic@manjaro.org smtp.mailfrom=dsimic@manjaro.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   04b8076df2534f08bb4190f90a24e0f7f8930aca
-commit: 3bf301e1ab85e18ed0e337ce124dc71d6d7b5fd7 string: Add Kunit tests for strcat() family
-date:   10 months ago
-config: alpha-randconfig-r032-20221115 (https://download.01.org/0day-ci/archive/20240304/202403040332.AgBq81MC-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240304/202403040332.AgBq81MC-lkp@intel.com/reproduce)
+Hello Anand,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403040332.AgBq81MC-lkp@intel.com/
+On 2024-02-28 18:50, Dragan Simic wrote:
+> On 2024-02-28 11:42, Dragan Simic wrote:
+>> On 2024-02-27 15:58, Dragan Simic wrote:
+>>> On 2024-02-27 13:49, Anand Moon wrote:
+>>>> On Tue, 27 Feb 2024 at 00:39, Dragan Simic <dsimic@manjaro.org> 
+>>>> wrote:
+>>>>> On 2024-02-26 19:23, Anand Moon wrote:
+>>>>> > As per RK3568 Datasheet and TRM add missing cache information to
+>>>>> > the Rockchip RK3566 and RK3568 SoC.
+>>>>> >
+>>>>> > - Each Cortex-A55 core has 32KB of L1 instruction cache available and
+>>>>> >       32KB of L1 data cache available with ECC.
+>>>>> > - Along with 512KB Unified L3 cache with ECC.
+>>>>> >
+>>>>> > With adding instruction cache and data cache and a write buffer to
+>>>>> > reduce the effect of main memory bandwidth and latency on data
+>>>>> > access performance.
+>>>>> 
+>>>>> I was about to send my own patch that adds the same missing cache
+>>>>> information, so please allow me to describe the proposed way to 
+>>>>> move
+>>>>> forward.
+>>>>> 
+>>>>> The way I see it, your commit summary and description need a rather
+>>>>> complete rewrite, to be more readable, more accurate, and to avoid
+>>>>> including an irrelevant (and slightly misleading) description of 
+>>>>> the
+>>>>> general role of caches.
+>>>>> 
+>>>>> Also, the changes to the dtsi file would benefit from small 
+>>>>> touch-ups
+>>>>> here and there, for improved consistency, etc.
+>>>>> 
+>>>>> With all that in mind, I propose that you withdraw your patch and 
+>>>>> let
+>>>>> me send my patch that will addresses all these issues, of course 
+>>>>> with
+>>>>> a proper tag that lists you as a co-developer.  I think that would
+>>>>> save us a fair amount of time going back and forth.
+>>>>> 
+>>>>> I hope you agree.
+>>>> 
+>>>> I have no issue with this,.If you have a better version plz share 
+>>>> this.
+>>> 
+>>> Thank you, I'll send my patch within the next couple of days.
+>> 
+>> Here's a brief update...  Basically, not all of the cache-size values
+>> found in your patch were correct, but I've got all of them calculated
+>> again, double-checked, and cross-compared with the way values in my
+>> earlier patch for the RK3399 SoC dtsi were calculated. [2]
+>> 
+>> It all checked out just fine.  It's all based on the RK3566 and RK3568
+>> SoC datasheets and a couple of ARM specifications, which I'll describe
+>> in detail in my patch description.  I'll send the patch after I test
+>> it a bit, to make sure it all works as expected.
+>> 
+>> [1] 
+>> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=b72633ba5cfa932405832de25d0f0a11716903b4
+> 
+> Pretty much the same patch for the RK3328 is also ready for testing.
 
-All warnings (new ones prefixed by >>, old ones prefixed by <<):
+Just sent the patches to the mailing list, please have a look. [2][3]
 
-WARNING: modpost: vmlinux.o: EXPORT_SYMBOL used for init/exit symbol: page_is_ram (section: .init.text)
-WARNING: modpost: EXPORT symbol "strcpy" [vmlinux] version generation failed, symbol will not be versioned.
-Is "strcpy" prototyped in <asm/asm-prototypes.h>?
-WARNING: modpost: EXPORT symbol "strcat" [vmlinux] version generation failed, symbol will not be versioned.
-Is "strcat" prototyped in <asm/asm-prototypes.h>?
-WARNING: modpost: EXPORT symbol "strncpy" [vmlinux] version generation failed, symbol will not be versioned.
-Is "strncpy" prototyped in <asm/asm-prototypes.h>?
-WARNING: modpost: EXPORT symbol "strncat" [vmlinux] version generation failed, symbol will not be versioned.
-Is "strncat" prototyped in <asm/asm-prototypes.h>?
-WARNING: modpost: "strcpy" [fs/overlayfs/overlay.ko] has no CRC!
-WARNING: modpost: "strcat" [fs/overlayfs/overlay.ko] has no CRC!
-WARNING: modpost: "strncat" [lib/kunit/kunit.ko] has no CRC!
-WARNING: modpost: "strncpy" [lib/test_hexdump.ko] has no CRC!
-WARNING: modpost: "strcpy" [lib/test_rhashtable.ko] has no CRC!
-WARNING: modpost: "strcpy" [lib/crc64-rocksoft.ko] has no CRC!
-WARNING: modpost: "strncat" [lib/strcat_kunit.ko] has no CRC!
->> WARNING: modpost: "strcat" [lib/strcat_kunit.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/video/fbdev/cyber2000fb.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/video/fbdev/sis/sisfb.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/video/fbdev/savage/savagefb.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/video/fbdev/s3fb.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/video/fbdev/mb862xx/mb862xxfb.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/video/fbdev/ocfb.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/char/ipmi/ipmi_si.ko] has no CRC!
-WARNING: modpost: "strcat" [drivers/char/ipmi/ipmi_si.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/char/ipmi/ipmi_watchdog.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/gpu/drm/tests/drm_cmdline_parser_test.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/gpu/drm/tests/drm_connector_test.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/gpu/drm/tests/drm_dp_mst_helper_test.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/gpu/drm/tests/drm_framebuffer_test.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/gpu/drm/tests/drm_plane_helper_test.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/gpu/drm/tests/drm_probe_helper_test.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/gpu/drm/hisilicon/hibmc/hibmc-drm.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/gpu/drm/drm.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/gpu/drm/drm.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/gpu/drm/amd/amdgpu/amdgpu.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/gpu/drm/nouveau/nouveau.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/gpu/drm/nouveau/nouveau.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/base/regmap/regmap-kunit.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/misc/cb710/cb710.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/misc/apds990x.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/misc/c2port/core.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/firewire/firewire-core.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/i2c/busses/i2c-at91.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/i2c/busses/i2c-owl.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/media/dvb-frontends/cxd2841er.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/media/platform/nxp/imx7-media-csi.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/power/supply/wm831x_backup.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/power/supply/wm831x_power.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/power/supply/bq2515x_charger.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/power/supply/bq25980_charger.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/leds/leds-bd2802.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/leds/leds-lm3530.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/leds/leds-wm831x-status.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/hid/hid-wiimote.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/hid/hid-sensor-custom.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/staging/vme_user/vme_tsi148.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/staging/greybus/gb-loopback.ko] has no CRC!
-WARNING: modpost: "strcat" [drivers/staging/sm750fb/sm750fb.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/iio/adc/hx711.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/iio/adc/mcp3422.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/iio/adc/mxs-lradc-adc.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/iio/light/cm32181.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/iio/proximity/srf08.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/iio/proximity/sx9324.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/iio/test/iio-test-rescale.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/perf/marvell_cn10k_tad_pmu.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/rapidio/rapidio.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/hwmon/adm1029.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/hwmon/adt7462.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/hwmon/adt7475.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/hwmon/f71882fg.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/hwmon/fschmd.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/hwmon/i5k_amb.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/hwmon/amc6821.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/hwmon/pmbus/pmbus_core.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/hwtracing/stm/stm_console.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/fpga/fpga-mgr.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/fpga/dfl-fme.ko] has no CRC!
+I've "downgraded" the previously proposed "Co-developed-by" tag in the
+RK356x patch [3] to a "Helped-by" tag, just because the cache-size 
+values
+in your patch mostly weren't correct and, as a result, differed from the
+cache-size values in my patch, making the "Co-developed-by" tag 
+technically
+not applicable.  For that tag to be applicable, the most important parts
+of the patches need to be pretty much identical.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+I hope you agree.
+
+[2] 
+https://lore.kernel.org/linux-rockchip/e61173d87f5f41af80e6f87f8820ce8d06f7c20c.1709491127.git.dsimic@manjaro.org/
+[3] 
+https://lore.kernel.org/linux-rockchip/2285ee41e165813011220f9469e28697923aa6e0.1709491108.git.dsimic@manjaro.org/
 
