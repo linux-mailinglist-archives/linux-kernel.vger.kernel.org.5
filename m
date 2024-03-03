@@ -1,180 +1,133 @@
-Return-Path: <linux-kernel+bounces-89895-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89896-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B80686F700
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 21:17:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 97E3186F702
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 21:21:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D61C1C20AC2
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 20:17:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BFE6B1C20AF5
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 20:21:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6E1A79DD2;
-	Sun,  3 Mar 2024 20:17:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED6E979DBE;
+	Sun,  3 Mar 2024 20:21:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WaISdvOo"
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qnc8fUOw"
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE04B79DB2
-	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 20:17:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E03F2AE90;
+	Sun,  3 Mar 2024 20:21:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709497062; cv=none; b=L3m3V4bhqDNEUcAvT7P7jII7ZHpjKlBkLJTOdFDLDDBr3AX9RdpU2XU/yvv0OB1sH1ug00mnA+yhXIddLCcIrUs3iHEua/lszmnBVnXN6sCglWZ9pPdOdAFCYYtofqmxNcY15Otr0RnBqDe/Mgr6JeEPFyHglCZilmmqtydNIvM=
+	t=1709497297; cv=none; b=mtFAxJiKpZRGIpt0JUvhL0GXtZFRG55nMKevO+Y4hA1Pz6mZM8BhfYHVgkMKaGOKIGwztVbu35sdlCyMizoFc04KrHEIqyGCVamBo3X96UpRiPwmupGOisdYcZYMId2wvUaDUnWYoq8MzT/zP44skClexDnfuASRgZRdW7ZNjno=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709497062; c=relaxed/simple;
-	bh=Pr/EGbS52tudhJ/h/9+tZQSoXN2fkwJrEeJMk/YQ648=;
+	s=arc-20240116; t=1709497297; c=relaxed/simple;
+	bh=Q35YAZglOxYGDpRSAGOwZwk3SdJ6ZQoJ/uPZMfRrgyU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tHhf9/E7rHrBiv41HkLN2G8Ddb2F6ITkkE95ZRMJGKVjWBCisbJnyxkvIL7dGh6jXMpbNwr6TFMFovJz2mD31IJ2QG6oct7yNwpCsHnPM+qYvl0yRL7Ptg6Br3wugnX7fbjufjmWyuM2p5PfL4Wk+tM+L3/cs7iSHvu3QsDjzJw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WaISdvOo; arc=none smtp.client-ip=209.85.219.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dcbcea9c261so3830392276.3
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 12:17:40 -0800 (PST)
+	 To:Cc:Content-Type; b=eedFUwbZCxBmt3Cph042/QbNkrMpM4qyTftt9pAr/lmXbnERDFrVtK5Y4e68VMuQUK2vwDszrh5Y9UuZ7rz1Kouvpd/c76uTaBDcZhHhePJMnAcL3ze8n7ssod2jbWAnW233T34DIayUEamxnHFSJPoJ5/I1xT8RYt+LBzEdyXg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Qnc8fUOw; arc=none smtp.client-ip=209.85.208.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d2305589a2so55692851fa.1;
+        Sun, 03 Mar 2024 12:21:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709497060; x=1710101860; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=0oLMJ7QyQW9M1dcmvX6Tku2vCY05PL1Xxf4L46VwXmk=;
-        b=WaISdvOoxG3aBepSnEyZUPAWYtz/cshUCQKS7IoB/uq3FfvAZdKXObpIwdLPf9BHtk
-         1bHDpWL/QfiGLTLfDvrUQLtUgRovgSMf4xJKKOReHp6swyzOIXSGDey/7sqcRdlnY98V
-         TEqDcy2LqRpx4EBnXfYZt1wi21I54LeBllBmORD5VukpFoqVWk8ZbpEeQZFIzwHI3YIb
-         V9dva1VV8/bX9GF1vtPVLCj0AdpFwG4J0mYMhtFrOAT90+4dqJt1k9BBHjiO+lvCaurB
-         w4slsIHibjSDRYRjC7zg3M2OT2Mr6QKta1XAKd0a83s6gdEAbrciFX+p5kzbPGTyN7Hm
-         gfAg==
+        d=gmail.com; s=20230601; t=1709497294; x=1710102094; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=u7rADcp8cd3a5Ybe7Fit1F3MeRi+39WRSfwok0lZWxA=;
+        b=Qnc8fUOwIh5TXmZWqH03PBSWVqpsWAsEWRZaay/TKHmgU/FWKSRmTJO09AStv9VlJn
+         EKkdFP7s4gQ4OTGECRp+J/8uDPbKSGqVPs5dB08SWJOMIGZvhU5MRmiatxbQU5+De+33
+         vPE4cPnEcIpOZeOV7plRW/cIlswm8nNg/83NY4h5ngYzwV5SvbBmMaaY9lOYmN7KQLcf
+         pqSZUcR5cMyE5DP9Go3Y2R1z4JQygJJOgiu0BfGxX1uTmbgT+dKiO/TD4/gi+rlY1A44
+         48BmzXo9FRPnlW9GmrucZJpN9h4DPGpvFM4lE9Lq3NlYY9HTpm4NeBsFtiFP453xb9LH
+         AN6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709497060; x=1710101860;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0oLMJ7QyQW9M1dcmvX6Tku2vCY05PL1Xxf4L46VwXmk=;
-        b=t7UPCtlmqXrkD+6TnDx+ia+irHLCQxMsN41iqp9dSik+Fsatqt+cVijuBqrst5TyT0
-         LSa40UANAv98yCMytCrfCGXv4ahaIpAkerzw5AQ8Yh+aNdG+4hBUfqmqkTBXvUccFcFy
-         7zW84No7W5CXHykzALhpBk8sWb8uTew5AgS4zbfmNhTPwNSbJf3pcrdk5OvThoHmRtuD
-         SongHUCPQGwPI62i3KIqMgK2SJxY8BIE/c0eL/eMOrSIV6HyWmFFRoHmyupg2BGL4E7m
-         z1iXMLUUFka3ToydT3/OP+NGrHOvr2T9S43U76zfQv2DhILb5knieF/wJSQ8e/OdXgDl
-         toqA==
-X-Forwarded-Encrypted: i=1; AJvYcCVIVI1D9NIbsSqSqGKwg/zujiI6Qj5W4mOiy1lttt79uaGHKgMmmSPxFrlpnPrgIqSn91bhUv0dhRT57cHaJTzfti71q5yssB5itFAe
-X-Gm-Message-State: AOJu0YyitTHEXrbgo+lufrhO5owlCaBov7ebEr1hntvxCwU3Zbscq2Pp
-	DuvPQQ/9jelhio01TO3tkDAA3SE3n57+Pmu+DCeKqt8tXhvmh+mQR3kP0yI04ptl7oBBvYTw21y
-	Q5PLeoc795aY2/SfV9ftvvt4ChNrkiTst88FsdA==
-X-Google-Smtp-Source: AGHT+IFPY9ZyADmDsmR9SjEm5ehQQZqmjmvwRGcwPSo1nZrtoYE3mGo81maMBFS4xRF5pgWyRBvOsVR35VN7iVyETrc=
-X-Received: by 2002:a81:4744:0:b0:608:b5e4:9576 with SMTP id
- u65-20020a814744000000b00608b5e49576mr4921561ywa.45.1709497059898; Sun, 03
- Mar 2024 12:17:39 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709497294; x=1710102094;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u7rADcp8cd3a5Ybe7Fit1F3MeRi+39WRSfwok0lZWxA=;
+        b=QoTW/JHMFJ/ob1Z1UDlP2Yk44IlUg4iN18nGl7xJjudBOPdMKHZYuvMQAnyUyjrMjh
+         Q4frvF0EE6fAyNJv+uU1V51KpSm8UEfgvjJOvwQ/YAcLlKjg24AhmFxOKgTN34HlcmXU
+         JEQVV7H0asAR5aMQP08aFUVHtxPTvhw8SBQen9rvfEvUlDkPWbNZ1J6gb6wUp3bX86UL
+         ZO5zlEfkMHxDwK7EdZaWxFt6CH4TCoHCwJ4cv4yWKgmnc6Zt/B08GzUJzueDsqYljcuM
+         XQtrOEKpoDx9fV7kh89152D6sPR0g48pJhWdVzFJ65rg+48BJCgrnDacswrHbkfXCl9p
+         kPWA==
+X-Forwarded-Encrypted: i=1; AJvYcCXVHdFtB8ACs/C4wucMVjok4r3icK1ZR7pDoBxcFfz2l9d/BigTIiC+AoppJ9rYqqv11bPzsC9OKHTLwRli3qFyta3dcMUGcQW3YX5gs6HT2hExYCRZ7MbwNopCKIOMIzBDm0Gc+I1woVD9
+X-Gm-Message-State: AOJu0YxrdqygoMT+456ey9daHNfNPerLMST8mqq56RJc4DndxhGZC8+L
+	g/9k5VvXNx/4ZXCrguaHvGjsEY/runRM3wz2hM0ZQPXjw+NBAahuIL2mpCgRDkGbbmkMTWF70YE
+	UZw5kuJdoAWiuANr88kNLoUOKp/k=
+X-Google-Smtp-Source: AGHT+IFxzrAqNk8fA92YYJpvZJNt/kHy1rRa4DBkd0uvc3IOknUgd6d0DvxW55b7IB8ZEWE4u9x76ucY5Uij8msbFv8=
+X-Received: by 2002:a2e:92d0:0:b0:2d3:93dd:c54b with SMTP id
+ k16-20020a2e92d0000000b002d393ddc54bmr1606888ljh.25.1709497293411; Sun, 03
+ Mar 2024 12:21:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240222-x1e80100-display-refactor-connector-v2-0-bd4197dfceab@linaro.org>
- <20240222-x1e80100-display-refactor-connector-v2-1-bd4197dfceab@linaro.org>
- <a90dcd83-d158-4ec1-9186-0658c108afef@linaro.org> <20240301175205.GB2438612-robh@kernel.org>
-In-Reply-To: <20240301175205.GB2438612-robh@kernel.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Sun, 3 Mar 2024 22:17:28 +0200
-Message-ID: <CAA8EJppVhMyA_QK_RzC_+M3dniBrm5wxUKeoeh0Dg2w++JoZ2g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: display: msm: dp-controller: document
- X1E80100 compatible
-To: Rob Herring <robh@kernel.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Abel Vesa <abel.vesa@linaro.org>, 
-	Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
-	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Kuogee Hsieh <quic_khsieh@quicinc.com>, Bjorn Andersson <andersson@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Johan Hovold <johan@kernel.org>, 
-	linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	freedreno@lists.freedesktop.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+References: <202403020457.RCJoQ3ts-lkp@intel.com> <87edctwr6y.ffs@tglx>
+ <87a5nhwpus.ffs@tglx> <87y1b0vp8m.ffs@tglx> <87sf18vdsq.ffs@tglx>
+ <87le70uwf0.ffs@tglx> <CAHk-=wiWhfdc4Sw2VBq_2nL2NDxmZS32xG4P7mBVwABGqUoJnw@mail.gmail.com>
+ <87edcruvja.ffs@tglx> <CAFULd4bVEUBEidTLbHNzRaJbSjXm99yC8LT=jdzFWb7xnuFH7g@mail.gmail.com>
+ <87bk7vuldh.ffs@tglx>
+In-Reply-To: <87bk7vuldh.ffs@tglx>
+From: Uros Bizjak <ubizjak@gmail.com>
+Date: Sun, 3 Mar 2024 21:21:21 +0100
+Message-ID: <CAFULd4arHT+_fy9_oUNpmsvyfVPGaeB_pdeuqVS3UTpP5R757A@mail.gmail.com>
+Subject: Re: arch/x86/include/asm/processor.h:698:16: sparse: sparse:
+ incorrect type in initializer (different address spaces)
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, kernel test robot <lkp@intel.com>, 
+	oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	Arjan van de Ven <arjan@linux.intel.com>, x86@kernel.org, 
+	Luc Van Oostenryck <luc.vanoostenryck@gmail.com>, 
+	Sparse Mailing-list <linux-sparse@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 1 Mar 2024 at 19:52, Rob Herring <robh@kernel.org> wrote:
+On Sun, Mar 3, 2024 at 9:10=E2=80=AFPM Thomas Gleixner <tglx@linutronix.de>=
+ wrote:
 >
-> On Tue, Feb 27, 2024 at 04:45:25PM +0100, Krzysztof Kozlowski wrote:
-> > On 22/02/2024 16:55, Abel Vesa wrote:
-> > > Add the X1E80100 to the list of compatibles and document the is-edp
-> > > flag. The controllers are expected to operate in DP mode by default,
-> > > and this flag can be used to select eDP mode.
-> > >
-> > > Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> > > ---
-> > >  Documentation/devicetree/bindings/display/msm/dp-controller.yaml | 6 ++++++
-> > >  1 file changed, 6 insertions(+)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/display/msm/dp-controller.yaml b/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
-> > > index ae53cbfb2193..ed11852e403d 100644
-> > > --- a/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
-> > > +++ b/Documentation/devicetree/bindings/display/msm/dp-controller.yaml
-> > > @@ -27,6 +27,7 @@ properties:
-> > >            - qcom,sdm845-dp
-> > >            - qcom,sm8350-dp
-> > >            - qcom,sm8650-dp
-> > > +          - qcom,x1e80100-dp
-> > >        - items:
-> > >            - enum:
-> > >                - qcom,sm8150-dp
-> > > @@ -73,6 +74,11 @@ properties:
-> > >        - description: phy 0 parent
-> > >        - description: phy 1 parent
-> > >
-> > > +  is-edp:
-> > > +    $ref: /schemas/types.yaml#/definitions/flag
-> > > +    description:
-> > > +      Tells the controller to switch to eDP mode
+> On Sun, Mar 03 2024 at 20:03, Uros Bizjak wrote:
+> > On Sun, Mar 3, 2024 at 5:31=E2=80=AFPM Thomas Gleixner <tglx@linutronix=
+de> wrote:
+> >> I did not follow the __set_gs work closely, so I don't know whether Ur=
+os
+> >> ever tried to actually mark the per CPU variable __set_gs right away,
+> >> which would obviously catch the above 'foo' nonsense.
 > >
+> > No, because [1]:
 > >
-> > DP controller cannot be edp, so property "is-edp" is confusing. Probably
-> > you want to choose some phy mode, so you should rather use "phy-mode"
-> > property. I am sure we've been here...
+> > "gcc does not provide a way to remove segment qualifiers, which is need=
+ed
+> > to use typeof() to create local instances of the per-cpu variable. For
+> > this reason, do not use the segment qualifier for per-cpu variables, an=
+d
+> > do casting using the segment qualifier instead."
 >
-> phy-mode belongs in the phy node though. Not that you couldn't look in
-> the phy node and see, but everyone likes all the properties they need
-> nicely packaged up in their driver's node.
+> Right. I just figured that out myself when playing with it in user
+> space.
 >
-> > Anyway, if you define completely new property without vendor prefix,
-> > that's a generic property, so you need to put it in some common schema
-> > for all Display Controllers, not only Qualcomm.
+> That's so sad because it would provide us compiler based __percpu
+> validation.
 
-Is there a generic schema for DisplayPort controllers? I think there
-is none at this point. We can probably add it, declaring is-edp
-property, link-frequencies, etc.
-However Mediatek already uses a different option to specify supported
-link frequencies.
+Unfortunately, the c compiler can't strip qualifiers, so typeof() is
+of limited use also when const and volatile qualifiers are used.
+Perhaps some extension could be introduced to c standard to provide an
+unqualified type, e.g. typeof_unqual().
 
+Uros.
+
+> Right now this simply does not work and __verify_pcp_ptr(ptr) is not
+> doing anything except when sparse looks at it.
 >
-> I'm trying to unsee what the driver is doing... Hard-coding the
-> connector type and some instance indices. Uhhhh! I'm sure I'm to blame
-> for rejecting those in DT.
-
-Once this patchset is accepted (in this or that or whatever else
-form), we will cleanup most of those hardcoded types.
-
+> Sigh.
 >
-> I've suggested connector nodes in the past. More generally, whatever is
-> attached at the other end (as it could be a bridge rather than a
-> connector) knows what mode is needed. It's simple negotiation. Each end
-> presents what they support. You take the union of the list(s) and get
-> the mode. If there's more than one, then the kernel or user gets to
-> choose.
-
-It's not that easy. First, probing of the bridge chain differs
-slightly depending on whether the controller is eDP or DP controller.
-eDP should use AUX BUS, while DP (currently) doesn't use it. More
-importantly, error conditions differ too. For example, in the DP case
-it is perfectly fine to have nothing attached to the controller. It
-just means that the display chain needs no additional handling and the
-HPD pin will be handled by the controller itself. In the eDP case if
-neither a panel nor a bridge are attached, it is considered to be an
-error and thus the driver will return probe error.
-
-> Qualcomm is not the only one with this problem. Solve it for everyone...
-
--- 
-With best wishes
-Dmitry
+>         tglx
+>
 
