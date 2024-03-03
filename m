@@ -1,127 +1,195 @@
-Return-Path: <linux-kernel+bounces-89903-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89904-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E61A86F718
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 21:56:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCEC986F71A
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 22:00:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0C021C20978
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 20:56:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F25EB2104B
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 21:00:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E4937A158;
-	Sun,  3 Mar 2024 20:56:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AY5rdt7v"
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 729237A146;
+	Sun,  3 Mar 2024 21:00:28 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2D00A957;
-	Sun,  3 Mar 2024 20:56:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00F4A1CA8F
+	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 21:00:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709499388; cv=none; b=JF96BBFj6NN7g9NwXMlCesQZnpIxWB94i03xFRnGTToXVJH6LCEMdg1QeJF780fmYWerusq+j/XpKJmTAQaD1yZKvgz4JFV93m81ZlvFsQrMo22QRah8h/kwYPKQVQYrHybUQWfw2iDUScPRk+tPupf+seZviqs1dUrJxEhh7+M=
+	t=1709499628; cv=none; b=mZjFFaZyMlFJDFUBWNZKIRT7PMbcsixlzb6+EuNa8emtaX+tmADjTbOZpp9w8FcOEvHrXNAXIJdoWRJRDybP00Dc//EM3aWPuz/mBhhqUoW4e/uUTWws+FPDUNhawhelcW+pmxEGeBKb+apIFYcGEmCzJl+tla66pnZwZF+yj1Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709499388; c=relaxed/simple;
-	bh=UbvcmCf/ZNBzClT52hYrifGzgp651ApHQ59cRO1SWR0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=maVFNZc3Omz4XQau+IJguzAHO7XG29PI3ZmjHFuaTN7BlGOkOgfs9soCG6ccxX5ErMJxF+gJUOpBmXrO+mtfSCAoU/fnYZIlWp+Bg53yUKd17vySmSeZUHP7VnAOVJ6qTLz7ocQtRaxwtj5M/4nBL7ld+rxzizBhFUvmkdMU2dY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AY5rdt7v; arc=none smtp.client-ip=209.85.128.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-60982a6d8a7so30518227b3.0;
-        Sun, 03 Mar 2024 12:56:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709499386; x=1710104186; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=lUlwWyeD8wtN0Yiye52/NFRnTVNfRkd0UskjSRBJusA=;
-        b=AY5rdt7vYYzEhYVBIS+9SqedVj/VFKSA0sgTjp//yC/BE6uX3+mCweJcG7aUI52wDx
-         BpIgLsTrlQR2eyegGbNmIc77WI0SL2mPCyksMM440d9OSfSY7L/+a8aw9/rNQdGglHmc
-         Wx3EoA/72g7LWY4gs+Xq0y3PqsulDB1LQQJpcmWIJhz1jJpJsjckUNi2/W49gJZf4LQ5
-         fDonOegLQyziuG28geZ+3k2HC72UaKAZBwNnxjQf09RoKVqNnGHvOEOiyM4ZsPdb7aPn
-         WXTYHQR76gr4B5P7od9NI13yDBMDa379qxLeyI8JUC8KW63k5i7w1LIw9n+VWH5YTQOH
-         dRvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709499386; x=1710104186;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lUlwWyeD8wtN0Yiye52/NFRnTVNfRkd0UskjSRBJusA=;
-        b=rsMhq5zdMlrRTLKdkqvDAkzqD5HEoXXhVHaYBVFkr2KNpnV5pyIA3lsl2NwKpF32CE
-         JX+Ft7FpE6Bv0ymoyrHUiRtcTB87wgqiuFO15a1TCCvW/QOmFKBrcETztC/KMFsiuy8d
-         13MsaWJtvDtb5exHBIZFqeVtx2phWJNYUSgCADMbeLLCqGgysTycAw7GgE2QkPa9gIYr
-         D197ZbO1ugyKw6PoeXRzPcMG08slQ32g6c2s7GTNRMRyhJIi7HKWrK5JWlhePS3ucxLK
-         okEY6CTxB/7VM/iI21DdomBuY0TU1szb/RyeuxmHmWcNwgee3LJzD1j0jhvvpB3nchnx
-         Q5IQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVkDltVaYIR7YDUpyC84yO//6vLUr7l6Vtk902/v2PZcjF7BJpiDXzDRmUeWg6yWBAkV0E/xNtY7m4s+U7bpmJs4TW3SfCDWaXGGHQ9tRpYI5E7wvD44Bl5iUctJCWUehaGUGS0jHunULPIOHFLOe5vrLJfsMLYnzKGPqHLONXX8Pbl7g4=
-X-Gm-Message-State: AOJu0YzhB49cCmuNZVsr8ieN2XULyPRULpMkg5/LsKi2Xlt/Mi2bfQCr
-	IjY29/bt3yefMpkvnQVDYfw1UKuNKyMHwkSxuN39c5IlHKOGPxJe
-X-Google-Smtp-Source: AGHT+IEMH2ZpOlzBOX/XP9oGNCEo7HCMfPSqirGENtbdV4d7lFuZmWbLldFKBVbQ602N2DaOmU0uVQ==
-X-Received: by 2002:a0d:cb10:0:b0:608:922:4001 with SMTP id n16-20020a0dcb10000000b0060809224001mr6370866ywd.5.1709499385764;
-        Sun, 03 Mar 2024 12:56:25 -0800 (PST)
-Received: from localhost ([2607:fb91:20ca:fa23:a05e:7311:56f7:3a04])
-        by smtp.gmail.com with ESMTPSA id h5-20020a81b645000000b006094292e834sm2245184ywk.75.2024.03.03.12.56.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Mar 2024 12:56:25 -0800 (PST)
-Date: Sun, 3 Mar 2024 12:56:21 -0800
-From: Yury Norov <yury.norov@gmail.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	Andy Shevchenko <andy@kernel.org>,
-	"geert@linux-m68k.org" <geert@linux-m68k.org>,
-	"robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"conor+dt@kernel.org" <conor+dt@kernel.org>,
-	"andrew@lunn.ch" <andrew@lunn.ch>,
-	"gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
-	"sebastian.hesselbarth@gmail.com" <sebastian.hesselbarth@gmail.com>,
-	"pavel@ucw.cz" <pavel@ucw.cz>, "lee@kernel.org" <lee@kernel.org>,
-	"linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v3 1/4] auxdisplay: Add 7-segment LED display driver
-Message-ID: <ZeTj9cRkafeps0dT@yury-ThinkPad>
-References: <20240301014203.2033844-1-chris.packham@alliedtelesis.co.nz>
- <20240301014203.2033844-2-chris.packham@alliedtelesis.co.nz>
- <ZeIb_TaKK1DE6l6U@smile.fi.intel.com>
- <f17adc70-be85-4be2-bbe2-336866907d68@alliedtelesis.co.nz>
- <CAHp75VfCt-3wOKykUNE8MnV9nHKvkbDY9vs25j559+cX-OudzQ@mail.gmail.com>
+	s=arc-20240116; t=1709499628; c=relaxed/simple;
+	bh=4K/6qawlxlLp5YPXg9nf1OpXPhPLHshxrMH66rS1Icg=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=tRW3Bsetku9UB47AQntD44lwHrKzgfIXU2KqsSzFtNFOGQfiLDv62DPOIRccndiMrCNlD8RKFo2K7xUwP8r5X8B3nSQpqQ+METI6DL40EkB8b6JhW9ONhrRhmlpINWKxVnzlADdenkF35IezZV48x0fmIOYg0h5SXB0tgxaYPbg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4241EC433C7;
+	Sun,  3 Mar 2024 21:00:26 +0000 (UTC)
+Date: Sun, 3 Mar 2024 16:00:24 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Sachin Sant <sachinp@linux.ibm.com>
+Subject: Re: [GIT PULL] tracing: Prevent trace_marker being bigger than
+ unsigned short
+Message-ID: <20240303160024.458d4f91@rorschach.local.home>
+In-Reply-To: <CAHk-=wiTGmAXfHiRB8ku4diLxRpN=Hac_q86=j65oiP3J5uXKg@mail.gmail.com>
+References: <20240302111244.3a1674be@gandalf.local.home>
+	<CAHk-=wj376WMgZ24wKGEWDs_ojNtod-LDZBedPzDYRRcY60UYA@mail.gmail.com>
+	<20240302145958.05aabdd2@rorschach.local.home>
+	<CAHk-=wgjhdRj1V847NTF4veMN_tCbrySiEHXO8RO3n05cNeXeA@mail.gmail.com>
+	<20240302154713.71e29402@rorschach.local.home>
+	<CAHk-=wioeo5vyEWUZcGBKMsf3jnjrnnHc3uJiV=JjSKPdvZOEw@mail.gmail.com>
+	<20240303075937.36fc6043@rorschach.local.home>
+	<CAHk-=wiLdWetJgKHB72VeDALZsjpggEyyuiZ2KmoY_g+3horwQ@mail.gmail.com>
+	<20240303140705.0f655e36@rorschach.local.home>
+	<CAHk-=wiTGmAXfHiRB8ku4diLxRpN=Hac_q86=j65oiP3J5uXKg@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHp75VfCt-3wOKykUNE8MnV9nHKvkbDY9vs25j559+cX-OudzQ@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Sun, Mar 03, 2024 at 10:35:03PM +0200, Andy Shevchenko wrote:
-> +Cc: Rasmus, Yury
-> 
-> On Sun, Mar 3, 2024 at 9:58 PM Chris Packham
-> <Chris.Packham@alliedtelesis.co.nz> wrote:
-> > On 2/03/24 07:18, Andy Shevchenko wrote:
-> 
-> ...
-> 
-> > >> +    DECLARE_BITMAP(values, 8);
-> > >> +    bitmap_zero(values, 8);
-> > > Why do you need this zeroing?
-> > >
-> > >> +    bitmap_set_value8(values, map_to_seg7(&map->map.seg7, linedisp->buf[0]), 0);
-> 
-> > Without the zeroing above GCC complains about use  of a potentially
-> > uninitialized variable here. I think because bitmap_set_value8() does &=
-> > and |=.
-> 
-> Hmm... Rasmus, Yury, do we have any ideas how to get rid of this redundancy?
+On Sun, 3 Mar 2024 12:09:37 -0800
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-DECLARE_BITMAP(values, 8) = { 0 };
+
+
+> 
+> Doing insane chunking in 1kB pieces was another "let's paper over the
+> symptom, not fix the problem".
+> 
+> And now you finally admit that the actual problem was that YOUR
+> PRECISION WAS STUPID TO BEGIN WITH.
+
+A little more background. I wanted my tracing buffer to take bigger
+events like perf does. Specifically to get stack traces from user
+space. perf allows for greater than PAGE_SIZE events, so I had to do
+the same to get this to work.
+
+The code was changed a bit which also allowed trace_marker to use the
+full buffer as well. I even used trace_marker to test the "large
+events" code.
+
+The problem that happened here was PowerPC's 64k PAGE_SIZE which also
+allowed the trace_marker to take a string that's 64K. I never did test
+that as I don't have any machines with 64k PAGE_SIZE. If I didn't add a
+trace_marker test to test a large string as well, I would never have
+seen this.
+
+> 
+> Do you really not see what the truly _fundamental_ problem here is?
+> 
+> Kernel code doesn't "paper over" stuff. We do things *right*. No more
+> of this crap.
+> 
+> You really need to take a deep look at what you are doing. I spend
+> more time on your pull requests than I want to, exactly because you
+> have had this pattern of doing something wrong in the first place, and
+> then adding MORE CODE to paper over all the problems that initial
+> wrong decision causes.
+> 
+> This was *exactly* the same same thing that happened on the tracefs
+> side. You did things wrong, and then you spent a lot of effort in
+> trying to patch up the resulting problems, instead of going back and
+> doing it *right*.
+
+This is different than tracefs. I actually do understand the code here,
+where as in tracefs there was a lot I didn't understand.
+
+The only reason I added a precision is that during the code change I
+truncated the string on the write due to a bug that didn't write the
+full event, and the print caused a crash due to the missing '\0'. I
+figured by adding a precision it would "harden" the code as the missing
+'\0' was a bug and should never happen by design.
+
+> 
+> And honestly, I still think that the fundamental mistake you have done
+> is to let people say "I want to have these big strings" and you just
+> roll over and say "sure, we'll create shit kernel code for you".
+
+Writing a bit over 4K isn't that crazy. Writing over 32K is, but that
+is only possible on PowerPC due to allocating PAGE_SIZE buffers that
+are 64K in size.
+
+> 
+> WTF do you think it's fine to say "let people do insane things"
+> instead of just telling people that no, we have sane and small limits.
+
+System calls are expensive, writing more in one call is better than
+writing lots of little calls. Again, 32K is stupid, but it was based on
+the kernel allocated buffer size.
+
+> 
+> As a maintainer, one of your jobs is to say "No, we're not doing crazy
+> stuff". I still think that having so big strings that this came up in
+> the first place is a sign of the deeper problem, and then the fact
+> that you had an insane and pointless precision field was just a small
+> implementation issue.
+
+BTW, I never did add any code change to allow for the large strings
+because someone asked me to. That was a side effect. Yes, people asked
+for it because it caused "funny output", and I told them sorry. And
+that's it.
+
+But to add code for the stack traces I changed the buffers to allow
+larger than 4K. The increase string size write was a side effect of that
+work. And it even helped to make an easy way to test large events as I
+used the trace_marker in my tests. I added a test to write into the
+trace_marker to test these large events as well.
+
+It wasn't until Sachin reported that the test caused the precision
+overflow on PowerPC. I didn't even know there was a way to write more
+than 32K.
+
+
+> 
+> Doing tracing in the kernel is not some kind of general-purpose thing.
+> It's ok - in fact, it's a really damn good idea - to just tell people
+> "yes, you can add strings, but dammit, there needs to be sanity to
+> it".
+> 
+> So I now tell you that you should
+> 
+>  (a) get rid of the stupid and nonsensical precision
+
+I can do that.
+
+> 
+>  (b) tell people that their string are limited (and that 4kB is an
+> _upper_ value to sane string lengths in the kernel)
+
+Well, I actually did tell people that. I just changed the code for
+other reasons that gave this "feature" as a side effect, and only on
+PowerPC does it get insanely large.
+
+> 
+>  (c) really fundamentally stop with the "paper over" things approach
+> to kernel programming
+> 
+> Large strings are not a "feature". They are a bug.
+> 
+> It's also sad that apparently your strings are counted, but you don't
+> count them very well, so instead of just using the count (which is
+> *much* cheaper) you end up using '%s' and do things until you hit a
+> NUL byte.  Guess what? All our printk infrastructure is designed for
+> small strings, so '%s' isn't exactly optimized, because we expected
+> sanity. It ends up in a loop that literally does things one byte at a
+> time.
+
+Note, this is the slow path, as it only happens on reading the trace or
+trace_pipe files. And again, these strings in most use cases are small.
+If someone cares about performance of the read, then they should read
+trace_pipe_raw which just reads the raw data without any string
+processing.
+
+-- Steve
 
