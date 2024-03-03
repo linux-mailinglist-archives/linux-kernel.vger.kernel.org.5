@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-89660-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89661-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C68A986F3CA
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 07:16:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41AA286F3CC
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 07:18:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2AABFB229B0
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 06:16:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8AA51F220C7
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 06:18:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F8EA8BE7;
-	Sun,  3 Mar 2024 06:16:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 601C4A958;
+	Sun,  3 Mar 2024 06:17:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UJ9cnsRb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jnh71ZnL"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2D156FD5
-	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 06:16:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1B9EA93A
+	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 06:17:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709446580; cv=none; b=p/Z8K1Oyzt/HBA9P/bO091duKypQGBsAtUR+a8CztrKlYfJRiW1oCh7GMg6AysH66oBgJTVGVYM+vP4EX6qJJDgaG4IEq8MTfiboji9q/MMotB95jmDUXyF0hDcvkwlDraYBkg8S5I67JiLdclRDMP4xXzIwEqdrTGy//XGn7yg=
+	t=1709446678; cv=none; b=C4i+qRWvGPD9NTGhdWUXsF0xMGsCBAuD5efV+b1e3EMSNJGe9sdnYRe1ngOdKs9DXRxe3wIJNkyJ5jcTcqdZVAUF7ikQvxmuCIOKBap+9n2pcIQCgqNXBRi9t7ULdcLlMkrsLGGbMZJwmxLlvXEe5AfT6pmwvx1o0OLYz9ZZ/6Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709446580; c=relaxed/simple;
-	bh=MDmzk7Y7KLtXakpc0plr7MLSv8GCZZhHgELtbBb0gkk=;
+	s=arc-20240116; t=1709446678; c=relaxed/simple;
+	bh=bDEK6c2BjoMhmUAk+RQsAlhDmAN/H7P6w4YunFmCdYI=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=CS25WocL1L+nORh0u7t0fstSztd30uDxbnUuAwj13P54rRRGetrhVayVUriparAnHm37xvEXZwlx6jv3Slo/7l/y5oH2R0nDeT62cwlQYnCDPjjyGMfoimAZP5fhKCzu6EcPw4dpkRw4xrE67epcWD7NE8FBcfEI+X60jVt0rQQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UJ9cnsRb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10F7CC433C7;
-	Sun,  3 Mar 2024 06:16:12 +0000 (UTC)
+	 MIME-Version:Content-Type; b=KumGG7AyASLZdoCggldRxZ0opzVZKLzSrNO28eOp8ByeZQ6jEDUSeeXuZvXKd+65gqTuDX8MBnfGHDtOI4kzseiqIVJVRqGlpGDnk0yQTfmPRYpP9Z3iSwA8UE2ow4vN9eptDaWTX4X8jvLPE5CtATedTscMBt/ZKraBmDOIImQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jnh71ZnL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57AB3C433C7;
+	Sun,  3 Mar 2024 06:17:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709446580;
-	bh=MDmzk7Y7KLtXakpc0plr7MLSv8GCZZhHgELtbBb0gkk=;
+	s=k20201202; t=1709446678;
+	bh=bDEK6c2BjoMhmUAk+RQsAlhDmAN/H7P6w4YunFmCdYI=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=UJ9cnsRb+a3U174a3rkoQfxHjDrXCoBZhX0+pkdVH0UHSThiVUBw4jPa1RwdDTsmz
-	 S5hgzAK3iT9jFwvlZV3A9//21O/Ds8VVrewEMWxgJk98TJ9oCNjypmTUxlab+YpqK1
-	 lMCnr1NIrmHXXx+UJcVWPVlwS48Qok73quDT1MVCin36PadrCGLPg7WZsbn8Nl7oKP
-	 /uKWHUJjHWCqOji9hhC1kqmRfM/l1dkwod2J27GiIM97xYRpvz9a8ocKYishmm9D8u
-	 682Nvj/5mxSeufo1MPlv4GztaH/PyhS6ENtzCZhSvMWnfzcBpIjmTV4Z8+mzTDxsw2
-	 gdYmmZxXmVL+A==
+	b=Jnh71ZnLqC9WXN3z6qJc1CKgt7N3C//7qq9exzhPmlknaIdEn2eHqQCs/RQppJeEx
+	 kZs6Iy/bADDiN+2S+0ayWEAuQeWUKZAVQUjRzFtLxhOpafXsq83uhpZJZsKQvfcXIo
+	 OlCtVmUQf5CD+vF+A9PoL0h3TEYWNGZAVPkksB6cgFwUfOu9a/ShxhTEnnsobZIh0F
+	 3wkDHTfqTKHYLz9z30eVS/lWQZzGMSdX7tZeEBp2MeDh64kcyMSE14JZp0+S34fB2A
+	 CwGZwmuI32T3O+UC6MPw4rhPI7QeOIMCLymLmbOzC4OCTO9aDBFE8HFzc3ePOQCdqJ
+	 mKe7UI7PvEBLQ==
 X-Mailer: emacs 29.2 (via feedmail 11-beta-1 I)
 From: Aneesh Kumar K.V <aneesh.kumar@kernel.org>
-To: "Huang, Ying" <ying.huang@intel.com>
-Cc: Donet Tom <donettom@linux.ibm.com>,
-	Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+To: Michal Hocko <mhocko@suse.com>, "Huang, Ying" <ying.huang@intel.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Donet Tom <donettom@linux.ibm.com>, linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org,
 	Dave Hansen <dave.hansen@linux.intel.com>,
 	Mel Gorman <mgorman@suse.de>,
 	Ben Widawsky <ben.widawsky@intel.com>,
-	Feng Tang <feng.tang@intel.com>, Michal Hocko <mhocko@kernel.org>,
+	Feng Tang <feng.tang@intel.com>,
 	Andrea Arcangeli <aarcange@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
 	Ingo Molnar <mingo@redhat.com>, Rik van Riel <riel@surriel.com>,
@@ -61,16 +61,20 @@ Cc: Donet Tom <donettom@linux.ibm.com>,
 	Hugh Dickins <hughd@google.com>,
 	Kefeng Wang <wangkefeng.wang@huawei.com>,
 	Suren Baghdasaryan <surenb@google.com>
-Subject: Re: [PATCH 3/3] mm/numa_balancing:Allow migrate on protnone
- reference with MPOL_PREFERRED_MANY policy
-In-Reply-To: <87ttm3o9db.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Subject: Re: [PATCH 1/3] mm/mempolicy: Use the already fetched local variable
+In-Reply-To: <ZdRq9EM1mDFXBiiO@tiehlicka>
 References: <9c3f7b743477560d1c5b12b8c111a584a2cc92ee.1708097962.git.donettom@linux.ibm.com>
- <8d7737208bd24e754dc7a538a3f7f02de84f1f72.1708097962.git.donettom@linux.ibm.com>
- <877cizppsa.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <87sf1nzi3s.fsf@kernel.org>
- <87ttm3o9db.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Date: Sun, 03 Mar 2024 11:46:09 +0530
-Message-ID: <878r2zlu1i.fsf@kernel.org>
+ <20240218133851.22c22b55460e866a099be5ce@linux-foundation.org>
+ <63a0f7c4-3c3f-4097-9a24-d1e3fc7b6030@linux.ibm.com>
+ <20240219172130.82a16c1ebecbf8ba86a8987d@linux-foundation.org>
+ <21f343fa-84a7-4539-91e2-6fc963dbfb62@kernel.org>
+ <87frxnps8w.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <7097ff95-6077-4744-a770-b90d224c0c9b@kernel.org>
+ <b599bfe5-1c4d-4750-b0d6-a086e1c8a34c@kernel.org>
+ <8734tnppls.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <ZdRq9EM1mDFXBiiO@tiehlicka>
+Date: Sun, 03 Mar 2024 11:47:47 +0530
+Message-ID: <875xy3ltys.fsf@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,186 +83,75 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain
 
-"Huang, Ying" <ying.huang@intel.com> writes:
+Michal Hocko <mhocko@suse.com> writes:
 
-> Aneesh Kumar K.V <aneesh.kumar@kernel.org> writes:
+> On Tue 20-02-24 15:22:07, Huang, Ying wrote:
+> [...]
+>> This isn't an issue now, because mpol_misplaced() are always called with
+>> PTL held.  And, we can still keep thiscpu local variable.
 >
->> "Huang, Ying" <ying.huang@intel.com> writes:
->>
->>> Donet Tom <donettom@linux.ibm.com> writes:
->>>
->>>> commit bda420b98505 ("numa balancing: migrate on fault among multiple bound
->>>> nodes") added support for migrate on protnone reference with MPOL_BIND
->>>> memory policy. This allowed numa fault migration when the executing node
->>>> is part of the policy mask for MPOL_BIND. This patch extends migration
->>>> support to MPOL_PREFERRED_MANY policy.
->>>>
->>>> Currently, we cannot specify MPOL_PREFERRED_MANY with the mempolicy flag
->>>> MPOL_F_NUMA_BALANCING. This causes issues when we want to use
->>>> NUMA_BALANCING_MEMORY_TIERING. To effectively use the slow memory tier,
->>>> the kernel should not allocate pages from the slower memory tier via
->>>> allocation control zonelist fallback. Instead, we should move cold pages
->>>> from the faster memory node via memory demotion. For a page allocation,
->>>> kswapd is only woken up after we try to allocate pages from all nodes in
->>>> the allocation zone list. This implies that, without using memory
->>>> policies, we will end up allocating hot pages in the slower memory tier.
->>>>
->>>> MPOL_PREFERRED_MANY was added by commit b27abaccf8e8 ("mm/mempolicy: add
->>>> MPOL_PREFERRED_MANY for multiple preferred nodes") to allow better
->>>> allocation control when we have memory tiers in the system. With
->>>> MPOL_PREFERRED_MANY, the user can use a policy node mask consisting only
->>>> of faster memory nodes. When we fail to allocate pages from the faster
->>>> memory node, kswapd would be woken up, allowing demotion of cold pages
->>>> to slower memory nodes.
->>>>
->>>> With the current kernel, such usage of memory policies implies we can't
->>>> do page promotion from a slower memory tier to a faster memory tier
->>>> using numa fault. This patch fixes this issue.
->>>>
->>>> For MPOL_PREFERRED_MANY, if the executing node is in the policy node
->>>> mask, we allow numa migration to the executing nodes. If the executing
->>>> node is not in the policy node mask but the folio is already allocated
->>>> based on policy preference (the folio node is in the policy node mask),
->>>> we don't allow numa migration. If both the executing node and folio node
->>>> are outside the policy node mask, we allow numa migration to the
->>>> executing nodes.
->>>>
->>>> Signed-off-by: Aneesh Kumar K.V (IBM) <aneesh.kumar@kernel.org>
->>>> Signed-off-by: Donet Tom <donettom@linux.ibm.com>
->>>> ---
->>>>  mm/mempolicy.c | 28 ++++++++++++++++++++++++++--
->>>>  1 file changed, 26 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
->>>> index 73d698e21dae..8c4c92b10371 100644
->>>> --- a/mm/mempolicy.c
->>>> +++ b/mm/mempolicy.c
->>>> @@ -1458,9 +1458,10 @@ static inline int sanitize_mpol_flags(int *mode, unsigned short *flags)
->>>>  	if ((*flags & MPOL_F_STATIC_NODES) && (*flags & MPOL_F_RELATIVE_NODES))
->>>>  		return -EINVAL;
->>>>  	if (*flags & MPOL_F_NUMA_BALANCING) {
->>>> -		if (*mode != MPOL_BIND)
->>>> +		if (*mode == MPOL_BIND || *mode == MPOL_PREFERRED_MANY)
->>>> +			*flags |= (MPOL_F_MOF | MPOL_F_MORON);
->>>> +		else
->>>>  			return -EINVAL;
->>>> -		*flags |= (MPOL_F_MOF | MPOL_F_MORON);
->>>>  	}
->>>>  	return 0;
->>>>  }
->>>> @@ -2463,6 +2464,23 @@ static void sp_free(struct sp_node *n)
->>>>  	kmem_cache_free(sn_cache, n);
->>>>  }
->>>>  
->>>> +static inline bool mpol_preferred_should_numa_migrate(int exec_node, int folio_node,
->>>> +					    struct mempolicy *pol)
->>>> +{
->>>> +	/* if the executing node is in the policy node mask, migrate */
->>>> +	if (node_isset(exec_node, pol->nodes))
->>>> +		return true;
->>>> +
->>>> +	/* If the folio node is in policy node mask, don't migrate */
->>>> +	if (node_isset(folio_node, pol->nodes))
->>>> +		return false;
->>>> +	/*
->>>> +	 * both the folio node and executing node are outside the policy nodemask,
->>>> +	 * migrate as normal numa fault migration.
->>>> +	 */
->>>> +	return true;
->>>
->>> Why?  This may cause some unexpected result.  For example, pages may be
->>> distributed among multiple sockets unexpectedly.  So, I prefer the more
->>> conservative policy, that is, only migrate if this node is in
->>> pol->nodes.
->>>
->>
->> This will only have an impact if the user specifies
->> MPOL_F_NUMA_BALANCING. This means that the user is explicitly requesting
->> for frequently accessed memory pages to be migrated. Memory policy
->> MPOL_PREFERRED_MANY is able to allocate pages from nodes outside of
->> policy->nodes. For the specific use case that I am interested in, it
->> should be okay to restrict it to policy->nodes. However, I am wondering
->> if this is too restrictive given the definition of MPOL_PREFERRED_MANY.
->
-> IMHO, we can start with some consecutive way and expand it if it's
-> proved necessary.
+> yes, this is the case but it would be better if we made that assumption
+> official by lockdep_assert_held
 >
 
-Is this good?
+How about this folded into this patch?
 
-1 file changed, 14 insertions(+), 34 deletions(-)
-mm/mempolicy.c | 48 ++++++++++++++----------------------------------
+2 files changed, 12 insertions(+), 4 deletions(-)
+mm/memory.c    |  6 ++++--
+mm/mempolicy.c | 10 ++++++++--
 
-modified   mm/mempolicy.c
-@@ -2464,23 +2464,6 @@ static void sp_free(struct sp_node *n)
- 	kmem_cache_free(sn_cache, n);
+modified   mm/memory.c
+@@ -4879,9 +4879,11 @@ static vm_fault_t do_fault(struct vm_fault *vmf)
+ 	return ret;
  }
  
--static inline bool mpol_preferred_should_numa_migrate(int exec_node, int folio_node,
--					    struct mempolicy *pol)
--{
--	/* if the executing node is in the policy node mask, migrate */
--	if (node_isset(exec_node, pol->nodes))
--		return true;
--
--	/* If the folio node is in policy node mask, don't migrate */
--	if (node_isset(folio_node, pol->nodes))
--		return false;
--	/*
--	 * both the folio node and executing node are outside the policy nodemask,
--	 * migrate as normal numa fault migration.
--	 */
--	return true;
--}
--
- /**
-  * mpol_misplaced - check whether current folio node is valid in policy
-  *
-@@ -2533,29 +2516,26 @@ int mpol_misplaced(struct folio *folio, struct vm_fault *vmf,
- 		break;
+-int numa_migrate_prep(struct folio *folio, struct vm_area_struct *vma,
++int numa_migrate_prep(struct folio *folio, struct vm_fault *vmf,
+ 		      unsigned long addr, int page_nid, int *flags)
+ {
++	struct vm_area_struct *vma = vmf->vma;
++
+ 	folio_get(folio);
  
- 	case MPOL_BIND:
--		/* Optimize placement among multiple nodes via NUMA balancing */
-+	case MPOL_PREFERRED_MANY:
-+		/*
-+		 * Even though MPOL_PREFERRED_MANY can allocate pages outside
-+		 * policy nodemask we don't allow numa migration to nodes
-+		 * outside policy nodemask for now. This is done so that if we
-+		 * want demotion to slow memory to happen, before allocating
-+		 * from some DRAM node say 'x', we will end up using a
-+		 * MPOL_PREFERRED_MANY mask excluding node 'x'. In such scenario
-+		 * we should not promote to node 'x' from slow memory node.
-+		 */
- 		if (pol->flags & MPOL_F_MORON) {
-+			/*
-+			 * Optimize placement among multiple nodes
-+			 * via NUMA balancing
-+			 */
- 			if (node_isset(thisnid, pol->nodes))
- 				break;
- 			goto out;
- 		}
+ 	/* Record the current PID acceesing VMA */
+@@ -4893,7 +4895,7 @@ int numa_migrate_prep(struct folio *folio, struct vm_area_struct *vma,
+ 		*flags |= TNF_FAULT_LOCAL;
+ 	}
  
--		if (node_isset(curnid, pol->nodes))
--			goto out;
--		z = first_zones_zonelist(
--				node_zonelist(thisnid, GFP_HIGHUSER),
--				gfp_zone(GFP_HIGHUSER),
--				&pol->nodes);
--		polnid = zone_to_nid(z->zone);
--		break;
--
--	case MPOL_PREFERRED_MANY:
--		if (pol->flags & MPOL_F_MORON) {
--			if (!mpol_preferred_should_numa_migrate(thisnid, curnid, pol))
--				goto out;
--			break;
--		}
--
- 		/*
- 		 * use current page if in policy nodemask,
- 		 * else select nearest allowed node, if any.
+-	return mpol_misplaced(folio, vma, addr);
++	return mpol_misplaced(folio, vmf, addr);
+ }
+ 
+ static vm_fault_t do_numa_page(struct vm_fault *vmf)
+modified   mm/mempolicy.c
+@@ -2495,18 +2495,24 @@ static inline bool mpol_preferred_should_numa_migrate(int exec_node, int folio_n
+  * Return: NUMA_NO_NODE if the page is in a node that is valid for this
+  * policy, or a suitable node ID to allocate a replacement folio from.
+  */
+-int mpol_misplaced(struct folio *folio, struct vm_area_struct *vma,
++int mpol_misplaced(struct folio *folio, struct vm_fault *vmf,
+ 		   unsigned long addr)
+ {
+ 	struct mempolicy *pol;
+ 	pgoff_t ilx;
+ 	struct zoneref *z;
+ 	int curnid = folio_nid(folio);
++	struct vm_area_struct *vma = vmf->vma;
+ 	int thiscpu = raw_smp_processor_id();
+-	int thisnid = cpu_to_node(thiscpu);
++	int thisnid = numa_node_id();
+ 	int polnid = NUMA_NO_NODE;
+ 	int ret = NUMA_NO_NODE;
+ 
++	/*
++	 * Make sure ptl is held so that we don't preempt and we
++	 * have a stable smp processor id
++	 */
++	lockdep_assert_held(vmf->ptl);
+ 	pol = get_vma_policy(vma, addr, folio_order(folio), &ilx);
+ 	if (!(pol->flags & MPOL_F_MOF))
+ 		goto out;
 
 [back]
-.
+ 
 
