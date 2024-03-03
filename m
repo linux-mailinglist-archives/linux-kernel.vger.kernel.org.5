@@ -1,123 +1,130 @@
-Return-Path: <linux-kernel+bounces-89905-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89906-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDCAB86F71E
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 22:03:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAA2086F720
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 22:08:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A48A281018
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 21:03:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CFD36B2112E
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 21:08:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93AB47A15A;
-	Sun,  3 Mar 2024 21:03:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8770C7A151;
+	Sun,  3 Mar 2024 21:08:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ODy+0TXT"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (1024-bit key) header.d=iitb.ac.in header.i=@iitb.ac.in header.b="iKpm+6L0"
+Received: from smtp1.iitb.ac.in (smtpd9.iitb.ac.in [103.21.126.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 163C52F844;
-	Sun,  3 Mar 2024 21:03:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0B5C1CA8F
+	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 21:07:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.21.126.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709499796; cv=none; b=UmObmAb96x9FXVgdNPOTE+H4A/fQsqgn/t7awUL5fSqYzNhsigvaUt2U+QwjFIj4CG+YeXk9t5LXw3XvPT7QX5kaXa2aPx/TjxXgoWrkYiDcF6az7omY1TBXDiiHs1UrwxxiqTWxrn1+rTk7GunCKKUNBYwPxXxn2Is6D4eYOCI=
+	t=1709500079; cv=none; b=bVZAddS+YloTHOtGPCpqGAlSwkKzZFnc3JOzLo6B40cfpJ+9LN6cvY8D/3LszmcEj+LVYpAlAiI0gBSLJ/PpvBw/6/VV0HzkhHznJfmkYysFjDIlsUtejoM+somEFeFMfataJhQjxm6R5Z+ucno+JmwnSijhGay0cnyucHzHrLs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709499796; c=relaxed/simple;
-	bh=Q1SlwDX2IPHS63/TeBvyFRgdP7QEewyNH57bHy4Jg+0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BEECHYi6FFX8dYp63Ug5/zrbNre6fWUsfjYLkxoIcHYcLAqCm2+VjpmltwqSrpystzBviJz/i1wLGnDMWFxD7WJrOgz3QivhN3eQGwxXdp8YN5f+lJbMFOnWW6NdKmZhV0PUTtPfcBiHwGyuB5GcYS0GP4K5ycij7UpXuzuLKwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ODy+0TXT; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 423KWKDb012105;
-	Sun, 3 Mar 2024 21:03:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=1O7XTeLo80WEdjsYTG8xbnDjbah2VcPOv5sifLZlx30=;
- b=ODy+0TXTIVuv//Eh1lRYBkiFzQZY9UH8a1YRWsYpAhgO8Y05nHgu8HryhXRGj2ePKtLh
- 77SkuSAejLTjPJBaFKvOzbQAqraL7+0P37Q4OF9gMk2s7rq9/dHzQXNTT70sqoN/VNll
- N/pjvz37PnmL2mHzSJxigmErDbHUsFRwWZYJAk9pCz/5kdk/wcKBTJsh7V8B43uddvtP
- s8VbRRj7LoZy3LZ2spLwHDH9VIIafnJCEdLwJDOZeitB9MM+48vr8SJZrB/8g/C5/6Os
- SaObH4V9P59eVfLYC0X9EMlpXbYOBfqzv9bhVDVmu0LGLUbIW1mDcCCMTUat6VEaFdyA sw== 
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wn0b0gehf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 03 Mar 2024 21:03:07 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 423IEN9R010910;
-	Sun, 3 Mar 2024 21:03:07 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wmh51v375-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 03 Mar 2024 21:03:07 +0000
-Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
-	by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 423L34wd14942878
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sun, 3 Mar 2024 21:03:06 GMT
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 436EB58070;
-	Sun,  3 Mar 2024 21:03:04 +0000 (GMT)
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 393AF58055;
-	Sun,  3 Mar 2024 21:03:03 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Sun,  3 Mar 2024 21:03:03 +0000 (GMT)
-Message-ID: <24151f46-e7b3-434b-88e3-b53ac783eb13@linux.ibm.com>
-Date: Sun, 3 Mar 2024 16:03:02 -0500
+	s=arc-20240116; t=1709500079; c=relaxed/simple;
+	bh=cKZF4odXE/it1RO6myqlNO63lhy9YJ56gjTn3CJcxsg=;
+	h=MIME-Version:Date:From:To:Cc:Subject:Message-ID:Content-Type; b=ZIZ+SUi3E+METMieIX7CKme/MxeJhy6RTtKT8wHdB5od/NsfWlHgl8Hsqqo4svWHJ3Y7R2IN9t6XFhx9cdBCsm83xcvQmjoD2GETsxFVk/FsSkqflzC2xVmJJrv4HgI3PnIz9OLRnSfrBS3Q2xUGaZz+gyY3fozoTMZnQ++qs5M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=iitb.ac.in; spf=pass smtp.mailfrom=iitb.ac.in; dkim=pass (1024-bit key) header.d=iitb.ac.in header.i=@iitb.ac.in header.b=iKpm+6L0; arc=none smtp.client-ip=103.21.126.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=iitb.ac.in
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iitb.ac.in
+Received: from ldns1.iitb.ac.in (ldns1.iitb.ac.in [10.200.12.1])
+	by smtp1.iitb.ac.in (Postfix) with SMTP id 7EFB8101CA97
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 02:28:05 +0530 (IST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.iitb.ac.in 7EFB8101CA97
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=iitb.ac.in; s=mail;
+	t=1709499485; bh=cKZF4odXE/it1RO6myqlNO63lhy9YJ56gjTn3CJcxsg=;
+	h=Date:From:To:Cc:Subject:From;
+	b=iKpm+6L0Pc/00Or8X8OssRsxjQMhwYDrKz9bODytEVcXCnbzyt9G3u0q6xNDhdgW2
+	 W6LzUUdcHPyOQMck9zdE13H8weaVvST9hM7LbwX0LuMeDfa4Vqqo59Ej4X1ujyTL59
+	 io9vXgCXQN0aGdHnnIUb3qQ8udXfX27VCEIvzsi4=
+Received: (qmail 10329 invoked by uid 510); 4 Mar 2024 02:28:05 +0530
+X-Qmail-Scanner-Diagnostics: from 10.200.1.25 by ldns1 (envelope-from <210100011@iitb.ac.in>, uid 501) with qmail-scanner-2.11
+ spamassassin: 3.4.1. mhr: 1.0. {clamdscan: 0.101.4/26439} 
+ Clear:RC:1(10.200.1.25):SA:0(0.0/7.0):. Processed in 2.173844 secs; 04 Mar 2024 02:28:05 +0530
+X-Spam-Level: 
+X-Spam-Pyzor: Reported 0 times.
+X-Envelope-From: 210100011@iitb.ac.in
+X-Qmail-Scanner-Mime-Attachments: |
+X-Qmail-Scanner-Zip-Files: |
+Received: from unknown (HELO ldns1.iitb.ac.in) (10.200.1.25)
+  by ldns1.iitb.ac.in with SMTP; 4 Mar 2024 02:28:03 +0530
+Received: from wm1.iitb.ac.in (wm1.iitb.ac.in [10.200.17.1])
+	by ldns1.iitb.ac.in (Postfix) with ESMTP id 0F460360072;
+	Mon,  4 Mar 2024 02:28:03 +0530 (IST)
+Received: from webmail-sso.iitb.ac.in (localhost [IPv6:::1])
+	by wm1.iitb.ac.in (Postfix) with ESMTP id 0B2DC608E11;
+	Mon,  4 Mar 2024 02:28:03 +0530 (IST)
+Received: from [10.9.9.42]
+ by webmail.iitb.ac.in
+ with HTTP (HTTP/1.1 POST); Mon, 04 Mar 2024 02:28:02 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 11/12] crypto: asymmetric_keys - Adjust signature size
- calculation for NIST P521
-Content-Language: en-US
-To: Lukas Wunner <lukas@wunner.de>
-Cc: keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        linux-kernel@vger.kernel.org, saulo.alessandre@tse.jus.br
-References: <20240301022007.344948-1-stefanb@linux.ibm.com>
- <20240301022007.344948-12-stefanb@linux.ibm.com>
- <20240303184745.GA9392@wunner.de>
-From: Stefan Berger <stefanb@linux.ibm.com>
-In-Reply-To: <20240303184745.GA9392@wunner.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Date: Mon, 04 Mar 2024 02:28:02 +0530
+From: Aman Sharma <210100011@iitb.ac.in>
+To: gregkh@linuxfoundation.org
+Cc: devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Staging: pi433: Updated bitrate range from datasheet
+Message-ID: <ddbd681a7504ae8b8fd4dc69270e804d@iitb.ac.in>
+X-Sender: 210100011@iitb.ac.in
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 01j3a4jF8HoaSlz1sMeq-Ray_McknfV9
-X-Proofpoint-GUID: 01j3a4jF8HoaSlz1sMeq-Ray_McknfV9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-03_11,2024-03-01_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- suspectscore=0 mlxlogscore=872 phishscore=0 impostorscore=0
- lowpriorityscore=0 adultscore=0 spamscore=0 bulkscore=0 malwarescore=0
- clxscore=1015 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2403030178
 
+ From a0528708b209739f0d566401bdd428e215abf366 Mon Sep 17 00:00:00 2001
+ From: Aman Sharma <amansharma612002@gmail.com>
+Date: Mon, 4 Mar 2024 00:44:06 +0530
+Subject: [PATCH] Staging: pi433: Updated bitrate range from datasheet
 
+Updated bitrate range for FSK and OOK modulation from datasheet.
 
-On 3/3/24 13:47, Lukas Wunner wrote:
-> On Thu, Feb 29, 2024 at 09:20:06PM -0500, Stefan Berger wrote:
->> Adjust the calculation of the maximum signature size for support of
->> NIST P521. While existing curves may prepend a 0 byte to their coordinates
->> (to make the number positive), NIST P521 will not do this since only the
->> first bit in the most significant byte is used.
->>
->> If the encoding of the x & y coordinates requires more than 128 bytes then
->> an additional byte is needed for the encoding of the length. Take this into
->> account when calculating the maximum signature size.
->>
->> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> 
-> Reviewed-by: Lukas Wunner <lukas@wunner.de>
-> 
-Thanks. I have to adjust the commit text and comment in the patch, 
-though. It should be '... requires at least 128 bytes then ...'
+Signed-off-by: Aman Sharma<amansharma6122002@gmail.com>
+---
+  drivers/staging/pi433/Documentation/pi433.txt | 6 ++++--
+  drivers/staging/pi433/TODO                    | 1 -
+  2 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/staging/pi433/Documentation/pi433.txt 
+b/drivers/staging/pi433/Documentation/pi433.txt
+index 4a0d34b4ad37..9ce7282ef6f8 100644
+--- a/drivers/staging/pi433/Documentation/pi433.txt
++++ b/drivers/staging/pi433/Documentation/pi433.txt
+@@ -78,7 +78,8 @@ rf params:
+  		Allowed values: 433050000...434790000
+  	bit_rate
+  		bit rate used for transmission.
+-		Allowed values: #####
++		Allowed values (For FSK): 1200...320000
++		Allowed values (For OOK): 1200...32768
+  	dev_frequency
+  		frequency deviation in case of FSK.
+  		Allowed values: 600...500000
+@@ -169,7 +170,8 @@ rf params:
+  		Allowed values: 433050000...434790000
+  	bit_rate
+  		bit rate used for transmission.
+-		Allowed values: #####
++		Allowed values (For FSK): 1200...320000
++		Allowed values (For OOK): 1200...32768
+  	dev_frequency
+  		frequency deviation in case of FSK.
+  		Allowed values: 600...500000
+diff --git a/drivers/staging/pi433/TODO b/drivers/staging/pi433/TODO
+index 63a40bfcc67e..61ed3a1578bc 100644
+--- a/drivers/staging/pi433/TODO
++++ b/drivers/staging/pi433/TODO
+@@ -2,4 +2,3 @@
+  * still TODOs, annotated in the code
+  * currently the code introduces new IOCTLs. I'm afraid this is a bad 
+idea.
+    -> Replace this with another interface, hints are welcome!
+-* Some missing data (marked with ###) needs to be added in the 
+documentation
+-- 
+2.34.1
 
