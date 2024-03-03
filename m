@@ -1,242 +1,121 @@
-Return-Path: <linux-kernel+bounces-89655-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89656-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DF9186F3A5
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 05:49:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD1F586F3A7
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 05:51:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 870F5281BED
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 04:49:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EE201F21CB3
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 04:51:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD7FF6FD5;
-	Sun,  3 Mar 2024 04:49:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3992379D2;
+	Sun,  3 Mar 2024 04:51:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="vJvCPUow"
-Received: from smtp-fw-52005.amazon.com (smtp-fw-52005.amazon.com [52.119.213.156])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BH6uByEa"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FAF316FF4C;
-	Sun,  3 Mar 2024 04:49:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.156
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B331753BE;
+	Sun,  3 Mar 2024 04:51:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709441368; cv=none; b=qgK9QULMBRJVNrxjvWW0nBczscrrQWCUmPILZJ21Wu/0MzLHPDTiYTQL15Cv2ZNmI3bpRLhABTnEIyR9MO3ymdD9QISSZZSg2rZ2MQKjVKgfdjS9dqLljLVwAq1hNVPtUAf6Uv677/nmyuxse0X3l1qQrLqUwb8L49jPFtGkuZU=
+	t=1709441493; cv=none; b=Uk9Dng+4FeWaQFtndKlIZfm/HigD55C7JVOVofST0tJGDLX7IFecaqXuUlY7Hll87xMU+zbOWIix4f72exNJyPgN/yaTLYtqRwT3mPHYoeBBMUYx8hWdl9QcjoHPrYdiQWXloEBKwUFNbfpr8f2l+dQa5MZRmpnODYgmFlWUpKI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709441368; c=relaxed/simple;
-	bh=/mMBea5qOP8qQVAp1Iyo3m+jJso1XFmBlu1283c3SAs=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=XQl021RW8FNpk1esOc6BPb0bdzlhZspSE3xsCeWPbuSHwlcX/e/d9IfpKQdRA7aNkuly+Ia3yRu3uHfYsCi27MhZ4C5C7+56vVsb2Fv2UGnlWp7fC8N2pJN7Ggyr9Nz052TVYHT6+Gmjpq9AiKupWnzlNfA7oqU7prx4UmxHE8I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=vJvCPUow; arc=none smtp.client-ip=52.119.213.156
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1709441366; x=1740977366;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=EcAkR74T37oaMFgDuTvxPlS3yLJ8+qDqwNv46qMyVV4=;
-  b=vJvCPUowcs9mjlz38yg5SeXnN9n2yrVsQ2PWvYwE1JC3irXJ7UFzDF58
-   bwN80YFRBad1u5MDlHwy4uKyILPE0/UcCVcuMNUKADS5EiqnDdDsGAJrx
-   auyeJGGx7DTWSRZTG+/u9vT63BACf57TqVD5dK0GOBinGxICpufgExClZ
-   k=;
-X-IronPort-AV: E=Sophos;i="6.06,200,1705363200"; 
-   d="scan'208";a="638173303"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
-  by smtp-border-fw-52005.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2024 04:49:23 +0000
-Received: from EX19MTAEUB002.ant.amazon.com [10.0.43.254:33619]
- by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.9.254:2525] with esmtp (Farcaster)
- id 0f94f4e3-8c8b-42ed-9481-e718686ab622; Sun, 3 Mar 2024 04:49:21 +0000 (UTC)
-X-Farcaster-Flow-ID: 0f94f4e3-8c8b-42ed-9481-e718686ab622
-Received: from EX19D026EUB004.ant.amazon.com (10.252.61.64) by
- EX19MTAEUB002.ant.amazon.com (10.252.51.59) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Sun, 3 Mar 2024 04:49:21 +0000
-Received: from uc3ecf78c6baf56.ant.amazon.com (10.187.170.45) by
- EX19D026EUB004.ant.amazon.com (10.252.61.64) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Sun, 3 Mar 2024 04:49:18 +0000
-From: Andrew Paniakin <apanyaki@amazon.com>
-To: <stable@vger.kernel.org>
-CC: Benjamin Herrenschmidt <benh@amazon.com>, Andrew Panyakin
-	<apanyaki@amazon.com>, Maximilian Heyne <mheyne@amazon.de>, Boris Ostrovsky
-	<boris.ostrovsky@oracle.com>, Juergen Gross <jgross@suse.com>, "Stefano
- Stabellini" <sstabellini@kernel.org>, Sasha Levin <sashal@kernel.org>, "Greg
- Kroah-Hartman" <gregkh@linuxfoundation.org>, Julien Grall
-	<jgrall@amazon.com>, <xen-devel@lists.xenproject.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: [PATCH 5.4] xen/events: close evtchn after mapping cleanup
-Date: Sat, 2 Mar 2024 20:45:39 -0800
-Message-ID: <20240303044539.2673085-1-apanyaki@amazon.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1709441493; c=relaxed/simple;
+	bh=DiznAYK71m8KjN3kngmKzjZ08qDdBKWha23BeRkoj2U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GzZG/0e9IDcbemzcUc/ctcAgKMLDawIHLxdU0/eFJkNCnx5shxD2OrmBdRk/NvEXHtpTS37hSFphBs1wfisV83OyWUFGBBgLgeE2tdR8bBt61TvDA16tnClS2oWkzv7XIM19OaYw1e4ibBN11cRdu9OoCBA3e0cHJ1untL4D/4c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BH6uByEa; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709441492; x=1740977492;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=DiznAYK71m8KjN3kngmKzjZ08qDdBKWha23BeRkoj2U=;
+  b=BH6uByEalP3xReEcXzs7RGVVqK58iHJnXN5Hkf0I1weTCBB2Q7QqWInB
+   c8SnAaSWQSjZmqNOFZfaxjgo3PhxIf6iUTHCUnk1q2Qh1v0jauxlXOGzX
+   XTVktWsNSLgBiFHyZ55K7L3U6mbnDY947lbfwtdJDNZFaWoGe2GylDrld
+   GmuWLAcA9U29gAtgSGG4EPo9p9dZt8mbpfl6sRiAcsO7a4wYuLXRxcbA6
+   SDHsxV4mm6A0CJcvhar+qP1qH0cCpmGQLSGvEabEG+Noui+XlSoZhQtpl
+   sZlLsEOF4Yujq0MsBqkZdkucwf5OmUM+C5yKc+I/2mMlELabk6Ltij2k4
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11001"; a="7723694"
+X-IronPort-AV: E=Sophos;i="6.06,200,1705392000"; 
+   d="scan'208";a="7723694"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2024 20:51:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,200,1705392000"; 
+   d="scan'208";a="39621421"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by fmviesa001.fm.intel.com with ESMTP; 02 Mar 2024 20:51:29 -0800
+Date: Sun, 3 Mar 2024 12:47:19 +0800
+From: Xu Yilun <yilun.xu@linux.intel.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, seanjc@google.com,
+	michael.roth@amd.com, isaku.yamahata@intel.com,
+	thomas.lendacky@amd.com
+Subject: Re: [PATCH 11/21] KVM: x86/tdp_mmu: Init role member of struct
+ kvm_mmu_page at allocation
+Message-ID: <ZeQA12SlPPSgLBGG@yilunxu-OptiPlex-7050>
+References: <20240227232100.478238-1-pbonzini@redhat.com>
+ <20240227232100.478238-12-pbonzini@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D035UWA004.ant.amazon.com (10.13.139.109) To
- EX19D026EUB004.ant.amazon.com (10.252.61.64)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240227232100.478238-12-pbonzini@redhat.com>
 
-From: Andrew Panyakin <apanyaki@amazon.com>
+On Tue, Feb 27, 2024 at 06:20:50PM -0500, Paolo Bonzini wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
+> 
+> Refactor tdp_mmu_alloc_sp() and tdp_mmu_init_sp and eliminate
+                                  ^
+tdp_mmu_init_sp() 
 
-From: Maximilian Heyne <mheyne@amazon.de>
+> tdp_mmu_init_child_sp().  Currently tdp_mmu_init_sp() (or
+> tdp_mmu_init_child_sp()) sets kvm_mmu_page.role after tdp_mmu_alloc_sp()
+> allocating struct kvm_mmu_page and its page table page.  This patch makes
+> tdp_mmu_alloc_sp() initialize kvm_mmu_page.role instead of
+> tdp_mmu_init_sp().
+> 
+> To handle private page tables, argument of is_private needs to be passed
+> down.  Given that already page level is passed down, it would be cumbersome
+> to add one more parameter about sp. Instead replace the level argument with
+> union kvm_mmu_page_role.  Thus the number of argument won't be increased
 
-Commit fa765c4b4aed2d64266b694520ecb025c862c5a9 upstream
+This section is hard to understand. I'm lost at which functions are
+mentioned here that took the level argument and should be replaced by
+role.
 
-shutdown_pirq and startup_pirq are not taking the
-irq_mapping_update_lock because they can't due to lock inversion. Both
-are called with the irq_desc->lock being taking. The lock order,
-however, is first irq_mapping_update_lock and then irq_desc->lock.
+> and more info about sp can be passed down.
 
-This opens multiple races:
-- shutdown_pirq can be interrupted by a function that allocates an event
-  channel:
+My understanding of the change is:
 
-  CPU0                        CPU1
-  shutdown_pirq {
-    xen_evtchn_close(e)
-                              __startup_pirq {
-                                EVTCHNOP_bind_pirq
-                                  -> returns just freed evtchn e
-                                set_evtchn_to_irq(e, irq)
-                              }
-    xen_irq_info_cleanup() {
-      set_evtchn_to_irq(e, -1)
-    }
-  }
+Extra handling is need for Allocation of private page tables, so
+earlier caculate the kvm_mmu_page_role for the sp and pass it to
+tdp_mmu_alloc_sp().  Since the sp.role could be decided on sp
+allocation, in turn remove the role argument for tdp_mmu_init_sp(), also
+eliminate the helper tdp_mmu_init_child_sp().
 
-  Assume here event channel e refers here to the same event channel
-  number.
-  After this race the evtchn_to_irq mapping for e is invalid (-1).
+> 
+> For private sp, secure page table will be also allocated in addition to
+> struct kvm_mmu_page and page table (spt member).  The allocation functions
+> (tdp_mmu_alloc_sp() and __tdp_mmu_alloc_sp_for_split()) need to know if the
+> allocation is for the conventional page table or private page table.  Pass
+> union kvm_mmu_role to those functions and initialize role member of struct
+        ^
 
-- __startup_pirq races with __unbind_from_irq in a similar way. Because
-  __startup_pirq doesn't take irq_mapping_update_lock it can grab the
-  evtchn that __unbind_from_irq is currently freeing and cleaning up. In
-  this case even though the event channel is allocated, its mapping can
-  be unset in evtchn_to_irq.
+Should be kvm_mmu_page_role
 
-The fix is to first cleanup the mappings and then close the event
-channel. In this way, when an event channel gets allocated it's
-potential previous evtchn_to_irq mappings are guaranteed to be unset already.
-This is also the reverse order of the allocation where first the event
-channel is allocated and then the mappings are setup.
-
-On a 5.10 kernel prior to commit 3fcdaf3d7634 ("xen/events: modify internal
-[un]bind interfaces"), we hit a BUG like the following during probing of NVMe
-devices. The issue is that during nvme_setup_io_queues, pci_free_irq
-is called for every device which results in a call to shutdown_pirq.
-With many nvme devices it's therefore likely to hit this race during
-boot because there will be multiple calls to shutdown_pirq and
-startup_pirq are running potentially in parallel.
-
-  ------------[ cut here ]------------
-  blkfront: xvda: barrier or flush: disabled; persistent grants: enabled; indirect descriptors: enabled; bounce buffer: enabled
-  kernel BUG at drivers/xen/events/events_base.c:499!
-  invalid opcode: 0000 [#1] SMP PTI
-  CPU: 44 PID: 375 Comm: kworker/u257:23 Not tainted 5.10.201-191.748.amzn2.x86_64 #1
-  Hardware name: Xen HVM domU, BIOS 4.11.amazon 08/24/2006
-  Workqueue: nvme-reset-wq nvme_reset_work
-  RIP: 0010:bind_evtchn_to_cpu+0xdf/0xf0
-  Code: 5d 41 5e c3 cc cc cc cc 44 89 f7 e8 2b 55 ad ff 49 89 c5 48 85 c0 0f 84 64 ff ff ff 4c 8b 68 30 41 83 fe ff 0f 85 60 ff ff ff <0f> 0b 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 0f 1f 44 00 00
-  RSP: 0000:ffffc9000d533b08 EFLAGS: 00010046
-  RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000006
-  RDX: 0000000000000028 RSI: 00000000ffffffff RDI: 00000000ffffffff
-  RBP: ffff888107419680 R08: 0000000000000000 R09: ffffffff82d72b00
-  R10: 0000000000000000 R11: 0000000000000000 R12: 00000000000001ed
-  R13: 0000000000000000 R14: 00000000ffffffff R15: 0000000000000002
-  FS:  0000000000000000(0000) GS:ffff88bc8b500000(0000) knlGS:0000000000000000
-  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  CR2: 0000000000000000 CR3: 0000000002610001 CR4: 00000000001706e0
-  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-  Call Trace:
-   ? show_trace_log_lvl+0x1c1/0x2d9
-   ? show_trace_log_lvl+0x1c1/0x2d9
-   ? set_affinity_irq+0xdc/0x1c0
-   ? __die_body.cold+0x8/0xd
-   ? die+0x2b/0x50
-   ? do_trap+0x90/0x110
-   ? bind_evtchn_to_cpu+0xdf/0xf0
-   ? do_error_trap+0x65/0x80
-   ? bind_evtchn_to_cpu+0xdf/0xf0
-   ? exc_invalid_op+0x4e/0x70
-   ? bind_evtchn_to_cpu+0xdf/0xf0
-   ? asm_exc_invalid_op+0x12/0x20
-   ? bind_evtchn_to_cpu+0xdf/0xf0
-   ? bind_evtchn_to_cpu+0xc5/0xf0
-   set_affinity_irq+0xdc/0x1c0
-   irq_do_set_affinity+0x1d7/0x1f0
-   irq_setup_affinity+0xd6/0x1a0
-   irq_startup+0x8a/0xf0
-   __setup_irq+0x639/0x6d0
-   ? nvme_suspend+0x150/0x150
-   request_threaded_irq+0x10c/0x180
-   ? nvme_suspend+0x150/0x150
-   pci_request_irq+0xa8/0xf0
-   ? __blk_mq_free_request+0x74/0xa0
-   queue_request_irq+0x6f/0x80
-   nvme_create_queue+0x1af/0x200
-   nvme_create_io_queues+0xbd/0xf0
-   nvme_setup_io_queues+0x246/0x320
-   ? nvme_irq_check+0x30/0x30
-   nvme_reset_work+0x1c8/0x400
-   process_one_work+0x1b0/0x350
-   worker_thread+0x49/0x310
-   ? process_one_work+0x350/0x350
-   kthread+0x11b/0x140
-   ? __kthread_bind_mask+0x60/0x60
-   ret_from_fork+0x22/0x30
-  Modules linked in:
-  ---[ end trace a11715de1eee1873 ]---
-
-Fixes: d46a78b05c0e ("xen: implement pirq type event channels")
-Co-debugged-by: Andrew Panyakin <apanyaki@amazon.com>
-Signed-off-by: Maximilian Heyne <mheyne@amazon.de>
-[apanyaki: backport to v5.4-stable]
-Signed-off-by: Andrew Paniakin <apanyaki@amazon.com>
----
-Compare to upstream patch this one does not have close_evtchn flag
-because there is no need to handle static event channels.
-This feature was added only in 58f6259b7a08f ("xen/evtchn: Introduce new
-IOCTL to bind static evtchn")
-
- drivers/xen/events/events_base.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/xen/events/events_base.c b/drivers/xen/events/events_base.c
-index 91806dc1236d..f8554d9a9f28 100644
---- a/drivers/xen/events/events_base.c
-+++ b/drivers/xen/events/events_base.c
-@@ -825,8 +825,8 @@ static void shutdown_pirq(struct irq_data *data)
- 		return;
- 
- 	do_mask(info, EVT_MASK_REASON_EXPLICIT);
--	xen_evtchn_close(evtchn);
- 	xen_irq_info_cleanup(info);
-+	xen_evtchn_close(evtchn);
- }
- 
- static void enable_pirq(struct irq_data *data)
-@@ -869,8 +869,6 @@ static void __unbind_from_irq(unsigned int irq)
- 	if (VALID_EVTCHN(evtchn)) {
- 		unsigned int cpu = cpu_from_irq(irq);
- 
--		xen_evtchn_close(evtchn);
--
- 		switch (type_from_irq(irq)) {
- 		case IRQT_VIRQ:
- 			per_cpu(virq_to_irq, cpu)[virq_from_irq(irq)] = -1;
-@@ -883,6 +881,7 @@ static void __unbind_from_irq(unsigned int irq)
- 		}
- 
- 		xen_irq_info_cleanup(info);
-+		xen_evtchn_close(evtchn);
- 	}
- 
- 	xen_free_irq(irq);
--- 
-2.40.1
-
+Thanks,
+Yilun
 
