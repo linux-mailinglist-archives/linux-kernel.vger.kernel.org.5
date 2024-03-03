@@ -1,82 +1,109 @@
-Return-Path: <linux-kernel+bounces-89868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBC9086F6B8
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 20:15:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFD3986F6BB
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 20:21:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE5981C204F7
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 19:15:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B415281B1D
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 19:21:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91B9479DA0;
-	Sun,  3 Mar 2024 19:15:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6DA979DAB;
+	Sun,  3 Mar 2024 19:20:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="SybIzYFr"
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RnHyqoXf"
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B4938BE8;
-	Sun,  3 Mar 2024 19:15:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 642597605D;
+	Sun,  3 Mar 2024 19:20:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709493320; cv=none; b=qQC9aTkgzTrxkjA+MPSd6xNwYq+WVMUFAgjjocS6s7FbscpQvwLHkSnwm7aYa3oAW5SQd+joEJ6HDxk3A0adY8aSd5IUzos7GGE/gF/V/hWv8/0y6k6vskJvRmQ2iWEq785+MZOtLQE0VeKTDAvRUWRjWCOmqLhkOy0V6BgXe3I=
+	t=1709493656; cv=none; b=puHx5vFD1WaqFHJzFXBh2epYWsC2wpcw/RVKq0HZIGIBW8diIwCXTHA+fb1zBE5bs+uwJ4ceEI6IqzIjSQSOVqdiToPmMXvwhnjrOb19A12ipG5pK6T/iY26N7JS1He7sVB62cLVOcB8OCq1VB+O7Kylp8bimiHxUMn0ZX+PyQE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709493320; c=relaxed/simple;
-	bh=N4PBUmj2kADEi2NGvZOma7ycbVJgN0KLWkB8ZTVI1mk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hRK+eXcNQV48ym1IloqPc7jDvf0rRhYAWheIabnAnEuMgIWVpb+Kn887NF3EMjXZpNZUP55mux3v4w7XCsDqDf21vXmkIW0Pj06QRngEQ8ig5ndaF7abNcP3r4yqFewENXomCr3VyCpcFcJDLBB+i+rhm5f67cqtwxhtHJnaPZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=SybIzYFr; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=LjcLQ1z0lBbXZGI5dOfu2yMBvuw6O+vnpyNO4pY2cE8=; b=SybIzYFrqtEV5t5VBq8JC6bP8+
-	QciPKhO6Fby1a5lYdnX5Dbxg/YwZDvt+xEaIVI87Ku41u7KR5CTOwfWl0svbfmdes6dnOJEYFiTZw
-	3vp8LCxLGk0Ag6j8T83bIWb7b7qu3B/qmiADMOCrCDYjkDLX8B4KVnqXTNYT1ItU+A4yttp8Qq93/
-	4DOzkfQNKVHrIHEQSzA8fzO+G9Fm7XM1Lkxo/TeVtrr0tR3bQSVKFOCXVx86UO6Fj1OrvfRK3MLl+
-	0oKOvkkMpffoIDBmOl6v0PwQTQWh533Y9ink/aErIIbCDNRVPyQtvjzDu/TCZA7rnBED1Ne7EbYdk
-	giVUFwpw==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rgrIj-002CRg-2H;
-	Sun, 03 Mar 2024 19:15:10 +0000
-Date: Sun, 3 Mar 2024 19:15:09 +0000
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: kernel test robot <lkp@intel.com>
-Cc: Kees Cook <keescook@chromium.org>, oe-kbuild-all@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: WARNING: modpost: "strcat" [lib/strcat_kunit.ko] has no CRC!
-Message-ID: <20240303191509.GA524366@ZenIV>
-References: <202403040332.AgBq81MC-lkp@intel.com>
+	s=arc-20240116; t=1709493656; c=relaxed/simple;
+	bh=q19qy03OqV1sYE/Cd6Ro7zu5hMUu18O2FfzTZl9cEB8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RwbCNet3yyl0pJGEHI19QZZnoZh1cGzFvLGOhxQ46Mr2engvJmPraCxKNwIcNyAK/fPUTUl/JBt+3UP1nmCvEeHM3+6YhN1NRi2tgfilVaymu0Tey448X/ncQ3MI/ZSI/jQgsTgDZ79HbvXPt24SYhGxNVqOImy5VhpgrBorTn4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RnHyqoXf; arc=none smtp.client-ip=209.85.208.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d269b2ff48so42223151fa.3;
+        Sun, 03 Mar 2024 11:20:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709493652; x=1710098452; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rZADT8Xzso2kMaQmTmzt66RpPyIczD7PKHVuaIw0k74=;
+        b=RnHyqoXfQ8kvrUm406dh2G3WVbB332NL1koEPebuuQB2L3OBtLWI6SKFan5ne18kuZ
+         jKWIZadtibLHR637GLhInou174grbMprVduTiX9CfCV0j+keen/wirsF6Jt63+3othIx
+         Oa2PoUnKDjAa0ZlDT78H3NxDEIfNYnLOg1HG9DJgwAjPK07oWS+v9mQ9DNJeRbFN5CBo
+         ODGv9HuzPlzXtFFh9DszUi85cNiSZMl3LM1OI3tZa7PaJq0UoJbAlWRJXkHNeBFr9DXS
+         6y13ap5Jat1ebT4VzEXmyEcLeLTEA2vsjakcExSfiVQ1sifLPLGcpOBnJuFCI2ndna0B
+         uFKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709493652; x=1710098452;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rZADT8Xzso2kMaQmTmzt66RpPyIczD7PKHVuaIw0k74=;
+        b=ByDlskXq5lGc7RACPUWG6mw/ot63F5iaSNQIuzxQ5PwH2J0apY7TgoilNKLZA/dfie
+         32djxdSJYXyZVmz+5M6HcmCNA0yvdK2w+ScszkA4K3txd6zU9bs1u0C79/YtAYZiaI0E
+         99S+QaTKH4mMgL8Z19faxlrPM2ItmpDKQkoA/vemgY9ApPtIOmcfSJS4hWa4D1jNghlp
+         pVdmXc6WP5D5hBkW7848uIJYUKBh2sS8XBlFUJXCXO+SZDfIitpMOFpN0efmdhGVjmB2
+         495z1e1e8RSVm0i5fo+3XsRotf3g+Bb9lheJgahytaRMDM61gOK+1kFCEdcAQFytuZ4w
+         gCKA==
+X-Forwarded-Encrypted: i=1; AJvYcCUGxmLlJEAtLakwtTwGFAPpDukrhFTyl5LUqCgy6fmAtDpvrJ8eOgI9tggi/thjjFwJYTaRGQh5yUEPE37uQ+d6FMNNfclv1V4AkbyElBbguHg/rrHxM30UjTGlhb9kPnxfgNrW9dVsXdM=
+X-Gm-Message-State: AOJu0Yx6Jo3S7mT7gcpV7hjnTuKmqc6gbu6ui0QXdhpqiwYikPk6LhC5
+	/oZQeWmJgv75BY1rgiRavV5L12iKh1S2dSgJwZ82ttJTm/YxJL6K
+X-Google-Smtp-Source: AGHT+IFaRQCUN34EwaoDCNtYgQgn2C2N7m/q35LNxEAYuhgraGSJL5V239YFxz5M40XaQeNYvy+UEw==
+X-Received: by 2002:a2e:7a12:0:b0:2d2:ca55:be46 with SMTP id v18-20020a2e7a12000000b002d2ca55be46mr4753304ljc.34.1709493652209;
+        Sun, 03 Mar 2024 11:20:52 -0800 (PST)
+Received: from localhost.localdomain (c83-255-24-248.bredband.tele2.se. [83.255.24.248])
+        by smtp.googlemail.com with ESMTPSA id y10-20020a2e9d4a000000b002d3c466adc7sm68438ljj.15.2024.03.03.11.20.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Mar 2024 11:20:51 -0800 (PST)
+From: Jonathan Bergh <bergh.jonathan@gmail.com>
+To: mchehab@kernel.org
+Cc: mcgrof@kernel.org,
+	linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Jonathan Bergh <bergh.jonathan@gmail.com>
+Subject: [PATCH 0/9] staging: media: av7110: These patches address various code style and formatting issues in the av7110 driver
+Date: Sun,  3 Mar 2024 20:20:31 +0100
+Message-Id: <20240303192040.8116-1-bergh.jonathan@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202403040332.AgBq81MC-lkp@intel.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Mar 04, 2024 at 03:09:04AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   04b8076df2534f08bb4190f90a24e0f7f8930aca
-> commit: 3bf301e1ab85e18ed0e337ce124dc71d6d7b5fd7 string: Add Kunit tests for strcat() family
-> date:   10 months ago
-> config: alpha-randconfig-r032-20221115 (https://download.01.org/0day-ci/archive/20240304/202403040332.AgBq81MC-lkp@intel.com/config)
-> compiler: alpha-linux-gcc (GCC) 13.2.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240304/202403040332.AgBq81MC-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202403040332.AgBq81MC-lkp@intel.com/
+The following patches fix a number of code style issues identified by
+checkpatch in the av7110 driver.
 
-See 8a4a2705ed98 "alpha: fix modversions for strcpy() et.al."
-in git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git #work.alpha
+Jonathan Bergh (9):
+  staging: media: av7110: Fix formatting problem where trailing statements
+    should be on a new line
+  staging: media: av7110: Remove braces for single line statement blocks
+  staging: media: av7110: Remove spaces between function name and
+    opening parenthesis
+  staging: media: av7110: Fix formatting of pointers to meet coding
+    style guidelines
+  staging: media: av7110: Fix block comments to meet code style
+    guidelines
+  staging: media: av7110: Remove extra whitespace before opening '['s
+  staging: media: av7110: Remove extra whitespace before ','
+  staging: media: av7110: Ensure whitespace ahead of opening brace '{'
+  staging: media: av7110: Ensure newline after variable declarations
+
+ drivers/staging/media/av7110/sp8870.c | 136 +++++++++++++-------------
+ 1 file changed, 70 insertions(+), 66 deletions(-)
+
+-- 
+2.40.1
 
 
