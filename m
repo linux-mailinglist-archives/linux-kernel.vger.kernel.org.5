@@ -1,45 +1,46 @@
-Return-Path: <linux-kernel+bounces-89801-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89800-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B788886F5E6
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 16:32:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93E0986F5E3
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 16:31:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 09D8AB22A05
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 15:32:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25135B225AF
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 15:31:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A118D67E8A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4643E67C7D;
 	Sun,  3 Mar 2024 15:31:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="qSBoFGGm"
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="STo5rBOq"
 Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9941E5A107;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47DED67C43;
 	Sun,  3 Mar 2024 15:31:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709479893; cv=none; b=ik2hEOg8TGy26MmcESy3uWbPHMa3DvgxnFhdp3oM5GrCgQJObfHsoyh3oXAfhT+GDzlEPxoUTqnU9wGzYDuV6ZB0x9DN+XzLLGJ9PvhlfnPbLkSjEyqn1Akw9Odo8Z3q3HxA6UZNEK2CIcr3l+ODKeDaRX4cMIxUPPDQImjIFdo=
+	t=1709479892; cv=none; b=ZwbDIymB/V9P9p0EH8Y2zydrKiIVZz1ix/wCOZiicGfZSNLHr6gG6Nu260CHEeOkwo8ciEf1ky+Uut7AHKdp4CBHU6GiDhrjcVM9m615N0zPBChZixDtPO6UudN0uL7Zc2VSBJQ5e6dENgah52qJeOEuE9YGVOeRgXPwtbo22zE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709479893; c=relaxed/simple;
-	bh=7Y+sg6xU/tnRXb7nijX/qTcZu9YebnvPyPbqD2+B3oc=;
+	s=arc-20240116; t=1709479892; c=relaxed/simple;
+	bh=vO0wi2by1WM0BWnFkPRqBVKMUBA1OoHp/KPmP50MDPk=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=LFEqHrQbs5HVUddafAtxPkvg+kErF6/cRJdMRJciNjMIp+ck15Ia/n1xFxv8PNY6IFDdlGCOQIx83254RLoOf2VFKUOys8PkzPbJKkD2/SPpxhpAp10p6yGBIWQGaOP0oJ5JSlRclrb/B8tfCOhxPZ0LKNC6Mdwu4MURdqnFUQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=qSBoFGGm; arc=none smtp.client-ip=159.69.126.157
+	 In-Reply-To:To:Cc; b=cDHoCX/y3a7You53ezbFYQdnH4Vz0Ay6osBKDEljqKN919zLo6uOgbMgh1wD8VRJH5yVRo+4OXtqyLf4BVr07TPQIi82nG38CmBQd/wvK5UTGSPbv3rgCWS9lm/XBJP4oAkmAH8+wPeyNOmhQEwldah/4JZ1dI0sobZ80DXk68g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=STo5rBOq; arc=none smtp.client-ip=159.69.126.157
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
 	s=mail; t=1709479880;
-	bh=7Y+sg6xU/tnRXb7nijX/qTcZu9YebnvPyPbqD2+B3oc=;
+	bh=vO0wi2by1WM0BWnFkPRqBVKMUBA1OoHp/KPmP50MDPk=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=qSBoFGGmRDRvcBmdFarxZfB6CRYQi137tHupqZF9EWxtpaBPBOwUoC20rfFZAO/uq
-	 pJbuKtX5zxcrYjLkLSpk1H2LjNfHk8piSbazm+d9J8uytHCANIyC/iG6CuMc2ej277
-	 kQDEZaI7GJu14tYkKHbt++UDSxhVe5rlTdqWUyHs=
+	b=STo5rBOqunq7z5IG7wu5dKvIA21c5NhAPYn8+cuq24n/Jhmfbey52WnUd3saXvOib
+	 lmFqOc0+d6dojbXEDmVKLFlriXFtVfStoMX7D/euAS4ubVg79IbwHhQfxNc28sfB3C
+	 lKlB7Js9uLTD4BntdbzoS2fbU5Vf/V3dGNaI1avQ=
 From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date: Sun, 03 Mar 2024 16:31:13 +0100
-Subject: [PATCH v2 1/4] power: supply: mm8013: fix "not charging" detection
+Date: Sun, 03 Mar 2024 16:31:14 +0100
+Subject: [PATCH v2 2/4] power: supply: core: ease special formatting
+ implementations
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -48,7 +49,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20240303-power_supply-charge_behaviour_prop-v2-1-8ebb0a7c2409@weissschuh.net>
+Message-Id: <20240303-power_supply-charge_behaviour_prop-v2-2-8ebb0a7c2409@weissschuh.net>
 References: <20240303-power_supply-charge_behaviour_prop-v2-0-8ebb0a7c2409@weissschuh.net>
 In-Reply-To: <20240303-power_supply-charge_behaviour_prop-v2-0-8ebb0a7c2409@weissschuh.net>
 To: Sebastian Reichel <sre@kernel.org>, Hans de Goede <hdegoede@redhat.com>, 
@@ -57,73 +58,57 @@ Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
  Sebastian Reichel <sebastian.reichel@collabora.com>, 
  =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1709479879; l=2437;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1709479879; l=1698;
  i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=7Y+sg6xU/tnRXb7nijX/qTcZu9YebnvPyPbqD2+B3oc=;
- b=IQvGhFBz5UJ3o+kOa80uOHlJwACcG9eD17Q1U+K31JZAr2mT1CIU5BeoN15u290SdZ83ox6S8
- N2XHc5u5mhOBfFp7yyPtJNSJ8C2Q7UBqtgG6bVtYx1hrhLL4x7i1Zam
+ bh=vO0wi2by1WM0BWnFkPRqBVKMUBA1OoHp/KPmP50MDPk=;
+ b=a4Tl17+Sqj9JWs4YaN8gTyUAG/AsZ3gSSPoZt8UeygTkJQEzuF9NsdqZb1pGUJMgoyw2rQ7Tg
+ Zn8LkgaBgGiBhXTaqmL8u+iil5YwHxL5grGwjfDu4HtLuCyrnXTJjEd
 X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
  pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
 
-The charge_behaviours property is meant as a control-knob that can be
-changed by the user.
+By moving the conditional into the default-branch of the switch new
+additions to the switch won't have to bypass the conditional.
 
-Page 23 of [0] which documents the flag CHG_INH as follows:
+This makes it easier to implement those special cases like the upcoming
+change to the formatting of "charge_behaviour".
 
-  CHG_INH : Charge Inhibit      When the current is more than or equal to charge
-                                threshold current,
-                                charge inhibit temperature (upper/lower limit) ：1
-                                charge permission temperature or the current is
-                                less than charge threshold current ：0
-
-So this is pure read-only information which is better represented as
-POWER_SUPPLY_STATUS_NOT_CHARGING.
-
-[0] https://product.minebeamitsumi.com/en/product/category/ics/battery/fuel_gauge/parts/download/__icsFiles/afieldfile/2023/07/12/1_download_01_12.pdf
-
+Suggested-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/lkml/53082075-852f-4698-b354-ed30e7fd2683@redhat.com/
 Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
 ---
- drivers/power/supply/mm8013.c | 13 ++-----------
- 1 file changed, 2 insertions(+), 11 deletions(-)
+ drivers/power/supply/power_supply_sysfs.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/power/supply/mm8013.c b/drivers/power/supply/mm8013.c
-index caa272b03564..20c1651ca38e 100644
---- a/drivers/power/supply/mm8013.c
-+++ b/drivers/power/supply/mm8013.c
-@@ -71,7 +71,6 @@ static int mm8013_checkdevice(struct mm8013_chip *chip)
+diff --git a/drivers/power/supply/power_supply_sysfs.c b/drivers/power/supply/power_supply_sysfs.c
+index 977611e16373..10fec411794b 100644
+--- a/drivers/power/supply/power_supply_sysfs.c
++++ b/drivers/power/supply/power_supply_sysfs.c
+@@ -298,11 +298,6 @@ static ssize_t power_supply_show_property(struct device *dev,
+ 		}
+ 	}
  
- static enum power_supply_property mm8013_battery_props[] = {
- 	POWER_SUPPLY_PROP_CAPACITY,
--	POWER_SUPPLY_PROP_CHARGE_BEHAVIOUR,
- 	POWER_SUPPLY_PROP_CHARGE_FULL,
- 	POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN,
- 	POWER_SUPPLY_PROP_CHARGE_NOW,
-@@ -103,16 +102,6 @@ static int mm8013_get_property(struct power_supply *psy,
- 
- 		val->intval = regval;
- 		break;
--	case POWER_SUPPLY_PROP_CHARGE_BEHAVIOUR:
--		ret = regmap_read(chip->regmap, REG_FLAGS, &regval);
--		if (ret < 0)
--			return ret;
+-	if (ps_attr->text_values_len > 0 &&
+-	    value.intval < ps_attr->text_values_len && value.intval >= 0) {
+-		return sysfs_emit(buf, "%s\n", ps_attr->text_values[value.intval]);
+-	}
 -
--		if (regval & MM8013_FLAG_CHG_INH)
--			val->intval = POWER_SUPPLY_CHARGE_BEHAVIOUR_INHIBIT_CHARGE;
--		else
--			val->intval = POWER_SUPPLY_CHARGE_BEHAVIOUR_AUTO;
--		break;
- 	case POWER_SUPPLY_PROP_CHARGE_FULL:
- 		ret = regmap_read(chip->regmap, REG_FULL_CHARGE_CAPACITY, &regval);
- 		if (ret < 0)
-@@ -187,6 +176,8 @@ static int mm8013_get_property(struct power_supply *psy,
+ 	switch (psp) {
+ 	case POWER_SUPPLY_PROP_USB_TYPE:
+ 		ret = power_supply_show_usb_type(dev, psy->desc,
+@@ -312,7 +307,12 @@ static ssize_t power_supply_show_property(struct device *dev,
+ 		ret = sysfs_emit(buf, "%s\n", value.strval);
+ 		break;
+ 	default:
+-		ret = sysfs_emit(buf, "%d\n", value.intval);
++		if (ps_attr->text_values_len > 0 &&
++				value.intval < ps_attr->text_values_len && value.intval >= 0) {
++			ret = sysfs_emit(buf, "%s\n", ps_attr->text_values[value.intval]);
++		} else {
++			ret = sysfs_emit(buf, "%d\n", value.intval);
++		}
+ 	}
  
- 		if (regval & MM8013_FLAG_DSG)
- 			val->intval = POWER_SUPPLY_STATUS_DISCHARGING;
-+		else if (regval & MM8013_FLAG_CHG_INH)
-+			val->intval = POWER_SUPPLY_STATUS_NOT_CHARGING;
- 		else if (regval & MM8013_FLAG_CHG)
- 			val->intval = POWER_SUPPLY_STATUS_CHARGING;
- 		else if (regval & MM8013_FLAG_FC)
+ 	return ret;
 
 -- 
 2.44.0
