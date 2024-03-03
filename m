@@ -1,95 +1,205 @@
-Return-Path: <linux-kernel+bounces-89642-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89641-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DBCA86F37C
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 04:14:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFA0886F37A
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 04:13:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE34C283A52
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 03:14:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39DEE1F21908
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 03:13:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 974555CB5;
-	Sun,  3 Mar 2024 03:14:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64B88567F;
+	Sun,  3 Mar 2024 03:13:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="C8UF+y9x"
-Received: from out162-62-57-49.mail.qq.com (out162-62-57-49.mail.qq.com [162.62.57.49])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="g56thN9y";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="JZdoEKmB"
+Received: from wfout5-smtp.messagingengine.com (wfout5-smtp.messagingengine.com [64.147.123.148])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44A787F
-	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 03:14:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D0DA7F;
+	Sun,  3 Mar 2024 03:13:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709435663; cv=none; b=HLK0sMAXZtIdfl/yuELgx4/JgCONmK3ma5Vck3LXQMRtqseYu4lujwpFt3Bxvzvxoco7qlLDGxL7wf+vvC7DbSat+bCOvspNVxyUb3Ak4HbANA1+3sbSkaEk+VNoJuS9jHOGXZ8URE4vfwmofWwxUaXiLfOjTTQvacfliYo0vf4=
+	t=1709435614; cv=none; b=cxm0zed7rSmXP+iEQR8wMzFyhvcMFatv7OE0Ms4oVi8//EiMkXUFHr0O2WA4F+3u97PiqdlJ+y9lLGqS+DGwwiKuJsZxoreArXiKSUF0FHwSp1uxG9fuR4wFfRZ/o5I6o7D2cRv5voaeUFfeyxo6EZZiiS7fKUUAfAr5LDAyhww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709435663; c=relaxed/simple;
-	bh=5OCH4ubpafnoDYSK1m9V4em9FxgzMYJjrO1TpLlSxS4=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=ZQsRrSbtVJeXS+qzUuQmkb7/a8yxyqfMxVOr2+rO1HSd/HrXRgHdLfbDQi8v6LRD2eFMs2oVWgsG6aTf8Vb/Yyw9T/aIzWOzc/I+gGYPFKWZbQftz2weS36/3zeXGGphekQT4ouuG/1Qn/n7XKzAj/vxS9vdG1sVNRI0oIDp/N4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=C8UF+y9x; arc=none smtp.client-ip=162.62.57.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1709435351; bh=v3WpzfiMBJXywrT2erFA2ns2yDgHUiWRul3btSHpFJ0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=C8UF+y9xFH8wmeXc9Ki2hzIEYByIK0j2CJL0JQTyH4uKs7yjKFALQMxRvUAEIwh+f
-	 /cLodqG7cu79k9oBSJ8hlA8EpKvb0f14Xe/g6WEBOtEeM5LVrQo5k6mnXCDiXb+QEx
-	 pqlZ6IIgTOiKy40dzJuZxbsYtY+IASDDwuydSWuY=
-Received: from pek-lxu-l1.wrs.com ([111.198.228.140])
-	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
-	id 249A4A0D; Sun, 03 Mar 2024 11:09:09 +0800
-X-QQ-mid: xmsmtpt1709435349t4qjp5ka6
-Message-ID: <tencent_8C9B67BC3CDF3618963837324B3874D17709@qq.com>
-X-QQ-XMAILINFO: NojR6Ao/DkEDVDit6y81s9TWIncZk1a8zeWyLZjjfhzjFG9K8fpSUnX3uBhXWB
-	 3AYB8wuFAy6KxP9JsS0YBqdH/IuI6ClMCsUeN5gwPDlFzI+XUC8S92TkFfL9CDR8KMvd97BTg1Ja
-	 xQ1ftGERyst92+xi9LBv91GpXaIwDSSbHMOU5WE+Rrtjyg9TZ1UYfAJdyMmsdgz9dYwRf/Nthd1/
-	 jeK3Bzu26G6hqVmdcegiOaDtPAbRlBIZj0SNQqGSj5bv7FLc5gW8iq7UBLUhCfBNLOXD1pEoGrJC
-	 agw0wjSWef5enjDHK2hvnoGhPrTvdzXqi7S78M429E8j/PMDrLgzZgCQRdGwNQ9cTlhXbhvOh7Pp
-	 IEwg14QTuLizM/qGrrUR8Psv9nSEgDh0SA+YiMNYDgRreURTP80dmVLmJXl5oxqpET5yEjOX/jT/
-	 5YDiS4p+uq2rkL8hntJJpme2+ajdnuHkeO8kGXZ7ICX3VX4hr2d7o0bS10Pg6SYQOcxWUDin87MO
-	 FPTeyJVwT0XCciJ6HdEx7tXeHWorV4+KMrxUXMv63P42xKmMEWTpyIP4tSKs3k2uXeST4CSASmwa
-	 9U4cqhe20Ea1Z4F6/7Hq/Da7tEUH7iCF8veH6S8AKXGZgC/Cru4G/8Uo8rpljh09/n5LUMG/nM7o
-	 U15FUHbCCL7N/uWWdZF/eZ9F4WWf/45haPvissOoql3Gq2NlJP+GhE4fviyp7wO7KSWf+jHnk+xr
-	 iNgVN2vli4knbpbHnqVAjOK5zsMyzwPC5gf/wApWAjinK3LFGf3GKLhgFGUp+yDhFMy2A9b9aUuX
-	 y+NhOWG/UFmm7qchyC9Vp8bQ208qehNt44xxjPS40WFr2iiEQsT0LAYLINF8qOCKgPRoCuzqSQ1c
-	 pZbzcRSZ/a74n/uCCypTaicgXf8G6k8/D9/TGswfKYhLJcMonK4JVzax3F+VmGr8nQJq8MgYKcXs
-	 dA9VgHXH80fpDUgVk95AITPnQc3/ISLd91NvfnF9c=
-X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+04486d87f6240a004c85@syzkaller.appspotmail.com
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [hfs?] KMSAN: uninit-value in hfs_cat_keycmp (2)
-Date: Sun,  3 Mar 2024 11:09:10 +0800
-X-OQ-MSGID: <20240303030909.4147285-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <00000000000098b3700612b5ee0f@google.com>
-References: <00000000000098b3700612b5ee0f@google.com>
+	s=arc-20240116; t=1709435614; c=relaxed/simple;
+	bh=aXk/E1VC6Fs0OgESy453uujPe4S0IwfzXYvHOoboVBM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ORC1UqFJMfNi83MTgCdZxctQfNwTUHq/inSfFMpJqolCtbfRsguJHSNdgEgUMYlEwYc6ZNKX8DEkoz1HPkAfIXVw2Z+dxPdC5c3BbQnCudHmXzTmsbYrRZfCGpnshqfzSgDHs7HELHC8iQq7dV4ATwA5UfPN811rGKZIODTU8pA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=g56thN9y; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=JZdoEKmB; arc=none smtp.client-ip=64.147.123.148
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailfout.west.internal (Postfix) with ESMTP id 5E39E1C00098;
+	Sat,  2 Mar 2024 22:13:29 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Sat, 02 Mar 2024 22:13:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+	 h=cc:cc:content-type:content-type:date:date:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm1; t=1709435608; x=
+	1709522008; bh=x/zIFvm0CQkbS31nHrROpDnZxIitaOxufuuqemOeeoA=; b=g
+	56thN9yMkrws8xGyDaGSKHwVuZ4kMUecPnU9XKzKRdUVT5HHdPo6MMHWQhwIl549
+	rfjsRKUOFSUCKHKjOLcYALf3EspIK68zveN/GQeIzeDZtws04UDe0wYh4cghDrkS
+	kb2pngkCtrpXb/NTEAzoXnDAqG5oFRbSSRMb8F6IKFE4jFKlHcEhqL0SmGLkui5w
+	vkalvzFuPFuC3AFxGo63CxfeBO0zzk1zDKVf7uAMsNet8NOdi19gnzOnTqYOipW7
+	lHXLYMVJS+iG9a0d7sDSccIVmXtqVOWaeDrjRhKtMrgT0OdoGHVVJdA+KbGGWadV
+	B/ecHVBZAuXGFrwH/gTXw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1709435608; x=1709522008; bh=x/zIFvm0CQkbS31nHrROpDnZxIit
+	aOxufuuqemOeeoA=; b=JZdoEKmB78qtyOaP7kvcwVp6bLWPdKc9aK+tuHZomHw0
+	i4ZFp9QzPXGCbj6tq2xPHEwcxnv9REjmxXxwb6ieyqTXDxh+aIbCJHNt9+3N5vbq
+	uvhjalEPVQ7ZmuGm3cL/pObjQg2saOb94O1rC1e/8QB/4ukGMWFgO6gac4MQBteq
+	Rrl9bFcOI2DjdD4GWTo7bbqTTqDykpkFwuuYKzTx49wzpPaeXZ1s0oQaXZ/BpkYy
+	ehAG/+AKK5UXHxaW14JNdv1ml11i3L4EuOYGi5S9fyMbz+dilB668iZ8BPY/gJiu
+	FWVQFq+l9aA98RxvSyOTAvBmYuEk+E8a0XgJ/mvwFQ==
+X-ME-Sender: <xms:2OrjZXlwGxJF_8Z5amfKDFqZSNuOzTJ2dB6xRhkAbKHwpZGn1fby4A>
+    <xme:2OrjZa21PULy0HF1GaehZsaC94EKFG87JzlhhX55y3yxe2HKwEpfTuJhRwvwLIgKW
+    w73fWeW77d6oUl8D8s>
+X-ME-Received: <xmr:2OrjZdogXB6XBSzJHgSbq0qhfd-xYQAAT7MOuah2uxSlzw5RRx25i_2OefLJTqK-zZ8sTbAfsId0QoI650tUf4A0EA7Dje_nrqE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrheeggdehhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvrghkrghs
+    hhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjh
+    hpqeenucggtffrrghtthgvrhhnpeevieelhfdukeffheekffduudevvdefudelleefgeei
+    leejheejuedvgefhteevvdenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluh
+    hsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhh
+    ihesshgrkhgrmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:2OrjZflEmUzagsRxaRlUVzpGCObR0XckM0DrbTjw7Q75jzn3X2gs2A>
+    <xmx:2OrjZV3YCREY7mQnLSTab-FxMyRat9ZH9i2tQ-rBGpMhSIsTtZxB-g>
+    <xmx:2OrjZetJN7bqh_FmkurZoaHIvXSNFNgE_P0z5meYi8bOSsceHI9fSQ>
+    <xmx:2OrjZQTZBWIyxiXJsXwsyLeMVz-c-tbwfCJL4j80vDc2r8lqXJFn6yFEGHM>
+Feedback-ID: ie8e14432:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 2 Mar 2024 22:13:27 -0500 (EST)
+Date: Sun, 3 Mar 2024 12:13:25 +0900
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Edmund Raile <edmund.raile@proton.me>
+Cc: linux-kernel@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
+	linux-pci@vger.kernel.org
+Subject: Re: [PATCH v2] firewire: ohci: prevent leak of left-over IRQ on
+ unbind
+Message-ID: <20240303031325.GA40441@workstation.local>
+Mail-Followup-To: Edmund Raile <edmund.raile@proton.me>,
+	linux-kernel@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
+	linux-pci@vger.kernel.org
+References: <20240229101236.8074-1-edmund.raile@proton.me>
+ <20240229144723.13047-2-edmund.raile@proton.me>
+ <20240301044024.GA37429@workstation.local>
+ <wrcvrmxqfy2zfpbcgoy4txqmzcoyptzvctzymztlp55gasu2fg@tyudozxoyvzo>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <wrcvrmxqfy2zfpbcgoy4txqmzcoyptzvctzymztlp55gasu2fg@tyudozxoyvzo>
 
-please test uninit-value in hfs_cat_keycmp
+Hi,
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+(C.C.ed to the list of PCI SUBSYSTEM.)
 
-diff --git a/fs/hfs/bfind.c b/fs/hfs/bfind.c
-index ef9498a6e88a..c74d864bc29e 100644
---- a/fs/hfs/bfind.c
-+++ b/fs/hfs/bfind.c
-@@ -18,7 +18,7 @@ int hfs_find_init(struct hfs_btree *tree, struct hfs_find_data *fd)
- 
- 	fd->tree = tree;
- 	fd->bnode = NULL;
--	ptr = kmalloc(tree->max_key_len * 2 + 4, GFP_KERNEL);
-+	ptr = kzalloc(tree->max_key_len * 2 + 4, GFP_KERNEL);
- 	if (!ptr)
- 		return -ENOMEM;
- 	fd->search_key = ptr;
+On Sat, Mar 02, 2024 at 04:52:06PM +0000, Edmund Raile wrote:
+> > In my opinion, the devres mechanism releases the allocated memory when
+> > releasing the data of associated device structure.
+> > device_release_driver_internal()
+> > ->__device_release_driver()
+> >   ->device_unbind_cleanup()
+> >     (drivers/base/devres.c)
+> >     ->devres_release_all(dev);
+> >       ->release_nodes()
+> >         (kernel/irq/devres.c)
+> > 	->free_irq()
+> 
+> Looking at __device_release_driver() in drivers/base/dd.c,
+> device_remove() gets called, leading to dev->bus->remove(dev),
+> which likely calls our good old friend from the call trace:
+> pci_device_remove().
+> 
+> > > Call Trace:
+> > >  ? remove_proc_entry+0x19c/0x1c0
+> > >  ? __warn+0x81/0x130
+> > >  ? remove_proc_entry+0x19c/0x1c0
+> > >  ? report_bug+0x171/0x1a0
+> > >  ? console_unlock+0x78/0x120
+> > >  ? handle_bug+0x3c/0x80
+> > >  ? exc_invalid_op+0x17/0x70
+> > >  ? asm_exc_invalid_op+0x1a/0x20
+> > >  ? remove_proc_entry+0x19c/0x1c0
+> > >  unregister_irq_proc+0xf4/0x120
+> > >  free_desc+0x3d/0xe0
+> > >  ? kfree+0x29f/0x2f0
+> > >  irq_free_descs+0x47/0x70
+> > >  msi_domain_free_locked.part.0+0x19d/0x1d0
+> > >  msi_domain_free_irqs_all_locked+0x81/0xc0
+> > >  pci_free_msi_irqs+0x12/0x40
+> > >  pci_disable_msi+0x4c/0x60
+> > >  pci_remove+0x9d/0xc0 [firewire_ohci
+> > >      01b483699bebf9cb07a3d69df0aa2bee71db1b26]
+> > >  pci_device_remove+0x37/0xa0
+> > >  device_release_driver_internal+0x19f/0x200
+> > >  unbind_store+0xa1/0xb0
+> 
+> Then in ohci.c's pci_remove(), we kill the MSIs, which leads to
+> the removal of the IRQ, etc.
+> Back in __device_release_driver(), after device_remove(),
+> device_unbind_cleanup() is called, leading to free_irq(), but too late.
+> 
+> I think the order of these calls may be our issue but I doubt it
+> has been done like this without good reason.
+> That code is 8 years old, someone would have noticed if it had an error.
 
+Now I got the point. Before optimizing to device managing resource, the
+1394 OHCI driver called `free_irq()` then `pci_disable_msi()` in the
+remove() callback. So the issue did not occur. At present, the order is
+reversed, as you find.
+
+To be honestly, I have little knowledge about current implementation of
+PCIe MSI operation and the current best-practice in Linux PCI subsystem.
+I've just replaced the old implementation of the driver with the
+relevant APIs, so I need to consult someone about the issue.
+
+> I could be entirely wrong but the function description in
+> /kernel/irq/devres.c tells me that function is meant to be used:
+> 
+> > Except for the extra @dev argument, this function takes the
+> > same arguments and performs the same function as free_irq().
+> > This function instead of free_irq() should be used to manually
+> > free IRQs allocated with devm_request_irq().
+> 
+> And while devm_request_irq() has no function description of its own, its
+> sister devm_request_threaded_irq() mentions this:
+> 
+> > IRQs requested with this function will be
+> > automatically freed on driver detach.
+> > 
+> > If an IRQ allocated with this function needs to be freed
+> > separately, devm_free_irq() must be used.
+> 
+> Should we pull in the maintainers of dd.c for their opinion?
+> 
+> Thank you very much for all the very hard work you do Sakamoto-Sensei!
+
+Indeed. If the current implementation of PCIe MSI requires the call of
+`free_irq()` (or something) before calling `pci_disable_msi()`, it
+should be documented. But we can also see the `pci_disable_msi()` is
+legacy API in PCIe MSI implementation[1]. I guess that the extra care of
+order to call these two functions would be useless nowadays by some
+enhancement.
+
+
+[1] https://docs.kernel.org/PCI/msi-howto.html#legacy-apis
+
+Thanks
+
+Takashi Sakamoto
 
