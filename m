@@ -1,95 +1,198 @@
-Return-Path: <linux-kernel+bounces-89762-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89745-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F92B86F532
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 14:50:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34DBC86F501
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 14:11:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D1A3AB21034
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 13:50:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DEFF0282832
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 13:11:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68A4459B5C;
-	Sun,  3 Mar 2024 13:50:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67C12C2C6;
+	Sun,  3 Mar 2024 13:11:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="D9LfZCp9"
-Received: from xmbg9.mail.qq.com (xmbg9.mail.qq.com [81.69.217.30])
+	dkim=pass (2048-bit key) header.d=valentinobst.de header.i=kernel@valentinobst.de header.b="sv+TsEdx"
+Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 048CBDDBD
-	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 13:50:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=81.69.217.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2C11CA73;
+	Sun,  3 Mar 2024 13:11:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.72.192.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709473812; cv=none; b=S/XgSTB3bf1vnxql6z4udBOlr3dqtUDsxESa0g+hHQg0vulXXWEJVqzKJukC3MhhWD2sV8gla2qh+2lwydhhMJYIFDyl48OR90N83vJIwkfwMl5NX5ScH0seMuYb0e+38Llbs+zzrV+4KdkbA81alNvu/PuPkX15G9He6GtCV3M=
+	t=1709471476; cv=none; b=T3C7xibDzFBuUuUxxuKHJVnGl0FGS103eUw3uQB8aOYeBlUbEelswcteNdbbe1ITruo6kCE8N3Cv5CF885jst3oZc+CIvK2RuFQutzp0vA9j1RDEUi7ohBHXCCA9pXXQzT8dl39WQh1ZCrVcBdr2N8r5V+O2iZ4iGvk2XHckDsE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709473812; c=relaxed/simple;
-	bh=q7aVnpQfojbNvVjLMpOGPbY3ZgvtHFpeN7zbX1Nsa3M=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=CD0aAG0po3J7Artzk52LhANcYLG8Kpkby24ey8drctzvcJWExujO5hrix0S8qkXpiLZ1sLDTlmotLQPJ/Idd6Hud1gAOS2+uqFkWnpmFypwX6iu5qvmyvYcnqXZgun46ikZeVQuHgTBja96OLf79+qTr1pa9pOEKo5frO9eDORc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=D9LfZCp9; arc=none smtp.client-ip=81.69.217.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1709473804; bh=sBqmRt7qqG9ivI2p3xgtXTCdIlBqGzWhtXzBZBhAO0U=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=D9LfZCp9LNSJPNLDcF6jdBryN03Ic3FEj3WhR/3u7Ra3TCt8ag3kiMnjJnz9IyF9t
-	 vjuzdTI6byd7eQUFC5LiLChpvjGdl000psqg2PHep9rwRmoVPLTnO+8nYy9a9aQ0oi
-	 48un2rvj3sezw0F/OJh+ZV4J2841NaGT46ybvec4=
-Received: from pek-lxu-l1.wrs.com ([111.198.228.140])
-	by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
-	id A4C07C52; Sun, 03 Mar 2024 20:41:12 +0800
-X-QQ-mid: xmsmtpt1709469672to7x0bnhv
-Message-ID: <tencent_146CC89774EBA6EC92CFA4783E6CA42D850A@qq.com>
-X-QQ-XMAILINFO: MbOQvCiz/DlEBSLO3bCgeAInCPH/hw+KFIIHVly85jF/Nqup/gpW5WJBrHrIw1
-	 jBh09JNzyD+1Z2c1ZI6CS6+R56QFF9/lJOBxe43hX+Bv2VH5qSAAz+g1OxwVwJvrtYeitdAfwqH7
-	 2SrtVVY23J8DbpBKr1sWD1oHRsmG2MjjFbOIc00ZNjV5pIZsLDRd6f2vlpw8Ja+ol2Vc9vOogKZV
-	 lOlAnZVHHuA9xcWVej27OqKuQQmvNOhfVH/oao3SC6jbj+5iObxp/FFTWHi7twN3vvoKf56fVbwj
-	 ke2TTPJ9n0ISwR39LhqNWo4u6I9g8uC+U8aV/hyiDlvfjUC8LXyZfAqhgEddngrEPcwTk3uqkVCG
-	 eytPTUjtYLOLxRAmegyVTrQKUxiJL8Za8yqGAfCjAQealbpDjyMzBlyjzF02R0NpNm0v5kONON7c
-	 gEropmuMgVSoJQ/NBXyOGn9+xIkhv3KqsfVTwBqj81/QYYc0cdTUOeVOTk4TksAdYUgrcxYRZKzY
-	 P3SXIzkla76juuL52RrFVJmcb3Zlaxoz1EuBblxNVgU2koIz5EtzrJA20QSj5hL6B70pqZlCUrQI
-	 rXE93K5BunnF9cXywXW/zBbOYFk0y9yO38x76H+1L7sAB3KlrM+Nro7IV5tOCGSDV0o51izIqBPW
-	 JRUYhmj8wZLXB3qgvxmm8Bp5ixlkM9J++bTc5Budxm1vlL+dQQixLiHvOGo7QZAfXvpmuYGS2L2v
-	 SZKSDCuV3ijSwbjAjj+H+86e+1acL3fslneaIHF1RAAZiYtE29FB6oILWC1QiM/4iFLBnXWU1JP3
-	 NtkJKyb3SaKJoeH7D5O55jblKZNZVKj4kIHu0WQ+A+feIV+OW4fwh+pZSEcb44Nh/Qlwvi/iPAcp
-	 1JfX+x5Fl556rEDs0fhujdNU+Mu1Lrbe6s6a81s5siE7ui+3q/xdSAH6R+laPs0jTKgoWoBxGvae
-	 Hci4PaMoWVKJgI4St6yF/oOX3nd2BxxKqzeK/m95SUUQxubaE3n5UZdxdG86CE5WMLpOSWstE7Ox
-	 vfSepxpFd7Pt1R288RTJyQFlgQg/s=
-X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+f770ce3566e60e5573ac@syzkaller.appspotmail.com
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [hams?] KMSAN: uninit-value in nr_route_frame
-Date: Sun,  3 Mar 2024 20:41:12 +0800
-X-OQ-MSGID: <20240303124111.596358-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <000000000000b69bf20612bf586e@google.com>
-References: <000000000000b69bf20612bf586e@google.com>
+	s=arc-20240116; t=1709471476; c=relaxed/simple;
+	bh=PYafNNhjJMBNjwpI8k3yoMSKo6rMOK3JKkJ6SSwHO/c=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=cDfuEZAjRYsaCsgUk7n02O7ePGL0/OlfVvK4h9K4WQswt8cseZlyGNPF2fz8eANGMYCH/hiFD2xkvuQaUwxKAXVumXZMWoKpgfN6NGDPy80HcOJwa++y3t7OXsidMhwuMQ9Rstt7yPZVlSjPOjzDJysM1aJ/mjhVOBxDPqpZtbY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=valentinobst.de; spf=pass smtp.mailfrom=valentinobst.de; dkim=pass (2048-bit key) header.d=valentinobst.de header.i=kernel@valentinobst.de header.b=sv+TsEdx; arc=none smtp.client-ip=217.72.192.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=valentinobst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=valentinobst.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=valentinobst.de;
+	s=s1-ionos; t=1709471466; x=1710076266; i=kernel@valentinobst.de;
+	bh=PYafNNhjJMBNjwpI8k3yoMSKo6rMOK3JKkJ6SSwHO/c=;
+	h=X-UI-Sender-Class:From:Date:Subject:To:Cc;
+	b=sv+TsEdxulpP6xxBh3w2qqlA/lfQr9iE+QyomVvKB9E9gm4XPQpo5dJ/Nmx0XTaO
+	 qMIHS2fm/+wT4ramoa1MW6Zii10EdHYDCDyiysaqZNdZ4NIxEhIdOPdN2e51Q0bh9
+	 Rrbo9kIqPwEpeFlBAMmkWPpr95zUBzVawsWaJQ4Ys71MzL0dbwvAOneA+lHlkSsgW
+	 e2k+FNTLV/t0DZeEU0/FLXxpg9+C1b/Zf8m/4H++5RmlIdgVab4dBhpwFat46B09u
+	 N5ynokZbx6ZFroKpEqTeV5LT6ESqQU1jTIYUHFWzRXdYgVA/H4M+hbnW5hDwKLzvb
+	 Wzkbp7Oz7l8/AdBV6w==
+X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
+Received: from [192.168.2.229] ([80.133.137.1]) by mrelayeu.kundenserver.de
+ (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis) id
+ 1MWAay-1rNOzJ37xi-00XgKM; Sun, 03 Mar 2024 13:44:59 +0100
+From: Valentin Obst <kernel@valentinobst.de>
+Date: Sun, 03 Mar 2024 13:44:36 +0100
+Subject: [PATCH RFC] selftests: default to host arch for LLVM builds
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <20240303-selftests-libmk-llvm-rfc-v1-1-9ab53e365e31@valentinobst.de>
+X-B4-Tracking: v=1; b=H4sIALNw5GUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDYwNj3eLUnLSS1OKSYt2czKTcbN2cnLJc3aK0ZF3TtFTj5LREyzQDSxM
+ loPaCotS0zAqw0dFKQW7OSrG1tQA8nkx2bwAAAA==
+To: Shuah Khan <shuah@kernel.org>
+Cc: Anders Roxell <anders.roxell@linaro.org>, 
+ Benjamin Poirier <bpoirier@nvidia.com>, 
+ Guillaume Tucker <guillaume.tucker@collabora.com>, 
+ John Hubbard <jhubbard@nvidia.com>, 
+ Marcos Paulo de Souza <mpdesouza@suse.com>, Mark Brown <broonie@kernel.org>, 
+ Nathan Chancellor <nathan@kernel.org>, Sasha Levin <sashal@kernel.org>, 
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ Valentin Obst <kernel@valentinobst.de>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1709469899; l=4000;
+ i=kernel@valentinobst.de; s=20240131; h=from:subject:message-id;
+ bh=yZzV08YOvoeLyJJ85Mn+deJxF5jyLGkheHCV3AY3Ufs=;
+ b=TSN9jyLjY6bKdK+NLS7g1B8qOvrNCSBg8JOwMdTGuEH/NmHm11YJWG+eHr+U7CQMkaHgHO8id
+ 5nbK2BFfjh8ABJuP+6uaorPV+sBQssX/76EHtCTvre8y/PTwgfmYMvs
+X-Developer-Key: i=kernel@valentinobst.de; a=ed25519;
+ pk=3s7U8y0mqkaiurgHSQQTYWOo2tw5HgzCg5vnJVfw37Y=
+X-Provags-ID: V03:K1:Sz5F4HnDlLJMIKupiDJCbYrM2nc8zUpYRbGOYYRMiddrKjStcw/
+ 7V1Vf7oZPMHDJla9MJDzF50E2SsmkBk8MyFa51I8SIkUHNjyfTUIbiyOjYKlXSmfZs6+4i+
+ J9bGyVj07bHh7iqUEIXrXQvsJhufztJxHDS5uA8tOykeY7LZ9RkI+wEOBOmh7YUsT/7tyxz
+ Z19I4Xx70anfa2xxF7+BA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:/CEI+nyxZus=;PvNMHw0P8TdM9bclnRLsNCwmtWm
+ qzi2i0QYj3wTVzmHuEm3Jws0S1FtDwbYkByzou1DMeLFGHYdXFXyTQ1P+OTBNcj6nDYIwiIVV
+ oqVFJjzCU6ZwVjVvTsUP7FRASskasGhy0K4z8jrmf9bKE/XzhQcz2GYPD00l1AfMD0TsB9BSR
+ Vviu0/MFFQ0AvTuoxEGneDrf5ffFF7GEXkYewC59V4ALVqY/cC29FtC3ILu7dK71P6rnWTLpG
+ JHDCQHz+zBeEqKphOJaYBIXRNC0rykQ0vbu3x+4B2o2GWWd+Le3fBzYn+0Mc0dD6nLVCXWriQ
+ K9PKOFqNT2jUlgDZGqiPRytgMH4Syvrw60bdMl/cqlnRToPH8ZHvEOLF3dScr6foGxGVwbRAM
+ n5hlv7Or+wrrYefzxXVtoqMCleJ4ZOW1AFUOFhM6fD7+k0/iebjx+Jv4XPJQ2Phh+nyYApBHP
+ u3rsrfgHLMa8Hx1XFEaT6Pi83jHazAC39TaPSglzekwassWue8S8dgb+kxW7Ss33VZFeF1O02
+ fnF6UGnWbRjvuNeOGiKR0DuG/MHtULGix0X/uH/fTH8a9kwUM32SV1kryzCUJDu4oiLbPDlvX
+ mkulJZOQvzYBTbSChQIIQGZbUuZQyppPjBFiAdU7fBMyPGcnK2bfJcbG8xEz2C1hYBZ1dY8gu
+ B+6hC2lU30bYXm071ALFt7AwdatS81m4z7UYiYzr2dRan5IY+y5YJmZeglFSZe99Lu4vev9Vc
+ t/DpYFPrhVkZWKs5CNZ55UBjw8b3bKtG+Q2axAb1Eno0VWVCfdeJCo=
 
-please test uninit-value in nr_route_frame
+When using gcc without cross compiling, i.e., `CROSS_COMPILE` unset or
+empty, the selftests build defaults to the host architecture, i.e., it use=
+s
+plain gcc. However, when compiling with clang an unset `ARCH` variable in
+combination with an unset `CROSS_COMPILE` variable, i.e., compiling for
+the host architecture, leads to compilation failures since `lib.mk` can
+not determine the clang target triple. In this case, the following error
+message is displayed for each subsystem that does not set `ARCH` in its
+own Makefile before including `lib.mk` (lines wrapped at 75 chrs):
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+  make[1]: Entering directory '/mnt/build/linux/tools/testing/selftests/
+   sysctl'
+  ../lib.mk:33: *** Specify CROSS_COMPILE or add '--target=3D' option to
+   lib.mk.  Stop.
+  make[1]: Leaving directory '/mnt/build/linux/tools/testing/selftests/
+   sysctl'
 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index edbbef563d4d..5ca5a608daec 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -656,6 +656,7 @@ struct sk_buff *__alloc_skb(unsigned int size, gfp_t gfp_mask,
- 	 * to allow max possible filling before reallocation.
- 	 */
- 	prefetchw(data + SKB_WITH_OVERHEAD(size));
-+	memset(data, 0, size);
- 
- 	/*
- 	 * Only clear those fields we need to clear, not those that we will
+Align the behavior for gcc and clang builds by interpreting unset
+`ARCH` and `CROSS_COMPILE` variables in `LLVM` builds as a sign that the
+user wants to build for the host architecture.
+
+This preserves the property that setting the `ARCH` variable to an
+unknown value will trigger an error that complains about insufficient
+information.
+
+RFC since I am not entirely sure if this behavior is in fact known and
+intended, and whether the way to obtain the host target triple is
+sufficiently general. (The flag was introduced in llvm-8 with [1], it
+will be an error for older clang versions, however, currently 13.0.1 is th=
+e
+minimal version required to build the kernel. For some clang binaries it
+prints the 'unknown' instead of the 'linux' version of the target, e.g.,
+mips [2]). An alternative could be to simply do:
+
+  ARCH ?=3D $(shell uname -m)
+
+before using it to select the target. Possibly with some post processing,
+but at that point we would likely be replicating `scripts/subarch.include`=
+.
+
+Also unsure if it needs a 'Fixes: 795285ef2425 ("selftests: Fix clang
+cross compilation")'. Furthermore, this change might make it possible to
+remove the explicit setting of `ARCH` from the few subsystem Makefiles
+that do it.
+
+Would be happy to get some feedback on those points. If it looks OK I
+can also send it as a patch.
+
+Link: https://reviews.llvm.org/D50755 [1]
+Link: https://godbolt.org/z/r7Gn9bvv1 [2]
+Signed-off-by: Valentin Obst <kernel@valentinobst.de>
+=2D--
+ tools/testing/selftests/lib.mk | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.=
+mk
+index aa646e0661f3..a8f0442a36bc 100644
+=2D-- a/tools/testing/selftests/lib.mk
++++ b/tools/testing/selftests/lib.mk
+@@ -7,6 +7,8 @@ else ifneq ($(filter -%,$(LLVM)),)
+ LLVM_SUFFIX :=3D $(LLVM)
+ endif
+
++CLANG :=3D $(LLVM_PREFIX)clang$(LLVM_SUFFIX)
++
+ CLANG_TARGET_FLAGS_arm          :=3D arm-linux-gnueabi
+ CLANG_TARGET_FLAGS_arm64        :=3D aarch64-linux-gnu
+ CLANG_TARGET_FLAGS_hexagon      :=3D hexagon-linux-musl
+@@ -18,7 +20,13 @@ CLANG_TARGET_FLAGS_riscv        :=3D riscv64-linux-gnu
+ CLANG_TARGET_FLAGS_s390         :=3D s390x-linux-gnu
+ CLANG_TARGET_FLAGS_x86          :=3D x86_64-linux-gnu
+ CLANG_TARGET_FLAGS_x86_64       :=3D x86_64-linux-gnu
+-CLANG_TARGET_FLAGS              :=3D $(CLANG_TARGET_FLAGS_$(ARCH))
++
++# Default to host architecture if ARCH is not explicitly given.
++ifeq ($(ARCH),)
++CLANG_TARGET_FLAGS :=3D $(shell $(CLANG) -print-target-triple)
++else
++CLANG_TARGET_FLAGS :=3D $(CLANG_TARGET_FLAGS_$(ARCH))
++endif
+
+ ifeq ($(CROSS_COMPILE),)
+ ifeq ($(CLANG_TARGET_FLAGS),)
+@@ -30,7 +38,7 @@ else
+ CLANG_FLAGS     +=3D --target=3D$(notdir $(CROSS_COMPILE:%-=3D%))
+ endif # CROSS_COMPILE
+
+-CC :=3D $(LLVM_PREFIX)clang$(LLVM_SUFFIX) $(CLANG_FLAGS) -fintegrated-as
++CC :=3D $(CLANG) $(CLANG_FLAGS) -fintegrated-as
+ else
+ CC :=3D $(CROSS_COMPILE)gcc
+ endif # LLVM
+
+=2D--
+base-commit: d206a76d7d2726f3b096037f2079ce0bd3ba329b
+change-id: 20240303-selftests-libmk-llvm-rfc-5fe3cfa9f094
+
+Best regards,
+=2D-
+Valentin Obst <kernel@valentinobst.de>
 
 
