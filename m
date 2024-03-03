@@ -1,141 +1,110 @@
-Return-Path: <linux-kernel+bounces-89772-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89773-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D51086F57C
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 15:13:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9C7586F583
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 15:23:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A42C1F2217A
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 14:13:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB7E51C20A38
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 14:23:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 073D05A4E0;
-	Sun,  3 Mar 2024 14:12:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 789D55A118;
+	Sun,  3 Mar 2024 14:23:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="btkRZBG9"
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CuHHO2h+"
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5ACF31A8F
-	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 14:12:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F4BABE5B;
+	Sun,  3 Mar 2024 14:23:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709475168; cv=none; b=YP1Oy8l3sGy8GeOHC0DiIqBjqHEhzdYV1fVHq1j9L5DnhKdjF1R/NfHaybiTX+qKpCLkxfT5j9yB0MDSSjjPYeBEsjgRVaoTKxPpxoUvRglASGS85PJSqniDRMcam/hilO96/aLCWR49uddvsSoEvhS7/Hpl1ktZuIKs2YWmwDc=
+	t=1709475786; cv=none; b=kLZggjCcwxBZr+NrXHYI8rWhSaPZQFrUWzcFXn56R0Ajl3vPdoboZbHGqE1P8THDAy/9Oq6k1+eDNmYl4pbU0/LLYXwsboGLVVo07397tgHsrbXnHcsunNOmN0Et0uftSM3p6PDy8uX0aUPxrXm5Tgtn8NHD3y1UAAr69UjVhdg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709475168; c=relaxed/simple;
-	bh=NCDrrJlc3tRE6yl7ATLHxCA3vYz9taO9U7grccTrnF0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JSi+QPRd0WOdgwNMabdaR/hb2bnL/P9ME+YLKP5GmwDLEwCsikbhkAKByON8opzKLHeO+yIKbtwzIzWruAuPEnEEi0NAU5PpmUyr929QQsZQWrNrJ15RCN3pkuboMAdt3NhvDnVUD68Lzthu3LNk005zlDo/y2atT6nbx2E/syo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=btkRZBG9; arc=none smtp.client-ip=209.85.216.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-299e0271294so2431875a91.3
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 06:12:46 -0800 (PST)
+	s=arc-20240116; t=1709475786; c=relaxed/simple;
+	bh=t5jBL7YflSrKd4hHS9yTmYvU8CNC76z53TMa+27R98M=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=GWGJK/JtHwE/DZ3n9bJUNM6ORnzv0UyKWZ/+jQ8PNNJLM0se7yw5PZhaLX7QfXvOO35WJ7gsrGnEgO4QWaddNuSUwOj4R7IkCHpX/o0WS371aVwyWEmmHYFF6i5Ezw0HnwMRI8sbDdRa3oNSX+d5R/y2y4cHXQ1d0jT6d7dyY58=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CuHHO2h+; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1dc0e5b223eso31692535ad.1;
+        Sun, 03 Mar 2024 06:23:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709475166; x=1710079966; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=97ZbKR/nkeCOTOB37P+kvgKA8uhgX0z9ipBzLO+afkw=;
-        b=btkRZBG9v2sWoYpJ4nT5Nlb972Nop10XcqgVM571+QtpiwGBDUClC2Ny0FlhKrmksx
-         w/FoF0sb4+F5YPuhu8pCUwsiSGpq4tPHk8+8BNEqicsV1y4EOA+vs5zhbnOvAMs5m2Es
-         zRb2rKfXpbRx/ekWvVsdaSOWiUuhAfydFRDQ1SSsaURFvoEfXnUm6YtDjG2ovFBPvB6/
-         FbO7WMyfrb/MpiZt99219SnLTdN0iw0BZjQcu9GLFzqMKei+TG34+u7ejOFgHN5/Z87k
-         Nlq2wg6GWYSCTBzpc+sGgXizWfxkEYnqWQhGm56AeuP9mAE0YaS8vkgNc+smOJXNugit
-         gEOA==
+        d=gmail.com; s=20230601; t=1709475785; x=1710080585; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Id6mziPFV2Bo5BUrdfcO2e1rBc0/eRCQTm2X30V/Jlg=;
+        b=CuHHO2h+O4l7Lb5HXukJ71gTaj2SQK/MJJ4kJFgm763gTLbvnj7XAQA3vZfdxRAHaJ
+         S0P4jm9fIzn0zOEM0ulsWoFozlNeth8qI3AYDq+5xrPqOhc+cqys8Y7htHwclaxW7IxB
+         nGwaAJlwJEq7odE093vPLmqkvtbzE0zUhLYuqmUkO2YV71t8xfL5edXub9hCMz4m1Adl
+         Dql041oWbMxxTavzpQI6g9kDgVXZgXDOmfDb5ZCTDlG0Rgywyz87UX5VS2YqDb7zdFF4
+         XwCmBcGh2zbUBLa8CQZvMiH4Uxvw0mg79bbMspEZe9F3VE5aqIv6MLrSWrRRBVHIbkGf
+         h5MQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709475166; x=1710079966;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=97ZbKR/nkeCOTOB37P+kvgKA8uhgX0z9ipBzLO+afkw=;
-        b=cc2uvKrggPodbv4V9R+mg9RGlRnapRD67xjdqgRtK4VvbS64zXdUvBJ8Lt5jxkMzEr
-         pjzztM/UpSjS2ZeXNjXdWx6XWGGvZFGxd5zy4iQan6KMdKoZ+DLXhT4hdy1je70PUNRR
-         kkxZCxwisx6odJaztoFIHfBwfdX/6A/jGSW5LkiiWQEY83qt73jtTgTlFA/ihydPFZYD
-         o7YVsdIPsGoyvnnoc/xy9sFsaONGkxl9G9RJmaSxQS3+2ZuOe3wn3j3abCLVRp4dXlRN
-         ikdT7MXLpmiAZSiJ75QwGQ5iIAjyKWMTucUjo76M7Y7n0GKih+/XRBVn3erfSFWW2JNF
-         43+w==
-X-Forwarded-Encrypted: i=1; AJvYcCWtrGhZkIaZvcgLopNCIGdcIA4PDztMpOMkeiLne+Ha3OzPYDcVVP8E0XgZeAtPYstGVejVsX7NP9qlVh8sAOrmDU8zk1Isxv+Nb8ub
-X-Gm-Message-State: AOJu0YynEoqPImIb1yLuHXAa5uqOT35DzYVXqFX00EJZaG87G/MJ3yNz
-	ga7rYGm9tswPa7KeMiKsDTKUPTJrDRT1PdAnNcsPiBhzhARv4Zhtooj6z0EFf5g=
-X-Google-Smtp-Source: AGHT+IFG+wGaEtdkA4OQ9eiWV3WBTHsJ2Jsq86wcnKWy9omE+7oa3Usnduwz4hYZlHm7CS4l9UtJ9g==
-X-Received: by 2002:a17:90a:4211:b0:29a:a1cd:da65 with SMTP id o17-20020a17090a421100b0029aa1cdda65mr4517702pjg.43.1709475165878;
-        Sun, 03 Mar 2024 06:12:45 -0800 (PST)
-Received: from ishi ([2.56.252.75])
-        by smtp.gmail.com with ESMTPSA id bf3-20020a17090b0b0300b0029b178a7068sm5231556pjb.50.2024.03.03.06.12.43
+        d=1e100.net; s=20230601; t=1709475785; x=1710080585;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Id6mziPFV2Bo5BUrdfcO2e1rBc0/eRCQTm2X30V/Jlg=;
+        b=V/rEcyB0s39jE/7LPQR4FTaxYhD9oIXRbAXFsVoTNxFZoA24AlzsFoI3ZRA1g/C1nl
+         rPYOIKrk/18YrPn9oQpe7Zzg1XepyqwxwXncgg9QutAH1NQdcGq0hKMsS8sPkPyMjUxu
+         tmMZDhVh+Pv2J8QoFgZxr+YLrqFrkRep38KJyCG4SadhXwl5mDV5KB5aoPg+V8ATZ0+Y
+         KTo1lyRgCf+8X7o5SUEWwgNl/b1YVl//DeR7a5X+onqyDve8AUajF/nKCdRGAKFhheNu
+         J+62I003Hdkps7sgqFdzxUJQCLfi8f1qqAzkoEcp8YWukSkcsNfNth5wa0U1ZPtHdbeH
+         LgEw==
+X-Forwarded-Encrypted: i=1; AJvYcCVhELUi2aHwLPK+hUTzMDT6mIrEmHspLDm+vJQXaSi81fgVlfW+8V7l0FmzdMxSKdtNkfBk4TAabgKka0AbuECnyBzYGxNoZOjrIl20
+X-Gm-Message-State: AOJu0YzHr4xl73VuEZORpeX3vS9VTakLcrrmRkPH/wvIfkh5Y1WAU3+f
+	pQRSGABW+3/Rhk8wg9j7ffLhzlJ8K/fvd8yLk3gOKDfXdMJViuPM
+X-Google-Smtp-Source: AGHT+IHF0b3I75HECWEIPvqQ7CoeEGnCAZrJspkLyufByz0tVoA6esIOGEVF7CdXptYj8dXiRWipYg==
+X-Received: by 2002:a17:902:d488:b0:1dc:c17d:6edd with SMTP id c8-20020a170902d48800b001dcc17d6eddmr7572433plg.20.1709475784790;
+        Sun, 03 Mar 2024 06:23:04 -0800 (PST)
+Received: from kernel.. ([2402:e280:214c:86:98b4:6d91:d5f4:8f27])
+        by smtp.gmail.com with ESMTPSA id l1-20020a170903244100b001dc95f56848sm6697305pls.92.2024.03.03.06.23.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Mar 2024 06:12:45 -0800 (PST)
-Date: Sun, 3 Mar 2024 09:12:39 -0500
-From: William Breathitt Gray <william.gray@linaro.org>
-To: R SUNDAR <prosunofficial@gmail.com>
-Cc: linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Removed priv field description to prevent kernel doc
- warning
-Message-ID: <ZeSFV7T9Rwm2Adal@ishi>
-References: <20240303140300.6114-1-prosunofficial@gmail.com>
+        Sun, 03 Mar 2024 06:23:04 -0800 (PST)
+From: R SUNDAR <prosunofficial@gmail.com>
+To: bingbu.cao@intel.com,
+	tian.shu.qiu@intel.com,
+	sakari.ailus@linux.intel.com,
+	mchehab@kernel.org
+Cc: linux-media@vger.kernel.org,
+	linux-staging@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	R SUNDAR <prosunofficial@gmail.com>
+Subject: [PATCH] Removed __acc_osys field description to prevent kernel doc warning
+Date: Sun,  3 Mar 2024 19:52:58 +0530
+Message-Id: <20240303142258.6590-1-prosunofficial@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="HiSxRJ/9FIC6peuO"
-Content-Disposition: inline
-In-Reply-To: <20240303140300.6114-1-prosunofficial@gmail.com>
+Content-Transfer-Encoding: 8bit
 
+/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h:2778: warning: Excess struct member '__acc_osys' description in 'ipu3_uapi_flags'
 
---HiSxRJ/9FIC6peuO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: R SUNDAR <prosunofficial@gmail.com>
+---
+ drivers/staging/media/ipu3/include/uapi/intel-ipu3.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-On Sun, Mar 03, 2024 at 07:33:00PM +0530, R SUNDAR wrote:
-> ./include/linux/counter.h:400: warning: Excess struct member 'priv' descr=
-iption in 'counter_device'
->=20
-> Signed-off-by: R SUNDAR <prosunofficial@gmail.com>
-> ---
->  include/linux/counter.h | 1 -
->  1 file changed, 1 deletion(-)
->=20
-> diff --git a/include/linux/counter.h b/include/linux/counter.h
-> index 702e9108bbb4..b767b5c821f5 100644
-> --- a/include/linux/counter.h
-> +++ b/include/linux/counter.h
-> @@ -359,7 +359,6 @@ struct counter_ops {
->   * @num_counts:		number of Counts specified in @counts
->   * @ext:		optional array of Counter device extensions
->   * @num_ext:		number of Counter device extensions specified in @ext
-> - * @priv:		optional private data supplied by driver
->   * @dev:		internal device structure
->   * @chrdev:		internal character device structure
->   * @events_list:	list of current watching Counter events
-> --=20
-> 2.34.1
+diff --git a/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h b/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
+index 926fcf84e33c..4aa2797f5e3c 100644
+--- a/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
++++ b/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
+@@ -2722,7 +2722,6 @@ struct ipu3_uapi_obgrid_param {
+  * @acc_ae: 0 = no update, 1 = update.
+  * @acc_af: 0 = no update, 1 = update.
+  * @acc_awb: 0 = no update, 1 = update.
+- * @__acc_osys: 0 = no update, 1 = update.
+  * @reserved3: Not used.
+  * @lin_vmem_params: 0 = no update, 1 = update.
+  * @tnr3_vmem_params: 0 = no update, 1 = update.
+-- 
+2.34.1
 
-Thank you for the patch, but it looks like this was already resolved by
-an earlier patch[^1] and in counter-next as commit 0b3bbd8f9baf[^2]. It
-should be picked up with the other Counter updates in the next merge
-window for the Linux 6.9 cycle.
-
-William Breathitt Gray
-
-[^1]: https://lore.kernel.org/all/20231223050511.13849-1-rdunlap@infradead.=
-org/
-[^2]: https://git.kernel.org/pub/scm/linux/kernel/git/wbg/counter.git/commi=
-t/?h=3Dcounter-next&id=3D0b3bbd8f9baf245ec77d86f6f5bc902105b4bfa9
-
---HiSxRJ/9FIC6peuO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQSNN83d4NIlKPjon7a1SFbKvhIjKwUCZeSFVwAKCRC1SFbKvhIj
-K8axAPwPx/2NnRyJz3BUspGwzmgozohYut1T6VGt9yyDNzc5kgD+MoQ0fqaxeXiZ
-mb9g91TWYRxgrfvQOCAUjtl4/0v7qgk=
-=hOEr
------END PGP SIGNATURE-----
-
---HiSxRJ/9FIC6peuO--
 
