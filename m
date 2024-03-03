@@ -1,96 +1,127 @@
-Return-Path: <linux-kernel+bounces-89684-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89685-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3401E86F426
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 10:21:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B61F686F427
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 10:24:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D37FB1F21BA0
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 09:21:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A34D6B21EEF
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 09:24:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0E57B657;
-	Sun,  3 Mar 2024 09:21:05 +0000 (UTC)
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E510B641;
+	Sun,  3 Mar 2024 09:24:30 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBDDDAD27
-	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 09:21:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B879DAD35
+	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 09:24:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709457665; cv=none; b=JLcPi928VOB0+TWyj89GSpeKxMjkl62x7gGjyYStVaQfs5viNovmyn4FjbC3BQKRYh3dTzog19cvEdA79Cx6+WtfpZv3Whre4uLvXanpyXGO5wBQbAVzWasduZ38/nVFWy/KeePsacCltyTFhMC1jbBqFDXaxcpXaJ/dycAxIok=
+	t=1709457869; cv=none; b=HEWtwJmb1bZsD3LmNB4nmbrbfFtv5MbiUUVPvxmGW+wReSx+qVKSwcRdSgafxLaO3xFyeVtG8iOqeXZrjIn75KddgkozEKNwx+PPvfSaK0/su7sbwKHOy3cbEw6nfcdK0ATx/d3uGj6fRpaaL8Fxd7Zxsy2SY7bZLPxohcQ4tC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709457665; c=relaxed/simple;
-	bh=eQ2zKyXcg6lchPmJDdH4J88CdY7LkmQ+FwqDiZ3fWrs=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=cQ8kdcsvnwWJzKq0Dbfltdpt92p9KNRR0175vODEd3hMeD8sEGDgsTuA0CQfa8iK8Av/5jppPDDUxPF0TTkte/dNcYCcu2cmHTKwZNsXX6N6ZOoUFyTg22LGp2o+t3nhCcr13LrvEnDS0y+6BjPqb320/YeVmXHnh1aCNakoYdA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3653311922eso41937965ab.0
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 01:21:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709457663; x=1710062463;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mnnr37vr7kK8/uItRIjje7sAKUW3hU17pprTGtiVvYY=;
-        b=i5RUe493ZsouGyLdvN0iI95Qdf2DiMVVg8YUyLpIyH3zVrSTZ0Cj2rSWAEVno/cz7+
-         2wJwbDYi5N+Er80xECj6Ovsz1enA+7IlWlWv4K7eLUon8w86tPqXLu+zT7gscMQfmgAm
-         swQ5QogoWVsZkrQMvErS39sMlZQxZ8VvHuog20oS8iJ8Px/9TBFlkuUnFl6rMhtJavWP
-         A/eWMaPnQzbwNXCSRfB4cDvT+yj1n0sWxzzfkY0A2NHY9PkT+JeyFMtBYaBjXpmaNoQ2
-         GzyIfD1laZgWoeUsniDvMpn0oVdWss99x17TTzOpJI3blrrTLdd1bYoDZ+KxjIBq/V4g
-         GA2A==
-X-Forwarded-Encrypted: i=1; AJvYcCVu/BMOe74sEW+G7/a/tn2klf7xD8tEFpWiZ0xNdP+FuKH2Hvt9wpBPhTgR8w/bHwZ7V6b03QofquNEcqnSs9+8zFo8+OmjrFdjN1pi
-X-Gm-Message-State: AOJu0YwXh/T99gBF4NUbRTXrLLcRD4NBZi2XAhja5OpcwAWuLnJY0RFJ
-	yZpI4JurtRd41AXMMOLUhrpv4zlggoiSeBUaDTripXWgsaGrQods0sVa+lXv/hsT2W02oavaMjU
-	b/KaOF0zzmmw95A6+T02jY8/HtLoOc29l854VfDDGwM32onUreV35MWg=
-X-Google-Smtp-Source: AGHT+IExuAl1BYRZUWOqXt/mPBBPeN+jgdmkqUJMT8iH+3nUEGBGafeE5uibvMk2oOpsuDQS+nimT4c6JqP26uCjxEZUZJS11+AF
+	s=arc-20240116; t=1709457869; c=relaxed/simple;
+	bh=LlKvoQRPABfKry/b2N2XpVfDUkyfRmoWcEJ2WI/dDZI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=KPb1sDRdUKx7xVbbinMpfjPiz/Wd1vA4XLJrSwe43Xqy1brNnaEYFevVSQXEwY5UQCJNfwuzwX6IS3ojZjmLHBj8O0BcNCJwKeLBoQZN1ny2LIf0q1hKC+dsKqjkWj8fmItGrxyxibkO61SvZJBl29/mINQOEW2C1/T9QveZOBk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rgi50-0007Gy-BM; Sun, 03 Mar 2024 10:24:22 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rgi4z-0048Ir-28; Sun, 03 Mar 2024 10:24:21 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rgi4y-00FrWU-39;
+	Sun, 03 Mar 2024 10:24:20 +0100
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Biju Das <biju.das.jz@bp.renesas.com>,
+	linux-kernel@vger.kernel.org,
+	kernel@pengutronix.de
+Subject: [PATCH v2] mul_u64_u64_div_u64: Increase precision by conditionally swapping a and b
+Date: Sun,  3 Mar 2024 10:24:09 +0100
+Message-ID: <20240303092408.662449-2-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1ca5:b0:365:5dbd:b956 with SMTP id
- x5-20020a056e021ca500b003655dbdb956mr353124ill.3.1709457663236; Sun, 03 Mar
- 2024 01:21:03 -0800 (PST)
-Date: Sun, 03 Mar 2024 01:21:03 -0800
-In-Reply-To: <0000000000002373f005ff843b58@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c6b0fa0612be2070@google.com>
-Subject: Re: [syzbot] [reiserfs] kernel panic: stack is corrupted in ___slab_alloc
-From: syzbot <syzbot+cf0693aee9ea61dda749@syzkaller.appspotmail.com>
-To: 42.hyeyoo@gmail.com, akpm@linux-foundation.org, axboe@kernel.dk, 
-	brauner@kernel.org, cl@linux.com, cl@os.amperecomputing.com, 
-	dvyukov@google.com, iamjoonsoo.kim@lge.com, jack@suse.cz, 
-	keescook@chromium.org, linux-fsdevel@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, penberg@kernel.org, reiserfs-devel@vger.kernel.org, 
-	rientjes@google.com, roman.gushchin@linux.dev, 
-	syzkaller-bugs@googlegroups.com, vbabka@suse.cz
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1840; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=LlKvoQRPABfKry/b2N2XpVfDUkyfRmoWcEJ2WI/dDZI=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBl5EG4uHU+wgSThK8NbSrhs6DrOsbWCbBx4V9+s 36f5N6+XfGJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZeRBuAAKCRCPgPtYfRL+ TsujB/917hzWZmKaMffR1oaaoL9/J7Qz7ku+4cfOD4wKy+B3GPkeraqhFLV+sYzrcmHKjQ1eUWj uDFU/J0hDHFm5ZMlFxzb2/rltHIJIL3vb5R7kdaWpVN2DZ4ZRq8Jck0gmTL1PrETaxrizdxrvCG 0keL9teMrLm595r0gTBVsNGGTbp0tk3O/sIumbIuPQac466mNuZeDNGE0SJQiYZKUgYRNKZgHAf e/v1QsrUkRVTu6AQtxGqgB0ZDPoWTGl8cReZQfLw6ctZjlx8K0xTOjjo4zb52FmcGXuHgLWc5Gi Abegik2AB5jOZYwghMVPDylW3RvWF8ZrA2uovA9GRo/7R7Qx
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+As indicated in the added comment, the algorithm works better if b is
+big. As multiplication is commutative, a and b can be swapped. Do this
+if a is bigger than b.
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+Changes since v1:
+ - Make use of swap() (Thanks Marc)
+ - Fix a typo in a code comment (Thanks Randy)
+ - Fix a typo in the commit log (s/If/if/; noticed myself)
 
-    fs: Block writes to mounted block devices
+v1 got a Tested-by from Biju; I didn't add it here as the patch changed.
+I'm optimistic that this v2 would pass his tests, too, but I don't wanna
+assume stuff when adding tags.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1629e3ca180000
-start commit:   e8f75c0270d9 Merge tag 'x86_sgx_for_v6.5' of git://git.ker..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a98ec7f738e43bd4
-dashboard link: https://syzkaller.appspot.com/bug?extid=cf0693aee9ea61dda749
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10310670a80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1220c777280000
+Best regards
+Uwe
 
-If the result looks correct, please mark the issue as fixed by replying with:
+ lib/math/div64.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-#syz fix: fs: Block writes to mounted block devices
+diff --git a/lib/math/div64.c b/lib/math/div64.c
+index 55a81782e271..191761b1b623 100644
+--- a/lib/math/div64.c
++++ b/lib/math/div64.c
+@@ -22,6 +22,7 @@
+ #include <linux/export.h>
+ #include <linux/math.h>
+ #include <linux/math64.h>
++#include <linux/minmax.h>
+ #include <linux/log2.h>
+ 
+ /* Not needed on 64bit architectures */
+@@ -190,6 +191,20 @@ u64 mul_u64_u64_div_u64(u64 a, u64 b, u64 c)
+ 
+ 	/* can a * b overflow ? */
+ 	if (ilog2(a) + ilog2(b) > 62) {
++		/*
++		 * Note that the algorithm after the if block below might lose
++		 * some precision and the result is more exact for b > a. So
++		 * exchange a and b if a is bigger than b.
++		 *
++		 * For example with a = 43980465100800, b = 100000000, c = 1000000000
++		 * the below calculation doesn't modify b at all because div == 0
++		 * and then shift becomes 45 + 26 - 62 = 9 and so the result
++		 * becomes 4398035251080. However with a and b swapped the exact
++		 * result is calculated (i.e. 4398046510080).
++		 */
++		if (a > b)
++			swap(a, b);
++
+ 		/*
+ 		 * (b * a) / c is equal to
+ 		 *
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+base-commit: 1870cdc0e8dee32e3c221704a2977898ba4c10e8
+-- 
+2.43.0
+
 
