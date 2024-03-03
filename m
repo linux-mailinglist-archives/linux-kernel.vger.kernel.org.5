@@ -1,147 +1,128 @@
-Return-Path: <linux-kernel+bounces-89707-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89708-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC3DF86F47B
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 11:48:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30D9786F47D
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 11:49:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8CE1B1F21935
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 10:48:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0EF72835D3
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 10:49:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 693E4BE4E;
-	Sun,  3 Mar 2024 10:48:19 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE70EBA46;
+	Sun,  3 Mar 2024 10:49:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="yyGQN/T3"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F46FB653
-	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 10:48:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51419B64C
+	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 10:48:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709462898; cv=none; b=eJ2HvZ6E4gijL1XYyJa38BO5sTfilJufUYrIadOb9hUyag8cKyg5vyhDtjQZcbbo75pQ+kgHHFkNXWrJnJ/kCldbNPaAjINsYUtAtGFOfax8oAwzRpuSblKxVJ0AjiJOsmEa0dAegLFDIJL+vH683g/1t4v1jEx3WyBjgQ3cfTA=
+	t=1709462942; cv=none; b=QfVMazjRYbA0G6OYGBWLSgR/4QETXhDdlk5IucEkrn2d5byirH4bk8+fUuvaCp2uqo6Qx7/7x+aYUXVTvG8/WkFumWVJSyz4uSNgllm2j5kY81cHvA5i+a0dsed7CShtAelt8xIDoJb0CclktWlswBE0R0PX7tp8DOhlFjn41qI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709462898; c=relaxed/simple;
-	bh=VjuhQGCzGOfzaihRX2JyJ76FsPEOFBeLHPY+5Hq/WRw=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=puuaAF1Q3dseyAHyRgk2Je9azk5DiB2KF2czE2y2btc+Ib5agBJOEnQH6ZhffTTq2zrQClxj5cUYr+Xj01ZXVp+lnEjZzTAzJhOMVKISASzL1gcJXGXxD3J1RKhkjnsRL+KCFmvPA6t2fIdOiNs9jpEQRFzjcPxYnuFHRvfDRLE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7c83b729ba5so85451839f.0
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 02:48:17 -0800 (PST)
+	s=arc-20240116; t=1709462942; c=relaxed/simple;
+	bh=wdMZvlY9a5pjvdej/k7MCIk+lVgoJHMV1KhOOpZkf8I=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=PC2/BUSjIeKn+muSlrZhcEsxgQo72CTiagNIJuQYWrZ78WQV4xH32p6umfDwQs5pZANlB+qQbl8Uu8tEt3YzbUfPm+P5gEhKiMnB+oPGKZbB7LHlSxCEYlB0iO13K6xu0OLVu+O7ukmTUcTcsfQjCm/3vN24id2WjO9WxKNmcSg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=yyGQN/T3; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a446b5a08f0so403098666b.1
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 02:48:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1709462937; x=1710067737; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=qntDsCq8rgJuk7hdQSQYmfEUmAPY9qw4QwTul/rj/lU=;
+        b=yyGQN/T3j++gHMHFi+q96mX9ZYpLRXZHUtxxVLrSfY4jPIzs4FBiHMO7v27ugR4dAM
+         1UjVs383IAWeFD7qt4qIdbI8XBzLrlTtvhYvS34X01jFQLeXA4UZOpaciWbQiKWPtKey
+         aOBLp8NkSH6Noh/5qAywHzIh4gVpnluzTbVTIySJdTjoy0fxQDknTqKVYepxt8v/Vl8z
+         R3lvZDhnBd1I+cDwEZiQvTS+DswITDf4n/1T7UvsbT0RuvD8IVO0onooq6XKdXkGQ431
+         YsZWai15/A4qYLmnfVfy4mLbL8JPh7MNgpG6QLBrSVnZ6Eo8xk/P57k8mXyLpLFYIn8N
+         VRew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709462896; x=1710067696;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nV/zkV9C2v6G1+zSdNLoBMk/XcnewbbvU219oPM9wzo=;
-        b=h10WM2sTgb9gyTAgOqcdXdhgU099v7SDhFt538WbRhXPEeQwo3WPqAHzGreM9DfZkz
-         hapjiSHlQhbtenlM13znR5t1wmdTiaMR6eoh/hQV3vdTVNkzriq6QxHiNnd7pz8UcjV8
-         rJM22M3EJP0OGiJRFLRm6y/S2pNjR6oNofCCbe69uaKIyKZcQ5x4d/KrTWqBJTdsJMQ9
-         25x+YvNuBEGWAD1T9FCJay9/O3gC6CaWtCnv9aa6+PceFbaMPLhZ5DjJO/oRVIxcE8cz
-         ZDJ7pKVBxA2hT6cELSCy6Gw5ll/KYwX+Vcmv6fG/xGtEofSFAf5XBjqotKdimlnnmxgV
-         MpWw==
-X-Forwarded-Encrypted: i=1; AJvYcCW5IoWYltoLMmUgm8xVw2CG47WR65MDGBN1SmI3klx4dUSG565ZN/RXDiPP8R7bCTzTBU3SmPMTad60cfQFjlSWMYl0RJZVavKx+33w
-X-Gm-Message-State: AOJu0YxOdVNmO8nnMSJgtIrPCZ291GpQBNAwtD2MXt96u/b4hzaHwzkO
-	cdEEaSO77hTlqTdZWEQNNr9T9iDilVVHJuq/vPsGpEtFoFGmU4YQn/ilGywnqGYZ9vJpG2ZGUVH
-	1FTsP8sptGI0N8FHRP0V4ziHnIWBKGFwpi6Oy0RhxndxjjxrASAM/iAM=
-X-Google-Smtp-Source: AGHT+IHQRAaAzXWtAlHHXRq3FoQG0Pu2gvokhMpmLxgURuAWvd1ROW62KNKw88NbXloTj/U16U80J53/2ZZuXL510i8T6Lb2u6bw
+        d=1e100.net; s=20230601; t=1709462937; x=1710067737;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qntDsCq8rgJuk7hdQSQYmfEUmAPY9qw4QwTul/rj/lU=;
+        b=dTYmLpB2/ffi884BMVnJSzIwKD9stJe3XZ4kRtMi6efzjJ3LkX5aUAYbVzLiJ2g8FP
+         mnZtMccc1LQwBAFjvCy16ukpBhzHZPsDrEPeJc3bD7lw/GZ6UfUJ0bpwnLlAgfZL9mO8
+         tzHYjojBD0jInFU1EaKuxtR0qz361ej41J7hGTUxQ5qxF4dndpeCMP49wHkuKBz/+xee
+         I+CySf5NuvrnVwaP+hvOtU2qMJGkyoJICWq2ATMCo9ymNl6q+qv2uyowHtWEhCyYl5jp
+         n54bG3+YhyoCjdbmjZY07mV1INUgAW692mgbe9mErk3/qcFzeymC1Xe4RCDFSd0Ld6lT
+         02iw==
+X-Forwarded-Encrypted: i=1; AJvYcCVQY056skEZItmD7PKa2EUVx0wTvfjTgM7tkoTogkIT3RzObpm70R6jf/vI84oE1Acrif4WVO/WGzUHwQ7OI+2Oyt3n/zNnlI2QdU6m
+X-Gm-Message-State: AOJu0YxfhuC9ZNtSBOfMtWoLshVHATFrTd3qsiMFi3bewYMOXvA7LMpM
+	Kg+Yan4s5CIVC3HMfPtysnnb8aTvzYyoriO++HJOWO6ooBcmNtdHYlrgZR/veLs=
+X-Google-Smtp-Source: AGHT+IFpd7/0A8HZA8X0BaCKoqokGmayqMEq28RDQ2RuXymWMt5xBJCQfQZs2Qv/VI3r31VlyOkWcA==
+X-Received: by 2002:a17:906:6c97:b0:a45:2cf3:6c65 with SMTP id s23-20020a1709066c9700b00a452cf36c65mr445528ejr.25.1709462937430;
+        Sun, 03 Mar 2024 02:48:57 -0800 (PST)
+Received: from brgl-uxlite.. (5-226-109-134.static.ip.netia.com.pl. [5.226.109.134])
+        by smtp.gmail.com with ESMTPSA id he44-20020a1709073dac00b00a4323d1b18fsm3582303ejc.34.2024.03.03.02.48.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Mar 2024 02:48:57 -0800 (PST)
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+To: Rob Herring <robh+dt@kernel.org>,
+	Frank Rowand <frowand.list@gmail.com>
+Cc: devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [PATCH] of: make for_each_property_of_node() available to to !OF
+Date: Sun,  3 Mar 2024 11:48:53 +0100
+Message-Id: <20240303104853.31511-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:348c:b0:474:e855:df7a with SMTP id
- t12-20020a056638348c00b00474e855df7amr54497jal.5.1709462896666; Sun, 03 Mar
- 2024 02:48:16 -0800 (PST)
-Date: Sun, 03 Mar 2024 02:48:16 -0800
-In-Reply-To: <000000000000903473060e875e9e@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b69bf20612bf586e@google.com>
-Subject: Re: [syzbot] [hams?] KMSAN: uninit-value in nr_route_frame
-From: syzbot <syzbot+f770ce3566e60e5573ac@syzkaller.appspotmail.com>
-To: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
-	linux-hams@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, pabeni@redhat.com, ralf@linux-mips.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-syzbot has found a reproducer for the following issue on:
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-HEAD commit:    04b8076df253 Merge tag 'firewire-fixes-6.8-rc7' of git://g..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=15ccc1a2180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=80c7a82a572c0de3
-dashboard link: https://syzkaller.appspot.com/bug?extid=f770ce3566e60e5573ac
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12918b32180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16b3efac180000
+for_each_property_of_node() is a macro and so doesn't have a stub inline
+function for !OF. Move it out of the relevant #ifdef to make it available
+to all users.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/a4610b1ff2a7/disk-04b8076d.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/991e9d902d39/vmlinux-04b8076d.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a5b8e8e98121/bzImage-04b8076d.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f770ce3566e60e5573ac@syzkaller.appspotmail.com
-
-=====================================================
-BUG: KMSAN: uninit-value in nr_route_frame+0x4a9/0xfc0 net/netrom/nr_route.c:787
- nr_route_frame+0x4a9/0xfc0 net/netrom/nr_route.c:787
- nr_xmit+0x5a/0x1c0 net/netrom/nr_dev.c:144
- __netdev_start_xmit include/linux/netdevice.h:4980 [inline]
- netdev_start_xmit include/linux/netdevice.h:4994 [inline]
- xmit_one net/core/dev.c:3547 [inline]
- dev_hard_start_xmit+0x244/0xa10 net/core/dev.c:3563
- __dev_queue_xmit+0x33ed/0x51c0 net/core/dev.c:4351
- dev_queue_xmit include/linux/netdevice.h:3171 [inline]
- raw_sendmsg+0x64e/0xc10 net/ieee802154/socket.c:299
- ieee802154_sock_sendmsg+0x91/0xc0 net/ieee802154/socket.c:96
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg net/socket.c:745 [inline]
- ____sys_sendmsg+0x9c2/0xd60 net/socket.c:2584
- ___sys_sendmsg+0x28d/0x3c0 net/socket.c:2638
- __sys_sendmsg net/socket.c:2667 [inline]
- __do_sys_sendmsg net/socket.c:2676 [inline]
- __se_sys_sendmsg net/socket.c:2674 [inline]
- __x64_sys_sendmsg+0x307/0x490 net/socket.c:2674
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-Uninit was created at:
- slab_post_alloc_hook mm/slub.c:3819 [inline]
- slab_alloc_node mm/slub.c:3860 [inline]
- kmem_cache_alloc_node+0x5cb/0xbc0 mm/slub.c:3903
- kmalloc_reserve+0x13d/0x4a0 net/core/skbuff.c:560
- __alloc_skb+0x352/0x790 net/core/skbuff.c:651
- alloc_skb include/linux/skbuff.h:1296 [inline]
- alloc_skb_with_frags+0xc8/0xbd0 net/core/skbuff.c:6394
- sock_alloc_send_pskb+0xa80/0xbf0 net/core/sock.c:2783
- sock_alloc_send_skb include/net/sock.h:1855 [inline]
- raw_sendmsg+0x367/0xc10 net/ieee802154/socket.c:282
- ieee802154_sock_sendmsg+0x91/0xc0 net/ieee802154/socket.c:96
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg net/socket.c:745 [inline]
- ____sys_sendmsg+0x9c2/0xd60 net/socket.c:2584
- ___sys_sendmsg+0x28d/0x3c0 net/socket.c:2638
- __sys_sendmsg net/socket.c:2667 [inline]
- __do_sys_sendmsg net/socket.c:2676 [inline]
- __se_sys_sendmsg net/socket.c:2674 [inline]
- __x64_sys_sendmsg+0x307/0x490 net/socket.c:2674
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-CPU: 0 PID: 5044 Comm: syz-executor263 Not tainted 6.8.0-rc6-syzkaller-00250-g04b8076df253 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-=====================================================
-
-
+Fixes: 611cad720148 ("dt: add of_alias_scan and of_alias_get_id")
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 ---
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+I have an upcoming driver that will use this but which can also be built
+on non-DT systems. I'd like to get that in as a fix to avoid inter-tree
+dependencies later.
+
+ include/linux/of.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/include/linux/of.h b/include/linux/of.h
+index 6a9ddf20e79a..a3e8e429ad7f 100644
+--- a/include/linux/of.h
++++ b/include/linux/of.h
+@@ -362,9 +362,6 @@ extern struct device_node *of_get_cpu_state_node(struct device_node *cpu_node,
+ 						 int index);
+ extern u64 of_get_cpu_hwid(struct device_node *cpun, unsigned int thread);
+ 
+-#define for_each_property_of_node(dn, pp) \
+-	for (pp = dn->properties; pp != NULL; pp = pp->next)
+-
+ extern int of_n_addr_cells(struct device_node *np);
+ extern int of_n_size_cells(struct device_node *np);
+ extern const struct of_device_id *of_match_node(
+@@ -892,6 +889,9 @@ static inline int of_prop_val_eq(struct property *p1, struct property *p2)
+ 	       !memcmp(p1->value, p2->value, (size_t)p1->length);
+ }
+ 
++#define for_each_property_of_node(dn, pp) \
++	for (pp = dn->properties; pp != NULL; pp = pp->next)
++
+ #if defined(CONFIG_OF) && defined(CONFIG_NUMA)
+ extern int of_node_to_nid(struct device_node *np);
+ #else
+-- 
+2.40.1
+
 
