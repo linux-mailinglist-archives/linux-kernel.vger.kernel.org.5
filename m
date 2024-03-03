@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-89916-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89917-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DED6086F746
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 22:48:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9F2186F748
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 22:48:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 45C7FB20BA5
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 21:48:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAEDF1C20920
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 21:48:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AAAD7B3FA;
-	Sun,  3 Mar 2024 21:47:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 567A47BAFD;
+	Sun,  3 Mar 2024 21:47:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=smile-fr.20230601.gappssmtp.com header.i=@smile-fr.20230601.gappssmtp.com header.b="tP30Um7+"
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	dkim=pass (2048-bit key) header.d=smile-fr.20230601.gappssmtp.com header.i=@smile-fr.20230601.gappssmtp.com header.b="ZiQSv6Xl"
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 567727A70E
-	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 21:47:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E62F7A729
+	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 21:47:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709502440; cv=none; b=qEKVLG8CEPCyXauxkaiAO9BLZb2UuWfBAWTOJ0NmBbIxBUWjDXE9Roj9q5M3DTKqMPZK8FEBHaafejtuc0WuBykstP+ZTF+AEstV45XAXJr3kxf/6XeG+V2tqajFUeXEAJjhLvjtG1/TvbEsIlOfyumS8J+LUHK5wfxVFzAC6wo=
+	t=1709502440; cv=none; b=st0Ne9FjtDjspVazlSg/Y7zVLizXxNkVXeNbTX95Dj4aDGTkQf4U+pf/2s84yvnTdrdOZUL0uTbdQeuVNd/S3Qa+fNUVCMpj941nq5HYT5oKnmTytkQfahFrnHMnR3qs1x3vIklRN6OdautxmZHuBbJ+jHVJmKMdpUi4762uIwQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709502440; c=relaxed/simple;
-	bh=MCNa9ztFUE2oUlEReP56MHU0MfrXs710iqZ4Zm20fuY=;
+	bh=qLHHve/IJsVJlqgF6Jk70C+/XLkpF6P4w2riD0m3DKo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=E+6XZu3VS35E17aAPtacI0y171/0z1eQcc1Hw4dbaH45nc0p89ufaMw5woB3+i9QtHS+eQxGcIaJWUDbWkirFGOcnQgDCjlbY2N6KLp1dvRvjfsewvm17N5uc2xUN+et3X0Vy/9eWU6P1TVk3a+k9nj69hb1WHPpscRSkIAGk9E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=smile.fr; spf=pass smtp.mailfrom=smile.fr; dkim=pass (2048-bit key) header.d=smile-fr.20230601.gappssmtp.com header.i=@smile-fr.20230601.gappssmtp.com header.b=tP30Um7+; arc=none smtp.client-ip=209.85.128.51
+	 MIME-Version; b=nkluxtsca8a9HzX3QFgfS+N2voVQ6OGMCrRa1TlKmAsw8Nfj7262+hpWsQrarxNfW/ZLMAmbYtXKN/afgEUMVUx+exM87pZUwkHYoI2dNm/QriVPoK0kq5mSTAUoKhEphvqaVWwpM5VC3034QG7KFOhWoCxlbL+d6XnAAIg/XaI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=smile.fr; spf=pass smtp.mailfrom=smile.fr; dkim=pass (2048-bit key) header.d=smile-fr.20230601.gappssmtp.com header.i=@smile-fr.20230601.gappssmtp.com header.b=ZiQSv6Xl; arc=none smtp.client-ip=209.85.221.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=smile.fr
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=smile.fr
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-412de4e7d9cso4914575e9.1
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 13:47:17 -0800 (PST)
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-33e151a1434so1074592f8f.2
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 13:47:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=smile-fr.20230601.gappssmtp.com; s=20230601; t=1709502435; x=1710107235; darn=vger.kernel.org;
+        d=smile-fr.20230601.gappssmtp.com; s=20230601; t=1709502437; x=1710107237; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cqqXDHwWxaVlf6JANUXu9UPKsRPCn/ZbiyHMKl1BV6c=;
-        b=tP30Um7+YiQQOC4PP+Kx9nr1qP+UACthuC/PrAhG8dIxgg/NoxyQsFltKAuyW1/aTh
-         3tnvXu8Xi4EBGvwgMSzXKy6s+ZyKrZebHNx3HFtedSSHsqst8bOQvqWnu5yEhQjuDaRz
-         AeBHFhpIxadxpldCvxFuLS9TVTr+xPWsR72MwRQzpUaDAarUXjhXpykJS/XbvPaTFkST
-         OaPi0E5t9hEw2p8v7RtqCse58sr3piaEbvYr2KCbxI7hJ1EC8jECvqdeVjhcT6XnwejI
-         Yja4degf6M4cKtHFLL3rSasqRcpH8brDC3/6p9JSJG0T3PpflUf1RPf0kGiTkZOD3uoz
-         x+uQ==
+        bh=FD+6MDmKRX3rBNbRNBvTaUK966jMpDDoNcEIpOuczko=;
+        b=ZiQSv6XlP7hxl3FBe0G9CmETmipYotNTqP7KaqBE4jSO58YbdYz5dXUxZpdn4bPrV8
+         rFuNbL4HaqiXdSshnv3SDJlKcJKeoVU3J4yEM+pclPiDj3atV2njbnXvTvIif4XnK6fO
+         LYmmGy0cAjpCm0Ek1sRWtsWeVXyjDfz+skzlLcWB9W3uoGotAd4vbvLk43PblTbAi8dw
+         LB2rgOGgrhLyMv6pg6sNGj6gBhyS2LVzhkBcrq6Xb6xvTe1Lff8xUCK5Ms9/jqBhIi98
+         0TDC6uIJ1dmelQITP9XOrzsvvt2nIWCje5FDg74DtT8g/st9fX1qGvKS1wIdPDtxP3zn
+         fPoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709502435; x=1710107235;
+        d=1e100.net; s=20230601; t=1709502437; x=1710107237;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=cqqXDHwWxaVlf6JANUXu9UPKsRPCn/ZbiyHMKl1BV6c=;
-        b=o6fwxvvJYtCTFigchInnAro259s+6UEVp3dKJERTsr9sUNiKUKcVb4HSgprEcfxfC/
-         yrmAOihabDo1DYu4q/wYJmGrbgZmxglIvNEdZOfU8fm8+RMVBJv1/caRuv6vUDaA9uV7
-         zazaeo2tVbFSiwXuoY8cVt6fGjTvWufnp3WqYvMWYWylVy7yFzSYL8iuJQ8LsCyr3+Pf
-         HdlanzedgYljivqCRYQszqTSpJc4ZOepAFN7KacFNObP3Ajx2eoefXnlRvJVXLrqbm2a
-         ngb+Z/mgWpcCj1/MwdjSrmPyzZsitU81kTpRooQKsGiRnNHpm4hEb64Smy+moVAd8qz+
-         fBDQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWSlWum/KmD8Ae+dyy+lRSaLRKD+SCR3AOFip453k00R+Hnl3VHZIa6eRPoa2xuSsOpD/MmMAJr0oQJgCJGedfuP1u2quzhEfQDh8B8
-X-Gm-Message-State: AOJu0YwxFTJ/3YPTH4BONzKJd13a+3kWM3exvLekMYAorUtwrrVHxc8z
-	sxAGl+1lgnmKanqU903iT2AppMWliGJck2UC9K5A+Zk+FttsGJoKDJeGduzrVo4=
-X-Google-Smtp-Source: AGHT+IHsU9Go1PGnEF0+qHk3RasU+lHfGUIjRLpbGvpRMXmpheJjleZjVndsSqNEb4oFGICOc46gBw==
-X-Received: by 2002:a05:600c:34c3:b0:412:de7e:b997 with SMTP id d3-20020a05600c34c300b00412de7eb997mr1679611wmq.11.1709502435707;
-        Sun, 03 Mar 2024 13:47:15 -0800 (PST)
+        bh=FD+6MDmKRX3rBNbRNBvTaUK966jMpDDoNcEIpOuczko=;
+        b=GBkZswV7dTHLd1cRKjNE+CK4Q2bBi5Ri0J9wCWrH1ajM0GH+A3h7Aa3dIRx/oEZhPc
+         +k29b4+VrKiZ+o2r+Awz4Z71X2Sj+Q9rzZo+fd+h0+ujBF2QKc1P4bcxkJnVngg53awz
+         7Mk7BK6C5EAlYG89fRyD8OIQKHH4ScrORfQ2YwBsVlI6/UoPgduMQCY3G3hWxagZalTi
+         i5E3kRENr347URApBd4M35yMbatB/ZSbal0Ocd0V2ORgRaS8nNRytcTiaJMwmXZe7HpM
+         uNqwwJkMgn1l8PrbB8k0T4mY9xmgY9zjL3zB1lMrvdaRWMTLdjt6Oj7y1POzGgfQftZt
+         ewgw==
+X-Forwarded-Encrypted: i=1; AJvYcCVXbHUNxXZpp+4hDa5IMhY5yFVUbgr+HwEMtF8mQHZbqJbBCeRUv1MiZdN85PaHDfVCFlMNPuSehlpRDXEYou9DJD5fDps6Fudiave2
+X-Gm-Message-State: AOJu0YwKtXYfzx+VgbzSvL0iFnAIi3c7luowDR8QMzE7VrxGIUuJcnXE
+	qyssJWMHSNZy2M/cXND2jZlURUKtW/2TMNJe+JzPjF3LCBKtdtaCHoPFe+F8eK0=
+X-Google-Smtp-Source: AGHT+IGznqr/wt4dtduea4dIZTe9E+kioM4CSved/7ZHQdDUAuqkwksDJT4LqAvpVGrM69Yv7U63uA==
+X-Received: by 2002:a05:6000:90d:b0:33d:4fca:b7dc with SMTP id cw13-20020a056000090d00b0033d4fcab7dcmr5288160wrb.62.1709502436851;
+        Sun, 03 Mar 2024 13:47:16 -0800 (PST)
 Received: from P-ASN-ECS-830T8C3.numericable.fr ([89.159.1.53])
-        by smtp.gmail.com with ESMTPSA id bu16-20020a056000079000b0033dc3f3d689sm10525236wrb.93.2024.03.03.13.47.14
+        by smtp.gmail.com with ESMTPSA id bu16-20020a056000079000b0033dc3f3d689sm10525236wrb.93.2024.03.03.13.47.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Mar 2024 13:47:15 -0800 (PST)
+        Sun, 03 Mar 2024 13:47:16 -0800 (PST)
 From: Yoann Congal <yoann.congal@smile.fr>
 To: linux-fsdevel@vger.kernel.org,
 	linux-kbuild@vger.kernel.org,
@@ -93,9 +93,9 @@ Cc: =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
 	Yoann Congal <yoann.congal@smile.fr>
-Subject: [PATCH v6 2/3] printk: Change type of CONFIG_BASE_SMALL to bool
-Date: Sun,  3 Mar 2024 22:46:51 +0100
-Message-Id: <20240303214652.727140-3-yoann.congal@smile.fr>
+Subject: [PATCH v6 3/3] printk: Remove redundant CONFIG_BASE_FULL
+Date: Sun,  3 Mar 2024 22:46:52 +0100
+Message-Id: <20240303214652.727140-4-yoann.congal@smile.fr>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240303214652.727140-1-yoann.congal@smile.fr>
 References: <20240303214652.727140-1-yoann.congal@smile.fr>
@@ -107,154 +107,371 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-CONFIG_BASE_SMALL is currently a type int but is only used as a boolean.
+CONFIG_BASE_FULL is equivalent to !CONFIG_BASE_SMALL and is enabled by
+default: CONFIG_BASE_SMALL is the special case to take care of.
+So, remove CONFIG_BASE_FULL and move the config choice to
+CONFIG_BASE_SMALL (which defaults to 'n')
 
-So, change its type to bool and adapt all usages:
-CONFIG_BASE_SMALL == 0 becomes !IS_ENABLED(CONFIG_BASE_SMALL) and
-CONFIG_BASE_SMALL != 0 becomes  IS_ENABLED(CONFIG_BASE_SMALL).
+For defconfigs explicitely disabling BASE_FULL, explicitely enable
+BASE_SMALL.
+For defconfigs explicitely enabling BASE_FULL, drop it as it is the
+default.
 
-Reviewed-by: Petr Mladek <pmladek@suse.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
 Signed-off-by: Yoann Congal <yoann.congal@smile.fr>
 ---
- arch/x86/include/asm/mpspec.h | 6 +++---
- drivers/tty/vt/vc_screen.c    | 2 +-
- include/linux/threads.h       | 4 ++--
- include/linux/udp.h           | 2 +-
- include/linux/xarray.h        | 2 +-
- init/Kconfig                  | 6 ++----
- kernel/futex/core.c           | 2 +-
- kernel/user.c                 | 2 +-
- 8 files changed, 12 insertions(+), 14 deletions(-)
+ arch/arm/configs/collie_defconfig                    |  2 +-
+ arch/arm/configs/keystone_defconfig                  |  2 +-
+ arch/arm/configs/lpc18xx_defconfig                   |  2 +-
+ arch/arm/configs/moxart_defconfig                    |  2 +-
+ arch/arm/configs/mps2_defconfig                      |  2 +-
+ arch/arm/configs/omap1_defconfig                     |  2 +-
+ arch/arm/configs/stm32_defconfig                     |  2 +-
+ arch/microblaze/configs/mmu_defconfig                |  2 +-
+ arch/mips/configs/rs90_defconfig                     |  2 +-
+ arch/powerpc/configs/adder875_defconfig              |  2 +-
+ arch/powerpc/configs/ep88xc_defconfig                |  2 +-
+ arch/powerpc/configs/mpc866_ads_defconfig            |  2 +-
+ arch/powerpc/configs/mpc885_ads_defconfig            |  2 +-
+ arch/powerpc/configs/tqm8xx_defconfig                |  2 +-
+ arch/riscv/configs/nommu_k210_defconfig              |  2 +-
+ arch/riscv/configs/nommu_k210_sdcard_defconfig       |  2 +-
+ arch/riscv/configs/nommu_virt_defconfig              |  2 +-
+ arch/sh/configs/edosk7705_defconfig                  |  2 +-
+ arch/sh/configs/se7619_defconfig                     |  2 +-
+ arch/sh/configs/se7712_defconfig                     |  2 +-
+ arch/sh/configs/se7721_defconfig                     |  2 +-
+ arch/sh/configs/shmin_defconfig                      |  2 +-
+ init/Kconfig                                         | 10 +++-------
+ tools/testing/selftests/wireguard/qemu/kernel.config |  1 -
+ 24 files changed, 25 insertions(+), 30 deletions(-)
 
-diff --git a/arch/x86/include/asm/mpspec.h b/arch/x86/include/asm/mpspec.h
-index 4b0f98a8d338d..c01d3105840cf 100644
---- a/arch/x86/include/asm/mpspec.h
-+++ b/arch/x86/include/asm/mpspec.h
-@@ -15,10 +15,10 @@ extern int pic_mode;
-  * Summit or generic (i.e. installer) kernels need lots of bus entries.
-  * Maximum 256 PCI busses, plus 1 ISA bus in each of 4 cabinets.
-  */
--#if CONFIG_BASE_SMALL == 0
--# define MAX_MP_BUSSES		260
--#else
-+#ifdef CONFIG_BASE_SMALL
- # define MAX_MP_BUSSES		32
-+#else
-+# define MAX_MP_BUSSES		260
- #endif
- 
- #define MAX_IRQ_SOURCES		256
-diff --git a/drivers/tty/vt/vc_screen.c b/drivers/tty/vt/vc_screen.c
-index 67e2cb7c96eec..da33c6c4691c0 100644
---- a/drivers/tty/vt/vc_screen.c
-+++ b/drivers/tty/vt/vc_screen.c
-@@ -51,7 +51,7 @@
- #include <asm/unaligned.h>
- 
- #define HEADER_SIZE	4u
--#define CON_BUF_SIZE (CONFIG_BASE_SMALL ? 256 : PAGE_SIZE)
-+#define CON_BUF_SIZE (IS_ENABLED(CONFIG_BASE_SMALL) ? 256 : PAGE_SIZE)
- 
- /*
-  * Our minor space:
-diff --git a/include/linux/threads.h b/include/linux/threads.h
-index c34173e6c5f18..1674a471b0b4c 100644
---- a/include/linux/threads.h
-+++ b/include/linux/threads.h
-@@ -25,13 +25,13 @@
- /*
-  * This controls the default maximum pid allocated to a process
-  */
--#define PID_MAX_DEFAULT (CONFIG_BASE_SMALL ? 0x1000 : 0x8000)
-+#define PID_MAX_DEFAULT (IS_ENABLED(CONFIG_BASE_SMALL) ? 0x1000 : 0x8000)
- 
- /*
-  * A maximum of 4 million PIDs should be enough for a while.
-  * [NOTE: PID/TIDs are limited to 2^30 ~= 1 billion, see FUTEX_TID_MASK.]
-  */
--#define PID_MAX_LIMIT (CONFIG_BASE_SMALL ? PAGE_SIZE * 8 : \
-+#define PID_MAX_LIMIT (IS_ENABLED(CONFIG_BASE_SMALL) ? PAGE_SIZE * 8 : \
- 	(sizeof(long) > 4 ? 4 * 1024 * 1024 : PID_MAX_DEFAULT))
- 
- /*
-diff --git a/include/linux/udp.h b/include/linux/udp.h
-index d04188714dca1..b456417fb4515 100644
---- a/include/linux/udp.h
-+++ b/include/linux/udp.h
-@@ -24,7 +24,7 @@ static inline struct udphdr *udp_hdr(const struct sk_buff *skb)
- }
- 
- #define UDP_HTABLE_SIZE_MIN_PERNET	128
--#define UDP_HTABLE_SIZE_MIN		(CONFIG_BASE_SMALL ? 128 : 256)
-+#define UDP_HTABLE_SIZE_MIN		(IS_ENABLED(CONFIG_BASE_SMALL) ? 128 : 256)
- #define UDP_HTABLE_SIZE_MAX		65536
- 
- static inline u32 udp_hashfn(const struct net *net, u32 num, u32 mask)
-diff --git a/include/linux/xarray.h b/include/linux/xarray.h
-index cb571dfcf4b16..3f81ee5f9fb9c 100644
---- a/include/linux/xarray.h
-+++ b/include/linux/xarray.h
-@@ -1141,7 +1141,7 @@ static inline void xa_release(struct xarray *xa, unsigned long index)
-  * doubled the number of slots per node, we'd get only 3 nodes per 4kB page.
-  */
- #ifndef XA_CHUNK_SHIFT
--#define XA_CHUNK_SHIFT		(CONFIG_BASE_SMALL ? 4 : 6)
-+#define XA_CHUNK_SHIFT		(IS_ENABLED(CONFIG_BASE_SMALL) ? 4 : 6)
- #endif
- #define XA_CHUNK_SIZE		(1UL << XA_CHUNK_SHIFT)
- #define XA_CHUNK_MASK		(XA_CHUNK_SIZE - 1)
+diff --git a/arch/arm/configs/collie_defconfig b/arch/arm/configs/collie_defconfig
+index 01b5a5a73f037..42cb1c8541188 100644
+--- a/arch/arm/configs/collie_defconfig
++++ b/arch/arm/configs/collie_defconfig
+@@ -3,7 +3,7 @@ CONFIG_LOG_BUF_SHIFT=14
+ CONFIG_BLK_DEV_INITRD=y
+ # CONFIG_CC_OPTIMIZE_FOR_SIZE is not set
+ CONFIG_EXPERT=y
+-# CONFIG_BASE_FULL is not set
++CONFIG_BASE_SMALL=y
+ # CONFIG_EPOLL is not set
+ CONFIG_ARCH_MULTI_V4=y
+ # CONFIG_ARCH_MULTI_V7 is not set
+diff --git a/arch/arm/configs/keystone_defconfig b/arch/arm/configs/keystone_defconfig
+index 59c4835ffc977..c1291ca290b23 100644
+--- a/arch/arm/configs/keystone_defconfig
++++ b/arch/arm/configs/keystone_defconfig
+@@ -12,7 +12,7 @@ CONFIG_CGROUP_DEVICE=y
+ CONFIG_CGROUP_CPUACCT=y
+ CONFIG_BLK_DEV_INITRD=y
+ # CONFIG_ELF_CORE is not set
+-# CONFIG_BASE_FULL is not set
++CONFIG_BASE_SMALL=y
+ CONFIG_KALLSYMS_ALL=y
+ CONFIG_EXPERT=y
+ CONFIG_PROFILING=y
+diff --git a/arch/arm/configs/lpc18xx_defconfig b/arch/arm/configs/lpc18xx_defconfig
+index d169da9b2824d..f55c231e08708 100644
+--- a/arch/arm/configs/lpc18xx_defconfig
++++ b/arch/arm/configs/lpc18xx_defconfig
+@@ -8,7 +8,7 @@ CONFIG_BLK_DEV_INITRD=y
+ # CONFIG_RD_LZ4 is not set
+ CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ # CONFIG_UID16 is not set
+-# CONFIG_BASE_FULL is not set
++CONFIG_BASE_SMALL=y
+ # CONFIG_FUTEX is not set
+ # CONFIG_EPOLL is not set
+ # CONFIG_SIGNALFD is not set
+diff --git a/arch/arm/configs/moxart_defconfig b/arch/arm/configs/moxart_defconfig
+index 1d41e73f4903c..34d079e03b3c5 100644
+--- a/arch/arm/configs/moxart_defconfig
++++ b/arch/arm/configs/moxart_defconfig
+@@ -6,7 +6,7 @@ CONFIG_IKCONFIG=y
+ CONFIG_IKCONFIG_PROC=y
+ CONFIG_EXPERT=y
+ # CONFIG_ELF_CORE is not set
+-# CONFIG_BASE_FULL is not set
++CONFIG_BASE_SMALL=y
+ # CONFIG_SIGNALFD is not set
+ # CONFIG_TIMERFD is not set
+ # CONFIG_EVENTFD is not set
+diff --git a/arch/arm/configs/mps2_defconfig b/arch/arm/configs/mps2_defconfig
+index 3ed73f184d839..e995e50537efd 100644
+--- a/arch/arm/configs/mps2_defconfig
++++ b/arch/arm/configs/mps2_defconfig
+@@ -5,7 +5,7 @@ CONFIG_LOG_BUF_SHIFT=16
+ CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ CONFIG_EXPERT=y
+ # CONFIG_UID16 is not set
+-# CONFIG_BASE_FULL is not set
++CONFIG_BASE_SMALL=y
+ # CONFIG_FUTEX is not set
+ # CONFIG_EPOLL is not set
+ # CONFIG_SIGNALFD is not set
+diff --git a/arch/arm/configs/omap1_defconfig b/arch/arm/configs/omap1_defconfig
+index 729ea8157e2a5..025b595dd8375 100644
+--- a/arch/arm/configs/omap1_defconfig
++++ b/arch/arm/configs/omap1_defconfig
+@@ -9,7 +9,7 @@ CONFIG_LOG_BUF_SHIFT=14
+ CONFIG_BLK_DEV_INITRD=y
+ CONFIG_EXPERT=y
+ # CONFIG_ELF_CORE is not set
+-# CONFIG_BASE_FULL is not set
++CONFIG_BASE_SMALL=y
+ # CONFIG_SHMEM is not set
+ # CONFIG_KALLSYMS is not set
+ CONFIG_PROFILING=y
+diff --git a/arch/arm/configs/stm32_defconfig b/arch/arm/configs/stm32_defconfig
+index b9fe3fbed5aec..3baec075d1efd 100644
+--- a/arch/arm/configs/stm32_defconfig
++++ b/arch/arm/configs/stm32_defconfig
+@@ -6,7 +6,7 @@ CONFIG_BLK_DEV_INITRD=y
+ CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ CONFIG_EXPERT=y
+ # CONFIG_UID16 is not set
+-# CONFIG_BASE_FULL is not set
++CONFIG_BASE_SMALL=y
+ # CONFIG_FUTEX is not set
+ # CONFIG_EPOLL is not set
+ # CONFIG_SIGNALFD is not set
+diff --git a/arch/microblaze/configs/mmu_defconfig b/arch/microblaze/configs/mmu_defconfig
+index 4da7bc4ac4a37..176314f3c9aac 100644
+--- a/arch/microblaze/configs/mmu_defconfig
++++ b/arch/microblaze/configs/mmu_defconfig
+@@ -4,7 +4,7 @@ CONFIG_AUDIT=y
+ CONFIG_IKCONFIG=y
+ CONFIG_IKCONFIG_PROC=y
+ CONFIG_EXPERT=y
+-# CONFIG_BASE_FULL is not set
++CONFIG_BASE_SMALL=y
+ CONFIG_KALLSYMS_ALL=y
+ CONFIG_XILINX_MICROBLAZE0_USE_MSR_INSTR=1
+ CONFIG_XILINX_MICROBLAZE0_USE_PCMP_INSTR=1
+diff --git a/arch/mips/configs/rs90_defconfig b/arch/mips/configs/rs90_defconfig
+index 4b9e36d6400e0..a53dd66e9b864 100644
+--- a/arch/mips/configs/rs90_defconfig
++++ b/arch/mips/configs/rs90_defconfig
+@@ -9,7 +9,7 @@ CONFIG_LD_DEAD_CODE_DATA_ELIMINATION=y
+ # CONFIG_SGETMASK_SYSCALL is not set
+ # CONFIG_SYSFS_SYSCALL is not set
+ # CONFIG_ELF_CORE is not set
+-# CONFIG_BASE_FULL is not set
++CONFIG_BASE_SMALL=y
+ # CONFIG_TIMERFD is not set
+ # CONFIG_AIO is not set
+ # CONFIG_IO_URING is not set
+diff --git a/arch/powerpc/configs/adder875_defconfig b/arch/powerpc/configs/adder875_defconfig
+index 7f35d5bc12299..97f4d48517356 100644
+--- a/arch/powerpc/configs/adder875_defconfig
++++ b/arch/powerpc/configs/adder875_defconfig
+@@ -4,7 +4,7 @@ CONFIG_SYSVIPC=y
+ CONFIG_LOG_BUF_SHIFT=14
+ CONFIG_EXPERT=y
+ # CONFIG_ELF_CORE is not set
+-# CONFIG_BASE_FULL is not set
++CONFIG_BASE_SMALL=y
+ # CONFIG_FUTEX is not set
+ # CONFIG_VM_EVENT_COUNTERS is not set
+ # CONFIG_BLK_DEV_BSG is not set
+diff --git a/arch/powerpc/configs/ep88xc_defconfig b/arch/powerpc/configs/ep88xc_defconfig
+index a98ef6a4abef6..50cc59eb36cf1 100644
+--- a/arch/powerpc/configs/ep88xc_defconfig
++++ b/arch/powerpc/configs/ep88xc_defconfig
+@@ -6,7 +6,7 @@ CONFIG_HIGH_RES_TIMERS=y
+ CONFIG_LOG_BUF_SHIFT=14
+ CONFIG_EXPERT=y
+ # CONFIG_ELF_CORE is not set
+-# CONFIG_BASE_FULL is not set
++CONFIG_BASE_SMALL=y
+ # CONFIG_FUTEX is not set
+ # CONFIG_VM_EVENT_COUNTERS is not set
+ # CONFIG_BLK_DEV_BSG is not set
+diff --git a/arch/powerpc/configs/mpc866_ads_defconfig b/arch/powerpc/configs/mpc866_ads_defconfig
+index 5c56d36cdfc5c..6f449411abf7b 100644
+--- a/arch/powerpc/configs/mpc866_ads_defconfig
++++ b/arch/powerpc/configs/mpc866_ads_defconfig
+@@ -6,7 +6,7 @@ CONFIG_HIGH_RES_TIMERS=y
+ CONFIG_LOG_BUF_SHIFT=14
+ CONFIG_EXPERT=y
+ # CONFIG_BUG is not set
+-# CONFIG_BASE_FULL is not set
++CONFIG_BASE_SMALL=y
+ # CONFIG_EPOLL is not set
+ # CONFIG_VM_EVENT_COUNTERS is not set
+ # CONFIG_BLK_DEV_BSG is not set
+diff --git a/arch/powerpc/configs/mpc885_ads_defconfig b/arch/powerpc/configs/mpc885_ads_defconfig
+index 56b876e418e91..77306be62e9ee 100644
+--- a/arch/powerpc/configs/mpc885_ads_defconfig
++++ b/arch/powerpc/configs/mpc885_ads_defconfig
+@@ -7,7 +7,7 @@ CONFIG_VIRT_CPU_ACCOUNTING_NATIVE=y
+ CONFIG_LOG_BUF_SHIFT=14
+ CONFIG_EXPERT=y
+ # CONFIG_ELF_CORE is not set
+-# CONFIG_BASE_FULL is not set
++CONFIG_BASE_SMALL=y
+ # CONFIG_FUTEX is not set
+ CONFIG_PERF_EVENTS=y
+ # CONFIG_VM_EVENT_COUNTERS is not set
+diff --git a/arch/powerpc/configs/tqm8xx_defconfig b/arch/powerpc/configs/tqm8xx_defconfig
+index 083c2e57520a0..383c0966e92fd 100644
+--- a/arch/powerpc/configs/tqm8xx_defconfig
++++ b/arch/powerpc/configs/tqm8xx_defconfig
+@@ -6,7 +6,7 @@ CONFIG_HIGH_RES_TIMERS=y
+ CONFIG_LOG_BUF_SHIFT=14
+ CONFIG_EXPERT=y
+ # CONFIG_ELF_CORE is not set
+-# CONFIG_BASE_FULL is not set
++CONFIG_BASE_SMALL=y
+ # CONFIG_FUTEX is not set
+ # CONFIG_VM_EVENT_COUNTERS is not set
+ CONFIG_MODULES=y
+diff --git a/arch/riscv/configs/nommu_k210_defconfig b/arch/riscv/configs/nommu_k210_defconfig
+index 146c46d0525b4..51ba0d1683383 100644
+--- a/arch/riscv/configs/nommu_k210_defconfig
++++ b/arch/riscv/configs/nommu_k210_defconfig
+@@ -11,7 +11,7 @@ CONFIG_BLK_DEV_INITRD=y
+ CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ # CONFIG_SYSFS_SYSCALL is not set
+ # CONFIG_FHANDLE is not set
+-# CONFIG_BASE_FULL is not set
++CONFIG_BASE_SMALL=y
+ # CONFIG_FUTEX is not set
+ # CONFIG_EPOLL is not set
+ # CONFIG_SIGNALFD is not set
+diff --git a/arch/riscv/configs/nommu_k210_sdcard_defconfig b/arch/riscv/configs/nommu_k210_sdcard_defconfig
+index 95d8d1808f194..762aea9127ae4 100644
+--- a/arch/riscv/configs/nommu_k210_sdcard_defconfig
++++ b/arch/riscv/configs/nommu_k210_sdcard_defconfig
+@@ -3,7 +3,7 @@ CONFIG_LOG_BUF_SHIFT=13
+ CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ # CONFIG_SYSFS_SYSCALL is not set
+ # CONFIG_FHANDLE is not set
+-# CONFIG_BASE_FULL is not set
++CONFIG_BASE_SMALL=y
+ # CONFIG_FUTEX is not set
+ # CONFIG_EPOLL is not set
+ # CONFIG_SIGNALFD is not set
+diff --git a/arch/riscv/configs/nommu_virt_defconfig b/arch/riscv/configs/nommu_virt_defconfig
+index b794e2f8144e6..ab6d618c1828f 100644
+--- a/arch/riscv/configs/nommu_virt_defconfig
++++ b/arch/riscv/configs/nommu_virt_defconfig
+@@ -10,7 +10,7 @@ CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ CONFIG_EXPERT=y
+ # CONFIG_SYSFS_SYSCALL is not set
+ # CONFIG_FHANDLE is not set
+-# CONFIG_BASE_FULL is not set
++CONFIG_BASE_SMALL=y
+ # CONFIG_EPOLL is not set
+ # CONFIG_SIGNALFD is not set
+ # CONFIG_TIMERFD is not set
+diff --git a/arch/sh/configs/edosk7705_defconfig b/arch/sh/configs/edosk7705_defconfig
+index 9ee35269bee26..ab3bf72264df4 100644
+--- a/arch/sh/configs/edosk7705_defconfig
++++ b/arch/sh/configs/edosk7705_defconfig
+@@ -6,7 +6,7 @@
+ # CONFIG_PRINTK is not set
+ # CONFIG_BUG is not set
+ # CONFIG_ELF_CORE is not set
+-# CONFIG_BASE_FULL is not set
++CONFIG_BASE_SMALL=y
+ # CONFIG_FUTEX is not set
+ # CONFIG_EPOLL is not set
+ # CONFIG_SIGNALFD is not set
+diff --git a/arch/sh/configs/se7619_defconfig b/arch/sh/configs/se7619_defconfig
+index 14d0f5ead502f..4765966fec99c 100644
+--- a/arch/sh/configs/se7619_defconfig
++++ b/arch/sh/configs/se7619_defconfig
+@@ -4,7 +4,7 @@ CONFIG_LOG_BUF_SHIFT=14
+ # CONFIG_KALLSYMS is not set
+ # CONFIG_HOTPLUG is not set
+ # CONFIG_ELF_CORE is not set
+-# CONFIG_BASE_FULL is not set
++CONFIG_BASE_SMALL=y
+ # CONFIG_FUTEX is not set
+ # CONFIG_EPOLL is not set
+ # CONFIG_VM_EVENT_COUNTERS is not set
+diff --git a/arch/sh/configs/se7712_defconfig b/arch/sh/configs/se7712_defconfig
+index dc854293da435..20f07aee5bde7 100644
+--- a/arch/sh/configs/se7712_defconfig
++++ b/arch/sh/configs/se7712_defconfig
+@@ -7,7 +7,7 @@ CONFIG_LOG_BUF_SHIFT=14
+ # CONFIG_CC_OPTIMIZE_FOR_SIZE is not set
+ CONFIG_KALLSYMS_ALL=y
+ # CONFIG_BUG is not set
+-# CONFIG_BASE_FULL is not set
++CONFIG_BASE_SMALL=y
+ # CONFIG_SHMEM is not set
+ CONFIG_MODULES=y
+ # CONFIG_BLK_DEV_BSG is not set
+diff --git a/arch/sh/configs/se7721_defconfig b/arch/sh/configs/se7721_defconfig
+index c891945b8a900..00862d3c030d2 100644
+--- a/arch/sh/configs/se7721_defconfig
++++ b/arch/sh/configs/se7721_defconfig
+@@ -7,7 +7,7 @@ CONFIG_LOG_BUF_SHIFT=14
+ # CONFIG_CC_OPTIMIZE_FOR_SIZE is not set
+ CONFIG_KALLSYMS_ALL=y
+ # CONFIG_BUG is not set
+-# CONFIG_BASE_FULL is not set
++CONFIG_BASE_SMALL=y
+ # CONFIG_SHMEM is not set
+ CONFIG_MODULES=y
+ # CONFIG_BLK_DEV_BSG is not set
+diff --git a/arch/sh/configs/shmin_defconfig b/arch/sh/configs/shmin_defconfig
+index e078b193a78a8..bfeb004f130ec 100644
+--- a/arch/sh/configs/shmin_defconfig
++++ b/arch/sh/configs/shmin_defconfig
+@@ -5,7 +5,7 @@ CONFIG_LOG_BUF_SHIFT=14
+ # CONFIG_HOTPLUG is not set
+ # CONFIG_BUG is not set
+ # CONFIG_ELF_CORE is not set
+-# CONFIG_BASE_FULL is not set
++CONFIG_BASE_SMALL=y
+ # CONFIG_FUTEX is not set
+ # CONFIG_EPOLL is not set
+ # CONFIG_SHMEM is not set
 diff --git a/init/Kconfig b/init/Kconfig
-index ad4b6f778d2bd..182f2671a49dd 100644
+index 182f2671a49dd..2a8203628d212 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -743,7 +743,7 @@ config LOG_CPU_MAX_BUF_SHIFT
- 	int "CPU kernel log buffer size contribution (13 => 8 KB, 17 => 128KB)"
- 	depends on SMP
- 	range 0 21
--	default 0 if BASE_SMALL != 0
-+	default 0 if BASE_SMALL
- 	default 12
- 	depends on PRINTK
+@@ -1590,11 +1590,10 @@ config PCSPKR_PLATFORM
+ 	  This option allows to disable the internal PC-Speaker
+ 	  support, saving some memory.
+ 
+-config BASE_FULL
+-	default y
+-	bool "Enable full-sized data structures for core" if EXPERT
++config BASE_SMALL
++	bool "Enable smaller-sized data structures for core" if EXPERT
  	help
-@@ -1950,9 +1950,7 @@ config RT_MUTEXES
+-	  Disabling this option reduces the size of miscellaneous core
++	  Enabling this option reduces the size of miscellaneous core
+ 	  kernel data structures. This saves memory on small machines,
+ 	  but may reduce performance.
+ 
+@@ -1949,9 +1948,6 @@ config RT_MUTEXES
+ 	bool
  	default y if PREEMPT_RT
  
- config BASE_SMALL
--	int
--	default 0 if BASE_FULL
--	default 1 if !BASE_FULL
-+	def_bool !BASE_FULL
- 
+-config BASE_SMALL
+-	def_bool !BASE_FULL
+-
  config MODULE_SIG_FORMAT
  	def_bool n
-diff --git a/kernel/futex/core.c b/kernel/futex/core.c
-index 1e78ef24321e8..06a1f091be81d 100644
---- a/kernel/futex/core.c
-+++ b/kernel/futex/core.c
-@@ -1150,7 +1150,7 @@ static int __init futex_init(void)
- 	unsigned int futex_shift;
- 	unsigned long i;
- 
--#if CONFIG_BASE_SMALL
-+#ifdef CONFIG_BASE_SMALL
- 	futex_hashsize = 16;
- #else
- 	futex_hashsize = roundup_pow_of_two(256 * num_possible_cpus());
-diff --git a/kernel/user.c b/kernel/user.c
-index 03cedc366dc9e..aa1162deafe49 100644
---- a/kernel/user.c
-+++ b/kernel/user.c
-@@ -88,7 +88,7 @@ EXPORT_SYMBOL_GPL(init_user_ns);
-  * when changing user ID's (ie setuid() and friends).
-  */
- 
--#define UIDHASH_BITS	(CONFIG_BASE_SMALL ? 3 : 7)
-+#define UIDHASH_BITS	(IS_ENABLED(CONFIG_BASE_SMALL) ? 3 : 7)
- #define UIDHASH_SZ	(1 << UIDHASH_BITS)
- #define UIDHASH_MASK		(UIDHASH_SZ - 1)
- #define __uidhashfn(uid)	(((uid >> UIDHASH_BITS) + uid) & UIDHASH_MASK)
+ 	select SYSTEM_DATA_VERIFICATION
+diff --git a/tools/testing/selftests/wireguard/qemu/kernel.config b/tools/testing/selftests/wireguard/qemu/kernel.config
+index 507555714b1d8..f314d3789f175 100644
+--- a/tools/testing/selftests/wireguard/qemu/kernel.config
++++ b/tools/testing/selftests/wireguard/qemu/kernel.config
+@@ -41,7 +41,6 @@ CONFIG_KALLSYMS=y
+ CONFIG_BUG=y
+ CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE=y
+ CONFIG_JUMP_LABEL=y
+-CONFIG_BASE_FULL=y
+ CONFIG_FUTEX=y
+ CONFIG_SHMEM=y
+ CONFIG_SLUB=y
 -- 
 2.39.2
 
