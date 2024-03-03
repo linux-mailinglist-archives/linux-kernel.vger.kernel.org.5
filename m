@@ -1,105 +1,168 @@
-Return-Path: <linux-kernel+bounces-89761-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89763-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8849986F531
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 14:45:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 51A6286F534
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 14:50:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D5ED1C203E0
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 13:45:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E4B11C2086B
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 13:50:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77CDC59B53;
-	Sun,  3 Mar 2024 13:45:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0877859B62;
+	Sun,  3 Mar 2024 13:50:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UnzvAxc9"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rY0cGOtr"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72CF543143
-	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 13:45:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42DC0A957;
+	Sun,  3 Mar 2024 13:50:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709473510; cv=none; b=Mrj5ay/aGx9V3kD1toPdR0HjSJEhbPAlrPOTdMBCfIbUXqxamDLDUlOPEdPOBD1DsukRSI0MedylacedkUIowaa3PJjFCn/Xd0Ol0YLWhf6RckxWLGpr8E9WR9wgPEyPR4l061saHogNJq0Yz3obPNTk0xWX2yLJK0oaXYi9PFQ=
+	t=1709473842; cv=none; b=b8HkJe8LbISvadyMTINFwPxyeYx/nd3QMUwbAKoGwibgzn2a/FFEeAYeRZEBJDFXyesayoDtKK/niG8wddsyBL7pMaQg+0t8SERKX8u9toTLdNAxR4Xs/Fi5OldjOGpmgyRStt8FCFVfYULfVm6l3RXRIw7UnITX1jeegDF/Cvs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709473510; c=relaxed/simple;
-	bh=HEgCdTvbhWhM9cKHruQw6qkKlH2qIXp7yjM9KSOCWwg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bVKGCG2Gwe4Vsi8JSNDoxwxohrhqPwYl+zFVmp3qqUePxGNpb/Xi7pYPeDAUTeV2hnHwZFd5huukPkR3yUUFtk2VTrEFbty8re2p1RIH7//bYPnKmRvz0TTByQAP3KRVIKO6JTVkg9B4TudtSPIB9U4XpoTurKOXbokTFjJVW/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UnzvAxc9; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1dcce5e84bcso29018755ad.1
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 05:45:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709473509; x=1710078309; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=f+XvaSacvZv2FwpCKQI/VZDC6hmI2YHWeRkctoTLloI=;
-        b=UnzvAxc9tjvBnVSx8yGbFhELy39UJVu+FyDQytWNlL5T2/tP3ThXYdGu2prjpSPxeA
-         ues6tpBbsWL5GhXN3MdwY4JeS81XEKYFtSgJ4YXRzL7wIQUIq5KRNTZq8qzBUwrMxR4U
-         WvTBtBU7TuRHqHIs+x6D5R+ATPKcOUNjreMZKJC63DwA5W3d32J6amvzlbY9bwq/9rtz
-         3rCDr5shsR4Ke26jqEYib3l6WPDN6hevw0dlYZ2e9wypVTmHnQKqKrGwxZPRHjJ25ygI
-         A3BF7zLDKhfxAZwYY5BrdwqMWAWNxsokN3qxUfH8Aga7gxKxJoA3SMmN58K2sG3UiAr3
-         YiKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709473509; x=1710078309;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=f+XvaSacvZv2FwpCKQI/VZDC6hmI2YHWeRkctoTLloI=;
-        b=H5msZmCSvvpGbdC6nhXzHe8CknSy0Y3dZCzngM0QilttWkbxWfZfYL9V8GZ2OyYL/z
-         fY5al8T+Plwq3KDaBQVS8qok7i4vqgSOoXT5I8sdJnoIUdDWEfVRV/zIEQ3fj8DVRd9Z
-         KJSRWfCl/aS4r9UyLXKtw8WcFdH6lJHr1KCb+Zy/r3EO50LF/jeuPbiisP6YhyGKNP6n
-         Z5Lu++tqXCu+kUy7toWEI6I71JL0xVVOhiGu89+DBdtXujtY1tyIhDwXj5uh6BvKAhDU
-         vkmw0juj/lWzQAitGBVQVHLgSFlLHpxYhnD26Ffl5ERueJOUx4Q0x1OA8RfqqIPkBrR6
-         SK9A==
-X-Gm-Message-State: AOJu0YwXztRYKRmBTJ7zasM+rBuA7+eo26Yuna6j2cyMnJ/D658sZm3I
-	s/Oj8hlLSFvbQ2yadNeWmUpCP1Zx2arlzhlIc7uJI1gyjpAL5hF1ANwoQ/3T
-X-Google-Smtp-Source: AGHT+IHp0+kCn7euvS782F+lC0zGNSOjCiP4/N9VFfmkptpZU9eXdpG/ngz60LloISbZgst1lD4Q5g==
-X-Received: by 2002:a17:903:22cb:b0:1db:c6ff:664a with SMTP id y11-20020a17090322cb00b001dbc6ff664amr6965221plg.53.1709473508876;
-        Sun, 03 Mar 2024 05:45:08 -0800 (PST)
-Received: from kernel.. ([2402:e280:214c:86:98b4:6d91:d5f4:8f27])
-        by smtp.gmail.com with ESMTPSA id c9-20020a170902d48900b001db37fd26bcsm6658041plg.116.2024.03.03.05.45.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Mar 2024 05:45:08 -0800 (PST)
-From: R SUNDAR <prosunofficial@gmail.com>
-To: openbmc@lists.ozlabs.org,
-	iwona.winiarska@intel.com
-Cc: linux-kernel@vger.kernel.org,
-	R SUNDAR <prosunofficial@gmail.com>
-Subject: [PATCH] Removed controller field description to prevent kernel-doc warnings
-Date: Sun,  3 Mar 2024 19:14:53 +0530
-Message-Id: <20240303134453.5791-1-prosunofficial@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1709473842; c=relaxed/simple;
+	bh=cLGjYnegpEWxWvkDnB472eI87+/tPnQpAUYZmm2aSo0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=EP9po9ZaKm+TreobqObQXwr1K6oke6ICu9j2E9A4gSQjUFt2Dfn09lIXwK375tGORl4RT0XSPHF6o+d+EkgrgzJOv4w0sFpNhescq7MBnQvlv4h5+gVHpAO4+db0nJOEx+pSe7q44SJmiiAERBTkBVPFJ5bqijZAXhhQmckJWvw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rY0cGOtr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5C9CC433C7;
+	Sun,  3 Mar 2024 13:50:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709473841;
+	bh=cLGjYnegpEWxWvkDnB472eI87+/tPnQpAUYZmm2aSo0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=rY0cGOtr2PVnKTQSCT9oVGnoJnn0WzUFeOVgSE25SGvcvxMglR/VtfuMnwAtDn+Ta
+	 ygDJLO9kj46ngEG/yoXrxpAWQdnE02CT2Cu3f/KWvU/45Gw3TTYvBf2OodU7PgS8qQ
+	 pG7REWTAFWYvSm3aFCXg0dM8GnRvzA8IlZi73WTltDXSFPr7Ki3iEykFBmsWygYyWO
+	 Gbn8SCs2PW47BvJxFwHTp/AWe6AUDpl0NWzeul1gU82HhNBmJlq9IhHkeXQRGF7Mq5
+	 e2JhHA90r86pz7KDzL/rKtLEZQSj/JuqBeIrqENH9Ulj3HAWVwF8TqQPGRG1/Gabcp
+	 poOWZwIqSH4Qw==
+Date: Sun, 3 Mar 2024 13:50:28 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org, Lars-Peter
+ Clausen <lars@metafoo.de>
+Subject: Re: [PATCH v1 1/1] iio: adc: twl4030-madc: Make use of device
+ properties
+Message-ID: <20240303134746.0d145b6d@jic23-huawei>
+In-Reply-To: <20240228205927.3681321-1-andriy.shevchenko@linux.intel.com>
+References: <20240228205927.3681321-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-/include/linux/peci.h:84: warning: Excess struct member 'controller' description in 'peci_device'
+On Wed, 28 Feb 2024 22:59:27 +0200
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 
-Signed-off-by: R SUNDAR <prosunofficial@gmail.com>
----
- include/linux/peci.h | 1 -
- 1 file changed, 1 deletion(-)
+> Convert the module to be property provider agnostic and allow
+> it to be used on non-OF platforms.
+>=20
+> Include mod_devicetable.h explicitly to replace the dropped of.h
+> which included mod_devicetable.h indirectly.
 
-diff --git a/include/linux/peci.h b/include/linux/peci.h
-index 9b3d36aff431..90e241458ef6 100644
---- a/include/linux/peci.h
-+++ b/include/linux/peci.h
-@@ -58,7 +58,6 @@ static inline struct peci_controller *to_peci_controller(void *d)
- /**
-  * struct peci_device - PECI device
-  * @dev: device object to register PECI device to the device model
-- * @controller: manages the bus segment hosting this PECI device
-  * @info: PECI device characteristics
-  * @info.family: device family
-  * @info.model: device model
--- 
-2.34.1
+It seems fairly implausible anyone will use this ancient device
+with any other firmware, but as conversion is trivial and provides
+one less place for people to copy of specific handling from
+i tried applying it.
+
+However it doesn't build...
+
+drivers/iio/adc/twl4030-madc.c:754:24: error: =E2=80=98np=E2=80=99 undeclar=
+ed (first use in this function); did you mean =E2=80=98up=E2=80=99?
+  754 |         if (!pdata && !np) {
+      |                        ^~
+      |                        up
+
+
+I guess !dev_fwnode(dev) instead?
+
+Jonathan
+=20
+>=20
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/iio/adc/twl4030-madc.c | 14 ++++++--------
+>  1 file changed, 6 insertions(+), 8 deletions(-)
+>=20
+> diff --git a/drivers/iio/adc/twl4030-madc.c b/drivers/iio/adc/twl4030-mad=
+c.c
+> index 4a247ca25a44..a7b6b81014de 100644
+> --- a/drivers/iio/adc/twl4030-madc.c
+> +++ b/drivers/iio/adc/twl4030-madc.c
+> @@ -19,10 +19,12 @@
+>  #include <linux/interrupt.h>
+>  #include <linux/kernel.h>
+>  #include <linux/delay.h>
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/module.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/property.h>
+>  #include <linux/slab.h>
+>  #include <linux/mfd/twl.h>
+> -#include <linux/module.h>
+>  #include <linux/stddef.h>
+>  #include <linux/mutex.h>
+>  #include <linux/bitops.h>
+> @@ -30,7 +32,6 @@
+>  #include <linux/types.h>
+>  #include <linux/gfp.h>
+>  #include <linux/err.h>
+> -#include <linux/of.h>
+>  #include <linux/regulator/consumer.h>
+> =20
+>  #include <linux/iio/iio.h>
+> @@ -746,7 +747,6 @@ static int twl4030_madc_probe(struct platform_device =
+*pdev)
+>  {
+>  	struct twl4030_madc_data *madc;
+>  	struct twl4030_madc_platform_data *pdata =3D dev_get_platdata(&pdev->de=
+v);
+> -	struct device_node *np =3D pdev->dev.of_node;
+>  	int irq, ret;
+>  	u8 regval;
+>  	struct iio_dev *iio_dev =3D NULL;
+> @@ -779,7 +779,7 @@ static int twl4030_madc_probe(struct platform_device =
+*pdev)
+>  	if (pdata)
+>  		madc->use_second_irq =3D (pdata->irq_line !=3D 1);
+>  	else
+> -		madc->use_second_irq =3D of_property_read_bool(np,
+> +		madc->use_second_irq =3D device_property_read_bool(&pdev->dev,
+>  				       "ti,system-uses-second-madc-irq");
+> =20
+>  	madc->imr =3D madc->use_second_irq ? TWL4030_MADC_IMR2 :
+> @@ -905,20 +905,18 @@ static void twl4030_madc_remove(struct platform_dev=
+ice *pdev)
+>  	regulator_disable(madc->usb3v1);
+>  }
+> =20
+> -#ifdef CONFIG_OF
+>  static const struct of_device_id twl_madc_of_match[] =3D {
+>  	{ .compatible =3D "ti,twl4030-madc", },
+> -	{ },
+> +	{ }
+>  };
+>  MODULE_DEVICE_TABLE(of, twl_madc_of_match);
+> -#endif
+> =20
+>  static struct platform_driver twl4030_madc_driver =3D {
+>  	.probe =3D twl4030_madc_probe,
+>  	.remove_new =3D twl4030_madc_remove,
+>  	.driver =3D {
+>  		   .name =3D "twl4030_madc",
+> -		   .of_match_table =3D of_match_ptr(twl_madc_of_match),
+> +		   .of_match_table =3D twl_madc_of_match,
+>  	},
+>  };
+> =20
 
 
