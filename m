@@ -1,173 +1,129 @@
-Return-Path: <linux-kernel+bounces-89921-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89922-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B78A86F755
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 22:55:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6767A86F756
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 22:57:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0BB7281063
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 21:55:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 927DA1C208A2
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 21:57:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E2497BAF3;
-	Sun,  3 Mar 2024 21:54:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38C157A715;
+	Sun,  3 Mar 2024 21:57:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LAPuQsRR"
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UxFc5SjK"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 113037AE69;
-	Sun,  3 Mar 2024 21:54:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6054879DB6
+	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 21:57:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709502871; cv=none; b=WAhhkAncC7vtxOB6YTUUO36HFLkNdx7Bcyipj3J5gz++SVL6GxfDbeg5GcTP33YfiunxjmgOc0eh7Jk5a6KeiillvUWERNPcx4A3FDqMZlcbJMQw7tCDdbyz8g0j2N1ig4DvLLtbp2+6lCTtZQBLDRYebPp6ixUTrrwDsaq7aNg=
+	t=1709503023; cv=none; b=cS5F53+gZEsbaL7bDuot3+zPyBt4YNxaqB0A+yCbTzCsRBHwLRA7w/PuQEg/BDZJMIvrNVoXbbyMPRTsIgXiVrs4xckOlJSkcNGQzlODTw7/BqV5IYVvYk26luOQn91tBXbV6yoGfVa6h0Hxy+HJQRdMUuWKF9OaqJTQ8QCrIGE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709502871; c=relaxed/simple;
-	bh=aVC+szChqUVwP9dorH1s8x/ORY9BRZBBC5IcgeZmXjg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=P84b+j5UeABYtxB33pWiwrJYrolTdjzTf1pYKExgzB/BV67R1KK12t+/3Xno//IUReyOTCYs2ugQWPRPHChLRCywK2IG3IO1vSHVSmSRx8CNiGlRtPL97P3Xd7y49WCNElGD8t5L6tQTSANrEtjMN6+H/b4e6dHIL6R319Nre2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LAPuQsRR; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-565a3910f86so5780691a12.3;
-        Sun, 03 Mar 2024 13:54:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709502868; x=1710107668; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9wfVpFY3RFJ1WZsM48MjjCquUKLQaa0zbDWX/ailz6E=;
-        b=LAPuQsRRH3MtUkpY4uyzvQAxycxbMMxYnRebDqj2r3fgGbzn+Zdse+rMlsApbCOgnj
-         KjfW4ho58K0ywn1Ge75S/GrtIAl9od3B10LKqTRt2b7W8uEENq+2gzQFKn5gh4Hf86Jt
-         LltZmjFCm3HPShymDFrZvXFCeRHpWTA/narVc/YTy9gIKGd5+XRU1SUt8tDai+oMmYw3
-         OFmiUK1dEal48If07a9zZLeizupanwAB/5PIoKG2VfNBxrNul2jtdQzd2x2oCKjzmNy2
-         suxh0kBAkSp+jj7DPFB95yP8GKCWOZl95D+X5YHDTelv06eLWQkSxnojpb4qEz/9PML6
-         gkSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709502868; x=1710107668;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9wfVpFY3RFJ1WZsM48MjjCquUKLQaa0zbDWX/ailz6E=;
-        b=Sop0gEfcW9nDp5yuvWdjKdrJUevz/ddrNZjpQPj1qc7hIzrfZ7Vz0W66KfrNavqFSg
-         +UrFNf1BgkP7o2iCPFieP1ZTTgXE1M4h2Kq/H41Cd7mGfM1Socff9vmQvafZauEVLiVm
-         BDKjbyCS4Od1L7OHMFBUbYidE34qjpyeRvFABN+PNa8BD7uW8WZM0MIAVxiPylt35hwg
-         dtm92NZWoOgQg6KPRjlzG/KTYNIbmTHxdKp8BZqKSfYuMP1saX5DklA+nc+FfGbT6mEC
-         tN6E7bTlK+g78A5i1AROQbJilMTfoz3jLtEyeT1Jsb+mkSazv7nSYShFSNi7/oV5chfJ
-         7JLQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWj3LSGRPsh/NNMmauEy8LkSj7Dw+4Vqg8L1sWsEqIhEiENglAvHKYNdO3ulUOroLqm+TNd4mRBlCm8f3bjtVATa0TdzTtk82RIr8uqRzN9lGB8mXw26M0sZvijf2gbodAsNZvZIW1QA1mXf4jIcvGTTT+drR3BfyaeSasrFVYFYM7VFA==
-X-Gm-Message-State: AOJu0YwjT+QhyHkHj9WxNvAGXy1AxhOmB1SbfOdG/UGP9GqiNB9rX2ge
-	7uEjfGLLgs1b9o785wJgRo+BMPSljk97gWBJyggbR4JkHvZmhsFmpjHFX1GOrswcwg==
-X-Google-Smtp-Source: AGHT+IHlckUN5ksJiFKHAfgeDqB9otVgcaNUqPtywMP22W0xmNKg7pinjAu1q0x4S4lT+ZC662dFAQ==
-X-Received: by 2002:a05:6402:26c5:b0:564:3392:e9db with SMTP id x5-20020a05640226c500b005643392e9dbmr6313049edd.33.1709502867851;
-        Sun, 03 Mar 2024 13:54:27 -0800 (PST)
-Received: from [127.0.1.1] (2a02-8389-41cf-e200-b3d8-5b4b-5188-4373.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:b3d8:5b4b:5188:4373])
-        by smtp.gmail.com with ESMTPSA id n22-20020a05640205d600b00566d6950d14sm2783250edx.92.2024.03.03.13.54.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Mar 2024 13:54:27 -0800 (PST)
-From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Date: Sun, 03 Mar 2024 22:54:22 +0100
-Subject: [PATCH v3 3/3] iio: humidity: hdc3020: add reset management
+	s=arc-20240116; t=1709503023; c=relaxed/simple;
+	bh=yBugoWgQAYcskdBuGMNWHxzysZg3JCbfaz8uiiWHdko=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PQpGaGB3en1aINUeSlQaJRpLOkruYp7mNVLj8h2c0Lm/ObWhUwgOhOC43fRH0vsNbMij0/wWa5RLnjn7lRkPP7+cfSOFyDBLZPRXEwkvVckEnjcfg/16tHKyyB9mtojH263c+mKTXuCFwsctoyERQFpXkvzkCeXzDzPqgeeODT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UxFc5SjK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7329C433F1
+	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 21:57:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709503022;
+	bh=yBugoWgQAYcskdBuGMNWHxzysZg3JCbfaz8uiiWHdko=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=UxFc5SjKMJZWPj6dHiRT3fLLQ0I0GCpW5WQw2OWCG10VGkBHbX7//DzwQ6cFHpYqV
+	 +0oxTmJ31hDzKgyznx3ysUnjFuYcSguvgi1CrjV2MAtJJHKrtFZjb6pv0L0DaI9ZsI
+	 6SiVWP2nkWGLLOudIX1xZqiEwMspWWz5LGtLblVcbB0txmUYJ/EfYyndqCv0+cKCel
+	 lBcuwIsEkrhbDUgh0SX2tgjp3lVKs7RKAmWi3ba5qwzjotx7i51wf3l0hHMZODLmL6
+	 VtIo9ovvdG7UiV5N6rhJS24h2eoLvYqtuSmFMBWGAzWAeRouPmHId4T4DI8Z2LL97V
+	 9r+2CwCuhnDTg==
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d311081954so42235111fa.2
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 13:57:02 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUy6cVrz+G1Q1WkedmW06GWlg4lw5oEtEPEMNVM4wu8YYbznWn210rIHjFzUjPcOnEQxZU8ZgQ9hEHMC2+QuKmhahug6bNQE7j8o1O5
+X-Gm-Message-State: AOJu0Yzeh1RH1k3PSdbo1JQucyuaqyRn8uT0+IAFsEiE3/4uV8zrLwvd
+	mdCA88T+niBFqS20lvZB73J0slOFApmZSE+q5OIAu0GCviTX7oWv+fJ4zbXNDssU8lY0I0fr4wT
+	KPIyfZSKDRlVlPRJV1B4c0GXri8E=
+X-Google-Smtp-Source: AGHT+IGkCE6KduDw4XSaElSxE8ellqIcyx7yRIOsSrLDLQG0snlMa0CXYX/avdOqBnuq2bCaRf6sZsTNoJudi9TxMu4=
+X-Received: by 2002:a05:6512:3d1c:b0:513:3310:4062 with SMTP id
+ d28-20020a0565123d1c00b0051333104062mr5718558lfv.64.1709503021033; Sun, 03
+ Mar 2024 13:57:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240303-hdc3020-pm-v3-3-48bc02b5241b@gmail.com>
-References: <20240303-hdc3020-pm-v3-0-48bc02b5241b@gmail.com>
-In-Reply-To: <20240303-hdc3020-pm-v3-0-48bc02b5241b@gmail.com>
-To: Jonathan Cameron <jic23@kernel.org>, 
- Lars-Peter Clausen <lars@metafoo.de>, Li peiyu <579lpy@gmail.com>, 
- Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>, 
- linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org, 
- devicetree@vger.kernel.org, 
- Javier Carrasco <javier.carrasco.cruz@gmail.com>
-X-Mailer: b4 0.14-dev
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1709502861; l=2300;
- i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
- bh=aVC+szChqUVwP9dorH1s8x/ORY9BRZBBC5IcgeZmXjg=;
- b=xhvMcJZaOIgBiJ8bzYqJ/tYs7KdeFM+Wd6KN70+V7hWYPyQ2kzRvnmsoX3Zm9WEFQFe2IKYAg
- tg+4Ko2kB1QAgRb8ys164IE+lFVQKv8CSAOa57mZnOoVr73mFaO8t2L
-X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
- pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
+References: <20240227151907.387873-11-ardb+git@google.com> <20240227151907.387873-13-ardb+git@google.com>
+ <20240228205540.GIZd-dzFYIBbtfIAo3@fat_crate.local> <CAMj1kXGhZU+FE2gE262Q8_vZEFHicsRtVPzXT-dhhCvBuiMjUA@mail.gmail.com>
+ <20240301160921.GBZeH9sZhp73xX40ze@fat_crate.local> <CAMj1kXFJwEUExy7+Snh3QHVn-ATj0C+sYje22Qmc+y=cCtAV7g@mail.gmail.com>
+ <20240301173323.GDZeIRY_BVBqpudkEo@fat_crate.local> <20240303192654.GAZeTO_nxJ4bE2A2zD@fat_crate.local>
+In-Reply-To: <20240303192654.GAZeTO_nxJ4bE2A2zD@fat_crate.local>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Sun, 3 Mar 2024 22:56:49 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXEmNWNH8ZRXcMQ=NKyvOWd4=K5kC4mZMzH-8BmBtvmw+A@mail.gmail.com>
+Message-ID: <CAMj1kXEmNWNH8ZRXcMQ=NKyvOWd4=K5kC4mZMzH-8BmBtvmw+A@mail.gmail.com>
+Subject: Re: [PATCH v7 2/9] x86/startup_64: Defer assignment of 5-level paging
+ global variables
+To: Borislav Petkov <bp@alien8.de>
+Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org, 
+	Kevin Loughlin <kevinloughlin@google.com>, Tom Lendacky <thomas.lendacky@amd.com>, 
+	Dionna Glaze <dionnaglaze@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	Andy Lutomirski <luto@kernel.org>, Brian Gerst <brgerst@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 
-The HDC3020 provides an active low reset signal that must be handled if
-connected. Asserting this signal turns the device into Trigger-on Demand
-measurement mode, reducing its power consumption when no measurements
-are required like in low-power modes.
+On Sun, 3 Mar 2024 at 20:27, Borislav Petkov <bp@alien8.de> wrote:
+>
+..
+>
+> Btw, on a semi-related note, do you have an idea whether a normal guest
+> kernel using OVMF istead of seabios would be even able to boot a kernel
+> supplied with -kernel like above but without an -initrd?
+>
 
-According to the datasheet, the longest "Reset Ready" is 3 ms, which is
-only taken into account if the reset signal is defined.
+How are you passing the root device to the kernel? Via root= on the
+command line?
 
-Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
----
- drivers/iio/humidity/hdc3020.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+> I have everything builtin and the same kernel boots fine in a guest with
+> a
+> [    0.000000] SMBIOS 3.0.0 present.
+> [    0.000000] DMI: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+>
 
-diff --git a/drivers/iio/humidity/hdc3020.c b/drivers/iio/humidity/hdc3020.c
-index 7f93024b850c..cdc4789213ba 100644
---- a/drivers/iio/humidity/hdc3020.c
-+++ b/drivers/iio/humidity/hdc3020.c
-@@ -15,6 +15,7 @@
- #include <linux/cleanup.h>
- #include <linux/crc8.h>
- #include <linux/delay.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/i2c.h>
- #include <linux/init.h>
- #include <linux/interrupt.h>
-@@ -70,6 +71,7 @@
- 
- struct hdc3020_data {
- 	struct i2c_client *client;
-+	struct gpio_desc *reset_gpio;
- 	struct regulator *vdd_supply;
- 	/*
- 	 * Ensure that the sensor configuration (currently only heater is
-@@ -558,6 +560,9 @@ static int hdc3020_power_off(struct hdc3020_data *data)
- {
- 	hdc3020_exec_cmd(data, HDC3020_EXIT_AUTO);
- 
-+	if (data->reset_gpio)
-+		gpiod_set_value_cansleep(data->reset_gpio, 1);
-+
- 	return regulator_disable(data->vdd_supply);
- }
- 
-@@ -571,6 +576,11 @@ static int hdc3020_power_on(struct hdc3020_data *data)
- 
- 	fsleep(5000);
- 
-+	if (data->reset_gpio) {
-+		gpiod_set_value_cansleep(data->reset_gpio, 0);
-+		fsleep(3000);
-+	}
-+
- 	if (data->client->irq) {
- 		/*
- 		 * The alert output is activated by default upon power up,
-@@ -627,6 +637,12 @@ static int hdc3020_probe(struct i2c_client *client)
- 		return dev_err_probe(&client->dev, PTR_ERR(data->vdd_supply),
- 				     "Unable to get VDD regulator\n");
- 
-+	data->reset_gpio = devm_gpiod_get_optional(&client->dev, "reset",
-+						   GPIOD_OUT_HIGH);
-+	if (IS_ERR(data->reset_gpio))
-+		return dev_err_probe(&client->dev, PTR_ERR(data->reset_gpio),
-+				     "Cannot get reset GPIO\n");
-+
- 	ret = hdc3020_power_on(data);
- 	if (ret)
- 		return dev_err_probe(&client->dev, ret, "Power on failed\n");
+OK, so this is SeaBIOS
 
--- 
-2.40.1
+> but if I try to boot the respective guest installed with the OVMF BIOS
+> from the debian package:
+>
+> [    0.000000] efi: EFI v2.7 by Debian distribution of EDK II
+> [    0.000000] efi: SMBIOS=0x7f788000 SMBIOS 3.0=0x7f786000 ACPI=0x7f97e000 ACPI 2.0=0x7f97e014 MEMATTR=0x7ddfe018
+>
 
+and this is OVMF.
+
+I have tried both of these, with i440fx as well as q35, and they all
+work happily with my Debian guest image passed via -hda to QEMU, and
+with root=/dev/sda2 on the kernel command line.
+
+
+> it fails looking up the /dev/root device major/minor deep in the bowels
+> of the vfs:
+>
+> [    2.565651] do_new_mount:
+> [    2.566380] vfs_get_tree: fc->root: 0000000000000000
+> [    2.567298] kern_path: filename: ffff88800d666000 of name: /dev/root
+> [    2.568418] kern_path: ret: 0
+> [    2.569009] lookup_bdev: kern_path(/dev/root, , path: ffff88800e537380), error: 0
+> [    2.571645] lookup_bdev: inode->i_rdev: 0x0
+> [    2.572417] get_tree_bdev: lookup_bdev(/dev/root, dev: 0x0), error: 0
+>                                                      ^^^^^^^^^
+>
+> That dev_t should be 0x800002 - the major and minor of /dev/sda2 but it
+> looks like something else is missing in this case...
+>
+
+How did you get this output? Are these debug printk()s you added yourself?
 
