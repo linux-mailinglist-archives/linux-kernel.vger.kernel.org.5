@@ -1,110 +1,182 @@
-Return-Path: <linux-kernel+bounces-89773-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89774-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9C7586F583
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 15:23:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9387386F58A
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 15:34:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB7E51C20A38
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 14:23:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 341A2B215D0
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 14:34:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 789D55A118;
-	Sun,  3 Mar 2024 14:23:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CDF167A11;
+	Sun,  3 Mar 2024 14:34:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CuHHO2h+"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aQdNt5/5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F4BABE5B;
-	Sun,  3 Mar 2024 14:23:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 934DE3EA68;
+	Sun,  3 Mar 2024 14:34:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709475786; cv=none; b=kLZggjCcwxBZr+NrXHYI8rWhSaPZQFrUWzcFXn56R0Ajl3vPdoboZbHGqE1P8THDAy/9Oq6k1+eDNmYl4pbU0/LLYXwsboGLVVo07397tgHsrbXnHcsunNOmN0Et0uftSM3p6PDy8uX0aUPxrXm5Tgtn8NHD3y1UAAr69UjVhdg=
+	t=1709476483; cv=none; b=G1RbSQIYMGeJ1ltfBjbibmAKZtSLq54gsgvetHWBuRDsLAoltJwHuGqOcSevfvgbzUQLuazP8XjMbTm4yOni+sa0CxfxMO4UjY7AzRST88K0W4qwW4seXa5s6F/gNbR241fDUaQqYgAbwX65bvWR56FCBOneDBubfBS6WPPGlvY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709475786; c=relaxed/simple;
-	bh=t5jBL7YflSrKd4hHS9yTmYvU8CNC76z53TMa+27R98M=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=GWGJK/JtHwE/DZ3n9bJUNM6ORnzv0UyKWZ/+jQ8PNNJLM0se7yw5PZhaLX7QfXvOO35WJ7gsrGnEgO4QWaddNuSUwOj4R7IkCHpX/o0WS371aVwyWEmmHYFF6i5Ezw0HnwMRI8sbDdRa3oNSX+d5R/y2y4cHXQ1d0jT6d7dyY58=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CuHHO2h+; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1dc0e5b223eso31692535ad.1;
-        Sun, 03 Mar 2024 06:23:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709475785; x=1710080585; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Id6mziPFV2Bo5BUrdfcO2e1rBc0/eRCQTm2X30V/Jlg=;
-        b=CuHHO2h+O4l7Lb5HXukJ71gTaj2SQK/MJJ4kJFgm763gTLbvnj7XAQA3vZfdxRAHaJ
-         S0P4jm9fIzn0zOEM0ulsWoFozlNeth8qI3AYDq+5xrPqOhc+cqys8Y7htHwclaxW7IxB
-         nGwaAJlwJEq7odE093vPLmqkvtbzE0zUhLYuqmUkO2YV71t8xfL5edXub9hCMz4m1Adl
-         Dql041oWbMxxTavzpQI6g9kDgVXZgXDOmfDb5ZCTDlG0Rgywyz87UX5VS2YqDb7zdFF4
-         XwCmBcGh2zbUBLa8CQZvMiH4Uxvw0mg79bbMspEZe9F3VE5aqIv6MLrSWrRRBVHIbkGf
-         h5MQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709475785; x=1710080585;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Id6mziPFV2Bo5BUrdfcO2e1rBc0/eRCQTm2X30V/Jlg=;
-        b=V/rEcyB0s39jE/7LPQR4FTaxYhD9oIXRbAXFsVoTNxFZoA24AlzsFoI3ZRA1g/C1nl
-         rPYOIKrk/18YrPn9oQpe7Zzg1XepyqwxwXncgg9QutAH1NQdcGq0hKMsS8sPkPyMjUxu
-         tmMZDhVh+Pv2J8QoFgZxr+YLrqFrkRep38KJyCG4SadhXwl5mDV5KB5aoPg+V8ATZ0+Y
-         KTo1lyRgCf+8X7o5SUEWwgNl/b1YVl//DeR7a5X+onqyDve8AUajF/nKCdRGAKFhheNu
-         J+62I003Hdkps7sgqFdzxUJQCLfi8f1qqAzkoEcp8YWukSkcsNfNth5wa0U1ZPtHdbeH
-         LgEw==
-X-Forwarded-Encrypted: i=1; AJvYcCVhELUi2aHwLPK+hUTzMDT6mIrEmHspLDm+vJQXaSi81fgVlfW+8V7l0FmzdMxSKdtNkfBk4TAabgKka0AbuECnyBzYGxNoZOjrIl20
-X-Gm-Message-State: AOJu0YzHr4xl73VuEZORpeX3vS9VTakLcrrmRkPH/wvIfkh5Y1WAU3+f
-	pQRSGABW+3/Rhk8wg9j7ffLhzlJ8K/fvd8yLk3gOKDfXdMJViuPM
-X-Google-Smtp-Source: AGHT+IHF0b3I75HECWEIPvqQ7CoeEGnCAZrJspkLyufByz0tVoA6esIOGEVF7CdXptYj8dXiRWipYg==
-X-Received: by 2002:a17:902:d488:b0:1dc:c17d:6edd with SMTP id c8-20020a170902d48800b001dcc17d6eddmr7572433plg.20.1709475784790;
-        Sun, 03 Mar 2024 06:23:04 -0800 (PST)
-Received: from kernel.. ([2402:e280:214c:86:98b4:6d91:d5f4:8f27])
-        by smtp.gmail.com with ESMTPSA id l1-20020a170903244100b001dc95f56848sm6697305pls.92.2024.03.03.06.23.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Mar 2024 06:23:04 -0800 (PST)
-From: R SUNDAR <prosunofficial@gmail.com>
-To: bingbu.cao@intel.com,
-	tian.shu.qiu@intel.com,
-	sakari.ailus@linux.intel.com,
-	mchehab@kernel.org
-Cc: linux-media@vger.kernel.org,
-	linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	R SUNDAR <prosunofficial@gmail.com>
-Subject: [PATCH] Removed __acc_osys field description to prevent kernel doc warning
-Date: Sun,  3 Mar 2024 19:52:58 +0530
-Message-Id: <20240303142258.6590-1-prosunofficial@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1709476483; c=relaxed/simple;
+	bh=7pIB5wDzFt9Tko9FAC1MbXUYpB6Pon2A5GdhinIvdXc=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ZvCDaMeCY0E85ZT2zc2tsMLZstnRm+6uiC1SCUYB35P6MSo+gGmhbRWbQ7h8oZRFtqZT/2GtfwBh1QA8/QMW7lmsYHQnrYgisItgF7QGFhd8JOxuvplGBiVG5OoSzeHTWSAdd8S2MBYgZXmnX9G+wZMVlNozNS6i7N4SaNXozJ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aQdNt5/5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BCE4C433F1;
+	Sun,  3 Mar 2024 14:34:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709476483;
+	bh=7pIB5wDzFt9Tko9FAC1MbXUYpB6Pon2A5GdhinIvdXc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=aQdNt5/5Gd/t21et4QpZZ7GLN0pXVKLQ9LrQzknFIW6e+My6HzsHZW3oZMauviVKG
+	 2QsgL+7/Qpc8/gBm2tNjbTR7ZGHxkbsUSHL4edTD2z4q8n0cziJVRzp1WdihUKbnSw
+	 FtE5VSO/DfOKvQ79zm/sHe8knsNpefKjE+0lJgJ9tUPB61kLnDw4FYBP+96po62EEK
+	 XxfucQVW+Ea7K7S/S///TiGE1KuRXcn8rF9tzPeofkhg1NGnA8RCB6ua9yg8l9asQF
+	 k23f7eE1afP1WSws3EXvrVZhX/IvweX9Izqhg+inHzBmmwlYfYxAItuJAOPwnlDpvl
+	 yzbLpQ65Mgytg==
+Date: Sun, 3 Mar 2024 14:34:29 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Dumitru Ceclan <mitrutzceclan@gmail.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ David Lechner <dlechner@baylibre.com>, Ceclan Dumitru
+ <dumitru.ceclan@analog.com>, linux-iio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] iio: adc: ad7173: add support for additional
+ models
+Message-ID: <20240303143429.68fd5cd4@jic23-huawei>
+In-Reply-To: <20240228135532.30761-3-mitrutzceclan@gmail.com>
+References: <20240228135532.30761-1-mitrutzceclan@gmail.com>
+	<20240228135532.30761-3-mitrutzceclan@gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h:2778: warning: Excess struct member '__acc_osys' description in 'ipu3_uapi_flags'
+On Wed, 28 Feb 2024 15:54:57 +0200
+Dumitru Ceclan <mitrutzceclan@gmail.com> wrote:
 
-Signed-off-by: R SUNDAR <prosunofficial@gmail.com>
----
- drivers/staging/media/ipu3/include/uapi/intel-ipu3.h | 1 -
- 1 file changed, 1 deletion(-)
+> Add support for Analog Devices AD7172-2, AD7175-8, AD7177-2.
+> 
+> Signed-off-by: Dumitru Ceclan <mitrutzceclan@gmail.com>
+Hi Dumitru
 
-diff --git a/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h b/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
-index 926fcf84e33c..4aa2797f5e3c 100644
---- a/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
-+++ b/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
-@@ -2722,7 +2722,6 @@ struct ipu3_uapi_obgrid_param {
-  * @acc_ae: 0 = no update, 1 = update.
-  * @acc_af: 0 = no update, 1 = update.
-  * @acc_awb: 0 = no update, 1 = update.
-- * @__acc_osys: 0 = no update, 1 = update.
-  * @reserved3: Not used.
-  * @lin_vmem_params: 0 = no update, 1 = update.
-  * @tnr3_vmem_params: 0 = no update, 1 = update.
--- 
-2.34.1
+Some of the changes in here make it clear more inter chip variability
+should be specified directly in your device_info structures, and less
+(preferably none) use made of the id field + if statements inline.
+
+Those ID fields should just be for matching, not for direct use to adjust
+code flow.
+
+Jonathan
+
+
+> ---
+>  drivers/iio/adc/ad7173.c | 82 ++++++++++++++++++++++++++++++++++++----
+>  1 file changed, 74 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/ad7173.c b/drivers/iio/adc/ad7173.c
+> index b42fbe28a325..e60ecce20e08 100644
+> --- a/drivers/iio/adc/ad7173.c
+> +++ b/drivers/iio/adc/ad7173.c
+> @@ -1,6 +1,11 @@
+>  // SPDX-License-Identifier: GPL-2.0+
+>  /*
+> - * AD7172-2/AD7173-8/AD7175-2/AD7176-2 SPI ADC driver
+> + * AD717x family SPI ADC driver
+> + *
+> + * Supported devices:
+> + *  AD7172-2/AD7172-4/AD7173-8/AD7175-2
+> + *  AD7175-8/AD7176-2/AD7177-2
+> + *
+>   * Copyright (C) 2015, 2024 Analog Devices, Inc.
+>   */
+>  
+> @@ -61,10 +66,13 @@
+>  #define AD7173_AIN_TEMP_POS	17
+>  #define AD7173_AIN_TEMP_NEG	18
+>  
+> -#define AD7172_ID			0x00d0
+> -#define AD7173_ID			0x30d0
+> -#define AD7175_ID			0x0cd0
+> +#define AD7172_2_ID			0x00d0
+>  #define AD7176_ID			0x0c90
+> +#define AD7175_2_ID			0x0cd0
+> +#define AD7172_4_ID			0x2050
+> +#define AD7173_ID			0x30d0
+> +#define AD7175_8_ID			0x3cd0
+> +#define AD7177_ID			0x4fd0
+>  #define AD7173_ID_MASK			GENMASK(15, 4)
+>  
+>  #define AD7173_ADC_MODE_REF_EN		BIT(15)
+> @@ -110,15 +118,19 @@
+>  #define AD7173_SETUP_REF_SEL_EXT_REF	0x0
+>  #define AD7173_VOLTAGE_INT_REF_uV	2500000
+>  #define AD7173_TEMP_SENSIIVITY_uV_per_C	477
+> +#define AD7177_ODR_START_VALUE		0x07
+>  
+>  #define AD7173_FILTER_ODR0_MASK		GENMASK(5, 0)
+>  #define AD7173_MAX_CONFIGS		8
+>  
+..
+
+>  
+>  static const char *const ad7173_ref_sel_str[] = {
+> @@ -656,7 +701,12 @@ static int ad7173_write_raw(struct iio_dev *indio_dev,
+>  	switch (info) {
+>  	case IIO_CHAN_INFO_SAMP_FREQ:
+>  		freq = val * MILLI + val2 / MILLI;
+> -		for (i = 0; i < st->info->num_sinc5_data_rates - 1; i++)
+> +		/*
+> +		 * AD7177-2 has the filter values [0-6] marked as reserved
+> +		 * datasheet page 58
+> +		 */
+> +		i = (st->info->id == AD7177_ID) ? AD7177_ODR_START_VALUE : 0;
+
+Add an st->info->odr_start_value field. Can set it only for this part, but
+if in future others turn up that needs similar it becomes very easy to support.
+
+> +		for (; i < st->info->num_sinc5_data_rates - 1; i++)
+>  			if (freq >= st->info->sinc5_data_rates[i])
+>  				break;
+>  
+> @@ -908,8 +958,15 @@ static int ad7173_fw_parse_channel_config(struct iio_dev *indio_dev)
+>  		else
+>  			ref_sel = ret;
+>  
+> +		if (ref_sel == AD7173_SETUP_REF_SEL_INT_REF &&
+> +		    st->info->id == AD7172_2_ID) {
+
+As below.  You may well end up adding more devices here. Make it data instead by
+adding  has_ref1 boolean to your st->info structure.
+
+> +			fwnode_handle_put(child);
+> +			return dev_err_probe(dev, -EINVAL,
+> +				"Internal reference is not available on ad7172-2\n");
+> +		}
+> +
+>  		if (ref_sel == AD7173_SETUP_REF_SEL_EXT_REF2 &&
+> -		    st->info->id != AD7173_ID) {
+> +		    st->info->id != AD7173_ID && st->info->id != AD7172_2_ID) {
+This is one of those cases that clearly shows why ID matching doesn't generalize well.
+Better to have a flag in info that directly says if there is an external reference 2 
+possible for each chip variant.  Otherwise this list just keeps on growing!
+
+		   !st->info->has_ref2
+
+>  			fwnode_handle_put(child);
+>  			return dev_err_probe(dev, -EINVAL,
+>  				"External reference 2 is only available on ad7173-8\n");
 
 
