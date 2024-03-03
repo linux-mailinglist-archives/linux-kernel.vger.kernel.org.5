@@ -1,255 +1,221 @@
-Return-Path: <linux-kernel+bounces-89862-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89864-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1916B86F6A7
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 20:04:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0C9D86F6B0
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 20:07:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2203D1C2092B
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 19:04:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1F68EB20F90
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 19:07:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B0067994B;
-	Sun,  3 Mar 2024 19:04:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75CCE79942;
+	Sun,  3 Mar 2024 19:07:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g+a5ypPK"
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SO7/Pzm9"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D863E76417;
-	Sun,  3 Mar 2024 19:04:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9191D79DAE
+	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 19:07:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709492651; cv=none; b=Xw3FEHbt6UcbdDbVD7FpQupJnNIOXPm0MFsb93QNDcB3C+LlnDyCGVF+x3TADTmZWU7x9Wq81Blbbr26pPQssCo3PitzZaHg0/aVs8CNH3/T62nqR525Y8DQmz+ktOqY3GOGQcdpdtVHa2iyC+kv2HCDjMCInG7dQTShnlLCm9Y=
+	t=1709492832; cv=none; b=dzUHbvYED0M9QQVrwyJ5aAJ1QUjm7vuCZ3gpNA4VkE2uzNPM12MIVkmN7XtSCGmRIz4t9ILBLIOjFQqPgy1+zLY8DvempLhKwUcgp8AD1cBXgEg8LwodWG3IYbCdTjb++NBJV/g8XuUnMy44RnTK+vH5Dg3cbelcRC/HJPZ2Pms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709492651; c=relaxed/simple;
-	bh=XcvvUXceBSb176i0TRf9vtM0/PGGD8QMPdQJXgBDrGM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=k5cF//b39Ihxsc7F2r6JXkdwUimX8A4R3k9FQmIHqDio6EceWUW1w8KcL9uEhQYLCWJPQQu9vLVJoFcjoe/kA+ONytlTE9k0Y71YUaiWRoDYsHS8krLPePjuj4HV6nSciL6Jlafxf2Y9vQqSGUfW5XxhX93PPXakRB/z+44cDEA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g+a5ypPK; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d27fef509eso51989561fa.3;
-        Sun, 03 Mar 2024 11:04:09 -0800 (PST)
+	s=arc-20240116; t=1709492832; c=relaxed/simple;
+	bh=Xq/6EX7Vma5DVArRtVZxDv2nekiTsrf7RQfu18aVsJM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=b8PZ0gFo/PHFvBvPiBMezHz9KBDQBI7XNakGMcLVdPSpclnNmRMf+NpmMWASwPpqrf+Lw86VTa1n0oUVkjFw/o/bigS59DgXj4UVxaXrwxQKpNoFj79o7D7AchsUBzs3IUdbSEPk8vU5d2dD8Q24HjbJI42jlXzVF4BO23DMcZY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=SO7/Pzm9; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a44ad785a44so245150366b.3
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 11:07:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709492648; x=1710097448; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1DVCx1/HHcWKKtGLW0BdzytODfQzaAANbwcrDliILZk=;
-        b=g+a5ypPKj39pLt0g100sovnhYOjmmpKRjj5SOMZzfM0X5JFz6Q9fjQ/i6lsZV6nr4z
-         3EiKITfu0Lxkjmi2b0EzFOTpZzKI3Br8AFbaHd3GI6BNnaqjU+yu8LUNVtWB+oCSNJtN
-         uFFNQZSkRl/hhL6zNI1Hk9L+ae0jZw81Rc+LfB1wJQvMd2WEe/ywWHab9Zvpfszb1MhT
-         YC5+JEk4BZZYCCmUW5sPHJ+IA8TlB7HJfOilhiLr+qNbpsM0XJIPmNmimTTgiH2XwWBY
-         fasCUXyWFFmfXZpkUbJY2DM6IolgmNWIStw2nx1vwRM8dARZMdu1J84l5T9aq61RPRUb
-         NVDg==
+        d=linaro.org; s=google; t=1709492829; x=1710097629; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=t8+5hz1pC1NUruMJAl+eg8w3VSt8O+IZDxY81DWZbIU=;
+        b=SO7/Pzm9XXLWchfdpbRM7BK4v1xSE2gJZO6QvknP/GGWh4HQiYt23TF7R5Mo3SRPJk
+         Tini7fQ1mr2gRlMkpyLEn5XYngrkSfOP/8vHwSLNy0n5E8sn88YfFv/CY2IbzL9LbXwx
+         MrEEX9DRZ8n3qvGEz68ipgB78d9gZsJAwTXXBoGAHYqeEBqzIAjKLKV9Sp8z5e/f2DiW
+         j2UnoJ8EUe1bS/lQAlkq8PHs29hu0aq5LYMWhW5dHFRkm7K1CS4gmA+ArScysfm3Mgra
+         eT4um6nF9vQxWOI3R/6jv7VL5PMEUIxHGAtw7sm60eZUag5GkqTBxokevwQS/AE9UYMt
+         HLWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709492648; x=1710097448;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1DVCx1/HHcWKKtGLW0BdzytODfQzaAANbwcrDliILZk=;
-        b=qWoYJ5XlqUCVi89M0gyhWTuEhblZvD0h7eXDFCCFN1/dzCUNgunf3rp2hkHKhEjNky
-         V2FGZrSjxqWjDgUvgUqwhA6hBAa4035GaMsuk8gJQTLpttYkDjTK+/Latekqi0Jzs+91
-         c6bn59s8LXFVJ7CcOyagtj8Tya8BzoCG5vZtz0ugGPneGJrKfrbdp3jV1ea/u6RLm6Qd
-         /Iibf1kqbU5OiFZqBipeX6pBYgpGkDVM1JD7yjSp4r53M+HcPSvlJ6SGEebN6gnGE5iT
-         R6xeFMgUKiJqcsKihyp8GoNpYQLIoFiJdExNspQ62tmy8wtc4/3SH7DdIxNFbb23Hh+F
-         lOzw==
-X-Forwarded-Encrypted: i=1; AJvYcCVaafcDldWlfWmcORKFO05QtFtkJe/jUVaOM+4kCu9/aXVhkoHQ5OmG0hp9fQSmz1VVkV8xIVYQ5hSzuvMmx6HpBbx+d7fkf1JpjOI1/50XnzMoGSHqoXash4P180IQe+el+snEJxnTZuEM
-X-Gm-Message-State: AOJu0Ywlfu1Ok96Ud8KQ50E+zFRhrI32f/mcml3490SO45Wfo7Lk9T5/
-	RsiK8O61T9nTJOTgajVVuPl48yyA+q4ru6WeofguIObPkDuFxtsCZDYa6R8aVC+JC/HLAOW2+IA
-	s/dRaolKJQFQHOKq0iHDtspUHXtQSyxt62/U=
-X-Google-Smtp-Source: AGHT+IFCSdD6OHt6bljSwkVkmweyQrmbR5W6Rf3Y/xTV8dRYMkGvWt4G0Q4Zm0KA/B2fjDQRxo5V6x5AwJlIy4MUrgI=
-X-Received: by 2002:a2e:6e10:0:b0:2d2:8fb4:46cf with SMTP id
- j16-20020a2e6e10000000b002d28fb446cfmr4825247ljc.15.1709492647620; Sun, 03
- Mar 2024 11:04:07 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709492829; x=1710097629;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=t8+5hz1pC1NUruMJAl+eg8w3VSt8O+IZDxY81DWZbIU=;
+        b=Tj3wfxody4qvEyNsbKVu6MP9thc2Mzh5e3LNLN4e4sN1w1iV2BGwvR6IWmD7VS1jNA
+         K9vy4sfrtQvJKSkRBs63DQwy0/rPX8i1LO/+ROP40WoOorTdXoMINPN3GRjlV5JtyEqL
+         tpvPsuZM0mRpQVYTUThT3deVoehk96l4/s4YYhK9CszBL/1ttD17ZyYz8y0E+YQ0Nr9y
+         ePWKV2thSeYdRQf/TafFWg9JC7lr8K7yKAFIOrwK8qoJsqd7IHUInCfySMuyUDr3a+3v
+         BJCN3hjUKfPFCMPdPwJYbtbo20Va8ROO4bRfRYGilgzbjcMf0gqTrZ+oO4U0X7Gu2bg1
+         sbkg==
+X-Forwarded-Encrypted: i=1; AJvYcCUSZv15DIG193nysNCgDO/1w9jF2BhyC1qnkrodyH8PzKzaPGAlwuLWg75rtKpX6V2UHCbt5Sqqq2avXasG9T5h+qwMOpCTUNcaJnRS
+X-Gm-Message-State: AOJu0YwpEWI6YEWcxakSCVitx1NNQYScXdahFNoxtf9EHwTH3hb4gHPB
+	ROpaRdoVp4RmfFhUlsghdNY4nZlVGuHF/D05OCnAyx6bkxcBc7JZGDcfWwI6c0w=
+X-Google-Smtp-Source: AGHT+IE0gq/QoToo3IKKgK/wLQhOrWdvlyROKGxYxQmMgG7sJ8DJthEQl1WpJmZwJWFdPBX9DJ+/Sw==
+X-Received: by 2002:a17:906:48c6:b0:a45:2038:4caa with SMTP id d6-20020a17090648c600b00a4520384caamr1109660ejt.76.1709492828895;
+        Sun, 03 Mar 2024 11:07:08 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id ld15-20020a170906f94f00b00a44e7afde87sm1669822ejb.148.2024.03.03.11.07.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 03 Mar 2024 11:07:08 -0800 (PST)
+Message-ID: <e13610f6-6e09-4073-bc26-108b76c2a88f@linaro.org>
+Date: Sun, 3 Mar 2024 20:07:05 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <202403020457.RCJoQ3ts-lkp@intel.com> <87edctwr6y.ffs@tglx>
- <87a5nhwpus.ffs@tglx> <87y1b0vp8m.ffs@tglx> <87sf18vdsq.ffs@tglx>
- <87le70uwf0.ffs@tglx> <CAHk-=wiWhfdc4Sw2VBq_2nL2NDxmZS32xG4P7mBVwABGqUoJnw@mail.gmail.com>
- <87edcruvja.ffs@tglx>
-In-Reply-To: <87edcruvja.ffs@tglx>
-From: Uros Bizjak <ubizjak@gmail.com>
-Date: Sun, 3 Mar 2024 20:03:56 +0100
-Message-ID: <CAFULd4bVEUBEidTLbHNzRaJbSjXm99yC8LT=jdzFWb7xnuFH7g@mail.gmail.com>
-Subject: Re: arch/x86/include/asm/processor.h:698:16: sparse: sparse:
- incorrect type in initializer (different address spaces)
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, kernel test robot <lkp@intel.com>, 
-	oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	Arjan van de Ven <arjan@linux.intel.com>, x86@kernel.org, 
-	Luc Van Oostenryck <luc.vanoostenryck@gmail.com>, 
-	Sparse Mailing-list <linux-sparse@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] dt-bindings: misc: merge qcom,qrc
+To: Canfeng Zhuang <quic_czhuang@quicinc.com>,
+ Derek Kiernan <derek.kiernan@amd.com>, Dragan Cvetic
+ <dragan.cvetic@amd.com>, Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org
+References: <20240304-qcom_qrc-v1-0-2a709f95fd61@quicinc.com>
+ <20240304-qcom_qrc-v1-2-2a709f95fd61@quicinc.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240304-qcom_qrc-v1-2-2a709f95fd61@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sun, Mar 3, 2024 at 5:31=E2=80=AFPM Thomas Gleixner <tglx@linutronix.de>=
- wrote:
->
-> On Sat, Mar 02 2024 at 14:49, Linus Torvalds wrote:
-> > On Sat, 2 Mar 2024 at 14:00, Thomas Gleixner <tglx@linutronix.de> wrote=
-:
-> >>
-> >> I had commented out both. But the real reason is the EXPORT_SYMBOL,
-> >> which obviously wants to be EXPORT_PER_CPU_SYMBOL_GPL...
-> >
-> > Side note: while it's nice to hear that sparse kind of got this right,
-> > I wonder what gcc does when we start using the named address spaces
-> > for percpu variables.
-> >
-> > We actively make EXPORT_PER_CPU_SYMBOL_XYZ be a no-op for sparse
-> > exactly because sparse ended up warning about the regular
-> > EXPORT_SYMBOL, and we didn't have any "real" per-cpu export model.
->
-> Right.
->
-> > So EXPORT_PER_CPU_SYMBOL_GPL() is kind of an artificial "shut up
-> > sparse".
->
-> Aside of that it's also making it clear what this is about. So I don't
-> think it's purely artifical.
->
-> > But with __seg_gs/fs support for native percpu symbols with
-> > gcc, I wonder if we'll hit the same thing. Or is there something that
-> > makes gcc not warn about the named address spaces?
->
-> Right now the pending code in tip does not complain about the
-> EXPORT_PER_CPU_SYMBOL_GPL() part because our current macro maze is
-> hideous. Here is the preprocessor output.
->
-> This is DECLARE_PER_CPU() in the header:
->
-> extern __attribute__((section(".data..percpu" ""))) __typeof__(u64) x86_s=
-pec_ctrl_current;
->
-> Here is DEFINE_PER_CPU():
->
-> __attribute__((section(".data..percpu" ""))) __typeof__(u64) x86_spec_ctr=
-l_current;
->
-> And the EXPORT:
->
-> extern typeof(x86_spec_ctrl_current) x86_spec_ctrl_current;
->
-> static void * __attribute__((__used__))
->    __attribute__((__section__(".discard.addressable")))
->    __UNIQUE_ID___addressable_x86_spec_ctrl_current804 =3D (void *)(uintpt=
-r_t)&x86_spec_ctrl_current;
->
->    asm(".section \".export_symbol\",\"a\" ;
->        __export_symbol_x86_spec_ctrl_current: ;
->        .asciz \"GPL\" ; .asciz \"\" ; .balign 8 ; .quad x86_spec_ctrl_cur=
-rent ; .previous");
->
-> And the __seg_gs magic happens only in the per CPU accessor itself:
->
-> __attribute__((__noinline__)) __attribute__((no_instrument_function))
->  __attribute((__section__(".noinstr.text")))
->  __attribute__((__no_sanitize_address__))
->  __attribute__((__no_profile_instrument_function__))
->  u64 spec_ctrl_current(void)
-> {
->  return ({
->     // this_cpu_read(x86_spec_ctrl_current)
->
->     typeof(x86_spec_ctrl_current) pscr_ret__;
->
->     do { const void *__vpp_verify =3D (typeof((&(x86_spec_ctrl_current)) =
-+ 0))((void *)0); (void)__vpp_verify;
->     } while (0);
->
->     switch(sizeof(x86_spec_ctrl_current))
->     {
->     case 1: pscr_ret__ =3D ({
->             *(volatile typeof(x86_spec_ctrl_current) __seg_gs *)(typeof(*=
-&(x86_spec_ctrl_current)) __seg_gs *)(uintptr_t)(&(x86_spec_ctrl_current));=
- });
->             break;
->     case 2: pscr_ret__ =3D ({
->             *(volatile typeof(x86_spec_ctrl_current) __seg_gs *)(typeof(*=
-&(x86_spec_ctrl_current)) __seg_gs *)(uintptr_t)(&(x86_spec_ctrl_current));=
- });
->             break;
->     case 4: pscr_ret__ =3D ({
->             *(volatile typeof(x86_spec_ctrl_current) __seg_gs *)(typeof(*=
-&(x86_spec_ctrl_current)) __seg_gs *)(uintptr_t)(&(x86_spec_ctrl_current));=
- });
->             break;
->     case 8: pscr_ret__ =3D ({
->             *(volatile typeof(x86_spec_ctrl_current) __seg_gs *)(typeof(*=
-&(x86_spec_ctrl_current)) __seg_gs *)(uintptr_t)(&(x86_spec_ctrl_current));=
- });
->             break;
->
->     default: __bad_size_call_parameter(); break;
->     }
->
->     pscr_ret__;
->   });
-> }
->
-> So all the export etc. just works because it all operates on a plain
-> data type and the __seg_gs is only bolted on via type casts in the
-> accessors.
->
-> As the per cpu variables are in the .data..percpu section the linker
-> puts them at address 0 and upwards. So the cast to a __seg_gs pointer
-> makes it end up at the real kernel address because of GSBASE + "offset".
->
-> The compiler converts this to RIP relative addressing:
->
->   movq   $0x0,%gs:0x7e14169f(%rip)        # 1ba08 <fpu_fpregs_owner_ctx>
->
-> This obviously has a downside. If I do:
->
->    u64 foo;
->
->    this_cpu_read(foo);
->
-> the compiler is just happy to build that w/o complaining and it will
-> only explode at runtime because foo is a kernel data address which added
-> to GSBASE will result in accessing some random address:
->
->   mov    %gs:0x15d08d4(%rip),%rax        # ffffffff834aac60 <x86_spec_ctr=
-l_base>
->
-> This is not at all different from the inline ASM based version which is
-> in your tree. The only difference is that the macro maze is pure C and
-> the __set_gs cast allows the compiler to (micro) optimize, e.g. 'mov
-> %gs:...; movzbl' into a single 'movzbl'.
->
-> IOW, right now the only defense against such a mistake is actually the
-> sparse check. Maybe one of the coccinelle scripts has something similar,
-> I don't know.
->
-> I did not follow the __set_gs work closely, so I don't know whether Uros
-> ever tried to actually mark the per CPU variable __set_gs right away,
-> which would obviously catch the above 'foo' nonsense.
+On 03/03/2024 17:53, Canfeng Zhuang wrote:
+> Merge Qualcomm-specific qrc binding
 
-No, because [1]:
+Merge? No, instead describe the hardware.
 
-"gcc does not provide a way to remove segment qualifiers, which is needed
-to use typeof() to create local instances of the per-cpu variable. For
-this reason, do not use the segment qualifier for per-cpu variables, and
-do casting using the segment qualifier instead."
+Similar problem with the sibject.
 
-[1] https://lore.kernel.org/lkml/20190823224424.15296-3-namit@vmware.com/
+> 
+> Signed-off-by: Canfeng Zhuang <quic_czhuang@quicinc.com>
+> ---
+>  .../devicetree/bindings/misc/qcom,qrc.yaml         | 32 ++++++++++++++++++++++
+>  1 file changed, 32 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/misc/qcom,qrc.yaml b/Documentation/devicetree/bindings/misc/qcom,qrc.yaml
+> new file mode 100644
+> index 000000000000..730efd679ba0
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/misc/qcom,qrc.yaml
+> @@ -0,0 +1,32 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/misc/qcom,qrc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm Robotics Communication Driver
 
-Uros.
+Driver? Unfortunately bindings are for hardware, not drivers.
 
->
-> I think this should just work, but that would obviously require to do
-> the type cast magic at the EXPORT_SYMBOL side and in some other places.
->
-> Thanks,
->
->         tglx
->
->
+> +
+> +maintainers:
+> +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> +
+> +description: |
+
+Do not need '|' unless you need to preserve formatting.
+
+> +  The QRC (Qualcomm Robotics Communication) driver is used for information interaction
+
+Agaim, driver?
+
+> +  between the robot control board and the main board when using a uart port connection.
+> +  This Driver will support uart read & write and robot control board
+
+No, describe the hardware.
+
+> +  reset function.
+> +
+> +properties:
+> +  compatible:
+> +    const: qcom,qrc-uart
+> +
+> +required:
+> +  - compatible
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    qrc: qcom,qrc_uart {
+
+
+How does it remotely look like upstream DTS? Please don't send
+downstream/vendor DTS before cleaning it up. Before posting, please read
+submitting patches and/or quite extensive Qualcomm upstreaming guides.
+
+> +        compatible = "qcom,qrc-uart";
+
+Nope, so this is just to instantiate Linux device? No resources? This
+looks really incomplete.
+
+> +    };
+> +
+> 
+
+Best regards,
+Krzysztof
+
 
