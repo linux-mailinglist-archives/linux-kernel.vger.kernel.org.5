@@ -1,51 +1,51 @@
-Return-Path: <linux-kernel+bounces-89826-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89827-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF86786F62A
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 17:37:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F12E86F62D
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 17:42:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BAC31C220B2
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 16:37:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6EFEA1C220E9
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 16:42:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 588616CDA5;
-	Sun,  3 Mar 2024 16:36:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 629656CDD1;
+	Sun,  3 Mar 2024 16:42:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="byLmC7rM"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="D8BD8Bjs"
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 781B966B5F
-	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 16:36:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 680CF7493;
+	Sun,  3 Mar 2024 16:42:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709483817; cv=none; b=B6NFAZQP2hWyVNnFsf6mXB/Z7aF7ElSHhc8dfmTFiALI/70hmEGai3+FtKjjDczB1Cwxrc/W/WCnN63MkZ7RT6X1zgY6c9vcgCvQYNk4LuJXTlkEbDIs9Vu8+f+raFjmERPFCjodpP+ullkTGujOk+luc2Y4pO6l2YO0s+ApkS4=
+	t=1709484121; cv=none; b=dRU4RJrrGjSP8+/CXpVKdesR2CwoIURmg9ACAJleD71Np7su5nkCnYxAIEVZ1tkuNg0MuTWps1bw6fSZrw6U0aUMg7I/dB8Rr5DUxHpWDXeU7LEdhuCWX2ouVwKj7NLz1UYwMNm1aUO1TMBmYaoqHNKF38mO1mwqJaIbqpBSwxc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709483817; c=relaxed/simple;
-	bh=iVEVVafPHLIsnU6JVQedkPVmE9o83ai58lzcRJQ1XLw=;
+	s=arc-20240116; t=1709484121; c=relaxed/simple;
+	bh=Gwzzy7hNAaV1D/F6nWxqZu6+TdQiyQjvihiT7l0ydOg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bddNWe7vqj4mG2DzfcSL0rhnrTM34/Vwf9IAg9a2a2K01Hv4Tz79J6v9wF2I3yNJW+F8qZxETp4zFmYpOOWso59WzWW1VIkcjhj76JuQfgGY4wtlUHSN5QpCy7vqOQIQlzhU6IeirPX8t4/iGvkZOpsJ492rez0fYhq9cV6yrRE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=byLmC7rM; arc=none smtp.client-ip=198.137.202.133
+	 In-Reply-To:Content-Type; b=YwK6Zkaztx52TeHjbLzIxHwCLYpRRNP4TrWOERfzxCU9Mxibc+nB0ZGBPDTz/CD0Ejl1k9zHxvUJaEoSCvp/OGA2f7ewowMUVY0S/vKZfY74A8B26QAGCP3FirzUNiA5G/2PL+QpXIrlg6HNJ5AyHnRPNnXYNnrNrX1xAG0dPGw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=D8BD8Bjs; arc=none smtp.client-ip=198.137.202.133
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
 	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
 	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=tSswBdIcszDJoDe9Vi8pnuS2WTvFPCmOZO051C3dxKM=; b=byLmC7rMmjeLz0US861q1IrR7R
-	IQbPqrmvZLo+d9gIbCSHG1dzWeOCiwoo9J0+pQRIfrybvbIRarvyosXTpVwRiMGjlDnRI+vgQBrhW
-	m6YlLLdXfwuqsNal5V2vZnPjOuG61Y29ges0vQu2a1Bxd9DXUR+HmWjGPwDNo5nrB4MvlBGu9vmMe
-	aRTEyUVbR5lg7i8k0X05EpsQw03v6OyDcPwI8OB2QkhbJ4KfkQqKjNUDxPXm3auq2oUUmj871eJ2P
-	1/P3MixwaR7KnoUPEZqL/cmwbjLFzXPKTKKM7YyTzFZr13pXSS4hAQ6B/sQ7EbYvrT37BAb0weNdM
-	kjfkxXOw==;
+	bh=b4d/3tR4nX8imA7O6QUupWdB/X3IAtMGfLXRBaowLV0=; b=D8BD8BjsGOn7hEIlSgGYc8xXPq
+	O3Oudq1XubTYyx97XtSsdXlSLQgSF5sM8Tkg9Wq7ZI1TdwxdIVVrfp/aB/34cWJ4jgvbf35we063g
+	BkIbRdNklaMdHeiDTH4RsEUEoFlib97fIEGD/YyPpNPD1KQG3ojm0EmMrEPz02goIleClNBawuPT3
+	l0Q8Sscio79vgjRCXk2yKhFJfF/XtDmjQwurROGV2IekoLpTkYy23kHG0qQDdn5mKzj7Tjbi+WswM
+	yg6KVXYqdmqKpC2mOGJjC6h23vcvSlCaQ0JuFPMO1EtlJsrlHW1fKa+NnMqxwHskFosw8uYTFiTfj
+	nG82Eo5Q==;
 Received: from [50.53.50.0] (helo=[192.168.254.15])
 	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rgopZ-00000006IUw-1oWo;
-	Sun, 03 Mar 2024 16:36:53 +0000
-Message-ID: <aac03d82-1a07-457e-af5e-f125e05c66de@infradead.org>
-Date: Sun, 3 Mar 2024 08:36:50 -0800
+	id 1rgouT-00000006J2t-0uGx;
+	Sun, 03 Mar 2024 16:41:57 +0000
+Message-ID: <120c265e-dde5-454e-8e0b-72a1361912b6@infradead.org>
+Date: Sun, 3 Mar 2024 08:41:56 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,47 +53,51 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Removed controller field description to prevent
- kernel-doc warnings
+Subject: Re: [PATCH] Removed inputq,namedq field description to prevent kernel
+ doc warnings.
 Content-Language: en-US
-To: R SUNDAR <prosunofficial@gmail.com>, openbmc@lists.ozlabs.org,
- iwona.winiarska@intel.com
-Cc: linux-kernel@vger.kernel.org
-References: <20240303134453.5791-1-prosunofficial@gmail.com>
+To: R SUNDAR <prosunofficial@gmail.com>, jmaloy@redhat.com,
+ ying.xue@windriver.com, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com
+Cc: netdev@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
+ linux-kernel@vger.kernel.org
+References: <20240303143919.6903-1-prosunofficial@gmail.com>
 From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240303134453.5791-1-prosunofficial@gmail.com>
+In-Reply-To: <20240303143919.6903-1-prosunofficial@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
+Hi,
 
-
-On 3/3/24 05:44, R SUNDAR wrote:
-> /include/linux/peci.h:84: warning: Excess struct member 'controller' description in 'peci_device'
+On 3/3/24 06:39, R SUNDAR wrote:
+> /net/tipc/node.c:150: warning: Excess struct member 'inputq' description in 'tipc_node'
+> /net/tipc/node.c:150: warning: Excess struct member 'namedq' description in 'tipc_node'
 > 
 > Signed-off-by: R SUNDAR <prosunofficial@gmail.com>
 
-Yes, or
-https://lore.kernel.org/lkml/20231223050605.13961-1-rdunlap@infradead.org/
+This is already fixed in linux-next and net-next, as was another one of your
+patches.
+I suggest that you focus more on the -next trees for such patch targets.
 
-so
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Thanks.
 
 > ---
->  include/linux/peci.h | 1 -
->  1 file changed, 1 deletion(-)
+>  net/tipc/node.c | 2 --
+>  1 file changed, 2 deletions(-)
 > 
-> diff --git a/include/linux/peci.h b/include/linux/peci.h
-> index 9b3d36aff431..90e241458ef6 100644
-> --- a/include/linux/peci.h
-> +++ b/include/linux/peci.h
-> @@ -58,7 +58,6 @@ static inline struct peci_controller *to_peci_controller(void *d)
->  /**
->   * struct peci_device - PECI device
->   * @dev: device object to register PECI device to the device model
-> - * @controller: manages the bus segment hosting this PECI device
->   * @info: PECI device characteristics
->   * @info.family: device family
->   * @info.model: device model
+> diff --git a/net/tipc/node.c b/net/tipc/node.c
+> index 3105abe97bb9..c1e890a82434 100644
+> --- a/net/tipc/node.c
+> +++ b/net/tipc/node.c
+> @@ -86,8 +86,6 @@ struct tipc_bclink_entry {
+>   * @lock: rwlock governing access to structure
+>   * @net: the applicable net namespace
+>   * @hash: links to adjacent nodes in unsorted hash chain
+> - * @inputq: pointer to input queue containing messages for msg event
+> - * @namedq: pointer to name table input queue with name table messages
+>   * @active_links: bearer ids of active links, used as index into links[] array
+>   * @links: array containing references to all links to node
+>   * @bc_entry: broadcast link entry
 
 -- 
 #Randy
