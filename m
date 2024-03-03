@@ -1,157 +1,172 @@
-Return-Path: <linux-kernel+bounces-89859-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89860-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 594F086F69A
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 19:52:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D84C786F69C
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 19:54:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DFD01B21521
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 18:52:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0830D1C20ED1
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 18:54:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62A1979949;
-	Sun,  3 Mar 2024 18:52:26 +0000 (UTC)
-Received: from mail.stoffel.org (mail.stoffel.org [172.104.24.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B263276417;
+	Sun,  3 Mar 2024 18:54:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="va8pU1cK"
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEA071EB2C;
-	Sun,  3 Mar 2024 18:52:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=172.104.24.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 178035FEE3
+	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 18:54:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709491946; cv=none; b=A4UA50l0uATlSWGSL32bokp/26sgFQ9dUPX7wTW4DHfATpk5KQGuLk2ESBvulz8QHDCcYrGJyyXAqEgguum5TYohplSo7Xy4YvusGIC8LTkpuw0Uv3XDqK9YzX5ZdUiwvjPFYrAaClOaVRd28c/LviDV9WJCxpzhpp3t0soEX4A=
+	t=1709492087; cv=none; b=l4DntwWLLjIoH6I9DZI2/IqleNTcYa/mHk1gH5hCbkE8PuWGUDFqAfJjwXZywrdB5/AavZm+/bfaTpKRdSpn03nPeFb2euSN2ld2mLTqmypirb8FXh7Hsai3k1KroYkyzk5gFOsYB33Ncwg9NrUdrQ0omzfbcQlMpkCUCquXUy0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709491946; c=relaxed/simple;
-	bh=BEXKtQcTSH5pL96wieE7s8hzRl6MbWq3psRI7jxDZoI=;
-	h=MIME-Version:Content-Type:Message-ID:Date:From:To:Cc:Subject:
-	 In-Reply-To:References; b=a8dUBDk+2koYX4Yv/PuQeaDo2rZsVH9o+qLcZ0qM3O3zVUKVQl9xTvlPGwL/2ZHSr2/AiPqiBrOHy7kfM7cFpZ+Cj78OkPwAxEQfgraeqaplRO+KWNnD8Y156NSsjJzlnw+Hs8Ar4icoR51tkuR5N1adhWr7EPeqY9iAAVH/b9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=stoffel.org; spf=pass smtp.mailfrom=stoffel.org; arc=none smtp.client-ip=172.104.24.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=stoffel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stoffel.org
-Received: from quad.stoffel.org (097-095-183-072.res.spectrum.com [97.95.183.72])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
-	(No client certificate requested)
-	by mail.stoffel.org (Postfix) with ESMTPSA id CF0301E731;
-	Sun,  3 Mar 2024 13:52:21 -0500 (EST)
-Received: by quad.stoffel.org (Postfix, from userid 1000)
-	id 81A7BA0257; Sun,  3 Mar 2024 13:52:21 -0500 (EST)
+	s=arc-20240116; t=1709492087; c=relaxed/simple;
+	bh=iwq+sGovXovBXD38LyxkWIOjH510WLGP2Qoco8AQv0c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HmVYJqF3a6v6Vtnfyv2FFQL2+GG0uXjit0qfrCtUSWbrHbWwvOCYsxgkSHXxe1gfq2QpjWLyzxfzhxHTZgVOHvndwCrIe8BC16X4/QpvV2w1YOlaH+8poSslmP8AfgGSFXMTU74nijTnHurTd8sttwEDIB2ajgR4ZsHzGHnUJXE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=va8pU1cK; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-33d28468666so2484133f8f.0
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 10:54:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1709492083; x=1710096883; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=pxJlWnXbvEoKyXuye3QkRbIfgBWxXZHW+bMIprOkjrY=;
+        b=va8pU1cKXUc91wVnHHjYeG+kDwGQpJV3gCTK3+HirKP11pLFkdmWcdGY7D/J5mSKac
+         QuQRuO3oWGiSr6ITEsqH6WCVjGPhBjtwcG3/9wknNkvLnDWtyX4D3ESH2GbDDSLFutul
+         DNYGSMwoezZrTzM/Gg1+DVanCH/GP8i9z8MYQgEyto88JiPpMOFThG+vtAONUeb3zxaU
+         VLrUoz2cOfsYHKMJaumW60t6XkGPW+OaXVRgL+HyJdYQ/SYmfevOC4DKUptUpmkjg7N9
+         0AiJyruRvxpG0FKrqUh542xZsFLUb5yzEucw9+DO3FJ03AEHSDJxk7kp70UoA5zbkH6c
+         V/iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709492083; x=1710096883;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pxJlWnXbvEoKyXuye3QkRbIfgBWxXZHW+bMIprOkjrY=;
+        b=AeOyE9epttoyOqIrz5X3vP9YyC4N4jrRP2F1kuVtT0D20ej0hNW6mJto23fD3m0Tvf
+         17RzxGEW8YYd5BrZk22nSFKxuUejzvruIhoQd7OdyD+09IQ4rSDNZL0bZsey84ParIvO
+         nw44/zXRiruK80kT+3bc43j/6BgTHryg4RX00YPvCXsoi77TtIiWcgrJSLHCCt8ZkFIC
+         4TN286z2coW/UzcFMp0Lvmw9uD1r6K3s1EL70W/kUEf/JZ1OQrI2mL9GoGhRzjximKXa
+         Z7jMEB7d7Pxs5mzGFj+EYap8h3gQYfu7Ouxp7rIMDEw7jqBhO22rBTi2Gzpukamqfp6R
+         zxbg==
+X-Forwarded-Encrypted: i=1; AJvYcCWMYBJNBnwS+l79rSPU7Gpe54Dip0KXWNf/Kjd5IB0d8FSmv2P2o/5gCBjYFMl/X+V4bmEVF0YIg5ZoJUW7z7acw0SU8zbluedgMZRP
+X-Gm-Message-State: AOJu0Yzbdr29nypxzFJx25zcjgyIgFMYIA4dkedJ/Qt88W+uzofWzOiH
+	jLaSYelmlc6xdaAjKRePDPXl0aqj67C1CDKk0hVo68Wu39IB1RBOcyrhdKc43LQ=
+X-Google-Smtp-Source: AGHT+IEu7OpwO3vckO/49wnkxr2YfTUnYTBGWCdjP71DqCS253cvgVy9PMaQeUZjtUvZyW6xUar5CA==
+X-Received: by 2002:adf:cf0e:0:b0:33e:21e:26aa with SMTP id o14-20020adfcf0e000000b0033e021e26aamr5372090wrj.7.1709492083128;
+        Sun, 03 Mar 2024 10:54:43 -0800 (PST)
+Received: from airbuntu (host109-154-46-208.range109-154.btcentralplus.com. [109.154.46.208])
+        by smtp.gmail.com with ESMTPSA id i6-20020adfb646000000b0033e033898c5sm10221725wre.20.2024.03.03.10.54.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Mar 2024 10:54:42 -0800 (PST)
+Date: Sun, 3 Mar 2024 18:54:41 +0000
+From: Qais Yousef <qyousef@layalina.io>
+To: Shrikanth Hegde <sshegde@linux.ibm.com>
+Cc: mingo@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org,
+	yu.c.chen@intel.com, dietmar.eggemann@arm.com,
+	linux-kernel@vger.kernel.org, nysal@linux.ibm.com,
+	aboorvad@linux.ibm.com, srikar@linux.ibm.com, vschneid@redhat.com,
+	pierre.gondois@arm.com, morten.rasmussen@arm.com
+Subject: Re: [PATCH v4 2/2] sched/fair: Use helper function to access
+ rd->overutilized
+Message-ID: <20240303185441.km7c4u7yui3b5nl2@airbuntu>
+References: <20240301151725.874604-1-sshegde@linux.ibm.com>
+ <20240301151725.874604-3-sshegde@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Message-ID: <26084.50917.505942.959325@quad.stoffel.home>
-Date: Sun, 3 Mar 2024 13:52:21 -0500
-From: "John Stoffel" <john@stoffel.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org,
-    linux-fsdevel@vger.kernel.org,
-    linux-kernel@vger.kernel.org,
-    Josef Bacik <josef@toxicpanda.com>,
-    Miklos Szeredi <mszeredi@redhat.com>,
-    Christian Brauner <brauner@kernel.org>,
-    David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH] statx: stx_vol
-In-Reply-To: <20240302220203.623614-1-kent.overstreet@linux.dev>
-References: <20240302220203.623614-1-kent.overstreet@linux.dev>
-X-Mailer: VM 8.2.0b under 28.2 (x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240301151725.874604-3-sshegde@linux.ibm.com>
 
->>>>> "Kent" == Kent Overstreet <kent.overstreet@linux.dev> writes:
+On 03/01/24 20:47, Shrikanth Hegde wrote:
+> Overutilized field is accessed directly in multiple places.
+> So it could use a helper function. That way one might be more
+> informed that it needs to be used only in case of EAS.
+> 
+> No change in functionality intended.
+> 
+> Signed-off-by: Shrikanth Hegde <sshegde@linux.ibm.com>
 
-> Add a new statx field for (sub)volume identifiers.
-> This includes bcachefs support; we'll definitely want btrfs support as
-> well.
+Can we do the same for rd->overload too? A set_rd_overload_status() would be
+a nice addition too. Anyway.
 
-> Link: https://lore.kernel.org/linux-fsdevel/2uvhm6gweyl7iyyp2xpfryvcu2g3padagaeqcbiavjyiis6prl@yjm725bizncq/
-> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> Cc: Josef Bacik <josef@toxicpanda.com>
-> Cc: Miklos Szeredi <mszeredi@redhat.com>
-> Cc: Christian Brauner <brauner@kernel.org>
-> Cc: David Howells <dhowells@redhat.com>
+Reviewed-by: Qais Yousef <qyousef@layalina.io>
+
+
+Thanks!
+
+--
+Qais Yousef
+
 > ---
->  fs/bcachefs/fs.c          | 3 +++
->  fs/stat.c                 | 1 +
->  include/linux/stat.h      | 1 +
->  include/uapi/linux/stat.h | 4 +++-
->  4 files changed, 8 insertions(+), 1 deletion(-)
-
-> diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
-> index 3f073845bbd7..d82f7f3f0670 100644
-> --- a/fs/bcachefs/fs.c
-> +++ b/fs/bcachefs/fs.c
-> @@ -840,6 +840,9 @@ static int bch2_getattr(struct mnt_idmap *idmap,
-stat-> blksize	= block_bytes(c);
-stat-> blocks	= inode->v.i_blocks;
- 
-> +	stat->vol	= inode->ei_subvol;
-> +	stat->result_mask |= STATX_VOL;
-> +
->  	if (request_mask & STATX_BTIME) {
-stat-> result_mask |= STATX_BTIME;
-stat-> btime = bch2_time_to_timespec(c, inode->ei_inode.bi_otime);
-> diff --git a/fs/stat.c b/fs/stat.c
-> index 77cdc69eb422..80d5f7502d99 100644
-> --- a/fs/stat.c
-> +++ b/fs/stat.c
-> @@ -658,6 +658,7 @@ cp_statx(const struct kstat *stat, struct statx __user *buffer)
->  	tmp.stx_mnt_id = stat->mnt_id;
->  	tmp.stx_dio_mem_align = stat->dio_mem_align;
->  	tmp.stx_dio_offset_align = stat->dio_offset_align;
-> +	tmp.stx_vol = stat->vol;
-
-So this bugs me that you use subvol and vol sorta interchangeably
-here.  Shouldn't it always be 'subvol'?  It's not a seperate volume,
-it's a snapshot/whatever that is a part of the parent volume, but
-should be treated seperately. 
- 
->  	return copy_to_user(buffer, &tmp, sizeof(tmp)) ? -EFAULT : 0;
+>  kernel/sched/fair.c | 16 +++++++++++++---
+>  1 file changed, 13 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index a71f8a1506e4..650909a648d0 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -6670,6 +6670,15 @@ static inline bool cpu_overutilized(int cpu)
+>  	return !util_fits_cpu(cpu_util_cfs(cpu), rq_util_min, rq_util_max, cpu);
 >  }
-> diff --git a/include/linux/stat.h b/include/linux/stat.h
-> index 52150570d37a..9dc1b493ef1f 100644
-> --- a/include/linux/stat.h
-> +++ b/include/linux/stat.h
-> @@ -53,6 +53,7 @@ struct kstat {
->  	u32		dio_mem_align;
->  	u32		dio_offset_align;
->  	u64		change_cookie;
-> +	u64		vol;
->  };
-
-Again, should this be subvol? And comments added for what it really means?
- 
->  /* These definitions are internal to the kernel for now. Mainly used by nfsd. */
-> diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
-> index 2f2ee82d5517..ae090d67946d 100644
-> --- a/include/uapi/linux/stat.h
-> +++ b/include/uapi/linux/stat.h
-> @@ -126,8 +126,9 @@ struct statx {
->  	__u64	stx_mnt_id;
->  	__u32	stx_dio_mem_align;	/* Memory buffer alignment for direct I/O */
->  	__u32	stx_dio_offset_align;	/* File offset alignment for direct I/O */
-> +	__u64	stx_vol;	/* Subvolume identifier */
-
-Again, then call it 'stx_subvol' if that's what it is!
-
->  	/* 0xa0 */
-> -	__u64	__spare3[12];	/* Spare space for future expansion */
-> +	__u64	__spare3[11];	/* Spare space for future expansion */
->  	/* 0x100 */
->  };
- 
-> @@ -155,6 +156,7 @@ struct statx {
->  #define STATX_MNT_ID		0x00001000U	/* Got stx_mnt_id */
->  #define STATX_DIOALIGN		0x00002000U	/* Want/got direct I/O alignment info */
->  #define STATX_MNT_ID_UNIQUE	0x00004000U	/* Want/got extended stx_mount_id */
-> +#define STATX_VOL		0x00008000U	/* Want/got stx_vol */
- 
->  #define STATX__RESERVED		0x80000000U	/* Reserved for future struct statx expansion */
- 
-> -- 
-> 2.43.0
-
-
+> 
+> +/*
+> + * Ensure that caller can do EAS. overutilized value
+> + * make sense only if EAS is enabled
+> + */
+> +static inline int is_rd_overutilized(struct root_domain *rd)
+> +{
+> +	return READ_ONCE(rd->overutilized);
+> +}
+> +
+>  static inline void set_rd_overutilized_status(struct root_domain *rd,
+>  					      unsigned int status)
+>  {
+> @@ -6686,13 +6695,14 @@ static inline void check_update_overutilized_status(struct rq *rq)
+>  	if (!sched_energy_enabled())
+>  		return;
+> 
+> -	if (!READ_ONCE(rq->rd->overutilized) && cpu_overutilized(rq->cpu))
+> +	if (!is_rd_overutilized(rq->rd) && cpu_overutilized(rq->cpu))
+>  		set_rd_overutilized_status(rq->rd, SG_OVERUTILIZED);
+>  }
+>  #else
+>  static inline void check_update_overutilized_status(struct rq *rq) { }
+>  static inline void set_rd_overutilized_status(struct root_domain *rd,
+>  					      unsigned int status) { }
+> +static inline int is_rd_overutilized(struct root_domain *rd) { }
+>  #endif
+> 
+>  /* Runqueue only has SCHED_IDLE tasks enqueued */
+> @@ -7974,7 +7984,7 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
+> 
+>  	rcu_read_lock();
+>  	pd = rcu_dereference(rd->pd);
+> -	if (!pd || READ_ONCE(rd->overutilized))
+> +	if (!pd || is_rd_overutilized(rd))
+>  		goto unlock;
+> 
+>  	/*
+> @@ -10859,7 +10869,7 @@ static struct sched_group *find_busiest_group(struct lb_env *env)
+>  	if (sched_energy_enabled()) {
+>  		struct root_domain *rd = env->dst_rq->rd;
+> 
+> -		if (rcu_dereference(rd->pd) && !READ_ONCE(rd->overutilized))
+> +		if (rcu_dereference(rd->pd) && !is_rd_overutilized(rd))
+>  			goto out_balanced;
+>  	}
+> 
+> --
+> 2.39.3
+> 
 
