@@ -1,115 +1,149 @@
-Return-Path: <linux-kernel+bounces-89845-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6213A86F66C
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 18:29:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90ADD86F659
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 18:16:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 023C91F21296
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 17:29:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49DBA281A79
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 17:16:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A00476419;
-	Sun,  3 Mar 2024 17:29:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA10B76408;
+	Sun,  3 Mar 2024 17:16:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eLFejsnv"
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EzZErkQr"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56872763F0
-	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 17:29:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FDB57640A
+	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 17:16:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709486975; cv=none; b=lRXeaUGyshKtIf12vM7jJZNwxADuxTuVikD+ghF/yIfzHJBLgIQxX3kvgEnhw8Vdeg2NeYan2rSy3XNnsqJDxkJsEQxO4YVzNA2P76ddjEdHvSXsSM7JKaRJ3F+9IEfhhnlPrMkEZNo5vz17rJeWirXCMRBDaUTKLj4mrV1Ksug=
+	t=1709486164; cv=none; b=qmIpC2qOHTOxPCzTlKHcH/u2qt0cQoSV5jGXvurOffjwXBrfMWNblf5soDTX9ZctrXYBrw7rqPATuBjuE0vrSFb7atSQTvoCPibYH7/hIhTH89XKNhz3WCYJ9fTke/IoFkGc6s705FrWVUcJbFomnZj1RjbM82FVRH/kb74Ff00=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709486975; c=relaxed/simple;
-	bh=28EhC5XSpteuYd/qzCd4RcejlAoQCodh6ULXimjO9C0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=CthnpU0FzB68/XvhJyENP9I2ETqCFywHt1ugYWcIHlHKIdfhmeTJara2UX4y0mL0d1WnbCZrsT5amQSBWqL0uZ74462KKJ8tPewIrffiWguhRjo7EaHIdwVy1tp33/uJi+2/5d3PS4VrNV04nBevKyjbUCKbqrHPBBh6Eat9bVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eLFejsnv; arc=none smtp.client-ip=209.85.208.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d228a132acso47603181fa.0
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 09:29:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709486971; x=1710091771; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hkvXYX+ONENv8/j+tz0gO2keTFuryyaJ4d+HnaqfB4Y=;
-        b=eLFejsnvhJMhV2EFM6Yd0O3edreW7z2XaKVYFEgjQp+SBTyNI8QWJkqeJNPWgQYcJS
-         ROlLLZ4YnbZf+sbkKVDqEmroH8THMqQr5ODCejK4xwiBKHc84GbjG8pFBdzb8tDtyl5f
-         7rs58+jrejjBQ108CuuQVgJmy3hHHxJkeb0u9+xBSVG1TMP2jPvVqslJpX36x9f3vYXy
-         xZxP9CA8dJQvlZrTmxVfTOohhyE6nkewEttA736CjbuUdRUBM5KQVH6Ml9AqiQaWyukf
-         N72o00bVM9L6xs5xUVQ8lM1p/YJ6zrvXTnpp3Fk+X3GXdTliXdM4G0FgAqSeJuvGkAcK
-         AOUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709486971; x=1710091771;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hkvXYX+ONENv8/j+tz0gO2keTFuryyaJ4d+HnaqfB4Y=;
-        b=tv5eI6uDQdt6GFGkhhjuGNS3Bpt6y6Syr0QbZXY417lZ+pjx3bob0vBmZApHQOUz8z
-         H5g/VsPh7M+DijbMpJd+jU8EgUtLOmfU1g/n4L2YvUGA2rQkERI7e4a8id7cuTkAAZ25
-         XhJlIzZ60Gt0btGiGnYqmIBNwVFDwnt87zMBpB2KSLBUfnnTd2OqgxsevnVMJ/yVX30A
-         ZRlxNL3rVit/ovnguaf7ZUVzuZG+nJJEQD3XJ4E51uird4dSGI+xAQjZqLwhFK+6sbNy
-         qY9hPl5ipybYjD7+L7pblEo5zMaSPxI2CN0kR5BkaLN0Hs063B/XAmZy9y8GpEeKvTpV
-         HcsA==
-X-Forwarded-Encrypted: i=1; AJvYcCWRSQZQKetdTjLLlPymEupJyPzlP8lNJvZwRCp5F62JcqdIEnHAvqa8En/K1OIGlz2so5Y20A/CuSPWu9vOoK7TuGExGKsiUyxt94cy
-X-Gm-Message-State: AOJu0Yz+x9dp7hs0aV+MQF/QHFbwxtQP5nkDtNw/+VC80yJcTY7bRg44
-	P6VgVRiHpG9hhsjc43+1EXJWHqI55H32fRv7Qp36MEp6xgEcy7/Vjik+TnxCeY1umw==
-X-Google-Smtp-Source: AGHT+IHyJJ/DcrP89x+IuuSiPZW3F7228qHRaRw4qu8k4MUOA9GgO+lUlyrl6G4FeFxAdCNV4uvKaw==
-X-Received: by 2002:a2e:9018:0:b0:2d2:dfd6:8335 with SMTP id h24-20020a2e9018000000b002d2dfd68335mr4556684ljg.22.1709486971170;
-        Sun, 03 Mar 2024 09:29:31 -0800 (PST)
-Received: from ubuntu-focal.zuku.co.ke ([197.237.50.252])
-        by smtp.gmail.com with ESMTPSA id j1-20020a50ed01000000b005667629f6e1sm3695030eds.39.2024.03.03.09.29.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Mar 2024 09:29:30 -0800 (PST)
-From: Dorine Tipo <dorine.a.tipo@gmail.com>
-To: forest@alittletooquiet.net,
-	gregkh@linuxfoundation.org,
-	linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Cc: Dorine Tipo <dorine.a.tipo@gmail.com>
-Subject: [PATCH] staging: vt6655: Match parenthesis alignment
-Date: Sun,  3 Mar 2024 06:56:40 +0000
-Message-Id: <20240303065640.11651-1-dorine.a.tipo@gmail.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1709486164; c=relaxed/simple;
+	bh=qRStcwLXl2/7vDMZpOL69TpjetNulwoJj2qetC831JA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KQiYaTFb3tkPmD0gfl1gxJOAAoZnOn2nkEuq1y8vkRGmvU+gLRsXPJ5mjuKFHs/SlzbSjm6iDlex0xZXaJ3dv+lQrh4W7iEFZWEaGvSuamfvqLXeCLLT2N2Dv34nsrFODNbbHyFlO4R5Gf8JoXh1EyHy47vkhp7Vj5PMdbmWQVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EzZErkQr; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709486161; x=1741022161;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=qRStcwLXl2/7vDMZpOL69TpjetNulwoJj2qetC831JA=;
+  b=EzZErkQrgtjMW/seUOIJ9MCRLUhMACcvsBa1FUfg3YQlcsWGJssGs4CU
+   NF4tmFzNqtFBR8S/MpZf2whhc4xhPvrSPkGsPatRwVLM1xhWkqku+8YII
+   02Y60RCd2XEfUp6vmzkMnimrY2sKChTuWVakAFF+8pxLqFuHzQenET3v/
+   4rRoRKho+h1dXcZWLTdb96Vo3C2lIXatYyA8YyHu2vf3rgpwubpL8yr8d
+   z1i4F/bmEmqShnRwNREhmv4S6lRiWkd1Ybk2EcZO4M7w+9VXYdsRsh++V
+   Jn5CPWiTHKzDm6LDc1VX/f48OVhC+DEbbo5IfVBhUrH+ouUKOC+JtQRnI
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="7790968"
+X-IronPort-AV: E=Sophos;i="6.06,201,1705392000"; 
+   d="scan'208";a="7790968"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2024 09:16:01 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,201,1705392000"; 
+   d="scan'208";a="9196876"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by orviesa006.jf.intel.com with ESMTP; 03 Mar 2024 09:15:56 -0800
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rgpRJ-0001yO-2z;
+	Sun, 03 Mar 2024 17:15:53 +0000
+Date: Mon, 4 Mar 2024 01:15:17 +0800
+From: kernel test robot <lkp@intel.com>
+To: Anatoliy Klymenko <anatoliy.klymenko@amd.com>,
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Michal Simek <monstr@monstr.eu>,
+	Andrzej Hajda <andrzej.hajda@intel.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Robert Foss <rfoss@kernel.org>, Jonas Karlman <jonas@kwiboo.se>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	dri-devel@lists.freedesktop.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Anatoliy Klymenko <anatoliy.klymenko@amd.com>
+Subject: Re: [PATCH 3/4] drm: xlnx: zynqmp_dpsub: Set input live format
+Message-ID: <202403040104.mwzqu5gs-lkp@intel.com>
+References: <20240226-dp-live-fmt-v1-3-b78c3f69c9d8@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240226-dp-live-fmt-v1-3-b78c3f69c9d8@amd.com>
 
-Align parameters in static void calculate_ofdmr_parameter()
+Hi Anatoliy,
 
-This patch aligns the parameters with the opening parenthesis for better
-readability and adherence to coding style guidelines.
+kernel test robot noticed the following build warnings:
 
-Signed-off-by: Dorine Tipo <dorine.a.tipo@gmail.com>
----
- drivers/staging/vt6655/card.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+[auto build test WARNING on bfa4437fd3938ae2e186e7664b2db65bb8775670]
 
-diff --git a/drivers/staging/vt6655/card.c b/drivers/staging/vt6655/card.c
-index 36183f2a64c1..77662056c52c 100644
---- a/drivers/staging/vt6655/card.c
-+++ b/drivers/staging/vt6655/card.c
-@@ -81,9 +81,9 @@ static void vt6655_mac_set_bb_type(void __iomem *iobase, u32 mask)
-  * Return Value: none
-  */
- static void calculate_ofdmr_parameter(unsigned char rate,
--				       u8 bb_type,
--				       unsigned char *tx_rate,
--				       unsigned char *rsv_time)
-+				      u8 bb_type,
-+				      unsigned char *tx_rate,
-+				      unsigned char *rsv_time)
- {
- 	switch (rate) {
- 	case RATE_6M:
+url:    https://github.com/intel-lab-lkp/linux/commits/Anatoliy-Klymenko/drm-xlnx-zynqmp_dpsub-Set-layer-mode-during-creation/20240227-124631
+base:   bfa4437fd3938ae2e186e7664b2db65bb8775670
+patch link:    https://lore.kernel.org/r/20240226-dp-live-fmt-v1-3-b78c3f69c9d8%40amd.com
+patch subject: [PATCH 3/4] drm: xlnx: zynqmp_dpsub: Set input live format
+config: x86_64-allmodconfig (https://download.01.org/0day-ci/archive/20240304/202403040104.mwzqu5gs-lkp@intel.com/config)
+compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240304/202403040104.mwzqu5gs-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403040104.mwzqu5gs-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/gpu/drm/xlnx/zynqmp_disp.c:164: warning: Function parameter or struct member 'blend' not described in 'zynqmp_disp'
+   drivers/gpu/drm/xlnx/zynqmp_disp.c:164: warning: Function parameter or struct member 'avbuf' not described in 'zynqmp_disp'
+   drivers/gpu/drm/xlnx/zynqmp_disp.c:164: warning: Function parameter or struct member 'audio' not described in 'zynqmp_disp'
+>> drivers/gpu/drm/xlnx/zynqmp_disp.c:1019: warning: Function parameter or struct member 'bus_format' not described in 'zynqmp_disp_layer_set_live_format'
+>> drivers/gpu/drm/xlnx/zynqmp_disp.c:1019: warning: Excess function parameter 'info' description in 'zynqmp_disp_layer_set_live_format'
+
+
+vim +1019 drivers/gpu/drm/xlnx/zynqmp_disp.c
+
+  1009	
+  1010	/**
+  1011	 * zynqmp_disp_layer_set_live_format - Set live layer input format
+  1012	 * @layer: The layer
+  1013	 * @info: Input media bus format
+  1014	 *
+  1015	 * Set the live @layer input bus format. The layer must be disabled.
+  1016	 */
+  1017	void zynqmp_disp_layer_set_live_format(struct zynqmp_disp_layer *layer,
+  1018					       u32 bus_format)
+> 1019	{
+  1020		int i;
+  1021		const struct zynqmp_disp_format *fmt;
+  1022	
+  1023		for (i = 0; i < ARRAY_SIZE(avbuf_live_fmts); ++i) {
+  1024			fmt = &avbuf_live_fmts[i];
+  1025			if (fmt->bus_fmt == bus_format) {
+  1026				layer->disp_fmt = fmt;
+  1027				layer->drm_fmt = drm_format_info(fmt->drm_fmt);
+  1028				zynqmp_disp_avbuf_set_live_format(layer->disp, layer, fmt);
+  1029				return;
+  1030			}
+  1031		}
+  1032	}
+  1033	
+
 -- 
-2.25.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
