@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-89696-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89698-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 007F986F44C
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 11:15:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0AC186F451
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 11:16:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 75382B21499
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 10:15:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 336131F21647
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 10:16:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5944DBE49;
-	Sun,  3 Mar 2024 10:15:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ECFFDF4A;
+	Sun,  3 Mar 2024 10:15:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=gimli.ms.mff.cuni.cz header.i=@gimli.ms.mff.cuni.cz header.b="po16+Jx8"
+	dkim=pass (1024-bit key) header.d=gimli.ms.mff.cuni.cz header.i=@gimli.ms.mff.cuni.cz header.b="X9NhVwE2"
 Received: from nikam.ms.mff.cuni.cz (nikam.ms.mff.cuni.cz [195.113.20.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C588EB657;
-	Sun,  3 Mar 2024 10:15:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B166CB658;
+	Sun,  3 Mar 2024 10:15:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.113.20.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709460935; cv=none; b=nHY0/59oK/wKUeRLUWIhY+jrB1Kkst7ejQ3pt0JlQ7mP5Kp8boX2tyyl8QG18LDIXTQF6FKxpfHt99tVLUAyYvb5Jkfcqko1bcEuiWirLDpdSMfjSCQdQi+UqGde4UUfhvJ6cVOOXI0sjQ8q9vaTlLv04+FKuY+grYs7sC4JAd0=
+	t=1709460937; cv=none; b=L14D5+otp7rodbPdH9gy4+BSHrZ5Z9nsiS3T/iqhcyczS4imWo2rK3W5S35gzrwuDZ2SyTxaLXJ7NTGupk07FQ/8keqtNZdpjaTuKJcNsYm+Ua1i95Y+FkX1CII5geSMT73y+gezKnMCkUaBPgHLaO4tujq+4F3lACVr0zb2tvo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709460935; c=relaxed/simple;
-	bh=Ch2E7gNOECXJ9bCkUmp3zCVDkVJp8aC6si+oXHJMb80=;
+	s=arc-20240116; t=1709460937; c=relaxed/simple;
+	bh=qYGefpcXl3f4Pfc/Kw83lzaWyUs9N5xpxIFTZgylE64=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sNa+fHPSeK8Cy/7qY6gY/OFwysbaWJilJcOH2TqbnNj2a8Tdg/4UQl+hN3+bbr1sS5HuFbfic2vYQ0gvdTq9FmVQkO0AkMFZ1CC3Vkrpr7l0FDmkNogTp7RmDVIm6oL2j435z4FLliAbhi8r3l231nbsTdBhFSjoPe0VuiMGcp4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gimli.ms.mff.cuni.cz; spf=pass smtp.mailfrom=gimli.ms.mff.cuni.cz; dkim=pass (1024-bit key) header.d=gimli.ms.mff.cuni.cz header.i=@gimli.ms.mff.cuni.cz header.b=po16+Jx8; arc=none smtp.client-ip=195.113.20.16
+	 MIME-Version; b=Xgi1eCftcdFNvEt9eMQR0Uk8mzI7H1Vz+tZ1NwSL7JrsXmZJnabwUEJF3ST3jW4hSSf030tV6PsDoXcRRT+UNZCrdsQJxKi3qrNI8BYfbzuYo95WRFW21tOnEYmWgH46yeSM3UGPCyzQ0kCpsGsyD65u0nmFcuX8xaWsqT7FD3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gimli.ms.mff.cuni.cz; spf=pass smtp.mailfrom=gimli.ms.mff.cuni.cz; dkim=pass (1024-bit key) header.d=gimli.ms.mff.cuni.cz header.i=@gimli.ms.mff.cuni.cz header.b=X9NhVwE2; arc=none smtp.client-ip=195.113.20.16
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gimli.ms.mff.cuni.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gimli.ms.mff.cuni.cz
 Received: from gimli.ms.mff.cuni.cz (gimli.ms.mff.cuni.cz [195.113.20.176])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
 	(No client certificate requested)
-	by nikam.ms.mff.cuni.cz (Postfix) with ESMTPS id B1215284291;
-	Sun,  3 Mar 2024 11:15:29 +0100 (CET)
+	by nikam.ms.mff.cuni.cz (Postfix) with ESMTPS id 96C0A284292;
+	Sun,  3 Mar 2024 11:15:32 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gimli.ms.mff.cuni.cz;
-	s=gen1; t=1709460929;
+	s=gen1; t=1709460932;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=9U2dAMCkXRiskMUmdbbGYCvHSLFwoJhVBt80xaRbL80=;
-	b=po16+Jx8SGaCfLHrVmnz3BfcYJ9cfm50mFduIYmFXSL34VZ3fnVv81NDSQegZjGSQLEuNk
-	fWRq8MFNJmp+KccNu2K4nSIR9UIhFNEFhVq1dWDIrCHojEmwUsMz4PzKtRI3dOznyMqydE
-	SWgq2OAOsK71lJvtn3h1+9JE12f+MEk=
+	bh=93xzp7dCdOCuDWUdid6AjEgFhifckMgQYOe+L6wZQhI=;
+	b=X9NhVwE2osg6fHk4aLd3Bkvh4e3JicqyXc2zLlbYdGAupqSw9dDosvvnCYbRGbcAndC1Cn
+	C+GFjvMQ85HQlIFtkPXiZraIntbQW9HHADsovdPwKeolXIlEleYSC1wf8RO6h7VCdSXd+E
+	UmH4AqX9zyLjxVeVkGAnHFK+LLSEswo=
 Received: from localhost (internet5.mraknet.com [185.200.108.250])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: karelb)
-	by gimli.ms.mff.cuni.cz (Postfix) with ESMTPSA id 8B79D456F3E;
-	Sun,  3 Mar 2024 11:15:29 +0100 (CET)
+	by gimli.ms.mff.cuni.cz (Postfix) with ESMTPSA id 711DA456F3E;
+	Sun,  3 Mar 2024 11:15:32 +0100 (CET)
 From: Karel Balej <karelb@gimli.ms.mff.cuni.cz>
 To: Karel Balej <balejk@matfyz.cz>,
 	Lee Jones <lee@kernel.org>,
@@ -68,9 +68,9 @@ To: Karel Balej <balejk@matfyz.cz>,
 Cc: =?UTF-8?q?Duje=20Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
 	~postmarketos/upstreaming@lists.sr.ht,
 	phone-devel@vger.kernel.org
-Subject: [RFC PATCH v3 2/5] mfd: add driver for Marvell 88PM886 PMIC
-Date: Sun,  3 Mar 2024 11:04:23 +0100
-Message-ID: <20240303101506.4187-3-karelb@gimli.ms.mff.cuni.cz>
+Subject: [RFC PATCH v3 3/5] regulator: add regulators driver for Marvell 88PM886 PMIC
+Date: Sun,  3 Mar 2024 11:04:24 +0100
+Message-ID: <20240303101506.4187-4-karelb@gimli.ms.mff.cuni.cz>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240303101506.4187-1-karelb@gimli.ms.mff.cuni.cz>
 References: <20240303101506.4187-1-karelb@gimli.ms.mff.cuni.cz>
@@ -84,361 +84,260 @@ Content-Transfer-Encoding: 8bit
 
 From: Karel Balej <balejk@matfyz.cz>
 
-Marvell 88PM886 is a PMIC which provides various functions such as
-onkey, battery, charger and regulators. It is found for instance in the
-samsung,coreprimevelte smartphone with which this was tested.
-
-Only implement basic support to allow for the use of regulators and
-onkey omitting the currently unused register definitions and I2C
-subclients which should thus be added with the subdevice drivers which
-need them.
+Support the LDO and buck regulators of the Marvell 88PM886 PMIC.
 
 Signed-off-by: Karel Balej <balejk@matfyz.cz>
 ---
 
 Notes:
     RFC v3:
-    - Drop onkey cell .of_compatible.
-    - Rename LDO page offset and regmap to REGULATORS.
+    - Do not have a variable for each regulator -- define them all in the
+      pm886_regulators array.
+    - Use new regulators regmap index name.
+    - Use dev_err_probe.
     RFC v2:
-    - Remove some abstraction.
-    - Sort includes alphabetically and add linux/of.h.
-    - Depend on OF, remove of_match_ptr and add MODULE_DEVICE_TABLE.
-    - Use more temporaries and break long lines.
-    - Do not initialize ret in probe.
-    - Use the wakeup-source DT property.
-    - Rename ret to err.
-    - Address Lee's comments:
-      - Drop patched in presets for base regmap and related defines.
-      - Use full sentences in comments.
-      - Remove IRQ comment.
-      - Define regmap_config member values.
-      - Rename data to sys_off_data.
-      - Add _PMIC suffix to Kconfig.
-      - Use dev_err_probe.
-      - Do not store irq_data.
-      - s/WHOAMI/CHIP_ID
-      - Drop LINUX part of include guard name.
-      - Merge in the regulator series modifications in order to have more
-        devices and modify the commit message accordingly. Changes with
-        respect to the original regulator series patches:
-        - ret -> err
-        - Add temporary for dev in pm88x_initialize_subregmaps.
-        - Drop of_compatible for the regulators.
-        - Do not duplicate LDO regmap for bucks.
-    - Rewrite commit message.
+    - Drop of_compatible and related code.
+    - Drop unused include.
+    - Remove some abstraction: use only one regmap for all regulators and
+      only mention 88PM886 in Kconfig description.
+    - Reword commit message.
 
- drivers/mfd/88pm886.c       | 210 ++++++++++++++++++++++++++++++++++++
- drivers/mfd/Kconfig         |  12 +++
- drivers/mfd/Makefile        |   1 +
- include/linux/mfd/88pm886.h |  46 ++++++++
- 4 files changed, 269 insertions(+)
- create mode 100644 drivers/mfd/88pm886.c
- create mode 100644 include/linux/mfd/88pm886.h
+ drivers/regulator/88pm886-regulator.c | 195 ++++++++++++++++++++++++++
+ drivers/regulator/Kconfig             |   6 +
+ drivers/regulator/Makefile            |   1 +
+ 3 files changed, 202 insertions(+)
+ create mode 100644 drivers/regulator/88pm886-regulator.c
 
-diff --git a/drivers/mfd/88pm886.c b/drivers/mfd/88pm886.c
+diff --git a/drivers/regulator/88pm886-regulator.c b/drivers/regulator/88pm886-regulator.c
 new file mode 100644
-index 000000000000..c17220e1b7e2
+index 000000000000..73f6ce413dc3
 --- /dev/null
-+++ b/drivers/mfd/88pm886.c
-@@ -0,0 +1,210 @@
++++ b/drivers/regulator/88pm886-regulator.c
+@@ -0,0 +1,195 @@
 +// SPDX-License-Identifier: GPL-2.0-only
-+#include <linux/i2c.h>
-+#include <linux/mfd/core.h>
++#include <linux/kernel.h>
++#include <linux/linear_range.h>
 +#include <linux/module.h>
-+#include <linux/notifier.h>
 +#include <linux/of.h>
-+#include <linux/reboot.h>
 +#include <linux/regmap.h>
++#include <linux/regulator/driver.h>
++#include <linux/regulator/of_regulator.h>
 +
 +#include <linux/mfd/88pm886.h>
 +
-+#define PM886_REG_INT_STATUS1			0x05
++#define PM886_REG_LDO_EN1		0x09
++#define PM886_REG_LDO_EN2		0x0a
 +
-+#define PM886_REG_INT_ENA_1			0x0a
-+#define PM886_INT_ENA1_ONKEY			BIT(0)
++#define PM886_REG_BUCK_EN		0x08
 +
-+#define PM886_REGMAP_CONF_REG_BITS		8
-+#define PM886_REGMAP_CONF_VAL_BITS		8
-+#define PM886_REGMAP_CONF_MAX_REG		0xfe
++#define PM886_REG_LDO1_VOUT		0x20
++#define PM886_REG_LDO2_VOUT		0x26
++#define PM886_REG_LDO3_VOUT		0x2c
++#define PM886_REG_LDO4_VOUT		0x32
++#define PM886_REG_LDO5_VOUT		0x38
++#define PM886_REG_LDO6_VOUT		0x3e
++#define PM886_REG_LDO7_VOUT		0x44
++#define PM886_REG_LDO8_VOUT		0x4a
++#define PM886_REG_LDO9_VOUT		0x50
++#define PM886_REG_LDO10_VOUT		0x56
++#define PM886_REG_LDO11_VOUT		0x5c
++#define PM886_REG_LDO12_VOUT		0x62
++#define PM886_REG_LDO13_VOUT		0x68
++#define PM886_REG_LDO14_VOUT		0x6e
++#define PM886_REG_LDO15_VOUT		0x74
++#define PM886_REG_LDO16_VOUT		0x7a
 +
-+enum pm886_irq_number {
-+	PM886_IRQ_ONKEY,
++#define PM886_REG_BUCK1_VOUT		0xa5
++#define PM886_REG_BUCK2_VOUT		0xb3
++#define PM886_REG_BUCK3_VOUT		0xc1
++#define PM886_REG_BUCK4_VOUT		0xcf
++#define PM886_REG_BUCK5_VOUT		0xdd
 +
-+	PM886_MAX_IRQ
++#define PM886_LDO_VSEL_MASK		0x0f
++#define PM886_BUCK_VSEL_MASK		0x7f
++
++struct pm886_regulator {
++	struct regulator_desc desc;
++	int max_uA;
 +};
 +
-+static struct regmap_irq pm886_regmap_irqs[] = {
-+	REGMAP_IRQ_REG(PM886_IRQ_ONKEY, 0, PM886_INT_ENA1_ONKEY),
-+};
-+
-+static struct regmap_irq_chip pm886_regmap_irq_chip = {
-+	.name = "88pm886",
-+	.irqs = pm886_regmap_irqs,
-+	.num_irqs = ARRAY_SIZE(pm886_regmap_irqs),
-+	.num_regs = 4,
-+	.status_base = PM886_REG_INT_STATUS1,
-+	.ack_base = PM886_REG_INT_STATUS1,
-+	.unmask_base = PM886_REG_INT_ENA_1,
-+};
-+
-+static struct resource pm886_onkey_resources[] = {
-+	DEFINE_RES_IRQ_NAMED(PM886_IRQ_ONKEY, "88pm886-onkey"),
-+};
-+
-+static struct mfd_cell pm886_devs[] = {
-+	{
-+		.name = "88pm886-onkey",
-+		.num_resources = ARRAY_SIZE(pm886_onkey_resources),
-+		.resources = pm886_onkey_resources,
-+	},
-+	{
-+		.name = "88pm886-regulator",
-+		.id = PM886_REGULATOR_ID_LDO2,
-+	},
-+	{
-+		.name = "88pm886-regulator",
-+		.id = PM886_REGULATOR_ID_LDO15,
-+	},
-+	{
-+		.name = "88pm886-regulator",
-+		.id = PM886_REGULATOR_ID_BUCK2,
-+	},
-+};
-+
-+static const struct regmap_config pm886_i2c_regmap = {
-+	.reg_bits = PM886_REGMAP_CONF_REG_BITS,
-+	.val_bits = PM886_REGMAP_CONF_VAL_BITS,
-+	.max_register = PM886_REGMAP_CONF_MAX_REG,
-+};
-+
-+static int pm886_power_off_handler(struct sys_off_data *sys_off_data)
++static int pm886_regulator_get_ilim(struct regulator_dev *rdev)
 +{
-+	struct pm886_chip *chip = sys_off_data->cb_data;
-+	struct regmap *regmap = chip->regmaps[PM886_REGMAP_BASE];
-+	struct device *dev = &chip->client->dev;
-+	int err;
++	struct pm886_regulator *data = rdev_get_drvdata(rdev);
 +
-+	err = regmap_update_bits(regmap, PM886_REG_MISC_CONFIG1, PM886_SW_PDOWN,
-+				PM886_SW_PDOWN);
-+	if (err) {
-+		dev_err(dev, "Failed to power off the device: %d\n", err);
-+		return NOTIFY_BAD;
++	if (!data) {
++		dev_err(&rdev->dev, "Failed to get regulator data\n");
++		return -EINVAL;
 +	}
-+	return NOTIFY_DONE;
++	return data->max_uA;
 +}
 +
-+static int pm886_initialize_subregmaps(struct pm886_chip *chip)
-+{
-+	struct device *dev = &chip->client->dev;
-+	struct i2c_client *page;
-+	struct regmap *regmap;
-+	int err;
++static const struct regulator_ops pm886_ldo_ops = {
++	.list_voltage = regulator_list_voltage_table,
++	.map_voltage = regulator_map_voltage_iterate,
++	.set_voltage_sel = regulator_set_voltage_sel_regmap,
++	.get_voltage_sel = regulator_get_voltage_sel_regmap,
++	.enable = regulator_enable_regmap,
++	.disable = regulator_disable_regmap,
++	.is_enabled = regulator_is_enabled_regmap,
++	.get_current_limit = pm886_regulator_get_ilim,
++};
 +
-+	/* regulators page */
-+	page = devm_i2c_new_dummy_device(dev, chip->client->adapter,
-+				chip->client->addr + PM886_PAGE_OFFSET_REGULATORS);
-+	if (IS_ERR(page)) {
-+		err = PTR_ERR(page);
-+		dev_err(dev, "Failed to initialize regulators client: %d\n", err);
-+		return err;
-+	}
-+	regmap = devm_regmap_init_i2c(page, &pm886_i2c_regmap);
-+	if (IS_ERR(regmap)) {
-+		err = PTR_ERR(regmap);
-+		dev_err(dev, "Failed to initialize regulators regmap: %d\n", err);
-+		return err;
-+	}
-+	chip->regmaps[PM886_REGMAP_REGULATORS] = regmap;
++static const struct regulator_ops pm886_buck_ops = {
++	.list_voltage = regulator_list_voltage_linear_range,
++	.map_voltage = regulator_map_voltage_linear_range,
++	.set_voltage_sel = regulator_set_voltage_sel_regmap,
++	.get_voltage_sel = regulator_get_voltage_sel_regmap,
++	.enable = regulator_enable_regmap,
++	.disable = regulator_disable_regmap,
++	.is_enabled = regulator_is_enabled_regmap,
++	.get_current_limit = pm886_regulator_get_ilim,
++};
++
++static const unsigned int pm886_ldo_volt_table1[] = {
++	1700000, 1800000, 1900000, 2500000, 2800000, 2900000, 3100000, 3300000,
++};
++
++static const unsigned int pm886_ldo_volt_table2[] = {
++	1200000, 1250000, 1700000, 1800000, 1850000, 1900000, 2500000, 2600000,
++	2700000, 2750000, 2800000, 2850000, 2900000, 3000000, 3100000, 3300000,
++};
++
++static const unsigned int pm886_ldo_volt_table3[] = {
++	1700000, 1800000, 1900000, 2000000, 2100000, 2500000, 2700000, 2800000,
++};
++
++static const struct linear_range pm886_buck_volt_ranges1[] = {
++	REGULATOR_LINEAR_RANGE(600000, 0, 79, 12500),
++	REGULATOR_LINEAR_RANGE(1600000, 80, 84, 50000),
++};
++
++static const struct linear_range pm886_buck_volt_ranges2[] = {
++	REGULATOR_LINEAR_RANGE(600000, 0, 79, 12500),
++	REGULATOR_LINEAR_RANGE(1600000, 80, 114, 50000),
++};
++
++static struct pm886_regulator pm886_regulators[] = {
++	[PM886_REGULATOR_ID_LDO2] = {
++		.desc = {
++			.name = "LDO2",
++			.id = PM886_REGULATOR_ID_LDO2,
++			.regulators_node = "regulators",
++			.of_match = "ldo2",
++			.ops = &pm886_ldo_ops,
++			.type = REGULATOR_VOLTAGE,
++			.enable_reg = PM886_REG_LDO_EN1,
++			.enable_mask = BIT(1),
++			.volt_table = pm886_ldo_volt_table1,
++			.n_voltages = ARRAY_SIZE(pm886_ldo_volt_table1),
++			.vsel_reg = PM886_REG_LDO2_VOUT,
++			.vsel_mask = PM886_LDO_VSEL_MASK,
++		},
++		.max_uA = 100000,
++	},
++	[PM886_REGULATOR_ID_LDO15] = {
++		.desc = {
++			.name = "LDO15",
++			.id = PM886_REGULATOR_ID_LDO15,
++			.regulators_node = "regulators",
++			.of_match = "ldo15",
++			.ops = &pm886_ldo_ops,
++			.type = REGULATOR_VOLTAGE,
++			.enable_reg = PM886_REG_LDO_EN2,
++			.enable_mask = BIT(6),
++			.volt_table = pm886_ldo_volt_table2,
++			.n_voltages = ARRAY_SIZE(pm886_ldo_volt_table2),
++			.vsel_reg = PM886_REG_LDO15_VOUT,
++			.vsel_mask = PM886_LDO_VSEL_MASK,
++		},
++		.max_uA = 200000,
++	},
++	[PM886_REGULATOR_ID_BUCK2] = {
++		.desc = {
++			.name = "buck2",
++			.id = PM886_REGULATOR_ID_BUCK2,
++			.regulators_node = "regulators",
++			.of_match = "buck2",
++			.ops = &pm886_buck_ops,
++			.type = REGULATOR_VOLTAGE,
++			.n_voltages = 115,
++			.linear_ranges = pm886_buck_volt_ranges2,
++			.n_linear_ranges = ARRAY_SIZE(pm886_buck_volt_ranges2),
++			.vsel_reg = PM886_REG_BUCK2_VOUT,
++			.vsel_mask = PM886_BUCK_VSEL_MASK,
++			.enable_reg = PM886_REG_BUCK_EN,
++			.enable_mask = BIT(1),
++		},
++		.max_uA = 1200000,
++	},
++};
++
++static int pm886_regulator_probe(struct platform_device *pdev)
++{
++	struct pm886_chip *chip = dev_get_drvdata(pdev->dev.parent);
++	struct regulator_config rcfg = { };
++	struct pm886_regulator *regulator;
++	struct device *dev = &pdev->dev;
++	struct regulator_desc *rdesc;
++	struct regulator_dev *rdev;
++
++	if (pdev->id < 0 || pdev->id >= PM886_REGULATOR_ID_SENTINEL)
++		return dev_err_probe(dev, -EINVAL, "Invalid regulator ID: %d\n",
++									pdev->id);
++
++	rcfg.dev = dev->parent;
++	regulator = &pm886_regulators[pdev->id];
++	rdesc = &regulator->desc;
++	rcfg.driver_data = regulator;
++	rcfg.regmap = chip->regmaps[PM886_REGMAP_REGULATORS];
++	rdev = devm_regulator_register(dev, rdesc, &rcfg);
++	if (IS_ERR(rdev))
++		return dev_err_probe(dev, PTR_ERR(rdev), "Failed to register %s",
++								rdesc->name);
 +
 +	return 0;
 +}
 +
-+static int pm886_setup_irq(struct pm886_chip *chip,
-+		struct regmap_irq_chip_data **irq_data)
-+{
-+	struct regmap *regmap = chip->regmaps[PM886_REGMAP_BASE];
-+	struct device *dev = &chip->client->dev;
-+	int err;
-+
-+	/* Set interrupt clearing mode to clear on write. */
-+	err = regmap_update_bits(regmap, PM886_REG_MISC_CONFIG2,
-+			PM886_INT_INV | PM886_INT_CLEAR | PM886_INT_MASK_MODE,
-+			PM886_INT_WC);
-+	if (err) {
-+		dev_err(dev, "Failed to set interrupt clearing mode: %d\n", err);
-+		return err;
-+	}
-+
-+	err = devm_regmap_add_irq_chip(dev, regmap, chip->client->irq,
-+					IRQF_ONESHOT, -1, &pm886_regmap_irq_chip,
-+					irq_data);
-+	if (err) {
-+		dev_err(dev, "Failed to request IRQ: %d\n", err);
-+		return err;
-+	}
-+
-+	return 0;
-+}
-+
-+static int pm886_probe(struct i2c_client *client)
-+{
-+	struct regmap_irq_chip_data *irq_data;
-+	struct device *dev = &client->dev;
-+	struct pm886_chip *chip;
-+	struct regmap *regmap;
-+	unsigned int chip_id;
-+	int err;
-+
-+	chip = devm_kzalloc(dev, sizeof(*chip), GFP_KERNEL);
-+	if (!chip)
-+		return -ENOMEM;
-+
-+	chip->client = client;
-+	chip->whoami = (uintptr_t)device_get_match_data(dev);
-+	i2c_set_clientdata(client, chip);
-+
-+	regmap = devm_regmap_init_i2c(client, &pm886_i2c_regmap);
-+	if (IS_ERR(regmap)) {
-+		err = PTR_ERR(regmap);
-+		return dev_err_probe(dev, err, "Failed to initialize regmap\n");
-+	}
-+	chip->regmaps[PM886_REGMAP_BASE] = regmap;
-+
-+	err = regmap_read(regmap, PM886_REG_ID, &chip_id);
-+	if (err)
-+		return dev_err_probe(dev, err, "Failed to read chip ID\n");
-+	if (chip->whoami != chip_id)
-+		return dev_err_probe(dev, -EINVAL, "Device reported wrong chip ID: %u\n",
-+					chip_id);
-+
-+	err = pm886_initialize_subregmaps(chip);
-+	if (err)
-+		return err;
-+
-+	err = pm886_setup_irq(chip, &irq_data);
-+	if (err)
-+		return err;
-+
-+	err = devm_mfd_add_devices(dev, 0, pm886_devs, ARRAY_SIZE(pm886_devs),
-+				NULL, 0, regmap_irq_get_domain(irq_data));
-+	if (err)
-+		return dev_err_probe(dev, err, "Failed to add devices\n");
-+
-+	err = devm_register_power_off_handler(dev, pm886_power_off_handler, chip);
-+	if (err)
-+		return dev_err_probe(dev, err, "Failed to register power off handler\n");
-+
-+	device_init_wakeup(dev, device_property_read_bool(dev, "wakeup-source"));
-+
-+	return 0;
-+}
-+
-+const struct of_device_id pm886_of_match[] = {
-+	{ .compatible = "marvell,88pm886-a1", .data = (void *)PM886_A1_CHIP_ID },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, pm886_of_match);
-+
-+static struct i2c_driver pm886_i2c_driver = {
++static struct platform_driver pm886_regulator_driver = {
 +	.driver = {
-+		.name = "88pm886",
-+		.of_match_table = pm886_of_match,
++		.name = "88pm886-regulator",
 +	},
-+	.probe = pm886_probe,
++	.probe = pm886_regulator_probe,
 +};
-+module_i2c_driver(pm886_i2c_driver);
++module_platform_driver(pm886_regulator_driver);
 +
-+MODULE_DESCRIPTION("Marvell 88PM886 PMIC driver");
++MODULE_DESCRIPTION("Marvell 88PM886 PMIC regulator driver");
 +MODULE_AUTHOR("Karel Balej <balejk@matfyz.cz>");
 +MODULE_LICENSE("GPL");
-diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index e7a6e45b9fac..9ef921c59f30 100644
---- a/drivers/mfd/Kconfig
-+++ b/drivers/mfd/Kconfig
-@@ -794,6 +794,18 @@ config MFD_88PM860X
- 	  select individual components like voltage regulators, RTC and
- 	  battery-charger under the corresponding menus.
+diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
+index 550145f82726..e8f504d4b9f6 100644
+--- a/drivers/regulator/Kconfig
++++ b/drivers/regulator/Kconfig
+@@ -91,6 +91,12 @@ config REGULATOR_88PM8607
+ 	help
+ 	  This driver supports 88PM8607 voltage regulator chips.
  
-+config MFD_88PM886_PMIC
-+	bool "Marvell 88PM886 PMIC"
-+	depends on I2C=y
-+	depends on OF
-+	select REGMAP_I2C
-+	select REGMAP_IRQ
-+	select MFD_CORE
++config REGULATOR_88PM886
++	tristate "Marvell 88PM886 voltage regulators"
++	depends on MFD_88PM886_PMIC
 +	help
-+	  This enables support for Marvell 88PM886 Power Management IC.
-+	  This includes the I2C driver and the core APIs _only_, you have to
-+	  select individual components like onkey under the corresponding menus.
++	  This driver implements support for Marvell 88PM886 voltage regulators.
 +
- config MFD_MAX14577
- 	tristate "Maxim Semiconductor MAX14577/77836 MUIC + Charger Support"
+ config REGULATOR_ACT8865
+ 	tristate "Active-semi act8865 voltage regulator"
  	depends on I2C
-diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-index c66f07edcd0e..d016b7fed354 100644
---- a/drivers/mfd/Makefile
-+++ b/drivers/mfd/Makefile
-@@ -7,6 +7,7 @@
- obj-$(CONFIG_MFD_88PM860X)	+= 88pm860x.o
- obj-$(CONFIG_MFD_88PM800)	+= 88pm800.o 88pm80x.o
- obj-$(CONFIG_MFD_88PM805)	+= 88pm805.o 88pm80x.o
-+obj-$(CONFIG_MFD_88PM886_PMIC)	+= 88pm886.o
- obj-$(CONFIG_MFD_ACT8945A)	+= act8945a.o
- obj-$(CONFIG_MFD_SM501)		+= sm501.o
- obj-$(CONFIG_ARCH_BCM2835)	+= bcm2835-pm.o
-diff --git a/include/linux/mfd/88pm886.h b/include/linux/mfd/88pm886.h
-new file mode 100644
-index 000000000000..c7527bab0fba
---- /dev/null
-+++ b/include/linux/mfd/88pm886.h
-@@ -0,0 +1,46 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+#ifndef __MFD_88PM886_H
-+#define __MFD_88PM886_H
-+
-+#include <linux/mfd/core.h>
-+
-+#define PM886_A1_CHIP_ID		0xa1
-+
-+#define PM886_REG_ID			0x00
-+
-+#define PM886_REG_STATUS1		0x01
-+#define PM886_ONKEY_STS1		BIT(0)
-+
-+#define PM886_REG_MISC_CONFIG1		0x14
-+#define PM886_SW_PDOWN			BIT(5)
-+
-+#define PM886_REG_MISC_CONFIG2		0x15
-+#define PM886_INT_INV			BIT(0)
-+#define PM886_INT_CLEAR			BIT(1)
-+#define PM886_INT_RC			0x00
-+#define PM886_INT_WC			BIT(1)
-+#define PM886_INT_MASK_MODE		BIT(2)
-+
-+#define PM886_PAGE_OFFSET_REGULATORS	1
-+
-+enum pm886_regulator_id {
-+	PM886_REGULATOR_ID_LDO2,
-+	PM886_REGULATOR_ID_LDO15,
-+	PM886_REGULATOR_ID_BUCK2,
-+
-+	PM886_REGULATOR_ID_SENTINEL
-+};
-+
-+enum pm886_regmap_index {
-+	PM886_REGMAP_BASE,
-+	PM886_REGMAP_REGULATORS,
-+
-+	PM886_REGMAP_NR
-+};
-+
-+struct pm886_chip {
-+	struct i2c_client *client;
-+	unsigned int whoami;
-+	struct regmap *regmaps[PM886_REGMAP_NR];
-+};
-+#endif /* __MFD_88PM886_H */
+diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
+index 46fb569e6be8..f30089b74b2e 100644
+--- a/drivers/regulator/Makefile
++++ b/drivers/regulator/Makefile
+@@ -14,6 +14,7 @@ obj-$(CONFIG_REGULATOR_USERSPACE_CONSUMER) += userspace-consumer.o
+ obj-$(CONFIG_REGULATOR_88PG86X) += 88pg86x.o
+ obj-$(CONFIG_REGULATOR_88PM800) += 88pm800-regulator.o
+ obj-$(CONFIG_REGULATOR_88PM8607) += 88pm8607.o
++obj-$(CONFIG_REGULATOR_88PM886) += 88pm886-regulator.o
+ obj-$(CONFIG_REGULATOR_CROS_EC) += cros-ec-regulator.o
+ obj-$(CONFIG_REGULATOR_CPCAP) += cpcap-regulator.o
+ obj-$(CONFIG_REGULATOR_AAT2870) += aat2870-regulator.o
 -- 
 2.44.0
 
