@@ -1,70 +1,60 @@
-Return-Path: <linux-kernel+bounces-89923-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89924-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34CE486F758
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 23:03:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6798886F75C
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 23:10:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 981E21F2116F
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 22:03:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD264281229
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 22:10:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1380A7A718;
-	Sun,  3 Mar 2024 22:03:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FA127A709;
+	Sun,  3 Mar 2024 22:10:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UvufBnHj"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="UG1mG1Hs"
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CBB679DB7
-	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 22:03:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EDD143AB5;
+	Sun,  3 Mar 2024 22:10:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709503401; cv=none; b=oqOkdczKsqqYAzgVFvQfth7t9pAUgqh914m4PaDsL3dd7dWsicu3De8GuB4BHaa4n3g0vf8V3GnTGAHt+RZKvB4qjKiK3PGb+zikv5SB8RqsJlvoX2BLWuw5mDCx7ZQxWc1tao9O6n6lEwoWhZukk3x8y0DbKYdSY0aYpF+6/Ek=
+	t=1709503830; cv=none; b=FhGT2xMS3g3skGgMgVj0Wkiw4mPdt78EImRZ5nsl6/LZVBKkWPHKfMUGixyXNjWgeEZZsGg/04FwaAU+albJdk7suY2uo3VLsqtXsgetOjY4Ox9mQBetAyHtyg+eqTtSiGxKLysj/qBErKQ+xFh6/opheJflZ7ACUbtjHNEN6RM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709503401; c=relaxed/simple;
-	bh=404hrQkFSafNGGqfuGVD2td27gUerFRf+a20Dy8mPwE=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=ltLF5WSKuMRqegJm7TMDwPtmdesetdlQJwYXLCLefzjJ0ibknYryC2YCEY+PMXIksajQS2O0cton9yCLA8q2WiHzw3CzDw2GxTT243dbunyVo7j0X0EBC8YeW8Ztb+SHAsCw7j4RZXAwGQj31u5vHxY2vERk3zP4BMFDFFzxhf4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UvufBnHj; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709503398; x=1741039398;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=404hrQkFSafNGGqfuGVD2td27gUerFRf+a20Dy8mPwE=;
-  b=UvufBnHjHXfXZOwuPTGbiDSsE2dnsAic9o0EQHAtomjCMT0ZjAho+AiT
-   5WQo8yNM6MpKblVnpDxS32eTULTqfGdg3Uzw4cPLnJcF6ueYaOENgt4qD
-   PGAe8nfQ7rI0zeGdgDa1wtK4S0fC3altLWEJMsuhqOsQipPypTWUlITYY
-   r49Mu9GzhDCIFqMbhmEpzVdUeRRgMwfKW4ZI53svynsDVeanrey/MI8BU
-   /XHU+1r7/mvuFTvvGRK6+WVxar9zy0kQi/1ghHKcBfYlBlAICCQHBfMGP
-   svIMh1+rW/sU3RkYjeFUQjQHVq/wqB//4Zo52NkqBLHYkXL1LxHirjqbv
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="7801008"
-X-IronPort-AV: E=Sophos;i="6.06,201,1705392000"; 
-   d="scan'208";a="7801008"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2024 14:03:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,201,1705392000"; 
-   d="scan'208";a="39635552"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by orviesa002.jf.intel.com with ESMTP; 03 Mar 2024 14:03:16 -0800
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rgtvO-00028K-0n;
-	Sun, 03 Mar 2024 22:03:14 +0000
-Date: Mon, 4 Mar 2024 06:02:08 +0800
-From: kernel test robot <lkp@intel.com>
-To: Jing Cai <jing.cai@mediatek.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	s=arc-20240116; t=1709503830; c=relaxed/simple;
+	bh=VAh4dIkTENU2/QEjIcjwE+UuoxnSUGcJoPqGUDx5MCc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YyH6nHowzT2uhUIJLJ2V5mdSqTDV7sJ8sLNselTEGt1AI/z+De1UL0sFKJyYR3MyDzTaLMFfx0ZIXLWvJDKJzEBLGm+dWZ73vQ4Plt3r/mvSLo92fyKt084mJS+vaHdj4RBP3u0U7q9x44mi0UYhNwA/2OdANUrIy8Dj/K7tq7Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=UG1mG1Hs; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=0g5zoVT+JVW02GwsTEDCm7DmiF1qRMx3Unb0+lN7s4c=; b=UG1mG1HsZor8kvPgUKPIAi3Dsx
+	ytA6TJVPQOsJZSxzVIrKu2ZwVYh3Plp8NRL9ZDnpJInBen1kxyXw/BQWWU+d/N6BBfgriWQCRDrS+
+	kJ7fF7YJyIk8lZ2IZYtPg/xsgDCL0TEfbAAIV2z2avyiG2AGeyutPjVvRCEgCcP2oUjW09tIDxtXe
+	ya0rgkq5N0PQvthdHeegJcveWc85bJZBfYmwGj+nJ3exIxKlT8laS0MlPT8wJ+gW0w3xVavZYFBNK
+	ftPQfPvSy6OQ8Wph7eUzAprdMvcl+4ylrDWFmEkUVHI3n8TpK33bDd+OZBWxESZddtiZiDrUU1L3N
+	YYUyqtsw==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1rgu2D-002GxX-0S;
+	Sun, 03 Mar 2024 22:10:17 +0000
+Date: Sun, 3 Mar 2024 22:10:17 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: kernel test robot <lkp@intel.com>
+Cc: Jing Cai <jing.cai@mediatek.com>, oe-kbuild-all@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
 	Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
 	Chris Lu <chris.lu@mediatek.com>,
 	Sean Wang <sean.wang@mediatek.com>
-Subject: WARNING: modpost: "strcpy" [drivers/bluetooth/btmtk.ko] has no CRC!
-Message-ID: <202403040552.0iyr20St-lkp@intel.com>
+Subject: Re: WARNING: modpost: "strcpy" [drivers/bluetooth/btmtk.ko] has no
+ CRC!
+Message-ID: <20240303221017.GB524366@ZenIV>
+References: <202403040552.0iyr20St-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,132 +63,109 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <202403040552.0iyr20St-lkp@intel.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   58c806d867bf265c6fd16fc3bc62e2d3c156b5c9
-commit: 0b70151328781a89c89e4cf3fae21fc0e98d869e Bluetooth: btusb: mediatek: add MediaTek devcoredump support
-date:   7 months ago
-config: alpha-buildonly-randconfig-r004-20220321 (https://download.01.org/0day-ci/archive/20240304/202403040552.0iyr20St-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240304/202403040552.0iyr20St-lkp@intel.com/reproduce)
+On Mon, Mar 04, 2024 at 06:02:08AM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   58c806d867bf265c6fd16fc3bc62e2d3c156b5c9
+> commit: 0b70151328781a89c89e4cf3fae21fc0e98d869e Bluetooth: btusb: mediatek: add MediaTek devcoredump support
+> date:   7 months ago
+> config: alpha-buildonly-randconfig-r004-20220321 (https://download.01.org/0day-ci/archive/20240304/202403040552.0iyr20St-lkp@intel.com/config)
+> compiler: alpha-linux-gcc (GCC) 13.2.0
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240304/202403040552.0iyr20St-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202403040552.0iyr20St-lkp@intel.com/
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403040552.0iyr20St-lkp@intel.com/
+commit 8a4a2705ed98c33c2ad5f3e504efe2d379cf72d7
+Author: Al Viro <viro@zeniv.linux.org.uk>
+Date:   Mon Dec 18 22:59:26 2023 -0500
 
-All warnings (new ones prefixed by >>, old ones prefixed by <<):
+    alpha: fix modversions for strcpy() et.al.
+    
+            On alpha str{n,}{cpy,cat}() implementations are playing
+    fun games with shared chunks of code.  The problem is, they are
+    using direct branches and need to be next to each other.
+            Currently it's done by building them in separate object
+    files, then using ld -r to link those together.  Unfortunately,
+    genksyms machinery has no idea what to do with that - we have
+    generated in arch/alpha/lib/.strcat.S.cmd, but there's nothing
+    to propagate that into .stycpy.S.cmd, so modpost doesn't find
+    anything for those symbols, resulting in
+    WARNING: modpost: EXPORT symbol "strcpy" [vmlinux] version generation failed, symbol will not be versioned.
+    Is "strcpy" prototyped in <asm/asm-prototypes.h>?
+    WARNING: modpost: EXPORT symbol "strcat" [vmlinux] version generation failed, symbol will not be versioned.
+    Is "strcat" prototyped in <asm/asm-prototypes.h>?
+    WARNING: modpost: EXPORT symbol "strncpy" [vmlinux] version generation failed, symbol will not be versioned.
+    Is "strncpy" prototyped in <asm/asm-prototypes.h>?
+    WARNING: modpost: EXPORT symbol "strncat" [vmlinux] version generation failed, symbol will not be versioned.
+    Is "strncat" prototyped in <asm/asm-prototypes.h>?
+    spew on modversion-enabled builds (all 4 functions in question
+    are in fact prototyped in asm-prototypes.h)
+    
+            Fixing doesn't require messing with kbuild, thankfully -
+    just build one object (i.e. have sty{n,}cpy.S with includes of relevant
+    *.S instead of playing with ld -r) and that's it.
+    
+    Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 
-WARNING: modpost: "strncpy" [security/keys/encrypted-keys/encrypted-keys.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/video/fbdev/sis/sisfb.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/video/fbdev/s3fb.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/video/fbdev/arkfb.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/video/fbdev/mmp/fb/mmpfb.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/regulator/virtual.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/misc/ti-st/st_drv.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/misc/ics932s401.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/misc/lkdtm/lkdtm.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/misc/apds9802als.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/scsi/scsi_transport_fc.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/scsi/libfc/libfc.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/scsi/libfc/libfc.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/scsi/qla2xxx/qla2xxx.ko] has no CRC!
-WARNING: modpost: "strcat" [drivers/scsi/qla2xxx/qla2xxx.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/scsi/qla4xxx/qla4xxx.ko] has no CRC!
-WARNING: modpost: "strcat" [drivers/scsi/qla4xxx/qla4xxx.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/scsi/qla4xxx/qla4xxx.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/scsi/bfa/bfa.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/scsi/smartpqi/smartpqi.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/scsi/mpt3sas/mpt3sas.ko] has no CRC!
-WARNING: modpost: "strcat" [drivers/scsi/mpt3sas/mpt3sas.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/scsi/mpt3sas/mpt3sas.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/scsi/atp870u.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/scsi/bnx2i/bnx2i.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/scsi/qedi/qedi.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/nvme/host/nvme-fabrics.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/nvme/host/nvme-fc.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/net/ethernet/aquantia/atlantic/atlantic.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/net/ethernet/broadcom/bnx2.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/net/ethernet/broadcom/bnx2x/bnx2x.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/net/ethernet/broadcom/tg3.ko] has no CRC!
-WARNING: modpost: "strcat" [drivers/net/ethernet/broadcom/tg3.ko] has no CRC!
-WARNING: modpost: "strncat" [drivers/net/ethernet/broadcom/tg3.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/net/ethernet/broadcom/bnxt/bnxt_en.ko] has no CRC!
-WARNING: modpost: "strncat" [drivers/net/ethernet/broadcom/bnxt/bnxt_en.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/net/ethernet/chelsio/cxgb4/cxgb4.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/net/ethernet/cortina/gemini.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/net/ethernet/intel/e100.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/net/ethernet/intel/e100.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/net/ethernet/intel/e1000/e1000.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/net/ethernet/intel/e1000/e1000.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/net/ethernet/intel/igb/igb.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/net/ethernet/intel/igb/igb.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/net/ethernet/intel/ixgbe/ixgbe.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/net/ethernet/intel/iavf/iavf.ko] has no CRC!
-WARNING: modpost: "strcat" [drivers/net/ethernet/intel/iavf/iavf.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/net/ethernet/intel/fm10k/fm10k.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.ko] has no CRC!
-WARNING: modpost: "strcat" [drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.ko] has no CRC!
-WARNING: modpost: "strncat" [drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/net/ethernet/qlogic/qede/qede.ko] has no CRC!
-WARNING: modpost: "strcat" [drivers/message/fusion/mptbase.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/message/fusion/mptbase.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/message/fusion/mptctl.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/cdrom/cdrom.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/auxdisplay/panel.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/input/touchscreen/sun4i-ts.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/i2c/busses/i2c-at91.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/i2c/busses/i2c-jz4780.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/i3c/i3c.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/i3c/i3c.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/media/rc/rc-core.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/w1/slaves/w1_therm.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/w1/slaves/w1_ds28e17.ko] has no CRC!
-WARNING: modpost: "strcat" [drivers/w1/slaves/w1_ds28e17.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/power/supply/wm831x_backup.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/power/supply/charger-manager.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/power/supply/bq2415x_charger.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/power/supply/bq256xx_charger.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/hwmon/f71882fg.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/hwmon/amc6821.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/hwmon/thmc50.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/hwmon/pmbus/pmbus_core.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/isdn/mISDN/mISDN_core.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/isdn/mISDN/mISDN_core.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/mmc/core/mmc_core.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/mmc/core/mmc_block.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/leds/led-class-multicolor.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/leds/leds-bd2802.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/leds/leds-lm3530.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/leds/leds-lp3952.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/leds/leds-lp5521.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/leds/leds-lp5523.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/leds/leds-wm831x-status.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/hid/hid.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/hid/hid-wiimote.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/rpmsg/rpmsg_ns.ko] has no CRC!
-WARNING: modpost: "strncpy" [drivers/rpmsg/virtio_rpmsg_bus.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/devfreq/governor_userspace.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/memory/brcmstb_dpfe.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/perf/arm_smmuv3_pmu.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/perf/marvell_cn10k_tad_pmu.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/hwtracing/intel_th/intel_th.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/hwtracing/intel_th/intel_th_gth.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/hwtracing/stm/stm_console.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/fpga/dfl-fme.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/ata/libata.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/bluetooth/hci_vhci.ko] has no CRC!
->> WARNING: modpost: "strcpy" [drivers/bluetooth/btmtk.ko] has no CRC!
-WARNING: modpost: "strcpy" [drivers/soundwire/soundwire-bus.ko] has no CRC!
-WARNING: modpost: "strcpy" [net/x25/x25.ko] has no CRC!
-WARNING: modpost: "strcpy" [net/can/can-bcm.ko] has no CRC!
-WARNING: modpost: "strcpy" [net/bluetooth/bluetooth.ko] has no CRC!
-WARNING: modpost: "strcpy" [net/9p/9pnet_fd.ko] has no CRC!
-WARNING: modpost: "strcpy" [net/caif/caif.ko] has no CRC!
-WARNING: modpost: "strncpy" [net/caif/chnl_net.ko] has no CRC!
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+diff --git a/arch/alpha/lib/Makefile b/arch/alpha/lib/Makefile
+index 6a779b9018fd..84046e730e6d 100644
+--- a/arch/alpha/lib/Makefile
++++ b/arch/alpha/lib/Makefile
+@@ -44,17 +44,3 @@ AFLAGS___remlu.o =       -DREM -DINTSIZE
+ $(addprefix $(obj)/,__divqu.o __remqu.o __divlu.o __remlu.o): \
+ 						$(src)/$(ev6-y)divide.S FORCE
+ 	$(call if_changed_rule,as_o_S)
+-
+-# There are direct branches between {str*cpy,str*cat} and stx*cpy.
+-# Ensure the branches are within range by merging these objects.
+-
+-LDFLAGS_stycpy.o := -r
+-LDFLAGS_styncpy.o := -r
+-
+-$(obj)/stycpy.o: $(obj)/strcpy.o $(obj)/$(ev67-y)strcat.o \
+-		 $(obj)/$(ev6-y)stxcpy.o FORCE
+-	$(call if_changed,ld)
+-
+-$(obj)/styncpy.o: $(obj)/strncpy.o $(obj)/$(ev67-y)strncat.o \
+-		 $(obj)/$(ev6-y)stxncpy.o FORCE
+-	$(call if_changed,ld)
+diff --git a/arch/alpha/lib/stycpy.S b/arch/alpha/lib/stycpy.S
+new file mode 100644
+index 000000000000..32ecd9c5f90d
+--- /dev/null
++++ b/arch/alpha/lib/stycpy.S
+@@ -0,0 +1,11 @@
++#include "strcpy.S"
++#ifdef CONFIG_ALPHA_EV67
++#include "ev67-strcat.S"
++#else
++#include "strcat.S"
++#endif
++#ifdef CONFIG_ALPHA_EV6
++#include "ev6-stxcpy.S"
++#else
++#include "stxcpy.S"
++#endif
+diff --git a/arch/alpha/lib/styncpy.S b/arch/alpha/lib/styncpy.S
+new file mode 100644
+index 000000000000..72fc2754eb57
+--- /dev/null
++++ b/arch/alpha/lib/styncpy.S
+@@ -0,0 +1,11 @@
++#include "strncpy.S"
++#ifdef CONFIG_ALPHA_EV67
++#include "ev67-strncat.S"
++#else
++#include "strncat.S"
++#endif
++#ifdef CONFIG_ALPHA_EV6
++#include "ev6-stxncpy.S"
++#else
++#include "stxncpy.S"
++#endif
 
