@@ -1,120 +1,203 @@
-Return-Path: <linux-kernel+bounces-89668-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89669-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F96886F3F3
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 08:54:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E0B386F3F6
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 08:55:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56554283D03
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 07:54:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B05C1C20F9E
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 07:55:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DAF69470;
-	Sun,  3 Mar 2024 07:53:55 +0000 (UTC)
-Received: from sgoci-sdnproxy-4.icoremail.net (sgoci-sdnproxy-4.icoremail.net [129.150.39.64])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AE6C8F5D
-	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 07:53:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.150.39.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC11BB642;
+	Sun,  3 Mar 2024 07:55:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="pJJsykrt"
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E762CAD22
+	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 07:55:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709452434; cv=none; b=RnV/1wsvESA6txcPQF6TF6IBu2oakjM/xvu0UNAj2/HN2VUeyjkr2AE4vWPQzwRiF55WzKjEM7Mf8u2Nl23fZZTZLt0hJrzasYaSI74Nkdk2e15Jzr2hp0NXO0DlYr2Le2GzpqnBJpv4mCR0eR9McrXzDjqjykW3eSkNFI+aFss=
+	t=1709452517; cv=none; b=GjrjCllMT21BxkRe258wtMTWGi1c5io+/Cm8EolOfsJw0N8GOJhSV1hDb78cYnPPDRcG02rguJ9RTVev2asc4V6UT/J/3I19NBh+Z0xlaTprR4KfC93G5Uhpu2gjZUeaFokQ3Z2igAV9E21X+EwUXTvUzmbT78+f3jrfNNHI4fU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709452434; c=relaxed/simple;
-	bh=aJE/J1OJ5ZDl2zz2vpXR98OO8kPY5m2SyXGulSjHoUk=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=Fsq5qlaeu0pp9LRRL+Sn/U3e+e3I6DW02EsXtV/hrnBLjIeWEDkWDADMX/HtvemOBLRUTE3veS/iezPmheK8/TcZkR/y8UdhmtfvG2MWqviBBLFuJ+0mDc5iZHia7JuxO2RzKo6G4mgh58KvyWw+lg7LCpV9yt6IORsTWukeEps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=129.150.39.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from ubuntu.localdomain (unknown [218.12.16.66])
-	by mail-app4 (Coremail) with SMTP id cS_KCgCHgH5pLORlzhHfAQ--.40720S2;
-	Sun, 03 Mar 2024 15:53:29 +0800 (CST)
-From: Duoming Zhou <duoming@zju.edu.cn>
-To: linux-kernel@vger.kernel.org
-Cc: nouveau@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org,
-	daniel@ffwll.ch,
-	airlied@gmail.com,
-	dakr@redhat.com,
-	lyude@redhat.com,
-	kherbst@redhat.com,
-	Duoming Zhou <duoming@zju.edu.cn>
-Subject: [PATCH] nouveau/dmem: handle kcalloc() allocation failure
-Date: Sun,  3 Mar 2024 15:53:12 +0800
-Message-Id: <20240303075312.56349-1-duoming@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID:cS_KCgCHgH5pLORlzhHfAQ--.40720S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7trW5Aw4kur1fWF4UGF13CFg_yoW8ZF48pF
-	WxGF1jyr42yayjqry8tF1kur4ayan3JayxKa9Fy3sI9a4rXFy7Z3y7Aa45WFWYqrW7CrWa
-	qr4Dta43ZF4Ut3JanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7CjxVAaw2AFwI0_
-	Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67
-	AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIY
-	rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14
-	v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8
-	JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUd-B_UUU
-	UU=
-X-CM-SenderInfo: qssqjiasttq6lmxovvfxof0/1tbiAwIIAWXjdVMBCAAXs2
+	s=arc-20240116; t=1709452517; c=relaxed/simple;
+	bh=oW0AjmAtjBrSwOTqpTjHMx8tQhpUyxf3kPzUkMxfoC0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=eZ6a0FFD4ZNcpTdiiYjHyGbgSfbHIESsoAt8lfYjjsactxViw1xTy4wNxmoouQxKu5vYDgHRullNqV/qEyqdyzTpvi5CEYDXK/9leWbXQL9BsyeYtgwcmtKPsUcv5BcQf7xRFIhLq7TfHi5Xkhi8V+grLStdfDiMneWTfxE6dUk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=pJJsykrt; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-565a2c4cc1aso4993101a12.2
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Mar 2024 23:55:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709452513; x=1710057313; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=SQNFQBzA7HljQkmYb4b/pcadMolSbwCDgZaouB8ODCI=;
+        b=pJJsykrtOLzKBojr0YLsQ+lA5LODwLtC6hYpOu8J7ZcMZwWU95v8ttBvrB5NjLCcrM
+         GqKJ0ITLDeucrbCLFebPuV+s23eXf+/chie9MB6ZzhHXlzR6aIbhgZl35FIT0Q9sXZqt
+         1aZL5W+rQGjhkGlpUngcOPQiEYdRSqtCW0bK2A5zyePOMnSGLIOkz0uyaRCxdwmODSHs
+         4AGge5YN6n7vWN6pbQC7A8GqiVspsxJ4k4ewIRyKeOLn8tryAKVogBXSAwdWEp6KhQxI
+         /5qW/xaGWh1cfIB3IcbljMoLNxINb6D5EcRl0d1CaYhhaPRRmOGRGHf330Dv21zqthPn
+         m+OQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709452513; x=1710057313;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SQNFQBzA7HljQkmYb4b/pcadMolSbwCDgZaouB8ODCI=;
+        b=ZNziiMHIdd7wtaYFslKpAliXdzH/EHz1cArbV4YaaxfRxtmRNACnjwAJ4nXoTeC2mD
+         vzTCY5JnxTe0qjks/GyhFan+3Y1YBpVag6qSTDs7AmPFmsv/Uu7PzuSZetiKSVKWM/y1
+         CO6V0Y5kXyEHpCBCaPV+MLu64RMa4VsQCkheNDYSK0lh5qyxJZsu9TWnKN1pgogyHLLJ
+         GPdsaIcb1Hv4UsqCb9x1cdIZ4NbIXmOEOdjji114B3VuRdnStxg+FU9MuTC/EMRw6Yfa
+         /H31ufH+XFtYRMcbgGZkjKk966ZM2W2Tzbehz6qJRe+Lf7PlsYDLL6JJi5jjxpq9nn6L
+         L8lA==
+X-Forwarded-Encrypted: i=1; AJvYcCW4iKqBfLi2iMtobvVWtkdSB5HQ0gYFxQV+/TQVYsm9H/WlmyuIyHZNjWwSl6E3xR+OiZJDqJlOvNtpeZYqMNv3KGrbXkCqS08x8Sn3
+X-Gm-Message-State: AOJu0Yyj8kl0i+YSAmaRPMdn68JIEzTbjQQzG80u3mUI44zhpKp47aHd
+	fQaObMQUJP8062Zxb382p9KIIHq7rbpKbPrx3iIBuVhOvlGguMgYxFBvGhm+IHQ=
+X-Google-Smtp-Source: AGHT+IHEAqXQKJXxGsaNlMtq1WbKfpUdzg5MTjoIVtAUErcrScVKbviFS9z6h4/qaWFjiiEy9oErbg==
+X-Received: by 2002:aa7:ce0a:0:b0:567:285b:db1d with SMTP id d10-20020aa7ce0a000000b00567285bdb1dmr745453edv.42.1709452513283;
+        Sat, 02 Mar 2024 23:55:13 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id c28-20020a50d65c000000b00565a9c11987sm3410520edj.76.2024.03.02.23.55.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 02 Mar 2024 23:55:12 -0800 (PST)
+Message-ID: <32d4a6c9-1cc3-4e9a-81a6-744a33bc6bee@linaro.org>
+Date: Sun, 3 Mar 2024 08:55:10 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/2] dt-bindings: dma: fsl-edma: allow 'power-domains'
+ property
+To: Frank Li <Frank.li@nxp.com>
+Cc: conor+dt@kernel.org, devicetree@vger.kernel.org,
+ dmaengine@vger.kernel.org, imx@lists.linux.dev,
+ krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
+ peng.fan@nxp.com, robh@kernel.org, vkoul@kernel.org
+References: <20240301214536.958869-1-Frank.Li@nxp.com>
+ <20240301214536.958869-2-Frank.Li@nxp.com>
+ <885501b5-0364-48bd-bc1d-3bc486d1b4c6@linaro.org>
+ <ZeNI1nG1dmbwOqbb@lizhi-Precision-Tower-5810>
+ <31e62acf-d605-4786-80a1-df52c8490913@linaro.org>
+ <ZeNWXxzFBzNj0gM1@lizhi-Precision-Tower-5810>
+ <e1d0aafe-e54f-4331-8505-135b9a8f9bff@linaro.org>
+ <ZeNYG1IUfniWkhcp@lizhi-Precision-Tower-5810>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <ZeNYG1IUfniWkhcp@lizhi-Precision-Tower-5810>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-The kcalloc() in nouveau_dmem_evict_chunk() will return null if
-the physical memory has run out. As a result, if we dereference
-src_pfns, dst_pfns or dma_addrs, the null pointer dereference bugs
-will happen.
+On 02/03/2024 17:47, Frank Li wrote:
+> On Sat, Mar 02, 2024 at 05:43:01PM +0100, Krzysztof Kozlowski wrote:
+>> On 02/03/2024 17:39, Frank Li wrote:
+>>> On Sat, Mar 02, 2024 at 05:20:42PM +0100, Krzysztof Kozlowski wrote:
+>>>> On 02/03/2024 16:42, Frank Li wrote:
+>>>>> On Sat, Mar 02, 2024 at 02:59:39PM +0100, Krzysztof Kozlowski wrote:
+>>>>>> On 01/03/2024 22:45, Frank Li wrote:
+>>>>>>> Allow 'power-domains' property because i.MX8DXL i.MX8QM and i.MX8QXP need
+>>>>>>> it.
+>>>>>>>
+>>>>>>> Fixed below DTB_CHECK warning:
+>>>>>>>   dma-controller@599f0000: Unevaluated properties are not allowed ('power-domains' was unexpected)
+>>>>>>>
+>>>>>>> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+>>>>>>> ---
+>>>>>>>
+>>>>>>> Notes:
+>>>>>>>     Change from v1 to v2
+>>>>>>>     - using maxitem: 64. Each channel have one power domain. Max 64 dmachannel.
+>>>>>>>     - add power-domains to 'required' when compatible string is fsl,imx8qm-adma
+>>>>>>>     or fsl,imx8qm-edma
+>>>>>>>
+>>>>>>>  .../devicetree/bindings/dma/fsl,edma.yaml         | 15 +++++++++++++++
+>>>>>>>  1 file changed, 15 insertions(+)
+>>>>>>>
+>>>>>>> diff --git a/Documentation/devicetree/bindings/dma/fsl,edma.yaml b/Documentation/devicetree/bindings/dma/fsl,edma.yaml
+>>>>>>> index cf0aa8e6b9ec3..76c1716b8b95c 100644
+>>>>>>> --- a/Documentation/devicetree/bindings/dma/fsl,edma.yaml
+>>>>>>> +++ b/Documentation/devicetree/bindings/dma/fsl,edma.yaml
+>>>>>>> @@ -59,6 +59,10 @@ properties:
+>>>>>>>      minItems: 1
+>>>>>>>      maxItems: 2
+>>>>>>>  
+>>>>>>> +  power-domains:
+>>>>>>> +    minItems: 1
+>>>>>>> +    maxItems: 64
+>>>>>>
+>>>>>> Hm, this is odd. Blocks do not belong to almost infinite number of power
+>>>>>> domains.
+>>>>>
+>>>>> Sorry, what's your means? 'power-domains' belong to 'properties'. 
+>>>>> 'maxItems' belong to 'power-domains'.It is similar with 'clocks'. what's
+>>>>> wrong? 
+>>>>
+>>>> That one device belong to 64 power domains. That's just random code...
+>>>
+>>> Yes, each dma channel have one power domain. Total 64 dma channel. So
+>>> there are 64 power-domains.
+>>
+>> OK, then how about extending the example to be complete?
+> 
+> Let's add 8qxp example at next version.
 
-This patch uses stack variables to replace the kcalloc().
+You have already enough of examples there and your change here claims
+they user power domains, so why this cannot be added to existing examples?
 
-Fixes: 249881232e14 ("nouveau/dmem: evict device private memory during release")
-Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
----
- drivers/gpu/drm/nouveau/nouveau_dmem.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/gpu/drm/nouveau/nouveau_dmem.c b/drivers/gpu/drm/nouveau/nouveau_dmem.c
-index 12feecf71e7..9a578262c6d 100644
---- a/drivers/gpu/drm/nouveau/nouveau_dmem.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_dmem.c
-@@ -374,13 +374,13 @@ static void
- nouveau_dmem_evict_chunk(struct nouveau_dmem_chunk *chunk)
- {
- 	unsigned long i, npages = range_len(&chunk->pagemap.range) >> PAGE_SHIFT;
--	unsigned long *src_pfns, *dst_pfns;
--	dma_addr_t *dma_addrs;
-+	unsigned long src_pfns[npages], dst_pfns[npages];
-+	dma_addr_t dma_addrs[npages];
- 	struct nouveau_fence *fence;
- 
--	src_pfns = kcalloc(npages, sizeof(*src_pfns), GFP_KERNEL);
--	dst_pfns = kcalloc(npages, sizeof(*dst_pfns), GFP_KERNEL);
--	dma_addrs = kcalloc(npages, sizeof(*dma_addrs), GFP_KERNEL);
-+	memset(src_pfns, 0, npages);
-+	memset(dst_pfns, 0, npages);
-+	memset(dma_addrs, 0, npages);
- 
- 	migrate_device_range(src_pfns, chunk->pagemap.range.start >> PAGE_SHIFT,
- 			npages);
-@@ -406,11 +406,8 @@ nouveau_dmem_evict_chunk(struct nouveau_dmem_chunk *chunk)
- 	migrate_device_pages(src_pfns, dst_pfns, npages);
- 	nouveau_dmem_fence_done(&fence);
- 	migrate_device_finalize(src_pfns, dst_pfns, npages);
--	kfree(src_pfns);
--	kfree(dst_pfns);
- 	for (i = 0; i < npages; i++)
- 		dma_unmap_page(chunk->drm->dev->dev, dma_addrs[i], PAGE_SIZE, DMA_BIDIRECTIONAL);
--	kfree(dma_addrs);
- }
- 
- void
--- 
-2.17.1
+Best regards,
+Krzysztof
 
 
