@@ -1,149 +1,190 @@
-Return-Path: <linux-kernel+bounces-89810-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89811-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 525E886F5F8
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 16:51:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66C9386F5FB
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 16:52:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF5E81F215BF
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 15:51:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D16DD1F22867
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 15:52:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9363167C6F;
-	Sun,  3 Mar 2024 15:51:17 +0000 (UTC)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5078667C66;
+	Sun,  3 Mar 2024 15:52:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="diqYF8Ik"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93DE129CE1
-	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 15:51:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6D1067C50;
+	Sun,  3 Mar 2024 15:52:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709481077; cv=none; b=eOVQS38cS41YkDhzOlvvCXXhu5vG8v5YO/fzI2a3ZNCLiBfiqwOUNNbVGTtQOdMqtOYZrz3/sdTA0JHBFHGSW6KLcInHsbNk2ffZUK0BNNLLOEfVJoKhJFNkB4cdgycEZBj6sFLxUpFPW3glLVsnr8P3J/KIgYgk4SsTKmp9Diw=
+	t=1709481160; cv=none; b=EFkmDohjkSaUpeB9aaXECT5uEbTSuNXV2zTYEegXrbqJCtsbkvqUYIXaQFYhRYa6iIEq4yEj4H121H69TTehO4MkV50Gu9Gat3uvodEzsTOqGJGbSSHbqxm1GUsuAmCbUo1xOAXOKZ25mKa8Htcw71uRvBWj9SEtXXVXDYLdt/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709481077; c=relaxed/simple;
-	bh=8aYiyaGFXCLaXkhRzG6EvSN7OeV6ZdYdG/gRflj4/iQ=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=oOvKVrSOGOClaa+ZHvYpycmGKwmgdyauU3DU6itWUWCBcw5a31b2F6SqKnZeXB64WHQvZGy/Q3ILLZrAZUGexlfMrqxnz6HWLqd8N/ovVnN39NKeN2i5hKSkBwTW2xK3wCicw9aSDT3yGSVkrW9GYZUFJ0TTrj2tRuXMntYfq5s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-36579b46ebfso45748535ab.0
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 07:51:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709481075; x=1710085875;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=j0WfFVpCpCPboe1ePdcUuron3PP3a5v/P9we/dRVjCk=;
-        b=HnREITpvwKIYXjmaDtZVZT1sndf7sKpVtHbYTMrSBO6pKjxYH3y9K3CGfUs2iIXtkr
-         Ms4qU4j733VBa+zxdITrCenKBnHMEjUe19fqYf7CuIZ6PH8TOZSt5U79yY1riAphpcNo
-         RiW+QadkDbna5QTFQivKNlQ6KUCTkJUtLXC+1mgF2nm0tTJMFKOeWF7HUhhrSL44ALPM
-         y6jj9kAU62wAGU/4lqb4P0bbyOX3jcAAlQ2tNr+p/iKjDZg8XQUIOChdrYgpZhG/933K
-         Sv+gsOLzJvmQ10sReOlYRABSl5JjZoHlM0h6ETUbj8/hAUdm6EUvTByis0h+0iFyhlZJ
-         4R8w==
-X-Forwarded-Encrypted: i=1; AJvYcCVtCoh3S3N6KnAbmnt8PL0zQ5EgDwlIi3Z66A0oMVI8DqtEJhG+8Ve4+fZQA1W/qKxgAnGSzmWqqzifq0qCkEsHOu0ySytjcR6i/Shy
-X-Gm-Message-State: AOJu0Ywxq8igzJNYPKzTzfr1EZX/KzBopHFAmZgwuPK8XXUowNO1UXQa
-	0sq4wEdHs+2Gn3qqhAlWkPzgzR5x62oHERlHi0/4a8aPkqf8e0ntWyvaG4KAE7fosDHXYsnrrzy
-	ecHkeEA4S5WPVWEpMneLNDrURzjg6v1DErYh5g+fb7r6I4HlmcAcaoag=
-X-Google-Smtp-Source: AGHT+IECP7/6+A28HKut/GL1QdQhF0UBY7K0TwrhxVRRN4e4e/LjpVswDvQ0TtG9NTUpBoJ3qPV4F9PKanHWbnQ6u3/3qg1KMV5J
+	s=arc-20240116; t=1709481160; c=relaxed/simple;
+	bh=heBYFeJDqEutK0Jap5MQNGri5HlpLGdN4xYRo+19dGA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=k9BSCO2mk6x7TVRdu7EU8HXXs9jVZFiS25Q3JF1LFFH6j1Okq+CusT8ZMPe4VnQ4ggx55umz14O1K9rFzjQUa9b4dAzer9gCGdBmBWiG5giljMFDK08uBJjqqBnsLMtaM+VALC5puDLlwN1HHfMVXeHHxS59S5BWA+lD2Uj+jDo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=diqYF8Ik; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (89-27-53-110.bb.dnainternet.fi [89.27.53.110])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id A4ADC9D5;
+	Sun,  3 Mar 2024 16:52:14 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1709481134;
+	bh=heBYFeJDqEutK0Jap5MQNGri5HlpLGdN4xYRo+19dGA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=diqYF8IklThnS+NJvqfc17HqckXUJapqtKc2Si4LHvdeUcHCn1TG5ZWn2NTdLVR+A
+	 f8il9+HnVnlEg06BYQfaqAdaT6Z6esk0/yCkjJ/7qrC+vnFJOr07TGYwE+e2s908RL
+	 T6bmBRvlj/BsKECTNHkI5J/YN6kcGyYbGBL7g9D8=
+Date: Sun, 3 Mar 2024 17:52:31 +0200
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: Adam Ford <aford173@gmail.com>
+Cc: dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
+	aford@beaconembedded.com, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	Andrzej Hajda <andrzej.hajda@intel.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Robert Foss <rfoss@kernel.org>, Jonas Karlman <jonas@kwiboo.se>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	devicetree@vger.kernel.org, imx@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] drm/bridge: adv7511: Allow IRQ to share GPIO pins
+Message-ID: <20240303155231.GC11285@pendragon.ideasonboard.com>
+References: <20240228113737.43434-1-aford173@gmail.com>
+ <20240228163153.GH9863@pendragon.ideasonboard.com>
+ <CAHCN7xLGL5gMhd7Fo907gPScdD15KW==BHSorQMjbd-=k-E9OA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1525:b0:365:cbd9:ac92 with SMTP id
- i5-20020a056e02152500b00365cbd9ac92mr486466ilu.6.1709481074834; Sun, 03 Mar
- 2024 07:51:14 -0800 (PST)
-Date: Sun, 03 Mar 2024 07:51:14 -0800
-In-Reply-To: <000000000000d60fa905ee84ff8d@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000037444e0612c39434@google.com>
-Subject: Re: [syzbot] [hfs?] KMSAN: uninit-value in hfsplus_attr_bin_cmp_key
-From: syzbot <syzbot+c6d8e1bffb0970780d5c@syzkaller.appspotmail.com>
-To: glider@google.com, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHCN7xLGL5gMhd7Fo907gPScdD15KW==BHSorQMjbd-=k-E9OA@mail.gmail.com>
 
-syzbot has found a reproducer for the following issue on:
+On Sun, Mar 03, 2024 at 09:44:03AM -0600, Adam Ford wrote:
+> On Wed, Feb 28, 2024 at 10:31 AM Laurent Pinchart wrote:
+> > On Wed, Feb 28, 2024 at 05:37:35AM -0600, Adam Ford wrote:
+> > > The IRQ registration currently assumes that the GPIO is
+> > > dedicated to it, but that may not necessarily be the case.
+> > > If the board has another device sharing the IRQ, it won't be
+> > > registered and the hot-plug detect fails.  This is easily
+> > > fixed by add the IRQF_SHARED flag.
+> > >
+> > > Signed-off-by: Adam Ford <aford173@gmail.com>
+> > >
+> > > diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
+> > > index b5518ff97165..21f08b2ae265 100644
+> > > --- a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
+> > > +++ b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
+> > > @@ -1318,7 +1318,8 @@ static int adv7511_probe(struct i2c_client *i2c)
+> > >
+> > >               ret = devm_request_threaded_irq(dev, i2c->irq, NULL,
+> > >                                               adv7511_irq_handler,
+> > > -                                             IRQF_ONESHOT, dev_name(dev),
+> > > +                                             IRQF_ONESHOT | IRQF_SHARED,
+> > > +                                             dev_name(dev),
+> >
+> > This looks fine, but the IRQ handler doesn't.
+> 
+> Thanks for the review.
+> 
+> > static int adv7511_irq_process(struct adv7511 *adv7511, bool process_hpd)
+> > {
+> >         unsigned int irq0, irq1;
+> >         int ret;
+> >
+> >         ret = regmap_read(adv7511->regmap, ADV7511_REG_INT(0), &irq0);
+> >         if (ret < 0)
+> >                 return ret;
+> >
+> >         ret = regmap_read(adv7511->regmap, ADV7511_REG_INT(1), &irq1);
+> >         if (ret < 0)
+> >                 return ret;
+> 
+> If I did a check here and returned if there was no IRQ to handle,
+> would that be sufficient?
+> 
+> --- a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
+> +++ b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
+> @@ -477,6 +477,11 @@ static int adv7511_irq_process(struct adv7511
+> *adv7511, bool process_hpd)
+>         if (ret < 0)
+>                 return ret;
+> 
+> +       /* If there is no IRQ to handle, exit indicating no IRQ handled */
+> +       if (!(irq0 & (ADV7511_INT0_HPD | ADV7511_INT0_EDID_READY)) &&
+> +          !(irq1 & ADV7511_INT1_DDC_ERROR))
 
-HEAD commit:    04b8076df253 Merge tag 'firewire-fixes-6.8-rc7' of git://g..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=175aa96a180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=80c7a82a572c0de3
-dashboard link: https://syzkaller.appspot.com/bug?extid=c6d8e1bffb0970780d5c
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=173516ee180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12fd7bba180000
+If these are the only interrupt sources that the driver enables, this is
+fine.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/a4610b1ff2a7/disk-04b8076d.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/991e9d902d39/vmlinux-04b8076d.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a5b8e8e98121/bzImage-04b8076d.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/111a30273774/mount_0.gz
+> +               return -1;
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c6d8e1bffb0970780d5c@syzkaller.appspotmail.com
+Maybe a defined error code instead ?
 
-loop0: detected capacity change from 0 to 1024
-=====================================================
-BUG: KMSAN: uninit-value in hfsplus_attr_bin_cmp_key+0xf1/0x190 fs/hfsplus/attributes.c:42
- hfsplus_attr_bin_cmp_key+0xf1/0x190 fs/hfsplus/attributes.c:42
- hfs_find_rec_by_key+0xb0/0x240 fs/hfsplus/bfind.c:100
- __hfsplus_brec_find+0x26b/0x7b0 fs/hfsplus/bfind.c:135
- hfsplus_brec_find+0x445/0x970 fs/hfsplus/bfind.c:195
- hfsplus_find_attr+0x30c/0x390
- hfsplus_attr_exists+0x1c6/0x260 fs/hfsplus/attributes.c:182
- __hfsplus_setxattr+0x510/0x3580 fs/hfsplus/xattr.c:336
- hfsplus_setxattr+0x129/0x1e0 fs/hfsplus/xattr.c:434
- hfsplus_trusted_setxattr+0x55/0x70 fs/hfsplus/xattr_trusted.c:30
- __vfs_setxattr+0x7aa/0x8b0 fs/xattr.c:201
- __vfs_setxattr_noperm+0x24f/0xa30 fs/xattr.c:235
- __vfs_setxattr_locked+0x441/0x480 fs/xattr.c:296
- vfs_setxattr+0x294/0x650 fs/xattr.c:322
- do_setxattr fs/xattr.c:630 [inline]
- setxattr+0x45f/0x540 fs/xattr.c:653
- path_setxattr+0x1f5/0x3c0 fs/xattr.c:672
- __do_sys_setxattr fs/xattr.c:688 [inline]
- __se_sys_setxattr fs/xattr.c:684 [inline]
- __x64_sys_setxattr+0xf7/0x180 fs/xattr.c:684
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
+> +
+>         regmap_write(adv7511->regmap, ADV7511_REG_INT(0), irq0);
+>         regmap_write(adv7511->regmap, ADV7511_REG_INT(1), irq1);
+> 
+> With this, I would expect adv7511_irq_handler to return IRQ_NONE.  If
+> you're OK with that approach, I can do that.  If you want me to merge
+> adv7511_irq_handler, and adv7511_irq_process, I can do that too to
+> make the return codes a little more intuitive.
+> 
+> >
+> >         regmap_write(adv7511->regmap, ADV7511_REG_INT(0), irq0);
+> >         regmap_write(adv7511->regmap, ADV7511_REG_INT(1), irq1);
+> >
+> >         if (process_hpd && irq0 & ADV7511_INT0_HPD && adv7511->bridge.encoder)
+> >                 schedule_work(&adv7511->hpd_work);
+> >
+> >         if (irq0 & ADV7511_INT0_EDID_READY || irq1 & ADV7511_INT1_DDC_ERROR) {
+> >                 adv7511->edid_read = true;
+> >
+> >                 if (adv7511->i2c_main->irq)
+> >                         wake_up_all(&adv7511->wq);
+> >         }
+> >
+> > #ifdef CONFIG_DRM_I2C_ADV7511_CEC
+> >         adv7511_cec_irq_process(adv7511, irq1);
+> > #endif
+> >
+> >         return 0;
+> > }
+> >
+> > static irqreturn_t adv7511_irq_handler(int irq, void *devid)
+> > {
+> >         struct adv7511 *adv7511 = devid;
+> >         int ret;
+> >
+> >         ret = adv7511_irq_process(adv7511, true);
+> >         return ret < 0 ? IRQ_NONE : IRQ_HANDLED;
+> > }
+> >
+> > The function will return IRQ_HANDLED as long as the registers can be
+> > read, even if they don't report any interrupt.
+> >
+> > >                                               adv7511);
+> > >               if (ret)
+> > >                       goto err_unregister_audio;
 
-Uninit was created at:
- slab_post_alloc_hook mm/slub.c:3819 [inline]
- slab_alloc_node mm/slub.c:3860 [inline]
- __do_kmalloc_node mm/slub.c:3980 [inline]
- __kmalloc+0x919/0xf80 mm/slub.c:3994
- kmalloc include/linux/slab.h:594 [inline]
- hfsplus_find_init+0x91/0x250 fs/hfsplus/bfind.c:21
- hfsplus_attr_exists+0xde/0x260 fs/hfsplus/attributes.c:178
- __hfsplus_setxattr+0x510/0x3580 fs/hfsplus/xattr.c:336
- hfsplus_setxattr+0x129/0x1e0 fs/hfsplus/xattr.c:434
- hfsplus_trusted_setxattr+0x55/0x70 fs/hfsplus/xattr_trusted.c:30
- __vfs_setxattr+0x7aa/0x8b0 fs/xattr.c:201
- __vfs_setxattr_noperm+0x24f/0xa30 fs/xattr.c:235
- __vfs_setxattr_locked+0x441/0x480 fs/xattr.c:296
- vfs_setxattr+0x294/0x650 fs/xattr.c:322
- do_setxattr fs/xattr.c:630 [inline]
- setxattr+0x45f/0x540 fs/xattr.c:653
- path_setxattr+0x1f5/0x3c0 fs/xattr.c:672
- __do_sys_setxattr fs/xattr.c:688 [inline]
- __se_sys_setxattr fs/xattr.c:684 [inline]
- __x64_sys_setxattr+0xf7/0x180 fs/xattr.c:684
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
+-- 
+Regards,
 
-CPU: 0 PID: 5013 Comm: syz-executor247 Not tainted 6.8.0-rc6-syzkaller-00250-g04b8076df253 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-=====================================================
-
-
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+Laurent Pinchart
 
