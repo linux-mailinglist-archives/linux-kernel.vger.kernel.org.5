@@ -1,149 +1,137 @@
-Return-Path: <linux-kernel+bounces-89722-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89723-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7134D86F4B7
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 13:08:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A25986F4B9
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 13:12:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B6C7283B26
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 12:08:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3ECF31F21B90
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 12:12:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0A1ADDD2;
-	Sun,  3 Mar 2024 12:08:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="FxA46i5o"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04929BE62;
+	Sun,  3 Mar 2024 12:12:07 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70D18D310;
-	Sun,  3 Mar 2024 12:08:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 160AFB664
+	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 12:12:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709467683; cv=none; b=gVjagBfmN5x/T574RMfvlzEEPTpj4WkYsLu5D/0j7PfR/PiM3W2Ju+oSiELSROoCl+gQPyFV287FhiAtJYIynrf4AE80N7SpCQihaSeqwQMFqXpN34X3TcLxdWX+zA/EoIf5bgoK/mj5jtZKk+UDktP7KclHd5f6zmCANOWT/ic=
+	t=1709467926; cv=none; b=tYIv5g2v3nrvqr28Fl7Tr0uzXrZeQXLEkZ7NkcO/Byfh0H8SwA6F7Qt7XE5RYdIt/x5KOIwqIEsB3Ubk8iO4lQQpf8u5p2FsNH70RIjItSWkm5OBViRshYV6yPVrcn6Pgiy+MCf4lTpjBlh171pf+BNgLLZZFTO1uVW0diUQ9h0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709467683; c=relaxed/simple;
-	bh=ZVzuIPJ2Spz42dW3z+sI1ANyF8EV1ajAg3ADQrGKUwI=;
-	h=Message-ID:Date:MIME-Version:Subject:Cc:References:From:To:
-	 In-Reply-To:Content-Type; b=STg/01HbGk63Wue524DnkB//I7UYrmc1gZQGb6iVuqWj2q7VKSLWnJg3TrcA720VuebasyPQf6+uCd0Kxi/yuFjJsQZiCXkEAN74BCvV8pQpvc1qeIX/PI3PfCBVV8Ag7OIo87HHS6lFokKGVujIqbv3GkZeeGBFwYJ/u7gg3YM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=FxA46i5o; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:To:Reply-To:From:References:Cc:Subject:MIME-Version:Date:
-	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
-	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	In-Reply-To:References; bh=PJwJk2t8D6bGLaekvbSUAMPsqL9sh+IsbZwuA2V5S24=;
-	t=1709467681; x=1709899681; b=FxA46i5osCuwnGbbi19rlrEtSrWLXkIzhSu1bvaK9IXZSlE
-	F55cKfZD0cg0+HN3WNK2pHlfXCeMUYuMY7V+RUo9dlWid5HD00edkx6W1IcpdvE8lcO6ezhYJHiCs
-	9HdiL37yFB5THeGZiNzURLKcNS0Y05+t1O3zHt8pQ/1HIr3dRhk8QE8tW40TRiO21adhk3MlaafKA
-	Pb343cWoS3wpWxZLF5zbBF5zITEDWabMr/wyRiVAwBi/zSIb09QpOBm1b9b7mVGp8zeyR0QZK6Wji
-	pK8Nyl8bX2nZ+g80YH+Rtw/PpupTWgVDXsHairDD1dleRapbBvp7NhiT0aAGcMcA==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1rgkdJ-0002Pq-0Q; Sun, 03 Mar 2024 13:07:57 +0100
-Message-ID: <1270339f-3d35-4281-ba02-009005877877@leemhuis.info>
-Date: Sun, 3 Mar 2024 13:07:56 +0100
+	s=arc-20240116; t=1709467926; c=relaxed/simple;
+	bh=wdQWhihA+tWxfIIIQj2ZJilwsv+rh/p06y1AI3SN5E4=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=F9SdoTdH1kj+d8JDqLCKwYOW6L5fiNWUfcX07ZlGaP6+hla0skYMl1A3fIx1OWb+65GVW8kT14U3eM+MRQIv2spkqnmg3K8LzwxaQj92WT8tr4kB9o1ySNnpccbEuVZssGSYc4XbhIsuoO11M4WltTLlrmZrmtGRmCQllOryo6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7c83e0f8c51so52457639f.2
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 04:12:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709467924; x=1710072724;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=S4kfNbpTnOQSD55Iq/AlBz6zYWL46TQpEdNRvS9MKaU=;
+        b=lpsTGr16TDG74y/pvdYppeeBiM3/JJnecJigNeQyYNqLDXpM9SbJkquIUGnm0ANoRT
+         KbN2ljIqaVijMY0f1I38aftBIRL6ifGyGHslFskXrJDdIjZr/6otxrgTsH4p+UkP8taP
+         sLI4eYNF61kPnTs+Feaqm8a9ZHsw8Efu0QuOaZBwYlDaJn4wbG6ucOYM2f+/54+U1CuE
+         o322sguuRWB99dUcAgsrrXDpHu5o9Z2gHYTDOmkLhJns7BCNVvZJqYx5Omt8/eJYg4e9
+         KMK3PSdqPXseEoAEyiAqhYakAIY+bc7SsRnKjeSClIDFExyn3fw7lKy1dr9gOOkkyfgk
+         G9WQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXIDOQDZ2sNAVnist5dc1bcGidPbZv4+lxUlvpYucLK+FhISq9cOzzeMU/5O4LaqO+Cu9yqiR3Ds4yJPoLcTP2GXnOqUU8qT4jvKsq3
+X-Gm-Message-State: AOJu0Yyy9f76j6b9xXw8QeVJXufiC6Cex9E2cR/Mn6sHX6lqNsxpORhb
+	b7uMBNWOFGjUnOQ89khhyZu75ZoqOmfjhr1Et/NuMpLMzEXL+wq1qJrS16spWxDYwGzInmxZVkd
+	JjdsC4pScz8wi/tPh+fLtUgfDfrYjkVUyfsNxfTzqQApEa7HmvSiruWM=
+X-Google-Smtp-Source: AGHT+IGLTkyhKrHhu1BRRI+WzCnaHq1/epNXDS0Zm+OVmJ2Ng9KhNlB511rXvLnpZNntiskmr1eH/PVfN7uagNk7bbnwQ+Mri12w
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/nouveau: keep DMA buffers required for suspend/resume
-Content-Language: en-US, de-DE
-Cc: Sid Pranjale <sidpranjale127@protonmail.com>,
- Sid Pranjale <siddharthpranjale127@gmail.com>,
- dri-devel@lists.freedesktop.org, ML nouveau <nouveau@lists.freedesktop.org>,
- LKML <linux-kernel@vger.kernel.org>,
- Linux kernel regressions list <regressions@lists.linux.dev>,
- Karol Herbst <kherbst@redhat.com>, Lyude Paul <lyude@redhat.com>,
- Danilo Krummrich <dakr@redhat.com>
-References: <20240229175822.30613-1-sidpranjale127@protonmail.com>
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-To: Timur Tabi <ttabi@nvidia.com>
-In-Reply-To: <20240229175822.30613-1-sidpranjale127@protonmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1709467681;934e2524;
-X-HE-SMSGID: 1rgkdJ-0002Pq-0Q
+X-Received: by 2002:a05:6e02:1c8b:b0:365:1c10:9ce2 with SMTP id
+ w11-20020a056e021c8b00b003651c109ce2mr518474ill.2.1709467924139; Sun, 03 Mar
+ 2024 04:12:04 -0800 (PST)
+Date: Sun, 03 Mar 2024 04:12:04 -0800
+In-Reply-To: <tencent_FB46CF407B6A6CBC2C596F7C97BCE8EEEE0A@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005f96040612c084b5@google.com>
+Subject: Re: [syzbot] [hams?] KMSAN: uninit-value in nr_route_frame
+From: syzbot <syzbot+f770ce3566e60e5573ac@syzkaller.appspotmail.com>
+To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-[adding a bunch of list and people as well as Timur Tabi, who authored
-the culprit]
+Hello,
 
-Sid Pranjale, thx for the report. FWIW, I'm just replying to add this to
-the regression tracking to ensure it does not fall through the cracks.
-Nevertheless let me mention two things while at it:
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+KMSAN: uninit-value in nr_route_frame
 
-On 29.02.24 18:58, Sid Pranjale wrote:
-> Nouveau deallocates a few buffers post GPU init which are required for GPU suspend/resume to function correctly.
-> This is likely not as big an issue on systems where the NVGPU is the only GPU, but on multi-GPU set ups it leads to a regression where the kernel module errors and results in a system-wide rendering freeze.
+=====================================================
+BUG: KMSAN: uninit-value in nr_route_frame+0x4a9/0xfc0 net/netrom/nr_route.c:787
+ nr_route_frame+0x4a9/0xfc0 net/netrom/nr_route.c:787
+ nr_xmit+0x5a/0x1c0 net/netrom/nr_dev.c:144
+ __netdev_start_xmit include/linux/netdevice.h:4980 [inline]
+ netdev_start_xmit include/linux/netdevice.h:4994 [inline]
+ xmit_one net/core/dev.c:3547 [inline]
+ dev_hard_start_xmit+0x244/0xa10 net/core/dev.c:3563
+ __dev_queue_xmit+0x33ed/0x51c0 net/core/dev.c:4351
+ dev_queue_xmit include/linux/netdevice.h:3171 [inline]
+ raw_sendmsg+0x64e/0xc10 net/ieee802154/socket.c:299
+ ieee802154_sock_sendmsg+0x91/0xc0 net/ieee802154/socket.c:96
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg net/socket.c:745 [inline]
+ ____sys_sendmsg+0x9c2/0xd60 net/socket.c:2584
+ ___sys_sendmsg+0x28d/0x3c0 net/socket.c:2638
+ __sys_sendmsg net/socket.c:2667 [inline]
+ __do_sys_sendmsg net/socket.c:2676 [inline]
+ __se_sys_sendmsg net/socket.c:2674 [inline]
+ __x64_sys_sendmsg+0x307/0x490 net/socket.c:2674
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-These lines are too long, see
-Documentation/process/submitting-patches.rst for details.
+Uninit was created at:
+ slab_post_alloc_hook mm/slub.c:3819 [inline]
+ slab_alloc_node mm/slub.c:3860 [inline]
+ kmem_cache_alloc_node+0x5cb/0xbc0 mm/slub.c:3903
+ kmalloc_reserve+0x13d/0x4a0 net/core/skbuff.c:560
+ __alloc_skb+0x33d/0x7a0 net/core/skbuff.c:651
+ alloc_skb include/linux/skbuff.h:1296 [inline]
+ alloc_skb_with_frags+0xc8/0xbd0 net/core/skbuff.c:6395
+ sock_alloc_send_pskb+0xa80/0xbf0 net/core/sock.c:2783
+ sock_alloc_send_skb include/net/sock.h:1855 [inline]
+ raw_sendmsg+0x367/0xc10 net/ieee802154/socket.c:282
+ ieee802154_sock_sendmsg+0x91/0xc0 net/ieee802154/socket.c:96
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg net/socket.c:745 [inline]
+ ____sys_sendmsg+0x9c2/0xd60 net/socket.c:2584
+ ___sys_sendmsg+0x28d/0x3c0 net/socket.c:2638
+ __sys_sendmsg net/socket.c:2667 [inline]
+ __do_sys_sendmsg net/socket.c:2676 [inline]
+ __se_sys_sendmsg net/socket.c:2674 [inline]
+ __x64_sys_sendmsg+0x307/0x490 net/socket.c:2674
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-> This commit addresses that regression by moving the two buffers required for suspend and resume to be deallocated at driver unload instead of post init.
-> 
-> Fixes: 042b5f8 ("drm/nouveau: fix several DMA buffer leaks")
+CPU: 1 PID: 5501 Comm: syz-executor.0 Not tainted 6.8.0-rc6-syzkaller-g04b8076df253-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+=====================================================
 
-And that should be:
 
-Fixes:  042b5f83841fbf ("drm/nouveau: fix several DMA buffer leaks")
+Tested on:
 
-> Signed-off-by: Sid Pranjale <sidpranjale127@protonmail.com>
-> ---
->  drivers/gpu/drm/nouveau/nvkm/subdev/gsp/r535.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/gsp/r535.c b/drivers/gpu/drm/nouveau/nvkm/subdev/gsp/r535.c
-> index a64c81385..a73a5b589 100644
-> --- a/drivers/gpu/drm/nouveau/nvkm/subdev/gsp/r535.c
-> +++ b/drivers/gpu/drm/nouveau/nvkm/subdev/gsp/r535.c
-> @@ -1054,8 +1054,6 @@ r535_gsp_postinit(struct nvkm_gsp *gsp)
->  	/* Release the DMA buffers that were needed only for boot and init */
->  	nvkm_gsp_mem_dtor(gsp, &gsp->boot.fw);
->  	nvkm_gsp_mem_dtor(gsp, &gsp->libos);
-> -	nvkm_gsp_mem_dtor(gsp, &gsp->rmargs);
-> -	nvkm_gsp_mem_dtor(gsp, &gsp->wpr_meta);
->  
->  	return ret;
->  }
-> @@ -2163,6 +2161,8 @@ r535_gsp_dtor(struct nvkm_gsp *gsp)
->  
->  	r535_gsp_dtor_fws(gsp);
->  
-> +	nvkm_gsp_mem_dtor(gsp, &gsp->rmargs);
-> +	nvkm_gsp_mem_dtor(gsp, &gsp->wpr_meta);
->  	nvkm_gsp_mem_dtor(gsp, &gsp->shm.mem);
->  	nvkm_gsp_mem_dtor(gsp, &gsp->loginit);
->  	nvkm_gsp_mem_dtor(gsp, &gsp->logintr);
+commit:         04b8076d Merge tag 'firewire-fixes-6.8-rc7' of git://g..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=149cd06c180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=80c7a82a572c0de3
+dashboard link: https://syzkaller.appspot.com/bug?extid=f770ce3566e60e5573ac
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=1666dc36180000
 
-To be sure the issue doesn't fall through the cracks unnoticed, I'm
-adding it to regzbot, the Linux kernel regression tracking bot:
-
-#regzbot ^introduced 042b5f83841fbf
-#regzbot title drm/nouveau: rendering freezes with multi-GPU setup
-#regzbot ignore-activity
-
-This isn't a regression? This issue or a fix for it are already
-discussed somewhere else? It was fixed already? You want to clarify when
-the regression started to happen? Or point out I got the title or
-something else totally wrong? Then just reply and tell me -- ideally
-while also telling regzbot about it, as explained by the page listed in
-the footer of this mail.
-
-Developers: When fixing the issue, remember to add 'Link:' tags pointing
-to the report (the parent of this mail). See page linked in footer for
-details.
-
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-That page also explains what to do if mails like this annoy you.
 
