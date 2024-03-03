@@ -1,112 +1,122 @@
-Return-Path: <linux-kernel+bounces-89878-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89879-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 632CE86F6CD
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 20:23:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85FEF86F6CE
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 20:23:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94D691C21127
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 19:23:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E157D281A6D
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 19:23:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 918587CF37;
-	Sun,  3 Mar 2024 19:21:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AD8079DA8;
+	Sun,  3 Mar 2024 19:21:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z1UTb49q"
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RKNnq8jc"
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D3A87C094;
-	Sun,  3 Mar 2024 19:21:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2248479DA2
+	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 19:21:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709493671; cv=none; b=rBy3I1tOKNt52eMeO/ugDJBsFIw3h2usmBrwE6AW3zXZ7biPu28pDcCz9vQ0ad0G9Jj0kAjM872Oo7DsP233KIjPhetBtqjGA1Wcb9rEyV11WV8E6PiEM7yWNDDSjk5yjrS64zdVwCSnMtyceVMsUThIbGSSHSIXftr//GuyYgM=
+	t=1709493718; cv=none; b=ora4Iak//1/j2piFhJGaw9dvTKzb9V2u9hUEUkjoRgszI9Z9tAyAeThEX8nwdY5YinPFXQkCg+oy0fiMMCVmpi+4Sfh0heAspvsoL/FRIqh9aJ3y4Dz2sJuvVgaKu+bQc66rMV6cMlnTwb0DiGlYb3RecCZkBKohpox4A5ByKBA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709493671; c=relaxed/simple;
-	bh=HbF8PhOHWXzQebb+281vK8rEhxcXGPsG5YmKmH9qB48=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=kpmbW2vfqprzhI6Qh6rZCeCQI/TWto3eaSVLWd89DyIo8+hMDQbIee9xBcuN4RvOhYrgIMuw7Eetzb3M6flSdFvuUuY9LwKEl0ANFBGh402JV3wYU0dWnbu19OOwWjwBTGc2UjuXOTEu3goX2yJWqnk0fuFDAsfCNijtP+NsZLc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z1UTb49q; arc=none smtp.client-ip=209.85.208.175
+	s=arc-20240116; t=1709493718; c=relaxed/simple;
+	bh=Z4ARjctXdInaTulfH0l39W/5hUBT3Mx6CnyDsRwi5AI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VOeWJV1yOyeQxxgDeaE2GnE2CON5RTuaThDyCCr9d65KIlNOV3lHztK87G6mUQk2mOptZCnwu5/FX6PxRubz7sqU4+h/lkkIOjO/H20nlcDVuQxoqhWq4Kdz02HgD06wRYeFqUzO+em1Ezmf2S1NiZlMEzaSkl9d7zCPF64WMFM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RKNnq8jc; arc=none smtp.client-ip=209.85.167.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d269dc3575so32378001fa.1;
-        Sun, 03 Mar 2024 11:21:09 -0800 (PST)
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-5132444ac00so1235610e87.1
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 11:21:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709493668; x=1710098468; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=D1NBB/w/tNKdMZAaK5g6A1PLO2nptHAk6enBO1WBgZQ=;
-        b=Z1UTb49qL2HPpX8fTLsSPTPP52LQOr0MG+0ThTcwSfgl4MCQkf7+P3rMNsKMz9HlkV
-         uRSVz7sgEoFFF2IiPpo2uXb3EwSPnq8O7nfdmfyhzBYkxs2j7SXRLHWMlR7RVLMMQqbR
-         yShwR1QpwlWWLFeIvTCJx+rT/J9uq5/JfwsOo0noCSmcckohxNVTBbn0F3ZXTXZnA13l
-         2yemL47JudLkzv6IMuMLHLhELXVrr15uK69lcs1W7N6qCooPiNZKY3ZWYz0+Ql7cnRGb
-         3ghRrZiNYAMJpNAZuevgWSgGz069tprc7iksDJ2e7kR/8gu+aJbEQt1Dbr61CJlHN+cA
-         730A==
+        d=gmail.com; s=20230601; t=1709493715; x=1710098515; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=T/48/JKby1GAL8JfgGJx3fO2g/mkSQ2r0j63ahzXbQY=;
+        b=RKNnq8jcnKDjQMKcGXicW54JgAXyuACC+rvoF8yNR4StyWc9tT/XJfP/fYdiChv3sa
+         T/2YaE7qxqAoHBJetnJ1haqBzCtGCTC5sG6LoMVJ0VGh5B+sarpGRsmlVJKFe0a6SU1y
+         Lh9drQaB+kezcSWnj5Opscx8qSPQGFZ5t+jjD9WGU3J0MzTZrzVwQKsNTZCud7LP+w5t
+         Vmg7o/6vw1oq7XgUpdTY6MzM70KCIW/tmdKo7n9Tw1azSlCanXHe1DQsRuJP4xOzozUr
+         uaEUaoqx+wH3wzybvwAykzy6iTH8041Dkuo8D7LE76TCmjJ1L7eotS1Nx7R/rt0TtDXf
+         fSBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709493668; x=1710098468;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=D1NBB/w/tNKdMZAaK5g6A1PLO2nptHAk6enBO1WBgZQ=;
-        b=ICnAJglU8MDIISoPmNlD4Vr2ICmwse1ISEHrHEauD4B0562Us4PZabo/Qme74oS8P8
-         fV52m1YPvvy2w+a/lfjQOYvak7k7v4Xul4IY+YhQmxp2Rh3PKhyqsfFigIxy8kMYbos5
-         gVxrBwmF4dKngzWqnETRSMsRNQxqFJF1no7xv1CYmAVctYRCuSFLRG+17VJPjr0M5896
-         mj9yUgMN6lPoW2jWF77xX/5eQ3cnhC22RiFhQJaUJgrExr/lu76h4zpBEaVuT8Mo+H5U
-         sXo0f8fs5bMWIjsVgL52PgHdnYVwF7xUSGVQd9HN6bU+jnikMuRVsGRBLJ5XtnhmfqFw
-         UruQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWldB7eH3N4Z0V6sIkzgv4MY/r6gBWUyl2/A9UFevnQJr+c0HbZSBiLJ6yN7W1gIfJ/dn38gDdhb7mSe+rCxi6tZ4j9rbgALBjySRkIZYdZV9/n2LdTidq2maxayTaFTGzd1zlNjwvVhy4=
-X-Gm-Message-State: AOJu0YxKl66us2qO85+wzOxEDBi2TvlLEgCOGTmgrmm27Mdipu7cOhxA
-	r/8NA3/rgYdpRKV/JVgyvXUVTNAG/5HGei9cehn805KxC0Wqzpzd
-X-Google-Smtp-Source: AGHT+IFCdKjU0W9mTDjumHrBpz5piviPHr5+0eVAzAPOVxFlUryE4CqRsVq+4HKGKE9pwhUuQH//Jg==
-X-Received: by 2002:a2e:b602:0:b0:2d2:864c:8467 with SMTP id r2-20020a2eb602000000b002d2864c8467mr3020394ljn.20.1709493668462;
-        Sun, 03 Mar 2024 11:21:08 -0800 (PST)
-Received: from localhost.localdomain (c83-255-24-248.bredband.tele2.se. [83.255.24.248])
-        by smtp.googlemail.com with ESMTPSA id y10-20020a2e9d4a000000b002d3c466adc7sm68438ljj.15.2024.03.03.11.21.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Mar 2024 11:21:08 -0800 (PST)
-From: Jonathan Bergh <bergh.jonathan@gmail.com>
-To: mchehab@kernel.org
-Cc: mcgrof@kernel.org,
-	linux-media@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jonathan Bergh <bergh.jonathan@gmail.com>
-Subject: [PATCH 9/9] staging: media: av7110: Ensure newline after variable declarations
-Date: Sun,  3 Mar 2024 20:20:40 +0100
-Message-Id: <20240303192040.8116-10-bergh.jonathan@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240303192040.8116-1-bergh.jonathan@gmail.com>
-References: <20240303192040.8116-1-bergh.jonathan@gmail.com>
+        d=1e100.net; s=20230601; t=1709493715; x=1710098515;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=T/48/JKby1GAL8JfgGJx3fO2g/mkSQ2r0j63ahzXbQY=;
+        b=phkRQvG335KdKE3iub2g1APBaksoaCh/EmgbGOUSyiXgO4w/jZcFALmk5uUM+iBoLF
+         dpr67mTN/Hb9MFZJQaH4tdSYZm4dYF/OoJSb+8Pzv+UeKwRQukiYxqqivKxoJ+A694GK
+         VVNd7b5u+Md4XjN6g0uM63Y/eXQIEXWT753FVDttf7+fGXEhPgcIQb8NgeBr9annjw1h
+         BRCWi8XRkrBaH9g63vhVSiWXPWzpBkpNdgdpQdlgGpcMeEC/6Z951mVjqqrJK6BnyNZu
+         XwwU31DOR0olV1LcBXlVyffw7eXVZwZmwsAqlyOV6cA4DOlnPKC5XZfPCEqROuQuY8cG
+         7zow==
+X-Forwarded-Encrypted: i=1; AJvYcCUSN+rHTmLekE1WAfQuUEiJhBB+QUANLEjGJs23cuDcbfOqYblhQM5sqgSELrHbt6QyM/8uyUKcF3yx+G5j6l2n7v5KwfwVw+BJWEn9
+X-Gm-Message-State: AOJu0YymC9cy1I1N37mEXXPrlCUbhZ7loBFqqRcDGAxJzTeNPJy68Xhz
+	EAXmVyq6H2DSQBGuGKQ5I1PHZ7lj4ODTYFteppTmwds8lplxku4ELPBemcTvaD0=
+X-Google-Smtp-Source: AGHT+IEdzvGOfJaJFfR6dGZMvCX4xDWmbnCege8hFqnLHxzPzMwPajFoJC8GzvkolyvM5Mem/j1Bxw==
+X-Received: by 2002:ac2:4648:0:b0:513:2fcb:da02 with SMTP id s8-20020ac24648000000b005132fcbda02mr3710173lfo.2.1709493714917;
+        Sun, 03 Mar 2024 11:21:54 -0800 (PST)
+Received: from [192.168.0.101] (p54a07fa0.dip0.t-ipconnect.de. [84.160.127.160])
+        by smtp.gmail.com with ESMTPSA id cm29-20020a170906f59d00b00a3ce60b003asm4035741ejd.176.2024.03.03.11.21.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 03 Mar 2024 11:21:54 -0800 (PST)
+Message-ID: <2df748b9-9a7f-4ae7-b871-a4a9df9297f3@gmail.com>
+Date: Sun, 3 Mar 2024 20:21:53 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Staging: rtl8192e: Declare variable with static
+To: Ariel Silver <arielsilver77@gmail.com>, gregkh@linuxfoundation.org,
+ yogi.kernel@gmail.com, dan.carpenter@linaro.org, straube.linux@gmail.com,
+ garyrookard@fastmail.org
+Cc: linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20240301153128.13974-1-arielsilver77@gmail.com>
+Content-Language: en-US
+From: Philipp Hortmann <philipp.g.hortmann@gmail.com>
+In-Reply-To: <20240301153128.13974-1-arielsilver77@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-This patch makes the following change:
- * Ensure a newline after variable declarations
+On 3/1/24 16:31, Ariel Silver wrote:
+> Fixed sparse warning:
+> "'dm_rx_path_sel_table' was not declared. Should it be static?"
+> As dm_rx_path_sel_table is used only in rtl_dm.c it should be static.
+> 
+> Signed-off-by: Ariel Silver <arielsilver77@gmail.com>
+> ---
+>   drivers/staging/rtl8192e/rtl8192e/rtl_dm.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c b/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
+> index 92143c50c149..850ee6ae1f02 100644
+> --- a/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
+> +++ b/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
+> @@ -144,7 +144,7 @@ const u8 dm_cck_tx_bb_gain_ch14[CCK_TX_BB_GAIN_TABLE_LEN][8] = {
+>   /*------------------------Define global variable-----------------------------*/
+>   struct dig_t dm_digtable;
+>   
+> -struct drx_path_sel dm_rx_path_sel_table;
+> +static struct drx_path_sel dm_rx_path_sel_table;
+>   /*------------------------Define global variable-----------------------------*/
+>   
+>   
 
-Signed-off-by: Jonathan Bergh <bergh.jonathan@gmail.com>
----
- drivers/staging/media/av7110/sp8870.c | 1 +
- 1 file changed, 1 insertion(+)
+Hi Ariel,
 
-diff --git a/drivers/staging/media/av7110/sp8870.c b/drivers/staging/media/av7110/sp8870.c
-index a3c7660c5092..f652c8d7d2ee 100644
---- a/drivers/staging/media/av7110/sp8870.c
-+++ b/drivers/staging/media/av7110/sp8870.c
-@@ -538,6 +538,7 @@ static int sp8870_i2c_gate_ctrl(struct dvb_frontend *fe, int enable)
- static void sp8870_release(struct dvb_frontend *fe)
- {
- 	struct sp8870_state *state = fe->demodulator_priv;
-+
- 	kfree(state);
- }
- 
--- 
-2.40.1
+I need to tell you that you need a change history. There is also the v2 
+missing in the subject. Please make a v3 with change history.
 
+Thanks
+
+Bye Philipp
 
