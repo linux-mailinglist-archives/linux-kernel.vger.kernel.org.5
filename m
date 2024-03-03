@@ -1,80 +1,82 @@
-Return-Path: <linux-kernel+bounces-89753-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89756-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 778E886F51D
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 14:28:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F72C86F525
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 14:32:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3155828421C
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 13:27:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B1DF81C212E7
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 13:32:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFF2DFC09;
-	Sun,  3 Mar 2024 13:27:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D6A1FC16;
+	Sun,  3 Mar 2024 13:32:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="bZVjHBzw"
-Received: from out203-205-221-239.mail.qq.com (out203-205-221-239.mail.qq.com [203.205.221.239])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aMrKSLbI"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0465BDDCD;
-	Sun,  3 Mar 2024 13:27:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.239
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 313475684;
+	Sun,  3 Mar 2024 13:32:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709472450; cv=none; b=WgMo2JK0lc3YPiSzu6fKvgvQxox/akKklxKvA1SkNpk2An6wRnkYa/Ix0YxUktXQbdyCns4zMvffmVPOkEmmUHyDzmnvKeBLNZuKMBXogQEfV5Feb63C0wSRO4Ls4iDljyepUmuZiXND2fkzKD/sq3CduWVPHkkT8TU8ZprdjYo=
+	t=1709472754; cv=none; b=GutdplUfaaFr0gyelJGjcP757U26gb7Eg9zV/lkW2A9wEnb+rMwXoMYJhQ7DgUxMtyS4J5cMY14eKWWQNUa2Fqe8QXX/80eomvak1q5rLZBHDO/enMsMJmYEe6AA2aM6rSoHgE9/gHKkszDTFHBbQNw8bp9sJ+ftwCd87Ws2j0A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709472450; c=relaxed/simple;
-	bh=kOAHXIVkNpGVFPmgvWaDzJT7LEV1p/mFzFaumoZj+yo=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=McONMhm2sbXmm/spH3jSzD9d67TM0p+RpaVI35qbnfnlE79+VGUQNDJESSMu/Gwo1EkSo3aP2VhCjAoGUjFhHdcmHqpoCYq+49kiZg1ChjPE5S8EG4X/F1iCfEFkP2aeQuRuGeSUVWICmXuRWcRHkUPiFfBkMgX5V9Ml1OEKQ2A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=bZVjHBzw; arc=none smtp.client-ip=203.205.221.239
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1709472436; bh=n2s+gXwdW2+QjJ47xTyefHF5QVT8S/PZfQcur2EDRe0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=bZVjHBzwFWvi1aAIK/H45S92QzrmGf2mfM/AjKqtoPKB2aTbwz4enpYAWw7AoRYZA
-	 ysSfwQeC9qE4LhesPwAiFR/AIRVHQVa5i4q6AMToCKtpH1hk9ZdHBYzQ0MgNuCFw+N
-	 /CcKYOsUPq2hqsZ7zGlZ8lFf3NvxCuNm93QX/xdo=
-Received: from cyy-pc.lan ([240e:379:2240:e500:994d:62ab:74a6:932b])
-	by newxmesmtplogicsvrsza1-0.qq.com (NewEsmtp) with SMTP
-	id 6C4A707D; Sun, 03 Mar 2024 21:27:04 +0800
-X-QQ-mid: xmsmtpt1709472433tjc79lwka
-Message-ID: <tencent_AB8C6AC86B23355F8DE096369A2317AE5D06@qq.com>
-X-QQ-XMAILINFO: OLnGMPzD2sDVlqXcDkXPfya9vVmqwpnozEkItOhSPtXL957hjtkeImGA1UZYiQ
-	 jo2Uo435vxlL+75zCehrIzdy5SP/c32+zPuR4DTvciSO/xbVWSDw0NpLnkTyk2qRkZYm4PZzCz++
-	 6j38P/IRN0bqbzlp8YiKEeeHnhKXVxkYF3+iJPMbL2vCAFqdekPQYpWNwu3T+dCV+JTU4oItwB8j
-	 oUHvWPAIx1/6VwpQ4TzaZd6V4WacVTvHiOSV0KbkCC2UVKN5IyMCFDsTCt835YDVMPc/Wi/rDitm
-	 7WyjsIhV7M08PuOxCZ17AcUyIPt3YrApfANVCTyd6BPyaP3/TuuJzhHIUkX5H9Yw1jFOtugl0e+6
-	 A/JIcjRh6MUIJ9dsDCT2Xemevmk3QEZ/pNATezpo08JY/m3Yz5DZJrlqpP+xXK0Q+U7ydK7s0rCt
-	 wkBYekbKY9rEa6Op/J4pb08FgkquGrwlWV2tmQrko3lnPJ46siVWKmqgmIcHAvYgHNHw+jXGteQb
-	 hZRKEFm+x4Ztl0VUeqalpPesEdiweL5Ykdda2CYSsD3JlDWK2MvZsgZ1ZUgIP9UFFyBV1BoZQFkG
-	 b/enTlqOSckY225yrzVzuI+BsdiO9vpqhHvGfu36FNnKyHQ6MYLQvAhn1OoST2Ra6pnRVQlAZiJh
-	 A8TgZuEYldYl109DEXb9eKyqhKRj3PI4UrKuFR5emviKSAa3XEnpenYBA9Sw0jnWnYBmgzHrzmtR
-	 PyUAV9YMqpTeg+9Wj+JHaMdCtFEB5+UnAzmA6Bk7jxFK/HMYmTaUdykYuAN8/lB6qqP5AdZkzhv2
-	 JJ1y0o2qGwFOrPtC0AuRPth3ckdtIJNn0aK5g9pAu5fCLFp8E0BZDsbd13xgQEmaY0+VIqF7Huzo
-	 ku+0HVuca18QrpTp4PsS5cIHTr4cr3GPatGEHwv49KYXQqRG0gpfHevig7yv78WQN6k8kRBGVyzE
-	 RGOk28OXJByphC4BZz+35QLiQwCxfPx6n6PJ+VTlW143LxxFZZyNqb2jZ6RLPZ55PXWqnLr0qmzk
-	 rUA/uKhFxqJZRe00XnblCOKfgeDWdJFAiv0wk1M/iybnlCIPpV
-X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
-From: Yangyu Chen <cyy@cyyself.name>
-To: linux-riscv@lists.infradead.org
-Cc: Conor Dooley <conor@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Guo Ren <guoren@kernel.org>,
-	devicetree@vger.kernel.org,
+	s=arc-20240116; t=1709472754; c=relaxed/simple;
+	bh=3xboL4uDKO9puxjaC/KLuajulbpu8+6bh9CscgkXE6g=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=JcPjBvK+o8lDSiOt3e+vFIOz+WcPZhphAs+xQ3GYCq75a8DF0K4dV7RjjT4vr9xYTgsLRLPgEsMwN62OwRAp8BEt82ovd8vSMA06N7z5oc3dX905kbrPXNT/QbcrgZ2LuLQryMEMtNxR6ZhkNtDAY9f7LDXyo8ceYx8NdwKY8qw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aMrKSLbI; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1dc29f1956cso28478895ad.0;
+        Sun, 03 Mar 2024 05:32:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709472752; x=1710077552; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=kwlx5IgoHl5RII/i/nv9JimUnsVXypM6jybnxn6UlcA=;
+        b=aMrKSLbIfjQ1rXHem83eSr6FLYGmd7NVad2A24IX/St6eAPlwVCaJuDWaM0pWHEk7J
+         yuK6UIVYdHkVrTJg1tTLJt2HZUEPBIUcFht5fv+gzkIQcSy86eHL4uHy0lzfjUXTeYfV
+         xDH3sWoRQDQW/UJWha8l4+MmzbATwCTYkp44eGqQcChBzN3gN7SIm7kVPZJzCnyWLMUZ
+         qDBNpMp2SGDIB+dQY9gZaf16Uv94XeJglUew65ExfEDTGRjg9nA0QnAnG04UG1jlUm3b
+         LfDqnTnxTnLRGhmjnrBEiv4lRhn9FL5kuxuZvf14jEu8NMwyrV+ChI4DEnaRsNqriXrJ
+         UaFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709472752; x=1710077552;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kwlx5IgoHl5RII/i/nv9JimUnsVXypM6jybnxn6UlcA=;
+        b=EQdSJ6xsF/c63mHo037AmXKhNb0sDH7efApVGpoXaxwphjQ2FI9B9JG4XNCWjR69nY
+         hI4pCm4QRdFBxIB51nicbcunfEglDOVgmMiR5WJWgCdfRb0ir6lo9eO9xCjRL/LO/pjK
+         aM71vhGm6OSVNmqnu8QiJ7xi0S6gclhs29dSTviKIBrDTS7xxlLjy8ytNs1Rm1CrxWtW
+         vTIgrryZ4nuuV1E7ER89I2IMJxpFpnoNuPqJ08d53OpHdbCd0/1LNmtEdr15h5L/WLT8
+         +yv3yTOwqSISv9Nb/gGY2cSY+oOGSjTyzf528FmNSAPvywPuibudbGICvFvQ5JULKb90
+         OF9g==
+X-Forwarded-Encrypted: i=1; AJvYcCXUP1VdJN2qLJDujztkzdmWa+NX9094wWF1imBXjPH75w5xuNQPy3iAeK9zMV9jjiC7js4eZJdfzQ80ug/YHTJa5htWV7BjwHW+A7kS
+X-Gm-Message-State: AOJu0Yzay5IwhYIaZbY0DVMVGiC9bpx2mrHeC5aPGoe9MYUk2HU6mLk8
+	BolSSFGaxBvan+PC3NVpFingWojd/YH3YrZUPQoqmSpk2BU1Ia4n
+X-Google-Smtp-Source: AGHT+IHySZPGneCeilbyiEHd2PBEFR0SDxJNhhWhViVxgeze4L1iRiaZQ0PmXq9Zn3zXXB12k080lQ==
+X-Received: by 2002:a17:903:2408:b0:1d8:e4b8:95e5 with SMTP id e8-20020a170903240800b001d8e4b895e5mr6717407plo.32.1709472752496;
+        Sun, 03 Mar 2024 05:32:32 -0800 (PST)
+Received: from kernel.. ([2402:e280:214c:86:98b4:6d91:d5f4:8f27])
+        by smtp.gmail.com with ESMTPSA id u9-20020a170902e80900b001d9a42f6183sm6634803plg.45.2024.03.03.05.32.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Mar 2024 05:32:32 -0800 (PST)
+From: R SUNDAR <prosunofficial@gmail.com>
+To: bingbu.cao@intel.com,
+	tian.shu.qiu@intel.com,
+	sakari.ailus@linux.intel.com,
+	mchehab@kernel.org
+Cc: linux-media@vger.kernel.org,
+	linux-staging@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
-	Yangyu Chen <cyy@cyyself.name>
-Subject: [PATCH 5/5] riscv: config: enable SOC_CANAAN in defconfig
-Date: Sun,  3 Mar 2024 21:26:27 +0800
-X-OQ-MSGID: <20240303132627.553698-5-cyy@cyyself.name>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <tencent_E15F8FE0B6769E6338AE690C7F4844A31706@qq.com>
-References: <tencent_E15F8FE0B6769E6338AE690C7F4844A31706@qq.com>
+	R SUNDAR <prosunofficial@gmail.com>
+Subject: [PATCH] Removed reserved1/2 fields to prevent kernel-doc warnings
+Date: Sun,  3 Mar 2024 19:02:23 +0530
+Message-Id: <20240303133223.5506-1-prosunofficial@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,27 +85,31 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Since K230 has been supported, allow SOC_CANAAN to be selected to build dt
-and drivers for it in defconfig.
+/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h:2522: warning: Excess struct member 'reserved1' description in 'ipu3_uapi_acc_param'
+/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h:2522: warning: Excess struct member 'reserved2' description in 'ipu3_uapi_acc_param'
 
-Signed-off-by: Yangyu Chen <cyy@cyyself.name>
+Signed-off-by: R SUNDAR <prosunofficial@gmail.com>
 ---
- arch/riscv/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/staging/media/ipu3/include/uapi/intel-ipu3.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
-index 89a009a580fe..20b557ec28df 100644
---- a/arch/riscv/configs/defconfig
-+++ b/arch/riscv/configs/defconfig
-@@ -33,6 +33,7 @@ CONFIG_SOC_STARFIVE=y
- CONFIG_ARCH_SUNXI=y
- CONFIG_ARCH_THEAD=y
- CONFIG_SOC_VIRT=y
-+CONFIG_SOC_CANAAN=y
- CONFIG_SMP=y
- CONFIG_HOTPLUG_CPU=y
- CONFIG_PM=y
+diff --git a/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h b/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
+index caa358e0bae4..926fcf84e33c 100644
+--- a/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
++++ b/drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
+@@ -2485,11 +2485,9 @@ struct ipu3_uapi_anr_config {
+  *		&ipu3_uapi_yuvp1_y_ee_nr_config
+  * @yds:	y down scaler config. See &ipu3_uapi_yuvp1_yds_config
+  * @chnr:	chroma noise reduction config. See &ipu3_uapi_yuvp1_chnr_config
+- * @reserved1: reserved
+  * @yds2:	y channel down scaler config. See &ipu3_uapi_yuvp1_yds_config
+  * @tcc:	total color correction config as defined in struct
+  *		&ipu3_uapi_yuvp2_tcc_static_config
+- * @reserved2: reserved
+  * @anr:	advanced noise reduction config.See &ipu3_uapi_anr_config
+  * @awb_fr:	AWB filter response config. See ipu3_uapi_awb_fr_config
+  * @ae:	auto exposure config  As specified by &ipu3_uapi_ae_config
 -- 
-2.43.0
+2.34.1
 
 
