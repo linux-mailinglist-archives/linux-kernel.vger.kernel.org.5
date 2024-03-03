@@ -1,160 +1,172 @@
-Return-Path: <linux-kernel+bounces-89779-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89778-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FF3486F59A
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 15:56:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61A8C86F599
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 15:55:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E4241C20CDE
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 14:56:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF3A1285E70
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 14:55:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4C2167A14;
-	Sun,  3 Mar 2024 14:56:03 +0000 (UTC)
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C7AB67A19;
+	Sun,  3 Mar 2024 14:55:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LlA8FB3X"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 274812EB09;
-	Sun,  3 Mar 2024 14:56:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D56235B1E8;
+	Sun,  3 Mar 2024 14:55:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709477763; cv=none; b=cUCa+cpNT7rrT3a/CWq96zMMLNP4mK4I8VntrAWQLlTS/9lre7abT83osOf4UQV/dhxofZZv/q+1F2tTLTy3nq7gaqoCtxgzm287GtafrY8U+0miXHKRuzmhw8rsxr9emE1RBKbUJhZO9C3ctk8MAnAW9TK+WKfGUqh7KK/Fwlc=
+	t=1709477724; cv=none; b=M44U1adKFplhLJEVCCjral3QDtdYgZF87m5hjhlAoxf8hb2B2m4G2/vL2Y6tZQrlRgXlUfYyr5SU1VNgjc9aRbP8r2vtiiD8iNkdRIT32lFlMf6biHoh/bnpduxjVkdNolru+No09iVaftbLWW1z6hvrH9zPnrS6yyYkYzdSnyo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709477763; c=relaxed/simple;
-	bh=PDW3W9UUOB58picWGQF59vY7+3Fq1Mklcn3pNhiZtuU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:Cc:From:
-	 In-Reply-To:Content-Type; b=cRU70etn8tZFDgkmy/EkUC9dWzfZz6U8qaUB0F1845y6BQTL+8Gdf4iKWQhhfdYF13Bh3PspJ9jr9UrYS8bYZlaNhMIHLFULHIcRhS6IM/BYkB0za/dvlr4HI1OJ8zzFqkV+ajOrW+KbAkv2XDTTmzO8n+qrb39X79yTjk1qEgE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from fsav115.sakura.ne.jp (fsav115.sakura.ne.jp [27.133.134.242])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 423Esgxl036017;
-	Sun, 3 Mar 2024 23:54:42 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav115.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav115.sakura.ne.jp);
- Sun, 03 Mar 2024 23:54:42 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav115.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 423Esf8G035999
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Sun, 3 Mar 2024 23:54:41 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <ab2a337d-c2dd-437d-9ab8-e3b837f1ff1a@I-love.SAKURA.ne.jp>
-Date: Sun, 3 Mar 2024 23:54:38 +0900
+	s=arc-20240116; t=1709477724; c=relaxed/simple;
+	bh=zKFNE4/BKI7X/507/duOC2eR6r5WNqry55jGlRdStBY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=i1zrnA2vuYovJ3NCM71ouVfX/QGHHkXczp1tIi61P11L8ib9YnaLbuIGDHsKuwiA04BTzhH+8eWRSMZraWsv1TCXOHHN/S8K2eKNL/nCQ+D8ngwy+pMR2pt/zf+T0MTzIg3szPevFNHGEfOy6PLQ66LOCrnnm24pfYCiHZOzZOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LlA8FB3X; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23353C433F1;
+	Sun,  3 Mar 2024 14:55:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709477724;
+	bh=zKFNE4/BKI7X/507/duOC2eR6r5WNqry55jGlRdStBY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=LlA8FB3XCAxwgDjFJsiFiFuTyjZ64l6OeN5agero4ToCq5TU8mBzF8lcgMa+aM3ie
+	 autugMIakkuYrAqS48HfPKGT26DtEG0yHCrb5zahZBgo/txX48sw6pGDALMHeZG99U
+	 XOxqnVITNY38et6w9Se2Pb1Q8jb9xAJLrg9/fSYp31+LWikOn59swQkjwjB/YA7fkO
+	 50Dx8NaKM1Vl/7dl4VYdPm63IWht95z+jMUKrbBqsScq79z11Lj2syNXPrHhNf/wo5
+	 BGYvJF3FLJ5apx4yya+hExUtFVB+WaAMI0/iLNoPuo0IQlLvX3E4xABTO+vIhllpoH
+	 NhUfagF9bBqhw==
+Date: Sun, 3 Mar 2024 14:55:07 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Matti Vaittinen <mazziesaccount@gmail.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Subhajit Ghosh
+ <subhajit.ghosh@tweaklogic.com>, Lars-Peter Clausen <lars@metafoo.de>, Rob
+ Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Marek Vasut <marex@denx.de>, Anshul Dalal <anshulusr@gmail.com>, Javier
+ Carrasco <javier.carrasco.cruz@gmail.com>, Matt Ranostay
+ <matt@ranostay.sg>, Stefan Windfeldt-Prytz
+ <stefan.windfeldt-prytz@axis.com>, linux-iio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 5/5] iio: light: Add support for APDS9306 Light
+ Sensor
+Message-ID: <20240303145507.25523b35@jic23-huawei>
+In-Reply-To: <a5aa10f3-e487-4e70-8010-1604bea3a936@gmail.com>
+References: <20240228122408.18619-1-subhajit.ghosh@tweaklogic.com>
+	<20240228122408.18619-6-subhajit.ghosh@tweaklogic.com>
+	<a828e77c-b3d4-49bb-b0bb-b9fd6cb7d114@gmail.com>
+	<Zd9tApJClX7Frq20@smile.fi.intel.com>
+	<45386f39-a034-4d70-a6d4-8804c27aadce@tweaklogic.com>
+	<21ecfb62-30b7-4073-bad6-46a9e08e08b0@gmail.com>
+	<ZeCJ3T8HVaQZC1Ps@smile.fi.intel.com>
+	<a5aa10f3-e487-4e70-8010-1604bea3a936@gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [integrity?] [lsm?] KMSAN: uninit-value in
- ima_add_template_entry
-Content-Language: en-US
-To: syzbot <syzbot+7bc44a489f0ef0670bd5@syzkaller.appspotmail.com>,
-        syzkaller-bugs@googlegroups.com, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>
-References: <0000000000002be12a0611ca7ff8@google.com>
- <40746a9ae6d2e76d748ec0bf7710bba7e49a53ac.camel@huaweicloud.com>
-Cc: linux-kernel@vger.kernel.org, linux-erofs@lists.ozlabs.org
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <40746a9ae6d2e76d748ec0bf7710bba7e49a53ac.camel@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 
-On 2024/02/20 19:40, Roberto Sassu wrote:
-> On Mon, 2024-02-19 at 22:41 -0800, syzbot wrote:
->> Hello,
->>
->> syzbot found the following issue on:
->>
->> HEAD commit:    4f5e5092fdbf Merge tag 'net-6.8-rc5' of git://git.kernel.o..
->> git tree:       upstream
->> console output: https://syzkaller.appspot.com/x/log.txt?x=135ba81c180000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=e3dd779fba027968
->> dashboard link: https://syzkaller.appspot.com/bug?extid=7bc44a489f0ef0670bd5
->> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+On Thu, 29 Feb 2024 17:35:01 +0200
+Matti Vaittinen <mazziesaccount@gmail.com> wrote:
 
-> I would add the VFS people in CC, in case they have some ideas.
+> On 2/29/24 15:42, Andy Shevchenko wrote:
+> > On Thu, Feb 29, 2024 at 02:58:52PM +0200, Matti Vaittinen wrote: =20
+> >> On 2/29/24 14:34, Subhajit Ghosh wrote: =20
+> >>> On 29/2/24 03:57, Andy Shevchenko wrote: =20
+> >>>> On Wed, Feb 28, 2024 at 03:08:56PM +0200, Matti Vaittinen wrote: =20
+> >>>>> On 2/28/24 14:24, Subhajit Ghosh wrote: =20
+> >=20
+> > ...
+> >  =20
+> >>>>>> +=C2=A0=C2=A0=C2=A0 if (gain_new < 0) {
+> >>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dev_err_ratelimited(de=
+v, "Unsupported gain with time\n");
+> >>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return gain_new;
+> >>>>>> +=C2=A0=C2=A0=C2=A0 } =20
+> >>>>
+> >>>> What is the difference between negative response from the function
+> >>>> itself and
+> >>>> similar in gain_new?
+> >>>> =20
+> >>> -ve response form the function is an error condition.
+> >>> -ve value in gain_new means - no valid gains could be computed.
+> >>> In case of error conditions from the function, the gain_new is also s=
+et
+> >>> to -1.
+> >>> My use case is valid hardware gain so I went for checking only gain_n=
+ew.
+> >>> Matti will be the best person to answer on this. =20
+> >>
+> >> I now rely on the kerneldoc for the
+> >> iio_gts_find_new_gain_by_old_gain_time() as it seems reasonable to me:
+> >>
+> >> * Return: 0 if an exactly matching supported new gain was found. When a
+> >> * non-zero value is returned, the @new_gain will be set to a negative =
+or
+> >> * positive value. The negative value means that no gain could be compu=
+ted.
+> >> * Positive value will be the "best possible new gain there could be". =
+There
+> >> * can be two reasons why finding the "best possible" new gain is not d=
+eemed
+> >> * successful. 1) This new value cannot be supported by the hardware. 2=
+) The
+> >> new
+> >> * gain required to maintain the scale would not be an integer. In this=
+ case,
+> >> * the "best possible" new gain will be a floored optimal gain, which m=
+ay or
+> >> * may not be supported by the hardware. =20
+> >  =20
+> >> Eg, if ret is zero, there is no need to check validity of the gain_new=
+ but
+> >> it is guaranteed to be one of the supported gains. =20
+> >=20
+> > Right, but this kernel doc despite being so verbose does not fully answ=
+er my
+> > question. What is the semantic of that "negative value"?  =20
+>=20
+> Current approach is to always investigate the function return value as=20
+> error if the 'new_gain' is negative. Or, caller specific error if=20
+> new_gain is unsuitable in some other way. When this is done, the=20
+> absolute value of the negative 'new_gain' does not matter.
+>=20
+> > I would expect to have
+> > the error code there (maybe different to what the function returns), bu=
+t at
+> > least be able to return it to the upper layers if needed. =20
+>=20
+> I am not sure I see the benefit of returning the new_gain over returning=
+=20
+> the error returned by the function. Well, maybe the benefit to be able=20
+> to not evaluate the value returned by the=20
+> iio_gts_find_new_gain_by_old_gain_time() - although I'm not sure I love i=
+t.
+>=20
+> > Hence 2 ARs I see:
+> > 1) clarify the kernel documentation there;
+> > 2) update the semantic of the gain_new to simplify caller's code. =20
+>=20
+> Yes, I agree. Patches welcome :) By the very least the kerneldoc can be=20
+> improved. I'm undecided on benefits of having the error code in 'new_gain=
+'.
 
-This is an erofs bug. Since the filesystem image in the reproducer
-is crafted, decompression generates bogus result and
-z_erofs_transform_plain() misbehaves.
-
-You can obtain a single-threaded reproducer from
-https://syzkaller.appspot.com/x/repro.c?x=1256096a180000 with below diff.
-
-----------------------------------------
---- old/1256096a180000.c
-+++ new/1256096a180000.c
-@@ -676,6 +676,6 @@
-   syscall(__NR_mmap, /*addr=*/0x21000000ul, /*len=*/0x1000ul, /*prot=*/0ul,
-           /*flags=MAP_FIXED|MAP_ANONYMOUS|MAP_PRIVATE*/ 0x32ul, /*fd=*/-1,
-           /*offset=*/0ul);
--  loop();
-+  execute_one();
-   return 0;
- }
-----------------------------------------
-
-With CONFIG_EROFS_FS_DEBUG=y, the reproducer hits DBG_BUGON().
-With debug printk() shown below, you can get output shown below.
-
-----------------------------------------
-diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
-index d4cee95af14c..f221133a0731 100644
---- a/fs/erofs/decompressor.c
-+++ b/fs/erofs/decompressor.c
-@@ -323,7 +323,11 @@ static int z_erofs_transform_plain(struct z_erofs_decompress_req *rq,
- 	unsigned int cur = 0, ni = 0, no, pi, po, insz, cnt;
- 	u8 *kin;
- 
--	DBG_BUGON(rq->outputsize > rq->inputsize);
-+	if (rq->outputsize > rq->inputsize) {
-+		pr_err("rq->inputsize=%u rq->outputsize=%u\n", rq->inputsize, rq->outputsize);
-+		pr_err("rq->pageofs_in=%u rq->pageofs_out=%u\n", rq->pageofs_in, rq->pageofs_out);
-+		pr_err("nrpages_in=%u nrpages_out=%u\n", nrpages_in, nrpages_out);
-+	}
- 	if (rq->alg == Z_EROFS_COMPRESSION_INTERLACED) {
- 		cur = bs - (rq->pageofs_out & (bs - 1));
- 		pi = (rq->pageofs_in + rq->inputsize - cur) & ~PAGE_MASK;
-@@ -352,7 +356,8 @@ static int z_erofs_transform_plain(struct z_erofs_decompress_req *rq,
- 		do {
- 			no = (rq->pageofs_out + cur + pi) >> PAGE_SHIFT;
- 			po = (rq->pageofs_out + cur + pi) & ~PAGE_MASK;
--			DBG_BUGON(no >= nrpages_out);
-+			if (no >= nrpages_out)
-+				pr_err("no=%u nrpages_out=%u\n", no, nrpages_out);
- 			cnt = min(insz - pi, PAGE_SIZE - po);
- 			if (rq->out[no] == rq->in[ni]) {
- 				memmove(kin + po,
-@@ -366,7 +371,8 @@ static int z_erofs_transform_plain(struct z_erofs_decompress_req *rq,
- 		} while (pi < insz);
- 		kunmap_local(kin);
- 	}
--	DBG_BUGON(ni > nrpages_in);
-+	if (ni > nrpages_in)
-+		pr_err("ni=%u nrpages_in=%u\n", ni, nrpages_in);
- 	return 0;
- }
- 
-----------------------------------------
-
-----------------------------------------
-[  138.991810][ T2983] loop0: detected capacity change from 0 to 16
-[  139.804002][ T2983] erofs: (device loop0): mounted with root inode @ nid 36.
-[  139.810464][   T87] erofs: rq->inputsize=4096 rq->outputsize=8194
-[  139.821540][   T87] erofs: rq->pageofs_in=0 rq->pageofs_out=0
-[  139.824347][   T87] erofs: nrpages_in=1 nrpages_out=3
-[  139.827008][   T87] erofs: ni=3 nrpages_in=1
-[  139.873777][ T2983] =====================================================
-[  139.881268][ T2983] BUG: KMSAN: uninit-value in ima_add_template_entry+0x626/0xa80
-----------------------------------------
-
-#syz set subsystems: erofs
+It's definitely a weird bit of API and would benefit from a rethink.
+>=20
+> The GTS API fixes shouldn't be required in the context of this driver=20
+> series though.
+Agreed.
+>=20
+> Yours,
+> 	--Matti
+>=20
 
 
