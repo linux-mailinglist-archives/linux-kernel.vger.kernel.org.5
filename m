@@ -1,110 +1,108 @@
-Return-Path: <linux-kernel+bounces-89929-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89930-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2158286F768
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 23:24:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C96C786F76D
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 23:32:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8277C2815AB
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 22:24:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 686341F214AC
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 22:32:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E86C57A736;
-	Sun,  3 Mar 2024 22:24:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7650B7AE4F;
+	Sun,  3 Mar 2024 22:31:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IP1iFgJH"
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iJeuh37s"
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CFFE43AB5;
-	Sun,  3 Mar 2024 22:24:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B49E1E484;
+	Sun,  3 Mar 2024 22:31:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709504644; cv=none; b=rrZwDkZu6TvEdjCLmiak7wf69l7LtTvFUZvEykydHAgfT48xCAYWUVy85Qk6+wnnWGC5X6SBl5ni+coNwOiOwfPqKdYN6Lho4sHwe5+sFgnlkkWWOM37DM5+rQl+h+3gCO0vMzUa0CojWo+LgyhWFLI+3BJ/bcE+8BI+o/wNlOw=
+	t=1709505110; cv=none; b=ISRyMI5ynE9Jka7tV8fBgp2A/eGw8y6+0KBuIWQ+3eBYeWf89Xb1HZHFHo/2HhNb1pQJ4Y0yQmbV04t2aNS+fqBToIFsKxfFY9dRVUDo9qF7Ebz4C+4oAJZeBiIMV5Tw9ccKfmKQEQhiw83YLYOWmTx5sy/5DbWuvEbGLQjWRao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709504644; c=relaxed/simple;
-	bh=fWKZpoOVsmI9SMFRFzneQ+qINrfQUikH9vUDXnHAPDw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DOcH84R/wPLn9UKSliJUM04TQFVcGSoVaW73YdgNZQlYZxRRldnGWG3YmjPYOgyNprGyaTwaL0F9GgzY7GMn78bFwGRecReJCpCW6+RgN6PwXsNevA4ZiONc3svw9nwFBrf5B2NBiVJLmT3gzzyks5vfkkh3o6j3AtuV7+SnklM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IP1iFgJH; arc=none smtp.client-ip=209.85.208.179
+	s=arc-20240116; t=1709505110; c=relaxed/simple;
+	bh=tVfVLgtXYUfLnXEzOs8FVL+6X7bfJi1XbwTO1o1SqQk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=o5reaTw2O5C0g7Ys+VisJpSAGO+3ocTt5oOMKd9RKXTISdabHPVZPl2plZjyBiKu8YxW9IHWSrwmbVtwj2apgC9RluqyuQpzCZzfH7RRDNTRpSlFRnKbipspB6lkjqfJqTlyVYo57yj8YL97QtQ/VmJX4Y/hI6mVtM/H1p1KGJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iJeuh37s; arc=none smtp.client-ip=209.85.215.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d27fef509eso53434571fa.3;
-        Sun, 03 Mar 2024 14:24:02 -0800 (PST)
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5d3907ff128so3962756a12.3;
+        Sun, 03 Mar 2024 14:31:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709504641; x=1710109441; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=EL46pY+v2d0L2oaWW+o5qVHF8A3+bX5FwEvxf5XZex4=;
-        b=IP1iFgJHin0x4kOchsa0JNHyCEc3EJcJZ9NzbYmfGvaovREJqcF8oL/vmMB7S3O43Y
-         ksO3GrsfHCvhUu9WORveRoUmEXBQc8G9u4DAeTgtthxYQ3WnAWCCsud5mJzx7dZV47Tm
-         4wH8UdEAJqRza7ocjS4ot/ng9HIHXhPB6E+ZGgmUTQBISCkyZtMOE1Fdm11lFlJ/8J3X
-         Ghcb921ufwohYXxQRt86JoSZ0MzbU60sMqS92mH8S/Q/GjTkZLBS3vtBHe/ZNsDKAiD4
-         LxMMWrtaKL99tFxsCbZRBx8MYzz6n273VGN6hpGVwztMgGRC8hQpGY4a3xqER5oSAMN4
-         CHjw==
+        d=gmail.com; s=20230601; t=1709505109; x=1710109909; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=znghxbZ4l34R7oZ3KohDywoN1rA+y1aUvwjzptHahq0=;
+        b=iJeuh37saJXEq+z7r/1bUAJ/Y5ZZIxjnquLLmVl9WfECa2AEwdyxYb4SFbu1zuC885
+         Ld2hjVxIdjs1Y0cAfb6anyjtcrt7RmKPDYDh/i3FhZebRjk7E9aZfspmNQMCK4hiCbkv
+         PXn7GIjp6GZP1faEeoewnszP0+WjbZmG7dbE39UNExGMEIIFux3Ls3cpjRQBV6950hRl
+         9myc+MD07FakcH3qD8XbuFVHli5zIppguhddLdiaEWyMdNsDOIIErc5ewCdpqytvpA8W
+         EhUGW1a8Fsqf+kKpUvlgwsOLNq1eDERgNh5iP+q6APkopDmiwrP/Bbl0II9tu4KZMKzh
+         ZAqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709504641; x=1710109441;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EL46pY+v2d0L2oaWW+o5qVHF8A3+bX5FwEvxf5XZex4=;
-        b=ap0jWsKPBZMGij3kTj5o2UPnNBJEFjacZS++qgwwUCmw5KyfRTcxQJ7D4EWh+GMeWC
-         bKdTjizSlACVpMw9oQmHfNhFORqvZVmLsEAEAhp9S0sRZ0w0kQLBHLn4hqo2rp/DA1ct
-         +vgzhm2q0DkUSYa4mP+O3rK0QxdxiqiAbDgKcGwYoE7hC43PXSQ88jMDbmTo2hVh+shF
-         en6NCeUDeoBsI3g8ElUh+8b/r99ciamLWYaW3wZSInBR/diGSEgdHojvq00WRLRZVpLt
-         DwGZS7prdW6X82ZhUA03suxWP+FDr9da5TumVayaUTLmQz4E1G05T5GhMFHlmbhhbyN+
-         J3yQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWBHvFbm3KinhOF6+5FvXmVVC1+i90icHXWV0c/u8y1d0dnz348SnDSTNI1NU2fVe7CmdvjvLEXN/+Cas+J3vi2Kv8PkmpRAIZRafg8STrMpPyWTbH6LPrZw+m7FTh7v4zYYhSn
-X-Gm-Message-State: AOJu0Yx62YsmSBrCgsxj73Ru4iNDLRtLPjSSYLavYKBvyDpS/aMvDqfB
-	8JlZx3I0hqO5TWjOxUKicZicoPnHEf+ZZHAf45iXUdMI697bqXV8
-X-Google-Smtp-Source: AGHT+IHCISfGPU2ASnga0MPJQDU2Wph/zBmNJ+4bntTT0LP9wwbZRHoM0CLPtUE4u39I8gC700OgAA==
-X-Received: by 2002:a2e:9f0e:0:b0:2d2:954e:aceb with SMTP id u14-20020a2e9f0e000000b002d2954eacebmr5116563ljk.53.1709504640799;
-        Sun, 03 Mar 2024 14:24:00 -0800 (PST)
-Received: from [192.168.0.3] ([69.6.8.124])
-        by smtp.gmail.com with ESMTPSA id d13-20020a2e96cd000000b002d2682050d4sm1511084ljj.88.2024.03.03.14.23.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 03 Mar 2024 14:24:00 -0800 (PST)
-Message-ID: <2866e576-52e0-463a-be8f-f133aaf1e066@gmail.com>
-Date: Mon, 4 Mar 2024 00:24:07 +0200
+        d=1e100.net; s=20230601; t=1709505109; x=1710109909;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=znghxbZ4l34R7oZ3KohDywoN1rA+y1aUvwjzptHahq0=;
+        b=fID/1AIasjuPxLus2UOfipCspgvGxH3iMYi0WdD1/MaWgIB+dw0BIum2eTm0KAkIAn
+         qPgRtXoiIpQJl2KqNWhgpsCimVfaOn4b5JsPD7G7+EvCSs1yMcUgzMWkCi+WpCJkJPdd
+         NMokSCKwwPhhTlrZ2c3D303IoFq+Wm2r3+y3D0kOVfMCKMNBNtU9gWNQ0QbAyaAIUiNr
+         u9VoBEYBB2++AVHh8FjINTUWCk5KstRN/VD61ForPGoAWXzObJ0jGhYQVf8quTp9ceZ7
+         RRNo8/zDrVjE9Y+vmqZDSeIGE3uAxXsgFEwAXcgfeXcCOoQQHg9FblZJJwsZqjV3HeVl
+         WBCw==
+X-Forwarded-Encrypted: i=1; AJvYcCUHGrfO3lgQm9HTUU4S96dTO1aAD05i0gm7ObY28tUn5+7ikYF70pxC+3ZDUqQ3YURaRwMyIVN0fC9BJ+CYdeI5NwR7GGCRur3DH60ZPQd0UZkzUUAh9JLRphUyst37HmVAnSXWPRM8Fo6Ld36Z
+X-Gm-Message-State: AOJu0YySD/UTM9fCI/QQH+CO+2q0CZ95QWjpq0ZGqmZY7zX1TGjhlY8o
+	YJd7qmdFs2RF1j/oAH6ixMHxDgfI0wLb4p0nQDK0jL7cyxmXD2Ot
+X-Google-Smtp-Source: AGHT+IFDE91gsfkorXaJ/eB0OfGef9DV/OeFmqrOvfd4+gpl6588evrCYRhKOq5C9DODIz+xzNQtyQ==
+X-Received: by 2002:a17:902:f7ce:b0:1db:37b1:b1a3 with SMTP id h14-20020a170902f7ce00b001db37b1b1a3mr7551806plw.17.1709505108558;
+        Sun, 03 Mar 2024 14:31:48 -0800 (PST)
+Received: from google.com ([2620:15c:9d:2:99d7:8333:f50c:d6a6])
+        by smtp.gmail.com with ESMTPSA id o17-20020a170902d4d100b001db5bdd5e3asm7081116plg.84.2024.03.03.14.31.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Mar 2024 14:31:48 -0800 (PST)
+Date: Sun, 3 Mar 2024 14:31:45 -0800
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Markus Elfring <Markus.Elfring@web.de>
+Cc: linux-input@vger.kernel.org, kernel-janitors@vger.kernel.org,
+	Jeff LaBundy <jeff@labundy.com>,
+	Mattijs Korpershoek <mkorpershoek@baylibre.com>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	ye xingchen <ye.xingchen@zte.com.cn>,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] Input: iqs269a - Use common error handling code in
+ iqs269_parse_chan()
+Message-ID: <ZeT6UUFNq1ujMW17@google.com>
+References: <6bf9f962-cf75-459d-89f4-2546063fc154@web.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 5/6] net: wwan: core: make wwan_class constant
-Content-Language: en-US
-To: "Ricardo B. Marliere" <ricardo@marliere.net>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Loic Poulain <loic.poulain@linaro.org>,
- Johannes Berg <johannes@sipsolutions.net>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Paolo Abeni <pabeni@redhat.com>, Salil Mehta <salil.mehta@huawei.com>,
- Yisen Zhuang <yisen.zhuang@huawei.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240302-class_cleanup-net-next-v1-0-8fa378595b93@marliere.net>
- <20240302-class_cleanup-net-next-v1-5-8fa378595b93@marliere.net>
-From: Sergey Ryazanov <ryazanov.s.a@gmail.com>
-In-Reply-To: <20240302-class_cleanup-net-next-v1-5-8fa378595b93@marliere.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6bf9f962-cf75-459d-89f4-2546063fc154@web.de>
 
-On 02.03.2024 19:06, Ricardo B. Marliere wrote:
-> Since commit 43a7206b0963 ("driver core: class: make class_register() take
-> a const *"), the driver core allows for struct class to be in read-only
-> memory, so move the wwan_class structure to be declared at build time
-> placing it into read-only memory, instead of having to be dynamically
-> allocated at boot time.
+Hi Markus,
+
+On Sat, Mar 02, 2024 at 09:24:53AM +0100, Markus Elfring wrote:
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Sat, 2 Mar 2024 09:15:20 +0100
 > 
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+> Add a jump target so that a bit of exception handling can be better reused
+> at the end of this function implementation.
 
-Thanks!
+No, I do not think this is needed. However if you can introduce a fwnode
+cleanup/free function (see include/linux/cleanup.h) maybe it would be
+more useful and we could apply it to various drivers.
 
-Acked-by: Sergey Ryazanov <ryazanov.s.a@gmail.com>
+Thanks.
+
+-- 
+Dmitry
 
