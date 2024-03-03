@@ -1,64 +1,62 @@
-Return-Path: <linux-kernel+bounces-89812-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89813-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8490F86F5FE
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 16:56:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A86F86F601
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 17:00:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 14CFCB223D7
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 15:56:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 307161F213A3
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 16:00:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B659E67C7B;
-	Sun,  3 Mar 2024 15:55:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7216367E80;
+	Sun,  3 Mar 2024 16:00:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="aUld6k3M"
+	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="D7+wRm3A"
 Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0E4067C52;
-	Sun,  3 Mar 2024 15:55:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A99167C53;
+	Sun,  3 Mar 2024 16:00:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709481355; cv=none; b=SMfVN+B/rXs5AqEiWo2HKY2wl5FDOhJDabWD+xoUTHo2a4lMeYJBqXIT1QqxfDQWAaSKqI9cz/HJJYiRNEGKkAGjVx6BJuNTSIBE2ysNh8osnkqb/DIUu1lYlJ9vGkMNixhBHQ6QaIv2MqTg5l0hcrszxjgUIVhAmoBSlPzi2+A=
+	t=1709481611; cv=none; b=Zg79OIEr95AsJ3F3pJRYqx6KtL7m3USWmvQjeCn1DiPAszFg0u4D5fyGv3mPtagnCGQhoC0GxboxV2WaZ1GZEXUuj4vTjZ6SxReE/tND2LABfJ2oRvvZvruNYyCO/tfLEyfbIyr6YMBc0IplnG2VheC1wJfyQEWY5Q6MGRQJ/v8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709481355; c=relaxed/simple;
-	bh=A4oTZLMFkOenzCOJ/988jBNt6yXBVrkt33H6ar9BUhk=;
+	s=arc-20240116; t=1709481611; c=relaxed/simple;
+	bh=Sx8hgvXv4t/MUqwvPfce9U7MPe0mrdw6nzvKR3ya0CE=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ILRCkgzysEOe0Q+Ru5CzUvGgjHhDNhP8dViRTM8Ff03Iuh3jA+JgNtwR2dZztEVmUg3T/FcrJrI3d4BCsiBIbMOeu21Guub02tC/k9Dc6bYEhiiOTHQdKC8Jwp0P+SnEFD85GxIskYtAHLYc7Vf/A/egYfIvWdRewwGmVMpkZVw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=aUld6k3M; arc=none smtp.client-ip=45.79.88.28
+	 MIME-Version:Content-Type; b=YmSJdJIKEH/ZxTnVq7VOYaeeNElwM/Gnp4zDnjw4ta8aNftS4dRVx0pNpDKgyNPwTfOZpjoMYrQPobGuTbDPbpKxlzhIxRwuqRNkMrD9A0IcSDOx/BPc5GIROufvey76rjAlRF3BReP2HZJ/DvjDVXiS+dyUQcLvYEQOAhc8Rj0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=D7+wRm3A; arc=none smtp.client-ip=45.79.88.28
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net BC716418B6
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 7D745418B6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1709481352; bh=MYNtKSCO59wyJH3h0SJ4lWAQ9OF6yT+pyl7GmiHG76M=;
+	t=1709481609; bh=+lDDxPXqU+cc4fLkXAYANxGoS0kZPxt3j75O2+Po568=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=aUld6k3MOhNiW5SOakY4A89povdbxKwn1JO1ZNRdO5Py2S63GQVylVdBBbmqPlBGa
-	 qWMm4ZGEDKgCz4VjXsnhpG0K4NjrrAsxEqehtY1SPGV3D/EZ5CQ6XmdgQ/Lko7nope
-	 ma3jqMrXbCb6jWtj7mU1DhYNfZZtXMXXq5nSpKDJRumuFvpJ6enMX05qIRCHUPCLdU
-	 3XRz02qFomIX1SJp4HxZ881qZH33vF4JNRgW0mT6XdMHUAL96QDRETbUoYFTJCAEu2
-	 io/uWaSHISTdu3qiyDb+QhCyQ1YlI0+MTasOr6yZdvrRdxIC+95CzGVaFQOpvN4+rd
-	 DotcBLla2n73A==
+	b=D7+wRm3AodOF9xpDiE9FZahN+hAQhIetaD9BZ37MGPzPq3e33wxj2NvAyZGueC1jT
+	 eMzWCtIqoTsEsXjeMxvkcfojI+KMunVNDu7YB+ziVQ1rlxU2LXTpAGPuB9nwjgnktW
+	 7O4K62sGFb0JStHa2wPzu6lTnvI1WYbWwfWlx3DA1/cv4e/nvupkGXqGBSuG+WV3r+
+	 zm3vtsRn3VL4d/rm7wQZVwfYF1uBTb63vNFKdTNLh6ZjqjNR/rJLyrlV7KGKkmHlsW
+	 EgPpW8yZtRmtWc9sX8BYwuxQjCUo3VD5Wy/ssHzmkFgmwgw0qNvCZdpVpb7wKNkCm6
+	 5eXyXeyXTp88Q==
 Received: from localhost (mdns.lwn.net [45.79.72.68])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id BC716418B6;
-	Sun,  3 Mar 2024 15:55:52 +0000 (UTC)
+	by ms.lwn.net (Postfix) with ESMTPSA id 7D745418B6;
+	Sun,  3 Mar 2024 16:00:09 +0000 (UTC)
 From: Jonathan Corbet <corbet@lwn.net>
-To: Akira Yokosawa <akiyks@gmail.com>, lukas.bulwahn@gmail.com
-Cc: jani.nikula@intel.com, kernel-janitors@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- rdunlap@infradead.org, workflows@vger.kernel.org, Akira Yokosawa
- <akiyks@gmail.com>
-Subject: Re: [PATCH v2 3/3] docs: submit-checklist: change to autonumbered
- lists
-In-Reply-To: <8df0c587-8f5b-4523-89d7-dc458ab2c1df@gmail.com>
-References: <20240229030743.9125-4-lukas.bulwahn@gmail.com>
- <8df0c587-8f5b-4523-89d7-dc458ab2c1df@gmail.com>
-Date: Sun, 03 Mar 2024 08:55:51 -0700
-Message-ID: <8734t7z4vs.fsf@meer.lwn.net>
+To: Lukas Bulwahn <lukas.bulwahn@gmail.com>, Jani Nikula
+ <jani.nikula@intel.com>, Randy Dunlap <rdunlap@infradead.org>,
+ workflows@vger.kernel.org, linux-doc@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Lukas
+ Bulwahn <lukas.bulwahn@gmail.com>
+Subject: Re: [PATCH v2 0/3] docs: submit-checklist: structure by category
+In-Reply-To: <20240229030743.9125-1-lukas.bulwahn@gmail.com>
+References: <20240229030743.9125-1-lukas.bulwahn@gmail.com>
+Date: Sun, 03 Mar 2024 09:00:08 -0700
+Message-ID: <87y1azxq47.fsf@meer.lwn.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,40 +65,69 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain
 
-Akira Yokosawa <akiyks@gmail.com> writes:
+Lukas Bulwahn <lukas.bulwahn@gmail.com> writes:
 
->> -1) If you use a facility then #include the file that defines/declares
->> +#. If you use a facility then #include the file that defines/declares
->>     that facility.  Don't depend on other header files pulling in ones
->>     that you use.
+> Dear Jonathan,
 >
-> Wait.  This will render the list starting from:
+> this v2 series addresses all review feedback of the patch v1 here:
 >
->     1. If you use ...
+>   https://lore.kernel.org/linux-doc/20240226104653.54877-1-lukas.bulwahn@gmail.com/
 >
-> In patch 1/1, you didn't change the ")".
+> Immediate actionable review feedback was:
 >
-> It was Jani who suggested "#.", but "#)" would work just fine.
+> from Jani Nikula:
+>   - turn categories into subheadings
+>   - use common heading adornment
+>   - change to bullet or autonumbered lists
+>   - propose those changes as separate additional patches
+>
+> from Randy Dunlap:
+>   - if subheadings, drop the colons at the end.
+>   - acked change to test with linux-next
+>   - Stephen Rothwell requested item 1 to stay item 1.
+>   - pointed out swapping the config names in the commit message.
+>
+> v1 -> v2:
+> The commit message of patch 1/3 is improved addressing Randy's
+> feedback on the commit message.
+> The diff itself of patch 1/3 is unchanged.
+>
+> Patch 2/3 and 3/3 addresses Jani's and Randy's feedback.
+>
+> The extended discussion and feedback was:
+>
+>   - Is the checkstack script worth mentioning or can it be replaced?
+>   - missing some nowadays more important points.
+>   - consider getting it coherent with submitting-patches.rst
+>
+> I have put the extended feedback onto my todo list; for the next
+> iteration on this document---after cleaning up submitting-patches and
+> making the howto and submitting-patches more coherent.
+>
+> I followed Jani's request and created three patches, this might help
+> in the next/final review---if any further review happens now.
+>
+> However, I do not think the kernel repository needs to be swamped with
+> three patches for this 'logically one change' to a single document. So,
+> I also squashed the three patches back into one patch, sent out as
+> PATCH v2-squashed:
+>
+>   https://lore.kernel.org/linux-doc/20240229030146.8418-1-lukas.bulwahn@gmail.com/
+>
+> Please either pick this patch series or just the PATCH v2-squashed as
+> you see fit.
+>
+> Lukas Bulwahn (3):
+>   docs: submit-checklist: structure by category
+>   docs: submit-checklist: use subheadings
+>   docs: submit-checklist: change to autonumbered lists
+>
+>  Documentation/process/submit-checklist.rst | 163 +++++++++++----------
+>  1 file changed, 88 insertions(+), 75 deletions(-)
 
-So I'm a little confused.  Is the objection that it renders the number
-as "1." rather than "1)"?  That doesn't seem like the biggest of deals,
-somehow, but am I missing something?
-
-A bigger complaint I might raise is that auto-numbering restarts the
-enumeration in each subsection, so we have a lot of steps #1, which is a
-definite change from before.
-
-That, of course, can be fixed by giving an explicit starting number in
-each subsection, partially defeating the point of the change in the
-first place.
-
-I honestly have to wonder: does this document need the enumerated list
-at all?  We don't refer to the numbers anywhere, so I don't think there
-is much useful information there.  How about just using regular bulleted
-lists instead?
-
-That said, I don't have strong feelings one way or the other, and can
-certainly apply it as-is if that's the consensus on what we should do.
+So I've applied the first two patches, since there doesn't seem to be
+any disagreement over those.  Once we figure out how we want the
+autonumbering to be done, that can go in as well.
 
 Thanks,
 
