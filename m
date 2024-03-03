@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-89830-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89831-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5830F86F637
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 17:53:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 41B8A86F639
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 17:53:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB4561F231F3
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 16:53:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ADEEF1F231D3
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 16:53:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B3726E5F6;
-	Sun,  3 Mar 2024 16:53:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76AFD6F06B;
+	Sun,  3 Mar 2024 16:53:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mh8NdNmZ"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fvFvC23s"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DE8E6CDA5;
-	Sun,  3 Mar 2024 16:53:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 060FC6E5EC;
+	Sun,  3 Mar 2024 16:53:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709484788; cv=none; b=BGS4PtiLXXpqG/nbSGqegyQlx5Q/CAKyh0Ibvp6Kzv++5r3+sqhiMMaHDlTjyMqH5L7Rdhlg1Iz9vqvYx2JZpOeGUxmnBQYf9Jmos2tOs5Jd+DA/y1hbk6DS4KPGu+gLgWJZuzO+P2F068ie0Ok9RA7tCOoOjpvabsOskhUYVVU=
+	t=1709484790; cv=none; b=YL1jkRdIYzrGht0wyr2RcpCqVowJMsKe09joV1FTWatIIY6kOI8zqXzubDtu4IYyjwAu2cL0c1mMvzLjeYW5j6ORsCFTbcN7yxWKYlI8XonL65o5uhy/6fa2gg9s3g2EPnhT5WK3zomNyYdFLjjfdF/9nbqEUqCfjOW3wLBSIKQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709484788; c=relaxed/simple;
-	bh=Wfe7KoyPBJuztYDXFmPvXzBPupp06EERxKSm+IcMdrA=;
+	s=arc-20240116; t=1709484790; c=relaxed/simple;
+	bh=jVXy9lioZ8kjlYkytLDO0ybrYl1qAi+3ZwTGHGj4x7Y=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=gdmm8xmoKdpfVeH72KuikzYzR5CzyqpzfPXNZd8tu628SHX0KLrbnSxSkpLW7n7M+KWPTGopnN/ME4A8SyT8xrfWemohfYg0FLpYfjbW16Pxl2JOFW0RPYoBOTgM7SdxDv8JD2U+F0XhAi59iOXTnMYjFSkM/veC6ifaQdrlfnc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mh8NdNmZ; arc=none smtp.client-ip=209.85.218.46
+	 MIME-Version; b=RSPV4XPYXZ9nsqevDV0j6Q2Es1/Hj8pUx62L3Xr/nJaSqLVA77WIMQu9EAY2iD9VF6RwDAatk3gW/GdiIedfmR5TCbEn5E44pZeWI6xrHwAe7lthLNCTKHYxw5c4B5MxOWzOYZfTtR1K42whLjd8AYrx5FCg+Ior8aFh2F/V0/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fvFvC23s; arc=none smtp.client-ip=209.85.218.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a36126ee41eso576597066b.2;
-        Sun, 03 Mar 2024 08:53:06 -0800 (PST)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a36126ee41eso576598566b.2;
+        Sun, 03 Mar 2024 08:53:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709484785; x=1710089585; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1709484787; x=1710089587; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=q+LGfZkm2kC8YjDAnvH8fwRgpj06URDP8BZpJfKxTVo=;
-        b=mh8NdNmZuc07NcAXflmSH6kQIL2R8eeabkWgfLViXbRZIvx+LgoauOzhMWxrLwTZmJ
-         dxKplpKTp6c646mGEGmCr8oHfcSWN8aKsmQ3xya6gTV3tJL4WfQwYvBgQ5vamzlRW0Rm
-         5Hmvs0ireqXbqC4U4RqM76xmXxJPD71lOKaxVxuhF0IQSEaB2Xr+weZM+IF3NkoIzWs4
-         HQMSSQrnzXzxdGU9xyqxS6b05a3OmS9FNA3TVRw2GbwKw48cqKghbWO6tziqG2I7tr4s
-         dqWaEQjcnmlGOAsvxjTtNmUd7FmnOzesMnjnpRETMCixaFMvL/Y7QaQKb9LZn4ET135b
-         dEiA==
+        bh=VRG8TNmENP/pTcySnhHli+1ouRQdj2vqC4wgPeKT1sQ=;
+        b=fvFvC23sSjn9beHvqIg3pcnROzEFwA/9/fi/qX3ThqPacBk9jEZa4kxA9EzOzPOZ9g
+         yYHH65jgYGGfB1Zem9B46tQNQCUXe/7WKgBGc7AE5zX40nRPEY0M3d4hzKOc+KPcKVMB
+         DHSkOI8w+qz8Fk/i1E0hSSkAtJobQyzAriq70x/1yux7fb/VFcwv4CIuC1p6BTk4sAL0
+         Hsax//rjuHwo2t5NvMjA+ieXL3RNtfkwdCgFfc243hm29oeK7fg65RqnnSZoWLtuj/VH
+         Pd6oVkZl/iPURnpdscxWieMCcPkN7lni2HgQT9/Rv7nzF23wMIvQeBlwTftzIM6OTSpi
+         fa2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709484785; x=1710089585;
+        d=1e100.net; s=20230601; t=1709484787; x=1710089587;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=q+LGfZkm2kC8YjDAnvH8fwRgpj06URDP8BZpJfKxTVo=;
-        b=mYjuQlOog4PJuIF9iqImtM2bhee6crAP5rOkWSlAE0sBKpfEgfUnmFtR+JDGr+5LWO
-         X4rKxLJMjUD45FgNQ6hmiLj4AQ2CjF8gSCAY6JJagXs3RcjrAqljBouGQ2GUGbQG8p0u
-         f7DTvcgBfrIJpUBJOYVcvR9doz6SQCbZxFPPBJK2kcbqWkrdTlPO6nPSQoMllwbYRyCB
-         iEBarVl8PpPxqdWoTQPo8XMBzC1ybPGQsz3RSQta4wWqcXdQkDsI2nnray2MHMFWNLOo
-         xwT7iOjzkCJVyYSYjPK4fjW62XbJhs1FD003D9ln3L0579sXuzXEXg1F8xI0EGwiD2jB
-         OeTg==
-X-Forwarded-Encrypted: i=1; AJvYcCVVXiEb1kmLDK/KpU1QHcm8j8kOjclfyOv+V6lHq1eXug2ZVhHGsq0j/N3/7oPtuLc6EUp6cGzNLWAJzqKyWf6LBLDhsFjv+mBVFN8UP6i5YVkz37jbjNCzm47G24Q5JNGtG6NLxtTk
-X-Gm-Message-State: AOJu0YySMfHlZU7Vsi9QdCL9+1I5eDaiDTJ0IT6foPBRQB3K2a+7/p97
-	N03Ii7R2A2gxm4j444laOshWeX8BKnZxsQMbMHJDrrcUEQUytSNg
-X-Google-Smtp-Source: AGHT+IGLHdpuVRRL7XZYY+Cu40TxzcnpQ+KtuPjarPvLbWkrGLDMQfR0DCyrG6Eoco4FDr3HkqGWmw==
-X-Received: by 2002:a17:906:3e09:b0:a45:514a:24f4 with SMTP id k9-20020a1709063e0900b00a45514a24f4mr98967eji.23.1709484785435;
-        Sun, 03 Mar 2024 08:53:05 -0800 (PST)
+        bh=VRG8TNmENP/pTcySnhHli+1ouRQdj2vqC4wgPeKT1sQ=;
+        b=nxV2e1UeAELg6iKsPSite2jQWRbo3uWtK2Y4ODdGYTVn2C+hKZgMnx2sN2KR1yS9y+
+         OYV7OaCM8bDeuYjSmtkkLfSxM5iLD5xPtPfba3m8unuLrAn8kunMSEhN9CWCcaYGNt5I
+         apQmQ6mbnWBb0t9ZSbKDZ43/OVFFtvwzJ0sVuggba62jBw2lOSsZl/tdRcfrWyCZNcra
+         xgIwj6cjX+CAbwhuC53CEu0LvkuQfPmbxhvdqnkdFOuvHU9UUoewKFOd70YXon0Z/tCh
+         +NWbgexly2/ioeDPhE9DZ+VkKPJY23jwMY1v9vFurZnRK3xYHPLWrR149KOa3Pv0ZbHp
+         5uXA==
+X-Forwarded-Encrypted: i=1; AJvYcCXlcLlxcVJ0pGb3GbQLORjGsV8w/cQS6XqQ8CRIfbQVgeNBWdAJAEDnZGkIj7SuFkbhSki/S7Pbgp0vv2xNTc29vB8Fr+slYUNPKwQRxCSbH2FENMii38v5QZgWnJy8Wh2rs4hxmpwN
+X-Gm-Message-State: AOJu0Yx71okllLln16AVqL78+Nufxp6RC8eE8fRH8nltY1DDIsmIeLpH
+	0G59PLoK1ZKhJUqtIslo/3U3WfsbJpQLlYNATLjiXVnbPxTbQaYvfGrOWUsotSUVcurC
+X-Google-Smtp-Source: AGHT+IFwkivHORp9/DELAvjWF9pUwUuYgSYHm6ZvEsidzS7M0b2A0y1EUXDO7uhNbQoD9YA5M6sVrQ==
+X-Received: by 2002:a17:906:2411:b0:a44:e92:ebcb with SMTP id z17-20020a170906241100b00a440e92ebcbmr5005844eja.21.1709484787156;
+        Sun, 03 Mar 2024 08:53:07 -0800 (PST)
 Received: from localhost.localdomain ([2a04:ee41:82:7577:d4e3:724b:4d69:34b2])
-        by smtp.gmail.com with ESMTPSA id lh15-20020a170906f8cf00b00a44f14c8d64sm1413992ejb.135.2024.03.03.08.53.04
+        by smtp.gmail.com with ESMTPSA id lh15-20020a170906f8cf00b00a44f14c8d64sm1413992ejb.135.2024.03.03.08.53.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Mar 2024 08:53:05 -0800 (PST)
+        Sun, 03 Mar 2024 08:53:06 -0800 (PST)
 From: Vasileios Amoiridis <vassilisamir@gmail.com>
 To: jic23@kernel.org
 Cc: lars@metafoo.de,
@@ -79,9 +79,9 @@ Cc: lars@metafoo.de,
 	linux-iio@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Vasileios Amoiridis <vassilisamir@gmail.com>
-Subject: [PATCH 1/4] iio: pressure: BMP280 core driver headers sorting
-Date: Sun,  3 Mar 2024 17:52:57 +0100
-Message-Id: <20240303165300.468011-2-vassilisamir@gmail.com>
+Subject: [PATCH 2/4] iio: pressure: Add scale value for channels
+Date: Sun,  3 Mar 2024 17:52:58 +0100
+Message-Id: <20240303165300.468011-3-vassilisamir@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240303165300.468011-1-vassilisamir@gmail.com>
 References: <20240303165300.468011-1-vassilisamir@gmail.com>
@@ -93,45 +93,133 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Sort headers in alphabetical order.
+Add extra IIO_CHAN_INFO_SCALE in order to be able to have the scales
+for the values in userspace. Can be used for triggered buffers.
 
 Signed-off-by: Vasileios Amoiridis <vassilisamir@gmail.com>
 ---
- drivers/iio/pressure/bmp280-core.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/iio/pressure/bmp280-core.c | 70 ++++++++++++++++++++++++++++++
+ 1 file changed, 70 insertions(+)
 
 diff --git a/drivers/iio/pressure/bmp280-core.c b/drivers/iio/pressure/bmp280-core.c
-index fe8734468ed3..29a8b7195076 100644
+index 29a8b7195076..acdf6138d317 100644
 --- a/drivers/iio/pressure/bmp280-core.c
 +++ b/drivers/iio/pressure/bmp280-core.c
-@@ -27,20 +27,20 @@
- 
- #include <linux/bitops.h>
- #include <linux/bitfield.h>
--#include <linux/device.h>
--#include <linux/module.h>
--#include <linux/nvmem-provider.h>
--#include <linux/regmap.h>
-+#include <linux/completion.h>
- #include <linux/delay.h>
-+#include <linux/device.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/iio/iio.h>
- #include <linux/iio/sysfs.h>
--#include <linux/gpio/consumer.h>
--#include <linux/regulator/consumer.h>
- #include <linux/interrupt.h>
- #include <linux/irq.h> /* For irq_get_irq_data() */
--#include <linux/completion.h>
-+#include <linux/module.h>
-+#include <linux/nvmem-provider.h>
- #include <linux/pm_runtime.h>
- #include <linux/random.h>
-+#include <linux/regmap.h>
-+#include <linux/regulator/consumer.h>
- 
- #include <asm/unaligned.h>
- 
+@@ -138,16 +138,19 @@ static const struct iio_chan_spec bmp280_channels[] = {
+ 	{
+ 		.type = IIO_PRESSURE,
+ 		.info_mask_separate = BIT(IIO_CHAN_INFO_PROCESSED) |
++				      BIT(IIO_CHAN_INFO_SCALE) |
+ 				      BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO),
+ 	},
+ 	{
+ 		.type = IIO_TEMP,
+ 		.info_mask_separate = BIT(IIO_CHAN_INFO_PROCESSED) |
++				      BIT(IIO_CHAN_INFO_SCALE) |
+ 				      BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO),
+ 	},
+ 	{
+ 		.type = IIO_HUMIDITYRELATIVE,
+ 		.info_mask_separate = BIT(IIO_CHAN_INFO_PROCESSED) |
++				      BIT(IIO_CHAN_INFO_SCALE) |
+ 				      BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO),
+ 	},
+ };
+@@ -156,6 +159,7 @@ static const struct iio_chan_spec bmp380_channels[] = {
+ 	{
+ 		.type = IIO_PRESSURE,
+ 		.info_mask_separate = BIT(IIO_CHAN_INFO_PROCESSED) |
++				      BIT(IIO_CHAN_INFO_SCALE) |
+ 				      BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO),
+ 		.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_SAMP_FREQ) |
+ 					   BIT(IIO_CHAN_INFO_LOW_PASS_FILTER_3DB_FREQUENCY),
+@@ -163,6 +167,7 @@ static const struct iio_chan_spec bmp380_channels[] = {
+ 	{
+ 		.type = IIO_TEMP,
+ 		.info_mask_separate = BIT(IIO_CHAN_INFO_PROCESSED) |
++				      BIT(IIO_CHAN_INFO_SCALE) |
+ 				      BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO),
+ 		.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_SAMP_FREQ) |
+ 					   BIT(IIO_CHAN_INFO_LOW_PASS_FILTER_3DB_FREQUENCY),
+@@ -170,6 +175,7 @@ static const struct iio_chan_spec bmp380_channels[] = {
+ 	{
+ 		.type = IIO_HUMIDITYRELATIVE,
+ 		.info_mask_separate = BIT(IIO_CHAN_INFO_PROCESSED) |
++				      BIT(IIO_CHAN_INFO_SCALE) |
+ 				      BIT(IIO_CHAN_INFO_OVERSAMPLING_RATIO),
+ 		.info_mask_shared_by_all = BIT(IIO_CHAN_INFO_SAMP_FREQ) |
+ 					   BIT(IIO_CHAN_INFO_LOW_PASS_FILTER_3DB_FREQUENCY),
+@@ -487,6 +493,70 @@ static int bmp280_read_raw(struct iio_dev *indio_dev,
+ 			break;
+ 		}
+ 		break;
++	case IIO_CHAN_INFO_SCALE:
++		switch (chan->type) {
++		case IIO_HUMIDITYRELATIVE:
++			if (!strcmp(indio_dev->name, "bme280")) {
++				*val = 1000;
++				*val2 = 1024;
++				ret = IIO_VAL_FRACTIONAL;
++			} else {
++				ret = -EINVAL;
++			}
++			break;
++		case IIO_PRESSURE:
++			if ((!strcmp(indio_dev->name, "bmp085")) ||
++			    (!strcmp(indio_dev->name, "bmp180")) ||
++			    (!strcmp(indio_dev->name, "bmp181"))) {
++				*val = 1;
++				*val2 = 1000;
++				ret = IIO_VAL_FRACTIONAL;
++			} else if ((!strcmp(indio_dev->name, "bmp280")) ||
++				   (!strcmp(indio_dev->name, "bme280"))) {
++				*val = 1;
++				*val2 = 256000;
++				ret = IIO_VAL_FRACTIONAL;
++			} else if (!strcmp(indio_dev->name, "bmp380")) {
++				*val = 1;
++				*val2 = 100000;
++				ret = IIO_VAL_FRACTIONAL;
++			} else if (!strcmp(indio_dev->name, "bmp580")) {
++				*val = 1;
++				*val2 = 64000;
++				ret = IIO_VAL_FRACTIONAL;
++			} else {
++				ret = -EINVAL;
++			}
++			break;
++		case IIO_TEMP:
++			if ((!strcmp(indio_dev->name, "bmp085")) ||
++			    (!strcmp(indio_dev->name, "bmp180")) ||
++			    (!strcmp(indio_dev->name, "bmp181"))) {
++				*val = 100;
++				*val2 = 1;
++				ret = IIO_VAL_FRACTIONAL;
++			} else if ((!strcmp(indio_dev->name, "bmp280")) ||
++				   (!strcmp(indio_dev->name, "bme280"))) {
++				*val = 10;
++				*val2 = 1;
++				ret = IIO_VAL_FRACTIONAL;
++			} else if (!strcmp(indio_dev->name, "bmp380")) {
++				*val = 10;
++				*val2 = 1;
++				ret = IIO_VAL_FRACTIONAL;
++			} else if (!strcmp(indio_dev->name, "bmp580")) {
++				*val = 1000;
++				*val2 = 16;
++				ret = IIO_VAL_FRACTIONAL_LOG2;
++			} else {
++				ret = -EINVAL;
++			}
++			break;
++		default:
++			ret = -EINVAL;
++			break;
++		}
++		break;
+ 	case IIO_CHAN_INFO_OVERSAMPLING_RATIO:
+ 		switch (chan->type) {
+ 		case IIO_HUMIDITYRELATIVE:
 -- 
 2.25.1
 
