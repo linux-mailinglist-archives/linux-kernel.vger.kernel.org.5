@@ -1,121 +1,77 @@
-Return-Path: <linux-kernel+bounces-89656-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89657-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD1F586F3A7
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 05:51:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A719F86F3B8
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 06:26:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EE201F21CB3
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 04:51:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20D2C1F2228F
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 05:26:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3992379D2;
-	Sun,  3 Mar 2024 04:51:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2DB6847E;
+	Sun,  3 Mar 2024 05:26:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BH6uByEa"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QUbyNXba"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B331753BE;
-	Sun,  3 Mar 2024 04:51:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 410E11C2E;
+	Sun,  3 Mar 2024 05:26:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709441493; cv=none; b=Uk9Dng+4FeWaQFtndKlIZfm/HigD55C7JVOVofST0tJGDLX7IFecaqXuUlY7Hll87xMU+zbOWIix4f72exNJyPgN/yaTLYtqRwT3mPHYoeBBMUYx8hWdl9QcjoHPrYdiQWXloEBKwUFNbfpr8f2l+dQa5MZRmpnODYgmFlWUpKI=
+	t=1709443577; cv=none; b=PG3SivbG9KMZlUuPQ0BXtiVhnetxAlYMRe4cdlrpDXhBXsK6TH8CZJIICE7hspOsMzfAjGpK74YmCgCvjk/I62x/U5POhWjNqgnnZVGl1yeG6WCGnZIfmN+i+C+Vb2kOUY03OAjp4uKa0nQRcqgjyFSdQOhyFzAUeOEDX17CdvU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709441493; c=relaxed/simple;
-	bh=DiznAYK71m8KjN3kngmKzjZ08qDdBKWha23BeRkoj2U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GzZG/0e9IDcbemzcUc/ctcAgKMLDawIHLxdU0/eFJkNCnx5shxD2OrmBdRk/NvEXHtpTS37hSFphBs1wfisV83OyWUFGBBgLgeE2tdR8bBt61TvDA16tnClS2oWkzv7XIM19OaYw1e4ibBN11cRdu9OoCBA3e0cHJ1untL4D/4c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BH6uByEa; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709441492; x=1740977492;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=DiznAYK71m8KjN3kngmKzjZ08qDdBKWha23BeRkoj2U=;
-  b=BH6uByEalP3xReEcXzs7RGVVqK58iHJnXN5Hkf0I1weTCBB2Q7QqWInB
-   c8SnAaSWQSjZmqNOFZfaxjgo3PhxIf6iUTHCUnk1q2Qh1v0jauxlXOGzX
-   XTVktWsNSLgBiFHyZ55K7L3U6mbnDY947lbfwtdJDNZFaWoGe2GylDrld
-   GmuWLAcA9U29gAtgSGG4EPo9p9dZt8mbpfl6sRiAcsO7a4wYuLXRxcbA6
-   SDHsxV4mm6A0CJcvhar+qP1qH0cCpmGQLSGvEabEG+Noui+XlSoZhQtpl
-   sZlLsEOF4Yujq0MsBqkZdkucwf5OmUM+C5yKc+I/2mMlELabk6Ltij2k4
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11001"; a="7723694"
-X-IronPort-AV: E=Sophos;i="6.06,200,1705392000"; 
-   d="scan'208";a="7723694"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2024 20:51:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,200,1705392000"; 
-   d="scan'208";a="39621421"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by fmviesa001.fm.intel.com with ESMTP; 02 Mar 2024 20:51:29 -0800
-Date: Sun, 3 Mar 2024 12:47:19 +0800
-From: Xu Yilun <yilun.xu@linux.intel.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, seanjc@google.com,
-	michael.roth@amd.com, isaku.yamahata@intel.com,
-	thomas.lendacky@amd.com
-Subject: Re: [PATCH 11/21] KVM: x86/tdp_mmu: Init role member of struct
- kvm_mmu_page at allocation
-Message-ID: <ZeQA12SlPPSgLBGG@yilunxu-OptiPlex-7050>
-References: <20240227232100.478238-1-pbonzini@redhat.com>
- <20240227232100.478238-12-pbonzini@redhat.com>
+	s=arc-20240116; t=1709443577; c=relaxed/simple;
+	bh=pDTqr75VrTenhrZ7T1mxLvCoeWHL+hc6thSbvXACcuQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=GDJnwF7J39WE2xK+7XSFyEIkSpYjnZD8oBguYAFOEEhw5Yzn5XIp5fX5brv+VkaM0Rg5EDkm06HHIe7GATEyLqTQO9kdL4iQC+Ajd7EFgr16fWFsAqiZgy0gvHHophwGEswet9wmT/BrrJ466WuOKRm8rzvfvV5nnCNWCkQq6U0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QUbyNXba; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F7FDC433F1;
+	Sun,  3 Mar 2024 05:26:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709443576;
+	bh=pDTqr75VrTenhrZ7T1mxLvCoeWHL+hc6thSbvXACcuQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=QUbyNXbaTyYF1KDMsPa4TbrSyBOX0xx/gnZUZi4SuDKF5r7E9EV97lYwRkpXYaF1L
+	 pADr96LkXEmMKKNx88n/AD0Y3wKlqgUOOTsfka8xTD6G3wP4F8ru0YepbIC6OUfC41
+	 eOhVxeo3NPCjU3K+6ioUBuakT34fPX0HZH/FzIv65Wo/dIbAfi484xB8/p7Jo+nYgR
+	 pmOWKavyMJ9KNPhRCv3r+9gg03PoZcyKaG1SESzVkighvnzv+hiFJql10Fimy1ALMC
+	 5+0C4jMZcLLtn6ko3i/3Ut9QwU1eGfhLe83RKDWEErP8O3U1H/2hwd9qPmv+l0y86g
+	 ivSE9pe/955+Q==
+Date: Sat, 2 Mar 2024 21:26:15 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: David Howells <dhowells@redhat.com>
+Cc: netdev@vger.kernel.org, Marc Dionne <marc.dionne@auristor.com>, "David
+ S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo
+ Abeni <pabeni@redhat.com>, linux-afs@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 13/21] rxrpc: Use rxrpc_txbuf::kvec[0] instead
+ of rxrpc_txbuf::wire
+Message-ID: <20240302212615.310678df@kernel.org>
+In-Reply-To: <20240301163807.385573-14-dhowells@redhat.com>
+References: <20240301163807.385573-1-dhowells@redhat.com>
+	<20240301163807.385573-14-dhowells@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240227232100.478238-12-pbonzini@redhat.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Feb 27, 2024 at 06:20:50PM -0500, Paolo Bonzini wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
+On Fri,  1 Mar 2024 16:37:45 +0000 David Howells wrote:
+> Use rxrpc_txbuf::kvec[0] instead of rxrpc_txbuf::wire to gain access to the
+> Rx protocol header.  In future, the wire header will be stored in a page
+> frag, not in the rxrpc_txbuf struct making it possible to use
+> MSG_SPLICE_PAGES when sending it.
 > 
-> Refactor tdp_mmu_alloc_sp() and tdp_mmu_init_sp and eliminate
-                                  ^
-tdp_mmu_init_sp() 
+> Similarly, access the ack header as being immediately after the wire header
+> when filling out an ACK packet.
 
-> tdp_mmu_init_child_sp().  Currently tdp_mmu_init_sp() (or
-> tdp_mmu_init_child_sp()) sets kvm_mmu_page.role after tdp_mmu_alloc_sp()
-> allocating struct kvm_mmu_page and its page table page.  This patch makes
-> tdp_mmu_alloc_sp() initialize kvm_mmu_page.role instead of
-> tdp_mmu_init_sp().
-> 
-> To handle private page tables, argument of is_private needs to be passed
-> down.  Given that already page level is passed down, it would be cumbersome
-> to add one more parameter about sp. Instead replace the level argument with
-> union kvm_mmu_page_role.  Thus the number of argument won't be increased
-
-This section is hard to understand. I'm lost at which functions are
-mentioned here that took the level argument and should be replaced by
-role.
-
-> and more info about sp can be passed down.
-
-My understanding of the change is:
-
-Extra handling is need for Allocation of private page tables, so
-earlier caculate the kvm_mmu_page_role for the sp and pass it to
-tdp_mmu_alloc_sp().  Since the sp.role could be decided on sp
-allocation, in turn remove the role argument for tdp_mmu_init_sp(), also
-eliminate the helper tdp_mmu_init_child_sp().
-
-> 
-> For private sp, secure page table will be also allocated in addition to
-> struct kvm_mmu_page and page table (spt member).  The allocation functions
-> (tdp_mmu_alloc_sp() and __tdp_mmu_alloc_sp_for_split()) need to know if the
-> allocation is for the conventional page table or private page table.  Pass
-> union kvm_mmu_role to those functions and initialize role member of struct
-        ^
-
-Should be kvm_mmu_page_role
-
-Thanks,
-Yilun
+net/rxrpc/output.c:263:28: warning: unused variable 'whdr' [-Wunused-variable]
+  263 |         struct rxrpc_wire_header *whdr;
+      |                                   ^~~~
 
