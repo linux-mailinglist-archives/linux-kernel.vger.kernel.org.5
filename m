@@ -1,206 +1,86 @@
-Return-Path: <linux-kernel+bounces-89744-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89746-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FE2386F4FC
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 14:10:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D234D86F505
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 14:15:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC2C51F21406
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 13:10:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D4F81F2162E
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 13:15:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 827B5DF4A;
-	Sun,  3 Mar 2024 13:09:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TFS4Wcld"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B701DDBB;
+	Sun,  3 Mar 2024 13:15:05 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A105EC121;
-	Sun,  3 Mar 2024 13:09:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 897F8D2FF
+	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 13:15:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709471386; cv=none; b=u8B0MbfN3Vkk0L/lSHn7zNlV5JfE/wZOfj+fwvbjeUaG3RhXsSGpLQkp0GTOP2h82UIRCgCnjKcACOIf2pQ1G2XYDp/LEUjY92ycj3a7k+97SnoJU/Dd5J5w/TvoOyO3gXCKoFne+JY3sEju8WeBz5PkJLNOpxDo1h0kJQQMqqM=
+	t=1709471705; cv=none; b=WThYOohBlYLrVFOmUiTrfiCZ6DkRrClKmfiyPjI3eV7MTiW3h+CHh3CwEMK/RP8eDYGizmjjFzq78Q2/ZELwd8+0gg95uwbPxO+2hMgkeQf8RqCAn9Fdgv/LFZGnJRr9rKN97mH1/+lKxtwUi+U05woBj1DyYCCtSVQFpIjV70I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709471386; c=relaxed/simple;
-	bh=vrYalRsEVZ5fLjX42yXSYdIo9++d6kZ4+2yqiD07orw=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=o0oH6VrDhaJSXMKlqcEMWIxmVVK9gqOipHOgH+705Yt1lfvgtd49IpeeWJkXncn7U8qYJNF10wWtir1C8KeXpjh2WnGknwBhja3rhqgwziYbdchdvAlQlGyv0iBR33f4x60+Z9U6MrexS29fJxMWB96fRy8VcF8q7O6xAPTL5vU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TFS4Wcld; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CDD6C433C7;
-	Sun,  3 Mar 2024 13:09:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709471386;
-	bh=vrYalRsEVZ5fLjX42yXSYdIo9++d6kZ4+2yqiD07orw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=TFS4WclduKBieWz1UkcNTKSuCZDyLEdTgFUGthkob7mjSQrWCfm9HvCnDfnyY6qtW
-	 MkNYLN/+XpB8K5gsWQPw9jLMIA09LfI+cLBVXF39xCggrkuXWM8et+8sLHBUbBJRqI
-	 xDrdrgOWWfgXvxEDr6Gh1WcJHxAOynrX5AmOLrn8EPti9G+E7lNvw6MrWX7xS3wt1a
-	 iR5kSIXQa3DC4H0bDcBa/OR87oQv//6vdDCNA27zEcdCrWAQ4BNq4xlKYmmDjJ2gJs
-	 prN85/sJhYV3U+JYiPlVPjJGOFuu9uyRmpGARyS0QvQrrLnM99LERQnKwoZHA2+avH
-	 8Vgq+BsIhZqhA==
-Date: Sun, 3 Mar 2024 13:09:28 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Nuno =?UTF-8?B?U8Oh?= <noname.nuno@gmail.com>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Vinod Koul
- <vkoul@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, Jonathan
- Cameron <Jonathan.Cameron@huawei.com>, Mark Brown <broonie@kernel.org>,
- Kees Cook <keescook@chromium.org>, linux-arm-kernel@lists.infradead.org,
- dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-iio@vger.kernel.org, linux-spi@vger.kernel.org,
- netdev@vger.kernel.org, linux-hardening@vger.kernel.org, Lars-Peter Clausen
- <lars@metafoo.de>, "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>, "Gustavo A. R. Silva" <gustavoars@kernel.org>, Nuno Sa
- <nuno.sa@analog.com>
-Subject: Re: [PATCH v4 5/8] iio: core: Use new helpers from overflow.h in
- iio_device_alloc()
-Message-ID: <20240303130928.0c2fea09@jic23-huawei>
-In-Reply-To: <9519dda9acd9db009dcb43102cc9b36943b35217.camel@gmail.com>
-References: <20240228204919.3680786-1-andriy.shevchenko@linux.intel.com>
-	<20240228204919.3680786-6-andriy.shevchenko@linux.intel.com>
-	<9519dda9acd9db009dcb43102cc9b36943b35217.camel@gmail.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1709471705; c=relaxed/simple;
+	bh=c9s0goSwX57rJCwT25YATUib6aIeBQc4e9zIuWfF+8I=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=PbtUW4UTgDF1cLo4Helom8/bmruzLZIaQKBXLdpDOloMRXqyI5ZXUVGiXcYk+dE/HUchLToVmD3kPary91jU38WfX4BK3/33Hi+I0ROJtTIq7wWRwZXthqbryyYb24a8NSO9Ae5sjehivdG/oXe4R/CTlc0nX9P3B5MDhcnmI7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7bec4b24a34so456857339f.3
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 05:15:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709471702; x=1710076502;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gX/3k7rE8wn8ZrlnoJJkxbG8GfZ9413M7gqlV/wqjCM=;
+        b=JNWCGcqMBQ97dKwAU5Zdtx98Clab8fLGHMpIvLeFGxrCc4oPYqy2Cy9UM8lKQMwYON
+         WRobU0q3PtZDzGrmr32cUUQJ8lsLHOtQWW4IjzH2nEwnw2GVj/6TDHcqXur/vVmcPw4W
+         TX7qyMJVkbQWzNAhH/OqnChexD8wSeGirVbnPncW+joK43b/OwkxeicXBAwGgN9lqLV0
+         OYFHRUZ9pQ1/ioY0oTJE5knB4tuS/6JqM2n/FhziayCqGgkHR0FmUF2mHnX2Ne7LYhbP
+         cbM99QgUdAr3S/L33p11d+z9+ftWFwBZbBbonqcaJUzilfYB7GLShWqJEzT1cmL+lfeC
+         yADg==
+X-Forwarded-Encrypted: i=1; AJvYcCWza9vNgwgNUPk75dkCoVZDARi/OOjF5Ikc6Rv2Z5sEZiGACPfs9XRVJwz33cvIa+cw+yknD4VTobprD/q7bTsd+mllMFHsGSTMTKpf
+X-Gm-Message-State: AOJu0YxLS553HNum3jbFw/KKmCTveBnC4sf7g05bpadfW/BKE6kZCaNS
+	KoIjfKFfOWvmUyxmRu/sZtD+32KSf13pYy8xqQbxWy6/edwjTgJrnFllTZOzBncQlpGb0EMIoKB
+	m27Ckumr6Q+NWMXGQ5oQSiagWjrxVuE+XF3WLGKnHYkgsf8XBwCUT4bo=
+X-Google-Smtp-Source: AGHT+IG148S6nbAJIBwhHzHoGEiywwBuYzzUjwuXZpMD8MtNfra6xyAe8QDQL/CAN6PUPnAe+ysxOoVUOlhO2ceQmmrIrXrUwWUv
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+X-Received: by 2002:a05:6e02:b28:b0:365:1780:2ca9 with SMTP id
+ e8-20020a056e020b2800b0036517802ca9mr458956ilu.5.1709471702799; Sun, 03 Mar
+ 2024 05:15:02 -0800 (PST)
+Date: Sun, 03 Mar 2024 05:15:02 -0800
+In-Reply-To: <tencent_146CC89774EBA6EC92CFA4783E6CA42D850A@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000995deb0612c16585@google.com>
+Subject: Re: [syzbot] [hams?] KMSAN: uninit-value in nr_route_frame
+From: syzbot <syzbot+f770ce3566e60e5573ac@syzkaller.appspotmail.com>
+To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, 29 Feb 2024 16:29:43 +0100
-Nuno S=C3=A1 <noname.nuno@gmail.com> wrote:
+Hello,
 
-> On Wed, 2024-02-28 at 22:41 +0200, Andy Shevchenko wrote:
-> > We have two new helpers struct_size_with_data() and struct_data_pointer=
-()
-> > that we can utilize in iio_device_alloc(). Do it so.
-> >=20
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > Reviewed-by: Nuno Sa <nuno.sa@analog.com>
-> > ---
-> > =C2=A0drivers/iio/industrialio-core.c | 5 ++---
-> > =C2=A01 file changed, 2 insertions(+), 3 deletions(-)
-> >=20
-> > diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio=
--core.c
-> > index 1986b3386307..223013725e32 100644
-> > --- a/drivers/iio/industrialio-core.c
-> > +++ b/drivers/iio/industrialio-core.c
-> > @@ -1644,7 +1644,7 @@ struct iio_dev *iio_device_alloc(struct device *p=
-arent,
-> > int sizeof_priv)
-> > =C2=A0	size_t alloc_size;
-> > =C2=A0
-> > =C2=A0	if (sizeof_priv)
-> > -		alloc_size =3D ALIGN(alloc_size, IIO_DMA_MINALIGN) +
-> > sizeof_priv;
-> > +		alloc_size =3D struct_size_with_data(iio_dev_opaque,
-> > IIO_DMA_MINALIGN, sizeof_priv);
-> > =C2=A0	else
-> > =C2=A0		alloc_size =3D sizeof(struct iio_dev_opaque);
-> > =C2=A0
-> > @@ -1655,8 +1655,7 @@ struct iio_dev *iio_device_alloc(struct device *p=
-arent,
-> > int sizeof_priv)
-> > =C2=A0	indio_dev =3D &iio_dev_opaque->indio_dev;
-> > =C2=A0
-> > =C2=A0	if (sizeof_priv)
-> > -		indio_dev->priv =3D (char *)iio_dev_opaque +
-> > -			ALIGN(sizeof(struct iio_dev_opaque),
-> > IIO_DMA_MINALIGN);
-> > +		indio_dev->priv =3D struct_data_pointer(iio_dev_opaque,
-> > IIO_DMA_MINALIGN); =20
->=20
-> I'd +1 for implementing what Kees suggested in IIO. Only thing is (I thin=
-k), we
-> need to move struct iio_dev indioo_dev to the end of struct iio_dev_opaqu=
-e.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-That is going to be messy and without horrible hacks (I think) add more pad=
-ding we
-don't need.  At the moment the struct iio_dev and the struct iio_dev_opaque
-are aligned as at the start of the structure.
+Reported-and-tested-by: syzbot+f770ce3566e60e5573ac@syzkaller.appspotmail.com
 
-The priv data is aligned by padding the larger struct iio_dev_opaque,
-so if you want the priv handle to be to data defined in struct iio_dev you =
-would
-need to add additional padding so that
+Tested on:
 
-struct iio_dev_opaque {
-	stuff...
-	// this next __aligned() is implicit anyway because of the rules for
-	// a structure always being aligned to the alignment of it's max aligned
-	// element.
-	struct iio_dev __aligned (IIO_DMA_ALIGN) { =20
-		stuff
-		u8 priv[] __aligned(IIO_DMA_ALIGN);
-	}
-}
+commit:         04b8076d Merge tag 'firewire-fixes-6.8-rc7' of git://g..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=17b893ce180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=80c7a82a572c0de3
+dashboard link: https://syzkaller.appspot.com/bug?extid=f770ce3566e60e5573ac
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=16d811a2180000
 
-How about using what Kees suggests on the iio_dev_opaque (which think is cl=
-eaner
-anyway as that's what we are allocating) and keeping the magic pointer to p=
-riv
-in the struct iio_dev; The compiler looses some visibility for iio_priv() a=
-ccesses
-but can it do much with those anyway? They always get cast to a struct driv=
-er_specific *
-and getting the original allocation wrong is not easy to do as we pass
-that struct size in.  Note, for others not aware of what is going on here, =
-the
-priv pointer in iio_dev is to allow efficient static inline iio_priv() call=
-s without
-needing to either make a function call, or expose the internals of the opaq=
-ue
-structure in which the iio_dev and the priv data are embedded.
-
-Standard pattern is:
-
-struct driver_specific *bob;
-struct iio_dev *indio_dev =3D dev_iio_device_alloc(dev, sizeof(*bob));
-// which allocates the iio_dev_opaque, but returns the contained iio_dev
-bob =3D iio_priv(indio_dev);
-
-So
-
-struct iio_dev_opaque {
-	struct iio_dev indio_dev {
-		stuff..
-		void *priv;=09
-	};
-	stuff..
-	int priv_count;
-	u8 priv[] __aligned(IIO_DMA_ALIGN) __counted_by(priv_count);
-}
-with indio_dev->priv =3D iio_dev_opaque->dev?
-
-This cleanups up a few IIO core bits but no impact outside them.
-Nice to have those cleanups.
-
-Is there any way to have that internal iio_dev->priv pointer associated with
-a __counted_by even though it's pointing elsewhere than a local variable si=
-zed
-trailing element? =20
-
-struct iio_dev {
-	stuff
-
-	u32 count;
-	void *priv __counted_by(count);
-}
-compiles with gcc but without digging further I have no idea if it does any=
-thing useful!
-
-Jonathan
-
->=20
-> - Nuno S=C3=A1
->=20
->=20
->=20
-
+Note: testing is done by a robot and is best-effort only.
 
