@@ -1,162 +1,242 @@
-Return-Path: <linux-kernel+bounces-89653-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89655-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 881CF86F39F
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 05:26:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DF9186F3A5
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 05:49:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D971CB21F01
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 04:26:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 870F5281BED
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 04:49:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E3126FD5;
-	Sun,  3 Mar 2024 04:26:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD7FF6FD5;
+	Sun,  3 Mar 2024 04:49:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Z9dvYHnL"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="vJvCPUow"
+Received: from smtp-fw-52005.amazon.com (smtp-fw-52005.amazon.com [52.119.213.156])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E18176FA8
-	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 04:25:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FAF316FF4C;
+	Sun,  3 Mar 2024 04:49:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.156
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709439960; cv=none; b=hqf7jXttxqix28lp4hApqbmWGd99NZVdfEd6aCWkCrzQ5zpyLUHcmrPck6k+77PBuFsmOf5Wu+Vw467tIiNo1DKqnTyYmcOmpew38DNIfSyIapNZ4OoYx4+CQlN+8x+RecZnO7PaBOwBN1tuFdaGe3YUbo3J2sS00hVnqumn3sY=
+	t=1709441368; cv=none; b=qgK9QULMBRJVNrxjvWW0nBczscrrQWCUmPILZJ21Wu/0MzLHPDTiYTQL15Cv2ZNmI3bpRLhABTnEIyR9MO3ymdD9QISSZZSg2rZ2MQKjVKgfdjS9dqLljLVwAq1hNVPtUAf6Uv677/nmyuxse0X3l1qQrLqUwb8L49jPFtGkuZU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709439960; c=relaxed/simple;
-	bh=JGEMTSw+h3Tskj6UQtxs7o4Z1kUEuraMEQeoCqx4kXk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QU4oUOisFz5Ae0C9TdLbVuTAiEGl6UbuOl8ZHdEj3ZmmcRE1OIZ24yrBHO+Dxej6k4Cf4lmz2Xq6gLA/VNBmLzySziuLhxII66t0hOOe6NekN+v7ilARUcCbNDpp21h38MEazPbmorQM96nmxACUGkUGrHwNPAJ1kPSlGmyvGwM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Z9dvYHnL; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709439957;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4tP8cj/EkhDB5rHKjBPyA2CO06IZFpZarql6Oarbplo=;
-	b=Z9dvYHnLhfcZrg55SDEICqj4yXNuICq5rSOfZjlvKI5px847G4XeOcjcgThuAoEbpG+eMc
-	yQWx43I9wNvWesO8nBQFycb+8hqpF3ui2PzTp81Sx6Y7vsns8YClA/LNLDmjh0GeDlVOvw
-	WG9F6LBdNLNSiwm9fg4SaU6BiC7qDfk=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-408-coMkeA93Ow-062Wa0M69gA-1; Sat,
- 02 Mar 2024 23:25:53 -0500
-X-MC-Unique: coMkeA93Ow-062Wa0M69gA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5D71429AB40A;
-	Sun,  3 Mar 2024 04:25:53 +0000 (UTC)
-Received: from [10.22.32.39] (unknown [10.22.32.39])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 994452166B31;
-	Sun,  3 Mar 2024 04:25:52 +0000 (UTC)
-Message-ID: <87fe0004-0e53-4b7a-b19d-c6b37c8db8dc@redhat.com>
-Date: Sat, 2 Mar 2024 23:25:51 -0500
+	s=arc-20240116; t=1709441368; c=relaxed/simple;
+	bh=/mMBea5qOP8qQVAp1Iyo3m+jJso1XFmBlu1283c3SAs=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=XQl021RW8FNpk1esOc6BPb0bdzlhZspSE3xsCeWPbuSHwlcX/e/d9IfpKQdRA7aNkuly+Ia3yRu3uHfYsCi27MhZ4C5C7+56vVsb2Fv2UGnlWp7fC8N2pJN7Ggyr9Nz052TVYHT6+Gmjpq9AiKupWnzlNfA7oqU7prx4UmxHE8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=vJvCPUow; arc=none smtp.client-ip=52.119.213.156
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1709441366; x=1740977366;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=EcAkR74T37oaMFgDuTvxPlS3yLJ8+qDqwNv46qMyVV4=;
+  b=vJvCPUowcs9mjlz38yg5SeXnN9n2yrVsQ2PWvYwE1JC3irXJ7UFzDF58
+   bwN80YFRBad1u5MDlHwy4uKyILPE0/UcCVcuMNUKADS5EiqnDdDsGAJrx
+   auyeJGGx7DTWSRZTG+/u9vT63BACf57TqVD5dK0GOBinGxICpufgExClZ
+   k=;
+X-IronPort-AV: E=Sophos;i="6.06,200,1705363200"; 
+   d="scan'208";a="638173303"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
+  by smtp-border-fw-52005.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2024 04:49:23 +0000
+Received: from EX19MTAEUB002.ant.amazon.com [10.0.43.254:33619]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.9.254:2525] with esmtp (Farcaster)
+ id 0f94f4e3-8c8b-42ed-9481-e718686ab622; Sun, 3 Mar 2024 04:49:21 +0000 (UTC)
+X-Farcaster-Flow-ID: 0f94f4e3-8c8b-42ed-9481-e718686ab622
+Received: from EX19D026EUB004.ant.amazon.com (10.252.61.64) by
+ EX19MTAEUB002.ant.amazon.com (10.252.51.59) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Sun, 3 Mar 2024 04:49:21 +0000
+Received: from uc3ecf78c6baf56.ant.amazon.com (10.187.170.45) by
+ EX19D026EUB004.ant.amazon.com (10.252.61.64) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Sun, 3 Mar 2024 04:49:18 +0000
+From: Andrew Paniakin <apanyaki@amazon.com>
+To: <stable@vger.kernel.org>
+CC: Benjamin Herrenschmidt <benh@amazon.com>, Andrew Panyakin
+	<apanyaki@amazon.com>, Maximilian Heyne <mheyne@amazon.de>, Boris Ostrovsky
+	<boris.ostrovsky@oracle.com>, Juergen Gross <jgross@suse.com>, "Stefano
+ Stabellini" <sstabellini@kernel.org>, Sasha Levin <sashal@kernel.org>, "Greg
+ Kroah-Hartman" <gregkh@linuxfoundation.org>, Julien Grall
+	<jgrall@amazon.com>, <xen-devel@lists.xenproject.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH 5.4] xen/events: close evtchn after mapping cleanup
+Date: Sat, 2 Mar 2024 20:45:39 -0800
+Message-ID: <20240303044539.2673085-1-apanyaki@amazon.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH/RFC] locking/spinlocks: Make __raw_* lock ops static
-Content-Language: en-US
-To: Geert Uytterhoeven <geert+renesas@glider.be>,
- Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Will Deacon <will@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
- Arnd Bergmann <arnd@arndb.de>
-Cc: linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <c395b02613572131568bc1fd1bc456d20d1a5426.1709325647.git.geert+renesas@glider.be>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <c395b02613572131568bc1fd1bc456d20d1a5426.1709325647.git.geert+renesas@glider.be>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D035UWA004.ant.amazon.com (10.13.139.109) To
+ EX19D026EUB004.ant.amazon.com (10.252.61.64)
 
-On 3/1/24 15:43, Geert Uytterhoeven wrote:
-> sh/sdk7786_defconfig (CONFIG_GENERIC_LOCKBREAK=y and
-> CONFIG_DEBUG_LOCK_ALLOC=n):
->
-> kernel/locking/spinlock.c:68:17: warning: no previous prototype for '__raw_spin_lock' [-Wmissing-prototypes]
-> kernel/locking/spinlock.c:80:26: warning: no previous prototype for '__raw_spin_lock_irqsave' [-Wmissing-prototypes]
-> kernel/locking/spinlock.c:98:17: warning: no previous prototype for '__raw_spin_lock_irq' [-Wmissing-prototypes]
-> kernel/locking/spinlock.c:103:17: warning: no previous prototype for '__raw_spin_lock_bh' [-Wmissing-prototypes]
-> kernel/locking/spinlock.c:68:17: warning: no previous prototype for '__raw_read_lock' [-Wmissing-prototypes]
-> kernel/locking/spinlock.c:80:26: warning: no previous prototype for '__raw_read_lock_irqsave' [-Wmissing-prototypes]
-> kernel/locking/spinlock.c:98:17: warning: no previous prototype for '__raw_read_lock_irq' [-Wmissing-prototypes]
-> kernel/locking/spinlock.c:103:17: warning: no previous prototype for '__raw_read_lock_bh' [-Wmissing-prototypes]
-> kernel/locking/spinlock.c:68:17: warning: no previous prototype for '__raw_write_lock' [-Wmissing-prototypes]
-> kernel/locking/spinlock.c:80:26: warning: no previous prototype for '__raw_write_lock_irqsave' [-Wmissing-prototypes]
-> kernel/locking/spinlock.c:98:17: warning: no previous prototype for '__raw_write_lock_irq' [-Wmissing-prototypes]
-> kernel/locking/spinlock.c:103:17: warning: no previous prototype for '__raw_write_lock_bh' [-Wmissing-prototypes]
->
-> Fix this by making the __raw_* lock ops static.
->
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
-> Compile-tested only.
->
-> Is SH really the only SMP platform where CONFIG_GENERIC_LOCKBREAK=y?
-> ---
->   kernel/locking/spinlock.c | 8 ++++----
->   1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/kernel/locking/spinlock.c b/kernel/locking/spinlock.c
-> index 8475a0794f8c5ad2..7009b568e6255d64 100644
-> --- a/kernel/locking/spinlock.c
-> +++ b/kernel/locking/spinlock.c
-> @@ -65,7 +65,7 @@ EXPORT_PER_CPU_SYMBOL(__mmiowb_state);
->    * towards that other CPU that it should break the lock ASAP.
->    */
->   #define BUILD_LOCK_OPS(op, locktype)					\
-> -void __lockfunc __raw_##op##_lock(locktype##_t *lock)			\
-> +static void __lockfunc __raw_##op##_lock(locktype##_t *lock)		\
->   {									\
->   	for (;;) {							\
->   		preempt_disable();					\
-> @@ -77,7 +77,7 @@ void __lockfunc __raw_##op##_lock(locktype##_t *lock)			\
->   	}								\
->   }									\
->   									\
-> -unsigned long __lockfunc __raw_##op##_lock_irqsave(locktype##_t *lock)	\
-> +static unsigned long __lockfunc __raw_##op##_lock_irqsave(locktype##_t *lock) \
->   {									\
->   	unsigned long flags;						\
->   									\
-> @@ -95,12 +95,12 @@ unsigned long __lockfunc __raw_##op##_lock_irqsave(locktype##_t *lock)	\
->   	return flags;							\
->   }									\
->   									\
-> -void __lockfunc __raw_##op##_lock_irq(locktype##_t *lock)		\
-> +static void __lockfunc __raw_##op##_lock_irq(locktype##_t *lock)	\
->   {									\
->   	_raw_##op##_lock_irqsave(lock);					\
->   }									\
->   									\
-> -void __lockfunc __raw_##op##_lock_bh(locktype##_t *lock)		\
-> +static void __lockfunc __raw_##op##_lock_bh(locktype##_t *lock)		\
->   {									\
->   	unsigned long flags;						\
->   									\
+From: Andrew Panyakin <apanyaki@amazon.com>
 
-This may not work if CONFIG_GENERIC_LOCKBREAK is defined. We had been 
-talking about taking out CONFIG_GENERIC_LOCKBREAK before. See the thread 
-in [1]. However, we didn't proceed further at that time as we weren't 
-totally sure if there were still some configurations that required 
-CONFIG_GENERIC_LOCKBREAK.
+From: Maximilian Heyne <mheyne@amazon.de>
 
-[1] https://lore.kernel.org/lkml/20211022120058.1031690-1-arnd@kernel.org/
+Commit fa765c4b4aed2d64266b694520ecb025c862c5a9 upstream
 
-Anyway, without taking out CONFIG_GENERIC_LOCKBREAK, the proper way to 
-fix this issue is probably to declare the proper function prototypes in 
-include/linux/rwlock_api_smp.h and include/linux/spinlock_api_smp.h when 
-CONFIG_GENERIC_LOCKBREAK is defined.
+shutdown_pirq and startup_pirq are not taking the
+irq_mapping_update_lock because they can't due to lock inversion. Both
+are called with the irq_desc->lock being taking. The lock order,
+however, is first irq_mapping_update_lock and then irq_desc->lock.
 
-Cheers,
-Longman
+This opens multiple races:
+- shutdown_pirq can be interrupted by a function that allocates an event
+  channel:
+
+  CPU0                        CPU1
+  shutdown_pirq {
+    xen_evtchn_close(e)
+                              __startup_pirq {
+                                EVTCHNOP_bind_pirq
+                                  -> returns just freed evtchn e
+                                set_evtchn_to_irq(e, irq)
+                              }
+    xen_irq_info_cleanup() {
+      set_evtchn_to_irq(e, -1)
+    }
+  }
+
+  Assume here event channel e refers here to the same event channel
+  number.
+  After this race the evtchn_to_irq mapping for e is invalid (-1).
+
+- __startup_pirq races with __unbind_from_irq in a similar way. Because
+  __startup_pirq doesn't take irq_mapping_update_lock it can grab the
+  evtchn that __unbind_from_irq is currently freeing and cleaning up. In
+  this case even though the event channel is allocated, its mapping can
+  be unset in evtchn_to_irq.
+
+The fix is to first cleanup the mappings and then close the event
+channel. In this way, when an event channel gets allocated it's
+potential previous evtchn_to_irq mappings are guaranteed to be unset already.
+This is also the reverse order of the allocation where first the event
+channel is allocated and then the mappings are setup.
+
+On a 5.10 kernel prior to commit 3fcdaf3d7634 ("xen/events: modify internal
+[un]bind interfaces"), we hit a BUG like the following during probing of NVMe
+devices. The issue is that during nvme_setup_io_queues, pci_free_irq
+is called for every device which results in a call to shutdown_pirq.
+With many nvme devices it's therefore likely to hit this race during
+boot because there will be multiple calls to shutdown_pirq and
+startup_pirq are running potentially in parallel.
+
+  ------------[ cut here ]------------
+  blkfront: xvda: barrier or flush: disabled; persistent grants: enabled; indirect descriptors: enabled; bounce buffer: enabled
+  kernel BUG at drivers/xen/events/events_base.c:499!
+  invalid opcode: 0000 [#1] SMP PTI
+  CPU: 44 PID: 375 Comm: kworker/u257:23 Not tainted 5.10.201-191.748.amzn2.x86_64 #1
+  Hardware name: Xen HVM domU, BIOS 4.11.amazon 08/24/2006
+  Workqueue: nvme-reset-wq nvme_reset_work
+  RIP: 0010:bind_evtchn_to_cpu+0xdf/0xf0
+  Code: 5d 41 5e c3 cc cc cc cc 44 89 f7 e8 2b 55 ad ff 49 89 c5 48 85 c0 0f 84 64 ff ff ff 4c 8b 68 30 41 83 fe ff 0f 85 60 ff ff ff <0f> 0b 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 0f 1f 44 00 00
+  RSP: 0000:ffffc9000d533b08 EFLAGS: 00010046
+  RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000006
+  RDX: 0000000000000028 RSI: 00000000ffffffff RDI: 00000000ffffffff
+  RBP: ffff888107419680 R08: 0000000000000000 R09: ffffffff82d72b00
+  R10: 0000000000000000 R11: 0000000000000000 R12: 00000000000001ed
+  R13: 0000000000000000 R14: 00000000ffffffff R15: 0000000000000002
+  FS:  0000000000000000(0000) GS:ffff88bc8b500000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 0000000000000000 CR3: 0000000002610001 CR4: 00000000001706e0
+  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+  Call Trace:
+   ? show_trace_log_lvl+0x1c1/0x2d9
+   ? show_trace_log_lvl+0x1c1/0x2d9
+   ? set_affinity_irq+0xdc/0x1c0
+   ? __die_body.cold+0x8/0xd
+   ? die+0x2b/0x50
+   ? do_trap+0x90/0x110
+   ? bind_evtchn_to_cpu+0xdf/0xf0
+   ? do_error_trap+0x65/0x80
+   ? bind_evtchn_to_cpu+0xdf/0xf0
+   ? exc_invalid_op+0x4e/0x70
+   ? bind_evtchn_to_cpu+0xdf/0xf0
+   ? asm_exc_invalid_op+0x12/0x20
+   ? bind_evtchn_to_cpu+0xdf/0xf0
+   ? bind_evtchn_to_cpu+0xc5/0xf0
+   set_affinity_irq+0xdc/0x1c0
+   irq_do_set_affinity+0x1d7/0x1f0
+   irq_setup_affinity+0xd6/0x1a0
+   irq_startup+0x8a/0xf0
+   __setup_irq+0x639/0x6d0
+   ? nvme_suspend+0x150/0x150
+   request_threaded_irq+0x10c/0x180
+   ? nvme_suspend+0x150/0x150
+   pci_request_irq+0xa8/0xf0
+   ? __blk_mq_free_request+0x74/0xa0
+   queue_request_irq+0x6f/0x80
+   nvme_create_queue+0x1af/0x200
+   nvme_create_io_queues+0xbd/0xf0
+   nvme_setup_io_queues+0x246/0x320
+   ? nvme_irq_check+0x30/0x30
+   nvme_reset_work+0x1c8/0x400
+   process_one_work+0x1b0/0x350
+   worker_thread+0x49/0x310
+   ? process_one_work+0x350/0x350
+   kthread+0x11b/0x140
+   ? __kthread_bind_mask+0x60/0x60
+   ret_from_fork+0x22/0x30
+  Modules linked in:
+  ---[ end trace a11715de1eee1873 ]---
+
+Fixes: d46a78b05c0e ("xen: implement pirq type event channels")
+Co-debugged-by: Andrew Panyakin <apanyaki@amazon.com>
+Signed-off-by: Maximilian Heyne <mheyne@amazon.de>
+[apanyaki: backport to v5.4-stable]
+Signed-off-by: Andrew Paniakin <apanyaki@amazon.com>
+---
+Compare to upstream patch this one does not have close_evtchn flag
+because there is no need to handle static event channels.
+This feature was added only in 58f6259b7a08f ("xen/evtchn: Introduce new
+IOCTL to bind static evtchn")
+
+ drivers/xen/events/events_base.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/xen/events/events_base.c b/drivers/xen/events/events_base.c
+index 91806dc1236d..f8554d9a9f28 100644
+--- a/drivers/xen/events/events_base.c
++++ b/drivers/xen/events/events_base.c
+@@ -825,8 +825,8 @@ static void shutdown_pirq(struct irq_data *data)
+ 		return;
+ 
+ 	do_mask(info, EVT_MASK_REASON_EXPLICIT);
+-	xen_evtchn_close(evtchn);
+ 	xen_irq_info_cleanup(info);
++	xen_evtchn_close(evtchn);
+ }
+ 
+ static void enable_pirq(struct irq_data *data)
+@@ -869,8 +869,6 @@ static void __unbind_from_irq(unsigned int irq)
+ 	if (VALID_EVTCHN(evtchn)) {
+ 		unsigned int cpu = cpu_from_irq(irq);
+ 
+-		xen_evtchn_close(evtchn);
+-
+ 		switch (type_from_irq(irq)) {
+ 		case IRQT_VIRQ:
+ 			per_cpu(virq_to_irq, cpu)[virq_from_irq(irq)] = -1;
+@@ -883,6 +881,7 @@ static void __unbind_from_irq(unsigned int irq)
+ 		}
+ 
+ 		xen_irq_info_cleanup(info);
++		xen_evtchn_close(evtchn);
+ 	}
+ 
+ 	xen_free_irq(irq);
+-- 
+2.40.1
 
 
