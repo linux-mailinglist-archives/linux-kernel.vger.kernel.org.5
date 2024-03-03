@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-89790-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89792-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09EEC86F5B4
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 16:03:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 910C086F5B6
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 16:04:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F08E6B24044
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 15:03:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 464041C21A7F
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 15:04:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC7DF6AFB7;
-	Sun,  3 Mar 2024 15:01:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F24B56BB47;
+	Sun,  3 Mar 2024 15:01:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="Qt2//bnh"
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="ADaenkqS"
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B35967A19
-	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 15:01:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 994DA6A002
+	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 15:01:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709478097; cv=none; b=C4jUUOiO1yFcS9oq35frs17tHcGxjxCnwoPkCaDWvnx4HaK9VmyNmJx1SbxWtG8sbDntUBF/28RjI13X85TR7Py4M6Vfs7INdXLr1wxABnH2bbFxJu/XR6w9+QCojk/r4Da4kov+lQrWp/AIQcP2yS9agfX7zWeRr1VtF6T7bzM=
+	t=1709478098; cv=none; b=DbEp2P/wwXP3T8X8F+Lk5tt7CE4dk3aT2ZSKkNzXK8OE1Q+JDHbIo4kNVCtvoFoFgjkMBvQTZebmD+rjVL+GEIZVM02D8N8ahr01y/KOz2YnzDKI9iUuyRZlOU31k5hDhqRBIf7QViNr3ZvZ79GpaLVPbJRvwikSXpxTsEQJXRM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709478097; c=relaxed/simple;
-	bh=BUOiJMJAEpUEY/4J8P8EFUX7DemWfjIpSlIVs71qurE=;
+	s=arc-20240116; t=1709478098; c=relaxed/simple;
+	bh=r4MrdpfQItW+VY2TV1TWENdOVO+4+6domQX8f1WokzU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=GGD/v6dnTnvrfy97xdXyLK6GPRvjqlppdZ5sCeu6X/Ulab5g/52EqJy0eQrnaE8FTKUY6PeEmCKXV1Vtj6JBmrbkzO21GHvGrGsDeJ6ksqagvImAIUsZONLBHKlKoBks02xKwq6384uzBYS/IRs5Pw9wA6s59gAspvVRxbLGCkE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=Qt2//bnh; arc=none smtp.client-ip=209.85.218.50
+	 MIME-Version; b=ZjsCzTEF3fFzwrMuhXVy9FjtHg764/Lr1UvBYXNo0pDg1iYil5WPEo4LuMua8MwSdOXacVMrCrtt86xJRcBtN3t6BUGp1JaKxE3+t+9+K2pWT6dEY74myJH55Ddiab6FURLhkxoViTx+mosOotOEUGfNaqjarDbqPsBXkpiG6zg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=ADaenkqS; arc=none smtp.client-ip=209.85.208.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a450bedffdfso63009266b.3
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 07:01:35 -0800 (PST)
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-564372fb762so4904899a12.0
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 07:01:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1709478094; x=1710082894; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1709478095; x=1710082895; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=L12WZQfIjPLa8ST8Z/BOMDM6oqnRCJHCQVsMSwzBc0M=;
-        b=Qt2//bnh3TZAGI+9m51FSvWPjhRu3YnmakxQix81idiR0cfKUQUpwVGxY1I3TTXgRS
-         BHFV8PnzZpBKTSw/CtTeODNwM9PyfBkWo1UDYrRTrCyHLMNPbE8KaxpPacW+AaXO4Sfp
-         JRsjFi3fdoAn3FcknjVrtP4WHSEe44hq0uM2VHKMYxC1uJ2F8rtZl4HpklVaddAzWdNE
-         Ecfl0H3Q6jJ1j8p9L1Cvcg3JwUgy3ukekthDhar5JPV4hxupobyCBJ9iuzyUByqAoUrC
-         602IafQhESNUoomwdYoWYLwcML52syDaJwLTrWfxN1fJjFz4vM6rlqNW4qhe1g2TmSSA
-         LzjA==
+        bh=4wfEydsGbvddKil/3Z8l6vz+rSpkbDji/d2z7vS115c=;
+        b=ADaenkqSJZTdy1iD5HXeDXQ6qAg/NB4ipyYmj7G0qKZ49nloYL/0dx7+dbVQ+4o0oA
+         AzeKinUtDEC6uFzFmBOZTuTA4oLuIjNYy92iSjG1pHT+LIZlo0wo0K8FTrU6pr08Lf7z
+         Fn9yYZ7yeVWdxHzEb2fngBWuyB9oQXYv9RWU4TvIOUFACH7Lxp2bRm5cBt+NJR+rv4S0
+         1pE2GyKY61fNaCArkPWiXhXGWBSF98l4pEyhw5lH4DQYVuf3ejeEUWS7w+yh8PLkeHxG
+         O6oEhFu+6a46r6S01pYv35ED3+bc1y4UPbunZmJsrAoX7e9DRaqWRSZw1tvd7DgjTc3m
+         7rPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709478094; x=1710082894;
+        d=1e100.net; s=20230601; t=1709478095; x=1710082895;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=L12WZQfIjPLa8ST8Z/BOMDM6oqnRCJHCQVsMSwzBc0M=;
-        b=gQ4bdfUefMXDq6Hl8yR9XVKuop+gEzq1zbcvu2DZ5TwmNrFFD9VhLZADk9N3N5og+4
-         TL+IqyPn0qOuC4UGI6nyct+97cPKBVCWsy2W15oIfPXoxnRg6UhrcFGF5KY66JaS/fyi
-         Xhek+qf0Rhke7HfArv1mSef685fbLWvGtAWHTKa5QcjjC6bixiC/A5PL9lf+onNiec6E
-         CdCTwrGLTJON1jM9B4fc7aRHDe4vlCIN43vo+u7GEBlBgh5CwdvBdEDza6MlWlFqjKua
-         0lhTGZvepa78gcpCyW5IqWdDAkcAWy3L2D6ys6ZFRrMpDRK1R+c7O5+LVp7ndhwgJsjv
-         9XyA==
-X-Forwarded-Encrypted: i=1; AJvYcCVXTSXSWPWo6zeHH/JpVKe1YUbidF2O2QaPQuVD4If2I0Y8/EdtgGXXdCGoJb5d+WMbjbsPXPKVoHHkxGqgRanJ6FYhKdME1GPyP8QA
-X-Gm-Message-State: AOJu0Yx9WllXAjZ7PD1GI08sW/AMjXxNp5/vFfbjDgHvrsmVf1+J3XB5
-	RfIy/mdFNM2A8H+JqbeoGFi/QnXnUQ4Ha0h4i7xg+BYKYmrN6JqrY92KPCrGzn8=
-X-Google-Smtp-Source: AGHT+IHW70cWGZpmNZWU3rtJ73z8LCBjIZw93+By8b7kiMvBnTYxyj+8PGipVGYRTU0OyQfXajoSsA==
-X-Received: by 2002:a17:906:4f0a:b0:a45:46f8:a181 with SMTP id t10-20020a1709064f0a00b00a4546f8a181mr125275eju.46.1709478093972;
-        Sun, 03 Mar 2024 07:01:33 -0800 (PST)
+        bh=4wfEydsGbvddKil/3Z8l6vz+rSpkbDji/d2z7vS115c=;
+        b=KDGyAlU+RFbM8PovGpeQRYlGGTwYIkm2GQCxE/odtTyH9Fm+rwfpBaT/cWghv5RG9r
+         6I8fcbVNcW8YYw0CVd3OWYL6mErXrJaCxP567kECLsFEqPnpBjq8RlSmCsVqVniBwxOi
+         Z+Rhj29CM+cJqsYg1q0GhJ5JOpE3ewdwHp/K6+9bvkLlNDcFOxwg/zCK+K2jcgjLDR73
+         HCo574a+bi+23p+IdM8cdHtDoyaOlZpmXiWSPta+YT4sYzRjpKU8CGOfNjGY37Ol9o6b
+         mmFBdD19RCozAgamhn6AsF+8QKe1ClYSU7ixtsrE8Qeek3A+DScNrhfJJ1sTBupgRVwu
+         GNxw==
+X-Forwarded-Encrypted: i=1; AJvYcCW5eVPIZ3pLP3xIGrZ9jUwPkKeQiDsMMIXWRm7VmOqN3TCFzLphoEY2k1msINzPQnxhl41IeIwfTF1NEtZIxDMKNg90qFO/JtWNLe53
+X-Gm-Message-State: AOJu0Yx5GKZrGvz2pfjh4NR6Tf2cl2Kicr0NgIYAaj38tzGBUmRdw6eb
+	okGjZFSXIB9+sCGq5vp3jLxMKrz4ttXM2nA+ruR1FXD/Fv5N4HHizAq03wCpU0E=
+X-Google-Smtp-Source: AGHT+IHaKPYTKkceAREIbdiaxB2ZZXS4LTPdk7piZ4fOASBtCzFFy+kH4Zbu3DN08O6YHZeK1/WFjg==
+X-Received: by 2002:a17:906:24d4:b0:a3e:d835:5685 with SMTP id f20-20020a17090624d400b00a3ed8355685mr4362651ejb.67.1709478094847;
+        Sun, 03 Mar 2024 07:01:34 -0800 (PST)
 Received: from brgl-uxlite.. ([77.241.232.10])
-        by smtp.gmail.com with ESMTPSA id ch14-20020a170906c2ce00b00a42ea946917sm3740293ejb.130.2024.03.03.07.01.33
+        by smtp.gmail.com with ESMTPSA id ch14-20020a170906c2ce00b00a42ea946917sm3740293ejb.130.2024.03.03.07.01.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Mar 2024 07:01:33 -0800 (PST)
+        Sun, 03 Mar 2024 07:01:34 -0800 (PST)
 From: Bartosz Golaszewski <brgl@bgdev.pl>
 To: Andy Gross <agross@kernel.org>,
 	Bjorn Andersson <andersson@kernel.org>,
@@ -84,9 +84,9 @@ Cc: linux-arm-msm@vger.kernel.org,
 	kernel@quicinc.com,
 	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
 	Deepti Jaggi <quic_djaggi@quicinc.com>
-Subject: [PATCH v8 11/12] firmware: qcom: scm: clarify the comment in qcom_scm_pas_init_image()
-Date: Sun,  3 Mar 2024 16:01:14 +0100
-Message-Id: <20240303150115.133633-12-brgl@bgdev.pl>
+Subject: [PATCH v8 12/12] arm64: defconfig: enable SHM Bridge support for the TZ memory allocator
+Date: Sun,  3 Mar 2024 16:01:15 +0100
+Message-Id: <20240303150115.133633-13-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240303150115.133633-1-brgl@bgdev.pl>
 References: <20240303150115.133633-1-brgl@bgdev.pl>
@@ -100,36 +100,30 @@ Content-Transfer-Encoding: 8bit
 
 From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-The "memory protection" mechanism mentioned in the comment is the SHM
-Bridge. This is also the reason why we do not convert this call to using
-the TZ memory allocator.
+Enable SHM Bridge support in the Qualcomm TrustZone allocator by default
+as even on architectures that don't support it, we automatically fall
+back to the generic allocator.
 
 Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Tested-by: Andrew Halaney <ahalaney@redhat.com> # sc8280xp-lenovo-thinkpad-x13s
 Tested-by: Deepti Jaggi <quic_djaggi@quicinc.com> #sa8775p-ride
 Reviewed-by: Elliot Berman <quic_eberman@quicinc.com>
 ---
- drivers/firmware/qcom/qcom_scm.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/arm64/configs/defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
-index 811f93edac7f..fbacc959b6fa 100644
---- a/drivers/firmware/qcom/qcom_scm.c
-+++ b/drivers/firmware/qcom/qcom_scm.c
-@@ -566,6 +566,13 @@ int qcom_scm_pas_init_image(u32 peripheral, const void *metadata, size_t size,
- 	 * During the scm call memory protection will be enabled for the meta
- 	 * data blob, so make sure it's physically contiguous, 4K aligned and
- 	 * non-cachable to avoid XPU violations.
-+	 *
-+	 * For PIL calls the hypervisor creates SHM Bridges for the blob
-+	 * buffers on behalf of Linus so we must not do it ourselves hence
-+	 * not using the TZMem allocator here.
-+	 *
-+	 * If we pass a buffer that is already part of an SHM Bridge to this
-+	 * call, it will fail.
- 	 */
- 	mdata_buf = dma_alloc_coherent(__scm->dev, size, &mdata_phys,
- 				       GFP_KERNEL);
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index e70a599046b5..281cdcacc627 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -252,6 +252,7 @@ CONFIG_INTEL_STRATIX10_RSU=m
+ CONFIG_MTK_ADSP_IPC=m
+ CONFIG_EFI_CAPSULE_LOADER=y
+ CONFIG_IMX_SCU=y
++CONFIG_QCOM_TZMEM_MODE_SHMBRIDGE=y
+ CONFIG_QCOM_QSEECOM=y
+ CONFIG_QCOM_QSEECOM_UEFISECAPP=y
+ CONFIG_GNSS=m
 -- 
 2.40.1
 
