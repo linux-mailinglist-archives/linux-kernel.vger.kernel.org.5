@@ -1,86 +1,110 @@
-Return-Path: <linux-kernel+bounces-89639-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89640-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F186A86F373
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 03:55:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D305D86F376
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 04:04:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 798A4B22954
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 02:55:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E9A21F21D4B
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 03:04:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73D1D5CB5;
-	Sun,  3 Mar 2024 02:55:06 +0000 (UTC)
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B67B5CB5;
+	Sun,  3 Mar 2024 03:04:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="yD03v/WP"
+Received: from out203-205-221-153.mail.qq.com (out203-205-221-153.mail.qq.com [203.205.221.153])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A72237F
-	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 02:55:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 198F87F
+	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 03:04:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.153
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709434506; cv=none; b=rvSUWsk8FYpiwhhP+3yK4j2XigBTAWYoXWs1SeyG0bmFW9Hxv8Ur0AiMmZmgvs+q+W5AtoCUOw5001pISJVtImInkfHMKGRBVzrjfBBtehEwOZEdTSrnzJ0z3OcNvAsbXgIMBpxHd+Xw3SXxAQBal2mOSaWAcZmdivVFtz2fDhM=
+	t=1709435054; cv=none; b=UH18Tqzt5cb/vPI8zP3iKq8YLzWuRLT0iv1lX/QFHAE1FMDgraNE0OtrBDqNZGLI6r8k7HDX8SjaRA0ej566vRoedPgEZxO3q4pQ1Y3wgVh7iMAoBb0+qJh2iR8+6j1msUq7EKb/IqRQh5lRyFvI9GSWkhSsiGtHEMMbcDOCmF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709434506; c=relaxed/simple;
-	bh=DjSs0mQBLZI38L0jzSzr0Wlt9Fby7CV6ad4XDYFzAq4=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=Ft1O96aUP2iOCVDOvruBMfKIkA1ev7FDe9Og/d6wdLL6phczSpkpZWNW+zYKBBQkh619wMD5mxZq5Ax1QhI7kgle3vvXZ5Sn89y/e14AlrRiGBW9r0VhmHfTjmHmqzdS02JgGmz28+qDZUicBU3F61MXfI9rSeNsEXawvZ2kEzI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7c8364e4a31so76242739f.2
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Mar 2024 18:55:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709434504; x=1710039304;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CFlPxAxbMaIBt0XzyHKJhPUPplbAYy5uR+Dhxwse964=;
-        b=LQ92VJZqQNz5nmoTb+17PjXD5RNymPfzZldshFahhRh98UzEjwdlxVn2yArYBDDfRY
-         S4j+MxGNA/cFS1PLEXcJOheQtNhNggC49cFeDa/CfxblxM2vVKJlKxQYyJ4Ah5X8DgCf
-         TNw72B24MD7U1Psai+19gfrCOFXWb5CcjzSAwBbvO/wtriJfRu24LUo50F1t1S3qmY3Z
-         X9Al9yupNNch4whKiF/I8cTILgqZajo0CM0mD/WCle5YZW8hqIwwhiQXaZONOgBDDeSj
-         0x1eyHTXeXTMgOsMkckcbiUTrsR6P2hineTMNfAOmSkVw1uatUFksbpT2MTpyeaVb1w8
-         EL6A==
-X-Forwarded-Encrypted: i=1; AJvYcCV2AQufwLxdtXmJLOpEeo5h3oOGbf2NQ1EYIGmKbo75kaFkniRQZJUQ7wL4u1ETREpD7O9t+3Mpj4Twu0wH6U4vS19m8l7UvcxjxWmD
-X-Gm-Message-State: AOJu0YxOhxUCKpHB8Bts3IGnG2bL+xtL/TtjPfLcvMN58WW7PuBwMH7a
-	es7mo0Xapf4F1lSosGa77TAZKVFIINW8bghAxClsHLrerBFwdOdXhKcTILkaJZsS8In6Ru7ZJCE
-	jF7+BtSipZEi6kzrhvTBBPjocghxFA9U38AyYbRffF8dsz0Q57FBiSBo=
-X-Google-Smtp-Source: AGHT+IEuYU6tkBtiTnxAKaOShmToEu2kuX00CZYwDy1lId02U85LwjJQpSTQxzgmDhFFdcD4k6l0A50ZMRE4tRSveH45df3QlcC/
+	s=arc-20240116; t=1709435054; c=relaxed/simple;
+	bh=bvsAFbdOceGaJh/xNDTlqquJ5u9tn/gHWjotlPelnzM=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=jy7INOUVAmtolUDvJvvBZD1N4zdXo2aleu5AMBv5raP/JuH5lPPBEH7h/+mzmo5qymwpjf7NbUw7wqixnmGgGYSO2TQhijLsB15D0BpkMhrYZN44zxAG6Wi6lY+fhcKomwBIooetAAYROHSXw+hwe63+4XTM7whYwu9QqZz6nIc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=yD03v/WP; arc=none smtp.client-ip=203.205.221.153
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1709434742; bh=4B6VFs/HdgVIfEnBI1FSGNUsahA/M0i8oBqkPIYLPag=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=yD03v/WPlaErEnpfI5PNHSYH+Y7wOPPee3525Ozc0jSldElAfWTQLzvFFzuWr2za2
+	 aoEcAIBVkANH4gvpunIXjESZ+ZRP2mAUMv5asn6UCO0Bl4734rJSbKjzUCYFsqYZal
+	 B46McZRu8+Tj1fSrADPKPRU0Ivh95x/Acu71IjI8=
+Received: from pek-lxu-l1.wrs.com ([111.198.228.140])
+	by newxmesmtplogicsvrsza1-0.qq.com (NewEsmtp) with SMTP
+	id EC13B6E5; Sun, 03 Mar 2024 10:59:01 +0800
+X-QQ-mid: xmsmtpt1709434741tgzo8cvpx
+Message-ID: <tencent_5436144A4A74DD76DD66D03C89363E96E009@qq.com>
+X-QQ-XMAILINFO: MZ4XH1L85f1rlgDm9Gp5U1REGCZSds9b2g9BlnK9NcipZXWOW/wMRNuRJknsAO
+	 GcIJhAr/SaxzbHWFQypeoIfWsgj/9043XknIvZ9jcpU2Nxihy1f87UtBMeSI1gGQvjCI7kwuUQR0
+	 K62r1qvUcm4kfXeWVOsMyWGTvWdxETQKfrOxlhGMtxnhfEQnOvH8JGgU1j2/pAA/eNxr8RkC0zgG
+	 RuzYIi7ZaHmNz0qaDHRd2jd7IW0IJ23gBSMyzWkq2ju/uZ7/KO469jNRqYWB5sAs2Dqbqrxh4Faj
+	 pOIh9TrHHLBQEywRm5vSz7pgIDMJEOZrfqF0kfTTK9zAsTUnejJN+uMo3POpSnzIVhevQKVqSr+s
+	 ZmgrmGEcIwk5XFYNxYZ84wBNDonvKe/hgyAqlz0CmWkHhZbZLF8yVXqkB8HTrEl8n9mY6ZKRQiqi
+	 xKtiEDSOlnSt0Dyb7rp5rq41qwtUfsN1WGqz+6okHFIUdMiCh3DrgDa/3O3Pql5aWBnQ+EYDCRng
+	 9Q2Lrdui4DxNGYLutiItFtrIOMLuOqMlpKndYYkJGvv9iQg0zl22X6IzqghhcF9S1k7OkezEIThk
+	 bmNoMAVG3WR0qdTNCv7t2ueW1NXhWoOHIp9WnhpDTx5rTf5Eul9aoDIOslyJyGN7OvKKOy32UjOX
+	 FixcLQbkXzBqMqfHmTANUf+dUBE30CeYRI0aRJQsx7CeqLxKP3DbgpEwIq0BczvaOhxgy9a11Fd8
+	 +mXYawHLjPRblvHQdmZdQARXUOU+2stkQDMFlif4CVgcicLOprPj9LsYXbsu2Y1RRW7zfIsKZp/L
+	 924KM0xDrwKoyo4+/EIuCkSd/2nz2pG1cu+KYVzIO+gkqJIBudYJPs71Uby6XsihjK+v0Oh7GTcr
+	 +QLj74Ic2CJn6Rieu3AKEMhapXWqkV3be6ULNErrXXlJhTX7bUjS0YcTeRKbgPAW0nmFMmhMKO
+X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+d4faee732755bba9838e@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [rds?] WARNING in rds_conn_connect_if_down
+Date: Sun,  3 Mar 2024 10:59:02 +0800
+X-OQ-MSGID: <20240303025901.4139828-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <000000000000c0550506125e4118@google.com>
+References: <000000000000c0550506125e4118@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:37a1:b0:474:d744:c701 with SMTP id
- w33-20020a05663837a100b00474d744c701mr223329jal.4.1709434503995; Sat, 02 Mar
- 2024 18:55:03 -0800 (PST)
-Date: Sat, 02 Mar 2024 18:55:03 -0800
-In-Reply-To: <20240303014351.1274-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000060a5870612b8bc8f@google.com>
-Subject: Re: [syzbot] [usb?] [media?] KASAN: use-after-free Read in v4l2_fh_open
-From: syzbot <syzbot+b2391895514ed9ef4a8e@syzkaller.appspotmail.com>
-To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+please test mp capable for rds
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 
-Reported-and-tested-by: syzbot+b2391895514ed9ef4a8e@syzkaller.appspotmail.com
+diff --git a/net/rds/rdma.c b/net/rds/rdma.c
+index fba82d36593a..7fe1a79bd63d 100644
+--- a/net/rds/rdma.c
++++ b/net/rds/rdma.c
+@@ -301,6 +301,10 @@ static int __rds_rdma_map(struct rds_sock *rs, struct rds_get_mr_args *args,
+ 			kfree(sg);
+ 		}
+ 		ret = PTR_ERR(trans_private);
++		printk("ret: %d, %s\n", ret, __func__);
++		/* Trigger connection so that its ready for the next retry */
++		if (ret == -ENODEV)
++			rds_conn_connect_if_down(cp->cp_conn);
+ 		goto out;
+ 	}
+ 
+diff --git a/net/rds/send.c b/net/rds/send.c
+index 5e57a1581dc6..9efda3283753 100644
+--- a/net/rds/send.c
++++ b/net/rds/send.c
+@@ -1314,9 +1314,6 @@ int rds_sendmsg(struct socket *sock, struct msghdr *msg, size_t payload_len)
+ 	/* Parse any control messages the user may have included. */
+ 	ret = rds_cmsg_send(rs, rm, msg, &allocated_mr, &vct);
+ 	if (ret) {
+-		/* Trigger connection so that its ready for the next retry */
+-		if (ret ==  -EAGAIN)
+-			rds_conn_connect_if_down(conn);
+ 		goto out;
+ 	}
+ 
 
-Tested on:
-
-commit:         04b8076d Merge tag 'firewire-fixes-6.8-rc7' of git://g..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=12012abc180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fa01a41dc74de670
-dashboard link: https://syzkaller.appspot.com/bug?extid=b2391895514ed9ef4a8e
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1709bcf2180000
-
-Note: testing is done by a robot and is best-effort only.
 
