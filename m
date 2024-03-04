@@ -1,500 +1,249 @@
-Return-Path: <linux-kernel+bounces-90863-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90862-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA456870609
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:43:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5D84870624
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:49:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71DE4288A17
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:43:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7210AB2CA4D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:43:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 692DB4E1A8;
-	Mon,  4 Mar 2024 15:39:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 977B84DA04;
+	Mon,  4 Mar 2024 15:39:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="NF/JQE24"
-Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="cbq7r/B4";
+	dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b="qNTDiT7V"
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA6E3481AA
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 15:39:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709566772; cv=none; b=ClMK7YLNa5jSMOzV4zCEf/TAX+oz7X2512Ltez5IlHd9TpoG20DLhenIo9zN/N2e/0j045uqY4pjZRwcdb8hg/w/FLKeosRNIVWKrbXXHeuvqo16AEG1F0InCvQkALWjio92IDONedTiCFIxAdXgyrLHMqIKkOWqEwhzHIvpVZM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709566772; c=relaxed/simple;
-	bh=IuF3KpsYUrO8RcEt74LrQGVh7YFlbYp3gdosQ8XBzGo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=BZ8Pj3sTmhtIip/rVLzdavUV01wIGSLr0QuPiqro9w/2cmHJd+7LQshuB68qSqd87lhS7u69LpEztzugDkjsPSd9q67mTYjmSoTU7ciktHMzwY4l7gfkIGioC1R5LSGZOtEdfRV1tvrBvuy1TUASjrD2ndPQoayw0Gj1tejUlYs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=NF/JQE24; arc=none smtp.client-ip=198.252.153.129
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
-Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx1.riseup.net (Postfix) with ESMTPS id 4TpNCt1pLPzDqD7;
-	Mon,  4 Mar 2024 15:39:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-	t=1709566762; bh=IuF3KpsYUrO8RcEt74LrQGVh7YFlbYp3gdosQ8XBzGo=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=NF/JQE24GFQKXiv+LvkBPpfY2AJxxdew1XxrmIPTtnOQ0AoWe316IJuW9Ff02RL1t
-	 KWI+qz1J4RlO3GVyBAm+od1wFvipNfxkzCDiPAgXmJmpFW4/driROui9/Us6ywzBUC
-	 J8i1pAA2Ve2pI1o3y0LWQTLb93+Km2RvggldKiao=
-X-Riseup-User-ID: 9D8945CDF63164A431B251F7C9D4F2C6FB26EA9B77DC23CA88E50E3583F36153
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4TpNCl69xCzFvSP;
-	Mon,  4 Mar 2024 15:39:15 +0000 (UTC)
-Message-ID: <fde6b1d5-56c9-43d0-9ccc-87683b700734@riseup.net>
-Date: Mon, 4 Mar 2024 12:39:12 -0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63DB9481A3
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 15:39:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=210.61.82.184
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709566771; cv=fail; b=B8o/TuW6wHFOYrY53qQPy4w4pjHgoNmzIyoc0y8PTGLLP4YGi073wYQjDOQ1sa/lVjmAZEsWX4736dKBq/i+x8wQn3fP/NfG5MdapKOFpDcRrVKua5zw2EYUL9kwCSt5xEjSr/Yz1LZMkeJS/Qqcn22hIGT79nHPbLJ7DNg6NbE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709566771; c=relaxed/simple;
+	bh=f5Ppwzs9pIDg42WbFULARx1Zvvit5C0FWfSXhf8UEQs=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=IJFBPINXfIW3Md2W+XyBHmprQuK5eahKqzaxqlem7jI+1ri0Waas9HmwHiNmTUL2E1FaDQsMJoKfetLZ8eRLsN93+sNu9Ugr70xAEqk1RDLKtc+g0QPlHigOT3v0DS2/y3mNfBJGJL9T5McnxICZdjwKnp1iAPZ1Dxwwd2QskmQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=cbq7r/B4; dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b=qNTDiT7V; arc=fail smtp.client-ip=210.61.82.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: 60b31aecda3d11ee935d6952f98a51a9-20240304
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=f5Ppwzs9pIDg42WbFULARx1Zvvit5C0FWfSXhf8UEQs=;
+	b=cbq7r/B4+U/iR7ryh0JqYXBrx+eV7eYKp5C2mWyWHH0YlGs0HXePtfi/4hZolacG9gm+O1WfHf1OPqmWnhyjavH4q0TWBZx4M+2iTb+r04L2+dq1NRpz2kdHdaopbcfXEUVoKmnQ24ZJGzUoyjjUkjlDWyz1fLAugh0bnyox5eg=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:c79d4845-8189-4d73-b0e6-281aa0b3b334,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:6f543d0,CLOUDID:37b69884-8d4f-477b-89d2-1e3bdbef96d1,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
+	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 60b31aecda3d11ee935d6952f98a51a9-20240304
+Received: from mtkmbs14n2.mediatek.inc [(172.21.101.76)] by mailgw02.mediatek.com
+	(envelope-from <jason-jh.lin@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 862905885; Mon, 04 Mar 2024 23:39:24 +0800
+Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
+ mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Mon, 4 Mar 2024 23:39:23 +0800
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (172.21.101.237)
+ by mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Mon, 4 Mar 2024 23:39:23 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RUL8EV9diFscckXq7wH0PiKTmzUtn8cD0Js275h5pv4BFzPI0gxYnPMhXdIpE8N5S+CNsHgEvoqCVXja3G0E0mzq8sBuOq60LiOCOVN9BWNMnAYe8oaGoCDyxZIaiqO54SVLIa6FVp3V47mh1SR6dgG/irlp4AYS7Dpa5luWtkgTxdqrXcBC0A+CJXX7Zu6gu3E1IGb8IHFLxZ7z5lwpJJk2p/9mTSdRQUG73knEo8HcGqJmMfj1h14jNtMAhuH4FGDeUtok8WbFA0lHm69SMkWzAQU7BLq5sOyg9NxQZNaEEx46CHM0GvBElzv4XIswJL/IMekGHqlkzFn/NaJBUw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=f5Ppwzs9pIDg42WbFULARx1Zvvit5C0FWfSXhf8UEQs=;
+ b=gs0fxpzC5qi9c5CyDNKt3j617pxgQKs/v7F3gN3Ekyxaj8ePitRu+WpYu6dt6dMa8+xJ4RRnwil3mEWsQmaybd3KD+tLJldSRh3+hlFC4cGOEttSsgUwW5vCCm8TexLDfgVppUJEIgpSvJr1FxlYvMVHKwZLNBu5nrSWcHMOO35TXgz8o/STJJ0CREggWmdU1ntRhRzBpzbLzRabxe88g3gmdWlR/qc60U73jInlYnqjTngcCg/WoL41htAQyo6Kz8GF9ac/KgsK7y5JRbFdWi796aZVAZgj/B0ehw4R7uYxr5W3snpLdMHcHP3PnVW16gGA9HbpeKyWikmD7Pkt9w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
+ dkim=pass header.d=mediatek.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f5Ppwzs9pIDg42WbFULARx1Zvvit5C0FWfSXhf8UEQs=;
+ b=qNTDiT7VIxQ1Kp5lZwpAZ35lD76oNOIrO8NZC/uQc0cxY4Z6iBAlHygcfpcgYVJkCEaAHy/SYDss9/uAC5Itq4RjHxHhsFM08+WMuFAqvYyFhzXz37BYrRbKQO/FwwZWa3D7aibHsjlkmozlKIu57z/BvA36pvxOooObH1q8H8c=
+Received: from SEYPR03MB7682.apcprd03.prod.outlook.com (2603:1096:101:149::11)
+ by SEZPR03MB8230.apcprd03.prod.outlook.com (2603:1096:101:18e::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.39; Mon, 4 Mar
+ 2024 15:39:20 +0000
+Received: from SEYPR03MB7682.apcprd03.prod.outlook.com
+ ([fe80::bc7c:deed:ae:ed4c]) by SEYPR03MB7682.apcprd03.prod.outlook.com
+ ([fe80::bc7c:deed:ae:ed4c%4]) with mapi id 15.20.7339.033; Mon, 4 Mar 2024
+ 15:39:20 +0000
+From: =?utf-8?B?SmFzb24tSkggTGluICjmnpfnnb/npaUp?= <Jason-JH.Lin@mediatek.com>
+To: =?utf-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>,
+	"jassisinghbrar@gmail.com" <jassisinghbrar@gmail.com>,
+	"matthias.bgg@gmail.com" <matthias.bgg@gmail.com>, "chunkuang.hu@kernel.org"
+	<chunkuang.hu@kernel.org>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+	=?utf-8?B?U2luZ28gQ2hhbmcgKOW8teiIiOWciyk=?= <Singo.Chang@mediatek.com>,
+	=?utf-8?B?SmFzb24tY2ggQ2hlbiAo6Zmz5bu66LGqKQ==?=
+	<Jason-ch.Chen@mediatek.com>, =?utf-8?B?U2hhd24gU3VuZyAo5a6L5a2d6KyZKQ==?=
+	<Shawn.Sung@mediatek.com>, =?utf-8?B?TmFuY3kgTGluICjmnpfmrKPonqIp?=
+	<Nancy.Lin@mediatek.com>, Project_Global_Chrome_Upstream_Group
+	<Project_Global_Chrome_Upstream_Group@mediatek.com>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>,
+	"angelogioacchino.delregno@collabora.com"
+	<angelogioacchino.delregno@collabora.com>
+Subject: Re: [RESEND, PATCH 4/5] soc: mediatek: mtk-cmdq: Add
+ cmdq_pkt_acquire_event() function
+Thread-Topic: [RESEND, PATCH 4/5] soc: mediatek: mtk-cmdq: Add
+ cmdq_pkt_acquire_event() function
+Thread-Index: AQHaa+b/w8B443UOGkqSLoAweqsZE7Em2q4AgADhwoA=
+Date: Mon, 4 Mar 2024 15:39:20 +0000
+Message-ID: <2872ca3bf9fb3e55a93c1a7d48149bacdd8e2bd5.camel@mediatek.com>
+References: <20240301144403.2977-1-jason-jh.lin@mediatek.com>
+	 <20240301144403.2977-5-jason-jh.lin@mediatek.com>
+	 <ade36b07c4f60a755a3b7700250e56ec61711d53.camel@mediatek.com>
+In-Reply-To: <ade36b07c4f60a755a3b7700250e56ec61711d53.camel@mediatek.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=mediatek.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SEYPR03MB7682:EE_|SEZPR03MB8230:EE_
+x-ms-office365-filtering-correlation-id: c60b3a7e-9ce9-4aef-0eb9-08dc3c614261
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: dWDkAZEjofGk+ZM7m0LXZ4HXDNyAauSez/mPlsxWRy6GigiEtrPZl9ejx1txKjoOMtXVT9mDc0fczwm2KW07V/3LwIclG5fo5YULrImqfcUw3mQcX4RgIAhTCiZzf6oO6ZXl0EzSNXy7NH4uZrNCs7xyDGUQSv+TzwdHE6FV88lkCkNmxWoqwSf1xXgDzOEsGlhX6hD8c0KMErzKj5lRsCcRCA9k8dnxHSCWssNCm0hHay1Cqc1z91gIohy7IeF9vm03XZHA8d297nODSYhcFobir96HQlYDWj6045m4MIs0Re5oeJvrGwc54GBcg6lFjxg5kNRh8AiKwvP8BeG21M66hwtE4fr6HIRIFdsMTD8E3v477IdIMVcAQzBwwiVsBNj7jlHRPrN2YtWb3gPLaZEiHcTNlq/zwGmwIBMN4PYVEWPA++ADN4gFqpLK6g+OLm2dJ8fdZDgN8j6eF2/WCMIF5qgPUhDnVWvO2SxyqvJANpnjvGPVyiyvOXM+yKUNSBZnswLoXCPiG4+joVMAQ8HI7MnkyEEtBp5LFFxFGwHBrvV6Mcaf69nWtMV7OxczXm0mfOj472y/2DNHw5gDppE7bfRV0LEjDJa1b5vmMHoqG2UTSHvRTZaek1YkeQGE4/GXLxfvImY6X+aOpaKMTY3mwgUryRMbj1zFcMfbhbbM34eK4Pa+5fYRePCTl0NRfjP2Dd8gKMV18lL/eFqr2Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEYPR03MB7682.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?cFZJNUtSbE1wRGhuTGpLSWYxRlVHNkVoMGFLaXRTdU5kK0RxeUpTWEh1czV5?=
+ =?utf-8?B?Um52MXF3WU5xK2NMSzBDWHR3ZW1EZktFVjc1anVMSktkM2lSbWtaVEZMQTk0?=
+ =?utf-8?B?OTI1MHczMHhCT0lBRzU1WVZkV2ZHWXRYaDNFMzIxOXJSUDZxZFdWcjZsZUlQ?=
+ =?utf-8?B?NkcwOFVPdlNjNWJQcXRaWERSS0UrNFNTcGZKWGdBMENZbUlUYzZEeFhkS3Jh?=
+ =?utf-8?B?ZGxFc0JEcjAxbEFrTnBod2xFWTRUQmNJK2JieTRuWjdEUnAzbVJ3K1VMcVZQ?=
+ =?utf-8?B?czlKcHI5blhNNGQvZWFvL1VWSUp1L3dLM2t5VUVaVWJrL3JhRFZGYmIzWURt?=
+ =?utf-8?B?Yzk4NEo0RmdXL0tGSDJ0Skl4WjFUT0srT0tReHZwTW9YRldGNEpTM2NZQi9j?=
+ =?utf-8?B?dnJXNjZhbGw3UmJINXpGdmlrVHN0UVErNXd6Q0FnYjJ6ckQvOTEzdjRkM2Y4?=
+ =?utf-8?B?enYxQXdiTU9BT3VhbWdYRkhxNHArRnZvWi9Mc0x6Y0xvakt0dnErSVdGS1FS?=
+ =?utf-8?B?bUROQkZFelVZM0FNMjZ1cURwTzhNaXROL0trYUtTejA2V2RtUXZMakwvOEt2?=
+ =?utf-8?B?b0xENkZKMEJibzhVRGx4Q1BGK2djZVNKMHFZTDRKQnA0R2YvbFEwUFhsWGQ4?=
+ =?utf-8?B?MWFEbXNMeFRHcStZaUdYeXBEemdGVU9heHpsZnJpYWRCUno3TWVoV1RESTho?=
+ =?utf-8?B?ZWdRWTdrMXYySXkyd2dKSG5Jb3NkTWgyKy9FRVQ5dHRkREI3UERjcGpydHBQ?=
+ =?utf-8?B?NjJwcnNWK0JLbllmdEdiT2s0WFZ3V2IrVXhkVjNyZDVBd080T2FNelptZEwv?=
+ =?utf-8?B?a1U0S2ZqbkY2bEdoY3FXby9lVVJUVDdZdjNhYllsVmtZNDNkOE12c0J4bnFG?=
+ =?utf-8?B?bDROUm9UUUR4eFZ1azFKYktRc2ovRm44cjVDVGZVVUFCYlVCMmdPNmxOa0NL?=
+ =?utf-8?B?SU14OXpJRjNtVUF5UkxWanVjU0h4a09HWHZYUTdwNXlMdDU4MDdaTDVvMnN2?=
+ =?utf-8?B?WS9XbjdSUWJhdFF0Z0l2VnlXSUFxcWVCSFhsbGx1OGdKZm5hVnJ1dWloV1dk?=
+ =?utf-8?B?dlZsZHJrd0YzYlNmWFduQ0phM09CVW5PbTFJSUY5WWZWM3ExeWFjU09WVFRu?=
+ =?utf-8?B?VzlqNnRMcmtSTHpHRENvR2U0ZXFZWEVKSHN5S0tsMnJEQlRQM3U3cHMxV0xH?=
+ =?utf-8?B?VVovYzdJY0N3T3pURjBFZFBHbDdxUk9BT1U4YzVrcGEwV3BpOE82YzRySkJa?=
+ =?utf-8?B?UFN2NDVFV1FWZllzdWtOdWhpSHlJcTNsWVhrZFhiNjNSQXF4YzFLTWNOWjdV?=
+ =?utf-8?B?cjV0WVdlN05SY1JBeVZoZGFZMElOamVTZThNOXNtb2c0WFk5UUZKYWIzQ3RK?=
+ =?utf-8?B?MXd3bXV5SWgrd2IwV2xGdHh4U094TEg0aDdMQ1lGTEU5d1UwNTVuek1wK1Bk?=
+ =?utf-8?B?SEZITFdwVm5RWWRRVVpMVUFnS2xYRGc1WElPTnE2L3JNN0VsR0RQNW8yTHFT?=
+ =?utf-8?B?SGV3UTkydW4wMGUrajVWYUpXSHBuZ081VDVSM1Q1Y0FDM05lQ29rd2tHTHVx?=
+ =?utf-8?B?dG5ud010cWdCeld3RG9kY2I3TWFkSnhydk5Vb2FsdURFRkV0TTRyVlo1ZTlX?=
+ =?utf-8?B?cVBwdmttMXhkZ2MrOVZjTUE0TFBzYXNrdHNKNys3dkJTNmJ5TXRYdWdTRVNz?=
+ =?utf-8?B?Y3owVTU4UTIrUU8xVG1sbHBxMlVEb29YZHFUMnYvNktKdDB4Z0NpcGF3T1hn?=
+ =?utf-8?B?cmJCaTcxcHdZUmdYaUhURnhpSG5vU29ETDQyVjVLK3ZZTlFUS3JqYWpmVXc2?=
+ =?utf-8?B?QnorSHlpRSs0dnNpajBjdVQ0bjJDV3FSU0hHQVRzT2Q2bElLMFlRWjBwSEZW?=
+ =?utf-8?B?aURGQ1FYcGpPUmpsS2xVZk90WStEWkFBT0w0dnlwUHFQMGovS0hsM0p3QTQ5?=
+ =?utf-8?B?TVFETUt0eVV0UFNiS1o4QjJkVHhrSDFYRDhhZnpsYzVQSExEajh6eGhNSEE5?=
+ =?utf-8?B?R3dhWXorUmFQR1Q3OFo0dVBmbW85MHRkRW91dHh5bkVIZmNVWnkwMmc3L3Zt?=
+ =?utf-8?B?WlVhUk9OZUcvQVB3NVkva29IcnNMcTMxMFlXQzVGVlRuWElXOHhCelFDOHQ1?=
+ =?utf-8?B?SVl4SEhhVlFwWmMxSWkwY3pKS1YvemZiL0F3MnZVVEJBVDFUTkx4QzhqVkph?=
+ =?utf-8?B?dGc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <72B7321F6961414B9A9D484776CBD15E@apcprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 6/9] drm/vkms: Add YUV support
-To: Pekka Paalanen <pekka.paalanen@collabora.com>,
- Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
- Melissa Wen <melissa.srw@gmail.com>, =?UTF-8?Q?Ma=C3=ADra_Canal?=
- <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
- thomas.petazzoni@bootlin.com
-References: <20240223-yuv-v2-0-aa6be2827bb7@bootlin.com>
- <20240223-yuv-v2-6-aa6be2827bb7@bootlin.com>
- <20240226141916.1627bbbd.pekka.paalanen@collabora.com>
- <Zd35c_CJbhY46TjQ@localhost.localdomain>
- <b23da076-0bfb-48b2-9386-383a6dec1868@riseup.net>
- <8fc07f0f-f14d-4878-9884-2bc4b4c6f426@riseup.net>
- <20240229141238.51891cad.pekka.paalanen@collabora.com>
- <ZeXoo4DJxlzhuK4W@localhost.localdomain>
-Content-Language: en-US
-From: Arthur Grillo <arthurgrillo@riseup.net>
-In-Reply-To: <ZeXoo4DJxlzhuK4W@localhost.localdomain>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SEYPR03MB7682.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c60b3a7e-9ce9-4aef-0eb9-08dc3c614261
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Mar 2024 15:39:20.2296
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: KFgNogXY0Qcseg6O1g97V94vVQ3mQJaZkjvT7Lk4yzCA5sPX9DNOzOFFovllelZIPf50ECQnp9qwPgExkxRU9PwbXaVDOy9TYuyG0G6/4bE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR03MB8230
 
-
-
-On 04/03/24 12:28, Louis Chauvet wrote:
-> Le 29/02/24 - 14:12, Pekka Paalanen a écrit :
->> On Wed, 28 Feb 2024 22:52:09 -0300
->> Arthur Grillo <arthurgrillo@riseup.net> wrote:
->>
->>> On 27/02/24 17:01, Arthur Grillo wrote:
->>>>
->>>>
->>>> On 27/02/24 12:02, Louis Chauvet wrote:  
->>>>> Hi Pekka,
->>>>>
->>>>> For all the comment related to the conversion part, maybe Arthur have an 
->>>>> opinion on it, I took his patch as a "black box" (I did not want to 
->>>>> break (and debug) it).
->>>>>
->>>>> Le 26/02/24 - 14:19, Pekka Paalanen a écrit :  
->>>>>> On Fri, 23 Feb 2024 12:37:26 +0100
->>>>>> Louis Chauvet <louis.chauvet@bootlin.com> wrote:
->>>>>>  
->>>>>>> From: Arthur Grillo <arthurgrillo@riseup.net>
->>>>>>>
->>>>>>> Add support to the YUV formats bellow:
->>>>>>>
->>>>>>> - NV12
->>>>>>> - NV16
->>>>>>> - NV24
->>>>>>> - NV21
->>>>>>> - NV61
->>>>>>> - NV42
->>>>>>> - YUV420
->>>>>>> - YUV422
->>>>>>> - YUV444
->>>>>>> - YVU420
->>>>>>> - YVU422
->>>>>>> - YVU444
->>>>>>>
->>>>>>> The conversion matrices of each encoding and range were obtained by
->>>>>>> rounding the values of the original conversion matrices multiplied by
->>>>>>> 2^8. This is done to avoid the use of fixed point operations.
->>>>>>>
->>>>>>> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
->>>>>>> [Louis Chauvet: Adapted Arthur's work and implemented the read_line_t
->>>>>>> callbacks for yuv formats]
->>>>>>> Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
->>>>>>> ---
->>>>>>>  drivers/gpu/drm/vkms/vkms_composer.c |   2 +-
->>>>>>>  drivers/gpu/drm/vkms/vkms_drv.h      |   6 +-
->>>>>>>  drivers/gpu/drm/vkms/vkms_formats.c  | 289 +++++++++++++++++++++++++++++++++--
->>>>>>>  drivers/gpu/drm/vkms/vkms_formats.h  |   4 +
->>>>>>>  drivers/gpu/drm/vkms/vkms_plane.c    |  14 +-
->>>>>>>  5 files changed, 295 insertions(+), 20 deletions(-)
->>>>>>>
->>>>>>> diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkms/vkms_composer.c
->>>>>>> index e555bf9c1aee..54fc5161d565 100644
->>>>>>> --- a/drivers/gpu/drm/vkms/vkms_composer.c
->>>>>>> +++ b/drivers/gpu/drm/vkms/vkms_composer.c
->>>>>>> @@ -312,7 +312,7 @@ static void blend(struct vkms_writeback_job *wb,
->>>>>>>  			 * buffer [1]
->>>>>>>  			 */
->>>>>>>  			current_plane->pixel_read_line(
->>>>>>> -				current_plane->frame_info,
->>>>>>> +				current_plane,
->>>>>>>  				x_start,
->>>>>>>  				y_start,
->>>>>>>  				direction,
->>>>>>> diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
->>>>>>> index ccc5be009f15..a4f6456cb971 100644
->>>>>>> --- a/drivers/gpu/drm/vkms/vkms_drv.h
->>>>>>> +++ b/drivers/gpu/drm/vkms/vkms_drv.h
->>>>>>> @@ -75,6 +75,8 @@ enum pixel_read_direction {
->>>>>>>  	READ_RIGHT
->>>>>>>  };
->>>>>>>  
->>>>>>> +struct vkms_plane_state;
->>>>>>> +
->>>>>>>  /**
->>>>>>>  <<<<<<< HEAD
->>>>>>>   * typedef pixel_read_line_t - These functions are used to read a pixel line in the source frame,
->>>>>>> @@ -87,8 +89,8 @@ enum pixel_read_direction {
->>>>>>>   * @out_pixel: Pointer where to write the pixel value. Pixels will be written between x_start and
->>>>>>>   *  x_end.
->>>>>>>   */
->>>>>>> -typedef void (*pixel_read_line_t)(struct vkms_frame_info *frame_info, int x_start, int y_start, enum
->>>>>>> -	pixel_read_direction direction, int count, struct pixel_argb_u16 out_pixel[]);
->>>>>>> +typedef void (*pixel_read_line_t)(struct vkms_plane_state *frame_info, int x_start, int y_start,
->>>>>>> +	enum pixel_read_direction direction, int count, struct pixel_argb_u16 out_pixel[]);  
->>>>>>
->>>>>> This is the second or third time in this one series changing this type.
->>>>>> Could you not do the change once, in its own patch if possible?  
->>>>>
->>>>> Sorry, this is not a change here, but a wrong formatting (missed when 
->>>>> rebasing).
->>>>>
->>>>> Do you think that it make sense to re-order my patches and put this 
->>>>> typedef at the end? This way it is never updated.
->>
->> I'm not sure, I haven't checked how it would change your patches. The
->> intermediate changes might get a lot uglier?
->>
->> Just try to fold changes so that you don't need to change something
->> twice over the series unless there is a good reason to. "How hard would
->> it be to review this?" is my measure stick.
-> 
-> It will not be uglier, it was just the order I did things. I first cleaned 
-> the code and created this typedef (PATCHv2 4/9), and then rewrote the 
-> composition, for which I had to change the typedef.
-> 
-> I also wanted to make my series easy to understand and make clear what is 
-> my "main contribution" and what are "quality stuff, not related to my 
-> contribution":
-> - Prepare things (document existing state, format, typedef)
-> - Big change (and update related doc, typedef)
-> - Rebase some other stuff on my big change (YUV)
-> 
-> So yes, some parts are changed twice in preparation step and the "big 
-> change".
-> 
->>
->>>>>  
->>>>>>>  
->>>>>>>  /**
->>>>>>>   * vkms_plane_state - Driver specific plane state
->>>>>>> diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkms/vkms_formats.c
->>>>>>> index 46daea6d3ee9..515c80866a58 100644
->>>>>>> --- a/drivers/gpu/drm/vkms/vkms_formats.c
->>>>>>> +++ b/drivers/gpu/drm/vkms/vkms_formats.c
->>>>>>> @@ -33,7 +33,8 @@ static size_t packed_pixels_offset(const struct vkms_frame_info *frame_info, int
->>>>>>>  	 */
->>>>>>>  	return fb->offsets[plane_index] +
->>>>>>>  	       (y / drm_format_info_block_width(format, plane_index)) * fb->pitches[plane_index] +
->>>>>>> -	       (x / drm_format_info_block_height(format, plane_index)) * format->char_per_block[plane_index];
->>>>>>> +	       (x / drm_format_info_block_height(format, plane_index)) *
->>>>>>> +	       format->char_per_block[plane_index];  
->>>>>>
->>>>>> Shouldn't this be in the patch that added this code in the first place?  
->>>>>
->>>>> Same as above, a wrong formatting, I will remove this change and keep 
->>>>> everything on one line (even if it's more than 100 chars, it is easier to 
->>>>> read).
->>
->> Personally I agree that readability is more important than strict line
->> length limits. I'm not sure how the kernel rolls there.
->>
->>>>>  
->>>>>>>  }
->>>>>>>  
->>>>>>>  /**
->>>>>>> @@ -84,6 +85,32 @@ static int get_step_1x1(struct drm_framebuffer *fb, enum pixel_read_direction di
->>>>>>>  	}
->>>>>>>  }
->>>>>>>  
->>>>>>> +/**
->>>>>>> + * get_subsampling() - Get the subsampling value on a specific direction  
->>>>>>
->>>>>> subsampling divisor  
->>>>>
->>>>> Thanks for this precision.
->>>>>  
->>>>>>> + */
->>>>>>> +static int get_subsampling(const struct drm_format_info *format,
->>>>>>> +			   enum pixel_read_direction direction)
->>>>>>> +{
->>>>>>> +	if (direction == READ_LEFT || direction == READ_RIGHT)
->>>>>>> +		return format->hsub;
->>>>>>> +	else if (direction == READ_DOWN || direction == READ_UP)
->>>>>>> +		return format->vsub;
->>>>>>> +	return 1;  
->>>>>>
->>>>>> In this and the below function, personally I'd prefer switch-case, with
->>>>>> a cannot-happen-scream after the switch, so the compiler can warn about
->>>>>> unhandled enum values.  
->>>>>
->>>>> As for the previous patch, I did not know about this compiler feature, 
->>>>> thanks!
->>>>>  
->>>>>>> +}
->>>>>>> +
->>>>>>> +/**
->>>>>>> + * get_subsampling_offset() - Get the subsampling offset to use when incrementing the pixel counter
->>>>>>> + */
->>>>>>> +static int get_subsampling_offset(const struct drm_format_info *format,
->>>>>>> +				  enum pixel_read_direction direction, int x_start, int y_start)  
->>>>>>
->>>>>> 'start' values as "increments" for a pixel counter? Is something
->>>>>> misnamed here?
->>>>>>
->>>>>> Is it an increment or an offset?  
->>>>>
->>>>> I don't really know how to name the function. I'm open to suggestions
->>>>> x_start and y_start are really the coordinate of the starting reading point.
->>
->> I looks like it's an offset, so "offset" and "start" are good words.
->> Then the only misleading piece is the doc:
->>
->> 	"Get the subsampling offset to use when incrementing the pixel counter"
->>
->> This sounds like the offset is used when incrementing a counter, that
->> is, counter is increment by offset each time. That's my problem with
->> this.
->>
->> Fix just the doc, and it's good, I think.
->>
->>>>>
->>>>> To explain what it does:
->>>>>
->>>>> When using subsampling, you have to read the next pixel of planes[1..4] 
->>>>> not at the same "speed" as plane[0]. But I can't only rely on 
->>>>> "read_pixel_count % subsampling == 0", because it means that the pixel 
->>>>> incrementation on planes[1..4] may not be aligned with the buffer (if 
->>>>> hsub=2 and the start pixel is 1, I need to increment planes[1..4] only 
->>>>> for x=2,4,6... not 1,3,5...).
->>>>>
->>>>> A way to ensure this is to add an "offset" to count, which ensure that the 
->>>>> count % subsampling == 0 on the correct pixel.
->>
->> Yes, I think I did get that feeling from the code eventually somehow,
->> but it wouldn't hurt to explain it in the comment.
->>
->> "An offset for keeping the chroma siting consistent regardless of
->> x_start and y_start" maybe?
-> 
-> It is better yes, thanks!
-> 
->>>>>
->>>>> I made an error, the switch case must be (as count is always counting up, 
->>>>> for "inverted" reading direction a negative number ensure that 
->>>>> %subsampling == 0 on the correct pixel):
->>>>>
->>>>> 	switch (direction) {
->>>>> 	case READ_UP:
->>>>> 		return -y_start;
->>>>> 	case READ_DOWN:
->>>>> 		return y_start;
->>>>> 	case READ_LEFT:
->>>>> 		return -x_start;
->>>>> 	case READ_RIGHT:
->>>>> 		return x_start;
->>>>> 	}
->>
->> Yes, the inverted reading directions are different indeed. I did not
->> think through if this works also for sub-sampling divisors > 2 which I
->> don't think are ever used.
-> 
-> I choosen those values because they should work with any sub-sampling 
-> divisor.
-> 
-> hsub/vsub = 4 is used with DRM_FORMAT_YUV410/YVU410/YUV411/YVU411.
-> 
->>
->> Does IGT find this mistake? If not, maybe IGT should be extended.
-> 
-> No, for two reasons:
-> - The original version works fine for NV12/16/24 and YUV with *sub <= 2
->   (x+n%2 == x-n%2). It only breaks for *sub > 2.
-> - YUV410/... are not supported by VKMS
-> - IGT does not test different colors for rotations/translations (at least
->   for the tests I tried). I will see if it's possible to add things in 
->   kms_rotation_crc/kms_cursor_crc to test more colors format (at least 
->   one RGB and one YUV).
->  
->>>>>  
->>>>>>> +{
->>>>>>> +	if (direction == READ_RIGHT || direction == READ_LEFT)
->>>>>>> +		return x_start;
->>>>>>> +	else if (direction == READ_DOWN || direction == READ_UP)
->>>>>>> +		return y_start;
->>>>>>> +	return 0;
->>>>>>> +}
->>>>>>> +  
->>>>>
->>>>> [...]
->>>>>  
->>>>>>> +static void yuv_u8_to_argb_u16(struct pixel_argb_u16 *argb_u16, const struct pixel_yuv_u8 *yuv_u8,
->>>>>>> +			       enum drm_color_encoding encoding, enum drm_color_range range)
->>>>>>> +{
->>>>>>> +	static const s16 bt601_full[3][3] = {
->>>>>>> +		{ 256, 0,   359 },
->>>>>>> +		{ 256, -88, -183 },
->>>>>>> +		{ 256, 454, 0 },
->>>>>>> +	};  
->>>>>
->>>>> [...]
->>>>>  
->>>>>>> +
->>>>>>> +	u8 r = 0;
->>>>>>> +	u8 g = 0;
->>>>>>> +	u8 b = 0;
->>>>>>> +	bool full = range == DRM_COLOR_YCBCR_FULL_RANGE;
->>>>>>> +	unsigned int y_offset = full ? 0 : 16;
->>>>>>> +
->>>>>>> +	switch (encoding) {
->>>>>>> +	case DRM_COLOR_YCBCR_BT601:
->>>>>>> +		ycbcr2rgb(full ? bt601_full : bt601,  
->>>>>>
->>>>>> Doing all these conditional again pixel by pixel is probably
->>>>>> inefficient. Just like with the line reading functions, you could pick
->>>>>> the matrix in advance.  
->>>>>
->>>>> I don't think the performance impact is huge (it's only a pair of if), but 
->>>>> yes, it's an easy optimization. 
->>>>>
->>>>> I will create a conversion_matrix structure:
->>>>>
->>>>> 	struct conversion_matrix {
->>>>> 		s16 matrix[3][3];
->>>>> 		u16 y_offset;
->>>>> 	}
->>
->> When defining such a struct type, it would be good to document the
->> matrix layout (which one is row, which one is column), and what the s16
->> mean (fixed point?).
-> 
-> Ack
-> 
->> Try to not mix signed and unsigned types, too. The C implicit type
->> promotion rules can be surprising. Just make everything signed while
->> computing, and convert to/from unsigned only for storage.
-> 
-> Ack, I will change to signed type.
-> 
->>>>>
->>>>> I will create a `get_conversion_matrix_to_argb_u16` function to get this 
->>>>> structure from a format+encoding+range.
->>>>>
->>>>> I will also add a field `conversion_matrix` in struct vkms_plane_state to 
->>>>> get this matrix only once per plane setup.
->>
->> Alright. Let's see how that works.
->>
->>>>>
->>>>>  
->>>>>>> +			  yuv_u8->y, yuv_u8->u, yuv_u8->v, y_offset, &r, &g, &b);
->>>>>>> +		break;
->>>>>>> +	case DRM_COLOR_YCBCR_BT709:
->>>>>>> +		ycbcr2rgb(full ? rec709_full : rec709,
->>>>>>> +			  yuv_u8->y, yuv_u8->u, yuv_u8->v, y_offset, &r, &g, &b);
->>>>>>> +		break;
->>>>>>> +	case DRM_COLOR_YCBCR_BT2020:
->>>>>>> +		ycbcr2rgb(full ? bt2020_full : bt2020,
->>>>>>> +			  yuv_u8->y, yuv_u8->u, yuv_u8->v, y_offset, &r, &g, &b);
->>>>>>> +		break;
->>>>>>> +	default:
->>>>>>> +		pr_warn_once("Not supported color encoding\n");
->>>>>>> +		break;
->>>>>>> +	}
->>>>>>> +
->>>>>>> +	argb_u16->r = r * 257;
->>>>>>> +	argb_u16->g = g * 257;
->>>>>>> +	argb_u16->b = b * 257;  
->>>>>>
->>>>>> I wonder. Using 8-bit fixed point precision seems quite coarse for
->>>>>> 8-bit pixel formats, and it's going to be insufficient for higher bit
->>>>>> depths. Was supporting e.g. 10-bit YUV considered? There is even
->>>>>> deeper, too, like DRM_FORMAT_P016.  
->>>>>
->>>>> It's a good point, as I explained above, I took the conversion part as a 
->>>>> "black box" to avoid breaking (and debugging) stuff. I think it's easy to 
->>>>> switch to s32 bits matrix with 16.16 bits (or anything with more than 16 bits in 
->>>>> the float part).
->>>>>
->>>>> Maybe Arthur have an opinion on this?  
->>>>
->>>> Yeah, I too don't see why not we could do that. The 8-bit precision was
->>>> sufficient for those formats, but as well noted by Pekka this could be a
->>>> problem for higher bit depths. I just need to make my terrible python
->>>> script spit those values XD.  
->>>
->>> Finally, I got it working with 32-bit precision.
->>>
->>> I basically threw all my untrusted python code away, and started using
->>> the colour python framework suggested by Sebastian[1]. After knowing the
->>> right values (and staring at numbers for hours), I found that with a
->>> little bit of rounding, the conversion works.
->>>
->>> Also, while at it, I changed the name rec709 to bt709 to follow the
->>> pattern and added "_full" to the full ranges matrices.
->>>
->>> While using the library, I noticed that the red component is wrong on
->>> the color red in one test case.
->>>
->>> [1]: https://lore.kernel.org/all/20240115150600.GC160656@toolbox/
->>
->> That all sounds good. I wish the kernel code contained comments
->> explaining how exactly you computed those matrices with python/colour.
->> If the python snippets are not too long, including them verbatim as
->> code comments would be really nice for both reviewers and posterity.
->>
->> The same for the VKMS unit tests, too, how you got the expected result
->> values.
-> 
-> I edited the YUV support to have those s64 values.
-> 
-> @arthur, I will submit a v4 with this:
-> - matrix selection in plane_atomic_update (so it's selected only once)
-> - s64 numbers for matrix
-> - avoiding multiple loop implementation by switching matrix columns
-
-This looks good to me.
-
-> 
-> Regarding the YUV part, I don't feel confortable adressing Pekka's 
-> comments, would you mind doing it?
-
-I'm already doing that, how do you want me to send those changes? I reply to
-your series, like a did before?
-
-Best Regards,
-~Arthur Grillo
-
-> 
-> Kind regards,
-> Louis Chauvet
-> 
-> [...]
-> 
+SGkgQ0ssDQoNClRoYW5rcyBmb3IgdGhlIHJldmlld3MuDQoNCk9uIE1vbiwgMjAyNC0wMy0wNCBh
+dCAwMjoxMSArMDAwMCwgQ0sgSHUgKOiDoeS/iuWFiSkgd3JvdGU6DQo+IEhpLCBKYXNvbjoNCj4g
+DQo+IE9uIEZyaSwgMjAyNC0wMy0wMSBhdCAyMjo0NCArMDgwMCwgSmFzb24tSkguTGluIHdyb3Rl
+Og0KPiA+IEFkZCBjbWRxX3BrdF9hY3F1aXJlX2V2ZW50KCkgZnVuY3Rpb24gdG8gc3VwcG9ydCBD
+TURRIHVzZXIgbWFraW5nDQo+ID4gYW4gaW5zdHJ1Y3Rpb24gZm9yIGFjcXVpcmluZyBldmVudC4N
+Cj4gPiANCj4gPiBDTURRIHVzZXJzIGNhbiB1c2UgY21kcV9wa3RfYWNxdWlyZV9ldmVudCgpIGFu
+ZA0KPiA+IGNtZHFfcGt0X2NsZWFyX2V2ZW50KCkNCj4gPiB0byBhY3F1aXJlIEdDRSBldmVudCBh
+bmQgcmVsZWFzZSBHQ0UgZXZlbnQgYW5kIGFjaGlldmUgdGhlDQo+ID4gTVVURVhfTE9DSw0KPiA+
+IHByb3RlY3Rpb24gYmV0d2VlbiBHQ0UgdGhyZWFkcy4NCj4gDQo+IEknbSBub3QgY2xlYXIgd2hh
+dCBhY3F1aXJlIGRvIGluIGRldGFpbC4gVGhpcyBpcyB3aGF0IEkgZ3Vlc3M6DQo+IA0KPiBjbWRx
+X3BrdF9hY3F1aXJlX2V2ZW50KCkgd291bGQgd2FpdCBmb3IgZXZlbnQgdG8gYmUgY2xlYXJlZC4g
+QWZ0ZXINCj4gZXZlbnQgaXMgY2xlYXJlZCwgY21kcV9wa3RfYWNxdWlyZV9ldmVudCgpIHdvdWxk
+IHNldCBldmVudCBhbmQga2VlcA0KPiBleGVjdXRpbmcgbmV4dCBjb21tYW5kLiBTbyB0aGUgbXV0
+ZXggd291bGQgd29yayBsaWtlIHRoaXMNCj4gDQo+IGNtZHFfcGt0X2FjcXVpcmVfZXZlbnQoKSAv
+KiBtdXRleCBsb2NrICovDQo+IA0KPiAvKiBjcml0aWNhbCBzZWN0b24gKi8NCj4gDQo+IGNtZHFf
+cGt0X2NsZWFyX2V2ZW50KCkgLyogbXV0ZXggdW5sb2NrICovDQo+IA0KPiBJZiBpdCdzIHNvLCBk
+ZXNjcmliZSBhcyBkZXRhaWwgYXMgdGhpcy4gSWYgbm90LCBkZXNjcmliZSBob3cgaXQgZG8uDQo+
+IA0KWWVzLCB0aGV5IHNob3VsZCBiZSB1c2VkIGxpa2UgdGhpcy4NCkknbGwgYWRkIG1vcmUgZGVz
+Y3JpcHRpb24gaW4gY29tbWl0IG1lc3NhZ2UuDQoNCj4gQXMgSSBrbm93LCBHQ0UgaXMgc2luZ2xl
+IGNvcmUsIHNvIG11bHRpcGxlIHRocmVhZCBpcyBzZXJ2ZWQgYnkgc2luZ2xlDQo+IEdDRSwgd2h5
+IG5lZWQgbXV0ZXggbG9jaz8NCj4gDQpBbHRob3VnaCBHQ0UgaXMgc2luZ2xlIGNvcmUsIGl0IHdp
+bGwgY29udGV4dCBzd2l0Y2ggdG8gb3RoZXIgR0NFDQp0aHJlYWRzIHdpdGggdGhlIHNhbWUgcHJp
+b3JpdHkuIFRoZSBjb250ZXh0IHN3aXRjaCB0aW1lIGlzIHNldCB0bw0KR0NFX1RIUl9TTE9UX0NZ
+Q0xFUyBkdXJpbmcgR0NFIGluaXRpYWxpemF0aW9uLg0KDQpTbyB3ZSBoYXZlIHRvIHVzZSBldmVu
+dF9sb2NrIHRvIHByb3RlY3QgSFcgcmVzb3VyY2UgaWYgZWFjaCBjbWRxX3BrdCBpbg0KZGlmZmVy
+ZW50IHRocmVhZCBtYXkgZXhlY3V0ZSBtb3JlIHRoYW4gdGhlIGNvbnRleHQgc3dpdGNoIHRpbWUu
+DQoNClJlZ2FyZHMsDQpKYXNvbi1KSC5MaW4NCg0KPiBSZWdhcmRzLA0KPiBDSw0KPiANCj4gPiAN
+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBKYXNvbi1KSC5MaW4gPGphc29uLWpoLmxpbkBtZWRpYXRlay5j
+b20+DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvc29jL21lZGlhdGVrL210ay1jbWRxLWhlbHBlci5j
+IHwgMTUgKysrKysrKysrKysrKysrDQo+ID4gIGluY2x1ZGUvbGludXgvc29jL21lZGlhdGVrL210
+ay1jbWRxLmggIHwgIDkgKysrKysrKysrDQo+ID4gIDIgZmlsZXMgY2hhbmdlZCwgMjQgaW5zZXJ0
+aW9ucygrKQ0KPiA+IA0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGst
+Y21kcS1oZWxwZXIuYw0KPiA+IGIvZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXRrLWNtZHEtaGVscGVy
+LmMNCj4gPiBpbmRleCAyZTlmYzliYjExODMuLjAxODNiNDBhMGVmZiAxMDA2NDQNCj4gPiAtLS0g
+YS9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstY21kcS1oZWxwZXIuYw0KPiA+ICsrKyBiL2RyaXZl
+cnMvc29jL21lZGlhdGVrL210ay1jbWRxLWhlbHBlci5jDQo+ID4gQEAgLTM0Miw2ICszNDIsMjEg
+QEAgaW50IGNtZHFfcGt0X3dmZShzdHJ1Y3QgY21kcV9wa3QgKnBrdCwgdTE2DQo+ID4gZXZlbnQs
+IGJvb2wgY2xlYXIpDQo+ID4gIH0NCj4gPiAgRVhQT1JUX1NZTUJPTChjbWRxX3BrdF93ZmUpOw0K
+PiA+ICANCj4gPiAraW50IGNtZHFfcGt0X2FjcXVpcmVfZXZlbnQoc3RydWN0IGNtZHFfcGt0ICpw
+a3QsIHUxNiBldmVudCkNCj4gPiArew0KPiA+ICsJc3RydWN0IGNtZHFfaW5zdHJ1Y3Rpb24gaW5z
+dCA9IHt9Ow0KPiA+ICsNCj4gPiArCWlmIChldmVudCA+PSBDTURRX01BWF9FVkVOVCkNCj4gPiAr
+CQlyZXR1cm4gLUVJTlZBTDsNCj4gPiArDQo+ID4gKwlpbnN0Lm9wID0gQ01EUV9DT0RFX1dGRTsN
+Cj4gPiArCWluc3QudmFsdWUgPSBDTURRX1dGRV9VUERBVEUgfCBDTURRX1dGRV9VUERBVEVfVkFM
+VUUgfA0KPiA+IENNRFFfV0ZFX1dBSVQ7DQo+ID4gKwlpbnN0LmV2ZW50ID0gZXZlbnQ7DQo+ID4g
+Kw0KPiA+ICsJcmV0dXJuIGNtZHFfcGt0X2FwcGVuZF9jb21tYW5kKHBrdCwgaW5zdCk7DQo+ID4g
+K30NCj4gPiArRVhQT1JUX1NZTUJPTChjbWRxX3BrdF9hY3F1aXJlX2V2ZW50KTsNCj4gPiArDQo+
+ID4gIGludCBjbWRxX3BrdF9jbGVhcl9ldmVudChzdHJ1Y3QgY21kcV9wa3QgKnBrdCwgdTE2IGV2
+ZW50KQ0KPiA+ICB7DQo+ID4gIAlzdHJ1Y3QgY21kcV9pbnN0cnVjdGlvbiBpbnN0ID0geyB7MH0g
+fTsNCj4gPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9zb2MvbWVkaWF0ZWsvbXRrLWNtZHEu
+aA0KPiA+IGIvaW5jbHVkZS9saW51eC9zb2MvbWVkaWF0ZWsvbXRrLWNtZHEuaA0KPiA+IGluZGV4
+IDJmZTliZTI0MGZiYy4uZGU5M2MwYThlOGE5IDEwMDY0NA0KPiA+IC0tLSBhL2luY2x1ZGUvbGlu
+dXgvc29jL21lZGlhdGVrL210ay1jbWRxLmgNCj4gPiArKysgYi9pbmNsdWRlL2xpbnV4L3NvYy9t
+ZWRpYXRlay9tdGstY21kcS5oDQo+ID4gQEAgLTIwMiw2ICsyMDIsMTUgQEAgaW50IGNtZHFfcGt0
+X21lbV9tb3ZlKHN0cnVjdCBjbWRxX3BrdCAqcGt0LA0KPiA+IGRtYV9hZGRyX3Qgc3JjX2FkZHIs
+IGRtYV9hZGRyX3QgZHN0Xw0KPiA+ICAgKi8NCj4gPiAgaW50IGNtZHFfcGt0X3dmZShzdHJ1Y3Qg
+Y21kcV9wa3QgKnBrdCwgdTE2IGV2ZW50LCBib29sIGNsZWFyKTsNCj4gPiAgDQo+ID4gKy8qKg0K
+PiA+ICsgKiBjbWRxX3BrdF9hY3F1aXJlX2V2ZW50KCkgLSBhcHBlbmQgYWNxdWlyZSBldmVudCBj
+b21tYW5kIHRvIHRoZQ0KPiA+IENNRFEgcGFja2V0DQo+ID4gKyAqIEBwa3Q6CXRoZSBDTURRIHBh
+Y2tldA0KPiA+ICsgKiBAZXZlbnQ6CXRoZSBkZXNpcmVkIGV2ZW50IHRvIGJlIGFjcXVpcmVkDQo+
+ID4gKyAqDQo+ID4gKyAqIFJldHVybjogMCBmb3Igc3VjY2VzczsgZWxzZSB0aGUgZXJyb3IgY29k
+ZSBpcyByZXR1cm5lZA0KPiA+ICsgKi8NCj4gPiAraW50IGNtZHFfcGt0X2FjcXVpcmVfZXZlbnQo
+c3RydWN0IGNtZHFfcGt0ICpwa3QsIHUxNiBldmVudCk7DQo+ID4gKw0KPiA+ICAvKioNCj4gPiAg
+ICogY21kcV9wa3RfY2xlYXJfZXZlbnQoKSAtIGFwcGVuZCBjbGVhciBldmVudCBjb21tYW5kIHRv
+IHRoZSBDTURRDQo+ID4gcGFja2V0DQo+ID4gICAqIEBwa3Q6CXRoZSBDTURRIHBhY2tldA0K
 
