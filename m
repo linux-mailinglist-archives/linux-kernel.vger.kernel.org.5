@@ -1,77 +1,65 @@
-Return-Path: <linux-kernel+bounces-90456-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90457-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9903D86FF6A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:49:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 763E986FF6C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:49:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA6641C220FE
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:49:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 319D32850A2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:49:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE6243839F;
-	Mon,  4 Mar 2024 10:48:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 131DE39859;
+	Mon,  4 Mar 2024 10:48:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CR2tb1cA"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="GXfakCda"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0C9F374DE;
-	Mon,  4 Mar 2024 10:48:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E35E38FA0;
+	Mon,  4 Mar 2024 10:48:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709549335; cv=none; b=adWvqNIA7QTUIb8Z93mfKYxQhFk98+N1WgPzTiKxQP60QCUICLEbS10ebjweAHYSKyYFddlhE8pQ6WMfo9bCoJp59w51l4Kww+tRQw9rPBZUQHPsyxICPI9gdpMpPxbRPAm0Fm2DcRSR6SkRirhs/EFX7pVpvhrjVkOTn/pQfrQ=
+	t=1709549338; cv=none; b=QQJGnWL+U0WAvfogMA3ALzd8TXbsRivgnPseY1npoz8D+1KlNNH6xXobFpynXPfnilQlShv1HfRIlEGu0LNkG5pkSU9XUr/LSwfUaM+STPtIJwdZkiqiIpbbXGwCKr8BMvB2QlRBGRGdt4x8sYnCGREyUSoV/LedMR6Tbux0HjQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709549335; c=relaxed/simple;
-	bh=OE0XZMxoN+lzBJ6Pub/O4OVZnEDZz5AZoPrtdE7dITo=;
+	s=arc-20240116; t=1709549338; c=relaxed/simple;
+	bh=9CRzSnUxCADHGSf4ROldZkRv1p7amv4W/QBk5HAlgIo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h9vNbz9tw4CdUqsyvbr21AiHqRRu2Idphux0VWNmDP/KI8G8FIv1mwaHKjhj1KehAqWzSCG1T+6qiTKonROcSjVgAVQE3nHKRufKEUreVUf30JuwNOlOQRIFU2oxUpweJN/UT+QMzrml7cn6oKYgUGMMpg2VpXB+tkRBS8arzGY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CR2tb1cA; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709549332; x=1741085332;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=OE0XZMxoN+lzBJ6Pub/O4OVZnEDZz5AZoPrtdE7dITo=;
-  b=CR2tb1cA+TraR8LCqREED7ChrsBO29hi/r9+SDXalwINVKgbx37bx9cQ
-   YUsvokWxwy8r/eqVVVF1PfQP4IO03aF58p/yPUCpUa5kEZV4bv0B5ZHfH
-   LdklePH5kLEHh8LVkb7vSonjGcSp+LxJYH53yNZGxmW1i6ZTrNuP6QGGM
-   v5eY5bKEP38A9Sgvifg8e+qTSlK8w0xWHY/PwZmMT2RghWqHBD5vh5zJZ
-   LIP9kbFyJR9nBFJ8bL6RHH4oUcJDy8kNHBwYxPRt44av1cqn32oxz6Fk9
-   n2I9EtwXqtm3uNx6oX4tOveSt2iqvzJJH/ghugOgrKxNNPqSKI9FxC778
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="4197661"
-X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
-   d="scan'208";a="4197661"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 02:48:52 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
-   d="scan'208";a="46470235"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 02:48:51 -0800
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-	by kekkonen.fi.intel.com (Postfix) with SMTP id 9C6C911F8B1;
-	Mon,  4 Mar 2024 12:48:47 +0200 (EET)
-Date: Mon, 4 Mar 2024 10:48:47 +0000
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
-	Markus Elfring <Markus.Elfring@web.de>,
-	linux-renesas-soc@vger.kernel.org, linux-media@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Niklas =?iso-8859-1?Q?S=F6derlund?= <niklas.soderlund@ragnatech.se>,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] media: rcar-csi2: Use common error handling code in
- rcsi2_parse_dt()
-Message-ID: <ZeWnD9YrXLWJYmhT@kekkonen.localdomain>
-References: <8b4203dc-bc0a-4c00-8862-e2d0ed6e346b@web.de>
- <CAMuHMdWwegdks3eEviEsBJE3AvUVKbZqHduYdhuwz=8xTMDs5g@mail.gmail.com>
- <260d82b6-e7fc-40c3-b414-50a883709fd7@moroto.mountain>
+	 Content-Type:Content-Disposition:In-Reply-To; b=iv/c3GQXhyjiM2TCwTq09TolNPvcsCqCY+xfbX3qCKlJQb6ZPeZ3PzT2KmPpcNR/gQINDyil6oQtHF6fEMKNaLlfSn7tYkm581knfSIfhAlftoN7MgWODPx4xWgSja+yhgb5LyBpiJtvGHlciZ/qQa0BGF8l5INkGEQlGRPCC9g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=GXfakCda; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B83B3C433F1;
+	Mon,  4 Mar 2024 10:48:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1709549338;
+	bh=9CRzSnUxCADHGSf4ROldZkRv1p7amv4W/QBk5HAlgIo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GXfakCdaeON+xoPZzd9ddQQQAOjxak1Wx+/JTj8pSNiQdkFeSDTOa8oJShfagW7cf
+	 FyxYBxdUuzaj+2AReqyQSNZJIovulnFyLFwyAlWXV+cattPgu+10STcfSTFc20t9i3
+	 wSnubIqJwumJLQkMt1J5gxwNUe7a2qNY7SPuy+XU=
+Date: Mon, 4 Mar 2024 11:48:55 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Charan Teja Kalla <quic_charante@quicinc.com>
+Cc: Zi Yan <ziy@nvidia.com>, David Hildenbrand <david@redhat.com>,
+	Matthew Wilcox <willy@infradead.org>, akpm@linux-foundation.org,
+	vbabka@suse.cz, dhowells@redhat.com, surenb@google.com,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	# see patch description <stable@vger.kernel.org>,
+	Huang Ying <ying.huang@intel.com>,
+	Naoya Horiguchi <naoya.horiguchi@linux.dev>
+Subject: Re: [PATCH] mm/huge_memory: fix swap entry values of tail pages of
+ THP
+Message-ID: <2024030444-unfreeze-crystal-1ccf@gregkh>
+References: <845ca78f-913b-4a92-8b40-ff772a7ad333@redhat.com>
+ <bc1a5e36-1983-1a39-4d06-8062993a4ca4@quicinc.com>
+ <ZczLoOqdpMJpkO5N@casper.infradead.org>
+ <f2ad5918-7e36-4a7c-a619-c6807cfca5ec@redhat.com>
+ <30ea073d-0ccf-46e1-954d-e22f5cbf69f7@redhat.com>
+ <1ABD022A-35FC-4A6E-ADAD-36F3D745FB91@nvidia.com>
+ <42be658c-cb13-4001-aae4-8d8275a84038@redhat.com>
+ <ECEF5EF8-3328-43AD-9E0B-7AE325368CB7@nvidia.com>
+ <07A26237-B17E-4418-9A19-E86F450B9695@nvidia.com>
+ <acdf3d44-b20e-8491-6302-bfb1b354bc62@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -80,67 +68,54 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <260d82b6-e7fc-40c3-b414-50a883709fd7@moroto.mountain>
+In-Reply-To: <acdf3d44-b20e-8491-6302-bfb1b354bc62@quicinc.com>
 
-Hi Dan,
-
-On Fri, Mar 01, 2024 at 04:42:01PM +0300, Dan Carpenter wrote:
-> Sakari Ailus pointed out in another thread that we could use __free()
-> instead.  Something like this:
+On Wed, Feb 28, 2024 at 09:06:19PM +0530, Charan Teja Kalla wrote:
+> Thanks David/Zi Yan,
 > 
-
-Looks good to me.
-
-We could merge this with your SoB (pending Niklas's review). :-) The driver
-has been since moved under drivers/media/platform/renesas/rcar-vin/ .
-
-> diff --git a/drivers/media/platform/renesas/rcar-csi2.c b/drivers/media/platform/renesas/rcar-csi2.c
-> index 582d5e35db0e..c569df6057b7 100644
-> --- a/drivers/media/platform/renesas/rcar-csi2.c
-> +++ b/drivers/media/platform/renesas/rcar-csi2.c
-> @@ -1372,8 +1372,8 @@ static int rcsi2_parse_v4l2(struct rcar_csi2 *priv,
->  static int rcsi2_parse_dt(struct rcar_csi2 *priv)
->  {
->  	struct v4l2_async_connection *asc;
-> -	struct fwnode_handle *fwnode;
-> -	struct fwnode_handle *ep;
-> +	struct fwnode_handle *fwnode __free(fwnode_handle) = NULL;
-> +	struct fwnode_handle *ep __free(fwnode_handle);
->  	struct v4l2_fwnode_endpoint v4l2_ep = {
->  		.bus_type = V4L2_MBUS_UNKNOWN,
->  	};
-> @@ -1388,18 +1388,14 @@ static int rcsi2_parse_dt(struct rcar_csi2 *priv)
->  	ret = v4l2_fwnode_endpoint_parse(ep, &v4l2_ep);
->  	if (ret) {
->  		dev_err(priv->dev, "Could not parse v4l2 endpoint\n");
-> -		fwnode_handle_put(ep);
->  		return -EINVAL;
->  	}
->  
->  	ret = rcsi2_parse_v4l2(priv, &v4l2_ep);
-> -	if (ret) {
-> -		fwnode_handle_put(ep);
-> +	if (ret)
->  		return ret;
-> -	}
->  
->  	fwnode = fwnode_graph_get_remote_endpoint(ep);
-> -	fwnode_handle_put(ep);
->  
->  	dev_dbg(priv->dev, "Found '%pOF'\n", to_of_node(fwnode));
->  
-> @@ -1408,7 +1404,6 @@ static int rcsi2_parse_dt(struct rcar_csi2 *priv)
->  
->  	asc = v4l2_async_nf_add_fwnode(&priv->notifier, fwnode,
->  				       struct v4l2_async_connection);
-> -	fwnode_handle_put(fwnode);
->  	if (IS_ERR(asc))
->  		return PTR_ERR(asc);
->  
+> On 2/27/2024 9:45 PM, Zi Yan wrote:
+> > So likely we'd have to fix the stable kernels:
+> > 
+> > 4.19
+> > 5.4
+> > 5.10
+> > 5.15
+> > 6.1
+> > 
+> > That's a lot of pre-folio code. A backport of my series likely won't really make any sense.
 > 
+> So, I assume this is a consensus to have stable-only fix for this issue.
+> 
+> > 
+> > For v6.1, the fix would like below?
+> > 
+> > diff --git a/mm/migrate.c b/mm/migrate.c
+> > index c93dd6a31c31..c5968021fde0 100644
+> > --- a/mm/migrate.c
+> > +++ b/mm/migrate.c
+> > @@ -423,8 +423,12 @@ int folio_migrate_mapping(struct address_space *mapping,
+> >         if (folio_test_swapbacked(folio)) {
+> >                 __folio_set_swapbacked(newfolio);
+> >                 if (folio_test_swapcache(folio)) {
+> > +                       int i;
+> > +
+> >                         folio_set_swapcache(newfolio);
+> > -                       newfolio->private = folio_get_private(folio);
+> > +                       for (i = 0; i < nr; i++)
+> > +                               set_page_private(folio_page(newfolio, i),
+> > +                                       page_private(folio_page(folio, i)));
+> >                 }
+> >                 entries = nr;
+> >         } else {
+> 
+> Similar to this is what we had tested[1] internally and observed no issues.
+> 
+> Can this be taken to 6.1, please?
 
--- 
-Regards,
+Someone needs to submit it properly and get it reviewed by the relevent
+maintainers.
 
-Sakari Ailus
+thanks,
+
+greg k-h
 
