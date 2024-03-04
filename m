@@ -1,125 +1,89 @@
-Return-Path: <linux-kernel+bounces-90523-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90525-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 374A3870097
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:43:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B594E87009B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:45:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB1C0B23F22
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:43:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7140C2847E0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:45:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00DC03A8C9;
-	Mon,  4 Mar 2024 11:43:47 +0000 (UTC)
-Received: from mail-out.aladdin-rd.ru (mail-out.aladdin-rd.ru [91.199.251.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40ADA3838B;
-	Mon,  4 Mar 2024 11:43:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.199.251.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 401733A8E1;
+	Mon,  4 Mar 2024 11:45:52 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 691913A1BD
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 11:45:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709552626; cv=none; b=jofjJcASFD5wkvkD5dFVTa1k634WAb5X5iHQ5IlTSsj4WWofVJ9CsGZHgw+kMLzCmaa3YDCJGHBf1DKrhKLdiexyx5egjWIb7lzoiipPKu48OZ5fp1jhpT7JbACJmIOTAo57ufow8esJmvif2jBzLZA86aInssgc3/onsV0ZbPU=
+	t=1709552751; cv=none; b=YgGs3DLNX/x0vML8oiHyRdipmIc/E2J+8DRK+I1Ghyg3nTNE4fRrBRZihFfSxw2rNgU7aO6l3JcCQT/ASi7jNxRjYHf7QbYXQSwJwYG6awe7+xcB8H7wOQeIjDDdzJuOBONaKAAHQBbDjWIyzQ2cn998Se0NmVNU8TIPl0tnMDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709552626; c=relaxed/simple;
-	bh=h/N89wHsupO3eOr5saosVZAEbXKftzVyWze4j0uXvhg=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=eUzkq1zpO6u5ivbLg6cLjxBjU7rPIo9x62bYXReDBCigaFZyYeQZR3cuJ4nudHhdgTzOvGkdJRkunR2o84SLfl4qBbNHYA4USD9mZ74jSFNQ3i2UjcOFr3JYsgKZ988eji9F7uxvEuUTmyC2UJZz4CCmOzgPWutq1DOw9JBsfvY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aladdin.ru; spf=pass smtp.mailfrom=aladdin.ru; arc=none smtp.client-ip=91.199.251.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aladdin.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aladdin.ru
-From: Daniil Dulov <D.Dulov@aladdin.ru>
-To: Vadim Pasternak <vadimp@nvidia.com>, Hans de Goede <hdegoede@redhat.com>
-CC: Mark Gross <mgross@linux.intel.com>, Andy Shevchenko <andy@infradead.org>,
-	Darren Hart <dvhart@infradead.org>, "platform-driver-x86@vger.kernel.org"
-	<platform-driver-x86@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "lvc-project@linuxtesting.org"
-	<lvc-project@linuxtesting.org>
-Subject: RE: [PATCH] platform/mellanox: mlxreg-hotplug: Check pointer for NULL
- before dereferencing it
-Thread-Topic: [PATCH] platform/mellanox: mlxreg-hotplug: Check pointer for
- NULL before dereferencing it
-Thread-Index: AQHaaMPFv4wPmJNqB0Oh/Aq5IIhcv7EciV8AgAS1laA=
-Date: Mon, 4 Mar 2024 11:43:38 +0000
-Message-ID: <e34edced65e747c5870ee439e3c84457@aladdin.ru>
-References: <20240226145442.3468-1-d.dulov@aladdin.ru>
- <BN9PR12MB538106C733D231B73FC1C1AAAF5A2@BN9PR12MB5381.namprd12.prod.outlook.com>
-In-Reply-To: <BN9PR12MB538106C733D231B73FC1C1AAAF5A2@BN9PR12MB5381.namprd12.prod.outlook.com>
-Accept-Language: ru-RU, en-US
-Content-Language: ru-RU
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1709552751; c=relaxed/simple;
+	bh=35fzCKDGyb1iAEeJtIZBGvLzvc69xXg+MMNnks/ms5k=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=F8MlzilSVMEW2Brh8O92P5NlI/y3onWVVYowULg2KzNPrvD0F+SbCutlYYx0lrg3K9MDp30kNZZ6/ERbujNFlvWL3DOFlEq+1lVa2+wQMs7uLbul3W1y3dc01uxzyQN107idvGfW3DnXwgYtzzrHQVqSxXa0V2nCleDQhZc0wu4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 850001FB;
+	Mon,  4 Mar 2024 03:46:26 -0800 (PST)
+Received: from donnerap.manchester.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5240A3F738;
+	Mon,  4 Mar 2024 03:45:48 -0800 (PST)
+Date: Mon, 4 Mar 2024 11:45:46 +0000
+From: Andre Przywara <andre.przywara@arm.com>
+To: "Arnd Bergmann" <arnd@arndb.de>
+Cc: "Naresh Kamboju" <naresh.kamboju@linaro.org>, "open list"
+ <linux-kernel@vger.kernel.org>, "Linux ARM"
+ <linux-arm-kernel@lists.infradead.org>, linux-sunxi@lists.linux.dev,
+ dri-devel@lists.freedesktop.org, lkft-triage@lists.linaro.org, "Maxime
+ Ripard" <mripard@kernel.org>, "Dave Airlie" <airlied@redhat.com>, "Dan
+ Carpenter" <dan.carpenter@linaro.org>, "Ard Biesheuvel" <ardb@kernel.org>
+Subject: Re: arm: ERROR: modpost: "__aeabi_uldivmod"
+ [drivers/gpu/drm/sun4i/sun4i-drm-hdmi.ko] undefined!
+Message-ID: <20240304114546.4e8e1e32@donnerap.manchester.arm.com>
+In-Reply-To: <1baf9a7f-b0e4-45d8-ac57-0727a213d82d@app.fastmail.com>
+References: <CA+G9fYvG9KE15PGNoLu+SBVyShe+u5HBLQ81+kK9Zop6u=ywmw@mail.gmail.com>
+	<338c89bb-a70b-4f35-b71b-f974e90e3383@app.fastmail.com>
+	<20240304112441.707ded23@donnerap.manchester.arm.com>
+	<1baf9a7f-b0e4-45d8-ac57-0727a213d82d@app.fastmail.com>
+Organization: ARM
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; aarch64-unknown-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-SGVsbG8hDQoNCkkgc3VwcG9zZSB0aGVyZSBpcyBubyBzZW5zZSB0byBwcm9kdWNlIGRldl9lcnIo
-KSBpbnNpZGUNCm1seHJlZ19ob3RwbHVnX3dvcmtfaGVscGVyKCkgc2luY2UgaXRlbSBpcyBkZXJl
-ZmVyZW5jZWQgdHdpY2UNCmJlZm9yZSB3ZSBjYWxsIHRoaXMgZnVuY3Rpb24uIFNob3VsZCB3ZSBw
-cm9kdWNlIGRldl9lcnIoKQ0KaW5zaWRlIHRoZSBsb29wIGluIG1seHJlZ19ob3RwbHVnX3dvcmtf
-aGFuZGxlcigpIGluc3RlYWQ/DQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBW
-YWRpbSBQYXN0ZXJuYWsgW21haWx0bzp2YWRpbXBAbnZpZGlhLmNvbV0gDQpTZW50OiBNb25kYXks
-IEZlYnJ1YXJ5IDI2LCAyMDI0IDY6MTUgUE0NClRvOiBEYW5paWwgRHVsb3YgPEQuRHVsb3ZAYWxh
-ZGRpbi5ydT47IEhhbnMgZGUgR29lZGUgPGhkZWdvZWRlQHJlZGhhdC5jb20+DQpDYzogTWFyayBH
-cm9zcyA8bWdyb3NzQGxpbnV4LmludGVsLmNvbT47IEFuZHkgU2hldmNoZW5rbyA8YW5keUBpbmZy
-YWRlYWQub3JnPjsgRGFycmVuIEhhcnQgPGR2aGFydEBpbmZyYWRlYWQub3JnPjsgcGxhdGZvcm0t
-ZHJpdmVyLXg4NkB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7
-IGx2Yy1wcm9qZWN0QGxpbnV4dGVzdGluZy5vcmcNClN1YmplY3Q6IFJFOiBbUEFUQ0hdIHBsYXRm
-b3JtL21lbGxhbm94OiBtbHhyZWctaG90cGx1ZzogQ2hlY2sgcG9pbnRlciBmb3IgTlVMTCBiZWZv
-cmUgZGVyZWZlcmVuY2luZyBpdA0KDQoNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0K
-PiBGcm9tOiBEYW5paWwgRHVsb3YgPGQuZHVsb3ZAYWxhZGRpbi5ydT4NCj4gU2VudDogTW9uZGF5
-LCAyNiBGZWJydWFyeSAyMDI0IDE2OjU1DQo+IFRvOiBIYW5zIGRlIEdvZWRlIDxoZGVnb2VkZUBy
-ZWRoYXQuY29tPg0KPiBDYzogRGFuaWlsIER1bG92IDxkLmR1bG92QGFsYWRkaW4ucnU+OyBNYXJr
-IEdyb3NzDQo+IDxtZ3Jvc3NAbGludXguaW50ZWwuY29tPjsgQW5keSBTaGV2Y2hlbmtvIDxhbmR5
-QGluZnJhZGVhZC5vcmc+OyBEYXJyZW4NCj4gSGFydCA8ZHZoYXJ0QGluZnJhZGVhZC5vcmc+OyBW
-YWRpbSBQYXN0ZXJuYWsgPHZhZGltcEBudmlkaWEuY29tPjsNCj4gcGxhdGZvcm0tZHJpdmVyLXg4
-NkB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGx2Yy0NCj4g
-cHJvamVjdEBsaW51eHRlc3Rpbmcub3JnDQo+IFN1YmplY3Q6IFtQQVRDSF0gcGxhdGZvcm0vbWVs
-bGFub3g6IG1seHJlZy1ob3RwbHVnOiBDaGVjayBwb2ludGVyIGZvciBOVUxMDQo+IGJlZm9yZSBk
-ZXJlZmVyZW5jaW5nIGl0DQo+IA0KPiBtbHhyZWdfaG90cGx1Z193b3JrX2hlbHBlcigpIGltcGxp
-ZXMgdGhhdCBpdGVtIGNhbiBiZSBOVUxMLiBUaGVyZSBpcyBhDQo+IHNhbml0eSBjaGVjayB0aGF0
-IGNoZWNrcyBpdGVtIGZvciBOVUxMIGFuZCB0aGVuIGRlcmVmZXJlbmNlcyBpdC4NCj4gDQo+IEV2
-ZW4gdGhvdWdoLCB0aGUgY29tbWVudCBiZWZvcmUgc2FuaXR5IGNoZWNrIHNheXMgdGhhdCBpdCBj
-YW4gb25seSBoYXBwZW4gaWYNCj4gc29tZSBwaWVjZSBvZiBoYXJkd2FyZSBpcyBicm9rZW4sIGJ1
-dCBpbiB0aGlzIGNhc2UgaXQgd2lsbCBsZWFkIHRvIE5VTEwtcG9pbnRlcg0KPiBkZXJlZmVyZW5j
-ZSBiZWZvcmUgdGhlIGZ1bmN0aW9uIGlzIGV2ZW4gY2FsbGVkLCBzbyBsZXQncyBjaGVjayBpdCBi
-ZWZvcmUNCj4gZGVyZWZlcmVuY2luZy4NCj4gDQo+IEZvdW5kIGJ5IExpbnV4IFZlcmlmaWNhdGlv
-biBDZW50ZXIgKGxpbnV4dGVzdGluZy5vcmcpIHdpdGggU1ZBQ0UuDQo+IA0KPiBGaXhlczogYzZh
-Y2FkNjhlYjJkICgicGxhdGZvcm0vbWVsbGFub3g6IG1seHJlZy1ob3RwbHVnOiBNb2RpZnkgdG8g
-dXNlIGENCj4gcmVnbWFwIGludGVyZmFjZSIpDQo+IFNpZ25lZC1vZmYtYnk6IERhbmlpbCBEdWxv
-diA8ZC5kdWxvdkBhbGFkZGluLnJ1Pg0KPiAtLS0NCj4gIGRyaXZlcnMvcGxhdGZvcm0vbWVsbGFu
-b3gvbWx4cmVnLWhvdHBsdWcuYyB8IDE2ICstLS0tLS0tLS0tLS0tLS0NCj4gIDEgZmlsZSBjaGFu
-Z2VkLCAxIGluc2VydGlvbigrKSwgMTUgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEv
-ZHJpdmVycy9wbGF0Zm9ybS9tZWxsYW5veC9tbHhyZWctaG90cGx1Zy5jDQo+IGIvZHJpdmVycy9w
-bGF0Zm9ybS9tZWxsYW5veC9tbHhyZWctaG90cGx1Zy5jDQo+IGluZGV4IDVjMDIyYjI1OGY5MS4u
-NTI0MTIxYjlmMDcwIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL3BsYXRmb3JtL21lbGxhbm94L21s
-eHJlZy1ob3RwbHVnLmMNCj4gKysrIGIvZHJpdmVycy9wbGF0Zm9ybS9tZWxsYW5veC9tbHhyZWct
-aG90cGx1Zy5jDQo+IEBAIC0zNDgsMjAgKzM0OCw2IEBAIG1seHJlZ19ob3RwbHVnX3dvcmtfaGVs
-cGVyKHN0cnVjdA0KPiBtbHhyZWdfaG90cGx1Z19wcml2X2RhdGEgKnByaXYsDQo+ICAJdTMyIHJl
-Z3ZhbCwgYml0Ow0KPiAgCWludCByZXQ7DQo+IA0KPiAtCS8qDQo+IC0JICogVmFsaWRhdGUgaWYg
-aXRlbSByZWxhdGVkIHRvIHJlY2VpdmVkIHNpZ25hbCB0eXBlIGlzIHZhbGlkLg0KPiAtCSAqIEl0
-IHNob3VsZCBuZXZlciBoYXBwZW4sIGV4Y2VwdGVkIHRoZSBzaXR1YXRpb24gd2hlbiBzb21lDQo+
-IC0JICogcGllY2Ugb2YgaGFyZHdhcmUgaXMgYnJva2VuLiBJbiBzdWNoIHNpdHVhdGlvbiBqdXN0
-IHByb2R1Y2UNCj4gLQkgKiBlcnJvciBtZXNzYWdlIGFuZCByZXR1cm4uIENhbGxlciBtdXN0IGNv
-bnRpbnVlIHRvIGhhbmRsZSB0aGUNCj4gLQkgKiBzaWduYWxzIGZyb20gb3RoZXIgZGV2aWNlcyBp
-ZiBhbnkuDQo+IC0JICovDQo+IC0JaWYgKHVubGlrZWx5KCFpdGVtKSkgew0KPiAtCQlkZXZfZXJy
-KHByaXYtPmRldiwgIkZhbHNlIHNpZ25hbDogYXQgb2Zmc2V0Om1hc2sNCj4gMHglMDJ4OjB4JTAy
-eC5cbiIsDQo+IC0JCQlpdGVtLT5yZWcsIGl0ZW0tPm1hc2spOw0KPiAtDQo+IC0JCXJldHVybjsN
-Cj4gLQl9DQoNCkl0IHdvdWxkIGJlIGVub3VnaCBqdXN0IHRvIHByb2R1Y2UgZGV2X2Vycihwcml2
-LT5kZXYsICJGYWxzZSBzaWduYWxcbiIpOw0KQW5kIHJldHVybi4NCg0KPiAtDQo+ICAJLyogTWFz
-ayBldmVudC4gKi8NCj4gIAlyZXQgPSByZWdtYXBfd3JpdGUocHJpdi0+cmVnbWFwLCBpdGVtLT5y
-ZWcgKw0KPiBNTFhSRUdfSE9UUExVR19NQVNLX09GRiwNCj4gIAkJCSAgIDApOw0KPiBAQCAtNTU2
-LDcgKzU0Miw3IEBAIHN0YXRpYyB2b2lkIG1seHJlZ19ob3RwbHVnX3dvcmtfaGFuZGxlcihzdHJ1
-Y3QNCj4gd29ya19zdHJ1Y3QgKndvcmspDQo+IA0KPiAgCS8qIEhhbmRsZSB0b3BvbG9neSBhbmQg
-aGVhbHRoIGNvbmZpZ3VyYXRpb24gY2hhbmdlcy4gKi8NCj4gIAlmb3IgKGkgPSAwOyBpIDwgcGRh
-dGEtPmNvdW50ZXI7IGkrKywgaXRlbSsrKSB7DQo+IC0JCWlmIChhZ2dyX2Fzc2VydGVkICYgaXRl
-bS0+YWdncl9tYXNrKSB7DQo+ICsJCWlmIChpdGVtICYmIChhZ2dyX2Fzc2VydGVkICYgaXRlbS0+
-YWdncl9tYXNrKSkgew0KPiAgCQkJaWYgKGl0ZW0tPmhlYWx0aCkNCj4gIAkJCQltbHhyZWdfaG90
-cGx1Z19oZWFsdGhfd29ya19oZWxwZXIocHJpdiwNCj4gaXRlbSk7DQo+ICAJCQllbHNlDQo+IC0t
-DQo+IDIuMjUuMQ0KDQo=
+On Mon, 04 Mar 2024 12:26:46 +0100
+"Arnd Bergmann" <arnd@arndb.de> wrote:
+
+> On Mon, Mar 4, 2024, at 12:24, Andre Przywara wrote:
+> > On Mon, 04 Mar 2024 12:11:36 +0100 "Arnd Bergmann" <arnd@arndb.de> wrote:  
+> >>
+> >> This used to be a 32-bit division. If the rate is never more than
+> >> 4.2GHz, clock could be turned back into 'unsigned long' to avoid
+> >> the expensive div_u64().  
+> >
+> > Wouldn't "div_u64(clock, 200)" solve this problem?  
+> 
+> Yes, that's why I mentioned it as the worse of the two obvious
+> solutions. ;-)
+
+Argh, should have cleaned my glasses first ;-)
+
+I guess I was put somehow put off by the word "expensive". While it's
+admittedly not trivial, I wonder if we care about the (hidden) complexity
+of that function? I mean it's neither core code nor something called
+frequently?
+I don't think we have any clock exceeding 3GHz at the moment, but it
+sounds fishy to rely on that.
+
+Cheers,
+Andre
 
