@@ -1,95 +1,199 @@
-Return-Path: <linux-kernel+bounces-91222-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93A9C870B67
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:20:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE563870B75
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:22:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8DF7B25831
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:19:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 439891F20FA0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:22:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E77987BB04;
-	Mon,  4 Mar 2024 20:19:22 +0000 (UTC)
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EA4F7AE56;
+	Mon,  4 Mar 2024 20:22:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l7i2/hQX"
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA4497BAF7;
-	Mon,  4 Mar 2024 20:19:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B9AA4AEF9;
+	Mon,  4 Mar 2024 20:22:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709583562; cv=none; b=UGplq1fpAXPwOlicdzmyAxP2Y0zXBRWyL+kg8COlxPW111SE7+ZlTttSZH8/wCoINBrNn1hFvncdmncUr7IESWqoGUc1x54DD3SG2z+dDo6MRqG9FL7GMTEESYqH0+DF0Zi6Uc/8h4KDZ8uTD4W3ji4fpnmRWH4Ki/xpXZ2jhXE=
+	t=1709583745; cv=none; b=e/FNfirikuGl/F0UJvWzafgKjmQOIY6W/XFlAYE9SiDHoOoQgKEosrEYlX0sU73fOm9C0PFXiGrmwqcQ3zBUDgTI/nqG5kUxa+90UEUCxlGWnGfO9+duKcPSPNvbHtTIr9FtCeZeV6psgAmdQItz6bWH6++3GqO0bmHFypvUTFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709583562; c=relaxed/simple;
-	bh=cZLqTYaiOu2bk9deA+g54OjJ2LadNtfU7hA7K/nKNM4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CChWoGlY66+0/mzb1lBThXp0UBVvFpAALBpGEuf92kR0F8Wo0Hij+Yu9dA9JRDQvV8djP5zkTOg9GxG/mEw4farn/CCD8WIm0wZ5b9fFij8iNam4sSdKXMSGbDfEc0pp/SZfbJ7EOvsEr375Z0wMSDUwm9lUFQrxDznaGN264Ig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+	s=arc-20240116; t=1709583745; c=relaxed/simple;
+	bh=CCgENNhMF/8TvGn5GCj4PBL+aZdDyrq2Bayv8Qqsu84=;
+	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
+	 MIME-Version:Content-Type; b=V7F43fc2x2qjS5i/1d8Nu2GXEMVZTC7r/L9SWEOU2KtBrNIeLiV/anmxG2r5Sa2uwjW5+HUYpdX9lZvkqnjv/6wg316Pc8feex9Obpgx9tgspJ0YBNtIaNjEyzmGuobSueqtlet7UHT8xW1+UcZSqZZc6vPPn/PexLCg9zHq9a8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l7i2/hQX; arc=none smtp.client-ip=209.85.208.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a456ab934eeso163486466b.0;
-        Mon, 04 Mar 2024 12:19:20 -0800 (PST)
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d28387db09so58789441fa.0;
+        Mon, 04 Mar 2024 12:22:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709583742; x=1710188542; darn=vger.kernel.org;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=8fxFB8N57hfAiZrRByccOlSQfamUKiybD6QOVLL+RAg=;
+        b=l7i2/hQXoP4Nj/PnpuJhbFXqkpG5aDh4xtlkGw+qu4dMI19rQfySZJgX7gsNGBw2cj
+         IvhsZmElK9VVSyi3lGOIas30fELE3nYQCGK6YCuHl3EmHQ4O5N6PQI/O477czyFwKs7p
+         21zVOqzIvdufnxsiXUWXEXpaPooE1PJkyTmOPT8gSoqugKef/Uk3lzOo+nJJ+CHm3JpT
+         tjRrlwlcCPzOiPWzCRMNsd37qWj6XzsI5vUWqQ524yXz6HJXLfkgLgLktckYfOloazhh
+         WEOq47tSpQZtp4i3HIfRlxhdqFKIjEq1629Rg2POkC/2MZZ+oLlo9nob66pCzAUidJkP
+         1MnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709583559; x=1710188359;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1709583742; x=1710188542;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bLBb+T9z5q+g5UgFeOXXQ/ZVAkRZaqhWpyHrBugMSCI=;
-        b=Z4jyjFiAfHgKHgY4BJhuZV6Yv8swM6d00bws7ZocepP9MaLGbb4O6lm4xoBC+nmdkK
-         wFK4+VzFBJs8PoU5EKJHzkHDOrneG9fAzFM1s5P7vTbLPpDAq/1abUYswYj0aWwPqZc2
-         ZTtb4cWNnqdqZ4gBxapXrDCMQ81vot1+qrIMX9WRS/iKTXzrO/suu5Ef4DnuDlKOxjcU
-         fqNNpL5DcDZZBDPCNGKqYQVRUC7qfFPXilL+cW0Gi6c68mg0VFXHVQEGWj7eouS25Z7h
-         1vB37qVtFohC1txvy9yqJm1Ibf+xbLQ3M4j6PHa/KVeEG+M/g0V4Rn5jAAe6cT6i+4bZ
-         VC1g==
-X-Forwarded-Encrypted: i=1; AJvYcCXVp2S3rwTK0nbYqopKYuuSt89rjV1aPi1eq2dWvtgV7qaCUK7ofV9yLweVPPwC8hkD4F2JUgst2ZUSSXKXusToruxAe5uBTLudtgE8UTfT3rm/ma9xRvfH0x1pg/obuAL1j0Lvs+Hu6lMGRtI9C08WHbmo+BStM2S41UdySKk9
-X-Gm-Message-State: AOJu0YzJgs7qSr6kFKtOn7TJFElhsovZM983J86Fn8fWzJdDdqWw9a0e
-	rqUV+th6wLkIAKLrNYE3Zfc9q0qXxVoKL1BNVddsVcmSiLJR1xGM
-X-Google-Smtp-Source: AGHT+IHVh3TH5B0Fu/qX11N+HGXIGYiif+MCCFo90LFmFwuCKns4eQHrYi06IzUsH8sLH9WcZ2o1GQ==
-X-Received: by 2002:a17:906:a89a:b0:a45:5b6c:e524 with SMTP id ha26-20020a170906a89a00b00a455b6ce524mr2134919ejb.65.1709583558999;
-        Mon, 04 Mar 2024 12:19:18 -0800 (PST)
-Received: from gmail.com (fwdproxy-lla-005.fbsv.net. [2a03:2880:30ff:5::face:b00c])
-        by smtp.gmail.com with ESMTPSA id f17-20020a170906049100b00a40f7ed6cb9sm5239682eja.4.2024.03.04.12.19.17
+        bh=8fxFB8N57hfAiZrRByccOlSQfamUKiybD6QOVLL+RAg=;
+        b=cZuL33hsFt1S/Nm70znMsNopR95DkjHiy+WR4FW30cOOhkzZVVbKbZ8BciT765f7IF
+         A9HmlOSwBBfg2CqR2c8mwXvgoSIs4awv+3OPqiJv0Mb/1FWwi5AKqGyJCre+0A4OsMMh
+         fNNMxxIjH9HSRswK/+moTK2XV3UI+wJ8gm+3Vsj2oTBJwfaBWTHfpgZ2DdyqSqxz9RGv
+         MiDV1xLIY1OPeEBmceQFWnZBx+1ueYjert/GMts+gVmmiN7NjxluX4JORz+IrlOCdt4E
+         cn01JdDmviKsPt4tOwyL3mKiEVeDqsaU+McDwkAqa+rawh/wTjrFHW8QhrFCGdQF9IXG
+         woyg==
+X-Forwarded-Encrypted: i=1; AJvYcCWZK84Ncna/VZWTmOdh40NQ0zGpXZZZxiEszhuYapMW/V7Bim4hnMdK4uv7AgYQ3GnN12BHPA1s6lbWhIrp/U58fBZteMib6irhat0=
+X-Gm-Message-State: AOJu0YyE21jVWTORCvo0NNmaxYUdyZMJtAT13IkvsJCDViBOWsJc46mb
+	yZs7dnoN2yIVHIfOHsPxh6t32SIUZajDCz5EZItl0UDReBLSr/Yg
+X-Google-Smtp-Source: AGHT+IEeiz3Lwz5LXdMFw/NJ7/qtw+liFm+ZYMrdHXD8p9Rhf2MZkqYh6y0ihTR7OqPz/C9g56OosQ==
+X-Received: by 2002:a2e:a316:0:b0:2d3:7c06:bb14 with SMTP id l22-20020a2ea316000000b002d37c06bb14mr3978819lje.47.1709583742057;
+        Mon, 04 Mar 2024 12:22:22 -0800 (PST)
+Received: from razdolb ([89.208.103.172])
+        by smtp.gmail.com with ESMTPSA id k12-20020a2e240c000000b002d2904e959csm1855698ljk.5.2024.03.04.12.22.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 12:19:18 -0800 (PST)
-Date: Mon, 4 Mar 2024 12:19:16 -0800
-From: Breno Leitao <leitao@debian.org>
-To: "Ricardo B. Marliere" <ricardo@marliere.net>
-Cc: Yisen Zhuang <yisen.zhuang@huawei.com>,
-	Salil Mehta <salil.mehta@huawei.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Loic Poulain <loic.poulain@linaro.org>,
-	Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-ppp@vger.kernel.org
-Subject: Re: [PATCH net-next 6/6] nfc: core: make nfc_class constant
-Message-ID: <ZeYsxHCK43NAx3UY@gmail.com>
-References: <20240302-class_cleanup-net-next-v1-0-8fa378595b93@marliere.net>
- <20240302-class_cleanup-net-next-v1-6-8fa378595b93@marliere.net>
+        Mon, 04 Mar 2024 12:22:21 -0800 (PST)
+References: <20240229165333.227484-1-mike.rudenko@gmail.com>
+ <20240229165333.227484-13-mike.rudenko@gmail.com>
+ <170957124561.566498.576610873794356352@ping.linuxembedded.co.uk>
+User-agent: mu4e 1.10.8; emacs 29.2.50
+From: Mikhail Rudenko <mike.rudenko@gmail.com>
+To: Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc: linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, Sakari Ailus
+ <sakari.ailus@linux.intel.com>, Laurent Pinchart
+ <laurent.pinchart@ideasonboard.com>, Jacopo Mondi <jacopo@jmondi.org>,
+ Tommaso Merciai <tomm.merciai@gmail.com>, Christophe JAILLET
+ <christophe.jaillet@wanadoo.fr>, Dave Stevenson
+ <dave.stevenson@raspberrypi.com>, Mauro Carvalho Chehab
+ <mchehab@kernel.org>
+Subject: Re: [PATCH v3 12/20] media: i2c: ov4689: Implement vflip/hflip
+ controls
+Date: Mon, 04 Mar 2024 23:19:35 +0300
+In-reply-to: <170957124561.566498.576610873794356352@ping.linuxembedded.co.uk>
+Message-ID: <871q8phhmt.fsf@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240302-class_cleanup-net-next-v1-6-8fa378595b93@marliere.net>
+Content-Type: text/plain
 
-On Sat, Mar 02, 2024 at 02:06:02PM -0300, Ricardo B. Marliere wrote:
-> Since commit 43a7206b0963 ("driver core: class: make class_register() take
-> a const *"), the driver core allows for struct class to be in read-only
-> memory, so move the nfc_class structure to be declared at build time
-> placing it into read-only memory, instead of having to be dynamically
-> allocated at boot time.
-> 
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
-Reviwed-by: Breno Leitao <leitao@debian.org>
+
+Hi Kieran,
+
+and thanks for the review!
+
+On 2024-03-04 at 16:54 GMT, Kieran Bingham <kieran.bingham@ideasonboard.com> wrote:
+
+> Quoting Mikhail Rudenko (2024-02-29 16:53:25)
+>> The OV4689 sensor supports horizontal and vertical flipping. Add
+>> appropriate controls to the driver. Toggling both array flip and
+>> digital flip bits allows to achieve flipping while maintaining output
+>> Bayer order. Note that the default value of hflip control corresponds
+>> to both bits set, as it was before this patch.
+>>
+>> Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
+>> ---
+>>  drivers/media/i2c/ov4689.c | 24 ++++++++++++++++++++++--
+>>  1 file changed, 22 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/media/i2c/ov4689.c b/drivers/media/i2c/ov4689.c
+>> index 8283a9ac86c9..01ee8cadb7c9 100644
+>> --- a/drivers/media/i2c/ov4689.c
+>> +++ b/drivers/media/i2c/ov4689.c
+>> @@ -42,6 +42,14 @@
+>>  #define OV4689_REG_VTS                 CCI_REG16(0x380e)
+>>  #define OV4689_VTS_MAX                 0x7fff
+>>
+>> +#define OV4689_REG_TIMING_FORMAT1      CCI_REG8(0x3820)
+>> +#define OV4689_REG_TIMING_FORMAT2      CCI_REG8(0x3821)
+>
+> I assume these registerse are called TIMING_FORMAT1 and TIMING_FORMAT2,
+> and they don't have any named reference to H/V?
+
+Exactly.
+
+> It's a shame, but I might add /* Horizontal */ and /* Vertical */
+> accordingly to these definitions, though not specifically required.
+
+Thanks for the tip, will do it in v3.
+
+> Looks like a good breakdown of the control though.
+>
+> Reviewed-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+>
+>> +#define OV4689_TIMING_FLIP_MASK                GENMASK(2, 1)
+>> +#define OV4689_TIMING_FLIP_ARRAY       BIT(1)
+>> +#define OV4689_TIMING_FLIP_DIGITAL     BIT(2)
+>> +#define OV4689_TIMING_FLIP_BOTH                (OV4689_TIMING_FLIP_ARRAY |\
+>> +                                        OV4689_TIMING_FLIP_DIGITAL)
+>> +
+>>  #define OV4689_REG_TEST_PATTERN                CCI_REG8(0x5040)
+>>  #define OV4689_TEST_PATTERN_ENABLE     0x80
+>>  #define OV4689_TEST_PATTERN_DISABLE    0x0
+>> @@ -183,7 +191,6 @@ static const struct cci_reg_sequence ov4689_2688x1520_regs[] = {
+>>         {CCI_REG8(0x3811), 0x08}, /* H_WIN_OFF_L h_win_off[7:0] = 0x08*/
+>>         {CCI_REG8(0x3813), 0x04}, /* V_WIN_OFF_L v_win_off[7:0] = 0x04 */
+>>         {CCI_REG8(0x3819), 0x01}, /* VSYNC_END_L vsync_end_point[7:0] = 0x01 */
+>> -       {CCI_REG8(0x3821), 0x06}, /* TIMING_FORMAT2 array_h_mirror = 1, digital_h_mirror = 1 */
+>>
+>>         /* OTP control */
+>>         {CCI_REG8(0x3d85), 0x36}, /* OTP_REG85 OTP_power_up_load_setting_enable = 1,
+>> @@ -607,6 +614,16 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
+>>                           (ctrl->val + ov4689->cur_mode->width) /
+>>                           OV4689_HTS_DIVIDER, &ret);
+>>                 break;
+>> +       case V4L2_CID_VFLIP:
+>> +               cci_update_bits(regmap, OV4689_REG_TIMING_FORMAT1,
+>> +                               OV4689_TIMING_FLIP_MASK,
+>> +                               ctrl->val ? OV4689_TIMING_FLIP_BOTH : 0, &ret);
+>> +               break;
+>> +       case V4L2_CID_HFLIP:
+>> +               cci_update_bits(regmap, OV4689_REG_TIMING_FORMAT2,
+>> +                               OV4689_TIMING_FLIP_MASK,
+>> +                               ctrl->val ? 0 : OV4689_TIMING_FLIP_BOTH, &ret);
+>> +               break;
+>>         default:
+>>                 dev_warn(dev, "%s Unhandled id:0x%x, val:0x%x\n",
+>>                          __func__, ctrl->id, ctrl->val);
+>> @@ -637,7 +654,7 @@ static int ov4689_initialize_controls(struct ov4689 *ov4689)
+>>
+>>         handler = &ov4689->ctrl_handler;
+>>         mode = ov4689->cur_mode;
+>> -       ret = v4l2_ctrl_handler_init(handler, 10);
+>> +       ret = v4l2_ctrl_handler_init(handler, 12);
+>>         if (ret)
+>>                 return ret;
+>>
+>> @@ -677,6 +694,9 @@ static int ov4689_initialize_controls(struct ov4689 *ov4689)
+>>                                      ARRAY_SIZE(ov4689_test_pattern_menu) - 1,
+>>                                      0, 0, ov4689_test_pattern_menu);
+>>
+>> +       v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops, V4L2_CID_VFLIP, 0, 1, 1, 0);
+>> +       v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops, V4L2_CID_HFLIP, 0, 1, 1, 0);
+>> +
+>>         if (handler->error) {
+>>                 ret = handler->error;
+>>                 dev_err(ov4689->dev, "Failed to init controls(%d)\n", ret);
+>> --
+>> 2.43.0
+>>
+
+
+--
+Best regards,
+Mikhail Rudenko
 
