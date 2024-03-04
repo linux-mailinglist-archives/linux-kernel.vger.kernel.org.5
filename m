@@ -1,362 +1,221 @@
-Return-Path: <linux-kernel+bounces-90470-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90471-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E83186FFAD
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:01:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5B9E86FFB1
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:01:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50BAC1C22D86
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:01:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D76D1F22A71
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:01:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37A0E38F8F;
-	Mon,  4 Mar 2024 11:01:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5412E381D0;
+	Mon,  4 Mar 2024 11:01:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="G+yDLBR+"
-Received: from bee.tesarici.cz (unknown [77.93.223.253])
+	dkim=pass (1024-bit key) header.d=axis.com header.i=@axis.com header.b="Mo6hwwvp"
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2040.outbound.protection.outlook.com [40.107.20.40])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F5CEB654
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 11:01:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.93.223.253
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709550070; cv=none; b=ingye4ZNgMB/7TyzBFw1arBj+YjI5ZaiooF7ByoBGl8WngRwDq7oupYJ4JYNPi04czr4x6MlQzZI6PyAiHca+W1EE16sP04CFAx+yKy2wrTfni8nZNbTCCj9N4d5Y2+e6YYwFJlbjD8cOjj6Gc7ZqHxHl0EK+SjjbBNpoQM3uI0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709550070; c=relaxed/simple;
-	bh=2UTWtXNz24rOfsWHy0tRJI4cilrUVGSVZsXVaMM9kQo=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=EwlMLzcLqFCyTQjpyK6nGYPWzOnUYggLfuj7PAcrltN/z1pI14DleTRHr+WaY+FXIKLa+3SABlOfSmqgwmSz73izOyKmMFerbF/lCVmET7kadqgALJiM+uhSbX0hwyUlyMO4xnKRu4nquCJv1/WbHDJqYNjiLAvhLaz2CGvE8yc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=G+yDLBR+; arc=none smtp.client-ip=77.93.223.253
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by bee.tesarici.cz (Postfix) with ESMTPSA id AFF561C5563;
-	Mon,  4 Mar 2024 12:00:57 +0100 (CET)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
-	t=1709550058; bh=GkbQTNoWP+O71+8oP+N+b53JfIHvCbph5mOTRuQfr0M=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=G+yDLBR+EcffwFMDOOIbxm9Xur/CZgIERhXAoalZHdd0eQfO68ZTs7sf8/ggZUTcW
-	 O2BWW+Qxyd7/sXcTG5ZaknXUDEd54XvOQu0KG9sqK9s0305pu2DwXuNhEvntgco6Vo
-	 z7LczJagcnXKhuLtKk4jJsk59k2yVwoRN+HacLALRTc11BVASexJbqPs09cYlEE3BK
-	 GdTh+cN7NIzUm6xa0ZFF8mcPplsumnBgvLLX4yWWdlcTjjQKQGVtejZEofQF/jHkKW
-	 9bZryzM0lG00KL3/p2jyxPgDPXlgK/7kYlFYC7ieBfyo/El1x/Jsruk/S7ltzB00G2
-	 M1mhnnfxQuMMw==
-Date: Mon, 4 Mar 2024 12:00:55 +0100
-From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To: Michael Kelley <mhklinux@outlook.com>
-Cc: Robin Murphy <robin.murphy@arm.com>, Christoph Hellwig <hch@lst.de>,
- Will Deacon <will@kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, Petr Tesarik
- <petr.tesarik1@huawei-partners.com>, "kernel-team@android.com"
- <kernel-team@android.com>, "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Dexuan Cui
- <decui@microsoft.com>, Nicolin Chen <nicolinc@nvidia.com>
-Subject: Re: [PATCH v5 6/6] swiotlb: Remove pointless stride adjustment for
- allocations >= PAGE_SIZE
-Message-ID: <20240304120055.56035c21@meshulam.tesarici.cz>
-In-Reply-To: <SN6PR02MB41571DA1EE99BFAA65869024D4232@SN6PR02MB4157.namprd02.prod.outlook.com>
-References: <20240228133930.15400-1-will@kernel.org>
-	<20240228133930.15400-7-will@kernel.org>
-	<SN6PR02MB4157A62353559DA8DB8BC4ADD45F2@SN6PR02MB4157.namprd02.prod.outlook.com>
-	<SN6PR02MB41577D09E97B1D9645369D58D45F2@SN6PR02MB4157.namprd02.prod.outlook.com>
-	<20240229133346.GA7177@lst.de>
-	<SN6PR02MB4157314F142D05E279B7991ED45F2@SN6PR02MB4157.namprd02.prod.outlook.com>
-	<20240229154756.GA10137@lst.de>
-	<20240301163927.18358ee2@meshulam.tesarici.cz>
-	<20240301180853.5ac20b27@meshulam.tesarici.cz>
-	<8869c8b2-29c3-41e4-8f8a-5bcf9c0d22bb@arm.com>
-	<20240301194212.3c64c9b2@meshulam.tesarici.cz>
-	<SN6PR02MB41571DA1EE99BFAA65869024D4232@SN6PR02MB4157.namprd02.prod.outlook.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 348BFB654;
+	Mon,  4 Mar 2024 11:01:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.40
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709550082; cv=fail; b=eGYAtyGGcMu8fm7lQ9bUmjvBim3YYEdHvOic2rCNrfHdT9nl6a2gj70xTek0IPGl35RNenaIsZSu2pCmx4gOg9MRs3VRh0mo+NJhWdmpFgZuJzE/25poPXdL+SKFzz0eQRCLeSJrvbt/K7c5rDpntt9XF1qDf05gxNDoU/xsuLs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709550082; c=relaxed/simple;
+	bh=taEDUYVo0Xd2CqGzoJOj2Ho325kV+SsKkReUpIS++rs=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=d/ELFtL3ZtZzC76SfpMoOg8K4RDUHKqu64WkWUvfwu5xGyoOHFgQJA/aC5PXA827QdG5cZ+50Iu0CBiQ+N090iVhxUkYirec/BrAqM5pOj2SjgG3KBYcXutGuy+qZp4VOMtZFyBFm/aqVIiPzXDazIHtobTHPAXH5++WSSLQaYg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=axis.com; spf=pass smtp.mailfrom=axis.com; dkim=pass (1024-bit key) header.d=axis.com header.i=@axis.com header.b=Mo6hwwvp; arc=fail smtp.client-ip=40.107.20.40
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=axis.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=axis.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IiURKwBBLcGrdvOT8wnppYEl9Z4QJj+wvtEHWPp227kmcvK1WsodMYyvVKsaXEB5IjN0YvFypBLPeYIz4OxAjLwJ0iXbIfzENZNLBA8iC9PQmWJh16mIZzcK5eKkXBGKvJEmBXisAGQIpveUgmxYO38B3QXOV32YmqCgsg1CKrTCPQHhrnILKw+eHD+ZoWefbWY2Pca7WnpZ0Hp0Q3ZyVcUnhWDDgRS7jvP13ILPowqphYfGawDha7iNsm4gEITcsgD1YfWWbEAdEalJYe4KNh4Djmdt/hgwkN9HLl7ECdEcGqYO0vSvZy80S+bJrAKITsnl3cpc8lAPDNBjCSBFCw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=v+ZZbnIdkoGNUj57jIAS8nVuE1fh9JoC9AwLIvDdNmc=;
+ b=Es3PyzAKGYwGLdJd2MdAwg64+4sL5P6sUIunqBckA/E3aZIfgXu2VW4WSYljPhP9K/rXI4M3uZlxT+LcvXIOVZNrY5ZH3B47pVacvpMn+CPrwjClCPAncOasWRJdUQFcBGx8FRmiqxqp6caQFroiWp8knxm9AhMztX81HRvh2qomIcc+JJyMwIxuQzwlRE96NmuVwl3Qna4PTyQ/h0M0AZ1/Mbt3zEbnarLmRrv42pIVSYEO0/P4uydTCVDkiYgJqe1/BFnWI9B/79xJvUC9HaprY3y7a16OYiao0yjwM/RYhz12+ER3SjxcPKNp7naMYHkz771crDZzSB1GxP+dBw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
+ 195.60.68.100) smtp.rcpttodomain=kernel.org smtp.mailfrom=axis.com;
+ dmarc=fail (p=none sp=none pct=100) action=none header.from=axis.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axis.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=v+ZZbnIdkoGNUj57jIAS8nVuE1fh9JoC9AwLIvDdNmc=;
+ b=Mo6hwwvpqCngHVXfCi1Z3ew7Hm+83uvauoguNs9lpouu8inPtk05ihKzYU3v3cOOR3sKNgkrH7xRkM0ijNzxibPZZMkRFPjSkEHe26N3wynCbKHfTUSHreJ1ueUqvj9yhUMU09zBQrxGb9UPcMN3l9Gz1BFAgcyfOFBEdXYSktc=
+Received: from DU6P191CA0024.EURP191.PROD.OUTLOOK.COM (2603:10a6:10:540::14)
+ by AM9PR02MB7108.eurprd02.prod.outlook.com (2603:10a6:20b:266::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.39; Mon, 4 Mar
+ 2024 11:01:16 +0000
+Received: from DB1PEPF000509FD.eurprd03.prod.outlook.com
+ (2603:10a6:10:540:cafe::b0) by DU6P191CA0024.outlook.office365.com
+ (2603:10a6:10:540::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.39 via Frontend
+ Transport; Mon, 4 Mar 2024 11:01:16 +0000
+X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 195.60.68.100)
+ smtp.mailfrom=axis.com; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=none header.from=axis.com;
+Received-SPF: Fail (protection.outlook.com: domain of axis.com does not
+ designate 195.60.68.100 as permitted sender) receiver=protection.outlook.com;
+ client-ip=195.60.68.100; helo=mail.axis.com;
+Received: from mail.axis.com (195.60.68.100) by
+ DB1PEPF000509FD.mail.protection.outlook.com (10.167.242.39) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7292.25 via Frontend Transport; Mon, 4 Mar 2024 11:01:16 +0000
+Received: from SE-MAIL21W.axis.com (10.20.40.16) by se-mail01w.axis.com
+ (10.20.40.7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Mon, 4 Mar
+ 2024 12:01:15 +0100
+Received: from se-mail02w.axis.com (10.20.40.8) by SE-MAIL21W.axis.com
+ (10.20.40.16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Mon, 4 Mar
+ 2024 12:01:15 +0100
+Received: from se-intmail01x.se.axis.com (10.0.5.60) by se-mail02w.axis.com
+ (10.20.40.8) with Microsoft SMTP Server id 15.1.2375.34 via Frontend
+ Transport; Mon, 4 Mar 2024 12:01:15 +0100
+Received: from pc55637-2337.se.axis.com (pc55637-2337.se.axis.com [10.88.4.11])
+	by se-intmail01x.se.axis.com (Postfix) with ESMTP id 79B30159B0;
+	Mon,  4 Mar 2024 12:01:15 +0100 (CET)
+Received: by pc55637-2337.se.axis.com (Postfix, from userid 363)
+	id 7CE00209F3C1; Mon,  4 Mar 2024 12:01:15 +0100 (CET)
+From: Jesper Nilsson <jesper.nilsson@axis.com>
+Date: Mon, 4 Mar 2024 12:01:14 +0100
+Subject: [PATCH] i2c: exynos5: Init data before registering interrupt
+ handler
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <20240304-i2c_exynos5-v1-1-e91c889d2025@axis.com>
+X-B4-Tracking: v=1; b=H4sIAPmp5WUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDIyML3Uyj5PjUisq8/GJT3ZQkQ+NEc6PU1GSLJCWgjoKi1LTMCrBp0bG
+ 1tQAgdi6bXQAAAA==
+To: Andi Shyti <andi.shyti@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski@linaro.org>, Alim Akhtar <alim.akhtar@samsung.com>
+CC: <linux-i2c@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-samsung-soc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<kernel@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1709550075; l=2710;
+ i=jesper.nilsson@axis.com; s=20240216; h=from:subject:message-id;
+ bh=taEDUYVo0Xd2CqGzoJOj2Ho325kV+SsKkReUpIS++rs=;
+ b=42Xz07/u1gESiLkkx8zkvVy0spBZP95p3aFkIH9BUSDtZ4eERc12NHYCw1maC1j0y6Q/qteJt
+ 5pAMd0Uh6bCB0kaO75nQwB1Ip1v2AkpTndpB5nn28qz/CvUhxiHUMyH
+X-Developer-Key: i=jesper.nilsson@axis.com; a=ed25519;
+ pk=RDobTFVrTaE8iMP112Wk0CDiLdcV7I+OkaCECzhr/bI=
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB1PEPF000509FD:EE_|AM9PR02MB7108:EE_
+X-MS-Office365-Filtering-Correlation-Id: bd92e749-2c52-4bbb-d358-08dc3c3a69f9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	6rF2IcZicHZYAIAjju7qPxXL7AP5Q6m5A/pDVQqhmnm/UVzxQ8DGdH4QhS6kKu3PBkbJTR3se2C3RaSNF9oa8Sh0CqkttpMwGo0S3DLRVbn/iaq3kSp2SPXvMqIeThvNdctAiP3oQED0iiVp2w1iuSjPecNIjAdJ8AkPrgnw+YYOzess9q/3TQKxo1AYjNrJJMdD1mot2wvL31SPE3yKO3lhXwKDTxrt1Hq5IC4RfO8apjnddNqxylUR43DZSWspJSdGRoePFp5tAZLr2UM4PrvAQUHCa1V/xeLtwjloOKPYTkkj6UiUUYx7z/ZlJIuUzUQQrAjz8rPJrrGwu4SWjwdOSJV9uw11BgD6lWdc0g6NIv5OVuzK327PEAYZGvSzLpBG/fax7M6ztbbg0g+9uGTYAcIaKaXiKQdS0Oyvnu98kfBelZBU1gfAenMB7IAJ45M9tAt5yutWIcQ3JwhNaez0Fm97n0olJeivRVXBT6ZumssfmvF6pfxpLDMeAtiG03EntsDlFFrp09Qtiao5VoAb2h2Js8iIsc97hHsSeXtDfOOnTtxxxZb7O8xXgJNKIMRXBxaX6J2hLifvqjgm7OIhSZir2aXlk88X0N3OmAYpjQFENly1+NjD2H/ZP4qszkPCwYrkwHhiMdL7wbaWB07tGPQH7sA398sncnoNlqBU1ecZ+ChO2Uo2ArgYuSAHjNzhDBVSBFlOmc9ZSCFiGnFC84OfuBXIdSO9jgJwi0vfo2sCr+rqb5gMzgKCTV7O
+X-Forefront-Antispam-Report:
+	CIP:195.60.68.100;CTRY:SE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.axis.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(376005)(82310400014);DIR:OUT;SFP:1101;
+X-OriginatorOrg: axis.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Mar 2024 11:01:16.2736
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: bd92e749-2c52-4bbb-d358-08dc3c3a69f9
+X-MS-Exchange-CrossTenant-Id: 78703d3c-b907-432f-b066-88f7af9ca3af
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=78703d3c-b907-432f-b066-88f7af9ca3af;Ip=[195.60.68.100];Helo=[mail.axis.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DB1PEPF000509FD.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR02MB7108
 
-On Mon, 4 Mar 2024 03:31:34 +0000
-Michael Kelley <mhklinux@outlook.com> wrote:
+devm_request_irq() is called before we initialize the "variant"
+member variable from of_device_get_match_data(), so if an interrupt
+is triggered inbetween, we can end up following a NULL pointer
+in the interrupt handler.
 
-> From: Petr Tesa=C5=99=C3=ADk <petr@tesarici.cz> Sent: Friday, March 1, 20=
-24 10:42 AM
-> >=20
-> > On Fri, 1 Mar 2024 17:54:06 +0000
-> > Robin Murphy <robin.murphy@arm.com> wrote:
-> >  =20
-> > > On 2024-03-01 5:08 pm, Petr Tesa=C5=99=C3=ADk wrote: =20
-> > > > On Fri, 1 Mar 2024 16:39:27 +0100
-> > > > Petr Tesa=C5=99=C3=ADk <petr@tesarici.cz> wrote:
-> > > > =20
-> > > >> On Thu, 29 Feb 2024 16:47:56 +0100
-> > > >> Christoph Hellwig <hch@lst.de> wrote:
-> > > >> =20
-> > > >>> On Thu, Feb 29, 2024 at 03:44:11PM +0000, Michael Kelley wrote: =
-=20
-> > > >>>> Any thoughts on how that historical behavior should apply if
-> > > >>>> the DMA min_align_mask is non-zero, or the alloc_align_mask
-> > > >>>> parameter to swiotbl_tbl_map_single() is non-zero? As currently
-> > > >>>> used, alloc_align_mask is page aligned if the IOMMU granule is =
-=20
-> > > >>>>> =3D PAGE_SIZE. But a non-zero min_align_mask could mandate =20
-> > > >>>> returning a buffer that is not page aligned. Perhaps do the
-> > > >>>> historical behavior only if alloc_align_mask and min_align_mask
-> > > >>>> are both zero? =20
-> > > >>>
-> > > >>> I think the driver setting min_align_mask is a clear indicator
-> > > >>> that the driver requested a specific alignment and the defaults
-> > > >>> don't apply.  For swiotbl_tbl_map_single as used by dma-iommu
-> > > >>> I'd have to tak a closer look at how it is used. =20
-> > > >>
-> > > >> I'm not sure it helps in this discussion, but let me dive into a b=
-it
-> > > >> of ancient history to understand how we ended up here.
-> > > >>
-> > > >> IIRC this behaviour was originally motivated by limitations of PC =
-AT
-> > > >> hardware. Intel 8237 is a 16-bit DMA controller. To make it somehow
-> > > >> usable with addresses up to 16MB (yeah, the infamous DMA zone), IBM
-> > > >> added a page register, but it was on a separate chip and it did not
-> > > >> increment when the 8237 address rolled over back to zero. Effectiv=
-ely,
-> > > >> the page register selected a 64K-aligned window of 64K buffers.
-> > > >> Consequently, DMA buffers could not cross a 64K physical boundary.
-> > > >>
-> > > >> Thanks to how the buddy allocator works, the 64K-boundary constrai=
-nt
-> > > >> was satisfied by allocation size, and drivers took advantage of it=
- when
-> > > >> allocating device buffers. IMO software bounce buffers simply foll=
-owed
-> > > >> the same logic that worked for buffers allocated by the buddy allo=
-cator.
-> > > >>
-> > > >> OTOH min_align_mask was motivated by NVME which prescribes the val=
-ue of
-> > > >> a certain number of low bits in the DMA address (for simplicity as=
-sumed
-> > > >> to be identical with the same bits in the physical address).
-> > > >>
-> > > >> The only pre-existing user of alloc_align_mask is x86 IOMMU code, =
-and
-> > > >> IIUC it is used to guarantee that unaligned transactions do not sh=
-are
-> > > >> the IOMMU granule with another device. This whole thing is weird,
-> > > >> because swiotlb_tbl_map_single() is called like this:
-> > > >>
-> > > >>                  aligned_size =3D iova_align(iovad, size);
-> > > >>                  phys =3D swiotlb_tbl_map_single(dev, phys, size, =
-aligned_size,
-> > > >>                                                iova_mask(iovad), d=
-ir, attrs);
-> > > >>
-> > > >> Here:
-> > > >>
-> > > >> * alloc_size =3D iova_align(iovad, size)
-> > > >> * alloc_align_mask =3D iova_mask(iovad)
-> > > >>
-> > > >> Now, iova_align() rounds up its argument to a multiple of iova gra=
-nule
-> > > >> and iova_mask() is simply "granule - 1". This works, because granu=
-le
-> > > >> size must be a power of 2, and I assume it must also be >=3D PAGE_=
-SIZE.
-> > > >>
-> > > >> In that case, the alloc_align_mask argument is not even needed if =
-you
-> > > >> adjust the code to match documentation---the resulting buffer will=
- be
-> > > >> aligned to a granule boundary by virtue of having a size that is a
-> > > >> multiple of the granule size.
-> > > >>
-> > > >> To sum it up:
-> > > >>
-> > > >> 1. min_align_mask is by far the most important constraint. Devices=
- will
-> > > >>     simply stop working if it is not met.
-> > > >> 2. Alignment to the smallest PAGE_SIZE order which is greater than=
- or
-> > > >>     equal to the requested size has been documented, and some driv=
-ers
-> > > >>     may rely on it.
-> > > >> 3. alloc_align_mask is a misguided fix for a bug in the above.
-> > > >>
-> > > >> Correct me if anything of the above is wrong. =20
-> > > >
-> > > > I thought about it some more, and I believe I know what should happ=
-en
-> > > > if the first two constraints appear to be mutually exclusive.
-> > > >
-> > > > First, the alignment based on size does not guarantee that the resu=
-lting
-> > > > physical address is aligned. In fact, the lowest IO_TLB_SHIFT bits =
-must
-> > > > be always identical to the original buffer address.
-> > > >
-> > > > Let's take an example request like this:
-> > > >
-> > > >     TLB_SIZE       =3D 0x00000800
-> > > >     min_align_mask =3D 0x0000ffff
-> > > >     orig_addr      =3D 0x....1234
-> > > >     alloc_size     =3D 0x00002800
-> > > >
-> > > > Minimum alignment mask requires to keep the 1234 at the end. Alloca=
-tion
-> > > > size requires a buffer that is aligned to 16K. Of course, there is =
-no
-> > > > 16K-aligned slot with slot_address & 0x7ff =3D=3D 0x200, but if IO_=
-TLB_SHIFT
-> > > > was 14, it would be slot_address & 0x3fff =3D=3D 0 (low IO_TLB_SHIF=
-T are
-> > > > masked off). Since the SWIOTLB API does not guarantee any specific
-> > > > value of IO_TLB_SHIFT, callers cannot rely on it. That means 0x1234=
- is a
-> > > > perfectly valid bounce buffer address for this example.
-> > > >
-> > > > The caller may rightfully expect that the 16K granule containing the
-> > > > bounce buffer is not shared with any other user. For the above case=
- I
-> > > > suggest to increase the allocation size to 0x4000 already in
-> > > > swiotlb_tbl_map_single() and treat 0x1234 as the offset from the sl=
-ot
-> > > > address. =20
-> > >
-> > > That doesn't make sense - a caller asks to map some range of kernel
-> > > addresses and they get back a corresponding range of DMA addresses; t=
-hey
-> > > cannot make any reasonable assumptions about DMA addresses *outside*
-> > > that range. In the example above, the caller has explicitly chosen not
-> > > to map the range xxx0000-xxx1234; if they expect the device to actual=
-ly
-> > > access bytes in the DMA range yyy0000-yyy1234, then they should have
-> > > mapped the whole range starting from xxx0000 and it is their own erro=
-r. =20
-> >=20
-> > I agree that the range was not requested. But it is not wrong if
-> > SWIOTLB overallocates. In fact, it usually does overallocate because it
-> > works with slot granularity.
-> >  =20
-> > > SWIOTLB does not and cannot provide any memory protection itself, so
-> > > there is no functional benefit to automatically over-allocating, all =
-it
-> > > will do is waste slots. iommu-dma *can* provide memory protection
-> > > between individual mappings via additional layers that SWIOTLB doesn't
-> > > know about, so in that case it's iommu-dma's responsibility to
-> > > explicitly manage whatever over-allocation is necessary at the SWIOTLB
-> > > level to match the IOMMU level. =20
-> >=20
-> > I'm trying to understand what the caller expects to get if they request
-> > both buffer alignment (either given implicitly through mapping size or
-> > explicitly with an alloc_align_mask) with a min_align_mask and non-zero
-> > low bits covered by the buffer alignment.
-> >=20
-> > In other words, if iommu_dma_map_page() gets into this situation:
-> >=20
-> > * granule size is 4k
-> > * device specifies 64k min_align_mask
-> > * bit 11 of the original buffer address is non-zero
-> >=20
-> > Then you ask for a pair of slots where the first slot has bit 11 =3D=3D=
- 0
-> > (required by alignment to granule size) and also has bit 11 =3D=3D 1
-> > (required to preserve the lowest 16 bits of the original address).
-> >=20
-> > Sure, you can fail such a mapping, but is it what the caller expects?
-> >  =20
+This problem was exposed when the I2C controller in question was
+(mis)configured to be used in both secure world and Linux.
 
-Upfront, thank you very much for the overview. Much appreciated!
+That this can happen is also reflected by the existing code that
+clears any pending interrupts from "u-boot or misc causes".
 
-> Here's my take on tying all the threads together. There are=20
-> four alignment combinations:
->=20
-> 1. alloc_align_mask: zero; min_align_mask: zero
-> 2. alloc_align_mask: zero; min_align_mask: non-zero
-> 3. alloc_align_mask: non-zero; min_align_mask: zero/ignored
-> 4. alloc_align_mask: non-zero; min_align_mask: non-zero
+Move the clearing of pending interrupts and the call to
+devm_request_irq() to the end of probe.
+Additionally, return failure if we can't find a match in devicetree.
 
-What does "min_align_mask: zero/ignored" mean? Under which
-circumstances should be a non-zero min_align_mask ignored?
+Signed-off-by: Jesper Nilsson <jesper.nilsson@axis.com>
+---
+ drivers/i2c/busses/i2c-exynos5.c | 32 ++++++++++++++++++--------------
+ 1 file changed, 18 insertions(+), 14 deletions(-)
 
-> xen_swiotlb_map_page() and dma_direct_map_page() are #1 or #2
-> via swiotlb_map() and swiotlb_tbl_map_single()
->=20
-> iommu_dma_map_page() is #3 and #4 via swiotlb_tbl_map_single()
->=20
-> swiotlb_alloc() is #3, directly to swiotlb_find_slots()
->=20
-> For #1, the returned physical address has no constraints if=20
-> the requested size is less than a page. For page size or=20
-> greater, the discussed historical requirement for page=20
-> alignment applies.
->=20
-> For #2, min_align_mask governs the bits of the returned=20
-> physical address that must match the original address. When=20
-> needed, swiotlb must also allocate pre-padding aligned to=20
-> IO_TLB_SIZE that precedes the returned physical address.  A=20
-> request size <=3D swiotlb_max_mapping_size() will not exceed=20
-> IO_TLB_SEGSIZE even with the padding. The historical=20
-> requirement for page alignment does not apply because the=20
-> driver has explicitly used the newer min_align_mask feature.
+diff --git a/drivers/i2c/busses/i2c-exynos5.c b/drivers/i2c/busses/i2c-exynos5.c
+index 385ef9d9e4d4..eba717e5cad7 100644
+--- a/drivers/i2c/busses/i2c-exynos5.c
++++ b/drivers/i2c/busses/i2c-exynos5.c
+@@ -906,24 +906,14 @@ static int exynos5_i2c_probe(struct platform_device *pdev)
+ 	i2c->adap.algo_data = i2c;
+ 	i2c->adap.dev.parent = &pdev->dev;
+ 
+-	/* Clear pending interrupts from u-boot or misc causes */
+-	exynos5_i2c_clr_pend_irq(i2c);
+-
+ 	spin_lock_init(&i2c->lock);
+ 	init_completion(&i2c->msg_complete);
+ 
+-	i2c->irq = ret = platform_get_irq(pdev, 0);
+-	if (ret < 0)
+-		goto err_clk;
+-
+-	ret = devm_request_irq(&pdev->dev, i2c->irq, exynos5_i2c_irq,
+-			       IRQF_NO_SUSPEND, dev_name(&pdev->dev), i2c);
+-	if (ret != 0) {
+-		dev_err(&pdev->dev, "cannot request HS-I2C IRQ %d\n", i2c->irq);
+-		goto err_clk;
+-	}
+-
+ 	i2c->variant = of_device_get_match_data(&pdev->dev);
++	if (!i2c->variant) {
++		dev_err(&pdev->dev, "can't match device variant\n");
++		return -ENODEV;
++	}
+ 
+ 	ret = exynos5_hsi2c_clock_setup(i2c);
+ 	if (ret)
+@@ -940,6 +930,20 @@ static int exynos5_i2c_probe(struct platform_device *pdev)
+ 	clk_disable(i2c->clk);
+ 	clk_disable(i2c->pclk);
+ 
++	/* Clear pending interrupts from u-boot or misc causes */
++	exynos5_i2c_clr_pend_irq(i2c);
++
++	i2c->irq = ret = platform_get_irq(pdev, 0);
++	if (ret < 0)
++		goto err_clk;
++
++	ret = devm_request_irq(&pdev->dev, i2c->irq, exynos5_i2c_irq,
++			       IRQF_NO_SUSPEND, dev_name(&pdev->dev), i2c);
++	if (ret != 0) {
++		dev_err(&pdev->dev, "cannot request HS-I2C IRQ %d\n", i2c->irq);
++		goto err_clk;
++	}
++
+ 	return 0;
+ 
+  err_clk:
 
-What is the idea here? Is it the assumption that only old drivers rely
-on page alignment, so if they use min_align_mask, it proves that they
-are new and must not rely on page alignment?
+---
+base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
+change-id: 20240228-i2c_exynos5-db13a72eec8b
 
-> For #3, alloc_align_mask specifies the required alignment. No=20
-> pre-padding is needed. Per earlier comments from Robin[1],=20
-> it's reasonable to assume alloc_align_mask (i.e., the granule)=20
-> is >=3D IO_TLB_SIZE. The original address is not relevant in=20
-> determining the alignment, and the historical page alignment=20
-> requirement does not apply since alloc_align_mask explicitly=20
-> states the alignment.
->
-> For #4, the returned physical address must match the bits
-> in the original address specified by min_align_mask.  swiotlb
-> swiotlb must also allocate pre-padding aligned to
-> alloc_align_mask that precedes the returned physical address.
-> Also per Robin[1], assume alloc_align_mask is >=3D
-> min_align_mask, which solves the conflicting alignment=20
-> problem pointed out by Petr[2]. Perhaps we should add a=20
-> "WARN_ON(alloc_align_mask < min_align_mask)" rather than=20
-> failing depending on which bits of the original address are=20
-> set. Again, the historical requirement for page alignment does=20
-> not apply.
+Best regards,
+-- 
 
-AFAICS the only reason this works in practice is that there are only
-two in-tree users of min_align_mask: NVMe and Hyper-V. Both use a mask
-of 12 bits, and the IOVA granule size is never smaller than 4K.
-
-If we want to rely on this, then I propose to make a BUG_ON() rather
-than WARN_ON().
-
-> I believe Will's patch set implements everything in #2, #3,=20
-> and #4, except my suggested WARN_ON in #4. The historical page=20
-> alignment in #1 presumably needs to be added. Also, the current=20
-> implementation of #4 has a bug in that IO_TLB_SEGSIZE could be=20
-> exceeded as pointed out here[3], but Robin was OK with not=20
-> fixing that now.
-
-Agreed.
-
-Thank you again, this helps a lot.
-
-Petr T
-
->=20
-> Michael
->=20
-> [1] https://lore.kernel.org/linux-iommu/20240221113504.7161-1-will@kernel=
-org/T/#mbd31cbfbdf841336e25f37758c8af1a0b6d8f3eb=20
-> [2] https://lore.kernel.org/linux-iommu/20240228133930.15400-1-will@kerne=
-l.org/T/#mf631679b302b1f5c7cacc82f4c15fb4b19f3dea1=20
-> [3] https://lore.kernel.org/linux-iommu/20240221113504.7161-1-will@kernel=
-org/T/#m4179a909777ec751f3dc15b515617477e6682600
+/^JN - Jesper Nilsson
+-- 
+               Jesper Nilsson -- jesper.nilsson@axis.com
 
 
