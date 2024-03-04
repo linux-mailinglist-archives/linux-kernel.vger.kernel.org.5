@@ -1,157 +1,133 @@
-Return-Path: <linux-kernel+bounces-90436-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90437-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EED3386FF25
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:34:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF70886FF28
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:34:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A0C5B21709
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:34:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA74E285322
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:34:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E42DF2EB09;
-	Mon,  4 Mar 2024 10:34:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="yUycssvT"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0E93321AA;
+	Mon,  4 Mar 2024 10:34:27 +0000 (UTC)
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 891D51A29F;
-	Mon,  4 Mar 2024 10:34:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E49A5249EA;
+	Mon,  4 Mar 2024 10:34:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709548448; cv=none; b=We0T+BOpWXFt2UPDEcDGnaD/YRXQI10EZvBIvekL6vQPo0mV3ONNN1wyAryx26AVA2vutMp4KPZ282PSM8ffEFgrADxEssx6wwGzfjG1LWQApu2xpqBdbAUidkTt8T1MhiWLxIR8NDwWB2ZOD1AYrAu+Y3LHWyJSEnr7c56QNVA=
+	t=1709548467; cv=none; b=FiamtVMRm2Kjy7lw6oaM3hVK5gCzi9X7AEnvXdFQJX3Znf+fVLUK38In0D8J+j4YuVmgftgtcZtPZGzEJ4kFg/Aw3H4z5tckAeBP3/3rVMjVxyceI3PaGimiRgmVqoHSYfJXyoXPW8Ivn92VQh6WfZxWY7skyAciDmNHfcOSLzg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709548448; c=relaxed/simple;
-	bh=X8hStsCEoYVAZ6F/f5AhI30DQJROTSe1ABt+YDwR7qE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=ha8Ry9PJe0MhdLQmebE4UxUBr1RkF2a0L1sMae/LkCiMpBgn/lBW34vw6dH4mAHMeIy6b9jJvJTJqiEvVX60448hq2QvIoR+AN6KC0IQ0wG1shIIxfxH2WVjCQ0foIl6lDP5QtOX0vmLwrMnVMmWXsGavO1QBbG3LD97jyhmjAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=yUycssvT; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 424AWsLm059411;
-	Mon, 4 Mar 2024 04:32:54 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1709548374;
-	bh=dGqTM/o/z/iQYnEvV+JIGkw/hQ9dTMU9/eegiOjtL5M=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=yUycssvT7jbKY/9r4s3Z10FR8/TIMGCoktkB2/v0KdDTs6LLJi0pLxOtSG0R9sOnW
-	 EZ8Dgq0ea3oyebO8lT74vPPmwM8i/p9fRARDo0gxbRYeUuR16QYT11t/ldjSLjzsTU
-	 rNZ1ZWKriCC6NQLJflHXzWD6FWaOq3oJbHxmpsog=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 424AWsR4004236
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 4 Mar 2024 04:32:54 -0600
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 4
- Mar 2024 04:32:53 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 4 Mar 2024 04:32:53 -0600
-Received: from [172.24.227.88] (uda0500640.dhcp.ti.com [172.24.227.88])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 424AWn0D060483;
-	Mon, 4 Mar 2024 04:32:49 -0600
-Message-ID: <8d92dcbb-828d-17f4-d199-c625505e7b0c@ti.com>
-Date: Mon, 4 Mar 2024 16:02:48 +0530
+	s=arc-20240116; t=1709548467; c=relaxed/simple;
+	bh=GnMIo/pAd4JHLRP1VZXlqka2oS6REd7bI010ZIuZm+8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lWWAZkN5KgK6+v3otMxYDOs9JAiea7ElbHF2po36GFvLufwQm1adhBa2r9mSFNVyAPYkJzxbsPHMc3q/5NBsVHPoeCpK84+ZNQubEmjW8PoEBLTZF3Hbt3eqzBqtW5JxDnixIkVnM9/pYQGff9mX4w50WE34VRPECEK0lZlAvz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-60821136c5aso28861637b3.1;
+        Mon, 04 Mar 2024 02:34:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709548463; x=1710153263;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GnMIo/pAd4JHLRP1VZXlqka2oS6REd7bI010ZIuZm+8=;
+        b=Tgnt8DTX9VYO85UQCn5zwwWOhHYNRPCia7Lb5QsrxqSx59dXlny2BKlhdadQgxUf2a
+         lzt2NOL282XgeQQ0h9SPLdu3t68Rx4mRYhfFDXraTDv/o6tbHyCnWlHiMuHqytPrT0oS
+         J0ZlAqMGSRIBkwQm0+CtiR7VsFFjftGL7Nk9pR50zuso2Gp1zS8D8imErE7tqZH0zjB4
+         f22JuXINqas4scXn2BJeQ5z4yA0OQGuga3WTSRrUjnLukvjdYmGwYD2/QnWe8b5D0rIA
+         1QoicaN+buxY9PItdBx1bv0g3obxji2v+CFeDaiRKeQ+kFRR4MDmGfyN4DgxJdVxlVBX
+         BwUA==
+X-Forwarded-Encrypted: i=1; AJvYcCVhD9GAXg0D6xNuEVD+cuZa9A5MVmk4i/Fqer/00pfSQsAkIowrSXCchhGXlcVfEyvxYUaUEFjwd+JKczirnRxumQ5TAeutm6LirV3UtH0XVyzLgSSZqFXQlVkJ84RxBXEcXgrFXuSp2ZVnvQN5WSAyvhNDcCI2mzWuuRUa0MkJ/g==
+X-Gm-Message-State: AOJu0Yw9ph6Q9aciFyHKSMLl9iinqgOlHFAJ1NEvHAKWq+QA8VrSLK/q
+	kX7IfHfU/s3cm9Oe/1qhU9zbAMF1Ad2o38SUY5PilOudDbbhVyIwaFOLyMx0gOs=
+X-Google-Smtp-Source: AGHT+IHX930ZUrQfn3sruS1o3KTGvcsMAaJR2gpkCVcT9jsiz2lXYaGoLy4Csg21BIWb1vOGL7pj5g==
+X-Received: by 2002:a81:9847:0:b0:608:c440:620a with SMTP id p68-20020a819847000000b00608c440620amr7990467ywg.13.1709548462884;
+        Mon, 04 Mar 2024 02:34:22 -0800 (PST)
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com. [209.85.128.178])
+        by smtp.gmail.com with ESMTPSA id u62-20020a816041000000b00607c9160c22sm2553915ywb.119.2024.03.04.02.34.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Mar 2024 02:34:22 -0800 (PST)
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-60982a6d8a7so36294867b3.0;
+        Mon, 04 Mar 2024 02:34:22 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUzWclLHPvm8Tgx2cHWhjBo9UqVKzt1pxcsl3Qr1zRE581xlyNsv3Nm9uJHIsAU1ucnSo+sxludaeGNWTwnKmRSRKcuxEVSL2gfbSvBX2OjiMzVmu+ElVamX9nOCKOY3dlTlM0tnhExIvuCprJiA6SDUZUkesbLsBEZWF5agU3ANQ==
+X-Received: by 2002:a81:6d15:0:b0:609:879c:a72c with SMTP id
+ i21-20020a816d15000000b00609879ca72cmr7227414ywc.42.1709548462066; Mon, 04
+ Mar 2024 02:34:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] net: hsr: Use full string description when opening HSR
- network device
-Content-Language: en-US
-To: Lukasz Majewski <lukma@denx.de>, Oleksij Rempel <o.rempel@pengutronix.de>
-CC: Eric Dumazet <edumazet@google.com>, Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <Tristram.Ha@microchip.com>,
-        "Sebastian Andrzej
- Siewior" <bigeasy@linutronix.de>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Nikita
- Zhandarovich" <n.zhandarovich@fintech.ru>,
-        Murali Karicheri
-	<m-karicheri2@ti.com>,
-        Ziyang Xuan <william.xuanziyang@huawei.com>,
-        <linux-kernel@vger.kernel.org>,
-        Ravi Gunasekaran <r-gunasekaran@ti.com>
-References: <20240304093220.4183179-1-lukma@denx.de>
-From: Ravi Gunasekaran <r-gunasekaran@ti.com>
-In-Reply-To: <20240304093220.4183179-1-lukma@denx.de>
+References: <010ea3a0-929e-4912-ad22-9f0cf5b1a3e2@redhat.com>
+In-Reply-To: <010ea3a0-929e-4912-ad22-9f0cf5b1a3e2@redhat.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 4 Mar 2024 11:34:09 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdX2CtKuY5GS=sJL2rYhixzgtXBQQpef-h=2GKRX-cNOjg@mail.gmail.com>
+Message-ID: <CAMuHMdX2CtKuY5GS=sJL2rYhixzgtXBQQpef-h=2GKRX-cNOjg@mail.gmail.com>
+Subject: Re: pm_runtime_early_init() defined but not used, except on SuperH
+ which has its own definition ?
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, 
+	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Pavel Machek <pavel@ucw.cz>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-sh@vger.kernel.org, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux PM <linux-pm@vger.kernel.org>, 
+	Bartosz Golaszewski <brgl@bgdev.pl>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: quoted-printable
 
+CC Bartosz
 
-
-On 3/4/24 3:02 PM, Lukasz Majewski wrote:
-> Up till now only single character ('A' or 'B') was used to provide
-> information of HSR slave network device status.
-> 
-> As it is also possible and valid, that Interlink network device may
-> be supported as well, the description must be more verbose. As a result
-> the full string description is now used.
-> 
-> Signed-off-by: Lukasz Majewski <lukma@denx.de>
-> ---
->  net/hsr/hsr_device.c | 13 ++++++-------
->  1 file changed, 6 insertions(+), 7 deletions(-)
-> 
-> diff --git a/net/hsr/hsr_device.c b/net/hsr/hsr_device.c
-> index 9d71b66183da..9a60489fba96 100644
-> --- a/net/hsr/hsr_device.c
-> +++ b/net/hsr/hsr_device.c
-> @@ -142,30 +142,29 @@ static int hsr_dev_open(struct net_device *dev)
->  {
->  	struct hsr_priv *hsr;
->  	struct hsr_port *port;
-> -	char designation;
-> +	char *designation = NULL;
->  
->  	hsr = netdev_priv(dev);
-> -	designation = '\0';
->  
->  	hsr_for_each_port(hsr, port) {
->  		if (port->type == HSR_PT_MASTER)
->  			continue;
->  		switch (port->type) {
->  		case HSR_PT_SLAVE_A:
-> -			designation = 'A';
-> +			designation = "Slave A";
-
-"designation" is now a pointer and is being assigned value
-without even allocating memory for it.
-
->  			break;
->  		case HSR_PT_SLAVE_B:
-> -			designation = 'B';
-> +			designation = "Slave B";
->  			break;
->  		default:
-> -			designation = '?';
-> +			designation = "Unknown";
->  		}
->  		if (!is_slave_up(port->dev))
-> -			netdev_warn(dev, "Slave %c (%s) is not up; please bring it up to get a fully working HSR network\n",
-> +			netdev_warn(dev, "%s (%s) is not up; please bring it up to get a fully working HSR network\n",
->  				    designation, port->dev->name);
->  	}
->  
-> -	if (designation == '\0')
-> +	if (!designation)
->  		netdev_warn(dev, "No slave devices configured\n");
->  
->  	return 0;
-
--- 
-Regards,
-Ravi
+On Sun, Mar 3, 2024 at 8:53=E2=80=AFPM Hans de Goede <hdegoede@redhat.com> =
+wrote:
+>
+> Hi All,
+>
+> I noticed that drivers/base/power/power.h defines pm_runtime_early_init()
+> but nothing under drivers/base uses this.
+>
+> A grep over the entire tree shows that arch/sh/drivers/platform_early.c
+> does use pm_runtime_early_init() but rather then including
+> drivers/base/power/power.h it has its own definition / private copy
+> of both device_pm_init_common() and pm_runtime_early_init() from
+> drivers/base/power/power.h ???
+>
+> Also the private copy of pm_runtime_early_init() in
+> arch/sh/drivers/platform_early.c differs from the unused one
+> in drivers/base/power/power.h, but only when CONFIG_PM is not set.
+>
+> When CONFIG_PM is not set then the pm_runtime_early_init() in
+> arch/sh/drivers/platform_early.c is a no-op, where as the one in
+> drivers/base/power/power.h still calls device_pm_init_common()
+> in this case ...
+>
+> I also wonder if given that pm_runtime_early_init() is not
+> used with the exception of arch/sh/drivers/platform_early.c
+> if the dev->power.early_init flag check in
+> device_pm_init_common() is really necessary ?
+>
+> On non SuperH the only (1) caller of device_pm_init_common()
+> is device_pm_init(), so it seems to me that the code to
+> avoid doing device_pm_init_common() twice is unnecessary.
+>
+> Actually it seems to me that the entire contents of
+> device_pm_init_common() can be moved inside device_pm_init()
+> and the dev->power.early_init can be completely dropped (2).
+>
+> Regards,
+>
+> Hans
+>
+>
+> 1) Well pm_runtime_early_init() calls it too, but that itself
+> is unused and can be removed, removing it is even ok-ish
+> for SuperH since that has its own copy anyways.
+>
+> 2) With the exception that all of this is still necessary
+> for SuperH I guess.
 
