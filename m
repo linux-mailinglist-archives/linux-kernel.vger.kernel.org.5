@@ -1,100 +1,165 @@
-Return-Path: <linux-kernel+bounces-90749-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90745-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FCC9870467
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:41:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA9BF87045E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:39:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 43EBCB29044
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:41:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7228D28272C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:39:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA9A54C61B;
-	Mon,  4 Mar 2024 14:39:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 815A747A6A;
+	Mon,  4 Mar 2024 14:39:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="emGzoon8"
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vGZN+aUG"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1471487B5
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 14:39:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC5A03FE58;
+	Mon,  4 Mar 2024 14:39:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709563165; cv=none; b=GycW5FcqQDeWgC48dMzo0c7YdeeYQIt6RSq3PtJJIsyO+wdB0y9YQxXTo6ygpIPlpI74K3wj8LS9uipbkjURswj80B3dbbKQnaTtARs91GnYNbz4peaI5j60omDPwYAME53Xz3OdGYX9CcT9K42FS2MxZIMfE6GRTJRAmDX93AU=
+	t=1709563159; cv=none; b=PwoBjaO0o4c2gZlT4tdO/0iCbiNitDqK/dbMCBL3PoC+JtoSRnu/VQeicDtq8oEMZLTJxLQzKEXDq8FfH5zGw7BYvtLDOftlc8MqabqH2b93m3YM9mB2uARdq+yI5C6F8YWjCFH1JbGjJv2YQZM/z5+6LG9GzQen/TOtLVDpDsQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709563165; c=relaxed/simple;
-	bh=vDGpRCxAORqJMueKt34edr+rCaYe1PnBVeh9tbmSp1w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FXpSVwsI5w72jO3FRaqwAgoO0R5Y8ktfTLtAF1cIaUeFYKyFt3hFO6MTfbA+U2InkG4CF5EcnV4CXesPI5BtQn0+Z7XttUvXSqd0sgx/LRBsBfsGAu/u2y1KBYmA5Sg/fdSc2KWrepTAiSgh/mP4SBh9GP7HzrAfYN/w5ewhkig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=emGzoon8; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d2ab9c5e83so45513811fa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 06:39:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1709563161; x=1710167961; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vDGpRCxAORqJMueKt34edr+rCaYe1PnBVeh9tbmSp1w=;
-        b=emGzoon81ObDc4HA71OMLgO4ZeiTeZ9nxIEmUiplvEnTErKGmNFq/UAAtQpMukhgeh
-         UsUihWdRHlhFop3CKe1sbTPt+89G61a4VpVQYYAMhtzmasYXMRxrtvohfns29DIXSOlx
-         C8E9N2dhuwZN31xn3F3yX1EXrCOGVbe/G8C6kCpBUQwiI7a9KwgzI5Ba92jPYwftLORI
-         y/zmcdwE/EANdx1CfzNC+BakxmFGOeHkdfE3iirJGXtXUBMkL6FOOKd08r9A8aZedhd4
-         CtA9k5nSfmskCkazvO/nYQWnlu16a1Rds1zf6mvBshyo8sHm/Chp7YcWbtlZjeQuNFAS
-         +6+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709563161; x=1710167961;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vDGpRCxAORqJMueKt34edr+rCaYe1PnBVeh9tbmSp1w=;
-        b=qo3mnR9UwNcWrzYzxZ/Kshiof+KlAnLar8Ka8We4tivladT3J2EtYP0rl2egv2jfoT
-         GNdcgsG75o95ExzhWq1uuHxAyh5XAvv5zK6Wp5uVtepZCRJDTt6fNJiNSx2xOOXQYZxf
-         fMUPTufuuV/hEMPn/MLUH3yNsG8oeiZFxOnEG899pdfpgKYJzn0jS6+uQbKn1HXivSlC
-         YR5g81Ee+z01e3Oj6C6Ipkqrf6guig2WLtM9DvqlAqDWgHuyZVJ6aRB9mGk1nocrq8Pl
-         1m+qYl+qVERzqkx50eCHmdYeVsOJSpbQ5c6ozPm4xsh8Rz9fEQTPRPo/O6ZXzmtxqFqg
-         Miow==
-X-Forwarded-Encrypted: i=1; AJvYcCVIUGHj4QUo/VNKbwlgvLB0hb/kILlxgvdc2swZMohu/F6m8DRP3dAaxfwk+KthlyQGP/jJaCQ/fjks7qxY9LuFLex3JrOgdKP9sGaY
-X-Gm-Message-State: AOJu0YyeqhxAEEfn5J8U6cAW+IR55uqeKsXR+4uGYPTgn0bM75/vlg0h
-	eNl1+VJrbnGbtIRG5rXIcB0XYlTBPlZO1zcC63wctL6zLPFQ3Cc1B+++Mb57zFzVOG7ElyWjTJe
-	ZcfqAQ+Z9I9ux8brb0leiVyNMgsmGW7MRwMycwg==
-X-Google-Smtp-Source: AGHT+IHDk6ElikIs8iamzUoSTyAOXOafoUhC1GRAhOK3vIrfpyJwvtQAHDA/PPtsiDzT5clDw/wzuhOyU+TXxJplUy4=
-X-Received: by 2002:a2e:b057:0:b0:2d3:3305:c37d with SMTP id
- d23-20020a2eb057000000b002d33305c37dmr6796096ljl.2.1709563161280; Mon, 04 Mar
- 2024 06:39:21 -0800 (PST)
+	s=arc-20240116; t=1709563159; c=relaxed/simple;
+	bh=jMLHce6fSNV1ibpvqXecN80o6gKL25oVTs9fW+eNgJc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=R+hKH7pQLLklaoi+4B9wve6MO8KUA47/6GMVZu90mRqT03ELUAEZdJD6zLA8fPFIw5Z7yt4tR5x8hGzcVM+If4qv2/DB4cVoK9DMysyf/PAWk5B3GNdY1UqP3KntWGjGV9al92q8y34Ee0c93YeE3JQGXI6Y1KuuNOGMD2Lv1jQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vGZN+aUG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0AFCC43394;
+	Mon,  4 Mar 2024 14:39:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709563159;
+	bh=jMLHce6fSNV1ibpvqXecN80o6gKL25oVTs9fW+eNgJc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=vGZN+aUGRCHUXtaClyfB0lW2zx8oz2EnMN+dEfj6++ZyYSSPq+FTcQGe47oCabaHn
+	 hygA37nDu5yUChLQS9ebQxaY9xeRyhxwKzTewrv7ZIR2lHPrJLQZohTwDPi7lZot4D
+	 LitPMpmhwwPXWmLEsDuhowiAnSHHcTmkT3gviCMR5NFWBKnrdHVMRFmpnc7zmZBPLD
+	 +GfgdyJa6DQltRPUVE6O0V0p8Y4Cp6UoF4dXx89qS8OuIHn5/uCHo6yTci+iBzcrpM
+	 P+HtDaM2cLgfXTu/82Bbm7HMPGBl+43c1PadJmvN73yy0z16/sulhotTpO4BMongqE
+	 oVCTYKNNJftgQ==
+Date: Mon, 4 Mar 2024 08:39:16 -0600
+From: Rob Herring <robh@kernel.org>
+To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc: Abel Vesa <abelvesa@kernel.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>, linux-clk@vger.kernel.org,
+	imx@lists.linux.dev, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH v3 1/2] dt-bindindgs: clock: support NXP i.MX95 BLK CTL
+ module
+Message-ID: <20240304143916.GA181628-robh@kernel.org>
+References: <20240228-imx95-blk-ctl-v3-0-40ceba01a211@nxp.com>
+ <20240228-imx95-blk-ctl-v3-1-40ceba01a211@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240304140650.977784-1-andriy.shevchenko@linux.intel.com> <20240304140650.977784-2-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20240304140650.977784-2-andriy.shevchenko@linux.intel.com>
-From: David Lechner <dlechner@baylibre.com>
-Date: Mon, 4 Mar 2024 08:39:10 -0600
-Message-ID: <CAMknhBFLVaEBE_aPYADpDdYVNhfz5aSb4vhP6v7L3de27K7V1Q@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] iio: core: Leave private pointer NULL when no
- private data supplied
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>, linux-iio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>, 
-	Lars-Peter Clausen <lars@metafoo.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240228-imx95-blk-ctl-v3-1-40ceba01a211@nxp.com>
 
-On Mon, Mar 4, 2024 at 8:07=E2=80=AFAM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> In iio_device_alloc() when size of the private data is 0,
-> the private pointer is calculated to point behind the valid data.
-> Leave it NULL when no private data supplied.
->
-> Fixes: 6d4ebd565d15 ("iio: core: wrap IIO device into an iio_dev_opaque o=
-bject")
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+On Wed, Feb 28, 2024 at 03:48:22PM +0800, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+> 
+> i.MX95 includes BLK CTL module in several MIXes, such as VPU_CSR in
+> VPUMIX, BLK_CTRL_NETCMIX in NETCMIX, CAMERA_CSR in CAMERAMIX and etc.
+> 
+> The BLK CTL module is used for various settings of a specific MIX, such
+> as clock, QoS and etc.
+> 
+> This patch is to add some BLK CTL modules that has clock features.
+
+This sentence doesn't add anything you haven't already said.
+
+> 
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
 > ---
+>  .../devicetree/bindings/clock/imx95-blk-ctl.yaml   | 61 ++++++++++++++++++++++
+>  include/dt-bindings/clock/nxp,imx95-clock.h        | 32 ++++++++++++
+>  2 files changed, 93 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/clock/imx95-blk-ctl.yaml b/Documentation/devicetree/bindings/clock/imx95-blk-ctl.yaml
+> new file mode 100644
+> index 000000000000..c8974b927bee
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/imx95-blk-ctl.yaml
+> @@ -0,0 +1,61 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/clock/imx95-blk-ctl.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: NXP i.MX95 Block Control
+> +
+> +maintainers:
+> +  - Peng Fan <peng.fan@nxp.com>
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - nxp,imx95-cameramix-csr
+> +          - nxp,imx95-display-master-csr
+> +          - nxp,imx95-dispmix-lvds-csr
+> +          - nxp,imx95-dispmix-csr
+> +          - nxp,imx95-netcmix-blk-ctrl
+> +          - nxp,imx95-vpumix-csr
+> +      - const: syscon
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  '#clock-cells':
+> +    const: 1
+> +    description:
+> +      The clock consumer should specify the desired clock by having the clock
+> +      ID in its "clocks" phandle cell. See
+> +      include/dt-bindings/clock/nxp,imx95-clock.h
+> +
+> +  mux-controller:
+> +    type: object
+> +    $ref: /schemas/mux/reg-mux.yaml
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - '#clock-cells'
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  # Clock Control Module node:
+> +  - |
+> +    #include <dt-bindings/clock/nxp,imx95-clock.h>
+> +
+> +    syscon@4c410000 {
 
-Reviewed-by: David Lechner <dlechner@baylibre.com>
+clock-controller@...
+
+As that is the main feature/function.
+
+> +      compatible = "nxp,imx95-vpumix-csr", "syscon";
+> +      reg = <0x4c410000 0x10000>;
+> +      #clock-cells = <1>;
+
+Please make the example as full as possible. For example, add 
+mux-controller node. Do some of the blocks not have mux ctrl?
 
