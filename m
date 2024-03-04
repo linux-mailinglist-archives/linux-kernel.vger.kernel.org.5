@@ -1,144 +1,98 @@
-Return-Path: <linux-kernel+bounces-90201-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C10B86FBD8
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:29:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76CCE86FBD7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:29:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 83CF2B21A36
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:29:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A87641C20D57
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:29:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 811FA17BB6;
-	Mon,  4 Mar 2024 08:29:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C40CE1757A;
+	Mon,  4 Mar 2024 08:29:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="HDM8YqlS"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ecNTlmUG"
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0231F17995
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 08:29:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63D16171CE
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 08:29:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709540950; cv=none; b=dSCrdy+HJm98VgXVwcYdWXr2iE6Lu+bNVTcqauXdpV6xTCRWEVkPfHo17p6kWUFQMocaLkIkF5f9CjXBOUIvQYpSZwpJrOq4YGks8Dgg4+lrbpMZndzqVHoeG4bgnbGj4jDBbsMIjCi8pavfm4k3KKKKiFH+sdABuJuDpyEX26Y=
+	t=1709540947; cv=none; b=O5jVE+gZpjYFXm8JbOz9fryXDi/Mqy3VGxuc98TV3FcQBoNVji0EBYz9ZGoXO72gHKnLc03NN1js0reddJicjnDFcvHFm/Cbnx+yYl9mRMrIEgoj7LvHDjDekVkEjQ9FGxET/rG0tz16PxiTtlHk58AbgU6Eetnk6z/gsnGaqVY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709540950; c=relaxed/simple;
-	bh=xHGtEE89Ysf5s3ceorxN1bQrlL7WHOhbN/NAx/SwBqU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JRPn/el93tFhz6jWZndswgTuFJPUzgfmHzOwsa8tS8rx2KdTXqW7bfYkkT0phPsQQ+J7kUP4gqC4ebWeLgzqc//8+FkCso/v9yrmSIT3do/9VW/z+UTkiSZKNgZSqf1+WsbFpPO8/DQAMIPBnz/NWrywuRh+0bMNDhoelX9OGdE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=HDM8YqlS; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42485owI016470;
-	Mon, 4 Mar 2024 08:28:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=SxZpxjfc7CDYpKWOPubQqbhzUUm/zbSPqv4kbl3pM4o=;
- b=HDM8YqlSxTOrQ8h6PrGT25zaBlUyRLbSfCf1BcroPpvV/A5dQt2i0MedNYs+67h5QFyy
- 0uoD3DugZiVyELD1KvqzE8ax5wFynSIGKXscSNpglcXYbQDldXaX8/ykEdeE+NIuCw51
- G7lSHvys2e+yFrSD7N1JNc6FK31aZQYwdRK9b9dC912UJDcMttuiedvbPzoGgrRmeu0B
- iFeJR3YRtL+SIRJuYh5v2fkGUmQNKzdF67FozsUxs0uk9au/L2UY0eX/5Pjp7BArcVcw
- 0HRmx802JOMP9+K5dXIrRpIQ3PR0Xc4O/29N9/RrOKUMp9tLxOgaahWaoO+70UywTz6I Vw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wnafy0fqe-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 04 Mar 2024 08:28:57 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 424867eB017110;
-	Mon, 4 Mar 2024 08:28:56 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wnafy0fq1-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 04 Mar 2024 08:28:56 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 424705SA026228;
-	Mon, 4 Mar 2024 08:28:56 GMT
-Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wmfenfbcb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 04 Mar 2024 08:28:56 +0000
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
-	by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4248Sq5F37224936
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 4 Mar 2024 08:28:55 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 9A7AD58066;
-	Mon,  4 Mar 2024 08:28:52 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 26C2A58062;
-	Mon,  4 Mar 2024 08:28:27 +0000 (GMT)
-Received: from [9.109.201.126] (unknown [9.109.201.126])
-	by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Mon,  4 Mar 2024 08:28:24 +0000 (GMT)
-Message-ID: <5e5c0a81-3c60-437c-b164-e1245222d964@linux.ibm.com>
-Date: Mon, 4 Mar 2024 13:58:16 +0530
+	s=arc-20240116; t=1709540947; c=relaxed/simple;
+	bh=AiF3M2ZXGt2DD8dbuzeBj+thfVUxVizYfVV2gUrncrw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oSRRslbQ/OgWo/zTG8HNfniBQeC2smLgHHt/HdsXwwpHf+2nwLI4o4M6QPCBzDvoUGpud0PlLmxqEY72xKLbz7wuhMa2FiZDKnJQ04V6PEXnpGrRodKj9sAo1OD04JYr8HO0rUMb3dbNqVZzD8stfZ1PTv7SB5GSjkmJDAjfByk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ecNTlmUG; arc=none smtp.client-ip=209.85.208.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d3b93e992aso8327721fa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 00:29:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709540943; x=1710145743; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+wo0SJU7p2/dpepBvA/P9zsdXAkWlRWzHBTJpWaC47Q=;
+        b=ecNTlmUG0Ws8DXTczrlhT0TAuin6ZFSDpgl0NM5ZmVE72yyq8n4fbcTeWUjZaRJE1I
+         5qx9wX47ZBuGr4ZAY/TRIruMASBiB+7QRi33aTRqPMimEUe+yCqEXQy+FYZRzS91t8Jl
+         JfG8qj7mirzLqf4b6J/pOllvkElZE8VP4/tSlVjN3XOQxoaRnKYaXjwZbtBZy2gQL+tt
+         +KnSmEtHXwv8Zqx1+PDdFaZCnvfUSVn57ogJgwv6+Dd8d2R2XPopFpn6oKpaVjoFwFjk
+         4FXRnpsu0fQLvnvBzr1pQUalk8i3MTxWxqpR9AMemVcy/A/q9QCtZI2Jg6oNeXFN1yb3
+         h10w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709540943; x=1710145743;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+wo0SJU7p2/dpepBvA/P9zsdXAkWlRWzHBTJpWaC47Q=;
+        b=XiQC6yrmMiz61QKtVwVqcd4xZ+Ih+NDLZx7UG4rogNWCBTH+AlutA1/R/g3qmyrpn6
+         PfE7kbW4FbsC+MC/PoSvHT7i4Sk5nf8FHssZZL75cImxagAx4AhVkVZLHtsnYHzu3Jrf
+         9oTfmwDyQd2xV/CtMV6nU/OXBSGRVPWl5LE7e191lcE1Jnjq+gpbkQInFBVTAcsFbgET
+         zGXAE6ZCXkwsHe2Pz7OW6dWQy1QudVqI4FkQ3yIHqp7NqVbgfnNu9w+ZYc6UpmaEgptd
+         4YVDdd+o5pPHKvBFECYu9IDywP7mn/6goQYyLWi0wzbJ/Cpim/QHTnRG5beUzANyP6ri
+         vaPQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUt+Y6rWXPjz2qQyjpZA9SeNil2SVBJqxPeX3pU+fsuODcwH5NKAbv+0rrGVLbv5dlTRav/HPJYub2w5B8ri74tE7odsP220ZpWM3Um
+X-Gm-Message-State: AOJu0YyvXKiP6vGU/5THzWBsZNPPhFowzdUP9O6nUZhQ7oXLU3HLBCRz
+	hlGrUtFRdSj4aF3yPwfAxRiuZyYQMYfpw4xoON5abah8vQsm/xPXy446miazz1M=
+X-Google-Smtp-Source: AGHT+IHlP9u2qsK3YEBWaFlAHughEjQFuWV6BdioiPXHNX5f7Nu3vQLHQ3crSeYL2fYj6PpyWk+Z4Q==
+X-Received: by 2002:a2e:90ce:0:b0:2d2:2ddb:28c7 with SMTP id o14-20020a2e90ce000000b002d22ddb28c7mr6033182ljg.26.1709540943507;
+        Mon, 04 Mar 2024 00:29:03 -0800 (PST)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id jg6-20020a05600ca00600b00412ddcd38efsm4226264wmb.21.2024.03.04.00.29.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Mar 2024 00:29:03 -0800 (PST)
+Date: Mon, 4 Mar 2024 11:28:59 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Aman Sharma <210100011@iitb.ac.in>
+Cc: Gregkh <gregkh@linuxfoundation.org>, linux-staging@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] Staging: pi433: Updated bitrate range from datasheet
+Message-ID: <7ae15d44-d7b8-4008-97e9-f8c26b9323c9@moroto.mountain>
+References: <0eaf24f26b1f7e89350b54a65c7f47a6@iitb.ac.in>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/2] sched/fair: Use helper function to access
- rd->overutilized
-Content-Language: en-US
-To: Qais Yousef <qyousef@layalina.io>
-Cc: mingo@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org,
-        yu.c.chen@intel.com, dietmar.eggemann@arm.com,
-        linux-kernel@vger.kernel.org, nysal@linux.ibm.com,
-        aboorvad@linux.ibm.com, srikar@linux.ibm.com, vschneid@redhat.com,
-        pierre.gondois@arm.com, morten.rasmussen@arm.com
-References: <20240301151725.874604-1-sshegde@linux.ibm.com>
- <20240301151725.874604-3-sshegde@linux.ibm.com>
- <20240303185441.km7c4u7yui3b5nl2@airbuntu>
-From: Shrikanth Hegde <sshegde@linux.ibm.com>
-In-Reply-To: <20240303185441.km7c4u7yui3b5nl2@airbuntu>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 8hRRv0y0fHzTgdpiDn-irHGKx_yayNbH
-X-Proofpoint-GUID: WoeoPssrgSrXv6x67HH8DbQ1hMrs83YG
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-04_04,2024-03-01_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- priorityscore=1501 adultscore=0 phishscore=0 lowpriorityscore=0
- spamscore=0 impostorscore=0 mlxlogscore=942 bulkscore=0 clxscore=1015
- mlxscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2403040064
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0eaf24f26b1f7e89350b54a65c7f47a6@iitb.ac.in>
 
-
-
-On 3/4/24 12:24 AM, Qais Yousef wrote:
-> On 03/01/24 20:47, Shrikanth Hegde wrote:
->> Overutilized field is accessed directly in multiple places.
->> So it could use a helper function. That way one might be more
->> informed that it needs to be used only in case of EAS.
->>
->> No change in functionality intended.
->>
->> Signed-off-by: Shrikanth Hegde <sshegde@linux.ibm.com>
+On Mon, Mar 04, 2024 at 01:19:36PM +0530, Aman Sharma wrote:
+> Updated bitrate range for FSK and OOK modulation from the RFM69 Datasheet.
+> The values are mentioned in Section 2.3.2 of the datasheet.
 > 
-> Can we do the same for rd->overload too? A set_rd_overload_status() would be
-> a nice addition too. Anyway.
+> Signed-off-by: Aman Sharma<amansharma6122002@gmail.com>
+                            ^
+Space character still missing.  Btw, I tested and checkpatch.pl will
+find this issue.  Please, run checkpatch on your patches.
 
+regards,
+dan carpenter
 
-We have some more experiments going around overload. 
-For example, currently it is writing sg_status & SG_OVERLOAD without checking if it has 
-changed first. On large systems that are not overloaded, that may help by reducing the 
-bus traffic. 
-
-I will pick up this after we have some more data on the above. 
-
-> 
-> Reviewed-by: Qais Yousef <qyousef@layalina.io>
-> 
-
-Thank you.
-
-> 
-> Thanks!
 
