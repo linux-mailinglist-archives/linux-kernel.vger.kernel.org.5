@@ -1,137 +1,188 @@
-Return-Path: <linux-kernel+bounces-90388-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90399-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B93286FE91
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:13:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D020B86FEA8
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:16:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16D67B2368A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:13:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6AE811F22F1F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:16:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E926938DDC;
-	Mon,  4 Mar 2024 10:12:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8086D3D544;
+	Mon,  4 Mar 2024 10:12:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZF++zhKW"
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="d+D4umXx"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EE2736AEB
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 10:12:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 378D925755;
+	Mon,  4 Mar 2024 10:12:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709547126; cv=none; b=KP4bnhy08gJFOFF/1UwaIRz91ItTEffwsVsiazp938EQ9D5b5L6daWDdWLxh/ll0d9dWLunSlDq0+2AJSYm9m4ME1mAsjPaYBByEEP0eoEKYaCewzZbh97rwAscjbG8aOtktcaXkF77CtoPn/mciUfzAXh8sn5mz6FQqAtEnYvM=
+	t=1709547161; cv=none; b=QXwwmYetuuQb+AvCRQWnNZdrEnFn4K/z2RcXnrGpqRHAMc3grmX44/4UqBP2QRrDNWwCKXJOm7CJ7SyZ4q/0HWxQDa094WAdfDIgPF5i0sCDKuJzbEht7+42SSshLF1729cIZJGtplfHBo8GpWCcgxgUt+/kAJXYtgdFHr6X8EQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709547126; c=relaxed/simple;
-	bh=IQiBIX1ptsqUCh17mmsk9JR1+iQzH5+7RhWBq7Lbzeo=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=hLuwvOThUcImCevVMEOrR4hvzN4zR6DCV8xWAzPnEKrjuJZKal6dAwxnIr/h9f32w/nhJJaS827vTXalI0/KqA1DeEwZrHVV/MzQKMTp5KHeKE+hIOTj8PzD1L9vTzQotmvv0Tpi1YItV6jbxRJUDkv1ZS3OP8xyUE7Gum0nrNc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ZF++zhKW; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-56657bcd555so5419435a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 02:12:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709547123; x=1710151923; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qkscxkyuLKmNGJ13PCRB5gPU2riBC6Uyvc9FkqhiTrI=;
-        b=ZF++zhKWxiOJzapXn9HafgVxReE2bOHURe9BcEtLuTJMDVzCO+XDbAy/Mkk7r+ZUIE
-         dKoXXDOmB5l9TXaH7NFc6UfZI1JUDs5J296h44Kdq0hOQNvKsI4BFZrHGdhgO03reRAM
-         tmPwk+VMx7VlRTVqNhC6hT/SxkV/1jeb1y9PTe06vqj68XdMdfUPwQWwdLGgkbxKV+G9
-         8FFLwdlwAB04XD0veNVAV4ImwinpIVZAsuvn5n/XMz4GQT0xtmBxlNOvsaVLal0g6diR
-         z7gImo05oSVUvCOcfdOF5jN3EIbWuMovZlSJ5WAIzPGNUNxHbFpf+vg1ZVS/FuiS8Udo
-         LOXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709547123; x=1710151923;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qkscxkyuLKmNGJ13PCRB5gPU2riBC6Uyvc9FkqhiTrI=;
-        b=lw3ygBKhlTufG7HduiYFasEsP9diQk4qqil/x4l02a4o7ui5GcHNsDTJ1IM36kYDwA
-         zewJBvbgDuft8YilS6c8RF//RDl2EU86ytRp6otrhYZ/OyfEJQjw2WdsZaPWfsEonC4X
-         Graj3L+4xRq4WMIihkP8thhv0W4wrTQsaA5wZgh7vzMUvrwXtbT0LpeNneaH1L26vsQz
-         jPrNpDMM24fI397SUhrn/yNNqPwPO1hHkxNcKKL/hKMkHHaoFk3tXTZmZPLwzo1dzvwv
-         rDKjc+oz/t44ZBOryqSFTueZ+kArGnNPUi8fRKGbyOxHZHuD9NteZYVjY4d07HCHUyYm
-         mnrw==
-X-Forwarded-Encrypted: i=1; AJvYcCUpPLE8x2HpQ7NRIoepbqdIjJUcxxVCgxj8bxcqOOwu7JopH6U33Bz2x5dBdcS0CM7cyo/x3uohmWxqRrWlFy3NhdgOtY1kfAXwHQJA
-X-Gm-Message-State: AOJu0YwftgQJJwEpaSN2LOTLDDV8pSpgBnPAeO81GfttQeiCqyCjyaEo
-	mon+x/WZn8mWDuEPgA/0GIxUbJayvSwT0NRAvMhd+/DyovDzt4Svmy83YpArsUE=
-X-Google-Smtp-Source: AGHT+IGrR48vptQZf+rBErBNW3zRh8A4eRQbm5RBoTdBYRzBDUp2kfXMSXqolT28sPSNVPFt+B9itg==
-X-Received: by 2002:a17:906:1c90:b0:a44:86d4:70a1 with SMTP id g16-20020a1709061c9000b00a4486d470a1mr5679948ejh.59.1709547123118;
-        Mon, 04 Mar 2024 02:12:03 -0800 (PST)
-Received: from [127.0.1.1] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id ef11-20020a17090697cb00b00a44bc99cd89sm2938481ejb.42.2024.03.04.02.12.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 02:12:02 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Mon, 04 Mar 2024 11:11:44 +0100
-Subject: [PATCH 7/7] backlight: pandora_bl: Drop unneeded ENOMEM error
- message
+	s=arc-20240116; t=1709547161; c=relaxed/simple;
+	bh=kfAcNKmA4cBvu+kjAgfSfD0IyZ8QJAIfKSZTQk0XGtM=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eSX8lbT2zXPyQLc1HYRbOKJLq+b047nTL3un1itfJZrH42M8H1FJO2BOqsFY70f1vyuuSDV1xv387z22LaZ2N/BDQEK6JL+OsnlOfRk6IK15gtOlwNkQ2RmyKTVrjQJeQhToPWYREdHw0C75S4jIigGaN8F0ZKdQAhpgSZttVUk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=d+D4umXx; arc=none smtp.client-ip=68.232.154.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1709547159; x=1741083159;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=kfAcNKmA4cBvu+kjAgfSfD0IyZ8QJAIfKSZTQk0XGtM=;
+  b=d+D4umXxKq+/z12ay63WdCST85WafWmWTQq6ktq5dHhxEEMLV3DqtcgT
+   hzdtFtksThsDHsqlf2PtZazrijCtxJEpBEqcuO9crvYYfFTcC2hW40sWp
+   OuEucRbxGlNXR4rBzzbkovspe+L6mEvjD/vfv4SE4exhSA4AnuAMp/IbQ
+   7MtxN0/2vDJKE2u/hgNzUSYos+ty0qm481WxZvHGs6/oLrIgI9gpgh32O
+   pvaZwq4hsXJ81FfY5l4ZFBq/dv+Xd8DJud1iJs3Yh0B9+gm24f+AQ2Yl9
+   YqOCzd9K+9OVla6cljSHk9yhLNK0lA7YatLgD7xRn2EJHXJ+J7D63VnT2
+   g==;
+X-CSE-ConnectionGUID: wCwOhLHtRuaTzD16zsH71g==
+X-CSE-MsgGUID: pesRzB4dSCO6pOnMr5pS8w==
+X-IronPort-AV: E=Sophos;i="6.06,203,1705388400"; 
+   d="asc'?scan'208";a="17693678"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 04 Mar 2024 03:12:38 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 4 Mar 2024 03:12:31 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex04.mchp-main.com (10.10.85.152)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Mon, 4 Mar 2024 03:12:29 -0700
+Date: Mon, 4 Mar 2024 10:11:45 +0000
+From: Conor Dooley <conor.dooley@microchip.com>
+To: Yangyu Chen <cyy@cyyself.name>
+CC: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	<linux-riscv@lists.infradead.org>, Conor Dooley <conor@kernel.org>, Rob
+ Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Paul Walmsley
+	<paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
+	<aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/5] dt-bindings: add Canaan K230 boards compatible
+ strings
+Message-ID: <20240304-wharf-safely-8167b9641821@wendy>
+References: <tencent_E15F8FE0B6769E6338AE690C7F4844A31706@qq.com>
+ <tencent_D5188EA5B85A31AC21588DBD7C7482ACDA08@qq.com>
+ <7c3c578a-d662-4485-ad15-47250ad0e935@linaro.org>
+ <tencent_BF607C338244DA7F8EB2B8F2314A218B8D08@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240304-backlight-probe-v1-7-e5f57d0df6e6@linaro.org>
-References: <20240304-backlight-probe-v1-0-e5f57d0df6e6@linaro.org>
-In-Reply-To: <20240304-backlight-probe-v1-0-e5f57d0df6e6@linaro.org>
-To: Lee Jones <lee@kernel.org>, 
- Daniel Thompson <daniel.thompson@linaro.org>, 
- Jingoo Han <jingoohan1@gmail.com>, Helge Deller <deller@gmx.de>
-Cc: dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=861;
- i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=IQiBIX1ptsqUCh17mmsk9JR1+iQzH5+7RhWBq7Lbzeo=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBl5Z5mnfBQ5T6LEu6wSHreyeIddxcFaUtThG5hR
- a7P7xtBFQOJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZeWeZgAKCRDBN2bmhouD
- 1+bBEACC1mknggxkpb8buuVG+0wI2sOUPaDlTNanVp8VneZ1l/BNkKBQ16feuUhfuQwjRbtWsUf
- ZuSeoXHhpFP4r86SdVkbEVDk2lHP0KnDRoyq62CN2cvKV/jH1gOV+dRRjQwaQ/+1O2GMx0mPbDu
- iaqhbqb5oqrns4Ycj+pUyBUD0pjID8r0TnOsriFXB2OKlIj30CaBhcaq8P6ChS8t7bP6qgDjSqs
- jUOVa9GFE0IiX7CJhIBtOO7Uk6GaQ12WeQxZuikLzwrGgiv9PCvohPt6a9xgmqEyDchFF/V+IwX
- SXAHRzQdkez8EzzNYFlwKbaRtTOzF9uPqZvzLJowH+HXPrBowr7kCJ0XlBosRMxlNkeGPjGC8zF
- klwHa4J6M4rQnL27yx8qzkeaTjuHw2OCKdyrBEFikRSKRNWw0tVjgKWdmMJ5uP7LXnLGxiK330C
- UbwI0ZPdFqScbrPDf83rLA0+DP+abdH2Wr9o0vbFTuEW8NxPwqys23rwj29dj7O3Hdw5okM306X
- kMaeqS5zhQ0Oq8XJrf6wUIGnGJkLS9anoWh5FJTS+xQWg0V4kfM1v3bc7klOT2G67xTXllFT3gG
- TAkA+gLn74eZZxkaYbAwdLovsbQnn1Ey7Zoui+W7wRwR8NgCwbgKmETXcsNMbdkRGvXyAstq/Sh
- X7Mj1VxLbKE+uxg==
-X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
- fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="sMeZDBbqBAeg1clN"
+Content-Disposition: inline
+In-Reply-To: <tencent_BF607C338244DA7F8EB2B8F2314A218B8D08@qq.com>
 
-Core code already prints detailed information about failure of memory
-allocation.
+--sMeZDBbqBAeg1clN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- drivers/video/backlight/pandora_bl.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+On Mon, Mar 04, 2024 at 04:51:05PM +0800, Yangyu Chen wrote:
+> On 2024/3/4 16:11, Krzysztof Kozlowski wrote:
+> > On 03/03/2024 14:26, Yangyu Chen wrote:
+> > > Since K230 was released, K210 is no longer the only SoC in the Kendry=
+te
+> > > series, so remove the K210 string from the description. Also, add two
+> > > boards based on k230 to compatible strings to allow them to be used i=
+n the
+> > > dt.
+> > >=20
+> > > Signed-off-by: Yangyu Chen <cyy@cyyself.name>
+> > > ---
+> > >   Documentation/devicetree/bindings/riscv/canaan.yaml | 13 ++++++++++=
+++-
+> > >   1 file changed, 12 insertions(+), 1 deletion(-)
+> > >=20
+> > > diff --git a/Documentation/devicetree/bindings/riscv/canaan.yaml b/Do=
+cumentation/devicetree/bindings/riscv/canaan.yaml
+> > > index 41fd11f70a49..444758db964e 100644
+> > > --- a/Documentation/devicetree/bindings/riscv/canaan.yaml
+> > > +++ b/Documentation/devicetree/bindings/riscv/canaan.yaml
+> > > @@ -10,7 +10,7 @@ maintainers:
+> > >     - Damien Le Moal <dlemoal@kernel.org>
+> > >   description:
+> > > -  Canaan Kendryte K210 SoC-based boards
+> > > +  Canaan Kendryte SoC-based boards
+> > >   properties:
+> > >     $nodename:
+> > > @@ -42,6 +42,17 @@ properties:
+> > >         - items:
+> > >             - const: canaan,kendryte-k210
+> > > +      - items:
+> > > +          - const: canaan,k230-usip-lp3-evb
+> > > +          - const: canaan,kendryte-k230
+> > > +
+> > > +      - items:
+> > > +          - const: canaan,canmv-k230
+> >=20
+> > Why this is not part of previous entry in an enum?
+> >=20
+> > > +          - const: canaan,kendryte-k230
+> > > +
+> > > +      - items:
+> > > +          - const: canaan,kendryte-k230
+> >=20
+> > Usually you cannot run SoCs alone. What does it represent (in real life=
+)?
+> >=20
+>=20
+> I'm not sure what it means.
 
-diff --git a/drivers/video/backlight/pandora_bl.c b/drivers/video/backlight/pandora_bl.c
-index f946470ce9f6..51faa889e01f 100644
---- a/drivers/video/backlight/pandora_bl.c
-+++ b/drivers/video/backlight/pandora_bl.c
-@@ -114,10 +114,8 @@ static int pandora_backlight_probe(struct platform_device *pdev)
- 	u8 r;
- 
- 	priv = devm_kmalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
--	if (!priv) {
--		dev_err(&pdev->dev, "failed to allocate driver private data\n");
-+	if (!priv)
- 		return -ENOMEM;
--	}
- 
- 	memset(&props, 0, sizeof(props));
- 	props.max_brightness = MAX_USER_VALUE;
+You have a SoC compatible but no board compatible. You cannot run a SoC
+without some sort of board connected to it, so this should be removed.
 
--- 
-2.34.1
+> If you wonder why should I add a compatible string for soc, that is altho=
+ugh
+> we cannot run SoCs alone, adding a soc compatible will allow some
+> bootloaders or SBI on RISC-V to choose an errata for a soc. Such as this
+> opensbi patch. [1]
 
+You don't need to add an isolated compatible like this to be able to
+apply that "erratum", the compatible is already documented from the
+"usip-l3-evb" and "canmv-k230" entries.
+
+> If you wonder why I should allow a soc-compatible string with soc alone,
+> that is because k210 did it previously.
+
+The k210 is not really a beacon of quality in the DT department, copying
+=66rom there is likely to be misleading unfortunately.
+
+> And provide a k210_generic.dts to
+> use it. I haven't provided generic dts now but allowing only soc-compatib=
+le
+> string alone would also be acceptable I think.
+
+To be honest, I would like to delete the generic dts for the k210, I
+don't think it should exist, at least not in the current form.
+
+Thanks,
+Conor.
+
+--sMeZDBbqBAeg1clN
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZeWeYQAKCRB4tDGHoIJi
+0l7sAP47uOhYd1DCwmJBkxO8TaMhAQS5Yf1og9jIrnGIqxlXVgD/Y4GmbTvJfOfh
+M8suFJ9UmnJ3S0rikA5KJgnrXlJZ7gA=
+=TfqN
+-----END PGP SIGNATURE-----
+
+--sMeZDBbqBAeg1clN--
 
