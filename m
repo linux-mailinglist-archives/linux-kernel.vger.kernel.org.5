@@ -1,61 +1,61 @@
-Return-Path: <linux-kernel+bounces-90580-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90571-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CEFE870191
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:33:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01E5887016A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:32:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 90F8C1C234B8
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:33:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD1FA287AC8
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:31:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 314CB481B3;
-	Mon,  4 Mar 2024 12:30:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27E203CF6D;
+	Mon,  4 Mar 2024 12:30:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="btgO66SW"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EnyEIcKk"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B134D1DFD6;
-	Mon,  4 Mar 2024 12:30:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6FD33DB8B;
+	Mon,  4 Mar 2024 12:30:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709555458; cv=none; b=LknKZl/w9JmrTm3TJEAM9vsg4rNym1NZFeEC6FWIyByrCcajq4lNHamVh4pvrhFB9W7AhXpaKLeYzBii4kPiQ63kWjp5x4tmdJbl/eYRiqrMI2PZfj5G1u7uPYwbT7Tq+0NlxHx1+EjpfaMjcZay7L6X63jPBJy0taYJaxMgVdQ=
+	t=1709555452; cv=none; b=JsbvKmENPl8HTLvheyziUi44kk48lu2FvpXM4qUliPP0BkBVdBQR7nBret9dBBozUd+6Nu5drOhfmcGqZpphq9wG8Yl3RQ9MEaqY40aqzO6P7cbJ1nR4PRssmO8PMBzNoiddZcRqDqCDg0fDKflvWqpuK2A+SJ5sv0KR9nnai7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709555458; c=relaxed/simple;
-	bh=Ug0+1cJK1qABFIX1u2vFwuq1+scRl5b911mXi0OiA6E=;
+	s=arc-20240116; t=1709555452; c=relaxed/simple;
+	bh=TnMt2ju9cdAL7PKJz1vum/eONvPof09ld6E2GiIPEVg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=h1Q8dKir6+je1iSxv815rMCxrshct+Pna4xj0o2TnAmYfh/URnJyw0adVvUQVwJUjKJMhB7Xjlz5iUEGWtoejKczZiT2hVaSkDzUmpcBLaLjWIvZwqZkgYKH8UJVjCNawE1mn7GkVMS/E5ZXrhExE4iTXq6txn0EFPeWdMFriGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=btgO66SW; arc=none smtp.client-ip=192.198.163.12
+	 MIME-Version; b=FdwaAqLjhKyJZNg6RoNg+qEBs3YvJFO1X3ADHMqUhCNw/j7Vbn6cTC8WhOlv7HftFA+YWmPj7FLNAn84OTrTRzSoQuOFhRuEWHyFwwnk1iAtY3qpxxRqG5UOikjRjDXGFclnY04GwqEX9QBCvaCfi/Eavx7rqQEDl5wHRCxp1HM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EnyEIcKk; arc=none smtp.client-ip=192.198.163.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709555457; x=1741091457;
+  t=1709555451; x=1741091451;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=Ug0+1cJK1qABFIX1u2vFwuq1+scRl5b911mXi0OiA6E=;
-  b=btgO66SWU7R75f1NA6Np7PWHbaWPwPj4LHe6t4MSURWSRWVWbX2bvS+5
-   8LBqpsBTIRZW2PY1PZqsOV4Gvyky6BIVbVlXykOeGFY/9IjtV+XsPdBcc
-   jOVAxuQLHOxn4nTbtHGdxNW2QQ2IXZsFX+7XnMnvO/qllvCz+NuL+hXz3
-   R0QqWRgTm8nqx/wc36VttavsdSna+M1PFHkerd7m+9lfDzJaIqQTVd9t5
-   x4jw21dtzanKluXWnxuC60ezPBUWarM20bjYM8sQYZVhFYVNIwpsKsVyU
-   eFdP1ZY4si+ti4LPk1/2aNZS2HvdT6gXvg+BOHHxCTyMl1XfuFIMYRF6Y
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="7815203"
+  bh=TnMt2ju9cdAL7PKJz1vum/eONvPof09ld6E2GiIPEVg=;
+  b=EnyEIcKkVQZTW7RMkD5/KI1SwzfKgLeR7mDUTQxp6a7ilowEuor/Oh5T
+   7S0GBUXC5O8qshdU1sH1XYH19zUWkSvnRfWwdeHEiXBsxXnftlf0U910t
+   lUgUMOcwvxfrsFY6yVXPVJpxuTCSnHo99zuBMnor3P9KTdQmDHSySjav4
+   bsvsEDZJ5A9DBnTtYliWcc5kehpb7POJ+PY+5mtMfHuNoDeH6Eqo6F6dB
+   N6tKuCztafJx+cYUlOMq5Ab27+tIEvEjx24ItMFEeWL5aK1fM/SArY5kw
+   rZppPNsgtOpOzURZ/UX2x7O7iqlpk8HPXSGM8wMH5hdX2Fik8UZQ+Jnqm
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="7815099"
 X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
-   d="scan'208";a="7815203"
+   d="scan'208";a="7815099"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 04:30:51 -0800
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 04:30:50 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="937040433"
+X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="937040432"
 X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
-   d="scan'208";a="937040433"
+   d="scan'208";a="937040432"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 04 Mar 2024 04:30:45 -0800
+  by fmsmga001.fm.intel.com with ESMTP; 04 Mar 2024 04:30:44 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id BF01A8F6; Mon,  4 Mar 2024 14:30:37 +0200 (EET)
+	id CB7CFA59; Mon,  4 Mar 2024 14:30:37 +0200 (EET)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
@@ -81,9 +81,9 @@ Cc: Jiri Slaby <jirislaby@kernel.org>,
 	Jonathan Hunter <jonathanh@nvidia.com>,
 	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
 	Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [PATCH v3 11/14] serial: 8250_omap: Switch to use uart_read_port_properties()
-Date: Mon,  4 Mar 2024 14:27:12 +0200
-Message-ID: <20240304123035.758700-12-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v3 12/14] serial: 8250_pxa: Switch to use uart_read_port_properties()
+Date: Mon,  4 Mar 2024 14:27:13 +0200
+Message-ID: <20240304123035.758700-13-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 In-Reply-To: <20240304123035.758700-1-andriy.shevchenko@linux.intel.com>
 References: <20240304123035.758700-1-andriy.shevchenko@linux.intel.com>
@@ -100,17 +100,17 @@ use it instead of sparse home grown solution.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/tty/serial/8250/8250_omap.c | 29 ++++++++++-------------------
- 1 file changed, 10 insertions(+), 19 deletions(-)
+ drivers/tty/serial/8250/8250_pxa.c | 22 +++++++++-------------
+ 1 file changed, 9 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250/8250_omap.c
-index 6942990a333c..66901d93089a 100644
---- a/drivers/tty/serial/8250/8250_omap.c
-+++ b/drivers/tty/serial/8250/8250_omap.c
-@@ -1394,11 +1394,7 @@ static int omap8250_probe(struct platform_device *pdev)
- 	struct uart_8250_port up;
- 	struct resource *regs;
- 	void __iomem *membase;
+diff --git a/drivers/tty/serial/8250/8250_pxa.c b/drivers/tty/serial/8250/8250_pxa.c
+index 77686da42ce8..f1a51b00b1b9 100644
+--- a/drivers/tty/serial/8250/8250_pxa.c
++++ b/drivers/tty/serial/8250/8250_pxa.c
+@@ -92,11 +92,7 @@ static int serial_pxa_probe(struct platform_device *pdev)
+ 	struct uart_8250_port uart = {};
+ 	struct pxa8250_data *data;
+ 	struct resource *mmres;
 -	int irq, ret;
 -
 -	irq = platform_get_irq(pdev, 0);
@@ -118,63 +118,38 @@ index 6942990a333c..66901d93089a 100644
 -		return irq;
 +	int ret;
  
- 	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	if (!regs) {
-@@ -1419,7 +1415,6 @@ static int omap8250_probe(struct platform_device *pdev)
- 	up.port.dev = &pdev->dev;
- 	up.port.mapbase = regs->start;
- 	up.port.membase = membase;
--	up.port.irq = irq;
- 	/*
- 	 * It claims to be 16C750 compatible however it is a little different.
- 	 * It has EFR and has no FCR7_64byte bit. The AFE (which it claims to
-@@ -1429,13 +1424,9 @@ static int omap8250_probe(struct platform_device *pdev)
- 	 * or pm callback.
- 	 */
- 	up.port.type = PORT_8250;
--	up.port.iotype = UPIO_MEM;
--	up.port.flags = UPF_FIXED_PORT | UPF_FIXED_TYPE | UPF_SOFT_FLOW |
--		UPF_HARD_FLOW;
-+	up.port.flags = UPF_FIXED_PORT | UPF_FIXED_TYPE | UPF_SOFT_FLOW | UPF_HARD_FLOW;
- 	up.port.private_data = priv;
- 
--	up.port.regshift = OMAP_UART_REGSHIFT;
--	up.port.fifosize = 64;
- 	up.tx_loadsz = 64;
- 	up.capabilities = UART_CAP_FIFO;
- #ifdef CONFIG_PM
-@@ -1461,14 +1452,14 @@ static int omap8250_probe(struct platform_device *pdev)
- 	up.rs485_stop_tx = serial8250_em485_stop_tx;
- 	up.port.has_sysrq = IS_ENABLED(CONFIG_SERIAL_8250_CONSOLE);
- 
--	ret = of_alias_get_id(np, "serial");
--	if (ret < 0) {
--		dev_err(&pdev->dev, "failed to get alias\n");
-+	ret = uart_read_port_properties(&up.port);
-+	if (ret)
+ 	mmres = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	if (!mmres)
+@@ -114,21 +110,21 @@ static int serial_pxa_probe(struct platform_device *pdev)
+ 	if (ret)
  		return ret;
--	}
--	up.port.line = ret;
  
--	if (of_property_read_u32(np, "clock-frequency", &up.port.uartclk)) {
-+	up.port.regshift = OMAP_UART_REGSHIFT;
-+	up.port.fifosize = 64;
+-	ret = of_alias_get_id(pdev->dev.of_node, "serial");
+-	if (ret >= 0)
+-		uart.port.line = ret;
+-
+ 	uart.port.type = PORT_XSCALE;
+-	uart.port.iotype = UPIO_MEM32;
+ 	uart.port.mapbase = mmres->start;
+-	uart.port.regshift = 2;
+-	uart.port.irq = irq;
+-	uart.port.fifosize = 64;
+ 	uart.port.flags = UPF_IOREMAP | UPF_SKIP_TEST | UPF_FIXED_TYPE;
+ 	uart.port.dev = &pdev->dev;
+ 	uart.port.uartclk = clk_get_rate(data->clk);
+ 	uart.port.pm = serial_pxa_pm;
+ 	uart.port.private_data = data;
 +
-+	if (!up.port.uartclk) {
- 		struct clk *clk;
++	ret = uart_read_port_properties(&uart.port);
++	if (ret)
++		return ret;
++
++	uart.port.iotype = UPIO_MEM32;
++	uart.port.regshift = 2;
++	uart.port.fifosize = 64;
+ 	uart.dl_write = serial_pxa_dl_write;
  
- 		clk = devm_clk_get(&pdev->dev, NULL);
-@@ -1560,8 +1551,8 @@ static int omap8250_probe(struct platform_device *pdev)
- 	}
- #endif
- 
--	irq_set_status_flags(irq, IRQ_NOAUTOEN);
--	ret = devm_request_irq(&pdev->dev, irq, omap8250_irq, 0,
-+	irq_set_status_flags(up.port.irq, IRQ_NOAUTOEN);
-+	ret = devm_request_irq(&pdev->dev, up.port.irq, omap8250_irq, 0,
- 			       dev_name(&pdev->dev), priv);
- 	if (ret < 0)
- 		return ret;
+ 	ret = serial8250_register_8250_port(&uart);
 -- 
 2.43.0.rc1.1.gbec44491f096
 
