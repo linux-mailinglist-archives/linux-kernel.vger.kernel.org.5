@@ -1,94 +1,95 @@
-Return-Path: <linux-kernel+bounces-90237-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90241-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BBA786FC48
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:50:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CABC486FC54
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:52:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F350E1F21673
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:50:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F4CEB229FA
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:52:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67AED3D0CA;
-	Mon,  4 Mar 2024 08:44:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66BCE21109;
+	Mon,  4 Mar 2024 08:44:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GXE51NYD"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="WnEnDnHr"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E1F11DA5B;
-	Mon,  4 Mar 2024 08:44:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A5FA1AAD7;
+	Mon,  4 Mar 2024 08:44:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709541857; cv=none; b=Z/YOcVD7FlkLgfutSGPiyQaUfkf3BI5BkPihzBd/L/BELEmT0ASHDIjjDYbsKUX+qAxRMaMe+/sIcq3Gbs1/vMe8Q1ytbTbQdAqQZCShz4SoQgEdKhLrzCulX2jzgo/0x1NGbOYCm7EYqrsYhrHofOmVCOi0RuZ9+bSE5t+FQL8=
+	t=1709541891; cv=none; b=KY7BbHucRQgMxs1Ip24o8CNQBokMlmNo7SlnFjFanp7UA5DeFa5XP+xiAFqL00chiGsIXtq6q6VoRzcxnbegI18mRgPmrIKkMYKlN3UhpdEC+luoSTzmCyaWIhqeddcGIgfHn4cTr0fEMyqtG9A9cwhVjhd3CqQc8Vdlnbn+wZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709541857; c=relaxed/simple;
-	bh=m3btwuB1XUM+0/1Srhrmy8oBrwYrCSMk8C4cHIhZwpI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h8//Pn/8aHczXdhdITMkbuoWyNbn3fJiFBrsNln9Ub4R1wkPgydhVBH0yQidmnROAm7SV3Boq0tDsLbjsr9Azd9mpMBVZIqBeHbORynRXi8OeMH7brpc5hc5VC4qz4Qlipdoh8Zevnr0kPc1wopNIoRkYoWgohR5ARRV+jdM668=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GXE51NYD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E0C3C43399;
-	Mon,  4 Mar 2024 08:44:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709541857;
-	bh=m3btwuB1XUM+0/1Srhrmy8oBrwYrCSMk8C4cHIhZwpI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GXE51NYDqpQ6Rpt9NCI+I0KTgTxx8Ob9USgAHcXYvtmVdkGqv9AJOiPikODi/j8+J
-	 7JMubxXRMWEnVhoLTktK0+ZSoBnHvSbaG7TShTXMSmNd9wdyeXvcVBKx5E859ICTT4
-	 HBoz1rjslk7YRW72BGTovEg/P++8uW9LfQTYy3vhl5wn0yn/ioLGvJ/fW707WhVa78
-	 m216Hm24/eDT/aA9PiVuIvA2ukGsRri5g7nghmfQOMZv6wHhIPtASbOLZCoWVsjGHV
-	 N/uK6O2Dkz6XaukXb+Ik9dnu49PD3loVvBZsOhM/NIJ7CUuAonay1v5ra93D6LBqYR
-	 PKHtKW3BB9x3g==
-Date: Mon, 4 Mar 2024 09:44:09 +0100
-From: Lorenzo Pieralisi <lpieralisi@kernel.org>
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Frank Li <Frank.Li@nxp.com>, bhelgaas@google.com, conor+dt@kernel.org,
-	devicetree@vger.kernel.org, festevam@gmail.com,
-	hongxing.zhu@nxp.com, imx@lists.linux.dev, kernel@pengutronix.de,
-	krzysztof.kozlowski+dt@linaro.org, krzysztof.kozlowski@linaro.org,
-	kw@linux.com, l.stach@pengutronix.de,
-	linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	manivannan.sadhasivam@linaro.org, robh@kernel.org,
-	s.hauer@pengutronix.de, shawnguo@kernel.org,
-	Nathan Chancellor <nathan@kernel.org>
-Subject: Re: [PATCH v10 03/14] PCI: imx6: Simplify reset handling by using by
- using *_FLAG_HAS_*_RESET
-Message-ID: <ZeWJ2Z5kKoqbeWYn@lpieralisi>
-References: <20240205173335.1120469-4-Frank.Li@nxp.com>
- <20240301190931.GA403500@bhelgaas>
+	s=arc-20240116; t=1709541891; c=relaxed/simple;
+	bh=aQdBSLlALLw63VO8L/jjBkWYw2D61GkjyZobEivi5pg=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=jZJYmkVLYxpDk8igGUJlZkvCydPR3VREP9zsvN2eCZivVF7V7aINFti3Qj3jFfWiZTZAlzLiDSKigfnAqNbnV1ilr+PGbcfAgozAzs0vIdG7AJkXqtbF0j/m+Z0IYJNYPPXc+DJTMK913lMMI/K9udiOE1JN3jYBaCTjDo7ywhM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=WnEnDnHr; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709541888;
+	bh=aQdBSLlALLw63VO8L/jjBkWYw2D61GkjyZobEivi5pg=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=WnEnDnHr/h/QXOlI26XCkJxch5TkTF9EBxc6HF62ugTISIN5nv5ptzrwQOqtte1IP
+	 UzYGGsH7s1getc6wfxdjsP1ksdp2eXXMUI6dWwBRDuGWRVz+AszYdf4eqhlRYl6qVw
+	 cOuDy4kO2l+xUd2P0FheHhX54e6BJe4/5A1WjOlw5EdB5hIHqdBvmrB2x++GVReO+l
+	 dkepW+mNmAQ9CcmUJ4Tc/D4bxuWqERG8byJ11ETfccLyc0lAIJkVk8caU7q1/Gypn6
+	 J31c8g4WTtkPnuBAh1ekFrod/KKkWBwWKn6vOa703G00ZHxzlX6VDXMVbOxFwiAjr/
+	 h2ze1Ljv0lSEg==
+Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 1441F3782076;
+	Mon,  4 Mar 2024 08:44:39 +0000 (UTC)
+Message-ID: <bceb2aab-7b8e-4b87-a3ac-b5f25505612a@collabora.com>
+Date: Mon, 4 Mar 2024 13:44:54 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240301190931.GA403500@bhelgaas>
+User-Agent: Mozilla Thunderbird
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+ James Smart <james.smart@broadcom.com>,
+ Dick Kennedy <dick.kennedy@broadcom.com>,
+ "James E.J. Bottomley" <jejb@linux.ibm.com>,
+ "Martin K. Petersen" <martin.petersen@oracle.com>, kernel@collabora.com,
+ kernel-janitors@vger.kernel.org, James Smart <jsmart2021@gmail.com>,
+ linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] scsi: lpfc: correct size for cmdwqe/rspwqe for memset
+To: Justin Tee <justin.tee@broadcom.com>,
+ Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+References: <20240301144434.2809483-1-usama.anjum@collabora.com>
+ <5a0172a7-1a02-47d4-86c7-f5fd22e9767c@wanadoo.fr>
+ <CAAmqgVM8+wWQOaF43FzQ1O-hBspB_aUODHygHeNM_e2o7Ni9uw@mail.gmail.com>
+Content-Language: en-US
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <CAAmqgVM8+wWQOaF43FzQ1O-hBspB_aUODHygHeNM_e2o7Ni9uw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Mar 01, 2024 at 01:09:31PM -0600, Bjorn Helgaas wrote:
-> [+cc Nathan]
-> 
-> On Mon, Feb 05, 2024 at 12:33:24PM -0500, Frank Li wrote:
-> > Refactors the reset handling logic in the imx6 PCI driver by adding
-> > IMX6_PCIE_FLAG_HAS_*_RESET bitmask define for drvdata::flags.
-> > 
-> > The drvdata::flags and a bitmask ensures a cleaner and more scalable
-> > switch-case structure for handling reset.
-> > 
-> > Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
-> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> 
-> Lorenzo, would you mind squashing in Nathan's fix from
-> https://lore.kernel.org/r/20240301-pci-imx6-fix-clang-implicit-fallthrough-v1-1-db78c7cbb384@kernel.org?
-> 
-> Also, the subject line has a repeated "by using by using".
+I'll send v2.
 
-I will fix it up.
+On 3/1/24 11:59 PM, Justin Tee wrote:
+> Hi Muhammad,
+> 
+> Agreed with Christophe's comment.
+> 
+> memset(cmdwqe, 0, sizeof(*cmdwqe));
+> memset(rspwqe, 0, sizeof(*rspwqe));
+> 
+> Thanks,
+> Justin
+> 
 
-Thanks,
-Lorenzo
+-- 
+BR,
+Muhammad Usama Anjum
 
