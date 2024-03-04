@@ -1,134 +1,100 @@
-Return-Path: <linux-kernel+bounces-90935-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90936-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DBEF8706FC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:27:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8244F8706FF
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:28:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2F77B21EC4
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:27:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B4F0B23AEF
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:28:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E0214C634;
-	Mon,  4 Mar 2024 16:27:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86FBA4CB3D;
+	Mon,  4 Mar 2024 16:28:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p1re9V+k"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KB4RHpau"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6224B482E2;
-	Mon,  4 Mar 2024 16:27:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5544482EF;
+	Mon,  4 Mar 2024 16:28:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709569647; cv=none; b=SUEWiS+f1qgGx43mkAMIfWImFKUoroFAUkk4rwXDf2uW7lcEdar8TvS88Eg7M3hV7gFltmKaLEBBB9E/VUiis3glcsF5n1ay475Irvz7cgejc0LZcAVWXP5qEIr9QQR20d3C0tknLaWtLs6stPbzZelr5WXydxWC3Lp/CfToO+4=
+	t=1709569693; cv=none; b=EWFuCpv+QDsa5XdFHBH41b3CIrIpSMhw/YXMTcQcaPd1H76pjehYTwcMwxCEfhjLLt9swPD0uiKLtOlxAT62EKhq9wj2zAvR7Q/Al+FOX8B+FcjKA3dBJzyMzkfWAaATDkDLgW7UqDzfAI+EB9jgeDvUC6NBKUwzo+cZV/eforQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709569647; c=relaxed/simple;
-	bh=2Jb1vJn/xYd7ULjthjMCdzuXihA6/Atrjilwen7AQxA=;
+	s=arc-20240116; t=1709569693; c=relaxed/simple;
+	bh=L0jLtyPZbItn8KbijN41lcA/FmtrSMyJCLKJ1HIJGi0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gOnC1NVtA8EGizvkCjcaefpJvCXMH2gkQ0oGptbPE4wKP2MrYz7eB4JytYLt30AL93gh7N4lkxAifejVUM/I6acHA5lWsKhnaooGKpBdHkRw9r67q8xikgZWlPV3b56TRA1tdcPcT4MZEyoz8CyOCS5od2z4XnuqT05ZTn1pcjE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p1re9V+k; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E20CC433F1;
-	Mon,  4 Mar 2024 16:27:25 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=pM2erjv9UfBQcaDgas/mc+4foBtoWZfm/NFOXHIq+AYgNeqOf3GQhVCzAidYgS7C9cOabpbkCvgHIJmVbz4kf/f/Riv8n/rxXUzTGfcCoLZ7rMImttSwR68/GcjfN8rgnxN81Clsh3znpg3WL29+Zppivqzcb9d9/0d5gdRu3wY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KB4RHpau; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E761C433C7;
+	Mon,  4 Mar 2024 16:28:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709569647;
-	bh=2Jb1vJn/xYd7ULjthjMCdzuXihA6/Atrjilwen7AQxA=;
+	s=k20201202; t=1709569693;
+	bh=L0jLtyPZbItn8KbijN41lcA/FmtrSMyJCLKJ1HIJGi0=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=p1re9V+kLVa6vGXJr3cQ/AT+HPrCsQDzi+BnkaaLsI+cie6mitgKvdT5y0Rw8UozW
-	 3yIJwOCzVhXDC6amqPHXPdBWMRTzPF6KAFTH/FVd3G8RQMs/X/MY/zoXI7/ASuW7j/
-	 9NPris8PYQIVlK0AojJKd7PavJvU25wsmgkBr1sbO6oG17Zd4+qtpwEjcxiEw8vxHp
-	 QvVyjgK7KkVyj3IHHhVQTdsy4khskiUgz3HcX+66mxQTBfmcV7Dvyg17SUYmYtGh9p
-	 qS/GUqUxCINUHv7Ds5CJZ0R7VVncTQOrmXpJFxIkQT17dWMoIH/Du31AlK3H7EBcB6
-	 1FyUiki1hCupw==
-Date: Mon, 4 Mar 2024 16:27:22 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Marc Zyngier <maz@kernel.org>
-Cc: Oliver Upton <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, linux-arm-kernel@lists.infradead.org,
-	kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] KVM: arm64: Reuse struct cpu_fp_state to track
- the guest FP state
-Message-ID: <607a10e4-6678-4148-9d5e-ec030b742207@sirena.org.uk>
-References: <20240229-kvm-arm64-group-fp-data-v2-0-276de0d550e8@kernel.org>
- <20240229-kvm-arm64-group-fp-data-v2-2-276de0d550e8@kernel.org>
- <86y1b027mc.wl-maz@kernel.org>
+	b=KB4RHpauAvX0OazxS1wZX4PwHWd0afUdhxmvohYXv0W1NAqqcMtSErNc1mpc6MWX8
+	 K4VuUYLkgACJUEwKXNtPU//BlRmW9eak8pFhH73XC933gNfei7QpwEOs1BLgw4xaDQ
+	 oGF4gWn7Jq1+8b3SAlZ5sMcwLkfmTNqGwKuXYIhxjYxiT1Y4j8qJ0chSltG0f3wL9F
+	 nYOSySqcXYDIyAvwWMNyNt5YjMZJjLsicViSEPA8P0O6aop1lnAuX8xGEyODJyASZr
+	 xWw3y+7PXFzC2JakT8CVThdu2a3Zz+Y7nCA+chm9BQ54ezB5Fyzfk1Q2ahkj7fBuJ0
+	 TMIDkvk2FXAgQ==
+Date: Mon, 4 Mar 2024 10:28:11 -0600
+From: Rob Herring <robh@kernel.org>
+To: David Lechner <dlechner@baylibre.com>
+Cc: linux-iio@vger.kernel.org,
+	Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Michael Hennerich <Michael.Hennerich@analog.com>,
+	Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+	Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v4 1/2] dt-bindings: iio: adc: add ad7944 ADCs
+Message-ID: <170956969031.622753.9168069143401175386.robh@kernel.org>
+References: <20240229-ad7944-mainline-v4-0-f88b5ec4baed@baylibre.com>
+ <20240229-ad7944-mainline-v4-1-f88b5ec4baed@baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="D3tctJlyH4cuFut5"
-Content-Disposition: inline
-In-Reply-To: <86y1b027mc.wl-maz@kernel.org>
-X-Cookie: He who hesitates is last.
-
-
---D3tctJlyH4cuFut5
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240229-ad7944-mainline-v4-1-f88b5ec4baed@baylibre.com>
 
-On Sat, Mar 02, 2024 at 11:30:51AM +0000, Marc Zyngier wrote:
-> Mark Brown <broonie@kernel.org> wrote:
 
-> > At present we store the various bits of floating point state individual=
-ly
-> > in struct kvm_vcpu_arch and construct a struct cpu_fp_state to share wi=
-th
-> > the host each time we exit the guest. Let's simplify this a little by
-> > having a struct cpu_fp_state in the struct kvm_vcpu_arch and initialisi=
-ng
-> > this while initialising the guest.
+On Thu, 29 Feb 2024 10:25:50 -0600, David Lechner wrote:
+> This adds a new binding for the Analog Devices, Inc. AD7944, AD7985, and
+> AD7986 ADCs.
+> 
+> Signed-off-by: David Lechner <dlechner@baylibre.com>
+> 
+> ---
+> v4 changes:
+> - Fixed broken patch due to misplaced changelog
+> 
+> v3 changes:
+> - Removed default 'multi' value from adi,spi-mode property. This simplifies
+>   things a bit by not having to check for two possible conditions (absence of
+>   property or explicit default value). Now, only absence of property is valid to
+>   indicate the default mode. Constraints that depend on this property are
+>   updated accordingly.
+> - Fixed spelling of 'conventional'.
+> - Expanded description to call out potential confusion of '3-wire' mode being
+>   unrelated to the standard spi-3wire property.
+> - Added standard '#daisy-chained-devices' property for chain mode.
+> - Relaxed requirement of cnv-gpios since it was determined that an active high
+>   CS could actually be used in chain mode.
+> ---
+>  .../devicetree/bindings/iio/adc/adi,ad7944.yaml    | 213 +++++++++++++++++++++
+>  MAINTAINERS                                        |   8 +
+>  2 files changed, 221 insertions(+)
+> 
 
-> This structure is only useful to the physical CPU we run on, and does
-> not capture anything that is related to the guest state. Why should it
-> live in the vcpu structure, duplicating things we already have?
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-You were previously complaining that we were having to bind too much
-floating point state each time we bind a guest to a CPU, the goal here
-is to address this concern by filling in the structure at startup and
-then reusing it.  As noted in the commit log given that this state
-includes system registers there are difficulties in trying to rearrange
-things so everything is in a single structure, I'm not sure that having
-to special case the FP registers would be a win there. =20
-
-> This is just making things even more opaque.
-
-> If you need to add such a structure so that you can know what to
-> save/restore on context switch, then attach it to the per-CPU data
-> structure we already have.
-
-I'm having a hard time understanding what you're thinking of here, this
-is mainly about addressing whatever it is that's concering you but I'm
-not sure I have a good handle on what that is other than just a general
-concern that there's a lot of FP state which needs binding.  If we put
-something in the per-CPU state without reorganising the data a lot it'll
-look very similar to the code you were complaining about, the current
-code is doing roughly what you suggest already.
-
-Personally I'm not overly concerned about the current state of the
-world and find it to be a reasonable tradeoff given what's going on,
-this is trying to address your feedback.
-
---D3tctJlyH4cuFut5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXl9mkACgkQJNaLcl1U
-h9BioAf+NfHQfn/tMxiACNNhF5eYbNjv53vdlckqwV5LSBzV/wXC/CjhKz/UJnaZ
-1ewtyJ0dKGVdKWefX3V/gIl1tq1lpM6PBEVG2LrFIYj6NzF1cYn9LH0pFN+Icaey
-cgZ9xPNOa2jImOVghBSxsedQ91CmJR2Z/Ye2IGU9ud+h1gs46/hhccE/PYhuggh/
-/kt/GJVoSqJJncqUyBB/ETKSHgiJbJmiklNSg1RRAEKdd8zH62QABVlVeLf2XW+P
-hJ3dN2GPJkqFae1ir9QLLD2eDb3iuFvsXr9PKmw8SN7ntOVyLq1JuLyG4mUeVAiM
-qPGyqumFxtUakf5YFtKb8b7yea5vaA==
-=1Ccq
------END PGP SIGNATURE-----
-
---D3tctJlyH4cuFut5--
 
