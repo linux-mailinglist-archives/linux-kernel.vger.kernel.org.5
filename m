@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-91398-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91399-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61F438710EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 00:09:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 47AF58710EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 00:09:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 057D6288AB7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 23:09:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DAB962889CA
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 23:09:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2F137E10D;
-	Mon,  4 Mar 2024 23:08:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40DF27E57D;
+	Mon,  4 Mar 2024 23:08:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n1yckOcp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uCklBLKT"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDDC47D3F3;
-	Mon,  4 Mar 2024 23:08:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61E717D41C;
+	Mon,  4 Mar 2024 23:08:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709593698; cv=none; b=utlsfe5SEXaBVO8yXZGtZhrDINWO2SboOS3Z2TzCfR5xyKHZhW3U4oms7NzpH8k9JeF+fsXiO1HROdpObT0KL3753Z3OD5hL7+B9hz90sRIScpMZcr9Zo2gU9F2O5g0KdZemolx/8in/v8RRRNWBYJE6L3qYlyddklgdZ2dZydw=
+	t=1709593699; cv=none; b=B/VZaaeApY/+/hEDyuXaCDhk1Mml6euiH4Jf8dDgcXB0LEVyTb6cmn7VuAr0XtArhNSmtvhR9v/uAymudm0uZWR1826UF2UXBZvpvnr5+hPHh8h5nlenLuN/6sxRqGXuF+lP59E1RC9qjrDPH1KWFD6G3pqMWGIqsneLThcsHzI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709593698; c=relaxed/simple;
-	bh=nI/RKtUavLJDBHPe+FswyQfp864clxp3xe66Az3ofZY=;
+	s=arc-20240116; t=1709593699; c=relaxed/simple;
+	bh=6Aw5acCv4CoQWjErFC5MywXHMebtv9mViX2GVgBXuqY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CHY9M0QBd2PJ1y4mgpS4Qdwhyl6p5lB/CJlVrXTpE4mhPpR/1DmFlY/e0YF0Mwu4LsN8JQ8RvsdUegjvPwMihCzl1ICVtNKKCvpXcCz2GiC2vjYos0gmC5yBDlAIi/hTUupR9HE7GOy21ja/X21cGh9HkSc0V+wSxL9/BvPAgnU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n1yckOcp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32824C433A6;
+	 MIME-Version; b=hdIJDBcMEMQU41E4GJXWfaEgva8qYgcv8JXMM9tcWXEpa2HF9mA/EoFnNabmd12rteL54idKMh/RDMKwE2b751xtgFxOOzvU0JuV7NQ/3h60ozZIuPJRGwtm5USKzS/pzJ21KfTM3AfsmXzjSxy62qE2+GIlKLcflbaWXDoKHyQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uCklBLKT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6B7CC43330;
 	Mon,  4 Mar 2024 23:08:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709593698;
-	bh=nI/RKtUavLJDBHPe+FswyQfp864clxp3xe66Az3ofZY=;
+	s=k20201202; t=1709593699;
+	bh=6Aw5acCv4CoQWjErFC5MywXHMebtv9mViX2GVgBXuqY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=n1yckOcpDOfq2sN2uxM/sQgtjyTYxMI2l97eLjXP68rPbETQaezXSIj6xb+tXNbmQ
-	 G88X1EiHFYH6ukA5FnqEES3jfkVKntLhGgbT33J80P1cTvFasobKjGm3r16vwqOw2R
-	 dp233U4DolIbyfwXffVkrQPNS2boeFaxh96qVXmwNwsBymz60/w84RtDLHGOWarAOF
-	 R1kS6HS+6gvrE/6zCbtV4/mf9MCHzs7Qz8s/3UCkg4ewLMUWAmTwg4rN+Rfm0YEheg
-	 NGdORzwFPPvmt7vDSFSBBv3UEJCmbBr1gMMq+VW/al3F8EU4HNGmw/xsuKtGqrLN2W
-	 i/Wo3+prgKRow==
+	b=uCklBLKTP0WjF2EXAYwVXuoMjg1Bk+RX2LKu1r/l+/S1wEcjHX4IvPpCKna84QoQP
+	 l4GNnYbOgLXM3VSyoenGhefXdqTHdBIDJbKc6SxYgmwZNGMgXK+BnlVIzwwWKWn1Lx
+	 1LTIRznVPlT+weVohsCf2KPDleQqdoxsgwcmqp1+D0xW6I56Ynid5zz92uCUcU6Yye
+	 y68hyuCZ5Us5oZ6cPy+skChwrT8ogC8C89w3gWJ+D6N3eKd6neZ714Ukr+D7GrqUq5
+	 3+8kNm4Q3t7Kx/VrStwmcs2GxUTkf+L0qg6ak6uDwcG1nD4e8pj8oeZ5rNxrcDofnB
+	 2tUs9y+Ias2/A==
 From: Namhyung Kim <namhyung@kernel.org>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>,
 	Ian Rogers <irogers@google.com>
@@ -50,9 +50,9 @@ Cc: Jiri Olsa <jolsa@kernel.org>,
 	LKML <linux-kernel@vger.kernel.org>,
 	linux-perf-users@vger.kernel.org,
 	Andi Kleen <ak@linux.intel.com>
-Subject: [PATCH v2 3/4] perf annotate: Remove sym_hist.addr[] array
-Date: Mon,  4 Mar 2024 15:08:14 -0800
-Message-ID: <20240304230815.1440583-4-namhyung@kernel.org>
+Subject: [PATCH v2 4/4] perf annotate: Add comments in the data structures
+Date: Mon,  4 Mar 2024 15:08:15 -0800
+Message-ID: <20240304230815.1440583-5-namhyung@kernel.org>
 X-Mailer: git-send-email 2.44.0.rc1.240.g4c46232300-goog
 In-Reply-To: <20240304230815.1440583-1-namhyung@kernel.org>
 References: <20240304230815.1440583-1-namhyung@kernel.org>
@@ -64,124 +64,116 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-It's not used anymore and the code is coverted to use a hash map.  Now
-sym_hist has a static size, so no need to have sizeof_sym_hist in the
-struct annotated_source.
-
 Reviewed-by: Ian Rogers <irogers@google.com>
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/annotate.c | 36 +++++-------------------------------
- tools/perf/util/annotate.h |  4 +---
- 2 files changed, 6 insertions(+), 34 deletions(-)
+ tools/perf/util/annotate.h | 69 ++++++++++++++++++++++++++++++++++----
+ 1 file changed, 62 insertions(+), 7 deletions(-)
 
-diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-index 1451699d931d..ac002d907d81 100644
---- a/tools/perf/util/annotate.c
-+++ b/tools/perf/util/annotate.c
-@@ -896,33 +896,10 @@ static __maybe_unused void annotated_source__delete(struct annotated_source *src
- }
- 
- static int annotated_source__alloc_histograms(struct annotated_source *src,
--					      size_t size, int nr_hists)
-+					      int nr_hists)
- {
--	size_t sizeof_sym_hist;
--
--	/*
--	 * Add buffer of one element for zero length symbol.
--	 * When sample is taken from first instruction of
--	 * zero length symbol, perf still resolves it and
--	 * shows symbol name in perf report and allows to
--	 * annotate it.
--	 */
--	if (size == 0)
--		size = 1;
--
--	/* Check for overflow when calculating sizeof_sym_hist */
--	if (size > (SIZE_MAX - sizeof(struct sym_hist)) / sizeof(struct sym_hist_entry))
--		return -1;
--
--	sizeof_sym_hist = (sizeof(struct sym_hist) + size * sizeof(struct sym_hist_entry));
--
--	/* Check for overflow in zalloc argument */
--	if (sizeof_sym_hist > SIZE_MAX / nr_hists)
--		return -1;
--
--	src->sizeof_sym_hist = sizeof_sym_hist;
- 	src->nr_histograms   = nr_hists;
--	src->histograms	     = calloc(nr_hists, sizeof_sym_hist) ;
-+	src->histograms	     = calloc(nr_hists, sizeof(*src->histograms));
- 
- 	if (src->histograms == NULL)
- 		return -1;
-@@ -941,7 +918,7 @@ void symbol__annotate_zero_histograms(struct symbol *sym)
- 	annotation__lock(notes);
- 	if (notes->src != NULL) {
- 		memset(notes->src->histograms, 0,
--		       notes->src->nr_histograms * notes->src->sizeof_sym_hist);
-+		       notes->src->nr_histograms * sizeof(*notes->src->histograms));
- 		hashmap__clear(notes->src->samples);
- 	}
- 	if (notes->branch && notes->branch->cycles_hist) {
-@@ -1039,9 +1016,7 @@ static int __symbol__inc_addr_samples(struct map_symbol *ms,
- 	}
- 
- 	h->nr_samples++;
--	h->addr[offset].nr_samples++;
- 	h->period += sample->period;
--	h->addr[offset].period += sample->period;
- 	entry->nr_samples++;
- 	entry->period += sample->period;
- 
-@@ -1094,8 +1069,7 @@ struct annotated_source *symbol__hists(struct symbol *sym, int nr_hists)
- 
- 	if (notes->src->histograms == NULL) {
- alloc_histograms:
--		annotated_source__alloc_histograms(notes->src, symbol__size(sym),
--						   nr_hists);
-+		annotated_source__alloc_histograms(notes->src, nr_hists);
- 	}
- 
- 	return notes->src;
-@@ -2854,7 +2828,7 @@ void symbol__annotate_zero_histogram(struct symbol *sym, int evidx)
- 	struct annotation *notes = symbol__annotation(sym);
- 	struct sym_hist *h = annotation__histogram(notes, evidx);
- 
--	memset(h, 0, notes->src->sizeof_sym_hist);
-+	memset(h, 0, sizeof(*notes->src->histograms) * notes->src->nr_histograms);
- }
- 
- void symbol__annotate_decay_histogram(struct symbol *sym, int evidx)
 diff --git a/tools/perf/util/annotate.h b/tools/perf/util/annotate.h
-index 3362980a5d3d..4bdc70a9d376 100644
+index 4bdc70a9d376..13cc659e508c 100644
 --- a/tools/perf/util/annotate.h
 +++ b/tools/perf/util/annotate.h
-@@ -242,7 +242,6 @@ void symbol__calc_percent(struct symbol *sym, struct evsel *evsel);
+@@ -239,11 +239,42 @@ int disasm_line__scnprintf(struct disasm_line *dl, char *bf, size_t size, bool r
+ size_t disasm__fprintf(struct list_head *head, FILE *fp);
+ void symbol__calc_percent(struct symbol *sym, struct evsel *evsel);
+ 
++/**
++ * struct sym_hist - symbol histogram information for an event
++ *
++ * @nr_samples: Total number of samples.
++ * @period: Sum of sample periods.
++ */
  struct sym_hist {
  	u64		      nr_samples;
  	u64		      period;
--	struct sym_hist_entry addr[];
  };
  
++/**
++ * struct cyc_hist - (CPU) cycle histogram for a basic block
++ *
++ * @start: Start address of current block (if known).
++ * @cycles: Sum of cycles for the longest basic block.
++ * @cycles_aggr: Total cycles for this address.
++ * @cycles_max: Max cycles for this address.
++ * @cycles_min: Min cycles for this address.
++ * @cycles_spark: History of cycles for the longest basic block.
++ * @num: Number of samples for the longest basic block.
++ * @num_aggr: Total number of samples for this address.
++ * @have_start: Whether the current branch info has a start address.
++ * @reset: Number of resets due to a different start address.
++ *
++ * If sample has branch_stack and cycles info, it can construct basic blocks
++ * between two adjacent branches.  It'd have start and end addresses but
++ * sometimes the start address may not be available.  So the cycles are
++ * accounted at the end address.  If multiple basic blocks end at the same
++ * address, it will take the longest one.
++ *
++ * The @start, @cycles, @cycles_spark and @num fields are used for the longest
++ * block only.  Other fields are used for all cases.
++ *
++ * See __symbol__account_cycles().
++ */
  struct cyc_hist {
-@@ -278,7 +277,6 @@ struct cyc_hist {
-  */
- struct annotated_source {
- 	struct list_head	source;
--	size_t			sizeof_sym_hist;
- 	struct sym_hist		*histograms;
- 	struct annotation_line	**offsets;
- 	struct hashmap	   	*samples;
-@@ -348,7 +346,7 @@ void annotation__toggle_full_addr(struct annotation *notes, struct map_symbol *m
+ 	u64	start;
+ 	u64	cycles;
+@@ -258,18 +289,24 @@ struct cyc_hist {
+ 	u16	reset;
+ };
  
- static inline struct sym_hist *annotated_source__histogram(struct annotated_source *src, int idx)
- {
--	return ((void *)src->histograms) + (src->sizeof_sym_hist * idx);
-+	return &src->histograms[idx];
- }
+-/** struct annotated_source - symbols with hits have this attached as in sannotation
++/**
++ * struct annotated_source - symbols with hits have this attached as in annotation
+  *
+- * @histograms: Array of addr hit histograms per event being monitored
+- * nr_histograms: This may not be the same as evsel->evlist->core.nr_entries if
++ * @source: List head for annotated_line (embeded in disasm_line).
++ * @histograms: Array of symbol histograms per event to maintain the total number
++ * 		of samples and period.
++ * @nr_histograms: This may not be the same as evsel->evlist->core.nr_entries if
+  * 		  we have more than a group in a evlist, where we will want
+  * 		  to see each group separately, that is why symbol__annotate2()
+  * 		  sets src->nr_histograms to evsel->nr_members.
+- * @lines: If 'print_lines' is specified, per source code line percentages
+- * @source: source parsed from a disassembler like objdump -dS
+- * @cyc_hist: Average cycles per basic block
++ * @offsets: Array of annotation_line to be accessed by offset.
++ * @samples: Hash map of sym_hist_entry.  Keyed by event index and offset in symbol.
++ * @nr_entries: Number of annotated_line in the source list.
++ * @nr_asm_entries: Number of annotated_line with actual asm instruction in the
++ * 		    source list.
++ * @max_line_len: Maximum length of objdump output in an annotated_line.
+  *
+- * lines is allocated, percentages calculated and all sorted by percentage
++ * disasm_lines are allocated, percentages calculated and all sorted by percentage
+  * when the annotation is about to be presented, so the percentages are for
+  * one of the entries in the histogram array, i.e. for the event/counter being
+  * presented. It is deallocated right after symbol__{tui,tty,etc}_annotate
+@@ -286,6 +323,24 @@ struct annotated_source {
+ 	u16			max_line_len;
+ };
  
- static inline struct sym_hist *annotation__histogram(struct annotation *notes, int idx)
++/**
++ * struct annotated_branch - basic block and IPC information for a symbol.
++ *
++ * @hit_cycles: Total executed cycles.
++ * @hit_insn: Total number of instructions executed.
++ * @total_insn: Number of instructions in the function.
++ * @cover_insn: Number of distinct, actually executed instructions.
++ * @cycles_hist: Array of cyc_hist for each instruction.
++ * @max_coverage: Maximum number of covered basic block (used for block-range).
++ *
++ * This struct is used by two different codes when the sample has branch stack
++ * and cycles information.  annotation__compute_ipc() calculates average IPC
++ * using @hit_insn / @hit_cycles.  The actual coverage can be calculated using
++ * @cover_insn / @total_insn.  The @cycles_hist can give IPC for each (longest)
++ * basic block ends at the given address.
++ * process_basic_block() calculates coverage of instructions (or basic blocks)
++ * in the function.
++ */
+ struct annotated_branch {
+ 	u64			hit_cycles;
+ 	u64			hit_insn;
 -- 
 2.44.0.rc1.240.g4c46232300-goog
 
