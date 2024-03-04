@@ -1,159 +1,126 @@
-Return-Path: <linux-kernel+bounces-90926-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90927-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB7378706DD
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:19:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EBEA8706E2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:21:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 59CCF1F228EB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:19:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D27DC1F211A9
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:21:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1395495F0;
-	Mon,  4 Mar 2024 16:19:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC5394C60B;
+	Mon,  4 Mar 2024 16:20:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="R7I1Gw0X"
-Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="KXq3IymV"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ECB3482DA
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 16:19:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A22D88828;
+	Mon,  4 Mar 2024 16:20:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709569168; cv=none; b=iO0D6csvkd0958X3XMrwGKpFKtUy1XJC6RI6YEYuAlbRMolmTP8otH4pa1GBHOwXlQCPQniept4xy/eKzelhz5tC95lzll13guQN5+9v2W6y/xA3xb2uj3Xvx9L7RDmphaC9KTsmWYKSLbUwJfKVyXdZc3Qc2xX8XBtF3r5e3zM=
+	t=1709569259; cv=none; b=ifeOdebCAsCjhde7mWb0vp4dkMUov39AWlFkZSh2yiz4Cb+p97vkUb2syHV41bqxIfcJrplndPlq32H0jrMeVuw0JzhSTnbP3lCr1lzTBiEW/s8cbeWTOpDWnaC4k7rORQRndwZpeQ1uIwpoPjhZj/tPRPWMkgqAiuh1RSyq0cI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709569168; c=relaxed/simple;
-	bh=AyK9vkFDxSdFY7pAAcpyEeR0clBo4J9X95OLjQ6YFoE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Tb3G+46HlIOBVkOxSrBm26cSz6sd6eHIWDZAgFmzJpYQh/LnyUTp25r1Iwr/u7X1xKNIdgSYznVFYQXuQMMZn9O+AxtfYDRgzPkNhP/3s8mv2R+8EjvMppqXyj1rYy9VIShJZrJPZCiUwVUvPusLUnEDbIKjMTLawQWPHy+B/gA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=R7I1Gw0X; arc=none smtp.client-ip=209.85.219.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-68f571be9ddso42928356d6.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 08:19:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1709569165; x=1710173965; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lwFydJvCBlry2uVIEmH1Py5ewOn9oa12Fu2r23KnJkU=;
-        b=R7I1Gw0XYobRrdSQVqlXE+Bo0+ez2IcX79w/xf/C31KtRLQZR68t5f3UEcr5wTUpGX
-         PzwQnA2CalRVf+8RWdYxShQmrIHg3sS1kyMEUt/hcg2DuwBjvJNQ+epAzGaf+n4bWvX8
-         rfrebGxSMBQOr0u+52z2IX2o3LYO1yDCcvqK8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709569165; x=1710173965;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lwFydJvCBlry2uVIEmH1Py5ewOn9oa12Fu2r23KnJkU=;
-        b=EDq+CWHSivKxvfCQhttwfRlkzNHikQ8RMDHd3Qyt/xUGtzhJTNU4LLLkrE4zpG6vVJ
-         gDzL80o+btyDT1s7CG8r5c2NoW1ayqWdSBGa1a8t400+ZES15zd0GeepBFMM5jAwA7tl
-         xT7V4sF69rZoaMxvOaqwEOfInr7+EJISakNVKfQaz+Np9jfzPg+6BvUXP8vuKiYBYjnx
-         WTDU6OWwr0rN0SWwt5SibOF8ud2v/XebqpzrpfUwzfEVB+9us52AYKgHLQ3hKMhx6rf0
-         mQKiWi+V5mtnZ9c1E7s1Y61z9nmQLWY7Fi7+c4dnFuG4dvRzSDqonzp2kExr1LacYHWK
-         lyyw==
-X-Forwarded-Encrypted: i=1; AJvYcCXKONDYdRavDvX+RRniaWUmx4ZhG1KH1kF4kTFTQqbemQXd1PXG7P4iyhC119ih5n3ps/SXcTkrUOWTdpcOO+mN6PfsGCLeCQR6oHoq
-X-Gm-Message-State: AOJu0YxIgYsELcRFQWlK7RshaKt9CJ5ZZC4nDRVOVsHr+0TBqjj5rJqG
-	Ovuw6OpaMNeAwfQyVmmgA29S/eIgR4wUhN7SnIqeuEtXQgAs3Ybt87CnvTBz4hg=
-X-Google-Smtp-Source: AGHT+IHRnHA4BPN1k/dST9tqeSMDTfcXQLpJ7zegjvXgs4LzDEZavQjCLkpW3DBSjVkbGjDt+PABZg==
-X-Received: by 2002:a0c:eed4:0:b0:690:6eb7:c678 with SMTP id h20-20020a0ceed4000000b006906eb7c678mr4951142qvs.18.1709569165125;
-        Mon, 04 Mar 2024 08:19:25 -0800 (PST)
-Received: from [10.5.0.2] ([91.196.69.189])
-        by smtp.gmail.com with ESMTPSA id r8-20020a0ccc08000000b0068f6e1c3582sm5142982qvk.146.2024.03.04.08.19.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Mar 2024 08:19:24 -0800 (PST)
-Message-ID: <f3624f39-bbb1-451d-8161-8518e4108d8e@joelfernandes.org>
-Date: Mon, 4 Mar 2024 11:19:21 -0500
+	s=arc-20240116; t=1709569259; c=relaxed/simple;
+	bh=xapk+o4LkyAtTFDuzK4KzFAFpaNguNxC/HJKXHpho3A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=iurY2f013ULYVF5d8OLkmkZqSZ9+LF3sdvCPKUXtGbzli6n836x+xDDPkJ4nC7Fg6TSv0o1Rk6GEMDTfdchwNEDkBBm5xTt8orz8+Ne15eqS4alrH8FCBGfgJeI53RvAARaFCU9zOSRNlPVyGbYmDFOkZ2UVEybrZJLZIKzNudU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=KXq3IymV; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 424Fsxhc009372;
+	Mon, 4 Mar 2024 16:20:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=luqHtL/ifKsi3nTud2EGsB27luGkQ9iJ6ha/rabF93Q=; b=KX
+	q3IymVHDBcfO3aNTpYLA/RnZpS3SgJaM52SKpeQWuLt7TBK4icMN5Lsu9CeQK3rJ
+	QhJNMVIO7wMuWNE11DKn0tSWqZ3aDbf8GkktOPKrgj96frRbMShx5eBiYtBNpr5c
+	/QvTNJ1CTw1++xyejcMkbUHPNsGQwN+NDBrJ+d76b4YQ3YEz0HGCUnR22rPqmVQV
+	EW1MhIV6rZ6zFil/KTALV4LHM/iMLH3/S35EPjjTJmniG+/iMVLX2Xxa9wZWUE1p
+	q7y5Sjxmg1GnUx9ULkKBDBESVS6G3o9813o+7i1IMzBg27yL9L4InsLoM8aXoj32
+	e/lC0JiwllIWI7hZYXjA==
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wn96es50n-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 04 Mar 2024 16:20:53 +0000 (GMT)
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 424GKq9I010201
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 4 Mar 2024 16:20:52 GMT
+Received: from [10.216.35.58] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 4 Mar
+ 2024 08:20:49 -0800
+Message-ID: <9fbe1a2c-6d2b-db4f-12d7-e7136ad9cce1@quicinc.com>
+Date: Mon, 4 Mar 2024 21:50:39 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] rcutorture: Fix
- rcu_torture_pipe_update_one()/rcu_torture_writer() data race and concurrency
- bug
-To: linke li <lilinke99@qq.com>
-Cc: Davidlohr Bueso <dave@stgolabs.net>, "Paul E. McKenney"
- <paulmck@kernel.org>, Josh Triplett <josh@joshtriplett.org>,
- Frederic Weisbecker <frederic@kernel.org>,
- Neeraj Upadhyay <quic_neeraju@quicinc.com>, Boqun Feng
- <boqun.feng@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
- linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-References: <tencent_B51A9DA220288A95A435E3435A0443BEB007@qq.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] firmware: qcom_scm: disable clocks if
+ qcom_scm_bw_enable() fails
 Content-Language: en-US
-From: Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <tencent_B51A9DA220288A95A435E3435A0443BEB007@qq.com>
-Content-Type: text/plain; charset=UTF-8
+To: Gabor Juhos <j4g8y7@gmail.com>, Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Sibi Sankar
+	<quic_sibis@quicinc.com>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <stable@vger.kernel.org>
+References: <20240304-qcom-scm-disable-clk-v1-1-b36e51577ca1@gmail.com>
+From: Mukesh Ojha <quic_mojha@quicinc.com>
+In-Reply-To: <20240304-qcom-scm-disable-clk-v1-1-b36e51577ca1@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: ajCwg2s2cw4P9sbVTOMmlQFzXFIY6e-w
+X-Proofpoint-GUID: ajCwg2s2cw4P9sbVTOMmlQFzXFIY6e-w
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-04_12,2024-03-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ adultscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0 malwarescore=0
+ mlxscore=0 impostorscore=0 clxscore=1011 mlxlogscore=859
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403040124
 
 
 
-On 3/4/2024 5:54 AM, linke li wrote:
-> Some changes are done to fix a data race in commit 202489101f2e ("rcutorture: Fix rcu_torture_one_read()/rcu_torture_writer() data race")
+On 3/4/2024 6:44 PM, Gabor Juhos wrote:
+> There are several functions which are calling qcom_scm_bw_enable()
+> then returns immediately if the call fails and leaves the clocks
+> enabled.
 > 
->  {
->  	int i;
+> Change the code of these functions to disable clocks when the
+> qcom_scm_bw_enable() call fails. This also fixes a possible dma
+> buffer leak in the qcom_scm_pas_init_image() function.
 > 
-> -	i = rp->rtort_pipe_count;
-> +	i = READ_ONCE(rp->rtort_pipe_count);
->  	if (i > RCU_TORTURE_PIPE_LEN)
->  		i = RCU_TORTURE_PIPE_LEN;
->  	atomic_inc(&rcu_torture_wcount[i]);
-> -	if (++rp->rtort_pipe_count >= RCU_TORTURE_PIPE_LEN) {
-> +	WRITE_ONCE(rp->rtort_pipe_count, i + 1);
-> +	if (rp->rtort_pipe_count >= RCU_TORTURE_PIPE_LEN) {
->  		rp->rtort_mbtest = 0;
->  		return true;
->  	}
+> Compile tested only due to lack of hardware with interconnect
+> support.
 > 
-> But ++rp->rtort_pipe_count is meant to add itself by 1, not give i+1 to
-> rp->rtort_pipe_count, because rp->rtort_pipe_count may write by
-> rcu_torture_writer() concurrently.
-> 
-> Also, rp->rtort_pipe_count in the next line should be read using
-> READ_ONCE() because of data race.
-> 
-> Signed-off-by: linke li <lilinke99@qq.com>
+> Cc: stable@vger.kernel.org
+> Fixes: 65b7ebda5028 ("firmware: qcom_scm: Add bw voting support to the SCM interface")
+> Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
 > ---
->  kernel/rcu/rcutorture.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> Based on v6.8-rc7.
 > 
-> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> index 7567ca8e743c..00059ace4fd5 100644
-> --- a/kernel/rcu/rcutorture.c
-> +++ b/kernel/rcu/rcutorture.c
-> @@ -465,8 +465,8 @@ rcu_torture_pipe_update_one(struct rcu_torture *rp)
->  	if (i > RCU_TORTURE_PIPE_LEN)
->  		i = RCU_TORTURE_PIPE_LEN;
->  	atomic_inc(&rcu_torture_wcount[i]);
-> -	WRITE_ONCE(rp->rtort_pipe_count, i + 1);
-> -	if (rp->rtort_pipe_count >= RCU_TORTURE_PIPE_LEN) {
-> +	WRITE_ONCE(rp->rtort_pipe_count, rp->rtort_pipe_count + 1);
-> +	if (READ_ONCE(rp->rtort_pipe_count) >= RCU_TORTURE_PIPE_LEN) {
+> Note: Removing the two empty lines from qcom_scm_pas_init_image()
+> and fomr qcom_scm_pas_shutdown() functions is intentional to make
+> those consistent with the other two functions.
 
-I want to say, I am not convinced with the patch because what's wrong with
-writing to an old index?
+LGTM..
 
-You win/lose the race anyway, say the CPU executed the WRITE_ONCE() a bit too
-early/late and another WRITE_ONCE() lost/won, regardless of whether you wrote
-the "incremented i" or "the increment from the latest value of pipe_count".
+Reviewed-by: Mukesh Ojha <quic_mojha@quicinc.com>
 
-Anyway, a slightly related/different question:
-
-Should that:
-WRITE_ONCE(rp->rtort_pipe_count, rp->rtort_pipe_count + 1);
-
-Be:
-WRITE_ONCE(rp->rtort_pipe_count, READ_ONCE(rp->rtort_pipe_count) + 1);
-
-?
-
-thanks,
-
- - Joel
+-Mukesh
 
