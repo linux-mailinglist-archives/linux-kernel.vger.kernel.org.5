@@ -1,129 +1,199 @@
-Return-Path: <linux-kernel+bounces-91143-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91144-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0704C870A05
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:02:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46558870A07
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:04:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B61F4281E29
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:02:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1C9A28135E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:04:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D9B178B67;
-	Mon,  4 Mar 2024 19:02:11 +0000 (UTC)
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FF1178B64;
+	Mon,  4 Mar 2024 19:04:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="Fo3nHuCy"
+Received: from bee.tesarici.cz (unknown [77.93.223.253])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8591B48CC7;
-	Mon,  4 Mar 2024 19:02:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FE816216C
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 19:04:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.93.223.253
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709578931; cv=none; b=GpaL1iWpUxj11eCMdjpM6HdcqxwNyy5KIeXIyoSkkVhmCgmm8iqhlYqpWgHhzpPh+TJkXH0/CArykiofmtIIxWzbgLbBdvFSfKf1IayslKBIJvUVmB87vRbZzQpH/cG0mdvKU8krhdRBDZ9sj8jdLWB1lFMvLaG1ZX8iJLqeTPE=
+	t=1709579074; cv=none; b=gk+UsW7muC3jqwLnX7+OkbFoAFZr0/e2vhoJHoJ5IVg2wZyk3oE25XigAZGhnNSpTTDfjlkrcPX6BA6vOWkkP3abl82D3BUw0mdoIYvzuF5fDr18gMTwzdaUBbVLb1R3DbTRSBTIkcAp0QLG9AjxNyD3cp5eWDkT7XLnEcDBnLc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709578931; c=relaxed/simple;
-	bh=jz+YaBY6pOhcQeRXB2G4cm+3RZ3GXD8LU3XyAlsEUug=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KaYTCdkYe8G+sJqgxMPQLPTyvUJ2HgISgrwkbQlvODe3rpDRqoe0fGOb7c7wFfwPyHw4naoDIkET/mvmsObbtykBc615SuAW7g+QUsEgZjZmtxc3aSosC3qGtoFTo+cJTRl/aViw5tHLkaLcUHcxl8iiXSTLNfFpjapGXLRP9GM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dc74435c428so5312289276.2;
-        Mon, 04 Mar 2024 11:02:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709578928; x=1710183728;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LYl1mIRYbr8vmVU4jA2oiSVVNLp+IoIPd1/D/iVf0OQ=;
-        b=mA21OxOmYlV1KRDI06BXJ01zNFPGfQ6O9hL+lWVx0o8bTvc7ixGQWn4euJuCTlHG44
-         tbRr2wsG0XNx/5QoW8bQLYcsrwptZB4qXsPaA9RfYAcWiwZotsTSLhfsH+ffHy84dwKR
-         xvJsS70P4hJeY26gG2ceUTnVtShU5t0DVfsD9h04FigcjhVl5BrBxLcXu0E1AGcr2dFx
-         Z9NbwCa2JWOTIpRiv4soVVbfPmEBlYbo9DIQt3PgxhRJ3k6PqtjPYCvBlHMBuDq6tAjn
-         J+1v6geIQdtjZ8VbhDyYrdX/CwbaF+3aiP6zLHRDFJ/9knbc0UMjLea/QAz3I+H1vHeL
-         GVww==
-X-Forwarded-Encrypted: i=1; AJvYcCVxI6GfRbDYIRHuiJLgWCPne7e7Q6iZgXLJUOWSl3Ms5zhAnuzye4n4ZrcWYscEPe7h0HCKw/PClpbKkIKjpQXM2nM+GE/6Dqn608z0Q2vpOYsedUMML7N/Kkt4YdYC38b+ENA9BdLQkegg372XbsExdmipJwNOUHRgAceO2RIkG8rYUfk=
-X-Gm-Message-State: AOJu0YxnMbX9xKF3tYUpPJcEc/plutMvZEpUpaXEh8yM8ywilrAyEMc9
-	DfuuFGiF0sVdHpH70A75bBaUNpxkrI+NqSEasFIMco0BpReJMkKLYPZ8HB9AHus=
-X-Google-Smtp-Source: AGHT+IHcGnKBnMT8d7rh2gKo/LhCbodyr0HL6t21lbnSOzsIBsDg9Jhv8uRbsuCx21k7kmdGmJTR+Q==
-X-Received: by 2002:a25:c546:0:b0:dc6:ff66:87a8 with SMTP id v67-20020a25c546000000b00dc6ff6687a8mr6990780ybe.51.1709578928022;
-        Mon, 04 Mar 2024 11:02:08 -0800 (PST)
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com. [209.85.128.174])
-        by smtp.gmail.com with ESMTPSA id x3-20020a258583000000b00dcc234241c4sm2269850ybk.55.2024.03.04.11.02.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Mar 2024 11:02:07 -0800 (PST)
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-60925d20af0so48776787b3.2;
-        Mon, 04 Mar 2024 11:02:07 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXjRVp8g/Ijxu1BPEJDwJQ3cbUB3aYLsyV9MxLOI9BmmctTfDKF9ZmqKoiE0OMh6aeQ3a6huXZzdnfyO/rHXyM8U+oWPSi99eP733TcFHVv9Q3TJM119cgSXqOeq90csZWMyOCCeFlCNkja+/mQc8FfZbiLr20FRYuwescsv8gbO7k0+Ps=
-X-Received: by 2002:a0d:d4c6:0:b0:609:3250:865 with SMTP id
- w189-20020a0dd4c6000000b0060932500865mr10236091ywd.7.1709578927167; Mon, 04
- Mar 2024 11:02:07 -0800 (PST)
+	s=arc-20240116; t=1709579074; c=relaxed/simple;
+	bh=OpcaKRhpxKs0wOB7QmV51ntNwwxhFrwNpqIrJcjmlXI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=o2NGBZ4pHOHGpHAiQpHbnCS0kGsO/T+zMaACclN20nHcwnKDkahW9jiAmZsgl4ffbenXIdQYWJzHmnwfWPGzxy887zg1V0DqODFBJGlG2CpYo4Jg1YVYdKSkNbdvheihoPVHj8aYSIXkkSvEVLig60b5dJvK8vz7GROHmcAuBN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=Fo3nHuCy; arc=none smtp.client-ip=77.93.223.253
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
+Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by bee.tesarici.cz (Postfix) with ESMTPSA id AB1041C6459;
+	Mon,  4 Mar 2024 20:04:29 +0100 (CET)
+Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
+	t=1709579069; bh=ve+WTsjm8GalaYsBeUXZYJVXRvABnJYKupgzVA3x+6A=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Fo3nHuCyzevUukPS4EApPbTFdWBknU7zj0Wabpd2eNjlJlFoV83SnSKiFwpwtSrS0
+	 rcId2iacLg8Y7rGv3McpJhsyRw63rHb1IYhRLromNmZLXdL6zuDZUAK/ZOGBqXSBXC
+	 kigxZ/qacEJwFUsydGy+uaPgFwxxkvhAkshDxC84NHS/FALvbIZnR5sTOI0s8Pdrsg
+	 JayA3+6QeP+LcJ14meIxW4Ldl32elMakh3ehS4SxMRkCxss0Hy9ZI/lrhwxI/7K599
+	 bGurMFB1Z6bda/tcUkA+/NGyehlcWB4F9FgBmGM3OAw1aROAdoTa1yxPIx+Qv+CYRZ
+	 Q3sci9mc8SnXw==
+Date: Mon, 4 Mar 2024 20:04:28 +0100
+From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+To: Michael Kelley <mhklinux@outlook.com>
+Cc: Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+ Christoph Hellwig <hch@lst.de>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Petr Tesarik
+ <petr.tesarik1@huawei-partners.com>, "kernel-team@android.com"
+ <kernel-team@android.com>, "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+ Marek Szyprowski <m.szyprowski@samsung.com>, Dexuan Cui
+ <decui@microsoft.com>, Nicolin Chen <nicolinc@nvidia.com>
+Subject: Re: [PATCH v5 6/6] swiotlb: Remove pointless stride adjustment for
+ allocations >= PAGE_SIZE
+Message-ID: <20240304200428.4111d78e@meshulam.tesarici.cz>
+In-Reply-To: <SN6PR02MB41571F68F8F9E003C4359948D4232@SN6PR02MB4157.namprd02.prod.outlook.com>
+References: <SN6PR02MB4157314F142D05E279B7991ED45F2@SN6PR02MB4157.namprd02.prod.outlook.com>
+	<20240229154756.GA10137@lst.de>
+	<20240301163927.18358ee2@meshulam.tesarici.cz>
+	<20240301180853.5ac20b27@meshulam.tesarici.cz>
+	<8869c8b2-29c3-41e4-8f8a-5bcf9c0d22bb@arm.com>
+	<20240301194212.3c64c9b2@meshulam.tesarici.cz>
+	<SN6PR02MB41571DA1EE99BFAA65869024D4232@SN6PR02MB4157.namprd02.prod.outlook.com>
+	<20240304120055.56035c21@meshulam.tesarici.cz>
+	<ffd7646b-37b1-4cd2-822a-848b36b076c9@arm.com>
+	<20240304165506.49e3b2d3@meshulam.tesarici.cz>
+	<20240304160210.GB21077@willie-the-truck>
+	<SN6PR02MB41571F68F8F9E003C4359948D4232@SN6PR02MB4157.namprd02.prod.outlook.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240301014203.2033844-1-chris.packham@alliedtelesis.co.nz>
- <20240301014203.2033844-5-chris.packham@alliedtelesis.co.nz>
- <ZeIdXIx5zYjKQiSO@smile.fi.intel.com> <CAMuHMdVJiWtB4MSGHXXz=OAEvu-+b9Xp-jQ_NXWck+hwKGK4TQ@mail.gmail.com>
- <CAHp75VesLCo72ftQ2BNEKSXwF9A2pe0Vbnuves2-L3ist_twNQ@mail.gmail.com>
- <CAMuHMdXjqVQeQF6TFr1nQmUCLrEbY1gq5OdCcz6T60W33QO2-Q@mail.gmail.com> <CAHp75Vfh_pv50Pk84JGz6qT=K9m3w=0_HDGX2WvqEN4Nm8fFDw@mail.gmail.com>
-In-Reply-To: <CAHp75Vfh_pv50Pk84JGz6qT=K9m3w=0_HDGX2WvqEN4Nm8fFDw@mail.gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 4 Mar 2024 20:01:58 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVuiYdjV46aS2fqPsFdW-vGK7zm_sY-LbWGYg4U0Ar5yQ@mail.gmail.com>
-Message-ID: <CAMuHMdVuiYdjV46aS2fqPsFdW-vGK7zm_sY-LbWGYg4U0Ar5yQ@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] ARM: dts: marvell: Indicate USB activity on x530
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Andy Shevchenko <andy@kernel.org>, Chris Packham <chris.packham@alliedtelesis.co.nz>, 
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	andrew@lunn.ch, gregory.clement@bootlin.com, sebastian.hesselbarth@gmail.com, 
-	pavel@ucw.cz, lee@kernel.org, linux-leds@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-Hi Andy,
+On Mon, 4 Mar 2024 16:10:46 +0000
+Michael Kelley <mhklinux@outlook.com> wrote:
 
-On Mon, Mar 4, 2024 at 7:17=E2=80=AFPM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Mon, Mar 4, 2024 at 11:57=E2=80=AFAM Geert Uytterhoeven <geert@linux-m=
-68k.org> wrote:
-> > On Sun, Mar 3, 2024 at 9:43=E2=80=AFPM Andy Shevchenko
-> > <andy.shevchenko@gmail.com> wrote:
->
-> ...
->
-> > So IMHO it would be a bad idea to make the DP mandatory.
->
-> But I'm not talking about making it mandatory, I'm talking about the
+> From: Will Deacon <will@kernel.org> Sent: Monday, March 4, 2024 8:02 AM
+> >=20
+> > Hi folks,
+> >=20
+> > On Mon, Mar 04, 2024 at 04:55:06PM +0100, Petr Tesa=C5=99=C3=ADk wrote:=
+ =20
+> > > On Mon, 4 Mar 2024 13:37:56 +0000
+> > > Robin Murphy <robin.murphy@arm.com> wrote: =20
+> > > > On 04/03/2024 11:00 am, Petr Tesa=C5=99=C3=ADk wrote:
+> > > > [...] =20
+> > > > >> Here's my take on tying all the threads together. There are
+> > > > >> four alignment combinations:
+> > > > >>
+> > > > >> 1. alloc_align_mask: zero; min_align_mask: zero =20
+> >=20
+> > Based on this ^^^ ...
+> >  =20
+> > > > >> xen_swiotlb_map_page() and dma_direct_map_page() are #1 or #2
+> > > > >> via swiotlb_map() and swiotlb_tbl_map_single()
+> > > > >>
+> > > > >> iommu_dma_map_page() is #3 and #4 via swiotlb_tbl_map_single()
+> > > > >>
+> > > > >> swiotlb_alloc() is #3, directly to swiotlb_find_slots()
+> > > > >>
+> > > > >> For #1, the returned physical address has no constraints if
+> > > > >> the requested size is less than a page. For page size or
+> > > > >> greater, the discussed historical requirement for page
+> > > > >> alignment applies. =20
+> >=20
+> > ... and this ^^^ ...
+> >=20
+> >  =20
+> > > I believe this patch series is now good as is, except the commit
+> > > message should make it clear that alloc_align_mask and min_align_mask
+> > > can both be zero, but that simply means no alignment constraints. =20
+> >=20
+> > ... my (possibly incorrect!) reading of the thread so far is that we
+> > should preserve page-aligned allocation in this case if the allocation
+> > size is >=3D PAGE_SIZE.
+> >=20
+> > Something like the diff below, to replace this final patch?
+> >=20
+> > Will
+> >  =20
+> > --->8 =20
+> >=20
+> > diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+> > index c381a7ed718f..67eac05728c0 100644
+> > --- a/kernel/dma/swiotlb.c
+> > +++ b/kernel/dma/swiotlb.c
+> > @@ -992,6 +992,14 @@ static int swiotlb_search_pool_area(struct device
+> > *dev, struct io_tlb_pool *pool
+> >         BUG_ON(!nslots);
+> >         BUG_ON(area_index >=3D pool->nareas);
+> >=20
+> > +       /*
+> > +        * Historically, allocations >=3D PAGE_SIZE were guaranteed to =
+be
+> > +        * page-aligned in the absence of any other alignment requireme=
+nts.
+> > +        * Since drivers may be relying on this, preserve the old behav=
+iour.
+> > +        */
+> > +       if (!alloc_align_mask && !iotlb_align_mask && alloc_size >=3D P=
+AGE_SIZE)
+> > +               alloc_align_mask =3D PAGE_SIZE - 1;
+> > + =20
+>=20
+> Yes, I think that should do it.
 
-OK.
+Sure, this will solve the allocations. But my understanding of this
+same thread is that we don't need it here. The historical page order
+alignment applies ONLY to allocations, NOT to mappings. It is
+documented in Documentation/core-api/dma-api-howto.rst under Consistent
+DMA mappings, for dma_alloc_coherent(). IIUC it does not apply to the
+streaming DMA mappings. At least, it would explain why nobody
+complained that the more strict guarantee for sizes greater than
+PAGE_SIZE was not kept...
 
-> DP to be used as DP when it _is_ present and wired. If current
-> platform wants to use DP for something else, I'm pretty much worried
-> that this is the right thing to do.
+The SWIOTLB can be used for allocation if CONFIG_DMA_RESTRICTED_POOL=3Dy,
+but this case is handled by patch 3/6 of this patch series.
 
-There is not much we can do about that. People can already model
-such displays as individual LEDs, too.
-And in some sense, the auxdisplay/linedisp driver for
-"generic-gpio-7seg" imposes a policy, too.
-What if people want to e.g. use 4 7-seg displays to show a continuously
-running snake?
+Do I miss something again?
 
-Gr{oetje,eeting}s,
+Petr T
 
-                        Geert
+> Michael
+>=20
+> >         /*
+> >          * Ensure that the allocation is at least slot-aligned and upda=
+te
+> >          * 'iotlb_align_mask' to ignore bits that will be preserved when
+> > @@ -1006,13 +1014,6 @@ static int swiotlb_search_pool_area(struct devic=
+e *dev, struct io_tlb_pool *pool
+> >          */
+> >         stride =3D get_max_slots(max(alloc_align_mask, iotlb_align_mask=
+));
+> >=20
+> > -       /*
+> > -        * For allocations of PAGE_SIZE or larger only look for page al=
+igned
+> > -        * allocations.
+> > -        */
+> > -       if (alloc_size >=3D PAGE_SIZE)
+> > -               stride =3D umax(stride, PAGE_SHIFT - IO_TLB_SHIFT + 1);
+> > -
+> >         spin_lock_irqsave(&area->lock, flags);
+> >         if (unlikely(nslots > pool->area_nslabs - area->used))
+> >                 goto not_found; =20
+>=20
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
