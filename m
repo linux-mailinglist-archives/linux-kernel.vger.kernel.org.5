@@ -1,161 +1,285 @@
-Return-Path: <linux-kernel+bounces-91311-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91316-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE3FD870D46
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:32:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD496870DD4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:38:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8967628E4FF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:32:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 25EBD1F21B61
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:38:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1B3F7C092;
-	Mon,  4 Mar 2024 21:32:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A9E547A5D;
+	Mon,  4 Mar 2024 21:38:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="LlxvZC8d"
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="HQVhsdkm"
+Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52A6B7BAF0
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 21:32:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 684898F58
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 21:38:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709587943; cv=none; b=SKqwtJDR0y3khRByB1M1eTEnMsuKWBuTtVPoVJY8lCNwk2DJnRQvdI751NgHfqkU1Rrh/aUB6RXXGnhc4mhc719C2VxlcQRUBfofuJ1/OnctHZZucjK3RFuv07vh6/VjITSFcf99eISA0Y940zdf047Wx1/41DTW9LfCqSeWk+Q=
+	t=1709588287; cv=none; b=NvbE6QhS/OhVvZHjvaVGS7lYx0LVAmQlyj7qj/hUhAPYzHezteO5Aw7CPxdLj0vPYbhOkKiIh2vjZVBhylPf0SSWorA+7PGzYy7RtMr9Q030Lf5aYKPlaLBGq47v3Ui8vFT6vAr9rS0FED82sFE1oDY2a2iakAcv1RGDgInjWIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709587943; c=relaxed/simple;
-	bh=Fid7qZAd/FJHN/tsMQvT21XJE1w7mAABpnaR9DnDguQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Sm5IOpeklQJ5Q6v9YX7uaS1sznM1eoPeGw8dMXOMrHNJm99NUN2YlKO08mk1oj0PlXrWC2+DvjqQYouZn6yc7Ia/Mc8LRpzYhFlBHfq6lQJXjHcfrpBX/eJ+SiY4fmDaMCLVPHlf9EA2OKYY6gu6KDanKrQo9gK7tauSeAV4MLY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=LlxvZC8d; arc=none smtp.client-ip=209.85.210.181
+	s=arc-20240116; t=1709588287; c=relaxed/simple;
+	bh=bEeluja2wt43rMonaMlY3Ipk5PwOYatagCTG7W0iKq8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tRaDX7RvjxcPWPrx4Enac2vVBw2UkcDTTHUhav1uEb/FXc1VeJTaNY6bVPOQSSCqaslCEjXqvVNCBqyDxrdZAL0nFImyAc9VbdzdAxs3JbUtAZ/yx7pbUI+PksHnItq5TzKDR1hD/q1wEnz6PJlJ7G7HND4uV9xsYKgV2RUE84k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=HQVhsdkm; arc=none smtp.client-ip=209.85.160.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6e6381df003so204946b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 13:32:22 -0800 (PST)
+Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-21eea6aab5eso28925fac.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 13:38:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709587941; x=1710192741; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5AAGBs1uayIPxzgb5qVJOa8HOKMdVNYp2rAU1bHGoGE=;
-        b=LlxvZC8dI4upTIvgiol1/vPFgKgj0eEt9Rlrekdddxoa1plFoW6paMLc2u/8Z0C98l
-         whP6lPQDQHBOBOXmn2tEdmakrisCM5AC4ZVF2ljUz2f9OnVkT4P3rs/eDlqB97Wjs7fl
-         oqLKO6CSdmej4UMCvQKeBtYiufJL65tLIY1aA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709587941; x=1710192741;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=chromium.org; s=google; t=1709588284; x=1710193084; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5AAGBs1uayIPxzgb5qVJOa8HOKMdVNYp2rAU1bHGoGE=;
-        b=dt5qmXS5lVgDjWeBvIJh4IHqOLx++EWdmelu59FxEJ3DsH8xz77eHizFNql1/rD2+R
-         X8ZEqr+usiSnzDjym8N6zzJIpuOJWrJ9LcmNYSYpYc4Sw1AU3tEREHegAeUijW6UhPib
-         zqVVo2icXpMVzCbmjydKHMn6dqj/IiD9KFshdYnbH2I6uxfbI9+EG55iTIXUsoNl/Jlm
-         igryJfSX8fpxMn+qKWtYHtlsGH2NIq82IGm3ri1cVkJ9RUBdDtyPWw0iNZexyBphlJ0S
-         q/CMPRCGNQF5XXmCalmW8mTvPeN27gcoDP46q3PAiRkp4Dui9ZX5fLJmGGVsnhA8aKA7
-         rG3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCX9YWtJ6N+KSldeUr8r75szyRSa7VBZMlkfjcRsDBziVRlJOJePnMBQiWOWwedwBfkkV0zd6bDwvm+w+AeFRWDOZ94gcA0k0qGgK5qm
-X-Gm-Message-State: AOJu0Yw7Se0rI1Zs6aO4WsTfTUSjO2nJc0TEO6Q5nqPVaMwK5HL3Cxsl
-	1j/abUMFatH1gnxNjScvvn2QFG+MnUUG/n44xCqJ4TBfz4SB9IQ9SRhX1i7wfQ==
-X-Google-Smtp-Source: AGHT+IEEnu5o0IjVhO8m0c2U97SysmqAe9C51lQEBxAa+CLPJbohojNI1/SQD2+C0H93ZMSvh+9SMg==
-X-Received: by 2002:a05:6a20:3c8d:b0:1a1:2a5b:a6c3 with SMTP id b13-20020a056a203c8d00b001a12a5ba6c3mr12600656pzj.3.1709587941650;
-        Mon, 04 Mar 2024 13:32:21 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id w62-20020a636241000000b005e485fbd455sm7872070pgb.45.2024.03.04.13.32.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 13:32:21 -0800 (PST)
-Date: Mon, 4 Mar 2024 13:32:20 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Dave Chinner <david@fromorbit.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>,
-	Christian Brauner <brauner@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-	linux-fsdevel@vger.kernel.org,
-	"GONG, Ruiqi" <gongruiqi@huaweicloud.com>,
-	Xiu Jianfeng <xiujianfeng@huawei.com>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
-	David Rientjes <rientjes@google.com>,
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 3/4] xattr: Use dedicated slab buckets for setxattr()
-Message-ID: <202403041330.06842D397@keescook>
-References: <20240304184252.work.496-kees@kernel.org>
- <20240304184933.3672759-3-keescook@chromium.org>
- <ZeY6Lv4rfUyFHgOr@dread.disaster.area>
+        bh=9zllh0qjRXcCCFX37PpZEtxqzl5R3qbc1KL3e6oevK4=;
+        b=HQVhsdkmpPfMuZrPAa/YyFzCRi0DKHoX4QpDAKepjliU+txyjo184GjnyCYrh/mIoz
+         pikMifYDvxNGdbmFlG9ZIlFVPpXI6J2RXkCvB1643Bz/W+8TGDv1MK4kX4CI+a/hyB1A
+         kPbx3OVHKpzl8X83+2rfWV0nJyQK4IX5gC4jk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709588284; x=1710193084;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9zllh0qjRXcCCFX37PpZEtxqzl5R3qbc1KL3e6oevK4=;
+        b=aHHn+Tgi4fo+8Jm6G5V60bkhWBW5uHMFUPsmJ0hgTF8bvZoSwkJTy6GWcsA5Ml/Q5T
+         7VtjDwulBe/nF2J4mzoVzcqFZxmjlzvX2w5lpTm+ApUabMqMAwboz426Z/fftXfeX/MG
+         D/Q91utzZzEFP/TSp8SwGPuErnCUqrQLNxsH1f05iMadbwKfi3SEcEoA2oBIbq3Wnknm
+         SVqr1IiYkU7J1f6yVPevkbhkqxPgWzViJc1BMS082Nr1JUrbgO8VHPLXO2E+Xi+5C2FE
+         bdH2jJ8uK4YzVFoPG15gEPcnSjGkvyaUOUPcd3HaoYzOLi7B1wDT1vzM0RCvbCPYajFd
+         zqzQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWnvmM/wpj167i26uzguis4rMYU3DtV9APE6YXv5wDGIC+LlVd+KEqyRFKx9mXIQrPYSnf5LdcYaI9QWcZLfG3JsPGHVYQCgTXUALHq
+X-Gm-Message-State: AOJu0YyrH3OC+AuEWgTbbJl+nj96u/TsdeSnNIKbqGg7eILnkYB9//rK
+	cEWhx8GY8+2kn3/Qlzh2M4h/TpO09qzowW2MVGiRI65QfnIikCHjAd5ZujSuQpk0xt3YezcQnr1
+	+v7y4Uea5Rj+lLjfIkrUCNwR0Jmg0GSuPi85r
+X-Google-Smtp-Source: AGHT+IHV7Mz+ohK3UdKzTdVvn41CHMJQdqnwQyxqrrWmzdlKaHc5w5Wsqs7RjBSe4RBMiaaCmIUUlbzf5NLUec3a7UE=
+X-Received: by 2002:a05:6871:80e:b0:21f:4fe:9ee8 with SMTP id
+ q14-20020a056871080e00b0021f04fe9ee8mr12682869oap.4.1709588284302; Mon, 04
+ Mar 2024 13:38:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZeY6Lv4rfUyFHgOr@dread.disaster.area>
+References: <20240304195214.14563-1-hsinyi@chromium.org> <20240304195214.14563-3-hsinyi@chromium.org>
+ <87a5nd4tsg.fsf@intel.com>
+In-Reply-To: <87a5nd4tsg.fsf@intel.com>
+From: Hsin-Yi Wang <hsinyi@chromium.org>
+Date: Mon, 4 Mar 2024 13:37:38 -0800
+Message-ID: <CAJMQK-j4wGah=szyUW53hu-v6Q4QjgR7WMLKnspoFaO9oPfaQw@mail.gmail.com>
+Subject: Re: [PATCH v3 2/4] drm/edid: Add a function to check monitor string
+To: Jani Nikula <jani.nikula@linux.intel.com>
+Cc: Douglas Anderson <dianders@chromium.org>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 05, 2024 at 08:16:30AM +1100, Dave Chinner wrote:
-> On Mon, Mar 04, 2024 at 10:49:31AM -0800, Kees Cook wrote:
-> > The setxattr() API can be used for exploiting[1][2][3] use-after-free
-> > type confusion flaws in the kernel. Avoid having a user-controlled size
-> > cache share the global kmalloc allocator by using a separate set of
-> > kmalloc buckets.
-> > 
-> > Link: https://duasynt.com/blog/linux-kernel-heap-spray [1]
-> > Link: https://etenal.me/archives/1336 [2]
-> > Link: https://github.com/a13xp0p0v/kernel-hack-drill/blob/master/drill_exploit_uaf.c [3]
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
+On Mon, Mar 4, 2024 at 12:38=E2=80=AFPM Jani Nikula <jani.nikula@linux.inte=
+l.com> wrote:
+>
+> On Mon, 04 Mar 2024, Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+> > Add a function to check if the EDID base block contains a given string.
+> >
+> > One of the use cases is fetching panel from a list of panel names, sinc=
+e
+> > some panel vendors put the monitor name after EDID_DETAIL_MONITOR_STRIN=
+G
+> > instead of EDID_DETAIL_MONITOR_NAME.
+> >
+> > Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
 > > ---
-> > Cc: Christian Brauner <brauner@kernel.org>
-> > Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> > Cc: Jan Kara <jack@suse.cz>
-> > Cc: linux-fsdevel@vger.kernel.org
+> > v2->v3: move string matching to drm_edid
 > > ---
-> >  fs/xattr.c | 12 +++++++++++-
-> >  1 file changed, 11 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/xattr.c b/fs/xattr.c
-> > index 09d927603433..2b06316f1d1f 100644
-> > --- a/fs/xattr.c
-> > +++ b/fs/xattr.c
-> > @@ -821,6 +821,16 @@ SYSCALL_DEFINE4(fgetxattr, int, fd, const char __user *, name,
-> >  	return error;
+> >  drivers/gpu/drm/drm_edid.c | 49 ++++++++++++++++++++++++++++++++++++++
+> >  include/drm/drm_edid.h     |  1 +
+> >  2 files changed, 50 insertions(+)
+> >
+> > diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+> > index 13454bc64ca2..fcdc2bd143dd 100644
+> > --- a/drivers/gpu/drm/drm_edid.c
+> > +++ b/drivers/gpu/drm/drm_edid.c
+> > @@ -2789,6 +2789,55 @@ u32 drm_edid_get_panel_id(struct edid_base_block=
+ *base_block)
 > >  }
-> >  
-> > +static struct kmem_buckets *xattr_buckets;
-> > +static int __init init_xattr_buckets(void)
+> >  EXPORT_SYMBOL(drm_edid_get_panel_id);
+> >
+> > +/**
+> > + * drm_edid_has_monitor_string - Check if a EDID base block has certai=
+n string.
+> > + * @base_block: EDID base block to check.
+> > + * @str: pointer to a character array to hold the string to be checked=
+.
+> > + *
+> > + * Check if the detailed timings section of a EDID base block has the =
+given
+> > + * string.
+> > + *
+> > + * Return: True if the EDID base block contains the string, false othe=
+rwise.
+> > + */
+> > +bool drm_edid_has_monitor_string(struct edid_base_block *base_block, c=
+onst char *str)
 > > +{
-> > +	xattr_buckets = kmem_buckets_create("xattr", 0, 0, 0,
-> > +					    XATTR_LIST_MAX, NULL);
+> > +     unsigned int i, j, k, buflen =3D strlen(str);
 > > +
-> > +	return 0;
+> > +     for (i =3D 0; i < EDID_DETAILED_TIMINGS; i++) {
+> > +             struct detailed_timing *timing =3D &base_block->edid.deta=
+iled_timings[i];
+> > +             unsigned int size =3D ARRAY_SIZE(timing->data.other_data.=
+data.str.str);
+> > +
+> > +             if (buflen > size || timing->pixel_clock !=3D 0 ||
+> > +                 timing->data.other_data.pad1 !=3D 0 ||
+> > +                 (timing->data.other_data.type !=3D EDID_DETAIL_MONITO=
+R_NAME &&
+> > +                  timing->data.other_data.type !=3D EDID_DETAIL_MONITO=
+R_STRING))
+> > +                     continue;
+> > +
+> > +             for (j =3D 0; j < buflen; j++) {
+> > +                     char c =3D timing->data.other_data.data.str.str[j=
+];
+> > +
+> > +                     if (c !=3D str[j] ||  c =3D=3D '\n')
+> > +                             break;
+> > +             }
+> > +
+> > +             if (j =3D=3D buflen) {
+> > +                     /* Allow trailing white spaces. */
+> > +                     for (k =3D j; k < size; k++) {
+> > +                             char c =3D timing->data.other_data.data.s=
+tr.str[k];
+> > +
+> > +                             if (c =3D=3D '\n')
+> > +                                     return true;
+> > +                             else if (c !=3D ' ')
+> > +                                     break;
+> > +                     }
+> > +                     if (k =3D=3D size)
+> > +                             return true;
+> > +             }
+> > +     }
+> > +
+> > +     return false;
 > > +}
-> > +subsys_initcall(init_xattr_buckets);
 > > +
-> >  /*
-> >   * Extended attribute LIST operations
-> >   */
-> > @@ -833,7 +843,7 @@ listxattr(struct dentry *d, char __user *list, size_t size)
-> >  	if (size) {
-> >  		if (size > XATTR_LIST_MAX)
-> >  			size = XATTR_LIST_MAX;
-> > -		klist = kvmalloc(size, GFP_KERNEL);
-> > +		klist = kmem_buckets_alloc(xattr_buckets, size, GFP_KERNEL);
-> 
-> There's a reason this uses kvmalloc() - allocations can be up to
-> 64kB in size and it's not uncommon for large slab allocation to
-> fail on long running machines. hence this needs to fall back to
-> vmalloc() to ensure that large xattrs can always be read.
+>
+> So we've put a lot of effort into converting from struct edid to struct
+> drm_edid, passing that around in drm_edid.c, with the allocation size it
+> provides, and generally cleaning stuff up.
+>
+> I'm not at all happy to see *another* struct added just for the base
+> block, and detailed timing iteration as well as monitor name parsing
+> duplicated.
+>
+> With struct drm_edid you can actually return an EDID that only has the
+> base block and size 128, even if the EDID indicates more
+> extensions. Because the whole thing is *designed* to handle that
+> gracefully. The allocated size matters, not what the blob originating
+> outside of the kernel tells you.
+>
+> What I'm thinking is:
+>
+> - Add some struct drm_edid_ident or similar. Add all the information
+>   that's needed to identify a panel there. I guess initially that's
+>   panel_id and name.
+>
+>     struct drm_edid_ident {
+>         u32 panel_id;
+>         const char *name;
+>     };
+>
+> - Add function:
+>
+>     bool drm_edid_match(const struct drm_edid *drm_edid, const struct drm=
+_edid_ident *ident);
+>
+>   Check if stuff in ident matches drm_edid. You can use and extend the
+>   existing drm_edid based iteration etc. in
+>   drm_edid.c. Straightforward. The fields in ident can trivially be
+>   extended later, and the stuff can be useful for other drivers and
+>   quirks etc.
+>
+> - Restructure struct edp_panel_entry to contain struct
+>   drm_edid_ident. Change the iteration of edp_panels array to use
+>   drm_edid_match() on the array elements and the edid.
+>
+> - Add a function to read the EDID base block *but* make it return const
+>   struct drm_edid *. Add warnings in the comments that it's only for
+>   panel and for transition until it switches to reading full EDIDs.
+>
+>     const struct drm_edid *drm_edid_read_base_block(struct i2c_adapter *a=
+dapter);
+>
+>   This is the *only* hackish part of the whole thing, and it's nicely
+>   isolated. For the most part you can use drm_edid_get_panel_id() code
+>   for this, just return the blob wrapped in a struct drm_edid envelope.
 
-I can add a vmalloc fallback interface too. It looked like the larger
-xattr usage (8k-64k) was less common, but yeah, let's not remove the
-correct allocation fallback here. I'll fix this for v2.
+To clarify:
+struct drm_edid currently is only internal to drm_edid.c. So with
+change we will have to move it to the header drm_edid.h
 
-Thanks!
+>
+> - Remove function:
+>
+>     u32 drm_edid_get_panel_id(struct i2c_adapter *adapter);
+>
 
--Kees
+Probably change to u32 drm_edid_get_panel_id(const struct drm_edid
+*);? Given that we still need to parse id from
+drm_edid_read_base_block().
 
--- 
-Kees Cook
+> - Refactor edid_quirk_list to use the same id struct and match function
+>   and mechanism within drm_edid.c (can be follow-up too).
+>
+
+edid_quirk currently doesn't have panel names in it, and it might be a
+bit difficult to get all the correct names of these panels without
+having the datasheets.
+One way is to leave the name as null and if the name is empty and skip
+matching the name in drm_edid_match().
+
+> - Once you change the panel code to read the whole EDID using
+>   drm_edid_read family of functions in the future, you don't have to
+>   change *anything* about the iteration or matching or anything, because
+>   it's already passing struct drm_edid around.
+>
+>
+> I hope this covers everything.
+>
+> BR,
+> Jani.
+>
+>
+> >  /**
+> >   * drm_edid_get_base_block - Get a panel's EDID base block
+> >   * @adapter: I2C adapter to use for DDC
+> > diff --git a/include/drm/drm_edid.h b/include/drm/drm_edid.h
+> > index 2455d6ab2221..248ddb0a6b5d 100644
+> > --- a/include/drm/drm_edid.h
+> > +++ b/include/drm/drm_edid.h
+> > @@ -416,6 +416,7 @@ struct edid *drm_get_edid(struct drm_connector *con=
+nector,
+> >                         struct i2c_adapter *adapter);
+> >  struct edid_base_block *drm_edid_get_base_block(struct i2c_adapter *ad=
+apter);
+> >  u32 drm_edid_get_panel_id(struct edid_base_block *base_block);
+> > +bool drm_edid_has_monitor_string(struct edid_base_block *base_block, c=
+onst char *str);
+> >  struct edid *drm_get_edid_switcheroo(struct drm_connector *connector,
+> >                                    struct i2c_adapter *adapter);
+> >  struct edid *drm_edid_duplicate(const struct edid *edid);
+>
+> --
+> Jani Nikula, Intel
 
