@@ -1,74 +1,125 @@
-Return-Path: <linux-kernel+bounces-90405-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90406-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61EE586FEBB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:17:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E9C386FEBF
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:18:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2B7B1F23463
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:17:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE277281EC7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:18:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1151624215;
-	Mon,  4 Mar 2024 10:14:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73555225A2;
+	Mon,  4 Mar 2024 10:15:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UP/VLUnY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Ym8KY+n2"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A363225A2;
-	Mon,  4 Mar 2024 10:14:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89A6E249FE;
+	Mon,  4 Mar 2024 10:14:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709547269; cv=none; b=kLytkASZo4Y6DbGYvxSGvLipkTzI+7druCaUfhPmh/EqiGeP7EIUmzfeEUnikvWqLedjZFu8+7ubeS/Cixr9cU7I4VY6dIWulM+JR8O9Gc4nRpmpZ7CNLO36m/aljDNBffMV7JPYLzo4Xn6C5hksEIO7R+zzASCoUPplB7LCoMM=
+	t=1709547299; cv=none; b=clOntgSpgtQOPnrjM+T2zI6NEl3TEwqqe1I4FnaWjHjkla24IdewY2n5T6SULXckVQ4g5Iykx6xpMNSJJEaKgzQwJQGDLn4JprqDvsi8uT4pWutmVUPhNt9RiVFI6Db+pwTyvpMpL2qWqA4qwlwmZKivruOS+CfdK2x40mVd22Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709547269; c=relaxed/simple;
-	bh=nhV3nLQLv9fmwP/nySp4wv0mZvbHQ0i0sj34n6Bo4pk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MwshFnyFErNkA2arx+76EQX3KybIf1GMwQ/wV8lqrvgeZ6u5eFBhWUx1X9EFUPL/tmMRr6nd5Z+2JlnreZaD4dp8jAR49eMhnB15PNpO7DC/CeU+udn/JqEKl1jksN5CzKnXN8sOrIODJejxZkSYMGYrK9GoZi8WFPQgv20Fht8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UP/VLUnY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3236C433F1;
-	Mon,  4 Mar 2024 10:14:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709547268;
-	bh=nhV3nLQLv9fmwP/nySp4wv0mZvbHQ0i0sj34n6Bo4pk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UP/VLUnY5u+1a64IBrRO5uXaeBnbx88yQUVRsYK7v7zuM/y7npA6dhXODCCKE/lyR
-	 sk6EO2HIRaz46qWpIj5DTEqPsOIbvmceH7kqI4cW3KyvTXhkwijxTqtX5CnEaj8gez
-	 SGJwprpM9PeZmRXDTzF4ZV2Xf2uJ5B8TBUX1G3RHgkXVMkazpxgTfeKCdyhC1OoJac
-	 9ZnAnl8LIFUNhtBRrotYLPnoAiTF/4k57q66meSZVPOwQ1HFwQP4sCAax12yYkYMk0
-	 Q30mbiHHH10X3Nl2wDiEoKpgAMsVfzHt40N+yGibjS9J/UE4MLwO37fA0H0voK8bms
-	 d9eBqY+i6N6ow==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rh5LB-0000000076g-0Foe;
-	Mon, 04 Mar 2024 11:14:37 +0100
-Date: Mon, 4 Mar 2024 11:14:37 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Cameron Williams <cang1@live.co.uk>
-Cc: gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH] usb: serial: Add device ID for cp210x
-Message-ID: <ZeWfDU3Mx7dhq-j6@hovoldconsulting.com>
-References: <DU0PR02MB7899B4A2A35EFE1B350E6F97C44F2@DU0PR02MB7899.eurprd02.prod.outlook.com>
+	s=arc-20240116; t=1709547299; c=relaxed/simple;
+	bh=l1WERtT5arsgrWURcH/8kAmZA8tXvv8Qm9AF3iNFUnE=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:To:From:
+	 References:In-Reply-To; b=WZtDF0PsVwtc0XDWeMPb/G4OA2PTWNqCXQq7YQAKz9Lh8d68pH5UjbUBXikBR/Vm8NPDyEBri/F5pd6PISemdYPV3l+ovsWKzMUQhZe2D6g0t5YdcWkESpGGBt3mZ6o4BnO90WUH/O5lgrzvqQWp8daN5JCLqX2eg9fKn5ylBbs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Ym8KY+n2; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 1275A1C0004;
+	Mon,  4 Mar 2024 10:14:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709547294;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rwK2LvulJHcbE7EmhorBdfblFEGwYo80VFJJkLx6bEM=;
+	b=Ym8KY+n2YskzH42HV2pYni6ovFBEES1RrCl8btmcC5bGzboVaC+z71RtEB0GOGiEYVX7HM
+	SV4gJnS44PUjERVjsW1NEqHGR2hbGYkOYE8ifxHS0iJEsncm1w6qMaBKRxMRdxJCgBfAvu
+	rao6ZStM6bI9yioHYxMRNbR+P7LgggIZO9jg4NSbdPRDuZrlh3kFDs7e0+lIJngJZgZ/rQ
+	ljGLKo/FdYEfyX6HqxXPCKHH9xnI0guJKrtuXPYrvoWsr7qsXL1jx0RD09mJF6EqonEf9b
+	0nnWI8iPOODQBB0isjQrT+Oypb/zfx1khrhL+pbIdcZV4x9fTUbmL/BqUqaV+Q==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DU0PR02MB7899B4A2A35EFE1B350E6F97C44F2@DU0PR02MB7899.eurprd02.prod.outlook.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 04 Mar 2024 11:14:53 +0100
+Message-Id: <CZKVXSULAGXC.1C5PDQJ6KCHN@bootlin.com>
+Subject: Re: [PATCH v2 06/11] i2c: nomadik: support short xfer timeouts
+ using waitqueue & hrtimer
+Cc: "Linus Walleij" <linus.walleij@linaro.org>, "Andi Shyti"
+ <andi.shyti@kernel.org>, "Rob Herring" <robh+dt@kernel.org>, "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley"
+ <conor+dt@kernel.org>, "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-i2c@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-mips@vger.kernel.org>, "Gregory Clement"
+ <gregory.clement@bootlin.com>, "Vladimir Kondratiev"
+ <vladimir.kondratiev@mobileye.com>, "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
+ <tawfik.bayouk@mobileye.com>
+To: "Wolfram Sang" <wsa@kernel.org>
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+X-Mailer: aerc 0.15.2
+References: <20240229-mbly-i2c-v2-0-b32ed18c098c@bootlin.com>
+ <20240229-mbly-i2c-v2-6-b32ed18c098c@bootlin.com>
+ <ZeWRyuN8v-VnraQA@ninjato>
+In-Reply-To: <ZeWRyuN8v-VnraQA@ninjato>
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-On Tue, Feb 13, 2024 at 09:53:29PM +0000, Cameron Williams wrote:
-> Add device ID for a (probably fake) CP2102 UART device.
-> lsusb -v output:
+Hello,
 
-Now applied with a slightly updated summary:
+On Mon Mar 4, 2024 at 10:18 AM CET, Wolfram Sang wrote:
+> On Thu, Feb 29, 2024 at 07:10:54PM +0100, Th=C3=A9o Lebrun wrote:
+> > Replace the completion by a waitqueue for synchronization from IRQ
+> > handler to task. For short timeouts, use hrtimers, else use timers.
+> > Usecase: avoid blocking the I2C bus for too long when an issue occurs.
+> >=20
+> > The threshold picked is one jiffy: if timeout is below that, use
+> > hrtimers. This threshold is NOT configurable.
+> >=20
+> > Implement behavior but do NOT change fetching of timeout. This means th=
+e
+> > timeout is unchanged (200ms) and the hrtimer case will never trigger.
+> >=20
+> > A waitqueue is used because it supports both desired timeout approaches=
+.
+> > See wait_event_timeout() and wait_event_hrtimeout(). An atomic boolean
+> > serves as synchronization condition.
+> >=20
+> > Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> > Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+>
+> Largely:
+>
+> Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-	USB: serial: add device ID for VeriFone adapter
+Thanks for the reviews Wolfram.
 
-Johan
+> Nit:
+>
+> > -	int				timeout;
+> > +	int				timeout_usecs;
+>
+> I think 'unsigned' makes a lot of sense here. Maybe u32 even?
+
+Yes unsigned would make sense. unsigned int or u32, I wouldn't know
+which to pick.
+
+Regards,
+
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+
 
