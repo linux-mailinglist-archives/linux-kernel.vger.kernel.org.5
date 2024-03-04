@@ -1,134 +1,216 @@
-Return-Path: <linux-kernel+bounces-90673-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90674-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE41A87030C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:43:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D801E87031F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:45:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DA7D1F21CCC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:43:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 677141F21D7A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:45:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9D273EA69;
-	Mon,  4 Mar 2024 13:42:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="irtJW8O0"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 828813F8E4;
+	Mon,  4 Mar 2024 13:45:29 +0000 (UTC)
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E3E93D963;
-	Mon,  4 Mar 2024 13:42:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11A293E47B;
+	Mon,  4 Mar 2024 13:45:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709559766; cv=none; b=JzXGTRMNZpYKZxZphESJub9m9w5yowGALFx2L0wcrMD+PeRrSPz2vS//Mldx9d2jVK3FPlmKonx2UFu4IdTCbkFdfu+7Edqb0rpuQFPfN5NJkb/19KS1xcwra1/vqEiP5pdnzO5QkvWy9JIYMzJ+2rmhiRDglJMqkWF2GF5VkOQ=
+	t=1709559929; cv=none; b=d9AjlE5xUokvq7ej8aZbJOdIwU8+pPFTYYY875zGrpU+XjtMO63icS9OZhwY3AIhBDRgdyJq+KgJqkMyv3RunNahP1KBJSXD4XuImb6BRlQ3wx59weph8aaIEwXsATWwkfNsVx1OUnLA/IjbKqOycfkD1UBY5uVdOcrEHO9DZBE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709559766; c=relaxed/simple;
-	bh=uof/ush/MFndl5WiP6r2u0em/l91glIDX9t4FzIKBFg=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=dueV5DguxkohvaAd9Eigp5yFNmm9bBUBRkHjW5GEqlE0MA7BAujrVUQ8mXv3GY4SxYKiGrZPoch7LFP3+YpFodX1DPkxnrmT5vTdI2F0/NNuz66j1qSKk7H5Ru7YwEw7K+Bt8XIsfbJI8I70tunwtb1VBtKjzS1oUf/vin0dj6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=irtJW8O0; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 424DgbHs025574;
-	Mon, 4 Mar 2024 13:42:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id; s=qcppdkim1; bh=J98nZN1Wf+Z8
-	xl5UNZWuCOEvqbu2IIbX5MnokV7ko2c=; b=irtJW8O0ksF+hDxzFcr3PG68Jd0V
-	059TNjC1T8Dj7Ine7fiH7v3j+xbEcj/KH6TaG4TCGfwp4XJlXf4PNw11VHLjV4kc
-	6/KF8MaRWBimKrFpuOLNRLWF0dikLvuyDAbNiiDbB3fpsA9Zp048MUwmRWx9SgAQ
-	2IK/o+E2go7bIbZIBZ835UmaZYVBF82oLmNgn3x1fYAzoOtInQ0fzu+Wh2tDDtK8
-	eLxjraP0YVoky0KahY9AOl/SFTiqjbzOYrRC7phU3ykVBlaThcVs4be5bYhPfo8K
-	DX97vO9XiX8W5hv74ii270Ao+rCgOgm3EL35re1KvEgaq3y3OxmCIG+rJA==
-Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wn6qx110f-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 04 Mar 2024 13:42:37 +0000 (GMT)
-Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-	by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 424DgWof003908;
-	Mon, 4 Mar 2024 13:42:32 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3wkw6khygt-1;
-	Mon, 04 Mar 2024 13:42:32 +0000
-Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 424DgWdU003903;
-	Mon, 4 Mar 2024 13:42:32 GMT
-Received: from hu-maiyas-hyd.qualcomm.com (hu-vdadhani-hyd.qualcomm.com [10.213.106.28])
-	by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 424DgWAl003901;
-	Mon, 04 Mar 2024 13:42:32 +0000
-Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 4047106)
-	id 725815001CE; Mon,  4 Mar 2024 19:12:31 +0530 (+0530)
-From: Viken Dadhaniya <quic_vdadhani@quicinc.com>
-To: andersson@kernel.org, konrad.dybcio@linaro.org,
-        srinivas.kandagatla@linaro.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: quic_msavaliy@quicinc.com, quic_vtanuku@quicinc.com,
-        quic_anupkulk@quicinc.com, quic_cchiluve@quicinc.com,
-        Viken Dadhaniya <quic_vdadhani@quicinc.com>
-Subject: [PATCH v1] slimbus: qcom-ngd-ctrl: Add timeout for wait operation
-Date: Mon,  4 Mar 2024 19:12:28 +0530
-Message-Id: <20240304134228.16627-1-quic_vdadhani@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: od_AhOf-ZDhZmbY2pp2n9cVpFgowZs0n
-X-Proofpoint-ORIG-GUID: od_AhOf-ZDhZmbY2pp2n9cVpFgowZs0n
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-04_09,2024-03-04_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- bulkscore=0 priorityscore=1501 lowpriorityscore=0 phishscore=0
- clxscore=1011 adultscore=0 spamscore=0 mlxlogscore=999 impostorscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403040104
+	s=arc-20240116; t=1709559929; c=relaxed/simple;
+	bh=Vogrl90LPvlwp2Ghw/yIzr9IKjNdfq8ALbuzUCNGjqc=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=u24qnTVthXjCQ96hMxLu6+9HLDSXzdwmESp3N1p3duH/1tG/hDHWaev+wQl1zyaaDUCOFXrKuz77ZjmsDISIOqcwmrb2KrvOP54FlyR1+D2grm75DiQ9cHbceYgTP8kRrjFM5Fk6DhPzrV13oW/ekVtvj1jUEVaXuaWx0bSZL5M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4TpKdf3B0Sz1Q9mN;
+	Mon,  4 Mar 2024 21:43:02 +0800 (CST)
+Received: from kwepemm600003.china.huawei.com (unknown [7.193.23.202])
+	by mail.maildlp.com (Postfix) with ESMTPS id 414801A016E;
+	Mon,  4 Mar 2024 21:45:22 +0800 (CST)
+Received: from dggpemm500008.china.huawei.com (7.185.36.136) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 4 Mar 2024 21:45:21 +0800
+Received: from dggpemm500008.china.huawei.com ([7.185.36.136]) by
+ dggpemm500008.china.huawei.com ([7.185.36.136]) with mapi id 15.01.2507.035;
+ Mon, 4 Mar 2024 21:45:21 +0800
+From: wangyunjian <wangyunjian@huawei.com>
+To: "Michael S. Tsirkin" <mst@redhat.com>, "jasowang@redhat.com"
+	<jasowang@redhat.com>
+CC: Paolo Abeni <pabeni@redhat.com>, "willemdebruijn.kernel@gmail.com"
+	<willemdebruijn.kernel@gmail.com>, "kuba@kernel.org" <kuba@kernel.org>,
+	"bjorn@kernel.org" <bjorn@kernel.org>, "magnus.karlsson@intel.com"
+	<magnus.karlsson@intel.com>, "maciej.fijalkowski@intel.com"
+	<maciej.fijalkowski@intel.com>, "jonathan.lemon@gmail.com"
+	<jonathan.lemon@gmail.com>, "davem@davemloft.net" <davem@davemloft.net>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"virtualization@lists.linux.dev" <virtualization@lists.linux.dev>, xudingke
+	<xudingke@huawei.com>, "liwei (DT)" <liwei395@huawei.com>
+Subject: RE: [PATCH net-next v2 3/3] tun: AF_XDP Tx zero-copy support
+Thread-Topic: [PATCH net-next v2 3/3] tun: AF_XDP Tx zero-copy support
+Thread-Index: AQHaajYcNkJKJoTBfEqyMPzDlwSi+bEgpeYAgAIJPRD//5RegIAFWUkg
+Date: Mon, 4 Mar 2024 13:45:21 +0000
+Message-ID: <ffbe60c2732842a3b81e6ae0f58d2556@huawei.com>
+References: <1709118356-133960-1-git-send-email-wangyunjian@huawei.com>
+ <7d478cb842e28094f4d6102e593e3de25ab27dfe.camel@redhat.com>
+ <223aeca6435342ec8a4d57c959c23303@huawei.com>
+ <20240301065141-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20240301065141-mutt-send-email-mst@kernel.org>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
 
-In current driver qcom_slim_ngd_up_worker() indefinitely
-waiting for ctrl->qmi_up completion object. This is
-resulting in workqueue lockup on Kthread.
 
-Added wait_for_completion_interruptible_timeout to
-allow the thread to wait for specific timeout period and
-bail out instead waiting infinitely.
 
-Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
----
- drivers/slimbus/qcom-ngd-ctrl.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+> -----Original Message-----
+> From: Michael S. Tsirkin [mailto:mst@redhat.com]
+> Sent: Friday, March 1, 2024 7:53 PM
+> To: wangyunjian <wangyunjian@huawei.com>
+> Cc: Paolo Abeni <pabeni@redhat.com>; willemdebruijn.kernel@gmail.com;
+> jasowang@redhat.com; kuba@kernel.org; bjorn@kernel.org;
+> magnus.karlsson@intel.com; maciej.fijalkowski@intel.com;
+> jonathan.lemon@gmail.com; davem@davemloft.net; bpf@vger.kernel.org;
+> netdev@vger.kernel.org; linux-kernel@vger.kernel.org; kvm@vger.kernel.org=
+;
+> virtualization@lists.linux.dev; xudingke <xudingke@huawei.com>; liwei (DT=
+)
+> <liwei395@huawei.com>
+> Subject: Re: [PATCH net-next v2 3/3] tun: AF_XDP Tx zero-copy support
+>=20
+> On Fri, Mar 01, 2024 at 11:45:52AM +0000, wangyunjian wrote:
+> > > -----Original Message-----
+> > > From: Paolo Abeni [mailto:pabeni@redhat.com]
+> > > Sent: Thursday, February 29, 2024 7:13 PM
+> > > To: wangyunjian <wangyunjian@huawei.com>; mst@redhat.com;
+> > > willemdebruijn.kernel@gmail.com; jasowang@redhat.com;
+> > > kuba@kernel.org; bjorn@kernel.org; magnus.karlsson@intel.com;
+> > > maciej.fijalkowski@intel.com; jonathan.lemon@gmail.com;
+> > > davem@davemloft.net
+> > > Cc: bpf@vger.kernel.org; netdev@vger.kernel.org;
+> > > linux-kernel@vger.kernel.org; kvm@vger.kernel.org;
+> > > virtualization@lists.linux.dev; xudingke <xudingke@huawei.com>;
+> > > liwei (DT) <liwei395@huawei.com>
+> > > Subject: Re: [PATCH net-next v2 3/3] tun: AF_XDP Tx zero-copy
+> > > support
+> > >
+> > > On Wed, 2024-02-28 at 19:05 +0800, Yunjian Wang wrote:
+> > > > @@ -2661,6 +2776,54 @@ static int tun_ptr_peek_len(void *ptr)
+> > > >  	}
+> > > >  }
+> > > >
+> > > > +static void tun_peek_xsk(struct tun_file *tfile) {
+> > > > +	struct xsk_buff_pool *pool;
+> > > > +	u32 i, batch, budget;
+> > > > +	void *frame;
+> > > > +
+> > > > +	if (!ptr_ring_empty(&tfile->tx_ring))
+> > > > +		return;
+> > > > +
+> > > > +	spin_lock(&tfile->pool_lock);
+> > > > +	pool =3D tfile->xsk_pool;
+> > > > +	if (!pool) {
+> > > > +		spin_unlock(&tfile->pool_lock);
+> > > > +		return;
+> > > > +	}
+> > > > +
+> > > > +	if (tfile->nb_descs) {
+> > > > +		xsk_tx_completed(pool, tfile->nb_descs);
+> > > > +		if (xsk_uses_need_wakeup(pool))
+> > > > +			xsk_set_tx_need_wakeup(pool);
+> > > > +	}
+> > > > +
+> > > > +	spin_lock(&tfile->tx_ring.producer_lock);
+> > > > +	budget =3D min_t(u32, tfile->tx_ring.size, TUN_XDP_BATCH);
+> > > > +
+> > > > +	batch =3D xsk_tx_peek_release_desc_batch(pool, budget);
+> > > > +	if (!batch) {
+> > >
+> > > This branch looks like an unneeded "optimization". The generic loop
+> > > below should have the same effect with no measurable perf delta - and
+> smaller code.
+> > > Just remove this.
+> > >
+> > > > +		tfile->nb_descs =3D 0;
+> > > > +		spin_unlock(&tfile->tx_ring.producer_lock);
+> > > > +		spin_unlock(&tfile->pool_lock);
+> > > > +		return;
+> > > > +	}
+> > > > +
+> > > > +	tfile->nb_descs =3D batch;
+> > > > +	for (i =3D 0; i < batch; i++) {
+> > > > +		/* Encode the XDP DESC flag into lowest bit for consumer to
+> differ
+> > > > +		 * XDP desc from XDP buffer and sk_buff.
+> > > > +		 */
+> > > > +		frame =3D tun_xdp_desc_to_ptr(&pool->tx_descs[i]);
+> > > > +		/* The budget must be less than or equal to tx_ring.size,
+> > > > +		 * so enqueuing will not fail.
+> > > > +		 */
+> > > > +		__ptr_ring_produce(&tfile->tx_ring, frame);
+> > > > +	}
+> > > > +	spin_unlock(&tfile->tx_ring.producer_lock);
+> > > > +	spin_unlock(&tfile->pool_lock);
+> > >
+> > > More related to the general design: it looks wrong. What if
+> > > get_rx_bufs() will fail (ENOBUF) after successful peeking? With no
+> > > more incoming packets, later peek will return 0 and it looks like
+> > > that the half-processed packets will stay in the ring forever???
+> > >
+> > > I think the 'ring produce' part should be moved into tun_do_read().
+> >
+> > Currently, the vhost-net obtains a batch descriptors/sk_buffs from the
+> > ptr_ring and enqueue the batch descriptors/sk_buffs to the
+> > virtqueue'queue, and then consumes the descriptors/sk_buffs from the
+> > virtqueue'queue in sequence. As a result, TUN does not know whether
+> > the batch descriptors have been used up, and thus does not know when to
+> return the batch descriptors.
+> >
+> > So, I think it's reasonable that when vhost-net checks ptr_ring is
+> > empty, it calls peek_len to get new xsk's descs and return the descript=
+ors.
+> >
+> > Thanks
+>=20
+> What you need to think about is that if you peek, another call in paralle=
+l can get
+> the same value at the same time.
 
-diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
-index efeba8275a66..c27076d8b7db 100644
---- a/drivers/slimbus/qcom-ngd-ctrl.c
-+++ b/drivers/slimbus/qcom-ngd-ctrl.c
-@@ -83,6 +83,7 @@
- 
- #define QCOM_SLIM_NGD_AUTOSUSPEND	MSEC_PER_SEC
- #define SLIM_RX_MSGQ_TIMEOUT_VAL	0x10000
-+#define SLIM_QMI_TIMEOUT_MS		1000
- 
- #define SLIM_LA_MGR	0xFF
- #define SLIM_ROOT_FREQ	24576000
-@@ -1451,7 +1452,11 @@ static void qcom_slim_ngd_up_worker(struct work_struct *work)
- 	ctrl = container_of(work, struct qcom_slim_ngd_ctrl, ngd_up_work);
- 
- 	/* Make sure qmi service is up before continuing */
--	wait_for_completion_interruptible(&ctrl->qmi_up);
-+	if (!wait_for_completion_interruptible_timeout(&ctrl->qmi_up,
-+						       msecs_to_jiffies(SLIM_QMI_TIMEOUT_MS))) {
-+		dev_err(ctrl->dev, "QMI wait timeout\n");
-+		return;
-+	}
- 
- 	mutex_lock(&ctrl->ssr_lock);
- 	qcom_slim_ngd_enable(ctrl, true);
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
+Thank you. I have identified a problem. The tx_descs array was created with=
+in xsk's pool.
+When xsk is freed, the pool and tx_descs are also freed. Howerver, some des=
+cs may
+remain in the virtqueue'queue, which could lead to a use-after-free scenari=
+o. Currently,
+I do not have an idea to solve this concurrency problem and believe this sc=
+enario may
+not be appropriate for reusing the ptr_ring.
+
+Thanks
+
+>=20
+>=20
+> > >
+> > > Cheers,
+> > >
+> > > Paolo
+> >
 
 
