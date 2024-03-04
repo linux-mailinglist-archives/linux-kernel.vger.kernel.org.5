@@ -1,131 +1,174 @@
-Return-Path: <linux-kernel+bounces-90968-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90969-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 451C18707C2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:56:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C41DB8707C4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:57:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F15422828E1
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:56:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B923281697
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:57:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FD4A5F578;
-	Mon,  4 Mar 2024 16:56:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA8C35C8EC;
+	Mon,  4 Mar 2024 16:56:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F+h3DOW9"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="dmrsCZlk";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="ivc7oN7f";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="dmrsCZlk";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="ivc7oN7f"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6E92A20;
-	Mon,  4 Mar 2024 16:56:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2031D5C90F;
+	Mon,  4 Mar 2024 16:56:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709571397; cv=none; b=uw1fLOFs5DeZqyt4qLBpkPULvLxn9NqWFa6XQE3QE8fqDusvYr+4NVE2+ZeaT8mP0OuMsLRhQVnUGPpf2hzEjraLKWd9L00Z2sQXm2jEeAvWNG3uDHetJz82kX1c5Xx7VGaVxHgLuMqVrsCstGY7o8VbMK2rJOJ3QhYFu99Euv0=
+	t=1709571412; cv=none; b=Ff3NXYHsqXIxZ6BfvUtdIOAHqNNrTK7/qAj0Gm+KNkDEYFplDMuCKKNh2+/1WAKtXC1nIqShQrP6pPGGAp080ML0UZOLPS/wl9nTnMb9goQaJKliSQeTHiGiObDNY5kbLBWK5jn0NMSTJBWq1tT2OJNUm3eidl6UPZyb/qR4bCU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709571397; c=relaxed/simple;
-	bh=xVMa7i8oPGdLj8iX76oU3OuSEEgYdE3cXj3g2JVHqYA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FK6ZTCqd8vTUuYMnuhdz1e4rK/2ljC9WqvUz2QCE3qq29CdnwnEG7vscsLav6qXDXuUvQSr0LCYroR9d7csFOyFTfNNazepoft210c5lsTJEEaLw/1AiNLD4diUqyZB1B6TU2KKVYVwVNfSVOEHzbx0+XNxNMNPqmFjdE5dkaro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F+h3DOW9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43584C433F1;
-	Mon,  4 Mar 2024 16:56:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709571397;
-	bh=xVMa7i8oPGdLj8iX76oU3OuSEEgYdE3cXj3g2JVHqYA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=F+h3DOW9ORlN/9HF9TaxmR/fYvUag0uSF8Hc9e/12dJNoz+71goZo2H8TackF4ndY
-	 NfVYqGj/6OFDRiDCsry5FDGozEtGEBurPUvzd9yu6rOK0cbMv8vDpUXzA1HT0Z0/sA
-	 qujKdTO7/OeWMSBL96U+8G+buwL9ScaI1Mid9Lcybrym8Th/7y5NAPq1JqK70JXxKQ
-	 WvLrG00pt/H1qdoz+81PJJ5YiS22nvmqncYZfgaMLdXthBsu3rxy5UE35nXH9gpq8q
-	 KeiaEoMNsjjEdzpngrMHC/ZI1eja3L9D7ZMCGBt+YMsACvSIS2ioHguEOpdgDRyZDa
-	 YZKTSWcYAv91A==
-Date: Mon, 4 Mar 2024 10:56:35 -0600
-From: Rob Herring <robh@kernel.org>
-To: Sam Protsenko <semen.protsenko@linaro.org>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Mark Brown <broonie@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	andi.shyti@kernel.org, conor+dt@kernel.org,
-	linux-spi@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	andre.draszik@linaro.org, peter.griffin@linaro.org,
-	willmcvicker@google.com, kernel-team@android.com
-Subject: Re: [PATCH] spi: dt-bindings: samsung: make dma properties not
- required
-Message-ID: <20240304165635.GA739022-robh@kernel.org>
-References: <20240301115546.2266676-1-tudor.ambarus@linaro.org>
- <CAPLW+4=6oYcs0NPXo4ffLiCvtNQ-tY1s_isaxTX8dcPkV56xMw@mail.gmail.com>
- <cb426fb0-2f27-4c9b-89f5-7139354ea425@sirena.org.uk>
- <f06328e4-b283-4302-b9c1-6473aa3cfa25@linaro.org>
- <CAPLW+4kjXK=EWx__h0bX0rJMrL33E=t4YDzSOfObmvtG9aS+jg@mail.gmail.com>
+	s=arc-20240116; t=1709571412; c=relaxed/simple;
+	bh=ZGMXcFuQrgx1SMeh//RuHHEKTwX4JgGSvJklkPh98+A=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ty9y1M7HTIi37yDGW+bAkNdc3FfAGXGRSCjxkQj7YElqY1vYpooJdxQkLIPUazCnhNulDiiIdgyCMKIKM0lw9O+TiSNsBliDrIwnkIvH8TMCBkbxVKybuUcnCpn2Q9rQdltByyKjQ8Plm4WL+aXdzd00mEErOG/Xf/b7XToAbds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=dmrsCZlk; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=ivc7oN7f; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=dmrsCZlk; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=ivc7oN7f; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4CEDE33688;
+	Mon,  4 Mar 2024 16:56:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1709571409; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=X18wun2KPgEkmdf+nMDldpOLsokiS1pBuUIkbNKN0Jc=;
+	b=dmrsCZlkGijUKt4OPFwE+aIuXT1qureSUgSqEQv3iJOtSpcVMLx4+8m00Y3BPHXLvQIy5X
+	vJ38Z0PvADCOOKqMFK9HlYprqdbwV/a3NYIKje+f0SiTH5V7WSDLVeuF+Fvd/6dSfHDhr4
+	d6qWybpfVftpH01YmFHzMtuUbKt0jBk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709571409;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=X18wun2KPgEkmdf+nMDldpOLsokiS1pBuUIkbNKN0Jc=;
+	b=ivc7oN7fe5rpjHA2qwoj4aFXG+p3OJvZpRqkl5c6Qs1H9K23FDr6B1gk8YDBHDq/TcOZBx
+	MZNl9qLkLjZsTnAg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1709571409; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=X18wun2KPgEkmdf+nMDldpOLsokiS1pBuUIkbNKN0Jc=;
+	b=dmrsCZlkGijUKt4OPFwE+aIuXT1qureSUgSqEQv3iJOtSpcVMLx4+8m00Y3BPHXLvQIy5X
+	vJ38Z0PvADCOOKqMFK9HlYprqdbwV/a3NYIKje+f0SiTH5V7WSDLVeuF+Fvd/6dSfHDhr4
+	d6qWybpfVftpH01YmFHzMtuUbKt0jBk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709571409;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=X18wun2KPgEkmdf+nMDldpOLsokiS1pBuUIkbNKN0Jc=;
+	b=ivc7oN7fe5rpjHA2qwoj4aFXG+p3OJvZpRqkl5c6Qs1H9K23FDr6B1gk8YDBHDq/TcOZBx
+	MZNl9qLkLjZsTnAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0D7DB13A5B;
+	Mon,  4 Mar 2024 16:56:49 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id iHG3AVH95WX1BAAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Mon, 04 Mar 2024 16:56:49 +0000
+Date: Mon, 04 Mar 2024 17:56:48 +0100
+Message-ID: <87il223pgv.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Pavin Joseph <me@pavinjoseph.com>
+Cc: Thorsten Leemhuis <linux@leemhuis.info>,
+	Linux regressions mailing list <regressions@lists.linux.dev>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Subject: Re: guide on bisecting (was Re: [REGRESSION] kexec does firmware reboot in kernel v6.7.6)
+In-Reply-To: <66019e35-5adb-4817-a64d-e379b6f4240a@pavinjoseph.com>
+References: <3a1b9909-45ac-4f97-ad68-d16ef1ce99db@pavinjoseph.com>
+	<7ebb1c90-544d-4540-87c0-b18dea963004@leemhuis.info>
+	<3a8453e8-03a3-462f-81a2-e9366466b990@pavinjoseph.com>
+	<a84c1a5d-3a8a-4eea-9f66-0402c983ccbb@leemhuis.info>
+	<806629e6-c228-4046-828a-68d397eb8dbc@pavinjoseph.com>
+	<4630483e-fc4e-448d-8fd6-916d3422784e@leemhuis.info>
+	<66019e35-5adb-4817-a64d-e379b6f4240a@pavinjoseph.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPLW+4kjXK=EWx__h0bX0rJMrL33E=t4YDzSOfObmvtG9aS+jg@mail.gmail.com>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=dmrsCZlk;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=ivc7oN7f
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.93 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DWL_DNSWL_HI(-3.50)[suse.de:dkim];
+	 RCPT_COUNT_FIVE(0.00)[5];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 TO_DN_ALL(0.00)[];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.92)[86.30%]
+X-Spam-Score: -4.93
+X-Rspamd-Queue-Id: 4CEDE33688
+X-Spam-Flag: NO
 
-On Sat, Mar 02, 2024 at 10:23:16AM -0600, Sam Protsenko wrote:
-> On Sat, Mar 2, 2024 at 3:36 AM Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
-> >
-> >
-> >
-> > On 01.03.2024 22:42, Mark Brown wrote:
-> > > On Fri, Mar 01, 2024 at 01:28:35PM -0600, Sam Protsenko wrote:
-> > >> On Fri, Mar 1, 2024 at 5:55 AM Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
-> > >
-> > >>> Since the addition of the driver in 2009, the driver selects between DMA
-> > >>> and polling mode depending on the transfer length - DMA mode for
-> > >>> transfers bigger than the FIFO depth, polling mode otherwise. All
-> > >>> versions of the IP support polling mode, make the dma properties not
-> > >>> required.
-> > >
-> > >> AFAIU, the device tree has nothing to do with drivers, it's about
-> > >> hardware description. Does making DMA properties not required here
-> >
-> > correct
-> >
-> > >> mean that there are some HW out there which doesn't integrate DMA in
-> >
-> > no, to me it means that the IP can work without DMA, only in PIO mode,
-> > regardless if DMA is integrated or not. Not required means that the
-> > property is not mandatory, which is what I'm trying to achieve here.
-> >
-> > >> SPI blocks? Even if this change is ok (I'm not sure), the
-> > >> argumentation doesn't look sound to me.
-> >
-> > switching to PIO mode in the driver for sizes smaller than FIFO depths
-> > in the driver guarantees that all existing compatibles support PIO mode.
-> >
-> > Are you saying that if there is a physical line between an IP and DMA
-> > controller, then the DMA properties must always be specified in dt? I
-> > thought they can be marked as optional in this case, and that's what I
-> > did with this patch.
-> >
+On Sun, 03 Mar 2024 11:17:44 +0100,
+Pavin Joseph wrote:
 > 
-> No, I would wait for maintainers to clarify on that bit. Change itself
-> can be ok. But the commit message shouldn't mention the driver,
-> because the driver uses (depends on) device tree, not vice versa. The
-> device tree can be used in other projects as well (like U-Boot and
-> OP-TEE), so it should be designed to be universal and not depend on
-> kernel drivers. The commit message should be based on particular HW
-> layout features and how the patch makes the bindings describe that HW
-> better. It shouldn't rely on driver implementations.
+> On 3/3/24 14:06, Thorsten Leemhuis wrote:
+> 
+> >> 2. The "installkernel" command is called "kernel-install" in OpenSuse,
+> > 
+> > Yeah, it looks like that, but that's not really the case. :-) In short:
+> > on Fedora "installkernel" calls into kernel-install -- and
+> > "installkernel" has a long history, so doing what Fedora does is likely
+> > a wise thing for distros. And openSUSE had a "installkernel" as well,
+> > which was part of the dracut package. Not sure if that is still the case
+> > for current Leap and Tumbleweed. Could you check?
+> 
+> It's not available even as a symlink in OpenSuse TW / Slowroll I'm afraid.
+> 
+> suse-pc:~ # whereis installkernel
+> installkernel:
+> suse-pc:~ # whereis kernel-install
+> kernel-install: /usr/bin/kernel-install
+> /usr/share/man/man8/kernel-install.8.gz
+> suse-pc:~ # man kernel-install | grep -i installkernel
+>        installkernel [OPTIONS...] VERSION VMLINUZ [MAP] [INSTALLATION-DIR]
+>        When invoked as installkernel, this program accepts arguments
+> as specified by the kernel build system's make install command. The
+> VERSION and VMLINUZ parameters
 
-If the controller is DMA capable then it should have dma properties. The 
-compatible should be enough to tell if it is a case of 'can only work 
-with DMA'. Otherwise, it is going to be up to a specific user. Even 
-within Linux, you may have a serial port that doesn't use DMA for the 
-console, but uses it for the tty or serdev.
+FYI, /usr/sbin/installkernel is included in kernel-install-tools
+package.
 
-Of course, if a new device is added without DMA properties and they 
-are added later on, then they are going to be optional even though the 
-DMA support is always there. I can't fully understand everyone's h/w. 
 
-Rob
+Takashi
 
