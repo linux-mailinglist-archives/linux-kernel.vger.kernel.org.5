@@ -1,221 +1,261 @@
-Return-Path: <linux-kernel+bounces-90890-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90891-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06E6E870672
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:04:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E08E870673
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:04:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 967ED1F28021
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:04:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 416FE1C211DC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:04:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A01D482DA;
-	Mon,  4 Mar 2024 16:04:01 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19EF145BFD
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 16:03:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709568240; cv=none; b=ciVTYqPXHZcok/HtVJF0hdcybqlzE8+EkIbsfmxZf8VFMEq8F9B6nRqLyXxxRcjoy9ojfJBMlpBn8/fcsxgy1hkH7o5gE0exv/1LasPjtq5IGALDZE+IotRWYigk43J2Wy8dEdkjYgZ9Gk+NRjWK7d3zLeZRP4pDg5pEZKFy2B8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709568240; c=relaxed/simple;
-	bh=oEcirPU6Hl14sSXYPX5Jx9oja/EinwImeUB5SopFd2M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dtDvY9qmiTKZPfV+/9lz+0ML96NBwq8KwebbaalIdNQfMw2IRTltTcfuuNyzACeme8aan7mrblfIDPyoN77EzESJUQgX486Iu7nDijVFS7Vj+xMQvAn6qG1nVcWKW8lSyDKh8EnfYabwNWTqNuQTxSVDeSwwhSwv7DHUU++58hM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C586E1FB;
-	Mon,  4 Mar 2024 08:04:34 -0800 (PST)
-Received: from [10.57.68.92] (unknown [10.57.68.92])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 13BA23F73F;
-	Mon,  4 Mar 2024 08:03:54 -0800 (PST)
-Message-ID: <b642c7ff-c452-4066-ac12-dbf05e215cb9@arm.com>
-Date: Mon, 4 Mar 2024 16:03:53 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C6A2482DF;
+	Mon,  4 Mar 2024 16:04:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="cfS0m+zi"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10olkn2069.outbound.protection.outlook.com [40.92.42.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48768481C2
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 16:04:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.42.69
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709568256; cv=fail; b=Zh2GaNCUCo2kAi4ZTPejiw90A+pMwUiVZEWXc5Xaw6TIF3GRO24mjfzt2U6GFNTYiXvOOT7RfO3VeIO8rSJFlZhYxtmkW9/tfI4LeRiGHoQOrchhTkxehy5+DC82WxKeSP/2mgKw0abDt5A/YVBIgLl7AnqK4RK6hta59gj4BdA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709568256; c=relaxed/simple;
+	bh=wfjN9OWdEjTohNohX9N8HB2VXKiBf0ov8RJ88DP/w30=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=N4WDNSM9XUSgrZhYI8a5Y1qy+Wi6TFERSH2OB5BeLjCTunHqv/E/hJDAp3/bh2DDirq0GfB0b9pJCKdDmM0J22YGXjjI1DYmw52ymTbVGgW/inAcv/lCBcDz5FOQhd3YcPR273wtn6/Z/QpXYS8CbnG3OcH/LD8ucn6BdgDR1fY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=cfS0m+zi; arc=fail smtp.client-ip=40.92.42.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dWgY8F5VmlHtSgqZmTS1eU4dYBylJUwyNTIonAa0b+D3NmiJNF6QnDFfqAMhi0JbC/RyrQqLwv33AHVVUzC6ACx4kY6vx8O/PALpZp1WxFaR2mY4KbuOgcvf+X/+fl7/+FwXCpC54H54/NtL5KQkWUOfPjIz6YFXpxN0Oek7JMrWigLsgAYGnPoOLLN58X6h+7MwUz8tFTXlpZ4nqWXHzOMJF864XywPQVU6dmAQ5Uc/K8dQ8NRKMvHZLt9KmaBRNdJ/hXpFuTwmEBt27l+kwPPSLxh0nfzUa514PWdEVm5pn0hrjxvWIsU9OgPQXekSWN3/iwybWTkzfqzalhBvpw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wfjN9OWdEjTohNohX9N8HB2VXKiBf0ov8RJ88DP/w30=;
+ b=Tu2h124sab9qVVO/PiAvN0UcrmRBaDqM1PwgdOmWDmm0iLimteK3uGohExCSY/CqFBITgnjiMxeX8dQGHhvMwOtAyTxW5jrriG0EkfkNA5/oGyy5gX8vGWtq0CMjM+0ldrOKDdwCT5P0ZfFUttO2iVVdEkEwVlvYsp9Ah2NcwEvdwXfX3KP7Mya4EZYHsVyfXxRNVS+6QfrSp4WRNQJYK6vDZIBNOV4HpemFUS9zNWqfIFKk/eRd3koEd003lY6ZEr7OYplI457B6/3KUlLYyd7RcCevfmGdywEEVTrlmotbvL8tOnY6wO8dq8UdLQCEUCjbZAxp4qt6TG5XhKzV+w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wfjN9OWdEjTohNohX9N8HB2VXKiBf0ov8RJ88DP/w30=;
+ b=cfS0m+ziu6OcNE3IJ//0ruFHbXXv/yxA7Zeanu+rBLdKxRnt20CV8L6FmuidqUZasNZh+vC4TFAC3PIYeHEi3OZEPYU+ptfnlbf3J1Lnw1zH+8oG9QoNcx0ScVjGNWUhFYFVmmzdEEKQHgsVS1IyBi/ZGQcqLv1n14754S+nT6ndzLOk82FGTPolLYHOzGU+GYoNti2BJVB1B2JeIyWk5l0/yWU4b5qyD3ntLmRRMMeD9QaY6PLqWfWb9/cAqrO76400kZYUScSUab4otvm9JWiFcuooXzItui7NVG3h7t1F0BsrOOtpgW4hTtiKK8loZgqDRMTTIRvYJwUPYV++Hg==
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
+ by SJ0PR02MB8403.namprd02.prod.outlook.com (2603:10b6:a03:3f3::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.38; Mon, 4 Mar
+ 2024 16:04:10 +0000
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::67a9:f3c0:f57b:86dd]) by SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::67a9:f3c0:f57b:86dd%5]) with mapi id 15.20.7339.035; Mon, 4 Mar 2024
+ 16:04:09 +0000
+From: Michael Kelley <mhklinux@outlook.com>
+To: =?utf-8?B?UGV0ciBUZXNhxZnDrWs=?= <petr@tesarici.cz>, Robin Murphy
+	<robin.murphy@arm.com>
+CC: Christoph Hellwig <hch@lst.de>, Will Deacon <will@kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Petr Tesarik
+	<petr.tesarik1@huawei-partners.com>, "kernel-team@android.com"
+	<kernel-team@android.com>, "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+	Marek Szyprowski <m.szyprowski@samsung.com>, Dexuan Cui
+	<decui@microsoft.com>, Nicolin Chen <nicolinc@nvidia.com>
+Subject: RE: [PATCH v5 6/6] swiotlb: Remove pointless stride adjustment for
+ allocations >= PAGE_SIZE
+Thread-Topic: [PATCH v5 6/6] swiotlb: Remove pointless stride adjustment for
+ allocations >= PAGE_SIZE
+Thread-Index:
+ AQHaakuep9s0mIf3eE+om+sQlmyZtbEg06/QgAAR1sCAAG26AIAAIlEwgAADLACAAY/2gIAAGPyAgAAMowCAAA1wAIADuADAgAB+HYCAACvfAIAAJlIAgAAAVPA=
+Date: Mon, 4 Mar 2024 16:04:09 +0000
+Message-ID:
+ <SN6PR02MB41576F53BE9B88EB52BBDC10D4232@SN6PR02MB4157.namprd02.prod.outlook.com>
+References: <20240228133930.15400-1-will@kernel.org>
+	<20240228133930.15400-7-will@kernel.org>
+	<SN6PR02MB4157A62353559DA8DB8BC4ADD45F2@SN6PR02MB4157.namprd02.prod.outlook.com>
+	<SN6PR02MB41577D09E97B1D9645369D58D45F2@SN6PR02MB4157.namprd02.prod.outlook.com>
+	<20240229133346.GA7177@lst.de>
+	<SN6PR02MB4157314F142D05E279B7991ED45F2@SN6PR02MB4157.namprd02.prod.outlook.com>
+	<20240229154756.GA10137@lst.de>
+	<20240301163927.18358ee2@meshulam.tesarici.cz>
+	<20240301180853.5ac20b27@meshulam.tesarici.cz>
+	<8869c8b2-29c3-41e4-8f8a-5bcf9c0d22bb@arm.com>
+	<20240301194212.3c64c9b2@meshulam.tesarici.cz>
+	<SN6PR02MB41571DA1EE99BFAA65869024D4232@SN6PR02MB4157.namprd02.prod.outlook.com>
+	<20240304120055.56035c21@meshulam.tesarici.cz>
+	<ffd7646b-37b1-4cd2-822a-848b36b076c9@arm.com>
+ <20240304165506.49e3b2d3@meshulam.tesarici.cz>
+In-Reply-To: <20240304165506.49e3b2d3@meshulam.tesarici.cz>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-tmn: [1wzHlVcmPHiIxZY3mPh8n6gyeuzhetIe]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|SJ0PR02MB8403:EE_
+x-ms-office365-filtering-correlation-id: 54337799-61a7-43ea-36ba-08dc3c64ba47
+x-ms-exchange-slblob-mailprops:
+ laRBL560oLTeY4B5Uu9VZYvGMTlNPOvpsrECZ3BciMY5wYyV5kyyTNhR1ERzz7+3Vu+amTmg0YnpiyZBN7kqaN7IM8etIozWU1UCSrgrkB01JZd+LvItAJqn+KWkwP2c1DfxIM8uHK+2pHlbsunSSEjVokoAHnRjOxHMrMsHnrEFAtDQZfRa3sMaEYpOd7VeWwSn+/6rOy3jj7aB9SyzDXjFLtbnfK/3TuFXr6HZdlZOjHbouZDR15/RPCknxYF0eMm/6/NPg6/mjd6Uy6OliiCltc5ndoMwZ+xXGCuo9d55HmfgmeSC2aZ4xTZjm0kNJregHz0v5awvvXvmq2uHCfNPfolYyhDP5tSjiwUG4xN9GCZUIDa2+2U/2un0cfkxqRKrJ1kUx58tO2ZEbJQdD2r66KzB0WUwxCZDDohdRwUAFiiMkNV+EoaEY64n1Q9873OABvCEIhP6sDluLZkbKaCU8vqnU5StfKUQ5Z3uRkR/m528dBWVzMi1JKW2czBXvFIQJ/VWd5HtUk6E3TZ+DdmkUcKHJdGjjkno98FUd1oHnrnO7dPYT0aQ41gOSWfzGVxMPux+5DK1KtV3/m2YMQ8PRzmwRAHsqoCKXvA0/y9JIVcEFg9sn/H/xzc/ycuVg8ZWUlBax67fTkc8dPilbCky9OcgZG7V3CBmWPGENUh199C7dteHjKcwN4qurV+jKdPZDpEqJuovaZpIHk6Vzzwxz8+Ts8FYYMY6PagN39o+0sh053wfi5+5H9Qy7YZ5IKB3Uopsmn4lQ9Hjla8rN4WmJR0myTKv
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ se7haS4UZVKza2NJEw9JFklMFZgYrcF9gIKbldXtCBqcqXJONuA03jhBClP7PZ5Ea/Gr16is8eyfbhVNjzDpX2Nz6pt5eQrCXHiKIbT9qpQXtEV8BnjYF7ms9heLARW3YJ/9YFtgRDT69jX2alzxr42kCQ2JVZOl3S20PUAV1siLWLitRSZWVnc6FZ1WCQD/HMVIyyQFyb2znfRDsuNkwcLLff60pIxMA5YQ4vHeGUaYrwbO4zOKKBQyvzpfrNWOVzlBth9bWNhCcnGj85TK6QabYULz8TAEJ97zgG91N4NxjzllvJXFEmkzcJz848CtoDwzkF/83KAkX9G6z/U2fLqJZaRZRqZtOggu0oangk5tZ3nm98TgFJ2A6pNHlG9/JYETOACfT1x3+p6grRlS63nPaSxJhi8HO918x9c4c5Fo06E5s0/7zA3KzgoiWIcxv+9NGpA8GH74uX1UQDyeZKPSsNzlnVfNX8mHlqhvQxA0g9FwzXAn+RJOTMuhHhpeNrybie2jjIbIYMsPfIxEX+YBG2NSxNILemZ92AcprheVvA64qenapa1EsN2NwlAF
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?RjUrNUQzNFBTRnd0SzlhY2s1aDlFTlE4blhQenRFbjdCVmpoZUNkL1JabGNa?=
+ =?utf-8?B?N2pDWDducWkvWGpvKzY4a0p1TkJONW1saWFMSW43bHRuU3k0NDJ0OUlKcDRR?=
+ =?utf-8?B?cHJ4V0pJWkNrZHVrL29heVBVaXpKSnUrS0dxUTA3U3lpb1BvUUE4bXYwYVY4?=
+ =?utf-8?B?UjJoSWhjN2QzWTA1aVloQmt3VlZiSmV6VEhTSysydG5hdUlaRGp3NVVYV0VI?=
+ =?utf-8?B?ZjhlTzY5QXhwajhQY1orcjExbm45Z0hqVDJBdFNxYUpka2pHYS9wUGEvdVRV?=
+ =?utf-8?B?cDlwTWU5M0lQU2pvcER6a04yeFoveGRwZUdJWFRVRDlXZFVzS1dVYUFCYk1i?=
+ =?utf-8?B?WmtsY29YSXpQZE44bkhKd3ljUEcwYTNZMm5ERlRoK1psbWZubWFLMHppWXBZ?=
+ =?utf-8?B?WWg2MlBwYnVrMVFFdWwzd1ROczFZU1lZdyt1SWd3OFk1VUtETzlJR0toWXkv?=
+ =?utf-8?B?dlAvUUp4QzlBOUZlMnlBaTJYMUNJVHBKREYwNXMreUo5OWttKzU3OFY4ajQw?=
+ =?utf-8?B?QUJXTUN6NUxKQUJaWEhyN2tGejJzbTFEK29aV0dVQU5GbHhhckU3ZDMyRkZB?=
+ =?utf-8?B?Z29JRlVYNng5UkdFU0Rya1luTUpnSEE4S3ZTNjB5K0wrVExLbHNTTml6d0Uy?=
+ =?utf-8?B?STJhRmhmMWtiMEczWHFqYjFsN3htTWZwVUVCNkcweDh3OCtWZlRBZkZUVy9Q?=
+ =?utf-8?B?amNlR2wzbHZHMjlGT2RVWHdTZ3JyWmpIamFYTGM0YkN1bGxFd0d4VjZZZ082?=
+ =?utf-8?B?eFVvc2Z4YUJsbzY2QzZWS1pSUndZKzM4RE9MN0hVbVR1cERCV2l1NUY0VUZN?=
+ =?utf-8?B?eDg2MWxGNk9TbEx1WUdIMjA3TUROelVhUnBibGF1U3RXNHpkY3JLd3pJVDZQ?=
+ =?utf-8?B?OGFjMGtqbitHZnFJTmZha0RwN08wNFhJSUtBUlNFNWN6RnJXYjZ2Q2w2TWMw?=
+ =?utf-8?B?eURQSis2R1FyQnNDZXJjZWpUMGZ0TnZZZFI3aFFadEFMZlJnL2RzaFJSM0FO?=
+ =?utf-8?B?ZWphR2V5UElIVTJRME1KbnhmeFpFZFZEZkc4anBzSitvZG44V0Vkcnhtbmhr?=
+ =?utf-8?B?SUcyVjcveW9aeTFHQmcyS2diZTVGYVk3czVOYmhKZDZVVVlMSDgyejM2TFFL?=
+ =?utf-8?B?bFVhT1ZUQU9hY3ZGb0VwRGdaTGI0dEoyQTgreHVCWm1zY1hxNUlwZklTc2dz?=
+ =?utf-8?B?L2FFZ3pTVUd0K2pzUkZia2hUR0luOElzb3dYYWl1aGdyMldlTlFSV0dXZWZq?=
+ =?utf-8?B?ZkRETm9DbVl5ODYwWEUzYVZHbFZac0JVU01CVXoyYzFlckhMclEyYjlMVkJn?=
+ =?utf-8?B?TDlOdyswTlVDWldQT3gzSXVPeERRWjRldnNJampxbnVzL1lRaEJwVmVwcUw3?=
+ =?utf-8?B?bTZRa1AxN3I2bUZvK2dWRGhUQklxbWdnMi9KYi9SVVpGY0w0U01RK1lNOXIz?=
+ =?utf-8?B?cmlVN3VDY1g1ZHRaUFRSazF2cUFieGJRU3VoV1Z3UjdzY0M0ZVZocVFqaHJY?=
+ =?utf-8?B?ckFGc0VWZTRVNVk4UDc4N1lHaER4YTBiQUxrSzg1cWsyMWFOU1FRVTNBZjJ2?=
+ =?utf-8?B?VTlEN3UrbTloYW5VcXhqeUFvMXVJd1lvSmY4SDJyc1VIQ243bGRyVG1OUTds?=
+ =?utf-8?B?WmFWMnJseGg1MytQTVFxL2R0N0p4bXc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/4] mm: swap: Remove CLUSTER_FLAG_HUGE from
- swap_cluster_info:flags
-Content-Language: en-GB
-To: David Hildenbrand <david@redhat.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>, Huang Ying <ying.huang@intel.com>,
- Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
- Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
- Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20231025144546.577640-1-ryan.roberts@arm.com>
- <20231025144546.577640-2-ryan.roberts@arm.com>
- <d108bd79-086b-4564-838b-d41afa055137@redhat.com>
- <6541e29b-f25a-48b8-a553-fd8febe85e5a@redhat.com>
- <ee760679-7e3c-4a35-ad53-ca98b598ead5@arm.com>
- <ba9101ae-a618-4afc-9515-a61f25376390@arm.com>
- <2934125a-f2e2-417c-a9f9-3cb1e074a44f@redhat.com>
- <049818ca-e656-44e4-b336-934992c16028@arm.com>
- <d2fbfdd0-ad61-4fe2-a976-4dac7427bfc9@redhat.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <d2fbfdd0-ad61-4fe2-a976-4dac7427bfc9@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: 54337799-61a7-43ea-36ba-08dc3c64ba47
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Mar 2024 16:04:09.9163
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR02MB8403
 
-On 28/02/2024 12:12, David Hildenbrand wrote:
->>> How relevant is it? Relevant enough that someone decided to put that
->>> optimization in? I don't know :)
->>
->> I'll have one last go at convincing you: Huang Ying (original author) commented
->> "I believe this should be OK.  Better to compare the performance too." at [1].
->> That implies to me that perhaps the optimization wasn't in response to a
->> specific problem after all. Do you have any thoughts, Huang?
-> 
-> Might make sense to include that in the patch description!
-> 
->> OK so if we really do need to keep this optimization, here are some ideas:
->>
->> Fundamentally, we would like to be able to figure out the size of the swap slot
->> from the swap entry. Today swap supports 2 sizes; PAGE_SIZE and PMD_SIZE. For
->> PMD_SIZE, it always uses a full cluster, so can easily add a flag to the cluster
->> to mark it as PMD_SIZE.
->>
->> Going forwards, we want to support all sizes (power-of-2). Most of the time, a
->> cluster will contain only one size of THPs, but this is not the case when a THP
->> in the swapcache gets split or when an order-0 slot gets stolen. We expect these
->> cases to be rare.
->>
->> 1) Keep the size of the smallest swap entry in the cluster header. Most of the
->> time it will be the full size of the swap entry, but sometimes it will cover
->> only a portion. In the latter case you may see a false negative for
->> swap_page_trans_huge_swapped() meaning we take the slow path, but that is rare.
->> There is one wrinkle: currently the HUGE flag is cleared in put_swap_folio(). We
->> wouldn't want to do the equivalent in the new scheme (i.e. set the whole cluster
->> to order-0). I think that is safe, but haven't completely convinced myself yet.
->>
->> 2) allocate 4 bits per (small) swap slot to hold the order. This will give
->> precise information and is conceptually simpler to understand, but will cost
->> more memory (half as much as the initial swap_map[] again).
->>
->> I still prefer to avoid this at all if we can (and would like to hear Huang's
->> thoughts). But if its a choice between 1 and 2, I prefer 1 - I'll do some
->> prototyping.
-> 
-> Taking a step back: what about we simply batch unmapping of swap entries?
-> 
-> That is, if we're unmapping a PTE range, we'll collect swap entries (under PT
-> lock) that reference consecutive swap offsets in the same swap file.
-> 
-> There, we can then first decrement all the swap counts, and then try minimizing
-> how often we actually have to try reclaiming swap space (lookup folio, see it's
-> a large folio that we cannot reclaim or could reclaim, ...).
-> 
-> Might need some fine-tuning in swap code to "advance" to the next entry to try
-> freeing up, but we certainly can do better than what we would do right now.
-> 
-
-Hi,
-
-I'm struggling to convince myself that free_swap_and_cache() can't race with
-with swapoff(). Can anyone explain that this is safe?
-
-I *think* they are both serialized by the PTL, since all callers of
-free_swap_and_cache() (except shmem) have the PTL, and swapoff() calls
-try_to_unuse() early on, which takes the PTL as it iterates over every vma in
-every mm. It looks like shmem is handled specially by a call to shmem_unuse(),
-but I can't see the exact serialization mechanism.
-
-I've implemented a batching function, as David suggested above, but I'm trying
-to convince myself that it is safe for it to access si->swap_map[] without a
-lock (i.e. that swapoff() can't concurrently free it). But I think
-free_swap_and_cache() as it already exists depends on being able to access the
-si without an explicit lock, so I'm assuming the same mechanism will protect my
-new changes. But I want to be sure I understand the mechanism...
-
-
-This is the existing free_swap_and_cache(). I think _swap_info_get() would break
-if this could race with swapoff(), and __swap_entry_free() looks up the cluster
-from an array, which would also be freed by swapoff if racing:
-
-int free_swap_and_cache(swp_entry_t entry)
-{
-	struct swap_info_struct *p;
-	unsigned char count;
-
-	if (non_swap_entry(entry))
-		return 1;
-
-	p = _swap_info_get(entry);
-	if (p) {
-		count = __swap_entry_free(p, entry);
-		if (count == SWAP_HAS_CACHE)
-			__try_to_reclaim_swap(p, swp_offset(entry),
-					      TTRS_UNMAPPED | TTRS_FULL);
-	}
-	return p != NULL;
-}
-
-
-This is my new function. I want to be sure that it's safe to do the
-READ_ONCE(si->swap_info[...]):
-
-void free_swap_and_cache_nr(swp_entry_t entry, int nr)
-{
-	unsigned long end = swp_offset(entry) + nr;
-	unsigned type = swp_type(entry);
-	struct swap_info_struct *si;
-	unsigned long offset;
-
-	if (non_swap_entry(entry))
-		return;
-
-	si = _swap_info_get(entry);
-	if (!si || end > si->max)
-		return;
-
-	/*
-	 * First free all entries in the range.
-	 */
-	for (offset = swp_offset(entry); offset < end; offset++) {
-		VM_WARN_ON(data_race(!si->swap_map[offset]));
-		__swap_entry_free(si, swp_entry(type, offset));
-	}
-
-	/*
-	 * Now go back over the range trying to reclaim the swap cache. This is
-	 * more efficient for large folios because we will only try to reclaim
-	 * the swap once per folio in the common case. If we do
-	 * __swap_entry_free() and __try_to_reclaim_swap() in the same loop, the
-	 * latter will get a reference and lock the folio for every individual
-	 * page but will only succeed once the swap slot for every subpage is
-	 * zero.
-	 */
-	for (offset = swp_offset(entry); offset < end; offset += nr) {
-		nr = 1;
-		if (READ_ONCE(si->swap_map[offset]) == SWAP_HAS_CACHE) { << HERE
-			/*
-			 * Folios are always naturally aligned in swap so
-			 * advance forward to the next boundary. Zero means no
-			 * folio was found for the swap entry, so advance by 1
-			 * in this case. Negative value means folio was found
-			 * but could not be reclaimed. Here we can still advance
-			 * to the next boundary.
-			 */
-			nr = __try_to_reclaim_swap(si, offset,
-					      TTRS_UNMAPPED | TTRS_FULL);
-			if (nr == 0)
-				nr = 1;
-			else if (nr < 0)
-				nr = -nr;
-			nr = ALIGN(offset + 1, nr) - offset;
-		}
-	}
-}
-
-Thanks,
-Ryan
-
+RnJvbTogUGV0ciBUZXNhxZnDrWsgPHBldHJAdGVzYXJpY2kuY3o+IFNlbnQ6IE1vbmRheSwgTWFy
+Y2ggNCwgMjAyNCA3OjU1IEFNDQo+IA0KPiBPbiBNb24sIDQgTWFyIDIwMjQgMTM6Mzc6NTYgKzAw
+MDANCj4gUm9iaW4gTXVycGh5IDxyb2Jpbi5tdXJwaHlAYXJtLmNvbT4gd3JvdGU6DQo+IA0KPiA+
+IE9uIDA0LzAzLzIwMjQgMTE6MDAgYW0sIFBldHIgVGVzYcWZw61rIHdyb3RlOg0KPiA+IFsuLi5d
+DQo+ID4gPj4gSGVyZSdzIG15IHRha2Ugb24gdHlpbmcgYWxsIHRoZSB0aHJlYWRzIHRvZ2V0aGVy
+LiBUaGVyZSBhcmUNCj4gPiA+PiBmb3VyIGFsaWdubWVudCBjb21iaW5hdGlvbnM6DQo+ID4gPj4N
+Cj4gPiA+PiAxLiBhbGxvY19hbGlnbl9tYXNrOiB6ZXJvOyBtaW5fYWxpZ25fbWFzazogemVybw0K
+PiA+ID4+IDIuIGFsbG9jX2FsaWduX21hc2s6IHplcm87IG1pbl9hbGlnbl9tYXNrOiBub24temVy
+bw0KPiA+ID4+IDMuIGFsbG9jX2FsaWduX21hc2s6IG5vbi16ZXJvOyBtaW5fYWxpZ25fbWFzazog
+emVyby9pZ25vcmVkDQo+ID4gPj4gNC4gYWxsb2NfYWxpZ25fbWFzazogbm9uLXplcm87IG1pbl9h
+bGlnbl9tYXNrOiBub24temVybw0KPiA+ID4NCj4gPiA+IFdoYXQgZG9lcyAibWluX2FsaWduX21h
+c2s6IHplcm8vaWdub3JlZCIgbWVhbj8gVW5kZXIgd2hpY2gNCj4gPiA+IGNpcmN1bXN0YW5jZXMg
+c2hvdWxkIGJlIGEgbm9uLXplcm8gbWluX2FsaWduX21hc2sgaWdub3JlZD8NCg0KIklnbm9yZWQi
+IHdhcyBteSBzaG9ydC1oYW5kIGZvciB0aGUgc3dpb3RsYl9hbGxvYygpIGNhc2Ugd2hlcmUNCm9y
+aWdfYWRkciBpcyB6ZXJvLiAgRXZlbiBpZiBtaW5fYWxpZ25fbWFzayBpcyBzZXQgZm9yIHRoZSBk
+ZXZpY2UsIGl0DQpkb2Vzbid0IGhhdmUgYW55IGVmZmVjdCB3aGVuIG9yaWdfYWRkciBpcyB6ZXJv
+Lg0KDQo+ID4gPg0KPiA+ID4+IHhlbl9zd2lvdGxiX21hcF9wYWdlKCkgYW5kIGRtYV9kaXJlY3Rf
+bWFwX3BhZ2UoKSBhcmUgIzEgb3IgIzINCj4gPiA+PiB2aWEgc3dpb3RsYl9tYXAoKSBhbmQgc3dp
+b3RsYl90YmxfbWFwX3NpbmdsZSgpDQo+ID4gPj4NCj4gPiA+PiBpb21tdV9kbWFfbWFwX3BhZ2Uo
+KSBpcyAjMyBhbmQgIzQgdmlhIHN3aW90bGJfdGJsX21hcF9zaW5nbGUoKQ0KPiA+ID4+DQo+ID4g
+Pj4gc3dpb3RsYl9hbGxvYygpIGlzICMzLCBkaXJlY3RseSB0byBzd2lvdGxiX2ZpbmRfc2xvdHMo
+KQ0KPiA+ID4+DQo+ID4gPj4gRm9yICMxLCB0aGUgcmV0dXJuZWQgcGh5c2ljYWwgYWRkcmVzcyBo
+YXMgbm8gY29uc3RyYWludHMgaWYNCj4gPiA+PiB0aGUgcmVxdWVzdGVkIHNpemUgaXMgbGVzcyB0
+aGFuIGEgcGFnZS4gRm9yIHBhZ2Ugc2l6ZSBvcg0KPiA+ID4+IGdyZWF0ZXIsIHRoZSBkaXNjdXNz
+ZWQgaGlzdG9yaWNhbCByZXF1aXJlbWVudCBmb3IgcGFnZQ0KPiA+ID4+IGFsaWdubWVudCBhcHBs
+aWVzLg0KPiA+ID4+DQo+ID4gPj4gRm9yICMyLCBtaW5fYWxpZ25fbWFzayBnb3Zlcm5zIHRoZSBi
+aXRzIG9mIHRoZSByZXR1cm5lZA0KPiA+ID4+IHBoeXNpY2FsIGFkZHJlc3MgdGhhdCBtdXN0IG1h
+dGNoIHRoZSBvcmlnaW5hbCBhZGRyZXNzLiBXaGVuDQo+ID4gPj4gbmVlZGVkLCBzd2lvdGxiIG11
+c3QgYWxzbyBhbGxvY2F0ZSBwcmUtcGFkZGluZyBhbGlnbmVkIHRvDQo+ID4gPj4gSU9fVExCX1NJ
+WkUgdGhhdCBwcmVjZWRlcyB0aGUgcmV0dXJuZWQgcGh5c2ljYWwgYWRkcmVzcy4gIEENCj4gPiA+
+PiByZXF1ZXN0IHNpemUgPD0gc3dpb3RsYl9tYXhfbWFwcGluZ19zaXplKCkgd2lsbCBub3QgZXhj
+ZWVkDQo+ID4gPj4gSU9fVExCX1NFR1NJWkUgZXZlbiB3aXRoIHRoZSBwYWRkaW5nLiBUaGUgaGlz
+dG9yaWNhbA0KPiA+ID4+IHJlcXVpcmVtZW50IGZvciBwYWdlIGFsaWdubWVudCBkb2VzIG5vdCBh
+cHBseSBiZWNhdXNlIHRoZQ0KPiA+ID4+IGRyaXZlciBoYXMgZXhwbGljaXRseSB1c2VkIHRoZSBu
+ZXdlciBtaW5fYWxpZ25fbWFzayBmZWF0dXJlLg0KPiA+ID4NCj4gPiA+IFdoYXQgaXMgdGhlIGlk
+ZWEgaGVyZT8gSXMgaXQgdGhlIGFzc3VtcHRpb24gdGhhdCBvbmx5IG9sZCBkcml2ZXJzIHJlbHkN
+Cj4gPiA+IG9uIHBhZ2UgYWxpZ25tZW50LCBzbyBpZiB0aGV5IHVzZSBtaW5fYWxpZ25fbWFzaywg
+aXQgcHJvdmVzIHRoYXQgdGhleQ0KPiA+ID4gYXJlIG5ldyBhbmQgbXVzdCBub3QgcmVseSBvbiBw
+YWdlIGFsaWdubWVudD8NCj4gPg0KPiA+IFllcywgaWYgYSBkcml2ZXIgZ29lcyBvdXQgb2YgaXRz
+IHdheSB0byBzZXQgYSBtaW5fYWxpZ25fbWFzayB3aGljaCBpcw0KPiA+IHNtYWxsZXIgdGhhbiBp
+dHMgYWN0dWFsIGFsaWdubWVudCBjb25zdHJhaW50LCB0aGF0IGlzIGNsZWFybHkgdGhlDQo+ID4g
+ZHJpdmVyJ3Mgb3duIGJ1Zy4gU3RyaWN0bHkgd2Ugb25seSBuZWVkIHRvIGJlIHN5bXBhdGhldGlj
+IHRvIGRyaXZlcnMNCj4gPiB3aGljaCBwcmVkYXRlIG1pbl9hbGlnbl9tYXNrLCB3aGVuIGltcGxp
+Y2l0bHkgcmVseWluZyBvbiBwYWdlIGFsaWdubWVudA0KPiA+IHdhcyBhbGwgdGhleSBoYWQuDQo+
+ID4NCj4gPiA+PiBGb3IgIzMsIGFsbG9jX2FsaWduX21hc2sgc3BlY2lmaWVzIHRoZSByZXF1aXJl
+ZCBhbGlnbm1lbnQuIE5vDQo+ID4gPj4gcHJlLXBhZGRpbmcgaXMgbmVlZGVkLiBQZXIgZWFybGll
+ciBjb21tZW50cyBmcm9tIFJvYmluWzFdLA0KPiA+ID4+IGl0J3MgcmVhc29uYWJsZSB0byBhc3N1
+bWUgYWxsb2NfYWxpZ25fbWFzayAoaS5lLiwgdGhlIGdyYW51bGUpDQo+ID4gPj4gaXMgPj0gSU9f
+VExCX1NJWkUuIFRoZSBvcmlnaW5hbCBhZGRyZXNzIGlzIG5vdCByZWxldmFudCBpbg0KPiA+ID4+
+IGRldGVybWluaW5nIHRoZSBhbGlnbm1lbnQsIGFuZCB0aGUgaGlzdG9yaWNhbCBwYWdlIGFsaWdu
+bWVudA0KPiA+ID4+IHJlcXVpcmVtZW50IGRvZXMgbm90IGFwcGx5IHNpbmNlIGFsbG9jX2FsaWdu
+X21hc2sgZXhwbGljaXRseQ0KPiA+ID4+IHN0YXRlcyB0aGUgYWxpZ25tZW50Lg0KPiA+DQo+ID4g
+RldJVyBJJ20gYWxzbyBzdGFydGluZyB0byB3b25kZXIgYWJvdXQgZ2V0dGluZyByaWQgb2YgdGhl
+IGFsbG9jX3NpemUNCj4gPiBhcmd1bWVudCBhbmQganVzdCBoYXZlIFNXSU9UTEIgcm91bmQgdGhl
+IGVuZCBhZGRyZXNzIHVwIHRvDQo+ID4gYWxsb2NfYWxpZ25fbWFzayBpdHNlbGYgYXMgcGFydCBv
+ZiBhbGwgdGhlc2UgY2FsY3VsYXRpb25zLiBTZWVtcyBsaWtlIGl0DQo+ID4gY291bGQgcG90ZW50
+aWFsbHkgZW5kIHVwIGEgbGl0dGxlIHNpbXBsZXIsIG1heWJlPw0KDQpZZXMsIEkgd2FzIHRoaW5r
+aW5nIGV4YWN0bHkgdGhpcy4gIEJ1dCBteSByZWFzb25pbmcgd2FzIHRvIHNvbHZlIHRoZQ0KYnVn
+IGluICM0IHRoYXQgSSBwcmV2aW91c2x5IHBvaW50ZWQgb3V0LiAgSWYgaW9tbXVfZG1hX21hcF9w
+YWdlKCkNCmRvZXMgKm5vdCogZG8NCg0KCWFsaWduZWRfc2l6ZSA9IGlvdmFfYWxpZ24oaW92YWQs
+IHNpemUpOw0KDQpidXQgc3dpb3RsYl90YmxfbWFwX3NpbmdsZSgpIHJvdW5kcyB1cCB0aGUgc2l6
+ZSBiYXNlZCBvbg0KYWxsb2NfYWxpZ25fbWFzayAqYWZ0ZXIqIGFkZGluZyB0aGUgb2Zmc2V0IG1v
+ZHVsbw0KbWluX2FsaWduX21hc2ssIHRoZW4gdGhlIHJvdW5kZWQtdXAgc2l6ZSB3b24ndCBleGNl
+ZWQgSU9fVExCX1NJWkUsDQpyZWdhcmRsZXNzIG9mIHdoaWNoIGJpdHMgYXJlIHNldCBpbiBvcmln
+X2FkZHIuDQoNCj4gPg0KPiA+ID4+IEZvciAjNCwgdGhlIHJldHVybmVkIHBoeXNpY2FsIGFkZHJl
+c3MgbXVzdCBtYXRjaCB0aGUgYml0cw0KPiA+ID4+IGluIHRoZSBvcmlnaW5hbCBhZGRyZXNzIHNw
+ZWNpZmllZCBieSBtaW5fYWxpZ25fbWFzay4gIHN3aW90bGINCj4gPiA+PiBzd2lvdGxiIG11c3Qg
+YWxzbyBhbGxvY2F0ZSBwcmUtcGFkZGluZyBhbGlnbmVkIHRvDQo+ID4gPj4gYWxsb2NfYWxpZ25f
+bWFzayB0aGF0IHByZWNlZGVzIHRoZSByZXR1cm5lZCBwaHlzaWNhbCBhZGRyZXNzLg0KPiA+ID4+
+IEFsc28gcGVyIFJvYmluWzFdLCBhc3N1bWUgYWxsb2NfYWxpZ25fbWFzayBpcyA+PQ0KPiA+ID4+
+IG1pbl9hbGlnbl9tYXNrLCB3aGljaCBzb2x2ZXMgdGhlIGNvbmZsaWN0aW5nIGFsaWdubWVudA0K
+PiA+ID4+IHByb2JsZW0gcG9pbnRlZCBvdXQgYnkgUGV0clsyXS4gUGVyaGFwcyB3ZSBzaG91bGQg
+YWRkIGENCj4gPiA+PiAiV0FSTl9PTihhbGxvY19hbGlnbl9tYXNrIDwgbWluX2FsaWduX21hc2sp
+IiByYXRoZXIgdGhhbg0KPiA+ID4+IGZhaWxpbmcgZGVwZW5kaW5nIG9uIHdoaWNoIGJpdHMgb2Yg
+dGhlIG9yaWdpbmFsIGFkZHJlc3MgYXJlDQo+ID4gPj4gc2V0LiBBZ2FpbiwgdGhlIGhpc3Rvcmlj
+YWwgcmVxdWlyZW1lbnQgZm9yIHBhZ2UgYWxpZ25tZW50IGRvZXMNCj4gPiA+PiBub3QgYXBwbHku
+DQo+ID4gPg0KPiA+ID4gQUZBSUNTIHRoZSBvbmx5IHJlYXNvbiB0aGlzIHdvcmtzIGluIHByYWN0
+aWNlIGlzIHRoYXQgdGhlcmUgYXJlIG9ubHkNCj4gPiA+IHR3byBpbi10cmVlIHVzZXJzIG9mIG1p
+bl9hbGlnbl9tYXNrOiBOVk1lIGFuZCBIeXBlci1WLiBCb3RoIHVzZSBhIG1hc2sNCj4gPiA+IG9m
+IDEyIGJpdHMsIGFuZCB0aGUgSU9WQSBncmFudWxlIHNpemUgaXMgbmV2ZXIgc21hbGxlciB0aGFu
+IDRLLg0KPiA+DQo+ID4gSWYgd2UgYXNzdW1lIGEgbm9uemVybyBhbGxvY19hbGlnbl9tYXNrIGV4
+Y2x1c2l2ZWx5IHNpZ25pZmllcyBpb21tdS1kbWEsDQo+ID4gdGhlbiBmb3IgdGhpcyBzaXR1YXRp
+b24gU1dJT1RMQiBzaG91bGQgb25seSBuZWVkIHRvIHdvcnJ5IGFib3V0IHRoZQ0KPiA+IGludGVy
+c2VjdGlvbiBvZiBhbGxvY19hbGlnbl9tYXNrICYgbWluX2FsaWduX21hc2ssIHNpbmNlIGFueQ0K
+PiA+IG1pbl9hbGlnbl9tYXNrIGJpdHMgbGFyZ2VyIHRoYW4gdGhlIElPVkEgZ3JhbnVsZSB3b3Vs
+ZCBuZWVkIHRvIGJlDQo+ID4gYWNjb3VudGVkIGZvciBpbiB0aGUgSU9WQSBhbGxvY2F0aW9uIHJl
+Z2FyZGxlc3Mgb2YgU1dJT1RMQi4NCj4gDQo+IEFoLCByaWdodCwgaXQncyBub3QgbGltaXRlZCB0
+byBib3VuY2UgYnVmZmVycy4NCj4gDQo+ID4gPiBJZiB3ZSB3YW50IHRvIHJlbHkgb24gdGhpcywg
+dGhlbiBJIHByb3Bvc2UgdG8gbWFrZSBhIEJVR19PTigpIHJhdGhlcg0KPiA+ID4gdGhhbiBXQVJO
+X09OKCkuDQo+ID4NCj4gPiBJJ3ZlIGp1c3QgcHJvcG9zZWQgYSBwYXRjaCB0byBtYWtlIGl0IG5v
+dCBtYXR0ZXIgZm9yIG5vdyAtIHRoZSBuYXR1cmUgb2YNCj4gPiBpb21tdS1kbWEgbWFrZXMgaXQg
+c2xpZ2h0bHkgbW9yZSBhd2t3YXJkIHRvIHByZXZlbnQgU1dJT1RMQiBmcm9tIGV2ZXINCj4gPiBz
+ZWVpbmcgdGhpcyBjb25kaXRpb24gYXQgYWxsLCBzbyBJIGNob3NlIG5vdCB0byBkbyB0aGF0LCBi
+dXQgYXMgbG9uZyBhcw0KPiA+IHN3aW90bGJfdGJsX21hcF9zaW5nbGUoKSBkb2VzICpzb21ldGhp
+bmcqIGZvciBjb25mbGljdGluZyBjb25zdHJhaW50cw0KPiA+IHdpdGhvdXQgY29tcGxldGVseSBm
+YWxsaW5nIG92ZXIsIHdoaWNoIHN3aW90bGJfdGJsX3VubWFwX3NpbmdsZSBjYW4gdGhlbg0KPiA+
+IHVuZG8gYWdhaW4sIHRoZW4gaXQgc2hvdWxkIGJlIGZpbmUuDQo+IA0KPiBZZXMuIEl0IG1heSBh
+bGxvY2F0ZSBhbiB1bnN1aXRhYmx5IGFsaWduZWQgYm91bmNlIGJ1ZmZlciwgb3IgaXQgbWF5DQo+
+IGZhaWwsIGJ1dCB5b3VyIElPTU1VIHBhdGNoIHdpbGwgY29udGludWUgdG8gd29yayAoYW5kIGFs
+c28gY292ZXIgdGhlDQo+IG5vbi1TV0lPVExCIGNhc2UpLg0KPiANCj4gSSBiZWxpZXZlIHRoaXMg
+cGF0Y2ggc2VyaWVzIGlzIG5vdyBnb29kIGFzIGlzLCBleGNlcHQgdGhlIGNvbW1pdA0KPiBtZXNz
+YWdlIHNob3VsZCBtYWtlIGl0IGNsZWFyIHRoYXQgYWxsb2NfYWxpZ25fbWFzayBhbmQgbWluX2Fs
+aWduX21hc2sNCj4gY2FuIGJvdGggYmUgemVybywgYnV0IHRoYXQgc2ltcGx5IG1lYW5zIG5vIGFs
+aWdubWVudCBjb25zdHJhaW50cy4NCj4gDQoNCk5vLCBJIHRoaW5rIHdlIG5lZWQgdG8gYWRkIHRo
+ZSBoaXN0b3JpY2FsIHBhZ2UgYWxpZ25tZW50IGZ1bmN0aW9uYWxpdHkNCmJhY2sgYWdhaW4gZm9y
+IG15ICMxIChhbGxvY19hbGlnbl9tYXNrIGFuZCBtaW5fYWxpZ25fbWFzayBib3RoIHplcm8pLg0K
+V2UgZG9uJ3Qga25vdyB3aGF0IG9sZCBkcml2ZXJzIG1pZ2h0IGJlIGRlcGVuZGluZyBvbiwgYW5k
+IHdlIGRvbid0DQp3YW50IHRvIHJpc2sgYnJlYWtpbmcgdGhlbS4NCg0KTWljaGFlbA0K
 
