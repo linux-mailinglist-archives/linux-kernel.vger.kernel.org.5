@@ -1,39 +1,51 @@
-Return-Path: <linux-kernel+bounces-90561-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90563-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F5D6870121
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:21:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 036A2870125
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:22:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF28728193D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:21:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9328DB21C46
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:22:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 568DE3BB3C;
-	Mon,  4 Mar 2024 12:21:06 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0239224DF
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 12:21:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B87253BB4C;
+	Mon,  4 Mar 2024 12:22:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="VUZDVgRT"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA3983B193;
+	Mon,  4 Mar 2024 12:22:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709554865; cv=none; b=lhljh4MPN4618aq4cY/GwuRvNr4povFvra1/LzVgc+kU5bILdf7n2OoiioFQO7ApuBvGBmIHFvrxGBIHQx1wYC+sKVUvRO+80mj44vZ18zTZ53vwJxfFoR+jh7i79QB3VgwuebVoWekOx8rozNW5zS2HwSqtycxnZ2afIWcUdrI=
+	t=1709554935; cv=none; b=mEfA1SYzM6Os6cMTSUL8262bl8/e6g0HqNgUxLuVa8p2upQ1k1b8woHf8NJi9u5pb+MkStNwCiUMt2vI9kSO8T1OipaSSM8xpxY7fQ9plS5kJaFbjobGCuliWWw0vR8AX1vYORiMR7ZqCg3eoR682Dal0PQh7DSj653tN6TpIXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709554865; c=relaxed/simple;
-	bh=ZocpjqRuppIq2fiN7AV4sPsN3gPAAmJwPELmQnF/MBA=;
+	s=arc-20240116; t=1709554935; c=relaxed/simple;
+	bh=iaLvMkscTu22PMg6EbbOG8ddmaxyYkSqojzFu2hcZX4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nQZvrx/1KrdToKS0s8o150euvGTCsewKdU7SOsfrTldzKqpP1aIeUuQU74ajIcp96Vzya/9tCoKNwajM7GGRed3DBeQB7SzSc0BD9D9OLPweapY6kEto1es36KpnVE1VHB/1F8EF/xQvaLuTdWsQ0cUjYzScSNMTKeb7CUwxhCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D500F1FB;
-	Mon,  4 Mar 2024 04:21:39 -0800 (PST)
-Received: from [10.57.68.92] (unknown [10.57.68.92])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5B0943F738;
-	Mon,  4 Mar 2024 04:21:00 -0800 (PST)
-Message-ID: <706b7129-85f6-4470-9fd9-f955a8e6bd7c@arm.com>
-Date: Mon, 4 Mar 2024 12:20:58 +0000
+	 In-Reply-To:Content-Type; b=Y9MmoIoZIO2zARG3Wvvfwxzv/71yIjcAfwUIBfK9GhwltIoFhW5F4mdj/xer4reak7ZmltIkpGWnGzv1XqQzCwUFxqU2FqUK3dGiQ3MHIbWRGcebpextf89+K8e8KHIWYUCM40cjozGkmV9AGwiPDloyOGXaUhNaf6xzSxZ/4vE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=VUZDVgRT; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
+	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
+	In-Reply-To:References; bh=hMCkIUe+XyHaUa+80k/WKyK1Rur9pNDUNUE4O40OC+0=;
+	t=1709554933; x=1709986933; b=VUZDVgRT1+M0EH0E91TBKm6loP2eLABA0m3HGiuRtQeBMqh
+	EX/vKimGSMJpjuJiyN3zjcfIpdLVW5v5r9lXrymuyI1VKyaRwTEnjCRdd1Jj2wx88w/YPkRwZz0bm
+	5+h4YG5dg5p5dbvuFjl9YcH5w8nmUInSodYnyPE6xoeJJ01ul4BplBYJX1+ySHTKdvjYWSWpGKcZ3
+	XmIUPq6h5GOSj40ym7IbiCNfIMZ+QIa39Phu415iaZnD/Klei/LF/pwiL0nnvp7NylsXNKEm2gGMV
+	os68EQa3PyhX3bZxnxG+7HcqDp2d9B7ZBmdvljdqHL53fUr8gTKt/A7RN0WkOxIg==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rh7KW-0008UW-Bd; Mon, 04 Mar 2024 13:22:04 +0100
+Message-ID: <aaf7a195-e726-4bcb-a63a-4e75c09608ef@leemhuis.info>
+Date: Mon, 4 Mar 2024 13:22:03 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,111 +53,62 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH] mm: hold PTL from the first PTE while reclaiming a
- large folio
-Content-Language: en-GB
-To: Barry Song <21cnbao@gmail.com>, akpm@linux-foundation.org,
- linux-mm@kvack.org
-Cc: david@redhat.com, chrisl@kernel.org, yuzhao@google.com,
- hanchuanhua@oppo.com, linux-kernel@vger.kernel.org, willy@infradead.org,
- ying.huang@intel.com, xiang@kernel.org, mhocko@suse.com,
- shy828301@gmail.com, wangkefeng.wang@huawei.com,
- Barry Song <v-songbaohua@oppo.com>, Hugh Dickins <hughd@google.com>
-References: <20240304103757.235352-1-21cnbao@gmail.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <20240304103757.235352-1-21cnbao@gmail.com>
+Subject: Re: [PATCH v2] docs: new text on bisecting which also covers bug
+ validation
+Content-Language: en-US, de-DE
+To: Jonathan Corbet <corbet@lwn.net>
+Cc: regressions@lists.linux.dev, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Bagas Sanjaya <bagasdotme@gmail.com>,
+ Nathan Chancellor <nathan@kernel.org>, =?UTF-8?B?UGV0ciBUZXNhxZnDrWs=?=
+ <petr@tesarici.cz>, Vegard Nossum <vegard.nossum@oracle.com>,
+ Jani Nikula <jani.nikula@linux.intel.com>
+References: <02b084a06de4ad61ac4ecd92b9265d4df4d03d71.1709282441.git.linux@leemhuis.info>
+ <6d282271-25fa-4ed9-9748-df3705f9d5fb@leemhuis.info>
+ <878r2zz5n7.fsf@meer.lwn.net>
+From: "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <878r2zz5n7.fsf@meer.lwn.net>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1709554933;f4826097;
+X-HE-SMSGID: 1rh7KW-0008UW-Bd
 
-Hi Barry,
-
-On 04/03/2024 10:37, Barry Song wrote:
-> From: Barry Song <v-songbaohua@oppo.com>
+On 03.03.24 16:39, Jonathan Corbet wrote:
+> "Linux regression tracking (Thorsten Leemhuis)"
+> <regressions@leemhuis.info> writes:
 > 
-> page_vma_mapped_walk() within try_to_unmap_one() races with other
-> PTEs modification such as break-before-make, while iterating PTEs
-> of a large folio, it will only begin to acquire PTL after it gets
-> a valid(present) PTE. break-before-make intermediately sets PTEs
-> to pte_none. Thus, a large folio's PTEs might be partially skipped
-> in try_to_unmap_one().
-
-I just want to check my understanding here - I think the problem occurs for
-PTE-mapped, PMD-sized folios as well as smaller-than-PMD-size large folios? Now
-that I've had a look at the code and have a better understanding, I think that
-must be the case? And therefore this problem exists independently of my work to
-support swap-out of mTHP? (From your previous report I was under the impression
-that it only affected mTHP).
-
-Its just that the problem is becoming more pronounced because with mTHP,
-PTE-mapped large folios are much more common?
-
-> For example, for an anon folio, after try_to_unmap_one(), we may
-> have PTE0 present, while PTE1 ~ PTE(nr_pages - 1) are swap entries.
-> So folio will be still mapped, the folio fails to be reclaimed.
-> What’s even more worrying is, its PTEs are no longer in a unified
-> state. This might lead to accident folio_split() afterwards. And
-> since a part of PTEs are now swap entries, accessing them will
-> incur page fault - do_swap_page.
-> It creates both anxiety and more expense. While we can't avoid
-> userspace's unmap to break up unified PTEs such as CONT-PTE for
-> a large folio, we can indeed keep away from kernel's breaking up
-> them due to its code design.
-> This patch is holding PTL from PTE0, thus, the folio will either
-> be entirely reclaimed or entirely kept. On the other hand, this
-> approach doesn't increase PTL contention. Even w/o the patch,
-> page_vma_mapped_walk() will always get PTL after it sometimes
-> skips one or two PTEs because intermediate break-before-makes
-> are short, according to test. Of course, even w/o this patch,
-> the vast majority of try_to_unmap_one still can get PTL from
-> PTE0. This patch makes the number 100%.
-> The other option is that we can give up in try_to_unmap_one
-> once we find PTE0 is not the first entry we get PTL, we call
-> page_vma_mapped_walk_done() to end the iteration at this case.
-> This will keep the unified PTEs while the folio isn't reclaimed.
-> The result is quite similar with small folios with one PTE -
-> either entirely reclaimed or entirely kept.
-> Reclaiming large folios by holding PTL from PTE0 seems a better
-> option comparing to giving up after detecting PTL begins from
-> non-PTE0.
+>> On 01.03.24 09:41, Thorsten Leemhuis wrote:
+>>> Add a second document on bisecting regressions explaining the whole
+>>> process from beginning to end -- while also describing how to validate
+>>> if a problem is still present in mainline.  This "two in one" approach
+>>> is possible, as checking whenever a bug is in mainline is one of the
+>>> first steps before performing a bisection anyway and thus needs to be
+>>> described. Due to this approach the text also works quite nicely in
+>>> conjunction with Documentation/admin-guide/reporting-issues.rst, as it
+>>> covers all typical cases where users will need to build a kernel in
+>>> exactly the same order.
+>>> [...]
+>>> diff --git a/Documentation/admin-guide/index.rst b/Documentation/admin-guide/index.rst
+>>> index ed8a629e59c86a..c53bb6e36291b8 100644
+>>> --- a/Documentation/admin-guide/index.rst
+>>> +++ b/Documentation/admin-guide/index.rst
+>>> @@ -1,4 +1,3 @@
+>>> -=================================================
+>>
+>> Just saw that, that line obviously was not meant to be removed. Sorry.
+>>
+>> Jonathan, in case you consider merging this "soon", as suggested
+>> yesterday by  Vegard, could you please fix this up? Otherwise I'll fix
+>> this with v3.
 > 
-> Cc: Hugh Dickins <hughd@google.com>
-> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+> I've applied the patch and undone the little change, no need for a v3.
 
-Do we need a Fixes tag?
+Great, thx and thx!
 
-> ---
->  mm/vmscan.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 0b888a2afa58..e4722fbbcd0c 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -1270,6 +1270,17 @@ static unsigned int shrink_folio_list(struct list_head *folio_list,
->  
->  			if (folio_test_pmd_mappable(folio))
->  				flags |= TTU_SPLIT_HUGE_PMD;
-> +			/*
-> +			 * if page table lock is not held from the first PTE of
-> +			 * a large folio, some PTEs might be skipped because of
-> +			 * races with break-before-make, for example, PTEs can
-> +			 * be pte_none intermediately, thus one or more PTEs
-> +			 * might be skipped in try_to_unmap_one, we might result
-> +			 * in a large folio is partially mapped and partially
-> +			 * unmapped after try_to_unmap
-> +			 */
-> +			if (folio_test_large(folio))
-> +				flags |= TTU_SYNC;
+FWIW, I received some feedback from a user who among others also noticed
+a bug. Will send a follow-up patch in a few days when the dust settled
+and a few details are fully ironed out.
 
-This looks sensible to me after thinking about it for a while. But I also have a
-gut feeling that there might be some more subtleties that are going over my
-head, since I'm not expert in this area. So will leave others to provide R-b :)
-
-Thanks,
-Ryan
-
->  
->  			try_to_unmap(folio, flags);
->  			if (folio_mapped(folio)) {
-
+Thx again for merging it. Ciao, Thorsten
 
