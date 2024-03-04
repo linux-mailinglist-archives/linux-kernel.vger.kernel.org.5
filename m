@@ -1,126 +1,102 @@
-Return-Path: <linux-kernel+bounces-90105-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90107-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63DE186FA6E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:05:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEDE286FA73
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:05:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EBDC2823BD
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 07:05:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 735A41F214F9
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 07:05:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE63F134AE;
-	Mon,  4 Mar 2024 07:04:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDE39134BE;
+	Mon,  4 Mar 2024 07:05:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QqgxkHIn"
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HUkCyXPE"
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBFBD1170A
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 07:04:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4A6512E51;
+	Mon,  4 Mar 2024 07:05:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709535895; cv=none; b=Pcde8Cbl60Tym18AlUIEdefeeIdWpA4XpBF965MKGG6SroviixH4AZmkLk1D1DSwG+HM2Gk5bGKOm99fQW8E27Q3LXx2octf1v1XPKFidyDJYqQJV/AVKNEgwdaJVtO7m6Zo+4+aa6yYOKka5tMYaUdSISQmvCtpq+IeH2pQoLs=
+	t=1709535937; cv=none; b=goi+J/8bePZijXwh+UDr/R1wneeXkFfpXJRercp71cvPWeNNBbePRX6KiS5eVJ/ktReFZZwFW+FB6Tpw6MARnx8ageaEF8djTzYBBpXisDAAffKi05IL7Gz6L9s2cl9qs7qIwIl7lD4xTJokL4DHmEzTdjQOlgFTU3XuGSJwYXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709535895; c=relaxed/simple;
-	bh=fOzF9T+7+v6nbIr6JpI2D3fB/kcAd613CX/CdSkUuJg=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=FOxZTBlcMwNbUOsir4aVld+uobiOUQ0DuwoBwGoQ5FfVwUla11CfOXvwA9LpUhNVqF9Q3cWLB/VGmYTSkmCavIpdiJQNSUWukfy8jhLgcoB/dluzK2Z9gVNXhxglNO7xSEhOataSMh/awtIIMfjP74HcfyZSnBjQ64NZYeIRFrA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QqgxkHIn; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-412e22315d8so4889235e9.1
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 23:04:52 -0800 (PST)
+	s=arc-20240116; t=1709535937; c=relaxed/simple;
+	bh=uZOiLiUhyXTDISekQ6gI95VgtmBCaMN1Y1rXTmgseG4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Content-Type; b=LOBEovpHtIy8cIb9dOypZWUvc5EPryEe48JwoqzlaEPOswWfuzj1ogcaUS7qAdZGaMUx3h37wQTT1QvzYQbhWfH68PgKri+OsCGLtbgQWcnrUZdfQ0YXEssHyfTOlLq1T3UpDxnKBjM3OWLmABfNAk0TAi1pNK/bFywzFgz58ko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HUkCyXPE; arc=none smtp.client-ip=209.85.167.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-5133d26632fso1622291e87.2;
+        Sun, 03 Mar 2024 23:05:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709535891; x=1710140691; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/RTu2QOOVQbOweB1LGR/BRbdQUT3nXvJVjgo89rA8a4=;
-        b=QqgxkHInV4+gl4HHNp17XXNyik/Bcn8YA+vnUVHB2DLacIH2Gwt2E8Oe5Q4zouwm6+
-         C5WexYBrTa6PQ/E49dwt2JzHQ7n90zKCsshi0WG6JhiMtvF53EYTLYAaBK0PXlYbjrr5
-         haP3oJNHMlFC0HeQAVchgCmV+pTL2HAYvVCYmOAw9egIPE7bZg4yCY1hANdokMsbpZPn
-         d9+BsM0pxdwB/Q58Fj9UT7YOUjyL1fStrbeLEpYVs64XEgGzRcmRASN+aPnzfAGBU4tg
-         0wr6yj6TjGQ54DWlDFcw2Dl5IOgpidxYzUPqq195CVNevcL0riPNHmF8BR+qzSLBnN6V
-         TXHw==
+        d=gmail.com; s=20230601; t=1709535934; x=1710140734; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uZOiLiUhyXTDISekQ6gI95VgtmBCaMN1Y1rXTmgseG4=;
+        b=HUkCyXPEJbfG6CsQpajp2FUbvhzhySdJLEMWiLOV1wSWwNlyhRK1A2ChBjM8vcXDIZ
+         8ivxjN2/KU8ITkcQnnWK4PdH65PZoU2l9WGnY8Dp9tMH1x5Rkfh/Afun5yR5ndOggNcl
+         KKCGANgh1Bw05IwcgfPFsM5fS59Gblnwo9y6KmtCU4234dyvbCL4kG+mCQrJPuX+Gole
+         Vj7prvBdcxTiuJhSzqTNkX6Zyo5J2ke8X8U51se6zGJJ4NmdtqrfmrpZcRxyj6ktg940
+         fn9S6v8txttlpESX/BMJzNmmh1dsr0zW8x9UfLkiXncgvdPZ8o+Qhmot4V0YKK4ep95F
+         Ki+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709535891; x=1710140691;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/RTu2QOOVQbOweB1LGR/BRbdQUT3nXvJVjgo89rA8a4=;
-        b=OXLqdUz8D+4GalbIL3slnyxyPOtnaRfrSJOX+0LeRvIadcWvIb9rS9ODWYt3vRIqJY
-         1DywOWMyDNSUR6FdIJWLcwOUSkW5Xnn+1G/Q5vPvB96kpBLE+YhAJx3QnK4EN6l3LNwh
-         5eQhzk4D6GHBkG7FFGbxRMt9aGmc3urR0JnUSHQIpaDHt3SkNMceInl3IRMsqrnVPZa5
-         pJQ7jbWe0+UzOo5EdvF5Rz9ZB9sVkSr4Z2QR8lC4Boa0rFJw2GePwdnSCH6m13HZPF+c
-         9BIof9YQk2+m/MUiVjpGV+jGeXok/3Dhm1iv9uggc2vkh1TExjNgAnDqzc+PDkRLV8Rs
-         fu6w==
-X-Forwarded-Encrypted: i=1; AJvYcCW16z5ubh7UKA4iZj/KzUMb0fQtaqK6ZSl+rgo53AD8HRzI979c2GioOlWddpg0QKUmEs8XJQy9GB0liEHdqTHYYvFkgPzfvgfNigtz
-X-Gm-Message-State: AOJu0YxCeLTrEAWKTtvMaw7iuq7yoCDTB0myBaeB6YZP8axFbW17vWhb
-	1OHhuNA0cF0gJaTCLunFbHMj47wrfVZIg33SUBJIS9FTnVhWI4KDWKn9ln3ejoE=
-X-Google-Smtp-Source: AGHT+IFc4xUICRVVStYlfPV57gzFOOaMSvfieW4xk8n3smggrfWI5KpXmkdHe/qcd3sZ3tLX4YTRXQ==
-X-Received: by 2002:adf:9c8b:0:b0:33d:47d6:c159 with SMTP id d11-20020adf9c8b000000b0033d47d6c159mr5733432wre.12.1709535891433;
-        Sun, 03 Mar 2024 23:04:51 -0800 (PST)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id r18-20020adfca92000000b0033dcc0d1399sm11375456wrh.25.2024.03.03.23.04.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Mar 2024 23:04:51 -0800 (PST)
-Date: Mon, 4 Mar 2024 10:04:48 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Rui Miguel Silva <rmfrfs@gmail.com>
-Cc: Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] staging: greybus: fix get_channel_from_mode() failure path
-Message-ID: <379c0cb4-39e0-4293-8a18-c7b1298e5420@moroto.mountain>
+        d=1e100.net; s=20230601; t=1709535934; x=1710140734;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uZOiLiUhyXTDISekQ6gI95VgtmBCaMN1Y1rXTmgseG4=;
+        b=SL3Nye3gKCHrimipx9DmhZx07f4XMiEMeSVg+2XLi1TkZrTa3fDnoyOFmQGv3Ilczc
+         MArZ3peSdrN0gqrzqky6bBwa31puxIX0brQwcyKwc2CvBj66nY3w8rI2UuK4jxE5wEtA
+         eeywIVnno6rGeqlwQUyxxgieuOVlc0bYObFKn/ou4dgc/mF6zfKu8HahWwmRfDrcyRof
+         iP3EhNyOiP+a0L2gauGgBEfpzyDrzFRDDKPfFimm4IV4brIQLsvFc6Se0KZoiASfEgVo
+         ndrakvVIDWWEwP45vzeEcUFiUnFhpJ+EEDhlwdSRsNuWMNcZxXWQzPV4jmuqb6EycFt0
+         VrYg==
+X-Forwarded-Encrypted: i=1; AJvYcCVi+4SpLdUsRf0JHTrOWxgJWyKQkipT5agrL3eoBRV0eCEbGqLOm19FvgbcSUZlJUZkmYg2118FyLpuDvuNSkRixU9/UHsz4fP6SkCWHN9GpiROiDnxEjJY8kT0dPM5IERzHw8k
+X-Gm-Message-State: AOJu0Yy+4vD163WTrR5XcFoI92csf1lN4WB7qNk9MEfznh0kfM3+j+zP
+	bVVVwun/7SFTIDisYJ1qnNo6PYm1QD3k+8jT2tEmy8RQBJcBbWPjKEsNpMB+o+SIzZ+YCzqBNvj
+	CCB1mdJB1SU8plJH2ppnDnjHS0DwvP96Psrxf9Q==
+X-Google-Smtp-Source: AGHT+IH79lNVlQtBywZnbndMdatWNWGcIwIqtPti+7K6lgsxAVSinJGVCpRhVVAlmFtK5IdgZSGwYEMVeAmNAETvla4=
+X-Received: by 2002:a05:6512:2fb:b0:513:3ab2:5d2a with SMTP id
+ m27-20020a05651202fb00b005133ab25d2amr3222186lfq.55.1709535933753; Sun, 03
+ Mar 2024 23:05:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
+References: <20240303114139.GA11018@didi-ThinkCentre-M920t-N000>
+In-Reply-To: <20240303114139.GA11018@didi-ThinkCentre-M920t-N000>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Mon, 4 Mar 2024 15:04:57 +0800
+Message-ID: <CAL+tcoDAmA4q+FxJchgA1LQ2fxhD8oRdjDOmVPeJ1-eSnkSt5Q@mail.gmail.com>
+Subject: Re: [PATCH net-next v2] net/nlmon: Cancel setting the fields of
+ statistics to zero.
+To: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	pabeni@redhat.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	fuyuanli@didiglobal.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The get_channel_from_mode() function is supposed to return the channel
-which matches the mode.  But it has a bug where if it doesn't find a
-matching channel then it returns the last channel.  It should return
-NULL instead.
+On Sun, Mar 3, 2024 at 7:43=E2=80=AFPM fuyuanli <fuyuanli@didiglobal.com> w=
+rote:
+>
+> Since fields of rtnl_link_stats64 have been set to zero in the previous
+> dev_get_stats function, there is no need to set them again in the
+> ndo_get_stats64 function.
+>
+> Signed-off-by: fuyuanli <fuyuanli@didiglobal.com>
+> Link: https://lore.kernel.org/netdev/20240302105224.GA7223@didi-ThinkCent=
+re-M920t-N000/
 
-Also remove an unnecessary NULL check on "channel".
+Suggested-by: Jason Xing <kerneljasonxing@gmail.com>
+See https://lore.kernel.org/all/CAL+tcoA=3DFVBJi2eJgAELhWG_f+N-kwmrHc+XRfKX=
+hYk2RJcPKg@mail.gmail.com/
 
-Fixes: 2870b52bae4c ("greybus: lights: add lights implementation")
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
----
- drivers/staging/greybus/light.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/staging/greybus/light.c b/drivers/staging/greybus/light.c
-index d62f97249aca..a5c2fe963866 100644
---- a/drivers/staging/greybus/light.c
-+++ b/drivers/staging/greybus/light.c
-@@ -95,15 +95,15 @@ static struct led_classdev *get_channel_cdev(struct gb_channel *channel)
- static struct gb_channel *get_channel_from_mode(struct gb_light *light,
- 						u32 mode)
- {
--	struct gb_channel *channel = NULL;
-+	struct gb_channel *channel;
- 	int i;
- 
- 	for (i = 0; i < light->channels_count; i++) {
- 		channel = &light->channels[i];
--		if (channel && channel->mode == mode)
--			break;
-+		if (channel->mode == mode)
-+			return channel;
- 	}
--	return channel;
-+	return NULL;
- }
- 
- static int __gb_lights_flash_intensity_set(struct gb_channel *channel,
--- 
-2.43.0
-
+Reviewed-by: Jason Xing <kerneljasonxing@gmail.com>
 
