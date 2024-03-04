@@ -1,184 +1,105 @@
-Return-Path: <linux-kernel+bounces-90756-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90757-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD9F1870481
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:49:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F7C6870489
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:52:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F21631C21147
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:49:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B1A3288618
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:51:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D47245945;
-	Mon,  4 Mar 2024 14:48:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3106E4438F;
+	Mon,  4 Mar 2024 14:51:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="TQ0Kfnno"
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LNqZ8Z6t"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBD14BE4C;
-	Mon,  4 Mar 2024 14:48:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 417C03F9C0;
+	Mon,  4 Mar 2024 14:51:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709563737; cv=none; b=MP9UCcJvJWGDeLmCTSCPNj9YT83lEt/OFYtlZFsasW04+tg2u1poHr87pneAT4qMlrXetChYObmHZ8rPaCXsgXC6Vh+vTxxeGJxhzviARqBwZO3d65heO1gwqmJ5pxiuTdzieSLuvhPGLp3sMkvOlKddJMAn4W8+OB4TkVtp1b4=
+	t=1709563913; cv=none; b=T2qOAZCtw+jzzJWKWGP7aQ5Q7b73/bdwH4oiUlRV6XrU0CwaGTnFNEHiwTQYNG+Q2KXHm2eRcbuj3NFyS0dBeSsXxf9gmOHF2wnn1k0zvhOq4zNhcT1NqjPxCu9acUIYLO2wqnMU3fE1Wl2KCg/PJC/LxqwMX6NVOMs/opG+QPI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709563737; c=relaxed/simple;
-	bh=TgxXi/gIeKMpR66/mFlQ4SY+Nb0//zmHj5iPRrxLsSU=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=O8lPJTKXGWcMojrFWa96cSbZWUyO5ttCSRlRcpw2glMWeNXberEUV5lRXgkNfLGgvkAKPh/2F8AnORoq8lIc5MryuNBb3nIuE2dV34/axt73bVaM1haCiKlT/0h3pHiyGUKMstFaIz0UN/WKrm+CiVC7ThQlik3PgUbRu8idJOk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=TQ0Kfnno; arc=none smtp.client-ip=60.244.123.138
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: 5034d9beda3611eeb8927bc1f75efef4-20240304
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=2ex3URhGJ25sIwQtcELaXnntnV6MtlBieKBk9AFSMU4=;
-	b=TQ0KfnnoD/09XKNFRC/lBVhXABRz9vciAjkOOyofpDekXeXThM0DIWx9fk0+oEQ718l6c6lRqZlFfMzcpb11BPi8B6qvcuC8vXkjYZX31fdgkbVuAIXyJ0/3xMa5Hu8CvqLz1vEZ+LqqC5iFPzq6uy0LwwTzRbrdB9AeJeAuw1A=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:9936d3c0-59f3-4366-b7c5-02658c00a01e,IP:0,U
-	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:-25
-X-CID-META: VersionHash:6f543d0,CLOUDID:cd6d9884-8d4f-477b-89d2-1e3bdbef96d1,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
-	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 5034d9beda3611eeb8927bc1f75efef4-20240304
-Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw01.mediatek.com
-	(envelope-from <peter.tsao@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 887760762; Mon, 04 Mar 2024 22:48:50 +0800
-Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- MTKMBS14N2.mediatek.inc (172.21.101.76) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Mon, 4 Mar 2024 22:48:48 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Mon, 4 Mar 2024 22:48:48 +0800
-From: Peter Tsao <peter.tsao@mediatek.com>
-To: Marcel Holtmann <marcel@holtmann.org>, Johan Hedberg
-	<johan.hedberg@gmail.com>, Luiz Von Dentz <luiz.dentz@gmail.com>
-CC: Sean Wang <sean.wang@mediatek.com>, Deren Wu <deren.Wu@mediatek.com>,
-	Chris Lu <chris.lu@mediatek.com>, Aaron Hou <aaron.hou@mediatek.com>, "Steve
- Lee" <steve.lee@mediatek.com>, linux-bluetooth
-	<linux-bluetooth@vger.kernel.org>, linux-kernel
-	<linux-kernel@vger.kernel.org>, linux-mediatek
-	<linux-mediatek@lists.infradead.org>, Peter Tsao <peter.tsao@mediatek.com>
-Subject: [PATCH] [PATCH] Bluetooth: btusb: Add support Mediatek MT7920
-Date: Mon, 4 Mar 2024 22:48:44 +0800
-Message-ID: <20240304144844.2042-1-peter.tsao@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+	s=arc-20240116; t=1709563913; c=relaxed/simple;
+	bh=FBrOGsh5xv9/HCNVxTPsEbEIIxOX+UvVmPXRgPFaPEA=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=elUM1co+DxjeX7ewxXDZtjXI3IQk34FRZKC0e44XRhqzfMajqpbjitFiHo99lKdiW3TBgmc0Hl1cZF7KPyZiof4oZ68RIre2UQsaNJVHoosB/RsvmqXpLGkG9X/QPUyC8U+zKMNS0t9u/eEavi8Ya2whID7ka/aypQbK8piX3X8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LNqZ8Z6t; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1dcb3e6ff3fso19733855ad.2;
+        Mon, 04 Mar 2024 06:51:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709563911; x=1710168711; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=h+buNMSyZ9brTA6XcUMRnnsjRRgboTCbHH7+GZjb/bU=;
+        b=LNqZ8Z6tOihgXfx3I5J4qpVYy/lWi2DkAQ3Q/pA9JGBaZFM6v6lKcAUz79kG7so2HJ
+         Ob5KRneRCUz3OnicvH/sY9p5MLU22TLIdSDBScsmc8EGXrCrUFyJiVpgrb09ZwoALjmx
+         RlD/sDzoNP9W9k+D/PGgRiNIb1SfoYTyajlDnE5GUAr0KVkEtkrN2/MnPE9Ca4dqJj4P
+         rBQH4eYUHnfmaF2+PFSL0mwOpGy4LyYNoHB5u8Lalr+CurKmVhLGTiLr5DULz7XqxJ/9
+         DICf17ARsDqjyZbBCegv6PtRSYdc1n0kCJp0hSjElnwNvDijwOSpS9i26IQ6qAE2uRt1
+         +Opg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709563911; x=1710168711;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=h+buNMSyZ9brTA6XcUMRnnsjRRgboTCbHH7+GZjb/bU=;
+        b=eUu21xP6kBw++TIA3MKqk4UbZ5ICmodkHJxuVqGJiK/IEr36XyKvW6n7+n7fWJUPkm
+         U3qM/5Ih4buOpvs8pPpdWYZbk7DNPOy/Ib/M2dK/rp2sjsLgRkAhjyqkwaog/hoyUv9A
+         ybjpS3C1HPghqFezTcUfvh0ju/zL13rIgQUC34V4NN7ydSFcBvisKCecL5feTHXu/YWe
+         rR7+j8N3hPM2UPxJaZrkvfwDuiiBEyOXYgIAL2i71EamVJC2hMmvgciqEEVQncRmb7CY
+         6g/sor5Zwb44kcKXDXRbdzhhZx0xqJDKH5D77MUCrI6ZcxyWOv/L4KxNSpDZpBld2B5o
+         buiw==
+X-Forwarded-Encrypted: i=1; AJvYcCXhG27cdju2FL3lzwjE0tziPEvmXxbCJ/1Opn7wwVFfaYx3IlHhn1wHtdjrIGYwTFkYLhRqwLw3Tz1VrFmVlUv6s18LVcs2wZu3ND/n
+X-Gm-Message-State: AOJu0YwBWkrW3YCUDY/LJaaaE9959IGcIH2YoPTpJXl/YInoThXJct9r
+	qtSkLfgw2/mlSi/FnU+8XBPXAOqBiFUf4hYknuTpELWoDRAfQAiVmaPD2Fwv
+X-Google-Smtp-Source: AGHT+IHM1vEaWmP4Da0UP7NmgT0Cm17ez0na3GOYLfG5yqkp8ZRLlHlLY7OFSIW3G+hfOm9xrTw4Mw==
+X-Received: by 2002:a17:902:ccc2:b0:1dd:159:e2e7 with SMTP id z2-20020a170902ccc200b001dd0159e2e7mr5928354ple.39.1709563911166;
+        Mon, 04 Mar 2024 06:51:51 -0800 (PST)
+Received: from localhost.localdomain ([49.142.40.215])
+        by smtp.gmail.com with ESMTPSA id n14-20020a170902e54e00b001d9641003cfsm7618409plf.142.2024.03.04.06.51.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Mar 2024 06:51:50 -0800 (PST)
+From: skseofh@gmail.com
+To: robh+dt@kernel.org
+Cc: devicetree@vger.kernel.org,
+	frowand.list@gmail.com,
+	linux-kernel@vger.kernel.org,
+	skseofh@gmail.com
+Subject: 
+Date: Mon,  4 Mar 2024 23:51:26 +0900
+Message-Id: <20240304145127.165250-1-skseofh@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <CAL_JsqKNGjKq3vcUPFiPa9JNq-8=oP=uBSD=tyKaPMH3cvAkww@mail.gmail.com>
+References: <CAL_JsqKNGjKq3vcUPFiPa9JNq-8=oP=uBSD=tyKaPMH3cvAkww@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--5.048000-8.000000
-X-TMASE-MatchedRID: AIneCDrHljXpHzzvfxlA9bCvlllU7Dl1jzwigoyOACR+YesuCgkiXFrN
-	q+deGHNNEBd8LlX7xQH+drDB7ysG20fr6WG4Th9ah6L+ZkJhXC5CX8V1FiRRkt9RlPzeVuQQj3Q
-	bFpHxze0b2iLBDKNZzdwU8VHXGipCHxPMjOKY7A8LbigRnpKlKTpcQTtiHDgWa2+sArfqKRjsrr
-	DlOva601p4ExCflAw3kxMpQp+e7bKo+jfN2htJCEMMprcbiest
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--5.048000-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP:
-	3B0F0103528A15B8EFAAF9D0E9492880D9625E15880BF383EDB174C927AE17392000:8
-X-MTK: N
+Content-Transfer-Encoding: 8bit
 
-This patch is added support Mediatek MT7920
-The firmware location of MT7920 will set to
-/lib/firmware/mediatek/
+From: skseofh@gmail.com
+Reply-To: 
+Subject: 
+In-Reply-To: CAL_JsqKNGjKq3vcUPFiPa9JNq-8=oP=uBSD=tyKaPMH3cvAkww@mail.gmail.com
 
-The information in /sys/kernel/debug/usb/devices about MT7920U
-Bluetooth device is listed as the below
+>>
+>> From: Daero Lee <skseofh@gmail.com>
+>>
+>> After page aligning, the size may become zero. So I added exception
+>> handling code for size 0.
+>
+>That may be true, but when would anyone only have memory regions of
+>less than 2 pages. In any case memblock_add will just do nothing. What
+>is the actual problem you are having?
 
-T:  Bus=01 Lev=02 Prnt=02 Port=00 Cnt=01 Dev#= 12 Spd=480  MxCh= 0
-D:  Ver= 2.10 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
-P:  Vendor=0e8d ProdID=7920 Rev= 1.00
-S:  Manufacturer=MediaTek Inc.
-S:  Product=Wireless_Device
-S:  SerialNumber=000000000
-C:* #Ifs= 3 Cfg#= 1 Atr=e0 MxPwr=100mA
-A:  FirstIf#= 0 IfCount= 3 Cls=e0(wlcon) Sub=01 Prot=01
-I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=125us
-E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
-E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
-I:* If#= 2 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
-E:  Ad=8a(I) Atr=03(Int.) MxPS=  64 Ivl=125us
-E:  Ad=0a(O) Atr=03(Int.) MxPS=  64 Ivl=125us
-I:  If#= 2 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
-E:  Ad=8a(I) Atr=03(Int.) MxPS= 512 Ivl=125us
-E:  Ad=0a(O) Atr=03(Int.) MxPS= 512 Ivl=125us
-
-Signed-off-by: Peter Tsao <peter.tsao@mediatek.com>
----
- drivers/bluetooth/btusb.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index edfb49bbaa28..ba6ac853110b 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -3088,7 +3088,7 @@ static int btusb_mtk_setup(struct hci_dev *hdev)
- 	int err, status;
- 	u32 dev_id = 0;
- 	char fw_bin_name[64];
--	u32 fw_version = 0;
-+	u32 fw_version = 0, fw_flavor = 0;
- 	u8 param;
- 	struct btmediatek_data *mediatek;
- 
-@@ -3111,6 +3111,11 @@ static int btusb_mtk_setup(struct hci_dev *hdev)
- 			bt_dev_err(hdev, "Failed to get fw version (%d)", err);
- 			return err;
- 		}
-+		err = btusb_mtk_id_get(data, 0x70010020, &fw_flavor);
-+		if (err < 0) {
-+			bt_dev_err(hdev, "Failed to get fw flavor (%d)", err);
-+			return err;
-+		}
- 	}
- 
- 	mediatek = hci_get_priv(hdev);
-@@ -3135,6 +3140,10 @@ static int btusb_mtk_setup(struct hci_dev *hdev)
- 			snprintf(fw_bin_name, sizeof(fw_bin_name),
- 				 "mediatek/mt%04x/BT_RAM_CODE_MT%04x_1_%x_hdr.bin",
- 				 dev_id & 0xffff, dev_id & 0xffff, (fw_version & 0xff) + 1);
-+		else if (dev_id == 0x7961 && fw_flavor)
-+			snprintf(fw_bin_name, sizeof(fw_bin_name),
-+				 "mediatek/BT_RAM_CODE_MT%04x_1a_%x_hdr.bin",
-+				 dev_id & 0xffff, (fw_version & 0xff) + 1);
- 		else
- 			snprintf(fw_bin_name, sizeof(fw_bin_name),
- 				 "mediatek/BT_RAM_CODE_MT%04x_1_%x_hdr.bin",
--- 
-2.18.0
-
+I modified the patch to clear this. Please check.
 
