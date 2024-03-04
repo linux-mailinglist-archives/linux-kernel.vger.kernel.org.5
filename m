@@ -1,652 +1,159 @@
-Return-Path: <linux-kernel+bounces-90544-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90545-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 142168700F1
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:08:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E511D8700F3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:08:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 97D6E1F21CD9
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:08:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D13C282A29
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:08:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0C773BB2F;
-	Mon,  4 Mar 2024 12:08:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BA9B3BB3F;
+	Mon,  4 Mar 2024 12:08:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sNUc23nS"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="aysvxr+D"
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05olkn2070.outbound.protection.outlook.com [40.92.90.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74C9B3A8E1;
-	Mon,  4 Mar 2024 12:08:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709554080; cv=none; b=CnS024LlVazdrg58kTUWVh++WbLubU1stF8ozoCZQwMnd357C5KlxBi412YUwrE0jovLC63jqcCjDY0IC020ddvmUmsK5YmV8K0VTfmECX11kMmXbAb1U5NrH6+/mhGeWqppjaCUsQ9gUYZCPLysjIjekRDl8P7sONsTxWZPR1M=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709554080; c=relaxed/simple;
-	bh=Cl+0SxVOA1juHMZEj8vL0DIgeLYC9OGfZf7ASrVHyx8=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=BjBGr0jjk0ItvEv5BnPR/Sdl2Vt7Y7lT+/TPOsipxrXtHhuLq/lZON6hLDzEYNasvOt4sbR8gJSEPnRsPYGXpxr4bdQPQgjQGU2EFYZa6FUsxRKrwL+Ogsj3T0x8TfNkIMUZKJ/kuCt6pjuRF/2MKlyfujrMoJLTQp9HnDUScuU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sNUc23nS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2A20C43390;
-	Mon,  4 Mar 2024 12:07:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709554080;
-	bh=Cl+0SxVOA1juHMZEj8vL0DIgeLYC9OGfZf7ASrVHyx8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=sNUc23nSt0y4osxPfL1NMofCrkhH6WNxukWDh9L85TBaBCzR+aYpV5vC+mPcl+SEw
-	 HGKAYPnFferiX3Ngs8l5wKPbjpMxrtLLseulKBuyq5SObxY+g/6stb600hjSei7SdZ
-	 ZOQEqaOfu5UAlnwtuZ28i13aXFKijXehGSu/8CW5auyeMsyre3+KqsWeC0H1Ta4VeV
-	 kzxqH7x29dQ7R+lzrYhVW3vPfQSx9YCogMUtZvyx4NM59tjrXaU6L1zXA+jfbu0Qwu
-	 nmW1jfzPNuiU4YcOGWH6tc4vX+bQdY4WsUQ+UiLAjbVEQ3+S+lNvbUCgEZqXlPWkro
-	 wqzUhI9k+pqbQ==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rh76q-009D4H-TR;
-	Mon, 04 Mar 2024 12:07:57 +0000
-Date: Mon, 04 Mar 2024 12:07:55 +0000
-Message-ID: <86wmqi19pg.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Ruidong Tian <tianruidong@linux.alibaba.com>
-Cc: catalin.marinas@arm.com,
-	will@kernel.org,
-	lpieralisi@kernel.org,
-	guohanjun@huawei.com,
-	sudeep.holla@arm.com,
-	xueshuai@linux.alibaba.com,
-	baolin.wang@linux.alibaba.com,
-	linux-kernel@vger.kernel.org,
-	linux-acpi@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	Tyler Baicar <baicar@os.amperecomputing.com>
-Subject: Re: [PATCH 1/2] ACPI/AEST: Initial AEST driver
-In-Reply-To: <20240304111517.33001-2-tianruidong@linux.alibaba.com>
-References: <20240304111517.33001-1-tianruidong@linux.alibaba.com>
-	<20240304111517.33001-2-tianruidong@linux.alibaba.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58F733B296;
+	Mon,  4 Mar 2024 12:08:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.90.70
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709554115; cv=fail; b=meHrqDzjDq5eF8q11LNqz7ICWVZkBCfrlBL//RbY7ljJv1m/2Vj3VwLxvIUmK7Mnk4tEpY3rQ8/vo/HRi4WTKItmg88DIKUqKTyAK23XNs2GIGrk2zRxT5Gppo3dvdlTqg4S1909Ozb9IpruumDd+gtaJkMLgZ1OkjLgdgcZyv8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709554115; c=relaxed/simple;
+	bh=sPpMHZi7dschW/YoNRabwqj25iFF9ki10/vkuSG76JI=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=YDU1mwLTNzuZXOK+AO5hBGvk1+N7gXFkzRN5pZgdtdBZnC0gYojh8T3O9j8X3Tp9UYTeYu/g+q02BLoD0UnnqDoN7MwDWHvqn2Rs47DdMk6DUrEwdy8szdjeMJyHCzvc5DIAbsrnfEWrPC26HbaSk4NraKuSrKFH7NhWwKDWCE0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=aysvxr+D; arc=fail smtp.client-ip=40.92.90.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Nr3E971/7//B67YpiZ1oE2xTx+7ElRCMCUFtmk4059ytbzJx56yBOLG/AQLfyPk2Jh3Mx2vIKaAibUmX/dknxLAKM/Nqhkp4qpZiiozrzk1wglQctkPDuNwlwvbtW7hUZKUuiAW0tImhDzXhJ6ZFxSxH2hvNMMw6XS5iltaSBDhzxVBwveWDf7q4X1BGpefLbjEDx1ATzND6m1cREEuvN9xrk8IjqBTS0hUbXGRLvSmJBwN/weaW4c3OR61zQbbFKKuhzrOMIXHb1m17mkImVmhDC2pSc7di5i7ksSoTb+gtrDNSBginfKP64jBvb3vcfSRGwUPipQdROYmKG/nvxw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=aEoNqMfhLIMjWS60JemBKHbtSHZkTm251ieZoUgn1hc=;
+ b=bgCxu1bUdDqsYIqszZvbwrnLjHiaJJE0HMx4V3OB4kn9C60LBE+NoXCE2zRe9ZyJ+0k++fiA1f2kqemwgcj5vLLRCl8Lcxcbg5+nc+3TIRCg48gBAHQ3jpwfF+AfjM2UAkfoDrpviPDCjJD1nZ0kqX88prb4s5BbDV6Ll7ZbWzGh4UAExb0Hs333BylLe44mxwHmJbqKuIv/7rwKqlUdAUCBBS1M8pMkr39hirQUxMOqfbuBWOY1P07zumMt9fXg5SymTZM3itL9YGt4rJ3T/+jp303VPEEJopTGK9ieJk6u8KrWxA0FPbqlai9hGIwvP+myDATzsXrL+G4FXay1XA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aEoNqMfhLIMjWS60JemBKHbtSHZkTm251ieZoUgn1hc=;
+ b=aysvxr+DsW0r8YXKl1dllbpA8EpM7PuIdzv/J5CnT4gAwLrneFjh1N7j1Z8VUdxCEoB4VydVYGKsESqX9kgzFAsA1J+TrHSXNQ0fOS8+Yf3OBxFoeKoCCdQzHEeJn5ArqYMJlHJgDCKwuKSgZOMORMMhijQu72mLg9+JzAnLvmPEKMs3qHKx/nKCavCeYWtsQYlVdqdF+6bOe9Pw17Q2BQzuUzY239qwUN/8b34J20PMLBqyOxIn6H81QxWR5IMIzXtHjDXNYDlaOZvuUodg9f6UQxanfJDjgxOaegqW+5voCYGu93VuPFkQLyvDmWC+oKVqGdyz5qPrgnU+4rNwiA==
+Received: from AM6PR03MB5848.eurprd03.prod.outlook.com (2603:10a6:20b:e4::10)
+ by AS2PR03MB8905.eurprd03.prod.outlook.com (2603:10a6:20b:5e5::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.32; Mon, 4 Mar
+ 2024 12:08:27 +0000
+Received: from AM6PR03MB5848.eurprd03.prod.outlook.com
+ ([fe80::58d5:77b7:b985:3a18]) by AM6PR03MB5848.eurprd03.prod.outlook.com
+ ([fe80::58d5:77b7:b985:3a18%7]) with mapi id 15.20.7339.035; Mon, 4 Mar 2024
+ 12:08:27 +0000
+Message-ID:
+ <AM6PR03MB5848FE9567FCB44911E8E4D599232@AM6PR03MB5848.eurprd03.prod.outlook.com>
+Date: Mon, 4 Mar 2024 20:08:28 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] inet: Add getsockopt support for IP_ROUTER_ALERT and
+ IPV6_ROUTER_ALERT
+To: Eric Dumazet <edumazet@google.com>
+Cc: davem@davemloft.net, dsahern@kernel.org, kuba@kernel.org,
+ pabeni@redhat.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <AM6PR03MB5848BD89913195FF68DC625599232@AM6PR03MB5848.eurprd03.prod.outlook.com>
+ <CANn89iKzGS39jLrRszBLh6BMyYykX-d_n3egdDU77z_fcXbiXQ@mail.gmail.com>
+From: Juntong Deng <juntong.deng@outlook.com>
+In-Reply-To: <CANn89iKzGS39jLrRszBLh6BMyYykX-d_n3egdDU77z_fcXbiXQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TMN: [Qgai2JlTW25CZRL9duFv7m3qn+YDLvop]
+X-ClientProxiedBy: LO6P123CA0024.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:313::16) To AM6PR03MB5848.eurprd03.prod.outlook.com
+ (2603:10a6:20b:e4::10)
+X-Microsoft-Original-Message-ID:
+ <c17bc801-d7c7-414f-9626-8fbfa046addb@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: tianruidong@linux.alibaba.com, catalin.marinas@arm.com, will@kernel.org, lpieralisi@kernel.org, guohanjun@huawei.com, sudeep.holla@arm.com, xueshuai@linux.alibaba.com, baolin.wang@linux.alibaba.com, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org, baicar@os.amperecomputing.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR03MB5848:EE_|AS2PR03MB8905:EE_
+X-MS-Office365-Filtering-Correlation-Id: b8668c34-2473-4ed8-c61c-08dc3c43cc9c
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	GUDJBW7G7xtM8evbPAVT2R5gkcQmKsx1ODdbS36HDMET5bTtDnOnJ44aA8HGAjCGeWF7xWmAW5tntuFKV4R+w4OmkeYLxL32yQpn+hLNeakCGOFyFtCbBG78udllaJ/iCAs0NQ+KVbaqEDKoOkkP4kokuL2pKo6KaGQqmRjMVBC/KP56aJ0vij0IwZu8tdhOrhJbDhcfBIx9pKEQIPNjqc9MYAUmLQQ6eOOlb6fxtyXbRM2Rm3swTuTCpiHroobdbeYyrrF26unl4kpwh4HJ43LVSosNhPomCsxSog8XfpeIR5d3sHLSciVAsA6ehClQ3acZc5zxHlJzXgOvQE/DcvowCEurhoTWNljDnRCjpb7gSJgzHwZiJqR152ANxrFPy0KiGGOIocWz6IpdkrBRYH0qvemws2HTr706DVtEZH3wBPSq8rKRt7pyxheqAVi5qSXRsi+C33XswrdVjiaC+4CAM34x9SJwwcdGHgnOtNYatYKwpDbYnkYdIugqGHT94OsUAjfyyNdPor82hM2JHgIuECaQ2wIKN/lgT7WBzoZn4aEIwxH6ZHlzn9Q00dfJ
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?RlZMRVdqdk1GbnREUndZUGpZc1VYNW5BL0tTc3JuSndjcXN5RDRTMFF6aDU4?=
+ =?utf-8?B?Sm9qTm52RVpWUlk4czU0Z3NkdzFSQzNwZ0Vua3NOTEtiUWdLRWs3VVdOOEpX?=
+ =?utf-8?B?UkFNVG5hdk1BalUxaW9rampDa0ZkdmxZeEJWa2tGL1l3U1V3dVJ0Y2VyZWxY?=
+ =?utf-8?B?bUVuMkVRMDdqTzdMNGJTMVNJNHFoRTY5T1VwYXhMcFBJZERpMEYzU055SDBt?=
+ =?utf-8?B?enhLbC95ZUM5OHZBNU5EL2JKYnNXYmhzdms1S2lpK05xSml4MmZoR0luMndn?=
+ =?utf-8?B?UDlCNGVZMFFmcnBnZGU2ZDR0T1djeUpNOXZUOGcrVytjOHlodkVNUmFHY2oy?=
+ =?utf-8?B?SW00UFdtQlJsV1pTNGJ5R0p5UFZBOU5VZmpadld6ekJWc09WOFFKODJ0bjh1?=
+ =?utf-8?B?cGQ1OXdKOFNKWmE1QmJvd0h2OTdPc0ZnVW02WmwwZ2JuZnJ3T2F1QisyT0cv?=
+ =?utf-8?B?UGR5NjdTd1RNZGRPUjQwNnNCZnJvV0p5emhmcVVXbThuNE93Qys3UkhuaTBI?=
+ =?utf-8?B?Sjkwcm1XZ3hRZWRxN3pZNE1TTGFvSnkxWUVWaUhSTGlQdUZMTkZReThRbnFs?=
+ =?utf-8?B?UWxqR2s1eVpVQzhSRG1CZ3MyaGJ5Nkw2YWxPeVEvTml4elh4ZUprTklVY2dk?=
+ =?utf-8?B?MEkwaHozNzdpdTZDQVNsc2M1K0dpOUNoelN0dHVTTnh3MmZsNEpGWUIwMlNr?=
+ =?utf-8?B?M0k5all5bU95KytMVVl0VFArQ0RzaDc3VnA4dHlVVElBTVVoZVprRXM3UktH?=
+ =?utf-8?B?MzFMU0hITkgvZWEyNS8zVGFaZXBFdjU4Q28xUEV1UlhKdTNBMHc2SHhDNHdj?=
+ =?utf-8?B?VnZNbWZOamVEU0FRazUyZDV1R0t1eENiMmtvQmxsMDZxYkpHNklMUmpDN1BG?=
+ =?utf-8?B?NjRrU3lwWXdjZzdWd093UHQzRGZET1hnYjY2WCtHUEowZk9Tb3FGYk9Nd3lO?=
+ =?utf-8?B?SkNKWWtrM1JGRDRIYXgrWGNUY3JGN25nUFNKM2ZvbXNpNjFrVzhkZTd1OERj?=
+ =?utf-8?B?RXFsV2Vvd2lGR2dvZmpYakZmWlgwa1c2TXZsVUo2TWloTG5HS0N1Qyt1U21N?=
+ =?utf-8?B?UGxoR1FTdU1GR2tkb24zTkNGWE1zTWlOUktEdHZTSXZOcGxSL0VyRUhSS3Fo?=
+ =?utf-8?B?VC9KRHQvK3pwMGd4c1pEYUdHcWxRYytWaHhqeEdMY004MUNuWHl0U2RoL0p0?=
+ =?utf-8?B?eE9hSUFPZjhiUW1xRS9qbUpJbjB5WTFiL0xHS2Z4SnBBeDJyNnJXTWJsemgx?=
+ =?utf-8?B?RWVqU0tuTGhUV2FJZmFCblJrQzNocnJsN1ZieFdTMFVmcFJhZHYrL2tMSEIv?=
+ =?utf-8?B?eVpiTW9lSkxlQ0tyUFRkbVBZZ2hvdndZYURGb3RaU1lOeWdqVW9PeFJmVk1J?=
+ =?utf-8?B?NjlxSHByVVp4czdaUEp3UEx0MlVDM0JnQmFmNW5IY2xUcUI0VEFSbEhUZklv?=
+ =?utf-8?B?dE81L0VmUUtuTGE2YkdlbTdtUG9HM3pWUmhERmhKRlJYMTJMTU00VllQM1Uz?=
+ =?utf-8?B?MGVsQ29tVkJxL1hoRUs4aldZbGdUeUVqZWFoSE9YRlBQb2hxUXBVblJ0TndW?=
+ =?utf-8?B?R0sxRjV0Z1pvQUVDYzBhdCtYczR4MHJNMzMva0hBQ1dmOU5CTktHN3NXVmJ0?=
+ =?utf-8?B?WUUvUFg1b3djNnl6WWFSdVQ3cVZEWGhOUmdET2VWMXBuNExsczE3MWdvU000?=
+ =?utf-8?Q?Khenu9ralXqGeHAY9vqz?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b8668c34-2473-4ed8-c61c-08dc3c43cc9c
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR03MB5848.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Mar 2024 12:08:27.5044
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS2PR03MB8905
 
-On Mon, 04 Mar 2024 11:15:16 +0000,
-Ruidong Tian <tianruidong@linux.alibaba.com> wrote:
+On 2024/3/4 19:49, Eric Dumazet wrote:
+> On Mon, Mar 4, 2024 at 12:33 PM Juntong Deng <juntong.deng@outlook.com> wrote:
+>>
+>> Currently getsockopt does not support IP_ROUTER_ALERT and
+>> IPV6_ROUTER_ALERT, and we are unable to get the values of these two
+>> socket options through getsockopt.
+>>
+>> This patch adds getsockopt support for IP_ROUTER_ALERT and
+>> IPV6_ROUTER_ALERT.
+>>
+>> Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
+>>
 > 
-> From: Tyler Baicar <baicar@os.amperecomputing.com>
+> This looks good to me, thanks, assuming this is net-next material.
 > 
-> Add support for parsing the ARM Error Source Table and basic handling of
-> errors reported through both memory mapped and system register interfaces.
+> Make sure next time to include the target tree (net or net-next)
 > 
-> Assume system register interfaces are only registered with private
-> peripheral interrupts (PPIs); otherwise there is no guarantee the
-> core handling the error is the core which took the error and has the
-> syndrome info in its system registers.
-> 
-> All detected errors will be collected to a workqueue in irq context and
-> print error information later.
-> 
-> Signed-off-by: Tyler Baicar <baicar@os.amperecomputing.com>
-> Signed-off-by: Ruidong Tian <tianruidong@linux.alibaba.com>
-> ---
->  MAINTAINERS                  |  11 +
->  arch/arm64/include/asm/ras.h |  38 ++
->  drivers/acpi/arm64/Kconfig   |  10 +
->  drivers/acpi/arm64/Makefile  |   1 +
->  drivers/acpi/arm64/aest.c    | 723 +++++++++++++++++++++++++++++++++++
->  include/linux/acpi_aest.h    |  91 +++++
->  include/linux/cpuhotplug.h   |   1 +
->  7 files changed, 875 insertions(+)
->  create mode 100644 arch/arm64/include/asm/ras.h
->  create mode 100644 drivers/acpi/arm64/aest.c
->  create mode 100644 include/linux/acpi_aest.h
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 2a7a90eeec49..5df845763a9c 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -329,6 +329,17 @@ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->  S:	Maintained
->  F:	drivers/acpi/arm64
->  
-> +ACPI AEST
-> +M:	Tyler Baicar <baicar@os.amperecomputing.com>
-> +M:	Ruidong Tian <tianruidond@linux.alibaba.com>
-> +L:	linux-acpi@vger.kernel.org
-> +L:	linux-arm-kernel@lists.infradead.org
-> +S:	Supported
-> +F:	arch/arm64/include/asm/ras.h
-> +F:	drivers/acpi/arm64/aest.c
-> +F:	include/linux/acpi_aest.h
-> +
-> +
->  ACPI FOR RISC-V (ACPI/riscv)
->  M:	Sunil V L <sunilvl@ventanamicro.com>
->  L:	linux-acpi@vger.kernel.org
-> diff --git a/arch/arm64/include/asm/ras.h b/arch/arm64/include/asm/ras.h
-> new file mode 100644
-> index 000000000000..2fb0d9741567
-> --- /dev/null
-> +++ b/arch/arm64/include/asm/ras.h
-> @@ -0,0 +1,38 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef __ASM_RAS_H
-> +#define __ASM_RAS_H
-> +
-> +#include <linux/types.h>
-> +#include <linux/bits.h>
-> +
-> +#define ERR_STATUS_AV		BIT(31)
-> +#define ERR_STATUS_V		BIT(30)
-> +#define ERR_STATUS_UE		BIT(29)
-> +#define ERR_STATUS_ER		BIT(28)
-> +#define ERR_STATUS_OF		BIT(27)
-> +#define ERR_STATUS_MV		BIT(26)
-> +#define ERR_STATUS_CE		(BIT(25) | BIT(24))
-> +#define ERR_STATUS_DE		BIT(23)
-> +#define ERR_STATUS_PN		BIT(22)
-> +#define ERR_STATUS_UET		(BIT(21) | BIT(20))
-> +#define ERR_STATUS_CI		BIT(19)
-> +#define ERR_STATUS_IERR 	GENMASK_ULL(15, 8)
-> +#define ERR_STATUS_SERR 	GENMASK_ULL(7, 0)
+> Reviewed-by: Eric Dumazet <edumazet@google.com>
 
-All these bits need to be defined in arch/arm64/tools/sysreg as
-ERXSTATUS_EL1 fields.
+Hi Eric Dumazet,
 
-> +
-> +/* These bit is write-one-to-clear */
-> +#define ERR_STATUS_W1TC 	(ERR_STATUS_AV | ERR_STATUS_V | ERR_STATUS_UE | \
-> +				ERR_STATUS_ER | ERR_STATUS_OF | ERR_STATUS_MV | \
-> +				ERR_STATUS_CE | ERR_STATUS_DE | ERR_STATUS_PN | \
-> +				ERR_STATUS_UET | ERR_STATUS_CI)
-> +
-> +#define RAS_REV_v1_1		0x1
+Thanks for the review.
 
-What is this? We already have ID_AA64PFR1_EL1.RAS_frac.
+Yes, I made this patch based on net-next.
 
-> +
-> +struct ras_ext_regs {
-> +	u64 err_fr;
-> +	u64 err_ctlr;
-> +	u64 err_status;
-> +	u64 err_addr;
-> +	u64 err_misc[4];
-> +};
-> +
-> +#endif	/* __ASM_RAS_H */
-> diff --git a/drivers/acpi/arm64/Kconfig b/drivers/acpi/arm64/Kconfig
-> index b3ed6212244c..639db671c5cf 100644
-> --- a/drivers/acpi/arm64/Kconfig
-> +++ b/drivers/acpi/arm64/Kconfig
-> @@ -21,3 +21,13 @@ config ACPI_AGDI
->  
->  config ACPI_APMT
->  	bool
-> +
-> +config ACPI_AEST
-> +	bool "ARM Error Source Table Support"
-> +
-> +	help
-> +	  The Arm Error Source Table (AEST) provides details on ACPI
-> +	  extensions that enable kernel-first handling of errors in a
-> +	  system that supports the Armv8 RAS extensions.
-> +
-> +	  If set, the kernel will report and log hardware errors.
-> diff --git a/drivers/acpi/arm64/Makefile b/drivers/acpi/arm64/Makefile
-> index 726944648c9b..5ea82b196b90 100644
-> --- a/drivers/acpi/arm64/Makefile
-> +++ b/drivers/acpi/arm64/Makefile
-> @@ -6,3 +6,4 @@ obj-$(CONFIG_ACPI_APMT) 	+= apmt.o
->  obj-$(CONFIG_ARM_AMBA)		+= amba.o
->  obj-y				+= dma.o init.o
->  obj-y				+= thermal_cpufreq.o
-> +obj-$(CONFIG_ACPI_AEST) 	+= aest.o
-> diff --git a/drivers/acpi/arm64/aest.c b/drivers/acpi/arm64/aest.c
-> new file mode 100644
-> index 000000000000..be0883316449
-> --- /dev/null
-> +++ b/drivers/acpi/arm64/aest.c
-> @@ -0,0 +1,723 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * ARM Error Source Table Support
-> + *
-> + * Copyright (c) 2021, Ampere Computing LLC
-> + * Copyright (c) 2021-2024, Alibaba Group.
-> + */
-> +
-> +#include <linux/acpi.h>
-> +#include <linux/acpi_aest.h>
-> +#include <linux/cpuhotplug.h>
-> +#include <linux/kernel.h>
-> +#include <linux/genalloc.h>
-> +#include <linux/llist.h>
-> +#include <acpi/actbl.h>
-> +#include <asm/ras.h>
-> +
-> +#undef pr_fmt
-> +#define pr_fmt(fmt) "ACPI AEST: " fmt
-> +
-> +#define CASE_READ_CLEAR(x, clear)					\
-> +	case (x): {							\
-> +		res = read_sysreg_s(SYS_##x##_EL1);			\
-> +		if (clear)						\
-> +			write_sysreg_s(0, SYS_##x##_EL1);		\
-> +		break;							\
-> +	}
-
-Please don't use macros with side effects. This is horrible to debug.
-Instead, *return* the value from the macro, or pass the variable you
-want to affect as a parameter.
-
-Also, what ensures the synchronisation of this write? How is the W1TC
-aspect enforced?
-
-> +
-> +#define CASE_WRITE(val, x)						\
-> +	case (x): {							\
-> +		write_sysreg_s((val), SYS_##x##_EL1);			\
-> +		break;							\
-> +	}
-> +
-> +static struct acpi_table_header *aest_table;
-> +
-> +static struct aest_node __percpu **ppi_data;
-> +
-> +static int *ppi_irqs;
-> +static u8 num_ppi;
-> +static u8 ppi_idx;
-> +
-> +static struct work_struct aest_work;
-> +
-> +static struct gen_pool *aest_node_pool;
-> +static struct llist_head aest_node_llist;
-> +
-> +/*
-> + * This memory pool is only to be used to save AEST node in AEST irq context.
-> + * Use 8 pages to save AEST node for now (~500 AEST node at most).
-> + */
-> +#define AEST_NODE_POOLSZ	(8 * PAGE_SIZE)
-
-This doesn't make sense. PAGE_SIZE is a variable concept (ranging from
-4 to 64kB). What is this "~500" number coming from? If you want to
-store a given number of records, allocate the size you actually want.
-
-> +
-> +static u64 aest_sysreg_read_clear(u64 base, u32 offset, bool clear)
-> +{
-> +	u64 res;
-> +
-> +	switch (offset) {
-> +	CASE_READ_CLEAR(ERXFR, clear)
-> +	CASE_READ_CLEAR(ERXCTLR, clear)
-> +	CASE_READ_CLEAR(ERXSTATUS, clear)
-> +	CASE_READ_CLEAR(ERXADDR, clear)
-> +	CASE_READ_CLEAR(ERXMISC0, clear)
-> +	CASE_READ_CLEAR(ERXMISC1, clear)
-> +	CASE_READ_CLEAR(ERXMISC2, clear)
-> +	CASE_READ_CLEAR(ERXMISC3, clear)
-> +	default :
-> +		res = 0;
-> +	}
-> +	return res;
-> +}
-> +
-> +static void aest_sysreg_write(u64 base, u32 offset, u64 val)
-> +{
-> +	switch (offset) {
-> +	CASE_WRITE(val, ERXFR)
-> +	CASE_WRITE(val, ERXCTLR)
-> +	CASE_WRITE(val, ERXSTATUS)
-> +	CASE_WRITE(val, ERXADDR)
-> +	CASE_WRITE(val, ERXMISC0)
-> +	CASE_WRITE(val, ERXMISC1)
-> +	CASE_WRITE(val, ERXMISC2)
-> +	CASE_WRITE(val, ERXMISC3)
-> +	default :
-> +		return;
-> +	}
-> +}
-> +
-> +static u64 aest_iomem_read_clear(u64 base, u32 offset, bool clear)
-> +{
-> +	u64 res;
-> +
-> +	res = readq((void *)(base + offset));
-> +	if (clear)
-> +		writeq(0, (void *)(base + offset));
-
-Do you need the explicit synchronisation? What ordering are you trying
-to guarantee?
-
-> +	return res;
-> +}
-> +
-> +static void aest_iomem_write(u64 base, u32 offset, u64 val)
-> +{
-> +	writeq(val, (void *)(base + offset));
-
-Same question.
-
-> +}
-> +
-> +static void aest_print(struct aest_node_llist *lnode)
-> +{
-> +	static atomic_t seqno;
-
-Uninitialised atomic?
-
-> +	unsigned int curr_seqno;
-> +	char pfx_seq[64];
-
-Magic number?
-
-> +	int index;
-> +	struct ras_ext_regs *regs;
-> +
-> +	curr_seqno = atomic_inc_return(&seqno);
-> +	snprintf(pfx_seq, sizeof(pfx_seq), "{%u}" HW_ERR, curr_seqno);
-> +	pr_info("%sHardware error from %s\n", pfx_seq, lnode->node_name);
-> +
-> +	switch (lnode->type) {
-> +	case ACPI_AEST_PROCESSOR_ERROR_NODE:
-> +		pr_err("%s Error from CPU%d\n", pfx_seq, lnode->id0);
-> +		break;
-> +	case ACPI_AEST_MEMORY_ERROR_NODE:
-> +		pr_err("%s Error from memory at SRAT proximity domain 0x%x\n",
-> +			pfx_seq, lnode->id0);
-> +		break;
-> +	case ACPI_AEST_SMMU_ERROR_NODE:
-> +		pr_err("%s Error from SMMU IORT node 0x%x subcomponent 0x%x\n",
-> +			pfx_seq, lnode->id0, lnode->id1);
-> +		break;
-> +	case ACPI_AEST_VENDOR_ERROR_NODE:
-> +		pr_err("%s Error from vendor hid 0x%x uid 0x%x\n",
-> +			pfx_seq, lnode->id0, lnode->id1);
-> +		break;
-> +	case ACPI_AEST_GIC_ERROR_NODE:
-> +		pr_err("%s Error from GIC type 0x%x instance 0x%x\n",
-> +			pfx_seq, lnode->id0, lnode->id1);
-> +		break;
-> +	default:
-> +		pr_err("%s Unknown AEST node type\n", pfx_seq);
-> +		return;
-> +	}
-> +
-> +	index = lnode->index;
-> +	regs = &lnode->regs;
-> +
-> +	pr_err("%s  ERR%uFR: 0x%llx\n", pfx_seq, index, regs->err_fr);
-> +	pr_err("%s  ERR%uCTRL: 0x%llx\n", pfx_seq, index, regs->err_ctlr);
-> +	pr_err("%s  ERR%uSTATUS: 0x%llx\n", pfx_seq, index, regs->err_status);
-> +	if (regs->err_status & ERR_STATUS_AV)
-> +		pr_err("%s  ERR%uADDR: 0x%llx\n", pfx_seq, index, regs->err_addr);
-> +
-> +	if (regs->err_status & ERR_STATUS_MV) {
-> +		pr_err("%s  ERR%uMISC0: 0x%llx\n", pfx_seq, index, regs->err_misc[0]);
-> +		pr_err("%s  ERR%uMISC1: 0x%llx\n", pfx_seq, index, regs->err_misc[1]);
-> +		pr_err("%s  ERR%uMISC2: 0x%llx\n", pfx_seq, index, regs->err_misc[2]);
-> +		pr_err("%s  ERR%uMISC3: 0x%llx\n", pfx_seq, index, regs->err_misc[3]);
-> +	}
-> +}
-> +
-> +
-> +static void aest_node_pool_process(struct work_struct *__unused)
-> +{
-> +	struct llist_node *head;
-> +	struct aest_node_llist *lnode, *tmp;
-> +
-> +	head = llist_del_all(&aest_node_llist);
-> +	if (!head)
-> +		return;
-> +
-> +	head = llist_reverse_order(head);
-> +	llist_for_each_entry_safe(lnode, tmp, head, llnode) {
-> +		aest_print(lnode);
-> +		gen_pool_free(aest_node_pool, (unsigned long)lnode,
-> +				sizeof(*lnode));
-> +	}
-> +}
-> +
-> +static int aest_node_gen_pool_add(struct aest_node *node, int index,
-> +				struct ras_ext_regs *regs)
-> +{
-> +	struct aest_node_llist *list;
-> +
-> +	if (!aest_node_pool)
-> +		return -EINVAL;
-> +
-> +	list = (void *)gen_pool_alloc(aest_node_pool, sizeof(*list));
-> +	if (!list)
-> +		return -ENOMEM;
-> +
-> +	list->type = node->type;
-> +	list->node_name = node->name;
-> +	switch (node->type) {
-> +	case ACPI_AEST_PROCESSOR_ERROR_NODE:
-> +		list->id0 = node->spec.processor.processor_id;
-> +		if (node->spec.processor.flags & (ACPI_AEST_PROC_FLAG_SHARED |
-> +						ACPI_AEST_PROC_FLAG_GLOBAL))
-> +			list->id0 = smp_processor_id();
-> +
-> +		list->id1 = node->spec.processor.resource_type;
-> +		break;
-> +	case ACPI_AEST_MEMORY_ERROR_NODE:
-> +		list->id0 = node->spec.memory.srat_proximity_domain;
-> +		break;
-> +	case ACPI_AEST_SMMU_ERROR_NODE:
-> +		list->id0 = node->spec.smmu.iort_node_reference;
-> +		list->id1 = node->spec.smmu.subcomponent_reference;
-> +		break;
-> +	case ACPI_AEST_VENDOR_ERROR_NODE:
-> +		list->id0 = node->spec.vendor.acpi_hid;
-> +		list->id1 = node->spec.vendor.acpi_uid;
-> +		break;
-> +	case ACPI_AEST_GIC_ERROR_NODE:
-> +		list->id0 = node->spec.gic.interface_type;
-> +		list->id1 = node->spec.gic.instance_id;
-> +		break;
-> +	default:
-> +		list->id0 = 0;
-> +		list->id1 = 0;
-> +	}
-> +
-> +	memcpy(&list->regs, regs, sizeof(*regs));
-
-You have vmalloced the record. Why do you need to copy it instead of
-simply pointing to it?
-
-> +	list->index = index;
-> +	llist_add(&list->llnode, &aest_node_llist);
-> +
-> +	return 0;
-> +}
-> +
-> +static int aest_node_pool_init(void)
-> +{
-> +	unsigned long addr, size;
-> +	int rc;
-> +
-> +	if (aest_node_pool)
-> +		return 0;
-> +
-> +	aest_node_pool = gen_pool_create(ilog2(sizeof(struct aest_node_llist)), -1);
-> +	if (!aest_node_pool)
-> +		return -ENOMEM;
-> +
-> +	size = PAGE_ALIGN(AEST_NODE_POOLSZ);
-> +	addr = (unsigned long)vmalloc(size);
-> +	if (!addr)
-> +		goto err_pool_alloc;
-> +
-> +	rc = gen_pool_add(aest_node_pool, addr, size, -1);
-> +	if (rc)
-> +		goto err_pool_add;
-> +
-> +	return 0;
-> +
-> +err_pool_add:
-> +	vfree((void *)addr);
-> +
-> +err_pool_alloc:
-> +	gen_pool_destroy(aest_node_pool);
-> +
-> +	return -ENOMEM;
-> +}
-> +
-> +static void aest_log(struct aest_node *node, int index, struct ras_ext_regs *regs)
-> +{
-> +	if (!aest_node_gen_pool_add(node, index, regs))
-> +		schedule_work(&aest_work);
-> +}
-> +
-> +/*
-> + * you must select cpu number first in order to operate RAS register belonged
-> + * that cpu.
-> + */
-> +static void aest_select_cpu(struct aest_node *node, int i)
-> +{
-> +	if (node->interface.type == ACPI_AEST_NODE_SYSTEM_REGISTER) {
-> +		write_sysreg_s(i, SYS_ERRSELR_EL1);
-
-ERRSELR_EL1 doesn't select a CPU. It selects a RAS record. How records
-and CPUs are mapped isn't specified in the architecture.
-
-> +		isb();
-> +	}
-> +}
-> +
-> +static void aest_proc(struct aest_node *node)
-> +{
-> +	struct ras_ext_regs regs = {0};
-> +	struct aest_access *access;
-> +	int i;
-> +	u64 regs_p;
-> +
-> +
-> +	for (i = node->interface.record_start; i < node->interface.record_end; i++) {
-> +		/* 1b: Error record at i index is not implemented */
-> +		if (test_bit(i, &node->interface.record_implemented))
-> +			continue;
-> +
-> +		aest_select_cpu(node, i);
-> +
-> +		access = node->access;
-> +		regs_p = (u64)&node->interface.regs[i];
-> +
-> +		regs.err_status = access->read_clear(regs_p, ERXSTATUS, false);
-> +		if (!(regs.err_status & ERR_STATUS_V))
-> +			continue;
-> +
-> +		if (regs.err_status & ERR_STATUS_AV)
-> +			regs.err_addr = access->read_clear(regs_p, ERXADDR, false);
-> +
-> +		regs.err_fr = access->read_clear(regs_p, ERXFR, false);
-> +		regs.err_ctlr = access->read_clear(regs_p, ERXCTLR, false);
-> +
-> +		if (regs.err_status & ERR_STATUS_MV) {
-> +			bool clear = node->interface.flags & ACPI_AEST_INTERFACE_CLEAR_MISC;
-> +
-> +			regs.err_misc[0] = access->read_clear(regs_p, ERXMISC0, clear);
-> +			regs.err_misc[1] = access->read_clear(regs_p, ERXMISC1, clear);
-> +			regs.err_misc[2] = access->read_clear(regs_p, ERXMISC2, clear);
-> +			regs.err_misc[3] = access->read_clear(regs_p, ERXMISC3, clear);
-> +		}
-> +
-> +		aest_log(node, i, &regs);
-> +
-> +		if (regs.err_status & ERR_STATUS_UE)
-> +			panic("AEST: uncorrectable error encountered");
-> +
-> +		/* Write-one-to-clear the bits we've seen */
-> +		regs.err_status &= ERR_STATUS_W1TC;
-> +
-> +		/* Multi bit filed need to write all-ones to clear. */
-> +		if (regs.err_status & ERR_STATUS_CE)
-> +			regs.err_status |= ERR_STATUS_CE;
-> +
-> +		/* Multi bit filed need to write all-ones to clear. */
-> +		if (regs.err_status & ERR_STATUS_UET)
-> +			regs.err_status |= ERR_STATUS_UET;
-> +
-> +		access->write(regs_p, ERXSTATUS, regs.err_status);
-> +	}
-> +}
-> +
-> +static irqreturn_t aest_irq_func(int irq, void *input)
-> +{
-> +	struct aest_node *node = input;
-> +
-> +	aest_proc(node);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static int __init aest_register_gsi(u32 gsi, int trigger, void *data,
-> +					irq_handler_t aest_irq_func)
-> +{
-> +	int cpu, irq;
-> +
-> +	irq = acpi_register_gsi(NULL, gsi, trigger, ACPI_ACTIVE_HIGH);
-> +
-> +	if (irq == -EINVAL) {
-> +		pr_err("failed to map AEST GSI %d\n", gsi);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (gsi < 16) {
-> +		pr_err("invalid GSI %d\n", gsi);
-> +		return -EINVAL;
-> +	} else if (gsi < 32) {
-> +		if (ppi_idx >= AEST_MAX_PPI) {
-> +			pr_err("Unable to register PPI %d\n", gsi);
-> +			return -EINVAL;
-> +		}
-> +		ppi_irqs[ppi_idx] = irq;
-> +		enable_percpu_irq(irq, IRQ_TYPE_NONE);
-
-Enabling the PPI before requesting it? Looks... great. And how does
-this work on a system that supports EPPIs, which are in the
-[1119:1056] range?
-
-Also, if you get a trigger as a parameter, why the IRQ_TYPE_NONE?
-
-
-> +		for_each_possible_cpu(cpu) {
-> +			memcpy(per_cpu_ptr(ppi_data[ppi_idx], cpu), data,
-> +			       sizeof(struct aest_node));
-> +		}
-> +		if (request_percpu_irq(irq, aest_irq_func, "AEST",
-> +				       ppi_data[ppi_idx++])) {
-> +			pr_err("failed to register AEST IRQ %d\n", irq);
-> +			return -EINVAL;
-> +		}
-> +	} else if (gsi < 1020) {
-> +		if (request_irq(irq, aest_irq_func, IRQF_SHARED, "AEST",
-> +				data)) {
-
-Why SHARED? Who would share a RAS interrupt?????
-
-> +			pr_err("failed to register AEST IRQ %d\n", irq);
-> +			return -EINVAL;
-
-Same question about extended SPIs.
-
-All in all, this whole logic is totally useless. It isn't the driver's
-job to classify the GIC INTIDs...
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+Sorry for the oversight, I will add the target tree next time.
 
