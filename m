@@ -1,80 +1,132 @@
-Return-Path: <linux-kernel+bounces-91180-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91181-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5777870AB7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:30:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A4FA870AB8
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:30:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D83531C21E67
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:30:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D18A1C21CD0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:30:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BE417995A;
-	Mon,  4 Mar 2024 19:30:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B797B79DDE;
+	Mon,  4 Mar 2024 19:30:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b="H9O9cVle"
-Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WUM/5z2h"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A3B079934;
-	Mon,  4 Mar 2024 19:29:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.194.8.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F70D79DD6
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 19:30:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709580604; cv=none; b=cZ3RS5CGwckDcDWpFa5IHabb5eCnM3Tcr30Z2hajAVbyU+j3G/koiV+shkp7L9JaTU8bKA+ecrXATSHESDi28adp3KKN6RdfmwwvcYKz8EaKAo0ohnplwvNcppSDXJJhjclhLVvTATkFic+Wa5OHiQ+Cduyc55ipcJzwz08m2f8=
+	t=1709580615; cv=none; b=URxsY2zAOeAr3KinHIUKv+nsf7ROw6LblsX7gXZIynbsvy1gY9S6qK2nUf9qljk7DpwJkmMwLsXEu5F7Qv/tGd1aWRXgMTI1YXzzXuCD+jVbrUkHeRCtXqhWetdRqv3+QbpREBl6L3oV+mydEGnIiX2NvS3fUU4tcDr3ekdPAEA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709580604; c=relaxed/simple;
-	bh=OHHQkLHOYhKzzUAIATtYY0qzmwZeAs+dZRjgbBX/R1s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HyyVI/6gB5cqjWUox8ESQKioo1H6q8+wnd4m445g4zMUVhnyYvIKKfnf+Eei+Z/T76D32boMJrewMsGWKYactfzavIJp5saX6iybaDEQAyiFEeBoNB5nePADUjvSa+xR0MqdkV8Si55YoMzLjORYCy2H9l4EC/cGePf1S529VC0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it; spf=pass smtp.mailfrom=dolcini.it; dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b=H9O9cVle; arc=none smtp.client-ip=217.194.8.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
-Received: from francesco-nb (31-10-206-125.static.upc.ch [31.10.206.125])
-	by mail11.truemail.it (Postfix) with ESMTPA id 3B4A320272;
-	Mon,  4 Mar 2024 20:29:57 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dolcini.it;
-	s=default; t=1709580597;
-	bh=gYZ+/ZNs5fL/27laenTgswxEUSGg+HFZXtEGcfk/WM8=; h=From:To:Subject;
-	b=H9O9cVlewkYHIk3S/Cj4ZSQ5uqbe4unbHVBrnYKoUOdB0fHbS4ZOkyP9HhYp2Llsi
-	 +klTM/4bR/M27dzGGAZr9au1TAgEPFWH4BOqosriFlWqGmS1bECUR2eNBx728/totM
-	 mijIwfXuGK6zuv+T75j5pgjoZ/t4nJF1F2tiAgiWtUz3HokTRmPsw78KevG2SPDwWW
-	 MATWS6uNniA3F2V0CNWRVMnA5CYqhAh8dOHXBR3Yt903uKL4IqDdPtbxo/nhj3RNGB
-	 YR6+j2AiuBFFM6JHWfBpGXiKlj/7kez9vP3/gusltez2nO6LUpoJ9QUgOlbrXNZlRb
-	 ydDhF8L6/hFmA==
-Date: Mon, 4 Mar 2024 20:29:52 +0100
-From: Francesco Dolcini <francesco@dolcini.it>
-To: Neeraj Sanjay Kale <neeraj.sanjaykale@nxp.com>
-Cc: marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
-	amitkumar.karwar@nxp.com, rohit.fule@nxp.com, sherry.sun@nxp.com,
-	linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org
-Subject: Re: [PATCH v2] Bluetooth: btnxpuart: Enable Power Save feature on
- startup
-Message-ID: <20240304192952.GA17410@francesco-nb>
-References: <20240304170753.500074-1-neeraj.sanjaykale@nxp.com>
+	s=arc-20240116; t=1709580615; c=relaxed/simple;
+	bh=N0+dVA/LrZJxmJ2LqiDpPOLemlHNFaSbv/OgoIwc3rU=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=E2nQ9zTwB6cUBqbCxSDjA2tW9CXrrJqfp43coZIUGoC2gLR/6TF6reYKlbtm37CDvv0suJYJK67QwrCGXbudxYD7AiTK74O/C/exrCay+bZSyFmx68OiEThuQlVNVn7IZtbfUx2+pqO+hc7ED64jrP77iFjmd/aVLFdHRhD1Lmk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WUM/5z2h; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709580612;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eZiRoNZpJWWKK/cOdoxLY/19xwv2y7y2vYTfMraz1OY=;
+	b=WUM/5z2hiMevmyvHtx/KJb4GWS+Yk6/OJE39Ung6QOt/w+tXHkM48ow3BbuoNWuTTgu80m
+	8yAzsW/wMOS6wchp33/x08xNIJDHfAG6da9suJFiUpLw74Fpk7avbrMEdP3rqXSFiq5mRn
+	o7dVughFMlW6R41Nu+zoAvxMWO0sSZg=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-633-T1uQzw1pPLycaiypK-qdqA-1; Mon, 04 Mar 2024 14:30:11 -0500
+X-MC-Unique: T1uQzw1pPLycaiypK-qdqA-1
+Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-6903611eef7so73681146d6.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 11:30:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709580610; x=1710185410;
+        h=mime-version:user-agent:content-transfer-encoding:organization
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eZiRoNZpJWWKK/cOdoxLY/19xwv2y7y2vYTfMraz1OY=;
+        b=ZODjFZVuJXCxcTHZ6XKhKfzYHGS0UqOOdwMwVe38Nxb8xm5akOBSJWwebQDODvpeiB
+         ehvDvVd8SzxFScAAcqxEPN/jZitdjG8/gjwR2N93ANwwcPYmcd/x8cnk4gOJv+sq8AhJ
+         BJzevsZbzpuxPSGHFRBOBWqnvS9Jk4NbkmZVBkX455bLledUVoDAq14hJameK73mn1Za
+         YAV4DW37cCLwN7GBbDPEylOgnwIrMb9C1Zs0I0A/v/pFUsxX2yeG4Wiz3++ME+hm+SkO
+         9OXQYlsM7ao79WBklPd0SI9cpjOI5Der4j4bzHvtp73MHnMh6vEe8oby3Tr7I3mSsDnP
+         XL9A==
+X-Forwarded-Encrypted: i=1; AJvYcCW9x5fWP7p0StW4JaDbEASBf4iSmHeUQIanKwV4OOcHOWWwF1nMaxU6mX3O5bHTxdaVUcA7hba4mT+VyzSYTydunKqNFG4eQLXe/Udv
+X-Gm-Message-State: AOJu0YyITXbN4ZFcCInVIFVC8dXYG9tFT9kOvBKbS8ImIkMcPunnaddJ
+	QmDxEvlVnFAcQkBUfP2QiSCYAOwBzDpWSMG3MASWfkqRzyY0PPtnJ7MbZCqiA/BQFdQ8RaYRudl
+	WX+wPycB7pdLMJOwK2xecVewmvPjkZKxWm4RLT424YRxxVk4PgtaUDwuKTGOAYw==
+X-Received: by 2002:a0c:e6a4:0:b0:690:4724:777c with SMTP id j4-20020a0ce6a4000000b006904724777cmr10059759qvn.35.1709580610577;
+        Mon, 04 Mar 2024 11:30:10 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHQoAv9sj9nxd+niUS6DSSnJifmdH5VWrZcwBNdh3HO60CPXPf5TWq0bZW09NJkHf71aBle2Q==
+X-Received: by 2002:a0c:e6a4:0:b0:690:4724:777c with SMTP id j4-20020a0ce6a4000000b006904724777cmr10059744qvn.35.1709580610325;
+        Mon, 04 Mar 2024 11:30:10 -0800 (PST)
+Received: from ?IPv6:2600:4040:5c6c:a300::feb? ([2600:4040:5c6c:a300::feb])
+        by smtp.gmail.com with ESMTPSA id qj22-20020a056214321600b0068f73372424sm5418384qvb.90.2024.03.04.11.30.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Mar 2024 11:30:09 -0800 (PST)
+Message-ID: <14f1d3efc0bef057a51748db6fe95fcd22f3b34c.camel@redhat.com>
+Subject: Re: [PATCH 1/2] drm/nouveau: fix stale locked mutex in
+ nouveau_gem_ioctl_pushbuf
+From: Lyude Paul <lyude@redhat.com>
+To: Karol Herbst <kherbst@redhat.com>, linux-kernel@vger.kernel.org
+Cc: Danilo Krummrich <dakr@redhat.com>, dri-devel@lists.freedesktop.org, 
+	nouveau@lists.freedesktop.org
+Date: Mon, 04 Mar 2024 14:30:08 -0500
+In-Reply-To: <20240304183157.1587152-1-kherbst@redhat.com>
+References: <20240304183157.1587152-1-kherbst@redhat.com>
+Organization: Red Hat Inc.
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240304170753.500074-1-neeraj.sanjaykale@nxp.com>
 
-On Mon, Mar 04, 2024 at 10:37:53PM +0530, Neeraj Sanjay Kale wrote:
-> This sets the default power save mode setting to enabled.
-> 
-> The power save feature is now stable and stress test issues, such as the
-> TX timeout error, have been resolved.
+Reviewed-by: Lyude Paul <lyude@redhat.com>
 
-I assume that the stability issue has been fixed in firmware, correct?
-What's going to happen if running the updated driver with old firmware?
-What about combo Wi-Fi/BT firmware files, were those updated? I'm
-currently using this driver with this firmware [1]
+On Mon, 2024-03-04 at 19:31 +0100, Karol Herbst wrote:
+> If VM_BIND is enabled on the client the legacy submission ioctl can't be
+> used, however if a client tries to do so regardless it will return an
+> error. In this case the clients mutex remained unlocked leading to a
+> deadlock inside nouveau_drm_postclose or any other nouveau ioctl call.
+>=20
+> Fixes: b88baab82871 ("drm/nouveau: implement new VM_BIND uAPI")
+> Cc: Danilo Krummrich <dakr@redhat.com>
+> Signed-off-by: Karol Herbst <kherbst@redhat.com>
+> ---
+>  drivers/gpu/drm/nouveau/nouveau_gem.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/nouveau/nouveau_gem.c b/drivers/gpu/drm/nouv=
+eau/nouveau_gem.c
+> index 49c2bcbef1299..5a887d67dc0e8 100644
+> --- a/drivers/gpu/drm/nouveau/nouveau_gem.c
+> +++ b/drivers/gpu/drm/nouveau/nouveau_gem.c
+> @@ -764,7 +764,7 @@ nouveau_gem_ioctl_pushbuf(struct drm_device *dev, voi=
+d *data,
+>  		return -ENOMEM;
+> =20
+>  	if (unlikely(nouveau_cli_uvmm(cli)))
+> -		return -ENOSYS;
+> +		return nouveau_abi16_put(abi16, -ENOSYS);
+> =20
+>  	list_for_each_entry(temp, &abi16->channels, head) {
+>  		if (temp->chan->chid =3D=3D req->channel) {
 
-[1] https://github.com/nxp-imx/imx-firmware/blob/lf-5.15.52_2.1.0/nxp/FwImage_IW416_SD/sdiouartiw416_combo_v0.bin
-
-Francesco
+--=20
+Cheers,
+ Lyude Paul (she/her)
+ Software Engineer at Red Hat
 
 
