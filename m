@@ -1,209 +1,151 @@
-Return-Path: <linux-kernel+bounces-91205-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91206-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26949870B2E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:07:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EA6B870B34
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:10:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B36DD287BC2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:07:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6F76B22409
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:10:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 381AB7A150;
-	Mon,  4 Mar 2024 20:07:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6752379925;
+	Mon,  4 Mar 2024 20:10:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zv8M//rr"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PYxUFNrp"
+Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com [209.85.222.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F0217995F;
-	Mon,  4 Mar 2024 20:07:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A1CD7A12E
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 20:10:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709582864; cv=none; b=iSD4xRqi8ErxJWxJxMKLMUnBiVWYuOkSmbuJq9puFpDxtNrohoXbZ9WcJ9NV7zQFpMcWFKWXJqhibJupszC0kyLtRcQu3/MjqxqFhcMBAfmjSu1oeovQJeFaw6vJVZ1VU8jmFJ6x8R83wXvss8SkkykHavrK4iBOWqRSrKGJFJc=
+	t=1709583025; cv=none; b=BeuI7Ickkd3SZrckvqOIWQuzkmYSIFC1nI5d50SIDS+AwUojWMHJexPfnCCSr22HZgBskJewAxJ9oeW6xB99NNkFTttiAH8X09mRpVCKlI5cYyJFgJtTNWTgnEEm5mdJfnY+baoh8YnJevFFmN+3Urrpq/M+Zo54biofg/LUx68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709582864; c=relaxed/simple;
-	bh=rxDEV3N7EKQdsIQOLDUfRTkpb7cFIvo3F8fg01dVwRs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gkb/0+mEH4wuPYj3k5XVkvO8Dw4tbiryV2e6vClr25TlR4GCpMoYpF+82tbSNj6rmn+dyT2VZM9GYA5alRS1n9vLOOlxuRqo4hl7z5MWeeLmzwQM4dEnimn/K7o7gDsVk7rSlHPWYSyTjihUeIl1tmRe/Kmw9Tt9DZNyaoyKO68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zv8M//rr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC525C433C7;
-	Mon,  4 Mar 2024 20:07:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709582863;
-	bh=rxDEV3N7EKQdsIQOLDUfRTkpb7cFIvo3F8fg01dVwRs=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=Zv8M//rr2IL8nsFMGCvFoGPdtHjhU2LSfZiDzXCU8Q18POe7eD9orzOh/ZacOFMta
-	 aIRJImzgxiEp5EaYGojWJ/Osctuq3eBtYVKcIFqW8FJhrMFJbraGw58rV2iStfoQpb
-	 BnV69K8jFTt471YprBBuiqPCG5PDzrdIccBOwlbmilUqooBYpxVi9oycDkdX6mpZjm
-	 xUBeBftmQV8BBxY2sME5UojTpshHJxptPyCf8QGNfKaJ/wu3GWLDk1TgqeW5nzTufq
-	 ++ktAIfPGJgvZFh4XttGeCos0Jhn9nVXi0J0hHI14mdaL1zmU1i6OErHwSv2DOmbMd
-	 wjb4nswzxrFJg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 60D4BCE049E; Mon,  4 Mar 2024 12:07:43 -0800 (PST)
-Date: Mon, 4 Mar 2024 12:07:43 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Uladzislau Rezki <urezki@gmail.com>
-Cc: Frederic Weisbecker <frederic@kernel.org>, RCU <rcu@vger.kernel.org>,
-	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
-	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH v5 2/4] rcu: Reduce synchronize_rcu() latency
-Message-ID: <aa431a31-e9a3-4a6c-b2a7-f0e09794ca4c@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240220183115.74124-1-urezki@gmail.com>
- <20240220183115.74124-3-urezki@gmail.com>
- <Zd0ZtNu+Rt0qXkfS@lothringen>
- <Zd91pR0fjiCUZTtP@pc636>
- <ZeW2w08WZo4yapQp@localhost.localdomain>
- <ZeX1cXWKv2kirDXg@pc638.lan>
+	s=arc-20240116; t=1709583025; c=relaxed/simple;
+	bh=kdQKu3RoxSzAKnls9h9y9cqdioEJoGugPDVhLaSIEWc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OQCL9I9bDwF1ek9zTyAVmyewvyJSFW7qX+axyYXwiQ0UYQ6B7T1qQY72lpwZgkIWg+yt6JxbQtW5QrKjDm97FChke8O4sehmmrp60ABVpUHMZwvL3oVorGYlgPcXgmRe3+bJemd/+MNdKs1Cv93+69IYPUqnoV5L0PHVLiA2xDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PYxUFNrp; arc=none smtp.client-ip=209.85.222.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ua1-f44.google.com with SMTP id a1e0cc1a2514c-7d5c40f874aso2795848241.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 12:10:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709583023; x=1710187823; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kdQKu3RoxSzAKnls9h9y9cqdioEJoGugPDVhLaSIEWc=;
+        b=PYxUFNrpyCeymfEAxMBzc4agC+5XiwQCCZYnTUkmQFqdDahVVc4vUxnB8DcSKoY5bq
+         4geU2Yr0BX0rURJWivnGOQoqRhyW6uAx3mytZBhDA2uS2Y1aBhIIORC1Lxo2MyTPc3mW
+         QDdVn9UAphU/f0pxlRUIbEta03BZACtTBHAWlxr49iK08KKJzU6pGykqeyQyMDHMTHT6
+         WEiHYJ0tGKHKYpw/OdPnQbHiBE/d/pCpf4q3hgJIbRPh/oyzKiBfPHK259AFDxVZca3n
+         Io6XR8wxU2YWx/V9XapFB9/uHQNugXXctpB9N57qtQTBuNunb1yenSV/ZNTcGkQf+LkU
+         +U8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709583023; x=1710187823;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kdQKu3RoxSzAKnls9h9y9cqdioEJoGugPDVhLaSIEWc=;
+        b=hra9wksk/Kf08YeKLmMFSoSoES9gORVob+aIqsPwpPU/kKjIs/OQAoy71OYQ9RQQ69
+         Jf9WCdGLysi7oshu/pPSNaXobzi3KEAPDA3u9ujKvt0AOR0DZX2myo8olDL6bN9qZW0Y
+         OUXB0Qb0xN1795Wa1lKc0xaXEkbjq+IFSTVViVq+MB9lh1HudQtwfPmfX443XsjaXlAb
+         uSNOazIA9yTMmTW/wdIQWdBbZptN1r7dSzzvU8VTwJxnoY3gOGqW8+6Flxj/pn91Xo6a
+         bbYVvmkd2VP+b6cVGCNbdoZcRBoAzFTiUTNdTa2iJa5gT62C1H1xzKATxJfOhanmzAfD
+         rHew==
+X-Forwarded-Encrypted: i=1; AJvYcCWz6CkwT5PJkuQSXhYym9TUuRAnAjJ+dtqBN95afgga8kKr4no80py51bvCErDzAQ6wLoqMqhYih1C5gcdM72FpdgNqNL8lsl0jQLvU
+X-Gm-Message-State: AOJu0YxDJBfmXuRUAxdDvMVqznKjP3KBiqBIu5YnvGWEV5qUt/l8HgCk
+	jbl2txVtp9H63J8k7nihdifTFTDlr2HyEjHEvccCSncxk5hQWYzVtNiw8gu/2cjuHjqW4DyEE77
+	GvmFY9kNSfQffMY4ZxTsCPx2M2KL6r64jyT8U
+X-Google-Smtp-Source: AGHT+IEVa0EzaUVXzcVxUqw7hDykrrvfsa29Bpt49sVGOlnxc+uITAdGh6g6OsI7IoCnd6Z9sxW1oBlNNGF5IRZ3iR4=
+X-Received: by 2002:a05:6102:3a66:b0:470:c99d:6776 with SMTP id
+ bf6-20020a0561023a6600b00470c99d6776mr7873661vsb.13.1709583022912; Mon, 04
+ Mar 2024 12:10:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZeX1cXWKv2kirDXg@pc638.lan>
+References: <20240304-shadow-call-stack-v1-1-f055eaf40a2c@google.com>
+In-Reply-To: <20240304-shadow-call-stack-v1-1-f055eaf40a2c@google.com>
+From: Sami Tolvanen <samitolvanen@google.com>
+Date: Mon, 4 Mar 2024 12:09:44 -0800
+Message-ID: <CABCJKuem3GbLO-G7+wi8LPA8rFgNzFVjNof7zcAO1UGJR4u44Q@mail.gmail.com>
+Subject: Re: [PATCH] rust: add flags for shadow call stack sanitizer
+To: Alice Ryhl <aliceryhl@google.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Jamie Cunliffe <Jamie.Cunliffe@arm.com>, Masahiro Yamada <masahiroy@kernel.org>, 
+	Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, Ard Biesheuvel <ardb@kernel.org>, 
+	Marc Zyngier <maz@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mark Brown <broonie@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Kees Cook <keescook@chromium.org>, 
+	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, rust-for-linux@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 04, 2024 at 05:23:13PM +0100, Uladzislau Rezki wrote:
-> On Mon, Mar 04, 2024 at 12:55:47PM +0100, Frederic Weisbecker wrote:
-> > Le Wed, Feb 28, 2024 at 07:04:21PM +0100, Uladzislau Rezki a écrit :
-> > > On Tue, Feb 27, 2024 at 12:07:32AM +0100, Frederic Weisbecker wrote:
-> > > > On Tue, Feb 20, 2024 at 07:31:13PM +0100, Uladzislau Rezki (Sony) wrote:
-> > > > > +static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
-> > > > > +{
-> > > > > +	struct llist_node *done, *rcu, *next, *head;
-> > > > > +
-> > > > > +	/*
-> > > > > +	 * This work execution can potentially execute
-> > > > > +	 * while a new done tail is being updated by
-> > > > > +	 * grace period kthread in rcu_sr_normal_gp_cleanup().
-> > > > > +	 * So, read and updates of done tail need to
-> > > > > +	 * follow acq-rel semantics.
-> > > > > +	 *
-> > > > > +	 * Given that wq semantics guarantees that a single work
-> > > > > +	 * cannot execute concurrently by multiple kworkers,
-> > > > > +	 * the done tail list manipulations are protected here.
-> > > > > +	 */
-> > > > > +	done = smp_load_acquire(&rcu_state.srs_done_tail);
-> > > > > +	if (!done)
-> > > > > +		return;
-> > > > > +
-> > > > > +	WARN_ON_ONCE(!rcu_sr_is_wait_head(done));
-> > > > > +	head = done->next;
-> > > > > +	done->next = NULL;
-> > > > 
-> > > > Can the following race happen?
-> > > > 
-> > > > CPU 0                                                   CPU 1
-> > > > -----                                                   -----
-> > > > 
-> > > > // wait_tail == HEAD1
-> > > > rcu_sr_normal_gp_cleanup() {
-> > > >     // has passed SR_MAX_USERS_WAKE_FROM_GP
-> > > >     wait_tail->next = next;
-> > > >     // done_tail = HEAD1
-> > > >     smp_store_release(&rcu_state.srs_done_tail, wait_tail);
-> > > >     queue_work() {
-> > > >         test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work)
-> > > >         __queue_work()
-> > > >     }
-> > > > }
-> > > > 
-> > > >                                                       set_work_pool_and_clear_pending()
-> > > >                                                       rcu_sr_normal_gp_cleanup_work() {
-> > > > // new GP, wait_tail == HEAD2
-> > > > rcu_sr_normal_gp_cleanup() {
-> > > >     // executes all completion, but stop at HEAD1
-> > > >     wait_tail->next = HEAD1;
-> > > >     // done_tail = HEAD2
-> > > >     smp_store_release(&rcu_state.srs_done_tail, wait_tail);
-> > > >     queue_work() {
-> > > >         test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work)
-> > > >         __queue_work()
-> > > >     }
-> > > > }
-> > > >                                                           // done = HEAD2
-> > > >                                                           done = smp_load_acquire(&rcu_state.srs_done_tail);
-> > > >                                                           // head = HEAD1
-> > > >                                                           head = done->next;
-> > > >                                                           done->next = NULL;
-> > > >                                                           llist_for_each_safe() {
-> > > >                                                               // completes all callbacks, release HEAD1
-> > > >                                                           }
-> > > >                                                       }
-> > > >                                                       // Process second queue
-> > > >                                                       set_work_pool_and_clear_pending()
-> > > >                                                       rcu_sr_normal_gp_cleanup_work() {
-> > > >                                                           // done = HEAD2
-> > > >                                                           done = smp_load_acquire(&rcu_state.srs_done_tail);
-> > > > 
-> > > > // new GP, wait_tail == HEAD3
-> > > > rcu_sr_normal_gp_cleanup() {
-> > > >     // Finds HEAD2 with ->next == NULL at the end
-> > > >     rcu_sr_put_wait_head(HEAD2)
-> > > >     ...
-> > > > 
-> > > > // A few more GPs later
-> > > > rcu_sr_normal_gp_init() {
-> > > >      HEAD2 = rcu_sr_get_wait_head();
-> > > >      llist_add(HEAD2, &rcu_state.srs_next);
-> > > >                                                           // head == rcu_state.srs_next
-> > > >                                                           head = done->next;
-> > > >                                                           done->next = NULL;
-> > > >                                                           llist_for_each_safe() {
-> > > >                                                               // EXECUTE CALLBACKS TOO EARLY!!!
-> > > >                                                           }
-> > > >                                                       }
-> > > Looks like that. To address this, we should not release the head in the GP
-> > > > kthread.
-> > 
-> > But then you have to unconditionally schedule the work, right? Otherwise the
-> > HEADs are not released. And that means dropping this patch (right now I don't
-> > have a better idea).
-> >
-> The easiest way is to drop the patch. To address it we can go with:
-> 
-> <snip>
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 31f3a61f9c38..9aa2cd46583e 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -1661,16 +1661,8 @@ static void rcu_sr_normal_gp_cleanup(void)
->  	 * wait-head is released if last. The worker is not kicked.
->  	 */
->  	llist_for_each_safe(rcu, next, wait_tail->next) {
-> -		if (rcu_sr_is_wait_head(rcu)) {
-> -			if (!rcu->next) {
-> -				rcu_sr_put_wait_head(rcu);
-> -				wait_tail->next = NULL;
-> -			} else {
-> -				wait_tail->next = rcu;
-> -			}
-> -
-> +		if (rcu_sr_is_wait_head(rcu))
->  			break;
-> -		}
->  
->  		rcu_sr_normal_complete(rcu);
->  		// It can be last, update a next on this step.
-> <snip>
-> 
-> i.e. the process of users from GP is still there. The work is triggered
-> to perform a final complete(if there are users) + releasing wait-heads
-> so we do not race anymore.
-> 
-> I am OK with both cases. Dropping the patch will make it more simple
-> for sure.
+On Mon, Mar 4, 2024 at 5:17=E2=80=AFAM Alice Ryhl <aliceryhl@google.com> wr=
+ote:
+>
+> Add flags to support the shadow call stack sanitizer, both in the
+> dynamic and non-dynamic modes.
+>
+> Right now, the compiler will emit the warning "unknown feature specified
+> for `-Ctarget-feature`: `reserve-x18`". However, the compiler still
+> passes it to the codegen backend, so the flag will work just fine. Once
+> rustc starts recognizing the flag (or provides another way to enable the
+> feature), it will stop emitting this warning. See [1] for the relevant
+> issue.
+>
+> Currently, the compiler thinks that the aarch64-unknown-none target
+> doesn't support -Zsanitizer=3Dshadow-call-stack, so the build will fail i=
+f
+> you enable shadow call stack in non-dynamic mode. However, I still think
+> it is reasonable to add the flag now, as it will at least fail the build
+> when using an invalid configuration, until the Rust compiler is fixed to
+> list -Zsanitizer=3Dshadow-call-stack as supported for the target. See [2]
+> for the feature request to add this.
+>
+> I have tested this change with Rust Binder on an Android device using
+> CONFIG_DYNAMIC_SCS. Without the -Ctarget-feature=3D+reserve-x18 flag, the
+> phone crashes immediately on boot, and with the flag, the phone appears
+> to work normally.
+>
+> Link: https://github.com/rust-lang/rust/issues/121970 [1]
+> Link: https://github.com/rust-lang/rust/issues/121972 [2]
+> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
+> ---
+> It's not 100% clear to me whether this patch is enough for full SCS
+> support in Rust. If there is some issue where this makes things compile
+> and work without actually applying SCS to the Rust code, please let me
+> know. Is there some way to verify that it is actually working?
 
-Please feel free to repost a fixed-up patch series.  I can easily replace
-the commits currently in -rcu with new ones.  Just let me know.
+Perhaps you could write a Rust version of the CFI_BACKWARD test in LKDTM?
 
-						Thanx, Paul
+Alternatively, the simplest way to verify this is to look at the
+disassembly and verify that shadow stack instructions are emitted to
+Rust functions too. In case of dynamic SCS, you might need to dump
+function memory in a debugger to verify that PAC instructions were
+patched correctly. If they're not, the code will just quietly continue
+working without using shadow stacks.
+
+> This patch raises the question of whether we should change the Rust
+> aarch64 support to use a custom target.json specification. If we do
+> that, then we can fix both the warning for dynamic SCS and the
+> build-failure for non-dynamic SCS without waiting for a new version of
+> rustc with the mentioned issues fixed.
+
+Sure, having a custom target description for the kernel might be
+useful for other purposes too. In the meantime:
+
+Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
+
+Sami
 
