@@ -1,69 +1,54 @@
-Return-Path: <linux-kernel+bounces-90985-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90987-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B508F870809
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:09:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECE2387080F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:10:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 567591F23751
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:09:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE0F81C21211
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:10:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD4765CDDD;
-	Mon,  4 Mar 2024 17:09:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47CEB60253;
+	Mon,  4 Mar 2024 17:10:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eCtFf9/2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WH2sUL65"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3BC15FDDD;
-	Mon,  4 Mar 2024 17:09:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88F65A20;
+	Mon,  4 Mar 2024 17:10:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709572174; cv=none; b=jDQZMLXwRzueas/rnhUklT7QtEWVdi2y4nF9eQwsktg00Et0Y6n/izLRzsVRuz7kJKG9SZ8WVWPj9gzTGLPEnr8h3ePeOZFjksPSRhMtyWzToz9h7uyJK8kdIBvppW6IqPCeIOmy9nEGF1SlQcM4SiWIBLFDhDkNp+JICfmDgWw=
+	t=1709572226; cv=none; b=mqDRhyvdwbtv/v830P4lGbxUHp7SryDfhTDKvLflY3T1efrbTH0rEFnLbgoUp0rFRuwCOIcYYwf/T08YZYML67APpIttoSEWSb4aaPbym97oC6alr42spUIrg0rFTr1/R18F8bFKzfhHM+lKPGm7S4RwDKhbHcZ5V32rjintWdk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709572174; c=relaxed/simple;
-	bh=KFuuK6Z/Lbtgs0+49Cr4tb8gzfzX+qY3CeO9ab9UQbM=;
+	s=arc-20240116; t=1709572226; c=relaxed/simple;
+	bh=ir7CIMz84CsYxYaV1KjttiipiJKUuOcc6oUPRUzVK8c=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u7yXsbv8GZjvm2XzCzMTsCkCa2Izn6QRIc8yR9dJZnIJIEsxdNjVmfX6IQtmLsnq424amySeUldVFlGx1uligmar6jedaWz2f8SW0oRcszm8BHa2kqG5MuO4HMgZ/ccTFP/GKceEMUfwWsQa4jM/nh6q0W7l+o5iGX+kZaC7SsM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eCtFf9/2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1522FC433C7;
-	Mon,  4 Mar 2024 17:09:32 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=rYgQgWqiHgEnAbOZgrwg915fJxvbiei10kNzyaxOLnvGWfWEFAatT04JbNmh+jWqkKwfE2/QxQnhiCjlH6+gXR2Mg2dtujb3ZGRLc6R3JfirxtLEkQOYV7K4RMXUoGIDrOApsaiXmfNA7eLqXKyEcZhrJVxshz8nh/GDJEpGHQI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WH2sUL65; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65935C43394;
+	Mon,  4 Mar 2024 17:10:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709572173;
-	bh=KFuuK6Z/Lbtgs0+49Cr4tb8gzfzX+qY3CeO9ab9UQbM=;
+	s=k20201202; t=1709572226;
+	bh=ir7CIMz84CsYxYaV1KjttiipiJKUuOcc6oUPRUzVK8c=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=eCtFf9/2G5rTnjGvWTuJiR5sMtfoApydEFX+YkpjmcQc4hX533qVYJHvPVrgzmXxP
-	 tA1flS8fgAkpUjkjQuynvbudLq2kcpL1bln2Un50p0Aj1RjVHqmt5QSq84gRBqHgq3
-	 iZQc1nr/AcWvDRYveT8ZJu+R6Fz48VyIOWF+j69EGOHkJK+EEBaKkN97DORJ7vBXQ5
-	 10jwJhHpLRKJYnaSkH+C1uK/wg7ml3pbdwn1/JNl7QqQZlpour37eYwO1heGhmLOT0
-	 9KR93efnH2icsYGHSacwW7Git2KGjvh+DRh1TKFqOC4v1g4UrfMNpFNLqPdOCiXRgC
-	 73oA9EHPJ+xyA==
-Date: Mon, 4 Mar 2024 18:09:31 +0100
-From: Maxime Ripard <mripard@kernel.org>
-To: Guenter Roeck <groeck@google.com>
-Cc: Linus Torvalds <torvalds@linuxfoundation.org>, 
-	Nikolai Kondrashov <spbnick@gmail.com>, Helen Koike <helen.koike@collabora.com>, linuxtv-ci@linuxtv.org, 
-	dave.pigott@collabora.com, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	linux-kselftest@vger.kernel.org, gustavo.padovan@collabora.com, pawiecz@collabora.com, 
-	tales.aparecida@gmail.com, workflows@vger.kernel.org, kernelci@lists.linux.dev, 
-	skhan@linuxfoundation.org, kunit-dev@googlegroups.com, nfraprado@collabora.com, 
-	davidgow@google.com, cocci@inria.fr, Julia.Lawall@inria.fr, laura.nao@collabora.com, 
-	ricardo.canuelo@collabora.com, kernel@collabora.com, gregkh@linuxfoundation.org
-Subject: Re: [PATCH 1/3] kci-gitlab: Introducing GitLab-CI Pipeline for
- Kernel Testing
-Message-ID: <20240304-benevolent-brawny-urchin-0af0ad@houat>
-References: <20240228225527.1052240-1-helen.koike@collabora.com>
- <20240228225527.1052240-2-helen.koike@collabora.com>
- <20240229-dancing-laughing-groundhog-d85161@houat>
- <5d7ed81b-37f9-48e9-ab7e-484b74ca886c@gmail.com>
- <CAHk-=wixVy3WYvjbt43ZSrCqPDsS76QJQSkXFbbPsAOs1MCSAQ@mail.gmail.com>
- <CABXOdTeT2ip1uS2EG2w8pW7254Tnd=ZDNz-KC61-G-yqDTVgJA@mail.gmail.com>
- <20240304-rigorous-silkworm-of-awe-4eee8f@houat>
- <CABXOdTc4MXcjwgGuJb4_69-4OFELD37x0B6oMr=4z=nxZ2HPXQ@mail.gmail.com>
- <20240304-ludicrous-grinning-goldfish-090aac@houat>
- <CABXOdTeDydWO9mf2yxWjjebHZ1bE=R2HPs1P4XYwNhzznNKxmw@mail.gmail.com>
+	b=WH2sUL65uuJb1FXEFfxXJzD4xUHPjhvCwhuc35gH6m+oszK2XeEK2rKGEGOBTSU5O
+	 avnLI9H8cGiMutKCJejAb0cKvAq8K6OkeZNL5P/tfHQe0UQB0pygOhXyaAoMGQ633t
+	 AIpp8ylPvnwoogpRz4MBuhXhdLS4T5Gi41+vnZp/JeR7G53RL48S5Otmkl0IMe0HA8
+	 y4Dw/jRzqL3SChEXl96EhNH3Cmx7YTJZRTUdlxIm0lZVeKzCQyik3hetr6Ovpspkqp
+	 NcsSmFK7fayrZM/bqld5LhffOab2ecFDHZIzL2O2ymeeAn8ixhr5vbm8pd2MFLJqE0
+	 kgSYOOR6PPkoQ==
+Date: Mon, 4 Mar 2024 17:10:22 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Yang Yingliang <yangyingliang@huawei.com>, linux-spi@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] spi: oc-tiny: Remove unused of_gpio.h
+Message-ID: <9ac09714-25e6-429f-8847-0ee6a34e0220@sirena.org.uk>
+References: <20240228193732.3605768-1-andriy.shevchenko@linux.intel.com>
+ <ZeXd7zrNZSTW3va0@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,84 +56,51 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ufoh4k2ksxi7sc3r"
+	protocol="application/pgp-signature"; boundary="dPx+4uutjh+/sTt7"
 Content-Disposition: inline
-In-Reply-To: <CABXOdTeDydWO9mf2yxWjjebHZ1bE=R2HPs1P4XYwNhzznNKxmw@mail.gmail.com>
+In-Reply-To: <ZeXd7zrNZSTW3va0@smile.fi.intel.com>
+X-Cookie: He who hesitates is last.
 
 
---ufoh4k2ksxi7sc3r
-Content-Type: text/plain; charset=utf-8
+--dPx+4uutjh+/sTt7
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 04, 2024 at 08:17:22AM -0800, Guenter Roeck wrote:
-> On Mon, Mar 4, 2024 at 8:05=E2=80=AFAM Maxime Ripard <mripard@kernel.org>=
- wrote:
-> >
-> > On Mon, Mar 04, 2024 at 07:46:34AM -0800, Guenter Roeck wrote:
-> > > On Mon, Mar 4, 2024 at 1:24=E2=80=AFAM Maxime Ripard <mripard@kernel.=
-org> wrote:
-> > > [ ... ]
-> > > >
-> > > > If anything, it's more of a side-effect to the push for COMPILE_TEST
-> > > > than anything.
-> > > >
-> > >
-> > > If the drm subsystem maintainers don't want people to build it with
-> > > COMPILE_TEST while at the same time not limiting it to platforms where
-> > > it doesn't even build, I'd suggest making it dependent on
-> > > !COMPILE_TEST.
-> >
-> > I don't think we want anything. My point was that you can't have an
-> > option that is meant to explore for bad practices and expose drivers
-> > that don't go through the proper abstraction, and at the same time
-> > complain that things gets broken. It's the whole point of it.
-> >
-> Can we get back to the original problem, please ?
+On Mon, Mar 04, 2024 at 04:42:55PM +0200, Andy Shevchenko wrote:
+> On Wed, Feb 28, 2024 at 09:37:31PM +0200, Andy Shevchenko wrote:
+> > of_gpio.h is deprecated and subject to remove.
+> > The driver doesn't use it, simply remove the unused header.
 
-Sure.
+> Hmm... did it fall through cracks or anything should I do?
 
-> Build errors such as failed 32-bit builds are a nuisance for those
-> running build tests. It seems to me that an automated infrastructure
-> to prevent such build errors from making it into the kernel should be
-> desirable. You seem to disagree, and at least it looked like you
-> complained about the existence of COMPILE_TEST, or that people are
-> doing COMPILE_TEST builds. What is your suggested alternative ?
-> Disabling build tests on drm doesn't seem to be it, and it seems you
-> don't like the idea of a basic generic CI either, but what is it ?
+Please don't send content free pings and please allow a reasonable time
+for review.  People get busy, go on holiday, attend conferences and so=20
+on so unless there is some reason for urgency (like critical bug fixes)
+please allow at least a couple of weeks for review.  If there have been
+review comments then people may be waiting for those to be addressed.
 
-You don't have to be aggressive about it though. Anyway. The original
-problem I pointed out was funding. You can't expect everyone to pay for
-builders running things they fundamentally don't care about.
+Sending content free pings adds to the mail volume (if they are seen at
+all) which is often the problem and since they can't be reviewed
+directly if something has gone wrong you'll have to resend the patches
+anyway, so sending again is generally a better approach though there are
+some other maintainers who like them - if in doubt look at how patches
+for the subsystem are normally handled.
 
-That's it.
-
-I'm all for CI, I'm all for automated tests and builds, I don't think
-COMPILE_TEST is a bad idea, I also think doing those kind of builds is
-worth it and useful.
-
-But the point of those exploratory kind of builds is precisely to look
-for breakages, so is something we should expect, not complain about.
-There's nothing to fix, or nothing to improve to me, except the general
-discourse.
-
-And singling out DRM because it regularly allegedly breaks things on
-xtensa or m68k and claiming we're not taking CI seriously because of it
-is completely ridiculous. If the all the subsystems were taking CI as
-seriously as DRM, we would be in a much better place.
-
-Maxime
-
---ufoh4k2ksxi7sc3r
+--dPx+4uutjh+/sTt7
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZeYASgAKCRDj7w1vZxhR
-xXLuAP4wC5xDGdiHGqBC8Uk90cIgeJhuDjincOi98AnfIDAzLwEAlRjgqNP7e2++
-8/J5xjuIH8MC29W7H8pSrQAXvFY5Dg0=
-=DYuz
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXmAH0ACgkQJNaLcl1U
+h9CBJAf+KCmOyXbSHMSaUF7iM+zgyrhoXTfgVHjEVwpXQpfln6OE+3PioX6XmDNW
+LofkMmGBQf48vwR+e1n6orXYP+OvlzzupDHDvmHSrDP19fTcUs6KCtsDRn8nnnhu
+tBjUPdwyxM5v7AfUoyocY7PfZPPwflWjVX/Mx8RKl5BcXU/NULfqBy5EwEhvuI01
+2m3asHZn7+Rv8cFnz33FZYQ746RbwsYdBwTQ9j0Gz2s47BdMDI5P9RqUMyaWaQIy
+8G5AJu/AGoBdgeZTqPIA8FwE0j+TM5NY1I6bxriH4B7KPRyn9MrlYJnSfxb0EAKJ
+xJ0slGZ6RbNIFg0oEe4O+knZHp/j+g==
+=oZhH
 -----END PGP SIGNATURE-----
 
---ufoh4k2ksxi7sc3r--
+--dPx+4uutjh+/sTt7--
 
