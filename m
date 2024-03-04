@@ -1,155 +1,113 @@
-Return-Path: <linux-kernel+bounces-91161-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91162-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19980870A46
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:13:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25F48870A6F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:15:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3EB0282117
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:13:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0CB51F2295F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:15:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06AFC7BAED;
-	Mon,  4 Mar 2024 19:12:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19D787CF03;
+	Mon,  4 Mar 2024 19:12:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iCmDNTRU"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V3K3cePX"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FC297A71E
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 19:12:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 529D17C6CE;
+	Mon,  4 Mar 2024 19:12:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709579544; cv=none; b=L+sLZQrtK/Iwn5g+zw3XSsOpzoLsKqZ9qB9c1t85J7yHhRSB+wzwuc0ArQsZgKSSH/05RWQWJmDTDr5Ce3id/IiCSEMGMKSrw5RrxYiaOUR+DVQm35Cgaj66RIYSBwb05njAW1jFXc+hHmu81ehnOHzJvJeT8Ibw8TlvmG1hIFk=
+	t=1709579567; cv=none; b=DOkRMtKO98IwyBIWuQD6uhwRjd0o9GwbHwyU8ws76XuSrRRi8thcmf9YlgZI+gTyitmhDX3D7lg12BQTukkQhx8cE1i0Pci2pTpyX5s7yZMDFVySu33xNonclePtWQISZyygHXvmZdKy4q/wcBZuQR3vY21GxP44cRuknHI9jeU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709579544; c=relaxed/simple;
-	bh=YQOUYGH92NEcitg/ruLuF4nrJWBx8Imk1eZ2XcovxQo=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=aj5hMaEZBh2hfYZO/in3ZzUC+AXf07w/qoDUWWxxvMHNpS9eN8TF7ECQ9Th089QWu5fh//KsXAdZmpY2r5EQVn6W1Tw9S6hAeQvGq0sz7Oev3Ip5kTdj0Vo4horyDc6X6oSplryrOFM39jVkgyClc1FPBwkbPVmB6zyIzKf16Qc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iCmDNTRU; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709579542; x=1741115542;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=YQOUYGH92NEcitg/ruLuF4nrJWBx8Imk1eZ2XcovxQo=;
-  b=iCmDNTRUyVtlznMs0I30QdHpvfry0w7ODWjic53Fzxq7wdx/JuwWCIWL
-   iPtO5JtVrhE+otEV2hnX0fnFnNz9TCoye1i1Q2n3DB0kH9PE1ceJiXfxU
-   rWDIf/7YlyJHf8G5l/bRZRcfHFeVw30dPxr5iW1FIuDKCbHyn5mtVMJ9M
-   bVWVKvps6gJo0RpL03aJrWsS5lbDv+DEfCklSFMxWkuX1UJcTl7sCXbNa
-   Je7V2E9dGKA/N1eEA3HPe3cjWrkgyXsPgZ10DEhuqibO4WVcMihxa6z6N
-   OA7TCjU1kBVHfE04ppN1p4avf2S0wSQDQEGDwudDo/TK54XUsEf3hN2Lx
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="4017493"
-X-IronPort-AV: E=Sophos;i="6.06,204,1705392000"; 
-   d="scan'208";a="4017493"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 11:12:21 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,204,1705392000"; 
-   d="scan'208";a="13596038"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by fmviesa005.fm.intel.com with ESMTP; 04 Mar 2024 11:12:19 -0800
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rhDjV-0002iP-1C;
-	Mon, 04 Mar 2024 19:12:17 +0000
-Date: Tue, 5 Mar 2024 03:11:46 +0800
-From: kernel test robot <lkp@intel.com>
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Peter Zijlstra <peterz@infradead.org>,
-	Kees Cook <keescook@chromium.org>
-Subject: drivers/iommu/io-pgtable-arm.c:330:13: error: void value not ignored
- as it ought to be
-Message-ID: <202403050319.iEyasXif-lkp@intel.com>
+	s=arc-20240116; t=1709579567; c=relaxed/simple;
+	bh=QSR6I3jfyGK14va/ehCs0Hkla4STm7N1K8hQmaLZ2vU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kFkFzioUfxMPYsGfJC6/mlVvgPUfx/g2hx8RuOJc3Of0Bq3Vn0VFAPpDLRy6Y857MNe9VlHrSAT6fvoWLOdNEkqQomulu9jqoVxs9Gb922dzkh6R4CWfK6dEXnttENW7Um/5M98bHFIio/7RZXhYUa5l6r9l7CBgYzplipSQ9uY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V3K3cePX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C81A0C433F1;
+	Mon,  4 Mar 2024 19:12:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709579566;
+	bh=QSR6I3jfyGK14va/ehCs0Hkla4STm7N1K8hQmaLZ2vU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=V3K3cePXRCVXsXCvb7n4XR324l2knWT3B//QwHRnxH3SGSNoiu1nBKUjlHhL9FVOc
+	 0DA+XmH20JE3yQiSRXFzz0EPYFT2P9VxCVT+ysoZrSzTvMBg0wqo1/wdH0r0Rhm09H
+	 9K87SiXgwz4G1A4/56L00nNLSh4lV2pmIRRBXZLR4bfK0m6YXGjRCj4rMf+5+dPY4J
+	 KV+NM51DEgIko7lHOoDBjDsUqISyzsOMGgCgvEK50HYzg620w0VwYvEkFihUjc2wxm
+	 r1gZotlOTf85+UuGUU8RL6Ktqmoatub0Sx2yj7g7B2IKYZWu2YelPR30yoy6McvjY6
+	 hDcWBbeYUGRVA==
+Date: Mon, 4 Mar 2024 19:12:40 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	Daniel Baluta <daniel.baluta@nxp.com>,
+	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
+	sound-open-firmware@alsa-project.org, linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel@collabora.com
+Subject: Re: [PATCH v3 0/2] ASoC: SOF: amd: Skip IRAM/DRAM size modification
+ for Steam Deck OLED
+Message-ID: <62b7add5-97b8-4f82-bf49-9d20d8a0407a@sirena.org.uk>
+References: <20240220201623.438944-1-cristian.ciocaltea@collabora.com>
+ <db53a405-362f-4c8d-82e2-49c001b29dd1@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="yjcqeVw2x6rkxRWa"
+Content-Disposition: inline
+In-Reply-To: <db53a405-362f-4c8d-82e2-49c001b29dd1@collabora.com>
+X-Cookie: He who hesitates is last.
+
+
+--yjcqeVw2x6rkxRWa
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hi Mark,
+On Mon, Mar 04, 2024 at 09:11:06PM +0200, Cristian Ciocaltea wrote:
 
-FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
+> Could we get this queued for merging as v6.9 material?
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   90d35da658da8cff0d4ecbb5113f5fac9d00eb72
-commit: 9257959a6e5b4fca6fc8e985790bff62c2046f20 locking/atomic: scripts: restructure fallback ifdeffery
-date:   9 months ago
-config: arc-allyesconfig (https://download.01.org/0day-ci/archive/20240305/202403050319.iEyasXif-lkp@intel.com/config)
-compiler: arceb-elf-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240305/202403050319.iEyasXif-lkp@intel.com/reproduce)
+Please don't send content free pings and please allow a reasonable time
+for review.  People get busy, go on holiday, attend conferences and so=20
+on so unless there is some reason for urgency (like critical bug fixes)
+please allow at least a couple of weeks for review.  If there have been
+review comments then people may be waiting for those to be addressed.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403050319.iEyasXif-lkp@intel.com/
+Sending content free pings adds to the mail volume (if they are seen at
+all) which is often the problem and since they can't be reviewed
+directly if something has gone wrong you'll have to resend the patches
+anyway, so sending again is generally a better approach though there are
+some other maintainers who like them - if in doubt look at how patches
+for the subsystem are normally handled.
 
-All errors (new ones prefixed by >>):
+--yjcqeVw2x6rkxRWa
+Content-Type: application/pgp-signature; name="signature.asc"
 
-   drivers/iommu/io-pgtable-arm.c: In function 'arm_lpae_install_table':
->> drivers/iommu/io-pgtable-arm.c:330:13: error: void value not ignored as it ought to be
-     330 |         old = cmpxchg64_relaxed(ptep, curr, new);
-         |             ^
---
-   drivers/iommu/io-pgtable-dart.c: In function 'dart_install_table':
->> drivers/iommu/io-pgtable-dart.c:168:13: error: void value not ignored as it ought to be
-     168 |         old = cmpxchg64_relaxed(ptep, curr, new);
-         |             ^
-   drivers/iommu/io-pgtable-dart.c:157:25: warning: variable 'new' set but not used [-Wunused-but-set-variable]
-     157 |         dart_iopte old, new;
-         |                         ^~~
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXmHSgACgkQJNaLcl1U
+h9CHcQf/QHAAawoaBLZYEmSJ6jjIXptEJvNjgLTRrIKFMDRoRGxUDsYLdiWjXIrq
+QRG3QFAcwvQMdnh7plUQy6JPh0jxuN4DtXxsWHnOlVS4pKkyU+SDXQJWzcuxBX4/
+9gMLYJDp7TTsm7HLaZm5YJ1y4NYnKXkTwy5IsaY4hssRQre+MZ+DsR28y82XhkOZ
+xUCs+k3FcjRxngsF/7ceM2x9YjeRXlJDK3ux4LA3lNawdYYKKWoTvBQnlGQAbAeN
+SDRgYBMcSAaWE030csrSbvO1Lf+boSaebTrM05GA5muz+MgbrY+8FxOgynQhWqsb
+jBFGg8yN0BwJXxr0eh+R/YipeO6Ydw==
+=NMer
+-----END PGP SIGNATURE-----
 
-vim +330 drivers/iommu/io-pgtable-arm.c
-
-c896c132b01895 Laurent Pinchart   2014-12-14  310  
-fb3a95795da53d Robin Murphy       2017-06-22  311  static arm_lpae_iopte arm_lpae_install_table(arm_lpae_iopte *table,
-fb3a95795da53d Robin Murphy       2017-06-22  312  					     arm_lpae_iopte *ptep,
-2c3d273eabe8b1 Robin Murphy       2017-06-22  313  					     arm_lpae_iopte curr,
-9abe2ac834851a Hector Martin      2021-11-20  314  					     struct arm_lpae_io_pgtable *data)
-fb3a95795da53d Robin Murphy       2017-06-22  315  {
-2c3d273eabe8b1 Robin Murphy       2017-06-22  316  	arm_lpae_iopte old, new;
-9abe2ac834851a Hector Martin      2021-11-20  317  	struct io_pgtable_cfg *cfg = &data->iop.cfg;
-e1d3c0fd701df8 Will Deacon        2014-11-14  318  
-9abe2ac834851a Hector Martin      2021-11-20  319  	new = paddr_to_iopte(__pa(table), data) | ARM_LPAE_PTE_TYPE_TABLE;
-fb3a95795da53d Robin Murphy       2017-06-22  320  	if (cfg->quirks & IO_PGTABLE_QUIRK_ARM_NS)
-fb3a95795da53d Robin Murphy       2017-06-22  321  		new |= ARM_LPAE_PTE_NSTABLE;
-e1d3c0fd701df8 Will Deacon        2014-11-14  322  
-77f3445866c39d Will Deacon        2017-06-23  323  	/*
-77f3445866c39d Will Deacon        2017-06-23  324  	 * Ensure the table itself is visible before its PTE can be.
-77f3445866c39d Will Deacon        2017-06-23  325  	 * Whilst we could get away with cmpxchg64_release below, this
-77f3445866c39d Will Deacon        2017-06-23  326  	 * doesn't have any ordering semantics when !CONFIG_SMP.
-77f3445866c39d Will Deacon        2017-06-23  327  	 */
-77f3445866c39d Will Deacon        2017-06-23  328  	dma_wmb();
-2c3d273eabe8b1 Robin Murphy       2017-06-22  329  
-2c3d273eabe8b1 Robin Murphy       2017-06-22 @330  	old = cmpxchg64_relaxed(ptep, curr, new);
-2c3d273eabe8b1 Robin Murphy       2017-06-22  331  
-4f41845b340783 Will Deacon        2019-06-25  332  	if (cfg->coherent_walk || (old & ARM_LPAE_PTE_SW_SYNC))
-2c3d273eabe8b1 Robin Murphy       2017-06-22  333  		return old;
-2c3d273eabe8b1 Robin Murphy       2017-06-22  334  
-2c3d273eabe8b1 Robin Murphy       2017-06-22  335  	/* Even if it's not ours, there's no point waiting; just kick it */
-41e1eb2546e9c8 Isaac J. Manjarres 2021-06-16  336  	__arm_lpae_sync_pte(ptep, 1, cfg);
-2c3d273eabe8b1 Robin Murphy       2017-06-22  337  	if (old == curr)
-2c3d273eabe8b1 Robin Murphy       2017-06-22  338  		WRITE_ONCE(*ptep, new | ARM_LPAE_PTE_SW_SYNC);
-2c3d273eabe8b1 Robin Murphy       2017-06-22  339  
-2c3d273eabe8b1 Robin Murphy       2017-06-22  340  	return old;
-e1d3c0fd701df8 Will Deacon        2014-11-14  341  }
-e1d3c0fd701df8 Will Deacon        2014-11-14  342  
-
-:::::: The code at line 330 was first introduced by commit
-:::::: 2c3d273eabe8b1ed3b3cffe2c79643b1bf7e2d4a iommu/io-pgtable-arm: Support lockless operation
-
-:::::: TO: Robin Murphy <robin.murphy@arm.com>
-:::::: CC: Will Deacon <will.deacon@arm.com>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--yjcqeVw2x6rkxRWa--
 
