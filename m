@@ -1,113 +1,214 @@
-Return-Path: <linux-kernel+bounces-90634-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90635-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65327870284
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:19:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AA5E870289
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:20:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EAE22B21A94
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:19:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 91024B22AD1
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:20:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 942DE3D982;
-	Mon,  4 Mar 2024 13:19:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B931D3D982;
+	Mon,  4 Mar 2024 13:20:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="j0vsoZ5h"
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cz0MnUrk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F02A43D547;
-	Mon,  4 Mar 2024 13:19:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D77453D547;
+	Mon,  4 Mar 2024 13:20:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709558378; cv=none; b=JK5oIyEtNvlApyWLfuvx7Q3qi3Qc8goyx4JtnXuYYhbHbObdsS5FnNMnbSPBqb7cq3OtcnnI/Ks3BG8dXLzCFVqdy1DocphtMLM1POD+0auxcDMupNf/nN3fFqE6vhPY7L/N9EBmKXUWTGGQt5VdQ5RR6ehNsMy/9Yqm6d7kawY=
+	t=1709558429; cv=none; b=p4aiU7mN9LoAhXxs8oOUV7vowUPSjrvD+NJPvjelHv2Y9p4y/86UFvLJkEL1QIvbfXUXaGCkaoo2U5shMyOL54Bz1uaAZ5+M3iyO4r853eE+r9uXoXx/1Qx0pL9O4tl2+QSlYOT+oiV48GkJ9e1Yt3xTGnWJEGFTkLGKDBdi5hA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709558378; c=relaxed/simple;
-	bh=afzJtdtms/jbY1raMtb1alh1Cys2o04f4eQPLD2PdkU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=AohnQpVCXXxyaSd+SxnEAyavEGrESAIKQxFbeX0Vz7RWHODMOdocy3JeK5lo98CO7cWZuL/Tw7R0pYHkbhy7wx/SJqTwdWHYyufcGUsAh2sH5VCwXkPeP09Hfz73iFDLtycTX4zGoiYTD16xntd4AzmloniEZeHA5CRa18Nkt5k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=j0vsoZ5h; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C8D07E0009;
-	Mon,  4 Mar 2024 13:19:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709558374;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sss8ohSvvwGn3uSwOCh1KZp9GMEloGBYCwOa6wonWFE=;
-	b=j0vsoZ5hRpTOvw/xyk1SdAUlqkRAqFVd/BazCSa+SSz7n7eR+kj+vdKiscpSSnHeyrnaq+
-	U8wltMM4u2gb8coGq/zn/KrmIbVnENiLSwHcHy57LIYD0cXbScPGALY/kwAuluzYpmu5Vr
-	rm33cstmzNS4NWJxpe+IC1EE7U7amKH1DOyUjSPInCGfptYIxCQJBWJLcVVl5ZYABkh8u+
-	5ks9A01fsDpnbrlqlK+HeJ4xkFwadmLa2epVbTZhVcgm6r51QjdAwxXngFmx1hNb8v9EwQ
-	Wj5t8c0xGhfqKNrNvQg5Ce0qRmvIchJ6VNxej6Peem/KqTRofqqL9Zcxzc7F/w==
-From: Gregory CLEMENT <gregory.clement@bootlin.com>
-To: Lukas Bulwahn <lukas.bulwahn@gmail.com>, Vladimir Kondratiev
- <vladimir.kondratiev@mobileye.com>, =?utf-8?Q?Th=C3=A9o?= Lebrun
- <theo.lebrun@bootlin.com>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Lukas
- Bulwahn <lukas.bulwahn@gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: remove entry to non-existing file in
- MOBILEYE MIPS SOCS
-In-Reply-To: <20240222143312.27757-1-lukas.bulwahn@gmail.com>
-References: <20240222143312.27757-1-lukas.bulwahn@gmail.com>
-Date: Mon, 04 Mar 2024 14:19:33 +0100
-Message-ID: <87sf16gmmy.fsf@BL-laptop>
+	s=arc-20240116; t=1709558429; c=relaxed/simple;
+	bh=lWH6ZQb+u3aVI1K8RVWtzh32u94Bi50MfHqB4s7lSSU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BoGRRQV08UGNOm/8RBoRTI6MvJlbiwNiBuX62FdGFcGOxd3Gzy+UVFTsfl0FY8xfTV8jLfIjBqwTyd6K6V1puPgp5D15y5GvjcCdCtPoV7urJDTlp+KxX+zg4CM5ScSEGW+NAJtIgCMxUZcfc/7lR9ryvWY6hR9w/PjFZ641bxE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cz0MnUrk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42281C433F1;
+	Mon,  4 Mar 2024 13:20:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709558428;
+	bh=lWH6ZQb+u3aVI1K8RVWtzh32u94Bi50MfHqB4s7lSSU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Cz0MnUrkf2ihH7Ow57r9X6otRH+qG8mZW44tV5mDWRoGMBhvsFJLXmbmYnux+QVYP
+	 ol7TT8gPYF93lXPVXEI+/8x5J0IsT+20XBWhhcT1HaA6JqhL9SRjFjPUFxKQ90bbDb
+	 G5wKzVL8k9UWRbi7MxOZHgP2lE6k2KbnB9KrQ4LsIsOft0uTEUherYltcdedmzaJOX
+	 1VYUoJyzMYusNq/OD6GJGQhiL9/r/k/lyuBgYyevcnrwLNAW6gLmyFlogKAQBeISKL
+	 6U4g3yCcW+ktZYLiFlXsDJa3Jk9z+nLEZ6pxUCNEnLEzZidKBZzOf5PJGYU+nir60d
+	 ibt5cZK+qn5HA==
+Date: Mon, 4 Mar 2024 14:20:22 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Adrian Ratiu <adrian.ratiu@collabora.com>
+Cc: linux-fsdevel@vger.kernel.org, kernel@collabora.com, 
+	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
+	Guenter Roeck <groeck@chromium.org>, Doug Anderson <dianders@chromium.org>, 
+	Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Randy Dunlap <rdunlap@infradead.org>, 
+	Mike Frysinger <vapier@chromium.org>
+Subject: Re: [PATCH v2] proc: allow restricting /proc/pid/mem writes
+Message-ID: <20240304-zugute-abtragen-d499556390b3@brauner>
+References: <20240301213442.198443-1-adrian.ratiu@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-GND-Sasl: gregory.clement@bootlin.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240301213442.198443-1-adrian.ratiu@collabora.com>
 
-Lukas Bulwahn <lukas.bulwahn@gmail.com> writes:
-
-> Commit f34158edd249 ("MAINTAINERS: Add entry for Mobileye MIPS SoCs") adds
-> the section MOBILEYE MIPS SOCS with a file entry to the non-existing file
-> include/dt-bindings/soc/mobileye,eyeq5.h.
->
-> Hence, ./scripts/get_maintainer.pl --self-test=patterns complains about a
-> broken reference.
->
-> Possibly, this file was part of an early patch series, but in the final
-> patch series, this file does not appear anymore.
->
-> Delete this file entry in the MOBILEYE MIPS SOCS section.
->
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-
-Acked-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-
-Thanks,
-
-Gregory
+On Fri, Mar 01, 2024 at 11:34:42PM +0200, Adrian Ratiu wrote:
+> Prior to v2.6.39 write access to /proc/<pid>/mem was restricted,
+> after which it got allowed in commit 198214a7ee50 ("proc: enable
+> writing to /proc/pid/mem"). Famous last words from that patch:
+> "no longer a security hazard". :)
+> 
+> Afterwards exploits appeared started causing drama like [1]. The
+> /proc/*/mem exploits can be rather sophisticated like [2] which
+> installed an arbitrary payload from noexec storage into a running
+> process then exec'd it, which itself could include an ELF loader
+> to run arbitrary code off noexec storage.
+> 
+> As part of hardening against these types of attacks, distrbutions
+> can restrict /proc/*/mem to only allow writes when they makes sense,
+> like in case of debuggers which have ptrace permissions, as they
+> are able to access memory anyway via PTRACE_POKEDATA and friends.
+> 
+> Dropping the mode bits disables write access for non-root users.
+> Trying to `chmod` the paths back fails as the kernel rejects it.
+> 
+> For users with CAP_DAC_OVERRIDE (usually just root) we have to
+> disable the mem_write callback to avoid bypassing the mode bits.
+> 
+> Writes can be used to bypass permissions on memory maps, even if a
+> memory region is mapped r-x (as is a program's executable pages),
+> the process can open its own /proc/self/mem file and write to the
+> pages directly.
+> 
+> Even if seccomp filters block mmap/mprotect calls with W|X perms,
+> they often cannot block open calls as daemons want to read/write
+> their own runtime state and seccomp filters cannot check file paths.
+> Write calls also can't be blocked in general via seccomp.
+> 
+> Since the mem file is part of the dynamic /proc/<pid>/ space, we
+> can't run chmod once at boot to restrict it (and trying to react
+> to every process and run chmod doesn't scale, and the kernel no
+> longer allows chmod on any of these paths).
+> 
+> SELinux could be used with a rule to cover all /proc/*/mem files,
+> but even then having multiple ways to deny an attack is useful in
+> case on layer fails.
+> 
+> [1] https://lwn.net/Articles/476947/
+> [2] https://issues.chromium.org/issues/40089045
+> 
+> Based on an initial patch by Mike Frysinger <vapier@chromium.org>.
+> 
+> Cc: Guenter Roeck <groeck@chromium.org>
+> Cc: Doug Anderson <dianders@chromium.org>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Jann Horn <jannh@google.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Christian Brauner <brauner@kernel.org>
+> Co-developed-by: Mike Frysinger <vapier@chromium.org>
+> Signed-off-by: Mike Frysinger <vapier@chromium.org>
+> Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
 > ---
->  MAINTAINERS | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 28b2013031bd..19ac6a8e46b2 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -14914,7 +14914,6 @@ F:	Documentation/devicetree/bindings/mips/mobileye.yaml
->  F:	arch/mips/boot/dts/mobileye/
->  F:	arch/mips/configs/eyeq5_defconfig
->  F:	arch/mips/mobileye/board-epm5.its.S
-> -F:	include/dt-bindings/soc/mobileye,eyeq5.h
+> Changes in v2:
+>  * Added boot time parameter with default kconfig option
+>  * Moved check earlier in mem_open() instead of mem_write()
+>  * Simplified implementation branching
+>  * Removed dependency on CONFIG_MEMCG
+> ---
+>  .../admin-guide/kernel-parameters.txt         |  4 ++
+>  fs/proc/base.c                                | 47 ++++++++++++++++++-
+>  security/Kconfig                              | 22 +++++++++
+>  3 files changed, 71 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 460b97a1d0da..0647e2f54248 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -5618,6 +5618,10 @@
+>  	reset_devices	[KNL] Force drivers to reset the underlying device
+>  			during initialization.
 >  
->  MODULE SUPPORT
->  M:	Luis Chamberlain <mcgrof@kernel.org>
-> -- 
-> 2.17.1
->
+> +	restrict_proc_mem_write= [KNL]
+> +			Enable or disable write access to /proc/*/mem files.
+> +			Default is SECURITY_PROC_MEM_RESTRICT_WRITE_DEFAULT_ON.
+> +
+>  	resume=		[SWSUSP]
+>  			Specify the partition device for software suspend
+>  			Format:
+> diff --git a/fs/proc/base.c b/fs/proc/base.c
+> index 98a031ac2648..92f668191312 100644
+> --- a/fs/proc/base.c
+> +++ b/fs/proc/base.c
+> @@ -152,6 +152,30 @@ struct pid_entry {
+>  		NULL, &proc_pid_attr_operations,	\
+>  		{ .lsmid = LSMID })
+>  
+> +#ifdef CONFIG_SECURITY_PROC_MEM_RESTRICT_WRITE
+> +DEFINE_STATIC_KEY_MAYBE_RO(CONFIG_SECURITY_PROC_MEM_RESTRICT_WRITE_DEFAULT_ON,
+> +			   restrict_proc_mem_write);
+> +static int __init early_restrict_proc_mem_write(char *buf)
+> +{
+> +	int ret;
+> +	bool bool_result;
+> +
+> +	ret = kstrtobool(buf, &bool_result);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (bool_result)
+> +		static_branch_enable(&restrict_proc_mem_write);
+> +	else
+> +		static_branch_disable(&restrict_proc_mem_write);
+> +	return 0;
+> +}
+> +early_param("restrict_proc_mem_write", early_restrict_proc_mem_write);
+> +# define PROC_PID_MEM_MODE S_IRUSR
+> +#else
+> +# define PROC_PID_MEM_MODE (S_IRUSR|S_IWUSR)
+> +#endif
+> +
+>  /*
+>   * Count the number of hardlinks for the pid_entry table, excluding the .
+>   * and .. links.
+> @@ -829,6 +853,25 @@ static int mem_open(struct inode *inode, struct file *file)
+>  {
+>  	int ret = __mem_open(inode, file, PTRACE_MODE_ATTACH);
+>  
+> +#ifdef CONFIG_SECURITY_PROC_MEM_RESTRICT_WRITE
+> +	struct mm_struct *mm = file->private_data;
+> +	struct task_struct *task = get_proc_task(inode);
+> +
+> +	if (mm && task) {
+> +		/* Only allow writes by processes already ptracing the target task */
+> +		if (file->f_mode & FMODE_WRITE &&
+> +		    static_branch_maybe(CONFIG_SECURITY_PROC_MEM_RESTRICT_WRITE_DEFAULT_ON,
+> +					&restrict_proc_mem_write)) {
+> +			rcu_read_lock();
+> +			if (!ptracer_capable(current, mm->user_ns) ||
+> +			    current != ptrace_parent(task))
+> +				ret = -EACCES;
 
--- 
-Gregory Clement, Bootlin
-Embedded Linux and Kernel engineering
-http://bootlin.com
+Uhm, this will break the seccomp notifier, no? So you can't turn on
+SECURITY_PROC_MEM_RESTRICT_WRITE when you want to use the seccomp
+notifier to do system call interception and rewrite memory locations of
+the calling task, no? Which is very much relied upon in various
+container managers and possibly other security tools.
+
+Which means that you can't turn this on in any of the regular distros.
+
+So you need to either account for the calling task being a seccomp
+supervisor for the task whose memory it is trying to access or you need
+to provide a migration path by adding an api that let's caller's perform
+these writes through the seccomp notifier.
 
