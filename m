@@ -1,115 +1,58 @@
-Return-Path: <linux-kernel+bounces-90360-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90363-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B8D886FE17
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:55:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3565386FE20
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:56:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB28E281968
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:55:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0FA2B231E2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:56:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D018622099;
-	Mon,  4 Mar 2024 09:55:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="C8v3+ZIp"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0F1A249F1;
+	Mon,  4 Mar 2024 09:56:10 +0000 (UTC)
+Received: from mail-out.aladdin-rd.ru (mail-out.aladdin-rd.ru [91.199.251.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1E68208A2;
-	Mon,  4 Mar 2024 09:55:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1303222625;
+	Mon,  4 Mar 2024 09:55:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.199.251.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709546131; cv=none; b=KcFNo6xINQv33OLT7DMJS6H5OKNjp2ya/T4kuXbwZAQtGiTUDkiWyOgGPgxmO3PKchuFLFlE5OAi6qCa6Z0rhOT4Btq+QEjy4wc5205Gj5MwYE/py3yCRNSFJGLhf9e4SelLEHV75cvHSFtX1umSXZU+3h0q0+FWS23roPal0Ag=
+	t=1709546170; cv=none; b=eyvnlA8xdNLhTQpFpRCYtk6g/eD5HOgM75tOSC4xnU/o1lzpQtRbBtlt6wULidP0B1V4y/ggh12HX/paMuq1ucMW3GCRol1rxqHVkMDyZki2OrJSo/o38q/UXTLnPbWw69iix5UNnM7PMAIAF9cOobs4PSB+FQuEZBQ2Lo1gD0M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709546131; c=relaxed/simple;
-	bh=tGGIjtvf2OqUUpfEvU1EyE4HH8U209KvVuAbHYsXd6A=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=OP2a4+G+8rl7GS7Lhtxe0jZeKcvbC6IgQA2EvtqH68PjOqKs40va/RVJeSQCe8hS4BQ94HDiXOSoWRTHR8nw1CyFH6+Gfpil4MEj5fMKwyzVlr1A9im7x9qcdqUBZQDqCewjOUZ4Lr1DeEJN0VOLRHkv87DtdILP2sz3tfkOvBg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=C8v3+ZIp; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709546129; x=1741082129;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=tGGIjtvf2OqUUpfEvU1EyE4HH8U209KvVuAbHYsXd6A=;
-  b=C8v3+ZIp8FldoJsjrciDDtKs1srhE/DgqU2INnEKQty6DM9IvBrs0z8/
-   Nd/rzDZwkfAvlQ0dABF1pyUawGwkuEmf/pMkYDNX4gON3JB7sacJnsA4u
-   gfOXzXidGT1FqJJ3k4Q3Ns2w2+2T1NpRFlPiRo3fZd48caMuJJ5OWGI4v
-   CjUkS5li04bjZr+2WCIKJM+Cxpi2z5eKEIMqe50Am+kdPp9sa+coYNBbd
-   40Zzbz4qokcKbs4Lc+d3av/sw41zvHh+GbQ98dkznS9HbL+gkzV1+AR88
-   9BL/fOXcMyax+TqD/K4AdgxvEGoLGm6LL1TGpa2jN80Le7ki2aNsSS3xN
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="7799078"
-X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
-   d="scan'208";a="7799078"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 01:55:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
-   d="scan'208";a="39934272"
-Received: from syakovle-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.51.3])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 01:55:24 -0800
-From: Jani Nikula <jani.nikula@intel.com>
-To: Michael Ellerman <mpe@ellerman.id.au>,
-	linuxppc-dev@lists.ozlabs.org
-Cc: jani.nikula@intel.com,
-	dri-devel@lists.freedesktop.org,
-	lkft-triage@lists.linaro.org,
-	linux-kernel@vger.kernel.org,
-	Naresh Kamboju <naresh.kamboju@linaro.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Helge Deller <deller@gmx.de>,
-	linux-fbdev@vger.kernel.org
-Subject: [PATCH] powerpc: include linux/backlight.h from asm/backlight.h
-Date: Mon,  4 Mar 2024 11:55:12 +0200
-Message-Id: <20240304095512.742348-1-jani.nikula@intel.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <CA+G9fYsAk5TbqqxFC2W4oHLGA0CbTHMxbeq8QayFXTU75YiueA@mail.gmail.com>
-References: <CA+G9fYsAk5TbqqxFC2W4oHLGA0CbTHMxbeq8QayFXTU75YiueA@mail.gmail.com>
+	s=arc-20240116; t=1709546170; c=relaxed/simple;
+	bh=ZLWxTNvadb4hyjem5uvWUCn8AIITYg1bzbW2sx4kDIU=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=VmxLrt77IMoeUY2qkIz3+7oisEL+K31WkhvM2pamcxdR9XRYEus5nsg/YRBrZ+Iz12S4ubuR90bTsrlBB7q/ZKg6W74iiEKBPuOf516eJhqfnMuqbc1xTs7oO47EOvhQWP1G1AJXHCSmaB9s9T8Hk+FW7LpPLgTJMI6n2WgMShA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aladdin.ru; spf=pass smtp.mailfrom=aladdin.ru; arc=none smtp.client-ip=91.199.251.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aladdin.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aladdin.ru
+From: Daniil Dulov <d.dulov@aladdin.ru>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, <stable@vger.kernel.org>
+CC: Daniil Dulov <d.dulov@aladdin.ru>, Vinod Koul <vkoul@kernel.org>, Bard
+ Liao <yung-chuan.liao@linux.intel.com>, Pierre-Louis Bossart
+	<pierre-louis.bossart@linux.intel.com>, Sanyog Kale
+	<sanyog.r.kale@intel.com>, <alsa-devel@alsa-project.org>,
+	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>
+Subject: [PATCH 5.10/5.15/6.1 0/1] soundwire: stream: use consistent pattern for freeing buffers
+Date: Mon, 4 Mar 2024 12:55:41 +0300
+Message-ID: <20240304095542.4799-1-d.dulov@aladdin.ru>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EXCH-2016-03.aladdin.ru (192.168.1.103) To
+ EXCH-2016-01.aladdin.ru (192.168.1.101)
 
-Removal of the backlight include from fb.h uncovered an implicit
-dependency in powerpc asm/backlight.h. Add the explicit include.
-
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Closes: https://lore.kernel.org/r/CA+G9fYsAk5TbqqxFC2W4oHLGA0CbTHMxbeq8QayFXTU75YiueA@mail.gmail.com
-Fixes: 11b4eedfc87d ("fbdev: Do not include <linux/backlight.h> in header")
-Cc: Thomas Zimmermann <tzimmermann@suse.de>
-Cc: Helge Deller <deller@gmx.de>
-Cc: linux-fbdev@vger.kernel.org
-Signed-off-by: Jani Nikula <jani.nikula@intel.com>
-
----
-
-Not even compile tested!
----
- arch/powerpc/include/asm/backlight.h | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/powerpc/include/asm/backlight.h b/arch/powerpc/include/asm/backlight.h
-index 1b5eab62ed04..275d5bb9aa04 100644
---- a/arch/powerpc/include/asm/backlight.h
-+++ b/arch/powerpc/include/asm/backlight.h
-@@ -10,6 +10,7 @@
- #define __ASM_POWERPC_BACKLIGHT_H
- #ifdef __KERNEL__
- 
-+#include <linux/backlight.h>
- #include <linux/fb.h>
- #include <linux/mutex.h>
- 
--- 
-2.39.2
-
+Svacer reports NULL-pointer dereference and double free issues in
+do_bank_switch() in case sdw_ml_sync_bank_switch() returns an error
+not on the first iteration of the list_for_each_entry() loop. These 
+problems are present in 5.10, 5.15 and 6.1 stable releases. These problems
+have been fixed by the following upstream patch that can be cleanly
+applied to 5.10, 5.15 and 6.1 branches.
 
