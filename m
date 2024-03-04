@@ -1,86 +1,89 @@
-Return-Path: <linux-kernel+bounces-90929-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90930-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 921358706EB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:23:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1C458706ED
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:23:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4D7C1C21E1D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:23:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4ECDB1F214B1
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:23:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3626E4C60B;
-	Mon,  4 Mar 2024 16:22:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 516C34C61B;
+	Mon,  4 Mar 2024 16:23:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="yJMljcVO"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gvkna4Cn"
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0191F47A6C
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 16:22:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAC1A4AECA;
+	Mon,  4 Mar 2024 16:23:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709569373; cv=none; b=BXj2iDiifs4HVKLGbyeMcgfJCKfIuN+2rB3/lgnMaGtbE7AMsrM2qdvdx6fTLl1CIuggbXQO/unjiRuQb8sVnGGGHGKtmqSojhK7uvrNULqh1vagP/51wk1HaqoBa7qbqJ8yFrmKHg5/V/RhK7mB0tNfq95snxTcgdwzMnTa6hQ=
+	t=1709569399; cv=none; b=g9EwRVU83iV7cKDAGnleAycAdI50+oDGdYIceIlHBor+4VMjIF++u6Qv3pB+4A2gKCxUlXygL/9mOCeZQ8mc2AqhSBMtGazK3PCx0yxqSGUd39fQ1WFpjfgiSo+I9W6UzozlUOfnMrbmXmLw1mrMiE6qi6KJUy3b9u4yTT6/k4k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709569373; c=relaxed/simple;
-	bh=kW7JCJO31lEwSLDJYPlDizRw0G1TW66mT2RjtfaXc5M=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=qVar+XDZllrMq2dPmgn59K/d9/kBoMGjwfjqUj9iUM7Eq0h9ZnujRHbVvqPxbkOUIUjEbKrQzluMdnxkO63aneAVg0fMA3aeiEyWM4YLLJW+JbLNRZ0qFm7YEQxgfoa1yf8+qaGoQRNZDezRbecGqSX15YSXZcxxNsS+dsNedbE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=yJMljcVO; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-412e1b52934so8052085e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 08:22:50 -0800 (PST)
+	s=arc-20240116; t=1709569399; c=relaxed/simple;
+	bh=bhcQm9IVnLXYy1OPeiOKUbtZ95U8nYVEeR2LEzd9vU4=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=siR4UEubsh/QrliXrGLUYZLWfx92qafiCwGW2E7+jlOs5sE4dw8IrjeoCcCyOQmeweuoAIdkRnkQ5xFRipzi1p44eLJs+bMpP5mMz0Sdg500d9iskc+oPcLctL7dL97moE3U9SApv5BVZnyrQGxvqYRLeD3LblwlCjFiUE5PUuo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Gvkna4Cn; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d2628e81b8so54569121fa.0;
+        Mon, 04 Mar 2024 08:23:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1709569369; x=1710174169; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yJyamNFRAv3xfMQWs9hxsro+fRS73UwVpOB+wUw3hBc=;
-        b=yJMljcVOOKG8wa10PGrWA6ppeeP+w4M5HNndELfzK/jbGQdCHdSGPY8bgZLbG/MIgo
-         hCRGj1Xxefast0inHFuueLJOqS92zBm7K+SkvQevMhMdp6dun7yvgaFImgMwNuAbPvEZ
-         0gYtTVeerHV9/fR36DDdoif+WmwiBHqZZWQfmBHRU6llQA4KBtAJ+1Q2TYxgwMqJGVq/
-         X3NpmWnXtJI7FlTZC5gnGgfJy+nc7HUog3HXKkCO758mRkbDWajvwI7/7ujjeHnHQswr
-         V+q9RCOHqfbsPypXO3QjnQPA/Bbjx+9c1O8z01zHZxrb9LDOvgaix5sv0J/A3tcmfxKL
-         dZOw==
+        d=gmail.com; s=20230601; t=1709569396; x=1710174196; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=LnSBxJC80Vj6IkqExQ+493ms5K7qx9z96ku+5T01XSU=;
+        b=Gvkna4CnpQB+z3aoYqIQh4FdyBn+VsSHAnYRql3W7YMdHzZHNlajXHkHHziFgGIdOw
+         WMwKxERySTYkM8jRFKtFbSB9WVuIuGRx8AgZMh2T4W/0haZ97wpL8hiWsPEcGV42A/FN
+         DyfsazquwOeoAqUX2gYMhmFC0qBS5AZkBNCvVG2nadnBN03VTs8aS3zIS7eLEbMjml6g
+         xqsOhYk4g4ZCjc1mfhkGg+SUdEkJTbCftnwfabBbf5SA1fIRMrrqZm/MOM24yfjXOJaG
+         2unqKn5bnTiNhHcl7jkEkwPxGOY7+oOWpXTtnIfMAmvBOLxr92cT9j/TG0ZdtcP2hkil
+         vSkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709569369; x=1710174169;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yJyamNFRAv3xfMQWs9hxsro+fRS73UwVpOB+wUw3hBc=;
-        b=DxBjMf2ar//ojWrpegFF8jN6pRGAlFXkzXnpBoyfxq/meC3fOSo83FD5FRozGg1tC8
-         PSJlepduaZcJ06+wLwjPqhrJKdn/kCGYYQ/THHZGEb52vs/aY6N6qYr38fl/uXCJ7D4m
-         1DeylNhVLsAmJALk2j7A1piC1tVbSCcB1mjckvCDzYp5BytqBpPUpKreAnQ/GVZ3S77M
-         j2MfXwRPpCw/pCORUBbtRI0x6ZHyWhKBVngqNBO2Ri8Miw7T5Jh3WyRNok1AmO0Fq6SQ
-         UCx9HooFDKDuwuthfIxhgmrrBeexnOHF/BrreW5NfwsyrKZL7gLhmgwqoWjcMDnd2Ugs
-         FnEA==
-X-Forwarded-Encrypted: i=1; AJvYcCXWJ/Hz3xX4A5oXuThiHsPjVn6b2rc9kpakqvV72i6JyeZ6ayPc9mN/v/W8JaOX8h1K80ZPRS0lOf1xBq3HarkPeJfCv94isrSoOUK4
-X-Gm-Message-State: AOJu0YweT9Mdt9bJfnKYrYeL8BSPDtuKDgUZlRClsUaEsK0UPugDlTtm
-	InQsDpAL6MQsZM15ZfxNaEa7g4nBMx/CaI/QwkCLj5pyDrpcTE9dhuPzr/GBWOM=
-X-Google-Smtp-Source: AGHT+IE7mgWGKlhDIKoEASTtxNaJrZNaMEJ/tQfO+YfrKLNfyHXZ48/JDpqB3KxTO+aQbkvJNL6ELg==
-X-Received: by 2002:a05:600c:4e93:b0:412:a015:9411 with SMTP id f19-20020a05600c4e9300b00412a0159411mr9758119wmq.6.1709569369268;
-        Mon, 04 Mar 2024 08:22:49 -0800 (PST)
-Received: from localhost ([2a01:cb19:95ba:5000:d6dd:417f:52ac:335b])
-        by smtp.gmail.com with ESMTPSA id l22-20020a05600c4f1600b004128f41a13fsm15180835wmq.38.2024.03.04.08.22.48
+        d=1e100.net; s=20230601; t=1709569396; x=1710174196;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LnSBxJC80Vj6IkqExQ+493ms5K7qx9z96ku+5T01XSU=;
+        b=vnzw+DZ9Nu9zoh1rXSbkRjpx3aZPDUnEo7MLPPZa9tZuDIJecSxQ1i0C5zI+tdZuEj
+         kiQXeilawNTyEB1lGptxKUOxCOlthaRarLlh+C3szuhwaLAO/sI9jnLlAJtak1DpcxzM
+         lqyMBiLwSh/W7o7MoohM7usA4+spbqRR2zKOdATNEjYL306ECOK9ihPecAsheUFmZNtV
+         P5ZZ4585H01bNUWWHcqRcD9pEMHVzTOsJ1zBHyxzww5toWxonl9AGf7tCd6/TnU+9kw8
+         X49kJOuLQOAnUf936/QBZtxoHfQxC9OLxr5Akvrez8HeFWEsDrhbY8jJoPmO/P1eRVCd
+         idlw==
+X-Forwarded-Encrypted: i=1; AJvYcCU/eLb3V4Cyj8gsexbho4xF/5x1GcXh0P8FsDzvj/ayPCmUB60a4yIL3NSmnUirG5HrvPyf98Elhp/NQuykXDXUIKv3Lr7dgYG1AULgXeFxhnGEc5wyyb9nh7E2PwFnlJym
+X-Gm-Message-State: AOJu0Yz9HBDq3H8w3YYhFiHjBKXOskOLTsbFuX51j/iD038JQnwkMjU1
+	58F45eVlwYxY+vq2qOWDyt/ngF/LQwOswORnGbLG4MeGqHHY4+EW
+X-Google-Smtp-Source: AGHT+IFlseYM9/Av3AeeMEWulX49lWqH5kgRVbhEM3OC0mBUVqyUY4xyyyWmucu/ME7DjRgpmB9W3A==
+X-Received: by 2002:a2e:94d7:0:b0:2d3:a45c:4390 with SMTP id r23-20020a2e94d7000000b002d3a45c4390mr1410745ljh.5.1709569395624;
+        Mon, 04 Mar 2024 08:23:15 -0800 (PST)
+Received: from pc638.lan (host-185-121-47-193.sydskane.nu. [185.121.47.193])
+        by smtp.gmail.com with ESMTPSA id e20-20020a2eb1d4000000b002d292191b10sm1773244lja.36.2024.03.04.08.23.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 08:22:48 -0800 (PST)
-From: Mattijs Korpershoek <mkorpershoek@baylibre.com>
-To: Nicolas Dufresne <nicolas.dufresne@collabora.com>, Nas Chung
- <nas.chung@chipsnmedia.com>, Jackson Lee <jackson.lee@chipsnmedia.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: Guillaume La Roque <glaroque@baylibre.com>, Brandon Brnich
- <b-brnich@ti.com>, Robert Beckett <bob.beckett@collabora.com>, Sebastian
- Fricke <sebastian.fricke@collabora.com>, linux-media@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: chips-media: wave5: Call v4l2_m2m_job_finish()
- in job_abort()
-In-Reply-To: <21ba0e670fecea78bda7ebf2d75470c534c46bf1.camel@collabora.com>
-References: <20240228-wave5-fix-abort-v1-1-7482b9316867@baylibre.com>
- <21ba0e670fecea78bda7ebf2d75470c534c46bf1.camel@collabora.com>
-Date: Mon, 04 Mar 2024 17:22:48 +0100
-Message-ID: <87il227yqv.fsf@baylibre.com>
+        Mon, 04 Mar 2024 08:23:15 -0800 (PST)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date: Mon, 4 Mar 2024 17:23:13 +0100
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: Uladzislau Rezki <urezki@gmail.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>,
+	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH v5 2/4] rcu: Reduce synchronize_rcu() latency
+Message-ID: <ZeX1cXWKv2kirDXg@pc638.lan>
+References: <20240220183115.74124-1-urezki@gmail.com>
+ <20240220183115.74124-3-urezki@gmail.com>
+ <Zd0ZtNu+Rt0qXkfS@lothringen>
+ <Zd91pR0fjiCUZTtP@pc636>
+ <ZeW2w08WZo4yapQp@localhost.localdomain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,190 +91,141 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZeW2w08WZo4yapQp@localhost.localdomain>
 
-Hi Nicolas,
-
-Thank you for your prompt reply.
-
-On ven., mars 01, 2024 at 09:01, Nicolas Dufresne <nicolas.dufresne@collabo=
-ra.com> wrote:
-
-> Hi,
+On Mon, Mar 04, 2024 at 12:55:47PM +0100, Frederic Weisbecker wrote:
+> Le Wed, Feb 28, 2024 at 07:04:21PM +0100, Uladzislau Rezki a écrit :
+> > On Tue, Feb 27, 2024 at 12:07:32AM +0100, Frederic Weisbecker wrote:
+> > > On Tue, Feb 20, 2024 at 07:31:13PM +0100, Uladzislau Rezki (Sony) wrote:
+> > > > +static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
+> > > > +{
+> > > > +	struct llist_node *done, *rcu, *next, *head;
+> > > > +
+> > > > +	/*
+> > > > +	 * This work execution can potentially execute
+> > > > +	 * while a new done tail is being updated by
+> > > > +	 * grace period kthread in rcu_sr_normal_gp_cleanup().
+> > > > +	 * So, read and updates of done tail need to
+> > > > +	 * follow acq-rel semantics.
+> > > > +	 *
+> > > > +	 * Given that wq semantics guarantees that a single work
+> > > > +	 * cannot execute concurrently by multiple kworkers,
+> > > > +	 * the done tail list manipulations are protected here.
+> > > > +	 */
+> > > > +	done = smp_load_acquire(&rcu_state.srs_done_tail);
+> > > > +	if (!done)
+> > > > +		return;
+> > > > +
+> > > > +	WARN_ON_ONCE(!rcu_sr_is_wait_head(done));
+> > > > +	head = done->next;
+> > > > +	done->next = NULL;
+> > > 
+> > > Can the following race happen?
+> > > 
+> > > CPU 0                                                   CPU 1
+> > > -----                                                   -----
+> > > 
+> > > // wait_tail == HEAD1
+> > > rcu_sr_normal_gp_cleanup() {
+> > >     // has passed SR_MAX_USERS_WAKE_FROM_GP
+> > >     wait_tail->next = next;
+> > >     // done_tail = HEAD1
+> > >     smp_store_release(&rcu_state.srs_done_tail, wait_tail);
+> > >     queue_work() {
+> > >         test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work)
+> > >         __queue_work()
+> > >     }
+> > > }
+> > > 
+> > >                                                       set_work_pool_and_clear_pending()
+> > >                                                       rcu_sr_normal_gp_cleanup_work() {
+> > > // new GP, wait_tail == HEAD2
+> > > rcu_sr_normal_gp_cleanup() {
+> > >     // executes all completion, but stop at HEAD1
+> > >     wait_tail->next = HEAD1;
+> > >     // done_tail = HEAD2
+> > >     smp_store_release(&rcu_state.srs_done_tail, wait_tail);
+> > >     queue_work() {
+> > >         test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work)
+> > >         __queue_work()
+> > >     }
+> > > }
+> > >                                                           // done = HEAD2
+> > >                                                           done = smp_load_acquire(&rcu_state.srs_done_tail);
+> > >                                                           // head = HEAD1
+> > >                                                           head = done->next;
+> > >                                                           done->next = NULL;
+> > >                                                           llist_for_each_safe() {
+> > >                                                               // completes all callbacks, release HEAD1
+> > >                                                           }
+> > >                                                       }
+> > >                                                       // Process second queue
+> > >                                                       set_work_pool_and_clear_pending()
+> > >                                                       rcu_sr_normal_gp_cleanup_work() {
+> > >                                                           // done = HEAD2
+> > >                                                           done = smp_load_acquire(&rcu_state.srs_done_tail);
+> > > 
+> > > // new GP, wait_tail == HEAD3
+> > > rcu_sr_normal_gp_cleanup() {
+> > >     // Finds HEAD2 with ->next == NULL at the end
+> > >     rcu_sr_put_wait_head(HEAD2)
+> > >     ...
+> > > 
+> > > // A few more GPs later
+> > > rcu_sr_normal_gp_init() {
+> > >      HEAD2 = rcu_sr_get_wait_head();
+> > >      llist_add(HEAD2, &rcu_state.srs_next);
+> > >                                                           // head == rcu_state.srs_next
+> > >                                                           head = done->next;
+> > >                                                           done->next = NULL;
+> > >                                                           llist_for_each_safe() {
+> > >                                                               // EXECUTE CALLBACKS TOO EARLY!!!
+> > >                                                           }
+> > >                                                       }
+> > Looks like that. To address this, we should not release the head in the GP
+> > > kthread.
+> 
+> But then you have to unconditionally schedule the work, right? Otherwise the
+> HEADs are not released. And that means dropping this patch (right now I don't
+> have a better idea).
 >
-> Le mercredi 28 f=C3=A9vrier 2024 =C3=A0 17:12 +0100, Mattijs Korpershoek =
-a =C3=A9crit=C2=A0:
->> When aborting a stream, it's possible that v4l2_m2m_cancel_job()
->> remains stuck:
->>=20
->> [ 3498.490038][    T1] sysrq: Show Blocked State
->> [ 3498.511754][    T1] task:V4L2DecodeCompo state:D stack:12480 pid:2387=
-  ppid:1      flags:0x04000809
->> [ 3498.521153][    T1] Call trace:
->> [ 3498.524333][    T1]  __switch_to+0x174/0x338
->> [ 3498.528611][    T1]  __schedule+0x5ec/0x9cc
->> [ 3498.532795][    T1]  schedule+0x84/0xf0
->> [ 3498.536630][    T1]  v4l2_m2m_cancel_job+0x118/0x194
->> [ 3498.541595][    T1]  v4l2_m2m_streamoff+0x34/0x13c
->> [ 3498.546384][    T1]  v4l2_m2m_ioctl_streamoff+0x20/0x30
->> [ 3498.551607][    T1]  v4l_streamoff+0x44/0x54
->> [ 3498.555877][    T1]  __video_do_ioctl+0x388/0x4dc
->> [ 3498.560580][    T1]  video_usercopy+0x618/0xa0c
->> [ 3498.565109][    T1]  video_ioctl2+0x20/0x30
->> [ 3498.569292][    T1]  v4l2_ioctl+0x74/0x8c
->> [ 3498.573300][    T1]  __arm64_sys_ioctl+0xb0/0xec
->> [ 3498.577918][    T1]  invoke_syscall+0x60/0x124
->> [ 3498.582368][    T1]  el0_svc_common+0x90/0xfc
->> [ 3498.586724][    T1]  do_el0_svc+0x34/0xb8
->> [ 3498.590733][    T1]  el0_svc+0x2c/0xa4
->> [ 3498.594480][    T1]  el0t_64_sync_handler+0x68/0xb4
->> [ 3498.599354][    T1]  el0t_64_sync+0x1a4/0x1a8
->> [ 3498.603832][    T1] sysrq: Kill All Tasks
->>=20
->> According to job_abort() documentation from v4l2_m2m_ops:
->>=20
->>   After the driver performs the necessary steps, it has to call
->>   v4l2_m2m_job_finish() or v4l2_m2m_buf_done_and_job_finish() as
->>   if the transaction ended normally.
->>=20
->> This is not done in wave5_vpu_dec_job_abort(). Neither switch_state() nor
->> wave5_vpu_dec_set_eos_on_firmware() does this.
->
-> The doc said "the driver", not job_abort() specifically ...
+The easiest way is to drop the patch. To address it we can go with:
 
-Indeed. Seems I wanted to convince myself that this was job_abort()
-specific. Sorry about that.
+<snip>
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 31f3a61f9c38..9aa2cd46583e 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1661,16 +1661,8 @@ static void rcu_sr_normal_gp_cleanup(void)
+ 	 * wait-head is released if last. The worker is not kicked.
+ 	 */
+ 	llist_for_each_safe(rcu, next, wait_tail->next) {
+-		if (rcu_sr_is_wait_head(rcu)) {
+-			if (!rcu->next) {
+-				rcu_sr_put_wait_head(rcu);
+-				wait_tail->next = NULL;
+-			} else {
+-				wait_tail->next = rcu;
+-			}
+-
++		if (rcu_sr_is_wait_head(rcu))
+ 			break;
+-		}
+ 
+ 		rcu_sr_normal_complete(rcu);
+ 		// It can be last, update a next on this step.
+<snip>
 
->
->>=20
->> Add the missing call to fix the v4l2_m2m_cancel_job() hangs.
->>=20
->> Fixes: 9707a6254a8a ("media: chips-media: wave5: Add the v4l2 layer")
->> Signed-off-by: Mattijs Korpershoek <mkorpershoek@baylibre.com>
->> ---
->> This has been tested on the AM62Px SK EVM using Android 14.
->> See:
->>     https://www.ti.com/tool/PROCESSOR-SDK-AM62P
->>=20
->> Note: while this is has not been tested on an upstream linux tree, I
->> believe the fix is still valid for mainline and I would like to get
->> some feedback on it.
->>=20
->> Thank you in advance for your time.
->> ---
->>  drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c | 3 +++
->>  1 file changed, 3 insertions(+)
->>=20
->> diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c b/=
-drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
->> index ef227af72348..b03e3633a1bc 100644
->> --- a/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
->> +++ b/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
->> @@ -1715,6 +1715,7 @@ static void wave5_vpu_dec_device_run(void *priv)
->>  static void wave5_vpu_dec_job_abort(void *priv)
->>  {
->>  	struct vpu_instance *inst =3D priv;
->> +	struct v4l2_m2m_ctx *m2m_ctx =3D inst->v4l2_fh.m2m_ctx;
->>  	int ret;
->>=20=20
->>  	ret =3D switch_state(inst, VPU_INST_STATE_STOP);
->> @@ -1725,6 +1726,8 @@ static void wave5_vpu_dec_job_abort(void *priv)
->>  	if (ret)
->>  		dev_warn(inst->dev->dev,
->>  			 "Setting EOS for the bitstream, fail: %d\n", ret);
->> +
->> +	v4l2_m2m_job_finish(inst->v4l2_m2m_dev, m2m_ctx);
->
-> Wave5 firmware have no function to cancel pending jobs. By finishing the =
-job
-> without caring about the firmware state, wave5_vpu_dec_finish_decode() wi=
-ll be
-> called concurrently to another job. This change will effectively breaks s=
-eeking,
-> and will cause warning and possibly memory corruption.
+i.e. the process of users from GP is still there. The work is triggered
+to perform a final complete(if there are users) + releasing wait-heads
+so we do not race anymore.
 
-Ah. That's not what I intended. This patch would completely break the
-driver.
-Thank you for explaining that to me.
+I am OK with both cases. Dropping the patch will make it more simple
+for sure.
 
->
-> In principle, setting the EOS flag should be enough to ensure that the dr=
-ain
-> sequence is initiated, and that should allow finish_decoder() to be calle=
-d,
-> which is the only clean way to get finish_job() to be called.
+--
+Uladzislau Rezki
 
->
-> This driver implementation uses PIC_END operating mode of the IP, that en=
-sure
-> that each submitted job is assumed to be complete, which means each RUN w=
-ill
-> lead to a matching IRQ. We had a similar stall during development which w=
-as
-> fixed with a firmware update, are you sure you have the very latest firmw=
-are ?
-
-Interesting.
-
-I double checked the firmware from linux-firmware:
-
-$ ~/work/upstream/linux-firmware/ main md5sum cnm/wave521c_k3_codec_fw.bin
-02c5faa5405559bd59a7361a32c2695a  cnm/wave521c_k3_codec_fw.bin
-
-$ ~/ adb shell md5sum /vendor/firmware/cnm/wave521c_k3_codec_fw.bin
-02c5faa5405559bd59a7361a32c2695a  /vendor/firmware/cnm/wave521c_k3_codec_fw=
-bin
-
-Which should be: "FW version : 1.0.3"
-
-> Any chance you can use v4l2-tracer to share what your software have been =
-doing ?
-
-I did not know v4l2-tracer.
-I tried to run it on android but it seems it segfaults when overriding
-mmap().
-I will continue to try to get some traces.
-
->
-> What you can though though, to fortify this a little, is to introduce a w=
-atchdog
-> here. You can trigger it from abort, and on timeout, you will have to ful=
-ly
-> reset and reboot the chip (which is not very fast, you don't want to do t=
-his at
-> all time). When the reset have completed, you will have to carefully rese=
-t the
-> driver state before you can safely continue. You'll need to add thread sa=
-fe
-> protection against spurious finish_decode() call, in case the watchdog ti=
-meout
-> raced with the firmware finally coming back to life.
-
-Ok, I can look into that as well.
-
-Given that i'm not super familiar with multimedia, this has helped me a
-lot.
-
-Thanks!
-
->
-> regards,
-> Nicolas
->
-> p.s. you should perhaps trace the firmware job counters to try and unders=
-tand
-> more about your specific hang.
-
-I will look into it.
-
->
->>  }
->>=20=20
->>  static int wave5_vpu_dec_job_ready(void *priv)
->>=20
->> ---
->> base-commit: 8c64f4cdf4e6cc5682c52523713af8c39c94e6d5
->> change-id: 20240228-wave5-fix-abort-f72d25881cbd
->>=20
->> Best regards,
 
