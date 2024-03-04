@@ -1,99 +1,96 @@
-Return-Path: <linux-kernel+bounces-90101-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90102-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09DBF86FA60
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 07:58:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 631B586FA64
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:01:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DE672815D6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 06:58:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DD8628167C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 07:01:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7BA512B6B;
-	Mon,  4 Mar 2024 06:58:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AD0E12E4E;
+	Mon,  4 Mar 2024 07:00:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eAT8eJWe"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="UxuI2eHH"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1266E125D9
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 06:58:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBEB2B667;
+	Mon,  4 Mar 2024 07:00:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709535512; cv=none; b=XOin0qK+LXjh/nIgzCG5ctV1tlRRtqjnPAl2TToeC5yQP1JLTRDrcr4bqL4y163mWW5Sbz2zyIx5XaIX8V8ekGQogWoAm5RMpZgoOPnVXnKB9cXnwO9rNdOqcN+zBH//LRpJKeI3AHCsOGTieuYd+jA665V0vI/mB9wSXnNV+f4=
+	t=1709535658; cv=none; b=RO/FqCzxVRb7JvW5LB9GlvoQLRJMVOcmSDN0yyEHRXlACqIUnuiaBDHlQ1RF62SK8zmnd7ccCpMOqViJy/jGEQJ+LRNE1fhi2LuiTfcFmLqe01Cc+UGCdDV848mgLCL7aoTLJ9I9BtlbuPz4LqFH/AV5d5FAyNoemNJ7t+I4aOg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709535512; c=relaxed/simple;
-	bh=pCHXV/s88VE05KHiAtDUcDWj2C6kZNCANXL4c+tdvNg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dMLfTXZnbg/4Zgt1GQ1eRLIjcCUT0XaqcHWMucOfu5ZkQEsYf9DLyTpfYfZWEPOi+53ztJ7A//Z6XRnq0G8QtXXOBl4flmHqoOtuW50LxYWJiSy6SrzFS4zm7u57xZ3uXCNSnpq/Vzng9cSwzvSZYeKUUxDJTUcl14cTPgIP2QE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eAT8eJWe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B8B3C433C7;
-	Mon,  4 Mar 2024 06:58:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709535511;
-	bh=pCHXV/s88VE05KHiAtDUcDWj2C6kZNCANXL4c+tdvNg=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=eAT8eJWePJd0jK8Q2ixYVlvIpvbeeLUFoFy/sPTywGp9Q9vA+7LVcfX852wftPuwt
-	 MCzTGMA3XXTTiCtMvzdJtShw5uz7C3mlwqC+2li4cNz8sAXfqo6g7vhltuNVKX+zHI
-	 G6D1sVk3N4SeMME7KilqGabeYxTc3/y3FBBO68N6l7IezvBwRyl49B5I6ENlcQbQVL
-	 T++ovo7BFzwcTa3jmK7C3Ib8e3sdcSRbl4Ot6eof2/A9rXto3fTz1Ll3XLKByaLCYw
-	 8CDZEFzigrcusaCgFK1iRGuP6PkmTq9GlQqcw95+itOVqVIcbH26w6aQ9e+ipONRqg
-	 LADpyzp2BriQw==
-Message-ID: <0b1ebda7-cf70-47bc-9d31-129eb895ae9f@kernel.org>
-Date: Mon, 4 Mar 2024 12:28:23 +0530
+	s=arc-20240116; t=1709535658; c=relaxed/simple;
+	bh=+6O1b61eegcauwvncVdJAGt41wHdeb1LoXWkjLcqFoE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HbXxrGogjKz785tt+KA2AXaUAcWDQwEeu26zZdJHx9whgYmIRGKnhS2b0y7+KwdCEd0zFKCY8OyLFYuoeNV6269QRE3pSF98uQD8/A9LCK51cvkVoJVnJyKs6n08sCqKBwuUu15ziToFnlRw+0GSaUTH6KSelgMnOnnnDBwyyQo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=UxuI2eHH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52E26C433F1;
+	Mon,  4 Mar 2024 07:00:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1709535658;
+	bh=+6O1b61eegcauwvncVdJAGt41wHdeb1LoXWkjLcqFoE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=UxuI2eHHYYG49CuvPpfxTZ4Lym5ZGcUhVYM77yOxy0x9oL1Q+CbpyB7FXUCq77XyD
+	 LxbM2dHSvTuLkvWcrcx8SBt7yL1lfP6xhMS++RyJyMSqDQgWi8r1BSQNygoB7brDT5
+	 WWHar8t2Qrf1cvtd8e7eiIoJZz2TBZxFvtXK8iks=
+Date: Mon, 4 Mar 2024 07:58:56 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Linux regressions mailing list <regressions@lists.linux.dev>
+Cc: Hans de Goede <hdegoede@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
+	Eric Piel <eric.piel@tremplin-utc.net>,
+	linux-kernel@vger.kernel.org, Paul Menzel <pmenzel@molgen.mpg.de>,
+	stable@vger.kernel.org
+Subject: Re: [PATCH regression fix] misc: lis3lv02d_i2c: Fix regulators
+ getting en-/dis-abled twice on suspend/resume
+Message-ID: <2024030432-deploy-tingle-f2bb@gregkh>
+References: <20240220190035.53402-1-hdegoede@redhat.com>
+ <1d8226cd-df43-4ef6-8425-2db01d513b32@leemhuis.info>
+ <d2465271-1e4b-4bae-9399-4d49d3938048@leemhuis.info>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] powerpc: align memory_limit to 16MB in early_parse_mem
-To: Michael Ellerman <mpe@ellerman.id.au>, Joel Savitz <jsavitz@redhat.com>,
- linux-kernel@vger.kernel.org
-Cc: Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Benjamin Gray <bgray@linux.ibm.com>, Paul Mackerras <paulus@ozlabs.org>,
- linuxppc-dev@lists.ozlabs.org, Gonzalo Siero <gsierohu@redhat.com>
-References: <20240301203023.2197451-1-jsavitz@redhat.com>
- <87cysdfsef.fsf@mail.lhotse>
-Content-Language: en-US
-From: "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
-In-Reply-To: <87cysdfsef.fsf@mail.lhotse>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d2465271-1e4b-4bae-9399-4d49d3938048@leemhuis.info>
 
-On 3/2/24 4:53 AM, Michael Ellerman wrote:
-> Hi Joel,
+On Fri, Mar 01, 2024 at 06:20:52AM +0100, Linux regression tracking (Thorsten Leemhuis) wrote:
+> On 27.02.24 17:25, Linux regression tracking (Thorsten Leemhuis) wrote:
+> > On 20.02.24 20:00, Hans de Goede wrote:
+> >> When not configured for wakeup lis3lv02d_i2c_suspend() will call
+> >> lis3lv02d_poweroff() even if the device has already been turned off
+> >> by the runtime-suspend handler and if configured for wakeup and
+> >> the device is runtime-suspended at this point then it is not turned
+> >> back on to serve as a wakeup source.
+> >>
+> >> [...]
+> >>
+> >> Fixes: b1b9f7a49440 ("misc: lis3lv02d_i2c: Add missing setting of the reg_ctrl callback")
+> >> Reported-by: Paul Menzel <pmenzel@molgen.mpg.de>
+> >> Closes: https://lore.kernel.org/regressions/5fc6da74-af0a-4aac-b4d5-a000b39a63a5@molgen.mpg.de/
+> >> Cc: stable@vger.kernel.org
+> >> Cc: regressions@lists.linux.dev
+> > 
+> > Paul, did you maybe test this? I suppose Greg had no time to review this
+> > yet due to all the CVE stuff and stable tree maintenance; but with a bit
+> > of luck a "Tested-by" from your side might motivate him or somebody else
+> > to look into this.
 > 
-> Joel Savitz <jsavitz@redhat.com> writes:
->> On 64-bit powerpc, usage of a non-16MB-aligned value for the mem= kernel
->> cmdline parameter results in a system hang at boot.
+> Hmmm, Greg seems to be pretty busy with other stuff. Hans, is there
+> maybe someone we can motivate into reviewing this to make it easier for
+> Greg to pick this up and send it to Linus before -rc8/the final?
 > 
-> Can you give us any more details on that? It might be a bug we can fix.
-> 
->> For example, using 'mem=4198400K' will always reproduce this issue.
->>
->> This patch fixes the problem by aligning any argument to mem= to 16MB
->> corresponding with the large page size on powerpc.
-> 
-> The large page size depends on the MMU, with Radix it's 2MB or 1GB. So
-> depending on what's happening 16MB may not be enough.
-> 
-> What system are you testing on?
-> 
+> Sure, it's "just" a warning fix, still would have been nice to get this
+> into -rc7. But I guess time has already run out on that. :-/
 
-htab_bolt_mapping should have aligned things to a lower value that is 16MB aligned.
+Sorry for the delay, this ended up at the bottom of my pile.  I'll pick
+it up now...
 
-	/* Carefully map only the possible range */
-	vaddr = ALIGN(vstart, step);
-	paddr = ALIGN(pstart, step);
-	vend  = ALIGN_DOWN(vend, step);
-
-
-
--aneesh
-
+greg k-h
 
