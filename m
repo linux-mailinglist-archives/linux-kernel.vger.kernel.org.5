@@ -1,218 +1,125 @@
-Return-Path: <linux-kernel+bounces-90124-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90123-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9CD886FAAA
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:23:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A692F86FAA9
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:23:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 316871F21615
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 07:23:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D831B1C20D44
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 07:23:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59D781428B;
-	Mon,  4 Mar 2024 07:23:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qHkPhrNt"
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD4E713FFD;
+	Mon,  4 Mar 2024 07:23:26 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80D8C134AD
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2CD9134B7
 	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 07:23:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709537006; cv=none; b=rMEmSuq3l/0ifLyuIds5i8AiUwTy2CFlOzcOuJ/yDOT4tZ1HKIrh55ji26+DfRm+49aIbZOTM1d2NRZTgLUkmWZCOOjjEeRJ7czobJKTO0z8RHVGcgUVLVKisfkaP/XDPJohq8VRDF77tnRWUHrbUeOQb0Dsv8CbHYyiZ+mkMKA=
+	t=1709537006; cv=none; b=Rpcv10LX2fiwstZ0XPk5+ELqYdv9tH5B28RY8AXGzsG18cxE4aVp4zhaZotehcTHPhnAzAOfH2ElCxXF0bGVXJKYdmg4+9gwgi9QtNKJbEQU5QaEPv1T5k30U3DTGd3TikYD1DNOrSD0NzLFjGGYqfX4eh6ff7S0cS2YkwsaWc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709537006; c=relaxed/simple;
-	bh=M03hxy49tZj3JEHn2dTWKxfoGsKeX4oy3shfwcKmMIU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MpE7F+V/icroZa/HEL24WMdVlGxsGTf/p/LC4ZHWlDlj1W9qSEgqH3CGhRnR5UtOpxFPOHbnKeBekcD4h53C26O7Hz6Y/i/kvhjDO6wiiH3tKZUY0ySDaUMUHpt2VzUc2YhaWou0ghsGLvYMH3RlgdhnB+/g+XD7mggXt89OcMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qHkPhrNt; arc=none smtp.client-ip=209.85.221.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-33d146737e6so3054297f8f.0
+	bh=uZVPkag5AAXBeA+sFAklmErR3BGsvvJg/HeilNA4UWc=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=e+er5/of1qoYHrVNQXvqEl0bO/20KAs8s/AFWBiAEjXnUrgAiLp+rVJslWNTdIUAcH60/ew6ONQhe9/etzX1mIKrKLqdAz0TNb1b4BE4Qp+5nnnVPuP7a8NZ0VXpvlsDSUYpVixPmeeJ8Nt3LE1Wg5/dB61P+xdCOK+xNnu09lQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7c846da7ad2so98441839f.3
         for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 23:23:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709537003; x=1710141803; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Zvv2RvqAKR32wfF6dMhJCec7pDLoBXFhK3YVJX0dABw=;
-        b=qHkPhrNtzRyFswmUGV+qgKpThNuzH4z8aCB9miC28TGgwuJ1XQktR8CXmk66dZ2mCy
-         ujRTt4fZVCFZeYergXIICvbUBtqczeNM6LyLA78HLIlKAcQu2et8hYRbSvzkwO8MHXA0
-         v14SMkaQNBMLNFrAYgByePaCffEgB8kubd6ZkAesoi40dpkdI6yD92LbhA//lyCzgxN+
-         GQRMq5wQYwIQHhd0WWn+HjYtDLvFVRO8nYUMS74Vg0oilukE8fv8AH8KTudrlcbAl/C5
-         582nXfOL49/nHcxbR1cQt1erteRedrtgU8JO6Tzqyk8ECnr2fYGaLRk/PnxqT/mKhs7E
-         Qspg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709537003; x=1710141803;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Zvv2RvqAKR32wfF6dMhJCec7pDLoBXFhK3YVJX0dABw=;
-        b=bb23WRkc510EgNXtlWp/JugpB9/GwJVpeUd36syXOUpGDIqfygAktCumKiqjKw5Zt2
-         Ip3tqrn1s/QBBdB8TcuQ4K73Wp66CtxaxsgNkzXEzuhYjJ4mBU2vFwfhCgeSL8XEqoZb
-         or3cGfWH1ck5vPXT5TOUG9csDTFdCWQegGRf+xe8iIoVrXGrzzt+JEGSFLbswwvTPjHL
-         ay2F1zumHnPQthYKdPMRC4CXxOCsKwnTBC8lYRV9dwQljfPI0q6xvtAcG2bC34e4Etsf
-         QAk8IngqYYXDtz3hZsOIadaMMaKKOfS+tnPcGUQbBjOYyCYClHQlLENTGdqK+Avo283l
-         vyqg==
-X-Forwarded-Encrypted: i=1; AJvYcCUAxlYHk3B2bM/x7jMsbHxI0ikYH3hI5jUxqVzGLj0io8w8SJlAU9O1MN6ppalsIEjSQn85Bs1PmkWBtU/L7S0joRgzpxwneG4KYmQ+
-X-Gm-Message-State: AOJu0YzP5W21bfsy0xmpw+iPb4gm3hneS1wiTsdgFi2plww4wJIEiBak
-	ag+fJ1wptL81g3TQIQP0/XmRLj7j/EzO4XiTHkJsmjD+c8D+Tu5bYbkHdTMYv7U=
-X-Google-Smtp-Source: AGHT+IE7ALsJqhDpVZxE7usDUH7HTanZGu45qUCRfZCLZQ3L36mu/z7mahNw7Pce9HumilUFcN9K2A==
-X-Received: by 2002:adf:e643:0:b0:33d:c5c7:4182 with SMTP id b3-20020adfe643000000b0033dc5c74182mr5737767wrn.7.1709537002828;
-        Sun, 03 Mar 2024 23:23:22 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id h8-20020a056000000800b0033d2ae84fafsm8098930wrx.52.2024.03.03.23.23.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 03 Mar 2024 23:23:22 -0800 (PST)
-Message-ID: <9c1f74b9-468b-4243-a21e-fd18183aa4b1@linaro.org>
-Date: Mon, 4 Mar 2024 08:23:20 +0100
+        d=1e100.net; s=20230601; t=1709537004; x=1710141804;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0tpG0eDwWW5kcoi19UELPjP4fL+iOhGGTyJmkrVdifU=;
+        b=UG23jPSqrk2+wyVBsq3RBCOKvf2pZAK1x9FvidTCqxPZmMaZUTUbQKNUiHpnQVXOPP
+         x6m5sVbw3QMyOqY3PfutVhT/v8PBMyT/6nn9AmZTZ1q/SYHNWa4KBJ//k306a8SWXMp6
+         /aXxqr/hOWkBeXwc77ijxsxa1f26JovMTMjJzGPLv2SxId7BW1m55/WcgLb3hphafh7Y
+         4gD8aLDVKeIk4MPPD8CPCzPc7yZxI0W3Ti9mFENTk+Rqy96wato7RYkNjmdugzOJ79i8
+         EHzxQdTb+UGDMH8ZEr+B0Jkx/h8EeWlR/EbdITmUdjO2lkgvQ6Xr0IfBqzKEnq62rD4t
+         u+OA==
+X-Forwarded-Encrypted: i=1; AJvYcCVxTJIKDkYb4QlJDwGgcm2hN46GhMvlVBItLOp5QWkpN7/VAfF3jkMtx3CACjqzXlMr6tBLgFjY6G+but3GqpRDjIEGRKFnHS59KfmB
+X-Gm-Message-State: AOJu0Yyk2XcCvYm9f/Dm+ykdy5F1WdJdg1F4sPDc2poAZu7IGHHG1uk7
+	GCJOfgkbnd1q2EcKp2GmrSJoIj+0xm2Y6dFUyeit/RwDMiufCj22YbRD3C5DDEWQ/V7D9vYliF8
+	kz7LEybeCHhCBr+QLGhiCXtE1S6DLQqu1vNsQDwzxB5LtHd9Fxon2Hqc=
+X-Google-Smtp-Source: AGHT+IFjA7/eq7vxEVBVY5D06vCo1DteiS6LkpGXtmk3Tly1vrk328qEQjpu/DZfM2joVCaFNCyjlUKyQSgAds0XeYOjkSA+zkN1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] dt-bindings: dma: fsl-edma: allow 'power-domains'
- property
-To: Frank Li <Frank.li@nxp.com>
-Cc: conor+dt@kernel.org, devicetree@vger.kernel.org,
- dmaengine@vger.kernel.org, imx@lists.linux.dev,
- krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
- peng.fan@nxp.com, robh@kernel.org, vkoul@kernel.org
-References: <20240301214536.958869-1-Frank.Li@nxp.com>
- <20240301214536.958869-2-Frank.Li@nxp.com>
- <885501b5-0364-48bd-bc1d-3bc486d1b4c6@linaro.org>
- <ZeNI1nG1dmbwOqbb@lizhi-Precision-Tower-5810>
- <31e62acf-d605-4786-80a1-df52c8490913@linaro.org>
- <ZeNWXxzFBzNj0gM1@lizhi-Precision-Tower-5810>
- <e1d0aafe-e54f-4331-8505-135b9a8f9bff@linaro.org>
- <ZeNYG1IUfniWkhcp@lizhi-Precision-Tower-5810>
- <32d4a6c9-1cc3-4e9a-81a6-744a33bc6bee@linaro.org>
- <ZeU/UQVPj/q4kD3p@lizhi-Precision-Tower-5810>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <ZeU/UQVPj/q4kD3p@lizhi-Precision-Tower-5810>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:219d:b0:365:26e3:6e48 with SMTP id
+ j29-20020a056e02219d00b0036526e36e48mr664367ila.0.1709537004058; Sun, 03 Mar
+ 2024 23:23:24 -0800 (PST)
+Date: Sun, 03 Mar 2024 23:23:24 -0800
+In-Reply-To: <000000000000b18c2406124b652e@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000db848a0612d09997@google.com>
+Subject: Re: [syzbot] [wireless?] KMSAN: uninit-value in ieee80211_amsdu_to_8023s
+From: syzbot <syzbot+d050d437fe47d479d210@syzkaller.appspotmail.com>
+To: davem@davemloft.net, edumazet@google.com, johannes.berg@intel.com, 
+	johannes@sipsolutions.net, kuba@kernel.org, linux-kernel@vger.kernel.org, 
+	linux-wireless@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 04/03/2024 04:26, Frank Li wrote:
-> On Sun, Mar 03, 2024 at 08:55:10AM +0100, Krzysztof Kozlowski wrote:
->> On 02/03/2024 17:47, Frank Li wrote:
->>> On Sat, Mar 02, 2024 at 05:43:01PM +0100, Krzysztof Kozlowski wrote:
->>>> On 02/03/2024 17:39, Frank Li wrote:
->>>>> On Sat, Mar 02, 2024 at 05:20:42PM +0100, Krzysztof Kozlowski wrote:
->>>>>> On 02/03/2024 16:42, Frank Li wrote:
->>>>>>> On Sat, Mar 02, 2024 at 02:59:39PM +0100, Krzysztof Kozlowski wrote:
->>>>>>>> On 01/03/2024 22:45, Frank Li wrote:
->>>>>>>>> Allow 'power-domains' property because i.MX8DXL i.MX8QM and i.MX8QXP need
->>>>>>>>> it.
->>>>>>>>>
->>>>>>>>> Fixed below DTB_CHECK warning:
->>>>>>>>>   dma-controller@599f0000: Unevaluated properties are not allowed ('power-domains' was unexpected)
->>>>>>>>>
->>>>>>>>> Signed-off-by: Frank Li <Frank.Li@nxp.com>
->>>>>>>>> ---
->>>>>>>>>
->>>>>>>>> Notes:
->>>>>>>>>     Change from v1 to v2
->>>>>>>>>     - using maxitem: 64. Each channel have one power domain. Max 64 dmachannel.
->>>>>>>>>     - add power-domains to 'required' when compatible string is fsl,imx8qm-adma
->>>>>>>>>     or fsl,imx8qm-edma
->>>>>>>>>
->>>>>>>>>  .../devicetree/bindings/dma/fsl,edma.yaml         | 15 +++++++++++++++
->>>>>>>>>  1 file changed, 15 insertions(+)
->>>>>>>>>
->>>>>>>>> diff --git a/Documentation/devicetree/bindings/dma/fsl,edma.yaml b/Documentation/devicetree/bindings/dma/fsl,edma.yaml
->>>>>>>>> index cf0aa8e6b9ec3..76c1716b8b95c 100644
->>>>>>>>> --- a/Documentation/devicetree/bindings/dma/fsl,edma.yaml
->>>>>>>>> +++ b/Documentation/devicetree/bindings/dma/fsl,edma.yaml
->>>>>>>>> @@ -59,6 +59,10 @@ properties:
->>>>>>>>>      minItems: 1
->>>>>>>>>      maxItems: 2
->>>>>>>>>  
->>>>>>>>> +  power-domains:
->>>>>>>>> +    minItems: 1
->>>>>>>>> +    maxItems: 64
->>>>>>>>
->>>>>>>> Hm, this is odd. Blocks do not belong to almost infinite number of power
->>>>>>>> domains.
->>>>>>>
->>>>>>> Sorry, what's your means? 'power-domains' belong to 'properties'. 
->>>>>>> 'maxItems' belong to 'power-domains'.It is similar with 'clocks'. what's
->>>>>>> wrong? 
->>>>>>
->>>>>> That one device belong to 64 power domains. That's just random code...
->>>>>
->>>>> Yes, each dma channel have one power domain. Total 64 dma channel. So
->>>>> there are 64 power-domains.
->>>>
->>>> OK, then how about extending the example to be complete?
->>>
->>> Let's add 8qxp example at next version.
->>
->> You have already enough of examples there and your change here claims
->> they user power domains, so why this cannot be added to existing examples?
-> 
-> Only imx8qxp/8qm need power-domains now. The example in yaml is vf610, 7ulp
+syzbot has found a reproducer for the following issue on:
 
-Need? Hardware is either part of power domain or not. It's not dual-state.
+HEAD commit:    58c806d867bf Merge tag 'phy-fixes2-6.8' of git://git.kerne..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=12374c96180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=80c7a82a572c0de3
+dashboard link: https://syzkaller.appspot.com/bug?extid=d050d437fe47d479d210
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14227612180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=134411a2180000
 
-> and imx93. If add power-domains at existed example, it will mislead reader.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/b2b0ed9886ae/disk-58c806d8.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/372dff1b6033/vmlinux-58c806d8.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/d2b87ebe3e7b/bzImage-58c806d8.xz
 
-Then please disallow the domains for other variants. You can convert
-imx93 to imx95 example, because it's no different than other one. There
-is little point in putting so many same examples in the binding. You are
-just duplicating DTS.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d050d437fe47d479d210@syzkaller.appspotmail.com
 
-Best regards,
-Krzysztof
+=====================================================
+BUG: KMSAN: uninit-value in ieee80211_amsdu_to_8023s+0x8c1/0x2d40 net/wireless/util.c:856
+ ieee80211_amsdu_to_8023s+0x8c1/0x2d40 net/wireless/util.c:856
+ __ieee80211_rx_h_amsdu+0x91a/0x13b0 net/mac80211/rx.c:3047
+ ieee80211_rx_h_amsdu net/mac80211/rx.c:3133 [inline]
+ ieee80211_rx_handlers+0x571a/0x10c40 net/mac80211/rx.c:4141
+ ieee80211_invoke_rx_handlers net/mac80211/rx.c:4185 [inline]
+ ieee80211_prepare_and_rx_handle+0x5640/0x9690 net/mac80211/rx.c:5033
+ __ieee80211_rx_handle_packet net/mac80211/rx.c:5239 [inline]
+ ieee80211_rx_list+0x642c/0x65d0 net/mac80211/rx.c:5410
+ ieee80211_rx_napi+0x84/0x3e0 net/mac80211/rx.c:5433
+ ieee80211_rx include/net/mac80211.h:4983 [inline]
+ ieee80211_tasklet_handler+0x19f/0x330 net/mac80211/main.c:318
+ tasklet_action_common+0x391/0xd30 kernel/softirq.c:780
+ tasklet_action+0x26/0x30 kernel/softirq.c:805
+ __do_softirq+0x1b7/0x7c5 kernel/softirq.c:553
+ run_ksoftirqd+0x24/0x40 kernel/softirq.c:921
+ smpboot_thread_fn+0x558/0xa60 kernel/smpboot.c:164
+ kthread+0x3ed/0x550 kernel/kthread.c:388
+ ret_from_fork+0x66/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:243
 
+Local variable hdr created at:
+ ieee80211_amsdu_to_8023s+0x5b/0x2d40 net/wireless/util.c:832
+ __ieee80211_rx_h_amsdu+0x91a/0x13b0 net/mac80211/rx.c:3047
+
+CPU: 0 PID: 15 Comm: ksoftirqd/0 Not tainted 6.8.0-rc6-syzkaller-00278-g58c806d867bf #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+=====================================================
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
