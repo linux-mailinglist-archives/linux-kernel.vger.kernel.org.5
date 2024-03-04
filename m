@@ -1,49 +1,49 @@
-Return-Path: <linux-kernel+bounces-90895-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90896-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F3E7870681
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:05:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 066DB870683
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:05:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B09C2823DF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:05:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53A8AB23A3D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:05:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 563CA4C637;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCFC34CE0E;
 	Mon,  4 Mar 2024 16:05:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="mxcd7MhD"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="hSIUVb6E"
 Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A495482CA;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 395C4482DA;
 	Mon,  4 Mar 2024 16:05:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709568304; cv=none; b=cNL3yJO2IokeyPD1vMhLVwtNUHmu9oTzmfmd8LB3q+j7mzb01KFjFPG8kTgh42s836qoFKTkgBZr/z0Va/AyNh6O04xCCbpdhWSwvKcDDcU2OkqCDk8WVnW787KX7C+GI9HpYK+NcjOobifAk3HepGBx6W7C99+cL45OwN3KFvY=
+	t=1709568305; cv=none; b=o6JmfqDbaQgSyFaVVveLEC0yaip0GLH7KH2w++BEF9c+rwBA3L3RZngSSui3dotHQ40hDLYsaROYNGhJqPgy4AOPFwCNmr3rg/N03n6HjhAlMEZIzMCY+1chH7DE7pekBXtrTu1k16KXfxJ53oXQM9kN8xY2yST6as08wrukYOE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709568304; c=relaxed/simple;
-	bh=IQZJrynjmNkRwbD/swl17Nu6ar2/DgqZrKdijF57wmk=;
+	s=arc-20240116; t=1709568305; c=relaxed/simple;
+	bh=UqrS3L3ZfbwmChhjl8azT4mTToB0ZPmTuVA//e4Tm3c=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Jpr1ZNsf4m1F3vIntVW8STTiLJvlSgRJCSm2tEJK5l9Y+Mr38AryyELGedEiLpsRux3oJdjsPTmQ5n9Gp4TEHv/t+L6zJepwm0oVWi8N+Xaf3+LSNlR4Tm2+iaxTObFfodRfJMv77oKqRLPYveEyLBiY7jIjuJCRC1Ymx75kATA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=mxcd7MhD; arc=none smtp.client-ip=217.70.183.200
+	 MIME-Version:Content-Type; b=Ed9qnqvtDOt+Q85DvS0+92hp/BA6lWX6XrET1iRO6+gjbebRRt9wNNzT+0YRNxuomVO17mZB0lwBYXBYHBkqS3DpowHn1T+ZgZU+oazjyuk9C1KzFYLpedbR9mS0bBJFmC2/OMD77JfhL8R0StPHUAw40X/p6EzY5LSKemRFVZ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=hSIUVb6E; arc=none smtp.client-ip=217.70.183.200
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 9436B20003;
-	Mon,  4 Mar 2024 16:04:59 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 949B920004;
+	Mon,  4 Mar 2024 16:05:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709568300;
+	t=1709568301;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=LWQ0te0Hyhk01MW2THXCDBvNYf7CwmLuR3EI8Wv6l6Q=;
-	b=mxcd7MhDgscxROkA6tVuMcPScoYCH/fwAuUbAKBhuU6E80Ptv9G79yo3iGho7+FmQd0T+V
-	2SvQDzslyoOdlMzvaS6+1CX8+eSVamjYivtlCb6NP3UNsCNbtTRpvTkMA2KvowyOMgleAx
-	jXuzXhWPEXD3CAUxeBss/zzawKYX4Q8ku2GfrrNVxKmUC91dli1qXIGHX43Qj272GQEoJL
-	xMGV8VBsa+kDoySLqZDEbGe80tQhYR6zCJtJX2fk8jFnLQ+IGrbjQKWaPwuc4Y3ZDBojO8
-	sp05lYzHdwt+gkscLhipll3lXvQJ4/1351U0jeQipNEDXNl/mbeWZ+zgXlcnwQ==
+	bh=02ddm9Xy6N7z/+neL8gzCb13I4/NT+KuYhzJAZBmiP4=;
+	b=hSIUVb6E9z+JSB3bVvrNY/dPAlfXj7zfaI3INTwE8Z2MqF10k09JJmTREEaB3DRgjsWAQj
+	YwzYwrwJKxnGbuvvtKJw9iaJxJvbXAzkzEXZeTUcF58cWnZDswtLxwJNXEVgAPkiSIgJtc
+	9lroxmwHSoB34Yz6fFszoK/HGENu8aOAhW+7unBeOQ2lIxYlqzYMgCqQwIYnS3ASG9W+mX
+	tixzkUi6qIOWAa+ekwBb2CBGStwPBvV/uqrjaRzm4I8BjtYxsd/8EjxtKvgcf8zQ1GRw7Y
+	tu1aM+ajydcauOYQjMoKO7iApTuYrnLSblJ2fCiJYBYBBnYiG5xrDw6qRSSo7A==
 From: =?UTF-8?q?J=C3=A9r=C3=A9mie=20Dautheribes?= <jeremie.dautheribes@bootlin.com>
 To: Neil Armstrong <neil.armstrong@linaro.org>,
 	Jessica Zhang <quic_jesszhan@quicinc.com>,
@@ -63,9 +63,9 @@ Cc: dri-devel@lists.freedesktop.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	Yen-Mei Goh <yen-mei.goh@keysight.com>,
 	=?UTF-8?q?J=C3=A9r=C3=A9mie=20Dautheribes?= <jeremie.dautheribes@bootlin.com>
-Subject: [PATCH v2 2/3] dt-bindings: display: simple: add support for Crystal Clear CMT430B19N00
-Date: Mon,  4 Mar 2024 17:04:53 +0100
-Message-Id: <20240304160454.96977-3-jeremie.dautheribes@bootlin.com>
+Subject: [PATCH v2 3/3] drm/panel: simple: add CMT430B19N00 LCD panel support
+Date: Mon,  4 Mar 2024 17:04:54 +0100
+Message-Id: <20240304160454.96977-4-jeremie.dautheribes@bootlin.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240304160454.96977-1-jeremie.dautheribes@bootlin.com>
 References: <20240304160454.96977-1-jeremie.dautheribes@bootlin.com>
@@ -79,27 +79,61 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: jeremie.dautheribes@bootlin.com
 
-Add Crystal Clear Technology CMT430B19N00 4.3" 480x272 TFT-LCD panel
-compatible string.
+Add support for Crystal Clear Technology CMT430B19N00 4.3" 480x272
+TFT-LCD panel.
 
 Signed-off-by: Jérémie Dautheribes <jeremie.dautheribes@bootlin.com>
 ---
- .../devicetree/bindings/display/panel/panel-simple.yaml         | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/gpu/drm/panel/panel-simple.c | 29 ++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-index a95445f40870..c575f7c4b745 100644
---- a/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-+++ b/Documentation/devicetree/bindings/display/panel/panel-simple.yaml
-@@ -91,6 +91,8 @@ properties:
-       - boe,nv133fhm-n62
-         # BOE NV140FHM-N49 14.0" FHD a-Si FT panel
-       - boe,nv140fhmn49
-+        # Crystal Clear Technology CMT430B19N00 4.3" 480x272 TFT-LCD panel
-+      - cct,cmt430b19n00
-         # CDTech(H.K.) Electronics Limited 4.3" 480x272 color TFT-LCD panel
-       - cdtech,s043wq26h-ct7
-         # CDTech(H.K.) Electronics Limited 7" WSVGA (1024x600) TFT LCD Panel
+diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+index 20e3df1c59d4..b940220f56e2 100644
+--- a/drivers/gpu/drm/panel/panel-simple.c
++++ b/drivers/gpu/drm/panel/panel-simple.c
+@@ -1457,6 +1457,32 @@ static const struct panel_desc boe_hv070wsa = {
+ 	.connector_type = DRM_MODE_CONNECTOR_LVDS,
+ };
+ 
++static const struct drm_display_mode cct_cmt430b19n00_mode = {
++	.clock = 9000,
++	.hdisplay = 480,
++	.hsync_start = 480 + 43,
++	.hsync_end = 480 + 43 + 8,
++	.htotal = 480 + 43 + 8 + 4,
++	.vdisplay = 272,
++	.vsync_start = 272 + 12,
++	.vsync_end = 272 + 12 + 8,
++	.vtotal = 272 + 12 + 8 + 4,
++	.flags = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
++};
++
++static const struct panel_desc cct_cmt430b19n00 = {
++	.modes = &cct_cmt430b19n00_mode,
++	.num_modes = 1,
++	.bpc = 8,
++	.size = {
++		.width = 95,
++		.height = 53,
++	},
++	.bus_format = MEDIA_BUS_FMT_RGB888_1X24,
++	.bus_flags = DRM_BUS_FLAG_DE_HIGH | DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE,
++	.connector_type = DRM_MODE_CONNECTOR_DPI,
++};
++
+ static const struct drm_display_mode cdtech_s043wq26h_ct7_mode = {
+ 	.clock = 9000,
+ 	.hdisplay = 480,
+@@ -4402,6 +4428,9 @@ static const struct of_device_id platform_of_match[] = {
+ 	}, {
+ 		.compatible = "boe,hv070wsa-100",
+ 		.data = &boe_hv070wsa
++	}, {
++		.compatible = "cct,cmt430b19n00",
++		.data = &cct_cmt430b19n00,
+ 	}, {
+ 		.compatible = "cdtech,s043wq26h-ct7",
+ 		.data = &cdtech_s043wq26h_ct7,
 -- 
 2.34.1
 
