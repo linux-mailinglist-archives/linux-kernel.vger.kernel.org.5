@@ -1,144 +1,101 @@
-Return-Path: <linux-kernel+bounces-91421-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91424-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B66F87114B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 00:45:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61A32871155
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 00:50:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5534F2813E0
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 23:45:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E677928418B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 23:50:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52D3E7D3E1;
-	Mon,  4 Mar 2024 23:45:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F2757D3F0;
+	Mon,  4 Mar 2024 23:50:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TV8VBHum"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E23EA7D06E
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 23:45:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1DD47CF2B;
+	Mon,  4 Mar 2024 23:50:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709595937; cv=none; b=CGgLucPXjXCBAacKaOJHI/rCOXJwbuzVkQVoqya4GWkC10qAPCxeJQJFRQ6GP30GdX0K/3TWNSpqGGXFPj/Z0ETJY3LimVUWycHHmBYJJsYNdeH8vZwP2WIZOiMfoy9sgx8mF+GNWPLuLGY8og6oqliX5lDoL/pAi8FlBeS1Hcg=
+	t=1709596234; cv=none; b=Xrc8hDgPqQyTGPbeCyDH8z4OCYS0zxeOsXwzpOUG5s6DXP8o1tcp+R13IQFsjiHufNoaV4FaW+HLo3q4g0chX+kCjzQ2YJmuPH9sIzi2AQllp8zAWvFzXK3p6zhIeCg/5m1UGhEtpKYvQacTfTJL5n208Pb9NaN6JWo1y9HWJO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709595937; c=relaxed/simple;
-	bh=rWCalsQ/ubomWP4T3IoTLD+8DsTwXYo/CmCx4jzu1OA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=a3OBiKqiQyBNuPW1PKzzGJDqC7pqRTCy3vW4E+r1nDSmb9KbyKIbblLI9daUN4RPJQ1rd/o/qAuktPL6dvNfR3VxCnfQ3DtOYA9XX+MJWq8QbOyySykzMslOxuuiALzK4Hs6qt8Ep9jzCXjiobZGCfhXrf2uzTrzisQIgs6xIF0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF6A4C43390;
-	Mon,  4 Mar 2024 23:45:36 +0000 (UTC)
-Date: Mon, 4 Mar 2024 18:47:25 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Sachin Sant <sachinp@linux.ibm.com>
-Subject: Re: [GIT PULL] tracing: Prevent trace_marker being bigger than
- unsigned short
-Message-ID: <20240304184725.55449e70@gandalf.local.home>
-In-Reply-To: <CAHk-=wi53cJEKim7UvUXtdhQG1BR7oU5TABPXaOq5SmBKLSKYg@mail.gmail.com>
-References: <20240302111244.3a1674be@gandalf.local.home>
-	<CAHk-=wj376WMgZ24wKGEWDs_ojNtod-LDZBedPzDYRRcY60UYA@mail.gmail.com>
-	<20240302145958.05aabdd2@rorschach.local.home>
-	<CAHk-=wgjhdRj1V847NTF4veMN_tCbrySiEHXO8RO3n05cNeXeA@mail.gmail.com>
-	<20240302154713.71e29402@rorschach.local.home>
-	<CAHk-=wioeo5vyEWUZcGBKMsf3jnjrnnHc3uJiV=JjSKPdvZOEw@mail.gmail.com>
-	<20240303075937.36fc6043@rorschach.local.home>
-	<CAHk-=wiLdWetJgKHB72VeDALZsjpggEyyuiZ2KmoY_g+3horwQ@mail.gmail.com>
-	<20240303140705.0f655e36@rorschach.local.home>
-	<CAHk-=wiTGmAXfHiRB8ku4diLxRpN=Hac_q86=j65oiP3J5uXKg@mail.gmail.com>
-	<20240303160024.458d4f91@rorschach.local.home>
-	<20240304164205.3245608a@gandalf.local.home>
-	<CAHk-=wgwy-p_zodT0JvkVkkd5MWy9NffC3jiDiczMMHPj1eQ9w@mail.gmail.com>
-	<20240304171034.08d037aa@gandalf.local.home>
-	<CAHk-=wi53cJEKim7UvUXtdhQG1BR7oU5TABPXaOq5SmBKLSKYg@mail.gmail.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1709596234; c=relaxed/simple;
+	bh=FUqV7V3jF4155KU2wYQ2VpqDEN8BLRgff07ULcK6dDo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UpIw2MQT4ZbZne3p9XWzzv9BhtQZWhiCPiqOaNBb706SMg71gxd9FobsDEfM9GUIPLjuJseHkJzQCVQ4pAo/cRBsW6y66V0zJ76kZ9G+3VwmgKl3+iXWFGmh5BvFIMBc7K2FJ6nAaCNM+QmQHxNSszZSQf4Ifm+qwG6CkgYLISg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TV8VBHum; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98B69C433F1;
+	Mon,  4 Mar 2024 23:50:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709596234;
+	bh=FUqV7V3jF4155KU2wYQ2VpqDEN8BLRgff07ULcK6dDo=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=TV8VBHum6DhMa9heo77mkcgh5EBnsNaX7tquiD7C18YX4iQEgSqwDrOXJcKqWKyDQ
+	 xA2/V+2wisq0K2kay3/O1WyD74yhX6ITb6oVQnUEUouULKCluzUMqEuD/9iPC75fEO
+	 7nY4DCfKezJgEqYAoYisyEbqtRPwy6L7yQOLB4q+ooziskwwYQBgPBLd51R7DkbWKA
+	 0zlVreg1ZmTWPewFZSq3y/0xV8YPYlmA39gahM2hlMsHYzbE9eHxKDQt1KCnRYl0Z2
+	 yfK/aj1itIUE+WpsSPw9CPjfui40ZRp5CGrlD6BkBWjxwBedhicj5nnMbNhRwyX4/W
+	 Gc+21lWvvFW1w==
+Message-ID: <2a206c9b-b570-4081-b4e4-d177343482f3@kernel.org>
+Date: Tue, 5 Mar 2024 08:50:29 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 7/7] riscv: config: enable SOC_CANAAN in defconfig
+Content-Language: en-US
+To: Yangyu Chen <cyy@cyyself.name>, linux-riscv@lists.infradead.org
+Cc: Conor Dooley <conor@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Guo Ren <guoren@kernel.org>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Conor Dooley <conor.dooley@microchip.com>
+References: <tencent_BB2364BBF1812F4E304F7BDDD11E57356605@qq.com>
+ <tencent_E2812086B695A334EE5E8C70C85CA3171F06@qq.com>
+From: Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <tencent_E2812086B695A334EE5E8C70C85CA3171F06@qq.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On Mon, 4 Mar 2024 15:20:52 -0800
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
-
-> On Mon, 4 Mar 2024 at 14:08, Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > Fine, I'll just remove the precision as that's not needed. There was no
-> > other overflows involved here.  
+On 3/5/24 06:06, Yangyu Chen wrote:
+> Since K230 has been supported, allow SOC_CANAAN to be selected to build dt
+> and drivers for it in defconfig.
 > 
-> I really want you to add the size check on the trace buffer *creation* side.
+> Signed-off-by: Yangyu Chen <cyy@cyyself.name>
+> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> ---
+>  arch/riscv/configs/defconfig | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> I don't understand why you refuse to accept the fact that the
-> precision warning found a PROBLEM.
+> diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
+> index 89a009a580fe..20b557ec28df 100644
+> --- a/arch/riscv/configs/defconfig
+> +++ b/arch/riscv/configs/defconfig
+> @@ -33,6 +33,7 @@ CONFIG_SOC_STARFIVE=y
+>  CONFIG_ARCH_SUNXI=y
+>  CONFIG_ARCH_THEAD=y
+>  CONFIG_SOC_VIRT=y
+> +CONFIG_SOC_CANAAN=y
 
-And what exactly was that problem? That someone wrote a huge string into
-the trace_marker on a machine that had huge page sizes?
+Given that the k210 need !MMU, including it like this in the defconfig is
+odd... I do not even see how that could work. But that depends on patch 5,
+which does not seem OK to me.
 
-What exactly broke?
+>  CONFIG_SMP=y
+>  CONFIG_HOTPLUG_CPU=y
+>  CONFIG_PM=y
 
-There was no overflow. No bad memory. KASAN is happy.
+-- 
+Damien Le Moal
+Western Digital Research
 
-
-> 
-> And no, the fix was never to paper over the problem by limiting the
-> precision field. Hiding a problem isn't fixing it.
-
-What was broken? The fact that we allowed the buffer to be 64K on a system
-that has 64K PAGE_SIZE and we limited the strings to the size of what the
-buffer can hold?
-
-I would limit the buffers themselves but they are used in page mappings
-which needs to be PAGE_SIZE. Which is most cases is only 4K.
-
-> 
-> And no, the fix was also never to chop up the printing of the string
-> in smaller pieces to hide paper over the precision field. Again,
-> hiding a problem isn't fixing it.
-
-Yes, I didn't like that change either.
-
-> 
-> And finally, NO, the fix was also never to add extra debug code to see
-> that there was a NUL character there.
-
-That was not a fix, but just a paranoid check. The only times that my
-paranoid checks usually trigger is during development which saves a few
-hours of debugging as they point out exactly what broke.
-
-> 
-> The fix was *always* to simply not accept insanely long strings in the
-> first place, and make sure that the field was correctly *set*.
-
-And what exactly is an "insane size"?
-
-The buffer is allocated by page size, and when writing to it I make sure it
-fits. I'm now supposed to add some code to tell the user, "No you can't
-write that much into the buffer, even though we allocated enough to fit it"?
-
-If I had never added that precision (which I just recently added), there
-would have been no bug report, because there would have been no bug.
-
-
-> 
-> IOW, at *creation* time the code needed a proper check for length
-> (which obviously indirectly includes checking for the terminating NUL
-> character at that point).
-> 
-> Why do these threads with you always have to end up this long? Why do
-> I Nhave to explain every single step of the way that you need to *FIX*
-> the problem, not try to hide it with new extra code.
-
-Because I still don't know what exactly the problem is! I'm supposed to add
-some arbitrary limit to what people can enter just because we think it's
-crazy to have big strings?
-
-If I remove the precision, as I did in this patch. Then adding a limit is
-not fixing any bug. It's just adding a limit.
-
--- Steve
 
