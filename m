@@ -1,129 +1,206 @@
-Return-Path: <linux-kernel+bounces-90079-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90080-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F67986F9F9
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 07:19:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CE7C886F9FB
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 07:19:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 610601C20C87
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 06:19:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CECAB1C20D8C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 06:19:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0971D517;
-	Mon,  4 Mar 2024 06:19:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UkdwZ0NJ"
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7FF7CA73;
+	Mon,  4 Mar 2024 06:19:17 +0000 (UTC)
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0CF4C15B
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 06:19:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63EE2DF43;
+	Mon,  4 Mar 2024 06:19:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709533152; cv=none; b=Kr5gjenPsLrLa8CYnF31XREtlzffnoWUl0Fb1UxkSr31QvK+wEzrxvrpNKQlkeHJ56CuBtBaH6fd35es8Rm2RsPnFaIcCxJzeUTxknAp/btg9d9sPWVIrZq9izztvKcvr/fM0JZGSWyKgElF7m8eOTL5TUm8YZuHsLJ9f4DSfuk=
+	t=1709533157; cv=none; b=HxE0l18gv+c1/fmKxvA/NmNe29GamXiIWImzQyoK+yR4szbSLtyyevLSia6iAoZdBfHjDfX71BNvn1dg9sgCR7ghjxQRF1chovarc/5aPLaJ39x0FzDk8+OnOU8N/n8+wPr1oL49QJfBmQ+Ikk71tTRfsFOzovMEXsYOzmmLJJA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709533152; c=relaxed/simple;
-	bh=oDnfxJ4A8v+Y+oMepOulbgQydBSN2yDgubk57DJ4nVo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dVMQgVPUz2R+vadW8I6OC+jO42RGOEFjziEK9rqpxnUxVMK+XkdjxNI+TDGQ30h4NKWYKlYtNqwz58ItxjFY+pn1TSbi/j0EUS2+0fvj4VBFnqIkl2kzPtvurU8vlmyZn9Oun4rPshfXHbpvCNPNrfv1ydNNfmnUkhcS/TVOV/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UkdwZ0NJ; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6e58a984ea1so2603562b3a.2
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 22:19:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709533149; x=1710137949; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=yY8EnFgYAlXlPqttQTMQ9X4CPIclgM7lc+6szk0vfN0=;
-        b=UkdwZ0NJO/t+VeRQ3jJaAJWmtWtHhKKNpJDL8AnzczA5poxIkP82dlz2Nz3ZvQaA5j
-         042n+WMa/w1Z1PmxEDdZ+r7jrAX6o+4erId+uuiw40c6rNLfagxqvvs3sCp7PmXk3oY+
-         p7z8YX5yAkFjrnDGq4yUApovsYKc/v106gUdPYksnuaFAz978pmQUBVm484eaJhbCZN4
-         Sloh50Q44CSXV5G67vSnWWKOJ4ho0R4hNbViDYrKxyBJvG+htd+UdGVJjnMNBkHMLpOf
-         jJW8OKwZmqof6MZl+/eLJGjheZqCLf3+NQiWtBMgLVBw7JTZoK8fvHx7ixno2eS74MnX
-         6jMQ==
+	s=arc-20240116; t=1709533157; c=relaxed/simple;
+	bh=LavnIQzI6K2p2RCHNzLWO9yZ6LXZlKh51vXvuLb5ngE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=kJumycH7BSIxv+nji9UfwW17tkSBZk4ckC+fwNACOCt3aGvqubL5+dmMIZ1AJpqSyJuBM0IhI0QlXVqC0+ftuCSAzA/h487J90vSxBXhdDpKglX9SQC5lugB5jq0JYRS8VzWOdthi5KeQhYdC0KQxgZPiTiNiJCy2O+zCINW/bQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56682b85220so6538744a12.1;
+        Sun, 03 Mar 2024 22:19:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709533149; x=1710137949;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20230601; t=1709533154; x=1710137954;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yY8EnFgYAlXlPqttQTMQ9X4CPIclgM7lc+6szk0vfN0=;
-        b=psi8dOyeCTQHhWzskluy963AbiVITPi6caXBIEPbK8a7XepZwvLSy+X0DhwU9w9l2d
-         CgITg87c9oDY8UkmJm+jjitPWGWgH73CnP/aUrbraegp6vBH5QOCr8UbG3JQ8G1/+qNx
-         t8cSxcixtV6Wy4TWw29TzH0NgqtyXXDzRp1Dtd/qD/MpNfvSUdYzp5dqttDCE/pflH3w
-         RIeTPQDX+p0fi9b//pvxEmWMQyYjCILa6lwUefg8fFArPATasB9tbt1z/8dORtW68sBt
-         58rOebF92V8+/7SkU1z8sSdoT3MYUXIVa/riqWUiHuX0hwZbbg+QUVgLVAAXGwoA07nj
-         8D3w==
-X-Forwarded-Encrypted: i=1; AJvYcCUoS0A3n9cqwWUb1hfMjHNe540FNBCZifO+4cNBqIUTAfKy7IwKtJKP4Vvd3OhZ5242hLDx+5ATYevCC4ygtB1vpfwCzQDecMFvhr3c
-X-Gm-Message-State: AOJu0YzzV9Jefg111jE7+IQWf4KVOnYFlW49tIWveUzDZzFoQGleQMrh
-	cvlhVjAIc04HmwBnWVYn09fTlIcjbts9/aBJaUZC6oewx0TSzNAMD+nuaCytug==
-X-Google-Smtp-Source: AGHT+IEGGhWfMbQLfvF9uJtsc7Y6qkosURA49AQc9jMC4u8Vp5VihTolBAdcYaH2nlvvK6/zVXQicg==
-X-Received: by 2002:a05:6a00:2e26:b0:6e4:f32a:4612 with SMTP id fc38-20020a056a002e2600b006e4f32a4612mr8718386pfb.16.1709533149188;
-        Sun, 03 Mar 2024 22:19:09 -0800 (PST)
-Received: from thinkpad ([117.207.30.163])
-        by smtp.gmail.com with ESMTPSA id k19-20020a63ff13000000b005cfb6e7b0c7sm6825218pgi.39.2024.03.03.22.19.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Mar 2024 22:19:08 -0800 (PST)
-Date: Mon, 4 Mar 2024 11:49:00 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Frank Li <Frank.li@nxp.com>
-Cc: Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Marek Vasut <marek.vasut+renesas@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Serge Semin <fancer.lancer@gmail.com>, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, mhi@lists.linux.dev,
-	Siddharth Vadapalli <s-vadapalli@ti.com>
-Subject: Re: [PATCH v3 3/5] PCI: dwc: Pass the eDMA mapping format flag
- directly from glue drivers
-Message-ID: <20240304061900.GF2647@thinkpad>
-References: <20240226-dw-hdma-v3-0-cfcb8171fc24@linaro.org>
- <20240226-dw-hdma-v3-3-cfcb8171fc24@linaro.org>
- <Zdy8lVU6r+JO6OSJ@lizhi-Precision-Tower-5810>
- <20240227074533.GH2587@thinkpad>
- <Zd4eLBXscaV1WkbV@lizhi-Precision-Tower-5810>
+        bh=mj8UW/sTg/rsg4yE01TOym0iCl+m2eCHrKFY5kdqTco=;
+        b=uxQZydYpOnfv8sYWuTnPp7HX2C98PbRMdfOWtefhj1Hj88w6Ko77WeDaeJPswo8u68
+         OLcJLPorUchgC8DfVwU+kxEVVn8crMfVOlnZYFUJhCyJ0GlKfQSOEW+sVr5kdYfxMW6p
+         ypLVcgoqyH4b0sza8TVmeaacC1VhQt32BOelmptdu2u7h9XGUY6na2/6HLZV/nLmHZ4K
+         ajgPCQZAFtdsGu+n+8j6VeNT0edO1ABFsMszHzgM4XKcKBoM5fQc4y4irBaX/MBLdfE7
+         G7/2k3piWFudjRCynIAclbHt+nOnIswihMS03ho8Cc1ook8bgPg4z5rRAm9daFOixnNG
+         oZxA==
+X-Forwarded-Encrypted: i=1; AJvYcCVIpR7Mkl+39Rgpo5Jn7ZLBYR1ZVHiDsmpRXGU3TgKhK84oPXmzZReSJJcGpElXmZCSAOuOxHJAjEYHjqQN2S/ZQxIC9r2zdL3BKH7CwB8FiFYgWkOzUHYwVSQgepw8J4Ru6nnlLYcovo9B
+X-Gm-Message-State: AOJu0YwoBVbGlk/ewgIw/vXHZl+yGMRl7bjKUvgMMPftET/MIdOwK6KF
+	x965oulfLxJn4ahaFn9zumeKstrtaanTWn3VBzTxXkmj5+Kdo+SDe0pdS3/J
+X-Google-Smtp-Source: AGHT+IG1EOK4TV4uAcdjoT/0sHY3Q7wFgMI7uGNxMnBTkKvx18lfIfyeY1aYuNmzGuMyiRk2ZqXIZw==
+X-Received: by 2002:a05:6402:5114:b0:566:28ae:55d4 with SMTP id m20-20020a056402511400b0056628ae55d4mr6879042edd.39.1709533153503;
+        Sun, 03 Mar 2024 22:19:13 -0800 (PST)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
+        by smtp.gmail.com with ESMTPSA id d8-20020a50fe88000000b005673e29cc0fsm1034642edt.54.2024.03.03.22.19.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 03 Mar 2024 22:19:12 -0800 (PST)
+Message-ID: <e8b49c34-90a1-4610-b7cd-8eff1b1a312a@kernel.org>
+Date: Mon, 4 Mar 2024 07:19:11 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 tty] 8250: microchip: pci1xxxx: Refactor TX Burst code
+ to use pre-existing APIs
+Content-Language: en-US
+To: Rengarajan.S@microchip.com, linux-serial@vger.kernel.org,
+ gregkh@linuxfoundation.org, Kumaravel.Thiagarajan@microchip.com,
+ UNGLinuxDriver@microchip.com, Tharunkumar.Pasumarthi@microchip.com,
+ linux-kernel@vger.kernel.org
+References: <20240222134944.1131952-1-rengarajan.s@microchip.com>
+ <5bf4ba6d-d8e3-4ba6-a889-cfae8c3ddabe@kernel.org>
+ <e93048e64c3f8aa2731575d4b296c473e8dadb82.camel@microchip.com>
+ <254db026-5f9d-497f-ac44-c81d9d5947cf@kernel.org>
+ <53dd0d89466f0f06dfd2d63ab1ff29462a09aabb.camel@microchip.com>
+From: Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
+In-Reply-To: <53dd0d89466f0f06dfd2d63ab1ff29462a09aabb.camel@microchip.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <Zd4eLBXscaV1WkbV@lizhi-Precision-Tower-5810>
 
-On Tue, Feb 27, 2024 at 12:38:52PM -0500, Frank Li wrote:
-> On Tue, Feb 27, 2024 at 01:15:33PM +0530, Manivannan Sadhasivam wrote:
-> > On Mon, Feb 26, 2024 at 11:30:13AM -0500, Frank Li wrote:
-> > > On Mon, Feb 26, 2024 at 05:07:28PM +0530, Manivannan Sadhasivam wrote:
-> > > > Instead of maintaining a separate capability for glue drivers that cannot
-> > > > support auto detection of the eDMA mapping format, let's pass the mapping
-> > > > format directly from them.
-> > > 
-> > > Sorry, what's mapping? is it register address layout?
-> > > 
-> > 
-> > Memory map containing the register layout for iATU, DMA etc...
+On 04. 03. 24, 5:37, Rengarajan.S@microchip.com wrote:
+> Hi Jiri,
 > 
-> the world 'map' is too general. can you use 'register map' at least at one
-> place? There are bunch 'map' related DMA, such iommu map, stream id map, 
-> memory page map. The reader need go though whole thread to figure out it is
-> register map. 
+> On Fri, 2024-02-23 at 10:26 +0100, Jiri Slaby wrote:
+>> EXTERNAL EMAIL: Do not click links or open attachments unless you
+>> know the content is safe
+>>
+>> On 23. 02. 24, 10:21, Rengarajan.S@microchip.com wrote:
+>>> On Fri, 2024-02-23 at 07:08 +0100, Jiri Slaby wrote:
+>>>> EXTERNAL EMAIL: Do not click links or open attachments unless you
+>>>> know the content is safe
+>>>>
+>>>> On 22. 02. 24, 14:49, Rengarajan S wrote:
+>>>>> Updated the TX Burst implementation by changing the circular
+>>>>> buffer
+>>>>> processing with the pre-existing APIs in kernel. Also updated
+>>>>> conditional
+>>>>> statements and alignment issues for better readability.
+>>>>
+>>>> Hi,
+>>>>
+>>>> so why are you keeping the nested double loop?
+>>>>
+>>>
+>>> Hi, in order to differentiate Burst mode handling with byte mode
+>>> had
+>>> seperate loops for both. Since, having single while loop also does
+>>> not
+>>> align with rx implementation (where we have seperate handling for
+>>> burst
+>>> and byte) have retained the double loop.
+>>
+>> So obviously, align RX to a single loop if possible. The current TX
+>> code
+>> is very hard to follow and sort of unmaintainable (and buggy). And
+>> IMO
+>> it's unnecessary as I proposed [1]. And even if RX cannot be one
+>> loop,
+>> you still can make TX easy to read as the two need not be the same.
+>>
+>> [1]
+>> https://lore.kernel.org/all/b8325c3f-bf5b-4c55-8dce-ef395edce251@kernel.org/
 > 
+> 
+> while (data_empty_count) {
+>     cnt = CIRC_CNT_TO_END();
+>     if (!cnt)
+>       break;
+>     if (cnt < UART_BURST_SIZE || (tail & 3)) { // is_unaligned()
+>       writeb();
+>       cnt = 1;
+>     } else {
+>       writel()
+>       cnt = UART_BURST_SIZE;
+>     }
+>     uart_xmit_advance(cnt);
+>     data_empty_count -= cnt;
+> }
+> 
+> With the above implementation we are observing performance drop of 2
+> Mbps at baud rate of 4 Mbps. The reason for this is the fact that for
+> each iteration we are checking if the the data need to be processed via
+> DWORDs or Bytes. The condition check for each iteration is causing the
+> drop in performance.
 
-This is what used from the start and also what "mf" corresponds to. So I had to
-use the same terminology.
+Hi,
 
-- Mani
+the check is by several orders of magnitude faster than the I/O proper. 
+So I don't think that's the root cause.
 
+> With the previous implementation(with nested loops) the performance is
+> found to be around 4 Mbps at baud rate of 4 Mbps. In that
+> implementation we handle sending DWORDs continuosly until the transfer
+> size < 4. Can you let us know any other alternatives for the above
+> performance drop.
+
+Could you attach the patch you are testing?
+
+thanks,
 -- 
-மணிவண்ணன் சதாசிவம்
+js
+suse labs
+
 
