@@ -1,175 +1,92 @@
-Return-Path: <linux-kernel+bounces-90999-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91000-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75CFC870840
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:28:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0623870842
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:28:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0600B219AA
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:28:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7024C1F22065
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:28:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D1C1612DE;
-	Mon,  4 Mar 2024 17:28:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B1A2612ED;
+	Mon,  4 Mar 2024 17:28:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z79strOx"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8F2D1756D;
-	Mon,  4 Mar 2024 17:28:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAF511FA4;
+	Mon,  4 Mar 2024 17:28:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709573300; cv=none; b=IytnhoQpWLYJh6cOzUlm9MK0+DnsqCsWblv+lKHO5/c1rYiIdjzfL0STnxP5NqJqq7/onKhlt2l/b4elFxoo/NMoJruUMzdPxO4yUNaMIHiq2bbKvHXkqvZsviz4J8sYirgDfzWr10AxwXxXTQbWYF5cxsTlFllMvjWfVaoZ534=
+	t=1709573320; cv=none; b=L/eO+YvajTrxrz4M2QKim4Nyt6PzR+TgYVlQHK5dIQrNoEV2RbFcxcH4MAkjsOJSc+C0/IVTLFgN6hkeUkaETgwiFMHFp4q01WezuXIaa2XbDXYubauKHF+9Oo37J66r9RQKsL1LTOUPlfzGCxOuaBYolKiltTD7duT5kIJllGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709573300; c=relaxed/simple;
-	bh=bgaXc6UbtMvm6q7rNQwEibfcHRDpfZN+XPlFzPFE/74=;
+	s=arc-20240116; t=1709573320; c=relaxed/simple;
+	bh=jXPoWYEypMCzFQJdRgp7dQtRm04IRd4h4Diw6kjWE18=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YelKcOiIxk5wflJcTJKhzZC+4G2xOOkU3cskOczcoOcCQC7EgpJ8e1xnkFGECu6E0OxmkmRvEb8d6Ph/NEs6QoVPHw0Z6ueZhQsBHRjLALIxJOEyqgxIrh1JorD6qqyHkjUjTGKfJn9saxdCHvn/ySVVdKYa84TvTYK3JcKfg+Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 873C2C433F1;
-	Mon,  4 Mar 2024 17:28:13 +0000 (UTC)
-Date: Mon, 4 Mar 2024 22:58:09 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Shashank Babu Chinta Venkata <quic_schintav@quicinc.com>,
-	agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-	mani@kernel.org, quic_msarkar@quicinc.com,
-	quic_kraravin@quicinc.com,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Serge Semin <fancer.lancer@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Josh Triplett <josh@joshtriplett.org>, linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v1 1/3] PCI: dwc: refactor common code
-Message-ID: <20240304172809.GA31079@thinkpad>
-References: <20240301051220.20917-2-quic_schintav@quicinc.com>
- <20240301194456.GA405061@bhelgaas>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ymv9XwTmKbhbTTaJ82Rydg0V9jp6UE2WmbZ4XK5ENtSjh1iUWLdF4/qgqwAKCa5Olvwx/yzmny7I/ngiNzDbjSogy5mW89dXkMpjLSuv7toM48XaHqAr5Cc8TY3V/uts4YG4ERlQBYce9clsiEUjJ8jicr3bFQpsLJR6rYcjHLM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z79strOx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84262C433F1;
+	Mon,  4 Mar 2024 17:28:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709573320;
+	bh=jXPoWYEypMCzFQJdRgp7dQtRm04IRd4h4Diw6kjWE18=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Z79strOxPlpgeFkzNKa0ZTCRVrEl7Hh7G7FCNFoCdx3F5tSZu6TpNQjpTpue9ubL/
+	 0O15rGxSH7/0DRXWaOBwLl/Oq7arEX86vxH9j3k9yyj7dTBV88N1hCSxEwPe4hnBKM
+	 P0vFsTQTYEViW3grtMyhsvhs0lp79qgz0wNhm+4iRB88bp7gPsVuajhT1kzIF09unK
+	 kuZE5p0BL0m4MpIBiMaNqq3ypU3Z9t1hbJewn3eU9VtA1UtrUsEpps3hlmp9zE40Gy
+	 A+ujujDFjjy3Jbq2Ybp5Gnh7XDNXr84PxiNTnFEIg4j8LkkToxkTVCv826gLyfslr2
+	 4hQWj2ad3usCQ==
+Date: Mon, 4 Mar 2024 17:28:36 +0000
+From: Simon Horman <horms@kernel.org>
+To: R SUNDAR <prosunofficial@gmail.com>
+Cc: jmaloy@redhat.com, ying.xue@windriver.com, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	netdev@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Removed blocking_link field description to prevent
+ kernel doc warning
+Message-ID: <20240304172836.GL403078@kernel.org>
+References: <20240303144359.7066-1-prosunofficial@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240301194456.GA405061@bhelgaas>
+In-Reply-To: <20240303144359.7066-1-prosunofficial@gmail.com>
 
-On Fri, Mar 01, 2024 at 01:44:56PM -0600, Bjorn Helgaas wrote:
-> On Thu, Feb 29, 2024 at 09:11:34PM -0800, Shashank Babu Chinta Venkata wrote:
-> > Refactor common code from RC(Root Complex) and EP(End Point)
-> > drivers and move them to a common repository. This acts as placeholder
-> > for common source code for both drivers avoiding duplication.
-> > 
-> > Signed-off-by: Shashank Babu Chinta Venkata <quic_schintav@quicinc.com>
-> > ---
-> >  drivers/pci/controller/dwc/Kconfig         |  5 ++
-> >  drivers/pci/controller/dwc/Makefile        |  1 +
-> >  drivers/pci/controller/dwc/pcie-qcom-cmn.c | 85 ++++++++++++++++++++++
-> >  drivers/pci/controller/dwc/pcie-qcom-cmn.h | 30 ++++++++
-> >  drivers/pci/controller/dwc/pcie-qcom-ep.c  | 39 +---------
-> >  drivers/pci/controller/dwc/pcie-qcom.c     | 67 ++---------------
-> >  6 files changed, 133 insertions(+), 94 deletions(-)
-> >  create mode 100644 drivers/pci/controller/dwc/pcie-qcom-cmn.c
-> >  create mode 100644 drivers/pci/controller/dwc/pcie-qcom-cmn.h
+On Sun, Mar 03, 2024 at 08:13:59PM +0530, R SUNDAR wrote:
+> ./net/tipc/socket.c:143: warning: Excess struct member 'blocking_link' description in 'tipc_sock'
 > 
-> Hmm.  I'm a little ambivalent about adding two new files.  Overall I
-> think I prefer the drivers that include both RC and EP mode in a
-> single source file because one file is easier to browse than four and
-> more things can be static.
+> Signed-off-by: R SUNDAR <prosunofficial@gmail.com>
+> ---
+>  net/tipc/socket.c | 1 -
+>  1 file changed, 1 deletion(-)
 > 
-> A single file would also reduce quite a bit more duplication between
-> pcie-qcom.c and pcie-qcom-ep.c, e.g., register names and fields with
-> needlessly different names:
-> 
->   #define AUX_PWR_DET                     BIT(4)  # pcie-qcom.c
->   #define PARF_SYS_CTRL_AUX_PWR_DET       BIT(4)  # pcie-qcom-ep.c
-> 
-> I do see PCIE_QCOM is bool and PCIE_QCOM_EP is tristate, so that and
-> other considerations might make a single source file impractical.
-> 
+> diff --git a/net/tipc/socket.c b/net/tipc/socket.c
+> index bb1118d02f95..7e4135db5816 100644
+> --- a/net/tipc/socket.c
+> +++ b/net/tipc/socket.c
+> @@ -80,7 +80,6 @@ struct sockaddr_pair {
+>   * @phdr: preformatted message header used when sending messages
+>   * @cong_links: list of congested links
+>   * @publications: list of publications for port
+> - * @blocking_link: address of the congested link we are currently sleeping on
+>   * @pub_count: total # of publications port has made during its lifetime
+>   * @conn_timeout: the time we can wait for an unresponded setup request
+>   * @probe_unacked: probe has not received ack yet
 
-Yeah, we explored that option while adding the EP driver and it didn't look
-feasible.
+Thanks, this looks good.
+However, it duplicates a patch accepted upstream in January.
 
-- Mani
-
-> > +++ b/drivers/pci/controller/dwc/Makefile
-> > @@ -27,6 +27,7 @@ obj-$(CONFIG_PCIE_UNIPHIER) += pcie-uniphier.o
-> >  obj-$(CONFIG_PCIE_UNIPHIER_EP) += pcie-uniphier-ep.o
-> >  obj-$(CONFIG_PCIE_VISCONTI_HOST) += pcie-visconti.o
-> >  obj-$(CONFIG_PCIE_RCAR_GEN4) += pcie-rcar-gen4.o
-> > +obj-$(CONFIG_PCIE_QCOM_CMN) += pcie-qcom-cmn.o
-> 
-> If we have to have pcie-qcom-cmn.o, at least move this next to the
-> existing lines:
-> 
->   obj-$(CONFIG_PCIE_QCOM) += pcie-qcom.o
->   obj-$(CONFIG_PCIE_QCOM_EP) += pcie-qcom-ep.o
-> 
-> > +++ b/drivers/pci/controller/dwc/pcie-qcom-cmn.c
-> > @@ -0,0 +1,85 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Copyright (c) 2014-2015, 2020 The Linux Foundation. All rights reserved.
-> > + * Copyright 2015, 2021 Linaro Limited.
-> > + * Copyright (c) 2024 Qualcomm Innovation Center, Inc. All rights reserved.
-> > + *
-> 
-> Spurious blank line.
-> 
-> > +int qcom_pcie_cmn_icc_get_resource(struct dw_pcie *pci, struct icc_path *icc_mem)
-> 
-> I don't see the value of adding "cmn" in the middle of the names.
-> 
-> > +{
-> > +	int ret = 0;
-> > +
-> > +	if (IS_ERR(pci))
-> > +		return PTR_ERR(pci);
-> > +
-> > +	icc_mem = devm_of_icc_get(pci->dev, "pcie-mem");
-> > +	if (IS_ERR(icc_mem))
-> > +		return PTR_ERR(icc_mem);
-> > +
-> > +	return ret;
-> 
-> No need for the "ret" variable since it's never assigned.  "return 0"
-> here would be easier to read.
-> 
-> > +int qcom_pcie_cmn_icc_init(struct dw_pcie *pci, struct icc_path *icc_mem)
-> > +{
-> > +	int ret = 0;
-> 
-> Unnecessary initialization.
-> 
-> > +++ b/drivers/pci/controller/dwc/pcie-qcom-cmn.h
-> > @@ -0,0 +1,30 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * Copyright (c) 2014-2015, 2020 The Linux Foundation. All rights reserved.
-> > + * Copyright 2015, 2021 Linaro Limited.
-> > + * Copyright (c) 2024 Qualcomm Innovation Center, Inc. All rights reserved.
-> > + */
-> > +
-> > +#include <linux/pci.h>
-> > +#include "../../pci.h"
-> > +#include "pcie-designware.h"
-> > +
-> > +#ifdef CONFIG_PCIE_QCOM_CMN
-> 
-> Why the #ifdef wrapper?  And why do we need the stubs when
-> CONFIG_PCIE_QCOM_CMN isn't defined?
-> 
-> > +#else
-> > +static inline int qcom_pcie_cmn_icc_get_resource(struct dw_pcie *pci, struct icc_path *icc_mem)
-> > +{
-> > +	return 0;
-> > +}
+Link: https://git.kernel.org/netdev/net-next/c/88bf1b8f3c31
 
 -- 
-மணிவண்ணன் சதாசிவம்
+pw-bot: not-applicable
 
