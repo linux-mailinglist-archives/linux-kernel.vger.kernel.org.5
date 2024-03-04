@@ -1,75 +1,74 @@
-Return-Path: <linux-kernel+bounces-90383-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90384-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B06D386FE85
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:12:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB48286FE87
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:12:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 21C34B215FB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:12:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A6FB1F22CBD
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:12:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB3BF2511E;
-	Mon,  4 Mar 2024 10:11:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 719D7224DF;
+	Mon,  4 Mar 2024 10:12:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oBvOxM9w"
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MGKlp4T+"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E1D1225D2
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 10:11:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC8B5249FC
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 10:11:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709547119; cv=none; b=B1K58HNHJ4G/gIfkYKpu+q8yoc6VnNg1UY71Qe1+aM4TCl9HzdISu35DLuoo7arCNBkiJ7P1abCLgiDX5yZgbZm484bWSp9F49Dq4lfP39VJZTC5ZtUko0ebqTDdMslJb13kV7CN7/H9XW81fQiQzk1D4GKBuG8/u1RQizaqwqU=
+	t=1709547120; cv=none; b=FGGzbT1h8kuEyrmWT+IhFATYvMFGOl2dfbtnJIJm9bilKqR5CpdOjY3Sj5aOCUIhCFNwUVB07Hy+QzdnS2B4i2r3L7JpVww1MYJBjpFUJQOZ+FFmTknrXNzFg+veEm+IJQSSEgCncmcGH9X03pBnF4SrsUHcsn2DXwitPU3buzg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709547119; c=relaxed/simple;
-	bh=NY6ffh05b3e06y7LUri3yhspGUFjPVtoTn9TDh5HN+Q=;
+	s=arc-20240116; t=1709547120; c=relaxed/simple;
+	bh=oBEkNwxibRPgfDk3iSeQlCR1ZXaxiSrVLWAc+9a0T0g=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=TvvG+k28fpJHK5vcegcilJqpYF6rHiaDqwqm1IcOrrh3skrs3mA9JDqiYE6YfzMXEubN9Tvxc/0Zcr9OVMsOhF0j7w4laKVqbDGKrt81fDg8zvSqVCgHWLioUp8xlyCcizTmUW6+n+wfKVwIaJyUWGy2mwCSydE3j4VO+eYMQ28=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oBvOxM9w; arc=none smtp.client-ip=209.85.208.44
+	 In-Reply-To:To:Cc; b=nK+1PZ9WpVQaNjbUH+uXfNvyt3z2GYE3GWdU54+Iq+wAq0W8lfeZcTrv0vacuqXScoEpzyQXxhOCZfDjn2HdtMTc3PYq086oYLwxqj2Zzcp72DRXIAHXbYyUiWUlk/UyAEI77HynW3XZIy8g+2/zobZ+S0VfDVU0RkeWx4uH9Ro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=MGKlp4T+; arc=none smtp.client-ip=209.85.218.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-565ef8af2f5so5532742a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 02:11:56 -0800 (PST)
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a3ed9cae56fso985897266b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 02:11:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709547115; x=1710151915; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1709547117; x=1710151917; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=N1FwEFy+Dl2uRsNArjy2my0aFqui23Xcgx08mwBp3cc=;
-        b=oBvOxM9wdb31Ou0VnNu6RL+nOzpvA9DbpCeSc0Gmwd7biSohKwNCmBEw6q42tSZ/i4
-         SBK0mEM7+vxwlcfGfGppDNdbrlR0VEQ0vQ948sr9Nhnuop05GwEg0naORcXuw3Jphn4B
-         jWnL0+YToffKwQiEkZ6o1T3jtylmaWNFAoVfvLlEScObcUUPv6tcjAjmkMwf/Z9O8c/v
-         7lCkjdaFNmIv8p0kWWj8iEYkpgVqFXETiFFFNB8Mj7qDV1L59RjAMNxUBErG88n5iINQ
-         hVlMYLOFVynYOeaOSLq0iqi8GyU+6CmE3COMa7rNhxIzmi67mmLjHk8nP7JJRIseuWxf
-         7QWg==
+        bh=Ne2X+cO3epNXe9ln4awOX17bBGBk21696xx6GBwAIpM=;
+        b=MGKlp4T+rbc1DCnqZx6QpHL9zm2bziiHgQd+WkO/1y8knm3GLNLpdY3zOXzQw3f+nW
+         36An9kwh8NemT8OEml8ZFK3j9IfhN9mG2k3o4gmG4eCGzGzJXCPsAna35W5ptJQREDyG
+         qHqc50nQARL7t7RSgYDeCx6Wm58fAOcF1QG5AEyFwoBw4rTMEvFOA8H/VGNTmKZDj7iZ
+         hm/RVxobpgH9Sa8dIKvi0D0wI4syM/E+chppnDhHjBQ1EzRvfYHnwz0HeL4WmAm2uOPW
+         cR5Co3rIKU6cQxBHg9hBLEbGUeQJZOrt+8vzLe315lhxvWKHIVVIFq8dUBZVNpsGq1Em
+         fUeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709547115; x=1710151915;
+        d=1e100.net; s=20230601; t=1709547117; x=1710151917;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=N1FwEFy+Dl2uRsNArjy2my0aFqui23Xcgx08mwBp3cc=;
-        b=M5cFjDnm+7rxIEqxH/x7Pbx2+1RMfx9rK6dAD5ZOS7/rKXoJuA2c237EMPYfmGX9Y3
-         8XydBfrlU0fkps+WJJieLb7kSRDM1tpc3NvzvgnDlRBfeWPwDI1HcRNKoZJtF/r6o1fn
-         syCnZTZbjdtJqkpeRCCOQdyclaL1Acm+xgT1PUXovxeXdz0b8EJV//WMWpfAc3BfFx3a
-         nl3q12dAAag7l9Vgpl76QYOFi8xDRKSEhug6BizIJsf8M6yO9pK5pX8xls2Owd2Vuin2
-         UcroJaJtmrBqX1XqMi01+HdqveJ4dyTBxn6gH8OEL0Q2Hfq9AeQvUwoh6wrKDwPERcRR
-         De7Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXIrVw4u7TPdZQVzSeSKzR4bP33Ki7MS51gkhFMyuKbHIhaNQ3bPLwHhHPU4BLbaVUX1Wz0e+F06e+M6rHAvY33pGsiSbhRuU2PAJLa
-X-Gm-Message-State: AOJu0YxxohpbqxjM8fzE20L6TnMJaiqVPLsF5vtFm1G5w9Ab6jT1mmPM
-	BG1ZiSSMXsrNKCU6O6shBlNj+s+kvsDy8dhxh5WNF54qcWXfhO5fCMN3j82x634fS4pFWSb9rWP
-	a
-X-Google-Smtp-Source: AGHT+IH5cQu1xy1LVdK9PUSdHoyXXpoj3l3x8HX5st0puZSlq08NTx/d1VXHsfxHoA9L7M5NJzXQBg==
-X-Received: by 2002:a17:906:f0d0:b0:a44:6b6b:bae3 with SMTP id dk16-20020a170906f0d000b00a446b6bbae3mr6905807ejb.59.1709547115593;
-        Mon, 04 Mar 2024 02:11:55 -0800 (PST)
+        bh=Ne2X+cO3epNXe9ln4awOX17bBGBk21696xx6GBwAIpM=;
+        b=WcSrXt7Sgf/MYcBTmfaUaFtg9O2jHy+lDVygI0IuAYT+Woab7f8W/VYYEZ/oIxCHzS
+         pQGMGDmxVdFEYJopxaH+XsNE4YLIdg5YaJ3SmEXwcFyeP2sJAPEyHT3BE/qzGoTv/gX7
+         ysbMB4jkGWn9IWDnyr13BMfKS2KHSO8VL1zP3oJDjx8elUmSmk/OGiVHjwUqniz+rH3n
+         65mcoBMnA4JU3qiAGwfUigwznf8VhzZh5JOlMDt8vw2eClApXLBK5n/OTqAjYtqpbLts
+         Enhrv8Tq9VgPHkAxZjbj+ofYqsDCaqNxxDXPly4H8c6Z609ZaRArgYpMR+txl0m4sqtr
+         iXVw==
+X-Forwarded-Encrypted: i=1; AJvYcCVPNfzJWdRObQDoPlIKd61foxkt1B4hjFz6UEGXwAA3vVEiOAqjD9yvPoM6L0+/1akscfaQkAI4xV1yveL6O7HB7vZ+wlJ8ApTTnniy
+X-Gm-Message-State: AOJu0YxNpU1n95Sjqw5spwoZPgeY0W9flKnwpt1RhDCaokhWep6z6Jz3
+	rc1fpBr3gkDuVZz/p2Ctnly/687D+LmK2LIrc9xcluq4VxlclQpzGhwJQa9+RGA=
+X-Google-Smtp-Source: AGHT+IGVbbGsL8NOOdTcpOF06AVc7bLlOHtxT+CBCYGHBhkmB+OOeSg+PN2omYlET3YAC6IP7dKJ2A==
+X-Received: by 2002:a17:906:6c97:b0:a45:2cf3:6c65 with SMTP id s23-20020a1709066c9700b00a452cf36c65mr2316877ejr.25.1709547117400;
+        Mon, 04 Mar 2024 02:11:57 -0800 (PST)
 Received: from [127.0.1.1] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id ef11-20020a17090697cb00b00a44bc99cd89sm2938481ejb.42.2024.03.04.02.11.54
+        by smtp.gmail.com with ESMTPSA id ef11-20020a17090697cb00b00a44bc99cd89sm2938481ejb.42.2024.03.04.02.11.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 02:11:55 -0800 (PST)
+        Mon, 04 Mar 2024 02:11:56 -0800 (PST)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Date: Mon, 04 Mar 2024 11:11:39 +0100
-Subject: [PATCH 2/7] backlight: l4f00242t03: Simplify with dev_err_probe()
+Date: Mon, 04 Mar 2024 11:11:40 +0100
+Subject: [PATCH 3/7] backlight: bd6107: Handle deferred probe
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,7 +77,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240304-backlight-probe-v1-2-e5f57d0df6e6@linaro.org>
+Message-Id: <20240304-backlight-probe-v1-3-e5f57d0df6e6@linaro.org>
 References: <20240304-backlight-probe-v1-0-e5f57d0df6e6@linaro.org>
 In-Reply-To: <20240304-backlight-probe-v1-0-e5f57d0df6e6@linaro.org>
 To: Lee Jones <lee@kernel.org>, 
@@ -88,85 +87,59 @@ Cc: dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
  linux-kernel@vger.kernel.org, 
  Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2430;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1247;
  i=krzysztof.kozlowski@linaro.org; h=from:subject:message-id;
- bh=NY6ffh05b3e06y7LUri3yhspGUFjPVtoTn9TDh5HN+Q=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBl5Z5iGhsKCRV6SnmJLcxk3l63l/2wXkWX0mqPw
- FqUYp3+MCCJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZeWeYgAKCRDBN2bmhouD
- 1384D/94qBZqd0L96f/YTCIfX+UGorHT6vsSGWZKBQDglVcQtd+W2q9z5FyqxQRpgTRGNrrJaJr
- 4XwBT0yhzuONJj8YysOc6z01URhYjs+1rTh0qxQ+1RO8iepYCX2CIcmi5mDsnwLLmcarlNY+Bzs
- P4DnCKWECInNTkU8k5gOHSfMEwr1ZI1pF8F927yg/9LQ6cpdwhkQhj89oCzr4riJg6w32dyIMZw
- IdJzS9rHxaGQNPW22klHxPxlE5L3gz3/xpkA3wlGUrD9EtRIoyzdbKUJDuSmIlcED8A0C/ZRXpF
- gjKj29XREHEOEdWkN4TQER0kkfBpvx+FjPWrfSm+bOs48jgR4JQiB2UMZprxaUUhk8zikuRByC5
- u4lL0xzLBoqLmRqQIlybVuN8VESMlgeaw4ipEn0M7QVbvZi09KPsmeXi1RtyfgUF5nmPYDePky+
- L3vXzDlQduxOf5bn9F9oRxVOsmGCiHppov0WVudC857+DAkprPcZmFOeoSnnfmkVWJNF3VMWLAX
- cAeWwpIIonnOJyiRXcOQlAIcsbfa1qZ/0SRkdg+abAPfGLwQ/crRlY2TKxXUBLCuUAkTNyB8mvX
- 0AdT2K9K8Rzu13mZQdmZ9w+xQ1EFIvkyxf/kgNnILFMpr+BC9TYRP4OF3XpkdfAr5K2b9Bkvkfp
- LP0YnjvPJA4aPdg==
+ bh=oBEkNwxibRPgfDk3iSeQlCR1ZXaxiSrVLWAc+9a0T0g=;
+ b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBl5Z5j77gB1Wx0xWhb8EDQs62oL63I8/c7sddDs
+ CC6aYwM7c2JAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCZeWeYwAKCRDBN2bmhouD
+ 1yAHD/oD63Jj+FaduY3m25CAoOSOqZrt+/dbgU985Nod7ZV2XRRMJEItdueEuA3748jPE6o2Crw
+ iKIWC5h+bsPxgR4zl9V2j19cGWY/+UdpElaCU3a5y6IeK6Gibi1CCSovo+wY3sUvFhe/JPp3Ehu
+ XABYIK8t+C0udLjNPoTi51pdBqNmWcTHa6zZH8B4i+mbImB+4h4wWt7zbKgAd5RBGCeSLDon4y5
+ UdXbUUQ/M1VobGvTvha2KDdxmCQ0ZuItOTjzQ9eCh7aa071V1uHbF8IHTvLiCdCrQGd099Xc00D
+ A6JyiyJIiOiid0BRh7EC1/kIHHbcXfogpZpcpaSGr8IxAj7bytITyUtMAIetq9D/c5t9Rlp5PAf
+ WHm67lyeJxjyMXrW8BWbN4FeukFR6Qf3WlwEKxTBd8ItB3pvZ9+/LpVhRv7mAI+TST4qKnvoJ+3
+ 8WQlYy571QWu0kYwQfVXIz3gCS1G+lbBlT7pkydCU9TeAlxtjcUUt3W8yehDnRr3lzDlTTsH9wV
+ 7TgX7eMnoNQ+kReZ21Auu/HX88NDWYCNQ7rPs/VT2RckfKP7vn8JdWnc6P4N7yC4kx+mHKuizue
+ mcvUhlAxB57g96zl7F0RVZ7gq5r1WhuKnIogHxHi/ZaCWVJJTSJ2o8AdIvgg9PVbHlvnM769UnO
+ 8X9j3780xbqzNcw==
 X-Developer-Key: i=krzysztof.kozlowski@linaro.org; a=openpgp;
  fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
 
-Common pattern of handling deferred probe can be simplified with
-dev_err_probe().  Less code and also it prints the error value.
+Don't pollute dmesg on deferred probe and simplify the code with
+dev_err_probe().
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- drivers/video/backlight/l4f00242t03.c | 34 ++++++++++++++--------------------
- 1 file changed, 14 insertions(+), 20 deletions(-)
+ drivers/video/backlight/bd6107.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/video/backlight/l4f00242t03.c b/drivers/video/backlight/l4f00242t03.c
-index cc763cf15f53..bd5137ee203b 100644
---- a/drivers/video/backlight/l4f00242t03.c
-+++ b/drivers/video/backlight/l4f00242t03.c
-@@ -179,34 +179,28 @@ static int l4f00242t03_probe(struct spi_device *spi)
- 	priv->spi = spi;
+diff --git a/drivers/video/backlight/bd6107.c b/drivers/video/backlight/bd6107.c
+index c95a12bf0ce2..b1e7126380ef 100644
+--- a/drivers/video/backlight/bd6107.c
++++ b/drivers/video/backlight/bd6107.c
+@@ -119,7 +119,6 @@ static int bd6107_probe(struct i2c_client *client)
+ 	struct backlight_device *backlight;
+ 	struct backlight_properties props;
+ 	struct bd6107 *bd;
+-	int ret;
  
- 	priv->reset = devm_gpiod_get(&spi->dev, "reset", GPIOD_OUT_HIGH);
--	if (IS_ERR(priv->reset)) {
--		dev_err(&spi->dev,
--			"Unable to get the lcd l4f00242t03 reset gpio.\n");
--		return PTR_ERR(priv->reset);
+ 	if (pdata == NULL) {
+ 		dev_err(&client->dev, "No platform data\n");
+@@ -147,11 +146,9 @@ static int bd6107_probe(struct i2c_client *client)
+ 	 * the reset.
+ 	 */
+ 	bd->reset = devm_gpiod_get(&client->dev, "reset", GPIOD_OUT_HIGH);
+-	if (IS_ERR(bd->reset)) {
+-		dev_err(&client->dev, "unable to request reset GPIO\n");
+-		ret = PTR_ERR(bd->reset);
+-		return ret;
 -	}
-+	if (IS_ERR(priv->reset))
-+		return dev_err_probe(&spi->dev, PTR_ERR(priv->reset),
-+				     "Unable to get the lcd l4f00242t03 reset gpio.\n");
- 	gpiod_set_consumer_name(priv->reset, "lcd l4f00242t03 reset");
++	if (IS_ERR(bd->reset))
++		return dev_err_probe(&client->dev, PTR_ERR(bd->reset),
++				     "unable to request reset GPIO\n");
  
- 	priv->enable = devm_gpiod_get(&spi->dev, "enable", GPIOD_OUT_LOW);
--	if (IS_ERR(priv->enable)) {
--		dev_err(&spi->dev,
--			"Unable to get the lcd l4f00242t03 data en gpio.\n");
--		return PTR_ERR(priv->enable);
--	}
-+	if (IS_ERR(priv->enable))
-+		return dev_err_probe(&spi->dev, PTR_ERR(priv->enable),
-+				     "Unable to get the lcd l4f00242t03 data en gpio.\n");
- 	gpiod_set_consumer_name(priv->enable, "lcd l4f00242t03 data enable");
- 
- 	priv->io_reg = devm_regulator_get(&spi->dev, "vdd");
--	if (IS_ERR(priv->io_reg)) {
--		dev_err(&spi->dev, "%s: Unable to get the IO regulator\n",
--		       __func__);
--		return PTR_ERR(priv->io_reg);
--	}
-+	if (IS_ERR(priv->io_reg))
-+		return dev_err_probe(&spi->dev, PTR_ERR(priv->io_reg),
-+				     "%s: Unable to get the IO regulator\n",
-+				     __func__);
- 
- 	priv->core_reg = devm_regulator_get(&spi->dev, "vcore");
--	if (IS_ERR(priv->core_reg)) {
--		dev_err(&spi->dev, "%s: Unable to get the core regulator\n",
--		       __func__);
--		return PTR_ERR(priv->core_reg);
--	}
-+	if (IS_ERR(priv->core_reg))
-+		return dev_err_probe(&spi->dev, PTR_ERR(priv->core_reg),
-+				     "%s: Unable to get the core regulator\n",
-+				     __func__);
- 
- 	priv->ld = devm_lcd_device_register(&spi->dev, "l4f00242t03", &spi->dev,
- 					priv, &l4f_ops);
+ 	memset(&props, 0, sizeof(props));
+ 	props.type = BACKLIGHT_RAW;
 
 -- 
 2.34.1
