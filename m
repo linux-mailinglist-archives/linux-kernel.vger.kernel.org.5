@@ -1,107 +1,109 @@
-Return-Path: <linux-kernel+bounces-91079-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91080-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C653A870950
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:17:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C85EE870955
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:18:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82101282C68
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:17:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 69C42B283FB
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:18:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11CB162141;
-	Mon,  4 Mar 2024 18:17:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6F9F62170;
+	Mon,  4 Mar 2024 18:17:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="DXzRlVfD"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BGgEW9KC"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C786060265;
-	Mon,  4 Mar 2024 18:17:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A46F062140;
+	Mon,  4 Mar 2024 18:17:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709576236; cv=none; b=j+thPJq3TxaoiBPj23VKDRrQWdoHcFTwMZE/efuNRCvnK6cLTdXmzyErX1HfykbjMlKwjg64m9s3HGBGQZnj58gMOxTF5qoGB9xS1Zt5wbnrd+D51sFquva+mRjkWLK/8dXAxsRaawPBOgRJhtht9F6xaBymMBlLeoc0Cz+Frl4=
+	t=1709576271; cv=none; b=EfYwJE6nf643NgMGc7HeQTKTnNMtVrXzbzk7u1KtkN3rpCJL16tBIbx6AdzmQP/fOZtRgv+U6W/fLub4PBoO7IYnaOjZ7jxE+HugydDz4AbE906J49Ft15ptmjNes8Cz+Zqu8WGVaydIrZrtrZsnHSxQdPihKcEu4nnamBAaWdo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709576236; c=relaxed/simple;
-	bh=mGcU7Q/+0jxgOeDAGcFHkNyqKrKFJjMKqnfcQIcdE5E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=l+AoQy+AnjulZXY8w0uKPrQiSMp+Sze5q4zJ8T/tXNqSC8Aqq13kCAFxJeq6Gy47gPnUMsV6OEgoYZNe1sTag0+r+m/Z1Wc51owshvaCYZ/1DczQV5Cpd+2X7kX7CC65yqe9iMrHWkFE856DPckAK6WEESJJu4rC1wtWSxGLI8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=DXzRlVfD; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709576232;
-	bh=mGcU7Q/+0jxgOeDAGcFHkNyqKrKFJjMKqnfcQIcdE5E=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DXzRlVfDBER/2IW3C3rLcqjWTJoTzGp7X1SUCtdpqqcxxG4AOuXJ67twVAxjzthaA
-	 2bMp7aGKZd06aiAFEOJ/1qlnbEOJFYZnuSlxr+W7zzecStWgEdHEjQztoi6N9Usiju
-	 iC+LK9nF6XJAwhqxnu12I8dc04/YWQYf5+SidcHvrNWSbedBtIKx9vyabfsxkt3sp5
-	 3Q4ttO5zIzm8BoweSqo2R+PlPjaYH4om2rMOgz4eiFAwKlH/Rn3oHSfgByxfbH1ATt
-	 1VaxwHTSGynAw5cKD/DqWmNm15l1ThnbYho9lsJlNGquSWVwj0ltwhYCzwrZ3hU9hp
-	 w78ddQrDJPEvg==
-Received: from notapiano (zone.collabora.co.uk [167.235.23.81])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: nfraprado)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 8E51E3780C6C;
-	Mon,  4 Mar 2024 18:17:09 +0000 (UTC)
-Date: Mon, 4 Mar 2024 13:17:07 -0500
-From: =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado <nfraprado@collabora.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Brian Norris <briannorris@chromium.org>,
-	Julius Werner <jwerner@chromium.org>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nicolas@fjasle.eu>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	kernel@collabora.com, chrome-platform@lists.linux.dev,
-	linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	Tzung-Bi Shih <tzungbi@kernel.org>
-Subject: Re: [PATCH v4 0/4] Allow coreboot modules to autoload and enable
- cbmem in the arm64 defconfig
-Message-ID: <533d8c52-3b7d-4390-984b-05fa55996e31@notapiano>
-References: <20240212-coreboot-mod-defconfig-v4-0-d14172676f6d@collabora.com>
- <36df8535-083f-4ce3-84c7-b8f652a9085b@notapiano>
- <a9063efe-1faf-4945-83ce-449a23d44fc5@app.fastmail.com>
+	s=arc-20240116; t=1709576271; c=relaxed/simple;
+	bh=0VcXOVEj4uX5cN19M7/PiaO2mkyA5iUM7Ie+C/DjQ/g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qCH/a0WPB4uaxRlWP6vp8S8gnBceBZK9pcEeCNZe5IMr+YsqFFlZrUs5XraOcoW8Dpr6zu6c2pUJmefYV8ZBe3K3A4aTf3w0+0O7w1oZwYEJSrAy+nhBU9uPonYTcrMP9lE8mlaW3tmMtQUfQQsGZosJcMcQWVAop0jzlLluliM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BGgEW9KC; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a4467d570cdso485481266b.3;
+        Mon, 04 Mar 2024 10:17:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709576268; x=1710181068; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0VcXOVEj4uX5cN19M7/PiaO2mkyA5iUM7Ie+C/DjQ/g=;
+        b=BGgEW9KC+n6L2KlIkGvl+tGG7Ymt5sHRXUhzNAYExEZwZwmvgWLX43RkYp3Gg7dx5I
+         e78pEfVy0iDf0+b/5bbxWErYWqQWqqtLxEUGAw3CBqfeuF33mKcwKCw/fpw2MZdmMbli
+         Nqln6S+drgx6hxG29Y/30ADlMolgnfkbxVGDWusMKXVzftfbchyTG9i4IACRhYEWcDjm
+         LtJK0ap6lkmFfgwgonzm34Yad2kutDOn0Gg7WQFTVehoF7Z9l+KG4e5C2xt9teBiNURm
+         OIFzSOxBrKxW3TzUlWJrmRvYFcfH2hRN6Vy3wZt0VEZfuvzpLRKYaUQSZQv4cUz5VmAO
+         y0Rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709576268; x=1710181068;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0VcXOVEj4uX5cN19M7/PiaO2mkyA5iUM7Ie+C/DjQ/g=;
+        b=gJyPqOmp9VZgVm+N5NsGDKUeW2VJTYMAVjFYk/ypP5C955wIrwLKcupmHjdIT04+qE
+         G9sj5lAJeJO5o2vw2nX13cs5usjy6DrrSS0anARRQIw8K57JuDQPnsNDoOGhJRx1sCdl
+         RvR048Di079gn+WEDRz6U5SDjA6BHyIJDkelwTwOHXLWEPRAGMBnHDrpzOrjC+ZWINS1
+         GdtJ75oIilMw1ttmCj9eoBScFScT324mLNvjc0wAp5UA35+W3tRg6cGzBijnW7Xd6RNT
+         8qq1AVQYjU/ODLZ+kz1NQ+mglz+hEvrOfAV9HQAxNqSthi1o3kCFIpqrK56KHGKygXlA
+         grxg==
+X-Forwarded-Encrypted: i=1; AJvYcCVlmsfITOq3QzrEh+VPUNPvi8jFkS0hNd3nGWNUhWHScvaXwP7vWFK3LDqx4gIMFLfCxAKTgKPoB/VXhuqiCutz7hXLtyjpyd+b9Qhe6aTFmgxZtfSefl/2J1IBR0Z4umTJPWt0IQ/9NqmIwSjLLa0Op58y6+d05KMvhEZoC5O3uAu27ik=
+X-Gm-Message-State: AOJu0YyHyMckGkXOxmvR5VjjpqVnifhA2jJq6LAN/ofdgUG5JJdyxYlE
+	BfXKXggpGMRz6ftZ057/fKhias8sc/mMBHi0ZDwuRlAzEkpwLa8O6bbrWvZsvZYq/X+1zsI2b25
+	aCf6o6qBam6CylL6x4V2EXgbLde0=
+X-Google-Smtp-Source: AGHT+IH8TVrqbKPkISojymMNbutJG+3MG9Q5hp7NXKQN7l42CwKtPGnXdOghrTrfrTcx7ph0QmrrkGy8NtpHc3/FEFY=
+X-Received: by 2002:a17:906:b80b:b0:a45:1c4b:54eb with SMTP id
+ dv11-20020a170906b80b00b00a451c4b54ebmr3224939ejb.3.1709576267706; Mon, 04
+ Mar 2024 10:17:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a9063efe-1faf-4945-83ce-449a23d44fc5@app.fastmail.com>
+References: <20240301014203.2033844-1-chris.packham@alliedtelesis.co.nz>
+ <20240301014203.2033844-5-chris.packham@alliedtelesis.co.nz>
+ <ZeIdXIx5zYjKQiSO@smile.fi.intel.com> <CAMuHMdVJiWtB4MSGHXXz=OAEvu-+b9Xp-jQ_NXWck+hwKGK4TQ@mail.gmail.com>
+ <CAHp75VesLCo72ftQ2BNEKSXwF9A2pe0Vbnuves2-L3ist_twNQ@mail.gmail.com> <CAMuHMdXjqVQeQF6TFr1nQmUCLrEbY1gq5OdCcz6T60W33QO2-Q@mail.gmail.com>
+In-Reply-To: <CAMuHMdXjqVQeQF6TFr1nQmUCLrEbY1gq5OdCcz6T60W33QO2-Q@mail.gmail.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Mon, 4 Mar 2024 20:17:11 +0200
+Message-ID: <CAHp75Vfh_pv50Pk84JGz6qT=K9m3w=0_HDGX2WvqEN4Nm8fFDw@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] ARM: dts: marvell: Indicate USB activity on x530
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Andy Shevchenko <andy@kernel.org>, Chris Packham <chris.packham@alliedtelesis.co.nz>, 
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	andrew@lunn.ch, gregory.clement@bootlin.com, sebastian.hesselbarth@gmail.com, 
+	pavel@ucw.cz, lee@kernel.org, linux-leds@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 04, 2024 at 03:02:21PM +0100, Arnd Bergmann wrote:
-> On Mon, Mar 4, 2024, at 14:56, Nícolas F. R. A. Prado wrote:
-> > On Mon, Feb 12, 2024 at 09:50:04AM -0500, Nícolas F. R. A. Prado wrote:
-> >> Nícolas F. R. A. Prado (4):
-> >>       firmware: coreboot: Generate modalias uevent for devices
-> >>       firmware: coreboot: Generate aliases for coreboot modules
-> >>       firmware: coreboot: Replace tag with id table in driver struct
-> >>       arm64: defconfig: Enable support for cbmem entries in the coreboot table
-> >
-> > is it ok for Tzung-Bi to merge this last patch for the defconfig through the
-> > chrome-platform-firmware tree?
-> 
-> I would much prefer to see this patch get sent to soc@kernel.org
-> so I can pick it up through the soc tree. I'm usually not worried
-> about bisection issues with defconfig changes since most users
-> have their own .config anyway, and in this case I don't see
-> any strict dependency and would just merge the patch directly.
+On Mon, Mar 4, 2024 at 11:57=E2=80=AFAM Geert Uytterhoeven <geert@linux-m68=
+k.org> wrote:
+> On Sun, Mar 3, 2024 at 9:43=E2=80=AFPM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
 
-Sounds good, I'll send it separately there. And you're right, the patch doesn't
-have any dependency.
+..
 
-Thanks,
-Nícolas
+> So IMHO it would be a bad idea to make the DP mandatory.
+
+But I'm not talking about making it mandatory, I'm talking about the
+DP to be used as DP when it _is_ present and wired. If current
+platform wants to use DP for something else, I'm pretty much worried
+that this is the right thing to do.
+
+--=20
+With Best Regards,
+Andy Shevchenko
 
