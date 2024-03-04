@@ -1,232 +1,181 @@
-Return-Path: <linux-kernel+bounces-90035-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90036-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 988AF86F923
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 05:15:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D066A86F92F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 05:24:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C84F28166A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 04:15:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84DE41F214E3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 04:24:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E220613A;
-	Mon,  4 Mar 2024 04:15:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F0B4613A;
+	Mon,  4 Mar 2024 04:24:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="wiQamvm6";
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="qPE2Oi5M"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="gd96gwWk"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23D44539E;
-	Mon,  4 Mar 2024 04:15:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.154.123
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709525717; cv=fail; b=OXTAJWClwv7rH9IMRoCpa9w+8iFm41cW9J50xfSZ0kN2D6uR/pezhV8negAn0wVG522x0ocEf33XrFWhOxOIcMv/qTd/FcxwpCeaRNm/9VeRVmnYrrzw0aV44nFaBPwk9akReM7Qog6BiJoZxK46dVBq9tMu0OwHplNWBSgx8jc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709525717; c=relaxed/simple;
-	bh=k0RCiI7ngT/dcIYg4MGY7jFqWWjoxpqiYFMQ5bmOVV0=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=ULNEHKlNtjhhUXR7oyOOHWVqvgFDRlghsICV1ECOvw+kBlJI7pMpIU3FttfODLQI9kuKi9ZyfYU3ktAZnpq6U0UA9MydlrqVX7aurTlDPZVKYldiicg+5h3jmhy0Tc/g/imXZNyc2yYknToDrCjJDtC3OK5l1PWkCySCYJumNpI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=wiQamvm6; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=qPE2Oi5M; arc=fail smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1709525715; x=1741061715;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=k0RCiI7ngT/dcIYg4MGY7jFqWWjoxpqiYFMQ5bmOVV0=;
-  b=wiQamvm6HkJioCZ4W7L6/yj8jS6Y6kg0aAZceVHvcU0JVkPff2mSFH2Q
-   7U+4gaQIAF+/xc+tF+kv8AaMADDhFhVuHIgRaZrlLs2FeUwFczb00gaIQ
-   iPb2jDdbM4DUX2wUh2F0xyoZpGIfEUPv/QnA5IentewicruJq486N1Blz
-   32fO8o9JcA96XMuxkFnsqqTFCHTf98Ng5/eHMFy+TWsKhTenHPTGEeXBg
-   M9wuog49R3sTYeLkaaTwecTKetGnrsiA8pkR+4QTGSsjJpsMij/UTONd7
-   mjHP46vtltC25XtVfQa3rsCRwD5C1hTqBMY7f0sS5KkjBbcwuXxXa6HKX
-   w==;
-X-CSE-ConnectionGUID: Su6vTMwzQ961PgqGPeVIpw==
-X-CSE-MsgGUID: 87qvCGH2QMC3O5U9F6XmYA==
-X-IronPort-AV: E=Sophos;i="6.06,203,1705388400"; 
-   d="scan'208";a="184416707"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 03 Mar 2024 21:15:06 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 3 Mar 2024 21:14:58 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (10.10.215.250)
- by email.microchip.com (10.10.87.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Sun, 3 Mar 2024 21:14:58 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MtJu8sI54IJ+MR+lzaC5byNUhWrC9kJ8cCzSfjhxC3QeWq2vUReLWsXKRn2PPlSGWptVqwyWknraQ1uOw0i4EN2LRysoNBk+fguLm7vvEub/kgwzp2vLAiextL8HP0nCACnPQCpxM6WRdOcVmG+VLzY5wg5NUnhRZHwtR9Jv3O6LI4KTDoHetdQIHqehQpH5cq3IRP8oCyyJ2bh82B/GMpWD0H05zrnUnLHlmh6HjbUql4uGVdLd+FAqN3QucddXyg1M8Sn3PFWnLnhyFkOEVeqQBTZl94LrLsoErS0oT2RRzIEwkOz19fymkeNRsOxFPBvmBkdhelNK/fadTCUCzw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=k0RCiI7ngT/dcIYg4MGY7jFqWWjoxpqiYFMQ5bmOVV0=;
- b=K8nw068fpcRW1wy6h3yD+pbERJhhqyW9dYSCPnySYIWgg3p3zD8JBSIqESBX6wAvqWaBPy21AwHkjVZupdtyTOqCDcRBEiFCtjhgWIs34IB7tS7F7u5ZNWmruuhYBsjQDnq2QwFI+QYcFah8KXavdwcHVXRu7zEPC5AbCR/tQnPwgSO2KT4E2Zrcr1wVB8W9nBAQ2SWcV8Aomql1nMhuoUgIIhU+MWDDwmlpZ2IF8NSSumLfHZiQ/mVCNwRMZ+q3Pxou8cN/7xTMQe/8ibz8H6MEoxfMYOivYTduZK2tZo5Sc8lGJz9EbMZzqBFMqnawZpsgMuThwOOUbDj1I080PA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microchip.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k0RCiI7ngT/dcIYg4MGY7jFqWWjoxpqiYFMQ5bmOVV0=;
- b=qPE2Oi5MSTHbKKtuvEPgvP6/CnPdyAHTIxS+860VDW4DIg0MTkom6UFbNnxASb5ll27d4DAM5Ar6GwH5P8pDqXBOc4Ohfmi4SqkiHIE5XfVpm9CsfSnT0rZ0+uYhYe827SJaa0JWgPN7VY4zStbJbB5RhcJsJcYxJKQ0BNF2XHpV1S+s6S6JKUkiQCkS4E6+0yrVZlnJPIvn61xDfuI/hDMDIYrja+nYdX3bx5OonNpS43L/78JGcxBjl2QTAkwhSsx6XNVFnbEBHoWZa/LOxb7eYgrjkTtLr7QUMYpWn6cDmc0q8ufJwSAwlfqRClIsfuQL4A2yXySqXA6ZJ1eBfw==
-Received: from PH7PR11MB6451.namprd11.prod.outlook.com (2603:10b6:510:1f4::16)
- by BN9PR11MB5289.namprd11.prod.outlook.com (2603:10b6:408:136::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.23; Mon, 4 Mar
- 2024 04:14:56 +0000
-Received: from PH7PR11MB6451.namprd11.prod.outlook.com
- ([fe80::c2e8:2ace:1ddf:54dd]) by PH7PR11MB6451.namprd11.prod.outlook.com
- ([fe80::c2e8:2ace:1ddf:54dd%3]) with mapi id 15.20.7362.019; Mon, 4 Mar 2024
- 04:14:56 +0000
-From: <Dharma.B@microchip.com>
-To: <robh@kernel.org>
-CC: <krzysztof.kozlowski@linaro.org>, <maarten.lankhorst@linux.intel.com>,
-	<mripard@kernel.org>, <tzimmermann@suse.de>, <airlied@gmail.com>,
-	<daniel@ffwll.ch>, <krzysztof.kozlowski+dt@linaro.org>,
-	<conor+dt@kernel.org>, <Nicolas.Ferre@microchip.com>,
-	<alexandre.belloni@bootlin.com>, <claudiu.beznea@tuxon.dev>,
-	<dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] dt-bindings: display: atmel,lcdc: convert to dtschema
-Thread-Topic: [PATCH] dt-bindings: display: atmel,lcdc: convert to dtschema
-Thread-Index: AQHaZjjd01Ir06e0kkmO7KWz3iDwFbEeHZWAgAE9Z4CAAAOxAIAAM9cAgAABZ4CAAU/ZAIACVyyAgAPNmoA=
-Date: Mon, 4 Mar 2024 04:14:56 +0000
-Message-ID: <62f3e424-0d09-4cd2-ab3c-d2032fc3284d@microchip.com>
-References: <20240223-lcdc-fb-v1-1-4c64cb6277df@microchip.com>
- <796652d5-af57-4aca-87c2-10a7b0b55959@linaro.org>
- <11c545e2-45df-4587-a5c7-12b05c2f01e0@microchip.com>
- <9bf7e492-891c-4d8f-b388-3b2ebae611c1@linaro.org>
- <e5cb705f-56cc-47cc-beb5-700c9a35c8cf@microchip.com>
- <34388175-7d5b-4f6b-b264-e85b84e98677@linaro.org>
- <dc8181d9-c7c9-4817-96f1-84a1b64575d6@microchip.com>
- <20240301181007.GA2481641-robh@kernel.org>
-In-Reply-To: <20240301181007.GA2481641-robh@kernel.org>
-Accept-Language: en-GB, en-US
-Content-Language: en-GB
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microchip.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH7PR11MB6451:EE_|BN9PR11MB5289:EE_
-x-ms-office365-filtering-correlation-id: 84ec1338-55db-4e4a-24bb-08dc3c01a650
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: RGEChburZoHnHmWEEtlcL0lXKhs9uSmJDQK0JrACskO5ae0iu4mlH2NzyrdQbo4FTyOQ39ZVWAFOVqTxtz7sUO7SVToxbD+YcTpBLrncfyupDxPxP3R+Yct5UPYNJE91/4fUxVfTfl7ZdHEIVpf1NDiJt2hHX8Xq/+sFATIMlyrE+mb/JF64/As7kUuIT1nr8l8M0EQzJ3D0CmVspr7HnmL9l6Q8RS9G6VOmrGd5hH+SBXCIwMeZfHBWz4JcnkwnE0uFhIrzFKdKGUX9zygGzQwr9rWJ0NymE4OB9Yj9qtf7nDHSp+wQYeW5vjndtMeFMgSoMHrSCVtjaPgYHNcAbcye30laV37XI5iBuV2KbdR314Y4caThIyby5+pklWppTgx7rI73dlUzsuqMQXGgEas2yyjxalV6YdOoWCkexDSb+F722JZt6mivpQZk9P8G9cfAWJXG+n7HglOBdJEiwWvYIsOJIX9BxZssGH6oNVkP6u6pobS7NOHy0oz5lhtLhHWdQxBkfHG4gA7QAmyP1XXrYv/DWIWosqbpDbI/+ObhNtmZLBh3/B7MsNvuHd7hzPrm1yUb79ajOHRqEQv/FqcvrNDY9WSwUaRbxo2GWHfFxrSJAghvbN/W3ofOt3ku+LQwcjvp9OvT2RH6nUJ8iSYoRF4bDaNnaYVXZ4Se4EKpZlCP26npTtQExUXKMayoTowCaYxC/pnGRU518AQLf6EUrgyH2V0uuFYkXXB7HB4=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB6451.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?c3NYOEhXR1hReWh0NUh0b3RGayt3SUcwaG4zU3RnbWxqWWtua3NSTUxOc0Ra?=
- =?utf-8?B?Mm5xZU5aSlZ4enVBV0t2NlBBVDJVazJoTHFUK3JvdTJQckp3UTkzOFN1bVpu?=
- =?utf-8?B?NEw2MytYUUx0TG1QeVI4VjgyazdjVWFoOXc3TktyR0VFQ2FhaDh6dTFQOGhh?=
- =?utf-8?B?L2piN0kxR1liSUVKc2NpaFZIK3hzN1hTejBmSUxyOTB5aC9uUnR2c1ZURTlD?=
- =?utf-8?B?bVg5RkVSZXEwWEdSdWJVYXdQUlpvRUgyR0M1TjdzVlEzWDBjVDhMTncvazZ5?=
- =?utf-8?B?dEZEU0tHTDhXZDcvcWM1SVJlR1VHSEM3b1JySlJoTVpsbmpycUxpQStEZ0dz?=
- =?utf-8?B?MmtIenNrMkxIRW9ENE8yQ3F0dXRoZVVFeEovUVFZTklaUHQxYUJNTHBzckRT?=
- =?utf-8?B?SndVVHBqNWtUaXlNbCtWNnpWZDVzNGZvVEJSRkczQWVrTmNmbTZuT2dYcUtz?=
- =?utf-8?B?NGxFaElzTzhVS3hKS2szdnl1SG85SlM2MEdad0pKQXcwNVpVeDF3RzRqY0Fj?=
- =?utf-8?B?QVdrS3g0WVd1Vk1nVjc5THRLWEFZWFpGNlRBSTREYXJYcTVEMklscUsxOHVC?=
- =?utf-8?B?VGg0YlVBTFdTTEhWR25FOTNKL2Zod1lhRHhDeG9XK2dXU2Q1ZlR5WERPUjZo?=
- =?utf-8?B?eWxGelpWTENGeTd3elZmYzlmam83bGJyVlNjWkVlYVFjcGN4K21vaVpLaTNT?=
- =?utf-8?B?YkVpbDEwdngrbC9DU3lOUzhGMktYN0pGMi9pZFdEMXMzTGtNd1QxRE4rTXJi?=
- =?utf-8?B?Y0tPaTBPTWwxVFVxRjlzWngzL1U0cEd2alhOK2ZpT1hoTFFld3d6UkJTZmZC?=
- =?utf-8?B?VUVvWWhIVU8zYm40ZVJxUzNiMFM5SUNRVmdFWmkwZVFzaTE4N2gvQU9KMEw2?=
- =?utf-8?B?RlpFV2xHdWhWZGgrL1RSdUZyc1ZURmMxVzAyM3QxdU5UckhoOVlWVFZLWjhp?=
- =?utf-8?B?VmR4VlJoMFlUeXJiOUxJWVlKY1Q1Z2hqRlUwcmxZM3V1S2ZWRXduTEIrWm85?=
- =?utf-8?B?Wlh3THQvQmpjaWFvUlFmOTcydDFHcjlOM1dZa3Z5U1dmOGE3ZnBBdWdCU2FU?=
- =?utf-8?B?ZEFlaERETVppWDd4Lzd3TEs5a1BadUtKam5KVDBpWmJIVkR4TWJZejQ5dWV4?=
- =?utf-8?B?WnFOb2F5VE9NWk1HZ2dsdFB5dFNXY285TTBsUjdzc08vQng2Q0IwSVJGdzRt?=
- =?utf-8?B?MzJ1dldQOXJ0K21Mb3ZSTGtlK1RNNXlyS1BEV25MeWVudzlNcDRmd1R3eVd2?=
- =?utf-8?B?V2xUT0p6enFqS2N1ang0NkRRTGdQR201RXpaNDlwNS9MRUVhcWhxVWJaK3Y3?=
- =?utf-8?B?SFpsSXpxa0g1Z0h0c0VNdFZQdlNQU0d4RG9zWnByY3lRNjF4UStRMnhSOGVC?=
- =?utf-8?B?UC9EWm4zcXpaR3c2TmMvUUJudjNHaUIrRXV2cnlpbXN6dHFZYW9kS0NTUGll?=
- =?utf-8?B?ZmloQ3B4L3FwcHBzQXVWckwzUktGTlJpWi9qMmNPNWtBOFplZXR2Y0dzcDJp?=
- =?utf-8?B?MGVnODBHdmxsaDZpUHdSNm4zczcxWThyVE5saGdLaGd4dGorT0FZVlE5b3Zi?=
- =?utf-8?B?d3V2U3BvVUljZEhyZFFiTjM4cVROSU1QUFl1aW9QKyttMUdsRktRSUpxeElR?=
- =?utf-8?B?a01TUnlSWkwrM2pwNTY4OWlxWklUQ3JJQTZ4eXVBd0EvallhN2lSeEo4bUtM?=
- =?utf-8?B?NTFqSHBZTUgvQWhUQ0owTUpBbE5WQVdYdnMyUjB1akZ6S0VwVUxQU0x2VTI4?=
- =?utf-8?B?SnZ5dmRwK1FEdHk0cEJmUEpKdTNnMWxnUi9ycVovVHZNVFYxTUE1a3RwRVlE?=
- =?utf-8?B?V1FXOTAvcUxHc3FaT0FIbzBPWE9wUlBkZ3BnTEdERHJML0pmRnlIN1pEZnhP?=
- =?utf-8?B?eGlCSWNYdS84RjhxN2JuVzNDT1JQR0pUTTcyRE8wbUN0d1BSYUROSlRCOThF?=
- =?utf-8?B?U1AraWhsNDM2QS9ZdUZBWWZhWFlqOUpFOWxaL0FqRUdRWkp3UXVTS0RKQk9P?=
- =?utf-8?B?QmhjN0hpV0NDNkZSZVJPcXk2R0hlUmFSbVNxNzQ5bFBzZEtWTVFaajhZbEhN?=
- =?utf-8?B?RE9tNVlCU1ZrU0ZsRFA4NjhVa2ZYblJKUEMyRjRzODRiY0ZwSHpKaUQ3TkdW?=
- =?utf-8?Q?ZSjXj1cxYJ3lOtiunWtu+O9+U?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <3C4999EA2CFA594A85DDA9DAD3F32071@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D94D3539E;
+	Mon,  4 Mar 2024 04:24:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709526287; cv=none; b=mK1oNTsevRZfSSv3CkvAmh5L1AzFIutDL5cU1tVsDL3ZxhY2e6+KLH9gpweR62oBdlqQL7fs0FdnTTSLlSjLk1mWoO0Ub8BpYFWqP0ardzOHnmD6LhvSMvbmyHYUpLRY3DCNWtrrNgq6zsLi7GFfEb6UXg0zTeZ93407+peJQLc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709526287; c=relaxed/simple;
+	bh=/UO1JchsRlaHph8IMHDSkaKMTLSRO+gYXsqGVjDeD5M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=iMyC1lVYWvQ9Rc2W8WTOiQz4WXcvapT288unDj5HyLeKUwEyI7YeNOeD1V73teShCR9oD7LL2H2RPgbSYLrX2/aA//PltH7vdwt2u9sLh30zke1P3logr2pRoV5Ujit8BqYllPYkoIV4rAOdfei5++NjbplZdQmVTQYqSgHO4ZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=gd96gwWk; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4244OOc7068967;
+	Sun, 3 Mar 2024 22:24:24 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1709526264;
+	bh=6xyNnzj+dboJSEAS1HgU2JHeEMGGFllhk6cp37pKr7w=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=gd96gwWkdfPTta0rogXvDAX8ygh0VKreIvt+8CiUeY9v2Ac61Fii5K0ky+9Ru4MKS
+	 dhSnpSDbJwHaf9CKqohRQ8sKc4nzpk3OuQWNjcdm9lUf+imcsq8iKstY59r8VF0LCN
+	 U/+sedfjJDLDOMVk4o36lcMeQUU9fQJApLNfg5uw=
+Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4244OOJH055999
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Sun, 3 Mar 2024 22:24:24 -0600
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sun, 3
+ Mar 2024 22:24:24 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Sun, 3 Mar 2024 22:24:24 -0600
+Received: from [172.24.227.94] (uda0132425.dhcp.ti.com [172.24.227.94])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 4244OKxK077275;
+	Sun, 3 Mar 2024 22:24:20 -0600
+Message-ID: <392def9d-5e02-4ca6-8838-c4252ccd4c54@ti.com>
+Date: Mon, 4 Mar 2024 09:54:19 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB6451.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 84ec1338-55db-4e4a-24bb-08dc3c01a650
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Mar 2024 04:14:56.2455
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: IOypc1dC9CouCrmj7tcv8DixPJWqlEICbraq/TqkgyKdoAzh5deaA+yNKrtJ10kn5tpPXPMAZd38N0OxjmBxUQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR11MB5289
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm: dts: ti: beagleplay: Fix Ethernet PHY RESET GPIOs
+Content-Language: en-US
+To: Roger Quadros <rogerq@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Tero Kristo
+	<kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC: <srk@ti.com>, <s-vadapalli@ti.com>, <r-gunasekaran@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20240229-b4-for-v6-9-am65-beagleplay-ethernet-reset-v1-1-b3e4b33378bd@kernel.org>
+ <bfd9b146-061b-4f82-a703-3bd32ffc09b7@kernel.org>
+ <c75d35c1-13f8-4f79-bf96-9a73e88d1b19@kernel.org>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+In-Reply-To: <c75d35c1-13f8-4f79-bf96-9a73e88d1b19@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-T24gMDEvMDMvMjQgMTE6NDAgcG0sIFJvYiBIZXJyaW5nIHdyb3RlOg0KPiBFWFRFUk5BTCBFTUFJ
-TDogRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNzIHlvdSBrbm93
-IHRoZSBjb250ZW50IGlzIHNhZmUNCj4gDQo+IE9uIFRodSwgRmViIDI5LCAyMDI0IGF0IDA2OjI1
-OjU2QU0gKzAwMDAsIERoYXJtYS5CQG1pY3JvY2hpcC5jb20gd3JvdGU6DQo+PiBPbiAyOC8wMi8y
-NCAzOjUzIHBtLCBLcnp5c3p0b2YgS296bG93c2tpIHdyb3RlOg0KPj4+IEVYVEVSTkFMIEVNQUlM
-OiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cyB1bmxlc3MgeW91IGtub3cg
-dGhlIGNvbnRlbnQgaXMgc2FmZQ0KPj4+DQo+Pj4gT24gMjgvMDIvMjAyNCAxMToxOCwgRGhhcm1h
-LkJAbWljcm9jaGlwLmNvbSB3cm90ZToNCj4+Pj4gT24gMjgvMDIvMjQgMTI6NDMgcG0sIEtyenlz
-enRvZiBLb3psb3dza2kgd3JvdGU6DQo+Pj4+PiBFWFRFUk5BTCBFTUFJTDogRG8gbm90IGNsaWNr
-IGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNzIHlvdSBrbm93IHRoZSBjb250ZW50IGlz
-IHNhZmUNCj4+Pj4+DQo+Pj4+PiBPbiAyOC8wMi8yMDI0IDA3OjU5LCBEaGFybWEuQkBtaWNyb2No
-aXAuY29tIHdyb3RlOg0KPj4+Pj4+DQo+Pj4+Pj4+DQo+Pj4+Pj4+IEkgZG9uJ3Qga25vdyB3aGF0
-J3MgdGhpcyBleGFjdGx5LCBidXQgaWYgZW1iZWRkZWQgZGlzcGxheSB0aGVuIG1heWJlDQo+Pj4+
-Pj4+IGNvdWxkIGJlIHBhcnQgb2YgdGhpcyBkZXZpY2Ugbm9kZS4gSWYgc29tZSBvdGhlciBkaXNw
-bGF5LCB0aGVuIG1heWJlIHlvdQ0KPj4+Pj4+PiBuZWVkIGFub3RoZXIgc2NoZW1hLCB3aXRoIGNv
-bXBhdGlibGU/IEJ1dCBmaXJzdCBJIHdvdWxkIGNoZWNrIGhvdyBvdGhlcnMNCj4+Pj4+Pj4gYXJl
-IGRvaW5nIHRoaXMuDQo+Pj4+Pj4NCj4+Pj4+PiBPa2F5LCB0aGVuIEkgdGhpbmsgdGhlIGRyaXZl
-ciBhbHNvIG5lZWRzIHRvIGJlIG1vZGlmaWVkLCBjdXJyZW50bHkgdGhlDQo+Pj4+Pj4gZHJpdmVy
-IHBhcnNlcyB0aGUgcGhhbmRsZSBhbmQgbG9va3MgZm9yIHRoZXNlIHByb3BlcnRpZXMuIEFsc28g
-dGhlDQo+Pj4+Pj4gY29ycmVzcG9uZGluZyBkdHMgZmlsZXMuDQo+Pj4+Pg0KPj4+Pj4gRHJpdmVy
-IGRvZXMgbm90IGhhdmUgdG8gYmUgbW9kaWZpZWQgaW4gbXkgcHJvcG9zYWwuIFlvdSB3b3VsZCBz
-dGlsbCBoYXZlDQo+Pj4+PiBwaGFuZGxlLg0KPj4+Pg0KPj4+PiBJZiBJIHVuZGVyc3RhbmQgY29y
-cmVjdGx5LCBJIGNvdWxkIGRlZmluZSB0aGUgZHQgYmluZGluZ3MgYXMgYmVsb3cNCj4+Pj4NCj4+
-Pj4gICAgICBkaXNwbGF5Og0KPj4+PiAgICAgICAgJHJlZjogL3NjaGVtYXMvdHlwZXMueWFtbCMv
-ZGVmaW5pdGlvbnMvcGhhbmRsZQ0KPj4+PiAgICAgICAgZGVzY3JpcHRpb246IEEgcGhhbmRsZSBw
-b2ludGluZyB0byB0aGUgZGlzcGxheSBub2RlLg0KPj4+Pg0KPj4+PiAgICAgIHBhbmVsOg0KPj4+
-PiAgICAgICAgJHJlZjogcGFuZWwvcGFuZWwtY29tbW9uLnlhbWwjDQo+Pj4+ICAgICAgICBwcm9w
-ZXJ0aWVzOg0KPj4+Pg0KPj4+DQo+Pj4gU28gdGhlc2UgYXJlIHN0YW5kYXJkIHBhbmVsIGJpbmRp
-bmdzPyBUaGVuIHRoZSBub2RlIHNob3VsZCBsaXZlIG91dHNpZGUNCj4+PiBvZiBsY2RjLiBJZiBj
-dXJyZW50IGRyaXZlciBuZWVkcyB0byBwb2tlIGluc2lkZSBwYW5lbCBhbmQgcGFuZWwgY291bGQg
-YmUNCj4+PiBhbnl0aGluZywgdGhlbiBwcm9iYWJseSB5b3UgbmVlZCBwZXJpcGhlcmFsLXByb3Bz
-LWxpa2UgYXBwcm9hY2guIDovDQo+Pg0KPj4gVGhhbmsgeW91IHNvIG11Y2gsIHNvIGNhbiBJIHVz
-ZSBzb21ldGhpbmcgbGlrZSB0aGlzDQo+Pg0KPj4gICAgIGRpc3BsYXk6DQo+PiAgICAgICAkcmVm
-OiAvc2NoZW1hcy90eXBlcy55YW1sIy9kZWZpbml0aW9ucy9waGFuZGxlDQo+PiAgICAgICBkZXNj
-cmlwdGlvbjogQSBwaGFuZGxlIHBvaW50aW5nIHRvIHRoZSBkaXNwbGF5IG5vZGUuDQo+Pg0KPj4g
-cGF0dGVyblByb3BlcnRpZXM6DQo+PiAgICAgIl5wYW5lbCI6DQo+IA0KPiBKdXN0ICdwYW5lbCcg
-YW5kIG5vdCBhIHBhdHRlcm4uDQo+IA0KPiBIb3dldmVyLCB0aGF0J3Mgbm90IHdoYXQgdGhlIG9y
-aWdpbmFsIGJpbmRpbmcgaGFkLiBJdCB3YXMgYSBzZXBhcmF0ZQ0KPiBub2RlLiBJZiB5b3Ugd2Fu
-dCB0byBwcmVzZXJ2ZSB0aGF0LCB0aGVuIHlvdSdsbCBuZWVkIGEgc2VwYXJhdGUNCj4gc2NoZW1h
-IGZpbGUgYW5kIGEgc3BlY2lhbCAnc2VsZWN0Jy4gU29tZXRoaW5nIGxpa2U6DQo+IA0KPiBzZWxl
-Y3Q6DQo+ICAgIGFueU9mOg0KPiAgICAgIC0gcmVxdWlyZWQ6IFsgYXRtZWwsZG1hY29uIF0NCj4g
-ICAgICAtIHJlcXVpcmVkOiBbIGF0bWVsLGxjZGNvbjIgXQ0KPiAgICAgIC0gcmVxdWlyZWQ6IFsg
-YXRtZWwsZ3VhcmQtdGltZSBdDQo+IA0KPiBVcCB0byB5b3UgYW5kIGF0OTEgbWFpbnRhaW5lcnMg
-aWYgeW91IHdhbnQgdG8gaGF2ZSB0byB1cGRhdGUgeW91ciBkdHMNCj4gZmlsZXMgb3Igbm90Lg0K
-PiANCj4gUm9iDQoNClRoYW5rIHlvdSBzbyBtdWNoIFJvYiwgSSB3aWxsIGludHJvZHVjZSBhIG5l
-dyBiaW5kaW5nIGZvciBsY2RjLWRpc3BsYXkgDQp3aXRoIGEgc3BlY2lhbCBzZWxlY3QgYXMgeW91
-IHN1Z2dlc3RlZC4NCg0KSSB3aWxsIHNlbmQgYSB2MiB3aXRoIHRoZSBmb2xsb3dpbmcgY2hhbmdl
-cw0KLSBSdW4gY2hlY2twYXRjaCBhbmQgcmVtb3ZlIHdoaXRlc3BhY2UgZXJyb3JzLg0KLSBBZGQg
-dGhlIHN0YW5kYXJkIGludGVycnVwdCBmbGFncy4NCi0gU3BsaXQgdGhlIGJpbmRpbmcgaW50byB0
-d28gbmFtZWx5IGxjZGMueWFtbCBhbmQgbGNkYy1kaXNwbGF5LnlhbWwuDQpmb3IgeW91ciBraW5k
-IHBlcnVzYWwuDQoNCi0tIA0KV2l0aCBCZXN0IFJlZ2FyZHMsDQpEaGFybWEgQi4NCg0K
+Hi Roger,
+
+On 02/03/24 02:59, Roger Quadros wrote:
+> 
+> 
+> On 01/03/2024 22:58, Roger Quadros wrote:
+>>
+>>
+>> On 29/02/2024 18:25, Roger Quadros wrote:
+>>> The RESET GPIO pinmux should be part of MDIO bus node
+>>> so that they can be in the right state before the PHY
+>>> can be probed via MDIO bus scan.
+>>>
+>>> Add GPIO reset for the Gigabit Ethernet PHY. As per
+>>> RTL8211F datasheet, reset assert width is 10ms and
+>>> PHY registers can be access accessed after 50ms of
+>>> reset deassert.
+>>>
+>>> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+>>> ---
+>>>  arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts | 8 ++++++--
+>>>  1 file changed, 6 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
+>>> index a34e0df2ab86..77240cf3ae4d 100644
+>>> --- a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
+>>> +++ b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
+>>> @@ -292,6 +292,8 @@ mdio0_pins_default: mdio0-default-pins {
+>>>  		pinctrl-single,pins = <
+>>>  			AM62X_IOPAD(0x0160, PIN_OUTPUT, 0) /* (AD24) MDIO0_MDC */
+>>>  			AM62X_IOPAD(0x015c, PIN_INPUT, 0) /* (AB22) MDIO0_MDIO */
+>>> +			AM62X_IOPAD(0x003c, PIN_INPUT, 7) /* (M25) GPMC0_AD0.GPIO0_15 */
+>>
+>> This should be PIN_OUTPUT.
+>> Will fix in next spin.
+> 
+> Actually PIN_INPUT is correct else we won't be able to read the correct GPIO pin status
+> on gpio read.
+> I observe this issue on u-boot at least.
+> 
+>>
+>>> +			AM62X_IOPAD(0x018c, PIN_OUTPUT, 7) /* (AC21) RGMII2_RD2.GPIO1_5 */
+> 
+> This one needs to be fixed to PIN_INPUT.
+
+While at it, please fix the $subject prefix:
+
+arm64: dts: ti: beagleplay: ...
+
+Do we need a Fixes: Tag too?
+
+> 
+>>>  		>;
+>>>  	};
+>>>  
+>>> @@ -383,7 +385,6 @@ AM62X_IOPAD(0x017c, PIN_INPUT, 1) /* (AD22) RGMII2_RX_CTL.RMII2_RX_ER */
+>>>  			AM62X_IOPAD(0x016c, PIN_INPUT, 1) /* (Y18) RGMII2_TD0.RMII2_TXD0 */
+>>>  			AM62X_IOPAD(0x0170, PIN_INPUT, 1) /* (AA18) RGMII2_TD1.RMII2_TXD1 */
+>>>  			AM62X_IOPAD(0x0164, PIN_INPUT, 1) /* (AA19) RGMII2_TX_CTL.RMII2_TX_EN */
+>>> -			AM62X_IOPAD(0x018c, PIN_OUTPUT, 7) /* (AC21) RGMII2_RD2.GPIO1_5 */
+>>>  			AM62X_IOPAD(0x0190, PIN_INPUT, 7) /* (AE22) RGMII2_RD3.GPIO1_6 */
+>>>  			AM62X_IOPAD(0x01f0, PIN_OUTPUT, 5) /* (A18) EXT_REFCLK1.CLKOUT0 */
+>>>  		>;
+>>> @@ -597,6 +598,9 @@ &cpsw3g_mdio {
+>>>  
+>>>  	cpsw3g_phy0: ethernet-phy@0 {
+>>>  		reg = <0>;
+>>> +		reset-gpios = <&main_gpio0 15 GPIO_ACTIVE_LOW>;
+>>> +		reset-assert-us = <10000>;
+>>> +		reset-deassert-us = <50000>;
+>>>  	};
+>>>  
+>>>  	cpsw3g_phy1: ethernet-phy@1 {
+>>> @@ -615,7 +619,7 @@ &main_gpio0 {
+>>>  		"USR0", "USR1", "USR2", "USR3", "", "", "USR4",	/* 3-9 */
+>>>  		"EEPROM_WP",					/* 10 */
+>>>  		"CSI2_CAMERA_GPIO1", "CSI2_CAMERA_GPIO2",	/* 11-12 */
+>>> -		"CC1352P7_BOOT", "CC1352P7_RSTN", "", "", "",	/* 13-17 */
+>>> +		"CC1352P7_BOOT", "CC1352P7_RSTN", "GBE_RSTN", "", "",	/* 13-17 */
+>>>  		"USR_BUTTON", "", "", "", "", "", "", "", "",	/* 18-26 */
+>>>  		"", "", "", "", "", "", "", "", "", "HDMI_INT",	/* 27-36 */
+>>>  		"", "VDD_WLAN_EN", "", "", "WL_IRQ", "GBE_INTN",/* 37-42 */
+>>>
+>>> ---
+>>> base-commit: bbef42084cc170cbfc035bf784f2ff055c939d7e
+>>> change-id: 20240229-b4-for-v6-9-am65-beagleplay-ethernet-reset-098f274fbf15
+>>>
+>>> Best regards,
+>>
+> 
+
+-- 
+Regards
+Vignesh
 
