@@ -1,120 +1,157 @@
-Return-Path: <linux-kernel+bounces-90974-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90967-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4E0A8707D7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:01:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0E238707BE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:56:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F631284E24
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:01:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69C3E1F215C8
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:56:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57A83604B8;
-	Mon,  4 Mar 2024 17:01:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38AAE5FDB0;
+	Mon,  4 Mar 2024 16:56:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="ftkDgRLz"
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EZ/pqmGe"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2E4D60267
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 17:01:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 500D0A20;
+	Mon,  4 Mar 2024 16:56:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709571677; cv=none; b=BEaJ3Dtu3sUcKs76lEPOHoW807QHwM5S/+sqxo/nA1dKU+KgbIOfaoq3OqydXW/PUa9+Sk2kKW91wrPa/Xy+vnMQnGwqzLCsnzn+d1AG3dvoMUqtrRd2R/cbpBot7rkkhtcZoms5tQ+0jvzmlz205sqrExTBpMWKMUFLksDJZCE=
+	t=1709571379; cv=none; b=lIidscSWDLYpbcWWFBQWTBw9W0FDFAEhCzzEle7YiqwQCXdhrbr+dR78YGPFu0Jviou64JpeBf28u/Za6pIqpcMZf8lMazkOY0NlMQbgIrMIuBmtZhRduQp0mxoERDq08rga1rHjL3fzt4vDU/dtXI4uV9vsORKa76w01uhtBzA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709571677; c=relaxed/simple;
-	bh=Y1hODsyOTqk2qNlu5XLNFWyxBpWwax0wrwGYV8h0bf8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jc8pScauEG3XI+tADOpMG5G3Q1c7Uus/OhB6q+JXyOvUfyCa0oWPkPUfhmVV2xOFN1J9nRrGJbG1QSfAXl9lT59LguqdnqJndWjyTn7X57Qt9u4vBmGwaurkKxcEO+O2TmKvMVJMG5WzWjbLMbAOhwWWNbEOHTU1NAqTqp/hMwQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=ftkDgRLz; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-412e7fe422fso5022265e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 09:01:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1709571674; x=1710176474; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=s/uotU1HGCeXUT4H5saUqikW28hMXwwL7oNQgmFD0EY=;
-        b=ftkDgRLzdt3TOkpuSPtEhIa8mNuW44Q1s/dMB9989NckTQdAQOTkHz8VkbjJfgtBcN
-         OOuUZy/qAeJ6l9Ml/MopbxazrybNVMvVekbKFcdc2qv1hs5cBSs24zl3vpVKHdI6PGEU
-         YzVnE/Y+Tldeq5YJizSLoExKhEucKfdnmD1NyA/ZUXnqHaqwBvt46fqGOQ8MxQ1JLOmg
-         gIR0NZrQnqe+pnqVNgM1xkWoQC8h2yu7VFMlxgp4B4ZsDdk8Cvy9lGIRWjxqqOyQsK3S
-         h3vyeTQhvAq8w/6NeELLB7eLSVoTqWZIRV8h+DG275N9IldIeAD268Prr91OR15hJlW6
-         Gl5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709571674; x=1710176474;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=s/uotU1HGCeXUT4H5saUqikW28hMXwwL7oNQgmFD0EY=;
-        b=IFCZ0A5RZtQ2tCDBLH8hTPagTuHXERsV1asealRxhlcAeS02tMc73xIq6kEemePkzr
-         6E+T0MoHNr53iFEnU2vtz+S9FpiukYhAJz+gdZ16qxYzES3vw3U4P/kOvimxryVtjTEC
-         8nH7U0nRqs2XqKpY06rx/kSnlf1knEQGkSw0AGuvLUtU0XyCGS7jKdCDjb9ItILpgG0o
-         1kzVxkizGPpU+p2NxEfPZp38glCtpPH0f2Eu05ndIY8Jr3ArCrGSSbhd5VpTbZVRxo4Z
-         2D/p4OYqYe31Ozj88ULSip7dCbgpaDyXAKGXnv5lJtU48nhTc9l69zyw1baEu9kWuFpD
-         HaDQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWnZyXmWL5ILOzm9oe057iTJXkYNvIb8jYlQHhiC5bdm51yBGwZJcCdHjGeK1Akgm+ha1onjAdMDHuvXH4YOiHDEv73q4dkvbLKs/7o
-X-Gm-Message-State: AOJu0YzUR1cieFGmJmjGniD7NKQWFqvgnY7BMXzKUnkITjbGW0elXzrX
-	PgN1FGBxe3hXU2gCPY7q1zFNueMHNyTSb6W9jK2P3RaGY369Gy2QH1S0mGIZEYA=
-X-Google-Smtp-Source: AGHT+IGZzfhyMUkVQDEbxidUeo+sp6ipbXiw/f98kRVENVpcTyhXxPwrE0AypKvSiUcuMEpZK88sqQ==
-X-Received: by 2002:a05:600c:458f:b0:412:bfa1:2139 with SMTP id r15-20020a05600c458f00b00412bfa12139mr6919053wmo.37.1709571674138;
-        Mon, 04 Mar 2024 09:01:14 -0800 (PST)
-Received: from fedora.fritz.box (aftr-82-135-80-152.dynamic.mnet-online.de. [82.135.80.152])
-        by smtp.gmail.com with ESMTPSA id i4-20020a05600c354400b004101f27737asm18520049wmq.29.2024.03.04.09.01.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 09:01:13 -0800 (PST)
-From: Thorsten Blum <thorsten.blum@toblux.com>
-To: "Theodore Ts'o" <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>
-Cc: linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Thorsten Blum <thorsten.blum@toblux.com>
-Subject: [PATCH] ext4: Remove unneeded if checks before kfree
-Date: Mon,  4 Mar 2024 17:55:08 +0100
-Message-ID: <20240304165507.156076-2-thorsten.blum@toblux.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1709571379; c=relaxed/simple;
+	bh=Iw/1JU1TagbMrr1ftOYJ1zZMGOHfXtUQyWKwKKbthFQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JiCZLKQrQgCzfRmPfCAVmYZ7H6r73vhgabDW4r/Y8oxRQhV635azFKdIDfInwlmLuPGQExi5uiR0OLWzaVm8O0BvxA1oinFHus9ifGB63GQ4PCrrrfvKG598upqK5SHeS2RxKn+9nkr5io4vo6dRWaUwIsoYykx2mECwLsmgGMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EZ/pqmGe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D6E2C433C7;
+	Mon,  4 Mar 2024 16:56:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709571378;
+	bh=Iw/1JU1TagbMrr1ftOYJ1zZMGOHfXtUQyWKwKKbthFQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=EZ/pqmGek5fFsjKeUCHY0Z3TuGQv/4R64k5i0wi3azQ7z+ti/o9T+ZggO2c/i1aSe
+	 hWRhGtBQlZPOprsX9pAgX5YnlXV/qWfXT03T4Z4gZla+QlbZYNlDG6WKYgAOuAjfEr
+	 i2XWor6/AhbldPmjvS9MsCkf1hUeEwn+ghF9pVUFs1P1NE+eK0vMt8wui7m0Irv9hr
+	 VynKf3+pZzL/aSJf5Sl6y2NuGZ9vEbCsfmB9g+HvVViEiqhLGen80AkxXBhQMnrIjp
+	 QjYlfqXUcs57/aWMFblpa5G6Tnxgy5gRMHqbAfDtbVUGJRFX5To0MGB1folgF/Tosr
+	 BKSK8hxUxPWJA==
+Date: Mon, 4 Mar 2024 10:56:17 -0600
+From: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
+To: Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc: Christian Brauner <brauner@kernel.org>, Serge Hallyn <serge@hallyn.com>,
+	Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>,
+	James Morris <jmorris@namei.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
+	Stephen Smalley <stephen.smalley.work@gmail.com>,
+	Ondrej Mosnacek <omosnace@redhat.com>,
+	Casey Schaufler <casey@schaufler-ca.com>,
+	Mimi Zohar <zohar@linux.ibm.com>,
+	Roberto Sassu <roberto.sassu@huawei.com>,
+	Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+	Eric Snowberg <eric.snowberg@oracle.com>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Miklos Szeredi <miklos@szeredi.hu>,
+	Amir Goldstein <amir73il@gmail.com>, linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-security-module@vger.kernel.org, audit@vger.kernel.org,
+	selinux@vger.kernel.org, linux-integrity@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-unionfs@vger.kernel.org
+Subject: Re: [PATCH v2 24/25] commoncap: use vfs fscaps interfaces
+Message-ID: <ZeX9MRhU/EGhHkCY@do-x1extreme>
+References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
+ <20240221-idmap-fscap-refactor-v2-24-3039364623bd@kernel.org>
+ <dcbd9e7869d2fcce69546b53851d694b8ebad54e.camel@huaweicloud.com>
+ <ZeXpbOsdRTbLsYe9@do-x1extreme>
+ <a7124afa6bed2fcadcb66efa08e256828cd6f8ab.camel@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a7124afa6bed2fcadcb66efa08e256828cd6f8ab.camel@huaweicloud.com>
 
-kfree already checks if its argument is NULL. This fixes two
-Coccinelle/coccicheck warnings reported by ifnullfree.cocci.
+On Mon, Mar 04, 2024 at 05:17:57PM +0100, Roberto Sassu wrote:
+> On Mon, 2024-03-04 at 09:31 -0600, Seth Forshee (DigitalOcean) wrote:
+> > On Mon, Mar 04, 2024 at 11:19:54AM +0100, Roberto Sassu wrote:
+> > > On Wed, 2024-02-21 at 15:24 -0600, Seth Forshee (DigitalOcean) wrote:
+> > > > Use the vfs interfaces for fetching file capabilities for killpriv
+> > > > checks and from get_vfs_caps_from_disk(). While there, update the
+> > > > kerneldoc for get_vfs_caps_from_disk() to explain how it is different
+> > > > from vfs_get_fscaps_nosec().
+> > > > 
+> > > > Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
+> > > > ---
+> > > >  security/commoncap.c | 30 +++++++++++++-----------------
+> > > >  1 file changed, 13 insertions(+), 17 deletions(-)
+> > > > 
+> > > > diff --git a/security/commoncap.c b/security/commoncap.c
+> > > > index a0ff7e6092e0..751bb26a06a6 100644
+> > > > --- a/security/commoncap.c
+> > > > +++ b/security/commoncap.c
+> > > > @@ -296,11 +296,12 @@ int cap_capset(struct cred *new,
+> > > >   */
+> > > >  int cap_inode_need_killpriv(struct dentry *dentry)
+> > > >  {
+> > > > -	struct inode *inode = d_backing_inode(dentry);
+> > > > +	struct vfs_caps caps;
+> > > >  	int error;
+> > > >  
+> > > > -	error = __vfs_getxattr(dentry, inode, XATTR_NAME_CAPS, NULL, 0);
+> > > > -	return error > 0;
+> > > > +	/* Use nop_mnt_idmap for no mapping here as mapping is unimportant */
+> > > > +	error = vfs_get_fscaps_nosec(&nop_mnt_idmap, dentry, &caps);
+> > > > +	return error == 0;
+> > > >  }
+> > > >  
+> > > >  /**
+> > > > @@ -323,7 +324,7 @@ int cap_inode_killpriv(struct mnt_idmap *idmap, struct dentry *dentry)
+> > > >  {
+> > > >  	int error;
+> > > >  
+> > > > -	error = __vfs_removexattr(idmap, dentry, XATTR_NAME_CAPS);
+> > > > +	error = vfs_remove_fscaps_nosec(idmap, dentry);
+> > > 
+> > > Uhm, I see that the change is logically correct... but the original
+> > > code was not correct, since the EVM post hook is not called (thus the
+> > > HMAC is broken, or an xattr change is allowed on a portable signature
+> > > which should be not).
+> > > 
+> > > For completeness, the xattr change on a portable signature should not
+> > > happen in the first place, so cap_inode_killpriv() would not be called.
+> > > However, since EVM allows same value change, we are here.
+> > 
+> > I really don't understand EVM that well and am pretty hesitant to try an
+> > change any of the logic around it. But I'll hazard a thought: should EVM
+> > have a inode_need_killpriv hook which returns an error in this
+> > situation?
+> 
+> Uhm, I think it would not work without modifying
+> security_inode_need_killpriv() and the hook definition.
+> 
+> Since cap_inode_need_killpriv() returns 1, the loop stops and EVM would
+> not be invoked. We would need to continue the loop and let EVM know
+> what is the current return value. Then EVM can reject the change.
+> 
+> An alternative way would be to detect that actually we are setting the
+> same value for inode metadata, and maybe not returning 1 from
+> cap_inode_need_killpriv().
+> 
+> I would prefer the second, since EVM allows same value change and we
+> would have an exception if there are fscaps.
+> 
+> This solves only the case of portable signatures. We would need to
+> change cap_inode_need_killpriv() anyway to update the HMAC for mutable
+> files.
 
-Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
----
- fs/ext4/super.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 0f931d0c227d..9b7a0b4f2d3d 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -2079,8 +2079,7 @@ static int unnote_qf_name(struct fs_context *fc, int qtype)
- {
- 	struct ext4_fs_context *ctx = fc->fs_private;
- 
--	if (ctx->s_qf_names[qtype])
--		kfree(ctx->s_qf_names[qtype]);
-+	kfree(ctx->s_qf_names[qtype]);
- 
- 	ctx->s_qf_names[qtype] = NULL;
- 	ctx->qname_spec |= 1 << qtype;
-@@ -2485,8 +2484,7 @@ static int parse_options(struct fs_context *fc, char *options)
- 			param.size = v_len;
- 
- 			ret = ext4_parse_param(fc, &param);
--			if (param.string)
--				kfree(param.string);
-+			kfree(param.string);
- 			if (ret < 0)
- 				return ret;
- 		}
--- 
-2.44.0
-
+I see. In any case this sounds like a matter for a separate patch
+series.
 
