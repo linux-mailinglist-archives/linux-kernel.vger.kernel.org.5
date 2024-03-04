@@ -1,91 +1,91 @@
-Return-Path: <linux-kernel+bounces-91158-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91160-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AE39870A33
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:12:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4006870A35
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:12:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B57A8281B3C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:12:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 015DA1C20E92
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:12:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63FFC7B3F4;
-	Mon,  4 Mar 2024 19:11:03 +0000 (UTC)
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [195.130.132.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02C4D79934;
+	Mon,  4 Mar 2024 19:11:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="QMqei85U"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C9847AE6F
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 19:10:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.132.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B12E7CF17;
+	Mon,  4 Mar 2024 19:11:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709579463; cv=none; b=stEMiZGch1dKBRAqXMtNFdqjkYm9XM89TPtq8HSwUWEVz13/F7A8WuwgT4Ou3QNj4aR5YrUTTs9eP+1a+tggDZ/hTv+UEYBGwjXkZtmyIycETvR76HZ1/M6KoMwwdT3zhRJ1X+dugqOWnDEfsVYXABQBaq3uTsmYYKS+h3w3zQg=
+	t=1709579472; cv=none; b=p/4C4ZWF9gxFWCAE4T27Pn0QDBAiGi/7oadFbicGPzGFZjumTWDHPvruWV4KzSs8iR5Quztv09rLtAOALB4wEdWqZ9CZQXBc3QGlhOpA1chnmbuGlVHl+YHpKMnkkVRcDulgU0rtWpeHBuH0+RqnVH1ztBcxYBeGHntHKlPzJes=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709579463; c=relaxed/simple;
-	bh=UgXL7h1cn275yguuSgiJgSKSKNaSdhoQTwdlVguxmNw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dCM2UsBEEIYgk1ED24ppiG9oSpUkFplrDw667aUdTl+lgxLr4N8Gp8QQvOYjzUv7JeFcGPFM0DvZs8uzGNuQ24N5qLAIk1Ywz+UUGSotaO2BdZhXhiwopollnmyGw/W6d0gruTeKGXOYBbef0mvpnf2PzispaO7Z/WYhNB64dvY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.132.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:2716:1247:52e8:4f90])
-	by andre.telenet-ops.be with bizsmtp
-	id ujAr2B00H2qflky01jArLk; Mon, 04 Mar 2024 20:10:52 +0100
-Received: from rox.of.borg ([192.168.97.57])
-	by ramsan.of.borg with esmtp (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rhDhv-002KKH-Q5;
-	Mon, 04 Mar 2024 20:10:51 +0100
-Received: from geert by rox.of.borg with local (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rhDi7-00BCd4-Fv;
-	Mon, 04 Mar 2024 20:10:51 +0100
-From: Geert Uytterhoeven <geert+renesas@glider.be>
-To: Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Rich Felker <dalias@libc.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Arnd Bergmann <arnd@arndb.de>
-Cc: linux-sh@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 7/7] sh: sh7785lcr: Make init_sh7785lcr_IRQ() static
-Date: Mon,  4 Mar 2024 20:10:49 +0100
-Message-Id: <cbe9da98a1106cdab686766e2f23f768399dbdbf.1709579038.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1709579038.git.geert+renesas@glider.be>
-References: <cover.1709579038.git.geert+renesas@glider.be>
+	s=arc-20240116; t=1709579472; c=relaxed/simple;
+	bh=K3yrAUxiGdxT7G8PGb78Jnh5WW5YiKan5RDHOUdHxAQ=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=ZVimDZc73F6C1HDjpaYE9dWzWA1hvCuOIeskq42WeasuZ3vERpPetmrdRtPpX4ZwShMNtZqhdJenZDiW98/iVfxDR1CVgJGQz5zQ/mMuSsdu0h66QeMawNcMaCW54ExK2St7OQnt+a3tr3dK4j29cV/a9IT8xI3sMSC2GFRfBqU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=QMqei85U; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709579468;
+	bh=K3yrAUxiGdxT7G8PGb78Jnh5WW5YiKan5RDHOUdHxAQ=;
+	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+	b=QMqei85Ub5fJFt0Uw9DIkhVOxC8Cjbc5f/XONZH8HXy9F0yQ2I+KxVxp8evAKgyuW
+	 RXsCvF14+INkMQqGREGKq/P0JGAwpxPy+QV+oDXQD/pDqX5VXVVQmYkBz3DoHr5G46
+	 CjrZMa6v3kp6HyYPfxJNzRJXAFWN/O3Rt+eu3qUnuyrJylruhL8DF0FKDQHnJoACZl
+	 EYPBVZgsZU46hzraNRVd6h1HVH69mRlDAskUcI43/yfUS+7XjtE7HP4Ikcg9y274ox
+	 ewPozdep0uZADlomZXnMjLXRz61U1z9IKpJg0cBPzeOT/wQAd6lbIiz8A5Jezw35Or
+	 xeXP7kWWJkKGw==
+Received: from [100.115.223.179] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: cristicc)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 24DA23780480;
+	Mon,  4 Mar 2024 19:11:07 +0000 (UTC)
+Message-ID: <db53a405-362f-4c8d-82e2-49c001b29dd1@collabora.com>
+Date: Mon, 4 Mar 2024 21:11:06 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/2] ASoC: SOF: amd: Skip IRAM/DRAM size modification
+ for Steam Deck OLED
+Content-Language: en-US
+From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+ Daniel Baluta <daniel.baluta@nxp.com>,
+ Kai Vehmanen <kai.vehmanen@linux.intel.com>, Mark Brown
+ <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>,
+ Venkata Prasad Potturu <venkataprasad.potturu@amd.com>
+Cc: sound-open-firmware@alsa-project.org, linux-sound@vger.kernel.org,
+ linux-kernel@vger.kernel.org, kernel@collabora.com
+References: <20240220201623.438944-1-cristian.ciocaltea@collabora.com>
+In-Reply-To: <20240220201623.438944-1-cristian.ciocaltea@collabora.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-arch/sh/boards/board-sh7785lcr.c:298:13: warning: no previous prototype for ‘init_sh7785lcr_IRQ’ [-Wmissing-prototypes]
+On 2/20/24 22:16, Cristian Ciocaltea wrote:
+> This patch series restores audio support on Valve's Steam Deck OLED model, which
+> broke after the recent introduction of ACP/PSP communication for IRAM/DRAM fence
+> register programming.
 
-There are no users outside this file, so make it static.
+Hi Mark,
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- arch/sh/boards/board-sh7785lcr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Could we get this queued for merging as v6.9 material?
 
-diff --git a/arch/sh/boards/board-sh7785lcr.c b/arch/sh/boards/board-sh7785lcr.c
-index 77dad1e511b4652b..25c4968f0d8b0e7d 100644
---- a/arch/sh/boards/board-sh7785lcr.c
-+++ b/arch/sh/boards/board-sh7785lcr.c
-@@ -295,7 +295,7 @@ static int __init sh7785lcr_devices_setup(void)
- device_initcall(sh7785lcr_devices_setup);
- 
- /* Initialize IRQ setting */
--void __init init_sh7785lcr_IRQ(void)
-+static void __init init_sh7785lcr_IRQ(void)
- {
- 	plat_irq_setup_pins(IRQ_MODE_IRQ7654);
- 	plat_irq_setup_pins(IRQ_MODE_IRQ3210);
--- 
-2.34.1
-
+Thanks,
+Cristian
 
