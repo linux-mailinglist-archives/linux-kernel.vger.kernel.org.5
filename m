@@ -1,91 +1,86 @@
-Return-Path: <linux-kernel+bounces-90719-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90720-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BBEC8703E2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:20:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 256998703EC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:21:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD9071C2272A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:20:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A73DE281BDF
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:21:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1CD53FB31;
-	Mon,  4 Mar 2024 14:20:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF65C3FE47;
+	Mon,  4 Mar 2024 14:21:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ezyxueCn"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="3GGOItv0"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F167543143;
-	Mon,  4 Mar 2024 14:20:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79CEF3FB0F;
+	Mon,  4 Mar 2024 14:21:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709562004; cv=none; b=ujKo/jBF2hthkP/BrgWiOCfzFVTtr/DyCRcOQwrh8/D7L/x8/iJaJoZq+YaBOv83wajpBvqlkC5a64I72aBuarLY3LLjJ6EhmkLeu9sPRBXbMCNIrtb6ZkcNYXMIxwibe8MCv3EB+HeBh7m2AdKD+HSMTGoGnCs55TxH6HmYP5w=
+	t=1709562110; cv=none; b=PNlhDCkcVn523jLXjyeMB9/dOt5TTbJoUm5ZQqSEekicxU15OA+V+epiA5VcC96+o81ClJCxPAqbcc3CiVaXjomQ410b+0mYBRTVDnpcWvMyhJh81LHi80KTfKSak+BeNenPeXRY1jYP9UG0n5TyrHEY/1cgZLgm9N7s339KJZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709562004; c=relaxed/simple;
-	bh=RWlnDWKxXqq0n6k2lqfqFDqVfl1QcGSZnt0Kub/OHIQ=;
+	s=arc-20240116; t=1709562110; c=relaxed/simple;
+	bh=zZT0cmO/66bD+ZDQQKiN4DsPz1NU/xkUGFceWCJydN8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XJLUzanVqdfFaU3xlBByDj/A8g4XZH0mn7+HtVH6nxLO5S/EEWw6d5jOunZYovNWH789PHrE7trkV+J72dj63kMFlf1dNDF7UdrqLu6zZ9Yx5OJAdWIv38iMLwdxj9OIJ4RMSztIK4rAPphFG4PWr0TWkJtR4vlgP0DHGzEoKLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ezyxueCn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25AC2C433F1;
-	Mon,  4 Mar 2024 14:20:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709562003;
-	bh=RWlnDWKxXqq0n6k2lqfqFDqVfl1QcGSZnt0Kub/OHIQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ezyxueCnepsSMhtIU1EkDKZZWjembdsnrrGf7YGBqiPa45+cfkaD/+E/kCEydbtv+
-	 zgXgGdDXC1akH+0im/gMfwC6sqioPi8iZvjnCPUZfngNZTDQMHgwXb11mjLsFLLJ+t
-	 fv+ZrPgRwh9ksUz9CgxX9X7zSwQwymRO6ENbq7xsmMuK8s2MVQ94zXmH47iOeUqxgH
-	 kMxQf+ujxlPADV5KNzMOWdXuFETp9EhXMxd8646TpVuWWlIQGaUNW0p28R2KCyMA0x
-	 JPwxQphlaV0aWHYitgG8zWMjed1u/1NU6KO/PPAS2+gGo9oVLkJ7yfEQq4QO4BfV8H
-	 mI/VIdb8dEWTw==
-Date: Mon, 4 Mar 2024 15:19:58 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Christian Schoenebeck <linux_oss@crudebyte.com>
-Cc: Eric Van Hensbergen <ericvh@kernel.org>, 
-	Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, 
-	v9fs@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	xingwei lee <xrivendell7@gmail.com>, sam sun <samsun1006219@gmail.com>, 
-	Seth Forshee <sforshee@kernel.org>
-Subject: Re: [PATCH] 9p: cap xattr max size to XATTR_SIZE_MAX
-Message-ID: <20240304-zeitschrift-tagung-6f2a28e781bc@brauner>
-References: <20240304-xattr_maxsize-v1-1-322357ec6bdf@codewreck.org>
- <4091309.WcpKHNDlqE@silver>
+	 Content-Type:Content-Disposition:In-Reply-To; b=nD6zWlKO0ZLC0ybaMK7YEa4S+zqH2byuYlHhJ9BsSG/IjBHUybIv61XbDXvM8/+Oy4OL1h35lZ4qc7CedCnmLgVy6gi2Yt6c9aelfNHMEDD3p9ApQSRF7d1oy6BZeQUTFoGVo9j2+otH8/mIL9AUkFd+7hP9OrS41HweJAj7GJY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=3GGOItv0; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=JIN8y4O7mW/tfP/yj2CUKARqOiw3PB7vIKQNQWOqQ6Q=; b=3GGOItv0lEPkfxKpYVSFfaAur4
+	nP/lEhux2TM3ZpooxAbmYlyKTjm4jRE1U4L3hx0PTOCEMZ/qiEyhECndZiY9IDIJ164AM5Fv36RkN
+	TYAkVWYnLVv28HqXJMsZ1XoqTxnvKBJ7qKB1v/A4n9fOoOEUAV9wOcJLXQWXrMUfWMyM=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rh9CF-009KaP-HK; Mon, 04 Mar 2024 15:21:39 +0100
+Date: Mon, 4 Mar 2024 15:21:39 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Ravi Gunasekaran <r-gunasekaran@ti.com>
+Cc: Lukasz Majewski <lukma@denx.de>,
+	Oleksij Rempel <o.rempel@pengutronix.de>,
+	Eric Dumazet <edumazet@google.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+	Tristram.Ha@microchip.com,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
+	Murali Karicheri <m-karicheri2@ti.com>,
+	Ziyang Xuan <william.xuanziyang@huawei.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: hsr: Use full string description when opening HSR
+ network device
+Message-ID: <c984e6c2-b79a-45dc-8930-31c61e2f23c2@lunn.ch>
+References: <20240304093220.4183179-1-lukma@denx.de>
+ <8d92dcbb-828d-17f4-d199-c625505e7b0c@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4091309.WcpKHNDlqE@silver>
+In-Reply-To: <8d92dcbb-828d-17f4-d199-c625505e7b0c@ti.com>
 
-On Mon, Mar 04, 2024 at 02:35:07PM +0100, Christian Schoenebeck wrote:
-> On Monday, March 4, 2024 1:42:43 PM CET Dominique Martinet wrote:
-> > We probably shouldn't ever get an xattr bigger than that, and the current check
-> > of SSIZE_MAX is a bit too large.
+> >  		case HSR_PT_SLAVE_A:
+> > -			designation = 'A';
+> > +			designation = "Slave A";
 > 
-> Maybe, OTOH e.g. ACLs (dynamic size) are implemented by storing them as xattrs
-> on 9p server as well, and this change somewhat expects server to run Linux as
-> well. So maybe s/XATTR_SIZE_MAX/KMALLOC_MAX_SIZE/ might be more appropriate,
-> considering that this patch is about fixing a potential kmalloc() warning?
-> 
-> Worth to mention in the commit log BTW what the issue was.
-> 
-> /Christian
+> "designation" is now a pointer and is being assigned value
+> without even allocating memory for it.
 
-So the error is somewhat specific to filesystem capabilities which also
-live in the xattr apis but Seth is working to get rid of them in there.
+"Slave A" is in memory somewhere, probably the .rodata section. So
+designation now points to that memory.
 
-They currently use a special api vfs_getxattr_alloc() which is an
-in-kernel api that does a racy query-size+allocate-buffer+retrieve-data
-dance.
-
-That api is used for fscaps, security labels, and other xattrs. And that
-api doesn't do any size checks which probably should also be fixed now
-that I write this.
-
-@Seth?
+	Andrew
 
