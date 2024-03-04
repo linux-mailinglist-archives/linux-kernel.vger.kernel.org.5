@@ -1,102 +1,182 @@
-Return-Path: <linux-kernel+bounces-90159-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90160-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31F5E86FB37
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:58:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 25FD486FB3B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:59:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D0AD0B20F8D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 07:58:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B4CB1B216A9
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 07:59:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67E1D168DF;
-	Mon,  4 Mar 2024 07:58:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B6C4171A6;
+	Mon,  4 Mar 2024 07:59:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bo1m2D6j"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HMl5ewI4"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9708512B6F;
-	Mon,  4 Mar 2024 07:58:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BB94171A2;
+	Mon,  4 Mar 2024 07:59:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709539120; cv=none; b=KzOlnGQpJx3vflzHu2pfRPBlCE3MTzKDrGdC3BAAjLio2NMK3rWURSVfDpSCEEzw8o56Q13WT7lJUOc1E+mEl8yRLYnDiNCvEqDXNGvKpDycVeEtSJ0xJlsar82DvK2Y9PWd/1IRuf9R0laJ0KEuIq+nZFp9CX3rfEV318JTu0I=
+	t=1709539157; cv=none; b=JxyauE3fasGPmyEiyf68d0HqpAXqF3fVB5/lCusN4R998/DV5hhXR0Buqxr8BOWzbmC50aMcgB/IqQCQShV7fLeJvi/6ghTblUewcIs6qfPuFiCfRkYuIudLY5uXSz7hE7OC6tH0dt3DHsPJ2s9I3sK7lRHbYReRjdg0VZiVbGE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709539120; c=relaxed/simple;
-	bh=kXL1G3MGkn84vTLCWth5uLNnu0KzeMkzapRKplDqIvc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AM2zItFDZEaut9RxLpGdAzmFe2sl0j0UKb5fc3SdAg/dBWE8ogG7XBxRf9OWa2YXRTK7NeJVg/l3XpyvycglN/HkBQLNHtUC4ExHxdFtAvVcctqlz+FT+RBV9PnDd7aG3f575tWJT0PwFTgZ+7DamTSdfmVDN20FVsgk7noygEc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bo1m2D6j; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	s=arc-20240116; t=1709539157; c=relaxed/simple;
+	bh=wbUpByb5oxuPadRm9JZleAn/NqozTy3sADip5yJwJ3M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kQObubfAgMxZr0oVU1/AdtpNo7z3MP+qJUw8tGQmnPokXKnWKhGPIfCr13jiD7/2wX/5nR78H7Rr8bLT2uyYpe021J9hRq94qvnW/bp2DpZa5wUh9l9eNEdCdcrbSNXQ/1+S9OjmPQ0I2xMLFdu4QcWTTig37dPdtNeUiIsvNic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HMl5ewI4; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709539119; x=1741075119;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=kXL1G3MGkn84vTLCWth5uLNnu0KzeMkzapRKplDqIvc=;
-  b=bo1m2D6jsYlETg9bPDTYhTmC8bXPm7OaYhETtIM7JnQEIzHoDo0alfTQ
-   4D3AHX+DiMqTLvDD+6GOhCrkZnOKI7vxAYBcUqIg8A3r6o3i20xBmKV1t
-   vUPq4ZDxWpxQMsXflfCCWFJ1vJpqsfttJURcLjD5rYpquAooosdVWhVnX
-   BLBL74l1Rsup8mw5fijL9P6oPGSlgRoNIEGhRiym3hC+y5D9pau9cW++u
-   HBfjK7C+AYz8uYRNoPbxvq8Api3vF/y4uT2Wto4p+dg9ImsfzmBDfF+4S
-   phAq/55DbbHoo34OSpRjcLYJ3qR84k70qVOPFweaZ867fWpa5RmVLd5VP
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="21553989"
+  t=1709539156; x=1741075156;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=wbUpByb5oxuPadRm9JZleAn/NqozTy3sADip5yJwJ3M=;
+  b=HMl5ewI4bfFEgLfpEvUa+/RUTNs5rKLTDdNNBv0Wo1kgeL4X8v9PVf8T
+   cuQnB3IUhYQF2QV+iQN6s4wgA0V9bd4fYtlU9iBmq+QM7f4E6E6kyzmeE
+   H4xXk6Ww+qtud6lgWspITvdPbMZxff/ipmMlmmpP1ugXCjncFBKwDjbQK
+   0DbGjpXtWYY3OgadBOqIDoFKUepsbRJax6JS5ZRj646I/SCyvjcVYlgZc
+   xR/jMsXfcC5C+t79aGEkyLXMtXphrK5t/X+YgmWvsWE2259ydcjP5/y25
+   U3QhGPLEXtyKoEAjn3hfzZ5XCLPyrZEic68ThEqeyI9Jrf1fiaCKXolB4
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="26480268"
 X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
-   d="scan'208";a="21553989"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2024 23:58:38 -0800
+   d="scan'208";a="26480268"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2024 23:59:13 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="937039792"
 X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
-   d="scan'208";a="937039792"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2024 23:58:35 -0800
-Date: Mon, 4 Mar 2024 09:58:32 +0200
-From: Raag Jadav <raag.jadav@intel.com>
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>, andi.shyti@kernel.org
-Cc: mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com,
-	jsd@semihalf.com, andi.shyti@kernel.org, linux-i2c@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] i2c: designware: constify regmap_config
-Message-ID: <ZeV_KDgPdwo9cXsR@black.fi.intel.com>
-References: <20240122033108.31053-1-raag.jadav@intel.com>
- <20240122033108.31053-2-raag.jadav@intel.com>
- <2caa903b-e5a6-499c-84ea-b8f85e4d1c71@linux.intel.com>
- <ZcSw6gV2GzIG9OOg@black.fi.intel.com>
+   d="scan'208";a="13469584"
+Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.124.239.60]) ([10.124.239.60])
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2024 23:59:08 -0800
+Message-ID: <f5bbe9ac-ca35-4c3e-8cd7-249839fbb8b8@linux.intel.com>
+Date: Mon, 4 Mar 2024 15:59:05 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZcSw6gV2GzIG9OOg@black.fi.intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] KVM: x86/svm/pmu: Set PerfMonV2 global control bits
+ correctly
+Content-Language: en-US
+To: Sandipan Das <sandipan.das@amd.com>, Like Xu <like.xu.linux@gmail.com>
+Cc: seanjc@google.com, pbonzini@redhat.com, mizhang@google.com,
+ jmattson@google.com, ravi.bangoria@amd.com, nikunj.dadhania@amd.com,
+ santosh.shukla@amd.com, manali.shukla@amd.com, babu.moger@amd.com,
+ kvm list <kvm@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20240301075007.644152-1-sandipan.das@amd.com>
+ <06061a28-88c0-404b-98a6-83cc6cc8c796@gmail.com>
+ <cc8699be-3aae-42aa-9c70-f8b6a9728ee3@amd.com>
+From: "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
+In-Reply-To: <cc8699be-3aae-42aa-9c70-f8b6a9728ee3@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 08, 2024 at 12:46:07PM +0200, Raag Jadav wrote:
-> On Mon, Jan 22, 2024 at 11:44:22AM +0200, Jarkko Nikula wrote:
-> > On 1/22/24 05:31, Raag Jadav wrote:
-> > > We never modify regmap_config, mark it as const.
-> > > 
-> > > Signed-off-by: Raag Jadav <raag.jadav@intel.com>
-> > > ---
-> > >   drivers/i2c/busses/i2c-designware-platdrv.c | 2 +-
-> > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > Both:
-> > 
-> > Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-> 
-> Bump.
-> 
-> Anything I can do to move these forward?
 
-Hi Andi,
+On 3/1/2024 5:00 PM, Sandipan Das wrote:
+> On 3/1/2024 2:07 PM, Like Xu wrote:
+>> On 1/3/2024 3:50 pm, Sandipan Das wrote:
+>>> With PerfMonV2, a performance monitoring counter will start operating
+>>> only when both the PERF_CTLx enable bit as well as the corresponding
+>>> PerfCntrGlobalCtl enable bit are set.
+>>>
+>>> When the PerfMonV2 CPUID feature bit (leaf 0x80000022 EAX bit 0) is set
+>>> for a guest but the guest kernel does not support PerfMonV2 (such as
+>>> kernels older than v5.19), the guest counters do not count since the
+>>> PerfCntrGlobalCtl MSR is initialized to zero and the guest kernel never
+>>> writes to it.
+>> If the vcpu has the PerfMonV2 feature, it should not work the way legacy
+>> PMU does. Users need to use the new driver to operate the new hardware,
+>> don't they ? One practical approach is that the hypervisor should not set
+>> the PerfMonV2 bit for this unpatched 'v5.19' guest.
+>>
+> My understanding is that the legacy method of managing the counters should
+> still work because the enable bits in PerfCntrGlobalCtl are expected to be
+> set. The AMD PPR does mention that the PerfCntrEn bitfield of PerfCntrGlobalCtl
+> is set to 0x3f after a system reset. That way, the guest kernel can use either
 
-Are these worth moving forward?
 
-Raag
+If so, please add the PPR description here as comments.
+
+
+> the new or legacy method.
+>
+>>> This is not observed on bare-metal as the default value of the
+>>> PerfCntrGlobalCtl MSR after a reset is 0x3f (assuming there are six
+>>> counters) and the counters can still be operated by using the enable
+>>> bit in the PERF_CTLx MSRs. Replicate the same behaviour in guests for
+>>> compatibility with older kernels.
+>>>
+>>> Before:
+>>>
+>>>     $ perf stat -e cycles:u true
+>>>
+>>>      Performance counter stats for 'true':
+>>>
+>>>                      0      cycles:u
+>>>
+>>>            0.001074773 seconds time elapsed
+>>>
+>>>            0.001169000 seconds user
+>>>            0.000000000 seconds sys
+>>>
+>>> After:
+>>>
+>>>     $ perf stat -e cycles:u true
+>>>
+>>>      Performance counter stats for 'true':
+>>>
+>>>                227,850      cycles:u
+>>>
+>>>            0.037770758 seconds time elapsed
+>>>
+>>>            0.000000000 seconds user
+>>>            0.037886000 seconds sys
+>>>
+>>> Reported-by: Babu Moger <babu.moger@amd.com>
+>>> Fixes: 4a2771895ca6 ("KVM: x86/svm/pmu: Add AMD PerfMonV2 support")
+>>> Signed-off-by: Sandipan Das <sandipan.das@amd.com>
+>>> ---
+>>>    arch/x86/kvm/svm/pmu.c | 1 +
+>>>    1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/arch/x86/kvm/svm/pmu.c b/arch/x86/kvm/svm/pmu.c
+>>> index b6a7ad4d6914..14709c564d6a 100644
+>>> --- a/arch/x86/kvm/svm/pmu.c
+>>> +++ b/arch/x86/kvm/svm/pmu.c
+>>> @@ -205,6 +205,7 @@ static void amd_pmu_refresh(struct kvm_vcpu *vcpu)
+>>>        if (pmu->version > 1) {
+>>>            pmu->global_ctrl_mask = ~((1ull << pmu->nr_arch_gp_counters) - 1);
+>>>            pmu->global_status_mask = pmu->global_ctrl_mask;
+>>> +        pmu->global_ctrl = ~pmu->global_ctrl_mask;
+
+
+It seems to be more easily understand to calculate global_ctrl firstly 
+and then derive the globol_ctrl_mask (negative logic).
+
+diff --git a/arch/x86/kvm/svm/pmu.c b/arch/x86/kvm/svm/pmu.c
+index e886300f0f97..7ac9b080aba6 100644
+--- a/arch/x86/kvm/svm/pmu.c
++++ b/arch/x86/kvm/svm/pmu.c
+@@ -199,7 +199,8 @@ static void amd_pmu_refresh(struct kvm_vcpu *vcpu)
+kvm_pmu_cap.num_counters_gp);
+
+         if (pmu->version > 1) {
+-               pmu->global_ctrl_mask = ~((1ull << 
+pmu->nr_arch_gp_counters) - 1);
++               pmu->global_ctrl = (1ull << pmu->nr_arch_gp_counters) - 1;
++               pmu->global_ctrl_mask = ~pmu->global_ctrl;
+                 pmu->global_status_mask = pmu->global_ctrl_mask;
+         }
+
+>>>        }
+>>>          pmu->counter_bitmask[KVM_PMC_GP] = ((u64)1 << 48) - 1;
+>
 
