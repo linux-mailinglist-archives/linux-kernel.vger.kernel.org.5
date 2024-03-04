@@ -1,107 +1,97 @@
-Return-Path: <linux-kernel+bounces-90660-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90661-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA5D78702D2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:34:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D88F98702D5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:35:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 618B11F21F63
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:34:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D77C28BD30
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:35:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 503243FB1E;
-	Mon,  4 Mar 2024 13:33:18 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E17AE3DB9A;
+	Mon,  4 Mar 2024 13:34:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ghiG6N+b"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C62143FB07;
-	Mon,  4 Mar 2024 13:33:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA33A3E462;
+	Mon,  4 Mar 2024 13:34:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709559197; cv=none; b=POM1bgKQoYWUekHjaK78nbrVJmeFJVQVP2FrU82ZP4fGZ0pLNh6O2HeP7KyEQkrh1Ajp2XrNkAl3ElxkDqodhQXhLT7PAcaFd/x7j+D+H1itgEPfxhLNr3qbwIxdYzcWc5/2NwIvVS3Lxhopo0gDOKHk2/QE0TtidMMAQurpbM8=
+	t=1709559289; cv=none; b=NMMjiAigkZM+gqH1RHoZYzKRlXNHZE4t/dsLr36wj4Eb54l/St7hwv91ZBWdjDgr3fKzXzo/j/NN2Q1NvoAMJdxhH+oMs2r97SlHydMF7eKcU7N3SdAjscDbD/YmUVcqYpYLnqJn/w9Vv/IH5Dl5t7YbUB0VwFKQToIwiyH/2kc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709559197; c=relaxed/simple;
-	bh=p3LIkl9rC/cvDmNDiTkY3DxMJpyCd0pKeUzStd2zvqE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=P4MNNgKRl1J5jjeF3ZVSlazGcKMgqkkVOq2X6I2j5GhfvDzfV4Gjk4ONrRXJyjiuwvRiGeE0deCeEhA1zaSI978w3387yjZHXIl8A0Y3+JpgOxHyon7xo/WQ0srEO/R5pOlwbaVCyp9q76ca5hiPdLdjYp1lo9QdVuXJneCRQcs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TpKMX0RY4z2BfBT;
-	Mon,  4 Mar 2024 21:30:48 +0800 (CST)
-Received: from kwepemm600012.china.huawei.com (unknown [7.193.23.74])
-	by mail.maildlp.com (Postfix) with ESMTPS id 865B4140118;
-	Mon,  4 Mar 2024 21:33:07 +0800 (CST)
-Received: from [10.174.178.220] (10.174.178.220) by
- kwepemm600012.china.huawei.com (7.193.23.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 4 Mar 2024 21:33:06 +0800
-Message-ID: <c6826eab-3e12-48fb-8e8a-e347571b1446@huawei.com>
-Date: Mon, 4 Mar 2024 21:33:05 +0800
+	s=arc-20240116; t=1709559289; c=relaxed/simple;
+	bh=+Owds2r9Mm7uOEVwGzmpQS09QahSOxcWW+Vi+cImv20=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=VEnRfY85wv3zoRxju3DCi4vstNJXzDrbRqGZ/O1iCBniW8vgHtIud63q0AtKFTMDuM2sdd46nmDFfU+NiYz2PHt7tlDWtOA0UiJqz3VRNvLW2xhAwe2PQJjXC/2AqOvEOMsH+QZdF7p3GBiR+v9MNIS1hffpRsXW0K8tHs7SiR4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ghiG6N+b; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709559288; x=1741095288;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=+Owds2r9Mm7uOEVwGzmpQS09QahSOxcWW+Vi+cImv20=;
+  b=ghiG6N+blP77tS+/FslmQ+BrzKlXgh6XWZF29z0wymxMLW5HfJQw/uVg
+   AKWCRP9LSec4UzbqvBOr+xi3w1/vdaoRJXXcMZRU1c7metFamfizdj5Gw
+   uXQpYRbibn+cWTVB3yX40iMNizr+lb6m5DlGnXaz7w5x8uQSMl2f0z7cr
+   ODByiqQplzZykOMkdEEWcJ1J2kA43cYtSjbzljPZdWWhtU09otH/m6AD9
+   DgqsCCX6IYmXZe1q2+I8UnvflRb72xSKqlj8gOTEuLohqlxbrg308rVGw
+   JaE54TaEgfXgHLe9cds4wUsdki7Utw+T0Kup/BCqGPvc6fijh8ZmvS6Gd
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="14626052"
+X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
+   d="scan'208";a="14626052"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 05:34:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
+   d="scan'208";a="13499598"
+Received: from ekohn-mobl1.ger.corp.intel.com (HELO localhost) ([10.246.49.145])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 05:34:44 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Mon, 4 Mar 2024 15:34:40 +0200 (EET)
+To: "David E. Box" <david.e.box@linux.intel.com>
+cc: rajvi.jingar@linux.intel.com, platform-driver-x86@vger.kernel.org, 
+    LKML <linux-kernel@vger.kernel.org>, Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH V2 9/9] tools: intel_sdsi: Add current meter support
+In-Reply-To: <20240228000016.1685518-10-david.e.box@linux.intel.com>
+Message-ID: <297de469-c804-e641-337b-d2bf0524097b@linux.intel.com>
+References: <20240228000016.1685518-1-david.e.box@linux.intel.com> <20240228000016.1685518-10-david.e.box@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] RDMA/restrack: Fix potential invalid address access
-Content-Language: en-US
-To: Leon Romanovsky <leon@kernel.org>
-CC: Jason Gunthorpe <jgg@ziepe.ca>, <linux-rdma@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-References: <20240301095514.3598280-1-haowenchao2@huawei.com>
- <20240303125737.GB112581@unreal>
- <a7b2409c-4a3b-472d-a23a-87b12530be6d@huawei.com>
- <20240304073548.GA13620@unreal>
-From: Wenchao Hao <haowenchao2@huawei.com>
-In-Reply-To: <20240304073548.GA13620@unreal>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600012.china.huawei.com (7.193.23.74)
+Content-Type: multipart/mixed; boundary="8323328-432551398-1709559280=:986"
 
-On 2024/3/4 15:35, Leon Romanovsky wrote:
-> On Mon, Mar 04, 2024 at 11:21:19AM +0800, Wenchao Hao wrote:
->> On 2024/3/3 20:57, Leon Romanovsky wrote:
->>> On Fri, Mar 01, 2024 at 05:55:15PM +0800, Wenchao Hao wrote:
->>>> struct rdma_restrack_entry's kern_name was set to KBUILD_MODNAME
->>>> in ib_create_cq(), while if the module exited but forgot del this
->>>> rdma_restrack_entry, it would cause a invalid address access in
->>>> rdma_restrack_clean() when print the owner of this rdma_restrack_entry.
->>>
->>> How is it possible to exit owner module without cleaning the resources?
->>>
->>
->> I meet this issue with one of our product who develop their owner kernel
->> modules based on ib_core, and there are terrible logic with the exit
->> code which cause resource leak.
->>
->> Of curse it's bug of module who did not clear resource when exit, but
->> I think ib_core should avoid accessing memory of other modules directly
->> to provides better stability.
->>
->> What's more, from the context of rdma_restrack_clean() when print
->> "restack: %s %s object allocated by %s is not freed ...", it seems
->> designed for the above scene where client has bug to alerts there
->> are resource leak, so we should not panic on this log print.
-> 
-> Can you please share the kernel panic?
-> 
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Sorry, there is no stack or panic info recorded. This is because
-another issue of "printk". It seems printk would cause a deadlock
-when printk access invalid address with our kernel.
+--8323328-432551398-1709559280=:986
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-Actually, I found this issue with ftrace/kprobe but not printk, that's
-why it takes me a long time to address it.
+On Tue, 27 Feb 2024, David E. Box wrote:
 
-BTW, I am not developer of rdma, after found the issue, I think it's
-better to enhance, so send this patch, and the patch has been tested with
-the origin scene.
+> Add support to read the 'meter_current' file. The display is the same as
+> the 'meter_certificate', but will show the current snapshot of the
+> counters.
+>=20
+> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> ---
+>=20
+> V2 - Set the name of the file to be opened once.
 
-> Thanks
+Reviewed-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
 
+--=20
+ i.
+
+--8323328-432551398-1709559280=:986--
 
