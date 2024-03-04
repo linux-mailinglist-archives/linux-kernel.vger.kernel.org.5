@@ -1,69 +1,71 @@
-Return-Path: <linux-kernel+bounces-90094-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90095-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12C9686FA43
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 07:53:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F69086FA44
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 07:53:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C28F4280ED4
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 06:53:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A916280F92
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 06:53:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CC6911729;
-	Mon,  4 Mar 2024 06:52:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9562125A5;
+	Mon,  4 Mar 2024 06:52:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b="ORR4JJ6A"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b="ATPZWgAh"
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EC7AB667
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 06:52:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E3A611CAE
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 06:52:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709535175; cv=none; b=APtmgPGoSiSm2Tv1hb7UsaL9okfWyKYl2YIgCENIKY1UYQsA3gVxSKq4FUQn1Nbsy+Y+DPWBePR6gQ6k3Kxfqul0xBDkOz0i3x4YiAGDYeADk5keAJgZxpt21A1onYvv9yXiywdPr4ivYQBCBvL+xtNMCl6wCQuGLfBnEJxqR3o=
+	t=1709535179; cv=none; b=d98eXMfZzZIFglga/rHY0XRRRnWTcIhsj+XD5ZMruX405cCTFlXD9U9t4RdKk+/zuJe74aoZvkFY5UG9hyEZp5e6bsxno1YUOIIfasmemEFyJggJdphm10Un0gI6oMWDGE47ldOKyUwE9RmWFme5A+OQgczg02gt0Rwcvu3gBvI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709535175; c=relaxed/simple;
-	bh=cSlPucFtajFoSvNcpLUmF2ZoHtOq7wHrm8yvp8wylmA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ovKbcB/ZDaRMtFhRSw3Pd1CBQDKvcIJFIxiarYiEikabgu9Br+pRsF6d8zatGQQT5hEBTFdL2yv1/UffYWvfWeXi6K+prWzcIxIbfxL5uzptG+kuqcKvoS1hFTKldHCsOQhYAYP6B1/EkoXVwrT+88OuUKk//oqfER6NPsui10s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com; spf=pass smtp.mailfrom=shopee.com; dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b=ORR4JJ6A; arc=none smtp.client-ip=209.85.210.176
+	s=arc-20240116; t=1709535179; c=relaxed/simple;
+	bh=MA0DxG8bRrDPES7N5MFpH/L+LhBYNxe9zPtGQO6dSek=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=b/rmX/qSCaTf6zbRwPibTRbIrNlIHq33M2iB4aAwfMph+3rFe3xnILNt5iLILXSQp+C+ehKfNX769jOWnohXIAvrm/b6qUCVXowRxwzq57vPml7PpJENUZmg+hQ/XD6WIzjR+DFWBDO5PXvcfsUWJMJ3HRbzsXSKl4R3+jutFGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com; spf=pass smtp.mailfrom=shopee.com; dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b=ATPZWgAh; arc=none smtp.client-ip=209.85.210.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shopee.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e5c81ccfb9so1570792b3a.3
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 22:52:53 -0800 (PST)
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6de3141f041so2581359b3a.0
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 22:52:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shopee.com; s=shopee.com; t=1709535173; x=1710139973; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=erMBjTI/jIfumSA4fKbj0G6FlmHUlS4W5+VpSdb/r1o=;
-        b=ORR4JJ6A38Tr9HZmLj++ivypmmQwkQbIrgEhHZ9Qho5f/aIKe8xUvZY7SBPQADfVcp
-         NmRnGtM0S0V6zyXwHkxFttipCNJ1HzE8ZzNOlOGHpSIWZy/Yo9i1WRyPWevmcv+1d/Cg
-         p3tbtABFdmTyMETglejlUgvp/7KfoQ84Q3HBGtv+23RoyEV0wvKaEODsh99dSkGKiu+W
-         41kdu+foWfXMPRhCEql4C1C8ZPFFn9goPp/QGuu7C7T9tFMl23+7r6W3Zvq1lWr0lqMl
-         43JvEB2vh0TrBFomFG7hLl48Kw56EnG9qeAPy4nskJYu/sLMWx6LUYEUbJ+PTyo/dLKE
-         6LLA==
+        d=shopee.com; s=shopee.com; t=1709535177; x=1710139977; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gfomRvH8ULPC5eeUCXao/k9/srrLuDto1N2pX2K7uu0=;
+        b=ATPZWgAh3Zoh1ScahENVK7XPylXN2KJ0nzdLbOKo7Tu4+Sn5FvteqW06nvepzL9eYZ
+         i5sZN8IK0JBgnBpDUbaoeSEh4cCedm/uC0kEHX0Sr8xB3xQiT+VAAQ+A8GolC4WdfoZL
+         cRLHEAXPGLit/nggWrsxb1QBLHCiyXEmZToeAIVcNFpw/bf58CkXTQVLJ+Sgiz930xGP
+         gNvcZNY/NneSA5Bh/YGefLsMwYFc1fYpqz7zPv0gRhKAwVu8MbX26vXdfl4AFSnaur5K
+         vJcT6hS3dp+tiqnDwUmoa1D462+zyUo6+zXaFT70ryGEdneD1CFWDQFY6kXxYlnRYCRm
+         JVpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709535173; x=1710139973;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=erMBjTI/jIfumSA4fKbj0G6FlmHUlS4W5+VpSdb/r1o=;
-        b=rejR6KwWqd8mopX/xS95ylmOmnJmkNgu9aMPqGfIX1PkOGCciUb96Mgu73Uo4KlMm2
-         YWXhv13nJI9oy+OodH/ZzaakZoig2vtdXD3xwnPH/paMtzbHSiSJ9XinCsevamvRI/1k
-         uyYISi/Paco8H3MqASEf8GlZRuM77/BqAoagS3SsWkIqYbpCRu4pq28FeIwKMGc8UaxL
-         a9mHhyO22uiU/Z2XkUfQmyNDX5MjNsXiQXLNEGSMXIfWcGLi2ZlwjVlN6kWtEQ5q7/sC
-         1DdJJUgjkTnyT8CfotD/0vlZpVWy2DQQjpmsesPXpGDYVp8qtpB277IG8QU95pV+7J6g
-         6nGg==
-X-Forwarded-Encrypted: i=1; AJvYcCXWNrdatHXCPydxv60uRmFdL7yWyb61AxzxPCae2x1hQyZ3bMdOTkHCerMXZWcf8uIIRHJgxXYkz41m/kpG6mdSHnQT7xsLaPYEqtAv
-X-Gm-Message-State: AOJu0Yxk1O4P+HJG56xk3fZxqH+nPIDaNlf/C8/eys+GiDyzBEilap4s
-	lfc53jobLVA4H3s/WxXdLOWZ+lHKm4kH0xhwqTu9bbqwyVxV8H0F4zHHo87KTZk=
-X-Google-Smtp-Source: AGHT+IEVKymbD8p/sRwY6mMMXGR6xSlR8jN4wA4xt/CQiCmU19Y5TivGbgi5ZYV+OqYtBkEA2s29Ig==
-X-Received: by 2002:a62:c142:0:b0:6e6:fe6:3db0 with SMTP id i63-20020a62c142000000b006e60fe63db0mr2023369pfg.23.1709535173272;
-        Sun, 03 Mar 2024 22:52:53 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709535177; x=1710139977;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gfomRvH8ULPC5eeUCXao/k9/srrLuDto1N2pX2K7uu0=;
+        b=Bk9L5ybyK+U5yevNcuZMQa8/pgUbewnCiZGylJ2pmvSrAzyftwCxIs+vMHulUqrryc
+         ohiiyHbWI88EZOmu7T5r4CI6+Qcd7WBvKWDUPB/eOqL5jvC99MhPqMK/a+IA46Ol7bmQ
+         G7Ia+gio9H14vWODD5CvglVX8XCa4/yNflMjQoFY/W3y07VILWxrKTvgE3Z2ZFH8sGNV
+         ppCdSfTRGpVDtvbiu9j9ZNqOeVQcb2PSqB5/tidtxkh+dzlRusreRTAV3DpQVypg5jkX
+         pZcQcVjtYSPPhXOrcuu4GakNToHxDUrkUYPyjPJWASQ+b4JYLCQyNfxxhVUYLLRhxOCC
+         arqA==
+X-Forwarded-Encrypted: i=1; AJvYcCUFJhA1Ebp4hrIng76GstPxiq+k+zCRvPk75iWjqIOkRihzG2Cjyv/LTvn4y1IWuXSwzQj2xxDZbRzzy3UB7I/3C6WiUejXv9XOGNNp
+X-Gm-Message-State: AOJu0YzwJwRf8k8FJn1/MLuCY6yzIBZkyg42y51ZTsVdEHXL7SyaP3R2
+	20h5r5yI3fsI934VubY0P7V2rwX2wTK/PEDTrdnHzuMKBm0UvVa5fXGoCLuUF9E=
+X-Google-Smtp-Source: AGHT+IHq01yhFcxM+Ys+burCeKb/S2tHJ4gorNVk0H6QB7243MKMLmukDxVUF1XzQYYwFrfXJt3Fdw==
+X-Received: by 2002:a05:6a00:9294:b0:6e5:56b5:606a with SMTP id jw20-20020a056a00929400b006e556b5606amr9211060pfb.11.1709535176943;
+        Sun, 03 Mar 2024 22:52:56 -0800 (PST)
 Received: from seacloud.vm ([143.92.64.20])
-        by smtp.gmail.com with ESMTPSA id o26-20020a056a001b5a00b006e4766d31bcsm6554740pfv.184.2024.03.03.22.52.51
+        by smtp.gmail.com with ESMTPSA id o26-20020a056a001b5a00b006e4766d31bcsm6554740pfv.184.2024.03.03.22.52.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Mar 2024 22:52:52 -0800 (PST)
+        Sun, 03 Mar 2024 22:52:56 -0800 (PST)
 From: Haifeng Xu <haifeng.xu@shopee.com>
 To: reinette.chatre@intel.com,
 	james.morse@arm.com
@@ -73,10 +75,12 @@ Cc: fenghua.yu@intel.com,
 	x86@kernel.org,
 	linux-kernel@vger.kernel.org,
 	Haifeng Xu <haifeng.xu@shopee.com>
-Subject: [PATCH v4 0/2] x86/resctrl: Track llc_occupancy of RMIDs in limbo list
-Date: Mon,  4 Mar 2024 14:52:34 +0800
-Message-Id: <20240304065236.281877-1-haifeng.xu@shopee.com>
+Subject: [PATCH v4 1/2] x86/resctrl: Rename pseudo_lock_event.h to trace.h
+Date: Mon,  4 Mar 2024 14:52:35 +0800
+Message-Id: <20240304065236.281877-2-haifeng.xu@shopee.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240304065236.281877-1-haifeng.xu@shopee.com>
+References: <20240304065236.281877-1-haifeng.xu@shopee.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -85,40 +89,65 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-After removing a monitor group, its RMID may not be freed immediately
-unless its llc_occupancy is less than the re-allocation threshold. If
-turning up the threshold, the RMID can be reused. In order to know how
-much the threshold should be, it's necessary to acquire the llc_occupancy.
+Now only pseudo-locking part uses tracepoints to do event tracking, but
+other parts of resctrl may need new tracepoints. It is unnecessary to
+create separate header files and define CREATE_TRACE_POINTS in different
+c files which fragments the resctrl tracing.
 
-The patch series provides a new tracepoint to track the llc_occupancy.
+Therefore, give the resctrl tracepoint header file a generic name to
+support its use for tracepoints that are not specific to pseudo-locking.
 
-Changes since v1:
-- Rename pseudo_lock_event.h instead of creating a new header file.
-- Modify names used in the tracepoint.
-- Update changelog.
+No functional change.
 
-Changes since v2:
-- Fix typo and use the x86/resctrl subject prefix in the cover letter.
-- Track both CLOSID and RMID in the tracepoint.
-- Remove the details on how perf can be used in patch2's changelog.
+Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
+Suggested-by: Reinette Chatre <reinette.chatre@intel.com>
+---
+ arch/x86/kernel/cpu/resctrl/pseudo_lock.c                   | 2 +-
+ .../x86/kernel/cpu/resctrl/{pseudo_lock_event.h => trace.h} | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+ rename arch/x86/kernel/cpu/resctrl/{pseudo_lock_event.h => trace.h} (88%)
 
-Changes since v3:
-- Put the tracepoint in the 'else' section of the if/else after
-  resctrl_arch_rmid_read().
-- Modify names used in the tracepoint.
-- Document the properties of the tracepoint.
-
-Haifeng Xu (2):
-  x86/resctrl: Rename pseudo_lock_event.h to trace.h
-  x86/resctrl: Add tracepoint for llc_occupancy tracking
-
- Documentation/arch/x86/resctrl.rst            |  8 +++++++
- arch/x86/kernel/cpu/resctrl/monitor.c         |  9 ++++++++
- arch/x86/kernel/cpu/resctrl/pseudo_lock.c     |  2 +-
- .../resctrl/{pseudo_lock_event.h => trace.h}  | 22 ++++++++++++++++---
- 4 files changed, 37 insertions(+), 4 deletions(-)
- rename arch/x86/kernel/cpu/resctrl/{pseudo_lock_event.h => trace.h} (57%)
-
+diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+index 884b88e25141..492c8e28c4ce 100644
+--- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
++++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+@@ -31,7 +31,7 @@
+ #include "internal.h"
+ 
+ #define CREATE_TRACE_POINTS
+-#include "pseudo_lock_event.h"
++#include "trace.h"
+ 
+ /*
+  * The bits needed to disable hardware prefetching varies based on the
+diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock_event.h b/arch/x86/kernel/cpu/resctrl/trace.h
+similarity index 88%
+rename from arch/x86/kernel/cpu/resctrl/pseudo_lock_event.h
+rename to arch/x86/kernel/cpu/resctrl/trace.h
+index 428ebbd4270b..ed5c66b8ab0b 100644
+--- a/arch/x86/kernel/cpu/resctrl/pseudo_lock_event.h
++++ b/arch/x86/kernel/cpu/resctrl/trace.h
+@@ -2,7 +2,7 @@
+ #undef TRACE_SYSTEM
+ #define TRACE_SYSTEM resctrl
+ 
+-#if !defined(_TRACE_PSEUDO_LOCK_H) || defined(TRACE_HEADER_MULTI_READ)
++#if !defined(_TRACE_RESCTRL_H) || defined(TRACE_HEADER_MULTI_READ)
+ #define _TRACE_PSEUDO_LOCK_H
+ 
+ #include <linux/tracepoint.h>
+@@ -35,9 +35,9 @@ TRACE_EVENT(pseudo_lock_l3,
+ 	    TP_printk("hits=%llu miss=%llu",
+ 		      __entry->l3_hits, __entry->l3_miss));
+ 
+-#endif /* _TRACE_PSEUDO_LOCK_H */
++#endif /* _TRACE_RESCTRL_H */
+ 
+ #undef TRACE_INCLUDE_PATH
+ #define TRACE_INCLUDE_PATH .
+-#define TRACE_INCLUDE_FILE pseudo_lock_event
++#define TRACE_INCLUDE_FILE trace
+ #include <trace/define_trace.h>
 -- 
 2.25.1
 
