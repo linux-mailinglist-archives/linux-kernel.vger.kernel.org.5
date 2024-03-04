@@ -1,165 +1,137 @@
-Return-Path: <linux-kernel+bounces-90745-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90748-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA9BF87045E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:39:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87968870462
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:40:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7228D28272C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:39:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3AA931F213C2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:40:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 815A747A6A;
-	Mon,  4 Mar 2024 14:39:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DB794AEF6;
+	Mon,  4 Mar 2024 14:39:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vGZN+aUG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="glZ7W4vr"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC5A03FE58;
-	Mon,  4 Mar 2024 14:39:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F00F495E5;
+	Mon,  4 Mar 2024 14:39:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709563159; cv=none; b=PwoBjaO0o4c2gZlT4tdO/0iCbiNitDqK/dbMCBL3PoC+JtoSRnu/VQeicDtq8oEMZLTJxLQzKEXDq8FfH5zGw7BYvtLDOftlc8MqabqH2b93m3YM9mB2uARdq+yI5C6F8YWjCFH1JbGjJv2YQZM/z5+6LG9GzQen/TOtLVDpDsQ=
+	t=1709563163; cv=none; b=qFYx+0COf6J1ZQ4zbbXWZ1uneGOzLLaw/lk6oCslkM+lNScSVb3gPPs986oDrieJoi03N5JR2/IOF3QKqpmxbzQsy4NjLycYSRC9KrE0FxMubgv6klfa1AJUKJEh8fInZwh/fAXu6NGOdTDtdHALD2ZihEfJExF+16iEZeVzCJ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709563159; c=relaxed/simple;
-	bh=jMLHce6fSNV1ibpvqXecN80o6gKL25oVTs9fW+eNgJc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R+hKH7pQLLklaoi+4B9wve6MO8KUA47/6GMVZu90mRqT03ELUAEZdJD6zLA8fPFIw5Z7yt4tR5x8hGzcVM+If4qv2/DB4cVoK9DMysyf/PAWk5B3GNdY1UqP3KntWGjGV9al92q8y34Ee0c93YeE3JQGXI6Y1KuuNOGMD2Lv1jQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vGZN+aUG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0AFCC43394;
-	Mon,  4 Mar 2024 14:39:18 +0000 (UTC)
+	s=arc-20240116; t=1709563163; c=relaxed/simple;
+	bh=izAXvc7UkjU7STvEMBh35M4iT8s1W0W9zz7tDRGPHzo=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=FAlNRRqSXZxrfZJ0e0sDr9hYoErwmuvGBPEP9cYoWQXdonqDOFtbDO7Do1jdeT9l7GUGCz2FJzfwNBLnDBOciiTr8GSqlQtMNs9TuNs15UgNa44eQ/jcs2NKN/K6wD52OVqCvSz5JX2JCsNsf/tOwmBpp7IdljaKJ783dCUszh0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=glZ7W4vr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA9AEC433C7;
+	Mon,  4 Mar 2024 14:39:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709563159;
-	bh=jMLHce6fSNV1ibpvqXecN80o6gKL25oVTs9fW+eNgJc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=vGZN+aUGRCHUXtaClyfB0lW2zx8oz2EnMN+dEfj6++ZyYSSPq+FTcQGe47oCabaHn
-	 hygA37nDu5yUChLQS9ebQxaY9xeRyhxwKzTewrv7ZIR2lHPrJLQZohTwDPi7lZot4D
-	 LitPMpmhwwPXWmLEsDuhowiAnSHHcTmkT3gviCMR5NFWBKnrdHVMRFmpnc7zmZBPLD
-	 +GfgdyJa6DQltRPUVE6O0V0p8Y4Cp6UoF4dXx89qS8OuIHn5/uCHo6yTci+iBzcrpM
-	 P+HtDaM2cLgfXTu/82Bbm7HMPGBl+43c1PadJmvN73yy0z16/sulhotTpO4BMongqE
-	 oVCTYKNNJftgQ==
-Date: Mon, 4 Mar 2024 08:39:16 -0600
-From: Rob Herring <robh@kernel.org>
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc: Abel Vesa <abelvesa@kernel.org>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>, linux-clk@vger.kernel.org,
-	imx@lists.linux.dev, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH v3 1/2] dt-bindindgs: clock: support NXP i.MX95 BLK CTL
- module
-Message-ID: <20240304143916.GA181628-robh@kernel.org>
-References: <20240228-imx95-blk-ctl-v3-0-40ceba01a211@nxp.com>
- <20240228-imx95-blk-ctl-v3-1-40ceba01a211@nxp.com>
+	s=k20201202; t=1709563163;
+	bh=izAXvc7UkjU7STvEMBh35M4iT8s1W0W9zz7tDRGPHzo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=glZ7W4vrTQkpbpVmXiwoko4e1UeWuHDoPnBQw0pf+rW2ralwhpahvWWNoPWGWN/HC
+	 KK8H3DuYdZYgEGSL1NzUp9Tcdto2oyGOaTNk6248P1Ycl+REHkHPbmqxOnizE9P3Hk
+	 JSslNvj+PKtkL+hSWE0Z+XYLu87XNAwvIc0nvUHDCn+A9fUpYb2iqVqVKGd1C07eAl
+	 bEsifpEGtV4018VCgDG7gXF453EX/g2QHjnLnpFpEitgfG2TgOpSfpU3sv1/JaGfBO
+	 ttMQWHbgiELj7QQAgxzcKKXdNia1ZAvqb32hS/vWo7LAQmnbOIFKU7ulLoTA0WFUui
+	 s064K+6tTCm0A==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rh9TM-009FjJ-9f;
+	Mon, 04 Mar 2024 14:39:20 +0000
+Date: Mon, 04 Mar 2024 14:39:19 +0000
+Message-ID: <86v86212p4.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Joey Gouly <joey.gouly@arm.com>,
+	linux-arm-kernel@lists.infradead.org,
+	kvmarm@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: arm64: Only save S1PIE registers when dirty
+In-Reply-To: <50c5cdd2-fceb-44c4-aff1-dc98180161a1@sirena.org.uk>
+References: <20240301-kvm-arm64-defer-regs-v1-1-401e3de92e97@kernel.org>
+	<ZeItTLQxdxxICw01@linux.dev>
+	<562f5e62-c26c-41d9-9ab9-aac02c91c7ae@sirena.org.uk>
+	<86zfvh0vy5.wl-maz@kernel.org>
+	<50c5cdd2-fceb-44c4-aff1-dc98180161a1@sirena.org.uk>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240228-imx95-blk-ctl-v3-1-40ceba01a211@nxp.com>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: broonie@kernel.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, joey.gouly@arm.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Wed, Feb 28, 2024 at 03:48:22PM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
+On Mon, 04 Mar 2024 14:11:19 +0000,
+Mark Brown <broonie@kernel.org> wrote:
 > 
-> i.MX95 includes BLK CTL module in several MIXes, such as VPU_CSR in
-> VPUMIX, BLK_CTRL_NETCMIX in NETCMIX, CAMERA_CSR in CAMERAMIX and etc.
+> [1  <text/plain; us-ascii (7bit)>]
+> On Sat, Mar 02, 2024 at 10:28:18AM +0000, Marc Zyngier wrote:
+> > Mark Brown <broonie@kernel.org> wrote:
+> > > On Fri, Mar 01, 2024 at 07:32:28PM +0000, Oliver Upton wrote:
 > 
-> The BLK CTL module is used for various settings of a specific MIX, such
-> as clock, QoS and etc.
+> > > > The overheads of guest exits are extremely configuration dependent, and
+> > > > on VHE the save/restore of EL1 state happens at vcpu_load() / vcpu_put()
+> > > > rather than every exit. There isn't a whole lot KVM can do to lessen the
+> > > > blow of sharing EL1 in the nVHE configuration.
 > 
-> This patch is to add some BLK CTL modules that has clock features.
-
-This sentence doesn't add anything you haven't already said.
-
+> > > > Looking a bit further out, the cost of traps will be dramatically higher
+> > > > when running as a guest hypervisor, so we'd want to avoid them if
+> > > > possible...
 > 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  .../devicetree/bindings/clock/imx95-blk-ctl.yaml   | 61 ++++++++++++++++++++++
->  include/dt-bindings/clock/nxp,imx95-clock.h        | 32 ++++++++++++
->  2 files changed, 93 insertions(+)
+> > > Indeed, but OTOH I got some complaints about adding more system register
 > 
-> diff --git a/Documentation/devicetree/bindings/clock/imx95-blk-ctl.yaml b/Documentation/devicetree/bindings/clock/imx95-blk-ctl.yaml
-> new file mode 100644
-> index 000000000000..c8974b927bee
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/clock/imx95-blk-ctl.yaml
-> @@ -0,0 +1,61 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/clock/imx95-blk-ctl.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: NXP i.MX95 Block Control
-> +
-> +maintainers:
-> +  - Peng Fan <peng.fan@nxp.com>
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - nxp,imx95-cameramix-csr
-> +          - nxp,imx95-display-master-csr
-> +          - nxp,imx95-dispmix-lvds-csr
-> +          - nxp,imx95-dispmix-csr
-> +          - nxp,imx95-netcmix-blk-ctrl
-> +          - nxp,imx95-vpumix-csr
-> +      - const: syscon
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  '#clock-cells':
-> +    const: 1
-> +    description:
-> +      The clock consumer should specify the desired clock by having the clock
-> +      ID in its "clocks" phandle cell. See
-> +      include/dt-bindings/clock/nxp,imx95-clock.h
-> +
-> +  mux-controller:
-> +    type: object
-> +    $ref: /schemas/mux/reg-mux.yaml
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - '#clock-cells'
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  # Clock Control Module node:
-> +  - |
-> +    #include <dt-bindings/clock/nxp,imx95-clock.h>
-> +
-> +    syscon@4c410000 {
+> > Complains from whom? I can't see anything in my inbox, so it my
+> > conclusion that these "issues" are not serious enough to be publicly
+> > mentioned.
+> 
+> This was you saying that adding more registers to be context switched
+> here needed special explanation, rather than just being the default and
+> generally unremarkable place to put context switching of registers for
+> EL0/1.
 
-clock-controller@...
+What I remember saying is that it is wrong to add extra registers to
+the context switch without gating them with the VM configuration.
+Which is a very different thing.
 
-As that is the main feature/function.
+I don't know where you got the idea that I wanted to make this sort of
+things lazy. Quite the contrary, actually. I want to trap things to
+make them UNDEF. And this is exactly how -next now behaves (see
+58627b722ee2).
 
-> +      compatible = "nxp,imx95-vpumix-csr", "syscon";
-> +      reg = <0x4c410000 0x10000>;
-> +      #clock-cells = <1>;
+What I want to see explained in all cases is why a register has to be
+eagerly switched and not deferred to the load/put phases, specially on
+VHE. because that has a very visible impact on the overall performance.
 
-Please make the example as full as possible. For example, add 
-mux-controller node. Do some of the blocks not have mux ctrl?
+> > If anything, I'm actually minded to remove existing instances of this
+> > stupid trapping, such as PAuth, which is entirely pointless.
+> 
+> That one was part of why it appeared that this sort of thing was what
+> you were asking for.
+
+No, really not.
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
 
