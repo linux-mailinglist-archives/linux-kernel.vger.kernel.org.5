@@ -1,71 +1,75 @@
-Return-Path: <linux-kernel+bounces-91127-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91131-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 189F08709DB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:49:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94CA98709E4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:50:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE9C01F23AC8
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:49:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1BBC81F233BE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:50:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9AB362147;
-	Mon,  4 Mar 2024 18:49:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FFFF7B3D4;
+	Mon,  4 Mar 2024 18:49:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="lnAxA0LX"
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="FjOMYjnR"
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3842F7869A
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 18:49:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D3976216C
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 18:49:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709578178; cv=none; b=Ws/OavoamTAEnadCSjmzzBsFz7F/c7lBic3+abt5jW3QUGXWd+Jw5+22HXNrEx9rH/ZAqIgIuEN4Lg7a9e4/8/haLzUkDPB1h/oUftF325ua0314rsvgh6j6+zzBF2gOYQjJCdtblPkOtAzb5Kg7EFWYaB8eaBpiwBsUvyCVghQ=
+	t=1709578183; cv=none; b=Yaw8s1CuhfAg+e+M86q1H7CwlzmP2FlIeN2MO/07buj2gNdoKNUeMKDfeYntDGLQ5LtQMKCUoU7+SlGXv1YCedn2s87sYqQpqG0C5D0pKPvnw5cA1FaDQO+WGMbSKnNw8R4H2TARV57GUF2M9DXGn6VC9j3kwx7Xl5QTJh+52GE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709578178; c=relaxed/simple;
-	bh=+zltM60WJIwhQhbYbj+QC0RcHFfEEaTaC5b3PkagfmU=;
+	s=arc-20240116; t=1709578183; c=relaxed/simple;
+	bh=IcLElAry6DIoRKKwJQmpd7ju+FKDVUugrCBgj64Jc1w=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=pDPpCj130TfE8hz0NwDMj0VnxclcLiommVFjPKuWdlDiXcPvE/maOlKoeS5ydDmRPQCAg5cnxDYDE+RIvL439DnBfTdtIH0ROe73J+i533bBq92Q+NIFbscLZ7AI/wCrrRTKL7PZUyDPhzzW2ptdvO6sMyUZOHhoQdRxILAEV7k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=lnAxA0LX; arc=none smtp.client-ip=209.85.215.171
+	 MIME-Version; b=ImBB4YNRu1p97mxNsTqfpkocURGlbKtIHVSaSXhYDuY59MEIs+WpFIXYJc+fQUF7QE6PSSFplKDxDFpOwx/xJFXBypBktO0q4d4g1e0dTXvfx8GVVy+/CyVqs4noYROHVdj+f5z2QUXOq1U5v2m1KOydVCRWQ2hGqvAXKgQepsA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=FjOMYjnR; arc=none smtp.client-ip=209.85.210.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5cfd95130c6so3175848a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 10:49:37 -0800 (PST)
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e5eb3dd2f8so1489574b3a.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 10:49:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709578176; x=1710182976; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1709578179; x=1710182979; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=63pQSv4lgdcPPxgjmIdkeCTgPw+ykuMnj3qldPskCm4=;
-        b=lnAxA0LX5r4TexID833cxBb9m6AYk1kuPjjHNW75Uz5yV5mnYRoxey8+d/FilyimRc
-         z6bcJsRjZhuOgaGrcoPoZjEjOD7lTn6SCdPL9Egl121TaxJLgeYqQLiPxoUVz/ArfXce
-         2ZxCUOR4cid/r/gD9cESFTgMJ2GsjxvVqVbzc=
+        bh=2QOKxvJdszgSExOijEeIBqvAxDpXCtl9o7KCQ12P01Y=;
+        b=FjOMYjnRMCw8a5h5ArmSEPQ6udrpaxW+1c0RexEdjfVm9cpDln9PewKj+qmiD09/rq
+         jbSGrBJ9sZAN6kkLxylO+qxRHMFx0vrQQZyEoWwU3VHNHvjNflgYvjbKKAz2C2Lc5c9N
+         Mn/XvuCQamq9Qf/t1fVTySzbuf+Sr8pTRa+CE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709578176; x=1710182976;
+        d=1e100.net; s=20230601; t=1709578179; x=1710182979;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=63pQSv4lgdcPPxgjmIdkeCTgPw+ykuMnj3qldPskCm4=;
-        b=i5+RTo5mc0riqZwTm1uAI5oyBYMe8n4SPEpeUgMV30y/CMJ1abft+/mhmtkzLIuy5t
-         eKIxZvoWF9IN8wBQ9feyXnXGWysMomdGIduOlE7MC+qHoR1Ezi36Q3PpQ6Ky4sj+dygP
-         KGmvlGiKXjt3RVl7rEOwE2IoTigl7adFxUN2xhRpfn5ipOUKwHJwsEqfX1eYWKvqSXdE
-         HqQVdR/AUIR+kDBxo2cpg/05v4VG8bZlbDNP6GUON8xkmqbMLQpPNWlWyJIQTbLiV997
-         5p+PoSeGQYrU6l0S3jstbicYDxn6wTcsNYNqABe/64wliALM6907Qz+pJDJ/f7hOMhIR
-         5V4w==
-X-Forwarded-Encrypted: i=1; AJvYcCWKHoF6E0X+jftcg4sG73uogm6yZSEc0bh9U16MwHFLTS9IyVOpJLkx6OtkUIIng/q6qrcnlDvk5CsFMQ4gBlj47bUA/eT+ThLBJQ9u
-X-Gm-Message-State: AOJu0YzMQRxgWXwuzSkCqdCJgK+umHLCbVZR7eZOIsUCzLSuYxQ5BX43
-	BFGHQF3LUjcNM20QPIT46BP+gJOpEDSUXjPQxM7kh+iRxpEihW8zl2XmHJwbSw==
-X-Google-Smtp-Source: AGHT+IEqbrBUCeaoycN6eZ+VoJQJ/3ekxM3Ni9GrmrAmVAhx541ISPKoahwiO20Sd0vgoGv+eX/7cQ==
-X-Received: by 2002:a05:6a21:9214:b0:1a1:4842:6760 with SMTP id tl20-20020a056a21921400b001a148426760mr1903106pzb.50.1709578176499;
-        Mon, 04 Mar 2024 10:49:36 -0800 (PST)
+        bh=2QOKxvJdszgSExOijEeIBqvAxDpXCtl9o7KCQ12P01Y=;
+        b=OcgFWE3N1FsLN5NyPm+AAaG0odph5ITEzHVObVwxrt9Ka/TophaD0gEglM9Xdl0eyC
+         fNiUChyfGKukOjepSS7g87mz/yhUhPm7E7CrDdNdYDoZ1z9JmJY75OHHHCLcZ+Zub5KE
+         +4Ehjsa/591AuVuZ4feKId0Yj4gTFWLZ2ScKBZZfHv29BgYfJJQ52XpX9v60/gmaMVl9
+         g/tmNiIAAwsG+IdvSwmcev2GQk5q7jKR92dNyrSuOZtgJD/F+n5fVJHbr3HLhcpeEtwi
+         tmBC3CeYDaB3z1Z/hXK6CiL7lNOc1MNsskmSFeJksPq+gqVs+QcHU6E6qnAXEo0iMjaH
+         QmXg==
+X-Forwarded-Encrypted: i=1; AJvYcCVLBZjm+ljIv49MfgKGEZlexmhFolclDlwpuVDY1vLjz3D5fBbeYEmu2bKxcVrJHDEt/xzs7K340ZCKA6ZnAUSTQS8qyGBpdjdu/dO6
+X-Gm-Message-State: AOJu0YyBAejICpSzcwRQRrMuwYhWlZK8KufY6qQpyKVZHU4eahEF6p4x
+	Vk8yMx6MFT4eR8SCy7ZS/uc5nO95EoNv6xKvsFvVI+eRaIK73zY+pObEtoYQEw==
+X-Google-Smtp-Source: AGHT+IGILIudDoOhkhQCWTyG9z0DMQjNf1OD2uCgU2558fLWKJP3m4244pk1XqBrh1eKa3auyU02eA==
+X-Received: by 2002:aa7:88c1:0:b0:6e5:5425:d914 with SMTP id k1-20020aa788c1000000b006e55425d914mr10540158pff.2.1709578179470;
+        Mon, 04 Mar 2024 10:49:39 -0800 (PST)
 Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id j4-20020a654284000000b005d8be4c125csm6743414pgp.80.2024.03.04.10.49.34
+        by smtp.gmail.com with ESMTPSA id r27-20020aa79edb000000b006e60c08cbcasm2881132pfq.50.2024.03.04.10.49.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 04 Mar 2024 10:49:34 -0800 (PST)
 From: Kees Cook <keescook@chromium.org>
 To: Vlastimil Babka <vbabka@suse.cz>
 Cc: Kees Cook <keescook@chromium.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Jan Kara <jack@suse.cz>,
+	linux-fsdevel@vger.kernel.org,
 	"GONG, Ruiqi" <gongruiqi@huaweicloud.com>,
 	Xiu Jianfeng <xiujianfeng@huawei.com>,
 	Suren Baghdasaryan <surenb@google.com>,
@@ -77,16 +81,12 @@ Cc: Kees Cook <keescook@chromium.org>,
 	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
 	Roman Gushchin <roman.gushchin@linux.dev>,
 	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	Jan Kara <jack@suse.cz>,
 	linux-kernel@vger.kernel.org,
 	linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org,
 	linux-hardening@vger.kernel.org
-Subject: [PATCH 2/4] ipc, msg: Use dedicated slab buckets for alloc_msg()
-Date: Mon,  4 Mar 2024 10:49:30 -0800
-Message-Id: <20240304184933.3672759-2-keescook@chromium.org>
+Subject: [PATCH 3/4] xattr: Use dedicated slab buckets for setxattr()
+Date: Mon,  4 Mar 2024 10:49:31 -0800
+Message-Id: <20240304184933.3672759-3-keescook@chromium.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240304184252.work.496-kees@kernel.org>
 References: <20240304184252.work.496-kees@kernel.org>
@@ -96,79 +96,70 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2289; i=keescook@chromium.org;
- h=from:subject; bh=+zltM60WJIwhQhbYbj+QC0RcHFfEEaTaC5b3PkagfmU=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBl5he8qRUAcVCqu4hpjGv4CjmdHzSAnbUNg4er3
- NYamCewr9+JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZeYXvAAKCRCJcvTf3G3A
- JuDzEACBBwraGVldgENLbkSYf63dOOHOPJEiqhaSkAxMKXMPigi7yQdQbfcNSnwgtebo1L2uUYv
- 8a5GjWZgg0pW2K8BJCfxaWqaOKGcKcaQl1JGzOhYIznQhTvy3eFL7liqoKr/iyqINgJllEJw5u1
- 73nGpA9SrpjgMVQ1WWjUKo3CDRewIUR0dTk28fcGEgg2RubRBocB+ojMwSQvPfl2WwXNNJ6NnaM
- t1jPN5TOfmjkQwM+IKkwdXSau+eNTMhtba3hE02RRu1OPtszIgPzv9e6R7LQqcPA+z5Nnw9Mx4y
- ZbqEuw8j6jqARnWfEt9pH8SBkxg5A5JD8uhSVvD9eLQTvHQ47gbqoIV3OvqhNEVQB2mMxiFpJIK
- NlLkEb/nSKSv3ezcvBEPp9sNggeP6uknRz72aj7v0lLBeL9dnwoPjQS8Vx4tIco3WJcVgCiOxes
- 11aqWUfxoQSK/Hm/2uAQSZRBPq9t11u4mLp4PCdwiyhfBdIqhHXQUXwKfqAd5M95kCOWSger5J9
- de8D2cgNhvOQlrVe+1Oj+J515SQVuJJH4p1jmyS5NEs9nXqR8qExyhvPhjm7ka/HrKG77o3MS0F
- 7hijfdr4qYUQTGuK0lTaECipjA3875yLPsHC4EB0tB+xynBLCgMVx7JT6jFuddPDRtCkf8QdmaT L+aT5CFzJLRrfWA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1560; i=keescook@chromium.org;
+ h=from:subject; bh=IcLElAry6DIoRKKwJQmpd7ju+FKDVUugrCBgj64Jc1w=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBl5he8RUV3Nml6+beLYoX/gI6MaxpEQEieiV1Pk
+ LAMHZWkh1eJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZeYXvAAKCRCJcvTf3G3A
+ JgarD/9HvGby2B7eoqRlayCbyDlLBOSIiVV2Bq+vUUsC8Ne0FV1zyqgFRQrXbQ2G6VGoWXimSlm
+ M1jvsW/Y99i2kQDWqeDEZeZf+LehlADDm5Vd8pmJfMMgX19BF898FQYPT7s7OKOxOJ4T/GuE1Kf
+ f8BRgEGLrWxyrMYUyG5/wFYfmfEzazDwiU+A/d2eMxhnYFT6e1elFQ0FweaUabd1+ZCJwV5UdWh
+ HIyGFxL/YTavdVnf68HYBNALeF2lzUERVyzafZOv6WzhMzem7sDreYdkBpWwU4Nvafa5vCB+mCZ
+ kz+tSe+uPkTDLUvM18O8w9hPQ0ywaf1CFBDkCciseVfUKVnH06WlWb84AbCwLv1KSDl6ipWRLxU
+ 84NhknBpAY4fgIguhU0kDs83NhdIl/kn10T/oubIkmY5wdavroHRaFjSlkw/VAeVdJCOOH+U3b9
+ AJDGgUmwEUlmq7b731/mixhLBrz0CTKq8Aa59nDba3ji+Utrd7I1HKHwMPTcsPrBIVtK2QspH+t
+ pcBzTrTkEuaW7vRD41WXoqxhSJ+mUK3+SKCFafsj0ZaMq2qMA977BazfKFPlNrWRRWzRrteGmk1
+ Q8c9m2anBqS3EOtpP7bZ2OHyh5VlDQiLJP6Mo78p0Tkgsf+LU7XH1gWUSibuhbnTREFTie5DhAK x63js6NDKJKKoCA==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 
-The msg subsystem is a common target for exploiting[1][2][3][4][5][6]
-use-after-free type confusion flaws in the kernel for both read and
-write primitives. Avoid having a user-controlled size cache share the
-global kmalloc allocator by using a separate set of kmalloc buckets.
+The setxattr() API can be used for exploiting[1][2][3] use-after-free
+type confusion flaws in the kernel. Avoid having a user-controlled size
+cache share the global kmalloc allocator by using a separate set of
+kmalloc buckets.
 
-After a fresh boot under Ubuntu 23.10, we can see the caches are already
-in use:
-
- # grep ^msg_msg /proc/slabinfo
- msg_msg-8k             0      0   8192    4    8 : ...
- msg_msg-4k            96    128   4096    8    8 : ...
- msg_msg-2k            64     64   2048   16    8 : ...
- msg_msg-1k            64     64   1024   16    4 : ...
- msg_msg-16          1024   1024     16  256    1 : ...
- msg_msg-8              0      0      8  512    1 : ...
-
-Link: https://blog.hacktivesecurity.com/index.php/2022/06/13/linux-kernel-exploit-development-1day-case-study/ [1]
-Link: https://hardenedvault.net/blog/2022-11-13-msg_msg-recon-mitigation-ved/ [2]
-Link: https://www.willsroot.io/2021/08/corctf-2021-fire-of-salvation-writeup.html [3]
-Link: https://a13xp0p0v.github.io/2021/02/09/CVE-2021-26708.html [4]
-Link: https://google.github.io/security-research/pocs/linux/cve-2021-22555/writeup.html [5]
-Link: https://zplin.me/papers/ELOISE.pdf [6]
+Link: https://duasynt.com/blog/linux-kernel-heap-spray [1]
+Link: https://etenal.me/archives/1336 [2]
+Link: https://github.com/a13xp0p0v/kernel-hack-drill/blob/master/drill_exploit_uaf.c [3]
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Jan Kara <jack@suse.cz>
+Cc: linux-fsdevel@vger.kernel.org
 ---
- ipc/msgutil.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ fs/xattr.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/ipc/msgutil.c b/ipc/msgutil.c
-index d0a0e877cadd..36f1aa9ea1cf 100644
---- a/ipc/msgutil.c
-+++ b/ipc/msgutil.c
-@@ -42,6 +42,15 @@ struct msg_msgseg {
- #define DATALEN_MSG	((size_t)PAGE_SIZE-sizeof(struct msg_msg))
- #define DATALEN_SEG	((size_t)PAGE_SIZE-sizeof(struct msg_msgseg))
+diff --git a/fs/xattr.c b/fs/xattr.c
+index 09d927603433..2b06316f1d1f 100644
+--- a/fs/xattr.c
++++ b/fs/xattr.c
+@@ -821,6 +821,16 @@ SYSCALL_DEFINE4(fgetxattr, int, fd, const char __user *, name,
+ 	return error;
+ }
  
-+static struct kmem_buckets *msg_buckets __ro_after_init;
-+
-+static int __init init_msg_buckets(void)
++static struct kmem_buckets *xattr_buckets;
++static int __init init_xattr_buckets(void)
 +{
-+	msg_buckets = kmem_buckets_create("msg_msg", 0, SLAB_ACCOUNT, 0, 0, NULL);
++	xattr_buckets = kmem_buckets_create("xattr", 0, 0, 0,
++					    XATTR_LIST_MAX, NULL);
 +
 +	return 0;
 +}
-+subsys_initcall(init_msg_buckets);
- 
- static struct msg_msg *alloc_msg(size_t len)
- {
-@@ -50,7 +59,7 @@ static struct msg_msg *alloc_msg(size_t len)
- 	size_t alen;
- 
- 	alen = min(len, DATALEN_MSG);
--	msg = kmalloc(sizeof(*msg) + alen, GFP_KERNEL_ACCOUNT);
-+	msg = kmem_buckets_alloc(msg_buckets, sizeof(*msg) + alen, GFP_KERNEL);
- 	if (msg == NULL)
- 		return NULL;
- 
++subsys_initcall(init_xattr_buckets);
++
+ /*
+  * Extended attribute LIST operations
+  */
+@@ -833,7 +843,7 @@ listxattr(struct dentry *d, char __user *list, size_t size)
+ 	if (size) {
+ 		if (size > XATTR_LIST_MAX)
+ 			size = XATTR_LIST_MAX;
+-		klist = kvmalloc(size, GFP_KERNEL);
++		klist = kmem_buckets_alloc(xattr_buckets, size, GFP_KERNEL);
+ 		if (!klist)
+ 			return -ENOMEM;
+ 	}
 -- 
 2.34.1
 
