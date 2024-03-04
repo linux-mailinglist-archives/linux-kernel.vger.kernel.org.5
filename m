@@ -1,148 +1,126 @@
-Return-Path: <linux-kernel+bounces-90280-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90282-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0A8286FCD3
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:12:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BC5786FCDC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:13:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E215F1C222B6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:12:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D81B1C223F4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:13:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE8BB20B3E;
-	Mon,  4 Mar 2024 09:12:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="cLGPWTyT"
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 174361BC44;
+	Mon,  4 Mar 2024 09:13:38 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED3B51B802;
-	Mon,  4 Mar 2024 09:12:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 228EC1B27A
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 09:13:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709543532; cv=none; b=VSzjOVC4zs8CJdtPL2voI0VU9Qg7cqya50qOc4MjShMTDJ26SyHAmVrX6yYnzeX6EG1+igQQfh7FYaJwcx9+EKbJI2UH9HiQGTwiZ0Bpt6AQNF6bgZ+GQTRuqUMk2xfWBIR3nXgGC77bA6iwjMCl5B/1gXDyaKiBuNIKX3XKlLA=
+	t=1709543617; cv=none; b=MxChbHjipmEWjB/ju4n4FlNqbZp/rdeoLWAc27gdvkBR/ljjsJszy65vbHCXZKZfBoBaKes9JAAiJDHLZPB07ynahXNS9IE3Pjy+OJvKZOpAOq0CvLavi152Kl7aVY2lKd9JL9OAY3L2q4k/EggB5IxW3pFLxy5XJP7dKfyrha4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709543532; c=relaxed/simple;
-	bh=SXQdHBzDn6lNhNR2jRKyU6m0hP/iQLlkGyx6cM7QnjE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=BWGI+F95cToY0/wG8nk5ECqXDwnpD2hpXanNHyNsvSLKyPtEHUZzx3p6Sc1EPZL9iBbymBHBcXoWMuqifog6HkMJaPGL80rFC6z/ADPREhtBEpYj7ojnkcOWSGOgo8ZDD0BV84gZwIjWP/kgoZXKwrP7ol6sgMWTNCshrQ7hmQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=cLGPWTyT; arc=none smtp.client-ip=93.104.207.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1709543529; x=1741079529;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=8o4rUALbnNNyVSdf0MmmAYmT6lll+Rib3jtEkEHDq+I=;
-  b=cLGPWTyTSdkXYUoAmaM9ldCECgZaQr//fwXqozomNvt5pBnx4MHvScOL
-   lT6sT5yrUjAXxaoOLU2ckOBGWLT3bn46U8tqycAjpTo3IaySbDqNwcCHO
-   x+LFecR5kBzeDxdVX5u+KsLsOkjowVvYpIqOY9GDMKBlNTTe3Iom8Z4fq
-   ucxG67OG0dT51Xyc5Ir1/OfZv0ollxdFyNy+XJoED5FUuFQq7LZxLP3E7
-   7CLNStQSqPR2MSkvX+Fh0s1mfIvL5lvy/9B4Wn+KZgdyr8WB47T9xWEzT
-   ybLCM47eASTJE/VUbn9Js1fmOvQAFuzGBQ1V8QTHFMvPI212G2dN3Ndsm
-   Q==;
-X-IronPort-AV: E=Sophos;i="6.06,203,1705359600"; 
-   d="scan'208";a="35711027"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 04 Mar 2024 10:12:03 +0100
-Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.25])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 322E7280071;
-	Mon,  4 Mar 2024 10:12:03 +0100 (CET)
-From: Alexander Stein <alexander.stein@ew.tq-group.com>
-To: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, linux-arm-kernel@lists.infradead.org
-Cc: devicetree@vger.kernel.org, imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Frank Li <Frank.Li@nxp.com>, Alice Guo <alice.guo@nxp.com>, Peng Fan <peng.fan@nxp.com>, Frank Li <Frank.Li@nxp.com>
-Subject: Re: [PATCH v2 2/4] arm64: dts: imx8dxl: add lpuart device in cm40 subsystem
-Date: Mon, 04 Mar 2024 10:12:04 +0100
-Message-ID: <6024754.lOV4Wx5bFT@steina-w>
-Organization: TQ-Systems GmbH
-In-Reply-To: <20240302-m4_lpuart-v2-2-89a5952043b6@nxp.com>
-References: <20240302-m4_lpuart-v2-0-89a5952043b6@nxp.com> <20240302-m4_lpuart-v2-2-89a5952043b6@nxp.com>
+	s=arc-20240116; t=1709543617; c=relaxed/simple;
+	bh=n4g6A/1gV2oAFkfciMKSmu9PWw+8nLkwQuD7vVTJDCk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=gmzmZMFF3rKFGNB2ZMtYJDTOXwz0Am6MvZgEPOTP6ICuUOeQV1wcP/QZZ11ygWvZlUoBRvlnE2Kvxg70RvvCU1rGheUeFec3XEKmOIMGBArO7Lq1hFFmG2c3ere1KxzN1WJ4p8JKD7cXHMTFUZWCRJPXvhMtBEgqPVlLqJjM2d4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rh4O3-00036d-5I; Mon, 04 Mar 2024 10:13:31 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rh4O2-004K1A-4l; Mon, 04 Mar 2024 10:13:30 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rh4O2-00GVS1-0B;
+	Mon, 04 Mar 2024 10:13:30 +0100
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Richard Cochran <richardcochran@gmail.com>,
+	Min Li <min.li.xe@renesas.com>
+Cc: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] ptp: fc3: Convert to platform remove callback returning void
+Date: Mon,  4 Mar 2024 10:13:25 +0100
+Message-ID: <20240304091325.717546-2-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1785; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=n4g6A/1gV2oAFkfciMKSmu9PWw+8nLkwQuD7vVTJDCk=; b=owGbwMvMwMXY3/A7olbonx/jabUkhtSnE7YdyRIIWl+xzPDn90I2o7MZD72Eyp/eP7Zuj4j2m osb28PvdzIaszAwcjHIiimy2DeuybSqkovsXPvvMswgViaQKQxcnAIwEeFE9n9a9/6u+WFWXOQv +u1UEtvRaxeZOk68tGDxeyXPoPo5Q/lAou71GwKNnq+37bJt0g9Y73Z9xsE1fzUMVwrkSqzwuX6 7IvfErr8OZWmtLh7K8hvyX+22C/SQNys8/Kev9DXvhxzbNiXrLG2rOwIFsb8dXgSLBK2PLFual6 mQ3yEV6Wndt5aJt6R2Ru2VADfN5yLTnGOn+Bjsj6nzSjGbq27HUT9Nzv5zhlNKyESNaE6rO19es Xu8z41L0ZTN4X2sscLpSWO5/N9JGblzrkrGRzklLlHPSPip3ruR67ieUwn/rtNxhydJftq+6pTu MqB/ZrawPdQUPdsi2yATPDnXKL875/HFcrGF1cp7DwMA
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Hi Frank,
+The .remove() callback for a platform driver returns an int which makes
+many driver authors wrongly assume it's possible to do error handling by
+returning an error code. However the value returned is ignored (apart
+from emitting a warning) and this typically results in resource leaks.
 
-thanks for the update.
+To improve here there is a quest to make the remove callback return
+void. In the first step of this quest all drivers are converted to
+remove_new(), which already returns void. Eventually after all drivers
+are converted, .remove_new() will be renamed to .remove().
 
-Am Samstag, 2. M=E4rz 2024, 17:27:45 CET schrieb Frank Li:
-> From: Alice Guo <alice.guo@nxp.com>
->=20
-> Add lpuart device in cm40 subsystem.
->=20
-> Signed-off-by: Alice Guo <alice.guo@nxp.com>
-> Reviewed-by: Peng Fan <peng.fan@nxp.com>
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+Trivially convert this driver from always returning zero in the remove
+callback to the void returning variant.
 
-Reviewed-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+Hello,
 
-> ---
->  arch/arm64/boot/dts/freescale/imx8-ss-cm40.dtsi | 24 +++++++++++++++++++=
-+++++
->  1 file changed, 24 insertions(+)
->=20
-> diff --git a/arch/arm64/boot/dts/freescale/imx8-ss-cm40.dtsi b/arch/arm64=
-/boot/dts/freescale/imx8-ss-cm40.dtsi
-> index 68043ab74e765..b6af85b20ddd7 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8-ss-cm40.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8-ss-cm40.dtsi
-> @@ -20,6 +20,18 @@ cm40_subsys: bus@34000000 {
->  	#size-cells =3D <1>;
->  	ranges =3D <0x34000000 0x0 0x34000000 0x4000000>;
-> =20
-> +	cm40_lpuart: serial@37220000 {
-> +		compatible =3D "fsl,imx8qxp-lpuart";
-> +		reg =3D <0x37220000 0x1000>;
-> +		interrupts =3D <7 IRQ_TYPE_LEVEL_HIGH>;
-> +		clocks =3D <&cm40_uart_lpcg 1>, <&cm40_uart_lpcg 0>;
-> +		clock-names =3D "ipg", "baud";
-> +		assigned-clocks =3D <&clk IMX_SC_R_M4_0_UART IMX_SC_PM_CLK_PER>;
-> +		assigned-clock-rates =3D <24000000>;
-> +		power-domains =3D <&pd IMX_SC_R_M4_0_UART>;
-> +		status =3D "disabled";
-> +	};
-> +
->  	cm40_i2c: i2c@37230000 {
->  		compatible =3D "fsl,imx8qxp-lpi2c", "fsl,imx7ulp-lpi2c";
->  		reg =3D <0x37230000 0x1000>;
-> @@ -53,6 +65,18 @@ cm40_intmux: intmux@37400000 {
->  		status =3D "disabled";
->  	};
-> =20
-> +	cm40_uart_lpcg: clock-controller@37620000 {
-> +		compatible =3D "fsl,imx8qxp-lpcg";
-> +		reg =3D <0x37620000 0x1000>;
-> +		#clock-cells =3D <1>;
-> +		clocks =3D <&clk IMX_SC_R_M4_0_UART IMX_SC_PM_CLK_PER>,
-> +			 <&cm40_ipg_clk>;
-> +		clock-indices =3D <IMX_LPCG_CLK_0>, <IMX_LPCG_CLK_1>;
-> +		clock-output-names =3D "cm40_lpcg_uart_clk",
-> +				     "cm40_lpcg_uart_ipg_clk";
-> +		power-domains =3D <&pd IMX_SC_R_M4_0_UART>;
-> +	};
-> +
->  	cm40_i2c_lpcg: clock-controller@37630000 {
->  		compatible =3D "fsl,imx8qxp-lpcg";
->  		reg =3D <0x37630000 0x1000>;
->=20
->=20
+note this driver is currently only available in next.
 
+Best regards
+Uwe
 
-=2D-=20
-TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
-Amtsgericht M=FCnchen, HRB 105018
-Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
-http://www.tq-group.com/
+ drivers/ptp/ptp_fc3.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
+diff --git a/drivers/ptp/ptp_fc3.c b/drivers/ptp/ptp_fc3.c
+index 0e2286ba088a..6ef982862e27 100644
+--- a/drivers/ptp/ptp_fc3.c
++++ b/drivers/ptp/ptp_fc3.c
+@@ -996,13 +996,11 @@ static int idtfc3_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static int idtfc3_remove(struct platform_device *pdev)
++static void idtfc3_remove(struct platform_device *pdev)
+ {
+ 	struct idtfc3 *idtfc3 = platform_get_drvdata(pdev);
+ 
+ 	ptp_clock_unregister(idtfc3->ptp_clock);
+-
+-	return 0;
+ }
+ 
+ static struct platform_driver idtfc3_driver = {
+@@ -1010,7 +1008,7 @@ static struct platform_driver idtfc3_driver = {
+ 		.name = "rc38xxx-phc",
+ 	},
+ 	.probe = idtfc3_probe,
+-	.remove	= idtfc3_remove,
++	.remove_new = idtfc3_remove,
+ };
+ 
+ module_platform_driver(idtfc3_driver);
+
+base-commit: 67908bf6954b7635d33760ff6dfc189fc26ccc89
+-- 
+2.43.0
 
 
