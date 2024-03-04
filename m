@@ -1,83 +1,68 @@
-Return-Path: <linux-kernel+bounces-90459-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90460-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 803EE86FF79
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:51:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BFDD86FF7D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:51:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 371BF2868D5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:51:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B49A21F261C0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:51:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BBFF37715;
-	Mon,  4 Mar 2024 10:51:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B1DA25760;
+	Mon,  4 Mar 2024 10:51:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IUdmHlqm"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="E4EHMFH0"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DAF737179;
-	Mon,  4 Mar 2024 10:51:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58E53B654
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 10:51:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709549475; cv=none; b=SJeo26ych6EY9cio9pW+GJcXDJCs9FMMCAgdIeQXsC1/FLnKCyrlz7b+M89jVJ1H7uWLP35l0D3kLGRCd1itT3Okw60Brl2ux6qKTv4AoGM1HTPZhBn/R/Z0LqZ9k6tOi5hKDSjQmLXSEo2e4kSAmO553+haNqqSmQFdiPj8FRM=
+	t=1709549502; cv=none; b=fGU6g1X33bludrPXtJfnb/l08uF1BpFfPEbbGdMkLdFWeInjYmub6nsaLghcvOwRn2QLKS1iQxy4ByloVI1go8o39zyvBWsiH/2uloPZBE15rtnl6JxpUMPwjV26TQQ5euej6TmTVIbMYuwMsewsNaECtDfe7dK9tXShejjkMAw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709549475; c=relaxed/simple;
-	bh=1zd3GVu3Rm2C+KWSEoGXpIwLN5A0GfhS1q9Aw+9W7rM=;
+	s=arc-20240116; t=1709549502; c=relaxed/simple;
+	bh=AWkFBgfU32UlDqkiUF9U7RS12kflTBdFk/tNRRbAdYs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qsUQsjq6UZEDVIxOkSKPP0PsimzuKjbz6a8F3nMUWLxxmQIGQCN0qjuQR2a5re6T27Ur6ZcwixLICy8VFFlDHjKiBgvXquP0mkQPH4LB/uB/MG0nvEajr5CVWPE90xZ3DLGySFc0/VE6B+y+8bG93xnw18SsTuyR1m9RaFRDmn0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IUdmHlqm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABB22C433F1;
-	Mon,  4 Mar 2024 10:51:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709549475;
-	bh=1zd3GVu3Rm2C+KWSEoGXpIwLN5A0GfhS1q9Aw+9W7rM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IUdmHlqmjdF9sVcEjisGPLRse7lw64LkirsFmw8ShEDmhnEjzp+/xEafNTJlZcV0Y
-	 dZe7GxwvZCcDsFMuNpeI/TBwtkXIQfhyEmx2XSYukzbvJ2wo7p+6JOKdVe9r9toohS
-	 NlTeaFLYq74S/3aEiVdhGrcxHA+8HRd3jOHW7ID/kFX181CUuQt3Af87RQlcW0AV8Y
-	 8kdxJIksuaKE5Ts22TYEpnkd0vBxLtG3xh0tytDO0EoHd+LsQIFDr+ctBOLe3l4hdx
-	 K6a+Q6vuqbd6IvLegVq8GqYu9Apf58BPfO3BJ5lX9OF7SPNebpBmSvqGTFOLTQKZJX
-	 LXYTijmD2A6Xw==
-Date: Mon, 4 Mar 2024 11:51:04 +0100
-From: Niklas Cassel <cassel@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Marek Vasut <marek.vasut+renesas@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Kishon Vijay Abraham I <kishon@ti.com>,
-	Vidya Sagar <vidyas@nvidia.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Minghuan Lian <minghuan.Lian@nxp.com>,
-	Mingkai Hu <mingkai.hu@nxp.com>, Roy Zang <roy.zang@nxp.com>,
-	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v8 03/10] PCI: dwc: ep: Introduce dw_pcie_ep_cleanup()
- API for drivers supporting PERST#
-Message-ID: <ZeWnmLjS0O8CYQYg@fedora>
-References: <20240224-pci-dbi-rework-v8-0-64c7fd0cfe64@linaro.org>
- <20240224-pci-dbi-rework-v8-3-64c7fd0cfe64@linaro.org>
- <ZeB7PQtkDSoCzE1Z@fedora>
- <20240304081713.GH2647@thinkpad>
+	 Content-Type:Content-Disposition:In-Reply-To; b=TsFg1xGGbWp0E26UIFtaI2GLareE73j2nOVIz2xjull0jpCWC5pO0/bTmRocRq8EM1KIZra0W2a91eJFoUuFcQI7JtseLzZqzdt7dcCp4zC6NT6xWE6zJmyVZ/ZjyNcSJusNna40uBxr/nJYUNBnTyTeY+Y/DhEEqoHBlcmhsB0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=E4EHMFH0; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709549500;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8KDGD6J5huIB/ELO1ZkJuBYCkJyRo8YAdd5Mvn33swU=;
+	b=E4EHMFH09RErNNjY72/tj8kmAJ4ZWMsz2Bd8YiyYmDgVdpXK0p6Ew4/HE3PM0dSjF1JQyn
+	OiweBTlPIzFanb1w7W/7RZj4EqPuoYd/RhiVWGOYESRCQKF92VSHZ2WmH/sqhX3LI+MzoY
+	lw/fdt1yk6xiMbtLOsalckmPcTR1sBs=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-515--l8jLQ_AN36e-Sv1IVWe5A-1; Mon, 04 Mar 2024 05:51:35 -0500
+X-MC-Unique: -l8jLQ_AN36e-Sv1IVWe5A-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D16C6862DC0;
+	Mon,  4 Mar 2024 10:51:34 +0000 (UTC)
+Received: from localhost (unknown [10.72.116.6])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id E9A09422A9;
+	Mon,  4 Mar 2024 10:51:33 +0000 (UTC)
+Date: Mon, 4 Mar 2024 18:51:26 +0800
+From: Baoquan He <bhe@redhat.com>
+To: Borislav Petkov <bp@alien8.de>
+Cc: X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	dyoung@redhat.com
+Subject: Re: [RFC PATCH 1/2] Revert "x86/kexec/64: Prevent kexec from 5-level
+ paging to a 4-level only kernel"
+Message-ID: <ZeWnrhzU86pz7y5Z@MiWiFi-R3L-srv>
+References: <20240301185618.19663-1-bp@alien8.de>
+ <20240301185618.19663-2-bp@alien8.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -86,86 +71,54 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240304081713.GH2647@thinkpad>
+In-Reply-To: <20240301185618.19663-2-bp@alien8.de>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-On Mon, Mar 04, 2024 at 01:47:13PM +0530, Manivannan Sadhasivam wrote:
-> On Thu, Feb 29, 2024 at 01:40:29PM +0100, Niklas Cassel wrote:
-> > On Sat, Feb 24, 2024 at 12:24:09PM +0530, Manivannan Sadhasivam wrote:
-> > 
-> > Since e.g. qcom-ep.c does a reset_control_assert() during perst
-> > assert/deassert, which should clear sticky registers, I think that
-> > you should let dw_pcie_ep_cleanup() clean up the BARs using
-> > dw_pcie_ep_clear_bar().
-> > 
+On 03/01/24 at 07:56pm, Borislav Petkov wrote:
+> From: "Borislav Petkov (AMD)" <bp@alien8.de>
 > 
-> As I mentioned earlier, it is the job of the EPF drivers to clear the BARs since
-> they allocate them. I'm trying to reduce the implicit resetting wherever we
-> could.
+> This reverts commit ee338b9ee2822e65a85750da6129946c14962410.
 > 
-> The proper fix is to add the LINK_DOWN callback to EPF drivers and do cleanup.
-> I'm planning to submit a series for that after this one.
+> This whole dynamic switching support is silly. I don't see a use case
+> where one would use an old kernel with CONFIG_X86_5LEVEL disabled to
+> kexec into. I.e., you use pretty much the same kernel.
 
-Currently, pci-epf-test allocates memory for the BARs in .bind().
-Likewise it frees the memory for the BARs in .unbind().
+It's not true. Customer may want to try to load a different kernel if
+they have taken many testings and trust that kdump kernel, or for
+debugging. The similar for kexec reboot into 2nd kernel. We don't
+enforce kexec/kdump to work on the same kernel as the 1st kernel. With
+the fail and message, user can take measure to avoid that. it's better
+the failure is encountered when failing to jump to kexec/kdump kernel.
 
-AFAICT, most iATU registers, and most BAR registers are sticky registers,
-so they will not get reset on link down.
-(The currently selected BAR size, in case of Resizable BAR is an exception.)
+I remmeber we have use case where customer used kdump kernel different
+than the 1st kernel. While I don't remember why.
 
-That means that even on link down, we do not need to free the memory,
-or change the iATU settings. (This applies to all drivers.)
+> 
+> But I'm open to corrections.
+> 
+> Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+> ---
+>  arch/x86/kernel/kexec-bzimage64.c | 5 -----
+>  1 file changed, 5 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/kexec-bzimage64.c b/arch/x86/kernel/kexec-bzimage64.c
+> index cde167b0ea92..4f2e47338b7f 100644
+> --- a/arch/x86/kernel/kexec-bzimage64.c
+> +++ b/arch/x86/kernel/kexec-bzimage64.c
+> @@ -375,11 +375,6 @@ static int bzImage64_probe(const char *buf, unsigned long len)
+>  		return ret;
+>  	}
+>  
+> -	if (!(header->xloadflags & XLF_5LEVEL) && pgtable_l5_enabled()) {
+> -		pr_err("bzImage cannot handle 5-level paging mode.\n");
+> -		return ret;
+> -	}
+> -
+>  	/* I've got a bzImage */
+>  	pr_debug("It's a relocatable bzImage64\n");
+>  	ret = 0;
+> -- 
+> 2.43.0
+> 
 
-
-
-However, on PERST (for the drivers call dw_pcie_ep_cleanup()), they call
-reset_control_assert(), so they will clear sticky registers, which means
-that they need to at least re-write the iATU and BAR registers.
-(I guess they could free + allocate the memory for the BARs again,
-but I don't think that is strictly necessary.)
-That is why I suggested that you call dw_pcie_ep_clear_bar() from
-dw_pcie_ep_cleanup().
-
-
-
-If you free the memory for the BARs in link_down() (this callback exists
-for many drivers, even drivers without a PERST handler), where are you
-supposted to alloc the memory for the BARs again?
-
-Allocating them at link_up() is too late (because as soon as the link is
-up, the host is allowed to enumerate the EP BARs.) The proper place is to
-allocate them when receiving PERST, but not all drivers have a PERST handler.
-
-(My understanding is that 1) PERST assert 2) PERST deassert 3) link is up.)
-
-
-
-unbind() undos what was done in bind(), so shouldn't link_down() undo what was
-done in link_up()? With that logic, if you move the alloc to .core_init(),
-should we perhaps have a .core_deinit() callback for EPF drivers?
-(I guess only drivers which perform a reset during PERST would call this.)
-
-But considering that free+alloc is not strictly needed, why not just keep
-the allocation + free in .bind()/.unbind() ?
-(To avoid the need to create a .core_deinit()), and let dw_pcie_ep_cleanup()
-call dw_pcie_ep_clear_bar() ?
-
-I guess my point is that it seems a bit pointless for drivers that do not
-clear sticky registers to free+alloc memory on link down, for no good
-reason. (Memory might get fragmented over time, so it might not be possible
-to perform a big allocation after the device has been running for a really
-long time.)
-
-
-
-So I'm thinking that we either
-1) Keep the alloc/free in bind/unbind, and let dw_pcie_ep_cleanup() call
-dw_pcie_ep_clear_bar(),
-or
-2) Introduce a .deinit_core() callback which will free the BARs.
-(Because I don't see how you will (re-)allocate memory for all drivers
-if you free the memory in link_down().)
-
-
-Kind regards,
-Niklas
 
