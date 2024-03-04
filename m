@@ -1,96 +1,122 @@
-Return-Path: <linux-kernel+bounces-90560-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90565-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4F6087011F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:19:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91B34870141
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:30:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A0DB1F20616
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:19:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 320241F232B0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:30:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FD143BB51;
-	Mon,  4 Mar 2024 12:19:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 951613D0C8;
+	Mon,  4 Mar 2024 12:30:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZUI2hZ4O"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b="USsmf+ae"
+Received: from mx1.t-argos.ru (mx1.t-argos.ru [109.73.34.58])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD53F224DF;
-	Mon,  4 Mar 2024 12:19:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE0631D53F;
+	Mon,  4 Mar 2024 12:30:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=109.73.34.58
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709554747; cv=none; b=K8mHw0/FufPHHSbg78UdXjGzYtRWcnxAW287/WOaRtDrDHGK/P6fqxwVwWZf3OfHjYNyDgbeN39kVWHGG7WfYpQKnKz8pdYNQhv3N5dL9TDZAUcFZxKXWaWqJ6UPb3R0gSO9qmqCHjW2m2H2wNayrOTcPlQaHEtzmebGNnUOw0o=
+	t=1709555445; cv=none; b=gHpsyJ5wlY6nvSBSkWeN8kBYS3tibt+UB3jsfhWn7bDOUF2CcMiH8numtdLFy/uGfNSiIREslA1SfMp8SdiGlktnchV+N61Nv51ll35UxIQiCnGkhWmu+Fjj6btLK4BCj8RLe9eSu8mPwwybCoTBmK0375AGLIMGJCjlKJ8oCoo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709554747; c=relaxed/simple;
-	bh=+Xw4yL/juL36M9CS5u3iiQJvhPaohn+valC9SCU0ybc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bCZjtbWkOfc08ddXx1otLXlvXvfeICVX4DZHCEcNETCWzUzG9iunftGbZ4oFmS8vq/KxosoIB948OcuN/4zStKcsSR0jiOzyzKz5pSE8MymXzqGKISiB7FyUnMzggvnol3n2TGwElX0X/8E1UmNoqtJ/g+FClHFwzV03tKYdTyQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZUI2hZ4O; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D36F2C433F1;
-	Mon,  4 Mar 2024 12:19:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709554747;
-	bh=+Xw4yL/juL36M9CS5u3iiQJvhPaohn+valC9SCU0ybc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZUI2hZ4OWyfYui0MJR/fJWyPYofxYOcvEJ5DI5z16+KtH7rdtSfHUvftD8pxYv3OS
-	 Jc7qJDmbS15d8t3ugJKe1V7YtWvL/oFLbb4Eqzu9vrZUmiuKwoJRwMdYkzT+pqv8xO
-	 h3lrVQ8b6Jm+hEQAHgS2R5Kgvody6lBsg1TewvwUIZ+HgyTSeOc6gyJkfLVwKfDxWF
-	 oW3YBP15Z1GMWhXHEecrhhiPIasG6UweQmh7JdpKv2x0EAdvAMLY5S4wy25I+nSG9+
-	 QOkTl8utddU4tV378UMm9IVrEcP9A7KhccuWtuPVxeUxs3WaRTAMwmLU14vshiHLGS
-	 +4IV2oFFV3X8A==
-Date: Mon, 4 Mar 2024 13:19:02 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Dominique Martinet <asmadeus@codewreck.org>
-Cc: xingwei lee <xrivendell7@gmail.com>, linux-kernel@vger.kernel.org, 
-	samsun1006219@gmail.com, linux-fsdevel@vger.kernel.org, syzkaller@googlegroups.com, 
-	jack@suse.cz, viro@zeniv.linux.org.uk, Eric Van Hensbergen <ericvh@kernel.org>, 
-	v9fs@lists.linux.dev
-Subject: Re: WARNING in vfs_getxattr_alloc
-Message-ID: <20240304-essverhalten-wortlaut-d4cc40939a3c@brauner>
-References: <CABOYnLwY5Y499j=JgWtk9ksRneOzLoH_G9dYZTwXi=UvLbUsSg@mail.gmail.com>
- <20240304-stuhl-appetit-656a443d78a5@brauner>
- <ZeW6a1OK-lhCbAf0@codewreck.org>
+	s=arc-20240116; t=1709555445; c=relaxed/simple;
+	bh=FeBZR3SGL2Om8m5Kdr9xfsj804J10OkYTMQW2JZj7VE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=f4L0zkxRz8U6lcNcVk4YMlSS5If7pR8M/woV9msX1og7rp76+RSF8VjrHnF1e2rMz0IBXutEM0qBi1YQC1Uidb+1AakqfQfkbLzRvwpnR+Anot0uAMHXli4H7K1wFRbqWs5ej8neldF/ygpKaDS+EcKnW2Av6XY4RI5a8hDgGLU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru; spf=pass smtp.mailfrom=t-argos.ru; dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b=USsmf+ae; arc=none smtp.client-ip=109.73.34.58
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=t-argos.ru
+Received: from mx1.t-argos.ru (localhost [127.0.0.1])
+	by mx1.t-argos.ru (Postfix) with ESMTP id 14559100002;
+	Mon,  4 Mar 2024 15:22:19 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=t-argos.ru; s=mail;
+	t=1709554939; bh=YbTF9cKWyBV3OLPeCxcCiIlnH5+s0eWfsFAU6u80XD8=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
+	b=USsmf+aeiLQI1maKyJZCHhC3uyVMfHOojULGaFWYvhPTEoegbnXGOiaA+Wt+ckXQ8
+	 tsnL6RA1DUE7YrfOXx0ZPF30wRf+jNS4DyWPA4M/cIYXkc/ds9EA6GKlbzRCS30opr
+	 2ygKtaj6qi0qFya1KmnN20qfMsBDifLnRCZq2DVTsfEhwfSg8jzjwKYrnHsvCdyI0H
+	 PDD1E+nDLSTkp/rcc6nWYJBBnwhh3sRYf6+r2uSYXf4/RPQKopiFO8Ke8gMr51bYgH
+	 61D7azudCxIcFVJ45f2xvoUyHiqAzDIqqIjaV6aOd3a4Qsp93JLDTBwOF95RDxvAdH
+	 m1XXng71rCzfQ==
+Received: from mx1.t-argos.ru.ru (mail.t-argos.ru [172.17.13.212])
+	by mx1.t-argos.ru (Postfix) with ESMTP;
+	Mon,  4 Mar 2024 15:21:17 +0300 (MSK)
+Received: from localhost.localdomain (172.17.215.6) by ta-mail-02
+ (172.17.13.212) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Mon, 4 Mar 2024
+ 15:20:56 +0300
+From: Aleksandr Mishin <amishin@t-argos.ru>
+To: Corentin Labbe <clabbe@baylibre.com>
+CC: Aleksandr Mishin <amishin@t-argos.ru>, Herbert Xu
+	<herbert@gondor.apana.org.au>, "David S . Miller" <davem@davemloft.net>,
+	Heiko Stuebner <heiko@sntech.de>, <linux-crypto@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-rockchip@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>
+Subject: [PATCH] crypto: rockchip/rk3288 - Add dereference of NULL pointer check
+Date: Mon, 4 Mar 2024 15:20:31 +0300
+Message-ID: <20240304122031.25325-1-amishin@t-argos.ru>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZeW6a1OK-lhCbAf0@codewreck.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: ta-mail-02.ta.t-argos.ru (172.17.13.212) To ta-mail-02
+ (172.17.13.212)
+X-KSMG-Rule-ID: 1
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 183922 [Mar 04 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.3
+X-KSMG-AntiSpam-Envelope-From: amishin@t-argos.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 8 0.3.8 4a99897b35b48c45ee5c877607d26a2d9f419920, {Tracking_from_domain_doesnt_match_to}, t-argos.ru:7.1.1;mx1.t-argos.ru.ru:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: s
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2024/03/04 09:16:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2024/03/04 08:11:00 #23960386
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-On Mon, Mar 04, 2024 at 09:11:23PM +0900, Dominique Martinet wrote:
-> Christian Brauner wrote on Mon, Mar 04, 2024 at 12:50:12PM +0100:
-> > > kernel: lastest linux 6.7.rc8 90d35da658da8cff0d4ecbb5113f5fac9d00eb72
-> > > kernel config: https://syzkaller.appspot.com/text?tag=KernelConfig&x=4a65fa9f077ead01
-> > > with KASAN enabled
-> > > compiler: gcc (GCC) 12.2.0
-> > > 
-> > > TITLE: WARNING in vfs_getxattr_alloc------------[ cut here ]------------
-> > 
-> > Very likely a bug in 9p. Report it on that mailing list. It seems that
-> > p9_client_xattrwalk() returns questionable values for attr_size:
-> > 748310584784038656
-> > That's obviously a rather problematic allocation request.
-> 
-> That's whatever the server requested -- in 9p we don't have the data at
-> allocation time (xattrwalk returns the size, then we "read" it out in a
-> subsequent request), so we cannot double-check that the size makes sense
-> based on a payload at this point.
-> 
-> We could obviously add a max (the current max of SSIZE_MAX is "a bit"
-> too generous), but I honestly have no idea what'd make sense for this
-> without breaking some weird usecase somewhere (given the content is
-> "read" we're not limited by the size of a single message; I've seen
-> someone return large content as synthetic xattrs so it's hard to put an
-> actual number for me).
-> If the linux VFS has a max hard-wired somewhere plase tell me and I'll
-> be glad to change the max.
+In rk_crypto_probe() crypto_engine_alloc_init() is assigned to
+crypto_info->engine and there is a dereference of it in
+clk_mt2712_top_init_early() which could lead to a NULL pointer
+dereference on failure of crypto_engine_alloc_init().
 
-Surprisingly we have a max limit that exists in a way because the whole
-xattr uapi is somewhat broken. So best to limit it at XATTR_SIZE_MAX.
-See fs/xattr.c for how it's used.
+Fix this bug by adding a check of crypto_info->engine.
+
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
+
+Fixes: 57d67c6e8219 ("crypto: rockchip - rework by using crypto_engine")
+
+Signed-off-by: Aleksandr Mishin <amishin@t-argos.ru>
+---
+ drivers/crypto/rockchip/rk3288_crypto.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/crypto/rockchip/rk3288_crypto.c b/drivers/crypto/rockchip/rk3288_crypto.c
+index 70edf40bc523..88cea1e36afa 100644
+--- a/drivers/crypto/rockchip/rk3288_crypto.c
++++ b/drivers/crypto/rockchip/rk3288_crypto.c
+@@ -371,6 +371,10 @@ static int rk_crypto_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	crypto_info->engine = crypto_engine_alloc_init(&pdev->dev, true);
++	if (!crypto_info->engine) {
++		dev_err(&pdev->dev, "memory allocation failed.\n");
++		goto err_crypto;
++	}
+ 	crypto_engine_start(crypto_info->engine);
+ 	init_completion(&crypto_info->complete);
+ 
+-- 
+2.30.2
+
 
