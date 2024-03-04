@@ -1,94 +1,177 @@
-Return-Path: <linux-kernel+bounces-91318-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91319-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40B44870E12
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:40:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB4D4870E3B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:42:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D59791F21C31
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:40:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 393101F22C11
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:42:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B37667BB08;
-	Mon,  4 Mar 2024 21:40:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18B5478B47;
+	Mon,  4 Mar 2024 21:41:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cv43hwON"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AlsfXtNa"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E84CD1F92C;
-	Mon,  4 Mar 2024 21:40:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E60F8F58;
+	Mon,  4 Mar 2024 21:41:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709588429; cv=none; b=uin3kMH5UARJ6njdLAHiyib5EIqgObqkGvILcFpFhOzsqoGRI5dwB8Nm1+JbFw49zMnCYg55KF+46ZcybVmCTcZaM2w6rzNNw9g7YuG9D7oPisYC7Bf15jjlBY4fc3JC8tD7SPaZ7c39LNGbxVECBGmdW19g1VKbJpQ+z8nJMSM=
+	t=1709588516; cv=none; b=IITcqiQCifLWT2RcungOBmFH8TvrDt3oTwsihwIbMRtB+nLM1oOuz4syYMZnmwNiCv/mmJSN7AY4RwLC2IU2HXCvWHDXeQNYKNvd+lJ2xSKYqCIqYdiLLHhvtF/9+8gCyk+g7NVL93xuFqyFDPWNV8x+f1vPK/2Od8foATH5xwk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709588429; c=relaxed/simple;
-	bh=0yqtvKb6euEXfWCJ5BupuWOTgDwHxNA52Wph41RVxls=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=odUiJ3iuJmtTXhK8NsQhQzbWtBL4SN69aRD/CFnZMgLaiSP9TzkrvIREECws2SJyhgnfMubbmFF5sZJ3+mI9XcF3jE8iRhmCqykg7ZsIccObme2xhX5tnMzshYneDlqrDeZIeTZ15jhPR5XqlppYwTne+mVD5aCNr2BJKCtOgpU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cv43hwON; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 760E9C43390;
-	Mon,  4 Mar 2024 21:40:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709588427;
-	bh=0yqtvKb6euEXfWCJ5BupuWOTgDwHxNA52Wph41RVxls=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Cv43hwONEsIKBQ2wAnPHyKgBXY3Qz4Yq5mTh4jqxkMmXkuHWyQxYPXmCcHakE9vlh
-	 AK5n9xvDKKoYcGxVaRypsGBGZcTttntFuHhJe5V6wdf6MnArXFdqJ5yIgeX6xJ25bt
-	 DjlyKmzZcGanJf/42sZmdzwgzZJGBOSr/zJNmm/Pf1XC+szC/LNoSvdlcOf2pNl6zG
-	 ZpAueehZgD4/M0O/c1hrDeeQKe8Gn5eDNOYhDoTv9X3oW5P9a/3HZUZid5HbjOPaUg
-	 W6j8lVtPdOtNRJ9bGeInbcOJPR/lKZks8MkcIXH7YYJBEMuYq3Yc8177bTw5wbngZ0
-	 uYhJVfQArBJlw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 55F16C3274B;
-	Mon,  4 Mar 2024 21:40:27 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1709588516; c=relaxed/simple;
+	bh=9SEv1fZ/gQAqY+O/ktRXWn4grnSoNnUcFBAN3ld0CVA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BKqAK3LoleGoklQyM0FFBiXpBUtVP2WuKGOuaAz4LZGQMe3diFmxnTHTpmLHHBcajFD+Xn7xlyxvYHzzMilspqWV8kEsRDzXyhbAqa4qf/NcjVA03QsQCyMwCTH9WbiTpca+yqtLksxPdp40ql6L3f4wwkASW+faUPZSdUgpKAw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AlsfXtNa; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-412e84e87e6so6354105e9.2;
+        Mon, 04 Mar 2024 13:41:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709588513; x=1710193313; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rGrlaWOqHwE4QKgjxl7U7FEwFsj916aCtQXG9iXn0EY=;
+        b=AlsfXtNa+qoWgiFTFPcMzZJbeab8PXZt6zNuq5NaRlfKxuFaV4HJHlnsIGNwtzeGda
+         aDK50iaBZq2KLy4neyYyt3mK+zvnZ1NRAuhyMdruN/XlHTGO8c4hWBpY/hrNtA81a0ET
+         E5T43Da8ZucJQRc0/QdmXG3/EcmNt5MZnrQYBidVRJ5KmiNWjJvgSN3Wq42iCW/R/Nyb
+         fEHr4sMePBVHqde0FydQtHy5G03VtCKuTkbML27f0draIiZBMH/purgXFBFFBOfmhASw
+         1le0kydqt2fCTINuEqKXkDYqqm94jW2VJqzDC3kDPVgKwlLS0MDcoFw/1w2WYV4znLOH
+         Nc0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709588513; x=1710193313;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rGrlaWOqHwE4QKgjxl7U7FEwFsj916aCtQXG9iXn0EY=;
+        b=WhMPIDz7j0tqihPrMIFAdC3U0jOa1zr2DZX0Bq+VQ+1jd7zJd0yr1vAI7mZcbVOttR
+         LVVkhQDDRqb9ciGiRLQ1tm+3zoYC6T/ajyi9zfw7gIZAJ9f1JoKjocd6KKyr1EoBtVhU
+         VXz2/5kJgrbZxsa7wfeaEgwmCw+6Qo++crzLKmj1MLH3HPaNsi9hsj93eQdm7K1Lw7YF
+         4u86CJhpLiH9kR0KNyeU/gTMgIsPdMpJJ+AW7VkxmtHkR6N+mIVMzT9Qx/7kZxw9Hx3K
+         JoVxgnkiJLYJvbJkKudE15XVQWkmfpP3hK2TMyWhguAYSeyurKu5+iiM1FanJcnzEBqb
+         100g==
+X-Forwarded-Encrypted: i=1; AJvYcCU/QVdN+gVSeiglTnOamNZtxdCGqL//2YXZ64t+YPc+68Gwd8YrS8KDMIDi1dZnGnkiusLOBvHkKZQnKUcbyGJmzjlKQ9aYgCirKq14k9Zo8EIJqNlbetrdkueBNjmW8yAnvXktSTjLMjwf6uiI+DFk7D0WBTtmf1k/d72C235U
+X-Gm-Message-State: AOJu0Yy/arK37bLKdu9EQLkfbaWtlYoBjUVwTkcyTgi32ZdzobkJd0Bh
+	HX5vYeIDC78jK4P9XRTvkD9QRxKr9Wn6P7o/l9EXdVd/6xI6j35Y
+X-Google-Smtp-Source: AGHT+IHS4Ph0K17h5ybJ4yv/Ax/dRUFfDIaeA86vo6DSHkFXwpvHydlfr7H15a+V+WFlSgowjooCuQ==
+X-Received: by 2002:a05:600c:468a:b0:412:bcc9:32dc with SMTP id p10-20020a05600c468a00b00412bcc932dcmr8364626wmo.31.1709588512525;
+        Mon, 04 Mar 2024 13:41:52 -0800 (PST)
+Received: from eldamar.lan (c-82-192-242-114.customer.ggaweb.ch. [82.192.242.114])
+        by smtp.gmail.com with ESMTPSA id o17-20020a05600c4fd100b00412d68dbf75sm8769968wmq.35.2024.03.04.13.41.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Mar 2024 13:41:50 -0800 (PST)
+Sender: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com>
+Received: by eldamar.lan (Postfix, from userid 1000)
+	id 14349BE2EE8; Mon,  4 Mar 2024 22:41:50 +0100 (CET)
+Date: Mon, 4 Mar 2024 22:41:50 +0100
+From: Salvatore Bonaccorso <carnil@debian.org>
+To: Jonathan Corbet <corbet@lwn.net>
+Cc: regressions@lists.linux.dev, stable@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Ben Hutchings <ben@decadent.org.uk>,
+	Kees Cook <keescook@chromium.org>, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Aditya Srivastava <yashsri421@gmail.com>, 1064035@bugs.debian.org
+Subject: Re: [regression 5.10.y] linux-doc builds: Global symbol "$args"
+ requires explicit package name (did you forget to declare "my $args"?) at
+ ./scripts/kernel-doc line 1236.
+Message-ID: <ZeZAHnzlmZoAhkqW@eldamar.lan>
+References: <ZeHKjjPGoyv_b2Tg@eldamar.lan>
+ <877ciiw1yp.fsf@meer.lwn.net>
+ <ZeYoZNJaZ4ejONTZ@eldamar.lan>
+ <874jdlsqyy.fsf@meer.lwn.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] Bluetooth: Add new quirk for broken read key length on
- ATS2851
-From: patchwork-bot+bluetooth@kernel.org
-Message-Id: 
- <170958842734.5292.12544056625468291768.git-patchwork-notify@kernel.org>
-Date: Mon, 04 Mar 2024 21:40:27 +0000
-References: <20240227014328.1052386-1-nukelet64@gmail.com>
-In-Reply-To: <20240227014328.1052386-1-nukelet64@gmail.com>
-To: Vinicius Peixoto <nukelet64@gmail.com>
-Cc: marcel@holtmann.org, luiz.dentz@gmail.com, johan.hedberg@gmail.com,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org
+Content-Type: multipart/mixed; boundary="AtnHYYbjYt9cf90c"
+Content-Disposition: inline
+In-Reply-To: <874jdlsqyy.fsf@meer.lwn.net>
 
-Hello:
 
-This patch was applied to bluetooth/bluetooth-next.git (master)
-by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
+--AtnHYYbjYt9cf90c
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Mon, 26 Feb 2024 22:43:26 -0300 you wrote:
-> The ATS2851 controller erroneously reports support for the "Read
-> Encryption Key Length" HCI command. This makes it unable to connect
-> to any devices, since this command is issued by the kernel during the
-> connection process in response to an "Encryption Change" HCI event.
+Hi,
+
+On Mon, Mar 04, 2024 at 01:05:09PM -0700, Jonathan Corbet wrote:
+> Salvatore Bonaccorso <carnil@debian.org> writes:
 > 
-> Add a new quirk (HCI_QUIRK_BROKEN_ENC_KEY_SIZE) to hint that the command
-> is unsupported, preventing it from interrupting the connection process.
+> > Ok. In the sprit of the stable series rules we might try the later and
+> > if it's not feasible pick the first variant?
 > 
-> [...]
+> Well, "the spirit of the stable series" is one of Greg's titles, and he
+> said either was good...:)
 
-Here is the summary with links:
-  - Bluetooth: Add new quirk for broken read key length on ATS2851
-    https://git.kernel.org/bluetooth/bluetooth-next/c/88f741deaa76
+here we go. Please let me know if you need anything changed in the
+commit message to describe the situation better.
 
-You are awesome, thank you!
+Greg, in the Fixes tag I added the 5.10.y commit as the issue is
+specific to the 5.10.y series. Is this the correct form to note this?
+
+Regards,
+Salvatore
+
+--AtnHYYbjYt9cf90c
+Content-Type: text/x-diff; charset=us-ascii
+Content-Disposition: attachment;
+	filename="0001-scripts-kernel-doc-Fix-syntax-error-due-to-undeclare.patch"
+
+From ccddb9f4915f0dbf28fb72b6ff4c04977978ed3d Mon Sep 17 00:00:00 2001
+From: Salvatore Bonaccorso <carnil@debian.org>
+Date: Mon, 4 Mar 2024 22:24:12 +0100
+Subject: [PATCH] scripts: kernel-doc: Fix syntax error due to undeclared args
+ variable
+
+The backport of commit 3080ea5553cc ("stddef: Introduce
+DECLARE_FLEX_ARRAY() helper") to 5.10.y (as a prerequisite of another
+fix) modified scripts/kernel-doc and introduced a syntax error:
+
+Global symbol "$args" requires explicit package name (did you forget to declare "my $args"?) at ./scripts/kernel-doc line 1236.
+Global symbol "$args" requires explicit package name (did you forget to declare "my $args"?) at ./scripts/kernel-doc line 1236.
+Execution of ./scripts/kernel-doc aborted due to compilation errors.
+
+Note: The issue could be fixed in the 5.10.y series as well by
+backporting e86bdb24375a ("scripts: kernel-doc: reduce repeated regex
+expressions into variables") but just replacing the undeclared args back
+to ([^,)]+) was the most straightforward approach. The issue is specific
+to the backport to the 5.10.y series. Thus there is as well no upstream
+commit for this change.
+
+Fixes: 443b16ee3d9c ("stddef: Introduce DECLARE_FLEX_ARRAY() helper") # 5.10.y
+Reported-by: Ben Hutchings <ben@decadent.org.uk>
+Link: https://lore.kernel.org/regressions/ZeHKjjPGoyv_b2Tg@eldamar.lan/T/#u
+Link: https://bugs.debian.org/1064035
+Signed-off-by: Salvatore Bonaccorso <carnil@debian.org>
+---
+ scripts/kernel-doc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scripts/kernel-doc b/scripts/kernel-doc
+index 7a04d4c05326..8e3257f1ea2c 100755
+--- a/scripts/kernel-doc
++++ b/scripts/kernel-doc
+@@ -1233,7 +1233,7 @@ sub dump_struct($$) {
+ 	# replace DECLARE_KFIFO_PTR
+ 	$members =~ s/DECLARE_KFIFO_PTR\s*\(([^,)]+),\s*([^,)]+)\)/$2 \*$1/gos;
+ 	# replace DECLARE_FLEX_ARRAY
+-	$members =~ s/(?:__)?DECLARE_FLEX_ARRAY\s*\($args,\s*$args\)/$1 $2\[\]/gos;
++	$members =~ s/(?:__)?DECLARE_FLEX_ARRAY\s*\(([^,)]+),\s*([^,)]+)\)/$1 $2\[\]/gos;
+ 	my $declaration = $members;
+ 
+ 	# Split nested struct/union elements as newer ones
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+2.43.0
 
 
+--AtnHYYbjYt9cf90c--
 
