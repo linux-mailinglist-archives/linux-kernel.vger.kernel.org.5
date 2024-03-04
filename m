@@ -1,109 +1,167 @@
-Return-Path: <linux-kernel+bounces-90750-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90751-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9A84870466
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:41:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E420B870469
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:41:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB6391C23551
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:41:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 22AED1C212AA
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:41:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74E1E41775;
-	Mon,  4 Mar 2024 14:39:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03DBF4653A;
+	Mon,  4 Mar 2024 14:40:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="jmj4UvLe"
-Received: from bee.tesarici.cz (unknown [77.93.223.253])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mLQ7elNH"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11C2F4087F
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 14:39:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.93.223.253
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80C251E484;
+	Mon,  4 Mar 2024 14:40:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709563184; cv=none; b=fk6SPbZUfjgOQT2+IDxjQOj3fbWKdZ/QF8c/zvJJTeC8yhhZ3p7LatVXyCQBffJTz8Q+Y3RA7GT+Lbe64jKhx1WB0J4sGTjHULUrZQcfmpNhAySAqptAeimLut2jXeZeX8tQv8xEtVpqjpWtPBnru6DVU9S6Jp76toOapL9t0JQ=
+	t=1709563245; cv=none; b=V52WmP08tdP8XEHXHZvoYjef6UjPUdeY7Pw2HYN633kju1u5a3bYagT5Tbgkru8sDKD6/VJ1Qj1pcHqqzSdJ/omcA/qH5y312eNREoIDXT1ht/w1ndw6TNREPIpHdtdCs0Zt6YpMrdbBfIPbbnmhx4i4vTxWZHN4jBeqmyAlTqU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709563184; c=relaxed/simple;
-	bh=OuH4ARsy4uMSskFQxM4nVWSg6cNRuQIZsejNWP30OlM=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=oIK/vk11AECQlF3kGNEXNavRy23hEfOdFJiFI33fXdovcJ31rM8e3rJdaBTnpGnG9+9akW6OuRAhC9g8aalNPan+OzD8ZZ5YC0UhidVTSte1noS8n4DchnQBRPcNJ/GjY2nduLO9ONlMRBluQnjYr3UevqzE94w6w0V5W6/pZ4c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=jmj4UvLe; arc=none smtp.client-ip=77.93.223.253
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by bee.tesarici.cz (Postfix) with ESMTPSA id C409E1C4BDD;
-	Mon,  4 Mar 2024 15:39:39 +0100 (CET)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
-	t=1709563179; bh=DNUUA0JgeJlN4yw9N1RggkXAebOO04FxH/opiGgSGMU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=jmj4UvLeXwlP5cI6zhn4rcHfzcQAW0evTccxhBZD/Rejx23Y2+HJzE9WUhT6lr8El
-	 5nTLAo3t1GsEzptAULYUw07tCVnr+vY+8MG6mKH25vHoI/kKYEmM34ilqZf/RuhxiV
-	 7D9RvZqtWveVlbvv4nbEzYGJIiDDDkHnhCJk3GoyGVc40hgng9IViTN3B8W6ydJtkI
-	 bgyuJr73NzhCByCwv4GcGuORGEp+CJ8ctycpn3rn0jZTyRKOo2ipaKGYCV7ktaMII4
-	 c/fuYmkgoOHfQ0gwtSBeADekmE3fSDye2AHONrNjG6dzumsdWPphxplxN1+JaWV/v2
-	 l4/EYlFeg6p7g==
-Date: Mon, 4 Mar 2024 15:39:38 +0100
-From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To: Robin Murphy <robin.murphy@arm.com>
-Cc: joro@8bytes.org, iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
- will@kernel.org, mhklinux@outlook.com, hch@lst.de
-Subject: Re: [PATCH] iommu/dma: Document min_align_mask assumption
-Message-ID: <20240304153938.1fa984b7@meshulam.tesarici.cz>
-In-Reply-To: <dbb4d2d8e5d1691ac9a6c67e9758904e6c447ba5.1709553942.git.robin.murphy@arm.com>
-References: <dbb4d2d8e5d1691ac9a6c67e9758904e6c447ba5.1709553942.git.robin.murphy@arm.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
+	s=arc-20240116; t=1709563245; c=relaxed/simple;
+	bh=zIjlGZfedJV9OUraq9VXgB71J74hXHMlhetn5zUkDYY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NN8ZWYAAcu0JQcvVv/A1EROtLk6jBPJM7AuAblqgT5FPQCM+KaZkykrn4R4iZF19tjyJ0+6/qkyKW0jp0kyAfS0U4HlNNtV3X+fiOpDBDgryOw24XxiUWWalFcN2Y9XFbtId7tNco9E6gaYmm9PGJ5eWoBjY0I0TSBjAFTVOPIU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mLQ7elNH; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709563243; x=1741099243;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=zIjlGZfedJV9OUraq9VXgB71J74hXHMlhetn5zUkDYY=;
+  b=mLQ7elNHI8fwuBeu4AYTe6OpbLIKWl8hK8wbHP33G/7uU8n5JEY5frpb
+   qAYnHCBJM98RPbR3NemmPky+UEhhgabmAaFE4OOr6AbqFFvzv7lDnpFNh
+   /UtQ6l1x7UaMTuncvQkhWqYW0VQfN76tKRlzP438BPj48/qOQbg5WxMeH
+   H/BMOa+fTMYiwmOJL7w53oC+WUNzMHTed4gbUHVXZUiy5CX7LDhaoyFzD
+   Vp+RglKXEgkR0pMl7ob4XsME1TcXPhjXWzr5FBMFLO1S1FodQT6QTO0hs
+   NIcF+yshUdMakT/npTuW8bd3zRUXG2JL2iqZ5uV0HfUq+OZW0gOYKZKLo
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="4218619"
+X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
+   d="scan'208";a="4218619"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 06:40:43 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="937040615"
+X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
+   d="scan'208";a="937040615"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 04 Mar 2024 06:40:40 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id E9A1715C; Mon,  4 Mar 2024 16:40:38 +0200 (EET)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH v2 1/1] iio: adc: twl4030-madc: Make use of device properties
+Date: Mon,  4 Mar 2024 16:40:06 +0200
+Message-ID: <20240304144037.1036390-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Mon,  4 Mar 2024 12:05:42 +0000
-Robin Murphy <robin.murphy@arm.com> wrote:
+Convert the module to be property provider agnostic and allow
+it to be used on non-OF platforms.
 
-> iommu-dma does not explicitly reference min_align_mask since we already
-> assume that that will be less than or equal to any typical IOVA granule.
-> We wouldn't realistically expect to see the case where it is larger, and
-> that would be non-trivial to support, however for the sake of reasoning
-> (particularly around the interaction with SWIOTLB), let's clearly
-> enforce the assumption.
-> 
-> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+Include mod_devicetable.h explicitly to replace the dropped of.h
+which included mod_devicetable.h indirectly.
 
-Looks good to me.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+v2: converted leftover (Jonathan)
+ drivers/iio/adc/twl4030-madc.c | 19 +++++++++----------
+ 1 file changed, 9 insertions(+), 10 deletions(-)
 
-Reviewed-by: Petr Tesarik <petr.tesarik1@huawei-partners.com>
-
-Thank you!
-
-Petr T
-
-> ---
->  drivers/iommu/dma-iommu.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-> index 50ccc4f1ef81..b58f5a3311c3 100644
-> --- a/drivers/iommu/dma-iommu.c
-> +++ b/drivers/iommu/dma-iommu.c
-> @@ -859,6 +859,11 @@ static dma_addr_t __iommu_dma_map(struct device *dev, phys_addr_t phys,
->  	    iommu_deferred_attach(dev, domain))
->  		return DMA_MAPPING_ERROR;
->  
-> +	/* If anyone ever wants this we'd need support in the IOVA allocator */
-> +	if (dev_WARN_ONCE(dev, dma_get_min_align_mask(dev) > iova_mask(iovad),
-> +	    "Unsupported alignment constraint\n"))
-> +		return DMA_MAPPING_ERROR;
-> +
->  	size = iova_align(iovad, size + iova_off);
->  
->  	iova = iommu_dma_alloc_iova(domain, size, dma_mask, dev);
+diff --git a/drivers/iio/adc/twl4030-madc.c b/drivers/iio/adc/twl4030-madc.c
+index 4a247ca25a44..0253064fadec 100644
+--- a/drivers/iio/adc/twl4030-madc.c
++++ b/drivers/iio/adc/twl4030-madc.c
+@@ -19,10 +19,12 @@
+ #include <linux/interrupt.h>
+ #include <linux/kernel.h>
+ #include <linux/delay.h>
++#include <linux/mod_devicetable.h>
++#include <linux/module.h>
+ #include <linux/platform_device.h>
++#include <linux/property.h>
+ #include <linux/slab.h>
+ #include <linux/mfd/twl.h>
+-#include <linux/module.h>
+ #include <linux/stddef.h>
+ #include <linux/mutex.h>
+ #include <linux/bitops.h>
+@@ -30,7 +32,6 @@
+ #include <linux/types.h>
+ #include <linux/gfp.h>
+ #include <linux/err.h>
+-#include <linux/of.h>
+ #include <linux/regulator/consumer.h>
+ 
+ #include <linux/iio/iio.h>
+@@ -744,14 +745,14 @@ static int twl4030_madc_set_power(struct twl4030_madc_data *madc, int on)
+  */
+ static int twl4030_madc_probe(struct platform_device *pdev)
+ {
++	struct device *dev = &pdev->dev;
++	struct twl4030_madc_platform_data *pdata = dev_get_platdata(dev);
+ 	struct twl4030_madc_data *madc;
+-	struct twl4030_madc_platform_data *pdata = dev_get_platdata(&pdev->dev);
+-	struct device_node *np = pdev->dev.of_node;
+ 	int irq, ret;
+ 	u8 regval;
+ 	struct iio_dev *iio_dev = NULL;
+ 
+-	if (!pdata && !np) {
++	if (!pdata && !dev_fwnode(dev)) {
+ 		dev_err(&pdev->dev, "neither platform data nor Device Tree node available\n");
+ 		return -EINVAL;
+ 	}
+@@ -779,7 +780,7 @@ static int twl4030_madc_probe(struct platform_device *pdev)
+ 	if (pdata)
+ 		madc->use_second_irq = (pdata->irq_line != 1);
+ 	else
+-		madc->use_second_irq = of_property_read_bool(np,
++		madc->use_second_irq = device_property_read_bool(dev,
+ 				       "ti,system-uses-second-madc-irq");
+ 
+ 	madc->imr = madc->use_second_irq ? TWL4030_MADC_IMR2 :
+@@ -905,20 +906,18 @@ static void twl4030_madc_remove(struct platform_device *pdev)
+ 	regulator_disable(madc->usb3v1);
+ }
+ 
+-#ifdef CONFIG_OF
+ static const struct of_device_id twl_madc_of_match[] = {
+ 	{ .compatible = "ti,twl4030-madc", },
+-	{ },
++	{ }
+ };
+ MODULE_DEVICE_TABLE(of, twl_madc_of_match);
+-#endif
+ 
+ static struct platform_driver twl4030_madc_driver = {
+ 	.probe = twl4030_madc_probe,
+ 	.remove_new = twl4030_madc_remove,
+ 	.driver = {
+ 		   .name = "twl4030_madc",
+-		   .of_match_table = of_match_ptr(twl_madc_of_match),
++		   .of_match_table = twl_madc_of_match,
+ 	},
+ };
+ 
+-- 
+2.43.0.rc1.1.gbec44491f096
 
 
