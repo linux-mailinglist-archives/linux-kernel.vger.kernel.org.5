@@ -1,116 +1,136 @@
-Return-Path: <linux-kernel+bounces-91368-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91370-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B812687102D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 23:38:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C923A871033
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 23:41:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6CE6E1F2198C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:38:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 681B2285972
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:41:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF64E7BB01;
-	Mon,  4 Mar 2024 22:38:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FFE07BB1B;
+	Mon,  4 Mar 2024 22:41:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FNoUBake"
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="UeEgay1a"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E57368F44;
-	Mon,  4 Mar 2024 22:38:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFA218F44;
+	Mon,  4 Mar 2024 22:41:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709591922; cv=none; b=YGQ8DYDN6v0XcanGQZzpP/Ks7Jqp0EBNqQljqcWW/R5R804oPaRTkcGVmyj/L9zMbhViH/r94U5L1xV6Pypmo8+M1aVq2v+ICIzgGf1srjmLjslS3mIdvsTIj06lc/wTS0HLw4mT7hOH+rOM9CN3BqhPfU/TrQvtm6/146mI55s=
+	t=1709592109; cv=none; b=cJo0Lr70liu+uNSrbndjdXc4eOnospkFFAoNC6RQ4hiLEYg6uxsFlMgyXKlS4IlEAb80ngu5dSzjk0vVGpu8jR1FMcUFom5m1M5Jo61PyC2fYOCYWzvDEcQEIab7Qd2IlMO4IYsEnNWylkUaqGoTAeuJEVCk12Q0olI4210S/xI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709591922; c=relaxed/simple;
-	bh=Gn967GUY01TbnVw7J+amolBiTsybUNll2L3IweRe7x8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=es8LGaTuuudbv2zd/zf6zVy3fbEKVqCESKoVtiV2sW+RvpFPWwaFxVcOxsrLcqMdNcj8QZ5kcuESKIG5ZzOsx7+e2okQ7CnwzYil3hoqCIGcJ/+vYSmQm2EGMbCW63XlhpXFzdfqxrloxrl+biGdQE2T29FO0pTy+tHarnS7bRs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FNoUBake; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6e5b1c6daa3so3526670b3a.1;
-        Mon, 04 Mar 2024 14:38:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709591920; x=1710196720; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BN8SwlbqyYdlyO4orHXGIO4nVPTlMFcHeme81n3Cn24=;
-        b=FNoUBakedd0MBrblVk8mNK8LjJTEz4DlHsiNT0tX8bWkPH31DbAepT+job1jBW45FX
-         ajqZ4/1Ph3GhUVnYagMP1dWkz/EnAFC/YlinXVSxONvCSba+ZE5iqE5E8Tk8REjSY3Y7
-         /TMWLtmy5gyMcJNAHRdneqfcBBHpDXz9fLWHlrXIHNmsX3dIPdeAuSyfI2k2RwfAA7dq
-         JG2Ra6R/QC5yP5+ihHiVY6Oss4qSnl/NTmBnL/t5ZYsdX8cSYJtsY5WfnNhTguCtA50P
-         AcEVMMt6bSnazg1/HyaV5avUeihBa38JwGLu/x9gPzktix6Vk6dTNTbEkTSM+44dQGIk
-         j1xA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709591920; x=1710196720;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BN8SwlbqyYdlyO4orHXGIO4nVPTlMFcHeme81n3Cn24=;
-        b=GMnV6DqdzKWfDXHCy/eWW6GQ1X76W7JLQ1Yfn7zz/EBCfjeztmSXnetmJpwI9Zr+0G
-         NM8EbOCBRcvtika5RqgaoI1dOMDErJ3u09mMaEHpcolZB8txDPQiSajH45pZtXLH2Jkm
-         LkoqPYk6SmqfpzSyq20NSbNzT4K8h286S/XcaVJrjYeSJQPZwgwPVnupHqlmIVIpHF+0
-         8ju8mKGBI4yPvWMhn2QDxNK7d4a5qNkBcdigHj3P5y2QiaBFqSqNyB8H6XpBSF0giVuM
-         I0lAb8J2o67QPyu6Le3AUmuycMWCi5oLHqJzC7vf9BEYjDHJxheHJ+acOleEQ+VKFxcy
-         VaPw==
-X-Forwarded-Encrypted: i=1; AJvYcCVK4kqgE6nhiIImcY5aqJ/OKLvRH5IiffCocuathfz+1RrXIBFV9uOkLoQLLOEKJDdpRipGcjX8oxuCGXV5evUtXdR6SLUvBW9fFdZ3
-X-Gm-Message-State: AOJu0YwoH6ufaM7A5ux11GzsUOuyh5aFiDhmHbRn5PP8yHjRb7D0Wgvp
-	mxkJos5VdcgVJ2cA1JEZT7tLYCB8O31FrNuorg4/RNOB+z4QI4NL
-X-Google-Smtp-Source: AGHT+IG8dU5/zW36h3fRi77tXNMaH85I+KnVTo+H3gSed/dcTydDNOJhmwTWowr49ZEFzcP95HxORQ==
-X-Received: by 2002:a05:6a00:815:b0:6e1:338d:e01c with SMTP id m21-20020a056a00081500b006e1338de01cmr13090467pfk.1.1709591920061;
-        Mon, 04 Mar 2024 14:38:40 -0800 (PST)
-Received: from localhost.localdomain ([49.142.40.215])
-        by smtp.gmail.com with ESMTPSA id y127-20020a62ce85000000b006e5571be110sm8069622pfg.214.2024.03.04.14.38.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 14:38:39 -0800 (PST)
-From: skseofh@gmail.com
-To: robh+dt@kernel.org
-Cc: devicetree@vger.kernel.org,
-	frowand.list@gmail.com,
-	linux-kernel@vger.kernel.org,
-	skseofh@gmail.com
-Subject: [PATCH] of: fdt: modify small size memory check
-Date: Tue,  5 Mar 2024 07:38:30 +0900
-Message-Id: <20240304223831.11288-1-skseofh@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <CAL_JsqKaZ4KcvfNZmn2gj+yXa8eLgzMpdhJJ=+OmMJPvzm-1Qg@mail.gmail.com>
-References: <CAL_JsqKaZ4KcvfNZmn2gj+yXa8eLgzMpdhJJ=+OmMJPvzm-1Qg@mail.gmail.com>
+	s=arc-20240116; t=1709592109; c=relaxed/simple;
+	bh=HWFANnbfyh550S/G6W+HjyeNPbThbmyjuPz5MkKe0IE=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=r6HBlYKvX9Gcw4m6oUTGgebMElzIxnrhHVETvZUNZ3syCYuILr/Sx7y8hE5BQhaRJXZ9f2OpzbRNdnhqBMYL7VCmzJ+NIg16aR9IeNmIW/zflGP9twS1uwnqpoxUl9xXzub5S8mAiGJwO49+D0xvfZ0z6wSKXEKquYZptrWhLck=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=UeEgay1a; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 424MP7Zt014327;
+	Mon, 4 Mar 2024 22:41:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:date:subject:mime-version:content-type
+	:content-transfer-encoding:message-id:to:cc; s=qcppdkim1; bh=esL
+	Cy/asd2qFbuOcZUlzDM/SjCHIES7hirGA2lXMTyk=; b=UeEgay1a9CGAIv1KRLY
+	Ni2AtnFSFXSLd/94H6LdSMLUDDQb6j9hSBBEIABSR/+TScVvYpOPqeUcF+od00MN
+	OfA6S39MbV4S/EKONr3ssExQmpU99KizElfBACRbW/BR1rgBq6StKr7ePOv/0+5U
+	IDLL2rnenSgAVFdobVKl4ZkTHyZZSWQYjPjuniMSkMAIzpbUCkBYdjD1tHYJBKWt
+	k4E2A38GZTS4O+jVs4mc5oSwbZo4qbl3XOLn8rqltn4L2bFqYb8FGYn1cUPqw5F7
+	sszaghO2qc/CjcUEVIQtw+w4OHugT2NOTMh352EKRLl8SRA084NlgOcnKO9uA71E
+	SsA==
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wn8fxt355-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 04 Mar 2024 22:41:43 +0000 (GMT)
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 424Mfgjb011510
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 4 Mar 2024 22:41:42 GMT
+Received: from hu-eberman-lv.qualcomm.com (10.49.16.6) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 4 Mar 2024 14:41:42 -0800
+From: Elliot Berman <quic_eberman@quicinc.com>
+Date: Mon, 4 Mar 2024 14:41:15 -0800
+Subject: [PATCH] arm64: dts: qcom: sm8650: Add missing reserved memory for
+ chipinfo
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <20240304-sm8650-missing-chipinfo-region-v1-1-8a0b41dd8308@quicinc.com>
+X-B4-Tracking: v=1; b=H4sIAApO5mUC/x2NOwqAMBAFryJbuxCD/6uIhcY1vsIoWRBBvLvBc
+ oqZeUglQpT67KEoFxRHSFDkGbltCl4YS2KyxpbG2pZ1b+vK8A5VBM9uw4mwHhzFJ5UXV1fz3E1
+ NWTSUImeUFfc/GMb3/QBQM84PcAAAAA==
+To: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>
+CC: <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Patrick Daly <quic_pdaly@quicinc.com>,
+        "Elliot Berman" <quic_eberman@quicinc.com>
+X-Mailer: b4 0.12.4
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: rgYwrrmCIzi8zUlWTUUE6oIb8ZJvFvr7
+X-Proofpoint-ORIG-GUID: rgYwrrmCIzi8zUlWTUUE6oIb8ZJvFvr7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-04_18,2024-03-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 bulkscore=0 mlxlogscore=821 clxscore=1015 phishscore=0
+ mlxscore=0 adultscore=0 suspectscore=0 spamscore=0 impostorscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403040176
 
+Add missing reserved memory for chipinfo region.
 
-> >
-> >
-> > >>
-> > >> From: Daero Lee <skseofh@gmail.com>
-> > >>
-> > >> After page aligning, the size may become zero. So I added exception
-> > >> handling code for size 0.
-> > >
-> > >That may be true, but when would anyone only have memory regions of
-> > >less than 2 pages. In any case memblock_add will just do nothing. What
-> > >is the actual problem you are having?
-> > >
-> > >Rob
-> >
-> > Ignore the previous mail.
-> > I modified the patch to clear this size check routine. Please check
->
-> You still haven't answered my questions above.
-> 
-> Though the patch below is a bit more readable than what we currently have...
+Cc: Patrick Daly <quic_pdaly@quicinc.com>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>
+Fixes: d2350377997f ("arm64: dts: qcom: add initial SM8650 dtsi")
+Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
+---
+ arch/arm64/boot/dts/qcom/sm8650.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Well.. I don't see any 'real' problem with this.
-But I'm not sure if it's appropriate to leave a part that will be returned 
-directly in the next fuction called. Wouldn't it be better to handle the part
-can be handled in this function, rather than expecting the next function to 
-handle this exception?
+diff --git a/arch/arm64/boot/dts/qcom/sm8650.dtsi b/arch/arm64/boot/dts/qcom/sm8650.dtsi
+index 12ba839f215e..a8f2bd7fd1ff 100644
+--- a/arch/arm64/boot/dts/qcom/sm8650.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8650.dtsi
+@@ -485,9 +485,9 @@ aop_cmd_db_mem: aop-cmd-db@81c60000 {
+ 			no-map;
+ 		};
+ 
+-		/* Merged aop_config, tme_crash_dump, tme_log and uefi_log regions */
++		/* Merged aop_config, tme_crash_dump, tme_log, uefi_log, and chipinfo regions */
+ 		aop_tme_uefi_merged_mem: aop-tme-uefi-merged@81c80000 {
+-			reg = <0 0x81c80000 0 0x74000>;
++			reg = <0 0x81c80000 0 0x75000>;
+ 			no-map;
+ 		};
+ 
+
+---
+base-commit: f6265e31fc717283224752dde476128191737d69
+change-id: 20240228-sm8650-missing-chipinfo-region-dc65bb9a7417
+
+Best regards,
+-- 
+Elliot Berman <quic_eberman@quicinc.com>
+
 
