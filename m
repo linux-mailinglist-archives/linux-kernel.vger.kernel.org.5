@@ -1,136 +1,167 @@
-Return-Path: <linux-kernel+bounces-90923-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90924-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC5368706D2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:18:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 767AD8706D9
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:18:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 262251F22531
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:18:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 03B1B1F22833
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:18:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 151FA4C3C3;
-	Mon,  4 Mar 2024 16:17:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="KLjUj6a0"
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0B814CB2E;
+	Mon,  4 Mar 2024 16:18:34 +0000 (UTC)
+Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93AE18828
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 16:17:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AA28482DA;
+	Mon,  4 Mar 2024 16:18:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709569074; cv=none; b=chmR3aE+5RbrBxzrMNxbNDOf8qR5DZZmQDB4oZ37j+hY4wqfg/NA8sFZZUxxzD6eEg8VNUaUYMT/OgsdxzeyBRZMLqRNi3jrraiyobiDlootzZP/RvnIR88NjPrPcoIQzb7S4bgmt4YlAXeVJ8V4O/0UQnx+4sN0ioLVgc8i0r4=
+	t=1709569114; cv=none; b=eV+/QlY/IpNUKfjtGk7O4EDSlvQ5MSzuvG5ly9HIhEh3+M0JuiUB1C9nxbTA244ZZxBpESVTXMtbQU+GJPH9GPKHvurzRB27l4LIbktf9EiNFtd5nVZAn4Z9Ju0UqY4s8u77gV/3mK6UD/gttN61nL98dl8UtCGopN0bZ81/Xks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709569074; c=relaxed/simple;
-	bh=fT9+RDjIMzx5jaeuwiRDUN+/FkIMCPj3JQcCA0Q/lds=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fxkgW6EFXTzd5NRwHbbnF55x55hBBOKZg/1+CSbrqBMszYYyrJlrariZm1Wmk55mcF8W07opgj2XOTCB0uTWe8Elex5UeFhp3xSojkB1OV7zUxn4QNTdI7X7t+7slcZ9Z1J8PWd/T9757nxx5YQdijdk/0Ida3FJQ6SwX4QTQes=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=KLjUj6a0; arc=none smtp.client-ip=209.85.208.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d28464c554so63952461fa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 08:17:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709569070; x=1710173870; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=km22joOP3BJvhNiKy5z6xew4BuTiJqbVYs51+71h3NQ=;
-        b=KLjUj6a0573xRkbL3DIveS1aK9b1xc6fevSnfzXDiHlJvNsbuT4SMkZUm9wQ9+y/Bv
-         VJxTnp1pcLrM5gOeqiW6eyrxLdpYlOY3OFNKRER5Uw8idRR0/Kv07MpD1Y1fY0zaot81
-         dFGEhfmglc7+MpxrQaciJUzoWy5W24nubyqvg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709569070; x=1710173870;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=km22joOP3BJvhNiKy5z6xew4BuTiJqbVYs51+71h3NQ=;
-        b=Etm3MMik7qNT+LSqwy7zhRJlesWjFebEEQCqCx+2OnU8vFNZFSs363Ga2NEV6TuxWz
-         lbTdD3wmk3vVEwS1p716C+V/8pEt117zazhGzWhm1CnRMUGn8hRLzNkTvzQW5F85exKN
-         QZ/RfZhVJYJDHditYnl1FPdNN3j3o8C7lKpv+uH61FJaCLxfysFXG6d2zJ+ZkJ9ba/A5
-         /TpotqKj0QNE/oQyw9fcVKR7WghjLZQF5mOH6u0At6iCYFalir19qfkugfu92TfuiGdb
-         d+qHV1J1GVFAh5VuCMkO9/EZTqdWx8VLKGoL2kHvGWcaR1KNrcLk8HEBPfZ2qlr6tNHF
-         TTsQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVdzudpi3zhYC0Y4E3GDyK4q6ZV9f8Wx6kQApmB3d+Edi2ANhZVadQJYk5M84c4zCI6WuglXhRgJFSbWCHZv+p6dNELGTw6emvXvX/i
-X-Gm-Message-State: AOJu0Yz5pbrdMJM9HFSyn3pHUz5tAJzhHJhyJpuncGeIbe7AoqGwuyHJ
-	PAyF6NnI6yCu33UlRvfA681M45Vis8k/SSmp88eqkZRoOCTyp8toPaJDkCt5ziLoDaZZD/h1pB5
-	FRw==
-X-Google-Smtp-Source: AGHT+IGbstSA4Wx0FDUzBvKvzzWMsRGaIimExiUVD+r43DtK8xEHuxYuQxrC4y5vYo6zPhyWOnhbfA==
-X-Received: by 2002:a05:6512:360b:b0:513:256f:ef63 with SMTP id f11-20020a056512360b00b00513256fef63mr5981094lfs.20.1709569070277;
-        Mon, 04 Mar 2024 08:17:50 -0800 (PST)
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com. [209.85.128.46])
-        by smtp.gmail.com with ESMTPSA id d17-20020a056402517100b005671100145dsm2591182ede.55.2024.03.04.08.17.49
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Mar 2024 08:17:49 -0800 (PST)
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-412d84ffbfaso93945e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 08:17:49 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVgUS/SmC8tmLQTkHH2PeLnxjhylI0wTtI2+4448NMFAK2cqhNdR2CNarRqnonCJO/yaXpCodZINvGiVE4RixZSflU4AJN3XIBG0ksN
-X-Received: by 2002:a05:600c:518b:b0:412:e492:7e5 with SMTP id
- fa11-20020a05600c518b00b00412e49207e5mr156141wmb.1.1709569068931; Mon, 04 Mar
- 2024 08:17:48 -0800 (PST)
+	s=arc-20240116; t=1709569114; c=relaxed/simple;
+	bh=vfCt86t5faZJDVibBfvf2Juvf6JHTd3OEradfAtDy3g=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=A8FZysNVWuXKRY/Ptbw+fgJDy6eDjDAMqxc9ES7rkf4lR400cwkOotEtJjFtOdrOKRPc4Og3S29w+bCQw8jceJO7C2d9R/ql34nlQCceTi8fOrddPHZlsIiGHgQH11bmVuJbWdaZbi3qBtlVmgQ0NU7O6V5BfhOgwKCuW/HfXPc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.29])
+	by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4TpNky4sfvz9y5ZR;
+	Tue,  5 Mar 2024 00:02:50 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.47])
+	by mail.maildlp.com (Postfix) with ESMTP id A67B814066A;
+	Tue,  5 Mar 2024 00:18:17 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+	by APP1 (Coremail) with SMTP id LxC2BwD37xg49OVl09+0Aw--.24845S2;
+	Mon, 04 Mar 2024 17:18:16 +0100 (CET)
+Message-ID: <a7124afa6bed2fcadcb66efa08e256828cd6f8ab.camel@huaweicloud.com>
+Subject: Re: [PATCH v2 24/25] commoncap: use vfs fscaps interfaces
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+To: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
+Cc: Christian Brauner <brauner@kernel.org>, Serge Hallyn <serge@hallyn.com>,
+  Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>, James
+ Morris <jmorris@namei.org>,  Alexander Viro <viro@zeniv.linux.org.uk>, Jan
+ Kara <jack@suse.cz>, Stephen Smalley <stephen.smalley.work@gmail.com>,
+ Ondrej Mosnacek <omosnace@redhat.com>,  Casey Schaufler
+ <casey@schaufler-ca.com>, Mimi Zohar <zohar@linux.ibm.com>, Roberto Sassu
+ <roberto.sassu@huawei.com>,  Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+ Eric Snowberg <eric.snowberg@oracle.com>, "Matthew Wilcox (Oracle)"
+ <willy@infradead.org>, Jonathan Corbet <corbet@lwn.net>, Miklos Szeredi
+ <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, 
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+ linux-security-module@vger.kernel.org, audit@vger.kernel.org, 
+ selinux@vger.kernel.org, linux-integrity@vger.kernel.org, 
+ linux-doc@vger.kernel.org, linux-unionfs@vger.kernel.org
+Date: Mon, 04 Mar 2024 17:17:57 +0100
+In-Reply-To: <ZeXpbOsdRTbLsYe9@do-x1extreme>
+References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
+	 <20240221-idmap-fscap-refactor-v2-24-3039364623bd@kernel.org>
+	 <dcbd9e7869d2fcce69546b53851d694b8ebad54e.camel@huaweicloud.com>
+	 <ZeXpbOsdRTbLsYe9@do-x1extreme>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240223223958.3887423-1-hsinyi@chromium.org> <20240223223958.3887423-2-hsinyi@chromium.org>
- <87wmqqjmt9.fsf@intel.com> <CAJMQK-jSPg6vU3SLmRy7zwNHJ4yqO2hT6RaiYxA4ifZ7CzwD9Q@mail.gmail.com>
- <CAD=FV=WU-2yystd40e+g9VNDNTiv5c=nP0uQg-AR03o7UGMTdA@mail.gmail.com>
- <87bk7z6x1w.fsf@intel.com> <CAD=FV=Wzm9Y7m9Q6KqO7yWdnc1xToaRMb2f1s2TQMJqpqVYLOg@mail.gmail.com>
- <CAA8EJpqHJTbc+TCpkccjx_eQH36zaNgcQ9QssecNeQUQgfYApQ@mail.gmail.com>
-In-Reply-To: <CAA8EJpqHJTbc+TCpkccjx_eQH36zaNgcQ9QssecNeQUQgfYApQ@mail.gmail.com>
-From: Doug Anderson <dianders@chromium.org>
-Date: Mon, 4 Mar 2024 08:17:32 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=XyV=V-USfq8kp058=FzRQq=bPA5A4GDb1p0zO-KPbtwQ@mail.gmail.com>
-Message-ID: <CAD=FV=XyV=V-USfq8kp058=FzRQq=bPA5A4GDb1p0zO-KPbtwQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] drm_edid: Add a function to get EDID base block
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Jani Nikula <jani.nikula@linux.intel.com>, Hsin-Yi Wang <hsinyi@chromium.org>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
-	Sam Ravnborg <sam@ravnborg.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-CM-TRANSID:LxC2BwD37xg49OVl09+0Aw--.24845S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWFyfZrWkCrWxGw4UJw1fZwb_yoW5CrW5pF
+	W3GFnxKr4kXr17Crn7tr4DZa4F9w4fJF47GF97G3y0ywnFkr1ftr4S9347uFy5Cry8Kr45
+	ZF1qya45CrZ8ZaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
+	7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
+	Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY
+	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6x
+	AIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
+	6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IU1c4S7UUUUU==
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAMBF1jj5r12AAAsP
 
-Hi,
+On Mon, 2024-03-04 at 09:31 -0600, Seth Forshee (DigitalOcean) wrote:
+> On Mon, Mar 04, 2024 at 11:19:54AM +0100, Roberto Sassu wrote:
+> > On Wed, 2024-02-21 at 15:24 -0600, Seth Forshee (DigitalOcean) wrote:
+> > > Use the vfs interfaces for fetching file capabilities for killpriv
+> > > checks and from get_vfs_caps_from_disk(). While there, update the
+> > > kerneldoc for get_vfs_caps_from_disk() to explain how it is different
+> > > from vfs_get_fscaps_nosec().
+> > >=20
+> > > Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
+> > > ---
+> > >  security/commoncap.c | 30 +++++++++++++-----------------
+> > >  1 file changed, 13 insertions(+), 17 deletions(-)
+> > >=20
+> > > diff --git a/security/commoncap.c b/security/commoncap.c
+> > > index a0ff7e6092e0..751bb26a06a6 100644
+> > > --- a/security/commoncap.c
+> > > +++ b/security/commoncap.c
+> > > @@ -296,11 +296,12 @@ int cap_capset(struct cred *new,
+> > >   */
+> > >  int cap_inode_need_killpriv(struct dentry *dentry)
+> > >  {
+> > > -	struct inode *inode =3D d_backing_inode(dentry);
+> > > +	struct vfs_caps caps;
+> > >  	int error;
+> > > =20
+> > > -	error =3D __vfs_getxattr(dentry, inode, XATTR_NAME_CAPS, NULL, 0);
+> > > -	return error > 0;
+> > > +	/* Use nop_mnt_idmap for no mapping here as mapping is unimportant =
+*/
+> > > +	error =3D vfs_get_fscaps_nosec(&nop_mnt_idmap, dentry, &caps);
+> > > +	return error =3D=3D 0;
+> > >  }
+> > > =20
+> > >  /**
+> > > @@ -323,7 +324,7 @@ int cap_inode_killpriv(struct mnt_idmap *idmap, s=
+truct dentry *dentry)
+> > >  {
+> > >  	int error;
+> > > =20
+> > > -	error =3D __vfs_removexattr(idmap, dentry, XATTR_NAME_CAPS);
+> > > +	error =3D vfs_remove_fscaps_nosec(idmap, dentry);
+> >=20
+> > Uhm, I see that the change is logically correct... but the original
+> > code was not correct, since the EVM post hook is not called (thus the
+> > HMAC is broken, or an xattr change is allowed on a portable signature
+> > which should be not).
+> >=20
+> > For completeness, the xattr change on a portable signature should not
+> > happen in the first place, so cap_inode_killpriv() would not be called.
+> > However, since EVM allows same value change, we are here.
+>=20
+> I really don't understand EVM that well and am pretty hesitant to try an
+> change any of the logic around it. But I'll hazard a thought: should EVM
+> have a inode_need_killpriv hook which returns an error in this
+> situation?
 
-On Sun, Mar 3, 2024 at 1:30=E2=80=AFPM Dmitry Baryshkov
-<dmitry.baryshkov@linaro.org> wrote:
->
-> > The problem is that Dmitry didn't like the idea of using a hash and in
-> > v2 Hsin-Yi has moved to using the name of the display. ...except of
-> > course that eDP panels don't always properly specify
-> > "EDID_DETAIL_MONITOR_NAME". See the discussion [1]. If you want to see
-> > some of the EDIDs involved, you can see Hsin-Yi's post [2]. The panels
-> > included stuff like this:
-> >
-> >     Alphanumeric Data String: 'AUO'
-> >     Alphanumeric Data String: 'B116XAN04.0 '
-> >
-> > The fact that there is more than one string in there makes it hard to
-> > just "return" the display name in a generic way. The way Hsin-Yi's
-> > code was doing it was that it would consider it a match if the panel
-> > name was in any of the strings...
-> >
-> > How about this as a solution: we change drm_edid_get_panel_id() to
-> > return an opaque type (struct drm_edid_panel_id_blob) that's really
-> > just the first block of the EDID but we can all pretend that it isn't.
-> > Then we can add a function in drm_edid.c that takes this opaque blob,
-> > a 32-bit integer (as per drm_edid_encode_panel_id()), and a string
-> > name and it can tell us if the blob matches?
->
-> Would it be easier to push drm_edid_match to drm_edid.c? It looks way
-> more simpler than the opaque blob.
+Uhm, I think it would not work without modifying
+security_inode_need_killpriv() and the hook definition.
 
-Yeah, that sounds reasonable / cleaner to me. Good idea! Maybe Hsin-Yi
-will be able to try this out and see if there's a reason it wouldn't
-work.
+Since cap_inode_need_killpriv() returns 1, the loop stops and EVM would
+not be invoked. We would need to continue the loop and let EVM know
+what is the current return value. Then EVM can reject the change.
 
--Doug
+An alternative way would be to detect that actually we are setting the
+same value for inode metadata, and maybe not returning 1 from
+cap_inode_need_killpriv().
+
+I would prefer the second, since EVM allows same value change and we
+would have an exception if there are fscaps.
+
+This solves only the case of portable signatures. We would need to
+change cap_inode_need_killpriv() anyway to update the HMAC for mutable
+files.
+
+Roberto
+
 
