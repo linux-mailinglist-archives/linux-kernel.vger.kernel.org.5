@@ -1,125 +1,106 @@
-Return-Path: <linux-kernel+bounces-90413-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90416-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CACC86FECF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:20:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0066686FED9
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:21:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DCD7028359F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:20:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8239EB207C9
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:20:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E14003C497;
-	Mon,  4 Mar 2024 10:16:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m1v6gwCK"
-Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60D6E364A3;
+	Mon,  4 Mar 2024 10:18:53 +0000 (UTC)
+Received: from bg1.exmail.qq.com (bg1.exmail.qq.com [114.132.67.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B51EA2574D;
-	Mon,  4 Mar 2024 10:16:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2F76225CB
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 10:18:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.132.67.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709547414; cv=none; b=Bg2cse9RsPWukdnP1InQmkGN0IYh5llLkrS9/KW+WsmD/rjGIEa4SXC4JPQZM7ITHBT/vx48mVfRyW25inSp0Gmo7i3I7ZNhfE2LGT/10r87/p+B5KtF4AfuBNREofXyUfizlRZ2cwXubbJI4blRCuC5KwrvPhDDqovAqTQBgsE=
+	t=1709547533; cv=none; b=iXtp+PNw0wJ1KFWuZAeFHY1C7RFaMVNqrImrpvcbuBXodaMGg08VQVsvj7dzE6SGToPyfXCwdhoEWP6ECMGrfM/1CxTEWbOwD6VLINlI8gq/jGqEBQU0ZIRGWRdl5YKKtEZ5qgkykkoqlWzklAR4LkOEZMlwPDhT9ImAfOAymqI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709547414; c=relaxed/simple;
-	bh=r9R7fsoaFTssCD4S8pAvGpfWz79/sdKQ+D2RchM3Vp8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sACfMU//dZUIQWAhOoYx7BTdnKjzvzlQbTs+cwoiYGqY36o1tgZdEeKvEEnretEZbOFq6mWQ36SP25BM6x/01rcOAuyYcs3av0O+A6vHetHmv5eg/M26Sagid60/wcN+oDer7coNFj12tGvOeBJBG92zbcGEDNbcHj3gFrmYLfg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m1v6gwCK; arc=none smtp.client-ip=209.85.161.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-5a0932aa9ecso2244363eaf.3;
-        Mon, 04 Mar 2024 02:16:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709547412; x=1710152212; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=9IduB56gCouP3puaRFBT9qXQWpSpTWONTThlDJRHj/0=;
-        b=m1v6gwCKzw48XrtMF9FKJ7IGIkm2+RdpmNCD6V2UnWqJrnPCCIHAw1M7/lmyl31oRa
-         gnvlz1YoolMrnWd4A59JTsRiAquY/9e8zuVwkB3tueL1zgN1ZJX0MWgr88ygXbOWEEnY
-         /BEJOARYB+t5VihMuRgbzJnPHYpQAVdrUVUsivWg31JU2B20fOJ5lhIfK1ghfxAXbSFa
-         HyDk7Q/h1ZTeT3BvM8qdjQ5h6oZPYDmIqqQEp7zWAZDNEkcb9paqLXvpzcpbgvpEjjaH
-         MddkcwIpqTE4AHojjE3khyIwleeAfpBHAWvuT7iF23L2DgDJ+O7FSwRyv3/7O/gAKlRT
-         YuBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709547412; x=1710152212;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9IduB56gCouP3puaRFBT9qXQWpSpTWONTThlDJRHj/0=;
-        b=t9OuSEJQBD0APTWMN9oXqD+WZ6xJRRr2nyYOyB89nxzDIfr4QnzRpT/GTzRbyHQ8o+
-         nEKK7Z5KcfjLkS9uUUrFbbAEfUv9Z/xVY/iSaroxCvET6WvGwCtcPHy0WJwcFhqTa9c9
-         J9HUhcxturenhMuMJNC5kiKMAwpMaakzSan1NSmSTGgbPBWCZdey+8zbAwyWq5rDSSHP
-         zyH3geKJNs6gHZbKXe0kNCY6LV42OwwLcqM5u4N8eEmr/nKiMqMqpY/ypIrHQaDxINBk
-         EnaL81gKmv9VTUyk10nQhnnRzTh3ye7Il7gjOD4plTkyGXQCUAkSk+uz9avsVbq9hm2L
-         43wQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUHN2W0nefe09Q1Ssc/tXfdXwWFpR/qwzdgqKtJPL4XPkkRqi0CHkqgoUGs+EpGVRiwSN4aol65A843lvUxw5KH361bODi7L9xQMeiyj6lxbOorFbwqXXDd4m52nl0ctgJ3ID238nByVZNrvf/Tf4tQ7WSd0KwnwFZYeYzS0D9q9TDspwrbhqbQBz0=
-X-Gm-Message-State: AOJu0YwtTW8uGZpJ2dxeRNtXMlzPv5vvHu8LaozsnQ95I0b6LkNiV3Rq
-	Cec+TEziiTep0UUskOQyNnpHSTVG5o47dNxpbL9clwzr51lRhrOmLdEtg9MsNmbIol+ppGe//qr
-	2grawcS0m4upTJPykFO4n5cnBvMk=
-X-Google-Smtp-Source: AGHT+IGKlDQiwe2ETynuP1WjM66TUUfTvgAkEekSsjW8GST4aMh5tCx5vaqg6xAtZrzbO88Nx3b5zZhE0vTBzIOc68s=
-X-Received: by 2002:a05:6820:808:b0:5a1:ff2:4c46 with SMTP id
- bg8-20020a056820080800b005a10ff24c46mr6436866oob.9.1709547411912; Mon, 04 Mar
- 2024 02:16:51 -0800 (PST)
+	s=arc-20240116; t=1709547533; c=relaxed/simple;
+	bh=dpj4ufgifj7GIAYt7yGK4hK+qv6CPi//o/CWx5UlmNo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=P1HRHfBYLeNcdVKlthrCHuG4kEyoDe10aIFRvbav3szshQOvXavYW1F05ZAzZTVvrw4+/FeH+PuA5QbooMlzHsaA++4CJ5PYpkqTnWt3J3tcApZQ0aQFjkQGev6j7XrDCQ68YKkIffnKRTQ4AlEti0KpMf9SoZgm3UKmtRAhGng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=114.132.67.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
+X-QQ-mid: bizesmtp62t1709547436tgx9g8d8
+X-QQ-Originating-IP: 5APuCEWtsWVVSMzxS98Vxt66O3rkkYqE//ZKcb3vJ+g=
+Received: from localhost ( [112.22.30.30])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Mon, 04 Mar 2024 18:17:15 +0800 (CST)
+X-QQ-SSF: 01400000000000505000000A0000000
+X-QQ-FEAT: K2/klV1qoGlTWfl/w1BagxXdSiRmYm4VevULtmbJrZ7m+uuFIYP55sr8PKkvE
+	LFZQXXHCr2EtSCCK5SmQK1O3CRe7068aVPwYQHDZCMfx7QBCLRqh9MtFSaXOyEVk4S+IfnL
+	2/c6rzZrUKUayJFC/T2TuxVOdQKJPK4MvcEOso17dcNqbz53yLtACjYbYOWZKrry9iwT4rK
+	XzDZJLmzJEfCUTJb7aJM8LZ5wN7nvXIEDScRqEYoc9zVus6PtEhY12m8BHXaIfrp3UvkIuq
+	UmrF6GqiRFa+hiBGw0LgRdJa9CPzsujyNW9C5ZPnUspyt0oTr42TjiB9UjisUspC6pYOJY+
+	VID4BefrRwRQu91VAot+KD4yuNquhwGHqQx/zo6dV5tqUydf5QcwodVxY4LKfdFhmVkUqnD
+	1lKiJBNLonDN+eqHPG21JpBfAZ4tTl0e
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 11784876487773860519
+From: Dawei Li <dawei.li@shingroup.cn>
+To: conor.dooley@microchip.com,
+	daire.mcnamara@microchip.com
+Cc: linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Dawei Li <dawei.li@shingroup.cn>,
+	kernel test robot <lkp@intel.com>
+Subject: [PATCH v2] firmware: microchip: Fix over-requested allocation size
+Date: Mon,  4 Mar 2024 18:16:53 +0800
+Message-Id: <20240304101653.126570-1-dawei.li@shingroup.cn>
+X-Mailer: git-send-email 2.27.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240301193831.3346-1-linux.amoon@gmail.com> <20240301193831.3346-3-linux.amoon@gmail.com>
- <ZeWSp4ohOhHGclud@hovoldconsulting.com>
-In-Reply-To: <ZeWSp4ohOhHGclud@hovoldconsulting.com>
-From: Anand Moon <linux.amoon@gmail.com>
-Date: Mon, 4 Mar 2024 15:46:39 +0530
-Message-ID: <CANAwSgShe9-Buyta5Ej9nmhp1dy467da6Cdfm5a+pwpEjem=QA@mail.gmail.com>
-Subject: Re: [PATCH v1 2/4] usb: ehci-exynos: Switch from CONFIG_PM guards to pm_ptr()
-To: Johan Hovold <johan@kernel.org>
-Cc: Alan Stern <stern@rowland.harvard.edu>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Alim Akhtar <alim.akhtar@samsung.com>, 
-	linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz5a-1
 
-Hi Johan,
+cocci warnings: (new ones prefixed by >>)
+>> drivers/firmware/microchip/mpfs-auto-update.c:387:72-78:
+   ERROR: application of sizeof to pointer
+   drivers/firmware/microchip/mpfs-auto-update.c:170:72-78:
+   ERROR: application of sizeof to pointer
 
-On Mon, 4 Mar 2024 at 14:51, Johan Hovold <johan@kernel.org> wrote:
->
-> On Sat, Mar 02, 2024 at 01:08:09AM +0530, Anand Moon wrote:
-> > Use the new PM macros for the suspend and resume functions to be
-> > automatically dropped by the compiler when CONFIG_PM are disabled,
-> > without having to use #ifdef guards. If CONFIG_PM unused,
-> > they will simply be discarded by the compiler.
-> >
-> > Use RUNTIME_PM_OPS runtime macro for suspend/resume function.
-> >
-> > Signed-off-by: Anand Moon <linux.amoon@gmail.com>
-> > ---
-> >  drivers/usb/host/ehci-exynos.c | 10 ++--------
-> >  1 file changed, 2 insertions(+), 8 deletions(-)
->
-> >  static const struct dev_pm_ops exynos_ehci_pm_ops = {
-> > -     .suspend        = exynos_ehci_suspend,
-> > -     .resume         = exynos_ehci_resume,
-> > +     RUNTIME_PM_OPS(exynos_ehci_suspend, exynos_ehci_resume, NULL)
-> >  };
->
-> This is also broken and clearly not tested. See the definition of
-> RUNTIME_PM_OPS() which sets the runtime pm callbacks, not the suspend
-> ones:
->
->         #define RUNTIME_PM_OPS(suspend_fn, resume_fn, idle_fn) \
->                 .runtime_suspend = suspend_fn, \
->                 .runtime_resume = resume_fn, \
->                 .runtime_idle = idle_fn,
->
-> Johan
+response_msg is a pointer to u32, so the size of element it points to is
+supposed to be a multiple of sizeof(u32), rather than sizeof(u32 *).
 
-Ok, I will drop these changes.
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202403040516.CYxoWTXw-lkp@intel.com/
+Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
+---
 
-Thanks.
--Anand
+V1 -> V2:
+sizeof(u32)->sizeof(*response_msg) 
+
+V1:
+https://lore.kernel.org/lkml/20240304092532.125751-1-dawei.li@shingroup.cn/
+
+ drivers/firmware/microchip/mpfs-auto-update.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/firmware/microchip/mpfs-auto-update.c b/drivers/firmware/microchip/mpfs-auto-update.c
+index 682e417be5a3..fbeeaee4ac85 100644
+--- a/drivers/firmware/microchip/mpfs-auto-update.c
++++ b/drivers/firmware/microchip/mpfs-auto-update.c
+@@ -384,7 +384,8 @@ static int mpfs_auto_update_available(struct mpfs_auto_update_priv *priv)
+ 	u32 *response_msg;
+ 	int ret;
+ 
+-	response_msg = devm_kzalloc(priv->dev, AUTO_UPDATE_FEATURE_RESP_SIZE * sizeof(response_msg),
++	response_msg = devm_kzalloc(priv->dev,
++				    AUTO_UPDATE_FEATURE_RESP_SIZE * sizeof(*response_msg),
+ 				    GFP_KERNEL);
+ 	if (!response_msg)
+ 		return -ENOMEM;
+-- 
+2.27.0
+
 
