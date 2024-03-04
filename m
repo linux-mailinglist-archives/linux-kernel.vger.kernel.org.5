@@ -1,196 +1,211 @@
-Return-Path: <linux-kernel+bounces-90075-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90077-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 468A186F9D9
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 07:07:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6945A86F9EC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 07:17:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F08DC281525
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 06:07:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC0402815F5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 06:16:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A695AD272;
-	Mon,  4 Mar 2024 06:07:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CA94CA4A;
+	Mon,  4 Mar 2024 06:16:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="RmWvIpHY"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="DpT3jIfe"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B478B666
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 06:07:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08CABBA5E;
+	Mon,  4 Mar 2024 06:16:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709532432; cv=none; b=p3WgWa2WnUrRcMh6jRizmvPzJMZgWIMEed8rkKxdM4nAiNZmlLodZlKd3QjowgjA4F1LlRFZuoJ2Z4Yv1kwIuX9i4ChCjxIf8qwiUFvNtQ9zXYW4GnzXgAbdbCrkJPVZPFD1KaUn/2lsnwhSECcpGIvtVMJ/xLBCZr5hlCVo14E=
+	t=1709533012; cv=none; b=Jn4XSyb+9e923eu93nX7yKdzBTYLVYtIL0AE/QTdWWhnbr6zpy1C+726TKQTagRnqDc9YXgI0QagcZPGuQnUJ4o6vPcYh0Zw7q0vFoxNfrg4mOcKluRIoc/pVDlQvzVMrgmSSkCUpUUZAb0f899IFpI6Cf7x5Tk/5C7p7tpfmIY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709532432; c=relaxed/simple;
-	bh=0WP8Ltd4+HZ7yFqiob65ZX8Kr15q2vLC5UlPnNe9mBc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KThoYOjnQLpzXfyH+V77WMIevPWN4UYOgw6x8dr/GKSw020xZmpw3wbINJ3Na7QoxfUln5PzZJKS6bnKmcjx2Bx/zpoaOZvbFAMnrnwOwb9ayTqyjnVJYafeMedkbu+tf2d5rFOOUxYvUQeBbj4U2/nKMGSa7LXs6emhuNoTl7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=RmWvIpHY; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d944e8f367so27100465ad.0
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 22:07:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709532431; x=1710137231; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=FhEJRlvCaCR4wDqO5rRMM6OSqb/H9Os2oUv3uFwDX/g=;
-        b=RmWvIpHYTx6naKUeUfRcZ6vzg82p7PDDyf25ongV74N3RNh0ebYiSQdA3IL2kczw9L
-         NJ7PrJK8JDUJp2Lq9pPIt55zhEh8mO6gvuS9WdvawohLIz0tzlbqVIwSz/J88joDmp1V
-         euWGgpjH4pRLtqruPI8TTIi6UtJ/AX2jJx/I0zh76jgOovvyUfrkHZSk2yi23vlb+BxM
-         Fexso6In3kxtxNl2Aujxyopo1LkPp+kC0GgDrBOyyoLmgGRz6NM9EF1IxclZHrA1dnc1
-         PbLLiLT0TwLw2EwfIPPmnVkgF3MNPvlDy04bCLttJ+PAFDFU6hUvgklhqxisH9LCQ1pX
-         b2qQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709532431; x=1710137231;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FhEJRlvCaCR4wDqO5rRMM6OSqb/H9Os2oUv3uFwDX/g=;
-        b=peGst8BwNFfKlNh/xPq4YNHD3XJaPdYZKa+1Kl9vpiWvBx9H8Cr2ZQ5V7c1mRcM3FI
-         LOQC86pi5EU1nataDcm26lOIoTq/a42vBSPpnR3K1BH6z3rrRzdBs425leaWsE8hjhr1
-         rcSrw3Nbv7uDnGomdkckhUxeOO7xTacdO2tt9MYqh2KLtejpCh4Ff2XibIiYdtqA4HyR
-         nVmT3NYDjYoMLIpNb2Qa8ujVmmJJfIUKAFot0cEhsL9ZmOUINLsf2GgC/cwp7JjAgTWJ
-         UySssoQfCyZKuiyPS/ZQl24Pfa6dNFnWiQscfY6GvEk3FurJqlL+cznCbUpWrO+id9vM
-         4ZWA==
-X-Forwarded-Encrypted: i=1; AJvYcCUm3+QfnvqbqBfiYpX8cL7YCovmYMvG8Qylp0vlPQSOKmVh/VJk1vNOOzTLcNJ8osVomOeeb2FQxw7dLD22M/8/OMoPeoFcgSLouBqS
-X-Gm-Message-State: AOJu0Yyigk3IPc7rOVXfpsjz6MMb70N1+I2mhYYatPvqFLO9NqKjVkHU
-	RqSp21TK7rJZFT6RiSLPPxijawxZu4Sp5cbcgHxZqKbvT2ft0EcaaC/iei/oJQ==
-X-Google-Smtp-Source: AGHT+IH2zrIOPzr3AI4ZasZTAXun5czB2o+PuFfZI1017C8l5WdYVlq8oSSCVAQTv+1lcEPhiCemaA==
-X-Received: by 2002:a17:902:9a07:b0:1dc:7890:cb27 with SMTP id v7-20020a1709029a0700b001dc7890cb27mr7278937plp.48.1709532430393;
-        Sun, 03 Mar 2024 22:07:10 -0800 (PST)
-Received: from thinkpad ([117.207.30.163])
-        by smtp.gmail.com with ESMTPSA id u8-20020a17090341c800b001dd1029db99sm1395975ple.4.2024.03.03.22.07.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Mar 2024 22:07:10 -0800 (PST)
-Date: Mon, 4 Mar 2024 11:37:00 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Mrinmay Sarkar <quic_msarkar@quicinc.com>
-Cc: andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, konrad.dybcio@linaro.org, robh@kernel.org,
-	quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
-	quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
-	dmitry.baryshkov@linaro.org, quic_krichai@quicinc.com,
-	quic_vbadigan@quicinc.com, quic_schintav@quicinc.com,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Bjorn Helgaas <bhelgaas@google.com>, linux-arm-msm@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org
-Subject: Re: [PATCH v5 1/3] PCI: qcom: Enable cache coherency for SA8775P RC
-Message-ID: <20240304060700.GD2647@thinkpad>
-References: <1708697021-16877-1-git-send-email-quic_msarkar@quicinc.com>
- <1708697021-16877-2-git-send-email-quic_msarkar@quicinc.com>
+	s=arc-20240116; t=1709533012; c=relaxed/simple;
+	bh=vDEkHhbgoncuK1EhIkt+qBLzvO6pAGjxBO7E/Z8jvNs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ef/yaCzT3pXQ3Ay+kK6c+s/N8u/NsCxor/dBeBcccAS01X4bVhvkZMO6/06Qg535BgcnkkjNP8sB1BYvIe8+6QvK5zhQKNBE5zrqqlc9nlOFf86oehAQIMqlDTNV6ZrRp2c4+ubo+PmdRLrfYXf+QRlevy+WJqbg2H3MBznuJMo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=DpT3jIfe; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:From:
+	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
+	References; bh=BJJ1FnvZ+/hL3/GZOS7H0S2hO+1YoMgqTri63N9h0ZM=; t=1709533010;
+	x=1709965010; b=DpT3jIfeeua4C8TkKdh93dK/4LNNN6yUumz3OfzpaoTb/V+v/Se2sZLRqjn80
+	/NytuTIWzY/p+4vn0qEIF7xfkRyQxwyD7UStKAFzCaUEV541sJ/G6OpzWoyFpn/M13v7yqp2axyoh
+	LMEtDGO9NVwZVcl+b1tcPOBnr/FbI6kUBhkCeyJWL+GvQ6Em7QdwLVNXYag1u3YeyRC+JRyUK6Ou8
+	IcLEhLl8j+I+TzIDfaGLIAOxriT3tyw/dWCjPvapBfxmcuc8xgoCMmd5YEecWTJcXb0NLSDYaH/vb
+	v+U+KinOQTMDBM/OfLgJm8G2fnDK5pfGhjjW2K1Vlk68IAretA==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rh1cw-0002hs-9B; Mon, 04 Mar 2024 07:16:42 +0100
+Message-ID: <e1d87d5c-97ee-4e08-84c9-61a02c81ca63@leemhuis.info>
+Date: Mon, 4 Mar 2024 07:16:41 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: guide on bisecting (was Re: [REGRESSION] kexec does firmware
+ reboot in kernel v6.7.6)
+Content-Language: en-US, de-DE
+To: Pavin Joseph <me@pavinjoseph.com>,
+ Linux regressions mailing list <regressions@lists.linux.dev>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Linux Doc Mailing List <linux-doc@vger.kernel.org>
+References: <3a1b9909-45ac-4f97-ad68-d16ef1ce99db@pavinjoseph.com>
+ <7ebb1c90-544d-4540-87c0-b18dea963004@leemhuis.info>
+ <3a8453e8-03a3-462f-81a2-e9366466b990@pavinjoseph.com>
+ <a84c1a5d-3a8a-4eea-9f66-0402c983ccbb@leemhuis.info>
+ <806629e6-c228-4046-828a-68d397eb8dbc@pavinjoseph.com>
+ <4630483e-fc4e-448d-8fd6-916d3422784e@leemhuis.info>
+ <66019e35-5adb-4817-a64d-e379b6f4240a@pavinjoseph.com>
+From: Thorsten Leemhuis <linux@leemhuis.info>
+Autocrypt: addr=linux@leemhuis.info; keydata=
+ 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 n7RI
+In-Reply-To: <66019e35-5adb-4817-a64d-e379b6f4240a@pavinjoseph.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1708697021-16877-2-git-send-email-quic_msarkar@quicinc.com>
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1709533010;dcd7aaf7;
+X-HE-SMSGID: 1rh1cw-0002hs-9B
 
-On Fri, Feb 23, 2024 at 07:33:38PM +0530, Mrinmay Sarkar wrote:
-
-Subject should be:
-
-"PCI: qcom: Override NO_SNOOP attribute for SA8775P"
-
-> Due to some hardware changes, SA8775P has set the NO_SNOOP attribute
-> in its TLP for all the PCIe controllers. NO_SNOOP attribute when set,
-> the requester is indicating that there no cache coherency issues exit
-> for the addressed memory on the host i.e., memory is not cached. But
-
-s/host/endpoint
-
-> in reality, requester cannot assume this unless there is a complete
-> control/visibility over the addressed memory on the host.
+On 03.03.24 11:17, Pavin Joseph wrote:
+> On 3/3/24 14:06, Thorsten Leemhuis wrote:
 > 
+>> That being said: I think I might know what sent you sideways: the main
+>> section lacked a "git remote add -t master stable
+>> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git". :-((
+> Now that I read through it with a fresh pair of eyes, this is exactly
+> the problem!
 
-s/host/endpoint
+Thx for confirming, fixed this up locally and will submit a patch to fix
+this for inclusion (the text is now in -next, yeah!).
 
-> And worst case, if the memory is cached on the host, it may lead to
-
-s/host/endpoint
-
-> memory corruption issues. It should be noted that the caching of memory
-> on the host is not solely dependent on the NO_SNOOP attribute in TLP.
+>>> 2. The "installkernel" command is called "kernel-install" in OpenSuse,
+>>
+>> Yeah, it looks like that, but that's not really the case. :-) In short:
+>> on Fedora "installkernel" calls into kernel-install -- and
+>> "installkernel" has a long history, so doing what Fedora does is likely
+>> a wise thing for distros. And openSUSE had a "installkernel" as well,
+>> which was part of the dracut package. Not sure if that is still the case
+>> for current Leap and Tumbleweed. Could you check?
 > 
+> It's not available even as a symlink in OpenSuse TW / Slowroll I'm afraid.
 
-s/host/endpoint
+I'm not really familiar with openSUSE, but it set up a TW container and
+found that a package kernel-install-tools provides installkernel script.
+Not sure how good it works though. Could you maybe test that?
 
-> So to avoid the corruption, this patch overrides the NO_SNOOP attribute
-> by setting the PCIE_PARF_NO_SNOOP_OVERIDE register. This patch is not
-> needed for other upstream supported platforms since they do not set
-> NO_SNOOP attribute by default.
-> 
-> 8775 has IP version 1.34.0 so intruduce a new cfg(cfg_1_34_0) for this
-> platform. Assign enable_cache_snoop flag into struct qcom_pcie_cfg and
-> set it true in cfg_1_34_0 and enable cache snooping if this particular
-> flag is true.
-> 
-> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
-> ---
->  drivers/pci/controller/dwc/pcie-qcom.c | 20 +++++++++++++++++++-
->  1 file changed, 19 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> index 2ce2a3bd932b..872be7f7d7b3 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> @@ -51,6 +51,7 @@
->  #define PARF_SID_OFFSET				0x234
->  #define PARF_BDF_TRANSLATE_CFG			0x24c
->  #define PARF_SLV_ADDR_SPACE_SIZE		0x358
-> +#define PARF_NO_SNOOP_OVERIDE			0x3d4
->  #define PARF_DEVICE_TYPE			0x1000
->  #define PARF_BDF_TO_SID_TABLE_N			0x2000
->  
-> @@ -117,6 +118,10 @@
->  /* PARF_LTSSM register fields */
->  #define LTSSM_EN				BIT(8)
->  
-> +/* PARF_NO_SNOOP_OVERIDE register fields */
-> +#define WR_NO_SNOOP_OVERIDE_EN			BIT(1)
-> +#define RD_NO_SNOOP_OVERIDE_EN			BIT(3)
-> +
->  /* PARF_DEVICE_TYPE register fields */
->  #define DEVICE_TYPE_RC				0x4
->  
-> @@ -229,6 +234,7 @@ struct qcom_pcie_ops {
->  
+>>> and it doesn't really perform all the steps to install kernel. It calls
+>>> dracut to create initramfs though, but that's hardly much help.
+>> Could you please elaborate a bit on that "hardly much help", as I'm not
+>> really sure what you exactly mean here. Are you and/or openSUSE normally
+>> not using dracut?
+> I meant that calling kernel-install in OpenSuse only seems to then call
+> dracut to build an initramfs for the kernel. I can call dracut myself
+> without adding an unnecessary middleman (kernel-install) in the process
+> and less verbosely too: dracut --kver $(make -s kernelrelease)
 
-Please add Kdoc comments for this struct. And describe the "override_no_snoop"
-member as below:
+kernel-install is normally meant to copy the image over to /boot/ as
+well afaik; maybe it did not do that in your case because you already
+had placed it there manually?
 
-"Override NO_SNOOP attribute in TLP to enable cache snooping"
+> Perhaps you could add generic details such as I provided in the
+> reference section for distros where installkernel doesn't exist or don't
+> perform all the steps required.
 
->  struct qcom_pcie_cfg {
->  	const struct qcom_pcie_ops *ops;
-> +	bool enable_cache_snoop;
+Go look, they are there since the start. They differ from your
+instructions though, as you put the image in /usr/lib/modules/ which
+only works with distros that have kernel-install. Hmmm. Maybe it at some
+point will likely be better to just use it for the manual install
+instructions; but it feels a bit like it's to early for that. Not sure.
 
-Rename this to "override_no_snoop"
+>>> 3. The dependencies for kernel building in OpenSuse and other major
+>>> distros are incomplete,
+>> So what was missing?
+> Sorry, I don't remember.
 
->  };
->  
->  struct qcom_pcie {
-> @@ -961,6 +967,13 @@ static int qcom_pcie_init_2_7_0(struct qcom_pcie *pcie)
->  
->  static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
->  {
-> +	const struct qcom_pcie_cfg *pcie_cfg = pcie->cfg;
-> +
-> +	/* Enable cache snooping for SA8775P */
+I checked using a container and fixed this this.
 
-Remove this comment in favor of Kdoc mentioned above.
+> The compile/build threw some error and I looked
+> up how to install kernel building dependencies in OpenSuse only to find
+> out there was a pattern for it already.
 
-- Mani
+I just checked, the command you provided earlier would download ~250
+MByte of packages that would consume 1,5 GByte disk space, all of which
+are unneeded afaics. I'm taken a bit back and forth there, but I think
+sticking to just listing the packages that are actually needed might be
+the better approach.
 
--- 
-மணிவண்ணன் சதாசிவம்
+> Perhaps you could list the basic dependencies in the main section and
+> provide the collection/patterns in the reference section.
+
+I want to keep the main section distro-agnostic as much as possible;
+listing package names for distros would also make it longer. I think
+it's better to do that in the reference section.
+
+>>> 4. The command to build RPM package (make binrpm-pkg) fails as the
+>>> modules are installed into "/home/<user>/linux/.../lib" while depmod
+>>> checks for modules in "/home/<user>/linux/.../usr/lib".
+>> That sounds like a bug that should be reported and fixed, not something
+>> that docs should catch and work around. Could you report that?
+> Please, could you tell me where to report this bug? Kernel bugzilla?
+> Which category/component?
+
+Just sent a mail to Masahiro Yamada <masahiroy@kernel.org> with
+linux-kbuild@vger.kernel.org and linux-kernel@vger.kernel.org in CC.
+
+> Thanks for all your help 😉
+
+Thx for your feedback, it helped making things better!
+
+Ciao, Thorsten
 
