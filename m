@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-90833-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90834-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 303B087058A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:32:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3477087058B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:33:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C482E1F25BA6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:32:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6C96280E03
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:33:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91942548F4;
-	Mon,  4 Mar 2024 15:29:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C56F54F84;
+	Mon,  4 Mar 2024 15:29:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Xk4J9VU+"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="kV3Vg5ij"
 Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 076B8535DF
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 15:29:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DAD854745
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 15:29:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709566176; cv=none; b=YdA/0/zvFNcarAPZRZLfBJdhNjpgMdx4/tKJHOTXXIhFLB46xWUWvb+JMeW8NzdpzYDdMcuH4NM0CQJ6FlotV74ugfyNBBSLFJyuYhqkPeJxiIcTdCjmSglD/MMS6pAXTsyLqW5sJfq1alOaUD7oo5euogjitBRm6flI1DblrPE=
+	t=1709566178; cv=none; b=WJVvXLdw1gthF/qImXP9T0IcuR/KgEWDPlKtszVG3CVBYx+U9GETYxH1+kw9WdNl9b7xzmgs9s/huHEfNQjNDUxrKm0VTVrXm/pJNSCyC8ACIvpqCgFjY41UEPdsjnAkJBma86Y2Dmac3n7egb8h6sQ4XBlmYdy5fB6q8+3ylfE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709566176; c=relaxed/simple;
-	bh=WDAxkhzjtawKA8ibJoFIkQ/DkTdgQXrpylNOsCS8bTs=;
+	s=arc-20240116; t=1709566178; c=relaxed/simple;
+	bh=fXKiE8oreceOOqPqncuQdk6eyUwYiFstX/vvkBDvpmo=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=DhiEiNa6xZ/ud7N3PUsACRByP8AFw9zXPEvte4UlPdwLAPPPb3xX614M7J2l5POOveLtThthBm9u0KyH2ljrr1nHuxtzjDhciKnOh5tjd2bNpAaFLJmmDbDsNj8Z2hoOQ4gfdqasPppz30hOIUsDWWzBY/Ujqx/nElSj5IliCZ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Xk4J9VU+; arc=none smtp.client-ip=217.70.183.197
+	 In-Reply-To:To:Cc; b=H4qeT6rfPcEn4I0KrwDBd+JlwR8FCVocs0QQeRv/NHRLl1I45lWUVZrtSMW9yXMDqfPosqZX8AyhHfjILf+EB8aS31FYDWtbxGM++1Op9s7BeROAb1JVKjHKSMCQN//Xjtum4EZLvZThYQ/9k/vjq4i7GbMAR/zm9MUhGYhOYT8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=kV3Vg5ij; arc=none smtp.client-ip=217.70.183.197
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 551711C0004;
-	Mon,  4 Mar 2024 15:29:32 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 625D81C0011;
+	Mon,  4 Mar 2024 15:29:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709566173;
+	t=1709566174;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=1mJQirOrh5uVlCQFN4AJsimww+6ayqe/xDiVoFk4V7I=;
-	b=Xk4J9VU+pc7nMsKkFc0PCYSd0Uqy9K3tIKHRaV9ewrg7Rd/qEqHMCcMAqJwVa0TJrQBvHv
-	O5qS1eBGut0j3WSf/UTmr2wj14SPT7Jk1i9VTvjeXtBhWTFwMtBJUUui+IO5qK8pka6HtC
-	6GDy5CUmLD38yQeF0vBcmShM00uM7kyvIs+wOg3HcntYmxLo/PhTQzpIF0AWBtJF7vRJ54
-	uwnFE6i2rnLbj7o18pUl2Aue6N9hK5xhibJygd1Mbvyr14QIvUaWl5w1pD+V1zARik6sjZ
-	JhvS3EZZfOmfZJVWdYs0+sN2wwV+ngs7RvKww2OeuXT5NoHCETjIlsXcQWS7VA==
+	bh=Sxj7PD7QU9ATJPEMVZ0jCO8idYJAgbdOpi3aVdMCsmM=;
+	b=kV3Vg5ijL9b5AdnNkmG9kUZ4jn/zrvdgEKB8/rsRl2Dp3Mnj5IOLpuuLdqCJkO4/6Tsgwf
+	rohZUr12EcBNjGKGiN+H492zw4tcJO2KphkVyPyRKRoqvxlpM0pw8Nnp+YdznDOt0os/eA
+	4iyAsV2r0021vPX2lwYSBHm7Ymc7S5CV67CbUFmHUWh4k+/zj1ln2zq8MgwMNL1kfrAi5v
+	dN44qC5+vnJysmdbAZaRvEry5wiZGRCsOsHlhGEnImjYKXn3QnSidmNSe7ksvrjMQPZOL0
+	Fr8ZR3QztMjBKSYQs0XZNBeCut0O1ZrxApFnm98bGUwqq2DhPPoqIdoFZCkuXg==
 From: Louis Chauvet <louis.chauvet@bootlin.com>
-Date: Mon, 04 Mar 2024 16:28:18 +0100
-Subject: [PATCH v4 13/14] drm/vkms: Drop YUV formats TODO
+Date: Mon, 04 Mar 2024 16:28:19 +0100
+Subject: [PATCH v4 14/14] drm/vkms: Create KUnit tests for YUV conversions
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,7 +55,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240304-yuv-v4-13-76beac8e9793@bootlin.com>
+Message-Id: <20240304-yuv-v4-14-76beac8e9793@bootlin.com>
 References: <20240304-yuv-v4-0-76beac8e9793@bootlin.com>
 In-Reply-To: <20240304-yuv-v4-0-76beac8e9793@bootlin.com>
 To: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>, 
@@ -71,49 +71,301 @@ Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
  thomas.petazzoni@bootlin.com, seanpaul@google.com, marcheu@google.com, 
  nicolejadeyee@google.com, Louis Chauvet <louis.chauvet@bootlin.com>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=881;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=10466;
  i=louis.chauvet@bootlin.com; h=from:subject:message-id;
- bh=cRkkP1b8eceTuEm0QTSGTTTnDinaYzDjRJLok06bIiI=;
- b=owEBbQKS/ZANAwAIASCtLsZbECziAcsmYgBl5ejN9NMOsH5mc7MJuPKBhjpy8/A2Pbt9HDaq6Wzi
- tKnejwmJAjMEAAEIAB0WIQRPj7g/vng8MQxQWQQgrS7GWxAs4gUCZeXozQAKCRAgrS7GWxAs4pO2D/
- 96UYBmCNnqyEt/7G+7haOSQC/qglT/fzK77FF2xMd0MYFlrW8XGXuE9aq1Rj2QiCC4jTgVb597PaUU
- lkvUu4GKnfyBePKMCOEngZOWsW9duc0+Cqm6G/b9AoRAbQZQEU9t0Eb2XGk4LbcLfeadUdTAIan36B
- gKqFdJOFuNpJJog6MKfDjQxe0JzdVyiABSvwxCq6AfYO2HILZS2yqKcIA6ZdtgIYdm7mDvWhihtdyI
- gn3YmeNO1qTV9YKKI8b9BodFr3oe7KBAR1cwWNJD1E/8hQRzZWqmImfPWHyxBSHqt3tYgqasjMs+4X
- 6sGev7z6CmlaP2gVNcPvMPHj7ksawgVJ1dpwTakCGwDH32ayeoMC4wHlSo5XF4Xjp0MpS7sb3pFFPa
- 5moafTrnNTvxUGBDM04aLF8cqjwwhbjYaj20Acg9eQU0soFYDClKAqu9mfZpwd+7FtGqdummT+NkLE
- Je5GrodyuEztOMlaffvVuLENBoTEmhsNGOBp41iYqbE9zPcJ9MS1DJ0rvImgv3muTMni6WluE/PMlA
- G8Bw1xFBMfuGUHaUOHV9acOEFsaJHM8tm5cL9Q4euG1jakI5E5R1TGgetTVjgXpB5j3mQ2Pf3RF6JT
- 4y6m5UCHAePgspKzh99ycSK6R0PB6JMHAPZmQZsfluAKQ4CQBGiqKPHchDzw==
+ bh=oit4DBZsqYBsCSeCVnB90xL2YrQEqzM2Rsn5P03j1zs=;
+ b=owEBbQKS/ZANAwAIASCtLsZbECziAcsmYgBl5ejNN1MQo+P1mq5+sUn5p5kzGYr35Lao4Xt3vrkl
+ hn+gONyJAjMEAAEIAB0WIQRPj7g/vng8MQxQWQQgrS7GWxAs4gUCZeXozQAKCRAgrS7GWxAs4tRhEA
+ C+8Urz+c3RbOiqiY+106LXtJxOGqN2KIp8qYemSm/SFIJV8SGLVcCLk/07Wuyixeg3gPw6vrc/aSex
+ eKXyNmmKCiI4laJU5Dp9Ci1/HP0njBEQQCTsZtQXjM+DyyBDNZ46FOezgGsgN5dHdN7uJZwYA+8Jqi
+ rJDuHAims+TJ5A8xBmOTzml5wvZWm4PCylvmrTFo6DFKqpWKoMKHrJAzkb1Mt5uU/YYyP9uOxJowPb
+ oSnez51Yt4TxoI9Ldx3ZxihL4/Zvkf5VMXhTO4cUHaVk61tI1WTVC4Sh7LJzjoBS27eot5awr3wdrC
+ NSRT92mPfjZX9OyAWckKPRenTr8/vwCFX3lfqazc9XzvxVNqSrU1crxHSKKr6oQfUY7XOT+yXUggMR
+ OxsIjAR5YNX/8up0lCF3uOgtDu6p41pNTpLRghHW9u8a3eo/ipFfHEo6OGjJN7tX++sAneZ0SLO0Xc
+ 8IRiRJsHL9yque6iqdfXMx2Qq22/NOkpygkgu58aVER48SAjFOKd2Dhk76yLMhuE/LOZQNmw9IU67D
+ ckLhhqwchi95f/lBVq8fubuj82cDrOV1g2T7RLq+eDRPwwIyBJDabhk/852Wy9fnIxQHFrt0U/sV0v
+ Eam6nfIt49N/WDBWvIDdm3Y/AB39OcdERAFyCuhx2Ubu+98gJZ8sj0oUfwRA==
 X-Developer-Key: i=louis.chauvet@bootlin.com; a=openpgp;
  fpr=8B7104AE9A272D6693F527F2EC1883F55E0B40A5
 X-GND-Sasl: louis.chauvet@bootlin.com
 
 From: Arthur Grillo <arthurgrillo@riseup.net>
 
-VKMS has support for YUV formats now. Remove the task from the TODO
-list.
+Create KUnit tests to test the conversion between YUV and RGB. Test each
+conversion and range combination with some common colors.
 
 Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
+[Louis Chauvet: fix minor formating issues (whitespace, double line), change expected alpha from 0x0000 to 0xffff, adapt to the new get_conversion_matrix usage]
 Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
 ---
- Documentation/gpu/vkms.rst | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/gpu/drm/vkms/Kconfig                  |  15 +++
+ drivers/gpu/drm/vkms/Makefile                 |   1 +
+ drivers/gpu/drm/vkms/tests/.kunitconfig       |   4 +
+ drivers/gpu/drm/vkms/tests/Makefile           |   3 +
+ drivers/gpu/drm/vkms/tests/vkms_format_test.c | 158 ++++++++++++++++++++++++++
+ drivers/gpu/drm/vkms/vkms_formats.c           |   5 +-
+ drivers/gpu/drm/vkms/vkms_formats.h           |   4 +
+ 7 files changed, 189 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/gpu/vkms.rst b/Documentation/gpu/vkms.rst
-index ba04ac7c2167..13b866c3617c 100644
---- a/Documentation/gpu/vkms.rst
-+++ b/Documentation/gpu/vkms.rst
-@@ -122,8 +122,7 @@ There's lots of plane features we could add support for:
+diff --git a/drivers/gpu/drm/vkms/Kconfig b/drivers/gpu/drm/vkms/Kconfig
+index b9ecdebecb0b..9b0e1940c14f 100644
+--- a/drivers/gpu/drm/vkms/Kconfig
++++ b/drivers/gpu/drm/vkms/Kconfig
+@@ -13,3 +13,18 @@ config DRM_VKMS
+ 	  a VKMS.
  
- - Scaling.
+ 	  If M is selected the module will be called vkms.
++
++config DRM_VKMS_KUNIT_TESTS
++	tristate "Tests for VKMS" if !KUNIT_ALL_TESTS
++	depends on DRM_VKMS && KUNIT
++	default KUNIT_ALL_TESTS
++	help
++	  This builds unit tests for VKMS. This option is not useful for
++	  distributions or general kernels, but only for kernel
++	  developers working on VKMS.
++
++	  For more information on KUnit and unit tests in general,
++	  please refer to the KUnit documentation in
++	  Documentation/dev-tools/kunit/.
++
++	  If in doubt, say "N".
+\ No newline at end of file
+diff --git a/drivers/gpu/drm/vkms/Makefile b/drivers/gpu/drm/vkms/Makefile
+index 1b28a6a32948..8d3e46dde635 100644
+--- a/drivers/gpu/drm/vkms/Makefile
++++ b/drivers/gpu/drm/vkms/Makefile
+@@ -9,3 +9,4 @@ vkms-y := \
+ 	vkms_writeback.o
  
--- Additional buffer formats, especially YUV formats for video like NV12.
--  Low/high bpp RGB formats would also be interesting.
-+- Additional buffer formats. Low/high bpp RGB formats would be interesting.
+ obj-$(CONFIG_DRM_VKMS) += vkms.o
++obj-$(CONFIG_DRM_VKMS_KUNIT_TESTS) += tests/
+diff --git a/drivers/gpu/drm/vkms/tests/.kunitconfig b/drivers/gpu/drm/vkms/tests/.kunitconfig
+new file mode 100644
+index 000000000000..70e378228cbd
+--- /dev/null
++++ b/drivers/gpu/drm/vkms/tests/.kunitconfig
+@@ -0,0 +1,4 @@
++CONFIG_KUNIT=y
++CONFIG_DRM=y
++CONFIG_DRM_VKMS=y
++CONFIG_DRM_VKMS_KUNIT_TESTS=y
+diff --git a/drivers/gpu/drm/vkms/tests/Makefile b/drivers/gpu/drm/vkms/tests/Makefile
+new file mode 100644
+index 000000000000..2d1df668569e
+--- /dev/null
++++ b/drivers/gpu/drm/vkms/tests/Makefile
+@@ -0,0 +1,3 @@
++# SPDX-License-Identifier: GPL-2.0-only
++
++obj-$(CONFIG_DRM_VKMS_KUNIT_TESTS) += vkms_format_test.o
+diff --git a/drivers/gpu/drm/vkms/tests/vkms_format_test.c b/drivers/gpu/drm/vkms/tests/vkms_format_test.c
+new file mode 100644
+index 000000000000..4636b013602f
+--- /dev/null
++++ b/drivers/gpu/drm/vkms/tests/vkms_format_test.c
+@@ -0,0 +1,158 @@
++// SPDX-License-Identifier: GPL-2.0+
++
++#include <kunit/test.h>
++
++#include <drm/drm_fixed.h>
++#include <drm/drm_fourcc.h>
++#include <drm/drm_print.h>
++
++#include "../../drm_crtc_internal.h"
++
++#include "../vkms_drv.h"
++#include "../vkms_formats.h"
++
++#define TEST_BUFF_SIZE 50
++
++struct yuv_u8_to_argb_u16_case {
++	enum drm_color_encoding encoding;
++	enum drm_color_range range;
++	size_t n_colors;
++	struct format_pair {
++		char *name;
++		struct pixel_yuv_u8 yuv;
++		struct pixel_argb_u16 argb;
++	} colors[TEST_BUFF_SIZE];
++};
++
++static struct yuv_u8_to_argb_u16_case yuv_u8_to_argb_u16_cases[] = {
++	{
++		.encoding = DRM_COLOR_YCBCR_BT601,
++		.range = DRM_COLOR_YCBCR_FULL_RANGE,
++		.n_colors = 6,
++		.colors = {
++			{"white", {0xff, 0x80, 0x80}, {0xffff, 0xffff, 0xffff, 0xffff}},
++			{"gray",  {0x80, 0x80, 0x80}, {0xffff, 0x8000, 0x8000, 0x8000}},
++			{"black", {0x00, 0x80, 0x80}, {0xffff, 0x0000, 0x0000, 0x0000}},
++			{"red",   {0x4c, 0x55, 0xff}, {0xffff, 0xffff, 0x0000, 0x0000}},
++			{"green", {0x96, 0x2c, 0x15}, {0xffff, 0x0000, 0xffff, 0x0000}},
++			{"blue",  {0x1d, 0xff, 0x6b}, {0xffff, 0x0000, 0x0000, 0xffff}},
++		},
++	},
++	{
++		.encoding = DRM_COLOR_YCBCR_BT601,
++		.range = DRM_COLOR_YCBCR_LIMITED_RANGE,
++		.n_colors = 6,
++		.colors = {
++			{"white", {0xeb, 0x80, 0x80}, {0xffff, 0xffff, 0xffff, 0xffff}},
++			{"gray",  {0x7e, 0x80, 0x80}, {0xffff, 0x8000, 0x8000, 0x8000}},
++			{"black", {0x10, 0x80, 0x80}, {0xffff, 0x0000, 0x0000, 0x0000}},
++			{"red",   {0x51, 0x5a, 0xf0}, {0xffff, 0xffff, 0x0000, 0x0000}},
++			{"green", {0x91, 0x36, 0x22}, {0xffff, 0x0000, 0xffff, 0x0000}},
++			{"blue",  {0x29, 0xf0, 0x6e}, {0xffff, 0x0000, 0x0000, 0xffff}},
++		},
++	},
++	{
++		.encoding = DRM_COLOR_YCBCR_BT709,
++		.range = DRM_COLOR_YCBCR_FULL_RANGE,
++		.n_colors = 4,
++		.colors = {
++			{"white", {0xff, 0x80, 0x80}, {0xffff, 0xffff, 0xffff, 0xffff}},
++			{"gray",  {0x80, 0x80, 0x80}, {0xffff, 0x8000, 0x8000, 0x8000}},
++			{"black", {0x00, 0x80, 0x80}, {0xffff, 0x0000, 0x0000, 0x0000}},
++			{"red",   {0x36, 0x63, 0xff}, {0xffff, 0xffff, 0x0000, 0x0000}},
++			{"green", {0xb6, 0x1e, 0x0c}, {0xffff, 0x0000, 0xffff, 0x0000}},
++			{"blue",  {0x12, 0xff, 0x74}, {0xffff, 0x0000, 0x0000, 0xffff}},
++		},
++	},
++	{
++		.encoding = DRM_COLOR_YCBCR_BT709,
++		.range = DRM_COLOR_YCBCR_LIMITED_RANGE,
++		.n_colors = 4,
++		.colors = {
++			{"white", {0xeb, 0x80, 0x80}, {0xffff, 0xffff, 0xffff, 0xffff}},
++			{"gray",  {0x7e, 0x80, 0x80}, {0xffff, 0x8000, 0x8000, 0x8000}},
++			{"black", {0x10, 0x80, 0x80}, {0xffff, 0x0000, 0x0000, 0x0000}},
++			{"red",   {0x3f, 0x66, 0xf0}, {0xffff, 0xffff, 0x0000, 0x0000}},
++			{"green", {0xad, 0x2a, 0x1a}, {0xffff, 0x0000, 0xffff, 0x0000}},
++			{"blue",  {0x20, 0xf0, 0x76}, {0xffff, 0x0000, 0x0000, 0xffff}},
++		},
++	},
++	{
++		.encoding = DRM_COLOR_YCBCR_BT2020,
++		.range = DRM_COLOR_YCBCR_FULL_RANGE,
++		.n_colors = 4,
++		.colors = {
++			{"white", {0xff, 0x80, 0x80}, {0xffff, 0xffff, 0xffff, 0xffff}},
++			{"gray",  {0x80, 0x80, 0x80}, {0xffff, 0x8000, 0x8000, 0x8000}},
++			{"black", {0x00, 0x80, 0x80}, {0xffff, 0x0000, 0x0000, 0x0000}},
++			{"red",   {0x43, 0x5c, 0xff}, {0xffff, 0xffff, 0x0000, 0x0000}},
++			{"green", {0xad, 0x24, 0x0b}, {0xffff, 0x0000, 0xffff, 0x0000}},
++			{"blue",  {0x0f, 0xff, 0x76}, {0xffff, 0x0000, 0x0000, 0xffff}},
++		},
++	},
++	{
++		.encoding = DRM_COLOR_YCBCR_BT2020,
++		.range = DRM_COLOR_YCBCR_LIMITED_RANGE,
++		.n_colors = 4,
++		.colors = {
++			{"white", {0xeb, 0x80, 0x80}, {0xffff, 0xffff, 0xffff, 0xffff}},
++			{"gray",  {0x7e, 0x80, 0x80}, {0xffff, 0x8000, 0x8000, 0x8000}},
++			{"black", {0x10, 0x80, 0x80}, {0xffff, 0x0000, 0x0000, 0x0000}},
++			{"red",   {0x4a, 0x61, 0xf0}, {0xffff, 0xffff, 0x0000, 0x0000}},
++			{"green", {0xa4, 0x2f, 0x19}, {0xffff, 0x0000, 0xffff, 0x0000}},
++			{"blue",  {0x1d, 0xf0, 0x77}, {0xffff, 0x0000, 0x0000, 0xffff}},
++		},
++	},
++};
++
++static void vkms_format_test_yuv_u8_to_argb_u16(struct kunit *test)
++{
++	const struct yuv_u8_to_argb_u16_case *param = test->param_value;
++	struct pixel_argb_u16 argb;
++
++	for (size_t i = 0; i < param->n_colors; i++) {
++		const struct format_pair *color = &param->colors[i];
++
++		const struct conversion_matrix *matrix = get_conversion_matrix_to_argb_u16
++			(DRM_FORMAT_NV12, param->encoding, param->range);
++
++		argb = argb_u16_from_yuv888(color->yuv.y, color->yuv.u, color->yuv.v, matrix);
++
++		KUNIT_EXPECT_LE_MSG(test, abs_diff(argb.a, color->argb.a), 257,
++				    "On the A channel of the color %s expected 0x%04x, got 0x%04x",
++				    color->name, color->argb.a, argb.a);
++		KUNIT_EXPECT_LE_MSG(test, abs_diff(argb.r, color->argb.r), 257,
++				    "On the R channel of the color %s expected 0x%04x, got 0x%04x",
++				    color->name, color->argb.r, argb.r);
++		KUNIT_EXPECT_LE_MSG(test, abs_diff(argb.g, color->argb.g), 257,
++				    "On the G channel of the color %s expected 0x%04x, got 0x%04x",
++				    color->name, color->argb.g, argb.g);
++		KUNIT_EXPECT_LE_MSG(test, abs_diff(argb.b, color->argb.b), 257,
++				    "On the B channel of the color %s expected 0x%04x, got 0x%04x",
++				    color->name, color->argb.b, argb.b);
++	}
++}
++
++static void vkms_format_test_yuv_u8_to_argb_u16_case_desc(struct yuv_u8_to_argb_u16_case *t,
++							  char *desc)
++{
++	snprintf(desc, KUNIT_PARAM_DESC_SIZE, "%s - %s",
++		 drm_get_color_encoding_name(t->encoding), drm_get_color_range_name(t->range));
++}
++
++KUNIT_ARRAY_PARAM(yuv_u8_to_argb_u16, yuv_u8_to_argb_u16_cases,
++	vkms_format_test_yuv_u8_to_argb_u16_case_desc);
++
++static struct kunit_case vkms_format_test_cases[] = {
++	KUNIT_CASE_PARAM(vkms_format_test_yuv_u8_to_argb_u16, yuv_u8_to_argb_u16_gen_params),
++	{}
++};
++
++static struct kunit_suite vkms_format_test_suite = {
++	.name = "vkms-format",
++	.test_cases = vkms_format_test_cases,
++};
++
++kunit_test_suite(vkms_format_test_suite);
++
++MODULE_LICENSE("GPL");
+diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkms/vkms_formats.c
+index d9b70d9b99ef..44d9b9b3bdc3 100644
+--- a/drivers/gpu/drm/vkms/vkms_formats.c
++++ b/drivers/gpu/drm/vkms/vkms_formats.c
+@@ -7,6 +7,8 @@
+ #include <drm/drm_rect.h>
+ #include <drm/drm_fixed.h>
  
- - Async updates (currently only possible on cursor plane using the legacy
-   cursor api).
++#include <kunit/visibility.h>
++
+ #include "vkms_formats.h"
+ 
+ /**
+@@ -185,7 +187,7 @@ static struct pixel_argb_u16 argb_u16_from_RGB565(const u16 *pixel)
+ 	return out_pixel;
+ }
+ 
+-static struct pixel_argb_u16 argb_u16_from_yuv888(u8 y, u8 cb, u8 cr,
++VISIBLE_IF_KUNIT struct pixel_argb_u16 argb_u16_from_yuv888(u8 y, u8 cb, u8 cr,
+ 						  struct conversion_matrix *matrix)
+ {
+ 	u8 r, g, b;
+@@ -218,6 +220,7 @@ static struct pixel_argb_u16 argb_u16_from_yuv888(u8 y, u8 cb, u8 cr,
+ 
+ 	return argb_u16_from_u8888(255, r, g, b);
+ }
++EXPORT_SYMBOL_IF_KUNIT(argb_u16_from_yuv888);
+ 
+ /*
+  * The following functions are read_line function for each pixel format supported by VKMS.
+diff --git a/drivers/gpu/drm/vkms/vkms_formats.h b/drivers/gpu/drm/vkms/vkms_formats.h
+index e1d324764b17..21e66a0cac16 100644
+--- a/drivers/gpu/drm/vkms/vkms_formats.h
++++ b/drivers/gpu/drm/vkms/vkms_formats.h
+@@ -13,4 +13,8 @@ struct conversion_matrix *
+ get_conversion_matrix_to_argb_u16(u32 format, enum drm_color_encoding encoding,
+ 				  enum drm_color_range range);
+ 
++#if IS_ENABLED(CONFIG_KUNIT)
++struct pixel_argb_u16 argb_u16_from_yuv888(u8 y, u8 cb, u8 cr, struct conversion_matrix *matrix);
++#endif
++
+ #endif /* _VKMS_FORMATS_H_ */
 
 -- 
 2.43.0
