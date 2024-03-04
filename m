@@ -1,100 +1,121 @@
-Return-Path: <linux-kernel+bounces-90670-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90671-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15E918702FC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:41:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2ED09870301
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:42:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF51B1F21CBF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:41:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE25C28A993
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:42:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6A923F9D8;
-	Mon,  4 Mar 2024 13:40:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C7EE3FB02;
+	Mon,  4 Mar 2024 13:41:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="XqJjbyhz"
-Received: from smtp-relay-canonical-1.canonical.com (smtp-relay-canonical-1.canonical.com [185.125.188.121])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QjvAJLQO"
+Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 493771EB2C;
-	Mon,  4 Mar 2024 13:40:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.121
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C3121EB2C;
+	Mon,  4 Mar 2024 13:41:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709559653; cv=none; b=MEV7sbW6Q4kpqtT9fE9Eay2gOkBnEdpqduT2TNzA3oI3d86TkieZIdA+YMTSGUcZp6IcZ/TVOpQC95spOwsRDVEoAW/H0NbkKSeySsnK+GYiOlQ8wPOolDSzfVo7ZLGZNFAVjNd/z0yYuD4BWSePithEO5fbnsZs6qyPxm0r7to=
+	t=1709559665; cv=none; b=usMgvyog5+De3s9M7KqvXx4f5JhD7veNrsckU71UguD2UAl15VodnMk2qkLv0UdpC6EYEBWm0niL38dgzbhqahi5DRxy7YmTFPiQhNJhVVZUcYmOpxsVlW8TIo/jq+XIi0V1PZoeqPw2zar9pOlSv0ubhzGPJBz2Xq/xoLdOGys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709559653; c=relaxed/simple;
-	bh=HEWHA2PR2Vwm0nx5ZwKKi8D+dn4R9GYVVAfVOpirOdg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ewod9qB84v8b3OasMIwsWRflM2lZ3EEi0PelDmZMK9j99qtH+TvINHD7T7WUh+wYt0JG40CeA1hlNHn4I8z/TSDEwNBx5/bV0AfIpksbftMcDKSJXEnauc7FPka1TKkiiABb/HaUiM0eiiFhAEH/gMHoJsZJd3zzehwTUFT+at0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=XqJjbyhz; arc=none smtp.client-ip=185.125.188.121
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from andch-XPS-15-9520.. (1-163-114-48.dynamic-ip.hinet.net [1.163.114.48])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 49D333FDED;
-	Mon,  4 Mar 2024 13:40:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1709559648;
-	bh=tVLPpKCRmOM3oFaDePTJQsjQEmkz+D3QGfPGx8yx7lU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-	b=XqJjbyhzobDu/SqCj/j1eAUeLfhRTceHvctRjIfQcSvG3Nf9qohi5SKZuexOaPHD3
-	 4ORyFrXG+R4Z5nxPjO/ksKsovwt2KHKnmO+F2Bq7EQoIcdtDYsMumcILt3UkBg54jy
-	 NMsYdzdyGZoLo5svgOSuRNQKlxgn6xcEMw0J5iBLrI8YNguWkR+c1rUVvNCTnlnLY7
-	 qysjWzO/AO0r3+tyk/jHClwvLCQV4FPwDRY9jmTmKGt/+YaIvJGJknVeXVCCaQoCGz
-	 XRXbjserrYrJSUDoBxKWEmZSeEfM4fAMdMqgrBdF0oihEo3L3vgeQMsgUSeMbs9HsT
-	 9GgLTSZhBTuTw==
-From: Andy Chi <andy.chi@canonical.com>
-To: 
-Cc: andy.chi@canonical.com,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Stefan Binding <sbinding@opensource.cirrus.com>,
-	Kailang Yang <kailang@realtek.com>,
-	"Luke D. Jones" <luke@ljones.dev>,
-	Shenghao Ding <shenghao-ding@ti.com>,
-	Matthew Anderson <ruinairas1992@gmail.com>,
-	Richard Fitzgerald <rf@opensource.cirrus.com>,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] ALSA: hda/realtek: fix mute/micmute LEDs for HP EliteBook
-Date: Mon,  4 Mar 2024 21:40:32 +0800
-Message-Id: <20240304134033.773348-1-andy.chi@canonical.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1709559665; c=relaxed/simple;
+	bh=BQE9hFzI13IZRZo749AAQrUf4z+0QDBsfPu5T/4OTlQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=s/99RKek9tk2KOAASfliFSNNr3ujohQ8C11ci74r7kHPagREc7gv0aoLZplncy4Drm83LZz8f2gyZgf53RBt0IYSaMUCN1rvEjzS4om7stPOXswx0Wh6AfcT2gUSc7Gn01v0Cm8kN17/0yO5Ka2S56Fp1HMXihb0VJoDu8Z44OQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QjvAJLQO; arc=none smtp.client-ip=209.85.161.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-5a128e202b6so831860eaf.2;
+        Mon, 04 Mar 2024 05:41:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709559663; x=1710164463; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5/dHCpgDDmSuBOfKLpH4euKRiDvMD04w7x34y1sbbGY=;
+        b=QjvAJLQOfdYN5YNyyJLVXsLMQIUBFGP8rfn0wUsSTTSneGSPT01RszcUqljGvwa0m9
+         F1f3cfWF34w0xSU/KD4q5Uga+/Vt9W6lT5bhswikwSQytfV0BYc83AYzMFnxKHYUSX6I
+         kiBlDcWT1kdRWRD628HSIIDFXBPv/4U7U6JSFQiLf8FEdC7ca6Ac5kefDWCboaXFIy4S
+         mWhstasd9ElNjAWHEpLbmlqflgcE6FAQ65v48moGed2kZSwwozRqIYPkJ7nbMO94jrAb
+         k1l7KHQE0e6NDoYCsvnd+YnxXFoBbSYk2sjE87yg4fJi/fZyeH2epjWNfecwb0CelN2/
+         JcbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709559663; x=1710164463;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5/dHCpgDDmSuBOfKLpH4euKRiDvMD04w7x34y1sbbGY=;
+        b=iB8bB2bCynPnq3I0lnt3tVsNsNtRut2Dha36GRJVNSyCnRrEhd5V4dqHhHK89Sjxn4
+         A7u8zOJFGDUj8Bvg+C9A6DFkk0ysBmzow24R/AwbXMFthjwkLMmOcLE63IpOzYyycbHr
+         8J9Jfw4YoIh9GhmrlhJrs7K3kL8F5zudfQqUtAQkzjjQW12TbcKIQKZwoIOvgIaCnzRe
+         6P7RmyjroJxuPDShEG/n58YSjjeCJe+AycA/5t9Wf43g+j8O7B3nqp81PDtdYYLbWeKW
+         aZyXwcvWzU1ZL9CnoMGU6p1+muKO/O4iylVvMNYlAdd0rEgmWmGVlxnWXuXAIZvcYfzc
+         9Siw==
+X-Forwarded-Encrypted: i=1; AJvYcCUo2RyTPFE9OMwEBCYMYM4ff3KGt6YiSIJTrsITVfC3bk3ZoJEtIZKsEYqvPLfg7/083suOmTOWZFED9m5An2+qNtRjjnEgby78TpisXg3Q8hdnwZFaS8AEQi+B/lc1xCJ91T+5WqljbPWt+m0Fx0DlpNVgABuOQ8qra/jk7miHWg0CGg==
+X-Gm-Message-State: AOJu0YxxEZ/KPYJos06MzmluZFht1GHpccu8emUzucf68JSolRkFIr/7
+	9O9DlkN72J3T6N1ut8AfNlXP6AB8mdYY8l17r/Pdur1PN4dZpxRBW4kIsoWZ/+HAHCuJtDkOA9e
+	w9HhATh1O/9px7J+0U1Mk5D1F2cbdXziTR5vdYqJY
+X-Google-Smtp-Source: AGHT+IGApFrYWTCxf7o+Xw3AU3j0mc3yLDQDYin1YtShfj5gmezRzs9SAsWTz6aEslad9W0wPmt7sBbXkXDMb2pSQo4=
+X-Received: by 2002:a4a:2559:0:b0:5a1:15a2:114c with SMTP id
+ v25-20020a4a2559000000b005a115a2114cmr4854461ooe.0.1709559663519; Mon, 04 Mar
+ 2024 05:41:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240304085933.1246964-1-qiujingbao.dlmu@gmail.com>
+ <20240304090248.1247215-1-qiujingbao.dlmu@gmail.com> <91f0a339-ac0e-49df-bd26-dbfe1485308f@linaro.org>
+In-Reply-To: <91f0a339-ac0e-49df-bd26-dbfe1485308f@linaro.org>
+From: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+Date: Mon, 4 Mar 2024 21:40:52 +0800
+Message-ID: <CAJRtX8TPz_jTvPmuBW8t=mC+BR1kWmu=GS9K1k6ys7U9u0ENFw@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] pwm: sophgo: add pwm support for Sophgo CV1800 SoC
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: u.kleine-koenig@pengutronix.de, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, 
+	linux-pwm@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	dlan@gentoo.org, inochiama@outlook.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The HP EliteBook using ALC236 codec which using 0x02 to
-control mute LED and 0x01 to control micmute LED.
-Therefore, add a quirk to make it works.
+On Mon, Mar 4, 2024 at 6:15=E2=80=AFPM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 04/03/2024 10:02, Jingbao Qiu wrote:
+> > Implement the PWM driver for CV1800.
+> >
+> > Signed-off-by: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+>
+> ...
+>
+> > +
+> > +     ret =3D devm_add_action_or_reset(&pdev->dev, devm_clk_rate_exclus=
+ive_put,
+> > +                                    priv->clk);
+> > +     if (ret) {
+> > +             clk_rate_exclusive_put(priv->clk);
+> > +             return ret;
+>
+> Please test this path - you have double put.
+>
 
-Signed-off-by: Andy Chi <andy.chi@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Thank you for your reply. You're right. If the
+devm_add_action_or_reset()  function
+fails to add an action, it will call the action.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index d71520858b5f..232f759e169f 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9880,6 +9880,10 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x8c70, "HP EliteBook 835 G11", ALC287_FIXUP_CS35L41_I2C_2_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8c71, "HP EliteBook 845 G11", ALC287_FIXUP_CS35L41_I2C_2_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8c72, "HP EliteBook 865 G11", ALC287_FIXUP_CS35L41_I2C_2_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8c8a, "HP EliteBook 630", ALC236_FIXUP_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8c8c, "HP EliteBook 660", ALC236_FIXUP_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8c90, "HP EliteBook 640", ALC236_FIXUP_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8c91, "HP EliteBook 660", ALC236_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8c96, "HP", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
- 	SND_PCI_QUIRK(0x103c, 0x8c97, "HP ZBook", ALC236_FIXUP_HP_MUTE_LED_MICMUTE_VREF),
- 	SND_PCI_QUIRK(0x103c, 0x8ca1, "HP ZBook Power", ALC236_FIXUP_HP_GPIO_LED),
--- 
-2.34.1
+By the way, if I need to resend the patch, should I wait for the
+maintainer to review it, or
+should I immediately correct this error and resend it.
 
+Best regards,
+Jingbao Qiu
 
