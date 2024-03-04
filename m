@@ -1,63 +1,62 @@
-Return-Path: <linux-kernel+bounces-90803-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90805-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20346870535
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:18:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15AC0870537
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:18:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CFA662841D4
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:18:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB2861F25D83
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:18:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1F914F5FA;
-	Mon,  4 Mar 2024 15:16:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57EB5524B4;
+	Mon,  4 Mar 2024 15:17:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="ZopN0P2U"
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="XIXpNosk"
 Received: from out162-62-57-49.mail.qq.com (out162-62-57-49.mail.qq.com [162.62.57.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBE5E495EC
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 15:16:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B9604AEFD
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 15:16:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709565418; cv=none; b=QxdKqkzKTOiMT7NEJ4TEANiVYQO+H6o2JnKC4rTsJRErE3McOLFR4SbDEA7o3Zcf+JgYa4cs1skMWDoqQ1YRmikDE+mc4btMEkEnAzTnJWN2sKho7ckboPlBZVnmIGKYp6rQCQdHx2Q23tCYh/T2MXIUGChoR33hOjktis8u88E=
+	t=1709565419; cv=none; b=RUP7NwmfL3A6agdh9ToeL4k7N/FmonhmAvfl/x7wN770C+FYd4meitfevyPFHe5gSZlLvGKu/3aNc/IEFcegRUpMjg5GTtKvnOcYtmm+ZMy4nGwKY+XuuJK4GhcgTpUB0Gx0CqebBHpYR+JsEajUExFquE+3Zl0Z3Whe5NF9qmI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709565418; c=relaxed/simple;
-	bh=ETeFvo3wbUuXHXxemScmOu2seWVe80QSlx6B/IsK5O0=;
+	s=arc-20240116; t=1709565419; c=relaxed/simple;
+	bh=CjFyzFbpm3pHQdLOEiOSHfMP0scTVcINbBhHBnj4ZFA=;
 	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=JLbdpDO9bL1n3684xU3bQvvdEP3xfLFDZJ00Azi3+MfhJa62QMd3esR18J8pQiTINkRvcIdharLdTixk77mHPX9eTPc2WzsC0rL3a2dVmlIblUtl9uvK40hSFhgKB+FAghK4J7RXakeBCxzJAGlqKhv3bLAUY6AMb/c3hFJQhlQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=ZopN0P2U; arc=none smtp.client-ip=162.62.57.49
+	 MIME-Version; b=QqvZIolS9tqg30TuWQxUScvlnOKEHxsz+xl1YQ8VJjA7FUwItJMYPwBpTh8JK75Qico0DAGDukLO04WsAPqvkHsF/B1REcyO8AckMV5RUOADg4RkfvZUX+sLPtjFvTURtbvSbmuNn4/ZtcAjPwgda4KnECUvHjAIxhLBAQpfZGU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=XIXpNosk; arc=none smtp.client-ip=162.62.57.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1709565405; bh=QCJNzCmklfQ5NgNTmfCMQlcAPni2vZ8VItHC2T73jcg=;
+	t=1709565407; bh=nJidGdrVKa9+98drhoLdbDX2xCdE6XKT/ou4UGPQ/5Q=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=ZopN0P2UfwiSVQdqXOystS1rlm7GgMbuVJ1XdgrsIc9sCzVDJ/PjshZ5hZ1ipVr//
-	 rVuqfdVzMfFisIzr4W6h2HtEtPdPIEjqebCvyEtR8uFiydWi08VxCpJNbCTIj7TFe6
-	 UVqMOCYYRKxRqrg5s/zGBjJYbIA1N99Q+QTgTLPA=
+	b=XIXpNoskD2SzVNX+Peds2tkeV0A5Lg3YB8rIMfmIGAKB5JH5CTW00nrC8+5CV2T54
+	 0y2NR57NGy2C5BNuLdoXsYjkIW4Xc9Vwlc+7BUbTMUfVyVJxTD9Iv7R2DY+wghS+4B
+	 fO2ED/m+13+Ftk08EsHKpl79G9AsST9gN3xrBcT4=
 Received: from cyy-pc.lan ([240e:379:2240:e500:994d:62ab:74a6:932b])
 	by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
 	id 42726AAD; Mon, 04 Mar 2024 23:16:39 +0800
-X-QQ-mid: xmsmtpt1709565402t1mhl1zai
-Message-ID: <tencent_1DF18DF87C3E8281DA758E55B82831AD2108@qq.com>
-X-QQ-XMAILINFO: MB5+LsFw85No+fsVuxhrDBql3W1UvGQ7Qv5D8q4s73qVKZ4qGKfodgjOikGJh+
-	 F9YqSkX5fQPcm8/c6VyllKAcvCCZxmJTQdiMDhj//C8hZM1dd2O9gyyzK31uvCtmNo2A09Xx5Yzm
-	 eNDPyyep4R4r1c+aDBoT8DJBMFCisvtHfFgzVHv7tly0J0rXOCd0/uqKN60O9cNZROD2dwic8+pp
-	 t6Kc8+kzl8n030JmczW81szdQQNT9wS6Z6QgeW0MtDIofa4A45JXSmZNxPpap7qhQvVIMts7MVKE
-	 FAk6M8PLaM4JDh1jf0nAh9D7fXZ9kC+L7AePrN95G50dVeP+7J956qCbdYysK0Nowj6+Byt3arxN
-	 A50Bi3yfH3FD4VOHgSdjLziPcFYiLFptMJyXRzhWFNLlfjgwKGapgeiac2TpcCgtBySzzRcehepL
-	 4qHhpAQ7UPhgu4QLyQPiEPN2hF0Wis1tVgc27zwDAv1J9lY4kh3ChLFaug5jtrXj1CKUnDUTNhk/
-	 VALbq5xXut53jJhuDo8vgK0LwR28FGRHIUWjjCFwwPatxXSzUBkbb6GIpjTbRO5+D3kulTCEIbCK
-	 mBUMjzbNTvAnWTcvE12N1gHrQIJ6NkZreSe3zmO7b8ZUJRKBEAM0LcIa5wWseQUO5Fu44x2a9hhl
-	 21CuNmQ7uZLwDA5RYuAy1Ziw9/W2gHU4woZ3QT9pKd4aLu5HzsErs+uJuo1EKl+fjsgOT2EfXxQH
-	 lq7S9Wqc2ZYMZO211bJis17odpggPKDUjQS6tnLwZEy8OX7Yar1r/sD7MZCY9XDwj1kHnXFYikvE
-	 +6RlACioxjttm9TCiCc37EIuAvLoXIukKyGZcdGVk/8lqCl9obhdZuPN0dmegbr+G7Kxj/DD6hO/
-	 4OFlkRXAliQ6/VtbjIg3E5enggsm6RIuK59Pjq0+/n3G3z24R4ByBLtohFS/+b4XcySFynsjuJK9
-	 PTPC+HIaeSsL+9jQjASfOr+KX+vSDki+SipDqeGzf2aP2T9itPl+CuuZPRImxyIuZPkJj7t0/NqC
-	 u3PjXi/QMNQOojx3MzaGlusomeygNb2OaSf4ku1VtvEGjKsyBdMad7rYDD0PpciFqdSrWcFLnq0l
-	 J9L5s6
-X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
+X-QQ-mid: xmsmtpt1709565404tp2y8ecwp
+Message-ID: <tencent_84166A6B39E6E062C4F8872436FAF1D10A0A@qq.com>
+X-QQ-XMAILINFO: M01fr8RkAJIF4wUbDHP5mIGbxbh9iR1w5XGbdFmx5J74WeZ48s/OPys7QOl9TZ
+	 xL6Lrk54S3w4AIOydTjq+lfT61tTdueWAUmYcOeIP0mXpXsr89m7vhje1INUkgv2vRgHkDi8/IXd
+	 V+yA91cWwTaRhMuJJg+3LxI2AlyCTT6m5h4HTsfc+5RyM+tkWP5HKmKsxLWdeFSRmydNvwA9HUiE
+	 n6BJar9CzGKQvuju0y9mwgKh4g9v32/VaY/Q8lqvLYHCtEirOTO5+Rb6tsfxssGJKGRtr9jkKvrS
+	 Q/5DgU6t6RMhjpNycpOF93435WmT2tZmvQ63BksFQsBp84H7wWX+qi0PHveFQWRec8bP92B6kJyz
+	 KXO4ffteq/4mKND7cdpYpbU7OEZLIH4KX/s6gbcp7ZdW8imx+4xqwfToeAn3uuUgMaVMxnIKg9M8
+	 /8sHqkx25NYqBmLQo49m1957kqJZmuZhTu1R9Iwlfg1xU1HOtVZmH9dmGfQnVhL6kK7JippVFbNZ
+	 Sl9T1kn+Gjo5/+jg1eg03pf72xjFvn51bNhdQtjDDmxri2sjfOdtbOv9ISF7Ij0U1OrlrqZbzR3e
+	 Du6g9AnLhD+dLPtODPQBMcknPBQ3jPOZMBI8IcTNj62MiAExj7tvJxZ/3qbFAc1gsBLBmz34cyvd
+	 5XZNbY/GheHqSdhyRzX3T2mhPZK3+ZglFORCaaULpKTC+PDI1jUjYJj0ntR4/7ZSb0oZvdMmM/Gv
+	 12nD9wcCobiYtYfFScPvpEypSbT/4uPdXVPAWexoJjnC8PeKpwhKtrAhodSabyEXfIvUbep+LooH
+	 U82isaF0Qi47jeNhcXhkoQqP7oY3hYiBGpemI2r6U5McEuFEndRabKi7cAhxP1sly0hTQbTriDCs
+	 onDhjJki6xzhO4+NsSo581Oq0l26nlLvNrsHXpX/vi/GKF5gXtvD49KS8ace6cVN88BQ4lGbfdJG
+	 Pj+lxaUuiDtAmV981zwfSI9shc9BPj9ryIhfwEUvZjJnNK8IKls24KtJSfoIJgPNKd8NDJdHTWZr
+	 vRv5OkbLN01G8kSgvTDrCqrN9z4MLCdXW77S4wo29I4gIpQ/ti
+X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
 From: Yangyu Chen <cyy@cyyself.name>
 To: linux-riscv@lists.infradead.org
 Cc: Conor Dooley <conor@kernel.org>,
@@ -71,9 +70,9 @@ Cc: Conor Dooley <conor@kernel.org>,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Yangyu Chen <cyy@cyyself.name>
-Subject: [PATCH v2 2/7] dt-bindings: add Canaan K230 boards compatible strings
-Date: Mon,  4 Mar 2024 23:16:21 +0800
-X-OQ-MSGID: <20240304151626.759150-2-cyy@cyyself.name>
+Subject: [PATCH v2 3/7] dt-bindings: timer: Add Canaan K230 CLINT
+Date: Mon,  4 Mar 2024 23:16:22 +0800
+X-OQ-MSGID: <20240304151626.759150-3-cyy@cyyself.name>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <tencent_64A9B4B31C2D70D5633042461AC9F80C0509@qq.com>
 References: <tencent_64A9B4B31C2D70D5633042461AC9F80C0509@qq.com>
@@ -85,42 +84,25 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Since K230 was released, K210 is no longer the only SoC in the Kendryte
-series, so remove the K210 string from the description. Also, add two
-boards based on k230 to compatible strings to allow them to be used in the
-dt.
+Add compatible string for Canaan K230 CLINT.
 
 Signed-off-by: Yangyu Chen <cyy@cyyself.name>
 ---
- Documentation/devicetree/bindings/riscv/canaan.yaml | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ Documentation/devicetree/bindings/timer/sifive,clint.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/riscv/canaan.yaml b/Documentation/devicetree/bindings/riscv/canaan.yaml
-index 41fd11f70a49..12a78bc95992 100644
---- a/Documentation/devicetree/bindings/riscv/canaan.yaml
-+++ b/Documentation/devicetree/bindings/riscv/canaan.yaml
-@@ -10,7 +10,7 @@ maintainers:
-   - Damien Le Moal <dlemoal@kernel.org>
- 
- description:
--  Canaan Kendryte K210 SoC-based boards
-+  Canaan Kendryte SoC-based boards
- 
- properties:
-   $nodename:
-@@ -42,6 +42,12 @@ properties:
+diff --git a/Documentation/devicetree/bindings/timer/sifive,clint.yaml b/Documentation/devicetree/bindings/timer/sifive,clint.yaml
+index fced6f2d8ecb..9840a21c40ca 100644
+--- a/Documentation/devicetree/bindings/timer/sifive,clint.yaml
++++ b/Documentation/devicetree/bindings/timer/sifive,clint.yaml
+@@ -37,6 +37,7 @@ properties:
+           - const: sifive,clint0        # SiFive CLINT v0 IP block
        - items:
-           - const: canaan,kendryte-k210
- 
-+      - items:
-+          - enum:
-+              - canaan,k230-usip-lp3-evb
-+              - canaan,canmv-k230
-+          - const: canaan,kendryte-k230
-+
- additionalProperties: true
- 
- ...
+           - enum:
++              - canaan,k230-clint
+               - allwinner,sun20i-d1-clint
+               - sophgo,cv1800b-clint
+               - sophgo,cv1812h-clint
 -- 
 2.43.0
 
