@@ -1,139 +1,137 @@
-Return-Path: <linux-kernel+bounces-90795-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90796-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 429E5870523
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:16:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBE94870527
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:17:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D81521F23EB8
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:16:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A5D21C2354F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:17:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63FBA4C622;
-	Mon,  4 Mar 2024 15:15:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77A0B4CE1F;
+	Mon,  4 Mar 2024 15:15:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="pvUYGsix"
-Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com [209.85.222.46])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Kd4b+qkS"
+Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB3592C18D
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 15:15:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2948747772
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 15:15:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709565333; cv=none; b=ImVW0O+5FDFI4yWyHEHo6ORexx1DkLbANS1aSGIHxYYW/fpKzy1kMVtu7a2ohUO+7zalvgF9xqzATtzDjsuZe64m1kVdZDKjjx9GgzpO34znIxGNKaKJV9vpV2kr0uZaDRx7VefAYBzaigi3MViYDYQAE7FkzXnnpGAprPskYa8=
+	t=1709565348; cv=none; b=jOoMf/otwhOrB2tiqK/lGbocGuYa9ZhqsHMq6xawxO6i1hHVohGDME67tXghpD/r7aKNEwtO6i2Tuh5fuQjUUCA8wSPr9y49BZ85amrHl0wW+TnVXc45r/DJEvOX5jLq7fix83z6v7tRc9mxNw+xnoMAliiINAXnGUCEUeyHPAo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709565333; c=relaxed/simple;
-	bh=YxbTFoLqP6oY280USyFbflYr0v1oTqG8VedpUTgh7JM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lOGqhGVUpali5HiwVVl1w3EpJpzyvUY87iPa1uxWOw6b5mobs14MD78fRm2+V86VzMowjBaqB8Z3YY2KHIJJBM4pXE8zoL97xLihcr6umaJf8KzktX1+5sS7D8cSQAiWXJpxly438rGXreO5vPGpeM978MukSGAeySfVqb2Ufo8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=pvUYGsix; arc=none smtp.client-ip=209.85.222.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-ua1-f46.google.com with SMTP id a1e0cc1a2514c-7daf95b096aso1258111241.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 07:15:31 -0800 (PST)
+	s=arc-20240116; t=1709565348; c=relaxed/simple;
+	bh=PHagvGZN49C8CopjtNuDmKmGFqr3kmXN7R8kWRH/HsA=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=nOVje8SJyfIG32kILBznAgsLyRXcDeHHLCJxSx5abAUKGRJdBjNt4J/mFuWwO+1tpQBkjKJ2JDh9p//xAL76jVBOAcEQ+bIMqqY4OcWkvsRIIvIQcdHRpuVmD7+02CHf7y+w8fB/Ch/b6xCxNZgAinYAwxtDM/mK1WAdCW9liV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Kd4b+qkS; arc=none smtp.client-ip=209.85.214.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-1dcfc3ae5d9so23728415ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 07:15:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1709565331; x=1710170131; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kYjJ9NXUu5m1nDaRsg8bhsfXlzVxtGulq6ljiUHV0SA=;
-        b=pvUYGsixQ123Y425uz1ePWL2lJdDw5rOwviYexooqHTqECkY4BduexWPLvsFOtEzjc
-         fbiFXtkvFWAy1RXD0UjM4Qp6pMBb9asQY5/mvlQm4EdCmlbpPZezhWzb8gbGSZUH225Y
-         qR8Fe0VM44giTUAL/NYhdSWcGi7YXH1ShHaJvd/XU0/xyhtnhVwAf1bjohiJC6jWs59d
-         NeiKMfFq9ciK4MPFg/kNDLUcJga2kJNfeNuh1RWHje+ch5eGG83uuMsqpLd1te97Nkud
-         EMqgvxqGKuhIIxvJHu4l99CDvoHBuBWhLMAJUUPN3lIBG3/okw17qmoEJwEM/NmvwcBx
-         VqPA==
+        d=google.com; s=20230601; t=1709565346; x=1710170146; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=pFO6+UywViZZyvnPAa9tMMRLlhb9803+MwFU94Wmgk4=;
+        b=Kd4b+qkSPT44csNE/JIMN3qr5t0cBmih5H7hsQQpfsihY4rIBv+OLNhz/2uD9gcMa2
+         +5+0nBMfAxzZLlhm9SyuHLmXO1ifG1CT57cSFaV/lJXkMWeZH1VWVFH+ciC/0vk7VgtK
+         vizuUJr0u2eA76d1aqYy8tI1MSxWxGfVM4el+ydURYfImxTE1seRKetCyevUToXbD3a7
+         abIjNEY/yXF8Y8etFIb5Kx/Myrk/t2NQBgWmvYzeFTPaGHIuOAUCiPjrtM0CiLQrpad+
+         BOYKWG2BtAj+iX1znxEwm3n54lLSpbhIE+1HDXwpq0pdDV68rjCKUx3nhvaC9hGZ2lRC
+         H9Kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709565331; x=1710170131;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kYjJ9NXUu5m1nDaRsg8bhsfXlzVxtGulq6ljiUHV0SA=;
-        b=h1V+pjcmO96pMwnyC3T0wC4eX+xAc7mB1yTXHgR6NFpb0bKfbKvfo3eESWbnLWiEg5
-         NeBhgG2YOMnH51oI57PtmIe26KS0ryPg7LE2YNOll86RweLUF5dheAxLmk9Toa5desnE
-         jDGmS2kH+o5LHLahDAprckszdi45FGDueCw+Gmk+P+5R1+aBf1du6PSl6AkPn9cfWJZl
-         EIMZN69f7BMkvTjrad30PAhdk0ki765Ms5ml7x7fzU3Drsl01rkYv0mIKilJDoMpe90v
-         pfHdd+ShBrvsb32TvxX8/XZU83XU6LFRaLecD++mek6byVJ2GSrUcR9PCu6lwriMwTD5
-         3L2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUAVGuS/6SWxUuRTroccg9ab6eJuLTY6rCwtOwNelC5eY4ntg1qXbzhqAWS5OZcfZOmtMkGzc+Bonn42CCx9j8Fcrsc6CAJRymWXMvx
-X-Gm-Message-State: AOJu0YxcZvINEjMQ79GHp3/ztGjgNMHV88Epcunmkylax699BTefw0uQ
-	YiI/i+eWZFAzz8s7sPFs0w1cK0K3Gv7XMzGf6tsQBH8i4a7YQW9yfsSbpr4gwZvzXxN1rS0BcrJ
-	oArP0KXRuH0VA95PwZpsN7pzfGh0GtC/BqcvwI42gH+vawFWc3LUgDA==
-X-Google-Smtp-Source: AGHT+IGcUa2shBJW7CAhyhkG6SYS4eHgsUA4RZw2fnlT7G4lYKf145+I8+ZU6+U6BcVoB5jryN+nBitx1d4WjxESkak=
-X-Received: by 2002:a05:6122:3685:b0:4c7:7407:e8ab with SMTP id
- ec5-20020a056122368500b004c77407e8abmr5906270vkb.12.1709565330774; Mon, 04
- Mar 2024 07:15:30 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709565346; x=1710170146;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pFO6+UywViZZyvnPAa9tMMRLlhb9803+MwFU94Wmgk4=;
+        b=PR430IYtM426utBSZjmi4eMpaFrMT8VNhj3z5ychodGz9dgWG9lT3+U5NlhrCSeyN3
+         9RFAqc37C75b/vqYpavJHxnRJoS171E2e+tT5zKPNwY01IvLM6Ij6KtGKkahQmEqeVUt
+         KEmBJrf8oZMtVVEz1W9deeZ9NnWzsDuF1lBeJU/yDcoqJRfGUT5Of0xsEsEriMDmhOBY
+         vEToRqvSgfUuvW513TJm1TwiEihgTUeNcctwzRDqL2XqYLmsaYaccENj7Ef54sjxcpXe
+         6oFcp11H5LjV2MAiAQrxKviOtI51SzNDUpAswTgIMPK9xZGNhNBdmnXPcDM00LNal3pJ
+         0Lvw==
+X-Forwarded-Encrypted: i=1; AJvYcCUFJr7iR5uIr3aJHIX68BXBzOychjbzAJ+qb5SKuYCn0f7mnLOHe5Lf4o1fH1KCVvzY/kDd03Wq4pZYqlBt/ps7JPpMq0Ogay2xmsXx
+X-Gm-Message-State: AOJu0YxhLkLhqeVw/QZNqp/IR/ytTn0ZAJt6e5ZHAjFO9E/JrgJVaG6Q
+	YIl7cnFJgS54PcvbYuyUXnpJa81tstXJbNe0qWUpnaDNWsbeiNskh+FfC02XwhJK0HURtmog3xY
+	w0A==
+X-Google-Smtp-Source: AGHT+IHGAA0Lrr6D8JJnCJuBRYdJyqZCbHSa/69Uam1kLs9A6DxL38nQx5C9WFnOxNa+i/UXz2cKgvYsNBM=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:e5c8:b0:1dc:e9e:374e with SMTP id
+ u8-20020a170902e5c800b001dc0e9e374emr91930plf.12.1709565346183; Mon, 04 Mar
+ 2024 07:15:46 -0800 (PST)
+Date: Mon, 4 Mar 2024 07:15:44 -0800
+In-Reply-To: <20240301101410.356007-2-kraxel@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240221193647.13777-1-andriy.shevchenko@linux.intel.com>
- <CAMRc=McECxKW+uS7fQyGtYVfcSZQaAJZFi+s+wNMoRiHxef0zw@mail.gmail.com>
- <ZddL7L24RXoqR7sN@smile.fi.intel.com> <CAMRc=Md6d19hhySFti+vSLV9pfyzuHNUDmHN_XYV73uCWDAY7w@mail.gmail.com>
- <ZddOcJrYEANc2B2Y@smile.fi.intel.com> <CAMRc=MdABvY8dC+UBpkoLiHc881UFKv0VAQsCUhqnxn3f5LKRQ@mail.gmail.com>
- <ZddPEHjLeiYUd6Tb@smile.fi.intel.com>
-In-Reply-To: <ZddPEHjLeiYUd6Tb@smile.fi.intel.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Mon, 4 Mar 2024 16:15:19 +0100
-Message-ID: <CAMRc=MdDDz1HHqB4pkHFv+_A4iVdh7m-R2B9BrmotRW3Pm2EEA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] gpiolib: Deduplicate cleanup for-loop in gpiochip_add_data_with_key()
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, 
-	Linus Walleij <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+References: <20240301101410.356007-1-kraxel@redhat.com> <20240301101410.356007-2-kraxel@redhat.com>
+Message-ID: <ZeXloHPV1dkOwBTe@google.com>
+Subject: Re: [PATCH 1/3] kvm: wire up KVM_CAP_VM_GPA_BITS for x86
+From: Sean Christopherson <seanjc@google.com>
+To: Gerd Hoffmann <kraxel@redhat.com>
+Cc: kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, 
+	"maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, 
+	"open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
 
-On Thu, Feb 22, 2024 at 2:41=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Thu, Feb 22, 2024 at 02:40:05PM +0100, Bartosz Golaszewski wrote:
-> > On Thu, Feb 22, 2024 at 2:39=E2=80=AFPM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > > On Thu, Feb 22, 2024 at 02:30:03PM +0100, Bartosz Golaszewski wrote:
-> > > > On Thu, Feb 22, 2024 at 2:28=E2=80=AFPM Andy Shevchenko
-> > > > <andriy.shevchenko@linux.intel.com> wrote:
-> > > > > On Thu, Feb 22, 2024 at 10:48:00AM +0100, Bartosz Golaszewski wro=
-te:
-> > > > > > On Wed, Feb 21, 2024 at 8:36=E2=80=AFPM Andy Shevchenko
-> > > > > > <andriy.shevchenko@linux.intel.com> wrote:
->
-> ...
->
-> > > > > > > +       while (desc_index--)
-> > > > > >
-> > > > > > What about gdev->descs[0]?
-> > > > >
-> > > > > What about it? :-)
-> > > > >
-> > > > > for (i =3D i - 1; i >=3D 0; i--)
-> > > > > while (--i >=3D 0)
-> > > > > while (i--)
-> > > > >
-> > > > > are all equivalents.
-> > > > >
-> > > > > The difference is what the value will i get _after_ the loop.
-> > > >
-> > > > Ugh of course. But the first one is more readable given I got trick=
-ed
-> > > > by variant #3 at a quick glance but the for loop says out loud what=
- it
-> > > > does.
-> > >
-> > > I disagree. `while (i--)` is very well known cleanup pattern.
-> > > Less letters to parse, easier to understand.
-> >
-> > Whatever, I don't have a strong opinion, just rebase it and resend.
->
-> Sure (just will wait to the fix to be settled down first), thanks for rev=
-iew!
->
+On Fri, Mar 01, 2024, Gerd Hoffmann wrote:
+> Add new guest_phys_bits field to kvm_caps, return the value to
+> userspace when asked for KVM_CAP_VM_GPA_BITS capability.
+> 
+> Initialize guest_phys_bits with boot_cpu_data.x86_phys_bits.
+> Vendor modules (i.e. vmx and svm) can adjust this field in case
+> additional restrictions apply, for example in case EPT has no
+> support for 5-level paging.
+> 
+> Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+> ---
+>  arch/x86/kvm/x86.h | 2 ++
+>  arch/x86/kvm/x86.c | 5 +++++
+>  2 files changed, 7 insertions(+)
+> 
+> diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
+> index 2f7e19166658..e03aec3527f8 100644
+> --- a/arch/x86/kvm/x86.h
+> +++ b/arch/x86/kvm/x86.h
+> @@ -24,6 +24,8 @@ struct kvm_caps {
+>  	bool has_bus_lock_exit;
+>  	/* notify VM exit supported? */
+>  	bool has_notify_vmexit;
+> +	/* usable guest phys bits */
+> +	u32  guest_phys_bits;
+>  
+>  	u64 supported_mce_cap;
+>  	u64 supported_xcr0;
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 48a61d283406..e270b9b708d1 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -4784,6 +4784,9 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+>  		if (kvm_is_vm_type_supported(KVM_X86_SW_PROTECTED_VM))
+>  			r |= BIT(KVM_X86_SW_PROTECTED_VM);
+>  		break;
+> +	case KVM_CAP_VM_GPA_BITS:
+> +		r = kvm_caps.guest_phys_bits;
 
-I realized you haven't resent it after all, do you still want to change thi=
-s?
+This is not a fast path, just compute the effective guest.MAXPHYADDR on the fly
+using tdp_root_level and max_tdp_level.  But as pointed out and discussed in the
+previous thread, adverising a guest.MAXPHYADDR that is smaller than host.MAXPHYADDR
+simply doesn't work[*].
 
-Bart
+I thought the plan was to add a way for KVM to advertise the maximum *addressable*
+GPA, and figure out a way to communicate that to the guest, e.g. so that firmware
+doesn't try to use legal GPAs that the host cannot address.
+
+Paolo, any update on this?
+
+[*] https://lore.kernel.org/all/CALMp9eTutnTxCjQjs-nxP=XC345vTmJJODr+PcSOeaQpBW0Skw@mail.gmail.com
 
