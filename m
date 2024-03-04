@@ -1,110 +1,90 @@
-Return-Path: <linux-kernel+bounces-90520-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90521-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57291870088
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:41:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FBC4870091
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:43:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE666B23810
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:41:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 57079B21CFB
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:42:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B17733A1B4;
-	Mon,  4 Mar 2024 11:41:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gHO2BRlY"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76228374C1;
-	Mon,  4 Mar 2024 11:41:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3C613A287;
+	Mon,  4 Mar 2024 11:42:50 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D62639FEE;
+	Mon,  4 Mar 2024 11:42:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709552481; cv=none; b=JdqHU9oY4MzNdgCArDPH8qtD4/AxJfJ75F4AG/v4+Dr5KozGuoMMxC/NzH6N1Ne4t/TwFfhsrth6uUXzudXMBWrRqzC16skpNpYWiyXhQm2LK6nqqlARp8B+uImR0mXUi4PSb+K3p4HuM4Pk7W95HhXhMy/BJzc6TC1jRLYjG/Q=
+	t=1709552570; cv=none; b=KoskiX1+vla202dQeST8ajhlJ5spex8w1BuL1pLimOLqMf9TRjIfw7Fj1s5O1KDYkmZ5azG3IAubaFY4ll4XFjLOC5HYYUeZN2pa2eE0s/IabNO5u3+BGBUQy6v8HMTbCfUkRU9jJG/FXS+T+ZEYjm4ACUaPnuTHVwlvVrwJRqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709552481; c=relaxed/simple;
-	bh=cYUSVmUyifdM6nM2L9Q0Fp5Qhn4DCDVKnUNjXiArGkU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fF5o85AKv7cE0i2GWbym2GaxOXeizz24jVTup1XFH2ilr7DiPRG1ej9gJ1U4c5ATfQO0bBU7Has9XWkCMiX2lUKC0KKKz5HW5MHYYbtdtrsF4RIfBwl5J7PmUlRQEUAfjs40BiMb6F8wq54EXrLBpnn6a4C8GkoAAhApzYpC36Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gHO2BRlY; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a45670f9508so69348566b.0;
-        Mon, 04 Mar 2024 03:41:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709552478; x=1710157278; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cYUSVmUyifdM6nM2L9Q0Fp5Qhn4DCDVKnUNjXiArGkU=;
-        b=gHO2BRlYpgYFZTp1l2TgnsZLxhtmycGRtAs5avk0gntchwNxdGb73vF5LjcN7EpyWj
-         Nl13HxgpCFR71Yctg1MgbnYM69CarK6mgDduxXUA3bSBWbz5tQQr5uNz8i6Y9XfweP5G
-         x7HHV+7T8hmkVBMYtEQh9c3Uxu46n4/ldcyxsFqWU1dT1uf/tmpaPLfpaf4l9UolTjY5
-         NfJoBOQN0pH1DRlQEwnFOiURRXC/4RoFs2kYnBpQab0HBsRPDQDdm12acLs9qILoKBJ3
-         eeMK4b/V4h13Wy42kzXlT03EDiwB7U7yYZAzeJ7rud6d3fZKzs7jATwfA5pYWi0Pxky/
-         4f/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709552478; x=1710157278;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cYUSVmUyifdM6nM2L9Q0Fp5Qhn4DCDVKnUNjXiArGkU=;
-        b=wLpUFkb5MuSM8QCMk4dP+KSJjUvnkhsSEPgSMc+pEp5/mkNSFr3iVIcFaJ5AiBsjiG
-         KfCHL87+aRIUoEddwUFBxAylphXjJBf3gijYEswF2DtFnnVulf9aRNBuTui52poKs3VF
-         3h8C/RTjS5YmrWq4EGjd/j/l1odVcUvdH3Fy1V6XVRrzsW1lsw7fb3IdcGNCiEc0e9fW
-         0+2krcz1xzbNawpewNWL8wW+L/Ml2o1Opu/O6yN2vcPBnybAgr3xjqrvOyTl+f6iagTn
-         HDjdwvgWrrZFXnzWALeilzc4YHDBvcPJhNfjKR47eaLRivLkBwOAKK8jgQZnNSGoRy6U
-         LetA==
-X-Forwarded-Encrypted: i=1; AJvYcCWWPaiSIaT8a/z2TXXLkEwcpJxtWvU90+/aSNjjDgrPygmQypL2vb4DkbxV3xDUg0mB3PGYYkyJvOdO6ylY07D/ZOsVJ3Ikg4Py1d5px8J3QhSU/28RpkRpG/tomgqpBRu+fuxJuNes
-X-Gm-Message-State: AOJu0Yz8u0I2ljQYWLqi9QeKnWX8k9f6TxTqBBSEFXK9RkAZt2I44lc5
-	WH6Bt3QCMoydFbxGqReXMmTjxHdhRpRf5x8qYF5yUbOAQrhxXlYzAXFDbtOrJ7+dt34zhACNr+z
-	KhFe4WH0KoZk6kRdp4y6ClGNz2LE=
-X-Google-Smtp-Source: AGHT+IFmtUOyrS0e7mKw+lMMoMxfQ/YtHECP4CbZJ2nw54XaxiiPhL5Y89uhub/Ny/OhES4OZfvtxUI+UzxFM+Y17uQ=
-X-Received: by 2002:a17:906:f81b:b0:a3e:d7fe:4c4d with SMTP id
- kh27-20020a170906f81b00b00a3ed7fe4c4dmr6225743ejb.57.1709552477581; Mon, 04
- Mar 2024 03:41:17 -0800 (PST)
+	s=arc-20240116; t=1709552570; c=relaxed/simple;
+	bh=dnzxzWXhjTBIQHDxWLCiIj/FNQoDuoU0e9AQhpZ82os=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cAoBl0eHhwgWNre7kqlhaOGkki/I8mPn0cQh7/ylxlT0jmZxKKHaSJUcqfzae2UbkfmERYxvpgaWKNLilE5jS6Gv+HptO2tHEhOCLJBvTCPAp8kCe3bkfxVr1494hv/gNuH/9akh/QiLxpJ5EIbMWQgHy3RE4nN0kl/NbfPABmU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A77D51FB;
+	Mon,  4 Mar 2024 03:43:24 -0800 (PST)
+Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 47FF73F738;
+	Mon,  4 Mar 2024 03:42:46 -0800 (PST)
+Date: Mon, 4 Mar 2024 11:42:43 +0000
+From: Sudeep Holla <sudeep.holla@arm.com>
+To: Viresh Kumar <viresh.kumar@linaro.org>
+Cc: Pierre Gondois <pierre.gondois@arm.com>, linux-kernel@vger.kernel.org,
+	Cristian Marussi <cristian.marussi@arm.com>,
+	Christian Loehle <christian.loehle@arm.com>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	Ionela Voinescu <ionela.voinescu@arm.com>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH 0/3]  scmi-cpufreq: Set transition_delay_us
+Message-ID: <ZeWzs_g6FvQlHQN7@bogus>
+References: <20240222135702.2005635-1-pierre.gondois@arm.com>
+ <20240304070058.kfqg3ypssn5x6k7s@vireshk-i7>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240303-sdma_upstream-v1-0-869cd0165b09@nxp.com>
-In-Reply-To: <20240303-sdma_upstream-v1-0-869cd0165b09@nxp.com>
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Date: Mon, 4 Mar 2024 13:41:05 +0200
-Message-ID: <CAEnQRZCtxbHB--ZwkCtfF2RG+7GYkSjH6r6KY1wrp=H3Y2-_8w@mail.gmail.com>
-Subject: Re: [PATCH 0/4] dmaengine: fsl-sdma: Some improvement for fsl-sdma
-To: Frank Li <Frank.Li@nxp.com>
-Cc: Vinod Koul <vkoul@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
-	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
-	Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, dmaengine@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	imx@lists.linux.dev, Nicolin Chen <b42378@freescale.com>, 
-	Shengjiu Wang <shengjiu.wang@nxp.com>, Joy Zou <joy.zou@nxp.com>, 
-	Vipul Kumar <vipul_kumar@mentor.com>, 
-	Srikanth Krishnakar <Srikanth_Krishnakar@mentor.com>, Robin Gong <yibin.gong@nxp.com>, 
-	Clark Wang <xiaoning.wang@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240304070058.kfqg3ypssn5x6k7s@vireshk-i7>
 
-On Mon, Mar 4, 2024 at 6:33=E2=80=AFAM Frank Li <Frank.Li@nxp.com> wrote:
+On Mon, Mar 04, 2024 at 12:30:58PM +0530, Viresh Kumar wrote:
+> On 22-02-24, 14:56, Pierre Gondois wrote:
+> > policy's fields definitions:
+> > `transition_delay_us`:
+> > The minimum amount of time between two consecutive freq. requests
+> > for one policy.
+> > `transition_latency`:
+> > Delta between freq. change request and effective freq. change on
+> > the hardware.
+> >
+> > cpufreq_policy_transition_delay_us() uses the `transition_delay_us`
+> > value if available. Otherwise a value is induced from the policy's
+> > `transition_latency`.
+> >
+> > The scmi-cpufreq driver doesn't populate the `transition_delay_us`.
+> > Values matching the definition are available through the SCMI
+> > specification.
+> > Add support to fetch these values and use them in the scmi-cpufreq
+> > driver.
 >
-> To: Vinod Koul <vkoul@kernel.org>
-> To: Shawn Guo <shawnguo@kernel.org>
-> To: Sascha Hauer <s.hauer@pengutronix.de>
-> To: Pengutronix Kernel Team <kernel@pengutronix.de>
-> To: Fabio Estevam <festevam@gmail.com>
-> To: NXP Linux Team <linux-imx@nxp.com>
-> Cc: dmaengine@vger.kernel.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: imx@lists.linux.dev
->
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> How do we merge this series ? I can only pick the last commit.
 
-Looks good to me. For all patches in the series.
+I have sent my PR for v6.9 already and was deferring this to v6.10
+The changes look good to me. If it doesn't conflict much with -next
+SCMI content, then I am happy to ack and you can take all of them
+together. Otherwise we can revisit strategy at -rc1. Thoughts ?
 
-Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
+--
+Regards,
+Sudeep
 
