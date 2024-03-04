@@ -1,136 +1,116 @@
-Return-Path: <linux-kernel+bounces-91367-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91368-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70DEF871029
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 23:36:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B812687102D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 23:38:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A30D81C21371
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:36:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6CE6E1F2198C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:38:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5153B7BAF0;
-	Mon,  4 Mar 2024 22:36:37 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF64E7BB01;
+	Mon,  4 Mar 2024 22:38:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FNoUBake"
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31C9929CFE
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 22:36:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E57368F44;
+	Mon,  4 Mar 2024 22:38:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709591796; cv=none; b=KazsX/Ns1CwG9gP95W6TouTlX0CKMzr+/sFbIAvZaFxT8StmHqKAtxR2juirp2Y6ZTkx7cS23AoJsDDPrtWQ2qwvQi/UpGkgkiCzb8U/DHS/4r7AQ24l9KHUfWS7nOcgVhz91mZQNQADvRGdMsWOr0rbwtv4KVv8viS7KSA6Q4Y=
+	t=1709591922; cv=none; b=YGQ8DYDN6v0XcanGQZzpP/Ks7Jqp0EBNqQljqcWW/R5R804oPaRTkcGVmyj/L9zMbhViH/r94U5L1xV6Pypmo8+M1aVq2v+ICIzgGf1srjmLjslS3mIdvsTIj06lc/wTS0HLw4mT7hOH+rOM9CN3BqhPfU/TrQvtm6/146mI55s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709591796; c=relaxed/simple;
-	bh=5Q5aIComlWuNtnytT+SXnLlXQgTK0lIa/+09DRNUE04=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XmOi+B+I1lr/IPem+Qg8E8BGi3llS9mwlRV4m7wnLoLK8tHZ8ZlQFx0NJEsBiWN+uNgeekdzD3wUQ3N9goNo3FqS5aoOKFmKiEJQOfoMtoNP0jNhrDI4ppyEjjtB560je+g/bO8dOijZrkycr9VFoMswZVOjNuFPeB1gDkm1ecE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rhGv4-0008Vk-S2; Mon, 04 Mar 2024 23:36:26 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rhGv1-004RE3-Kf; Mon, 04 Mar 2024 23:36:23 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rhGv1-00H7Yf-1g;
-	Mon, 04 Mar 2024 23:36:23 +0100
-Date: Mon, 4 Mar 2024 23:36:23 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Arnd Bergmann <arnd@arndb.de>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, 
-	"derek.kiernan@amd.com" <derek.kiernan@amd.com>, Kees Cook <keescook@chromium.org>, linux-arm-msm@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, 
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>, John Stultz <jstultz@google.com>, 
-	Michal Simek <michal.simek@amd.com>, "dragan.cvetic@amd.com" <dragan.cvetic@amd.com>, 
-	Pengutronix Kernel Team <kernel@pengutronix.de>, Justin Stitt <justinstitt@google.com>, 
-	Frederic Barrat <fbarrat@linux.ibm.com>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, 
-	Tomas Winkler <tomas.winkler@intel.com>, Amol Maheshwari <amahesh@qti.qualcomm.com>, 
-	Jiri Slaby <jirislaby@kernel.org>, 
-	Appana Durga Kedareswara rao <appana.durga.kedareswara.rao@amd.com>, linux-arm-kernel@lists.infradead.org, 
-	Andrew Donnellan <ajd@linux.ibm.com>
-Subject: Re: [PATCH 00/11] misc: Convert to platform remove callback
- returning void
-Message-ID: <p2rqzrmgfaqdcwj2hlgt7u2yrgfrf4dwizecicdpdmb3jezoky@zmkxw5vt7qyi>
-References: <cover.1708508896.git.u.kleine-koenig@pengutronix.de>
- <d6c4ff9e-756a-4604-993a-cf14cfdbc53c@app.fastmail.com>
+	s=arc-20240116; t=1709591922; c=relaxed/simple;
+	bh=Gn967GUY01TbnVw7J+amolBiTsybUNll2L3IweRe7x8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=es8LGaTuuudbv2zd/zf6zVy3fbEKVqCESKoVtiV2sW+RvpFPWwaFxVcOxsrLcqMdNcj8QZ5kcuESKIG5ZzOsx7+e2okQ7CnwzYil3hoqCIGcJ/+vYSmQm2EGMbCW63XlhpXFzdfqxrloxrl+biGdQE2T29FO0pTy+tHarnS7bRs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FNoUBake; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6e5b1c6daa3so3526670b3a.1;
+        Mon, 04 Mar 2024 14:38:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709591920; x=1710196720; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BN8SwlbqyYdlyO4orHXGIO4nVPTlMFcHeme81n3Cn24=;
+        b=FNoUBakedd0MBrblVk8mNK8LjJTEz4DlHsiNT0tX8bWkPH31DbAepT+job1jBW45FX
+         ajqZ4/1Ph3GhUVnYagMP1dWkz/EnAFC/YlinXVSxONvCSba+ZE5iqE5E8Tk8REjSY3Y7
+         /TMWLtmy5gyMcJNAHRdneqfcBBHpDXz9fLWHlrXIHNmsX3dIPdeAuSyfI2k2RwfAA7dq
+         JG2Ra6R/QC5yP5+ihHiVY6Oss4qSnl/NTmBnL/t5ZYsdX8cSYJtsY5WfnNhTguCtA50P
+         AcEVMMt6bSnazg1/HyaV5avUeihBa38JwGLu/x9gPzktix6Vk6dTNTbEkTSM+44dQGIk
+         j1xA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709591920; x=1710196720;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BN8SwlbqyYdlyO4orHXGIO4nVPTlMFcHeme81n3Cn24=;
+        b=GMnV6DqdzKWfDXHCy/eWW6GQ1X76W7JLQ1Yfn7zz/EBCfjeztmSXnetmJpwI9Zr+0G
+         NM8EbOCBRcvtika5RqgaoI1dOMDErJ3u09mMaEHpcolZB8txDPQiSajH45pZtXLH2Jkm
+         LkoqPYk6SmqfpzSyq20NSbNzT4K8h286S/XcaVJrjYeSJQPZwgwPVnupHqlmIVIpHF+0
+         8ju8mKGBI4yPvWMhn2QDxNK7d4a5qNkBcdigHj3P5y2QiaBFqSqNyB8H6XpBSF0giVuM
+         I0lAb8J2o67QPyu6Le3AUmuycMWCi5oLHqJzC7vf9BEYjDHJxheHJ+acOleEQ+VKFxcy
+         VaPw==
+X-Forwarded-Encrypted: i=1; AJvYcCVK4kqgE6nhiIImcY5aqJ/OKLvRH5IiffCocuathfz+1RrXIBFV9uOkLoQLLOEKJDdpRipGcjX8oxuCGXV5evUtXdR6SLUvBW9fFdZ3
+X-Gm-Message-State: AOJu0YwoH6ufaM7A5ux11GzsUOuyh5aFiDhmHbRn5PP8yHjRb7D0Wgvp
+	mxkJos5VdcgVJ2cA1JEZT7tLYCB8O31FrNuorg4/RNOB+z4QI4NL
+X-Google-Smtp-Source: AGHT+IG8dU5/zW36h3fRi77tXNMaH85I+KnVTo+H3gSed/dcTydDNOJhmwTWowr49ZEFzcP95HxORQ==
+X-Received: by 2002:a05:6a00:815:b0:6e1:338d:e01c with SMTP id m21-20020a056a00081500b006e1338de01cmr13090467pfk.1.1709591920061;
+        Mon, 04 Mar 2024 14:38:40 -0800 (PST)
+Received: from localhost.localdomain ([49.142.40.215])
+        by smtp.gmail.com with ESMTPSA id y127-20020a62ce85000000b006e5571be110sm8069622pfg.214.2024.03.04.14.38.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Mar 2024 14:38:39 -0800 (PST)
+From: skseofh@gmail.com
+To: robh+dt@kernel.org
+Cc: devicetree@vger.kernel.org,
+	frowand.list@gmail.com,
+	linux-kernel@vger.kernel.org,
+	skseofh@gmail.com
+Subject: [PATCH] of: fdt: modify small size memory check
+Date: Tue,  5 Mar 2024 07:38:30 +0900
+Message-Id: <20240304223831.11288-1-skseofh@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <CAL_JsqKaZ4KcvfNZmn2gj+yXa8eLgzMpdhJJ=+OmMJPvzm-1Qg@mail.gmail.com>
+References: <CAL_JsqKaZ4KcvfNZmn2gj+yXa8eLgzMpdhJJ=+OmMJPvzm-1Qg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="rqw7vqzv73lfjvx5"
-Content-Disposition: inline
-In-Reply-To: <d6c4ff9e-756a-4604-993a-cf14cfdbc53c@app.fastmail.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 
 
---rqw7vqzv73lfjvx5
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hello Arnd, hello Greg,
-
-On Wed, Feb 21, 2024 at 02:52:29PM +0100, Arnd Bergmann wrote:
-> On Wed, Feb 21, 2024, at 10:53, Uwe Kleine-K=F6nig wrote:
-> > Hello,
 > >
-> > this series converts all drivers below drivers/misc to struct
-> > platform_driver::remove_new(). See commit 5c5a7680e67b ("platform:
-> > Provide a remove callback that returns no value") for an extended
-> > explanation and the eventual goal.
 > >
-> > All conversations are trivial, because their .remove() callbacks
-> > returned zero unconditionally.
+> > >>
+> > >> From: Daero Lee <skseofh@gmail.com>
+> > >>
+> > >> After page aligning, the size may become zero. So I added exception
+> > >> handling code for size 0.
+> > >
+> > >That may be true, but when would anyone only have memory regions of
+> > >less than 2 pages. In any case memblock_add will just do nothing. What
+> > >is the actual problem you are having?
+> > >
+> > >Rob
 > >
-> > There are no interdependencies between these patches, so they could be
-> > picked up individually. But I'd hope that Greg or Arnd picks them up all
-> > together.
->=20
-> These all look good to me, whole series
->=20
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
+> > Ignore the previous mail.
+> > I modified the patch to clear this size check routine. Please check
+>
+> You still haven't answered my questions above.
+> 
+> Though the patch below is a bit more readable than what we currently have...
 
-Thanks.
-
-You (=3D Arnd and Greg) are the listed maintainers for drivers/misc/. How
-is this series supposed to be merged? Would a pull request help?
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---rqw7vqzv73lfjvx5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmXmTOYACgkQj4D7WH0S
-/k7/bggAtLWuAbB65yreKqC3+3BQAW+yYHVR0gr5eF3xYgOQz1633vz0SPYZjaUe
-v9bbou74JW3Qsav38qI+/Onjrk60Iov624KdbHUheuPaTwFsKne/+S+rFqZfAQpg
-lrpDDpdBAZPeBWeqBUcy57wThrjH78HuAJyvSqldI4nxv0rjT1vYNlwChQ4IGsv9
-Bu9oZAPJswmwB418yGlGb1SuyPgnbf78KkqHOy7GPwApOavIhjEqU+r5VZFEk/B5
-RZ9smtJ/Rn+DrRUCV1rc0QUCLDkuT/bFFUaPwTI+2kY6NYA6CA7Nk361GfqSLvjx
-Q/WnE2MMUAqxDf/RZIZulv6Jkz+u/A==
-=hJf2
------END PGP SIGNATURE-----
-
---rqw7vqzv73lfjvx5--
+Well.. I don't see any 'real' problem with this.
+But I'm not sure if it's appropriate to leave a part that will be returned 
+directly in the next fuction called. Wouldn't it be better to handle the part
+can be handled in this function, rather than expecting the next function to 
+handle this exception?
 
