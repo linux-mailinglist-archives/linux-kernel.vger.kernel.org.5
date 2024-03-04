@@ -1,92 +1,165 @@
-Return-Path: <linux-kernel+bounces-90366-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90367-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6128986FE37
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:00:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCFB086FE3C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:01:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F0223B220EA
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:00:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CBE18B222F5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:01:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E8C522611;
-	Mon,  4 Mar 2024 10:00:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CF5F224C2;
+	Mon,  4 Mar 2024 10:00:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RhgmQDaW"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="maGBN6NO"
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FB7D224EE;
-	Mon,  4 Mar 2024 10:00:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78C2A24B2B;
+	Mon,  4 Mar 2024 10:00:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709546427; cv=none; b=ntT5YIZiCc8bx9Xk+sCHOOVgy1EjHCjQRjhHtg6mDjmb68ILecyciUD0Qkr5OBFwk3z3k58nQXdZQVFfoPUVLMMjP3ulWxFfw/Ok/vv4tCYdD/92kybXvBkUCqw66wj9RGwjvvDognsyAyWkcM3Hyyl9sF1J3vr69dYLZ7ROdGY=
+	t=1709546451; cv=none; b=l0MT5Bsw8eczFjqsaGmUMf5MBFplnBxuno1zfVakksakhQjqlSFbo/fZcvFGt8aNIzuKTgBv20DdnPBcDYtjJT7gp7WZkDOwziZHZMU7+HiKwezUdNEoDEH00fE1CIPaYlr3uvifetFSKndXRLb7ubu+rsAgcMV0VUOd65Oz7t0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709546427; c=relaxed/simple;
-	bh=SLyJ9jpZGtOXavO2oR1SCQeOLk04pqT/HIrfnN2FiKk=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=X8cxZaFjgMz/jenV4srBrtfK4tSkxvp0hKP+IhIjo+XqMGax5BnPbPWnHLv3Bj/b4Sj1rc0p1I6WQCdWZF8gaUE30dd2Oo6DJ7s2pKF4SxuQne8/REP1yApoDTFzpWIVRKchbZuYuwX5KKj8s4Tma6UYrlQ0PJK1C9BqehNwLE8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RhgmQDaW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D5549C43330;
-	Mon,  4 Mar 2024 10:00:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709546426;
-	bh=SLyJ9jpZGtOXavO2oR1SCQeOLk04pqT/HIrfnN2FiKk=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=RhgmQDaWDHNseF+UtD1FWf6GafR38sMs5UGPSDMD4NTPnONmEGC1Bl0XDq7hWnHxl
-	 xJp00nYalFFKMdSpruDbPxpf8LvxIADqmCfCMOFnBcpwOKcQw/61E5wTl7CzDvR/NK
-	 ZhviPzwKGP+8HiGYHEVQXRhZEOHPyddApGVRXq7fhLgbBNOBjSCnMnCpQrep7mv52L
-	 qV238/nikgIDRwhTJAyC4lDJt2webOxeGp9Npgbl3RU93+qbPfX9h6dBHGgGBoBiV9
-	 /mupYZqUuO/TNnNUBIXFG8amt1Qhq0WyqUhaaHQf+Fa6o/urt7cpm4/SGoUZ7YrhPg
-	 v0si3BMKwRxUQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C3A9DD9A4B9;
-	Mon,  4 Mar 2024 10:00:26 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1709546451; c=relaxed/simple;
+	bh=Ltz90TO6kzYU5NNZDHlenUvdrRAeb9Z4YTkBpwDlM6k=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:To:From:Subject:
+	 References:In-Reply-To; b=flHKRM4ThWRKTv0OM7OnOduDta4uLQ23yuEzktjmGbirnDdkNqSlvu93BFRVHOspDzqXhf5agjf5KEJv2N6JlFbBYOBY10X53FvQdo1Bw+WtOT4ZpzMmBFOZieZioh9sG0jxUw+45nVSD9zWXhPpTyonGwLdbhRRVBzbUWNxiJk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=maGBN6NO; arc=none smtp.client-ip=217.70.183.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 35D9C240011;
+	Mon,  4 Mar 2024 10:00:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709546446;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pz1yibsIsNHyK2XZsyjOxrFSmLQ7xgeVb+gsJobLKuE=;
+	b=maGBN6NOtE6vKHL1RnDS5WOvUaS37rhoc/gAC3aGOI2TqC8PyRPfBQq4vQxP0Gyyl2s4ax
+	NviTY9rFf8juUhThZVE4NqOCS0a8GhBFxTqjJTWIT0Qj92967tm4lPeJtTyWmQd84EBBiy
+	qldXFnyRJGr0n3OuBAJuYV7jdzwjN9j4fa4AG3ajgES9yK3hpFDGwv1AjLl3lXErJFMoxG
+	7PuFTSOxSFKsoOpmefpFyzU8wNLVcdJdgZE3F/4Q90L28+Q9T6+qgs8fZ0FGyFNNGffDEW
+	B8V6f6p/JiNEsog8hUpRWKfVtcsdad7apTXg6PhzhUHOJ8dM2k1+VK0+1p+3HA==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net: ip6_tunnel: Leverage core stats allocator
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170954642679.21816.8952625755887609113.git-patchwork-notify@kernel.org>
-Date: Mon, 04 Mar 2024 10:00:26 +0000
-References: <20240228180318.1650988-1-leitao@debian.org>
-In-Reply-To: <20240228180318.1650988-1-leitao@debian.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com,
- edumazet@google.com, dsahern@kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, horms@kernel.org
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 04 Mar 2024 11:00:45 +0100
+Message-Id: <CZKVMZC3BEXV.380JV1IP5RYFG@bootlin.com>
+Cc: "Linus Walleij" <linus.walleij@linaro.org>, "Rob Herring"
+ <robh+dt@kernel.org>, "Krzysztof Kozlowski"
+ <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
+ "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-i2c@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-mips@vger.kernel.org>, "Gregory Clement"
+ <gregory.clement@bootlin.com>, "Vladimir Kondratiev"
+ <vladimir.kondratiev@mobileye.com>, "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
+ <tawfik.bayouk@mobileye.com>
+To: "Andi Shyti" <andi.shyti@kernel.org>
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: Re: [PATCH v2 05/11] i2c: nomadik: use bitops helpers
+X-Mailer: aerc 0.15.2
+References: <20240229-mbly-i2c-v2-0-b32ed18c098c@bootlin.com>
+ <20240229-mbly-i2c-v2-5-b32ed18c098c@bootlin.com>
+ <3kooaexx6vhlfwoojcpmnyhagupqwppwenjh4k7ucxbvlfpjn6@e3b7c3ocu6kc>
+In-Reply-To: <3kooaexx6vhlfwoojcpmnyhagupqwppwenjh4k7ucxbvlfpjn6@e3b7c3ocu6kc>
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-Hello:
+Hello,
 
-This patch was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
+On Sat Mar 2, 2024 at 2:31 AM CET, Andi Shyti wrote:
 
-On Wed, 28 Feb 2024 10:03:17 -0800 you wrote:
-> With commit 34d21de99cea9 ("net: Move {l,t,d}stats allocation to core and
-> convert veth & vrf"), stats allocation could be done on net core
-> instead of in this driver.
-> 
-> With this new approach, the driver doesn't have to bother with error
-> handling (allocation failure checking, making sure free happens in the
-> right spot, etc). This is core responsibility now.
-> 
-> [...]
+[...]
 
-Here is the summary with links:
-  - [net-next] net: ip6_tunnel: Leverage core stats allocator
-    https://git.kernel.org/netdev/net-next/c/6752fb18dc57
+> > @@ -284,7 +290,7 @@ static int init_hw(struct nmk_i2c_dev *priv)
+> >  }
+> > =20
+> >  /* enable peripheral, master mode operation */
+> > -#define DEFAULT_I2C_REG_CR	((1 << 1) | I2C_CR_PE)
+> > +#define DEFAULT_I2C_REG_CR	(FIELD_PREP(I2C_CR_OM, 0b01) | I2C_CR_PE)
+>
+> 0b01?
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+OM is a two-bit field. We want to put 0b01 in that. We do not declare
+constants for its 4 potential values. Values are:
 
+ - 0b00 slave mode
+ - 0b01 master mode
+ - 0b10 master/slave mode
+ - 0b11 reserved
+
+To me the comment above DEFAULT_I2C_REG_CR is enough to show that we go
+into master mode. We could declare all values as constants but only
+0b01 would get used.
+
+>
+> >  /**
+> >   * load_i2c_mcr_reg() - load the MCR register
+> > @@ -296,41 +302,42 @@ static u32 load_i2c_mcr_reg(struct nmk_i2c_dev *p=
+riv, u16 flags)
+> >  	u32 mcr =3D 0;
+> >  	unsigned short slave_adr_3msb_bits;
+> > =20
+> > -	mcr |=3D GEN_MASK(priv->cli.slave_adr, I2C_MCR_A7, 1);
+> > +	mcr |=3D FIELD_PREP(I2C_MCR_A7, priv->cli.slave_adr);
+> > =20
+> >  	if (unlikely(flags & I2C_M_TEN)) {
+> >  		/* 10-bit address transaction */
+> > -		mcr |=3D GEN_MASK(2, I2C_MCR_AM, 12);
+> > +		mcr |=3D FIELD_PREP(I2C_MCR_AM, 2);
+> >  		/*
+> >  		 * Get the top 3 bits.
+> >  		 * EA10 represents extended address in MCR. This includes
+> >  		 * the extension (MSB bits) of the 7 bit address loaded
+> >  		 * in A7
+> >  		 */
+> > -		slave_adr_3msb_bits =3D (priv->cli.slave_adr >> 7) & 0x7;
+> > +		slave_adr_3msb_bits =3D FIELD_GET(GENMASK(9, 7),
+> > +						priv->cli.slave_adr);
+>
+> This looks like the only one not having a define. Shall we give a
+> definition to GENMASK(9, 7)?
+
+Indeed. What should it be named? It could be generic; this is about
+getting the upper 3 bits from an extended (10-bit) I2C address?
+
+> > -		mcr |=3D GEN_MASK(slave_adr_3msb_bits, I2C_MCR_EA10, 8);
+> > +		mcr |=3D FIELD_PREP(I2C_MCR_EA10, slave_adr_3msb_bits);
+>
+> ...
+>
+> > @@ -824,15 +827,16 @@ static irqreturn_t i2c_irq_handler(int irq, void =
+*arg)
+> >  	 * during the transaction.
+> >  	 */
+> >  	case I2C_IT_BERR:
+> > +	{
+> > +		u32 sr =3D readl(priv->virtbase + I2C_SR);
+>
+> please give a blank line after the variable definition.
+>
+> Besides, I'd prefer the assignment, when it is a bit more
+> complex, in a different line, as well.
+
+Will do.
+
+> Rest looks OK, didn't see anything off.
+
+Thanks for the review Andi!
+
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
 
