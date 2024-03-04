@@ -1,134 +1,134 @@
-Return-Path: <linux-kernel+bounces-90697-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90698-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFC84870380
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:59:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 632BE870387
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:02:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 69E84B21A31
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:59:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9B121F26D8F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:02:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67AD53F9D5;
-	Mon,  4 Mar 2024 13:58:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E1A03F9C3;
+	Mon,  4 Mar 2024 14:02:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ToVwlgxB"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="QGmT4hxL";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="fu/R4XyE"
+Received: from fhigh8-smtp.messagingengine.com (fhigh8-smtp.messagingengine.com [103.168.172.159])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACCA93EA72;
-	Mon,  4 Mar 2024 13:58:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4609D18E2E;
+	Mon,  4 Mar 2024 14:02:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.159
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709560732; cv=none; b=rUxUnTY/KGyWSqW7QEcRo9HBqD4QMJpbcGzC3qGi8F7uAQPGIDGjX0AVBcDQZuwourIHQTTZMNKZuBostqH86suNjV1mRferWPfnGiTtsyxavrCKIlt97iixjjPEhePicezjg5mJbQ55VZ8NUiWCbMJUyAdEvv7Z8wiH3o+FkUA=
+	t=1709560967; cv=none; b=Mun8DLWbNOp/0LEhOdmjuTnDrvqFgeTlbkl4Q8rHMZZtZnZDwQYeTyJ6WpIWKVJsrYdQbjmPiBqCb7zxVv1KdtsbYvmUtCaEe4pdbOP7lJFPZ7n2K1fNnw9A0XK9ilO6f2JgIc6xZpcuCD5Ankk/GTXifZIQzWkYfPghPaIGZOQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709560732; c=relaxed/simple;
-	bh=rQWP12B+ZOT796DFSjZOMLwUXkzwZeaMzqg82VZNbY4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=G0qbtr1gF0uNFDJyAmzZFtmZXvpt5yJdJra1ATfERayuEbOnB++mEkRws+hNsKwQIS7pka7cwRQ8ctBNeAhhfBy0Ts3YWa/mgIIarTtW/D+PQU3Zclf18xOp7Nfu12P0WbtORbJb3g2E6M/pcEvWF+6owHdKcgw3JoWnLi84mmM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ToVwlgxB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08703C43390;
-	Mon,  4 Mar 2024 13:58:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709560732;
-	bh=rQWP12B+ZOT796DFSjZOMLwUXkzwZeaMzqg82VZNbY4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ToVwlgxB6pd5r8A0uqzEe+rb9BkwmIOD17N8MR5OYURX12JuYAE3wgPmjTD9zNoNR
-	 QAhTYYgfwZ7VMYidZRO6kz74w9RvRLcXDZUrTan9XU6FKhAw4KsMHw8PVSDNjx2fwg
-	 1Seay5sLfD/PRijZMBwi3elk5glcDPDkcSiDebB+B1tkiPWicSWg16XWeLRsGr1llJ
-	 Cl4IgSiwDK/V2XUfOaR1zEFfFg4SBxvWU+Nexn/XDRtOBkceRRIHBxlcVNwQatVBim
-	 qDc54lB00pARuwtLE8DQ5WCYM6errmAT4loB+74fhVDyuZBUP9kwSffSGtnyhkOv4j
-	 PNs3EMg4Twdpg==
-Date: Mon, 4 Mar 2024 10:58:49 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org, Andi Kleen <ak@linux.intel.com>
-Subject: Re: [PATCH 0/4] perf annotate: Improve memory usage for symbol
- histogram
-Message-ID: <ZeXTmdhu3Y_gC9ma@x1>
-References: <20240228005230.287113-1-namhyung@kernel.org>
+	s=arc-20240116; t=1709560967; c=relaxed/simple;
+	bh=oW3W6ISMlJ8Eg/hIHK1jMTGlAIWDK7R9bRS0g0+jPHo=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=eoIV8yad0kMCSC0T5Vc7MSTemxdIA5jG+auaxARaKZ5hQVeUnhFslW6EzSYQuGlSKUcaWqC0ouazw0yexZPsml0jF40JOLDKLUArIuuDUhDAMQO0xfWclDnd8unJSVrkewesR1FNzvvtfgtaGIelr9/wsDlupYDtv2hzv5s5Ui8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=QGmT4hxL; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=fu/R4XyE; arc=none smtp.client-ip=103.168.172.159
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfhigh.nyi.internal (Postfix) with ESMTP id 501D311400D5;
+	Mon,  4 Mar 2024 09:02:45 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Mon, 04 Mar 2024 09:02:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1709560965;
+	 x=1709647365; bh=Tyc3a0qlsGocDX90h5xGZM+hiCwDa28icbfjEtQ1zvk=; b=
+	QGmT4hxLNmXGRO4v8IvjfEmWtXchgSMU24haZAHL4NW4DDDMnfs8r+EyLQzXryfo
+	vX435XzUZWRrzWY+Gs1nqemCgJZDw0+xWhpxgAZDJZwaSDjmJyxoNgtO3fo0p10X
+	bPexUBHqFSEl8QL+wBysexQN6gN6vpoIlenx2XSyq7Ilv8ZhcO7yEQ43bVvHzilv
+	0atKdtofMbe8qwL+83Wyx/Z6KvcBdcKv7ojY7YNk8fBnFZngoGM8KNRRj0+fVzyd
+	Fd2WQfIQs1S9OWOUPVGQLPfmoIpSLWm6UzubajS7F5iRgNHqrRw50Q9kxMoLCYZm
+	4fXaZ6/JotwSFacA/5jGAg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1709560965; x=
+	1709647365; bh=Tyc3a0qlsGocDX90h5xGZM+hiCwDa28icbfjEtQ1zvk=; b=f
+	u/R4XyE+vPN6RibXUKog+0xaHcTYuBNIdnDDkFXGO0/FunwE8VWyEpoMTF9L/5Nq
+	rlPmCRO5XLYgPbKv+5l7gbxnsZ0yxNLnNi5+oRcPp9mkuU6X+NXtHT+09Ox1NJ0r
+	5SlJohgOr80SI/6xbRLNy7MgluqY7v3BFcd8X8xPEoMDTzTdBqjEXbPnEzr2Ypy9
+	4t8gCtlcVsPMFMBAqBWxCeigDDCOxHrs/9HZ584RvkJmHFiRRntQ23eBL7BJefqC
+	wAzsp1nQ2pseaRQrIE2t9+JfW7iFJnXGj2lgUsdkSodgWVaZ1+c2BRPWclZZhsO7
+	undGJVuOVjeDDvX2jcmiA==
+X-ME-Sender: <xms:gtTlZd_NN9IfbcavqA02lUeQUK9glF1D8g-xgTj0OaukXht_pkakHQ>
+    <xme:gtTlZRseQxhD7o0mA4nFhRRRcpPWq8KhBzAwpQ_2WzOrgCU5NkOQyCsZa33N6O2bf
+    9X_uNVCUBiUVHA5Jm8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrheejgdehkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepgeefjeehvdelvdffieejieejiedvvdfhleeivdelveehjeelteegudektdfg
+    jeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:g9TlZbBr5MPmIecoKgXRB13aymYfIbR3OS0v5gVDhe8tNomBgTTF6g>
+    <xmx:g9TlZRdmJcw66TEtr_syhGOZXx-B2IyBL4T2SmtwKwNSYbZVnoD4VA>
+    <xmx:g9TlZSPmHNHDWF6RgyJni1Z6Duznav77L3s-o12LBBBhHOrnnwZmTA>
+    <xmx:hdTlZXfZOkInKEEcYLMv1ZLDUfYNuEU81F-xLYkbSortVbCH-f64bQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id BB003B6008D; Mon,  4 Mar 2024 09:02:42 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-205-g4dbcac4545-fm-20240301.001-g4dbcac45
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240228005230.287113-1-namhyung@kernel.org>
+Message-Id: <a9063efe-1faf-4945-83ce-449a23d44fc5@app.fastmail.com>
+In-Reply-To: <36df8535-083f-4ce3-84c7-b8f652a9085b@notapiano>
+References: <20240212-coreboot-mod-defconfig-v4-0-d14172676f6d@collabora.com>
+ <36df8535-083f-4ce3-84c7-b8f652a9085b@notapiano>
+Date: Mon, 04 Mar 2024 15:02:21 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: =?UTF-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
+Cc: "Brian Norris" <briannorris@chromium.org>,
+ "Julius Werner" <jwerner@chromium.org>,
+ "Masahiro Yamada" <masahiroy@kernel.org>,
+ "Nathan Chancellor" <nathan@kernel.org>,
+ "Nicolas Schier" <nicolas@fjasle.eu>,
+ "Catalin Marinas" <catalin.marinas@arm.com>, "Will Deacon" <will@kernel.org>,
+ "AngeloGioacchino Del Regno" <angelogioacchino.delregno@collabora.com>,
+ "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
+ "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>, kernel@collabora.com,
+ chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org,
+ linux-kbuild@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ "Tzung-Bi Shih" <tzungbi@kernel.org>
+Subject: Re: [PATCH v4 0/4] Allow coreboot modules to autoload and enable cbmem in the
+ arm64 defconfig
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 27, 2024 at 04:52:26PM -0800, Namhyung Kim wrote:
-> This is another series of memory optimization in perf annotate.
- 
-> When perf annotate (or perf report/top with TUI) processes samples, it
-> needs to save the sample period (overhead) at instruction level.  For
-> now, it allocates an array to do that for the whole symbol when it
-> hits any new symbol.  This comes with a lot of waste since samples can
-> be very few and instructions span to multiple bytes.
- 
-> For example, when a sample hits symbol 'foo' that has size of 100 and
-> that's the only sample falls into the symbol.  Then it needs to
-> allocate a symbol histogram (sym_hist) and the its size would be
- 
->   16 (header) + 16 (sym_hist_entry) * 100 (symbol_size) = 1616
- 
-> But actually it just needs 32 (header + sym_hist_entry) bytes.  Things
-> get worse if the symbol size is bigger (and it doesn't have many
-> samples in different places).  Also note that it needs separate
-> histogram for each event.
- 
-> Let's split the sym_hist_entry and have it in a hash table so that it
-> can allocate only necessary entries.
- 
-> No functional change intended.
+On Mon, Mar 4, 2024, at 14:56, N=C3=ADcolas F. R. A. Prado wrote:
+> On Mon, Feb 12, 2024 at 09:50:04AM -0500, N=C3=ADcolas F. R. A. Prado =
+wrote:
+>> N=C3=ADcolas F. R. A. Prado (4):
+>>       firmware: coreboot: Generate modalias uevent for devices
+>>       firmware: coreboot: Generate aliases for coreboot modules
+>>       firmware: coreboot: Replace tag with id table in driver struct
+>>       arm64: defconfig: Enable support for cbmem entries in the coreb=
+oot table
+>
+> is it ok for Tzung-Bi to merge this last patch for the defconfig throu=
+gh the
+> chrome-platform-firmware tree?
 
-I tried this before/after this series:
+I would much prefer to see this patch get sent to soc@kernel.org
+so I can pick it up through the soc tree. I'm usually not worried
+about bisection issues with defconfig changes since most users
+have their own .config anyway, and in this case I don't see
+any strict dependency and would just merge the patch directly.
 
-  $ time perf annotate --stdio2 -i perf.data.annotate
-
-For:
-
-  perf record -e '{cycles,instructions,cache-misses}' make -k CORESIGHT=1 O=/tmp/build/$(basename $PWD)/ -C tools/perf install-bin
-
-And found these odd cases:
-
-  $ diff -u before after
-  --- before	2024-02-28 15:38:25.086062812 -0300
-  +++ after	2024-02-29 14:12:05.606652725 -0300
-  @@ -2450826,7 +2450826,7 @@
-                                ↓ je       1c62                  
-                                → call     operator delete(void*)@plt
-                                { return _M_dataplus._M_p; }
-  -                       1c62:   mov      0x13c0(%rsp),%rdi     
-  +  0.00   0.00 100.00   1c62:   mov      0x13c0(%rsp),%rdi     
-                                if (_M_data() == _M_local_data())
-                                  lea      0x13d0(%rsp),%rax     
-                                  cmp      %rax,%rdi             
-  @@ -2470648,7 +2470648,7 @@
-                                  mov      %rbx,%rdi             
-                                → call     operator delete(void*)@plt
-                                using reference = T &;     
-  -  0.00   0.00 100.00  11c65:   mov      0x8(%r12),%rax        
-  +                      11c65:   mov      0x8(%r12),%rax        
-                                size_t size() const { return Size; }
-                                  mov      0x10(%r12),%ecx       
-                                  mov      %rax,%rbp             
-  $
-
-
-This is a large function:
-
-Samples: 574K of events 'anon group { cpu_core/cycles/u, cpu_core/instructions/u, cpu_core/cache-misses/u }', 4000 Hz, Event count (approx.): 614695751751, [percent: local period]$
-clang::CompilerInvocation::ParseCodeGenArgs(clang::CodeGenOptions&, llvm::opt::ArgList&, clang::InputKind, clang::DiagnosticsEngine&, llvm::Triple const&, std::__cxx11::basic_string<char, std
-Percent 
-
-Probably when building the BPF skels in tools/perf/
-
-- Arnaldo
+     Arnd
 
