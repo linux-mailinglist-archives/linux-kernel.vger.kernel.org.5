@@ -1,114 +1,116 @@
-Return-Path: <linux-kernel+bounces-91096-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91097-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FDCD870985
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:27:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D84408709AB
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:34:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D3F491F2702A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:27:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7BCEAB29022
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:29:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B67E626C6;
-	Mon,  4 Mar 2024 18:27:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CF03626AF;
+	Mon,  4 Mar 2024 18:28:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Jx7XLgic"
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="iIgJffdo"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54F0661675;
-	Mon,  4 Mar 2024 18:27:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 852F061675
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 18:28:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709576863; cv=none; b=uu++5/vfq/gL1v3WdBWXqoizOvvFqc5l9Zfaclst9yPaq93VM1needhjs3i6FDu2ibbrmRoed4RVZzDCDK2cLxk2GgntOnBTOFSKxzA4DAUqAHoCvYKC/cKa7bnkDPXx2Oq+MZQjJQGAn4nBuNwkzhyP0jykYu85fKVAjPXzxRg=
+	t=1709576934; cv=none; b=hgK7k95+d6UfMoZ900UxYrr4TNujRkQrkAWI7Id+UMubPPQvCShzqKvb+U9Ww7zVy43pOQXc9GTzDdpgjagDrZNhpozqtNZsEKgQUSbBeSFuP5zXmu7K44vfRXm7xhKu1G4NEg9baVZfog6sgICl2jjPSRm22NtQQZX6urH57sg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709576863; c=relaxed/simple;
-	bh=fA5p4w2UAKT55clHGlZaFH4D9YSLg1VtWskiVCls5Yo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TLjZ8EPowWiER43slk5TJk0p9xe74ILggQyF0+CJyhikkEo4OA94ZGzzYnTEG+NXvGg+L7ai9F8Uue0YE+e1QiNXJoFTjW99urKYs8TXHrm3rifh8VjM0c3raB9bDAi3V/RkKUv+b4wDj8QFFLqmaQgV/3rOTDmGK7N3aAeO2LQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Jx7XLgic; arc=none smtp.client-ip=209.85.219.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dcdb9d0cdefso885082276.0;
-        Mon, 04 Mar 2024 10:27:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709576860; x=1710181660; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=5fY6/K6G2r7+NzeCbDJRHUKraEj8DaHdwVJ1zy3xyb0=;
-        b=Jx7XLgicXcgNNBQ3QXw412Wb6uU2zjk7rRRc0QsfeoV+eGQI4gBQvKoFopMVq16T/Q
-         NP6swAFfuZBdYUDp4opnF5/QhrWzXekEqP4NBkzlQtPVwCu1xaeMEqyearUBNJDNjY59
-         IPCCxWR4hsUZ8RwITHjrkseKksdwUyoSIIUB+e6zci2hYxfj3V71MzmJXyEMe6/CI3od
-         fKPgleDHaxdYuc9YeD0T+RRax8MHsHAXhBjnhD7KEmfmdmNzxRlGvPsJ0OVEhsD0RgT/
-         FwyWInSkMs4d3XPIXfLeKRL6szG7YgC4+MM/SYWnL0axzpa63XXrOtXlD8JrWLrGvDAY
-         nZnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709576860; x=1710181660;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5fY6/K6G2r7+NzeCbDJRHUKraEj8DaHdwVJ1zy3xyb0=;
-        b=UtE+5uR0APzfNgZbdxoEFbTrE0ZinNirXsgdNPJ9ePXWGNTeLRsol4z8qAjpS/gCoe
-         BskYY9rQS6sMtNStWGi4QXjPxRGpEuEyk2eZgc9uABvFnF9PxSHCYk6nq0WekAvn4s8v
-         dIezXDi9DatFhATdKtYs/vjSLR58uGYJLRKRpFvjQxMYULZMRS9AgTvh3T+el1Ro9D87
-         YrJ+2aFl6YlI8pcK0wsuNp1ZSAhffZqPSB0zjYq4tc2rHJOFJo5wb3OnKqzpGrkqr2RC
-         4CN7+Kzj4c52RJ5OMxgFj2rwG5P/DKk+2ghH4FbHWMQBpjlaN86fnxOeAgi8XtShLMd/
-         oUwQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWmzVMUYGI047U6huG5b5laHX2bfiT+I+fMbe9/hybI6e5Sj9r/BQb+bLv4W1dolhZoe7rphreU++r1biShcPsMre3Sqs7q+LVdxuFj62OGwXMfTz5DQV5av3qhEJYPvgcsbRaQyoT/NgJPhHzgaF8X1oW5DW8YHxydj1vzowhK2uZVSEodWdNTWQ==
-X-Gm-Message-State: AOJu0YyxVttN6FYIMe4YkHwahXN1xL35rJdLRBHPXF1w+xP0R9CtcMcd
-	R1pAHUTHH8rik74OkdH+/8O57QQWV8U+1FOxkXUlrhiTdRilabT+I/LTHQB82ixA4IGrDy1mePs
-	fkcHeWlNSpyHkqOyOxqIwh+WfuUUvsPUdehU=
-X-Google-Smtp-Source: AGHT+IGnVOofktzGqRKelWII7rR2f7/3nD/nhtqjsuJ9LvkIen82+AjAUzOSo9JHnCEmRPYwF3U9Q/XfBZJmrJQGORs=
-X-Received: by 2002:a25:84cc:0:b0:dc2:5237:81c2 with SMTP id
- x12-20020a2584cc000000b00dc2523781c2mr5402639ybm.1.1709576860215; Mon, 04 Mar
- 2024 10:27:40 -0800 (PST)
+	s=arc-20240116; t=1709576934; c=relaxed/simple;
+	bh=v9K54mCWFGXxTmk+0kMTeT8m/5ID9PzFuet4Ue7lEa8=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=R0S798C+HvhIqRt5yl3HMsQabrRilCoKMUsO3UTQykhXP+WDzclqX7cGsiHw5S5faVWjokzXqlq0E0yXbVaNNVghYVbvoDt02NpnYqOkITL+U/HMGOh4/7r7hulspVhPliXDWOfuXr+TDHLwARrcoU6Vle/6wZGli5542SSqA9s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=iIgJffdo; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709576930;
+	bh=v9K54mCWFGXxTmk+0kMTeT8m/5ID9PzFuet4Ue7lEa8=;
+	h=From:Date:Subject:To:Cc:From;
+	b=iIgJffdobUV6zPpFOTq1ofzrrvjiE+JvULRCF/zLUCFl/dCOU+nUvJ6x715Lf4Hil
+	 SVzlcsdWy+5pjLlukRBlxm1/sTXXDPbQ2ND9e0GkUPpeLU5OaC1aalj9OZaM/IVGc4
+	 ZmnEg9HVbBryGVWuChAZUqYMvLmn7/E5bYOS9QLbD5hwNmCPSNhkIpWkTIuEr2z1GD
+	 p4WXBUxn3L3IE5w+n0l5CzyEXfmv+4sQd5FU7ck+7uQWpIjOhhwUYxvJlqdnh6EWHj
+	 jqlBgLTj8GLdDiNJCHy2RPX8xyVVy9DdnmM0JVG/MiaYzR8krm5V2kbtgwfd4zUFMg
+	 4IF5Po/2eaBtg==
+Received: from [192.168.1.234] (zone.collabora.co.uk [167.235.23.81])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: nfraprado)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id B776E3780C6C;
+	Mon,  4 Mar 2024 18:28:48 +0000 (UTC)
+From: =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
+Date: Mon, 04 Mar 2024 13:28:35 -0500
+Subject: [PATCH] arm64: defconfig: Enable support for cbmem entries in the
+ coreboot table
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240304090649.833953-1-usama.anjum@collabora.com>
-In-Reply-To: <20240304090649.833953-1-usama.anjum@collabora.com>
-From: Justin Tee <justintee8345@gmail.com>
-Date: Mon, 4 Mar 2024 10:27:28 -0800
-Message-ID: <CABPRKS9KtaD6O61__3Vv73cvd1bxJT+zkeroGnStbPz8pYhmgA@mail.gmail.com>
-Subject: Re: [PATCH v2] scsi: lpfc: correct size for wqe for memset
-To: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc: Justin Tee <justin.tee@broadcom.com>, James Smart <james.smart@broadcom.com>, 
-	Dick Kennedy <dick.kennedy@broadcom.com>, "James E.J. Bottomley" <jejb@linux.ibm.com>, 
-	"Martin K. Petersen" <martin.petersen@oracle.com>, Hannes Reinecke <hare@suse.com>, kernel@collabora.com, 
-	kernel-janitors@vger.kernel.org, James Smart <jsmart2021@gmail.com>, 
-	linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240304-coreboot-defconfig-v1-1-02dc1940408f@collabora.com>
+X-B4-Tracking: v=1; b=H4sIANIS5mUC/x3MPQqAMAxA4atIZgtVY/25ijhoTTVLI62IULy7x
+ fEb3ksQKTBFGIsEgW6OLD6jKguwx+J3UrxlQ61r1I1GZSXQKnKpjZwV73hXiIPpXdt2aAzk8Az
+ k+Pmn0/y+H6f2ks1kAAAA
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: soc@kernel.org, Catalin Marinas <catalin.marinas@arm.com>, 
+ Will Deacon <will@kernel.org>, Tzung-Bi Shih <tzungbi@kernel.org>, 
+ kernel@collabora.com, linux-arm-kernel@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, 
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+ Brian Norris <briannorris@chromium.org>, 
+ =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
+X-Mailer: b4 0.13.0
 
-> The wqe is of type lpfc_wqe128. It should be memset with the same type.
->
-> Fixes: 6c621a2229b0 ("scsi: lpfc: Separate NVMET RQ buffer posting from IO resources SGL/iocbq/context")
-> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-> ---
-> Changes since v1:
-> - Use *wqe instead of type to find sizeof
-> ---
->  drivers/scsi/lpfc/lpfc_nvmet.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/scsi/lpfc/lpfc_nvmet.c b/drivers/scsi/lpfc/lpfc_nvmet.c
-> index 8258b771bd009..561ced5503c63 100644
-> --- a/drivers/scsi/lpfc/lpfc_nvmet.c
-> +++ b/drivers/scsi/lpfc/lpfc_nvmet.c
-> @@ -1586,7 +1586,7 @@ lpfc_nvmet_setup_io_context(struct lpfc_hba *phba)
->                 wqe = &nvmewqe->wqe;
->
->                 /* Initialize WQE */
-> -               memset(wqe, 0, sizeof(union lpfc_wqe));
-> +               memset(wqe, 0, sizeof(*wqe));
->
->                 ctx_buf->iocbq->cmd_dmabuf = NULL;
->                 spin_lock(&phba->sli4_hba.sgl_list_lock);
-> --
-> 2.39.2
+Enable the cbmem driver and dependencies in order to support reading
+cbmem entries from the coreboot table, which are used to store logs from
+coreboot on arm64 Chromebooks, and provide useful information for
+debugging the boot process on those devices.
 
-Reviewed-by: Justin Tee <justintee8345@gmail.com>
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Reviewed-by: Brian Norris <briannorris@chromium.org>
+Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+---
+Patch split from
+https://lore.kernel.org/all/20240212-coreboot-mod-defconfig-v4-4-d14172676f6d@collabora.com
+as it's independent from that series.
+
+Rebased on top of soc/for-next.
+---
+ arch/arm64/configs/defconfig | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index f9cc5bff157c..97888eabb328 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -251,6 +251,9 @@ CONFIG_RASPBERRYPI_FIRMWARE=y
+ CONFIG_INTEL_STRATIX10_SERVICE=y
+ CONFIG_INTEL_STRATIX10_RSU=m
+ CONFIG_MTK_ADSP_IPC=m
++CONFIG_GOOGLE_FIRMWARE=y
++CONFIG_GOOGLE_CBMEM=m
++CONFIG_GOOGLE_COREBOOT_TABLE=m
+ CONFIG_EFI_CAPSULE_LOADER=y
+ CONFIG_IMX_SCU=y
+ CONFIG_QCOM_QSEECOM=y
+
+---
+base-commit: 856e4f898347c4b3dbe1ece5d8c511cf8858011d
+change-id: 20240304-coreboot-defconfig-44968f557466
+
+Best regards,
+-- 
+Nícolas F. R. A. Prado <nfraprado@collabora.com>
+
 
