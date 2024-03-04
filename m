@@ -1,122 +1,384 @@
-Return-Path: <linux-kernel+bounces-90565-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90562-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91B34870141
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:30:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA71E870123
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:21:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 320241F232B0
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:30:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8F7FBB21EB9
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:21:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 951613D0C8;
-	Mon,  4 Mar 2024 12:30:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E84773BB3E;
+	Mon,  4 Mar 2024 12:21:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b="USsmf+ae"
-Received: from mx1.t-argos.ru (mx1.t-argos.ru [109.73.34.58])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SyzIQjI3"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE0631D53F;
-	Mon,  4 Mar 2024 12:30:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=109.73.34.58
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44CF53C485
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 12:21:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709555445; cv=none; b=gHpsyJ5wlY6nvSBSkWeN8kBYS3tibt+UB3jsfhWn7bDOUF2CcMiH8numtdLFy/uGfNSiIREslA1SfMp8SdiGlktnchV+N61Nv51ll35UxIQiCnGkhWmu+Fjj6btLK4BCj8RLe9eSu8mPwwybCoTBmK0375AGLIMGJCjlKJ8oCoo=
+	t=1709554879; cv=none; b=sCU6Gys/OdHJvGLcaS1jsFvklpKyx3zZz135ACWJDsjs8xqxCCSipBQp/4uxs4TgxrsAMO2L928Jr9vNn++QrQoswjvKfayrX68yOHSjREBwsNyineFNqcC/5dsyK9jKrgq4La8b2jJ/Oke67xh09xZ8cKMgdXv/yXbb3LJsBsQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709555445; c=relaxed/simple;
-	bh=FeBZR3SGL2Om8m5Kdr9xfsj804J10OkYTMQW2JZj7VE=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=f4L0zkxRz8U6lcNcVk4YMlSS5If7pR8M/woV9msX1og7rp76+RSF8VjrHnF1e2rMz0IBXutEM0qBi1YQC1Uidb+1AakqfQfkbLzRvwpnR+Anot0uAMHXli4H7K1wFRbqWs5ej8neldF/ygpKaDS+EcKnW2Av6XY4RI5a8hDgGLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru; spf=pass smtp.mailfrom=t-argos.ru; dkim=pass (2048-bit key) header.d=t-argos.ru header.i=@t-argos.ru header.b=USsmf+ae; arc=none smtp.client-ip=109.73.34.58
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=t-argos.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=t-argos.ru
-Received: from mx1.t-argos.ru (localhost [127.0.0.1])
-	by mx1.t-argos.ru (Postfix) with ESMTP id 14559100002;
-	Mon,  4 Mar 2024 15:22:19 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=t-argos.ru; s=mail;
-	t=1709554939; bh=YbTF9cKWyBV3OLPeCxcCiIlnH5+s0eWfsFAU6u80XD8=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=USsmf+aeiLQI1maKyJZCHhC3uyVMfHOojULGaFWYvhPTEoegbnXGOiaA+Wt+ckXQ8
-	 tsnL6RA1DUE7YrfOXx0ZPF30wRf+jNS4DyWPA4M/cIYXkc/ds9EA6GKlbzRCS30opr
-	 2ygKtaj6qi0qFya1KmnN20qfMsBDifLnRCZq2DVTsfEhwfSg8jzjwKYrnHsvCdyI0H
-	 PDD1E+nDLSTkp/rcc6nWYJBBnwhh3sRYf6+r2uSYXf4/RPQKopiFO8Ke8gMr51bYgH
-	 61D7azudCxIcFVJ45f2xvoUyHiqAzDIqqIjaV6aOd3a4Qsp93JLDTBwOF95RDxvAdH
-	 m1XXng71rCzfQ==
-Received: from mx1.t-argos.ru.ru (mail.t-argos.ru [172.17.13.212])
-	by mx1.t-argos.ru (Postfix) with ESMTP;
-	Mon,  4 Mar 2024 15:21:17 +0300 (MSK)
-Received: from localhost.localdomain (172.17.215.6) by ta-mail-02
- (172.17.13.212) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Mon, 4 Mar 2024
- 15:20:56 +0300
-From: Aleksandr Mishin <amishin@t-argos.ru>
-To: Corentin Labbe <clabbe@baylibre.com>
-CC: Aleksandr Mishin <amishin@t-argos.ru>, Herbert Xu
-	<herbert@gondor.apana.org.au>, "David S . Miller" <davem@davemloft.net>,
-	Heiko Stuebner <heiko@sntech.de>, <linux-crypto@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-rockchip@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>
-Subject: [PATCH] crypto: rockchip/rk3288 - Add dereference of NULL pointer check
-Date: Mon, 4 Mar 2024 15:20:31 +0300
-Message-ID: <20240304122031.25325-1-amishin@t-argos.ru>
-X-Mailer: git-send-email 2.30.2
+	s=arc-20240116; t=1709554879; c=relaxed/simple;
+	bh=hWHdW5m5ePOJsUUws9lwg2D7HZz/q9aVYpBUEZOWnOQ=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=NMwxeyStB/cO2V8E8vKoJRMzcqkAe7opGubW4hZZbplwYReZ3p1srJLkx0KdY8WhBDb8z03sTFfq32PT9jRsTlUK4xzTHqmzNZQ3J/DjYHcNOls/1hJ7umFNbGjqQxPyfuEWm4Rbm5xhyz+nIvsGW0Ll59eQ87hqSU427BDMyyQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SyzIQjI3; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709554876;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JPRoL4xIPLzFOJH/TZjpS+iWhVmnOHxtzmR1jUZI8WA=;
+	b=SyzIQjI3uiWIXk+9XBCPPKhMuLlYMfdX77IPui1OQg/tH2Pm0giMLIJts6SOlF2casGx3p
+	7U8ALX0qkiGAJSan4eB83LnErL59N6FMa4WWEGt1ZYGGtI1637uvt6rzoZ8IevDzFhuCpl
+	Eej293Xh0WEEH1zjD4WlEnJK4mpfECU=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-68-tza-swlJNY60SzLPMprKSw-1; Mon, 04 Mar 2024 07:21:15 -0500
+X-MC-Unique: tza-swlJNY60SzLPMprKSw-1
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1dbcf647a9dso49190105ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 04:21:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709554874; x=1710159674;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JPRoL4xIPLzFOJH/TZjpS+iWhVmnOHxtzmR1jUZI8WA=;
+        b=k1S4MOIrdGOXT9afjhiJqKjr2UQ0vqHO7pEVX0GvEleAm2Le0dj4y/WXNX6DkF5YQf
+         XuJyu+GACRTBo69CZntx+w2U4/A/APE/jJEkShto8RyfLw7qBJEgSanxgysqg9noRzB4
+         Qdd3fcqISpRPks1rKeHiu+B2uWa+jZGhIsiUpU0mPKjGqgCswv7PmZcH3yTUbVTudyzx
+         ASgPRwuqNabhcJkD/d0PykiVdcs2RMS0tMbUYzEAV07S3miKg8eErurvVUXKhNHvuvdB
+         1YFY2PDIsd1EEPCxIsMX1zi4Sxzr2Sj+qJv2xTrwAdVBcgc19EJbgjIv9MZZZ/t3Hrfl
+         MAzQ==
+X-Gm-Message-State: AOJu0YxvgIyLafOxjvDNL2bxmorTzm1zN48x9hnf00A7w1v3VBFw7+88
+	nROnrIijX66R+Kj6NjAGfp0e3JDtYCU5e82GeCK+WATENrlf9cA2OGp902MWSNxBV9swJtQf49o
+	s5zpxr7t9Gs94OWjIOS9JwjLppmUg5C0zI7xGKXmadfsTt/m/rwQ0+oAQopmztQ==
+X-Received: by 2002:a17:90a:d594:b0:29a:b654:49b with SMTP id v20-20020a17090ad59400b0029ab654049bmr12791703pju.18.1709554873951;
+        Mon, 04 Mar 2024 04:21:13 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFGAy98HJSP/gQbb1UlTm70tpZZ6iH5onEWvTpYCEKZ58ky9WanFN4QvGqW0GmjqtBSgbDIkA==
+X-Received: by 2002:a17:90a:d594:b0:29a:b654:49b with SMTP id v20-20020a17090ad59400b0029ab654049bmr12791679pju.18.1709554873492;
+        Mon, 04 Mar 2024 04:21:13 -0800 (PST)
+Received: from smtpclient.apple ([115.96.159.226])
+        by smtp.gmail.com with ESMTPSA id gx15-20020a17090b124f00b00298ca46547fsm7641143pjb.36.2024.03.04.04.21.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 04 Mar 2024 04:21:13 -0800 (PST)
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: ta-mail-02.ta.t-argos.ru (172.17.13.212) To ta-mail-02
- (172.17.13.212)
-X-KSMG-Rule-ID: 1
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 183922 [Mar 04 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.3
-X-KSMG-AntiSpam-Envelope-From: amishin@t-argos.ru
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 8 0.3.8 4a99897b35b48c45ee5c877607d26a2d9f419920, {Tracking_from_domain_doesnt_match_to}, t-argos.ru:7.1.1;mx1.t-argos.ru.ru:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: s
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2024/03/04 09:16:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 1.1.2.30, bases: 2024/03/04 08:11:00 #23960386
-X-KSMG-AntiVirus-Status: Clean, skipped
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.400.31\))
+Subject: Re: [PATCH] hv/hv_kvp_daemon: Handle IPv4 and Ipv6 combination for
+ keyfile format
+From: Ani Sinha <anisinha@redhat.com>
+In-Reply-To: <1709297778-20420-1-git-send-email-shradhagupta@linux.microsoft.com>
+Date: Mon, 4 Mar 2024 17:50:57 +0530
+Cc: linux-kernel@vger.kernel.org,
+ linux-hyperv@vger.kernel.org,
+ "K. Y. Srinivasan" <kys@microsoft.com>,
+ Haiyang Zhang <haiyangz@microsoft.com>,
+ Wei Liu <wei.liu@kernel.org>,
+ Dexuan Cui <decui@microsoft.com>,
+ Long Li <longli@microsoft.com>,
+ Michael Kelley <mikelley@microsoft.com>,
+ Olaf Hering <olaf@aepfle.de>,
+ Shradha Gupta <shradhagupta@microsoft.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <57C0D59F-4256-49A8-9864-D45F0E4F4BD7@redhat.com>
+References: <1709297778-20420-1-git-send-email-shradhagupta@linux.microsoft.com>
+To: Shradha Gupta <shradhagupta@linux.microsoft.com>
+X-Mailer: Apple Mail (2.3774.400.31)
 
-In rk_crypto_probe() crypto_engine_alloc_init() is assigned to
-crypto_info->engine and there is a dereference of it in
-clk_mt2712_top_init_early() which could lead to a NULL pointer
-dereference on failure of crypto_engine_alloc_init().
 
-Fix this bug by adding a check of crypto_info->engine.
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> On 01-Mar-2024, at 18:26, Shradha Gupta =
+<shradhagupta@linux.microsoft.com> wrote:
+>=20
+> If the network configuration strings are passed as a combination of =
+IPv and
+> IPv6 addresses, the current KVP daemon doesnot handle it for the =
+keyfile
+> configuration format.
+> With these changes, the keyfile config generation logic scans through =
+the
+> list twice to generate IPv4 and IPv6 sections for the configuration =
+files
+> to handle this support.
 
-Fixes: 57d67c6e8219 ("crypto: rockchip - rework by using crypto_engine")
+We will test this patch internally and I will report back but after the =
+following suggestions=20
 
-Signed-off-by: Aleksandr Mishin <amishin@t-argos.ru>
----
- drivers/crypto/rockchip/rk3288_crypto.c | 4 ++++
- 1 file changed, 4 insertions(+)
+>=20
+> Built-on: Rhel9
+> Tested-on: Rhel9(IPv4 only, IPv6 only, IPv4 and IPv6 combination)
+> Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+> ---
+> tools/hv/hv_kvp_daemon.c | 152 ++++++++++++++++++++++++++++-----------
+> 1 file changed, 112 insertions(+), 40 deletions(-)
+>=20
+> diff --git a/tools/hv/hv_kvp_daemon.c b/tools/hv/hv_kvp_daemon.c
+> index 318e2dad27e0..7e84e40b55fb 100644
+> --- a/tools/hv/hv_kvp_daemon.c
+> +++ b/tools/hv/hv_kvp_daemon.c
+> @@ -76,6 +76,11 @@ enum {
+> DNS
+> };
+>=20
+> +enum {
+> + IPV4 =3D 1,
+> + IPV6,
 
-diff --git a/drivers/crypto/rockchip/rk3288_crypto.c b/drivers/crypto/rockchip/rk3288_crypto.c
-index 70edf40bc523..88cea1e36afa 100644
---- a/drivers/crypto/rockchip/rk3288_crypto.c
-+++ b/drivers/crypto/rockchip/rk3288_crypto.c
-@@ -371,6 +371,10 @@ static int rk_crypto_probe(struct platform_device *pdev)
- 	}
- 
- 	crypto_info->engine = crypto_engine_alloc_init(&pdev->dev, true);
-+	if (!crypto_info->engine) {
-+		dev_err(&pdev->dev, "memory allocation failed.\n");
-+		goto err_crypto;
-+	}
- 	crypto_engine_start(crypto_info->engine);
- 	init_completion(&crypto_info->complete);
- 
--- 
-2.30.2
+How about adding IP_TYPE_MAX here? Then see below =E2=80=A6
+
+> +};
+> +
+> static int in_hand_shake;
+>=20
+> static char *os_name =3D "";
+> @@ -1171,6 +1176,18 @@ static int process_ip_string(FILE *f, char =
+*ip_string, int type)
+> return 0;
+> }
+>=20
+> +int ip_version_check(const char *input_addr)
+> +{
+> + struct in6_addr addr;
+> +
+> + if (inet_pton(AF_INET, input_addr, &addr))
+> + return IPV4;
+> + else if (inet_pton(AF_INET6, input_addr, &addr))
+> + return IPV6;
+> + else
+> + return -EINVAL;
+> +}
+> +
+> /*
+>  * Only IPv4 subnet strings needs to be converted to plen
+>  * For IPv6 the subnet is already privided in plen format
+> @@ -1197,14 +1214,56 @@ static int kvp_subnet_to_plen(char =
+*subnet_addr_str)
+> return plen;
+> }
+>=20
+> +static int process_dns_gateway_nm(FILE *f, char *ip_string, int type,
+> +  int ip_sec)
+> +{
+> + char addr[INET6_ADDRSTRLEN], *output_str;
+> + int ip_offset =3D 0, error, ip_ver;
+> + char *param_name;
+> +
+> + output_str =3D malloc(strlen(ip_string));
+
+Could we use calloc() here? Then ...
+
+> +
+> + if (!output_str)
+> + return 1;
+> +
+> + output_str[0] =3D '\0';
+
+We do not need to do this.
+
+> +
+> + if (type =3D=3D DNS)
+> + param_name =3D "dns";
+> + else
+> + param_name =3D "gateway";
+> +
+> + while (parse_ip_val_buffer(ip_string, &ip_offset, addr,
+> +   (MAX_IP_ADDR_SIZE * 2))) {
+> + ip_ver =3D ip_version_check(addr);
+
+Maybe assert here that ip_ver is !=3D -EINVAL.
+
+> +
+> + if ((ip_ver =3D=3D IPV4 && ip_sec =3D=3D IPV4) ||
+> +    (ip_ver =3D=3D IPV6 && ip_sec =3D=3D IPV6)) {
+> + strcat(output_str, addr);
+> + strcat(output_str, ",");
+> + } else {
+> + continue;
+> + }
+> + }
+> +
+> + if (strlen(output_str)) {
+> + output_str[strlen(output_str) - 1] =3D '\0';
+> + error =3D fprintf(f, "%s=3D%s\n", param_name, output_str);
+> + if (error <  0)
+> + return error;
+> + }
+> +
+> + return 0;
+> +}
+> +
+> static int process_ip_string_nm(FILE *f, char *ip_string, char =
+*subnet,
+> - int is_ipv6)
+> + int ip_sec)
+> {
+> char addr[INET6_ADDRSTRLEN];
+> char subnet_addr[INET6_ADDRSTRLEN];
+> int error, i =3D 0;
+> int ip_offset =3D 0, subnet_offset =3D 0;
+> - int plen;
+> + int plen, ip_ver;
+>=20
+> memset(addr, 0, sizeof(addr));
+> memset(subnet_addr, 0, sizeof(subnet_addr));
+> @@ -1216,10 +1275,13 @@ static int process_ip_string_nm(FILE *f, char =
+*ip_string, char *subnet,
+>       subnet_addr,
+>       (MAX_IP_ADDR_SIZE *
+> 2))) {
+> - if (!is_ipv6)
+> + ip_ver =3D ip_version_check(addr);
+> + if (ip_ver =3D=3D IPV4 && ip_sec =3D=3D IPV4)
+> plen =3D kvp_subnet_to_plen((char *)subnet_addr);
+> - else
+> + else if (ip_ver =3D=3D IPV6 && ip_sec =3D=3D IPV6)
+> plen =3D atoi(subnet_addr);
+> + else
+> + continue;
+>=20
+> if (plen < 0)
+> return plen;
+> @@ -1242,8 +1304,8 @@ static int kvp_set_ip_info(char *if_name, struct =
+hv_kvp_ipaddr_value *new_val)
+> char if_filename[PATH_MAX];
+> char nm_filename[PATH_MAX];
+> FILE *ifcfg_file, *nmfile;
+> + int ip_sections_count;
+> char cmd[PATH_MAX];
+> - int is_ipv6 =3D 0;
+> char *mac_addr;
+> int str_len;
+>=20
+> @@ -1421,52 +1483,62 @@ static int kvp_set_ip_info(char *if_name, =
+struct hv_kvp_ipaddr_value *new_val)
+> if (error)
+> goto setval_error;
+>=20
+> - if (new_val->addr_family & ADDR_FAMILY_IPV6) {
+> - error =3D fprintf(nmfile, "\n[ipv6]\n");
+> - if (error < 0)
+> - goto setval_error;
+> - is_ipv6 =3D 1;
+> - } else {
+> - error =3D fprintf(nmfile, "\n[ipv4]\n");
+> - if (error < 0)
+> - goto setval_error;
+> - }
+> -
+> /*
+> - * Now we populate the keyfile format
+> + * The keyfile format expects the IPv6 and IPv4 configuration in
+> + * different sections. Therefore we iterate through the list twice,
+> + * once to populate the IPv4 section and the next time for IPv6
+> */
+> + ip_sections_count =3D 1;
+
+Ugh, this is ugly! How about,
+
+ip_type =3D IPV4 ;
+
+
+> + do {
+> + if (ip_sections_count =3D=3D 1) {
+> + error =3D fprintf(nmfile, "\n[ipv4]\n");
+> + if (error < 0)
+> + goto setval_error;
+> + } else {
+> + error =3D fprintf(nmfile, "\n[ipv6]\n");
+> + if (error < 0)
+> + goto setval_error;
+> + }
+>=20
+> - if (new_val->dhcp_enabled) {
+> - error =3D kvp_write_file(nmfile, "method", "", "auto");
+> - if (error < 0)
+> - goto setval_error;
+> - } else {
+> - error =3D kvp_write_file(nmfile, "method", "", "manual");
+> + /*
+> + * Now we populate the keyfile format
+> + */
+> +
+> + if (new_val->dhcp_enabled) {
+> + error =3D kvp_write_file(nmfile, "method", "", "auto");
+> + if (error < 0)
+> + goto setval_error;
+> + } else {
+> + error =3D kvp_write_file(nmfile, "method", "", "manual");
+> + if (error < 0)
+> + goto setval_error;
+> + }
+> +
+> + /*
+> + * Write the configuration for ipaddress, netmask, gateway and
+> + * name services
+> + */
+> + error =3D process_ip_string_nm(nmfile, (char *)new_val->ip_addr,
+> +     (char *)new_val->sub_net,
+> +     ip_sections_count);
+> if (error < 0)
+> goto setval_error;
+> - }
+>=20
+> - /*
+> - * Write the configuration for ipaddress, netmask, gateway and
+> - * name services
+> - */
+> - error =3D process_ip_string_nm(nmfile, (char *)new_val->ip_addr,
+> -     (char *)new_val->sub_net, is_ipv6);
+> - if (error < 0)
+> - goto setval_error;
+> -
+> - /* we do not want ipv4 addresses in ipv6 section and vice versa */
+> - if (is_ipv6 !=3D is_ipv4((char *)new_val->gate_way)) {
+> - error =3D fprintf(nmfile, "gateway=3D%s\n", (char =
+*)new_val->gate_way);
+> + error =3D process_dns_gateway_nm(nmfile,
+> +       (char *)new_val->gate_way,
+> +       GATEWAY, ip_sections_count);
+> if (error < 0)
+> goto setval_error;
+> - }
+>=20
+> - if (is_ipv6 !=3D is_ipv4((char *)new_val->dns_addr)) {
+> - error =3D fprintf(nmfile, "dns=3D%s\n", (char *)new_val->dns_addr);
+> + error =3D process_dns_gateway_nm(nmfile,
+> +       (char *)new_val->dns_addr, DNS,
+> +       ip_sections_count);
+> if (error < 0)
+> goto setval_error;
+> - }
+> +
+> + ip_sections_count++;
+
+ip_type++ ;
+
+
+> + } while (ip_sections_count < 2);
+
+while (ip_type < IP_TYPE_MAX)
+
+> +
+> fclose(nmfile);
+> fclose(ifcfg_file);
+>=20
+> --=20
+> 2.34.1
+>=20
 
 
