@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-90372-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90373-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FB7586FE4B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:06:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5427586FE4C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:06:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 310ED1F23003
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:06:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDE501F22A6E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:06:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6D7822099;
-	Mon,  4 Mar 2024 10:06:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1BE12556F;
+	Mon,  4 Mar 2024 10:06:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="GqrZRx2u"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="lxTIWQPg"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 609DC241E5
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 10:05:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F4DF241E5
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 10:06:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709546761; cv=none; b=m/3HRYL7o5f20XCLAWe9efT51bTakuSDfftdXdjKwauaV0Ljt1WJPxBQkYA0GY/YZJVvcm8e8zwicD9ft7qYafipCts2aNKLGrhfXN1V7AXi94EJmW6o1EA6UrOdaztzibYLoON1+RyipcgxYqbbISYYRJ4oIQ/ODE2jUUooWx4=
+	t=1709546766; cv=none; b=JS8YswnWwLEvuObBGlEcKDdigXkuTzmqxKWhfp8C3ps+05LPxO8Zwltj/FNFsQhAjl1v/Xgm2oskyX1uwe+Di+6BVrLJRy5mj+xhsvwacW7PQKnjjOhW3Yn09xXJWk2/SWDvruO+fTDvBOaPnuRM3jW18RundGEPIhpfln5DvyY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709546761; c=relaxed/simple;
-	bh=RWN2Ea3qOUjs6zLtAAXLBFQstrOSR//0aV6xqRJRRoM=;
+	s=arc-20240116; t=1709546766; c=relaxed/simple;
+	bh=ISoQmi3oK6Vmoe0IMg783tBWT8NBk2AxOuF2EXXZsNA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=m6LesYSu4wNaajNrMf+PgdJf6P13tL19i4OAkt/DNzCsWnm7q1BDgle2L/ertudmVH7EEgbU4a2zaZPNo7JbhCQ8BVmJ1wfsmbtXnB/gE5eXZG3K/oOcm1O96LYEhDpzIH55nig870mY0N0HeZJejFQB6iGt8wNPIply2HZa76s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=GqrZRx2u; arc=none smtp.client-ip=46.235.227.194
+	 In-Reply-To:Content-Type; b=d5d5ruQc4f1mJ5S0ZC8f+XtjHi+sL0rTqB0H/QnAdLlgTnF4gXqhJekKUNxH0oS2GmHM4ViZVMv6VDIsa0U7zSO7/+yvABxD1pbMlqFyVc2mE+wp/fC+lkdcxpu0h2exfGEXAypiP5IJrd+1EDV0hGhCCAvfg327CeBlJLxwWZM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=lxTIWQPg; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709546757;
-	bh=RWN2Ea3qOUjs6zLtAAXLBFQstrOSR//0aV6xqRJRRoM=;
+	s=mail; t=1709546762;
+	bh=ISoQmi3oK6Vmoe0IMg783tBWT8NBk2AxOuF2EXXZsNA=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=GqrZRx2uqquFaYJnQ+ZQZ4Z5duNI4garPorJYbWGIcwBXVtikqwGmsSv+TSPAg24/
-	 RXtRy6utMLXjpXYUgoqYIi3/d9O+yDEDdapjK8iyOOQWm95lkCw9vP+pqVAYSvaQD8
-	 2MeMrgwT075yFyFqbgrhlhUourXnkm0DYcWti2SKsj7qwmwpzr5NkdzCU723O1qGkl
-	 hsm+FVUUP+eKRI3nVfLaQw+qnAQ2d+V7KV28h+QT9kSsPpO37FbQ9Z+39g4eJeebS6
-	 BZl01pEvqkNz72VepmGyH3Z82Mge3rfc4KlUMUxuOyG3FMtsearuwQFdR9Dq5xmou0
-	 Zf8TRylfj2Qtw==
+	b=lxTIWQPgCtvn/08bqkNRUqmv9OYbsWXP25wg4KmMebFyq/31OukwBT07DglJTqM4e
+	 0Arch9pe+YnSg0aKI5MI1gh5oshiDmv3CrgCLCMs+n/v1ufC8+PDP0DZe8gDfGEAn2
+	 EmaXxlfcTIFeDXn6+LDuh4IsXgCf6G7/9QyYllXTE0Wz+b81wLDBkwS3tDhj5UMp/q
+	 B+OFHeP4cMFa5kYcUz3xPckKDcQrIgg0KrwoYDjg2QvBvGfPeKtiL6XBtUt3Ey2C6V
+	 f/b+mu89oMgzzbu3i1iuhPzJWJBYvMGNcFVSEaW6zgFubLlVviub4LwvmwuBzQk4Em
+	 GjUU5Hts4gi3g==
 Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id D61573782091;
-	Mon,  4 Mar 2024 10:05:56 +0000 (UTC)
-Message-ID: <3dab3afd-7d0c-4bf1-b4f6-984f8d5d2d02@collabora.com>
-Date: Mon, 4 Mar 2024 11:05:56 +0100
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2739537820C3;
+	Mon,  4 Mar 2024 10:06:02 +0000 (UTC)
+Message-ID: <298c13ff-25a7-4d9c-ab51-4c22c07c245d@collabora.com>
+Date: Mon, 4 Mar 2024 11:06:02 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,9 +56,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/5] soc: mediatek: mtk-cmdq: Add cmdq_pkt_acquire_event()
- function
-Content-Language: en-US
+Subject: Re: [PATCH 5/5] mailbox: mtk-cmdq: Add support runtime get and set
+ GCE event
 To: "Jason-JH.Lin" <jason-jh.lin@mediatek.com>,
  Jassi Brar <jassisinghbrar@gmail.com>,
  Chun-Kuang Hu <chunkuang.hu@kernel.org>,
@@ -69,79 +68,110 @@ Cc: Jason-ch Chen <jason-ch.chen@mediatek.com>,
  linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
  Project_Global_Chrome_Upstream_Group@mediatek.com
 References: <20240301111126.22035-1-jason-jh.lin@mediatek.com>
- <20240301111126.22035-5-jason-jh.lin@mediatek.com>
+ <20240301111126.22035-6-jason-jh.lin@mediatek.com>
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20240301111126.22035-5-jason-jh.lin@mediatek.com>
+Content-Language: en-US
+In-Reply-To: <20240301111126.22035-6-jason-jh.lin@mediatek.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 Il 01/03/24 12:11, Jason-JH.Lin ha scritto:
-> Add cmdq_pkt_acquire_event() function to support CMDQ user making
-> an instruction for acquiring event.
-> 
-> CMDQ users can use cmdq_pkt_acquire_event() and cmdq_pkt_clear_event()
-> to acquire GCE event and release GCE event and achieve the MUTEX_LOCK
-> protection between GCE threads.
+> ISP drivers need to get and set GCE event in their runtime contorl flow.
+> So add these functions to support get and set GCE by CPU.
 > 
 > Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
-> Change-Id: Icdae6b60345c7ec1d7541ac76d1f06da56959cde
+> Change-Id: I494c34ebc5ec26c82213f2bc03d2033d60652523
 
-Drop Change-Id please.
+Change-Id makes no sense upstream. Please drop.
 
 > ---
->   drivers/soc/mediatek/mtk-cmdq-helper.c | 15 +++++++++++++++
->   include/linux/soc/mediatek/mtk-cmdq.h  |  9 +++++++++
->   2 files changed, 24 insertions(+)
+>   drivers/mailbox/mtk-cmdq-mailbox.c       | 37 ++++++++++++++++++++++++
+>   include/linux/mailbox/mtk-cmdq-mailbox.h |  2 ++
+>   2 files changed, 39 insertions(+)
 > 
-> diff --git a/drivers/soc/mediatek/mtk-cmdq-helper.c b/drivers/soc/mediatek/mtk-cmdq-helper.c
-> index 2e9fc9bb1183..0183b40a0eff 100644
-> --- a/drivers/soc/mediatek/mtk-cmdq-helper.c
-> +++ b/drivers/soc/mediatek/mtk-cmdq-helper.c
-> @@ -342,6 +342,21 @@ int cmdq_pkt_wfe(struct cmdq_pkt *pkt, u16 event, bool clear)
+> diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c b/drivers/mailbox/mtk-cmdq-mailbox.c
+> index ead2200f39ba..d7c08249c898 100644
+> --- a/drivers/mailbox/mtk-cmdq-mailbox.c
+> +++ b/drivers/mailbox/mtk-cmdq-mailbox.c
+> @@ -25,7 +25,11 @@
+>   #define CMDQ_GCE_NUM_MAX		(2)
+>   
+>   #define CMDQ_CURR_IRQ_STATUS		0x10
+> +#define CMDQ_SYNC_TOKEN_ID		0x60
+> +#define CMDQ_SYNC_TOKEN_VALUE		0x64
+> +#define CMDQ_TOKEN_ID_MASK			GENMASK(9, 0)
+>   #define CMDQ_SYNC_TOKEN_UPDATE		0x68
+> +#define CMDQ_TOKEN_UPDATE_VALUE			BIT(16)
+>   #define CMDQ_THR_SLOT_CYCLES		0x30
+>   #define CMDQ_THR_BASE			0x100
+>   #define CMDQ_THR_SIZE			0x80
+> @@ -83,6 +87,7 @@ struct cmdq {
+>   	struct cmdq_thread	*thread;
+>   	struct clk_bulk_data	clocks[CMDQ_GCE_NUM_MAX];
+>   	bool			suspended;
+> +	spinlock_t		event_lock; /* lock for gce event */
+>   };
+>   
+>   struct gce_plat {
+> @@ -113,6 +118,38 @@ u8 cmdq_get_shift_pa(struct mbox_chan *chan)
 >   }
->   EXPORT_SYMBOL(cmdq_pkt_wfe);
+>   EXPORT_SYMBOL(cmdq_get_shift_pa);
 >   
-> +int cmdq_pkt_acquire_event(struct cmdq_pkt *pkt, u16 event)
+> +void cmdq_set_event(void *chan, u16 event_id)
 > +{
-> +	struct cmdq_instruction inst = {};
+> +	struct cmdq *cmdq = container_of(((struct mbox_chan *)chan)->mbox,
+> +		typeof(*cmdq), mbox);
+
+struct mbox_chan *mbc = chan;
+struct cmdq *cmdq = container_of(mbc->mbox, ... etc); (and this fits in one line)
+
+> +	unsigned long flags;
 > +
-> +	if (event >= CMDQ_MAX_EVENT)
-> +		return -EINVAL;
+> +	spin_lock_irqsave(&cmdq->event_lock, flags);
+
+Why do you need irqsave/irqrestore? I think I know, but please explain.
+
 > +
-> +	inst.op = CMDQ_CODE_WFE;
-> +	inst.value = CMDQ_WFE_UPDATE | CMDQ_WFE_UPDATE_VALUE | CMDQ_WFE_WAIT;
-> +	inst.event = event;
+> +	writel(CMDQ_TOKEN_UPDATE_VALUE | event_id, cmdq->base + CMDQ_SYNC_TOKEN_UPDATE);
 > +
-> +	return cmdq_pkt_append_command(pkt, inst);
+> +	spin_unlock_irqrestore(&cmdq->event_lock, flags);
 > +}
-> +EXPORT_SYMBOL(cmdq_pkt_acquire_event);
+> +EXPORT_SYMBOL(cmdq_set_event);
 > +
->   int cmdq_pkt_clear_event(struct cmdq_pkt *pkt, u16 event)
+> +u32 cmdq_get_event(void *chan, u16 event_id)
+> +{
+> +	struct cmdq *cmdq = container_of(((struct mbox_chan *)chan)->mbox,
+> +		typeof(*cmdq), mbox);
+> +	unsigned long flags;
+> +	u32 value = 0;
+> +
+> +	spin_lock_irqsave(&cmdq->event_lock, flags);
+> +
+> +	writel(CMDQ_TOKEN_ID_MASK & event_id, cmdq->base + CMDQ_SYNC_TOKEN_ID);
+> +	value = readl(cmdq->base + CMDQ_SYNC_TOKEN_VALUE);
+> +
+> +	spin_unlock_irqrestore(&cmdq->event_lock, flags);
+> +
+> +	return value;
+> +}
+> +EXPORT_SYMBOL(cmdq_get_event);
+> +
+>   static int cmdq_thread_suspend(struct cmdq *cmdq, struct cmdq_thread *thread)
 >   {
->   	struct cmdq_instruction inst = { {0} };
-> diff --git a/include/linux/soc/mediatek/mtk-cmdq.h b/include/linux/soc/mediatek/mtk-cmdq.h
-> index 2fe9be240fbc..de93c0a8e8a9 100644
-> --- a/include/linux/soc/mediatek/mtk-cmdq.h
-> +++ b/include/linux/soc/mediatek/mtk-cmdq.h
-> @@ -202,6 +202,15 @@ int cmdq_pkt_mem_move(struct cmdq_pkt *pkt, dma_addr_t src_addr, dma_addr_t dst_
->    */
->   int cmdq_pkt_wfe(struct cmdq_pkt *pkt, u16 event, bool clear);
+>   	u32 status;
+> diff --git a/include/linux/mailbox/mtk-cmdq-mailbox.h b/include/linux/mailbox/mtk-cmdq-mailbox.h
+> index a8f0070c7aa9..f05cabd230da 100644
+> --- a/include/linux/mailbox/mtk-cmdq-mailbox.h
+> +++ b/include/linux/mailbox/mtk-cmdq-mailbox.h
+> @@ -79,5 +79,7 @@ struct cmdq_pkt {
+>   };
 >   
-> +/**
-> + * cmdq_pkt_acquire_event() - append acquire event command to the CMDQ packet
-> + * @pkt:	the CMDQ packet
-> + * @event:	the desired event to be acquired
+>   u8 cmdq_get_shift_pa(struct mbox_chan *chan);
+> +void cmdq_set_event(void *chan, u16 event_id);
+> +u32 cmdq_get_event(void *chan, u16 event_id);
+>   
+>   #endif /* __MTK_CMDQ_MAILBOX_H__ */
 
-What you wrote in the commit message is good documentation for this function,
-please also put it here in kerneldoc format as a documentation paragraph.
 
-> + *
-> + * Return: 0 for success; else the error code is returned
-> + */
-> +int cmdq_pkt_acquire_event(struct cmdq_pkt *pkt, u16 event);
-> +
->   /**
->    * cmdq_pkt_clear_event() - append clear event command to the CMDQ packet
->    * @pkt:	the CMDQ packet
 
 
