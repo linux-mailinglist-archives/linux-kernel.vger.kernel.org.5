@@ -1,211 +1,179 @@
-Return-Path: <linux-kernel+bounces-90947-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90948-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7765487075F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:41:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC51E870769
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:44:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 042841F212A5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:41:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC3D41C20C75
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:44:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C90674205F;
-	Mon,  4 Mar 2024 16:41:34 +0000 (UTC)
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AF524D5A6;
+	Mon,  4 Mar 2024 16:44:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j2QBJFWx"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1CAF495E0;
-	Mon,  4 Mar 2024 16:41:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B74411DDE9;
+	Mon,  4 Mar 2024 16:44:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709570494; cv=none; b=p+86ia2yg/R+sGRkAC6JrvxLfl2qVLX6J03kXsOJkL/qPAhJTguUrQW8QBWjhveJbsTioBqnP1uOAtRS9PeuE3cJ0b6R2cnra2NSzhVP2q9wcVr6VA7RzRMaIhD+glLdjGmQycZQ+Prpx5N3JcFFtRK+W+6vyAgBkjCgnbwMpE0=
+	t=1709570665; cv=none; b=Coyc81wjbHkFBNUfqsbY0xgTyqfVRivo20fyVpsbCJhzAb0vpQSlTGD8B5j/t+5pkV8Uk5pnQWFbebAVfz/5CnPWGOJ47J2vyAkCy408S+NQsq6MtZewDBa2wwOPRDpkZZeHvJmLBTSwzPTbjgL4zymI22xyxycMJW2ZkO0XejQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709570494; c=relaxed/simple;
-	bh=WF5yncz6g/9Mh8GpF3BGz7UNGN6nzwG3LAT4Qy6Xaio=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=f4PYu+Unrg6kJj36ZdSpzii4V3I4TTedqaQ2iTDa7Fj36zvY6eleD8oaE4mMXfG9OTcodPqGdWHyfYGjxq0sC5Iwau23y3V6lkS+OA7it/YtqIoAuqBgJwBzl27hhi/j5Ux9mj+wPu53x02rDzh3Ds+ts8+/bmD7hmx+zSRneZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6e4ea48972cso349898a34.0;
-        Mon, 04 Mar 2024 08:41:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709570491; x=1710175291;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VFEvVmR8mpln9PL6OoXoC/Ne2hrqBirmQBmOubPamhM=;
-        b=YA2de6ZSTvZXCNhn95podiput1z9VfVru6dewyXCjJJTKfQMfAECOTUeINzhZTt4U1
-         5FP/J9ZQ6UQxKCyy/NDcsnAIILkGFYNkilpd1OciNrnKgdc7z0e2TJUaTByFR2NiNguJ
-         PnKmOTAg3E9f46JNTV+q8Y65uYxWfhHY0uQ94YoUtPL9yZ/CtG/PZJU61mIxRzkiIcIQ
-         mAk4Tf1OEABYnyL9PoP908SBtrIMPJF/OdgqFC2n19YpbM487BXFIje7Up3SF5RCgZc7
-         qGAg+Wg4ISceHR1gnotO0g2NutmYiVC/ChjZGLqWlYhUyrFqgAz/2OGxYq935j9ZwdUe
-         +KUw==
-X-Forwarded-Encrypted: i=1; AJvYcCXReyYU0ENnsYG6Q7gGsk9sQ07/chZauazrMiqemJ97CKYvEQMyB15lMJyKnCoYqN59Le8nNgpI1ASaP4V8bBZRHJGfIW6Cz1rqiPRMZU2NJF6uJE8Iccsh3hXQhaTJBSMxQAbVUQTixUuXbW3a2zkErBsivgzVSxR58FVNDZ7T6jTs2U7n87PMky6ciq7tJjfdvtiv41XQuvrLJF/8
-X-Gm-Message-State: AOJu0YwNeLDlRKHDo6L4jb4j2x1F3eu31zUv2msx3XTpG0TbDxq0V8Bm
-	Eqq3tbuQ9pMH7LarXVYeCCI+jBUtvVfrtyP9rP4PoXWQROwa3FyoXCs2Yynaw9CcsFjcByzzXQC
-	wvWYYSKFdrGnwWw2ogbWVz56sp+k=
-X-Google-Smtp-Source: AGHT+IFOLTCVRY6mWwBXwQ8bn84DuU3MLvfAPphMkKwDWG2kShUWWEC/Gh+iRLlPQgqLOSE+Q2+c67uENaJegwa9oW4=
-X-Received: by 2002:a05:6870:c69d:b0:220:bd4d:674d with SMTP id
- cv29-20020a056870c69d00b00220bd4d674dmr10062324oab.5.1709570491549; Mon, 04
- Mar 2024 08:41:31 -0800 (PST)
+	s=arc-20240116; t=1709570665; c=relaxed/simple;
+	bh=WOnO9JPDwy/Qr4hBOGiy3niCuOWp/MDBx/XySwl/3GQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bVjfnyFJZ9kmzpc/rrBHbvpnhe8zBz1CZ4hdmnx2zRKz8Y2EZdEAXQSXmfojO1T+/soBjJRhXWv+95IADFirR/CtTka7J3EZglDiiRpilN7kYBCuHbtIQDOctrLRx+/pj1HLf41/PgY4C7Tqmqdxhxhj7s9JzjblyNhnR0BzNAM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j2QBJFWx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2201BC433C7;
+	Mon,  4 Mar 2024 16:44:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709570665;
+	bh=WOnO9JPDwy/Qr4hBOGiy3niCuOWp/MDBx/XySwl/3GQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=j2QBJFWxCzebsWpK34GWwHgrIuHa2p0uD0mJy9OGDPrF/F2S5inbL2X1YgyV+nqBt
+	 hXlNyJIqMw2h7m69oFFnh/GiRj7jpsXRRU+2QhIOhQ/zfv3ptecIdyaiUxLcYGWFL8
+	 6b62WOwl3L8e9RX5Z6PsBoI9PkuUnWAu4JBmjay7ZEk6c4smNVY1UWXv16pRmD9wfc
+	 zDS1+KZPtKdUJhUocFa9Id5Ol9dGS211WwXB1yHoETngI5Yr1hmKtAOUXWhQrz1SZ0
+	 mE3RSGzvu/QKW5Naf54cDX3nlpUEVJFdgQIDdSqbSRH2a9fnZDDjceX/tmnuCf+8Ck
+	 CBDsOPhE7htHA==
+Date: Mon, 4 Mar 2024 10:44:23 -0600
+From: Rob Herring <robh@kernel.org>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: Vinod Koul <vkoul@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Peng Fan <peng.fan@nxp.com>,
+	imx@lists.linux.dev, dmaengine@vger.kernel.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+	Joy Zou <joy.zou@nxp.com>
+Subject: Re: [PATCH v2 4/5] dt-bindings: dma: fsl-edma: add fsl,imx8ulp-edma
+ compatible string
+Message-ID: <20240304164423.GA626742-robh@kernel.org>
+References: <20240229-8ulp_edma-v2-0-9d12f883c8f7@nxp.com>
+ <20240229-8ulp_edma-v2-4-9d12f883c8f7@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAJZ5v0grDNJkEcgw+34SBmNFL7qhSTz8ydC7BSkM7DiCatkKSA@mail.gmail.com>
- <20240304155138.GA482969@bhelgaas>
-In-Reply-To: <20240304155138.GA482969@bhelgaas>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 4 Mar 2024 17:41:19 +0100
-Message-ID: <CAJZ5v0jS_x7=joXkHuuqQhO-FqkhGi44o-Nq-1FGhPQ5-1VhnQ@mail.gmail.com>
-Subject: Re: [PATCH v3] driver core: Cancel scheduled pm_runtime_idle() on
- device removal
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Kai-Heng Feng <kai.heng.feng@canonical.com>, 
-	gregkh@linuxfoundation.org, bhelgaas@google.com, linux-pci@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Ricky Wu <ricky_wu@realtek.com>, 
-	Kees Cook <keescook@chromium.org>, Tony Luck <tony.luck@intel.com>, 
-	"Guilherme G. Piccoli" <gpiccoli@igalia.com>, linux-hardening@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240229-8ulp_edma-v2-4-9d12f883c8f7@nxp.com>
 
-On Mon, Mar 4, 2024 at 4:51=E2=80=AFPM Bjorn Helgaas <helgaas@kernel.org> w=
-rote:
->
-> On Mon, Mar 04, 2024 at 03:38:38PM +0100, Rafael J. Wysocki wrote:
-> > On Thu, Feb 29, 2024 at 7:23=E2=80=AFAM Kai-Heng Feng
-> > <kai.heng.feng@canonical.com> wrote:
-> > >
-> > > When inserting an SD7.0 card to Realtek card reader, the card reader
-> > > unplugs itself and morph into a NVMe device. The slot Link down on ho=
-t
-> > > unplugged can cause the following error:
-> > >
-> > > pcieport 0000:00:1c.0: pciehp: Slot(8): Link Down
-> > > BUG: unable to handle page fault for address: ffffb24d403e5010
-> > > PGD 100000067 P4D 100000067 PUD 1001fe067 PMD 100d97067 PTE 0
-> > > Oops: 0000 [#1] PREEMPT SMP PTI
-> > > CPU: 3 PID: 534 Comm: kworker/3:10 Not tainted 6.4.0 #6
-> > > Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M./H370M Pr=
-o4, BIOS P3.40 10/25/2018
-> > > Workqueue: pm pm_runtime_work
-> > > RIP: 0010:ioread32+0x2e/0x70
-> > ...
-> > > Call Trace:
-> > >  <TASK>
-> > >  ? show_regs+0x68/0x70
-> > >  ? __die_body+0x20/0x70
-> > >  ? __die+0x2b/0x40
-> > >  ? page_fault_oops+0x160/0x480
-> > >  ? search_bpf_extables+0x63/0x90
-> > >  ? ioread32+0x2e/0x70
-> > >  ? search_exception_tables+0x5f/0x70
-> > >  ? kernelmode_fixup_or_oops+0xa2/0x120
-> > >  ? __bad_area_nosemaphore+0x179/0x230
-> > >  ? bad_area_nosemaphore+0x16/0x20
-> > >  ? do_kern_addr_fault+0x8b/0xa0
-> > >  ? exc_page_fault+0xe5/0x180
-> > >  ? asm_exc_page_fault+0x27/0x30
-> > >  ? ioread32+0x2e/0x70
-> > >  ? rtsx_pci_write_register+0x5b/0x90 [rtsx_pci]
-> > >  rtsx_set_l1off_sub+0x1c/0x30 [rtsx_pci]
-> > >  rts5261_set_l1off_cfg_sub_d0+0x36/0x40 [rtsx_pci]
-> > >  rtsx_pci_runtime_idle+0xc7/0x160 [rtsx_pci]
-> > >  ? __pfx_pci_pm_runtime_idle+0x10/0x10
-> > >  pci_pm_runtime_idle+0x34/0x70
-> > >  rpm_idle+0xc4/0x2b0
-> > >  pm_runtime_work+0x93/0xc0
-> > >  process_one_work+0x21a/0x430
-> > >  worker_thread+0x4a/0x3c0
-> > ...
->
-> > > This happens because scheduled pm_runtime_idle() is not cancelled.
-> >
-> > But rpm_resume() changes dev->power.request to RPM_REQ_NONE and if
-> > pm_runtime_work() sees this, it will not run rpm_idle().
-> >
-> > However, rpm_resume() doesn't deactivate the autosuspend timer if it
-> > is running (see the comment in rpm_resume() regarding this), so it may
-> > queue up a runtime PM work later.
-> >
-> > If this is not desirable, you need to stop the autosuspend timer
-> > explicitly in addition to calling pm_runtime_get_sync().
->
-> I don't quite follow all this.  I think the race is between
-> rtsx_pci_remove() (not resume) and rtsx_pci_runtime_idle().
+On Thu, Feb 29, 2024 at 03:58:10PM -0500, Frank Li wrote:
+> From: Joy Zou <joy.zou@nxp.com>
+> 
+> Introduce the compatible string 'fsl,imx8ulp-edma' to enable support for
+> the i.MX8ULP's eDMA, alongside adjusting the clock numbering. The i.MX8ULP
+> eDMA architecture features one clock for each DMA channel and an additional
+> clock for the core controller. Given a maximum of 32 DMA channels, the
+> maximum clock number consequently increases to 33.
+> 
+> Signed-off-by: Joy Zou <joy.zou@nxp.com>
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+>  .../devicetree/bindings/dma/fsl,edma.yaml          | 26 ++++++++++++++++++++--
+>  1 file changed, 24 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/dma/fsl,edma.yaml b/Documentation/devicetree/bindings/dma/fsl,edma.yaml
+> index aa51d278cb67b..55cce79c759f8 100644
+> --- a/Documentation/devicetree/bindings/dma/fsl,edma.yaml
+> +++ b/Documentation/devicetree/bindings/dma/fsl,edma.yaml
+> @@ -23,6 +23,7 @@ properties:
+>            - fsl,imx7ulp-edma
+>            - fsl,imx8qm-adma
+>            - fsl,imx8qm-edma
+> +          - fsl,imx8ulp-edma
+>            - fsl,imx93-edma3
+>            - fsl,imx93-edma4
+>            - fsl,imx95-edma5
+> @@ -53,11 +54,11 @@ properties:
+>  
+>    clocks:
+>      minItems: 1
+> -    maxItems: 2
+> +    maxItems: 33
+>  
+>    clock-names:
+>      minItems: 1
+> -    maxItems: 2
+> +    maxItems: 33
+>  
+>    big-endian:
+>      description: |
+> @@ -108,6 +109,7 @@ allOf:
+>        properties:
+>          clocks:
+>            minItems: 2
+> +          maxItems: 2
+>          clock-names:
+>            items:
+>              - const: dmamux0
+> @@ -136,6 +138,7 @@ allOf:
+>        properties:
+>          clock:
+>            minItems: 2
+> +          maxItems: 2
+>          clock-names:
+>            items:
+>              - const: dma
+> @@ -151,6 +154,25 @@ allOf:
+>          dma-channels:
+>            const: 32
+>  
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: fsl,imx8ulp-edma
+> +    then:
+> +      properties:
+> +        clock:
 
-I think so too and the latter is not expected to run.
+clocks
 
->   rtsx_pci_remove()
->   {
->     pm_runtime_get_sync()
->     pm_runtime_forbid()
->     ...
->
-> If this is an rtsx bug, what exactly should be added to
-> rtsx_pci_remove()?
->
-> Is there ever a case where we want any runtime PM work to happen
-> during or after a driver .remove()?  If not, maybe the driver core
-> should prevent that, which I think is basically what this patch does.
+> +          maxItems: 33
 
-No, it is not, because it doesn't actually prevent the race from
-occurring, it just narrows the window quite a bit.
+That is already the max. I think you want 'minItems: 33' here.
 
-It would be better to call pm_runtime_dont_use_autosuspend() instead
-of pm_runtime_barrier().
+> +        clock-names:
+> +          items:
+> +            - const: dma
+> +            - pattern: "^CH[0-31]-clk$"
 
-> If this is an rtsx driver bug, I'm concerned there may be many other
-> drivers with a similar issue.  rtsx exercises this path more than most
-> because the device switches between card reader and NVMe SSD using
-> hotplug add/remove based on whether an SD card is inserted (see [1]).
+'-clk' is redundant. [0-31] is not how you do a range of numbers with 
+regex. 
 
-This is a valid concern, so it is mostly a matter of where to disable
-autosuspend.
+This doesn't cover clocks 3-33. Not a great way to express in 
+json-schema, but this should do it:
 
-It may be the driver core in principle, but note that it calls
-->remove() after invoking pm_runtime_put_sync(), so why would it
-disable autosuspend when it allows runtime PM to race with device
-removal in general?
+allOf:
+  - items:
+      - const: dma
+  - items:
+      oneOf:
+        - const: dma
+        - pattern: "^ch([0-9]|[1-2][0-9]|[3[01])$"
 
-Another way might be to add a pm_runtime_dont_use_autosuspend() call
-at the beginning of pci_device_remove().
+That doesn't enforce the order of 'chN' entries though. Probably good 
+enough.
 
-Or just remove the optimization in question from rpm_resume() which is
-quite confusing and causes people to make assumptions that lead to
-incorrect behavior in this particular case.
 
-So this (modulo GMail-induced whitespace breakage):
+> +        interrupt-names: false
+> +        interrupts:
+> +          maxItems: 32
 
----
- drivers/base/power/runtime.c |    9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
+minItems
 
-Index: linux-pm/drivers/base/power/runtime.c
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- linux-pm.orig/drivers/base/power/runtime.c
-+++ linux-pm/drivers/base/power/runtime.c
-@@ -782,15 +782,8 @@ static int rpm_resume(struct device *dev
-     if (retval)
-         goto out;
+> +        "#dma-cells":
+> +          const: 3
 
--    /*
--     * Other scheduled or pending requests need to be canceled.  Small
--     * optimization: If an autosuspend timer is running, leave it running
--     * rather than cancelling it now only to restart it again in the near
--     * future.
--     */
-     dev->power.request =3D RPM_REQ_NONE;
--    if (!dev->power.timer_autosuspends)
--        pm_runtime_deactivate_timer(dev);
-+    pm_runtime_deactivate_timer(dev);
+Is what is in each cell defined somewhere? If not, you need a 
+description with those details.
 
-     if (dev->power.runtime_status =3D=3D RPM_ACTIVE) {
-         retval =3D 1;
+Rob
 
