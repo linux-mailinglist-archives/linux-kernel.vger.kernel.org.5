@@ -1,76 +1,77 @@
-Return-Path: <linux-kernel+bounces-90554-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90557-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7AF087010F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:16:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B879870114
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:16:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB02E1C214EF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:16:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 86EA41F21D3E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:16:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5A593D565;
-	Mon,  4 Mar 2024 12:15:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3E713E47A;
+	Mon,  4 Mar 2024 12:15:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Zi02m4mf";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="mzN6kN+A"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="oRLSZpbC";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="2ppw8y05"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CED533C48C;
-	Mon,  4 Mar 2024 12:15:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7C923D3A4;
+	Mon,  4 Mar 2024 12:15:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709554510; cv=none; b=s+VpcC61nRvqN1KCVQgpHLJ0XIiMursgPKE141MdsDfQ/NgYQOLMXIgn94Xn9ZUkUGhX2qKIRpjPwHAAhtVvo7dy3mY/bnSIK3X0BRe7LCpYqcRUaxFcf8N7ubLODJJwo24Lz+tcmxWI+NnQie0adoqXC5JZ0ftqHgOB01jDbCc=
+	t=1709554512; cv=none; b=XLWa6pdahmQjZhV+yCj2xf257nvcjCs1LoLwUS9VSRXH+CDpGCU6W49JKSwZQZsx09DcSY/23FTLWhb/8WrDhSz6itB8VCsrv+aFat3A6QMvKxz6gvwDPGn5g6NQTiYQ4JbwhR/0GvoMvTmjVgL2HsdLPgRl1391Yu8z49zUTiU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709554510; c=relaxed/simple;
-	bh=nhAPL9y2KxO+2jXbqXyN9OL+t4E10NC+M/+MS4tvp7Q=;
+	s=arc-20240116; t=1709554512; c=relaxed/simple;
+	bh=O4YPBXk06Z/LswFItKphIK70oMVrjDQkBBmiAgD6Ytg=;
 	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=ltIQfSy3XD2f23NjoiUHubco9khm47lx2yZZDbu7v8G+nsen1QHqkqhoRhzrMpW6TCe3CCHcKydi70DqeVxZoPCPidHpXpOJ9yqqbHVaETVtjaExm5vAn9wX1Lqdhd1EbOcmx4tfnuUD9uIzINGq3jaJ6eDuGKnSZJo+CT7E9as=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Zi02m4mf; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=mzN6kN+A; arc=none smtp.client-ip=193.142.43.55
+	 Message-ID:Content-Type; b=AcsCL4nw328GionqmVd70dlvsh3qcJQf5LP2nEHuPk4P2kI8JdXYD3rGpN30hLfNtFXkYIfjD1VcWlfN8T69eGrCmC1mjZ4hg8OVuHFxlHLRX70W7bCm0BBDVFa6Di1BehlbNwyNkBRKlIU220K0wGvDMwB7BRQSGF7fXty6yz0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=oRLSZpbC; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=2ppw8y05; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 04 Mar 2024 12:15:06 -0000
+Date: Mon, 04 Mar 2024 12:15:07 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1709554507;
+	s=2020; t=1709554508;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=T4+VQ/SiOTH7NZbdNcIsDTPflajM/nzVAGWxROgwsCA=;
-	b=Zi02m4mfR3fEqnI69bZVjB/RnlXRBuMrmZXck89zHCV3gQQrMJ2vAvVWE0TNqmqnWgpBhJ
-	KouD7JzRrsl4vzRzHAof9j9puaKOv9ekHOrN8tqJXmx9bj+0RTlH9xBpeVzgvpSe46iqQO
-	62LBA/eIrzfH8a664vLHOpZCBIq2OGXwXe/N4GMPe4OrJqFe19v/emBSP68FY01BrTCR+F
-	8zvcfNEUZWCWBwyjh9SXUFt3rG//Zj3NeD2StTbi0WXjhEXHHdGbXNUwEzZs+Bzw4Ewe8v
-	m1NS4KX8nY6QI4clfOn+4DFgAiLPEQuZFwHefBUHVK91AvAoPvUDMTa6NgUo+Q==
+	bh=geDnCpFgvxB2oKuj16bvG/AKad282wxpMr9/+JHwrUs=;
+	b=oRLSZpbCB5QNoPjWYrnk0rPtJeGnZBmnQPIlj2cN64PaNTfLcdCiGPm6H4CXH9Csrfn7yz
+	iSj6FDWAKGQZ+yHbKlq+uenpD6ZOoVFlQKStI0a4kcywgxStbJC1/BoFcz6iXKOI64dzT4
+	AbuBibodT/n+tbyUnIpwmooIR+IRTQd4SOo4kgxRkA0WW4VfQ0L/XF1eRGBOnkq7/Eh2At
+	LhceOOidUDw1jfpI1BK3SsTJPOqqELgRi5QZeeIpnSnwrjpY1Xrwo9wWMTa7MUmtuc0GCs
+	Xhy78PHPR7G0cSE+qxAMHOAAWkEzroEUoszVG30JbIgoteCJxLXSA0qjmH6SOg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1709554507;
+	s=2020e; t=1709554508;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=T4+VQ/SiOTH7NZbdNcIsDTPflajM/nzVAGWxROgwsCA=;
-	b=mzN6kN+AVYshzuTevndgtcSTvJXH2uVH1Wjv7kSE/GxzmDLSw5BopsbrCL7kNMGYMwnwKR
-	b11DNc9cuduoHyDA==
+	bh=geDnCpFgvxB2oKuj16bvG/AKad282wxpMr9/+JHwrUs=;
+	b=2ppw8y05MWorFOd7EMG30tXdeIfn8zEvSZnCKQlTVroWcRXLGmi/H+MfnQ+GMC8OgMcRGm
+	iPotwwRHLnvzCYBg==
 From: "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] smp: Consolidate smp_prepare_boot_cpu()
+Subject: [tip: x86/cleanups] x86/msr: Prepare for including <linux/percpu.h>
+ into <asm/msr.h>
 Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@kernel.org>,
  x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240304005104.567671691@linutronix.de>
-References: <20240304005104.567671691@linutronix.de>
+In-Reply-To: <20240304005104.454678686@linutronix.de>
+References: <20240304005104.454678686@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170955450642.398.11996171883596347966.tip-bot2@tip-bot2>
+Message-ID: <170955450788.398.5285179242265335833.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe:
  Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -80,230 +81,229 @@ Content-Transfer-Encoding: 7bit
 
 The following commit has been merged into the x86/cleanups branch of tip:
 
-Commit-ID:     712610725c48c829e42bebfc9908cd92468e2731
-Gitweb:        https://git.kernel.org/tip/712610725c48c829e42bebfc9908cd92468e2731
+Commit-ID:     154fcf3a788868cb87d8c2e50c0b5b3a2fe89853
+Gitweb:        https://git.kernel.org/tip/154fcf3a788868cb87d8c2e50c0b5b3a2fe89853
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Mon, 04 Mar 2024 11:12:22 +01:00
+AuthorDate:    Mon, 04 Mar 2024 11:12:19 +01:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Mon, 04 Mar 2024 12:01:54 +01:00
+CommitterDate: Mon, 04 Mar 2024 12:01:39 +01:00
 
-smp: Consolidate smp_prepare_boot_cpu()
+x86/msr: Prepare for including <linux/percpu.h> into <asm/msr.h>
 
-There is no point in having seven architectures implementing the same empty
-stub.
+To clean up the per CPU insanity of UP which causes sparse to be rightfully
+unhappy and prevents the usage of the generic per CPU accessors on cpu_info
+it is necessary to include <linux/percpu.h> into <asm/msr.h>.
 
-Provide a weak function in the init code and remove the stubs.
+Including <linux/percpu.h> into <asm/msr.h> is impossible because it ends
+up in header dependency hell. The problem is that <asm/processor.h>
+includes <asm/msr.h>. The inclusion of <linux/percpu.h> results in a
+compile fail where the compiler cannot longer handle an include in
+<asm/cpufeature.h> which references boot_cpu_data which is
+defined in <asm/processor.h>.
 
-This also allows to utilize the function on UP which is required to
-sanitize the per CPU handling on X86 UP.
+The only reason why <asm/msr.h> is included in <asm/processor.h> are the
+set/get_debugctlmsr() inlines. They are defined there because <asm/processor.h>
+is such a nice dump ground for everything. In fact they belong obviously
+into <asm/debugreg.h>.
+
+Move them to <asm/debugreg.h> and fix up the resulting damage which is just
+exposing the reliance on random include chains.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20240304005104.567671691@linutronix.de
+Link: https://lore.kernel.org/r/20240304005104.454678686@linutronix.de
 ---
- arch/alpha/kernel/smp.c     |  5 -----
- arch/arc/kernel/smp.c       |  5 -----
- arch/csky/kernel/smp.c      |  4 ----
- arch/hexagon/kernel/smp.c   |  4 ----
- arch/openrisc/kernel/smp.c  |  4 ----
- arch/riscv/kernel/smpboot.c |  4 ----
- arch/sparc/kernel/smp_64.c  |  4 ----
- arch/x86/include/asm/smp.h  |  5 -----
- arch/x86/kernel/smpboot.c   |  5 +++++
- include/linux/smp.h         | 13 ++++++-------
- init/main.c                 |  4 ++++
- 11 files changed, 15 insertions(+), 42 deletions(-)
+ arch/x86/events/intel/core.c         |  1 +
+ arch/x86/events/intel/ds.c           |  1 +
+ arch/x86/include/asm/debugreg.h      | 24 ++++++++++++++++++++++++
+ arch/x86/include/asm/fsgsbase.h      |  2 +-
+ arch/x86/include/asm/processor.h     | 22 ----------------------
+ arch/x86/include/asm/special_insns.h |  4 ++--
+ arch/x86/kernel/cpu/intel_pconfig.c  |  2 ++
+ arch/x86/kernel/cpu/rdrand.c         |  1 +
+ arch/x86/kernel/fpu/bugs.c           |  2 ++
+ arch/x86/kernel/step.c               |  2 ++
+ 10 files changed, 36 insertions(+), 25 deletions(-)
 
-diff --git a/arch/alpha/kernel/smp.c b/arch/alpha/kernel/smp.c
-index 7439b23..8e9dd63 100644
---- a/arch/alpha/kernel/smp.c
-+++ b/arch/alpha/kernel/smp.c
-@@ -467,11 +467,6 @@ smp_prepare_cpus(unsigned int max_cpus)
- 	smp_num_cpus = smp_num_probed;
- }
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index 3804f21..768d141 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -17,6 +17,7 @@
+ #include <linux/kvm_host.h>
  
--void
--smp_prepare_boot_cpu(void)
--{
--}
--
- int
- __cpu_up(unsigned int cpu, struct task_struct *tidle)
- {
-diff --git a/arch/arc/kernel/smp.c b/arch/arc/kernel/smp.c
-index 8d9b188..b2f2c59 100644
---- a/arch/arc/kernel/smp.c
-+++ b/arch/arc/kernel/smp.c
-@@ -39,11 +39,6 @@ struct plat_smp_ops  __weak plat_smp_ops;
- /* XXX: per cpu ? Only needed once in early secondary boot */
- struct task_struct *secondary_idle_tsk;
+ #include <asm/cpufeature.h>
++#include <asm/debugreg.h>
+ #include <asm/hardirq.h>
+ #include <asm/intel-family.h>
+ #include <asm/intel_pt.h>
+diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
+index d49d661..2641ba6 100644
+--- a/arch/x86/events/intel/ds.c
++++ b/arch/x86/events/intel/ds.c
+@@ -5,6 +5,7 @@
+ #include <linux/sched/clock.h>
  
--/* Called from start_kernel */
--void __init smp_prepare_boot_cpu(void)
--{
--}
--
- static int __init arc_get_cpu_map(const char *name, struct cpumask *cpumask)
- {
- 	unsigned long dt_root = of_get_flat_dt_root();
-diff --git a/arch/csky/kernel/smp.c b/arch/csky/kernel/smp.c
-index 8e42352..92dbbf3 100644
---- a/arch/csky/kernel/smp.c
-+++ b/arch/csky/kernel/smp.c
-@@ -152,10 +152,6 @@ void arch_irq_work_raise(void)
+ #include <asm/cpu_entry_area.h>
++#include <asm/debugreg.h>
+ #include <asm/perf_event.h>
+ #include <asm/tlbflush.h>
+ #include <asm/insn.h>
+diff --git a/arch/x86/include/asm/debugreg.h b/arch/x86/include/asm/debugreg.h
+index 0cec92c..fdbbbfe 100644
+--- a/arch/x86/include/asm/debugreg.h
++++ b/arch/x86/include/asm/debugreg.h
+@@ -5,7 +5,9 @@
+ #include <linux/bug.h>
+ #include <linux/percpu.h>
+ #include <uapi/asm/debugreg.h>
++
+ #include <asm/cpufeature.h>
++#include <asm/msr.h>
+ 
+ DECLARE_PER_CPU(unsigned long, cpu_dr7);
+ 
+@@ -159,4 +161,26 @@ static inline unsigned long amd_get_dr_addr_mask(unsigned int dr)
  }
  #endif
  
--void __init smp_prepare_boot_cpu(void)
--{
--}
--
- void __init smp_prepare_cpus(unsigned int max_cpus)
- {
- }
-diff --git a/arch/hexagon/kernel/smp.c b/arch/hexagon/kernel/smp.c
-index 608884b..65e1fdf 100644
---- a/arch/hexagon/kernel/smp.c
-+++ b/arch/hexagon/kernel/smp.c
-@@ -114,10 +114,6 @@ void send_ipi(const struct cpumask *cpumask, enum ipi_message_type msg)
- 	local_irq_restore(flags);
- }
- 
--void __init smp_prepare_boot_cpu(void)
--{
--}
--
- /*
-  * interrupts should already be disabled from the VM
-  * SP should already be correct; need to set THREADINFO_REG
-diff --git a/arch/openrisc/kernel/smp.c b/arch/openrisc/kernel/smp.c
-index 1c5a2d7..86da4bc 100644
---- a/arch/openrisc/kernel/smp.c
-+++ b/arch/openrisc/kernel/smp.c
-@@ -57,10 +57,6 @@ static void boot_secondary(unsigned int cpu, struct task_struct *idle)
- 	spin_unlock(&boot_lock);
- }
- 
--void __init smp_prepare_boot_cpu(void)
--{
--}
--
- void __init smp_init_cpus(void)
- {
- 	struct device_node *cpu;
-diff --git a/arch/riscv/kernel/smpboot.c b/arch/riscv/kernel/smpboot.c
-index 519b6bd..c4ed7d9 100644
---- a/arch/riscv/kernel/smpboot.c
-+++ b/arch/riscv/kernel/smpboot.c
-@@ -42,10 +42,6 @@
- 
- static DECLARE_COMPLETION(cpu_running);
- 
--void __init smp_prepare_boot_cpu(void)
--{
--}
--
- void __init smp_prepare_cpus(unsigned int max_cpus)
- {
- 	int cpuid;
-diff --git a/arch/sparc/kernel/smp_64.c b/arch/sparc/kernel/smp_64.c
-index f3969a3..a0cc9bb 100644
---- a/arch/sparc/kernel/smp_64.c
-+++ b/arch/sparc/kernel/smp_64.c
-@@ -1206,10 +1206,6 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
- {
- }
- 
--void smp_prepare_boot_cpu(void)
--{
--}
--
- void __init smp_setup_processor_id(void)
- {
- 	if (tlb_type == spitfire)
-diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
-index 4fab2ed..31edeab 100644
---- a/arch/x86/include/asm/smp.h
-+++ b/arch/x86/include/asm/smp.h
-@@ -59,11 +59,6 @@ static inline void stop_other_cpus(void)
- 	smp_ops.stop_other_cpus(1);
- }
- 
--static inline void smp_prepare_boot_cpu(void)
--{
--	smp_ops.smp_prepare_boot_cpu();
--}
--
- static inline void smp_prepare_cpus(unsigned int max_cpus)
- {
- 	smp_ops.smp_prepare_cpus(max_cpus);
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index 3f57ce6..980782b 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -1187,6 +1187,11 @@ void __init smp_prepare_cpus_common(void)
- 	set_cpu_sibling_map(0);
- }
- 
-+void __init smp_prepare_boot_cpu(void)
++static inline unsigned long get_debugctlmsr(void)
 +{
-+	smp_ops.smp_prepare_boot_cpu();
++	unsigned long debugctlmsr = 0;
++
++#ifndef CONFIG_X86_DEBUGCTLMSR
++	if (boot_cpu_data.x86 < 6)
++		return 0;
++#endif
++	rdmsrl(MSR_IA32_DEBUGCTLMSR, debugctlmsr);
++
++	return debugctlmsr;
 +}
 +
++static inline void update_debugctlmsr(unsigned long debugctlmsr)
++{
++#ifndef CONFIG_X86_DEBUGCTLMSR
++	if (boot_cpu_data.x86 < 6)
++		return;
++#endif
++	wrmsrl(MSR_IA32_DEBUGCTLMSR, debugctlmsr);
++}
++
+ #endif /* _ASM_X86_DEBUGREG_H */
+diff --git a/arch/x86/include/asm/fsgsbase.h b/arch/x86/include/asm/fsgsbase.h
+index 35cff5f..9e7e8ca 100644
+--- a/arch/x86/include/asm/fsgsbase.h
++++ b/arch/x86/include/asm/fsgsbase.h
+@@ -6,7 +6,7 @@
+ 
  #ifdef CONFIG_X86_64
- /* Establish whether parallel bringup can be supported. */
- bool __init arch_cpuhp_init_parallel_bringup(void)
-diff --git a/include/linux/smp.h b/include/linux/smp.h
-index e87520d..b845929 100644
---- a/include/linux/smp.h
-+++ b/include/linux/smp.h
-@@ -105,6 +105,12 @@ static inline void on_each_cpu_cond(smp_cond_func_t cond_func,
- 	on_each_cpu_cond_mask(cond_func, func, info, wait, cpu_online_mask);
- }
  
-+/*
-+ * Architecture specific boot CPU setup.  Defined as empty weak function in
-+ * init/main.c. Architectures can override it.
-+ */
-+void smp_prepare_boot_cpu(void);
-+
- #ifdef CONFIG_SMP
+-#include <asm/msr-index.h>
++#include <asm/msr.h>
  
- #include <linux/preempt.h>
-@@ -171,12 +177,6 @@ void generic_smp_call_function_single_interrupt(void);
- #define generic_smp_call_function_interrupt \
- 	generic_smp_call_function_single_interrupt
+ /*
+  * Read/write a task's FSBASE or GSBASE. This returns the value that
+diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+index 26620d7..d2ef4f5 100644
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -576,28 +576,6 @@ extern void cpu_init(void);
+ extern void cpu_init_exception_handling(void);
+ extern void cr4_init(void);
  
--/*
-- * Mark the boot cpu "online" so that it can call console drivers in
-- * printk() and can access its per-cpu storage.
-- */
--void smp_prepare_boot_cpu(void);
+-static inline unsigned long get_debugctlmsr(void)
+-{
+-	unsigned long debugctlmsr = 0;
 -
- extern unsigned int setup_max_cpus;
- extern void __init setup_nr_cpu_ids(void);
- extern void __init smp_init(void);
-@@ -203,7 +203,6 @@ static inline void up_smp_call_function(smp_call_func_t func, void *info)
- 			(up_smp_call_function(func, info))
+-#ifndef CONFIG_X86_DEBUGCTLMSR
+-	if (boot_cpu_data.x86 < 6)
+-		return 0;
+-#endif
+-	rdmsrl(MSR_IA32_DEBUGCTLMSR, debugctlmsr);
+-
+-	return debugctlmsr;
+-}
+-
+-static inline void update_debugctlmsr(unsigned long debugctlmsr)
+-{
+-#ifndef CONFIG_X86_DEBUGCTLMSR
+-	if (boot_cpu_data.x86 < 6)
+-		return;
+-#endif
+-	wrmsrl(MSR_IA32_DEBUGCTLMSR, debugctlmsr);
+-}
+-
+ extern void set_task_blockstep(struct task_struct *task, bool on);
  
- static inline void smp_send_reschedule(int cpu) { }
--#define smp_prepare_boot_cpu()			do {} while (0)
- #define smp_call_function_many(mask, func, info, wait) \
- 			(up_smp_call_function(func, info))
- static inline void call_function_init(void) { }
-diff --git a/init/main.c b/init/main.c
-index e24b078..d60bc4b 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -776,6 +776,10 @@ void __init __weak smp_setup_processor_id(void)
- {
- }
+ /* Boot loader type from the setup header: */
+diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
+index 48f8dd4..f13df37 100644
+--- a/arch/x86/include/asm/special_insns.h
++++ b/arch/x86/include/asm/special_insns.h
+@@ -2,11 +2,11 @@
+ #ifndef _ASM_X86_SPECIAL_INSNS_H
+ #define _ASM_X86_SPECIAL_INSNS_H
  
-+void __init __weak smp_prepare_boot_cpu(void)
-+{
-+}
+-
+ #ifdef __KERNEL__
+-
+ #include <asm/nops.h>
+ #include <asm/processor-flags.h>
 +
- # if THREAD_SIZE >= PAGE_SIZE
- void __init __weak thread_stack_cache_init(void)
- {
++#include <linux/errno.h>
+ #include <linux/irqflags.h>
+ #include <linux/jump_label.h>
+ 
+diff --git a/arch/x86/kernel/cpu/intel_pconfig.c b/arch/x86/kernel/cpu/intel_pconfig.c
+index 0771a90..5be2b17 100644
+--- a/arch/x86/kernel/cpu/intel_pconfig.c
++++ b/arch/x86/kernel/cpu/intel_pconfig.c
+@@ -7,6 +7,8 @@
+  * Author:
+  *	Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+  */
++#include <linux/bug.h>
++#include <linux/limits.h>
+ 
+ #include <asm/cpufeature.h>
+ #include <asm/intel_pconfig.h>
+diff --git a/arch/x86/kernel/cpu/rdrand.c b/arch/x86/kernel/cpu/rdrand.c
+index 26a427f..eeac00d 100644
+--- a/arch/x86/kernel/cpu/rdrand.c
++++ b/arch/x86/kernel/cpu/rdrand.c
+@@ -6,6 +6,7 @@
+  * Authors: Fenghua Yu <fenghua.yu@intel.com>,
+  *          H. Peter Anvin <hpa@linux.intel.com>
+  */
++#include <linux/printk.h>
+ 
+ #include <asm/processor.h>
+ #include <asm/archrandom.h>
+diff --git a/arch/x86/kernel/fpu/bugs.c b/arch/x86/kernel/fpu/bugs.c
+index a06b876..edbafc5 100644
+--- a/arch/x86/kernel/fpu/bugs.c
++++ b/arch/x86/kernel/fpu/bugs.c
+@@ -2,6 +2,8 @@
+ /*
+  * x86 FPU bug checks:
+  */
++#include <linux/printk.h>
++
+ #include <asm/cpufeature.h>
+ #include <asm/fpu/api.h>
+ 
+diff --git a/arch/x86/kernel/step.c b/arch/x86/kernel/step.c
+index 8e2b255..3e29526 100644
+--- a/arch/x86/kernel/step.c
++++ b/arch/x86/kernel/step.c
+@@ -6,7 +6,9 @@
+ #include <linux/sched/task_stack.h>
+ #include <linux/mm.h>
+ #include <linux/ptrace.h>
++
+ #include <asm/desc.h>
++#include <asm/debugreg.h>
+ #include <asm/mmu_context.h>
+ 
+ unsigned long convert_ip_to_linear(struct task_struct *child, struct pt_regs *regs)
 
