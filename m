@@ -1,122 +1,140 @@
-Return-Path: <linux-kernel+bounces-90955-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90961-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54E3C870783
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:50:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BE9698707A9
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:52:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EC2B284231
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:50:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7998E28161A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:52:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 425245C5F4;
-	Mon,  4 Mar 2024 16:49:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAAA95CDE1;
+	Mon,  4 Mar 2024 16:51:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="K8oP5Z9E"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Xz6yhItV"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5034959B4F;
-	Mon,  4 Mar 2024 16:49:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 562B3605A5
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 16:51:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709570994; cv=none; b=gYTQLstDx4S40TtFckm0UI6QfvsaNZyg9vTt15URVb1XDD6coxO779EzeUMB2TsII0Jyr2VoXYeCTBzWCwCO3QfN4OpK+h12xc1GHw2t0wWGuBL8ILdkJIxty1JA0Sirvq1YA+3A0TlQpiCyVWCuShrCauDiG8rcPp+7f7aHEVs=
+	t=1709571089; cv=none; b=c90A3KYzJlDTIepC7UUnQyLEB6neal2QTCrPC+3URRGce8VW8rXPlaz6avkhCRx7dqaCdsWxAfRUaLmGljnGbBFoSfcvoNTcRjDs4Sb8RIjwWjAX+9dBE8dGSrUFCk98SMe4zqn6VvDNA3htnJkt8cLjPkW3x6dvRpS9NgfqAI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709570994; c=relaxed/simple;
-	bh=b+8s5dVi6mrt5wOGzTAd9u16HmjZOBeOaZElzRl9yEc=;
-	h=Content-Type:MIME-Version:In-Reply-To:References:Subject:From:Cc:
-	 To:Date:Message-ID; b=H8aXw+sPOTEWG+KsTpGJMNoMw14bunQNUgYGSFNEhN93JkRyNtolfHucwjFUXW3kQWtWlB9c4WoJvJXYn1IkLRPlYnNXZJs/ydkU9GHJ0BYbn1L6HhbbQRlanC/2silt9RlZx7+fMTc/k6fB3AcKlXoG/FXZqjp/Y40YwpgrJZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=K8oP5Z9E; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (aztw-30-b2-v4wan-166917-cust845.vm26.cable.virginm.net [82.37.23.78])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id E43003871;
-	Mon,  4 Mar 2024 17:49:32 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1709570973;
-	bh=b+8s5dVi6mrt5wOGzTAd9u16HmjZOBeOaZElzRl9yEc=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=K8oP5Z9EbVRWPAZKyhAd1M77sg2MAZAaQsKh3VYgkdOMv3h0cv5qUZFnBScekdRT7
-	 Pdn+KpoB9mV61fXZHSy+zSfF7bKrHw0zm+EP6SlNcX/yBPBqqjfmrflcm35sS8SlPe
-	 zURgn290d6sXtDxe8RWUBKQpHOfbjkcAW0ECIut4=
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1709571089; c=relaxed/simple;
+	bh=8YEW8/QYd153IU1YcCsQ5FCqtApBQaAp36ELoAoTGug=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rfEkEPnELTtCMMpDmKdpiqhya0X1pNLo3vtuQwTB/vDAp7QWKpWQrzjprrWOYjCfbSsXE5qEw0VGbBzOZxYZT8IqeLGQn4WHfMjG+KyboHrwJDWcUv6RuQSH/TFNdaJPg9hEzpASVzexZBgDV+eT5rBkXVg5kmPgz/2hxm1/y3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Xz6yhItV; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a4532f84144so171433566b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 08:51:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1709571084; x=1710175884; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xOyMFcdZeiizIIdM2h9cviSaGUWkoYW6H6plPEQ7/JE=;
+        b=Xz6yhItVu+bd1OAN+7W4IPdXqG1psTBThcOsS9BGq2nKTtjGKtg5WzzH41d74Rrgf4
+         KUIk8doq6pwt4t5ZlWE+Qvsvu5NPKYFluovGINCBMnJcJfaZLEV1xWCG03um9qOHt4oO
+         lD96ebXl460RM4ACBsNlXtAgY0EOGG+1BpxoU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709571084; x=1710175884;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xOyMFcdZeiizIIdM2h9cviSaGUWkoYW6H6plPEQ7/JE=;
+        b=ZaRGJW88v3jWC/p7UDxL0XQpzaK7vcnhzR0ACgBp2XjdugjBw6F92xukj12e8Vr/dR
+         jENNS8JY2NLUWIE+AuRWZwgGK9sqnsHw5SUfj+sDBUyEc4VF9Vh4r2SeYf690+Y3MZOE
+         osze2YnQJX7RSIe93j2iNs4El8pGteLxcXcVnPkEfd/xAVyNOTc3ScVBi9UBwZEePxO1
+         /ZEfj9bmegTOs/2lGDXjxWlIXuxb2NfvCiyDuvfN/WScHGRfq9/BEOPuvw1s4spWj6OL
+         H102WIXxn03vjGJMl7Y8ZkjhEz8SR5jkj/JhCjKU53OF8gULQbcX382Ut2C+euUf5GwX
+         VNEA==
+X-Forwarded-Encrypted: i=1; AJvYcCVZT6/OwKPH8H2CUvoq0AuihnJX/qMUbmU7R6QZrHUi2xpTZS+tgVv8IjCEXB17zcMHXzTsZhvCR2TgSm1mqYtuAimlf03js5kUsm9b
+X-Gm-Message-State: AOJu0YwuOe1OznWseTBdRrzpQnWvSGpD6jRiSvemY9cTSLwPyx1qNiMg
+	zfouJbW0LdpefCDOT/cwGV/Y4DaDXD0dC4Y16MQCd9uE8Eiqf/iaXsXhyDCDIiFyICPFZqMCzSv
+	bXClB
+X-Google-Smtp-Source: AGHT+IHXK+XtlwXCl54s51VMYEMUiKbRfQ4zxHBP7JEcAcbRCvuL2sY5IEmmr1VQxe5pTnz2GVA/iw==
+X-Received: by 2002:a17:906:d295:b0:a3e:5589:6099 with SMTP id ay21-20020a170906d29500b00a3e55896099mr6140222ejb.70.1709571083803;
+        Mon, 04 Mar 2024 08:51:23 -0800 (PST)
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com. [209.85.128.46])
+        by smtp.gmail.com with ESMTPSA id sa24-20020a1709076d1800b00a440019ac45sm5033319ejc.69.2024.03.04.08.51.22
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Mar 2024 08:51:22 -0800 (PST)
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-412d84ffbfaso98005e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 08:51:22 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWN4eS1nwxuEc/aHi5eeVJ6C/WjTgEFIxGLjBfFJcFxw6KX4cAJZ7yyrn5rENfh24gBNpnvzT7anF8PcF4XtJkBrLXScwPQvvYljv/G
+X-Received: by 2002:a7b:c417:0:b0:412:dd21:292 with SMTP id
+ k23-20020a7bc417000000b00412dd210292mr263164wmi.0.1709571082557; Mon, 04 Mar
+ 2024 08:51:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240301061128.3145982-1-yangcong5@huaqin.corp-partner.google.com>
+In-Reply-To: <20240301061128.3145982-1-yangcong5@huaqin.corp-partner.google.com>
+From: Doug Anderson <dianders@chromium.org>
+Date: Mon, 4 Mar 2024 08:51:06 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=UP9NxfmT8rqLd-HUq8QwJXa5xO7UbrgYHLw4vOKZO7hA@mail.gmail.com>
+Message-ID: <CAD=FV=UP9NxfmT8rqLd-HUq8QwJXa5xO7UbrgYHLw4vOKZO7hA@mail.gmail.com>
+Subject: Re: [PATCH] drm/panel: boe-tv101wum-nl6: Fine tune Himax83102-j02
+ panel HFP and HBP
+To: Cong Yang <yangcong5@huaqin.corp-partner.google.com>
+Cc: sam@ravnborg.org, neil.armstrong@linaro.org, daniel@ffwll.ch, 
+	hsinyi@chromium.org, swboyd@chromium.org, airlied@gmail.com, 
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20240229165333.227484-7-mike.rudenko@gmail.com>
-References: <20240229165333.227484-1-mike.rudenko@gmail.com> <20240229165333.227484-7-mike.rudenko@gmail.com>
-Subject: Re: [PATCH v3 06/20] media: i2c: ov4689: Refactor ov4689_set_ctrl
-From: Kieran Bingham <kieran.bingham@ideasonboard.com>
-Cc: Sakari Ailus <sakari.ailus@linux.intel.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Jacopo Mondi <jacopo@jmondi.org>, Tommaso Merciai <tomm.merciai@gmail.com>, Christophe JAILLET <christophe.jaillet@wanadoo.fr>, Dave Stevenson <dave.stevenson@raspberrypi.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Mikhail Rudenko <mike.rudenko@gmail.com>
-To: Mikhail Rudenko <mike.rudenko@gmail.com>, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Date: Mon, 04 Mar 2024 16:49:46 +0000
-Message-ID: <170957098683.566498.5256791258269936446@ping.linuxembedded.co.uk>
-User-Agent: alot/0.10
 
-Hi Mikhail,
+Hi,
 
-I love this series. ;-)
-
-Quoting Mikhail Rudenko (2024-02-29 16:53:19)
-> Introduce local variable for regmap within the ov4689_set_ctrl
-> function. This adjustment eliminates repetition within the function.
->=20
-> Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
-
-Reviewed-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
-
-> ---
->  drivers/media/i2c/ov4689.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
->=20
-> diff --git a/drivers/media/i2c/ov4689.c b/drivers/media/i2c/ov4689.c
-> index 56bf1d964e43..1bc00404f3fb 100644
-> --- a/drivers/media/i2c/ov4689.c
-> +++ b/drivers/media/i2c/ov4689.c
-> @@ -580,10 +580,11 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
->  {
->         struct ov4689 *ov4689 =3D
->                 container_of(ctrl->handler, struct ov4689, ctrl_handler);
-> +       struct regmap *regmap =3D ov4689->regmap;
->         struct device *dev =3D ov4689->dev;
->         int sensor_gain;
->         s64 max_expo;
-> -       int ret;
-> +       int ret =3D 0;
-> =20
->         /* Propagate change of current control to all related controls */
->         switch (ctrl->id) {
-> @@ -603,16 +604,15 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
->         switch (ctrl->id) {
->         case V4L2_CID_EXPOSURE:
->                 /* 4 least significant bits of exposure are fractional pa=
-rt */
-> -               ret =3D cci_write(ov4689->regmap, OV4689_REG_EXPOSURE,
-> -                               ctrl->val << 4, NULL);
-> +               cci_write(regmap, OV4689_REG_EXPOSURE, ctrl->val << 4, &r=
-et);
->                 break;
->         case V4L2_CID_ANALOGUE_GAIN:
->                 ret =3D ov4689_map_gain(ov4689, ctrl->val, &sensor_gain);
-> -               cci_write(ov4689->regmap, OV4689_REG_GAIN, sensor_gain, &=
-ret);
-> +               cci_write(regmap, OV4689_REG_GAIN, sensor_gain, &ret);
->                 break;
->         case V4L2_CID_VBLANK:
-> -               ret =3D cci_write(ov4689->regmap, OV4689_REG_VTS,
-> -                               ctrl->val + ov4689->cur_mode->height, NUL=
-L);
-> +               cci_write(regmap, OV4689_REG_VTS,
-> +                         ctrl->val + ov4689->cur_mode->height, &ret);
->                 break;
->         case V4L2_CID_TEST_PATTERN:
->                 ret =3D ov4689_enable_test_pattern(ov4689, ctrl->val);
-> --=20
-> 2.43.0
+On Thu, Feb 29, 2024 at 10:11=E2=80=AFPM Cong Yang
+<yangcong5@huaqin.corp-partner.google.com> wrote:
 >
+> The current measured frame rate is 59.95Hz, which does not meet the
+> requirements of touch-stylus and stylus cannot work normally. After
+> adjustment, the actual measurement is 60.001Hz. Now this panel looks
+> like it's only used by me on the MTK platform, so let's change this
+> set of parameters.
+>
+> Fixes: cea7008190ad ("drm/panel: Fine tune Himax83102-j02 panel HFP and H=
+BP")
+
+Your "Fixes:" tag is not quite right. It needs to have the _exact_
+subject of the old commit message, AKA:
+
+Fixes: cea7008190ad ("drm/panel: boe-tv101wum-nl6: Fine tune
+Himax83102-j02 panel HFP and HBP")
+
+> Signed-off-by: Cong Yang <yangcong5@huaqin.corp-partner.google.com>
+> ---
+>  drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+
+A little odd that the patch you're fixing claimed that it caused the
+measured rate to be 60.01Hz and here you're saying that it ended up
+being 59.95Hz. I guess there was a measurement error when the previous
+patch was posted?
+
+In any case, the argument still holds that this is a panel that still
+appears to be only used by your board, so small tweaks to the numbers
+here seem OK.
+
+Landed to "drm-misc-fixes" after:
+* Adding "(again)" to the end of the subject to make it distinct from
+the previous patch description
+* Fixing your Fixes tag
+
+9dfc46c87cdc drm/panel: boe-tv101wum-nl6: Fine tune Himax83102-j02
+panel HFP and HBP (again)
+
+
+-Doug
 
