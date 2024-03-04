@@ -1,112 +1,158 @@
-Return-Path: <linux-kernel+bounces-90811-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90812-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B600087054B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:21:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94CCE870555
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:22:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D33F1F26650
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:21:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF794B2A409
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:22:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 967E7487AE;
-	Mon,  4 Mar 2024 15:19:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3804F47793;
+	Mon,  4 Mar 2024 15:22:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MA+XVt8b"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lnqT6sH8"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1A1E14ABC;
-	Mon,  4 Mar 2024 15:19:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78C6214ABC;
+	Mon,  4 Mar 2024 15:22:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709565546; cv=none; b=mD6ycauGWBuvBXKpbfpL6dcPFSA6PiUNaOT8S1TowAxx6Typ/T3jkcLoq8XqBjnLO89N7zH6n7flR+uVQYfZ3kwnvFNdx/yd3HcDpdDisWjFweMDv/w1MSynUTZKFj3RJTc/63YYzUwnyRSs3sUGFhJ6ADdaK3+pO86c7xndv1g=
+	t=1709565725; cv=none; b=p12GF/aQcauO8HCQah4cFBuH1d4U2d+nvWWB/Na+c2S7OxyCWTZ8zg788BH28ekYJHZYfeVldvEG+NNv+UoBP2atWg9RMe9FPdivHOfw2Ug3CSBDcj27tiOp2BA0n83odVqLWc7SZfMq6YPduv0i2cMjA0IsQOFQEaFFPaE76G4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709565546; c=relaxed/simple;
-	bh=QR5PaUloC2glE+RawDBmkFXBJ+lOR6RPDaFaRyQRbV0=;
+	s=arc-20240116; t=1709565725; c=relaxed/simple;
+	bh=0J2+33p5a+aTwSIDVi9UTSdR58s5N2JFzwkPJEshxqg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Cy1P5ONKOd0Uxjq2vIngSHKuqB8pZxDT48Hf+gsWGWUxRfIn5jnN0kwIbsOe2di5+mZfzbsXdWzi9YqiiSKruEe1JfhF4ROKHi0QJMh97xAQWBz5qIxxFR+7hA5uAcyd8FSC8hvmpvOWph1umssS9SW9zbBTDFVvRay0ADPxDcc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MA+XVt8b; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A508C433C7;
-	Mon,  4 Mar 2024 15:19:06 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=qr2k6fqFBGdkGm67y8YcQy4q+8vcRQM7Ad9yvPVIT3B0n+nEGUoLL5hwzpQX3LJYmrsER78O4d7M3hYASuPWBAbKL15Kuu6Z8o5LclpWEKM8NUGaWIkCOqirz9cQZXdhDq9FmAiTheUSzsFzWrFgPoFCftRIE00g0D2E0nKhf+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lnqT6sH8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B369BC43390;
+	Mon,  4 Mar 2024 15:22:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709565546;
-	bh=QR5PaUloC2glE+RawDBmkFXBJ+lOR6RPDaFaRyQRbV0=;
+	s=k20201202; t=1709565725;
+	bh=0J2+33p5a+aTwSIDVi9UTSdR58s5N2JFzwkPJEshxqg=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MA+XVt8bw4FeD+KfDJ6Gb8c1VkRZlvxZ95p7aFH1YyRpPYlCDdexNW6rHwG+cLsw4
-	 UWwG/OwbkC4K4xFL7eylA0Jyg9tdoN4OvrJL0z6GUncK5M4fAbR5picEBJvwWmKA8F
-	 fvQedPfnkSU6GKqp0QgBgH+S+ecLFl0GexCrnWRC/Hb2rgGtZLQWVp8/oVs9U9wtnM
-	 5Jq/sCf4hW8H36C/0LXkMU7ZPOEP3sqiC7vIXuDz1MtdatmCDhEegbFA98U8GAIFaL
-	 Bu1RZ7QpF7g/2ur3CH1cDYligyLpg+9/HoUXdCkCdW1uo0gT+0dX5JRjzbnmLxEwv+
-	 LKqmHv4f64bEQ==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rhA5y-000000001Jq-1OB2;
-	Mon, 04 Mar 2024 16:19:14 +0100
-Date: Mon, 4 Mar 2024 16:19:14 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Qingliang Li <qingliang.li@mediatek.com>
-Cc: "Rafael J . Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-	Len Brown <len.brown@intel.com>,
+	b=lnqT6sH8hlYUxWnS009nN43I4h1roAfI3QqtNzSaeKc0aQREiBEU0baxR6Cjb6BCq
+	 mpPg/87hpW9dSsv/jqlRQ+16BVc5EjxFoOCxuASQEP3NNaL6zipSVTFZe9KnGiZD1C
+	 AuHHzzeCdQ0A71A9C8pXfCdoGsHYLKpjJJtzitdBu7TmCiVLhBJa95LmSLiY6e7SLv
+	 U4FgjUWoZZbW46eDVTmIZofPtcsbScWWbXuA4z4szoQxuzW6ePvNC32MFyNDN2kBVq
+	 cF9xhqKEeArjTP+o2Ot5YudXjWJXsjdNyklTwTt91MRO0vKsMyKvhbjDvzMzrP7e7x
+	 hzAP4ZwuT8urg==
+Date: Mon, 4 Mar 2024 09:22:02 -0600
+From: Rob Herring <robh@kernel.org>
+To: Nuno =?iso-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+Cc: Herve Codina <herve.codina@bootlin.com>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Tony Lindgren <tony@atomide.com>, linux-pm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, Dhruva Gole <d-gole@ti.com>
-Subject: Re: [PATCH v2] PM: sleep: wakeirq: fix wake irq warning in system
- suspend
-Message-ID: <ZeXmcl4ngEm1RccW@hovoldconsulting.com>
-References: <20240301092657.15528-1-qingliang.li@mediatek.com>
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Frank Rowand <frowand.list@gmail.com>,
+	Lizhi Hou <lizhi.hou@amd.com>, Max Zhen <max.zhen@amd.com>,
+	Sonal Santan <sonal.santan@amd.com>,
+	Stefano Stabellini <stefano.stabellini@xilinx.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+	Allan Nielsen <allan.nielsen@microchip.com>,
+	Horatiu Vultur <horatiu.vultur@microchip.com>,
+	Steen Hegelund <steen.hegelund@microchip.com>,
+	Luca Ceresoli <luca.ceresoli@bootlin.com>,
+	Nuno Sa <nuno.sa@analog.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	stable@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] of: overlay: Synchronize of_overlay_remove() with
+ the devlink removals
+Message-ID: <20240304152202.GA222088-robh@kernel.org>
+References: <20240229105204.720717-1-herve.codina@bootlin.com>
+ <20240229105204.720717-3-herve.codina@bootlin.com>
+ <acb69aa8c1a4c4e9849123ef538b9646a71507a0.camel@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20240301092657.15528-1-qingliang.li@mediatek.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <acb69aa8c1a4c4e9849123ef538b9646a71507a0.camel@gmail.com>
 
-On Fri, Mar 01, 2024 at 05:26:57PM +0800, Qingliang Li wrote:
-> When driver uses pm_runtime_force_suspend() as the system suspend callback
-> function and registers the wake irq with reverse enable ordering, the wake
-> irq will be re-enabled when entering system suspend, triggering an
-> 'Unbalanced enable for IRQ xxx' warning. In this scenario, the call
-> sequence during system suspend is as follows:
->   suspend_devices_and_enter()
->     -> dpm_suspend_start()
->       -> dpm_run_callback()
->         -> pm_runtime_force_suspend()
->           -> dev_pm_enable_wake_irq_check()
->           -> dev_pm_enable_wake_irq_complete()
+On Thu, Feb 29, 2024 at 12:18:49PM +0100, Nuno Sá wrote:
+> On Thu, 2024-02-29 at 11:52 +0100, Herve Codina wrote:
+> > In the following sequence:
+> >   1) of_platform_depopulate()
+> >   2) of_overlay_remove()
+> > 
+> > During the step 1, devices are destroyed and devlinks are removed.
+> > During the step 2, OF nodes are destroyed but
+> > __of_changeset_entry_destroy() can raise warnings related to missing
+> > of_node_put():
+> >   ERROR: memory leak, expected refcount 1 instead of 2 ...
+> > 
+> > Indeed, during the devlink removals performed at step 1, the removal
+> > itself releasing the device (and the attached of_node) is done by a job
+> > queued in a workqueue and so, it is done asynchronously with respect to
+> > function calls.
+> > When the warning is present, of_node_put() will be called but wrongly
+> > too late from the workqueue job.
+> > 
+> > In order to be sure that any ongoing devlink removals are done before
+> > the of_node destruction, synchronize the of_overlay_remove() with the
+> > devlink removals.
+> > 
+> > Fixes: 80dd33cf72d1 ("drivers: base: Fix device link removal")
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> > ---
+> >  drivers/of/overlay.c | 10 +++++++++-
+> >  1 file changed, 9 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/of/overlay.c b/drivers/of/overlay.c
+> > index 2ae7e9d24a64..7a010a62b9d8 100644
+> > --- a/drivers/of/overlay.c
+> > +++ b/drivers/of/overlay.c
+> > @@ -8,6 +8,7 @@
+> >  
+> >  #define pr_fmt(fmt)	"OF: overlay: " fmt
+> >  
+> > +#include <linux/device.h>
 > 
->     -> suspend_enter()
->       -> dpm_suspend_noirq()
->         -> device_wakeup_arm_wake_irqs()
->           -> dev_pm_arm_wake_irq()
+> This is clearly up to the DT maintainers to decide but, IMHO, I would very much
+> prefer to see fwnode.h included in here rather than directly device.h (so yeah,
+> renaming the function to fwnode_*).
+
+IMO, the DT code should know almost nothing about fwnode because that's 
+the layer above it. But then overlay stuff is kind of a layer above the 
+core DT code too.
+
+> But yeah, I might be biased by own series :)
 > 
-> To fix this issue, complete the setting of WAKE_IRQ_DEDICATED_ENABLED flag
-> in dev_pm_enable_wake_irq_complete() to avoid redundant irq enablement.
+> >  #include <linux/kernel.h>
+> >  #include <linux/module.h>
+> >  #include <linux/of.h>
+> > @@ -853,6 +854,14 @@ static void free_overlay_changeset(struct
+> > overlay_changeset *ovcs)
+> >  {
+> >  	int i;
+> >  
+> > +	/*
+> > +	 * Wait for any ongoing device link removals before removing some of
+> > +	 * nodes. Drop the global lock while waiting
+> > +	 */
+> > +	mutex_unlock(&of_mutex);
+> > +	device_link_wait_removal();
+> > +	mutex_lock(&of_mutex);
 > 
-> Reviewed-by: Dhruva Gole <d-gole@ti.com>
-> Signed-off-by: Qingliang Li <qingliang.li@mediatek.com>
+> I'm still not convinced we need to drop the lock. What happens if someone else
+> grabs the lock while we are in device_link_wait_removal()? Can we guarantee that
+> we can't screw things badly?
 
-Thanks for the fix. Looks correct to me:
+It is also just ugly because it's the callers of 
+free_overlay_changeset() that hold the lock and now we're releasing it 
+behind their back.
 
-Reviewed-by: Johan Hovold <johan+linaro@kernel.org>
+As device_link_wait_removal() is called before we touch anything, can't 
+it be called before we take the lock? And do we need to call it if 
+applying the overlay fails?
 
-I think you should add back the Fixes tag from v1 and CC stable as well:
-
-Fixes: 8527beb12087 ("PM: sleep: wakeirq: fix wake irq arming")
-Cc: stable@vger.kernel.org      # 5.16
-
-Note that WAKE_IRQ_DEDICATED_REVERSE was added in 5.16 by commit
-259714100d98 ("PM / wakeirq: support enabling wake-up irq after
-runtime_suspend called") so no need to try to backport any further than
-that.
-
-Johan
+Rob
 
