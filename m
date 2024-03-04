@@ -1,137 +1,109 @@
-Return-Path: <linux-kernel+bounces-90748-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90750-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87968870462
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:40:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9A84870466
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:41:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3AA931F213C2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:40:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB6391C23551
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:41:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DB794AEF6;
-	Mon,  4 Mar 2024 14:39:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74E1E41775;
+	Mon,  4 Mar 2024 14:39:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="glZ7W4vr"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="jmj4UvLe"
+Received: from bee.tesarici.cz (unknown [77.93.223.253])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F00F495E5;
-	Mon,  4 Mar 2024 14:39:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11C2F4087F
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 14:39:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.93.223.253
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709563163; cv=none; b=qFYx+0COf6J1ZQ4zbbXWZ1uneGOzLLaw/lk6oCslkM+lNScSVb3gPPs986oDrieJoi03N5JR2/IOF3QKqpmxbzQsy4NjLycYSRC9KrE0FxMubgv6klfa1AJUKJEh8fInZwh/fAXu6NGOdTDtdHALD2ZihEfJExF+16iEZeVzCJ8=
+	t=1709563184; cv=none; b=fk6SPbZUfjgOQT2+IDxjQOj3fbWKdZ/QF8c/zvJJTeC8yhhZ3p7LatVXyCQBffJTz8Q+Y3RA7GT+Lbe64jKhx1WB0J4sGTjHULUrZQcfmpNhAySAqptAeimLut2jXeZeX8tQv8xEtVpqjpWtPBnru6DVU9S6Jp76toOapL9t0JQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709563163; c=relaxed/simple;
-	bh=izAXvc7UkjU7STvEMBh35M4iT8s1W0W9zz7tDRGPHzo=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FAlNRRqSXZxrfZJ0e0sDr9hYoErwmuvGBPEP9cYoWQXdonqDOFtbDO7Do1jdeT9l7GUGCz2FJzfwNBLnDBOciiTr8GSqlQtMNs9TuNs15UgNa44eQ/jcs2NKN/K6wD52OVqCvSz5JX2JCsNsf/tOwmBpp7IdljaKJ783dCUszh0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=glZ7W4vr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA9AEC433C7;
-	Mon,  4 Mar 2024 14:39:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709563163;
-	bh=izAXvc7UkjU7STvEMBh35M4iT8s1W0W9zz7tDRGPHzo=;
+	s=arc-20240116; t=1709563184; c=relaxed/simple;
+	bh=OuH4ARsy4uMSskFQxM4nVWSg6cNRuQIZsejNWP30OlM=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=oIK/vk11AECQlF3kGNEXNavRy23hEfOdFJiFI33fXdovcJ31rM8e3rJdaBTnpGnG9+9akW6OuRAhC9g8aalNPan+OzD8ZZ5YC0UhidVTSte1noS8n4DchnQBRPcNJ/GjY2nduLO9ONlMRBluQnjYr3UevqzE94w6w0V5W6/pZ4c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=jmj4UvLe; arc=none smtp.client-ip=77.93.223.253
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
+Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by bee.tesarici.cz (Postfix) with ESMTPSA id C409E1C4BDD;
+	Mon,  4 Mar 2024 15:39:39 +0100 (CET)
+Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
+	t=1709563179; bh=DNUUA0JgeJlN4yw9N1RggkXAebOO04FxH/opiGgSGMU=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=glZ7W4vrTQkpbpVmXiwoko4e1UeWuHDoPnBQw0pf+rW2ralwhpahvWWNoPWGWN/HC
-	 KK8H3DuYdZYgEGSL1NzUp9Tcdto2oyGOaTNk6248P1Ycl+REHkHPbmqxOnizE9P3Hk
-	 JSslNvj+PKtkL+hSWE0Z+XYLu87XNAwvIc0nvUHDCn+A9fUpYb2iqVqVKGd1C07eAl
-	 bEsifpEGtV4018VCgDG7gXF453EX/g2QHjnLnpFpEitgfG2TgOpSfpU3sv1/JaGfBO
-	 ttMQWHbgiELj7QQAgxzcKKXdNia1ZAvqb32hS/vWo7LAQmnbOIFKU7ulLoTA0WFUui
-	 s064K+6tTCm0A==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rh9TM-009FjJ-9f;
-	Mon, 04 Mar 2024 14:39:20 +0000
-Date: Mon, 04 Mar 2024 14:39:19 +0000
-Message-ID: <86v86212p4.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Oliver Upton <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Joey Gouly <joey.gouly@arm.com>,
-	linux-arm-kernel@lists.infradead.org,
-	kvmarm@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: arm64: Only save S1PIE registers when dirty
-In-Reply-To: <50c5cdd2-fceb-44c4-aff1-dc98180161a1@sirena.org.uk>
-References: <20240301-kvm-arm64-defer-regs-v1-1-401e3de92e97@kernel.org>
-	<ZeItTLQxdxxICw01@linux.dev>
-	<562f5e62-c26c-41d9-9ab9-aac02c91c7ae@sirena.org.uk>
-	<86zfvh0vy5.wl-maz@kernel.org>
-	<50c5cdd2-fceb-44c4-aff1-dc98180161a1@sirena.org.uk>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	b=jmj4UvLeXwlP5cI6zhn4rcHfzcQAW0evTccxhBZD/Rejx23Y2+HJzE9WUhT6lr8El
+	 5nTLAo3t1GsEzptAULYUw07tCVnr+vY+8MG6mKH25vHoI/kKYEmM34ilqZf/RuhxiV
+	 7D9RvZqtWveVlbvv4nbEzYGJIiDDDkHnhCJk3GoyGVc40hgng9IViTN3B8W6ydJtkI
+	 bgyuJr73NzhCByCwv4GcGuORGEp+CJ8ctycpn3rn0jZTyRKOo2ipaKGYCV7ktaMII4
+	 c/fuYmkgoOHfQ0gwtSBeADekmE3fSDye2AHONrNjG6dzumsdWPphxplxN1+JaWV/v2
+	 l4/EYlFeg6p7g==
+Date: Mon, 4 Mar 2024 15:39:38 +0100
+From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+To: Robin Murphy <robin.murphy@arm.com>
+Cc: joro@8bytes.org, iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+ will@kernel.org, mhklinux@outlook.com, hch@lst.de
+Subject: Re: [PATCH] iommu/dma: Document min_align_mask assumption
+Message-ID: <20240304153938.1fa984b7@meshulam.tesarici.cz>
+In-Reply-To: <dbb4d2d8e5d1691ac9a6c67e9758904e6c447ba5.1709553942.git.robin.murphy@arm.com>
+References: <dbb4d2d8e5d1691ac9a6c67e9758904e6c447ba5.1709553942.git.robin.murphy@arm.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: broonie@kernel.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, joey.gouly@arm.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Transfer-Encoding: 7bit
 
-On Mon, 04 Mar 2024 14:11:19 +0000,
-Mark Brown <broonie@kernel.org> wrote:
+On Mon,  4 Mar 2024 12:05:42 +0000
+Robin Murphy <robin.murphy@arm.com> wrote:
+
+> iommu-dma does not explicitly reference min_align_mask since we already
+> assume that that will be less than or equal to any typical IOVA granule.
+> We wouldn't realistically expect to see the case where it is larger, and
+> that would be non-trivial to support, however for the sake of reasoning
+> (particularly around the interaction with SWIOTLB), let's clearly
+> enforce the assumption.
 > 
-> [1  <text/plain; us-ascii (7bit)>]
-> On Sat, Mar 02, 2024 at 10:28:18AM +0000, Marc Zyngier wrote:
-> > Mark Brown <broonie@kernel.org> wrote:
-> > > On Fri, Mar 01, 2024 at 07:32:28PM +0000, Oliver Upton wrote:
+> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+
+Looks good to me.
+
+Reviewed-by: Petr Tesarik <petr.tesarik1@huawei-partners.com>
+
+Thank you!
+
+Petr T
+
+> ---
+>  drivers/iommu/dma-iommu.c | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
-> > > > The overheads of guest exits are extremely configuration dependent, and
-> > > > on VHE the save/restore of EL1 state happens at vcpu_load() / vcpu_put()
-> > > > rather than every exit. There isn't a whole lot KVM can do to lessen the
-> > > > blow of sharing EL1 in the nVHE configuration.
-> 
-> > > > Looking a bit further out, the cost of traps will be dramatically higher
-> > > > when running as a guest hypervisor, so we'd want to avoid them if
-> > > > possible...
-> 
-> > > Indeed, but OTOH I got some complaints about adding more system register
-> 
-> > Complains from whom? I can't see anything in my inbox, so it my
-> > conclusion that these "issues" are not serious enough to be publicly
-> > mentioned.
-> 
-> This was you saying that adding more registers to be context switched
-> here needed special explanation, rather than just being the default and
-> generally unremarkable place to put context switching of registers for
-> EL0/1.
+> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+> index 50ccc4f1ef81..b58f5a3311c3 100644
+> --- a/drivers/iommu/dma-iommu.c
+> +++ b/drivers/iommu/dma-iommu.c
+> @@ -859,6 +859,11 @@ static dma_addr_t __iommu_dma_map(struct device *dev, phys_addr_t phys,
+>  	    iommu_deferred_attach(dev, domain))
+>  		return DMA_MAPPING_ERROR;
+>  
+> +	/* If anyone ever wants this we'd need support in the IOVA allocator */
+> +	if (dev_WARN_ONCE(dev, dma_get_min_align_mask(dev) > iova_mask(iovad),
+> +	    "Unsupported alignment constraint\n"))
+> +		return DMA_MAPPING_ERROR;
+> +
+>  	size = iova_align(iovad, size + iova_off);
+>  
+>  	iova = iommu_dma_alloc_iova(domain, size, dma_mask, dev);
 
-What I remember saying is that it is wrong to add extra registers to
-the context switch without gating them with the VM configuration.
-Which is a very different thing.
-
-I don't know where you got the idea that I wanted to make this sort of
-things lazy. Quite the contrary, actually. I want to trap things to
-make them UNDEF. And this is exactly how -next now behaves (see
-58627b722ee2).
-
-What I want to see explained in all cases is why a register has to be
-eagerly switched and not deferred to the load/put phases, specially on
-VHE. because that has a very visible impact on the overall performance.
-
-> > If anything, I'm actually minded to remove existing instances of this
-> > stupid trapping, such as PAuth, which is entirely pointless.
-> 
-> That one was part of why it appeared that this sort of thing was what
-> you were asking for.
-
-No, really not.
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
 
