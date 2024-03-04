@@ -1,101 +1,143 @@
-Return-Path: <linux-kernel+bounces-91005-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90986-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71F97870857
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:34:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A481787080B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:09:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1160B1F2134A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:34:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 328DB1F22C43
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:09:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52F21612E9;
-	Mon,  4 Mar 2024 17:34:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87B4260277;
+	Mon,  4 Mar 2024 17:09:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="KVJbzvVt"
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="soX6GgBT"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 073D81E484;
-	Mon,  4 Mar 2024 17:34:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2A6F39AF1;
+	Mon,  4 Mar 2024 17:09:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709573674; cv=none; b=g9nrit9xTfD6gMxEWXAP69QhC9LABi9E2PSM4cyBhCIGSbMKgpTYSenO9UUBGojQGUGJDfnTISdOTYos5wWgfAKD3Ltc7zzpry+r6PT1tA9yfV6yQQO8gbhpk2HwDpUFBaErjZMrhtRfKJZQWZlERsD3fzDt/E752k40DfOxt8o=
+	t=1709572174; cv=none; b=Nq8DVVcMR/dD1o5V3HMG3z6oKSW7RvzhEfdD/sbqHKSHfDd2vHvpMVc0E/n4AEf7wvXM4O/m9abygI6HJia4Tp8RTfFs/esWkJuYKZcRTsKy2PJcQDZ8xekCe8FoqZeioPJ/TwzpXbuOHF/zsTTKqBPgKR6AbY/xLglnE2hha2g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709573674; c=relaxed/simple;
-	bh=TUFC2oXSkwh1q+EPlqWlIYwORwjSCpCR0ZK+J1sWVDg=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ckVAg4+MUeQnDADjgfGBurcyj7sCG7zDQHeWnWV15N+x03gSx3Wd+jeOlYBuDEJb5aECeJLgwq005Qyb7L61gsqKZ4+NyXPZNkU8yj/EdXfQENMIpaQmKwP9F6NyPhpgveeI5ElPxFtLslMFgg14Yg4mRlTbf4Bv2KSp4vh6Q64=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=KVJbzvVt; arc=none smtp.client-ip=67.231.149.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 424H03rG023294;
-	Mon, 4 Mar 2024 11:08:58 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:content-transfer-encoding:in-reply-to; s=
-	PODMain02222019; bh=UmgdeD3y5bH8MTO7d9mjBfyE5hjIg3x+2bIjgp9F6A8=; b=
-	KVJbzvVtmtnT9Mz7C9idMb6aC/rJgH7jReMf23cfoKrPMhio0HJbfUcSlLc3c35o
-	16hGfV3YAurNHMZ5mCzS3kc7vt45xkDMs+TtQm2RmKPNFZSoAf3XqhcyT6+HtmVc
-	bGMeF2e+9OphoBDETNJOsMjTmvP6JXoJI8KxUg5T8ylZ2NCD/APavn1X3Icdy2oY
-	EiQ/phA0mtqdA/nHzMXHa7IKUiIPtQtXP3gKlNlXunYlwB1akH/r6FE9sU6tKhN2
-	It2olIOVuh+XmUq2LcCCG+tthL9DL/6UfAc03lUdhYNvcjZHKwCA86rHC6uAtMm3
-	Ch1+utbxVgn5UGNEWgEljQ==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3wm2d2j4uw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 04 Mar 2024 11:08:57 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Mon, 4 Mar 2024
- 17:08:55 +0000
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1544.4 via Frontend Transport; Mon, 4 Mar 2024 17:08:55 +0000
-Received: from ediswmail9.ad.cirrus.com (ediswmail9.ad.cirrus.com [198.61.86.93])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTPS id B6E48820241;
-	Mon,  4 Mar 2024 17:08:55 +0000 (UTC)
-Date: Mon, 4 Mar 2024 17:08:54 +0000
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-CC: <linus.walleij@linaro.org>, <linux-gpio@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
-Subject: Re: [PATCH] gpio: swnode: Don't use __free() on result of
- swnode_get_gpio_device()
-Message-ID: <ZeYAJkHwPImooI9S@ediswmail9.ad.cirrus.com>
-References: <20240304160320.1054811-1-ckeepax@opensource.cirrus.com>
- <CAMRc=MfAZC8yGXXYrCLeSxonOwozgxRdPC4h=aVgCMSkA7O_dA@mail.gmail.com>
+	s=arc-20240116; t=1709572174; c=relaxed/simple;
+	bh=tfmse9oyNlqgI6AiSd09oH+NFlRIxN1x6Z2RuuIvkJs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ge0QC0LPJuSuz77yGJ3ApokEkym+WzFqyW45Zw7sXcOGc6bMvl7fGTPLI5o4L2XbYiU+sxyGfxx694FAWUnKJ8nZ870CAta8TkghjPIN+zq0DWwDRIZDoJF34QCExPm3iWSID49ZDK0SKelgIN614RA+AGIAqUIFUieu3zu2a0g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=soX6GgBT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40226C43394;
+	Mon,  4 Mar 2024 17:09:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709572174;
+	bh=tfmse9oyNlqgI6AiSd09oH+NFlRIxN1x6Z2RuuIvkJs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=soX6GgBTFRn0lOQXRrK5UP+eWYLdnSfFrX3QatoCn7QWM7mdc/yW6Ut+6YLGvcclh
+	 j9i3rcu07+okBT+LA+7buYESrjxWgumdkSNx2cZfqD09nUJ/mvQET8gZxFj8Q+fSk+
+	 Jk+OYius5IXzHXACJ4oBiBlL4MFb6pcMcKe7aonL43HXQ7eAtQjO/PheqtLRLczcZc
+	 toH5tJ/+5bd559zsD5CWr3lRBW4sEoWj18n90DTdVLRAqXHQ00meZEMTs7REVtOjaA
+	 EB9dH+DjpB8WLpDpP1b2K0h6U7N5gOK+Dl6pZlsJMWBXZLCTsdQa0jviFzcOoujuYQ
+	 KxzCxAaIo2UoQ==
+Date: Mon, 4 Mar 2024 17:09:29 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Marc Zyngier <maz@kernel.org>
+Cc: Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Joey Gouly <joey.gouly@arm.com>,
+	linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: arm64: Only save S1PIE registers when dirty
+Message-ID: <dfae9e6e-080b-4724-a660-39febc7ab1b9@sirena.org.uk>
+References: <20240301-kvm-arm64-defer-regs-v1-1-401e3de92e97@kernel.org>
+ <ZeItTLQxdxxICw01@linux.dev>
+ <562f5e62-c26c-41d9-9ab9-aac02c91c7ae@sirena.org.uk>
+ <86zfvh0vy5.wl-maz@kernel.org>
+ <50c5cdd2-fceb-44c4-aff1-dc98180161a1@sirena.org.uk>
+ <86v86212p4.wl-maz@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="Rwhc8ntAFC1zcQn8"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=MfAZC8yGXXYrCLeSxonOwozgxRdPC4h=aVgCMSkA7O_dA@mail.gmail.com>
-X-Proofpoint-ORIG-GUID: o8tyN_KVLbO71e-kPl2lMRBj3NUNHT8H
-X-Proofpoint-GUID: o8tyN_KVLbO71e-kPl2lMRBj3NUNHT8H
-X-Proofpoint-Spam-Reason: safe
+In-Reply-To: <86v86212p4.wl-maz@kernel.org>
+X-Cookie: He who hesitates is last.
 
-On Mon, Mar 04, 2024 at 05:34:27PM +0100, Bartosz Golaszewski wrote:
-> On Mon, Mar 4, 2024 at 5:03 PM Charles Keepax
-> <ckeepax@opensource.cirrus.com> wrote:
-> >
-> > swnode_get_gpio_device() can return an error pointer, however
-> > gpio_device_put() is not able to accept error values. Thus using
-> > __free() will result in dereferencing an invalid pointer.
-> >
-> 
-> Can you post the steps to reproduce this? Because it should work[1].
 
-Hmm... yeah that does look like it should work, I have had the
-patch sitting in my tree for a little while, let me double check
-and I will come back/resend if it is actually still needed.
+--Rwhc8ntAFC1zcQn8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-Charles
+On Mon, Mar 04, 2024 at 02:39:19PM +0000, Marc Zyngier wrote:
+> Mark Brown <broonie@kernel.org> wrote:
+> > On Sat, Mar 02, 2024 at 10:28:18AM +0000, Marc Zyngier wrote:
+
+> > > Complains from whom? I can't see anything in my inbox, so it my
+> > > conclusion that these "issues" are not serious enough to be publicly
+> > > mentioned.
+
+> > This was you saying that adding more registers to be context switched
+> > here needed special explanation, rather than just being the default and
+> > generally unremarkable place to put context switching of registers for
+> > EL0/1.
+
+> What I remember saying is that it is wrong to add extra registers to
+> the context switch without gating them with the VM configuration.
+> Which is a very different thing.
+
+You said both things separately.  This is specifically addressing your
+comment:
+
+| For the benefit of the unsuspecting reviewers, and in the absence of a
+| public specification (which the XML drop isn't), it would be good to
+| have the commit message explaining the rationale of what gets saved
+| when.
+
+which did not seem obviously tied to your separate comments about using
+your at the time still in flight patches to add support for parsing
+features out of the ID registers, it seemed like a separate concern.
+
+> What I want to see explained in all cases is why a register has to be
+> eagerly switched and not deferred to the load/put phases, specially on
+> VHE. because that has a very visible impact on the overall performance.
+
+I'm confused here, the specific register save/restores that you were
+asking for an explanation of are as far as I can tell switched in
+load/put (eg, the specific complaint was attached to loads in
+__sysreg_restore_el1_state() which for VHE is called from=20
+
+	__vcpu_load_switch_sysregs()
+	kvm_vcpu_load_vhe()
+	kvm_arch_vcpu_load()
+
+which is to my understanding part of the load/put phase).  This should
+be true for all the GCS registers, the explanation would be something
+along the lines of "these are completely unremarkable EL0/1 registers
+and are switched in the default place where we switch all the other
+EL0/1 registers".
+
+--Rwhc8ntAFC1zcQn8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXmAEgACgkQJNaLcl1U
+h9BJnQf9GzikoCtIUvJKBD40CKqUtV+C7nWo/dWWawV9xkNjDtFlpXhMxVi5UlDL
+6UnXNkN0QsYZK5DLUDzp3BH0G4eQifz6OLz4E59kyDsh05xGBPnfe4ypOSL6/SxH
+hfvk4bqe55sqkaxu0adUhQtNVUylPWzmcdNllm5blLz8et2KbEnCo7PCjjC9XJ5/
+bSpl+1SDgWhPslAblxLJtSwId8uJrM0I+u1QLQ5ogR9Mb/op9K2/6yLNmRSTPd/6
+dmcrgYD7xm0c26XU371QR/YN23HfBe8BeCWr2le79ixv+UA4Lf/ounlQhHutdX3m
+5RQ6vtPIHfESdaSFXm2PRfDym54b/g==
+=u/Yn
+-----END PGP SIGNATURE-----
+
+--Rwhc8ntAFC1zcQn8--
 
