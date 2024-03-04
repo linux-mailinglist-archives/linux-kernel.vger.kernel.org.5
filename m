@@ -1,267 +1,139 @@
-Return-Path: <linux-kernel+bounces-91081-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91082-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1209387095A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:18:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EA3987095C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:19:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36EA91C218A8
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:18:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE7BA1F21A7C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:19:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28DAC626BF;
-	Mon,  4 Mar 2024 18:18:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28B9E62176;
+	Mon,  4 Mar 2024 18:19:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jcUGxUTM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="J8lvZYbL"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4480160265;
-	Mon,  4 Mar 2024 18:18:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0E9C6025E
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 18:18:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709576281; cv=none; b=WHm6bU5Sx57yoWAnEaq/WiPGIKNP0mx7R8tlTRPr5wiRkHApPuOZsWLLnIhK03/EPZN40BwoDsQNJuHgEZ3iPivkUIUPq3YbKQluQwWQ87S5Muka02PBRi6/t61i1ZMOFykG5mf+F7Eykj+D+6A0diYQ+lR7+z0ytG+D2lwvf1s=
+	t=1709576341; cv=none; b=tW1slpoKWGDOD8ETLtolQHC5EIeaBd/gz/ur4bbzmuzikG88tNUyfaxWqLm/syYNm8inuSC/Fivr2HDTZCXfLDEwO6VUzffjrp9K0u8MT8T/pCPrNe4cpQN6Qb7d90WbyDp0meyTarU1XxF8/FWySd5wui8nWVqcID5nrpb9pWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709576281; c=relaxed/simple;
-	bh=MhVj6rlBDtv//G52D2MyGutBUo2/1sAyxm3U50UUn30=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dvgaD6iqmZNbEvsXzhEEkLB9IxDvQ7nE8c1YUMNOWLlR5t463NMpnr4Nqb2qKIGwEuR64fn5WJHfpfKG1yQgz4XoeNwfcg/sam435Xfuv/rf4wyu1DGFgjwbZjh3UeYVu62XR55geSxaaipDh9zV8/Ag8JAYjILeZkTLxieXuu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jcUGxUTM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC2F3C433F1;
-	Mon,  4 Mar 2024 18:18:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709576281;
-	bh=MhVj6rlBDtv//G52D2MyGutBUo2/1sAyxm3U50UUn30=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jcUGxUTMLrXoBlVWwpFwR2ePes5uBfgyy+Rb/TuNqh58LT77DJlq4X+AxNS+tn8Zh
-	 gwhQXT5Lree2PNi5NHpENFpCK9KVdJrN3IXTGJ0LDF3G/nH4WFNJ7x0uB2rPTj69uz
-	 xAcjEmYKnSuPqUVmBnb+q/l1wak3BTuxE4HkOHNJUcpmDizN2ezYC4VozhxnrfeNzR
-	 V79/t4BCUW9wq576a9jq8CYmlvrlDjyw81et1/iHY8aLLIjqL8V03OycFd5g2rAcMr
-	 X6aoJsIs1Iq+Pybu57C7GZA87n8VIzAciGeKsuk2Xs5f6SqUXET9HONdYkcI14657L
-	 7xGDHB4z+VfkA==
-Date: Mon, 4 Mar 2024 12:17:58 -0600
-From: Rob Herring <robh@kernel.org>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: conor@kernel.org, bhelgaas@google.com, conor+dt@kernel.org,
-	devicetree@vger.kernel.org, helgaas@kernel.org, imx@lists.linux.dev,
-	krzysztof.kozlowski+dt@linaro.org, kw@linux.com,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	lpieralisi@kernel.org
-Subject: Re: [PATCH v6 2/3] dt-bindings: pci: layerscape-pci: Add
- snps,dw-pcie.yaml reference
-Message-ID: <20240304181758.GA803086-robh@kernel.org>
-References: <20240301162741.765524-1-Frank.Li@nxp.com>
- <20240301162741.765524-3-Frank.Li@nxp.com>
+	s=arc-20240116; t=1709576341; c=relaxed/simple;
+	bh=cGGgIIC1RWpsDz3r3XZ6uBQqBn17EQ6Fh5wygcHaQX4=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=Z2fBkGUKE/lkHt0sj5WxhFPcX53llR9wUXUoqmonKAS2gxXve8KXq0WY3i6bb53kkG2u/L+ilTIFtzeFLYNwe8KuoLh5MT7HN/Gl/KxsfCK/6vFDhSTC2snD0HwH9kbFZdTgo1iMu2xd0RTULu6TKLEUvyG7amfcls0n0uR4DYo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=J8lvZYbL; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 0992140E019B;
+	Mon,  4 Mar 2024 18:18:55 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id zo9VhH_4nHBM; Mon,  4 Mar 2024 18:18:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1709576332; bh=qbrWRZTEhU68qFmwLeTyfQWef1FZlIa4wlRRoa1qAjo=;
+	h=Date:From:To:Cc:Subject:From;
+	b=J8lvZYbLh80zcgP2XUyHIeilCIXluI4UAslattC+g6TtnQYB4829jHWWlTndoEwt1
+	 g3CAtiJsWvS+Zcpo53d7gdrGKSFwWKo5FaFhsQiYTRghH/9udIf1CgDvuOl901Cb28
+	 THFbyMwDOGYWCbRAKcwriiTIG27BMBNuAU9prhTHe2WB1ymjZi4pOtZB2eo81VuUjW
+	 sd65TPwGIUUKeOnkAtNx1WqWWSnl2iGWzJGTRgFeul78b6bxTsyaALxtfZ/JZ+GFQH
+	 0gss+nKWx+Am0xOMhMr9QuVxkc+U47/mCCwxiEI7rzmMBRNGeupiKR4LbtaSA4w81m
+	 UrFiTdxYcgr2INfyhgylm463fap4SJXHdx8MltyzufaxVc4HRFCBpcmYb5L6dNudxz
+	 tFKJvINSPp053XmqXeb0ZwpruwTPS/jSjbcJarsGUyzXt65/ekv85LqMrxKN5AA/TW
+	 xtmHCy5ekeqcTUK4eSHJbr/nsau+Fic28P3Cky4/fSkisxMk2bKlG5ctyzyX5I6bim
+	 5BZSDKTSSPFiB2odsNhe3ic1ln8xGPfZNWhSrQYsnbo+lcqi39e2zuO7bQePZxEmZ6
+	 gMRrHgFfsrqk5/2PV4R8JAIR8tP7+3gmArbJAqTc4Bk+rXAwzUs8I204I7IHj+Jcwx
+	 gUV0n62vn5s/hOUvH/1Bf8W0=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 949F140E0196;
+	Mon,  4 Mar 2024 18:18:46 +0000 (UTC)
+Date: Mon, 4 Mar 2024 19:18:41 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: x86-ml <x86@kernel.org>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Alexander Antonov <alexander.antonov@linux.intel.com>,
+	lkml <linux-kernel@vger.kernel.org>
+Subject: unchecked MSR access error: WRMSR to 0xd84 (tried to write
+ 0x0000000000010003) at rIP: 0xffffffffa025a1b8
+ (snbep_uncore_msr_init_box+0x38/0x60 [intel_uncore])
+Message-ID: <20240304181841.GCZeYQgbZk6fdntg-X@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240301162741.765524-3-Frank.Li@nxp.com>
 
-On Fri, Mar 01, 2024 at 11:27:40AM -0500, Frank Li wrote:
-> Add snps,dw-pcie.yaml reference. Clean up all context that already exist in
-> snps,dw-pcie.yaml. Update interrupt-names requirement for difference
-> compatible string.
-> 
-> Set 'unevaluatedProperties' back to 'false'.
-> 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
->  .../bindings/pci/fsl,layerscape-pcie.yaml     | 104 +++++++++++++-----
->  1 file changed, 78 insertions(+), 26 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie.yaml b/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie.yaml
-> index 3f2d058701d22..137cc17933a4b 100644
-> --- a/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie.yaml
-> +++ b/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie.yaml
-> @@ -11,7 +11,6 @@ maintainers:
->  
->  description:
->    This PCIe RC controller is based on the Synopsys DesignWare PCIe IP
-> -  and thus inherits all the common properties defined in snps,dw-pcie.yaml.
->  
->    This controller derives its clocks from the Reset Configuration Word (RCW)
->    which is used to describe the PLL settings at the time of chip-reset.
-> @@ -36,31 +35,18 @@ properties:
->        - fsl,lx2160a-pcie
->  
->    reg:
-> -    description: base addresses and lengths of the PCIe controller register blocks.
-> +    maxItems: 2
-> +
-> +  reg-names:
-> +    maxItems: 2
+Hi all,
 
-Need to define what the entries are. You change 'regs' to 'dbi' in the 
-example. Was that an error in the example or are you planning on 
-changing it in dts files? Besides the latter being an ABI change, I 
-don't think you want to change dts files for platforms which are pretty 
-stable.
+sending this to a bunch of people who have touched this function
+recently and some more relevant Intel folks.
 
->    interrupts:
-> -    description: A list of interrupt outputs of the controller. Must contain an
-> -      entry for each entry in the interrupt-names property.
-> +    minItems: 1
-> +    maxItems: 3
->  
->    interrupt-names:
->      minItems: 1
->      maxItems: 3
-> -    description: It could include the following entries.
-> -    items:
-> -      oneOf:
-> -        - description:
-> -            Used for interrupt line which reports AER events when
-> -            non MSI/MSI-X/INTx mode is used.
-> -          const: aer
-> -        - description:
-> -            Used for interrupt line which reports PME events when
-> -            non MSI/MSI-X/INTx mode is used.
-> -          const: pme
-> -        - description:
-> -            Used for SoCs(like ls2080a, lx2160a, ls2080a, ls2088a, ls1088a)
-> -            which has a single interrupt line for miscellaneous controller
-> -            events(could include AER and PME events).
-> -          const: intr
->  
->    fsl,pcie-scfg:
->      $ref: /schemas/types.yaml#/definitions/phandle
-> @@ -69,23 +55,88 @@ properties:
->        The second entry is the physical PCIe controller index starting from '0'.
->        This is used to get SCFG PEXN registers
->  
-> -  dma-coherent:
-> -    description: Indicates that the hardware IP block can ensure the coherency
-> -      of the data transferred from/to the IP block. This can avoid the software
-> -      cache flush/invalid actions, and improve the performance significantly
-> +  dma-coherent: true
+The machine is an old SNB:
 
-No need to list.
+smpboot: CPU0: Intel(R) Xeon(R) CPU E5-1620 0 @ 3.60GHz (family: 0x6, model: 0x2d, stepping: 0x7)
 
-> +
-> +  msi-parent: true
-> +
-> +  iommu-map: true
->  
->    big-endian:
->      $ref: /schemas/types.yaml#/definitions/flag
->      description: If the PEX_LUT and PF register block is in big-endian, specify
->        this property.
->  
-> -unevaluatedProperties: true
-> +unevaluatedProperties: false
->  
->  required:
->    - compatible
->    - reg
->    - interrupt-names
->  
-> +allOf:
-> +  - $ref: /schemas/pci/pci-bus.yaml#
+and with latest linus/master + tip/master it gives the below.
 
-That's already referenced in the common schema.
+It must be something new because 6.8-rc6 is fine.
 
-> +  - $ref: /schemas/pci/snps,dw-pcie.yaml#
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          enum:
-> +            - fsl,lx2160a-pcie
-> +    then:
-> +      properties:
-> +        interrupts:
-> +          maxItems: 3
+..
+i801_smbus 0000:00:1f.3: enabling device (0000 -> 0003)
+input: Power Button as /devices/LNXSYSTM:00/LNXPWRBN:00/input/input5
+i801_smbus 0000:00:1f.3: SMBus using PCI interrupt
+ACPI: button: Power Button [PWRF]
+i2c i2c-14: 4/4 memory slots populated (from DMI)
+unchecked MSR access error: WRMSR to 0xd84 (tried to write 0x0000000000010003) at rIP: 0xffffffffa025a1b8 (snbep_uncore_msr_init_box+0x38/0x60 [intel_uncore])
+Call Trace:
+ <TASK>
+ ? ex_handler_msr+0xcb/0x130
+ ? fixup_exception+0x166/0x320
+ ? exc_general_protection+0xd7/0x3f0
+ ? asm_exc_general_protection+0x22/0x30
+ ? snbep_uncore_msr_init_box+0x38/0x60 [intel_uncore]
+ uncore_box_ref.part.0+0x9c/0xc0 [intel_uncore]
+ ? __pfx_uncore_event_cpu_online+0x10/0x10 [intel_uncore]
+ uncore_event_cpu_online+0x56/0x140 [intel_uncore]
+ ? __pfx_uncore_event_cpu_online+0x10/0x10 [intel_uncore]
+ cpuhp_invoke_callback+0x174/0x5e0
+ ? cpuhp_thread_fun+0x5a/0x200
+ cpuhp_thread_fun+0x17e/0x200
+ ? smpboot_thread_fn+0x2b/0x250
+ smpboot_thread_fn+0x1ad/0x250
+ ? __pfx_smpboot_thread_fn+0x10/0x10
+ kthread+0xed/0x120
+ ? __pfx_kthread+0x10/0x10
+ ret_from_fork+0x30/0x50
+ ? __pfx_kthread+0x10/0x10
+iTCO_vendor_support: vendor-support=0
+ ret_from_fork_asm+0x1a/0x30
+ </TASK>
+iTCO_wdt iTCO_wdt.1.auto: Found a Patsburg TCO device (Version=2, TCOBASE=0x0460)
+iTCO_wdt iTCO_wdt.1.auto: initialized. heartbeat=30 sec (nowayout=0)
+RAPL PMU: API unit is 2^-32 Joules, 2 fixed counters, 163840 ms ovfl timer
+..
 
-max is already 3.
+Thx.
 
-minItems: 3
+-- 
+Regards/Gruss,
+    Boris.
 
-> +        interrupt-names:
-> +          items:
-> +            - const: pme
-> +            - const: aer
-> +            - const: intr
-
-I guess since you figured out the ordering here, you should keep them 
-despite what I said in the first patch.
-
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          enum:
-> +            - fsl,ls1028a-pcie
-> +            - fsl,ls1046a-pcie
-> +            - fsl,ls1043a-pcie
-> +            - fsl,ls1012a-pcie
-> +    then:
-> +      properties:
-> +        interrupts:
-> +          maxItems: 2
-
-minItems: 2
-maxItems: 2
-
-> +        interrupt-names:
-> +          items:
-> +            - const: pme
-> +            - const: aer
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          enum:
-> +            - fsl,ls2080a-pcie
-> +            - fsl,ls2085a-pcie
-> +            - fsl,ls2088a-pcie
-> +            - fsl,ls1021a-pcie
-> +    then:
-> +      properties:
-> +        interrupts:
-> +          maxItems: 1
-> +        interrupt-names:
-> +          items:
-> +            - const: intr
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          enum:
-> +            - fsl,ls1088a-pcie
-> +    then:
-> +      properties:
-> +        interrupts:
-> +          maxItems: 1
-> +        interrupt-names:
-> +          items:
-> +            - const: aer
-> +
->  examples:
->    - |
->      #include <dt-bindings/interrupt-controller/arm-gic.h>
-> @@ -98,7 +149,7 @@ examples:
->          compatible = "fsl,ls1088a-pcie";
->          reg = <0x00 0x03400000 0x0 0x00100000>, /* controller registers */
->              <0x20 0x00000000 0x0 0x00002000>; /* configuration space */
-> -        reg-names = "regs", "config";
-> +        reg-names = "dbi", "config";
->          interrupts = <0 108 IRQ_TYPE_LEVEL_HIGH>; /* aer interrupt */
->          interrupt-names = "aer";
->          #address-cells = <3>;
-> @@ -116,6 +167,7 @@ examples:
->                          <0000 0 0 3 &gic 0 0 0 111 IRQ_TYPE_LEVEL_HIGH>,
->                          <0000 0 0 4 &gic 0 0 0 112 IRQ_TYPE_LEVEL_HIGH>;
->          iommu-map = <0 &smmu 0 1>; /* Fixed-up by bootloader */
-> +        msi-map = <0 &its 0 1>; /* Fixed-up by bootloader */
->        };
->      };
->  ...
-> -- 
-> 2.34.1
-> 
+https://people.kernel.org/tglx/notes-about-netiquette
 
