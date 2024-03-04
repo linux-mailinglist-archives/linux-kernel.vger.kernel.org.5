@@ -1,97 +1,113 @@
-Return-Path: <linux-kernel+bounces-90632-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90634-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0EB487027F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:18:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65327870284
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:19:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E8631C21278
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:18:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EAE22B21A94
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:19:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C79733F9CE;
-	Mon,  4 Mar 2024 13:17:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 942DE3D982;
+	Mon,  4 Mar 2024 13:19:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jUsPpxYt"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="j0vsoZ5h"
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AADD3F9C7;
-	Mon,  4 Mar 2024 13:17:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F02A43D547;
+	Mon,  4 Mar 2024 13:19:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709558258; cv=none; b=nSeQb6sq0yVK3CNwQjagvOvki7ZBn4bIxnr7KtColy8/fr9I4dR3JyQgZgHidlgYVmif4vTSFJyWxuTjeDuSJcGd6ZTyHT2JK0iQhPKkUdEWMmSDwskstFiv2tAr7zY+ZnRlcS+u9tiyI4Iql+FT2QUv6PHkNQPHcm19M8tPLLc=
+	t=1709558378; cv=none; b=JK5oIyEtNvlApyWLfuvx7Q3qi3Qc8goyx4JtnXuYYhbHbObdsS5FnNMnbSPBqb7cq3OtcnnI/Ks3BG8dXLzCFVqdy1DocphtMLM1POD+0auxcDMupNf/nN3fFqE6vhPY7L/N9EBmKXUWTGGQt5VdQ5RR6ehNsMy/9Yqm6d7kawY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709558258; c=relaxed/simple;
-	bh=OX/K8YyOzC1SThuNTMwMMnK8+cBQVcgmipBIo+ZTROA=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=cyU9/MDADKrRTETj3Zx59msY0G9zgKf7paHtFJszuYoo4GRITx2TH98zqL5jqHFKQK7s6u2S/gBEoTltYoBr8/agthlZxtu0A2Nh2uNBmS630sW+RH9bPYCpobPd77MwaFN4C78aggLsGXKNzGR56bcsNeVXLeW2+AP2zTdUbC0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jUsPpxYt; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709558256; x=1741094256;
-  h=from:to:cc:in-reply-to:references:subject:message-id:
-   date:mime-version:content-transfer-encoding;
-  bh=OX/K8YyOzC1SThuNTMwMMnK8+cBQVcgmipBIo+ZTROA=;
-  b=jUsPpxYt2rxU0MwZYiU32eHmgH5WKW2oSAv7E8DCebA806ev4if9YltW
-   L9gdwKO6x8XttyrSSNKbN9Q2vLAWT2xC2IexjBHxW1EJj07fVJZ4vaIKQ
-   5zva3Y1cb6Tiz5dOcX/bpRlVnYZn/YIUrfsWBbhRggrKHYbIAP95YjlSr
-   CNU5FyNNvbe/RfPENWwPPEAm3BKv9dRDgRQ3FDpyWaXNbzwwAR0htJYy3
-   mbeDwDyMwv+kZXfFKNh+0m6JRI4beXap/tsU40yWxZBN+UEXWAZRi6vLD
-   4pCV01iYcYkEcfMWjnhTHzoxeyrhTfbV1GU0p4tbMZ2GuWYbnGjnrCpe0
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="4213933"
-X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
-   d="scan'208";a="4213933"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 05:17:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
-   d="scan'208";a="13656421"
-Received: from ekohn-mobl1.ger.corp.intel.com (HELO localhost) ([10.246.49.145])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 05:17:32 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To: Shravan Kumar Ramani <shravankr@nvidia.com>, 
- Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Hans de Goede <hdegoede@redhat.com>, 
- Vadim Pasternak <vadimp@nvidia.com>, platform-driver-x86@vger.kernel.org, 
- linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-In-Reply-To: <a4af764e-990b-4ebd-b342-852844374032@moroto.mountain>
-References: <a4af764e-990b-4ebd-b342-852844374032@moroto.mountain>
-Subject: Re: [PATCH] platform/mellanox: mlxbf-pmc: fix signedness bugs
-Message-Id: <170955824704.5357.5837908391020307060.b4-ty@linux.intel.com>
-Date: Mon, 04 Mar 2024 15:17:27 +0200
+	s=arc-20240116; t=1709558378; c=relaxed/simple;
+	bh=afzJtdtms/jbY1raMtb1alh1Cys2o04f4eQPLD2PdkU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=AohnQpVCXXxyaSd+SxnEAyavEGrESAIKQxFbeX0Vz7RWHODMOdocy3JeK5lo98CO7cWZuL/Tw7R0pYHkbhy7wx/SJqTwdWHYyufcGUsAh2sH5VCwXkPeP09Hfz73iFDLtycTX4zGoiYTD16xntd4AzmloniEZeHA5CRa18Nkt5k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=j0vsoZ5h; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id C8D07E0009;
+	Mon,  4 Mar 2024 13:19:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709558374;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sss8ohSvvwGn3uSwOCh1KZp9GMEloGBYCwOa6wonWFE=;
+	b=j0vsoZ5hRpTOvw/xyk1SdAUlqkRAqFVd/BazCSa+SSz7n7eR+kj+vdKiscpSSnHeyrnaq+
+	U8wltMM4u2gb8coGq/zn/KrmIbVnENiLSwHcHy57LIYD0cXbScPGALY/kwAuluzYpmu5Vr
+	rm33cstmzNS4NWJxpe+IC1EE7U7amKH1DOyUjSPInCGfptYIxCQJBWJLcVVl5ZYABkh8u+
+	5ks9A01fsDpnbrlqlK+HeJ4xkFwadmLa2epVbTZhVcgm6r51QjdAwxXngFmx1hNb8v9EwQ
+	Wj5t8c0xGhfqKNrNvQg5Ce0qRmvIchJ6VNxej6Peem/KqTRofqqL9Zcxzc7F/w==
+From: Gregory CLEMENT <gregory.clement@bootlin.com>
+To: Lukas Bulwahn <lukas.bulwahn@gmail.com>, Vladimir Kondratiev
+ <vladimir.kondratiev@mobileye.com>, =?utf-8?Q?Th=C3=A9o?= Lebrun
+ <theo.lebrun@bootlin.com>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, Lukas
+ Bulwahn <lukas.bulwahn@gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: remove entry to non-existing file in
+ MOBILEYE MIPS SOCS
+In-Reply-To: <20240222143312.27757-1-lukas.bulwahn@gmail.com>
+References: <20240222143312.27757-1-lukas.bulwahn@gmail.com>
+Date: Mon, 04 Mar 2024 14:19:33 +0100
+Message-ID: <87sf16gmmy.fsf@BL-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
+Content-Type: text/plain
+X-GND-Sasl: gregory.clement@bootlin.com
 
-On Thu, 29 Feb 2024 16:11:36 +0300, Dan Carpenter wrote:
+Lukas Bulwahn <lukas.bulwahn@gmail.com> writes:
 
-> These need to be signed for the error handling to work.  The
-> mlxbf_pmc_get_event_num() function returns int so int type is correct.
-> 
-> 
+> Commit f34158edd249 ("MAINTAINERS: Add entry for Mobileye MIPS SoCs") adds
+> the section MOBILEYE MIPS SOCS with a file entry to the non-existing file
+> include/dt-bindings/soc/mobileye,eyeq5.h.
+>
+> Hence, ./scripts/get_maintainer.pl --self-test=patterns complains about a
+> broken reference.
+>
+> Possibly, this file was part of an early patch series, but in the final
+> patch series, this file does not appear anymore.
+>
+> Delete this file entry in the MOBILEYE MIPS SOCS section.
+>
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
+Acked-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 
-Thank you for your contribution, it has been applied to my local
-review-ilpo branch. Note it will show up in the public
-platform-drivers-x86/review-ilpo branch only once I've pushed my
-local branch there, which might take a while.
+Thanks,
 
-The list of commits applied:
-[1/1] platform/mellanox: mlxbf-pmc: fix signedness bugs
-      commit: d22168db08c4c8e6c5e25fa3570f50f0f2ff1ef1
+Gregory
+> ---
+>  MAINTAINERS | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 28b2013031bd..19ac6a8e46b2 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -14914,7 +14914,6 @@ F:	Documentation/devicetree/bindings/mips/mobileye.yaml
+>  F:	arch/mips/boot/dts/mobileye/
+>  F:	arch/mips/configs/eyeq5_defconfig
+>  F:	arch/mips/mobileye/board-epm5.its.S
+> -F:	include/dt-bindings/soc/mobileye,eyeq5.h
+>  
+>  MODULE SUPPORT
+>  M:	Luis Chamberlain <mcgrof@kernel.org>
+> -- 
+> 2.17.1
+>
 
---
- i.
-
+-- 
+Gregory Clement, Bootlin
+Embedded Linux and Kernel engineering
+http://bootlin.com
 
