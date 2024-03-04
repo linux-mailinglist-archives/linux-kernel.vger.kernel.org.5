@@ -1,125 +1,221 @@
-Return-Path: <linux-kernel+bounces-90123-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90126-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A692F86FAA9
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:23:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A57C86FAB3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:25:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D831B1C20D44
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 07:23:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7EB2F1C21133
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 07:25:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD4E713FFD;
-	Mon,  4 Mar 2024 07:23:26 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EAFF13AEA;
+	Mon,  4 Mar 2024 07:25:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="O43rKGW/"
+Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2CD9134B7
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 07:23:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A406290A;
+	Mon,  4 Mar 2024 07:25:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709537006; cv=none; b=Rpcv10LX2fiwstZ0XPk5+ELqYdv9tH5B28RY8AXGzsG18cxE4aVp4zhaZotehcTHPhnAzAOfH2ElCxXF0bGVXJKYdmg4+9gwgi9QtNKJbEQU5QaEPv1T5k30U3DTGd3TikYD1DNOrSD0NzLFjGGYqfX4eh6ff7S0cS2YkwsaWc8=
+	t=1709537107; cv=none; b=lSbUMGpLxNQw6HZJpq/YhFROOcbsCWH8wJtWvjrsjqSbhEuj4fxvNQ3qLL9Dzkv9l26y7EhtZvzmDohMkO9BfLImkgmcz9HfXil/mUmmTgn7ZwyJ0cuAc9NPARi93/+g5yXEU47XBI8BtNYKfs9h2X8Um95u9R+55Go5PL2F5jE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709537006; c=relaxed/simple;
-	bh=uZVPkag5AAXBeA+sFAklmErR3BGsvvJg/HeilNA4UWc=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=e+er5/of1qoYHrVNQXvqEl0bO/20KAs8s/AFWBiAEjXnUrgAiLp+rVJslWNTdIUAcH60/ew6ONQhe9/etzX1mIKrKLqdAz0TNb1b4BE4Qp+5nnnVPuP7a8NZ0VXpvlsDSUYpVixPmeeJ8Nt3LE1Wg5/dB61P+xdCOK+xNnu09lQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7c846da7ad2so98441839f.3
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 23:23:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709537004; x=1710141804;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0tpG0eDwWW5kcoi19UELPjP4fL+iOhGGTyJmkrVdifU=;
-        b=UG23jPSqrk2+wyVBsq3RBCOKvf2pZAK1x9FvidTCqxPZmMaZUTUbQKNUiHpnQVXOPP
-         x6m5sVbw3QMyOqY3PfutVhT/v8PBMyT/6nn9AmZTZ1q/SYHNWa4KBJ//k306a8SWXMp6
-         /aXxqr/hOWkBeXwc77ijxsxa1f26JovMTMjJzGPLv2SxId7BW1m55/WcgLb3hphafh7Y
-         4gD8aLDVKeIk4MPPD8CPCzPc7yZxI0W3Ti9mFENTk+Rqy96wato7RYkNjmdugzOJ79i8
-         EHzxQdTb+UGDMH8ZEr+B0Jkx/h8EeWlR/EbdITmUdjO2lkgvQ6Xr0IfBqzKEnq62rD4t
-         u+OA==
-X-Forwarded-Encrypted: i=1; AJvYcCVxTJIKDkYb4QlJDwGgcm2hN46GhMvlVBItLOp5QWkpN7/VAfF3jkMtx3CACjqzXlMr6tBLgFjY6G+but3GqpRDjIEGRKFnHS59KfmB
-X-Gm-Message-State: AOJu0Yyk2XcCvYm9f/Dm+ykdy5F1WdJdg1F4sPDc2poAZu7IGHHG1uk7
-	GCJOfgkbnd1q2EcKp2GmrSJoIj+0xm2Y6dFUyeit/RwDMiufCj22YbRD3C5DDEWQ/V7D9vYliF8
-	kz7LEybeCHhCBr+QLGhiCXtE1S6DLQqu1vNsQDwzxB5LtHd9Fxon2Hqc=
-X-Google-Smtp-Source: AGHT+IFjA7/eq7vxEVBVY5D06vCo1DteiS6LkpGXtmk3Tly1vrk328qEQjpu/DZfM2joVCaFNCyjlUKyQSgAds0XeYOjkSA+zkN1
+	s=arc-20240116; t=1709537107; c=relaxed/simple;
+	bh=LitBOrh0rH84Ytd3oX/0/rdi/LDYqoriCLgdKDjvv84=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eKbC8LEVYgR2Anpdh6oV2nzRkQFrEEvj6XFFFQvG8NE1yNCbt+1EHel0wNAGUUVGXk41VQ7kqdtCIlKwRG7IfyWlD75Q/QzC819WBOa5I5btDEyx7fyV2BcnfULOD5p9MJgPvP5fWOUWvTkzLOG/P0p8JUDdN/BpxAvE8esxCfc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=O43rKGW/; arc=none smtp.client-ip=83.149.199.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
+Received: from localhost (unknown [46.242.8.170])
+	by mail.ispras.ru (Postfix) with ESMTPSA id 533A140F1DEA;
+	Mon,  4 Mar 2024 07:24:53 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 533A140F1DEA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
+	s=default; t=1709537093;
+	bh=sUu2jXk6oN7WL3yTZueu0m4/tmU+enR8r/8eii6cirE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=O43rKGW/vJhat8eRPnIIhlulsSLV4QuGsTgA4Oz43w2fOcjlK0/EWpbItXaDZ8b9X
+	 ACFxcbaPV0PKHeG3aCtbbNW7+f0eu/Mu4CWx31pu2tt2rUBDAxyPVMPxzMoNzobPVh
+	 vina/qG8By7JliwbhO27wM2S7zSQlX0RPzBJM8sg=
+Date: Mon, 4 Mar 2024 10:24:53 +0300
+From: Fedor Pchelkin <pchelkin@ispras.ru>
+To: Alexander Aring <aahringo@redhat.com>
+Cc: Alexander Aring <alex.aring@gmail.com>, 
+	Stefan Schmidt <stefan@datenfreihafen.org>, Miquel Raynal <miquel.raynal@bootlin.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Phoebe Buckheister <phoebe.buckheister@itwm.fraunhofer.de>, linux-wpan@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Alexey Khoroshilov <khoroshilov@ispras.ru>, 
+	lvc-project@linuxtesting.org, stable@vger.kernel.org
+Subject: Re: Re: [PATCH wpan] mac802154: fix llsec key resources release in
+ mac802154_llsec_key_del
+Message-ID: <95eecd55-378c-4a55-96d8-fa74ec59e76a-pchelkin@ispras.ru>
+References: <20240228163840.6667-1-pchelkin@ispras.ru>
+ <CAK-6q+i4v94uF9BEeZ0zNWtutOn35pzstiY7jMBetCJ0PHOD3w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:219d:b0:365:26e3:6e48 with SMTP id
- j29-20020a056e02219d00b0036526e36e48mr664367ila.0.1709537004058; Sun, 03 Mar
- 2024 23:23:24 -0800 (PST)
-Date: Sun, 03 Mar 2024 23:23:24 -0800
-In-Reply-To: <000000000000b18c2406124b652e@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000db848a0612d09997@google.com>
-Subject: Re: [syzbot] [wireless?] KMSAN: uninit-value in ieee80211_amsdu_to_8023s
-From: syzbot <syzbot+d050d437fe47d479d210@syzkaller.appspotmail.com>
-To: davem@davemloft.net, edumazet@google.com, johannes.berg@intel.com, 
-	johannes@sipsolutions.net, kuba@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-wireless@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK-6q+i4v94uF9BEeZ0zNWtutOn35pzstiY7jMBetCJ0PHOD3w@mail.gmail.com>
 
-syzbot has found a reproducer for the following issue on:
+Hello Alexander,
 
-HEAD commit:    58c806d867bf Merge tag 'phy-fixes2-6.8' of git://git.kerne..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=12374c96180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=80c7a82a572c0de3
-dashboard link: https://syzkaller.appspot.com/bug?extid=d050d437fe47d479d210
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14227612180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=134411a2180000
+Thanks for review!
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/b2b0ed9886ae/disk-58c806d8.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/372dff1b6033/vmlinux-58c806d8.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/d2b87ebe3e7b/bzImage-58c806d8.xz
+On 24/03/03 06:19PM, Alexander Aring wrote:
+> Hi,
+> 
+> On Wed, Feb 28, 2024 at 11:44 AM Fedor Pchelkin <pchelkin@ispras.ru> wrote:
+> >
+> > mac802154_llsec_key_del() can free resources of a key directly without
+> > following the RCU rules for waiting before the end of a grace period. This
+> > may lead to use-after-free in case llsec_lookup_key() is traversing the
+> > list of keys in parallel with a key deletion:
+> >
+> > refcount_t: addition on 0; use-after-free.
+> > WARNING: CPU: 4 PID: 16000 at lib/refcount.c:25 refcount_warn_saturate+0x162/0x2a0
+> > Modules linked in:
+> > CPU: 4 PID: 16000 Comm: wpan-ping Not tainted 6.7.0 #19
+> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> > RIP: 0010:refcount_warn_saturate+0x162/0x2a0
+> > Call Trace:
+> >  <TASK>
+> >  llsec_lookup_key.isra.0+0x890/0x9e0
+> >  mac802154_llsec_encrypt+0x30c/0x9c0
+> >  ieee802154_subif_start_xmit+0x24/0x1e0
+> >  dev_hard_start_xmit+0x13e/0x690
+> >  sch_direct_xmit+0x2ae/0xbc0
+> >  __dev_queue_xmit+0x11dd/0x3c20
+> >  dgram_sendmsg+0x90b/0xd60
+> >  __sys_sendto+0x466/0x4c0
+> >  __x64_sys_sendto+0xe0/0x1c0
+> >  do_syscall_64+0x45/0xf0
+> >  entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> >
+> > Also, ieee802154_llsec_key_entry structures are not freed by
+> > mac802154_llsec_key_del():
+> >
+> > unreferenced object 0xffff8880613b6980 (size 64):
+> >   comm "iwpan", pid 2176, jiffies 4294761134 (age 60.475s)
+> >   hex dump (first 32 bytes):
+> >     78 0d 8f 18 80 88 ff ff 22 01 00 00 00 00 ad de  x.......".......
+> >     00 00 00 00 00 00 00 00 03 00 cd ab 00 00 00 00  ................
+> >   backtrace:
+> >     [<ffffffff81dcfa62>] __kmem_cache_alloc_node+0x1e2/0x2d0
+> >     [<ffffffff81c43865>] kmalloc_trace+0x25/0xc0
+> >     [<ffffffff88968b09>] mac802154_llsec_key_add+0xac9/0xcf0
+> >     [<ffffffff8896e41a>] ieee802154_add_llsec_key+0x5a/0x80
+> >     [<ffffffff8892adc6>] nl802154_add_llsec_key+0x426/0x5b0
+> >     [<ffffffff86ff293e>] genl_family_rcv_msg_doit+0x1fe/0x2f0
+> >     [<ffffffff86ff46d1>] genl_rcv_msg+0x531/0x7d0
+> >     [<ffffffff86fee7a9>] netlink_rcv_skb+0x169/0x440
+> >     [<ffffffff86ff1d88>] genl_rcv+0x28/0x40
+> >     [<ffffffff86fec15c>] netlink_unicast+0x53c/0x820
+> >     [<ffffffff86fecd8b>] netlink_sendmsg+0x93b/0xe60
+> >     [<ffffffff86b91b35>] ____sys_sendmsg+0xac5/0xca0
+> >     [<ffffffff86b9c3dd>] ___sys_sendmsg+0x11d/0x1c0
+> >     [<ffffffff86b9c65a>] __sys_sendmsg+0xfa/0x1d0
+> >     [<ffffffff88eadbf5>] do_syscall_64+0x45/0xf0
+> >     [<ffffffff890000ea>] entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> >
+> > Handle the proper resource release in the RCU callback function
+> > mac802154_llsec_key_del_rcu().
+> >
+> > Note that if llsec_lookup_key() finds a key, it gets a refcount via
+> > llsec_key_get() and locally copies key id from key_entry (which is a
+> > list element). So it's safe to call llsec_key_put() and free the list
+> > entry after the RCU grace period elapses.
+> >
+> > Found by Linux Verification Center (linuxtesting.org).
+> >
+> > Fixes: 5d637d5aabd8 ("mac802154: add llsec structures and mutators")
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Fedor Pchelkin <pchelkin@ispras.ru>
+> > ---
+> > Should the patch be targeted to "net" tree directly?
+> >
+> >  include/net/cfg802154.h |  1 +
+> >  net/mac802154/llsec.c   | 18 +++++++++++++-----
+> >  2 files changed, 14 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/include/net/cfg802154.h b/include/net/cfg802154.h
+> > index cd95711b12b8..76d2cd2e2b30 100644
+> > --- a/include/net/cfg802154.h
+> > +++ b/include/net/cfg802154.h
+> > @@ -401,6 +401,7 @@ struct ieee802154_llsec_key {
+> >
+> >  struct ieee802154_llsec_key_entry {
+> >         struct list_head list;
+> > +       struct rcu_head rcu;
+> >
+> >         struct ieee802154_llsec_key_id id;
+> >         struct ieee802154_llsec_key *key;
+> > diff --git a/net/mac802154/llsec.c b/net/mac802154/llsec.c
+> > index 8d2eabc71bbe..f13b07ebfb98 100644
+> > --- a/net/mac802154/llsec.c
+> > +++ b/net/mac802154/llsec.c
+> > @@ -265,19 +265,27 @@ int mac802154_llsec_key_add(struct mac802154_llsec *sec,
+> >         return -ENOMEM;
+> >  }
+> >
+> > +static void mac802154_llsec_key_del_rcu(struct rcu_head *rcu)
+> > +{
+> > +       struct ieee802154_llsec_key_entry *pos;
+> > +       struct mac802154_llsec_key *mkey;
+> > +
+> > +       pos = container_of(rcu, struct ieee802154_llsec_key_entry, rcu);
+> > +       mkey = container_of(pos->key, struct mac802154_llsec_key, key);
+> > +
+> > +       llsec_key_put(mkey);
+> > +       kfree_sensitive(pos);
+> 
+> I don't think this kfree is right, "struct ieee802154_llsec_key_entry"
+> is declared as "non pointer" in "struct mac802154_llsec_key". The
+> memory that is part of "struct ieee802154_llsec_key_entry" should be
+> freed when llsec_key_put(), llsec_key_release() hits.
+> 
+> Or is there something I am missing here?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d050d437fe47d479d210@syzkaller.appspotmail.com
+`struct ieee802154_llsec_key_entry` is not included into any other
+struct. It is a standalone entity describing an entry in the
+`ieee802154_llsec_table.keys` list.
 
-=====================================================
-BUG: KMSAN: uninit-value in ieee80211_amsdu_to_8023s+0x8c1/0x2d40 net/wireless/util.c:856
- ieee80211_amsdu_to_8023s+0x8c1/0x2d40 net/wireless/util.c:856
- __ieee80211_rx_h_amsdu+0x91a/0x13b0 net/mac80211/rx.c:3047
- ieee80211_rx_h_amsdu net/mac80211/rx.c:3133 [inline]
- ieee80211_rx_handlers+0x571a/0x10c40 net/mac80211/rx.c:4141
- ieee80211_invoke_rx_handlers net/mac80211/rx.c:4185 [inline]
- ieee80211_prepare_and_rx_handle+0x5640/0x9690 net/mac80211/rx.c:5033
- __ieee80211_rx_handle_packet net/mac80211/rx.c:5239 [inline]
- ieee80211_rx_list+0x642c/0x65d0 net/mac80211/rx.c:5410
- ieee80211_rx_napi+0x84/0x3e0 net/mac80211/rx.c:5433
- ieee80211_rx include/net/mac80211.h:4983 [inline]
- ieee80211_tasklet_handler+0x19f/0x330 net/mac80211/main.c:318
- tasklet_action_common+0x391/0xd30 kernel/softirq.c:780
- tasklet_action+0x26/0x30 kernel/softirq.c:805
- __do_softirq+0x1b7/0x7c5 kernel/softirq.c:553
- run_ksoftirqd+0x24/0x40 kernel/softirq.c:921
- smpboot_thread_fn+0x558/0xa60 kernel/smpboot.c:164
- kthread+0x3ed/0x550 kernel/kthread.c:388
- ret_from_fork+0x66/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:243
+Maybe you are confusing it with `struct ieee802154_llsec_key`?
 
-Local variable hdr created at:
- ieee80211_amsdu_to_8023s+0x5b/0x2d40 net/wireless/util.c:832
- __ieee80211_rx_h_amsdu+0x91a/0x13b0 net/mac80211/rx.c:3047
+When mac802154_llsec_key_add() is called, `struct ieee802154_llsec_key_entry`
+objects are allocated using kzalloc() and are linked into the list.
 
-CPU: 0 PID: 15 Comm: ksoftirqd/0 Not tainted 6.8.0-rc6-syzkaller-00278-g58c806d867bf #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-=====================================================
+`struct mac802154_llsec_key` object is allocated only if it has not
+been allocated yet for some other llsec_key_id, otherwise its refcount
+is incremented. Its lifecycle is managed with llsec_key_{get|put}
+primitives. A pointer to this object is passed into
+`struct ieee802154_llsec_key_entry`.
 
+So the only way to reach `struct ieee802154_llsec_key_entry` objects is
+through the list they belong to and they should be freed when they are
+unlinked from the list.
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+E.g. see mac802154_llsec_destroy() where for &sec->table.keys this
+sequence of llsec_key_put() for mkey and kfree_sensitive() for list entry
+is done.
+
+> 
+> Thanks.
+> 
+> Otherwise the patch looks correct to me.
+> 
+> - Alex
+> 
+
+--
+Fedor
 
