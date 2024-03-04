@@ -1,98 +1,112 @@
-Return-Path: <linux-kernel+bounces-90446-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90447-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F68D86FF44
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:41:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA93A86FF46
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:42:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A9082860CF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:41:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 07EDC1C213A7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:42:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D9EC37168;
-	Mon,  4 Mar 2024 10:41:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDAF43717D;
+	Mon,  4 Mar 2024 10:42:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hS1YEJtX"
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="ltERCB8y"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FA6536B04
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 10:41:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D03BB654;
+	Mon,  4 Mar 2024 10:42:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709548896; cv=none; b=chEvDxoMciaHF83bVTLsRqFZfVww3EVXvdyTzSyxd0aEGQIZs8yV1nZpLxAxOg9kqxc1TQULN/xf7HNAi72dyskVHaO9VoIqNkyHKDmp7Qu7h2AvoGf0I7C9vUkB3AA0zGCZnwu3TjBlHqPgGLk3vKCu+JnlhDZ43wBJQF98CjQ=
+	t=1709548922; cv=none; b=oDjE3z+mzAp9fUksX55Y5LiW2D5gVfM+FjopVsxCImM2y0hMnsP51bYfhtbncpIzsnYyq43VSqrAil5kLRUdDnwCQLTHL4IDFDpb0+gV8EUZ1rXhqP6jndNZFpEDgh1BJrFhkLCI2WJOiBLjey2l4NOJxrU6OmVnfJap0is736A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709548896; c=relaxed/simple;
-	bh=vrHtVTxDzXnHnmBEAwyW6CZO5Ixx5yRmkfq/0NawaJY=;
+	s=arc-20240116; t=1709548922; c=relaxed/simple;
+	bh=+JybKZUAmD1s3bmTrSchyai48XNikWXuRgLyxam6z0o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bw/RJjW7z+3m6XrdbCBB6rI3xIi0Crwn2xFbGqsbtyZ5nIRQlXmZ3p2JC2DzuQgOLmX0VWmOBu+5JLgTlN6pHiOY9kwX87T16trRrdmR6RvS8Jm1W707rH8rUeyg1h020eA+3mZ9BRpuONYRRw8rMjcbWsfFMdYpTbbfJoCUmaE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hS1YEJtX; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33e2774bdc5so1553050f8f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 02:41:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709548894; x=1710153694; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vrHtVTxDzXnHnmBEAwyW6CZO5Ixx5yRmkfq/0NawaJY=;
-        b=hS1YEJtXkbSfbku4i3uWoA2qtl89Rxvt+RsH4dskoRdEMwZQm3EPzBzI0LhcN9RmFc
-         JuLqqk6vlxCAFHoV35etoc9gLKuLwUu4yHep7Xh204JAIupVGolvrzleTvdf5t9XFqpo
-         lNd4Za7tAo2Kn8oskBqRKTmHYn7EyiR3eG2XVTHlWrUWDU/xmI8eJ6nQWH6mOEDUnkI4
-         cmI1gFI+JtHi6ON5ESjk/rYTf+0RKU4yqxn8MkQN+Gv3AfJGHMk9Nd2197xttCjJzamw
-         M9NMUcIQVzVjsEPuGNQl+k+RGYAdN7Az36XcRJpH/1buEygkf2FPj4odFon5HZ5EOUWA
-         kKFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709548894; x=1710153694;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vrHtVTxDzXnHnmBEAwyW6CZO5Ixx5yRmkfq/0NawaJY=;
-        b=imIUU+yaxBFgazJLRdJogEEPaQwMcpBYy03rqxh5S2dCLcygpaFbqO0CTlBjU7MCGU
-         K0VMN5ERMV4Gz1i5lhlsB5rgQ56SbHwsVqgDaGi5Pqa5o70jbK+JcaiktjahWKToIrSN
-         ZxZJkqWos69cP4GV9q9TZyVbGgnGF4L1r/V5Ybcs6R70Qblk7VYApLRIUHYud0VN2RUN
-         p/JUpa0VMj8JeRdpvSzMzwLztxuLu8znsl9Wxjw+mQkB+teb3nvEOaH6+QoGVzLLUedi
-         I7GCQtbmocb/C8wld0TDQJB4/vNlp0sJkTJIa+WoGmNCP+wlNXIJA0nd7h97m9qB6q2d
-         WZ6A==
-X-Forwarded-Encrypted: i=1; AJvYcCVKRq+Lx86It+FrmXwKwGsNeNdk41EnOHuKk4273cNpLSfIHdEJndPWV4rIZlAOpd138iY8GaLrntoAiD3eZS7J+HPuI71ViEpnLIvU
-X-Gm-Message-State: AOJu0YxXisCU9vRaZKVkEn3hR0MZaIb3nG+yf7YMpPl/k3TDT2w/HHoE
-	VtlMol+BIlBYPlnSo4Z9JD/iK2O2qLyPu6qUWOaVl3hhwOxY8VjaryacP/U5gE0=
-X-Google-Smtp-Source: AGHT+IHuTg+L0d+SsYB/hWx+WCbqqhs4YKUOH7u+m5Pfe3qeJQEf5b9S71I7FIfRX9NDNXPeyFgP4g==
-X-Received: by 2002:a5d:6986:0:b0:33c:ec8f:7b51 with SMTP id g6-20020a5d6986000000b0033cec8f7b51mr6513642wru.16.1709548893708;
-        Mon, 04 Mar 2024 02:41:33 -0800 (PST)
-Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
-        by smtp.gmail.com with ESMTPSA id bp16-20020a5d5a90000000b0033e0567e90bsm12266311wrb.5.2024.03.04.02.41.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 02:41:33 -0800 (PST)
-Date: Mon, 4 Mar 2024 10:41:31 +0000
-From: Daniel Thompson <daniel.thompson@linaro.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Lee Jones <lee@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
-	Helge Deller <deller@gmx.de>, dri-devel@lists.freedesktop.org,
-	linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/7] backlight: bd6107: Handle deferred probe
-Message-ID: <20240304104131.GC102563@aspen.lan>
-References: <20240304-backlight-probe-v1-0-e5f57d0df6e6@linaro.org>
- <20240304-backlight-probe-v1-3-e5f57d0df6e6@linaro.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=UFyCVeXq52cF+X2HPFYVd5B8ommW2vmluxxr4O/Mjrtq374XVGyIllfARS29GMrB7DSv+FIHpBhSgX6XQVZFDQLHA2TrPxNWgpzdQHJW3RMbat6EeiTI3W4GSOcq1vKgv/pVPlsiyqRt5OGwqeljGaINt8qHk9yDXs3im7bvqpM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=ltERCB8y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DA83C433C7;
+	Mon,  4 Mar 2024 10:42:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1709548922;
+	bh=+JybKZUAmD1s3bmTrSchyai48XNikWXuRgLyxam6z0o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ltERCB8yAa0AMPJEpgzQS9Mbx+MMdX4t6PVSu/3nf+AZxPeRfx0+1DMY//JNr6jdF
+	 tHg/7M9hFnV/Jln+GGOrzBNYQGeYgWaCN5MUeTJUQJ4E6ijEOJPByuThwLfpXCPeDg
+	 OG3QZo2Gi3pZnIsOzs0Uil3poHWRtMmE+7WWYpTY=
+Date: Mon, 4 Mar 2024 11:41:46 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Rui Qi <qirui.001@bytedance.com>
+Cc: bp@alien8.de, mingo@redhat.com, tglx@linutronix.de, hpa@zytor.com,
+	jpoimboe@redhat.com, peterz@infradead.org, mbenes@suse.cz,
+	stable@vger.kernel.org, alexandre.chartre@oracle.com,
+	x86@kernel.org, linux-kernel@vger.kernel.org, yuanzhu@bytedance.com
+Subject: Re: [PATCH v2 0/3] Support intra-function call validation
+Message-ID: <2024030438-dropout-satisfy-b4c4@gregkh>
+References: <20240228024535.79980-1-qirui.001@bytedance.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240304-backlight-probe-v1-3-e5f57d0df6e6@linaro.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240228024535.79980-1-qirui.001@bytedance.com>
 
-On Mon, Mar 04, 2024 at 11:11:40AM +0100, Krzysztof Kozlowski wrote:
-> Don't pollute dmesg on deferred probe and simplify the code with
-> dev_err_probe().
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+On Wed, Feb 28, 2024 at 10:45:32AM +0800, Rui Qi wrote:
+> Since kernel version 5.4.217 LTS, there has been an issue with the kernel live patching feature becoming unavailable. 
+> When compiling the sample code for kernel live patching, the following message is displayed when enabled:
+> 
+> livepatch: klp_check_stack: kworker/u256:6:23490 has an unreliable stack
+> 
+> Reproduction steps:
+> 1.git checkout v5.4.269 -b v5.4.269
+> 2.make defconfig
+> 3. Set CONFIG_LIVEPATCH=y、CONFIG_SAMPLE_LIVEPATCH=m
+> 4. make -j bzImage
+> 5. make samples/livepatch/livepatch-sample.ko
+> 6. qemu-system-x86_64 -kernel arch/x86_64/boot/bzImage -nographic -append "console=ttyS0" -initrd initrd.img -m 1024M
+> 7. insmod livepatch-sample.ko
+> 
+> Kernel live patch cannot complete successfully.
+> 
+> After some debugging, the immediate cause of the patch failure is an error in stack checking. The logs are as follows:
+> [ 340.974853] livepatch: klp_check_stack: kworker/u256:0:23486 has an unreliable stack
+> [ 340.974858] livepatch: klp_check_stack: kworker/u256:1:23487 has an unreliable stack
+> [ 340.974863] livepatch: klp_check_stack: kworker/u256:2:23488 has an unreliable stack
+> [ 340.974868] livepatch: klp_check_stack: kworker/u256:5:23489 has an unreliable stack
+> [ 340.974872] livepatch: klp_check_stack: kworker/u256:6:23490 has an unreliable stack
+> ......
+> 
+> BTW,if you use the v5.4.217 tag for testing, make sure to set CONFIG_RETPOLINE = y and CONFIG_LIVEPATCH = y, and other steps are consistent with v5.4.269
+> 
+> After investigation, The problem is strongly related to the commit 8afd1c7da2b0 ("x86/speculation: Change FILL_RETURN_BUFFER to work with objtool"),
+> which would cause incorrect ORC entries to be generated, and the v5.4.217 version can undo this commit to make kernel livepatch work normally. 
+> It is a back-ported upstream patch with some code adjustments,from the git log, the author also mentioned no intra-function call validation support.
+> 
+> Based on commit 6e1f54a4985b63bc1b55a09e5e75a974c5d6719b (Linux 5.4.269), This patchset adds stack validation support for intra-function calls, 
+> allowing the kernel live patching feature to work correctly.
+> 
+> Alexandre Chartre (2):
+>   objtool: is_fentry_call() crashes if call has no destination
+>   objtool: Add support for intra-function calls
+> 
+> Rui Qi (1):
+>   x86/speculation: Support intra-function call validation
+> 
+>  arch/x86/include/asm/nospec-branch.h          |  7 ++
+>  include/linux/frame.h                         | 11 ++++
+>  .../Documentation/stack-validation.txt        |  8 +++
+>  tools/objtool/arch/x86/decode.c               |  6 ++
+>  tools/objtool/check.c                         | 64 +++++++++++++++++--
+>  5 files changed, 91 insertions(+), 5 deletions(-)
 
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+All now queued up, thanks!
 
-
-Daniel.
+greg k-h
 
