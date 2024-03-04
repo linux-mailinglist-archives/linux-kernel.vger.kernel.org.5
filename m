@@ -1,136 +1,147 @@
-Return-Path: <linux-kernel+bounces-90294-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90295-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72AF986FD00
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:19:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39B8586FD04
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:19:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E04731F245FF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:19:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6036281732
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:19:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B0B2225CD;
-	Mon,  4 Mar 2024 09:17:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F493224E7;
+	Mon,  4 Mar 2024 09:18:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WE1xC0pp"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cMVaAVwB"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B62A41B814;
-	Mon,  4 Mar 2024 09:17:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80A721BDC8;
+	Mon,  4 Mar 2024 09:18:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709543861; cv=none; b=LVRqFP31bIsitgYB0CC+fmKS6jO7BuQ1Ih93UFTrgfUVd+/PnsnoLlR1vy0KaD193b+2db7bJ/jvjomJMB3Ex37fAGqwNKaIUgiUKsTgyvPPJfoKQjiH7GYTaTuhcH8+OvqWFPQuXtoTWVabRHLdul3CFWZ8YkO0bOyrayrAtio=
+	t=1709543886; cv=none; b=D0obt3atJRDb5L8R26UeTe97ppoeUdpyPx18axpcIuY+Z3Yacr3UcENU0bq4FVDdEJQwvArUKB6DM/epJNA073GyK3EF5m5N/qWTZ0MaBJXFk2R32cFjtlR3qkv53U1oRl8cBOxW9NSvmDmianILgGcw0tqvPxocVlJ1VSIAK/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709543861; c=relaxed/simple;
-	bh=Qq1jg86NYicltpYfn1YXwPRMwEdiM2aWEnn4TNPiai8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=h2ESVor/MYOrk/gjN2tFQAoZBZ+JWZzQRM566CvgYH5cMFqGtkWesOZEHNbPiFVnEz770hLQg7+uIFYr10NwS/UYrVv36YRRjQC/HrN/QtP+OfdYJn4v/PksehEPv0elGvMulP4INWCLD4SwVxxgqFTB+xqBeKPokv0Ie4mmvnk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WE1xC0pp; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d23114b19dso51792641fa.3;
-        Mon, 04 Mar 2024 01:17:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709543858; x=1710148658; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=wxb84sArYHWCge17RqY2dnfS8pZorGfPXvmpeXBM+UE=;
-        b=WE1xC0pprrgUY/tpgdCHInmleFaKWpc+KYzPSszg5xsD6rH5aPrPeEh/jyK3IoL5g1
-         UQWlmybUNS4F8kuKy1EF3rcZ/uSc1eLYbny6KwnkPP/RPfez8U5lHTU/h4Zbmm0IJEvp
-         cU7GOeK6UL1jPkpP/6jGgV4Ljbd/hD/AB8cVvI1XOJ4b22u5qSqRQoNcEZwP2AEcb4Bp
-         K+Cb0SE0rmwNzxAsthO4D/ok33M3ZjV6KOatAkqSc2Taar9FC3UHCYTgx5HA9X6gwSt9
-         0fgDW7fejF/jX0sP0PhFfwKQL+v2NKLWggq4uH6E99x2wrhrcODc7hRhoE/gEm0AW4Wz
-         IzJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709543858; x=1710148658;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wxb84sArYHWCge17RqY2dnfS8pZorGfPXvmpeXBM+UE=;
-        b=UA4fMlG+j3qd2iFPFq8u7PJ7eYqxbvAH/9lGGBKcKJingTB69yg9B8fUrfcL0tbZs7
-         rpWnT/9vi6qMJuqmpYLmmgcwYR4zlxXf0ZfuniMixaimRiim+I2TqZ0+w/rr8IN/ivod
-         ibdpTPGY+EqkcN+NNXcaSMxU+QKVnurbOJ/gNQxLwvHbbg97qQ+h6/Z2Co1dTcfuFB6r
-         8UHkm402pdG8xN0CY2ALIGDLXj0+j2jKanaLaADhJi1dtzVk1hMReqpd2JL1BGFvErgN
-         KEFH4DwnvTUGig9bcf3VWIMSRsO6tjv/U77Olr5TwDAoX+Q1FHB0cubf2zfoIaAV9L/R
-         rGOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWbB5U61zL0ZbcoPUrJZ30dga6H58Tk+Z/tw5LDxv41LBfY8qZQsDyuBNp6QB9KpSXXoj3m5tTVsdrKL8ackeT6N8Ms9Ns3wKqEh9aO2n0JbG0G+6MyIFrRjuV9/yNce655j/IwmyAfFxqnUGF+
-X-Gm-Message-State: AOJu0Yz51Rw4goqaqEJT7syfYvlxNMGk4ObLu2krfH0i2xqn8axKVR3I
-	izB1cJipE8aifjgC3Y9QbkowHsR6AJvi4wN11oCA0HPhxeZvkllT
-X-Google-Smtp-Source: AGHT+IHoWbhv0G7/RF1N1tx36guIvvx6OukW50GAMYLBOZmWqoYnRwfEqdFQ9lwVbVqHZlcw8HR+hQ==
-X-Received: by 2002:a2e:9cd3:0:b0:2d2:b068:6d2a with SMTP id g19-20020a2e9cd3000000b002d2b0686d2amr5802516ljj.16.1709543857438;
-        Mon, 04 Mar 2024 01:17:37 -0800 (PST)
-Received: from localhost (a109-49-32-45.cpe.netcabo.pt. [109.49.32.45])
-        by smtp.gmail.com with ESMTPSA id a10-20020a05600c348a00b00412e5060995sm1679557wmq.34.2024.03.04.01.17.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 01:17:36 -0800 (PST)
-From: Rui Miguel Silva <rmfrfs@gmail.com>
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, greybus-dev@lists.linaro.org,
- linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
- kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] staging: greybus: fix get_channel_from_mode() failure path
-In-Reply-To: <379c0cb4-39e0-4293-8a18-c7b1298e5420@moroto.mountain>
-References: <379c0cb4-39e0-4293-8a18-c7b1298e5420@moroto.mountain>
-Date: Mon, 04 Mar 2024 09:17:36 +0000
-Message-ID: <m3sf16tky7.fsf@gmail.com>
+	s=arc-20240116; t=1709543886; c=relaxed/simple;
+	bh=Hz5X8SjPZaPMVvkREhxPkwcMhjiRAzuRBm8lmosOsm8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aWYhGJ2mGYK66YqdSDdVwnD2UCz2Cog9mGGi7A8Kstsa+Qt6QyY9lSB6wSd8uUkRXhaNhS7dvdYJed3fo8dev3w8BbklcUbCeiLYIzcObaHH7DV11gtG+/R5oPAmS5OxbSLOSxTJyd9w1FFyJdi36mU4Hc9hWmuf1fBFGY1W4EA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cMVaAVwB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5EEFC433C7;
+	Mon,  4 Mar 2024 09:18:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709543886;
+	bh=Hz5X8SjPZaPMVvkREhxPkwcMhjiRAzuRBm8lmosOsm8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cMVaAVwBcvnPGrdq6e7btLLYM9gCJQP57sSCSb/GFXetumUhwhDWy4EWBcEfNHuOs
+	 nen/R8UCTax7+UIhGtc3FxuSQO9ozn82C6VBuIGCvx1vMD+24pTAKpz3Nje3Xf/I0N
+	 6mmZQl49BemD1XRaRAAs+ffgwzHIBcQ8iZwuHGxPdyuq4w7dcT3HDTPLg9kp9G2yB+
+	 BBtQVG7yQQ/iXqdMzkJqu+k8SjonewKeRUrQ0gv5yJ4Rg6YzEif7laeHz16KIkb0zT
+	 F5M6d4wEhuYNkksw5E8rb1nkn9Np/Q6fA/sSMFcnFRx22q2uNNONhVwWeg6zSRqx+B
+	 nIvgFipJpSi/A==
+Date: Mon, 4 Mar 2024 10:18:02 +0100
+From: Wolfram Sang <wsa@kernel.org>
+To: =?utf-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	Gregory Clement <gregory.clement@bootlin.com>,
+	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+Subject: Re: [PATCH v2 06/11] i2c: nomadik: support short xfer timeouts using
+ waitqueue & hrtimer
+Message-ID: <ZeWRyuN8v-VnraQA@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+	=?utf-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	Gregory Clement <gregory.clement@bootlin.com>,
+	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+References: <20240229-mbly-i2c-v2-0-b32ed18c098c@bootlin.com>
+ <20240229-mbly-i2c-v2-6-b32ed18c098c@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ADopU0GSN45E8OWO"
+Content-Disposition: inline
+In-Reply-To: <20240229-mbly-i2c-v2-6-b32ed18c098c@bootlin.com>
 
-Hi Dan,
-once again thanks for the patch.
 
-Dan Carpenter <dan.carpenter@linaro.org> writes:
+--ADopU0GSN45E8OWO
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> The get_channel_from_mode() function is supposed to return the channel
-> which matches the mode.  But it has a bug where if it doesn't find a
-> matching channel then it returns the last channel.  It should return
-> NULL instead.
->
-> Also remove an unnecessary NULL check on "channel".
->
-> Fixes: 2870b52bae4c ("greybus: lights: add lights implementation")
-> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+On Thu, Feb 29, 2024 at 07:10:54PM +0100, Th=C3=A9o Lebrun wrote:
+> Replace the completion by a waitqueue for synchronization from IRQ
+> handler to task. For short timeouts, use hrtimers, else use timers.
+> Usecase: avoid blocking the I2C bus for too long when an issue occurs.
+>=20
+> The threshold picked is one jiffy: if timeout is below that, use
+> hrtimers. This threshold is NOT configurable.
+>=20
+> Implement behavior but do NOT change fetching of timeout. This means the
+> timeout is unchanged (200ms) and the hrtimer case will never trigger.
+>=20
+> A waitqueue is used because it supports both desired timeout approaches.
+> See wait_event_timeout() and wait_event_hrtimeout(). An atomic boolean
+> serves as synchronization condition.
+>=20
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
 
-Reviewed-by: Rui Miguel Silva <rmfrfs@gmail.com>
+Largely:
 
-Cheers,
-  Rui
+Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-> ---
->  drivers/staging/greybus/light.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/staging/greybus/light.c b/drivers/staging/greybus/light.c
-> index d62f97249aca..a5c2fe963866 100644
-> --- a/drivers/staging/greybus/light.c
-> +++ b/drivers/staging/greybus/light.c
-> @@ -95,15 +95,15 @@ static struct led_classdev *get_channel_cdev(struct gb_channel *channel)
->  static struct gb_channel *get_channel_from_mode(struct gb_light *light,
->  						u32 mode)
->  {
-> -	struct gb_channel *channel = NULL;
-> +	struct gb_channel *channel;
->  	int i;
->  
->  	for (i = 0; i < light->channels_count; i++) {
->  		channel = &light->channels[i];
-> -		if (channel && channel->mode == mode)
-> -			break;
-> +		if (channel->mode == mode)
-> +			return channel;
->  	}
-> -	return channel;
-> +	return NULL;
->  }
->  
->  static int __gb_lights_flash_intensity_set(struct gb_channel *channel,
-> -- 
-> 2.43.0
+Nit:
+
+> -	int				timeout;
+> +	int				timeout_usecs;
+
+I think 'unsigned' makes a lot of sense here. Maybe u32 even?
+
+
+--ADopU0GSN45E8OWO
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmXlkcoACgkQFA3kzBSg
+Kba7iw/8Cjwrc5SjA/NL3KJonpOz3S37vaadRXid+bhB8XUNVUI0PMJkyw//gEc4
+njYS1/v197pg+4JsPPorLhOxjDGoD14nvA+kQkZ4XDktCxU+U12NUBKDc5XgFMmN
+cx7+QIr8AtfJpo5Il8nNYO4xn15+F510a1qjPgTlCE4QV2sX9aeSgOazretpVNmp
+03IKZDUPmP3HCFfNkGgt5PzpZpnY4RlPflThQcMYJm2wXz+E/h6VM1xqmENlhJQa
+2oqZ9FNBttktiahGx8vBpGeLcSXnQF3okUiCJC1f7MCP9ApaLI7a9700eneemBLn
++Q9M1Gexied95SJcIJYKzgTzN10+GOHg8P1pFsuf3NKNCmZApobOIc3Nv/zDfGum
+Rp08Hrq0OgTSXGyPsLPs6OSeEtEg7KvCO/WZyuLAdt+wHVEKTMYsWra3FUCu6YMB
+m1RIQcluy4QVlv4E61RmOI22YsKibwl2mw2WMENEbLodFPc6lvtSSiEmjWSOBL4r
+Pv1oTlkNjBGOpgFF1T9TByvhhmIWLCQcbAHxR2R+EGcO3NNQ7wLMFCLkm7cm1sI3
+u4Y+cxDfdXz0zag7rJkp6GwzxwmNorvo90wbNA3FODizmmqFuUt6tIExR2hfxkA8
+4GURp7XQJAp5kXMt5vBAaEoDDCvaa5ivgOmaq0OFdQRcYnHtHRw=
+=vre8
+-----END PGP SIGNATURE-----
+
+--ADopU0GSN45E8OWO--
 
