@@ -1,159 +1,115 @@
-Return-Path: <linux-kernel+bounces-90088-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90087-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D166486FA11
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 07:30:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5649186FA10
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 07:30:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E5421F21613
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 06:30:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7865B1C20BA6
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 06:30:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B81C111B0;
-	Mon,  4 Mar 2024 06:30:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9677FD272;
+	Mon,  4 Mar 2024 06:29:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="sPquiY6o"
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zLm0Kl6Y"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC50F11199
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 06:30:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.97
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BF06C15B
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 06:29:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709533843; cv=none; b=bX8zmzYxDD+NoR4mBzH4wfbNq1TpJPVq08trhzJWg6/p1K9IHqlwfFteHF9bozCnTUjw0cO5RhCP3+CU+XdI7p77CTI492Dsx2K4H0UjUZDiHlqa0EfovbqcccHUhdKh0ffyuza6bUlF+VgcOwpCAyhpKku0DrDAWyUntZI6Q70=
+	t=1709533794; cv=none; b=bTpe0zdd6sVcb781OqiTqWXpH4BnLcEyl+I5knizLU/U+GVdk+xFsmXJSU4p20njUfwRBBYSrUkkjVGk4Ho1qw9xeoTgs9AwuglAOBlkXeNfM7L4TfmwGVTqjZiBI6xX/WmRYsN04zdi+efSxyjybIkqGFyhZodVJ9HK3P4uoUU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709533843; c=relaxed/simple;
-	bh=oRuL5E03NRBdlsCXDyKaHFjeY88RtCn+H3QpyLpZHgI=;
-	h=Message-ID:Subject:Date:From:To:Cc:References:In-Reply-To; b=ZXcJN0tarQUozJpDZH0Ohe/mx+bvrhaYO8T2hH1psYvArZcztQRsriqSRecu+VZ+QtHwHyf6HPChSWqmFszNCpm2iH/4D4DIPMAmu6OhNVOicvwm5WQwirNH1S6byRgJA6gtiGLZIf+zEsAsnVUgsjjodsJNqJ7WCDpGp7y+xkg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=sPquiY6o; arc=none smtp.client-ip=115.124.30.97
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1709533833; h=Message-ID:Subject:Date:From:To;
-	bh=NGXjorvuk11qTskGv8WPgdXQ88lN94avzSL2JOcc1C8=;
-	b=sPquiY6or+egThxF2tTEh0EE8v8UOQUYiOseVtW3MzTvkr+XUFty0kSDja9xFMf8vJZY8S9k8JPaZF/498yq+a2iZzgR4V8e/KhistVE0i5Z5t6n2crtIttAAIF792c27zFv1VeVtegHgmlusCcU/TT8ABqWpPlhx6sjvoxrvXU=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R631e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0W1kG7dz_1709533832;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W1kG7dz_1709533832)
-          by smtp.aliyun-inc.com;
-          Mon, 04 Mar 2024 14:30:32 +0800
-Message-ID: <1709533720.5072534-2-xuanzhuo@linux.alibaba.com>
-Subject: Re: [RFC] dma-mapping: introduce dma_can_skip_unmap()
-Date: Mon, 4 Mar 2024 14:28:40 +0800
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: Robin Murphy <robin.murphy@arm.com>
-Cc: linux-kernel@vger.kernel.org,
- Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>,
- Christoph Hellwig <hch@lst.de>,
- Marek Szyprowski <m.szyprowski@samsung.com>,
- iommu@lists.linux.dev,
- Zelin Deng <zelin.deng@linux.alibaba.com>,
- "Michael S. Tsirkin" <mst@redhat.com>
-References: <20240301071918.64631-1-xuanzhuo@linux.alibaba.com>
- <64be2e23-c526-45d3-bb7b-29e31241bbef@arm.com>
- <20240301064632-mutt-send-email-mst@kernel.org>
- <a00f0b55-0681-4e9c-b75e-e7e3d4110471@arm.com>
- <20240301082703-mutt-send-email-mst@kernel.org>
- <d4f2f99c-b8bb-4ed9-8d91-ed0f5b418425@arm.com>
-In-Reply-To: <d4f2f99c-b8bb-4ed9-8d91-ed0f5b418425@arm.com>
+	s=arc-20240116; t=1709533794; c=relaxed/simple;
+	bh=Pf7uv/gYGGXC6+7FVldt3LroRAuk574J76EPU23+wJA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AuwRRIMEVep42WCHItVNVs8LAph1lNo6O0dnvuL5xOP/RmGYDzFZT5u2EeEIUScmURUMtg0bsI+20UdFvSddRQwalnVUMcsFYEp2iKFXEkWpbSwordO+9/JkFLGjAUOjLtBIGRQv2phmmOyRDX9C6mwifzd4vpwvPMCLK5Me9vY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zLm0Kl6Y; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-412a9e9c776so29586785e9.0
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 22:29:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709533792; x=1710138592; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1Sr+3/igGAuTwcw+O5i8ci7ivmixVyDSgfl+R16S+q0=;
+        b=zLm0Kl6Y2TH/8Oo7HmkD4jIua3Kt569yVyPjwEWvhbgxkr75ugX+bDs4JLwFc+F7SU
+         ULI1IpC9KySojzUnEziEv1AIs/Hze6C7mz3nEULZ2XsKxL2XqQ+MZWpG78V5riA1tCCK
+         xn84eKPtr/8/89XXJglR6kiMs7HT89O+EGZJvPWCV/Wblr2GNFT0qxyHW9yqYhdkYPtO
+         yIFgPP9zh0gBCik8MVzJqhc7b0+3JeqYjb/oyo0fGMV04W24gHJxOKxdLb4G7g80TY7i
+         G6BI/g/vWyMCnoe1SfO9T0vbotBs1EH+DoC9kEvTuFmO+oF3pFTXXK3c2nZJQgrwqY84
+         kHKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709533792; x=1710138592;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1Sr+3/igGAuTwcw+O5i8ci7ivmixVyDSgfl+R16S+q0=;
+        b=L5ub+UHljHObrEyMsDn8lfkOzbLJwKTTWv/S3FxWH2p6oqjbp2Il2aw3H9EzINNvKk
+         wUWZf4XCBlMbBLGTiAGKwCb76TnQyFLWEorbP8xKsBoA4UOSAtpvij5KKgmMjEr5ptVl
+         XzzvyYBDadXEpd6LO7QPbnB1ix+4wilAifzUh12aBBJ6hPaB7JgHyq1htK/+Iy7m/osb
+         W05uv7BaPAc5KdgdjUiw5zs5IslTO5KbzslW9t5bomTYCfJj7yQ0ufOHBhxrWUlEQoBk
+         dZaIs6VOQ1634e22Nz8MTM5upDGyzfg+Vf9qS/b9NWoi/6esLHZ5BCELrxpxR5tkjjJc
+         zMnQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWihZPQU4rLQ2Pxst4+T6PnGQUo8oMOcMEgEpcJAdpNGB2oEkBGnlwHt0qEuwEdRMcPS2UiAdtuXDz8bQKT7lLvSnEIMKgn7xkIivQ/
+X-Gm-Message-State: AOJu0YxR2hagY4kV1M1BLuc2srI6aUrMhPcXLQ4boKSy+tBFAVWGmDnG
+	DsClaYb6RKJ6fNXrCFsnDlN1S9eQFN8OMqJGodTVt3TzN+nHGIa9WEbjG+27UkA=
+X-Google-Smtp-Source: AGHT+IHq9JCYT783Wtc+zj9tHovEmxaZxWX3kn+l7xtGlx5U/KJDz3VB67RRX9FFH9wGGkZte3BftA==
+X-Received: by 2002:a05:600c:4f82:b0:412:dab5:b20e with SMTP id n2-20020a05600c4f8200b00412dab5b20emr3940436wmq.8.1709533791619;
+        Sun, 03 Mar 2024 22:29:51 -0800 (PST)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id l21-20020a05600c4f1500b004101543e843sm16723413wmq.10.2024.03.03.22.29.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Mar 2024 22:29:51 -0800 (PST)
+Date: Mon, 4 Mar 2024 09:29:47 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Rui Miguel Silva <rmfrfs@gmail.com>
+Cc: Mikhail Lobanov <m.lobanov@rosalinux.ru>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] greybus: Fix deref of NULL in
+ __gb_lights_flash_brightness_set
+Message-ID: <02f31119-e35a-4358-a0a0-079416ba4a9d@moroto.mountain>
+References: <20240301190425.120605-1-m.lobanov@rosalinux.ru>
+ <7ef732ad-a50f-4cf5-8322-376f42eb051b@moroto.mountain>
+ <m3ttlolktk.fsf@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <m3ttlolktk.fsf@gmail.com>
 
-On Fri, 1 Mar 2024 18:04:10 +0000, Robin Murphy <robin.murphy@arm.com> wrote:
-> On 2024-03-01 1:41 pm, Michael S. Tsirkin wrote:
-> > On Fri, Mar 01, 2024 at 12:42:39PM +0000, Robin Murphy wrote:
-> >> On 2024-03-01 11:50 am, Michael S. Tsirkin wrote:
-> >>> On Fri, Mar 01, 2024 at 11:38:25AM +0000, Robin Murphy wrote:
-> >>>> Not only is this idea not viable, the entire premise seems flawed - the
-> >>>> reasons for virtio needing to use the DMA API at all are highly likely to be
-> >>>> the same reasons for it needing to use the DMA API *properly* anyway.
-> >>>
-> >>> The idea has nothing to do with virtio per se
-> >>
-> >> Sure, I can see that, but if virtio is presented as the justification for
-> >> doing this then it's the justification I'm going to look at first. And the
-> >> fact is that it *does* seem to have particular significance, since having up
-> >> to 19 DMA addresses involved in a single transfer is very much an outlier
-> >> compared to typical hardware drivers.
+On Sat, Mar 02, 2024 at 03:23:03PM +0000, Rui Miguel Silva wrote:
+> Dan Carpenter <dan.carpenter@linaro.org> writes:
+> Hi Dan,
+> 
+> > On Fri, Mar 01, 2024 at 02:04:24PM -0500, Mikhail Lobanov wrote:
+> >> Dereference of null pointer in the __gb_lights_flash_brightness_set function.
+> >> Assigning the channel the result of executing the get_channel_from_mode function
+> >> without checking for NULL may result in an error.
 > >
-> > That's a valid comment. Xuan Zhuo do other drivers do this too,
-> > could you check pls?
+> > get_channel_from_mode() can only return NULL when light->channels_count
+> > is zero.
 > >
-> >> Furthermore the fact that DMA API
-> >> support was retrofitted to the established virtio design means I would
-> >> always expect it to run up against more challenges than a hardware driver
-> >> designed around the expectation that DMA buffers have DMA addresses.
-> >
-> >
-> > It seems virtio can't drive any DMA changes then it's forever tainted?
-> > Seems unfair - we retrofitted it years ago, enough refactoring happened
-> > since then.
->
-> No, I'm not saying we couldn't still do things to help virtio if and
-> when it does prove reasonable to do so; just that if anything it's
-> *because* that retrofit is mature and fairly well polished by now that
-> any remaining issues like this one are going to be found in the most
-> awkward corners and thus unlikely to generalise.
->
-> FWIW in my experience it seems more common for network drivers to
-> actually have the opposite problem, where knowing the DMA address of a
-> buffer is easy, but keeping track of the corresponding CPU address can
-> be more of a pain.
->
-> >>> - we are likely not the
-> >>> only driver that wastes a lot of memory (hot in cache, too) keeping DMA
-> >>> addresses around for the sole purpose of calling DMA unmap.  On a bunch
-> >>> of systems unmap is always a nop and we could save some memory if there
-> >>> was a way to find out. What is proposed is an API extension allowing
-> >>> that for anyone - not just virtio.
-> >>
-> >> And the point I'm making is that that "always" is a big assumption, and in
-> >> fact for the situations where it is robustly true we already have the
-> >> DEFINE_DMA_UNMAP_{ADDR,LEN} mechanism.
-> >> I'd consider it rare for DMA
-> >> addresses to be stored in isolation, as opposed to being part of some kind
-> >> of buffer descriptor (or indeed struct scatterlist, for an obvious example)
-> >> that a driver or subsystem still has to keep track of anyway, so in general
-> >> I believe the scope for saving decidedly small amounts of memory at runtime
-> >> is also considerably less than you might be imagining.
-> >>
-> >> Thanks,
-> >> Robin.
-> >
-> >
-> > Yes. DEFINE_DMA_UNMAP_ exits but that's only compile time.
-> > And I think the fact we have that mechanism is a hint that
-> > enough configurations could benefit from a runtime
-> > mechanism, too.
-> >
-> > E.g. since you mentioned scatterlist, it has a bunch of ifdefs
-> > in place.
->
-> But what could that benefit be in general? It's not like we can change
-> structure layouts on a per-DMA-mapping-call basis to save
-> already-allocated memory... :/
+> > Although get_channel_from_mode() seems buggy to me.  If it can't
+> > find the correct mode, it just returns the last channel.  So potentially
+> > it should be made to return NULL.
+> 
+> Correct, thanks for the fix. Will you or me send a proper patch for
+> this? Taking also the suggestion from Alex.
 
-We can put the memory together. If the unmap is not needed, then we do not
-allocate the memory. That is the way we are trying.
+I'll send it.  Thanks!
 
-Thanks.
+regards,
+dan carpenter
 
-
-
->
-> Thanks,
-> Robin.
->
-> >
-> > Of course
-> > - finding more examples would be benefitial to help maintainers
-> >    do the cost/benefit analysis
-> > - a robust implementation is needed
-> >
-> >
 
