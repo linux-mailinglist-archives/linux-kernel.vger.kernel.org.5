@@ -1,146 +1,163 @@
-Return-Path: <linux-kernel+bounces-91210-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91211-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EE1B870B3E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:13:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B255870B40
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:13:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DF1C1C21FB9
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:13:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 418181F2115E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:13:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF30C7A159;
-	Mon,  4 Mar 2024 20:13:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B079A7A731;
+	Mon,  4 Mar 2024 20:13:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="TVgOPoQn"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k85dEHj8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82C4B62160
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 20:12:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E693962171;
+	Mon,  4 Mar 2024 20:13:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709583181; cv=none; b=qZYeJ7NQpoIr6Z5AH1b9f/3Fd/egSKajbGOgJWQwtyeH/8BnWir88g0YjURl7CUD5owaChA+LToZ8FDQFYYRANrnNf6TqtCPOZchx1WTEf4ZzOwtb/373B06/WQmh4zyAba0GYqpKBU+r2A4eE0uH4y5Uf11gHXWqGqlQa+b1co=
+	t=1709583193; cv=none; b=SElJdsKfK5Jc8KI9giwMScnQzM1fPAMJ6B2Om3iBbGzDNyFQfT0gdwXKuzw/B+eNkIke9+fHTx+tQqy7w9d0FAAy7YPGw79o2OB53okR5Uj9HPalmO6YZ4G+sBkVOLXiKG9wx7vqTiS4WV8DKwLjzfJZAI4e9z9QAfneFDMUHQE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709583181; c=relaxed/simple;
-	bh=2dZWQKT9+VI4fN5HG83hCe2KIo74Iq/neyDLmBuYqs4=;
+	s=arc-20240116; t=1709583193; c=relaxed/simple;
+	bh=Jarf+3xgm31a5ItvIpY/7IPTj0Vs8zmgBoIbgY65ZsU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Mrs0cnWWwjfAvxTTyhd/p8EZd7j7eEKL19KgljQHV5/X5QsRsd62AWjB40UqGWhpC0qkbNCUdC821/d2G9Ox9G6F9UuJLghIqX7Y4i7Pyiu072fLGRWsa33kgHI0b1juC56CeaPChDZmzMywG39IFSiDMpc5gbo6ya79klKsOHA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=TVgOPoQn; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id D8BF940E01A2;
-	Mon,  4 Mar 2024 20:12:49 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 6J3TiTwB9LEu; Mon,  4 Mar 2024 20:12:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1709583167; bh=7AAnRCmUw6WY5dqLo5Ulda1PXQ665OL1WDw/NItN5FU=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=S20gJAshz2YikDTv17kjrr7UPCxho2F52f6k77wdzK70ZoyLxx9qyy/OenGAeyKa2f6jiOAlPs7g9HRPdkuNY2OnsT5B9iTUH+G9aHtyAIVERudF8br+F5ZPVAWY5n7wwQeeImc0ib3Nkxi3v3rc3TEBaixK3NYHceHLbYaX384=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k85dEHj8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 424EFC433F1;
+	Mon,  4 Mar 2024 20:13:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709583192;
+	bh=Jarf+3xgm31a5ItvIpY/7IPTj0Vs8zmgBoIbgY65ZsU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=TVgOPoQnrP7Ef3bPuHU9FCZXF1Nt5Xa5euDTlgjgpPP54KtRwJKY3UybEf2m6T3Ja
-	 2lXVliEWZibNzheT0OCdLuPqZk8D6v/+KRWhd3+NqkW58bMaesTpe8Yv8gyt3XOaJS
-	 GLwHWBpnxIM+Ont41u2YJInqy295yAZTFt+gv+l1GczAb9Tahw3PxMnUTIls1BV9UT
-	 7VsPXc62PXXX6yWFhNfGne28TuPReg77cofrtaPtYXtzS6Eak15iHLYs3/bUCv4IKO
-	 gfaBIvq9e2TOTFUdfO6u5A13I4CLZOkpcAFNRuRq8pG5+Gdt3bA3BrVacmF9RUmiQJ
-	 3FHmwrZSvp1HY8uiTuemUhujJ3T5g3NjouQ6Aa9x2CIh/0W6T3zbFdBATNW8ocAcyy
-	 v7krF+ako+2tA2t7yESGUCmcFjhPBQ+Ymmq/JcIIXmI5XxYROJlSXzL+4/gP566fzI
-	 ZXxYmFH2ub+Nen92EQ2yyPthuPaYViMMfmN7CPvJcj+dKDufghrNsyS6+DLWhvvQy/
-	 CX7LePeOVOmctQldS5SqmUTqPcZIcwiBSBu5EBp1uCY5HMDZeY9suBUqtMAxnzwNqw
-	 2vc5Jq1JOZAi2ykf6PfgcH/WEvsOFFluNu3zQa4pcpoGQZgP+PN9yfmyNEhI6WIWGf
-	 vvus8piHLBIGsJtGb0H+7wbI=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3CCD340E0185;
-	Mon,  4 Mar 2024 20:12:40 +0000 (UTC)
-Date: Mon, 4 Mar 2024 21:12:33 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: "Liang, Kan" <kan.liang@linux.intel.com>
-Cc: x86-ml <x86@kernel.org>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Alexander Antonov <alexander.antonov@linux.intel.com>,
-	lkml <linux-kernel@vger.kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: unchecked MSR access error: WRMSR to 0xd84 (tried to write
- 0x0000000000010003) at rIP: 0xffffffffa025a1b8
- (snbep_uncore_msr_init_box+0x38/0x60 [intel_uncore])
-Message-ID: <20240304201233.GDZeYrMc9exmV21PFB@fat_crate.local>
-References: <20240304181841.GCZeYQgbZk6fdntg-X@fat_crate.local>
- <b16add91-30c4-43e6-bcf8-11ca8aeaa783@linux.intel.com>
+	b=k85dEHj8+jTdrQGFPCxKUTyZPYtvSW8yVrZPUefH7fCrOBySUGu/XDD0+cXAil+Ro
+	 UVIh278q4HvcZPCDWkfAm4xmc/qbitRfQFj6C2AO35cx8ZwNppPqtPdSbIssr18miG
+	 mBKplj0BBKFKN2LuTbpAa3rG2oO3bzCGESDE9m1/W4DiOolIFHAanor8J+OVwLuoyu
+	 KJ0G2b7tczan5XxTPfVhF/GjEPvSX+n7eKt9dYVbqYVe720b62X1DvKsyIgy4isBAm
+	 h8CpL64c69YnJoq4LiRG7iYPrnTmRjiImLi4cYEFrzKKrL1hR6NY1HLfAK2a8CjSHt
+	 gxEdL2IZSXYHQ==
+Date: Mon, 4 Mar 2024 20:13:06 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Frank Li <Frank.li@nxp.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	Shengjiu Wang <shengjiu.wang@nxp.com>, linux-sound@vger.kernel.org,
+	devicetree@vger.kernel.org, imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/4] ASoC: dt-bindings: fsl-sai: allow only one
+ dma-names
+Message-ID: <20240304-cape-saloon-80f241bfd6df@spud>
+References: <20240227-asrc_8qxp-v2-0-521bcc7eb1c0@nxp.com>
+ <20240227-asrc_8qxp-v2-3-521bcc7eb1c0@nxp.com>
+ <20240229-husband-penalty-8c1ab0f57f55@spud>
+ <20240229-rundown-isotope-954ba9ea4c57@spud>
+ <ZeDdMJlxBL4SGkws@lizhi-Precision-Tower-5810>
+ <20240301-crudeness-resale-3c0a1228850d@spud>
+ <ZeIGXEJ3l4tgjmxT@lizhi-Precision-Tower-5810>
+ <20240301-deluxe-tiptoeing-741af7d620b9@spud>
+ <ZeIPmGG7+5cKZkO3@lizhi-Precision-Tower-5810>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="G/bhWJ7YMFFq+jSj"
 Content-Disposition: inline
-In-Reply-To: <b16add91-30c4-43e6-bcf8-11ca8aeaa783@linux.intel.com>
+In-Reply-To: <ZeIPmGG7+5cKZkO3@lizhi-Precision-Tower-5810>
 
-On Mon, Mar 04, 2024 at 02:22:50PM -0500, Liang, Kan wrote:
-> The number of available CBOXs on a SNBEP machine is determined at boot
-> time. It should not be larger than the maximum number of cores.
-> The recent commit 89b0f15f408f ("x86/cpu/topology: Get rid of
-> cpuinfo::x86_max_cores") change the boot_cpu_data.x86_max_cores to
-> topology_num_cores_per_package().
-> I guess the new function probably returns a different maximum number of
-> cores on the machine. But I don't have a SNBEP on my hands. Could you
-> please help to check whether a different maximum number of cores is
-> returned?
 
-Yeah, the topo rework looks at fault:
+--G/bhWJ7YMFFq+jSj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-before:
+On Fri, Mar 01, 2024 at 12:25:44PM -0500, Frank Li wrote:
+> On Fri, Mar 01, 2024 at 05:07:07PM +0000, Conor Dooley wrote:
+> > On Fri, Mar 01, 2024 at 11:46:20AM -0500, Frank Li wrote:
+> > > On Fri, Mar 01, 2024 at 04:05:25PM +0000, Conor Dooley wrote:
+> > > > On Thu, Feb 29, 2024 at 02:38:24PM -0500, Frank Li wrote:
+> > > > > On Thu, Feb 29, 2024 at 06:57:29PM +0000, Conor Dooley wrote:
+> > > > > > On Thu, Feb 29, 2024 at 06:55:58PM +0000, Conor Dooley wrote:
+> > > > > > > On Tue, Feb 27, 2024 at 03:54:11PM -0500, Frank Li wrote:
+> > > > > > > > Some sai only connect one direction. So allow only "rx" or =
+"tx" for
+> > > > > > > > dma-names.
+> > > > > > >=20
+> > > > > > > Which sai? Can you restrict this per compatible please, so th=
+at someone
+> > > > > > > cannot add 2 dmas for ones where only the tx is supported.
+> > > > > > >=20
+> > > > > > > |  dmas:
+> > > > > > > |    minItems: 1
+> > > > > > > |    items:
+> > > > > > > |      - description: DMA controller phandle and request line=
+ for RX
+> > > > > > > |      - description: DMA controller phandle and request line=
+ for TX
+> > > > > > >=20
+> > > > > > > The binding already allows only one, but it documents that th=
+e first dma
+> > > > > > > is always the RX dma, and that doesn't change with this patch=
+=2E.
+> > > > > >=20
+> > > > > > I said "doesn't change" - but I don't think you can change this
+> > > > > > trivially, as something could rely on the first dma being the r=
+x one.
+> > > > > > You'd have to check that there is nothing using these using ind=
+ices
+> > > > > > rather than names before making any changes here.
+> > > > >=20
+> > > > > Linux driver and dts with tx only work well. Only issue is dtb_ch=
+eck will
+> > > > > report error. I want to eliminate these DTB_CHECK warning.
+> > > >=20
+> > > > Linux is not the only user of these bindings, citing linux as your
+> > > > evidence here is only sufficient if no other users exist. Do they?
+> > >=20
+> > > But, 'dmas' should be common property for all these bindings? I don't=
+ think
+> > > they use 'descriptions:' property, which should guide dts writer to w=
+rite
+> > > dts file. actually words 'DMA controller phandle and request line' ju=
+st
+> > > nonsense words. let 'regs', it'd better descript at 'reg-names' inste=
+ad
+> > > of 'regs' if reg-names exist. Only meansful words is "RX" and "TX", w=
+hich
+> > > already show at "dma-names".
+> >=20
+> > None of this matters. If there's a documented order for these, which
+> > there is, software is not obligated to use the names and can rely on the
+> > order alone. You need to check that there are no other users which will
+> > be broken by your proposed change.
+>=20
+> As my best knowledge, only linux use this binding.
 
-online:              1
-initial_apicid:      0
-apicid:              0
-pkg_id:              0
-die_id:              0
-cu_id:               255
-core_id:             0
-logical_pkg_id:      0
-logical_die_id:      0
-llc_id:              0
-l2c_id:              0
-max_cores:           4
-max_die_per_pkg:     1
-smp_num_siblings:    2
+If you've checked and there are no users, that's fine. Please mention
+in the commit message that there are no users that will be affected as
+justification for the ABI change.
 
-after:
+--G/bhWJ7YMFFq+jSj
+Content-Type: application/pgp-signature; name="signature.asc"
 
-online:              1
-initial_apicid:      0
-apicid:              0
-pkg_id:              0
-die_id:              0
-cu_id:               255
-core_id:             0
-logical_pkg_id:      0
-logical_die_id:      0
-llc_id:              0
-l2c_id:              0
-amd_node_id:         0
-amd_nodes_per_pkg:   0
-num_threads:         32
-num_cores:           16
-max_dies_per_pkg:    1
-max_threads_per_core:2
+-----BEGIN PGP SIGNATURE-----
 
-I'll let tglx poke at this.
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZeYrUgAKCRB4tDGHoIJi
+0kXGAP0ZXQDdSBHtYgiW6KEtRSeHnNW+Qzp4Xi6aG6/WngSB7wEAkXcAGBBLZxUQ
+3gj8XZWrnoAYzbHNua6AJZOzWa0FEQY=
+=OdYx
+-----END PGP SIGNATURE-----
 
-Thx!
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+--G/bhWJ7YMFFq+jSj--
 
