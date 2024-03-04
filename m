@@ -1,171 +1,165 @@
-Return-Path: <linux-kernel+bounces-90965-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90966-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDD688707B1
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:53:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F7138707B3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:54:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6EC371F22F65
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:53:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 319821F2203F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:54:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 726B845BF6;
-	Mon,  4 Mar 2024 16:53:40 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61453A20
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 16:53:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3FF25D738;
+	Mon,  4 Mar 2024 16:54:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="SlltTY1l"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DA1A45BF6;
+	Mon,  4 Mar 2024 16:54:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709571219; cv=none; b=Ndvaqk8aEHr/v3/dEURtBLf3oo9CCWqoOdp9yjjyBbmVpPRPvEB43BgqOshjWvJhNH3zTx0WQP0AUNJD5H1dQZ7ZGGua3t33Wau8gxTyRGYsRHXC0dyAeu7nbTnQy0xyNryUkiAalKkQUab0ReFmzo+cInCj8O/dAO1PNnAh3e0=
+	t=1709571252; cv=none; b=HpX2qtYc2PPHD6ywqR5ZoG/XpXHOcSDCerexRaq8Qo2F263YhRamr4BsGWbky+jIsadEELfeTWhrdFqkSiLIW7ITsl5W9lWjESVolE6x4e/o1l5SEAX+eMN2lr6QGIi7EYT3DBqzwWbANpd52wpxFf3xwDRsggYL2DLNNKjDbMc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709571219; c=relaxed/simple;
-	bh=odLag6z4EVrHLDoxIhELyF6yH/BXlNlYTSx9r0KRJf8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TMfO6F4yJ4ErX5yd6QQtR1iHV8tZra4JsEvnEHo2MpURgOuuw20IPbRp0MctFddDBYyFrLTlXvJLuMoThrIFVzjZYjWCFB3jw00ddj/D0Wb9xilcx1SnBcm8CUoQh1HGdCkct0xllkjTiKUfGAgReeysFZncCD7rFeqVGw7b4Ak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 260FA1FB;
-	Mon,  4 Mar 2024 08:54:13 -0800 (PST)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A3FB73F73F;
-	Mon,  4 Mar 2024 08:53:34 -0800 (PST)
-Message-ID: <b63d4332-b659-4897-83c7-04e5ad397a69@arm.com>
-Date: Mon, 4 Mar 2024 16:53:32 +0000
+	s=arc-20240116; t=1709571252; c=relaxed/simple;
+	bh=+R7oTg+kxjTKyaKYxZHYT42wyBy1AiS9hgSVvfLNDyo=;
+	h=Content-Type:MIME-Version:In-Reply-To:References:Subject:From:Cc:
+	 To:Date:Message-ID; b=dFz8L7TumJBUWy8iuShfrqNE6kbB7yeJQ8kwhzSY2xWtmQLttLBZZupIQ4ZKSPUcaKFlx/SkpjCYIoNiNhsl6tgjjlYJKwPv+BbDR/xKLCL3jF7/BLqJt+nAAWgPh95lbuyTvPFaJWOjZAriSoGxclDODpZbAFyJKPkl30x99rQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=SlltTY1l; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (aztw-30-b2-v4wan-166917-cust845.vm26.cable.virginm.net [82.37.23.78])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 517FD3871;
+	Mon,  4 Mar 2024 17:53:52 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1709571232;
+	bh=+R7oTg+kxjTKyaKYxZHYT42wyBy1AiS9hgSVvfLNDyo=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=SlltTY1lkILhpK1EXZ/YXpEMFb8cbBxwNoZkuDArAucNSaR1T/TRKkkC92Kt2ZMgM
+	 Y9fxl+n17THj3Pv8pwvbX3yoB+szb//puxlu6GjtAsvNrf6+c56BJO2j67/ocUT5jc
+	 2SIB5iJK5KtgHlVJZOySFlhlKvaBUO1R8f26jyrw=
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 6/6] swiotlb: Remove pointless stride adjustment for
- allocations >= PAGE_SIZE
-Content-Language: en-GB
-To: Michael Kelley <mhklinux@outlook.com>, Will Deacon <will@kernel.org>,
- =?UTF-8?B?UGV0ciBUZXNhxZnDrWs=?= <petr@tesarici.cz>
-Cc: Christoph Hellwig <hch@lst.de>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Petr Tesarik <petr.tesarik1@huawei-partners.com>,
- "kernel-team@android.com" <kernel-team@android.com>,
- "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Dexuan Cui
- <decui@microsoft.com>, Nicolin Chen <nicolinc@nvidia.com>
-References: <SN6PR02MB4157314F142D05E279B7991ED45F2@SN6PR02MB4157.namprd02.prod.outlook.com>
- <20240229154756.GA10137@lst.de>
- <20240301163927.18358ee2@meshulam.tesarici.cz>
- <20240301180853.5ac20b27@meshulam.tesarici.cz>
- <8869c8b2-29c3-41e4-8f8a-5bcf9c0d22bb@arm.com>
- <20240301194212.3c64c9b2@meshulam.tesarici.cz>
- <SN6PR02MB41571DA1EE99BFAA65869024D4232@SN6PR02MB4157.namprd02.prod.outlook.com>
- <20240304120055.56035c21@meshulam.tesarici.cz>
- <ffd7646b-37b1-4cd2-822a-848b36b076c9@arm.com>
- <20240304165506.49e3b2d3@meshulam.tesarici.cz>
- <20240304160210.GB21077@willie-the-truck>
- <SN6PR02MB41571F68F8F9E003C4359948D4232@SN6PR02MB4157.namprd02.prod.outlook.com>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <SN6PR02MB41571F68F8F9E003C4359948D4232@SN6PR02MB4157.namprd02.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240229165333.227484-13-mike.rudenko@gmail.com>
+References: <20240229165333.227484-1-mike.rudenko@gmail.com> <20240229165333.227484-13-mike.rudenko@gmail.com>
+Subject: Re: [PATCH v3 12/20] media: i2c: ov4689: Implement vflip/hflip controls
+From: Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc: Sakari Ailus <sakari.ailus@linux.intel.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Jacopo Mondi <jacopo@jmondi.org>, Tommaso Merciai <tomm.merciai@gmail.com>, Christophe JAILLET <christophe.jaillet@wanadoo.fr>, Dave Stevenson <dave.stevenson@raspberrypi.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Mikhail Rudenko <mike.rudenko@gmail.com>
+To: Mikhail Rudenko <mike.rudenko@gmail.com>, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Date: Mon, 04 Mar 2024 16:54:05 +0000
+Message-ID: <170957124561.566498.576610873794356352@ping.linuxembedded.co.uk>
+User-Agent: alot/0.10
 
-On 04/03/2024 4:10 pm, Michael Kelley wrote:
-> From: Will Deacon <will@kernel.org> Sent: Monday, March 4, 2024 8:02 AM
->>
->> Hi folks,
->>
->> On Mon, Mar 04, 2024 at 04:55:06PM +0100, Petr Tesařík wrote:
->>> On Mon, 4 Mar 2024 13:37:56 +0000
->>> Robin Murphy <robin.murphy@arm.com> wrote:
->>>> On 04/03/2024 11:00 am, Petr Tesařík wrote:
->>>> [...]
->>>>>> Here's my take on tying all the threads together. There are
->>>>>> four alignment combinations:
->>>>>>
->>>>>> 1. alloc_align_mask: zero; min_align_mask: zero
->>
->> Based on this ^^^ ...
->>
->>>>>> xen_swiotlb_map_page() and dma_direct_map_page() are #1 or #2
->>>>>> via swiotlb_map() and swiotlb_tbl_map_single()
->>>>>>
->>>>>> iommu_dma_map_page() is #3 and #4 via swiotlb_tbl_map_single()
->>>>>>
->>>>>> swiotlb_alloc() is #3, directly to swiotlb_find_slots()
->>>>>>
->>>>>> For #1, the returned physical address has no constraints if
->>>>>> the requested size is less than a page. For page size or
->>>>>> greater, the discussed historical requirement for page
->>>>>> alignment applies.
->>
->> ... and this ^^^ ...
->>
->>
->>> I believe this patch series is now good as is, except the commit
->>> message should make it clear that alloc_align_mask and min_align_mask
->>> can both be zero, but that simply means no alignment constraints.
->>
->> ... my (possibly incorrect!) reading of the thread so far is that we
->> should preserve page-aligned allocation in this case if the allocation
->> size is >= PAGE_SIZE.
->>
->> Something like the diff below, to replace this final patch?
->>
->> Will
->>
->> --->8
->>
->> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
->> index c381a7ed718f..67eac05728c0 100644
->> --- a/kernel/dma/swiotlb.c
->> +++ b/kernel/dma/swiotlb.c
->> @@ -992,6 +992,14 @@ static int swiotlb_search_pool_area(struct device
->> *dev, struct io_tlb_pool *pool
->>          BUG_ON(!nslots);
->>          BUG_ON(area_index >= pool->nareas);
->>
->> +       /*
->> +        * Historically, allocations >= PAGE_SIZE were guaranteed to be
->> +        * page-aligned in the absence of any other alignment requirements.
->> +        * Since drivers may be relying on this, preserve the old behaviour.
->> +        */
->> +       if (!alloc_align_mask && !iotlb_align_mask && alloc_size >= PAGE_SIZE)
->> +               alloc_align_mask = PAGE_SIZE - 1;
->> +
-> 
-> Yes, I think that should do it.
+Quoting Mikhail Rudenko (2024-02-29 16:53:25)
+> The OV4689 sensor supports horizontal and vertical flipping. Add
+> appropriate controls to the driver. Toggling both array flip and
+> digital flip bits allows to achieve flipping while maintaining output
+> Bayer order. Note that the default value of hflip control corresponds
+> to both bits set, as it was before this patch.
+>=20
+> Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
+> ---
+>  drivers/media/i2c/ov4689.c | 24 ++++++++++++++++++++++--
+>  1 file changed, 22 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/media/i2c/ov4689.c b/drivers/media/i2c/ov4689.c
+> index 8283a9ac86c9..01ee8cadb7c9 100644
+> --- a/drivers/media/i2c/ov4689.c
+> +++ b/drivers/media/i2c/ov4689.c
+> @@ -42,6 +42,14 @@
+>  #define OV4689_REG_VTS                 CCI_REG16(0x380e)
+>  #define OV4689_VTS_MAX                 0x7fff
+> =20
+> +#define OV4689_REG_TIMING_FORMAT1      CCI_REG8(0x3820)
+> +#define OV4689_REG_TIMING_FORMAT2      CCI_REG8(0x3821)
 
-In principle it might be more logical to fudge this into 
-iotlb_align_mask rather than alloc_align_mask - since that's really the 
-effective behaviour to preserve for streaming mappings - and then pass 
-an explicit alloc_align_mask from swiotlb_alloc() to honour the 
-dma-coherent requirements. However I also wouldn't really object to not 
-going that far and instead just making the comment a bit clearer that 
-this is still serving both purposes.
+I assume these registerse are called TIMING_FORMAT1 and TIMING_FORMAT2,
+and they don't have any named reference to H/V?
 
-Cheers,
-Robin.
+It's a shame, but I might add /* Horizontal */ and /* Vertical */
+accordingly to these definitions, though not specifically required.
 
-> 
-> Michael
-> 
->>          /*
->>           * Ensure that the allocation is at least slot-aligned and update
->>           * 'iotlb_align_mask' to ignore bits that will be preserved when
->> @@ -1006,13 +1014,6 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
->>           */
->>          stride = get_max_slots(max(alloc_align_mask, iotlb_align_mask));
->>
->> -       /*
->> -        * For allocations of PAGE_SIZE or larger only look for page aligned
->> -        * allocations.
->> -        */
->> -       if (alloc_size >= PAGE_SIZE)
->> -               stride = umax(stride, PAGE_SHIFT - IO_TLB_SHIFT + 1);
->> -
->>          spin_lock_irqsave(&area->lock, flags);
->>          if (unlikely(nslots > pool->area_nslabs - area->used))
->>                  goto not_found;
-> 
+
+Looks like a good breakdown of the control though.
+
+Reviewed-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+
+> +#define OV4689_TIMING_FLIP_MASK                GENMASK(2, 1)
+> +#define OV4689_TIMING_FLIP_ARRAY       BIT(1)
+> +#define OV4689_TIMING_FLIP_DIGITAL     BIT(2)
+> +#define OV4689_TIMING_FLIP_BOTH                (OV4689_TIMING_FLIP_ARRAY=
+ |\
+> +                                        OV4689_TIMING_FLIP_DIGITAL)
+> +
+>  #define OV4689_REG_TEST_PATTERN                CCI_REG8(0x5040)
+>  #define OV4689_TEST_PATTERN_ENABLE     0x80
+>  #define OV4689_TEST_PATTERN_DISABLE    0x0
+> @@ -183,7 +191,6 @@ static const struct cci_reg_sequence ov4689_2688x1520=
+_regs[] =3D {
+>         {CCI_REG8(0x3811), 0x08}, /* H_WIN_OFF_L h_win_off[7:0] =3D 0x08*/
+>         {CCI_REG8(0x3813), 0x04}, /* V_WIN_OFF_L v_win_off[7:0] =3D 0x04 =
+*/
+>         {CCI_REG8(0x3819), 0x01}, /* VSYNC_END_L vsync_end_point[7:0] =3D=
+ 0x01 */
+> -       {CCI_REG8(0x3821), 0x06}, /* TIMING_FORMAT2 array_h_mirror =3D 1,=
+ digital_h_mirror =3D 1 */
+> =20
+>         /* OTP control */
+>         {CCI_REG8(0x3d85), 0x36}, /* OTP_REG85 OTP_power_up_load_setting_=
+enable =3D 1,
+> @@ -607,6 +614,16 @@ static int ov4689_set_ctrl(struct v4l2_ctrl *ctrl)
+>                           (ctrl->val + ov4689->cur_mode->width) /
+>                           OV4689_HTS_DIVIDER, &ret);
+>                 break;
+> +       case V4L2_CID_VFLIP:
+> +               cci_update_bits(regmap, OV4689_REG_TIMING_FORMAT1,
+> +                               OV4689_TIMING_FLIP_MASK,
+> +                               ctrl->val ? OV4689_TIMING_FLIP_BOTH : 0, =
+&ret);
+> +               break;
+> +       case V4L2_CID_HFLIP:
+> +               cci_update_bits(regmap, OV4689_REG_TIMING_FORMAT2,
+> +                               OV4689_TIMING_FLIP_MASK,
+> +                               ctrl->val ? 0 : OV4689_TIMING_FLIP_BOTH, =
+&ret);
+> +               break;
+>         default:
+>                 dev_warn(dev, "%s Unhandled id:0x%x, val:0x%x\n",
+>                          __func__, ctrl->id, ctrl->val);
+> @@ -637,7 +654,7 @@ static int ov4689_initialize_controls(struct ov4689 *=
+ov4689)
+> =20
+>         handler =3D &ov4689->ctrl_handler;
+>         mode =3D ov4689->cur_mode;
+> -       ret =3D v4l2_ctrl_handler_init(handler, 10);
+> +       ret =3D v4l2_ctrl_handler_init(handler, 12);
+>         if (ret)
+>                 return ret;
+> =20
+> @@ -677,6 +694,9 @@ static int ov4689_initialize_controls(struct ov4689 *=
+ov4689)
+>                                      ARRAY_SIZE(ov4689_test_pattern_menu)=
+ - 1,
+>                                      0, 0, ov4689_test_pattern_menu);
+> =20
+> +       v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops, V4L2_CID_VFLIP, 0, 1=
+, 1, 0);
+> +       v4l2_ctrl_new_std(handler, &ov4689_ctrl_ops, V4L2_CID_HFLIP, 0, 1=
+, 1, 0);
+> +
+>         if (handler->error) {
+>                 ret =3D handler->error;
+>                 dev_err(ov4689->dev, "Failed to init controls(%d)\n", ret=
+);
+> --=20
+> 2.43.0
+>
 
