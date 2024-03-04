@@ -1,99 +1,147 @@
-Return-Path: <linux-kernel+bounces-90490-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90491-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8B56870005
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:12:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAFD387000C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:13:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E5BC1F26463
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:12:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52B2F1F2309E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:13:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 064E838FBA;
-	Mon,  4 Mar 2024 11:12:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iCDPP+yA"
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A73038DF7;
+	Mon,  4 Mar 2024 11:13:06 +0000 (UTC)
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D2BE381A0;
-	Mon,  4 Mar 2024 11:12:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7AA9381D0;
+	Mon,  4 Mar 2024 11:13:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709550742; cv=none; b=EHRqxLyCpUShQXKwWuz36XsfERdxkR8iHauVBQh3vVVVCyE1HKD+Zo/3KEYNlr8ego+e9dJxm9JvcT8p0vithmcpoBJo+5/1LB9BCWbD6Ha+6+B3ABt/S8Kv8QrUPuFwGzDuqANg2wl7oxeeX9LasUWFVpeNvp64wnV/JNnCCqU=
+	t=1709550785; cv=none; b=f/903pNL0HoY1YZ155uMiGO0iMqib9W11b5Zmuoftv0ewzqj3pHn3CfKLmO+D+ayPtGROr3Gz4IGI+qiDGCI1panTDUChfZY7uFY3PlbwNO9cfV3I9EhdjpZ7uT21D+HI28bP4qWxAfjjI+A9Pi0Zp9FZKtJZDFuBv8tz7WjSy4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709550742; c=relaxed/simple;
-	bh=6ZkCzawr70iVhSytkJbWHHAWdAJp5VaXL802KLG6CSM=;
+	s=arc-20240116; t=1709550785; c=relaxed/simple;
+	bh=BCy0Hx88WwhmnHSyuJBBAaJRbV8fYrG9jlRMWdx1Egg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jfei8aatF2GRtoaePULSf803INjWK4v8W1jDt9y6EVmnx7fv25Spwz92TqzpN5sLfQX7kDN7WiogxviY7REzq5bGm9HZv0j6vEjyjdW8W/rIqkY6or55bzByWwcgQZ94JE9Q2clTlAXXSsFZviptoFoUowuLtR40cgSaC5HTmo4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iCDPP+yA; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	 To:Cc:Content-Type; b=qXhn9YQsvQffMrE+m2uuLGYwIFWhFZIB1c4hHN4dffUbj6GpCWY7+gSRUD8LSFDdo6JeYhxDsowhxCKGBPOBMTA38s/cxjCTdiUGbBAuqLtfjfLzBGt/Pi3kVrppcsb6WOIzcqD5CHdY76hJaf8cetM1Z8vZkB87HxKk51qoHHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1dcc0d163a1so14380785ad.0;
-        Mon, 04 Mar 2024 03:12:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709550740; x=1710155540; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6ZkCzawr70iVhSytkJbWHHAWdAJp5VaXL802KLG6CSM=;
-        b=iCDPP+yACbwZlzhY6yw/dr1FZXjzf6sUw08SmgzuXPGGaqO4DYGZkhyMZi1n6HMrHH
-         XU4A5zbOptNRipWHEZUC+7lR25K58wJK+ArrQ+Ve5ugnoDHINNrpm6yV88DcTNlZ6KMs
-         IJ07f7NQacuV6SeGZXMHdrkzmmMv+IQXj0RmcMpimyN0GEEP5t3rECodlAmsNNQa8a8Z
-         rI2/Udcq+O2PWvSVl8itdVshM5kzL3aULbE3jCisN/4XrlOddXqqiveN2SCJ+UH47bT6
-         miVEHgE3DfejfGPnab+w2YP1v51I6K6aSMyy0hsafwPznUR0UjSv1P3YgGh4D8nxwy0I
-         ai6w==
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-6098bf69909so20326257b3.1;
+        Mon, 04 Mar 2024 03:13:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709550740; x=1710155540;
+        d=1e100.net; s=20230601; t=1709550781; x=1710155581;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6ZkCzawr70iVhSytkJbWHHAWdAJp5VaXL802KLG6CSM=;
-        b=jEBkpQLFlF9z/EiuRq5t3DfrFBbGMGo62xoLmxPvF4R14AF6wWWNqQX+Eqknu9Ik+h
-         /xSJSW+QGubnvFc7wUEZ8xFr4CEcj/uNst8u4xnuT5OJHGrmZHxkPtL2pKs/UrjO0L2Y
-         CjcD9GVbrZBF1Y1AgbhEMz9GpNNRGfn37WQFJm8gsfsEJc/SE4WooRo2tXq/S2ZfZurN
-         qDXA2kLP8f8e9b4/cyMryNSMRQtCIy4HpwE9rWRkQ6qUXT/lBCteRpDLklZL4Zbw5/oD
-         o6VLOobWiNQ41CFE5Yue/gkPIi8jfitQGTiOdNaGX7aBLEYhqbq0yuoUUvNU8eP4hF1D
-         gqIg==
-X-Forwarded-Encrypted: i=1; AJvYcCWuYlhwnglfadbtxSRZIlOxQgwjDhuQ6hq9g3WU8PgP35d6hQbxTi7mL0lw82QQbG4O0uu78SLvISye0IIfnMY+iiEWEFon7nxhUzG15IpHf/YSnf17Z4QATOsBZSfrcJr0UNmID25a
-X-Gm-Message-State: AOJu0YykHtxalqyDhei++4dMfHqL0FxQNvB0pKBLeniuigzpuQawYDkR
-	lTsbWBFTkprq0Z9rnDxCdyuniFCYXxs+lacYQxucQDm0Zo5OLTu9Rj3CfLBALzizYffzbKli1GN
-	xa71YuIB+hK6t+Yxh2YmmlW/kCKA=
-X-Google-Smtp-Source: AGHT+IEU/vpzfP1RaAkx+T0jQDm+f6dkz0d4veGwrfAmSyfH5tKFgW+VMU5rqKHIALIH3Q5NIoakElFocN33G1QYmAc=
-X-Received: by 2002:a17:90a:9e3:b0:29b:f79:2ec3 with SMTP id
- 90-20020a17090a09e300b0029b0f792ec3mr7088904pjo.3.1709550740384; Mon, 04 Mar
- 2024 03:12:20 -0800 (PST)
+        bh=X8dLsJKtv+8j8qXEd3qFacsSzLxPyFjQtVyNStvTTTM=;
+        b=Rl3+OQK8P3cblFvpPL4ZJGgLGltIy6HQbBT3Kbm+TsiOWQG8noYGj0NLrHrHNu5Vnc
+         j5KX1yVqK1etO4zff8B+ncgA+qvM9gx+nwDy7yBRVe5EncLhmTmc9v9VPWJaa+eSoZKu
+         w0QnxuNd33km9ROO8ehwW5uURNHkY+t5sv4+XbUV3KgiKg+W2pd9VU9j/wSha0nmw7eo
+         inX6HGSGQy5RLz/wQDUPgiBoSfsS0MCcNPuA6mImfkL9YIJMwLFcrKlx61bXdqe0gZCc
+         rp+7sFrbk4MHtw8CbR0gkwj4T7x0OD1qLz7VPTVauQMZYm+KSZuOjWNBhTZqkkq+ExbZ
+         h+gg==
+X-Forwarded-Encrypted: i=1; AJvYcCVyz6PZQkP/3d9VdzVBIoQv/O+zBn89SqFefZa8wT8U+esYfKs6H38qArbvRmfHY4eoRDrmWsEwqtCqfIWr/zirhldqHUesv9q+RREiWWmZnXmHEYBCiYemd+BVgmJO4e3qy8qlaIfdUDQfTkDlPlik2ivk+PL0WzSY980I4PemKYqZIC7QAv8Z
+X-Gm-Message-State: AOJu0YxL/EAnXjVKC/Ef0Qn/0IYc7A5om9Z7GY/hf8RlAZOgkLnx8jkE
+	U/0CoQ7nVkmQtIQEH0H1qo336CMpqgq2ozfLMjsxs8RqkrH6BvuLuLqghA2+I3o=
+X-Google-Smtp-Source: AGHT+IGMESEWEYZbE5+BT/RgzoZuNlfDR6zie6WyT0wGeP135y7b/u4EvvLORzNzIV7O+dg2c5GaLQ==
+X-Received: by 2002:a0d:e64b:0:b0:609:b59f:8352 with SMTP id p72-20020a0de64b000000b00609b59f8352mr693012ywe.19.1709550780754;
+        Mon, 04 Mar 2024 03:13:00 -0800 (PST)
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
+        by smtp.gmail.com with ESMTPSA id bx18-20020a05690c081200b006091d284e67sm2521471ywb.54.2024.03.04.03.12.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Mar 2024 03:12:59 -0800 (PST)
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dbed179f0faso3679947276.1;
+        Mon, 04 Mar 2024 03:12:59 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCW17gsnlehopKSARPZz6Y5U6NU9hUeHrFwCnwcnGZlKUi29fMDG+rrWilCBKSJP3Mfl4XRtJTpndxqDZqf8xo+rQCEwaBRrTn5pa40OlHAN6mALJlNKooFIH3Yulo8GvE4/tLcpIFv8ywE3ZID6cy34ru/MF/Otks7p7jBzEVvhx844fsR1Hjhb
+X-Received: by 2002:a25:ab44:0:b0:dcc:55e9:ec34 with SMTP id
+ u62-20020a25ab44000000b00dcc55e9ec34mr4965526ybi.30.1709550779663; Mon, 04
+ Mar 2024 03:12:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240303-sdma_upstream-v1-0-869cd0165b09@nxp.com> <20240303-sdma_upstream-v1-4-869cd0165b09@nxp.com>
-In-Reply-To: <20240303-sdma_upstream-v1-4-869cd0165b09@nxp.com>
-From: Fabio Estevam <festevam@gmail.com>
-Date: Mon, 4 Mar 2024 08:12:09 -0300
-Message-ID: <CAOMZO5A60zG+1u0NYPFaLsAgCxcF1RxxybVeatovTGj07oxqBA@mail.gmail.com>
-Subject: Re: [PATCH 4/4] dmaengine: imx-sdma: Add i2c dma support
-To: Frank Li <Frank.Li@nxp.com>
-Cc: Vinod Koul <vkoul@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
-	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
-	NXP Linux Team <linux-imx@nxp.com>, dmaengine@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	imx@lists.linux.dev, Robin Gong <yibin.gong@nxp.com>, 
-	Clark Wang <xiaoning.wang@nxp.com>
+References: <20240228225527.1052240-2-helen.koike@collabora.com>
+ <20240229-dancing-laughing-groundhog-d85161@houat> <5d7ed81b-37f9-48e9-ab7e-484b74ca886c@gmail.com>
+ <CAHk-=wixVy3WYvjbt43ZSrCqPDsS76QJQSkXFbbPsAOs1MCSAQ@mail.gmail.com>
+ <CABXOdTeT2ip1uS2EG2w8pW7254Tnd=ZDNz-KC61-G-yqDTVgJA@mail.gmail.com>
+ <269232e6-41c9-4aa1-9320-662beabcd69b@infradead.org> <CAMuHMdXuXV9WV3aANFTteuP8Q3JY6R5OWsVBedGOP7e_JguxqA@mail.gmail.com>
+ <CAMuHMdWi069YAvOoXe7sHJ_o702tY4tDQgL3sfApPR3aCnZboQ@mail.gmail.com>
+ <20240304-transparent-oriole-of-honeydew-f4174e@houat> <CAMuHMdXyvcyXw8eXc2MONNaBYYGpVdnPh2h3T=QV38MEUzhu9A@mail.gmail.com>
+ <20240304-dangerous-mastiff-of-fury-1fac5c@houat>
+In-Reply-To: <20240304-dangerous-mastiff-of-fury-1fac5c@houat>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 4 Mar 2024 12:12:47 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdV2HkYjowOZBgSZQ3N01UeUTnyv5kjx-82C9YJ+dsgsxQ@mail.gmail.com>
+Message-ID: <CAMuHMdV2HkYjowOZBgSZQ3N01UeUTnyv5kjx-82C9YJ+dsgsxQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] kci-gitlab: Introducing GitLab-CI Pipeline for Kernel Testing
+To: Maxime Ripard <mripard@kernel.org>
+Cc: Randy Dunlap <rdunlap@infradead.org>, Guenter Roeck <groeck@google.com>, 
+	Linus Torvalds <torvalds@linuxfoundation.org>, Nikolai Kondrashov <spbnick@gmail.com>, 
+	Helen Koike <helen.koike@collabora.com>, linuxtv-ci@linuxtv.org, 
+	dave.pigott@collabora.com, linux-kernel@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org, 
+	gustavo.padovan@collabora.com, pawiecz@collabora.com, 
+	tales.aparecida@gmail.com, workflows@vger.kernel.org, 
+	kernelci@lists.linux.dev, skhan@linuxfoundation.org, 
+	kunit-dev@googlegroups.com, nfraprado@collabora.com, davidgow@google.com, 
+	cocci@inria.fr, Julia.Lawall@inria.fr, laura.nao@collabora.com, 
+	ricardo.canuelo@collabora.com, kernel@collabora.com, 
+	gregkh@linuxfoundation.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 4, 2024 at 1:33=E2=80=AFAM Frank Li <Frank.Li@nxp.com> wrote:
->
-> From: Robin Gong <yibin.gong@nxp.com>
->
-> New sdma script support i2c. So add I2C dma support.
+Hi Maxime,
 
-What is the SDMA firmware version that corresponds to this "new SDMA script=
-"?
+On Mon, Mar 4, 2024 at 11:20=E2=80=AFAM Maxime Ripard <mripard@kernel.org> =
+wrote:
+> On Mon, Mar 04, 2024 at 11:07:22AM +0100, Geert Uytterhoeven wrote:
+> > On Mon, Mar 4, 2024 at 10:15=E2=80=AFAM Maxime Ripard <mripard@kernel.o=
+rg> wrote:
+> > > On Mon, Mar 04, 2024 at 09:12:38AM +0100, Geert Uytterhoeven wrote:
+> > > > On Sun, Mar 3, 2024 at 10:30=E2=80=AFAM Geert Uytterhoeven <geert@l=
+inux-m68k.org> wrote:
+> > > > ERROR: modpost: "__udivdi3" [drivers/gpu/drm/sun4i/sun4i-drm-hdmi.k=
+o] undefined!
+> > > > make[3]: *** [scripts/Makefile.modpost:145: Module.symvers] Error 1
+> > > > make[2]: *** [Makefile:1871: modpost] Error 2
+> > > > make[1]: *** [Makefile:240: __sub-make] Error 2
+> > > > make: *** [Makefile:240: __sub-make] Error 2
+> > > >
+> > > > No warnings found in log.
+> > > > -------------------------------------------------------------------=
+>8---
+> > >
+> > > The driver is meant for a controller featured in an SoC with a Cortex=
+-A8
+> > > ARM CPU and less than a GiB/s memory bandwidth.
+> >
+> > Good, so the hardware cannot possibly need 64-bit pixel clock values ;-=
+)
+>
+> This is an early patch to convert that function into a framework hook
+> implementation. HDMI 2.1 has a max TMDS character rate of slightly less
+> than 6GHz, so larger than 2^32 - 1.
+>
+> So yes, this driver doesn't need to. The framework does however.
 
-In which SoC has this been tested?
+That's gonna be interesting, as the Common Clock Framework does not
+support 64-bit clock rates on 32-bit platforms yet...
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
