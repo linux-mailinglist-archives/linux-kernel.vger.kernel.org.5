@@ -1,74 +1,63 @@
-Return-Path: <linux-kernel+bounces-90231-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90237-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0E5686FC39
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:48:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BBA786FC48
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:50:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76CC91F2153F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:48:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F350E1F21673
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:50:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DFDC39FC7;
-	Mon,  4 Mar 2024 08:44:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67AED3D0CA;
+	Mon,  4 Mar 2024 08:44:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Z4dWYz3O"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GXE51NYD"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BA2C38F8F
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 08:44:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E1F11DA5B;
+	Mon,  4 Mar 2024 08:44:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709541842; cv=none; b=mgRHTGwwLwpkb4PBf7rkfjyv0au3L6kp7Ma0d65mykbEc/RoOIrA6BHA8PqFXu6A2/4QHcYVLV2Dcj2Fx1MXDCep5XdrlywjJsXB+HzqQlCh89aWQvZ4fMlsu1usAmX00RUmecNtctkkqBXo6fUyJE6BrZLimuKOESDBbDCo9QQ=
+	t=1709541857; cv=none; b=Z/YOcVD7FlkLgfutSGPiyQaUfkf3BI5BkPihzBd/L/BELEmT0ASHDIjjDYbsKUX+qAxRMaMe+/sIcq3Gbs1/vMe8Q1ytbTbQdAqQZCShz4SoQgEdKhLrzCulX2jzgo/0x1NGbOYCm7EYqrsYhrHofOmVCOi0RuZ9+bSE5t+FQL8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709541842; c=relaxed/simple;
-	bh=I29VTBmWsXgiB8EffcLS3EPaMYqXfAHUkxD9L3kQnkQ=;
+	s=arc-20240116; t=1709541857; c=relaxed/simple;
+	bh=m3btwuB1XUM+0/1Srhrmy8oBrwYrCSMk8C4cHIhZwpI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pzBxjKs+m9GU9gGwle3/Ys3iXn+4h7hFcmyTKOsf8uqydxNgui5fbByVpquq1nOF1sKyLoWO9enNfqrB4hiPJnm+KGWJ+y0Csyw9lvHV7WXZC8Q9WzNFSPlc6bmB09Ok5S4izbJYK7/2TdWJH7wt+Al3IqZ2/ZL/mwYTT0g+6xY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Z4dWYz3O; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709541839;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3LdMeXg6oYzzaQwNcQtAfoUHshalR516v8C8QWlVtXs=;
-	b=Z4dWYz3O1CS38A+Z4ehIn0rIWKOtb/gNJQ5GOzMFyYJOytq0LMqStvRrHugKFl5y8TQiX5
-	ji7yPStq5RS0OVrlN1O3XTulKY71i5FaJb2UkTHsazjX/TAz1cB6JOMpN/bHGPNhwAw89T
-	fi21NWjx0ua3QcYf7G6dwfyjj66lB+A=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-584-RAUvfw0xNwWztwDrstr7uA-1; Mon, 04 Mar 2024 03:43:56 -0500
-X-MC-Unique: RAUvfw0xNwWztwDrstr7uA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 967FD811E79;
-	Mon,  4 Mar 2024 08:43:55 +0000 (UTC)
-Received: from sirius.home.kraxel.org (unknown [10.39.193.36])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 205332166B31;
-	Mon,  4 Mar 2024 08:43:55 +0000 (UTC)
-Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
-	id BD16218009DB; Mon,  4 Mar 2024 09:43:53 +0100 (CET)
-Date: Mon, 4 Mar 2024 09:43:53 +0100
-From: Gerd Hoffmann <kraxel@redhat.com>
-To: Tao Su <tao1.su@linux.intel.com>
-Cc: kvm@vger.kernel.org, Sean Christopherson <seanjc@google.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, 
-	"maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, 
-	"open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] kvm: wire up KVM_CAP_VM_GPA_BITS for x86
-Message-ID: <vlr6f5dnyhb6aw5si6m4vxqemwoyg7lrti7pdy4jzatady5mgr@bv44qwgk6ppu>
-References: <20240301101410.356007-1-kraxel@redhat.com>
- <20240301101410.356007-2-kraxel@redhat.com>
- <ZeH+pPO7hhgDNujs@linux.bj.intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=h8//Pn/8aHczXdhdITMkbuoWyNbn3fJiFBrsNln9Ub4R1wkPgydhVBH0yQidmnROAm7SV3Boq0tDsLbjsr9Azd9mpMBVZIqBeHbORynRXi8OeMH7brpc5hc5VC4qz4Qlipdoh8Zevnr0kPc1wopNIoRkYoWgohR5ARRV+jdM668=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GXE51NYD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E0C3C43399;
+	Mon,  4 Mar 2024 08:44:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709541857;
+	bh=m3btwuB1XUM+0/1Srhrmy8oBrwYrCSMk8C4cHIhZwpI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GXE51NYDqpQ6Rpt9NCI+I0KTgTxx8Ob9USgAHcXYvtmVdkGqv9AJOiPikODi/j8+J
+	 7JMubxXRMWEnVhoLTktK0+ZSoBnHvSbaG7TShTXMSmNd9wdyeXvcVBKx5E859ICTT4
+	 HBoz1rjslk7YRW72BGTovEg/P++8uW9LfQTYy3vhl5wn0yn/ioLGvJ/fW707WhVa78
+	 m216Hm24/eDT/aA9PiVuIvA2ukGsRri5g7nghmfQOMZv6wHhIPtASbOLZCoWVsjGHV
+	 N/uK6O2Dkz6XaukXb+Ik9dnu49PD3loVvBZsOhM/NIJ7CUuAonay1v5ra93D6LBqYR
+	 PKHtKW3BB9x3g==
+Date: Mon, 4 Mar 2024 09:44:09 +0100
+From: Lorenzo Pieralisi <lpieralisi@kernel.org>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Frank Li <Frank.Li@nxp.com>, bhelgaas@google.com, conor+dt@kernel.org,
+	devicetree@vger.kernel.org, festevam@gmail.com,
+	hongxing.zhu@nxp.com, imx@lists.linux.dev, kernel@pengutronix.de,
+	krzysztof.kozlowski+dt@linaro.org, krzysztof.kozlowski@linaro.org,
+	kw@linux.com, l.stach@pengutronix.de,
+	linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	manivannan.sadhasivam@linaro.org, robh@kernel.org,
+	s.hauer@pengutronix.de, shawnguo@kernel.org,
+	Nathan Chancellor <nathan@kernel.org>
+Subject: Re: [PATCH v10 03/14] PCI: imx6: Simplify reset handling by using by
+ using *_FLAG_HAS_*_RESET
+Message-ID: <ZeWJ2Z5kKoqbeWYn@lpieralisi>
+References: <20240205173335.1120469-4-Frank.Li@nxp.com>
+ <20240301190931.GA403500@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,25 +66,29 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZeH+pPO7hhgDNujs@linux.bj.intel.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+In-Reply-To: <20240301190931.GA403500@bhelgaas>
 
-> > +	kvm_caps.guest_phys_bits = boot_cpu_data.x86_phys_bits;
+On Fri, Mar 01, 2024 at 01:09:31PM -0600, Bjorn Helgaas wrote:
+> [+cc Nathan]
 > 
-> When KeyID_bits is non-zero, MAXPHYADDR != boot_cpu_data.x86_phys_bits
-> here, you can check in detect_tme().
+> On Mon, Feb 05, 2024 at 12:33:24PM -0500, Frank Li wrote:
+> > Refactors the reset handling logic in the imx6 PCI driver by adding
+> > IMX6_PCIE_FLAG_HAS_*_RESET bitmask define for drvdata::flags.
+> > 
+> > The drvdata::flags and a bitmask ensures a cleaner and more scalable
+> > switch-case structure for handling reset.
+> > 
+> > Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
+> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> 
+> Lorenzo, would you mind squashing in Nathan's fix from
+> https://lore.kernel.org/r/20240301-pci-imx6-fix-clang-implicit-fallthrough-v1-1-db78c7cbb384@kernel.org?
+> 
+> Also, the subject line has a repeated "by using by using".
 
-from detect_tme():
+I will fix it up.
 
-        /*
-         * KeyID bits effectively lower the number of physical address
-         * bits.  Update cpuinfo_x86::x86_phys_bits accordingly.
-         */
-        c->x86_phys_bits -= keyid_bits;
-
-This looks like x86_phys_bits gets adjusted if needed.
-
-take care,
-  Gerd
-
+Thanks,
+Lorenzo
 
