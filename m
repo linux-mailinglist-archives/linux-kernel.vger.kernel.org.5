@@ -1,142 +1,191 @@
-Return-Path: <linux-kernel+bounces-91194-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91188-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBAA0870B0B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:53:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68A6A870AEE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:46:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 977DA287C91
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:53:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BED521F22E5E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:46:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F2817BAFB;
-	Mon,  4 Mar 2024 19:52:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EEBC79DD7;
+	Mon,  4 Mar 2024 19:46:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="SiHLQ+YM"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="if4l83O9"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 104137AE47
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 19:52:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 124FC4653A
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 19:46:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709581943; cv=none; b=dm6RsBiT3xs6c2J5746uloJt+MP5UW89rzNxlUo1im4k2RvX/hYJtgbd23RoyE/XCKxxWoDBqlBSMTves4xNqZCDyV8552X4+hZwpPLAdJAkCN9O2E9TWGNcTUgGEC8XnP/If1M7pvryjm/PaqKTxgGtRkLZeShQmHp+G2j/5fQ=
+	t=1709581588; cv=none; b=sW4fAQwArsEGq4+lvSOEoD+JFgt2DqYK2OJpZSpaUpS+VFZA9v8xAMEtejh6/fm/kg9mvedjmPfOnre9FsaUzNmdQwiMrc2ZmDozmTtvr7EW2ths/e8+F24aWHZinsRsSqzznu9Zk3/XFQ2vLWwT5x+WdXiQefEq+e8JD8K6M3E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709581943; c=relaxed/simple;
-	bh=8OuDlLGurFFp9VxyciJz45RtYgLMl6l5MFaKGdW8p1s=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=da//bk7k4IcisUIu2PaLBvRnNCILer/RhiHit80i7ddqnwlVzYPdMGC0lTOjF2ERKceyFuYZLk98JDOt9j3GbfsO4bVxQ0dQMxK2bTPyRVGI06dMDxxcAGgfOZaWI/mi7AWwkFggXRv3R4RLijR2pfMMXndMltG4BrGty+nE7QI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=SiHLQ+YM; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e56d594b31so2547827b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 11:52:21 -0800 (PST)
+	s=arc-20240116; t=1709581588; c=relaxed/simple;
+	bh=aOqHk6SVd7G59dSUt4yGvRnSNmhLPrAQTYd8u3xfOEA=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=DdD9W+3cCzwbuU1T4LSmAt6JbgaZF0btLNd+h8YRqwOJ0g7d2c5RFJAgT+dwdaQ0GbY3iY1+TcbgBycqgf4KvIt6wQvU5RJ3boMlpDD/nX1MA4M5mG3ZW2h9cJznlPPhpIHD30ZrJk5gsYnUXYzPdRxA2/zV8fViyKRHNEDDqPs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=if4l83O9; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6b26eef6cso6608635276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 11:46:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709581941; x=1710186741; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EMSlD4D61SNUMtl55lAIMxqBblJYN3jwwZ/l0KMGCh0=;
-        b=SiHLQ+YMyChL5yT9Cus6F9bysVDRaojtjFLsZkD7hHiRIM5K+k0SZDrFCiSSBcS5Ue
-         8zqbSfdi/SXAOMOQCQHBbYukohUOwGtf+J4UpO9Gktj3jI4zFkECaRVclHV6iFkcpTi0
-         4PFDgzWA36YpOtv0OdQpxGhpuqftK9uhEUY90=
+        d=google.com; s=20230601; t=1709581586; x=1710186386; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VWzHdRna3zMy+XLYBNvG6plLaOTh5XkeubVVBNUfIw0=;
+        b=if4l83O9zqyZF+RJplfo5dSbH52VmsnlZcb+cEBy+Lu4BBdvRbRyDcv4zlSU83N7P7
+         UDaQLd1QTNkBkKokjLT7a3ShrDisPSDo4wJD0cBJ/ucXhCYN3nNmDJZnobOWiT2YBPbK
+         AJRAmwIu+/Co35w2pOV16b8FkR894pC8PTLgb4FaJA+twPq/cAA7cCGZINXCEPI7MbyX
+         CphkbzYw/qG7Li38Qr9yfmKMo7DRF10VrDTBRaZGqxWptKn/4RXSMtR7JzwpU2kVVXo+
+         dMHZmWrAzUk1+W+UA6P94dutGKyXKz4CsYsmuTl4XrmqXWgbqYvmszayMSGMHz+kpvdc
+         vT5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709581941; x=1710186741;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EMSlD4D61SNUMtl55lAIMxqBblJYN3jwwZ/l0KMGCh0=;
-        b=c7Q1kN92xMjiHpV0E9dusUhkbHk1ZemvqKAusX+WwqfJTHfO11qlYAEkKhCN6gWRlJ
-         di5GT7fHKBqUmihCRk20awMznx1xyCMs8CU3NDzEUdMTucUOgjXCnFcf7hfbeMu1lnWJ
-         tb0AGrqVXKAoIKXt4F3xzWIW0ycircn1yj1iu5CDH5IYmPniTOnmblo4QLaj8FO/F+Ln
-         tGLzxiGvuCeE35cD8MRQ74FLKbBa6ogEXbgk7uOdwERm4lJLRuaKfR+q/tzimROatHF2
-         F8Ra+gatElsN9aPS2ZyjQmlIIwH4yBo09BfhcPVrzpB/QNSOYDoKFpFklnUoZ4J8KLKS
-         Mdhw==
-X-Forwarded-Encrypted: i=1; AJvYcCUscnrlG9kIpqJkKJvSGHsI3tYJ+0Nbe0Xd2UwJcyxOJI1YmOsp9pqhJotf1ItHAPuDzEgmmgMiXF4Hx0buGZWLejzYOiHslfA8cq+z
-X-Gm-Message-State: AOJu0Yxc3Dnm44mSpjHtuhz01KLqLjCgrw1wTIv3+LucU4uBR/04eTJ8
-	qnsoUMKDQYJTwRXB2g9SndQWLvETK2vl/V2OTIng2vOePxMyW2G6oLAHp4owqg==
-X-Google-Smtp-Source: AGHT+IHPtFpxTAyxqYpM+QvUFmcFVeN7dHU0wEyqkEdqd7zuA4ef1jTJ4eEAL4kK24nK/EHKqXAQdw==
-X-Received: by 2002:a05:6a20:e11a:b0:1a1:4d8b:8cf9 with SMTP id kr26-20020a056a20e11a00b001a14d8b8cf9mr1728648pzb.11.1709581941402;
-        Mon, 04 Mar 2024 11:52:21 -0800 (PST)
-Received: from hsinyi.sjc.corp.google.com ([2620:15c:9d:2:bcf3:25da:25cd:199])
-        by smtp.gmail.com with ESMTPSA id r27-20020aa7845b000000b006e04d2be954sm7600820pfn.187.2024.03.04.11.52.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 11:52:21 -0800 (PST)
-From: Hsin-Yi Wang <hsinyi@chromium.org>
-To: Douglas Anderson <dianders@chromium.org>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>,
-	Jessica Zhang <quic_jesszhan@quicinc.com>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3 4/4] drm/panel: panel-edp: Fix AUO 0x405c panel naming and add a variant
-Date: Mon,  4 Mar 2024 11:44:59 -0800
-Message-ID: <20240304195214.14563-5-hsinyi@chromium.org>
-X-Mailer: git-send-email 2.44.0.rc1.240.g4c46232300-goog
-In-Reply-To: <20240304195214.14563-1-hsinyi@chromium.org>
-References: <20240304195214.14563-1-hsinyi@chromium.org>
+        d=1e100.net; s=20230601; t=1709581586; x=1710186386;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=VWzHdRna3zMy+XLYBNvG6plLaOTh5XkeubVVBNUfIw0=;
+        b=M3ScB20bwWZNKB2iToOxOcGVY0kDm2S2F1XZ8KVwT9EeYXZXnACDg8hCKCVLwImKMP
+         C4CuzGSh85GlzrBmt6w6Ap6ooR+5MStckQsojS9NHWkqQjezH1SVKcp8KJJEFPBFPXR1
+         mRKrEVqDZXNXWnk05lM+JE1vL7xrmekx8e7Kp5bPMA0FMHQDHY/bQ0srZqqGFdxgYxRh
+         XI7OJKoGGs8FuXFOrLo1ZTEOOCDuakiI/MHnbrLoOTEERu3z4LZsHL/js6gWw7eewfvX
+         d2QQegg8wvA1K+NMlHM3N4n+vQ+vhPDT8O9lSObYszDaoNtmbGWSBUtPOjpPGcRJq9Rr
+         A/PQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVH/Rel8a3e2RorpMEi+hwC3grrIItRL72H7oJBSw3WxPpAPfsW63dXttO5FaLc82Qzn3ePofBK1me1msAHm33ty/woQtzhL6SlDaCb
+X-Gm-Message-State: AOJu0Yyg4HrBAWcYM9aqfody6mtXJR0bNryV0JQ+zhgsQ1mLTZu8pl43
+	n0FPUf86aEQ7fAZc3DEbumn5yHwJPIFxwCZjiJtn+qjspHI41NfaZ+JUbwZHSXn/sCJ6RCd4zPy
+	ahQ==
+X-Google-Smtp-Source: AGHT+IHSp+E82/ypS4UweAZlpJyK2PaD1v+2hDqPO3hjubOPh1Qou0p7AnyKgGQKbThW17QfzK3uokGmnz0=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:1143:b0:dc7:6cfa:dc59 with SMTP id
+ p3-20020a056902114300b00dc76cfadc59mr389188ybu.4.1709581585728; Mon, 04 Mar
+ 2024 11:46:25 -0800 (PST)
+Date: Mon, 4 Mar 2024 11:46:24 -0800
+In-Reply-To: <f5bbe9ac-ca35-4c3e-8cd7-249839fbb8b8@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <20240301075007.644152-1-sandipan.das@amd.com> <06061a28-88c0-404b-98a6-83cc6cc8c796@gmail.com>
+ <cc8699be-3aae-42aa-9c70-f8b6a9728ee3@amd.com> <f5bbe9ac-ca35-4c3e-8cd7-249839fbb8b8@linux.intel.com>
+Message-ID: <ZeYlEGORqeTPLK2_@google.com>
+Subject: Re: [PATCH] KVM: x86/svm/pmu: Set PerfMonV2 global control bits correctly
+From: Sean Christopherson <seanjc@google.com>
+To: Dapeng Mi <dapeng1.mi@linux.intel.com>
+Cc: Sandipan Das <sandipan.das@amd.com>, Like Xu <like.xu.linux@gmail.com>, pbonzini@redhat.com, 
+	mizhang@google.com, jmattson@google.com, ravi.bangoria@amd.com, 
+	nikunj.dadhania@amd.com, santosh.shukla@amd.com, manali.shukla@amd.com, 
+	babu.moger@amd.com, kvm list <kvm@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-There are 2 different AUO panels using the same panel id. One of the
-variants requires using overridden modes to resolve glitching issue as
-described in commit 70e0d5550f5c ("drm/panel-edp: Add auo_b116xa3_mode").
-Other variants should use the modes parsed from EDID.
+On Mon, Mar 04, 2024, Dapeng Mi wrote:
+>=20
+> On 3/1/2024 5:00 PM, Sandipan Das wrote:
+> > On 3/1/2024 2:07 PM, Like Xu wrote:
+> > > On 1/3/2024 3:50 pm, Sandipan Das wrote:
+> > > > With PerfMonV2, a performance monitoring counter will start operati=
+ng
+> > > > only when both the PERF_CTLx enable bit as well as the correspondin=
+g
+> > > > PerfCntrGlobalCtl enable bit are set.
+> > > >=20
+> > > > When the PerfMonV2 CPUID feature bit (leaf 0x80000022 EAX bit 0) is=
+ set
+> > > > for a guest but the guest kernel does not support PerfMonV2 (such a=
+s
+> > > > kernels older than v5.19), the guest counters do not count since th=
+e
+> > > > PerfCntrGlobalCtl MSR is initialized to zero and the guest kernel n=
+ever
+> > > > writes to it.
+> > > If the vcpu has the PerfMonV2 feature, it should not work the way leg=
+acy
+> > > PMU does. Users need to use the new driver to operate the new hardwar=
+e,
+> > > don't they ? One practical approach is that the hypervisor should not=
+ set
+> > > the PerfMonV2 bit for this unpatched 'v5.19' guest.
+> > >=20
+> > My understanding is that the legacy method of managing the counters sho=
+uld
+> > still work because the enable bits in PerfCntrGlobalCtl are expected to=
+ be
+> > set. The AMD PPR does mention that the PerfCntrEn bitfield of PerfCntrG=
+lobalCtl
+> > is set to 0x3f after a system reset. That way, the guest kernel can use=
+ either
+>=20
+> If so, please add the PPR description here as comments.
 
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
----
-v2->v3: no change.
----
- drivers/gpu/drm/panel/panel-edp.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+Or even better, make that architectural behavior that's documented in the A=
+PM.
 
-diff --git a/drivers/gpu/drm/panel/panel-edp.c b/drivers/gpu/drm/panel/panel-edp.c
-index e3044e34c5f8..d2e181efff98 100644
---- a/drivers/gpu/drm/panel/panel-edp.c
-+++ b/drivers/gpu/drm/panel/panel-edp.c
-@@ -1011,6 +1011,19 @@ static const struct panel_desc auo_b101ean01 = {
- 	},
- };
- 
-+static const struct drm_display_mode auo_b116xa3_mode = {
-+	.clock = 70589,
-+	.hdisplay = 1366,
-+	.hsync_start = 1366 + 40,
-+	.hsync_end = 1366 + 40 + 40,
-+	.htotal = 1366 + 40 + 40 + 32,
-+	.vdisplay = 768,
-+	.vsync_start = 768 + 10,
-+	.vsync_end = 768 + 10 + 12,
-+	.vtotal = 768 + 10 + 12 + 6,
-+	.flags = DRM_MODE_FLAG_NVSYNC | DRM_MODE_FLAG_NHSYNC,
-+};
-+
- static const struct drm_display_mode auo_b116xak01_mode = {
- 	.clock = 69300,
- 	.hdisplay = 1366,
-@@ -1966,7 +1979,9 @@ static const struct edp_panel_entry edp_panels[] = {
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x239b, &delay_200_500_e50, "B116XAN06.1"),
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x255c, &delay_200_500_e50, "B116XTN02.5"),
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x403d, &delay_200_500_e50, "B140HAN04.0"),
--	EDP_PANEL_ENTRY('A', 'U', 'O', 0x405c, &auo_b116xak01.delay, "B116XAK01.0"),
-+	EDP_PANEL_ENTRY('A', 'U', 'O', 0x405c, &auo_b116xak01.delay, "B116XAN04.0"),
-+	EDP_PANEL_ENTRY2('A', 'U', 'O', 0x405c, &auo_b116xak01.delay, "B116XAK01.0 ",
-+			 &auo_b116xa3_mode),
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x435c, &delay_200_500_e50, "Unknown"),
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x582d, &delay_200_500_e50, "B133UAN01.0"),
- 	EDP_PANEL_ENTRY('A', 'U', 'O', 0x615c, &delay_200_500_e50, "B116XAN06.1"),
--- 
-2.44.0.rc1.240.g4c46232300-goog
+> > > > ---
+> > > >  =C2=A0 arch/x86/kvm/svm/pmu.c | 1 +
+> > > >  =C2=A0 1 file changed, 1 insertion(+)
+> > > >=20
+> > > > diff --git a/arch/x86/kvm/svm/pmu.c b/arch/x86/kvm/svm/pmu.c
+> > > > index b6a7ad4d6914..14709c564d6a 100644
+> > > > --- a/arch/x86/kvm/svm/pmu.c
+> > > > +++ b/arch/x86/kvm/svm/pmu.c
+> > > > @@ -205,6 +205,7 @@ static void amd_pmu_refresh(struct kvm_vcpu *vc=
+pu)
+> > > >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (pmu->version > 1) {
+> > > >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pmu->global=
+_ctrl_mask =3D ~((1ull << pmu->nr_arch_gp_counters) - 1);
+> > > >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pmu->global=
+_status_mask =3D pmu->global_ctrl_mask;
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pmu->global_ctrl =3D ~p=
+mu->global_ctrl_mask;
+>=20
+> It seems to be more easily understand to calculate global_ctrl firstly an=
+d
+> then derive the globol_ctrl_mask (negative logic).
 
+Hrm, I'm torn.  On one hand, awful name aside (global_ctrl_mask should real=
+ly be
+something like global_ctrl_rsvd_bits), the computation of the reserved bits=
+ should
+come from the capabilities of the PMU, not from the RESET value.
+
+On the other hand, setting _all_ non-reserved bits will likely do the wrong=
+ thing
+if AMD ever adds bits in PerfCntGlobalCtl that aren't tied to general purpo=
+se
+counters.  But, that's a future theoretical problem, so I'm inclined to vot=
+e for
+Sandipan's approach.
+
+> diff --git a/arch/x86/kvm/svm/pmu.c b/arch/x86/kvm/svm/pmu.c
+> index e886300f0f97..7ac9b080aba6 100644
+> --- a/arch/x86/kvm/svm/pmu.c
+> +++ b/arch/x86/kvm/svm/pmu.c
+> @@ -199,7 +199,8 @@ static void amd_pmu_refresh(struct kvm_vcpu *vcpu)
+> kvm_pmu_cap.num_counters_gp);
+>=20
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (pmu->version > 1) {
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 pmu->global_ctrl_mask =3D ~((1ull << pmu->nr_arch_gp_counters)
+> - 1);
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 pmu->global_ctrl =3D (1ull << pmu->nr_arch_gp_counters) - 1;
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 pmu->global_ctrl_mask =3D ~pmu->global_ctrl;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 pmu->global_status_mask =3D pmu->global_ctrl_mask;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>=20
+> > > >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+> > > >  =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pmu->counter_bitmask[KVM_PMC=
+_GP] =3D ((u64)1 << 48) - 1;
+> >=20
 
