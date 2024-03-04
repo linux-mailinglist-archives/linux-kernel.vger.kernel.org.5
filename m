@@ -1,109 +1,267 @@
-Return-Path: <linux-kernel+bounces-91080-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91081-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C85EE870955
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:18:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1209387095A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:18:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 69C42B283FB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:18:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36EA91C218A8
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:18:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6F9F62170;
-	Mon,  4 Mar 2024 18:17:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28DAC626BF;
+	Mon,  4 Mar 2024 18:18:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BGgEW9KC"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jcUGxUTM"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A46F062140;
-	Mon,  4 Mar 2024 18:17:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4480160265;
+	Mon,  4 Mar 2024 18:18:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709576271; cv=none; b=EfYwJE6nf643NgMGc7HeQTKTnNMtVrXzbzk7u1KtkN3rpCJL16tBIbx6AdzmQP/fOZtRgv+U6W/fLub4PBoO7IYnaOjZ7jxE+HugydDz4AbE906J49Ft15ptmjNes8Cz+Zqu8WGVaydIrZrtrZsnHSxQdPihKcEu4nnamBAaWdo=
+	t=1709576281; cv=none; b=WHm6bU5Sx57yoWAnEaq/WiPGIKNP0mx7R8tlTRPr5wiRkHApPuOZsWLLnIhK03/EPZN40BwoDsQNJuHgEZ3iPivkUIUPq3YbKQluQwWQ87S5Muka02PBRi6/t61i1ZMOFykG5mf+F7Eykj+D+6A0diYQ+lR7+z0ytG+D2lwvf1s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709576271; c=relaxed/simple;
-	bh=0VcXOVEj4uX5cN19M7/PiaO2mkyA5iUM7Ie+C/DjQ/g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qCH/a0WPB4uaxRlWP6vp8S8gnBceBZK9pcEeCNZe5IMr+YsqFFlZrUs5XraOcoW8Dpr6zu6c2pUJmefYV8ZBe3K3A4aTf3w0+0O7w1oZwYEJSrAy+nhBU9uPonYTcrMP9lE8mlaW3tmMtQUfQQsGZosJcMcQWVAop0jzlLluliM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BGgEW9KC; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a4467d570cdso485481266b.3;
-        Mon, 04 Mar 2024 10:17:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709576268; x=1710181068; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0VcXOVEj4uX5cN19M7/PiaO2mkyA5iUM7Ie+C/DjQ/g=;
-        b=BGgEW9KC+n6L2KlIkGvl+tGG7Ymt5sHRXUhzNAYExEZwZwmvgWLX43RkYp3Gg7dx5I
-         e78pEfVy0iDf0+b/5bbxWErYWqQWqqtLxEUGAw3CBqfeuF33mKcwKCw/fpw2MZdmMbli
-         Nqln6S+drgx6hxG29Y/30ADlMolgnfkbxVGDWusMKXVzftfbchyTG9i4IACRhYEWcDjm
-         LtJK0ap6lkmFfgwgonzm34Yad2kutDOn0Gg7WQFTVehoF7Z9l+KG4e5C2xt9teBiNURm
-         OIFzSOxBrKxW3TzUlWJrmRvYFcfH2hRN6Vy3wZt0VEZfuvzpLRKYaUQSZQv4cUz5VmAO
-         y0Rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709576268; x=1710181068;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0VcXOVEj4uX5cN19M7/PiaO2mkyA5iUM7Ie+C/DjQ/g=;
-        b=gJyPqOmp9VZgVm+N5NsGDKUeW2VJTYMAVjFYk/ypP5C955wIrwLKcupmHjdIT04+qE
-         G9sj5lAJeJO5o2vw2nX13cs5usjy6DrrSS0anARRQIw8K57JuDQPnsNDoOGhJRx1sCdl
-         RvR048Di079gn+WEDRz6U5SDjA6BHyIJDkelwTwOHXLWEPRAGMBnHDrpzOrjC+ZWINS1
-         GdtJ75oIilMw1ttmCj9eoBScFScT324mLNvjc0wAp5UA35+W3tRg6cGzBijnW7Xd6RNT
-         8qq1AVQYjU/ODLZ+kz1NQ+mglz+hEvrOfAV9HQAxNqSthi1o3kCFIpqrK56KHGKygXlA
-         grxg==
-X-Forwarded-Encrypted: i=1; AJvYcCVlmsfITOq3QzrEh+VPUNPvi8jFkS0hNd3nGWNUhWHScvaXwP7vWFK3LDqx4gIMFLfCxAKTgKPoB/VXhuqiCutz7hXLtyjpyd+b9Qhe6aTFmgxZtfSefl/2J1IBR0Z4umTJPWt0IQ/9NqmIwSjLLa0Op58y6+d05KMvhEZoC5O3uAu27ik=
-X-Gm-Message-State: AOJu0YyHyMckGkXOxmvR5VjjpqVnifhA2jJq6LAN/ofdgUG5JJdyxYlE
-	BfXKXggpGMRz6ftZ057/fKhias8sc/mMBHi0ZDwuRlAzEkpwLa8O6bbrWvZsvZYq/X+1zsI2b25
-	aCf6o6qBam6CylL6x4V2EXgbLde0=
-X-Google-Smtp-Source: AGHT+IH8TVrqbKPkISojymMNbutJG+3MG9Q5hp7NXKQN7l42CwKtPGnXdOghrTrfrTcx7ph0QmrrkGy8NtpHc3/FEFY=
-X-Received: by 2002:a17:906:b80b:b0:a45:1c4b:54eb with SMTP id
- dv11-20020a170906b80b00b00a451c4b54ebmr3224939ejb.3.1709576267706; Mon, 04
- Mar 2024 10:17:47 -0800 (PST)
+	s=arc-20240116; t=1709576281; c=relaxed/simple;
+	bh=MhVj6rlBDtv//G52D2MyGutBUo2/1sAyxm3U50UUn30=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dvgaD6iqmZNbEvsXzhEEkLB9IxDvQ7nE8c1YUMNOWLlR5t463NMpnr4Nqb2qKIGwEuR64fn5WJHfpfKG1yQgz4XoeNwfcg/sam435Xfuv/rf4wyu1DGFgjwbZjh3UeYVu62XR55geSxaaipDh9zV8/Ag8JAYjILeZkTLxieXuu8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jcUGxUTM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC2F3C433F1;
+	Mon,  4 Mar 2024 18:18:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709576281;
+	bh=MhVj6rlBDtv//G52D2MyGutBUo2/1sAyxm3U50UUn30=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jcUGxUTMLrXoBlVWwpFwR2ePes5uBfgyy+Rb/TuNqh58LT77DJlq4X+AxNS+tn8Zh
+	 gwhQXT5Lree2PNi5NHpENFpCK9KVdJrN3IXTGJ0LDF3G/nH4WFNJ7x0uB2rPTj69uz
+	 xAcjEmYKnSuPqUVmBnb+q/l1wak3BTuxE4HkOHNJUcpmDizN2ezYC4VozhxnrfeNzR
+	 V79/t4BCUW9wq576a9jq8CYmlvrlDjyw81et1/iHY8aLLIjqL8V03OycFd5g2rAcMr
+	 X6aoJsIs1Iq+Pybu57C7GZA87n8VIzAciGeKsuk2Xs5f6SqUXET9HONdYkcI14657L
+	 7xGDHB4z+VfkA==
+Date: Mon, 4 Mar 2024 12:17:58 -0600
+From: Rob Herring <robh@kernel.org>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: conor@kernel.org, bhelgaas@google.com, conor+dt@kernel.org,
+	devicetree@vger.kernel.org, helgaas@kernel.org, imx@lists.linux.dev,
+	krzysztof.kozlowski+dt@linaro.org, kw@linux.com,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	lpieralisi@kernel.org
+Subject: Re: [PATCH v6 2/3] dt-bindings: pci: layerscape-pci: Add
+ snps,dw-pcie.yaml reference
+Message-ID: <20240304181758.GA803086-robh@kernel.org>
+References: <20240301162741.765524-1-Frank.Li@nxp.com>
+ <20240301162741.765524-3-Frank.Li@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240301014203.2033844-1-chris.packham@alliedtelesis.co.nz>
- <20240301014203.2033844-5-chris.packham@alliedtelesis.co.nz>
- <ZeIdXIx5zYjKQiSO@smile.fi.intel.com> <CAMuHMdVJiWtB4MSGHXXz=OAEvu-+b9Xp-jQ_NXWck+hwKGK4TQ@mail.gmail.com>
- <CAHp75VesLCo72ftQ2BNEKSXwF9A2pe0Vbnuves2-L3ist_twNQ@mail.gmail.com> <CAMuHMdXjqVQeQF6TFr1nQmUCLrEbY1gq5OdCcz6T60W33QO2-Q@mail.gmail.com>
-In-Reply-To: <CAMuHMdXjqVQeQF6TFr1nQmUCLrEbY1gq5OdCcz6T60W33QO2-Q@mail.gmail.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Mon, 4 Mar 2024 20:17:11 +0200
-Message-ID: <CAHp75Vfh_pv50Pk84JGz6qT=K9m3w=0_HDGX2WvqEN4Nm8fFDw@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] ARM: dts: marvell: Indicate USB activity on x530
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Andy Shevchenko <andy@kernel.org>, Chris Packham <chris.packham@alliedtelesis.co.nz>, 
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	andrew@lunn.ch, gregory.clement@bootlin.com, sebastian.hesselbarth@gmail.com, 
-	pavel@ucw.cz, lee@kernel.org, linux-leds@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240301162741.765524-3-Frank.Li@nxp.com>
 
-On Mon, Mar 4, 2024 at 11:57=E2=80=AFAM Geert Uytterhoeven <geert@linux-m68=
-k.org> wrote:
-> On Sun, Mar 3, 2024 at 9:43=E2=80=AFPM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
+On Fri, Mar 01, 2024 at 11:27:40AM -0500, Frank Li wrote:
+> Add snps,dw-pcie.yaml reference. Clean up all context that already exist in
+> snps,dw-pcie.yaml. Update interrupt-names requirement for difference
+> compatible string.
+> 
+> Set 'unevaluatedProperties' back to 'false'.
+> 
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+>  .../bindings/pci/fsl,layerscape-pcie.yaml     | 104 +++++++++++++-----
+>  1 file changed, 78 insertions(+), 26 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie.yaml b/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie.yaml
+> index 3f2d058701d22..137cc17933a4b 100644
+> --- a/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie.yaml
+> +++ b/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie.yaml
+> @@ -11,7 +11,6 @@ maintainers:
+>  
+>  description:
+>    This PCIe RC controller is based on the Synopsys DesignWare PCIe IP
+> -  and thus inherits all the common properties defined in snps,dw-pcie.yaml.
+>  
+>    This controller derives its clocks from the Reset Configuration Word (RCW)
+>    which is used to describe the PLL settings at the time of chip-reset.
+> @@ -36,31 +35,18 @@ properties:
+>        - fsl,lx2160a-pcie
+>  
+>    reg:
+> -    description: base addresses and lengths of the PCIe controller register blocks.
+> +    maxItems: 2
+> +
+> +  reg-names:
+> +    maxItems: 2
 
-..
+Need to define what the entries are. You change 'regs' to 'dbi' in the 
+example. Was that an error in the example or are you planning on 
+changing it in dts files? Besides the latter being an ABI change, I 
+don't think you want to change dts files for platforms which are pretty 
+stable.
 
-> So IMHO it would be a bad idea to make the DP mandatory.
+>    interrupts:
+> -    description: A list of interrupt outputs of the controller. Must contain an
+> -      entry for each entry in the interrupt-names property.
+> +    minItems: 1
+> +    maxItems: 3
+>  
+>    interrupt-names:
+>      minItems: 1
+>      maxItems: 3
+> -    description: It could include the following entries.
+> -    items:
+> -      oneOf:
+> -        - description:
+> -            Used for interrupt line which reports AER events when
+> -            non MSI/MSI-X/INTx mode is used.
+> -          const: aer
+> -        - description:
+> -            Used for interrupt line which reports PME events when
+> -            non MSI/MSI-X/INTx mode is used.
+> -          const: pme
+> -        - description:
+> -            Used for SoCs(like ls2080a, lx2160a, ls2080a, ls2088a, ls1088a)
+> -            which has a single interrupt line for miscellaneous controller
+> -            events(could include AER and PME events).
+> -          const: intr
+>  
+>    fsl,pcie-scfg:
+>      $ref: /schemas/types.yaml#/definitions/phandle
+> @@ -69,23 +55,88 @@ properties:
+>        The second entry is the physical PCIe controller index starting from '0'.
+>        This is used to get SCFG PEXN registers
+>  
+> -  dma-coherent:
+> -    description: Indicates that the hardware IP block can ensure the coherency
+> -      of the data transferred from/to the IP block. This can avoid the software
+> -      cache flush/invalid actions, and improve the performance significantly
+> +  dma-coherent: true
 
-But I'm not talking about making it mandatory, I'm talking about the
-DP to be used as DP when it _is_ present and wired. If current
-platform wants to use DP for something else, I'm pretty much worried
-that this is the right thing to do.
+No need to list.
 
---=20
-With Best Regards,
-Andy Shevchenko
+> +
+> +  msi-parent: true
+> +
+> +  iommu-map: true
+>  
+>    big-endian:
+>      $ref: /schemas/types.yaml#/definitions/flag
+>      description: If the PEX_LUT and PF register block is in big-endian, specify
+>        this property.
+>  
+> -unevaluatedProperties: true
+> +unevaluatedProperties: false
+>  
+>  required:
+>    - compatible
+>    - reg
+>    - interrupt-names
+>  
+> +allOf:
+> +  - $ref: /schemas/pci/pci-bus.yaml#
+
+That's already referenced in the common schema.
+
+> +  - $ref: /schemas/pci/snps,dw-pcie.yaml#
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          enum:
+> +            - fsl,lx2160a-pcie
+> +    then:
+> +      properties:
+> +        interrupts:
+> +          maxItems: 3
+
+max is already 3.
+
+minItems: 3
+
+> +        interrupt-names:
+> +          items:
+> +            - const: pme
+> +            - const: aer
+> +            - const: intr
+
+I guess since you figured out the ordering here, you should keep them 
+despite what I said in the first patch.
+
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          enum:
+> +            - fsl,ls1028a-pcie
+> +            - fsl,ls1046a-pcie
+> +            - fsl,ls1043a-pcie
+> +            - fsl,ls1012a-pcie
+> +    then:
+> +      properties:
+> +        interrupts:
+> +          maxItems: 2
+
+minItems: 2
+maxItems: 2
+
+> +        interrupt-names:
+> +          items:
+> +            - const: pme
+> +            - const: aer
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          enum:
+> +            - fsl,ls2080a-pcie
+> +            - fsl,ls2085a-pcie
+> +            - fsl,ls2088a-pcie
+> +            - fsl,ls1021a-pcie
+> +    then:
+> +      properties:
+> +        interrupts:
+> +          maxItems: 1
+> +        interrupt-names:
+> +          items:
+> +            - const: intr
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          enum:
+> +            - fsl,ls1088a-pcie
+> +    then:
+> +      properties:
+> +        interrupts:
+> +          maxItems: 1
+> +        interrupt-names:
+> +          items:
+> +            - const: aer
+> +
+>  examples:
+>    - |
+>      #include <dt-bindings/interrupt-controller/arm-gic.h>
+> @@ -98,7 +149,7 @@ examples:
+>          compatible = "fsl,ls1088a-pcie";
+>          reg = <0x00 0x03400000 0x0 0x00100000>, /* controller registers */
+>              <0x20 0x00000000 0x0 0x00002000>; /* configuration space */
+> -        reg-names = "regs", "config";
+> +        reg-names = "dbi", "config";
+>          interrupts = <0 108 IRQ_TYPE_LEVEL_HIGH>; /* aer interrupt */
+>          interrupt-names = "aer";
+>          #address-cells = <3>;
+> @@ -116,6 +167,7 @@ examples:
+>                          <0000 0 0 3 &gic 0 0 0 111 IRQ_TYPE_LEVEL_HIGH>,
+>                          <0000 0 0 4 &gic 0 0 0 112 IRQ_TYPE_LEVEL_HIGH>;
+>          iommu-map = <0 &smmu 0 1>; /* Fixed-up by bootloader */
+> +        msi-map = <0 &its 0 1>; /* Fixed-up by bootloader */
+>        };
+>      };
+>  ...
+> -- 
+> 2.34.1
+> 
 
