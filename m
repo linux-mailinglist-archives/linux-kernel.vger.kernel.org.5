@@ -1,139 +1,114 @@
-Return-Path: <linux-kernel+bounces-91082-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91083-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EA3987095C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:19:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8836E87095F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:19:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE7BA1F21A7C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:19:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C45BCB26AAE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:19:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28B9E62176;
-	Mon,  4 Mar 2024 18:19:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D5E56216E;
+	Mon,  4 Mar 2024 18:19:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="J8lvZYbL"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b="EQCWL2C2";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="QFMofaAk"
+Received: from wfhigh6-smtp.messagingengine.com (wfhigh6-smtp.messagingengine.com [64.147.123.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0E9C6025E
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 18:18:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D209626B4;
+	Mon,  4 Mar 2024 18:19:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709576341; cv=none; b=tW1slpoKWGDOD8ETLtolQHC5EIeaBd/gz/ur4bbzmuzikG88tNUyfaxWqLm/syYNm8inuSC/Fivr2HDTZCXfLDEwO6VUzffjrp9K0u8MT8T/pCPrNe4cpQN6Qb7d90WbyDp0meyTarU1XxF8/FWySd5wui8nWVqcID5nrpb9pWU=
+	t=1709576346; cv=none; b=uQvRLVg4zrOmm7gtHlbzuG1U7kqOvozEf6jEYZ2uPgEdARd1CUTNtpjRwjQEUdiWcc8k+WwBJtsLdPeWQX5nxc0KvVLmi7VGG3v523ZvWT0L7ZZKShZrW7FDB1lryL9nS7c8axBTpCsAMxmI41fsccarZ7d7Faq1wmlrsJpG8i8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709576341; c=relaxed/simple;
-	bh=cGGgIIC1RWpsDz3r3XZ6uBQqBn17EQ6Fh5wygcHaQX4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=Z2fBkGUKE/lkHt0sj5WxhFPcX53llR9wUXUoqmonKAS2gxXve8KXq0WY3i6bb53kkG2u/L+ilTIFtzeFLYNwe8KuoLh5MT7HN/Gl/KxsfCK/6vFDhSTC2snD0HwH9kbFZdTgo1iMu2xd0RTULu6TKLEUvyG7amfcls0n0uR4DYo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=J8lvZYbL; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 0992140E019B;
-	Mon,  4 Mar 2024 18:18:55 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id zo9VhH_4nHBM; Mon,  4 Mar 2024 18:18:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1709576332; bh=qbrWRZTEhU68qFmwLeTyfQWef1FZlIa4wlRRoa1qAjo=;
-	h=Date:From:To:Cc:Subject:From;
-	b=J8lvZYbLh80zcgP2XUyHIeilCIXluI4UAslattC+g6TtnQYB4829jHWWlTndoEwt1
-	 g3CAtiJsWvS+Zcpo53d7gdrGKSFwWKo5FaFhsQiYTRghH/9udIf1CgDvuOl901Cb28
-	 THFbyMwDOGYWCbRAKcwriiTIG27BMBNuAU9prhTHe2WB1ymjZi4pOtZB2eo81VuUjW
-	 sd65TPwGIUUKeOnkAtNx1WqWWSnl2iGWzJGTRgFeul78b6bxTsyaALxtfZ/JZ+GFQH
-	 0gss+nKWx+Am0xOMhMr9QuVxkc+U47/mCCwxiEI7rzmMBRNGeupiKR4LbtaSA4w81m
-	 UrFiTdxYcgr2INfyhgylm463fap4SJXHdx8MltyzufaxVc4HRFCBpcmYb5L6dNudxz
-	 tFKJvINSPp053XmqXeb0ZwpruwTPS/jSjbcJarsGUyzXt65/ekv85LqMrxKN5AA/TW
-	 xtmHCy5ekeqcTUK4eSHJbr/nsau+Fic28P3Cky4/fSkisxMk2bKlG5ctyzyX5I6bim
-	 5BZSDKTSSPFiB2odsNhe3ic1ln8xGPfZNWhSrQYsnbo+lcqi39e2zuO7bQePZxEmZ6
-	 gMRrHgFfsrqk5/2PV4R8JAIR8tP7+3gmArbJAqTc4Bk+rXAwzUs8I204I7IHj+Jcwx
-	 gUV0n62vn5s/hOUvH/1Bf8W0=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 949F140E0196;
-	Mon,  4 Mar 2024 18:18:46 +0000 (UTC)
-Date: Mon, 4 Mar 2024 19:18:41 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: x86-ml <x86@kernel.org>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Alexander Antonov <alexander.antonov@linux.intel.com>,
-	lkml <linux-kernel@vger.kernel.org>
-Subject: unchecked MSR access error: WRMSR to 0xd84 (tried to write
- 0x0000000000010003) at rIP: 0xffffffffa025a1b8
- (snbep_uncore_msr_init_box+0x38/0x60 [intel_uncore])
-Message-ID: <20240304181841.GCZeYQgbZk6fdntg-X@fat_crate.local>
+	s=arc-20240116; t=1709576346; c=relaxed/simple;
+	bh=ZB6RyDFbxlttOpgzbjZBh+D1rmRtuloGrCBd1DEC+J0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tR+6EPbAqnvXQiUpbJcc5w12YWlooKS6Gu0nzsci8X+5mTpSCxVNihCNZ0LwKqDmdG91QqmeYMSSqGcqGHcsQw+AKOzNJ2U7j/Yi1FzsRuAmEfUHltvgXsSSJnt9JJ7YVbwIaa4ErNQ1KUNZdHf7JPD4G33K7tllEIPu1fQ61jM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com; spf=pass smtp.mailfrom=kroah.com; dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b=EQCWL2C2; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=QFMofaAk; arc=none smtp.client-ip=64.147.123.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kroah.com
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailfhigh.west.internal (Postfix) with ESMTP id 9FCD118000AF;
+	Mon,  4 Mar 2024 13:19:02 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Mon, 04 Mar 2024 13:19:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1709576342; x=1709662742; bh=5I72IAgIle
+	ks6OLkLYZtEzLf5RcIGAx8NGNiSl4OvSo=; b=EQCWL2C2QauoVC9rUwHvnjBA5T
+	NFozWAkcoidonwbim7YkhJ0tTq3/JhxK3Mrmeuq3h019PChikmOE2rRqdfW8wzOl
+	yoFDWuENytQBNuifFGYx+rKcgTZcW+rgwZIu11gZCnjBDFW9e++kW+CyQd811uFC
+	Q62N2FZHgakr8BUsY9cuCWhSxo0ExhDPnmfk6FYoyjpx0mSRHJ96DY9gGlyqiPca
+	WRL69LlAS0/IbqcOH2BGpTaSEQRMw7+MM4lkhVfKPtaRDriRrG64ezQ0ATucmPwY
+	cLDvY3MCDNdmYEcErEyLaSVCEYNZvK5E8JG+M/V9J/V+b6SAxkWqLuvUnu6w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1709576342; x=1709662742; bh=5I72IAgIleks6OLkLYZtEzLf5RcI
+	GAx8NGNiSl4OvSo=; b=QFMofaAkyrd7zIUWQMhWAe+RHcXPBDmruSxTWDr1tXWq
+	ODwRuVjRS+n9G6xiy81gSm1nCPobOcK2G1xz/8vFmmr2RTyEd15D2TgTqpJHNvs/
+	0sjgjvS2jhYXV+MGHLSLPZPrp0KYYGx4bk+ZTllmbqh2D5HMoJ/pKFzdb/tryr1U
+	hyun5pU4VAKnDL40ENUplhf6FmAuZhnW3saMrSfJDhtVCBIN7eUTv5QMgOzDpDrP
+	IQGjrmCxiw1Fk46tmXd2U7DF7PkNGnpO/WQbdKe4WhQDLLYJwFm3cmC6V0heK/pF
+	8xZ3hDe5nmc+31aC8ykcJbMzqLOcLvztcdQhp2pjfg==
+X-ME-Sender: <xms:lRDmZSFT-0ZSUeBdGkx61QFPqy2yuSW8R4n1ZoUFRF5WmU4aHaQwIg>
+    <xme:lRDmZTUnFI4c9cQ52rUbXZ4MxfYwzaRXY8MYkqOxS2_fbc_eGa6X-g8JN8ZqF_Fdg
+    yB4EYCv7t-D1w>
+X-ME-Received: <xmr:lRDmZcKnCqxN1outkorvoz5dgcZ2iTHtG3-NtLR3h5H7XPv3HtJEj5OvMg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrheejgddutdelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepheegvd
+    evvdeljeeugfdtudduhfekledtiefhveejkeejuefhtdeufefhgfehkeetnecuvehluhhs
+    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorg
+    hhrdgtohhm
+X-ME-Proxy: <xmx:lhDmZcEl_frVW884Fn4uYEJDJ-GpOVSfvwZQQp0oUhs3U6wPwNY5xg>
+    <xmx:lhDmZYU95LX2anQC30gbRNg9cSh0xgDZddv4bNvTgJpvbaNyU4Il5g>
+    <xmx:lhDmZfNL9g6lQPuTpxhw7pnR46GJ6G8JyTQYjAABI-_5aURFmC8vng>
+    <xmx:lhDmZZuzjgyDWCi9FwysD36oRd0cv3wE9kmfeMYk9EeP9DYK7fRreXca8s0>
+Feedback-ID: i787e41f1:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 4 Mar 2024 13:19:01 -0500 (EST)
+Date: Mon, 4 Mar 2024 19:18:53 +0100
+From: Greg KH <greg@kroah.com>
+To: Danilo Krummrich <dakr@redhat.com>
+Cc: stable@vger.kernel.org, nouveau@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+	Karol Herbst <kherbst@redhat.com>
+Subject: Re: [PATCH stable v6.7] drm/nouveau: don't fini scheduler before
+ entity flush
+Message-ID: <2024030446-upside-nest-59b5@gregkh>
+References: <20240304170158.4206-1-dakr@redhat.com>
+ <2024030448-basin-grit-b550@gregkh>
+ <4a3dc556-d7f4-4741-ae5b-6722bd2ce1c1@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <4a3dc556-d7f4-4741-ae5b-6722bd2ce1c1@redhat.com>
 
-Hi all,
+On Mon, Mar 04, 2024 at 07:10:56PM +0100, Danilo Krummrich wrote:
+> On 3/4/24 18:55, Greg KH wrote:
+> > On Mon, Mar 04, 2024 at 06:01:46PM +0100, Danilo Krummrich wrote:
+> > > Cc: <stable@vger.kernel.org> # v6.7 only
+> > You say 6.7 only, but this commit is in 6.6, so why not 6.6 also?
+> 
+> Good catch, I was sure I originally merged this for 6.7. This fix should indeed
+> be applied to 6.6 as well. Should have double checked that, my bad.
 
-sending this to a bunch of people who have touched this function
-recently and some more relevant Intel folks.
+Great, now queued up, thanks!
 
-The machine is an old SNB:
-
-smpboot: CPU0: Intel(R) Xeon(R) CPU E5-1620 0 @ 3.60GHz (family: 0x6, model: 0x2d, stepping: 0x7)
-
-and with latest linus/master + tip/master it gives the below.
-
-It must be something new because 6.8-rc6 is fine.
-
-..
-i801_smbus 0000:00:1f.3: enabling device (0000 -> 0003)
-input: Power Button as /devices/LNXSYSTM:00/LNXPWRBN:00/input/input5
-i801_smbus 0000:00:1f.3: SMBus using PCI interrupt
-ACPI: button: Power Button [PWRF]
-i2c i2c-14: 4/4 memory slots populated (from DMI)
-unchecked MSR access error: WRMSR to 0xd84 (tried to write 0x0000000000010003) at rIP: 0xffffffffa025a1b8 (snbep_uncore_msr_init_box+0x38/0x60 [intel_uncore])
-Call Trace:
- <TASK>
- ? ex_handler_msr+0xcb/0x130
- ? fixup_exception+0x166/0x320
- ? exc_general_protection+0xd7/0x3f0
- ? asm_exc_general_protection+0x22/0x30
- ? snbep_uncore_msr_init_box+0x38/0x60 [intel_uncore]
- uncore_box_ref.part.0+0x9c/0xc0 [intel_uncore]
- ? __pfx_uncore_event_cpu_online+0x10/0x10 [intel_uncore]
- uncore_event_cpu_online+0x56/0x140 [intel_uncore]
- ? __pfx_uncore_event_cpu_online+0x10/0x10 [intel_uncore]
- cpuhp_invoke_callback+0x174/0x5e0
- ? cpuhp_thread_fun+0x5a/0x200
- cpuhp_thread_fun+0x17e/0x200
- ? smpboot_thread_fn+0x2b/0x250
- smpboot_thread_fn+0x1ad/0x250
- ? __pfx_smpboot_thread_fn+0x10/0x10
- kthread+0xed/0x120
- ? __pfx_kthread+0x10/0x10
- ret_from_fork+0x30/0x50
- ? __pfx_kthread+0x10/0x10
-iTCO_vendor_support: vendor-support=0
- ret_from_fork_asm+0x1a/0x30
- </TASK>
-iTCO_wdt iTCO_wdt.1.auto: Found a Patsburg TCO device (Version=2, TCOBASE=0x0460)
-iTCO_wdt iTCO_wdt.1.auto: initialized. heartbeat=30 sec (nowayout=0)
-RAPL PMU: API unit is 2^-32 Joules, 2 fixed counters, 163840 ms ovfl timer
-..
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+greg k-h
 
