@@ -1,229 +1,143 @@
-Return-Path: <linux-kernel+bounces-91253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91254-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F561870BC8
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:47:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A23E8870BCD
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:50:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 987DD282D62
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:47:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5DB322829C4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:50:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34257F9C1;
-	Mon,  4 Mar 2024 20:47:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 020B9FC09;
+	Mon,  4 Mar 2024 20:49:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LwTDU2b5"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Z+EizRfY"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58524947F;
-	Mon,  4 Mar 2024 20:47:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D498DDF67
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 20:49:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709585269; cv=none; b=beg0pT2ylq3gPU9BlnAoLyeOqPMN+VTXzvN74Amn6WbccbApGvoPZqqKjFobbH5QrcacmxteTsfPNLtQlmcwwuc7rvVIO7P/CV3cZla3L4oWaGtCIEfwsMfUZzw5Ysu1ay+mAcVJjMG0mBLNbzfaCpm+Ztw1eShWHnkXXp3v1ns=
+	t=1709585395; cv=none; b=C6Psx7SOZ4ld/V0NK3xNlYpcAeN3CrI3qMgPQO0SWdAHOz0IqvA7EYjfyxj+xkQQDjycCRCi+n92gC1ngYKusKfCOMwnrihVnnnKPhCBhhZXg/mOmnR3U/mAWQbpAaTfylzXQzb7N3uE+YVVOaPoUN8/BHmTCoMGka7eWx+iB+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709585269; c=relaxed/simple;
-	bh=IVDfZpj2i2Tsybj/sYKdWPPXRjam9p4bIaY7/Ooj62Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PILDPCuIz7kdIRa9tW/rCq5ldyL6rwDVqVvbAX+auMYKmuPK3AvjbwEzoyUIkh+XifXW0Qw98xbTSeLOQsZhAOpyoX8C044ZUqbWUGM9ZPvuwpL9ryuJzz4grfTyhx2HmUkTUT+Nu2139TUVMnZyZJMt3bYb9/uNDyB3WEO13+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LwTDU2b5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D51C2C433C7;
-	Mon,  4 Mar 2024 20:47:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709585268;
-	bh=IVDfZpj2i2Tsybj/sYKdWPPXRjam9p4bIaY7/Ooj62Q=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=LwTDU2b5dVe6onrLXUUhM2seumF0aDAauZwHQQz7Hj4xMROt+PgjVKj3HZIvl9Ed4
-	 QlFQcZfP5drYsMwuUtNUyJJdbduwct98jbILOnxZWFBqO8uOwuW835uz4C1N2YB4MR
-	 NbOK/yq0FmOvHiEFre56CNYue2jTGMlfSjPHvsMqCfof75vw4nmvt5EIJaCD8edq/e
-	 hREyOy5y81BGnmYhoFVIjRCJL7hzUETkAeeaAWiNen3P6cG8exSjNH0Yr81eAKpBtL
-	 9Z4qBHTx2un21afZZkOdjN+z3CSZImQaTeDK/ROsuv+JsNtWOk+muL06aZ2ygmNINM
-	 +tG4QF+AiP0qw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 8A7B7CE049E; Mon,  4 Mar 2024 12:47:48 -0800 (PST)
-Date: Mon, 4 Mar 2024 12:47:48 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Joel Fernandes <joel@joelfernandes.org>
-Cc: linke li <lilinke99@qq.com>, Davidlohr Bueso <dave@stgolabs.net>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org
-Subject: Re: [PATCH] rcutorture: Fix
- rcu_torture_pipe_update_one()/rcu_torture_writer() data race and concurrency
- bug
-Message-ID: <0640c3b9-fa19-4c2d-9158-a6aa5b398da3@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <tencent_B51A9DA220288A95A435E3435A0443BEB007@qq.com>
- <f3624f39-bbb1-451d-8161-8518e4108d8e@joelfernandes.org>
- <4857c5ef-bd8f-4670-87ac-0600a1699d05@paulmck-laptop>
- <a8e9c84f-c354-4536-b676-d38043913d09@joelfernandes.org>
- <a9ff4787-1b07-4d47-b2a0-5eb1336d3710@paulmck-laptop>
- <51c4b25f-1cdc-4bcc-8b40-c98096bebacf@joelfernandes.org>
+	s=arc-20240116; t=1709585395; c=relaxed/simple;
+	bh=A+CXBTKX4i/CDGbxfMAyWrBuJdNoNwdpxzflMVoCsm4=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=mia1Dw0F+MxyOyidKCstIS9k2rHUJBZ32IOR4QvHR9CTxES5fuoECNSPp3vCfx7TxddP3fvn8bDME+5d0SonTu2NzeKlPFrTiC5D3o4gGWO5LszpA5LDrB3QH5YUgig0YUw+D2L0lCg2bCPS1Z+ay/lwksgYDoWVdZTcu689ZKA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Z+EizRfY; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-6092bf785d7so91451217b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 12:49:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709585393; x=1710190193; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Wvrqw1J4AWCkZRLQPrePGKOZL8AsSzVG85lzhBNbxRo=;
+        b=Z+EizRfYzytRxcDccGpWaCRqTz52e+cvrhSjDaPmvJ7y+1nbOboCu0Lsqb9kYU82r5
+         OiK8LZ9DOCPq7vUNcaYJXhuvlaUbqwPRxJ+eEFj0xZz9bzq632kAoXHsuDEWFzL/iLwR
+         r/6yuAU+Q2OZ6bZCbRsYBogaFwVsORrq0mIao4wVPol5d8GY59fbRiMT16dGOj/+wpix
+         7JU5VrkTPI2xwz8VPT+BLRdlLdBEdG/fZppsyU/NbisXhykecJL/3F4Ukr8Ar2JnjAZL
+         TdFvldoj7e/Ighdc/vDHMjmB+SETSaaVW6ry2V0NucgbeRZdEShzaNx21bx+3rEspP52
+         4vbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709585393; x=1710190193;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Wvrqw1J4AWCkZRLQPrePGKOZL8AsSzVG85lzhBNbxRo=;
+        b=QIxytfO7PzoMo5qc+jgDyrC6pAK3C+CdQ6nwTY7kgYFAEcP7w6LtlRNOTx3pVXRQOx
+         SemFMkuSF/dMOS3wkD+Z9KsAn9scFpennlIgjLtOSCns4NuNw8SfM/u/L44kXOYuiIfS
+         xblo96uL12JO/NfSO3HtvW+vc4MqFOyjPbJ/m/k6WsjR4RPHLFihDkSzeQDAG2JCMzQK
+         vSmCdtcEDr6K5g4bxLR82IxLkD1ysJY5rrHNNwrKVHqMkmkf2ldyrBFEu8Tx1etTeqaN
+         SLR2vj/Ae2BIQZeRl5zCtpzK8s5ViQ2Hc00mUwzsPuBKMkf66u6e1sW0GVPuyHR5QJ5R
+         eyrQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUK0yRQIqQ8xK/Wg/PoS+ZjGktmSjD5vkkG4v2ysIvK1vjpohhw3MG4xY99AMcrjMxXv7EeM9EXOTZBeVviHbqXA1ybAC8DjV0jXfF0
+X-Gm-Message-State: AOJu0YyMoCA4AHbLn1fFMxea9+tLuy17SB0JcNOUhrxwnZhTzE7OplJi
+	N6ttQW3IuW+GXGCz5NYweG+NQzFE9NHPZ2P5H36i5G7Iy0B7M2iOwhrNSGFYiQSX1pB2SAGV1a1
+	kdg==
+X-Google-Smtp-Source: AGHT+IGx/EOpNHqZBkjjnh3CQgKgdI+yO/NSSlFdJYsMld/AjY8gzl6UOYL4ami7Qc4x5X6dBra5pAht7wM=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:1004:b0:dc7:42:ecd with SMTP id
+ w4-20020a056902100400b00dc700420ecdmr2589331ybt.6.1709585392894; Mon, 04 Mar
+ 2024 12:49:52 -0800 (PST)
+Date: Mon, 4 Mar 2024 12:49:51 -0800
+In-Reply-To: <CALMp9eRbOQpVsKkZ9N1VYTyOrKPWCmvi0B5WZCFXAPsSkShmEA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <51c4b25f-1cdc-4bcc-8b40-c98096bebacf@joelfernandes.org>
+Mime-Version: 1.0
+References: <20240301074423.643779-1-sandipan.das@amd.com> <CALMp9eRbOQpVsKkZ9N1VYTyOrKPWCmvi0B5WZCFXAPsSkShmEA@mail.gmail.com>
+Message-ID: <ZeYz7zPGcIQSH_NI@google.com>
+Subject: Re: [PATCH] KVM: x86: Do not mask LVTPC when handling a PMI on AMD platforms
+From: Sean Christopherson <seanjc@google.com>
+To: Jim Mattson <jmattson@google.com>
+Cc: Sandipan Das <sandipan.das@amd.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
+	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
+	mlevitsk@redhat.com, vkuznets@redhat.com, mizhang@google.com, 
+	tao1.su@linux.intel.com, andriy.shevchenko@linux.intel.com, 
+	ravi.bangoria@amd.com, ananth.narayan@amd.com, nikunj.dadhania@amd.com, 
+	santosh.shukla@amd.com, manali.shukla@amd.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 04, 2024 at 03:13:10PM -0500, Joel Fernandes wrote:
-> 
-> 
-> On 3/4/2024 2:44 PM, Paul E. McKenney wrote:
-> > On Mon, Mar 04, 2024 at 02:10:09PM -0500, Joel Fernandes wrote:
-> >>
-> >>
-> >> On 3/4/2024 12:14 PM, Paul E. McKenney wrote:
-> >>> On Mon, Mar 04, 2024 at 11:19:21AM -0500, Joel Fernandes wrote:
-> >>>>
-> >>>>
-> >>>> On 3/4/2024 5:54 AM, linke li wrote:
-> >>>>> Some changes are done to fix a data race in commit 202489101f2e ("rcutorture: Fix rcu_torture_one_read()/rcu_torture_writer() data race")
-> >>>>>
-> >>>>>  {
-> >>>>>  	int i;
-> >>>>>
-> >>>>> -	i = rp->rtort_pipe_count;
-> >>>>> +	i = READ_ONCE(rp->rtort_pipe_count);
-> >>>>>  	if (i > RCU_TORTURE_PIPE_LEN)
-> >>>>>  		i = RCU_TORTURE_PIPE_LEN;
-> >>>>>  	atomic_inc(&rcu_torture_wcount[i]);
-> >>>>> -	if (++rp->rtort_pipe_count >= RCU_TORTURE_PIPE_LEN) {
-> >>>>> +	WRITE_ONCE(rp->rtort_pipe_count, i + 1);
-> >>>>> +	if (rp->rtort_pipe_count >= RCU_TORTURE_PIPE_LEN) {
-> >>>>>  		rp->rtort_mbtest = 0;
-> >>>>>  		return true;
-> >>>>>  	}
-> >>>>>
-> >>>>> But ++rp->rtort_pipe_count is meant to add itself by 1, not give i+1 to
-> >>>>> rp->rtort_pipe_count, because rp->rtort_pipe_count may write by
-> >>>>> rcu_torture_writer() concurrently.
-> >>>>>
-> >>>>> Also, rp->rtort_pipe_count in the next line should be read using
-> >>>>> READ_ONCE() because of data race.
-> >>>>>
-> >>>>> Signed-off-by: linke li <lilinke99@qq.com>
-> >>>>> ---
-> >>>>>  kernel/rcu/rcutorture.c | 4 ++--
-> >>>>>  1 file changed, 2 insertions(+), 2 deletions(-)
-> >>>>>
-> >>>>> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> >>>>> index 7567ca8e743c..00059ace4fd5 100644
-> >>>>> --- a/kernel/rcu/rcutorture.c
-> >>>>> +++ b/kernel/rcu/rcutorture.c
-> >>>>> @@ -465,8 +465,8 @@ rcu_torture_pipe_update_one(struct rcu_torture *rp)
-> >>>>>  	if (i > RCU_TORTURE_PIPE_LEN)
-> >>>>>  		i = RCU_TORTURE_PIPE_LEN;
-> >>>>>  	atomic_inc(&rcu_torture_wcount[i]);
-> >>>>> -	WRITE_ONCE(rp->rtort_pipe_count, i + 1);
-> >>>>> -	if (rp->rtort_pipe_count >= RCU_TORTURE_PIPE_LEN) {
-> >>>>> +	WRITE_ONCE(rp->rtort_pipe_count, rp->rtort_pipe_count + 1);
-> >>>>> +	if (READ_ONCE(rp->rtort_pipe_count) >= RCU_TORTURE_PIPE_LEN) {
-> >>>>
-> >>>> I want to say, I am not convinced with the patch because what's wrong with
-> >>>> writing to an old index?
-> >>>>
-> >>>> You win/lose the race anyway, say the CPU executed the WRITE_ONCE() a bit too
-> >>>> early/late and another WRITE_ONCE() lost/won, regardless of whether you wrote
-> >>>> the "incremented i" or "the increment from the latest value of pipe_count".
-> >>>>
-> >>>> Anyway, a slightly related/different question:
-> >>>>
-> >>>> Should that:
-> >>>> WRITE_ONCE(rp->rtort_pipe_count, rp->rtort_pipe_count + 1);
-> >>>>
-> >>>> Be:
-> >>>> WRITE_ONCE(rp->rtort_pipe_count, READ_ONCE(rp->rtort_pipe_count) + 1);
-> >>>>
-> >>>> ?
-> >>>
-> >>> Thank you both!
-> >>>
-> >>> At first glance, I would argue for something like this:
-> >>>
-> >>> ------------------------------------------------------------------------
-> >>>
-> >>> static bool
-> >>> rcu_torture_pipe_update_one(struct rcu_torture *rp)
-> >>> {
-> >>> 	int i;
-> >>> 	struct rcu_torture_reader_check *rtrcp = READ_ONCE(rp->rtort_chkp);
-> >>>
-> >>> 	if (rtrcp) {
-> >>> 		WRITE_ONCE(rp->rtort_chkp, NULL);
-> >>> 		smp_store_release(&rtrcp->rtc_ready, 1); // Pair with smp_load_acquire().
-> >>> 	}
-> >>> 	i = READ_ONCE(rp->rtort_pipe_count) + 1;
-> >>> 	if (i > RCU_TORTURE_PIPE_LEN)
-> >>> 		i = RCU_TORTURE_PIPE_LEN;
-> >>> 	atomic_inc(&rcu_torture_wcount[i]);
-> >>> 	WRITE_ONCE(rp->rtort_pipe_count, i);
-> >>> 	if (i >= RCU_TORTURE_PIPE_LEN) {
-> >>> 		rp->rtort_mbtest = 0;
-> >>> 		return true;
-> >>> 	}
-> >>> 	return false;
-> >>> }
-> >>>
-> >>> ------------------------------------------------------------------------
-> >>>
-> >>> That is, move the increment to the read and replace the re-read with
-> >>> the value "i" that was just written.
-> >>
-> >> But that changes the original logic as well? It looks like with the above
-> >> change, you're now writing to rcu_torture_wcount[READ_ONCE(rp->rtort_pipe_count)
-> >> + 1] instead of rcu_torture_wcount[READ_ONCE(rp->rtort_pipe_count)].
-> >>
-> >> I think that might break rcutorture, because there is an increment outside of
-> >> the first 2 entries in rcu_torture_wcount but not sure (need to look more).
-> > 
-> > Good point on never incrementing the zeroth entry!  Clearly I should
-> > have waited before replying.
-> > 
-> > How about the following?
-> > 
-> > ------------------------------------------------------------------------
-> > 
-> > static bool
-> > rcu_torture_pipe_update_one(struct rcu_torture *rp)
-> > {
-> > 	int i;
-> > 	struct rcu_torture_reader_check *rtrcp = READ_ONCE(rp->rtort_chkp);
-> > 
-> > 	if (rtrcp) {
-> > 		WRITE_ONCE(rp->rtort_chkp, NULL);
-> > 		smp_store_release(&rtrcp->rtc_ready, 1); // Pair with smp_load_acquire().
-> > 	}
-> > 	i = READ_ONCE(rp->rtort_pipe_count);
-> > 	if (i > RCU_TORTURE_PIPE_LEN)
-> > 		i = RCU_TORTURE_PIPE_LEN;
-> > 	atomic_inc(&rcu_torture_wcount[i]);
-> > 	WRITE_ONCE(rp->rtort_pipe_count, i + 1);
-> > 	if (i + 1 >= RCU_TORTURE_PIPE_LEN) {
-> > 		rp->rtort_mbtest = 0;
-> > 		return true;
-> > 	}
-> > 	return false;
-> > }
-> 
-> Yes, this looks good to me. Thanks,
-> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+On Fri, Mar 01, 2024, Jim Mattson wrote:
+> On Thu, Feb 29, 2024 at 11:44=E2=80=AFPM Sandipan Das <sandipan.das@amd.c=
+om> wrote:
+> >
+> > On AMD and Hygon platforms, the local APIC does not automatically set
+> > the mask bit of the LVTPC register when handling a PMI and there is
+> > no need to clear it in the kernel's PMI handler.
+>=20
+> I don't know why it didn't occur to me that different x86 vendors
+> wouldn't agree on this specification. :)
 
-Again, thank you.
+Because you're sane?  :-D
 
-linke li, does this approach work for you?  If so, would you be willing to
-send a new patch along these lines?  If it does not work, what additional
-problems do you see?
+> > diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+> > index 3242f3da2457..0959a887c306 100644
+> > --- a/arch/x86/kvm/lapic.c
+> > +++ b/arch/x86/kvm/lapic.c
+> > @@ -2768,7 +2768,7 @@ int kvm_apic_local_deliver(struct kvm_lapic *apic=
+, int lvt_type)
+> >                 trig_mode =3D reg & APIC_LVT_LEVEL_TRIGGER;
+> >
+> >                 r =3D __apic_accept_irq(apic, mode, vector, 1, trig_mod=
+e, NULL);
+> > -               if (r && lvt_type =3D=3D APIC_LVTPC)
+> > +               if (r && lvt_type =3D=3D APIC_LVTPC && !guest_cpuid_is_=
+amd_or_hygon(apic->vcpu))
+>=20
+> Perhaps we could use a positive predicate instead:
+> guest_cpuid_is_intel(apic->vcpu)?
 
-							Thanx, Paul
+AFAICT, Zhaoxin follows intel behavior, so we'd theoretically have to allow=
+ for
+that too.  The many checks of guest_cpuid_is_intel() in KVM suggest that no=
+ one
+actually cares about about correctly virtualizing Zhaoxin CPUs, but it's an=
+ easy
+enough problem to solve.
+
+I'm also very tempted to say KVM should cache the Intel vs. AMD vCPU model.=
+  E.g.
+if userspace does something weird with guest CPUID and puts CPUID.0x0 somew=
+here
+other than the zeroth entry, KVM's linear walk to find a CPUID entry will m=
+ake
+this a pretty slow lookup.
+
+Then we could also encapsulate the gory details for Intel vs. Zhaoxin vs. C=
+entaur,
+and AMD vs. Hygon, e.g.
+
+		if (r && lvt_type =3D=3D APIC_LVTPC &&
+		    apic->vcpu->arch.is_model_intel_compatible)
 
