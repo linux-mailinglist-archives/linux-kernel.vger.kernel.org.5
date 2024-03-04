@@ -1,151 +1,180 @@
-Return-Path: <linux-kernel+bounces-91206-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91207-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EA6B870B34
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:10:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4798A870B37
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:10:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6F76B22409
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:10:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D583C1F2198C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:10:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6752379925;
-	Mon,  4 Mar 2024 20:10:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA5FA7A15C;
+	Mon,  4 Mar 2024 20:10:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PYxUFNrp"
-Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com [209.85.222.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="choMJGc6"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A1CD7A12E
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 20:10:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B1127A12E;
+	Mon,  4 Mar 2024 20:10:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709583025; cv=none; b=BeuI7Ickkd3SZrckvqOIWQuzkmYSIFC1nI5d50SIDS+AwUojWMHJexPfnCCSr22HZgBskJewAxJ9oeW6xB99NNkFTttiAH8X09mRpVCKlI5cYyJFgJtTNWTgnEEm5mdJfnY+baoh8YnJevFFmN+3Urrpq/M+Zo54biofg/LUx68=
+	t=1709583032; cv=none; b=uzDiGt7gnhQ8xY9dU8L+tpr+O1x/aLcArF7mUz0w1ojI3UHNKDVVJMtZXqw2q1HqMLcpghCpmbgSV/zFiN3fkSf1whmytd4dUHmzoSdbzqgyd6hARRPHRFZKaS/xCTEtCeu8c76cQtuoe0Wp4mY0f0zPAWbgRo6eyBpjk3hwAWA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709583025; c=relaxed/simple;
-	bh=kdQKu3RoxSzAKnls9h9y9cqdioEJoGugPDVhLaSIEWc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OQCL9I9bDwF1ek9zTyAVmyewvyJSFW7qX+axyYXwiQ0UYQ6B7T1qQY72lpwZgkIWg+yt6JxbQtW5QrKjDm97FChke8O4sehmmrp60ABVpUHMZwvL3oVorGYlgPcXgmRe3+bJemd/+MNdKs1Cv93+69IYPUqnoV5L0PHVLiA2xDA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PYxUFNrp; arc=none smtp.client-ip=209.85.222.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ua1-f44.google.com with SMTP id a1e0cc1a2514c-7d5c40f874aso2795848241.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 12:10:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709583023; x=1710187823; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kdQKu3RoxSzAKnls9h9y9cqdioEJoGugPDVhLaSIEWc=;
-        b=PYxUFNrpyCeymfEAxMBzc4agC+5XiwQCCZYnTUkmQFqdDahVVc4vUxnB8DcSKoY5bq
-         4geU2Yr0BX0rURJWivnGOQoqRhyW6uAx3mytZBhDA2uS2Y1aBhIIORC1Lxo2MyTPc3mW
-         QDdVn9UAphU/f0pxlRUIbEta03BZACtTBHAWlxr49iK08KKJzU6pGykqeyQyMDHMTHT6
-         WEiHYJ0tGKHKYpw/OdPnQbHiBE/d/pCpf4q3hgJIbRPh/oyzKiBfPHK259AFDxVZca3n
-         Io6XR8wxU2YWx/V9XapFB9/uHQNugXXctpB9N57qtQTBuNunb1yenSV/ZNTcGkQf+LkU
-         +U8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709583023; x=1710187823;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kdQKu3RoxSzAKnls9h9y9cqdioEJoGugPDVhLaSIEWc=;
-        b=hra9wksk/Kf08YeKLmMFSoSoES9gORVob+aIqsPwpPU/kKjIs/OQAoy71OYQ9RQQ69
-         Jf9WCdGLysi7oshu/pPSNaXobzi3KEAPDA3u9ujKvt0AOR0DZX2myo8olDL6bN9qZW0Y
-         OUXB0Qb0xN1795Wa1lKc0xaXEkbjq+IFSTVViVq+MB9lh1HudQtwfPmfX443XsjaXlAb
-         uSNOazIA9yTMmTW/wdIQWdBbZptN1r7dSzzvU8VTwJxnoY3gOGqW8+6Flxj/pn91Xo6a
-         bbYVvmkd2VP+b6cVGCNbdoZcRBoAzFTiUTNdTa2iJa5gT62C1H1xzKATxJfOhanmzAfD
-         rHew==
-X-Forwarded-Encrypted: i=1; AJvYcCWz6CkwT5PJkuQSXhYym9TUuRAnAjJ+dtqBN95afgga8kKr4no80py51bvCErDzAQ6wLoqMqhYih1C5gcdM72FpdgNqNL8lsl0jQLvU
-X-Gm-Message-State: AOJu0YxDJBfmXuRUAxdDvMVqznKjP3KBiqBIu5YnvGWEV5qUt/l8HgCk
-	jbl2txVtp9H63J8k7nihdifTFTDlr2HyEjHEvccCSncxk5hQWYzVtNiw8gu/2cjuHjqW4DyEE77
-	GvmFY9kNSfQffMY4ZxTsCPx2M2KL6r64jyT8U
-X-Google-Smtp-Source: AGHT+IEVa0EzaUVXzcVxUqw7hDykrrvfsa29Bpt49sVGOlnxc+uITAdGh6g6OsI7IoCnd6Z9sxW1oBlNNGF5IRZ3iR4=
-X-Received: by 2002:a05:6102:3a66:b0:470:c99d:6776 with SMTP id
- bf6-20020a0561023a6600b00470c99d6776mr7873661vsb.13.1709583022912; Mon, 04
- Mar 2024 12:10:22 -0800 (PST)
+	s=arc-20240116; t=1709583032; c=relaxed/simple;
+	bh=ORa3w3T3UxRI7Q/DXMeLntlDVqx5vmqR80tifIbBiwY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tllK+ylHcrwWulDo/16PlSvgr1PlWuoRR4GAAb/h4Ytbz9xvj6Y4pP/+v/Yglehmeqm/tsTQyS/FBliW4JjDYPc5jGhuKeaQyuTHmn4FanAo/T5059302IV1bjQL3pgr8CiotCj3gUue9L3nzwYeueh7k5aQDvmFfPZwFI5DXUY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=choMJGc6; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709583030; x=1741119030;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=ORa3w3T3UxRI7Q/DXMeLntlDVqx5vmqR80tifIbBiwY=;
+  b=choMJGc6A2Hs9U6ffRkNFA1Hfm9aTU9yqOASEqam6JxtLWb+0Pq+SGpL
+   zHBPol6F8p5dctjLb2S7CVVfTJVyZeMrGhh7XvaK7lyCNKCfXP5GhIdwm
+   f9VaW3fteIeRLUbNwuk81wANo5KswMxg9mlodN1BuetQKUgkXE8IQ1tUw
+   tC8XyQW0Aron7JUUuLZt1W63Bi9MjANr9azQ4xpGp2l50Fmzk4h9VeyRx
+   B998FPzcPL2H0M+YiFH3m6EIZN3ukLE8qAQbJLCQ+ZqkbHW85KzNE9OzH
+   lN3ZP7eZVD+VsHvierRFcI/UjtVe5EHzE3bOLmFTWGZP44DRSjKpMy6ms
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="4224796"
+X-IronPort-AV: E=Sophos;i="6.06,204,1705392000"; 
+   d="scan'208";a="4224796"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 12:10:29 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,204,1705392000"; 
+   d="scan'208";a="9289124"
+Received: from cbrown-mobl1.amr.corp.intel.com (HELO [10.209.66.113]) ([10.209.66.113])
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 12:10:25 -0800
+Message-ID: <71acbf58-a05d-4842-bc6b-c4e66e1a2b58@linux.intel.com>
+Date: Mon, 4 Mar 2024 12:10:24 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240304-shadow-call-stack-v1-1-f055eaf40a2c@google.com>
-In-Reply-To: <20240304-shadow-call-stack-v1-1-f055eaf40a2c@google.com>
-From: Sami Tolvanen <samitolvanen@google.com>
-Date: Mon, 4 Mar 2024 12:09:44 -0800
-Message-ID: <CABCJKuem3GbLO-G7+wi8LPA8rFgNzFVjNof7zcAO1UGJR4u44Q@mail.gmail.com>
-Subject: Re: [PATCH] rust: add flags for shadow call stack sanitizer
-To: Alice Ryhl <aliceryhl@google.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Jamie Cunliffe <Jamie.Cunliffe@arm.com>, Masahiro Yamada <masahiroy@kernel.org>, 
-	Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, Ard Biesheuvel <ardb@kernel.org>, 
-	Marc Zyngier <maz@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Mark Brown <broonie@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Kees Cook <keescook@chromium.org>, 
-	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, rust-for-linux@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH pci-next] pci/edr: Ignore Surprise Down error on hot
+ removal
+To: Ethan Zhao <haifeng.zhao@linux.intel.com>, bhelgaas@google.com,
+ lukas@wunner.de
+Cc: Smita.KoralahalliChannabasappa@amd.com, ilpo.jarvinen@linux.intel.com,
+ linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, kbusch@kernel.org
+References: <20240304090819.3812465-1-haifeng.zhao@linux.intel.com>
+Content-Language: en-US
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20240304090819.3812465-1-haifeng.zhao@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 4, 2024 at 5:17=E2=80=AFAM Alice Ryhl <aliceryhl@google.com> wr=
-ote:
+
+On 3/4/24 1:08 AM, Ethan Zhao wrote:
+> Per PCI firmware spec r3.3 sec 4.6.12, for firmware first mode DPC
+> handling path, FW should clear UC errors logged by port and bring link
+> out of DPC, but because of ambiguity of wording in the spec, some BIOSes
+> doesn't clear the surprise down error and the error bits in pci status,
+
+As Lukas mentioned, please include the hardware and BIOS version
+where you see this issue.
+
+> still notify OS to handle it. thus following trick is needed in EDR when
+> double reporting (hot removal interrupt && dpc notification) is hit.
+
+EDR notification is generally used when a firmware wants OS to invalidate
+or recover the error state of child devices when handling a containment event.
+Since this DPC event is a side effect of async removal, there is no recovery
+involved. So there is no value in firmware notifying the OS via an ACPI notification
+and then OS ignoring it.
+
+If you check the PCIe firmware spec, sec 4.6.12, IMPLEMENTATION NOTE, it
+recommends firmware to ignore the DPC due to hotplug surprise.
+
 >
-> Add flags to support the shadow call stack sanitizer, both in the
-> dynamic and non-dynamic modes.
+> https://patchwork.kernel.org/project/linux-pci/patch/20240207181854.
+> 121335-1-Smita.KoralahalliChannabasappa@amd.com/
 >
-> Right now, the compiler will emit the warning "unknown feature specified
-> for `-Ctarget-feature`: `reserve-x18`". However, the compiler still
-> passes it to the codegen backend, so the flag will work just fine. Once
-> rustc starts recognizing the flag (or provides another way to enable the
-> feature), it will stop emitting this warning. See [1] for the relevant
-> issue.
->
-> Currently, the compiler thinks that the aarch64-unknown-none target
-> doesn't support -Zsanitizer=3Dshadow-call-stack, so the build will fail i=
-f
-> you enable shadow call stack in non-dynamic mode. However, I still think
-> it is reasonable to add the flag now, as it will at least fail the build
-> when using an invalid configuration, until the Rust compiler is fixed to
-> list -Zsanitizer=3Dshadow-call-stack as supported for the target. See [2]
-> for the feature request to add this.
->
-> I have tested this change with Rust Binder on an Android device using
-> CONFIG_DYNAMIC_SCS. Without the -Ctarget-feature=3D+reserve-x18 flag, the
-> phone crashes immediately on boot, and with the flag, the phone appears
-> to work normally.
->
-> Link: https://github.com/rust-lang/rust/issues/121970 [1]
-> Link: https://github.com/rust-lang/rust/issues/121972 [2]
-> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
+> Signed-off-by: Ethan Zhao <haifeng.zhao@linux.intel.com>
 > ---
-> It's not 100% clear to me whether this patch is enough for full SCS
-> support in Rust. If there is some issue where this makes things compile
-> and work without actually applying SCS to the Rust code, please let me
-> know. Is there some way to verify that it is actually working?
+>  drivers/pci/pci.h      | 1 +
+>  drivers/pci/pcie/dpc.c | 9 +++++----
+>  drivers/pci/pcie/edr.c | 3 +++
+>  3 files changed, 9 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> index 50134b5e3235..3787bb32e724 100644
+> --- a/drivers/pci/pci.h
+> +++ b/drivers/pci/pci.h
+> @@ -443,6 +443,7 @@ void pci_save_dpc_state(struct pci_dev *dev);
+>  void pci_restore_dpc_state(struct pci_dev *dev);
+>  void pci_dpc_init(struct pci_dev *pdev);
+>  void dpc_process_error(struct pci_dev *pdev);
+> +bool dpc_handle_surprise_removal(struct pci_dev *pdev);
+>  pci_ers_result_t dpc_reset_link(struct pci_dev *pdev);
+>  bool pci_dpc_recovered(struct pci_dev *pdev);
+>  #else
+> diff --git a/drivers/pci/pcie/dpc.c b/drivers/pci/pcie/dpc.c
+> index 98b42e425bb9..be79f205e04c 100644
+> --- a/drivers/pci/pcie/dpc.c
+> +++ b/drivers/pci/pcie/dpc.c
+> @@ -319,8 +319,10 @@ static void pci_clear_surpdn_errors(struct pci_dev *pdev)
+>  	pcie_capability_write_word(pdev, PCI_EXP_DEVSTA, PCI_EXP_DEVSTA_FED);
+>  }
+>  
+> -static void dpc_handle_surprise_removal(struct pci_dev *pdev)
+> +bool  dpc_handle_surprise_removal(struct pci_dev *pdev)
+>  {
+> +	if (!dpc_is_surprise_removal(pdev))
+> +		return false;
+>  	if (!pcie_wait_for_link(pdev, false)) {
+>  		pci_info(pdev, "Data Link Layer Link Active not cleared in 1000 msec\n");
+>  		goto out;
+> @@ -338,6 +340,7 @@ static void dpc_handle_surprise_removal(struct pci_dev *pdev)
+>  out:
+>  	clear_bit(PCI_DPC_RECOVERED, &pdev->priv_flags);
+>  	wake_up_all(&dpc_completed_waitqueue);
+> +	return true;
+>  }
+>  
+>  static bool dpc_is_surprise_removal(struct pci_dev *pdev)
+> @@ -362,10 +365,8 @@ static irqreturn_t dpc_handler(int irq, void *context)
+>  	 * According to PCIe r6.0 sec 6.7.6, errors are an expected side effect
+>  	 * of async removal and should be ignored by software.
+>  	 */
+> -	if (dpc_is_surprise_removal(pdev)) {
+> -		dpc_handle_surprise_removal(pdev);
+> +	if (dpc_handle_surprise_removal(pdev))
+>  		return IRQ_HANDLED;
+> -	}
+>  
+>  	dpc_process_error(pdev);
+>  
+> diff --git a/drivers/pci/pcie/edr.c b/drivers/pci/pcie/edr.c
+> index 5f4914d313a1..556edfb2696a 100644
+> --- a/drivers/pci/pcie/edr.c
+> +++ b/drivers/pci/pcie/edr.c
+> @@ -184,6 +184,9 @@ static void edr_handle_event(acpi_handle handle, u32 event, void *data)
+>  		goto send_ost;
+>  	}
+>  
+> +	if (dpc_handle_surprise_removal(edev))
+> +		goto send_ost;
+> +
+>  	dpc_process_error(edev);
+>  	pci_aer_raw_clear_status(edev);
+>  
+>
+> base-commit: a66f2b4a4d365dc4bac35576f3a9d4f5982f1d63
 
-Perhaps you could write a Rust version of the CFI_BACKWARD test in LKDTM?
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
 
-Alternatively, the simplest way to verify this is to look at the
-disassembly and verify that shadow stack instructions are emitted to
-Rust functions too. In case of dynamic SCS, you might need to dump
-function memory in a debugger to verify that PAC instructions were
-patched correctly. If they're not, the code will just quietly continue
-working without using shadow stacks.
-
-> This patch raises the question of whether we should change the Rust
-> aarch64 support to use a custom target.json specification. If we do
-> that, then we can fix both the warning for dynamic SCS and the
-> build-failure for non-dynamic SCS without waiting for a new version of
-> rustc with the mentioned issues fixed.
-
-Sure, having a custom target description for the kernel might be
-useful for other purposes too. In the meantime:
-
-Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
-
-Sami
 
