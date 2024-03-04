@@ -1,151 +1,254 @@
-Return-Path: <linux-kernel+bounces-90216-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90225-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24A5186FC14
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:43:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09F1D86FC2A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:46:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE5DB1F22CB3
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:43:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 736D61F22E71
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:46:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7147199C7;
-	Mon,  4 Mar 2024 08:43:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06F752D600;
+	Mon,  4 Mar 2024 08:43:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="Kwl55zxb"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XVhNDulU"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F7F818EB4
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 08:43:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AA342574D
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 08:43:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709541801; cv=none; b=uJuCHzgbE4eNGWwL8OJW5gflAz/p0ZRJRGVyb6zl4u19jQcVrK4wFXc2JkOVz2ny+9kbYX+3Z757NRVJ/sV2LDe+vAxSiIvQFrV36txwuxAp5KojX3uCsJPCPPtoI8tOwM+1s9ycz8MU9f7jGBTWgFy7nQH6rW17CHk8/lKsWdI=
+	t=1709541827; cv=none; b=JSNzrUH5LnSsncwZRyVG9fQBUYFygx2I/0ML8nXK0Gtd9P9+SfGgkY1Qyudd6DFji3DjctQ6WXLMFbYFfyJByXXhWOuXK6ozJKPSO4uvOF/ddwy51LxiVF4Sb+kPwAO+ZwS78DDJJzCvvzokXJiRhw/ysdFcugMPsHsTL2URPUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709541801; c=relaxed/simple;
-	bh=pCnufLy/HtQxFmJvCJIBchOyotPLyFf9InIAEZFtzyY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ljcMZ4SQ+LTgTUph6z1dH3DqncW7MuMpABBU3liQ00y/KG1/wSROnb58rMCjILkCxu6ZWt8ONqOCcyzUi50ivrlLmm4uwOf6zsod5conv82xJP4gIAKiLSDLtfTEsQHUhhUvdo0MG+H+BbhifWS1C7/COGbaQU/Qdg87070u7lE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=Kwl55zxb; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-563c403719cso5747549a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 00:43:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1709541796; x=1710146596; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=T5Tdy8e2M2LwA/AfaCGwdWZIPI/u425rq1VFhpOUNQA=;
-        b=Kwl55zxbriz3widw4ypAfXgsfjohHhIcVTW9s8csoN6s68Tf+plwyiKeHzpxnEa7jb
-         LCSGRAiiEWRj0O2lxFE9YQjKtO+zo8gOQsvqFEEw2AuBYMMQbnuk+mJ9xlYoJgqL6nCX
-         RkzVhvILqUZJyynV9XoSbRLF/+wo8ho1AruF+ODajQCxvcflz3nNzILZhjBdmnhKvbVa
-         JyJpYHhmIt7AsybYrt81ACoDUftq4/cTxAHwwF4qEc9kvm/b+eMHl+ZsE6EgWk5vZu8a
-         z1JJpjrR0tCKAy/komjO4jAY4vk4jB2oYcu5CWmd1iT/XRtXMdbKEPGh8SAyYcjxxM6L
-         RNYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709541796; x=1710146596;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=T5Tdy8e2M2LwA/AfaCGwdWZIPI/u425rq1VFhpOUNQA=;
-        b=BBMMlLvBPaWNpSj0ja3OEvyL+Y0yVph3B27/k8ROPx4zJoztdznrIIUWNSzdkByK3m
-         meDu6s+swzKSnl4Oe8chF6ecpnsXJrI62eaWTKaFHlm96PXF8pVPna+9699ZF+ofxtMq
-         Nz0ZS+siy+jUcmLF2nTm9mJkDeCWaxIoH2jJOCPgDv83OKHqFLxYUzX/0QXFhVwp7mLk
-         ZfOW2QW6bW6O2fraoUZs0TVbSqdIgsCOS7vpks8mBlVghUwjAnuyIoqzKN8Lreqz+qlu
-         fbEbskiZdjpKFrmAQcr7hPQHMXNJY2N71FkP3chSBcJ4MXkuRkVjnXMDl0JAZxesjtHj
-         FKyQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUNinJBU9scK/xFmTkemRMP89MPDXXJkBq59CU9I11byCMPed+cEWDBzWvyeD+RA7uZkxobev5/0j+AGNcsgqvRFTz7A4Boa68D0dvk
-X-Gm-Message-State: AOJu0YybHAV69o3dZNVZkoxMkbelP3hqelpEI1W2JQQvoF+ZjKyHbkJK
-	WWTJvVEDE7MBqVTbC0KC3YVDV6mfbgabBULvUMRIOsn6bwEeKMeCFq/Q4LpSbla6tOXZP7TDcmm
-	oaRXVNHeaYD3rfe3bVfzOIjmLJKN0YyBjgEM+Hw==
-X-Google-Smtp-Source: AGHT+IFh3iQrNw66aCjZWvQhrTZ7/Vd8fhUefXxPExNqJlkSHixSsXeU4cwRVs5xuqmPK6lnUcEq9LU+l+TqakQxmJs=
-X-Received: by 2002:aa7:d04c:0:b0:567:2870:1f1c with SMTP id
- n12-20020aa7d04c000000b0056728701f1cmr2747833edo.19.1709541796556; Mon, 04
- Mar 2024 00:43:16 -0800 (PST)
+	s=arc-20240116; t=1709541827; c=relaxed/simple;
+	bh=1yskpCVzWiHGiofGxGLw9LLF25f7okHA+AFw/Vlb7/4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=uttw3xxIMEJF/oGaQAsfn7+Q03BfuYNi55WiIOdF9pgsUQSDq6P+ksApA2kZDn6n8wmkp7DE/5/yYTyfbfWCbYyYw/gsBDyytHohvLFRcZLa7sP2/CHdA1TRjlw5BDEVUXx04+fwYUjooUIk4fG5tGR85+F6YZskfgoJ0QIbGt4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XVhNDulU; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709541824;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TRdqimspnMZVPKymX1p9GQpRQzRORSRvhQalJQ51PVE=;
+	b=XVhNDulUdM3eVHqrn5rKGEBzrWQuv58POjYoskkxPtfzQO9c8rMZ8fOOink7+W+EhqpS1L
+	FZDnaXu5Uu/FDqEMvbSU5iRfSqbA2nHu1WSGKbJH/5hLSYY522FmE/4GY9eCYYd8lu9adJ
+	MCfXXSeYpWFvMw5JpiNlQ0QYPzniTwk=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-158-PI_DrKkvOWCpZZ1IjQTxYg-1; Mon,
+ 04 Mar 2024 03:43:43 -0500
+X-MC-Unique: PI_DrKkvOWCpZZ1IjQTxYg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8FDDB3C00090;
+	Mon,  4 Mar 2024 08:43:42 +0000 (UTC)
+Received: from warthog.procyon.org.com (unknown [10.42.28.114])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 442171121313;
+	Mon,  4 Mar 2024 08:43:41 +0000 (UTC)
+From: David Howells <dhowells@redhat.com>
+To: netdev@vger.kernel.org
+Cc: David Howells <dhowells@redhat.com>,
+	Marc Dionne <marc.dionne@auristor.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	linux-afs@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v2 09/21] rxrpc: Add a kvec[] to the rxrpc_txbuf struct
+Date: Mon,  4 Mar 2024 08:43:06 +0000
+Message-ID: <20240304084322.705539-10-dhowells@redhat.com>
+In-Reply-To: <20240304084322.705539-1-dhowells@redhat.com>
+References: <20240304084322.705539-1-dhowells@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240302201636.1228331-1-ipylypiv@google.com> <20240302201636.1228331-4-ipylypiv@google.com>
-In-Reply-To: <20240302201636.1228331-4-ipylypiv@google.com>
-From: Jinpu Wang <jinpu.wang@ionos.com>
-Date: Mon, 4 Mar 2024 09:43:05 +0100
-Message-ID: <CAMGffEkP4yCX8ngoApbStNdeBL6DbAcwa+U9O8q5gF8+WyCEPw@mail.gmail.com>
-Subject: Re: [PATCH v3 3/7] scsi: pm80xx: Add libsas SATA sysfs attributes group
-To: Igor Pylypiv <ipylypiv@google.com>
-Cc: Damien Le Moal <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>, 
-	John Garry <john.g.garry@oracle.com>, Jason Yan <yanaijie@huawei.com>, 
-	"James E.J. Bottomley" <jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, 
-	Jack Wang <jinpu.wang@cloud.ionos.com>, Hannes Reinecke <hare@suse.de>, 
-	Xiang Chen <chenxiang66@hisilicon.com>, Artur Paszkiewicz <artur.paszkiewicz@intel.com>, 
-	Bart Van Assche <bvanassche@acm.org>, TJ Adams <tadamsjr@google.com>, linux-ide@vger.kernel.org, 
-	linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-On Sat, Mar 2, 2024 at 9:16=E2=80=AFPM Igor Pylypiv <ipylypiv@google.com> w=
-rote:
->
-> The added sysfs attributes group enables the configuration of NCQ Priorit=
-y
-> feature for HBAs that rely on libsas to manage SATA devices.
->
-> Signed-off-by: Igor Pylypiv <ipylypiv@google.com>
-Acked-by: Jack Wang <jinpu.wang@ionos.com>
-> ---
->  drivers/scsi/pm8001/pm8001_ctl.c  | 5 +++++
->  drivers/scsi/pm8001/pm8001_init.c | 1 +
->  drivers/scsi/pm8001/pm8001_sas.h  | 1 +
->  3 files changed, 7 insertions(+)
->
-> diff --git a/drivers/scsi/pm8001/pm8001_ctl.c b/drivers/scsi/pm8001/pm800=
-1_ctl.c
-> index 5c26a13ffbd2..9ffe1a868d0f 100644
-> --- a/drivers/scsi/pm8001/pm8001_ctl.c
-> +++ b/drivers/scsi/pm8001/pm8001_ctl.c
-> @@ -1039,3 +1039,8 @@ const struct attribute_group *pm8001_host_groups[] =
-=3D {
->         &pm8001_host_attr_group,
->         NULL
->  };
-> +
-> +const struct attribute_group *pm8001_sdev_groups[] =3D {
-> +       &sas_ata_sdev_attr_group,
-> +       NULL
-> +};
-> diff --git a/drivers/scsi/pm8001/pm8001_init.c b/drivers/scsi/pm8001/pm80=
-01_init.c
-> index ed6b7d954dda..e6b1108f6117 100644
-> --- a/drivers/scsi/pm8001/pm8001_init.c
-> +++ b/drivers/scsi/pm8001/pm8001_init.c
-> @@ -134,6 +134,7 @@ static const struct scsi_host_template pm8001_sht =3D=
+Add a kvec[] to the rxrpc_txbuf struct to point to the contributory buffers
+for a packet.  Start with just a single element for now, but this will be
+expanded later.
+
+Make the ACK sending function use it, which means that rxrpc_fill_out_ack()
+doesn't need to return the size of the sack table, padding and trailer.
+
+Make the data sending code use it, both in where sendmsg() packages code up
+into txbufs and where those txbufs are transmitted.
+
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Marc Dionne <marc.dionne@auristor.com>
+cc: "David S. Miller" <davem@davemloft.net>
+cc: Eric Dumazet <edumazet@google.com>
+cc: Jakub Kicinski <kuba@kernel.org>
+cc: Paolo Abeni <pabeni@redhat.com>
+cc: linux-afs@lists.infradead.org
+cc: netdev@vger.kernel.org
+---
+ net/rxrpc/ar-internal.h |  2 ++
+ net/rxrpc/output.c      | 33 ++++++++++++---------------------
+ net/rxrpc/sendmsg.c     |  8 +++++---
+ net/rxrpc/txbuf.c       |  3 +++
+ 4 files changed, 22 insertions(+), 24 deletions(-)
+
+diff --git a/net/rxrpc/ar-internal.h b/net/rxrpc/ar-internal.h
+index c9a2882627aa..c6731f43a2d5 100644
+--- a/net/rxrpc/ar-internal.h
++++ b/net/rxrpc/ar-internal.h
+@@ -805,6 +805,8 @@ struct rxrpc_txbuf {
+ #define RXRPC_TXBUF_RESENT	0x100		/* Set if has been resent */
+ 	__be16			cksum;		/* Checksum to go in header */
+ 	u8 /*enum rxrpc_propose_ack_trace*/ ack_why;	/* If ack, why */
++	u8			nr_kvec;
++	struct kvec		kvec[1];
+ 	struct {
+ 		/* The packet for encrypting and DMA'ing.  We align it such
+ 		 * that data[] aligns correctly for any crypto blocksize.
+diff --git a/net/rxrpc/output.c b/net/rxrpc/output.c
+index e2c9e645fcfb..f2b10c3e4cc2 100644
+--- a/net/rxrpc/output.c
++++ b/net/rxrpc/output.c
+@@ -77,10 +77,10 @@ static void rxrpc_set_keepalive(struct rxrpc_call *call)
+ /*
+  * Fill out an ACK packet.
+  */
+-static size_t rxrpc_fill_out_ack(struct rxrpc_connection *conn,
+-				 struct rxrpc_call *call,
+-				 struct rxrpc_txbuf *txb,
+-				 u16 *_rwind)
++static void rxrpc_fill_out_ack(struct rxrpc_connection *conn,
++			       struct rxrpc_call *call,
++			       struct rxrpc_txbuf *txb,
++			       u16 *_rwind)
  {
->         .compat_ioctl           =3D sas_ioctl,
->  #endif
->         .shost_groups           =3D pm8001_host_groups,
-> +       .sdev_groups            =3D pm8001_sdev_groups,
->         .track_queue_depth      =3D 1,
->         .cmd_per_lun            =3D 32,
->         .map_queues             =3D pm8001_map_queues,
-> diff --git a/drivers/scsi/pm8001/pm8001_sas.h b/drivers/scsi/pm8001/pm800=
-1_sas.h
-> index 3ccb7371902f..ced6721380a8 100644
-> --- a/drivers/scsi/pm8001/pm8001_sas.h
-> +++ b/drivers/scsi/pm8001/pm8001_sas.h
-> @@ -717,6 +717,7 @@ int pm80xx_fatal_errors(struct pm8001_hba_info *pm800=
-1_ha);
->  void pm8001_free_dev(struct pm8001_device *pm8001_dev);
->  /* ctl shared API */
->  extern const struct attribute_group *pm8001_host_groups[];
-> +extern const struct attribute_group *pm8001_sdev_groups[];
->
->  #define PM8001_INVALID_TAG     ((u32)-1)
->
-> --
-> 2.44.0.278.ge034bb2e1d-goog
->
+ 	struct rxrpc_acktrailer trailer;
+ 	unsigned int qsize, sack, wrap, to;
+@@ -134,7 +134,9 @@ static size_t rxrpc_fill_out_ack(struct rxrpc_connection *conn,
+ 	*ackp++ = 0;
+ 	*ackp++ = 0;
+ 	memcpy(ackp, &trailer, sizeof(trailer));
+-	return txb->ack.nAcks + 3 + sizeof(trailer);
++	txb->kvec[0].iov_len = sizeof(txb->wire) +
++		sizeof(txb->ack) + txb->ack.nAcks + 3 + sizeof(trailer);
++	txb->len = txb->kvec[0].iov_len;
+ }
+ 
+ /*
+@@ -187,8 +189,6 @@ int rxrpc_send_ack_packet(struct rxrpc_call *call, struct rxrpc_txbuf *txb)
+ {
+ 	struct rxrpc_connection *conn;
+ 	struct msghdr msg;
+-	struct kvec iov[1];
+-	size_t len, n;
+ 	int ret, rtt_slot = -1;
+ 	u16 rwind;
+ 
+@@ -207,13 +207,7 @@ int rxrpc_send_ack_packet(struct rxrpc_call *call, struct rxrpc_txbuf *txb)
+ 		txb->flags |= RXRPC_REQUEST_ACK;
+ 	txb->wire.flags = txb->flags & RXRPC_TXBUF_WIRE_FLAGS;
+ 
+-	n = rxrpc_fill_out_ack(conn, call, txb, &rwind);
+-	if (n == 0)
+-		return 0;
+-
+-	iov[0].iov_base	= &txb->wire;
+-	iov[0].iov_len	= sizeof(txb->wire) + sizeof(txb->ack) + n;
+-	len = iov[0].iov_len;
++	rxrpc_fill_out_ack(conn, call, txb, &rwind);
+ 
+ 	txb->serial = rxrpc_get_next_serial(conn);
+ 	txb->wire.serial = htonl(txb->serial);
+@@ -230,9 +224,9 @@ int rxrpc_send_ack_packet(struct rxrpc_call *call, struct rxrpc_txbuf *txb)
+ 	/* Grab the highest received seq as late as possible */
+ 	txb->ack.previousPacket	= htonl(call->rx_highest_seq);
+ 
+-	iov_iter_kvec(&msg.msg_iter, WRITE, iov, 1, len);
++	iov_iter_kvec(&msg.msg_iter, WRITE, txb->kvec, txb->nr_kvec, txb->len);
+ 	rxrpc_local_dont_fragment(conn->local, false);
+-	ret = do_udp_sendmsg(conn->local->socket, &msg, len);
++	ret = do_udp_sendmsg(conn->local->socket, &msg, txb->len);
+ 	call->peer->last_tx_at = ktime_get_seconds();
+ 	if (ret < 0) {
+ 		trace_rxrpc_tx_fail(call->debug_id, txb->serial, ret,
+@@ -327,7 +321,6 @@ int rxrpc_send_data_packet(struct rxrpc_call *call, struct rxrpc_txbuf *txb)
+ 	enum rxrpc_req_ack_trace why;
+ 	enum rxrpc_tx_point frag;
+ 	struct msghdr msg;
+-	struct kvec iov[1];
+ 	size_t len;
+ 	int ret, rtt_slot = -1;
+ 
+@@ -342,10 +335,8 @@ int rxrpc_send_data_packet(struct rxrpc_call *call, struct rxrpc_txbuf *txb)
+ 	    txb->seq == 1)
+ 		txb->wire.userStatus = RXRPC_USERSTATUS_SERVICE_UPGRADE;
+ 
+-	iov[0].iov_base = &txb->wire;
+-	iov[0].iov_len = sizeof(txb->wire) + txb->len;
+-	len = iov[0].iov_len;
+-	iov_iter_kvec(&msg.msg_iter, WRITE, iov, 1, len);
++	len = txb->kvec[0].iov_len;
++	iov_iter_kvec(&msg.msg_iter, WRITE, txb->kvec, txb->nr_kvec, len);
+ 
+ 	msg.msg_name = &call->peer->srx.transport;
+ 	msg.msg_namelen = call->peer->srx.transport_len;
+diff --git a/net/rxrpc/sendmsg.c b/net/rxrpc/sendmsg.c
+index 25c7c1d4f4c6..1e81046ea8a6 100644
+--- a/net/rxrpc/sendmsg.c
++++ b/net/rxrpc/sendmsg.c
+@@ -362,7 +362,7 @@ static int rxrpc_send_data(struct rxrpc_sock *rx,
+ 			if (!txb)
+ 				goto maybe_error;
+ 
+-			txb->offset = offset;
++			txb->offset = offset + sizeof(struct rxrpc_wire_header);
+ 			txb->space -= offset;
+ 			txb->space = min_t(size_t, chunk, txb->space);
+ 		}
+@@ -374,8 +374,8 @@ static int rxrpc_send_data(struct rxrpc_sock *rx,
+ 			size_t copy = min_t(size_t, txb->space, msg_data_left(msg));
+ 
+ 			_debug("add %zu", copy);
+-			if (!copy_from_iter_full(txb->data + txb->offset, copy,
+-						 &msg->msg_iter))
++			if (!copy_from_iter_full(txb->kvec[0].iov_base + txb->offset,
++						 copy, &msg->msg_iter))
+ 				goto efault;
+ 			_debug("added");
+ 			txb->space -= copy;
+@@ -404,6 +404,8 @@ static int rxrpc_send_data(struct rxrpc_sock *rx,
+ 			if (ret < 0)
+ 				goto out;
+ 
++			txb->kvec[0].iov_len += txb->len;
++			txb->len = txb->kvec[0].iov_len;
+ 			rxrpc_queue_packet(rx, call, txb, notify_end_tx);
+ 			txb = NULL;
+ 		}
+diff --git a/net/rxrpc/txbuf.c b/net/rxrpc/txbuf.c
+index 7273615afe94..91e96cda6dc7 100644
+--- a/net/rxrpc/txbuf.c
++++ b/net/rxrpc/txbuf.c
+@@ -36,6 +36,9 @@ struct rxrpc_txbuf *rxrpc_alloc_txbuf(struct rxrpc_call *call, u8 packet_type,
+ 		txb->seq		= call->tx_prepared + 1;
+ 		txb->serial		= 0;
+ 		txb->cksum		= 0;
++		txb->nr_kvec		= 1;
++		txb->kvec[0].iov_base	= &txb->wire;
++		txb->kvec[0].iov_len	= sizeof(txb->wire);
+ 		txb->wire.epoch		= htonl(call->conn->proto.epoch);
+ 		txb->wire.cid		= htonl(call->cid);
+ 		txb->wire.callNumber	= htonl(call->call_id);
+
 
