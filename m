@@ -1,34 +1,34 @@
-Return-Path: <linux-kernel+bounces-90557-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90555-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B879870114
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:16:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C8B9870111
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:16:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 86EA41F21D3E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:16:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 953C7283753
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:16:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3E713E47A;
-	Mon,  4 Mar 2024 12:15:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C18A3BB46;
+	Mon,  4 Mar 2024 12:15:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="oRLSZpbC";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="2ppw8y05"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="nTEHyS0c";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Wm5uZKSA"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7C923D3A4;
-	Mon,  4 Mar 2024 12:15:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C031A3CF74;
+	Mon,  4 Mar 2024 12:15:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709554512; cv=none; b=XLWa6pdahmQjZhV+yCj2xf257nvcjCs1LoLwUS9VSRXH+CDpGCU6W49JKSwZQZsx09DcSY/23FTLWhb/8WrDhSz6itB8VCsrv+aFat3A6QMvKxz6gvwDPGn5g6NQTiYQ4JbwhR/0GvoMvTmjVgL2HsdLPgRl1391Yu8z49zUTiU=
+	t=1709554511; cv=none; b=CNjbHq07BvN42xzpWyy+yWGfkI113HgtBmLdilPuAYq/eoA6uRmUZyq7iOj7gLQTd1KuIByVoDWECw/5AAbg4dlo0tW9RurJxa2/X8GvnbBXdmHCUnFfJgj8t4QiWJwQpFwmKvhumqzbCkFsc691mUd6VyKB8N8L0Lu7jWK2hIk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709554512; c=relaxed/simple;
-	bh=O4YPBXk06Z/LswFItKphIK70oMVrjDQkBBmiAgD6Ytg=;
+	s=arc-20240116; t=1709554511; c=relaxed/simple;
+	bh=4e7c4XeoMoqErMEUvZy9LPZhvhSF317wV2byPficIbM=;
 	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=AcsCL4nw328GionqmVd70dlvsh3qcJQf5LP2nEHuPk4P2kI8JdXYD3rGpN30hLfNtFXkYIfjD1VcWlfN8T69eGrCmC1mjZ4hg8OVuHFxlHLRX70W7bCm0BBDVFa6Di1BehlbNwyNkBRKlIU220K0wGvDMwB7BRQSGF7fXty6yz0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=oRLSZpbC; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=2ppw8y05; arc=none smtp.client-ip=193.142.43.55
+	 Message-ID:Content-Type; b=r9VIGtmC61FrvXyeEA6x4Dva22u7BmNRYb4tSB2pKZjVRNptK+q0SzZ9NAmzyYCkYwh2oLYjU3kAWImtnBPIIeWWvLg0O3yqgXI/P/7mNU/7tK/+fZxw3DAMc/Z2fZXWjO6P57j7tqKyMgOPOgVXHLdhmJMGUtuZIwEgKK4135Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=nTEHyS0c; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Wm5uZKSA; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Date: Mon, 04 Mar 2024 12:15:07 -0000
@@ -39,12 +39,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=geDnCpFgvxB2oKuj16bvG/AKad282wxpMr9/+JHwrUs=;
-	b=oRLSZpbCB5QNoPjWYrnk0rPtJeGnZBmnQPIlj2cN64PaNTfLcdCiGPm6H4CXH9Csrfn7yz
-	iSj6FDWAKGQZ+yHbKlq+uenpD6ZOoVFlQKStI0a4kcywgxStbJC1/BoFcz6iXKOI64dzT4
-	AbuBibodT/n+tbyUnIpwmooIR+IRTQd4SOo4kgxRkA0WW4VfQ0L/XF1eRGBOnkq7/Eh2At
-	LhceOOidUDw1jfpI1BK3SsTJPOqqELgRi5QZeeIpnSnwrjpY1Xrwo9wWMTa7MUmtuc0GCs
-	Xhy78PHPR7G0cSE+qxAMHOAAWkEzroEUoszVG30JbIgoteCJxLXSA0qjmH6SOg==
+	bh=WWggXFl6uEUV2KrPyBZxmWrCftIgyB21SQjzfWt7kjk=;
+	b=nTEHyS0cs83SLuAwdkPuqDt9rluQiU0JbTqqJIrUSHfBPMtYO7kSFicve5dWTGnIBoJPcn
+	sPCdog1ekfJW/roabZKMVeeIX+tDmoSxJau76502mHpIUHXIY2K2+VFhlNU4Sb521JqOKH
+	OkP487E+uY44Y/JZauNz+dlWTH/PBcb9pohsP4nnwNA6ZJFUhHw1ghA+s168due/GZnkK4
+	Onp42H62LA0CsaXL5yQCu4+Ew2JiYPntQWc2RHBqr8fzKYtJn7JScq+vgXiJHMkcqdxkOc
+	wZnxxUF/FVvOPCAj/vzsv2YsYGKca+NUD5YE6owZsaW21lCoIbtI/W37pjoyvA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020e; t=1709554508;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -52,26 +52,25 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=geDnCpFgvxB2oKuj16bvG/AKad282wxpMr9/+JHwrUs=;
-	b=2ppw8y05MWorFOd7EMG30tXdeIfn8zEvSZnCKQlTVroWcRXLGmi/H+MfnQ+GMC8OgMcRGm
-	iPotwwRHLnvzCYBg==
+	bh=WWggXFl6uEUV2KrPyBZxmWrCftIgyB21SQjzfWt7kjk=;
+	b=Wm5uZKSAxjEzzIFxW5aTKWT12gT48v5ApyrRhYn87lK92NEX525hx4FIQ6X1KDzu+xr+sK
+	VnEknZm7Df7Vr7Bw==
 From: "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] x86/msr: Prepare for including <linux/percpu.h>
- into <asm/msr.h>
+Subject: [tip: x86/cleanups] x86/msr: Add missing __percpu annotations
 Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@kernel.org>,
  x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240304005104.454678686@linutronix.de>
-References: <20240304005104.454678686@linutronix.de>
+In-Reply-To: <20240304005104.513181735@linutronix.de>
+References: <20240304005104.513181735@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170955450788.398.5285179242265335833.tip-bot2@tip-bot2>
+Message-ID: <170955450713.398.6405328311126408942.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe:
  Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -81,229 +80,205 @@ Content-Transfer-Encoding: 7bit
 
 The following commit has been merged into the x86/cleanups branch of tip:
 
-Commit-ID:     154fcf3a788868cb87d8c2e50c0b5b3a2fe89853
-Gitweb:        https://git.kernel.org/tip/154fcf3a788868cb87d8c2e50c0b5b3a2fe89853
+Commit-ID:     5323922f50ecdf9d10cdd2fabd06507e5b4f3feb
+Gitweb:        https://git.kernel.org/tip/5323922f50ecdf9d10cdd2fabd06507e5b4f3feb
 Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Mon, 04 Mar 2024 11:12:19 +01:00
+AuthorDate:    Mon, 04 Mar 2024 11:12:20 +01:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Mon, 04 Mar 2024 12:01:39 +01:00
+CommitterDate: Mon, 04 Mar 2024 12:01:54 +01:00
 
-x86/msr: Prepare for including <linux/percpu.h> into <asm/msr.h>
+x86/msr: Add missing __percpu annotations
 
-To clean up the per CPU insanity of UP which causes sparse to be rightfully
-unhappy and prevents the usage of the generic per CPU accessors on cpu_info
-it is necessary to include <linux/percpu.h> into <asm/msr.h>.
+Sparse rightfully complains about using a plain pointer for per CPU
+accessors:
 
-Including <linux/percpu.h> into <asm/msr.h> is impossible because it ends
-up in header dependency hell. The problem is that <asm/processor.h>
-includes <asm/msr.h>. The inclusion of <linux/percpu.h> results in a
-compile fail where the compiler cannot longer handle an include in
-<asm/cpufeature.h> which references boot_cpu_data which is
-defined in <asm/processor.h>.
+  msr-smp.c:15:23: sparse: warning: incorrect type in initializer (different address spaces)
+  msr-smp.c:15:23: sparse:    expected void const [noderef] __percpu *__vpp_verify
+  msr-smp.c:15:23: sparse:    got struct msr *
 
-The only reason why <asm/msr.h> is included in <asm/processor.h> are the
-set/get_debugctlmsr() inlines. They are defined there because <asm/processor.h>
-is such a nice dump ground for everything. In fact they belong obviously
-into <asm/debugreg.h>.
-
-Move them to <asm/debugreg.h> and fix up the resulting damage which is just
-exposing the reliance on random include chains.
+Add __percpu annotations to the related datastructure and function
+arguments to cure this. This also cures the related sparse warnings at the
+callsites in drivers/edac/amd64_edac.c.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20240304005104.454678686@linutronix.de
+Link: https://lore.kernel.org/r/20240304005104.513181735@linutronix.de
 ---
- arch/x86/events/intel/core.c         |  1 +
- arch/x86/events/intel/ds.c           |  1 +
- arch/x86/include/asm/debugreg.h      | 24 ++++++++++++++++++++++++
- arch/x86/include/asm/fsgsbase.h      |  2 +-
- arch/x86/include/asm/processor.h     | 22 ----------------------
- arch/x86/include/asm/special_insns.h |  4 ++--
- arch/x86/kernel/cpu/intel_pconfig.c  |  2 ++
- arch/x86/kernel/cpu/rdrand.c         |  1 +
- arch/x86/kernel/fpu/bugs.c           |  2 ++
- arch/x86/kernel/step.c               |  2 ++
- 10 files changed, 36 insertions(+), 25 deletions(-)
+ arch/x86/include/asm/msr.h       | 26 ++++++++++++++------------
+ arch/x86/include/asm/processor.h |  1 -
+ arch/x86/include/asm/tsc.h       |  3 ++-
+ arch/x86/lib/msr-smp.c           | 12 +++++-------
+ arch/x86/lib/msr.c               |  6 +++---
+ 5 files changed, 24 insertions(+), 24 deletions(-)
 
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 3804f21..768d141 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -17,6 +17,7 @@
- #include <linux/kvm_host.h>
+diff --git a/arch/x86/include/asm/msr.h b/arch/x86/include/asm/msr.h
+index 65ec196..4621e08 100644
+--- a/arch/x86/include/asm/msr.h
++++ b/arch/x86/include/asm/msr.h
+@@ -12,11 +12,13 @@
+ #include <uapi/asm/msr.h>
+ #include <asm/shared/msr.h>
  
- #include <asm/cpufeature.h>
-+#include <asm/debugreg.h>
- #include <asm/hardirq.h>
- #include <asm/intel-family.h>
- #include <asm/intel_pt.h>
-diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
-index d49d661..2641ba6 100644
---- a/arch/x86/events/intel/ds.c
-+++ b/arch/x86/events/intel/ds.c
-@@ -5,6 +5,7 @@
- #include <linux/sched/clock.h>
- 
- #include <asm/cpu_entry_area.h>
-+#include <asm/debugreg.h>
- #include <asm/perf_event.h>
- #include <asm/tlbflush.h>
- #include <asm/insn.h>
-diff --git a/arch/x86/include/asm/debugreg.h b/arch/x86/include/asm/debugreg.h
-index 0cec92c..fdbbbfe 100644
---- a/arch/x86/include/asm/debugreg.h
-+++ b/arch/x86/include/asm/debugreg.h
-@@ -5,7 +5,9 @@
- #include <linux/bug.h>
- #include <linux/percpu.h>
- #include <uapi/asm/debugreg.h>
++#include <linux/percpu.h>
 +
- #include <asm/cpufeature.h>
-+#include <asm/msr.h>
+ struct msr_info {
+-	u32 msr_no;
+-	struct msr reg;
+-	struct msr *msrs;
+-	int err;
++	u32			msr_no;
++	struct msr		reg;
++	struct msr __percpu	*msrs;
++	int			err;
+ };
  
- DECLARE_PER_CPU(unsigned long, cpu_dr7);
- 
-@@ -159,4 +161,26 @@ static inline unsigned long amd_get_dr_addr_mask(unsigned int dr)
+ struct msr_regs_info {
+@@ -305,8 +307,8 @@ static inline int wrmsrl_safe(u32 msr, u64 val)
+ 	return wrmsr_safe(msr, (u32)val,  (u32)(val >> 32));
  }
- #endif
  
-+static inline unsigned long get_debugctlmsr(void)
-+{
-+	unsigned long debugctlmsr = 0;
-+
-+#ifndef CONFIG_X86_DEBUGCTLMSR
-+	if (boot_cpu_data.x86 < 6)
-+		return 0;
-+#endif
-+	rdmsrl(MSR_IA32_DEBUGCTLMSR, debugctlmsr);
-+
-+	return debugctlmsr;
-+}
-+
-+static inline void update_debugctlmsr(unsigned long debugctlmsr)
-+{
-+#ifndef CONFIG_X86_DEBUGCTLMSR
-+	if (boot_cpu_data.x86 < 6)
-+		return;
-+#endif
-+	wrmsrl(MSR_IA32_DEBUGCTLMSR, debugctlmsr);
-+}
-+
- #endif /* _ASM_X86_DEBUGREG_H */
-diff --git a/arch/x86/include/asm/fsgsbase.h b/arch/x86/include/asm/fsgsbase.h
-index 35cff5f..9e7e8ca 100644
---- a/arch/x86/include/asm/fsgsbase.h
-+++ b/arch/x86/include/asm/fsgsbase.h
-@@ -6,7 +6,7 @@
+-struct msr *msrs_alloc(void);
+-void msrs_free(struct msr *msrs);
++struct msr __percpu *msrs_alloc(void);
++void msrs_free(struct msr __percpu *msrs);
+ int msr_set_bit(u32 msr, u8 bit);
+ int msr_clear_bit(u32 msr, u8 bit);
  
- #ifdef CONFIG_X86_64
- 
--#include <asm/msr-index.h>
-+#include <asm/msr.h>
- 
- /*
-  * Read/write a task's FSBASE or GSBASE. This returns the value that
+@@ -315,8 +317,8 @@ int rdmsr_on_cpu(unsigned int cpu, u32 msr_no, u32 *l, u32 *h);
+ int wrmsr_on_cpu(unsigned int cpu, u32 msr_no, u32 l, u32 h);
+ int rdmsrl_on_cpu(unsigned int cpu, u32 msr_no, u64 *q);
+ int wrmsrl_on_cpu(unsigned int cpu, u32 msr_no, u64 q);
+-void rdmsr_on_cpus(const struct cpumask *mask, u32 msr_no, struct msr *msrs);
+-void wrmsr_on_cpus(const struct cpumask *mask, u32 msr_no, struct msr *msrs);
++void rdmsr_on_cpus(const struct cpumask *mask, u32 msr_no, struct msr __percpu *msrs);
++void wrmsr_on_cpus(const struct cpumask *mask, u32 msr_no, struct msr __percpu *msrs);
+ int rdmsr_safe_on_cpu(unsigned int cpu, u32 msr_no, u32 *l, u32 *h);
+ int wrmsr_safe_on_cpu(unsigned int cpu, u32 msr_no, u32 l, u32 h);
+ int rdmsrl_safe_on_cpu(unsigned int cpu, u32 msr_no, u64 *q);
+@@ -345,14 +347,14 @@ static inline int wrmsrl_on_cpu(unsigned int cpu, u32 msr_no, u64 q)
+ 	return 0;
+ }
+ static inline void rdmsr_on_cpus(const struct cpumask *m, u32 msr_no,
+-				struct msr *msrs)
++				struct msr __percpu *msrs)
+ {
+-	rdmsr_on_cpu(0, msr_no, &(msrs[0].l), &(msrs[0].h));
++	rdmsr_on_cpu(0, msr_no, raw_cpu_ptr(&msrs->l), raw_cpu_ptr(&msrs->h));
+ }
+ static inline void wrmsr_on_cpus(const struct cpumask *m, u32 msr_no,
+-				struct msr *msrs)
++				struct msr __percpu *msrs)
+ {
+-	wrmsr_on_cpu(0, msr_no, msrs[0].l, msrs[0].h);
++	wrmsr_on_cpu(0, msr_no, raw_cpu_read(msrs->l), raw_cpu_read(msrs->h));
+ }
+ static inline int rdmsr_safe_on_cpu(unsigned int cpu, u32 msr_no,
+ 				    u32 *l, u32 *h)
 diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-index 26620d7..d2ef4f5 100644
+index d2ef4f5..a61f769 100644
 --- a/arch/x86/include/asm/processor.h
 +++ b/arch/x86/include/asm/processor.h
-@@ -576,28 +576,6 @@ extern void cpu_init(void);
- extern void cpu_init_exception_handling(void);
- extern void cr4_init(void);
- 
--static inline unsigned long get_debugctlmsr(void)
--{
--	unsigned long debugctlmsr = 0;
--
--#ifndef CONFIG_X86_DEBUGCTLMSR
--	if (boot_cpu_data.x86 < 6)
--		return 0;
--#endif
--	rdmsrl(MSR_IA32_DEBUGCTLMSR, debugctlmsr);
--
--	return debugctlmsr;
--}
--
--static inline void update_debugctlmsr(unsigned long debugctlmsr)
--{
--#ifndef CONFIG_X86_DEBUGCTLMSR
--	if (boot_cpu_data.x86 < 6)
--		return;
--#endif
--	wrmsrl(MSR_IA32_DEBUGCTLMSR, debugctlmsr);
--}
--
- extern void set_task_blockstep(struct task_struct *task, bool on);
- 
- /* Boot loader type from the setup header: */
-diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
-index 48f8dd4..f13df37 100644
---- a/arch/x86/include/asm/special_insns.h
-+++ b/arch/x86/include/asm/special_insns.h
-@@ -2,11 +2,11 @@
- #ifndef _ASM_X86_SPECIAL_INSNS_H
- #define _ASM_X86_SPECIAL_INSNS_H
- 
--
- #ifdef __KERNEL__
--
+@@ -20,7 +20,6 @@ struct vm86;
+ #include <asm/page.h>
+ #include <asm/pgtable_types.h>
+ #include <asm/percpu.h>
+-#include <asm/msr.h>
+ #include <asm/desc_defs.h>
  #include <asm/nops.h>
- #include <asm/processor-flags.h>
-+
-+#include <linux/errno.h>
- #include <linux/irqflags.h>
- #include <linux/jump_label.h>
+ #include <asm/special_insns.h>
+diff --git a/arch/x86/include/asm/tsc.h b/arch/x86/include/asm/tsc.h
+index 594fce0..405efb3 100644
+--- a/arch/x86/include/asm/tsc.h
++++ b/arch/x86/include/asm/tsc.h
+@@ -5,8 +5,9 @@
+ #ifndef _ASM_X86_TSC_H
+ #define _ASM_X86_TSC_H
  
-diff --git a/arch/x86/kernel/cpu/intel_pconfig.c b/arch/x86/kernel/cpu/intel_pconfig.c
-index 0771a90..5be2b17 100644
---- a/arch/x86/kernel/cpu/intel_pconfig.c
-+++ b/arch/x86/kernel/cpu/intel_pconfig.c
-@@ -7,6 +7,8 @@
-  * Author:
-  *	Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-  */
-+#include <linux/bug.h>
-+#include <linux/limits.h>
- 
+-#include <asm/processor.h>
  #include <asm/cpufeature.h>
- #include <asm/intel_pconfig.h>
-diff --git a/arch/x86/kernel/cpu/rdrand.c b/arch/x86/kernel/cpu/rdrand.c
-index 26a427f..eeac00d 100644
---- a/arch/x86/kernel/cpu/rdrand.c
-+++ b/arch/x86/kernel/cpu/rdrand.c
-@@ -6,6 +6,7 @@
-  * Authors: Fenghua Yu <fenghua.yu@intel.com>,
-  *          H. Peter Anvin <hpa@linux.intel.com>
-  */
-+#include <linux/printk.h>
++#include <asm/processor.h>
++#include <asm/msr.h>
  
- #include <asm/processor.h>
- #include <asm/archrandom.h>
-diff --git a/arch/x86/kernel/fpu/bugs.c b/arch/x86/kernel/fpu/bugs.c
-index a06b876..edbafc5 100644
---- a/arch/x86/kernel/fpu/bugs.c
-+++ b/arch/x86/kernel/fpu/bugs.c
-@@ -2,6 +2,8 @@
  /*
-  * x86 FPU bug checks:
+  * Standard way to access the cycle counter.
+diff --git a/arch/x86/lib/msr-smp.c b/arch/x86/lib/msr-smp.c
+index 40bbe56..acd463d 100644
+--- a/arch/x86/lib/msr-smp.c
++++ b/arch/x86/lib/msr-smp.c
+@@ -9,10 +9,9 @@ static void __rdmsr_on_cpu(void *info)
+ {
+ 	struct msr_info *rv = info;
+ 	struct msr *reg;
+-	int this_cpu = raw_smp_processor_id();
+ 
+ 	if (rv->msrs)
+-		reg = per_cpu_ptr(rv->msrs, this_cpu);
++		reg = this_cpu_ptr(rv->msrs);
+ 	else
+ 		reg = &rv->reg;
+ 
+@@ -23,10 +22,9 @@ static void __wrmsr_on_cpu(void *info)
+ {
+ 	struct msr_info *rv = info;
+ 	struct msr *reg;
+-	int this_cpu = raw_smp_processor_id();
+ 
+ 	if (rv->msrs)
+-		reg = per_cpu_ptr(rv->msrs, this_cpu);
++		reg = this_cpu_ptr(rv->msrs);
+ 	else
+ 		reg = &rv->reg;
+ 
+@@ -97,7 +95,7 @@ int wrmsrl_on_cpu(unsigned int cpu, u32 msr_no, u64 q)
+ EXPORT_SYMBOL(wrmsrl_on_cpu);
+ 
+ static void __rwmsr_on_cpus(const struct cpumask *mask, u32 msr_no,
+-			    struct msr *msrs,
++			    struct msr __percpu *msrs,
+ 			    void (*msr_func) (void *info))
+ {
+ 	struct msr_info rv;
+@@ -124,7 +122,7 @@ static void __rwmsr_on_cpus(const struct cpumask *mask, u32 msr_no,
+  * @msrs:       array of MSR values
+  *
   */
-+#include <linux/printk.h>
-+
- #include <asm/cpufeature.h>
- #include <asm/fpu/api.h>
+-void rdmsr_on_cpus(const struct cpumask *mask, u32 msr_no, struct msr *msrs)
++void rdmsr_on_cpus(const struct cpumask *mask, u32 msr_no, struct msr __percpu *msrs)
+ {
+ 	__rwmsr_on_cpus(mask, msr_no, msrs, __rdmsr_on_cpu);
+ }
+@@ -138,7 +136,7 @@ EXPORT_SYMBOL(rdmsr_on_cpus);
+  * @msrs:       array of MSR values
+  *
+  */
+-void wrmsr_on_cpus(const struct cpumask *mask, u32 msr_no, struct msr *msrs)
++void wrmsr_on_cpus(const struct cpumask *mask, u32 msr_no, struct msr __percpu *msrs)
+ {
+ 	__rwmsr_on_cpus(mask, msr_no, msrs, __wrmsr_on_cpu);
+ }
+diff --git a/arch/x86/lib/msr.c b/arch/x86/lib/msr.c
+index 47fd9bd..4bf4fad 100644
+--- a/arch/x86/lib/msr.c
++++ b/arch/x86/lib/msr.c
+@@ -6,9 +6,9 @@
+ #define CREATE_TRACE_POINTS
+ #include <asm/msr-trace.h>
  
-diff --git a/arch/x86/kernel/step.c b/arch/x86/kernel/step.c
-index 8e2b255..3e29526 100644
---- a/arch/x86/kernel/step.c
-+++ b/arch/x86/kernel/step.c
-@@ -6,7 +6,9 @@
- #include <linux/sched/task_stack.h>
- #include <linux/mm.h>
- #include <linux/ptrace.h>
-+
- #include <asm/desc.h>
-+#include <asm/debugreg.h>
- #include <asm/mmu_context.h>
+-struct msr *msrs_alloc(void)
++struct msr __percpu *msrs_alloc(void)
+ {
+-	struct msr *msrs = NULL;
++	struct msr __percpu *msrs = NULL;
  
- unsigned long convert_ip_to_linear(struct task_struct *child, struct pt_regs *regs)
+ 	msrs = alloc_percpu(struct msr);
+ 	if (!msrs) {
+@@ -20,7 +20,7 @@ struct msr *msrs_alloc(void)
+ }
+ EXPORT_SYMBOL(msrs_alloc);
+ 
+-void msrs_free(struct msr *msrs)
++void msrs_free(struct msr __percpu *msrs)
+ {
+ 	free_percpu(msrs);
+ }
 
