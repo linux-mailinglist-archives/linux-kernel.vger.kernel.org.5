@@ -1,217 +1,212 @@
-Return-Path: <linux-kernel+bounces-90857-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90838-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CB0C8705FF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:42:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3C568705A8
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:36:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A16611C22262
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:42:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52094B2AC02
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:34:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ACE75A7B6;
-	Mon,  4 Mar 2024 15:36:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B5704DA14;
+	Mon,  4 Mar 2024 15:32:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="DkCG7exs"
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IwV6aY0S"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE6095A10B;
-	Mon,  4 Mar 2024 15:36:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0CE44D134;
+	Mon,  4 Mar 2024 15:32:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709566606; cv=none; b=B/g/NQKrzL0i8u001ozC83Q2CHiEl/kqtJXPRN3uQX9IRcdhktZi5OdtYoWdGPGlCdK6S4Cob9knlUxdMC6WduAzDXPZwUgsUSl7u6kvJyVO1lkC+7mEworHup1ZJ4LeEJYSebye99laMbuVB8xuRMeh22PRy+MvaIRVViJ7yPY=
+	t=1709566375; cv=none; b=QxtWonXixoUtumE8D4fGUmiIEQYa+V8lZkTj8xOPotrUSCc4NB65upGYQdb3UMq+Fqznea/+mt8PhxNr+gwlvu6ugYusnsagj/XJfN9JdDrBlhIyRlKcCar6HpUFq+vsFV5HkepkEhERoL0nBoJLIjzmBIjM29imt9xoy4SjTFE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709566606; c=relaxed/simple;
-	bh=/JaCgmvn7UffcKtiKZ8KnVu2ThvlYf/H+nfsZaXvtrs=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=bEus+0azwGKvDxi7ocx/giV6akC/oPRsyRmxzCD6PiDkSGTar6wTX6KA/iDJ0h52WcMD4fvk2IMDaucu57dzAsfRapmCQL7uX7DM5d+hiTL2nqo9lB5bRW5y4Yl/7+UtQ8IK03GzvrGLiISKUWDLDqRL2yMqEv7y8sZFhvLK6EA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=DkCG7exs; arc=none smtp.client-ip=217.70.183.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C85DC1BF20D;
-	Mon,  4 Mar 2024 15:36:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709566602;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=s6E/Ne64c6+x0FpS9CVe8d7lEAGfcFSrGEubkDw5WnM=;
-	b=DkCG7exsY9UG0LnSnUH7x6xVnM2DPQ1Lj6I2RzBY+M7bkhHNhhakHh7CoGAHXYsXcvlGbq
-	A4ejNjPUVEZWsUjN2ioBLevD96g9DYAkOMpX7opwl8btRLw7jmFxXMP/bauJTQo844czGL
-	OSe/8J5KC3IpIFWpHreXS9ou4YhhpN0nCNBtkCj/ruw3mJOxuLyXilxeDtASBR76Qigb6K
-	B114owohauREEMF/fDdF5MUh0CSC+C5D2QJqkBiZCrO6hRngqjLDG85AFBezRdn59uE0IG
-	3Rwp0QtrYvsmiBlp+g4K7wa2jNHudKR/F5DFFBkYT9eyk43BYTXkAVvLynrQSw==
-From: Thomas Richard <thomas.richard@bootlin.com>
-Date: Mon, 04 Mar 2024 16:36:01 +0100
-Subject: [PATCH v4 18/18] PCI: j721e: Add suspend and resume support
+	s=arc-20240116; t=1709566375; c=relaxed/simple;
+	bh=3EAj3xv1au4Q4TJ50vvjHAcAy5htc0pMEaTTLlfhjOQ=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=c98cGUrQvBOvqo7XGLOaGpPfH5Won6BS+xUeMfapek2/QjEAMNXeBY5Vq7e2x/HlVuBAgQy/I0KInGee8cimDa2ni52CWdxPZOuIH9yVHBG07mvIJsqqHn0FGCUPrdm0JkzMLhAq61UN0HDRPWGHLZdSBUHJysBrklaxldk8xwY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IwV6aY0S; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a441d7c6125so562907966b.2;
+        Mon, 04 Mar 2024 07:32:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709566372; x=1710171172; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=bWvYOuCuRfEcVskjhEHNCFWud68WSGUgd2zUqGEpjT0=;
+        b=IwV6aY0Szpjtuexl28y/Bg5Dzx2rQ3Mf07TlyJbpZIvjp+rsxbH/TBcFmb4ZIDH/fz
+         Gj87MHiS5CIqUjlHg8SEBaMMrXu4nHnEHsj6kZGPGnp6CIMWlmPR97PGY6BovE2mzbGG
+         HyJ11E2ZFMD1YATGRNl6lrQi7QAZQoP7L9HIlOgeB5NWRYYbNq/TG7AgPACg86Gf/ciG
+         Ic+hQcmpI5eeI1Fce64wUA6uYMneuP93ybU/sTzgH5CF4kdvmTyOOC/4G5WKbdRKHEl6
+         vRke1BbVd8aj8lC6PPu+nNnElTg4CNe88THHmoWnchVq9k1d3B6oXIajB0uziDlLcOd1
+         EhSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709566372; x=1710171172;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bWvYOuCuRfEcVskjhEHNCFWud68WSGUgd2zUqGEpjT0=;
+        b=lOZ7VcF6w+F2OkX6kTWcdf+ENp9qJtfuNFPtOgkRKvIZPYfsLljPfXVwNFyp5jnRwE
+         RAFmh7+BB+FxgsPkU60dlkVKPVx4h6CHMGEYyRnhTsYRE5dFV3W6mmxIZDnYDhy3+nxX
+         xHJNXhVLoJnjGKh+alVsxac6NYT9zHHf2sUY0lQ+bPyveHNCGLAXAqza3b2O7ERTc54S
+         VxzUhuGrU14BA+Zsjk5SusMRQzNtzrEfBUdIKv1jIIb/yq12/Szblq1c9KR21nPVYyYb
+         +0andbAxj5BI70dx9npG5GYmGnza2UwZvcICdJCAvMhucF5yMNt+Wyzm3IfPdAlOMPlQ
+         PHtg==
+X-Forwarded-Encrypted: i=1; AJvYcCWicphpRxCFdQB7ED0O3QBs3me51CHiGYNrpcFetXiooWpUSMcwLWlIYavv2zAIQxTjAN77ni2HeDqLiyvh8/LFdjpF0OnHl4ZFIYDidotF0/WmVdrSrKOkKUACzemj+f2QPk9rFHv0/EOtjYGwmco9vMkMpodfc6cW4n3dK/mhrg==
+X-Gm-Message-State: AOJu0YwvpwXMwv+fcjpluJv9wL4nohcO6ez0MeMeBM//WvO71hHkihHD
+	OY6EjwgoLD6FmRp4lAYZbndUgNcHShtxXz8wTemmPtxsf5V7ic/v
+X-Google-Smtp-Source: AGHT+IHKE7kIPPNrF2w6yyuuVMCu9i3ZIMUD02F9duWP7L1huDB65YHByUXUVOOjQ3Ls99sC0F1W4g==
+X-Received: by 2002:a17:906:f35b:b0:a43:fd9e:2d69 with SMTP id hg27-20020a170906f35b00b00a43fd9e2d69mr7096029ejb.6.1709566371768;
+        Mon, 04 Mar 2024 07:32:51 -0800 (PST)
+Received: from ?IPv6:2003:f6:ef1b:2000:944c:cbc7:1e1c:2c47? (p200300f6ef1b2000944ccbc71e1c2c47.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:944c:cbc7:1e1c:2c47])
+        by smtp.gmail.com with ESMTPSA id wp1-20020a170907060100b00a44ce0671b1sm2937118ejb.108.2024.03.04.07.32.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Mar 2024 07:32:51 -0800 (PST)
+Message-ID: <93d0adf0ee6f3737af4d482dc206fe152f762482.camel@gmail.com>
+Subject: Re: [PATCH v3 2/2] of: overlay: Synchronize of_overlay_remove()
+ with the devlink removals
+From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To: Rob Herring <robh@kernel.org>
+Cc: Herve Codina <herve.codina@bootlin.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
+ Frank Rowand <frowand.list@gmail.com>, Lizhi Hou <lizhi.hou@amd.com>, Max
+ Zhen <max.zhen@amd.com>,  Sonal Santan <sonal.santan@amd.com>, Stefano
+ Stabellini <stefano.stabellini@xilinx.com>, Jonathan Cameron
+ <Jonathan.Cameron@huawei.com>, linux-kernel@vger.kernel.org, 
+ devicetree@vger.kernel.org, Allan Nielsen <allan.nielsen@microchip.com>, 
+ Horatiu Vultur <horatiu.vultur@microchip.com>, Steen Hegelund
+ <steen.hegelund@microchip.com>, Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ Nuno Sa <nuno.sa@analog.com>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, stable@vger.kernel.org
+Date: Mon, 04 Mar 2024 16:36:15 +0100
+In-Reply-To: <20240304152202.GA222088-robh@kernel.org>
+References: <20240229105204.720717-1-herve.codina@bootlin.com>
+	 <20240229105204.720717-3-herve.codina@bootlin.com>
+	 <acb69aa8c1a4c4e9849123ef538b9646a71507a0.camel@gmail.com>
+	 <20240304152202.GA222088-robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240102-j7200-pcie-s2r-v4-18-6f1f53390c85@bootlin.com>
-References: <20240102-j7200-pcie-s2r-v4-0-6f1f53390c85@bootlin.com>
-In-Reply-To: <20240102-j7200-pcie-s2r-v4-0-6f1f53390c85@bootlin.com>
-To: Linus Walleij <linus.walleij@linaro.org>, 
- Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>, 
- Tony Lindgren <tony@atomide.com>, 
- Haojian Zhuang <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>, 
- Aaro Koskinen <aaro.koskinen@iki.fi>, 
- Janusz Krzysztofik <jmkrzyszt@gmail.com>, 
- Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>, 
- Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>, 
- Philipp Zabel <p.zabel@pengutronix.de>, 
- Lorenzo Pieralisi <lpieralisi@kernel.org>, 
- =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>
-Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, 
- linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org, 
- linux-pci@vger.kernel.org, gregory.clement@bootlin.com, 
- theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com, u-kumar1@ti.com, 
- Thomas Richard <thomas.richard@bootlin.com>
-X-Mailer: b4 0.12.0
-X-GND-Sasl: thomas.richard@bootlin.com
 
-From: Théo Lebrun <theo.lebrun@bootlin.com>
+On Mon, 2024-03-04 at 09:22 -0600, Rob Herring wrote:
+> On Thu, Feb 29, 2024 at 12:18:49PM +0100, Nuno S=C3=A1 wrote:
+> > On Thu, 2024-02-29 at 11:52 +0100, Herve Codina wrote:
+> > > In the following sequence:
+> > > =C2=A0 1) of_platform_depopulate()
+> > > =C2=A0 2) of_overlay_remove()
+> > >=20
+> > > During the step 1, devices are destroyed and devlinks are removed.
+> > > During the step 2, OF nodes are destroyed but
+> > > __of_changeset_entry_destroy() can raise warnings related to missing
+> > > of_node_put():
+> > > =C2=A0 ERROR: memory leak, expected refcount 1 instead of 2 ...
+> > >=20
+> > > Indeed, during the devlink removals performed at step 1, the removal
+> > > itself releasing the device (and the attached of_node) is done by a j=
+ob
+> > > queued in a workqueue and so, it is done asynchronously with respect =
+to
+> > > function calls.
+> > > When the warning is present, of_node_put() will be called but wrongly
+> > > too late from the workqueue job.
+> > >=20
+> > > In order to be sure that any ongoing devlink removals are done before
+> > > the of_node destruction, synchronize the of_overlay_remove() with the
+> > > devlink removals.
+> > >=20
+> > > Fixes: 80dd33cf72d1 ("drivers: base: Fix device link removal")
+> > > Cc: stable@vger.kernel.org
+> > > Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> > > ---
+> > > =C2=A0drivers/of/overlay.c | 10 +++++++++-
+> > > =C2=A01 file changed, 9 insertions(+), 1 deletion(-)
+> > >=20
+> > > diff --git a/drivers/of/overlay.c b/drivers/of/overlay.c
+> > > index 2ae7e9d24a64..7a010a62b9d8 100644
+> > > --- a/drivers/of/overlay.c
+> > > +++ b/drivers/of/overlay.c
+> > > @@ -8,6 +8,7 @@
+> > > =C2=A0
+> > > =C2=A0#define pr_fmt(fmt)	"OF: overlay: " fmt
+> > > =C2=A0
+> > > +#include <linux/device.h>
+> >=20
+> > This is clearly up to the DT maintainers to decide but, IMHO, I would v=
+ery
+> > much
+> > prefer to see fwnode.h included in here rather than directly device.h (=
+so
+> > yeah,
+> > renaming the function to fwnode_*).
+>=20
+> IMO, the DT code should know almost nothing about fwnode because that's=
+=20
+> the layer above it. But then overlay stuff is kind of a layer above the=
+=20
+> core DT code too.
 
-Add suspend and resume support. Only the rc mode is supported.
+Yeah, my reasoning is just that it may be better than knowing about device.=
+h
+code... But maybe I'm wrong :)
 
-During the suspend stage PERST# is asserted, then deasserted during the
-resume stage.
+>=20
+> > But yeah, I might be biased by own series :)
+> >=20
+> > > =C2=A0#include <linux/kernel.h>
+> > > =C2=A0#include <linux/module.h>
+> > > =C2=A0#include <linux/of.h>
+> > > @@ -853,6 +854,14 @@ static void free_overlay_changeset(struct
+> > > overlay_changeset *ovcs)
+> > > =C2=A0{
+> > > =C2=A0	int i;
+> > > =C2=A0
+> > > +	/*
+> > > +	 * Wait for any ongoing device link removals before removing some
+> > > of
+> > > +	 * nodes. Drop the global lock while waiting
+> > > +	 */
+> > > +	mutex_unlock(&of_mutex);
+> > > +	device_link_wait_removal();
+> > > +	mutex_lock(&of_mutex);
+> >=20
+> > I'm still not convinced we need to drop the lock. What happens if someo=
+ne
+> > else
+> > grabs the lock while we are in device_link_wait_removal()? Can we guara=
+ntee
+> > that
+> > we can't screw things badly?
+>=20
+> It is also just ugly because it's the callers of=20
+> free_overlay_changeset() that hold the lock and now we're releasing it=
+=20
+> behind their back.
+>=20
+> As device_link_wait_removal() is called before we touch anything, can't=
+=20
+> it be called before we take the lock? And do we need to call it if=20
+> applying the overlay fails?
+>=20
 
-Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
-Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
----
- drivers/pci/controller/cadence/pci-j721e.c | 86 ++++++++++++++++++++++++++++++
- 1 file changed, 86 insertions(+)
+My natural feeling was to put it right before checking the node refcount...=
+ and
+I would like to still see proof that there's any potential deadlock. I did =
+not
+checked the code but the issue with calling it before we take the lock is t=
+hat
+likely the device links wont be removed because the overlay removal path (w=
+hich
+unbinds devices from drivers) needs to run under the lock?
 
-diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
-index 9af4fd64c1f9..a1f1232e8ee5 100644
---- a/drivers/pci/controller/cadence/pci-j721e.c
-+++ b/drivers/pci/controller/cadence/pci-j721e.c
-@@ -7,6 +7,8 @@
-  */
- 
- #include <linux/clk.h>
-+#include <linux/clk-provider.h>
-+#include <linux/container_of.h>
- #include <linux/delay.h>
- #include <linux/gpio/consumer.h>
- #include <linux/io.h>
-@@ -22,6 +24,8 @@
- #include "../../pci.h"
- #include "pcie-cadence.h"
- 
-+#define cdns_pcie_to_rc(p) container_of(p, struct cdns_pcie_rc, pcie)
-+
- #define ENABLE_REG_SYS_2	0x108
- #define STATUS_REG_SYS_2	0x508
- #define STATUS_CLR_REG_SYS_2	0x708
-@@ -588,6 +592,87 @@ static void j721e_pcie_remove(struct platform_device *pdev)
- 	pm_runtime_disable(dev);
- }
- 
-+static int j721e_pcie_suspend_noirq(struct device *dev)
-+{
-+	struct j721e_pcie *pcie = dev_get_drvdata(dev);
-+
-+	if (pcie->mode == PCI_MODE_RC) {
-+		gpiod_set_value_cansleep(pcie->reset_gpio, 0);
-+		clk_disable_unprepare(pcie->refclk);
-+	}
-+
-+	cdns_pcie_disable_phy(pcie->cdns_pcie);
-+
-+	return 0;
-+}
-+
-+static int j721e_pcie_resume_noirq(struct device *dev)
-+{
-+	struct j721e_pcie *pcie = dev_get_drvdata(dev);
-+	struct cdns_pcie *cdns_pcie = pcie->cdns_pcie;
-+	int ret;
-+
-+	ret = j721e_pcie_ctrl_init(pcie);
-+	if (ret < 0)
-+		return ret;
-+
-+	j721e_pcie_config_link_irq(pcie);
-+
-+	/*
-+	 * This is not called explicitly in the probe, it is called by
-+	 * cdns_pcie_init_phy().
-+	 */
-+	ret = cdns_pcie_enable_phy(pcie->cdns_pcie);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (pcie->mode == PCI_MODE_RC) {
-+		struct cdns_pcie_rc *rc = cdns_pcie_to_rc(cdns_pcie);
-+
-+		ret = clk_prepare_enable(pcie->refclk);
-+		if (ret < 0)
-+			return ret;
-+
-+		/*
-+		 * "Power Sequencing and Reset Signal Timings" table in
-+		 * PCI EXPRESS CARD ELECTROMECHANICAL SPECIFICATION, REV. 3.0
-+		 * indicates PERST# should be deasserted after minimum of 100us
-+		 * once REFCLK is stable. The REFCLK to the connector in RC
-+		 * mode is selected while enabling the PHY. So deassert PERST#
-+		 * after 100 us.
-+		 */
-+		if (pcie->reset_gpio) {
-+			fsleep(100);
-+			gpiod_set_value_cansleep(pcie->reset_gpio, 1);
-+		}
-+
-+		ret = cdns_pcie_host_link_setup(rc);
-+		if (ret < 0) {
-+			clk_disable_unprepare(pcie->refclk);
-+			return ret;
-+		}
-+
-+		/*
-+		 * Reset internal status of BARs to force reinitialization in
-+		 * cdns_pcie_host_init().
-+		 */
-+		for (enum cdns_pcie_rp_bar bar = RP_BAR0; bar <= RP_NO_BAR; bar++)
-+			rc->avail_ib_bar[bar] = true;
-+
-+		ret = cdns_pcie_host_init(rc);
-+		if (ret) {
-+			clk_disable_unprepare(pcie->refclk);
-+			return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static DEFINE_NOIRQ_DEV_PM_OPS(j721e_pcie_pm_ops,
-+			       j721e_pcie_suspend_noirq,
-+			       j721e_pcie_resume_noirq);
-+
- static struct platform_driver j721e_pcie_driver = {
- 	.probe  = j721e_pcie_probe,
- 	.remove_new = j721e_pcie_remove,
-@@ -595,6 +680,7 @@ static struct platform_driver j721e_pcie_driver = {
- 		.name	= "j721e-pcie",
- 		.of_match_table = of_j721e_pcie_match,
- 		.suppress_bind_attrs = true,
-+		.pm	= pm_sleep_ptr(&j721e_pcie_pm_ops),
- 	},
- };
- builtin_platform_driver(j721e_pcie_driver);
-
--- 
-2.39.2
-
+- Nuno S=C3=A1
 
