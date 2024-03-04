@@ -1,134 +1,177 @@
-Return-Path: <linux-kernel+bounces-90698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 632BE870387
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:02:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39C2487038B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:04:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9B121F26D8F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:02:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC7C22822BC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:04:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E1A03F9C3;
-	Mon,  4 Mar 2024 14:02:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14DDC3F9D3;
+	Mon,  4 Mar 2024 14:04:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="QGmT4hxL";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="fu/R4XyE"
-Received: from fhigh8-smtp.messagingengine.com (fhigh8-smtp.messagingengine.com [103.168.172.159])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jNVJp4Zd"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4609D18E2E;
-	Mon,  4 Mar 2024 14:02:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.159
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9034E3F8E2;
+	Mon,  4 Mar 2024 14:04:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709560967; cv=none; b=Mun8DLWbNOp/0LEhOdmjuTnDrvqFgeTlbkl4Q8rHMZZtZnZDwQYeTyJ6WpIWKVJsrYdQbjmPiBqCb7zxVv1KdtsbYvmUtCaEe4pdbOP7lJFPZ7n2K1fNnw9A0XK9ilO6f2JgIc6xZpcuCD5Ankk/GTXifZIQzWkYfPghPaIGZOQ=
+	t=1709561072; cv=none; b=SxpPFSZNRV5qNRypzOGLkN2MbqXnji0G7bOmFFnfsVVJiW2lDbu9qYNlIoQrOu8ItztZtAqPTm/qNaeaIO3t4rNYDv2JgeJ+4Nz3nur5936SoVM8uNLe5gp5vWUk9R6WsSotPp7MvGVDEfj4FvH+RYZSvaZixYsjpNXO3McNx1k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709560967; c=relaxed/simple;
-	bh=oW3W6ISMlJ8Eg/hIHK1jMTGlAIWDK7R9bRS0g0+jPHo=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=eoIV8yad0kMCSC0T5Vc7MSTemxdIA5jG+auaxARaKZ5hQVeUnhFslW6EzSYQuGlSKUcaWqC0ouazw0yexZPsml0jF40JOLDKLUArIuuDUhDAMQO0xfWclDnd8unJSVrkewesR1FNzvvtfgtaGIelr9/wsDlupYDtv2hzv5s5Ui8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=QGmT4hxL; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=fu/R4XyE; arc=none smtp.client-ip=103.168.172.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id 501D311400D5;
-	Mon,  4 Mar 2024 09:02:45 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Mon, 04 Mar 2024 09:02:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1709560965;
-	 x=1709647365; bh=Tyc3a0qlsGocDX90h5xGZM+hiCwDa28icbfjEtQ1zvk=; b=
-	QGmT4hxLNmXGRO4v8IvjfEmWtXchgSMU24haZAHL4NW4DDDMnfs8r+EyLQzXryfo
-	vX435XzUZWRrzWY+Gs1nqemCgJZDw0+xWhpxgAZDJZwaSDjmJyxoNgtO3fo0p10X
-	bPexUBHqFSEl8QL+wBysexQN6gN6vpoIlenx2XSyq7Ilv8ZhcO7yEQ43bVvHzilv
-	0atKdtofMbe8qwL+83Wyx/Z6KvcBdcKv7ojY7YNk8fBnFZngoGM8KNRRj0+fVzyd
-	Fd2WQfIQs1S9OWOUPVGQLPfmoIpSLWm6UzubajS7F5iRgNHqrRw50Q9kxMoLCYZm
-	4fXaZ6/JotwSFacA/5jGAg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1709560965; x=
-	1709647365; bh=Tyc3a0qlsGocDX90h5xGZM+hiCwDa28icbfjEtQ1zvk=; b=f
-	u/R4XyE+vPN6RibXUKog+0xaHcTYuBNIdnDDkFXGO0/FunwE8VWyEpoMTF9L/5Nq
-	rlPmCRO5XLYgPbKv+5l7gbxnsZ0yxNLnNi5+oRcPp9mkuU6X+NXtHT+09Ox1NJ0r
-	5SlJohgOr80SI/6xbRLNy7MgluqY7v3BFcd8X8xPEoMDTzTdBqjEXbPnEzr2Ypy9
-	4t8gCtlcVsPMFMBAqBWxCeigDDCOxHrs/9HZ584RvkJmHFiRRntQ23eBL7BJefqC
-	wAzsp1nQ2pseaRQrIE2t9+JfW7iFJnXGj2lgUsdkSodgWVaZ1+c2BRPWclZZhsO7
-	undGJVuOVjeDDvX2jcmiA==
-X-ME-Sender: <xms:gtTlZd_NN9IfbcavqA02lUeQUK9glF1D8g-xgTj0OaukXht_pkakHQ>
-    <xme:gtTlZRseQxhD7o0mA4nFhRRRcpPWq8KhBzAwpQ_2WzOrgCU5NkOQyCsZa33N6O2bf
-    9X_uNVCUBiUVHA5Jm8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrheejgdehkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepgeefjeehvdelvdffieejieejiedvvdfhleeivdelveehjeelteegudektdfg
-    jeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:g9TlZbBr5MPmIecoKgXRB13aymYfIbR3OS0v5gVDhe8tNomBgTTF6g>
-    <xmx:g9TlZRdmJcw66TEtr_syhGOZXx-B2IyBL4T2SmtwKwNSYbZVnoD4VA>
-    <xmx:g9TlZSPmHNHDWF6RgyJni1Z6Duznav77L3s-o12LBBBhHOrnnwZmTA>
-    <xmx:hdTlZXfZOkInKEEcYLMv1ZLDUfYNuEU81F-xLYkbSortVbCH-f64bQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id BB003B6008D; Mon,  4 Mar 2024 09:02:42 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-205-g4dbcac4545-fm-20240301.001-g4dbcac45
+	s=arc-20240116; t=1709561072; c=relaxed/simple;
+	bh=SLbSjt9SbkPv+g6/vROjXm/Gz3EE39aUaCGhCyjYusE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qZqcCfKA1XvWVszmgO9Q9jNHF02Bk2B1DDqBU2kKcDYc2K5qwmaYg6X9uQOx0pf4Xo2WIpFccmYXHxeliKOWU5Dvck8zxAMONRzpRXSKxEZDKFn8WIoPkuL7yI6nDqhqxX8dlsFybVc8F1PfesJskvXuJdutfcNIAgPsbhHk38w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jNVJp4Zd; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-51320ca689aso5277189e87.2;
+        Mon, 04 Mar 2024 06:04:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709561069; x=1710165869; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+A2MIgcuwPWk7lZwI41C//csGmOFt/MFKi0gAzZz/R8=;
+        b=jNVJp4Zd1kqK0JOh8wzUQal45ptHZeQKbv4gwNFVXmBsWOyu8BT9LRGanUvH4BwTst
+         oVsah7sJTMfAE2f1o1Zc8mDf7I/fOwbSpQT1dQ1XWN/apqPF74tEWZvY3KXjl0XU2SJt
+         C4MMWzbhr0nd2LuZbfCL5R2dmVTNYoxEQrTq7sC5l5MrGz6tEXlSdGzZP0tTgbr4+m8f
+         ZdSyOjzxCzQSkMES8bxZjmQhDyM4DzVkC4qwXzfXh5sMnvwU64JxoIKFkFCEHyfNMbHB
+         gc7Kel3/Ps3PlwPoheDsXV53XtH0gbVYOI6/ks0FFwaQfDU447pT4VpVN9zDdpXcRcL/
+         SDpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709561069; x=1710165869;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+A2MIgcuwPWk7lZwI41C//csGmOFt/MFKi0gAzZz/R8=;
+        b=Ux+CIXiBEkY83fvCKrpBPuu3o+sIgR+P14ha12RQ4bsV6qyd2XC2vjJfJOZCpBqOuC
+         biin8QxIG9YmHngnzUvyVXAC3SRYQXckSce0TnmmZqRAJBvqYVC1xouAh5UzhQKaGiym
+         oSoiJTEat4k6pL3DFOOfNL9i6q1aGMD3v0xyqjfgTuvQZPpmywnXFzWJXRwA13G8RUpC
+         9VO0+0J3hlXleyl+V+b96LlxmU5Cdq772jaICr+fSImH/rtZb9fovU+uf8Q+3bFpw7NZ
+         NAA0ZvsGNENh6ic8kBWBb3tG1dzltEKCLoaoyhp43bvw1eO4i8wtBKMzjrL6d8PDVAdt
+         cBCQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXdfzgPoTkRKwpGLwzEVAMOJM4mWJKgwolA9rMXjSwEHGmXJhlgLiJYcGOwk2Z8fLv+7jUrLDB326XX7jL6yQ0SvZwod7wcV42XSKvNhB5i+MXU6QTgK48J4NYFiAe4eY91NWP1A95+pbA=
+X-Gm-Message-State: AOJu0Ywr1f0kRtr/ZLvFOCckwRpbACb2yqsYl2PPAzoz/k+wJl9E08pH
+	EUoms/6kMCjvd5in3wxUW5iOTQwWXxpWEdDsCV8v//IpRXBBYCGW
+X-Google-Smtp-Source: AGHT+IEz+skFuqRkbnNFQLR4g/WSQnRAMiBY6M1c7WhrM5/JBrRjGoqo0wpSyC71RQNJ1tmb9ttgfg==
+X-Received: by 2002:a05:6512:34c8:b0:512:b00f:a55e with SMTP id w8-20020a05651234c800b00512b00fa55emr5880137lfr.13.1709561068360;
+        Mon, 04 Mar 2024 06:04:28 -0800 (PST)
+Received: from [192.168.0.31] (84-115-209-225.cable.dynamic.surfer.at. [84.115.209.225])
+        by smtp.gmail.com with ESMTPSA id q22-20020aa7da96000000b005669ce3f761sm4660283eds.59.2024.03.04.06.04.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Mar 2024 06:04:27 -0800 (PST)
+Message-ID: <c2e4ae25-1e8a-4f54-8321-800a7b7f8583@gmail.com>
+Date: Mon, 4 Mar 2024 15:04:26 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <a9063efe-1faf-4945-83ce-449a23d44fc5@app.fastmail.com>
-In-Reply-To: <36df8535-083f-4ce3-84c7-b8f652a9085b@notapiano>
-References: <20240212-coreboot-mod-defconfig-v4-0-d14172676f6d@collabora.com>
- <36df8535-083f-4ce3-84c7-b8f652a9085b@notapiano>
-Date: Mon, 04 Mar 2024 15:02:21 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: =?UTF-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
-Cc: "Brian Norris" <briannorris@chromium.org>,
- "Julius Werner" <jwerner@chromium.org>,
- "Masahiro Yamada" <masahiroy@kernel.org>,
- "Nathan Chancellor" <nathan@kernel.org>,
- "Nicolas Schier" <nicolas@fjasle.eu>,
- "Catalin Marinas" <catalin.marinas@arm.com>, "Will Deacon" <will@kernel.org>,
- "AngeloGioacchino Del Regno" <angelogioacchino.delregno@collabora.com>,
- "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
- "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>, kernel@collabora.com,
- chrome-platform@lists.linux.dev, linux-kernel@vger.kernel.org,
- linux-kbuild@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- "Tzung-Bi Shih" <tzungbi@kernel.org>
-Subject: Re: [PATCH v4 0/4] Allow coreboot modules to autoload and enable cbmem in the
- arm64 defconfig
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [REGRESSION] Missing bcm5974 touchpad on Macbooks
+Content-Language: en-US
+To: Takashi Iwai <tiwai@suse.de>,
+ Javier Carrasco <javier.carrasco@wolfvision.net>
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-input@vger.kernel.org,
+ linux-kernel@vger.kernel.org, regressions@lists.linux.dev
+References: <87sf161jjc.wl-tiwai@suse.de>
+ <6ef6c5bf-e6e5-4711-81c6-6ae41de2e61e@wolfvision.net>
+ <874jdm17yt.wl-tiwai@suse.de>
+From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+In-Reply-To: <874jdm17yt.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 4, 2024, at 14:56, N=C3=ADcolas F. R. A. Prado wrote:
-> On Mon, Feb 12, 2024 at 09:50:04AM -0500, N=C3=ADcolas F. R. A. Prado =
-wrote:
->> N=C3=ADcolas F. R. A. Prado (4):
->>       firmware: coreboot: Generate modalias uevent for devices
->>       firmware: coreboot: Generate aliases for coreboot modules
->>       firmware: coreboot: Replace tag with id table in driver struct
->>       arm64: defconfig: Enable support for cbmem entries in the coreb=
-oot table
->
-> is it ok for Tzung-Bi to merge this last patch for the defconfig throu=
-gh the
-> chrome-platform-firmware tree?
 
-I would much prefer to see this patch get sent to soc@kernel.org
-so I can pick it up through the soc tree. I'm usually not worried
-about bisection issues with defconfig changes since most users
-have their own .config anyway, and in this case I don't see
-any strict dependency and would just merge the patch directly.
+On 04.03.24 13:45, Takashi Iwai wrote:
+> On Mon, 04 Mar 2024 12:26:48 +0100,
+> Javier Carrasco wrote:
+>>
+>> On 04.03.24 09:35, Takashi Iwai wrote:
+>>> Hi,
+>>>
+>>> we've received a few regression reports for openSUSE Leap about the
+>>> missing touchpad on Macbooks.  After debugging, this turned out to be
+>>> the backport of the commit 2b9c3eb32a699acdd4784d6b93743271b4970899
+>>>     Input: bcm5974 - check endpoint type before starting traffic
+>>>
+>>> And, the same regression was confirmed on the upstream 6.8-rc6
+>>> kernel.
+>>>
+>>> Reverting the commit above fixes the problem, the touchpad reappears.
+>>>
+>>> The detailed hardware info is found at:
+>>>   https://bugzilla.suse.com/show_bug.cgi?id=1220030
+>>>
+>>> Feel free to join the bugzilla above, or let me know if you need
+>>> something for debugging, then I'll delegate on the bugzilla.
+>>>
+>>>
+>>> thanks,
+>>>
+>>> Takashi
+>>>
+>>
+>> Hi Takashi,
+>>
+>> The commit adds a check to ensure that the endpoint type is interrupt.
+>>
+>> According to that report, the issue arose with a MacBook Pro 5.1 (no
+>> button, only trackpad endpoint), so the check on the tp_ep address
+>> (0x81) returns false. I assume that you see an error message
+>> ("Unexpected non-int endpoint) and  the probe function fails returning
+>> -ENODEV.
+> 
+> Right, there is the message.
+> 
+>> Do you see any warning in the logs when you revert the commit? It was
+>> added to prevent using wrong endpoint types, which will display the
+>> following warning: "BOGUS urb xfer, pipe "some_number" != type
+>> "another_number""
+> 
+> The revert was tested on the downstream kernel, but it has also the
+> check of bogus pipe, and there was no such warning, as far as I see
+> the report.
+> 
+>> I am just wondering if for some reason the check on interrupt type is
+>> wrong here.
+> 
+> I'll ask reporters to give the lsusb -v output so that we can take a
+> deeper look.  Also, I'm building a test kernel based on 6.8-rc7 with
+> the revert, and ask reporters to test with it, just to be sure.
+> 
+> 
+> thanks,
+> 
+> Takashi
 
-     Arnd
+
+Getting the output of lsusb would be awesome, thank you.
+
+The bcm9547 driver has always made the assumption that the endpoint type
+is interrupt, and the expected output from lsusb would be something like
+
+bEndpointAddress     0x81  EP 1 IN
+bmAttributes         3
+Transfer Type        Interrupt
+
+which is what the reverted commit checks.
+
+I don't have the specific piece of hardware the report mentions, but I
+triggered the probe with the endpoint type = interrupt and the check was
+fine i.e. the probe did not fail. That made me think that the endpoint
+type could be different, but I am dubious about that.
+
+I will keep an eye on the bugzilla you linked, in case we get feedback
+quickly.
+
+Best regards,
+Javier Carrasco
 
