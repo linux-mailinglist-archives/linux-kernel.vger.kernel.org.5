@@ -1,99 +1,200 @@
-Return-Path: <linux-kernel+bounces-91023-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91024-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6A66870890
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:49:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4C7F870894
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:49:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7DDBA1F22B2C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:49:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A2E8283A65
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:49:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F262861669;
-	Mon,  4 Mar 2024 17:49:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B5BE6168A;
+	Mon,  4 Mar 2024 17:49:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Anky6rmU"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uF52TUP0"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0D7F612F6
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 17:49:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF706612FF;
+	Mon,  4 Mar 2024 17:49:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709574560; cv=none; b=mnhkP4WWATzkbc4vBqLYaEHMcDgqvLR4s1ZpW+/mjxZ+bNILG7FthAcKnSVr8ZXiEunbgs9u0oLovlBS2lsuzxrsz98fQtGzHX6YOPOw+DaLwi+Y5v2w6bXprXdaaidKeykSkQK5/R109OuYvaokbZm4cDK3DaICYDRK50SKsdo=
+	t=1709574569; cv=none; b=msNI/5JUmq0dMi/+ZcOknckw7Kazj3CMWP6crcFwem6tAB/7SsykTOc8Oq9bjSHaNf0rp+xn29tIwtbY8uO6I9rqNOg3vq92OhVCn5APpb0T9dCOoyM5q07PovaVPEoRMLqTN1SUhwipC5xKvVIN3ncomlUtoaxAllUjkEEWH0A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709574560; c=relaxed/simple;
-	bh=9Cfbvu51C5Vp1BAZIJWdCwFRnEaK07EuG47zkS+ieTI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=M+q8oBHmaN8DBu5foBs6MlTOs6xJehFy6evO1q7iwmLKf5i3BVFc7jdtKP8lCySKXWv5HCzX/5Bm/JBYe7QEQYy3tvkn1nvO6xMgZqEugWIuMjZou0Zu6XPxjjXqM2AI7JXB0+l2EO38jPCGIbYQKvaHirtBS5eTefoLwSi5uVQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Anky6rmU; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709574558; x=1741110558;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=9Cfbvu51C5Vp1BAZIJWdCwFRnEaK07EuG47zkS+ieTI=;
-  b=Anky6rmU+7GyS/jCHN8J7DN2+Sh6/aTOdmKyZcpLY6WhZ5rbgpOyTZ9m
-   afRiOnhuYnWcDpCh6P/8Ve4Cmcf5tvR367xtOZlS5Yvh5km3B6TslSqRy
-   wKbvmRi3Y7twFqKxnzfxkJAToQIvRGjID5SAeBZTxuKnI5oIE7Jqmp2Ib
-   IZuvosBQ7p4g8dKIicDGuSr7kTUpBB8so0bItru/1bL02POa6HSN1mt98
-   yfdtF6cy9CJEAojFYJkW8exOr68XGpZ/Q6zhYepBPYqISn5a7gddNG3jL
-   yoctCTxPxoY8ohKM9BWCVy4I1jBByCTtIwvOwvKY+y2ZYmii7eDA7yB0j
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="4209444"
-X-IronPort-AV: E=Sophos;i="6.06,204,1705392000"; 
-   d="scan'208";a="4209444"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 09:49:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="937040904"
-X-IronPort-AV: E=Sophos;i="6.06,204,1705392000"; 
-   d="scan'208";a="937040904"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 04 Mar 2024 09:49:16 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 3376715C; Mon,  4 Mar 2024 19:49:15 +0200 (EET)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Stanley Chang <stanley_chang@realtek.com>,
-	linux-kernel@vger.kernel.org
-Cc: MyungJoo Ham <myungjoo.ham@samsung.com>,
-	Chanwoo Choi <cw00.choi@samsung.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] extcon: realtek: Remove unused of_gpio.h
-Date: Mon,  4 Mar 2024 19:49:13 +0200
-Message-ID: <20240304174913.1198974-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+	s=arc-20240116; t=1709574569; c=relaxed/simple;
+	bh=yd3DG/OWoHxPS1GFw4PLIDi3ucW798a2Y8kNvy9b8wk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=b5tEOPZSq/Iy1cXkFcPVa4ofS3JUozJUvrnYjKd/zCRodxcUXY5nZMq2OP0lkuxWCRHVvmqcrYn/ME0FmMHbGPImeyQBx9N/FAEUQRmE7dP8xsug2Tk+eHdGhuryIk/z0RWi+MwHqNgeeEoLtfhhb1ltgepTo/580XsHej8VGGw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uF52TUP0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06876C43390;
+	Mon,  4 Mar 2024 17:49:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709574569;
+	bh=yd3DG/OWoHxPS1GFw4PLIDi3ucW798a2Y8kNvy9b8wk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uF52TUP0tpTMiUhBlzWL8cf+qju3fYNTFrzc8ikHGCPuqW33VmTL0e4XtuxizutKB
+	 sQLWSspT+OHrnjR2jXFPifQeE1EjuncmhFTM9IBrDxBA7nLz2P3MAmY7eBDb+Lwac7
+	 qFHADkYoMgg8ZxGOXo3MQ/Akt6h4NizrQzoIyS6IHIAbyXzvIWJpoN5EBfhGOn+ebg
+	 DM74vlR/O6OIl//4DjAPQFPhpWqOpSikD57muDEqtgNa43jeGKXmR/BgztQcjAJqhb
+	 Qo4lMMPoO9kLPIvMI3+DYuaGxiJO6CC3Z2XsRiZ3l0ZO92JQ1xxD0gG18kI4kbbIzi
+	 +OY1tojEhPf0A==
+Date: Mon, 4 Mar 2024 23:19:17 +0530
+From: Manivannan Sadhasivam <mani@kernel.org>
+To: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Brian Masney <bmasney@redhat.com>,
+	Georgi Djakov <djakov@kernel.org>, linux-arm-msm@vger.kernel.org,
+	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, vireshk@kernel.org,
+	quic_vbadigan@quicinc.com, quic_skananth@quicinc.com,
+	quic_nitegupt@quicinc.com, quic_parass@quicinc.com
+Subject: Re: [PATCH v8 5/7] arm64: dts: qcom: sm8450: Add opp table support
+ to PCIe
+Message-ID: <20240304174917.GC31079@thinkpad>
+References: <20240302-opp_support-v8-0-158285b86b10@quicinc.com>
+ <20240302-opp_support-v8-5-158285b86b10@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240302-opp_support-v8-5-158285b86b10@quicinc.com>
 
-of_gpio.h is deprecated and subject to remove.
-The driver doesn't use it, simply remove the unused header.
+On Sat, Mar 02, 2024 at 09:29:59AM +0530, Krishna chaitanya chundru wrote:
+> PCIe needs to choose the appropriate performance state of RPMH power
+> domain and interconnect bandwidth based up on the PCIe gen speed.
+> 
+> Add the OPP table support to specify RPMH performance states and
+> interconnect peak bandwidth.
+> 
+> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+> ---
+>  arch/arm64/boot/dts/qcom/sm8450.dtsi | 74 ++++++++++++++++++++++++++++++++++++
+>  1 file changed, 74 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sm8450.dtsi b/arch/arm64/boot/dts/qcom/sm8450.dtsi
+> index 6b1d2e0d9d14..662f2129f20d 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8450.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8450.dtsi
+> @@ -1827,7 +1827,32 @@ pcie0: pcie@1c00000 {
+>  			pinctrl-names = "default";
+>  			pinctrl-0 = <&pcie0_default_state>;
+>  
+> +			operating-points-v2 = <&pcie0_opp_table>;
+> +
+>  			status = "disabled";
+> +
+> +			pcie0_opp_table: opp-table {
+> +				compatible = "operating-points-v2";
+> +
+> +				opp-2500000 {
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/extcon/extcon-rtk-type-c.c | 1 -
- 1 file changed, 1 deletion(-)
+Add the comments that you added below.
 
-diff --git a/drivers/extcon/extcon-rtk-type-c.c b/drivers/extcon/extcon-rtk-type-c.c
-index a592bab77538..19a01e663733 100644
---- a/drivers/extcon/extcon-rtk-type-c.c
-+++ b/drivers/extcon/extcon-rtk-type-c.c
-@@ -13,7 +13,6 @@
- #include <linux/of.h>
- #include <linux/of_address.h>
- #include <linux/of_irq.h>
--#include <linux/of_gpio.h>
- #include <linux/io.h>
- #include <linux/interrupt.h>
- #include <linux/syscalls.h>
+> +					opp-hz = /bits/ 64 <2500000>;
+> +					required-opps = <&rpmhpd_opp_low_svs>;
+> +					opp-peak-kBps = <250000 1>;
+
+Isn't the peak bw should be greater that the avg bw? Atleast in upstream we
+follow that pattern.
+
+- Mani
+
+> +				};
+> +
+> +				opp-5000000 {
+> +					opp-hz = /bits/ 64 <5000000>;
+> +					required-opps = <&rpmhpd_opp_low_svs>;
+> +					opp-peak-kBps = <500000 1>;
+> +				};
+> +
+> +				opp-8000000 {
+> +					opp-hz = /bits/ 64 <8000000>;
+> +					required-opps = <&rpmhpd_opp_nom>;
+> +					opp-peak-kBps = <984500 1>;
+> +				};
+> +			};
+> +
+>  		};
+>  
+>  		pcie0_phy: phy@1c06000 {
+> @@ -1938,7 +1963,56 @@ pcie1: pcie@1c08000 {
+>  			pinctrl-names = "default";
+>  			pinctrl-0 = <&pcie1_default_state>;
+>  
+> +			operating-points-v2 = <&pcie1_opp_table>;
+> +
+>  			status = "disabled";
+> +
+> +			pcie1_opp_table: opp-table {
+> +				compatible = "operating-points-v2";
+> +
+> +				/* GEN 1x1 */
+> +				opp-2500000 {
+> +					opp-hz = /bits/ 64 <2500000>;
+> +					required-opps = <&rpmhpd_opp_low_svs>;
+> +					opp-peak-kBps = <250000 1>;
+> +				};
+> +
+> +				/* GEN 1x2 GEN 2x1 */
+> +				opp-5000000 {
+> +					opp-hz = /bits/ 64 <5000000>;
+> +					required-opps = <&rpmhpd_opp_low_svs>;
+> +					opp-peak-kBps = <500000 1>;
+> +				};
+> +
+> +				/* GEN 2x2 */
+> +				opp-10000000 {
+> +					opp-hz = /bits/ 64 <10000000>;
+> +					required-opps = <&rpmhpd_opp_low_svs>;
+> +					opp-peak-kBps = <1000000 1>;
+> +				};
+> +
+> +				/* GEN 3x1 */
+> +				opp-8000000 {
+> +					opp-hz = /bits/ 64 <8000000>;
+> +					required-opps = <&rpmhpd_opp_nom>;
+> +					opp-peak-kBps = <984500 1>;
+> +				};
+> +
+> +				/* GEN 3x2 GEN 4x1 */
+> +				opp-16000000 {
+> +					opp-hz = /bits/ 64 <16000000>;
+> +					required-opps = <&rpmhpd_opp_nom>;
+> +					opp-peak-kBps = <1969000 1>;
+> +				};
+> +
+> +				/* GEN 4x2 */
+> +				opp-32000000 {
+> +					opp-hz = /bits/ 64 <32000000>;
+> +					required-opps = <&rpmhpd_opp_nom>;
+> +					opp-peak-kBps = <3938000 1>;
+> +				};
+> +			};
+> +
+>  		};
+>  
+>  		pcie1_phy: phy@1c0e000 {
+> 
+> -- 
+> 2.42.0
+> 
+
 -- 
-2.43.0.rc1.1.gbec44491f096
-
+மணிவண்ணன் சதாசிவம்
 
