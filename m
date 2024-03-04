@@ -1,124 +1,102 @@
-Return-Path: <linux-kernel+bounces-90339-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90340-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FF9886FDE6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:47:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 278A186FDE9
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:47:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC474283B4D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:46:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59FB21C21FAA
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:47:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 618DA21A0A;
-	Mon,  4 Mar 2024 09:46:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D028224F5;
+	Mon,  4 Mar 2024 09:46:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="U2hJjhPf"
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nk320g2d"
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EFE01B7F3;
-	Mon,  4 Mar 2024 09:46:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0184A224ED
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 09:46:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709545595; cv=none; b=GuyjDDxjquQvooJOrmAlFUhk2BwnoYuzVfJSUzALPSrKF8PB3+zyct0H1rUtPPFLZUCqXCQqawQYupdTScOyYBPjdgrLvJ+imaXyQjsIXFYhCaw1ZgUGoLHBKx4xLodHw89+d5p2pF9qcWTP2emsiCP8Nd2LHUdfm4Z8lrhM8zc=
+	t=1709545601; cv=none; b=gnZjaLEZyW9s4w5AmRMqZs3veyVZar8C7lsc90B0F1SfJr0/dp8/taunv/JizedCQS2KUkoPZGawlY1z5yD8LhUfFr8T+EQ+6z5fVFXcaCm2dHlpk0AeGYWQySZPgIVS9DnW6If6p77kw8k7uyICj55F4fKo5EN9eAA5LtacHpo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709545595; c=relaxed/simple;
-	bh=anUB/OBSNGm/JeFQNlRuNFLtUQHaQ9D8+eh1w3c3q18=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:To:From:
-	 References:In-Reply-To; b=Sg3CWZcwnKmAIYuR55o4+eeuT37KeDEFitV+7j5ku6HnY5kyTLOLIkNvTjEaLhWmeqdpThJQaIbWBcmrgvaDkjTEwrNmi2quKgC+emPTAtoBHz6p8clLiGnF2M9CWTZ+QgftfSxb3yU0IZxglGOgCC0XGF85Bi8FQrX2Zqy/1/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=U2hJjhPf; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 11E9C1C000B;
-	Mon,  4 Mar 2024 09:46:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709545590;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+obVxPBVye59ep/rc+NawmN0v65caHupg9rcnFDhO04=;
-	b=U2hJjhPfJOybFyQT4y93sxpTKV9BVq+ROnsiqrseqLuHyo3Algc9QmEqF78XZW4vw+nps0
-	hqWxOQFFeHpDSPWMuAWRgoV0kPPh34RzLGGX7Y3V8H98/CYTX5UI3Ihs5mkHSpV6SuRKRl
-	aL0SZKJz+mA6n1G1HOhWuWgtl5rKiVNGqKWVUbTPUmSE/ZOIdnaMdy+t3UhOMwI1UCnsu/
-	L+vQTaNYK2HGkHlEftlk/loHRTWUQyI1EY3XAaP7nfI5vN2mPQvSiWp0feResi5kFwVzwh
-	CDcUL78cCvMYjMlMm0LY1DY9wrLf/okIjsoRCL+BrkliozmRxEpBTh/m3ZSAnA==
+	s=arc-20240116; t=1709545601; c=relaxed/simple;
+	bh=IOg5tTL2EdxX2sOuqblEfmkpCxTVQxFqLrNY/pH/HRw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XkdGnvFyGlQtN/H3tThV0Gu+eAECxTa1YOKEVsNBYqKJZVDN8M2wjxlAzC8Tbe+nN1HsfN6/MKz6UgglTjIoJW3u8Sqwe/E8/xrqVOdv9N/ge3gcu3Bqo6aq92PamIyYWk3jOpPlN/SRkMRiECpwyXadp6OypXfTuHL0MccqCso=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nk320g2d; arc=none smtp.client-ip=209.85.219.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dc25e12cc63so4976863276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 01:46:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709545599; x=1710150399; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=BLGlgXihsI1VhplbXrlYAn9SvEI3AGLqfYGV0kshuQE=;
+        b=nk320g2dGnsZ0R5TeoBCPqZIYn7JvJHerGm5CNp5gCfzgRnec9bk/s/XWm4QFkHx5R
+         A3jdxIDPVkw+tJI8TV7FPRJMFamIONw0LDuH0+1zyPaUa0GPDNChYPwBxNM3rcHvjGsk
+         1eIew01d+QcohwAAPoHX00BexqH0nbSaCElR9pQAjSDRIny04vM576BPlsEyAvTneeYG
+         6zvvTFvzkKksPEC7VSSIz1N+qk7BMzXmAXKh4PE1uWKwgK//6WiMUyvA4EnInN9R/cVd
+         wRkJESHzIADi+Am0ZaV4FNiPMt1Vd5lZLDCVQiyLbLUG9VzcpRCqmbDAygABkFkYMs2X
+         1izQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709545599; x=1710150399;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BLGlgXihsI1VhplbXrlYAn9SvEI3AGLqfYGV0kshuQE=;
+        b=vPDKGgtbhGVyQJ8A+SmEX/Wq5T6Wp3uCuz6rO/WA+L2ulYk+nYrLDU3Gx/BIzU+RPa
+         MnYk+Rq1xVOLY0oePsBuwx0+UZTm09HShELqyfhOciwpWhYRZwFe1oIvdwYbrCyw0vp7
+         lV1yiiiB05eSY3Mmke0bxnyESMApQlbfqcmko+pZAaZT78o7oGADvcRxHlv447wXXHCr
+         Xr+SgQi1FwGQ5UB26xAOB0DYA+G6vlAFH9j4jiXJYuK3+MoPsf2UIX6+VOWJ0ui9J4pm
+         7Do84EFoHyrb2lUWkF99J58qF9tWlbJSf4lvAVkEe4+sOaH8H7mnvv5Q5U7jqBllGV1A
+         gwRg==
+X-Forwarded-Encrypted: i=1; AJvYcCUuZIdcU1Oim25vgmRKkXgOuzjeVWU4dvFM7J7zfSgrBXrh5maHxsI2OkoNpX0XH5C1MCa1DCeZ0f/5IXu/haghDFYk7nqF1oLNTkjS
+X-Gm-Message-State: AOJu0YwaByg6cilRuSlRRby6rVmYsRFEGJA9sSJuQMedH3PVsSdf1CvC
+	TXEgfNNnsvSBkvBWfejCWaPB+SfNlZymsOGwpqgYAoSh2jK+vFz2YYt5AR3XJgcHwkdQc0+kJl/
+	olksIak8zhgzUlKRl9j6vXsmbfbEQbfjxpVb3nw==
+X-Google-Smtp-Source: AGHT+IEbNU5fOYhkOcwfE8i+Fr8S1blQTCr20ozaETwLblB+uHKIvc0Yw5/C0eYI4phk8/rQ63At6c98jlzp9d0hOLA=
+X-Received: by 2002:a5b:74a:0:b0:dc2:3a05:489 with SMTP id s10-20020a5b074a000000b00dc23a050489mr5804962ybq.14.1709545599070;
+ Mon, 04 Mar 2024 01:46:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 04 Mar 2024 10:46:26 +0100
-Message-Id: <CZKVC09R7VQB.3DEDAIWIICORV@bootlin.com>
-Subject: Re: [SPAM] [PATCH v2 04/11] i2c: nomadik: simplify IRQ masking
- logic
-Cc: "Linus Walleij" <linus.walleij@linaro.org>, "Rob Herring"
- <robh+dt@kernel.org>, "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
- "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
- <linux-arm-kernel@lists.infradead.org>, <linux-i2c@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-mips@vger.kernel.org>, "Gregory Clement"
- <gregory.clement@bootlin.com>, "Vladimir Kondratiev"
- <vladimir.kondratiev@mobileye.com>, "Thomas Petazzoni"
- <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
- <tawfik.bayouk@mobileye.com>
-To: "Andi Shyti" <andi.shyti@kernel.org>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-X-Mailer: aerc 0.15.2
-References: <20240229-mbly-i2c-v2-0-b32ed18c098c@bootlin.com>
- <20240229-mbly-i2c-v2-4-b32ed18c098c@bootlin.com>
- <hbnkcqjgykfzivqvjnr5ixmp57am43mxslfnpxhro27kzd2pyt@q35uhgkxn5cv>
-In-Reply-To: <hbnkcqjgykfzivqvjnr5ixmp57am43mxslfnpxhro27kzd2pyt@q35uhgkxn5cv>
-X-GND-Sasl: theo.lebrun@bootlin.com
+MIME-Version: 1.0
+References: <20240228194730.619204-1-quic_abhinavk@quicinc.com> <20240228194730.619204-2-quic_abhinavk@quicinc.com>
+In-Reply-To: <20240228194730.619204-2-quic_abhinavk@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Mon, 4 Mar 2024 11:46:27 +0200
+Message-ID: <CAA8EJpr+gTAQkc9RdDap2z7MvDoZCqBqJh3=7_4OwcXamDz3SQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] drm/msm/dpu: drop dpu_kms from _dpu_kms_initialize_writeback
+To: Abhinav Kumar <quic_abhinavk@quicinc.com>
+Cc: freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>, 
+	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org, 
+	quic_parellan@quicinc.com, quic_jesszhan@quicinc.com, 
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Hello,
-
-On Sat Mar 2, 2024 at 1:39 AM CET, Andi Shyti wrote:
-> On Thu, Feb 29, 2024 at 07:10:52PM +0100, Th=C3=A9o Lebrun wrote:
-> > IRQ_MASK and I2C_CLEAR_ALL_INTS are redundant. One masks the top three
+On Wed, 28 Feb 2024 at 21:47, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
 >
-> if I2C_CLEAR_ALL_INTS is redundant why don't you remove it?
-
-I understand this is unclear. What I meant by redundant is that they are
-redundant from one another; one overlaps the other. I'll give a better
-commit description for v3. Something like:
-
-   IRQ_MASK and I2C_CLEAR_ALL_INTS both mask available interrupts.
-   IRQ_MASK removes top options (bits 29-31). I2C_CLEAR_ALL_INTS
-   removes reserved options including top bits. Keep the latter.
-
-   31  29  27  25  23  21  19  17  15  13  11  09  07  05  03  01
-     30  28  26  24  22  20  18  16  14  12  10  08  06  04  02  00
-   --- IRQ_MASK: --------------------------------------------------
-          1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
-    0 0 0
-   --- I2C_CLEAR_ALL_INTS: ----------------------------------------
-          1     1 1       1 1 1 1 1                   1 1 1 1 1 1 1
-    0 0 0   0 0     0 0 0           0 0 0 0 0 0 0 0 0
-
-    Notice I2C_CLEAR_ALL_INTS is more restrictive than IRQ_MASK.
-
-Is that better?
-
-> > bits off as reserved, the other one masks the reserved IRQs inside the
-> > u32. Get rid of IRQ_MASK and only use the most restrictive mask.
+> Following the pattern of other interfaces, lets align writeback
+> as well by dropping the dpu_kms parameter in its _dpu_kms_initialize_*
+> function.
 >
-> Why is IRQ_MASK redundant? What happens if you write in the
-> reserved bits?
+> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
 
-The wording wasn't correct. Have I answered your
-question from the above?
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-Thanks Andi,
+> ---
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
 
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
+-- 
+With best wishes
+Dmitry
 
