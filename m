@@ -1,148 +1,202 @@
-Return-Path: <linux-kernel+bounces-90064-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90065-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0BE286F9AD
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 06:45:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8C4B86F9B3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 06:48:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A1DEB21142
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 05:45:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 863A42812E4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 05:48:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82057BE65;
-	Mon,  4 Mar 2024 05:45:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45D04C147;
+	Mon,  4 Mar 2024 05:48:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vF8V8jHP"
-Received: from mail-vs1-f46.google.com (mail-vs1-f46.google.com [209.85.217.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="hRtRt05F"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F39FB6138
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 05:45:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAD80BA27;
+	Mon,  4 Mar 2024 05:48:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709531126; cv=none; b=gvZlZ8+HmK7kvMXdwQdmIcuKEiKvJqVJgug47/0A+/qY+2jTSLKsQSU55JDxM1kShUvlYjm6V9BckM6P3MfDX1ykJPmbB4t/KLgOmnI7q9beZa3Q9X+/Db7Kiel+KNqyGJrOQaQOtNMyZwBzLhSWKzsAxJOX1lDyzdTYBSJadFo=
+	t=1709531287; cv=none; b=C0oAMMJaFLQhaqagT+k6f2X7WwP1fnU9/XiDZPEIZJVdnYPqaK5T+cRmzlU+Ejgqobs/pue1XDHwX9apIBio9kfq5Sb6vWZClHLWTN9XluCU9Lhmrtp9nYjpxbPXB1j3QSKRn0hvkMgt1AmXAhnRSQCBqH1rjqriyWKD/5j499c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709531126; c=relaxed/simple;
-	bh=++rr3GGIRoaCERnG/cWu7OqJ4/FLWkd9s2osDrEnVgM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QYB/GXDeYlOQwv5EbIKvyjoRbO7QsMZGdoVCK8DfW7M2Wu/6EcBhWT92lG/mBGPA1inqRAtlGtErWA307jw7cHNTIA2gu4aNERFsOqyIjaoy7YfSLenLbthprWwXTsHJES+tAUmEJdR899Nrcy5NvBXoDl6VzHl8ce73l3fWyU8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vF8V8jHP; arc=none smtp.client-ip=209.85.217.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vs1-f46.google.com with SMTP id ada2fe7eead31-47268589ec9so2010338137.0
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 21:45:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709531123; x=1710135923; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=iS66EljrgAI6W0osXJVskq7IlYu87j8C6OY/XQH31Zo=;
-        b=vF8V8jHPR7CBdSwL53hMRpGPaIO5AYRMOd7BWo6/IxDU1LurYEQzHr6vwsANkyX8Nh
-         wE9nY2S7irp9X5uvVfoUyoCr0QyfuUgU5Jg8luabewNVOqzz3wYSlj0AfDx/3qq20tNT
-         6bgSmRHP22IkvUS9s5e74ttGsaVs4f/JSNN8GcIoq9EKbcwB+Z/icEt5jirI1Y8tZ2A0
-         Z2rDHQ3denQYgdMbRoLCFqgYk+yeIs3XCbT/+seo8EUch0Q+ctafAQQIssZBkEitrOHR
-         q4lcAnHG4tJwCqBwIPSHlYq3gCKZbgUBMQIa4TFPO88VISolKhgwsClOqxfvvjyDfdsD
-         KRCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709531123; x=1710135923;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=iS66EljrgAI6W0osXJVskq7IlYu87j8C6OY/XQH31Zo=;
-        b=kBj1Y7azbL5fFr7W8YFLXc4LjZwj0T4M1HaGYKpFqEpEKcZRphmb9LZiCQZvGdPTej
-         xGjsjROA1Z+MRrxzLgPtPT3haUpNX+eaHlhAr0+U/oCZTV7V7is+y8K+3jAhxoOQ2VDY
-         Mi4mIXJGnSRujCI1BU1x6M9MJ0qtGvem/WuR/iWKmzZTPbHA7aQIdoFcXjPBFka6hfcN
-         ApYFJZeRaN2UMHLyQgjhp8Ct0snks+hagGDJ2Ww47zvQ+IZTgcHCBwdDNl39snzlJqW7
-         BgvA+B0dKSt8fY3/YfVnAFwEJMnceyvCboQ/nY6zf6AJQpRmJj4ojzT/kiIAN/ZljITr
-         J8tg==
-X-Forwarded-Encrypted: i=1; AJvYcCUL4hN0EPGjrZjVRDxFP/bTnCn/psz3rYaGwG95ov3Ls/qRKAcw+938qNJTfdAgcbZVvr5d1rch6VGxUD912dAqYefRN2KBI0j8379F
-X-Gm-Message-State: AOJu0YwZebBdJooeSs0ZbrXzcuxc11S44pmzk0QQ5bEG92U9MH26HMHq
-	PfN8xMD3JzRVVl5NTE5xZMfk+kVEiQTIJNT2p36zxsTmKraTBkuLYvOPxLh94VuR7PYxzlUAMCq
-	JuuEa4OckoKw8OT0bjC1m0l/WRJG4AYi/Revt2w==
-X-Google-Smtp-Source: AGHT+IGJiKCOmmG+6e4PqjE1sfyU8YCCfMdFjZs0DvF1bN/K25rjAZqRY4ze3L0+lpCsgPEmXAeBpB3H3Xx+bx16hSQ=
-X-Received: by 2002:a05:6102:3e07:b0:472:c993:a596 with SMTP id
- j7-20020a0561023e0700b00472c993a596mr1004393vsv.11.1709531122998; Sun, 03 Mar
- 2024 21:45:22 -0800 (PST)
+	s=arc-20240116; t=1709531287; c=relaxed/simple;
+	bh=Kv8Nr3FEIckencu6Ylpi3FmpKkAFdmqr9abFkn55fiI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=oG0XiIOYhySXLhcbuIbmje1GRhHbKHGH3iOERSfwvYbtk21LCIaAw3GLe1Wlw297wJNXw87HeFrn81iAck/LZ2OvxgpJtyJ41gsGVF+Wwf/RtYCxNFVVZeegO6IwssKbSqborkV0CEE+e5JYQfo5mk8kgnK8jL9txzQyGXWexyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=hRtRt05F; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4245YJkb026498;
+	Mon, 4 Mar 2024 05:47:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=0HGg9g3P/i9jEj6DMJ5AkuHF0Bu5U7/pEoE/uLfkva4=; b=hR
+	tRt05Fn+urAZCp8Y2wVArGbAGyD+fp7HcekU+xCNcOJJmplrcyxt+mvEOWweblqc
+	vtw7bayyexRwOwLoWTFkLiCv5jkljI6G+Zcu/25bhcrYTY3LzlBRxSqMxksauj02
+	DnyBbG8kYlxrq5psKw0YEz18ryLNYSUK+/CE/f+8h6+KeRzhCmidf0HBJbstN8ry
+	7moAXPru2WSLrLGEYTDUopQW9HP2lDYQc2pHARXYVfyENyhFVwxwQR9zNL5oAxi1
+	Qf3sqI0GofXmIQlRA6Amz0DW6UIFP8bUzmJwMOP7ZkiX2fHUNLMy12IRPvHCgb4x
+	J/4fjk0fE20gBAnByJcA==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wkstk2vey-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 04 Mar 2024 05:47:54 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4245lrvP030149
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 4 Mar 2024 05:47:53 GMT
+Received: from [10.50.22.179] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sun, 3 Mar
+ 2024 21:47:48 -0800
+Message-ID: <b3ec7faa-e059-d33e-4e4c-749c551e0097@quicinc.com>
+Date: Mon, 4 Mar 2024 11:17:44 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240301143731.3494455-1-sumit.garg@linaro.org>
-In-Reply-To: <20240301143731.3494455-1-sumit.garg@linaro.org>
-From: Sumit Garg <sumit.garg@linaro.org>
-Date: Mon, 4 Mar 2024 11:15:11 +0530
-Message-ID: <CAFA6WYOdyPG8xNCwchSzGW+KiaXZJ8LTYuKpyEbhV=tdYz=gUg@mail.gmail.com>
-Subject: Re: [PATCH] tee: optee: Fix kernel panic caused by incorrect error handling
-To: jens.wiklander@linaro.org, Arnd Bergmann <arnd@arndb.de>
-Cc: op-tee@lists.trustedfirmware.org, ilias.apalodimas@linaro.org, 
-	jerome.forissier@linaro.org, linux-kernel@vger.kernel.org, 
-	mikko.rapeli@linaro.org, stable@vger.kernel.org
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 06/20] media: venus: pm_helpers: Move reset acquisition
+ to common code
+Content-Language: en-US
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Stanimir Varbanov
+	<stanimir.k.varbanov@gmail.com>,
+        Vikash Garodia <quic_vgarodia@quicinc.com>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Andy Gross
+	<agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        "Mauro Carvalho
+ Chehab" <mchehab@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+CC: Marijn Suijten <marijn.suijten@somainline.org>,
+        Stanimir Varbanov
+	<stanimir.varbanov@linaro.org>,
+        Mauro Carvalho Chehab
+	<mchehab+huawei@kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230911-topic-mars-v2-0-3dac84b88c4b@linaro.org>
+ <20230911-topic-mars-v2-6-3dac84b88c4b@linaro.org>
+From: Dikshita Agarwal <quic_dikshita@quicinc.com>
+In-Reply-To: <20230911-topic-mars-v2-6-3dac84b88c4b@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: lls06jQDGs_Oyew5LW_S1siVw8vwWBuC
+X-Proofpoint-ORIG-GUID: lls06jQDGs_Oyew5LW_S1siVw8vwWBuC
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-04_02,2024-03-01_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=999
+ spamscore=0 suspectscore=0 impostorscore=0 adultscore=0 malwarescore=0
+ clxscore=1015 mlxscore=0 phishscore=0 priorityscore=1501
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403040041
 
-+ Arnd
 
-On Fri, 1 Mar 2024 at 20:07, Sumit Garg <sumit.garg@linaro.org> wrote:
->
-> The error path while failing to register devices on the TEE bus has a
-> bug leading to kernel panic as follows:
->
-> [   15.398930] Unable to handle kernel paging request at virtual address ffff07ed00626d7c
-> [   15.406913] Mem abort info:
-> [   15.409722]   ESR = 0x0000000096000005
-> [   15.413490]   EC = 0x25: DABT (current EL), IL = 32 bits
-> [   15.418814]   SET = 0, FnV = 0
-> [   15.421878]   EA = 0, S1PTW = 0
-> [   15.425031]   FSC = 0x05: level 1 translation fault
-> [   15.429922] Data abort info:
-> [   15.432813]   ISV = 0, ISS = 0x00000005, ISS2 = 0x00000000
-> [   15.438310]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-> [   15.443372]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-> [   15.448697] swapper pgtable: 4k pages, 48-bit VAs, pgdp=00000000d9e3e000
-> [   15.455413] [ffff07ed00626d7c] pgd=1800000bffdf9003, p4d=1800000bffdf9003, pud=0000000000000000
-> [   15.464146] Internal error: Oops: 0000000096000005 [#1] PREEMPT SMP
->
-> Commit 7269cba53d90 ("tee: optee: Fix supplicant based device enumeration")
-> lead to the introduction of this bug. So fix it appropriately.
->
-> Reported-by: Mikko Rapeli <mikko.rapeli@linaro.org>
-> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218542
-> Fixes: 7269cba53d90 ("tee: optee: Fix supplicant based device enumeration")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+
+On 2/10/2024 2:39 AM, Konrad Dybcio wrote:
+> There is no reason to keep reset_get code local to HFIv4/v6.
+> 
+> Move it to the common part.
+> 
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 > ---
->  drivers/tee/optee/device.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-
-Jens, Arnd,
-
-Is there any chance for this fix to make it into v6.8 release?
-
--Sumit
-
-> diff --git a/drivers/tee/optee/device.c b/drivers/tee/optee/device.c
-> index 9d2afac96acc..d296c70ddfdc 100644
-> --- a/drivers/tee/optee/device.c
-> +++ b/drivers/tee/optee/device.c
-> @@ -90,13 +90,14 @@ static int optee_register_device(const uuid_t *device_uuid, u32 func)
->         if (rc) {
->                 pr_err("device registration failed, err: %d\n", rc);
->                 put_device(&optee_device->dev);
-> +               return rc;
->         }
->
->         if (func == PTA_CMD_GET_DEVICES_SUPP)
->                 device_create_file(&optee_device->dev,
->                                    &dev_attr_need_supplicant);
->
-> -       return rc;
-> +       return 0;
+>  drivers/media/platform/qcom/venus/core.c       |  9 ++++++++-
+>  drivers/media/platform/qcom/venus/pm_helpers.c | 23 -----------------------
+>  2 files changed, 8 insertions(+), 24 deletions(-)
+> 
+> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
+> index 5ab3c414ec0f..0652065cb113 100644
+> --- a/drivers/media/platform/qcom/venus/core.c
+> +++ b/drivers/media/platform/qcom/venus/core.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/of_platform.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/pm_opp.h>
+> +#include <linux/reset.h>
+>  #include <linux/slab.h>
+>  #include <linux/types.h>
+>  #include <linux/pm_domain.h>
+> @@ -286,7 +287,7 @@ static int venus_probe(struct platform_device *pdev)
+>  {
+>  	struct device *dev = &pdev->dev;
+>  	struct venus_core *core;
+> -	int ret;
+> +	int i, ret;
+>  
+>  	core = devm_kzalloc(dev, sizeof(*core), GFP_KERNEL);
+>  	if (!core)
+> @@ -324,6 +325,12 @@ static int venus_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		return ret;
+>  
+> +	for (i = 0; i < core->res->resets_num; i++) {
+> +		core->resets[i] = devm_reset_control_get_exclusive(dev, core->res->resets[i]);
+> +		if (IS_ERR(core->resets[i]))
+> +			return PTR_ERR(core->resets[i]);
+> +	}
+> +
+>  	if (core->pm_ops->core_get) {
+>  		ret = core->pm_ops->core_get(core);
+>  		if (ret)
+> diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
+> index 7193075e8c04..6017a9236bff 100644
+> --- a/drivers/media/platform/qcom/venus/pm_helpers.c
+> +++ b/drivers/media/platform/qcom/venus/pm_helpers.c
+> @@ -939,25 +939,6 @@ static int core_resets_reset(struct venus_core *core)
+>  	return ret;
 >  }
->
->  static int __optee_enumerate_devices(u32 func)
-> --
-> 2.34.1
->
+>  
+> -static int core_resets_get(struct venus_core *core)
+> -{
+> -	struct device *dev = core->dev;
+> -	const struct venus_resources *res = core->res;
+> -	unsigned int i;
+> -	int ret;
+> -
+> -	for (i = 0; i < res->resets_num; i++) {
+> -		core->resets[i] =
+> -			devm_reset_control_get_exclusive(dev, res->resets[i]);
+> -		if (IS_ERR(core->resets[i])) {
+> -			ret = PTR_ERR(core->resets[i]);
+> -			return ret;
+> -		}
+> -	}
+> -
+> -	return 0;
+> -}
+> -
+resets are applicable to only v6 so it should be ok to keep this only in
+core_get_v4 which is invoked for v6 as well. common code should be common
+for all SOCs.
+>  static int core_get_v4(struct venus_core *core)
+>  {
+>  	struct device *dev = core->dev;
+> @@ -981,10 +962,6 @@ static int core_get_v4(struct venus_core *core)
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = core_resets_get(core);
+> -	if (ret)
+> -		return ret;
+> -
+>  	if (legacy_binding)
+>  		return 0;
+>  
+> 
 
