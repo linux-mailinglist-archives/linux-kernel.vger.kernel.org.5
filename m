@@ -1,147 +1,122 @@
-Return-Path: <linux-kernel+bounces-90295-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90296-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39B8586FD04
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:19:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66F5986FD09
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:19:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6036281732
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:19:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 983401C2251E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:19:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F493224E7;
-	Mon,  4 Mar 2024 09:18:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF41724B52;
+	Mon,  4 Mar 2024 09:18:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cMVaAVwB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NenlFay1"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80A721BDC8;
-	Mon,  4 Mar 2024 09:18:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D9D72C840;
+	Mon,  4 Mar 2024 09:18:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709543886; cv=none; b=D0obt3atJRDb5L8R26UeTe97ppoeUdpyPx18axpcIuY+Z3Yacr3UcENU0bq4FVDdEJQwvArUKB6DM/epJNA073GyK3EF5m5N/qWTZ0MaBJXFk2R32cFjtlR3qkv53U1oRl8cBOxW9NSvmDmianILgGcw0tqvPxocVlJ1VSIAK/w=
+	t=1709543890; cv=none; b=skcJo4YL/R1QVzgEx+RAdYzDP0Qk4ZVUJagCGEVvCDPYDfauHLZ8mV2j5XynV9+vVPVFkr9FFKNG/yZZWtiHHiXf4dJBMS0HWhfRdds3ndtTO2FJVw5ts/6ojjOuWUDxGCpVcOriqKpr3/IbCspMi/w1BFUPuyfefFGYUKFl4X8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709543886; c=relaxed/simple;
-	bh=Hz5X8SjPZaPMVvkREhxPkwcMhjiRAzuRBm8lmosOsm8=;
+	s=arc-20240116; t=1709543890; c=relaxed/simple;
+	bh=2NE8g2addB4JbRzGr5d4FEp+f0iHBWz+jrXCpfZtwJQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aWYhGJ2mGYK66YqdSDdVwnD2UCz2Cog9mGGi7A8Kstsa+Qt6QyY9lSB6wSd8uUkRXhaNhS7dvdYJed3fo8dev3w8BbklcUbCeiLYIzcObaHH7DV11gtG+/R5oPAmS5OxbSLOSxTJyd9w1FFyJdi36mU4Hc9hWmuf1fBFGY1W4EA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cMVaAVwB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5EEFC433C7;
-	Mon,  4 Mar 2024 09:18:05 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=k0FxgjCGnlFgbTG9jcAZceqfS0zVnyzXJpnD+Z2GZSrLkDtBbVId0rQohZkvEEG46JkZoCdpuehEB81/8qqyVI2ch3N/YjXK86Fot6DUEEvoQCHdN1DHq23xrLeV9vfzqk4ZvdT0kSC7IKFECeeWSSArk3D0CxeFcvQqcL+g3XQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NenlFay1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C45EC433C7;
+	Mon,  4 Mar 2024 09:18:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709543886;
-	bh=Hz5X8SjPZaPMVvkREhxPkwcMhjiRAzuRBm8lmosOsm8=;
+	s=k20201202; t=1709543890;
+	bh=2NE8g2addB4JbRzGr5d4FEp+f0iHBWz+jrXCpfZtwJQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cMVaAVwBcvnPGrdq6e7btLLYM9gCJQP57sSCSb/GFXetumUhwhDWy4EWBcEfNHuOs
-	 nen/R8UCTax7+UIhGtc3FxuSQO9ozn82C6VBuIGCvx1vMD+24pTAKpz3Nje3Xf/I0N
-	 6mmZQl49BemD1XRaRAAs+ffgwzHIBcQ8iZwuHGxPdyuq4w7dcT3HDTPLg9kp9G2yB+
-	 BBtQVG7yQQ/iXqdMzkJqu+k8SjonewKeRUrQ0gv5yJ4Rg6YzEif7laeHz16KIkb0zT
-	 F5M6d4wEhuYNkksw5E8rb1nkn9Np/Q6fA/sSMFcnFRx22q2uNNONhVwWeg6zSRqx+B
-	 nIvgFipJpSi/A==
-Date: Mon, 4 Mar 2024 10:18:02 +0100
-From: Wolfram Sang <wsa@kernel.org>
-To: =?utf-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	Gregory Clement <gregory.clement@bootlin.com>,
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-Subject: Re: [PATCH v2 06/11] i2c: nomadik: support short xfer timeouts using
- waitqueue & hrtimer
-Message-ID: <ZeWRyuN8v-VnraQA@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-	=?utf-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	Gregory Clement <gregory.clement@bootlin.com>,
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-References: <20240229-mbly-i2c-v2-0-b32ed18c098c@bootlin.com>
- <20240229-mbly-i2c-v2-6-b32ed18c098c@bootlin.com>
+	b=NenlFay1MbxbJPHgLYvsg7O47VtPF6kw4AwX5TmQ7vPryNVNrM6qgfGylZQ5wUm1N
+	 p6sfyIKOmo039RTOvDQ7vXCjHVZkkNTOwRN0IVYd9X8CZVdLe6OOECVH/S8AwKn01p
+	 1QELIvxo01dt4xoBTs2omBSR0DifRalsLaieDKNzL6PgG7oTGY6kOJp3zcnOXtztdp
+	 3G3WLpDN6MyeWctiEL+6cKCCasoJIkcCpizPNjcn0QeqlVO3pT5wGVQkUWNGrY8ZcG
+	 d9fbzWOe/pmdiPBGVZDSHR3cyHkM+PRx1KD5IzzETy1OFnDP0pAMvQPDxZGp1YrZK8
+	 XsizSg3llGdsw==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rh4Sf-000000006L4-3Ei2;
+	Mon, 04 Mar 2024 10:18:17 +0100
+Date: Mon, 4 Mar 2024 10:18:17 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Anand Moon <linux.amoon@gmail.com>
+Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	Alan Stern <stern@rowland.harvard.edu>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Alim Akhtar <alim.akhtar@samsung.com>, linux-usb@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/4] usb: ehci-exynos: Use devm_clk_get_enabled()
+ helpers
+Message-ID: <ZeWR2VByrV1xWmYN@hovoldconsulting.com>
+References: <20240301193831.3346-1-linux.amoon@gmail.com>
+ <20240301193831.3346-2-linux.amoon@gmail.com>
+ <3d1c7682-d163-4bcf-bd41-d7db0c8f61d1@wanadoo.fr>
+ <CANAwSgR0aQ7nt1y5xknvVjHSnfvTaC8JZMLWurb8z2D0Oxg6Rw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ADopU0GSN45E8OWO"
-Content-Disposition: inline
-In-Reply-To: <20240229-mbly-i2c-v2-6-b32ed18c098c@bootlin.com>
-
-
---ADopU0GSN45E8OWO
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANAwSgR0aQ7nt1y5xknvVjHSnfvTaC8JZMLWurb8z2D0Oxg6Rw@mail.gmail.com>
 
-On Thu, Feb 29, 2024 at 07:10:54PM +0100, Th=C3=A9o Lebrun wrote:
-> Replace the completion by a waitqueue for synchronization from IRQ
-> handler to task. For short timeouts, use hrtimers, else use timers.
-> Usecase: avoid blocking the I2C bus for too long when an issue occurs.
->=20
-> The threshold picked is one jiffy: if timeout is below that, use
-> hrtimers. This threshold is NOT configurable.
->=20
-> Implement behavior but do NOT change fetching of timeout. This means the
-> timeout is unchanged (200ms) and the hrtimer case will never trigger.
->=20
-> A waitqueue is used because it supports both desired timeout approaches.
-> See wait_event_timeout() and wait_event_hrtimeout(). An atomic boolean
-> serves as synchronization condition.
->=20
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+On Sat, Mar 02, 2024 at 10:05:46PM +0530, Anand Moon wrote:
+> On Sat, 2 Mar 2024 at 21:19, Christophe JAILLET
+> <christophe.jaillet@wanadoo.fr> wrote:
+> > Le 01/03/2024 à 20:38, Anand Moon a écrit :
 
-Largely:
+> > > The devm_clk_get_enabled() helpers:
+> > >      - call devm_clk_get()
+> > >      - call clk_prepare_enable() and register what is needed in order to
+> > >       call clk_disable_unprepare() when needed, as a managed resource.
+> > >
+> > > This simplifies the code and avoids the calls to clk_disable_unprepare().
+> > >
+> > > While at it, use dev_err_probe consistently, and use its return value
+> > > to return the error code.
 
-Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> > > @@ -260,25 +248,17 @@ static int exynos_ehci_suspend(struct device *dev)
+> > >
+> > >       exynos_ehci_phy_disable(dev);
+> > >
+> > > -     clk_disable_unprepare(exynos_ehci->clk);
 
-Nit:
+> > I don't think that removing clk_[en|dis]abble from the suspend and
+> > resume function is correct.
+> >
+> > The goal is to stop some hardware when the system is suspended, in order
+> > to save some power.
+> Yes correct,
+> >
+> > Why did you removed it?
 
-> -	int				timeout;
-> +	int				timeout_usecs;
+> devm_clk_get_enabled  function register callback for clk_prepare_enable
+> and clk_disable_unprepare, so when the clock resource is not used it should get
+> disabled.
+> 
+> [0] https://elixir.bootlin.com/linux/latest/source/drivers/clk/clk-devres.c#L75
+> 
+> I have also tested with rtc suspend & resume and did not find any issue.
 
-I think 'unsigned' makes a lot of sense here. Maybe u32 even?
+You seem to be totally confused about how devres works, and arguing back
+after Christophe points this out to you instead of going back and doing
+the homework you should have done before posting these patches is really
+not OK (e.g. as you're wasting other people's time).
 
+And you clearly did not test these patches enough to confirm that you
+didn't break the driver.
 
---ADopU0GSN45E8OWO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmXlkcoACgkQFA3kzBSg
-Kba7iw/8Cjwrc5SjA/NL3KJonpOz3S37vaadRXid+bhB8XUNVUI0PMJkyw//gEc4
-njYS1/v197pg+4JsPPorLhOxjDGoD14nvA+kQkZ4XDktCxU+U12NUBKDc5XgFMmN
-cx7+QIr8AtfJpo5Il8nNYO4xn15+F510a1qjPgTlCE4QV2sX9aeSgOazretpVNmp
-03IKZDUPmP3HCFfNkGgt5PzpZpnY4RlPflThQcMYJm2wXz+E/h6VM1xqmENlhJQa
-2oqZ9FNBttktiahGx8vBpGeLcSXnQF3okUiCJC1f7MCP9ApaLI7a9700eneemBLn
-+Q9M1Gexied95SJcIJYKzgTzN10+GOHg8P1pFsuf3NKNCmZApobOIc3Nv/zDfGum
-Rp08Hrq0OgTSXGyPsLPs6OSeEtEg7KvCO/WZyuLAdt+wHVEKTMYsWra3FUCu6YMB
-m1RIQcluy4QVlv4E61RmOI22YsKibwl2mw2WMENEbLodFPc6lvtSSiEmjWSOBL4r
-Pv1oTlkNjBGOpgFF1T9TByvhhmIWLCQcbAHxR2R+EGcO3NNQ7wLMFCLkm7cm1sI3
-u4Y+cxDfdXz0zag7rJkp6GwzxwmNorvo90wbNA3FODizmmqFuUt6tIExR2hfxkA8
-4GURp7XQJAp5kXMt5vBAaEoDDCvaa5ivgOmaq0OFdQRcYnHtHRw=
-=vre8
------END PGP SIGNATURE-----
-
---ADopU0GSN45E8OWO--
+Johan
 
