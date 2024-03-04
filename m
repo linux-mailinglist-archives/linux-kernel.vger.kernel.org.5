@@ -1,84 +1,99 @@
-Return-Path: <linux-kernel+bounces-90425-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90427-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5F6286FEF3
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:23:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D28286FF00
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:25:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 23A8A1C2088E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:23:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A0FF283C1A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:25:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50F8425764;
-	Mon,  4 Mar 2024 10:21:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A947F249EA;
+	Mon,  4 Mar 2024 10:25:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="hmxqRTZH"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="RPoGrPO7"
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1224224B26;
-	Mon,  4 Mar 2024 10:21:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AB8C224F9;
+	Mon,  4 Mar 2024 10:25:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709547705; cv=none; b=tjllv7+B+Y9lH+2mTIRFbLllQBJQHxMKxPHpKK8LYsIsgAuJQDhN/d8Iz8szUc6G5GFayV4zZROloCYo4oPGAkEaqnWvk0Sdqfp/J6CH5Z457GMyLstCMceLbBgHNi/5ZcGuNe05cxEzq/z97AMy6Oz0skztmj3vv602YEKbxYY=
+	t=1709547907; cv=none; b=C8+jOb2QEcxPd22uKMBZf9iTtSJ5of0L7QxxxOJqYRr2PTdv2Ckhm1HEZb+L8P3W6Y5G0Tn8qThSfyvACNTyhDxA4Vd3rPjMn70A0Xb8zV4r+pcLxAlV+/V+PcLurM0ftWvNMaNSOwUy8zjDy5TAQiNBX3np+PYAD3N3Kh6KO8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709547705; c=relaxed/simple;
-	bh=CdqsZgMWba5+4/38tOJ0rHa2CTmblAVjgPmyX2jcBAQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hKJp0UnV2AQsQf48Hw0VMntiaqtfb10+Lg05cJshNnd2Lf/j5+3r0anySpmV+85XGj/9PTYdjhJMyluuCi4DQ1BwjvUSuyrO3DLn93Sl04mbYOSyuuR8zzrRsMvKpk/WrRWetObWkh0k+FD3+iMczSYEiVvwuHyYxzshB9nk9XM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=hmxqRTZH; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709547702;
-	bh=CdqsZgMWba5+4/38tOJ0rHa2CTmblAVjgPmyX2jcBAQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=hmxqRTZHaFH0EmwDUqjKD9B2YwFeSsIN/Sv9G9R8MUAarAtX2CpV6WXAVo3j03DJZ
-	 6vtWlYiV9WgPT41PzE6h8UvM67wx+aYuxtN5FD6Z5ySrC0TSYmZWVDzObsJNaEEq19
-	 2F5mvVJ+sQerOh7Oec65NMyNutREUl9jXMX76RXUcTYj+60Jola5sSeKiapp7c3csh
-	 DrnyU2GY34R8J3dVvpY3sTjr9zMAhT+l4KSSlIpa2KFcJtnKaqdo5tN6OKykJmv9wh
-	 GlRMMxNol9Qj3uXcyXs/AHzksKgEVfi4mYlgmPapw+/Iel+AITOCchRhf27ktJFVQB
-	 DDXKQJZ5gzz6A==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 7C77137813CB;
-	Mon,  4 Mar 2024 10:21:41 +0000 (UTC)
-Message-ID: <02738700-6328-460b-8a5f-fb531756dd55@collabora.com>
-Date: Mon, 4 Mar 2024 11:21:40 +0100
+	s=arc-20240116; t=1709547907; c=relaxed/simple;
+	bh=JaiQtaNF1/PgiFULD7NI+iEq6L97TrPELreOk6gTc0s=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:To:From:
+	 References:In-Reply-To; b=I68p49KY3z5cPOvf4BIUO7TxxVK1Hdlg5AY+7tRMQ+tqT36U5WtamTxKa1/1NZ8EpXyGfPj8/pfqZAlzEcATkEyLsacHeFs/uuUCGcfCWtvvN84fkm+OFQzjiMdxSSnnV6fFDaoMK9Ym4LHSptpdDrAv/FD5NMVdD4erMEBs0qM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=RPoGrPO7; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 7E501E000E;
+	Mon,  4 Mar 2024 10:25:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709547902;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WDbbLkFjebj8+McjyxGMYNN3BxKTit6NKZsucO65PPY=;
+	b=RPoGrPO7U8YgQEss13LXMhj1Zf1cj+cdcgzouTr22thcSST3U8FnIxIfor8Ld6HSh8+g36
+	kS35ZYtx573ne6YJBMOhACPWyORzcoVpghTkShf6EwjM2j37mKETNnt7/XSvqBQHiWIGko
+	h6QJTyDemFbvYIqEPK8EuYe3p+p68MfqBQowBsfW9eHOfmXVvF3HqU5zSkIHKPn9x+LVfK
+	0TV+aJmRoaDMZsTB+277uxRrNK0CVCdGFPO6SrcldIFyd4tKlMJE/YvqeLq9ivV+6kdY6n
+	WB6ZxXSOAlAdUxdoAwawiJI0iLaxE89/+M46GPh0al9+MA9nFAU/YYbd+ytQqQ==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mtd: spi-nor: core: correct type of i to be signed
-Content-Language: en-US
-To: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- Tudor Ambarus <tudor.ambarus@linaro.org>,
- Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Cc: kernel@collabora.com, kernel-janitors@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240301144517.2811370-1-usama.anjum@collabora.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20240301144517.2811370-1-usama.anjum@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 04 Mar 2024 11:25:01 +0100
+Message-Id: <CZKW5JVUA93W.30NZQ9289BXX1@bootlin.com>
+Subject: Re: [PATCH v2 09/11] i2c: nomadik: support Mobileye EyeQ5 I2C
+ controller
+Cc: "Linus Walleij" <linus.walleij@linaro.org>, "Andi Shyti"
+ <andi.shyti@kernel.org>, "Rob Herring" <robh+dt@kernel.org>, "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley"
+ <conor+dt@kernel.org>, "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-i2c@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-mips@vger.kernel.org>, "Gregory Clement"
+ <gregory.clement@bootlin.com>, "Vladimir Kondratiev"
+ <vladimir.kondratiev@mobileye.com>, "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
+ <tawfik.bayouk@mobileye.com>
+To: "Wolfram Sang" <wsa@kernel.org>
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+X-Mailer: aerc 0.15.2
+References: <20240229-mbly-i2c-v2-0-b32ed18c098c@bootlin.com>
+ <20240229-mbly-i2c-v2-9-b32ed18c098c@bootlin.com>
+ <ZeWUF4P9CcovI3F5@ninjato>
+In-Reply-To: <ZeWUF4P9CcovI3F5@ninjato>
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-Il 01/03/24 15:45, Muhammad Usama Anjum ha scritto:
-> The i should be signed to find out the end of the loop. Otherwise,
-> i >= 0 is always true and loop becomes infinite.
-> 
-> Fixes: 6a9eda34418f ("mtd: spi-nor: core: set mtd->eraseregions for non-uniform erase map")
-> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Hello,
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+On Mon Mar 4, 2024 at 10:27 AM CET, Wolfram Sang wrote:
+>
+> > +	if (of_device_is_compatible(np, "mobileye,eyeq5-i2c")) {
+> > +		ret =3D nmk_i2c_eyeq5_probe(priv);
+> > +		if (ret) {
+> > +			dev_info(dev, "%s: %d: %d\n", __func__, __LINE__, ret);
+>
+> This is debug code, or? Please remove it. Especially since
+> nmk_i2c_eyeq5_probe() prints something out on error.
 
+It is. Nice catch, sorry about that.
+
+Regards,
+
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
