@@ -1,137 +1,102 @@
-Return-Path: <linux-kernel+bounces-90483-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90484-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BC4D86FFDC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:09:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE15086FFF3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:10:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 170C7284613
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:09:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B9201C22EFA
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:10:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C37BA39AE8;
-	Mon,  4 Mar 2024 11:09:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEC4D383B6;
+	Mon,  4 Mar 2024 11:10:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OXmpRFRn"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LNWUp4Qv"
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44A36383B9;
-	Mon,  4 Mar 2024 11:09:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0FF6381CF;
+	Mon,  4 Mar 2024 11:10:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709550560; cv=none; b=SSO6KBxPv6Dpp6e0wi8ad3pknkJBkVF3aRCGnz7BDHtDNjdJaCyYlsNq8Owtvli1iktQShDFx32vfZiqhGu8fNt/55pV8mpT7OBZKnFBHjl7JiBcaVBFPm4Y2Ab7e2GaWK7RwiK4pYGfS2Fok8WaWeXkhdNJ7+FB+DeiuIn1nSg=
+	t=1709550608; cv=none; b=Xk0yo8m7iEgBYF8fHef1BpSA6yUggpwTz6nCrYt39WI2zVg1r/09UtvI8XoDI4kP4v/2VGi6nHrQekgmF4m0/DDb9hvh8RjXo5w+YCDPjjwqwx2AvD1pag8JNp/ZqeGyEHLKq5toOfNyo8Plv7h9rqD4J2g0SheuCUWP/nvV99U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709550560; c=relaxed/simple;
-	bh=KXv3Q2iupm09gepMI0TpXGJCp9MnBfLCvS53P06EY2k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NbrY8v5Whk7jhb3FS28VdAPQyeImDOgdOUBdDTGTbW60P5ir8QPN45SBklkrRq1/yuILox/xSmMTrkCbI76mREOqpvGVD/NRyM6G+y66YflmT4HrRtsdMRogqvAG9ZvDUcKPdWX4KtFqEx500THpOnVeC1cEEPbBT7NCkahVssg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OXmpRFRn; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709550559; x=1741086559;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=KXv3Q2iupm09gepMI0TpXGJCp9MnBfLCvS53P06EY2k=;
-  b=OXmpRFRnlz4JhY6eMUcydd+QD+OZiaGVneBjNu0zd5WqeO4v0k6l+URC
-   Tc3t/4AmXYkUjuXA1QgB4oDVg+oQ7OtnlzAxrZEHm6u8Vnu/4kn3zz8pv
-   WZ2D7MYE1qOTQNPxkhQuOl91AZKt4YwllBT/Yjv3wjZrN1Sfkc7sprC0V
-   PvYGT9M9X9cgNI1hSGBen8DYjG1rvPLV4PQwF8NXgqWbkFi4kvdd6mzhk
-   d6aCfEBOumht1fTbSEvEjRv7zHHfTtGGWdfkDhOk+C0WnjxjetkKjDv92
-   eBVWC2pIPjAb5n/qZ1VBSnkVaRxDDPN216VeJ3XJc03UjLMb0oVkJqT2i
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="4202222"
-X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
-   d="scan'208";a="4202222"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 03:09:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="914102864"
-X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
-   d="scan'208";a="914102864"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 03:09:12 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rh6Bw-00000009hG5-1IAi;
-	Mon, 04 Mar 2024 13:09:08 +0200
-Date: Mon, 4 Mar 2024 13:09:07 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-aspeed@lists.ozlabs.org, linux-rpi-kernel@lists.infradead.org,
-	linux-mips@vger.kernel.org, linux-tegra@vger.kernel.org,
-	Jiri Slaby <jirislaby@kernel.org>, Joel Stanley <joel@jms.id.au>,
-	Andrew Jeffery <andrew@codeconstruct.com.au>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
-	Al Cooper <alcooperx@gmail.com>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Paul Cercueil <paul@crapouillou.net>,
-	Vladimir Zapolskiy <vz@mleia.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [PATCH v2 03/14] serial: port: Introduce a common helper to read
- properties
-Message-ID: <ZeWr06YWj5cDHfWL@smile.fi.intel.com>
-References: <20240226142514.1485246-1-andriy.shevchenko@linux.intel.com>
- <20240226142514.1485246-4-andriy.shevchenko@linux.intel.com>
- <2024030259-playback-starlit-a472@gregkh>
+	s=arc-20240116; t=1709550608; c=relaxed/simple;
+	bh=8rBw+8lavQNu3WP5WN/y/f26LqjJAVlqi+HMskTiDyI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JG6SMmJUotaQL86mqxyWiRTVm5lkr1JtCAlmGZtRTJh2zJyTXUadKbD5ExQ1T7bynGS7GBL2ayhSvAWpo8+QoODRFIm9mPApeR7wumOtPnXknwijzLmtIrb//qls+Oe/CE8BmHO6ZGIP2CZkLFh2akp41e1NWJ5Hg5D5m4gtYtQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LNWUp4Qv; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e5769aa0b3so934037b3a.1;
+        Mon, 04 Mar 2024 03:10:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709550606; x=1710155406; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8rBw+8lavQNu3WP5WN/y/f26LqjJAVlqi+HMskTiDyI=;
+        b=LNWUp4QvW/D0pgdACBps4jjF89rNliM51ukJC1qNQSyN+NKzASrSH2x2U26VFNqsFS
+         VpeZBH7U3AGH327xgrdLE1eSnMNCWSa4WRgBtbBFfNlXdRZ7ViglDmuIszjOU+I9JMor
+         uWqhDaRPAFPRbZyOyD43WH81rnB1TI570XGErT/lL4flPHIhRbakD4ZwG1nW9fqD8dv/
+         BFJOTUi2dhwJoXmAM6zvfnCbzDXq0rsdD+i4GVAriJAfBOkDtkPDZrSNxNsDS7nl8526
+         RXi8v7GTJfK4mYcfaVbTeIiYEB4cRJBqsqipOpW4zZJi2gNjINaLVmcLvAR23LRe+MwO
+         lxfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709550606; x=1710155406;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8rBw+8lavQNu3WP5WN/y/f26LqjJAVlqi+HMskTiDyI=;
+        b=KpYanH+QlX6e+SWyUhFMtTnyPM3rVZkkFAXNFPEWayUwoKoL9uw661N8w9RtcGjL7l
+         l4wtM0LQVaFamEDWWkqCj+5cy+296zBehKmYN1zyPJu3+3XUSZYuxpsNm/VzLuvI5tzJ
+         It86OgQBSR9rwKjPDELlysFsLXz2oYkJ4YaRuv7x8e1qGvFLucFHgCvEZUAFmEpRAqHX
+         PI4MtgGFnXTABX/OrO7BQYrRSMB27pN31vdBvOt+lgWXpyCIqEjXzjXmZ5dp1ksoUuoq
+         k4lKtgXkAGF+27HPDnp6El7UpN1EUa2phxY1UVisak8QznQGB4JMtaIZhYuXkVz6uuMw
+         aktw==
+X-Forwarded-Encrypted: i=1; AJvYcCWm+VPDL7FmbTVDrM0BMr+x1lWqE0mGj9X3PA5NAv1MdJ7ETevys32PeJmEFaTt9sy+iV+WYSXQYAv9BccZ+S8ylEIF1Tv+UJX34nh4jWH0smZIgxiDLOK+mugX53BrOkk1mfDX6yaokLjZ
+X-Gm-Message-State: AOJu0YxW1YOy9lWWLDqLhzX59hpOU9xLwt3Sl+P3GbSnYz8UgzxbonuP
+	Al6Hv9F2Gn4N7T1pJFuq2kEbWxMx0ONCyDP84FgfXIAseq5Rzv3D4AQ0M+GyL8yVqRnlep6+GLi
+	r9yqoqInD2VXOvQC3C50vIrZe/w0=
+X-Google-Smtp-Source: AGHT+IGw9TbaXB4OiBViXULChFw8ceMuWOdi0bShk6CdU+4WddPSCqd7UQSgJO1Yt6fZTZdAk8xHZza2uny5nD0L8Fs=
+X-Received: by 2002:a05:6a20:3ca8:b0:1a1:276b:e116 with SMTP id
+ b40-20020a056a203ca800b001a1276be116mr11760741pzj.3.1709550606198; Mon, 04
+ Mar 2024 03:10:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2024030259-playback-starlit-a472@gregkh>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240304020712.238637-1-sherry.sun@nxp.com> <2e1b1eae2e9d3cedcd270e35cfcf8086b914b7ff.camel@siemens.com>
+ <AS8PR04MB8404FEA637E51E3B258BC28C92232@AS8PR04MB8404.eurprd04.prod.outlook.com>
+In-Reply-To: <AS8PR04MB8404FEA637E51E3B258BC28C92232@AS8PR04MB8404.eurprd04.prod.outlook.com>
+From: Fabio Estevam <festevam@gmail.com>
+Date: Mon, 4 Mar 2024 08:09:54 -0300
+Message-ID: <CAOMZO5AUFsC87fivJ7UhLGpoqy+-rfSx8Jipp5QGjQ9uGOngTw@mail.gmail.com>
+Subject: Re: [PATCH] tty: serial: fsl_lpuart: avoid idle preamble pending if
+ CTS is enabled
+To: Sherry Sun <sherry.sun@nxp.com>
+Cc: "Sverdlin, Alexander" <alexander.sverdlin@siemens.com>, 
+	"u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>, 
+	"gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, 
+	"ilpo.jarvinen@linux.intel.com" <ilpo.jarvinen@linux.intel.com>, "robh@kernel.org" <robh@kernel.org>, 
+	Shenwei Wang <shenwei.wang@nxp.com>, "tglx@linutronix.de" <tglx@linutronix.de>, 
+	"jirislaby@kernel.org" <jirislaby@kernel.org>, "robert.hodaszi@digi.com" <robert.hodaszi@digi.com>, 
+	"linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, "imx@lists.linux.dev" <imx@lists.linux.dev>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Frank Li <frank.li@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Mar 02, 2024 at 09:58:53PM +0100, Greg Kroah-Hartman wrote:
-> On Mon, Feb 26, 2024 at 04:19:19PM +0200, Andy Shevchenko wrote:
+Hi Sherry,
 
-..
+On Mon, Mar 4, 2024 at 4:32=E2=80=AFAM Sherry Sun <sherry.sun@nxp.com> wrot=
+e:
 
-> > + * uart_read_port_properties - read firmware properties of the given UART port
-> 
-> I like, but:
-> 
-> > + * @port: corresponding port
-> > + * @use_defaults: apply defaults (when %true) or validate the values (when %false)
-> 
-> Using random booleans in a function is horrid.  Every time you see the
-> function call, or want to call it, you need to go and look up what the
-> boolean is and means.
-> 
-> Make 2 public functions here, one that does it with use_defaults=true
-> and one =false and then have them both call this one static function,
-> that way the function names themselves are easy to read and understand
-> and maintain over time.
+> Hi Alexander, good catch, I will move the "/* restore control register */=
+" message to the appropriate place in V2. Thanks!
 
-Okay! I'll redo that.
-
-..
-
-> > +EXPORT_SYMBOL(uart_read_port_properties);
-> 
-> EXPORT_SYMBOL_GPL()?  I have to ask :)
-
-No clue, the rest in this file is EXPORT_SYMBOL, but I admit I followed the
-cargo cult. I'll check the modified code and see if I may use _GPL version.
-
-Thank you for review!
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Please add a Fixes tag in v2.
 
