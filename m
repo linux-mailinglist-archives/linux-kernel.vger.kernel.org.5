@@ -1,135 +1,136 @@
-Return-Path: <linux-kernel+bounces-90488-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90489-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BA1F870000
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:12:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F214870002
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:12:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F0491C2335D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:12:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A6AD6B24A59
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:12:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D1D839FCD;
-	Mon,  4 Mar 2024 11:11:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F7ED39FCC;
+	Mon,  4 Mar 2024 11:12:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="aYeNFyF0"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="yvc3lv5W";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="MGCCBcZG"
+Received: from wfhigh1-smtp.messagingengine.com (wfhigh1-smtp.messagingengine.com [64.147.123.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8891D37718
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 11:11:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C690C38DFC
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 11:12:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709550705; cv=none; b=nsH+hRebWvU6Ct0vexXT2PX/3AS1DptPDysAfI8eoaJZucGeiSqh/Km0lE7NzM4nlOsRDA5etYGXZBVSK3o7di5AwF2cmgg4f+UoXqfsEMa91PiVcr3QXgrgC2OkD3eB04EislKlS/llg/6vIEGTLEqOuyE0mSQc9H2+sXiUzRU=
+	t=1709550722; cv=none; b=lDQBrHpLZ9cRFfMzn9mzza/UVtmwQHJoqKnDzTcLPJe2ee5h/yUiqNnS3xO5NJIM3CRrXdx0Bs1+evrDHEsiLHWKzbMQSD96F056nxmdqi0ArfmanNGbfagoLYJ4q+P5EJtF1FOicIWsZuZbCQXOBOn7SVIILGzuEe1C+RRs42U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709550705; c=relaxed/simple;
-	bh=TVGauwyeBR4AdfQsHXvgRjKRsr6eVvmQ6GDdnL5kg3s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Wmhejz/Oz9fiM6Zo1jJ96D3VTOEi760QPWfu785rKj2kfvmeY2f3NqTv16klh4gK5t6tztppwz2GxfjbRGUixWTM8BhBNM5hwP19q4yCAfPZwqMiAdHFbp5UGvOnTSSy51i6gFeCoCbdrh6uPE/0OIK1O7/vd6wzQfPIys7Y1tA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=aYeNFyF0; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 21F1240E01A2;
-	Mon,  4 Mar 2024 11:11:40 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 8Tc4xTkS6DEL; Mon,  4 Mar 2024 11:11:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1709550698; bh=BZDhxNl8JTWBcRIoa6Vr2/iEajD+gZXg9rtceU6Dukk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=aYeNFyF06TiGLHX8iz5HBkRDLQZNOzTLQ7+dK2Matf9/avlXsaoCW9WigEJP0cK/x
-	 kNGF8mRornpET98+oFZKuaf2InU/HMTpIu0bk9afLNDGYZW57yvmiWu5Jd+0ZKJEzU
-	 1q5q1lTc8NzGIFTDrqoNzT4AXmvE9fdOBADankEhgTUN1UlCCYCPqXwh0ObLs+7OAu
-	 MSG4T1GaUOuQYhZ0DIODwDl8ms9Q0AIxZA6e8jcUJJirtgSTdMsSgsLpEkPHpub5Zh
-	 SPh111R2VaNm4r42FALWTRQfTxgLzqdDsbLQKsyBg2FAYT6qr5mAqPoCpat8/WDek7
-	 evj8vENsv/ASD/n4t+8q/5arpVPGvxINSr+ZL3ufJCB4bRQ2gZqW/9gTjlfoBRoix/
-	 46tDMcL0ccbSzpAlMfCVhQU63YKdndGtuw8nRmyFavBx9TO3J1iBAMiNhEfVzG5gY2
-	 JfskYEamk5oZjkgP1VHlznQKB79eAIwhx0D1L39gjD6DuVrYEUcNfoFtc5eeV33hiU
-	 hm4McEyaM9RM0cCwTYsKZYnettZWG1vhgWQdx1TjTJkf4n9HL8BjFaKg/vU24Y9idQ
-	 EXdCwYnOGx19cA8wnb3TpjklyjUhADWK/1I+v3CaLYLvKhoGdpOlEqeKvaCMT0yieJ
-	 LXcKZoS5Z7pgM3orVyoFxvsM=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0B86040E0185;
-	Mon,  4 Mar 2024 11:11:34 +0000 (UTC)
-Date: Mon, 4 Mar 2024 12:11:27 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Baoquan He <bhe@redhat.com>
-Cc: X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	dyoung@redhat.com
-Subject: Re: [RFC PATCH 1/2] Revert "x86/kexec/64: Prevent kexec from 5-level
- paging to a 4-level only kernel"
-Message-ID: <20240304111127.GAZeWsX3gBabiwrrVV@fat_crate.local>
-References: <20240301185618.19663-1-bp@alien8.de>
- <20240301185618.19663-2-bp@alien8.de>
- <ZeWnrhzU86pz7y5Z@MiWiFi-R3L-srv>
+	s=arc-20240116; t=1709550722; c=relaxed/simple;
+	bh=MEL+STZkSdrfFnSSKd7mM5mtjXp9ebWCru/BPk1xE8o=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=oUyJpUuR1dLSvVACHlVZ2DZUFCyesKLcurECt7ikavNgDIRyWrz+JZX0gpRwUrQQ55kZ5Cr1cEB8ClXumhGyCf0V05ia2iQFyzP1nm/PCUk4Caf3YbxqHTdJQln+9VuJ+XRZanH8UP35x8EfExoGqE7C3bminKtKFWTK105HAoA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=yvc3lv5W; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=MGCCBcZG; arc=none smtp.client-ip=64.147.123.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfhigh.west.internal (Postfix) with ESMTP id E81031800071;
+	Mon,  4 Mar 2024 06:11:58 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Mon, 04 Mar 2024 06:12:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1709550718; x=1709637118; bh=EdyAyreUFv
+	IgIM6ctI+YdhHOhoypCpmrpuxvB1wsxPs=; b=yvc3lv5Wisgl69XprFcP5LoTvy
+	xOnR8ClrH2/ISMMCpe99Rj5lDH/mge/sdO8Q75eVh6ydyXO57A8YdnKv0uzyNUpx
+	7PG4TgXn9G9Me+kcKeAg/kPyZr20lkoE8Ge2PDZ0m0vvsssQX1uqCDBCVnQs4W3N
+	+wgnEzVauN3lLU7jf3CzxfNawof7guszJvZe02DYntMXlHpJG/yx1gvxsW0MT+bi
+	pFCPkfYc/KicROYhNZTnDHnP0uSUmy0/PfwLLpfzUh7P2YlatkXUsXudhqlkpChJ
+	NJjNqcyyoT6eqOCj46xFzfMY95lfa2hGbbCYGgVdNFVwICTdfRAsOEXX3fow==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1709550718; x=1709637118; bh=EdyAyreUFvIgIM6ctI+YdhHOhoyp
+	CpmrpuxvB1wsxPs=; b=MGCCBcZGWn6rAsXfzV4j1gaxH0Y2kffQfmDiJk8KF2GP
+	EoRo+xLTsXklU/QyL43TRHXVU3SdQGqau0Rw5/qC119H4DCDVvVHLYeAd2gXEYLR
+	XrJ067icxcSWRPBom4IlHWcjm0D5NawrA6H95J7ayq2qt/IK0YGlIMhvAaZhEmvL
+	zH2SsDruheTp8pljRm3f5HlFGH2k+U/Ah83zjcr6TA/mTqfE4wAMl+K3gjLf5Qo8
+	Jjdn9wlSnOZnr4M4Nr2lwIPZV4uOzRYDpvz/AbTEHtD1q0Unu6kzTPS4Q+bnc29k
+	+C4K8CTyxFoPau/lJun7a4c9COVbpR7XBoxJUJWQkQ==
+X-ME-Sender: <xms:fqzlZbfowZCDDY1dEYxarEK4eXUh520wbI7RsI0tgztE-LKszHYnjg>
+    <xme:fqzlZROcTlyFsKnY4Oe0qUgjVmAB4bGWwtOBURj2kXAH0jeLOiBQuPDmMk9KgGQNq
+    fOW2xDm8LEhcmu7iak>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrheejgddvgecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
+    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    hnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:fqzlZUjelUD9zaEr8nSDoJCtK559fTWiBiqAimb_sOoBNtSNx2EMMQ>
+    <xmx:fqzlZc_Ax8RVY9-c2Kpg8k8WwgUcknhXfOiVo-pP0vFyJP5vh7iZ-w>
+    <xmx:fqzlZXvWXr15D_PiaqiRY-ISbFDDa9D67Fx5YAbYK89hWhvycAn8Pw>
+    <xmx:fqzlZVKzGqHIXK_nBLwwCS2YB7JRMTnXAT0BKwWflGbNWy2SnBXzsdZsHwE>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 1DB36B6008D; Mon,  4 Mar 2024 06:11:58 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-205-g4dbcac4545-fm-20240301.001-g4dbcac45
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZeWnrhzU86pz7y5Z@MiWiFi-R3L-srv>
+Message-Id: <338c89bb-a70b-4f35-b71b-f974e90e3383@app.fastmail.com>
+In-Reply-To: 
+ <CA+G9fYvG9KE15PGNoLu+SBVyShe+u5HBLQ81+kK9Zop6u=ywmw@mail.gmail.com>
+References: 
+ <CA+G9fYvG9KE15PGNoLu+SBVyShe+u5HBLQ81+kK9Zop6u=ywmw@mail.gmail.com>
+Date: Mon, 04 Mar 2024 12:11:36 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Naresh Kamboju" <naresh.kamboju@linaro.org>,
+ "open list" <linux-kernel@vger.kernel.org>,
+ "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
+ linux-sunxi@lists.linux.dev, dri-devel@lists.freedesktop.org,
+ lkft-triage@lists.linaro.org
+Cc: "Maxime Ripard" <mripard@kernel.org>, "Dave Airlie" <airlied@redhat.com>,
+ "Dan Carpenter" <dan.carpenter@linaro.org>,
+ "Ard Biesheuvel" <ardb@kernel.org>
+Subject: Re: arm: ERROR: modpost: "__aeabi_uldivmod"
+ [drivers/gpu/drm/sun4i/sun4i-drm-hdmi.ko] undefined!
+Content-Type: text/plain
 
-On Mon, Mar 04, 2024 at 06:51:26PM +0800, Baoquan He wrote:
-> It's not true. Customer may want to try to load a different kernel if
+On Mon, Mar 4, 2024, at 09:07, Naresh Kamboju wrote:
+> The arm defconfig builds failed on today's Linux next tag next-20240304.
+>
+> Build log:
+> ---------
+> ERROR: modpost: "__aeabi_uldivmod"
+> [drivers/gpu/drm/sun4i/sun4i-drm-hdmi.ko] undefined!
+>
 
-"may want" is one of those hypothetical things which we don't do. If we
-have to support everything a customer *may* want, then the kernel will
-be a madness.
+Apparently caused by the 64-bit division in 358e76fd613a
+("drm/sun4i: hdmi: Consolidate atomic_check and mode_valid"):
 
-Also, you do realize that the kernel doesn't care about "customers",
-right?
 
-And the question is, how *sensible* is such a use case?
++static enum drm_mode_status
++sun4i_hdmi_connector_clock_valid(const struct drm_connector *connector,
++                                const struct drm_display_mode *mode,
++                                unsigned long long clock)
+ {
+-       struct sun4i_hdmi *hdmi = drm_encoder_to_sun4i_hdmi(encoder);
+-       unsigned long rate = mode->clock * 1000;
+-       unsigned long diff = rate / 200; /* +-0.5% allowed by HDMI spec */
++       const struct sun4i_hdmi *hdmi = drm_connector_to_sun4i_hdmi(connector);
++       unsigned long diff = clock / 200; /* +-0.5% allowed by HDMI spec */
+        long rounded_rate;
 
-In my experience, not at all. You simply take the same kernel or a very
-similar one and kexec it.
+This used to be a 32-bit division. If the rate is never more than
+4.2GHz, clock could be turned back into 'unsigned long' to avoid
+the expensive div_u64().
 
-> they have taken many testings and trust that kdump kernel, or for
-> debugging.
-
-Yes, and those kernels will have 5level too. Practically, distros must
-enable 5level support in their kernels in order to support modern hw.
-
-> The similar for kexec reboot into 2nd kernel. We don't enforce
-> kexec/kdump to work on the same kernel as the 1st kernel. With the
-> fail and message, user can take measure to avoid that. it's better the
-> failure is encountered when failing to jump to kexec/kdump kernel.
-
-I can't parse that example.
-
-Btw, kexec tools don't use those XLF_5LEVEL* flags bits either. Which
-basically means we don't really need them.
-
-> I remmeber we have use case where customer used kdump kernel different
-> than the 1st kernel. While I don't remember why.
-
-See above.
-
-And that customer can still use the old distro kernels which have those
-flags.
-
-The point here is, going forward, 5level becomes ubiquitous and will be
-even more tightly integrated in the kernel so that it'll become just
-another default feature which is either there or not.
-
-So the distinction is going away and the flags can go too.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+      Arnd
 
