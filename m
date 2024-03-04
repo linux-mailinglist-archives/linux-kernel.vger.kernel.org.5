@@ -1,118 +1,158 @@
-Return-Path: <linux-kernel+bounces-91404-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91405-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7D6E871105
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 00:23:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7960687110B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 00:31:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02D93286A3D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 23:23:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 352072845A9
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 23:31:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8D8B7CF03;
-	Mon,  4 Mar 2024 23:23:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94C707CF26;
+	Mon,  4 Mar 2024 23:31:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="Lq7A1dKK"
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b="1C1h287R"
+Received: from omta036.useast.a.cloudfilter.net (omta036.useast.a.cloudfilter.net [44.202.169.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8D8B1E4A2;
-	Mon,  4 Mar 2024 23:23:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 185357C6E3
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 23:31:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709594628; cv=none; b=sehKkGC+GJmECeU56ZGtXKY7XL8BG/hV4hiYDYyQkVeggNYJ8akuESQYAchhuJx02Tipj0eMTLU8X5aefYgzHfgj4Zypuh/iBkbd1juxCf1r3w82zgQVTjEQvSQODX3iB79ZnEs3rvcn8N0vRvYHBUFlUAQRfHIBS69EBrPhnsk=
+	t=1709595070; cv=none; b=PZDQVs9Ji7ILrZgqfaFQaH9QdNdde/yls7Ki4qOyu8dRhZoRTcSF8+B1xPeq2iw1a40WVGBFwLRsbdt7KJd3ygQcjAvrjQc6AOWRAhbfW0dQ1BVBDIUyot+bXBh+aCnpvqzj5w744rfmvbb6vnUZPTnJTGy3ltQzlKRBV+bXj2Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709594628; c=relaxed/simple;
-	bh=HEq5kgUP1ZPh6+iesZI1t0ZbH0sGN6VXjzGiLV0x70g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MbhMGMGmbAfARnsnmyCHObqOnEVAf3YlWw9cB5vMDtBWRhvFCt9I7g2OPvzd6xjZhIyF8SGUQbsuEX7RddI0oFazSgVL+2k0j0kXaCM/A5GJQTbzNat8V5TorfcKn+apUNJb7G/NVV28V9ViY/U6/QdjzqoPG29LcrMOIUH949Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=Lq7A1dKK; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1709594617;
-	bh=HEq5kgUP1ZPh6+iesZI1t0ZbH0sGN6VXjzGiLV0x70g=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Lq7A1dKKdKHYGgVerwIPoaMP/oem/Sw4zYJEeh3Uh0vap4ivUuxdZdZ5MeZVpqtPY
-	 wzoZ5eF4Idl6zq4reEmNAnIlgTlle9lqOoHFdlGds7COD/U7SVktHdbzXjucH4FhTf
-	 ImtK22+NAE9igHG64k7rlYVaih1s2h8qU/iOQTBbD2F0fKUAOCWhOJwlzvf1ZwGYw4
-	 Tj0NBrVVr6sAg7uvFTAixQ78RTim+yHupOvNfgbuHWzsMOBLnOcNJZeG6TmWqvLd2x
-	 rw+dBL7d9aJ/dwTyhFBUX2mw5hbKe8LZGJ4dMK6FIIdIMu3zS8zki4/gLHd6Xp5kZu
-	 BFfMWQFryfsWQ==
-Received: from [IPV6:2606:6d00:100:4000:cacb:9855:de1f:ded2] (unknown [IPv6:2606:6d00:100:4000:cacb:9855:de1f:ded2])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4TpZWY0lJBzfcS;
-	Mon,  4 Mar 2024 18:23:37 -0500 (EST)
-Message-ID: <b3803989-8465-4656-8ca3-678a92f9a140@efficios.com>
-Date: Mon, 4 Mar 2024 18:23:41 -0500
+	s=arc-20240116; t=1709595070; c=relaxed/simple;
+	bh=nHa8DwC8bpEcB5DaG4EAgwujyIfuWHXzqJpn/5Qkqrg=;
+	h=Subject:To:Cc:References:From:In-Reply-To:Message-ID:Date:
+	 MIME-Version:Content-Type; b=uDojhG7uE0c/bP8oqVq/hZIs8yJe3WLvd66TVTga+b7f5WoXoh77AHqIqUw2NOZ9qbiJI3Ut/VAsZSnx/JATGB6MV/6/5quO7Pd3BsgKlpbCYuJGLKWaRbhvWx1ttHmZ4sFzbCQz1g3C8gdRcTlk40KwJLjv8Wwo36AwyYf5NI0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net; spf=pass smtp.mailfrom=w6rz.net; dkim=pass (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b=1C1h287R; arc=none smtp.client-ip=44.202.169.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=w6rz.net
+Received: from eig-obgw-6001a.ext.cloudfilter.net ([10.0.30.140])
+	by cmsmtp with ESMTPS
+	id hG2nr7f16uh6shHlxrA8yL; Mon, 04 Mar 2024 23:31:06 +0000
+Received: from box5620.bluehost.com ([162.241.219.59])
+	by cmsmtp with ESMTPS
+	id hHlwr2daTiykKhHlxrn2Sc; Mon, 04 Mar 2024 23:31:05 +0000
+X-Authority-Analysis: v=2.4 cv=RKy1HZi+ c=1 sm=1 tr=0 ts=65e659b9
+ a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
+ a=IkcTkHD0fZMA:10 a=K6JAEmCyrfEA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
+ a=1GQxe75yrw9fIeUcjpcA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
+	s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
+	Message-ID:In-Reply-To:From:References:Cc:To:Subject:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=kkKXkaHiVwHFeTtq12t1/Zf9Z0FrNBJx40HZVh0CcXg=; b=1C1h287RIj9G1MTNAvlWvHaDG2
+	LTLJJGchb1J6Nln1UdFrU9WEr06HiZsdZaigQ6RZeSYSGu1EDxG6P/yAYb58sNvpmNrYRNwV1N5C0
+	l+wXpHwEM6gnXsxYOlKz+8pHMl/gpj9GYMgUx8PGF+eBNEV14QGTj0mvkoBmPk/m392JVX50U77x8
+	OkNbE2v27wNZ44R98sa02hcCvH+NJyJJPjSKt2hNMxKH0P5ezPce5X190hJxHOMxtVRKoOPVajxHr
+	837E2jHsh20RyvKOQxrRTlcc9stT5wdKgD4kQNokyX/RJd1I2iTSY8DQqeS5pyAvoblvyyN2goOgq
+	Dcb280Pw==;
+Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:49056 helo=[10.0.1.47])
+	by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <re@w6rz.net>)
+	id 1rhHlu-000CFb-2Z;
+	Mon, 04 Mar 2024 16:31:02 -0700
+Subject: Re: [PATCH 6.7 000/162] 6.7.9-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
+ rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
+References: <20240304211551.833500257@linuxfoundation.org>
+From: Ron Economos <re@w6rz.net>
+In-Reply-To: <20240304211551.833500257@linuxfoundation.org>
+Message-ID: <dcc13107-8e7e-12c9-e9f0-d0fa96ea9c39@w6rz.net>
+Date: Mon, 4 Mar 2024 15:31:00 -0800
+User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] tracing: Remove precision vsnprintf() check from print
- event
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-To: Steven Rostedt <rostedt@goodmis.org>, LKML
- <linux-kernel@vger.kernel.org>,
- Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Sachin Sant <sachinp@linux.ibm.com>
-References: <20240304174341.2a561d9f@gandalf.local.home>
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <20240304174341.2a561d9f@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box5620.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - w6rz.net
+X-BWhitelist: no
+X-Source-IP: 98.207.139.8
+X-Source-L: No
+X-Exim-ID: 1rhHlu-000CFb-2Z
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:49056
+X-Source-Auth: re@w6rz.net
+X-Email-Count: 4
+X-Org: HG=bhshared;ORG=bluehost;
+X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfLG6DbbNn+yyWp5jnYgb7OuOrwq/jbp4XlnGBSYjpySKM13BecC+ppTL5XyNRWTh+2MiriCWQRTsyF8HUwOqjZpLZH/WpSs9RLSh3B50482ot3gI0N40
+ yTfCiHV6lKncOb+sHTM78CBkXRE2pNn/W18/0dGUYD6Nc86NzYPErkMM57SaK2835+4Qvg0aoJL3isDMH2ot8zFLEQbquWNpomg=
 
-On 2024-03-04 17:43, Steven Rostedt wrote:
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> 
-> This reverts 60be76eeabb3d ("tracing: Add size check when printing
-> trace_marker output"). The only reason the precision check was added
-> was because of a bug that miscalculated the write size of the string into
-> the ring buffer and it truncated it removing the terminating nul byte. On
-> reading the trace it crashed the kernel. But this was due to the bug in
-> the code that happened during development and should never happen in
-> practice. If anything, the precision can hide bugs where the string in the
-> ring buffer isn't nul terminated and it will not be checked.
-> 
-> Link: https://lore.kernel.org/all/C7E7AF1A-D30F-4D18-B8E5-AF1EF58004F5@linux.ibm.com/
-> Link: https://lore.kernel.org/linux-trace-kernel/20240227125706.04279ac2@gandalf.local.home
-> Link: https://lore.kernel.org/all/20240302111244.3a1674be@gandalf.local.home/
-> 
-> Reported-by: Sachin Sant <sachinp@linux.ibm.com>
-> Fixes: 60be76eeabb3d ("tracing: Add size check when printing trace_marker output")
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+On 3/4/24 1:21 PM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.7.9 release.
+> There are 162 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 06 Mar 2024 21:15:26 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.7.9-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.7.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-This is a step in the right direction IMHO.
+The build fails on RISC-V RV64 with:
 
-Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+arch/riscv/kernel/suspend.c: In function ‘suspend_save_csrs’:
+arch/riscv/kernel/suspend.c:14:66: error: ‘RISCV_ISA_EXT_XLINUXENVCFG’ 
+undeclared (first use in this function); did you mean 
+‘RISCV_ISA_EXT_ZIFENCEI’?
+    14 |         if 
+(riscv_cpu_has_extension_unlikely(smp_processor_id(), 
+RISCV_ISA_EXT_XLINUXENVCFG))
+| ^~~~~~~~~~~~~~~~~~~~~~~~~~
+| RISCV_ISA_EXT_ZIFENCEI
+arch/riscv/kernel/suspend.c:14:66: note: each undeclared identifier is 
+reported only once for each function it appears in
+arch/riscv/kernel/suspend.c: In function ‘suspend_restore_csrs’:
+arch/riscv/kernel/suspend.c:37:66: error: ‘RISCV_ISA_EXT_XLINUXENVCFG’ 
+undeclared (first use in this function); did you mean 
+‘RISCV_ISA_EXT_ZIFENCEI’?
+    37 |         if 
+(riscv_cpu_has_extension_unlikely(smp_processor_id(), 
+RISCV_ISA_EXT_XLINUXENVCFG))
+| ^~~~~~~~~~~~~~~~~~~~~~~~~~
+| RISCV_ISA_EXT_ZIFENCEI
+make[4]: *** [scripts/Makefile.build:243: arch/riscv/kernel/suspend.o] 
+Error 1
+make[3]: *** [scripts/Makefile.build:480: arch/riscv/kernel] Error 2
+make[2]: *** [scripts/Makefile.build:480: arch/riscv] Error 2
 
-Just out of curiosity, is there anything to prevent trace_marker from
-writing a huge string into the ring buffer in the first place ? Is this
-limit implicit and based on the page size of the architecture or is it
-a known fixed limit ? (e.g. 4kB strings).
-
-It appears to currently be limited by
-
-#define TRACE_SEQ_BUFFER_SIZE   (PAGE_SIZE * 2 - \
-         (sizeof(struct seq_buf) + sizeof(size_t) + sizeof(int)))
-
-checked within tracing_mark_write().
-
-I would have hoped for a simpler limit (e.g. 4kB) consistent across
-architectures. But that would belong to a separate change.
-
-Thanks,
-
-Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+The patch "riscv: Save/restore envcfg CSR during CPU suspend" (commit 
+64e54f78d9f2dc30ac399a632922bb1fe036778a) requires patch "riscv: Add a 
+custom ISA extension for the [ms]envcfg CSR" (upstream commit 
+4774848fef6041716a4883217eb75f6b10eb183b).
 
 
