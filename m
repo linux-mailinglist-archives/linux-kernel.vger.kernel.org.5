@@ -1,94 +1,112 @@
-Return-Path: <linux-kernel+bounces-90799-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90800-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24C2987052E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:17:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D7BD87052F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:18:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF7ED285DB3
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:17:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 64CAB1C23612
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:18:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAAB3482ED;
-	Mon,  4 Mar 2024 15:16:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3A2D3FB02;
+	Mon,  4 Mar 2024 15:16:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hOd/+P6s"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="KFqjWutX"
+Received: from out162-62-58-216.mail.qq.com (out162-62-58-216.mail.qq.com [162.62.58.216])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B11347A79;
-	Mon,  4 Mar 2024 15:16:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D2CE4778C
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 15:16:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.58.216
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709565379; cv=none; b=BpaTHXSGDLe01njpQRTbmebqp9I7lsvAow1fLfMmX3TGFiD9IRB+0d9llP/nevvji3e0pNoHChM/gBiCxgP80hnC4wH9INmFyB90Hj3ifhw7iUw1x7vk5Y+qZvhCjq6a0x7LOQ51eSWSgqTmu0BpJZSwtgTjooYkVs3Ke/dzC+I=
+	t=1709565410; cv=none; b=O2gHdiWL46VQf3zlswi6JPKcttqp7Dqk7BwTRL/RmkFMd9KcBHOSQExqEDl8Id75WuVe2SAMfHAbLehfpSiiiaLeoo1RoNt+vkksLH4PNwoPyeKwtXvDxyJC8DZC12BkXII2TYh8H4I+DoWzusngHbHjQlwFkPoX3RPHPXjMPno=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709565379; c=relaxed/simple;
-	bh=n6eF4OhUt9iY0clWHwZ2SF5Ga4Tn0p7M9AKJEUcdEpQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ncRHS/I8Hzr+ID5b9CzAPqPcc0nnDXX/8WfnLD+Ebz/a6l+jiLDM4z7fSyx90lO9HFQchcGJa40PW8CTnCk51Quhca+BVldHWrsaqUobgHxkGCnmv1GZPI8YYawpExH9Uf2p+XJB3YjDiuw6MOFKxS9t/gEJoAsRihmdj9qDU8s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hOd/+P6s; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4F1DC433F1;
-	Mon,  4 Mar 2024 15:16:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709565378;
-	bh=n6eF4OhUt9iY0clWHwZ2SF5Ga4Tn0p7M9AKJEUcdEpQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hOd/+P6s9cWaetEUqDqQiuMlBrLxvwZhJ2d3MlW4VCvEc66s0tQWpltlRB0gt5yFC
-	 yGk+rzwkaTqKXihTBe6G6g4w7VJsPc9zoIXnYuA+SO5JIKpqztn8m1jHsR7Qu9DAWE
-	 ZSYXpCRBkGFJtoFcyDTv1uGIsDPcSk+d+elhy/yf1KU5zaXOuOEFrK/++x8XQ4Q9NU
-	 EXiXcUff6eSoMnYYkr3jhHTBi8QGRHWzEoEw2nq+V6aUpAhgYEsaUfgPyL4xCecCZD
-	 aQSsirFhs5evLWtojCc5rsPs4kzr4JNh1UTykK/IYjDN6/WyrCo7VJb4g0W2y3e+qz
-	 N2TybLVwJM1mQ==
-Date: Mon, 4 Mar 2024 16:16:14 +0100
-From: Andi Shyti <andi.shyti@kernel.org>
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc: linux-renesas-soc@vger.kernel.org, 
-	Chris Packham <chris.packham@alliedtelesis.co.nz>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, linux-i2c@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Andi Shyti <andi.shyti@kernel.org>
-Subject: Re: [PATCH RFT 1/3] dt-bindings: i2c: mpc: use proper binding for
- transfer timeouts
-Message-ID: <r3tho2bh3l23f5xkjc3ovq4xdehpsb3nz4ukbkremxvzq6shpe@kdsxfz4brskb>
-References: <20240229105810.29220-5-wsa+renesas@sang-engineering.com>
- <20240229105810.29220-6-wsa+renesas@sang-engineering.com>
+	s=arc-20240116; t=1709565410; c=relaxed/simple;
+	bh=iIg1m/HJGO+YBecXFqvZUlmsxmUTnWYkXWH5ivM16oA=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=sJDRduC54tXiSHgTBaUog6aexkqdm8uBMN/z4MGynOmAzz/kOmDWu6GaBElmy6DghTike+U0D/va8AjHffiuiW81lhgFM4lW6IsFp/jcMGlWre/pdiSkuO0TLF3/JxvQnRmLsaltfSd1T4WZ8ofXDU5IgFVZ6VixHmQqRW0PZO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=KFqjWutX; arc=none smtp.client-ip=162.62.58.216
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1709565403; bh=s7QEg+O5WzM5yI1q1lQPoUf0e90dpB5qxk5MpOdViLo=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=KFqjWutXOWrgnx+YBQrMGfQZm37zOqEe59oGBjA+c+aIgHZnZjosnKK5+XCh/cfQA
+	 BqHw1cYOfjIQv2SIfijRPNR0r8Cbtmd+M53YzE/P+mmRAVaSFc9PG+9GlQgXQnfqaj
+	 dwqA3HbLp4/7G+Awn5vzQySpSQGiUqk1rCKxbFwE=
+Received: from cyy-pc.lan ([240e:379:2240:e500:994d:62ab:74a6:932b])
+	by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
+	id 42726AAD; Mon, 04 Mar 2024 23:16:39 +0800
+X-QQ-mid: xmsmtpt1709565399tgkhp07d9
+Message-ID: <tencent_4EBC1BA5F988047DB4691C1D714D636E4209@qq.com>
+X-QQ-XMAILINFO: MB5+LsFw85NoN+Knf0Ay9A6Og7gvJ/GmKJTIgfR9/r0iceG/xbDQNEolu02CbB
+	 U0eMZGsivnZkYrCZjgoBJRq4r0rcMCyXIN2gO2XkFhn2z0KstNf2ncy7tJdCw3YkWIZgfLIITsi6
+	 cfju+qoziZMpTegHNUDPKRKx9gf9ip1bllwbakjF1teNWm6ugXBf+kiE5Ed9WZuceVRzA/o8Licn
+	 SfCVH93e113sJFrxNRgM+6/V2eIK6tX6zG7suGHITZxM8W7sGmhwcdqlCn4weAlO8hm1S9d3lFEW
+	 F+0XCWdS1Q3lf92IsUXyjHeZYhNZGkWbTtmuXYGozjaOfcsmG4aHvtMK2VNzy3jzT6t1uZANK3Fj
+	 F3zaASNUkWYEFgbrvgMFAW0R8z+PFQgLYgfYS0KecLkZNLGIsuA1RROrG2FmyXoMlb+t+a3xgoGy
+	 l29d3gCXnBYAzX002s9r2f28H2qPRTpaoi9giVj8OrH+sIP+YxA21AHM4+CHW3iSJWKP0vHg4g2a
+	 BrPvbi8NDnL6Mv0THAouYmcW0m/lImjo4h8z7sDl5zBz+kuNwGrpjBxEtvDOGT5EzNxkW5CFCEJJ
+	 XjkNi8grjGOYDi4xzpZ/P8QI6Mq8pQvJ7FzcNb7NidEioZ+MYJemFWGWg+RyxYCDita2WffFJLzQ
+	 9OITInRwrA6sxYX/+wXvyUy8aCjZrpS0om1t7jydCwJSv/IP5r+wBJYBZvB5XQm2mohs+1UBJXgR
+	 guPZeC2eyG0mLgfxQKuiQ4mrKFdXxYDSGO93t8KsQjaT6CPm47Nyo02SqDmuVz64MCRwkh4FtDj7
+	 QzFxXyzZp+yw1FeYtbV5EWe2PGUDT8HO/DERYHeYRhWvLF0gQcSqwGtP+MFKOpjSFh5b9NG6vOLE
+	 yeF6WQqL3c+i0E6+wKs8B3lAFdFANTZoCKC//8whQrjkpr1NZ9bO2PYBWYxJZmwy0yH7ZYo2in9L
+	 0ymoZg9wEY2sfGO9KDkQCohYIF/QnbavfoTvL/gho8binJsskS8qaX9yga2IcEbjFYct55XEShIj
+	 ELbwR0LR8suArhY0wBEPe56P1xqtUR6BbcedFC5jbENLVlV4lj
+X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
+From: Yangyu Chen <cyy@cyyself.name>
+To: linux-riscv@lists.infradead.org
+Cc: Conor Dooley <conor@kernel.org>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Guo Ren <guoren@kernel.org>,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Yangyu Chen <cyy@cyyself.name>,
+	Conor Dooley <conor.dooley@microchip.com>
+Subject: [PATCH v2 1/7] dt-bindings: riscv: Add T-HEAD C908 compatible
+Date: Mon,  4 Mar 2024 23:16:20 +0800
+X-OQ-MSGID: <20240304151626.759150-1-cyy@cyyself.name>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <tencent_64A9B4B31C2D70D5633042461AC9F80C0509@qq.com>
+References: <tencent_64A9B4B31C2D70D5633042461AC9F80C0509@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240229105810.29220-6-wsa+renesas@sang-engineering.com>
+Content-Transfer-Encoding: 8bit
 
-Hi,
+The thead,c908 is a RISC-V CPU core from T-HEAD Semiconductor which used
+in Canaan Kendryte K230 SoC.
 
-On Thu, Feb 29, 2024 at 11:58:11AM +0100, Wolfram Sang wrote:
-> "i2c-scl-clk-low-timeout-us" has flaws in itself and the usage here is
-> all wrong. The driver doesn't use it as a maximum time for clock
-> stretching but the maximum time for a total transfer. We already have
-> a binding for the latter. Convert the wrong binding from examples.
-> 
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> ---
->  Documentation/devicetree/bindings/i2c/i2c-mpc.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/i2c/i2c-mpc.yaml b/Documentation/devicetree/bindings/i2c/i2c-mpc.yaml
-> index 70fb69b923c4..b1d7d14c0be4 100644
-> --- a/Documentation/devicetree/bindings/i2c/i2c-mpc.yaml
-> +++ b/Documentation/devicetree/bindings/i2c/i2c-mpc.yaml
-> @@ -96,6 +96,6 @@ examples:
->          interrupts = <43 2>;
->          interrupt-parent = <&mpic>;
->          clock-frequency = <400000>;
-> -        i2c-scl-clk-low-timeout-us = <10000>;
-> +        i2c-transfer-timeout-us = <10000>;
+Signed-off-by: Yangyu Chen <cyy@cyyself.name>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+---
+ Documentation/devicetree/bindings/riscv/cpus.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-Chris, can you please give it an ack?
+diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml b/Documentation/devicetree/bindings/riscv/cpus.yaml
+index 9d8670c00e3b..e853a7fcee8a 100644
+--- a/Documentation/devicetree/bindings/riscv/cpus.yaml
++++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
+@@ -47,6 +47,7 @@ properties:
+               - sifive,u74
+               - sifive,u74-mc
+               - thead,c906
++              - thead,c908
+               - thead,c910
+               - thead,c920
+           - const: riscv
+-- 
+2.43.0
 
-The whole series is coherent to this change.
-
-Andi
 
