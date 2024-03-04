@@ -1,68 +1,54 @@
-Return-Path: <linux-kernel+bounces-91176-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91175-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8678870AA7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:27:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FD50870AA4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:27:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82FC1283968
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:27:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A41D2B26AC9
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:27:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4406279DD7;
-	Mon,  4 Mar 2024 19:27:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44FA079946;
+	Mon,  4 Mar 2024 19:27:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="jncod8sh"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fBJ/0MAW"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFCE479DC1;
-	Mon,  4 Mar 2024 19:27:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85B5578B68;
+	Mon,  4 Mar 2024 19:27:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709580454; cv=none; b=YmZQIyOu3sZ753EbEpOho+SWSds23IvNKSYNwR4IVgC3OoHkIjeinrN7wA+i4bavAQmntduCA9RdZOfTb9oT/FA3uvvrGcOncjLxBLgWocT5g0XB9OESqZcKdcvVnJhDeMfD1eF6FecPsMvb2oSUZMrTIykzGPXGyf8ccr1mlO4=
+	t=1709580448; cv=none; b=pSyCzfFTErKGdDOwIJHdzM20T24yVJ6NYqmgt1M/X84ElEGT5FGog9U7ly0MJXy38SQmg1A5eA4+YB8kinHSMSSgKo5bf3SDiSf0ZP6W1s+d5cIe7CEhWezo9h6ePom1CLANOwPzp08AtNN2Tv1LIDxAYs0WaGmS6chcgayn0JE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709580454; c=relaxed/simple;
-	bh=hANRgoNVGaZU4rZ+XDQgnMgAvRmbrD9MTNHj1xOU1c4=;
+	s=arc-20240116; t=1709580448; c=relaxed/simple;
+	bh=Q/qmBaGLFXD+OqwG0cV6Sxh9sh+SNUs2jlMlo+ZO0EY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ABTt1oL4VkweFKeYZc7KpX0SMuLOeOa7+RZj7MXgSdP+cMOOevd/6NSsEeJxx/mrjBceFBxlSxK5wOUauqo6K825lEafns3hLaPrtlynYnUaG0ABNdgO3WmqGyRibgPhB/rPjgcBvDTzo3oZhDQJsEtBHZIMY0p/+QJ+6JzKxjw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=jncod8sh; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=UFjQCiD5weQa18oNxEgo6gN7ayWqxgCNs3etg8HITds=; b=jncod8shLs0Tc/C6HJKYzYW0FL
-	whcy1kq9S4e4SzhZtcuVjoJi8h3RAeSBt10loUEBobfjZJiv5zsZgO9eiJZ1NFduO3gNnp9axoWzj
-	L2Ve3H4G/UiNhOEnqA/fvtDA08pijJ/ziBxzNoo9s+Fue7z+cumBoPlBzthwfhkIWsaLeSnNaOecE
-	42C5dgx/Ap3QwpnWBUkC5aemWKxa+h/M0LRcw92juQWPHI+ujIvX2KJHHIIf7oZw7jySo6EqB3t3c
-	9VMG0XO0TfY6Md0Zvv1uoflF0L1zzKzSlop8UW2CXm3pGsRCC4K+2fEftfrctASnKHhOd75i79CmP
-	3GxQiZTA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:39752)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rhDy5-00069q-17;
-	Mon, 04 Mar 2024 19:27:21 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rhDy2-0004id-Dg; Mon, 04 Mar 2024 19:27:18 +0000
-Date: Mon, 4 Mar 2024 19:27:18 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Robert Marko <robimarko@gmail.com>
-Cc: andersson@kernel.org, konrad.dybcio@linaro.org, andrew@lunn.ch,
-	hkallweit1@gmail.com, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, ansuelsmth@gmail.com,
-	linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH net] net: phy: qca807x: fix compilation when
- CONFIG_GPIOLIB is not set
-Message-ID: <ZeYglnW6/k0nvmiL@shell.armlinux.org.uk>
-References: <20240304192244.2924407-1-robimarko@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=HTm95d348MjuYvG+Jxhh6cKgB0jWvibZj4CNf/47IR4CMYznUcXa2Xd9546UmXwrPuAfyXLUZza/Xv5E4/2Bbwoks8t2VwVK8kufwqGbsy+7GrmZYEuAqt8xXoGTR5GYQe+3dAb+fsM3Q47k2aqH6jkvulqEwaw2rIMp8gLOJmA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fBJ/0MAW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECDE7C43399;
+	Mon,  4 Mar 2024 19:27:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709580448;
+	bh=Q/qmBaGLFXD+OqwG0cV6Sxh9sh+SNUs2jlMlo+ZO0EY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fBJ/0MAW2FzsYC2u6AUYvioejIJRUAdJ8tnZKSuoF2AH/tRk0VRjLsAap2eEdg96A
+	 KAofJu2kRiJRSnsS6kl4y52rJmieLfbl/3u0lQ/zdCw+pbZALn0SLSyW+szuBtUg5B
+	 hDwCSvCzRk4er7mOUt3VTzkqEBxsr2Dg4jwdHkclZOrh2m5Q1mkFTKiQiFwDj/n2tp
+	 3LgF4VF/6b8WCiqN+TtgzrH8a0caPmYeZl5ijUsEDuJJfRuttUWirgBv1wUzC/lGHh
+	 W28XF7VCBr/iiEwanDvrb9lSgEJ8g/vDvrTpJ0pEqJfEihPFuC6M5oGzR/wiQ97Rov
+	 1szd+L6+63fXw==
+Date: Mon, 4 Mar 2024 13:27:26 -0600
+From: Rob Herring <robh@kernel.org>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Frank Rowand <frowand.list@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH] of: make for_each_property_of_node() available to to !OF
+Message-ID: <170958044459.929757.7231203467292560186.robh@kernel.org>
+References: <20240303104853.31511-1-brgl@bgdev.pl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,26 +57,27 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240304192244.2924407-1-robimarko@gmail.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <20240303104853.31511-1-brgl@bgdev.pl>
 
-On Mon, Mar 04, 2024 at 08:21:36PM +0100, Robert Marko wrote:
-> -	if (IS_ENABLED(CONFIG_GPIOLIB)) {
-> +#if IS_ENABLED(CONFIG_GPIOLIB)
->  		/* Make sure we don't have mixed leds node and gpio-controller
->  		 * to prevent registering leds and having gpio-controller usage
->  		 * conflicting with them.
-> @@ -749,7 +749,7 @@ static int qca807x_probe(struct phy_device *phydev)
->  			if (ret)
->  				return ret;
->  		}
-> -	}
-> +#endif
 
-I know it makes for a bigger patch, but #if is not equivalent to if()
-in terms of indentation, so the indentation also needs to be changed.
+On Sun, 03 Mar 2024 11:48:53 +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> 
+> for_each_property_of_node() is a macro and so doesn't have a stub inline
+> function for !OF. Move it out of the relevant #ifdef to make it available
+> to all users.
+> 
+> Fixes: 611cad720148 ("dt: add of_alias_scan and of_alias_get_id")
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> ---
+> I have an upcoming driver that will use this but which can also be built
+> on non-DT systems. I'd like to get that in as a fix to avoid inter-tree
+> dependencies later.
+> 
+>  include/linux/of.h | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Applied, thanks!
+
 
