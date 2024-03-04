@@ -1,132 +1,117 @@
-Return-Path: <linux-kernel+bounces-91016-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91017-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88AD987087E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:42:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BF0E9870881
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:42:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9CF41C21994
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:42:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0EE81C21A56
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:42:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C7A861677;
-	Mon,  4 Mar 2024 17:42:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0FB5612D8;
+	Mon,  4 Mar 2024 17:42:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="UREnqlSD"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kRI8vrcT"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A673E612FD
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 17:42:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A3636025E;
+	Mon,  4 Mar 2024 17:42:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709574123; cv=none; b=biTAssDbY0L9Qix2PbWEUwMz0i4W278BaOTA9FbkIO9p0whqHe1eNNKkXw5JM69+Zy4EoSYEO4P+tjqWZYm3/MyWwrWl2cxouqWGdnGthNHoCiph1O4Rewam3356i/mGeiQDyEk+lZsxs3AvSwLSZswKWClgLLWLLKf/hv8pGT4=
+	t=1709574151; cv=none; b=DwvZUmhgkIVjPOdAgvss99PZORKmLFHkuEnHlycr1gw2kn+9lNodDH8poNaOiGisT1h+0MDPwtDLemuDP8x0vp/jK+RmFAlolzUUFmD/2lXxLJ9GLmkmRyAEzrPz9vvsIbqnID+HFElRNWSiJj94ytvtV4CrXRNEQzWAeq/pKJY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709574123; c=relaxed/simple;
-	bh=hU2yLMJMJXbgNEPYfx2RPR8hYlJGjYJqjcguiRszWgg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aTNVfvYuNASarJcj5e1J5648GU4YOn41cruMD09yh0TUo261j61vL4tM9IZGFXB4iyXDcwsgPumEybjMeeyC3D34cmsClUbwu3FJb470BGLbtBwj9lAdeZCFL6LvlJuNeEOl15WDLTH9MCbh8ICZ3mS+VLdpgu59P+NytcwJDtY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=UREnqlSD; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1dc49afb495so45078625ad.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 09:42:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709574121; x=1710178921; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=M7401r6D2cA71znQdJzF80EF2KfSktKnOfloCrndmE8=;
-        b=UREnqlSD958HTAgmrhBip/bfGztwZ8eypIZwaQlGTuInTcMW9AqA9D5Y+G3lR8O+k3
-         iLRb64wLgf61g6ucctVm/oMVRqC16j+sIhcBLSQBFW0q5g+VkRoclbb0mWfpzl4WHqfa
-         V8+lnGHSWFIqmVAf7zS7nUuwlJRJ3lR2h1eVE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709574121; x=1710178921;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=M7401r6D2cA71znQdJzF80EF2KfSktKnOfloCrndmE8=;
-        b=P+GuI/9vRy60v8yCZHg/dPyRqOvbcq5ecn8I7xONvbmsJExDjiG7rnrC7Rgm4LhzHH
-         t2ebw5/SHCQJVzBC1MTEIIbGEkvziARFtaeZcUKB0R26MNaUURIsf3kx4SK/xBJJydfA
-         r4unATJ3dd96g2+Iyl94DulgENqB6HHwvNQBBn+jV/fc/sMQ5krvkbg6bPG+QobNSL18
-         VQb/fVFjkOYzpZtEPpVl2hl2SGxe4roSz+0qaFmohtVPgCqQVRhmW9QA3bXt4lo0sPVE
-         FHMMX20EQQwXDys2gB+xWoH7VQ3+xgNTfA9CNK/p76PFDCvNUd9EXX21V/yJ/rJmaN+4
-         da8g==
-X-Forwarded-Encrypted: i=1; AJvYcCW923R11AwWvZGXBJgNR1xCAkaqKvgAhNnqd8rDFVky35DMsc5ztM9yM1EMg7xTMrxIa2QoURkxriFl16YKqPrGnxiCwQAAAq3Ja5IH
-X-Gm-Message-State: AOJu0YwRhRkqQZvI+hLx+0kF/CJOMSP8QQvzi2SBBC7wMmhrp+BafOuj
-	MQIvOWDxUkux//p9HVDQ6QZ0WaCz/2b0HgBwh9QwQbxxrFQq8mjngn8hdfTTmw==
-X-Google-Smtp-Source: AGHT+IGbjTF4ZKwzOe0VNjsw6UtT/zASPWXIHtUxjXFZsMlGN7NGI8dA/FI7NCmH8IqvtDTQ74pfsQ==
-X-Received: by 2002:a17:902:6f17:b0:1dc:540f:c5eb with SMTP id w23-20020a1709026f1700b001dc540fc5ebmr9727288plk.51.1709574121089;
-        Mon, 04 Mar 2024 09:42:01 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id u2-20020a17090341c200b001dd0d0d26a4sm2963663ple.147.2024.03.04.09.42.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 09:42:00 -0800 (PST)
-Date: Mon, 4 Mar 2024 09:42:00 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Adrian Ratiu <adrian.ratiu@collabora.com>
-Cc: linux-fsdevel@vger.kernel.org, kernel@collabora.com,
-	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org, linux-doc@vger.kernel.org,
-	Guenter Roeck <groeck@chromium.org>,
-	Doug Anderson <dianders@chromium.org>, Jann Horn <jannh@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Mike Frysinger <vapier@chromium.org>
-Subject: Re: [PATCH v2] proc: allow restricting /proc/pid/mem writes
-Message-ID: <202403040940.BAFD26EA4@keescook>
-References: <20240301213442.198443-1-adrian.ratiu@collabora.com>
- <202403011451.C236A38@keescook>
- <39f23-65e5d580-3-638b0780@155677577>
+	s=arc-20240116; t=1709574151; c=relaxed/simple;
+	bh=h4x1z5kFcsXRs0S1/1xtxHnLDvLTTR1q1CynXjth2QY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DN5lHQyJF2AEGPTaZGIPihiy999yMsO26xagTccvJoba5dslBVKku5Ryjf1HRNbpVdZIod/hAC/7Ox1XNPnF6oCEB+q1TkQyPqPxK3leeDKhRdHrVH/i8GMR9zQNG/z0bql++x4Pn8AiH+oBQIR66E23DHxpNyCSoDPCMFXSYDE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kRI8vrcT; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709574150; x=1741110150;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=h4x1z5kFcsXRs0S1/1xtxHnLDvLTTR1q1CynXjth2QY=;
+  b=kRI8vrcTR/5ddpBbCu98rxFZ1JcPkq8/hDa0bLfdMj77lNYhJqlVq3xk
+   X4E23X8F3wmE03HDv6vGGGeTxuVjUjT/7f10Bo+EEoOm39lXpt8es48SN
+   JB2x3zlgSQrQPMDNosdO2DGxW1/GjuOMZBveHD68D7EPgbeIiWO0Qmw+Z
+   uvPEstj+d+/unf7gTV91A6px1DaUcp6TwGXrggPcndy8ZGVFzYkV0uqY/
+   EBv33GFc/xpl4wwad/r9sOld/TBMQO/LjPFJYafx9ArhBIDUcKQGMN1S5
+   w6gN66d36oYDR2ruEOXf0JCtJubgMpJV2cGjd3mO8VNI2U4QReya2y4y6
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="4208207"
+X-IronPort-AV: E=Sophos;i="6.06,204,1705392000"; 
+   d="scan'208";a="4208207"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 09:42:28 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="937040903"
+X-IronPort-AV: E=Sophos;i="6.06,204,1705392000"; 
+   d="scan'208";a="937040903"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 04 Mar 2024 09:42:24 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id AB22E15C; Mon,  4 Mar 2024 19:42:22 +0200 (EET)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: linux-wpan@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Alexander Aring <alex.aring@gmail.com>,
+	Stefan Schmidt <stefan@datenfreihafen.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH net-next v1 1/1] ieee802154: at86rf230: Replace of_gpio.h by proper one
+Date: Mon,  4 Mar 2024 19:42:17 +0200
+Message-ID: <20240304174218.1198411-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <39f23-65e5d580-3-638b0780@155677577>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Mar 04, 2024 at 02:06:43PM +0000, Adrian Ratiu wrote:
-> On Saturday, March 02, 2024 01:55 EET, Kees Cook <keescook@chromium.org> wrote:
-> > On Fri, Mar 01, 2024 at 11:34:42PM +0200, Adrian Ratiu wrote:
-> > > [...]
-> > > +# define PROC_PID_MEM_MODE S_IRUSR
-> > > +#else
-> > > +# define PROC_PID_MEM_MODE (S_IRUSR|S_IWUSR)
-> > > +#endif
-> > 
-> > PROC_PID_MEM_MODE will need to be a __ro_after_init variable, set by
-> > early_restrict_proc_mem_write, otherwise the mode won't change based on
-> > the runtime setting. e.g.:
-> > 
-> > #ifdef CONFIG_SECURITY_PROC_MEM_RESTRICT_WRITE_DEFAULT_ON
-> > mode_t proc_pid_mem_mode __ro_after_init = S_IRUSR;
-> > #else
-> > mode_t proc_pid_mem_mode __ro_after_init = (S_IRUSR|S_IWUSR);
-> > #endif
-> > 
-> > DEFINE_STATIC_KEY_MAYBE_RO(CONFIG_SECURITY_PROC_MEM_RESTRICT_WRITE_DEFAULT_ON,
-> > 			   restrict_proc_mem_write);
-> > ...
-> > 	if (bool_result) {
-> > 		static_branch_enable(&restrict_proc_mem_write);
-> > 		proc_pid_mem_mode = S_IRUSR;
-> > 	} else {
-> > 		static_branch_disable(&restrict_proc_mem_write);
-> > 		proc_pid_mem_mode = (S_IRUSR|S_IWUSR);
-> > 	}
-> > ...
-> > 	REG("mem",        proc_pid_mem_mode, proc_mem_operations),
-> 
-> I'm having trouble implementing this because the proc_pid_mem_mode initializer needs to be a compile-time constant, so I can't set a runtime value in the REG() definition like suggested above.
+of_gpio.h is deprecated and subject to remove.
+The driver doesn't use it directly, replace it
+with what is really being used.
 
-Ah. Yeah, so I guess just drop the perms change -- you're already
-checking the behavior in the open(), so you can just leave the perms
-alone.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/net/ieee802154/at86rf230.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
+diff --git a/drivers/net/ieee802154/at86rf230.c b/drivers/net/ieee802154/at86rf230.c
+index 6212164ffb36..f632b0cfd5ae 100644
+--- a/drivers/net/ieee802154/at86rf230.c
++++ b/drivers/net/ieee802154/at86rf230.c
+@@ -11,17 +11,16 @@
+  */
+ #include <linux/kernel.h>
+ #include <linux/module.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/hrtimer.h>
+ #include <linux/jiffies.h>
+ #include <linux/interrupt.h>
+ #include <linux/irq.h>
+-#include <linux/gpio.h>
+ #include <linux/delay.h>
+ #include <linux/property.h>
+ #include <linux/spi/spi.h>
+ #include <linux/regmap.h>
+ #include <linux/skbuff.h>
+-#include <linux/of_gpio.h>
+ #include <linux/ieee802154.h>
+ 
+ #include <net/mac802154.h>
 -- 
-Kees Cook
+2.43.0.rc1.1.gbec44491f096
+
 
