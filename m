@@ -1,104 +1,149 @@
-Return-Path: <linux-kernel+bounces-90213-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90214-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E5E386FC04
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:39:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D80F686FC08
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:41:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52ECD2828AD
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:39:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 702F31F22E09
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:41:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAD2919473;
-	Mon,  4 Mar 2024 08:39:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 008711A29A;
+	Mon,  4 Mar 2024 08:40:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gA8Dcpfi"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AIha+gAR"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57B0B171B0
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 08:39:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EAD519472;
+	Mon,  4 Mar 2024 08:40:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709541567; cv=none; b=UuP6oAHyuLp08gZSHPcpSGgzYDzSV25rYv4luQjLvW1exrIJKzJoGDCkI9DgRnb+cYd1eDPmr2tJCbXJlvoRn8xjSRC0PlAGwBe1prFdo0+v6G2hNFoq0Y9Gm74hBhlNHBNyajyCp8HNHtrCtoQpUBwmLLPA6AZ9Yz7HQMvtWL8=
+	t=1709541650; cv=none; b=fsTyHO+pMVy9qlZbv8m0/xrhqvT/nGnsOlj05BjjflJWwZinFaYScJr5q4fJvkqlK6guwv6rG7ZKR98iyGFBYOiXLQd127clgYF23Pm9qHibE/01gtIzXGxxEEZ8V0tUUBNVJbwBnGrw+uapMw9askxwqLyXwpd7sEQHuGN98SA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709541567; c=relaxed/simple;
-	bh=tnbuylnWDXP+S1B3cukYKyI8V5xN6rznZpSCdmCUPNI=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=tERhXmp5hhZRhuatz4a+jYquINK7RArlAfmWPnWxDTrND2DxCvJfS562KT0O7M/zZYOphTunycHOsPduHdAN20IriUcDqIzbxMxtxc5f762sTe+o4q3MPhiLi1X4PPZLuSbssHxQnVMEhRQ2Sz1Ou61F3z1Nq9qHq1qLI7iwVyc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gA8Dcpfi; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709541565; x=1741077565;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=tnbuylnWDXP+S1B3cukYKyI8V5xN6rznZpSCdmCUPNI=;
-  b=gA8Dcpfij8s3uzxFHKp/ghSFrkmgsM1eybhBMyZZPn8Intp7XAP0Z1BJ
-   KGEH/6GOViJrtnKJ/oB2bq9WBhHeYSDtK3aUDaHLLlGwgFFKE/P/xiaMZ
-   U8hWDhKT83l51lPusApe+iLItVse74BOHT4/L/hd1hztJp7F/G9gLAhCz
-   RYaMnQ4OUIfNTF5xJzmSAp2gMY2GufSAXb7Jj+lUSudzgnFLm4xyeRYW0
-   aU1cmP3LyPO/Wo1Iz+sdy+KIsWOjjvIuJT8vsBlEgaj9owvt0HIGqQxZK
-   s97WPVpw/O5JWMT36gYm6m5xZZ6/beoyPPDSDINKgSAjuXNhsSaZT8ftT
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="14664908"
-X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
-   d="scan'208";a="14664908"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 00:39:20 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
-   d="scan'208";a="13609098"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.211.18]) ([10.254.211.18])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 00:39:17 -0800
-Message-ID: <31054869-9373-481b-a002-5200e26a7bba@linux.intel.com>
-Date: Mon, 4 Mar 2024 16:39:14 +0800
+	s=arc-20240116; t=1709541650; c=relaxed/simple;
+	bh=t1T3OPaWjo53wfG6TOrATqy44YsWokKu6HeHAougC1I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Viip6tdYtwNQ+pwkD2Xzue4CVUcEedHdLUxtbKAKYMS/nleisHs7GV6pO5GIF4Rp4RHyCea8k/NPi5/r4z6WD2y14cq+r5/CBXIfYd4he8PUGgEL+r/76lRQTTWH6Q+mbIHzwTJn6VWL2fAlHbTb8EvLvBew2OkbkmkaIfr2jAk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AIha+gAR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4C71C433C7;
+	Mon,  4 Mar 2024 08:40:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709541649;
+	bh=t1T3OPaWjo53wfG6TOrATqy44YsWokKu6HeHAougC1I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AIha+gARcNYuhSwcukKIYg4p45pb6A8Eb1BoGaDioSXtNDt/XHo9+tu0OWSVMTEDA
+	 TCdLZhy/DEYy3mXFG+TLdphs/qsaLNPSRkHtzvVQYJn2flmCpGyYwREyE7oQKo6+3B
+	 ab1V4gnRlHvDLwrqCQ2HaaJ/uW1j7jwnDDI/78dkQiPBsu5gqoaWB8AVtadiHrg7Kw
+	 weBRT0t9pBuAWt/8MA0WpUtAj0ffodEALaUXLIezNXPWFwitJn+nQL6uYga8eqMPRH
+	 9CFfdeOxkoh47pFCQwDEodcKaXFs0+9NHo3NzvtQdxPprBAvT5REFms3RWYuvcrmdY
+	 vOUUDcyUeUSFA==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rh3sW-000000006DZ-199L;
+	Mon, 04 Mar 2024 09:40:56 +0100
+Date: Mon, 4 Mar 2024 09:40:56 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Wesley Cheng <quic_wcheng@quicinc.com>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+	Felipe Balbi <balbi@kernel.org>, devicetree@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org, quic_ppratap@quicinc.com,
+	quic_jackp@quicinc.com
+Subject: Re: [PATCH v15 2/9] usb: dwc3: core: Access XHCI address space
+ temporarily to read port info
+Message-ID: <ZeWJGCsUiZFw6ECl@hovoldconsulting.com>
+References: <20240216005756.762712-1-quic_kriskura@quicinc.com>
+ <20240216005756.762712-3-quic_kriskura@quicinc.com>
+ <ZeBSp0EWnHo8Wbsv@hovoldconsulting.com>
+ <c4607aa4-7af7-443f-8ccc-aa4fe3ede3cc@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, "iommu@lists.linux.dev"
- <iommu@lists.linux.dev>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/3] iommu/vt-d: Remove scalabe mode in
- domain_context_clear_one()
-Content-Language: en-US
-To: "Tian, Kevin" <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
- Jason Gunthorpe <jgg@ziepe.ca>, "Badger, Eric" <ebadger@purestorage.com>
-References: <20240229094804.121610-1-baolu.lu@linux.intel.com>
- <20240229094804.121610-4-baolu.lu@linux.intel.com>
- <BN9PR11MB527694903CD8E8FBC6C1FB168C232@BN9PR11MB5276.namprd11.prod.outlook.com>
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <BN9PR11MB527694903CD8E8FBC6C1FB168C232@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c4607aa4-7af7-443f-8ccc-aa4fe3ede3cc@quicinc.com>
 
-On 2024/3/4 15:53, Tian, Kevin wrote:
->> From: Lu Baolu<baolu.lu@linux.intel.com>
->> Sent: Thursday, February 29, 2024 5:48 PM
->>
->> @@ -2175,9 +2175,6 @@ static void domain_context_clear_one(struct
->> device_domain_info *info, u8 bus, u8
->>   	struct context_entry *context;
->>   	u16 did_old;
->>
->> -	if (!iommu)
->> -		return;
->> -
-> is this check only relevant to sm mode or should it be removed for
-> both legacy/sm? If the latter please add a note in the commit msg.
+On Thu, Feb 29, 2024 at 05:23:08PM +0530, Krishna Kurapati PSSNV wrote:
+> On 2/29/2024 3:17 PM, Johan Hovold wrote:
+> > On Fri, Feb 16, 2024 at 06:27:49AM +0530, Krishna Kurapati wrote:
+> >> Currently Multiport DWC3 controllers are host-only capable.
+> > 
+> > I already asked you to rephrase this so that it becomes clear that you
+> > are describing a property of the current hardware (and similar
+> > throughout the series):
+> > 
+> > 	https://lore.kernel.org/all/ZTI7AtCJWgAnACSh@hovoldconsulting.com/
 
-This kind of check makes no sense. I didn't take it to sm mode. So only
-need to remove it in the legacy path.
+> IMO, the statement is describing a property unique to current hardware, 
+> that "If it is a multiport controller, it is then host-only capable"
+> 
+> I used the word "Currently" to indicate that "Today, the multiport 
+> devices present...". Let me know if there is any ambiguity in the sentence.
+> 
+> In v13, I wrote:
+> "Currently host-only capable DWC3 controllers support Multiport."
+> You were right. It was ambiguous as it might refer to even single port 
+> controllers.
+> 
+> So I changed it saying all the DWC3 multiport controllers are host only 
+> capable.
+> 
+> How about:
+> 
+> "All the DWC3 Multi Port controllers that exist today only support host 
+> mode"
 
-Anyway, let me update the commit message to reflect this change.
+That should be clear enough, thanks.
 
-Best regards,
-baolu
+> >> +	/*
+> >> +	 * Currently only DWC3 controllers that are host-only capable
+> >> +	 * support Multiport.
+> >> +	 */
+> > 
+> > So again, also here, rephrase the comment so that it is clear that you
+> > are referring to a property of the current hardware.
+> 
+> I put the comment this way to indicate that we don't want to check for 
+> existence of multiple ports if the controller is not "host-only" 
+> capable. We should only check for multport support only if we are 
+> host-only capable. I think the statement clearly tells that "check for 
+> host-only" configuration before proceeding to check for xhci register reads.
+
+Fair enough, this comment could be considered to apply only to the
+implementation. Perhaps the following would be more clear though:
+
+	Currently only DWC3 controllers that are host-only capable
+	can have more than one port.
+
+or simply
+
+	Host-only capable controllers can have more than one port.
+
+Both of these also gives a hint that this is a property of the hardware.
+
+> I replied the same on:
+> https://lore.kernel.org/all/279a54f2-7260-4270-83c7-d6f5c5ba0873@quicinc.com/
+> 
+> And since you didn't mention anything else at this part of code in your 
+> return reply in:
+> https://lore.kernel.org/all/ZTYyXhyZN3jBXEfm@hovoldconsulting.com/
+
+I left in the following quote on purpose in that reply:
+
+	> > Please rephrase accordingly throughout so that this becomes clear.
+
+Johan
 
