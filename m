@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-90393-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90394-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96C0F86FE9B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:14:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D11386FE9D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:15:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF13FB23EAB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:14:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E87AEB240D4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:15:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A77403A8C9;
-	Mon,  4 Mar 2024 10:12:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 008593B789;
+	Mon,  4 Mar 2024 10:12:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="bxyWzpcY";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="gm6AaC64"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="IENSuJ/e";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="DybwRAza"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1605439AE1;
-	Mon,  4 Mar 2024 10:12:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA8053A1B5;
+	Mon,  4 Mar 2024 10:12:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709547145; cv=none; b=i4jOh2E2Cz8G9JxUHMqOU7rEFV8pJ4o2TlCwmRw9YRopIGqWdAAN5r2l19eFjAj9oPoOp2d0DM6o5aQpavl8A/CiS9rT04N4IsUIaxbCUQCYD/ElUpS1ngvwyr1syDh/SgjTA98jVJVC8xfk8mDk0EleCblxTLN0rbnem0VREOI=
+	t=1709547147; cv=none; b=mPnDZOgV5JpEz+4SHTJwuvbXaxBy3e08V50qehPEd5W/hVdr3kFcIU+fvUhE71GG00mVCaI4mSkbAwJg1TsOF0DEi1plhZqcyrQ3OONlQE+QQkAjsnadw4Cx6rAkLsUB4OCl+SMeSjcxIShcnTrCJWMuc0zBJUH4vNvtKgtunBA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709547145; c=relaxed/simple;
-	bh=+qLR+q/uBoLyfdu4Kb2bde98nuE8brKvaeX/RFH++3g=;
+	s=arc-20240116; t=1709547147; c=relaxed/simple;
+	bh=WnYEq+v+uffBZEOPsnlQcrlcLI+VPrV3Dcry/HVzvlk=;
 	h=Message-ID:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type:Date; b=ExCMIXtRIVdx4VBFeSDw+exi8SR8MQJgosdHHEmKFk6DbTzToLw6MDGvB37gV/nU61MNpVQnD4wyku3WGa/KnyUyKkPFkxvqYYsJyV9KY9ySJ73HGtlMvs4w+PbGNH7ecPe5xxP9AJ6OLqqBSjUobOyOet+hNs8wJASFRv/co8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=bxyWzpcY; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=gm6AaC64; arc=none smtp.client-ip=193.142.43.55
+	 Content-Type:Date; b=pufusesBf8RQ1S+O5ERiNyRG1r5IJfypJKuUBWliTHre5XRcfFuoNDWlktqwA09Q3SJ72h5XIfCLbOXIzqHNhOWb2dhnz4+cnL9MZZgg0WqfBPEEnkp39u3T3aLQCwRaDQ5prewRivlyNwhXrN6Dcb0ClYaQVx9z3GP/77dmj4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=IENSuJ/e; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=DybwRAza; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Message-ID: <20240304005104.567671691@linutronix.de>
+Message-ID: <20240304005104.622511517@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1709547142;
+	s=2020; t=1709547144;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=oaBlEsAnKVJlhuCSShod/Mz5x/UHGwu5Y/M9GU3TTqY=;
-	b=bxyWzpcYBU4vojC6l9Sr4UrKwz/800Vj5PVoGEx/Jsz6+3lxwDBlb6WHt9RzHMSLu3VEVJ
-	2EQGz2kadaVkthhryfkpapXpIjICn8OA96//bSzhi8HQYGBhybGd5je96yycbg3Ndtxd/V
-	/S2EIQ7DsBjsq919POW8zkcg57qBA28uMYSLOI/Z8exNkrfj0nPl3HmwPkiOE/Fb1KQWiJ
-	IUoipgMsuvsM/brDvw+SPDWoMTbZswCCrO1EUH6i+kP6ktDwrz/mDyWt2HjHz78ZWRx3Jn
-	Gh5kbQYBRxtK/3/ion2peua7KPX9NNdidIs1L6Hmw4hSQQpEPVwt8zzf4zG45A==
+	 references:references; bh=waWca13nkXlTk1KdzjjO2eUHwkXJkPInhR1X09TJX+0=;
+	b=IENSuJ/e6a+O59bFfGCzBu967ngLsRmjlrdNl9Yj+0nWcQ2bC0X2PFYcW/Ogp06sGMJLIB
+	ELnjGItFWtLl/DhXffYbhfYuZWdTuAHy8P8NVHuKbhqqPd+K6BZJft2vySb2+rum2C09Aq
+	cWLbAXlF9oprSMGGqHOjLNW9tMb08579es9MRNnrISA4hAX/P0g8vPVJRs53u0MiCEmg6E
+	uPe2Xr/qEg48MKdoe0aRLao5JNxk0MSqCCwClODcnS+OboqfNXt0nkNhir9tdrbcBn9GiL
+	H2I7NG7MHqA3R/H+15AKqhR+hAQvt2gdQuqJz62UKfwqHFHBPFCLeUK+U6W0Iw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1709547142;
+	s=2020e; t=1709547144;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 references:references; bh=oaBlEsAnKVJlhuCSShod/Mz5x/UHGwu5Y/M9GU3TTqY=;
-	b=gm6AaC648uSUhApkGjnoS+zQ5LiSzriiW9rugLnsQm+58Dgp/rElOwOUUrCPOY2ELxclZn
-	JQrQJkdcZMOh+oCw==
+	 references:references; bh=waWca13nkXlTk1KdzjjO2eUHwkXJkPInhR1X09TJX+0=;
+	b=DybwRAzaUVoj3GiTZNCzx4w9/5h1J6i6awKRx6ALpGlnYu7RBOoHK+EpiWo6GAfyzSUvKj
+	08Qabz6R7eWQ3kBw==
 From: Thomas Gleixner <tglx@linutronix.de>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: x86@kernel.org,
@@ -57,7 +57,7 @@ Cc: x86@kernel.org,
  linux-sparse@vger.kernel.org,
  lkp@intel.com,
  oe-kbuild-all@lists.linux.dev
-Subject: [patch 4/9] smp: Consolidate smp_prepare_boot_cpu()
+Subject: [patch 5/9] x86: Cure per CPU madness on UP
 References: <20240303235029.555787150@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -66,200 +66,96 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date: Mon,  4 Mar 2024 11:12:22 +0100 (CET)
+Date: Mon,  4 Mar 2024 11:12:23 +0100 (CET)
 
-There is no point in having seven architectures implementing the same empty
-stub.
+On UP builds sparse complains rightfully about accesses to cpu_info with
+per CPU accessors:
 
-Provide a weak function in the init code and remove the stubs.
+cacheinfo.c:282:30: sparse: warning: incorrect type in initializer (different address spaces)
+cacheinfo.c:282:30: sparse:    expected void const [noderef] __percpu *__vpp_verify
+cacheinfo.c:282:30: sparse:    got unsigned int *
 
-This also allows to utilize the function on UP which is required to
-sanitize the percpu handling on X86 UP.
+The reason is that on UP builds cpu_info which is a per CPU variable on SMP
+is mapped to boot_cpu_info which is a regular variable. There is a hideous
+accessor cpu_data() which tries to hide this, but it's not sufficient as
+some places require raw accessors and generates worse code than the regular
+per CPU accessors.
+
+Waste sizeof(struct x86_cpuinfo) memory on UP and provide the per CPU
+cpu_info unconditionally. This requires to update the CPU info on the boot
+CPU as SMP does. (Ab)use the weakly defined smp_prepare_boot_cpu() function
+and implement exactly that.
+
+This allows to use regular per CPU accessors uncoditionally and paves the
+way to remove the cpu_data() hackery.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/alpha/kernel/smp.c     |    5 -----
- arch/arc/kernel/smp.c       |    5 -----
- arch/csky/kernel/smp.c      |    4 ----
- arch/hexagon/kernel/smp.c   |    4 ----
- arch/openrisc/kernel/smp.c  |    4 ----
- arch/riscv/kernel/smpboot.c |    4 ----
- arch/sparc/kernel/smp_64.c  |    4 ----
- arch/x86/include/asm/smp.h  |    5 -----
- arch/x86/kernel/smpboot.c   |    5 +++++
- include/linux/smp.h         |   13 ++++++-------
- init/main.c                 |    4 ++++
- 11 files changed, 15 insertions(+), 42 deletions(-)
+ arch/x86/include/asm/processor.h |    5 -----
+ arch/x86/kernel/cpu/common.c     |    3 +++
+ arch/x86/kernel/setup.c          |   10 ++++++++++
+ arch/x86/kernel/smpboot.c        |    4 ----
+ 4 files changed, 13 insertions(+), 9 deletions(-)
 
---- a/arch/alpha/kernel/smp.c
-+++ b/arch/alpha/kernel/smp.c
-@@ -467,11 +467,6 @@ smp_prepare_cpus(unsigned int max_cpus)
- 	smp_num_cpus = smp_num_probed;
- }
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -185,13 +185,8 @@ extern struct cpuinfo_x86	new_cpu_data;
+ extern __u32			cpu_caps_cleared[NCAPINTS + NBUGINTS];
+ extern __u32			cpu_caps_set[NCAPINTS + NBUGINTS];
  
--void
--smp_prepare_boot_cpu(void)
--{
--}
--
- int
- __cpu_up(unsigned int cpu, struct task_struct *tidle)
- {
---- a/arch/arc/kernel/smp.c
-+++ b/arch/arc/kernel/smp.c
-@@ -39,11 +39,6 @@ struct plat_smp_ops  __weak plat_smp_ops
- /* XXX: per cpu ? Only needed once in early secondary boot */
- struct task_struct *secondary_idle_tsk;
+-#ifdef CONFIG_SMP
+ DECLARE_PER_CPU_READ_MOSTLY(struct cpuinfo_x86, cpu_info);
+ #define cpu_data(cpu)		per_cpu(cpu_info, cpu)
+-#else
+-#define cpu_info		boot_cpu_data
+-#define cpu_data(cpu)		boot_cpu_data
+-#endif
  
--/* Called from start_kernel */
--void __init smp_prepare_boot_cpu(void)
--{
--}
--
- static int __init arc_get_cpu_map(const char *name, struct cpumask *cpumask)
- {
- 	unsigned long dt_root = of_get_flat_dt_root();
---- a/arch/csky/kernel/smp.c
-+++ b/arch/csky/kernel/smp.c
-@@ -152,10 +152,6 @@ void arch_irq_work_raise(void)
- }
- #endif
+ extern const struct seq_operations cpuinfo_op;
  
--void __init smp_prepare_boot_cpu(void)
--{
--}
--
- void __init smp_prepare_cpus(unsigned int max_cpus)
- {
- }
---- a/arch/hexagon/kernel/smp.c
-+++ b/arch/hexagon/kernel/smp.c
-@@ -114,10 +114,6 @@ void send_ipi(const struct cpumask *cpum
- 	local_irq_restore(flags);
- }
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -70,6 +70,9 @@
  
--void __init smp_prepare_boot_cpu(void)
--{
--}
--
- /*
-  * interrupts should already be disabled from the VM
-  * SP should already be correct; need to set THREADINFO_REG
---- a/arch/openrisc/kernel/smp.c
-+++ b/arch/openrisc/kernel/smp.c
-@@ -57,10 +57,6 @@ static void boot_secondary(unsigned int
- 	spin_unlock(&boot_lock);
- }
+ #include "cpu.h"
  
--void __init smp_prepare_boot_cpu(void)
--{
--}
--
- void __init smp_init_cpus(void)
- {
- 	struct device_node *cpu;
---- a/arch/riscv/kernel/smpboot.c
-+++ b/arch/riscv/kernel/smpboot.c
-@@ -42,10 +42,6 @@
++DEFINE_PER_CPU_READ_MOSTLY(struct cpuinfo_x86, cpu_info);
++EXPORT_PER_CPU_SYMBOL(cpu_info);
++
+ u32 elf_hwcap2 __read_mostly;
  
- static DECLARE_COMPLETION(cpu_running);
+ /* Number of siblings per CPU package */
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -1211,6 +1211,16 @@ void __init i386_reserve_resources(void)
  
--void __init smp_prepare_boot_cpu(void)
--{
--}
--
- void __init smp_prepare_cpus(unsigned int max_cpus)
- {
- 	int cpuid;
---- a/arch/sparc/kernel/smp_64.c
-+++ b/arch/sparc/kernel/smp_64.c
-@@ -1206,10 +1206,6 @@ void __init smp_prepare_cpus(unsigned in
- {
- }
+ #endif /* CONFIG_X86_32 */
  
--void smp_prepare_boot_cpu(void)
--{
--}
--
- void __init smp_setup_processor_id(void)
- {
- 	if (tlb_type == spitfire)
---- a/arch/x86/include/asm/smp.h
-+++ b/arch/x86/include/asm/smp.h
-@@ -59,11 +59,6 @@ static inline void stop_other_cpus(void)
- 	smp_ops.stop_other_cpus(1);
- }
- 
--static inline void smp_prepare_boot_cpu(void)
--{
--	smp_ops.smp_prepare_boot_cpu();
--}
--
- static inline void smp_prepare_cpus(unsigned int max_cpus)
- {
- 	smp_ops.smp_prepare_cpus(max_cpus);
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -1187,6 +1187,11 @@ void __init smp_prepare_cpus_common(void
- 	set_cpu_sibling_map(0);
- }
- 
++#ifndef CONFIG_SMP
 +void __init smp_prepare_boot_cpu(void)
 +{
-+	smp_ops.smp_prepare_boot_cpu();
++	struct cpuinfo_x86 *c = &cpu_data(0);
++
++	*c = boot_cpu_data;
++	c->initialized = true;
 +}
++#endif
 +
- #ifdef CONFIG_X86_64
- /* Establish whether parallel bringup can be supported. */
- bool __init arch_cpuhp_init_parallel_bringup(void)
---- a/include/linux/smp.h
-+++ b/include/linux/smp.h
-@@ -105,6 +105,12 @@ static inline void on_each_cpu_cond(smp_
- 	on_each_cpu_cond_mask(cond_func, func, info, wait, cpu_online_mask);
- }
+ static struct notifier_block kernel_offset_notifier = {
+ 	.notifier_call = dump_kernel_offset
+ };
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -101,10 +101,6 @@ EXPORT_PER_CPU_SYMBOL(cpu_core_map);
+ DEFINE_PER_CPU_READ_MOSTLY(cpumask_var_t, cpu_die_map);
+ EXPORT_PER_CPU_SYMBOL(cpu_die_map);
  
-+/*
-+ * Architecture specific boot CPU setup.  Defined as empty weak function in
-+ * init/main.c. Architectures can override it.
-+ */
-+void smp_prepare_boot_cpu(void);
-+
- #ifdef CONFIG_SMP
- 
- #include <linux/preempt.h>
-@@ -171,12 +177,6 @@ void generic_smp_call_function_single_in
- #define generic_smp_call_function_interrupt \
- 	generic_smp_call_function_single_interrupt
- 
--/*
-- * Mark the boot cpu "online" so that it can call console drivers in
-- * printk() and can access its per-cpu storage.
-- */
--void smp_prepare_boot_cpu(void);
+-/* Per CPU bogomips and other parameters */
+-DEFINE_PER_CPU_READ_MOSTLY(struct cpuinfo_x86, cpu_info);
+-EXPORT_PER_CPU_SYMBOL(cpu_info);
 -
- extern unsigned int setup_max_cpus;
- extern void __init setup_nr_cpu_ids(void);
- extern void __init smp_init(void);
-@@ -203,7 +203,6 @@ static inline void up_smp_call_function(
- 			(up_smp_call_function(func, info))
+ /* CPUs which are the primary SMT threads */
+ struct cpumask __cpu_primary_thread_mask __read_mostly;
  
- static inline void smp_send_reschedule(int cpu) { }
--#define smp_prepare_boot_cpu()			do {} while (0)
- #define smp_call_function_many(mask, func, info, wait) \
- 			(up_smp_call_function(func, info))
- static inline void call_function_init(void) { }
---- a/init/main.c
-+++ b/init/main.c
-@@ -776,6 +776,10 @@ void __init __weak smp_setup_processor_i
- {
- }
- 
-+void __init __weak smp_prepare_boot_cpu(void)
-+{
-+}
-+
- # if THREAD_SIZE >= PAGE_SIZE
- void __init __weak thread_stack_cache_init(void)
- {
 
 
