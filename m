@@ -1,104 +1,85 @@
-Return-Path: <linux-kernel+bounces-90639-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90638-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D534D87029E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:25:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E135287029C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:25:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 885EB1F21A1E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:25:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E6781C23418
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:25:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 486A93D982;
-	Mon,  4 Mar 2024 13:25:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BDD03DB97;
+	Mon,  4 Mar 2024 13:24:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Jmmr/ecJ"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="3a0c/lQC"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C0F23D578;
-	Mon,  4 Mar 2024 13:25:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2F2E3D548;
+	Mon,  4 Mar 2024 13:24:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709558714; cv=none; b=t8FSCVgsEigVWgQcq2y3vVZ4pQAvoGVlKsvCYlHcduylbCGqv7ime8mSk418fqsh4QoJ0GPsO2uh8xve0wgbHVhuvMQfcTGa9mYySHSws1ZvMGs8RCbcM/VWhJhdshOSb4ss4ULyp7nx4ko4keaPJTFMADCoWnnfAubwpdBhTnU=
+	t=1709558691; cv=none; b=HN9YHphlYjD5NJw+NHoSfHsSEmpCcbDy4ujM8zPtESusMk2KALKCdBKGES/HrZFZdJuyHupiqDFiZ3W4CC7jejFAZ0TNuaso6aSl08FCFeqjwSmVfM/Yu95/DDigqkkJJzIrXb7zuQMxw/bUpbHHS4xclEP4ITnEdiR1VqizLRk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709558714; c=relaxed/simple;
-	bh=mE7WbTRPh0y+V6gk6+gRHEpzW2RaqAFTJA9wLdw90Hw=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=Uz8mWiLyJdhUfD40jaVKPRJRRgBXTF8BXqApYJJ8XAKuv4kf4U1O74pXSSFcRX0Zh5vqRQ805MQFOBE2LlJLgff07XJt+14QBZgn3Crw/q8JN5afHnrEUbonsysvHrIAkY5FgjhdT+s/7F3TWwTwJ57D/ZIq3nYshXYkiCSdC3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Jmmr/ecJ; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709558713; x=1741094713;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=mE7WbTRPh0y+V6gk6+gRHEpzW2RaqAFTJA9wLdw90Hw=;
-  b=Jmmr/ecJ62mbgMHYC9iH+7OGCE7Mu+R1UmvprjwUHYhWdqYsi8zwADLJ
-   sszOwDqoEn0y6BerjCm2vPSGG5giEppEtd5sNZB44LNgc6zhk6xOdB/Gk
-   aKkoHiC8sBMi9QXrizwqSHFvFwnguEBOiioMa/SYDy3tGKa8M6N6KNJy2
-   MytQw/I6s3FbqYJnbPaQr45fx3w+5kHW+tptcHerN2i7F9qoCn7AsyauW
-   bEZcNQZFml9VFtU32RPdlv6dQH9nTvHOAzBfBRCjJjagqhSAMX+UJc3H2
-   apK1XD2OcOPKRqfUfEy5EaqrzQvTWTXpKxh+qM/hWreh3u3X1cBSxILKc
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="26513704"
-X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
-   d="scan'208";a="26513704"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 05:25:12 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
-   d="scan'208";a="9369745"
-Received: from ekohn-mobl1.ger.corp.intel.com (HELO localhost) ([10.246.49.145])
-  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 05:25:10 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Mon, 4 Mar 2024 15:25:05 +0200 (EET)
-To: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-cc: "David E. Box" <david.e.box@linux.intel.com>, rajvi.jingar@linux.intel.com, 
-    platform-driver-x86@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
-    Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH V2 2/9] platform/x86/intel/sdsi: Combine read and write
- mailbox flows
-In-Reply-To: <dd9ab7d1-5c03-404a-90c7-7ccbc0fb5c4c@linux.intel.com>
-Message-ID: <b7b842e8-2609-aa8f-f90a-27a8ee8327cb@linux.intel.com>
-References: <20240228000016.1685518-1-david.e.box@linux.intel.com> <20240228000016.1685518-3-david.e.box@linux.intel.com> <dd9ab7d1-5c03-404a-90c7-7ccbc0fb5c4c@linux.intel.com>
+	s=arc-20240116; t=1709558691; c=relaxed/simple;
+	bh=JO+nK4/XoBa6mHXTNvGm1aZLOHYucf1zl9UOsaMS2bc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ItsesahASWK5ZdXFVdT5spu4fAbKqK0vLnp8WTG/FQyRvgWyXSL94EKiZn2xPqIX0kNdCXhPPL+3NQVNlvncLNcDVxAqbS4m74LFJXawfjxgLPdVN1iCKL/OpUHgOtistYlPlnznsKaXGi8VyMXgdTwmVmOiav4vFpSX5tVqFZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=3a0c/lQC; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=nZ20AYDFfavj9F06Wv4gsheOGrFxLruQsYcgyQGjmGo=; b=3a0c/lQCv2CWyKUKbHldWrleLv
+	7GSKNiaoIZ3B8wMItAcxUWdwHl8A9ZurFDP9vfeMi09onMOlULl8pEOi9I2OQk2wpaSdiB2RmQlkt
+	mgfaml8QKSrHNuep0mdlMtWZyeGMeYhJBAE+LnqcG0Al4RNd4XunaxxuSDxdtRmP2hJc=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rh8JX-009KEd-Pj; Mon, 04 Mar 2024 14:25:07 +0100
+Date: Mon, 4 Mar 2024 14:25:07 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc: hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	wojciech.drewek@intel.com, arun.ramadoss@microchip.com,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	UNGLinuxDriver@microchip.com
+Subject: Re: [PATCH net-next v3 2/2] net: phy: micrel: lan8814 cable
+ improvement errata
+Message-ID: <2bbc2980-ce44-49ab-81b3-dbbaa0829bb7@lunn.ch>
+References: <20240304091548.1386022-1-horatiu.vultur@microchip.com>
+ <20240304091548.1386022-3-horatiu.vultur@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-1914460003-1709558705=:986"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240304091548.1386022-3-horatiu.vultur@microchip.com>
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Mon, Mar 04, 2024 at 10:15:48AM +0100, Horatiu Vultur wrote:
+> When the length of the cable is more than 100m and the lan8814 is
+> configured to run in 1000Base-T Slave then the register of the device
+> needs to be optimized.
+> 
+> Workaround this by setting the measure time to a value of 0xb. This
+> value can be set regardless of the configuration.
+> 
+> This issue is described in 'LAN8814 Silicon Errata and Data Sheet
+> Clarification' and according to that, this will not be corrected in a
+> future silicon revision.
+> 
+> Reviewed-by: Wojciech Drewek <wojciech.drewek@intel.com>
+> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
 
---8323328-1914460003-1709558705=:986
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-On Tue, 27 Feb 2024, Kuppuswamy Sathyanarayanan wrote:
-> On 2/27/24 4:00 PM, David E. Box wrote:
-> > The current mailbox commands are either read-only or write-only and the
-> > flow is different for each. New commands will need to send and receive
-> > data. In preparation for these commands, create a common polling functi=
-on
-> > to handle sending data and receiving in the same transaction.
-> >
-> > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> > ---
-> >
-> > V2 - In sdsi_cmd_read() remove unnecessary check for non-zero packet_si=
-ze
-> >      in do loop since the loop is exited earlier when packet_size is
-> >      zero.
-
-Reviewed-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
-
---=20
- i.
-
---8323328-1914460003-1709558705=:986--
+    Andrew
 
