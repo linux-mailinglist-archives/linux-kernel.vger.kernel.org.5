@@ -1,133 +1,108 @@
-Return-Path: <linux-kernel+bounces-90090-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90092-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70A1186FA2C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 07:36:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 726C186FA38
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 07:47:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 263401F21548
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 06:36:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 824EEB20B62
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 06:47:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C8DA111AE;
-	Mon,  4 Mar 2024 06:36:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3466011729;
+	Mon,  4 Mar 2024 06:47:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jxriXqJb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=avm.de header.i=@avm.de header.b="bnySA/Af"
+Received: from mail.avm.de (mail.avm.de [212.42.244.119])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A418353A6;
-	Mon,  4 Mar 2024 06:36:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 689BE1170A;
+	Mon,  4 Mar 2024 06:47:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.42.244.119
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709534208; cv=none; b=uw+2/rGqWR6Fyi3Wd2NraA70Yo2CHlktY2s9zAiWMe6xp0cJ36wt1f4RchQdK6/epJ7EVbpYFNUDIPQFyrLhID/BawpH7ubFIx7L5FHXXCLmZwgE/F9rJZm31uiuGZZQRhAUq/xKWLYM6grR65ljorNR6QmAkAUd8KT0TItFKLc=
+	t=1709534870; cv=none; b=HjCOnqo8pkDnGE9iY9BYxEGYyhjSY650B+xeuyA+PiShWZaJuO6YqNzBGPf5zKnDwgCA0rxPuHkig3ZLelAlvEJaaQ3qp1gtnAQflapIm8BhDFgd2IFEqjILcB8wk9xS+/Q5oSTs3nlURMKB8gaX6SxKYgVH9IavPb5OnViguFQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709534208; c=relaxed/simple;
-	bh=Lxit3tCPkuMKtuJFSH+dJUeNvHqA7L8OYQppQC6rPNY=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=aDVwQGRdfnsLkE1iWTBKcyZNJI1+PkGAJQMLXzGPmr8caZTOmBsC31xM2W+hF3XOfCk8EgDkwi6vN6c7/S7XT5HaBESiktrjSj1bNORd13I8tcJLaHgbvb1gC5n7/W5IJKPJDBIbGTCBVjmMgz+Gm0CVMDYgToA14nrj2TYWrJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jxriXqJb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A2FBC433F1;
-	Mon,  4 Mar 2024 06:36:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709534208;
-	bh=Lxit3tCPkuMKtuJFSH+dJUeNvHqA7L8OYQppQC6rPNY=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=jxriXqJbBviYoORKOQcXJDUwyJsaZY0CPgW6Oe8TttKAmSvfyE4BQuW25aT/hQlip
-	 EycujU65LIlA+jvjSZY2ZFc2IA3AZ63veV7cNkFfzAqebsXNMM25mAA0ujeDDnVhRP
-	 rOSIkqhGdiHG3XvfyG3VMIIydikTnGfAupeIzWZNZ0caug7zTU1TtQDmT7h43pJ+Sq
-	 jwPiEzucalG88tLoMPULbKYiPL2+V5tsY1ZRNY/L938nJVJhd0CmKXUpSQxmfGvjeC
-	 fakbtsn35UIpcUtJ1iirJGZURsxYp2sUxGrHFDwHX6m2aQ2+CT1qDAyeMtb5QNaoue
-	 Lepbx/p3VrHzw==
-Date: Mon, 04 Mar 2024 00:36:46 -0600
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1709534870; c=relaxed/simple;
+	bh=hQ6Jbd6lK1sLeGDCv6wXrJMCC6sO0zy1JnqZUvapV3Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=t7yjThxYVT5yrsysPnAAfIfmRw130viOMVnRN97fRY1z8HtJDI+wfbS84exrOSfmaHJGqklCD61/Ubb91PmlrZLJGu2IpNNcr9w4IN18/Q1/9n1R2qm5q+foyvzLeUPLpc5u7BfLFf+OifpD9YIjy2FKMaE/Zcr75iuVt5fdIFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=avm.de; spf=pass smtp.mailfrom=avm.de; dkim=pass (1024-bit key) header.d=avm.de header.i=@avm.de header.b=bnySA/Af; arc=none smtp.client-ip=212.42.244.119
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=avm.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=avm.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
+	t=1709534499; bh=hQ6Jbd6lK1sLeGDCv6wXrJMCC6sO0zy1JnqZUvapV3Q=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bnySA/AfsrQ0mFyJajhUib64TkUtodY0AzXmbSo84b0V/XPMByaqAqPeIXvEzwsQW
+	 KzqoIXFEufsGnLEaoiz0diXPFYWxFw0O7d1DLS4DHsAaw1qVPWLHBprWMs2QMSOSY0
+	 znssIervezbWe9xzCFTSDTMQx6RfBYcQJNi9UfzA=
+Received: from mail-auth.avm.de (dovecot-mx-01.avm.de [212.42.244.71])
+	by mail.avm.de (Postfix) with ESMTPS;
+	Mon,  4 Mar 2024 07:41:39 +0100 (CET)
+Received: from buildd.core.avm.de (buildd-sv-01.avm.de [172.16.0.225])
+	by mail-auth.avm.de (Postfix) with ESMTPA id 53AE280155;
+	Mon,  4 Mar 2024 07:41:39 +0100 (CET)
+Received: by buildd.core.avm.de (Postfix, from userid 1000)
+	id 484C018B3F5; Mon,  4 Mar 2024 07:41:39 +0100 (CET)
+Date: Mon, 4 Mar 2024 07:41:39 +0100
+From: Nicolas Schier <n.schier@avm.de>
+To: Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: Masahiro Yamada <masahiroy@kernel.org>, linux-kbuild@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv2] kconfig: add some Kconfig env variables to make help
+Message-ID: <ZeVtIwua9T5prwUl@buildd.core.avm.de>
+Mail-Followup-To: Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240222051621.GH11472@google.com>
+ <20240228045652.GH11972@google.com>
+ <CAK7LNAQ8OyNMeGzVoTRg-sHDZ4YK0EKY_eEWNepekaibO_ZKwg@mail.gmail.com>
+ <20240229021010.GM11972@google.com>
+ <CAK7LNASujf8m4PpMyoCC1cTN_YGeG1HVaOR+3pZx5=3OJp=85A@mail.gmail.com>
+ <20240229034739.GN11972@google.com>
+ <CAK7LNAS-mOxY884pLEMwWaX+wgzXdc6+=vqN=wfHBekuKL5ryA@mail.gmail.com>
+ <20240301043316.GO11972@google.com>
+ <ZeG2PRYmdO0r44kS@buildd.core.avm.de>
+ <20240301142844.GP11972@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Dharma Balasubiramani <dharma.b@microchip.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- dri-devel@lists.freedesktop.org, Conor Dooley <conor+dt@kernel.org>, 
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, Rob Herring <robh+dt@kernel.org>, 
- Thomas Zimmermann <tzimmermann@suse.de>, 
- Nicolas Ferre <nicolas.ferre@microchip.com>, 
- Maxime Ripard <mripard@kernel.org>, 
- Alexandre Belloni <alexandre.belloni@bootlin.com>, 
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
- Claudiu Beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <20240304-lcdc-fb-v2-1-a14b463c157a@microchip.com>
-References: <20240304-lcdc-fb-v2-1-a14b463c157a@microchip.com>
-Message-Id: <170953420588.3592333.10799403141422424018.robh@kernel.org>
-Subject: Re: [PATCH v2] dt-bindings: display: atmel,lcdc: convert to
- dtschema
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240301142844.GP11972@google.com>
+Organization: AVM GmbH
+X-purgate-ID: 149429::1709534499-E2E59402-6B815460/0/0
+X-purgate-type: clean
+X-purgate-size: 895
+X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
+X-purgate: This mail is considered clean (visit http://www.eleven.de for further information)
+X-purgate: clean
 
-
-On Mon, 04 Mar 2024 11:06:39 +0530, Dharma Balasubiramani wrote:
-> Convert the atmel,lcdc bindings to DT schema.
-> Changes during conversion: add missing clocks and clock-names properties.
+On Fri, Mar 01, 2024 at 11:28:44PM +0900, Sergey Senozhatsky wrote:
+> On (24/03/01 12:04), Nicolas Schier wrote:
+> > Perhaps it might be a compromise to let 'make help' point to the
+> > kbuild/kconfig documentation?
 > 
-> Signed-off-by: Dharma Balasubiramani <dharma.b@microchip.com>
-> ---
-> This patch converts the existing lcdc display text binding to JSON schema.
-> The binding is split into two namely
-> lcdc.yaml
-> - Holds the frame buffer properties
-> lcdc-display.yaml
-> - Holds the display panel properties which is a phandle to the display
-> property in lcdc fb node.
+> Yes, I was thinking the same. A one-liner description per-env var
+> and point to documentation if one-liner is not enough
 > 
-> These bindings are tested against the existing at91 dts files using
-> dtbs_check.
-> ---
-> Changes in v2:
-> - Run checkpatch and remove whitespace errors.
-> - Add the standard interrupt flags.
-> - Split the binding into two, namely lcdc.yaml and lcdc-display.yaml.
-> - Link to v1: https://lore.kernel.org/r/20240223-lcdc-fb-v1-1-4c64cb6277df@microchip.com
-> ---
->  .../bindings/display/atmel,lcdc-display.yaml       | 98 ++++++++++++++++++++++
->  .../devicetree/bindings/display/atmel,lcdc.txt     | 87 -------------------
->  .../devicetree/bindings/display/atmel,lcdc.yaml    | 70 ++++++++++++++++
->  3 files changed, 168 insertions(+), 87 deletions(-)
-> 
+> 	KCONFIG_BARREL_ROLL	- kconfig does a barrel roll
+> 	KCONFIG_FOO_BAR		- kconfig does foo and then bar (see
+> 	documentation for details)
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+No, I thought about leaving out any concrete examples but just adding a
+sentence like:
 
-yamllint warnings/errors:
+  kconfig and kbuild allow tuning and checks by settings various
+  environment variables, cp. Documentation/kbuild/ for details.
 
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/display/imx/fsl,imx-lcdc.example.dtb: display0: 'atmel,dmacon' is a required property
-	from schema $id: http://devicetree.org/schemas/display/atmel,lcdc-display.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/display/imx/fsl,imx-lcdc.example.dtb: display0: 'atmel,lcdcon2' is a required property
-	from schema $id: http://devicetree.org/schemas/display/atmel,lcdc-display.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/display/imx/fsl,imx-lcdc.example.dtb: display0: 'atmel,guard-time' is a required property
-	from schema $id: http://devicetree.org/schemas/display/atmel,lcdc-display.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/display/imx/fsl,imx-lcdc.example.dtb: display0: 'fsl,pcr', 'model' do not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/display/atmel,lcdc-display.yaml#
+Then there is no need to re-document each variable in 'make help' but
+those who are new are explicitly pointed to the maintained
+documentation.
 
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240304-lcdc-fb-v2-1-a14b463c157a@microchip.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+Kind regards,
+Nicolas
 
