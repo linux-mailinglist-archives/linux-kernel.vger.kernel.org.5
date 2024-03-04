@@ -1,302 +1,178 @@
-Return-Path: <linux-kernel+bounces-91076-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91078-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DE79870946
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:14:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B8B787094E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:15:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F993B21D09
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:14:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 90AC3B23015
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:15:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C0A562172;
-	Mon,  4 Mar 2024 18:14:36 +0000 (UTC)
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E858962170;
+	Mon,  4 Mar 2024 18:15:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="giHlgTOS"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2474962140;
-	Mon,  4 Mar 2024 18:14:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AB0562145
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 18:15:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709576075; cv=none; b=k3HASEjj8e5VOuTKvzBZ8DxuOVx6jDYgRixrEkzS5S67G3/mIO8TZOtQA9n+uUBU6mFmd82TXmXA8NRhH9XI3zehilI8ws6MPVlTq3+MVeU9+8BRgEEpNi58hKU3mMdJ3SLzq+gigtmH2RKMgsHL7DovXvIuAGH6N14G//dxU6o=
+	t=1709576146; cv=none; b=jC8iAZec9LQulx/un5TETg+rCivASOQflfmby8EZ5fsPaE1C+AP+C1yMhpb3VrpG01+ZP594b0TrC0FD8KBeBMPXHLuGZrVZwXJ2aw93OE7KKecr9b4YOe9K5kG0y6LiF867J2yyevgCCXlJp+4gwCPZgSDGtQsUswb6gJYDV/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709576075; c=relaxed/simple;
-	bh=AbHH7qvr0CkJaDNmydY1dltP0/FMPdTokrWUJsnffuU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=f9oLEps4yMCoeRY9eepS30CO6rXfW7ZPVXhncCKav09brexL9u7Bw262jN28SOwz2WcgVxtm+rCBued3lfhZxxgIFvYVfgGMZR2MwbxV2yYioCHPxcE78+3hbpzhwBdz4MhtmMb16CMi4eBCuopDSFRJlKJenhZXMkzxJkRREiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-5a1358e7e16so311954eaf.0;
-        Mon, 04 Mar 2024 10:14:33 -0800 (PST)
+	s=arc-20240116; t=1709576146; c=relaxed/simple;
+	bh=VauSxUeKDlLS0XJnXJZoJkn64Xnlj2KotCEvFkmd1CM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ACKt9IGE76r36BXsNWRgL/qAzkBYsOsXeYoj024Wl13Tvqk7t9sFdUyXbwmB5OEI7jzQRyvN8zVWWCIoxvtAO+H4hHngr021xQ/voyStTcTYHjJbMWGTNNr28PqXtTpNhlfW94vL6r63rBI1qdUfqPyoF2xa228MrZ4tIQQlUE8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=giHlgTOS; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-412dda84216so13713205e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 10:15:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709576143; x=1710180943; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=aQwEQKxahRfy1UUMYJ9k49LKptzc1VSVKXuBad2xfbI=;
+        b=giHlgTOSMvkDMXM9IyCrVGaDCfjBaMJAoyL1F/KeJob1GmvRprtAPAVlvoLINkRH1E
+         Tok4xu3GvvAAqEzx994pnEAx3HqzuE089NMI6tPZzaUZfC/reNJL9a2JNF3DctxvNGYK
+         4hqIIWCyLD6AfVuAO9KdBoOhoo7xN8ObZeMgkWxcyyZn2Ryb8dBk8i+GbIs8dfd5vLTd
+         l2tgEIfGFd4kP//tzDBpTJWXf98WRgqYu34mRcl3S0YPqn5p64P8UXDf8wwQImTm8gCA
+         3p9gFgSHaH2Dpq8TnINIpPud9sUUn91eqvRTVSOpFw88X1FWbAAPyi6QujbgrEVSnlbv
+         oPAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709576073; x=1710180873;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=i5gamsQVlsE6wgphQJ/+utzCP9dR4QkeR7TBdxOk1d4=;
-        b=ZRMdsz8pt9qlbRe+c8FHIgKyh/1WOQZTtH8SxTCrOOL7MxWwDc+n2qgDMCw6Gy4PfT
-         5iP2q4V6aAI5xYjRvYD284ZN2YIFMLGQW/PyLcUqq+ztWHHTGcdXJtMjFglRjcixwSYI
-         SEfNQbsqY6Qf9QmGP2Hf5XnyajueBEPVansEJ6ygFITr4c0uwOG7gSGnOhtzSRumzSol
-         7hepj9783R8sRqtXn0CfdJYqHXloUVGKqqIGimTFbZXAWWBr4E2xuQS+WKrA6s2bqQ7d
-         +fnigBrFjq6AjWLo0zeGrI08l7xljgSh9gI7YXZGhZVDTcrvYYssTdryprTWWRY2xDb6
-         G7Lw==
-X-Forwarded-Encrypted: i=1; AJvYcCVWXIb3gQTvZxiBh8dZqeseljb7ujcpaJh94yRx6xC+zjFGryJsEgfnNZ4I62b757RghkB7lwI97vgwb2gNlUR+yBjVzxNHYJpUpR504NqoFIcVfDbYjfZSq/DlgDnLXzwKCoUgSVgJCbzUEt7kUhN2+tIxBfz4dY2HVZD/oHewE+C9USR4cOps5DcFsNTaSPBYqWbe1CF+ozLH1Icf
-X-Gm-Message-State: AOJu0YzLCDpeHMtZ++kgtFJ5EI5PCKy1VshFyTF/arpp65CKJtoj/0Qw
-	9qGNkqOBP0CrgAwiLggb1mv/8+FNoTbiM3m8DJ/NO2jtEdp61OPE1k6QV1eclUIZ5Bqbmn0rabW
-	jBmUIJmEhXxAdUeLmsibb9jxlWWs=
-X-Google-Smtp-Source: AGHT+IFMKHIsModLunczVJGSOLKf94HeyBgQmo5PVZagqZz0uW/+O6O2mUXS4e2ysrsmrx4WJqMPtto6+Qb7T9IqYr4=
-X-Received: by 2002:a05:6820:1c13:b0:5a1:31a1:7f75 with SMTP id
- cl19-20020a0568201c1300b005a131a17f75mr3926238oob.1.1709576073177; Mon, 04
- Mar 2024 10:14:33 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709576143; x=1710180943;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aQwEQKxahRfy1UUMYJ9k49LKptzc1VSVKXuBad2xfbI=;
+        b=R+H5GFnUVF6yIYl9Vmr6uACt0etpnPsek7aaEfUAzcV4Kdv07jA3XBFN8YLBbOSno/
+         1QW6ICotNgUrM1m4JdFzmDDuJyiFwO1tg1TGViw8ICRtV+5pcqdt8npNLBkIJluIVYPJ
+         yDbeg2qQoWlL5FJ0ZsRZSXIHmdpj2bBENqsxaUluaTrkRSV8E9/Ibe/CCqpAXVL0+/30
+         w6rMLsoG+TODKTDOaSoTMCL3AlWM76FDc/GmQOOBTEDC9OMyO83xG3g7KKTpqw929MRd
+         1aFX0lU+a5QBh8vYSdwMvmrFkdjS441pBax9gIWD6gfJzhEmP1wSNDC4WkQMB8gpnY1t
+         a9rA==
+X-Forwarded-Encrypted: i=1; AJvYcCVz48nXbbEq5jVi3KH164ftA6KwKa8Gu54I1MERL0cemNjVQB0QC4rXazNqWY6VEWDBmHbXah62AL40DyrMPmJxNdaVhv5nEJNWJRtE
+X-Gm-Message-State: AOJu0YzbdvM0PtXhuIItT0A3vO2mhhadWcsRTDhNGWL+IajS9aOYPmPt
+	h9QbJ7ccgoum/g+d+5VYWWpwj7fT841TeG+rL5lLgmPT/6h5Z+tEMb8rO1k2f8A=
+X-Google-Smtp-Source: AGHT+IHS8mH5ep3olTYKjEqY60XC9rt4PJOU0PV0d/ZJCfSs+EsqO0ZGvDc2uljxo9I10eGxI2VHig==
+X-Received: by 2002:a05:600c:1d8d:b0:412:e7e2:b134 with SMTP id p13-20020a05600c1d8d00b00412e7e2b134mr1415090wms.36.1709576142191;
+        Mon, 04 Mar 2024 10:15:42 -0800 (PST)
+Received: from [192.168.2.107] ([79.115.63.35])
+        by smtp.gmail.com with ESMTPSA id i6-20020adfb646000000b0033e033898c5sm12820159wre.20.2024.03.04.10.15.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Mar 2024 10:15:41 -0800 (PST)
+Message-ID: <0852a6bc-315c-49e2-84fe-7dadca71df3d@linaro.org>
+Date: Mon, 4 Mar 2024 18:15:38 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAJZ5v0grDNJkEcgw+34SBmNFL7qhSTz8ydC7BSkM7DiCatkKSA@mail.gmail.com>
- <20240304155138.GA482969@bhelgaas> <CAJZ5v0jS_x7=joXkHuuqQhO-FqkhGi44o-Nq-1FGhPQ5-1VhnQ@mail.gmail.com>
- <CAJZ5v0idOkeod9-RmnNGCwMGG+9nYi8eJSBpQYWJnv=N+eVoWg@mail.gmail.com> <CAJZ5v0jJEo5p4Wr_bZjHHOfQG4WomX9pFtBwFnU6eMJRoCctOA@mail.gmail.com>
-In-Reply-To: <CAJZ5v0jJEo5p4Wr_bZjHHOfQG4WomX9pFtBwFnU6eMJRoCctOA@mail.gmail.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 4 Mar 2024 19:14:21 +0100
-Message-ID: <CAJZ5v0izNQ=2oaFff3WBQUm2AHZ5XnrYHq3pz0_Yx685QUUfMA@mail.gmail.com>
-Subject: Re: [PATCH v3] driver core: Cancel scheduled pm_runtime_idle() on
- device removal
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>, gregkh@linuxfoundation.org, 
-	bhelgaas@google.com, linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Ricky Wu <ricky_wu@realtek.com>, Kees Cook <keescook@chromium.org>, 
-	Tony Luck <tony.luck@intel.com>, "Guilherme G. Piccoli" <gpiccoli@igalia.com>, 
-	linux-hardening@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] spi: dt-bindings: samsung: make dma properties not
+ required
+Content-Language: en-US
+To: Rob Herring <robh@kernel.org>, Sam Protsenko <semen.protsenko@linaro.org>
+Cc: Mark Brown <broonie@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ andi.shyti@kernel.org, conor+dt@kernel.org, linux-spi@vger.kernel.org,
+ linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, andre.draszik@linaro.org,
+ peter.griffin@linaro.org, willmcvicker@google.com, kernel-team@android.com
+References: <20240301115546.2266676-1-tudor.ambarus@linaro.org>
+ <CAPLW+4=6oYcs0NPXo4ffLiCvtNQ-tY1s_isaxTX8dcPkV56xMw@mail.gmail.com>
+ <cb426fb0-2f27-4c9b-89f5-7139354ea425@sirena.org.uk>
+ <f06328e4-b283-4302-b9c1-6473aa3cfa25@linaro.org>
+ <CAPLW+4kjXK=EWx__h0bX0rJMrL33E=t4YDzSOfObmvtG9aS+jg@mail.gmail.com>
+ <20240304165635.GA739022-robh@kernel.org>
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+In-Reply-To: <20240304165635.GA739022-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, Mar 4, 2024 at 7:10=E2=80=AFPM Rafael J. Wysocki <rafael@kernel.org=
-> wrote:
->
-> On Mon, Mar 4, 2024 at 6:00=E2=80=AFPM Rafael J. Wysocki <rafael@kernel.o=
-rg> wrote:
-> >
-> > On Mon, Mar 4, 2024 at 5:41=E2=80=AFPM Rafael J. Wysocki <rafael@kernel=
-org> wrote:
-> > >
-> > > On Mon, Mar 4, 2024 at 4:51=E2=80=AFPM Bjorn Helgaas <helgaas@kernel.=
-org> wrote:
-> > > >
-> > > > On Mon, Mar 04, 2024 at 03:38:38PM +0100, Rafael J. Wysocki wrote:
-> > > > > On Thu, Feb 29, 2024 at 7:23=E2=80=AFAM Kai-Heng Feng
-> > > > > <kai.heng.feng@canonical.com> wrote:
-> > > > > >
-> > > > > > When inserting an SD7.0 card to Realtek card reader, the card r=
-eader
-> > > > > > unplugs itself and morph into a NVMe device. The slot Link down=
- on hot
-> > > > > > unplugged can cause the following error:
-> > > > > >
-> > > > > > pcieport 0000:00:1c.0: pciehp: Slot(8): Link Down
-> > > > > > BUG: unable to handle page fault for address: ffffb24d403e5010
-> > > > > > PGD 100000067 P4D 100000067 PUD 1001fe067 PMD 100d97067 PTE 0
-> > > > > > Oops: 0000 [#1] PREEMPT SMP PTI
-> > > > > > CPU: 3 PID: 534 Comm: kworker/3:10 Not tainted 6.4.0 #6
-> > > > > > Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M./H3=
-70M Pro4, BIOS P3.40 10/25/2018
-> > > > > > Workqueue: pm pm_runtime_work
-> > > > > > RIP: 0010:ioread32+0x2e/0x70
-> > > > > ...
-> > > > > > Call Trace:
-> > > > > >  <TASK>
-> > > > > >  ? show_regs+0x68/0x70
-> > > > > >  ? __die_body+0x20/0x70
-> > > > > >  ? __die+0x2b/0x40
-> > > > > >  ? page_fault_oops+0x160/0x480
-> > > > > >  ? search_bpf_extables+0x63/0x90
-> > > > > >  ? ioread32+0x2e/0x70
-> > > > > >  ? search_exception_tables+0x5f/0x70
-> > > > > >  ? kernelmode_fixup_or_oops+0xa2/0x120
-> > > > > >  ? __bad_area_nosemaphore+0x179/0x230
-> > > > > >  ? bad_area_nosemaphore+0x16/0x20
-> > > > > >  ? do_kern_addr_fault+0x8b/0xa0
-> > > > > >  ? exc_page_fault+0xe5/0x180
-> > > > > >  ? asm_exc_page_fault+0x27/0x30
-> > > > > >  ? ioread32+0x2e/0x70
-> > > > > >  ? rtsx_pci_write_register+0x5b/0x90 [rtsx_pci]
-> > > > > >  rtsx_set_l1off_sub+0x1c/0x30 [rtsx_pci]
-> > > > > >  rts5261_set_l1off_cfg_sub_d0+0x36/0x40 [rtsx_pci]
-> > > > > >  rtsx_pci_runtime_idle+0xc7/0x160 [rtsx_pci]
-> > > > > >  ? __pfx_pci_pm_runtime_idle+0x10/0x10
-> > > > > >  pci_pm_runtime_idle+0x34/0x70
-> > > > > >  rpm_idle+0xc4/0x2b0
-> > > > > >  pm_runtime_work+0x93/0xc0
-> > > > > >  process_one_work+0x21a/0x430
-> > > > > >  worker_thread+0x4a/0x3c0
-> > > > > ...
-> > > >
-> > > > > > This happens because scheduled pm_runtime_idle() is not cancell=
-ed.
-> > > > >
-> > > > > But rpm_resume() changes dev->power.request to RPM_REQ_NONE and i=
-f
-> > > > > pm_runtime_work() sees this, it will not run rpm_idle().
-> > > > >
-> > > > > However, rpm_resume() doesn't deactivate the autosuspend timer if=
- it
-> > > > > is running (see the comment in rpm_resume() regarding this), so i=
-t may
-> > > > > queue up a runtime PM work later.
-> > > > >
-> > > > > If this is not desirable, you need to stop the autosuspend timer
-> > > > > explicitly in addition to calling pm_runtime_get_sync().
-> > > >
-> > > > I don't quite follow all this.  I think the race is between
-> > > > rtsx_pci_remove() (not resume) and rtsx_pci_runtime_idle().
-> > >
-> > > I think so too and the latter is not expected to run.
-> > >
-> > > >   rtsx_pci_remove()
-> > > >   {
-> > > >     pm_runtime_get_sync()
-> > > >     pm_runtime_forbid()
-> > > >     ...
-> > > >
-> > > > If this is an rtsx bug, what exactly should be added to
-> > > > rtsx_pci_remove()?
-> > > >
-> > > > Is there ever a case where we want any runtime PM work to happen
-> > > > during or after a driver .remove()?  If not, maybe the driver core
-> > > > should prevent that, which I think is basically what this patch doe=
-s.
-> > >
-> > > No, it is not, because it doesn't actually prevent the race from
-> > > occurring, it just narrows the window quite a bit.
-> > >
-> > > It would be better to call pm_runtime_dont_use_autosuspend() instead
-> > > of pm_runtime_barrier().
-> > >
-> > > > If this is an rtsx driver bug, I'm concerned there may be many othe=
-r
-> > > > drivers with a similar issue.  rtsx exercises this path more than m=
-ost
-> > > > because the device switches between card reader and NVMe SSD using
-> > > > hotplug add/remove based on whether an SD card is inserted (see [1]=
-).
-> > >
-> > > This is a valid concern, so it is mostly a matter of where to disable
-> > > autosuspend.
-> > >
-> > > It may be the driver core in principle, but note that it calls
-> > > ->remove() after invoking pm_runtime_put_sync(), so why would it
-> > > disable autosuspend when it allows runtime PM to race with device
-> > > removal in general?
-> > >
-> > > Another way might be to add a pm_runtime_dont_use_autosuspend() call
-> > > at the beginning of pci_device_remove().
-> > >
-> > > Or just remove the optimization in question from rpm_resume() which i=
-s
-> > > quite confusing and causes people to make assumptions that lead to
-> > > incorrect behavior in this particular case.
-> >
-> > Well, scratch this.
-> >
-> > If rpm_idle() is already running at the time rpm_resume() is called,
-> > the latter may return right away without waiting, which is incorrect.
-> >
-> > rpm_resume() needs to wait for the "idle" callback to complete, so
-> > this (again, modulo GMail-induced whitespace mangling) should help:
-> >
-> > ---
-> >  drivers/base/power/runtime.c |    6 ++++--
-> >  1 file changed, 4 insertions(+), 2 deletions(-)
-> >
-> > Index: linux-pm/drivers/base/power/runtime.c
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > --- linux-pm.orig/drivers/base/power/runtime.c
-> > +++ linux-pm/drivers/base/power/runtime.c
-> > @@ -798,7 +798,8 @@ static int rpm_resume(struct device *dev
-> >      }
-> >
-> >      if (dev->power.runtime_status =3D=3D RPM_RESUMING ||
-> > -        dev->power.runtime_status =3D=3D RPM_SUSPENDING) {
-> > +        dev->power.runtime_status =3D=3D RPM_SUSPENDING ||
-> > +        dev->power.idle_notification) {
-> >          DEFINE_WAIT(wait);
-> >
-> >          if (rpmflags & (RPM_ASYNC | RPM_NOWAIT)) {
-> > @@ -826,7 +827,8 @@ static int rpm_resume(struct device *dev
-> >              prepare_to_wait(&dev->power.wait_queue, &wait,
-> >                      TASK_UNINTERRUPTIBLE);
-> >              if (dev->power.runtime_status !=3D RPM_RESUMING &&
-> > -                dev->power.runtime_status !=3D RPM_SUSPENDING)
-> > +                dev->power.runtime_status !=3D RPM_SUSPENDING &&
-> > +                !dev->power.idle_notification)
-> >                  break;
-> >
-> >              spin_unlock_irq(&dev->power.lock);
->
-> Well, not really.
->
-> The problem is that rtsx_pci_runtime_idle() is not expected to be
-> running after pm_runtime_get_sync(), but the latter doesn't really
-> guarantee that.  It only guarantees that the suspend/resume callbacks
-> will not be running after it returns.
->
-> As I said above, if the ->runtime_idle() callback is already running
-> when pm_runtime_get_sync() runs, the latter will notice that the
-> status is RPM_ACTIVE and will return right away without waiting for
-> the former to complete.  In fact, it cannot wait for it to complete,
-> because it may be called from a ->runtime_idle() callback itself (it
-> arguably does not make much sense to do that, but it is not strictly
-> forbidden).
->
-> So whoever is providing a ->runtime_idle() callback, they need to
-> protect it from running in parallel with whatever code runs after
-> pm_runtime_get_sync().  Note that ->runtime_idle() will not start
-> after pm_runtime_get_sync(), but it may continue running then if it
-> has started earlier already.
->
-> Calling pm_runtime_barrier() after pm_runtime_get_sync() (not before
-> it) should suffice, but once the runtime PM usage counter is dropped,
-> rpm_idle() may run again, so this is only effective until the usage
-> counter is greater than 1.  This means that
-> __device_release_driver(() is not the right place to call it, because
-> the usage counter is dropped before calling device_remove() in that
-> case.
->
-> The PCI bus type can prevent the race between driver-provided
-> ->runtime_idle() and ->remove() from occurring by adding a
-> pm_runtime_probe() call in the following way:
+Hi, Rob,
 
-s/pm_runtime_probe/pm_runtime_barrier/ (sorry)
+On 3/4/24 16:56, Rob Herring wrote:
+> On Sat, Mar 02, 2024 at 10:23:16AM -0600, Sam Protsenko wrote:
+>> On Sat, Mar 2, 2024 at 3:36 AM Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
+>>>
+>>>
+>>>
+>>> On 01.03.2024 22:42, Mark Brown wrote:
+>>>> On Fri, Mar 01, 2024 at 01:28:35PM -0600, Sam Protsenko wrote:
+>>>>> On Fri, Mar 1, 2024 at 5:55 AM Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
+>>>>
+>>>>>> Since the addition of the driver in 2009, the driver selects between DMA
+>>>>>> and polling mode depending on the transfer length - DMA mode for
+>>>>>> transfers bigger than the FIFO depth, polling mode otherwise. All
+>>>>>> versions of the IP support polling mode, make the dma properties not
+>>>>>> required.
+>>>>
+>>>>> AFAIU, the device tree has nothing to do with drivers, it's about
+>>>>> hardware description. Does making DMA properties not required here
+>>>
+>>> correct
+>>>
+>>>>> mean that there are some HW out there which doesn't integrate DMA in
+>>>
+>>> no, to me it means that the IP can work without DMA, only in PIO mode,
+>>> regardless if DMA is integrated or not. Not required means that the
+>>> property is not mandatory, which is what I'm trying to achieve here.
+>>>
+>>>>> SPI blocks? Even if this change is ok (I'm not sure), the
+>>>>> argumentation doesn't look sound to me.
+>>>
+>>> switching to PIO mode in the driver for sizes smaller than FIFO depths
+>>> in the driver guarantees that all existing compatibles support PIO mode.
+>>>
+>>> Are you saying that if there is a physical line between an IP and DMA
+>>> controller, then the DMA properties must always be specified in dt? I
+>>> thought they can be marked as optional in this case, and that's what I
+>>> did with this patch.
+>>>
+>>
+>> No, I would wait for maintainers to clarify on that bit. Change itself
+>> can be ok. But the commit message shouldn't mention the driver,
+>> because the driver uses (depends on) device tree, not vice versa. The
+>> device tree can be used in other projects as well (like U-Boot and
+>> OP-TEE), so it should be designed to be universal and not depend on
+>> kernel drivers. The commit message should be based on particular HW
+>> layout features and how the patch makes the bindings describe that HW
+>> better. It shouldn't rely on driver implementations.
+> 
+> If the controller is DMA capable then it should have dma properties. The 
 
-The patchlet below is correct, though.
+should have as in required/mandatory?
 
-> ---
->  drivers/pci/pci-driver.c |    7 +++++++
->  1 file changed, 7 insertions(+)
->
-> Index: linux-pm/drivers/pci/pci-driver.c
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-pm.orig/drivers/pci/pci-driver.c
-> +++ linux-pm/drivers/pci/pci-driver.c
-> @@ -473,6 +473,13 @@ static void pci_device_remove(struct dev
->
->      if (drv->remove) {
->          pm_runtime_get_sync(dev);
-> +        /*
-> +         * If the driver provides a .runtime_idle() callback and it has
-> +         * started to run already, it may continue to run in parallel
-> +         * with the code below, so wait until all of the runtime PM
-> +         * activity has completed.
-> +         */
-> +        pm_runtime_barrier(dev);
->          drv->remove(pci_dev);
->          pm_runtime_put_noidle(dev);
->      }
+> compatible should be enough to tell if it is a case of 'can only work 
+
+yes, I agree
+
+> with DMA'. Otherwise, it is going to be up to a specific user. Even 
+> within Linux, you may have a serial port that doesn't use DMA for the 
+> console, but uses it for the tty or serdev.
+> 
+> Of course, if a new device is added without DMA properties and they 
+> are added later on, then they are going to be optional even though the 
+> DMA support is always there. I can't fully understand everyone's h/w. 
+> 
+
+The SPI controller that I'm working with has a dedicated channel to the
+DMA controller. It can work without DMA too, just by polling registers
+or by interrupts.
+
+I can't get the DMA controller to work correctly yet, and since the SPI
+controller can work without DMA, I thought that I can mark the DMA
+properties as optional, add the SPI node in dt without DMA, and add the
+DMA properties later on, after I have the DMA controller working
+correctly. Is this approach wrong?
+
+Thanks,
+ta
 
