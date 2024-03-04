@@ -1,130 +1,105 @@
-Return-Path: <linux-kernel+bounces-90278-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90277-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8A3986FCCD
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:11:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7938486FCCB
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:11:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74F6C2843EE
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:11:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A59CB22099
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:11:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ED9E22071;
-	Mon,  4 Mar 2024 09:11:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E739D1BDC8;
+	Mon,  4 Mar 2024 09:11:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Wle3JIf2"
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="MoQtuYqx"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 070611BDEE
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 09:11:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F216A19472;
+	Mon,  4 Mar 2024 09:11:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709543467; cv=none; b=pdPyYi9XMSzSZvVTOTSpJ/0JLfpWaJoy9VeJTPWyV9bGUaBSi2mowYyoI6qifeq1K3bEKclvScP1U4X69nBNNijItijX4Y0/VWAjc8j0MtJjPWfEP0c1Z3bZkLoJFC6X1mfHjjjZXJl9Rhsspv6r8XYiP3Sh7AeQ0VkGdbBnClA=
+	t=1709543465; cv=none; b=IxWPWBBGYJv/YpH7TRhPqxsfEolgYB14f0lYXlnF7QU8+R3rQ2C3Pjzvk8r4Z5vP47bc0nVWt1Xg5ucyFmMGbl/Xj99fwaet+rhbVLRqVTAebE5AUCYP6jh5ZsMka3aMGyo2nYSYiWykDdV/wMxNyPiLE7oYD8eSTioon5uUGyQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709543467; c=relaxed/simple;
-	bh=CUtZhKapsZY/xavUkp55/c+tMUGvUPzfYmx4hsetBuU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=K5L/mldskj4NIgwfm+R4whwN0iWEfaWkngowBIriz2kRr83EqB+hCWiS5l7Ol/WLuM6BSIQ1k1Rv+Ks/0AzvS9zs01cYCH/ZTHNa2xUXAc2eDaioA3VSgIgSexCgi6W1sLc7TvQOq4NbaBjdIH+9YQpdyVS+K37a3QDfi6p9v4g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Wle3JIf2; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-412ddef6f83so7347345e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 01:11:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709543464; x=1710148264; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MAS4NfgNmP0HvgF3U0o9wHMePf9MEveoKdtR6KEo+dA=;
-        b=Wle3JIf2cCXXveWmsO+XQsfI6Wp0LQTBv0yAv9UfmuNDPSrpLITeSQRpdGphXW6PXv
-         LzfdKadXWFohNf5bpwLXbu3iJv+winXnVqwnXi8LZ5CfbzS3KcR/uNIpxZpwHm/0m9nP
-         xCdB1CPe5S4tOkrY40GLX2QT2K+F5OdHZIbjEZ6GZOep7AAEsT+qV19qxiyYONHZFrrz
-         4AKI5/xgg1/9cu/uvH/Wc+wVyNMI3Xb+3zSQeWMZMiTKWz+MSyfRpZE0zo63el3vjBiX
-         9/FoK2Yt/KGK56Y3aeiBW8z+NAonX2nPQfQx77Fa7acZFxOCxqemWX3w1S1MWpTKtE9e
-         be/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709543464; x=1710148264;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MAS4NfgNmP0HvgF3U0o9wHMePf9MEveoKdtR6KEo+dA=;
-        b=SqK/95UvqhClm4fDSLJPZPL+S0X7DTLR1soCYImfXX9f0czd5J+eC5eaC2WDpMKfFB
-         HuhPdRSFfBOviP+gNoO6aryVoOwiSGSo4u7G59Mt05VCrUAZkP0WDdb1MMJOR+aktCCf
-         /2ooMLcEsm5B4zq0a79pnPu5f3phzRQRSrx4qWP8jc/bGBhpcjMjxYnQBHjv5CJvqyZh
-         tJkm7h2au88fzVmRLtgZ8ev+3xSd10vHOI3qFWvitVHBsMfPyYjHc19gQrQEPEQBDbeT
-         UidJxEvXiME+a/8NiIUQZMnEvhntJl3RK1Y4LheiAd1ruwafDvqDwGH+ybFujPXaE+st
-         eRUg==
-X-Forwarded-Encrypted: i=1; AJvYcCW/d4ojr5N/+BAK15jxEJ38aYWrFLAbx+7EiXglzqRXdPVHVjjJsCR7pFXt6I3f7hKj78roCbWrutAa7DThLV/MBH2XM4nttIvCdGjB
-X-Gm-Message-State: AOJu0YycI6NizZsEIYBH9hD96ZZYb5S8T4Gamlf66yvFi4j825UR8Ol+
-	2mKJ7PbCojuIMdfriZ7A6OhnacIFsVR6aMnUqYYd23802jw7dJ0Tg2n9uaMPVJ0=
-X-Google-Smtp-Source: AGHT+IFEmXB1YdPhR2t7PE+oBbpNOs7QcDk2q6Z7v8XjJnD94Ikv7TDFwaNIEDds2pPVHP4cpZUn0g==
-X-Received: by 2002:a05:600c:3d91:b0:412:e555:f90e with SMTP id bi17-20020a05600c3d9100b00412e555f90emr938804wmb.35.1709543464434;
-        Mon, 04 Mar 2024 01:11:04 -0800 (PST)
-Received: from [192.168.2.107] ([79.115.63.35])
-        by smtp.gmail.com with ESMTPSA id j11-20020a5d604b000000b0033d9ee09b7asm11634328wrt.107.2024.03.04.01.11.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Mar 2024 01:11:04 -0800 (PST)
-Message-ID: <9e4461ec-2207-42bb-a3a9-826eac1757da@linaro.org>
-Date: Mon, 4 Mar 2024 09:11:02 +0000
+	s=arc-20240116; t=1709543465; c=relaxed/simple;
+	bh=CVm0itqbknJclQDsY4Frf9OoAkYPPa/1GZRo1JGqk0M=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=FdxqIAI+JTPMe72VE7cjnBeV74+jAICEoA5gS2Uql1xw4Jsy5otUQAtE1kfJ5CNp7s6q794BYW5XaHBQ8gDF53HAEjr1Svl0e6xMHekrQDOPuGo5q5yz2YeFQ17NWaG3cgBicCIwIdcpBtbFnoBTLZup8zIZ11NJnTeZGCz4Mw0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=MoQtuYqx; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709543461;
+	bh=CVm0itqbknJclQDsY4Frf9OoAkYPPa/1GZRo1JGqk0M=;
+	h=From:To:Cc:Subject:Date:From;
+	b=MoQtuYqxH59MYYoqJHYWXgE/CvSNkS4FDInxOYwx+mBhrrD6EgejdXCyXE9MrjrDc
+	 JdM39yfc+uT7tRfH7HbyGWnZzyafiz0GiKY/DXxXIY6i8A66/aIYv0SdnLxGWOHMkm
+	 ScjWEkYMttvzFGh6aEzmCCGOMq31NUtCyDf1yb31FEArCD6dkMM9eNf0QLqxh83vrI
+	 8Ui56w0i4qR/Wyd3GXS2TFEeaZ70jlH8tuVXkVqg5Gu/15cXZiCCFgSOzDWkLfrEmh
+	 nPAFMC2dj0ptermIeZBQFZ7dRJAieLIHyIoXCDebuPBkF88nytOK/Kb1Vufxx0O840
+	 DCdQioVds9PdQ==
+Received: from localhost.localdomain (broslavsky.collaboradmins.com [68.183.210.73])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 580A73781FE9;
+	Mon,  4 Mar 2024 09:10:58 +0000 (UTC)
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+To: James Smart <james.smart@broadcom.com>,
+	Dick Kennedy <dick.kennedy@broadcom.com>,
+	"James E.J. Bottomley" <jejb@linux.ibm.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Justin Tee <justin.tee@broadcom.com>
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+	kernel@collabora.com,
+	kernel-janitors@vger.kernel.org,
+	James Smart <jsmart2021@gmail.com>,
+	linux-scsi@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] scsi: lpfc: correct size for cmdwqe/rspwqe for memset
+Date: Mon,  4 Mar 2024 14:11:19 +0500
+Message-Id: <20240304091119.847060-1-usama.anjum@collabora.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] mtd: spi-nor: core: correct type of i
-Content-Language: en-US
-To: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- Pratyush Yadav <pratyush@kernel.org>, Michael Walle <mwalle@kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>,
- Takahiro Kuwano <Takahiro.Kuwano@infineon.com>
-Cc: kernel@collabora.com, kernel-janitors@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240304090103.818092-1-usama.anjum@collabora.com>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20240304090103.818092-1-usama.anjum@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Miquel,
+The cmdwqe and rspwqe are of type lpfc_wqe128. They should be memset
+with the same type.
 
-Can you please queue this to mtd/next after you pull in the SPI NOR
-changes? Thanks!
+Fixes: 61910d6a5243 ("scsi: lpfc: SLI path split: Refactor CT paths")
+Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+---
+Changes since v1:
+- Use *ptr instead of specifying type in sizeof
+---
+ drivers/scsi/lpfc/lpfc_bsg.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-ta
+diff --git a/drivers/scsi/lpfc/lpfc_bsg.c b/drivers/scsi/lpfc/lpfc_bsg.c
+index d80e6e81053b0..7d5275d3a7406 100644
+--- a/drivers/scsi/lpfc/lpfc_bsg.c
++++ b/drivers/scsi/lpfc/lpfc_bsg.c
+@@ -3169,10 +3169,10 @@ lpfc_bsg_diag_loopback_run(struct bsg_job *job)
+ 	}
+ 
+ 	cmdwqe = &cmdiocbq->wqe;
+-	memset(cmdwqe, 0, sizeof(union lpfc_wqe));
++	memset(cmdwqe, 0, sizeof(*cmdwqe));
+ 	if (phba->sli_rev < LPFC_SLI_REV4) {
+ 		rspwqe = &rspiocbq->wqe;
+-		memset(rspwqe, 0, sizeof(union lpfc_wqe));
++		memset(rspwqe, 0, sizeof(*rspwqe));
+ 	}
+ 
+ 	INIT_LIST_HEAD(&head);
+-- 
+2.39.2
 
-On 3/4/24 09:01, Muhammad Usama Anjum wrote:
-> The i should be signed to find out the end of the loop. Otherwise,
-> i >= 0 is always true and loop becomes infinite. Make its type to be
-> int.
-> 
-> Fixes: 6a9eda34418f ("mtd: spi-nor: core: set mtd->eraseregions for non-uniform erase map")
-> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-
-Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-
-> ---
-> Changes since v1:
-> - Make i int instead of u8
-> ---
->  drivers/mtd/spi-nor/core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 65b32ea59afc6..3e1f1913536bf 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -3373,7 +3373,7 @@ static u32
->  spi_nor_get_region_erasesize(const struct spi_nor_erase_region *region,
->  			     const struct spi_nor_erase_type *erase_type)
->  {
-> -	u8 i;
-> +	int i;
->  
->  	if (region->overlaid)
->  		return region->size;
 
