@@ -1,359 +1,337 @@
-Return-Path: <linux-kernel+bounces-90012-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90013-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 396B886F8E5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 04:29:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17ADC86F8E7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 04:31:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5E4F28151B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 03:29:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 365321C20844
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 03:31:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF56B612E;
-	Mon,  4 Mar 2024 03:29:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BF504691;
+	Mon,  4 Mar 2024 03:31:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z7hFw9ac"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LPQoBdic"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC3AF6116
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 03:29:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DAC4211C
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 03:31:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709522941; cv=none; b=G+AvkGLsnY6MyMz0zN9PHbGgmqdrR6rVmwG95UZc1q8KCn5lbkr+smbIpSZEaVQOhUYvUHdZAjoX262hPszwwKu192unAC9DDC6egn3B0ymRL1l6BFdq/v22OwfT9YOVW/isWdod1NfQJwpALaDCk5eHBGoJHRP39Lm+96ECApU=
+	t=1709523067; cv=none; b=pZ8QRVjmOH/yPzHITZQ0VCtt5Fh+QspnT05qG5+fZ9yVq9j2I0h/16IvieaJ2CcnC198WN5k9SQ4G2h7ZmKCpQ75+j0NPFHOUCIloMRlijFArvIViQ9NC20oWCixq41aeP5pulCS99oVEDteTZirYkAu9kBADXQf5VCn7xrvKrU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709522941; c=relaxed/simple;
-	bh=8cuxxMKaThdnE9KmCstvXojMSrmD62OoxAVhmApiYKE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UrLM+A8opCltdOy+FPUbQ0gTSu7s8cJhSlBFhBLnoyDZOtpF4Fi8cmLo+il+FQdx1cbt9qd8tKT/OznyUeLA6bONUcFyJTdQmfnzpye4ok3gGN66KNjhD9Q1MyLXPsX6mHZSOD6Mg6tapEA0+onjdDn/fx5B3Hmebgh5v5YBr68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z7hFw9ac; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DDE5C433F1;
-	Mon,  4 Mar 2024 03:28:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709522941;
-	bh=8cuxxMKaThdnE9KmCstvXojMSrmD62OoxAVhmApiYKE=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Z7hFw9ac0QSFPKRPuoRgzB/oArpB9Hrop4kMsYGmW7xiT5GWIL4uMBYEUCl6qmFCM
-	 L9Dscl48ekyWVlvKKmm1fV8ydfr02lNEl8U2d2cuMn/4ymURa7rS/v/3a0SEbI9+8G
-	 KD4DkWQbuvB03uehQK/xGVCLIfQe0M7Vddx00WWekNOI/gZLcBQZfOfo6cUBciZXcg
-	 ksG9piS6GtMV98eAqbIMe8rbHLI+wropzQ0bVarXIhhIQ5LxQnbI4epeL53WniXtPK
-	 p2CJ+wCx/cH8gi5PMJo2INWLy1XXfqgvgCzYoOsfI+UBqwIYSDskkK5hyOt5vnQQVX
-	 337JPVahscn1g==
-From: Chao Yu <chao@kernel.org>
-To: jaegeuk@kernel.org
-Cc: linux-f2fs-devel@lists.sourceforge.net,
-	linux-kernel@vger.kernel.org,
-	Chao Yu <chao@kernel.org>
-Subject: [PATCH v2] f2fs: introduce SEGS_TO_BLKS/BLKS_TO_SEGS for cleanup
-Date: Mon,  4 Mar 2024 11:28:55 +0800
-Message-Id: <20240304032855.1425579-1-chao@kernel.org>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1709523067; c=relaxed/simple;
+	bh=ZqFN2UEEI55o9pl/dH9NvM4/qaNRkfnnNBV+14OUoxg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=SzMvh3spQAKkGpSK2Q4jgV3d+SCidkGfC6vKuA9T2miTLBQPngvy1HVbF8+Sh/U7hJFnO+bDQ8w71UkWFCe2mDfvb3g6w58+bdfqg79/684ti6ZK5PSv8qE+X6BSWgtEbHo5qwXqsr5w2n7a9UScrzqF5XV83WcD+qgdgJpYGhQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LPQoBdic; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709523064; x=1741059064;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=ZqFN2UEEI55o9pl/dH9NvM4/qaNRkfnnNBV+14OUoxg=;
+  b=LPQoBdickDlRaKX10ejBXH6LH+Hpk5999ku9StIjD+u/IEpJrOWgMXrS
+   xYbmBWKSoDs1BVZatkaSQKdBd0ItFXrhDJcd8gzob+IqsWt3EhrVSdNmg
+   7MfZaP+K6Omw+f0YhdoiFPqf+HO+BGgJNkgj89T5B1F61VWPWkJ7mBkkl
+   MOr+TtoDlSmYdvEAnQaVSjGD18SOs/ATpHwVOiAPcJgL65Hj8mT4gBCDI
+   ViEVZBpaqtu/udgQbwZ7FTZYg4N9Lgv5YDhGI+pQDCcBW56mAjNvWi0hp
+   CJiTmOsjDgpJvpYPfMvZkYEz4RJCzwGVHyjDXkdUmk0K3w6HgYpAw4wuW
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="4118238"
+X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
+   d="scan'208";a="4118238"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2024 19:31:03 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
+   d="scan'208";a="8793144"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2024 19:31:01 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Byungchul Park <byungchul@sk.com>
+Cc: <akpm@linux-foundation.org>,  <linux-kernel@vger.kernel.org>,
+  <linux-mm@kvack.org>,  <kernel_team@skhynix.com>,  <yuzhao@google.com>,
+  <hannes@cmpxchg.org>
+Subject: Re: [PATCH v5] mm, vmscan: retry kswapd's priority loop with
+ cache_trim_mode off on failure
+In-Reply-To: <20240304030413.GC13332@system.software.com> (Byungchul Park's
+	message of "Mon, 4 Mar 2024 12:04:13 +0900")
+References: <20240304023018.69705-1-byungchul@sk.com>
+	<87bk7ubtd4.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<20240304030413.GC13332@system.software.com>
+Date: Mon, 04 Mar 2024 11:29:06 +0800
+Message-ID: <877ciibrp9.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=ascii
 
-Just cleanup, no functional change.
+Byungchul Park <byungchul@sk.com> writes:
 
-Signed-off-by: Chao Yu <chao@kernel.org>
----
-v2:
-- don't cast type of segment number from unsigned int
-to long long, because segs << log_blocks_per_seg won't
-overflow due to f2fs doesn't support 64-bits addressing.
- fs/f2fs/debug.c   |  7 +++----
- fs/f2fs/f2fs.h    | 14 ++++++++------
- fs/f2fs/gc.c      | 10 +++++-----
- fs/f2fs/gc.h      |  4 ++--
- fs/f2fs/segment.c | 12 ++++++------
- fs/f2fs/segment.h | 15 +++++++--------
- fs/f2fs/super.c   | 16 ++++++++--------
- fs/f2fs/sysfs.c   |  4 ++--
- 8 files changed, 41 insertions(+), 41 deletions(-)
+> On Mon, Mar 04, 2024 at 10:53:11AM +0800, Huang, Ying wrote:
+>> Byungchul Park <byungchul@sk.com> writes:
+>> 
+>> > Sorry for noise. I should've applied v5's change in v4.
+>> >
+>> > Changes from v4:
+>> > 	1. Make other scans start with may_cache_trim_mode = 1.
+>> >
+>> > Changes from v3:
+>> > 	1. Update the test result in the commit message with v4.
+>> > 	2. Retry the whole priority loop with cache_trim_mode off again,
+>> > 	   rather than forcing the mode off at the highest priority,
+>> > 	   when the mode doesn't work. (feedbacked by Johannes Weiner)
+>> >
+>> > Changes from v2:
+>> > 	1. Change the condition to stop cache_trim_mode.
+>> >
+>> > 	   From - Stop it if it's at high scan priorities, 0 or 1.
+>> > 	   To   - Stop it if it's at high scan priorities, 0 or 1, and
+>> > 	          the mode didn't work in the previous turn.
+>> >
+>> > 	   (feedbacked by Huang Ying)
+>> >
+>> > 	2. Change the test result in the commit message after testing
+>> > 	   with the new logic.
+>> >
+>> > Changes from v1:
+>> > 	1. Add a comment describing why this change is necessary in code
+>> > 	   and rewrite the commit message with how to reproduce and what
+>> > 	   the result is using vmstat. (feedbacked by Andrew Morton and
+>> > 	   Yu Zhao)
+>> > 	2. Change the condition to avoid cache_trim_mode from
+>> > 	   'sc->priority != 1' to 'sc->priority > 1' to reflect cases
+>> > 	   where the priority goes to zero all the way. (feedbacked by
+>> > 	   Yu Zhao)
+>> > --->8---
+>> > From 58f1a0e41b9feea72d7fd4bd7bed1ace592e6e4c Mon Sep 17 00:00:00 2001
+>> > From: Byungchul Park <byungchul@sk.com>
+>> > Date: Mon, 4 Mar 2024 11:24:40 +0900
+>> > Subject: [PATCH v5] mm, vmscan: retry kswapd's priority loop with cache_trim_mode off on failure
+>> >
+>> > With cache_trim_mode on, reclaim logic doesn't bother reclaiming anon
+>> > pages.  However, it should be more careful to use the mode because it's
+>> > going to prevent anon pages from being reclaimed even if there are a
+>> > huge number of anon pages that are cold and should be reclaimed.  Even
+>> > worse, that leads kswapd_failures to reach MAX_RECLAIM_RETRIES and
+>> > stopping kswapd from functioning until direct reclaim eventually works
+>> > to resume kswapd.
+>> >
+>> > So kswapd needs to retry its scan priority loop with cache_trim_mode
+>> > off again if the mode doesn't work for reclaim.
+>> >
+>> > The problematic behavior can be reproduced by:
+>> >
+>> >    CONFIG_NUMA_BALANCING enabled
+>> >    sysctl_numa_balancing_mode set to NUMA_BALANCING_MEMORY_TIERING
+>> >    numa node0 (8GB local memory, 16 CPUs)
+>> >    numa node1 (8GB slow tier memory, no CPUs)
+>> >
+>> >    Sequence:
+>> >
+>> >    1) echo 3 > /proc/sys/vm/drop_caches
+>> >    2) To emulate the system with full of cold memory in local DRAM, run
+>> >       the following dummy program and never touch the region:
+>> >
+>> >          mmap(0, 8 * 1024 * 1024 * 1024, PROT_READ | PROT_WRITE,
+>> >               MAP_ANONYMOUS | MAP_PRIVATE | MAP_POPULATE, -1, 0);
+>> >
+>> >    3) Run any memory intensive work e.g. XSBench.
+>> >    4) Check if numa balancing is working e.i. promotion/demotion.
+>> >    5) Iterate 1) ~ 4) until numa balancing stops.
+>> >
+>> > With this, you could see that promotion/demotion are not working because
+>> > kswapd has stopped due to ->kswapd_failures >= MAX_RECLAIM_RETRIES.
+>> >
+>> > Interesting vmstat delta's differences between before and after are like:
+>> >
+>> >    +-----------------------+-------------------------------+
+>> >    | interesting vmstat    | before        | after         |
+>> >    +-----------------------+-------------------------------+
+>> >    | nr_inactive_anon      | 321935        | 1646193       |
+>> >    | nr_active_anon        | 1780700       | 456388        |
+>> >    | nr_inactive_file      | 30425         | 27836         |
+>> >    | nr_active_file        | 14961         | 1217          |
+>> >    | pgpromote_success     | 356           | 1310120       |
+>> >    | pgpromote_candidate   | 21953245      | 1736872       |
+>> >    | pgactivate            | 1844523       | 3292443       |
+>> >    | pgdeactivate          | 50634         | 1526701       |
+>> >    | pgfault               | 31100294      | 6715375       |
+>> >    | pgdemote_kswapd       | 30856         | 1954199       |
+>> >    | pgscan_kswapd         | 1861981       | 7100099       |
+>> >    | pgscan_anon           | 1822930       | 7061135       |
+>> >    | pgscan_file           | 39051         | 38964         |
+>> >    | pgsteal_anon          | 386           | 1925214       |
+>> >    | pgsteal_file          | 30470         | 28985         |
+>> >    | pageoutrun            | 30            | 500           |
+>> >    | numa_hint_faults      | 27418279      | 3090773       |
+>> >    | numa_pages_migrated   | 356           | 1310120       |
+>> >    +-----------------------+-------------------------------+
+>> >
+>> > Signed-off-by: Byungchul Park <byungchul@sk.com>
+>> > ---
+>> >  mm/vmscan.c | 23 +++++++++++++++++++++--
+>> >  1 file changed, 21 insertions(+), 2 deletions(-)
+>> >
+>> > diff --git a/mm/vmscan.c b/mm/vmscan.c
+>> > index bba207f41b14..77948b0f8b5b 100644
+>> > --- a/mm/vmscan.c
+>> > +++ b/mm/vmscan.c
+>> > @@ -108,6 +108,9 @@ struct scan_control {
+>> >  	/* Can folios be swapped as part of reclaim? */
+>> >  	unsigned int may_swap:1;
+>> >  
+>> > +	/* Can cache_trim_mode be turned on as part of reclaim? */
+>> > +	unsigned int may_cache_trim_mode:1;
+>> > +
+>> 
+>> Although it's generally not good to use negative logic, I think that
+>> it's better to name the flag as something like "no_cache_trim_mode" to
+>> make it easier to initialize the flag to its default value ("0").
+>
+> No preference to me. But don't think it's better to use another of may_*
+> in scan_control as Johannes Weiner suggested?
+>
+>> >  	/* Proactive reclaim invoked by userspace through memory.reclaim */
+>> >  	unsigned int proactive:1;
+>> >  
+>> > @@ -1500,6 +1503,7 @@ unsigned int reclaim_clean_pages_from_list(struct zone *zone,
+>> >  	struct scan_control sc = {
+>> >  		.gfp_mask = GFP_KERNEL,
+>> >  		.may_unmap = 1,
+>> > +		.may_cache_trim_mode = 1,
+>> >  	};
+>> >  	struct reclaim_stat stat;
+>> >  	unsigned int nr_reclaimed;
+>> > @@ -2094,6 +2098,7 @@ static unsigned int reclaim_folio_list(struct list_head *folio_list,
+>> >  		.may_writepage = 1,
+>> >  		.may_unmap = 1,
+>> >  		.may_swap = 1,
+>> > +		.may_cache_trim_mode = 1,
+>> >  		.no_demotion = 1,
+>> >  	};
+>> >  
+>> > @@ -2268,7 +2273,8 @@ static void prepare_scan_control(pg_data_t *pgdat, struct scan_control *sc)
+>> >  	 * anonymous pages.
+>> >  	 */
+>> >  	file = lruvec_page_state(target_lruvec, NR_INACTIVE_FILE);
+>> > -	if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE))
+>> > +	if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE) &&
+>> > +	    sc->may_cache_trim_mode)
+>> >  		sc->cache_trim_mode = 1;
+>> >  	else
+>> >  		sc->cache_trim_mode = 0;
+>> > @@ -5435,6 +5441,7 @@ static ssize_t lru_gen_seq_write(struct file *file, const char __user *src,
+>> >  		.may_writepage = true,
+>> >  		.may_unmap = true,
+>> >  		.may_swap = true,
+>> > +		.may_cache_trim_mode = 1,
+>> >  		.reclaim_idx = MAX_NR_ZONES - 1,
+>> >  		.gfp_mask = GFP_KERNEL,
+>> >  	};
+>> > @@ -6394,6 +6401,7 @@ unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
+>> >  		.may_writepage = !laptop_mode,
+>> >  		.may_unmap = 1,
+>> >  		.may_swap = 1,
+>> > +		.may_cache_trim_mode = 1,
+>> >  	};
+>> >  
+>> >  	/*
+>> > @@ -6439,6 +6447,7 @@ unsigned long mem_cgroup_shrink_node(struct mem_cgroup *memcg,
+>> >  		.may_unmap = 1,
+>> >  		.reclaim_idx = MAX_NR_ZONES - 1,
+>> >  		.may_swap = !noswap,
+>> > +		.may_cache_trim_mode = 1,
+>> >  	};
+>> >  
+>> >  	WARN_ON_ONCE(!current->reclaim_state);
+>> > @@ -6482,6 +6491,7 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
+>> >  		.may_writepage = !laptop_mode,
+>> >  		.may_unmap = 1,
+>> >  		.may_swap = !!(reclaim_options & MEMCG_RECLAIM_MAY_SWAP),
+>> > +		.may_cache_trim_mode = 1,
+>> >  		.proactive = !!(reclaim_options & MEMCG_RECLAIM_PROACTIVE),
+>> >  	};
+>> >  	/*
+>> > @@ -6744,6 +6754,7 @@ static int balance_pgdat(pg_data_t *pgdat, int order, int highest_zoneidx)
+>> >  		.gfp_mask = GFP_KERNEL,
+>> >  		.order = order,
+>> >  		.may_unmap = 1,
+>> > +		.may_cache_trim_mode = 1,
+>> >  	};
+>> >  
+>> >  	set_task_reclaim_state(current, &sc.reclaim_state);
+>> > @@ -6898,8 +6909,14 @@ static int balance_pgdat(pg_data_t *pgdat, int order, int highest_zoneidx)
+>> >  			sc.priority--;
+>> >  	} while (sc.priority >= 1);
+>> >  
+>> > -	if (!sc.nr_reclaimed)
+>> > +	if (!sc.nr_reclaimed) {
+>> > +		if (sc.may_cache_trim_mode) {
+>> 
+>> sc.may_cache_trim_mode && cache_trim_mode ?
+>
+> I don't think so. cache_trim_mode has a chance to switch every
+> prepare_scan_control() like:
+>
+>    if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE) &&
+>        sc->may_cache_trim_mode)                                          
+> 	sc->cache_trim_mode = 1;                                      
+>    else                                                                  
+> 	sc->cache_trim_mode = 0;                                      
+>
+> So referring to the last value is not a good idea.
 
-diff --git a/fs/f2fs/debug.c b/fs/f2fs/debug.c
-index 0d02224b99b7..8b0e1e71b667 100644
---- a/fs/f2fs/debug.c
-+++ b/fs/f2fs/debug.c
-@@ -135,7 +135,7 @@ static void update_general_status(struct f2fs_sb_info *sbi)
- 	si->cur_ckpt_time = sbi->cprc_info.cur_time;
- 	si->peak_ckpt_time = sbi->cprc_info.peak_time;
- 	spin_unlock(&sbi->cprc_info.stat_lock);
--	si->total_count = (int)sbi->user_block_count / BLKS_PER_SEG(sbi);
-+	si->total_count = BLKS_TO_SEGS(sbi, (int)sbi->user_block_count);
- 	si->rsvd_segs = reserved_segments(sbi);
- 	si->overp_segs = overprovision_segments(sbi);
- 	si->valid_count = valid_user_blocks(sbi);
-@@ -176,11 +176,10 @@ static void update_general_status(struct f2fs_sb_info *sbi)
- 	si->alloc_nids = NM_I(sbi)->nid_cnt[PREALLOC_NID];
- 	si->io_skip_bggc = sbi->io_skip_bggc;
- 	si->other_skip_bggc = sbi->other_skip_bggc;
--	si->util_free = (int)(free_user_blocks(sbi) >> sbi->log_blocks_per_seg)
-+	si->util_free = (int)(BLKS_TO_SEGS(sbi, free_user_blocks(sbi)))
- 		* 100 / (int)(sbi->user_block_count >> sbi->log_blocks_per_seg)
- 		/ 2;
--	si->util_valid = (int)(written_block_count(sbi) >>
--						sbi->log_blocks_per_seg)
-+	si->util_valid = (int)(BLKS_TO_SEGS(sbi, written_block_count(sbi)))
- 		* 100 / (int)(sbi->user_block_count >> sbi->log_blocks_per_seg)
- 		/ 2;
- 	si->util_invalid = 50 - si->util_free - si->util_valid;
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index db05fd02350a..33fd02716cf3 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -1815,12 +1815,14 @@ struct f2fs_sb_info {
- };
- 
- /* Definitions to access f2fs_sb_info */
--#define BLKS_PER_SEG(sbi)					\
--	((sbi)->blocks_per_seg)
--#define BLKS_PER_SEC(sbi)					\
--	((sbi)->segs_per_sec << (sbi)->log_blocks_per_seg)
--#define SEGS_PER_SEC(sbi)					\
--	((sbi)->segs_per_sec)
-+#define SEGS_TO_BLKS(sbi, segs)					\
-+		((segs) << (sbi)->log_blocks_per_seg)
-+#define BLKS_TO_SEGS(sbi, blks)					\
-+		((blks) >> (sbi)->log_blocks_per_seg)
-+
-+#define BLKS_PER_SEG(sbi)	((sbi)->blocks_per_seg)
-+#define BLKS_PER_SEC(sbi)	(SEGS_TO_BLKS(sbi, (sbi)->segs_per_sec))
-+#define SEGS_PER_SEC(sbi)	((sbi)->segs_per_sec)
- 
- __printf(3, 4)
- void f2fs_printk(struct f2fs_sb_info *sbi, bool limit_rate, const char *fmt, ...);
-diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
-index e435e1f58cd5..3898b22b07ea 100644
---- a/fs/f2fs/gc.c
-+++ b/fs/f2fs/gc.c
-@@ -301,7 +301,7 @@ static unsigned int get_max_cost(struct f2fs_sb_info *sbi,
- 
- 	/* LFS */
- 	if (p->gc_mode == GC_GREEDY)
--		return 2 * BLKS_PER_SEG(sbi) * p->ofs_unit;
-+		return SEGS_TO_BLKS(sbi, 2 * p->ofs_unit);
- 	else if (p->gc_mode == GC_CB)
- 		return UINT_MAX;
- 	else if (p->gc_mode == GC_AT)
-@@ -348,7 +348,7 @@ static unsigned int get_cb_cost(struct f2fs_sb_info *sbi, unsigned int segno)
- 	mtime = div_u64(mtime, usable_segs_per_sec);
- 	vblocks = div_u64(vblocks, usable_segs_per_sec);
- 
--	u = (vblocks * 100) >> sbi->log_blocks_per_seg;
-+	u = BLKS_TO_SEGS(sbi, vblocks * 100);
- 
- 	/* Handle if the system time has changed by the user */
- 	if (mtime < sit_i->min_mtime)
-@@ -2078,7 +2078,7 @@ static void update_sb_metadata(struct f2fs_sb_info *sbi, int secs)
- 	raw_sb->segment_count = cpu_to_le32(segment_count + segs);
- 	raw_sb->segment_count_main = cpu_to_le32(segment_count_main + segs);
- 	raw_sb->block_count = cpu_to_le64(block_count +
--			(long long)(segs << sbi->log_blocks_per_seg));
-+			(long long)SEGS_TO_BLKS(sbi, segs));
- 	if (f2fs_is_multi_device(sbi)) {
- 		int last_dev = sbi->s_ndevs - 1;
- 		int dev_segs =
-@@ -2094,7 +2094,7 @@ static void update_sb_metadata(struct f2fs_sb_info *sbi, int secs)
- static void update_fs_metadata(struct f2fs_sb_info *sbi, int secs)
- {
- 	int segs = secs * SEGS_PER_SEC(sbi);
--	long long blks = (long long)segs << sbi->log_blocks_per_seg;
-+	long long blks = SEGS_TO_BLKS(sbi, segs);
- 	long long user_block_count =
- 				le64_to_cpu(F2FS_CKPT(sbi)->user_block_count);
- 
-@@ -2136,7 +2136,7 @@ int f2fs_resize_fs(struct file *filp, __u64 block_count)
- 		int last_dev = sbi->s_ndevs - 1;
- 		__u64 last_segs = FDEV(last_dev).total_segments;
- 
--		if (block_count + (last_segs << sbi->log_blocks_per_seg) <=
-+		if (block_count + SEGS_TO_BLKS(sbi, last_segs) <=
- 								old_block_count)
- 			return -EINVAL;
- 	}
-diff --git a/fs/f2fs/gc.h b/fs/f2fs/gc.h
-index 28a00942802c..9c0d06c4d19a 100644
---- a/fs/f2fs/gc.h
-+++ b/fs/f2fs/gc.h
-@@ -96,7 +96,7 @@ static inline block_t free_segs_blk_count(struct f2fs_sb_info *sbi)
- 	if (f2fs_sb_has_blkzoned(sbi))
- 		return free_segs_blk_count_zoned(sbi);
- 
--	return free_segments(sbi) << sbi->log_blocks_per_seg;
-+	return SEGS_TO_BLKS(sbi, free_segments(sbi));
- }
- 
- static inline block_t free_user_blocks(struct f2fs_sb_info *sbi)
-@@ -104,7 +104,7 @@ static inline block_t free_user_blocks(struct f2fs_sb_info *sbi)
- 	block_t free_blks, ovp_blks;
- 
- 	free_blks = free_segs_blk_count(sbi);
--	ovp_blks = overprovision_segments(sbi) << sbi->log_blocks_per_seg;
-+	ovp_blks = SEGS_TO_BLKS(sbi, overprovision_segments(sbi));
- 
- 	if (free_blks < ovp_blks)
- 		return 0;
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index d50f007d0e86..22241aba6564 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -451,8 +451,8 @@ static inline bool excess_dirty_threshold(struct f2fs_sb_info *sbi)
- 	unsigned int nodes = get_pages(sbi, F2FS_DIRTY_NODES);
- 	unsigned int meta = get_pages(sbi, F2FS_DIRTY_META);
- 	unsigned int imeta = get_pages(sbi, F2FS_DIRTY_IMETA);
--	unsigned int threshold = (factor * DEFAULT_DIRTY_THRESHOLD) <<
--				sbi->log_blocks_per_seg;
-+	unsigned int threshold =
-+		SEGS_TO_BLKS(sbi, (factor * DEFAULT_DIRTY_THRESHOLD));
- 	unsigned int global_threshold = threshold * 3 / 2;
- 
- 	if (dents >= threshold || qdata >= threshold ||
-@@ -875,7 +875,7 @@ block_t f2fs_get_unusable_blocks(struct f2fs_sb_info *sbi)
- {
- 	int ovp_hole_segs =
- 		(overprovision_segments(sbi) - reserved_segments(sbi));
--	block_t ovp_holes = ovp_hole_segs << sbi->log_blocks_per_seg;
-+	block_t ovp_holes = SEGS_TO_BLKS(sbi, ovp_hole_segs);
- 	struct dirty_seglist_info *dirty_i = DIRTY_I(sbi);
- 	block_t holes[2] = {0, 0};	/* DATA and NODE */
- 	block_t unusable;
-@@ -2188,7 +2188,7 @@ void f2fs_clear_prefree_segments(struct f2fs_sb_info *sbi,
- 		if (!f2fs_sb_has_blkzoned(sbi) &&
- 		    (!f2fs_lfs_mode(sbi) || !__is_large_section(sbi))) {
- 			f2fs_issue_discard(sbi, START_BLOCK(sbi, start),
--				(end - start) << sbi->log_blocks_per_seg);
-+				SEGS_TO_BLKS(sbi, end - start));
- 			continue;
- 		}
- next:
-@@ -2305,7 +2305,7 @@ static int create_discard_cmd_control(struct f2fs_sb_info *sbi)
- 	atomic_set(&dcc->queued_discard, 0);
- 	atomic_set(&dcc->discard_cmd_cnt, 0);
- 	dcc->nr_discards = 0;
--	dcc->max_discards = MAIN_SEGS(sbi) << sbi->log_blocks_per_seg;
-+	dcc->max_discards = SEGS_TO_BLKS(sbi, MAIN_SEGS(sbi));
- 	dcc->max_discard_request = DEF_MAX_DISCARD_REQUEST;
- 	dcc->min_discard_issue_time = DEF_MIN_DISCARD_ISSUE_TIME;
- 	dcc->mid_discard_issue_time = DEF_MID_DISCARD_ISSUE_TIME;
-@@ -4541,7 +4541,7 @@ static int build_sit_info(struct f2fs_sb_info *sbi)
- #endif
- 
- 	sit_i->sit_base_addr = le32_to_cpu(raw_super->sit_blkaddr);
--	sit_i->sit_blocks = sit_segs << sbi->log_blocks_per_seg;
-+	sit_i->sit_blocks = SEGS_TO_BLKS(sbi, sit_segs);
- 	sit_i->written_valid_blocks = 0;
- 	sit_i->bitmap_size = sit_bitmap_size;
- 	sit_i->dirty_sentries = 0;
-diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
-index 4595f1cc0382..e1c0f418aa11 100644
---- a/fs/f2fs/segment.h
-+++ b/fs/f2fs/segment.h
-@@ -77,21 +77,21 @@ static inline void sanity_check_seg_type(struct f2fs_sb_info *sbi,
- #define TOTAL_SEGS(sbi)							\
- 	(SM_I(sbi) ? SM_I(sbi)->segment_count : 				\
- 		le32_to_cpu(F2FS_RAW_SUPER(sbi)->segment_count))
--#define TOTAL_BLKS(sbi)	(TOTAL_SEGS(sbi) << (sbi)->log_blocks_per_seg)
-+#define TOTAL_BLKS(sbi)	(SEGS_TO_BLKS(sbi, TOTAL_SEGS(sbi)))
- 
- #define MAX_BLKADDR(sbi)	(SEG0_BLKADDR(sbi) + TOTAL_BLKS(sbi))
- #define SEGMENT_SIZE(sbi)	(1ULL << ((sbi)->log_blocksize +	\
- 					(sbi)->log_blocks_per_seg))
- 
- #define START_BLOCK(sbi, segno)	(SEG0_BLKADDR(sbi) +			\
--	 (GET_R2L_SEGNO(FREE_I(sbi), segno) << (sbi)->log_blocks_per_seg))
-+	 (SEGS_TO_BLKS(sbi, GET_R2L_SEGNO(FREE_I(sbi), segno))))
- 
- #define NEXT_FREE_BLKADDR(sbi, curseg)					\
- 	(START_BLOCK(sbi, (curseg)->segno) + (curseg)->next_blkoff)
- 
- #define GET_SEGOFF_FROM_SEG0(sbi, blk_addr)	((blk_addr) - SEG0_BLKADDR(sbi))
- #define GET_SEGNO_FROM_SEG0(sbi, blk_addr)				\
--	(GET_SEGOFF_FROM_SEG0(sbi, blk_addr) >> (sbi)->log_blocks_per_seg)
-+	(BLKS_TO_SEGS(sbi, GET_SEGOFF_FROM_SEG0(sbi, blk_addr)))
- #define GET_BLKOFF_FROM_SEG0(sbi, blk_addr)				\
- 	(GET_SEGOFF_FROM_SEG0(sbi, blk_addr) & (BLKS_PER_SEG(sbi) - 1))
- 
-@@ -100,11 +100,10 @@ static inline void sanity_check_seg_type(struct f2fs_sb_info *sbi,
- 	NULL_SEGNO : GET_L2R_SEGNO(FREE_I(sbi),			\
- 		GET_SEGNO_FROM_SEG0(sbi, blk_addr)))
- #define CAP_BLKS_PER_SEC(sbi)					\
--	(SEGS_PER_SEC(sbi) * BLKS_PER_SEG(sbi) -		\
--	 (sbi)->unusable_blocks_per_sec)
-+	(BLKS_PER_SEC(sbi) - (sbi)->unusable_blocks_per_sec)
- #define CAP_SEGS_PER_SEC(sbi)					\
--	(SEGS_PER_SEC(sbi) - ((sbi)->unusable_blocks_per_sec >>	\
--	(sbi)->log_blocks_per_seg))
-+	(SEGS_PER_SEC(sbi) -					\
-+	BLKS_TO_SEGS(sbi, (sbi)->unusable_blocks_per_sec))
- #define GET_SEC_FROM_SEG(sbi, segno)				\
- 	(((segno) == -1) ? -1 : (segno) / SEGS_PER_SEC(sbi))
- #define GET_SEG_FROM_SEC(sbi, secno)				\
-@@ -904,7 +903,7 @@ static inline int nr_pages_to_skip(struct f2fs_sb_info *sbi, int type)
- 	if (type == DATA)
- 		return BLKS_PER_SEG(sbi);
- 	else if (type == NODE)
--		return 8 * BLKS_PER_SEG(sbi);
-+		return SEGS_TO_BLKS(sbi, 8);
- 	else if (type == META)
- 		return 8 * BIO_MAX_VECS;
- 	else
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index b038028cff27..78a76583a4aa 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -3756,9 +3756,9 @@ static void init_sb_info(struct f2fs_sb_info *sbi)
- 	sbi->segs_per_sec = le32_to_cpu(raw_super->segs_per_sec);
- 	sbi->secs_per_zone = le32_to_cpu(raw_super->secs_per_zone);
- 	sbi->total_sections = le32_to_cpu(raw_super->section_count);
--	sbi->total_node_count =
--		((le32_to_cpu(raw_super->segment_count_nat) / 2) *
--		NAT_ENTRY_PER_BLOCK) << sbi->log_blocks_per_seg;
-+	sbi->total_node_count = SEGS_TO_BLKS(sbi,
-+			((le32_to_cpu(raw_super->segment_count_nat) / 2) *
-+			NAT_ENTRY_PER_BLOCK));
- 	F2FS_ROOT_INO(sbi) = le32_to_cpu(raw_super->root_ino);
- 	F2FS_NODE_INO(sbi) = le32_to_cpu(raw_super->node_ino);
- 	F2FS_META_INO(sbi) = le32_to_cpu(raw_super->meta_ino);
-@@ -4200,14 +4200,14 @@ static int f2fs_scan_devices(struct f2fs_sb_info *sbi)
- 			if (i == 0) {
- 				FDEV(i).start_blk = 0;
- 				FDEV(i).end_blk = FDEV(i).start_blk +
--				    (FDEV(i).total_segments <<
--				    sbi->log_blocks_per_seg) - 1 +
--				    le32_to_cpu(raw_super->segment0_blkaddr);
-+					SEGS_TO_BLKS(sbi,
-+					FDEV(i).total_segments) - 1 +
-+					le32_to_cpu(raw_super->segment0_blkaddr);
- 			} else {
- 				FDEV(i).start_blk = FDEV(i - 1).end_blk + 1;
- 				FDEV(i).end_blk = FDEV(i).start_blk +
--					(FDEV(i).total_segments <<
--					sbi->log_blocks_per_seg) - 1;
-+						SEGS_TO_BLKS(sbi,
-+						FDEV(i).total_segments) - 1;
- 				FDEV(i).bdev_handle = bdev_open_by_path(
- 					FDEV(i).path, mode, sbi->sb, NULL);
- 			}
-diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
-index 906d2af2d849..10f308b3128f 100644
---- a/fs/f2fs/sysfs.c
-+++ b/fs/f2fs/sysfs.c
-@@ -493,8 +493,8 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
- 		spin_lock(&sbi->stat_lock);
- 		if (t > (unsigned long)(sbi->user_block_count -
- 				F2FS_OPTION(sbi).root_reserved_blocks -
--				(SM_I(sbi)->additional_reserved_segments <<
--					sbi->log_blocks_per_seg))) {
-+				SEGS_TO_BLKS(sbi,
-+				SM_I(sbi)->additional_reserved_segments))) {
- 			spin_unlock(&sbi->stat_lock);
- 			return -EINVAL;
- 		}
--- 
-2.40.1
+We should only restart without cache_trim_mode if cache_trim_mode causes
+issue.  If it isn't enabled with highest priority (lowest value), it
+doesn't help to disable cache_trim_mode.
 
+And, please take care of other "break" in the loop, for example, if
+kthread_should_stop(), etc.
+
+--
+Best Regards,
+Huang, Ying
+
+> 	Byungchul
+>
+>> > +			sc.may_cache_trim_mode = 0;
+>> > +			goto restart;
+>> > +		}
+>> > +
+>> >  		pgdat->kswapd_failures++;
+>> > +	}
+>> >  
+>> >  out:
+>> >  	clear_reclaim_active(pgdat, highest_zoneidx);
+>> > @@ -7202,6 +7219,7 @@ unsigned long shrink_all_memory(unsigned long nr_to_reclaim)
+>> >  		.may_writepage = 1,
+>> >  		.may_unmap = 1,
+>> >  		.may_swap = 1,
+>> > +		.may_cache_trim_mode = 1,
+>> >  		.hibernation_mode = 1,
+>> >  	};
+>> >  	struct zonelist *zonelist = node_zonelist(numa_node_id(), sc.gfp_mask);
+>> > @@ -7360,6 +7378,7 @@ static int __node_reclaim(struct pglist_data *pgdat, gfp_t gfp_mask, unsigned in
+>> >  		.may_writepage = !!(node_reclaim_mode & RECLAIM_WRITE),
+>> >  		.may_unmap = !!(node_reclaim_mode & RECLAIM_UNMAP),
+>> >  		.may_swap = 1,
+>> > +		.may_cache_trim_mode = 1,
+>> >  		.reclaim_idx = gfp_zone(gfp_mask),
+>> >  	};
+>> >  	unsigned long pflags;
+>> 
+>> --
+>> Best Regards,
+>> Huang, Ying
 
