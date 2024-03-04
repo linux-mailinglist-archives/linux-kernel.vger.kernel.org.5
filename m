@@ -1,185 +1,96 @@
-Return-Path: <linux-kernel+bounces-90377-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90379-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14A8A86FE67
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:08:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A7AC86FE74
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:11:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF4472818F8
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:08:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8427DB207EF
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:11:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAF9F224F1;
-	Mon,  4 Mar 2024 10:07:40 +0000 (UTC)
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D48A519BA6;
-	Mon,  4 Mar 2024 10:07:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB518224FD;
+	Mon,  4 Mar 2024 10:10:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="V1g4ZJXg"
+Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD95A224E0
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 10:10:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.50.219
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709546860; cv=none; b=eyfZbd9C9SR83Qm3UsEkreCEYqpYRp+Pgfvtp7C068DBaCvQqsPFJKogwisxwOnmiuXcWcrgzzg+8pV6G/LEe8NfYf8vDtGkZxUlEQlmZa4++Zj4MFenXfyfEQJG9jhop0H2pfgmshVHpXeORjsZSZeGfBvywfIXh2RCZTYGACk=
+	t=1709547058; cv=none; b=heFfD9arj9lBzC+Lv/BhUd25+VuqI9QT2VvNNGHGaMRaboa7arBA5bBUIaJbGVmTYWuUcPweNQVNO/F9AmIS/HBXDtwpO+SjzHaW+Szbe09uZeH6iTwiqMK4jHWTW1tBwJOCY6BW5EnszESU8TZQv8gXFKUqMpbmRw5KUUU9e7Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709546860; c=relaxed/simple;
-	bh=ItdYRVoq54OKq2AVn5zcTMjjQ4E7x0re7IeusVb+ZrE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HDDuP9NGKm5YLTm1t5xMFBXvZrgbJDi8SpE67IX6/phKRWzEoMAsn+GCC70mRNA6iRq+zjSp1ZbbfHF+wP3+GmvgTeKdiHwNKgPuCDN8HSOpRX4PHC+8cPkWUdZ86bnO3JLTutyHBA8Q9z2UDh06L/le+KvrRU4FqzMpqbLtkjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-6095dfcb461so40086787b3.2;
-        Mon, 04 Mar 2024 02:07:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709546856; x=1710151656;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ER0dUVit3cfqDNJxrJfG+KdxGIXN2zcWnKvfnV+eZ4A=;
-        b=P0KV7+4kMn/JHEAugUwfHtAF5FvkI7tUHQ6JneqKSXm2owOef3wbvZuFeStqvBUEhj
-         +j8JAc5nJfiyyiwksWPlgdKZVtGfsPQg6TP88vBLoC+uTdk5qJcxEJDOuHIJb2wlPqeQ
-         Jsq7ISPV7weCSM5a9pZPlYWxkUPiCw0QkulwQmEiNJCKCLzy4Geq22RXuZhdPJo8q58c
-         qnBPxW7gVySFd1TgsFLcls14nldnNKs/ICDMDW+7LZCwnrLZPQf1q9ZD6MUHbfyeSJf1
-         VvbqXSRMvZM8hpbbpu/PwY/hQhbbQyHL+Ru8ANAFbz79JSV9Xm02jJ4jXOFh+cJpnlex
-         2/pA==
-X-Forwarded-Encrypted: i=1; AJvYcCVPN0RkIWxx/0vFKJx/Cv0zxtpDZ9r2/ZJPNYavCutZb0nJqHQNTPiaNnqyy37CheGQ3wjXe2a/39nd/5SLMU0xlxfNIj7Iw5AjSmhZvGbIQjEh5pNE8RjJvrXmNOzJoghKtF9oxzd1zI0fKH7xcn2Rem+7uPphYrdNzuMkpExp5keWgcII7kHe
-X-Gm-Message-State: AOJu0YwY1Myx2PITwyu6qX3BTa1h8mdVXI9sqK/vD8FCsnDLaKAdZNAM
-	keCJbCpbAtogvSg1KUxPxHRvzRf9zBwH2NJMi+dyynIjO2pv5hTakUwXwGCxSiw=
-X-Google-Smtp-Source: AGHT+IGSX0Qke3WlqBFpd4EhNxWre9v3aaJ3FphzDLDMm6A1E+XV/jHBQ+2/w/X4kYvKG+9WjSsUyA==
-X-Received: by 2002:a0d:db83:0:b0:609:740a:c782 with SMTP id d125-20020a0ddb83000000b00609740ac782mr7436411ywe.17.1709546856125;
-        Mon, 04 Mar 2024 02:07:36 -0800 (PST)
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com. [209.85.128.170])
-        by smtp.gmail.com with ESMTPSA id by18-20020a05690c083200b006096c7415c2sm2458758ywb.26.2024.03.04.02.07.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Mar 2024 02:07:35 -0800 (PST)
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-60983233a0dso32844557b3.3;
-        Mon, 04 Mar 2024 02:07:35 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVrYJE2VeKsr4IMQweCfu2TYwz7Pbgx8CDjcuwN76Tigq+SdyVdti9J4+flYTdKLdrwV0NmBJB+187EAWIOSgI+r78Ix4fLPUUbExR86dLXSCLbnRoqX3kNW5Vb6Nu7x6VmmpeSEJF2BzbuJNrFum/P2B8O/l4YFxABhzxVKpOP4njzaeHapZXx
-X-Received: by 2002:a81:9856:0:b0:609:7e98:1562 with SMTP id
- p83-20020a819856000000b006097e981562mr6776283ywg.38.1709546855021; Mon, 04
- Mar 2024 02:07:35 -0800 (PST)
+	s=arc-20240116; t=1709547058; c=relaxed/simple;
+	bh=Qd+RI16juGVjN7zrBNOH3Q/KIOhwUI6VbC2DgVyOadg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=MO/YeUGvWRtlHJUSd14upQFdmyGBcLtZyBPs8I5ck2AkBFZUG+xheTaMH0bBAAe2FT5hgxqyOjFYlaUHOUPWETiypSchlNpIlu6iO6iahRKaMo3JzC0q6QQUzGiz8NXE/BT/BPbDckShu/JABiIGO8EVJ7t2KdQpZL4wFDC+o98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=V1g4ZJXg; arc=none smtp.client-ip=45.254.50.219
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=rWWze
+	ynqvpKTE8wM5BvJ7WhI4cRh2jw6a0Kbi0ZwsdA=; b=V1g4ZJXgnDduvAq01bKml
+	dVxaDiyDzC5H4z8/n32ZfrcKQKaIKR84bNNjoy39SlkZ4ACN02OkX7LyOHn3rPMt
+	3o5L/JA0VGQGxfl9d6OGJoZ6RYmMk3p9veoiCHDvQ2k/XdiEmDlo1ZL8lSo48HFe
+	dM9SAFp1cugZROOeyXS7fM=
+Received: from ProDesk.. (unknown [103.29.142.67])
+	by gzga-smtp-mta-g0-3 (Coremail) with SMTP id _____wD3n_jzneVlOacmAQ--.60415S2;
+	Mon, 04 Mar 2024 18:10:01 +0800 (CST)
+From: Andy Yan <andyshrk@163.com>
+To: heiko@sntech.de
+Cc: hjc@rock-chips.com,
+	s.hauer@pengutronix.de,
+	dri-devel@lists.freedesktop.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-rockchip@lists.infradead.org,
+	Andy Yan <andy.yan@rock-chips.com>
+Subject: [PATCH] drm/rockchip: vop2: Remove AR30 and AB30 format support
+Date: Mon,  4 Mar 2024 18:09:52 +0800
+Message-Id: <20240304100952.3592984-1-andyshrk@163.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240228225527.1052240-1-helen.koike@collabora.com>
- <20240228225527.1052240-2-helen.koike@collabora.com> <20240229-dancing-laughing-groundhog-d85161@houat>
- <5d7ed81b-37f9-48e9-ab7e-484b74ca886c@gmail.com> <CAHk-=wixVy3WYvjbt43ZSrCqPDsS76QJQSkXFbbPsAOs1MCSAQ@mail.gmail.com>
- <CABXOdTeT2ip1uS2EG2w8pW7254Tnd=ZDNz-KC61-G-yqDTVgJA@mail.gmail.com>
- <269232e6-41c9-4aa1-9320-662beabcd69b@infradead.org> <CAMuHMdXuXV9WV3aANFTteuP8Q3JY6R5OWsVBedGOP7e_JguxqA@mail.gmail.com>
- <CAMuHMdWi069YAvOoXe7sHJ_o702tY4tDQgL3sfApPR3aCnZboQ@mail.gmail.com> <20240304-transparent-oriole-of-honeydew-f4174e@houat>
-In-Reply-To: <20240304-transparent-oriole-of-honeydew-f4174e@houat>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 4 Mar 2024 11:07:22 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXyvcyXw8eXc2MONNaBYYGpVdnPh2h3T=QV38MEUzhu9A@mail.gmail.com>
-Message-ID: <CAMuHMdXyvcyXw8eXc2MONNaBYYGpVdnPh2h3T=QV38MEUzhu9A@mail.gmail.com>
-Subject: Re: [PATCH 1/3] kci-gitlab: Introducing GitLab-CI Pipeline for Kernel Testing
-To: Maxime Ripard <mripard@kernel.org>
-Cc: Randy Dunlap <rdunlap@infradead.org>, Guenter Roeck <groeck@google.com>, 
-	Linus Torvalds <torvalds@linuxfoundation.org>, Nikolai Kondrashov <spbnick@gmail.com>, 
-	Helen Koike <helen.koike@collabora.com>, linuxtv-ci@linuxtv.org, 
-	dave.pigott@collabora.com, linux-kernel@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, linux-kselftest@vger.kernel.org, 
-	gustavo.padovan@collabora.com, pawiecz@collabora.com, 
-	tales.aparecida@gmail.com, workflows@vger.kernel.org, 
-	kernelci@lists.linux.dev, skhan@linuxfoundation.org, 
-	kunit-dev@googlegroups.com, nfraprado@collabora.com, davidgow@google.com, 
-	cocci@inria.fr, Julia.Lawall@inria.fr, laura.nao@collabora.com, 
-	ricardo.canuelo@collabora.com, kernel@collabora.com, 
-	gregkh@linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wD3n_jzneVlOacmAQ--.60415S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrKr47XrWkGr4DZw17ur45KFg_yoWfuwcEk3
+	47X3Wfur4xCrn8Jw12y3y7WrZFy3WI9Fs2ga9Yyan5AF1vvw1rXFy0vry7Gas8JF42kFs7
+	GF1jqry3CFn8WjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU1YL95UUUUU==
+X-CM-SenderInfo: 5dqg52xkunqiywtou0bp/xtbBEB6XXmVOCknmwAAAsJ
 
-Hi Maxime,
+From: Andy Yan <andy.yan@rock-chips.com>
 
-On Mon, Mar 4, 2024 at 10:15=E2=80=AFAM Maxime Ripard <mripard@kernel.org> =
-wrote:
-> On Mon, Mar 04, 2024 at 09:12:38AM +0100, Geert Uytterhoeven wrote:
-> > On Sun, Mar 3, 2024 at 10:30=E2=80=AFAM Geert Uytterhoeven <geert@linux=
--m68k.org> wrote:
-> > > On Sun, Mar 3, 2024 at 3:30=E2=80=AFAM Randy Dunlap <rdunlap@infradea=
-d.org> wrote:
-> > > > On 3/2/24 14:10, Guenter Roeck wrote:
-> > > > > While checkpatch is indeed of arguable value, I think it would he=
-lp a
-> > > > > lot not having to bother about the persistent _build_ failures on
-> > > > > 32-bit systems. You mentioned the fancy drm CI system above, but =
-they
-> > > > > don't run tests and not even test builds on 32-bit targets, which=
- has
-> > > > > repeatedly caused (and currently does cause) build failures in dr=
-m
-> > > > > code when trying to build, say, arm:allmodconfig in linux-next. M=
-ost
-> > > > > trivial build failures in linux-next (and, yes, sometimes mainlin=
-e)
-> > > > > could be prevented with a simple generic CI.
-> > > >
-> > > > Yes, definitely. Thanks for bringing that up.
-> > >
-> > > +1
-> >
-> > > Kisskb can send out email when builds get broken, and when they get
-> > > fixed again.  I receive such emails for the m68k builds.
-> >
-> > Like this (yes, one more in DRM; sometimes I wonder if DRM is meant onl=
-y
-> > for 64-bit little-endian platforms with +200 GiB/s memory bandwidth):
-> >
-> > ---8<------------------------------------------------------------------=
--
-> > Subject: kisskb: FAILED linux-next/m68k-allmodconfig/m68k-gcc8 Mon Mar =
-04, 06:35
-> > To: geert@linux-m68k.org
-> > Date: Mon, 04 Mar 2024 08:05:14 -0000
-> >
-> > FAILED linux-next/m68k-allmodconfig/m68k-gcc8 Mon Mar 04, 06:35
-> >
-> > http://kisskb.ellerman.id.au/kisskb/buildresult/15135537/
-> >
-> > Commit:   Add linux-next specific files for 20240304
-> >           67908bf6954b7635d33760ff6dfc189fc26ccc89
-> > Compiler: m68k-linux-gcc (GCC) 8.5.0 / GNU ld (GNU Binutils) 2.36.1
-> >
-> > Possible errors
-> > ---------------
-> >
-> > ERROR: modpost: "__udivdi3" [drivers/gpu/drm/sun4i/sun4i-drm-hdmi.ko] u=
-ndefined!
-> > make[3]: *** [scripts/Makefile.modpost:145: Module.symvers] Error 1
-> > make[2]: *** [Makefile:1871: modpost] Error 2
-> > make[1]: *** [Makefile:240: __sub-make] Error 2
-> > make: *** [Makefile:240: __sub-make] Error 2
-> >
-> > No warnings found in log.
-> > ------------------------------------------------------------------->8--=
--
->
-> The driver is meant for a controller featured in an SoC with a Cortex-A8
-> ARM CPU and less than a GiB/s memory bandwidth.
+The Alpha blending for 30 bit RGB/BGR are not
+functioning properly for rk3568/rk3588, so remove
+it from the format list.
 
-Good, so the hardware cannot possibly need 64-bit pixel clock values ;-)
+Fixes: bfd8a5c228fa ("drm/rockchip: vop2: Add more supported 10bit formats")
+Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
+---
 
-BTW, doesn't the build fail on arm32, too?
+ drivers/gpu/drm/rockchip/rockchip_vop2_reg.c | 2 --
+ 1 file changed, 2 deletions(-)
 
+diff --git a/drivers/gpu/drm/rockchip/rockchip_vop2_reg.c b/drivers/gpu/drm/rockchip/rockchip_vop2_reg.c
+index 48170694ac6b..18efb3fe1c00 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_vop2_reg.c
++++ b/drivers/gpu/drm/rockchip/rockchip_vop2_reg.c
+@@ -17,9 +17,7 @@
+ 
+ static const uint32_t formats_cluster[] = {
+ 	DRM_FORMAT_XRGB2101010,
+-	DRM_FORMAT_ARGB2101010,
+ 	DRM_FORMAT_XBGR2101010,
+-	DRM_FORMAT_ABGR2101010,
+ 	DRM_FORMAT_XRGB8888,
+ 	DRM_FORMAT_ARGB8888,
+ 	DRM_FORMAT_XBGR8888,
+-- 
+2.34.1
 
-> And I just sent a fix for that one, thanks for the report.
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
