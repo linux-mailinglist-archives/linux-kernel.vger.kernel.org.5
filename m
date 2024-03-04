@@ -1,99 +1,83 @@
-Return-Path: <linux-kernel+bounces-91136-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91137-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AED388709F3
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:56:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E7728709F5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:56:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B1DB2819C9
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:56:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6099A1C20491
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:56:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D13478B58;
-	Mon,  4 Mar 2024 18:55:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2692578B4D;
+	Mon,  4 Mar 2024 18:56:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Kwgn33wd"
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ok477O0O"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 004FD78688;
-	Mon,  4 Mar 2024 18:55:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6998A6166A;
+	Mon,  4 Mar 2024 18:56:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709578558; cv=none; b=oHOAxRx8JGsPExuu+qg+YR5RlWXAWCHSwWcKJMJbyu2I6mbBPw2Ev7+S7yULSeuNUO3lQR6FTqWGTC9lgu+m9+kcd63INi4vUBZ/yTbVItGxJUa4qketZl8ti8IIp6vtZ/Pd9HqGqOv27SsyQ+6WCYnx4A5z7xLKl8ipKKyVQB8=
+	t=1709578589; cv=none; b=EBPB8BA5yOtO96f2grmX04KoMZtE7s5tMjmzzKLE+2FYPxZkgPR3k+aBEo4sjeMP28M1xJQcqN3iAGLS5UAXHXmqYSBXaZoCoIOrSBofmAmSnFK0LrF+Z6PvkYQVYZx/j+LCrcUpHUdn+1+7yQnNx6jd6CNozQKRlae2cODi3W0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709578558; c=relaxed/simple;
-	bh=bGKnzitZArijvL9g3fzz6a59BbPOTjf9tQjbCrOYxj0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=q9uc2LKLXw4DJsLD84Zwlo27omeiIUHcaPFaHKdXR8F9t3gV3NyP75epvfpCaepteSTOCF//2b+w6ZajLmQ7/dp73ZsCbk5TchnCLvUWeQiJTriYSM3LYVqhxnJmp34fvu+RMWx92zCJxoNgYS7NzQ6YLiBPBZ+FQjCaTDGdLKQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Kwgn33wd; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e622b46f45so1002034b3a.1;
-        Mon, 04 Mar 2024 10:55:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709578556; x=1710183356; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bd5qc8Km15KNV6bPSOT31D1lIprfjOiZpGb5QhbtTm0=;
-        b=Kwgn33wd0svZuMgqrxhxesrbo0CxdKp7kvwQubQbl+u3QiMsXZCfzKzRNcWd8075KQ
-         thna22rMii7lPab34ZMehm1I8KCMonVGulOLwvjUhZBEHtLQhwpZ4loD3z25mAQl0P7h
-         E/twuEQdj0USXivbvb1Sk7+pDxwsp5Hs3kky/HCY07ppruRetGrfHTfcEh7OEn1Y9TfD
-         OiV3dmFkqzPuKNdHLTIwVrvujLTw9m4Hld76oE5icTUHJmqOmnm/+yMZDOWuENOBnva8
-         zh/WdVbaiik96oL33sC0LINo7RV0uHDtfqQVDd71mjg9eyCE5hLHF937XY5YAoe6igqD
-         qpKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709578556; x=1710183356;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bd5qc8Km15KNV6bPSOT31D1lIprfjOiZpGb5QhbtTm0=;
-        b=cdJ1mxDnHFdtFIQreRAKY6liHiM2puij74/S4+H+A0wq6yftnQn9c+vRH+b9ytvdql
-         /pq/wNPCxl7eLucc9R4KAEDoJblP1blOyyUpEzZChHQapRLNEW1IUIktCQ+9PD651SIq
-         4BsLVFUoiQU6uqjXCnzZ3X2yjh3vKrkkQOXHY74Ei3dQaFIz+f7rmAToWapDG5LCLqSl
-         cPu6y073m21RgIvmtw2/ibiMmcdDwnmBbIwc2jfHvJenw4NYa+YpY1oVUGWxOGc719w+
-         /hdM9R3Q8z3Ol8lwuq4al/A2o/+x7YRI62zbwzX8FiLDUqq7ia9vooOZEuPgaR/O7nuv
-         +ysQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWzg9yjmSyvcH0cwxfSF+VTxWfR3YVP3ONE5hERt6tb1CNj/QMXllbmEvT+H+R6AvE1BzHNLpfES/VkQ92caCbrzi2yxEm6pz9CJAyROKH0isTnH81v11Bi4OhVH8ZdXmo2OEfNAr4WhQ==
-X-Gm-Message-State: AOJu0YwYNXOjZ37QXtp3tupp6jU1wwvwlsTho5vMVG6RLSpGuL9Xp1wI
-	kBRkZ8XLhA5OOWqMyr/UbbT3D7e+Rn6kPE1SKpGgKg0oixEFfLxLPgRtTuDn
-X-Google-Smtp-Source: AGHT+IFLv7EawyhstGPKMyvZgfHs2RJ/bsO1dCAYq4K5ztCm0v0NGezxFvOpKgSC/d/nNZr2u7mlhg==
-X-Received: by 2002:a05:6a00:4fc9:b0:6e6:189b:a3a4 with SMTP id le9-20020a056a004fc900b006e6189ba3a4mr3892541pfb.5.1709578555119;
-        Mon, 04 Mar 2024 10:55:55 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id s16-20020a62e710000000b006e5a6e83f8esm6666222pfh.134.2024.03.04.10.55.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 10:55:54 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Mon, 4 Mar 2024 10:55:53 -0800
-From: Guenter Roeck <linux@roeck-us.net>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org, naresh.kamboju@linaro.org,
-	daniel.diaz@linaro.org, brauner@kernel.org
-Subject: Re: [PATCH v4 3/3] ext4: initialize sbi->s_freeclusters_counter and
- sbi->s_dirtyclusters_counter before use in kunit test
-Message-ID: <62b092a6-764f-4140-a586-1f6a94dfea36@roeck-us.net>
-References: <20240304163543.6700-1-shikemeng@huaweicloud.com>
- <20240304163543.6700-4-shikemeng@huaweicloud.com>
+	s=arc-20240116; t=1709578589; c=relaxed/simple;
+	bh=AGakVKBVHKZFUX1HC/uvSeswhvXnYisvQIbiyGd2BIw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=pysNdeDm8PhYoyvqxm4pXtp11JdEeK1XaR3vLlhP07AypD74RNsY00aeQAkH6UA+8PRfOYa/KDkvUJOx1Z2sSSEGBrd8Q4bbaPFUlUM3TUIdtLBvFsoIUYCzVyUiNtfC3UtlekmEi5V3b4snrloD59wGLOyTzKovnvVXCm4bK88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ok477O0O; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B34DC433C7;
+	Mon,  4 Mar 2024 18:56:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709578589;
+	bh=AGakVKBVHKZFUX1HC/uvSeswhvXnYisvQIbiyGd2BIw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=ok477O0OMniidJJ8lhthcFOsCei3t2AVKOmnRsMr6F2geD53c3okMIh4ojy7S5DCs
+	 ZmApql6tI/DntjIDKvjkzy5+KFI72T3wpOpINZtk2A8xU0vS7U4IMYev8r6SKGaaLv
+	 6Kg2Xv7qK7wxDqSjf52gY39witHyX3EZvjI77w/Lu5nFagodq4Bj2z8Zm0IDQ9nN20
+	 oMfp0lBoWlblBepHIvQn+Xkuh/zRov8to6pERz/Z8jUa6DAMG8zGaA0LPoQvXALzOP
+	 s2eHsVu+ZBaL2wj5QNN5OIVLRoV/ulIuEet1MWrVRt6/pA62aj7CyW8pqqdfhyqCgA
+	 r4T84yWq7lfEg==
+From: Namhyung Kim <namhyung@kernel.org>
+To: linux-perf-users@vger.kernel.org,
+	James Clark <james.clark@arm.com>
+Cc: Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	al.grant@arm.com,
+	Peter Zijlstra <peterz@infradead.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	linux-kernel@vger.kernel.org,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Subject: Re: [PATCH] perf version: Display availability of OpenCSD support
+Date: Mon,  4 Mar 2024 10:56:25 -0800
+Message-ID: <170957856861.1606352.735199628659445730.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.44.0.rc1.240.g4c46232300-goog
+In-Reply-To: <20240301133829.346286-1-james.clark@arm.com>
+References: <20240301133829.346286-1-james.clark@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240304163543.6700-4-shikemeng@huaweicloud.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 05, 2024 at 12:35:43AM +0800, Kemeng Shi wrote:
-> Fix that sbi->s_freeclusters_counter and sbi->s_dirtyclusters_counter are
-> used before initialization.
+On Fri, 1 Mar 2024 13:38:29 +0000, James Clark wrote:
+> This is useful for scripts that work with Perf and ETM trace. Rather
+> than them trying to parse Perf's error output at runtime to see if it
+> was linked or not.
 > 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> 
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+Applied to perf-tools-next, thanks!
+
+Best regards,
+-- 
+Namhyung Kim <namhyung@kernel.org>
 
