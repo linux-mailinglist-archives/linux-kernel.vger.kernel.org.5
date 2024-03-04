@@ -1,187 +1,110 @@
-Return-Path: <linux-kernel+bounces-90475-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90472-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56B2D86FFBE
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:04:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAE4E86FFB3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:02:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87CC11C22441
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:04:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 960A9B249EE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:02:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30976381DF;
-	Mon,  4 Mar 2024 11:04:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AAD6B654;
+	Mon,  4 Mar 2024 11:01:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=damenly.org header.i=@damenly.org header.b="WbY6V3Aj"
-Received: from mail-108-mta139.mxroute.com (mail-108-mta139.mxroute.com [136.175.108.139])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=smtpcorp.com header.i=@smtpcorp.com header.b="rTPB3rgx";
+	dkim=pass (2048-bit key) header.d=asem.it header.i=@asem.it header.b="meAzQJQs"
+Received: from e2i652.smtp2go.com (e2i652.smtp2go.com [103.2.142.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C334B25764
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 11:04:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.175.108.139
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DBDD39AD4
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 11:01:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.2.142.140
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709550248; cv=none; b=m8f+uQegrquDB3DFsm60EKc7BMujJuwGDipp2n0eaLTkwKe6s5pqo1+WzaSzTnyF2v/6jkLRf/V5iumMOaJjOBon6GC1/Dz8j/TkAjR6rHGmxdb4re0XHi3/fTguyPbBO1KlMbGFkcfr4GitRsC6DubFzbf27Hw9SKJVe6Mv1GM=
+	t=1709550086; cv=none; b=nyZcZiGTZaFJVyrkQhqFXHwDQpXTLPZlfP31bThwj1aIjrfFaFsUcO56iA1svjkwdQ7WRYoVUkMO6UbM2MVjzwN13p1Z5Gs0tZ2OANt+dPuKYkmaUz2M9MLzWi4o7Qnc8RRxQIBHMSjseJAfPePql7Loyctp5S/8ESgtxjg9oZk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709550248; c=relaxed/simple;
-	bh=ABUoXqb4QcK+r5diPiS8LiJQ/RSUu4on3uLn1QJNZcw=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=VvqSa/ssRuh2eRDhwJPGrFdk1KO1kAZiReZJ6y9nMPO7ux54L2GFEecofzc8BBkUhFMerzRT691YpS7JixFFMxCJNIpd6w7/ZMLfD57X1DXweNc6YshQdJO4+IED91/OWg2VGC2VQc4LLdgcUMokPI9Kk5KhDvNql7fHycS3RQM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=damenly.org; spf=pass smtp.mailfrom=damenly.org; dkim=pass (2048-bit key) header.d=damenly.org header.i=@damenly.org header.b=WbY6V3Aj; arc=none smtp.client-ip=136.175.108.139
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=damenly.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=damenly.org
-Received: from filter006.mxroute.com ([136.175.111.2] filter006.mxroute.com)
- (Authenticated sender: mN4UYu2MZsgR)
- by mail-108-mta139.mxroute.com (ZoneMTA) with ESMTPSA id 18e091dda850003bea.005
- for <linux-kernel@vger.kernel.org>
- (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
- Mon, 04 Mar 2024 10:58:55 +0000
-X-Zone-Loop: 32bf8802ebccda33ae8fe587da874fb3fcacce6f3235
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=damenly.org
-	; s=x; h=Content-Transfer-Encoding:Content-Type:Message-ID:References:
-	In-Reply-To:Subject:Cc:To:From:Date:MIME-Version:Sender:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=1UHzGpZdyo1LjOM2X4xUat1TELrdDB5G2pictjBphhE=; b=WbY6V3AjRRB67xfHdY9ToSWf/A
-	iyAsRRXYbHErJ2EpvW0vKvDz7xup68uZuW5A5psDgsDbjWB/LSo0SMhsnChCO7JphKL/advlksyOp
-	j3fCR2AOEiNzzJMN5L5pxB8LPMtGIxU8GM5RjzPz30RBZ0Cmwm5yNRnbYCxv9RHXyUXg7oD8JW7z+
-	1WwjGpN7gFsUZK7Etbiv276r4yPtfw/BqgiLw2DK5XSIou0SFASie8y6zVf2UnG39DvcKw/5vLoBy
-	DukPlxn8VBxeRqPZgDzeAi7aSb8WEyie3ajr2DIZI0gnV+NXH5o7wh+UO7RlIpAvA3+6ErAdHTVV0
-	NGVy0iwg==;
+	s=arc-20240116; t=1709550086; c=relaxed/simple;
+	bh=rBFiQEB8z/lHUfa+VHj4uIsM/ByrCz1KLthEmNo8hYw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jY5CCELUgCd4TYwlEf6jFT61FvmFYfQ1EqwEYKCkKNY7EIhiOCBP6AclIZ0DfiLJmcQWIhdY18NEqs7PwLtw6b16HSMddvZVl2b2PdkKTiovfX24/zDy9+sYF0W+IQSTlBgdvimeRiARYgZFP0CNp7SDsa1Bs/ENS+Czl+RdX74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=asem.it; spf=pass smtp.mailfrom=em1174574.asem.it; dkim=pass (2048-bit key) header.d=smtpcorp.com header.i=@smtpcorp.com header.b=rTPB3rgx; dkim=pass (2048-bit key) header.d=asem.it header.i=@asem.it header.b=meAzQJQs; arc=none smtp.client-ip=103.2.142.140
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=asem.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=em1174574.asem.it
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=smtpcorp.com; s=a1-4; h=Feedback-ID:X-Smtpcorp-Track:Message-Id:Date:
+	Subject:To:From:Reply-To:Sender:List-Unsubscribe;
+	bh=pxSNbisWh19U3rdQiiYOgslG+MwHDfuy5ghPqFpWc4E=; b=rTPB3rgxufVjq8U6sKvdzd2T8+
+	UaqXqayzFoQcWOwRqoB+vzT2o3pMcjx/4epyKXLA4fMvVLrRq4zudpI/Ycr2c7zyvoYrSEFDig9HD
+	R4Fy1PI5mEpsMBdTxNtjPWhdcPkZdkJUcoF7+bLKbRtuSCjAohODPSXomkWv/tjNcwb6uK6cBOK8h
+	r1hz4MPmxAEpjyPekW74reqwxklOUz65LKUBpYAPuK+qyCN4UCHJ7h9YPFDk7jT+jJRyrp6ju3RGa
+	VSBIEMlhXrVSxLkVl9e2l7Ttjh2nempMJvM+nnnGxCV5gCR2/rXH+PmzOLgUCA0/z8vJzPOQRWuHe
+	F3pzpNMg==;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=asem.it;
+ i=@asem.it; q=dns/txt; s=s1174574; t=1709550083; h=from : subject : to
+ : message-id : date; bh=pxSNbisWh19U3rdQiiYOgslG+MwHDfuy5ghPqFpWc4E=;
+ b=meAzQJQscpSkaY8hjwk4U4XszqMW+ttDZYguZnneF4iwEJGj2+gwSXTEawsRRVD40TqQd
+ WJmAsOadsTnCgot5th0wZiYX5pIq5ltebiFZ3zFrvm//3z68HDohPZIbj+PcucVeLZ7J6zF
+ SwRxF2Com//sSyDNL6BCAS1pyKpv52sYv4v9DuSp2S4w4buisJaZarJhB348V91nPY36w7v
+ djDxpC1v26CvTXfr5xNPgcMxtmGCuQS4Gl9jH0Bi4nNXd6NtHBsojnKwCqEUsijk4ZhkcE9
+ WTPCzBODQrSLrEY7Y8rB1uNys6qSD01zHlz/UVPqVUtIzk6kVt+7YgimqJFQ==
+Received: from [10.45.79.71] (helo=SmtpCorp) by smtpcorp.com with esmtpsa
+ (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+ (Exim 4.94.2-S2G) (envelope-from <f.suligoi@asem.it>)
+ id 1rh64J-qt4GTh-Gc; Mon, 04 Mar 2024 11:01:15 +0000
+Received: from [10.86.249.198] (helo=asas054.asem.intra)
+ by smtpcorp.com with esmtpa (Exim 4.96.1-S2G)
+ (envelope-from <f.suligoi@asem.it>) id 1rh64I-Dv15V4-0A;
+ Mon, 04 Mar 2024 11:01:14 +0000
+Received: from flavio-x.asem.intra ([172.16.18.47]) by asas054.asem.intra with
+ Microsoft SMTPSVC(10.0.14393.4169); Mon, 4 Mar 2024 12:01:12 +0100
+From: Flavio Suligoi <f.suligoi@asem.it>
+To: "Rafael J . Wysocki" <rafael@kernel.org>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>
+Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Flavio Suligoi <f.suligoi@asem.it>
+Subject: [PATCH] thermal: core: remove superfluous line in comment
+Date: Mon,  4 Mar 2024 12:00:22 +0100
+Message-Id: <20240304110022.2421632-1-f.suligoi@asem.it>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Mon, 04 Mar 2024 10:58:53 +0000
-From: l@damenly.org
-To: Li Zetao <lizetao1@huawei.com>
-Cc: kent.overstreet@linux.dev, bfoster@redhat.com,
- linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] bcachefs: Fix null-ptr-deref in bch2_fs_alloc()
-In-Reply-To: <f472dffa-d888-1566-e1e2-313f4eb842c2@huawei.com>
-References: <20240304032203.3480001-1-lizetao1@huawei.com>
- <frx6edjh.fsf@damenly.org> <f472dffa-d888-1566-e1e2-313f4eb842c2@huawei.com>
-Message-ID: <c7a48c2f58f409b3446de7655ce59a42@damenly.org>
-X-Sender: l@damenly.org
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Id: l@damenly.org
+X-OriginalArrivalTime: 04 Mar 2024 11:01:12.0413 (UTC)
+ FILETIME=[4529D0D0:01DA6E23]
+X-Smtpcorp-Track: 1rh64mDv15V40j.5bn49EblaxtBw
+Feedback-ID: 1174574m:1174574aXfMg4B:1174574sD5JYLEGfq
+X-Report-Abuse: Please forward a copy of this message, including all headers,
+ to <abuse-report@smtp2go.com>
 
-On 2024-03-04 09:47, Li Zetao wrote:
-> On 2024/3/4 13:12, Su Yue wrote:
->> 
->> On Mon 04 Mar 2024 at 11:22, Li Zetao <lizetao1@huawei.com> wrote:
->> 
->>> There is a null-ptr-deref issue reported by kasan:
->>> 
->>>   KASAN: null-ptr-deref in range   
->>> [0x0000000000000000-0x0000000000000007]
->>>   Call Trace:
->>>     <TASK>
->>>     bch2_fs_alloc+0x1092/0x2170 [bcachefs]
->>>     bch2_fs_open+0x683/0xe10 [bcachefs]
->>>     ...
->>> 
->>> When initializing the name of bch_fs, it needs to dynamically alloc 
->>> memory
->>> to meet the length of the name. However, when name allocation failed, 
->>> it
->>> will cause a null-ptr-deref access exception in subsequent string 
->>> copy.
->>> 
->> bch2_printbuf_make_room() does return -ENOMEM but
->> bch2_prt_printf() doesn't check the return code. And there are too 
->> many
->> callers of bch2_prt_printf() don't check allocation_failure.
-> Indeed, too many callers do not check whether name allocation is 
-> successful, which may cause hidden dangers. Maybe it is neccssary to 
-> use somethings like __GFP_NOFAIL flag here?
+The first and the third lines of the comment of function:
 
-No need of this as printbuf is not critical for using __GFP_NOFAIL. 
-__GFP_NOFAIL should be used carefully.
-It's just my nags. IOW, a fix as your fix is fine to me unless someone 
-sends 100+ patches to fix places like this.
+thermal_zone_device_set_polling()
 
->> 
->>> Fix this issue by checking if name allocation is successful.
->>> 
->>> Fixes: 401ec4db6308 ("bcachefs: Printbuf rework")
->>> Signed-off-by: Li Zetao <lizetao1@huawei.com>
->>> ---
->>>  fs/bcachefs/super.c | 6 +++---
->>>  1 file changed, 3 insertions(+), 3 deletions(-)
->>> 
->>> diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
->>> index 6b23e11825e6..24fa41bbe7e3 100644
->>> --- a/fs/bcachefs/super.c
->>> +++ b/fs/bcachefs/super.c
->>> @@ -818,13 +818,13 @@ static struct bch_fs *bch2_fs_alloc(struct 
->>> bch_sb *sb, struct bch_opts opts)
->>>          goto err;
->>> 
->>>      pr_uuid(&name, c->sb.user_uuid.b);
->>> -    strscpy(c->name, name.buf, sizeof(c->name));
->>> -    printbuf_exit(&name);
->>> -
->>>      ret = name.allocation_failure ? -BCH_ERR_ENOMEM_fs_name_alloc  : 
->>> 0;
->>>      if (ret)
->>>          goto err;
->>> 
->> IIRC, krealloc() doesn't free old pointer if new-size allocation 
->> failed.
->> There is no printbuf_exit called in label err then memory leak 
->> happens.
->> 
-> Here krealloc() is a bit complicated:
-> 1.if name allocation failure happens on the first time, the old pointer 
-> will be NULL, which cause a null-ptr-deref issue.
+belong to the same sentences, so they have to be joined together.
 
-But kfree(NULL) is safe, right?
+Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+---
+ drivers/thermal/thermal_core.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-mm/slub.c:
-/**
-  * kfree - free previously allocated memory
-  * @object: pointer returned by kmalloc() or kmem_cache_alloc()
+diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+index f7a7d43809e7..34a31bc72023 100644
+--- a/drivers/thermal/thermal_core.c
++++ b/drivers/thermal/thermal_core.c
+@@ -273,7 +273,6 @@ static int __init thermal_register_governors(void)
+ 
+ /*
+  * Zone update section: main control loop applied to each zone while monitoring
+- *
+  * in polling mode. The monitoring is done using a workqueue.
+  * Same update may be done on a zone by calling thermal_zone_device_update().
   *
-  * If @object is NULL, no operation is performed.
-  */
-void kfree(const void *object)
-
-
 -- 
-Su
-> 2.if name allocation failure don't happens on the first time, the old 
-> pointer will be available and need to free.
-> 
-> So the correct modification should be something like this:
->     pr_uuid(&name, c->sb.user_uuid.b);
->     if (unlikely(!name.buf)) {
->         ret = -BCH_ERR_ENOMEM_fs_name_alloc;
->         goto err;
->     }
-> 
->     strscpy(c->name, name.buf, sizeof(c->name));
->     printbuf_exit(&name);
-> 
->     ret = name.allocation_failure ? -BCH_ERR_ENOMEM_fs_name_alloc  : 0;
->     if (ret)
->         goto err;
->> -- Su
->>> 
->>> +    strscpy(c->name, name.buf, sizeof(c->name));
->>> +    printbuf_exit(&name);
->>> +
->>>      /* Compat: */
->>>      if (le16_to_cpu(sb->version) <= 
->>>  bcachefs_metadata_version_inode_v2 &&
->>>          !BCH_SB_JOURNAL_FLUSH_DELAY(sb))
-> 
-> Best regards,
-> --
-> Li Zetao
+2.34.1
+
 
