@@ -1,155 +1,252 @@
-Return-Path: <linux-kernel+bounces-91326-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91327-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0193C870EC0
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:46:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FD95870F01
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:50:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85A42B27399
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:46:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E0FD1F21161
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:50:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 848667BAE6;
-	Mon,  4 Mar 2024 21:46:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC4DB7B3E6;
+	Mon,  4 Mar 2024 21:49:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="F05ipFzq"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UQZOEUvR"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D41E10A35;
-	Mon,  4 Mar 2024 21:46:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56BC11EB5A;
+	Mon,  4 Mar 2024 21:49:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709588792; cv=none; b=gSHo90drCFaStRAm9cWBuMCfNo/DgEakhtbSbKFzLDN2SQiZ7osiqfiXxddeg6+JjT/D5SyN1VAdL1xGFhpRNV/qoe5+zrbB/AhJUKahxn8LHnKcnB7ALMUxkIMCBxxUA5pxNit6ARnKgt46s8gbPP5+nJoayqCeJwVloq/6+8s=
+	t=1709588997; cv=none; b=M10qHGkWSkTGZ8jKNnhy7mPVuHh4Mk1zVYlXs3jO3dwBhESdHPKd54m05hterWF7OoWZMG+4TTE/92cibLFipqR415XGinK9LFlmvjj9Qn6qO4jRtFldWu7EVBFBE8zfE+kcxxa27RZBAKHBD10UuR1GImrrAzjNnu1aLx+y9hc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709588792; c=relaxed/simple;
-	bh=PkIAzelvrlhN7PE4DU9IpFBpQgozAf+D/ekjzn1DMXg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=lNVn2bMxTzU4onpVDc7qEkiWlUQE2G7m0sa+Ubg+YkP1CSRbYXZzWWakEXVsdcGfF0MwrR4Y2WINsU5qeDqLt7a6PUT5MhkhPtuc3oMZZgAGDnNCcnth8ehnvxgYiLBNkpyG7jT6hO+IhP4G+zfBAgG9C0wHyqqfNzWROY26wHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=F05ipFzq; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 424Hb3bO030620;
-	Mon, 4 Mar 2024 21:46:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=peMhEB7LCKrCHa9OQkkEzlMT5kXB97fl2hhCe2/Uhp8=; b=F0
-	5ipFzqX2DqedTwKQaNkZu0i6fINNBBHXpMl40gfvSLuBSV57UHwkxOszjHIuW0/h
-	ifk1VaqNMcungqiqp4moEj7SzADlppz1D8M2USpjKpMuJ9zcMb2g7YvL1k4B7FN4
-	wegXQgkTKLhcZt/bJsxnn5qMiN6Fpn0QPseA/Tw+FXS6IQBdQFaBrgzTrfyIEIvy
-	mqIavOUbDdADtWCcoA89r+W79jHTSPFd2PRM8bxYv6/CbDx0q5H5T0MjWijBd/D8
-	8o1AJ7zKp5JwKj8yaNDEIDMesTMTZCtNlT2dGXzpuWs3kZCYuRJNHNkMJiTxe7Rf
-	r45sRoG7jOjKe7dAUEAg==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wn8fxsys0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 04 Mar 2024 21:46:12 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 424LkBW2008665
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 4 Mar 2024 21:46:11 GMT
-Received: from [10.110.86.150] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 4 Mar
- 2024 13:46:10 -0800
-Message-ID: <228772c6-034e-4727-b410-391316d8f340@quicinc.com>
-Date: Mon, 4 Mar 2024 13:46:09 -0800
+	s=arc-20240116; t=1709588997; c=relaxed/simple;
+	bh=N/qoAzsb/7sLnf5j1MSPu0te/TnAblCIa6qjqGuyO9E=;
+	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
+	 MIME-Version:Content-Type; b=cSI+6HkCE6fEv57nF69/XXpdPDKibj7vTuDGv8hSbwaVYD7r6Yw59IwCxlBE4xPlu7oy2FBoAvAe6wCklv4L1lTeq0eRUtT8xHR8BNOO3JcRxvQUqUVzgIRaCiLFgblKz2rTRVjsDKXA0fQToSoYCjpppJKGPK2Tna7CO8L6wBg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UQZOEUvR; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d2ab9c5e83so50691761fa.2;
+        Mon, 04 Mar 2024 13:49:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709588993; x=1710193793; darn=vger.kernel.org;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=r1fd5JWBu5m9ExqQ1tPo3RjEN00HnWcydYH7DAOUA/I=;
+        b=UQZOEUvRsO4y1Vj73CCaYdPqL8/0/INd/t+SuZeXM2GDo/6TTdSuR/Png8YsdBunY6
+         +rVmlvOBtSc4CibE+Nqpsr/ZgXzejGCL6hfB5MmXosBbZJG/XZhw5/cK0V6yL2iN3e8h
+         OaZoISQ7xaCybhbA8Lm5tcK5e9H4KJ87JHzGygmVjc9fYOSTols1AFvMy6e1pbLKExTc
+         jx3LTwPnSJ+jWzb7DjCAIk8ydKABCM0zp2MhAth/gvIUOX3jYbGvOsrlcWOZx23avc3V
+         EYbQ+BjpbaYbKf/N8ny2ngPiVVbfhNDO5gxGdlPqmCiN+I4NlIQJV4CgNjnwI3I9SCPK
+         KknA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709588993; x=1710193793;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=r1fd5JWBu5m9ExqQ1tPo3RjEN00HnWcydYH7DAOUA/I=;
+        b=tRm23T4pybooKzusMMRoxD4juEdkS7Whqhs+YzrXbo/94uoVicb+MyiX18KpmS4yC9
+         LQjSqDYsIjA4Sq5akwzUG+1FDtIFcS2do5eRreN8FkApJmOGAyTjQ17D6Z69mwdDrkXl
+         mEdJSGoivfPW4QmtWJCrvagrJIlh/l9DKV0iNVLz0HY3AaPPmlBTx27P2v5+rE6A93bW
+         PntzXkyaJaNrSxCQ9RilnEhUqs17ebyprsQ9Lq/S41gsxYmCA82nALZbld2exOU2fY4E
+         XF0UhbbWEDefdH4JhiWTgDjS83RzwbVswK3q6I1B7Scb0cpJpBLKzO6yRekKsVHu+8vB
+         C5GQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU+MOnS0zNOQ8LargZYmepjlCHcOV7hAb5JEaLCjdIRUUIICF37sSdXnd/fgc8mIgqbOnYWuh/JTB4/qOjLBvOAF2n+E8YqbQOACm+i
+X-Gm-Message-State: AOJu0YyZt8Ok0s05fBUW1xR/r3/5eyT9rlIDYKZBXrmVANlm7VVRjBum
+	4SgxE56C0p2sVgjDw+4DeXZH5nNcMJoqQseVrkcukDblUr4nMxJj
+X-Google-Smtp-Source: AGHT+IE0Pk2KzSaDGL17XDUQZmFBaTN4nO30WcTvLXVgfEjNbKLW6/KcodVPa/0E6urqu3Io6JSWCA==
+X-Received: by 2002:a05:651c:b06:b0:2d2:9b43:8d48 with SMTP id b6-20020a05651c0b0600b002d29b438d48mr88296ljr.39.1709588993145;
+        Mon, 04 Mar 2024 13:49:53 -0800 (PST)
+Received: from razdolb (95-24-155-202.broadband.corbina.ru. [95.24.155.202])
+        by smtp.gmail.com with ESMTPSA id r20-20020a2e9954000000b002d0c639e0cesm1902850ljj.6.2024.03.04.13.49.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Mar 2024 13:49:52 -0800 (PST)
+References: <20240229165333.227484-1-mike.rudenko@gmail.com>
+ <20240229165333.227484-20-mike.rudenko@gmail.com>
+ <20240304213103.GA3239@pendragon.ideasonboard.com>
+User-agent: mu4e 1.10.8; emacs 29.2.50
+From: Mikhail Rudenko <mike.rudenko@gmail.com>
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, Sakari Ailus
+ <sakari.ailus@linux.intel.com>, Jacopo Mondi <jacopo@jmondi.org>, Tommaso
+ Merciai <tomm.merciai@gmail.com>, Christophe JAILLET
+ <christophe.jaillet@wanadoo.fr>, Dave Stevenson
+ <dave.stevenson@raspberrypi.com>, Mauro Carvalho Chehab
+ <mchehab@kernel.org>
+Subject: Re: [PATCH v3 19/20] media: i2c: ov4689: Refactor ov4689_s_stream
+Date: Tue, 05 Mar 2024 00:48:14 +0300
+In-reply-to: <20240304213103.GA3239@pendragon.ideasonboard.com>
+Message-ID: <87wmqhfz0f.fsf@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: defconfig: build ath12k as a module
-Content-Language: en-US
-To: Bartosz Golaszewski <brgl@bgdev.pl>,
-        Catalin Marinas
-	<catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Bjorn Andersson
-	<quic_bjorande@quicinc.com>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski@linaro.org>,
-        Geert Uytterhoeven
-	<geert+renesas@glider.be>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "Arnd
- Bergmann" <arnd@arndb.de>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        "Marek
- Szyprowski" <m.szyprowski@samsung.com>
-CC: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        <ath12k@lists.infradead.org>, <linux-wireless@vger.kernel.org>
-References: <20240219084610.11007-1-brgl@bgdev.pl>
- <CAMRc=Md0H4=UZWNOoZR3-b50BrF-ch=34aPdqm2JhOXQzNi-mQ@mail.gmail.com>
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <CAMRc=Md0H4=UZWNOoZR3-b50BrF-ch=34aPdqm2JhOXQzNi-mQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: ZlLrK936vgFL4t36CuSf9fGamDQGBLFA
-X-Proofpoint-ORIG-GUID: ZlLrK936vgFL4t36CuSf9fGamDQGBLFA
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-04_18,2024-03-04_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 bulkscore=0 mlxlogscore=666 clxscore=1015 phishscore=0
- mlxscore=0 adultscore=0 suspectscore=0 spamscore=0 impostorscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403040169
+Content-Type: text/plain
 
-On 3/3/2024 2:34 AM, Bartosz Golaszewski wrote:
-> On Mon, Feb 19, 2024 at 9:46 AM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+
+Hi Laurent,
+
+and thanks for the review.
+
+On 2024-03-04 at 23:31 +02, Laurent Pinchart <laurent.pinchart@ideasonboard.com> wrote:
+
+> Hi Mikhail,
+>
+> Thank you for the patch.
+>
+> On Thu, Feb 29, 2024 at 07:53:32PM +0300, Mikhail Rudenko wrote:
+>> Split ov4689_s_stream into __ov4689_stream_on and __ov4689_stream_off
+>> functions. Also remove repetitive pm_runtime_put calls and call
+>> pm_runtime_put once at the end of the __ov4689_stream_off function if
+>> any error occurred.
 >>
->> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->>
->> Qualcomm sm8550-qrd and sm8650-qrd boards have ath12k modules as part of
->> their on-board WCN7850 WLAN/BT packages. Enable the relevant driver in
->> defconfig.
->>
->> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-
-Would have been nice to cc the ath12k and linux-wireless lists (done
-now). Just happened to stumble across this.
-
-As an ath12k maintainer--
-Reviewed-by: Jeff Johnson <quic_jjohnson@quicinc.com>
-
+>> Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
 >> ---
->>  arch/arm64/configs/defconfig | 1 +
->>  1 file changed, 1 insertion(+)
+>>  drivers/media/i2c/ov4689.c | 100 ++++++++++++++++++++-----------------
+>>  1 file changed, 53 insertions(+), 47 deletions(-)
 >>
->> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
->> index 056a6cc546a4..3f3d3350cf90 100644
->> --- a/arch/arm64/configs/defconfig
->> +++ b/arch/arm64/configs/defconfig
->> @@ -408,6 +408,7 @@ CONFIG_WCN36XX=m
->>  CONFIG_ATH11K=m
->>  CONFIG_ATH11K_AHB=m
->>  CONFIG_ATH11K_PCI=m
->> +CONFIG_ATH12K=m
->>  CONFIG_BRCMFMAC=m
->>  CONFIG_MWIFIEX=m
->>  CONFIG_MWIFIEX_SDIO=m
->> --
->> 2.40.1
+>> diff --git a/drivers/media/i2c/ov4689.c b/drivers/media/i2c/ov4689.c
+>> index 2496067b90a0..5cea9b5ba201 100644
+>> --- a/drivers/media/i2c/ov4689.c
+>> +++ b/drivers/media/i2c/ov4689.c
+>> @@ -537,61 +537,67 @@ static int ov4689_setup_blc_anchors(struct ov4689 *ov4689,
+>>  	return ret;
+>>  }
 >>
-> 
-> Gentle ping.
-> 
-> Bart
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>> +static int __ov4689_stream_on(struct ov4689 *ov4689,
+>
+> No need for the __ prefix. Same for __ov4689_stream_off().
 
+Will remove the prefix in v4.
+
+>> +			      struct v4l2_subdev_state *sd_state)
+>> +{
+>> +	int ret;
+>> +
+>> +	ret = pm_runtime_resume_and_get(ov4689->dev);
+>> +	if (ret < 0)
+>> +		return ret;
+>> +
+>> +	ret = cci_multi_reg_write(ov4689->regmap, ov4689_common_regs,
+>> +				  ARRAY_SIZE(ov4689_common_regs), NULL);
+>> +	if (ret)
+>> +		goto cleanup_pm;
+>> +
+>> +	ret = ov4689_setup_timings(ov4689, sd_state);
+>> +	if (ret)
+>> +		goto cleanup_pm;
+>> +
+>> +	ret = ov4689_setup_blc_anchors(ov4689, sd_state);
+>> +	if (ret)
+>> +		goto cleanup_pm;
+>> +
+>> +	ret = __v4l2_ctrl_handler_setup(&ov4689->ctrl_handler);
+>> +	if (ret)
+>> +		goto cleanup_pm;
+>> +
+>> +	ret = cci_write(ov4689->regmap, OV4689_REG_CTRL_MODE,
+>> +			OV4689_MODE_STREAMING, NULL);
+>> +	if (ret)
+>> +		goto cleanup_pm;
+>> +
+>> +	return 0;
+>> +
+>> + cleanup_pm:
+>
+> No space before the label. I would also name it just "error".
+
+Thanks for the suggestion, will do so in v4.
+
+> With those small changes,
+>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+>
+>> +	pm_runtime_put(ov4689->dev);
+>> +	return ret;
+>> +}
+>> +
+>> +static int __ov4689_stream_off(struct ov4689 *ov4689)
+>> +{
+>> +	cci_write(ov4689->regmap, OV4689_REG_CTRL_MODE, OV4689_MODE_SW_STANDBY,
+>> +		  NULL);
+>> +	pm_runtime_mark_last_busy(ov4689->dev);
+>> +	pm_runtime_put_autosuspend(ov4689->dev);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>  static int ov4689_s_stream(struct v4l2_subdev *sd, int on)
+>>  {
+>>  	struct ov4689 *ov4689 = to_ov4689(sd);
+>>  	struct v4l2_subdev_state *sd_state;
+>> -	struct device *dev = ov4689->dev;
+>> -	int ret = 0;
+>> +	int ret;
+>>
+>>  	sd_state = v4l2_subdev_lock_and_get_active_state(&ov4689->subdev);
+>>
+>> -	if (on) {
+>> -		ret = pm_runtime_resume_and_get(dev);
+>> -		if (ret < 0)
+>> -			goto unlock_and_return;
+>> -
+>> -		ret = cci_multi_reg_write(ov4689->regmap,
+>> -					  ov4689_common_regs,
+>> -					  ARRAY_SIZE(ov4689_common_regs),
+>> -					  NULL);
+>> -		if (ret) {
+>> -			pm_runtime_put(dev);
+>> -			goto unlock_and_return;
+>> -		}
+>> -
+>> -		ret = ov4689_setup_timings(ov4689, sd_state);
+>> -		if (ret) {
+>> -			pm_runtime_put(dev);
+>> -			goto unlock_and_return;
+>> -		}
+>> -
+>> -		ret = ov4689_setup_blc_anchors(ov4689, sd_state);
+>> -		if (ret) {
+>> -			pm_runtime_put(dev);
+>> -			goto unlock_and_return;
+>> -		}
+>> -
+>> -		ret = __v4l2_ctrl_handler_setup(&ov4689->ctrl_handler);
+>> -		if (ret) {
+>> -			pm_runtime_put(dev);
+>> -			goto unlock_and_return;
+>> -		}
+>> -
+>> -		ret = cci_write(ov4689->regmap, OV4689_REG_CTRL_MODE,
+>> -				OV4689_MODE_STREAMING, NULL);
+>> -		if (ret) {
+>> -			pm_runtime_put(dev);
+>> -			goto unlock_and_return;
+>> -		}
+>> -	} else {
+>> -		cci_write(ov4689->regmap, OV4689_REG_CTRL_MODE,
+>> -			  OV4689_MODE_SW_STANDBY, NULL);
+>> -		pm_runtime_mark_last_busy(dev);
+>> -		pm_runtime_put_autosuspend(dev);
+>> -	}
+>> +	if (on)
+>> +		ret = __ov4689_stream_on(ov4689, sd_state);
+>> +	else
+>> +		ret = __ov4689_stream_off(ov4689);
+>>
+>> -unlock_and_return:
+>>  	v4l2_subdev_unlock_state(sd_state);
+>>
+>>  	return ret;
+
+
+--
+Best regards,
+Mikhail Rudenko
 
