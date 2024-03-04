@@ -1,826 +1,213 @@
-Return-Path: <linux-kernel+bounces-90270-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90271-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA62486FCAD
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:05:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 387FE86FCAE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:05:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF3B51C2217F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:05:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9DD62B215E6
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:05:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6C3D1B5BB;
-	Mon,  4 Mar 2024 09:04:59 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 294B01A731;
-	Mon,  4 Mar 2024 09:04:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709543098; cv=none; b=rGuCHMu74bByN0hphP7pW0bSSbFdIgcPM8aJtWmhRted+xc0I457236GoHL9NWGT2tJpn9ZKpPLVT3smWvTmnY6XYCTMkE7qQOwW2fzUoIqguILfsR3DI0lbIM5yKZeYfDUzZI8mqEVuMwLr4d/TYg1FWL/cLNYGShWWkMzQGs0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709543098; c=relaxed/simple;
-	bh=l4wv2HTEtBH4U0aOIGr5tKq7yAId05b+INAdZNMXCCc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=OICkerOqp1e0wVvcm5wGRNnIWEy0wemql6PklrczkmgsYC5Dpv0C07OcYhiJ2N09UJkq/nwrUZZc/DoJS1G/H70esgQRJ5VnU37Zj7/wT78xrh4TpS5MoJaFeiY+vkpIeYIfXS3OmuZRXkNK2akiU5qELEjJ56grRdGGyFE71IY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 17EFB1FB;
-	Mon,  4 Mar 2024 01:05:32 -0800 (PST)
-Received: from [10.37.129.2] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 69F8A3F762;
-	Mon,  4 Mar 2024 01:04:53 -0800 (PST)
-From: Balint Dobszay <balint.dobszay@arm.com>
-To: Sumit Garg <sumit.garg@linaro.org>
-Cc: op-tee@lists.trustedfirmware.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- jens.wiklander@linaro.org, corbet@lwn.net, sudeep.holla@arm.com,
- rdunlap@infradead.org, krzk@kernel.org, gyorgy.szing@arm.com
-Subject: Re: [PATCH v2 2/3] tee: tstee: Add Trusted Services TEE driver
-Date: Mon, 04 Mar 2024 10:04:51 +0100
-X-Mailer: MailMate (1.14r5937)
-Message-ID: <666ACEA9-7A19-46BC-BC85-837021910900@arm.com>
-In-Reply-To: <CAFA6WYOKtxGTU33BY_z1H01UF41rm6g-LTxUi-DX4CJrV-aT3w@mail.gmail.com>
-References: <20240223095133.109046-1-balint.dobszay@arm.com>
- <20240223095133.109046-3-balint.dobszay@arm.com>
- <CAFA6WYOKtxGTU33BY_z1H01UF41rm6g-LTxUi-DX4CJrV-aT3w@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 407001B5A0;
+	Mon,  4 Mar 2024 09:05:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XGn2HT2Y"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A90EC1A58B
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 09:05:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.9
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709543144; cv=fail; b=XKEFJx1pZDaJ2QVrcakDpdhfcAHTf8R7jjSTnoJCTPt8fLtQWzEFDQ4nbbO3A2zLDq7NeRidpuOWGHkEoXfj16XnKExpiYYExrvXaF8m9ZT53j08nmE+hOHrfxIkt8k95tAjIl2F/pUs6ncJO64PLIo4HAIm0NMqwGH2nHd673A=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709543144; c=relaxed/simple;
+	bh=3D2vrS4SjS2zxvYkRk4gch/wnCD0VBKEGljXWVZwOBA=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=tiW5s6dHUB3eF+3Y90Sn5v6zHuVD01y5+W5OqnpQC9WPaY0Mq5ddpz7ILbJVNFthx9VyXCRL8XSVr9mSPhsxEb33DZwj1prcMQkBVx+vDuod5HUhtWgrISl+mvB0YPMeUUbEzYIGE4yjnX8rPZ7P2Z38fLepBQiwOnXjayfgHnI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XGn2HT2Y; arc=fail smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709543143; x=1741079143;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=3D2vrS4SjS2zxvYkRk4gch/wnCD0VBKEGljXWVZwOBA=;
+  b=XGn2HT2YWH412XpyiRD9Z0l+jShEQLfi4VnqbPEdhstQ++o54eLuVn9z
+   va2Mu/KysueR2JPGdyPjVuBH+nXe1+o4lt6taPaICqualGV5sqDG5IDke
+   34C+IGsvOY80dePyB4EDVTT7wWbTcqcSSAduIgF2ywUofivtJ7LArtLG4
+   7/DZ8EIMXSUVtOI0bssxaF89X9oNKohSMsHNkS8AuqsF+RTCC9JGlDpIY
+   9mH5lMBqdk4YhAGHOUb+kLffW1Z5aK342FmjsALirt7VuHKC1lBoZ4XYC
+   Orz1EYyH/PLG6nVyKZ9VyYHoowAr212Na566HdLuOsleV0XYHiHH4C+ni
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="26487767"
+X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
+   d="scan'208";a="26487767"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 01:05:42 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
+   d="scan'208";a="9500934"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orviesa008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Mar 2024 01:05:42 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 4 Mar 2024 01:05:41 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 4 Mar 2024 01:05:41 -0800
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 4 Mar 2024 01:05:40 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=l27egLC+E/22JsYrK9dtCIc+YphnUKZBVYqvwETbbhXhhH1jpY+pSF/4tjF5cCZqWWVhEY3oLo1j5mZBwwsV89kPPJEas2pACgSl3LF2MDz/cpKdfA4P4F0yzJMHuvVSd30rw95EfdP6J2bFhk2VStuqcdsXdCS81MLRYvsd7O3g3s2VBDVaWstmS1nvIBGGK5ronepuaUoA5duttYzXEpUeruLd0oYkoVPKkAt55WpXwZmbilDV74yyLXZ4OPSUK5wkmTMVRjsMUvelW89aPBNkKWbc5h9NRjBDl91ghXkxWcpbBNGC6RYfQ4dKS8veNlA8g/N2G9CtMutNifczdg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3D2vrS4SjS2zxvYkRk4gch/wnCD0VBKEGljXWVZwOBA=;
+ b=FyzLBJxX87kcX7YdASvoYLQJLQ8Xs2l75DSqfNcTHS+z2jXECWKFX33l4Kb7fGulQ7rhPOik5eB3WGWyNOUNzSc1kW9aE+R0OM6fsz3qPXJZOQXnrDygTndiIh0dGiKWE+MggtxG/54l13ckHA4clu9a6PEtw+Konj9R620Qqen5tsDRZMZh9NYdAkLT1V34eiGC4MV4AmPTdyTwy5S3Z+Qyb1CUO5CoCaT7r3K5yUxAUydn68IWjgUVg4C8ukd06kcm2N+aLa0NGODyonGOZfhRR0NUdiInpmEQD26eNZRN9s0N5wVV6i2DD0o8ks3MNBCe0p+T7cNrKO8bnZ/y0g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BL1PR11MB5271.namprd11.prod.outlook.com (2603:10b6:208:31a::21)
+ by SN7PR11MB7115.namprd11.prod.outlook.com (2603:10b6:806:29a::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.22; Mon, 4 Mar
+ 2024 09:05:37 +0000
+Received: from BL1PR11MB5271.namprd11.prod.outlook.com
+ ([fe80::ca67:e14d:c39b:5c01]) by BL1PR11MB5271.namprd11.prod.outlook.com
+ ([fe80::ca67:e14d:c39b:5c01%4]) with mapi id 15.20.7362.019; Mon, 4 Mar 2024
+ 09:05:37 +0000
+From: "Tian, Kevin" <kevin.tian@intel.com>
+To: Baolu Lu <baolu.lu@linux.intel.com>, Joerg Roedel <joro@8bytes.org>, "Will
+ Deacon" <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>, "Jason
+ Gunthorpe" <jgg@ziepe.ca>, "Badger, Eric" <ebadger@purestorage.com>
+CC: "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 1/3] iommu/vt-d: Setup scalable mode context entry in
+ probe path
+Thread-Topic: [PATCH 1/3] iommu/vt-d: Setup scalable mode context entry in
+ probe path
+Thread-Index: AQHaavVCLTBatnZFXkG2swhnu2ybRrEnN6mAgAAM7ICAAAoXsA==
+Date: Mon, 4 Mar 2024 09:05:37 +0000
+Message-ID: <BL1PR11MB52719E06919ECFF95A91EC028C232@BL1PR11MB5271.namprd11.prod.outlook.com>
+References: <20240229094804.121610-1-baolu.lu@linux.intel.com>
+ <20240229094804.121610-2-baolu.lu@linux.intel.com>
+ <BN9PR11MB52762BCC8AC154A601B6EBCA8C232@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <3ad0e349-0ba4-4a89-a664-800c5615ef77@linux.intel.com>
+In-Reply-To: <3ad0e349-0ba4-4a89-a664-800c5615ef77@linux.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BL1PR11MB5271:EE_|SN7PR11MB7115:EE_
+x-ms-office365-filtering-correlation-id: 499b6626-e0cc-4965-6eb1-08dc3c2a4235
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: COk3AeKZOBJqbTVNLF0xWfySAK6uM7LSYJjQz+VDMhba3JZ4s+VYfAhnB2RFFIZ/CruntuSK/9zPdOupWhfHhFLVhAu/AVb6t0xiHMHUfYU4uVdGzeGOY6zloDHGdXgATo476hrbkwsLM+cxtB4wfESzc4EuveIyxCwH5P+k8Vgy1M8D1ar1K1tZn0ZHDOz8MDao6L+czVbcXELobAs3W+MxcNjk5v09BzdJH7Azsnt2OibmKXpbeKuXDacUGnqqyuTzIRmRQ6DlB0DPUdinL+TjgiSkS5PPjdNemTsH07++4DRLbvwqy08OQND0rKgMKxgtdB+CLzyFQOdgBuKtI08N7QDrzBlH/+KU95/t/k2JhX7tqeeFexpH3Zmx3kStrGZLBZ0hBg/dwOezRZAadNw4lKyM5YcX+Rf11Dvwl/gSFewaruA8VZT5zOwopgbeA86GSncShow55k3PaG3LYzmRRxFsv/XwP6UMsj9d9liGHYn59iBE5OxSDIYHEZDZM6hHK6HDuynemtU47oBM7LEDdOh37WGYKphbqR+DfUnrOJVS5W0B7YFCdKU+dnoc6f8D40/JOoxQlbT5ly+OfNfq4BpSuxOAeVfCMQC1EKArubbwG+XM1EC6UTmAV8t7r7BTvMlEN2nYWxZslKrTqPdryuS+7I3lnUmyUxua46rW902iUIuTPkfk2/OexBuHxRSYDw8/DwkiC8J1E2vd8Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5271.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Sm5wTVd4WVhoR1NHYXB1MHp0VjNKbmxqQ0gyQlh3S3k3TnpuWURGSXhHYStt?=
+ =?utf-8?B?NDN1OEJNZWtORmhwaElXNE8wZjBpbVk0R3RBUnA2MGJrZnJGaytwV0U2ZGFL?=
+ =?utf-8?B?QlZPQjAvNlhRWEdpWUtGRDhiN3J1QWdoTXpSTkRmRy9uVk1XaXB2OGxnMGhy?=
+ =?utf-8?B?Z285Qy9VREE0UjIwSVJwUzJ3UW5ENTkxWHorTG53cTVMSDJoVmZndTdZQUI3?=
+ =?utf-8?B?dC9YQzdIRkpwUVdtS25lZE1mTk8zS0JXUGtsRGJUTVZTdDZPMDVqWWQyazZx?=
+ =?utf-8?B?K2Y4a2RBMUhhZHI1ams2VnNvMEltUGNuK0R3dlhldi9tb2VuV3JET3ZlMFd6?=
+ =?utf-8?B?S1lDRzJJWmM3RnBQUUFtV282MzBMOWEyeTc4emp4THd4MURFTFZjYlZiK001?=
+ =?utf-8?B?Njc4Y2FJSzcyeXdBU0RJcVZBSlYwRmllNWg2YjNxb2Q5RjR6eTBodlF2WWtX?=
+ =?utf-8?B?RVkwUm1zeXNnODBQUXhQR0ZBdnY3S1lIUmx3Tk44a2t0dmpyZHlOM3BYaHpv?=
+ =?utf-8?B?K2ZBM0lOQUMzQkQza1lBYTlPeEFGSjhheW1ndDJROUVib3VkMTRwaVNCYUsv?=
+ =?utf-8?B?OVp3M2hCL1U2bGpSVkVZcmgyYkpNS0dGdVJ0QnBHalQyNFU2MXZoUlBJdDRI?=
+ =?utf-8?B?VGtWS0t2SDlWV094bjNSdDNVZ1YxSlE4MjRUS2dWM1d6RVYxNjJNL3BWSmNw?=
+ =?utf-8?B?TWRseTZQQ013eGJUNzFLdnRnUmMzRi82VjdzZWQveWNLWTgwa3dQN2V0dVZu?=
+ =?utf-8?B?NnhhTDNZdnBSd2hVUW4yUHppTEhZQzNleDU4b2RYL1k0Q2VFeFBaWFVwU0Zp?=
+ =?utf-8?B?T0owdGpJLzJEZnNyczQzbVJYM2d0bDMxU1h6OHlMa3ZDb00zamxTa2pVTzhP?=
+ =?utf-8?B?TW9hY1dZYWpweERSejl4MThuQVR1QlZub1ZCMXZIb2JITjdHeDZNd3E3ZHY1?=
+ =?utf-8?B?OEgzRlhha0dZRjZ3QUxCckpQcmhSaGVjWEZveHpCbXN1S1N5Q091S1hYeGF5?=
+ =?utf-8?B?d0xNc1F5azJiL3VEaDdmL1BVS1ROMWovaEJWbUNHZlFCRkFiMmgrZWRHSUEw?=
+ =?utf-8?B?b2sycHd2MTh6V1lpU1Z3SXRFT2ZIS3ROU0lIMncxSllnQkkyZWp3VE9oYlUx?=
+ =?utf-8?B?QlRXK1hITndXbjVhK3libVBGZ0xtZzlmWjVBT2xVSFJkaDZnb1E1U3pNTHZT?=
+ =?utf-8?B?ZlB1OWFzZ2lDWUNHbmhnNzJ5WUh6UkNzQ0pvMDdDQ2xlSnkxTVBra1hocHBu?=
+ =?utf-8?B?RE0zTGFEdzdmR1RjNnFRakhqMmZBR3ZGbFN3SDY2dG1WYk5ZWVA5TlB4bVpW?=
+ =?utf-8?B?MzVJL2tXcTNIejd0QnJiOWNNRGt2cUZjTHhCLzdWT2I0SjFJM2RaMVlHanJW?=
+ =?utf-8?B?SGduQS92UWU2N29lMC9JeHNjYnpPeXl1Z2xidnFmak1ZWUFlUU1DS0NzeGJw?=
+ =?utf-8?B?ZVR3OFZyMHhFMmZGWE5RQmUyMEZqY2wxb0RycGtMZ2ZUVzdreEs5ZTNOUnQ0?=
+ =?utf-8?B?dGdiTWYwMS9YL21mTDRPZTJwRDQ3VTRWWE5GSkpXMU8zZzBHZ0JmQzVweHRw?=
+ =?utf-8?B?SHAyQXM0bk9lQW92VWRnUEE4SFVDYzFRcjV0bExGQkhDM1llaGh6bmxrVEd1?=
+ =?utf-8?B?ZW9TczZBNURtVnB3d1lHdm5QR2VwZFo3NHdxUHBENnJDM0k2OWtKbzl3cTFG?=
+ =?utf-8?B?d1pyT3dyWStVdXdwQlptTVZPUzg2NmdDWUVnUG96MHppdHcyNFJuQk9va0FJ?=
+ =?utf-8?B?dDJ6WllCVU9nNzRTTFBFdlRnOGZQM2pzN0ttdUpKbDdjZi8xbnR0cEFIUDBm?=
+ =?utf-8?B?KzZiaXRpV3d4Y2lZeHNBQkRDYW9NUW5uUHE1OXpGeFNtRXRKVGNuYm9jREQ1?=
+ =?utf-8?B?Sk5jVlFja3V3OUc3N2MvWjJ1WGo3TDBSeWZ5RDd5UFNkQW83YXk0UlJHczIy?=
+ =?utf-8?B?dk5OVnVGaWw4ak5OVUNMTG41MkVBZnB1N21XbTM5RDdpOW1jbTVjclhrNWkw?=
+ =?utf-8?B?Lzh5SnkxZWx1NVFMREdkWG9aSG9USmd3c3A1eUFnbDhrS3hVMGJlOXpJODNx?=
+ =?utf-8?B?eElLOHdjZE9IVjhLcFBkckMzYStBMHl2c25PSEhqNGgrTTlyblJjckVVa1Rz?=
+ =?utf-8?Q?O/6pZ8wQqOW0H6kmQai9t6q7G?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5271.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 499b6626-e0cc-4965-6eb1-08dc3c2a4235
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Mar 2024 09:05:37.6522
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: b7Hiz13aKHt6MiWxrBgpap1Zl34ljKOlkLfVATSmvXuLZ1bO1jvCksQvnnyjstgfS9uYBfiEdzgzFMRynwO49w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB7115
+X-OriginatorOrg: intel.com
 
-On 27 Feb 2024, at 8:08, Sumit Garg wrote:
-
-> On Fri, 23 Feb 2024 at 15:22, Balint Dobszay <balint.dobszay@arm.com> w=
-rote:
->>
->> The Trusted Services project provides a framework for developing and
->> deploying device Root of Trust services in FF-A Secure Partitions. The=
-
->> FF-A SPs are accessible through the FF-A driver, but this doesn't
->> provide a user space interface. The goal of this TEE driver is to make=
-
->> Trusted Services SPs accessible for user space clients.
->>
->> All TS SPs have the same FF-A UUID, it identifies the RPC protocol use=
-d
->> by TS. A TS SP can host one or more services, a service is identified =
-by
->> its service UUID. The same type of service cannot be present twice in
->> the same SP. During SP boot each service in an SP is assigned an
->> interface ID, this is just a short ID to simplify message addressing.
->> There is 1:1 mapping between TS SPs and TEE devices, i.e. a separate T=
-EE
->> device is registered for each TS SP. This is required since contrary t=
-o
->> the generic TEE design where memory is shared with the whole TEE
->> implementation, in case of FF-A, memory is shared with a specific SP. =
-A
->> user space client has to be able to separately share memory with each =
-SP
->> based on its endpoint ID.
->>
->> Signed-off-by: Balint Dobszay <balint.dobszay@arm.com>
->> ---
->>  drivers/tee/Kconfig               |   1 +
->>  drivers/tee/Makefile              |   1 +
->>  drivers/tee/tstee/Kconfig         |  11 +
->>  drivers/tee/tstee/Makefile        |   3 +
->>  drivers/tee/tstee/core.c          | 490 +++++++++++++++++++++++++++++=
-+
->>  drivers/tee/tstee/tstee_private.h |  94 ++++++
->>  include/uapi/linux/tee.h          |   1 +
->>  7 files changed, 601 insertions(+)
->>  create mode 100644 drivers/tee/tstee/Kconfig
->>  create mode 100644 drivers/tee/tstee/Makefile
->>  create mode 100644 drivers/tee/tstee/core.c
->>  create mode 100644 drivers/tee/tstee/tstee_private.h
->>
->> diff --git a/drivers/tee/Kconfig b/drivers/tee/Kconfig
->> index 73a147202e88..61b507c18780 100644
->> --- a/drivers/tee/Kconfig
->> +++ b/drivers/tee/Kconfig
->> @@ -15,5 +15,6 @@ if TEE
->>
->>  source "drivers/tee/optee/Kconfig"
->>  source "drivers/tee/amdtee/Kconfig"
->> +source "drivers/tee/tstee/Kconfig"
->>
->>  endif
->> diff --git a/drivers/tee/Makefile b/drivers/tee/Makefile
->> index 68da044afbfa..5488cba30bd2 100644
->> --- a/drivers/tee/Makefile
->> +++ b/drivers/tee/Makefile
->> @@ -5,3 +5,4 @@ tee-objs +=3D tee_shm.o
->>  tee-objs +=3D tee_shm_pool.o
->>  obj-$(CONFIG_OPTEE) +=3D optee/
->>  obj-$(CONFIG_AMDTEE) +=3D amdtee/
->> +obj-$(CONFIG_ARM_TSTEE) +=3D tstee/
->> diff --git a/drivers/tee/tstee/Kconfig b/drivers/tee/tstee/Kconfig
->> new file mode 100644
->> index 000000000000..d32f91d47398
->> --- /dev/null
->> +++ b/drivers/tee/tstee/Kconfig
->> @@ -0,0 +1,11 @@
->> +# SPDX-License-Identifier: GPL-2.0-only
->> +config ARM_TSTEE
->> +       tristate "Arm Trusted Services TEE driver"
->> +       depends on ARM_FFA_TRANSPORT
->> +       default n
->> +       help
->> +         The Trusted Services project provides a framework for develo=
-ping and
->> +         deploying device Root of Trust services in FF-A Secure Parti=
-tions.
->> +         This driver provides an interface to make Trusted Services S=
-ecure
->> +         Partitions accessible for user space clients, since the FF-A=
- driver
->> +         doesn't implement a user space interface directly.
->> diff --git a/drivers/tee/tstee/Makefile b/drivers/tee/tstee/Makefile
->> new file mode 100644
->> index 000000000000..5227020ebd30
->> --- /dev/null
->> +++ b/drivers/tee/tstee/Makefile
->> @@ -0,0 +1,3 @@
->> +# SPDX-License-Identifier: GPL-2.0-only
->> +arm-tstee-objs :=3D core.o
->> +obj-$(CONFIG_ARM_TSTEE) =3D arm-tstee.o
->> diff --git a/drivers/tee/tstee/core.c b/drivers/tee/tstee/core.c
->> new file mode 100644
->> index 000000000000..2932be017dbe
->> --- /dev/null
->> +++ b/drivers/tee/tstee/core.c
->> @@ -0,0 +1,490 @@
->> +// SPDX-License-Identifier: GPL-2.0-only
->> +/*
->> + * Copyright (c) 2023, Arm Limited
->> + */
->> +
->> +#define DRIVER_NAME "Arm TSTEE"
->> +#define pr_fmt(fmt) DRIVER_NAME ": " fmt
->> +
->> +#include <linux/arm_ffa.h>
->> +#include <linux/err.h>
->> +#include <linux/errno.h>
->> +#include <linux/kernel.h>
->> +#include <linux/limits.h>
->> +#include <linux/list.h>
->> +#include <linux/mm.h>
->> +#include <linux/module.h>
->> +#include <linux/scatterlist.h>
->> +#include <linux/slab.h>
->> +#include <linux/stat.h>
->> +#include <linux/tee_drv.h>
->> +#include <linux/types.h>
->> +#include <linux/uaccess.h>
->> +
->> +#include "tstee_private.h"
->> +
->> +#define FFA_DIRECT_REQ_ARG_NUM 5
->> +#define FFA_INVALID_MEM_HANDLE U64_MAX
->> +
->> +static void arg_list_to_ffa_data(const u32 *args,
->> +                                struct ffa_send_direct_data *data)
->> +{
->> +       data->data0 =3D args[0];
->> +       data->data1 =3D args[1];
->> +       data->data2 =3D args[2];
->> +       data->data3 =3D args[3];
->> +       data->data4 =3D args[4];
->> +}
->> +
->> +static void arg_list_from_ffa_data(const struct ffa_send_direct_data =
-*data,
->> +                                  u32 *args)
->> +{
->> +       args[0] =3D lower_32_bits(data->data0);
->> +       args[1] =3D lower_32_bits(data->data1);
->> +       args[2] =3D lower_32_bits(data->data2);
->> +       args[3] =3D lower_32_bits(data->data3);
->> +       args[4] =3D lower_32_bits(data->data4);
->> +}
->> +
->> +static void tstee_get_version(struct tee_device *teedev,
->> +                             struct tee_ioctl_version_data *vers)
->> +{
->> +       struct tstee *tstee =3D tee_get_drvdata(teedev);
->> +       struct tee_ioctl_version_data v =3D {
->> +               .impl_id =3D TEE_IMPL_ID_TSTEE,
->> +               /* FF-A endpoint ID only uses the lower 16 bits */
->> +               .impl_caps =3D lower_16_bits(tstee->ffa_dev->vm_id),
->> +               .gen_caps =3D 0,
->> +       };
->> +
->> +       *vers =3D v;
->> +}
->> +
->> +static int tstee_open(struct tee_context *ctx)
->> +{
->> +       struct ts_context_data *ctxdata;
->> +
->> +       ctxdata =3D kzalloc(sizeof(*ctxdata), GFP_KERNEL);
->> +       if (!ctxdata)
->> +               return -ENOMEM;
->> +
->> +       mutex_init(&ctxdata->mutex);
->> +       xa_init_flags(&ctxdata->sess_list, XA_FLAGS_ALLOC);
->> +
->> +       ctx->data =3D ctxdata;
->> +
->> +       return 0;
->> +}
->> +
->> +static void tstee_release(struct tee_context *ctx)
->> +{
->> +       struct ts_context_data *ctxdata =3D ctx->data;
->> +       struct ts_session *sess;
->> +       unsigned long idx;
->> +
->> +       if (!ctxdata)
->> +               return;
->> +
->> +       xa_for_each(&ctxdata->sess_list, idx, sess) {
->> +               xa_erase(&ctxdata->sess_list, idx);
->> +               kfree(sess);
->> +       }
->> +
->> +       xa_destroy(&ctxdata->sess_list);
->> +       mutex_destroy(&ctxdata->mutex);
->> +
->> +       kfree(ctxdata);
->> +       ctx->data =3D NULL;
->> +}
->> +
->> +static int tstee_open_session(struct tee_context *ctx,
->> +                             struct tee_ioctl_open_session_arg *arg,
->> +                             struct tee_param *param __always_unused)=
-
->> +{
->> +       struct tstee *tstee =3D tee_get_drvdata(ctx->teedev);
->> +       struct ffa_device *ffa_dev =3D tstee->ffa_dev;
->> +       struct ts_context_data *ctxdata =3D ctx->data;
->> +       struct ffa_send_direct_data ffa_data;
->> +       struct ts_session *sess =3D NULL;
->> +       u32 ffa_args[FFA_DIRECT_REQ_ARG_NUM] =3D {};
->> +       u32 sess_id;
->> +       int rc;
->> +
->> +       ffa_args[TS_RPC_CTRL_REG] =3D
->> +               TS_RPC_CTRL_PACK_IFACE_OPCODE(TS_RPC_MGMT_IFACE_ID,
->> +                                             TS_RPC_OP_SERVICE_INFO);=
-
->> +
->> +       memcpy(ffa_args + TS_RPC_SERVICE_INFO_UUID0, arg->uuid, UUID_S=
-IZE);
->> +
->> +       arg_list_to_ffa_data(ffa_args, &ffa_data);
->> +       rc =3D ffa_dev->ops->msg_ops->sync_send_receive(ffa_dev, &ffa_=
-data);
->> +       if (rc)
->> +               return rc;
->> +
->> +       arg_list_from_ffa_data(&ffa_data, ffa_args);
->> +
->> +       if (ffa_args[TS_RPC_SERVICE_INFO_RPC_STATUS] !=3D TS_RPC_OK)
->> +               return -ENODEV;
->> +
->> +       if (ffa_args[TS_RPC_SERVICE_INFO_IFACE] > U8_MAX)
->> +               return -EINVAL;
->> +
->> +       sess =3D kzalloc(sizeof(*sess), GFP_KERNEL);
->> +       if (!sess)
->> +               return -ENOMEM;
->> +
->> +       sess->iface_id =3D ffa_args[TS_RPC_SERVICE_INFO_IFACE];
->> +
->> +       rc =3D xa_alloc(&ctxdata->sess_list, &sess_id, sess, xa_limit_=
-32b,
->> +                     GFP_KERNEL);
->> +       if (rc) {
->> +               kfree(sess);
->> +               return rc;
->> +       }
->> +
->> +       arg->session =3D sess_id;
->> +       arg->ret =3D 0;
->> +
->> +       return 0;
->> +}
->> +
->> +static int tstee_close_session(struct tee_context *ctx, u32 session)
->> +{
->> +       struct ts_context_data *ctxdata =3D ctx->data;
->> +       struct ts_session *sess;
->> +
->> +       mutex_lock(&ctxdata->mutex);
->> +       sess =3D xa_erase(&ctxdata->sess_list, session);
->> +       mutex_unlock(&ctxdata->mutex);
->> +       if (!sess)
->> +               return -EINVAL;
->> +
->> +       kfree(sess);
->> +
->> +       return 0;
->> +}
->> +
->> +static int tstee_invoke_func(struct tee_context *ctx,
->> +                            struct tee_ioctl_invoke_arg *arg,
->> +                            struct tee_param *param)
->> +{
->> +       struct tstee *tstee =3D tee_get_drvdata(ctx->teedev);
->> +       struct ffa_device *ffa_dev =3D tstee->ffa_dev;
->> +       struct ts_context_data *ctxdata =3D ctx->data;
->> +       struct ffa_send_direct_data ffa_data;
->> +       struct tee_shm *shm =3D NULL;
->> +       struct ts_session *sess;
->> +       u32 req_len, ffa_args[FFA_DIRECT_REQ_ARG_NUM] =3D {};
->> +       int shm_id, rc;
->> +       u8 iface_id;
->> +       u64 handle;
->> +       u16 opcode;
->> +
->> +       mutex_lock(&ctxdata->mutex);
->> +       sess =3D xa_load(&ctxdata->sess_list, arg->session);
->> +
->> +       /*
->> +        * Do this while holding the mutex to make sure that the sessi=
-on wasn't
->> +        * closed meanwhile
->> +        */
->> +       if (sess)
->> +               iface_id =3D sess->iface_id;
->> +
->> +       mutex_unlock(&ctxdata->mutex);
->> +       if (!sess)
->> +               return -EINVAL;
->> +
->
-> We can drop usage of mutex here and other places via reusing
-> xa_lock(), something like below should work:
->
->         xa_lock(&ctxdata->sess_list);
->
->         sess =3D xa_load(&ctxdata->sess_list, arg->session);
->         if (sess)
->                 iface_id =3D sess->iface_id;
->
->         xa_unlock(&ctxdata->sess_list);
-
-Good point, I'll refactor according to your suggestion.
-
-Regards,
-Balint
-
->> +       opcode =3D lower_16_bits(arg->func);
->> +       shm_id =3D lower_32_bits(param[0].u.value.a);
->> +       req_len =3D lower_32_bits(param[0].u.value.b);
->> +
->> +       if (shm_id !=3D 0) {
->> +               shm =3D tee_shm_get_from_id(ctx, shm_id);
->> +               if (IS_ERR(shm))
->> +                       return PTR_ERR(shm);
->> +
->> +               if (shm->size < req_len) {
->> +                       pr_err("request doesn't fit into shared memory=
- buffer\n");
->> +                       rc =3D -EINVAL;
->> +                       goto out;
->> +               }
->> +
->> +               handle =3D shm->sec_world_id;
->> +       } else {
->> +               handle =3D FFA_INVALID_MEM_HANDLE;
->> +       }
->> +
->> +       ffa_args[TS_RPC_CTRL_REG] =3D TS_RPC_CTRL_PACK_IFACE_OPCODE(if=
-ace_id,
->> +                                                                 opco=
-de);
->> +       ffa_args[TS_RPC_SERVICE_MEM_HANDLE_LSW] =3D lower_32_bits(hand=
-le);
->> +       ffa_args[TS_RPC_SERVICE_MEM_HANDLE_MSW] =3D upper_32_bits(hand=
-le);
->> +       ffa_args[TS_RPC_SERVICE_REQ_LEN] =3D req_len;
->> +       ffa_args[TS_RPC_SERVICE_CLIENT_ID] =3D 0;
->> +
->> +       arg_list_to_ffa_data(ffa_args, &ffa_data);
->> +       rc =3D ffa_dev->ops->msg_ops->sync_send_receive(ffa_dev, &ffa_=
-data);
->> +       if (rc)
->> +               goto out;
->> +
->> +       arg_list_from_ffa_data(&ffa_data, ffa_args);
->> +
->> +       if (ffa_args[TS_RPC_SERVICE_RPC_STATUS] !=3D TS_RPC_OK) {
->> +               pr_err("invoke_func rpc status: %d\n",
->> +                      ffa_args[TS_RPC_SERVICE_RPC_STATUS]);
->> +               rc =3D -EINVAL;
->> +               goto out;
->> +       }
->> +
->> +       arg->ret =3D ffa_args[TS_RPC_SERVICE_STATUS];
->> +       if (shm && shm->size >=3D ffa_args[TS_RPC_SERVICE_RESP_LEN])
->> +               param[0].u.value.a =3D ffa_args[TS_RPC_SERVICE_RESP_LE=
-N];
->> +
->> +out:
->> +       if (shm)
->> +               tee_shm_put(shm);
->> +
->> +       return rc;
->> +}
->> +
->> +static int tstee_shm_register(struct tee_context *ctx, struct tee_shm=
- *shm,
->> +                             struct page **pages, size_t num_pages,
->> +                             unsigned long start __always_unused)
->> +{
->> +       struct tstee *tstee =3D tee_get_drvdata(ctx->teedev);
->> +       struct ffa_device *ffa_dev =3D tstee->ffa_dev;
->> +       struct ffa_mem_region_attributes mem_attr =3D {
->> +               .receiver =3D tstee->ffa_dev->vm_id,
->> +               .attrs =3D FFA_MEM_RW,
->> +               .flag =3D 0,
->> +       };
->> +       struct ffa_mem_ops_args mem_args =3D {
->> +               .attrs =3D &mem_attr,
->> +               .use_txbuf =3D true,
->> +               .nattrs =3D 1,
->> +               .flags =3D 0,
->> +       };
->> +       struct ffa_send_direct_data ffa_data;
->> +       struct sg_table sgt;
->> +       u32 ffa_args[FFA_DIRECT_REQ_ARG_NUM] =3D {};
->> +       int rc;
->> +
->> +       rc =3D sg_alloc_table_from_pages(&sgt, pages, num_pages, 0,
->> +                                      num_pages * PAGE_SIZE, GFP_KERN=
-EL);
->> +       if (rc)
->> +               return rc;
->> +
->> +       mem_args.sg =3D sgt.sgl;
->> +       rc =3D ffa_dev->ops->mem_ops->memory_share(&mem_args);
->> +       sg_free_table(&sgt);
->> +       if (rc)
->> +               return rc;
->> +
->> +       shm->sec_world_id =3D mem_args.g_handle;
->> +
->> +       ffa_args[TS_RPC_CTRL_REG] =3D
->> +                       TS_RPC_CTRL_PACK_IFACE_OPCODE(TS_RPC_MGMT_IFAC=
-E_ID,
->> +                                                     TS_RPC_OP_RETRIE=
-VE_MEM);
->> +       ffa_args[TS_RPC_RETRIEVE_MEM_HANDLE_LSW] =3D
->> +                       lower_32_bits(shm->sec_world_id);
->> +       ffa_args[TS_RPC_RETRIEVE_MEM_HANDLE_MSW] =3D
->> +                       upper_32_bits(shm->sec_world_id);
->> +       ffa_args[TS_RPC_RETRIEVE_MEM_TAG_LSW] =3D 0;
->> +       ffa_args[TS_RPC_RETRIEVE_MEM_TAG_MSW] =3D 0;
->> +
->> +       arg_list_to_ffa_data(ffa_args, &ffa_data);
->> +       rc =3D ffa_dev->ops->msg_ops->sync_send_receive(ffa_dev, &ffa_=
-data);
->> +       if (rc) {
->> +               (void)ffa_dev->ops->mem_ops->memory_reclaim(shm->sec_w=
-orld_id,
->> +                                                           0);
->> +               return rc;
->> +       }
->> +
->> +       arg_list_from_ffa_data(&ffa_data, ffa_args);
->> +
->> +       if (ffa_args[TS_RPC_RETRIEVE_MEM_RPC_STATUS] !=3D TS_RPC_OK) {=
-
->> +               pr_err("shm_register rpc status: %d\n",
->> +                      ffa_args[TS_RPC_RETRIEVE_MEM_RPC_STATUS]);
->> +               ffa_dev->ops->mem_ops->memory_reclaim(shm->sec_world_i=
-d, 0);
->> +               return -EINVAL;
->> +       }
->> +
->> +       return 0;
->> +}
->> +
->> +static int tstee_shm_unregister(struct tee_context *ctx, struct tee_s=
-hm *shm)
->> +{
->> +       struct tstee *tstee =3D tee_get_drvdata(ctx->teedev);
->> +       struct ffa_device *ffa_dev =3D tstee->ffa_dev;
->> +       struct ffa_send_direct_data ffa_data;
->> +       u32 ffa_args[FFA_DIRECT_REQ_ARG_NUM] =3D {};
->> +       int rc;
->> +
->> +       ffa_args[TS_RPC_CTRL_REG] =3D
->> +                       TS_RPC_CTRL_PACK_IFACE_OPCODE(TS_RPC_MGMT_IFAC=
-E_ID,
->> +                                                     TS_RPC_OP_RELINQ=
-_MEM);
->> +       ffa_args[TS_RPC_RELINQ_MEM_HANDLE_LSW] =3D
->> +                       lower_32_bits(shm->sec_world_id);
->> +       ffa_args[TS_RPC_RELINQ_MEM_HANDLE_MSW] =3D
->> +                       upper_32_bits(shm->sec_world_id);
->> +
->> +       arg_list_to_ffa_data(ffa_args, &ffa_data);
->> +       rc =3D ffa_dev->ops->msg_ops->sync_send_receive(ffa_dev, &ffa_=
-data);
->> +       if (rc)
->> +               return rc;
->> +       arg_list_from_ffa_data(&ffa_data, ffa_args);
->> +
->> +       if (ffa_args[TS_RPC_RELINQ_MEM_RPC_STATUS] !=3D TS_RPC_OK) {
->> +               pr_err("shm_unregister rpc status: %d\n",
->> +                      ffa_args[TS_RPC_RELINQ_MEM_RPC_STATUS]);
->> +               return -EINVAL;
->> +       }
->> +
->> +       rc =3D ffa_dev->ops->mem_ops->memory_reclaim(shm->sec_world_id=
-, 0);
->> +
->> +       return rc;
->> +}
->> +
->> +static const struct tee_driver_ops tstee_ops =3D {
->> +       .get_version =3D tstee_get_version,
->> +       .open =3D tstee_open,
->> +       .release =3D tstee_release,
->> +       .open_session =3D tstee_open_session,
->> +       .close_session =3D tstee_close_session,
->> +       .invoke_func =3D tstee_invoke_func,
->> +       .shm_register =3D tstee_shm_register,
->> +       .shm_unregister =3D tstee_shm_unregister,
->> +};
->> +
->> +static const struct tee_desc tstee_desc =3D {
->> +       .name =3D "tstee-clnt",
->> +       .ops =3D &tstee_ops,
->> +       .owner =3D THIS_MODULE,
->> +};
->> +
->> +static int pool_op_alloc(struct tee_shm_pool *pool, struct tee_shm *s=
-hm,
->> +                        size_t size, size_t align)
->> +{
->> +       return tee_shm_pool_op_alloc_helper(pool, shm, size, align,
->> +                                           tstee_shm_register);
->> +}
->> +
->> +static void pool_op_free(struct tee_shm_pool *pool, struct tee_shm *s=
-hm)
->> +{
->> +       tee_shm_pool_op_free_helper(pool, shm, tstee_shm_unregister);
->> +}
->> +
->> +static void pool_op_destroy_pool(struct tee_shm_pool *pool)
->> +{
->> +       kfree(pool);
->> +}
->> +
->> +static const struct tee_shm_pool_ops pool_ops =3D {
->> +       .alloc =3D pool_op_alloc,
->> +       .free =3D pool_op_free,
->> +       .destroy_pool =3D pool_op_destroy_pool,
->> +};
->> +
->> +static struct tee_shm_pool *tstee_create_shm_pool(void)
->> +{
->> +       struct tee_shm_pool *pool =3D kzalloc(sizeof(*pool), GFP_KERNE=
-L);
->> +
->> +       if (!pool)
->> +               return ERR_PTR(-ENOMEM);
->> +
->> +       pool->ops =3D &pool_ops;
->> +
->> +       return pool;
->> +}
->> +
->> +static bool tstee_check_rpc_compatible(struct ffa_device *ffa_dev)
->> +{
->> +       struct ffa_send_direct_data ffa_data;
->> +       u32 ffa_args[FFA_DIRECT_REQ_ARG_NUM] =3D {};
->> +
->> +       ffa_args[TS_RPC_CTRL_REG] =3D
->> +                       TS_RPC_CTRL_PACK_IFACE_OPCODE(TS_RPC_MGMT_IFAC=
-E_ID,
->> +                                                     TS_RPC_OP_GET_VE=
-RSION);
->> +
->> +       arg_list_to_ffa_data(ffa_args, &ffa_data);
->> +       if (ffa_dev->ops->msg_ops->sync_send_receive(ffa_dev, &ffa_dat=
-a))
->> +               return false;
->> +
->> +       arg_list_from_ffa_data(&ffa_data, ffa_args);
->> +
->> +       return ffa_args[TS_RPC_GET_VERSION_RESP] =3D=3D TS_RPC_PROTOCO=
-L_VERSION;
->> +}
->> +
->> +static int tstee_probe(struct ffa_device *ffa_dev)
->> +{
->> +       struct tstee *tstee;
->> +       int rc;
->> +
->> +       ffa_dev->ops->msg_ops->mode_32bit_set(ffa_dev);
->> +
->> +       if (!tstee_check_rpc_compatible(ffa_dev))
->> +               return -EINVAL;
->> +
->> +       tstee =3D kzalloc(sizeof(*tstee), GFP_KERNEL);
->> +       if (!tstee)
->> +               return -ENOMEM;
->> +
->> +       tstee->ffa_dev =3D ffa_dev;
->> +
->> +       tstee->pool =3D tstee_create_shm_pool();
->> +       if (IS_ERR(tstee->pool)) {
->> +               rc =3D PTR_ERR(tstee->pool);
->> +               tstee->pool =3D NULL;
->> +               goto err_free_tstee;
->> +       }
->> +
->> +       tstee->teedev =3D tee_device_alloc(&tstee_desc, NULL, tstee->p=
-ool, tstee);
->> +       if (IS_ERR(tstee->teedev)) {
->> +               rc =3D PTR_ERR(tstee->teedev);
->> +               tstee->teedev =3D NULL;
->> +               goto err_free_pool;
->> +       }
->> +
->> +       rc =3D tee_device_register(tstee->teedev);
->> +       if (rc)
->> +               goto err_unreg_teedev;
->> +
->> +       ffa_dev_set_drvdata(ffa_dev, tstee);
->> +
->> +       return 0;
->> +
->> +err_unreg_teedev:
->> +       tee_device_unregister(tstee->teedev);
->> +err_free_pool:
->> +       tee_shm_pool_free(tstee->pool);
->> +err_free_tstee:
->> +       kfree(tstee);
->> +       return rc;
->> +}
->> +
->> +static void tstee_remove(struct ffa_device *ffa_dev)
->> +{
->> +       struct tstee *tstee =3D ffa_dev->dev.driver_data;
->> +
->> +       tee_device_unregister(tstee->teedev);
->> +       tee_shm_pool_free(tstee->pool);
->> +       kfree(tstee);
->> +}
->> +
->> +static const struct ffa_device_id tstee_device_ids[] =3D {
->> +       /* TS RPC protocol UUID: bdcd76d7-825e-4751-963b-86d4f84943ac =
-*/
->> +       { TS_RPC_UUID },
->> +       {}
->> +};
->> +
->> +static struct ffa_driver tstee_driver =3D {
->> +       .name =3D "arm_tstee",
->> +       .probe =3D tstee_probe,
->> +       .remove =3D tstee_remove,
->> +       .id_table =3D tstee_device_ids,
->> +};
->> +
->> +module_ffa_driver(tstee_driver);
->> +
->> +MODULE_AUTHOR("Balint Dobszay <balint.dobszay@arm.com>");
->> +MODULE_DESCRIPTION("Arm Trusted Services TEE driver");
->> +MODULE_LICENSE("GPL");
->> diff --git a/drivers/tee/tstee/tstee_private.h b/drivers/tee/tstee/tst=
-ee_private.h
->> new file mode 100644
->> index 000000000000..6d24cf0dbbc2
->> --- /dev/null
->> +++ b/drivers/tee/tstee/tstee_private.h
->> @@ -0,0 +1,94 @@
->> +/* SPDX-License-Identifier: GPL-2.0-only */
->> +/*
->> + * Copyright (c) 2023, Arm Limited
->> + */
->> +
->> +#ifndef TSTEE_PRIVATE_H
->> +#define TSTEE_PRIVATE_H
->> +
->> +#include <linux/arm_ffa.h>
->> +#include <linux/bitops.h>
->> +#include <linux/tee_drv.h>
->> +#include <linux/types.h>
->> +#include <linux/uuid.h>
->> +#include <linux/xarray.h>
->> +
->> +/*
->> + * The description of the ABI implemented in this file is available a=
-t
->> + * https://trusted-services.readthedocs.io/en/v1.0.0/developer/servic=
-e-access-protocols.html#abi
->> + */
->> +
->> +/* UUID of this protocol */
->> +#define TS_RPC_UUID UUID_INIT(0xbdcd76d7, 0x825e, 0x4751, \
->> +                             0x96, 0x3b, 0x86, 0xd4, 0xf8, 0x49, 0x43=
-, 0xac)
->> +
->> +/* Protocol version*/
->> +#define TS_RPC_PROTOCOL_VERSION                (1)
->> +
->> +/* Status codes */
->> +#define TS_RPC_OK                      (0)
->> +
->> +/* RPC control register */
->> +#define TS_RPC_CTRL_REG                        (0)
->> +#define OPCODE_MASK                    GENMASK(15, 0)
->> +#define IFACE_ID_MASK                  GENMASK(23, 16)
->> +#define TS_RPC_CTRL_OPCODE(x)          ((u16)(FIELD_GET(OPCODE_MASK, =
-(x))))
->> +#define TS_RPC_CTRL_IFACE_ID(x)                ((u8)(FIELD_GET(IFACE_=
-ID_MASK, (x))))
->> +#define TS_RPC_CTRL_PACK_IFACE_OPCODE(i, o)    \
->> +       (FIELD_PREP(IFACE_ID_MASK, (i)) | FIELD_PREP(OPCODE_MASK, (o))=
-)
->> +#define TS_RPC_CTRL_SAP_RC             BIT(30)
->> +#define TS_RPC_CTRL_SAP_ERR            BIT(31)
->> +
->> +/* Interface ID for RPC management operations */
->> +#define TS_RPC_MGMT_IFACE_ID           (0xff)
->> +
->> +/* Management calls */
->> +#define TS_RPC_OP_GET_VERSION          (0x0000)
->> +#define TS_RPC_GET_VERSION_RESP                (1)
->> +
->> +#define TS_RPC_OP_RETRIEVE_MEM         (0x0001)
->> +#define TS_RPC_RETRIEVE_MEM_HANDLE_LSW (1)
->> +#define TS_RPC_RETRIEVE_MEM_HANDLE_MSW (2)
->> +#define TS_RPC_RETRIEVE_MEM_TAG_LSW    (3)
->> +#define TS_RPC_RETRIEVE_MEM_TAG_MSW    (4)
->> +#define TS_RPC_RETRIEVE_MEM_RPC_STATUS (1)
->> +
->> +#define TS_RPC_OP_RELINQ_MEM           (0x0002)
->> +#define TS_RPC_RELINQ_MEM_HANDLE_LSW   (1)
->> +#define TS_RPC_RELINQ_MEM_HANDLE_MSW   (2)
->> +#define TS_RPC_RELINQ_MEM_RPC_STATUS   (1)
->> +
->> +#define TS_RPC_OP_SERVICE_INFO         (0x0003)
->> +#define TS_RPC_SERVICE_INFO_UUID0      (1)
->> +#define TS_RPC_SERVICE_INFO_UUID1      (2)
->> +#define TS_RPC_SERVICE_INFO_UUID2      (3)
->> +#define TS_RPC_SERVICE_INFO_UUID3      (4)
->> +#define TS_RPC_SERVICE_INFO_RPC_STATUS (1)
->> +#define TS_RPC_SERVICE_INFO_IFACE      (2)
->> +
->> +/* Service call */
->> +#define TS_RPC_SERVICE_MEM_HANDLE_LSW  (1)
->> +#define TS_RPC_SERVICE_MEM_HANDLE_MSW  (2)
->> +#define TS_RPC_SERVICE_REQ_LEN         (3)
->> +#define TS_RPC_SERVICE_CLIENT_ID       (4)
->> +#define TS_RPC_SERVICE_RPC_STATUS      (1)
->> +#define TS_RPC_SERVICE_STATUS          (2)
->> +#define TS_RPC_SERVICE_RESP_LEN                (3)
->> +
->> +struct tstee {
->> +       struct ffa_device *ffa_dev;
->> +       struct tee_device *teedev;
->> +       struct tee_shm_pool *pool;
->> +};
->> +
->> +struct ts_session {
->> +       u8 iface_id;
->> +};
->> +
->> +struct ts_context_data {
->> +       struct xarray sess_list;
->> +       /* Serializes access to the session list */
->> +       struct mutex mutex;
->> +};
->> +
->> +#endif /* TSTEE_PRIVATE_H */
->> diff --git a/include/uapi/linux/tee.h b/include/uapi/linux/tee.h
->> index 23e57164693c..d0430bee8292 100644
->> --- a/include/uapi/linux/tee.h
->> +++ b/include/uapi/linux/tee.h
->> @@ -56,6 +56,7 @@
->>   */
->>  #define TEE_IMPL_ID_OPTEE      1
->>  #define TEE_IMPL_ID_AMDTEE     2
->> +#define TEE_IMPL_ID_TSTEE      3
->>
->>  /*
->>   * OP-TEE specific capabilities
->> --
->> 2.34.1
->>
+PiBGcm9tOiBCYW9sdSBMdSA8YmFvbHUubHVAbGludXguaW50ZWwuY29tPg0KPiBTZW50OiBNb25k
+YXksIE1hcmNoIDQsIDIwMjQgNDoyNCBQTQ0KPiANCj4gT24gMjAyNC8zLzQgMTU6NDgsIFRpYW4s
+IEtldmluIHdyb3RlOg0KPiA+PiBGcm9tOiBMdSBCYW9sdSA8YmFvbHUubHVAbGludXguaW50ZWwu
+Y29tPg0KPiA+PiBTZW50OiBUaHVyc2RheSwgRmVicnVhcnkgMjksIDIwMjQgNTo0OCBQTQ0KPiA+
+Pg0KPiA+PiArCS8qDQo+ID4+ICsJICogRm9yIGtkdW1wIGNhc2UsIGF0IHRoaXMgcG9pbnQsIHRo
+ZSBkZXZpY2UgaXMgc3VwcG9zZWQgdG8gZmluaXNoDQo+ID4+ICsJICogcmVzZXQgYXQgaXRzIGRy
+aXZlciBwcm9iZSBzdGFnZSwgc28gbm8gaW4tZmxpZ2h0IERNQSB3aWxsIGV4aXN0LA0KPiA+PiAr
+CSAqIGFuZCB3ZSBkb24ndCBuZWVkIHRvIHdvcnJ5IGFueW1vcmUgaGVyZWFmdGVyLg0KPiA+PiAr
+CSAqLw0KPiA+PiArCWlmIChjb250ZXh0X2NvcGllZChpb21tdSwgYnVzLCBkZXZmbikpIHsNCj4g
+Pj4gKwkJY29udGV4dF9jbGVhcl9lbnRyeShjb250ZXh0KTsNCj4gPj4gKwkJaWYgKCFlY2FwX2Nv
+aGVyZW50KGlvbW11LT5lY2FwKSkNCj4gPj4gKwkJCWNsZmx1c2hfY2FjaGVfcmFuZ2UoY29udGV4
+dCwgc2l6ZW9mKCpjb250ZXh0KSk7DQo+ID4+ICsJCXNtX2NvbnRleHRfZmx1c2hfY2FjaGVzKGRl
+dik7DQo+ID4+ICsJCWNsZWFyX2NvbnRleHRfY29waWVkKGlvbW11LCBidXMsIGRldmZuKTsNCj4g
+Pj4gKwl9DQo+ID4NCj4gPiBpdCdzIHVuY2xlYXIgdG8gbWUgd2h5IHRoaXMgZG9lc24ndCBuZWVk
+IHJlZmVyIHRvIG9sZCBkaWQgYXMgZG9uZSBpbiB0aGUNCj4gPiBleGlzdGluZyBjb2RlLiBJZiBz
+Y2FsYWJsZSBtb2RlIG1ha2VzIGFueSBkaWZmZXJlbmNlIGNvdWxkIHlvdSBleHRlbmQNCj4gPiB0
+aGUgY29tbWVudCB0byBleHBsYWluIHNvIHBlb3BsZSBjYW4gYXZvaWQgc2ltaWxhciBjb25mdXNp
+b24gd2hlbg0KPiA+IGNvbXBhcmluZyB0aGUgZGlmZmVyZW50IHBhdGhzIGJldHdlZW4gbGVnYWN5
+IGFuZCBzbT8NCj4gDQo+IFRoZSBwcmV2aW91cyBjb2RlIGdldHMgdGhlIGRvbWFpbiBJRCBmcm9t
+IHRoZSBjb3BpZWQgY29udGV4dCBlbnRyeToNCj4gDQo+IHUxNiBkaWRfb2xkID0gY29udGV4dF9k
+b21haW5faWQoY29udGV4dCk7DQo+IA0KPiBUaGlzIG1ha2VzIG5vIHNlbnNlIGZvciBzY2FsYWJs
+ZSBtb2RlLCBhcyB0aGUgZG9tYWluIElEIGhhcyBiZWVuIG1vdmVkDQo+IHRvIHRoZSBQQVNJRCBl
+bnRyeSBpbiBzY2FsYWJsZSBtb2RlLiBBcyB0aGUgcmVzdWx0LCBkaWRfb2xkIGFsd2F5cyBnZXRz
+DQo+IDAuDQoNClRoZSBwb2ludCBpcyB3aGV0aGVyIHRoZSBkcml2ZXIgcmVxdWlyZXMgdG8gaW52
+YWxpZGF0ZSBjYWNoZSBmb3Igb2xkIGRpZA0Kd2hpY2ggaXMgb3J0aG9nb25hbCB0byB1c2luZyBs
+ZWdhY3kgb3Igc20uIElmIHllcywgdGhlbiB3ZSBzaG91bGQgZml4IHRoZQ0KY29kZSB0byBmaW5k
+IHRoZSByaWdodCBkaWQgaW5zdGVhZCBvZiBpZ25vcmluZyBpdC4gSWYgbm8gdGhlbiB0aGUgbGVn
+YWN5IHBhdGgNCnNob3VsZCBiZSBjbGVhcmVkIHRvbyB0byBhdm9pZCB1bm5lY2Vzc2FyeSBidXJk
+ZW4uDQoNCj4gDQo+ID4gYW55d2F5IGl0J3Mga2luZCBvZiBhIHNlbWFudGljcyBjaGFuZ2UgcHJv
+YmFibHkgd29ydGggYSBzZXBhcmF0ZSBwYXRjaA0KPiA+IHRvIHNwZWNpYWwgY2FzZSBzbSBmb3Ig
+YmlzZWN0IGFuZCB0aGVuIGRvaW5nIGNsZWFudXAuLi4NCj4gDQo+IFRoaXMgY2hhbmdlIGRvZXNu
+J3QgaW1wYWN0IGFueXRoaW5nIGFzIHRoZSBoYXJkd2FyZSB3aWxsIHNraXAgZG9tYWluIGlkDQo+
+IGZpZWxkIGluIHRoZSBDb250ZXh0LWNhY2hlIEludmFsaWRhdGUgRGVzY3JpcHRvciBpbiBzY2Fs
+YWJsZSBtb2RlLg0KPiANCg0Kbm8gc2VtYW50aWNzIGNoYW5nZSBidXQgaWYgb2xkIGNvZGUgaGFz
+IGJ1ZyB3ZSBzaG91bGQgZml4IGl0IGluc3RlYWQNCm9mIGNhcnJ5aW5nIHRoZSBiZWhhdmlvci4g
+8J+Yig0K
 
