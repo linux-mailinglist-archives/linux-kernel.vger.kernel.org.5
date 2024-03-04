@@ -1,183 +1,207 @@
-Return-Path: <linux-kernel+bounces-91353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91354-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51A96870FE5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 23:14:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 098D5870FE7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 23:14:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6D11AB274C5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:14:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F01B31C233C5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:14:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 523558062D;
-	Mon,  4 Mar 2024 22:09:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57F5E7C6D5;
+	Mon,  4 Mar 2024 22:10:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="kdOTehSn";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="KA70iocv"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MbTf6s++"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A16E97FBC5;
-	Mon,  4 Mar 2024 22:09:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709590149; cv=none; b=mEj1/OuQZocQX6lkJ0TkRl43k4UzLB4siMrnO+DQ4WKFKnVMx9Uh4uOVto3bPdSt1EFbmGp8L1VpuzJ2W1HM0UZuXAK/R1cJQosy9CpZhtKFInOUDi1+ROpSDMRXim044UxjO16Yf6fctqBPK2gtqzjX/2QiNEgKuY4Z4e0mjsI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709590149; c=relaxed/simple;
-	bh=xCyVbzs6uHQlqTa82S68d5ETNsdVmItgKMc6XoV8gYI=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=Bm27zzanm0lKzF77IyG8UThljpxKzc7+AJcRgzmi5J9EMaxFzrISW/7Zgw9Ye1E7z9KVu2ZU4LdTIYvvWEqJcWx0lI9Mao03AkuXtUB6AVsnhkcqLTYSsYn7h1YR0ari6rTl4vh1IYE8TfNOwYUuQwHd5E+m2bCTAKSLzbTv0hI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=kdOTehSn; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=KA70iocv; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 04 Mar 2024 22:09:05 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1709590146;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1C4wtYgWSShlzUjRgY4KbuT32FTRtIl2ExRgRhq5Sig=;
-	b=kdOTehSnf/oZYNPE9jZ/vBTJTgYVQfxgLEAOaUO4Igrf0Cv1wiYLNdbgs2eGqM+RYdZrA3
-	GNFJt5iaT6lo4vVyhfsgEqCZ72v4gsmkEvasgphbkbLXJ8uZ7GNH3X8VVd1VLrHxvLIdbt
-	oi5X768QmUTlUNRg+0+j1+BQuttuXd642rU9BdAYboXTg7cdA5WYhudY3cH0BGRJI9YEaQ
-	8WBCDfWnN87X7aetNYJfincZuMEzTQ2JlZhAs+Uxi0v2kzPOixU3sckAhJyRdSXQ7YerXD
-	Ul9ylvGPB/gPlY4kDXnVyIGDkOQ1k7ilCPUpgTvTg9GUUgeSpvVJmcyRJzSJ5Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1709590146;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1C4wtYgWSShlzUjRgY4KbuT32FTRtIl2ExRgRhq5Sig=;
-	b=KA70iocvCpyZQHJOHxGGg2io4x59T9DQ+H4eDnrgn9+wCaQgOe6bEvEqiX9hIHhD70Kb3h
-	/uT/tIk9HGr9A5Dg==
-From: "tip-bot2 for Ard Biesheuvel" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/boot] x86/startup_64: Simplify CR4 handling in startup code
-Cc: Ard Biesheuvel <ardb@kernel.org>, "Borislav Petkov (AMD)" <bp@alien8.de>,
- Tom Lendacky <thomas.lendacky@amd.com>, x86@kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240227151907.387873-12-ardb+git@google.com>
-References: <20240227151907.387873-12-ardb+git@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 808247AE47;
+	Mon,  4 Mar 2024 22:10:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.14
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709590210; cv=fail; b=ZO4oFvNvqz5920cuCrEYhlU3pJgJWz7wk7Zjy9rqJSPFNGIVCIFZDlINY7XO+flBeNCcXWvJlqDJxpw+E2A831KQaHM9HEVmrR7jl5L+e8F3kJPfWfRFaA9pM4k2PwiyhTYpiLcxEIKVUURg6cI3Fq/g/unI/6Nh31pJFqNkrDE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709590210; c=relaxed/simple;
+	bh=UqwD2n/gx+v7cklMxC/zHKNWYI+LL1BgBHpLBhIE7A0=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=BYQECO4gLXJEHOwo9IRGYSIfppiK9c8I0UOVvOCDh6NlG/dxiS7y352i6SyRmiz32CAd5flmb/moZkKyoLYWdiRNTFBo5VAUC8dLzgpAYWg2LEMeEqhVAUeElOKI2/2yBImKTnGQ3GBCXX2i0Ul077fWE73iVopXzWKkxNiq9aA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MbTf6s++; arc=fail smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709590210; x=1741126210;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=UqwD2n/gx+v7cklMxC/zHKNWYI+LL1BgBHpLBhIE7A0=;
+  b=MbTf6s++1XnQPIsUOW14GfnZygd5wrHQo6wLVvgI04XrE6SqqdoxCEpQ
+   yARpTQpfsfqkSMdfU9WWLoy3H4krVEYZUbS8LgkwILedgnaAQ2+HXIcN0
+   si48z4wYjAU4+x13fgzGQT9olA17Y81rY0dGU/XBJsdnklezNmfT2g9Gh
+   ecjahRhVCle5O03pyjjUzIcTy16vmzt040u9pCu67kEiUhish5BLTRDSK
+   sGMU9Y/Jui814q+ODeXpy4hbEiVynOv4RB6CXTYXQCY17IUdVa0Z2yoXS
+   zni8PnsanGNuanVpOpu9vAlef6+E7ZLt6LI90qitfqZMNQGpp/vj3giID
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="7929076"
+X-IronPort-AV: E=Sophos;i="6.06,204,1705392000"; 
+   d="scan'208";a="7929076"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 14:09:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,204,1705392000"; 
+   d="scan'208";a="8989126"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmviesa007.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Mar 2024 14:09:53 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 4 Mar 2024 14:09:52 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 4 Mar 2024 14:09:52 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 4 Mar 2024 14:09:52 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CF39dOq0XWR5PJxb+zWWcc2mboW2I/leH6u0PH43+DAheoFiRTPjowbZuI7BznRxRSDgkKLR5iYNz5RGkTMIdRhl9eUjdYe9vTySagqqhODgYslMvgHHN0lfIpDQIyEOAoAAf0oPM/JrBmmyW1xQ73yfF0CyJ5CiFegNHU0tsfW8fRahuqkKJS8RORT4diGKtbpmLm0BtanXEcDDT1PfjGB7XL7ybApudUJRoUtYNMUXYKNWc/uYAxeSX9V9Zp4HeL4Gj3NofhbPXikBbDULmTZeWRAKWrcT5PgDEO/qH9THZVNJsutwZkS1mu2+2wHeZVfNjjU7bKkp4aEtQdT+0w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ALnQ83HWOFVyhETRtRIp9jFjscQVbnh9kHDpA0eQ9WM=;
+ b=kOHafwhalBRoDY6fMyX8TQ36PYNWzPX+fZ8CmzZ8G7wNwXdJsj05vYRPW6dctJs57a0uNcSCycgb9KEAEBZ2j9D7angfPn3zHaAWPB0PbIUZEs2IHvOE3H5wqTaqaIRU2CYWYLSaciqHXyx4rUgPN/Op4JWtfya3JM5XmPsZ+DGcoc9R6L/g9UAOF0GKTD2Wtf2Iv/ul5dI+R647qrcks6MVgh2f/u4A3I/fgfnUob9ZXle/GuzBqccIxJ2rumonzVYHxFVKCHxpLxmUrcQCnxKDS+vqmlqT4WpnaDoDaT6TcstL4ICBll0uqSNmWB5dwmGJK8kccDhMpE6nyNGmIA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BL3PR11MB6435.namprd11.prod.outlook.com (2603:10b6:208:3bb::9)
+ by PH7PR11MB8122.namprd11.prod.outlook.com (2603:10b6:510:235::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.22; Mon, 4 Mar
+ 2024 22:09:50 +0000
+Received: from BL3PR11MB6435.namprd11.prod.outlook.com
+ ([fe80::9c80:a200:48a2:b308]) by BL3PR11MB6435.namprd11.prod.outlook.com
+ ([fe80::9c80:a200:48a2:b308%4]) with mapi id 15.20.7362.019; Mon, 4 Mar 2024
+ 22:09:49 +0000
+Message-ID: <827d22da-fb32-1012-422d-d283b28ce5ec@intel.com>
+Date: Mon, 4 Mar 2024 14:09:46 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.1
+Subject: Re: [PATCH] i40e: Prevent setting MTU if greater than MFS
+To: Erwan Velu <erwanaliasr1@gmail.com>
+CC: Erwan Velu <e.velu@criteo.com>, Jesse Brandeburg
+	<jesse.brandeburg@intel.com>, "David S. Miller" <davem@davemloft.net>, "Eric
+ Dumazet" <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, <intel-wired-lan@lists.osuosl.org>,
+	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240227192704.376176-1-e.velu@criteo.com>
+Content-Language: en-US
+From: Tony Nguyen <anthony.l.nguyen@intel.com>
+In-Reply-To: <20240227192704.376176-1-e.velu@criteo.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4PR03CA0258.namprd03.prod.outlook.com
+ (2603:10b6:303:b4::23) To BL3PR11MB6435.namprd11.prod.outlook.com
+ (2603:10b6:208:3bb::9)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170959014519.398.9871521957540564245.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL3PR11MB6435:EE_|PH7PR11MB8122:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1cec3ba3-b35e-4be9-b15e-08dc3c97cf3b
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +9r6ELQHYsclLDe8u/Ql1+ziYC+PFM3xbM7xwGIbb/TAHSjScsO+Ltn4xh1qWREpH+rixxLIAGO1LfLvT1I90Hd8NYul8kUfjlclkSlhHWyB/l6YXcR28w/nPuCejP/MRzwz2vl98azelLy8YUaQqikOBsryjqufNly+9c0xc80D0/QO0EC1nJM8D7ZdUuY4m8q/1u10MbXoA5Vz759RL2pMrknUTAaYCll3JlW93gjVpQCp7pEIPCHJ6EkHf4Vg4vtazzOitC21LX169B3PRkGvcYIhvdBSLjAR2aGfUTZiQMXwTR4E80vS1wNMH2HlpIAcmkPUwD3T9xcDsv8/YcPmbgQWpXBoxBuOGO5jSoGznlNfQ/FR6ZZ3SAcV8XXqQ+03ffrko5meKDgPvGy14zpxghOI2IFgtuI/Pj+ogcAq8RhokA7Fe/c+4Kazrv3Nwao4lp6CltWbki2v3s+TnVUi0P84n0+cxyj9O7em7bEswRo1hrKuWqLFaUbbtNjO/TS+H20HvVcf4coG3K5aenkP6xLWfpOs5SZn6G5x6fKm5V5X+SI5IxXOFElX+6n3JoItsVUbCSLNGiG0ZyWx5Kq9tXv69uXgqVOk2amdAOvRqTnC+Srtkg+xmGQlFziXlWAlzBaU/+Yq3xKGrdPDpYqjmfyM75R+qcxGHPwgIdA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL3PR11MB6435.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Tm1XTm9yMjE3dm9oYWlQL1FZWUFFSzdCeDN5NGVzWXB6N3ZkNlJXRmJ2dkh6?=
+ =?utf-8?B?T1p2ZzRQdjZheFFhMEw4aU5HN2lLSU1ESmpjM2hEVnkrRWlpN2dxbFRNdjF0?=
+ =?utf-8?B?ZkNrMlFhUGNHTGt1MTJMVHEweE9lckJnMXBIN2x4TE8vb0ZuM2E4SFlEQ3I5?=
+ =?utf-8?B?TStwRHExNEhleTFUZGEwdVRPcEpsS3B4ZkJqWU9JTjljS1lKSDlmK3c1VkZ1?=
+ =?utf-8?B?Y2p3VklId2daRUR3WTMwZG50eHovTHpHSTBUMHZsS1ZEM3BYUWxzWjJiR3ds?=
+ =?utf-8?B?NG1PYS9pMzhXVllIbTR5N1JLYlRGMkJJVFJZQjlrYzdSMFBZQXg3bG1zMkVQ?=
+ =?utf-8?B?TVhaZXZYSXBLRzZ3VEt5RzBnL25WYkczQzBwWFB3cThsd3R3VDArVGhBeVhi?=
+ =?utf-8?B?YWpEQVl0ZllYYmcvajJydStJOXdlbm1VRFg2bHYxQ2wrMkdSSUtwTXhoVXIy?=
+ =?utf-8?B?aWpTQWgwNmJGT01JQTJCT2llbkNpQStiZjNhdXhra05tQyt2U3UyaVNwYXlU?=
+ =?utf-8?B?L0ZUazdDYjV3THFHYVNlMmdUVFNKZ1NNLy9OU1RWYk5jWnRieG9ueThsbnVW?=
+ =?utf-8?B?QjgxWlUrYVpJK0lWYmV3ckdMcWF6NkRMdlBtaFRpcUVFZG1Bb3dnQzZ5UjE3?=
+ =?utf-8?B?dTk4N1Y0TW9malNoYXhQK2piUFFXbW95MHMxWnZTRXowcGdTdnRySmZHVUF5?=
+ =?utf-8?B?MTVaV1pPQzZXeFFMYnZEVzRWZ3UxRkRHR2pvK25Udy9EQkJyZ05TRUw3QUgz?=
+ =?utf-8?B?MWhIaXU3SDZnR3IxcnJtb2QvYkpCVGlOY2Fxb2d1c0E2eWhtS0RzRnVSYzhz?=
+ =?utf-8?B?Wis2WGluTHlZZ24yVjQ1VUMvcUJ4eDFad0szVndXSTg4NkFXSlBzM3VtOTNF?=
+ =?utf-8?B?dUMreXVjY1VQVStuemgrcjJaUkd4L042ZHNWakpjM2NZN3NYN1hsYS9JRDN1?=
+ =?utf-8?B?WlgxUzlVRzkrSjYvQmp1Q0wwZG5UUVFSL3IvRkJkZFhDVEZnanB3dTg4dTdw?=
+ =?utf-8?B?T1BCNXg1dXBaY0x1QVpnbHc0WjU0QVNHd1B2Z0F6cTc1M212c29qd3NvT3dY?=
+ =?utf-8?B?RmFWY3ZIVVpydHBQQndrazFuUGdYNFBhcmRnbU10ZEM1cW1GTjFtZHlNbGdi?=
+ =?utf-8?B?QnpHOUJhZ1RPRkRzNjZTcG02VUxnVDhFUElwY0w3OHJhSC9ZSmhHQnhQamJB?=
+ =?utf-8?B?ZEtYRUF2bmpvRTNFaU56b1U2UXUzTy9sMmpLcXZPMVo0TXpQSEhCVkFXTmtF?=
+ =?utf-8?B?SS9EWWhTMGs2UjhpTTJUWVFsQk1WR0VPaTZLenNqOFowbHdoMlh6OS9FRXZC?=
+ =?utf-8?B?SlNZSTVIRXZYbDc5RFZlQjJIRHhFcE1jY01Lc2dhUDh4SVMxaEVIaHNwTjNq?=
+ =?utf-8?B?dktvZlhiU003WUErdlNwcTFuK3VPeTMrdHhZVlJSZlV5Zy9ON1QvaDBITjRa?=
+ =?utf-8?B?OHpCZ0d2aEVoWXNFeDlOcjEwUmxzWWxPblU4NnA1S1RiSnlYU1cybTFGTDFr?=
+ =?utf-8?B?bGNrSHlJWklGN09PdWs3R0dxd1N1WGJMT3Y4b2crTW4zNHVrSndIWHYraTJ6?=
+ =?utf-8?B?cGxGSG9TTlpKcVVXVlFuY3NXT0pleHVSWFcvT0JGZjcvdFdBZ2s4SlNGdU5s?=
+ =?utf-8?B?UGwxYnlkalZyUFAydjk4dVRQSko1aFJFUkVWL1lDTWVxV243M012M0hHejZE?=
+ =?utf-8?B?bFNKL3JPQWpVVzg0MmQwY1Rod3NCcUc5ci9tYSt5QUNSR0ZEaVJSNjUrZTc1?=
+ =?utf-8?B?U21wc1o4S0hHV0owcEY0MlhkdWxhYk1XRHhjbjRONEhrK09uaVhmeUZDY1ls?=
+ =?utf-8?B?OHFuS3MzSmc5M3VoS0ErWnlySllYU2pxU3l1V09zWkJjRU04SlZibnpZc2pU?=
+ =?utf-8?B?cDhTMDQwaU5jcDVyaFcreHZFbS9aMnIrQ2I5OTFaUGViQm54VU9nY1pGemZZ?=
+ =?utf-8?B?SWxxWVhaa0pvNExIUEpWYXhhejBuTHBpdGdZRWF3ZDJyNmJuNTZlR3N6Rjdp?=
+ =?utf-8?B?NlNCSjl3YUpQSEFXOERhRm9pZFFnbGRiUGpEcGRaU2NJakJSTjlJMm1lVFdk?=
+ =?utf-8?B?WmVHTG9TYm16SFZjM2t5dnp4THl4N1FSbHBiZWd2eWRDZEwveGpCLzd3VDVu?=
+ =?utf-8?B?RlFHdkRFZVU2NkJjNEtVelJUS3lXd3NzbDlWZ21obFB1V2lMbWI0U0I0cXVL?=
+ =?utf-8?B?NVE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1cec3ba3-b35e-4be9-b15e-08dc3c97cf3b
+X-MS-Exchange-CrossTenant-AuthSource: BL3PR11MB6435.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Mar 2024 22:09:49.6179
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: OmI1mQ5O7uHW5kV5fqK60RmWZ2S1io1zggLXa2qHjzbbT+VZXfdkJdn0Vs6hlw0+eRVIQPIEMQXAOFDLTEU0DkE1Pi/EdbKq87Rb8E6eMNM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB8122
+X-OriginatorOrg: intel.com
 
-The following commit has been merged into the x86/boot branch of tip:
+On 2/27/2024 11:27 AM, Erwan Velu wrote:
+> Commit 6871a7de705b6f6a4046f0d19da9bcd689c3bc8e from iPXE project is
+> setting the MFS to 0x600 = 1536.
+> 
+> At boot time the i40e driver complains about it with
+> the following message but continues.
+> 
+> 	MFS for port 1 has been set below the default: 600
+> 
+> If the MTU size is increased, the driver accept it but large packets will not
+> be processed by the firmware generating tx_errors. The issue is pretty
+> silent for users. i.e doing TCP in such context will generates lots of
+> retransmissions until the proper window size (below 1500) will be used.
+> 
+> To fix this case, it would have been ideal to increase the MFS,
+> via i40e_aqc_opc_set_mac_config, but I didn't found a reliable way to do it.
+> 
+> At least, this commit prevents setting up an MTU greater than the current MFS.
+> It will avoid being in the position of having an MTU set to 9000 on the
+> netdev with a firmware refusing packets larger than 1536.
+> 
+> A typical trace looks like the following :
+> [  377.548696] i40e 0000:5d:00.0 eno5: Error changing mtu to 9000 which is greater than the current mfs: 1536
+> 
+> Signed-off-by: Erwan Velu <e.velu@criteo.com>
 
-Commit-ID:     dada8587068c820ba5e5d09b9c32d8bc28c4dbe6
-Gitweb:        https://git.kernel.org/tip/dada8587068c820ba5e5d09b9c32d8bc28c4dbe6
-Author:        Ard Biesheuvel <ardb@kernel.org>
-AuthorDate:    Tue, 27 Feb 2024 16:19:09 +01:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Mon, 04 Mar 2024 18:11:34 +01:00
+The Author and Sign-off needs to be fixed; they don't match.
 
-x86/startup_64: Simplify CR4 handling in startup code
+WARNING: From:/Signed-off-by: email address mismatch: 'From: Erwan Velu 
+<erwanaliasr1@gmail.com>' != 'Signed-off-by: Erwan Velu <e.velu@criteo.com>'
 
-When paging is enabled, the CR4.PAE and CR4.LA57 control bits cannot be
-changed, and so they can simply be preserved rather than reason about
-whether or not they need to be set. CR4.MCE should be preserved unless
-the kernel was built without CONFIG_X86_MCE, in which case it must be
-cleared.
-
-CR4.PSE should be set explicitly, regardless of whether or not it was
-set before.
-
-CR4.PGE is set explicitly, and then cleared and set again after
-programming CR3 in order to flush TLB entries based on global
-translations. This makes the first assignment redundant, and can
-therefore be omitted. So clear PGE by omitting it from the preserve
-mask, and set it again explicitly after switching to the new page
-tables.
-
-  [ bp: Document the exact operation of CR4.PGE ]
-
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Tested-by: Tom Lendacky <thomas.lendacky@amd.com>
-Link: https://lore.kernel.org/r/20240227151907.387873-12-ardb+git@google.com
----
- arch/x86/kernel/head_64.S | 35 +++++++++++++++++------------------
- 1 file changed, 17 insertions(+), 18 deletions(-)
-
-diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-index 86136a7..54207e7 100644
---- a/arch/x86/kernel/head_64.S
-+++ b/arch/x86/kernel/head_64.S
-@@ -185,6 +185,16 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
- 	addq	$(init_top_pgt - __START_KERNEL_map), %rax
- 1:
- 
-+	/*
-+	 * Create a mask of CR4 bits to preserve. Omit PGE in order to flush
-+	 * global 1:1 translations from the TLBs.
-+	 *
-+	 * From the SDM:
-+	 * "If CR4.PGE is changing from 0 to 1, there were no global TLB
-+	 *  entries before the execution; if CR4.PGE is changing from 1 to 0,
-+	 *  there will be no global TLB entries after the execution."
-+	 */
-+	movl	$(X86_CR4_PAE | X86_CR4_LA57), %edx
- #ifdef CONFIG_X86_MCE
- 	/*
- 	 * Preserve CR4.MCE if the kernel will enable #MC support.
-@@ -193,20 +203,13 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
- 	 * configured will crash the system regardless of the CR4.MCE value set
- 	 * here.
- 	 */
--	movq	%cr4, %rcx
--	andl	$X86_CR4_MCE, %ecx
--#else
--	movl	$0, %ecx
-+	orl	$X86_CR4_MCE, %edx
- #endif
-+	movq	%cr4, %rcx
-+	andl	%edx, %ecx
- 
--	/* Enable PAE mode, PSE, PGE and LA57 */
--	orl	$(X86_CR4_PAE | X86_CR4_PSE | X86_CR4_PGE), %ecx
--#ifdef CONFIG_X86_5LEVEL
--	testb	$1, __pgtable_l5_enabled(%rip)
--	jz	1f
--	orl	$X86_CR4_LA57, %ecx
--1:
--#endif
-+	/* Even if ignored in long mode, set PSE uniformly on all logical CPUs. */
-+	btsl	$X86_CR4_PSE_BIT, %ecx
- 	movq	%rcx, %cr4
- 
- 	/* Setup early boot stage 4-/5-level pagetables. */
-@@ -223,14 +226,10 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
- 	movq	%rax, %cr3
- 
- 	/*
--	 * Do a global TLB flush after the CR3 switch to make sure the TLB
--	 * entries from the identity mapping are flushed.
-+	 * Set CR4.PGE to re-enable global translations.
- 	 */
--	movq	%cr4, %rcx
--	movq	%rcx, %rax
--	xorq	$X86_CR4_PGE, %rcx
-+	btsl	$X86_CR4_PGE_BIT, %ecx
- 	movq	%rcx, %cr4
--	movq	%rax, %cr4
- 
- 	/* Ensure I am executing from virtual addresses */
- 	movq	$1f, %rax
+Thanks,
+Tony
 
