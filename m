@@ -1,123 +1,104 @@
-Return-Path: <linux-kernel+bounces-90556-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90559-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34CB5870113
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:16:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57A5587011D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:18:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E33F3282157
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:16:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 847C11C219AF
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:18:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31F083D99C;
-	Mon,  4 Mar 2024 12:15:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CC083BB3E;
+	Mon,  4 Mar 2024 12:18:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0RWeU0vn";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ZgmJISvL"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="d0UfJP/k"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7C5A3D3A1;
-	Mon,  4 Mar 2024 12:15:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A8303BB3C;
+	Mon,  4 Mar 2024 12:18:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709554512; cv=none; b=ungOt2VJmCbyP9Bqs36N9EpDDYuw3E4SAL0wLDWlpam8DwKvZd5hkl53CZjCTFSzZ+zd2yu42BxjuOxk1vGubgNowpBEiV9TihSFl12GI5GIyfEqlxAdFgWGo4Q6j4TM4FfAenKdCasJBU41dLanUfDWzwoFsCl113Apg8bEw5E=
+	t=1709554694; cv=none; b=RqzkKbQEA+8iMS5rUmhCeOribCcdIfA0CxG44Cyjc0/zdgyRfMcatiYrnJO/em1fSwpKBY1qyc1268BjPDQK12M4tmJYP7ADI1h6O46aOBVW8oBVhM91e9ZRCKKkSzTIZ+b5f2Ww4KGu/au7whaBCuZvUxlGniUG0ePBR5N7EbY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709554512; c=relaxed/simple;
-	bh=24gGEBD85uMJ6hyJwnGdczNqQILCUNQ6WPuUDDHuvg8=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=ZsnwiEYHFGMq6jJNyg1M2h/hmsAxE8lJ/Z8eIie+Vy7DgZ29lilLGHtWQ8mWMb3opo9As1iJB1zooc0vNK5pt53jWyM3RL6ecLCb5mywRm8eMDHOggka7NZehhAdm4tFUZd1XNC3cZuD2sEUAb+SumrqAUq0fh1KEMuKAwslKkc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=0RWeU0vn; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ZgmJISvL; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 04 Mar 2024 12:15:08 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1709554509;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PYjQL1m6PdNqMGrIubduBfk/LF9c7kH7eRNu+74sspE=;
-	b=0RWeU0vn3h32AHT/DcjLl0ONM2Iy3RY9b0W8mnHim2uSctMV63r/IR4i8plzO4YSSfjV1R
-	DBJurKo9Q5IQuPKKTs6sMWnXCgvcZ1V+rKmDkxVEV5rKQQrplzDnL4Wy7IcVCFPyWG6TY1
-	p1VTn/CKwVKDHiLcdiEAGFM7NtU+WXqjavMGfIpdVChtgpMWWdr2OPNGjB/TzEZrQNJokv
-	r/SCApn046Td/FbglVF/N+YoqGQYQSMzUg3A7+iPCHyKGQmh2C5k/2XQLfRQhlCGETkQYQ
-	v2QyWJFEgGy/oKxbLFO5BNRFs2Z6Q42JguL3slH88WAtCzkdlHjK8syDqwVKTg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1709554509;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PYjQL1m6PdNqMGrIubduBfk/LF9c7kH7eRNu+74sspE=;
-	b=ZgmJISvLACO2cxHpEHLaaO4wAoCKCsRqyTh6tHC5YT8V8nfFFEgwaEMvu2y46h738N5A4B
-	/092ONa6HeHod1BQ==
-From: "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] perf/x86/amd/uncore: Fix __percpu annotation
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@kernel.org>,
- x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240304005104.394845326@linutronix.de>
-References: <20240304005104.394845326@linutronix.de>
+	s=arc-20240116; t=1709554694; c=relaxed/simple;
+	bh=N2W3mE8rnw2SVp2I4OlDvkJ1azlDiC+mHB23aFxRlX0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VLXgPC+cbAOkUw0axWbn6VhpihAVtS2Zz/ZmfvZ5ifJfp2wiQpOwzxU5nUAluCuzCZJhno00sPmyTrOsK2kIMBKtvbU6I93pkLkgQAZ+Tmd/btItFmWrzihhHOiHWVdtutWnqUQaOEJYLpguVhP3zsGVhC2JDhYCAt+ZFqJ0Mxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=d0UfJP/k; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
+	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
+	In-Reply-To:References; bh=uf9/2sCOY3v4S1nCPA6rsbwBK7yGOrOwP1YZD759F5Y=;
+	t=1709554692; x=1709986692; b=d0UfJP/kksHG+VFWhn/EsuBO+7Y9Ua442cnflhjdTKVbT/Q
+	1n5sqokjgSGlNhrTvffgquEiM3FkIsONWDVXt6Ee2DCgzPYa3iJ4xfK29mBemBAxtebDfwd5SmjtG
+	+etbL+zopIKaqnHLzpYxoVSd65uDeaouhUyFcdomVWOnyEzWVA3UoMcYuUW6DDRollfx20ATbI/y4
+	us314FSyoN0C5BXt7dvq8BNJPI+ZUCD4gDTIKh01yml9XBdJ09cc15Vk0udEag5SMfF2zj0J2WqmG
+	vQQXCJhcKqFg2ySOxTbC1yYHmfT+3vWvSfWnulJHnIuusafoTgJN3UEfzHfeaiAg==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rh7Gj-0007ZK-Aw; Mon, 04 Mar 2024 13:18:09 +0100
+Message-ID: <ab9d758c-3ce9-42f6-99af-877055a589e6@leemhuis.info>
+Date: Mon, 4 Mar 2024 13:18:08 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170955450855.398.7376903454873999769.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [REGRESSION] Missing bcm5974 touchpad on Macbooks
+Content-Language: en-US, de-DE
+To: regressions@lists.linux.dev
+Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <87sf161jjc.wl-tiwai@suse.de>
+From: "Linux regression tracking #adding (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <87sf161jjc.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1709554692;3519abd2;
+X-HE-SMSGID: 1rh7Gj-0007ZK-Aw
 
-The following commit has been merged into the x86/cleanups branch of tip:
+[TLDR: I'm adding this report to the list of tracked Linux kernel
+regressions; the text you find below is based on a few templates
+paragraphs you might have encountered already in similar form.
+See link in footer if these mails annoy you.]
 
-Commit-ID:     9eae297d5d8d87738a14010af62b2b64b9d98097
-Gitweb:        https://git.kernel.org/tip/9eae297d5d8d87738a14010af62b2b64b9d98097
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Mon, 04 Mar 2024 11:12:18 +01:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Mon, 04 Mar 2024 11:58:36 +01:00
+On 04.03.24 09:35, Takashi Iwai wrote:
+> 
+> we've received a few regression reports for openSUSE Leap about the
+> missing touchpad on Macbooks.  After debugging, this turned out to be
+> the backport of the commit 2b9c3eb32a699acdd4784d6b93743271b4970899
+>     Input: bcm5974 - check endpoint type before starting traffic
+> 
+> And, the same regression was confirmed on the upstream 6.8-rc6
+> kernel.
+> 
+> Reverting the commit above fixes the problem, the touchpad reappears.
+> 
+> The detailed hardware info is found at:
+>   https://bugzilla.suse.com/show_bug.cgi?id=1220030
 
-perf/x86/amd/uncore: Fix __percpu annotation
+Thanks for the report. To be sure the issue doesn't fall through the
+cracks unnoticed, I'm adding it to regzbot, the Linux kernel regression
+tracking bot:
 
-The __percpu annotation in struct amd_uncore is confusing Sparse:
+#regzbot ^introduced 2b9c3eb32a699ac
+#regzbot title Input: missing bcm5974 touchpad on Macbooks
+#regzbot duplicate: https://bugzilla.suse.com/show_bug.cgi?id=1220030
+#regzbot ignore-activity
 
-  uncore.c:649:10: sparse: warning: incorrect type in initializer (different address spaces)
-  uncore.c:649:10: sparse:    expected void const [noderef] __percpu *__vpp_verify
-  uncore.c:649:10: sparse:    got union amd_uncore_info *
-
-The reason is that the __percpu annotation sits between the '*'
-dereferencing operator and the member name.
-
-Move it before the dereferencing operator to cure this.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20240304005104.394845326@linutronix.de
----
- arch/x86/events/amd/uncore.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/events/amd/uncore.c b/arch/x86/events/amd/uncore.c
-index 5bf03c5..4ccb8fa 100644
---- a/arch/x86/events/amd/uncore.c
-+++ b/arch/x86/events/amd/uncore.c
-@@ -71,7 +71,7 @@ union amd_uncore_info {
- };
- 
- struct amd_uncore {
--	union amd_uncore_info * __percpu info;
-+	union amd_uncore_info  __percpu *info;
- 	struct amd_uncore_pmu *pmus;
- 	unsigned int num_pmus;
- 	bool init_done;
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
 
