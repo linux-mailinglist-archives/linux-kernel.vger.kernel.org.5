@@ -1,102 +1,101 @@
-Return-Path: <linux-kernel+bounces-91045-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91046-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18DA98708DA
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:57:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83C628708DF
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:58:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 49AD11C2302C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:57:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3FC0628708E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:58:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3FDA6167A;
-	Mon,  4 Mar 2024 17:57:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dL6t1YZ2"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FAE66168D;
+	Mon,  4 Mar 2024 17:58:41 +0000 (UTC)
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95D5960253;
-	Mon,  4 Mar 2024 17:57:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4FA5612F6;
+	Mon,  4 Mar 2024 17:58:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709575050; cv=none; b=CU99IfD+lrS+TUcq0EtHOH7O9Yhw47bf8Ltj1P0bIVeCB69doDnKUyDqKtSE0BPNnY5qC8noRwpC3LooKj0zZEx4+s+9E7PQ9K0H5ThbmPHJze2pt4WHK3Yr71Yh4H2GBC0CTmDVM7twNgw0z9zJxmylGn0UWAUHdEBECSf1i1I=
+	t=1709575121; cv=none; b=dybDadzhR9N+Sg2r0YHrBI/LfQvtgSREptFj+1c3I+jg4rfi3I4uhleCXm+TKaULMhJpMgB6L04m0r8HL6DNEIYM89eB6mPDAoz9658yN1WENdHnSUtKkMAJEJfnqmQy4PqSQHNSqWsmo5EX38SppnelGW5qb1a3cA5FI1IuyKY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709575050; c=relaxed/simple;
-	bh=xcbZ8aiTEFcbFkZ7e5ZCEBXrCQumyVXyJRQDCZfqNog=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UOQVPDBDVcyh4uqGonmEcGCH4J8R8ogZ6EFl7pIfsQ1XHApCd+81aqgYfrSj4ACNianzb5oYjj6+GJkXN1QcoFO/OIdTk3na/jAePvpSkwVgDE7g2Riq0fAOWlllFr6QBxZkOiX/Mp4TNmj/0yJeYhti6G8eO7H1JJCgrk/CyCQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dL6t1YZ2; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709575048; x=1741111048;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=xcbZ8aiTEFcbFkZ7e5ZCEBXrCQumyVXyJRQDCZfqNog=;
-  b=dL6t1YZ29/XVATADRR02514mkQOCg1ENcRA8qN5M0KOY7uMbN7rot+Vo
-   OQhLMxJmpPPhUgmeGBnLamqXCJvjL2RcF/a4BdsbNjBjTTrcSKlJdihqG
-   VGBc9pxn3XtBMkbn25PvVkB1iDCQXPYvCc3+LMZbh6CQFSdiAvLeNnAwO
-   C8xmWfQOJUi/pNA0juI7uS5y08fR+c5Ceotab15S9xasdiWgc/L66DVEV
-   bR/30GrsNmNk+g8WLLpDz1NevjG3g9Xo3oe/P3qQwErhMAcRjwtFQlFxH
-   b3utVilVpJeH7W8zlfIAGRkqjEcy0d8L7EkVY9bWi+EGSqt6nglb3esYL
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="4210529"
-X-IronPort-AV: E=Sophos;i="6.06,204,1705392000"; 
-   d="scan'208";a="4210529"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 09:57:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="937040911"
-X-IronPort-AV: E=Sophos;i="6.06,204,1705392000"; 
-   d="scan'208";a="937040911"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 04 Mar 2024 09:57:25 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 9714515C; Mon,  4 Mar 2024 19:57:24 +0200 (EET)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	linux-fpga@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Moritz Fischer <mdf@kernel.org>,
-	Wu Hao <hao.wu@intel.com>,
-	Xu Yilun <yilun.xu@intel.com>,
-	Tom Rix <trix@redhat.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/1] fpga: ice40-spi: Remove unused of_gpio.h
-Date: Mon,  4 Mar 2024 19:57:23 +0200
-Message-ID: <20240304175723.1200249-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+	s=arc-20240116; t=1709575121; c=relaxed/simple;
+	bh=7Zu9zgcac4VgwpjQvrHw9a/i3AQ4qr/4jtRiPbhFdrQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=E5jdwfo9cVEZuvUNjNNws/7c3IMu4mGuT+G+sHP1UTf7PTAEucRZeXFV+r4EwRsl9UeZO/ecxtFRVa/JXOpIG3oYRFOkOlPLBmi65QbSagXxN8+550znjifqaRs8eTdO/LJPRaq9YpEoL9P3B7owy0uAluQFKubxghkbcvnhqTQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e57a3bf411so2762299b3a.0;
+        Mon, 04 Mar 2024 09:58:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709575119; x=1710179919;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6ajt4lA5nr72NHbHG6HjtHvqols3KCbA7VNlfI59BaQ=;
+        b=Q58ZYHQDVX2YukB6WmLXrCE55UJso/J1SBXpywxsvgzY8XJX5GEWxTFmMzUYIpNUVX
+         Cfvuem7eq9lZJFPsOM/Kuczu/yYYSVsT/L+ybyifoSjns8hHSA7/kL8YuPeTg93pG6Bl
+         /PPnx37t08YlhDL8CgBfjSgXt8943/AlkBVNZLnaydw2m4dV2dTA8KJfz1qeeXxQkbb5
+         BAhuVsJTm5/l6NH0jDjFh0P9zUpU6CjAtVLt5zQubfvfOTyQYBjGp/7/k5XoOlh9tI0G
+         cknGqvhYpi5kzyJEG9KOALJVBSfhVUMBc5nLDryXaMPcWlkIRv2EDAhSsWoIso+ulEBN
+         o+8w==
+X-Forwarded-Encrypted: i=1; AJvYcCX1FAVB7DwTP1C4xIGzQfiFnsrlTtaT4waNOTuY+KPDOLkft1OzUaIEcrE91v45OTHQmxMAy3xsg3Bsj2aAiMBDsdah8toVf2LpN5ccKD4bPngP1UD1Ytz9qQX3knVltV4KBdsj6j8ew08C7A==
+X-Gm-Message-State: AOJu0YwaA6DaMybfeTRXlu+oFiIegR84EHufXEDE/EBeE1wY/Ue0x4ca
+	DECi9ZQo9pgfRoCf6NySozC2VFzQsJL7Wd81x3rgJ1fO0jL+8uyb
+X-Google-Smtp-Source: AGHT+IFhvikOlxrphG2KYj9gZMJrvMpgTjhCTRDIHMbditN7auCUbuV1vT9jAgXrYY12qSfNqY9/vg==
+X-Received: by 2002:a05:6a00:b48:b0:6e5:4451:eb90 with SMTP id p8-20020a056a000b4800b006e54451eb90mr12616402pfo.6.1709575119043;
+        Mon, 04 Mar 2024 09:58:39 -0800 (PST)
+Received: from ?IPV6:2620:0:1000:8411:9ba8:35e8:4ec5:44d1? ([2620:0:1000:8411:9ba8:35e8:4ec5:44d1])
+        by smtp.gmail.com with ESMTPSA id x16-20020aa784d0000000b006e55d5215dbsm7502218pfn.87.2024.03.04.09.58.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Mar 2024 09:58:38 -0800 (PST)
+Message-ID: <2587412f-454d-472c-84b3-d7b9776a105a@acm.org>
+Date: Mon, 4 Mar 2024 09:58:37 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] fs/aio: fix uaf in sys_io_cancel
+Content-Language: en-US
+To: Benjamin LaHaise <ben@communityfibre.ca>
+Cc: Edward Adam Davis <eadavis@qq.com>,
+ syzbot+b91eb2ed18f599dd3c31@syzkaller.appspotmail.com, brauner@kernel.org,
+ jack@suse.cz, linux-aio@kvack.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+ viro@zeniv.linux.org.uk
+References: <0000000000006945730612bc9173@google.com>
+ <tencent_DC4C9767C786D2D2FDC64F099FAEFDEEC106@qq.com>
+ <14f85d0c-8303-4710-b8b1-248ce27a6e1f@acm.org>
+ <20240304170343.GO20455@kvack.org>
+ <73949a4d-6087-4d8c-bae0-cda60e733442@acm.org>
+ <20240304173120.GP20455@kvack.org>
+ <5ee4df86-458f-4544-85db-81dc82c2df4c@acm.org>
+ <20240304174721.GQ20455@kvack.org>
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20240304174721.GQ20455@kvack.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-of_gpio.h is deprecated and subject to remove.
-The driver doesn't use it, simply remove the unused header.
+On 3/4/24 09:47, Benjamin LaHaise wrote:
+> On Mon, Mar 04, 2024 at 09:40:35AM -0800, Bart Van Assche wrote:
+>> On 3/4/24 09:31, Benjamin LaHaise wrote:
+>>> A revert is justified when a series of patches is buggy and had
+>>> insufficient review prior to merging.
+>>
+>> That's not how Linux kernel development works. If a bug can get fixed
+>> easily, a fix is preferred instead of reverting + reapplying a patch.
+> 
+> Your original "fix" is not right, and it wasn't properly tested.  Commit
+> 54cbc058d86beca3515c994039b5c0f0a34f53dd needs to be reverted.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/fpga/ice40-spi.c | 1 -
- 1 file changed, 1 deletion(-)
+As I explained before, the above reply is not sufficiently detailed to
+motivate a revert.
 
-diff --git a/drivers/fpga/ice40-spi.c b/drivers/fpga/ice40-spi.c
-index c0028ae4c5b7..46927945f1b9 100644
---- a/drivers/fpga/ice40-spi.c
-+++ b/drivers/fpga/ice40-spi.c
-@@ -11,7 +11,6 @@
- #include <linux/fpga/fpga-mgr.h>
- #include <linux/gpio/consumer.h>
- #include <linux/module.h>
--#include <linux/of_gpio.h>
- #include <linux/spi/spi.h>
- #include <linux/stringify.h>
- 
--- 
-2.43.0.rc1.1.gbec44491f096
-
+Bart.
 
