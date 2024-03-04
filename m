@@ -1,541 +1,184 @@
-Return-Path: <linux-kernel+bounces-90156-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90157-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2AD2186FB21
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:52:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4215A86FB24
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:54:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 486E71C20F64
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 07:52:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27319B21004
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 07:54:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2521168BA;
-	Mon,  4 Mar 2024 07:52:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6C32168A9;
+	Mon,  4 Mar 2024 07:54:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UAcbZKdq"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JXJN7C9Y"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BC3E16429
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 07:52:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709538758; cv=none; b=HTtOxr+3G1kCp5IE4Bb/2Jp/QCenDWqc04Rm8ebEAHYGvdkr6/+t9vAnLUVDQljAc3N7+sdQAwi0dhUNyacFBZKic0ey5LMJzBhd/VP7W1N86zLVqp+3gndU8pvkSFZNgioNLgNydyzZyC9wxQN3AvEdwLLhzreL2n9o/ET8pWs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709538758; c=relaxed/simple;
-	bh=r9HHtJnYVUKchs7aXVrXEujd+FfyutSQcERR7mI0IJY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mjaaxtkcsOIL9rdKtv0VcDVTxlT/mNTESJacOHNBgFrvMhgYZkLaK0w7Crzt+32rEaeyO1Zr3BqLCXHT0RbBjBE1auW8ZiBTervtEf5sAxlzEsPZkcSRDgWOlFbx0NjdYE8RZnQfGuhkRVe6FKYFXbDNLmeCSl/TqMb5nHqkCoc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UAcbZKdq; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-5133d276cbaso2106599e87.2
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 23:52:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709538755; x=1710143555; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=E4wbgivd5+75Dv+XUKqvmXgCNe2XqRsJil0CRCI0gOU=;
-        b=UAcbZKdq1VKEMyB7sSodCfwtYYJGoCBtfAT7pH6Y4GVwV1bsxuA/h2H1NQpNoe1mz5
-         fEw+Uf6IHlttOiccrd8jcHmw4BEykdRWq/qm5EQxAXkTCf6u7t9WMu/AJKEUHG8Fa3Q4
-         R5m+XXPwdQjD05u+ab5DJCTh2olQUshMqNXIjaPemT0nOyJgk9QKZTXjPo2EkMK9JR+n
-         qyeM+zEB+kBOI3bXeBCNsG+sZRzAmxVCdVmzCIwjf6PsDSq9IYPaMi6TncNk+uko5M75
-         LcDfbmHv1FbWji4uSPDK2pOLUcbTT8TVbgFCVPlrx2JMh/lXI1JZzQKFppVBMWALJ5qX
-         KbJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709538755; x=1710143555;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=E4wbgivd5+75Dv+XUKqvmXgCNe2XqRsJil0CRCI0gOU=;
-        b=Yknxqlw16tLbEzG9fuMIF5UE31eKkuzFDuefuzEqhFVeQjSnw2IWYBeP1bRaHJye0c
-         xjj1Ky2CS/HsULuNA8srlvnPWQwRFevrWwNs5XmmN+w+2QY77CUNIDLZMN8/DPW+X+hh
-         b2XRhEzhW3Zv3b/sBBi5DKhYX3F/4udNsFwkCQFalHqlApbbo16O6dfi8EZspazxnFp/
-         CxpvcZmpEPkdzjntS8M0g0e0gi18UEMFGltOtKt6pHGJWQ8EpqvHih3/wBV94vwHgQpz
-         /c8vqUAkq3s+VbdO3l7W7syUld7FytGWm8JHmJPGnugzInb6xwMGlkh7yvDaXFlSAPOr
-         qZ8g==
-X-Forwarded-Encrypted: i=1; AJvYcCWAEoB0ekgTEL3El4Mi/QnlGyDdXk8HOpP6vSFMv0uJoSiZrKYY/M+xU0ovQwQdoRWf/xI0WjuLKzh085kjpHSGAZsPEcsRfO9YSp5A
-X-Gm-Message-State: AOJu0Yzsbi/TySqrHPh/dFepU3ddaaCz5F0/ngR6dmzJfZSOkOb2YxAF
-	DUUkMHIKX5MH+keQWsYO15YbIE8QlUW8Ge3ai1+ZXnNVD819POjjpir/eWeRJGu/seWrGO7Q8/I
-	gXm+Np5QO40b00i+AicjYYVSE686HSt/lASqF/w==
-X-Google-Smtp-Source: AGHT+IGI8lhkeOLlr4j0ronceXg/nFZYLqUVtI16BzpMfKrWMEZPgxgiadDMsCfmkHRQMmK6qzmKMqPw9adG2ZuUp1I=
-X-Received: by 2002:a05:6512:10d4:b0:513:3d98:440 with SMTP id
- k20-20020a05651210d400b005133d980440mr3924245lfg.53.1709538754406; Sun, 03
- Mar 2024 23:52:34 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC53F16436
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 07:54:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.11
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709538844; cv=fail; b=raWxSeVCfRyL9tJOncjiYlXD566DP+eTK2h58Prb70OegY7XdEEAZSrVj/Upww6WkG5qeXj6xlZIJP+4/O0BUNuyb0h4dyAR+IJXNV+bsoBHbpA+SrYp3AowxG1scl2gN9L66lZqiM2xbhrWa/Mg2oOhpu54MWqNjXoMb14et6I=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709538844; c=relaxed/simple;
+	bh=CYQt8B9gr65gTBwEQhk7pA4DsqeDaAD0LI7gOiaA/lE=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=kkaj0jxavzv6fyEGAvDgzeCQILjn3mjGEPXiPGP8x9bVoNcBoTpyuu5dmVDzYUadl6iMHPphVpYa3eZx2yUMhgy4X+VheTbuxJkq7jTxf0rp4+2h18ZrwYWP3x3rASq6BjPTg7xaU0824CVlDA+sTLdNE21NkFem2khvNkublys=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JXJN7C9Y; arc=fail smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709538843; x=1741074843;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=CYQt8B9gr65gTBwEQhk7pA4DsqeDaAD0LI7gOiaA/lE=;
+  b=JXJN7C9Yno0dF21V+PG5aTfPFIv57NXUjoL6CbmUuZh5ym/YH8bKXkxr
+   dbU4Ker6rMljXFTRtE69Tvb+jYW129wIbN5iVjILuYvddoaS2jtTp+lzn
+   vgSN7Gx4lLCirOkAQI+mrVZUpNPSm/wAdukYkz3XMUAt0qIjySscM92qG
+   ZTee0sVvDGgoW0RUzaQQQJ2AnSxoqQR2r3GTZ7W99eMkj7It99OFH8iSm
+   v19wg55WgHU7v6T5yXontwvKiUjJ3q5Y5TImpuAYr6PsK56hIaHszTAc7
+   TS9Bpfxb4bLawKgD+mQA7wLkx6TiO7C7cf9h53JhEU3W3T1FoW5kmSV+N
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="14659077"
+X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
+   d="scan'208";a="14659077"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2024 23:54:02 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
+   d="scan'208";a="8973099"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orviesa009.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 03 Mar 2024 23:54:02 -0800
+Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sun, 3 Mar 2024 23:54:00 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Sun, 3 Mar 2024 23:54:00 -0800
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Sun, 3 Mar 2024 23:54:00 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VsedQHBoO6YkYeuDFeuxjNNX1ArpRtYs/8AB4dYdfVitVXJ97e742RUX4zYZUG/8zUPg/85sQUU3V6Ggaq0SB/3/fUrM3ewOgkEDECQZdDjp/Ma6J7EkBZCS8F1HCr2vPYX4hj8Q0/ANYVGplqu13/ngtaBJac4LwOqSHhgg7E7j10as0dlw4q3uYq9MA5V2kl6JXMB9ZK69lW+MguKOjOyzrV+bVjdiTKJvRxAAPJnDvfFpKuQjdELMyseFOrYj+l0/y1P9MDGYhIG7URLVWq32UdRjV/rICIL7A4k0EA6cSzVk0apFmL38p0EC9TBd2zLYoDewdwzv4i5/b+j8ng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/u0hflfSxjWn4RcZTye5/2a1FAWNr/zGBDbU+8GmLKo=;
+ b=KRMUnfj3BcbmMtKt57WWNWNfTGtbfoiYTJxWyHKfI3qbOKFNN4Qa52F6vwyUgqioq1JyolYy/6l/SbBr4RugthzK7Uo+1MyJJ2tpPS3u4nTanVBh9HhemQoyj5k3apFejbuR9AcPwOqe5reksqnfQ6ZRm/W6oSCV8vEBSbVXuZl8DaRnwQ15fmyLHuTDUtelMXIBobGbPehF60r6CZPpnejoJHZmJtTMPg3aDLdK+i6nNmbpcbCq2RWGm9f+Q63BQV9OJdV3dI0l9/NEp8KKNOCnB76uCVA0/d0vPR0IqR5jjtvy/O6paa1yp/i+RitEzs8u+raRBSTAskXh6Fg1Wg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
+ by SJ2PR11MB7600.namprd11.prod.outlook.com (2603:10b6:a03:4cd::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.10; Mon, 4 Mar
+ 2024 07:53:57 +0000
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::39d:5a9c:c9f5:c327]) by BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::39d:5a9c:c9f5:c327%5]) with mapi id 15.20.7362.019; Mon, 4 Mar 2024
+ 07:53:57 +0000
+From: "Tian, Kevin" <kevin.tian@intel.com>
+To: Lu Baolu <baolu.lu@linux.intel.com>, Joerg Roedel <joro@8bytes.org>, "Will
+ Deacon" <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>, "Jason
+ Gunthorpe" <jgg@ziepe.ca>, "Badger, Eric" <ebadger@purestorage.com>
+CC: "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 3/3] iommu/vt-d: Remove scalabe mode in
+ domain_context_clear_one()
+Thread-Topic: [PATCH 3/3] iommu/vt-d: Remove scalabe mode in
+ domain_context_clear_one()
+Thread-Index: AQHaavVG9VITS5BA3k+dWXZ9bE9UH7EnO5Jw
+Date: Mon, 4 Mar 2024 07:53:57 +0000
+Message-ID: <BN9PR11MB527694903CD8E8FBC6C1FB168C232@BN9PR11MB5276.namprd11.prod.outlook.com>
+References: <20240229094804.121610-1-baolu.lu@linux.intel.com>
+ <20240229094804.121610-4-baolu.lu@linux.intel.com>
+In-Reply-To: <20240229094804.121610-4-baolu.lu@linux.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|SJ2PR11MB7600:EE_
+x-ms-office365-filtering-correlation-id: 095b3fd0-9b5f-4a97-0a17-08dc3c203f37
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ejyvIexRej1dDQxLgtWqqPhsGgEcP9uoB9/ZUqBbWossUcUt2zVvuCGQ5UjRkL3oOksY3Oh6fk9cbZcPgWGwgPM2hlWqRDiPTJe23arq/Z4f8kvSpwTvfYz9jzbJsdAKhP7X3YEnGlLL+S0dPxY/omYotUAwY0pFJhxf9CSeXWljWwElcXYRG9Dex70bK/Gmzyw7EJ2pmNAjdNlvHDYJ1soge6zel0laab5cEZD71Jz7bn+Q5iV95ruD50lU87PFDqpCb9zkNkIu+OuxaojWaIcOPgRKTc9KEI8y1jzs/g3PzvNlrfpkc3u/T+cUoj22Wrty0R8uEOCyfM0JVaUTUx1XdvA9dNWqHibmIdrvf71cXXVN21HcQUKIYLApS9BlsivOCyyGQuE1V2DPVGMsC4OFeKL5PwUgdIINmZ2Ttq878YU2HyhlVnzu9hfEssT5LIXIWbO/O/qqS6BxBrTKuvUETuYRYTGrYhOU55HOUKZUdfbbSkD2CXovVGMe930MoernDFsomxpvW6p7/TVaSE9H5p8H55yrAePOi1+Tju7QHU3get7hOjSH/YdovSgiBPegh1UA02vpX2g9js4tT91sJOeA9YMe2RinFdffrmsAl7wzVkV3tNhiyjaWU9M5WPNnToZukRXJhOShSLg/vH6a//El2uFezxm6Wir+lQiLVQ2x7XRvdtjlpJr4VoFuXXyeA1OPKZtAZHSuAw0b8A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?iru7UgvDNm5E5x5ZCM5BlfnAoLFXc20LZXdLqchrGiXZdR8eoUCPpqbkY9JN?=
+ =?us-ascii?Q?TcHoVjCMFkQhycMs9GY8JfLNixiwUFN3kKDnNbLXptZRFKjxVpC0+tGIQM38?=
+ =?us-ascii?Q?EJQqknM2hxfX+antE11xEgYneKkUd/AgoKUKsj/3746FqP48s1T0UXrUQOI1?=
+ =?us-ascii?Q?Cuc6P+vNIQfVP2OphJSx8hkNVW/9gmZ+bF4fY+r0BA8JQkSQxB1NOFOdjTWl?=
+ =?us-ascii?Q?0sBNVw0JievwtJShzuKOdxyiKq+pFEOHpr15kUTIuBwGGK85wXU5bZKqlX/D?=
+ =?us-ascii?Q?unCYDgpKe2tNG2p0AoP78ivWLA0A6RUZgVQF4PrH4a0ddGHlpNRM0YQehGzJ?=
+ =?us-ascii?Q?ylAvHELxkYQ/uBSv3acLEPUblyr4vZ2TyZ/A8WQ/ZxjmYMymK0xd74xSRmUq?=
+ =?us-ascii?Q?7IGjPLWssHB/YhMvaZLkN4BFgIqxqTyxm/47EPtO9lIfhAqcM+8r2dj7Mqeg?=
+ =?us-ascii?Q?NixyU7inMnMnF6XsIagEKdDTJaln/S5SzTT6aoNm7Dz4M/F9J0Iz/zUFniqQ?=
+ =?us-ascii?Q?iEdlrh4t7RlDPP6aTAnk7AHXnEKL+4yE5tBxvMzH8HR0hM4RpP8Ua3WPA/zz?=
+ =?us-ascii?Q?N+3SUYPssehkq6sPpoN9cCurEIPCVktVKCoujyC9pYSbfQY1p9UIuJlGyzNA?=
+ =?us-ascii?Q?BaYlRIKM8Nz42VCULlUPUDIz8Ae8A9k5xebi3J6c5EKbwNywQf5A1JLKR5lA?=
+ =?us-ascii?Q?H/Sy2+MvvPikLl5U050psJ07cVl/MgjhO62N73kqZ7GGQA2xLwMkTdChPON2?=
+ =?us-ascii?Q?hipmVrJIJMfYEzB4tyAPnd19qfVcr43C0ytbKq8pvzMynINmxAZDZgMTDPXX?=
+ =?us-ascii?Q?KSmorNTwX4ljnYwZJa8SX3IbBufUdASnCikDh2xo2zVeTeg3eSWRmbm+FgM/?=
+ =?us-ascii?Q?98bR9pEDwxpL4g9oFjGQBriX+5GOYnFN/p3Zx5TIOaMZ3iydFfGTuxB5Lvnq?=
+ =?us-ascii?Q?exwh9FFzrrHv2VsOcazA/1QqONWc2BGRAXNSsy2iiPtA5fs/S+73sRMpJyAx?=
+ =?us-ascii?Q?7m9WAJDMkJY1OtrdAU4YU89FzDViHB4/yRQzwpvzXHaBhrIFi3qTfaO3FBEF?=
+ =?us-ascii?Q?6UmbC4dyVE6mo9JHjlz/sLSpxZU/fuXagX/6St87T5lOKgc9qbChjbT0BkkX?=
+ =?us-ascii?Q?9UGBTBJ56lG6jagUit8AfXwOLRC/mP9y23k3bJbOmpYmZe5Y3KJLs+K10+YT?=
+ =?us-ascii?Q?mzDo1HUDSFWIJOjPFvuSoGLufXj0sZlrOJGiaLxdWF26n/culdVB3EH07VAB?=
+ =?us-ascii?Q?U+rhQsGyu3KlwvrdRrUN0XcTc7xIzA/S1pO0jWvRIAymXYSDRlaTri1yAtZI?=
+ =?us-ascii?Q?DwANI7POIZaHqGgiABWVcbFDWffuSBM8Aj0jOh/HVjl/uvxoUAFcLzw/fqvd?=
+ =?us-ascii?Q?BTFaQYVbNC5DGeb7B/NJBElBlMDkKgJNoaq1lv2B1oR9Wk4rJJUQG1tWqhLu?=
+ =?us-ascii?Q?BtPfRmgH9HZZ3RWXehEU3RaUkD8fJRHm0kA/VuyQi4xKfDxShTS8e2Xn+Lyq?=
+ =?us-ascii?Q?Ay2IwQ4Xg6Iegfo3qj3eM1a4vvY8EXVyxJDvLDMWfYlVnmfc1YDx5CeEjVkM?=
+ =?us-ascii?Q?B2ndDGhCaTdJzwN8+4sgiL2Szaw0KDgMipATFAgb?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1709292976-13118-1-git-send-email-zhiguo.niu@unisoc.com>
- <7dc371ad-2448-4dd4-9551-8caef0a00d48@kernel.org> <CAHJ8P3+ZBuBu9Sdpm_6fxhY2sVyu97dXFKKLdtEF4shi_3Fs1Q@mail.gmail.com>
- <73197f36-4962-4a3d-a56c-8fd3494af7e5@kernel.org>
-In-Reply-To: <73197f36-4962-4a3d-a56c-8fd3494af7e5@kernel.org>
-From: Zhiguo Niu <niuzhiguo84@gmail.com>
-Date: Mon, 4 Mar 2024 15:52:23 +0800
-Message-ID: <CAHJ8P3Kiys7ZESM-J2oEBYs1dd+zAVQ2zrvg5t02eqXRMEudXQ@mail.gmail.com>
-Subject: Re: [PATCH] f2fs: fix to check result of new_curseg in f2fs_allocate_segment_for_resize
-To: Chao Yu <chao@kernel.org>
-Cc: Zhiguo Niu <zhiguo.niu@unisoc.com>, jaegeuk@kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, 
-	ke.wang@unisoc.com, hongyu.jin@unisoc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 095b3fd0-9b5f-4a97-0a17-08dc3c203f37
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Mar 2024 07:53:57.6793
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: cITSSgFxedM+HHcEXboi800yzZFi3Fh0tl9XzPVLf5jLOaEfzD8K3w/W3Z576oziAXm22b9a3T1yZYWmUSyGnw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR11MB7600
+X-OriginatorOrg: intel.com
 
-On Mon, Mar 4, 2024 at 3:17=E2=80=AFPM Chao Yu <chao@kernel.org> wrote:
->
-> On 2024/3/4 11:33, Zhiguo Niu wrote:
-> > On Mon, Mar 4, 2024 at 11:19=E2=80=AFAM Chao Yu <chao@kernel.org> wrote=
-:
-> >>
-> >> On 2024/3/1 19:36, Zhiguo Niu wrote:
-> >>> new_curseg may return error if get_new_segment fail, so its result
-> >>> should be check in its caller f2fs_allocate_segment_for_resize,
-> >>> alos pass this results to free_segment_range.
-> >>
-> >> Zhiguo,
-> >>
-> >> What about handling all error paths of new_curseg() and change_curseg(=
-)
-> >> in one patch?
-> > Dear Chao,
-> >
-> > Do you mean to merge it with the previous patch =E2=80=9Cf2fs: fix to c=
-heck
-> > return value of f2fs_gc_range=E2=80=9D?
-> > Because in addition to new_curseg/change_curseg error handling, there
-> > are some other changes in the previous patch.
-> > besides, I searched for new related codes, and there should be the
-> > only place left without error handling about new_curseg/
-> > change_curseg .
->
-> Zhiguo, I meant something like this?
->
-> Subject: [PATCH] f2fs: fix to handle error paths of {new,change}_curseg()
-Dear Chao,
-I got your meaning and I think this patch looks good.
-Please ignore my patch and use your version:=EF=BC=89.
-thanks!
->
-> ---
->   fs/f2fs/f2fs.h    |  4 +--
->   fs/f2fs/gc.c      |  7 +++--
->   fs/f2fs/segment.c | 67 +++++++++++++++++++++++++++++++----------------
->   fs/f2fs/super.c   |  4 ++-
->   4 files changed, 54 insertions(+), 28 deletions(-)
->
-> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> index 80789255bf68..03927f1b2ea1 100644
-> --- a/fs/f2fs/f2fs.h
-> +++ b/fs/f2fs/f2fs.h
-> @@ -3702,10 +3702,10 @@ int f2fs_disable_cp_again(struct f2fs_sb_info *sb=
-i, block_t unusable);
->   void f2fs_release_discard_addrs(struct f2fs_sb_info *sbi);
->   int f2fs_npages_for_summary_flush(struct f2fs_sb_info *sbi, bool for_ra=
-);
->   bool f2fs_segment_has_free_slot(struct f2fs_sb_info *sbi, int segno);
-> -void f2fs_init_inmem_curseg(struct f2fs_sb_info *sbi);
-> +int f2fs_init_inmem_curseg(struct f2fs_sb_info *sbi);
->   void f2fs_save_inmem_curseg(struct f2fs_sb_info *sbi);
->   void f2fs_restore_inmem_curseg(struct f2fs_sb_info *sbi);
-> -void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type=
-,
-> +int f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
->                                         unsigned int start, unsigned int =
-end);
->   int f2fs_allocate_new_section(struct f2fs_sb_info *sbi, int type, bool =
-force);
->   int f2fs_allocate_pinning_section(struct f2fs_sb_info *sbi);
-> diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
-> index f8314765246a..854ad0a3f6ea 100644
-> --- a/fs/f2fs/gc.c
-> +++ b/fs/f2fs/gc.c
-> @@ -2033,8 +2033,11 @@ static int free_segment_range(struct f2fs_sb_info =
-*sbi,
->         mutex_unlock(&DIRTY_I(sbi)->seglist_lock);
->
->         /* Move out cursegs from the target range */
-> -       for (type =3D CURSEG_HOT_DATA; type < NR_CURSEG_PERSIST_TYPE; typ=
-e++)
-> -               f2fs_allocate_segment_for_resize(sbi, type, start, end);
-> +       for (type =3D CURSEG_HOT_DATA; type < NR_CURSEG_PERSIST_TYPE; typ=
-e++) {
-> +               err =3D f2fs_allocate_segment_for_resize(sbi, type, start=
-, end);
-> +               if (err)
-> +                       goto out;
-> +       }
->
->         /* do GC to move out valid blocks in the range */
->         err =3D f2fs_gc_range(sbi, start, end, dry_run, 0);
-> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-> index 22241aba6564..2bcf01fde143 100644
-> --- a/fs/f2fs/segment.c
-> +++ b/fs/f2fs/segment.c
-> @@ -2863,7 +2863,7 @@ bool f2fs_segment_has_free_slot(struct f2fs_sb_info=
- *sbi, int segno)
->    * This function always allocates a used segment(from dirty seglist) by=
- SSR
->    * manner, so it should recover the existing segment information of val=
-id blocks
->    */
-> -static void change_curseg(struct f2fs_sb_info *sbi, int type)
-> +static int change_curseg(struct f2fs_sb_info *sbi, int type)
->   {
->         struct dirty_seglist_info *dirty_i =3D DIRTY_I(sbi);
->         struct curseg_info *curseg =3D CURSEG_I(sbi, type);
-> @@ -2888,21 +2888,24 @@ static void change_curseg(struct f2fs_sb_info *sb=
-i, int type)
->         if (IS_ERR(sum_page)) {
->                 /* GC won't be able to use stale summary pages by cp_erro=
-r */
->                 memset(curseg->sum_blk, 0, SUM_ENTRY_SIZE);
-> -               return;
-> +               return PTR_ERR(sum_page);
->         }
->         sum_node =3D (struct f2fs_summary_block *)page_address(sum_page);
->         memcpy(curseg->sum_blk, sum_node, SUM_ENTRY_SIZE);
->         f2fs_put_page(sum_page, 1);
-> +
-> +       return 0;
->   }
->
->   static int get_ssr_segment(struct f2fs_sb_info *sbi, int type,
->                                 int alloc_mode, unsigned long long age);
->
-> -static void get_atssr_segment(struct f2fs_sb_info *sbi, int type,
-> +static int get_atssr_segment(struct f2fs_sb_info *sbi, int type,
->                                         int target_type, int alloc_mode,
->                                         unsigned long long age)
->   {
->         struct curseg_info *curseg =3D CURSEG_I(sbi, type);
-> +       int ret;
->
->         curseg->seg_type =3D target_type;
->
-> @@ -2910,38 +2913,45 @@ static void get_atssr_segment(struct f2fs_sb_info=
- *sbi, int type,
->                 struct seg_entry *se =3D get_seg_entry(sbi, curseg->next_=
-segno);
->
->                 curseg->seg_type =3D se->type;
-> -               change_curseg(sbi, type);
-> +               ret =3D change_curseg(sbi, type);
->         } else {
->                 /* allocate cold segment by default */
->                 curseg->seg_type =3D CURSEG_COLD_DATA;
-> -               new_curseg(sbi, type, true);
-> +               ret =3D new_curseg(sbi, type, true);
->         }
->         stat_inc_seg_type(sbi, curseg);
-> +
-> +       return ret;
->   }
->
-> -static void __f2fs_init_atgc_curseg(struct f2fs_sb_info *sbi)
-> +static int __f2fs_init_atgc_curseg(struct f2fs_sb_info *sbi)
->   {
->         struct curseg_info *curseg =3D CURSEG_I(sbi, CURSEG_ALL_DATA_ATGC=
-);
-> +       int ret;
->
->         if (!sbi->am.atgc_enabled)
-> -               return;
-> +               return 0;
->
->         f2fs_down_read(&SM_I(sbi)->curseg_lock);
->
->         mutex_lock(&curseg->curseg_mutex);
->         down_write(&SIT_I(sbi)->sentry_lock);
->
-> -       get_atssr_segment(sbi, CURSEG_ALL_DATA_ATGC, CURSEG_COLD_DATA, SS=
-R, 0);
-> +       ret =3D get_atssr_segment(sbi, CURSEG_ALL_DATA_ATGC,
-> +                                       CURSEG_COLD_DATA, SSR, 0);
->
->         up_write(&SIT_I(sbi)->sentry_lock);
->         mutex_unlock(&curseg->curseg_mutex);
->
->         f2fs_up_read(&SM_I(sbi)->curseg_lock);
->
-> +       return ret;
-> +
->   }
-> -void f2fs_init_inmem_curseg(struct f2fs_sb_info *sbi)
-> +
-> +int f2fs_init_inmem_curseg(struct f2fs_sb_info *sbi)
->   {
-> -       __f2fs_init_atgc_curseg(sbi);
-> +       return __f2fs_init_atgc_curseg(sbi);
->   }
->
->   static void __f2fs_save_inmem_curseg(struct f2fs_sb_info *sbi, int type=
-)
-> @@ -3069,11 +3079,12 @@ static bool need_new_seg(struct f2fs_sb_info *sbi=
-, int type)
->         return false;
->   }
->
-> -void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type=
-,
-> +int f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
->                                         unsigned int start, unsigned int =
-end)
->   {
->         struct curseg_info *curseg =3D CURSEG_I(sbi, type);
->         unsigned int segno;
-> +       int ret =3D 0;
->
->         f2fs_down_read(&SM_I(sbi)->curseg_lock);
->         mutex_lock(&curseg->curseg_mutex);
-> @@ -3084,9 +3095,9 @@ void f2fs_allocate_segment_for_resize(struct f2fs_s=
-b_info *sbi, int type,
->                 goto unlock;
->
->         if (f2fs_need_SSR(sbi) && get_ssr_segment(sbi, type, SSR, 0))
-> -               change_curseg(sbi, type);
-> +               ret =3D change_curseg(sbi, type);
->         else
-> -               new_curseg(sbi, type, true);
-> +               ret =3D new_curseg(sbi, type, true);
->
->         stat_inc_seg_type(sbi, curseg);
->
-> @@ -3100,6 +3111,8 @@ void f2fs_allocate_segment_for_resize(struct f2fs_s=
-b_info *sbi, int type,
->
->         mutex_unlock(&curseg->curseg_mutex);
->         f2fs_up_read(&SM_I(sbi)->curseg_lock);
-> +
-> +       return ret;
->   }
->
->   static int __allocate_new_segment(struct f2fs_sb_info *sbi, int type,
-> @@ -3107,6 +3120,7 @@ static int __allocate_new_segment(struct f2fs_sb_in=
-fo *sbi, int type,
->   {
->         struct curseg_info *curseg =3D CURSEG_I(sbi, type);
->         unsigned int old_segno;
-> +       int ret;
->
->         if (type =3D=3D CURSEG_COLD_DATA_PINNED && !curseg->inited)
->                 goto allocate;
-> @@ -3119,8 +3133,9 @@ static int __allocate_new_segment(struct f2fs_sb_in=
-fo *sbi, int type,
->
->   allocate:
->         old_segno =3D curseg->segno;
-> -       if (new_curseg(sbi, type, true))
-> -               return -EAGAIN;
-> +       ret =3D new_curseg(sbi, type, true);
-> +       if (ret)
-> +               return ret;
->         stat_inc_seg_type(sbi, curseg);
->         locate_dirty_segment(sbi, old_segno);
->         return 0;
-> @@ -3480,14 +3495,17 @@ int f2fs_allocate_data_block(struct f2fs_sb_info =
-*sbi, struct page *page,
->         bool from_gc =3D (type =3D=3D CURSEG_ALL_DATA_ATGC);
->         struct seg_entry *se =3D NULL;
->         bool segment_full =3D false;
-> +       int ret =3D 0;
->
->         f2fs_down_read(&SM_I(sbi)->curseg_lock);
->
->         mutex_lock(&curseg->curseg_mutex);
->         down_write(&sit_i->sentry_lock);
->
-> -       if (curseg->segno =3D=3D NULL_SEGNO)
-> +       if (curseg->segno =3D=3D NULL_SEGNO) {
-> +               ret =3D -ENOSPC;
->                 goto out_err;
-> +       }
->
->         if (from_gc) {
->                 f2fs_bug_on(sbi, GET_SEGNO(sbi, old_blkaddr) =3D=3D NULL_=
-SEGNO);
-> @@ -3541,17 +3559,17 @@ int f2fs_allocate_data_block(struct f2fs_sb_info =
-*sbi, struct page *page,
->                 }
->
->                 if (from_gc) {
-> -                       get_atssr_segment(sbi, type, se->type,
-> +                       ret =3D get_atssr_segment(sbi, type, se->type,
->                                                 AT_SSR, se->mtime);
->                 } else {
->                         if (need_new_seg(sbi, type))
-> -                               new_curseg(sbi, type, false);
-> +                               ret =3D new_curseg(sbi, type, false);
->                         else
-> -                               change_curseg(sbi, type);
-> +                               ret =3D change_curseg(sbi, type);
->                         stat_inc_seg_type(sbi, curseg);
->                 }
->
-> -               if (curseg->segno =3D=3D NULL_SEGNO)
-> +               if (ret)
->                         goto out_err;
->         }
->
-> @@ -3594,7 +3612,7 @@ int f2fs_allocate_data_block(struct f2fs_sb_info *s=
-bi, struct page *page,
->         up_write(&sit_i->sentry_lock);
->         mutex_unlock(&curseg->curseg_mutex);
->         f2fs_up_read(&SM_I(sbi)->curseg_lock);
-> -       return -ENOSPC;
-> +       return ret;
->
->   }
->
-> @@ -3824,7 +3842,8 @@ void f2fs_do_replace_block(struct f2fs_sb_info *sbi=
-, struct f2fs_summary *sum,
->         /* change the current segment */
->         if (segno !=3D curseg->segno) {
->                 curseg->next_segno =3D segno;
-> -               change_curseg(sbi, type);
-> +               if (change_curseg(sbi, type))
-> +                       goto out_unlock;
->         }
->
->         curseg->next_blkoff =3D GET_BLKOFF_FROM_SEG0(sbi, new_blkaddr);
-> @@ -3850,12 +3869,14 @@ void f2fs_do_replace_block(struct f2fs_sb_info *s=
-bi, struct f2fs_summary *sum,
->         if (recover_curseg) {
->                 if (old_cursegno !=3D curseg->segno) {
->                         curseg->next_segno =3D old_cursegno;
-> -                       change_curseg(sbi, type);
-> +                       if (change_curseg(sbi, type))
-> +                               goto out_unlock;
->                 }
->                 curseg->next_blkoff =3D old_blkoff;
->                 curseg->alloc_type =3D old_alloc_type;
->         }
->
-> +out_unlock:
->         up_write(&sit_i->sentry_lock);
->         mutex_unlock(&curseg->curseg_mutex);
->         f2fs_up_write(&SM_I(sbi)->curseg_lock);
-> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> index 0676c2dcbbf7..8c69257db8cc 100644
-> --- a/fs/f2fs/super.c
-> +++ b/fs/f2fs/super.c
-> @@ -4691,7 +4691,9 @@ static int f2fs_fill_super(struct super_block *sb, =
-void *data, int silent)
->         if (err)
->                 goto free_meta;
->
-> -       f2fs_init_inmem_curseg(sbi);
-> +       err =3D f2fs_init_inmem_curseg(sbi);
-> +       if (err)
-> +               goto sync_free_meta;
->
->         /* f2fs_recover_fsync_data() cleared this already */
->         clear_sbi_flag(sbi, SBI_POR_DOING);
-> --
-> 2.40.1
->
->
->
-> >
-> > thanks!
-> >>
-> >> Thanks,
-> >>
-> >>>
-> >>> Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
-> >>> ---
-> >>>    fs/f2fs/f2fs.h    | 2 +-
-> >>>    fs/f2fs/gc.c      | 7 +++++--
-> >>>    fs/f2fs/segment.c | 9 +++++++--
-> >>>    3 files changed, 13 insertions(+), 5 deletions(-)
-> >>>
-> >>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> >>> index 4331012..39dda7d 100644
-> >>> --- a/fs/f2fs/f2fs.h
-> >>> +++ b/fs/f2fs/f2fs.h
-> >>> @@ -3701,7 +3701,7 @@ void f2fs_clear_prefree_segments(struct f2fs_sb=
-_info *sbi,
-> >>>    void f2fs_init_inmem_curseg(struct f2fs_sb_info *sbi);
-> >>>    void f2fs_save_inmem_curseg(struct f2fs_sb_info *sbi);
-> >>>    void f2fs_restore_inmem_curseg(struct f2fs_sb_info *sbi);
-> >>> -void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int =
-type,
-> >>> +int f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int t=
-ype,
-> >>>                                        unsigned int start, unsigned i=
-nt end);
-> >>>    int f2fs_allocate_new_section(struct f2fs_sb_info *sbi, int type, =
-bool force);
-> >>>    int f2fs_allocate_pinning_section(struct f2fs_sb_info *sbi);
-> >>> diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
-> >>> index c60b747..7a458fa 100644
-> >>> --- a/fs/f2fs/gc.c
-> >>> +++ b/fs/f2fs/gc.c
-> >>> @@ -2037,8 +2037,11 @@ static int free_segment_range(struct f2fs_sb_i=
-nfo *sbi,
-> >>>        mutex_unlock(&DIRTY_I(sbi)->seglist_lock);
-> >>>
-> >>>        /* Move out cursegs from the target range */
-> >>> -     for (type =3D CURSEG_HOT_DATA; type < NR_CURSEG_PERSIST_TYPE; t=
-ype++)
-> >>> -             f2fs_allocate_segment_for_resize(sbi, type, start, end)=
-;
-> >>> +     for (type =3D CURSEG_HOT_DATA; type < NR_CURSEG_PERSIST_TYPE; t=
-ype++) {
-> >>> +             err =3D f2fs_allocate_segment_for_resize(sbi, type, sta=
-rt, end);
-> >>> +             if (err)
-> >>> +                     goto out;
-> >>> +     }
-> >>>
-> >>>        /* do GC to move out valid blocks in the range */
-> >>>        err =3D f2fs_gc_range(sbi, start, end, dry_run, 0);
-> >>> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-> >>> index 1bb3019..2a07b9d 100644
-> >>> --- a/fs/f2fs/segment.c
-> >>> +++ b/fs/f2fs/segment.c
-> >>> @@ -3071,11 +3071,12 @@ static bool need_new_seg(struct f2fs_sb_info =
-*sbi, int type)
-> >>>        return false;
-> >>>    }
-> >>>
-> >>> -void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int =
-type,
-> >>> +int f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int t=
-ype,
-> >>>                                        unsigned int start, unsigned i=
-nt end)
-> >>>    {
-> >>>        struct curseg_info *curseg =3D CURSEG_I(sbi, type);
-> >>>        unsigned int segno;
-> >>> +     int err =3D 0;
-> >>>
-> >>>        f2fs_down_read(&SM_I(sbi)->curseg_lock);
-> >>>        mutex_lock(&curseg->curseg_mutex);
-> >>> @@ -3089,7 +3090,10 @@ void f2fs_allocate_segment_for_resize(struct f=
-2fs_sb_info *sbi, int type,
-> >>>                change_curseg(sbi, type);
-> >>>        else
-> >>>                new_curseg(sbi, type, true);
-> >>> -
-> >>> +     if (curseg->segno =3D=3D NULL_SEGNO) {
-> >>> +             err =3D -ENOSPC;
-> >>> +             goto unlock;
-> >>> +     }
-> >>>        stat_inc_seg_type(sbi, curseg);
-> >>>
-> >>>        locate_dirty_segment(sbi, segno);
-> >>> @@ -3102,6 +3106,7 @@ void f2fs_allocate_segment_for_resize(struct f2=
-fs_sb_info *sbi, int type,
-> >>>
-> >>>        mutex_unlock(&curseg->curseg_mutex);
-> >>>        f2fs_up_read(&SM_I(sbi)->curseg_lock);
-> >>> +     return err;
-> >>>    }
-> >>>
-> >>>    static int __allocate_new_segment(struct f2fs_sb_info *sbi, int ty=
-pe,
+> From: Lu Baolu <baolu.lu@linux.intel.com>
+> Sent: Thursday, February 29, 2024 5:48 PM
+>=20
+> @@ -2175,9 +2175,6 @@ static void domain_context_clear_one(struct
+> device_domain_info *info, u8 bus, u8
+>  	struct context_entry *context;
+>  	u16 did_old;
+>=20
+> -	if (!iommu)
+> -		return;
+> -
+
+is this check only relevant to sm mode or should it be removed for
+both legacy/sm? If the latter please add a note in the commit msg.
+
+otherwise,
+
+Reviewed-by: Kevin Tian <kevin.tian@intel.com>
 
