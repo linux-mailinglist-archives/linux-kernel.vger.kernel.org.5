@@ -1,304 +1,178 @@
-Return-Path: <linux-kernel+bounces-91219-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91217-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0578A870B5E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:18:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81FD8870B55
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:17:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08E4A1C22418
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:18:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ED628B252AE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:17:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C41067BAF7;
-	Mon,  4 Mar 2024 20:17:31 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 007EA2C840;
-	Mon,  4 Mar 2024 20:17:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 519A77B3C6;
+	Mon,  4 Mar 2024 20:17:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="by2EyQaH"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BCE37AE56
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 20:17:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709583449; cv=none; b=H9skxixbhDi04ii4VhbAu21gxaTSGd4GrzUYU51ioU8m7BT9oSOi1zOzU2w7w06ImbErxuZ5ocrAQSs0c13AEulkB8RBkwwzKJwdRSb2odpq670sY42c8FO7jYcZf/SfZ4tum02XUG8RahEtv4INSV8GVm3PaClPy7GYoFOEbVs=
+	t=1709583435; cv=none; b=Nqq4xbc3I5u+o/VpVxuWFwh/0gSCQHEWeill6yA4ISldQUzIimKbD/FA0lOsvcsE/k8ZOKnfN2up4mfrh/0S53zsfDtdzyeKgzJRfrQFzZJtki9JGhQlC357MdSCBJROTBvSTs/1cQotaEUQ7kQy5dw7tFfURfZksVNG1LAH7YE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709583449; c=relaxed/simple;
-	bh=clDidIhiTcDaNyPWQCdL6Rs1LruWiA738NpcAJs2/80=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=fgNLZu8K7xoGjYp/tflv6lZkmF24UHRtcmOXv7yglnIcT2xzOW8yBU23blOtOqvVqfZzzAdsa4zjj+KfQGu+YqHAmgK7Y9iujimwd3o2MPv+yJEi0bco1OeABPPMVIFkBSD4lsQn0DTQ+RZP7UJWShe9/X4ZUdLcXlidjWgLnok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 41B2C1576;
-	Mon,  4 Mar 2024 12:17:54 -0800 (PST)
-Received: from e133047.arm.com (unknown [10.57.95.7])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C84B13F738;
-	Mon,  4 Mar 2024 12:17:13 -0800 (PST)
-From: Christian Loehle <christian.loehle@arm.com>
-To: linux-kernel@vger.kernel.org
-Cc: peterz@infradead.org,
-	juri.lelli@redhat.com,
-	mingo@redhat.com,
-	rafael@kernel.org,
-	dietmar.eggemann@arm.com,
-	vschneid@redhat.com,
-	vincent.guittot@linaro.org,
-	Johannes.Thumshirn@wdc.com,
-	adrian.hunter@intel.com,
-	ulf.hansson@linaro.org,
-	andres@anarazel.de,
-	asml.silence@gmail.com,
-	linux-pm@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	io-uring@vger.kernel.org,
-	Christian Loehle <christian.loehle@arm.com>
-Subject: [RFC PATCH 2/2] cpufreq/schedutil: Remove iowait boost
-Date: Mon,  4 Mar 2024 20:16:25 +0000
-Message-Id: <20240304201625.100619-3-christian.loehle@arm.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240304201625.100619-1-christian.loehle@arm.com>
-References: <20240304201625.100619-1-christian.loehle@arm.com>
+	s=arc-20240116; t=1709583435; c=relaxed/simple;
+	bh=kCxdGUblvKvmrHONTMdMca6j8MkXm6abJWjQTd229yc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Yd+0uWRteEm0+Q8HIuiK8Acqkz0C0P6tB8b3IqFXUC8PwyGcb7uWzyl/YFLrLl9pyTi+jQCbVHbrq6NCwX2HNrgIL85FbDS321k9ZkqV2MHnMKRe16JBDH2GCkRiLSn2iFMFHuwEvuoGHauJtAghKuP+oR9Bv9K1k8v4I0B/Vm4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=by2EyQaH; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1dc3b4b9b62so42204365ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 12:17:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709583428; x=1710188228; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=D/7HbYGpfhKc4R/AKhfixpmLppzl+6hWOAPaqaIiEWg=;
+        b=by2EyQaHVwydyFEQCEoHVfjcgI0mF3hZe2jZxg6WiuzmtEvNc8wniDcqGcQwE3bQ91
+         x24NuJOYcGnaX6HM9nVs+UQg6A+7mG+g3jU/s+deaEiPCTvjBEq+9nlzt6FqCVZXf/zR
+         zZ0/MnFYGlGVF2oTWoE/f5PdolfOnBeODcnXT3FxNcQ+srDsBVXX5a1X+n3UGYCEAoDM
+         e0u1xoyCGSyOYBU7K/58kQoKSbTWReHKx7CH7XzWbFCpSWoH0t/YTSh89aYHaeh9VHw5
+         bl52ySUgLVUaA0Ekn+o+ZwP928cnIYkKuzF8hwpugZ7jiKXU2J4B9O1Rz2qYFsbpZNiw
+         W2Lw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709583428; x=1710188228;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=D/7HbYGpfhKc4R/AKhfixpmLppzl+6hWOAPaqaIiEWg=;
+        b=wfZe2OgyF4pjUvuhNi/+7yMB5/AF9IadvRep6IoFbYbGpBSudnB6vK9uo7peQcf1Al
+         XU3v9eCJQpx9GqKNLRGCvssMObXEanbI+v09KmtaQS5Z3BB32gD9TuRtXl3V4hHYklcp
+         OiLzdfwVMuVaXCiX67ekuDyYMuz99rI3VcGG/+fmf8N+AZeFyTseoY35Vz3KRrm28bbp
+         gH3FYQmxqoHEyMpY6g46bBpEEaJ2sgkrcrq0ExTwfu94F9V4dgYSnzYSSC5c4z/ldXil
+         0UlSK3J1FitUv53UtLi6GaGjN5toc/5WqXNUqpuDo643DzxLPiLV066715cQlWhpo67l
+         Fc3w==
+X-Forwarded-Encrypted: i=1; AJvYcCUCc/RAyG46xcbAkYnUNNi+Wr5cT4iNC3JDlAKeX+ZfvC/re5SVJHNvmUmpkbyWcbYM1gTBFtOGbCx0T/i6b8LaC36163qF6SJC05K5
+X-Gm-Message-State: AOJu0Yz/ff2JM7nGI545NnwPOC7Tkkk4uF7tBqQXXNOezRhQCQsy3EBX
+	1uVI3oCRbMUsHGxWQZ/aj1dIICa3jPc8PwQhDofxxDfJoJV+xOhvNXmaC3lyuQ==
+X-Google-Smtp-Source: AGHT+IHr6gdKYnTTswAQcy1CWFm8BVVjO2yoUp9XyOgEfaWpHToZmKZh3vQrFcLvHQBQK3CC0t0v8Q==
+X-Received: by 2002:a17:902:dac2:b0:1dc:a28a:52b9 with SMTP id q2-20020a170902dac200b001dca28a52b9mr772318plx.8.1709583428036;
+        Mon, 04 Mar 2024 12:17:08 -0800 (PST)
+Received: from google.com (176.13.105.34.bc.googleusercontent.com. [34.105.13.176])
+        by smtp.gmail.com with ESMTPSA id c5-20020a170902d48500b001db9cb62f7bsm8985870plg.153.2024.03.04.12.17.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Mar 2024 12:17:07 -0800 (PST)
+Date: Mon, 4 Mar 2024 20:17:04 +0000
+From: Mingwei Zhang <mizhang@google.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Dapeng Mi <dapeng1.mi@linux.intel.com>,
+	Sandipan Das <sandipan.das@amd.com>,
+	Like Xu <like.xu.linux@gmail.com>, pbonzini@redhat.com,
+	jmattson@google.com, ravi.bangoria@amd.com, nikunj.dadhania@amd.com,
+	santosh.shukla@amd.com, manali.shukla@amd.com, babu.moger@amd.com,
+	kvm list <kvm@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] KVM: x86/svm/pmu: Set PerfMonV2 global control bits
+ correctly
+Message-ID: <ZeYsQLs-_urXpdml@google.com>
+References: <20240301075007.644152-1-sandipan.das@amd.com>
+ <06061a28-88c0-404b-98a6-83cc6cc8c796@gmail.com>
+ <cc8699be-3aae-42aa-9c70-f8b6a9728ee3@amd.com>
+ <f5bbe9ac-ca35-4c3e-8cd7-249839fbb8b8@linux.intel.com>
+ <ZeYlEGORqeTPLK2_@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZeYlEGORqeTPLK2_@google.com>
 
-The previous commit provides a new cpu_util_cfs_boost_io interface for
-schedutil which uses the io boosted utilization of the per-task
-tracking strategy. Schedutil iowait boosting is therefore no longer
-necessary so remove it.
+On Mon, Mar 04, 2024, Sean Christopherson wrote:
+> On Mon, Mar 04, 2024, Dapeng Mi wrote:
+> > 
+> > On 3/1/2024 5:00 PM, Sandipan Das wrote:
+> > > On 3/1/2024 2:07 PM, Like Xu wrote:
+> > > > On 1/3/2024 3:50 pm, Sandipan Das wrote:
+> > > > > With PerfMonV2, a performance monitoring counter will start operating
+> > > > > only when both the PERF_CTLx enable bit as well as the corresponding
+> > > > > PerfCntrGlobalCtl enable bit are set.
+> > > > > 
+> > > > > When the PerfMonV2 CPUID feature bit (leaf 0x80000022 EAX bit 0) is set
+> > > > > for a guest but the guest kernel does not support PerfMonV2 (such as
+> > > > > kernels older than v5.19), the guest counters do not count since the
+> > > > > PerfCntrGlobalCtl MSR is initialized to zero and the guest kernel never
+> > > > > writes to it.
+> > > > If the vcpu has the PerfMonV2 feature, it should not work the way legacy
+> > > > PMU does. Users need to use the new driver to operate the new hardware,
+> > > > don't they ? One practical approach is that the hypervisor should not set
+> > > > the PerfMonV2 bit for this unpatched 'v5.19' guest.
+> > > > 
+> > > My understanding is that the legacy method of managing the counters should
+> > > still work because the enable bits in PerfCntrGlobalCtl are expected to be
+> > > set. The AMD PPR does mention that the PerfCntrEn bitfield of PerfCntrGlobalCtl
+> > > is set to 0x3f after a system reset. That way, the guest kernel can use either
+> > 
+> > If so, please add the PPR description here as comments.
+> 
+> Or even better, make that architectural behavior that's documented in the APM.
+> 
+> > > > > ---
+> > > > >    arch/x86/kvm/svm/pmu.c | 1 +
+> > > > >    1 file changed, 1 insertion(+)
+> > > > > 
+> > > > > diff --git a/arch/x86/kvm/svm/pmu.c b/arch/x86/kvm/svm/pmu.c
+> > > > > index b6a7ad4d6914..14709c564d6a 100644
+> > > > > --- a/arch/x86/kvm/svm/pmu.c
+> > > > > +++ b/arch/x86/kvm/svm/pmu.c
+> > > > > @@ -205,6 +205,7 @@ static void amd_pmu_refresh(struct kvm_vcpu *vcpu)
+> > > > >        if (pmu->version > 1) {
+> > > > >            pmu->global_ctrl_mask = ~((1ull << pmu->nr_arch_gp_counters) - 1);
+> > > > >            pmu->global_status_mask = pmu->global_ctrl_mask;
+> > > > > +        pmu->global_ctrl = ~pmu->global_ctrl_mask;
+> > 
+> > It seems to be more easily understand to calculate global_ctrl firstly and
+> > then derive the globol_ctrl_mask (negative logic).
+> 
+> Hrm, I'm torn.  On one hand, awful name aside (global_ctrl_mask should really be
+> something like global_ctrl_rsvd_bits), the computation of the reserved bits should
+> come from the capabilities of the PMU, not from the RESET value.
+> 
++1
 
-Signed-off-by: Christian Loehle <christian.loehle@arm.com>
----
- kernel/sched/cpufreq_schedutil.c | 152 +------------------------------
- 1 file changed, 5 insertions(+), 147 deletions(-)
+> On the other hand, setting _all_ non-reserved bits will likely do the wrong thing
+> if AMD ever adds bits in PerfCntGlobalCtl that aren't tied to general purpose
+> counters.  But, that's a future theoretical problem, so I'm inclined to vote for
+> Sandipan's approach.
+> 
 
-diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-index cd0ca3cbd212..ed9fc88a74fc 100644
---- a/kernel/sched/cpufreq_schedutil.c
-+++ b/kernel/sched/cpufreq_schedutil.c
-@@ -6,8 +6,6 @@
-  * Author: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-  */
- 
--#define IOWAIT_BOOST_MIN	(SCHED_CAPACITY_SCALE / 8)
--
- struct sugov_tunables {
- 	struct gov_attr_set	attr_set;
- 	unsigned int		rate_limit_us;
-@@ -42,10 +40,6 @@ struct sugov_cpu {
- 	struct sugov_policy	*sg_policy;
- 	unsigned int		cpu;
- 
--	bool			iowait_boost_pending;
--	unsigned int		iowait_boost;
--	u64			last_update;
--
- 	unsigned long		util;
- 	unsigned long		bw_min;
- 
-@@ -195,141 +189,17 @@ unsigned long sugov_effective_cpu_perf(int cpu, unsigned long actual,
- 	return max(min, max);
- }
- 
--static void sugov_get_util(struct sugov_cpu *sg_cpu, unsigned long boost)
-+static void sugov_get_util(struct sugov_cpu *sg_cpu)
- {
- 	unsigned long min, max, util = cpu_util_cfs_boost(sg_cpu->cpu);
- 	unsigned long io_boost = cpu_util_io_boost(sg_cpu->cpu);
- 
--	/*
--	 * XXX: This already includes io boost now, makes little sense with
--	 * sugov iowait boost on top
--	 */
- 	util = max(util, io_boost);
- 	util = effective_cpu_util(sg_cpu->cpu, util, &min, &max);
--	util = max(util, boost);
- 	sg_cpu->bw_min = min;
- 	sg_cpu->util = sugov_effective_cpu_perf(sg_cpu->cpu, util, min, max);
- }
- 
--/**
-- * sugov_iowait_reset() - Reset the IO boost status of a CPU.
-- * @sg_cpu: the sugov data for the CPU to boost
-- * @time: the update time from the caller
-- * @set_iowait_boost: true if an IO boost has been requested
-- *
-- * The IO wait boost of a task is disabled after a tick since the last update
-- * of a CPU. If a new IO wait boost is requested after more then a tick, then
-- * we enable the boost starting from IOWAIT_BOOST_MIN, which improves energy
-- * efficiency by ignoring sporadic wakeups from IO.
-- */
--static bool sugov_iowait_reset(struct sugov_cpu *sg_cpu, u64 time,
--			       bool set_iowait_boost)
--{
--	s64 delta_ns = time - sg_cpu->last_update;
--
--	/* Reset boost only if a tick has elapsed since last request */
--	if (delta_ns <= TICK_NSEC)
--		return false;
--
--	sg_cpu->iowait_boost = set_iowait_boost ? IOWAIT_BOOST_MIN : 0;
--	sg_cpu->iowait_boost_pending = set_iowait_boost;
--
--	return true;
--}
--
--/**
-- * sugov_iowait_boost() - Updates the IO boost status of a CPU.
-- * @sg_cpu: the sugov data for the CPU to boost
-- * @time: the update time from the caller
-- * @flags: SCHED_CPUFREQ_IOWAIT if the task is waking up after an IO wait
-- *
-- * Each time a task wakes up after an IO operation, the CPU utilization can be
-- * boosted to a certain utilization which doubles at each "frequent and
-- * successive" wakeup from IO, ranging from IOWAIT_BOOST_MIN to the utilization
-- * of the maximum OPP.
-- *
-- * To keep doubling, an IO boost has to be requested at least once per tick,
-- * otherwise we restart from the utilization of the minimum OPP.
-- */
--static void sugov_iowait_boost(struct sugov_cpu *sg_cpu, u64 time,
--			       unsigned int flags)
--{
--	bool set_iowait_boost = flags & SCHED_CPUFREQ_IOWAIT;
--
--	/* Reset boost if the CPU appears to have been idle enough */
--	if (sg_cpu->iowait_boost &&
--	    sugov_iowait_reset(sg_cpu, time, set_iowait_boost))
--		return;
--
--	/* Boost only tasks waking up after IO */
--	if (!set_iowait_boost)
--		return;
--
--	/* Ensure boost doubles only one time at each request */
--	if (sg_cpu->iowait_boost_pending)
--		return;
--	sg_cpu->iowait_boost_pending = true;
--
--	/* Double the boost at each request */
--	if (sg_cpu->iowait_boost) {
--		sg_cpu->iowait_boost =
--			min_t(unsigned int, sg_cpu->iowait_boost << 1, SCHED_CAPACITY_SCALE);
--		return;
--	}
--
--	/* First wakeup after IO: start with minimum boost */
--	sg_cpu->iowait_boost = IOWAIT_BOOST_MIN;
--}
--
--/**
-- * sugov_iowait_apply() - Apply the IO boost to a CPU.
-- * @sg_cpu: the sugov data for the cpu to boost
-- * @time: the update time from the caller
-- * @max_cap: the max CPU capacity
-- *
-- * A CPU running a task which woken up after an IO operation can have its
-- * utilization boosted to speed up the completion of those IO operations.
-- * The IO boost value is increased each time a task wakes up from IO, in
-- * sugov_iowait_apply(), and it's instead decreased by this function,
-- * each time an increase has not been requested (!iowait_boost_pending).
-- *
-- * A CPU which also appears to have been idle for at least one tick has also
-- * its IO boost utilization reset.
-- *
-- * This mechanism is designed to boost high frequently IO waiting tasks, while
-- * being more conservative on tasks which does sporadic IO operations.
-- */
--static unsigned long sugov_iowait_apply(struct sugov_cpu *sg_cpu, u64 time,
--			       unsigned long max_cap)
--{
--	/* No boost currently required */
--	if (!sg_cpu->iowait_boost)
--		return 0;
--
--	/* Reset boost if the CPU appears to have been idle enough */
--	if (sugov_iowait_reset(sg_cpu, time, false))
--		return 0;
--
--	if (!sg_cpu->iowait_boost_pending) {
--		/*
--		 * No boost pending; reduce the boost value.
--		 */
--		sg_cpu->iowait_boost >>= 1;
--		if (sg_cpu->iowait_boost < IOWAIT_BOOST_MIN) {
--			sg_cpu->iowait_boost = 0;
--			return 0;
--		}
--	}
--
--	sg_cpu->iowait_boost_pending = false;
--
--	/*
--	 * sg_cpu->util is already in capacity scale; convert iowait_boost
--	 * into the same scale so we can compare.
--	 */
--	return (sg_cpu->iowait_boost * max_cap) >> SCHED_CAPACITY_SHIFT;
--}
--
- #ifdef CONFIG_NO_HZ_COMMON
- static bool sugov_cpu_is_busy(struct sugov_cpu *sg_cpu)
- {
-@@ -357,18 +227,12 @@ static inline bool sugov_update_single_common(struct sugov_cpu *sg_cpu,
- 					      u64 time, unsigned long max_cap,
- 					      unsigned int flags)
- {
--	unsigned long boost;
--
--	sugov_iowait_boost(sg_cpu, time, flags);
--	sg_cpu->last_update = time;
--
- 	ignore_dl_rate_limit(sg_cpu);
- 
- 	if (!sugov_should_update_freq(sg_cpu->sg_policy, time))
- 		return false;
- 
--	boost = sugov_iowait_apply(sg_cpu, time, max_cap);
--	sugov_get_util(sg_cpu, boost);
-+	sugov_get_util(sg_cpu);
- 
- 	return true;
- }
-@@ -458,7 +322,7 @@ static void sugov_update_single_perf(struct update_util_data *hook, u64 time,
- 	sg_cpu->sg_policy->last_freq_update_time = time;
- }
- 
--static unsigned int sugov_next_freq_shared(struct sugov_cpu *sg_cpu, u64 time)
-+static unsigned int sugov_next_freq_shared(struct sugov_cpu *sg_cpu)
- {
- 	struct sugov_policy *sg_policy = sg_cpu->sg_policy;
- 	struct cpufreq_policy *policy = sg_policy->policy;
-@@ -469,11 +333,8 @@ static unsigned int sugov_next_freq_shared(struct sugov_cpu *sg_cpu, u64 time)
- 
- 	for_each_cpu(j, policy->cpus) {
- 		struct sugov_cpu *j_sg_cpu = &per_cpu(sugov_cpu, j);
--		unsigned long boost;
--
--		boost = sugov_iowait_apply(j_sg_cpu, time, max_cap);
--		sugov_get_util(j_sg_cpu, boost);
- 
-+		sugov_get_util(j_sg_cpu);
- 		util = max(j_sg_cpu->util, util);
- 	}
- 
-@@ -489,13 +350,10 @@ sugov_update_shared(struct update_util_data *hook, u64 time, unsigned int flags)
- 
- 	raw_spin_lock(&sg_policy->update_lock);
- 
--	sugov_iowait_boost(sg_cpu, time, flags);
--	sg_cpu->last_update = time;
--
- 	ignore_dl_rate_limit(sg_cpu);
- 
- 	if (sugov_should_update_freq(sg_policy, time)) {
--		next_f = sugov_next_freq_shared(sg_cpu, time);
-+		next_f = sugov_next_freq_shared(sg_cpu);
- 
- 		if (!sugov_update_next_freq(sg_policy, time, next_f))
- 			goto unlock;
--- 
-2.34.1
+right. I am ok with either approach.
 
+Thanks.
+-Mingwei
+> > diff --git a/arch/x86/kvm/svm/pmu.c b/arch/x86/kvm/svm/pmu.c
+> > index e886300f0f97..7ac9b080aba6 100644
+> > --- a/arch/x86/kvm/svm/pmu.c
+> > +++ b/arch/x86/kvm/svm/pmu.c
+> > @@ -199,7 +199,8 @@ static void amd_pmu_refresh(struct kvm_vcpu *vcpu)
+> > kvm_pmu_cap.num_counters_gp);
+> > 
+> >         if (pmu->version > 1) {
+> > -               pmu->global_ctrl_mask = ~((1ull << pmu->nr_arch_gp_counters)
+> > - 1);
+> > +               pmu->global_ctrl = (1ull << pmu->nr_arch_gp_counters) - 1;
+> > +               pmu->global_ctrl_mask = ~pmu->global_ctrl;
+> >                 pmu->global_status_mask = pmu->global_ctrl_mask;
+> >         }
+> > 
+> > > > >        }
+> > > > >          pmu->counter_bitmask[KVM_PMC_GP] = ((u64)1 << 48) - 1;
+> > > 
 
