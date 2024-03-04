@@ -1,224 +1,183 @@
-Return-Path: <linux-kernel+bounces-90421-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90420-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F71E86FEE8
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:22:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F052886FEE1
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:22:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16196282474
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:22:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0FF3283D3C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:21:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C22C239FC7;
-	Mon,  4 Mar 2024 10:20:31 +0000 (UTC)
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0614C3984F;
+	Mon,  4 Mar 2024 10:20:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bRRI1ubY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC460224F9;
-	Mon,  4 Mar 2024 10:20:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E67C38FA0;
+	Mon,  4 Mar 2024 10:19:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709547631; cv=none; b=L8bvgzOWt8wTxX8mp2FbDw6XktHOY3tJCVuD39iCyiD//JzSuZJstisDxkAQSGTHf4K/8Nu/8MlZ2KA/VBsgrfvBl1B4S81poPpdIxjvdrprjV1LmnfBMdqaHEMtvlto79/NCbvGv9/jInDQy4uNJxw3/l0z6qgWw5/7ODoyERY=
+	t=1709547599; cv=none; b=qC9wb1EfPKYSryLsIxV65X7KV+fpopkh6XLmdaYPWxYrrgYM93fKEs82Dtf1BvViwCpJxR/7L3502W+f0ORD0AIZhA6vqSEDMt4iPrKq4l5OmqYpr9NA+eMJGUXl7zBOZqQpg6rCgRmwgZ5C+pr8upG9un5AhmfQB2XlCiOZBOg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709547631; c=relaxed/simple;
-	bh=w741xtU6JN1TVvn/J0kQJ41j00UtJv+ZD9k8RAXfQbs=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=KlN9AzOCug8h7IBmyEQPz9D8w0QMmmh4Gax/eXwBiDWzIzX/p6vRKSURtVj6VMRbU+AVew8H5LQ/pjUe4ALveXCdUHu71tC35k0DkPuBDysn8+5SoVYSJ6tvadTIY+OTZnxvWPSb+F6bB2Ru3PLR3LZMiZIUyku3SvANDN6Tvjg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.29])
-	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4TpDnn3kRdz9xGgp;
-	Mon,  4 Mar 2024 18:04:45 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.47])
-	by mail.maildlp.com (Postfix) with ESMTP id 992D0140796;
-	Mon,  4 Mar 2024 18:20:14 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-	by APP1 (Coremail) with SMTP id LxC2BwC3YBlNoOVlNsuwAw--.61382S2;
-	Mon, 04 Mar 2024 11:20:13 +0100 (CET)
-Message-ID: <dcbd9e7869d2fcce69546b53851d694b8ebad54e.camel@huaweicloud.com>
-Subject: Re: [PATCH v2 24/25] commoncap: use vfs fscaps interfaces
-From: Roberto Sassu <roberto.sassu@huaweicloud.com>
-To: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>, Christian Brauner
- <brauner@kernel.org>, Serge Hallyn <serge@hallyn.com>, Paul Moore
- <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>, James Morris
- <jmorris@namei.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara
- <jack@suse.cz>, Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej
- Mosnacek <omosnace@redhat.com>, Casey Schaufler <casey@schaufler-ca.com>,
- Mimi Zohar <zohar@linux.ibm.com>, Roberto Sassu <roberto.sassu@huawei.com>,
- Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, Eric Snowberg
- <eric.snowberg@oracle.com>, "Matthew Wilcox (Oracle)"
- <willy@infradead.org>, Jonathan Corbet <corbet@lwn.net>, Miklos Szeredi
- <miklos@szeredi.hu>,  Amir Goldstein <amir73il@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, audit@vger.kernel.org, 
-	selinux@vger.kernel.org, linux-integrity@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-unionfs@vger.kernel.org
-Date: Mon, 04 Mar 2024 11:19:54 +0100
-In-Reply-To: <20240221-idmap-fscap-refactor-v2-24-3039364623bd@kernel.org>
-References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
-	 <20240221-idmap-fscap-refactor-v2-24-3039364623bd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1709547599; c=relaxed/simple;
+	bh=NGSlH5LAcmLr4NWdQQqksxXC4KeXnJMqiaUMMa23O50=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jAVAmuN0yW72g8bHi5cfef5jZjB8lA7+ZfKgi2ecblELDwYzE4zaaTfFfa/CWaAvwIYv+dEYY5P/GOxAC1Y62iM6L0k0hdHCIW98SEat62HBRH1To/4q/xPRQbuNgk7gE3eRmOwlm17UlH+ZOVzUzCdOl98htVHRjeUy0/ergsU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bRRI1ubY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 242B6C433C7;
+	Mon,  4 Mar 2024 10:19:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709547598;
+	bh=NGSlH5LAcmLr4NWdQQqksxXC4KeXnJMqiaUMMa23O50=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bRRI1ubYB5JLR6RYkkFRyyWTMvUvIRQozW4dwLP5i/+wQZkTnCyPC95hsxQV4GZov
+	 goGHLSsYZaXSnpEV9fVjdZ8Ox43GHjb/dEkLdj5043G+vivYB2R6PaiTu1lHwxmh0O
+	 OiFLWRUpMj6f0APGq0FS30auKhGOixxDIthM4bh1UzJ8qF4Zgb0Iez6AMjdCvHNuWS
+	 pYvpreuSujRVYwFwDTg676pDmnKw0bBRM2Ctc16P9uXJYnZMZ9kk+hxbVIW86Nw7CR
+	 oW3xlkmxFjDuOwTQushm3mTvoYKTW7WwVtqalJDd2hwJBmfE8KqWiSQp6c8tjgWFo4
+	 EkMmUBkruKt9Q==
+Date: Mon, 4 Mar 2024 11:19:56 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Randy Dunlap <rdunlap@infradead.org>, 
+	Guenter Roeck <groeck@google.com>, Linus Torvalds <torvalds@linuxfoundation.org>, 
+	Nikolai Kondrashov <spbnick@gmail.com>, Helen Koike <helen.koike@collabora.com>, linuxtv-ci@linuxtv.org, 
+	dave.pigott@collabora.com, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	linux-kselftest@vger.kernel.org, gustavo.padovan@collabora.com, pawiecz@collabora.com, 
+	tales.aparecida@gmail.com, workflows@vger.kernel.org, kernelci@lists.linux.dev, 
+	skhan@linuxfoundation.org, kunit-dev@googlegroups.com, nfraprado@collabora.com, 
+	davidgow@google.com, cocci@inria.fr, Julia.Lawall@inria.fr, laura.nao@collabora.com, 
+	ricardo.canuelo@collabora.com, kernel@collabora.com, gregkh@linuxfoundation.org
+Subject: Re: [PATCH 1/3] kci-gitlab: Introducing GitLab-CI Pipeline for
+ Kernel Testing
+Message-ID: <20240304-dangerous-mastiff-of-fury-1fac5c@houat>
+References: <20240228225527.1052240-2-helen.koike@collabora.com>
+ <20240229-dancing-laughing-groundhog-d85161@houat>
+ <5d7ed81b-37f9-48e9-ab7e-484b74ca886c@gmail.com>
+ <CAHk-=wixVy3WYvjbt43ZSrCqPDsS76QJQSkXFbbPsAOs1MCSAQ@mail.gmail.com>
+ <CABXOdTeT2ip1uS2EG2w8pW7254Tnd=ZDNz-KC61-G-yqDTVgJA@mail.gmail.com>
+ <269232e6-41c9-4aa1-9320-662beabcd69b@infradead.org>
+ <CAMuHMdXuXV9WV3aANFTteuP8Q3JY6R5OWsVBedGOP7e_JguxqA@mail.gmail.com>
+ <CAMuHMdWi069YAvOoXe7sHJ_o702tY4tDQgL3sfApPR3aCnZboQ@mail.gmail.com>
+ <20240304-transparent-oriole-of-honeydew-f4174e@houat>
+ <CAMuHMdXyvcyXw8eXc2MONNaBYYGpVdnPh2h3T=QV38MEUzhu9A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-CM-TRANSID:LxC2BwC3YBlNoOVlNsuwAw--.61382S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxXr47ArWUtw13Kr1rWr4rKrg_yoWrKr47pF
-	WftF9xKrWrXry7Wr18ta1Dua4F9ayfGFW7urW293sYywnrGr1ftr4xCr18CFy3Cr97Wr1Y
-	k3ZFyr98GwsrAw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
-	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
-	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-	xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-	c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAkuxUUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAMBF1jj5rxjAAAsf
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ba2cnmoytyqarlnv"
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdXyvcyXw8eXc2MONNaBYYGpVdnPh2h3T=QV38MEUzhu9A@mail.gmail.com>
 
-On Wed, 2024-02-21 at 15:24 -0600, Seth Forshee (DigitalOcean) wrote:
-> Use the vfs interfaces for fetching file capabilities for killpriv
-> checks and from get_vfs_caps_from_disk(). While there, update the
-> kerneldoc for get_vfs_caps_from_disk() to explain how it is different
-> from vfs_get_fscaps_nosec().
+
+--ba2cnmoytyqarlnv
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Mar 04, 2024 at 11:07:22AM +0100, Geert Uytterhoeven wrote:
+> Hi Maxime,
 >=20
-> Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
-> ---
->  security/commoncap.c | 30 +++++++++++++-----------------
->  1 file changed, 13 insertions(+), 17 deletions(-)
+> On Mon, Mar 4, 2024 at 10:15=E2=80=AFAM Maxime Ripard <mripard@kernel.org=
+> wrote:
+> > On Mon, Mar 04, 2024 at 09:12:38AM +0100, Geert Uytterhoeven wrote:
+> > > On Sun, Mar 3, 2024 at 10:30=E2=80=AFAM Geert Uytterhoeven <geert@lin=
+ux-m68k.org> wrote:
+> > > > On Sun, Mar 3, 2024 at 3:30=E2=80=AFAM Randy Dunlap <rdunlap@infrad=
+ead.org> wrote:
+> > > > > On 3/2/24 14:10, Guenter Roeck wrote:
+> > > > > > While checkpatch is indeed of arguable value, I think it would =
+help a
+> > > > > > lot not having to bother about the persistent _build_ failures =
+on
+> > > > > > 32-bit systems. You mentioned the fancy drm CI system above, bu=
+t they
+> > > > > > don't run tests and not even test builds on 32-bit targets, whi=
+ch has
+> > > > > > repeatedly caused (and currently does cause) build failures in =
+drm
+> > > > > > code when trying to build, say, arm:allmodconfig in linux-next.=
+ Most
+> > > > > > trivial build failures in linux-next (and, yes, sometimes mainl=
+ine)
+> > > > > > could be prevented with a simple generic CI.
+> > > > >
+> > > > > Yes, definitely. Thanks for bringing that up.
+> > > >
+> > > > +1
+> > >
+> > > > Kisskb can send out email when builds get broken, and when they get
+> > > > fixed again.  I receive such emails for the m68k builds.
+> > >
+> > > Like this (yes, one more in DRM; sometimes I wonder if DRM is meant o=
+nly
+> > > for 64-bit little-endian platforms with +200 GiB/s memory bandwidth):
+> > >
+> > > ---8<----------------------------------------------------------------=
+---
+> > > Subject: kisskb: FAILED linux-next/m68k-allmodconfig/m68k-gcc8 Mon Ma=
+r 04, 06:35
+> > > To: geert@linux-m68k.org
+> > > Date: Mon, 04 Mar 2024 08:05:14 -0000
+> > >
+> > > FAILED linux-next/m68k-allmodconfig/m68k-gcc8 Mon Mar 04, 06:35
+> > >
+> > > http://kisskb.ellerman.id.au/kisskb/buildresult/15135537/
+> > >
+> > > Commit:   Add linux-next specific files for 20240304
+> > >           67908bf6954b7635d33760ff6dfc189fc26ccc89
+> > > Compiler: m68k-linux-gcc (GCC) 8.5.0 / GNU ld (GNU Binutils) 2.36.1
+> > >
+> > > Possible errors
+> > > ---------------
+> > >
+> > > ERROR: modpost: "__udivdi3" [drivers/gpu/drm/sun4i/sun4i-drm-hdmi.ko]=
+ undefined!
+> > > make[3]: *** [scripts/Makefile.modpost:145: Module.symvers] Error 1
+> > > make[2]: *** [Makefile:1871: modpost] Error 2
+> > > make[1]: *** [Makefile:240: __sub-make] Error 2
+> > > make: *** [Makefile:240: __sub-make] Error 2
+> > >
+> > > No warnings found in log.
+> > > ------------------------------------------------------------------->8=
+---
+> >
+> > The driver is meant for a controller featured in an SoC with a Cortex-A8
+> > ARM CPU and less than a GiB/s memory bandwidth.
 >=20
-> diff --git a/security/commoncap.c b/security/commoncap.c
-> index a0ff7e6092e0..751bb26a06a6 100644
-> --- a/security/commoncap.c
-> +++ b/security/commoncap.c
-> @@ -296,11 +296,12 @@ int cap_capset(struct cred *new,
->   */
->  int cap_inode_need_killpriv(struct dentry *dentry)
->  {
-> -	struct inode *inode =3D d_backing_inode(dentry);
-> +	struct vfs_caps caps;
->  	int error;
-> =20
-> -	error =3D __vfs_getxattr(dentry, inode, XATTR_NAME_CAPS, NULL, 0);
-> -	return error > 0;
-> +	/* Use nop_mnt_idmap for no mapping here as mapping is unimportant */
-> +	error =3D vfs_get_fscaps_nosec(&nop_mnt_idmap, dentry, &caps);
-> +	return error =3D=3D 0;
->  }
-> =20
->  /**
-> @@ -323,7 +324,7 @@ int cap_inode_killpriv(struct mnt_idmap *idmap, struc=
-t dentry *dentry)
->  {
->  	int error;
-> =20
-> -	error =3D __vfs_removexattr(idmap, dentry, XATTR_NAME_CAPS);
-> +	error =3D vfs_remove_fscaps_nosec(idmap, dentry);
+> Good, so the hardware cannot possibly need 64-bit pixel clock values ;-)
 
-Uhm, I see that the change is logically correct... but the original
-code was not correct, since the EVM post hook is not called (thus the
-HMAC is broken, or an xattr change is allowed on a portable signature
-which should be not).
+This is an early patch to convert that function into a framework hook
+implementation. HDMI 2.1 has a max TMDS character rate of slightly less
+than 6GHz, so larger than 2^32 - 1.
 
-For completeness, the xattr change on a portable signature should not
-happen in the first place, so cap_inode_killpriv() would not be called.
-However, since EVM allows same value change, we are here.
+So yes, this driver doesn't need to. The framework does however.
 
-Here is how I discovered this problem.
+> BTW, doesn't the build fail on arm32, too?
 
-Example:
+It seems like gcc vs clang plays a role too. I had the same defconfig
+building for arm with gcc and reporting the error above with clang. I
+didn't look further because there was something to fix indeed.
 
-# ls -l test-file
--rw-r-Sr--. 1 3001 3001 5 Mar  4 10:11 test-file
+Maxime
 
-# getfattr -m - -d -e hex test-file
-# file: test-file
-security.capability=3D0x0100000202300000023000000000000000000000
-security.evm=3D0x05020498c82b5300663064023052a1aa6200d08b3db60a1c636b97b526=
-58af369ee0bf521cfca6c733671ebf5764b1b122f67030cfc688a111c19a7ed302303989596=
-6cf92217ea55c1405212ced1396c2d830ae55dbdb517c5d199c5a43638f90d430bad4819114=
-9dcc7c01f772ac
-security.ima=3D0x0404f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52=
-e6ccc26fd2
-security.selinux=3D0x756e636f6e66696e65645f753a6f626a6563745f723a756e6c6162=
-656c65645f743a733000
+--ba2cnmoytyqarlnv
+Content-Type: application/pgp-signature; name="signature.asc"
 
-# chown 3001 test-file
+-----BEGIN PGP SIGNATURE-----
 
-# ls -l test-file
--rw-r-Sr--. 1 3001 3001 5 Mar  4 10:14 test-file
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZeWgSwAKCRDj7w1vZxhR
+xQndAP4hm7WKDSfvUr1OAuA+byAHKabfcMBOAmOIiPdzHz82XAEA7D2tFnMHWIHL
+IFc/+TOVt18ZzPG2ws1AqKPXOolwxA4=
+=Pk79
+-----END PGP SIGNATURE-----
 
-# getfattr -m - -d -e hex test-file
-# file: test-file
-security.evm=3D0x05020498c82b5300673065023100cdd772fa7f9c17aa66e654c7f9c124=
-de1ccfd36abbe5b8100b64a296164da45d0025fd2a2dec2e9580d5c82e5a32bfca02305ea34=
-58b74e53d743408f65e748dc6ee52964e3aedac7367a43080248f4e000c655eb8e1f4338bec=
-b81797ea37f0bca6
-security.ima=3D0x0404f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52=
-e6ccc26fd2
-security.selinux=3D0x756e636f6e66696e65645f753a6f626a6563745f723a756e6c6162=
-656c65645f743a733000
-
-
-which breaks EVM verification.
-
-Roberto
-
->  	if (error =3D=3D -EOPNOTSUPP)
->  		error =3D 0;
->  	return error;
-> @@ -719,6 +720,10 @@ ssize_t vfs_caps_to_user_xattr(struct mnt_idmap *idm=
-ap,
->   * @cpu_caps:	vfs capabilities
->   *
->   * Extract the on-exec-apply capability sets for an executable file.
-> + * For version 3 capabilities xattrs, returns the capabilities only if
-> + * they are applicable to current_user_ns() (i.e. that the rootid
-> + * corresponds to an ID which maps to ID 0 in current_user_ns() or an
-> + * ancestor), and returns -ENODATA otherwise.
->   *
->   * If the inode has been found through an idmapped mount the idmap of
->   * the vfsmount must be passed through @idmap. This function will then
-> @@ -731,25 +736,16 @@ int get_vfs_caps_from_disk(struct mnt_idmap *idmap,
->  			   struct vfs_caps *cpu_caps)
->  {
->  	struct inode *inode =3D d_backing_inode(dentry);
-> -	int size, ret;
-> -	struct vfs_ns_cap_data data, *nscaps =3D &data;
-> +	int ret;
-> =20
->  	if (!inode)
->  		return -ENODATA;
-> =20
-> -	size =3D __vfs_getxattr((struct dentry *)dentry, inode,
-> -			      XATTR_NAME_CAPS, &data, XATTR_CAPS_SZ);
-> -	if (size =3D=3D -ENODATA || size =3D=3D -EOPNOTSUPP)
-> +	ret =3D vfs_get_fscaps_nosec(idmap, (struct dentry *)dentry, cpu_caps);
-> +	if (ret =3D=3D -EOPNOTSUPP || ret =3D=3D -EOVERFLOW)
->  		/* no data, that's ok */
-> -		return -ENODATA;
-> +		ret =3D -ENODATA;
-> =20
-> -	if (size < 0)
-> -		return size;
-> -
-> -	ret =3D vfs_caps_from_xattr(idmap, inode->i_sb->s_user_ns,
-> -				  cpu_caps, nscaps, size);
-> -	if (ret =3D=3D -EOVERFLOW)
-> -		return -ENODATA;
->  	if (ret)
->  		return ret;
-> =20
->=20
-
+--ba2cnmoytyqarlnv--
 
