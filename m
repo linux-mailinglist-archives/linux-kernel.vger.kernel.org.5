@@ -1,51 +1,54 @@
-Return-Path: <linux-kernel+bounces-90389-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90390-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2604D86FE94
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:14:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9ED486FE95
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:14:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF813281920
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:13:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E69E1F22F0F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:14:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C248C22636;
-	Mon,  4 Mar 2024 10:12:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE3FC39843;
+	Mon,  4 Mar 2024 10:12:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="vOr0Aal7";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="gEYEBAtK"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="18molGr0";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="I6Cd0G1o"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 292D22261A;
-	Mon,  4 Mar 2024 10:12:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77FB422EE9;
+	Mon,  4 Mar 2024 10:12:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709547141; cv=none; b=USareSguTBzStbH2q6QHFgtJzNH9CbEW0gO8Y9DSUIbJrccCeRS4TgIB2XD1Yx2iPCjQQRCyhPcGnyU7kdTm+f7biZSHoJUDEjJK5K0l5NIvJczgRBHWToSYbVmUhx5ciG21n/QrgMP8lf5vNeLVIfyyPZglg/K3KsX7s3vxMrc=
+	t=1709547142; cv=none; b=RVM93YiZM6nrLCpKvR5rrNGyziYXXLgphI8fr/rsn46Si2dGLUvd1bef4WRjttKxQIudBfgoW8Ez9qjgo3nGbMO302rBqRB7NonIgWbizARjsdo9Tjr3SnPn8YVG0KK6qyP1x51vxZ5RSnKaarezav0id/JKGZJW71HaUTOpOh4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709547141; c=relaxed/simple;
-	bh=o0R91Zk5Z/NMZsUmJYgThkIKIfpc/uoli84r/bMbblU=;
-	h=Message-ID:From:To:Cc:Subject:Date; b=egLHY1N6qMakmjeLIEFnaoybr/8e6Jn4zEW/du8wTahHom/HzLGRrXFIEXJQwAAIR5xWUJa1DwfRwHFgUq/w8x3GW5+fMLFnxwT8Suj89OR1E6ZroVaic6Cn0jH2CV4OOM4S/PIW96ZQkyWGemeAN0shuXTIErlJZusJV/5RQt8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=vOr0Aal7; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=gEYEBAtK; arc=none smtp.client-ip=193.142.43.55
+	s=arc-20240116; t=1709547142; c=relaxed/simple;
+	bh=OxIB2NND+GwRKTASD5QCovsMnnYYsMqrQtarqse8fjU=;
+	h=Message-ID:From:To:Cc:Subject:References:MIME-Version:
+	 Content-Type:Date; b=bb7O70rEBqO8qfX1ZDFjjD9Kl+dP3bpVI4SbaWW2Tc5Jn8jQnV0m05d1dvOlHq/ixvjPcDymyWyLcu/RxjFX9M0aAAa5lnXexDBP1VUETaYlLL4aHkZds4NnjrmU8TnNmKr5xMltKN1Vg3tRueokvo7w+5w27FyKT0RiZ79ZoGI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=18molGr0; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=I6Cd0G1o; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Message-ID: <20240303235029.555787150@linutronix.de>
+Message-ID: <20240304005104.394845326@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1709547137;
+	s=2020; t=1709547138;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc; bh=NB439uWftAZPMVdfvqzBSs1vW6nfM8dMMT/geSlX3oI=;
-	b=vOr0Aal7qbjW0uxzuQzJLYj4ey3sOocI/PVDGgQCaaj0LHjpN7UMoc6VuJzJ83523L/Q2A
-	yZHg6+sKzCI4hQVmBEtah0Jalul3dqwn0qf28dKKd5JgbkMm5KJcQ4NCdFeY1lbnkwd1wB
-	a7bR4IPQ2YbnazWiqzeZGCnh+3FO8oNO/4n3SiZe6EBUqShYSFdTQJAYrjwg6GrWvngUBB
-	L52uK1+NIURIP6LeUk6mBZgvdAae9lbSdygtHHsjIAHjq7D6TYg4ZGvkY9Sp6nH6PHS1Xs
-	BB/DwYRFn/oVnoYcAQvRbIz1CaxlgVUSTSjgkwcCFmatGjVjO2b35nlvdpOR9w==
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 references:references; bh=A3vlMqUJEQqqd54jjPrJxoXmY2AzGd+lvLwJqkXi5u0=;
+	b=18molGr0u2BdjPyrVtj4EuzPZ8saG92VRtLosWyHKUqN7RTwSdyYxCOOHA3hBR65Z+9cua
+	UGyGPSikf5PBTaggGn+HQgBChxqSxdFHlUNxcRK/PLssQ6TQG00Ljw66g7ZGAOo+kBz+jL
+	+1GQOPDYzzl9QZVcqQ0SeLH/BefvdPSnYGmhuA5/EENb52l5WowQjMujAnzDenn58GaSAb
+	/YT5yR2CDCRhy/dXWWA86DApqPso8offxSEcXNsAYJldO3H6XJ8BtDCBiMT8o3ZrsO/eny
+	Z+0ZnFS8BlwRFjn0PDFfqfqMurvNEDu2li3R1/oIrEVuM22K+j5Lhn3Rdmr6gA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1709547137;
+	s=2020e; t=1709547138;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc; bh=NB439uWftAZPMVdfvqzBSs1vW6nfM8dMMT/geSlX3oI=;
-	b=gEYEBAtKIXvZe400HpX9olYmjxa8LlRL77U6zhjIaLfadxH0Qv8v+ZtR5v9dZJ8fzWu2nC
-	pT1kivqHRYNAKQAw==
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 references:references; bh=A3vlMqUJEQqqd54jjPrJxoXmY2AzGd+lvLwJqkXi5u0=;
+	b=I6Cd0G1o/AZmLzVbcS4rLiO8uXc1CRKi91dtqC2ynHYdFBQ9uWYdR0ijlQBFFCXge/9w3S
+	r5PNP10WdNkansAA==
 From: Thomas Gleixner <tglx@linutronix.de>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: x86@kernel.org,
@@ -54,133 +57,43 @@ Cc: x86@kernel.org,
  linux-sparse@vger.kernel.org,
  lkp@intel.com,
  oe-kbuild-all@lists.linux.dev
-Subject: [patch 0/9] x86: Cure tons of sparse warnings (mostly __percpu)
-Date: Mon,  4 Mar 2024 11:12:16 +0100 (CET)
+Subject: [patch 1/9] perf/x86/amd/uncore: Fix __percpu annotation
+References: <20240303235029.555787150@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Date: Mon,  4 Mar 2024 11:12:18 +0100 (CET)
 
-A recent 0-day report about new __percpu related sparse warnings made me
-look deeper into it after I dismissed the report as bogus initially.
+The __percpu annotation in struct amd_uncore is confusing sparse:
 
-It turned out that sparse is actually right and all of these warnings (not
-only the most recent ones) are valid and got ignored. Some of them for many
-years.
+uncore.c:649:10: sparse: warning: incorrect type in initializer (different address spaces)
+uncore.c:649:10: sparse:    expected void const [noderef] __percpu *__vpp_verify
+uncore.c:649:10: sparse:    got union amd_uncore_info *
 
-The worst offender is an UP build because that maps the per CPU cpu_info to
-boot_cpu_data, which is regular data.
+The reason is that the __percpu annotation sits between the '*'
+dereferencing operator and the member name.
 
-As a consequence all per CPU accessors which look like legit code and are
-legit code in the SMP build are causing sparse to emit warnings.
+Move it before the dereferencing operator to cure this.
 
-This series addresses this by:
-
-     - Adding the missing __percpu annotations all over the place
-
-     - Curing the UP madness by exposing a proper per CPU cpu_info for the
-       price of wasting 320 byte of memory.
-
-       Even if the size police will hate me for that, this cures most of
-       the madness in one go and avoids to add more hideous macro mess
-       similar to the completely bogus cpu_data() one which should have
-       never been there in the first place.
-
-       I know that there are people who think that size matters, but the
-       only things which really matter in software are correctness and
-       maintainability. The latter simply forbids to add more hideous macro
-       mess just to avoid wasting 320 bytes of memory for something which
-       is mostly a reminiscence of the good old days...
-       
-     - Fixing a few obvious non __percpu related warnings which stood out
-       prominently.
-
-That reduces the sparse warnings in arch/x86 significantly. The remaining
-ones are less trivial to address:
-
-     - The non-x86 specific warning vs. sighand::lock:
-
-       sparse: warning: incorrect type in argument 1 (different address spaces)
-       sparse:    expected struct lockdep_map const *lock
-       sparse:    got struct lockdep_map [noderef] __rcu *
-
-     - A bunch of lock scope false positives which are non-trivial to solve
-
-     - A gazillion of __iomem warnings with the vast majority in the HPE/UV
-       code which are _all_ legit because neither UV nor the other places
-       care about the name space annotations at all. Pointer is pointer
-       after all.
-
-     - Tons of truncation warnings like this:
-
-       sparse: warning: cast truncates bits from constant value (20002 becomes 2)
-
-       mostly in the hypervisor space (kvm, hyperv). I did not look at
-       those at all so I don't know whether they matter or not.
-
-I really think sparse is valuable, but all of us should spend more time on
-this to weed out false positives or at least have some filtering of things
-which are simply not solvable at the sparse level.
-
-Coming back to __percpu. As I mentioned in the original thread it's a sad
-state of affairs that the only way to detect the __percpu fails is sparse
-or some other static checker:
-
-      https://lore.kernel.org/all/87bk7vuldh.ffs@tglx
-
-But that's a different problem to solve and does not invalidate the fixes
-which come with this series in any way.
-
-If the compiler people would have provided a way to utilize the anyway
-non-standard name space support in a useful way, I could have spared the
-time to bang my head agaist the wall simply because this would have failed
-to build in the first place long ago. That just makes me sad.
-
-After wading through this, I really ask the 0-day people to push hard on
-any sparse fallout which involves __percpu. The resulting failures can be
-truly subtle and not necessarily fatal right away.
-
-The series is based on Linus tree and also available from git:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git x86/core
-
-Thanks,
-
-	tglx
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/alpha/kernel/smp.c              |    5 -----
- arch/arc/kernel/smp.c                |    5 -----
- arch/csky/kernel/smp.c               |    4 ----
- arch/hexagon/kernel/smp.c            |    4 ----
- arch/openrisc/kernel/smp.c           |    4 ----
- arch/riscv/kernel/smpboot.c          |    4 ----
- arch/sparc/kernel/smp_64.c           |    4 ----
- arch/x86/events/amd/uncore.c         |    2 +-
- arch/x86/events/intel/core.c         |    1 +
- arch/x86/events/intel/ds.c           |    1 +
- arch/x86/include/asm/debugreg.h      |   24 ++++++++++++++++++++++++
- arch/x86/include/asm/fsgsbase.h      |    2 +-
- arch/x86/include/asm/msr.h           |   26 ++++++++++++++------------
- arch/x86/include/asm/processor.h     |   28 ----------------------------
- arch/x86/include/asm/smp.h           |    5 -----
- arch/x86/include/asm/spec-ctrl.h     |    2 ++
- arch/x86/include/asm/special_insns.h |    4 ++--
- arch/x86/include/asm/tsc.h           |    3 ++-
- arch/x86/include/asm/uaccess_64.h    |    7 ++++---
- arch/x86/kernel/callthunks.c         |    4 ++--
- arch/x86/kernel/cpu/bugs.c           |    2 +-
- arch/x86/kernel/cpu/common.c         |    3 +++
- arch/x86/kernel/cpu/intel_pconfig.c  |    2 ++
- arch/x86/kernel/cpu/rdrand.c         |    1 +
- arch/x86/kernel/fpu/bugs.c           |    2 ++
- arch/x86/kernel/setup.c              |   10 ++++++++++
- arch/x86/kernel/smpboot.c            |    9 +++++----
- arch/x86/kernel/step.c               |    2 ++
- arch/x86/kvm/mmu/mmu.c               |    3 +--
- arch/x86/lib/msr-smp.c               |   12 +++++-------
- arch/x86/lib/msr.c                   |    6 +++---
- include/linux/smp.h                  |   13 ++++++-------
- init/main.c                          |    4 ++++
- 33 files changed, 99 insertions(+), 109 deletions(-)
+ arch/x86/events/amd/uncore.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/arch/x86/events/amd/uncore.c
++++ b/arch/x86/events/amd/uncore.c
+@@ -71,7 +71,7 @@ union amd_uncore_info {
+ };
+ 
+ struct amd_uncore {
+-	union amd_uncore_info * __percpu info;
++	union amd_uncore_info  __percpu *info;
+ 	struct amd_uncore_pmu *pmus;
+ 	unsigned int num_pmus;
+ 	bool init_done;
+
 
