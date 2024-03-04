@@ -1,102 +1,165 @@
-Return-Path: <linux-kernel+bounces-90484-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90487-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE15086FFF3
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:10:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6596E86FFFE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:12:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B9201C22EFA
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:10:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BFAB2819E7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:12:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEC4D383B6;
-	Mon,  4 Mar 2024 11:10:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1DC43839A;
+	Mon,  4 Mar 2024 11:11:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LNWUp4Qv"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="NXenhUgW"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0FF6381CF;
-	Mon,  4 Mar 2024 11:10:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A98B46AD;
+	Mon,  4 Mar 2024 11:11:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709550608; cv=none; b=Xk0yo8m7iEgBYF8fHef1BpSA6yUggpwTz6nCrYt39WI2zVg1r/09UtvI8XoDI4kP4v/2VGi6nHrQekgmF4m0/DDb9hvh8RjXo5w+YCDPjjwqwx2AvD1pag8JNp/ZqeGyEHLKq5toOfNyo8Plv7h9rqD4J2g0SheuCUWP/nvV99U=
+	t=1709550703; cv=none; b=rLWkQUI80yxuJKsEiqd4DeCKWgOqwAl8zGTtym++ttr6Ce7lILK48zGSyuwOx+bO1v/z12TrlkBIauRavK4YYT/LXvt9dR2x5QOGW0IKKcoVZLM2zLXfr0equ3hAgBSdFEWniy5qGou1Og2+DW8Kq6bi7qhpWSxb8wIVm2bwP9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709550608; c=relaxed/simple;
-	bh=8rBw+8lavQNu3WP5WN/y/f26LqjJAVlqi+HMskTiDyI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JG6SMmJUotaQL86mqxyWiRTVm5lkr1JtCAlmGZtRTJh2zJyTXUadKbD5ExQ1T7bynGS7GBL2ayhSvAWpo8+QoODRFIm9mPApeR7wumOtPnXknwijzLmtIrb//qls+Oe/CE8BmHO6ZGIP2CZkLFh2akp41e1NWJ5Hg5D5m4gtYtQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LNWUp4Qv; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e5769aa0b3so934037b3a.1;
-        Mon, 04 Mar 2024 03:10:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709550606; x=1710155406; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8rBw+8lavQNu3WP5WN/y/f26LqjJAVlqi+HMskTiDyI=;
-        b=LNWUp4QvW/D0pgdACBps4jjF89rNliM51ukJC1qNQSyN+NKzASrSH2x2U26VFNqsFS
-         VpeZBH7U3AGH327xgrdLE1eSnMNCWSa4WRgBtbBFfNlXdRZ7ViglDmuIszjOU+I9JMor
-         uWqhDaRPAFPRbZyOyD43WH81rnB1TI570XGErT/lL4flPHIhRbakD4ZwG1nW9fqD8dv/
-         BFJOTUi2dhwJoXmAM6zvfnCbzDXq0rsdD+i4GVAriJAfBOkDtkPDZrSNxNsDS7nl8526
-         RXi8v7GTJfK4mYcfaVbTeIiYEB4cRJBqsqipOpW4zZJi2gNjINaLVmcLvAR23LRe+MwO
-         lxfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709550606; x=1710155406;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8rBw+8lavQNu3WP5WN/y/f26LqjJAVlqi+HMskTiDyI=;
-        b=KpYanH+QlX6e+SWyUhFMtTnyPM3rVZkkFAXNFPEWayUwoKoL9uw661N8w9RtcGjL7l
-         l4wtM0LQVaFamEDWWkqCj+5cy+296zBehKmYN1zyPJu3+3XUSZYuxpsNm/VzLuvI5tzJ
-         It86OgQBSR9rwKjPDELlysFsLXz2oYkJ4YaRuv7x8e1qGvFLucFHgCvEZUAFmEpRAqHX
-         PI4MtgGFnXTABX/OrO7BQYrRSMB27pN31vdBvOt+lgWXpyCIqEjXzjXmZ5dp1ksoUuoq
-         k4lKtgXkAGF+27HPDnp6El7UpN1EUa2phxY1UVisak8QznQGB4JMtaIZhYuXkVz6uuMw
-         aktw==
-X-Forwarded-Encrypted: i=1; AJvYcCWm+VPDL7FmbTVDrM0BMr+x1lWqE0mGj9X3PA5NAv1MdJ7ETevys32PeJmEFaTt9sy+iV+WYSXQYAv9BccZ+S8ylEIF1Tv+UJX34nh4jWH0smZIgxiDLOK+mugX53BrOkk1mfDX6yaokLjZ
-X-Gm-Message-State: AOJu0YxW1YOy9lWWLDqLhzX59hpOU9xLwt3Sl+P3GbSnYz8UgzxbonuP
-	Al6Hv9F2Gn4N7T1pJFuq2kEbWxMx0ONCyDP84FgfXIAseq5Rzv3D4AQ0M+GyL8yVqRnlep6+GLi
-	r9yqoqInD2VXOvQC3C50vIrZe/w0=
-X-Google-Smtp-Source: AGHT+IGw9TbaXB4OiBViXULChFw8ceMuWOdi0bShk6CdU+4WddPSCqd7UQSgJO1Yt6fZTZdAk8xHZza2uny5nD0L8Fs=
-X-Received: by 2002:a05:6a20:3ca8:b0:1a1:276b:e116 with SMTP id
- b40-20020a056a203ca800b001a1276be116mr11760741pzj.3.1709550606198; Mon, 04
- Mar 2024 03:10:06 -0800 (PST)
+	s=arc-20240116; t=1709550703; c=relaxed/simple;
+	bh=xVSkuAeo4D9ZElgt/IODeSW5ZINrq3fTsbkPSDyPGmc=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Yb+OvbtWbJRcZ3Nf41HH5F7ii6SAnMexh8NfzBLBPAeta6Yh7RgaAocgSipaLum9H+7tNjhRw14W70bYvX4Q8S+NkSSclMu/zV4tLvMIdZTs7wLu+QR0UP/JkT05F6emSxNZbdCarr1xpUMBSOLQ0RA87etTa2BlyM+Fl5KelW8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=NXenhUgW; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 424AsnYr019049;
+	Mon, 4 Mar 2024 11:11:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type; s=
+	qcppdkim1; bh=250lxiVyVhWgGkynbsvy556K2WPzHaat5nPoNu3o7uI=; b=NX
+	enhUgWz8BXddC9wB3akbZsUu/sCKYGBo4ZvPuYtT2dgnp+RKp7J3YCgArmuBpMyN
+	FlqDYq8+U5O641XmzJZ9pXrrsHgL8SpYnAgzWYNxTK2k1RmJJUKHMA+wsh5nwDsy
+	U9CFeB2UTAjzhyfJVs1DJ0EcfNLn074DFeKTyCLRUMGAb8Iyu5EM2DS9moZlpyeg
+	nKnkn/Nfvxwau4DGVBinA4WtVqjTeXdshYl3AP3QOmrFuYCHtpiNDTGeBbZnqBeP
+	wrwhRRrV8H8ZItyy/nyDHhqkZ9GDkBOk7QycbceyaJHcgyczqf2UsYbFtT6xp89u
+	swbxvW+3vTgZm7Pd0U2Q==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wkvb739ed-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 04 Mar 2024 11:11:31 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 424BBUT4007051
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 4 Mar 2024 11:11:30 GMT
+Received: from hu-nprakash-blr.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 4 Mar 2024 03:11:27 -0800
+From: Nikhil V <quic_nprakash@quicinc.com>
+To: 
+CC: Charan Teja Kalla <quic_charante@quicinc.com>,
+        Joerg Roedel
+	<joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy
+	<robin.murphy@arm.com>, <linux-kernel@vger.kernel.org>,
+        <iommu@lists.linux.dev>, Nikhil V <quic_nprakash@quicinc.com>,
+        <stable@vger.kernel.org>
+Subject: [PATCH RESEND STABLE v6.1] iommu: Avoid races around default domain allocations
+Date: Mon, 4 Mar 2024 16:40:50 +0530
+Message-ID: <cbf1295589bd90083ad6f75a7fbced01f327c047.1708680521.git.quic_nprakash@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240304020712.238637-1-sherry.sun@nxp.com> <2e1b1eae2e9d3cedcd270e35cfcf8086b914b7ff.camel@siemens.com>
- <AS8PR04MB8404FEA637E51E3B258BC28C92232@AS8PR04MB8404.eurprd04.prod.outlook.com>
-In-Reply-To: <AS8PR04MB8404FEA637E51E3B258BC28C92232@AS8PR04MB8404.eurprd04.prod.outlook.com>
-From: Fabio Estevam <festevam@gmail.com>
-Date: Mon, 4 Mar 2024 08:09:54 -0300
-Message-ID: <CAOMZO5AUFsC87fivJ7UhLGpoqy+-rfSx8Jipp5QGjQ9uGOngTw@mail.gmail.com>
-Subject: Re: [PATCH] tty: serial: fsl_lpuart: avoid idle preamble pending if
- CTS is enabled
-To: Sherry Sun <sherry.sun@nxp.com>
-Cc: "Sverdlin, Alexander" <alexander.sverdlin@siemens.com>, 
-	"u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>, 
-	"gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, 
-	"ilpo.jarvinen@linux.intel.com" <ilpo.jarvinen@linux.intel.com>, "robh@kernel.org" <robh@kernel.org>, 
-	Shenwei Wang <shenwei.wang@nxp.com>, "tglx@linutronix.de" <tglx@linutronix.de>, 
-	"jirislaby@kernel.org" <jirislaby@kernel.org>, "robert.hodaszi@digi.com" <robert.hodaszi@digi.com>, 
-	"linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, "imx@lists.linux.dev" <imx@lists.linux.dev>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Frank Li <frank.li@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: yz3Nelq0fOTemW5jQPryH1pxnJWCrhqt
+X-Proofpoint-ORIG-GUID: yz3Nelq0fOTemW5jQPryH1pxnJWCrhqt
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-04_06,2024-03-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 adultscore=0 mlxlogscore=999 lowpriorityscore=0 phishscore=0
+ malwarescore=0 impostorscore=0 clxscore=1015 spamscore=0 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403040084
 
-Hi Sherry,
+From: Charan Teja Kalla <quic_charante@quicinc.com>
 
-On Mon, Mar 4, 2024 at 4:32=E2=80=AFAM Sherry Sun <sherry.sun@nxp.com> wrot=
-e:
+This fix is applicable for LTS kernel, 6.1.y. In latest kernels, this race
+issue is fixed by the patch series [1] and [2]. The right thing to do here
+would have been propagating these changes from latest kernel to the stable
+branch, 6.1.y. However, these changes seems too intrusive to be picked for
+stable branches. Hence, the fix proposed can be taken as an alternative
+instead of backporting the patch series.
+[1] https://lore.kernel.org/all/0-v8-81230027b2fa+9d-iommu_all_defdom_jgg@nvidia.com/
+[2] https://lore.kernel.org/all/0-v5-1b99ae392328+44574-iommu_err_unwind_jgg@nvidia.com/
 
-> Hi Alexander, good catch, I will move the "/* restore control register */=
-" message to the appropriate place in V2. Thanks!
+Issue:
+A race condition is observed when arm_smmu_device_probe and
+modprobe of client devices happens in parallel. This results
+in the allocation of a new default domain for the iommu group
+even though it was previously allocated and the respective iova
+domain(iovad) was initialized. However, for this newly allocated
+default domain, iovad will not be initialized. As a result, for
+devices requesting dma allocations, this uninitialized iovad will
+be used, thereby causing NULL pointer dereference issue.
 
-Please add a Fixes tag in v2.
+Flow:
+- During arm_smmu_device_probe, bus_iommu_probe() will be called
+as part of iommu_device_register(). This results in the device probe,
+__iommu_probe_device().
+
+- When the modprobe of the client device happens in parallel, it
+sets up the DMA configuration for the device using of_dma_configure_id(),
+which inturn calls iommu_probe_device(). Later, default domain is
+allocated and attached using iommu_alloc_default_domain() and
+__iommu_attach_device() respectively. It then ends up initializing a
+mapping domain(IOVA domain) and rcaches for the device via
+arch_setup_dma_ops()->iommu_setup_dma_ops().
+
+- Now, in the bus_iommu_probe() path, it again tries to allocate
+a default domain via probe_alloc_default_domain(). This results in
+allocating a new default domain(along with IOVA domain) via
+__iommu_domain_alloc(). However, this newly allocated IOVA domain
+will not be initialized.
+
+- Now, when the same client device tries dma allocations via
+iommu_dma_alloc(), it ends up accessing the rcaches of the newly
+allocated IOVA domain, which is not initialized. This results
+into NULL pointer dereferencing.
+
+Fix this issue by adding a check in probe_alloc_default_domain()
+to see if the iommu_group already has a default domain allocated
+and initialized.
+
+Cc: <stable@vger.kernel.org> # see patch description, fix applicable only for 6.1.y
+Signed-off-by: Charan Teja Kalla <quic_charante@quicinc.com>
+Co-developed-by: Nikhil V <quic_nprakash@quicinc.com>
+Signed-off-by: Nikhil V <quic_nprakash@quicinc.com>
+---
+ drivers/iommu/iommu.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index 8b3897239477..83736824f17d 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -1741,6 +1741,9 @@ static void probe_alloc_default_domain(struct bus_type *bus,
+ {
+ 	struct __group_domain_type gtype;
+ 
++	if (group->default_domain)
++		return;
++
+ 	memset(&gtype, 0, sizeof(gtype));
+ 
+ 	/* Ask for default domain requirements of all devices in the group */
+-- 
+2.17.1
+
 
