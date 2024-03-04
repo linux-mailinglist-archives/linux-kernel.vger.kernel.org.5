@@ -1,163 +1,241 @@
-Return-Path: <linux-kernel+bounces-91211-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91212-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B255870B40
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:13:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 97BFE870B41
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:13:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 418181F2115E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:13:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 228F31F22971
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:13:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B079A7A731;
-	Mon,  4 Mar 2024 20:13:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 893587B3E6;
+	Mon,  4 Mar 2024 20:13:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k85dEHj8"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="BlgCG/gT"
+Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E693962171;
-	Mon,  4 Mar 2024 20:13:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4C487AE75
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 20:13:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709583193; cv=none; b=SElJdsKfK5Jc8KI9giwMScnQzM1fPAMJ6B2Om3iBbGzDNyFQfT0gdwXKuzw/B+eNkIke9+fHTx+tQqy7w9d0FAAy7YPGw79o2OB53okR5Uj9HPalmO6YZ4G+sBkVOLXiKG9wx7vqTiS4WV8DKwLjzfJZAI4e9z9QAfneFDMUHQE=
+	t=1709583196; cv=none; b=WKycZxX+/fjM7MGRMQ1QVfLZN9inPXpifkRHq6qEehc826+jbFuhZcrLIC0Q4NwgwZfX1qOv44yoYk/ZmDoic8BWVfqIe1042Uf3QeoFUfvJvBNd9hCOERXjwvMz9NIjFTNQRR9PeyXWAB66fcIyJG/mpTza9ZaRwAE+jZ48EEg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709583193; c=relaxed/simple;
-	bh=Jarf+3xgm31a5ItvIpY/7IPTj0Vs8zmgBoIbgY65ZsU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=S20gJAshz2YikDTv17kjrr7UPCxho2F52f6k77wdzK70ZoyLxx9qyy/OenGAeyKa2f6jiOAlPs7g9HRPdkuNY2OnsT5B9iTUH+G9aHtyAIVERudF8br+F5ZPVAWY5n7wwQeeImc0ib3Nkxi3v3rc3TEBaixK3NYHceHLbYaX384=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k85dEHj8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 424EFC433F1;
-	Mon,  4 Mar 2024 20:13:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709583192;
-	bh=Jarf+3xgm31a5ItvIpY/7IPTj0Vs8zmgBoIbgY65ZsU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=k85dEHj8+jTdrQGFPCxKUTyZPYtvSW8yVrZPUefH7fCrOBySUGu/XDD0+cXAil+Ro
-	 UVIh278q4HvcZPCDWkfAm4xmc/qbitRfQFj6C2AO35cx8ZwNppPqtPdSbIssr18miG
-	 mBKplj0BBKFKN2LuTbpAa3rG2oO3bzCGESDE9m1/W4DiOolIFHAanor8J+OVwLuoyu
-	 KJ0G2b7tczan5XxTPfVhF/GjEPvSX+n7eKt9dYVbqYVe720b62X1DvKsyIgy4isBAm
-	 h8CpL64c69YnJoq4LiRG7iYPrnTmRjiImLi4cYEFrzKKrL1hR6NY1HLfAK2a8CjSHt
-	 gxEdL2IZSXYHQ==
-Date: Mon, 4 Mar 2024 20:13:06 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Frank Li <Frank.li@nxp.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	Shengjiu Wang <shengjiu.wang@nxp.com>, linux-sound@vger.kernel.org,
-	devicetree@vger.kernel.org, imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/4] ASoC: dt-bindings: fsl-sai: allow only one
- dma-names
-Message-ID: <20240304-cape-saloon-80f241bfd6df@spud>
-References: <20240227-asrc_8qxp-v2-0-521bcc7eb1c0@nxp.com>
- <20240227-asrc_8qxp-v2-3-521bcc7eb1c0@nxp.com>
- <20240229-husband-penalty-8c1ab0f57f55@spud>
- <20240229-rundown-isotope-954ba9ea4c57@spud>
- <ZeDdMJlxBL4SGkws@lizhi-Precision-Tower-5810>
- <20240301-crudeness-resale-3c0a1228850d@spud>
- <ZeIGXEJ3l4tgjmxT@lizhi-Precision-Tower-5810>
- <20240301-deluxe-tiptoeing-741af7d620b9@spud>
- <ZeIPmGG7+5cKZkO3@lizhi-Precision-Tower-5810>
+	s=arc-20240116; t=1709583196; c=relaxed/simple;
+	bh=97wLSRavPWpvj3qLgQpbHp3AjLHo4nR/4VmELoC2t0c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Yw/dc2V/RBDONNSu5xfIlSxXVpm0Hl5chS6ynHbcE8g/69UYHoe5GEashPGVJCr+ywnitJKMRALKRjDrqR6bSQ4h/V7JpAKjNrh0ylke05JD058aZ3VJ7cBQwX7RM4uJcL+5RSgCv7+OHDi2mOs5wyu+gWc0AUY22NNj6XQjw98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=BlgCG/gT; arc=none smtp.client-ip=209.85.167.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3c1e992f060so1005917b6e.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 12:13:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1709583194; x=1710187994; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=I9hBziy42Zp0Bftc0h2FFnVy55qMVWSrsliZ52+smLE=;
+        b=BlgCG/gTvqw4iGJbudPTSE3U7tbRR4M+KR/PUIpEiz8y9jlQUGByqfXFSbQqctqTBj
+         AWS7daZofN1bxuuFR2wcGIzduf3Sfl9BCCks+rMgQCVhfFuqOo7CkHtK7drgAvIcdzcb
+         U1d3xK65FD+IvenvohCapMV+F0e3w8aW7QhJU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709583194; x=1710187994;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=I9hBziy42Zp0Bftc0h2FFnVy55qMVWSrsliZ52+smLE=;
+        b=mgkwwGBHyMZn6y93pW4tDsmNDUrvMMLjyw5vCJUIZKWhHHQdnMgJ2pKeJZNwucZFEL
+         uQ77wiCCTGh0jaG0s55KlZOfZLWufL3Bjr7HTDl7fqqhiroa+mtyQPz+O7HW1hvcWKkk
+         j+aeq7Cq4Z+KmLYEXYS7JFnLByKPrmnMBQ7s+yfuF41e2je4tUO0DEvVQhNDS20fbZqI
+         80C7zFrsYYOT5sNQjJnyaIkThpLFf6Kv6yGRmrOnCMT3+EmxmqKmieCt6EeuDd1RKcwP
+         O9rovumsIMeUEU/qq9Rd8OC+ZhI5U2XXtwLxGIK2RS0kU9Afy3C0mQghVa1gufIDvM/K
+         wl0w==
+X-Forwarded-Encrypted: i=1; AJvYcCVWFg5mJnrReYf3/RFlwIHJ4KrL2RtbYTobcZRkiL0PpWk9nRtVxDHCD8pAII2/kLdM9h+WZpEAN6o76ytqZBrZupaQI88BTMHDNiN9
+X-Gm-Message-State: AOJu0YxPieeCw8gm52OZaAZYM+dz7LpKami4DrvJkO52W633kqtnMT8h
+	Q/25fhPJ83S8hYW2GWaKtMk6uxpBN4PVAjSWHD/xJUscx7a4h/Giw7Wak4kfplFcLcexOzzP42P
+	U
+X-Google-Smtp-Source: AGHT+IGtQl9c1Evpp18ocZ5q/QQVhqE2/ZBbSr3U58j9PI2E4HefdEbETjVpINqcX9TcLPGz+COSDA==
+X-Received: by 2002:a05:6808:201f:b0:3c1:cb2a:b7e with SMTP id q31-20020a056808201f00b003c1cb2a0b7emr13146894oiw.5.1709583193677;
+        Mon, 04 Mar 2024 12:13:13 -0800 (PST)
+Received: from [10.5.0.2] ([91.196.69.189])
+        by smtp.gmail.com with ESMTPSA id w15-20020a05622a190f00b0042dce775a4bsm4729533qtc.3.2024.03.04.12.13.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Mar 2024 12:13:12 -0800 (PST)
+Message-ID: <51c4b25f-1cdc-4bcc-8b40-c98096bebacf@joelfernandes.org>
+Date: Mon, 4 Mar 2024 15:13:10 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="G/bhWJ7YMFFq+jSj"
-Content-Disposition: inline
-In-Reply-To: <ZeIPmGG7+5cKZkO3@lizhi-Precision-Tower-5810>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] rcutorture: Fix
+ rcu_torture_pipe_update_one()/rcu_torture_writer() data race and concurrency
+ bug
+Content-Language: en-US
+To: paulmck@kernel.org
+Cc: linke li <lilinke99@qq.com>, Davidlohr Bueso <dave@stgolabs.net>,
+ Josh Triplett <josh@joshtriplett.org>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Neeraj Upadhyay <quic_neeraju@quicinc.com>, Boqun Feng
+ <boqun.feng@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
+ linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+References: <tencent_B51A9DA220288A95A435E3435A0443BEB007@qq.com>
+ <f3624f39-bbb1-451d-8161-8518e4108d8e@joelfernandes.org>
+ <4857c5ef-bd8f-4670-87ac-0600a1699d05@paulmck-laptop>
+ <a8e9c84f-c354-4536-b676-d38043913d09@joelfernandes.org>
+ <a9ff4787-1b07-4d47-b2a0-5eb1336d3710@paulmck-laptop>
+From: Joel Fernandes <joel@joelfernandes.org>
+In-Reply-To: <a9ff4787-1b07-4d47-b2a0-5eb1336d3710@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
 
---G/bhWJ7YMFFq+jSj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 01, 2024 at 12:25:44PM -0500, Frank Li wrote:
-> On Fri, Mar 01, 2024 at 05:07:07PM +0000, Conor Dooley wrote:
-> > On Fri, Mar 01, 2024 at 11:46:20AM -0500, Frank Li wrote:
-> > > On Fri, Mar 01, 2024 at 04:05:25PM +0000, Conor Dooley wrote:
-> > > > On Thu, Feb 29, 2024 at 02:38:24PM -0500, Frank Li wrote:
-> > > > > On Thu, Feb 29, 2024 at 06:57:29PM +0000, Conor Dooley wrote:
-> > > > > > On Thu, Feb 29, 2024 at 06:55:58PM +0000, Conor Dooley wrote:
-> > > > > > > On Tue, Feb 27, 2024 at 03:54:11PM -0500, Frank Li wrote:
-> > > > > > > > Some sai only connect one direction. So allow only "rx" or =
-"tx" for
-> > > > > > > > dma-names.
-> > > > > > >=20
-> > > > > > > Which sai? Can you restrict this per compatible please, so th=
-at someone
-> > > > > > > cannot add 2 dmas for ones where only the tx is supported.
-> > > > > > >=20
-> > > > > > > |  dmas:
-> > > > > > > |    minItems: 1
-> > > > > > > |    items:
-> > > > > > > |      - description: DMA controller phandle and request line=
- for RX
-> > > > > > > |      - description: DMA controller phandle and request line=
- for TX
-> > > > > > >=20
-> > > > > > > The binding already allows only one, but it documents that th=
-e first dma
-> > > > > > > is always the RX dma, and that doesn't change with this patch=
-=2E.
-> > > > > >=20
-> > > > > > I said "doesn't change" - but I don't think you can change this
-> > > > > > trivially, as something could rely on the first dma being the r=
-x one.
-> > > > > > You'd have to check that there is nothing using these using ind=
-ices
-> > > > > > rather than names before making any changes here.
-> > > > >=20
-> > > > > Linux driver and dts with tx only work well. Only issue is dtb_ch=
-eck will
-> > > > > report error. I want to eliminate these DTB_CHECK warning.
-> > > >=20
-> > > > Linux is not the only user of these bindings, citing linux as your
-> > > > evidence here is only sufficient if no other users exist. Do they?
-> > >=20
-> > > But, 'dmas' should be common property for all these bindings? I don't=
- think
-> > > they use 'descriptions:' property, which should guide dts writer to w=
-rite
-> > > dts file. actually words 'DMA controller phandle and request line' ju=
-st
-> > > nonsense words. let 'regs', it'd better descript at 'reg-names' inste=
-ad
-> > > of 'regs' if reg-names exist. Only meansful words is "RX" and "TX", w=
-hich
-> > > already show at "dma-names".
-> >=20
-> > None of this matters. If there's a documented order for these, which
-> > there is, software is not obligated to use the names and can rely on the
-> > order alone. You need to check that there are no other users which will
-> > be broken by your proposed change.
->=20
-> As my best knowledge, only linux use this binding.
+On 3/4/2024 2:44 PM, Paul E. McKenney wrote:
+> On Mon, Mar 04, 2024 at 02:10:09PM -0500, Joel Fernandes wrote:
+>>
+>>
+>> On 3/4/2024 12:14 PM, Paul E. McKenney wrote:
+>>> On Mon, Mar 04, 2024 at 11:19:21AM -0500, Joel Fernandes wrote:
+>>>>
+>>>>
+>>>> On 3/4/2024 5:54 AM, linke li wrote:
+>>>>> Some changes are done to fix a data race in commit 202489101f2e ("rcutorture: Fix rcu_torture_one_read()/rcu_torture_writer() data race")
+>>>>>
+>>>>>  {
+>>>>>  	int i;
+>>>>>
+>>>>> -	i = rp->rtort_pipe_count;
+>>>>> +	i = READ_ONCE(rp->rtort_pipe_count);
+>>>>>  	if (i > RCU_TORTURE_PIPE_LEN)
+>>>>>  		i = RCU_TORTURE_PIPE_LEN;
+>>>>>  	atomic_inc(&rcu_torture_wcount[i]);
+>>>>> -	if (++rp->rtort_pipe_count >= RCU_TORTURE_PIPE_LEN) {
+>>>>> +	WRITE_ONCE(rp->rtort_pipe_count, i + 1);
+>>>>> +	if (rp->rtort_pipe_count >= RCU_TORTURE_PIPE_LEN) {
+>>>>>  		rp->rtort_mbtest = 0;
+>>>>>  		return true;
+>>>>>  	}
+>>>>>
+>>>>> But ++rp->rtort_pipe_count is meant to add itself by 1, not give i+1 to
+>>>>> rp->rtort_pipe_count, because rp->rtort_pipe_count may write by
+>>>>> rcu_torture_writer() concurrently.
+>>>>>
+>>>>> Also, rp->rtort_pipe_count in the next line should be read using
+>>>>> READ_ONCE() because of data race.
+>>>>>
+>>>>> Signed-off-by: linke li <lilinke99@qq.com>
+>>>>> ---
+>>>>>  kernel/rcu/rcutorture.c | 4 ++--
+>>>>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>>>>
+>>>>> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+>>>>> index 7567ca8e743c..00059ace4fd5 100644
+>>>>> --- a/kernel/rcu/rcutorture.c
+>>>>> +++ b/kernel/rcu/rcutorture.c
+>>>>> @@ -465,8 +465,8 @@ rcu_torture_pipe_update_one(struct rcu_torture *rp)
+>>>>>  	if (i > RCU_TORTURE_PIPE_LEN)
+>>>>>  		i = RCU_TORTURE_PIPE_LEN;
+>>>>>  	atomic_inc(&rcu_torture_wcount[i]);
+>>>>> -	WRITE_ONCE(rp->rtort_pipe_count, i + 1);
+>>>>> -	if (rp->rtort_pipe_count >= RCU_TORTURE_PIPE_LEN) {
+>>>>> +	WRITE_ONCE(rp->rtort_pipe_count, rp->rtort_pipe_count + 1);
+>>>>> +	if (READ_ONCE(rp->rtort_pipe_count) >= RCU_TORTURE_PIPE_LEN) {
+>>>>
+>>>> I want to say, I am not convinced with the patch because what's wrong with
+>>>> writing to an old index?
+>>>>
+>>>> You win/lose the race anyway, say the CPU executed the WRITE_ONCE() a bit too
+>>>> early/late and another WRITE_ONCE() lost/won, regardless of whether you wrote
+>>>> the "incremented i" or "the increment from the latest value of pipe_count".
+>>>>
+>>>> Anyway, a slightly related/different question:
+>>>>
+>>>> Should that:
+>>>> WRITE_ONCE(rp->rtort_pipe_count, rp->rtort_pipe_count + 1);
+>>>>
+>>>> Be:
+>>>> WRITE_ONCE(rp->rtort_pipe_count, READ_ONCE(rp->rtort_pipe_count) + 1);
+>>>>
+>>>> ?
+>>>
+>>> Thank you both!
+>>>
+>>> At first glance, I would argue for something like this:
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>> static bool
+>>> rcu_torture_pipe_update_one(struct rcu_torture *rp)
+>>> {
+>>> 	int i;
+>>> 	struct rcu_torture_reader_check *rtrcp = READ_ONCE(rp->rtort_chkp);
+>>>
+>>> 	if (rtrcp) {
+>>> 		WRITE_ONCE(rp->rtort_chkp, NULL);
+>>> 		smp_store_release(&rtrcp->rtc_ready, 1); // Pair with smp_load_acquire().
+>>> 	}
+>>> 	i = READ_ONCE(rp->rtort_pipe_count) + 1;
+>>> 	if (i > RCU_TORTURE_PIPE_LEN)
+>>> 		i = RCU_TORTURE_PIPE_LEN;
+>>> 	atomic_inc(&rcu_torture_wcount[i]);
+>>> 	WRITE_ONCE(rp->rtort_pipe_count, i);
+>>> 	if (i >= RCU_TORTURE_PIPE_LEN) {
+>>> 		rp->rtort_mbtest = 0;
+>>> 		return true;
+>>> 	}
+>>> 	return false;
+>>> }
+>>>
+>>> ------------------------------------------------------------------------
+>>>
+>>> That is, move the increment to the read and replace the re-read with
+>>> the value "i" that was just written.
+>>
+>> But that changes the original logic as well? It looks like with the above
+>> change, you're now writing to rcu_torture_wcount[READ_ONCE(rp->rtort_pipe_count)
+>> + 1] instead of rcu_torture_wcount[READ_ONCE(rp->rtort_pipe_count)].
+>>
+>> I think that might break rcutorture, because there is an increment outside of
+>> the first 2 entries in rcu_torture_wcount but not sure (need to look more).
+> 
+> Good point on never incrementing the zeroth entry!  Clearly I should
+> have waited before replying.
+> 
+> How about the following?
+> 
+> ------------------------------------------------------------------------
+> 
+> static bool
+> rcu_torture_pipe_update_one(struct rcu_torture *rp)
+> {
+> 	int i;
+> 	struct rcu_torture_reader_check *rtrcp = READ_ONCE(rp->rtort_chkp);
+> 
+> 	if (rtrcp) {
+> 		WRITE_ONCE(rp->rtort_chkp, NULL);
+> 		smp_store_release(&rtrcp->rtc_ready, 1); // Pair with smp_load_acquire().
+> 	}
+> 	i = READ_ONCE(rp->rtort_pipe_count);
+> 	if (i > RCU_TORTURE_PIPE_LEN)
+> 		i = RCU_TORTURE_PIPE_LEN;
+> 	atomic_inc(&rcu_torture_wcount[i]);
+> 	WRITE_ONCE(rp->rtort_pipe_count, i + 1);
+> 	if (i + 1 >= RCU_TORTURE_PIPE_LEN) {
+> 		rp->rtort_mbtest = 0;
+> 		return true;
+> 	}
+> 	return false;
+> }
 
-If you've checked and there are no users, that's fine. Please mention
-in the commit message that there are no users that will be affected as
-justification for the ABI change.
+Yes, this looks good to me. Thanks,
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
---G/bhWJ7YMFFq+jSj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZeYrUgAKCRB4tDGHoIJi
-0kXGAP0ZXQDdSBHtYgiW6KEtRSeHnNW+Qzp4Xi6aG6/WngSB7wEAkXcAGBBLZxUQ
-3gj8XZWrnoAYzbHNua6AJZOzWa0FEQY=
-=OdYx
------END PGP SIGNATURE-----
-
---G/bhWJ7YMFFq+jSj--
 
