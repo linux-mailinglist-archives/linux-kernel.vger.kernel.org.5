@@ -1,50 +1,50 @@
-Return-Path: <linux-kernel+bounces-90815-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90816-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BE10870563
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:28:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 43864870567
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:28:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F4C91F25A59
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:28:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ABBF51F25A82
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:28:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E28147A62;
-	Mon,  4 Mar 2024 15:28:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A17B481AA;
+	Mon,  4 Mar 2024 15:28:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="E/lDvTTl"
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="LBp/ntE7"
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 788A814ABC
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 15:28:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D3D84654E
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 15:28:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709566117; cv=none; b=uGx7rchsiqgc4apLku870WuyoKsHs8zjJ2EYOlDGHx01h3ochNZfVg+qOKaNP+BXiXh+0xSmBFVi3a+PJLzMl7uUKfMcyUIddwfVpBV5tcA/e8yomuyrWjDDL8foGuABk9Whr6Jw+ypSjnkKGvBxUqJhJ358h4fC6vEKHz560VY=
+	t=1709566119; cv=none; b=Cx0seW4SaZSPyMLmUuybdPFcjwaRDOgTrZAsf7A+ic+pEhioxzwtFRq3WNnvVxYC4lqKBKnhMvo1Xt3QdMnIAJf6VtSMDW9+zu4GyIzORxp+dJ1z+iXcZHb3UGkiSz2jCoBWW/63FKdLWO+sKCSnXn1MIntqeV6oBpnmxAybq+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709566117; c=relaxed/simple;
-	bh=JqPLe8KPWvpiqlSrIgQN5CjA/uLkeh0Hokz47hMRiiU=;
+	s=arc-20240116; t=1709566119; c=relaxed/simple;
+	bh=3dDcnXbku+Z27ViRbBROCPmutzCnVSXDVXSXJUywoTc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TtSoewfPdErkm6VOrwLzI+fMT7qVikdUB6Oxd9CfHgeKLJmpknCU3tsyErLaOxRgeK4ZBj0xjVhjSNBRNhTMzd7p39Xn2R3SL5k5B+p6f7so9aYvfVXfbHP4LYqkkZ/16kzOisvnubyp93kzYZr1YZxU1o/IoVTU2oyABbmU6us=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=E/lDvTTl; arc=none smtp.client-ip=217.70.183.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=HwgiFU8VFpKh3JgO5xunHpnWxRj4c8dz7nMeGM0NNwwjjiZNZT79iVvRnvrK8oBGnyIC4xnBWodDqC5bj/xEsdbDD61NKzroh3HE0P2VUiagXVW1XR+ITIUvrWqcjR8qqvEcKm4mgSxh9jqQTciaTtA9Hg+TQeo2Sckun3xTb+o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=LBp/ntE7; arc=none smtp.client-ip=217.70.183.193
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 2EC981BF204;
-	Mon,  4 Mar 2024 15:28:32 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 1D5C824000A;
+	Mon,  4 Mar 2024 15:28:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709566113;
+	t=1709566115;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=T4Zv8m/UXPDGpZewLmyg0pl/W4ahyJ8xUUUXXUY66xc=;
-	b=E/lDvTTl8F84vRyAi+hKvmn0JWisQyYP1UEdCQd8fmO5ZjfWdtsuTORqExmXL6CuAOdsMp
-	c56yDlg9yPH2s9fjLX0tz+vskbRBb0YDxKZszPXSuQCaAahyj7F6HC8laaThNCxF7iISjZ
-	f2zqQba8qhfnTAkTwIzCM2X+PN0kf585lLXnoifMQQprJI2xPQgAzG2J3kStq7bVMMB2tk
-	Wd7+fpOxIXImnLYR5tNlniuE+On92t538kBDTwrmgZ86QgYLx5mab3C0nlNnCTEilpDPgH
-	VytIyaCLrwV7hZ/hrqG5vFNUV3edyPiUvuaTHDyJNpPjdZj3bZlH6ffFdn0rag==
-Date: Mon, 4 Mar 2024 16:28:30 +0100
+	bh=aI3n8d1YGiT9gHLQYdUrdxkKidF5d2P9k5U07rkaydA=;
+	b=LBp/ntE7NGrS55I8dk57MpXv+Qbv9II5moe8TqKu1vg2wRw42ayMkkhiE8TC/PCzdieskq
+	MeH00UrXWnPzBsx7Mm2OrRjMoenGm8hsrnv5qutjdEq9yDbna0r5Pn2Orul2X46qdLqjco
+	qtc/lKFhpRSQ+pZ5F3xGAZAHtgEOxvGk7+BU/QqwOKxmrdulukYGqaT083RWhzFJxVzl6U
+	0b3gD/C++OMsqfKTU7pxWWkN9wO08AZVexOtu0sAcXZ48BnYg1Yw/M817SyCZxaKCU5O+U
+	i3+ihTaEN42XvqU/P2H5Ikx1VlYgfqEU0YTK5b3A486Wgq5CgzM0Ht5ZYaJJ+g==
+Date: Mon, 4 Mar 2024 16:28:32 +0100
 From: Louis Chauvet <louis.chauvet@bootlin.com>
 To: Pekka Paalanen <pekka.paalanen@collabora.com>
 Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
@@ -59,9 +59,9 @@ Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
 	Jonathan Corbet <corbet@lwn.net>, dri-devel@lists.freedesktop.org,
 	linux-kernel@vger.kernel.org, jeremie.dautheribes@bootlin.com,
 	miquel.raynal@bootlin.com, thomas.petazzoni@bootlin.com
-Subject: Re: [PATCH v2 3/9] drm/vkms: write/update the documentation for
- pixel conversion and pixel write functions
-Message-ID: <ZeXonl-jZq4xHnBK@localhost.localdomain>
+Subject: Re: [PATCH v2 4/9] drm/vkms: Add typedef and documentation for
+ pixel_read and pixel_write functions
+Message-ID: <ZeXooEmBN2HHxcCC@localhost.localdomain>
 Mail-Followup-To: Pekka Paalanen <pekka.paalanen@collabora.com>,
 	Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
 	Melissa Wen <melissa.srw@gmail.com>,
@@ -76,10 +76,10 @@ Mail-Followup-To: Pekka Paalanen <pekka.paalanen@collabora.com>,
 	linux-kernel@vger.kernel.org, jeremie.dautheribes@bootlin.com,
 	miquel.raynal@bootlin.com, thomas.petazzoni@bootlin.com
 References: <20240223-yuv-v2-0-aa6be2827bb7@bootlin.com>
- <20240223-yuv-v2-3-aa6be2827bb7@bootlin.com>
- <20240226133700.3fef91d9.pekka.paalanen@collabora.com>
- <Zd35cimh8BLICUuY@localhost.localdomain>
- <20240229104833.2a404d6b.pekka.paalanen@collabora.com>
+ <20240223-yuv-v2-4-aa6be2827bb7@bootlin.com>
+ <20240226133646.174d3fb2.pekka.paalanen@collabora.com>
+ <Zd35ddrlHduMq3_Y@localhost.localdomain>
+ <20240229110737.27f03450.pekka.paalanen@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -89,115 +89,174 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240229104833.2a404d6b.pekka.paalanen@collabora.com>
+In-Reply-To: <20240229110737.27f03450.pekka.paalanen@collabora.com>
 X-GND-Sasl: louis.chauvet@bootlin.com
 
-Le 29/02/24 - 10:48, Pekka Paalanen a écrit :
-> On Tue, 27 Feb 2024 16:02:10 +0100
+Le 29/02/24 - 11:07, Pekka Paalanen a écrit :
+> On Tue, 27 Feb 2024 16:02:13 +0100
 > Louis Chauvet <louis.chauvet@bootlin.com> wrote:
 > 
-> > [...]
-> > 
-> > > > diff --git a/drivers/gpu/drm/vkms/vkms_formats.c b/drivers/gpu/drm/vkms/vkms_formats.c
-> > > > index 172830a3936a..cb7a49b7c8e7 100644
-> > > > --- a/drivers/gpu/drm/vkms/vkms_formats.c
-> > > > +++ b/drivers/gpu/drm/vkms/vkms_formats.c
-> > > > @@ -9,6 +9,17 @@
-> > > >  
-> > > >  #include "vkms_formats.h"
+> > Le 26/02/24 - 13:36, Pekka Paalanen a écrit :
+> > > On Fri, 23 Feb 2024 12:37:24 +0100
+> > > Louis Chauvet <louis.chauvet@bootlin.com> wrote:
+> > >   
+> > > > Introduce two typedefs: pixel_read_t and pixel_write_t. It allows the
+> > > > compiler to check if the passed functions take the correct arguments.
+> > > > Such typedefs will help ensuring consistency across the code base in
+> > > > case of update of these prototypes.
+> > > > 
+> > > > Introduce a check around the get_pixel_*_functions to avoid using a
+> > > > nullptr as a function.
+> > > > 
+> > > > Document for those typedefs.
+> > > > 
+> > > > Signed-off-by: Louis Chauvet <louis.chauvet@bootlin.com>
+> > > > ---
+> > > >  drivers/gpu/drm/vkms/vkms_drv.h       | 23 +++++++++++++++++++++--
+> > > >  drivers/gpu/drm/vkms/vkms_formats.c   |  8 ++++----
+> > > >  drivers/gpu/drm/vkms/vkms_formats.h   |  4 ++--
+> > > >  drivers/gpu/drm/vkms/vkms_plane.c     |  9 ++++++++-
+> > > >  drivers/gpu/drm/vkms/vkms_writeback.c |  9 ++++++++-
+> > > >  5 files changed, 43 insertions(+), 10 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
+> > > > index 18086423a3a7..886c885c8cf5 100644
+> > > > --- a/drivers/gpu/drm/vkms/vkms_drv.h
+> > > > +++ b/drivers/gpu/drm/vkms/vkms_drv.h
+> > > > @@ -53,12 +53,31 @@ struct line_buffer {
+> > > >  	struct pixel_argb_u16 *pixels;
+> > > >  };
 > > > >  
 > > > > +/**
-> > > > + * packed_pixels_offset() - Get the offset of the block containing the pixel at coordinates x/y
-> > > > + * in the first plane
+> > > > + * typedef pixel_write_t - These functions are used to read a pixel from a
+> > > > + * `struct pixel_argb_u16*`, convert it in a specific format and write it in the @dst_pixels
+> > > > + * buffer.
 > > > > + *
-> > > > + * @frame_info: Buffer metadata
-> > > > + * @x: The x coordinate of the wanted pixel in the buffer
-> > > > + * @y: The y coordinate of the wanted pixel in the buffer
-> > > > + *
-> > > > + * The caller must be aware that this offset is not always a pointer to a pixel. If individual
-> > > > + * pixel values are needed, they have to be extracted from the resulting block.  
-> > > 
-> > > Just wondering how the caller will be able to extract the right pixel
-> > > from the block without re-using the knowledge already used in this
-> > > function. I'd also expect the function to round down x,y to be
-> > > divisible by block dimensions, but that's not visible in this email.
-> > > Then the caller needs the remainder from the round-down, too?  
-> > 
-> > You are right, the current implementation is only working when block_h == 
-> > block_w == 1. I think I wrote the documentation for PATCHv2 5/9, but when 
-> > backporting this comment for PATCHv2 3/9 I forgot to update it.
-> > The new comment will be:
-> > 
-> >  * pixels_offset() - Get the offset of a given pixel data at coordinate 
-> >  * x/y in the first plane
-> >    [...]
-> >  * The caller must ensure that the framebuffer associated with this 
-> >  * request uses a pixel format where block_h == block_w == 1.
-> >  * If this requirement is not fulfilled, the resulting offset can be 
-> >  * completly wrong.
-> 
-> Hi Louis,
-
-Hi Pekka,
-
-> if there is no plan for how non-1x1 blocks would work yet, then I think
-> the above wording is fine. In my mind, the below wording would
-> encourage callers to seek out and try arbitrary tricks to make things
-> work for non-1x1 without rewriting the function to actually work.
->
-> I believe something would need to change in the function signature to
-> make it properly usable for non-1x1 blocks, but I too cannot suggest
-> anything off-hand.
-
-I already made the change to support non-1x1 blocks in Patchv2 5/9 
-(I will extract this modification in "drm/vkms: Update pixels accessor to 
-support packed and multi-plane formats"), this function is now able 
-to extract the pointer to the start of a block. But as stated in the 
-comment, the caller must manually extract the correct pixel values (if the 
-format is 2x2, the pointer will point to the first byte of this block, the 
-caller must do some computation to access the bottom-right value).
- 
-> > 
-> > And yes, even after PATCHv2 5/9 it is not clear what is the offset. Is 
-> > this better to replace the last sentence? (I will do the same update for 
-> > the last sentence of packed_pixels_addr)
-> > 
-> >    [...]
-> >  * The returned offset correspond to the offset of the block containing the pixel at coordinates 
-> >  * x/y.
-> >  * The caller must use this offset with care, as for formats with block_h != 1 or block_w != 1 
-> >  * the requested pixel value may have to be extracted from the block, even if they are 
-> >  * individually adressable.
-> >  
+> > > > + * @dst_pixel: destination address to write the pixel
+> > > > + * @in_pixel: pixel to write
 > > > > + */
-> > > >  static size_t pixel_offset(const struct vkms_frame_info *frame_info, int x, int y)
-> > > >  {
-> > > >  	struct drm_framebuffer *fb = frame_info->fb;
-> > > > @@ -17,12 +28,13 @@ static size_t pixel_offset(const struct vkms_frame_info *frame_info, int x, int
-> > > >  			      + (x * fb->format->cpp[0]);
-> > > >  }
-> > > >    
+> > > > +typedef void (*pixel_write_t)(u8 *dst_pixels, struct pixel_argb_u16 *in_pixel);  
+> > > 
+> > > There are some inconsistencies in pixel_write_t and pixel_read_t. At
+> > > this point of the series they still operate on a single pixel, but you
+> > > use dst_pixels and src_pixels, plural. Yet the documentation correctly
+> > > talks about processing a single pixel.  
+> > 
+> > I will fix this for v4.
+> >  
+> > > I would also expect the source to be always const, but that's a whole
+> > > another patch to change.  
+> > 
+> > The v4 will contains a new patch "drm/vkms: Use const pointer for 
+> > pixel_read and pixel_write functions"
+> 
+> Sounds good!
+> 
 > > 
 > > [...]
 > > 
-> > > > +/**
-> > > > + * Retrieve the correct read_pixel function for a specific format.
-> > > > + * The returned pointer is NULL for unsupported pixel formats. The caller must ensure that the
-> > > > + * pointer is valid before using it in a vkms_plane_state.
-> > > > + *
-> > > > + * @format: 4cc of the format  
+> > > > diff --git a/drivers/gpu/drm/vkms/vkms_plane.c b/drivers/gpu/drm/vkms/vkms_plane.c
+> > > > index d5203f531d96..f68b1b03d632 100644
+> > > > --- a/drivers/gpu/drm/vkms/vkms_plane.c
+> > > > +++ b/drivers/gpu/drm/vkms/vkms_plane.c
+> > > > @@ -106,6 +106,13 @@ static void vkms_plane_atomic_update(struct drm_plane *plane,
+> > > >  		return;
+> > > >  
+> > > >  	fmt = fb->format->format;
+> > > > +	pixel_read_t pixel_read = get_pixel_read_function(fmt);
+> > > > +
+> > > > +	if (!pixel_read) {
+> > > > +		DRM_WARN("Pixel format is not supported by VKMS planes. State is inchanged\n");  
 > > > 
-> > > Since there are many different 4cc style pixel format definition tables
-> > > in existence with conflicting definitions, it would not hurt to be more
-> > > specific that this is about DRM_FORMAT_* or drm_fourcc.h.  
+> > > DRM_WARN() is the kernel equivalent to userspace assert(), right?  
 > > 
-> > Is this better?
+> > For the DRM_WARN it is just a standard prinkt(KERN_WARN, ...) (hidden 
+> > behind drm internal macros).
+> 
+> My concern here is that does hitting this cause additional breakage of
+> the UAPI contract? For example, the UAPI contract expects that the old
+> FB is unreffed and the new FB is reffed by the plane in question. If
+> this early return causes that FB swap to be skipped, it could cause
+> secondary unexpected failures or misbehaviour for userspace later. That
+> could mislead debugging to think that there is a userspace bug.
+>
+> Even if you cannot actually read FB due to an internal bug, it would be
+> good to still apply all the state changes that the UAPI contract
+> mandates.
+> 
+> Unless, this is a kernel bug kind of thing which explodes very
+> verbosely, but DRM_WARN is not that.
+
+You are right. In this case I maybe can just create a dummy 
+"pixel_read" which always return black? (The v4 will have it so you can 
+see how it look)
+
+This way, I can:
+- keep the check and avoid null function pointers (and OOPS);
+- log (WARN, DRM_WARN, DRM_ERROR or whatever suggested by DRM maintainers 
+to warn very loudly);
+- Apply the requested change from userspace (and don't break the UAPI 
+contract).
+
+The resulting behavior will be "the virtual plane is black", which is, I
+think, not very important. As the primary usage of VKMS is testing, it
+will just broke all the tests, and a quick look at the kernel logs will
+show this bug.
+ 
+> > > In that failing the check means an internal invariant was violated,
+> > > which means a code bug in kernel?
+> > >
+> > > Maybe this could be more specific about what invariant was violated?
+> > > E.g. atomic check should have rejected this attempt already.  
 > > 
-> >    @format: DRM_FORMAT_* value for which to obtain a conversion function (see [drm_fourcc.h])
+> > I'm not an expert (yet) in DRM, so please correct me:
+> > When atomic_update is called, the new state is always validated by 
+> > atomic_check before? There is no way to pass something not validated by 
+> > atomic_check to atomic_update? If this is the case, yes, it should be an 
+> > ERROR and not a WARN as an invalid format passed the atomic_check 
+> > verification.
 > 
-> Much better!
+> I only know about the UAPI, I'm not familiar with kernel internals.
 > 
+> We see that atomic_update returns void, so I think it simply cannot
+> return errors. To my understanding, atomic_check needs to ensure that
+> atomic_update cannot fail. There is even UAPI to exercise atomic_check
+> alone: the atomic commit TEST_ONLY flag. Userspace trusts that flag, and
+> will not expect an identical atomic commit to fail without TEST_ONLY
+> when it succeeded with TEST_ONLY.
+
+That my understanding of the UAPI/DRM internals too, is my suggestion 
+above sufficient? It will always succeed, no kernel OOPS.
+
+> > If so, is this better?
+> > 
+> > 	if (!pixel_read) {
+> > 		/*
+> > 		 * This is a bug as the vkms_plane_atomic_check must forbid all unsupported formats.
+> > 		 */
+> > 		DRM_ERROR("Pixel format %4cc is not supported by VKMS planes.\n", fmt);
+> > 		return;
+> > 	}
+> > 
+> > I will put the same code in vkms_writeback.c.
 > 
+> Maybe maintainers can comment whether even DRM_ERROR is strong enough.
+> 
+> As for the message, what you wrote in the comment is the most important
+> part that I'd put in the log. It explains what's going on, while that
+> "format not supported" is a detail without context.
+> 
+
+Is something like this better?
+
+	/*
+	 * This is a bug in vkms_plane_atomic_check. All the supported 
+	 * format must:
+	 * - Be listed in vkms_formats
+	 * - Have a pixel_read_line callback
+	 */
+	WARN(true, "Pixel format %4cc is not supported by VKMS planes. This is a kernel bug. Atomic check must forbid this configuration.\n", fmt)
+
 > Thanks,
 > pq
 
