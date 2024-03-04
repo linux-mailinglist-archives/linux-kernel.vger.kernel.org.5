@@ -1,119 +1,164 @@
-Return-Path: <linux-kernel+bounces-90591-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90592-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75C6C8701D6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:51:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED0DD8701DC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:57:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A73071C233E6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:51:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A8181F234F4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:57:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5D5E3D3BE;
-	Mon,  4 Mar 2024 12:50:52 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 198033D3B3;
+	Mon,  4 Mar 2024 12:57:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="KrhtaWsW"
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2087.outbound.protection.outlook.com [40.107.96.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC9DF1946C;
-	Mon,  4 Mar 2024 12:50:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709556652; cv=none; b=sYkLOedQQnBkx7Oxcdty99ImLS1udQVlInPqbGIw/F/AjzRP7qowEufxjmRACJLi9cgTu2IFcGK3MtwcpLbqYw15j5wp5yCB53t/aTamk8RnVbpLnv9OW67JxmEyejppo3kueejbWOB9tXE0H9fDulwqOAX//QFzeG8WHccMUKU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709556652; c=relaxed/simple;
-	bh=si1k6+m8kih3uRFyccYJEqu1Hr+qAYqsSzmMjNBAkH8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=IA/S3vX9WPdvc22rXS4QLBVxvx+jHY4T9/epPff8Sra1u/Qr33LsUeRPNJJiph1V8dhwZ7zhsfo8eYukuDZGYAha14PRfwROpuP25T1hg30rTprlS+BEp4oHxCIRFOxQUleavy4UBsxdK8Oq6r83RqzfSKK8SYpv6Gv2+qA74Kk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TpJTC5nRrz1FLgX;
-	Mon,  4 Mar 2024 20:50:39 +0800 (CST)
-Received: from dggpemd100001.china.huawei.com (unknown [7.185.36.94])
-	by mail.maildlp.com (Postfix) with ESMTPS id D438D140113;
-	Mon,  4 Mar 2024 20:50:45 +0800 (CST)
-Received: from [10.67.120.108] (10.67.120.108) by
- dggpemd100001.china.huawei.com (7.185.36.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Mon, 4 Mar 2024 20:50:45 +0800
-Message-ID: <80050a50-af6a-5862-8c12-ccaf91c5ff74@huawei.com>
-Date: Mon, 4 Mar 2024 20:50:45 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAB6F1D53F
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 12:57:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.96.87
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709557027; cv=fail; b=P8qtwjooevFZb0fkWWH8vEH2fb62rJP1pp+/2otdUXjcJnBMcVYUiLm6arxQ/TSPLdT46e/JjbJVJbl7EViinQeGB1ao01XW/QnHdgZdMev8Rc4jXTI1N+XdVRbimqaqD17B2okAeeDu866szrA8WM6X6sTEusThUKEtlcTu8Ao=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709557027; c=relaxed/simple;
+	bh=HERXuwG5C0XcNaKiNpIH7V9wNpJBsAPq/Ewp/2VDzqo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=kKEZcRxd9b9Ny7sGXohElc9AXwqCafW5/5nRs5uHtjT/3HY0Zh9De2e/hwmlCyuRBEREMIwyml4cdKltQ5kir7SRtr3QfGVIQRuPDTTJ9jCYHdW7z2Ju96jUsOF3Fs53dxzLDGRH0YQxeMX5KHychz8Tep5u5iawOQLYvMvtDlM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=KrhtaWsW; arc=fail smtp.client-ip=40.107.96.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=k3roZqUCGeCkG97c28EVN4rAO1IAs/KdsdO4LzH0+Q7CjrfnouD14z/44IxsGDnJUCdDdNGCJMYlPtRcJgSAn/NOD7/kCk84CzljFInv/ZlBNCAPjsCT0cSzWAJQIN+rRkVNAELsJCTcp0+n+PybGjxW4LBCch8sx/yLjGpVDLlimru04zMBoTt28yFEfK8fly7ai0EdRbIU24TX9dgpolYySd/vwrp9nOvF+Wgj3ZE9C/W4crrmLI6ulxyRoA3Em0nOgPThW3esnryyTBepkeG06h1JACJGDpMOYdokqbqroeFZQXjcarILpIiQSza6wumGa4SKk6Mj+ZrrwO741g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dz/VIKySif7YxyUk5CZ6N+BVAxb5wfqGWTPvmcJkres=;
+ b=B0BXNg+Wy31inCZrXo5y8eofa9xa9Z8eqvkj5A5/kd/715UoOwEkhMkXgvNZy3Yc5d4hBb0t7RCBBXu3tTAaJxKIKFgjHJow03GATu1jUbWp16wtGn9EicUShs+JCmQvf2iZEGXF9wnKPtalTgveK4A6rGS3M2PhX2raIAZLbMuAzXFQAWvHBZXMlQJ9InTkxAC7rwBZGrvvYzTQampTfo7FJYui5zZkN2BHYpYbglq8t1WLbI1LMQL3FXcHOMvYbYeB3Ba3Vl8iN5Ir9rpuD/qpq0lAXRGOwPPA9PJYHMXkfvusHJfQzYkoeJSUSepgMJp8F/Lyu4qDRP+6ju4GUg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dz/VIKySif7YxyUk5CZ6N+BVAxb5wfqGWTPvmcJkres=;
+ b=KrhtaWsWY/Cm7Q24O/Wbmj2ODUQ+QdWzPKkcwgQFhjX15M4dAs1EiHsl3paHUaYcUd36k8l4qHAD/cIUrHZtxLeZ5QByuQfsl/aT4oOv48NekyLMXntwlmSDSEwGma4+SjaLuN35pZ0EarJJCP/Rs90rFkHnYFE/tNKHF0RlrBuXjPO4f+/BUpYiy1jJayOigEyn6ddIpz4t8XPbKKova6fo8ygmXaCvSSTdqA96YRt6qgR7qilmVgmqbo/P9Dz3sdh5Wd3KWcKLQxJrBl0MLIoGJF+3HghJwmMq7d77VGgjyFy1JrlA8yB0VBSK2A8KBPnDrXYVDZo5TYu8AW3SBQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
+ by SN7PR12MB8102.namprd12.prod.outlook.com (2603:10b6:806:359::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.38; Mon, 4 Mar
+ 2024 12:57:01 +0000
+Received: from DM6PR12MB3849.namprd12.prod.outlook.com
+ ([fe80::c33c:18db:c570:33b3]) by DM6PR12MB3849.namprd12.prod.outlook.com
+ ([fe80::c33c:18db:c570:33b3%5]) with mapi id 15.20.7339.035; Mon, 4 Mar 2024
+ 12:57:00 +0000
+Date: Mon, 4 Mar 2024 08:56:58 -0400
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: peterx@redhat.com
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, Yang Shi <shy828301@gmail.com>,
+	"Kirill A . Shutemov" <kirill@shutemov.name>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+Subject: Re: [PATCH v2 1/7] mm/ppc: Define pXd_large() with pXd_leaf()
+Message-ID: <20240304125658.GO9179@nvidia.com>
+References: <20240229084258.599774-1-peterx@redhat.com>
+ <20240229084258.599774-2-peterx@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240229084258.599774-2-peterx@redhat.com>
+X-ClientProxiedBy: SA9PR13CA0143.namprd13.prod.outlook.com
+ (2603:10b6:806:27::28) To DM6PR12MB3849.namprd12.prod.outlook.com
+ (2603:10b6:5:1c7::26)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Subject: Re: [PATCH] scsi: libsas: Fix disk not being scanned in after being
- removed
-Content-Language: en-CA
-To: Jason Yan <yanaijie@huawei.com>, John Garry <john.g.garry@oracle.com>,
-	<jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-	<damien.lemoal@opensource.wdc.com>
-CC: <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linuxarm@huawei.com>, <prime.zeng@hisilicon.com>,
-	<chenxiang66@hisilicon.com>, <kangfenglong@huawei.com>
-References: <20240221073159.29408-1-yangxingui@huawei.com>
- <f095aa1c-f233-40f9-ad0f-fcd8fe69a80d@oracle.com>
- <e2a725ee-98b3-fd57-6ee4-af031ffbd6bc@huawei.com>
-From: yangxingui <yangxingui@huawei.com>
-In-Reply-To: <e2a725ee-98b3-fd57-6ee4-af031ffbd6bc@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggpemm500007.china.huawei.com (7.185.36.183) To
- dggpemd100001.china.huawei.com (7.185.36.94)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|SN7PR12MB8102:EE_
+X-MS-Office365-Filtering-Correlation-Id: b6c66146-ef2e-403b-cb0e-08dc3c4a9525
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	bcGj7NS6x6KptUWmtTG8gyyC/fVmJFoU2OVlWvgrRqt2Z6tZ2DKrUuBImIjmwjRiGiokdxoE6sJT7G6bJ2P2T5YH4XmTHD88/YcuZROYvayLKJqIh+O3bbSf63vm7HJQm7+QXi3XSDlHG4v5Yt5rQnPqXKtqmqGQe+4Rxag/ZwJHFX26LicxudFZcFwNT7FBLWRDPqG2JE8HcKkcI+8BTrR/axTqPmoFjVn3ykniJFlF0bIzQvAguVAKtb4T1JLBfqWvAJHSAsVb7AxVseJS9SyH9nwd/Y7rWVXuE01iaB+behEC/+A3L7VffuP7IhU5YEn2VK4k3CkSI0875Zr0/7VvAjuPDLTElBeQOyHIN77xmixmDHlgaRqHELzIfQMkGRfWWAtpBYzamB/lGWTGiC2zTUkwme4krOf3+K5Ll+zkJH4wYus0xkJO5JSDGdT6UVNIpkWaqHM4jAg/yPSOTp9P/4C8FfdFmRWuoUXK5rsH3FEXlBmZ6aaUVAU0UxjoB4PfRky8y4qk1wkY2DQCTJBABRpb4+TpklpDBLMs7e9YksaKDOjF8M8xvcZX4ZIxDQr+TZjXHO8AmALmHvgcqj92diR17pMGsLw7RJEiw8ERA4SIxtDwLm2Ny7oo26Wloo67qWMOlzf794Hqkfd7SJGswDOeqQzCA6ZCV2738ro=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?3ZLSK6vx0PuJjpwC/dtd4APjFbaUGZEh37Y/xzviyTSLoWaOoEiN58lBH5kP?=
+ =?us-ascii?Q?Pk8+WRrvj6rrm8gFFi954quSjY9QYqA7h7nWqUALqMjoNbTtphBjz+oTXqrJ?=
+ =?us-ascii?Q?3z0Mq3ML/s1rpqzUb3ZiFkzI7o18CVMZ+DoMDrExl7UZnInj2oF63a6GGAqk?=
+ =?us-ascii?Q?F1xhb4VpLlIH4AYc2oR1G9T/Wn6pY8IFFVHOFYX8Pm1yZpim4j2a7eLd7Qz5?=
+ =?us-ascii?Q?FfiorBIIYIg1XWIKm7jbtcz+OFGhOe1sHmMWsgEQfh1D+gJK9sqjT2OCnqPJ?=
+ =?us-ascii?Q?kH6WEBoIJEvf9aQJ2XbwAmXu3TqkfgF+nVewyEVY78bIOdLdkHkdwT3ftKFz?=
+ =?us-ascii?Q?IVQhlY5yebjqcYgmYiZqhA6KhpFnEZ920YnO5PMsbfNl33rHhEbCejMr+A2y?=
+ =?us-ascii?Q?OguqCiuNiIUB3kAEYL64enMZMbruYrzFfGFoWlvcV5aGF193K6ox/Vc+PcKy?=
+ =?us-ascii?Q?9D+KeaFV2K2zd5f7I33b9KAZhJ1xUmmUi2+xGpKFkLzML0uYCkzBPoKT4EYx?=
+ =?us-ascii?Q?TQOXI/6oE1FImd2OrFBx9AbC7yub6OogDyWl+MT5Y2mrdp/vbiRn1UlSBdj0?=
+ =?us-ascii?Q?Y7jeZe0mDB3LtUzeK47n0+kVANZH1thVznG+BiU5DaDpsGEaQ3LYcOk3ULQR?=
+ =?us-ascii?Q?qqVUg0EWcMOm3N1DmbfDoBVNpReWs/m13MKZXiH/KSD3FnpXPsoWsgpeD4OW?=
+ =?us-ascii?Q?AskbxW49DOPRPSaOfpRKp+Kp4Yhh69/aun0yNFYyf98VY1JfZ8Z9Q1ZobN/S?=
+ =?us-ascii?Q?gn4EqYTqlLD+39fhqv+tzHt1mUTjz3tepW1uglYzGQqVutmIrzxmQpbTCdcE?=
+ =?us-ascii?Q?QRMrU0UtRu23tQNz+iU3RGWFjnu5zXZ6ISDqtNAYbMLIZPEC2/owZCEMIzgw?=
+ =?us-ascii?Q?+vKSQuya2KgplcAa8xXym5xW22x+xrI0xZRq2fZgZ/rI0aF8/Sl2/qGYA4c4?=
+ =?us-ascii?Q?EzbxCaLvweKazRLkRAEEJIRCjXjOIxY0te9P9fDjV1VLUpoDqKPbAEyoks0X?=
+ =?us-ascii?Q?KAQwPpVVwHY5gRlSJ0z8d71HMrFO2KKt2rQ8bZKyybdXBMYCt+HWyu88cD1V?=
+ =?us-ascii?Q?C0adpyWbGPfYk41XbO/ez3NF+JzAr0UYDdPfu2xTTNqKk3OGF51aiA6NNom0?=
+ =?us-ascii?Q?fX/FSikgQXkBQ5appEKjN7JE3xp/wCWaqMojr0seI+zeFDUIzabP5yOV012X?=
+ =?us-ascii?Q?uSmVvZu6FgT56iNJCmSUO8TCRcgHPbDJPpR9dJowgInkarbmcdqPPXViLWgw?=
+ =?us-ascii?Q?oXvaH3OtKLQmk943jeXJyZBoK+JkpG7DvaOg9TnKHwkMkI4xKJ2Wjexx/tVu?=
+ =?us-ascii?Q?ryK6VmXYAgQTCBbNrmVI1FZccwkRgXaHzysoyujUHcpp8hgzzdxjMT5Nk7PE?=
+ =?us-ascii?Q?024imH0ZZMXFUS2o2vN1Jf/CnRlMsjT8gcAcIb+3lqgw7LKxEcqTTJgQ+9Pv?=
+ =?us-ascii?Q?Rpp+fOAPAA7SrR+Z14WeJylxDVlfGCUzMFTBcWjo3CrjVmwn3P1qHlqEHUak?=
+ =?us-ascii?Q?O0CPrNfP4HKHDvgxPKual46xibEYcED/5cM0/9vfiK1uf7OkZfpdg9Q7X1et?=
+ =?us-ascii?Q?Dos521BVeq/gJOcImKw=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b6c66146-ef2e-403b-cb0e-08dc3c4a9525
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Mar 2024 12:57:00.8576
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HlSYmGJrkRnPbpxhJQY6ZK/P4L/md3J0UZzKqPWUXzTaDqJ2CtQ64UmEJOHfuyH6
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB8102
 
-Hi Jason,
-
-On 2024/3/1 9:55, Jason Yan wrote:
-> On 2024/2/29 2:13, John Garry wrote:
->> On 21/02/2024 07:31, Xingui Yang wrote:
->>> As of commit d8649fc1c5e4 ("scsi: libsas: Do discovery on empty PHY to
->>> update PHY info"), do discovery will send a new SMP_DISCOVER and update
->>> phy->phy_change_count. We found that if the disk is reconnected and phy
->>> change_count changes at this time, the disk scanning process will not be
->>> triggered.
->>>
->>> So update the PHY info with the last query results.
->>>
->>> Fixes: d8649fc1c5e4 ("scsi: libsas: Do discovery on empty PHY to 
->>> update PHY info")
->>> Signed-off-by: Xingui Yang <yangxingui@huawei.com>
->>> ---
->>>   drivers/scsi/libsas/sas_expander.c | 9 ++++-----
->>>   1 file changed, 4 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/drivers/scsi/libsas/sas_expander.c 
->>> b/drivers/scsi/libsas/sas_expander.c
->>> index a2204674b680..9563f5589948 100644
->>> --- a/drivers/scsi/libsas/sas_expander.c
->>> +++ b/drivers/scsi/libsas/sas_expander.c
->>> @@ -1681,6 +1681,10 @@ int sas_get_phy_attached_dev(struct 
->>> domain_device *dev, int phy_id,
->>>           if (*type == 0)
->>>               memset(sas_addr, 0, SAS_ADDR_SIZE);
->>>       }
->>> +
->>> +    if ((SAS_ADDR(sas_addr) == 0) || (res == -ECOMM))
->>
->> It's odd to call sas_set_ex_phy() if we got res == -ECOMM. I mean, in 
->> this this case disc_resp is not filled in as the command did not 
->> execute, right? I know that is what the current code does, but it is 
->> strange.
+On Thu, Feb 29, 2024 at 04:42:52PM +0800, peterx@redhat.com wrote:
+> From: Peter Xu <peterx@redhat.com>
 > 
-> The current code actually re-send the SMP command and update the PHY 
-> status only when the the SMP command is responded correctly.
+> The two definitions are the same.  The only difference is that pXd_large()
+> is only defined with THP selected, and only on book3s 64bits.
 > 
-> Xinggui, can you please fix this and send v3?
-The current location cannot directly update the phy information. The 
-previous phy information will be used later, and the previous sas 
-address will be compared with the currently queried sas address. At 
-present, v2 is more suitable after many days of testing.
+> Instead of implementing it twice, make pXd_large() a macro to pXd_leaf().
+> Define it unconditionally just like pXd_leaf().  This helps to prepare
+> merging the two APIs.
+> 
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Nicholas Piggin <npiggin@gmail.com>
+> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Cc: "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
+> Cc: "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Signed-off-by: Peter Xu <peterx@redhat.com>
+> ---
+>  arch/powerpc/include/asm/book3s/64/pgtable.h | 16 ++--------------
+>  arch/powerpc/include/asm/pgtable.h           |  2 +-
+>  2 files changed, 3 insertions(+), 15 deletions(-)
 
-Thanks,
-Xingui
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+
+Jason
 
