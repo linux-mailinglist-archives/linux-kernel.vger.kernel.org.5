@@ -1,95 +1,135 @@
-Return-Path: <linux-kernel+bounces-90242-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90243-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C63286FC59
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:52:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8862E86FC60
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:53:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AEFB91C21A22
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:52:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32FF11F21E46
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:53:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56EC2225CF;
-	Mon,  4 Mar 2024 08:45:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="UALh7dVU"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1FAF249F3;
+	Mon,  4 Mar 2024 08:45:44 +0000 (UTC)
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A7A51A58B;
-	Mon,  4 Mar 2024 08:45:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 231B7199A1;
+	Mon,  4 Mar 2024 08:45:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709541905; cv=none; b=Q2oXlMRQDUl1o09dCJ0c8J/MI6xS/TwEnG6Zc1uFkxtIS0+3PKJg5yl0qaX3+CAAdnZDqdp5qR7vFZLoj4YaD96mSBrVyW76+0GT7IXuSDyOTfqXst0XCp+CX9G9bhMfxsZ8+lYfpZWGehJU7padKWxsywrg0kpKJEIT/6SxfEw=
+	t=1709541944; cv=none; b=GgnErBNvJcSoMc6XysZ9/z07gAMxTiJcwP5YZy72G6rp6T4nUCSXYKXkhhiSsopUS62anULH2jaCls5O+Ol6NzKFSvT21Uls/SvBCBh+ze1U5xeuh3npNxKUWuCaupD8/AD+kfE0tYMUWFrBfG23huEmoVD8DjMFpkfWV54/xHA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709541905; c=relaxed/simple;
-	bh=+GAQ/9U68cQzOw2tMQbxtkFHqRIm+NAF8L7v5JI73Gc=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=OSWObJKQisbgujSV0LqXS6OAs1ud+L2oglQtEjjfTI6ZBkDtkmzwJZNHDN5SGsAUbjhC6teIOtsBJngjyUoV7QwmF4VOLPl+wX64ucv5qjSnQujVjf7c5Yc4E95a4gU5RGroBLEEw4e3PDU47FmJ+I4imfVNq5fPQfuNSCMkGlY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=UALh7dVU; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709541902;
-	bh=+GAQ/9U68cQzOw2tMQbxtkFHqRIm+NAF8L7v5JI73Gc=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=UALh7dVUtCYFrhCQ5TAZ5MK8Q/UevNMPEqpLGVu+OI/GqYHa1YTfY33IsWVPbeedy
-	 SRMHz17SrzspB8mcA13JYZdoLeE8h2vDYMNXoapafhvFMPDR3H58l2rqrD9lMF78Es
-	 Y1+1UId6VhzAGEMYg7jfdMyj/ik7+xI9zriN9MefPzq4mhaOIEXpdb2ENcday/FaNL
-	 esmQ1Z26WjB/Eler2WoxiE5v44ZiYwxlcdVI7AJBKIEtKKtBaUeTpgpOeYchS9IDt/
-	 rLV+HiZ+6evQrgk4pK0klUDjy+UIdstJEH6lWfrIuJU/5m3fUuJ4hjq7CwssE/njWe
-	 GgPNw6iwjd3gg==
-Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 05B9A3781FE9;
-	Mon,  4 Mar 2024 08:44:49 +0000 (UTC)
-Message-ID: <f9be0f59-acaa-4a37-ba66-4096112a15bb@collabora.com>
-Date: Mon, 4 Mar 2024 13:45:21 +0500
+	s=arc-20240116; t=1709541944; c=relaxed/simple;
+	bh=3INRU0FvSF5yHYj1wch7w3hifZglrOnv+QBi8Qw0ndI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=Z9afsHX2yrb2dBfMHl9TF1fy2LyQr6Lm9LawJ1VZ9YTSvjs5zid7tfBJdPbRzU/nv8oMklibHsHeH2ZxCgeFQoHweJXDExq7skw2GA0QkngIyqH0A1hpEQYxIA0a0xmvASfhU/TL9qAUed0mwkmh3RE0UkzeaceLnkhbuSNFmYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4TpC0X6tGKzNlpP;
+	Mon,  4 Mar 2024 16:43:56 +0800 (CST)
+Received: from kwepemm600017.china.huawei.com (unknown [7.193.23.234])
+	by mail.maildlp.com (Postfix) with ESMTPS id CF891140415;
+	Mon,  4 Mar 2024 16:45:32 +0800 (CST)
+Received: from [10.174.179.234] (10.174.179.234) by
+ kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 4 Mar 2024 16:45:31 +0800
+Message-ID: <bc82e3e7-f301-3a40-cbf6-927351b6575d@huawei.com>
+Date: Mon, 4 Mar 2024 16:45:30 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- James Smart <james.smart@broadcom.com>,
- Dick Kennedy <dick.kennedy@broadcom.com>,
- Justin Tee <justin.tee@broadcom.com>,
- "James E.J. Bottomley" <jejb@linux.ibm.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- Hannes Reinecke <hare@suse.com>, kernel@collabora.com,
- kernel-janitors@vger.kernel.org, James Smart <jsmart2021@gmail.com>,
- linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scsi: lpfc: correct size for wqe for memset
-Content-Language: en-US
-To: Justin Tee <justintee8345@gmail.com>
-References: <20240301144458.2810597-1-usama.anjum@collabora.com>
- <CABPRKS-0v0bdsAp6aK80AQn80WRSGpF3SP9HtwH2wMPXoByJQw@mail.gmail.com>
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <CABPRKS-0v0bdsAp6aK80AQn80WRSGpF3SP9HtwH2wMPXoByJQw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: [bug report] dead loop in generic_perform_write() //Re: [PATCH v7
+ 07/12] iov_iter: Convert iterate*() to inline funcs
+To: Linus Torvalds <torvalds@linux-foundation.org>
+CC: Al Viro <viro@kernel.org>, David Howells <dhowells@redhat.com>, Jens Axboe
+	<axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>, Christian Brauner
+	<christian@brauner.io>, David Laight <David.Laight@aculab.com>, Matthew
+ Wilcox <willy@infradead.org>, Jeff Layton <jlayton@kernel.org>,
+	<linux-fsdevel@vger.kernel.org>, <linux-block@vger.kernel.org>,
+	<linux-mm@kvack.org>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Kefeng Wang <wangkefeng.wang@huawei.com>
+References: <20230925120309.1731676-1-dhowells@redhat.com>
+ <20230925120309.1731676-8-dhowells@redhat.com>
+ <4e80924d-9c85-f13a-722a-6a5d2b1c225a@huawei.com>
+ <CAHk-=whG+4ag+QLU9RJn_y47f1DBaK6b0qYq_6_eLkO=J=Mkmw@mail.gmail.com>
+ <CAHk-=wjSjuDrS9gc191PTEDDow7vHy6Kd3DKDaG+KVH0NQ3v=w@mail.gmail.com>
+ <e985429e-5fc4-a175-0564-5bb4ca8f662c@huawei.com>
+ <CAHk-=wh06M-1c9h7wZzZ=1KqooAmazy_qESh2oCcv7vg-sY6NQ@mail.gmail.com>
+ <CAHk-=wiBJRgA3iNqihR7uuft=5rog425X_b3uvgroG3fBhktwQ@mail.gmail.com>
+ <f914a48b-741c-e3fe-c971-510a07eefb91@huawei.com>
+ <CAHk-=whBw1EtCgfx0dS4u5piViXA3Q2fuGO64ZuGfC1eH_HNKg@mail.gmail.com>
+From: Tong Tiangen <tongtiangen@huawei.com>
+In-Reply-To: <CAHk-=whBw1EtCgfx0dS4u5piViXA3Q2fuGO64ZuGfC1eH_HNKg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600017.china.huawei.com (7.193.23.234)
 
-I'll send v2.
 
-On 3/2/24 12:02 AM, Justin Tee wrote:
-> Hi Muhammad,
-> 
->> -               memset(wqe, 0, sizeof(union lpfc_wqe));
->> +               memset(wqe, 0, sizeof(union lpfc_wqe128));
-> 
-> How about instead memset(wqe, 0, sizeof(*wqe));
-> 
-> Thanks,
-> Justin
-> 
 
--- 
-BR,
-Muhammad Usama Anjum
+在 2024/3/3 2:06, Linus Torvalds 写道:
+> On Sat, 2 Mar 2024 at 01:37, Tong Tiangen <tongtiangen@huawei.com> wrote:
+>>
+>> I think this solution has two impacts:
+>> 1. Although it is not a performance-critical path, the CPU usage may be
+>> affected by one more memory copy in some large-memory applications.
+> 
+> Compared to the IO, the extra memory copy is a non-issue.
+> 
+> If anything, getting rid of the "copy_mc" flag removes extra code in a
+> much more important path (ie the normal iov_iter code).
+
+Indeed. I'll test this solution. Theoretically, it should solve the problem.
+
+> 
+>> 2. If a hardware memory error occurs in "good location" and the
+>> ".copy_mc" is removed, the kernel will panic.
+> 
+> That's always true. We do not support non-recoverable machine checks
+> on kernel memory. Never have, and realistically probably never will. >
+> In fact, as far as I know, the hardware that caused all this code in
+> the first place no longer exists, and never really made it to wide
+> production.
+
+Yes. There is a low probability that the newly applied memory is faulty.
+
+Thanks,
+Tong.
+
+> 
+> The machine checks in question happened on pmem, now killed by Intel.
+> It's possible that somebody wants to use it for something else, but
+> let's hope any future implementations are less broken than the
+> unbelievable sh*tshow that caused all this code in the first place.
+> 
+> The whole copy_mc_to_kernel() mess exists mainly due to broken pmem
+> devices along with old and broken CPU's that did not deal correctly
+> with machine checks inside the regular memory copy ('rep movs') code,
+> and caused hung machines.
+> 
+> IOW, notice how 'copy_mc_to_kernel()' just becomes a regular
+> 'memcpy()' on fixed hardware, and how we have that disgusting
+> copy_mc_fragile_key that gets enabled for older CPU cores.
+> 
+> And yes, we then have copy_mc_enhanced_fast_string() which isn't
+> *that* disgusting, and that actually handles machine checks properly
+> on more modern hardware, but it's still very much "the hardware is
+> misdesiged, it has no testing, and nobody sane should depend on this"
+> 
+> In other words, it's the usual "Enterprise Hardware" situation. Looks
+> fancy on paper, costs an arm and a leg, and the reality is just sad,
+> sad, sad.
+> 
+>                 Linus
+> .
 
