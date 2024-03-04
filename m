@@ -1,318 +1,124 @@
-Return-Path: <linux-kernel+bounces-91263-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91264-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73BFD870BEE
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:56:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B7C8870BF2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:56:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F324A1F25FC1
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:56:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB55A2832BC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:56:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0577E10A33;
-	Mon,  4 Mar 2024 20:56:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46F5110A19;
+	Mon,  4 Mar 2024 20:56:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="EWWtdYk3"
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q7ur/Atm"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DC27F9EB
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 20:56:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75C8F101FA;
+	Mon,  4 Mar 2024 20:56:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709585774; cv=none; b=O5CYpA6O0O7YMtZh0ZUL3Vup2/7gd4FnoGlv8Ae5Qhihezh02Kyg+0oI83sTi5c9tbF/LvspPg25LnQ/ha3ss2ti9U2g+t+AlIyzZ3wpiFphcmfZsvfH87KHPM9L9ujNgWvMtmnPeDUDaXzAgx4eg/miFsqjmsqyT1SS3S/350g=
+	t=1709585807; cv=none; b=Itc3jJVvaPKH/7bjuAH8gXBHIGyNblnTRIw1+9PWCdELSzVeEFgjEakWwjADwCyZ3AX/9kQcjbwUeqTff9wlck7NAF/ltoe6vk1TwG3Xd3ZWdWmpjkwqFy8KXzUXZCbNK9kONG8EdPlsUesRjkigY5RwDa8WM1PTh4XXXG9lLWs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709585774; c=relaxed/simple;
-	bh=CP0H49h6PImwBY9HzAXfxRkiMR7GOTLQlVtBFzqCp4I=;
+	s=arc-20240116; t=1709585807; c=relaxed/simple;
+	bh=PGm7I2xBC8apFwuKMKOhBF/0kgBpWxKJP5GaEquNHBk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jfLkhO5uinC3DPPCfUMhdsF+EJuHs0+N+jWrXLn1s/37yJ5Lja9KJSO7MpcRBo1C+mZY0jsaCNCD+H/maT9vsVTX/ln+ZsW2/wmnt33IZSKFqM6zD88uTbxEwHFIw2CybZGPxNxmJcDenEk1/aJ430UNN5Gyh7Vkd9N4yxI/TyM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=EWWtdYk3; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1dcce5e84bcso39934455ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 12:56:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1709585771; x=1710190571; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kVCNhjf4zZDdqEabUMp85XLKsFJ6OP2P3h23DUArUwA=;
-        b=EWWtdYk3nPFd6hSCfJLbKGdjMWHhQ01YVbb9C1sqO2vstTDUvsTkKsUYe4Zj6UQzXP
-         NGiz0P42pDrbnUahXYWSlhiFlSxaJ66ZWUhpO9EaY+grx4XOfSN+3mVnxZP/hBjs1cjY
-         T7hoT6XyrYIMY6/0erBAv5IanUjW5fT4vEfurMqY5LzUzL3hsPdLTi7G4I09bUFHPl9G
-         2LN5hrBb9IBKQyAM9j1wOEkqGCQDGT2Dc3Y6XNwDLE8ryf4En2FfJ2zv+QcyK5B2IE7N
-         ZIwqwJvnuEVEiR+4Zza+awzjMdl2+/IpvhBU2R2u1CF5+odAfs3a8lfUp31rTvlhTsES
-         7JMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709585771; x=1710190571;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kVCNhjf4zZDdqEabUMp85XLKsFJ6OP2P3h23DUArUwA=;
-        b=DdjoD2u3GkfqzPSsxA220Eb8flWuglZbuUmSHt9NSpaJ/+6FJzvP4co2cHsxFTTt49
-         gcaufC5Ifdh58ZhbsMbDhaTyLuxxPrlrJkc0drc9pfbbskHRP968N/MujZP1Q+5xax13
-         S6EGUhgYNEHOwS46ZvGjMIETvziCtjnUwFpnsDEAqthUE7jysmfL3VVpGKL+AioH1FVj
-         u56Ir6p5TP8FPIPVkcQtNnq3wbDOuaTK+ZNsy6kAqO5YQEIVswAXyibIY8NoFZcRj3Cz
-         wlUYMPkQZU9b7P8U0M6d9KvMrmVBOgO8w+HUYMQrm9V4y6PWkY7r8Y/x5vGN8Vg2vTEw
-         EayQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXKXG8sX6sF+8QFrbmIQxOlOSWkFynHSrvmSZVjZ3Oy7rH/wiyJTQ2CWs21Kiz5qSzGKtKu+ipoeJ0XmLPSIB7Nm17AqjHlRonYyV/Q
-X-Gm-Message-State: AOJu0Yx2H78ZyoAKhG9d63ESAdcD/5tITERTBikAmOudka5y/KYCEADN
-	tMDAWhgRF18JmK0QosYsL7Nmus6Zh2lyICIfs8kUqhhmkxszsyeOLz/lwVPz4HU=
-X-Google-Smtp-Source: AGHT+IG/9Q5UDZV9qa/PcGqEZGm21zejhEFIVtLdGJu+GHF44GLDYBrpl2XrHkq9Vf0UhBVDHUNdRg==
-X-Received: by 2002:a17:902:cf0a:b0:1dc:a84c:987c with SMTP id i10-20020a170902cf0a00b001dca84c987cmr10669074plg.10.1709585771529;
-        Mon, 04 Mar 2024 12:56:11 -0800 (PST)
-Received: from dread.disaster.area (pa49-181-192-230.pa.nsw.optusnet.com.au. [49.181.192.230])
-        by smtp.gmail.com with ESMTPSA id c10-20020a170903234a00b001dc0d1fb3b1sm8935406plh.58.2024.03.04.12.56.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 12:56:11 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1rhFM0-00F3zC-0B;
-	Tue, 05 Mar 2024 07:56:08 +1100
-Date: Tue, 5 Mar 2024 07:56:08 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: Ritesh Harjani <ritesh.list@gmail.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-	Ojaswin Mujoo <ojaswin@linux.ibm.com>, Jan Kara <jack@suse.cz>,
-	Theodore Ts'o <tytso@mit.edu>, Matthew Wilcox <willy@infradead.org>,
-	"Darrick J . Wong" <djwong@kernel.org>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	John Garry <john.g.garry@oracle.com>, linux-kernel@vger.kernel.org
-Subject: Re: [RFC 3/8] iomap: Add atomic write support for direct-io
-Message-ID: <ZeY1aEce6rZwGeV1@dread.disaster.area>
-References: <ZeUhCbT4sbucOT3L@dread.disaster.area>
- <87frx64l3v.fsf@doe.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=t0Nb0DHLb0w1CfHjigyhCZWC8HesO9TmEyRhrA5q++YDeCZfoQ8ERUBDoWUZTYHcf3NMzRk6Vnz21GBBTnREA7UoayA31KQTIwngPydUn76WeIRWdSjWdynjv/g94SiBNj9sepVL/8rIKLKSiYfd2ZIkFYvcxnpXLzah9CzgWj8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q7ur/Atm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D3ACC433C7;
+	Mon,  4 Mar 2024 20:56:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709585807;
+	bh=PGm7I2xBC8apFwuKMKOhBF/0kgBpWxKJP5GaEquNHBk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=q7ur/Atm+F0BRx2XjbW/RLO681jkixxNDlhtmnW7AaqfZK5wOt2MFIoSLzPfIvTrZ
+	 Zi+nwZHsw3Bcbh+Es7vhBqmOGVB4apczXij+ftNj6iUdqhxQ4MHDeKR5HuQdWZ8KSj
+	 KxBU3C08oPCt1+UeaFrru0GO2FL3YnxlGHRBY3Oe18D8eS9ANJ1b0LMJ0Z2as/AyS5
+	 NF514VkFKLg9TMBJ2WS63FZ83dOisQ029009jUSYccwpubO86aWLatNTLgqxsmlRdP
+	 jAqVWw/BQx/Gr2CRvhmXq9PEUey6KArf0gc9eRC3gDG7KsVrXvwUQdgn66nzNP5HX7
+	 EVrWQeLBkZNHA==
+Date: Mon, 4 Mar 2024 21:56:43 +0100
+From: Wolfram Sang <wsa@kernel.org>
+To: Tommy Huang <tommy_huang@aspeedtech.com>
+Cc: Andi Shyti <andi.shyti@kernel.org>,
+	"brendan.higgins@linux.dev" <brendan.higgins@linux.dev>,
+	"p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+	"linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+	"openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+	"benh@kernel.crashing.org" <benh@kernel.crashing.org>,
+	"joel@jms.id.au" <joel@jms.id.au>,
+	"andrew@aj.id.au" <andrew@aj.id.au>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	BMC-SW <BMC-SW@aspeedtech.com>
+Subject: Re: [PATCH] i2c: aspeed: Fix the dummy irq expected print
+Message-ID: <ZeY1i9_liCIjqNYL@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+	Tommy Huang <tommy_huang@aspeedtech.com>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	"brendan.higgins@linux.dev" <brendan.higgins@linux.dev>,
+	"p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+	"linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+	"openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+	"benh@kernel.crashing.org" <benh@kernel.crashing.org>,
+	"joel@jms.id.au" <joel@jms.id.au>,
+	"andrew@aj.id.au" <andrew@aj.id.au>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	BMC-SW <BMC-SW@aspeedtech.com>
+References: <20240216120455.4138642-1-tommy_huang@aspeedtech.com>
+ <nbkkaktcozbhly44hii3zwie7ivsra3qxzdibyzhyhooxrudvb@zik6skmkki2c>
+ <TYZPR06MB61911F076C8719C6A7D57B97E1562@TYZPR06MB6191.apcprd06.prod.outlook.com>
+ <v4nawwb4rwjiy2g7xv2sfyhc545mhk4izb3g22f7jupcevjuzb@nxmqgf2zjyqs>
+ <TYZPR06MB61912715EE2869DDB7C3763DE1552@TYZPR06MB6191.apcprd06.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="avejMe9/B1mBt2nB"
+Content-Disposition: inline
+In-Reply-To: <TYZPR06MB61912715EE2869DDB7C3763DE1552@TYZPR06MB6191.apcprd06.prod.outlook.com>
+
+
+--avejMe9/B1mBt2nB
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87frx64l3v.fsf@doe.com>
 
-On Mon, Mar 04, 2024 at 11:03:24AM +0530, Ritesh Harjani wrote:
-> Dave Chinner <david@fromorbit.com> writes:
-> 
-> > On Sat, Mar 02, 2024 at 01:12:00PM +0530, Ritesh Harjani (IBM) wrote:
-> >> This adds direct-io atomic writes support in iomap. This adds -
-> >> 1. IOMAP_ATOMIC flag for iomap iter.
-> >> 2. Sets REQ_ATOMIC to bio opflags.
-> >> 3. Adds necessary checks in iomap_dio code to ensure a single bio is
-> >>    submitted for an atomic write request. (since we only support ubuf
-> >>    type iocb). Otherwise return an error EIO.
-> >> 4. Adds a common helper routine iomap_dio_check_atomic(). It helps in
-> >>    verifying mapped length and start/end physical offset against the hw
-> >>    device constraints for supporting atomic writes.
-> >> 
-> >> This patch is based on a patch from John Garry <john.g.garry@oracle.com>
-> >> which adds such support of DIO atomic writes to iomap.
-> 
-> Please note this comment above. I will refer this in below comments.
-> 
-> >> 
-> >> Co-developed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> >> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> >> Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-> >> ---
-> >>  fs/iomap/direct-io.c  | 75 +++++++++++++++++++++++++++++++++++++++++--
-> >>  fs/iomap/trace.h      |  3 +-
-> >>  include/linux/iomap.h |  1 +
-> >>  3 files changed, 75 insertions(+), 4 deletions(-)
-> >
-> > Ugh. Now we have two competing sets of changes to bring RWF_ATOMIC
-> > support to iomap. One from John here:
-> 
-> Not competing changes (and neither that was the intention). As you see I have
-> commented above saying that this patch is based on a previous patch in
-> iomap from John. 
 
-That's not the same as co-ordinating development or collaboration on
-common aspects of the functionality required.
+> 	Sure~
+> 	Below is my re-word commit and fixes tag.
 
-> So why did I send this one?  
-> 1. John's latest patch series v5 was on "block atomic writes" [1], which
-> does not have these checks in iomap (as it was not required). 
-> 
-> 2. For sake of completeness for ext4 atomic write support, I needed to
-> include this change along with this series. I have also tried to address all
-> the review comments he got on [2] (along with an extra function iomap_dio_check_atomic())
-> 
-> [1]: https://lore.kernel.org/all/20240226173612.1478858-1-john.g.garry@oracle.com/
-> [2]: https://lore.kernel.org/linux-fsdevel/20240124142645.9334-1-john.g.garry@oracle.com/
+Please resend the patch with the reworded commit and the fixes tag
+added.
 
-Yes, but you've clearly not seen the feedback that John has been
-given because otherwise you would not have implemented things the
-way you did.
 
-That's my point - you're operating in isolation, and forcing
-reviewers now to deal with two separate patch sets with overlapping
-funcitonality and similar problems.
+--avejMe9/B1mBt2nB
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> > https://lore.kernel.org/linux-fsdevel/20240124142645.9334-1-john.g.garry@oracle.com/
-> >
-> > and now this one.
-> >
-> > Can the two of you please co-ordinate your efforts and based your
-> > filesysetm work off the same iomap infrastructure changes?
-> 
-> Sure Dave, make sense. But we are cc'ing each other in this effort
-> together so that we are aware of what is being worked upon. 
+-----BEGIN PGP SIGNATURE-----
 
-"ccing each other" is not the same as actively collaborating on
-development.
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmXmNYsACgkQFA3kzBSg
+Kbbq4Q//W482FjqPLlxS98dtd5kekeRzwCXdh6wotwierJKOu6De5uec93delN3u
+JurwdgVTBV6vASmQSt5Ljl+JsKvRGL44fBLWeItzhTKgnEcUfF5rETgNTXbtiN0U
+uMhIcys10oiWK+68nzbycbiIdxU3hdP14TsDn2JI6h4QSqA8H6zJa6u2Cwff19AP
+eglXzL0/XxyyUL4wxjSk7Mq7KPql02xZq+S1zw50kaMTiNA28iXOh7zv7MXXMbe9
+TK/f5iXsijAhjt3MhkBIvQM9O+0Q3NcDS5P0ByVte3QDv34mHkdS7srfmkrN4d9M
+7mHlg0Nqbbst9sRHJXzfqyXrkEciOtIVPw1/03/wYDY4A6r0RxTQwFhXdkT1OgYo
+q+ejx44+jXLdAQ/t5qmlG28FNSybIyzSIqE5J85jWnMXdqcv2ulBC7oJJPk/hy/L
+IxDwUhgUvVySHyP2gx6M4GBrcGAIQcNedmoGQr5ymo4Kw7zJHru1fnG2cuBMEasv
+YeSWQOd6TKoPgmTtA/66i09gem/vzJbyK08JWElhqQZjowmiRwLoztZtTdQ9t4PJ
+J1KJkt8EwBPdD43kmPpm5khvU53z6zc0pHZ5T/x36++E5neY/S1O4R/HVKl2VTkM
+g8NqxMuMSpawebBzjtH7Klgu8TYAN/csxSuvUjLtTvAqzYVvbCw=
+=U+OC
+-----END PGP SIGNATURE-----
 
-> And as I mentioned, this change is not competing with John's change. If
-> at all it is only complementing his initial change, since this iomap change
-> addresses review comments from others on the previous one and added one
-> extra check (on mapped physical extent) which I wanted people to provide feedback on.
-> 
-> >
-> > .....
-> >
-> >> @@ -356,6 +360,11 @@ static loff_t iomap_dio_bio_iter(const struct iomap_iter *iter,
-> >>  	if (need_zeroout) {
-> >>  		/* zero out from the start of the block to the write offset */
-> >>  		pad = pos & (fs_block_size - 1);
-> >> +		if (unlikely(pad && atomic_write)) {
-> >> +			WARN_ON_ONCE("pos not atomic write aligned\n");
-> >> +			ret = -EINVAL;
-> >> +			goto out;
-> >> +		}
-> >
-> > This atomic IO should have been rejected before it even got to
-> > the layers where the bios are being built. If the IO alignment is
-> > such that it does not align to filesystem allocation constraints, it
-> > should be rejected at the filesystem ->write_iter() method and not
-> > even get to the iomap layer.
-> 
-> I had added this mainly from iomap sanity checking perspective. 
-> We are offloading some checks to be made by the filesystem before
-> submitting the I/O request to iomap. 
-> These "common" checks in iomap layer are mainly to provide sanity checking
-> to make sure FS did it's job, before iomap could form/process the bios and then
-> do submit_bio to the block layer. 
-
-If you read the feedback John had been given, you'd know that
-alignment verification for atomic writes belongs in the filesystem
-before it even calls into iomap. See these two patches in the XFS
-series he just sent out:
-
-https://lore.kernel.org/linux-xfs/20240304130428.13026-11-john.g.garry@oracle.com/T/#u
-https://lore.kernel.org/linux-xfs/20240304130428.13026-14-john.g.garry@oracle.com/T/#u
-
-> > .....
-> >
-> >> @@ -516,6 +535,44 @@ static loff_t iomap_dio_iter(const struct iomap_iter *iter,
-> >>  	}
-> >>  }
-> >>  
-> >> +/*
-> >> + * iomap_dio_check_atomic:	DIO Atomic checks before calling bio submission.
-> >> + * @iter:			iomap iterator
-> >> + * This function is called after filesystem block mapping and before bio
-> >> + * formation/submission. This is the right place to verify hw device/block
-> >> + * layer constraints to be followed for doing atomic writes. Hence do those
-> >> + * common checks here.
-> >> + */
-> >> +static bool iomap_dio_check_atomic(struct iomap_iter *iter)
-> >> +{
-> >> +	struct block_device *bdev = iter->iomap.bdev;
-> >> +	unsigned long long map_len = iomap_length(iter);
-> >> +	unsigned long long start = iomap_sector(&iter->iomap, iter->pos)
-> >> +						<< SECTOR_SHIFT;
-> >> +	unsigned long long end = start + map_len - 1;
-> >> +	unsigned int awu_min =
-> >> +			queue_atomic_write_unit_min_bytes(bdev->bd_queue);
-> >> +	unsigned int awu_max =
-> >> +			queue_atomic_write_unit_max_bytes(bdev->bd_queue);
-> >> +	unsigned long boundary =
-> >> +			queue_atomic_write_boundary_bytes(bdev->bd_queue);
-> >> +	unsigned long mask = ~(boundary - 1);
-> >> +
-> >> +
-> >> +	/* map_len should be same as user specified iter->len */
-> >> +	if (map_len < iter->len)
-> >> +		return false;
-> >> +	/* start should be aligned to block device min atomic unit alignment */
-> >> +	if (!IS_ALIGNED(start, awu_min))
-> >> +		return false;
-> >> +	/* If top bits doesn't match, means atomic unit boundary is crossed */
-> >> +	if (boundary && ((start | mask) != (end | mask)))
-> >> +		return false;
-> >> +
-> >> +	return true;
-> >> +}
-> >
-> > I think you are re-implementing stuff that John has already done at
-> > higher layers and in a generic manner. i.e.
-> > generic_atomic_write_valid() in this patch:
-> >
-> > https://lore.kernel.org/linux-fsdevel/20240226173612.1478858-4-john.g.garry@oracle.com/
-> >
-> > We shouldn't be getting anywhere near the iomap layer if the IO is
-> > not properly aligned to atomic IO constraints...
-> 
-> So current generic_atomic_write_valid() function mainly checks alignment
-> w.r.t logical offset and iter->len. 
-> 
-> What this function was checking was on the physical block offset and
-> mapped extent length. Hence it was made after iomap_iter() call.
-> i.e. ...
-
-The filesystem is supposed to guarantee the alignment of the iomap
-returned for mapping requests on inodes configured for atomic
-writes. IOWs, if the filesystem returns an unaligned or short extent
-for an atomic write enabled inode, the filesystem mapping operation
-is buggy. If it can't map aligned extents, then it should return an
-error, not leave crap for the iomap infrastructure to have to clean
-up.
-
-> 
->  +	/* map_len should be same as user specified iter->len */
->  +	if (map_len < iter->len)
->  +		return false;
->  +	/* start should be aligned to block device min atomic unit alignment */
->  +	if (!IS_ALIGNED(start, awu_min))
->  +		return false;
-> 
-> 
-> But I agree, that maybe we can improve generic_atomic_write_valid()
-> to be able to work on both logical and physical offset and
-> iter->len + mapped len. 
-> Let me think about it. 
-> 
-> However, the point on which I would like a feedback from others is - 
-> 1. After filesystem has returned the mapped extent in iomap_iter() call,
-> iomap will be forming a bio to be sent to the block layer.
-> So do we agree to add a check here in iomap layer to verify that the
-> mapped physical start and len should satisfy the requirements for doing
-> atomic writes?
-
-That's entirely the problem about you working on this in isolation:
-we've already had that discussion and the simplest solution is that
-this is a filesystem problem, not an iomap problem. That is, if the
-filesystem cannot return a correctly aligned and sized extent for an
-atomic write enabled inode, it must return an error and not a
-malformed iomap.
-
-IOWs, it's not the job of the iomap IO routines to enforce mapping
-alignment on these inodes - the extent alignment must always be
-correct for atomic writes regardless of whether an atomic write IO
-is being done or not. Failure to align any extent in the inode
-correctly will result in future atomic writes to that offset being
-impossible to issue.
-
-Hence if the inode is configured for atomic writes, it *must* return
-aligned and sized iomaps that atomic writes can be issued against.
-It's a filesystem implementation bug if this invariant is violated,
-so the filesystem implementation is where all the debug checks need
-to be to ensure it never returns an invalid mapping to the iomap
-infrastructure.
-
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+--avejMe9/B1mBt2nB--
 
