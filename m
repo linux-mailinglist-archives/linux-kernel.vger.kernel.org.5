@@ -1,129 +1,190 @@
-Return-Path: <linux-kernel+bounces-91329-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91331-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D538870F12
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:50:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1398A870F88
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:55:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 88EF61C23998
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:50:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7ED41B22B93
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:55:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C61A846BA0;
-	Mon,  4 Mar 2024 21:50:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="T03ece2d"
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16AE51EB5A
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 21:50:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69B537AE6B;
+	Mon,  4 Mar 2024 21:55:37 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCAB71C6AB
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 21:55:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709589034; cv=none; b=PWWNVJrhr5eUn2sJWc9LGGygSh10zBwhWvL8IvgnkV6upTkescwaZJkTGxD5Ua//khTouwPRXGgJAbM0R7ILzE4C1njIyE9Z+fAgw1UjWLDboY8Tegdp5EICPmTXWTNtOWdBL9fqomScbS8LJVg8N2lhb4RKsv58npB+k4OilJ4=
+	t=1709589337; cv=none; b=bUFMed9bZw52978cI0gVvVMtkuJYf47iSx3Pnnxx2lZFUmfTHLIeXuukqp4poGmuR5Pf/HHTHDSTwJLROtg971jR7wKaFmwy9iBdn6phtbb3QHANShEIJV2YyrVlWTi2s8XhiXeKeC4NIfz907rqKkgXpOv4+XznlHG4mLI3gfk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709589034; c=relaxed/simple;
-	bh=bKYPgpFCbSl2NydzosXHHWUI+moPSjodsNs3QOvUJ8E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bBRE/wz+DLLMVR3dvhHVn6t2KWLSXz3T1CB5jCemY5f++hlNlQczj2Rxk3p13ZfEwhX0fRx+asGNP+pGHl9MlfSfMMsYSfsGB7ujhY8Qao/QG5S/tRDRmSv9JEBGfND6o7A5OR7yiCkCty6JOrcWxupAgmkDDPfmVVA5AhuIEEI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=T03ece2d; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-512b3b04995so3716716e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 13:50:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1709589031; x=1710193831; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=IkcAw0ofkPUvRZUJ8G0b0hx/gIDaFjT663GLHM5RzmQ=;
-        b=T03ece2dKs/6tTECXOict21Kl7OrRqwW9FsD/erafY0+kwytNTMT4SOs39tqwMxRR/
-         jR2cy+ur5ZrAwkgNDbWo5usAbnpmBymqw8zNo+Sr//doHpwe5v51R7fCILfW24cNLdGU
-         lIaTW4rbNEqjENfuR5chU+qy82l6Evr5E0q0g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709589031; x=1710193831;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IkcAw0ofkPUvRZUJ8G0b0hx/gIDaFjT663GLHM5RzmQ=;
-        b=RA6WNYW8UkqpiTa6iwA3sGHlG9s5T7xqvFSTDTECJ+fB9PRse0r0XiieF8YVPZUpM7
-         FyPn1q3YC5HsT3pgmva2TRCavVXL39gsb/GpEjNALBWy03+heTSKVDGsaUDoHabnGtzz
-         0RlmCyntIa22/DsY0Q7wpOxkMFr7zpDx0I2dVSAZTgjdvn+lgBOFVYBKRlMyDhaAo1ic
-         Li7pB5xMBOQClQhG7NBZA68+q1ev3O4O1RDWmn25P2QdjCHquuqIFi7B5OF0+bdLKPwK
-         1xqYJtjoRTONaKjBzv2xi22y8CU9ZgbxKRmExc6N2n56HLKchoFvTOayKZ0y0ELfpDSZ
-         mMew==
-X-Gm-Message-State: AOJu0Yyoi9rQnyQmk1lKDYzxNNkxoMwLqgIt1aNPHd/DV1RmMVbKEtaT
-	gy3nK9JjqzEGcuIvycEepEGD8E7hjL3HmlFKVpSuJqnjZ8BcWeK0onzhSZa2uzxql7n0pCRaOsQ
-	865kOLA==
-X-Google-Smtp-Source: AGHT+IFUhiWcXN9bU2ND/K0giYKCFQZzaN5zZxIHxrwi6uP30HK/Z2BvPyqYySemNdXUTpkAxDwohQ==
-X-Received: by 2002:ac2:5511:0:b0:512:fded:e674 with SMTP id j17-20020ac25511000000b00512fdede674mr20886lfk.61.1709589031039;
-        Mon, 04 Mar 2024 13:50:31 -0800 (PST)
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com. [209.85.218.51])
-        by smtp.gmail.com with ESMTPSA id f27-20020a170906085b00b00a44ef54b6b6sm2905535ejd.58.2024.03.04.13.50.30
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Mar 2024 13:50:30 -0800 (PST)
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a44628725e3so632807266b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 13:50:30 -0800 (PST)
-X-Received: by 2002:a17:906:d0d4:b0:a45:22e2:bd6 with SMTP id
- bq20-20020a170906d0d400b00a4522e20bd6mr3503408ejb.23.1709589029913; Mon, 04
- Mar 2024 13:50:29 -0800 (PST)
+	s=arc-20240116; t=1709589337; c=relaxed/simple;
+	bh=zzxnjcPWqYVHLpSydgzNKYkbJMrP+/KrDyhCMMneXU0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RQvaHBvlaG7rbG8flIdFC8YRQhINWjenhtmP9MD8vIkXBqngglfsTWnE3FCMfPKvaB1MBIjmLgZFgrtGpVGOhPhI2Elanm/L0qxgG1HYMAqFqTv+SV8+bfCrKy8IkBs96Sgu4OFxfg++iYMZCppdT6maWqESwhOVAJ2SSKwNssk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 77E3D2F4;
+	Mon,  4 Mar 2024 13:56:05 -0800 (PST)
+Received: from [10.57.68.92] (unknown [10.57.68.92])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0147B3F73F;
+	Mon,  4 Mar 2024 13:55:25 -0800 (PST)
+Message-ID: <6cfc022a-0c7a-4fe6-aaa4-3d28aeacc982@arm.com>
+Date: Mon, 4 Mar 2024 21:55:24 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240302111244.3a1674be@gandalf.local.home> <CAHk-=wj376WMgZ24wKGEWDs_ojNtod-LDZBedPzDYRRcY60UYA@mail.gmail.com>
- <20240302145958.05aabdd2@rorschach.local.home> <CAHk-=wgjhdRj1V847NTF4veMN_tCbrySiEHXO8RO3n05cNeXeA@mail.gmail.com>
- <20240302154713.71e29402@rorschach.local.home> <CAHk-=wioeo5vyEWUZcGBKMsf3jnjrnnHc3uJiV=JjSKPdvZOEw@mail.gmail.com>
- <20240303075937.36fc6043@rorschach.local.home> <CAHk-=wiLdWetJgKHB72VeDALZsjpggEyyuiZ2KmoY_g+3horwQ@mail.gmail.com>
- <20240303140705.0f655e36@rorschach.local.home> <CAHk-=wiTGmAXfHiRB8ku4diLxRpN=Hac_q86=j65oiP3J5uXKg@mail.gmail.com>
- <20240303160024.458d4f91@rorschach.local.home> <20240304164205.3245608a@gandalf.local.home>
-In-Reply-To: <20240304164205.3245608a@gandalf.local.home>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Mon, 4 Mar 2024 13:50:13 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgwy-p_zodT0JvkVkkd5MWy9NffC3jiDiczMMHPj1eQ9w@mail.gmail.com>
-Message-ID: <CAHk-=wgwy-p_zodT0JvkVkkd5MWy9NffC3jiDiczMMHPj1eQ9w@mail.gmail.com>
-Subject: Re: [GIT PULL] tracing: Prevent trace_marker being bigger than
- unsigned short
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Sachin Sant <sachinp@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/4] mm: swap: Remove CLUSTER_FLAG_HUGE from
+ swap_cluster_info:flags
+Content-Language: en-GB
+To: David Hildenbrand <david@redhat.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Huang Ying <ying.huang@intel.com>,
+ Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
+ Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20231025144546.577640-1-ryan.roberts@arm.com>
+ <20231025144546.577640-2-ryan.roberts@arm.com>
+ <d108bd79-086b-4564-838b-d41afa055137@redhat.com>
+ <6541e29b-f25a-48b8-a553-fd8febe85e5a@redhat.com>
+ <ee760679-7e3c-4a35-ad53-ca98b598ead5@arm.com>
+ <ba9101ae-a618-4afc-9515-a61f25376390@arm.com>
+ <2934125a-f2e2-417c-a9f9-3cb1e074a44f@redhat.com>
+ <049818ca-e656-44e4-b336-934992c16028@arm.com>
+ <d2fbfdd0-ad61-4fe2-a976-4dac7427bfc9@redhat.com>
+ <b642c7ff-c452-4066-ac12-dbf05e215cb9@arm.com>
+ <949b6c22-d737-4060-9ca1-a69d8e986d90@redhat.com>
+ <9ed743a7-0c5d-49d9-b8b2-d58364df1f5f@arm.com>
+ <65a66eb9-41f8-4790-8db2-0c70ea15979f@redhat.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <65a66eb9-41f8-4790-8db2-0c70ea15979f@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, 4 Mar 2024 at 13:40, Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> As I mentioned that the design is based on that the allocated buffer size is
-> the string length rounded up to the word size, all I need to do is to make
-> sure that there's a nul terminating byte within the last word of the
-> allocated buffer. Then "%s" is all I need.
+On 04/03/2024 20:50, David Hildenbrand wrote:
+>>>>
+>>>> This is the existing free_swap_and_cache(). I think _swap_info_get() would
+>>>> break
+>>>> if this could race with swapoff(), and __swap_entry_free() looks up the cluster
+>>>> from an array, which would also be freed by swapoff if racing:
+>>>>
+>>>> int free_swap_and_cache(swp_entry_t entry)
+>>>> {
+>>>>      struct swap_info_struct *p;
+>>>>      unsigned char count;
+>>>>
+>>>>      if (non_swap_entry(entry))
+>>>>          return 1;
+>>>>
+>>>>      p = _swap_info_get(entry);
+>>>>      if (p) {
+>>>>          count = __swap_entry_free(p, entry);
+>>>
+>>> If count dropped to 0 and
+>>>
+>>>>          if (count == SWAP_HAS_CACHE)
+>>>
+>>>
+>>> count is now SWAP_HAS_CACHE, there is in fact no swap entry anymore. We removed
+>>> it. That one would have to be reclaimed asynchronously.
+>>>
+>>> The existing code we would call swap_page_trans_huge_swapped() with the SI it
+>>> obtained via _swap_info_get().
+>>>
+>>> I also don't see what should be left protecting the SI. It's not locked anymore,
+>>> the swapcounts are at 0. We don't hold the folio lock.
+>>>
+>>> try_to_unuse() will stop as soon as si->inuse_pages is at 0. Hm ...
+>>
+>> But, assuming the caller of free_swap_and_cache() acquires the PTL first, I
+>> think this all works out ok? While free_swap_and_cache() is running,
+>> try_to_unuse() will wait for the PTL. Or if try_to_unuse() runs first, then
+>> free_swap_and_cache() will never be called because the swap entry will have been
+>> removed from the PTE?
+> 
+> But can't try_to_unuse() run, detect !si->inuse_pages and not even bother about
+> scanning any further page tables?
+> 
+> But my head hurts from digging through that code.
 
-Please don't add pointless code that helps nothing.
+Yep, glad I'm not the only one that gets headaches from swapfile.c.
 
-> Would this work for you?
+> 
+> Let me try again:
+> 
+> __swap_entry_free() might be the last user and result in "count == SWAP_HAS_CACHE".
+> 
+> swapoff->try_to_unuse() will stop as soon as soon as si->inuse_pages==0.
+> 
+> 
+> So the question is: could someone reclaim the folio and turn si->inuse_pages==0,
+> before we completed swap_page_trans_huge_swapped().
+> 
+> Imagine the following: 2 MiB folio in the swapcache. Only 2 subpages are still
+> references by swap entries.
+> 
+> Process 1 still references subpage 0 via swap entry.
+> Process 2 still references subpage 1 via swap entry.
+> 
+> Process 1 quits. Calls free_swap_and_cache().
+> -> count == SWAP_HAS_CACHE
+> [then, preempted in the hypervisor etc.]
+> 
+> Process 2 quits. Calls free_swap_and_cache().
+> -> count == SWAP_HAS_CACHE
+> 
+> Process 2 goes ahead, passes swap_page_trans_huge_swapped(), and calls
+> __try_to_reclaim_swap().
+> 
+> __try_to_reclaim_swap()->folio_free_swap()->delete_from_swap_cache()->put_swap_folio()->
+> free_swap_slot()->swapcache_free_entries()->swap_entry_free()->swap_range_free()->
+> ...
+> WRITE_ONCE(si->inuse_pages, si->inuse_pages - nr_entries);
+> 
+> 
+> What stops swapoff to succeed after process 2 reclaimed the swap cache but
+> before process 1 finished its call to swap_page_trans_huge_swapped()?
 
-No. This code only adds debug code, and doesn't actually improve anything.
+Assuming you are talking about anonymous memory, process 1 has the PTL while
+it's executing free_swap_and_cache(). try_to_unuse() iterates over every vma in
+every mm, and it swaps-in a page for every PTE that holds a swap entry for the
+device being swapoff'ed. It takes the PTL while converting the swap entry to
+present PTE - see unuse_pte(). Process 1 must have beaten try_to_unuse() to the
+particular pte, because if try_to_unuse() got there first, it would have
+converted it from a swap entry to present pte and process 1 would never even
+have called free_swap_and_cache(). So try_to_unuse() will eventually wait on the
+PTL until process 1 has released it after free_swap_and_cache() completes. Am I
+missing something? Because that part feels pretty clear to me.
 
-We *have* debug code already. Things like KASAN already find array
-overruns, and your ex-tempore debug code adds zero actual value.
+Its the shmem case that I'm struggling to explain.
 
-That, btw, is why your old stupid precision code was not only
-triggering warnings, but was ACTIVELY DETRIMENTAL.
+> 
+> 
+> 
+>>
+>> That just leaves shmem... I suspected there might be some serialization between
+>> shmem_unuse() (called from try_to_unuse()) and the shmem free_swap_and_cache()
+>> callsites, but I can't see it. Hmm...
+>>
+>>>
+>>> Would performing the overall operation under lock_cluster_or_swap_info help? Not
+>>> so sure :(
+>>
+>> No - that function relies on being able to access the cluster from the array in
+>> the swap_info and lock it. And I think that array has the same lifetime as
+>> swap_map, so same problem. You'd need get_swap_device()/put_swap_device() and a
+>> bunch of refactoring for the internals not to take the locks, I guess. I think
+>> its doable, just not sure if neccessary...
+> 
+> Agreed.
+> 
 
-All that precision code could ever do was to potentially hide bugs if
-the string wasn't NUL-terminated.
-
-So no. I absolutely do NOT want you to write more code to hide bugs or
-do half-arsed checking.
-
-I want you to *simplify* the code, and put proper limits in place for strings.
-
-I want to see the code that actually notices when somebody generates a
-crazy string, and stops that garbage in its tracks.
-
-What I do *not* want to see is more ad-hoc code that tries to deal
-with the symptoms of you not having done so.
-
-                 Linus
 
