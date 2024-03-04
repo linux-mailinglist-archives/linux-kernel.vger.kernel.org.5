@@ -1,106 +1,586 @@
-Return-Path: <linux-kernel+bounces-91371-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91372-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB47C871034
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 23:42:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B304B87103F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 23:44:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 661B4285E05
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:42:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 698392825C8
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:44:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFE327BB1A;
-	Mon,  4 Mar 2024 22:41:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71A337C085;
+	Mon,  4 Mar 2024 22:44:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aDUYHl/g"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FA597BB0F;
-	Mon,  4 Mar 2024 22:41:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E96A3C28;
+	Mon,  4 Mar 2024 22:44:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709592114; cv=none; b=m+FatyIrmZ9GYAXAx6wFruMP/jeAUXHUv0FbnixqTpiC2BMBx4WWTM21nqh5MZM3MAp1V5JZ6dKfm/j04LL7GUg4McdCPjgjheoFVXBUM6tAFEBIge2f3DXgHxQXN+ohnVCO28IHtnMIGpRv7YN1Iv5oO6eTTcU527qZ18VX5Bk=
+	t=1709592244; cv=none; b=WH2K2bI96FEB7FxTTu3cMT2ENjLyWz74uxDaq8L4EvezsyPyPdUG8Rwc0VTl1dp5+VMWPcPongFGbAwSGxVxcWn8ShEB7Gvc52cqKufKncMrX6xLz89oZ5QaekkD5PGJlVMdQx+opSX3uDvgdnZVGxNKR10x3IT4GU7DgC7V6R8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709592114; c=relaxed/simple;
-	bh=N86BZ3vurduX6ZYiqZPgoddJQ4lkNaFSYKU9x17lROo=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=pQqzWbV4PpFbkArzaY5Z6Av/qx7Kzb6nTZq8zFmWQMdprBOywnKRU0kyBpw6xbfthbMUcHrffBd2ROAbAbrB+ZtxZ2owq+RRaASDily3QnrEcJp5I69fp9wIuw16qEDPS0S19g4/hrPkM5QaFnlFg8gKnB6OgSv6lG/+3tGQWTo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2999CC433F1;
-	Mon,  4 Mar 2024 22:41:53 +0000 (UTC)
-Date: Mon, 4 Mar 2024 17:43:41 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Linus Torvalds
- <torvalds@linux-foundation.org>, Sachin Sant <sachinp@linux.ibm.com>
-Subject: [PATCH] tracing: Remove precision vsnprintf() check from print
- event
-Message-ID: <20240304174341.2a561d9f@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1709592244; c=relaxed/simple;
+	bh=dmAbF1CtHmg87P884fbtkaF7czfd8ruUOuskVOi2PtQ=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=MmKm1mv3ci5wcb+mM7XkuSuKKzWEsupk+kBG7tdHriOiIKShHPX0Bt+Vcp7pE34JJcDitZS24Ur/caErURxrAdeZQCt2cckYuaXytTsc+Bj9zJ8kbHTKeSq83+u9SNqP96C22OgE0PhcTAXn0rdiRaQywPICc5COohJt3I6KxdA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aDUYHl/g; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D19A7C433C7;
+	Mon,  4 Mar 2024 22:43:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709592243;
+	bh=dmAbF1CtHmg87P884fbtkaF7czfd8ruUOuskVOi2PtQ=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=aDUYHl/gUofy53yoXtNjHkIQWBIVaDhKAUqxtXBJa2gYq1suh2g+9gqQhNtt1kojb
+	 +h1X1x1BIAUjNMFUioZpvuJsU/2MuFEl4H+FZIvOusrZ5HT8qsQO8iIhXX7V0zrhBW
+	 8WqZu/FvwSrtRWtyS5+EP/E+3D1wG4Jbqy+e+6+fm2xOmCujogm7U4tkUvxQYP2khC
+	 Xo8RW/I7F3aswG/uduAW9Nj9fPGZRGyO+5rALrO8WQyxAL1isEByuJlcQQ7jZWb/5A
+	 9hAdKwepwVah24U7WvGEu4yPFrJuOPE7ImHeZsYIuY93eVsVXem5xQ4ZNj5UQYwDu5
+	 fULY0/jFyYPrQ==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 05 Mar 2024 00:43:54 +0200
+Message-Id: <CZLBVAE478RG.3M8NKJAYI9QS5@suppilovahvero>
+Cc: "Shawn Guo" <shawnguo@kernel.org>, "Jonathan Corbet" <corbet@lwn.net>,
+ "Sascha Hauer" <s.hauer@pengutronix.de>, "Pengutronix Kernel Team"
+ <kernel@pengutronix.de>, "Fabio Estevam" <festevam@gmail.com>, "NXP Linux
+ Team" <linux-imx@nxp.com>, "Ahmad Fatoum" <a.fatoum@pengutronix.de>, "sigma
+ star Kernel Team" <upstream+dcp@sigma-star.at>, "David Howells"
+ <dhowells@redhat.com>, "Li Yang" <leoyang.li@nxp.com>, "Paul Moore"
+ <paul@paul-moore.com>, "James Morris" <jmorris@namei.org>, "Serge E.
+ Hallyn" <serge@hallyn.com>, "Paul E. McKenney" <paulmck@kernel.org>, "Randy
+ Dunlap" <rdunlap@infradead.org>, "Catalin Marinas"
+ <catalin.marinas@arm.com>, "Rafael J. Wysocki"
+ <rafael.j.wysocki@intel.com>, "Tejun Heo" <tj@kernel.org>, "Steven Rostedt
+ (Google)" <rostedt@goodmis.org>, <linux-doc@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-integrity@vger.kernel.org>,
+ <keyrings@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linuxppc-dev@lists.ozlabs.org>,
+ <linux-security-module@vger.kernel.org>, "Richard Weinberger"
+ <richard@nod.at>, "David Oberhollenzer" <david.oberhollenzer@sigma-star.at>
+Subject: Re: [PATCH v5 3/6] KEYS: trusted: Introduce NXP DCP-backed trusted
+ keys
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "David Gstir" <david@sigma-star.at>, "Mimi Zohar" <zohar@linux.ibm.com>,
+ "James Bottomley" <jejb@linux.ibm.com>, "Herbert Xu"
+ <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>
+X-Mailer: aerc 0.15.2
+References: <20231215110639.45522-1-david@sigma-star.at>
+ <20231215110639.45522-4-david@sigma-star.at>
+In-Reply-To: <20231215110639.45522-4-david@sigma-star.at>
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Fri Dec 15, 2023 at 1:06 PM EET, David Gstir wrote:
+> DCP (Data Co-Processor) is the little brother of NXP's CAAM IP.
+> Beside of accelerated crypto operations, it also offers support for
 
-This reverts 60be76eeabb3d ("tracing: Add size check when printing
-trace_marker output"). The only reason the precision check was added
-was because of a bug that miscalculated the write size of the string into
-the ring buffer and it truncated it removing the terminating nul byte. On
-reading the trace it crashed the kernel. But this was due to the bug in
-the code that happened during development and should never happen in
-practice. If anything, the precision can hide bugs where the string in the
-ring buffer isn't nul terminated and it will not be checked.
+Why acronym is not opened already in the first patch? Also, that does
+not mean it could not be opened also here. Sometimes redundancy is for
+better...
 
-Link: https://lore.kernel.org/all/C7E7AF1A-D30F-4D18-B8E5-AF1EF58004F5@linux.ibm.com/
-Link: https://lore.kernel.org/linux-trace-kernel/20240227125706.04279ac2@gandalf.local.home
-Link: https://lore.kernel.org/all/20240302111244.3a1674be@gandalf.local.home/
+> hardware-bound keys. Using this feature it is possible to implement a blo=
+b
+> mechanism similar to what CAAM offers. Unlike on CAAM, constructing and
+> parsing the blob has to happen in software (i.e. the kernel).
+>
+> The software-based blob format used by DCP trusted keys encrypts
+> the payload using AES-128-GCM with a freshly generated random key and non=
+ce.
+> The random key itself is AES-128-ECB encrypted using the DCP unique
+> or OTP key.
+>
+> The DCP trusted key blob format is:
+> /*
+>  * struct dcp_blob_fmt - DCP BLOB format.
+>  *
+>  * @fmt_version: Format version, currently being %1
+>  * @blob_key: Random AES 128 key which is used to encrypt @payload,
+>  *            @blob_key itself is encrypted with OTP or UNIQUE device key=
+ in
+>  *            AES-128-ECB mode by DCP.
+>  * @nonce: Random nonce used for @payload encryption.
+>  * @payload_len: Length of the plain text @payload.
+>  * @payload: The payload itself, encrypted using AES-128-GCM and @blob_ke=
+y,
+>  *           GCM auth tag of size AES_BLOCK_SIZE is attached at the end o=
+f it.
+>  *
+>  * The total size of a DCP BLOB is sizeof(struct dcp_blob_fmt) + @payload=
+_len +
+>  * AES_BLOCK_SIZE.
+>  */
+> struct dcp_blob_fmt {
+> 	__u8 fmt_version;
+> 	__u8 blob_key[AES_KEYSIZE_128];
+> 	__u8 nonce[AES_KEYSIZE_128];
+> 	__le32 payload_len;
+> 	__u8 payload[];
+> } __packed;
+>
+> By default the unique key is used. It is also possible to use the
+> OTP key. While the unique key should be unique it is not documented how
+> this key is derived. Therefore selection the OTP key is supported as
+> well via the use_otp_key module parameter.
 
-Reported-by: Sachin Sant <sachinp@linux.ibm.com>
-Fixes: 60be76eeabb3d ("tracing: Add size check when printing trace_marker output")
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- kernel/trace/trace_output.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+This is pretty good but I'll look it in more detail in the next
+iteration of the patch set.
 
-diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
-index 3e7fa44dc2b2..d8b302d01083 100644
---- a/kernel/trace/trace_output.c
-+++ b/kernel/trace/trace_output.c
-@@ -1587,12 +1587,11 @@ static enum print_line_t trace_print_print(struct trace_iterator *iter,
- {
- 	struct print_entry *field;
- 	struct trace_seq *s = &iter->seq;
--	int max = iter->ent_size - offsetof(struct print_entry, buf);
- 
- 	trace_assign_type(field, iter->ent);
- 
- 	seq_print_ip_sym(s, field->ip, flags);
--	trace_seq_printf(s, ": %.*s", max, field->buf);
-+	trace_seq_printf(s, ": %s", field->buf);
- 
- 	return trace_handle_return(s);
- }
-@@ -1601,11 +1600,10 @@ static enum print_line_t trace_print_raw(struct trace_iterator *iter, int flags,
- 					 struct trace_event *event)
- {
- 	struct print_entry *field;
--	int max = iter->ent_size - offsetof(struct print_entry, buf);
- 
- 	trace_assign_type(field, iter->ent);
- 
--	trace_seq_printf(&iter->seq, "# %lx %.*s", field->ip, max, field->buf);
-+	trace_seq_printf(&iter->seq, "# %lx %s", field->ip, field->buf);
- 
- 	return trace_handle_return(&iter->seq);
- }
--- 
-2.43.0
+>
+> Co-developed-by: Richard Weinberger <richard@nod.at>
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+> Co-developed-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+> Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+> Signed-off-by: David Gstir <david@sigma-star.at>
+> ---
+>  include/keys/trusted_dcp.h                |  11 +
+>  security/keys/trusted-keys/Kconfig        |   8 +
+>  security/keys/trusted-keys/Makefile       |   2 +
+>  security/keys/trusted-keys/trusted_core.c |   6 +-
+>  security/keys/trusted-keys/trusted_dcp.c  | 311 ++++++++++++++++++++++
+>  5 files changed, 337 insertions(+), 1 deletion(-)
+>  create mode 100644 include/keys/trusted_dcp.h
+>  create mode 100644 security/keys/trusted-keys/trusted_dcp.c
+>
+> diff --git a/include/keys/trusted_dcp.h b/include/keys/trusted_dcp.h
+> new file mode 100644
+> index 000000000000..9aaa42075b40
+> --- /dev/null
+> +++ b/include/keys/trusted_dcp.h
+> @@ -0,0 +1,11 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Copyright (C) 2021 sigma star gmbh
+> + */
+> +
+> +#ifndef TRUSTED_DCP_H
+> +#define TRUSTED_DCP_H
+> +
+> +extern struct trusted_key_ops dcp_trusted_key_ops;
+> +
+> +#endif
+> diff --git a/security/keys/trusted-keys/Kconfig b/security/keys/trusted-k=
+eys/Kconfig
+> index 553dc117f385..1fb8aa001995 100644
+> --- a/security/keys/trusted-keys/Kconfig
+> +++ b/security/keys/trusted-keys/Kconfig
+> @@ -39,6 +39,14 @@ config TRUSTED_KEYS_CAAM
+>  	  Enable use of NXP's Cryptographic Accelerator and Assurance Module
+>  	  (CAAM) as trusted key backend.
+> =20
+> +config TRUSTED_KEYS_DCP
+> +	bool "DCP-based trusted keys"
+> +	depends on CRYPTO_DEV_MXS_DCP >=3D TRUSTED_KEYS
+> +	default y
+> +	select HAVE_TRUSTED_KEYS
+> +	help
+> +	  Enable use of NXP's DCP (Data Co-Processor) as trusted key backend.
+> +
+>  if !HAVE_TRUSTED_KEYS
+>  	comment "No trust source selected!"
+>  endif
+> diff --git a/security/keys/trusted-keys/Makefile b/security/keys/trusted-=
+keys/Makefile
+> index 735aa0bc08ef..f0f3b27f688b 100644
+> --- a/security/keys/trusted-keys/Makefile
+> +++ b/security/keys/trusted-keys/Makefile
+> @@ -14,3 +14,5 @@ trusted-$(CONFIG_TRUSTED_KEYS_TPM) +=3D tpm2key.asn1.o
+>  trusted-$(CONFIG_TRUSTED_KEYS_TEE) +=3D trusted_tee.o
+> =20
+>  trusted-$(CONFIG_TRUSTED_KEYS_CAAM) +=3D trusted_caam.o
+> +
+> +trusted-$(CONFIG_TRUSTED_KEYS_DCP) +=3D trusted_dcp.o
+> diff --git a/security/keys/trusted-keys/trusted_core.c b/security/keys/tr=
+usted-keys/trusted_core.c
+> index c6fc50d67214..8af0988be850 100644
+> --- a/security/keys/trusted-keys/trusted_core.c
+> +++ b/security/keys/trusted-keys/trusted_core.c
+> @@ -10,6 +10,7 @@
+>  #include <keys/trusted-type.h>
+>  #include <keys/trusted_tee.h>
+>  #include <keys/trusted_caam.h>
+> +#include <keys/trusted_dcp.h>
+>  #include <keys/trusted_tpm.h>
+>  #include <linux/capability.h>
+>  #include <linux/err.h>
+> @@ -30,7 +31,7 @@ MODULE_PARM_DESC(rng, "Select trusted key RNG");
+> =20
+>  static char *trusted_key_source;
+>  module_param_named(source, trusted_key_source, charp, 0);
+> -MODULE_PARM_DESC(source, "Select trusted keys source (tpm, tee or caam)"=
+);
+> +MODULE_PARM_DESC(source, "Select trusted keys source (tpm, tee, caam or =
+dcp)");
+> =20
+>  static const struct trusted_key_source trusted_key_sources[] =3D {
+>  #if defined(CONFIG_TRUSTED_KEYS_TPM)
+> @@ -42,6 +43,9 @@ static const struct trusted_key_source trusted_key_sour=
+ces[] =3D {
+>  #if defined(CONFIG_TRUSTED_KEYS_CAAM)
+>  	{ "caam", &trusted_key_caam_ops },
+>  #endif
+> +#if defined(CONFIG_TRUSTED_KEYS_DCP)
+> +	{ "dcp", &dcp_trusted_key_ops },
+> +#endif
+>  };
+> =20
+>  DEFINE_STATIC_CALL_NULL(trusted_key_init, *trusted_key_sources[0].ops->i=
+nit);
+> diff --git a/security/keys/trusted-keys/trusted_dcp.c b/security/keys/tru=
+sted-keys/trusted_dcp.c
+> new file mode 100644
+> index 000000000000..8d19b92fe976
+> --- /dev/null
+> +++ b/security/keys/trusted-keys/trusted_dcp.c
+> @@ -0,0 +1,311 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (C) 2021 sigma star gmbh
+> + */
+> +
+> +#include <crypto/aead.h>
+> +#include <crypto/aes.h>
+> +#include <crypto/algapi.h>
+> +#include <crypto/gcm.h>
+> +#include <crypto/skcipher.h>
+> +#include <keys/trusted-type.h>
+> +#include <linux/key-type.h>
+> +#include <linux/module.h>
+> +#include <linux/printk.h>
+> +#include <linux/random.h>
+> +#include <linux/scatterlist.h>
+> +#include <soc/fsl/dcp.h>
+> +
+> +#define DCP_BLOB_VERSION 1
+> +#define DCP_BLOB_AUTHLEN 16
+> +
+> +/**
+> + * struct dcp_blob_fmt - DCP BLOB format.
+> + *
+> + * @fmt_version: Format version, currently being %1.
+> + * @blob_key: Random AES 128 key which is used to encrypt @payload,
+> + *            @blob_key itself is encrypted with OTP or UNIQUE device ke=
+y in
+> + *            AES-128-ECB mode by DCP.
+> + * @nonce: Random nonce used for @payload encryption.
+> + * @payload_len: Length of the plain text @payload.
+> + * @payload: The payload itself, encrypted using AES-128-GCM and @blob_k=
+ey,
+> + *           GCM auth tag of size DCP_BLOB_AUTHLEN is attached at the en=
+d of it.
+> + *
+> + * The total size of a DCP BLOB is sizeof(struct dcp_blob_fmt) + @payloa=
+d_len +
+> + * DCP_BLOB_AUTHLEN.
+> + */
+> +struct dcp_blob_fmt {
+> +	__u8 fmt_version;
+> +	__u8 blob_key[AES_KEYSIZE_128];
+> +	__u8 nonce[AES_KEYSIZE_128];
+> +	__le32 payload_len;
+> +	__u8 payload[];
+> +} __packed;
+> +
+> +static bool use_otp_key;
+> +module_param_named(dcp_use_otp_key, use_otp_key, bool, 0);
+> +MODULE_PARM_DESC(dcp_use_otp_key, "Use OTP instead of UNIQUE key for sea=
+ling");
+> +
+> +static bool skip_zk_test;
+> +module_param_named(dcp_skip_zk_test, skip_zk_test, bool, 0);
+> +MODULE_PARM_DESC(dcp_skip_zk_test, "Don't test whether device keys are z=
+ero'ed");
+> +
+> +static unsigned int calc_blob_len(unsigned int payload_len)
+> +{
+> +	return sizeof(struct dcp_blob_fmt) + payload_len + DCP_BLOB_AUTHLEN;
+> +}
+> +
+> +static int do_dcp_crypto(u8 *in, u8 *out, bool is_encrypt)
+> +{
+> +	int res =3D 0;
+> +	struct skcipher_request *req =3D NULL;
+> +	DECLARE_CRYPTO_WAIT(wait);
+> +	struct scatterlist src_sg, dst_sg;
+> +	struct crypto_skcipher *tfm;
+> +	u8 paes_key[DCP_PAES_KEYSIZE];
 
+Can you put these into reverse tree order (descending length)?
+
+> +
+> +	if (use_otp_key)
+> +		paes_key[0] =3D DCP_PAES_KEY_OTP;
+> +	else
+> +		paes_key[0] =3D DCP_PAES_KEY_UNIQUE;
+> +
+> +	tfm =3D crypto_alloc_skcipher("ecb-paes-dcp", CRYPTO_ALG_INTERNAL,
+> +				    CRYPTO_ALG_INTERNAL);
+> +	if (IS_ERR(tfm)) {
+> +		res =3D PTR_ERR(tfm);
+> +		pr_err("Unable to request DCP pAES-ECB cipher: %i\n", res);
+
+Error can be only used when something is not functioning properly
+(hardware, kernel, firmware). Out of memory condition is not such
+case, meaning that this is not legit use of pr_err().
+
+To add, it is already easy to trace given that you easily hook into
+crypto_alloc_cipher() either with ftrace or kprobes, if you really
+have to debug this.
+
+So to summarize: scrape it away, please.
+
+> +		tfm =3D NULL;
+> +		goto out;
+> +	}
+> +
+> +	req =3D skcipher_request_alloc(tfm, GFP_NOFS);
+> +	if (!req) {
+> +		res =3D -ENOMEM;
+> +		goto out;
+> +	}
+> +
+> +	skcipher_request_set_callback(req, CRYPTO_TFM_REQ_MAY_BACKLOG |
+> +				      CRYPTO_TFM_REQ_MAY_SLEEP,
+> +				      crypto_req_done, &wait);
+> +	res =3D crypto_skcipher_setkey(tfm, paes_key, sizeof(paes_key));
+> +	if (res < 0)
+> +		goto out;
+> +
+> +	sg_init_one(&src_sg, in, AES_KEYSIZE_128);
+> +	sg_init_one(&dst_sg, out, AES_KEYSIZE_128);
+> +	skcipher_request_set_crypt(req, &src_sg, &dst_sg, AES_KEYSIZE_128,
+> +				   NULL);
+> +
+> +	if (is_encrypt)
+> +		res =3D crypto_wait_req(crypto_skcipher_encrypt(req), &wait);
+> +	else
+> +		res =3D crypto_wait_req(crypto_skcipher_decrypt(req), &wait);
+> +
+> +out:
+> +	skcipher_request_free(req);
+> +	crypto_free_skcipher(tfm);
+> +
+> +	return res;
+> +}
+> +
+> +static int do_aead_crypto(u8 *in, u8 *out, size_t len, u8 *key, u8 *nonc=
+e,
+> +			  bool is_encrypt)
+     =20
+I'd rename the last parameter "is_encrypted" as it is at least proper
+English. No reason to cut two letters out (applies also to other
+locations with this parameter).
+
+> +{
+> +	struct aead_request *aead_req =3D NULL;
+> +	struct scatterlist src_sg, dst_sg;
+> +	struct crypto_aead *aead;
+> +	int ret;
+> +
+> +	aead =3D crypto_alloc_aead("gcm(aes)", 0, CRYPTO_ALG_ASYNC);
+> +	if (IS_ERR(aead)) {
+> +		ret =3D PTR_ERR(aead);
+> +		pr_err("Unable to request AES-GCM cipher: %i\n", ret);
+> +		goto out;
+> +	}
+> +
+> +	ret =3D crypto_aead_setauthsize(aead, DCP_BLOB_AUTHLEN);
+> +	if (ret < 0) {
+> +		pr_err("Can't set crypto auth tag len: %d\n", ret);
+> +		goto free_aead;
+> +	}
+> +
+> +	aead_req =3D aead_request_alloc(aead, GFP_KERNEL);
+> +	if (!aead_req) {
+> +		ret =3D -ENOMEM;
+> +		goto free_aead;
+> +	}
+> +
+> +	sg_init_one(&src_sg, in, len);
+> +	if (is_encrypt) {
+> +		/*
+> +		 * If we encrypt our buffer has extra space for the auth tag.
+> +		 */
+> +		sg_init_one(&dst_sg, out, len + DCP_BLOB_AUTHLEN);
+> +	} else {
+> +		sg_init_one(&dst_sg, out, len);
+> +	}
+> +
+> +	aead_request_set_crypt(aead_req, &src_sg, &dst_sg, len, nonce);
+> +	aead_request_set_callback(aead_req, CRYPTO_TFM_REQ_MAY_SLEEP, NULL,
+> +				  NULL);
+> +	aead_request_set_ad(aead_req, 0);
+> +
+> +	if (crypto_aead_setkey(aead, key, AES_KEYSIZE_128)) {
+> +		pr_err("Can't set crypto AEAD key\n");
+> +		ret =3D -EINVAL;
+> +		goto free_req;
+> +	}
+> +
+> +	if (is_encrypt)
+> +		ret =3D crypto_aead_encrypt(aead_req);
+> +	else
+> +		ret =3D crypto_aead_decrypt(aead_req);
+> +
+> +free_req:
+> +	aead_request_free(aead_req);
+> +free_aead:
+> +	crypto_free_aead(aead);
+> +out:
+> +	return ret;
+> +}
+> +
+> +static int decrypt_blob_key(u8 *key)
+> +{
+> +	return do_dcp_crypto(key, key, false);
+> +}
+> +
+> +static int encrypt_blob_key(u8 *key)
+> +{
+> +	return do_dcp_crypto(key, key, true);
+> +}
+> +
+> +static int trusted_dcp_seal(struct trusted_key_payload *p, char *datablo=
+b)
+> +{
+> +	struct dcp_blob_fmt *b =3D (struct dcp_blob_fmt *)p->blob;
+> +	int blen, ret;
+> +
+> +	blen =3D calc_blob_len(p->key_len);
+> +	if (blen > MAX_BLOB_SIZE)
+> +		return -E2BIG;
+> +
+> +	b->fmt_version =3D DCP_BLOB_VERSION;
+> +	get_random_bytes(b->nonce, AES_KEYSIZE_128);
+> +	get_random_bytes(b->blob_key, AES_KEYSIZE_128);
+> +
+> +	ret =3D do_aead_crypto(p->key, b->payload, p->key_len, b->blob_key,
+> +			     b->nonce, true);
+> +	if (ret) {
+> +		pr_err("Unable to encrypt blob payload: %i\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ret =3D encrypt_blob_key(b->blob_key);
+> +	if (ret) {
+> +		pr_err("Unable to encrypt blob key: %i\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	b->payload_len =3D get_unaligned_le32(&p->key_len);
+> +	p->blob_len =3D blen;
+> +	return 0;
+> +}
+> +
+> +static int trusted_dcp_unseal(struct trusted_key_payload *p, char *datab=
+lob)
+> +{
+> +	struct dcp_blob_fmt *b =3D (struct dcp_blob_fmt *)p->blob;
+> +	int blen, ret;
+> +
+> +	if (b->fmt_version !=3D DCP_BLOB_VERSION) {
+> +		pr_err("DCP blob has bad version: %i, expected %i\n",
+> +		       b->fmt_version, DCP_BLOB_VERSION);
+> +		ret =3D -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	p->key_len =3D le32_to_cpu(b->payload_len);
+> +	blen =3D calc_blob_len(p->key_len);
+> +	if (blen !=3D p->blob_len) {
+> +		pr_err("DCP blob has bad length: %i !=3D %i\n", blen,
+> +		       p->blob_len);
+> +		ret =3D -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +	ret =3D decrypt_blob_key(b->blob_key);
+> +	if (ret) {
+> +		pr_err("Unable to decrypt blob key: %i\n", ret);
+> +		goto out;
+> +	}
+> +
+> +	ret =3D do_aead_crypto(b->payload, p->key, p->key_len + DCP_BLOB_AUTHLE=
+N,
+> +			     b->blob_key, b->nonce, false);
+> +	if (ret) {
+> +		pr_err("Unwrap of DCP payload failed: %i\n", ret);
+> +		goto out;
+> +	}
+> +
+> +	ret =3D 0;
+> +out:
+> +	return ret;
+> +}
+> +
+> +static int test_for_zero_key(void)
+> +{
+> +	static const u8 bad[] =3D {0x9a, 0xda, 0xe0, 0x54, 0xf6, 0x3d, 0xfa, 0x=
+ff,
+> +				 0x5e, 0xa1, 0x8e, 0x45, 0xed, 0xf6, 0xea, 0x6f};
+> +	void *buf =3D NULL;
+> +	int ret =3D 0;
+> +
+> +	if (skip_zk_test)
+> +		goto out;
+> +
+> +	buf =3D kmalloc(AES_BLOCK_SIZE, GFP_KERNEL);
+> +	if (!buf) {
+> +		ret =3D -ENOMEM;
+> +		goto out;
+> +	}
+> +
+> +	memset(buf, 0x55, AES_BLOCK_SIZE);
+> +
+> +	ret =3D do_dcp_crypto(buf, buf, true);
+> +	if (ret)
+> +		goto out;
+> +
+> +	if (memcmp(buf, bad, AES_BLOCK_SIZE) =3D=3D 0) {
+> +		pr_err("Device neither in secure nor trusted mode!\n");
+> +		ret =3D -EINVAL;
+> +	}
+> +out:
+> +	kfree(buf);
+> +	return ret;
+> +}
+> +
+> +static int trusted_dcp_init(void)
+> +{
+> +	int ret;
+> +
+> +	if (use_otp_key)
+> +		pr_info("Using DCP OTP key\n");
+> +
+> +	ret =3D test_for_zero_key();
+> +	if (ret) {
+> +		pr_err("Test for zero'ed keys failed: %i\n", ret);
+> +
+> +		return -EINVAL;
+> +	}
+> +
+> +	return register_key_type(&key_type_trusted);
+> +}
+> +
+> +static void trusted_dcp_exit(void)
+> +{
+> +	unregister_key_type(&key_type_trusted);
+> +}
+> +
+> +struct trusted_key_ops dcp_trusted_key_ops =3D {
+> +	.exit =3D trusted_dcp_exit,
+> +	.init =3D trusted_dcp_init,
+> +	.seal =3D trusted_dcp_seal,
+> +	.unseal =3D trusted_dcp_unseal,
+> +	.migratable =3D 0,
+> +};
+
+BR, Jarkko
 
