@@ -1,135 +1,118 @@
-Return-Path: <linux-kernel+bounces-90547-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90548-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8176C8700FA
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:10:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 153F98700FC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:12:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B32C41C2155E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:10:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B59A41F21475
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:12:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3EC63BBF8;
-	Mon,  4 Mar 2024 12:10:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D04763BB51;
+	Mon,  4 Mar 2024 12:12:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="Zmc3PHWa"
-Received: from mout.web.de (mout.web.de [212.227.15.3])
+	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="ATUPb4Ec";
+	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="m4cofuHG"
+Received: from nautica.notk.org (nautica.notk.org [91.121.71.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 728BA2261A;
-	Mon,  4 Mar 2024 12:10:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A060B2261A;
+	Mon,  4 Mar 2024 12:12:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.121.71.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709554244; cv=none; b=JuGjdcma9e0UgsLvImxKf6IV7ToGsajkiBzNCIHSayCb9dleWPZxvYe//s/8acmx+wwpVC9YIkPNX8fQG9HZSqYcPkG3nseMlRr/PviE0OjSb3AfmdIG/eedFBxkkkdZ6mNddR86lI1XHuxpBPpPfkJBEzOoBWcU2p0hqhefk8I=
+	t=1709554324; cv=none; b=qHXX5RkvvTjdpy0XguO52HkaCsrN1Sjewf8XuhZVBl2mhGyI+6qdFAxuXkzqaa2hk01D0xNufyVbDeZdoPEz99SIzGj+MJ9uXcMDEQH+0MvGDT+jS70HinTMHM5bjIWm8RGylNmYFfBv8zRzqIu6tGK++3eEtWKEBr4BPVOtLGY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709554244; c=relaxed/simple;
-	bh=w8KVMfNx2zd6C6LYa7vJU1D+To3lrbFoF0bVr9U0imU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=U2lHm+IW5Kl764I7kk5M0aPjVPnJXy9L+3K0QEpyd5AeYFiJvVDVM8khWhpIU9YGlcJYtnYF0yIfX8WIhXetzPk6egOeEFow/qoui3W+joE6SiZZv1ORlSLAC+wgdtKblQpkw1K1tVG2IkVLRU1Q4vrVg2gbsPpwk7rmf8O+0lQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=Zmc3PHWa; arc=none smtp.client-ip=212.227.15.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1709554212; x=1710159012; i=markus.elfring@web.de;
-	bh=w8KVMfNx2zd6C6LYa7vJU1D+To3lrbFoF0bVr9U0imU=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=Zmc3PHWa6lOwpCA6+weIY3sdyr7tgF0RQpb+052BMFhBYTrSqBDa0Ni1ytlwX9mN
-	 EnJjLYwD5wJ/YRS3UYUAzb7xLyVVC3GRF77iqYnvBcL02gcuUyQb+FK2f+UPVndie
-	 aK6uYpeJY095Yl1Zv+aOAYI8ah+1CuKPVrMtX5M0xc7JREXbJgd2TaNDfetW8Jv2j
-	 N6SzcWlcCy0ZmgAYA1sh+2v4GHmqti8T/TvSl0ein80ZIwiuD1NdmsXPBIqRC1gCm
-	 mvRrHQwbn1ZUdECEtGZEzMykMpLHEjP9W974pfMyOh2TDf5ovDtAUr22HDqS7Eg0+
-	 /dANATb3HxV9AlMmVA==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.86.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1M2gkl-1riU3f36XH-004NU4; Mon, 04
- Mar 2024 13:10:12 +0100
-Message-ID: <a8cae5ad-8a2a-4752-a2cd-634c1746af8f@web.de>
-Date: Mon, 4 Mar 2024 13:10:11 +0100
+	s=arc-20240116; t=1709554324; c=relaxed/simple;
+	bh=nxynEXQnbPzCEps4/vN/tlKZKuT6sbVfyE2Bf43k7Pc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hZbm/f7K/J+D11zgAHxj0pU6tQD2TXoFyNlVoZUwzsUaPUEUBExlcfeLE7Dvvmtod2Jtt2wLWF4IHdG72c9/XutHFKQ17sOVUDfIqDmcBUFsM6u5V14inszhcXY2JCBJiL6KJY6P9Nql72N8/lK4vrR6ZLS09rreVR6k5MRZWUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org; spf=pass smtp.mailfrom=codewreck.org; dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b=ATUPb4Ec; dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b=m4cofuHG; arc=none smtp.client-ip=91.121.71.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codewreck.org
+Received: by nautica.notk.org (Postfix, from userid 108)
+	id 38ADBC01C; Mon,  4 Mar 2024 13:11:53 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+	t=1709554313; bh=s0/+PZLwbDwwVcX3U624+7+5k1GRK8btyXeIYeNGilQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ATUPb4Ec2PU0u9fevnCdcOK2WasRgWQabRzNw3SNgywoNXy9EL9jKmAFxR9EsTmI2
+	 Re4A2uRNt3gitRZK/mhPwSZ8qGzDT0/0c4ZS/GbwVwFEe8pg1dzGHVMceIBURlOvOM
+	 QdzTvQMG6L7JAfP/1diC1UG4oJ5NMFHYZkcpsN6ce+VlHA2rsGashGa2AtimUEYSzC
+	 lchk/rbR1D3cbZBLdFlHwa7THwgiLpx/NYkKLz8j5+haRThejJfwH13USb5RWRQGaD
+	 Pma4ggmLBdSPy2lq3QzS8IwHzd44H2Tg1vgGEtE9AdPJIWDJv+B/8fwrlCuiH2YeyB
+	 8YTKkOKsI1hZQ==
+X-Spam-Level: 
+Received: from gaia.codewreck.org (localhost [127.0.0.1])
+	by nautica.notk.org (Postfix) with ESMTPS id B0F03C009;
+	Mon,  4 Mar 2024 13:11:43 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+	t=1709554306; bh=s0/+PZLwbDwwVcX3U624+7+5k1GRK8btyXeIYeNGilQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=m4cofuHGsCq7kPOOJlTP4Z7gHG/Mf10X5QX9ZZeimha65Jby3bQTFP/rXT53+Os3W
+	 YgYbPPjIF0/4V8s/VHkVxn0nTQqiEcqJEdOFL+H7qjHNzJiD6kNyX4jrwKFKX3420e
+	 EDbXtftJCWcCRp8Ok9bs9yrK8F3t6y420Gnb7bOL+HOBiOwKdvv7BFG/w09NelNuvQ
+	 hsQxlYC+fPhGmdgc/U8V8T2tOGqI5OJPhCn4AcAlxnsKkbPRRBvgKLTjPGWLhTLhbK
+	 DxITGSeiH+b4crdq74datPT90S77JJEWBYLRqnbreva6rVfcdnr1lV923CokTDUkMJ
+	 NJTUn3tsNwwgQ==
+Received: from localhost (gaia.codewreck.org [local])
+	by gaia.codewreck.org (OpenSMTPD) with ESMTPA id 05491c99;
+	Mon, 4 Mar 2024 12:11:38 +0000 (UTC)
+Date: Mon, 4 Mar 2024 21:11:23 +0900
+From: Dominique Martinet <asmadeus@codewreck.org>
+To: Christian Brauner <brauner@kernel.org>
+Cc: xingwei lee <xrivendell7@gmail.com>, linux-kernel@vger.kernel.org,
+	samsun1006219@gmail.com, linux-fsdevel@vger.kernel.org,
+	syzkaller@googlegroups.com, jack@suse.cz, viro@zeniv.linux.org.uk,
+	Eric Van Hensbergen <ericvh@kernel.org>, v9fs@lists.linux.dev
+Subject: Re: WARNING in vfs_getxattr_alloc
+Message-ID: <ZeW6a1OK-lhCbAf0@codewreck.org>
+References: <CABOYnLwY5Y499j=JgWtk9ksRneOzLoH_G9dYZTwXi=UvLbUsSg@mail.gmail.com>
+ <20240304-stuhl-appetit-656a443d78a5@brauner>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] Input: iqs626a - Use scope-based resource management
- in iqs626_parse_events()
-Content-Language: en-GB
-To: Julia Lawall <julia.lawall@inria.fr>, linux-input@vger.kernel.org,
- kernel-janitors@vger.kernel.org, Dmitry Torokhov
- <dmitry.torokhov@gmail.com>, Jeff LaBundy <jeff@labundy.com>,
- Rob Herring <robh@kernel.org>,
- =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>
-References: <8a7607f8-d634-415e-8269-e26dcc0f9fdc@web.de>
- <ZeU8ENmnPj3sKxAv@nixie71> <ZeVOPSt0L1D4BxuZ@google.com>
- <e8a2b63f-4f9a-463b-b419-c5f673191111@web.de>
- <b91fe21-fe2-eac8-d1ee-ea8922a08861@inria.fr>
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <b91fe21-fe2-eac8-d1ee-ea8922a08861@inria.fr>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:PKES2OXGqOX5haTvklakPWg73v8jW8wtWclFnqH2pzuUBW7Xr/w
- A7vLT6ATYTbJCX52lGPrSnYwgWGdPvOtk/tT0Hq9gOhLL5TpBaFVVChg48PyAY8cOl8h7lo
- DUidwoYKeYgHpNQfBqCu0lQai6cmp5xznL8rdueAnME+ruajHrPr8O7VRg59m0prqwJb/6a
- qrNJuFRqPRdnGA6al/OxQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:DNcDAss1Lss=;J+Ty/FXrv4R1l3N0EljlsZQhbMX
- e+tYAqBtBYmJg3e1gA/d67ve0J8cQuNw8Suas1sIgfGZskJNuPTkukqwm5UEkxdAyT3vjckmv
- MfS109EG+fH2VtNp2C/BawYffFYWMW9lZ8lpYLAXBGN4u3nxG20Z1ZG6XtyDeibgNN/Sb3MyI
- kPzYEWLfBJkurOUy/DUda/zblrQ6TjxL64yoLxWmVV9gNZzK3e8T0dp37B5zjz543w6hhlKH9
- u8gKEF9Z5/fe5yzvpIwa2EMvp48ckEy2LcwlYpSu8+pUj06CgQU9KLB1RhJoMvtRu9KM3c9uk
- vtcT6xkEGZHAuAuzyF+/BBXqwIUimqmdNJ7amxLSoqbDu1lGvW+Zy3ew47SRTlgnWkz81Wf2Q
- TXpAMGuYEXXZpTh2ZTPTAOG2XwuR9l79ELZ6Do2BnClxmjK3C3RIRa353YTCYXSSI0FA3RW9y
- t86kC61H1uT4X/PF5dRMOf7wsgWQuVu0XJP/cddIQLH51Xth/Wz2DdLOsxq8lyy97PMEVyqjy
- V0USe2t7YzRfEsASjdMYCx+6WqmYVn+u04PCHq+zx8lrNHit2qsz8T5zLQXh5N1y+KU1wlbES
- skxAYskP2K2dmC8NAe2mqsX0VV0pM8U4Sri5v8OTLaqkZ4GrqaQJVoGBsqnKky2WoZ1eMPMlE
- uj/Y1/9e3Hf4McYl1Ei0B7RBDoX4GRC0FAn0Yf2CBwO5PjY2YMIM8QztXF80s6q1NLZ8D02KQ
- 6U5IuNmef30R3FscUbMWRY4fUBiSR9/yKmzazpyHVEr4R8F9LTYKLBErRCsLOC5vY0hZEw8ar
- 3NQ/UZ9RmGms6lWsFxT+ZwvlA/kIdiknUNt6d/rpB4Ak0=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240304-stuhl-appetit-656a443d78a5@brauner>
 
->> Scope-based resource management became supported also for this software
->> area by contributions of Jonathan Cameron on 2024-02-17.
->>
->> device property: Add cleanup.h based fwnode_handle_put() scope based cl=
-eanup.
->> https://lore.kernel.org/r/20240217164249.921878-3-jic23@kernel.org
->>
->>
->> * Thus use the attribute =E2=80=9C__free(fwnode_handle)=E2=80=9D.
->>
->> * Reduce the scope for the local variable =E2=80=9Cev_node=E2=80=9D int=
-o a for loop.
-=E2=80=A6
->> +++ b/drivers/input/misc/iqs626a.c
->> @@ -462,7 +462,6 @@ iqs626_parse_events(struct iqs626_private *iqs626,
->>  {
->>  	struct iqs626_sys_reg *sys_reg =3D &iqs626->sys_reg;
->>  	struct i2c_client *client =3D iqs626->client;
->> -	struct fwnode_handle *ev_node;
->>  	const char *ev_name;
->>  	u8 *thresh, *hyst;
->>  	unsigned int val;
->> @@ -501,6 +500,8 @@ iqs626_parse_events(struct iqs626_private *iqs626,
->>  		if (!iqs626_channels[ch_id].events[i])
->>  			continue;
->>
->> +		struct fwnode_handle *ev_node __free(fwnode_handle);
->
-> Doesn't this need to be initialized?
+Christian Brauner wrote on Mon, Mar 04, 2024 at 12:50:12PM +0100:
+> > kernel: lastest linux 6.7.rc8 90d35da658da8cff0d4ecbb5113f5fac9d00eb72
+> > kernel config: https://syzkaller.appspot.com/text?tag=KernelConfig&x=4a65fa9f077ead01
+> > with KASAN enabled
+> > compiler: gcc (GCC) 12.2.0
+> > 
+> > TITLE: WARNING in vfs_getxattr_alloc------------[ cut here ]------------
+> 
+> Very likely a bug in 9p. Report it on that mailing list. It seems that
+> p9_client_xattrwalk() returns questionable values for attr_size:
+> 748310584784038656
+> That's obviously a rather problematic allocation request.
 
-This variable should usually be set in both branches of the subsequent if =
-statement,
-shouldn't it?
+That's whatever the server requested -- in 9p we don't have the data at
+allocation time (xattrwalk returns the size, then we "read" it out in a
+subsequent request), so we cannot double-check that the size makes sense
+based on a payload at this point.
 
-Please take another look at the proposed scope reduction
-for the affected variable.
-May additional curly brackets be omitted for this source code transformati=
-on?
+We could obviously add a max (the current max of SSIZE_MAX is "a bit"
+too generous), but I honestly have no idea what'd make sense for this
+without breaking some weird usecase somewhere (given the content is
+"read" we're not limited by the size of a single message; I've seen
+someone return large content as synthetic xattrs so it's hard to put an
+actual number for me).
+If the linux VFS has a max hard-wired somewhere plase tell me and I'll
+be glad to change the max.
 
-Regards,
-Markus
+Otherwise then as far as I'm concerned if a server returns a huge value
+they'll get allocation failures and that's about as bad as it'll get; a
+malicious server could probably do quite a bit of bad if they put their
+mind at it (perhaps a neverending directory listing or some other
+metadata trickery), I wouldn't advise anyone to mount a storage they
+don't trust.
+
+-- 
+Dominique
 
