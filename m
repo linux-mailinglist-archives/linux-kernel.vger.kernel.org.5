@@ -1,140 +1,228 @@
-Return-Path: <linux-kernel+bounces-89998-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89999-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 535F186F8C5
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99E5386F8C6
 	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 04:08:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8771CB20E25
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 03:08:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC3FD1C20FB0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 03:08:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2497F4A15;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 919BE4C6B;
 	Mon,  4 Mar 2024 03:08:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QJbLIZXS"
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b="W3gYmJ5K"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3ED217CE;
-	Mon,  4 Mar 2024 03:08:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDB5917C9
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 03:08:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709521684; cv=none; b=oH4eTpdrAmJO6nZjrCLsAmatrS1ef7aUugsSJc2xdu4UfYzGMUS7ConQEZX3d+kCWiTCKFOF0Pqpr8FjNFlybGq0d0JUUaqPpT+oKoH9KmVDTZbgjAAueluHiVt5mt149Y3e6zDKkZgjgdrauqOIGBf7nljs3oCeDH/PAGvPJX8=
+	t=1709521684; cv=none; b=kklfAn24y1K44zP69zjXkNbt5PxAQJP2HzYzWZSRLtW3CmOF801KkcNt7Q7y9ZcJ9R6QDKbBxFUxCGV6jH8ozDaucH/oN/MOPYwoGhEIr6ovF1N63qtfDnCTk3hc5XH8dfqld68f9xZvYQ/JCwgnj0/76lio+23KSfP/dp8lGrI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709521684; c=relaxed/simple;
-	bh=3BI8B2Bp4XeQbxQpsn++p8FJGrgiOurWA5aDjJl5cVM=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i+t/l62vqLVD+ozBnmF7msudSU7JysRE7F+Kkz87EkS+ldxdHNfCVHZmd2ml4q1M5ISrdryzX9frRMwXymE7pCDynyoZajacjPCkDs9vcJtPktawdsGGU2BwlXQN4c5P1T5QsZc9ira0ur4jbCby9ulAr5UYvUysuLyJbG+ovqM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QJbLIZXS; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e5dddd3b95so1219277b3a.1;
-        Sun, 03 Mar 2024 19:08:02 -0800 (PST)
+	bh=yZYo83Z2W6CRyr8MaaAUL6vnyuB7o2l8XMnQn64c75s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=S3kgyL/RgJZLZ49PytFwQw40Ylb1XfUjJh7mJEKP5AWZN9M63fvzsctakTn8nHpKQabUz4qOCma04eWDlswYVvdnB4XT9l4gQ1H4Kw9V7914rGfSEUxm4eelQWNtTn0mFkwY/XOAOTtZx+tfb79QupTAH2VMLZjmuIuW10h8ESc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com; spf=pass smtp.mailfrom=shopee.com; dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b=W3gYmJ5K; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shopee.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1dca160163dso39040225ad.3
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 19:08:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709521682; x=1710126482; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=09c5Ld8ZWpizXtKH4r3UpdHmyvyQCrCH0kV5BMr3LS0=;
-        b=QJbLIZXSrqr+kTTbEsicCODd2Q/7qSA5XMkjsNnu1lyoVMEd0PX4IuV5cbIunjyw66
-         gYjL8fEDIvNXgOA509EYO9Y5TxW2ZO0stAvFYLyFrTRQvfJXQ+Mn0YoM65SIKqIRklwy
-         nMt7/9FCrkgnw66UhgZo6GiYsS5DIDsmdkB2alTRFzphDhno18N9fBpgax9qlRh5k/jJ
-         e8xrNL9nLPqqcQAApZbEe7zCDkMvE40LVw81jfQBkHILjDCWOA22w8p5qXGfd01rXsdn
-         NsoweUOE+DVrPa2r/tKzqWp6yyEQG1sREd9bzxxnK9YfP7aSpwgUxkUlkL15yjPPktz0
-         Gavw==
+        d=shopee.com; s=shopee.com; t=1709521682; x=1710126482; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aUDui+SoGtCzCcd28AP+HAZizOhj0wayhw6lwCsOegY=;
+        b=W3gYmJ5K5WHJM7Iylv36P60GH/1Q+gu/LoXWLpDAiJ2vz/S+G4e4A4uwoXsvUXjefG
+         pkM4veUAg+sPpFKmyZVMe9/ikXNsMSaiXT4sq6KJWF+E3hS85LQzu67DCnRzdM8JwpDp
+         TXAu/j4zNOMdo2U3INHc2k4aJlln4ZNDskYBo6zRBLcm/k7u6JtZzfcG4A4vJ/NHcO47
+         rT2+mQOgr/LqKkerNJTFso0d/r2YA3+jkOEaFK2SWrVl3APdSD3Fu5bvkKl1LNeAmeHy
+         YysgqZdFxpbb24P8VHTYnqwf0PurqYnmHpF+GtvWNZJ5DLf/AsXBp2RCScIgvbN9MyIA
+         2VTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1709521682; x=1710126482;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=09c5Ld8ZWpizXtKH4r3UpdHmyvyQCrCH0kV5BMr3LS0=;
-        b=QjcuBNKyBzWP5GTuAhNfzWUqMXjVQD04hEz8BoelDf2cc3xL6yL3R4XjH19Bsjf9tD
-         ZaN5Dde3yRA0jepM5p6zh9e2l/lddwCbMqZ4L974iZObdtMqmL2zlv3ejjfvOUtxwLIG
-         JnIlJIK1vp6CCBIx9DhRIqyoONLiDrqwyTaUhVCtE0lgb9KikqJSVk2TEbRAzvdfm20S
-         5rPIT+0scoQbWUpGexxUCq0imUnwFq8SxeRDBjpsFpdhRw4h7oFzzXhbahYdRKukjZC/
-         AoxGyTiqKZRic7zhYns/rphwpIPhOWnnbC5jpMg94ogaqe9ZhMDuBMEEntNNbrj8NEjg
-         iXDg==
-X-Forwarded-Encrypted: i=1; AJvYcCWuMEWl0WrbE8EOFiIjnzIO4izAXCsEleWvYWEGDueQ1MqexzGuE4vhPsBsLCeSCM6h+EckfWzSPcjDpH5OCP/+vXW+P/1LwxLl6ffCpZvp3s4oCBCEF3SJSneiymb3nHswmRzTFhDy+MfRT3NJ7CF+nqIsWuYRCptt88H+vPeuxQvNAg==
-X-Gm-Message-State: AOJu0Yz3sAtTVoaRJ5cS/GxQIa/EyB70w/eFPc0XU36zgnSnpMQ/0na1
-	C7SifHf8g64R6qZmLA5ACNlHteRKroPgrUfByowdrCGnWbEsz5RO
-X-Google-Smtp-Source: AGHT+IG2uYM8bLWoyeF3gdZVlOJfprj9tSG/wxizpVtatiHSeXDThSwnJefuUnh4WouBjPO9U9WXKA==
-X-Received: by 2002:a05:6a20:8f29:b0:1a1:461a:3691 with SMTP id b41-20020a056a208f2900b001a1461a3691mr6916853pzk.15.1709521682220;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=aUDui+SoGtCzCcd28AP+HAZizOhj0wayhw6lwCsOegY=;
+        b=wfJuqwzv5c3Sihmlrz62+hGz4eWyfnsFuqPFS8cSEXuyV2jE+NKoPuRZZgclMBJyaM
+         n541FhEu7NJPfgX3jRlzdvSzGXqAeKuuW13s7fOmcU8XGQbLiNLKnPwiWCO1zhoIahXH
+         mpVzIi66QnwfTzYtJL8/ii9TsFx4YSsUXTaq1lW3d5geFjKPAnWtzsl2ghDdz1HYD4pq
+         DlC0C3oMxhIB8+ERew+TegYgaZUiU2zVmunHyGZkQwwnl7WA1CGFT7R8KUXb1Ht0xxoV
+         vHedSZq8chrucBZx6QRXADju50NhyqYzrJar2mcbFVk6+epC0Tmp1JOdFxwnkLquFLi1
+         iSxg==
+X-Forwarded-Encrypted: i=1; AJvYcCWuBhiI2v7CtvZAoxY/e7iR/bcFVdpPcyMzgF6Xk29fF8wojkgP/HgJOOemT03iVt1a39dxpFu4nFw5oIv3aPVlp/OLSHZ+poLPTgbR
+X-Gm-Message-State: AOJu0YzUcrQwCpudn5Ybqjsh4+5t2PcIYPFJwy65rKMXAyGLSPU7KLKw
+	5wfRzqtvoVagn0zgTMPstIBGnos5SQtXCWSbZPFzUu77UKuY7adqzFTn6wkPnKWMoQV4eVo/qbh
+	4UnJy2g==
+X-Google-Smtp-Source: AGHT+IE/3Ek7ES6ikbweqGG+hs+nFUt3rgE9AFYivwlVALodbm5ZqdkRdubMV12wGC7dAvhSijYv8A==
+X-Received: by 2002:a17:902:d3c4:b0:1db:ccd0:e77e with SMTP id w4-20020a170902d3c400b001dbccd0e77emr8078485plb.35.1709521682152;
         Sun, 03 Mar 2024 19:08:02 -0800 (PST)
-Received: from debian ([2601:641:300:14de:bae0:aa65:8bdd:7233])
-        by smtp.gmail.com with ESMTPSA id a3-20020aa78643000000b006e0debc1b75sm6348979pfo.90.2024.03.03.19.08.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+Received: from [10.54.24.74] (static-ip-148-99-134-202.rev.dyxnet.com. [202.134.99.148])
+        by smtp.gmail.com with ESMTPSA id c7-20020a170902d48700b001db5079b705sm7289466plg.36.2024.03.03.19.07.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
         Sun, 03 Mar 2024 19:08:01 -0800 (PST)
-From: fan <nifan.cxl@gmail.com>
-X-Google-Original-From: fan <fan@debian>
-Date: Sun, 3 Mar 2024 19:07:40 -0800
-To: "Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com>
-Cc: Hao Xiang <hao.xiang@bytedance.com>,
-	Gregory Price <gourry.memverge@gmail.com>,
-	aneesh.kumar@linux.ibm.com, mhocko@suse.com, tj@kernel.org,
-	john@jagalactic.com, Eishan Mirakhur <emirakhur@micron.com>,
-	Vinicius Tavares Petrucci <vtavarespetr@micron.com>,
-	Ravis OpenSrc <Ravis.OpenSrc@micron.com>,
-	Alistair Popple <apopple@nvidia.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-	Huang Ying <ying.huang@intel.com>, linux-acpi@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	"Ho-Ren (Jack) Chuang" <horenc@vt.edu>,
-	"Ho-Ren (Jack) Chuang" <horenchuang@gmail.com>,
-	linux-cxl@vger.kernel.org, qemu-devel@nongnu.org
-Subject: Re: [PATCH v1 0/1] Improved Memory Tier Creation for CPUless NUMA
- Nodes
-Message-ID: <ZeU6_BnXIUs6pCym@debian>
-References: <20240301082248.3456086-1-horenchuang@bytedance.com>
+Message-ID: <668d1f61-9111-4239-9766-f43bef3a9828@shopee.com>
+Date: Mon, 4 Mar 2024 11:07:57 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240301082248.3456086-1-horenchuang@bytedance.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] x86/resctrl: Add tracepoint for llc_occupancy
+ tracking
+To: James Morse <james.morse@arm.com>, reinette.chatre@intel.com
+Cc: fenghua.yu@intel.com, babu.moger@amd.com, peternewman@google.com,
+ x86@kernel.org, linux-kernel@vger.kernel.org
+References: <20240229071125.100991-1-haifeng.xu@shopee.com>
+ <20240229071125.100991-3-haifeng.xu@shopee.com>
+ <4ddba36d-3c7d-4412-8b09-d55af493423e@arm.com>
+From: Haifeng Xu <haifeng.xu@shopee.com>
+In-Reply-To: <4ddba36d-3c7d-4412-8b09-d55af493423e@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Mar 01, 2024 at 08:22:44AM +0000, Ho-Ren (Jack) Chuang wrote:
-> The memory tiering component in the kernel is functionally useless for
-> CPUless memory/non-DRAM devices like CXL1.1 type3 memory because the nodes
-> are lumped together in the DRAM tier.
-> https://lore.kernel.org/linux-mm/PH0PR08MB7955E9F08CCB64F23963B5C3A860A@PH0PR08MB7955.namprd08.prod.outlook.com/T/
 
-Is this the right patchset you want to refer to? It is about node
-migration between tiers, how is it related to the context here?
 
-Fan
+On 2024/3/2 01:47, James Morse wrote:
+> Hello!
+> 
+> On 29/02/2024 07:11, Haifeng Xu wrote:
+>> In our production environment, after removing monitor groups, those unused
+>> RMIDs get stuck in the limbo list forever because their llc_occupancy are
+>> always larger than the threshold. But the unused RMIDs can be successfully
+>> freed by turning up the threshold.
+>>
+>> In order to know how much the threshold should be, perf can be used to acquire
+>> the llc_occupancy of RMIDs in each rdt domain.
+>>
+>> Instead of using perf tool to track llc_occupancy and filter the log manually,
+>> it is more convenient for users to use tracepoint to do this work. So add a new
+>> tracepoint that shows the llc_occupancy of busy RMIDs when scanning the limbo
+>> list.
+> 
+>> diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+>> index c34a35ec0f03..ada392ca75b2 100644
+>> --- a/arch/x86/kernel/cpu/resctrl/monitor.c
+>> +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+>> @@ -362,6 +363,13 @@ void __check_limbo(struct rdt_domain *d, bool force_free)
+> 
+> [expanded the diff hunk for better context]
+>>               entry = __rmid_entry(idx);
+>>               if (resctrl_arch_rmid_read(r, d, entry->closid, entry->rmid,
+>>                                          QOS_L3_OCCUP_EVENT_ID, &val,
+>>                                          arch_mon_ctx)) {
+>>                       rmid_dirty = true;
+>>               } else {
+>>                       rmid_dirty = (val >= resctrl_rmid_realloc_threshold);
+>>               }
+>>
+>>               if (force_free || !rmid_dirty) {
+>>                       clear_bit(idx, d->rmid_busy_llc);
+>>                       if (!--entry->busy)
+>>  				limbo_release_entry(entry);
+>>  		}
+> 
+>>  		cur_idx = idx + 1;
+> 
+> Ideally this would be the last line in the loop, its how the iterator advances to the next
+> bit in the bitmap.
+> 
+> 
+>> +		/* x86's CLOSID and RMID are independent numbers, so the entry's
+>> +		 * closid is a invalid CLOSID. But on arm64, the RMID value isn't
+>> +		 * a unique number for each CLOSID. It's necessary to track both
+>> +		 * CLOSID and RMID because there may be dependencies between each
+>> +		 * other on some architectures */
+>> +		trace_mon_llc_occupancy_limbo(entry->closid, entry->rmid, d->id, val);
+> 
+> I agree outputting both these values is the right thing to do.
+> 
+> resctrl_arch_rmid_read() could return an error, in which case val here is either
+> uninitialised, or the value of another RMID.
+> Could you put the tracepoint in the 'else' section of the if/else after
+> resctrl_arch_rmid_read()? This way it will only output a value to user-space if it is correct.
+> 
+> 
+>> diff --git a/arch/x86/kernel/cpu/resctrl/trace.h b/arch/x86/kernel/cpu/resctrl/trace.h
+>> index 495fb90c8572..35149a75c951 100644
+>> --- a/arch/x86/kernel/cpu/resctrl/trace.h
+>> +++ b/arch/x86/kernel/cpu/resctrl/trace.h
+>> @@ -35,6 +35,21 @@ TRACE_EVENT(pseudo_lock_l3,
+>>  	    TP_printk("hits=%llu miss=%llu",
+>>  		      __entry->l3_hits, __entry->l3_miss));
+>>  
+>> +TRACE_EVENT(mon_llc_occupancy_limbo,
+>> +	    TP_PROTO(u32 ctrl_hw_id, u32 mon_hw_id, int id, u64 occupancy),
+>> +	    TP_ARGS(ctrl_hw_id, mon_hw_id, id, occupancy),
+>> +	    TP_STRUCT__entry(__field(u32, ctrl_hw_id)
+>> +			     __field(u32, mon_hw_id)
+> 
+>> +			     __field(int, id)
+> 
+> Nit: Could we call this 'domain_id'? We've got two other ids already, so we should be
+> clear what each one is!
+> 
+> 
+>> +			     __field(u64, occupancy)),
+> 
+> Nit: 'occupancy_bytes'? Just to avoid user-space thinking it needs to convert from the
+> hardware unit in Intel's SDM ... and just in case we ever have to add another parameter
+> that is sort of occupancy too.
+> 
+> 
+>> +	    TP_fast_assign(__entry->ctrl_hw_id = ctrl_hw_id;
+>> +			   __entry->mon_hw_id = mon_hw_id;
+>> +			   __entry->id = id;
+>> +			   __entry->occupancy = occupancy;),
+>> +	    TP_printk("ctrl_hw_id=%u mon_hw_id=%u domain=%d llc_occupancy=%llu",
+>> +		      __entry->ctrl_hw_id, __entry->mon_hw_id, __entry->id, __entry->occupancy)
+>> +	   );
+>> +
+> 
+> Tracepoints always expose some implicit details of the kernel internals which can make
+> supporting them a headache. In this case - I've had some discussion with folk about future
+> work to defer the limbo work as late as possible - until a new control or monitor group is
+> allocated. This would be to avoid interrupting user-space tasks to update the limbo list
+> when the result isn't needed until alloc time.
+> 
+> In this case the tracepoint wouldn't be hit unless user-space made a mkdir() syscall to
+> force an update - I think this can just be a documentation problem.
+> 
+> I also don't think we should commit to this outputting values for all dirty RMID - which
+> it does today. If group creation were to fail because there weren't any free RMID you'd
+> get all the values, I think this is the only case where user-space would care.
+
+Yes. 
 
 > 
-> This patchset automatically resolves the issues. It delays the initialization
-> of memory tiers for CPUless NUMA nodes until they obtain HMAT information
-> at boot time, eliminating the need for user intervention.
-> If no HMAT specified, it falls back to using `default_dram_type`.
+> Could we document the properties of the the trace-point that can be relied on in
+> Documentation/arch/x86/resctrl.rst ?
 > 
-> Example usecase:
-> We have CXL memory on the host, and we create VMs with a new system memory
-> device backed by host CXL memory. We inject CXL memory performance attributes
-> through QEMU, and the guest now sees memory nodes with performance attributes
-> in HMAT. With this change, we enable the guest kernel to construct
-> the correct memory tiering for the memory nodes.
+> Something like:
+> | This tracepoint gives you the precise occupancy values for a subset of RMID that are not
+> | immediately available for allocation. This can't be relied on to produce output every
+> | second, it may be necessary to attempt to create an empty monitor group to force an
+> | update. Output may only be produced if creation of a control or monitor group fails.
 > 
-> Ho-Ren (Jack) Chuang (1):
->   memory tier: acpi/hmat: create CPUless memory tiers after obtaining
->     HMAT info
+> I think we'll always walk a list of dirty RMID before failing to allocate an RMID, so this
+> should be future proof.
 > 
->  drivers/acpi/numa/hmat.c     |  3 ++
->  include/linux/memory-tiers.h |  6 +++
->  mm/memory-tiers.c            | 76 ++++++++++++++++++++++++++++++++----
->  3 files changed, 77 insertions(+), 8 deletions(-)
 > 
-> -- 
-> Hao Xiang and Ho-Ren (Jack) Chuang
+> With the val and documentation bits:
+> Reviewed-by: James Morse <james.morse@arm.com>
 > 
+> 
+> Thanks,
+> 
+> James
+
+Thanks for your suggestions.
 
