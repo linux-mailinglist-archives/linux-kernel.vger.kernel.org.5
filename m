@@ -1,161 +1,206 @@
-Return-Path: <linux-kernel+bounces-89958-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89959-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A7BC86F820
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 02:15:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6320E86F823
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 02:17:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 38EA21F211E3
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 01:15:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4409B1C20B95
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 01:17:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3743017C8;
-	Mon,  4 Mar 2024 01:15:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 627DF1392;
+	Mon,  4 Mar 2024 01:17:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VpaSsHvm"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="Lq4kxYHr"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BFF5399;
-	Mon,  4 Mar 2024 01:15:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1133F17C8
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 01:17:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709514903; cv=none; b=L652iqzQAPLip0AS9ACRoa/GL4mRqd/eMvXt6PD/ugcXbkb0sp1fY9IrYN5gvf0aLfpK2O6rcXE6PISeiv2HBH8SQggmq1IixbZPB1CMKE7unWxNwMNpi7oglyRtPyDWhx6icoJ9QtxcI18GpeH9ZG5Xt9a2w4lC46j2utDgXPw=
+	t=1709515022; cv=none; b=BY+H1CTYRkp262ODmba4foItOGMe++w3heEV4UlVWDhEobJKOaAgHyWK2OYio3ztD7ALv1/VfBpHb1IzCccYN4YUhCJieysGn8NMffsLtqbR47VAIWJvIo31Lme4EE0gjRbq/tGNS7lMZD0MAvwtM+8TuzAjWPjW1Q7qwyOL670=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709514903; c=relaxed/simple;
-	bh=Is9g0jTE6Hghw4bYKw5kyfKhPC01Ffmw3Zw+sD4jVFM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XLjv/D+nTpodkSTWizlZYTVQUDqluhdixgYJM1o4jP77DB3G2Hy1stbc+2wFphXpL8DidmVxute7q3t4sZTuHU61LEy8gYriIDRLtbm72Z5Au610m71yHnlDZQkjGIGfgyiyZF/ifu6kK+It1EXs7+1nbmdSQts2iVWftl4QGAw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VpaSsHvm; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1dcab44747bso31882495ad.1;
-        Sun, 03 Mar 2024 17:15:01 -0800 (PST)
+	s=arc-20240116; t=1709515022; c=relaxed/simple;
+	bh=b7SSYspclds0BRCRMLVbMDZF22HsnPgTIN5c8uq/atE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DHSOqGJ40uEp1sx8kBo+TTYGC0c+5ownJB9Nbr6B3m6vx0sNVjf8nM+vayCM70pyln/7xmEkqBg1vz+24AuxrX237RLruNOBv+RMHPETQaij/znrz6szym9bKxOeD2oBmW44b+XEIeYWfdCZIlC9Ms2ywJvhYW3ZVy7FjZBuFGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=Lq4kxYHr; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1dccb2edc6dso32109795ad.3
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 17:17:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709514901; x=1710119701; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=J7+1VZ0sKh4c9zBtqZ8bdjGmhnnmQ3652uHnuEg9cXA=;
-        b=VpaSsHvmsq8wPxFxaVNe2k8EnXqmcm+fwBhjAVyzu+u4sDsBPDBZC3y81tGIubjuIx
-         K4JMcyVWYboXOAtx/0nfPOTvcNBmttNxkj5PzO7YyItuyd7nuE9jkoSMDuz/zpqu+Zpd
-         JDKZ7Qn08vNQ+yCp/NOSyAqfCx5JXF/3SrjqrAoQgcEteyjERPQVpCKozwX0UQzM68lf
-         nrtRfBeR2MsmZqkAH2BwgngLivWHPqt9IDw2tVxobgN4Q0Jx4hH4LEd/kjwiPQ8ymkke
-         6pLEraPupI4qGYpEZJwLy3Hmycz4zW7AwG0Eitfr8/iBYn4zQrV15F4StUYXnxKSsJVj
-         IvqQ==
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1709515020; x=1710119820; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Et25xNcaZ8dKVZKTWn3ytnYkOD3/9xAeQVIkCIdPgRA=;
+        b=Lq4kxYHrOyTGL47PBBXiJG8XXdzo0/uX8eXP0kHhIJfwf2AlR8Zcyf8rNo8CgVnNqb
+         S8IIClAUqJv2o8QopaZ2tUnw6Z368GMsO00A9t0xzMBboFLmV3UcpSNuYFKx+Wt9L7Lc
+         wtGmmuSUecSQZV7OtQ9EWwgj4RF++jztkPFAkPpELXI/0zVuh0obYHIrbf1e5gLkwK0s
+         Dh/lB681niDMxwwDI7wXVnhIr/RL+qBs8iEv/zrlgq3MuifpFT4xQZAYGBPUbqk+w5a/
+         Cwsla5vIOREsYwfyggz7WN3SXUCL7gFu0MQpyLryFsMY1E8brRUzuO/rWqgtGF8SpXf3
+         CVEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709514901; x=1710119701;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=J7+1VZ0sKh4c9zBtqZ8bdjGmhnnmQ3652uHnuEg9cXA=;
-        b=QmVN1j87Q6h9ixYQ5XbLKuNv/iiHlJjKZl/TipaEbfAve+vrVwXtWnUdHnlNBO/HHz
-         ek4fviPSmDjOKNI8XZebhkRlcGtxHykKEaSaJQMQrhManHrG1mYzZgeOssDbNqM7V/+o
-         B+Aqif9w1b4kW4kEWuqx8qkxoilfLNB4wMiPA8XuUpo/dPeMpsR3jMCEGL1svULqwoV0
-         hNCm3tUJM8n3XWT+76KuAUHktG0eW3yqlL89Tu47ken46rkQQgiCSK+cfflz/HnqCaeM
-         og8MKWOQT+g4OLdcOryYXEMRLEWXd57EZRaU3O8xEPP29xl/PuqzgzXDXP9pdAShewfz
-         Rypw==
-X-Forwarded-Encrypted: i=1; AJvYcCVKedpZu5DoTDcbg37EflbEfS04jtM5InjBaq1Rsb+5+VoUJuOwPx+0zr5lMsk5ct0nczfGuKIpiJentRrUufSZC+FpfzUbpk9rW/4BUppbWcnaAN25r+d6MdH2/0nGzKKs+K8kgcqDWEtxnWkZn9H6nkqaxESkuRa0anQt5c7U5rT9cXCE6AleLaTF09R9wCnS1VWoLGnSYoeRf64Sfx4wVaPn
-X-Gm-Message-State: AOJu0YymeynGbXn+aFnktXY5vVoJu7BEjfxUe/JoNGErxXTz6mfd7ZZA
-	6FpcFmNVph4A1X8j7/YDaAeqi0wxPrzEsV2fxNOPrgaDi26AsQtA
-X-Google-Smtp-Source: AGHT+IEhK3iUr8gBsGpNgs3hqYm/t6yFB3ipQbpCNtATZpIrbUTkevMfOSYevSIdRpG7OBtzj6KfsQ==
-X-Received: by 2002:a17:903:2309:b0:1dc:43d:964 with SMTP id d9-20020a170903230900b001dc043d0964mr8277235plh.48.1709514901309;
-        Sun, 03 Mar 2024 17:15:01 -0800 (PST)
-Received: from [10.0.2.15] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id w1-20020a170902d10100b001dbb14e6feesm7212913plw.189.2024.03.03.17.14.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 03 Mar 2024 17:15:00 -0800 (PST)
-Message-ID: <ef93a03b-d43e-44e7-bb55-17b46d86104c@gmail.com>
-Date: Mon, 4 Mar 2024 10:14:59 +0900
+        d=1e100.net; s=20230601; t=1709515020; x=1710119820;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Et25xNcaZ8dKVZKTWn3ytnYkOD3/9xAeQVIkCIdPgRA=;
+        b=OZEqrCZDkgrOkUQx5CwlwCOSVZVpHw/8FXgmsGJBDp8g9H25xo9na/g+fJnn0o3V+q
+         nBmY75E3+rny6IxE5QvIW4dIft/xOsBSdG9qZe382fexWvbQvNf0wLJsIQ8aiOjfUHIS
+         H4dkZ/rZGpGw17nuOE3OpkdnUIEOowxKgzFzKBPJk639MOE0o7fUPYXKznrA8lhs8Qul
+         UU9kTgnfNmEDj8gClrorUTI8UTtcBbHoRxzPmFcA7wntpj4Xd+rZh95oP2tsc/nJql5p
+         uKzT3fm8cAGL8XaKqS5U78xwR1un9AEM9Jgvpy7xPJ/he3T7c4I5UTuu1kNin9gNH8L4
+         6bMA==
+X-Forwarded-Encrypted: i=1; AJvYcCWOOcSH2SpGYkOMbWgW7YPzx1ezCIP/1w6EaN6+aAECwyW9mVdGQxc131pQU0m/V5eF37VdpZsbnUV8+otb6ijKzJMf0+a6CMgA/6vF
+X-Gm-Message-State: AOJu0YyuXdiK93PBRIGqrWFLe1A9+0vp5dErIwZPWXBLm/HP/AVaS+Kd
+	lgktJ2PdtmrtdT+pCS56qaGbB/INY8yH6NV3o+aWMBS/oMR/uI8xL1CpvVsCBro=
+X-Google-Smtp-Source: AGHT+IHkP92HVlEQaJyjtxeGimyAxRhgYGP3Nf+sZvScwD+toU1xyj8AIK7lAKdqqqFDTXgrXsgkbA==
+X-Received: by 2002:a17:903:298e:b0:1dc:7fb4:20cb with SMTP id lm14-20020a170903298e00b001dc7fb420cbmr8978654plb.62.1709515020106;
+        Sun, 03 Mar 2024 17:17:00 -0800 (PST)
+Received: from dread.disaster.area (pa49-181-247-196.pa.nsw.optusnet.com.au. [49.181.247.196])
+        by smtp.gmail.com with ESMTPSA id p8-20020a170902e74800b001dd091cbc4esm1598569plf.181.2024.03.03.17.16.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Mar 2024 17:16:59 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1rgwwr-00Egwg-18;
+	Mon, 04 Mar 2024 12:16:57 +1100
+Date: Mon, 4 Mar 2024 12:16:57 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+	Ojaswin Mujoo <ojaswin@linux.ibm.com>, Jan Kara <jack@suse.cz>,
+	Theodore Ts'o <tytso@mit.edu>, Matthew Wilcox <willy@infradead.org>,
+	"Darrick J . Wong" <djwong@kernel.org>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	John Garry <john.g.garry@oracle.com>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC 3/8] iomap: Add atomic write support for direct-io
+Message-ID: <ZeUhCbT4sbucOT3L@dread.disaster.area>
+References: <555cc3e262efa77ee5648196362f415a1efc018d.1709361537.git.ritesh.list@gmail.com>
+ <6a09654d152d3d1a07636174f5abcfce9948c20c.1709361537.git.ritesh.list@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/3] docs: submit-checklist: change to autonumbered
- lists
-To: Jonathan Corbet <corbet@lwn.net>, lukas.bulwahn@gmail.com
-Cc: jani.nikula@intel.com, kernel-janitors@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- rdunlap@infradead.org, workflows@vger.kernel.org,
- Akira Yokosawa <akiyks@gmail.com>
-References: <20240229030743.9125-4-lukas.bulwahn@gmail.com>
- <8df0c587-8f5b-4523-89d7-dc458ab2c1df@gmail.com>
- <8734t7z4vs.fsf@meer.lwn.net>
-Content-Language: en-US
-From: Akira Yokosawa <akiyks@gmail.com>
-In-Reply-To: <8734t7z4vs.fsf@meer.lwn.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6a09654d152d3d1a07636174f5abcfce9948c20c.1709361537.git.ritesh.list@gmail.com>
 
-On Sun, 03 Mar 2024 08:55:51 -0700, Jonathan Corbet wrote:
-> Akira Yokosawa <akiyks@gmail.com> writes:
+On Sat, Mar 02, 2024 at 01:12:00PM +0530, Ritesh Harjani (IBM) wrote:
+> This adds direct-io atomic writes support in iomap. This adds -
+> 1. IOMAP_ATOMIC flag for iomap iter.
+> 2. Sets REQ_ATOMIC to bio opflags.
+> 3. Adds necessary checks in iomap_dio code to ensure a single bio is
+>    submitted for an atomic write request. (since we only support ubuf
+>    type iocb). Otherwise return an error EIO.
+> 4. Adds a common helper routine iomap_dio_check_atomic(). It helps in
+>    verifying mapped length and start/end physical offset against the hw
+>    device constraints for supporting atomic writes.
 > 
->>> -1) If you use a facility then #include the file that defines/declares
->>> +#. If you use a facility then #include the file that defines/declares
->>>     that facility.  Don't depend on other header files pulling in ones
->>>     that you use.
->>
->> Wait.  This will render the list starting from:
->>
->>     1. If you use ...
->>
->> In patch 1/1, you didn't change the ")".
->>
->> It was Jani who suggested "#.", but "#)" would work just fine.
+> This patch is based on a patch from John Garry <john.g.garry@oracle.com>
+> which adds such support of DIO atomic writes to iomap.
 > 
-> So I'm a little confused.  Is the objection that it renders the number
-> as "1." rather than "1)"?  That doesn't seem like the biggest of deals,
-> somehow, but am I missing something?
-> 
+> Co-developed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+> ---
+>  fs/iomap/direct-io.c  | 75 +++++++++++++++++++++++++++++++++++++++++--
+>  fs/iomap/trace.h      |  3 +-
+>  include/linux/iomap.h |  1 +
+>  3 files changed, 75 insertions(+), 4 deletions(-)
 
-I said at the top of my reply:
+Ugh. Now we have two competing sets of changes to bring RWF_ATOMIC
+support to iomap. One from John here:
 
-> I might be nitpicking too much, but let me go ahead...
+https://lore.kernel.org/linux-fsdevel/20240124142645.9334-1-john.g.garry@oracle.com/
 
-, and my point here was to let Lukas aware of the variation of auto-
-numbering patterns.  I don't object the change from "1." to "1)" if
-that change is intended and explained in the changelog.
+and now this one.
 
-HTML builder recognizes "1)", but renders it as "1.", while
-LATEX builder renders it as "1)".
+Can the two of you please co-ordinate your efforts and based your
+filesysetm work off the same iomap infrastructure changes?
 
-> A bigger complaint I might raise is that auto-numbering restarts the
-> enumeration in each subsection, so we have a lot of steps #1, which is a
-> definite change from before.
+....
 
-+1
+> @@ -356,6 +360,11 @@ static loff_t iomap_dio_bio_iter(const struct iomap_iter *iter,
+>  	if (need_zeroout) {
+>  		/* zero out from the start of the block to the write offset */
+>  		pad = pos & (fs_block_size - 1);
+> +		if (unlikely(pad && atomic_write)) {
+> +			WARN_ON_ONCE("pos not atomic write aligned\n");
+> +			ret = -EINVAL;
+> +			goto out;
+> +		}
 
-> That, of course, can be fixed by giving an explicit starting number in
-> each subsection, partially defeating the point of the change in the
-> first place.
+This atomic IO should have been rejected before it even got to
+the layers where the bios are being built. If the IO alignment is
+such that it does not align to filesystem allocation constraints, it
+should be rejected at the filesystem ->write_iter() method and not
+even get to the iomap layer.
 
-Right.
+....
 
-> 
-> I honestly have to wonder: does this document need the enumerated list
-> at all?  We don't refer to the numbers anywhere, so I don't think there
-> is much useful information there.  How about just using regular bulleted
-> lists instead?
+> @@ -516,6 +535,44 @@ static loff_t iomap_dio_iter(const struct iomap_iter *iter,
+>  	}
+>  }
+>  
+> +/*
+> + * iomap_dio_check_atomic:	DIO Atomic checks before calling bio submission.
+> + * @iter:			iomap iterator
+> + * This function is called after filesystem block mapping and before bio
+> + * formation/submission. This is the right place to verify hw device/block
+> + * layer constraints to be followed for doing atomic writes. Hence do those
+> + * common checks here.
+> + */
+> +static bool iomap_dio_check_atomic(struct iomap_iter *iter)
+> +{
+> +	struct block_device *bdev = iter->iomap.bdev;
+> +	unsigned long long map_len = iomap_length(iter);
+> +	unsigned long long start = iomap_sector(&iter->iomap, iter->pos)
+> +						<< SECTOR_SHIFT;
+> +	unsigned long long end = start + map_len - 1;
+> +	unsigned int awu_min =
+> +			queue_atomic_write_unit_min_bytes(bdev->bd_queue);
+> +	unsigned int awu_max =
+> +			queue_atomic_write_unit_max_bytes(bdev->bd_queue);
+> +	unsigned long boundary =
+> +			queue_atomic_write_boundary_bytes(bdev->bd_queue);
+> +	unsigned long mask = ~(boundary - 1);
+> +
+> +
+> +	/* map_len should be same as user specified iter->len */
+> +	if (map_len < iter->len)
+> +		return false;
+> +	/* start should be aligned to block device min atomic unit alignment */
+> +	if (!IS_ALIGNED(start, awu_min))
+> +		return false;
+> +	/* If top bits doesn't match, means atomic unit boundary is crossed */
+> +	if (boundary && ((start | mask) != (end | mask)))
+> +		return false;
+> +
+> +	return true;
+> +}
 
-That would make a lot of sense.
-Auto-numbered enumerated lists look mostly the same as bulleted lists
-in the source.
+I think you are re-implementing stuff that John has already done at
+higher layers and in a generic manner. i.e.
+generic_atomic_write_valid() in this patch:
 
-No strong opinion, but I'd respect Randy's preference of not applying
-this change.
+https://lore.kernel.org/linux-fsdevel/20240226173612.1478858-4-john.g.garry@oracle.com/
 
-        Thanks, Akira
+We shouldn't be getting anywhere near the iomap layer if the IO is
+not properly aligned to atomic IO constraints...
 
-> 
-> That said, I don't have strong feelings one way or the other, and can
-> certainly apply it as-is if that's the consensus on what we should do.
-> 
-> Thanks,
-> 
-> jon
+So, yeah, can you please co-ordinate the development of this
+patchset with John and the work that has already been done to
+support this functionality on block devices and XFS?
 
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
 
