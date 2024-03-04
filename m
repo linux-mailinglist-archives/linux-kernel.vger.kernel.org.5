@@ -1,119 +1,140 @@
-Return-Path: <linux-kernel+bounces-91377-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91378-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30397871058
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 23:48:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76965871059
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 23:49:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B47F4B22B9D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:48:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 951BD1C20EDD
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:49:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1C2D7C090;
-	Mon,  4 Mar 2024 22:48:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7262A7B3FA;
+	Mon,  4 Mar 2024 22:49:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ip0RjyIj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oSI5+VTf"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3F8F3C28;
-	Mon,  4 Mar 2024 22:48:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA33B482DA;
+	Mon,  4 Mar 2024 22:49:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709592512; cv=none; b=C0kjS1e8ZUsNJyb9lzfvOd+TT6OWBKgd9QAwM2yL/E9G+G7zMT0k/msihtQLZSUXXBJFD8pdNUuu1ygJTQMXKh2tACyJVpViW4nARzjJ9QEp5bNwqxdBSl9v9FvPU14EUnUJpOTCHCzuaGxseokR3DJNazmHGpoD5XBuV0HTk/I=
+	t=1709592541; cv=none; b=jHK0vnMJdGHmDZ+BNY+MeDMYqBvh+cpBkPkOuZQ/hamKhc6YeeMUNZbYzSnGrH9y2uwaYCtSlcBE18X69qFDhdG5boJS/4XlYabgdDkHh6eQU1eZmXgR927Ag0iqKrPYQTIOpbH8wPJ3oarwS5kT3XimNiQ3PzsO7kRcY4iYFlE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709592512; c=relaxed/simple;
-	bh=hjE6OxUTFHBTTEz1ASl4W0QebwmdYPeQryt4Ps2i3NQ=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=CLgG2pklWsnpmxXvUtGNpOKAangUueXc9TaJlbrKe7zckrHJ/OTbmkPnGwcFpxapp0PhqEznIdeMYvvrvTRNBYunx5uG96gEhUjamxqZkfxH3yP86oHazPEPl98A4zwFR3W1/iMv7ecEvai63CdnzF0Xq4rC4HtfwqU67LhgW3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ip0RjyIj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 638ADC433C7;
-	Mon,  4 Mar 2024 22:48:25 +0000 (UTC)
+	s=arc-20240116; t=1709592541; c=relaxed/simple;
+	bh=Go6snc8a0bxMBUaZuWvM6dM8w80yiKNmjOPVsc/hEVE=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=sQrjocANAoCIKm6zrvXhbEjHC65BTg4jv+TkDS4cpewRGO/1ACDBmyEQ9E+JUCRmLnFGsEGSlLhDloutE8AxqdGEc58eAeUBxElnsanrhXxncxwE3AcuTpotIGMEObyh06oN6ESVL3y0yzXaQ7smHn5HSUNAiNEy5UzY7oFyv9c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oSI5+VTf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5704C433C7;
+	Mon,  4 Mar 2024 22:48:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709592511;
-	bh=hjE6OxUTFHBTTEz1ASl4W0QebwmdYPeQryt4Ps2i3NQ=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=ip0RjyIjHfhNyYSpPWGt+Yytbdw2gnNRsCywVX7OcVJnWySUJURfB6ik+xwZNqcSh
-	 iI6rDJM1dBXkFmGVCfUIvnQTElzgdVM+t74eMg2/wmv8Y/MIZ/wlVQhoW/IM4iH5iO
-	 wxEx4DENeF5UO+FpHK5ngyRSeXnAXXfgwVdd5nbRlfrNpp24vFloZZ8dV1hHt6C9eF
-	 ZsKyEm9IHHyFLwvuAg4d8xfqB3nfsSzxZ+PbtdiQREX394Cpzf5o2EXwl3jTvX5Gdg
-	 TEXWFFZZel9aJbd3QSH8gl+M8tQJ1Y3smFVs7cU49HpSXr8Lt60dDeu0xVKhBbfupS
-	 AdsIROYBS7M/g==
+	s=k20201202; t=1709592541;
+	bh=Go6snc8a0bxMBUaZuWvM6dM8w80yiKNmjOPVsc/hEVE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=oSI5+VTf8I5jSXor2IKDBw7St635sHVpgRrXxFBI0RJ8Ieue6C9dNfO8IGOQatxp9
+	 6ot5U6CICgudnBqK3Sr0c/ehpba9Ss8qjrffImKmo2vrzsyq8/dYXyxPpQeHn0Rpli
+	 7mjlvjIMQDugw69AjfTubYSZPHo/0/poxlSO0ApWblsqNEN29yVOjvBPojEr3FV1ZS
+	 7/77Fv5oGjfpfJr9Dh71jEVzMlwIu9jrMcWPZRyI5nHsVPSQEhfAH+7gyVRgbR+XW+
+	 qGrFrmiomh7f7Nu9faK+N2KxBv4jeM01k6mzu80R0QIiDItIAKldrBIIM/TtnYretM
+	 qd7Kq8+rAXoMQ==
+From: SeongJae Park <sj@kernel.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org,
+	patches@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	torvalds@linux-foundation.org,
+	akpm@linux-foundation.org,
+	linux@roeck-us.net,
+	shuah@kernel.org,
+	patches@kernelci.org,
+	lkft-triage@lists.linaro.org,
+	pavel@denx.de,
+	jonathanh@nvidia.com,
+	f.fainelli@gmail.com,
+	sudipm.mukherjee@gmail.com,
+	srw@sladewatkins.net,
+	rwarsow@gmx.de,
+	conor@kernel.org,
+	allen.lkml@gmail.com,
+	damon@lists.linux.dev,
+	SeongJae Park <sj@kernel.org>
+Subject: Re: [PATCH 6.6 000/143] 6.6.21-rc1 review
+Date: Mon,  4 Mar 2024 14:48:58 -0800
+Message-Id: <20240304224858.73401-1-sj@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240304211549.876981797@linuxfoundation.org>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 05 Mar 2024 00:48:23 +0200
-Message-Id: <CZLBYPUU992Q.2PRCZBFNZYWY6@suppilovahvero>
-Cc: "Shawn Guo" <shawnguo@kernel.org>, "Jonathan Corbet" <corbet@lwn.net>,
- "Sascha Hauer" <s.hauer@pengutronix.de>, "Pengutronix Kernel Team"
- <kernel@pengutronix.de>, "Fabio Estevam" <festevam@gmail.com>, "NXP Linux
- Team" <linux-imx@nxp.com>, "Ahmad Fatoum" <a.fatoum@pengutronix.de>, "sigma
- star Kernel Team" <upstream+dcp@sigma-star.at>, "David Howells"
- <dhowells@redhat.com>, "Li Yang" <leoyang.li@nxp.com>, "Paul Moore"
- <paul@paul-moore.com>, "James Morris" <jmorris@namei.org>, "Serge E.
- Hallyn" <serge@hallyn.com>, "Paul E. McKenney" <paulmck@kernel.org>, "Randy
- Dunlap" <rdunlap@infradead.org>, "Catalin Marinas"
- <catalin.marinas@arm.com>, "Rafael J. Wysocki"
- <rafael.j.wysocki@intel.com>, "Tejun Heo" <tj@kernel.org>, "Steven Rostedt
- (Google)" <rostedt@goodmis.org>, <linux-doc@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-integrity@vger.kernel.org>,
- <keyrings@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <linuxppc-dev@lists.ozlabs.org>,
- <linux-security-module@vger.kernel.org>
-Subject: Re: [PATCH v5 4/6] MAINTAINERS: add entry for DCP-based trusted
- keys
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "David Gstir" <david@sigma-star.at>, "Mimi Zohar" <zohar@linux.ibm.com>,
- "James Bottomley" <jejb@linux.ibm.com>, "Herbert Xu"
- <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>
-X-Mailer: aerc 0.15.2
-References: <20231215110639.45522-1-david@sigma-star.at>
- <20231215110639.45522-5-david@sigma-star.at>
-In-Reply-To: <20231215110639.45522-5-david@sigma-star.at>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Fri Dec 15, 2023 at 1:06 PM EET, David Gstir wrote:
-> This covers trusted keys backed by NXP's DCP (Data Co-Processor) chip
-> found in smaller i.MX SoCs.
->
-> Signed-off-by: David Gstir <david@sigma-star.at>
-> ---
->  MAINTAINERS | 9 +++++++++
->  1 file changed, 9 insertions(+)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 90f13281d297..988d01226131 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -11647,6 +11647,15 @@ S:	Maintained
->  F:	include/keys/trusted_caam.h
->  F:	security/keys/trusted-keys/trusted_caam.c
-> =20
-> +KEYS-TRUSTED-DCP
-> +M:	David Gstir <david@sigma-star.at>
-> +R:	sigma star Kernel Team <upstream+dcp@sigma-star.at>
-> +L:	linux-integrity@vger.kernel.org
-> +L:	keyrings@vger.kernel.org
-> +S:	Supported
-> +F:	include/keys/trusted_dcp.h
-> +F:	security/keys/trusted-keys/trusted_dcp.c
-> +
->  KEYS-TRUSTED-TEE
->  M:	Sumit Garg <sumit.garg@linaro.org>
->  L:	linux-integrity@vger.kernel.org
+Hello,
 
-Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
+On Mon,  4 Mar 2024 21:22:00 +0000 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-I can for sure put this. The code quality is *not* bad :-) However, your
-backing story really needs rework. It is otherwise impossible to
-understand the code changes later on because amount of information is
-vast, and you tend to forget details of stuff that you are not actively
-working on. That is why we care so deeply about them.
+> This is the start of the stable review cycle for the 6.6.21 release.
+> There are 143 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 06 Mar 2024 21:15:26 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.21-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
+> and the diffstat can be found below.
 
-BR, Jarkko
+This rc kernel passes DAMON functionality test[1] on my test machine.
+Attaching the test results summary below.  Please note that I retrieved the
+kernel from linux-stable-rc tree[2].
+
+Tested-by: SeongJae Park <sj@kernel.org>
+
+[1] https://github.com/awslabs/damon-tests/tree/next/corr
+[2] 5f9255b6ac45 ("Linux 6.6.21-rc1")
+
+Thanks,
+SJ
+
+[...]
+
+---
+
+ok 1 selftests: damon: debugfs_attrs.sh
+ok 2 selftests: damon: debugfs_schemes.sh
+ok 3 selftests: damon: debugfs_target_ids.sh
+ok 4 selftests: damon: debugfs_empty_targets.sh
+ok 5 selftests: damon: debugfs_huge_count_read_write.sh
+ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
+ok 7 selftests: damon: debugfs_rm_non_contexts.sh
+ok 8 selftests: damon: sysfs.sh
+ok 9 selftests: damon: sysfs_update_removed_scheme_dir.sh
+ok 10 selftests: damon: reclaim.sh
+ok 11 selftests: damon: lru_sort.sh
+ok 1 selftests: damon-tests: kunit.sh
+ok 2 selftests: damon-tests: huge_count_read_write.sh
+ok 3 selftests: damon-tests: buffer_overflow.sh
+ok 4 selftests: damon-tests: rm_contexts.sh
+ok 5 selftests: damon-tests: record_null_deref.sh
+ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
+ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
+ok 8 selftests: damon-tests: damo_tests.sh
+ok 9 selftests: damon-tests: masim-record.sh
+ok 10 selftests: damon-tests: build_i386.sh
+ok 11 selftests: damon-tests: build_arm64.sh
+ok 12 selftests: damon-tests: build_m68k.sh
+ok 13 selftests: damon-tests: build_i386_idle_flag.sh
+ok 14 selftests: damon-tests: build_i386_highpte.sh
+ok 15 selftests: damon-tests: build_nomemcg.sh
+ [33m
+ [92mPASS [39m
 
