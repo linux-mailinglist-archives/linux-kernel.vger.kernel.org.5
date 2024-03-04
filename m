@@ -1,102 +1,107 @@
-Return-Path: <linux-kernel+bounces-90166-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90167-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71D3486FB4E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:07:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45D4786FB52
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:08:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A37391C21ADE
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:07:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 77CC61C21B2E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:08:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8831A168CD;
-	Mon,  4 Mar 2024 08:07:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qE/goJ9z"
-Received: from mail-ua1-f53.google.com (mail-ua1-f53.google.com [209.85.222.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56BF8171BC;
+	Mon,  4 Mar 2024 08:08:46 +0000 (UTC)
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6104E15AE0
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 08:07:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7653E171AF;
+	Mon,  4 Mar 2024 08:08:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709539663; cv=none; b=BLIbHSYfgYdQVmWRi2nAyROjMCIX6SruzrXOs5n49CSazAAzOiaql74hp6XJ2i0DhG40Z8HKTl02XOHjI285WHyHISIpp73vgAyhPr+HyA8MMf2C8Y0tviw5FqHsee3xS69pNrDrFoUMNbiCBKcULPh9OOmAjiWlOJ6zf/K7TNg=
+	t=1709539725; cv=none; b=PLLMEz1Xgq8sA5y0356pwtaR6Nhj+Re0vUnZiAwS0ioS7pz3asqWf/QEK5K4waFaTWlENQKrftb+cJYSl7oAYqxNQqhFZRD5kzMbaWSEIL1kTyJdEA1pd4sjXLWcUS+qJqn+eWCI6iMNn+hl3qmN8o1dJ134Cm9SS1OT+gg1TFQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709539663; c=relaxed/simple;
-	bh=JrEfQ5lsb+5XbsDuc82K+zIwkMVIR394kZZUVAvcIAE=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=Db8zOvaYYqJ5WnviafqyRT+cj5C+6Z7+Fwv+zaQuTKmUjSuQC1pB9Z2lm+18tTapvBcqorK0sKrNflvWIcEOPKO23xrUcrB2Vbm1V4nO1ZSBy+cvOxBr2FSM/OzKWqUrJcmQBQ/CS//agTxCP3G4PVF0cRbV6fh/x9+ipFVC5yA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qE/goJ9z; arc=none smtp.client-ip=209.85.222.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ua1-f53.google.com with SMTP id a1e0cc1a2514c-7d5bfdd2366so2168482241.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 00:07:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709539661; x=1710144461; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=I4V64q1EnS//uojIpdSXO9kfi0xqru4ymFKUT9EN5ZI=;
-        b=qE/goJ9z5+XXNxR4BS1NEo73Q4xXYJj/IjwPyiVgVO8m+cbf2UEDcPVi4k6ChBCLel
-         81Gb01WcO0fN+qoU2diByeZ0iQZdyvyxG0E1VQVBg986/1kObEyEWywvTv1ff+2ggOvf
-         aKFde5KrAH8ys0EsS3aV0/MWRDwCvPX7pPI6fn0gckE7Fe+31Gam2XQWSc+j6Ikr6+XK
-         NrOygpPnONQ7VMyAWLL/4JSH9JaQI7uNgZe4KgnkWJBTjvXm5y8eAqelk/r5xgJL+ihF
-         Xgv3Y7/hn6bNL50PFQu/AHEWRNhoAW7z9Z9Sm5y0h7SBS1jFgyZs6uNa9WvXJQCeQtLE
-         dcwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709539661; x=1710144461;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=I4V64q1EnS//uojIpdSXO9kfi0xqru4ymFKUT9EN5ZI=;
-        b=dvAqzc1sItaGnbTceMkN9D1Qf/9caXs/pkt04ASumVKguFQwKGFEJdU/n3SAqWhS6S
-         al0pptWMudrf61MggpB7MMCXtjJdxFgQhp2pq/FeBZXutwHDCNU3y+YcvZUb2ezayY8i
-         PAQn5wcogq32kV/KtAzjdKVD/KvthxYOrHQroNDBtXdP2NDiv5Qtym/E/Qh8wFZ1jusk
-         qcg0kJrwppyQ4XNlARWoCd0scXZlbV5VpYusl1AKAgYEIQzCvQSqz1pBOa2kkl/PU46x
-         KyEZkg2ELMLckZo4Hddq1cm4Dj4aAL/HrJFhmfSWAG1QPmtoikaDk4xXg1hZc4J6rrHE
-         thqQ==
-X-Gm-Message-State: AOJu0Yx4fomgLdgWiIXbrkhDoBbdU0QoxMLZ4JzO4qNq1meoc4Tif55U
-	1VDbLs8jjkhM4u2ttbirD0W0w3owQ+Stwz+pZxUDBy3x1OVpN7Nem7BU/dGOFxpoRj6UfBkk4ty
-	ohkZY7XOcvBqYqMpjF+OtDCeU7RZtTZRcCRg11H44wCuydmP84S8=
-X-Google-Smtp-Source: AGHT+IGe/sEs/lbpDzYz9UckYPkNs1+8EFlDGUFzLUMP5Sy5o1K+biDa5g/KZP7WE5+fr/wSS0T9+F0Wwd8AmHuOlTA=
-X-Received: by 2002:a67:f1d1:0:b0:472:7729:69b with SMTP id
- v17-20020a67f1d1000000b004727729069bmr5396096vsm.29.1709539660578; Mon, 04
- Mar 2024 00:07:40 -0800 (PST)
+	s=arc-20240116; t=1709539725; c=relaxed/simple;
+	bh=yHwqB2Upd50z2cFRBEvqAhh9bCUpbHfzPJX7IFAjoPk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uWym2f9jizo9OgmgpauVBQJXe94OS+8fIxI7cGkNX5l/hCByY58Ldz+eePYiiHofuHBUw6njqn6qEdRHRANNmDIsR0wCl2MlKsCfxancRe2io5hz4dZYIUFRpfhMWzfeMeOlbZj9vkYIx3qezOAzgGYnyx6uijrze/PIFgNxY1w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr; spf=pass smtp.mailfrom=ghiti.fr; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 2D51CE0002;
+	Mon,  4 Mar 2024 08:08:32 +0000 (UTC)
+Message-ID: <79b41dfc-004e-4939-b045-0c320037e584@ghiti.fr>
+Date: Mon, 4 Mar 2024 09:08:32 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Mon, 4 Mar 2024 13:37:29 +0530
-Message-ID: <CA+G9fYvG9KE15PGNoLu+SBVyShe+u5HBLQ81+kK9Zop6u=ywmw@mail.gmail.com>
-Subject: arm: ERROR: modpost: "__aeabi_uldivmod" [drivers/gpu/drm/sun4i/sun4i-drm-hdmi.ko]
- undefined!
-To: open list <linux-kernel@vger.kernel.org>, 
-	Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-sunxi@lists.linux.dev, 
-	dri-devel@lists.freedesktop.org, lkft-triage@lists.linaro.org
-Cc: Maxime Ripard <mripard@kernel.org>, Dave Airlie <airlied@redhat.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Dan Carpenter <dan.carpenter@linaro.org>, 
-	Ard Biesheuvel <ardb@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: linux-next: Tree for Mar 1 (riscv 32-bit)
+Content-Language: en-US
+To: Randy Dunlap <rdunlap@infradead.org>,
+ Stephen Rothwell <sfr@canb.auug.org.au>,
+ Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-riscv <linux-riscv@lists.infradead.org>
+References: <20240301165705.07d9b52c@canb.auug.org.au>
+ <e111f031-1015-4c35-b89b-263f7174431c@infradead.org>
+From: Alexandre Ghiti <alex@ghiti.fr>
+In-Reply-To: <e111f031-1015-4c35-b89b-263f7174431c@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: alex@ghiti.fr
 
-The arm defconfig builds failed on today's Linux next tag next-20240304.
+Hi Randy,
 
-Build log:
----------
-ERROR: modpost: "__aeabi_uldivmod"
-[drivers/gpu/drm/sun4i/sun4i-drm-hdmi.ko] undefined!
+On 02/03/2024 06:37, Randy Dunlap wrote:
+>
+> On 2/29/24 21:57, Stephen Rothwell wrote:
+>> Hi all,
+>>
+>> Changes since 20240229:
+>>
+> on riscv 32-bit:
+>
+> In file included from ../arch/riscv/include/asm/uaccess.h:12,
+>                   from ../include/linux/uaccess.h:11,
+>                   from ../include/linux/sched/task.h:13,
+>                   from ../include/linux/sched/signal.h:9,
+>                   from ../include/linux/rcuwait.h:6,
+>                   from ../include/linux/percpu-rwsem.h:7,
+>                   from ../include/linux/fs.h:33,
+>                   from ../kernel/events/core.c:11:
+> ../kernel/events/core.c: In function 'perf_get_pgtable_size':
+> ../arch/riscv/include/asm/pgtable.h:443:41: error: implicit declaration of function 'napot_cont_size' [-Werror=implicit-function-declaration]
+>    443 |                                         napot_cont_size(napot_cont_order(pte)) :\
+>        |                                         ^~~~~~~~~~~~~~~
+> ../kernel/events/core.c:7588:24: note: in expansion of macro 'pte_leaf_size'
+>   7588 |                 size = pte_leaf_size(pte);
+>        |                        ^~~~~~~~~~~~~
+> ../arch/riscv/include/asm/pgtable.h:443:57: error: implicit declaration of function 'napot_cont_order'; did you mean 'get_count_order'? [-Werror=implicit-function-declaration]
+>    443 |                                         napot_cont_size(napot_cont_order(pte)) :\
+>        |                                                         ^~~~~~~~~~~~~~~~
+> ../kernel/events/core.c:7588:24: note: in expansion of macro 'pte_leaf_size'
+>   7588 |                 size = pte_leaf_size(pte);
+>        |                        ^~~~~~~~~~~~~
+>
+>
+> Full randconfig file is attached.
+>
 
-Steps to reproduce:
-  # tuxmake --runtime podman --target-arch arm --toolchain clang-17
---kconfig defconfig LLVM=1 LLVM_IAS=1
+I missed it because this patch interacts with FAST_GUP support merged in 
+for-next. But what this means is that the fix I sent for 6.8-rc7 was not 
+needed at all...my bad, sorry.
 
-Links:
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240304/testrun/22919744/suite/build/test/clang-17-defconfig/history/
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240304/testrun/22919744/suite/build/test/clang-17-defconfig/log
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240304/testrun/22919744/suite/build/test/clang-17-defconfig/details/
+I have just sent a fix here: 
+https://lore.kernel.org/linux-riscv/20240304080247.387710-1-alexghiti@rivosinc.com/T/#u
+
+Thanks,
+
+Alex
 
 
---
-Linaro LKFT
-https://lkft.linaro.org
+
 
