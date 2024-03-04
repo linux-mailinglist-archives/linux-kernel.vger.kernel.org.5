@@ -1,161 +1,162 @@
-Return-Path: <linux-kernel+bounces-90274-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90281-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF8BE86FCBF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:08:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D11286FCD5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:13:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0ADF21C2216C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:08:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7AD01F20FDE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:13:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBE1B1B95C;
-	Mon,  4 Mar 2024 09:08:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC4441B967;
+	Mon,  4 Mar 2024 09:12:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BfJ+oBzf"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="B16j+h9G"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAA451B5BB;
-	Mon,  4 Mar 2024 09:08:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52B6C1B7E8;
+	Mon,  4 Mar 2024 09:12:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709543314; cv=none; b=n2Fl60uPaBhIYmpqZ6yV3iBJDyFtdFyJN3C3d1PmPOqoH1NhlJbXi/ibPPACbW8V+UhldrmuIJrf+LhKG0JAJdIdBejATwIA0VJ31+O4EgJ1jsAhXBD1Oskkv8Hp7njKv096XFLDoHfOmCajbSvASP1qH1lkuoS+oprfHS03rso=
+	t=1709543574; cv=none; b=nYFjbR6dINV4hwe2oqqwUYtowcHU6+GgJ+NVD6ejRXpd+xf7XWDZnb9MvjzbfNH1dYYyN1EkIO5pxJ2uOYYsIkFwCn76NW0F9ePmkzsifPjlsNdYijy1rrKM/xLvsV73NKquZPN61qUiijEOsFk33UjrsKkQQfZ6A7/iOcB84y0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709543314; c=relaxed/simple;
-	bh=EA6ZR3Erkc94kHJhtNv8APoWSvKBml3K5BTGuia7NoM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=gl4Qv1m2hWK0PHwer3kJkSIgSMOpk19o6M3sNHT5ADChTwO7TSUkw3SONpf/njV3eovOHLCv8TRCltTfaYWmwWyftAcrY395ksnoyBKihR5ou4MDxoMgoWCn4z40nklQB8OchGpxqWVAaYGmy93lI1C6lPofLnJcEoRYC2vz54s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BfJ+oBzf; arc=none smtp.client-ip=198.175.65.15
+	s=arc-20240116; t=1709543574; c=relaxed/simple;
+	bh=fYUc9MBfCK5M1i9aW28WCU7ziu1UFtyPbddQMGeFd2w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=e/RD3ogXrUDznDwGKtOVVbE9vLtoHWkeXIqoTwTNCstY30r2r19hrNHEj62eWA1h35KgZD45a6eakXOpn6tY2Qjbkm+4xFWnlJ0hrxfoyrSBNc7d0Y4tTCkZtk1HbbCQr1gyh16BFtHtO2zPbmyP5DTwI0CAiCDPJ8t7j4E7rWE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=B16j+h9G; arc=none smtp.client-ip=198.175.65.17
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709543313; x=1741079313;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=EA6ZR3Erkc94kHJhtNv8APoWSvKBml3K5BTGuia7NoM=;
-  b=BfJ+oBzfv5oTzDpbOtO9Z9DDf3ymd/FnmZ73kiU5349Y8zSne3dQSgp3
-   NV/W5IRzenSiYAa+n6eGT/2epNdhvO666c+8MBgFOxbE4FzQ2mW+z4knq
-   gjbEXLz1b8S0JmWEYR9kaxEeSVXNHt4SgeT6bSn7iZMz6YVqe9KbCLgJH
-   EDFqOaPrT9/dS+A+regZgZObVuTKou837101/dPF8wONqv3vvqnbRPiqz
-   8vb7Xc+ZfQJXWWdAzZzk7Bh3WHHGCQd6+pvbkxTRLVX/KjLy+77PcTSQr
-   VCuVCrDlKRzLElChvZGM+dX58MiLUo0qp8JoD6/lV8OXnOfWsilexBnjr
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="7840688"
+  t=1709543572; x=1741079572;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=fYUc9MBfCK5M1i9aW28WCU7ziu1UFtyPbddQMGeFd2w=;
+  b=B16j+h9GsWu01gWbv8pxEX4znck67+f1QR942Aqb9MYKyg5Xs+um3uv8
+   o3OKT2yDiHHJ6zOPeBLKfh3gcX5HUI+H7cbMh2OW2fpGqtG0lbpHuGzMg
+   6EowJRv85TmN1xizGgeGGNPLqk7CYU+8pm9pda6DrGxDB7WmW4KWMeUno
+   JGJ4HpR+PyD0fuHAFlAROQQXRrfd9QRhA+iKI9ce8EVVjpFEwapolaxwg
+   Rd3/CQaGALy+Fq/otnxoZAGQnCJv6Es/fk4FJRKjUjivc3PBBSlRhkFGG
+   fYBY3N5+EXUD5C7p1OWqO52gjEfNxUFTBSQvZ1GFAgRjCCkDqBPjzBEbr
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="4188817"
 X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
-   d="scan'208";a="7840688"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 01:08:31 -0800
+   d="scan'208";a="4188817"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 01:12:51 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
-   d="scan'208";a="32092854"
-Received: from unknown (HELO ply01-vm-store.amr.corp.intel.com) ([10.238.153.201])
-  by fmviesa002.fm.intel.com with ESMTP; 04 Mar 2024 01:08:27 -0800
-From: Ethan Zhao <haifeng.zhao@linux.intel.com>
-To: bhelgaas@google.com,
-	lukas@wunner.de
-Cc: Smita.KoralahalliChannabasappa@amd.com,
-	ilpo.jarvinen@linux.intel.com,
-	sathyanarayanan.kuppuswamy@linux.intel.com,
-	linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kbusch@kernel.org,
-	Ethan Zhao <haifeng.zhao@linux.intel.com>
-Subject: [PATCH pci-next] pci/edr: Ignore Surprise Down error on hot removal
-Date: Mon,  4 Mar 2024 04:08:19 -0500
-Message-Id: <20240304090819.3812465-1-haifeng.zhao@linux.intel.com>
-X-Mailer: git-send-email 2.31.1
+   d="scan'208";a="13589213"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by orviesa004.jf.intel.com with ESMTP; 04 Mar 2024 01:12:49 -0800
+Date: Mon, 4 Mar 2024 17:08:38 +0800
+From: Xu Yilun <yilun.xu@linux.intel.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, seanjc@google.com,
+	michael.roth@amd.com, aik@amd.com
+Subject: Re: [PATCH v3 02/15] KVM: x86: use u64_to_user_addr()
+Message-ID: <ZeWPlvFAgtUOE7vm@yilunxu-OptiPlex-7050>
+References: <20240226190344.787149-1-pbonzini@redhat.com>
+ <20240226190344.787149-3-pbonzini@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240226190344.787149-3-pbonzini@redhat.com>
 
-Per PCI firmware spec r3.3 sec 4.6.12, for firmware first mode DPC
-handling path, FW should clear UC errors logged by port and bring link
-out of DPC, but because of ambiguity of wording in the spec, some BIOSes
-doesn't clear the surprise down error and the error bits in pci status,
-still notify OS to handle it. thus following trick is needed in EDR when
-double reporting (hot removal interrupt && dpc notification) is hit.
+On Mon, Feb 26, 2024 at 02:03:31PM -0500, Paolo Bonzini wrote:
+> There is no danger to the kernel if userspace provides a 64-bit value that
+> has the high bits set, but for whatever reason happ[ens to resolve to an
+                                                     ^
 
-https://patchwork.kernel.org/project/linux-pci/patch/20240207181854.
-121335-1-Smita.KoralahalliChannabasappa@amd.com/
+remove the messy char.
 
-Signed-off-by: Ethan Zhao <haifeng.zhao@linux.intel.com>
----
- drivers/pci/pci.h      | 1 +
- drivers/pci/pcie/dpc.c | 9 +++++----
- drivers/pci/pcie/edr.c | 3 +++
- 3 files changed, 9 insertions(+), 4 deletions(-)
+> address that has something mapped there.  KVM uses the checked version
+> of put_user() in kvm_x86_dev_get_attr().
 
-diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-index 50134b5e3235..3787bb32e724 100644
---- a/drivers/pci/pci.h
-+++ b/drivers/pci/pci.h
-@@ -443,6 +443,7 @@ void pci_save_dpc_state(struct pci_dev *dev);
- void pci_restore_dpc_state(struct pci_dev *dev);
- void pci_dpc_init(struct pci_dev *pdev);
- void dpc_process_error(struct pci_dev *pdev);
-+bool dpc_handle_surprise_removal(struct pci_dev *pdev);
- pci_ers_result_t dpc_reset_link(struct pci_dev *pdev);
- bool pci_dpc_recovered(struct pci_dev *pdev);
- #else
-diff --git a/drivers/pci/pcie/dpc.c b/drivers/pci/pcie/dpc.c
-index 98b42e425bb9..be79f205e04c 100644
---- a/drivers/pci/pcie/dpc.c
-+++ b/drivers/pci/pcie/dpc.c
-@@ -319,8 +319,10 @@ static void pci_clear_surpdn_errors(struct pci_dev *pdev)
- 	pcie_capability_write_word(pdev, PCI_EXP_DEVSTA, PCI_EXP_DEVSTA_FED);
- }
- 
--static void dpc_handle_surprise_removal(struct pci_dev *pdev)
-+bool  dpc_handle_surprise_removal(struct pci_dev *pdev)
- {
-+	if (!dpc_is_surprise_removal(pdev))
-+		return false;
- 	if (!pcie_wait_for_link(pdev, false)) {
- 		pci_info(pdev, "Data Link Layer Link Active not cleared in 1000 msec\n");
- 		goto out;
-@@ -338,6 +340,7 @@ static void dpc_handle_surprise_removal(struct pci_dev *pdev)
- out:
- 	clear_bit(PCI_DPC_RECOVERED, &pdev->priv_flags);
- 	wake_up_all(&dpc_completed_waitqueue);
-+	return true;
- }
- 
- static bool dpc_is_surprise_removal(struct pci_dev *pdev)
-@@ -362,10 +365,8 @@ static irqreturn_t dpc_handler(int irq, void *context)
- 	 * According to PCIe r6.0 sec 6.7.6, errors are an expected side effect
- 	 * of async removal and should be ignored by software.
- 	 */
--	if (dpc_is_surprise_removal(pdev)) {
--		dpc_handle_surprise_removal(pdev);
-+	if (dpc_handle_surprise_removal(pdev))
- 		return IRQ_HANDLED;
--	}
- 
- 	dpc_process_error(pdev);
- 
-diff --git a/drivers/pci/pcie/edr.c b/drivers/pci/pcie/edr.c
-index 5f4914d313a1..556edfb2696a 100644
---- a/drivers/pci/pcie/edr.c
-+++ b/drivers/pci/pcie/edr.c
-@@ -184,6 +184,9 @@ static void edr_handle_event(acpi_handle handle, u32 event, void *data)
- 		goto send_ost;
- 	}
- 
-+	if (dpc_handle_surprise_removal(edev))
-+		goto send_ost;
-+
- 	dpc_process_error(edev);
- 	pci_aer_raw_clear_status(edev);
- 
+See from the code change, not just kvm_x86_dev_get_attr().
 
-base-commit: a66f2b4a4d365dc4bac35576f3a9d4f5982f1d63
--- 
-2.31.1
+Thanks,
+Yilun
 
+> 
+> Suggested-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>  arch/x86/kvm/x86.c | 24 +++---------------------
+>  1 file changed, 3 insertions(+), 21 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index f3f7405e0628..14c969782d73 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -4791,25 +4791,13 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+>  	return r;
+>  }
+>  
+> -static inline void __user *kvm_get_attr_addr(struct kvm_device_attr *attr)
+> -{
+> -	void __user *uaddr = (void __user*)(unsigned long)attr->addr;
+> -
+> -	if ((u64)(unsigned long)uaddr != attr->addr)
+> -		return ERR_PTR_USR(-EFAULT);
+> -	return uaddr;
+> -}
+> -
+>  static int kvm_x86_dev_get_attr(struct kvm_device_attr *attr)
+>  {
+> -	u64 __user *uaddr = kvm_get_attr_addr(attr);
+> +	u64 __user *uaddr = u64_to_user_ptr(attr->addr);
+>  
+>  	if (attr->group)
+>  		return -ENXIO;
+>  
+> -	if (IS_ERR(uaddr))
+> -		return PTR_ERR(uaddr);
+> -
+>  	switch (attr->attr) {
+>  	case KVM_X86_XCOMP_GUEST_SUPP:
+>  		if (put_user(kvm_caps.supported_xcr0, uaddr))
+> @@ -5664,12 +5652,9 @@ static int kvm_arch_tsc_has_attr(struct kvm_vcpu *vcpu,
+>  static int kvm_arch_tsc_get_attr(struct kvm_vcpu *vcpu,
+>  				 struct kvm_device_attr *attr)
+>  {
+> -	u64 __user *uaddr = kvm_get_attr_addr(attr);
+> +	u64 __user *uaddr = u64_to_user_ptr(attr->addr);
+>  	int r;
+>  
+> -	if (IS_ERR(uaddr))
+> -		return PTR_ERR(uaddr);
+> -
+>  	switch (attr->attr) {
+>  	case KVM_VCPU_TSC_OFFSET:
+>  		r = -EFAULT;
+> @@ -5687,13 +5672,10 @@ static int kvm_arch_tsc_get_attr(struct kvm_vcpu *vcpu,
+>  static int kvm_arch_tsc_set_attr(struct kvm_vcpu *vcpu,
+>  				 struct kvm_device_attr *attr)
+>  {
+> -	u64 __user *uaddr = kvm_get_attr_addr(attr);
+> +	u64 __user *uaddr = u64_to_user_ptr(attr->addr);
+>  	struct kvm *kvm = vcpu->kvm;
+>  	int r;
+>  
+> -	if (IS_ERR(uaddr))
+> -		return PTR_ERR(uaddr);
+> -
+>  	switch (attr->attr) {
+>  	case KVM_VCPU_TSC_OFFSET: {
+>  		u64 offset, tsc, ns;
+> -- 
+> 2.39.1
+> 
+> 
+> 
 
