@@ -1,105 +1,149 @@
-Return-Path: <linux-kernel+bounces-90581-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90582-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 505B8870195
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:34:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6192F870199
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:35:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0722A1F26334
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:34:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BCB41B253FA
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:35:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 295113D3B3;
-	Mon,  4 Mar 2024 12:32:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A722337156;
+	Mon,  4 Mar 2024 12:35:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="idTVtYf/"
-Received: from mout.web.de (mout.web.de [212.227.15.4])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="T9/BQtSi";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="E6PLUkad"
+Received: from fout4-smtp.messagingengine.com (fout4-smtp.messagingengine.com [103.168.172.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36ADF38DEA;
-	Mon,  4 Mar 2024 12:32:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE85C1E506
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 12:35:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709555558; cv=none; b=aTF3137tz5KBRS98MtG+rY8RKBjQtW7NXOobiWgx6lEmWTaWmfykkpElQfjj82SLwoel/BFV95lbcTlEMYO9hB9ks1ShMLTGEaHdZAAxb9hA5b1RWnRkx1kNLhVpRJVBqxo9ooPldp3RuCE56TwkGx83bveqP8x/BaAsKfsjKic=
+	t=1709555712; cv=none; b=hLF83F1eQt/WWCyKUtVLnS+ZxtvWkpMCIS8ogrS3x5ZCJ8b4oaglzJ/chb7FcP/o0JlkSfdHgxYi4bCZZXxeof01200CrgCLQiDRKyWlYEcVn0X5hu1N4pVPzFtvrCexvLjXiIvGt/L/IuhLHQnhmgYZJNbprTVbQu0X9l9vYxM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709555558; c=relaxed/simple;
-	bh=di4c4mREnB9k5kEq9w5dk3pY2MZiD+6QT9eZNjhDu4o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NuA5GaWLksV3Na3rGcItY4UO/6mFvglhdmXhsadtzHj4T/eKi9inEkueTbaeQhS/MkV3Z60XSaBhoVn3oMS14hBkU9CmbpJJzfRv+9sNX4ZrkQNrPTwdUpS6JlRRnxcMLOKw7WNQJX+apxwGb46uJbqsuTiuS1/aLYdjsE2Yecg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=idTVtYf/; arc=none smtp.client-ip=212.227.15.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1709555507; x=1710160307; i=markus.elfring@web.de;
-	bh=di4c4mREnB9k5kEq9w5dk3pY2MZiD+6QT9eZNjhDu4o=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=idTVtYf/zbwHYQoEQSmrMqo8POAzdk9xYUYecKBUyVeqwAVFpxAKKVfkeJ+XSR5J
-	 ADtLS5nbKBGAy6+YswKLIthBlVlp7S0jGeGGBk0Buw7Mgt+j/GhmGN6lfPf/dQUZf
-	 UsZx0bI8EAIeltqDlveSumNBRVDIsZkJutM5Qh2pv3twPyLnCaJXooF058kKp9JaX
-	 RkeOs8+IwNPfvMyBkQrrtHSQOwDVCYTXpgJxqB527iVKCoi21MitTIeQef8uP77gg
-	 ZtsxrP6U1CaBbPhh41BjedZMBJRvy08uxtsb0p/ll5sXYq2RJG9/Y3gcEsOSq3fks
-	 Bg5gdV3vwfOHiIlzGw==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.86.95]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1Mt8kX-1qsAcl42OH-00tJYz; Mon, 04
- Mar 2024 13:31:47 +0100
-Message-ID: <ae1a88d8-2c7d-4d1a-9ade-ec8c6b4b13eb@web.de>
-Date: Mon, 4 Mar 2024 13:31:32 +0100
+	s=arc-20240116; t=1709555712; c=relaxed/simple;
+	bh=/Np2risLVk0Wnw2e+uGrNOir2LUcu73+mKUufe6y1yA=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=PFDWGrCND93nOd632M5dZfo5ySNum5mylUVgKYjmlZRbYLXu1vcfmfWnDaazWOSB8rRksi5i7fKhpZSMf4pvS5OulvjtUdlUNUSN7bjkTmEb01leEYshMBt66KvjZ7/NQQs1+PnNjuEpO6P+p/cSzeU6fRqa2JypZin/oHu16G4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=T9/BQtSi; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=E6PLUkad; arc=none smtp.client-ip=103.168.172.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.nyi.internal (Postfix) with ESMTP id 08E0713800B1;
+	Mon,  4 Mar 2024 07:35:10 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Mon, 04 Mar 2024 07:35:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1709555710; x=1709642110; bh=+TroZF8jeB
+	zIowpYrGF9jrP9uh+0X1BM1HbguhEHK/Y=; b=T9/BQtSiILQpMCnqJv+UGt4nim
+	DKXKwfSy6GCSmU9MI/Pjsfj44Z3Wenf6/LEy+I4ZoIzLMkMgMHF+PhBwQrEQSd4R
+	3rZ34vnDWPzOLcBAQ62+F62GS/PCSwLGOjzWb+4HYu61h70JZQCIMRnQeh4xv94L
+	RqYEnHdxXR+DuyS6xSsASBQtPM6SWEa9H5ufn4ujyn/GfVm6eqdJVo0J2tl1Q9JN
+	osTb1ZoBQT/GDSHLKe+qDqnCkft9Ctrbkk5rdzz0PysbgoloPjWfVGYPC/WFEi3S
+	fwraymKJf8Oz5X0l6etK+pq0APaTc34fcxeJ/yGvKIwwpEcW1Cueh3TlRW2Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1709555710; x=1709642110; bh=+TroZF8jeBzIowpYrGF9jrP9uh+0
+	X1BM1HbguhEHK/Y=; b=E6PLUkad/4kqaHFHfUpwwh4uJpCKtRVopl24PVUHG9Mw
+	LECgX5ZE9tMDn2FoHcmaohB658HUZmtIEw/WZy3lnp1a/CWLhvo2ivZz6E7VADD0
+	62B/D08u2/oLOME9TQj8WnUl4qtdfDQvJoaRgVNeIrOzjw+tSSGK8jYnQdxMteWO
+	B68q0Iind1V77AMyiOD0AvrLeopaQo55R7a69/krkZWyZVLFhaPCYOUN6nDofW94
+	sxV5UjKcnlMguzeNrZFy9PHtSJbq8oMRGtSY1qWVoWlxqqrTvJjKoCzJMaxjcR0z
+	PA3GyhuUq7W/yzGqROK+aw8iiAxFUrplNkVwb/B/ew==
+X-ME-Sender: <xms:_b_lZejkpGfPnkZ6rWHmnlF83ytm5tLUqBDv525-BSP26reAj07lWw>
+    <xme:_b_lZfACtMQggRtzKMcil5im_zd8ZbalEEKkC-rfuv8tx8uUhDTIOuJUqTPf6H8zF
+    i4LkP3AMKbjW3Re-Kk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrheejgdegtdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
+    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    hnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:_b_lZWE46UepRGStc-ln7gow_V2jQP-_Q_XxHslclj-_ee0Oz5Yl-w>
+    <xmx:_b_lZXSTQ4OTlJjnlshezWanXyeIh7YpBpBVHTBFpEUGfZJ7tncL1A>
+    <xmx:_b_lZbzEc11JtuWNBa_9xbo1ZfetGIJ_nairqqjxFQaF5dkINnhbxw>
+    <xmx:_r_lZQr-hNcmlRBZu5F-5E4vJ6n1LfLuyiyftEFvlDNfCRd2z4rDrg>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id AA096B6008F; Mon,  4 Mar 2024 07:35:09 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-205-g4dbcac4545-fm-20240301.001-g4dbcac45
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Input: iqs626a - Use common error handling code in
- iqs626_parse_events()
-Content-Language: en-GB
-To: Dan Carpenter <dan.carpenter@linaro.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, Jeff LaBundy
- <jeff@labundy.com>, linux-input@vger.kernel.org,
- kernel-janitors@vger.kernel.org
-Cc: Rob Herring <robh@kernel.org>,
- =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- LKML <linux-kernel@vger.kernel.org>
-References: <8a7607f8-d634-415e-8269-e26dcc0f9fdc@web.de>
- <ZeU8ENmnPj3sKxAv@nixie71> <ZeVOPSt0L1D4BxuZ@google.com>
- <11e5db31-2a8f-458d-a249-7205e37aa20f@moroto.mountain>
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <11e5db31-2a8f-458d-a249-7205e37aa20f@moroto.mountain>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:dWWuhieQn2ltbceIa2J3okqIXFlEceqale7urOiL33IgAP5AdOb
- ukSSFWgsxiveF29HzREbMe/hWax++JLv0Ezq1ovbyrRT7KnAJvhb4I0/1eZF/64/3VfdOlU
- xHShmCEVqdTfA4t8YxSty1zf0hUC3tLaenXijBC5ctCYJgYxm8OnpNtjhlcbt3MT46D2/fX
- j9o462CRckriYePWXAZ9w==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Jv8M8nYNTj4=;ji6CCsnWNMQia0Ua0J4XG3nAc2d
- QP7Gu8RP5eie815ZA/XYAKWzBA9VjyCTm8sT8qXAHYJKcTwAyC1IKi/gSWLV4/YdZbck9Q2wJ
- UCUJm+i/hWivJSxABu/OQ9YeSknnT/ffGHAoEU8++uU4gJBKvc2OorWcAzwzUTArtTx4KpNAM
- 0c5uQc2rd0o3f8ODPWReAe56FCfqVeTCOb+9pxJq1Ag3ntbviaZrN2V+Hi7132QtL1/18OFw+
- us60/PfOjmRpj2FXH+zCqFORae4E1M12Jxg9WR3ghHbEyMkO3+YcaQgtJGSSJfU910248m/rB
- 1bYJNBpLjGlqnkn1X//tSysMLJ10G8aC+czWornumktProQm+lpiVhXy2szxq/JjIqGQQqnW1
- 6ESN27AeXQ4m1DC2Z/cw1tkSC3ePVF9MJC8VnJN8rBmgkR4oe3bJGiVRksn4159ZkMLdFjEfm
- hfgzD6KV+j1S3/UQBbsa9rx0ss6Cd33PYZvAUfHutwZnVOWSp0o4qTOv4tB4QsMiPJP6eWJKL
- HTgMsN2jIxvfNclWJ6dzRf2s7hE7U89CVmehW2aQ/3Hsmu3HTLwvWgAODc1+chJVqAQ0q5l5K
- Yslw6Al3RZm9S9NQeadxMsV74ZIVGp8p7El0IvDNNHFyg16qeiWSUvzOn0Lw1xURtTGdKOb5P
- aRukp+k30QY6lqAP3ycGpKfc8wc0S175hXBpgQLKb++rQIVr/om54XniT4wESn63yrvEBL9il
- Ga5t3tFh4rnQ+NdSXnQs421kJmoyk3FvJ8guTYkA4kW4Odo4Mjd/39k8e1x32hs4KdGU6xiGX
- 3537NbffgQvlC3MTIL2WqrmcS/+e392WQ5BWtf89Jc05A=
+Message-Id: <badf279a-f1fa-4938-a5d2-492b89d7c27c@app.fastmail.com>
+In-Reply-To: <20240304114546.4e8e1e32@donnerap.manchester.arm.com>
+References: 
+ <CA+G9fYvG9KE15PGNoLu+SBVyShe+u5HBLQ81+kK9Zop6u=ywmw@mail.gmail.com>
+ <338c89bb-a70b-4f35-b71b-f974e90e3383@app.fastmail.com>
+ <20240304112441.707ded23@donnerap.manchester.arm.com>
+ <1baf9a7f-b0e4-45d8-ac57-0727a213d82d@app.fastmail.com>
+ <20240304114546.4e8e1e32@donnerap.manchester.arm.com>
+Date: Mon, 04 Mar 2024 13:34:49 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Andre Przywara" <andre.przywara@arm.com>
+Cc: "Naresh Kamboju" <naresh.kamboju@linaro.org>,
+ "open list" <linux-kernel@vger.kernel.org>,
+ "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
+ linux-sunxi@lists.linux.dev, dri-devel@lists.freedesktop.org,
+ lkft-triage@lists.linaro.org, "Maxime Ripard" <mripard@kernel.org>,
+ "Dave Airlie" <airlied@redhat.com>,
+ "Dan Carpenter" <dan.carpenter@linaro.org>,
+ "Ard Biesheuvel" <ardb@kernel.org>
+Subject: Re: arm: ERROR: modpost: "__aeabi_uldivmod"
+ [drivers/gpu/drm/sun4i/sun4i-drm-hdmi.ko] undefined!
+Content-Type: text/plain
 
-> DEFINE_FREE(fwnode_handle, struct fwnode_handle *, fwnode_handle_put(_T)=
-)
+On Mon, Mar 4, 2024, at 12:45, Andre Przywara wrote:
+> On Mon, 04 Mar 2024 12:26:46 +0100
+> "Arnd Bergmann" <arnd@arndb.de> wrote:
 >
-> I can send a patch for this.  You need to be a bit carefull to move
-> the declaration into the correct scope for this to work.  I should write
-> some Smatch rules for this...
+>> On Mon, Mar 4, 2024, at 12:24, Andre Przywara wrote:
+>> > On Mon, 04 Mar 2024 12:11:36 +0100 "Arnd Bergmann" <arnd@arndb.de> wrote:  
+>> >>
+>> >> This used to be a 32-bit division. If the rate is never more than
+>> >> 4.2GHz, clock could be turned back into 'unsigned long' to avoid
+>> >> the expensive div_u64().  
+>> >
+>> > Wouldn't "div_u64(clock, 200)" solve this problem?  
+>> 
+>> Yes, that's why I mentioned it as the worse of the two obvious
+>> solutions. ;-)
+>
+> Argh, should have cleaned my glasses first ;-)
+>
+> I guess I was put somehow put off by the word "expensive". While it's
+> admittedly not trivial, I wonder if we care about the (hidden) complexity
+> of that function? I mean it's neither core code nor something called
+> frequently?
 
-I became also curious how available development tools will evolve further
-for improved handling of scope-based resource management.
+It's not critical if this is called infrequently, and as Maxime
+just replied, the 64-bit division is in fact required here.
+Since we are dividing by a constant value (200), there is a good
+chance that this will be get turned into fairly efficient
+multiply/shift code.
 
-Regards,
-Markus
+> I don't think we have any clock exceeding 3GHz at the moment, but it
+> sounds fishy to rely on that.
+
+Right, it's just important to look at each case individually.
+The cost of 64-bit division is crazy if it gets called repeatedly,
+which is of course the entire reason we don't provide a
+__aeabi_uldivmod() function and require developers to think
+before adding div_u64().
+
+     Arnd
 
