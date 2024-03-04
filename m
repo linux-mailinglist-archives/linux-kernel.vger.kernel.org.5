@@ -1,267 +1,242 @@
-Return-Path: <linux-kernel+bounces-91041-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91042-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31DCA8708C8
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:55:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 308578708CB
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:55:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA89F286E77
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:55:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9AC371F247E4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:55:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E252461674;
-	Mon,  4 Mar 2024 17:55:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16EFB61687;
+	Mon,  4 Mar 2024 17:55:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OOiqjkmC"
-Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b="xDI7j03w";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="UUDIF0mr"
+Received: from fhigh2-smtp.messagingengine.com (fhigh2-smtp.messagingengine.com [103.168.172.153])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CFDF61682
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 17:55:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB1BF6025E;
+	Mon,  4 Mar 2024 17:55:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.153
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709574910; cv=none; b=cmHfmuicEF7dRk1bHT9ymE/7wz58nGE0xwqioxfij05O5EW2OD96M2kkA6yhhvaOC2eXtuKlQbTjjAukrCCBjFoYvHp8MtscIIuVMe6dP3rKxrVzsfjvaJjZb0EqDatpEa3OzZZiCRVDY+sG9E3lnfjpnwAE03XPOstzmKfO8uw=
+	t=1709574931; cv=none; b=kbQ2umllIOIxLnqLJx3yAToC7crsjI0lc8qum7LvxLqARNwhqGoqD/TINluP/8dwHX2PkIzJPA2DCZqkFPjCLnEoT5b5j+YS6PTYzn2jXUjNsj+TY3p3siT0qQn1m9Z9rGB15wNRsTO/R/c45JZWxpL/CbkROFuYsa4erguvu3c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709574910; c=relaxed/simple;
-	bh=vQrzAyvnO9cTC2zo0TDeRdPOpjiKgnZgYt5AOEExxRQ=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=QUCLcptszYkdtxyQv3O8mkci3obr0CTkqDUotRuDc2kxKrZ+h1IlNGjK2/BBOITiiEWfBubv8wpibxpr5rAwybEd9mfACW5DxvwprU8/doBpdi0HWXVy3r3EEAHgfWTqqDcHofjUu+UUQv4DNZI8H8lh6o68+pJ1ChzZ6n0+PuU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OOiqjkmC; arc=none smtp.client-ip=209.85.210.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6e6100a6b58so1096672b3a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 09:55:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709574908; x=1710179708; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=axU4h5sQNk59uPfyb9BlGWg0FQuKd8D22txYUHgqfsk=;
-        b=OOiqjkmCSRK/D/lHYAqaBlYjn2eX14KuA/bZvHSQrPXZRdv3CbVKqwse/FFdnYDsTV
-         YENP2n/Hvh0XjDMQZ4sWHsRdwweiP0K8ZdKZBSamcUr7ZlpvZ4R2zfHch5byfVIiCXXf
-         RyZ9H32DURcO79mX8YSPl5clNu/J5aY/DQ7QCFJj8LE3vF5Gpj93n523Sl1V3bhZ8oHL
-         sZ2EGVIeJG8TYUOfy9zaSv5VBVL5hEYKemH7q2oJb7vxG4nZM63kWUdDWZbNsIsUtiNC
-         yC9pVgXUTxQWqb5rHHeKkMQTYzVG661wpK6YYR7z4Dtifi3FKvwsGE+mHDVH7IfFZ6WC
-         lAcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709574908; x=1710179708;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=axU4h5sQNk59uPfyb9BlGWg0FQuKd8D22txYUHgqfsk=;
-        b=Zykd55zx2NItc9NxYHrXhZpDhHFDxk136TCiJ0jkmS9B79+YS8FpJk9nqgeh1L2omb
-         tpZE6AL7YmoKfPpTsJ+L/hFIkAlUAWzM6z02D95ObKvqUMZr7W/o/QaW08YRYmRc4MK+
-         Pl68XDpbGREDGIqbIFbnFxTXAuCDABdgrjZAfKGuSCDiE1NxJisKzvOOQ3lRMFUx7e1B
-         nN2EJJksoQ27UFKk7fEEWJdk7Wy1I5lcQW5zP33LCOyW8O5m380dPBPR1T5qoxzgKjFS
-         Qd89yyD9CcFUyomekC8tQw7RL8GNu+aepV7XXN5Ss2ngm99hDBVXsHgxx7cxAwPenEcW
-         3Ykw==
-X-Forwarded-Encrypted: i=1; AJvYcCUKbyU1TRNxV4onTqXf0ZjdKxEs0Rqkfc8QawvD3D5CEn+c4FblknG767uX1dLuPo7xOo2fojP088JNdxY+HpISAl4S+Qa0oXPjwHrT
-X-Gm-Message-State: AOJu0YyOUsNd02Fs8jRBANS1qfqv+aUWJvsjUGdfawR4kNp1dmqknyzO
-	48WbwQh6Fww0Li+yfvUris3mPIcITeCsA581USQc/zyIWvJkws9PLTcLcGA2fc+vzOIennq65p3
-	m7Q==
-X-Google-Smtp-Source: AGHT+IFg6ysgWmyL1B+R7gMX2anlCJ0cYqu7laChtGAPwU0HnAjkjothNO9Fsa2VNTibZcwGc9svzrcS3uQ=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:2d28:b0:6e5:547c:2f82 with SMTP id
- fa40-20020a056a002d2800b006e5547c2f82mr422385pfb.6.1709574907668; Mon, 04 Mar
- 2024 09:55:07 -0800 (PST)
-Date: Mon, 4 Mar 2024 09:55:06 -0800
-In-Reply-To: <1880816055.4545532.1709260250219.JavaMail.zimbra@sjtu.edu.cn>
+	s=arc-20240116; t=1709574931; c=relaxed/simple;
+	bh=y+187TTojYuvVoZjxboZRcqKAk8MYY1xFE2X5K9mYXQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dHxu0YIJRWr3Y0eac4Ssy4KJ8bsb38m0L/rx1Hs9bGHUX6y48NBenL506eKr3tbWDG1ePSwnCSULEHZyPm1hvMmq6AJ8hVtHkTat6J6QGeDNnu7h9Qv66rz5v1+rCRS/pfbCQlZvrulLRLrAy2T3U2Y5uKwbw9cL9w8jeapM1Xo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com; spf=pass smtp.mailfrom=kroah.com; dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b=xDI7j03w; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=UUDIF0mr; arc=none smtp.client-ip=103.168.172.153
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kroah.com
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+	by mailfhigh.nyi.internal (Postfix) with ESMTP id E513011400F3;
+	Mon,  4 Mar 2024 12:55:27 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 04 Mar 2024 12:55:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1709574927; x=1709661327; bh=gD1THqT0zP
+	RzvO9ud1VKCM+jcKNUokl0CnokuCSdG1s=; b=xDI7j03woFcHHeLw/+c4QzL3yj
+	wgdNWyKNzABjWvUPNr6jziPUF9tpFAf/+0dIvQ88GyQ7B761MZgNXlUgor3I+vbR
+	wGpwYj7UFEKNUh3RjZ1otxGXYkSJ6TZjBidqwTSUTljmCXx33/gEW0xIXXEaK/PA
+	kQ7T1do4PCegI4I/tvy3646J7ljBwXE6cg8XgeeXgR4wTLGKEli7/lHsNBiEm5qR
+	3id2i8mU8Qyy7Wt9wn67CqFJODcVEwGTYQSVXGJu31gV4gwKvWpoqXJorhnua9SL
+	UTrKEdkSrUuyTBbyyxBZBFAnYCRopepsUvu47OtCw4JP26vovT42ECxefykg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1709574927; x=1709661327; bh=gD1THqT0zPRzvO9ud1VKCM+jcKNU
+	okl0CnokuCSdG1s=; b=UUDIF0mrol8Rxt6uvSdLykmGMQy8pqWd29S+NAzeLkBC
+	zfnC2GvMOUc8OrnMNcZu+tmQFuRLkFm+sMqLh8EsyOMjHMz7OeHnBd7eMuhtvG/z
+	Grle0uLCWxmo4YI7EAUIPVyWeXBQDwzJW5DFgcrbx3UbEooQMc5nwGMe95oql/yb
+	Rw3Mj3tQvgW5x5ZS1OSNKTbiHJ2NQewzKsk9rR9O6yZqqqwQYK0XygC13XVq5iNj
+	iNkKWSSPJspiT9jgeUGz2iJ+qtg6It1wVdcaa6ef+FRTkdy+Gb8DYhwzEx26lFPK
+	8vr0kQiEhh3F18DNYq2vc7bedfbQRJKvi3dKeQExVQ==
+X-ME-Sender: <xms:DwvmZZg6rhRA5RL229IRgEPGPla82VrEe1cSvmAgEszp5VZ_4DI94A>
+    <xme:DwvmZeCe6XLyyefIA9GCGgM-bHNaJvdeGXKh7ADl0G0iUEStoWQQOZClDcFTBgFxi
+    nag_aIg4v-CQQ>
+X-ME-Received: <xmr:DwvmZZE9FoC_UiFY-whyNifm-ohpAoyyWF884SCUXijytpSajdscJjzaWg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrheejgddutdegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepffekje
+    ffieetueeljeeileetleekgeffjedvtddtueffvdegledukeeihfegkefhnecuffhomhgr
+    ihhnpehgihhthhhusghushgvrhgtohhnthgvnhhtrdgtohhmnecuvehluhhsthgvrhfuih
+    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
+X-ME-Proxy: <xmx:DwvmZeToV0kwYmD9Ml6RjI_izyXw9an0Hca90glDyAIYp9ezhPOrjQ>
+    <xmx:DwvmZWzFHtzZXrynvZOgpeTebmh6gSVfan7FjtnNV5FAezrofJDImA>
+    <xmx:DwvmZU6z74a_JZYRZyrftDAm9Bxg83TTx_WtMHeQQxlO-RB0YQL4uQ>
+    <xmx:DwvmZRrlwxYvm7w4x5UJv30QGViBGQBT3Eng1ebGLBbU3_w0GOt5eg>
+Feedback-ID: i787e41f1:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 4 Mar 2024 12:55:15 -0500 (EST)
+Date: Mon, 4 Mar 2024 18:55:08 +0100
+From: Greg KH <greg@kroah.com>
+To: Danilo Krummrich <dakr@redhat.com>
+Cc: stable@vger.kernel.org, nouveau@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+	Karol Herbst <kherbst@redhat.com>
+Subject: Re: [PATCH stable v6.7] drm/nouveau: don't fini scheduler before
+ entity flush
+Message-ID: <2024030448-basin-grit-b550@gregkh>
+References: <20240304170158.4206-1-dakr@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <1880816055.4545532.1709260250219.JavaMail.zimbra@sjtu.edu.cn>
-Message-ID: <ZeYK-hNDQz5cFhre@google.com>
-Subject: Re: [PATCH] KVM:SVM: Flush cache only on CPUs running SEV guest
-From: Sean Christopherson <seanjc@google.com>
-To: Zheyun Shen <szy0127@sjtu.edu.cn>
-Cc: pbonzini@redhat.com, tglx@linutronix.de, kvm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Tom Lendacky <thomas.lendacky@amd.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240304170158.4206-1-dakr@redhat.com>
 
-+Tom
-
-"KVM: SVM:" for the shortlog scope.
-
-On Fri, Mar 01, 2024, Zheyun Shen wrote:
-> On AMD CPUs without ensuring cache consistency, each memory page reclamation in
-> an SEV guest triggers a call to wbinvd_on_all_cpus, thereby affecting the
-> performance of other programs on the host.
+On Mon, Mar 04, 2024 at 06:01:46PM +0100, Danilo Krummrich wrote:
+> This bug is present in v6.7 only, since the scheduler design has been
+> re-worked in v6.8.
 > 
-> Typically, an AMD server may have 128 cores or more, while the SEV guest might only
-> utilize 8 of these cores. Meanwhile, host can use qemu-affinity to bind these 8 vCPUs
-> to specific physical CPUs.
+> Client scheduler entities must be flushed before an associated GPU
+> scheduler is teared down. Otherwise the entitiy might still hold a
+> pointer to the scheduler's runqueue which is freed at scheduler tear
+> down already.
 > 
-> Therefore, keeping a record of the physical core numbers each time a vCPU runs
-> can help avoid flushing the cache for all CPUs every time.
-
-This needs an unequivocal statement from AMD that flushing caches only on CPUs
-that do VMRUN is sufficient.  That sounds like it should be obviously correct,
-as I don't see how else a cache line can be dirtied for the encrypted PA, but
-this entire non-coherent caches mess makes me more than a bit paranoid.
-
-> Signed-off-by: Zheyun Shen <szy0127@sjtu.edu.cn>
-> ---
->  arch/x86/include/asm/smp.h |  1 +
->  arch/x86/kvm/svm/sev.c     | 28 ++++++++++++++++++++++++----
->  arch/x86/kvm/svm/svm.c     |  4 ++++
->  arch/x86/kvm/svm/svm.h     |  3 +++
->  arch/x86/lib/cache-smp.c   |  7 +++++++
->  5 files changed, 39 insertions(+), 4 deletions(-)
+> [  305.224293] ==================================================================
+> [  305.224297] BUG: KASAN: slab-use-after-free in drm_sched_entity_flush+0x6c4/0x7b0 [gpu_sched]
+> [  305.224310] Read of size 8 at addr ffff8881440a8f48 by task rmmod/4436
 > 
-> diff --git a/arch/x86/include/asm/smp.h b/arch/x86/include/asm/smp.h
-> index 4fab2ed45..19297202b 100644
-> --- a/arch/x86/include/asm/smp.h
-> +++ b/arch/x86/include/asm/smp.h
-> @@ -120,6 +120,7 @@ void native_play_dead(void);
->  void play_dead_common(void);
->  void wbinvd_on_cpu(int cpu);
->  int wbinvd_on_all_cpus(void);
-> +int wbinvd_on_cpus(struct cpumask *cpumask);
+> [  305.224317] CPU: 10 PID: 4436 Comm: rmmod Tainted: G     U             6.7.6-100.fc38.x86_64+debug #1
+> [  305.224321] Hardware name: Dell Inc. Precision 7550/01PXFR, BIOS 1.27.0 11/08/2023
+> [  305.224324] Call Trace:
+> [  305.224327]  <TASK>
+> [  305.224329]  dump_stack_lvl+0x76/0xd0
+> [  305.224336]  print_report+0xcf/0x670
+> [  305.224342]  ? drm_sched_entity_flush+0x6c4/0x7b0 [gpu_sched]
+> [  305.224352]  ? __virt_addr_valid+0x215/0x410
+> [  305.224359]  ? drm_sched_entity_flush+0x6c4/0x7b0 [gpu_sched]
+> [  305.224368]  kasan_report+0xa6/0xe0
+> [  305.224373]  ? drm_sched_entity_flush+0x6c4/0x7b0 [gpu_sched]
+> [  305.224385]  drm_sched_entity_flush+0x6c4/0x7b0 [gpu_sched]
+> [  305.224395]  ? __pfx_drm_sched_entity_flush+0x10/0x10 [gpu_sched]
+> [  305.224406]  ? rcu_is_watching+0x15/0xb0
+> [  305.224413]  drm_sched_entity_destroy+0x17/0x20 [gpu_sched]
+> [  305.224422]  nouveau_cli_fini+0x6c/0x120 [nouveau]
+> [  305.224658]  nouveau_drm_device_fini+0x2ac/0x490 [nouveau]
+> [  305.224871]  nouveau_drm_remove+0x18e/0x220 [nouveau]
+> [  305.225082]  ? __pfx_nouveau_drm_remove+0x10/0x10 [nouveau]
+> [  305.225290]  ? rcu_is_watching+0x15/0xb0
+> [  305.225295]  ? _raw_spin_unlock_irqrestore+0x66/0x80
+> [  305.225299]  ? trace_hardirqs_on+0x16/0x100
+> [  305.225304]  ? _raw_spin_unlock_irqrestore+0x4f/0x80
+> [  305.225310]  pci_device_remove+0xa3/0x1d0
+> [  305.225316]  device_release_driver_internal+0x379/0x540
+> [  305.225322]  driver_detach+0xc5/0x180
+> [  305.225327]  bus_remove_driver+0x11e/0x2a0
+> [  305.225333]  pci_unregister_driver+0x2a/0x250
+> [  305.225339]  nouveau_drm_exit+0x1f/0x970 [nouveau]
+> [  305.225548]  __do_sys_delete_module+0x350/0x580
+> [  305.225554]  ? __pfx___do_sys_delete_module+0x10/0x10
+> [  305.225562]  ? syscall_enter_from_user_mode+0x26/0x90
+> [  305.225567]  ? rcu_is_watching+0x15/0xb0
+> [  305.225571]  ? syscall_enter_from_user_mode+0x26/0x90
+> [  305.225575]  ? trace_hardirqs_on+0x16/0x100
+> [  305.225580]  do_syscall_64+0x61/0xe0
+> [  305.225584]  ? rcu_is_watching+0x15/0xb0
+> [  305.225587]  ? syscall_exit_to_user_mode+0x1f/0x50
+> [  305.225592]  ? trace_hardirqs_on_prepare+0xe3/0x100
+> [  305.225596]  ? do_syscall_64+0x70/0xe0
+> [  305.225600]  ? trace_hardirqs_on_prepare+0xe3/0x100
+> [  305.225604]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> [  305.225609] RIP: 0033:0x7f6148f3592b
+> [  305.225650] Code: 73 01 c3 48 8b 0d dd 04 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa b8 b0 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d ad 04 0c 00 f7 d8 64 89 01 48
+> [  305.225653] RSP: 002b:00007ffe89986f08 EFLAGS: 00000206 ORIG_RAX: 00000000000000b0
+> [  305.225659] RAX: ffffffffffffffda RBX: 000055cbb036e900 RCX: 00007f6148f3592b
+> [  305.225662] RDX: 0000000000000000 RSI: 0000000000000800 RDI: 000055cbb036e968
+> [  305.225664] RBP: 00007ffe89986f30 R08: 1999999999999999 R09: 0000000000000000
+> [  305.225667] R10: 00007f6148fa6ac0 R11: 0000000000000206 R12: 0000000000000000
+> [  305.225670] R13: 00007ffe89987190 R14: 000055cbb036e900 R15: 0000000000000000
+> [  305.225678]  </TASK>
+> 
+> [  305.225683] Allocated by task 484:
+> [  305.225685]  kasan_save_stack+0x33/0x60
+> [  305.225690]  kasan_set_track+0x25/0x30
+> [  305.225693]  __kasan_kmalloc+0x8f/0xa0
+> [  305.225696]  drm_sched_init+0x3c7/0xce0 [gpu_sched]
+> [  305.225705]  nouveau_sched_init+0xd2/0x110 [nouveau]
+> [  305.225913]  nouveau_drm_device_init+0x130/0x3290 [nouveau]
+> [  305.226121]  nouveau_drm_probe+0x1ab/0x6b0 [nouveau]
+> [  305.226329]  local_pci_probe+0xda/0x190
+> [  305.226333]  pci_device_probe+0x23a/0x780
+> [  305.226337]  really_probe+0x3df/0xb80
+> [  305.226341]  __driver_probe_device+0x18c/0x450
+> [  305.226345]  driver_probe_device+0x4a/0x120
+> [  305.226348]  __driver_attach+0x1e5/0x4a0
+> [  305.226351]  bus_for_each_dev+0x106/0x190
+> [  305.226355]  bus_add_driver+0x2a1/0x570
+> [  305.226358]  driver_register+0x134/0x460
+> [  305.226361]  do_one_initcall+0xd3/0x430
+> [  305.226366]  do_init_module+0x238/0x770
+> [  305.226370]  load_module+0x5581/0x6f10
+> [  305.226374]  __do_sys_init_module+0x1f2/0x220
+> [  305.226377]  do_syscall_64+0x61/0xe0
+> [  305.226381]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> 
+> [  305.226387] Freed by task 4436:
+> [  305.226389]  kasan_save_stack+0x33/0x60
+> [  305.226392]  kasan_set_track+0x25/0x30
+> [  305.226396]  kasan_save_free_info+0x2b/0x50
+> [  305.226399]  __kasan_slab_free+0x10b/0x1a0
+> [  305.226402]  slab_free_freelist_hook+0x12b/0x1e0
+> [  305.226406]  __kmem_cache_free+0xd4/0x1d0
+> [  305.226410]  drm_sched_fini+0x178/0x320 [gpu_sched]
+> [  305.226418]  nouveau_drm_device_fini+0x2a0/0x490 [nouveau]
+> [  305.226624]  nouveau_drm_remove+0x18e/0x220 [nouveau]
+> [  305.226832]  pci_device_remove+0xa3/0x1d0
+> [  305.226836]  device_release_driver_internal+0x379/0x540
+> [  305.226840]  driver_detach+0xc5/0x180
+> [  305.226843]  bus_remove_driver+0x11e/0x2a0
+> [  305.226847]  pci_unregister_driver+0x2a/0x250
+> [  305.226850]  nouveau_drm_exit+0x1f/0x970 [nouveau]
+> [  305.227056]  __do_sys_delete_module+0x350/0x580
+> [  305.227060]  do_syscall_64+0x61/0xe0
+> [  305.227064]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> 
+> [  305.227070] The buggy address belongs to the object at ffff8881440a8f00
+>                 which belongs to the cache kmalloc-128 of size 128
+> [  305.227073] The buggy address is located 72 bytes inside of
+>                 freed 128-byte region [ffff8881440a8f00, ffff8881440a8f80)
+> 
+> [  305.227078] The buggy address belongs to the physical page:
+> [  305.227081] page:00000000627efa0a refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1440a8
+> [  305.227085] head:00000000627efa0a order:1 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+> [  305.227088] flags: 0x17ffffc0000840(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
+> [  305.227093] page_type: 0xffffffff()
+> [  305.227097] raw: 0017ffffc0000840 ffff8881000428c0 ffffea0005b33500 dead000000000002
+> [  305.227100] raw: 0000000000000000 0000000000200020 00000001ffffffff 0000000000000000
+> [  305.227102] page dumped because: kasan: bad access detected
+> 
+> [  305.227106] Memory state around the buggy address:
+> [  305.227109]  ffff8881440a8e00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> [  305.227112]  ffff8881440a8e80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+> [  305.227114] >ffff8881440a8f00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> [  305.227117]                                               ^
+> [  305.227120]  ffff8881440a8f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+> [  305.227122]  ffff8881440a9000: 00 00 00 00 00 00 00 00 00 00 00 00 00 fc fc fc
+> [  305.227125] ==================================================================
+> 
+> Cc: <stable@vger.kernel.org> # v6.7 only
+> Reported-by: Karol Herbst <kherbst@redhat.com>
+> Closes: https://gist.githubusercontent.com/karolherbst/a20eb0f937a06ed6aabe2ac2ca3d11b5/raw/9cd8b1dc5894872d0eeebbee3dd0fdd28bb576bc/gistfile1.txt
+> Fixes: b88baab82871 ("drm/nouveau: implement new VM_BIND uAPI")
 
-KVM already has an internal helper that does this, see kvm_emulate_wbinvd_noskip().
-I'm not necessarily advocating that we keep KVM's internal code, but I don't want
-two ways of doing the same thing.
+You say 6.7 only, but this commit is in 6.6, so why not 6.6 also?
 
->  void smp_kick_mwait_play_dead(void);
->  
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index f760106c3..b6ed9a878 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -215,6 +215,21 @@ static void sev_asid_free(struct kvm_sev_info *sev)
->          sev->misc_cg = NULL;
->  }
->  
-> +struct cpumask *sev_get_cpumask(struct kvm *kvm)
-> +{
-> +        struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-> +
-> +        return &sev->cpumask;
-> +}
-> +
-> +void sev_clear_cpumask(struct kvm *kvm)
-> +{
-> +        struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-> +
-> +        cpumask_clear(&sev->cpumask);
-> +}
-> +
-> +
+thanks,
 
-Unnecessary newline.  But I would just delete these helpers.
-
->  static void sev_decommission(unsigned int handle)
->  {
->          struct sev_data_decommission decommission;
-> @@ -255,6 +270,7 @@ static int sev_guest_init(struct kvm *kvm, struct kvm_sev_cmd *argp)
->          if (unlikely(sev->active))
->                  return ret;
->  
-> +        cpumask_clear(&sev->cpumask);
-
-This is unnecessary, the mask is zero allocated.
-
->          sev->active = true;
->          sev->es_active = argp->id == KVM_SEV_ES_INIT;
->          asid = sev_asid_new(sev);
-> @@ -2048,7 +2064,8 @@ int sev_mem_enc_unregister_region(struct kvm *kvm,
->           * releasing the pages back to the system for use. CLFLUSH will
->           * not do this, so issue a WBINVD.
->           */
-> -        wbinvd_on_all_cpus();
-> +        wbinvd_on_cpus(sev_get_cpumask(kvm));
-> +        sev_clear_cpumask(kvm);
-
-Instead of copy+paste WBINVD+cpumask_clear() everywhere, add a prep patch to
-replace relevant open coded calls to wbinvd_on_all_cpus() with calls to
-sev_guest_memory_reclaimed().  Then only sev_guest_memory_reclaimed() needs to
-updated, and IMO it helps document why KVM is blasting WBINVD.
-
-That's why I recommend deleting sev_get_cpumask() and sev_clear_cpumask(), there
-really should only be two places that touch the mask itself: svm
-
->          __unregister_enc_region_locked(kvm, region);
->  
-> @@ -2152,7 +2169,8 @@ void sev_vm_destroy(struct kvm *kvm)
->           * releasing the pages back to the system for use. CLFLUSH will
->           * not do this, so issue a WBINVD.
->           */
-> -        wbinvd_on_all_cpus();
-> +        wbinvd_on_cpus(sev_get_cpumask(kvm));
-> +        sev_clear_cpumask(kvm);
->  
->          /*
->           * if userspace was terminated before unregistering the memory regions
-> @@ -2343,7 +2361,8 @@ static void sev_flush_encrypted_page(struct kvm_vcpu *vcpu, void *va)
->          return;
->  
->  do_wbinvd:
-> -        wbinvd_on_all_cpus();
-> +        wbinvd_on_cpus(sev_get_cpumask(vcpu->kvm));
-> +        sev_clear_cpumask(vcpu->kvm);
->  }
->  
->  void sev_guest_memory_reclaimed(struct kvm *kvm)
-> @@ -2351,7 +2370,8 @@ void sev_guest_memory_reclaimed(struct kvm *kvm)
->          if (!sev_guest(kvm))
->                  return;
->  
-> -        wbinvd_on_all_cpus();
-> +        wbinvd_on_cpus(sev_get_cpumask(kvm));
-> +        sev_clear_cpumask(kvm);
-
-This is unsafe from a correctness perspective, as sev_guest_memory_reclaimed()
-is called without holding any KVM locks.  E.g. if a vCPU runs between blasting
-WBINVD and cpumask_clear(), KVM will fail to emit WBINVD on a future reclaim.
-
-Making the mask per-vCPU, a la vcpu->arch.wbinvd_dirty_mask, doesn't solve the
-problem as KVM can't take vcpu->mutex in this path (sleeping may not be allowed),
-and that would create an unnecessary/unwated bottleneck.
-
-The simplest solution I can think of is to iterate over all possible CPUs using
-cpumask_test_and_clear_cpu().
-
->  }
->  
->  void sev_free_vcpu(struct kvm_vcpu *vcpu)
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index e90b429c8..f9bfa6e57 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -4107,6 +4107,10 @@ static noinstr void svm_vcpu_enter_exit(struct kvm_vcpu *vcpu, bool spec_ctrl_in
->  
->          amd_clear_divider();
->  
-> +    if (sev_guest(vcpu->kvm))
-
-Use tabs, not spaces.
-
-> +                cpumask_set_cpu(smp_processor_id(), sev_get_cpumask(vcpu->kvm));
-
-This does not need to be in the noinstr region, and it _shouldn't_ be in the
-noinstr region.  There's already a handy dandy pre_sev_run() that provides a
-convenient location to bury this stuff in SEV specific code.
-
-> +    
->          if (sev_es_guest(vcpu->kvm))
->                  __svm_sev_es_vcpu_run(svm, spec_ctrl_intercepted);
->          else
-> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> index 8ef95139c..1577e200e 100644
-> --- a/arch/x86/kvm/svm/svm.h
-> +++ b/arch/x86/kvm/svm/svm.h
-> @@ -90,6 +90,7 @@ struct kvm_sev_info {
->          struct list_head mirror_entry; /* Use as a list entry of mirrors */
->          struct misc_cg *misc_cg; /* For misc cgroup accounting */
->          atomic_t migration_in_progress;
-> +        struct cpumask cpumask; /* CPU list to flush */
-
-That is not a helpful comment.  Flush what?  What adds to the list?  When is the
-list cleared.  Even the name is fairly useless, e.g. "
-
-I'm also pretty sure this should be a cpumask_var_t, and dynamically allocated
-as appropriate.  And at that point, it should be allocated and filled if and only
-if the CPU doesn't have X86_FEATURE_SME_COHERENT.
+greg k-h
 
