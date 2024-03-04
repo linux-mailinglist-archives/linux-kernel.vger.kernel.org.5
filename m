@@ -1,156 +1,129 @@
-Return-Path: <linux-kernel+bounces-91145-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91143-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82622870A12
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:07:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0704C870A05
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:02:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B470D1C21703
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:07:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B61F4281E29
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:02:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6D7578B6C;
-	Mon,  4 Mar 2024 19:07:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="pxqBZ2Qy"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D9B178B67;
+	Mon,  4 Mar 2024 19:02:11 +0000 (UTC)
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E76DC78B50;
-	Mon,  4 Mar 2024 19:06:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8591B48CC7;
+	Mon,  4 Mar 2024 19:02:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709579220; cv=none; b=CDJ8uiVYfeEdPslJ8Y+sTBQKaqTDg3ge7HU8IPZPWPeiafgKCnNzF5+NUoXVq4xJhsyvXg+kwr8vh/+nGBvKI23EU2SZN04JIN7eydzANs4WXJxhKl+LFx1eaEdF/WJvEhfWVLgqwBV/XgkqMxmMklIjHJiqpdaqHQSPOZH0Agc=
+	t=1709578931; cv=none; b=GpaL1iWpUxj11eCMdjpM6HdcqxwNyy5KIeXIyoSkkVhmCgmm8iqhlYqpWgHhzpPh+TJkXH0/CArykiofmtIIxWzbgLbBdvFSfKf1IayslKBIJvUVmB87vRbZzQpH/cG0mdvKU8krhdRBDZ9sj8jdLWB1lFMvLaG1ZX8iJLqeTPE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709579220; c=relaxed/simple;
-	bh=z/+FJbtOYKoJjdt5JqfxQAUYtcZcb/bgxSsuxmnc7MQ=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=CbfZsDO2OaxLjq3rHPDoaOEeeWGkpbEDpNp3IKL53hdGKvGlZf8IhSqyxV/0xpNa8RE14nUuALNW4oIW91HUgAMYBbKf4gy8s6xqVjIhbutlF68we2XdxvGIHdoq9OBVzwmYYNY+Nfd5dwVGQ3Tf+zErNjA+p19sGLALzs7Wm8k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=pxqBZ2Qy; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 424Ir4HG032625;
-	Mon, 4 Mar 2024 19:06:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=wG+AkWFsLk0LGbkTfh6JMlER9PxzsT9H1kUw5NpdIwI=;
- b=pxqBZ2QywGfs5OfpEbTrv8t12fuzJ4gWxu09DJHBzcb2a2lH8lya5rLyqgfzH9l7s4oi
- pQWqkVpDVbkMCggiMzUzlQM/PhH1SLvMgHr9FlRyzznHeN7Y8erSDxNUGxsh9studt+a
- l2o5Qj8N6FB3h+Rn6l+wdst4LkP0XbZPxttOL0qgTn7zp6goZCPnV7+z/UIsvsP4OJEj
- sdlyfE8XmTdlVSvx1PMe33UJd7geY3xpPrMJxRYB4AX0DDSCtSDRvNhBMmudeD4RYKZo
- ZvxU5YpEE3Atp8c4UjBgmDcdPMF3uloqiyTUh7BdOL8DfsMKBrbkyO0p8vXV7hFe21zz FQ== 
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wnkyg0ct0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 04 Mar 2024 19:06:50 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 424H2lht031533;
-	Mon, 4 Mar 2024 19:01:42 GMT
-Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wmgnjt9tv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 04 Mar 2024 19:01:42 +0000
-Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
-	by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 424J1dKb27394678
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 4 Mar 2024 19:01:41 GMT
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 57E4758068;
-	Mon,  4 Mar 2024 19:01:39 +0000 (GMT)
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E191158056;
-	Mon,  4 Mar 2024 19:01:38 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-	by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Mon,  4 Mar 2024 19:01:38 +0000 (GMT)
-Message-ID: <3740c569-9dd2-448d-bcac-16ca5203b206@linux.ibm.com>
-Date: Mon, 4 Mar 2024 14:01:38 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 00/12] Add support for NIST P521 to ecdsa
-Content-Language: en-US
-To: Lukas Wunner <lukas@wunner.de>
-Cc: keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        linux-kernel@vger.kernel.org, saulo.alessandre@tse.jus.br
-References: <20240301022007.344948-1-stefanb@linux.ibm.com>
- <20240304181004.GA14180@wunner.de>
-From: Stefan Berger <stefanb@linux.ibm.com>
-In-Reply-To: <20240304181004.GA14180@wunner.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: e0MzAC8-aT97XANG7sA5IsTleu0lLLob
-X-Proofpoint-GUID: e0MzAC8-aT97XANG7sA5IsTleu0lLLob
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1709578931; c=relaxed/simple;
+	bh=jz+YaBY6pOhcQeRXB2G4cm+3RZ3GXD8LU3XyAlsEUug=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KaYTCdkYe8G+sJqgxMPQLPTyvUJ2HgISgrwkbQlvODe3rpDRqoe0fGOb7c7wFfwPyHw4naoDIkET/mvmsObbtykBc615SuAW7g+QUsEgZjZmtxc3aSosC3qGtoFTo+cJTRl/aViw5tHLkaLcUHcxl8iiXSTLNfFpjapGXLRP9GM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dc74435c428so5312289276.2;
+        Mon, 04 Mar 2024 11:02:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709578928; x=1710183728;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LYl1mIRYbr8vmVU4jA2oiSVVNLp+IoIPd1/D/iVf0OQ=;
+        b=mA21OxOmYlV1KRDI06BXJ01zNFPGfQ6O9hL+lWVx0o8bTvc7ixGQWn4euJuCTlHG44
+         tbRr2wsG0XNx/5QoW8bQLYcsrwptZB4qXsPaA9RfYAcWiwZotsTSLhfsH+ffHy84dwKR
+         xvJsS70P4hJeY26gG2ceUTnVtShU5t0DVfsD9h04FigcjhVl5BrBxLcXu0E1AGcr2dFx
+         Z9NbwCa2JWOTIpRiv4soVVbfPmEBlYbo9DIQt3PgxhRJ3k6PqtjPYCvBlHMBuDq6tAjn
+         J+1v6geIQdtjZ8VbhDyYrdX/CwbaF+3aiP6zLHRDFJ/9knbc0UMjLea/QAz3I+H1vHeL
+         GVww==
+X-Forwarded-Encrypted: i=1; AJvYcCVxI6GfRbDYIRHuiJLgWCPne7e7Q6iZgXLJUOWSl3Ms5zhAnuzye4n4ZrcWYscEPe7h0HCKw/PClpbKkIKjpQXM2nM+GE/6Dqn608z0Q2vpOYsedUMML7N/Kkt4YdYC38b+ENA9BdLQkegg372XbsExdmipJwNOUHRgAceO2RIkG8rYUfk=
+X-Gm-Message-State: AOJu0YxnMbX9xKF3tYUpPJcEc/plutMvZEpUpaXEh8yM8ywilrAyEMc9
+	DfuuFGiF0sVdHpH70A75bBaUNpxkrI+NqSEasFIMco0BpReJMkKLYPZ8HB9AHus=
+X-Google-Smtp-Source: AGHT+IHcGnKBnMT8d7rh2gKo/LhCbodyr0HL6t21lbnSOzsIBsDg9Jhv8uRbsuCx21k7kmdGmJTR+Q==
+X-Received: by 2002:a25:c546:0:b0:dc6:ff66:87a8 with SMTP id v67-20020a25c546000000b00dc6ff6687a8mr6990780ybe.51.1709578928022;
+        Mon, 04 Mar 2024 11:02:08 -0800 (PST)
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com. [209.85.128.174])
+        by smtp.gmail.com with ESMTPSA id x3-20020a258583000000b00dcc234241c4sm2269850ybk.55.2024.03.04.11.02.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Mar 2024 11:02:07 -0800 (PST)
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-60925d20af0so48776787b3.2;
+        Mon, 04 Mar 2024 11:02:07 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXjRVp8g/Ijxu1BPEJDwJQ3cbUB3aYLsyV9MxLOI9BmmctTfDKF9ZmqKoiE0OMh6aeQ3a6huXZzdnfyO/rHXyM8U+oWPSi99eP733TcFHVv9Q3TJM119cgSXqOeq90csZWMyOCCeFlCNkja+/mQc8FfZbiLr20FRYuwescsv8gbO7k0+Ps=
+X-Received: by 2002:a0d:d4c6:0:b0:609:3250:865 with SMTP id
+ w189-20020a0dd4c6000000b0060932500865mr10236091ywd.7.1709578927167; Mon, 04
+ Mar 2024 11:02:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-04_14,2024-03-04_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- priorityscore=1501 mlxscore=0 malwarescore=0 phishscore=0 bulkscore=0
- adultscore=0 spamscore=0 clxscore=1015 impostorscore=0 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2403040145
+References: <20240301014203.2033844-1-chris.packham@alliedtelesis.co.nz>
+ <20240301014203.2033844-5-chris.packham@alliedtelesis.co.nz>
+ <ZeIdXIx5zYjKQiSO@smile.fi.intel.com> <CAMuHMdVJiWtB4MSGHXXz=OAEvu-+b9Xp-jQ_NXWck+hwKGK4TQ@mail.gmail.com>
+ <CAHp75VesLCo72ftQ2BNEKSXwF9A2pe0Vbnuves2-L3ist_twNQ@mail.gmail.com>
+ <CAMuHMdXjqVQeQF6TFr1nQmUCLrEbY1gq5OdCcz6T60W33QO2-Q@mail.gmail.com> <CAHp75Vfh_pv50Pk84JGz6qT=K9m3w=0_HDGX2WvqEN4Nm8fFDw@mail.gmail.com>
+In-Reply-To: <CAHp75Vfh_pv50Pk84JGz6qT=K9m3w=0_HDGX2WvqEN4Nm8fFDw@mail.gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 4 Mar 2024 20:01:58 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVuiYdjV46aS2fqPsFdW-vGK7zm_sY-LbWGYg4U0Ar5yQ@mail.gmail.com>
+Message-ID: <CAMuHMdVuiYdjV46aS2fqPsFdW-vGK7zm_sY-LbWGYg4U0Ar5yQ@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] ARM: dts: marvell: Indicate USB activity on x530
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Andy Shevchenko <andy@kernel.org>, Chris Packham <chris.packham@alliedtelesis.co.nz>, 
+	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	andrew@lunn.ch, gregory.clement@bootlin.com, sebastian.hesselbarth@gmail.com, 
+	pavel@ucw.cz, lee@kernel.org, linux-leds@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Hi Andy,
 
+On Mon, Mar 4, 2024 at 7:17=E2=80=AFPM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+> On Mon, Mar 4, 2024 at 11:57=E2=80=AFAM Geert Uytterhoeven <geert@linux-m=
+68k.org> wrote:
+> > On Sun, Mar 3, 2024 at 9:43=E2=80=AFPM Andy Shevchenko
+> > <andy.shevchenko@gmail.com> wrote:
+>
+> ...
+>
+> > So IMHO it would be a bad idea to make the DP mandatory.
+>
+> But I'm not talking about making it mandatory, I'm talking about the
 
-On 3/4/24 13:10, Lukas Wunner wrote:
-> On Thu, Feb 29, 2024 at 09:19:55PM -0500, Stefan Berger wrote:
->> This series adds support for the NIST P521 curve to the ecdsa module
->> to enable signature verification with it.
->>
->> An issue with the current code in ecdsa is that it assumes that input
->> arrays providing key coordinates for example, are arrays of digits
->> (a 'digit' is a 'u64'). This works well for all currently supported
->> curves, such as NIST P192/256/384, but does not work for NIST P521 where
->> coordinates are 8 digits + 2 bytes long. So some of the changes deal with
->> converting byte arrays to digits and adjusting tests on input byte
->> array lengths to tolerate arrays not providing multiples of 8 bytes.
-> 
-> When respinning this series as v5, feel free to add my
-> 
-> Tested-by: Lukas Wunner <lukas@wunner.de>
+OK.
 
-Thanks.
-> 
-> 
-> I cherry-picked the commits from your nist_p521.v5 branch...
-> 
-> https://github.com/stefanberger/linux-ima-namespaces/commits/nist_p521.v5/
-> 
-> ...onto my development branch for PCI device authentication...
-> 
-> https://github.com/l1k/linux/commits/doe
-> 
-> ...and tested against qemu+libspdm that an emulated NVMe drive
-> is able to present a valid signature using NIST P521 + SHA384
-> which can be verified correctly by the kernel.
+> DP to be used as DP when it _is_ present and wired. If current
+> platform wants to use DP for something else, I'm pretty much worried
+> that this is the right thing to do.
 
-FYI: I have a PR for a test suite here as well:
+There is not much we can do about that. People can already model
+such displays as individual LEDs, too.
+And in some sense, the auxdisplay/linedisp driver for
+"generic-gpio-7seg" imposes a policy, too.
+What if people want to e.g. use 4 7-seg displays to show a continuously
+running snake?
 
-https://github.com/stefanberger/eckey-testing/pull/1
+Gr{oetje,eeting}s,
 
-> 
-> I needed to fix up two of my patches, one which adds P1363
-> signature format support to the kernel and another fixup to
-> add NIST P521 support to the in-kernel SPDM library
-> (two top-most commits on my above-linked development branch).
-> 
-> I performed this test against your f81547267725 head and notice
-> that you pushed a new version today (with "curve->nbits == 521"
-> instead of strcmp), but I'm confident those two small changes
-> wouldn't alter the outcone, hence my Tested-by stands.
-> 
-> Thanks,
-> 
-> Lukas
-> 
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
