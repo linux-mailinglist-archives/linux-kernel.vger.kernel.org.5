@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-91244-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91245-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AD23870BAD
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:35:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58041870BAF
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:36:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A23AFB237B1
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:35:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 13424282316
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:36:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5BA8E542;
-	Mon,  4 Mar 2024 20:35:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B07AC947B;
+	Mon,  4 Mar 2024 20:36:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NciIjyYJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RrMQbhOg"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 129AFDF6C;
-	Mon,  4 Mar 2024 20:35:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F41F06FA9;
+	Mon,  4 Mar 2024 20:36:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709584509; cv=none; b=eSz7zZ4NC1d0s4Md/FmSFJJJQwj2+cU0FN+BlmDeDiznesVB1HYub5m0Aap45/HZA4vja6wQ+ZhKvGUThz7XVQ60ZfHV5ypYpq41DcveIZgbH+iFmrHeKQUlx9HT98xZku/j1Lj0qUtYQmTovGvpunYDvZYsG0R1++ALnB8VOzk=
+	t=1709584590; cv=none; b=fo37tCuIx8kRSIJeBmHUVRBXblfbW7AEp2Rh/WOZSVIYFJOV+N0b1nPAUfH7LTfYlb3a8G/9xfWajGina0jewskpgBjaNfXdNcQs0ePsfkKKwqDPkek20O6+x9h47Ayc2XdkqNwedx3nFwoGSeXzYPvOwbyg1OPr1dr9+WFuR30=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709584509; c=relaxed/simple;
-	bh=NJDANWRGqAfFUEhKbR3uU6wp4qNAJ2qDc7OSyP9otQc=;
+	s=arc-20240116; t=1709584590; c=relaxed/simple;
+	bh=0MMHl+OHCBfHGKLKr5DEkaaBTXQ5Ns3AsiLeg4LasPE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=t3cv0a9mH6QzCIcuOWdIaB+vEJsRuqPKx3cRp8Cmm1x0Tb0VMr28ob+1Hfi0hRQcJQQq1gvYzR5kXTxBzi5k5uIeETDxABplzg0Db8QeSGhaV/2jFz0i5JBk228jPrQWntpdIwalNONGRXq+N7nHOB5rlrGohsYu09XqYH123uw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NciIjyYJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 912F0C433C7;
-	Mon,  4 Mar 2024 20:35:06 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=B57dxO9gVrgI2S5HSrcCEWu8RGcp8TsWrVrpNDSKn53kBJcb26vBt5qjUnfSzLtUqXxJZqFTffia+VasacnWsWGGDF13MaRoEf4NROm9m3yt6MFALIGMWPL8fQddITwLdiSuxogTUw4QxCa29gePUBt1tOEqS+zstFo2JxIMyTk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RrMQbhOg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53C80C433F1;
+	Mon,  4 Mar 2024 20:36:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709584508;
-	bh=NJDANWRGqAfFUEhKbR3uU6wp4qNAJ2qDc7OSyP9otQc=;
+	s=k20201202; t=1709584589;
+	bh=0MMHl+OHCBfHGKLKr5DEkaaBTXQ5Ns3AsiLeg4LasPE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NciIjyYJlyEGnplFPM3wx9LGv8TOaJiDLLY4GqwleDW2qaZzFcIEcAZNbK2k+SLyF
-	 4yLrMPxpNKsqHzyD5iSmsJ8pQGf3vY8QchZWbTkiLmOa3jqP9vCVT/uFnas+H6CSOj
-	 Lk5cbL6jtIRy0DNgJyyknD10pTbD0J5mZSms4dr2XDLbOMoawlgwhQ83X579p163M/
-	 KBpKTi4a98vy/wD128VqoqIuYGPogM0Pr4e77DIP6smZZ44ASuhXdPgtcODahGou7D
-	 qY/5+WdqOrAuG+KWxq2Xu3CR5Ox28B9eQbgB1crEw/hHwm57CLRfnTZuXbX2OFuEt2
-	 BxU3o33LZ3Dug==
-Date: Mon, 4 Mar 2024 20:35:04 +0000
+	b=RrMQbhOgk1XVUmA/6WJP4ULh44AdnpAOnO0Cv0x3bNyjccbZz417cadgkdWkTUPyR
+	 GwR5rlFpeoIqJ6nNj1xCQzmRUixk0gMNLjtsA0vxf9FmccKTsPNKRoTInjJw9evC7M
+	 duXjunpcgu9ZBTVdzhKEDJ/dugKjlNk378Cj/WvdlXsM2jv9s8kJxjkS0x1tj+hlTU
+	 u7syGomBNyb53bhJDzK1Fj+rThut84LRMXbPyQjQ3+jqvJEaaYq3CpYQEZligti6O+
+	 jYDPEwzS1UUemkWO1+h3jLEp5KLIxMxwVg8CGmbtoLX0UHXI4wBHRcVWF9X0fy0dk4
+	 wJAJaleEuxJUA==
+Date: Mon, 4 Mar 2024 20:36:24 +0000
 From: Conor Dooley <conor@kernel.org>
 To: Yangyu Chen <cyy@cyyself.name>
 Cc: linux-riscv@lists.infradead.org, Damien Le Moal <dlemoal@kernel.org>,
@@ -50,11 +50,10 @@ Cc: linux-riscv@lists.infradead.org, Damien Le Moal <dlemoal@kernel.org>,
 	Palmer Dabbelt <palmer@dabbelt.com>,
 	Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
 	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 6/7] riscv: dts: add initial canmv-k230 and k230-evb
- dts
-Message-ID: <20240304-outnumber-tapeless-b916970a3307@spud>
+Subject: Re: [PATCH v2 7/7] riscv: config: enable SOC_CANAAN in defconfig
+Message-ID: <20240304-collie-approach-80d0de4dc7da@spud>
 References: <tencent_64A9B4B31C2D70D5633042461AC9F80C0509@qq.com>
- <tencent_1352FBDA710F572F663E44B9B19BAF453005@qq.com>
+ <tencent_FE1B7BF85E04C1B5C51D7F707D6204436809@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,32 +61,62 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="D394WKXK63iejAQo"
+	protocol="application/pgp-signature"; boundary="hLLOp79WaqibcIfJ"
 Content-Disposition: inline
-In-Reply-To: <tencent_1352FBDA710F572F663E44B9B19BAF453005@qq.com>
+In-Reply-To: <tencent_FE1B7BF85E04C1B5C51D7F707D6204436809@qq.com>
 
 
---D394WKXK63iejAQo
+--hLLOp79WaqibcIfJ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 04, 2024 at 11:16:25PM +0800, Yangyu Chen wrote:
-> Add initial dts for CanMV-K230 and K230-EVB powered by Canaan Kendryte
-> K230 SoC [1].
+On Mon, Mar 04, 2024 at 11:16:26PM +0800, Yangyu Chen wrote:
+> Since K230 has been supported, allow SOC_CANAAN to be selected to build dt
+> and drivers for it in defconfig.
+>=20
+> Signed-off-by: Yangyu Chen <cyy@cyyself.name>
 
-I left some more comments on the v1 before I realised you'd sent another
-version. Can you apply the comments from there please?
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 
---D394WKXK63iejAQo
+Cheers,
+Conor.
+
+> ---
+>  arch/riscv/configs/defconfig | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
+> index 89a009a580fe..20b557ec28df 100644
+> --- a/arch/riscv/configs/defconfig
+> +++ b/arch/riscv/configs/defconfig
+> @@ -33,6 +33,7 @@ CONFIG_SOC_STARFIVE=3Dy
+>  CONFIG_ARCH_SUNXI=3Dy
+>  CONFIG_ARCH_THEAD=3Dy
+>  CONFIG_SOC_VIRT=3Dy
+> +CONFIG_SOC_CANAAN=3Dy
+>  CONFIG_SMP=3Dy
+>  CONFIG_HOTPLUG_CPU=3Dy
+>  CONFIG_PM=3Dy
+> --=20
+> 2.43.0
+>=20
+>=20
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+
+--hLLOp79WaqibcIfJ
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZeYweAAKCRB4tDGHoIJi
-0uoBAP9bvUqhubnsIr9kZg3/Ja1q/24TYzVui/yAyehAUYqU7wD/QSpy30wbJOYB
-3M1gKYPUDXxSXfFp5qZ7mSSz9WMd5gs=
-=x2SJ
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZeYwyAAKCRB4tDGHoIJi
+0v4LAP9ovsOm8/L+g9X/8QH+JrVVrJcdIk6eA4275kf9T/KF+gEA62x/SzJ0+UPT
+mfI6sWHCa72hDfjRlU6Ji0X1CNqZiAE=
+=2mwa
 -----END PGP SIGNATURE-----
 
---D394WKXK63iejAQo--
+--hLLOp79WaqibcIfJ--
 
