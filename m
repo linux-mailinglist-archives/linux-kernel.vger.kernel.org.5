@@ -1,73 +1,67 @@
-Return-Path: <linux-kernel+bounces-90625-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90626-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D6D1870269
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:15:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F49A87026D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:17:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F04B1C20D9E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:15:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 00445B236D2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:17:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C2243D564;
-	Mon,  4 Mar 2024 13:15:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D7053D564;
+	Mon,  4 Mar 2024 13:16:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i+OEh+t4"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nVaMEgSa"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 115643D3B4;
-	Mon,  4 Mar 2024 13:14:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C13663C6A3;
+	Mon,  4 Mar 2024 13:16:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709558101; cv=none; b=rZwvNlqaBogXGS+B16dcp2E515uD/BpXW+WQBjTPdxuYm1dnvcV+E/lNSq2ypj8CpzLULhLx2Ni1hFuzv/Uklg8+tTT1nueIS+xeXzGeRyzfEg0Oeye4jgiv3Xa7ZyWXr8BTKqDHmlkqjowG6LPrzUmsvHwsM3V5GZp7fWQ/3Ls=
+	t=1709558213; cv=none; b=bJ5+rDdmrQAiAfVPC/hubvbzEE0JUgpYUP2K7dAqV3MNPSBAvkRfDKqJv11xVUbv1UdQ9QGmLR4/bNHzb4BBS1RQBEwo71x23WKtUJSKxAIGWOFJDna6vBMMRW11jB+VRsj3MpjNQfVtJ0AV3Y73+dN1XFwYUf1M1Q9yfzsKtXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709558101; c=relaxed/simple;
-	bh=my4sJhUKSsXBtRhKes0rW4/YTKXdCpClyjKDr1rq0YE=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=GaBXAXmtbODLCG1Pjwzdn4yHvxLLitwyGd4SIWs0tVqR4EQLZSMXKpw/MLTFiGMmoo8BjdJpNWTcLfKvbCqx3pjuhO20lOCNAbfCiKPpdsfHadJD3CMSvk3ZmMTbzjbAHp/rsH8dvGiAGw7TiIxNv5qeLuyVCmLn5xPAHbDdx/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i+OEh+t4; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-565ef8af2f5so5776632a12.3;
-        Mon, 04 Mar 2024 05:14:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709558098; x=1710162898; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=qSY+0FJnRKGhhIo9ghINQ55bg6BnVBP3EupnZ+W3FO8=;
-        b=i+OEh+t4Dv14E31IrPnlpAbVMWnn/5lTuwCojMO9IGAYcA+XbFqpV5CZV/gnWS0L0O
-         IO54jTP+kXhuAMix+UfdwmThXIRdq3bzWDm/YyZfIfDkgjW1a44fUALQdUI1cjFAXA/O
-         Y3aCT2d0KFSBopyfPxFUoKwA+AsCeJE40Y8/DX2WxXSHzydAnYaptD6ehyDY1B38PTnO
-         XNs/twi2WTT89NhoqVXuNLgq03XgJNujE9JGT+xAn+PdK7s3urS1e2r2BFe7ErUfHpIA
-         Acfp/UlG2YLrOYDZEKHa9jPVa7jIXL2rdSiFhfOovUurK5UZUjTDvUS9N8coLjJoQ5RZ
-         s3mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709558098; x=1710162898;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qSY+0FJnRKGhhIo9ghINQ55bg6BnVBP3EupnZ+W3FO8=;
-        b=kdElYyX6zGBEbxjIaKfS830CF3wAk6dD1q+N3duV2dIPcK6eHHqmkfIrLvfXHh/aHo
-         PE9zwitEWucX/Q2GStIj/ryh7sPkQbRHTEKXtkx6PvX/zd5rtEq+TYzN/RWmFixun5hb
-         fGuPF0qevvqWSRg48vNQukVrkVbVkxKAI5NTUVm/bTGV2XJIghN/bUPq62TxYsSeAeZG
-         m/Dg7tNvLowQ0/8TMtnLFiHBUG/xIUZt7atBTy0o5ATrh5aYwe6786OGQUH4BPWpt8QH
-         RyQ42Du++tKlV6LT2663ccYS1v19XWrzP81Va9q8BgOQn7p5YGZ8y236eP2fNFVEGDMU
-         zKTQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXf2vXIHWVR0UrVp+NlWeKzwhQEdJucy/0fDSqbjm9huBH0RLCpn044TSbkufqBkOKUVK2poQ3Sk68BEF6fUQg5YIUSwEdnOxRV2O9hAgTMZ15pMEjo5LNwWSZYqHH2wIyJOVwX
-X-Gm-Message-State: AOJu0YyYxQeixB/qnKGAhPyJGFYreHTougq13Vg3YUKLzGqhQlYJ6FpX
-	uOYpdMwSjQHUOVXIF859T8jUQtv+vUpFHIs7K3Hu10rIoKYL1/id
-X-Google-Smtp-Source: AGHT+IG/dHnH6tSConVbuE0bqMVDVg8iYE+f1uNWUntd0gl7R8U1AZk7sAWSJA91AKlGmuEixDIp1g==
-X-Received: by 2002:a05:6402:2152:b0:566:ef8:a81a with SMTP id bq18-20020a056402215200b005660ef8a81amr6732285edb.7.1709558098243;
-        Mon, 04 Mar 2024 05:14:58 -0800 (PST)
-Received: from [192.168.20.102] (57657817.catv.pool.telekom.hu. [87.101.120.23])
-        by smtp.googlemail.com with ESMTPSA id fj10-20020a0564022b8a00b00563f8233ba8sm4595285edb.7.2024.03.04.05.14.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 05:14:57 -0800 (PST)
-From: Gabor Juhos <j4g8y7@gmail.com>
-Date: Mon, 04 Mar 2024 14:14:53 +0100
-Subject: [PATCH] firmware: qcom_scm: disable clocks if qcom_scm_bw_enable()
- fails
+	s=arc-20240116; t=1709558213; c=relaxed/simple;
+	bh=HFP5ZkdyG98y4hXFBgqadIXBVsKMkC4DBS2Q6pbdmho=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=TNsQf74FtcRxr6xFAvI75mHNXq+Dujcl6VpAfUIpZYi533WgVPZPU6qeUT1mrnXnGlz/qj0UjGuc6r/RhcyitGEEqX23cYFiCfFEo91Foc7yuCjD3xuq6HulCk9t4MgoFWxMAIvKPJPiPS6aIQ46rGf45yC7GqSBR7vq75oo2uo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nVaMEgSa; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709558211; x=1741094211;
+  h=from:to:cc:in-reply-to:references:subject:message-id:
+   date:mime-version:content-transfer-encoding;
+  bh=HFP5ZkdyG98y4hXFBgqadIXBVsKMkC4DBS2Q6pbdmho=;
+  b=nVaMEgSaFHtQIO9ImHJPRsuNDPHGScTamuYlnqnUipQMYJ5AYTzUMn9V
+   AyWP5hNw1XXrEnmopD9csUjHFKbHV8pjqvDsBlJN+mVqgjoGjcrvTcpaX
+   qXf7+K9Njw+bjloXsqU74AwTgI6bMkegPYTZHNtk2KdHsqzP6aREnhb8t
+   3/DFfeA0Mcj6uBSi12OoYTm4X27AmUBEDywxLCqtfMxuWo1ouj0bDpylr
+   sebU8nlyH7uLYIyo9YQS3wxUuY0/+O46PN0hMp1oNh74S4zibTTUcjpMO
+   RizRtMA3dA0+bZ2AejMMU7iWTS5DiUb2RWbaftF1UNIJdhOxS8fMaU9Ue
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="4625103"
+X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
+   d="scan'208";a="4625103"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 05:16:50 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
+   d="scan'208";a="8905038"
+Received: from ekohn-mobl1.ger.corp.intel.com (HELO localhost) ([10.246.49.145])
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 05:16:48 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To: "Lee, Chun-Yi" <jlee@suse.com>, Hans de Goede <hdegoede@redhat.com>, 
+ SungHwan Jung <onenowy@gmail.com>
+Cc: platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240220055231.6451-1-onenowy@gmail.com>
+References: <20240220055231.6451-1-onenowy@gmail.com>
+Subject: Re: [PATCH] platform/x86: acer-wmi: Add support for Acer PH16-71
+Message-Id: <170955820277.5357.13472512914572802380.b4-ty@linux.intel.com>
+Date: Mon, 04 Mar 2024 15:16:42 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,112 +70,26 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240304-qcom-scm-disable-clk-v1-1-b36e51577ca1@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAEzJ5WUC/x3MSwqAMAwA0atI1gaqVRSvIi5qm2rw34AIxbtbX
- L7FTAShwCTQZREC3Sx87AlFnoGdzT4RskuGUpWV0qrCyx4bit3QsZhxJbTrgqqlxri21t4UkNI
- zkOfn3/bD+344dc1UZgAAAA==
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Sibi Sankar <quic_sibis@quicinc.com>
-Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
- stable@vger.kernel.org, Gabor Juhos <j4g8y7@gmail.com>
 X-Mailer: b4 0.12.3
 
-There are several functions which are calling qcom_scm_bw_enable()
-then returns immediately if the call fails and leaves the clocks
-enabled.
+On Tue, 20 Feb 2024 14:52:31 +0900, SungHwan Jung wrote:
 
-Change the code of these functions to disable clocks when the
-qcom_scm_bw_enable() call fails. This also fixes a possible dma
-buffer leak in the qcom_scm_pas_init_image() function.
+> Add Acer Predator PH16-71 to Acer_quirks with predator_v4
+> to support mode button and fan speed sensor.
+> 
+> 
 
-Compile tested only due to lack of hardware with interconnect
-support.
 
-Cc: stable@vger.kernel.org
-Fixes: 65b7ebda5028 ("firmware: qcom_scm: Add bw voting support to the SCM interface")
-Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
----
-Based on v6.8-rc7.
+Thank you for your contribution, it has been applied to my local
+review-ilpo branch. Note it will show up in the public
+platform-drivers-x86/review-ilpo branch only once I've pushed my
+local branch there, which might take a while.
 
-Note: Removing the two empty lines from qcom_scm_pas_init_image()
-and fomr qcom_scm_pas_shutdown() functions is intentional to make
-those consistent with the other two functions.
----
- drivers/firmware/qcom/qcom_scm.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+The list of commits applied:
+[1/1] platform/x86: acer-wmi: Add support for Acer PH16-71
+      commit: 21f168a1c5e19dc1af511fc5031678a9c0f823ee
 
-diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
-index 520de9b5633ab..e8460626fb0c4 100644
---- a/drivers/firmware/qcom/qcom_scm.c
-+++ b/drivers/firmware/qcom/qcom_scm.c
-@@ -569,13 +569,14 @@ int qcom_scm_pas_init_image(u32 peripheral, const void *metadata, size_t size,
- 
- 	ret = qcom_scm_bw_enable();
- 	if (ret)
--		return ret;
-+		goto disable_clk;
- 
- 	desc.args[1] = mdata_phys;
- 
- 	ret = qcom_scm_call(__scm->dev, &desc, &res);
--
- 	qcom_scm_bw_disable();
-+
-+disable_clk:
- 	qcom_scm_clk_disable();
- 
- out:
-@@ -637,10 +638,12 @@ int qcom_scm_pas_mem_setup(u32 peripheral, phys_addr_t addr, phys_addr_t size)
- 
- 	ret = qcom_scm_bw_enable();
- 	if (ret)
--		return ret;
-+		goto disable_clk;
- 
- 	ret = qcom_scm_call(__scm->dev, &desc, &res);
- 	qcom_scm_bw_disable();
-+
-+disable_clk:
- 	qcom_scm_clk_disable();
- 
- 	return ret ? : res.result[0];
-@@ -672,10 +675,12 @@ int qcom_scm_pas_auth_and_reset(u32 peripheral)
- 
- 	ret = qcom_scm_bw_enable();
- 	if (ret)
--		return ret;
-+		goto disable_clk;
- 
- 	ret = qcom_scm_call(__scm->dev, &desc, &res);
- 	qcom_scm_bw_disable();
-+
-+disable_clk:
- 	qcom_scm_clk_disable();
- 
- 	return ret ? : res.result[0];
-@@ -706,11 +711,12 @@ int qcom_scm_pas_shutdown(u32 peripheral)
- 
- 	ret = qcom_scm_bw_enable();
- 	if (ret)
--		return ret;
-+		goto disable_clk;
- 
- 	ret = qcom_scm_call(__scm->dev, &desc, &res);
--
- 	qcom_scm_bw_disable();
-+
-+disable_clk:
- 	qcom_scm_clk_disable();
- 
- 	return ret ? : res.result[0];
-
----
-base-commit: 90d35da658da8cff0d4ecbb5113f5fac9d00eb72
-change-id: 20240304-qcom-scm-disable-clk-08e7ad853fa1
-
-Best regards,
--- 
-Gabor Juhos <j4g8y7@gmail.com>
+--
+ i.
 
 
