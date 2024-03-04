@@ -1,121 +1,131 @@
-Return-Path: <linux-kernel+bounces-90932-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90933-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 993A18706F4
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:25:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D3228706F9
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:26:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5055A281250
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:25:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1CAD41F21F25
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:26:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB7DF4D5B5;
-	Mon,  4 Mar 2024 16:24:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40E6C4CB23;
+	Mon,  4 Mar 2024 16:25:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mTeEzxHf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JQ6acpC/"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E906D4AEEE;
-	Mon,  4 Mar 2024 16:24:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8004A481DE;
+	Mon,  4 Mar 2024 16:25:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709569486; cv=none; b=knlUNWlKYgVro8Obg1WB/ZWe8ejLD9QF9Jl2aO4iQ9c+OXOSWgZAXsUhHYdfM3riV/fT29c5Sj8YM17tpU+imKfkbmy2RaXchWcAag3FWN7Df6+oSogVeJcprT7tmpb60J+1fuo+ZBXx2GbdZ7AYnIIpo9k97uR8chMo1z68RL4=
+	t=1709569553; cv=none; b=DQKBAIiOmtUHchNHJHE30XM/DfN6Qf5D3FKG1zrae9m0y8s/R3pTsY7rsHvSLNd8EGeIwBPpPbKH7bKzuQ3XyFDzOSq7+Q6aebxTn8KWmj2zuEgjIVEe58adeDBwLtvGIIdcnTHTpzLBJbzQbxiX9Zu74w4eZFxbZbhiX9okHzc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709569486; c=relaxed/simple;
-	bh=Yc4P1CIXlKDGFPR0/DVQiT/46JdWqiofdfkNDqPQVZI=;
+	s=arc-20240116; t=1709569553; c=relaxed/simple;
+	bh=2UZ7Ps4m/EJvpDzbZaPfX5VjodQWkCgg4RS6EPjKsCw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NoRy3Ys4ngM6sODtulSZVVSrhEThSCKApBf9S7XB/S+8/nfVgaOkYaGVyy033aDEx7Gp7yI04NqYWUW3MdpfQv1QTSeIfbKd5wMAsxxBTQHqASSGD2u6fU8w3aWIOXdYLzvmBAoEx1yO1bLb0Ix9f8kYJ5x1iW5h8tqmyWRJ5l8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mTeEzxHf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44643C433F1;
-	Mon,  4 Mar 2024 16:24:45 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=o2++6kKii34sXucLz4YjjuzxngYauBOAsDKj1+Z8QI4ApYEpW7MPEF65scWyWU1+2nx738JRy3YXja6Sq97D4IStJOe0cD/vOYYn0b+2460Xq73aisZJ+KrUBW6EIUrSdcVHs46xXmmDKyEPFYgjplw8WX9L8YcLWvGdGu3iW/Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JQ6acpC/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71BAFC433C7;
+	Mon,  4 Mar 2024 16:25:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709569485;
-	bh=Yc4P1CIXlKDGFPR0/DVQiT/46JdWqiofdfkNDqPQVZI=;
+	s=k20201202; t=1709569553;
+	bh=2UZ7Ps4m/EJvpDzbZaPfX5VjodQWkCgg4RS6EPjKsCw=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mTeEzxHfNCuzklQWKn0MQXGpW9wqJ5wU7bMtXXE3fNVk9xkSNCPuSErh0dD0iaM66
-	 Zf/idjm7pk9j+QcMsx+CiFy9KLc4DVT269NsV+fSYoAWP7T6MQZSNh+8Q8Z/guuzET
-	 fPgLI/JpW2VumWdtsZ9LYTzB2FhR8AKOkJ44dU0ewYkcxpbnA0Z/KHgTSA1xdAdBLy
-	 Ox3nmj1Me/PuiigdHF9L5hfYMUdMhWon/P14XnXBKzCzKmflmmQKwtTPwd4tMCMkmu
-	 japN0uyQHYOVfn+D5pfavzok/zAqZJSFByDy00IT9Rw2nVXfnL5vVst2ROwEp8Hn77
-	 0ViJmGCCPQG6w==
-Date: Mon, 4 Mar 2024 10:24:43 -0600
-From: Rob Herring <robh@kernel.org>
-To: Christophe Roullier <christophe.roullier@foss.st.com>
-Cc: "David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Richard Cochran <richardcochran@gmail.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] dt-bindings: net: add new property st,ext-phyclk in
- documentation for stm32
-Message-ID: <20240304162443.GA568211-robh@kernel.org>
-References: <20240229134724.1353903-1-christophe.roullier@foss.st.com>
- <20240229134724.1353903-3-christophe.roullier@foss.st.com>
+	b=JQ6acpC/cFa9wdBLb7Sws2VuYfCl+hY90Qsl+KTeVLG1ffOFpQKNDx0fFGYbFZOcr
+	 nR29qYIooowgh1Sp6FJsKpuMAWsXW5yYy3ze1RH7GdUK53xeMuSp5NP85GmbwxiSk8
+	 CUnNb+SYbDWqv7CrMlEufk1xc5AKLHuEtqNZi7KzdNtjNQ86fECtyyiQVUFqH7Ej6F
+	 5MTFFGi+yp5VI3QyGpxCq6yq1CGljfnu8gCDNbPwiMDKtoe+MTTavDBP/xd/XeU9SU
+	 IiDvMPKidoV5Sp9xjQMVrzjlWpl1TXNmtxF4+sD747PBYYvG1MRh0vKDpFUJB1UlWk
+	 uKH4RhpeQPzHg==
+Date: Mon, 4 Mar 2024 17:25:50 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: =?utf-8?B?SsOpcsOpbWll?= Dautheribes <jeremie.dautheribes@bootlin.com>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>, 
+	Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Thierry Reding <thierry.reding@gmail.com>, 
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Yen-Mei Goh <yen-mei.goh@keysight.com>
+Subject: Re: [PATCH v2 3/3] drm/panel: simple: add CMT430B19N00 LCD panel
+ support
+Message-ID: <20240304-inquisitive-kickass-pronghorn-c641ff@houat>
+References: <20240304160454.96977-1-jeremie.dautheribes@bootlin.com>
+ <20240304160454.96977-4-jeremie.dautheribes@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="mv2k3vttsq537qh6"
 Content-Disposition: inline
-In-Reply-To: <20240229134724.1353903-3-christophe.roullier@foss.st.com>
+In-Reply-To: <20240304160454.96977-4-jeremie.dautheribes@bootlin.com>
 
-On Thu, Feb 29, 2024 at 02:47:24PM +0100, Christophe Roullier wrote:
-> Add property st,ext-phyclk to manage cases when PHY have no cristal/quartz
-> This property can be used with RMII phy without cristal 50Mhz and when we
-> want to select RCC clock instead of ETH_REF_CLK
-> Can be used also with RGMII phy with no cristal and we select RCC clock
-> instead of ETH_CLK125
-> This new property replace st,eth-clk-sel and st,eth-ref-clk-sel
 
-That is obvious from the diff. What is not obvious is why we need a new 
-property and what is the problem with the existing ones.
+--mv2k3vttsq537qh6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
+Hi,
+
+On Mon, Mar 04, 2024 at 05:04:54PM +0100, J=E9r=E9mie Dautheribes wrote:
+> Add support for Crystal Clear Technology CMT430B19N00 4.3" 480x272
+> TFT-LCD panel.
+>=20
+> Signed-off-by: J=E9r=E9mie Dautheribes <jeremie.dautheribes@bootlin.com>
 > ---
->  Documentation/devicetree/bindings/net/stm32-dwmac.yaml | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
-> index 80937b28fa046..fda23c07c1cad 100644
-> --- a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
-> +++ b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
-> @@ -85,12 +85,21 @@ properties:
->    phy-supply:
->      description: PHY regulator
->  
-> +  st,ext-phyclk:
-> +    description:
-> +      set this property in RMII mode when you have PHY without crystal 50MHz and want to
-> +      select RCC clock instead of ETH_REF_CLK. OR in RGMII mode when you want to select
-> +      RCC clock instead of ETH_CLK125.
-> +    type: boolean
-> +
->    st,eth-clk-sel:
-> +    deprecated: true
->      description:
->        set this property in RGMII PHY when you want to select RCC clock instead of ETH_CLK125.
->      type: boolean
->  
->    st,eth-ref-clk-sel:
-> +    deprecated: true
->      description:
->        set this property in RMII mode when you have PHY without crystal 50MHz and want to
->        select RCC clock instead of ETH_REF_CLK.
-> -- 
-> 2.25.1
-> 
+>  drivers/gpu/drm/panel/panel-simple.c | 29 ++++++++++++++++++++++++++++
+>  1 file changed, 29 insertions(+)
+>=20
+> diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel=
+/panel-simple.c
+> index 20e3df1c59d4..b940220f56e2 100644
+> --- a/drivers/gpu/drm/panel/panel-simple.c
+> +++ b/drivers/gpu/drm/panel/panel-simple.c
+> @@ -1457,6 +1457,32 @@ static const struct panel_desc boe_hv070wsa =3D {
+>  	.connector_type =3D DRM_MODE_CONNECTOR_LVDS,
+>  };
+> =20
+> +static const struct drm_display_mode cct_cmt430b19n00_mode =3D {
+> +	.clock =3D 9000,
+> +	.hdisplay =3D 480,
+> +	.hsync_start =3D 480 + 43,
+> +	.hsync_end =3D 480 + 43 + 8,
+> +	.htotal =3D 480 + 43 + 8 + 4,
+> +	.vdisplay =3D 272,
+> +	.vsync_start =3D 272 + 12,
+> +	.vsync_end =3D 272 + 12 + 8,
+> +	.vtotal =3D 272 + 12 + 8 + 4,
+> +	.flags =3D DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
+> +};
+
+Your pixel clock doesn't really match the rest of the timings:
+
+(480 + 43 + 8 + 4) * (272 + 12 + 8 + 4) * 60 =3D 9501600
+
+So a ~6% deviation.
+
+What does the datasheet say?
+
+Maxime
+
+--mv2k3vttsq537qh6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZeX2DQAKCRDj7w1vZxhR
+xS9xAQCDGCVsUNv+1hMk/N0uYSfwBKeI3lP8qwJyPKdVGR6VrQEA7qRTva593Qgh
+GgGlSkFFwUHITKwZL7fG0K4ESfAOrAY=
+=MRSp
+-----END PGP SIGNATURE-----
+
+--mv2k3vttsq537qh6--
 
