@@ -1,215 +1,211 @@
-Return-Path: <linux-kernel+bounces-90946-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90947-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C367F87075B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:40:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7765487075F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:41:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A6A0281CF3
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:40:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 042841F212A5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:41:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7BC54CE11;
-	Mon,  4 Mar 2024 16:40:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="E1emAWOa"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C90674205F;
+	Mon,  4 Mar 2024 16:41:34 +0000 (UTC)
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 188BD1E48B;
-	Mon,  4 Mar 2024 16:40:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1CAF495E0;
+	Mon,  4 Mar 2024 16:41:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709570422; cv=none; b=FZiyRdyv54d5zIoXGZxyA6clwnCKaOr/nt6aTL/pQ70N4KW5z9+YtCR0yUI3rXs2aKRslZ2GXlzWFh6KRjZ6E3MJnkwpxwdGAvWHW7eV1yHYWyGT93AWG6gyL/mMmMxAaOuLd/rfLSqjmXUY0vTHeJS/nGo8wUecR1NkbCp7/vM=
+	t=1709570494; cv=none; b=p+86ia2yg/R+sGRkAC6JrvxLfl2qVLX6J03kXsOJkL/qPAhJTguUrQW8QBWjhveJbsTioBqnP1uOAtRS9PeuE3cJ0b6R2cnra2NSzhVP2q9wcVr6VA7RzRMaIhD+glLdjGmQycZQ+Prpx5N3JcFFtRK+W+6vyAgBkjCgnbwMpE0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709570422; c=relaxed/simple;
-	bh=ysTz6CoSf/OaCBd/3gnRXFxv2KlvPVHfiM45BdLhUK0=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tvTTRUQqmtvbRKf+bCwlyiFRejoiSGjEw/uAZowqksDp9i2XRvzicuhc4IJNqYOY9As8m4y4oSIyiu/ElDMU264WVu8c162J/UTSvaWjtCDhzHdjmVCAQPIBGByHQsqCjKIvIIDF+5wEgDVryWwYK3bYD/f3vJOxl4RF80sHNNE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=E1emAWOa; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 424EQgNS018061;
-	Mon, 4 Mar 2024 16:40:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=qcppdkim1; bh=YQv9TQce1ynh6DdrjSi+5
-	dUsbguvINcdIdJh+2uY/74=; b=E1emAWOaHnzZfRmliwM4v+Y3N9B5QOmaUdqnh
-	YYB6hie/1YGdwERsSFMYx6xsr21bqVA6Gqdpr+m0jPeG8G7UOmRrSPXHjCI7FkLf
-	hfoAnnCFp3bFytnHoj8Pk1g88VOc9io3FAn6FIJM8em+P0XbtkCTeiKUyqGZwIyI
-	JEObrCjhfSkNG7NRP8J4I2EvZ0pO57/OV9dcvkmStn10B25Ca5/lzVXVURODpvKA
-	n6DYMuoZK1LPuFpEn32AUpEv0C9iBS+S30PnnYG0kCudrqqosxmVuSBclJrsDPHT
-	9U3rMKmCDek5ivMibjlOSxtv5BDKUxMvYQRHbXnxx39+sBBkQ==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wn6qx1e2a-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 04 Mar 2024 16:40:12 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 424GeBPZ019578
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 4 Mar 2024 16:40:11 GMT
-Received: from hu-mdtipton-lv.qualcomm.com (10.49.16.6) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 4 Mar 2024 08:40:11 -0800
-Date: Mon, 4 Mar 2024 08:40:09 -0800
-From: Mike Tipton <quic_mdtipton@quicinc.com>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-CC: Bjorn Andersson <andersson@kernel.org>, Georgi Djakov <djakov@kernel.org>,
-        Abel Vesa <abel.vesa@linaro.org>, Sibi Sankar <quic_sibis@quicinc.com>,
-        Rajendra Nayak <quic_rjendra@quicinc.com>,
-        Marijn Suijten
-	<marijn.suijten@somainline.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] interconnect: qcom: x1e80100: Remove inexistent ACV_PERF
- BCM
-Message-ID: <20240304164009.GB25492@hu-mdtipton-lv.qualcomm.com>
-References: <20240302-topic-faux_bcm_x1e-v1-1-c40fab7c4bc5@linaro.org>
+	s=arc-20240116; t=1709570494; c=relaxed/simple;
+	bh=WF5yncz6g/9Mh8GpF3BGz7UNGN6nzwG3LAT4Qy6Xaio=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=f4PYu+Unrg6kJj36ZdSpzii4V3I4TTedqaQ2iTDa7Fj36zvY6eleD8oaE4mMXfG9OTcodPqGdWHyfYGjxq0sC5Iwau23y3V6lkS+OA7it/YtqIoAuqBgJwBzl27hhi/j5Ux9mj+wPu53x02rDzh3Ds+ts8+/bmD7hmx+zSRneZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6e4ea48972cso349898a34.0;
+        Mon, 04 Mar 2024 08:41:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709570491; x=1710175291;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VFEvVmR8mpln9PL6OoXoC/Ne2hrqBirmQBmOubPamhM=;
+        b=YA2de6ZSTvZXCNhn95podiput1z9VfVru6dewyXCjJJTKfQMfAECOTUeINzhZTt4U1
+         5FP/J9ZQ6UQxKCyy/NDcsnAIILkGFYNkilpd1OciNrnKgdc7z0e2TJUaTByFR2NiNguJ
+         PnKmOTAg3E9f46JNTV+q8Y65uYxWfhHY0uQ94YoUtPL9yZ/CtG/PZJU61mIxRzkiIcIQ
+         mAk4Tf1OEABYnyL9PoP908SBtrIMPJF/OdgqFC2n19YpbM487BXFIje7Up3SF5RCgZc7
+         qGAg+Wg4ISceHR1gnotO0g2NutmYiVC/ChjZGLqWlYhUyrFqgAz/2OGxYq935j9ZwdUe
+         +KUw==
+X-Forwarded-Encrypted: i=1; AJvYcCXReyYU0ENnsYG6Q7gGsk9sQ07/chZauazrMiqemJ97CKYvEQMyB15lMJyKnCoYqN59Le8nNgpI1ASaP4V8bBZRHJGfIW6Cz1rqiPRMZU2NJF6uJE8Iccsh3hXQhaTJBSMxQAbVUQTixUuXbW3a2zkErBsivgzVSxR58FVNDZ7T6jTs2U7n87PMky6ciq7tJjfdvtiv41XQuvrLJF/8
+X-Gm-Message-State: AOJu0YwNeLDlRKHDo6L4jb4j2x1F3eu31zUv2msx3XTpG0TbDxq0V8Bm
+	Eqq3tbuQ9pMH7LarXVYeCCI+jBUtvVfrtyP9rP4PoXWQROwa3FyoXCs2Yynaw9CcsFjcByzzXQC
+	wvWYYSKFdrGnwWw2ogbWVz56sp+k=
+X-Google-Smtp-Source: AGHT+IFOLTCVRY6mWwBXwQ8bn84DuU3MLvfAPphMkKwDWG2kShUWWEC/Gh+iRLlPQgqLOSE+Q2+c67uENaJegwa9oW4=
+X-Received: by 2002:a05:6870:c69d:b0:220:bd4d:674d with SMTP id
+ cv29-20020a056870c69d00b00220bd4d674dmr10062324oab.5.1709570491549; Mon, 04
+ Mar 2024 08:41:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240302-topic-faux_bcm_x1e-v1-1-c40fab7c4bc5@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 5_dHSE6Mnh83dLBXjjHb3uQ4VpzK4_jE
-X-Proofpoint-ORIG-GUID: 5_dHSE6Mnh83dLBXjjHb3uQ4VpzK4_jE
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-04_12,2024-03-04_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- bulkscore=0 priorityscore=1501 lowpriorityscore=0 phishscore=0
- clxscore=1011 adultscore=0 spamscore=0 mlxlogscore=999 impostorscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403040127
+References: <CAJZ5v0grDNJkEcgw+34SBmNFL7qhSTz8ydC7BSkM7DiCatkKSA@mail.gmail.com>
+ <20240304155138.GA482969@bhelgaas>
+In-Reply-To: <20240304155138.GA482969@bhelgaas>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Mon, 4 Mar 2024 17:41:19 +0100
+Message-ID: <CAJZ5v0jS_x7=joXkHuuqQhO-FqkhGi44o-Nq-1FGhPQ5-1VhnQ@mail.gmail.com>
+Subject: Re: [PATCH v3] driver core: Cancel scheduled pm_runtime_idle() on
+ device removal
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Kai-Heng Feng <kai.heng.feng@canonical.com>, 
+	gregkh@linuxfoundation.org, bhelgaas@google.com, linux-pci@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Ricky Wu <ricky_wu@realtek.com>, 
+	Kees Cook <keescook@chromium.org>, Tony Luck <tony.luck@intel.com>, 
+	"Guilherme G. Piccoli" <gpiccoli@igalia.com>, linux-hardening@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Mar 02, 2024 at 03:22:49AM +0100, Konrad Dybcio wrote:
-> Booting the kernel on X1E results in a message like:
-> 
-> [    2.561524] qnoc-x1e80100 interconnect-0: ACV_PERF could not find RPMh address
-> 
-> And indeed, taking a look at cmd-db, no such BCM exists. Remove it.
-> 
-> Fixes: 9f196772841e ("interconnect: qcom: Add X1E80100 interconnect provider driver")
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+On Mon, Mar 4, 2024 at 4:51=E2=80=AFPM Bjorn Helgaas <helgaas@kernel.org> w=
+rote:
+>
+> On Mon, Mar 04, 2024 at 03:38:38PM +0100, Rafael J. Wysocki wrote:
+> > On Thu, Feb 29, 2024 at 7:23=E2=80=AFAM Kai-Heng Feng
+> > <kai.heng.feng@canonical.com> wrote:
+> > >
+> > > When inserting an SD7.0 card to Realtek card reader, the card reader
+> > > unplugs itself and morph into a NVMe device. The slot Link down on ho=
+t
+> > > unplugged can cause the following error:
+> > >
+> > > pcieport 0000:00:1c.0: pciehp: Slot(8): Link Down
+> > > BUG: unable to handle page fault for address: ffffb24d403e5010
+> > > PGD 100000067 P4D 100000067 PUD 1001fe067 PMD 100d97067 PTE 0
+> > > Oops: 0000 [#1] PREEMPT SMP PTI
+> > > CPU: 3 PID: 534 Comm: kworker/3:10 Not tainted 6.4.0 #6
+> > > Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M./H370M Pr=
+o4, BIOS P3.40 10/25/2018
+> > > Workqueue: pm pm_runtime_work
+> > > RIP: 0010:ioread32+0x2e/0x70
+> > ...
+> > > Call Trace:
+> > >  <TASK>
+> > >  ? show_regs+0x68/0x70
+> > >  ? __die_body+0x20/0x70
+> > >  ? __die+0x2b/0x40
+> > >  ? page_fault_oops+0x160/0x480
+> > >  ? search_bpf_extables+0x63/0x90
+> > >  ? ioread32+0x2e/0x70
+> > >  ? search_exception_tables+0x5f/0x70
+> > >  ? kernelmode_fixup_or_oops+0xa2/0x120
+> > >  ? __bad_area_nosemaphore+0x179/0x230
+> > >  ? bad_area_nosemaphore+0x16/0x20
+> > >  ? do_kern_addr_fault+0x8b/0xa0
+> > >  ? exc_page_fault+0xe5/0x180
+> > >  ? asm_exc_page_fault+0x27/0x30
+> > >  ? ioread32+0x2e/0x70
+> > >  ? rtsx_pci_write_register+0x5b/0x90 [rtsx_pci]
+> > >  rtsx_set_l1off_sub+0x1c/0x30 [rtsx_pci]
+> > >  rts5261_set_l1off_cfg_sub_d0+0x36/0x40 [rtsx_pci]
+> > >  rtsx_pci_runtime_idle+0xc7/0x160 [rtsx_pci]
+> > >  ? __pfx_pci_pm_runtime_idle+0x10/0x10
+> > >  pci_pm_runtime_idle+0x34/0x70
+> > >  rpm_idle+0xc4/0x2b0
+> > >  pm_runtime_work+0x93/0xc0
+> > >  process_one_work+0x21a/0x430
+> > >  worker_thread+0x4a/0x3c0
+> > ...
+>
+> > > This happens because scheduled pm_runtime_idle() is not cancelled.
+> >
+> > But rpm_resume() changes dev->power.request to RPM_REQ_NONE and if
+> > pm_runtime_work() sees this, it will not run rpm_idle().
+> >
+> > However, rpm_resume() doesn't deactivate the autosuspend timer if it
+> > is running (see the comment in rpm_resume() regarding this), so it may
+> > queue up a runtime PM work later.
+> >
+> > If this is not desirable, you need to stop the autosuspend timer
+> > explicitly in addition to calling pm_runtime_get_sync().
+>
+> I don't quite follow all this.  I think the race is between
+> rtsx_pci_remove() (not resume) and rtsx_pci_runtime_idle().
 
-Reviewed-by: Mike Tipton <quic_mdtipton@quicinc.com>
+I think so too and the latter is not expected to run.
 
-For some background, ACV "perf mode" does exist, but not as a separate
-BCM. It's controlled by a separate bit in the ACV mask. By default, the
-ACV node only sets the bit indicating the HLOS voter. It doesn't assert
-the perf mode bit.
+>   rtsx_pci_remove()
+>   {
+>     pm_runtime_get_sync()
+>     pm_runtime_forbid()
+>     ...
+>
+> If this is an rtsx bug, what exactly should be added to
+> rtsx_pci_remove()?
+>
+> Is there ever a case where we want any runtime PM work to happen
+> during or after a driver .remove()?  If not, maybe the driver core
+> should prevent that, which I think is basically what this patch does.
 
-Enabling perf mode toggles different trade-offs within the DDR subsystem
-for slightly improved performance at the expense of slightly higher
-power. There are limited use cases of this downstream, where we expose
-control over this bit to clients through icc_set_tag(). It primarily
-improves certain latency sensitive benchmarks, AFAIK. I don't think it
-has much impact on real world use cases.
+No, it is not, because it doesn't actually prevent the race from
+occurring, it just narrows the window quite a bit.
 
-This is true for many other targets as well, not just x1e80100.
+It would be better to call pm_runtime_dont_use_autosuspend() instead
+of pm_runtime_barrier().
 
-Voting for perf-mode is entirely optional and in most cases also
-entirely unnecessary. So, removing this broken way to control it without
-adding the proper control is totally fine.
+> If this is an rtsx driver bug, I'm concerned there may be many other
+> drivers with a similar issue.  rtsx exercises this path more than most
+> because the device switches between card reader and NVMe SSD using
+> hotplug add/remove based on whether an SD card is inserted (see [1]).
 
-I have a local series to add the proper support, but haven't posted it
-yet. There aren't any users for it upstream yet, nor am I aware of any
-near term plans to add them. So, it would be unused for a little while,
-at least. That said, anybody could use it to set that tag on their BW
-votes on the off-chance it improves performance and they don't care
-about the power trade-offs.
+This is a valid concern, so it is mostly a matter of where to disable
+autosuspend.
 
-I could post the series soon if there's interest.
+It may be the driver core in principle, but note that it calls
+->remove() after invoking pm_runtime_put_sync(), so why would it
+disable autosuspend when it allows runtime PM to race with device
+removal in general?
 
-> ---
->  drivers/interconnect/qcom/x1e80100.c | 26 --------------------------
->  1 file changed, 26 deletions(-)
-> 
-> diff --git a/drivers/interconnect/qcom/x1e80100.c b/drivers/interconnect/qcom/x1e80100.c
-> index 99824675ee3f..654abb9ce08e 100644
-> --- a/drivers/interconnect/qcom/x1e80100.c
-> +++ b/drivers/interconnect/qcom/x1e80100.c
-> @@ -116,15 +116,6 @@ static struct qcom_icc_node xm_sdc2 = {
->  	.links = { X1E80100_SLAVE_A2NOC_SNOC },
->  };
->  
-> -static struct qcom_icc_node ddr_perf_mode_master = {
-> -	.name = "ddr_perf_mode_master",
-> -	.id = X1E80100_MASTER_DDR_PERF_MODE,
-> -	.channels = 1,
-> -	.buswidth = 4,
-> -	.num_links = 1,
-> -	.links = { X1E80100_SLAVE_DDR_PERF_MODE },
-> -};
-> -
->  static struct qcom_icc_node qup0_core_master = {
->  	.name = "qup0_core_master",
->  	.id = X1E80100_MASTER_QUP_CORE_0,
-> @@ -688,14 +679,6 @@ static struct qcom_icc_node qns_a2noc_snoc = {
->  	.links = { X1E80100_MASTER_A2NOC_SNOC },
->  };
->  
-> -static struct qcom_icc_node ddr_perf_mode_slave = {
-> -	.name = "ddr_perf_mode_slave",
-> -	.id = X1E80100_SLAVE_DDR_PERF_MODE,
-> -	.channels = 1,
-> -	.buswidth = 4,
-> -	.num_links = 0,
-> -};
-> -
->  static struct qcom_icc_node qup0_core_slave = {
->  	.name = "qup0_core_slave",
->  	.id = X1E80100_SLAVE_QUP_CORE_0,
-> @@ -1377,12 +1360,6 @@ static struct qcom_icc_bcm bcm_acv = {
->  	.nodes = { &ebi },
->  };
->  
-> -static struct qcom_icc_bcm bcm_acv_perf = {
-> -	.name = "ACV_PERF",
-> -	.num_nodes = 1,
-> -	.nodes = { &ddr_perf_mode_slave },
-> -};
-> -
->  static struct qcom_icc_bcm bcm_ce0 = {
->  	.name = "CE0",
->  	.num_nodes = 1,
-> @@ -1583,18 +1560,15 @@ static const struct qcom_icc_desc x1e80100_aggre2_noc = {
->  };
->  
->  static struct qcom_icc_bcm * const clk_virt_bcms[] = {
-> -	&bcm_acv_perf,
->  	&bcm_qup0,
->  	&bcm_qup1,
->  	&bcm_qup2,
->  };
->  
->  static struct qcom_icc_node * const clk_virt_nodes[] = {
-> -	[MASTER_DDR_PERF_MODE] = &ddr_perf_mode_master,
->  	[MASTER_QUP_CORE_0] = &qup0_core_master,
->  	[MASTER_QUP_CORE_1] = &qup1_core_master,
->  	[MASTER_QUP_CORE_2] = &qup2_core_master,
-> -	[SLAVE_DDR_PERF_MODE] = &ddr_perf_mode_slave,
->  	[SLAVE_QUP_CORE_0] = &qup0_core_slave,
->  	[SLAVE_QUP_CORE_1] = &qup1_core_slave,
->  	[SLAVE_QUP_CORE_2] = &qup2_core_slave,
-> 
-> ---
-> base-commit: 1870cdc0e8dee32e3c221704a2977898ba4c10e8
-> change-id: 20240302-topic-faux_bcm_x1e-8639adf9d010
-> 
-> Best regards,
-> -- 
-> Konrad Dybcio <konrad.dybcio@linaro.org>
-> 
+Another way might be to add a pm_runtime_dont_use_autosuspend() call
+at the beginning of pci_device_remove().
+
+Or just remove the optimization in question from rpm_resume() which is
+quite confusing and causes people to make assumptions that lead to
+incorrect behavior in this particular case.
+
+So this (modulo GMail-induced whitespace breakage):
+
+---
+ drivers/base/power/runtime.c |    9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
+
+Index: linux-pm/drivers/base/power/runtime.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+--- linux-pm.orig/drivers/base/power/runtime.c
++++ linux-pm/drivers/base/power/runtime.c
+@@ -782,15 +782,8 @@ static int rpm_resume(struct device *dev
+     if (retval)
+         goto out;
+
+-    /*
+-     * Other scheduled or pending requests need to be canceled.  Small
+-     * optimization: If an autosuspend timer is running, leave it running
+-     * rather than cancelling it now only to restart it again in the near
+-     * future.
+-     */
+     dev->power.request =3D RPM_REQ_NONE;
+-    if (!dev->power.timer_autosuspends)
+-        pm_runtime_deactivate_timer(dev);
++    pm_runtime_deactivate_timer(dev);
+
+     if (dev->power.runtime_status =3D=3D RPM_ACTIVE) {
+         retval =3D 1;
 
