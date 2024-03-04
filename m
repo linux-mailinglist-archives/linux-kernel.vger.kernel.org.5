@@ -1,235 +1,276 @@
-Return-Path: <linux-kernel+bounces-91268-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91270-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E94A870C0F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:04:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EC0D870C14
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:05:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C2AB1F2183F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:04:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8CBD283BFC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:05:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8721611185;
-	Mon,  4 Mar 2024 21:04:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCD9E41C6D;
+	Mon,  4 Mar 2024 21:04:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="JGFtbeXq";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="GyTdzJcp"
-Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="COKIpK6A"
+Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90DC510A19;
-	Mon,  4 Mar 2024 21:04:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.154.45
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709586277; cv=fail; b=Qt4o5ZmW4UFaZ1cqIfKjFWuivqiKDIYDnqukuFmLAhS1JJfM0jGGuwoGxxNGiLiznIwwVK0cpzDYA8VhL/DQZ4T5rHnrWvunmSfR7AUqUUgzq6+SJ4B+YiUTgTlWbsb9FAxcjCoVhb5LFFlG6bfj2+Q5PX31b9+u9O2mNCfSQuI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709586277; c=relaxed/simple;
-	bh=ydMqWyA2Eoi6YVVxZ7RctrIQYu0VjMuAl0M+XVvvaww=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=POwMe57WxA5pjWV+/QjRtaRUY28K8aRGlxUaY+qWY6qft7Ku/11ZSUkwNBD8rI3fw7k7VpocMxuDydC6oY1ky1Z03+kl69TfTBbV513Tqxa/2N/mn3m5QjA3HmnmywPuiwjlfo9U3BSa/eXreevwVfhfmdbi5bq/DuxcgIQPjcA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=JGFtbeXq; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=GyTdzJcp; arc=fail smtp.client-ip=216.71.154.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1709586275; x=1741122275;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=ydMqWyA2Eoi6YVVxZ7RctrIQYu0VjMuAl0M+XVvvaww=;
-  b=JGFtbeXq9o8Quv/SkiICGEMlTWuEVnXrErA3mPWPcJ01EducYSCsLTUv
-   Phv01Dotwzawz3WGNUbkK8jp72EKEtwRQ3eV+FX0WRSD6iWK/w+zaA55f
-   9fWXSQV0JBMPL9/ZINl6MVtYhCEJKK4Uw10XlqdrwzyhWJ/F1ZRrFSL1d
-   x/WiV84gqiRme/GjMPdV3z+MTYwgLZk0WYIefCiOs+/DpY82vi4E1ojl1
-   6t0T7u93EURCHEUZTuhhbzHY+fFDfV8+dk+6nU2AIP3XgrkX6vGIYKRwF
-   RgMyiF/ZGe7f8WFARVhDq8HSrzsLKSkZIil+d1iZHK6B4BvK14rtfTV4b
-   g==;
-X-CSE-ConnectionGUID: xfP7h+82StKo6Bb1xk5THA==
-X-CSE-MsgGUID: Nw7wXD1/TQGtkdrGEyc8Ww==
-X-IronPort-AV: E=Sophos;i="6.06,204,1705334400"; 
-   d="scan'208";a="10780089"
-Received: from mail-bn8nam12lp2168.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.168])
-  by ob1.hgst.iphmx.com with ESMTP; 05 Mar 2024 05:04:32 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=J/jkbPRd16ado1n1F8oAtRRTyPIGabVkNOs3RweNFejYTf3XQa3V5wm6XwE93ECN3d2AoWcxkWyIq3OzybIsZgJ17C9p/gtlNXgvpJenfTNk3i8JoU6+0R0BGfWYIGGC9MbEFU5f9GpeNKM+SfKFuPWURCFWM3GLxj+JAi9TrgEiYWIlJEUjDohnHrR88DC3koXlYq/RIKoI/Pp+MpMmX26Xmpwcq3BwiZPjsvSm2DBE3suz2iM3+9iU9UE/88YEUCxBujtgN9Wj6PsBJCvcf9LxDAgFjWoVY17wNQb04V/EQ970nRPcrgD7e0AMlWBORnMY2v4+dL9nn33Sz0Vyog==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ioYDdcHR1pnwo2wGi42WtZtjBIMI+pu5Wf/P6/ezC48=;
- b=G7zak/Wj4hv9E+bADyYBtq+LP0pAwdjj9DhH7CbczXUvziaPYQElBJ3aUcX4iiKT3OCPue3B+FsNwI4fpSJRvs/LFDmsm09l2GTxx+J3wy4262J0xTmm7Z/gja1W57bpO8nMGUvZLQ4VF/mybTQP5i5mxThhLVT+NSJPFg5mUwiy1y4nttE4bI5BoMYekDnRp5slBAPdQX6ffUYCwp04bwpzU7xAfFwYdrCWZguwP0AqLmW8Jk3LMiWG5yY9LlGEMRUxQdzXV/SuqNeBbB0TWSGIki5Vx+tfDxhqqIENPjVzNpi2QN9vzHF0E3lysOJt/NtPKCv/dFR+H3GVr4i5rA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45B0210A36
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 21:04:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.178
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709586289; cv=none; b=ntqyh6/sdDraTnx3XkDXaKVrXYCjyuE97O+2EH6hCIFu8VXMZkzFP647ooMlcqxG8W7WAfe9xgHcOSmT+Ip79Qy0DQ+LgeS61OfO4BHe54d+rMXqv42KsbgW7R7bZ2PUJ539zKRF0SymwRRwD9pEGZcrBF9eLaXzpT0cR4ITrQs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709586289; c=relaxed/simple;
+	bh=wcN0X4D5vAY7Fzi4SXe8LKE3eY9n8Hr99aj0im2D6Do=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kdbCHCh+Le/KyKVULUJNyUyBmT71johK21nOn8nTvAeGDOslIXSwIrQSaSy5QPE0tWslFVo4q5kbeRyqAC8ilKUoVUdboaztsCeapEcRjJz6+2vyWBWRc5ujBcp2T/U01Y2AQDLnSi62y4L9qd+ZLWHafNqv+UF+9hoG8daWhMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=COKIpK6A; arc=none smtp.client-ip=209.85.167.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3c1f6a387a3so389591b6e.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 13:04:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ioYDdcHR1pnwo2wGi42WtZtjBIMI+pu5Wf/P6/ezC48=;
- b=GyTdzJcphBCkveEjYURbNMr5xEzO4bRBtxoXFBqhSi1CbPYtpJQKxB9GkMdAQBX8nRED/GuE5/dypzZwWa3sUG3Hi7jepQLSivLHmHbDBlatdbo+OvkcGHTEAaNvqXvZmzFNQ3SUzM0hjMl1POiOkdVXVL8gEw0xoBYOycrHR7c=
-Received: from SJ0PR04MB8326.namprd04.prod.outlook.com (2603:10b6:a03:3db::16)
- by MN2PR04MB6398.namprd04.prod.outlook.com (2603:10b6:208:1a9::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.38; Mon, 4 Mar
- 2024 21:04:30 +0000
-Received: from SJ0PR04MB8326.namprd04.prod.outlook.com
- ([fe80::a115:b72e:ac9:d144]) by SJ0PR04MB8326.namprd04.prod.outlook.com
- ([fe80::a115:b72e:ac9:d144%7]) with mapi id 15.20.7339.035; Mon, 4 Mar 2024
- 21:04:30 +0000
-From: Niklas Cassel <Niklas.Cassel@wdc.com>
-To: Frank Li <Frank.li@nxp.com>
-CC: Manivannan Sadhasivam <mani@kernel.org>, "imx@lists.linux.dev"
-	<imx@lists.linux.dev>, Jingoo Han <jingoohan1@gmail.com>, Gustavo Pimentel
-	<gustavo.pimentel@synopsys.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	=?iso-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>, Rob Herring
-	<robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, Jon Mason
-	<jdmason@kudzu.us>, "open list:PCI DRIVER FOR SYNOPSYS DESIGNWARE"
-	<linux-pci@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] PCI: dwc: Fix BAR0 wrong map to iATU6 after root
- complex reinit endpoint
-Thread-Topic: [PATCH 1/1] PCI: dwc: Fix BAR0 wrong map to iATU6 after root
- complex reinit endpoint
-Thread-Index:
- AQHaMja1NResTHTkFE6//FhBs62b57CwYdiAgABGuYCAAAUWgIB3lVEXgAAW+ICAABG0gIAAHwcA
-Date: Mon, 4 Mar 2024 21:04:30 +0000
-Message-ID: <ZeY3XqgUf84qAMCL@fedora>
-References: <20231219044844.1195294-1-Frank.Li@nxp.com>
- <ZYFrUWM7JXdv7rtb@x1-carbon> <ZYGmpaf18pJgM/qj@lizhi-Precision-Tower-5810>
- <ZYGq6RdCfdhXFF/9@x1-carbon> <20240304084841.GJ2647@thinkpad>
- <ZeX7KDuwLWxwb5Kw@lizhi-Precision-Tower-5810>
- <20240304181005.GF31079@thinkpad>
- <ZeYdV3xMWa0nbz3k@lizhi-Precision-Tower-5810>
-In-Reply-To: <ZeYdV3xMWa0nbz3k@lizhi-Precision-Tower-5810>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ0PR04MB8326:EE_|MN2PR04MB6398:EE_
-x-ms-office365-filtering-correlation-id: dace8d74-d200-4e18-a79d-08dc3c8eaf7e
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- KGZPA5SWrP1gIa3hg+1DDaidXzqRq92DOnZL0UpHK7/BPtMqLLNVdNKuQa/rCXc+xV4qFllIapNLZB0FFSkSxKrs/Z8YyuR4LRECQHo9CHp+RuqpjMrcZJ4FajstDKl/Ae6A7v8SEre7ilSADIQuZ63tvAW0utNvdsU5kzzeLlmgXJSAyyi7KVuJOv1fVjsvHnkubIDfr7vT17S5MqycWjbeWZXnlMGqa3OC+iUCAbbBayCHEbRp+UxCyZqjq1ck9pwyye11G+JrJ4T3uJdd1xROYMq6gJGZruUAnfkl05Kl+o2mthr3BwKO+MsTRk1spgWYQcwfBolkoGiNVttNYSbUpPoRHv52UmKCfJaT+boVvRXr4YqWH77Tx7GF7LEONjAxekPApTzmtsKGpH1iqbeLOw9WH3yk4RDwcOApWSiHCmYADp3ZaNv8GQPsffuRwyWyeK1Ezd/nbcQnK0COYPqw2x5EK6uV2aouahgz53QpSmhCAwyNMcFGZJjtlo523TwFMXx5sIfh58No0bxK3gC5fNaqLiJbPrH7v1zhqD/vM8PJRnPU3/eQoMNNAFJK0ozVHqbd6qIEkgurGT937ELfyPW+rOAOnNVLTgg0FrNEmX4xEYPgu9Ib2VIPosE+J2pn/mCnEix7SzkPSCT/hpoTO7uRE6S+q5eKYmw3cQV0x0qHU72j+XAMEFJSv2KMAz4MvmbO08PVZm6KX3vJXRUqcABa15bMt8EnWdxXChg=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR04MB8326.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?iso-8859-2?Q?Yw5HEYzSYzfI65s8oLWgMbc2ooNZwVaLiCwaPQ5/Uqv3H7HyTOn2gxPKcG?=
- =?iso-8859-2?Q?NkQP34xpRyFReXZwTrtCrCQDYLq67YxMJujldDjAsfBar8A4qhGLoIVFSD?=
- =?iso-8859-2?Q?zEHkeaH3Zy4rOwkwsqh7TiVt8I9aE0y3eFHq9gEC2vHuMwRGcCnfZjZpPd?=
- =?iso-8859-2?Q?pl55vU1eDi4vpJtvxnIZG0Eo5QvVWYYpX3bmyho7FhQ1PWM89VrKyPMfPQ?=
- =?iso-8859-2?Q?r9SsYOlDCUgxi9Zljlzx0Ppf/tcUJQGoAGOQA6nBB0+s6ZPaUkQlOgRkyX?=
- =?iso-8859-2?Q?XUh3SkRY+zSnIvG0vxaicT1m8EPg4Nz/5dC8oF29yfH5NausB6eQIPgrtO?=
- =?iso-8859-2?Q?a917ZNzR1N+3OmAHcRYoK3tp4RY9s8q8VesbnE+mFKiAA9hzVZvBW5+7RV?=
- =?iso-8859-2?Q?Wkuol+Z/nvffxVS2A0wQ6O1yG27bg76tIlHWHe5zET0MkYzqhx/OkCQwxR?=
- =?iso-8859-2?Q?oEdu4/HNajW3ikg9fatIY1nfDAzcDY7046nfm0fJKB9USiNW+avK5w53MF?=
- =?iso-8859-2?Q?pyyILr5yz4EjqYrWuosW3n0Q0f9VVkQvQwQff2JJmJEAQP6W/tOJOUelhc?=
- =?iso-8859-2?Q?MbyALXbC22m1WeRCqQ5Qz0Z5W5lDN6B2ef1U3gcPYrl89DpJttBshIWBqd?=
- =?iso-8859-2?Q?3RT+EYJbpMH7ABgoImbDXHEmHmuacRgpni4qGO8u0w/GNHWM2cEr8Sxv5h?=
- =?iso-8859-2?Q?OHN5icIv9szUxoagvKAZ5AEzo7YvJLRiJMJVVBqXZxmC8k7h4X54ZyJRiG?=
- =?iso-8859-2?Q?vrvYAX/HgXOI54uKmQii53UpJx+7OzZIkPPq1MRNLI/7FX1nWW9RoDC5mo?=
- =?iso-8859-2?Q?qlLQLtL7qyCdUu1FM51Js8h9/EBq5uhxqXqrTu9AkOJemJIfRxeFcKroyz?=
- =?iso-8859-2?Q?hjqekeVVcfMzlneUjsFVuwH4pQI1+X9eFF+jv3969LK850k+CZW7/7JFQJ?=
- =?iso-8859-2?Q?T8N3KjT/1tWhib4DfNep+VDrc18ooTt4iKlhmJhBkHQMp3RT/rYbcp8IVz?=
- =?iso-8859-2?Q?p2ODgekq72YvUH5ZxFdv4sWNJUlI6dqMetQH6VxNm/KSiz2PtfsVBCqjVB?=
- =?iso-8859-2?Q?85bc/myQh7AjSBw4589rTkCXgoXynbWt53AP9cfYLANVI5JWIU7aroXwB6?=
- =?iso-8859-2?Q?VLSycFWm6Tr6mul5CIf4VNvRIs7S/B3iLUR5PQBUKu+SwX+PT9ArVL25Uh?=
- =?iso-8859-2?Q?tMWY//BG460PbpFtA5f+842oZInFml+xYwLahGCL5bGKc+Cv03Mjnh/s96?=
- =?iso-8859-2?Q?9VozTTuveE0I32N7G+7EgHTfy6Opw4FHBOuIGRsdgIUW8uLQv8jz3J6yVA?=
- =?iso-8859-2?Q?GE356lFG+iaP1bKWg9VY2X13YDj2/s+nSnSO9t6+we8vAhGygztKO3PcYd?=
- =?iso-8859-2?Q?khEZjc3qEbcj+Rd1QDK0PNDCFuxBaddcFgRNGM9YD/+rmeGtmF+89CImAU?=
- =?iso-8859-2?Q?YMJ74FS18joKFZK4VBExzfbMbakcI/kvdQdNBYbS3MCKWA3W+BC875h0Pm?=
- =?iso-8859-2?Q?xodapHlU7aJnA8BO3HkVW+XOpxQnMVpcLWBk/wiCV/H9cvYQAOTs9Y6sBM?=
- =?iso-8859-2?Q?MEK0+qTcJK51HCXMt4jzLeS3SvNH7+SQmYY1puF8aAYDSRSBZrp9PF5Nvc?=
- =?iso-8859-2?Q?9FTRg9dgLymgO45k29wvkuJJVtQlzar02tsHf90GpJrKLVSnXfKficXw?=
- =?iso-8859-2?Q?=3D=3D?=
-Content-Type: text/plain; charset="iso-8859-2"
-Content-ID: <5124D72B5B2CEE4F86F1CF50DAD77673@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20230601; t=1709586286; x=1710191086; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8TVmEhSKhlDR6P3G5ys+4kcir1aOuZN32lH8jTi+5V4=;
+        b=COKIpK6ASxCm9dIaK4nb2Ijz1oMUXy96fGHOt8iSUP1UkfeodbXY9+McbOtBafb13c
+         LIdIuNb5CsqtTTEtk7rTgeaHCZ5sI7WP1dQ5nHFFhNDMWMCUasBLRgP9G5T3N6Vua9F6
+         gW6msJ6pHyk2XDkDe5n02eyb+ACt1jbXKqGB9FDgaCq/XC1CntEH1Bj2ivz2fZNdx8fr
+         +uSVWUYwC+n7PTBUSq5mwsFnk8FuMRRV3zRGXwBsU8j04+Ei0a+BJrPpG+Wgd3ONEnKE
+         CoZTiXMNEoIHtpcCqsAwBphAOUSrR17KWmmnDiS93Yjin3CTdbUhji56Tku5rhf6rcg9
+         sJ7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709586286; x=1710191086;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8TVmEhSKhlDR6P3G5ys+4kcir1aOuZN32lH8jTi+5V4=;
+        b=VRB0P4afDvGFngEp8PegHZWH7mxkQFQ5o7xo7pqSyuH1XNJqzFZ6E+qPRgxkXlTrbs
+         pJfBEuRK8kX5llxPVnRNKm23AIkALUHbB1AGog/0owR7bslE0SyXHn8Wl920QXJp35Wr
+         N5LUhM3t2uM9t3AUv50P+rJ0U5ynFGleSHzCXmsJ2dsamsJ0vBQetZ0hG1B30m7mxXph
+         U6btegJx766FWnJaJJUKsioyaRLyoGDHyDH8WHdpsQg7BghCPzvcnbdJ+3l4rM+8AD/T
+         xMGQc3iFCVk5imyjzu/n1DIB8+fK7pGIO+mIjJTu15VqBlJiF5h2/BZIiWhlvD9EOIC1
+         GTAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXoON/zh4ExuXx8CD4j/2pqtBz/zTv42PgQvj/le4xXbHWHRT2iPwXIYbEYXcWqtPBZptCbO63bFVAr+HoeanMl4RKw8KnFgDYk8sDe
+X-Gm-Message-State: AOJu0Yx4Mn1zIRgJdjNIUhvbCnZrfaJrFEsdMa05Lxcnj24fxpuNbPhs
+	NTgiVAj1b8J2T5O1VmeuMBlA0ixng1KIP+9W+AaSx8p42PfelijL0uRZajeY32BYeqifT7ncjSA
+	xolCUmrJ30UU9a6QqTo8i+68pCOI=
+X-Google-Smtp-Source: AGHT+IH40sUK7/cQYOFbmLuq2L+jqwEit/A3MGsAyOy/hs1vuPRuz9cQpYooWpOftsRNDh2IOhs4cox54PoSdEH3TvU=
+X-Received: by 2002:a05:6808:f04:b0:3c2:66f:8be6 with SMTP id
+ m4-20020a0568080f0400b003c2066f8be6mr1223511oiw.43.1709586286341; Mon, 04 Mar
+ 2024 13:04:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	dDike5KwL2GHiI//p4xjJKL0SuqAyI+0roW8LS9TwWAd4Mcf4eKdO7S66J+PopYB0iWh42o2yyBSQbLkr0OpKwVUBx60v4aHW8UWb1lvXkTpAeazp8q45j+hR12pMDn1xq+U3WzUGrSkZcoX3m8SUmOutoyt4oFSEWMXnwh22vMjC71kWUom50oshfH6W2YRipI2hvFFan5ZQNPmIcMJBfHhWXkCikFXgzxH39YXH34wu4hGBUDwd19sT8DXCAoUOb69bKcc2FqhNjCVeHrPfJWYPink8H3jupmXBGHmthBKt5hSPus/VU5FQ4UhRFODJGTS4oK1DbA2P6AWOSAxuLak+WHjENB9Ty4esobdfei64m9Z+mcy5+cCv+C5I0oax/CPIjpC8HmDhLXStzUhc85JVXSOra71v+1o/x8473RMg+yxKP4tTxhHJNGSpZjPjpm0xHIqUHNEK7iEUjCbH9r4dnUVwZ+xdiXShgVouNWTSlh2pvtkWnsXSx61KhJDwkfjUh/sGw2gK4muSJBZ8iZvPLpNFYXIL5rvrOcmvSOzF2F9qaDGYsUVixoi7JkAkjAh6DRE5rEIi8/fCN26S9I3j0UCiqEDqYtV35DKTJurjgIzhBPnDKCUgmthIvmU
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR04MB8326.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dace8d74-d200-4e18-a79d-08dc3c8eaf7e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Mar 2024 21:04:30.6734
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 0GPPovrwFJHQRY7JAvfSsVTrEAhyfpWlGls+HMUd3zyZ6fdUX4xh5oUoi0hN4DgQb6mR4Ei5N3217AX13nmNVg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR04MB6398
+References: <20240304103757.235352-1-21cnbao@gmail.com> <706b7129-85f6-4470-9fd9-f955a8e6bd7c@arm.com>
+ <37f1e6da-412b-4bb4-88b7-4c49f21f5fe9@redhat.com>
+In-Reply-To: <37f1e6da-412b-4bb4-88b7-4c49f21f5fe9@redhat.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Tue, 5 Mar 2024 10:04:34 +1300
+Message-ID: <CAGsJ_4yJ3yCyN_KgBO8W+jFx8RN6_JhS9OwX3FH6X_gpU7g62w@mail.gmail.com>
+Subject: Re: [RFC PATCH] mm: hold PTL from the first PTE while reclaiming a
+ large folio
+To: David Hildenbrand <david@redhat.com>
+Cc: Ryan Roberts <ryan.roberts@arm.com>, akpm@linux-foundation.org, linux-mm@kvack.org, 
+	chrisl@kernel.org, yuzhao@google.com, hanchuanhua@oppo.com, 
+	linux-kernel@vger.kernel.org, willy@infradead.org, ying.huang@intel.com, 
+	xiang@kernel.org, mhocko@suse.com, shy828301@gmail.com, 
+	wangkefeng.wang@huawei.com, Barry Song <v-songbaohua@oppo.com>, 
+	Hugh Dickins <hughd@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 04, 2024 at 02:13:27PM -0500, Frank Li wrote:
-> >=20
-> > Niklas's initial suggestion of keeping u8 for the array and 0 as the un=
-allocated
-> > placeholder sounds good to me. Please use that instead.
-> >=20
->=20
-> It is impossible to keep u8, because 255 + 1 will 0 for u8. Previously
-> Niklas's initial suggestion have not consider this condition. If u8 have =
-to
-> change to u16 or s16 anyways, I prefer use -1 as free.
+On Tue, Mar 5, 2024 at 1:41=E2=80=AFAM David Hildenbrand <david@redhat.com>=
+ wrote:
+>
+> On 04.03.24 13:20, Ryan Roberts wrote:
+> > Hi Barry,
+> >
+> > On 04/03/2024 10:37, Barry Song wrote:
+> >> From: Barry Song <v-songbaohua@oppo.com>
+> >>
+> >> page_vma_mapped_walk() within try_to_unmap_one() races with other
+> >> PTEs modification such as break-before-make, while iterating PTEs
+> >> of a large folio, it will only begin to acquire PTL after it gets
+> >> a valid(present) PTE. break-before-make intermediately sets PTEs
+> >> to pte_none. Thus, a large folio's PTEs might be partially skipped
+> >> in try_to_unmap_one().
+> >
+> > I just want to check my understanding here - I think the problem occurs=
+ for
+> > PTE-mapped, PMD-sized folios as well as smaller-than-PMD-size large fol=
+ios? Now
+> > that I've had a look at the code and have a better understanding, I thi=
+nk that
+> > must be the case? And therefore this problem exists independently of my=
+ work to
+> > support swap-out of mTHP? (From your previous report I was under the im=
+pression
+> > that it only affected mTHP).
+> >
+> > Its just that the problem is becoming more pronounced because with mTHP=
+,
+> > PTE-mapped large folios are much more common?
+>
+> That is my understanding.
+>
+> >
+> >> For example, for an anon folio, after try_to_unmap_one(), we may
+> >> have PTE0 present, while PTE1 ~ PTE(nr_pages - 1) are swap entries.
+> >> So folio will be still mapped, the folio fails to be reclaimed.
+> >> What=E2=80=99s even more worrying is, its PTEs are no longer in a unif=
+ied
+> >> state. This might lead to accident folio_split() afterwards. And
+> >> since a part of PTEs are now swap entries, accessing them will
+> >> incur page fault - do_swap_page.
+> >> It creates both anxiety and more expense. While we can't avoid
+> >> userspace's unmap to break up unified PTEs such as CONT-PTE for
+> >> a large folio, we can indeed keep away from kernel's breaking up
+> >> them due to its code design.
+> >> This patch is holding PTL from PTE0, thus, the folio will either
+> >> be entirely reclaimed or entirely kept. On the other hand, this
+> >> approach doesn't increase PTL contention. Even w/o the patch,
+> >> page_vma_mapped_walk() will always get PTL after it sometimes
+> >> skips one or two PTEs because intermediate break-before-makes
+> >> are short, according to test. Of course, even w/o this patch,
+> >> the vast majority of try_to_unmap_one still can get PTL from
+> >> PTE0. This patch makes the number 100%.
+> >> The other option is that we can give up in try_to_unmap_one
+> >> once we find PTE0 is not the first entry we get PTL, we call
+> >> page_vma_mapped_walk_done() to end the iteration at this case.
+> >> This will keep the unified PTEs while the folio isn't reclaimed.
+> >> The result is quite similar with small folios with one PTE -
+> >> either entirely reclaimed or entirely kept.
+> >> Reclaiming large folios by holding PTL from PTE0 seems a better
+> >> option comparing to giving up after detecting PTL begins from
+> >> non-PTE0.
+> >>
+>
+> I'm sure that wall of text can be formatted in a better way :) . Also, I
+> think we can drop some of the details,
+>
+> If you need some inspiration, I can give it a shot.
+>
+> >> Cc: Hugh Dickins <hughd@google.com>
+> >> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+> >
+> > Do we need a Fixes tag?
 
-Well, to be fair, my suggestion was:
-"If we continue to use a u8, and offset the saved value by one,
-we will at least be able to support 255-1 =3D=3D 254 iATUs."
+I am not quite sure which commit should be here for a fixes tag.
+I think it's more of an optimization.
 
-But we have this define:
-drivers/pci/controller/dwc/pcie-designware.h:#define MAX_IATU_IN 256
-(Even if it isn't used anywhere.)
+> >
+>
+> What would be the description of the problem we are fixing?
+>
+> 1) failing to unmap?
+>
+> That can happen with small folios as well IIUC.
+>
+> 2) Putting the large folio on the deferred split queue?
+>
+> That sounds more reasonable.
 
-But as ridiculous as it may seem to support that many inbound ranges,
-that is the max number of windows supported by the hardware, so why
-not just let the driver support the max supported by the hardware?
+I don't feel it is reasonable. Avoiding this kind of accident splitting
+from the kernel's improper code is a more reasonable approach
+as there is always a price to pay for splitting and unfolding PTEs
+etc.
 
+While we can't avoid splitting coming from userspace's
+MADV_DONTNEED, munmap, mprotect, we have a way
+to ensure the kernel itself doesn't accidently break up a
+large folio.
 
-We are talking about:
-struct dw_pcie_ep {
-	...
-        u8                      bar_to_atu[PCI_STD_NUM_BARS];
-	...
+In OPPO's phones, we ran into some weird bugs due to skipped PTEs
+in try_to_unmap_one. hardly could we fix it from the root cause. with
+various races, figuring out their timings was really a big pain :-)
+
+But we did "resolve" those bugs by entirely untouching all PTEs if we
+found some PTEs were skipped in try_to_unmap_one [1].
+
+While we find we only get the PTL from 2nd, 3rd but not
+1st PTE, we entirely give up on try_to_unmap_one, and leave
+all PTEs untouched.
+
+/* we are not starting from head */
+if (!IS_ALIGNED((unsigned long)pvmw.pte, CONT_PTES * sizeof(*pvmw.pte))) {
+                   ret =3D false;
+                   atomic64_inc(&perf_stat.mapped_walk_start_from_non_head)=
+;
+                   set_pte_at(mm, address, pvmw.pte, pteval);
+                   page_vma_mapped_walk_done(&pvmw);
+                   break;
 }
+This will ensure all PTEs still have a unified state such as CONT-PTE
+after try_to_unmap fails.
+I feel this could have some false postive because when racing
+with unmap, 1st PTE might really become pte_none. So explicitly
+holding PTL from 1st PTE seems a better way.
 
-where PCI_STD_NUM_BARS =3D=3D 6.
+[1] https://github.com/OnePlusOSS/android_kernel_oneplus_sm8550/blob/oneplu=
+s/sm8550_u_14.0.0_oneplus11/mm/rmap.c#L1730
 
-And where struct dw_pcie_ep is kzalloced for what I assume is all drivers.
+>
+> >> ---
+> >>   mm/vmscan.c | 11 +++++++++++
+> >>   1 file changed, 11 insertions(+)
+> >>
+> >> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> >> index 0b888a2afa58..e4722fbbcd0c 100644
+> >> --- a/mm/vmscan.c
+> >> +++ b/mm/vmscan.c
+> >> @@ -1270,6 +1270,17 @@ static unsigned int shrink_folio_list(struct li=
+st_head *folio_list,
+> >>
+> >>                      if (folio_test_pmd_mappable(folio))
+> >>                              flags |=3D TTU_SPLIT_HUGE_PMD;
+> >> +                    /*
+> >> +                     * if page table lock is not held from the first =
+PTE of
+> >> +                     * a large folio, some PTEs might be skipped beca=
+use of
+> >> +                     * races with break-before-make, for example, PTE=
+s can
+> >> +                     * be pte_none intermediately, thus one or more P=
+TEs
+> >> +                     * might be skipped in try_to_unmap_one, we might=
+ result
+> >> +                     * in a large folio is partially mapped and parti=
+ally
+> >> +                     * unmapped after try_to_unmap
+> >> +                     */
+> >> +                    if (folio_test_large(folio))
+> >> +                            flags |=3D TTU_SYNC;
+> >
+> > This looks sensible to me after thinking about it for a while. But I al=
+so have a
+> > gut feeling that there might be some more subtleties that are going ove=
+r my
+> > head, since I'm not expert in this area. So will leave others to provid=
+e R-b :)
+> >
+>
+> As we are seeing more such problems with lockless PT walks, maybe we
+> really want some other special value (nonswap entry?) to indicate that a
+> PTE this is currently ondergoing protection changes. So we'd avoid the
+> pte_none() temporarily, if possible.
+>
+> Without that, TTU_SYNC feels like the right thing to do.
+>
+> --
+> Cheers,
+>
+> David / dhildenb
+>
 
-So I'm actually for your idea of changing it to u16, or even unsigned int.
-
-If the code is simplified if we use a u16 or unsigned int (because we don't
-need any weird if (val < MAX_IATU_IN - 1) check), then I'm all for it.
-
-
-What I personally don't like with your patch in $subject,
-was that you changed both dw_pcie_ep_clear_bar() to set the "clear value"
-to -1, but you also need a
-memset(ep->bar_to_atu, -1, sizeof(ep->bar_to_atu)); in dw_pcie_ep_init().
-
-
-I much prefer to have 0 as the default/unused value, because it will
-automatically get set when you do kzalloc().
-Seeing a memset -1 just looks a bit hackish to be, but I realize that
-it is personal preference.
-
-
-If it is super important to save 8 bytes from the heap, then I would
-even prefer changing the MAX_IATU_IN 256 to something smaller, like
-127 or whatever, just as long as we don't need that extra memset -1 :)
-
-
-Kind regards,
-Niklas
+Thanks
+Barry
 
