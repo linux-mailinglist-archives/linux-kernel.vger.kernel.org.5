@@ -1,60 +1,62 @@
-Return-Path: <linux-kernel+bounces-90333-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90334-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB8A386FDCC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:39:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCFE486FDCF
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:39:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDE651C224E6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:39:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8309728370B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:39:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71E2520B33;
-	Mon,  4 Mar 2024 09:39:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0272E210EE;
+	Mon,  4 Mar 2024 09:39:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hd1u5h0Y"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="HDnLPhvY"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 223191BC3D
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 09:39:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FA742233B;
+	Mon,  4 Mar 2024 09:39:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709545149; cv=none; b=SH3CRR4lThlo64LEKa3H7+V4WXIZWimxNpgQO5IzaKfR2cgYJ4TnRGJt/mDCP9pQ4Dn4y9FyVJ7Mbig2l6Pv30QDs2uWQ9qpZoeco6+Iiq2BaMM/uX+We5dQSjSzE79EFrLKSshOuNo7KxLd73mWzqHpkyn1OeRdlMBZVxXYjgY=
+	t=1709545162; cv=none; b=YXTC9E92LYoHX9hvf3rqI04qbjZlBgUiCa9wGAchEBfq0FpLtNgHtco5IVhQ1vJg7TetiUs5E+Ync4rZq1XDKEtkUAmkVugbc2CdfI1cwY3Ax4TuaEanob7LLHj0K7nDO01LReXAc1yorTpv/3MpfMBtTnd0DaKK1yJJLdD4Swk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709545149; c=relaxed/simple;
-	bh=zw1bKc+mpb3Eq0EH3dsgVKb7A+Jz5grqECA/b0F7Vl0=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=hBmTs9zgiN7p0oksEiWH1/h2fLRglCSMprQ2YuKO6daN2lp9+GQyMe3ilP2mjpFQHPVJv8Ed5Y0BNqxfBeyw/VBConi4tRxO+bl3nw/1KfH8hpqDJrPlZiL0Ft7REb8pUCDErN87wxvxwa2zi5fCFTp3Wis8A1CWqfj3r3hpbfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hd1u5h0Y; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709545148; x=1741081148;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=zw1bKc+mpb3Eq0EH3dsgVKb7A+Jz5grqECA/b0F7Vl0=;
-  b=hd1u5h0YIuJ1JRwH4eKRAzeM/TGb56ZZoWr3QNXCOdu1/Hd+FwfDILo8
-   ZP4SEj0vlAvXdq6GwTWHU6W3i20DDb3i7w8lbRTmMDMK9v6NAvCIeEFWY
-   wOVRvP6K+2C7uVJYa0o1RjsgN59Bb/G9OyLv+ofjeCiBNfP6GxK1NADSJ
-   RTsMyE8xfGspzGCrlp/JzY/ZPh0Kjp0CHm2K8H3aUBIH/3jNi4jw4C6NJ
-   MywMg5tcaJg0wZBCE5YDRJH//+HOzZjMqvYlSqGqH9VUJaHtjBiadtQEO
-   klz245xg5xnauQslwg2q00424RwQikOFTH7OTGXp9NPDVzxTNGOOKv+eF
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="21562712"
-X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
-   d="scan'208";a="21562712"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 01:39:07 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
-   d="scan'208";a="13495049"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.211.18]) ([10.254.211.18])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 01:39:05 -0800
-Message-ID: <4fadb386-e441-4464-9af1-0d369aed717e@linux.intel.com>
-Date: Mon, 4 Mar 2024 17:39:03 +0800
+	s=arc-20240116; t=1709545162; c=relaxed/simple;
+	bh=hlMnB2dL75qiH2zwxqxYzYy0Kk77oHmDiQwP2ar0g+w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=iJDbX6pEpPeIVUWHtRk28kQFHltjijh1Ugc0E/3GZgiCHof9vGRXO2Vxy2j5RCCwnUVF6tFZchdK8VSFmabu0YGVkFVt+JdOlHBzwv/WpBI8MDg3n5xWYbFqycFJhzCZLWiMA6NeVBJ5WLl7DXKidPVkrI8YEAfIhXSSmEZuQ00=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=HDnLPhvY; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4248eTIA017035;
+	Mon, 4 Mar 2024 09:39:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=zL7GlEKCJbsbLAgrwLYsbWRzSQBTSvsPBIMLHHqN6J8=; b=HD
+	nLPhvYtXJU1d0I2xM5W7z5sVwKx5DqPgPhVEq74en05GwTBzpC6Rq4qttzNSbU60
+	WdXq8AyxY6o+ZZjp8xUNmxFOjzaxXXRxlKoxa5qdP3r3CXMaflkeby0iqfMIzbx2
+	3bKnsXmooyrk9UTL2YcWM4jc/A4YDMMVIAhOvaaivWZsYdemlcEU1cWoXE+wE37Y
+	eYc2rc/VxjhzHepR7ZDlVEDZF2HhUT/hXjRkB8WlprHymwqWle17WI9MsFCxIL0k
+	3D5Y5ugU4rM268D37bFfnijrXbrnmdsfDrxivwwNhMJa/nx53nIigvZKwwPvYLsG
+	IAPoUBkEKuvmdD/hkjoA==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wn420rt4g-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 04 Mar 2024 09:39:14 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4249dCjm009892
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 4 Mar 2024 09:39:13 GMT
+Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 4 Mar
+ 2024 01:39:06 -0800
+Message-ID: <539e642a-fd2f-4e55-ac02-f75f58da8eb8@quicinc.com>
+Date: Mon, 4 Mar 2024 17:39:04 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,113 +64,89 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, "iommu@lists.linux.dev"
- <iommu@lists.linux.dev>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/2] iommu/vt-d: Fix NULL domain on device release
-Content-Language: en-US
-To: "Tian, Kevin" <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
- Jason Gunthorpe <jgg@ziepe.ca>, "Badger, Eric" <ebadger@purestorage.com>
-References: <20240229094613.121575-1-baolu.lu@linux.intel.com>
- <20240229094613.121575-3-baolu.lu@linux.intel.com>
- <BN9PR11MB52764189F754ABF69D24E2AE8C232@BN9PR11MB5276.namprd11.prod.outlook.com>
- <2cc53838-c88f-43a0-b974-c5acb6f27849@linux.intel.com>
- <BL1PR11MB5271815FE2D13186078BCED58C232@BL1PR11MB5271.namprd11.prod.outlook.com>
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <BL1PR11MB5271815FE2D13186078BCED58C232@BL1PR11MB5271.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH v5 1/4] dt-bindings: arm: qcom: Document QCS8550 SoC and
+ the AIM300 AIoT board
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>, <robh@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <dmitry.baryshkov@linaro.org>
+CC: <keescook@chromium.org>, <tony.luck@intel.com>, <gpiccoli@igalia.co>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-hardening@vger.kernel.org>,
+        <kernel@quicinc.com>
+References: <20240301134113.14423-1-quic_tengfan@quicinc.com>
+ <20240301134113.14423-2-quic_tengfan@quicinc.com>
+ <f19113bb-d66a-4197-a5d7-f51c1fb8c157@linaro.org>
+From: Tengfei Fan <quic_tengfan@quicinc.com>
+In-Reply-To: <f19113bb-d66a-4197-a5d7-f51c1fb8c157@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 3XlRvknQG6r-_V5qZOarQ3WgSp-TR5cm
+X-Proofpoint-GUID: 3XlRvknQG6r-_V5qZOarQ3WgSp-TR5cm
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-04_05,2024-03-01_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
+ malwarescore=0 lowpriorityscore=0 mlxscore=0 adultscore=0 clxscore=1011
+ impostorscore=0 mlxlogscore=999 suspectscore=0 spamscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403040073
 
-On 2024/3/4 16:59, Tian, Kevin wrote:
->> From: Baolu Lu <baolu.lu@linux.intel.com>
->> Sent: Monday, March 4, 2024 4:07 PM
+
+
+On 3/4/2024 3:42 PM, Krzysztof Kozlowski wrote:
+> On 01/03/2024 14:41, Tengfei Fan wrote:
+>> Document QCS8550 SoC and the AIM300 AIoT board bindings.
+>> QCS8550 is derived from SM8550. The difference between SM8550 and
+>> QCS8550 is QCS8550 doesn't have modem RF system. QCS8550 is mainly used
+>> in IoT scenarios.
+>> AIM300 Series is a highly optimized family of modules designed to
+>> support AIoT applications. It integrates QCS8550 SoC, UFS and PMIC chip
+>> etc.
+>> AIM stands for Artificial Intelligence Module. AIoT stands for AI IoT.
 >>
->> On 2024/3/4 15:36, Tian, Kevin wrote:
->>>> From: Lu Baolu <baolu.lu@linux.intel.com>
->>>> Sent: Thursday, February 29, 2024 5:46 PM
->>>>
->>>> +
->>>> +/*
->>>> + * Cache invalidation for changes to a scalable-mode context table
->>>> + * entry.
->>>> + *
->>>> + * Section 6.5.3.3 of the VT-d spec:
->>>> + * - Device-selective context-cache invalidation;
->>>> + * - Domain-selective PASID-cache invalidation to affected domains
->>>> + *   (can be skipped if all PASID entries were not-present);
->>>> + * - Domain-selective IOTLB invalidation to affected domains;
->>>
->>> the spec talks about domain-selective but the code actually does
->>> global invalidation.
+>> Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+>> ---
+>>   Documentation/devicetree/bindings/arm/qcom.yaml | 8 ++++++++
+>>   1 file changed, 8 insertions(+)
 >>
->> I should have included the following comments below:
->>
->> /* Given that we have no idea about which domain IDs and PASIDs were
->>    * used in the pasid table, upgrade them to global PASID and IOTLB
->>    * cache invalidation. This doesn't impact the performance significantly
->>    * as the clearing context entry is not a critical path.
->>    */
->>
+>> diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
+>> index 66beaac60e1d..0ca4333fa8cf 100644
+>> --- a/Documentation/devicetree/bindings/arm/qcom.yaml
+>> +++ b/Documentation/devicetree/bindings/arm/qcom.yaml
+>> @@ -42,6 +42,7 @@ description: |
+>>           msm8996
+>>           msm8998
+>>           qcs404
+>> +        qcs8550
+>>           qcm2290
+>>           qcm6490
+>>           qdu1000
+>> @@ -868,6 +869,13 @@ properties:
+>>             - const: qcom,qcs404-evb
+>>             - const: qcom,qcs404
+>>   
+>> +      - items:
+>> +          - enum:
+>> +              - qcom,qcs8550-aim300-aiot
+>> +          - const: qcom,qcs8550-aim300
+>> +          - const: qcom,qcs8550
+>> +          - const: qcom,sm8550
 > 
-> but then it affects all other perf-critical paths which rely on the cache
-> for other devices...
+> This should be after sm8550 boards, not after qcs404.
 
-You are right. Good consideration.
+Yes, I will adjust the order in the next patch series.
 
 > 
-> It's preferable to restrict overhead to this release path only e.g. walking
-> the PASID table to identify affected DIDs and PASIDs instead of expanding
-> the impact to system wide.
+> Best regards,
+> Krzysztof
+> 
 
-The sm_context_flush_caches() could be used in two different paths:
-- Deferred attachment case;
-- Normal device release path.
-
-For the formal case, we have to use global cache invalidation; but the
-the latter case, it's fine to skip these cache invalidation. The new
-helper probably looks like below.
-
-/*
-  * Cache invalidation for changes to a scalable-mode context table
-  * entry.
-  *
-  * Section 6.5.3.3 of the VT-d spec:
-  * - Device-selective context-cache invalidation;
-  * - Domain-selective PASID-cache invalidation to affected domains
-  *   (can be skipped if all PASID entries were not-present);
-  * - Domain-selective IOTLB invalidation to affected domains;
-  * - Global Device-TLB invalidation to affected functions.
-  *
-  * For kdump cases, old valid entries may be cached due to the in-flight
-  * DMA and copied pgtable, but there is no unmapping behaviour for them,
-  * thus we need explicit cache flushes for all affected domain IDs and
-  * PASIDs used in the copied PASID table. Given that we have no idea about
-  * which domain IDs and PASIDs were used in the copied tables, upgrade
-  * them to global PASID and IOTLB cache invalidation.
-  *
-  * For normal case, the iommu has been parked in blocking state. All PASID
-  * entries are in non-present now. Skip PASID and IOTLB cache invalidation.
-  */
-static void sm_context_flush_caches(struct device *dev)
-{
-         struct device_domain_info *info = dev_iommu_priv_get(dev);
-         struct intel_iommu *iommu = info->iommu;
-
-         iommu->flush.flush_context(iommu, 0, PCI_DEVID(info->bus, 
-info->devfn),
-                                    DMA_CCMD_MASK_NOBIT, 
-DMA_CCMD_DEVICE_INVL);
-         if (context_copied(iommu, info->bus, info->devfn)) {
-                 qi_flush_pasid_cache(iommu, 0, QI_PC_GLOBAL, 0);
-                 iommu->flush.flush_iotlb(iommu, 0, 0, 0, 
-DMA_TLB_GLOBAL_FLUSH);
-         }
-         devtlb_invalidation_with_pasid(iommu, dev, IOMMU_NO_PASID);
-}
-
-Does it look good for you?
-
-Best regards,
-baolu
+-- 
+Thx and BRs,
+Tengfei Fan
 
