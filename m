@@ -1,171 +1,148 @@
-Return-Path: <linux-kernel+bounces-90465-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90464-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14E9C86FF98
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:56:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7388A86FF96
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:56:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A48DD1F24408
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:56:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 938E61F23259
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:56:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1C25381B4;
-	Mon,  4 Mar 2024 10:56:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="Nei2I58y"
-Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DB41381A0;
+	Mon,  4 Mar 2024 10:56:33 +0000 (UTC)
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [195.130.137.90])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 660B538DDD;
-	Mon,  4 Mar 2024 10:56:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.134.164.104
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1E4C25760
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 10:56:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.137.90
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709549800; cv=none; b=XOoFiTVHrxkVkc0L8FuJhxrq/O/jxYtZpRT0qdj1yQyVie+Q8da6MGqIa7WQ+Q9qu2PpM2IZXgb0OvIrCOR7uX5Hxzaz+FHsyLoCHZOZdS/ZnGFpZUXwqXstfYamkqeD05XKSNp2kLPeW7ZRE5YMc87sI1v54NGKfNPqwxj2KTk=
+	t=1709549792; cv=none; b=FtVRhfDaJUKmfzGPA+iymYNMe0xoONNGHj3nXeiKRAl2CKcsFZUG+p907KlOob6F36c2MJLuGXt0HPfIyKoYzxcLQ6OvMIaMMWJGbpyDQas0MNI6H2VVmmR3UH/mnpXwCa6Ymxv/01pNl7AlTB6d28/j4YE0If42Kh++JWJve7A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709549800; c=relaxed/simple;
-	bh=24Wt4baQz9Fe57w/o1XeNPq06hI45Sc0xGbmnFC7+Js=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=ZX8svERORf4O109Uf9qnLZ6eodhnK/x7eQy3qL4AWUtA9ZBLnGaVaD7Y3UqwH1JHqqw0IWebS6FJAFZwyTdxWWJ8f4DIkBRi8mMBW5tFfPOdaDOKBwj+ijkzJr6XqAvWmNwq0ctBqHFNmAqRtigyHBQTptWQGMB7KDSNljTIqGs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr; spf=pass smtp.mailfrom=inria.fr; dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b=Nei2I58y; arc=none smtp.client-ip=192.134.164.104
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=AsaY1BGuEP7x4VKORfviVFJfoqV+zfnSfsG0OgmTAfI=;
-  b=Nei2I58yJdspuHmu1GK0f6Tq9JvoRwbqBsa/879VDpcWRjnl1ohIflZ1
-   JAJE7QuiHr5zDABDSfDqRmv64HL9qXRlcj6f7CySt9NcGQ2Hbgvs5LZE1
-   FLh4ruWWA7hoZpoU3pLimakxt6kGOqgD4gzJ0DA+YVqCRnLPdrs/DETz2
-   M=;
-Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.06,203,1705359600"; 
-   d="scan'208";a="81213033"
-Received: from dt-lawall.paris.inria.fr ([128.93.67.65])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 11:55:24 +0100
-Date: Mon, 4 Mar 2024 11:55:23 +0100 (CET)
-From: Julia Lawall <julia.lawall@inria.fr>
-To: Markus Elfring <Markus.Elfring@web.de>
-cc: linux-input@vger.kernel.org, kernel-janitors@vger.kernel.org, 
-    Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
-    Jeff LaBundy <jeff@labundy.com>, Rob Herring <robh@kernel.org>, 
-    =?ISO-8859-15?Q?Uwe_Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, 
-    LKML <linux-kernel@vger.kernel.org>, 
-    Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: Re: [PATCH v2] Input: iqs626a - Use scope-based resource management
- in iqs626_parse_events()
-In-Reply-To: <e8a2b63f-4f9a-463b-b419-c5f673191111@web.de>
-Message-ID: <b91fe21-fe2-eac8-d1ee-ea8922a08861@inria.fr>
-References: <8a7607f8-d634-415e-8269-e26dcc0f9fdc@web.de> <ZeU8ENmnPj3sKxAv@nixie71> <ZeVOPSt0L1D4BxuZ@google.com> <e8a2b63f-4f9a-463b-b419-c5f673191111@web.de>
+	s=arc-20240116; t=1709549792; c=relaxed/simple;
+	bh=J0ys2nCMeqQznpcv3TvixEojj3WOQhbihu0iZmOz7CM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=CqVHyo5ivR2+iq2UHCkEpr4W0bXY7OSQgf/iCXXjxHHQKT1C9PPN7qJ1BBz4c6dFql/HJISnHv1LP4Y0+wAVqaLpnRHKkMzVVsXV2syYA0AK54JzFhCmcpGLV8ZNgN6IH8pGgPT/QWiylO9V9Llin9FnkioD8YyvPvMGV92xi8c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.137.90
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:2716:1247:52e8:4f90])
+	by albert.telenet-ops.be with bizsmtp
+	id uawR2B0022qflky06awRS0; Mon, 04 Mar 2024 11:56:27 +0100
+Received: from rox.of.borg ([192.168.97.57])
+	by ramsan.of.borg with esmtp (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1rh5zR-002I7A-8W;
+	Mon, 04 Mar 2024 11:56:25 +0100
+Received: from geert by rox.of.borg with local (Exim 4.95)
+	(envelope-from <geert@linux-m68k.org>)
+	id 1rh5zc-007bnl-UC;
+	Mon, 04 Mar 2024 11:56:24 +0100
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+To: Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Arnd Bergmann <arnd@arndb.de>
+Cc: linux-kernel@vger.kernel.org,
+	linux-sh@vger.kernel.org,
+	linux-s390@vger.kernel.org,
+	Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH v2] locking/spinlocks: Make __raw_* lock ops static
+Date: Mon,  4 Mar 2024 11:56:20 +0100
+Message-Id: <78c366485bff13753de758fd27fb6b465ed2850a.1709549641.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-544120387-1709549724=:3479"
+Content-Transfer-Encoding: 8bit
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+If CONFIG_GENERIC_LOCKBREAK=y and CONFIG_DEBUG_LOCK_ALLOC=n
+(e.g. sh/sdk7786_defconfig):
 
---8323329-544120387-1709549724=:3479
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+    kernel/locking/spinlock.c:68:17: warning: no previous prototype for '__raw_spin_lock' [-Wmissing-prototypes]
+    kernel/locking/spinlock.c:80:26: warning: no previous prototype for '__raw_spin_lock_irqsave' [-Wmissing-prototypes]
+    kernel/locking/spinlock.c:98:17: warning: no previous prototype for '__raw_spin_lock_irq' [-Wmissing-prototypes]
+    kernel/locking/spinlock.c:103:17: warning: no previous prototype for '__raw_spin_lock_bh' [-Wmissing-prototypes]
+    kernel/locking/spinlock.c:68:17: warning: no previous prototype for '__raw_read_lock' [-Wmissing-prototypes]
+    kernel/locking/spinlock.c:80:26: warning: no previous prototype for '__raw_read_lock_irqsave' [-Wmissing-prototypes]
+    kernel/locking/spinlock.c:98:17: warning: no previous prototype for '__raw_read_lock_irq' [-Wmissing-prototypes]
+    kernel/locking/spinlock.c:103:17: warning: no previous prototype for '__raw_read_lock_bh' [-Wmissing-prototypes]
+    kernel/locking/spinlock.c:68:17: warning: no previous prototype for '__raw_write_lock' [-Wmissing-prototypes]
+    kernel/locking/spinlock.c:80:26: warning: no previous prototype for '__raw_write_lock_irqsave' [-Wmissing-prototypes]
+    kernel/locking/spinlock.c:98:17: warning: no previous prototype for '__raw_write_lock_irq' [-Wmissing-prototypes]
+    kernel/locking/spinlock.c:103:17: warning: no previous prototype for '__raw_write_lock_bh' [-Wmissing-prototypes]
 
+All __raw_* lock ops are internal functions without external callers.
+Hence fix this by making them static.
 
+Note that if CONFIG_GENERIC_LOCKBREAK=y, no lock ops are inlined, as all
+of CONFIG_INLINE_*_LOCK* depend on !GENERIC_LOCKBREAK.
 
-On Mon, 4 Mar 2024, Markus Elfring wrote:
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Acked-by: Waiman Long <longman@redhat.com>
+---
+Compile-tested on all defconfigs that have CONFIG_GENERIC_LOCKBREAK=y:
+  - sh/sdk7786_defconfig,
+  - sh/shx3_defconfig,
+  - s390/debug_defconfig,
+and also on s390/debug_defconfig after changing:
+    CONFIG_DEBUG_LOCK_ALLOC=n
+    CONFIG_DEBUG_WW_MUTEX_SLOWPATH=n
+    CONFIG_LOCK_STAT=n
+    CONFIG_PROVE_LOCKING=n
 
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Mon, 4 Mar 2024 11:40:04 +0100
->
-> Scope-based resource management became supported also for this software
-> area by contributions of Jonathan Cameron on 2024-02-17.
->
-> device property: Add cleanup.h based fwnode_handle_put() scope based cleanup.
-> https://lore.kernel.org/r/20240217164249.921878-3-jic23@kernel.org
->
->
-> * Thus use the attribute “__free(fwnode_handle)”.
->
-> * Reduce the scope for the local variable “ev_node” into a for loop.
->
-> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-> ---
->
-> v2:
-> An other cleanup technique was applied as requested by Dmitry Torokhov
-> and Jeff LaBundy.
->
->
->  drivers/input/misc/iqs626a.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/input/misc/iqs626a.c b/drivers/input/misc/iqs626a.c
-> index 0dab54d3a060..86fcb5134f45 100644
-> --- a/drivers/input/misc/iqs626a.c
-> +++ b/drivers/input/misc/iqs626a.c
-> @@ -462,7 +462,6 @@ iqs626_parse_events(struct iqs626_private *iqs626,
->  {
->  	struct iqs626_sys_reg *sys_reg = &iqs626->sys_reg;
->  	struct i2c_client *client = iqs626->client;
-> -	struct fwnode_handle *ev_node;
->  	const char *ev_name;
->  	u8 *thresh, *hyst;
->  	unsigned int val;
-> @@ -501,6 +500,8 @@ iqs626_parse_events(struct iqs626_private *iqs626,
->  		if (!iqs626_channels[ch_id].events[i])
->  			continue;
->
-> +		struct fwnode_handle *ev_node __free(fwnode_handle);
+v2:
+  - Add Acked-by,
+  - Drop RFC,
+  - Improve patch description.
+---
+ kernel/locking/spinlock.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Doesn't this need to be initialized?
+diff --git a/kernel/locking/spinlock.c b/kernel/locking/spinlock.c
+index 8475a0794f8c5ad2..7009b568e6255d64 100644
+--- a/kernel/locking/spinlock.c
++++ b/kernel/locking/spinlock.c
+@@ -65,7 +65,7 @@ EXPORT_PER_CPU_SYMBOL(__mmiowb_state);
+  * towards that other CPU that it should break the lock ASAP.
+  */
+ #define BUILD_LOCK_OPS(op, locktype)					\
+-void __lockfunc __raw_##op##_lock(locktype##_t *lock)			\
++static void __lockfunc __raw_##op##_lock(locktype##_t *lock)		\
+ {									\
+ 	for (;;) {							\
+ 		preempt_disable();					\
+@@ -77,7 +77,7 @@ void __lockfunc __raw_##op##_lock(locktype##_t *lock)			\
+ 	}								\
+ }									\
+ 									\
+-unsigned long __lockfunc __raw_##op##_lock_irqsave(locktype##_t *lock)	\
++static unsigned long __lockfunc __raw_##op##_lock_irqsave(locktype##_t *lock) \
+ {									\
+ 	unsigned long flags;						\
+ 									\
+@@ -95,12 +95,12 @@ unsigned long __lockfunc __raw_##op##_lock_irqsave(locktype##_t *lock)	\
+ 	return flags;							\
+ }									\
+ 									\
+-void __lockfunc __raw_##op##_lock_irq(locktype##_t *lock)		\
++static void __lockfunc __raw_##op##_lock_irq(locktype##_t *lock)	\
+ {									\
+ 	_raw_##op##_lock_irqsave(lock);					\
+ }									\
+ 									\
+-void __lockfunc __raw_##op##_lock_bh(locktype##_t *lock)		\
++static void __lockfunc __raw_##op##_lock_bh(locktype##_t *lock)		\
+ {									\
+ 	unsigned long flags;						\
+ 									\
+-- 
+2.34.1
 
-julia
-
-
-> +
->  		if (ch_id == IQS626_CH_TP_2 || ch_id == IQS626_CH_TP_3) {
->  			/*
->  			 * Trackpad touch events are simply described under the
-> @@ -530,7 +531,6 @@ iqs626_parse_events(struct iqs626_private *iqs626,
->  					dev_err(&client->dev,
->  						"Invalid input type: %u\n",
->  						val);
-> -					fwnode_handle_put(ev_node);
->  					return -EINVAL;
->  				}
->
-> @@ -545,7 +545,6 @@ iqs626_parse_events(struct iqs626_private *iqs626,
->  				dev_err(&client->dev,
->  					"Invalid %s channel hysteresis: %u\n",
->  					fwnode_get_name(ch_node), val);
-> -				fwnode_handle_put(ev_node);
->  				return -EINVAL;
->  			}
->
-> @@ -566,7 +565,6 @@ iqs626_parse_events(struct iqs626_private *iqs626,
->  				dev_err(&client->dev,
->  					"Invalid %s channel threshold: %u\n",
->  					fwnode_get_name(ch_node), val);
-> -				fwnode_handle_put(ev_node);
->  				return -EINVAL;
->  			}
->
-> @@ -575,8 +573,6 @@ iqs626_parse_events(struct iqs626_private *iqs626,
->  			else
->  				*(thresh + iqs626_events[i].th_offs) = val;
->  		}
-> -
-> -		fwnode_handle_put(ev_node);
->  	}
->
->  	return 0;
-> --
-> 2.44.0
->
->
->
---8323329-544120387-1709549724=:3479--
 
