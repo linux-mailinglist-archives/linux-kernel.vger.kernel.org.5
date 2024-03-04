@@ -1,75 +1,70 @@
-Return-Path: <linux-kernel+bounces-90724-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90726-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E589870400
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:25:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A31B1870409
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:27:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 588272847E5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:25:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3548F28458F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:27:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06CE141C70;
-	Mon,  4 Mar 2024 14:24:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72FD146546;
+	Mon,  4 Mar 2024 14:24:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ehaq55tS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LLlpWI/p"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C1BE3FB8B;
-	Mon,  4 Mar 2024 14:24:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A611C4644E;
+	Mon,  4 Mar 2024 14:24:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709562284; cv=none; b=tCf8IPQrchVldnUxzU4+DFQM5guLABmbXhLA02wgRwzDrApgS5nbNyzh6b5kWOh0INVfZOc4DuQE+xbemAWgxgQrmjgtw45dx1VS3EukZrRZrM9c4C2Nnrw7vuy4m3ALiF1euyFgaJDamtIQBsnvElM2qR7+YBTDy/6dldr0M0s=
+	t=1709562289; cv=none; b=LIiP5xI2DmV2FMHhSK0zsV7xk5jFm/xH0VyAJoLfTBXvQBfXVrRG3CnX0KJclSTTakWPaB5VU6fTZNBqZDMDZA/SiZfWLBna+DZGg3+tWVJ2Xj+TWPiLt7DAEC6Jc2d03SBsPxrl3QNO88FmKHIQBpNKSWsibvnV9RpGK8Ks+PM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709562284; c=relaxed/simple;
-	bh=KITP09qisQQ4/2pZCbAvCnZGgo1XzhvdRiFLcmTHqb4=;
+	s=arc-20240116; t=1709562289; c=relaxed/simple;
+	bh=6gCiVFXmpuEznUgKdT1gpn2oh/lHn5kfV0SnIxnZcus=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RuHfJyOxT9t6whOLSevGq6jOqgoaP3CsnHFYWTLKRIs7+WRZm9squzOC6Q76+4LIcd2RyZpBqzplLDXg/LW24G52qpTM1xDDQV/bs3WEY80mkfjHx+l7HEMBeCMcBI9SxulgVAIAfer7ncmR+NtZpbXwxfKn6rPN/qtEyqnBPKs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ehaq55tS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56A25C433C7;
-	Mon,  4 Mar 2024 14:24:43 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=f66/c5VX8hmJDLKnZkiGkQ1lpto+GYPe049qGjOauBLLKd6mjWrE9F58lbJ2SySqB0+0jXsgKHBf2IIHiWl4x2UWOQZZ6vqEurrnbS5iMe5Gm6yEeMmmUCE920ZNWH1yDBcuhWyRAIUoFw41CmjUcK/kXJZYXdLvd2heIhsCKqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LLlpWI/p; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9ABEC433C7;
+	Mon,  4 Mar 2024 14:24:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709562283;
-	bh=KITP09qisQQ4/2pZCbAvCnZGgo1XzhvdRiFLcmTHqb4=;
+	s=k20201202; t=1709562289;
+	bh=6gCiVFXmpuEznUgKdT1gpn2oh/lHn5kfV0SnIxnZcus=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ehaq55tSG+2t9+StHrrqBipANU2b83k2yNcb1blrzEyGt4+jcqmbJN51d+wZP7VYI
-	 WjL780kUEccs2iD3JbCsxbUxOk/fIOJL24eDnlUwa/4tj9VjcX/Wt00Ygr4xkeR4BQ
-	 48mo7Af1s/UxBDHcU0OfM67z90hF/jhdsIRuTQEKwXzB3s9nMCaUPmQEpi8ZpflqbS
-	 sJw3BASxEWhmK6XUyPm9aCTyM2WiO6ufOpj2djBd9O3cJLc5U1AJwpNjDmfFROs9DU
-	 a+WRpD1q4ms9UY5U5DCQHf/gQ5Lxxq7wJjhvTc4nA4YwD2pxmEAfZJvbwT9u6baMCy
-	 tVWTyPR8PdQGQ==
-Date: Mon, 4 Mar 2024 08:24:42 -0600
-From: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
-To: Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc: Christian Brauner <brauner@kernel.org>, Serge Hallyn <serge@hallyn.com>,
-	Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>,
-	James Morris <jmorris@namei.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-	Stephen Smalley <stephen.smalley.work@gmail.com>,
-	Ondrej Mosnacek <omosnace@redhat.com>,
-	Casey Schaufler <casey@schaufler-ca.com>,
-	Mimi Zohar <zohar@linux.ibm.com>,
-	Roberto Sassu <roberto.sassu@huawei.com>,
-	Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-	Eric Snowberg <eric.snowberg@oracle.com>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Amir Goldstein <amir73il@gmail.com>, linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-security-module@vger.kernel.org, audit@vger.kernel.org,
-	selinux@vger.kernel.org, linux-integrity@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-unionfs@vger.kernel.org
-Subject: Re: [PATCH v2 06/25] capability: provide helpers for converting
- between xattrs and vfs_caps
-Message-ID: <ZeXZqueCPTNzZtku@do-x1extreme>
-References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
- <20240221-idmap-fscap-refactor-v2-6-3039364623bd@kernel.org>
- <7633ab5d5359116a602cdc8f85afd2561047960e.camel@huaweicloud.com>
- <ZeIlwkUx5lNBrdS9@do-x1extreme>
- <be91c7158b1b9bed35aa9c3205e8f8e467778a5f.camel@huaweicloud.com>
+	b=LLlpWI/pBrzJtatXQW11HUwzKuXsVyGKKfBiSSowA2WXESzIhQfnBkrEpzBl7V0Nv
+	 q2pxS5bCEpGYLg32QR2Tm5c0LnIDmwpdSp+RMa19knG97b3bvgw3njuCgv/oyJ/o7b
+	 DrZg9BfvRaYfzndcxmrDqH9vjbU4TLg/WRLaaCjZdJbBFqHPbXZugIwDd9vBvMjvbU
+	 P9KOQfg3KdqyBgxq71VObOK7ZS3L1VvR8/nnIefqsB6aO+fOJclNQ6Z92TMMaa8rkx
+	 YDNZFqvAZ3wTH/Osq8uQvrg8WsfBXGn/PynwJKAjuPrNr+HL1SVCJiZniXKAZHOhPS
+	 LA1aR6hX2oBww==
+Date: Mon, 4 Mar 2024 08:24:46 -0600
+From: Rob Herring <robh@kernel.org>
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: broonie@kernel.org, wenst@chromium.org, lgirdwood@gmail.com,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	matthias.bgg@gmail.com, perex@perex.cz, tiwai@suse.com,
+	trevor.wu@mediatek.com, maso.huang@mediatek.com,
+	xiazhengqiao@huaqin.corp-partner.google.com, arnd@arndb.de,
+	kuninori.morimoto.gx@renesas.com, shraash@google.com,
+	amergnat@baylibre.com, nicolas.ferre@microchip.com,
+	u.kleine-koenig@pengutronix.de, dianders@chromium.org,
+	frank.li@vivo.com, allen-kh.cheng@mediatek.com,
+	eugen.hristev@collabora.com, claudiu.beznea@tuxon.dev,
+	jarkko.nikula@bitmer.com, jiaxin.yu@mediatek.com,
+	alpernebiyasak@gmail.com, ckeepax@opensource.cirrus.com,
+	zhourui@huaqin.corp-partner.google.com, nfraprado@collabora.com,
+	alsa-devel@alsa-project.org, shane.chien@mediatek.com,
+	linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, kernel@collabora.com
+Subject: Re: [PATCH 20/22] ASoC: dt-bindings: mt8186: Document audio-routing
+ and dai-link subnode
+Message-ID: <20240304142446.GA171936-robh@kernel.org>
+References: <20240227120939.290143-1-angelogioacchino.delregno@collabora.com>
+ <20240227120939.290143-21-angelogioacchino.delregno@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,60 +73,21 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <be91c7158b1b9bed35aa9c3205e8f8e467778a5f.camel@huaweicloud.com>
+In-Reply-To: <20240227120939.290143-21-angelogioacchino.delregno@collabora.com>
 
-On Mon, Mar 04, 2024 at 09:33:06AM +0100, Roberto Sassu wrote:
-> On Fri, 2024-03-01 at 13:00 -0600, Seth Forshee (DigitalOcean) wrote:
-> > On Fri, Mar 01, 2024 at 05:30:55PM +0100, Roberto Sassu wrote:
-> > > > +/*
-> > > > + * Inner implementation of vfs_caps_to_xattr() which does not return an
-> > > > + * error if the rootid does not map into @dest_userns.
-> > > > + */
-> > > > +static ssize_t __vfs_caps_to_xattr(struct mnt_idmap *idmap,
-> > > > +				   struct user_namespace *dest_userns,
-> > > > +				   const struct vfs_caps *vfs_caps,
-> > > > +				   void *data, size_t size)
-> > > > +{
-> > > > +	struct vfs_ns_cap_data *ns_caps = data;
-> > > > +	struct vfs_cap_data *caps = (struct vfs_cap_data *)ns_caps;
-> > > > +	kuid_t rootkuid;
-> > > > +	uid_t rootid;
-> > > > +
-> > > > +	memset(ns_caps, 0, size);
-> > > 
-> > > size -> sizeof(*ns_caps) (or an equivalent change)
-> > 
-> > This is zeroing out the passed buffer, so it should use the size passed
-> > for the buffer. sizeof(*ns_caps) could potentially be more than the size
-> > of the buffer.
+On Tue, Feb 27, 2024 at 01:09:37PM +0100, AngeloGioacchino Del Regno wrote:
+> Document the dai-link subnodes and the audio-routing property, allowing
+> to describe machine specific audio hardware and links in device tree.
 > 
-> Uhm, then maybe the problem is that you are passing the wrong argument?
-> 
-> ssize_t
-> do_getxattr(struct mnt_idmap *idmap, struct dentry *d,
-> 	struct xattr_ctx *ctx)
-> {
-> 	ssize_t error;
-> 	char *kname = ctx->kname->name;
-> 
-> 	if (is_fscaps_xattr(kname)) {
-> 		struct vfs_caps caps;
-> 		struct vfs_ns_cap_data data;
-> 		int ret;
-> 
-> 		ret = vfs_get_fscaps(idmap, d, &caps);
-> 		if (ret)
-> 			return ret;
-> 		/*
-> 		 * rootid is already in the mount idmap, so pass nop_mnt_idmap
-> 		 * so that it won't be mapped.
-> 		 */
-> 		ret = vfs_caps_to_user_xattr(&nop_mnt_idmap, current_user_ns(),
-> 					     &caps, &data, ctx->size);
-> 
-> 
-> ctx->size in my case is 1024 bytes.
+> While at it, also deprecate the old properties which were previously
+> used with the driver's partially hardcoded configuration.
 
-Ah, yes that definitely isn't correct. I will fix it, thanks for finding
-it.
+This can be combined with patch 19. Same comments apply.
+
+> 
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> ---
+>  .../sound/mt8186-mt6366-da7219-max98357.yaml  | 112 ++++++++++++++++--
+>  .../sound/mt8186-mt6366-rt1019-rt5682s.yaml   | 112 ++++++++++++++++--
+>  2 files changed, 210 insertions(+), 14 deletions(-)
 
