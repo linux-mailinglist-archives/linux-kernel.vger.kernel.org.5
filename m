@@ -1,86 +1,153 @@
-Return-Path: <linux-kernel+bounces-90056-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90060-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D4E786F990
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 06:27:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5D1386F9A4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 06:39:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CDAF21F21714
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 05:27:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 37F6BB21115
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 05:39:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A163EB676;
-	Mon,  4 Mar 2024 05:27:05 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AF2FBE4C;
+	Mon,  4 Mar 2024 05:39:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="NQm3wyKg"
+Received: from out162-62-58-216.mail.qq.com (out162-62-58-216.mail.qq.com [162.62.58.216])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D30E833C5
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 05:27:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8737DBA27;
+	Mon,  4 Mar 2024 05:39:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.58.216
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709530025; cv=none; b=Fs0m5ibcrapCEKC8r6Mt9nNWBeifwle5nHsubUmfRG0r97pp4pzwaeg/5v6mNLBDBm7vNFqZRlx8GyOzVVeAl3Y6SswcUcI2kdaZzBDrQQy1MVD8YT5POAmDUwJ3oS1nUQY9BxlBik4Gc3/dHlzBoDQ+GQRjpfwdeCzWbByQhWg=
+	t=1709530781; cv=none; b=kEN9+/xpoDq1rShHozMQXhnvaR832UmMjE41ebpGTRIJNlWgFsP+7OPg8XvE4WJFc9o6UoIpA91CmVyVMqUgpqw4wOKeTEY7PStzNzSaJFMtLcZehoqwoiTNKRnwL/OdSUyrYv5XBZ82OM4L5TRngXO5hOH6XMexPGTARx2I3EM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709530025; c=relaxed/simple;
-	bh=QpTcNn/QKKDXBkHK+dfH/+Ce9WnDMkQrFPljooN1J4U=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=ttrdNPRtCQ96dtf6XGMdFe6liabK434yUtWwggnpal4s4Fxc6EuTBttJc1e6TEAmG9pxCzc1sFx1qX8nry3lEODIoISoMelZLlEqibwuslNYSz3CdR7g1PqPW63W/6/zZ0t0COn5gUgjnFOboHoZW20NfmJsluXwvajofLY/PnQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7c858e555d1so29894039f.2
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 21:27:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709530023; x=1710134823;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8PeZRlucJ1lwBjXjtbFWI5UI+NxNlqTF0cug8QuOBcU=;
-        b=BHfUya/G6qtJpTpXzrHFBj04BW6kP/ruF1UIocy1ZjsyztGXh8PXSEYdfq4ACC+qRh
-         9dm1V/lJyrZvn98riPavX6gexatcJoPoda6zWAZVr9+GhwrpENNdziiDw4PtA5sJkEL9
-         pOn5ksmKA7n2Xfefqk5+t0JLGcLZibPj/CfyoC/+AR7ROe6QaDeX0fp+QPgnWNv/KQdw
-         nVtTwOutuUjKhSLP2NpDKo9doRyj42zOMUv/CQ3F/987knD01/bm6W7vwsToZpbmWmQk
-         hqeWek7ULFmyGyqR/8BuZUQfDRow00yMLd0BvVUZwQUNSih7KJIjPKPgpu8hGoqn4I7A
-         hr9w==
-X-Forwarded-Encrypted: i=1; AJvYcCWMOkvH/NMLrFNj4fN0LeHBB/wPNG/W1WC/m710ivPgwNvpzEVzjiHDzGyeczTHck92Xkhk6VkuwnDxexJf1pSBEEUKCqXTtmgEIi1Y
-X-Gm-Message-State: AOJu0YwZ4MmSZYFHuFyhzXVQ+UPijLmr4+ePy3GRhx9rdkiITHC0sdeS
-	RZDNN8R30Fm/ouqwyPYeRd+HO10g0VT0uw4MI0jsywd/MVdSOcgbEvW9SHRKVYj+hXa9TwOOYAi
-	W1+900IqHdlsYgMWGdP1kASfLLriWyuZf6THFs2vu6mT2+2SkSAVOYnw=
-X-Google-Smtp-Source: AGHT+IHfd9yXpkBCnoF69oagwtvvPdgFQISAOu0aRkB7TOS998hMYB+gQUfWbjtG8TwBcGTNlxS4h/gGwTpAyKKKB9Na1BU6APg1
+	s=arc-20240116; t=1709530781; c=relaxed/simple;
+	bh=Tpaq8N4Av+5b7UEGdG8PwgpDYuzB6CY0twmRaDGvc9c=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=bcAL1+6dHxErXmOt3PASSj1RMxgK4wS0ado+BnrKNNydahuJXRE3ZrIKzMMZbfvQEIMwuy/s3tYJJYk6Gys4zifE0f/F0D56jQS7FUWfXTPN0MScwX0102G4Rp5iZUUakZhgAib6PL4ot3LfwOT0hO83uzwnpvmKanPValfcXs0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=NQm3wyKg; arc=none smtp.client-ip=162.62.58.216
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1709530768; bh=9uK2GXZq/8xku+2xavhS19lwiemprvBmG1eFe+2OCLs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=NQm3wyKgm5Aqp3NDC8DWg2gOSmyDwHzkhFJ1bXea7QCGni4yID8HjoSwByoaoyrb1
+	 2vhD1VGFS1xV+4UvgAz5bDPTY/2NuuhnAZpWWSGHhYK/U9mzO34vnBab/nyynkULzN
+	 F5gKA0r+uyXZItFICYRo8Rv9Hc+Kx39VA4JUPLmc=
+Received: from pek-lxu-l1.wrs.com ([111.198.228.140])
+	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
+	id 8519C245; Mon, 04 Mar 2024 13:33:17 +0800
+X-QQ-mid: xmsmtpt1709530397t95cf53rs
+Message-ID: <tencent_55ACA4583763B77466C5B36C637569638305@qq.com>
+X-QQ-XMAILINFO: MCBt/x1q9XETxrFVo/g+iR8gh3Ugc6QxMk3Dka791CH3s4c66cR8rXCdzN/7lV
+	 PRCDITTWKfntfxPgWWTm+nbPDap91lTwj+SFBL+zISZ/50EgeaoENMj5tPNHpE5r6slE92H3dsb7
+	 rmx5P3zIDMXPyRENfZqcVqpJeR9qIXQJMIDGnaQaBqSACVASAO1+ik9TeNRitDfbEWcZ1K2e2q+2
+	 43hTcsnzypTVNZcFvHUFoa1kpDNYup50rIQeuj3ew7EvcAM/GDLB9aRWwUEqIMrFamKq97X/fl4o
+	 shJPC1F+VFP+t33gsLOt6sVogYDL+SnWB6/W43BUtqDtFzhCgoGC+m8Pu6iVs5Bl6x6UhKZD/ZXs
+	 KGEqw8+u0+jKpm7/98PEyfigpGhkDw2zjF+WqU71CcI7Kl93OHqZpS1JWkUIU2XgA6yAnNVPUj0H
+	 aafEJp9virIkmuih3E1hJimKl4y2OQQft9fbYRwsuWoYKSWvt7p6IaWIN+V/d8vmjVs7sKByAQv6
+	 lYW5+L3Q5ba9F+ZqknLINOdYw/UQVeLtYMYEjVAzKRe2zt3ZFy13f0E+HS3oAbg/lpRP7+8UFUED
+	 kyhOePvnWgpKRgTOJ2pgtKrGUIo8AfByIrEButrSVvxAi7nDFZa7uYo9piBxS3sE+MmQFcEcHDpL
+	 62NiFz8PN2Jr0PPE+BoQBOaDb1krpKD4YyOB6s7oJOSW1+VIX6p0k9px2ykYqd9yoBM2EgWaRzHv
+	 jH3Nw5oxJzBlx5d0C9wVBcRy0010yJUyk6LWS6y0g9uG3YK3dwfqg1/zmMb2NgMw0jYfDvspkWBL
+	 WmLctm5RgXynGVFQ/Jmps3RKlQlHZ74nl3iK9ILrjMk0RcoXrzDiSjQOHnVPnrY/W5ogObURLRfm
+	 G5DcYm9VR9TbGKmDalVuXOj6orEKdG22Pa09MXrD8DUMgBw0QRNHevFeS43CBy+90I/dX4/Gpp
+X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+c6d8e1bffb0970780d5c@syzkaller.appspotmail.com
+Cc: glider@google.com,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: [PATCH] hfsplus: fix uninit-value in hfsplus_attr_bin_cmp_key
+Date: Mon,  4 Mar 2024 13:33:18 +0800
+X-OQ-MSGID: <20240304053317.1237946-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <00000000000037444e0612c39434@google.com>
+References: <00000000000037444e0612c39434@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:16ca:b0:474:c881:1bff with SMTP id
- g10-20020a05663816ca00b00474c8811bffmr326225jat.2.1709530023127; Sun, 03 Mar
- 2024 21:27:03 -0800 (PST)
-Date: Sun, 03 Mar 2024 21:27:03 -0800
-In-Reply-To: <tencent_806C802F5D6EE895B4E862EFC6CC947B720A@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c2effe0612cef9a1@google.com>
-Subject: Re: [syzbot] [hfs?] KMSAN: uninit-value in hfsplus_attr_bin_cmp_key
-From: syzbot <syzbot+c6d8e1bffb0970780d5c@syzkaller.appspotmail.com>
-To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+[Syzbot reported]
+BUG: KMSAN: uninit-value in hfsplus_attr_bin_cmp_key+0xf1/0x190 fs/hfsplus/attributes.c:42
+ hfsplus_attr_bin_cmp_key+0xf1/0x190 fs/hfsplus/attributes.c:42
+ hfs_find_rec_by_key+0xb0/0x240 fs/hfsplus/bfind.c:100
+ __hfsplus_brec_find+0x26b/0x7b0 fs/hfsplus/bfind.c:135
+ hfsplus_brec_find+0x445/0x970 fs/hfsplus/bfind.c:195
+ hfsplus_find_attr+0x30c/0x390
+ hfsplus_attr_exists+0x1c6/0x260 fs/hfsplus/attributes.c:182
+ __hfsplus_setxattr+0x510/0x3580 fs/hfsplus/xattr.c:336
+ hfsplus_setxattr+0x129/0x1e0 fs/hfsplus/xattr.c:434
+ hfsplus_trusted_setxattr+0x55/0x70 fs/hfsplus/xattr_trusted.c:30
+ __vfs_setxattr+0x7aa/0x8b0 fs/xattr.c:201
+ __vfs_setxattr_noperm+0x24f/0xa30 fs/xattr.c:235
+ __vfs_setxattr_locked+0x441/0x480 fs/xattr.c:296
+ vfs_setxattr+0x294/0x650 fs/xattr.c:322
+ do_setxattr fs/xattr.c:630 [inline]
+ setxattr+0x45f/0x540 fs/xattr.c:653
+ path_setxattr+0x1f5/0x3c0 fs/xattr.c:672
+ __do_sys_setxattr fs/xattr.c:688 [inline]
+ __se_sys_setxattr fs/xattr.c:684 [inline]
+ __x64_sys_setxattr+0xf7/0x180 fs/xattr.c:684
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Uninit was created at:
+ slab_post_alloc_hook mm/slub.c:3819 [inline]
+ slab_alloc_node mm/slub.c:3860 [inline]
+ __do_kmalloc_node mm/slub.c:3980 [inline]
+ __kmalloc+0x919/0xf80 mm/slub.c:3994
+ kmalloc include/linux/slab.h:594 [inline]
+ hfsplus_find_init+0x91/0x250 fs/hfsplus/bfind.c:21
+ hfsplus_attr_exists+0xde/0x260 fs/hfsplus/attributes.c:178
+ __hfsplus_setxattr+0x510/0x3580 fs/hfsplus/xattr.c:336
+ hfsplus_setxattr+0x129/0x1e0 fs/hfsplus/xattr.c:434
+ hfsplus_trusted_setxattr+0x55/0x70 fs/hfsplus/xattr_trusted.c:30
+ __vfs_setxattr+0x7aa/0x8b0 fs/xattr.c:201
+ __vfs_setxattr_noperm+0x24f/0xa30 fs/xattr.c:235
+ __vfs_setxattr_locked+0x441/0x480 fs/xattr.c:296
+ vfs_setxattr+0x294/0x650 fs/xattr.c:322
+ do_setxattr fs/xattr.c:630 [inline]
+ setxattr+0x45f/0x540 fs/xattr.c:653
+ path_setxattr+0x1f5/0x3c0 fs/xattr.c:672
+ __do_sys_setxattr fs/xattr.c:688 [inline]
+ __se_sys_setxattr fs/xattr.c:684 [inline]
+ __x64_sys_setxattr+0xf7/0x180 fs/xattr.c:684
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+
+[Fix]
+Let's clear all search_key fields at alloc time.
 
 Reported-and-tested-by: syzbot+c6d8e1bffb0970780d5c@syzkaller.appspotmail.com
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+---
+ fs/hfsplus/bfind.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Tested on:
+diff --git a/fs/hfsplus/bfind.c b/fs/hfsplus/bfind.c
+index ca2ba8c9f82e..b939dc879dac 100644
+--- a/fs/hfsplus/bfind.c
++++ b/fs/hfsplus/bfind.c
+@@ -18,7 +18,7 @@ int hfs_find_init(struct hfs_btree *tree, struct hfs_find_data *fd)
+ 
+ 	fd->tree = tree;
+ 	fd->bnode = NULL;
+-	ptr = kmalloc(tree->max_key_len * 2 + 4, GFP_KERNEL);
++	ptr = kzalloc(tree->max_key_len * 2 + 4, GFP_KERNEL);
+ 	if (!ptr)
+ 		return -ENOMEM;
+ 	fd->search_key = ptr;
+-- 
+2.43.0
 
-commit:         90d35da6 Linux 6.8-rc7
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=177befac180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=db27810a659d0b3d
-dashboard link: https://syzkaller.appspot.com/bug?extid=c6d8e1bffb0970780d5c
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=17bbefac180000
-
-Note: testing is done by a robot and is best-effort only.
 
