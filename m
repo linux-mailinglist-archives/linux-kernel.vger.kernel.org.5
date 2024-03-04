@@ -1,118 +1,193 @@
-Return-Path: <linux-kernel+bounces-90112-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90113-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5572986FA7E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:09:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9353486FA81
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:09:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B0B01F2103B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 07:09:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5012B28162C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 07:09:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52D44134BF;
-	Mon,  4 Mar 2024 07:09:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C163134C5;
+	Mon,  4 Mar 2024 07:09:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UlxHZzva"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NsID04GF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A66B13FEB
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 07:09:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D84D412E4F;
+	Mon,  4 Mar 2024 07:09:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709536155; cv=none; b=D2KzZg1oBogFugynYNGGg68otrrAm0BVnMe9358z90j0903ahEtDgAIZyaqILZN8wGIIMZDVLvzyNsNIf6jA3NdyBlUggWlnaFqPyuFXQPWkhkiqslVVi13Cjom7xqQ/f+GZbweGchF9X6fVbDe20a1MfJKkEqbUdm8eNMGtJGk=
+	t=1709536188; cv=none; b=MjoD0uPcr4rR6Var5iCTgZTgq7gfwFzLiJOJZzbcLG5R37I/9s3o+L/HZZTk+rFBWTiQJqElvvOUe+HyrrFIAyBEXtOWQkf0zSJ6Qz1WvvQc9/0cJYKFew6p6s2coGb1Rvxs2N6d1gX0iTCv/Rzp/7EaAhjOp35gIbK82eh+L0g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709536155; c=relaxed/simple;
-	bh=+A9vsuYrYL7prLESEnutlZM5tyD4hloL5PPKBkU/1yI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EJTWOpw6lnnyQx4ciEElN1Qa2be2wRRAazw90uCo+1UKFWEAXGMOOFecVK1m7GG5bmKS4KJ8ib30e6LthtNP+nTzLQN+3Q0THZ4IViyZD1ldQyd0ru3ngHcommpg1thYZH+jpk+BANV1hCTQt2hNJF0K+e2wDBw3EnSUnXOnkLY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UlxHZzva; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1dcd0431f00so25523135ad.3
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 23:09:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709536153; x=1710140953; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=n+zV8At+QIPEvAtFzvpCNXCNPoGBw00JoBxGHFZGbLM=;
-        b=UlxHZzva85PRbTojHEfpKtD8RvQci8xwjEnaAygal5I55X6jFdMZq6wZ0tPn+5BoRv
-         aNCDGBqPNqZeGfcDhg4bAvV8j1gwiYPUACaVt8m9Gnz261oBuIUYve1zDgaGxdqs7uNk
-         U6QFurIjHkLwYp0CrtddNEvI+os878SsM4+x6i3VJCwz4GkJf+lyN+6mmfCnlus27dmw
-         /MxKZ5o2nKNeS+GJZN73cZY/0evEGGx2yrAHgJhTxUojvWNVqDuytgKXZYXa9bZvONGk
-         ggOHGk6na7jKYQR5cwJL2Iz5m6knyho0vkf+ceL+sy6e8RLK7VCUHjc6P2YTPbFeg4bZ
-         meWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709536153; x=1710140953;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=n+zV8At+QIPEvAtFzvpCNXCNPoGBw00JoBxGHFZGbLM=;
-        b=a5JdCalPN4WFvfOohBtGrjmveiWzTy01E0/rPufC81iXET0tZpPQ3UNflMFCWaa0lA
-         6Bq8SQh2C7aqK4WaO51yJfSYelKxSNHql82IoF4BxAY44/B1lgah4ByRtX2Hze8Vn4qh
-         82sRmqmiWstSsjdRu+qpKl8/GALtrKzIjd6ZwJ0odT/1y+orR/k7RW6oLWtio7Nhncm6
-         3hPo6bLnuneoETtrBqCcYGteTVF+/FCAaJ0glXGFvvSeI+ETO7O4Z7opWu6mhZ19GBR9
-         Pyk4df2UvQtG+5eTc5uR+HXVQ71NaPU2Dk0DeBM4aIM/Y/Do3U7fD4HwCMeEQOopYSFw
-         FW6w==
-X-Forwarded-Encrypted: i=1; AJvYcCXI4uPtcD77Gx+VItwkan/LBy8hMjmCdgCHguOC34X7OsN+6DlM9ZeQv5N9Qei34xAaIBnKfF//CSBGvwzKxSkibw3VS4qALrgiUKTI
-X-Gm-Message-State: AOJu0Yzw1MAOcthkINDJqxEiFCuO+01LYSccyNQhbXLBhsA8EvnfCuDl
-	zuCMqsDhQMmYoUg8cBRC6cPWi1vq9I6vIYZUF8o7aSltr7Xb1Bc3h7fDosUi3Pc=
-X-Google-Smtp-Source: AGHT+IHJxyX4EeUgRH56ZjuDB4mXGWhmRD9wMKWNWNmFh6nkhr1j78oSpV79A3Sr6Lv0eXlAvlfSaw==
-X-Received: by 2002:a17:902:a385:b0:1dc:afd1:9c37 with SMTP id x5-20020a170902a38500b001dcafd19c37mr6968268pla.24.1709536153521;
-        Sun, 03 Mar 2024 23:09:13 -0800 (PST)
-Received: from localhost ([122.172.85.206])
-        by smtp.gmail.com with ESMTPSA id 12-20020a170902c20c00b001dbab519ce7sm7689865pll.212.2024.03.03.23.09.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Mar 2024 23:09:13 -0800 (PST)
-Date: Mon, 4 Mar 2024 12:39:11 +0530
-From: Viresh Kumar <viresh.kumar@linaro.org>
-To: sudeep.holla@arm.com, Sibi Sankar <quic_sibis@quicinc.com>
-Cc: cristian.marussi@arm.com, rafael@kernel.org, morten.rasmussen@arm.com,
-	dietmar.eggemann@arm.com, lukasz.luba@arm.com, sboyd@kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, quic_mdtipton@quicinc.com,
-	linux-arm-msm@vger.kernel.org, nm@ti.com
-Subject: Re: [PATCH V2 0/3] cpufreq: scmi: Add boost frequency support
-Message-ID: <20240304070911.lr6uye75ykz4gilj@vireshk-i7>
-References: <20240227173434.650334-1-quic_sibis@quicinc.com>
+	s=arc-20240116; t=1709536188; c=relaxed/simple;
+	bh=2ijnbHwObwY7khqqO6e422ywpHeLzyDhZfDGrq2Kusc=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=PYJ0WRRqp8B0bdCD7GJXJ7SWuFGZ+M31CD8QtcnWptFuZEnqvFod7U/FP/IA1SoyVtdwJt+Plq/y9pNHj3RwwKubry8kURCPFqhPrVS/yqhc/PurPrAlXBgnYaIlZkZ3Iskz9BiqcevGv4AcLrjU2046eqPaAvOz4FOptfIvfec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NsID04GF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 7AA16C433C7;
+	Mon,  4 Mar 2024 07:09:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709536187;
+	bh=2ijnbHwObwY7khqqO6e422ywpHeLzyDhZfDGrq2Kusc=;
+	h=From:Date:Subject:To:Cc:Reply-To:From;
+	b=NsID04GFBrFEq2mhYG9GLBxTGuGQzGzgljIvINybpXBcuIdQt6cjjPtGoqSpKAscz
+	 mF1foLiiqHrkoRlxRfj2olGQdL2aXk97qrx0PiyvNTeg9+yUE4u6Z0fSbR8CylCpuv
+	 5S7A2Gu7HJ2n0bxd/64xyn2iB2Aiza8NHoqkRUPqRWB6f6pQSPynRCs4mLiNxXZt6t
+	 24q3AwHf0Fe9bnvey17Kjf4ClDb1HoVroNQRclzWXtPQfmxCxrVScfXjeWi/7iWt7S
+	 hXR43HSDfKU3tdmKAVIixf0rDPkyywJekSPH4w9KlfQR3nanE4jiTM3pAUMRDZWZfs
+	 awL5kDllj5NCw==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 619E4C48BF6;
+	Mon,  4 Mar 2024 07:09:47 +0000 (UTC)
+From: Hui Liu via B4 Relay <devnull+quic_huliu.quicinc.com@kernel.org>
+Date: Mon, 04 Mar 2024 15:09:34 +0800
+Subject: [PATCH v4] arm64: dts: qcom: qcm6490-idp: enable PMIC Volume and
+ Power buttons
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240227173434.650334-1-quic_sibis@quicinc.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240304-gpio-keys-v4-1-03604d778c86@quicinc.com>
+X-B4-Tracking: v=1; b=H4sIAK9z5WUC/23MTQ6CMBCG4auYrq3pH21x5T2MC2gLTIwUW20kh
+ Ltb2IjR5TeZ551QdAFcRMfdhIJLEMH3eYj9Dpmu6luHweaNGGGCMCJxO4DHVzdGTLmua6sLwkq
+ N8v8QXAOvtXW+5N1BfPgwrulEl+u/SqKYYiU1V2Vpq0bb0/0JBnpzMP6Glk5iG8v41rJsadkIX
+ XOrlWS/ln8sJ3RrebamklJYp5UqzLed5/kNFxAXDxwBAAA=
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Hui Liu <quic_huliu@quicinc.com>
+X-Mailer: b4 0.13-dev-83828
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1709536186; l=2848;
+ i=quic_huliu@quicinc.com; s=20230823; h=from:subject:message-id;
+ bh=DmuCpd4eRqEEUGUcUCiLEb7DRgH2P8prW7W/cQOxkwE=;
+ b=ihk9653yGVvrrofzSCIhnexlgDvC2L7KUxE6BEDvt1b0oR6rWZCL9f2uoOElF52DUDwDZEz+8
+ 0i6TwHzZVrTAIe4GKO6UKcwrnD7+T3uB/Km6BZtjs/pio/KVpbPRkl4
+X-Developer-Key: i=quic_huliu@quicinc.com; a=ed25519;
+ pk=1z+A50UnTuKe/FdQv2c0W3ajDsJOYddwIHo2iivhTTA=
+X-Endpoint-Received:
+ by B4 Relay for quic_huliu@quicinc.com/20230823 with auth_id=80
+X-Original-From: Hui Liu <quic_huliu@quicinc.com>
+Reply-To: <quic_huliu@quicinc.com>
 
-On 27-02-24, 23:04, Sibi Sankar wrote:
-> This series adds provision to mark dynamic opps as boost capable and adds
-> boost frequency support to the scmi cpufreq driver.
-> 
-> V2:
-> * Document boost flag. [Lukasz]
-> * Remove sustained_freq check. [Pierre]
-> * simplify sustained_freq_khz calculation. [Sudeep]
-> * fix default per-policy state. [Dietmar]
-> * fix typo in commit message in patch 3.
-> 
-> Depends on:
-> per-policy boost: https://patchwork.kernel.org/project/linux-arm-msm/cover/20240227165309.620422-1-quic_sibis@quicinc.com/
+From: Hui Liu <quic_huliu@quicinc.com>
 
-It doesn't really depend on it, just that there is a bug that needs to
-be fixed.
+The Volume Down & Power buttons are controlled by the PMIC via
+the PON hardware, and the Volume Up is connected to a PMIC gpio.
 
-> Sibi Sankar (3):
->   OPP: Extend dev_pm_opp_data with turbo support
->   firmware: arm_scmi: Add support for marking certain frequencies as
->     boost
->   cpufreq: scmi: Enable boost support
+Enable the necessary hardware and setup the GPIO state for the
+Volume Up gpio key.
 
-Sudeep,
+Signed-off-by: Hui Liu <quic_huliu@quicinc.com>
+---
+Changes in v4:
+- Switch the order of "pinctrl-0" and "pinctrl-names".
+- Update "volume_up" to "Volume_up".
+- Remove "linux,input-type", because the default value is 1(EV_KEY).
+- Link to v3: https://lore.kernel.org/r/20240301-gpio-keys-v3-1-ca664de8775c@quicinc.com
 
-Can I apply this series ?
+Changes in v3:
+- Update the commit more concise and explicit.
+- remove "power-source" property and update the numeric value to defined
+name for "qcom,drive-strength".
+- Link to v2: https://lore.kernel.org/r/20240223-gpio-keys-v2-1-19f48b3d8762@quicinc.com
 
+Changes in v2:
+- Update the commit description.
+- Link to v1: https://lore.kernel.org/r/20240206-gpio-keys-v1-1-7683799daf8d@quicinc.com
+---
+ arch/arm64/boot/dts/qcom/qcm6490-idp.dts | 41 ++++++++++++++++++++++++++++++++
+ 1 file changed, 41 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+index acf145d1d97c..12e162613ed0 100644
+--- a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
++++ b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
+@@ -9,7 +9,9 @@
+ #define PM7250B_SID 8
+ #define PM7250B_SID1 9
+ 
++#include <dt-bindings/input/linux-event-codes.h>
+ #include <dt-bindings/leds/common.h>
++#include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
+ #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+ #include "sc7280.dtsi"
+ #include "pm7250b.dtsi"
+@@ -39,6 +41,22 @@ chosen {
+ 		stdout-path = "serial0:115200n8";
+ 	};
+ 
++	gpio-keys {
++		compatible = "gpio-keys";
++
++		pinctrl-0 = <&key_vol_up_default>;
++		pinctrl-names = "default";
++
++		key-volume-up {
++			label = "Volume_up";
++			gpios = <&pm7325_gpios 6 GPIO_ACTIVE_LOW>;
++			linux,code = <KEY_VOLUMEUP>;
++			wakeup-source;
++			debounce-interval = <15>;
++			linux,can-disable;
++		};
++	};
++
+ 	reserved-memory {
+ 		xbl_mem: xbl@80700000 {
+ 			reg = <0x0 0x80700000 0x0 0x100000>;
+@@ -421,6 +439,16 @@ vreg_bob_3p296: bob {
+ 	};
+ };
+ 
++&pm7325_gpios {
++	key_vol_up_default: key-vol-up-state {
++		pins = "gpio6";
++		function = "normal";
++		input-enable;
++		bias-pull-up;
++		qcom,drive-strength = <PMIC_GPIO_STRENGTH_LOW>;
++	};
++};
++
+ &pm8350c_pwm {
+ 	status = "okay";
+ 
+@@ -448,6 +476,19 @@ led@3 {
+ 	};
+ };
+ 
++&pmk8350_pon {
++	status = "okay";
++};
++
++&pon_pwrkey {
++	status = "okay";
++};
++
++&pon_resin {
++	linux,code = <KEY_VOLUMEDOWN>;
++	status = "okay";
++};
++
+ &qupv3_id_0 {
+ 	status = "okay";
+ };
+
+---
+base-commit: 23e11d0318521e8693459b0e4d23aec614b3b68b
+change-id: 20240206-gpio-keys-138bbd850298
+
+Best regards,
 -- 
-viresh
+Hui Liu <quic_huliu@quicinc.com>
+
 
