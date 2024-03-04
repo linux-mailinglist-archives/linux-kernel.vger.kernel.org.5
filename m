@@ -1,85 +1,174 @@
-Return-Path: <linux-kernel+bounces-91358-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91359-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C774870FF9
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 23:17:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A704C870FFC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 23:17:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01DE72820D4
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:17:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D926B1C21AF5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:17:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3A837BAEE;
-	Mon,  4 Mar 2024 22:16:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2E267BAE2;
+	Mon,  4 Mar 2024 22:17:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gO//cuMW"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="Sf8XJOJh"
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C73478B5E;
-	Mon,  4 Mar 2024 22:16:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D58679F2;
+	Mon,  4 Mar 2024 22:17:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709590611; cv=none; b=BOgbWTpi923spSQku40Mkwlq0kLj84QC2unjIhw5coH0/RWTGXDw5IBoQlycxlLelQtZAYLtHk2lF/vUtzB2ppqfH8URqXn+6XOLdlTEIux2trpQxFWMDwLEjZYAc1vHZl16MiAn4HqdHF/osqRLztH2HadM+846cz6sB/FJ/1o=
+	t=1709590665; cv=none; b=MwweOR4cRZUj09xChYd65GC8V8sXN/e47Acgc4WvROioYize9NEzdu10v9wt04xwDEQthm4//EKALsz9IVrtFQXdOFcWdIk7v+m7Yfv+iSWZ9lwtP5C3g+zfBKmE/at5F6QvwfiSy9+NKFx8IZLDj9sc8cxUOIB8DYNZaVKPbL8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709590611; c=relaxed/simple;
-	bh=oMSW/l9lKinrJpplamNpwDg1l6Mk3deCCLXQTPl4Ew8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Il0Pq+WPske0hP0MXnqWofhd7AFSgGtyxpL+D8ryzoohW8Abm8soLoN5zhP7DaXsT5+K7xm+EKicNZNodUP19Koag1nZJCn1ncO2Gb8e2aQzRV3qaHPsh1LozMdEW6j5IcxrMLIH5kxSPh8YAMb0vatlG5mvneSDe86sLe/Uk98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gO//cuMW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C956C433C7;
-	Mon,  4 Mar 2024 22:16:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709590610;
-	bh=oMSW/l9lKinrJpplamNpwDg1l6Mk3deCCLXQTPl4Ew8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gO//cuMWvYrQDHWFKIz6ScWuPTxyaJMFL/e9iiHrsWfSyTgfmlagTGS08AN/ddNgJ
-	 0X5/udRKi0nY7KKQos4k4Udc4VJLeFNscvXTHkWZaCqCSWq1nbj4y63IPRmKDp5pq2
-	 RumO4j13a3ItcPFEUNAcx7SggcO9xRNXE6jMoM8rSu6aDEUEUdpLY2LJzw74JteThe
-	 so0bK4avvz0DoVQQ4E8BbBECxh3ia2UTz1Z+Pnl78cQG8CKqwKutmzZtpQ7fOFf1ff
-	 oRoIXYFVan0Mt7HLYc7meTHjayf03NL9hBGQkA/Vq9l+IaljmkonxBHlusdY0sFvw7
-	 0B7AWi1Bni51w==
-Date: Mon, 4 Mar 2024 14:16:48 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: Kees Cook <keescook@chromium.org>
-Cc: Vlastimil Babka <vbabka@suse.cz>,
-	Christian Brauner <brauner@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-	linux-fsdevel@vger.kernel.org,
-	"GONG, Ruiqi" <gongruiqi@huaweicloud.com>,
-	Xiu Jianfeng <xiujianfeng@huawei.com>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
-	David Rientjes <rientjes@google.com>,
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 3/4] xattr: Use dedicated slab buckets for setxattr()
-Message-ID: <20240304221648.GA17145@sol.localdomain>
-References: <20240304184252.work.496-kees@kernel.org>
- <20240304184933.3672759-3-keescook@chromium.org>
+	s=arc-20240116; t=1709590665; c=relaxed/simple;
+	bh=VlKZ9o+29/hqwaDeqpj4LAI4vgvn2/j6rxxZkLe2GW8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=oE4CVVCNfkl1cZ8LZuhgdHcJYA6+H6i4DovmBBvpqNh4SvaEeIKH8XWg+5bKrCnHaE1ftoUYq/rhhY1yzi2ywU8g2LV3e9xH7pKlt2Bq+IIN9rprcRsJiusxvnHyA5cPGXTKuVen1xgpNq0avwKVcpiEMa901T4SCAmH4ZxKbFI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=Sf8XJOJh; arc=none smtp.client-ip=212.227.15.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+	t=1709590655; x=1710195455; i=w_armin@gmx.de;
+	bh=VlKZ9o+29/hqwaDeqpj4LAI4vgvn2/j6rxxZkLe2GW8=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+	b=Sf8XJOJhNAbkpyCTeruVMgLTUarPwlB7X3g0xz7YC4I2kk2qodNOu1MSmEVUQ8Wa
+	 +ZGLg3QjgGLW4JLSUqgXcSx8ON55CC5ugw+k6HCnPEzjYNqZ7ueeDhFlxP+nFSN2R
+	 w3J3fxA7wHY66LodeFOe9czQZxSnNqNvLVlrgPAkM2PUiy7YKRXGn3ZDuJvbi/nyJ
+	 oI2nJFWLsDn/7z0LZjO42JsNsKXxjDgww/nWs6CeO/FTOAHOIXyigYt4OOVPx1fGB
+	 BntZOfFero7qrXk6cOWsHo2yX2t8TCpJ/1zASgPUjgoaCIVLn2cD422taScfljCSR
+	 18/6HMvRGIk8Tf1OmA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
+ (mrgmx004 [212.227.17.190]) with ESMTPSA (Nemesis) id
+ 1MulqD-1qqGfE2T1X-00rmzD; Mon, 04 Mar 2024 23:17:35 +0100
+From: Armin Wolf <W_Armin@gmx.de>
+To: hdegoede@redhat.com,
+	ilpo.jarvinen@linux.intel.com
+Cc: platform-driver-x86@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] platform/x86: wmi: Support reading/writing 16 bit EC values
+Date: Mon,  4 Mar 2024 23:17:31 +0100
+Message-Id: <20240304221732.39272-1-W_Armin@gmx.de>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240304184933.3672759-3-keescook@chromium.org>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:I+7jPpRajvJM716BLeMFIOzhm1SMpshI6DyrrzmcEaYxpSEnuK7
+ 7pFzHeZuV5rSBTkXTlw/WcPKYoteOGsC/GjD4FvBTvxeilr7i7M+T66RuzQbzsb7uck0HN0
+ kx3mMx0SbHatDoN3BZOWnap4FMF5m4ITmVw4eLxITykFgB5Gh9EuG3IesvLAhEBzhih8PjN
+ QsW2PHfVFZWje+Z2sv8iw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:Dwn4bMpLiuM=;owKiHwRliBJnz2ulk7Icj0E2Mq3
+ yK7cI/GxTALIIsJc72AM+ISjGPvWxxbHqD33EMXYz7LgrFN9jRNcFTG4oB/H88wdGv35edB8l
+ STrZu45GeyJxR8ruxS+q0BygUIhryjJOpwCDFesX5BcCcwvLIMQrHnkyqoX7r5ZH3aCTY4eq+
+ E6eYB2iUTkeTv9+nAq5bnheLhmeaWJBdXkI3c8ncGKy4fASDG06a7/XBCpxG3MPTCX6wIR92J
+ jq/GM1sZBar9fBsZIZ5HVY94oCCgKXY/lmcStkony/xXqEjz+z255OKR4khUhJHc4vxtvXvqf
+ DX2vxHlqMHJP83razOBLj3J0+BGrKLxj3OfrnHbEvB1TjfJ5dpf610FxuQdkynS4bgJZv1yRu
+ 1hy7jQAb9axTBjZQrGzWQKhuuFLBEyVmLNTokkgU6jkpXszu09F9wSyTSnbUkP+FAp8KrX1pr
+ vXx35dTQNkqnB6dOLZiu9hr8n1bRx8wtOkSDG7/uFFIImX4QSEuvEqAYaP8mZQbIrGYCqTmBA
+ eV2wCxv4mNytAfqQesdT3tHF/llXbNY5k+bXkIgcg8ft4ZVjVLGjxNnWXK+IVj5FKSgKBHRzR
+ PAquodzbWHlEHXFJsOO4YSkRaTsbtxggC0PGcUv8OWMnHFA8QLCS+Aj2AfDuSN/sL1oIk7LFh
+ 7o6eh98/llduwKOjiag0Nw2QmJBs/aRycTx6BrFJz4KnZUedI10w4YVF9sTvS4NW1gZZj94Ve
+ YIqS7LZ+AgDnraFJ6Nj7r/5Ny0bntNefeRM56G5N9couJxcb0J2rIrYsuIZB2lUsCopdjQw+L
+ dKucIy6Rf50vDOFKycz5d3q92uolBZsKHF78SmrcGdVkk=
 
-On Mon, Mar 04, 2024 at 10:49:31AM -0800, Kees Cook wrote:
-> xattr: Use dedicated slab buckets for setxattr()
+The ACPI EC address space handler currently only supports
+reading/writing 8 bit values. Some firmware implementations however
+want to access for example 16 bit values, which is prefectly legal
+according to the ACPI spec.
 
-This patch actually changes listxattr(), not setxattr().
+Add support for reading/writing such values.
 
-getxattr(), setxattr(), and listxattr() all allocate a user controlled size.
-Perhaps you meant to change all three?  What is special about listxattr() (or
-setxattr() if you actually meant to change that one)?
+Tested on a Dell Inspiron 3505 and a Asus Prime B650-Plus.
 
-- Eric
+Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+=2D--
+ drivers/platform/x86/wmi.c | 44 +++++++++++++++++++++++++++++---------
+ 1 file changed, 34 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
+index 1920e115da89..900e0e52a5fa 100644
+=2D-- a/drivers/platform/x86/wmi.c
++++ b/drivers/platform/x86/wmi.c
+@@ -1153,6 +1153,32 @@ static int parse_wdg(struct device *wmi_bus_dev, st=
+ruct platform_device *pdev)
+ 	return 0;
+ }
+
++static int ec_read_multiple(u8 address, u8 *buffer, size_t bytes)
++{
++	int i, ret;
++
++	for (i =3D 0; i < bytes; i++) {
++		ret =3D ec_read(address + i, &buffer[i]);
++		if (ret < 0)
++			return ret;
++	}
++
++	return 0;
++}
++
++static int ec_write_multiple(u8 address, u8 *buffer, size_t bytes)
++{
++	int i, ret;
++
++	for (i =3D 0; i < bytes; i++) {
++		ret =3D ec_write(address + i, buffer[i]);
++		if (ret < 0)
++			return ret;
++	}
++
++	return 0;
++}
++
+ /*
+  * WMI can have EmbeddedControl access regions. In which case, we just wa=
+nt to
+  * hand these off to the EC driver.
+@@ -1162,27 +1188,25 @@ acpi_wmi_ec_space_handler(u32 function, acpi_physi=
+cal_address address,
+ 			  u32 bits, u64 *value,
+ 			  void *handler_context, void *region_context)
+ {
+-	int result =3D 0;
+-	u8 temp =3D 0;
++	int bytes =3D bits / 8;
++	int ret;
+
+-	if ((address > 0xFF) || !value)
++	if (address > 0xFF || !value)
+ 		return AE_BAD_PARAMETER;
+
+-	if (function !=3D ACPI_READ && function !=3D ACPI_WRITE)
++	if (bytes > sizeof(*value))
+ 		return AE_BAD_PARAMETER;
+
+-	if (bits !=3D 8)
++	if (function !=3D ACPI_READ && function !=3D ACPI_WRITE)
+ 		return AE_BAD_PARAMETER;
+
+ 	if (function =3D=3D ACPI_READ) {
+-		result =3D ec_read(address, &temp);
+-		*value =3D temp;
++		ret =3D ec_read_multiple(address, (u8 *)value, bytes);
+ 	} else {
+-		temp =3D 0xff & *value;
+-		result =3D ec_write(address, temp);
++		ret =3D ec_write_multiple(address, (u8 *)value, bytes);
+ 	}
+
+-	switch (result) {
++	switch (ret) {
+ 	case -EINVAL:
+ 		return AE_BAD_PARAMETER;
+ 	case -ENODEV:
+=2D-
+2.39.2
+
 
