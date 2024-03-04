@@ -1,230 +1,227 @@
-Return-Path: <linux-kernel+bounces-91333-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91334-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8542870FA5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:58:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E76C870FAE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 23:02:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08F271C21D07
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:58:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D81E1F204DD
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:02:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50BD379950;
-	Mon,  4 Mar 2024 21:58:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A1A57B3D8;
+	Mon,  4 Mar 2024 22:01:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LNOtP+LN"
-Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kzwDgspQ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD2D946BA0
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 21:58:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C7C81F60A;
+	Mon,  4 Mar 2024 22:01:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709589487; cv=none; b=MO1CmOrJ4ntHFqZeEXLhk9LlTyxgirEk0J8sOvvad3ENHG+kt/MUuEZNMnpg8UJGGIdvg4q7gGLMQHrxA1NGSKLoW1K98RO/nB0VW7T+lELmOm0gvIw9iS7B748mmQ4IaEBbjKu3j4SqgPh1+E07wCdTEGZOiNkBElpxB8qhIqA=
+	t=1709589716; cv=none; b=pYho1rsLgfB7jsGuDgFQ5eWXBeaO/G/JJuQ2sJuS9RD+lll69Xe9wJFTR97k+dqamIxS9IaQoWPSPigdCE9uUV41GzhZnl6HzecWAm3j+qTNuof9nYmm6k9uuMOydx7nLxTocAu8vh6eYEyE09AJPxdOtV0I6quUC6eQW/SQ7+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709589487; c=relaxed/simple;
-	bh=sn/Na6APvSpDPJTu5dE21znedniJ8b9aLdy/sUge760=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Y3izQjK014vErJsd9dlexHGbhgfTPMvNxC/pqf27MSkyGAyrNPU1whsgTlzbEqBJMCX5XM3ULHsgs2AlgKRZpHBEC+IqRSXovrk5LQcbSzWJ5pB3fI2AEtpOYN0M7D9CiIo+TSov/HG5KWZB0ysr/55uja1STK1EPDeWZ9fmRgQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LNOtP+LN; arc=none smtp.client-ip=209.85.222.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-7d5cbc4a585so1981845241.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 13:58:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709589484; x=1710194284; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CqoBwlFjrEGlkxzScTIHxrhFsM9u6GTewCZPhOqLJRc=;
-        b=LNOtP+LNiZVz6z4qj0fbVg0bhw3YdO6qXh0yPSVPOWnc0c9aOe2dhy4iX8JDTT2QA8
-         fMdaAmMymnr28LSvqeIuL+/+KdBGHkGbA3cQuBjwAkFC7gn+DDtZWJd+6OOi6vUr0puf
-         9HFSU4VhetlXxphphMEQ51kFKiKD1S1T8n1iqDfhx1fIrJTuYtlVSS2dKzSo0WZMFneB
-         V0CUwb5ZPdoUsXzyAU0DSn8PvgcR+uK8ph7/d4Zsij5+lXlgzO8spNCEhmR/VBRvsCsc
-         BMqPalIRoc0AqKO9hCz/uE+BEq0H9PhjowJeubAkT51CKpEoz9p+m2tPswPV5zrJ3+Df
-         +VRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709589484; x=1710194284;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CqoBwlFjrEGlkxzScTIHxrhFsM9u6GTewCZPhOqLJRc=;
-        b=KeBW91b4ZkXru5SQOXoFaGGs6QG7YnQm0ybgMANBhurtAIyR2mMv+pxPo09pS8acbE
-         pqrxpwroE2x1sncSISJDeLLHWcwfqO9IWjw4FvDlO/0Mdlk6CoZX9gMEUB+QOg000zKU
-         TYhkeo365gpghJNS+X6pJywImwicKgaLR/kpWH2EWU2QkbjXdQplQkYd5pi++TnireuO
-         XDLim3IiElg8TXeO3fHW8/o5YCTBN9RVq1m/3NAfomKwEUYJP3rY6ZC4DI1mH/9o0vDT
-         e1TWzFuChUrRPwh5XBi1o/lqnVrpJvEoVNhKbJzY1SnMjMKyON/4e9O15C69SmeyMR/m
-         gNdw==
-X-Forwarded-Encrypted: i=1; AJvYcCUSEzl2iRfa/tZTuL9eZEodnUj8eBY92NnniQv6/QbjsuawjtyL7TDWV0QL3eCHi7Xv3qkTU5C2QRljBox0PMVFUg9J8Vum+tNci1dn
-X-Gm-Message-State: AOJu0YzCFMTE3KRmTVKBRLdZLXmvZCWcTTVSfCQi81thrz+P0XUjujWJ
-	spDPLRO50GV0++m/kmyCaOLWDHwCFz35Wj/hDLZX7UsoekEeRJEuTnNSO2PqqliT0z3IEArPUkF
-	bGBa3NDP34Q+3UQVfdGJmwJjldSE=
-X-Google-Smtp-Source: AGHT+IFJylADP6V6ydrpu37OvmzYZGm3wMHZcijXhFmQ+Oi+Looal8ewdWIErgxOYA/rF/J9DUIr549t5Eh3HSk459c=
-X-Received: by 2002:a05:6102:d8c:b0:472:cc6a:5dd8 with SMTP id
- d12-20020a0561020d8c00b00472cc6a5dd8mr71679vst.3.1709589483176; Mon, 04 Mar
- 2024 13:58:03 -0800 (PST)
+	s=arc-20240116; t=1709589716; c=relaxed/simple;
+	bh=cqXMB5LaH1/xbA9ssgEQZjW69NwMDww1M1qLrr+EmDM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y4NQl4zIvm6rTDGNyWYo1P0jqLszlDXUc+EYePNI3IBkLPCqV8Kgeyt12J/yhe0+Cg1BfzVUzxMGc3TEAng6KH5KFk7lTHM16lVExQ/r6L/GDhP1j+XoT20KA/FYxMpxO769LcyfLK3aLqAek/RiQWC0DhtrYeQGBXJo3eVvA5M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kzwDgspQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0715DC433C7;
+	Mon,  4 Mar 2024 22:01:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709589716;
+	bh=cqXMB5LaH1/xbA9ssgEQZjW69NwMDww1M1qLrr+EmDM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=kzwDgspQIO25NArRMwENJ9Lcj00WGdi2KhrHvwxCo7fsbV2LTA9bHtNHbfhvYoF65
+	 o0E8Ccy9lQEJZB2GDGnvUvBfpSXFffA8u3NCkWeqpiRllSvP4R6t6DQbAcHi2Mqe3a
+	 BiI2jYmtfugdMRsHeeeIUriNJCJaT/rZBgM+tCz6t+hkbrYX7SnBjZ5B3O9qGV9VJc
+	 /HvYp6ur22G2Im0S0T39SDa4rsiUYQLooEGFoHWLsE99i8kOpMGmtIbUksbhbwltZd
+	 Rs3TR++2GxK/f3kGwAmAL/RE305D06Xtj4QdC9jjgICE1O3FTofrPr+4JkWuZIu97b
+	 c0inMgWAuyrgA==
+Date: Mon, 4 Mar 2024 16:01:54 -0600
+From: Rob Herring <robh@kernel.org>
+To: Dharma Balasubiramani <dharma.b@microchip.com>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] dt-bindings: display: atmel,lcdc: convert to dtschema
+Message-ID: <20240304220154.GA1115739-robh@kernel.org>
+References: <20240304-lcdc-fb-v3-1-8b616fbb0199@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240304103757.235352-1-21cnbao@gmail.com> <706b7129-85f6-4470-9fd9-f955a8e6bd7c@arm.com>
-In-Reply-To: <706b7129-85f6-4470-9fd9-f955a8e6bd7c@arm.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Tue, 5 Mar 2024 10:57:51 +1300
-Message-ID: <CAGsJ_4wx7oSzt4vn6B+LRoZetMhH-fDXRFrCFRyoqVOakLidjg@mail.gmail.com>
-Subject: Re: [RFC PATCH] mm: hold PTL from the first PTE while reclaiming a
- large folio
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: akpm@linux-foundation.org, linux-mm@kvack.org, david@redhat.com, 
-	chrisl@kernel.org, yuzhao@google.com, hanchuanhua@oppo.com, 
-	linux-kernel@vger.kernel.org, willy@infradead.org, ying.huang@intel.com, 
-	xiang@kernel.org, mhocko@suse.com, shy828301@gmail.com, 
-	wangkefeng.wang@huawei.com, Barry Song <v-songbaohua@oppo.com>, 
-	Hugh Dickins <hughd@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240304-lcdc-fb-v3-1-8b616fbb0199@microchip.com>
 
-On Tue, Mar 5, 2024 at 1:21=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.com> =
-wrote:
->
-> Hi Barry,
->
-> On 04/03/2024 10:37, Barry Song wrote:
-> > From: Barry Song <v-songbaohua@oppo.com>
-> >
-> > page_vma_mapped_walk() within try_to_unmap_one() races with other
-> > PTEs modification such as break-before-make, while iterating PTEs
-> > of a large folio, it will only begin to acquire PTL after it gets
-> > a valid(present) PTE. break-before-make intermediately sets PTEs
-> > to pte_none. Thus, a large folio's PTEs might be partially skipped
-> > in try_to_unmap_one().
->
-> I just want to check my understanding here - I think the problem occurs f=
-or
-> PTE-mapped, PMD-sized folios as well as smaller-than-PMD-size large folio=
-s? Now
-> that I've had a look at the code and have a better understanding, I think=
- that
-> must be the case? And therefore this problem exists independently of my w=
-ork to
-> support swap-out of mTHP? (From your previous report I was under the impr=
-ession
-> that it only affected mTHP).
+On Mon, Mar 04, 2024 at 08:00:03PM +0530, Dharma Balasubiramani wrote:
+> Convert the atmel,lcdc bindings to DT schema.
+> Changes during conversion: add missing clocks and clock-names properties.
+> 
+> Signed-off-by: Dharma Balasubiramani <dharma.b@microchip.com>
+> ---
+> This patch converts the existing lcdc display text binding to JSON schema.
+> The binding is split into two namely
+> lcdc.yaml
+> - Holds the frame buffer properties
+> lcdc-display.yaml
+> - Holds the display panel properties which is a phandle to the display
+> property in lcdc fb node.
+> 
+> These bindings are tested using the following command.
+> 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> ---
+> Changes in v3:
+> - Remove the generic property "bits-per-pixel"
+> - Link to v2: https://lore.kernel.org/r/20240304-lcdc-fb-v2-1-a14b463c157a@microchip.com
+> 
+> Changes in v2:
+> - Run checkpatch and remove whitespace errors.
+> - Add the standard interrupt flags.
+> - Split the binding into two, namely lcdc.yaml and lcdc-display.yaml.
+> - Link to v1: https://lore.kernel.org/r/20240223-lcdc-fb-v1-1-4c64cb6277df@microchip.com
+> ---
+>  .../bindings/display/atmel,lcdc-display.yaml       | 97 ++++++++++++++++++++++
+>  .../devicetree/bindings/display/atmel,lcdc.txt     | 87 -------------------
+>  .../devicetree/bindings/display/atmel,lcdc.yaml    | 70 ++++++++++++++++
+>  3 files changed, 167 insertions(+), 87 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/display/atmel,lcdc-display.yaml b/Documentation/devicetree/bindings/display/atmel,lcdc-display.yaml
+> new file mode 100644
+> index 000000000000..5e0b706d695d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/atmel,lcdc-display.yaml
+> @@ -0,0 +1,97 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/atmel,lcdc-display.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Microchip's LCDC Display
+> +
+> +maintainers:
+> +  - Nicolas Ferre <nicolas.ferre@microchip.com>
+> +  - Dharma Balasubiramani <dharma.b@microchip.com>
+> +
+> +description:
+> +  The LCD Controller (LCDC) consists of logic for transferring LCD image data
+> +  from an external display buffer to a TFT LCD panel. The LCDC has one display
+> +  input buffer per layer that fetches pixels through the single bus host
+> +  interface and a look-up table to allow palletized display configurations. The
+> +  LCDC is programmable on a per layer basis, and supports different LCD
+> +  resolutions, window sizes, image formats and pixel depths.
+> +
+> +# We need a select here since this schema is applicable only for nodes with the
+> +# following properties
+> +
+> +select:
+> +  anyOf:
+> +    - required: [ 'atmel,dmacon' ]
+> +    - required: [ 'atmel,lcdcon2' ]
+> +    - required: [ 'atmel,guard-time' ]
+> +
+> +properties:
+> +  atmel,dmacon:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: dma controller configuration
+> +
+> +  atmel,lcdcon2:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: lcd controller configuration
+> +
+> +  atmel,guard-time:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: lcd guard time (Delay in frame periods)
 
-I think this affects all large folios with PTEs entries more than 1. but hu=
-geTLB
-is handled as a whole in try_to_unmap_one and its rmap is removed all
-together, i feel hugeTLB doesn't have this problem.
+Is there a maximum?
 
->
-> Its just that the problem is becoming more pronounced because with mTHP,
-> PTE-mapped large folios are much more common?
+> +
+> +  bits-per-pixel:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: lcd panel bit-depth.
 
-right. as now large folios become a more common case, and it is my case
-running in millions of phones.
+Constraints?
 
-BTW, I feel we can somehow learn from hugeTLB, for example, we can reclaim
-all PTEs all together rather than iterating PTEs one by one. This will impr=
-ove
-performance. for example, a batched
-set_ptes_to_swap_entries()
-{
-}
-then we only need to loop once for a large folio, right now we are looping
-nr_pages times.
+> +
+> +  atmel,lcdcon-backlight:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description: enable backlight
+> +
+> +  atmel,lcdcon-backlight-inverted:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description: invert backlight PWM polarity
+> +
+> +  atmel,lcd-wiring-mode:
+> +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
 
->
-> > For example, for an anon folio, after try_to_unmap_one(), we may
-> > have PTE0 present, while PTE1 ~ PTE(nr_pages - 1) are swap entries.
-> > So folio will be still mapped, the folio fails to be reclaimed.
-> > What=E2=80=99s even more worrying is, its PTEs are no longer in a unifi=
-ed
-> > state. This might lead to accident folio_split() afterwards. And
-> > since a part of PTEs are now swap entries, accessing them will
-> > incur page fault - do_swap_page.
-> > It creates both anxiety and more expense. While we can't avoid
-> > userspace's unmap to break up unified PTEs such as CONT-PTE for
-> > a large folio, we can indeed keep away from kernel's breaking up
-> > them due to its code design.
-> > This patch is holding PTL from PTE0, thus, the folio will either
-> > be entirely reclaimed or entirely kept. On the other hand, this
-> > approach doesn't increase PTL contention. Even w/o the patch,
-> > page_vma_mapped_walk() will always get PTL after it sometimes
-> > skips one or two PTEs because intermediate break-before-makes
-> > are short, according to test. Of course, even w/o this patch,
-> > the vast majority of try_to_unmap_one still can get PTL from
-> > PTE0. This patch makes the number 100%.
-> > The other option is that we can give up in try_to_unmap_one
-> > once we find PTE0 is not the first entry we get PTL, we call
-> > page_vma_mapped_walk_done() to end the iteration at this case.
-> > This will keep the unified PTEs while the folio isn't reclaimed.
-> > The result is quite similar with small folios with one PTE -
-> > either entirely reclaimed or entirely kept.
-> > Reclaiming large folios by holding PTL from PTE0 seems a better
-> > option comparing to giving up after detecting PTL begins from
-> > non-PTE0.
-> >
-> > Cc: Hugh Dickins <hughd@google.com>
-> > Signed-off-by: Barry Song <v-songbaohua@oppo.com>
->
-> Do we need a Fixes tag?
+Isn't this just a single string rather than an array?
 
-I don't feel a strong need for this as this doesn't cause a crash, memory
-leak or whatever serious.
+> +    description: lcd wiring mode "RGB" or "BRG"
 
->
-> > ---
-> >  mm/vmscan.c | 11 +++++++++++
-> >  1 file changed, 11 insertions(+)
-> >
-> > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > index 0b888a2afa58..e4722fbbcd0c 100644
-> > --- a/mm/vmscan.c
-> > +++ b/mm/vmscan.c
-> > @@ -1270,6 +1270,17 @@ static unsigned int shrink_folio_list(struct lis=
-t_head *folio_list,
-> >
-> >                       if (folio_test_pmd_mappable(folio))
-> >                               flags |=3D TTU_SPLIT_HUGE_PMD;
-> > +                     /*
-> > +                      * if page table lock is not held from the first =
-PTE of
-> > +                      * a large folio, some PTEs might be skipped beca=
-use of
-> > +                      * races with break-before-make, for example, PTE=
-s can
-> > +                      * be pte_none intermediately, thus one or more P=
-TEs
-> > +                      * might be skipped in try_to_unmap_one, we might=
- result
-> > +                      * in a large folio is partially mapped and parti=
-ally
-> > +                      * unmapped after try_to_unmap
-> > +                      */
-> > +                     if (folio_test_large(folio))
-> > +                             flags |=3D TTU_SYNC;
->
-> This looks sensible to me after thinking about it for a while. But I also=
- have a
-> gut feeling that there might be some more subtleties that are going over =
-my
-> head, since I'm not expert in this area. So will leave others to provide =
-R-b :)
->
+enum:
+  - RGB
+  - BRG
 
-ok, thanks :-)
+No BGR?
 
-> Thanks,
-> Ryan
->
-> >
-> >                       try_to_unmap(folio, flags);
-> >                       if (folio_mapped(folio)) {
->
+But wait, the example shows the value is '1'. That should fail testing. 
+It didn't, but I've now fixed that.
 
-Thanks
-Barry
+> +
+> +  atmel,power-control-gpio:
+> +    description: gpio to power on or off the LCD (as many as needed)
+
+maxItems: 1
+
+> +
+> +  display-timings:
+> +    $ref: panel/display-timings.yaml#
+> +
+> +required:
+> +  - atmel,dmacon
+> +  - atmel,lcdcon2
+> +  - atmel,guard-time
+> +  - bits-per-pixel
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    display: panel {
+> +      bits-per-pixel = <32>;
+> +      atmel,lcdcon-backlight;
+> +      atmel,dmacon = <0x1>;
+> +      atmel,lcdcon2 = <0x80008002>;
+> +      atmel,guard-time = <9>;
+> +      atmel,lcd-wiring-mode = <1>;
+> +
+> +      display-timings {
+> +        native-mode = <&timing0>;
+> +        timing0: timing0 {
+> +          clock-frequency = <9000000>;
+> +          hactive = <480>;
+> +          vactive = <272>;
+> +          hback-porch = <1>;
+> +          hfront-porch = <1>;
+> +          vback-porch = <40>;
+> +          vfront-porch = <1>;
+> +          hsync-len = <45>;
+> +          vsync-len = <1>;
+> +        };
+> +      };
+> +    };
 
