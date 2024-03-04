@@ -1,204 +1,184 @@
-Return-Path: <linux-kernel+bounces-91073-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91074-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB68F870938
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:13:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42B3187093A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:13:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF08EB27A18
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:13:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4BEC71C23F5E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:13:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 896D56216C;
-	Mon,  4 Mar 2024 18:12:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32BEA62141;
+	Mon,  4 Mar 2024 18:13:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CrOUBbJ9"
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b="AQkXWCzu"
+Received: from FRA01-PR2-obe.outbound.protection.outlook.com (mail-pr2fra01on2117.outbound.protection.outlook.com [40.107.12.117])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A21061689;
-	Mon,  4 Mar 2024 18:12:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709575948; cv=none; b=Qv9P+1IESWTIzoESUUu3N+b/t146d6BD1nhD50MYkLm2EiDNFcEJH9jht4z6cgmYlIynQCTRjo9QifZ5ltZpZo/mmdL4tu7IQOg9SWTRjFO5MuKUx0CxTcAmTiXxQ8HGr8cpev5lnyOT1dN6loBJtfIqom58uf8zd/H8d7SZtT0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709575948; c=relaxed/simple;
-	bh=qeYlY2Z0mU54S66qPg2nUJeend2RtdaAizfdSPieXAQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=Aemdq8BKr9IkZsXyMlt0n6JsPHA0oglsHRlEmAxmnpJyQF2KedM4uu15ulO/835R8b4RKKEuylEEyg/I5rX8DfX5YsGLKaTHS5zVBqdcL+8MTlEYRpp53TuY2a40Y2zIwNYQvCm4lxgqFn57sh8yMrB3zbslP7I8VbyNhmA0NG0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CrOUBbJ9; arc=none smtp.client-ip=209.85.215.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5d4d15ec7c5so4288086a12.1;
-        Mon, 04 Mar 2024 10:12:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709575945; x=1710180745; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=uwRt3Nexw71wDlnI00M5EwbWOdRZcBxm4wPyc9Hkfck=;
-        b=CrOUBbJ93nfN39/ebustOIq7cWIuiNjuKv1/POLcDvpJLjru50a4vjXFX7MOi6MQcN
-         ydZjnbT8TeoTdTEpca3/ejykG7eni+db3QR0hUFwbYH/B5Eh0KlZ5Va8fMlbtBcYv3hi
-         JIKekDtR4QYRu1LnzQwemeHjmdVR5b0yKrBYmRtOVNAK69aHg2bbF1js0gZicvzW1g0u
-         WIFTbuHCjswCsC0UGPTJvkM3pPTXAODd0CdjT/vw+iuVBGWTRLVin7E9+EX3QOyEX3qL
-         GhLnVCe6zKVja69HRhhWCcLNJ9g2kss6AD4diO2MT5ObV2/SGkXGbD3GS+H8VFLD7vto
-         34WA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709575945; x=1710180745;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uwRt3Nexw71wDlnI00M5EwbWOdRZcBxm4wPyc9Hkfck=;
-        b=lwKUj8Jx6B1ThzrLObpyRNqbSnrk6KcvLwEBr0WXXG183+agRPWP6vT44CFFEsW1Hv
-         2LEWlsOUIbYk10nI6kqBx/PRo8EGeun9/in3t28nQzZSMvti62KuYPFPqRe1yJ5NwqhU
-         THt+bn2u59NXnta+AZualUcHRBrgp9kJ8vV5X+qToaNFVhykLe8d/G+Fzy8HSwTKzXvN
-         TkcQNAz1dkmTAuXv1WHohOCoz2CgTeTJ518A1JDmVRnSLPgTMsw6f6Er+E2X4XusKgmP
-         i0841Z63FP/7xfpUho0oyD5UK4qPyUy3gROdYCqBGMdo4S3d1nskPQAMZp7AtvJGgQgT
-         2p7g==
-X-Forwarded-Encrypted: i=1; AJvYcCVfloUQ4ORzCJDzDw93HK7RHa+7qOtyupV/l7p8wVfBu1RrPJMDrNjDOA1uyCHmGDx1Qtu2gnCHj1UReoNftiSKx6DoCdVAcXOnOGr+WBs0yCqvz45emHilAIoUEcLo/XL4h0TCGPDXqx8oj0HuuQ==
-X-Gm-Message-State: AOJu0YyCDcJBN5oC7X8E1N0NcpdlBGrhu4dcHVoixhc2UhC5PlXGqHLK
-	N+RDMKPjvDITWuIRcQKPh7mGg/fkXoUXmvxmmik9IpGwxOpomb5p
-X-Google-Smtp-Source: AGHT+IFvjp2BDXPhLFljlarbH+iAAyjlCmFOsZ58WnJZzNiDqV8eNDS4TU0Ho2QFed6o7GIsPsk0vw==
-X-Received: by 2002:a17:902:dad2:b0:1db:2ad9:9393 with SMTP id q18-20020a170902dad200b001db2ad99393mr14373996plx.48.1709575944963;
-        Mon, 04 Mar 2024 10:12:24 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id mm6-20020a1709030a0600b001db67377e8dsm8819321plb.248.2024.03.04.10.12.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 10:12:24 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Mon, 4 Mar 2024 10:12:23 -0800
-From: Guenter Roeck <linux@roeck-us.net>
-To: Marco Elver <elver@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>,
-	Dmitry Vyukov <dvyukov@google.com>,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: hw_breakpoint unit test failures with various
- architectures/platforms in qemu
-Message-ID: <f477329e-4ecf-4c6c-82b1-1e9b84443902@roeck-us.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 113973E48C;
+	Mon,  4 Mar 2024 18:13:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.12.117
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709575987; cv=fail; b=U/X0hwkSis90aNh33UuvZ7lAQ2frzD0Gbnl7Pws2HnuhrgIt9mu9SAv5yVJOfKdnPqjxDJfTPK5WzqUa1vzFB0GUY7TeZ2BS6pnuNt5zUKP66Zd30jrJ6d3uOwrNzUqpEWhJ/MgtI19JinfQbkYP6E9Yvi6PiGkINROP9mUChjc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709575987; c=relaxed/simple;
+	bh=RZqT4+9Gr8s37n+LX2357Wqq4/DVAyexBLsGsWbAQyE=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=WKRzuQ5YpWt8SkPIhnkdlyUOv+6w6jnW2mXjCf90MM/aIhUD0JxPlTbcbBIH6BWFO5CqsBTflhZ/P4WkbPdoAr60YikmMAJAfENlTe/EsUvPniGfTGbRjoZFi5xOKDeHFHr4us28bV3HEP5SR5EczLUiItNhWwmQDrd1CK/M6VY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b=AQkXWCzu; arc=fail smtp.client-ip=40.107.12.117
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iK4qClUiMg8S8ydFH+GZO54xF3gzwBAZLIqNuyHI0XEy2IDAWS47jQ0FGwQvazC+0IgK4GPFAijYuoDQN10l4+uUat2lBRjcwys4+MtGrA1bT/muY9CK+rDmiq589adjMGiY6HEazEn1NAmM1R3jaGBH/UGVKSP+nWYSukLCo7ZIcZPS45Zpks+9tf9kJwRM22l0PyplPjpnuyJHaOTSSpwQBvtjJhgK1j8KDHk82Va/a5a7oHS6GE/DNScaAyJ46XMUCmiNQhs76KhuaAA4xhJhVmOZtm5t4b1XnbNRQrydVhhxcMpQTE62w5yRrPaverj0zYDsH6mAa6Gl2lexig==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RZqT4+9Gr8s37n+LX2357Wqq4/DVAyexBLsGsWbAQyE=;
+ b=HbKau8YA95E66C0NI1GZSpIgr7VWiW1K1LCcgg6zev4N3aEFA/CqQezYPBEOH44hLtITXkP9QbIqXOxfsDwTbKAq8CdxKU6jfJJwtSKbLIfE1JUHQ3PNzOqJV5VibFAHNJEc2qJNpfe4uJpI3aBFIjdY91yC/TzCjFqPX7PF98d6PSYwv2kYwxNfQcX1bTBkw+JkRQOAqfBeuTga1TIxyhKoTp0BuIcRirBkBfdbn/YckKr/XcU72bfPwVKTb/iT78wVnDTVKQLONfxyf7Qk0WGAIL0KVhUSZ6rYbjnSoGO7tgRKvPSW4XSQZ+Lh6fxcbCcSvAuJm9J+k/PATCnkOw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
+ dkim=pass header.d=csgroup.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RZqT4+9Gr8s37n+LX2357Wqq4/DVAyexBLsGsWbAQyE=;
+ b=AQkXWCzu9NzNJZofGCGsGzJPLY8p5ztmMyHuvpPITfjBE/EcBcTL/eswugCrXO7xQR5+zOmX3/9n6qKoQTbJ/kyXGHn0fMBOOBgJV0Jp/PjjAEWaajwb1d+0xrgQCN9ztmqOxj+fuMZyIV9MRRjZ4rhblRhyBf/OGk6+Sc51WD5iOAWT03kJpxRjOAiIAwcJIUJ9qfdiHGPsQFPXoy5bl5WRdb8mvmQKDyb+mWkrp/rFjRxyXdUS04TNyzSf+ShUS6lMFHPh0gZPAKkjKiSH3xtVRT6/2kkVD1aNwHQt8Ae16HaCnQrjQlestGljW+T3fczKtcFjW+Ws90Rgi7PDZw==
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
+ by MRZP264MB2444.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:1d::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.39; Mon, 4 Mar
+ 2024 18:13:01 +0000
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::c192:d40f:1c33:1f4e]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::c192:d40f:1c33:1f4e%6]) with mapi id 15.20.7339.035; Mon, 4 Mar 2024
+ 18:13:01 +0000
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+To: Thomas Zimmermann <tzimmermann@suse.de>, Jani Nikula
+	<jani.nikula@intel.com>, Michael Ellerman <mpe@ellerman.id.au>,
+	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+CC: "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>, Helge Deller
+	<deller@gmx.de>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "lkft-triage@lists.linaro.org"
+	<lkft-triage@lists.linaro.org>, "dri-devel@lists.freedesktop.org"
+	<dri-devel@lists.freedesktop.org>, Naresh Kamboju <naresh.kamboju@linaro.org>
+Subject: Re: [PATCH] powerpc: include linux/backlight.h from asm/backlight.h
+Thread-Topic: [PATCH] powerpc: include linux/backlight.h from asm/backlight.h
+Thread-Index: AQHabhpX5/mQAZSSV0274uSQf7awc7EnYl4AgACAnYA=
+Date: Mon, 4 Mar 2024 18:13:01 +0000
+Message-ID: <e5a0e44d-d2b9-49f0-9a08-fb7d9254266c@csgroup.eu>
+References:
+ <CA+G9fYsAk5TbqqxFC2W4oHLGA0CbTHMxbeq8QayFXTU75YiueA@mail.gmail.com>
+ <20240304095512.742348-1-jani.nikula@intel.com>
+ <eed9bb0f-486f-47f3-b4b5-c07adda4a1c7@suse.de>
+In-Reply-To: <eed9bb0f-486f-47f3-b4b5-c07adda4a1c7@suse.de>
+Accept-Language: fr-FR, en-US
+Content-Language: fr-FR
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=csgroup.eu;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MRZP264MB2988:EE_|MRZP264MB2444:EE_
+x-ms-office365-filtering-correlation-id: 1b47e3d6-d77d-471e-dccb-08dc3c76bab2
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ d75Y1DLtcoO7ti/OQFT81tU4E4B0NIfjGD/TGGWCFhL/r+C8e5OIrzNUGOERFq06gdCtQkY3Xo1AFtd9LdGEZNIgEwb8lsX/KpZ0OTbZ0jjqLSRjzGLgIG5jj52XYaLxe3Kp7UaNXHkHOHzff7x7REL5yF4E+pZmG1EvMyOVIx8GBkCtzKpNudhw7WDb+Rt2nmsHAlZaWVc93bkEJPqsAb3z4rDiD4KIdiRKlVYpwQikW3/AZ9HSLWniBVyI9CFPbvkfZaf9YaG9fTzVqxyxhnja/kqRvZoz8XuL8V6DogOqapzYtKoxVZ2NOyTseIp836kWGpkjnrMPW5ruOLTUzJp4pB3eHd3HmNHzYbNnc8zRlof1MV9y12+/7MA2Bv4RVGY4+tV9rkPWCM8yScjZlB35hWNYDUNpsote8SvVS+MS94HIv2a2JxvawMPnlI0LzSK41Dsq+nmaQyng49ubmoKvKlJSY0DsbXHtcuORAQcxbWQgtnDIn4EpNyXLHM/G3Nxr5xUFQ3e1q/M0tAhAe5LrgTls9Vmcsslo9rvFEXoAxw9EH1ZzkeS897X0XR82wJP6hpU/q8C/RhSLObiBvQKKhvEVLAJ8P/uaWOOPUTUjVeM6GDbIUgrFgMVcZYpNQeVln/yf0p2eqLMBC3mTAJ0nyCy2ZHzjKJ9x0pDQ5cY=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376005)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?Ny83MXhBcmZaNysvZElmK25VczZGSWMvOHhWc2FxbVR1NFNxZ2RuRTMwTURn?=
+ =?utf-8?B?NFJKWmg0N2k5a2RKc0NOay84alUrKzg5ZlBjR0cwSjJNdVJWUVZhOURDcVJO?=
+ =?utf-8?B?NTltWFkveEpwaldrTzY3VDFnb1NJMExNY1EyNG5FVE1kZEV5VytGNTVnT2Q2?=
+ =?utf-8?B?RlRvNWFCRVd2UzR0S0ZoZzlrL1pPWnlURjYxdkVUOWM3NlhOelFENjJNclBh?=
+ =?utf-8?B?czJIVkhOZzI4dFFwa0pWN1Z3UmZwUkNyVURIaVluUlh6M2dnUFF0SnJkV1hM?=
+ =?utf-8?B?bmdVSEpJZk9BMjA2QW9ua3RnQXgrNG9BVjRxS3AxbUtRQnZsbXNZVVZvYWdG?=
+ =?utf-8?B?Y3ROaVg5QUgyOVVwcG5OQVk1cHZ1aWZrdkd5c0ZOU293bUpDUlFmbml6RkhG?=
+ =?utf-8?B?LzJmNFdHSklIdnFFVFBlREpyM24rYVEwL1c4NzRIbCtNbEJLUmE2L1M2QlFN?=
+ =?utf-8?B?bC8xZThqK3ZEaGtyN0NLYXRybDJBYzJEV0pZS2VRTHc3RnRObmtxVEd3MWxX?=
+ =?utf-8?B?Qi9JdkVyaHJYT0wxMDN1Wk1lUFJmWUVlV0JBTkdUVzlyYjF5dzVhQnMrQVAr?=
+ =?utf-8?B?NGp4T29PWDBtVWZKb3ZJaUNOR21SV1NkdG9LRmcrb09MbUNjZm9Yb01NWVFu?=
+ =?utf-8?B?eER1MGpBbEQ4czlTQlkrUzY1NkFnRWNQdmtNVmoza2ZCckFZYjlueERvWTFp?=
+ =?utf-8?B?R0RqemJjdWxaU084Y0hzQnBYNGQ4UkNnQkc5K08vTllJR3l1ZFNaZnVVZXd6?=
+ =?utf-8?B?VVM0N1hqMFlPbWVZNW5oZzZyUXdiYURBY1pZazdxVDFaU0gxNENDcUVFMjVC?=
+ =?utf-8?B?WEdYbHNmQUlrUERmOTR2RVZBQWdPSGJ0dTZTajcxK3lsbGVFVFV2czhXVk5B?=
+ =?utf-8?B?czR1OVlQTVhJUEtndmNRMjhRWnBZSitqcFRCNy9WNng3a01HRlJmeGF0STc5?=
+ =?utf-8?B?NHFlS0pFQUpndG0rM3pabzlJNzZVWnBzaVNoZUdLZkp3RElrR0ZiMEVuTXJa?=
+ =?utf-8?B?ZVpwQ3RTMldEQWRZWW9SRlhDd0FVbmNySEZSbGhTd0JVQkRocS94VGJMaDVY?=
+ =?utf-8?B?SVpKVVphMjdHNjdmT1pILzUrc3JreEN6eTVTa1pSNjVGbEFpTzZDWERNejR6?=
+ =?utf-8?B?VjNnK0RtRVZMRjJvNkxUNUdpZmhCdWFDdnhpeXA3Q1cyOHExMmtBUjJPdE9F?=
+ =?utf-8?B?Z3VlOFlKVzA4QVRsNUdOZzJDZHI4ZThRUVVPTHVsMHY0aG1ScHZMaDE1UjJJ?=
+ =?utf-8?B?WlRaNzErMk9xRW1CYmgxTEF3cTdwZlY3Rmk3ZUxYSlJYRFRHTko1MVI1U0Ey?=
+ =?utf-8?B?YUdMT2thaVJwa042NEpyV01maW1hWFRTNndTWDFoTjIxaVF3VzJUVGhGNStV?=
+ =?utf-8?B?U2gvWmhEVzdrUk8yZElac1o3Y2tiazNQTWlmRlJscW5LbE5ONTVqMUN6V2dz?=
+ =?utf-8?B?RE5xcWtDTWtJMVozTnpwSno0M2Y3L1R5Sy95TG1hN25RRjYxVi95c1JXTCtJ?=
+ =?utf-8?B?NWZTVXNmQWFxMUpZNGNsT2pQS0duSUYyRlVKVGdLUFFVSHlISWF6dGhlSVZC?=
+ =?utf-8?B?YWtJa25JcktNbzhHYkh1Z3ByN0syQVg1K2ZXTEZTZEM0ekJVVm9mZ3QyaEZW?=
+ =?utf-8?B?bm5HanN4M1N6NFlNd2pPL01VZ3RrWUwydENyZzFYcGx3U2ZiN0ZuM2tqUW5H?=
+ =?utf-8?B?eVYyRyt6NFJZRTBKcGZIczg0TkxHVFJ3U1hvYWthNG5rVjFMRlZidXVRQThp?=
+ =?utf-8?B?eEdqdGtuMTU2L2tBR29nUjY5eDV3RjkxMlJoaTV4eXhELzZ2c2I1Q3JzNlh5?=
+ =?utf-8?B?QmEwYk9KU2JHZ1Y5TEpvd0RKTkJRVDNFZHZOa0tyZ2VUMXlsdzVMcmJpUVEv?=
+ =?utf-8?B?YnlaaVQ4QUpKOS92dWp3bTkxNjFGN3ZBWlY2bkpiai9YcUVQMGtVWVlCamVC?=
+ =?utf-8?B?cUt2WVM4aUFDUXQwa2xLSVdiallJK3RxdUZ2dlppQlU4UEZORU9TRXlROU4y?=
+ =?utf-8?B?Njd4cE9YR1ViWW9lNVNPMVdEajJIZ1dEcU1NblozWG03d09Oa1dtRERvNmtK?=
+ =?utf-8?B?VjFQMTVPakRBd2Z2THo2VXFuczdMMUN4UG94dmNhVUdCNGpCc2ZTMm5KQ2gy?=
+ =?utf-8?Q?5P9YVGFQKuTq/tPXNNwDuemAP?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <7AF28CAB10A12B4DB6A0E4DBA0BE7D18@FRAP264.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-OriginatorOrg: csgroup.eu
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1b47e3d6-d77d-471e-dccb-08dc3c76bab2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Mar 2024 18:13:01.5497
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Qzvri0MEV4dPRCdClGttLeaueVeDL/jESUB4gPIy98cuig5mg6iPEFaHA8AeN4Qze0jfzqUXqOj2GgbeZzdXgGCSFpXwJ6x7cx9JNWjpWMg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MRZP264MB2444
 
-Hi,
-
-I see a number of failures and tracebacks when running the hw_breakpoint
-unit tests on various architectures in qemu. Some examples are below.
-
-Is this a potential problem with the unit tests, with the hardware,
-or with the qemu emulation of that hardware ?
-
-In other words, is it worthwhile to look into this further, or would
-it make more sense to just disable those tests if they fail on a
-given hardware/platform ?
-
-Thanks,
-Guenter
-
----
-arm:smdkc210:
-
-[    9.515572]     ok 2 test_many_cpus
-[    9.519425] ########### searching unregister_test_bp
-[    9.519989] ------------[ cut here ]------------
-[    9.520995] ########### searching test_one_task_on_all_cpus
-[    9.521318] WARNING: CPU: 1 PID: 63 at kernel/events/hw_breakpoint_test.c:49 test_one_task_on_all_cpus+0x90/0x1c4
-[    9.521921] Modules linked in:
-[    9.522532] CPU: 1 PID: 63 Comm: kunit_try_catch Tainted: G                 N 6.8.0-rc7-00028-g624465c9abd6 #1
-[    9.523102] Hardware name: Samsung Exynos (Flattened Device Tree)
-[    9.523610]  unwind_backtrace from show_stack+0x10/0x14
-[    9.523936]  show_stack from dump_stack_lvl+0x68/0x90
-[    9.524191]  dump_stack_lvl from __warn+0xbc/0x21c
-[    9.524429]  __warn from warn_slowpath_fmt+0x1a8/0x1b0
-[    9.524674]  warn_slowpath_fmt from test_one_task_on_all_cpus+0x90/0x1c4
-[    9.524971]  test_one_task_on_all_cpus from kunit_try_run_case+0x58/0x18c
-[    9.525273]  kunit_try_run_case from kunit_generic_run_threadfn_adapter+0x14/0x20
-[    9.525593]  kunit_generic_run_threadfn_adapter from kthread+0x118/0x124
-[    9.525889]  kthread from ret_from_fork+0x14/0x28
-[    9.526200] Exception stack(0xf0ad5fb0 to 0xf0ad5ff8)
-[    9.526663] 5fa0:                                     00000000 00000000 00000000 00000000
-[    9.527112] 5fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-[    9.527449] 5fe0: 00000000 00000000 00000000 00000000 00000013 00000000
-[    9.527876] irq event stamp: 113
-[    9.528088] hardirqs last  enabled at (121): [<c01adfb4>] console_unlock+0x114/0x130
-[    9.529049] hardirqs last disabled at (140): [<c01adfa0>] console_unlock+0x100/0x130
-[    9.529501] softirqs last  enabled at (138): [<c010168c>] __do_softirq+0x340/0x520
-[    9.529892] softirqs last disabled at (129): [<c012f23c>] irq_exit+0x190/0x1c0
-[    9.530227] ---[ end trace 0000000000000000 ]---
-[    9.531752]     # test_one_task_on_all_cpus: ASSERTION FAILED at kernel/events/hw_breakpoint_test.c:70
-[    9.531752]     Expected IS_ERR(bp) to be false, but is true
-[    9.537757]     not ok 3 test_one_task_on_all_cpus
-
----
-arm:raspi2b (and others):
-
-[   14.718608]     # Subtest: hw_breakpoint
-[   14.719351]     # module: hw_breakpoint_test
-[   14.722275]     1..9
-[   14.737927]     # test_one_cpu: ASSERTION FAILED at kernel/events/hw_breakpoint_test.c:70
-[   14.737927]     Expected IS_ERR(bp) to be false, but is true
-[   14.745960]     not ok 1 test_one_cpu
-[   14.750052]     # test_many_cpus: ASSERTION FAILED at kernel/events/hw_breakpoint_test.c:70
-[   14.750052]     Expected IS_ERR(bp) to be false, but is true
-[   14.791453]     not ok 2 test_many_cpus
-[   14.805964]     # test_one_task_on_all_cpus: ASSERTION FAILED at kernel/events/hw_breakpoint_test.c:70
-[   14.805964]     Expected IS_ERR(bp) to be false, but is true
-[   14.822662]     not ok 3 test_one_task_on_all_cpus
-[   14.836897]     # test_two_tasks_on_all_cpus: ASSERTION FAILED at kernel/events/hw_breakpoint_test.c:70
-[   14.836897]     Expected IS_ERR(bp) to be false, but is true
-[   14.869770]     not ok 4 test_two_tasks_on_all_cpus
-[   14.913412]     # test_one_task_on_one_cpu: ASSERTION FAILED at kernel/events/hw_breakpoint_test.c:70
-[   14.913412]     Expected IS_ERR(bp) to be false, but is true
-[   14.929852]     not ok 5 test_one_task_on_one_cpu
-[   14.939676]     # test_one_task_mixed: ASSERTION FAILED at kernel/events/hw_breakpoint_test.c:70
-[   14.939676]     Expected IS_ERR(bp) to be false, but is true
-[   14.953670]     not ok 6 test_one_task_mixed
-[   14.964403]     # test_two_tasks_on_one_cpu: ASSERTION FAILED at kernel/events/hw_breakpoint_test.c:70
-[   14.964403]     Expected IS_ERR(bp) to be false, but is true
-[   14.997262]     not ok 7 test_two_tasks_on_one_cpu
-[   15.012825]     # test_two_tasks_on_one_all_cpus: ASSERTION FAILED at kernel/events/hw_breakpoint_test.c:70
-[   15.012825]     Expected IS_ERR(bp) to be false, but is true
-[   15.045472]     not ok 8 test_two_tasks_on_one_all_cpus
-[   15.070033]     # test_task_on_all_and_one_cpu: ASSERTION FAILED at kernel/events/hw_breakpoint_test.c:70
-[   15.070033]     Expected IS_ERR(bp) to be false, but is true
-[   15.077092]     not ok 9 test_task_on_all_and_one_cpu
-
----
-arm64:virt:
-
-[    7.753199]     ok 2 test_many_cpus
-[    7.766356]     # test_one_task_on_all_cpus: ASSERTION FAILED at kernel/events/hw_breakpoint_test.c:70
-[    7.766356]     Expected IS_ERR(bp) to be false, but is true
-[    7.775897]     not ok 3 test_one_task_on_all_cpus
-[    7.786604]     # test_two_tasks_on_all_cpus: ASSERTION FAILED at kernel/events/hw_breakpoint_test.c:70
-[    7.786604]     Expected IS_ERR(bp) to be false, but is true
-[    7.793878]     not ok 4 test_two_tasks_on_all_cpus
-[    7.799954]     # test_one_task_on_one_cpu: ASSERTION FAILED at kernel/events/hw_breakpoint_test.c:70
-[    7.799954]     Expected IS_ERR(bp) to be false, but is true
-[    7.811446]     not ok 5 test_one_task_on_one_cpu
-[    7.823706]     # test_one_task_mixed: ASSERTION FAILED at kernel/events/hw_breakpoint_test.c:70
-[    7.823706]     Expected IS_ERR(bp) to be false, but is true
-[    7.838892]     not ok 6 test_one_task_mixed
-[    7.843594]     # test_two_tasks_on_one_cpu: ASSERTION FAILED at kernel/events/hw_breakpoint_test.c:70
-[    7.843594]     Expected IS_ERR(bp) to be false, but is true
-[    7.862087]     not ok 7 test_two_tasks_on_one_cpu
-[    7.869706]     # test_two_tasks_on_one_all_cpus: ASSERTION FAILED at kernel/events/hw_breakpoint_test.c:70
-[    7.869706]     Expected IS_ERR(bp) to be false, but is true
-[    7.874499]     not ok 8 test_two_tasks_on_one_all_cpus
-[    7.878321]     # test_task_on_all_and_one_cpu: ASSERTION FAILED at kernel/events/hw_breakpoint_test.c:70
-[    7.878321]     Expected IS_ERR(bp) to be false, but is true
-[    7.894138]     not ok 9 test_task_on_all_and_one_cpu
-[    7.894501] # hw_breakpoint: pass:2 fail:7 skip:0 total:9
-[    7.894911] # Totals: pass:2 fail:7 skip:0 total:9
-
----
-loongarch:
-
-[    7.327439]     ok 2 test_many_cpus
-[    7.330144] ------------[ cut here ]------------
-[    7.330849] WARNING: CPU: 1 PID: 87 at kernel/events/hw_breakpoint_test.c:49 test_one_task_on_all_cpus+0x204/0x210
+DQoNCkxlIDA0LzAzLzIwMjQgw6AgMTE6MzIsIFRob21hcyBaaW1tZXJtYW5uIGEgw6ljcml0wqA6
+DQo+IEhpDQo+IA0KPiBBbSAwNC4wMy4yNCB1bSAxMDo1NSBzY2hyaWViIEphbmkgTmlrdWxhOg0K
+Pj4gUmVtb3ZhbCBvZiB0aGUgYmFja2xpZ2h0IGluY2x1ZGUgZnJvbSBmYi5oIHVuY292ZXJlZCBh
+biBpbXBsaWNpdA0KPj4gZGVwZW5kZW5jeSBpbiBwb3dlcnBjIGFzbS9iYWNrbGlnaHQuaC4gQWRk
+IHRoZSBleHBsaWNpdCBpbmNsdWRlLg0KPj4NCj4+IFJlcG9ydGVkLWJ5OiBOYXJlc2ggS2FtYm9q
+dSA8bmFyZXNoLmthbWJvanVAbGluYXJvLm9yZz4NCj4+IENsb3NlczogDQo+PiBodHRwczovL2xv
+cmUua2VybmVsLm9yZy9yL0NBK0c5ZllzQWs1VGJxcXhGQzJXNG9ITEdBMENiVEhNeGJlcThRYXlG
+WFRVNzVZaXVlQUBtYWlsLmdtYWlsLmNvbQ0KPj4gRml4ZXM6IDExYjRlZWRmYzg3ZCAoImZiZGV2
+OiBEbyBub3QgaW5jbHVkZSA8bGludXgvYmFja2xpZ2h0Lmg+IGluIA0KPj4gaGVhZGVyIikNCj4+
+IENjOiBUaG9tYXMgWmltbWVybWFubiA8dHppbW1lcm1hbm5Ac3VzZS5kZT4NCj4+IENjOiBIZWxn
+ZSBEZWxsZXIgPGRlbGxlckBnbXguZGU+DQo+PiBDYzogbGludXgtZmJkZXZAdmdlci5rZXJuZWwu
+b3JnDQo+PiBTaWduZWQtb2ZmLWJ5OiBKYW5pIE5pa3VsYSA8amFuaS5uaWt1bGFAaW50ZWwuY29t
+Pg0KPj4NCj4+IC0tLQ0KPj4NCj4+IE5vdCBldmVuIGNvbXBpbGUgdGVzdGVkIQ0KPiANCj4gVGhh
+dCdzIG9uZSBvZiB0aGUgY2FzZXMgdGhhdCdzIGhhcmQgdG8gY2F0Y2ggdW5sZXNzIHlvdSBnZXQg
+dGhlIGNvbmZpZyANCj4gcmlnaHQuDQo+IA0KPj4gLS0tDQo+PiDCoCBhcmNoL3Bvd2VycGMvaW5j
+bHVkZS9hc20vYmFja2xpZ2h0LmggfCAxICsNCj4+IMKgIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2Vy
+dGlvbigrKQ0KPj4NCj4+IGRpZmYgLS1naXQgYS9hcmNoL3Bvd2VycGMvaW5jbHVkZS9hc20vYmFj
+a2xpZ2h0LmggDQo+PiBiL2FyY2gvcG93ZXJwYy9pbmNsdWRlL2FzbS9iYWNrbGlnaHQuaA0KPj4g
+aW5kZXggMWI1ZWFiNjJlZDA0Li4yNzVkNWJiOWFhMDQgMTAwNjQ0DQo+PiAtLS0gYS9hcmNoL3Bv
+d2VycGMvaW5jbHVkZS9hc20vYmFja2xpZ2h0LmgNCj4+ICsrKyBiL2FyY2gvcG93ZXJwYy9pbmNs
+dWRlL2FzbS9iYWNrbGlnaHQuaA0KPj4gQEAgLTEwLDYgKzEwLDcgQEANCj4+IMKgICNkZWZpbmUg
+X19BU01fUE9XRVJQQ19CQUNLTElHSFRfSA0KPj4gwqAgI2lmZGVmIF9fS0VSTkVMX18NCj4+ICsj
+aW5jbHVkZSA8bGludXgvYmFja2xpZ2h0Lmg+DQo+IA0KPiBUaGFua3MsIGJ1dCBJIHRoaW5rIHRo
+aXMgc2hvdWxkIGdvIGRpcmVjdGx5IGludG8gY2hpcHNmYi5jLiBJIHdvdWxkIGhhdmUgDQo+IHBy
+b3ZpZGVkIGEgcGF0Y2ggYWxyZWFkeSwgaWYgb3VyIG1haWwgc2VydmVyIGRpZG4ndCBoYXZlIGlz
+c3VlcyB0aGlzIA0KPiBtb3JuaW5nLiBMZXQgbWUgdHJ5IGFnYWluLg0KDQphc20vYmFja2xpZ2h0
+LmggbmVlZHMgaXQgZm9yIHN0cnVjdCBiYWNrbGlnaHRfZGV2aWNlDQoNCkF0IGxlYXN0IGlmIHlv
+dSBkb24ndCB3YW50IHRvIGluY2x1ZGUgbGludXgvYmFja2xpZ2h0LmggaW4gDQphc20vYmFja2xp
+Z2h0LmgsIHRoZW4geW91IG5lZWQgYSBmb3J3YXJkIGRlY2xhcmF0aW9uIG9mIHN0cnVjdCANCmJh
+Y2tsaWdodF9kZXZpY2U7DQoNCj4gDQo+IEJlc3QgcmVnYXJkcw0KPiBUaG9tYXMNCj4gDQo+PiDC
+oCAjaW5jbHVkZSA8bGludXgvZmIuaD4NCj4+IMKgICNpbmNsdWRlIDxsaW51eC9tdXRleC5oPg0K
+PiANCg==
 
