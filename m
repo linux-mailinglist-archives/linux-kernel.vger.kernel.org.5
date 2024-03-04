@@ -1,207 +1,173 @@
-Return-Path: <linux-kernel+bounces-89971-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89966-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B92A86F85F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 03:02:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3FD586F853
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 02:52:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4342B28119A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 02:02:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 762761C208B2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 01:52:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B852C15D1;
-	Mon,  4 Mar 2024 02:02:37 +0000 (UTC)
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6299110F9;
+	Mon,  4 Mar 2024 01:51:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nB6jyWDz"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 274FB10F9;
-	Mon,  4 Mar 2024 02:02:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E24561362
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 01:51:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709517757; cv=none; b=spdyYrcDw94hjcVlZ+fBGFADm1kwzWgMriHAjDRIQr6iheu1hUJYBPaNycSyUKBDWFZKMt2dPkNlrath8B1Byf/SnGDEEAPuxxIXPkpq+SSxstiwGOb/SU1jSjuVF/AL6mfL3kCzirYGhqRUwFWz2XSAnV0Q9zj/R+TjzWv/XIQ=
+	t=1709517116; cv=none; b=U5t3BKczjCOJuRHcqwCKhg8c0Bezky1Hxp2nWSQX1qTpxcIkE2i2SiFUQffWyPtOm3zU7OIQaDZs7zOvZs+kNT8Un45xq9a5RwSvCsK+SXoWqykCeI2ozi9ClKwdOgASBFXn6H2GsiNRpnXFeS3mfNatdVebR8q43/U2lIdjdtQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709517757; c=relaxed/simple;
-	bh=mNw8COTtyAK/yrEut5kqQsziR57os7Zc/8gQK6TzrhU=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=j5P4It95zdx/IShMvKLLKckPl1IHAu1NLc91A0EhVT+RMUnyNHhZQgxWjbcihTXa7/dpaLwDD6/rtLbXlKbT0hQNh/jJGLDar3APUuIh/dIHyqyPBjG/9tl42sFlFGYpxosQ3zwLN+XT0V9jvQTpvLoSQUOxsZ9mZGcTr+F5soA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Tp22Y5GbQz1Q9gy;
-	Mon,  4 Mar 2024 10:00:05 +0800 (CST)
-Received: from canpemm500010.china.huawei.com (unknown [7.192.105.118])
-	by mail.maildlp.com (Postfix) with ESMTPS id 2384F14038F;
-	Mon,  4 Mar 2024 10:02:25 +0800 (CST)
-Received: from huawei.com (10.67.189.167) by canpemm500010.china.huawei.com
- (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 4 Mar
- 2024 10:02:24 +0800
-From: Jiangfeng Xiao <xiaojiangfeng@huawei.com>
-To: <gustavoars@kernel.org>, <akpm@linux-foundation.org>,
-	<jpoimboe@kernel.org>, <peterz@infradead.org>, <dave.hansen@linux.intel.com>,
-	<kirill.shutemov@linux.intel.com>, <keescook@chromium.org>,
-	<xiaojiangfeng@huawei.com>
-CC: <linux-kernel@vger.kernel.org>, <linux-hardening@vger.kernel.org>,
-	<linux-mm@kvack.org>, <nixiaoming@huawei.com>, <kepler.chenxin@huawei.com>,
-	<wangbing6@huawei.com>, <wangfangpeng1@huawei.com>, <douzhaolei@huawei.com>
-Subject: [PATCH] usercopy: delete __noreturn from usercopy_abort
-Date: Mon, 4 Mar 2024 09:39:45 +0800
-Message-ID: <1709516385-7778-1-git-send-email-xiaojiangfeng@huawei.com>
-X-Mailer: git-send-email 1.8.5.6
+	s=arc-20240116; t=1709517116; c=relaxed/simple;
+	bh=BCLPYf9pYMiAg1zSZ7/AMXpacdKq7f33SgpfQANAkY0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=RxQTbxLWZPnqm3f4FNUGj5i1y57i1SjF462B0qKrXCitUf+s335AtnmvwvuMv+NiEmavkTenXEZFNOtYsNP9V6vFwLRI/9hGbWBSL8B2onMUNucYuxF9aJ+9fnWG/QX3Kjn1D6HI7Ca9+k2FtTk2cTxNF8jCuHhMit55c2V69+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nB6jyWDz; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709517115; x=1741053115;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=BCLPYf9pYMiAg1zSZ7/AMXpacdKq7f33SgpfQANAkY0=;
+  b=nB6jyWDz6lc287DmByu4nCohA0cUAEM7znGrB2Wn0h9/p1eonMAfmuK4
+   F9FQDGBhffiR5Aa66cpn77n/Osf0QY7CD1mV+9YhssD2mKRs1b867VGcy
+   xeAfjwWs5UtrP9zc87vt2LUko3Nm59Cfhcv8Kx+n6fERvoDEbb3gCFQgW
+   I3LvZX34cBIa8YnUQwQQ4nD5oK12bJIRRuKu5/nZaW/3pVHKhzhcuEUwI
+   vtnekKsqw/HR1tattI9ch/giKZwBS3xY6EpWTBplcTgSM5HPUPJWt/T+w
+   JuEXGsUMnA+2ee4CeZZJUJclP8coxLQW2ZEhfhxg1b8dV7UeR+2fegxFX
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="4117144"
+X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
+   d="scan'208";a="4117144"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2024 17:51:54 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
+   d="scan'208";a="8773042"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2024 17:51:49 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Aneesh Kumar K.V <aneesh.kumar@kernel.org>
+Cc: Michal Hocko <mhocko@suse.com>,  Andrew Morton
+ <akpm@linux-foundation.org>,  Donet Tom <donettom@linux.ibm.com>,
+  linux-mm@kvack.org,  linux-kernel@vger.kernel.org,  Dave Hansen
+ <dave.hansen@linux.intel.com>,  Mel Gorman <mgorman@suse.de>,  Ben
+ Widawsky <ben.widawsky@intel.com>,  Feng Tang <feng.tang@intel.com>,
+  Andrea Arcangeli <aarcange@redhat.com>,  Peter Zijlstra
+ <peterz@infradead.org>,  Ingo Molnar <mingo@redhat.com>,  Rik van Riel
+ <riel@surriel.com>,  Johannes Weiner <hannes@cmpxchg.org>,  Matthew Wilcox
+ <willy@infradead.org>,  Mike Kravetz <mike.kravetz@oracle.com>,  Vlastimil
+ Babka <vbabka@suse.cz>,  Dan Williams <dan.j.williams@intel.com>,  Hugh
+ Dickins <hughd@google.com>,  Kefeng Wang <wangkefeng.wang@huawei.com>,
+  Suren Baghdasaryan <surenb@google.com>
+Subject: Re: [PATCH 1/3] mm/mempolicy: Use the already fetched local variable
+In-Reply-To: <875xy3ltys.fsf@kernel.org> (Aneesh Kumar K. V.'s message of
+	"Sun, 03 Mar 2024 11:47:47 +0530")
+References: <9c3f7b743477560d1c5b12b8c111a584a2cc92ee.1708097962.git.donettom@linux.ibm.com>
+	<20240218133851.22c22b55460e866a099be5ce@linux-foundation.org>
+	<63a0f7c4-3c3f-4097-9a24-d1e3fc7b6030@linux.ibm.com>
+	<20240219172130.82a16c1ebecbf8ba86a8987d@linux-foundation.org>
+	<21f343fa-84a7-4539-91e2-6fc963dbfb62@kernel.org>
+	<87frxnps8w.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<7097ff95-6077-4744-a770-b90d224c0c9b@kernel.org>
+	<b599bfe5-1c4d-4750-b0d6-a086e1c8a34c@kernel.org>
+	<8734tnppls.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<ZdRq9EM1mDFXBiiO@tiehlicka> <875xy3ltys.fsf@kernel.org>
+Date: Mon, 04 Mar 2024 09:49:54 +0800
+Message-ID: <87sf16bwal.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- canpemm500010.china.huawei.com (7.192.105.118)
+Content-Type: text/plain; charset=ascii
 
-When the last instruction of a noreturn function is a call
-to another function, the return address falls outside
-of the function boundary. This seems to cause kernel
-to interrupt the backtrace.
+Aneesh Kumar K.V <aneesh.kumar@kernel.org> writes:
 
-My testcase is as follow:
-```
+> Michal Hocko <mhocko@suse.com> writes:
+>
+>> On Tue 20-02-24 15:22:07, Huang, Ying wrote:
+>> [...]
+>>> This isn't an issue now, because mpol_misplaced() are always called with
+>>> PTL held.  And, we can still keep thiscpu local variable.
+>>
+>> yes, this is the case but it would be better if we made that assumption
+>> official by lockdep_assert_held
+>>
+>
+> How about this folded into this patch?
+>
+> 2 files changed, 12 insertions(+), 4 deletions(-)
+> mm/memory.c    |  6 ++++--
+> mm/mempolicy.c | 10 ++++++++--
+>
+> modified   mm/memory.c
+> @@ -4879,9 +4879,11 @@ static vm_fault_t do_fault(struct vm_fault *vmf)
+>  	return ret;
+>  }
+>  
+> -int numa_migrate_prep(struct folio *folio, struct vm_area_struct *vma,
+> +int numa_migrate_prep(struct folio *folio, struct vm_fault *vmf,
+>  		      unsigned long addr, int page_nid, int *flags)
+>  {
+> +	struct vm_area_struct *vma = vmf->vma;
+> +
+>  	folio_get(folio);
+>  
+>  	/* Record the current PID acceesing VMA */
+> @@ -4893,7 +4895,7 @@ int numa_migrate_prep(struct folio *folio, struct vm_area_struct *vma,
+>  		*flags |= TNF_FAULT_LOCAL;
+>  	}
+>  
+> -	return mpol_misplaced(folio, vma, addr);
+> +	return mpol_misplaced(folio, vmf, addr);
+>  }
+>  
+>  static vm_fault_t do_numa_page(struct vm_fault *vmf)
+> modified   mm/mempolicy.c
+> @@ -2495,18 +2495,24 @@ static inline bool mpol_preferred_should_numa_migrate(int exec_node, int folio_n
+>   * Return: NUMA_NO_NODE if the page is in a node that is valid for this
+>   * policy, or a suitable node ID to allocate a replacement folio from.
+>   */
+> -int mpol_misplaced(struct folio *folio, struct vm_area_struct *vma,
+> +int mpol_misplaced(struct folio *folio, struct vm_fault *vmf,
+>  		   unsigned long addr)
+>  {
+>  	struct mempolicy *pol;
+>  	pgoff_t ilx;
+>  	struct zoneref *z;
+>  	int curnid = folio_nid(folio);
+> +	struct vm_area_struct *vma = vmf->vma;
+>  	int thiscpu = raw_smp_processor_id();
+> -	int thisnid = cpu_to_node(thiscpu);
+> +	int thisnid = numa_node_id();
+>  	int polnid = NUMA_NO_NODE;
+>  	int ret = NUMA_NO_NODE;
+>  
+> +	/*
+> +	 * Make sure ptl is held so that we don't preempt and we
+> +	 * have a stable smp processor id
+> +	 */
+> +	lockdep_assert_held(vmf->ptl);
+>  	pol = get_vma_policy(vma, addr, folio_order(folio), &ilx);
+>  	if (!(pol->flags & MPOL_F_MOF))
+>  		goto out;
+>
+> [back]
+>  
 
-static volatile size_t unconst = 0;
-/*
-check_object_size
-    __check_object_size
-        check_kernel_text_object
-            usercopy_abort("kernel text", ...)
-*/
-void test_usercopy_kernel(void)
-{
-	check_object_size(schedule, unconst + PAGE_SIZE, 1);
-}
+LGTM, Thanks!
 
-static int __init test_usercopy_init(void)
-{
-        test_usercopy_kernel();
-	return 0;
-}
-
-static void __exit test_usercopy_exit(void)
-{
-}
-
-module_init(test_usercopy_init);
-module_exit(test_usercopy_exit);
-MODULE_LICENSE("GPL");
-```
-
-Running the testcase cause kernel oops,
-and then the call stack is incorrect:
-```
-usercopy: Kernel memory exposure attempt detected from kernel text
-Kernel BUG at usercopy_abort+0x98/0x9c
-Internal error: Oops - undefined instruction: 0 [#1] SMP ARM
-Modules linked in: test_usercopy(O+) usbcore usb_common
-CPU: 0 PID: 609 Comm: insmod Tainted: G           O      5.10.0 #11
-Hardware name: Hisilicon A9
-PC is at usercopy_abort+0x98/0x9c
-LR is at usercopy_abort+0x98/0x9c
-[...]
- (usercopy_abort) from (memfd_fcntl+0x0/0x654)
- (memfd_fcntl) from (0xef7368f8)
-Code: e1a01004 e58dc004 e58de000 eb108378 (e7f001f2)
----[ end trace e5fdc684259b0883 ]---
-Kernel panic - not syncing: Fatal exception
-```
-
-Why Does the kernel backtrace cause errors?
-Because usercopy_abort is marked as __noreturn.
-
-You can see the related disassembling:
-```
-c02f24ac <__check_object_size>:
-static_key_count():
-[...]
-check_kernel_text_object():
-linux/mm/usercopy.c:125
-        usercopy_abort("kernel text", NULL, to_user, ptr - textlow, n);
-c02f26c4:       e3040110        movw    r0, #16656      ; 0x4110
-c02f26c8:       e58d5000        str     r5, [sp]
-c02f26cc:       e0443003        sub     r3, r4, r3
-c02f26d0:       e1a02007        mov     r2, r7
-c02f26d4:       e34c0096        movt    r0, #49302      ; 0xc096
-c02f26d8:       ebffff4c        bl      c02f2410 <usercopy_abort>
-
-c02f26dc <memfd_fcntl>:
-memfd_fcntl():
-[...]
-```
-
-The last instruction of __check_object_size is a call to usercopy_abort,
-which is a noreturn function, the return address falls outside of the
-__check_object_size function boundary, the return address falls into
-the next function memfd_fcntl, therefore,
-an error occurs when the kernel backtrace.
-
-Delete __noreturn from usercopy_abort,
-the correct call stack is as follow:
-```
- (usercopy_abort) from (__check_object_size+0x170/0x234)
- (__check_object_size) from (test_usercopy_init+0x8/0xc0 [test_usercopy])
- (test_usercopy_init [test_usercopy]) from (do_one_initcall+0xac/0x204)
- (do_one_initcall) from (do_init_module+0x44/0x1c8)
- (do_init_module) from (load_module+0x1d48/0x2434)
- (load_module) from (sys_finit_module+0xc0/0xf4)
- (sys_finit_module) from (ret_fast_syscall+0x0/0x50)
-```
-
-Fixes: b394d468e7d7 ("usercopy: Enhance and rename report_usercopy()")
-
-Signed-off-by: Jiangfeng Xiao <xiaojiangfeng@huawei.com>
----
- include/linux/uaccess.h   | 2 +-
- mm/usercopy.c             | 2 +-
- tools/objtool/noreturns.h | 1 -
- 3 files changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
-index 3064314..c37af70 100644
---- a/include/linux/uaccess.h
-+++ b/include/linux/uaccess.h
-@@ -437,7 +437,7 @@ static inline void user_access_restore(unsigned long flags) { }
- #endif
- 
- #ifdef CONFIG_HARDENED_USERCOPY
--void __noreturn usercopy_abort(const char *name, const char *detail,
-+void usercopy_abort(const char *name, const char *detail,
- 			       bool to_user, unsigned long offset,
- 			       unsigned long len);
- #endif
-diff --git a/mm/usercopy.c b/mm/usercopy.c
-index 83c164a..ca1b22e 100644
---- a/mm/usercopy.c
-+++ b/mm/usercopy.c
-@@ -83,7 +83,7 @@ static noinline int check_stack_object(const void *obj, unsigned long len)
-  * kmem_cache_create_usercopy() function to create the cache (and
-  * carefully audit the whitelist range).
-  */
--void __noreturn usercopy_abort(const char *name, const char *detail,
-+void usercopy_abort(const char *name, const char *detail,
- 			       bool to_user, unsigned long offset,
- 			       unsigned long len)
- {
-diff --git a/tools/objtool/noreturns.h b/tools/objtool/noreturns.h
-index 1685d7e..c7e341c 100644
---- a/tools/objtool/noreturns.h
-+++ b/tools/objtool/noreturns.h
-@@ -40,7 +40,6 @@
- NORETURN(snp_abort)
- NORETURN(start_kernel)
- NORETURN(stop_this_cpu)
--NORETURN(usercopy_abort)
- NORETURN(x86_64_start_kernel)
- NORETURN(x86_64_start_reservations)
- NORETURN(xen_cpu_bringup_again)
--- 
-1.8.5.6
-
+--
+Best Regards,
+Huang, Ying
 
