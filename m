@@ -1,99 +1,111 @@
-Return-Path: <linux-kernel+bounces-90378-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90380-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E792086FE73
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:10:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A3F8686FE75
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:11:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2C03282461
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:10:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A8EB281705
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:11:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32686225D2;
-	Mon,  4 Mar 2024 10:10:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5715225A6;
+	Mon,  4 Mar 2024 10:11:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TP/R0yQS"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="t1vKMRHA"
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7015620B33;
-	Mon,  4 Mar 2024 10:10:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12EE5224DE
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 10:11:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709547028; cv=none; b=o6Qm1RuSeRIdfx3KQmhfv9864AbPbqW8sd0bwezsxLGuY34IiZp8D6VHPsVmnO9qdYwDBBTyRPDFwS4lbI7ROIWjc0ADMeX+/DDM9bP1Zmw6cMB157aSihS/tBoP5nxJwrZN2okbemnu8npEKRbzaC7WUS+lxS6X823GZjdPlvY=
+	t=1709547079; cv=none; b=BpvA1CXhyKyWV3l/pcPB9gqXFCrWO8kjHg/0U6BOuSox7vCngkI99CMhKgGlYyRUAupvGEyKyfCquUOlRq0Nu0fQ480P0iVl9V1WT2QC7yMOk18C/qWCFvWA9WuWRWluJNN1cHgrJBvZZNQtk4d4vqIeYlgdRpjdTDqENI98a5U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709547028; c=relaxed/simple;
-	bh=B826BG/LabvHzX/qTThYEXRApaxmS5m/7jaE3+DLICE=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=QC1/ADCRTVorhaxDo/PMOQYei37Hu1GMwtWSPtipm2NhWOfjVN/ZwfqoQkqERRFwh4sgX2PCIAxuIbXvwcobXcrvsemiLHb0pJWlozVDEROiXuCPIJ8r1zJ2lwhIaTOT94xXI7enwYELirE+WS0pu6QH1mFFVI0cDCDOMD6MCxA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TP/R0yQS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 2EFC9C433C7;
-	Mon,  4 Mar 2024 10:10:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709547028;
-	bh=B826BG/LabvHzX/qTThYEXRApaxmS5m/7jaE3+DLICE=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=TP/R0yQScU7A9oo7JK2IJK6F1Cu+pbJvFHFTfd3w7ecqrW/nF3MLpLuVyEl6sus/D
-	 l3DLo9YgpIHwomCL2w8MoYH3B4hZ4fyf22JS38RYyin1BgFlIqB2oj9VbGrj6+JOXA
-	 /Yv6Gcc66KokxBxI2rzUiaMSwHOTa34MZMpHcPJPP/vxYWbNP9bxs1mvK8UqMsiTHc
-	 K8wflKdElTFX5OuqA4Ci8UGu42NaLtv88IFFkPcSNW8Kl8fW4wqwb4nP8hOPV3ZUVr
-	 Pa3W+Ni7Xb9W0CoKuRxO5fdiAhv8zzt/8HvfheAyUiDvxTaMx5tXZuoZw6RxTMFjIT
-	 tsndoi4QFvUVg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 147ACD88F87;
-	Mon,  4 Mar 2024 10:10:28 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1709547079; c=relaxed/simple;
+	bh=QsoSw7nIsKdCbrB08TRB5MwF9IW2XROJQ40mzxo9EQ8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dq0JBB5nejxv5aJtf52DRgce+bJBp0gPcVst6FRVTH4eNJdvknV6FsIi8H45++wPeY3HV/oZCqiUchRqXj9/Ji+DREcCbIYRAyC7TYJ19u+O4ZYHQXfNrkbBh5bscz4wGk6sGj4x3ZvSmxpinwyw6vf2m52x6Fm+Phf0xjsBYW4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=t1vKMRHA; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-33dcd8dec88so2702466f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 02:11:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709547076; x=1710151876; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=apfVynKdMHWt/84gIfAXsivA2/2+KZh2cujSEqljhTk=;
+        b=t1vKMRHAekQqK4ihSgzLQ0FhGEG+pptJ/XdfGmAHmEWyO1JrVm+uK1CZMFUrfprRzG
+         gf6jEqW78w/oAIFcbCZ+LkFHwxDmwS1r/fMxHXWs8ZH9DgJMXj+Sx1W9L83Y7jkWzHgk
+         skMXS2K+FfWGLDswauoZJhbC7Psq5sjmdqXaF8bamDlx9yElMHxKJLqEJmAHaOU2ZN1z
+         X7wPUEL+TPmJ+gN78sPaOg5IACtXSGRRLlnB7HEZ+BDm+Yt6eOHIHZxx5GP3g2dowHaP
+         pNenXNllbzML3GB8v50NzHdDtVwOnsl3SnlVHJP8EZwa3G8+CZ2BLVmpmTqmmPmpu+Hm
+         vEwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709547076; x=1710151876;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=apfVynKdMHWt/84gIfAXsivA2/2+KZh2cujSEqljhTk=;
+        b=wV2oyOoeTRa8y0vhEGnfpSNv4jnKRnMuDLZ9hI5uguXaX1+zHWbzfIYV1ft7AInGrP
+         1GU3lRiE6wgZfnK1F/kkgXvo3VDYFSYf4+UFEOVaK9fXvIkDyaMYBMWhtZBYsq+k+QLk
+         K3D0JGLlrowyfZ6CRKwasiNfIEnixkS05abjEpC4UgIfmi3Nq1jzfa59mtsoTBIu0A6H
+         zMS6Cdem3Mx9I/ccq7RZGqgy3uQ1UnrVGXnoNm2pGaFC4iaHFDZ7oAXuek10OVVV2l6y
+         13+hi9Xe6qCv4dmC+j7Y0kKYAfIGHi+fykf7vwQB3UXq9Zde9UFN9zq8Y+uqC+g8CQEF
+         kiKg==
+X-Forwarded-Encrypted: i=1; AJvYcCUgV1ZI/ztBP6yAmShCDDfTZEiLt3AkWLPgEJh2bpLmlGNTk3V0WAPXVim6dTc1OqMEtdwQobvwrcKW39CX5planS/9OrQZ390rhPo5
+X-Gm-Message-State: AOJu0YxN9Hel/4SEfNcXC8ObJnqrYZMJiJWCCl3Ts8BfS2Lspz9GymNg
+	PU135p3JwXxw6CE4VSY7nzhWm8VgNqbEKxfgrE9p9FEL/wPlsKPpkCydAxnHQ3Y=
+X-Google-Smtp-Source: AGHT+IHNn7sU3K7fVrmKdjcX18dvKktXyRnPZAwnYOUoT0D0zKIFokCLkKqap2Bkk/sWa6rTyu9UnQ==
+X-Received: by 2002:a5d:5ccb:0:b0:33e:1627:4682 with SMTP id cg11-20020a5d5ccb000000b0033e16274682mr5193040wrb.29.1709547076459;
+        Mon, 04 Mar 2024 02:11:16 -0800 (PST)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id f10-20020a5d58ea000000b0033d4cf751b2sm11722955wrd.33.2024.03.04.02.11.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Mar 2024 02:11:15 -0800 (PST)
+Date: Mon, 4 Mar 2024 13:11:11 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	Takahiro Kuwano <Takahiro.Kuwano@infineon.com>,
+	kernel@collabora.com, kernel-janitors@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mtd: spi-nor: core: correct type of i
+Message-ID: <7a42984f-34cc-494e-b8f3-83596621d31a@moroto.mountain>
+References: <20240304090103.818092-1-usama.anjum@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/3] gve: Add header split support
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170954702808.29163.14572409164565217897.git-patchwork-notify@kernel.org>
-Date: Mon, 04 Mar 2024 10:10:28 +0000
-References: <20240229212236.3152897-1-ziweixiao@google.com>
-In-Reply-To: <20240229212236.3152897-1-ziweixiao@google.com>
-To: Ziwei Xiao <ziweixiao@google.com>
-Cc: netdev@vger.kernel.org, jeroendb@google.com, pkaligineedi@google.com,
- shailend@google.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, willemb@google.com, rushilg@google.com,
- jfraker@google.com, jrkim@google.com, hramamurthy@google.com,
- horms@kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240304090103.818092-1-usama.anjum@collabora.com>
 
-Hello:
-
-This series was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
-
-On Thu, 29 Feb 2024 13:22:33 -0800 you wrote:
-> Currently, the ethtool's ringparam has added a new field tcp-data-split
-> for enabling and disabling header split. These three patches will
-> utilize that ethtool flag to support header split in GVE driver.
+On Mon, Mar 04, 2024 at 02:01:03PM +0500, Muhammad Usama Anjum wrote:
+> The i should be signed to find out the end of the loop. Otherwise,
+> i >= 0 is always true and loop becomes infinite. Make its type to be
+> int.
 > 
-> Jeroen de Borst (3):
->   gve: Add header split device option
->   gve: Add header split data path
->   gve: Add header split ethtool stats
-> 
-> [...]
+> Fixes: 6a9eda34418f ("mtd: spi-nor: core: set mtd->eraseregions for non-uniform erase map")
+> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> ---
+> Changes since v1:
+> - Make i int instead of u8
 
-Here is the summary with links:
-  - [net-next,1/3] gve: Add header split device option
-    https://git.kernel.org/netdev/net-next/c/0b43cf527d1d
-  - [net-next,2/3] gve: Add header split data path
-    https://git.kernel.org/netdev/net-next/c/5e37d8254e7f
-  - [net-next,3/3] gve: Add header split ethtool stats
-    https://git.kernel.org/netdev/net-next/c/056a70924a02
+Thanks!
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
 
+regards,
+dan carpenter
 
 
