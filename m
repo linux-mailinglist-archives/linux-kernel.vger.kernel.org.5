@@ -1,406 +1,401 @@
-Return-Path: <linux-kernel+bounces-90735-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90734-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EC1987042C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:31:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0DE4870429
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:30:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D39A9B2837B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:31:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3635D1F21226
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:30:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD7923B29A;
-	Mon,  4 Mar 2024 14:30:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DA711DFD5;
+	Mon,  4 Mar 2024 14:30:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="N9h9roHF"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MC3i64YA"
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D5BDBE4C;
-	Mon,  4 Mar 2024 14:30:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 379483D0B9;
+	Mon,  4 Mar 2024 14:30:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709562649; cv=none; b=Or+xzTTnhx1JiramcOi7h9ce0gIi5pCW0liMcZxmhbflD96YpvEdn6ZF7RpPbI0QJLC9NIZMBnSucxQHjimPGlLH0WUEz57RLc0JbNcn++8xNjdus4WdOUqA8b80kBAoGnAskk/cDs7rXqBis207ZyH1zMyP7xDSgLCgBipGuSw=
+	t=1709562611; cv=none; b=bMMDBnZAOsZhKw868cSmFJSvB5ggtS1W/AUA/iGAvonYa+e7u/mLaFbYnDTEv1VvBCC0LC5SuU9qzOoJ/7LyhgYeXuuyDugDPLE1q8KhfHlAaarappB0OQaWBqgeKY+IPg9mi7rzaY7zXxZ3mmexYqzclyj89KZiKI5n6sznCZ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709562649; c=relaxed/simple;
-	bh=UuQpdAHcUd83egaYxRT9C0L3QRwOwMeJRqrjcKWuQhg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=Pm8AWHhu4+wXRfuAXPzMdMjLEZajrAD00gA/HeSrcWSgnyyI3cZqXMLKGhL7lh+EDlfpzkSDpqfqgfgvBaD1G/UxOxh2WyNccCpv/5f3p0NCvsjOlidM427ppq1fSlEivzYwW1ax4uB8yjZ7wD1TU7TEJ2R/f6F1pWiS66fD6oU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=N9h9roHF; arc=none smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1709562647; x=1741098647;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:to:cc;
-  bh=UuQpdAHcUd83egaYxRT9C0L3QRwOwMeJRqrjcKWuQhg=;
-  b=N9h9roHF2z5djvQuLLo7zlPN9QQ5kQvxm48+Q25/ucI6io55z7H/0iVP
-   G44zNP9p4bdChe1ZwyDlPGogPLohwk86MFcc2IO6C0t6NjZPKRYPtBSJs
-   TEKdAumG2ehPz5IS3QC4sezpyGRRR28uI5nL4A7sgo4Jx+hQHNwouHGIH
-   OFJkwFApb9rZpxjn4972EWfCCSpmL7ovV1ovjDhPCCEnhDAwtcWJMdjQd
-   7RE+pYnqVSn+1DaFQOXDHuXf/2auTrN9XoDvZJ5bblJQSp61oQDuC0Xsx
-   E4NRKSx4TVMepbEQntTc/pcQ88JzCta5P7zxbTG/DJwqXudQEW1TSlwHc
-   Q==;
-X-CSE-ConnectionGUID: jOFY5svaROuAta/v3OojJw==
-X-CSE-MsgGUID: EHliILurSS+P6PNTdF359g==
-X-IronPort-AV: E=Sophos;i="6.06,203,1705388400"; 
-   d="scan'208";a="184437303"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 04 Mar 2024 07:30:46 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 4 Mar 2024 07:30:16 -0700
-Received: from [127.0.0.1] (10.10.85.11) by chn-vm-ex03.mchp-main.com
- (10.10.85.151) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Mon, 4 Mar 2024 07:30:10 -0700
-From: Dharma Balasubiramani <dharma.b@microchip.com>
-Date: Mon, 4 Mar 2024 20:00:03 +0530
-Subject: [PATCH v3] dt-bindings: display: atmel,lcdc: convert to dtschema
+	s=arc-20240116; t=1709562611; c=relaxed/simple;
+	bh=nTO2OCoo9G+3aqJUlUJAn6Le+vn7Wle4pGPdiba3p3A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=f9avIWf+GHF+l66ULdIHUNMmDEmxKkvNgLIZupdUi/Hhj+wJcPwo99r+iGjYXZZzs5r/McfwBGm3K9qqgKUBlLfwjE5umfy/BttiRIYrbSz33EIBPIqRNUSOoVhG3nGtVDM7XHyQ2zN5DDKYiKjkWdsp2iTTagV2K5gSldQNasw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MC3i64YA; arc=none smtp.client-ip=209.85.167.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-512f54fc2dbso3739278e87.1;
+        Mon, 04 Mar 2024 06:30:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709562607; x=1710167407; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=b96Fa0n7lJYYYfYP8LJufQCu8NcjICu5pK/smx6fPJ4=;
+        b=MC3i64YAwvzMNjcVRJnJG9+QSBvWrboUXZeuoVqel9XI4q4BSa41Ge2BE5b0BxLsvQ
+         nx7inrC0K1TdOuIuoHD79+XpRodCiJs5AtcTuAGF3xvTMaAR3ImOq2YvZhqpC1t/LzUn
+         elwzCHbaBZ3PDK17Y5hYUVUpFMJvSBRohijGEekXnD+/e8TDVxahKT7n0uHdexugD/3N
+         SM9klu4yt8yjFep+svQnbearjEbBuQaIXO1eGem74vXgwoqjRbdbNgoTbxLURAnbCMVM
+         owuK7z3ajoOcmxB8qs5uBZ2yB71qwi2yObwut0eexx32BuhCTXnurRVBvVn51i5rDSl3
+         leoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709562607; x=1710167407;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=b96Fa0n7lJYYYfYP8LJufQCu8NcjICu5pK/smx6fPJ4=;
+        b=XGl2B16vEBYY+KNS74N3FQEJiyOBstd17NSvPYI4z4ThLzAA+kifEriUlmlqsNP4Oj
+         LBC3HkTjAymNy7ANCJZFSmu6k9nLtDscsW4R68sX9xnBKu5x5V8s4C4kiVIiFWB170+r
+         QR9JyXJ3NXKfsDTD5D+wEZzodK5qWWzfBREwBu9Qx/9b57bckFBZRD5omVnIRO4AY3Ud
+         Kr/YlT0aS0EHca2vXfo2HlAafeIIK2L4iDc71txiguOt5U9zEIksdW+xiRUZQFCjzunz
+         KRlrjQa3qCpEPWsA3Bk4N7BSd77a0R5wYJ4a5Jj/RbFYr/xrgKlKTEcvCEibn/tu5dHq
+         XWhA==
+X-Forwarded-Encrypted: i=1; AJvYcCWQuIXegl1iaY4YYxscHnzOe9mLrppL4tN5sjDU5idUqha0oYJj97q7wmvbawivQbA2KR2ntw7JFIzNS2D3kDnrf8QC/2Az1S3S
+X-Gm-Message-State: AOJu0YzYVIaWkN6hHtfmw34ViopUx0xG00jw//efgYgNRkngLjzwf1LS
+	5nxPwph8VuvE9s4OiI4iITwaggw6Kk3nxpB8B0Tv0bGz+OCitY7z
+X-Google-Smtp-Source: AGHT+IEI67EwIKKimur0K9NcYcnCRXIA/XCA16okEDStPcTssLZxiZcSCdG0p4qTedWtdUaCnY4mRA==
+X-Received: by 2002:ac2:4102:0:b0:512:a943:a0c3 with SMTP id b2-20020ac24102000000b00512a943a0c3mr5219080lfi.57.1709562607091;
+        Mon, 04 Mar 2024 06:30:07 -0800 (PST)
+Received: from [172.17.59.219] (avpn01.yadro.com. [89.207.88.243])
+        by smtp.gmail.com with ESMTPSA id be15-20020a056512250f00b005131cafecc0sm1746986lfb.25.2024.03.04.06.30.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Mar 2024 06:30:06 -0800 (PST)
+Message-ID: <72c67d56-ea70-4348-b1a0-895c319b3aef@gmail.com>
+Date: Mon, 4 Mar 2024 17:30:05 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 2/2] mmc: sdhci-of-dwcmshc: Implement SDHCI CQE support
+Content-Language: en-US
+To: Adrian Hunter <adrian.hunter@intel.com>, linux-mmc@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
+ Shawn Lin <shawn.lin@rock-chips.com>, Jyan Chou <jyanchou@realtek.com>
+References: <20231231144619.758290-1-serghox@gmail.com>
+ <20231231144619.758290-3-serghox@gmail.com>
+ <8eecede9-23b6-48dd-90e2-68e1f2722830@intel.com>
+From: Sergey Khimich <serghox@gmail.com>
+In-Reply-To: <8eecede9-23b6-48dd-90e2-68e1f2722830@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-ID: <20240304-lcdc-fb-v3-1-8b616fbb0199@microchip.com>
-X-B4-Tracking: v=1; b=H4sIAOra5WUC/2WMQQ6CMBBFr0K6toZOR1BX3sO4oNNWJhFLWtNoC
- He3sCHR5fv5700iucguiXM1iegyJw7PAnpXCeq7591JtoUF1IA1gJYPsiS9keZowYHXdFIoynu
- MzvN7LV1vhXtOrxA/azirZf1vZCWVRGqQTANta/1lYIqBeh73FAaxdDJsrq5xc6G4nUKDjSZ1a
- Ltfd57nL7naEtjeAAAA
-To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
-	<mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
-	<airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Rob Herring
-	<robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>, Alexandre Belloni
-	<alexandre.belloni@bootlin.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>
-CC: <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	Dharma Balasubiramani <dharma.b@microchip.com>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1709562610; l=9681;
- i=dharma.b@microchip.com; s=20240209; h=from:subject:message-id;
- bh=UuQpdAHcUd83egaYxRT9C0L3QRwOwMeJRqrjcKWuQhg=;
- b=hlfgdx8OEW0RK4jE3F6jUlwIvXBbITRfiUwf5z0o8Ymdn22QO3gdspRtvhlVlwjwaxh6GCEVQ
- v/kK7SFjmHRBr+3vDb5HB+owT9CxaWW3e3mAfSdyqFaoHBI/ks/nGhd
-X-Developer-Key: i=dharma.b@microchip.com; a=ed25519;
- pk=kCq31LcpLAe9HDfIz9ZJ1U7T+osjOi7OZSbe0gqtyQ4=
 
-Convert the atmel,lcdc bindings to DT schema.
-Changes during conversion: add missing clocks and clock-names properties.
+Hello Adrian!
 
-Signed-off-by: Dharma Balasubiramani <dharma.b@microchip.com>
----
-This patch converts the existing lcdc display text binding to JSON schema.
-The binding is split into two namely
-lcdc.yaml
-- Holds the frame buffer properties
-lcdc-display.yaml
-- Holds the display panel properties which is a phandle to the display
-property in lcdc fb node.
+Sorry for the late reply. Thanks for the comments - I`ll fix the next 
+patch set version.
 
-These bindings are tested using the following command.
-'make DT_CHECKER_FLAGS=-m dt_binding_check'
----
-Changes in v3:
-- Remove the generic property "bits-per-pixel"
-- Link to v2: https://lore.kernel.org/r/20240304-lcdc-fb-v2-1-a14b463c157a@microchip.com
-
-Changes in v2:
-- Run checkpatch and remove whitespace errors.
-- Add the standard interrupt flags.
-- Split the binding into two, namely lcdc.yaml and lcdc-display.yaml.
-- Link to v1: https://lore.kernel.org/r/20240223-lcdc-fb-v1-1-4c64cb6277df@microchip.com
----
- .../bindings/display/atmel,lcdc-display.yaml       | 97 ++++++++++++++++++++++
- .../devicetree/bindings/display/atmel,lcdc.txt     | 87 -------------------
- .../devicetree/bindings/display/atmel,lcdc.yaml    | 70 ++++++++++++++++
- 3 files changed, 167 insertions(+), 87 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/display/atmel,lcdc-display.yaml b/Documentation/devicetree/bindings/display/atmel,lcdc-display.yaml
-new file mode 100644
-index 000000000000..5e0b706d695d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/display/atmel,lcdc-display.yaml
-@@ -0,0 +1,97 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/display/atmel,lcdc-display.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Microchip's LCDC Display
-+
-+maintainers:
-+  - Nicolas Ferre <nicolas.ferre@microchip.com>
-+  - Dharma Balasubiramani <dharma.b@microchip.com>
-+
-+description:
-+  The LCD Controller (LCDC) consists of logic for transferring LCD image data
-+  from an external display buffer to a TFT LCD panel. The LCDC has one display
-+  input buffer per layer that fetches pixels through the single bus host
-+  interface and a look-up table to allow palletized display configurations. The
-+  LCDC is programmable on a per layer basis, and supports different LCD
-+  resolutions, window sizes, image formats and pixel depths.
-+
-+# We need a select here since this schema is applicable only for nodes with the
-+# following properties
-+
-+select:
-+  anyOf:
-+    - required: [ 'atmel,dmacon' ]
-+    - required: [ 'atmel,lcdcon2' ]
-+    - required: [ 'atmel,guard-time' ]
-+
-+properties:
-+  atmel,dmacon:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: dma controller configuration
-+
-+  atmel,lcdcon2:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: lcd controller configuration
-+
-+  atmel,guard-time:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: lcd guard time (Delay in frame periods)
-+
-+  bits-per-pixel:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: lcd panel bit-depth.
-+
-+  atmel,lcdcon-backlight:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description: enable backlight
-+
-+  atmel,lcdcon-backlight-inverted:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description: invert backlight PWM polarity
-+
-+  atmel,lcd-wiring-mode:
-+    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
-+    description: lcd wiring mode "RGB" or "BRG"
-+
-+  atmel,power-control-gpio:
-+    description: gpio to power on or off the LCD (as many as needed)
-+
-+  display-timings:
-+    $ref: panel/display-timings.yaml#
-+
-+required:
-+  - atmel,dmacon
-+  - atmel,lcdcon2
-+  - atmel,guard-time
-+  - bits-per-pixel
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    display: panel {
-+      bits-per-pixel = <32>;
-+      atmel,lcdcon-backlight;
-+      atmel,dmacon = <0x1>;
-+      atmel,lcdcon2 = <0x80008002>;
-+      atmel,guard-time = <9>;
-+      atmel,lcd-wiring-mode = <1>;
-+
-+      display-timings {
-+        native-mode = <&timing0>;
-+        timing0: timing0 {
-+          clock-frequency = <9000000>;
-+          hactive = <480>;
-+          vactive = <272>;
-+          hback-porch = <1>;
-+          hfront-porch = <1>;
-+          vback-porch = <40>;
-+          vfront-porch = <1>;
-+          hsync-len = <45>;
-+          vsync-len = <1>;
-+        };
-+      };
-+    };
-diff --git a/Documentation/devicetree/bindings/display/atmel,lcdc.txt b/Documentation/devicetree/bindings/display/atmel,lcdc.txt
-deleted file mode 100644
-index b5e355ada2fa..000000000000
---- a/Documentation/devicetree/bindings/display/atmel,lcdc.txt
-+++ /dev/null
-@@ -1,87 +0,0 @@
--Atmel LCDC Framebuffer
-------------------------------------------------------
--
--Required properties:
--- compatible :
--	"atmel,at91sam9261-lcdc" , 
--	"atmel,at91sam9263-lcdc" ,
--	"atmel,at91sam9g10-lcdc" ,
--	"atmel,at91sam9g45-lcdc" ,
--	"atmel,at91sam9g45es-lcdc" ,
--	"atmel,at91sam9rl-lcdc" ,
--- reg : Should contain 1 register ranges(address and length).
--	Can contain an additional register range(address and length)
--	for fixed framebuffer memory. Useful for dedicated memories.
--- interrupts : framebuffer controller interrupt
--- display: a phandle pointing to the display node
--
--Required nodes:
--- display: a display node is required to initialize the lcd panel
--	This should be in the board dts.
--- default-mode: a videomode within the display with timing parameters
--	as specified below.
--
--Optional properties:
--- lcd-supply: Regulator for LCD supply voltage.
--
--Example:
--
--	fb0: fb@00500000 {
--		compatible = "atmel,at91sam9g45-lcdc";
--		reg = <0x00500000 0x1000>;
--		interrupts = <23 3 0>;
--		pinctrl-names = "default";
--		pinctrl-0 = <&pinctrl_fb>;
--		display = <&display0>;
--		#address-cells = <1>;
--		#size-cells = <1>;
--
--	};
--
--Example for fixed framebuffer memory:
--
--	fb0: fb@00500000 {
--		compatible = "atmel,at91sam9263-lcdc";
--		reg = <0x00700000 0x1000 0x70000000 0x200000>;
--		[...]
--	};
--
--Atmel LCDC Display
-------------------------------------------------------
--Required properties (as per of_videomode_helper):
--
-- - atmel,dmacon: dma controller configuration
-- - atmel,lcdcon2: lcd controller configuration
-- - atmel,guard-time: lcd guard time (Delay in frame periods)
-- - bits-per-pixel: lcd panel bit-depth.
--
--Optional properties (as per of_videomode_helper):
-- - atmel,lcdcon-backlight: enable backlight
-- - atmel,lcdcon-backlight-inverted: invert backlight PWM polarity
-- - atmel,lcd-wiring-mode: lcd wiring mode "RGB" or "BRG"
-- - atmel,power-control-gpio: gpio to power on or off the LCD (as many as needed)
--
--Example:
--	display0: display {
--		bits-per-pixel = <32>;
--		atmel,lcdcon-backlight;
--		atmel,dmacon = <0x1>;
--		atmel,lcdcon2 = <0x80008002>;
--		atmel,guard-time = <9>;
--		atmel,lcd-wiring-mode = <1>;
--
--		display-timings {
--			native-mode = <&timing0>;
--			timing0: timing0 {
--				clock-frequency = <9000000>;
--				hactive = <480>;
--				vactive = <272>;
--				hback-porch = <1>;
--				hfront-porch = <1>;
--				vback-porch = <40>;
--				vfront-porch = <1>;
--				hsync-len = <45>;
--				vsync-len = <1>;
--			};
--		};
--	};
-diff --git a/Documentation/devicetree/bindings/display/atmel,lcdc.yaml b/Documentation/devicetree/bindings/display/atmel,lcdc.yaml
-new file mode 100644
-index 000000000000..1b6f7e395006
---- /dev/null
-+++ b/Documentation/devicetree/bindings/display/atmel,lcdc.yaml
-@@ -0,0 +1,70 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/display/atmel,lcdc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Microchip's LCDC Framebuffer
-+
-+maintainers:
-+  - Nicolas Ferre <nicolas.ferre@microchip.com>
-+  - Dharma Balasubiramani <dharma.b@microchip.com>
-+
-+description:
-+  The LCDC works with a framebuffer, which is a section of memory that contains
-+  a complete frame of data representing pixel values for the display. The LCDC
-+  reads the pixel data from the framebuffer and sends it to the LCD panel to
-+  render the image.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - atmel,at91sam9261-lcdc
-+      - atmel,at91sam9263-lcdc
-+      - atmel,at91sam9g10-lcdc
-+      - atmel,at91sam9g45-lcdc
-+      - atmel,at91sam9g45es-lcdc
-+      - atmel,at91sam9rl-lcdc
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 2
-+
-+  clock-names:
-+    items:
-+      - const: hclk
-+      - const: lcdc_clk
-+
-+  display:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description: A phandle pointing to the display node.
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+  - display
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/at91.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    fb@500000 {
-+      compatible = "atmel,at91sam9g45-lcdc";
-+      reg = <0x00500000 0x1000>;
-+      interrupts = <23 IRQ_TYPE_LEVEL_HIGH 0>;
-+      pinctrl-names = "default";
-+      pinctrl-0 = <&pinctrl_fb>;
-+      clocks = <&pmc PMC_TYPE_PERIPHERAL 23>, <&pmc PMC_TYPE_PERIPHERAL 23>;
-+      clock-names = "hclk", "lcdc_clk";
-+      display = <&display>;
-+    };
-
----
-base-commit: 90d35da658da8cff0d4ecbb5113f5fac9d00eb72
-change-id: 20240223-lcdc-fb-b8d2e2f3c914
-
-Best regards,
--- 
-Dharma Balasubiramani <dharma.b@microchip.com>
-
+On 03.01.2024 21:52, Adrian Hunter wrote:
+> On 31/12/23 16:46, Sergey Khimich wrote:
+>> From: Sergey Khimich <serghox@gmail.com>
+>>
+>> For enabling CQE support just set 'supports-cqe' in your DevTree file
+>> for appropriate mmc node.
+>>
+>> Signed-off-by: Sergey Khimich <serghox@gmail.com>
+>> ---
+>>   drivers/mmc/host/Kconfig            |   1 +
+>>   drivers/mmc/host/sdhci-of-dwcmshc.c | 181 +++++++++++++++++++++++++++-
+>>   2 files changed, 180 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
+>> index 58bd5fe4cd25..f7594705b013 100644
+>> --- a/drivers/mmc/host/Kconfig
+>> +++ b/drivers/mmc/host/Kconfig
+>> @@ -233,6 +233,7 @@ config MMC_SDHCI_OF_DWCMSHC
+>>   	depends on MMC_SDHCI_PLTFM
+>>   	depends on OF
+>>   	depends on COMMON_CLK
+>> +	select MMC_CQHCI
+>>   	help
+>>   	  This selects Synopsys DesignWare Cores Mobile Storage Controller
+>>   	  support.
+>> diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
+>> index 3a3bae6948a8..0ba1df4bcf36 100644
+>> --- a/drivers/mmc/host/sdhci-of-dwcmshc.c
+>> +++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
+>> @@ -20,6 +20,7 @@
+>>   #include <linux/sizes.h>
+>>   
+>>   #include "sdhci-pltfm.h"
+>> +#include "cqhci.h"
+>>   
+>>   #define SDHCI_DWCMSHC_ARG2_STUFF	GENMASK(31, 16)
+>>   
+>> @@ -36,6 +37,9 @@
+>>   #define DWCMSHC_ENHANCED_STROBE		BIT(8)
+>>   #define DWCMSHC_EMMC_ATCTRL		0x40
+>>   
+>> +/* DWC IP vendor area 2 pointer */
+>> +#define DWCMSHC_P_VENDOR_AREA2		0xea
+>> +
+>>   /* Rockchip specific Registers */
+>>   #define DWCMSHC_EMMC_DLL_CTRL		0x800
+>>   #define DWCMSHC_EMMC_DLL_RXCLK		0x804
+>> @@ -75,6 +79,11 @@
+>>   #define BOUNDARY_OK(addr, len) \
+>>   	((addr | (SZ_128M - 1)) == ((addr + len - 1) | (SZ_128M - 1)))
+>>   
+>> +#define DWCMSHC_SDHCI_CQE_TRNS_MODE	(SDHCI_TRNS_MULTI | \
+>> +					 SDHCI_TRNS_BLK_CNT_EN | \
+>> +					 SDHCI_TRNS_DMA)
+>> +
+>> +
+>>   enum dwcmshc_rk_type {
+>>   	DWCMSHC_RK3568,
+>>   	DWCMSHC_RK3588,
+>> @@ -90,7 +99,9 @@ struct rk35xx_priv {
+>>   
+>>   struct dwcmshc_priv {
+>>   	struct clk	*bus_clk;
+>> -	int vendor_specific_area1; /* P_VENDOR_SPECIFIC_AREA reg */
+>> +	int vendor_specific_area1; /* P_VENDOR_SPECIFIC_AREA1 reg */
+>> +	int vendor_specific_area2; /* P_VENDOR_SPECIFIC_AREA2 reg */
+>> +
+>>   	void *priv; /* pointer to SoC private stuff */
+>>   };
+>>   
+>> @@ -210,6 +221,90 @@ static void dwcmshc_hs400_enhanced_strobe(struct mmc_host *mmc,
+>>   	sdhci_writel(host, vendor, reg);
+>>   }
+>>   
+>> +static int dwcmshc_execute_tuning(struct mmc_host *mmc, u32 opcode)
+>> +{
+>> +	int err = sdhci_execute_tuning(mmc, opcode);
+>> +	struct sdhci_host *host = mmc_priv(mmc);
+>> +
+>> +	if (err)
+>> +		return err;
+>> +
+>> +	/*
+>> +	 * Tuning can leave the IP in an active state (Buffer Read Enable bit
+>> +	 * set) which prevents the entry to low power states (i.e. S0i3). Data
+>> +	 * reset will clear it.
+>> +	 */
+>> +	sdhci_reset(host, SDHCI_RESET_DATA);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static u32 dwcmshc_cqe_irq_handler(struct sdhci_host *host, u32 intmask)
+>> +{
+>> +	int cmd_error = 0;
+>> +	int data_error = 0;
+>> +
+>> +	if (!sdhci_cqe_irq(host, intmask, &cmd_error, &data_error))
+>> +		return intmask;
+>> +
+>> +	cqhci_irq(host->mmc, intmask, cmd_error, data_error);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static void dwcmshc_sdhci_cqe_enable(struct mmc_host *mmc)
+>> +{
+>> +	struct sdhci_host *host = mmc_priv(mmc);
+>> +	u8 ctrl;
+>> +
+>> +	sdhci_writew(host, DWCMSHC_SDHCI_CQE_TRNS_MODE, SDHCI_TRANSFER_MODE);
+>> +
+>> +	sdhci_cqe_enable(mmc);
+>> +
+>> +	/*
+>> +	 * The "DesignWare Cores Mobile Storage Host Controller
+>> +	 * DWC_mshc / DWC_mshc_lite Databook" says:
+>> +	 * when Host Version 4 Enable" is 1 in Host Control 2 register,
+>> +	 * SDHCI_CTRL_ADMA32 bit means ADMA2 is selected.
+>> +	 * Selection of 32-bit/64-bit System Addressing:
+>> +	 * either 32-bit or 64-bit system addressing is selected by
+>> +	 * 64-bit Addressing bit in Host Control 2 register.
+>> +	 *
+>> +	 * On the other hand the "DesignWare Cores Mobile Storage Host
+>> +	 * Controller DWC_mshc / DWC_mshc_lite User Guide" says, that we have to
+>> +	 * set DMA_SEL to ADMA2 _only_ mode in the Host Control 2 register.
+>> +	 */
+>> +	ctrl = sdhci_readb(host, SDHCI_HOST_CONTROL);
+>> +	ctrl &= ~SDHCI_CTRL_DMA_MASK;
+>> +	ctrl |= SDHCI_CTRL_ADMA32;
+>> +	sdhci_writeb(host, ctrl, SDHCI_HOST_CONTROL);
+>> +}
+>> +
+>> +static void dwcmshc_set_tran_desc(struct cqhci_host *cq_host, u8 **desc,
+>> +				  dma_addr_t addr, int len, bool end, bool dma64)
+>> +{
+>> +	int tmplen, offset;
+>> +
+>> +	if (likely(!len || BOUNDARY_OK(addr, len))) {
+>> +		cqhci_set_tran_desc(*desc, addr, len, end, dma64);
+>> +		return;
+>> +	}
+>> +
+>> +	offset = addr & (SZ_128M - 1);
+>> +	tmplen = SZ_128M - offset;
+>> +	cqhci_set_tran_desc(*desc, addr, tmplen, false, dma64);
+>> +
+>> +	addr += tmplen;
+>> +	len -= tmplen;
+>> +	*desc += cq_host->trans_desc_len;
+>> +	cqhci_set_tran_desc(*desc, addr, len, end, dma64);
+>> +}
+>> +
+>> +static void dwcmshc_cqhci_dumpregs(struct mmc_host *mmc)
+>> +{
+>> +	sdhci_dumpregs(mmc_priv(mmc));
+>> +}
+>> +
+>>   static void dwcmshc_rk3568_set_clock(struct sdhci_host *host, unsigned int clock)
+>>   {
+>>   	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+>> @@ -345,6 +440,7 @@ static const struct sdhci_ops sdhci_dwcmshc_ops = {
+>>   	.get_max_clock		= dwcmshc_get_max_clock,
+>>   	.reset			= sdhci_reset,
+>>   	.adma_write_desc	= dwcmshc_adma_write_desc,
+>> +	.irq			= dwcmshc_cqe_irq_handler,
+>>   };
+>>   
+>>   static const struct sdhci_ops sdhci_dwcmshc_rk35xx_ops = {
+>> @@ -379,6 +475,71 @@ static const struct sdhci_pltfm_data sdhci_dwcmshc_rk35xx_pdata = {
+>>   		   SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN,
+>>   };
+>>   
+>> +static const struct cqhci_host_ops dwcmshc_cqhci_ops = {
+>> +	.enable		= dwcmshc_sdhci_cqe_enable,
+>> +	.disable	= sdhci_cqe_disable,
+>> +	.dumpregs	= dwcmshc_cqhci_dumpregs,
+>> +	.set_tran_desc	= dwcmshc_set_tran_desc,
+>> +};
+>> +
+>> +static void dwcmshc_cqhci_init(struct sdhci_host *host, struct platform_device *pdev)
+>> +{
+>> +	struct cqhci_host *cq_host;
+>> +	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
+>> +	struct dwcmshc_priv *priv = sdhci_pltfm_priv(pltfm_host);
+>> +	bool dma64 = false;
+>> +	u16 clk;
+>> +	int err;
+>> +
+>> +	host->mmc->caps2 |= MMC_CAP2_CQE | MMC_CAP2_CQE_DCMD;
+>> +	cq_host = devm_kzalloc(&pdev->dev, sizeof(*cq_host), GFP_KERNEL);
+>> +	if (!cq_host) {
+>> +		dev_err(mmc_dev(host->mmc), "Unable to setup CQE: not enough memory\n");
+>> +		return;
+>> +	}
+>> +
+>> +	/*
+>> +	 * For dwcmshc host controller we have to enable internal clock
+>> +	 * before access to some registers from Vendor Specific Aria 2.
+> Aria -> Area
+>
+>> +	 */
+>> +	clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+>> +	clk |= SDHCI_CLOCK_INT_EN;
+>> +	sdhci_writew(host, clk, SDHCI_CLOCK_CONTROL);
+>> +	clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+>> +	if (!(clk & SDHCI_CLOCK_INT_EN)) {
+>> +		dev_err(mmc_dev(host->mmc), "Unable to setup CQE: internal clock enable error\n");
+>> +		goto free_cq_host;
+>> +	}
+>> +
+>> +	cq_host->mmio = host->ioaddr + priv->vendor_specific_area2;
+>> +	cq_host->ops = &dwcmshc_cqhci_ops;
+>> +
+>> +	/* Enable using of 128-bit task descriptors */
+>> +	dma64 = host->flags & SDHCI_USE_64_BIT_DMA;
+>> +	if (dma64) {
+>> +		dev_dbg(mmc_dev(host->mmc), "128-bit task descriptors\n");
+>> +		cq_host->caps |= CQHCI_TASK_DESC_SZ_128;
+>> +	}
+>> +	err = cqhci_init(cq_host, host->mmc, dma64);
+>> +	if (err) {
+>> +		dev_err(mmc_dev(host->mmc), "Unable to setup CQE: error %d\n", err);
+>> +		goto int_clock_disable;
+>> +	}
+>> +
+>> +	dev_dbg(mmc_dev(host->mmc), "CQE init done\n");
+>> +
+>> +	return;
+>> +
+>> +int_clock_disable:
+>> +	clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+>> +	clk &= ~SDHCI_CLOCK_INT_EN;
+>> +	sdhci_writew(host, clk, SDHCI_CLOCK_CONTROL);
+>> +
+>> +free_cq_host:
+>> +	devm_kfree(&pdev->dev, cq_host);
+>> +}
+>> +
+>> +
+>>   static int dwcmshc_rk35xx_init(struct sdhci_host *host, struct dwcmshc_priv *dwc_priv)
+>>   {
+>>   	int err;
+>> @@ -471,7 +632,7 @@ static int dwcmshc_probe(struct platform_device *pdev)
+>>   	struct rk35xx_priv *rk_priv = NULL;
+>>   	const struct sdhci_pltfm_data *pltfm_data;
+>>   	int err;
+>> -	u32 extra;
+>> +	u32 extra, caps;
+>>   
+>>   	pltfm_data = device_get_match_data(&pdev->dev);
+>>   	if (!pltfm_data) {
+>> @@ -519,9 +680,12 @@ static int dwcmshc_probe(struct platform_device *pdev)
+>>   
+>>   	priv->vendor_specific_area1 =
+>>   		sdhci_readl(host, DWCMSHC_P_VENDOR_AREA1) & DWCMSHC_AREA1_MASK;
+>> +	priv->vendor_specific_area2 =
+>> +		sdhci_readw(host, DWCMSHC_P_VENDOR_AREA2);
+> Is this OK for all IPs? ie. do they all have DWCMSHC_P_VENDOR_AREA2 register?
+Good question. Actually I can't guarantee that all dwcmshc-like IPs have 
+DWCMSHC_P_VENDOR_AREA2 register,
+because I`ve tested my patch only on my pre-selicon FPGA prototype.
+But on the other hand according to the documentation I have, CQE-related 
+registers are placed within this
+vendor2 block register. And thanks to Shawn Lin we know, Rockchip SoCs 
+with this IP also have this reg.
+As I understand CQE for dwcmshc-like IPs will not work without 
+DWCMSHC_P_VENDOR_AREA2.
+>
+>>   
+>>   	host->mmc_host_ops.request = dwcmshc_request;
+>>   	host->mmc_host_ops.hs400_enhanced_strobe = dwcmshc_hs400_enhanced_strobe;
+>> +	host->mmc_host_ops.execute_tuning = dwcmshc_execute_tuning;
+>>   
+>>   	if (pltfm_data == &sdhci_dwcmshc_rk35xx_pdata) {
+>>   		rk_priv = devm_kzalloc(&pdev->dev, sizeof(struct rk35xx_priv), GFP_KERNEL);
+>> @@ -547,6 +711,10 @@ static int dwcmshc_probe(struct platform_device *pdev)
+>>   		sdhci_enable_v4_mode(host);
+>>   #endif
+>>   
+>> +	caps = sdhci_readl(host, SDHCI_CAPABILITIES);
+>> +	if (caps & SDHCI_CAN_64BIT_V4)
+>> +		sdhci_enable_v4_mode(host);
+>> +
+>>   	host->mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY;
+>>   
+>>   	pm_runtime_get_noresume(dev);
+>> @@ -557,6 +725,15 @@ static int dwcmshc_probe(struct platform_device *pdev)
+>>   	if (err)
+>>   		goto err_rpm;
+>>   
+>> +	/* Setup Command Queue Engine if enabled */
+>> +	if (device_property_read_bool(&pdev->dev, "supports-cqe")) {
+>> +		if (caps & SDHCI_CAN_64BIT_V4)
+>> +			dwcmshc_cqhci_init(host, pdev);
+>> +		else
+>> +			dev_warn(dev, "Cannot enable CQE without V4 mode support\n");
+>> +	}
+>> +
+>> +
+> Double blank line.
+>
+>>   	if (rk_priv)
+>>   		dwcmshc_rk35xx_postinit(host, priv);
+>>   
 
