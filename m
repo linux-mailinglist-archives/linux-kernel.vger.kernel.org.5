@@ -1,156 +1,128 @@
-Return-Path: <linux-kernel+bounces-91401-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91402-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EE4D8710F4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 00:10:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 267378710FD
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 00:21:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AEF031C222D5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 23:10:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 268621C221A1
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 23:21:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E1AB7C0BF;
-	Mon,  4 Mar 2024 23:10:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8C2F7C6E3;
+	Mon,  4 Mar 2024 23:21:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="dfEtAnKm"
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="M8pq/eUN"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9CA37C6C0
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 23:10:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 016131E4A2
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 23:21:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709593843; cv=none; b=XP0kkUfWV+Ksa+Sv2rmHFyUEyv205sium5/Mb4EpTpaKphJIYzp6A+7s6S6VH0vJZLhHajC/Ncdqrr7r0aENL/xcqo6SnOhkNjYIv3aDZ8cBnESlslIsPRUIpKT5qtA5Q4lVekwpojDzTqVnME5Q10fsH2RKFGb1M8g+H0kZzNI=
+	t=1709594474; cv=none; b=WuoZBn7+fTzkJisoB8SP0A4zHsZNeU+AVzdoDriydtan6/TOl9iXczc19QKWKDvfJ/5hf7oku8OwmAv55aK32gS6KQwGfZInTokx7qzfzwlLiBBvJtrre3NmbcaQW7/BTx/04OGXuCUjTvEFod1K57Jdh+iTlXL8b3Yq12AnPLc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709593843; c=relaxed/simple;
-	bh=wMZzStv0WI94dHIupt/3qTiQCvxmwKcJlo5DxooTw+8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nox3DCmVXNeCkuNCK5LDYP/g+uqSKJrbuMZB67WfeeDcklBthGm+LFlZmkRSiPTBCIie6z8eciksflUS+zU8KAIR8RLmNvrTBEZTPtq8T7OLnkMasuGq4cU+9hlWYsjfccGNgkFQ01zbVPHOFk24pNCwEyJMDrTBv6+1HGuvGQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=dfEtAnKm; arc=none smtp.client-ip=209.85.216.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-29aa8c4710bso3676108a91.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 15:10:40 -0800 (PST)
+	s=arc-20240116; t=1709594474; c=relaxed/simple;
+	bh=L8wre41DKSFxRx1jDCxqg2DDV/BFGY6G8DQ0Y942V+A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=P+gjIrR/27LSpXITB3JmBRwRVMQzY48vZMyJYZGjCYUvt9ibLsF1XXSPGpJY197wgIaijPBk+exzSYLGLQTivyczIF5ui2WceDCf2x5HbPAGTGC8MxXKmuzucHISyPg2U1IAADsQc9jTTAaFK3kgUA/rgKFsOWIbVXL9tJ9Gn7A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=M8pq/eUN; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a44628725e3so640429866b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 15:21:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709593840; x=1710198640; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9msUTwBa3XNDAwjjPAvGjEpS0Gd3hVi8Z81nRq0fsvc=;
-        b=dfEtAnKmFSMK5QWlit8fTzTecWDN5ME/pgJL4QkLqSdE4mkkS77SfxSbjBmWp1hkAh
-         J/EecDWUnQQ7w62Utyq7enewe3MBG1fb2R5hF6butE1B6l7qkt/6So861QHDjisYX/Kc
-         0MU731QMcrPf0FsM5Lx3MHnE/Hc/Zkxm9/ylk=
+        d=linux-foundation.org; s=google; t=1709594470; x=1710199270; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=WfyiMDu4k9WJyJDcAdOCLHKLoRNRZ0hT5SNlHLbFleA=;
+        b=M8pq/eUN8gLP0duLV3YA+XUI9rGrTBjs2ts8TXLbt9oXdpTQfUFMpA2GucHKBwjg+U
+         lLUgJU092FA/C9ByO8CsGWJWy+cWt8QoCjSJrHoei075s/lLEAvXN79fhMts931adnVb
+         t0UTIXPSD/H7MFU0RBwqH8lT/QQMXCmhub8Lo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709593840; x=1710198640;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9msUTwBa3XNDAwjjPAvGjEpS0Gd3hVi8Z81nRq0fsvc=;
-        b=K88e/x/Axqln3Eqmqa29FCcalbufZT+JicIiAwfDiKS/u48ZWwDHVR8k5Z6DC0cOcI
-         vCmJwhOoJ3wo3NQty4k3tsu67nuX3ZqAmdy80IZ+zArqtSi7pwNFyAPaqRuDXM7Wxgi6
-         vKloTzFr82sij9b/T6JhTy03GGvjZNKill+i6Fjzdl2+QXEJn2N7WheKhDt+U6s6Diep
-         +D5uz211MP33Hm69y2j+VIFmkY99ZTXtD8ijr+lczt5cDc+bupCkpjaeEA+tb8x3ukJB
-         lSEvcBcMUMRtT9UCtEneafCV6xFg20ey97WgB7Rjc5/kaWu0U+W8boeZGl57pylr8A1U
-         vgHg==
-X-Forwarded-Encrypted: i=1; AJvYcCWnDLNcPo7oYfuUfmxCoy3V3z5paxahUHKMYtZFMWuuMxLAkM91Es5Jv0CNRccWKgpLnONOlwtENp5yFMyxhdGGJ476boQ/5hwMlTEK
-X-Gm-Message-State: AOJu0YzlolIUzxVpMiRaA03LHbnC5YINQExtKwaGG3m1YpErj23mNRSa
-	WQra3u5o5aiJBPNUJSHLi/Kf9deKw1YwlPzdIttEhvNNxKFtRC8+Ce2ONm/m8tXgoYrAbdjd2bg
-	=
-X-Google-Smtp-Source: AGHT+IEbAr3Hucp75eD8JSPbmT5fSEjkHtUZ6q2D8D6DXvd41jaoEyXkI1zB44xifF8tsNHZEQjQpA==
-X-Received: by 2002:a17:90a:e548:b0:29b:1bc5:cfda with SMTP id ei8-20020a17090ae54800b0029b1bc5cfdamr1080411pjb.16.1709593840120;
-        Mon, 04 Mar 2024 15:10:40 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id fa13-20020a17090af0cd00b00298f2ad430csm8380840pjb.0.2024.03.04.15.10.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 15:10:39 -0800 (PST)
-Date: Mon, 4 Mar 2024 15:10:39 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Alex Elder <elder@ieee.org>
-Cc: Alex Elder <elder@kernel.org>, Viresh Kumar <vireshk@kernel.org>,
-	Johan Hovold <johan@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Gustavo A . R . Silva" <gustavo@embeddedor.com>,
-	greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] greybus: Avoid fake flexible array for response data
-Message-ID: <202403041507.BEF59739@keescook>
-References: <20240304211940.it.083-kees@kernel.org>
- <1c5ab1e7-ac66-438c-bc49-0785810e9355@ieee.org>
+        d=1e100.net; s=20230601; t=1709594470; x=1710199270;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WfyiMDu4k9WJyJDcAdOCLHKLoRNRZ0hT5SNlHLbFleA=;
+        b=PTdiwp3/lR1hgZCEyJda1z34j7rfTH6MwXjDojUPZD2GEF/gPkYJLo4t7yasmjUgZi
+         J7jd4kaYO9f45BUmee0rZTBBVB9BXkTsyezDoUjoZRs/4DswRKQRKZkjPEVwY7gr56Vb
+         Ixuqz3kpA+Wb9ATshbiq4Nbw1957xytEWMOsmwPUAVFjOxGKZ9uAWrD5kPyzfqlKKOgP
+         ZyhuORDDfrJ6JzWAlhnw4BuJBMq3EWkgZJBbkP88zoQQCoJUHcL4csdR0RN2Vl8BjUoY
+         UseOiVUay6MODjGb2JFXn4lkrkaMM7xYB/+uQjYj3aSRnwU+gNxigcfcLTeG15RHB8BQ
+         upVg==
+X-Gm-Message-State: AOJu0YyWVOk/GXD/TDYGfVO+NDl+bLw1ETe3UkeUUu0vh6O6U8j2Z8my
+	TSol4zon21Ge5ENJITJ/gehzXHEYj3mFqVAd4jH2dHQC/IIdj990hv8kAUCGYd16axQMb54C4D9
+	GiKE=
+X-Google-Smtp-Source: AGHT+IERlzFlJ952VFRy4fiFu0IQXNKYxsxPovQ0xVmOWpadK1xVpwcL2B9DZg3mAUmaVgmox4/8/Q==
+X-Received: by 2002:a17:906:c30e:b0:a44:deba:2e8 with SMTP id s14-20020a170906c30e00b00a44deba02e8mr4875032ejz.69.1709594470014;
+        Mon, 04 Mar 2024 15:21:10 -0800 (PST)
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com. [209.85.218.47])
+        by smtp.gmail.com with ESMTPSA id y14-20020a170906070e00b00a4582d12253sm831808ejb.25.2024.03.04.15.21.09
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Mar 2024 15:21:09 -0800 (PST)
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a44665605f3so536844366b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 15:21:09 -0800 (PST)
+X-Received: by 2002:a17:906:aa0e:b0:a45:4ba5:2917 with SMTP id
+ ko14-20020a170906aa0e00b00a454ba52917mr2701230ejb.75.1709594468963; Mon, 04
+ Mar 2024 15:21:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1c5ab1e7-ac66-438c-bc49-0785810e9355@ieee.org>
+References: <20240302111244.3a1674be@gandalf.local.home> <CAHk-=wj376WMgZ24wKGEWDs_ojNtod-LDZBedPzDYRRcY60UYA@mail.gmail.com>
+ <20240302145958.05aabdd2@rorschach.local.home> <CAHk-=wgjhdRj1V847NTF4veMN_tCbrySiEHXO8RO3n05cNeXeA@mail.gmail.com>
+ <20240302154713.71e29402@rorschach.local.home> <CAHk-=wioeo5vyEWUZcGBKMsf3jnjrnnHc3uJiV=JjSKPdvZOEw@mail.gmail.com>
+ <20240303075937.36fc6043@rorschach.local.home> <CAHk-=wiLdWetJgKHB72VeDALZsjpggEyyuiZ2KmoY_g+3horwQ@mail.gmail.com>
+ <20240303140705.0f655e36@rorschach.local.home> <CAHk-=wiTGmAXfHiRB8ku4diLxRpN=Hac_q86=j65oiP3J5uXKg@mail.gmail.com>
+ <20240303160024.458d4f91@rorschach.local.home> <20240304164205.3245608a@gandalf.local.home>
+ <CAHk-=wgwy-p_zodT0JvkVkkd5MWy9NffC3jiDiczMMHPj1eQ9w@mail.gmail.com> <20240304171034.08d037aa@gandalf.local.home>
+In-Reply-To: <20240304171034.08d037aa@gandalf.local.home>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Mon, 4 Mar 2024 15:20:52 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wi53cJEKim7UvUXtdhQG1BR7oU5TABPXaOq5SmBKLSKYg@mail.gmail.com>
+Message-ID: <CAHk-=wi53cJEKim7UvUXtdhQG1BR7oU5TABPXaOq5SmBKLSKYg@mail.gmail.com>
+Subject: Re: [GIT PULL] tracing: Prevent trace_marker being bigger than
+ unsigned short
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Sachin Sant <sachinp@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Mar 04, 2024 at 04:45:11PM -0600, Alex Elder wrote:
-> On 3/4/24 3:19 PM, Kees Cook wrote:
-> > FORTIFY_SOURCE has been ignoring 0-sized destinations while the kernel
-> > code base has been converted to flexible arrays. In order to enforce
-> > the 0-sized destinations (e.g. with __counted_by), the remaining 0-sized
-> > destinations need to be handled. Instead of converting an empty struct
-> > into using a flexible array, just directly use a pointer without any
-> > additional indirection. Remove struct gb_bootrom_get_firmware_response
-> > and struct gb_fw_download_fetch_firmware_response.
-> > 
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> 
-> Thanks for adding the comments!  This looks good to me.
-> 
-> Reviewed-by: Alex Elder <elder@linaro.org>
-> 
-> 
-> 
-> I want to call attention to a few other spots that should
-> get a little more attention--related directly to what you're
-> doing here.
-> 
-> I noticed that the GB_CONTROL_TYPE_GET_MANIFEST response
-> structure also contains only a flexible array.  It might
-> be good to add a similar comment in gb_interface_enable(),
-> above this line:
->         manifest = kmalloc(size, GFP_KERNEL);
-> The definition of the gb_control_get_manifest_response structure
-> could probably be replaced with a comment.
-> 
-> 
-> The response buffer for an I2C transfer consists only of incoming
-> data.  There is already a comment in gb_i2c_operation_create()
-> that says this:
->         /* Response consists only of incoming data */
-> The definition of the gb_i2c_transfer_response structure should
-> then go away, in favor of a comment saying this.
-> 
-> The response buffer for a SPI transfer consists only of incoming
-> data.  It is used three times in "driver/staging/greybus/spilib.c":
-> - calc_rx_xfer_size() subtracts the size of the response structure,
->   and that should be replaced by a comment (and the structure
->   definition should go away)
-> - gb_spi_decode_response() takes the response structure as an
->   argument.  That could be replaced with a void pointer instead,
->   with a comment.
-> - gb_spi_transfer_one_message() is what passes the response buffer
->   to gb_spi_decode_response(), and could be adjusted to reflect
->   that the response consists only of data--rather than a struct
->   containing only a flexible array.
-> 
-> 
-> Kees:  I'm *not* asking you to deal with these, I'm just mentioning
-> them to you.  My comments above (without someone else confirming)
-> are not sufficient to dictate how to address these.
+On Mon, 4 Mar 2024 at 14:08, Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> Fine, I'll just remove the precision as that's not needed. There was no
+> other overflows involved here.
 
-Okay, thanks! Yeah, I took a look at struct gb_i2c_transfer_response and
-I think it might trip the memcpy checking too since it's zero sized, but
-it's on the source side, which isn't as strictly checked.
+I really want you to add the size check on the trace buffer *creation* side.
 
-I'll add a TODO item to track these, though.
+I don't understand why you refuse to accept the fact that the
+precision warning found a PROBLEM.
 
--Kees
+And no, the fix was never to paper over the problem by limiting the
+precision field. Hiding a problem isn't fixing it.
 
--- 
-Kees Cook
+And no, the fix was also never to chop up the printing of the string
+in smaller pieces to hide paper over the precision field. Again,
+hiding a problem isn't fixing it.
+
+And finally, NO, the fix was also never to add extra debug code to see
+that there was a NUL character there.
+
+The fix was *always* to simply not accept insanely long strings in the
+first place, and make sure that the field was correctly *set*.
+
+IOW, at *creation* time the code needed a proper check for length
+(which obviously indirectly includes checking for the terminating NUL
+character at that point).
+
+Why do these threads with you always have to end up this long? Why do
+I Nhave to explain every single step of the way that you need to *FIX*
+the problem, not try to hide it with new extra code.
+
+                  Linus
 
