@@ -1,135 +1,102 @@
-Return-Path: <linux-kernel+bounces-90794-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90797-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 506E7870522
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:16:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AAE3870528
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:17:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 063F51F231E7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:16:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD0591C23526
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:17:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EC53487BC;
-	Mon,  4 Mar 2024 15:15:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5B6D4D5A1;
+	Mon,  4 Mar 2024 15:15:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="zziNOuqm"
-Received: from out162-62-57-252.mail.qq.com (out162-62-57-252.mail.qq.com [162.62.57.252])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="FN46C1w0"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAF301946C
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 15:15:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.252
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B0D24CB47
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 15:15:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709565312; cv=none; b=WU6ra37jh91OAj5xq20psH1kSLHRLw7wNYqzVWbXqjrBGiS0sJxooVp3ALtgdiEqDAQpFZHTN1f5gmekg+n6rq8ho4HyboOcbAzSPTU+jj9lghLM3cAwfMiExaAp68mywTG7WQ97lz1i9kn1hWFa/1g9efC2Zukzjyd21WRn7VE=
+	t=1709565348; cv=none; b=bQYioIOYzf+A7yfm/YiXm+rmLlfAihzT7CV6Yg3BlqgYskZ3xrApR6uOtM86+8Xkv8mx6tUCdsFgsw3z2Bw85UuThW39Ng5WqGkVj+U3dMQ7mG1Il9YV0mmMjO/vZtdliH2V3SdsaBi6JAd2CGmNUaNVMoGGewQSHNsJFAsGHMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709565312; c=relaxed/simple;
-	bh=UVb+UzDGo6r93A9kFqS+4qMonZQvvkS3RQouaGJ0r58=;
-	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=AsU5JXNu+3CC7og1WqbMSLeTp5CHQrhM0eRGByJkPIa3biaD3DjCaIamFWrEiK+UCEnhEmLsP8zAjcwUJyVjkMJwGsv9gJ3WR3I4uFtE9yatePcOm9O7w2jLlFQ6nQiooLDLhoDrXGk+ZigvLq+5+7oi2laNgfjIeF7WcRPzduw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=zziNOuqm; arc=none smtp.client-ip=162.62.57.252
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1709565305; bh=j3aOvq2bodsmjXO3Ej4yrzGf1N49aFt+VJq79Wh3FMI=;
-	h=From:To:Cc:Subject:Date;
-	b=zziNOuqmPjts8WAyk2XbyJbjmqbQw5D0C3s63ZH0+yYSt4Ml1NW9F+r3uY51aHwSb
-	 9YTbG4pqrlMsPEXn2MQ1vQajHzFN+x+CSufH9tOMSKTnCg4PU1+89pLkdfBePAbekj
-	 TpEUWk9a7vjh1ZDaHKvSpjF1fOOiAvNq5qX8KHsQ=
-Received: from cyy-pc.lan ([240e:379:2240:e500:994d:62ab:74a6:932b])
-	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
-	id 3C13D406; Mon, 04 Mar 2024 23:15:01 +0800
-X-QQ-mid: xmsmtpt1709565301tiowc6h9o
-Message-ID: <tencent_64A9B4B31C2D70D5633042461AC9F80C0509@qq.com>
-X-QQ-XMAILINFO: MQAOa38Yz/8/VZ9FGJP60gUkkwv9Ys6etbYC0HQzPMG9u1NmtOFAC+KD+70eV4
-	 DALqGINNHW7TlqRmECPbqlydAcDQGZBlLNoQeAkp3PbCC9/6x0SGR2ujaEjYSivx2keWX3GUWpNh
-	 9S0zYADtu4mmoZw0gBHlSHZD8jZszuwacGdV3w4kztTPHnVi1yubqH2bgjf/HbJ8PvoH8foCFy1b
-	 XnrJA6XmjKXcNV50feLGAT54IIWAtZsJ2s4PFMOIPZjFoY8wUC79GcUGdP9K3E66IVWOG3i6ck5I
-	 FVO9tiDkhmIdQsU60bvjQzJeHHRPo5wZbn/RZR5cjtNpNnfrnZ4X3E5CwNu8mVYvlA33/B0QeXc2
-	 +qDJ6RCkY5yQ84asD6CfEBZhfMHe8HFyatVn9mIzhy73io/irXN0aTe35Afmg5qOpVUsdAWY7zZs
-	 znrdKAqP+DaBOz+Z3cdja4jcQWlSs+w+2hzjprmwkWXZTA4Sf0hSpRNVmOyS5QHFpxhU0gYind9C
-	 KqxmyatdLSmjUcex/n88dXo30d0KE2DNANH+EdtI/k2fBwruoEXk0+KF7HvYW7yf3IPlVa/X5m8j
-	 DV5/yB2ik3ORaQZPYoEstwf8lxjDXQU4BB7XrvVDHvYLMYp80PV9HIP4Eq33lli2UFHeQwnwR1qh
-	 yl+PFHbhfZF6AsHRbQM9kpC2I8j7H5j42mRyY0Dg4YBFW4s817m1N1mP3AanQ828Zcwp+RYirX1J
-	 nqIsBbLcJ4Ivcp5US1RLfYlmDhGCz3t9GaxTM8+mndH+EYoOvdbYtzdttRCVGZreQ9K7sQqXpjT3
-	 xHYUvoLADbRHuGm4HP7rue78/nThXcPNFoc505i9VOv88LURaVfwGeVJlDT/bzgRhtp8Y5IT2Xp3
-	 k/RV6LsYAA3UOVUCu85vIDggJIRYND50yQDBBhQ1i8HcZLG8ZHAAkZAkQRZ/BgowwVh4IrrAezsv
-	 VSuBQ0PAZRutrm2iuK0pN9YGDKykdHdjktSi4nRpEYox4oVT1f8QYarYxhfB9vtQT0qGR+jdhNpa
-	 hSsa1tzs8dV56OgiOFGkaDjRWfbQo=
-X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
-From: Yangyu Chen <cyy@cyyself.name>
-To: linux-riscv@lists.infradead.org
-Cc: Conor Dooley <conor@kernel.org>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Guo Ren <guoren@kernel.org>,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Yangyu Chen <cyy@cyyself.name>
-Subject: [PATCH v2 0/7] riscv: add initial support for Canaan Kendryte K230
-Date: Mon,  4 Mar 2024 23:14:38 +0800
-X-OQ-MSGID: <20240304151438.758641-1-cyy@cyyself.name>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1709565348; c=relaxed/simple;
+	bh=JaftqBjRUd5OiE9mP6ElGruCPofNrsQHVf3pU9lO0lo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BmrS2zwIpW+8+V1KLUVEgP9qTgwaPDNJkvfor5c0JIGMWfKzEUJ38I55/8SD4wg+dn3EFbqXokhncILmna9Ry/pirw+Wqkr7WAUw+28k6uWZCzp0E6TVGa9f508AyYz/a9ntvt+CiGRUqtFfBvpTrw8p5EQyMOqQMtLvOv8kfDc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FN46C1w0; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56693f0d235so23481a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 07:15:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709565345; x=1710170145; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JaftqBjRUd5OiE9mP6ElGruCPofNrsQHVf3pU9lO0lo=;
+        b=FN46C1w0opZL3pGHIueXrQM50J/X+AFiedCy/K528RxK763i+sQCdC2uY7bnXfK82f
+         A9+2zCM8hCtu4sp81xtJiNEq9IT19WJF3WtakgIMRd51hXxnRJHQzxyvmbuQ1+FC0Y3B
+         8pKg7oWwCsIoqYfQs6WG9XRykmZIFoNaSWAm+VaIpupWLR+PVfWh2G8NOF78d2EuAngy
+         BGI46NV0vW/PofhoEtOAm1e2T2wmcJd9GtWDpdyA1ZJeEkohbbX4OtAH+YK5pQkafxMR
+         hCIlyk2x35x50+RvMMaG/pt05FsHcJTTan01adb5a9qfyxo0VvXozafRMfkHs7PKV7Th
+         tu7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709565345; x=1710170145;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JaftqBjRUd5OiE9mP6ElGruCPofNrsQHVf3pU9lO0lo=;
+        b=KIb6fJqvQ+J/dx1t1BDuUnxWJTgSoKzWbpzg/m/Usa7HY8r2qvGfbnA0Q97lbiJcrr
+         0eOhFzlGItJalOgUZSgdp/3e/rWFd6X3Cwr8omEepbdgN8h//2EPcOCDYVzMoNKQGcHd
+         KpYTz4HzPXClbADsAbjag6hHjcaAPSLmDlu+QGgXQPeME9U5xStnAfQYUxufnjQe7m0v
+         /DddNlKLM457WrTj4goH57jD4vHTxszUXIwr3g1rsa70gWyaVunm++2zoJgfR10yu407
+         7VCbmzCxRTqC/MWhgHiUTOh1/6+mUdGK752ZCSMXcbkQi2Dh68GNKZAX2yTzioowFelZ
+         LQRA==
+X-Forwarded-Encrypted: i=1; AJvYcCXpSsQuk2Jhmav6BEk+dUZdBmp4BsJpQLbBYDcnH1ZC/kN5CUA4aVQ4BEcq/RvYuB4dMQa2/Ijm5z9H1V2uti8pS4jhv5aGtaUQOczT
+X-Gm-Message-State: AOJu0YwgrMs4khds9MPPevvpfuu/b8zn+BMRN8qnUXDU/AdS8/Incqxz
+	y8QwqVlT2ZUJfluuVxKxzDiIlALIDbsoC8N955dUKqqnrZYDBTQNPRiXHsFAf0JoimPK9SRDu9C
+	ewVcunipjtDHJUHIzyz/w7ZktKO1ugYVL4dtb
+X-Google-Smtp-Source: AGHT+IEtc8iFkUDhfxTXSKFmqZJRm6+dqGzN80jS12Vcq179DqSiAJDtL89r2EpdoV8ru4yX3BzzCTnXQuN4tukZYxk=
+X-Received: by 2002:a50:bac2:0:b0:566:ecde:290d with SMTP id
+ x60-20020a50bac2000000b00566ecde290dmr291227ede.4.1709565344548; Mon, 04 Mar
+ 2024 07:15:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1709516385-7778-1-git-send-email-xiaojiangfeng@huawei.com>
+In-Reply-To: <1709516385-7778-1-git-send-email-xiaojiangfeng@huawei.com>
+From: Jann Horn <jannh@google.com>
+Date: Mon, 4 Mar 2024 16:15:07 +0100
+Message-ID: <CAG48ez1h9X7Qv-5OR6hAhwnSOng6_PSXBaR6cT7xrk2Wzu39Yg@mail.gmail.com>
+Subject: Re: [PATCH] usercopy: delete __noreturn from usercopy_abort
+To: Jiangfeng Xiao <xiaojiangfeng@huawei.com>
+Cc: gustavoars@kernel.org, akpm@linux-foundation.org, jpoimboe@kernel.org, 
+	peterz@infradead.org, dave.hansen@linux.intel.com, 
+	kirill.shutemov@linux.intel.com, keescook@chromium.org, 
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org, 
+	linux-mm@kvack.org, nixiaoming@huawei.com, kepler.chenxin@huawei.com, 
+	wangbing6@huawei.com, wangfangpeng1@huawei.com, douzhaolei@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-K230 is an ideal chip for testing RISC-V Vector 1.0 now. Add initial
-support for it to allow more people to participate in building drivers
-to mainline for it.
+On Mon, Mar 4, 2024 at 3:02=E2=80=AFAM Jiangfeng Xiao <xiaojiangfeng@huawei=
+com> wrote:
+> When the last instruction of a noreturn function is a call
+> to another function, the return address falls outside
+> of the function boundary. This seems to cause kernel
+> to interrupt the backtrace.
+[...]
+> Delete __noreturn from usercopy_abort,
 
-This kernel has been tested upon factory SDK [1] with
-k230_evb_only_linux_defconfig and patched mainline opensbi [2] to skip
-locked pmp and successfully booted to busybox on initrd with this log [3].
-
-[1] https://github.com/kendryte/k230_sdk
-[2] https://github.com/cyyself/opensbi/tree/k230
-[3] https://gist.github.com/cyyself/b9445f38cc3ba1094924bd41c9086176
-
-Changes since v1:
-- Patch dt-bindings in clint and plic
-- Use enum in K230 compatible dt bindings
-- Fix dts to pass `make dtbs_check`
-- Add more details in commit message
-
-v1: https://lore.kernel.org/linux-riscv/tencent_E15F8FE0B6769E6338AE690C7F4844A31706@qq.com/
-
-Yangyu Chen (7):
-  dt-bindings: riscv: Add T-HEAD C908 compatible
-  dt-bindings: add Canaan K230 boards compatible strings
-  dt-bindings: timer: Add Canaan K230 CLINT
-  dt-bindings: interrupt-controller: Add Canaan K230 PLIC
-  riscv: Kconfig.socs: Allow SOC_CANAAN with MMU for K230
-  riscv: dts: add initial canmv-k230 and k230-evb dts
-  riscv: config: enable SOC_CANAAN in defconfig
-
- .../sifive,plic-1.0.0.yaml                    |   1 +
- .../devicetree/bindings/riscv/canaan.yaml     |   8 +-
- .../devicetree/bindings/riscv/cpus.yaml       |   1 +
- .../bindings/timer/sifive,clint.yaml          |   1 +
- arch/riscv/Kconfig.socs                       |   5 +-
- arch/riscv/boot/dts/canaan/Makefile           |   2 +
- arch/riscv/boot/dts/canaan/canmv-k230.dts     |  24 +++
- arch/riscv/boot/dts/canaan/k230-evb.dts       |  24 +++
- arch/riscv/boot/dts/canaan/k230.dtsi          | 140 ++++++++++++++++++
- arch/riscv/configs/defconfig                  |   1 +
- 10 files changed, 203 insertions(+), 4 deletions(-)
- create mode 100644 arch/riscv/boot/dts/canaan/canmv-k230.dts
- create mode 100644 arch/riscv/boot/dts/canaan/k230-evb.dts
- create mode 100644 arch/riscv/boot/dts/canaan/k230.dtsi
-
-base-commit: 45e0b0fd6dc574101825ac2738b890da024e4cda
-prerequisite-patch-id: 2374c56c0032e616e45854d2bc2bb1073996313d
-
-Dependencies: https://lore.kernel.org/linux-riscv/tencent_88FEE0A2C5E0852436A2F1A1087E6803380A@qq.com/
--- 
-2.43.0
-
+This sounds like the actual bug is in the backtracing logic? I don't
+think removing __noreturn annotations from an individual function is a
+good fix, since the same thing can happen with other __noreturn
+functions depending on what choices the compiler makes.
 
