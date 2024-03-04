@@ -1,868 +1,738 @@
-Return-Path: <linux-kernel+bounces-90050-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90051-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82B5086F95A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 06:04:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD09D86F95C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 06:06:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 97DCC1C20CAD
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 05:04:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57D5F281759
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 05:06:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E9D56ABF;
-	Mon,  4 Mar 2024 05:04:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3DA26FB8;
+	Mon,  4 Mar 2024 05:06:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="rLYQQgdS"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kU9QFIiv"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 842E817F3;
-	Mon,  4 Mar 2024 05:03:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709528638; cv=none; b=iveC+ufcuLnPngLwtaq1K0SDFNr/Fv6WYntdpuYasF4SrKUsQhe8Qvr/o4L31JfxrTdOEp579LDibV39ZHMUPDucXXY024bX+0X2/VpFJmt78MwoqWPMZtKn6Iv6PY1kDzbVxN2Wdv979Bg+xGAFCgmivgJZK09+AkALmWEoCSc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709528638; c=relaxed/simple;
-	bh=2mA5gBV4sMTDcON7bz1oHTZwpAOkXvi7wEnqKy3aLb8=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=tGHlLJ+5jPReV71SGjfuDBzJnLmEW0Jw55lzyEM1RyRnjc4vRr3GCeNjSVFFjW4V7VbZJTUmmowGuNlcfG9rurPy51A+PWaj81J8RUvrPXJegeicx0J14jAELQmUbr+Ycxu++Jx+bkIGeJYy5IxAI9j1+LI+r4nnQU5cSZ6ubuM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=rLYQQgdS; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1709528628;
-	bh=f7OlT7cp+1qcBDsehBRzKZfo47t//mWeu1C1u7Lw/7Q=;
-	h=Date:From:To:Cc:Subject:From;
-	b=rLYQQgdSKejWF8XlrqfEIfP/yEkVd3/TmgzQREOsmOGT1yp4YUwqrGNikJZn0DTiH
-	 P6Gcaba2UbX4uDk32FE4fd1Bu1QfpJZjDHJemKPnkFUHoveHW1NMVITEZwvS9GgtO3
-	 jya8LslV//y5Ay3fGQt8D8daWpcVCz7/k/s6MYSpfensoFA4MEFvYzGqwWyX/iEK0U
-	 UC514sru712YeApkEM203f7FNmAdtdgbE1EjZlTc0LIIUFV+bg99q0miVpWsvQ1PFO
-	 HfLVmyuZ1Qxrb4GcXzFVG60m/bfHXYPk1LO32opNqFhSEChy+1/Bi7yGyxaDVOTP1t
-	 WwAfkblHZR1KA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tp66X5tf2z4wxX;
-	Mon,  4 Mar 2024 16:03:48 +1100 (AEDT)
-Date: Mon, 4 Mar 2024 16:03:45 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: Tree for Mar 4
-Message-ID: <20240304160345.0a24400e@canb.auug.org.au>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43D3017F3;
+	Mon,  4 Mar 2024 05:06:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.18
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709528795; cv=fail; b=JUZdM7EvCne0t1kLn1gWI+eCiY/oEHt4+q/3ckuKB+VKh43M9bYekdDt5pqCHv2urBAXc6g/CbBxM/2dAfPmsgH4UHjjrhTguZrlNHBNbbXzqv5zNrse37/H/2a1XfzeittXdaHkQlKGAeUUZgvMcXQxqFBK8qk3u3BgTsg807s=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709528795; c=relaxed/simple;
+	bh=u15JjpQ6PgvWxfVbJ4Ao/+ituUHlawEn2DSAExA+qU0=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=fiMM2y1oSQrq3+xFKlT2NpvFexy4LYBpuQCeVK3AW1LjYfCmOymr3XJ22NT+hpw6VSFJJg5/Kk4SFtxyG5WqlRUueuV2hkcHkfXuYgwt6FVSuWAtWFkts/0WI+vCoh3sqaUyFLkYWPCD6YB71SrH4NtVpb1uCr5d4CWwCYRxiKo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kU9QFIiv; arc=fail smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709528792; x=1741064792;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=u15JjpQ6PgvWxfVbJ4Ao/+ituUHlawEn2DSAExA+qU0=;
+  b=kU9QFIivUVz0yDwf47ucfF5DhQ/DY8oKbUp5zA48PxwEhckz7ddmSkm+
+   kL1MoUBCWnOD4zC+Ih1Vi65FlOHfU7decYM/XZgdhIROm7O7B/Fv29HZL
+   I6oAfJhSYPGO5b5lVoWVIz0UA2OKqCl1SYlg+E6czxXJlojLIBbNplz1O
+   Kmd7433T8rOtfzSL6YJqlbU2QJQ7fDoQxxbA4oaN49hMeaLKqziKd+XLI
+   M2Or1ai4QlGM7qjyZaoThOVdNw+sC4JEPUIuky73kNAcCfGlpFUcY3G3E
+   Mqbj0n36Cw2iDVj1m5AbBZLLl2BagJtTmg4eeS6ytTaxZp8z3WYm/ioh2
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="4127283"
+X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
+   d="scan'208";a="4127283"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2024 21:06:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
+   d="scan'208";a="9060659"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmviesa006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 03 Mar 2024 21:06:31 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sun, 3 Mar 2024 21:06:30 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Sun, 3 Mar 2024 21:06:30 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Sun, 3 Mar 2024 21:06:30 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YSrqLu+hIK3BnFHaCZwRJBwZAm/LbrYn305GN55Uf8Cv29Pn/4WQqRb2uQyZEQstU/ePMIsg4x86lNEcfhHCAMJ809zOO+SBOySCX8roPln80bESJGOnJ1XTuie+SEkukPcORPRHZWjlaMX4+7oCbWsja0kaDuGFPWxL0CG/2mHzTwR9DBR+JgJZlR1utbrE7DuEaxOYBlHLklqgna6GCAVezGppiNC2nssyhvLu2oglYePKG+KbGgVyczwT01M5LiDm4loAbmGeS7At2UOJ6UeshpZ1ilfJFIPY7gDzdkNi7JOk/m3tCtx7IkmwgEiztC8YWvkwU/m3oTnb1yfvNQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=svEO4xd5laAFaPRkEbstK/MOLIin5ZDGJbqDB737JUk=;
+ b=Dr5bvTA5//hBb91uunZn94Edi7dqi1/pEiNN3+gDaOuyvdlp2Rv7UnA5SOLttdxGatz6bQ3YQioEJwC8qNP5i56O1AjJXPoeVaPMCMe/p+Rc31iciclxIYcf8D2e5uNj/7hDEnZyEtlmyzfjWYHM3HLvNvd5TVVvTZSd3nQ5v8lnezLkaF2ZRNQbufXecgi3sTgTcpJQIChJEhANymn+5jLW2lfi9RvNHcjpcjzvL0BLBt7sJWwRBwvQ3b5ZKNwmd0lZeSDdgP9ntZy9do+/sWBef7b7wpeSdLMrpGgwvZXraLh7xlwTB4g85gErb4Om511pxJh0AHDZQ8ZzZp7waA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CY5PR11MB6392.namprd11.prod.outlook.com (2603:10b6:930:37::15)
+ by DS7PR11MB6246.namprd11.prod.outlook.com (2603:10b6:8:99::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.22; Mon, 4 Mar
+ 2024 05:06:27 +0000
+Received: from CY5PR11MB6392.namprd11.prod.outlook.com
+ ([fe80::7118:c3d4:7001:cf9d]) by CY5PR11MB6392.namprd11.prod.outlook.com
+ ([fe80::7118:c3d4:7001:cf9d%5]) with mapi id 15.20.7362.019; Mon, 4 Mar 2024
+ 05:06:27 +0000
+Date: Mon, 4 Mar 2024 12:59:35 +0800
+From: Yujie Liu <yujie.liu@intel.com>
+To: Jan Kara <jack@suse.cz>
+CC: Oliver Sang <oliver.sang@intel.com>, <oe-lkp@lists.linux.dev>,
+	<lkp@intel.com>, <linux-kernel@vger.kernel.org>, Andrew Morton
+	<akpm@linux-foundation.org>, Matthew Wilcox <willy@infradead.org>, Guo Xuenan
+	<guoxuenan@huawei.com>, <linux-fsdevel@vger.kernel.org>,
+	<ying.huang@intel.com>, <feng.tang@intel.com>, <fengwei.yin@intel.com>
+Subject: Re: [linus:master] [readahead]  ab4443fe3c:
+ vm-scalability.throughput -21.4% regression
+Message-ID: <ZeVVN75kh9Ey4M4G@yujie-X299>
+References: <202402201642.c8d6bbc3-oliver.sang@intel.com>
+ <20240221111425.ozdozcbl3konmkov@quack3>
+ <ZdakRFhEouIF5o6D@xsang-OptiPlex-9020>
+ <20240222115032.u5h2phfxpn77lu5a@quack3>
+ <20240222183756.td7avnk2srg4tydu@quack3>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240222183756.td7avnk2srg4tydu@quack3>
+X-ClientProxiedBy: SI2P153CA0015.APCP153.PROD.OUTLOOK.COM
+ (2603:1096:4:140::21) To CY5PR11MB6392.namprd11.prod.outlook.com
+ (2603:10b6:930:37::15)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/QNJfSyowQxB0gj/XqP7V/yX";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY5PR11MB6392:EE_|DS7PR11MB6246:EE_
+X-MS-Office365-Filtering-Correlation-Id: b73dc7d3-09e2-42ab-253c-08dc3c08d8d0
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: htMaTtGFbsnsDreFP8WDAy2XZxXqNjzbzAvaDa5CrBN255jd3IJ3ytgh1kst1Ni4XGfFjcCNdLap5pgqQqgpPQYXdnX6JNIcU+OIfON4UsYOwcvHXG3KjxwRYFxswuPz6Qh9mzw+2m4FdYvP3y2RYB5CL6PEu4elYFKz3db6D8vlLZ2Ly58207GW9ctqvy0zyqqRBi0eoTXF+UpAN7I7uCcXnAA/RoXmmN2OsqAnlj0kb87aabmHITDjXQLovEeusKAQeB9Low3GRXyabmlroMrbSqtplfNrVkezPEmr3BOVKN6ADgEow1dg1TCZWpdOsdf5UW0+TSK2rhZ6WvpNEMmcAV+o/+H6VEUMw28iK3WI9NArg8Y7Fj7YjXSogOTvET8BXXucXpHn5OYDvkzQNdKqxZ0Qnej+cbgRBapTaxH66T3/rtXpN3Au8IGRUFkTuUPWUmWm+vXAeodCLnzCxOOApjthVvCS6tfeZ7o+Zc5jlfdLGLtrRxr9HBq0Iv7DyaO/BXociVAFH65SYNpebu0AR8Z7cfZnCrPTZmON6+33YgU1R+wZo8SZH0FVgZW2X2Rwq7wPWhhb+Da6ptGH9/fiHewwq6IoJu7HkyrlByg=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6392.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?QFcmQJWJbB+Z+qNhwzC0nBVT7IPCiQ7/2qH+HUTzv+BkOF9WHthVMVD5fE?=
+ =?iso-8859-1?Q?bh9X/ZRdagBbO4o36cIy4HUC9Gw8zwVBsT7ZqPbLymlb4bHHxEsWu5xiy/?=
+ =?iso-8859-1?Q?GTARD12sBINSeYMny0OyBH4tBPJZN6zqpPlADIg7OMPMemE6Cpb6ngD7d9?=
+ =?iso-8859-1?Q?mBuHIkfrNSdR+jA1JPW3IGF/VuWq9zGwfj+EzXDy3hcfs/gV5Va1hBa6Np?=
+ =?iso-8859-1?Q?QHC3y07MxTD/5Wac3SEhUaNu6xi6ZlkmxGco0AI55gAz3NV2+xmi3qr8a0?=
+ =?iso-8859-1?Q?5hu1ETnPQsa+awunMDABO3DdHHBcfxV6j06G2if/HZZr2sv+l2gaAEnV+W?=
+ =?iso-8859-1?Q?eeURX6s/kI4YofuR5N2Lu0hcggevu7+aShLPJjjmc+bgqn3GZrCgGVC5Pc?=
+ =?iso-8859-1?Q?76fQglPmffVQcyL3AxivYW+Ei41WlU9ukIOLyBK/R3unzL9CyYeAhh+0x8?=
+ =?iso-8859-1?Q?O7SZqbtx02lmSdvLpMAamo15R38ay4eRCNxTSpeVLWqSNgjM1O5lsGm5r/?=
+ =?iso-8859-1?Q?G5X9KpxXGSoGxX8yNhh36am+BHhOQfwktPOe3WTR8iYkY54bLGLBdHe2z0?=
+ =?iso-8859-1?Q?lG0P40Y6qIt2Ah/Jr6rzQomLFYP2lvebkZ/9bGcRhN+J9rSL82ewqImTC+?=
+ =?iso-8859-1?Q?OiFRxCzpLSozxdpb4mjTxjnEJs4zrJjS9PlgZ4zYMfOJkTmXPSkzum/6Dd?=
+ =?iso-8859-1?Q?79KsDc37IoLj42DLT9u32vCwuTF00PUFRdtVFabEYqYwcML//Q057ltCjU?=
+ =?iso-8859-1?Q?9oaIN6VGrhsWQNToPyO3TdtzlR/Kh6NJzsxkRmidXaD2U7114AcyPqEQnu?=
+ =?iso-8859-1?Q?cXwjSv1IAVgJOVmMEtjxzDyCaCMEpeN93VCBnT0ar5zMiiIcHepsJJIbyn?=
+ =?iso-8859-1?Q?KyLKzcmhJzlN8It4agjKCyhez8liUfxslvq3VGvxFgU8RtkJMlfraBPCg0?=
+ =?iso-8859-1?Q?PM3rtIwtOMtMJGG4unmQw9fmD65hM30+4/0eC6J9LfDp/cTVbIRVaFmg3z?=
+ =?iso-8859-1?Q?E94vMf6ohS0bI9ZXpJFlClZoVEc2hCILYFmeGJEHZcQP5J7cEkJEUnTe47?=
+ =?iso-8859-1?Q?2dbDREPqu8Pf1MoBILpLXUAT74pGHPGVU5LKzo53wRPumjHMmd33oIEbn9?=
+ =?iso-8859-1?Q?xR9oZ6wjX5FJZKsLJ1pCloII8EnZKB45o1NYanxsI3puZXB7FUYa5aOYTW?=
+ =?iso-8859-1?Q?tT+S9PUAOHNCzYdrOeOeBV888Ntplrgyxq2lTuwDXVYZIp4ulptPDp1jME?=
+ =?iso-8859-1?Q?seZWMBUiUlVXnTGjTcfF6SIDjKieKSQtyV54TVtcBPNgaGgYI3D7pI/OaY?=
+ =?iso-8859-1?Q?7DGdm9v4CSKX84zGJfytBT3yAgbcM3Br4lHQpI00hLEaofve83eMvKfZdH?=
+ =?iso-8859-1?Q?F6JRpZkL1I27WXLnoAg4KDyKl9rtamv83RnDhzp+PszkJdOyih/52KyaZB?=
+ =?iso-8859-1?Q?vkoUVYUaC1xu8MPzXvXXf7rYjpd0IEipL0UsfTb51GuSY+qK5Xm+KkrSF2?=
+ =?iso-8859-1?Q?a2N8TYgXAsMyTbeQcWujvC2Do1TRcg6r/lDkT7AteNzKpMrAeyp51Mg5GU?=
+ =?iso-8859-1?Q?eVYsGU1vF+dfWS1DNMmTSUPu7NzG9cMjDvmT2ONtCR6u0g/HQ6/hNDvgq1?=
+ =?iso-8859-1?Q?bPby1dvt7/hyjFVUxoNuJ8DmCeTgaZjvut?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: b73dc7d3-09e2-42ab-253c-08dc3c08d8d0
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6392.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Mar 2024 05:06:27.8400
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0SzLS2K4WJzgcOo9sYNi5hROrJqlhFu9r05RbDOybwpGFopwbGELHHm7+PE/nmdqV74icEwTJNQv7LMroXhzqg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR11MB6246
+X-OriginatorOrg: intel.com
 
---Sig_/QNJfSyowQxB0gj/XqP7V/yX
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Honza,
 
-Hi all,
+On Thu, Feb 22, 2024 at 07:37:56PM +0100, Jan Kara wrote:
+> On Thu 22-02-24 12:50:32, Jan Kara wrote:
+> > On Thu 22-02-24 09:32:52, Oliver Sang wrote:
+> > > On Wed, Feb 21, 2024 at 12:14:25PM +0100, Jan Kara wrote:
+> > > > On Tue 20-02-24 16:25:37, kernel test robot wrote:
+> > > > > kernel test robot noticed a -21.4% regression of vm-scalability.throughput on:
+> > > > > 
+> > > > > commit: ab4443fe3ca6298663a55c4a70efc6c3ce913ca6 ("readahead: avoid multiple marked readahead pages")
+> > > > > https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> > > > > 
+> > > > > testcase: vm-scalability
+> > > > > test machine: 224 threads 2 sockets Intel(R) Xeon(R) Platinum 8480CTDX (Sapphire Rapids) with 512G memory
+> > > > > parameters:
+> > > > > 
+> > > > > 	runtime: 300s
+> > > > > 	test: lru-file-readtwice
+> > > > > 	cpufreq_governor: performance
+> > > > 
+> > > > JFYI I had a look into this. What the test seems to do is that it creates
+> > > > image files on tmpfs, loopmounts XFS there, and does reads over file on
+> > > > XFS. But I was not able to find what lru-file-readtwice exactly does,
+> > > > neither I was able to reproduce it because I got stuck on some missing Ruby
+> > > > dependencies on my test system yesterday.
+> > > 
+> > > what's your OS?
+> > 
+> > I have SLES15-SP4 installed in my VM. What was missing was 'git' rubygem
+> > which apparently is not packaged at all and when I manually installed it, I
+> > was still hitting other problems so I rather went ahead and checked the
+> > vm-scalability source and wrote my own reproducer based on that.
+> > 
+> > I'm now able to reproduce the regression in my VM so I'm investigating...
+> 
+> So I was experimenting with this. What the test does is it creates as many
+> files as there are CPUs, files are sized so that their total size is 8x the
+> amount of available RAM. For each file two tasks are started which
+> sequentially read the file from start to end. Trivial repro from my VM with
+> 8 CPUs and 64GB of RAM is like:
+> 
+> truncate -s 60000000000 /dev/shm/xfsimg
+> mkfs.xfs /dev/shm/xfsimg
+> mount -t xfs -o loop /dev/shm/xfsimg /mnt
+> for (( i = 0; i < 8; i++ )); do truncate -s 60000000000 /mnt/sparse-file-$i; done
+> echo "Ready..."
+> sleep 3
+> echo "Running..."
+> for (( i = 0; i < 8; i++ )); do
+> 	dd bs=4k if=/mnt/sparse-file-$i of=/dev/null &
+> 	dd bs=4k if=/mnt/sparse-file-$i of=/dev/null &
+> done 2>&1 | grep "copied"
+> wait
+> umount /mnt
+> 
+> The difference between slow and fast runs seems to be in the amount of
+> pages reclaimed with direct reclaim - after commit ab4443fe3c we reclaim
+> about 10% of pages with direct reclaim, before commit ab4443fe3c only about
+> 1% of pages is reclaimed with direct reclaim. In both cases we reclaim the
+> same amount of pages corresponding to the total size of files so it isn't
+> the case that we would be rereading one page twice.
+> 
+> I suspect the reclaim difference is because after commit ab4443fe3c we
+> trigger readahead somewhat earlier so our effective workingset is somewhat
+> larger. This apparently gives harder time to kswapd and we end up with
+> direct reclaim more often.
+> 
+> Since this is a case of heavy overload on the system, I don't think the
+> throughput here matters that much and AFAICT the readahead code does
+> nothing wrong here. So I don't think we need to do anything here.
 
-Changes since 20240301:
+Thanks a lot for the analysis. Seems we can abstract two factors that
+may affect the throughput:
 
-The next-next tree still had its build failure.
+1. The benchmark itself is "dd" from a file to null, which is basically
+a sequential operation, so the earlier readahead should bring benefit
+to the throughput.
 
-The drm tree gained conflicts against Linus' tree.
+2. The earlier readahead somewhat enlarges the workingset and causes
+more often direct memory reclaim, which may hurt the throughput.
 
-The backlight tree still had its build failure so I used the version from
-next-20240223.
+We did another round of test. Our machine has 512GB RAM, now we set
+the total file size to 256GB so that all the files can be fully loaded
+into the memory and there will be no reclaim anymore. This eliminates
+the impact of factor 2, but unexpectedly, we still see a -42.3%
+throughput regression after commit ab4443fe3c.
 
-Non-merge commits (relative to Linus' tree): 10588
- 9620 files changed, 475131 insertions(+), 187184 deletions(-)
+From the perf profile, we can see that the contention of folio lru lock
+becomes more intense. We also did a simple one-file "dd" test. Looks
+like it is more likely that low-order folios are allocated after commit
+ab4443fe3c (Fengwei will help provide the data soon). Therefore, the
+average folio size decreases while the total folio amount increases,
+which leads to touching lru lock more often.
 
-----------------------------------------------------------------------------
+Please kindly check the detailed metrics below:
 
-I have created today's linux-next tree at
-git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-(patches at http://www.kernel.org/pub/linux/kernel/next/ ).  If you
-are tracking the linux-next tree using git, you should not use "git pull"
-to do so as that will try to merge the new linux-next release with the
-old one.  You should use "git fetch" and checkout or reset to the new
-master.
+=========================================================================================
+tbox_group/testcase/rootfs/kconfig/compiler/runtime/test/cpufreq_governor/debug-setup:
+  lkp-spr-2sp4/vm-scalability/debian-11.1-x86_64-20220510.cgz/x86_64-rhel-8.3/gcc-12/300s/lru-file-readtwice/performance/256GB-perf
 
-You can see which trees have been included by looking in the Next/Trees
-file in the source.  There is also the merge.log file in the Next
-directory.  Between each merge, the tree was built with a ppc64_defconfig
-for powerpc, an allmodconfig for x86_64, a multi_v7_defconfig for arm
-and a native build of tools/perf. After the final fixups (if any), I do
-an x86_64 modules_install followed by builds for x86_64 allnoconfig,
-powerpc allnoconfig (32 and 64 bit), ppc44x_defconfig, allyesconfig
-and pseries_le_defconfig and i386, arm64, s390, sparc and sparc64
-defconfig and htmldocs. And finally, a simple boot test of the powerpc
-pseries_le_defconfig kernel in qemu (with and without kvm enabled).
+commit:
+  f0b7a0d1d466 ("Merge branch 'master' into mm-hotfixes-stable")
+  ab4443fe3ca6 ("readahead: avoid multiple marked readahead pages")
 
-Below is a summary of the state of the merge.
+f0b7a0d1d46625db ab4443fe3ca6298663a55c4a70e
+---------------- ---------------------------
+         %stddev     %change         %stddev
+             \          |                \
+      0.00 ± 49%      -0.0        0.00        mpstat.cpu.all.iowait%
+      8.43 ±  2%      +3.6       12.06 ±  5%  mpstat.cpu.all.sys%
+      0.31            -0.0        0.27 ±  2%  mpstat.cpu.all.usr%
+   2289863 ±  8%     +55.6%    3563274 ±  7%  numa-numastat.node0.local_node
+   2375395 ±  6%     +54.4%    3666799 ±  6%  numa-numastat.node0.numa_hit
+   2311189 ±  7%     +53.8%    3554903 ±  6%  numa-numastat.node1.local_node
+   2454386 ±  6%     +50.1%    3684288 ±  4%  numa-numastat.node1.numa_hit
+    300.98           +25.2%     376.84 ±  4%  vmstat.memory.buff
+  46333305           +27.5%   59075372 ±  3%  vmstat.memory.cache
+     25.22 ±  4%     +51.4%      38.18 ±  6%  vmstat.procs.r
+    303089            +8.0%     327220        vmstat.system.in
+     29.30           +13.5%      33.27        time.elapsed_time
+     29.30           +13.5%      33.27        time.elapsed_time.max
+     33780 ± 16%     +94.4%      65660 ±  7%  time.involuntary_context_switches
+      1943 ±  2%     +42.4%       2767 ±  5%  time.percent_of_cpu_this_job_got
+    554.77 ±  3%     +63.5%     907.13 ±  6%  time.system_time
+     14.90            -3.3%      14.40        time.user_time
+     20505 ± 11%     -41.1%      12085 ±  8%  time.voluntary_context_switches
+    284.00 ±  3%     +34.8%     382.75 ±  5%  turbostat.Avg_MHz
+     10.08 ±  2%      +3.6       13.65 ±  4%  turbostat.Busy%
+     39.50 ±  2%      -1.8       37.68        turbostat.C1E%
+      0.38 ±  9%     -17.3%       0.31 ± 14%  turbostat.CPU%c6
+   9577640           +22.3%   11715251 ±  2%  turbostat.IRQ
+      4.88 ± 12%      -3.7        1.15 ± 48%  turbostat.PKG_%
+      5558 ±  5%     +41.9%       7887 ±  6%  turbostat.POLL
+    790616 ±  6%     -43.9%     443300 ±  7%  vm-scalability.median
+     12060 ±  7%   +3811.3       15871 ±  4%  vm-scalability.stddev%
+ 3.681e+08 ±  7%     -42.3%  2.122e+08 ±  7%  vm-scalability.throughput
+     33780 ± 16%     +94.4%      65660 ±  7%  vm-scalability.time.involuntary_context_switches
+      1943 ±  2%     +42.4%       2767 ±  5%  vm-scalability.time.percent_of_cpu_this_job_got
+    554.77 ±  3%     +63.5%     907.13 ±  6%  vm-scalability.time.system_time
+     20505 ± 11%     -41.1%      12085 ±  8%  vm-scalability.time.voluntary_context_switches
+  21390979 ±  4%     +31.7%   28175360 ± 19%  numa-meminfo.node0.Active
+  21388266 ±  4%     +31.7%   28172516 ± 19%  numa-meminfo.node0.Active(file)
+  24037883 ±  6%     +31.1%   31516721 ± 17%  numa-meminfo.node0.FilePages
+    497645 ± 25%     +82.4%     907626 ± 38%  numa-meminfo.node0.Inactive(file)
+  25952309 ±  6%     +29.2%   33533454 ± 16%  numa-meminfo.node0.MemUsed
+     20138 ±  9%    +154.2%      51187 ± 11%  numa-meminfo.node1.Active(anon)
+    704324 ± 17%     +85.4%    1306147 ± 33%  numa-meminfo.node1.Inactive
+    427031 ± 22%    +141.7%    1031971 ± 41%  numa-meminfo.node1.Inactive(file)
+  43712836           +27.4%   55698257 ±  2%  meminfo.Active
+     22786 ±  6%    +136.6%      53907 ± 11%  meminfo.Active(anon)
+  43690049           +27.4%   55644350 ±  2%  meminfo.Active(file)
+  47543418           +27.4%   60583554 ±  2%  meminfo.Cached
+   1454581 ± 10%     +72.8%    2513041 ± 11%  meminfo.Inactive
+    929099 ± 16%    +109.5%    1946433 ± 14%  meminfo.Inactive(file)
+    242993           +12.9%     274324        meminfo.KReclaimable
+     79132 ±  2%     +34.8%     106631 ±  2%  meminfo.Mapped
+  51363725           +25.6%   64520957 ±  2%  meminfo.Memused
+      9840           +12.2%      11041 ±  2%  meminfo.PageTables
+    242993           +12.9%     274324        meminfo.SReclaimable
+    136679           +50.2%     205224 ±  5%  meminfo.Shmem
+  72281513 ±  2%     +25.8%   90925817 ±  2%  meminfo.max_used_kB
+   5346609 ±  4%     +31.7%    7042196 ± 19%  numa-vmstat.node0.nr_active_file
+   6008637 ±  7%     +31.1%    7878524 ± 17%  numa-vmstat.node0.nr_file_pages
+    123918 ± 25%     +83.2%     227064 ± 38%  numa-vmstat.node0.nr_inactive_file
+   5346510 ±  4%     +31.7%    7042147 ± 19%  numa-vmstat.node0.nr_zone_active_file
+    123908 ± 25%     +83.3%     227063 ± 38%  numa-vmstat.node0.nr_zone_inactive_file
+   2375271 ±  6%     +54.4%    3666818 ±  6%  numa-vmstat.node0.numa_hit
+   2289740 ±  8%     +55.6%    3563294 ±  7%  numa-vmstat.node0.numa_local
+      5043 ±  9%    +153.9%      12803 ± 11%  numa-vmstat.node1.nr_active_anon
+    106576 ± 22%    +141.7%     257597 ± 41%  numa-vmstat.node1.nr_inactive_file
+      5043 ±  9%    +153.9%      12803 ± 11%  numa-vmstat.node1.nr_zone_active_anon
+    106574 ± 22%    +141.7%     257604 ± 41%  numa-vmstat.node1.nr_zone_inactive_file
+   2454493 ±  6%     +50.1%    3684201 ±  4%  numa-vmstat.node1.numa_hit
+   2311296 ±  7%     +53.8%    3554816 ±  6%  numa-vmstat.node1.numa_local
+      5701 ±  6%    +136.5%      13486 ± 11%  proc-vmstat.nr_active_anon
+  10923519           +27.3%   13904109 ±  2%  proc-vmstat.nr_active_file
+  11886157           +27.4%   15138396 ±  2%  proc-vmstat.nr_file_pages
+  1.19e+08            -2.8%  1.157e+08        proc-vmstat.nr_free_pages
+    131227            +8.1%     141868        proc-vmstat.nr_inactive_anon
+    231610 ± 16%    +109.7%     485756 ± 14%  proc-vmstat.nr_inactive_file
+     19793 ±  2%     +34.7%      26668 ±  2%  proc-vmstat.nr_mapped
+      2455           +12.3%       2758 ±  2%  proc-vmstat.nr_page_table_pages
+     34038 ±  2%     +51.4%      51526 ±  5%  proc-vmstat.nr_shmem
+     60753           +12.9%      68588        proc-vmstat.nr_slab_reclaimable
+    113209            +5.9%     119837        proc-vmstat.nr_slab_unreclaimable
+      5701 ±  6%    +136.5%      13486 ± 11%  proc-vmstat.nr_zone_active_anon
+  10923517           +27.3%   13904109 ±  2%  proc-vmstat.nr_zone_active_file
+    131227            +8.1%     141868        proc-vmstat.nr_zone_inactive_anon
+    231612 ± 16%    +109.7%     485757 ± 14%  proc-vmstat.nr_zone_inactive_file
+    162.75 ± 79%    +552.8%       1062 ± 72%  proc-vmstat.numa_hint_faults
+   4831171 ±  4%     +52.2%    7352661 ±  4%  proc-vmstat.numa_hit
+   4602441 ±  5%     +54.7%    7119707 ±  4%  proc-vmstat.numa_local
+    128.75 ± 59%    +527.5%     807.88 ± 31%  proc-vmstat.numa_pages_migrated
+  69656618            -1.5%   68615309        proc-vmstat.pgalloc_normal
+    672926            +3.0%     692907        proc-vmstat.pgfault
+    128.75 ± 59%    +527.5%     807.88 ± 31%  proc-vmstat.pgmigrate_success
+     31089            +3.7%      32235        proc-vmstat.pgreuse
+      0.77 ±  2%      -0.0        0.74 ±  2%  perf-stat.i.branch-miss-rate%
+     23.58 ±  6%      +3.6       27.18 ±  4%  perf-stat.i.cache-miss-rate%
+      2.74            +6.0%       2.90        perf-stat.i.cpi
+ 5.887e+10 ±  7%     +28.6%  7.572e+10 ± 10%  perf-stat.i.cpu-cycles
+     10194 ±  3%      -9.5%       9226 ±  4%  perf-stat.i.cycles-between-cache-misses
+      0.44            -2.7%       0.43        perf-stat.i.ipc
+      0.25 ± 11%     +29.9%       0.32 ± 11%  perf-stat.i.metric.GHz
+     17995 ±  2%      -9.0%      16374 ±  3%  perf-stat.i.minor-faults
+     17995 ±  2%      -9.0%      16374 ±  3%  perf-stat.i.page-faults
+     17.09           -16.1%      14.34 ±  2%  perf-stat.overall.MPKI
+      0.32            -0.0        0.29        perf-stat.overall.branch-miss-rate%
+     82.93            -2.1       80.88        perf-stat.overall.cache-miss-rate%
+      3.55 ±  2%     +28.9%       4.58 ±  3%  perf-stat.overall.cpi
+    207.81 ±  2%     +53.7%     319.49 ±  5%  perf-stat.overall.cycles-between-cache-misses
+      0.01 ±  4%      +0.0        0.01 ±  3%  perf-stat.overall.dTLB-load-miss-rate%
+      0.01 ±  3%      +0.0        0.01 ±  2%  perf-stat.overall.dTLB-store-miss-rate%
+      0.28 ±  2%     -22.3%       0.22 ±  3%  perf-stat.overall.ipc
+    967.32           +21.5%       1175 ±  2%  perf-stat.overall.path-length
+ 3.648e+09            +9.0%  3.976e+09        perf-stat.ps.branch-instructions
+ 2.987e+08           -10.6%   2.67e+08        perf-stat.ps.cache-misses
+ 3.602e+08            -8.4%  3.301e+08        perf-stat.ps.cache-references
+ 6.207e+10 ±  2%     +37.3%  8.524e+10 ±  4%  perf-stat.ps.cpu-cycles
+    356765 ±  4%     +14.6%     408833 ±  4%  perf-stat.ps.dTLB-load-misses
+ 4.786e+09            +5.2%  5.034e+09        perf-stat.ps.dTLB-loads
+    222451 ±  2%      +6.7%     237255 ±  2%  perf-stat.ps.dTLB-store-misses
+ 2.207e+09            -7.4%  2.043e+09        perf-stat.ps.dTLB-stores
+ 1.748e+10            +6.5%  1.862e+10        perf-stat.ps.instructions
+     17777            -9.3%      16117 ±  2%  perf-stat.ps.minor-faults
+     17778            -9.3%      16118 ±  2%  perf-stat.ps.page-faults
+ 5.193e+11           +21.5%   6.31e+11 ±  2%  perf-stat.total.instructions
+     12.70            -7.9        4.85 ± 38%  perf-profile.calltrace.cycles-pp.copy_page_to_iter.filemap_read.xfs_file_buffered_read.xfs_file_read_iter.vfs_read
+     12.53            -7.8        4.76 ± 38%  perf-profile.calltrace.cycles-pp._copy_to_iter.copy_page_to_iter.filemap_read.xfs_file_buffered_read.xfs_file_read_iter
+      8.68            -5.2        3.46 ± 38%  perf-profile.calltrace.cycles-pp.read_pages.page_cache_ra_order.filemap_get_pages.filemap_read.xfs_file_buffered_read
+      8.13            -4.7        3.38 ±  9%  perf-profile.calltrace.cycles-pp.zero_user_segments.iomap_readpage_iter.iomap_readahead.read_pages.page_cache_ra_order
+      8.67            -4.7        3.93 ±  8%  perf-profile.calltrace.cycles-pp.iomap_readahead.read_pages.page_cache_ra_order.filemap_get_pages.filemap_read
+      8.51            -4.7        3.81 ±  8%  perf-profile.calltrace.cycles-pp.iomap_readpage_iter.iomap_readahead.read_pages.page_cache_ra_order.filemap_get_pages
+      7.84            -4.6        3.28 ±  8%  perf-profile.calltrace.cycles-pp.__memset.zero_user_segments.iomap_readpage_iter.iomap_readahead.read_pages
+      6.47 ±  2%      -2.1        4.39 ±  5%  perf-profile.calltrace.cycles-pp.secondary_startup_64_no_verify
+      6.44 ±  2%      -2.1        4.36 ±  5%  perf-profile.calltrace.cycles-pp.cpu_startup_entry.start_secondary.secondary_startup_64_no_verify
+      6.44 ±  2%      -2.1        4.36 ±  5%  perf-profile.calltrace.cycles-pp.start_secondary.secondary_startup_64_no_verify
+      6.43 ±  2%      -2.1        4.36 ±  5%  perf-profile.calltrace.cycles-pp.do_idle.cpu_startup_entry.start_secondary.secondary_startup_64_no_verify
+      6.39 ±  2%      -2.1        4.33 ±  5%  perf-profile.calltrace.cycles-pp.cpuidle_idle_call.do_idle.cpu_startup_entry.start_secondary.secondary_startup_64_no_verify
+      6.08 ±  2%      -2.0        4.11 ±  5%  perf-profile.calltrace.cycles-pp.cpuidle_enter.cpuidle_idle_call.do_idle.cpu_startup_entry.start_secondary
+      5.85 ±  2%      -1.9        3.96 ±  5%  perf-profile.calltrace.cycles-pp.cpuidle_enter_state.cpuidle_enter.cpuidle_idle_call.do_idle.cpu_startup_entry
+      3.96 ±  2%      -1.3        2.62 ±  6%  perf-profile.calltrace.cycles-pp.write
+      3.50 ±  2%      -1.1        2.36 ±  6%  perf-profile.calltrace.cycles-pp.asm_sysvec_apic_timer_interrupt.cpuidle_enter_state.cpuidle_enter.cpuidle_idle_call.do_idle
+      3.28 ±  2%      -1.1        2.22 ±  6%  perf-profile.calltrace.cycles-pp.sysvec_apic_timer_interrupt.asm_sysvec_apic_timer_interrupt.cpuidle_enter_state.cpuidle_enter.cpuidle_idle_call
+      2.76 ±  3%      -0.9        1.86 ±  6%  perf-profile.calltrace.cycles-pp.entry_SYSCALL_64_after_hwframe.write
+      2.63 ±  3%      -0.8        1.79 ±  6%  perf-profile.calltrace.cycles-pp.do_syscall_64.entry_SYSCALL_64_after_hwframe.write
+      2.37 ±  2%      -0.8        1.57 ±  6%  perf-profile.calltrace.cycles-pp.__sysvec_apic_timer_interrupt.sysvec_apic_timer_interrupt.asm_sysvec_apic_timer_interrupt.cpuidle_enter_state.cpuidle_enter
+      2.30 ±  2%      -0.8        1.52 ±  6%  perf-profile.calltrace.cycles-pp.hrtimer_interrupt.__sysvec_apic_timer_interrupt.sysvec_apic_timer_interrupt.asm_sysvec_apic_timer_interrupt.cpuidle_enter_state
+      2.34 ±  4%      -0.7        1.61 ±  7%  perf-profile.calltrace.cycles-pp.ksys_write.do_syscall_64.entry_SYSCALL_64_after_hwframe.write
+      1.91 ±  3%      -0.7        1.26 ±  7%  perf-profile.calltrace.cycles-pp.__hrtimer_run_queues.hrtimer_interrupt.__sysvec_apic_timer_interrupt.sysvec_apic_timer_interrupt.asm_sysvec_apic_timer_interrupt
+      2.04 ±  4%      -0.6        1.43 ±  7%  perf-profile.calltrace.cycles-pp.vfs_write.ksys_write.do_syscall_64.entry_SYSCALL_64_after_hwframe.write
+      1.32 ±  2%      -0.6        0.71 ± 38%  perf-profile.calltrace.cycles-pp.filemap_get_read_batch.filemap_get_pages.filemap_read.xfs_file_buffered_read.xfs_file_read_iter
+      1.68 ±  4%      -0.6        1.09 ±  8%  perf-profile.calltrace.cycles-pp.tick_nohz_highres_handler.__hrtimer_run_queues.hrtimer_interrupt.__sysvec_apic_timer_interrupt.sysvec_apic_timer_interrupt
+      1.48 ±  3%      -0.5        0.98 ±  6%  perf-profile.calltrace.cycles-pp.tick_sched_handle.tick_nohz_highres_handler.__hrtimer_run_queues.hrtimer_interrupt.__sysvec_apic_timer_interrupt
+      1.47 ±  3%      -0.5        0.98 ±  6%  perf-profile.calltrace.cycles-pp.update_process_times.tick_sched_handle.tick_nohz_highres_handler.__hrtimer_run_queues.hrtimer_interrupt
+      1.29 ±  3%      -0.4        0.87 ±  5%  perf-profile.calltrace.cycles-pp.scheduler_tick.update_process_times.tick_sched_handle.tick_nohz_highres_handler.__hrtimer_run_queues
+      1.46 ± 11%      -0.4        1.07 ± 38%  perf-profile.calltrace.cycles-pp.ast_primary_plane_helper_atomic_update.drm_atomic_helper_commit_planes.drm_atomic_helper_commit_tail_rpm.ast_mode_config_helper_atomic_commit_tail.commit_tail
+      1.46 ± 11%      -0.4        1.07 ± 38%  perf-profile.calltrace.cycles-pp.drm_fb_memcpy.ast_primary_plane_helper_atomic_update.drm_atomic_helper_commit_planes.drm_atomic_helper_commit_tail_rpm.ast_mode_config_helper_atomic_commit_tail
+      1.46 ± 11%      -0.4        1.07 ± 38%  perf-profile.calltrace.cycles-pp.ast_mode_config_helper_atomic_commit_tail.commit_tail.drm_atomic_helper_commit.drm_atomic_commit.drm_atomic_helper_dirtyfb
+      1.46 ± 11%      -0.4        1.07 ± 38%  perf-profile.calltrace.cycles-pp.drm_atomic_helper_commit_planes.drm_atomic_helper_commit_tail_rpm.ast_mode_config_helper_atomic_commit_tail.commit_tail.drm_atomic_helper_commit
+      1.46 ± 11%      -0.4        1.07 ± 38%  perf-profile.calltrace.cycles-pp.drm_atomic_helper_commit_tail_rpm.ast_mode_config_helper_atomic_commit_tail.commit_tail.drm_atomic_helper_commit.drm_atomic_commit
+      1.43 ± 11%      -0.4        1.04 ± 38%  perf-profile.calltrace.cycles-pp.memcpy_toio.drm_fb_memcpy.ast_primary_plane_helper_atomic_update.drm_atomic_helper_commit_planes.drm_atomic_helper_commit_tail_rpm
+      1.13 ±  3%      -0.4        0.76 ±  6%  perf-profile.calltrace.cycles-pp.intel_idle.cpuidle_enter_state.cpuidle_enter.cpuidle_idle_call.do_idle
+      1.02            -0.3        0.70 ±  5%  perf-profile.calltrace.cycles-pp.intel_idle_xstate.cpuidle_enter_state.cpuidle_enter.cpuidle_idle_call.do_idle
+      0.94 ±  3%      -0.3        0.65 ±  5%  perf-profile.calltrace.cycles-pp.perf_event_task_tick.scheduler_tick.update_process_times.tick_sched_handle.tick_nohz_highres_handler
+      0.92 ±  3%      -0.3        0.63 ±  5%  perf-profile.calltrace.cycles-pp.perf_adjust_freq_unthr_context.perf_event_task_tick.scheduler_tick.update_process_times.tick_sched_handle
+      1.58 ± 12%      -0.3        1.29 ±  3%  perf-profile.calltrace.cycles-pp.worker_thread.kthread.ret_from_fork.ret_from_fork_asm
+      0.74 ±  4%      -0.3        0.46 ± 38%  perf-profile.calltrace.cycles-pp.__filemap_add_folio.filemap_add_folio.page_cache_ra_order.filemap_get_pages.filemap_read
+      1.56 ± 12%      -0.3        1.29 ±  4%  perf-profile.calltrace.cycles-pp.process_one_work.worker_thread.kthread.ret_from_fork.ret_from_fork_asm
+      1.55 ± 12%      -0.3        1.28 ±  3%  perf-profile.calltrace.cycles-pp.drm_fb_helper_damage_work.process_one_work.worker_thread.kthread.ret_from_fork
+      1.55 ± 12%      -0.3        1.28 ±  3%  perf-profile.calltrace.cycles-pp.drm_fbdev_generic_helper_fb_dirty.drm_fb_helper_damage_work.process_one_work.worker_thread.kthread
+      1.65 ± 11%      -0.3        1.38 ±  3%  perf-profile.calltrace.cycles-pp.kthread.ret_from_fork.ret_from_fork_asm
+      1.65 ± 11%      -0.3        1.38 ±  3%  perf-profile.calltrace.cycles-pp.ret_from_fork.ret_from_fork_asm
+      1.65 ± 11%      -0.3        1.38 ±  3%  perf-profile.calltrace.cycles-pp.ret_from_fork_asm
+      1.46 ± 11%      -0.2        1.22 ±  3%  perf-profile.calltrace.cycles-pp.commit_tail.drm_atomic_helper_commit.drm_atomic_commit.drm_atomic_helper_dirtyfb.drm_fbdev_generic_helper_fb_dirty
+      1.46 ± 11%      -0.2        1.22 ±  3%  perf-profile.calltrace.cycles-pp.drm_atomic_commit.drm_atomic_helper_dirtyfb.drm_fbdev_generic_helper_fb_dirty.drm_fb_helper_damage_work.process_one_work
+      1.46 ± 11%      -0.2        1.22 ±  3%  perf-profile.calltrace.cycles-pp.drm_atomic_helper_commit.drm_atomic_commit.drm_atomic_helper_dirtyfb.drm_fbdev_generic_helper_fb_dirty.drm_fb_helper_damage_work
+      1.47 ± 11%      -0.2        1.22 ±  3%  perf-profile.calltrace.cycles-pp.drm_atomic_helper_dirtyfb.drm_fbdev_generic_helper_fb_dirty.drm_fb_helper_damage_work.process_one_work.worker_thread
+      1.03 ±  7%      -0.2        0.82 ±  8%  perf-profile.calltrace.cycles-pp.devkmsg_emit.devkmsg_write.vfs_write.ksys_write.do_syscall_64
+      1.03 ±  7%      -0.2        0.82 ±  8%  perf-profile.calltrace.cycles-pp.devkmsg_write.vfs_write.ksys_write.do_syscall_64.entry_SYSCALL_64_after_hwframe
+      1.03 ±  7%      -0.2        0.82 ±  8%  perf-profile.calltrace.cycles-pp.vprintk_emit.devkmsg_emit.devkmsg_write.vfs_write.ksys_write
+      1.02 ±  7%      -0.2        0.82 ±  8%  perf-profile.calltrace.cycles-pp.console_flush_all.console_unlock.vprintk_emit.devkmsg_emit.devkmsg_write
+      1.02 ±  7%      -0.2        0.82 ±  8%  perf-profile.calltrace.cycles-pp.console_unlock.vprintk_emit.devkmsg_emit.devkmsg_write.vfs_write
+      0.61 ±  5%      -0.1        0.55 ±  4%  perf-profile.calltrace.cycles-pp.truncate_inode_pages_range.evict.do_unlinkat.__x64_sys_unlinkat.do_syscall_64
+     86.32            +4.1       90.42        perf-profile.calltrace.cycles-pp.read
+     85.08            +4.6       89.66        perf-profile.calltrace.cycles-pp.entry_SYSCALL_64_after_hwframe.read
+     84.96            +4.6       89.58        perf-profile.calltrace.cycles-pp.do_syscall_64.entry_SYSCALL_64_after_hwframe.read
+     84.63            +4.7       89.38        perf-profile.calltrace.cycles-pp.ksys_read.do_syscall_64.entry_SYSCALL_64_after_hwframe.read
+     84.36            +4.9       89.21        perf-profile.calltrace.cycles-pp.vfs_read.ksys_read.do_syscall_64.entry_SYSCALL_64_after_hwframe.read
+     26.79            +9.3       36.06 ±  2%  perf-profile.calltrace.cycles-pp.native_queued_spin_lock_slowpath._raw_spin_lock_irqsave.folio_lruvec_lock_irqsave.folio_batch_move_lru.folio_activate
+     26.94            +9.3       36.22 ±  2%  perf-profile.calltrace.cycles-pp.folio_lruvec_lock_irqsave.folio_batch_move_lru.folio_activate.folio_mark_accessed.filemap_read
+     26.87            +9.3       36.17 ±  2%  perf-profile.calltrace.cycles-pp._raw_spin_lock_irqsave.folio_lruvec_lock_irqsave.folio_batch_move_lru.folio_activate.folio_mark_accessed
+     26.91           +10.9       37.78 ±  2%  perf-profile.calltrace.cycles-pp.native_queued_spin_lock_slowpath._raw_spin_lock_irqsave.folio_lruvec_lock_irqsave.folio_batch_move_lru.folio_add_lru
+     27.00           +10.9       37.89 ±  2%  perf-profile.calltrace.cycles-pp.folio_lruvec_lock_irqsave.folio_batch_move_lru.folio_add_lru.filemap_add_folio.page_cache_ra_order
+     26.99           +10.9       37.89 ±  2%  perf-profile.calltrace.cycles-pp._raw_spin_lock_irqsave.folio_lruvec_lock_irqsave.folio_batch_move_lru.folio_add_lru.filemap_add_folio
+     27.44           +10.9       38.36 ±  2%  perf-profile.calltrace.cycles-pp.folio_batch_move_lru.folio_add_lru.filemap_add_folio.page_cache_ra_order.filemap_get_pages
+     27.47           +10.9       38.39 ±  2%  perf-profile.calltrace.cycles-pp.folio_add_lru.filemap_add_folio.page_cache_ra_order.filemap_get_pages.filemap_read
+     12.72            -7.2        5.56 ±  7%  perf-profile.children.cycles-pp.copy_page_to_iter
+     12.56            -7.1        5.46 ±  7%  perf-profile.children.cycles-pp._copy_to_iter
+      8.80            -4.9        3.95 ±  8%  perf-profile.children.cycles-pp.read_pages
+      8.78            -4.8        3.94 ±  8%  perf-profile.children.cycles-pp.iomap_readahead
+      8.62            -4.8        3.83 ±  8%  perf-profile.children.cycles-pp.iomap_readpage_iter
+      8.15            -4.8        3.39 ±  9%  perf-profile.children.cycles-pp.zero_user_segments
+      8.07            -4.7        3.36 ±  9%  perf-profile.children.cycles-pp.__memset
+      6.47 ±  2%      -2.1        4.39 ±  5%  perf-profile.children.cycles-pp.cpu_startup_entry
+      6.47 ±  2%      -2.1        4.39 ±  5%  perf-profile.children.cycles-pp.do_idle
+      6.47 ±  2%      -2.1        4.39 ±  5%  perf-profile.children.cycles-pp.secondary_startup_64_no_verify
+      6.44 ±  2%      -2.1        4.36 ±  5%  perf-profile.children.cycles-pp.start_secondary
+      6.42 ±  2%      -2.1        4.36 ±  5%  perf-profile.children.cycles-pp.cpuidle_idle_call
+      6.10 ±  2%      -2.0        4.13 ±  5%  perf-profile.children.cycles-pp.cpuidle_enter
+      6.10 ±  2%      -2.0        4.13 ±  5%  perf-profile.children.cycles-pp.cpuidle_enter_state
+      4.53 ±  2%      -1.5        2.98 ±  6%  perf-profile.children.cycles-pp.write
+      4.34 ±  2%      -1.4        2.90 ±  5%  perf-profile.children.cycles-pp.asm_sysvec_apic_timer_interrupt
+      3.93 ±  2%      -1.3        2.66 ±  5%  perf-profile.children.cycles-pp.sysvec_apic_timer_interrupt
+      2.96 ±  2%      -1.0        1.99 ±  5%  perf-profile.children.cycles-pp.__sysvec_apic_timer_interrupt
+      2.89 ±  2%      -1.0        1.94 ±  5%  perf-profile.children.cycles-pp.hrtimer_interrupt
+      2.46 ±  3%      -0.8        1.64 ±  6%  perf-profile.children.cycles-pp.__hrtimer_run_queues
+      2.47 ±  3%      -0.8        1.72 ±  7%  perf-profile.children.cycles-pp.ksys_write
+      2.18 ±  3%      -0.7        1.43 ±  7%  perf-profile.children.cycles-pp.tick_nohz_highres_handler
+      1.96 ±  2%      -0.7        1.31 ±  5%  perf-profile.children.cycles-pp.tick_sched_handle
+      1.96 ±  2%      -0.7        1.30 ±  5%  perf-profile.children.cycles-pp.update_process_times
+      2.20 ±  3%      -0.6        1.55 ±  7%  perf-profile.children.cycles-pp.vfs_write
+      1.74 ±  2%      -0.6        1.17 ±  5%  perf-profile.children.cycles-pp.scheduler_tick
+      1.35 ±  2%      -0.5        0.82 ±  5%  perf-profile.children.cycles-pp.filemap_get_read_batch
+      1.38 ±  2%      -0.5        0.88 ±  6%  perf-profile.children.cycles-pp.entry_SYSCALL_64
+      0.48 ± 17%      -0.4        0.05 ± 42%  perf-profile.children.cycles-pp.page_cache_ra_unbounded
+      0.69 ±  7%      -0.4        0.27 ± 39%  perf-profile.children.cycles-pp.xfs_ilock
+      0.82 ±  4%      -0.4        0.40 ±  7%  perf-profile.children.cycles-pp.touch_atime
+      1.46 ± 11%      -0.4        1.07 ± 38%  perf-profile.children.cycles-pp.ast_primary_plane_helper_atomic_update
+      1.46 ± 11%      -0.4        1.07 ± 38%  perf-profile.children.cycles-pp.ast_mode_config_helper_atomic_commit_tail
+      0.77 ±  5%      -0.4        0.38 ±  7%  perf-profile.children.cycles-pp.atime_needs_update
+      1.22 ±  2%      -0.4        0.84 ±  5%  perf-profile.children.cycles-pp.perf_event_task_tick
+      1.21 ±  2%      -0.4        0.83 ±  5%  perf-profile.children.cycles-pp.perf_adjust_freq_unthr_context
+      1.14 ±  3%      -0.4        0.76 ±  6%  perf-profile.children.cycles-pp.intel_idle
+      0.65 ±  8%      -0.4        0.28 ±  9%  perf-profile.children.cycles-pp.down_read
+      1.02 ±  2%      -0.3        0.70 ±  5%  perf-profile.children.cycles-pp.intel_idle_xstate
+      0.79 ±  2%      -0.3        0.49 ±  5%  perf-profile.children.cycles-pp.rw_verify_area
+      1.58 ± 12%      -0.3        1.29 ±  3%  perf-profile.children.cycles-pp.worker_thread
+      1.56 ± 12%      -0.3        1.29 ±  4%  perf-profile.children.cycles-pp.process_one_work
+      1.55 ± 12%      -0.3        1.28 ±  3%  perf-profile.children.cycles-pp.drm_fb_helper_damage_work
+      1.55 ± 12%      -0.3        1.28 ±  3%  perf-profile.children.cycles-pp.drm_fbdev_generic_helper_fb_dirty
+      1.65 ± 11%      -0.3        1.38 ±  3%  perf-profile.children.cycles-pp.ret_from_fork_asm
+      1.65 ± 11%      -0.3        1.38 ±  3%  perf-profile.children.cycles-pp.ret_from_fork
+      1.65 ± 11%      -0.3        1.38 ±  3%  perf-profile.children.cycles-pp.kthread
+      0.68 ±  2%      -0.3        0.43 ±  7%  perf-profile.children.cycles-pp.entry_SYSRETQ_unsafe_stack
+      1.46 ± 11%      -0.2        1.22 ±  3%  perf-profile.children.cycles-pp.drm_fb_memcpy
+      1.46 ± 11%      -0.2        1.22 ±  3%  perf-profile.children.cycles-pp.memcpy_toio
+      0.77 ±  4%      -0.2        0.52 ±  4%  perf-profile.children.cycles-pp.__filemap_add_folio
+      1.46 ± 11%      -0.2        1.22 ±  3%  perf-profile.children.cycles-pp.commit_tail
+      1.46 ± 11%      -0.2        1.22 ±  3%  perf-profile.children.cycles-pp.drm_atomic_commit
+      1.46 ± 11%      -0.2        1.22 ±  3%  perf-profile.children.cycles-pp.drm_atomic_helper_commit
+      1.46 ± 11%      -0.2        1.22 ±  3%  perf-profile.children.cycles-pp.drm_atomic_helper_commit_planes
+      1.46 ± 11%      -0.2        1.22 ±  3%  perf-profile.children.cycles-pp.drm_atomic_helper_commit_tail_rpm
+      1.47 ± 11%      -0.2        1.22 ±  3%  perf-profile.children.cycles-pp.drm_atomic_helper_dirtyfb
+      0.62 ±  3%      -0.2        0.39 ±  5%  perf-profile.children.cycles-pp.xas_load
+      0.61 ±  2%      -0.2        0.37 ±  5%  perf-profile.children.cycles-pp.security_file_permission
+      0.76 ±  3%      -0.2        0.53 ±  5%  perf-profile.children.cycles-pp.__intel_pmu_enable_all
+      0.41 ±  5%      -0.2        0.20 ± 38%  perf-profile.children.cycles-pp.xfs_iunlock
+      1.03 ±  7%      -0.2        0.82 ±  8%  perf-profile.children.cycles-pp.devkmsg_emit
+      1.03 ±  7%      -0.2        0.82 ±  8%  perf-profile.children.cycles-pp.devkmsg_write
+      1.03 ±  7%      -0.2        0.83 ±  8%  perf-profile.children.cycles-pp.console_flush_all
+      1.03 ±  7%      -0.2        0.83 ±  8%  perf-profile.children.cycles-pp.console_unlock
+      1.04 ±  7%      -0.2        0.84 ±  8%  perf-profile.children.cycles-pp.vprintk_emit
+      0.62 ±  3%      -0.2        0.42 ±  6%  perf-profile.children.cycles-pp.irq_exit_rcu
+      0.60 ±  2%      -0.2        0.41 ±  5%  perf-profile.children.cycles-pp.__do_softirq
+      0.52 ±  3%      -0.2        0.33 ±  7%  perf-profile.children.cycles-pp.folio_alloc
+      0.45 ±  2%      -0.2        0.27 ±  5%  perf-profile.children.cycles-pp.apparmor_file_permission
+      0.33 ±  6%      -0.2        0.16 ±  5%  perf-profile.children.cycles-pp.up_read
+      0.38 ±  4%      -0.1        0.23 ±  8%  perf-profile.children.cycles-pp.__fsnotify_parent
+      0.45 ±  3%      -0.1        0.31 ±  6%  perf-profile.children.cycles-pp.rebalance_domains
+      0.34 ±  3%      -0.1        0.20 ±  6%  perf-profile.children.cycles-pp.__fdget_pos
+      0.40 ±  4%      -0.1        0.27 ±  7%  perf-profile.children.cycles-pp.__alloc_pages
+      0.33 ±  3%      -0.1        0.19 ±  6%  perf-profile.children.cycles-pp.xas_descend
+      0.41 ±  3%      -0.1        0.27 ±  7%  perf-profile.children.cycles-pp.alloc_pages_mpol
+      0.29 ±  6%      -0.1        0.16 ±  8%  perf-profile.children.cycles-pp.__mem_cgroup_charge
+      0.38 ±  3%      -0.1        0.25 ±  7%  perf-profile.children.cycles-pp.get_page_from_freelist
+      0.34 ±  2%      -0.1        0.21 ±  6%  perf-profile.children.cycles-pp.syscall_exit_to_user_mode
+      0.22 ±  7%      -0.1        0.10 ± 12%  perf-profile.children.cycles-pp.try_charge_memcg
+      0.25 ±  3%      -0.1        0.14 ±  5%  perf-profile.children.cycles-pp.xas_store
+      0.31 ±  3%      -0.1        0.22 ±  6%  perf-profile.children.cycles-pp._raw_spin_trylock
+      0.20 ±  4%      -0.1        0.11 ±  7%  perf-profile.children.cycles-pp.__free_pages_ok
+      0.23 ±  5%      -0.1        0.14 ±  7%  perf-profile.children.cycles-pp.rmqueue
+      0.22 ±  4%      -0.1        0.13 ±  8%  perf-profile.children.cycles-pp.current_time
+      0.18 ±  6%      -0.1        0.10 ±  7%  perf-profile.children.cycles-pp.syscall_return_via_sysret
+      0.38 ± 15%      -0.1        0.29 ± 11%  perf-profile.children.cycles-pp.ktime_get
+      0.16 ±  8%      -0.1        0.08 ±  9%  perf-profile.children.cycles-pp.page_counter_try_charge
+      0.25 ±  6%      -0.1        0.17 ±  9%  perf-profile.children.cycles-pp.ktime_get_update_offsets_now
+      0.18 ±  3%      -0.1        0.10 ±  6%  perf-profile.children.cycles-pp.__x64_sys_execve
+      0.18 ±  3%      -0.1        0.10 ±  6%  perf-profile.children.cycles-pp.do_execveat_common
+      0.18 ±  3%      -0.1        0.10 ±  6%  perf-profile.children.cycles-pp.execve
+      0.28 ± 21%      -0.1        0.20 ± 13%  perf-profile.children.cycles-pp.tick_irq_enter
+      0.17 ±  4%      -0.1        0.10 ±  5%  perf-profile.children.cycles-pp.__mmput
+      0.17 ±  4%      -0.1        0.10 ±  5%  perf-profile.children.cycles-pp.exit_mmap
+      0.25            -0.1        0.18 ±  7%  perf-profile.children.cycles-pp.menu_select
+      0.18 ±  3%      -0.1        0.11 ±  6%  perf-profile.children.cycles-pp.aa_file_perm
+      0.28 ± 20%      -0.1        0.21 ± 14%  perf-profile.children.cycles-pp.irq_enter_rcu
+      0.13 ±  4%      -0.1        0.06 ±  8%  perf-profile.children.cycles-pp.xas_create
+      0.20 ±  4%      -0.1        0.13 ±  7%  perf-profile.children.cycles-pp.__mod_node_page_state
+      0.21 ±  4%      -0.1        0.14 ±  5%  perf-profile.children.cycles-pp.load_balance
+      0.20 ±  6%      -0.1        0.14 ±  3%  perf-profile.children.cycles-pp.xas_start
+      0.21 ±  4%      -0.1        0.14 ±  6%  perf-profile.children.cycles-pp.__mod_lruvec_state
+      0.11 ±  3%      -0.1        0.04 ± 38%  perf-profile.children.cycles-pp.kmem_cache_alloc_lru
+      0.11 ±  4%      -0.1        0.04 ± 38%  perf-profile.children.cycles-pp.xas_alloc
+      0.12 ±  2%      -0.1        0.06 ±  8%  perf-profile.children.cycles-pp.folio_prep_large_rmappable
+      0.18 ±  4%      -0.1        0.12 ±  6%  perf-profile.children.cycles-pp.__cond_resched
+      0.15 ±  5%      -0.1        0.09 ±  4%  perf-profile.children.cycles-pp.bprm_execve
+      0.61 ±  5%      -0.1        0.55 ±  4%  perf-profile.children.cycles-pp.truncate_inode_pages_range
+      0.13 ±  5%      -0.1        0.08 ±  5%  perf-profile.children.cycles-pp.exec_binprm
+      0.13 ±  5%      -0.1        0.08 ±  5%  perf-profile.children.cycles-pp.load_elf_binary
+      0.13 ±  5%      -0.1        0.08 ±  5%  perf-profile.children.cycles-pp.search_binary_handler
+      0.08 ±  6%      -0.1        0.02 ±100%  perf-profile.children.cycles-pp.begin_new_exec
+      0.14 ± 11%      -0.1        0.08 ±  8%  perf-profile.children.cycles-pp.arch_scale_freq_tick
+      0.12 ±  4%      -0.1        0.07 ±  7%  perf-profile.children.cycles-pp.lru_add_drain
+      0.10 ±  5%      -0.1        0.04 ± 37%  perf-profile.children.cycles-pp.__xas_next
+      0.12 ±  5%      -0.1        0.06 ±  7%  perf-profile.children.cycles-pp.lru_add_drain_cpu
+      0.15 ±  6%      -0.1        0.10 ±  5%  perf-profile.children.cycles-pp.update_sd_lb_stats
+      0.12 ±  2%      -0.1        0.07 ±  7%  perf-profile.children.cycles-pp.asm_exc_page_fault
+      0.15 ±  4%      -0.1        0.10 ±  7%  perf-profile.children.cycles-pp.find_busiest_group
+      0.31 ±  5%      -0.0        0.26 ±  6%  perf-profile.children.cycles-pp.workingset_activation
+      0.12 ±  4%      -0.0        0.07 ±  4%  perf-profile.children.cycles-pp.do_exit
+      0.12 ±  3%      -0.0        0.07 ±  4%  perf-profile.children.cycles-pp.__x64_sys_exit_group
+      0.12 ±  3%      -0.0        0.07 ±  4%  perf-profile.children.cycles-pp.do_group_exit
+      0.13 ±  5%      -0.0        0.09 ±  5%  perf-profile.children.cycles-pp.update_sg_lb_stats
+      0.10 ±  5%      -0.0        0.06 ±  9%  perf-profile.children.cycles-pp.do_vmi_munmap
+      0.10 ±  4%      -0.0        0.05 ±  8%  perf-profile.children.cycles-pp.do_vmi_align_munmap
+      0.10 ±  5%      -0.0        0.05 ± 38%  perf-profile.children.cycles-pp.ktime_get_coarse_real_ts64
+      0.15 ±  4%      -0.0        0.10 ±  9%  perf-profile.children.cycles-pp._raw_spin_lock
+      0.35 ±  2%      -0.0        0.30 ±  3%  perf-profile.children.cycles-pp.folio_activate_fn
+      0.11 ±  6%      -0.0        0.07 ±  7%  perf-profile.children.cycles-pp.__schedule
+      0.11 ±  4%      -0.0        0.06 ± 10%  perf-profile.children.cycles-pp.do_user_addr_fault
+      0.11 ±  4%      -0.0        0.06 ± 10%  perf-profile.children.cycles-pp.exc_page_fault
+      0.08 ±  4%      -0.0        0.04 ± 57%  perf-profile.children.cycles-pp.unmap_region
+      0.10 ±  4%      -0.0        0.06 ±  5%  perf-profile.children.cycles-pp.exit_mm
+      0.10 ±  3%      -0.0        0.06 ±  5%  perf-profile.children.cycles-pp.handle_mm_fault
+      0.15 ±  5%      -0.0        0.11 ± 14%  perf-profile.children.cycles-pp.__mod_memcg_lruvec_state
+      0.15 ±  4%      -0.0        0.11 ±  6%  perf-profile.children.cycles-pp.native_irq_return_iret
+      0.10 ±  3%      -0.0        0.06 ±  8%  perf-profile.children.cycles-pp.entry_SYSCALL_64_safe_stack
+      0.10 ±  6%      -0.0        0.06 ±  5%  perf-profile.children.cycles-pp.tlb_batch_pages_flush
+      0.10 ±  5%      -0.0        0.06 ±  5%  perf-profile.children.cycles-pp.vm_mmap_pgoff
+      0.10 ±  4%      -0.0        0.06 ±  8%  perf-profile.children.cycles-pp.mmap_region
+      0.15 ±  6%      -0.0        0.11 ±  7%  perf-profile.children.cycles-pp.__lruvec_stat_mod_folio
+      0.08 ±  4%      -0.0        0.04 ± 57%  perf-profile.children.cycles-pp.rcu_core
+      0.10 ±  4%      -0.0        0.06 ±  7%  perf-profile.children.cycles-pp.tlb_finish_mmu
+      0.10 ±  4%      -0.0        0.06 ±  5%  perf-profile.children.cycles-pp.do_mmap
+      0.10 ±  5%      -0.0        0.06 ±  8%  perf-profile.children.cycles-pp.__handle_mm_fault
+      0.16 ± 14%      -0.0        0.12 ± 23%  perf-profile.children.cycles-pp.vt_console_print
+      0.15 ± 13%      -0.0        0.12 ± 23%  perf-profile.children.cycles-pp.con_scroll
+      0.15 ± 13%      -0.0        0.11 ± 24%  perf-profile.children.cycles-pp.fbcon_redraw
+      0.15 ± 13%      -0.0        0.12 ± 23%  perf-profile.children.cycles-pp.fbcon_scroll
+      0.15 ± 13%      -0.0        0.12 ± 23%  perf-profile.children.cycles-pp.lf
+      0.11 ±  5%      -0.0        0.08 ±  6%  perf-profile.children.cycles-pp.task_tick_fair
+      0.08 ± 17%      -0.0        0.05 ± 38%  perf-profile.children.cycles-pp.calc_global_load_tick
+      0.11 ±  4%      -0.0        0.07 ±  4%  perf-profile.children.cycles-pp.perf_rotate_context
+      0.09 ±  6%      -0.0        0.05 ±  8%  perf-profile.children.cycles-pp.schedule
+      0.14 ± 13%      -0.0        0.10 ± 24%  perf-profile.children.cycles-pp.fbcon_putcs
+      0.10 ±  5%      -0.0        0.06 ±  8%  perf-profile.children.cycles-pp.rcu_all_qs
+      0.07 ±  7%      -0.0        0.03 ± 77%  perf-profile.children.cycles-pp.sched_clock
+      0.10 ± 18%      -0.0        0.07 ±  7%  perf-profile.children.cycles-pp.__memcpy
+      0.08 ±  6%      -0.0        0.04 ± 37%  perf-profile.children.cycles-pp.asm_sysvec_call_function
+      0.11 ±  4%      -0.0        0.08 ±  5%  perf-profile.children.cycles-pp.clockevents_program_event
+      0.11 ± 16%      -0.0        0.08 ± 25%  perf-profile.children.cycles-pp.fast_imageblit
+      0.11 ± 16%      -0.0        0.08 ± 25%  perf-profile.children.cycles-pp.drm_fbdev_generic_defio_imageblit
+      0.11 ± 16%      -0.0        0.08 ± 25%  perf-profile.children.cycles-pp.sys_imageblit
+      0.12 ±  5%      -0.0        0.10 ±  7%  perf-profile.children.cycles-pp.find_lock_entries
+      0.09 ±  4%      -0.0        0.06 ±  8%  perf-profile.children.cycles-pp.native_sched_clock
+      0.08 ±  6%      -0.0        0.05 ±  8%  perf-profile.children.cycles-pp.sched_clock_cpu
+      0.08 ±  5%      -0.0        0.06 ±  5%  perf-profile.children.cycles-pp.lapic_next_deadline
+      0.09 ±  4%      -0.0        0.06 ±  7%  perf-profile.children.cycles-pp.read_tsc
+      0.07 ±  6%      -0.0        0.05 ±  8%  perf-profile.children.cycles-pp.native_apic_msr_eoi
+      0.07 ±  8%      -0.0        0.05 ±  6%  perf-profile.children.cycles-pp.__free_one_page
+      0.07 ±  9%      +0.0        0.09        perf-profile.children.cycles-pp.__mem_cgroup_uncharge
+      0.06 ±  7%      +0.0        0.09 ±  5%  perf-profile.children.cycles-pp.uncharge_batch
+      0.04 ± 58%      +0.0        0.07        perf-profile.children.cycles-pp.page_counter_uncharge
+      0.09 ±  7%      +0.0        0.12 ±  2%  perf-profile.children.cycles-pp.destroy_large_folio
+      0.08 ±  4%      +0.0        0.13 ± 13%  perf-profile.children.cycles-pp._raw_spin_lock_irq
+      0.00            +0.1        0.06 ±  7%  perf-profile.children.cycles-pp.free_unref_page
+     89.22            +3.4       92.57        perf-profile.children.cycles-pp.entry_SYSCALL_64_after_hwframe
+     89.02            +3.4       92.44        perf-profile.children.cycles-pp.do_syscall_64
+     86.89            +3.9       90.79        perf-profile.children.cycles-pp.read
+     39.51            +4.7       44.21        perf-profile.children.cycles-pp.filemap_get_pages
+     84.67            +4.7       89.40        perf-profile.children.cycles-pp.ksys_read
+     84.40            +4.8       89.24        perf-profile.children.cycles-pp.vfs_read
+     37.48            +5.7       43.21        perf-profile.children.cycles-pp.page_cache_ra_order
+     82.04            +5.9       87.98        perf-profile.children.cycles-pp.filemap_read
+     28.01            +9.2       37.19        perf-profile.children.cycles-pp.folio_mark_accessed
+     27.68            +9.2       36.91 ±  2%  perf-profile.children.cycles-pp.folio_activate
+     28.55           +10.4       38.96 ±  2%  perf-profile.children.cycles-pp.filemap_add_folio
+     27.81           +10.7       38.48 ±  2%  perf-profile.children.cycles-pp.folio_add_lru
+     54.31           +19.8       74.12 ±  2%  perf-profile.children.cycles-pp.native_queued_spin_lock_slowpath
+     54.49           +19.8       74.33 ±  2%  perf-profile.children.cycles-pp.folio_lruvec_lock_irqsave
+     54.82           +19.8       74.67 ±  2%  perf-profile.children.cycles-pp._raw_spin_lock_irqsave
+     55.58           +19.9       75.44 ±  2%  perf-profile.children.cycles-pp.folio_batch_move_lru
+     12.46            -7.0        5.42 ±  7%  perf-profile.self.cycles-pp._copy_to_iter
+      8.02            -4.7        3.34 ±  9%  perf-profile.self.cycles-pp.__memset
+      1.14 ±  3%      -0.4        0.76 ±  6%  perf-profile.self.cycles-pp.intel_idle
+      0.93 ±  3%      -0.3        0.58 ±  6%  perf-profile.self.cycles-pp.filemap_read
+      0.56 ±  8%      -0.3        0.23 ±  9%  perf-profile.self.cycles-pp.down_read
+      1.02            -0.3        0.70 ±  5%  perf-profile.self.cycles-pp.intel_idle_xstate
+      0.49 ±  7%      -0.3        0.21 ±  8%  perf-profile.self.cycles-pp.atime_needs_update
+      0.66 ±  2%      -0.2        0.42 ±  7%  perf-profile.self.cycles-pp.entry_SYSRETQ_unsafe_stack
+      1.43 ± 11%      -0.2        1.18 ±  3%  perf-profile.self.cycles-pp.memcpy_toio
+      0.66 ±  2%      -0.2        0.44 ±  5%  perf-profile.self.cycles-pp.filemap_get_read_batch
+      0.76 ±  3%      -0.2        0.53 ±  5%  perf-profile.self.cycles-pp.__intel_pmu_enable_all
+      0.60 ±  3%      -0.2        0.38 ±  6%  perf-profile.self.cycles-pp.write
+      0.60 ±  2%      -0.2        0.38 ±  6%  perf-profile.self.cycles-pp.read
+      0.53 ±  3%      -0.2        0.32 ±  6%  perf-profile.self.cycles-pp.vfs_read
+      0.48            -0.2        0.31 ±  4%  perf-profile.self.cycles-pp.perf_adjust_freq_unthr_context
+      0.32 ±  7%      -0.2        0.16 ±  6%  perf-profile.self.cycles-pp.up_read
+      0.36 ±  4%      -0.1        0.22 ±  7%  perf-profile.self.cycles-pp.__fsnotify_parent
+      0.32 ±  4%      -0.1        0.19 ±  6%  perf-profile.self.cycles-pp.__fdget_pos
+      0.30 ±  7%      -0.1        0.17 ±  9%  perf-profile.self.cycles-pp.vfs_write
+      0.30 ±  3%      -0.1        0.17 ±  6%  perf-profile.self.cycles-pp.xas_descend
+      0.28 ±  2%      -0.1        0.16 ±  8%  perf-profile.self.cycles-pp.do_syscall_64
+      0.28 ±  3%      -0.1        0.17 ±  6%  perf-profile.self.cycles-pp.entry_SYSCALL_64
+      0.32 ±  3%      -0.1        0.22 ±  7%  perf-profile.self.cycles-pp.cpuidle_enter_state
+      0.19 ±  8%      -0.1        0.09 ± 38%  perf-profile.self.cycles-pp.xfs_file_read_iter
+      0.24 ±  3%      -0.1        0.14 ±  6%  perf-profile.self.cycles-pp.apparmor_file_permission
+      0.31 ±  3%      -0.1        0.22 ±  6%  perf-profile.self.cycles-pp._raw_spin_trylock
+      0.18 ±  5%      -0.1        0.10 ±  8%  perf-profile.self.cycles-pp.syscall_return_via_sysret
+      0.22 ±  4%      -0.1        0.14 ±  4%  perf-profile.self.cycles-pp.entry_SYSCALL_64_after_hwframe
+      0.23 ±  6%      -0.1        0.16 ±  9%  perf-profile.self.cycles-pp.ktime_get_update_offsets_now
+      0.14 ±  9%      -0.1        0.07 ± 12%  perf-profile.self.cycles-pp.page_counter_try_charge
+      0.10 ±  4%      -0.1        0.02 ±100%  perf-profile.self.cycles-pp.rmqueue
+      0.20 ±  3%      -0.1        0.13 ±  7%  perf-profile.self.cycles-pp.__mod_node_page_state
+      0.18 ±  3%      -0.1        0.12 ±  7%  perf-profile.self.cycles-pp.xas_load
+      0.09            -0.1        0.02 ±100%  perf-profile.self.cycles-pp.__xas_next
+      0.17 ±  2%      -0.1        0.10 ±  6%  perf-profile.self.cycles-pp.rw_verify_area
+      0.16 ±  3%      -0.1        0.10 ±  6%  perf-profile.self.cycles-pp.aa_file_perm
+      0.16 ±  3%      -0.1        0.09 ±  9%  perf-profile.self.cycles-pp.filemap_get_pages
+      0.19 ±  6%      -0.1        0.13 ±  3%  perf-profile.self.cycles-pp.xas_start
+      0.18 ±  3%      -0.1        0.12 ±  5%  perf-profile.self.cycles-pp.security_file_permission
+      0.17            -0.1        0.11 ±  6%  perf-profile.self.cycles-pp.copy_page_to_iter
+      0.12 ±  2%      -0.1        0.06 ±  8%  perf-profile.self.cycles-pp.folio_prep_large_rmappable
+      0.16 ±  3%      -0.1        0.10 ±  6%  perf-profile.self.cycles-pp.syscall_exit_to_user_mode
+      0.14 ± 11%      -0.1        0.08 ±  8%  perf-profile.self.cycles-pp.arch_scale_freq_tick
+      0.08 ±  8%      -0.1        0.03 ± 77%  perf-profile.self.cycles-pp.ktime_get_coarse_real_ts64
+      0.12 ±  6%      -0.1        0.06 ± 10%  perf-profile.self.cycles-pp.__free_pages_ok
+      0.08 ±  4%      -0.0        0.03 ± 77%  perf-profile.self.cycles-pp.xfs_ilock
+      0.14 ±  4%      -0.0        0.09 ±  9%  perf-profile.self.cycles-pp._raw_spin_lock
+      0.10 ±  4%      -0.0        0.06 ± 39%  perf-profile.self.cycles-pp.xfs_iunlock
+      0.12 ±  4%      -0.0        0.08 ±  9%  perf-profile.self.cycles-pp.current_time
+      0.11 ± 18%      -0.0        0.06 ± 17%  perf-profile.self.cycles-pp.iomap_set_range_uptodate
+      0.12 ±  4%      -0.0        0.07 ±  7%  perf-profile.self.cycles-pp.ksys_write
+      0.15 ±  4%      -0.0        0.11 ±  6%  perf-profile.self.cycles-pp.native_irq_return_iret
+      0.10 ±  3%      -0.0        0.06 ±  8%  perf-profile.self.cycles-pp.entry_SYSCALL_64_safe_stack
+      0.09 ±  5%      -0.0        0.05 ± 38%  perf-profile.self.cycles-pp.xfs_file_buffered_read
+      0.10 ±  4%      -0.0        0.06 ±  7%  perf-profile.self.cycles-pp.xas_store
+      0.14 ±  3%      -0.0        0.10 ± 15%  perf-profile.self.cycles-pp.__mod_memcg_lruvec_state
+      0.08 ± 17%      -0.0        0.04 ± 38%  perf-profile.self.cycles-pp.calc_global_load_tick
+      0.11 ±  4%      -0.0        0.07 ± 10%  perf-profile.self.cycles-pp.ksys_read
+      0.10 ± 18%      -0.0        0.07 ±  7%  perf-profile.self.cycles-pp.__memcpy
+      0.10 ±  7%      -0.0        0.07 ±  7%  perf-profile.self.cycles-pp.update_sg_lb_stats
+      0.12 ±  4%      -0.0        0.08 ±  8%  perf-profile.self.cycles-pp.menu_select
+      0.09 ±  4%      -0.0        0.06 ±  9%  perf-profile.self.cycles-pp.__cond_resched
+      0.11 ± 16%      -0.0        0.08 ± 25%  perf-profile.self.cycles-pp.fast_imageblit
+      0.09 ±  4%      -0.0        0.06 ±  5%  perf-profile.self.cycles-pp.read_tsc
+      0.08 ±  5%      -0.0        0.06 ±  5%  perf-profile.self.cycles-pp.native_sched_clock
+      0.08 ±  5%      -0.0        0.06 ±  5%  perf-profile.self.cycles-pp.lapic_next_deadline
+      0.08 ±  6%      -0.0        0.06 ± 11%  perf-profile.self.cycles-pp.folio_lruvec_lock_irqsave
+      0.07 ±  5%      -0.0        0.05 ±  8%  perf-profile.self.cycles-pp.native_apic_msr_eoi
+      0.07 ±  4%      -0.0        0.05 ±  6%  perf-profile.self.cycles-pp.__free_one_page
+      0.09 ±  8%      -0.0        0.07 ±  4%  perf-profile.self.cycles-pp.find_lock_entries
+      0.09            +0.0        0.10        perf-profile.self.cycles-pp.lru_add_fn
+      0.14 ±  2%      +0.0        0.16        perf-profile.self.cycles-pp.folio_batch_move_lru
+      0.03 ± 77%      +0.0        0.06 ±  7%  perf-profile.self.cycles-pp.page_counter_uncharge
+     54.31           +19.8       74.12 ±  2%  perf-profile.self.cycles-pp.native_queued_spin_lock_slowpath
 
-I am currently merging 369 trees (counting Linus' and 104 trees of bug
-fix patches pending for the current merge release).
 
-Stats about the size of the tree over time can be seen at
-http://neuling.org/linux-next-size.html .
-
-Status of my local build tests will be at
-http://kisskb.ellerman.id.au/linux-next .  If maintainers want to give
-advice about cross compilers/configs that work, we are always open to add
-more builds.
-
-Thanks to Randy Dunlap for doing many randconfig builds.  And to Paul
-Gortmaker for triage and bug fixes.
-
---=20
-Cheers,
-Stephen Rothwell
-
-$ git checkout master
-$ git reset --hard stable
-Merging origin/master (90d35da658da Linux 6.8-rc7)
-Merging fixes/fixes (2dde18cd1d8f Linux 6.5)
-Merging mm-hotfixes/mm-hotfixes-unstable (dc8c3f1a099d mailmap: fix Kishon'=
-s email)
-Merging kbuild-current/fixes (b401b621758e Linux 6.8-rc5)
-Merging arc-current/for-curr (861deac3b092 Linux 6.7-rc7)
-Merging arm-current/fixes (6613476e225e Linux 6.8-rc1)
-Merging arm64-fixes/for-next/fixes (d7b77a0d565b arm64/sme: Restore SMCR_EL=
-1.EZT0 on exit from suspend)
-Merging arm-soc-fixes/arm/fixes (dcb8e53e339e Merge tag 'renesas-fixes-for-=
-v6.8-tag1' of git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-d=
-evel into arm/fixes)
-Merging davinci-current/davinci/for-current (6613476e225e Linux 6.8-rc1)
-Merging drivers-memory-fixes/fixes (6613476e225e Linux 6.8-rc1)
-Merging sophgo-fixes/fixes (41bccc98fb79 Linux 6.8-rc2)
-Merging tee-fixes/fixes (ceaa837f96ad Linux 6.2-rc8)
-Merging m68k-current/for-linus (e8a7824856de m68k: defconfig: Update defcon=
-figs for v6.8-rc1)
-Merging powerpc-fixes/fixes (380cb2f4df78 selftests/powerpc: Fix fpu_signal=
- failures)
-Merging s390-fixes/fixes (5ef1dc40ffa6 s390/cio: fix invalid -EBUSY on ccw_=
-device_start)
-Merging fscrypt-current/for-current (4bcf6f827a79 fscrypt: check for NULL k=
-eyring in fscrypt_put_master_key_activeref())
-Merging fsverity-current/for-current (a075bacde257 fsverity: don't drop pag=
-ecache at end of FS_IOC_ENABLE_VERITY)
-Merging net/main (1c61728be22c MAINTAINERS: net: netsec: add myself as co-m=
-aintainer)
-Merging bpf/master (dced881ead78 Merge branch 'check-bpf_func_state-callbac=
-k_depth-when-pruning-states')
-Merging ipsec/master (1a807e46aa93 xfrm: Avoid clang fortify warning in cop=
-y_to_user_tmpl())
-Merging netfilter/main (6523cf516c55 selftests: netfilter: add bridge connt=
-rack + multicast test case)
-Merging ipvs/main (6523cf516c55 selftests: netfilter: add bridge conntrack =
-+ multicast test case)
-Merging wireless/for-next (413dafc8170f wifi: mac80211: only call drv_sta_r=
-c_update for uploaded stations)
-Merging wpan/master (b85ea95d0864 Linux 6.7-rc1)
-Merging rdma-fixes/for-rc (eb5c7465c324 RDMA/srpt: fix function pointer cas=
-t warnings)
-Merging sound-current/for-linus (642b02b45de5 ALSA: hda: optimize the probe=
- codec process)
-Merging sound-asoc-fixes/for-linus (f8b0127aca8c ASoC: Intel: bytcr_rt5640:=
- Add an extra entry for the Chuwi Vi8 tablet)
-Merging regmap-fixes/for-linus (2f0dbb24f78a regmap: kunit: Ensure that cha=
-nged bytes are actually different)
-Merging regulator-fixes/for-linus (e5d40e9afd84 regulator: max5970: Fix reg=
-ulator child node name)
-Merging spi-fixes/for-linus (6415c7fe7cf4 spi: Drop mismerged fix)
-Merging pci-current/for-linus (6613476e225e Linux 6.8-rc1)
-Merging driver-core.current/driver-core-linus (b401b621758e Linux 6.8-rc5)
-Merging tty.current/tty-linus (1581dafaf0d3 vt: fix unicode buffer corrupti=
-on when deleting characters)
-Merging usb.current/usb-linus (014bcf41d946 USB: usb-storage: Prevent divid=
-e-by-0 error in isd200_ata_command)
-Merging usb-serial-fixes/usb-linus (54be6c6c5ae8 Linux 6.8-rc3)
-Merging phy/fixes (d4c08d8b23b2 phy: qcom-qmp-usb: fix v3 offsets data)
-Merging staging.current/staging-linus (6613476e225e Linux 6.8-rc1)
-Merging iio-fixes/fixes-togreg (11dadb631007 iio: accel: adxl367: fix I2C F=
-IFO data register)
-Merging counter-current/counter-current (c83ccdc9586b counter: fix privdata=
- alignment)
-Merging char-misc.current/char-misc-linus (da85c25cdb67 Merge tag 'iio-fixe=
-s-for-6.8b' of https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio in=
-to char-misc-linus)
-Merging soundwire-fixes/fixes (6613476e225e Linux 6.8-rc1)
-Merging thunderbolt-fixes/fixes (d3d17e23d1a0 thunderbolt: Fix NULL pointer=
- dereference in tb_port_update_credits())
-Merging input-current/for-linus (4255447ad34c Input: i8042 - add Fujitsu Li=
-febook U728 to i8042 quirk table)
-Merging crypto-current/master (c0afb6b88fbb crypto: rk3288 - Fix use after =
-free in unprepare)
-Merging vfio-fixes/for-linus (4ea95c04fa6b vfio: Drop vfio_file_iommu_group=
-() stub to fudge around a KVM wart)
-Merging kselftest-fixes/fixes (b54761f6e977 kselftest/seccomp: Report each =
-expectation we assert as a KTAP test)
-Merging modules-fixes/modules-linus (f412eef03938 Documentation: livepatch:=
- module-elf-format: Remove local klp_modinfo definition)
-Merging dmaengine-fixes/fixes (df2515a17914 dmaengine: ptdma: use consisten=
-t DMA masks)
-Merging backlight-fixes/for-backlight-fixes (6613476e225e Linux 6.8-rc1)
-Merging mtd-fixes/mtd/fixes (e6a30d0c48a1 mtd: rawnand: marvell: fix layout=
-s)
-Merging mfd-fixes/for-mfd-fixes (6613476e225e Linux 6.8-rc1)
-Merging v4l-dvb-fixes/fixes (346c84e281a9 media: pwm-ir-tx: Depend on CONFI=
-G_HIGH_RES_TIMERS)
-Merging reset-fixes/reset/fixes (4a6756f56bcf reset: Fix crash when freeing=
- non-existent optional resets)
-Merging mips-fixes/mips-fixes (b401b621758e Linux 6.8-rc5)
-Merging at91-fixes/at91-fixes (6613476e225e Linux 6.8-rc1)
-Merging omap-fixes/fixes (9b6a51aab5f5 ARM: dts: Fix occasional boot hang f=
-or am3 usb)
-Merging kvm-fixes/master (5ef1d8c1ddbf KVM: SVM: Flush pages under kvm->loc=
-k to fix UAF in svm_register_enc_region())
-Merging kvms390-fixes/master (83303a4c776c KVM: s390: fix cc for successful=
- PQAP)
-Merging hwmon-fixes/hwmon (d206a76d7d27 Linux 6.8-rc6)
-Merging nvdimm-fixes/libnvdimm-fixes (33908660e814 ACPI: NFIT: Fix incorrec=
-t calculation of idt size)
-Merging cxl-fixes/fixes (d206a76d7d27 Linux 6.8-rc6)
-Merging btrfs-fixes/next-fixes (5aaf38c4aef2 Merge branch 'misc-6.8' into n=
-ext-fixes)
-Merging vfs-fixes/fixes (aa23317d0268 qibfs: fix dentry leak)
-Merging dma-mapping-fixes/for-linus (d5090484b021 swiotlb: do not try to al=
-locate a TLB bigger than MAX_ORDER pages)
-Merging drivers-x86-fixes/fixes (427c70dec738 platform/x86: thinkpad_acpi: =
-Only update profile if successfully converted)
-Merging samsung-krzk-fixes/fixes (eab4f56d3e75 ARM: dts: exynos4212-tab3: a=
-dd samsung,invert-vclk flag to fimd)
-Merging pinctrl-samsung-fixes/fixes (6613476e225e Linux 6.8-rc1)
-Merging devicetree-fixes/dt/linus (7cb50f6c9fba of: property: fw_devlink: F=
-ix stupid bug in remote-endpoint parsing)
-Merging dt-krzk-fixes/fixes (6613476e225e Linux 6.8-rc1)
-Merging scsi-fixes/fixes (ee0017c3ed8a scsi: mpt3sas: Prevent sending diag_=
-reset when the controller is ready)
-Merging drm-fixes/drm-fixes (f6ecfdad359a drm/nouveau: keep DMA buffers req=
-uired for suspend/resume)
-Merging drm-intel-fixes/for-linux-next-fixes (01bb1ae35006 drm/i915: Check =
-before removing mm notifier)
-Merging mmc-fixes/fixes (09e23823ae9a mmc: sdhci-xenon: add timeout for PHY=
- init complete)
-Merging rtc-fixes/rtc-fixes (08279468a294 rtc: sunplus: fix format string f=
-or printing resource)
-Merging gnss-fixes/gnss-linus (54be6c6c5ae8 Linux 6.8-rc3)
-Merging hyperv-fixes/hyperv-fixes (aa707b615ce1 Drivers: hv: vmbus: make hv=
-_bus const)
-Merging soc-fsl-fixes/fix (06c2afb862f9 Linux 6.5-rc1)
-Merging risc-v-fixes/fixes (a11dd49dcb93 riscv: Sparse-Memory/vmemmap out-o=
-f-bounds fix)
-Merging riscv-dt-fixes/riscv-dt-fixes (ce6b6d151396 riscv: dts: sifive: add=
- missing #interrupt-cells to pmic)
-Merging riscv-soc-fixes/riscv-soc-fixes (d206a76d7d27 Linux 6.8-rc6)
-Merging fpga-fixes/fixes (6613476e225e Linux 6.8-rc1)
-Merging spdx/spdx-linus (04b8076df253 Merge tag 'firewire-fixes-6.8-rc7' of=
- git://git.kernel.org/pub/scm/linux/kernel/git/ieee1394/linux1394)
-Merging gpio-brgl-fixes/gpio/for-current (ec5c54a9d3c4 gpio: fix resource u=
-nwinding order in error path)
-Merging gpio-intel-fixes/fixes (6613476e225e Linux 6.8-rc1)
-Merging pinctrl-intel-fixes/fixes (6613476e225e Linux 6.8-rc1)
-Merging auxdisplay-fixes/fixes (6613476e225e Linux 6.8-rc1)
-Merging erofs-fixes/fixes (56ee7db31187 erofs: fix refcount on the metabuf =
-used for inode lookup)
-Merging kunit-fixes/kunit-fixes (829388b725f8 kunit: device: Unregister the=
- kunit_bus on shutdown)
-Merging ubifs-fixes/fixes (2241ab53cbb5 Linux 6.2-rc5)
-Merging memblock-fixes/fixes (6a9531c3a880 memblock: fix crash when reserve=
-d memory is not added to memory)
-Merging nfsd-fixes/nfsd-fixes (5ea9a7c5fe41 nfsd: don't take fi_lock in nfs=
-d_break_deleg_cb())
-Merging renesas-fixes/fixes (8c987693dc2d ARM: dts: renesas: rcar-gen2: Add=
- missing #interrupt-cells to DA9063 nodes)
-Merging perf-current/perf-tools (fdd0ae72b34e perf tools headers: update th=
-e asm-generic/unaligned.h copy with the kernel sources)
-Merging efi-fixes/urgent (2ce507f57ba9 efivarfs: Drop 'duplicates' bool par=
-ameter on efivar_init())
-Merging zstd-fixes/zstd-linus (77618db34645 zstd: Fix array-index-out-of-bo=
-unds UBSAN warning)
-Merging battery-fixes/fixes (2df70149e73e power: supply: bq27xxx-i2c: Do no=
-t free non existing IRQ)
-Merging uml-fixes/fixes (73a23d771033 um: harddog: fix modular build)
-Merging iommufd-fixes/for-rc (bb04d1335388 iommufd/selftest: Don't check ma=
-p/unmap pairing with HUGE_PAGES)
-Merging rust-fixes/rust-fixes (b401b621758e Linux 6.8-rc5)
-Merging v9fs-fixes/fixes/next (6613476e225e Linux 6.8-rc1)
-Merging w1-fixes/fixes (6613476e225e Linux 6.8-rc1)
-Merging pmdomain-fixes/fixes (2a93c6cbd5a7 pmdomain: qcom: rpmhpd: Fix enab=
-led_corner aggregation)
-Merging overlayfs-fixes/ovl-fixes (420332b94119 ovl: mark xwhiteouts direct=
-ory with overlay.opaque=3D'x')
-Merging i2c-host-fixes/i2c/i2c-host-fixes (cf8281b1aeab i2c: imx: when bein=
-g a target, mark the last read as processed)
-Merging drm-misc-fixes/for-linux-next-fixes (c70703320e55 drm/tests/drm_bud=
-dy: add alloc_range_bias test)
-Applying: drm/tests/buddy: fix print format
-Merging mm-stable/mm-stable (c44ed5b7596f writeback: remove a use of write_=
-cache_pages() from do_writepages())
-Merging mm-nonmm-stable/mm-nonmm-stable (2932fb0a927d list: leverage list_i=
-s_head() for list_entry_is_head())
-CONFLICT (content): Merge conflict in arch/riscv/include/asm/ftrace.h
-Merging mm/mm-everything (8935f34a4f0d Merge branch 'mm-nonmm-unstable' int=
-o mm-everything)
-Merging kbuild/for-next (5270316c9fec kbuild: Use -fmin-function-alignment =
-when available)
-Merging clang-format/clang-format (5a205c6a9f79 clang-format: Update with v=
-6.7-rc4's `for_each` macro list)
-Merging perf/perf-tools-next (ec42d3d56819 perf map: Fix map reference coun=
-t issues)
-Merging compiler-attributes/compiler-attributes (2993eb7a8d34 Compiler Attr=
-ibutes: counted_by: fixup clang URL)
-Merging dma-mapping/for-next (b9fa16949d18 dma-direct: Leak pages on dma_se=
-t_decrypted() failure)
-Merging asm-generic/master (34b2321cc648 MAINTAINERS: Add Andreas Larsson a=
-s co-maintainer for arch/sparc)
-Merging arc/for-next (0bb80ecc33a8 Linux 6.6-rc1)
-Merging arm/for-next (b9920fdd5a75 ARM: 9352/1: iwmmxt: Remove support for =
-PJ4/PJ4B cores)
-Merging arm64/for-next/core (c5cf0a7e7c51 Merge branch 'for-next/stage1-lpa=
-2' into for-next/core)
-Merging arm-perf/for-next/perf (fd185a245155 perf/arm_cspmu: Add devicetree=
- support)
-Merging arm-soc/for-next (c6e9e225d498 soc: document merges)
-Merging amlogic/for-next (7092cfae086f Merge branch 'v6.9/arm64-dt' into fo=
-r-next)
-Merging asahi-soc/asahi-soc/for-next (ffc253263a13 Linux 6.6)
-Merging aspeed/for-next (0c30853731ec ARM: dts: aspeed: x4tf: Add dts for a=
-sus x4tf project)
-Merging at91/at91-next (6315946ad242 Merge branch 'at91-dt' into at91-next)
-Merging broadcom/next (bbfdba3d4757 Merge branch 'soc/next' into next)
-Merging davinci/davinci/for-next (6613476e225e Linux 6.8-rc1)
-Merging drivers-memory/for-next (e46076906722 memory: stm32-fmc2-ebi: keep =
-power domain on)
-Merging imx-mxs/for-next (edb0d16255f6 Merge branch 'imx/defconfig' into fo=
-r-next)
-Merging mediatek/for-next (ba90af39ba57 arm64: dts: mediatek: mt8183-pico6:=
- Fix wake-on-X event node names)
-Merging mvebu/for-next (6b6f1082cb46 Merge branch 'mvebu/dt64' into mvebu/f=
-or-next)
-Merging omap/for-next (bf3ab90b6b4e Merge branch 'omap-for-v6.9/soc' into f=
-or-next)
-Merging qcom/for-next (eecd6fdd6bb7 Merge branches 'arm32-for-6.9', 'arm64-=
-defconfig-for-6.9', 'arm64-fixes-for-6.8', 'arm64-for-6.9', 'clk-for-6.9' a=
-nd 'drivers-for-6.9' into for-next)
-Merging renesas/next (01fdf7d6f150 Merge branch 'renesas-dt-bindings-for-v6=
-9' into renesas-next)
-Merging reset/reset/next (c721f189e89c reset: Instantiate reset GPIO contro=
-ller for shared reset-gpios)
-Merging rockchip/for-next (24f3ec49401a Merge branch 'v6.9-armsoc/dts64' in=
-to for-next)
-Merging samsung-krzk/for-next (8b9d2e71b42c Merge branch 'next/clk' into fo=
-r-next)
-Merging scmi/for-linux-next (a2b8119375a1 Merge tags 'vexpress-update-6.9',=
- 'ffa-update-6.9' and 'scmi-updates-6.9' of git://git.kernel.org/pub/scm/li=
-nux/kernel/git/sudeep.holla/linux into for-linux-next)
-Merging sophgo/for-next (0f46e1339ef1 MAINTAINERS: Setup proper info for SO=
-PHGO vendor support)
-Merging stm32/stm32-next (a7b9ab6c880d arm64: dts: st: add video encoder su=
-pport to stm32mp255)
-Merging sunxi/sunxi/for-next (c1d7282e4e92 Merge branch 'sunxi/dt-for-6.9' =
-into sunxi/for-next)
-Merging tee/next (58ea7e692a9e Merge branch 'tee_bus_type_for_v6.9' into ne=
-xt)
-Merging tegra/for-next (c85c30fad06d Merge branch for-6.9/arm64/dt into for=
--next)
-Merging ti/ti-next (68818060efdb Merge branch 'ti-k3-dts-next' into ti-next)
-Merging xilinx/for-next (2d81f5ef567c Merge remote-tracking branch 'git/zyn=
-qmp/dt' into for-next)
-Merging clk/clk-next (bf11aa74218c Merge branch 'clk-devm' into clk-next)
-Merging clk-imx/for-next (13269dc6c704 clk: imx: imx8mp: Fix SAI_MCLK_SEL d=
-efinition)
-Merging clk-renesas/renesas-clk (81a7a88a9806 clk: renesas: r8a779h0: Add R=
-PC-IF clock)
-Merging csky/linux-next (2c40c1c6adab Merge tag 'usb-6.7-rc1' of git://git.=
-kernel.org/pub/scm/linux/kernel/git/gregkh/usb)
-Merging loongarch/loongarch-next (a6be9b65a61e LoongArch: Add kernel livepa=
-tching support)
-CONFLICT (content): Merge conflict in arch/loongarch/Makefile
-Merging m68k/for-next (6b9c045b0602 m68k: defconfig: Update defconfigs for =
-v6.7-rc1)
-Merging m68knommu/for-next (b401b621758e Linux 6.8-rc5)
-Merging microblaze/next (6613476e225e Linux 6.8-rc1)
-Merging mips/mips-next (af43e871c936 MIPS: mipsregs: Parse fp and sp regist=
-er by name in parse_r)
-Merging openrisc/for-next (c289330331eb openrisc: Remove kernel-doc marker =
-from ioremap comment)
-Merging parisc-hd/for-next (0568b6f0d863 parisc: Strip upper 32 bit of sum =
-in csum_ipv6_magic for 64-bit builds)
-Merging powerpc/next (ca3d3aa14e76 powerpc: Remove cpu-as-y completely)
-Merging soc-fsl/next (fb9c384625dd bus: fsl-mc: fsl-mc-allocator: Drop a wr=
-ite-only variable)
-Merging risc-v/for-next (886516fae2b7 RISC-V: fix check for zvkb with tip-o=
-f-tree clang)
-CONFLICT (content): Merge conflict in arch/riscv/include/asm/bitops.h
-Merging riscv-dt/riscv-dt-for-next (28ecaaa5af19 riscv: dts: starfive: jh71=
-10: Add camera subsystem nodes)
-Merging riscv-soc/riscv-soc-for-next (6613476e225e Linux 6.8-rc1)
-Merging s390/for-next (6a42aaf8e867 Merge branch 'features' into for-next)
-Merging sh/for-next (0a2d3ce0031f sh: hd64461: Make setup_hd64461 static)
-Merging uml/next (83aec96c631e um: Mark 32bit syscall helpers as clobbering=
- memory)
-Merging xtensa/xtensa-for-next (7ab7acb68adf xtensa: fix MAKE_PC_FROM_RA se=
-cond argument)
-Merging bcachefs/for-next (5623a6d19a76 bcachefs: Buffered write path now c=
-an avoid the inode lock)
-Merging pidfd/for-next (a901a3568fd2 Merge tag 'iomap-6.5-merge-1' of git:/=
-/git.kernel.org/pub/scm/fs/xfs/xfs-linux)
-Merging fscrypt/for-next (8c62f31eddb7 fscrypt: shrink the size of struct f=
-scrypt_inode_info slightly)
-Merging afs/afs-next (abcbd3bfbbfe afs: trace: Log afs_make_call(), includi=
-ng server address)
-Merging btrfs/for-next (2653677ec901 Merge branch 'for-next-next-v6.8-20240=
-222' into for-next-20240222)
-Merging ceph/master (51d31149a88b ceph: switch to corrected encoding of max=
-_xattr_size in mdsmap)
-Merging cifs/for-next (29c2751e77b9 cifs: update internal module version nu=
-mber for cifs.ko)
-Merging configfs/for-next (4425c1d9b44d configfs: improve item creation per=
-formance)
-Merging ecryptfs/next (a3d78fe3e1ae fs: ecryptfs: comment typo fix)
-Merging erofs/dev (b401b621758e Linux 6.8-rc5)
-Merging exfat/dev (f3cb82f5008f exfat: remove SLAB_MEM_SPREAD flag usage)
-Merging exportfs/exportfs-next (42c3732fa807 fs: Create a generic is_dot_do=
-tdot() utility)
-Merging ext3/for_next (21fea055bb74 Pull UDF mount API conversion)
-Merging ext4/dev (1f85b452e07c ext4: verify s_clusters_per_group even witho=
-ut bigalloc)
-Merging f2fs/dev (80d3964e8874 f2fs: allow to mount if cap is 100)
-Merging fsverity/for-next (8e43fb06e10d fsverity: remove hash page spin loc=
-k)
-Merging fuse/for-next (f4043e09d224 virtio_fs: remove duplicate check if qu=
-eue is broken)
-CONFLICT (content): Merge conflict in fs/fuse/inode.c
-Merging gfs2/for-next (6b89b6af459f Merge tag 'gfs2-v6.8-rc2-revert' of git=
-://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2)
-Merging jfs/jfs-next (e42e29cc4423 Revert "jfs: fix shift-out-of-bounds in =
-dbJoin")
-Merging ksmbd/ksmbd-for-next (342c3b87c95b ksmbd: retrieve number of blocks=
- using vfs_getattr in set_file_allocation_info)
-Merging nfs/linux-next (d206a76d7d27 Linux 6.8-rc6)
-Merging nfs-anna/linux-next (57331a59ac0d NFSv4.1: Use the nfs_client's rpc=
- timeouts for backchannel)
-Merging nfsd/nfsd-next (235c35c11b99 NFSD: Document nfsd_setattr() fill-att=
-ributes behavior)
-Merging ntfs3/master (622cd3daa8ea fs/ntfs3: Slightly simplify ntfs_inode_p=
-rintk())
-Merging orangefs/for-next (9bf93dcfc453 Julia Lawall reported this null poi=
-nter dereference, this should fix it.)
-Merging overlayfs/overlayfs-next (d17bb4620f90 overlayfs.rst: fix ReST form=
-atting)
-Merging ubifs/next (3ce485803da1 mtd: ubi: provide NVMEM layer over UBI vol=
-umes)
-Merging v9fs/9p-next (be3193e58ec2 9p: Fix read/write debug statements to r=
-eport server reply)
-Merging v9fs-ericvh/ericvh/for-next (be57855f5050 fs/9p: fix dups even in u=
-ncached mode)
-Merging xfs/for-next (601f8bc2440a Merge tag 'xfs-6.8-fixes-4' into xfs-for=
--next)
-Merging zonefs/for-next (567e629fd296 zonefs: convert zonefs to use the new=
- mount api)
-Merging iomap/iomap-for-next (3ac974796e5d iomap: fix short copy in iomap_w=
-rite_iter())
-Merging djw-vfs/vfs-for-next (ce85a1e04645 xfs: stabilize fs summary counte=
-rs for online fsck)
-Merging file-locks/locks-next (e0152e7481c6 Merge tag 'riscv-for-linus-6.6-=
-mw1' of git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux)
-Merging iversion/iversion-next (e0152e7481c6 Merge tag 'riscv-for-linus-6.6=
--mw1' of git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux)
-Merging vfs-brauner/vfs.all (5ef1be014c52 Merge branch 'vfs.uuid' into vfs.=
-all)
-CONFLICT (content): Merge conflict in fs/bcachefs/super-io.c
-CONFLICT (content): Merge conflict in fs/nfsd/nfs4layouts.c
-CONFLICT (content): Merge conflict in fs/smb/client/file.c
-CONFLICT (content): Merge conflict in fs/xfs/xfs_buf.c
-CONFLICT (content): Merge conflict in init/main.c
-Applying: fixup for "filelock: split common fields into struct file_lock_co=
-re"
-Merging vfs/for-next (052d534373b7 Merge tag 'exfat-for-6.8-rc1' of git://g=
-it.kernel.org/pub/scm/linux/kernel/git/linkinjeon/exfat)
-Merging printk/for-next (e7081d5a9d97 Merge branch 'rework/console-flushing=
--fixes' into for-next)
-Merging pci/next (a66f2b4a4d36 Merge branch 'pci/qcom')
-Merging pstore/for-next/pstore (98bc7e26e14f pstore/zone: Add a null pointe=
-r check to the psz_kmsg_read)
-Merging hid/for-next (f0cd2e82460c Merge branch 'for-6.9/amd-sfh' into for-=
-next)
-Merging i2c/i2c/for-next (d206a76d7d27 Linux 6.8-rc6)
-Merging i2c-host/i2c/i2c-host (197ecadad842 i2c: designware: Implement gene=
-ric polling mode code for Wangxun 10Gb NIC)
-Merging i3c/i3c/next (8f06fb458539 i3c: Make i3c_bus_type const)
-Merging hwmon-staging/hwmon-next (78cc80d834ed dt-bindings: hwmon: lm75: us=
-e common hwmon schema)
-Merging jc_docs/docs-next (a800c6f5b057 docs: Move ja_JP/howto.rst to ja_JP=
-/process/howto.rst)
-Merging v4l-dvb/master (8c64f4cdf4e6 media: edia: dvbdev: fix a use-after-f=
-ree)
-CONFLICT (content): Merge conflict in drivers/staging/media/atomisp/pci/ato=
-misp_cmd.c
-Merging v4l-dvb-next/master (e0b8eb0f6d65 media: visl: Add codec specific v=
-ariability on output frames)
-Merging pm/linux-next (9e79f7215565 Merge branch 'acpi-apei' into linux-nex=
-t)
-Merging cpufreq-arm/cpufreq/arm/linux-next (3093fa33539b cpufreq: qcom-hw: =
-add CONFIG_COMMON_CLK dependency)
-Merging cpupower/cpupower (babb46746cc5 Fix cpupower-frequency-info.1 man p=
-age typo)
-Merging devfreq/devfreq-next (b401b621758e Linux 6.8-rc5)
-Merging pmdomain/next (04581ea2b237 pmdomain: Merge branch fixes into next)
-Merging opp/opp/linux-next (ace4b31b297d cpufreq: Move dev_pm_opp_{init|fre=
-e}_cpufreq_table() to pm_opp.h)
-Merging thermal/thermal/linux-next (9ac53d5532cc thermal/drivers/sun8i: Don=
-'t fail probe due to zone registration failure)
-Merging dlm/next (5beebc1dda47 dlm: update format header reflect current fo=
-rmat)
-Merging rdma/for-next (14b526f55ba5 RDMA/uverbs: Remove flexible arrays fro=
-m struct *_filter)
-Merging net-next/main (4b2765ae410a Merge tag 'for-netdev' of https://git.k=
-ernel.org/pub/scm/linux/kernel/git/bpf/bpf-next)
-CONFLICT (content): Merge conflict in drivers/net/wireless/intel/iwlwifi/mv=
-m/mvm.h
-Applying: Revert "tcp: remove some holes in struct tcp_sock"
-Merging bpf-next/for-next (2e0405f125b2 bpf,docs: Rename legacy conformance=
- group to packet)
-Merging ipsec-next/master (aceb147b20a2 xfrm: Do not allocate stats in the =
-driver)
-Merging mlx5-next/mlx5-next (d727d27db536 RDMA/mlx5: Expose register c0 for=
- RDMA device)
-Merging netfilter-next/main (a4634aa71fee bonding: rate-limit bonding drive=
-r inspect messages)
-Merging ipvs-next/main (a4634aa71fee bonding: rate-limit bonding driver ins=
-pect messages)
-Merging bluetooth/master (cfbc55231f8e Bluetooth: bnep: Fix out-of-bound ac=
-cess)
-Merging wireless-next/for-next (416eb60317c6 bitfield: suppress "dubious: x=
- & !y" sparse warning)
-Merging wpan-next/master (42683294cc0a ieee802154: ca8210: Drop spurious WQ=
-_UNBOUND from alloc_ordered_workqueue() call)
-Merging wpan-staging/staging (42683294cc0a ieee802154: ca8210: Drop spuriou=
-s WQ_UNBOUND from alloc_ordered_workqueue() call)
-Merging mtd/mtd/next (77bf03252839 mtd: Remove support for Carillo Ranch dr=
-iver)
-Merging nand/nand/next (65a7f244b156 mtd: rawnand: hynix: remove @nand_tech=
-nology kernel-doc description)
-Merging spi-nor/spi-nor/next (6a9eda34418f mtd: spi-nor: core: set mtd->era=
-seregions for non-uniform erase map)
-Merging crypto/master (cdb083e73d63 crypto: iaa - Fix comp/decomp delay sta=
-tistics)
-Merging drm/drm-next (c6d6a82d8a9f Merge tag 'drm-misc-next-fixes-2024-02-2=
-9' of https://anongit.freedesktop.org/git/drm/drm-misc into drm-next)
-  76a86b58d2b3 ("drm/xe: Add uapi for dumpable bos")
-  7a975748d4dc ("drm/xe: Use pointers in trace events")
-  db7bbd13f087 ("drm/i915: Check before removing mm notifier")
-  f031c3a7af8e ("drm/xe/uapi: Remove DRM_XE_VM_BIND_FLAG_ASYNC comment left=
- over")
-CONFLICT (content): Merge conflict in drivers/gpu/drm/i915/display/intel_dp=
-_hdcp.c
-CONFLICT (content): Merge conflict in drivers/gpu/drm/xe/xe_bo.c
-CONFLICT (content): Merge conflict in drivers/gpu/drm/xe/xe_bo.h
-CONFLICT (content): Merge conflict in drivers/gpu/drm/xe/xe_exec_queue.c
-CONFLICT (content): Merge conflict in drivers/gpu/drm/xe/xe_exec_queue_type=
-s.h
-CONFLICT (content): Merge conflict in drivers/gpu/drm/xe/xe_trace.h
-CONFLICT (content): Merge conflict in drivers/gpu/drm/xe/xe_vm.c
-CONFLICT (content): Merge conflict in include/uapi/drm/xe_drm.h
-Applying: drm/i915: fix applying placement flag
-Merging drm-exynos/for-linux-next (40d47c5fb4f2 Merge tag 'amd-drm-next-6.9=
--2024-02-19' of https://gitlab.freedesktop.org/agd5f/linux into drm-next)
-Merging drm-misc/for-linux-next (9cb3542aeeac drm/imx/dcss: fix resource si=
-ze calculation)
-Merging amdgpu/drm-next (b07395d5d5e7 drm/amdgpu: remove misleading amdgpu_=
-pmops_runtime_idle() comment)
-  1cb96a8a59c6 ("Revert "drm/amd/pm: resolve reboot exception for si oland"=
-")
-  34b811a281ba ("drm/amd/display: Prevent potential buffer overflow in map_=
-hw_resources")
-  63fcd306c0a5 ("drm/amdgpu: Enable gpu reset for S3 abort cases on Raven s=
-eries")
-  f9e90b1ac63b ("drm/amdgpu/pm: Fix the power1_min_cap value")
-CONFLICT (content): Merge conflict in drivers/gpu/drm/amd/display/amdgpu_dm=
-/amdgpu_dm.c
-Merging drm-intel/for-linux-next (d10612f8303f drm/i915: Add missing doc fo=
-r drm_i915_reset_stats)
-Merging drm-tegra/for-next (2429b3c529da drm/tegra: Avoid potential 32-bit =
-integer overflow)
-Merging drm-msm/msm-next (18397519cb62 drm/msm/adreno: Add A702 support)
-Merging drm-msm-lumag/msm-next-lumag (e3b1f369db5a drm/msm/dpu: Add X1E8010=
-0 support)
-Merging drm-xe/drm-xe-next (be3939be12c3 replace 'grouped target' in Makefi=
-le with pattern rule)
-  158900ade92c ("drm/xe: Deny unbinds if uapi ufence pending")
-  35ed1d2bfff7 ("drm/xe: Use vmalloc for array of bind allocation in bind I=
-OCTL")
-  8034f6b070cc ("drm/xe/xe_trace: Add move_lacks_source detail to xe_bo_mov=
-e trace")
-  977e5b82e090 ("drm/xe: Expose user fence from xe_sync_entry")
-  ba6bbdc6eaef ("drm/xe: get rid of MAX_BINDS")
-  ddadc7120d4b ("drm/xe: Fix execlist splat")
-  f5d3983366c0 ("drm/xe/mmio: fix build warning for BAR resize on 32-bit")
-Merging etnaviv/etnaviv/next (c9959996a8fc drm/etnaviv: add sensitive state=
- for PE_RT_ADDR_4_PIPE(3, 0|1) address)
-Merging fbdev/for-next (72fee6b0a3a4 fbdev: Restrict FB_SH_MOBILE_LCDC to S=
-uperH)
-Merging regmap/for-next (62861ddcb27e Merge remote-tracking branch 'regmap/=
-for-6.9' into regmap-next)
-Merging sound/for-next (72165c867f21 ALSA: hwdep: Move put_user() call out =
-of scoped_guard() in snd_hwdep_control_ioctl())
-Merging ieee1394/for-next (41ebb53b1bff firewire: core: fix build failure d=
-ue to the caller of fw_csr_string())
-Merging sound-asoc/for-next (61e90a2095cf Merge remote-tracking branch 'aso=
-c/for-6.9' into asoc-next)
-Merging modules/modules-next (d1909c022173 module: Don't ignore errors from=
- set_memory_XX())
-Merging input/next (d03f030115fe Input: gameport - make gameport_bus const)
-Merging block/for-next (8b4ecbe52700 Merge branch 'for-6.9/io_uring' into f=
-or-next)
-CONFLICT (content): Merge conflict in block/blk.h
-CONFLICT (content): Merge conflict in include/linux/sched.h
-Merging device-mapper/for-next (c6ddf6d93706 Merge branch 'dm-vdo' into for=
--next)
-Merging libata/for-next (c1bc6ed01c16 Merge remote-tracking branch 'libata/=
-for-6.9' into HEAD)
-Merging pcmcia/pcmcia-next (1bec7691b327 pcmcia: ds: make pcmcia_bus_type c=
-onst)
-Merging mmc/next (6e860b05a0cb mmc: Merge branch fixes into next)
-CONFLICT (content): Merge conflict in drivers/mmc/core/queue.c
-Merging mfd/for-mfd-next (ec0131916367 dt-bindings: mfd: Convert atmel-flex=
-com to json-schema)
-Merging backlight/for-backlight-next (3c40590fafd4 backlight: lm3630a: Use =
-backlight_get_brightness helper in update_status)
-$ git reset --hard HEAD^
-Merging next-20240223 version of backlight
-Merging battery/for-next (71c2cc5cbf68 power: supply: core: make power_supp=
-ly_class constant)
-Merging regulator/for-next (65e49e977035 Merge remote-tracking branch 'regu=
-lator/for-6.9' into regulator-next)
-Merging security/next (8f49397828ee Automated merge of 'dev' into 'next')
-CONFLICT (content): Merge conflict in security/security.c
-Merging apparmor/apparmor-next (8ead196be219 apparmor: Fix memory leak in u=
-npack_profile())
-Merging integrity/next-integrity (85445b964290 integrity: eliminate unneces=
-sary "Problem loading X.509 certificate" msg)
-Merging selinux/next (a1fc79343abb selinux: fix style issues in security/se=
-linux/ss/symtab.c)
-Merging smack/next (69b6d71052b5 Smack: use init_task_smack() in smack_cred=
-_transfer())
-Merging tomoyo/master (0bb80ecc33a8 Linux 6.6-rc1)
-Merging tpmdd/next (27eaacc62ade tpm: tis_i2c: Add compatible string nuvoto=
-n,npct75x)
-Merging watchdog/master (cd2aa8779db0 dt-bindings: watchdog: sama5d4-wdt: a=
-dd compatible for sam9x7-wdt)
-Merging iommu/next (2e57ac92bf13 Merge branches 'iommu/fixes', 'arm/mediate=
-k', 'arm/renesas', 'arm/smmu', 'x86/vt-d', 'x86/amd' and 'core' into next)
-  2777781ca9b6 ("dt-bindings: arm-smmu: Fix SM8[45]50 GPU SMMU 'if' conditi=
-on")
-  8a05f74d567a ("dt-bindings: arm-smmu: Document SM8650 GPU SMMU")
-Merging audit/next (aa13b709084a audit: use KMEM_CACHE() instead of kmem_ca=
-che_create())
-Merging devicetree/for-next (c58395355788 dt-bindings: i2c: Remove obsolete=
- i2c.txt)
-CONFLICT (content): Merge conflict in Documentation/devicetree/bindings/tri=
-vial-devices.yaml
-Merging dt-krzk/for-next (8c82b4eef297 ARM: dts: sti: minor whitespace clea=
-nup around '=3D')
-Merging mailbox/for-next (cd795fb0c352 mailbox: mtk-cmdq: Add CMDQ driver s=
-upport for mt8188)
-Merging spi/for-next (bf790d87088a Merge remote-tracking branch 'spi/for-6.=
-9' into spi-next)
-Merging tip/master (628216e29239 Merge branch into tip/master: 'x86/tdx')
-  9e1daa3bfccc ("x86/e820: Don't reserve SETUP_RNG_SEED in e820")
-CONFLICT (content): Merge conflict in kernel/workqueue.c
-Merging clockevents/timers/drivers/next (c819dbd07832 dt-bindings: timer: A=
-dd support for cadence TTC PWM)
-Merging edac/edac-for-next (f144d3020343 Merge ras/edac-amd-atl into for-ne=
-xt)
-CONFLICT (content): Merge conflict in Documentation/index.rst
-Applying: fix up for "RAS: Introduce AMD Address Translation Library"
-Merging ftrace/for-next (a641f0533adb tracing: Decrement the snapshot if th=
-e snapshot trigger fails to register)
-Merging rcu/rcu/next (87c256b5ce36 rcu: Add lockdep checks and kernel-doc h=
-eader to rcu_softirq_qs())
-CONFLICT (content): Merge conflict in Documentation/admin-guide/kernel-para=
-meters.txt
-Merging kvm/next (0cbca1bf44a0 x86: irq: unconditionally define KVM interru=
-pt vectors)
-CONFLICT (content): Merge conflict in arch/loongarch/Kconfig
-Merging kvm-arm/next (0dcdde3b4db3 Merge branch kvm-arm64/misc into kvmarm/=
-next)
-CONFLICT (content): Merge conflict in arch/arm64/kernel/cpufeature.c
-Applying: fix up for "arm64/sysreg: Add register fields for ID_AA64DFR1_EL1"
-Merging kvms390/next (00de073e2420 KVM: s390: selftest: memop: Fix undefine=
-d behavior)
-Merging kvm-ppc/topic/ppc-kvm (41bccc98fb79 Linux 6.8-rc2)
-Merging kvm-riscv/riscv_kvm_next (f072b272aa27 RISC-V: KVM: Use correct res=
-tricted types)
-Merging kvm-x86/next (6a108bdc4913 Merge branch 'xen')
-CONFLICT (content): Merge conflict in arch/x86/kvm/svm/sev.c
-Merging xen-tip/linux-next (fa765c4b4aed xen/events: close evtchn after map=
-ping cleanup)
-Merging percpu/for-next (2d9ad81ef935 Merge branch 'for-6.8-fixes' into for=
--next)
-Merging workqueues/for-next (b111131e3ec7 Merge branch 'for-6.9' into for-n=
-ext)
-Merging drivers-x86/for-next (36c45cfc5cb3 platform/x86: intel_scu_ipcutil:=
- Make scu static)
-CONFLICT (content): Merge conflict in drivers/platform/x86/amd/pmf/tee-if.c
-Merging chrome-platform/for-next (6613476e225e Linux 6.8-rc1)
-Merging chrome-platform-firmware/for-firmware-next (8a0a62941a04 firmware: =
-coreboot: Replace tag with id table in driver struct)
-Merging hsi/for-next (3693760295e8 HSI: ssi_protocol: fix struct members ke=
-rnel-doc warnings)
-Merging leds-lj/for-leds-next (3e7b2b9309cd leds: sgm3140: Add missing time=
-r cleanup and flash gpio control)
-CONFLICT (content): Merge conflict in drivers/leds/flash/Kconfig
-Merging ipmi/for-next (296455ade1fd Merge tag 'char-misc-6.8-rc1' of git://=
-git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc)
-Merging driver-core/driver-core-next (04edfa7fa059 sysfs: Introduce DEFINE_=
-SIMPLE_SYSFS_GROUP_VISIBLE())
-Merging usb/usb-next (19e7b35d8a71 powerpc: dts: akebono: Harmonize EHCI/OH=
-CI DT nodes name)
-CONFLICT (content): Merge conflict in Documentation/devicetree/bindings/reg=
-ulator/qcom,usb-vbus-regulator.yaml
-Merging thunderbolt/next (b8a730836c6b thunderbolt: Constify the struct dev=
-ice_type usage)
-Merging usb-serial/usb-next (54be6c6c5ae8 Linux 6.8-rc3)
-Merging tty/tty-next (d47dd323bf95 serial: pch: Use uart_prepare_sysrq_char=
-().)
-Merging char-misc/char-misc-next (e0014ce72e09 Merge tag 'iio-for-6.9b' of =
-https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio into char-misc-ne=
-xt)
-Merging accel/habanalabs-next (576d7cc5a9e2 accel: constify the struct devi=
-ce_type usage)
-Merging coresight/next (a4f3057d19ff coresight-tpda: Change qcom,dsb-elemen=
-t-size to qcom,dsb-elem-bits)
-Merging fastrpc/for-next (5169a077f22a misc: fastrpc: Pass proper arguments=
- to scm call)
-Merging fpga/for-next (b1a91ca25f15 fpga: remove redundant checks for bridg=
-e ops)
-Merging icc/icc-next (d1c16491134c Merge branch 'icc-sm7150' into icc-next)
-Merging iio/togreg (f9d49338744b Merge branch 'togreg-cleanup' into togreg)
-Merging phy-next/next (00ca8a15dafa phy: constify of_phandle_args in xlate)
-CONFLICT (content): Merge conflict in drivers/phy/qualcomm/phy-qcom-qmp-usb=
-c
-Merging soundwire/next (e17aae16acf5 soundwire: Use snd_soc_substream_to_rt=
-d() to obtain rtd)
-Merging extcon/extcon-next (16c6e3aff8d7 extcon: intel-mrfld: Don't shadow =
-error from devm_extcon_dev_allocate())
-Merging gnss/gnss-next (54be6c6c5ae8 Linux 6.8-rc3)
-Merging vfio/next (ea95c8165493 vfio/pds: Refactor/simplify reset logic)
-CONFLICT (content): Merge conflict in MAINTAINERS
-Merging w1/for-next (d97d263132a6 w1: w1-gpio: Convert to platform remove c=
-allback returning void)
-Merging spmi/spmi-next (b85ea95d0864 Linux 6.7-rc1)
-Merging staging/staging-next (673f605ea73f staging/nvec: update TODO)
-Merging counter-next/counter-next (3bb282ef1149 counter: constify the struc=
-t device_type usage)
-Merging mux/for-next (44c026a73be8 Linux 6.4-rc3)
-Merging dmaengine/next (716141d366f4 dmaengine: of: constify of_phandle_arg=
-s in of_dma_find_controller())
-Merging cgroup/for-next (13eb1d6e1cfc Merge branch 'for-6.8-fixes' into for=
--next)
-Merging scsi/for-next (7b020ab8a009 Merge branch 'fixes' into for-next)
-Merging scsi-mkp/for-next (b914227e4215 Merge patch series "Pass data lifet=
-ime information to SCSI disk devices")
-CONFLICT (content): Merge conflict in fs/iomap/buffered-io.c
-CONFLICT (content): Merge conflict in include/linux/fs.h
-Merging vhost/linux-next (ac20046227aa virtio-net: add cond_resched() to th=
-e command waiting loop)
-Merging rpmsg/for-next (4789630c555f Merge branches 'rproc-next' and 'rpmsg=
--next' into for-next)
-CONFLICT (content): Merge conflict in drivers/remoteproc/imx_dsp_rproc.c
-Merging gpio/for-next (0bb80ecc33a8 Linux 6.6-rc1)
-Merging gpio-brgl/gpio/for-next (177f954f56bd dt-bindings: gpio: aspeed,ast=
-2400-gpio: Convert to DT schema)
-CONFLICT (content): Merge conflict in Documentation/userspace-api/index.rst
-Merging gpio-intel/for-next (6613476e225e Linux 6.8-rc1)
-Merging pinctrl/for-next (c041b1b66c2f Merge branch 'devel' into for-next)
-Merging pinctrl-intel/for-next (6613476e225e Linux 6.8-rc1)
-Merging pinctrl-renesas/renesas-pinctrl (a6f06b909fee pinctrl: renesas: All=
-ow the compiler to optimize away sh_pfc_pm)
-Merging pinctrl-samsung/for-next (6613476e225e Linux 6.8-rc1)
-Merging pwm/pwm/for-next (f2cea1dc2a98 pwm: meson: generalize 4 inputs cloc=
-k on meson8 pwm type)
-Merging ktest/for-next (7dc8e24f0e09 ktest: Restore stty setting at first i=
-n dodie)
-Merging kselftest/next (539cd3f4da3f selftests: lib.mk: Do not process TEST=
-_GEN_MODS_DIR)
-Merging kunit/test (6613476e225e Linux 6.8-rc1)
-Merging kunit-next/kunit (806cb2270237 kunit: Annotate _MSG assertion varia=
-nts with gnu printf specifiers)
-Merging livepatching/for-next (602bf1830798 Merge branch 'for-6.7' into for=
--next)
-Merging rtc/rtc-next (c12e67e076cb rtc: max31335: fix interrupt status reg)
-Merging nvdimm/libnvdimm-for-next (bc22374c96d9 device-dax: make dax_bus_ty=
-pe const)
-Merging at24/at24/for-next (6613476e225e Linux 6.8-rc1)
-Merging ntb/ntb-next (9341b37ec17a ntb_perf: Fix printk format)
-Merging seccomp/for-next/seccomp (56af94aace8a samples: user-trap: fix stri=
-ct-aliasing warning)
-Merging fsi/next (c5eeb63edac9 fsi: Fix panic on scom file read)
-Merging slimbus/for-next (6e8ba95e17ee slimbus: core: Remove usage of the d=
-eprecated ida_simple_xx() API)
-Merging nvmem/for-next (6b475e23544a nvmem: meson-efuse: fix function point=
-er type mismatch)
-Merging xarray/main (2a15de80dd0f idr: fix param name in idr_alloc_cyclic()=
- doc)
-Merging hyperv/hyperv-next (ce9ecca0238b Linux 6.6-rc2)
-Merging auxdisplay/for-next (a9bcd02fa422 auxdisplay: Add driver for MAX695=
-x 7-segment LED controllers)
-Merging kgdb/kgdb/for-next (4f41d30cd6dc kdb: Fix a potential buffer overfl=
-ow in kdb_local())
-Merging hmm/hmm (6613476e225e Linux 6.8-rc1)
-Merging cfi/cfi/next (06c2afb862f9 Linux 6.5-rc1)
-Merging mhi/mhi-next (2ec11b5d6d90 bus: mhi: host: pci_generic: constify mo=
-dem_telit_fn980_hw_v1_config)
-Merging memblock/for-next (2159bd4e9057 memblock: Return NUMA_NO_NODE inste=
-ad of -1 to improve code readability)
-Merging cxl/next (73bf93edeeea cxl/core: use sysfs_emit() for attr's _show(=
-))
-Merging zstd/zstd-next (3f832dfb8a8e zstd: fix g_debuglevel export warning)
-Merging efi/next (841c35169323 Linux 6.8-rc4)
-Merging unicode/for-next (101c3fad29d7 libfs: Drop generic_set_encrypted_ci=
-_d_ops)
-Merging slab/slab/for-next (1863805960aa Merge branch 'slab/for-6.9/slab-fl=
-ag-cleanups' into slab/for-next)
-Merging random/master (1f719a2f3fa6 Merge tag 'net-6.8-rc4' of git://git.ke=
-rnel.org/pub/scm/linux/kernel/git/netdev/net)
-Merging landlock/next (bdbf17bc7d65 landlock: Document IOCTL support)
-Merging rust/rust-next (768409cff6cc rust: upgrade to Rust 1.76.0)
-CONFLICT (content): Merge conflict in Documentation/process/changes.rst
-CONFLICT (content): Merge conflict in rust/Makefile
-Merging sysctl/sysctl-next (4f1136a55dc8 scripts: check-sysctl-docs: handle=
- per-namespace sysctls)
-Merging execve/for-next/execve (d3f0d7bbaefd exec: Delete unnecessary state=
-ments in remove_arg_zero())
-Merging bitmap/bitmap-for-next (fd8ed16c2419 bitmap: Step down as a reviewe=
-r)
-Merging hte/for-next (b85ea95d0864 Linux 6.7-rc1)
-Merging kspp/for-next/kspp (e36b70fb8c70 sh: Fix build with CONFIG_UBSAN=3D=
-y)
-CONFLICT (content): Merge conflict in scripts/Makefile.lib
-Merging kspp-gustavo/for-next/kspp (6613476e225e Linux 6.8-rc1)
-Merging nolibc/nolibc (6613476e225e Linux 6.8-rc1)
-Merging tsm/tsm-next (f4738f56d1dc virt: tdx-guest: Add Quote generation su=
-pport using TSM_REPORTS)
-Merging iommufd/for-next (6613476e225e Linux 6.8-rc1)
-Merging header_cleanup/header_cleanup (5f4c01f1e3c7 spinlock: Fix failing b=
-uild for PREEMPT_RT)
-
---Sig_/QNJfSyowQxB0gj/XqP7V/yX
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXlVjEACgkQAVBC80lX
-0GzlTwf/UCpELFBCExs1c7unfX0ghaaBa8AE1o11054ev8Ee8IYl2g56fe6qb6Dr
-VLaLWWzSa+ib0MVpU4tJgrVZLYMFbpDVKau7bfjSqqN3QvEKRReINwTfwGMlYiZ9
-I+7gntKpJhslXNYFMoW/zlhDyOwMB8kupYXTxQ0nSqDcGbaQ9zVxVSJzlHPcVueu
-rL3qWdqisCIzcy/r7k2o3MSH1FNPzWxgmLSKhXqc6/+aE3b5U/tdamc4kL3qbi8L
-jP1eNYNOaQFh+dn808u+Vq+IkzDEn6gaIVdYfG5xhZWE/e61zQCqfsn/LMn0bHpi
-teF4Ju9CkCOsaNT8PEw9PL+mJdwZJA==
-=VOrD
------END PGP SIGNATURE-----
-
---Sig_/QNJfSyowQxB0gj/XqP7V/yX--
+Best Regards,
+Yujie
 
