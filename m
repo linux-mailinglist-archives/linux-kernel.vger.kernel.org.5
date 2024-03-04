@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-90349-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90350-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25B8786FDF8
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:50:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A40086FDF9
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:50:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 905BEB220F2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:50:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 962BD1F231A6
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:50:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 799A0364B3;
-	Mon,  4 Mar 2024 09:48:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 190CF3717C;
+	Mon,  4 Mar 2024 09:48:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T3MRVr1b"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IpekwtjC"
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13C7A225A2
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 09:48:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 783D725750
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 09:48:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709545729; cv=none; b=euitIx7i4q5mQX2mnCxXskJ+Gk3X/f3frYJ2q0+8tfyNU4iWzqkUgCR2xoItXIg7CAqmafWtY7uuygFSYAlN7HkDZGZQo5fv/v/L7aU97CfR/yritxTvGrP+SUkp1gAGSndIfdATkpPS1cv35rfgFfLgKYWx8XY2mDef/P6LjDk=
+	t=1709545731; cv=none; b=maB7Y7J74az1OAldfMwjK8/cFp97oD3oc1DmEEoTEo5yVhdNbsk3L8xvXq7eKdc/bJirBzPCPgy/C+BjMW1Dx7elgLv/JKnm/3LZuexX2FeX/2DGnVSQE8pm38vheN+bzV0g4jCECFny88Mud4e2RqX6IhsKXYciVQycR5wk0BU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709545729; c=relaxed/simple;
-	bh=25qFObja4ZHXiwqUDbfSYr1EcpHvXYlwGZ9JseGR6EI=;
+	s=arc-20240116; t=1709545731; c=relaxed/simple;
+	bh=MzMJY9/zgf5Oz86g7Hieae+K/U88BNmCb9J5ynGrUUk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Ji/MXSXkhlVQUl3z/4pW7kh1XHi2YDETrHlKoiukvPc4HTW1wKh+VbHeTpxxlCaD3p56HNfto30LRC6yU9nPNJRuHlq7Vc4PVBxqMtnNCKWUDyQxXphtpmnqpHxZs4daT3HyaHDWJSnyF34aN0EJ1bBLnS5kTrcViIk0loYaI0o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T3MRVr1b; arc=none smtp.client-ip=209.85.218.47
+	 MIME-Version; b=um5wek52Sfht0uu+OmSKI/Wht+N3w+FR9U04qiTtaJ9aHrbKPOysfQlfiR5Poxn2H5l0qmBfA/oxwjWQ9F2PlSLlhJrhu9hM0XFMbPFJWNFb3diTHADAxNuFUlHAqvOsJjUSRC7q2eBVMvL5C77XzNWH7j6WpkXH5lHBcIHXhgc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IpekwtjC; arc=none smtp.client-ip=209.85.208.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a3fb8b0b7acso551281566b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 01:48:47 -0800 (PST)
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5672afabb86so812663a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 01:48:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709545726; x=1710150526; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1709545728; x=1710150528; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=m8fTQ+F8wbIR0pBCZ90+DSUH9EydgL03eONGv2AQpFQ=;
-        b=T3MRVr1btKrUguAdiuNooYiB6ZAghYwKNCztLL45EfkoAtKdpuTtPI+mDGqgqw9flw
-         xtp1XYQ4KCzsF43vcJsNik+uqAqgqHfFywlc54GzlSPRut6QsOXzSmYNz51PfyykqVlb
-         EH6XgOvSH03zSeeR8IXC9Q2CZ/Mvix1GZlKAW5Jah73X3XyBVE1VeM7ofIC7tRhWrA1j
-         oG+wdkH/hQw3/S+qiC7mWKepQN268kwt3RC0VwTno/q5K3FDxpe1alHDK9st0Xo6iUqW
-         m+FNXuoCFsNPuoUFWSay1ikL9HVKWklruIg5+rS97q40qYxB8O3GyeujRpM2n1s8huV4
-         LE8w==
+        bh=GyidcM4nXcEaVfVvwbOfTiXrFeqdSr6X/aGwmAepY54=;
+        b=IpekwtjCpsKJZSp25TIKYofc1BjLVik0e3LlvD3c1SxFQaK/FNBwjc3jN+Gb0ldkMd
+         +ErZe8cCEK/HFwmBdvuuyOribkh35u5ZE8zdTR9in+5ASiLPS3HrLOjsMQcFlBPnHfyZ
+         WP6WTOWFxGjZ+133NvhJrf1G7wxoaeCOIx1b+PdGs4fLhzM5YVDrTkv4X46OEgVcHUcy
+         iYliXS3y/zdMSmIEkr3gAJwq/2Jg9j07epuY6GfKLj3i3S2c/UmdRJ1lgnFg9L7zpZEj
+         cigs6B5lumFsvHL3xoYxYyNzNcIK1PIG9xlpkOLf7AK/IcTlnV+S1jJStRBKyd8kyM6T
+         hWPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709545726; x=1710150526;
+        d=1e100.net; s=20230601; t=1709545728; x=1710150528;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=m8fTQ+F8wbIR0pBCZ90+DSUH9EydgL03eONGv2AQpFQ=;
-        b=FSPBmMEelH7wCiullRyJB4+BqT47E8hGm7aYTTfINVrjHhcfchHKBpzRQ24XYCLqbO
-         82K1a86+d6YItJP2zZpwE5YVcV+5xnVlz2VjSiiiO7AcQAF3eZxpjLXSHjo/2jQPOZP9
-         zbnrKDr/yddF2EnbGvadPXErVLgXjQCTz0eBFDyHM8HOvhzhpPiv894xv7xtvlJzKeb3
-         5kK4GZU6oI89KWxJSDqF2swnF5Acd8UqWSkU/eVgL1IMEPlLOy2OjijIipqp13RnytNW
-         HCr7gFwb2ohaplvAq4qxmt6OXAkySff07UVjAeLMV3d0obAfYYGKnKcDU3JfSm2dn6Nh
-         mu3Q==
-X-Gm-Message-State: AOJu0YwfV9Zly3Cr+yrgL5uko33F7a4/1W00NHWt3eTy6WYiBbluhsY2
-	ASyvLm+TUY6LhYZUk9hnTB9xpnBZB35gspKgXcJwnkM8J8kGydUTWow/MKu4dJk=
-X-Google-Smtp-Source: AGHT+IF1FsxSvOKuqOF2NT31Ibw7qOiTD8cI3Sr3moOY5rR9+7kSDHylbfkPUsEZBe1RzLQq99Ap5Q==
-X-Received: by 2002:a17:906:3642:b0:a45:122b:5637 with SMTP id r2-20020a170906364200b00a45122b5637mr2410198ejb.41.1709545726622;
-        Mon, 04 Mar 2024 01:48:46 -0800 (PST)
+        bh=GyidcM4nXcEaVfVvwbOfTiXrFeqdSr6X/aGwmAepY54=;
+        b=rmM/1Nve2gd481S6zU7pP/Dwywx1/hyY1qn3BTgbtFE54eFAx8WETp8Xj3/vo61tW1
+         b93UgvGJt+5/sgWPwTVECujoeZEEJ90suz0v7Go9NRuKTQVpbUvzv9mWv/GLuXkxirtZ
+         bHm1Y+ibhOPuPGW5/0u3FLmPRbb0+1XRa4kI4lIkN5sczQeXhshamCjMmUdCk9xcn2TZ
+         sciaBkSXEujxlK8XxGeM+TqLvLoklZwPgydvkKx+fKYFW9B5psD/W1AWx4CbCclWfdH2
+         gSDAMGc7hesmeVt7LHF6WAuDkcnu+HdgT4pyuyX5gpw/l93n2S/hGrodiPLIJm7Rf7WN
+         Q6og==
+X-Gm-Message-State: AOJu0YySCAjhMV8ois7Q4OWnEuJH++SWOcmlVOKCBtsdK+dq6hsKnzL7
+	XcEV2ugoUWZ8rhhfPUow7IT08Lwsx+zHc7eHMx0d4cmtxhn9ioU1M4Wgj8Ajdk4=
+X-Google-Smtp-Source: AGHT+IGrWu7ee0LRPYL/ogLZoLapZyet5fE/pHJ0/OdMvcuuyaSKS29gsFHD7A6W/DvdQU2UBJTt5w==
+X-Received: by 2002:a17:906:d045:b0:a44:4d9b:9062 with SMTP id bo5-20020a170906d04500b00a444d9b9062mr4866205ejb.69.1709545727613;
+        Mon, 04 Mar 2024 01:48:47 -0800 (PST)
 Received: from kepler.redhat.com (1F2EF13F.nat.pool.telekom.hu. [31.46.241.63])
-        by smtp.gmail.com with ESMTPSA id s22-20020a170906501600b00a42e2bc82dbsm4569839ejj.169.2024.03.04.01.48.45
+        by smtp.gmail.com with ESMTPSA id s22-20020a170906501600b00a42e2bc82dbsm4569839ejj.169.2024.03.04.01.48.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 01:48:46 -0800 (PST)
+        Mon, 04 Mar 2024 01:48:47 -0800 (PST)
 Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
 From: Ingo Molnar <mingo@kernel.org>
 To: linux-kernel@vger.kernel.org
@@ -74,9 +74,9 @@ Cc: Shrikanth Hegde <sshegde@linux.ibm.com>,
 	Dietmar Eggemann <dietmar.eggemann@arm.com>,
 	Linus Torvalds <torvalds@linux-foundation.org>,
 	Valentin Schneider <vschneid@redhat.com>
-Subject: [PATCH 4/9] sched/balancing: Change comment formatting to not overlap Git conflict marker lines
-Date: Mon,  4 Mar 2024 10:48:26 +0100
-Message-Id: <20240304094831.3639338-5-mingo@kernel.org>
+Subject: [PATCH 5/9] sched/balancing: Fix comments (trying to) refer to NOHZ_BALANCE_KICK
+Date: Mon,  4 Mar 2024 10:48:27 +0100
+Message-Id: <20240304094831.3639338-6-mingo@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240304094831.3639338-1-mingo@kernel.org>
 References: <20240304094831.3639338-1-mingo@kernel.org>
@@ -88,17 +88,13 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-So the scheduler has two such comment blocks, with '=' used as a double underline:
+Fix two typos:
 
-        /*
-         * VRUNTIME
-         * ========
-         *
+ - There's no such thing as 'nohz_balancing_kick', the
+   flag is named 'BALANCE' and is capitalized:  NOHZ_BALANCE_KICK.
 
-'========' also happens to be a Git conflict marker, throwing off a simple
-search in an editor for this pattern.
-
-Change them to '-------' type of underline instead - it looks just as good.
+ - Likewise there's no such thing as a 'pending nohz_balance_kick'
+   either, the NOHZ_BALANCE_KICK flag is all upper-case.
 
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
@@ -111,27 +107,26 @@ Cc: Valentin Schneider <vschneid@redhat.com>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index f11fc6dd39b1..934ace69eb30 100644
+index 934ace69eb30..4c46bffb6a7a 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -3679,7 +3679,7 @@ static void reweight_eevdf(struct cfs_rq *cfs_rq, struct sched_entity *se,
+@@ -12410,14 +12410,14 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
  
+ /*
+  * run_rebalance_domains is triggered when needed from the scheduler tick.
+- * Also triggered for nohz idle balancing (with nohz_balancing_kick set).
++ * Also triggered for NOHZ idle balancing (with NOHZ_BALANCE_KICK set).
+  */
+ static __latent_entropy void run_rebalance_domains(struct softirq_action *h)
+ {
+ 	struct rq *this_rq = this_rq();
+ 	enum cpu_idle_type idle = this_rq->idle_balance;
  	/*
- 	 * VRUNTIME
--	 * ========
-+	 * --------
- 	 *
- 	 * COROLLARY #1: The virtual runtime of the entity needs to be
- 	 * adjusted if re-weight at !0-lag point.
-@@ -3762,7 +3762,7 @@ static void reweight_eevdf(struct cfs_rq *cfs_rq, struct sched_entity *se,
- 
- 	/*
- 	 * DEADLINE
--	 * ========
-+	 * --------
- 	 *
- 	 * When the weight changes, the virtual time slope changes and
- 	 * we should adjust the relative virtual deadline accordingly.
+-	 * If this CPU has a pending nohz_balance_kick, then do the
++	 * If this CPU has a pending NOHZ_BALANCE_KICK, then do the
+ 	 * balancing on behalf of the other idle CPUs whose ticks are
+ 	 * stopped. Do nohz_idle_balance *before* rebalance_domains to
+ 	 * give the idle CPUs a chance to load balance. Else we may
 -- 
 2.40.1
 
