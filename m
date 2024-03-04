@@ -1,67 +1,71 @@
-Return-Path: <linux-kernel+bounces-90273-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90274-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C6A886FCB5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:06:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF8BE86FCBF
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:08:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF7781F2168B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:06:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0ADF21C2216C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:08:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 926CE1BF3D;
-	Mon,  4 Mar 2024 09:06:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBE1B1B95C;
+	Mon,  4 Mar 2024 09:08:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="GAj+fQta"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BfJ+oBzf"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 625501A58B;
-	Mon,  4 Mar 2024 09:06:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAA451B5BB;
+	Mon,  4 Mar 2024 09:08:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709543191; cv=none; b=HqbEkQuM9VLg2nFbyDeCkMWI8Meo3iqu3hi/x7JeUUnltzNH3TJ6vwu/ZBQJOVOnjw2a/syJ0jEdzmBHu2fP4ZOltJoIyuSf9F7RaaNaPf7aGahrbiMq/y9sZw7p5Zx0MYYrgGEGcNA1PpjBIOvjnNaY6kwWlJqZvLndokw4a+s=
+	t=1709543314; cv=none; b=n2Fl60uPaBhIYmpqZ6yV3iBJDyFtdFyJN3C3d1PmPOqoH1NhlJbXi/ibPPACbW8V+UhldrmuIJrf+LhKG0JAJdIdBejATwIA0VJ31+O4EgJ1jsAhXBD1Oskkv8Hp7njKv096XFLDoHfOmCajbSvASP1qH1lkuoS+oprfHS03rso=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709543191; c=relaxed/simple;
-	bh=GCuw5Sm9pjw8RPsF+AZn1B/kTPwUEgdiAsqcOZ4ANW4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=V+F0nfqV8n4FGanRatN6e+RD5tQd1kgVzUdAmD9AixJ750rsGuWF/warwoy21g5Ndo3xgPt5HhFGZHu9TLZrqv8/T6O4k6/QAm1bWDB+zpnPfi5NCagiPsSCvv74wdL5H3bvJASyCU22hZofLv0KRlPE+bgvTqbnvNiOnrd2984=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=GAj+fQta; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709543188;
-	bh=GCuw5Sm9pjw8RPsF+AZn1B/kTPwUEgdiAsqcOZ4ANW4=;
-	h=From:To:Cc:Subject:Date:From;
-	b=GAj+fQtaM6u3iin5ZbT5b0HjMjDpd/odSbjNw77qL0jim7x03ptPzJ3bAn2cN7C4R
-	 RUhQyBKG4m5ZeDvxb18qKB6sFfIH9e90sYI+neWLEe6F0yURn8zBzKGUulqISlmwBQ
-	 XxV3K0kgY+E6imnSaPWHGnyw36w4DWbvtI3BR88NCiRrDf8hY02+T+Zaj2sAag6Kot
-	 Gz96q1i1YBfXSQGnD7tdvpdbhT+gdyoLdJWooHAMAzWI8tAPFk+Noj//Q/Cutvcgih
-	 6RpS3PiGj43mprxgFFChFZ4PPKIBfO6NH4UM4Rq7JnY4NYOWP6rS0m6sAnm00Kmk68
-	 EBHE8sb39w5dQ==
-Received: from localhost.localdomain (broslavsky.collaboradmins.com [68.183.210.73])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id BD3A53781FE9;
-	Mon,  4 Mar 2024 09:06:25 +0000 (UTC)
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-To: James Smart <james.smart@broadcom.com>,
-	Dick Kennedy <dick.kennedy@broadcom.com>,
-	"James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Hannes Reinecke <hare@suse.com>
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
-	kernel@collabora.com,
-	kernel-janitors@vger.kernel.org,
-	James Smart <jsmart2021@gmail.com>,
-	linux-scsi@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] scsi: lpfc: correct size for wqe for memset
-Date: Mon,  4 Mar 2024 14:06:48 +0500
-Message-Id: <20240304090649.833953-1-usama.anjum@collabora.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1709543314; c=relaxed/simple;
+	bh=EA6ZR3Erkc94kHJhtNv8APoWSvKBml3K5BTGuia7NoM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=gl4Qv1m2hWK0PHwer3kJkSIgSMOpk19o6M3sNHT5ADChTwO7TSUkw3SONpf/njV3eovOHLCv8TRCltTfaYWmwWyftAcrY395ksnoyBKihR5ou4MDxoMgoWCn4z40nklQB8OchGpxqWVAaYGmy93lI1C6lPofLnJcEoRYC2vz54s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BfJ+oBzf; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709543313; x=1741079313;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=EA6ZR3Erkc94kHJhtNv8APoWSvKBml3K5BTGuia7NoM=;
+  b=BfJ+oBzfv5oTzDpbOtO9Z9DDf3ymd/FnmZ73kiU5349Y8zSne3dQSgp3
+   NV/W5IRzenSiYAa+n6eGT/2epNdhvO666c+8MBgFOxbE4FzQ2mW+z4knq
+   gjbEXLz1b8S0JmWEYR9kaxEeSVXNHt4SgeT6bSn7iZMz6YVqe9KbCLgJH
+   EDFqOaPrT9/dS+A+regZgZObVuTKou837101/dPF8wONqv3vvqnbRPiqz
+   8vb7Xc+ZfQJXWWdAzZzk7Bh3WHHGCQd6+pvbkxTRLVX/KjLy+77PcTSQr
+   VCuVCrDlKRzLElChvZGM+dX58MiLUo0qp8JoD6/lV8OXnOfWsilexBnjr
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="7840688"
+X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
+   d="scan'208";a="7840688"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 01:08:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
+   d="scan'208";a="32092854"
+Received: from unknown (HELO ply01-vm-store.amr.corp.intel.com) ([10.238.153.201])
+  by fmviesa002.fm.intel.com with ESMTP; 04 Mar 2024 01:08:27 -0800
+From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+To: bhelgaas@google.com,
+	lukas@wunner.de
+Cc: Smita.KoralahalliChannabasappa@amd.com,
+	ilpo.jarvinen@linux.intel.com,
+	sathyanarayanan.kuppuswamy@linux.intel.com,
+	linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	kbusch@kernel.org,
+	Ethan Zhao <haifeng.zhao@linux.intel.com>
+Subject: [PATCH pci-next] pci/edr: Ignore Surprise Down error on hot removal
+Date: Mon,  4 Mar 2024 04:08:19 -0500
+Message-Id: <20240304090819.3812465-1-haifeng.zhao@linux.intel.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,31 +74,88 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The wqe is of type lpfc_wqe128. It should be memset with the same type.
+Per PCI firmware spec r3.3 sec 4.6.12, for firmware first mode DPC
+handling path, FW should clear UC errors logged by port and bring link
+out of DPC, but because of ambiguity of wording in the spec, some BIOSes
+doesn't clear the surprise down error and the error bits in pci status,
+still notify OS to handle it. thus following trick is needed in EDR when
+double reporting (hot removal interrupt && dpc notification) is hit.
 
-Fixes: 6c621a2229b0 ("scsi: lpfc: Separate NVMET RQ buffer posting from IO resources SGL/iocbq/context")
-Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
----
-Changes since v1:
-- Use *wqe instead of type to find sizeof
----
- drivers/scsi/lpfc/lpfc_nvmet.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+https://patchwork.kernel.org/project/linux-pci/patch/20240207181854.
+121335-1-Smita.KoralahalliChannabasappa@amd.com/
 
-diff --git a/drivers/scsi/lpfc/lpfc_nvmet.c b/drivers/scsi/lpfc/lpfc_nvmet.c
-index 8258b771bd009..561ced5503c63 100644
---- a/drivers/scsi/lpfc/lpfc_nvmet.c
-+++ b/drivers/scsi/lpfc/lpfc_nvmet.c
-@@ -1586,7 +1586,7 @@ lpfc_nvmet_setup_io_context(struct lpfc_hba *phba)
- 		wqe = &nvmewqe->wqe;
+Signed-off-by: Ethan Zhao <haifeng.zhao@linux.intel.com>
+---
+ drivers/pci/pci.h      | 1 +
+ drivers/pci/pcie/dpc.c | 9 +++++----
+ drivers/pci/pcie/edr.c | 3 +++
+ 3 files changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+index 50134b5e3235..3787bb32e724 100644
+--- a/drivers/pci/pci.h
++++ b/drivers/pci/pci.h
+@@ -443,6 +443,7 @@ void pci_save_dpc_state(struct pci_dev *dev);
+ void pci_restore_dpc_state(struct pci_dev *dev);
+ void pci_dpc_init(struct pci_dev *pdev);
+ void dpc_process_error(struct pci_dev *pdev);
++bool dpc_handle_surprise_removal(struct pci_dev *pdev);
+ pci_ers_result_t dpc_reset_link(struct pci_dev *pdev);
+ bool pci_dpc_recovered(struct pci_dev *pdev);
+ #else
+diff --git a/drivers/pci/pcie/dpc.c b/drivers/pci/pcie/dpc.c
+index 98b42e425bb9..be79f205e04c 100644
+--- a/drivers/pci/pcie/dpc.c
++++ b/drivers/pci/pcie/dpc.c
+@@ -319,8 +319,10 @@ static void pci_clear_surpdn_errors(struct pci_dev *pdev)
+ 	pcie_capability_write_word(pdev, PCI_EXP_DEVSTA, PCI_EXP_DEVSTA_FED);
+ }
  
- 		/* Initialize WQE */
--		memset(wqe, 0, sizeof(union lpfc_wqe));
-+		memset(wqe, 0, sizeof(*wqe));
+-static void dpc_handle_surprise_removal(struct pci_dev *pdev)
++bool  dpc_handle_surprise_removal(struct pci_dev *pdev)
+ {
++	if (!dpc_is_surprise_removal(pdev))
++		return false;
+ 	if (!pcie_wait_for_link(pdev, false)) {
+ 		pci_info(pdev, "Data Link Layer Link Active not cleared in 1000 msec\n");
+ 		goto out;
+@@ -338,6 +340,7 @@ static void dpc_handle_surprise_removal(struct pci_dev *pdev)
+ out:
+ 	clear_bit(PCI_DPC_RECOVERED, &pdev->priv_flags);
+ 	wake_up_all(&dpc_completed_waitqueue);
++	return true;
+ }
  
- 		ctx_buf->iocbq->cmd_dmabuf = NULL;
- 		spin_lock(&phba->sli4_hba.sgl_list_lock);
+ static bool dpc_is_surprise_removal(struct pci_dev *pdev)
+@@ -362,10 +365,8 @@ static irqreturn_t dpc_handler(int irq, void *context)
+ 	 * According to PCIe r6.0 sec 6.7.6, errors are an expected side effect
+ 	 * of async removal and should be ignored by software.
+ 	 */
+-	if (dpc_is_surprise_removal(pdev)) {
+-		dpc_handle_surprise_removal(pdev);
++	if (dpc_handle_surprise_removal(pdev))
+ 		return IRQ_HANDLED;
+-	}
+ 
+ 	dpc_process_error(pdev);
+ 
+diff --git a/drivers/pci/pcie/edr.c b/drivers/pci/pcie/edr.c
+index 5f4914d313a1..556edfb2696a 100644
+--- a/drivers/pci/pcie/edr.c
++++ b/drivers/pci/pcie/edr.c
+@@ -184,6 +184,9 @@ static void edr_handle_event(acpi_handle handle, u32 event, void *data)
+ 		goto send_ost;
+ 	}
+ 
++	if (dpc_handle_surprise_removal(edev))
++		goto send_ost;
++
+ 	dpc_process_error(edev);
+ 	pci_aer_raw_clear_status(edev);
+ 
+
+base-commit: a66f2b4a4d365dc4bac35576f3a9d4f5982f1d63
 -- 
-2.39.2
+2.31.1
 
 
