@@ -1,257 +1,149 @@
-Return-Path: <linux-kernel+bounces-91148-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91149-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1850A870A1A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:09:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E7F9870A1C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:09:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C373C280D22
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:09:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A16C3280F84
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:09:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E30A78B78;
-	Mon,  4 Mar 2024 19:08:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1164778B73;
+	Mon,  4 Mar 2024 19:09:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="ouLbdISb"
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2066.outbound.protection.outlook.com [40.107.20.66])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GNZH1qsf"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4185D78B5C;
-	Mon,  4 Mar 2024 19:08:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.66
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709579334; cv=fail; b=Ez295xbYofGVZ2/5beCg6nE58cQOIamO1E556P/PNKFPzrt68dzo4SpDZ2tkFUsWNW2lKfBYgLIss8YiawhDx4ZeEylB2hvH0wXBpE2jH/x4tM81dmodaJHV6toyfBAQTsALrPJVBrhJ9eLq4qAET6+QScnX2r0DHk6jRy7GA2Y=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709579334; c=relaxed/simple;
-	bh=z1eeRwchmhltHx5m2zh9+9Xvu3zYIzbGKlhL6KXNgAc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=nto+ZgduWYp33Ew5KLqF1BTaoLwtxRMTFqAfFYbljrMYqus0tw50i1Yq9w9m6qpqdBoiaPr4Vadda1hbQyM0qyLvVDSLfKw19OW4afztbye/g1y1oyD+263KiE6YyyJwMblQNZBc2QXSLX/VY+sM02CQkbrOfLtIBoyIPAzB4dE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=ouLbdISb; arc=fail smtp.client-ip=40.107.20.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=V1Qmv3F7LKlahMRHiM4VgzMmS7xaBp9Nhsnhn/cz2hdqrhqEC2o57NuiZzs4poiOxHgBTXqu1UC2AliWXXNma8dJFF10GrXv8nbxaW5BzRiNbYf2gz7rimZAm0LZGOe9JzX0SPnxZaH75xbVCuhak2pfvA4hnkqi8fu6abGsErb4Vk1Bl6fw/L+sx+jpg79ycuX2YicK1zmvOsZJ8qeH2YumT6XhSX7E61f+jl9JL88L7Hsp3T1RZ0fsFPK2SIH/U7mV4fDGqpltaJ68ceMnDCvW+SNcNpPpV/lVU5tDOPBYfe5G9YIof2bDQo17ZRZ7flwCFpWC8r8hxMtQ+1QnXw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gn47uum3Yi+6Vsz6ZdsjDMTT5dJEZ4BHF6+SAmGblrg=;
- b=SfNv72VWTKUYVwet0Np+q4Zpfx3yZ+bJQIldm6LiXpZHTMJAy7EbUUQH5aI//L7J9ivf5ep4h6QtZCZ9mqfnO0Wk2bwQuFV1bFvruvsh6boejKjYgztYb8/gmAh5mTMZxell3rPxeAYlS7Bt2XOOL8Tg/qjkqkl1Ybp9k6TLUyq5EXSDNslGn/V5F3WENVMs2Dmjo05APPXaHzj0SGvA596eiiLnMq1d8V4AJGnEZ0KDAYmj/HzU00tH4EyPjibfUXVuD929XSk/S4cRbrN12Aw5gPcAEGriBQt5ChcuRGYMWiMpvosK8wX0EH6GeTasLntyb3cDHgTOfR3ucp2b4A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gn47uum3Yi+6Vsz6ZdsjDMTT5dJEZ4BHF6+SAmGblrg=;
- b=ouLbdISbvnpRSAlJwFTCNRAWMvdNjavWrLl/RnXNXIhorSAecJn+0O93Xs40HcdaigGhrpfYBxY3ihajpIMZ14qGoxxjB7LiU6j1sRvaByeA92lg0f3+jPoyqTdr2Of3tKlFq/tc0JiI2W3DC4vQ4LYmert+EK3NTLAFSn3hYjs=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by GVXPR04MB10149.eurprd04.prod.outlook.com (2603:10a6:150:1c2::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.38; Mon, 4 Mar
- 2024 19:08:49 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::3168:91:27c6:edf6]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::3168:91:27c6:edf6%3]) with mapi id 15.20.7339.033; Mon, 4 Mar 2024
- 19:08:49 +0000
-Date: Mon, 4 Mar 2024 14:08:41 -0500
-From: Frank Li <Frank.li@nxp.com>
-To: Rob Herring <robh@kernel.org>
-Cc: conor@kernel.org, bhelgaas@google.com, conor+dt@kernel.org,
-	devicetree@vger.kernel.org, helgaas@kernel.org, imx@lists.linux.dev,
-	krzysztof.kozlowski+dt@linaro.org, kw@linux.com,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	lpieralisi@kernel.org
-Subject: Re: [PATCH v6 3/3] dt-bindings: pci: layerscape-pci-ep: Add
- snps,dw-pcie-ep.yaml reference
-Message-ID: <ZeYcOUAb7NWjTh9m@lizhi-Precision-Tower-5810>
-References: <20240301162741.765524-1-Frank.Li@nxp.com>
- <20240301162741.765524-4-Frank.Li@nxp.com>
- <20240304182049.GA851904-robh@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240304182049.GA851904-robh@kernel.org>
-X-ClientProxiedBy: SJ0PR03CA0289.namprd03.prod.outlook.com
- (2603:10b6:a03:39e::24) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AF4E78B64
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 19:09:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709579360; cv=none; b=Z3aJTPo6XLPSH3Sg3QXRy9GNhSg0SrQHBkGtAvOGDwA7Hd9hhdYWnhhqOvbXZYEf4VdOSwyLm579naENlh0d3mRwL/+hkNEXb3PnQUaUjWuwAMOVJHLbFSu4qMcalMXI/ebSOO20jeV4mKSsUs1EAQ2reBOCSgiQBB3T2Zr5KTQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709579360; c=relaxed/simple;
+	bh=kIYyxnV0Q3hfFaPKlETsc9QdTOBcN/w5dkg0ZaLqCj0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=d06hKEFyhX10WqM7+2HVritpUCPM5HRujSw1iN7BO9ElTTf47rwGIXS8hFiCFckKHD+5USk844BJyTXaV/fTHgX3oR2SFsZYP5mPUX1lx80/JnDQMb/L/WgnK1vryi3Io3FQdwCi7njtINw0aNjR+RiZnOEYhsXx2eCZwxrpDBA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GNZH1qsf; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709579357;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8tiOsoLjDyH9qgATuk9KBE0wMThlXEkQhbl+ACqPams=;
+	b=GNZH1qsfKJd92mfb/TSGN3YpjBiXcHd+T9vavjt/4IuAxlVJiI05kUk+EAqNoH+CLVW52S
+	bm2L6E87cZFdrSN/RLUEDTY7gNgcvQDD2RnpIC4aOBTcuyj2GMVgTfS7veUYtBmFPJjvVY
+	eTO3sUU7sd48Qdk06eBP/nCpJHIt+90=
+Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com
+ [209.85.219.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-578-FP2YDZ82N4CEr0kkLAWaLA-1; Mon, 04 Mar 2024 14:09:16 -0500
+X-MC-Unique: FP2YDZ82N4CEr0kkLAWaLA-1
+Received: by mail-yb1-f198.google.com with SMTP id 3f1490d57ef6-dc657e9bdc4so1398335276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 11:09:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709579355; x=1710184155;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8tiOsoLjDyH9qgATuk9KBE0wMThlXEkQhbl+ACqPams=;
+        b=baeVfqY2ojsVy9c+KFBHAzZWH6tpoB+ywEowaNNqP2t/Xusl8+cCPhE/YBQNkp2QfB
+         TUB5gZD2rg4kq20VerI38bADI+8rVRqUT3Z5ogwx4JUFKtDh8uI11zpo8uh9mXsJhWmO
+         lell2qgEoldI+M9Yp7uTuq9yyndFrR72MHhqKbbasVd+H1Z1lHBX0yb346KkUkL1kY7j
+         yqFmWGhb+W5TQXLBiwc3ThmtmSggc3Z2x01TRbmM+RTkFDqXOMamOyX6E90w4eoeLV5y
+         MuWPsTBfUiqD0x/hA/i+L9QuLIxfWv9Y7E2KoN/oktQlvTwPaDTrbVVL0jXKHryzWS37
+         0F+w==
+X-Forwarded-Encrypted: i=1; AJvYcCXQKpI1WLeOSWUdrkgXv968JeQh7mgQVN8ZegkOBNUECHdvJbXSbfjep8DRcdboF/KATzi/fG9TPRlTj0kqN4PSgvpOGNwncfL512vQ
+X-Gm-Message-State: AOJu0YxjNS9IfH88GFAw/GuVZRl3q3ELVDPs6/zjnAp0QL3EAvto3mJU
+	92d6okyS0YTuj7ZQuzsmNE26H05yZVdxESB78p1z2uIBsAEfJiuFojxV3vA5g7qwSViBebz8MUG
+	qTxZpAIhor+nRt86klqQjq0pJEB/U5N1jvqK7SSaTbnn8JOIA4pyFxmFkYX5KVnOy/yCGVXFWn4
+	BZOPQXM/UrC69xDPXl82HrGdAbPqEInKzaGwjN
+X-Received: by 2002:a25:b204:0:b0:dcf:56c1:5a12 with SMTP id i4-20020a25b204000000b00dcf56c15a12mr7029283ybj.38.1709579355525;
+        Mon, 04 Mar 2024 11:09:15 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH1WcLBSSbX0iebArXcd5CgjCMzw9CJRS+5TVmsdZ4vzbJ9Vng84vACPnWisD9eqfcpWiPGyAnMVIYG0R7e6VQ=
+X-Received: by 2002:a25:b204:0:b0:dcf:56c1:5a12 with SMTP id
+ i4-20020a25b204000000b00dcf56c15a12mr7029265ybj.38.1709579355051; Mon, 04 Mar
+ 2024 11:09:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|GVXPR04MB10149:EE_
-X-MS-Office365-Filtering-Correlation-Id: 99d1ecac-b10a-4504-3402-08dc3c7e85b8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	TRsAjY6HvqgzddTJ72SOwDKb5lyd2pQN5oAkyOrRNI2Xibfnc9Od6UgUFXUSQCeF8xBugPjSN8thyHZtMU+bzn+SQBsIIh5o+1EwjMXnhCA38vMlpboJSHfNeyNI7YmAOk6Cj/0fBCRzbPEe2MeiKFdBy7EaxhuDd7dgd7cC96nMb+sMVw3/5086AEG+xgs3w7XqVlirn+kP8SOG31m4ARQEDrF6UvWS85T802COw3vU/nlbNLy0/+2Fy2/1buJMSayQQMkXZtivEhFVU+5z8pMoXWljvQLBxKF+rubaWhlLix6/HUIRChqTFwivsPxhvlOkgc4WFNtWcA19n6bIMvcv6Ic5HEYfR1MIMF35wXVud5qdASbEMVqKiIpaKkGTsR6Or/SOOBuB/guD59t8ov/vexu/iM1L0GveJTR4/LNelI/2B2Thb//IIQX2PWzAXtJmqystEt8Wcfco+MNHzVWwNDmQwwkM4H82L5k8YQePLbYGGy7qh2x7teRuoPrOXNEY/siJL/faGnbMeJCsA426TdWWk1ceMjIdUkAkQqMpfcrrvDC8bJx8uYUrPwE8E3YVyueR9BNrglnnf7r1MwkoX9Q9EaLqf7Bjpvv52lrskkYZWTsjW1tDvcYNhOnbd4N4foo5kaHgDTMlB+a3LEvj1cpvyoQv7ky5f7NhJkA=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?eTQwnEpeo5lL+VxHySdrX8Z06eaLc20xjnXqoaKPiZxsVJxrOocjBEU7+Pic?=
- =?us-ascii?Q?/r4ipp/NERZVLOw8tMgrgrTwlZMdlsULyx75RaRG+st2nhLbkZ4jNvzcHTnW?=
- =?us-ascii?Q?tZmyQADXJJhLT6lzNVgfVLYsQo+krSGLBPBVzb2On+OqRwVlFjQjB6us02HU?=
- =?us-ascii?Q?XRSeDqImbEK8Ecn1/boRebGyxqY7b4ZyN1gMyhartkAxufLVGoUPku+gisgb?=
- =?us-ascii?Q?aH7Y4eaQnemqTq8A4Cftx3KLV6m7+Rp7OhWXI3XWIC1N3EQabT62oul3Xhlt?=
- =?us-ascii?Q?RcrvvJkHUrueLtUNrvlfIKBUmNx+2ppQUQXyHVV2WIzTCkxS8E3WAP07rLtp?=
- =?us-ascii?Q?AO+xCEr/8NuJ7L0UJEa+lXWjKfP+jRvPHVwmk0uKKj9RO53MAgRphppFTRDP?=
- =?us-ascii?Q?gwTs4bK8LuWz9DRZ2UpmpYDTpbpoQ3W/EgxHarYmfWWYSWDM/Ke9roIkrIyU?=
- =?us-ascii?Q?zGANVdWeLHvCqXHdTsEnwhNa03HWbK8TMspkvrWE1SDKYUaq1hPwZKUMgHqT?=
- =?us-ascii?Q?Mx/9Nrc88vUh7ygByXANca2jUccFZLamx188UtZGdD8DlJiGtz84b/Cw+Gk3?=
- =?us-ascii?Q?7PuxTw3SjqFlWz/EiDqodexBGVpfqEbgS+bVCWWPsT28zBS2D7hB7UqEYYiV?=
- =?us-ascii?Q?2zM4C2d7Wsc6MUyTRrzdm/ZqHTPhjUFcLwAom5FVR7hg1XthxYCSb8kj/HSO?=
- =?us-ascii?Q?V2cKH7xKjCFQ0Gqgm4BhaD1Wpk77cqgFXfSKKiXQMX2pw4HgQy7KnZhEBwsl?=
- =?us-ascii?Q?X1Wou9RIbHjQHWszSTIMo6ltOaHZMdOXS0upSvwzYAPf0ojn4yp2lQoDwppV?=
- =?us-ascii?Q?LxmfoOphFKpD6JwzMxszXlaeVoAeOKS//tzRsFa+txlzkactyjFSrKgY5hSz?=
- =?us-ascii?Q?EDsYpoMYSqOp5FFA7H8g5e51geaSVjh9Vdzx90WrVC6v2YFlu5/sIfcrW1Ag?=
- =?us-ascii?Q?7ZgRqc7CiOzlv3AslGni/XjJqDBUENU6a2fuu38TGPAjgnWAnXUoG8JhnC/v?=
- =?us-ascii?Q?5u7/kZaVlgQBQ/XKky8fjNOGPt7m2OADu5Gtwsgme/T5zj5IfnSKY0r3Ud3a?=
- =?us-ascii?Q?5rwqDKZNcHrYnU7q9N+0luKgyU3YrM7N/ad9gyRw0ab7Nzh6dIp0CvIonJxx?=
- =?us-ascii?Q?AjL0GImdFgL1OqbuYqkTb4CrGW7ukpDLCuC4J4tGKYEk+XUuoHt+qVU/MDEs?=
- =?us-ascii?Q?MARiVL18W7LpL0ESGjoL6XDPCo0ephGaZtmk9N5PBbQowL1lZEK3/vwy8cz5?=
- =?us-ascii?Q?5GVUsOZ1whWCQImgQf1Xuzd3YT4Bs1EkY7HqnzaMHjYUxuoelAifl+i/0ZcB?=
- =?us-ascii?Q?hv/wqquFUBLCFR3WAgBVirCBhic6DJ0j28/cbBAFhjJ+co3aETlbDllqpQ3c?=
- =?us-ascii?Q?BQKCHW+CoV5k0+oRxQbG8kO48bEz9dqfwOTzwdnxn3Fbm1QufP1b4J3fQGc+?=
- =?us-ascii?Q?d4ttvDE1nRsC8LbE/8IxtJQL6W9no/JVwfmT88Cz6Z88Yua+UZex405CU1Px?=
- =?us-ascii?Q?sG86hi2XY3/S5wV6LnQNR9XsCOfei424bwnr9NypNYCcHV+Bxl5r5lZf7Fmr?=
- =?us-ascii?Q?k7vCd3hdEVXRs65bwY0=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 99d1ecac-b10a-4504-3402-08dc3c7e85b8
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Mar 2024 19:08:48.8995
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GpGr2v6M2hLBgCGWmTpd13Z2hI932OSmlTTv0T6HVfwDx/XdQmOhZHiCmS5NbSMbG+ujo8PWpZSEvyRJ9AP3fQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVXPR04MB10149
+References: <20240301073300.287508-1-npache@redhat.com> <d44ada61-8789-444c-9823-fc68704586bd@collabora.com>
+In-Reply-To: <d44ada61-8789-444c-9823-fc68704586bd@collabora.com>
+From: Nico Pache <npache@redhat.com>
+Date: Mon, 4 Mar 2024 12:08:49 -0700
+Message-ID: <CAA1CXcAKXhv1nM8ULoQame2dQonVp_K-hJ9AGSV2PpURPmwtmQ@mail.gmail.com>
+Subject: Re: [PATCH] selftests/mm: Dont fail testsuite due to a lack of hugepages
+To: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: linux-mm@kvack.org, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, ben@decadent.org.uk, shuah@kernel.org, 
+	akpm@linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 04, 2024 at 12:20:49PM -0600, Rob Herring wrote:
-> On Fri, Mar 01, 2024 at 11:27:41AM -0500, Frank Li wrote:
-> > Add snps,dw-pcie-ep.yaml.
-> > 
-> > Remove context that exist in snps,dw-pcie-ep.yaml.
-> > 
-> > Add an example for pcie-ep.
-> > 
-> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+On Fri, Mar 1, 2024 at 2:35=E2=80=AFAM Muhammad Usama Anjum
+<usama.anjum@collabora.com> wrote:
+>
+> On 3/1/24 12:33 PM, Nico Pache wrote:
+> > On systems that have large core counts and large page sizes, but limite=
+d
+> > memory, the userfaultfd test hugepage requirement is too large.
+> >
+> > Exiting early due to missing one test's requirements is a rather aggres=
+sive
+> > strategy, and prevents a lot of other tests from running. Remove the
+> > early exit to prevent this.
+> Why don't we only skip that particular test which requires huge number of
+> pages instead? Thus the behavior of this script would remain same.
+Hi Muhammad,
+
+That would not solve the problem-- The issue is not with the
+userfaultfd test, but rather this part of the script that tries to
+allocate the hugepages. If it doesnt succeed at allocating the right
+amount of hugepages it will exit the run_vmtests.sh script, thus
+stopping all other tests. With the `exit` removed, the test suite is
+able to run, and upon running the userfaultfd test will result in a
+failed test case.
+
+If you'd like I can follow up with a patch to skip the test cases (in
+the actually test) rather than failing.
+
+Cheers,
+-- Nico
+>
+> >
+> > Fixes: ee00479d6702 ("selftests: vm: Try harder to allocate huge pages"=
+)
+> > Signed-off-by: Nico Pache <npache@redhat.com>
 > > ---
-> >  .../bindings/pci/fsl,layerscape-pcie-ep.yaml  | 54 ++++++++++---------
-> >  1 file changed, 29 insertions(+), 25 deletions(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml b/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml
-> > index cf517e4e46a33..07965683beece 100644
-> > --- a/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml
-> > +++ b/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml
-> > @@ -10,8 +10,7 @@ maintainers:
-> >    - Frank Li <Frank.Li@nxp.com>
-> >  
-> >  description:
-> > -  This PCIe RC controller is based on the Synopsys DesignWare PCIe IP
-> > -  and thus inherits all the common properties defined in snps,dw-pcie.yaml.
-> > +  This PCIe RC controller is based on the Synopsys DesignWare PCIe IP.
-> >  
-> >    This controller derives its clocks from the Reset Configuration Word (RCW)
-> >    which is used to describe the PLL settings at the time of chip-reset.
-> > @@ -35,31 +34,18 @@ properties:
-> >        - const: fsl,ls-pcie-ep
-> >  
-> >    reg:
-> > -    description: base addresses and lengths of the PCIe controller register blocks.
-> > +    maxItems: 2
-> > +
-> > +  reg-names:
-> > +    maxItems: 2
-> >  
-> >    interrupts:
-> > -    description: A list of interrupt outputs of the controller. Must contain an
-> > -      entry for each entry in the interrupt-names property.
-> > +    minItems: 1
-> > +    maxItems: 3
-> >  
-> >    interrupt-names:
-> >      minItems: 1
-> >      maxItems: 3
-> > -    description: It could include the following entries.
-> > -    items:
-> > -      oneOf:
-> > -        - description:
-> > -            Used for interrupt line which reports AER events when
-> > -            non MSI/MSI-X/INTx mode is used.
-> > -          const: aer
-> > -        - description:
-> > -            Used for interrupt line which reports PME events when
-> > -            non MSI/MSI-X/INTx mode is used.
-> > -          const: pme
-> > -        - description:
-> > -            Used for SoCs(like ls2080a, lx2160a, ls2080a, ls2088a, ls1088a)
-> > -            which has a single interrupt line for miscellaneous controller
-> > -            events(could include AER and PME events).
-> > -          const: intr
-> >  
-> >    fsl,pcie-scfg:
-> >      $ref: /schemas/types.yaml#/definitions/phandle
-> > @@ -68,10 +54,7 @@ properties:
-> >        The second entry is the physical PCIe controller index starting from '0'.
-> >        This is used to get SCFG PEXN registers
-> >  
-> > -  dma-coherent:
-> > -    description: Indicates that the hardware IP block can ensure the coherency
-> > -      of the data transferred from/to the IP block. This can avoid the software
-> > -      cache flush/invalid actions, and improve the performance significantly
-> > +  dma-coherent: true
-> >  
-> >    big-endian:
-> >      $ref: /schemas/types.yaml#/definitions/flag
-> > @@ -85,3 +68,24 @@ required:
-> >    - reg
-> >    - interrupt-names
-> >  
-> > +allOf:
-> > +  - $ref: /schemas/pci/snps,dw-pcie-ep.yaml#
-> > +
-> > +examples:
-> > +  - |
-> > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> > +
-> > +    soc {
-> > +      #address-cells = <2>;
-> > +      #size-cells = <2>;
-> > +
-> > +      pcie-ep@3400000 {
-> > +        compatible = "fsl,ls1028a-pcie-ep", "fsl,ls-pcie-ep";
-> > +        reg = <0x00 0x03400000 0x0 0x00100000
-> > +              0x80 0x00000000 0x8 0x00000000>;
-> > +        reg-names = "dbi", "addr_space";
-> > +        interrupts = <GIC_SPI 108 IRQ_TYPE_LEVEL_HIGH>; /* PME interrupt */
-> 
-> PME or...
-> 
-> > +        interrupt-names = "app";
-> 
-> app? You seem to just be changing the names to make the example happy. 
-> What do the dts files have? You need to make those pass.
+> >  tools/testing/selftests/mm/run_vmtests.sh | 1 -
+> >  1 file changed, 1 deletion(-)
+> >
+> > diff --git a/tools/testing/selftests/mm/run_vmtests.sh b/tools/testing/=
+selftests/mm/run_vmtests.sh
+> > index 246d53a5d7f28..727ea22ba408e 100755
+> > --- a/tools/testing/selftests/mm/run_vmtests.sh
+> > +++ b/tools/testing/selftests/mm/run_vmtests.sh
+> > @@ -173,7 +173,6 @@ if [ -n "$freepgs" ] && [ -n "$hpgsize_KB" ]; then
+> >       if [ "$freepgs" -lt "$needpgs" ]; then
+> >               printf "Not enough huge pages available (%d < %d)\n" \
+> >                      "$freepgs" "$needpgs"
+> > -             exit 1
+> >       fi
+> >  else
+> >       echo "no hugetlbfs support in kernel?"
+>
+> --
+> BR,
+> Muhammad Usama Anjum
+>
 
-It's on my plan.
-
-First need change 'regs' to 'dbi'. 
-
-https://lore.kernel.org/linux-pci/20240229194559.709182-1-Frank.Li@nxp.com/
-
-After that, I can update all dts.
-
-The second step:
-
-Change EP side interrupt-names. 
-
-Frank
-
-> 
-> Rob
 
