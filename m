@@ -1,96 +1,80 @@
-Return-Path: <linux-kernel+bounces-90636-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90637-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0BD6870290
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:23:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21DCB870292
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:24:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80E011F21B07
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:23:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C0EACB257ED
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:23:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B83313D97F;
-	Mon,  4 Mar 2024 13:22:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7284A3D972;
+	Mon,  4 Mar 2024 13:23:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DR/vqkTq"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="EszN5Bhl"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 757493D547;
-	Mon,  4 Mar 2024 13:22:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EA1C3D55E;
+	Mon,  4 Mar 2024 13:23:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709558575; cv=none; b=QHgZb6DympXSbLHahj/dnsrP8n/zVe/GaOuEF4htjU/lZ5AjMU2w5ygy1pUMbpYnrScu/Jf9lY4CjG7ZTvXBRIjCd+ZGQsHUDicQ1twd6WpX5LqxzAWO8lZ5AaqZl4w1XDimU8IvUn5EjLGZQgZwekhyiBmrcFJH96Kn0lk2XyI=
+	t=1709558626; cv=none; b=fI+JV2IkAjvuackurYXP0LT+fTYc+SvrzyZK9XSX3sYbXd0J1gmp9mJLV2xpBhqtfiEyNCebbK+N21l6n+6fmT4o2aTQhZXbKRmIMU0GsHvccWEiMjBlJVjYXBleAaL4Nfi6Z+nYe/gRMyUk08Wn49uJed+KhczE/DIgyOvlcF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709558575; c=relaxed/simple;
-	bh=wvqVrTZYUETegQB929WmfG/ja/6JUPIg5ef7y9GtyRE=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=JC6OxYSqak4KHcvZ7SXvl++6qLNX3ibFSDOeXKP+Ry7bQhG2Fe+WdXHEr2tvXghpWNrn9gqSQWSgC1IYP6VxMHiBa9EeemMQJSyo/glMyW1Nl+4+lapj1i9JITvGgvis36RunAtnm4laHgMrVYye1IfSIom1LjlyTVHaUIQzmnY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DR/vqkTq; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709558574; x=1741094574;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=wvqVrTZYUETegQB929WmfG/ja/6JUPIg5ef7y9GtyRE=;
-  b=DR/vqkTqYzUop2/LTwXpStpV/fXjKlL1h9K5BpMfuwr4QgfQYnbDRSyM
-   zdGnrmWnYL/nChqfBbD4KSMs8uvG+GHeEJDdpz8eARva2sFMhAMSneRwV
-   7cp3mnHU6hNE486Sel0RKwtFZ16xsL72HbygF46G6K0zBPwwte2rB/3BV
-   4jK5toE2n81Q1y5syJNrQY1ERalFw6PXPOc4quB4l7E+1De8qglegU/bX
-   wPmRI2URsDCmtZ9OT7jxrMAXcnw0oAGt7PDmZQItGRAAiFI25Bwlyo5t3
-   yxCwsSGWbw1e9INf421ZNgQBRiK4PllI3pY+efSRcV+Se+JgUgACj5Hp8
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="15198228"
-X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
-   d="scan'208";a="15198228"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 05:22:53 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
-   d="scan'208";a="8946080"
-Received: from ekohn-mobl1.ger.corp.intel.com (HELO localhost) ([10.246.49.145])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 05:22:50 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Mon, 4 Mar 2024 15:22:47 +0200 (EET)
-To: Dan Carpenter <dan.carpenter@linaro.org>, 
-    Shravan Kumar Ramani <shravankr@nvidia.com>
-cc: Hans de Goede <hdegoede@redhat.com>, Vadim Pasternak <vadimp@nvidia.com>, 
-    platform-driver-x86@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
-    kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] platform/mellanox: mlxbf-pmc: fix signedness bugs
-In-Reply-To: <a4af764e-990b-4ebd-b342-852844374032@moroto.mountain>
-Message-ID: <9bdeba5e-0f33-c1d9-4cb4-6fdb42ec2fa9@linux.intel.com>
-References: <a4af764e-990b-4ebd-b342-852844374032@moroto.mountain>
+	s=arc-20240116; t=1709558626; c=relaxed/simple;
+	bh=YsyDulOzSzx19ZpeWD5p9gxvh32LjG6ZWdvbYa2ooAY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kSDOjiKADQdgEW8Vog4LTe3gvMZaG+dksk/o2DHHBE+2YCjq02htpO6qIsJeMqSPy2OXpMYn1L7TkjpZA7Y/Pu/vzUMuLT36vPX7OirIPgcLniQpAMWk6GzK0qtXEPU3O0CbSrNxO2JdTwSpnqH0sGZKGuZa62EwHX2F0+n4vnM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=EszN5Bhl; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=1CZLYbfZD2uFt0DlBr8muQhEVQXSLcxTpka04YzR95c=; b=EszN5BhlkHgHWqGTCQdqNI4TxO
+	Uv67t+hBg3BhPkaFjwRro/2sCKqvWKosw+B9bI8cjiUYhPaN/h+isbKXkjYBqnDXfROyrE8QCnXS4
+	nASPiAGYIYG2C7gtyFsxMNwHVvu03d4ruR77xFf7H0ZYXNBMaCKL37k/KKVYA95AxLX8=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rh8IT-009KDq-Qh; Mon, 04 Mar 2024 14:24:01 +0100
+Date: Mon, 4 Mar 2024 14:24:01 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc: hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	wojciech.drewek@intel.com, arun.ramadoss@microchip.com,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	UNGLinuxDriver@microchip.com
+Subject: Re: [PATCH net-next v3 1/2] net: phy: micrel: lan8814 led errata
+Message-ID: <bc298c9b-95f2-4d54-bf0c-d1e257c9d172@lunn.ch>
+References: <20240304091548.1386022-1-horatiu.vultur@microchip.com>
+ <20240304091548.1386022-2-horatiu.vultur@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240304091548.1386022-2-horatiu.vultur@microchip.com>
 
-On Thu, 29 Feb 2024, Dan Carpenter wrote:
-
-> These need to be signed for the error handling to work.  The
-> mlxbf_pmc_get_event_num() function returns int so int type is correct.
+On Mon, Mar 04, 2024 at 10:15:47AM +0100, Horatiu Vultur wrote:
+> Lan8814 phy led behavior is not correct. It was noticed that the led
+> still remains ON when the cable is unplugged while there was traffic
+> passing at that time.
 > 
-> Fixes: 1ae9ffd303c2 ("platform/mellanox: mlxbf-pmc: Cleanup signed/unsigned mix-up")
-> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-> ---
-> The code in mlxbf_pmc_valid_range() has a check for negatives but that
-> has a signedness bug too.  Fortunately "(u32)-EINVAL + 8" will not
-> result in an integer overflow so the offset is treated as invalid.
+> The fix consists in clearing bit 10 of register 0x38, in this way the
+> led behaviour is correct and gets OFF when there is no link.
+> 
+> Reviewed-by: Wojciech Drewek <wojciech.drewek@intel.com>
+> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
 
-Hi,
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-While this patch itself was fine so I applied it, when reviewing the patch 
-I noticed that some of the kstrtouint() derived values were not properly 
-bound checked (some were fed directly to FIELD_PREP()).
-
--- 
- i.
-
+    Andrew
 
