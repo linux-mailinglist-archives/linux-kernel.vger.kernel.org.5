@@ -1,78 +1,107 @@
-Return-Path: <linux-kernel+bounces-90657-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90658-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EED448702CB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:32:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 270938702CF
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:34:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E7AA1F21CAE
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:32:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D77A0285124
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:34:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 451FC3EA6F;
-	Mon,  4 Mar 2024 13:32:38 +0000 (UTC)
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDE9A3F9C5;
+	Mon,  4 Mar 2024 13:32:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="FtebJCye"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B9B33DB9B
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 13:32:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 882CB3F8E0;
+	Mon,  4 Mar 2024 13:32:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709559157; cv=none; b=UJXQYZYrFoIjRapLW+iotCMJdrHPlsIZcn6MBE9vRBm9hoIzHItDXpHHo6G5lAAZc8iha3ShOC6ab3eza1hya73lnisXr3zJBEGYKeyv8jhmNj6rWmzWxrWv77DoPb0KSiIoTajl4ltfZ1ELTvt67HAFkx4SCb/jePt2XzBWa/g=
+	t=1709559167; cv=none; b=vCVdiCkYV85Rr2n2Rbif1ro7QFCDqgypcvyGJSYTOVO40GNQjyiH6pRRpK66YoUN5DhmZ1cneZH+mDEACcbuaDvhk+lJ8LZq7GF5HAdbe5qDxOa/2mDlvBRpT3aHcyW3lF/hF1QBfo12xcxcVX7hb9YiIVj4xIh0e9Bxzd6OyVw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709559157; c=relaxed/simple;
-	bh=WpEhD0DLpAmvkEc1e3g2sAW2YLB3LmBEFxRyGwWYYE0=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=bkvO36sDiat+fuCI/uPudaU/6wGxkN62CcRvcs3vY9xYghwvh+2pFhP/HnLYVpm0wX64uKIiEht02iMKBo4tb90fPyJ1I/a1s1COyWgVUR3xcS7r5MIa3BaCUsmFZbj9rFRrdVqGilV1+rM+rjg08GKpCiXpHLz5dhco8nhoJV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3651a261194so42041455ab.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 05:32:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709559155; x=1710163955;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WpEhD0DLpAmvkEc1e3g2sAW2YLB3LmBEFxRyGwWYYE0=;
-        b=OZV/T8jMIaeFbaERBETx+9ybuPxLFIF063slcN/Wjx1CcZEd2sxxaw2Qp7LfO6Z9WI
-         BORcWCH135tYxdE6O1mAMAmncYMah2w0e5TOQ3s2MhhvLRoB9lpevIVPzRSRjq+J57xz
-         DULdMULLHUyRFXbj1V/ahL1+Lfv/IUfVXqZ7TtkzJIZ+mYlKXNTagd+9NezmHCMegXQ8
-         uUZunYvufEYr8NqAOXtbNJz6/eI1VO3v3lyNxu4KCJ5hrNgNO3aszcI4g9Yf20U8y6yG
-         1iGifbAr6DpoCkOUs4REBCavYEHnb0qE5q60wyQ5IvHbWK5wFlDlS0STa/odOKk4JuKd
-         6ixw==
-X-Gm-Message-State: AOJu0YwNwYWxg72ClUAqRejyOjiQa7ADOGGL9s8k9y9U9swuFYoEdlsM
-	wl1AOKJhqOS6nm/w4WTh2S9rJU9/cl4kWwyUNdg6YE8sMSgKFjnPtJ2vHnbJ1qPjNMCIWSEGuIt
-	dq+FII7W08jncTZts4dEM+HohhL0K+9aMaLLA3Y2lGjuFQfXa6uutNPpBDQ==
-X-Google-Smtp-Source: AGHT+IEyv5Kf6/tqOOSOsxw4aG2t3DQmU0YJWsM6e9L2A5xttKNiLdGWwmKtgMwQ7xM1uF8oOIvDUDif9DIMFcKazp/it87ttRSD
+	s=arc-20240116; t=1709559167; c=relaxed/simple;
+	bh=0atBaHXl1e3n7AZO5fT2Mm64OWqwf3KkX/ptCgjWNPE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ezZYGjoAWoQhifxPmGUccPFeVTpjBzdpevudypsjkY0zhqi6vlStMMsZQHi31LdSoHID6lURg9IPakdH98WQ4+RBtXmJYKLG1PeKs+UhLSCTET+lZjoJf9TyPJsKUKxbDh+j4bO8b1hPWUKkKIwz1WYv720t07jRAQ5sUAbGHgM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=FtebJCye; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=OZLHOEQOwrKYkhkP5YCytEcFYTUgdUuOzV0w6B1zc5w=; b=FtebJCyeTDDX8B9ncGsT+3dwiL
+	S/NRnnAK6ew7ipqWGNe7yO3T6105XYq4XD9wuBMEA9pKAL3wxp0sPSpOxvkQp+PKPAoCn4YeKijJQ
+	/TOjzehI3Xhj0WU+wlS/ZS19CRhlv4Re7nhdAmWMH6c3r46K3efgJy+SdsJPdq9Tni7s=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rh8R0-009KGP-11; Mon, 04 Mar 2024 14:32:50 +0100
+Date: Mon, 4 Mar 2024 14:32:50 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: =?iso-8859-1?Q?K=F6ry?= Maincent <kory.maincent@bootlin.com>
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Russ Weight <russ.weight@linux.dev>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
+	Frank Rowand <frowand.list@gmail.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
+	Dent Project <dentproject@linuxfoundation.org>
+Subject: Re: [PATCH net-next v5 13/17] net: pse-pd: Use regulator framework
+ within PSE framework
+Message-ID: <84b300c7-8295-424b-9117-c604fb4cd73e@lunn.ch>
+References: <20240227-feature_poe-v5-0-28f0aa48246d@bootlin.com>
+ <20240227-feature_poe-v5-13-28f0aa48246d@bootlin.com>
+ <ZeObuKHkPN3tiWz_@pengutronix.de>
+ <20240304102708.5bb5d95c@kmaincent-XPS-13-7390>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a48:b0:365:2f19:e597 with SMTP id
- u8-20020a056e021a4800b003652f19e597mr494996ilv.5.1709559155718; Mon, 04 Mar
- 2024 05:32:35 -0800 (PST)
-Date: Mon, 04 Mar 2024 05:32:35 -0800
-In-Reply-To: <000000000000c456810605e6997c@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000330a080612d5c29d@google.com>
-Subject: Re: [syzbot] Re: [syzbot] [fs?] BUG: sleeping function called from
- invalid context in bdev_getblk
-From: syzbot <syzbot+51c61e2b1259fcd64071@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240304102708.5bb5d95c@kmaincent-XPS-13-7390>
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+> > > +	psec = dev_find_pse_control(&phy->mdio.dev);
+> > > +	if (IS_ERR(psec)) {
+> > > +		rc = PTR_ERR(psec);
+> > > +		goto unregister_phy;
+> > > +	}
+> > > +  
+> > 
+> > I do not think it is a good idea to make PSE controller depend on
+> > phy->mdio.dev. The only reason why we have fwnode_find_pse_control()
+> > here was the missing port abstraction.
+> 
+> I totally agree that having port abstraction would be more convenient.
+> Maxime Chevallier is currently working on this and will post it after his
+> multi-phy series get merged.
+> Meanwhile, we still need a device pointer for getting the regulator. The
+> phy->mdio.dev is the only one I can think of as a regulator consumer.
+> Another idea?
 
-***
+Sorry, i've not been keeping up...
 
-Subject: Re: [syzbot] [fs?] BUG: sleeping function called from invalid context in bdev_getblk
-Author: penguin-kernel@i-love.sakura.ne.jp
+Doesn't the device tree binding determine this? Where is the consumer
+in the tree?
 
-#syz dup: BUG: sleeping function called from invalid context in __getblk_gfp
-
+   Andrew
 
