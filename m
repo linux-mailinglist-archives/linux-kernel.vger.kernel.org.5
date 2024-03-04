@@ -1,108 +1,112 @@
-Return-Path: <linux-kernel+bounces-90810-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90811-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 778B3870549
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:20:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B600087054B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:21:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 07669B29BA7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:20:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D33F1F26650
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:21:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5034C4EB31;
-	Mon,  4 Mar 2024 15:18:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 967E7487AE;
+	Mon,  4 Mar 2024 15:19:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oXMoett4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MA+XVt8b"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99F4F4E1B5
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 15:18:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1A1E14ABC;
+	Mon,  4 Mar 2024 15:19:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709565487; cv=none; b=HDMLIts1fVLDNKBTQQdv0KdE9Trq71AIdw3olWHjr6YnIfadKEJdkfo4DM6g6wxPU+xnLQoOwzxss5zR2yFVowny7XfgRlZoYhYkeQ4NqlDYVR7Fs0+skL11OBs6WmpKV2I/BDBXeUrVm8MHvOZ26nJaBXTEtQG3zBGnp82PdkA=
+	t=1709565546; cv=none; b=mD6ycauGWBuvBXKpbfpL6dcPFSA6PiUNaOT8S1TowAxx6Typ/T3jkcLoq8XqBjnLO89N7zH6n7flR+uVQYfZ3kwnvFNdx/yd3HcDpdDisWjFweMDv/w1MSynUTZKFj3RJTc/63YYzUwnyRSs3sUGFhJ6ADdaK3+pO86c7xndv1g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709565487; c=relaxed/simple;
-	bh=qdhRIpJjJcHov+iHMqLEx0gJF+9Z4dZSl6Vdkwe23yw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JS3tYt8I+6cWCfURLec3NLfDGgaNkwNu3MNg547P0lhW0k5ukce+r0u8mO5H3HNNfQ3BjJV9ioYr+U3i09GbHfXF2wAiaNOAjIf/1U65rJG/kj6gzI+5+bFdYUd0YA2aXqXRcAHln/w6jc2YWW1wwo6V6Fz2IXKQOGeWRnApE4U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oXMoett4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0DE5C43390;
-	Mon,  4 Mar 2024 15:18:04 +0000 (UTC)
+	s=arc-20240116; t=1709565546; c=relaxed/simple;
+	bh=QR5PaUloC2glE+RawDBmkFXBJ+lOR6RPDaFaRyQRbV0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Cy1P5ONKOd0Uxjq2vIngSHKuqB8pZxDT48Hf+gsWGWUxRfIn5jnN0kwIbsOe2di5+mZfzbsXdWzi9YqiiSKruEe1JfhF4ROKHi0QJMh97xAQWBz5qIxxFR+7hA5uAcyd8FSC8hvmpvOWph1umssS9SW9zbBTDFVvRay0ADPxDcc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MA+XVt8b; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A508C433C7;
+	Mon,  4 Mar 2024 15:19:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709565487;
-	bh=qdhRIpJjJcHov+iHMqLEx0gJF+9Z4dZSl6Vdkwe23yw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=oXMoett4ZRK7uD/MUGyPFVKzWJSRplSB7I1MdYTwpj9CUiDpXnhewP+itWEFg7SyL
-	 SgSAPNMaMGSF0DoDyIFszcoZ71xLuf3GLO3QDI5a+4VD2c82fCXu721+mGyD2PDgDJ
-	 OnTC+qK/e9sX22PDoUMn84yRUpDeJdXgV4ON6q3u4xIK2XqSK7OxD3WxovSfMHdJFs
-	 Ia3X6bMjWbzxGLTq8VCWvH1K0wMYjOz/iC9LhJZ0XET119zCSVYmvoSP+XRY9HiG/5
-	 XrsexP7YZmUiFRPJa/kt2KGZmYTK0pduOU0fLuxS+W4c3j6bwh8ZwJROl821EQBeKl
-	 DLcjVQ5JHLNCA==
-From: Will Deacon <will@kernel.org>
-To: jonathan.cameron@huawei.com,
-	mark.rutland@arm.com,
-	hejunhao3@huawei.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Yicong Yang <yangyicong@huawei.com>
-Cc: catalin.marinas@arm.com,
-	kernel-team@android.com,
-	Will Deacon <will@kernel.org>,
-	yangyicong@hisilicon.com,
-	linuxarm@huawei.com,
-	prime.zeng@hisilicon.com,
-	fanghao11@huawei.com
-Subject: Re: [PATCH v2 0/8] drivers/perf: hisi_pcie: Several updates for HiSilicon PCIe PMU driver
-Date: Mon,  4 Mar 2024 15:17:54 +0000
-Message-Id: <170956190997.3268113.11075039105730599713.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20240223103359.18669-1-yangyicong@huawei.com>
-References: <20240223103359.18669-1-yangyicong@huawei.com>
+	s=k20201202; t=1709565546;
+	bh=QR5PaUloC2glE+RawDBmkFXBJ+lOR6RPDaFaRyQRbV0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MA+XVt8bw4FeD+KfDJ6Gb8c1VkRZlvxZ95p7aFH1YyRpPYlCDdexNW6rHwG+cLsw4
+	 UWwG/OwbkC4K4xFL7eylA0Jyg9tdoN4OvrJL0z6GUncK5M4fAbR5picEBJvwWmKA8F
+	 fvQedPfnkSU6GKqp0QgBgH+S+ecLFl0GexCrnWRC/Hb2rgGtZLQWVp8/oVs9U9wtnM
+	 5Jq/sCf4hW8H36C/0LXkMU7ZPOEP3sqiC7vIXuDz1MtdatmCDhEegbFA98U8GAIFaL
+	 Bu1RZ7QpF7g/2ur3CH1cDYligyLpg+9/HoUXdCkCdW1uo0gT+0dX5JRjzbnmLxEwv+
+	 LKqmHv4f64bEQ==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rhA5y-000000001Jq-1OB2;
+	Mon, 04 Mar 2024 16:19:14 +0100
+Date: Mon, 4 Mar 2024 16:19:14 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Qingliang Li <qingliang.li@mediatek.com>
+Cc: "Rafael J . Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+	Len Brown <len.brown@intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Tony Lindgren <tony@atomide.com>, linux-pm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, Dhruva Gole <d-gole@ti.com>
+Subject: Re: [PATCH v2] PM: sleep: wakeirq: fix wake irq warning in system
+ suspend
+Message-ID: <ZeXmcl4ngEm1RccW@hovoldconsulting.com>
+References: <20240301092657.15528-1-qingliang.li@mediatek.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240301092657.15528-1-qingliang.li@mediatek.com>
 
-On Fri, 23 Feb 2024 18:33:51 +0800, Yicong Yang wrote:
-> This series mainly fix and optimize the several usage of the driver:
-> - Add more events to complement the TLP bandwidth counting
-> - Fix the wrong counting on using the event group
-> - Properly check the target filter to avoid invalid filter value
-> - Optimize the handling of related events which are not in an event group
-> - Update the docs
+On Fri, Mar 01, 2024 at 05:26:57PM +0800, Qingliang Li wrote:
+> When driver uses pm_runtime_force_suspend() as the system suspend callback
+> function and registers the wake irq with reverse enable ordering, the wake
+> irq will be re-enabled when entering system suspend, triggering an
+> 'Unbalanced enable for IRQ xxx' warning. In this scenario, the call
+> sequence during system suspend is as follows:
+>   suspend_devices_and_enter()
+>     -> dpm_suspend_start()
+>       -> dpm_run_callback()
+>         -> pm_runtime_force_suspend()
+>           -> dev_pm_enable_wake_irq_check()
+>           -> dev_pm_enable_wake_irq_complete()
 > 
-> [...]
+>     -> suspend_enter()
+>       -> dpm_suspend_noirq()
+>         -> device_wakeup_arm_wake_irqs()
+>           -> dev_pm_arm_wake_irq()
+> 
+> To fix this issue, complete the setting of WAKE_IRQ_DEDICATED_ENABLED flag
+> in dev_pm_enable_wake_irq_complete() to avoid redundant irq enablement.
+> 
+> Reviewed-by: Dhruva Gole <d-gole@ti.com>
+> Signed-off-by: Qingliang Li <qingliang.li@mediatek.com>
 
-Applied to will (for-next/perf), thanks!
+Thanks for the fix. Looks correct to me:
 
-[1/8] drivers/perf: hisi_pcie: Rename hisi_pcie_pmu_{config,clear}_filter()
-      https://git.kernel.org/will/c/54a9e47eebb9
-[2/8] drivers/perf: hisi_pcie: Introduce hisi_pcie_pmu_get_event_ctrl_val()
-      https://git.kernel.org/will/c/4d473461e094
-[3/8] drivers/perf: hisi_pcie: Fix incorrect counting under metric mode
-      https://git.kernel.org/will/c/b6693ad68e27
-[4/8] drivers/perf: hisi_pcie: Add more events for counting TLP bandwidth
-      https://git.kernel.org/will/c/00ca69b856ba
-[5/8] drivers/perf: hisi_pcie: Check the target filter properly
-      https://git.kernel.org/will/c/2f864fee0851
-[6/8] drivers/perf: hisi_pcie: Relax the check on related events
-      https://git.kernel.org/will/c/2fbf96ed883a
-[7/8] drivers/perf: hisi_pcie: Merge find_related_event() and get_event_idx()
-      https://git.kernel.org/will/c/7da377059ee6
-[8/8] docs: perf: Update usage for target filter of hisi-pcie-pmu
-      https://git.kernel.org/will/c/89a032923d4b
+Reviewed-by: Johan Hovold <johan+linaro@kernel.org>
 
-Cheers,
--- 
-Will
+I think you should add back the Fixes tag from v1 and CC stable as well:
 
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
+Fixes: 8527beb12087 ("PM: sleep: wakeirq: fix wake irq arming")
+Cc: stable@vger.kernel.org      # 5.16
+
+Note that WAKE_IRQ_DEDICATED_REVERSE was added in 5.16 by commit
+259714100d98 ("PM / wakeirq: support enabling wake-up irq after
+runtime_suspend called") so no need to try to backport any further than
+that.
+
+Johan
 
