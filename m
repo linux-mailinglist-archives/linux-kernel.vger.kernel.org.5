@@ -1,116 +1,185 @@
-Return-Path: <linux-kernel+bounces-91097-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91098-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D84408709AB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:34:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7384687098D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:30:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7BCEAB29022
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:29:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A70D1F271E0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:30:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CF03626AF;
-	Mon,  4 Mar 2024 18:28:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73686629E3;
+	Mon,  4 Mar 2024 18:30:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="iIgJffdo"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ODDTDWd5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 852F061675
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 18:28:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E8DD629ED;
+	Mon,  4 Mar 2024 18:30:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709576934; cv=none; b=hgK7k95+d6UfMoZ900UxYrr4TNujRkQrkAWI7Id+UMubPPQvCShzqKvb+U9Ww7zVy43pOQXc9GTzDdpgjagDrZNhpozqtNZsEKgQUSbBeSFuP5zXmu7K44vfRXm7xhKu1G4NEg9baVZfog6sgICl2jjPSRm22NtQQZX6urH57sg=
+	t=1709577030; cv=none; b=tEWkQyonciv1x+ge0p8hUPoYEum3dmDuK/hEKKTmD6bybYOZ7tgj4RYlBR99XDPW/Vs6YkorsJv9pbUjq8ndlBXabnLoQr85L5sCKlRRviobqpwHPDLkhExepBmS2dvnR0HOSnyidZvmieH5qicXNt6xOVjru+60QaUVLWjIP1A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709576934; c=relaxed/simple;
-	bh=v9K54mCWFGXxTmk+0kMTeT8m/5ID9PzFuet4Ue7lEa8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=R0S798C+HvhIqRt5yl3HMsQabrRilCoKMUsO3UTQykhXP+WDzclqX7cGsiHw5S5faVWjokzXqlq0E0yXbVaNNVghYVbvoDt02NpnYqOkITL+U/HMGOh4/7r7hulspVhPliXDWOfuXr+TDHLwARrcoU6Vle/6wZGli5542SSqA9s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=iIgJffdo; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709576930;
-	bh=v9K54mCWFGXxTmk+0kMTeT8m/5ID9PzFuet4Ue7lEa8=;
-	h=From:Date:Subject:To:Cc:From;
-	b=iIgJffdobUV6zPpFOTq1ofzrrvjiE+JvULRCF/zLUCFl/dCOU+nUvJ6x715Lf4Hil
-	 SVzlcsdWy+5pjLlukRBlxm1/sTXXDPbQ2ND9e0GkUPpeLU5OaC1aalj9OZaM/IVGc4
-	 ZmnEg9HVbBryGVWuChAZUqYMvLmn7/E5bYOS9QLbD5hwNmCPSNhkIpWkTIuEr2z1GD
-	 p4WXBUxn3L3IE5w+n0l5CzyEXfmv+4sQd5FU7ck+7uQWpIjOhhwUYxvJlqdnh6EWHj
-	 jqlBgLTj8GLdDiNJCHy2RPX8xyVVy9DdnmM0JVG/MiaYzR8krm5V2kbtgwfd4zUFMg
-	 4IF5Po/2eaBtg==
-Received: from [192.168.1.234] (zone.collabora.co.uk [167.235.23.81])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: nfraprado)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id B776E3780C6C;
-	Mon,  4 Mar 2024 18:28:48 +0000 (UTC)
-From: =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
-Date: Mon, 04 Mar 2024 13:28:35 -0500
-Subject: [PATCH] arm64: defconfig: Enable support for cbmem entries in the
- coreboot table
+	s=arc-20240116; t=1709577030; c=relaxed/simple;
+	bh=ziA5WYvRRKeMAVzULW5DZrSwZgVRble6/Vv6u6klgFo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WfU9eMQy5078M2x200AFI/RN3zYMHvJlzPzd7YHIgJSRPsAB2XR9xpnfdGU52iB3yjiNKg/2bOz2tbIvrN6YlQdIxS4ZTgj2sHCZ1nt8q5sSz8/6/tWQdDJdQ13KYHzG5uab5na9AvxdYtHlKBOclr+rE641qcWsXoiO4CSrjt4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ODDTDWd5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6860C433F1;
+	Mon,  4 Mar 2024 18:30:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709577030;
+	bh=ziA5WYvRRKeMAVzULW5DZrSwZgVRble6/Vv6u6klgFo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ODDTDWd5dsvBmvO6XdiAVMwH149tJPAqQaCPw0Vl8CLxF38gNQateBMMrjXbkSusd
+	 vRQTWw9chXqiXtS5RHNoDboBDdQU30amnA0XAahk1ucXWPJuNtRl+eBk674JUjCzmP
+	 q992pDkt6r9K/xiQ2sqtKTUh0Q45ZlqdOXNbw/csWEXgsEpFHhcM0pDdr0r31YvMzv
+	 iFAvf5oD3BtuqkW5S/48K68MRC+ty7AmMOJ6+XbgUcvuulNgrEGXMOJrAd5YPnM5bT
+	 odXJeudAONXhEyDF7uO2xmu2eCmYxhw2HygbVi12Jwt0NYSeCRn684FzVPAgaQnWf6
+	 tgZXbBT6H7quw==
+Date: Mon, 4 Mar 2024 12:30:27 -0600
+From: Rob Herring <robh@kernel.org>
+To: abdellatif.elkhlifi@arm.com
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Mathieu Poirier <mathieu.poirier@linaro.org>,
+	Liviu Dudau <liviu.dudau@arm.com>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Drew.Reed@arm.com,
+	Adam.Johnston@arm.com, linux-arm-kernel@lists.infradead.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-remoteproc@vger.kernel.org
+Subject: Re: [PATCH 1/3] remoteproc: Add Arm remoteproc driver
+Message-ID: <20240304183027.GA854977-robh@kernel.org>
+References: <20240301164227.339208-1-abdellatif.elkhlifi@arm.com>
+ <20240301164227.339208-2-abdellatif.elkhlifi@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240304-coreboot-defconfig-v1-1-02dc1940408f@collabora.com>
-X-B4-Tracking: v=1; b=H4sIANIS5mUC/x3MPQqAMAxA4atIZgtVY/25ijhoTTVLI62IULy7x
- fEb3ksQKTBFGIsEgW6OLD6jKguwx+J3UrxlQ61r1I1GZSXQKnKpjZwV73hXiIPpXdt2aAzk8Az
- k+Pmn0/y+H6f2ks1kAAAA
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: soc@kernel.org, Catalin Marinas <catalin.marinas@arm.com>, 
- Will Deacon <will@kernel.org>, Tzung-Bi Shih <tzungbi@kernel.org>, 
- kernel@collabora.com, linux-arm-kernel@lists.infradead.org, 
- linux-kernel@vger.kernel.org, 
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
- Brian Norris <briannorris@chromium.org>, 
- =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
-X-Mailer: b4 0.13.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240301164227.339208-2-abdellatif.elkhlifi@arm.com>
 
-Enable the cbmem driver and dependencies in order to support reading
-cbmem entries from the coreboot table, which are used to store logs from
-coreboot on arm64 Chromebooks, and provide useful information for
-debugging the boot process on those devices.
+On Fri, Mar 01, 2024 at 04:42:25PM +0000, abdellatif.elkhlifi@arm.com wrote:
+> From: Abdellatif El Khlifi <abdellatif.elkhlifi@arm.com>
+> 
+> introduce remoteproc support for Arm remote processors
+> 
+> The supported remote processors are those that come with a reset
+> control register and a reset status register. The driver allows to
+> switch on or off the remote processor.
+> 
+> The current use case is Corstone-1000 External System (Cortex-M3).
+> 
+> The driver can be extended to support other remote processors
+> controlled with a reset control and a reset status registers.
+> 
+> The driver also supports control of multiple remote processors at the
+> same time.
+> 
+> Signed-off-by: Abdellatif El Khlifi <abdellatif.elkhlifi@arm.com>
+> ---
+>  MAINTAINERS                    |   6 +
+>  drivers/remoteproc/Kconfig     |  18 ++
+>  drivers/remoteproc/Makefile    |   1 +
+>  drivers/remoteproc/arm_rproc.c | 395 +++++++++++++++++++++++++++++++++
+>  4 files changed, 420 insertions(+)
+>  create mode 100644 drivers/remoteproc/arm_rproc.c
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 8d1052fa6a69..54d6a40feea5 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -1764,6 +1764,12 @@ S:	Maintained
+>  F:	Documentation/devicetree/bindings/interrupt-controller/arm,vic.yaml
+>  F:	drivers/irqchip/irq-vic.c
+>  
+> +ARM REMOTEPROC DRIVER
+> +M:	Abdellatif El Khlifi <abdellatif.elkhlifi@arm.com>
+> +L:	linux-remoteproc@vger.kernel.org
+> +S:	Maintained
+> +F:	drivers/remoteproc/arm_rproc.c
+> +
+>  ARM SMC WATCHDOG DRIVER
+>  M:	Julius Werner <jwerner@chromium.org>
+>  R:	Evan Benn <evanbenn@chromium.org>
+> diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
+> index 48845dc8fa85..57fbac454a5d 100644
+> --- a/drivers/remoteproc/Kconfig
+> +++ b/drivers/remoteproc/Kconfig
+> @@ -365,6 +365,24 @@ config XLNX_R5_REMOTEPROC
+>  
+>  	  It's safe to say N if not interested in using RPU r5f cores.
+>  
+> +config ARM_REMOTEPROC
+> +	tristate "Arm remoteproc support"
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Reviewed-by: Brian Norris <briannorris@chromium.org>
-Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
----
-Patch split from
-https://lore.kernel.org/all/20240212-coreboot-mod-defconfig-v4-4-d14172676f6d@collabora.com
-as it's independent from that series.
+Too generic of a name. It should say Corstone or Corstone-1000. Here and 
+everywhere you use just 'Arm'.
 
-Rebased on top of soc/for-next.
----
- arch/arm64/configs/defconfig | 3 +++
- 1 file changed, 3 insertions(+)
+> +	depends on HAS_IOMEM && ARM64
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index f9cc5bff157c..97888eabb328 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -251,6 +251,9 @@ CONFIG_RASPBERRYPI_FIRMWARE=y
- CONFIG_INTEL_STRATIX10_SERVICE=y
- CONFIG_INTEL_STRATIX10_RSU=m
- CONFIG_MTK_ADSP_IPC=m
-+CONFIG_GOOGLE_FIRMWARE=y
-+CONFIG_GOOGLE_CBMEM=m
-+CONFIG_GOOGLE_COREBOOT_TABLE=m
- CONFIG_EFI_CAPSULE_LOADER=y
- CONFIG_IMX_SCU=y
- CONFIG_QCOM_QSEECOM=y
+depends on ARM64 || (HAS_IOMEM && COMPILE_TEST)
 
----
-base-commit: 856e4f898347c4b3dbe1ece5d8c511cf8858011d
-change-id: 20240304-coreboot-defconfig-44968f557466
+That gets us wider build coverage. You should check at least x86 
+allmodconfig passes.
 
-Best regards,
--- 
-Nícolas F. R. A. Prado <nfraprado@collabora.com>
+> +	default n
+
+The default is already n, so drop.
+
+> +	help
+> +	  Say y here to support Arm remote processors via the remote
+> +	  processor framework.
+> +
+> +	  The supported processors are those that come with a reset control register
+> +	  and a reset status register. The design can be extended to support different
+> +	  processors meeting these requirements.
+> +	  The driver also supports control of multiple remote cores at the same time.
+> +
+> +	  Supported remote cores:
+> +	      Corstone-1000 External System (Cortex-M3)
+> +
+> +	  It's safe to say N here.
+> +
+>  endif # REMOTEPROC
+>  
+>  endmenu
+> diff --git a/drivers/remoteproc/Makefile b/drivers/remoteproc/Makefile
+> index 91314a9b43ce..73126310835b 100644
+> --- a/drivers/remoteproc/Makefile
+> +++ b/drivers/remoteproc/Makefile
+> @@ -39,3 +39,4 @@ obj-$(CONFIG_STM32_RPROC)		+= stm32_rproc.o
+>  obj-$(CONFIG_TI_K3_DSP_REMOTEPROC)	+= ti_k3_dsp_remoteproc.o
+>  obj-$(CONFIG_TI_K3_R5_REMOTEPROC)	+= ti_k3_r5_remoteproc.o
+>  obj-$(CONFIG_XLNX_R5_REMOTEPROC)	+= xlnx_r5_remoteproc.o
+> +obj-$(CONFIG_ARM_REMOTEPROC)		+= arm_rproc.o
+> diff --git a/drivers/remoteproc/arm_rproc.c b/drivers/remoteproc/arm_rproc.c
+> new file mode 100644
+> index 000000000000..6afa78ae7ad3
+> --- /dev/null
+> +++ b/drivers/remoteproc/arm_rproc.c
+> @@ -0,0 +1,395 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright 2024 Arm Limited and/or its affiliates <open-source-office@arm.com>
+
+We don't normally put OSO email in here.
+
+> + *
+> + * Authors:
+> + *   Abdellatif El Khlifi <abdellatif.elkhlifi@arm.com>
+
+That's recorded in the commit message and by git, so no need to put it 
+in the file.
+
+> + */
 
 
