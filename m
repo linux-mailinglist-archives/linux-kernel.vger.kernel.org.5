@@ -1,91 +1,119 @@
-Return-Path: <linux-kernel+bounces-91407-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91408-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67D10871112
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 00:33:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3D3587111B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 00:37:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EBCB428352C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 23:33:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E24E51C221EE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 23:37:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFC497CF37;
-	Mon,  4 Mar 2024 23:33:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF61C7CF37;
+	Mon,  4 Mar 2024 23:37:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H9Rv3Kpi"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="JdRGt6z8"
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CCFA7B3FA;
-	Mon,  4 Mar 2024 23:33:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 611B61E4A2;
+	Mon,  4 Mar 2024 23:37:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709595212; cv=none; b=r8h7zP7b2GwqUIcC7x6lqZW6quy8WhqHuwP0VZxX+BdYxu6R8+LraTFxNMPKhOehiAO5O/1u4eXQ8fJovPyl3ZMLBrz+utUKiw1dZbcUaXpMRkKXvJGO6sp3hX4994oE1Hdh4qnAYOdcGF5uTzG2OYW0w7rM41xWDm9n2+yti90=
+	t=1709595455; cv=none; b=N2hhXzTp+LZyxAwctwB5eqqsf8wlYrZYVA3kfFRJUU4uhKyxOcvaC0P1dw5eW2qNveenNJfTEt+ygz7KvHAOi1Irp2CgKxbkYMRLgr+JEzERF9Z4bU3iH6dGtw/JqzfAUrFx4hsFEHmnlpFQzgmP363sHfs1DmRNjEx7aMwJRmo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709595212; c=relaxed/simple;
-	bh=Kl7s1r1CfRFt8fTgVgVThr8LZ7WoKPAxcfXM2y5+B6Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ArQXQ0Ue4MsvEKLfyOKqUW9x4ZibfzP+WAMrFGlnu8ziLH6Wv55v46ljCs17ilMztIkZ+U3XBTbZv29Z51zIQV1qPV3GTo9Y7S/2BoBnm6jdQOXxSBEH8NORj0WekWZfiCWcu8i69gevml4yjzHxqb0m4B1i3a8I4HIRUIodKhU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H9Rv3Kpi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85899C433C7;
-	Mon,  4 Mar 2024 23:33:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709595211;
-	bh=Kl7s1r1CfRFt8fTgVgVThr8LZ7WoKPAxcfXM2y5+B6Y=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=H9Rv3KpiNyIf4FeXN6+Zs6qW8Vfucu5mt3INZ1epU4DdAJjkwjISZ1T1Xbzelz5TB
-	 qKW5/0YTn+G3/keCKTbTBN4s/LarmD3F3QSCbjCh6M5FiP1B4fGVfbhK0evSzEwSSJ
-	 yPfc7EYlkBYjO1aaiWFuakb75JfWcmaXXTasd5jVLfy6AOdsFw2ljAXSjTJYiYDgpL
-	 PeWBEFdYZbbkqYkGzT2DtHumXIcroEBGkKLHGx1idlccqHvDMiRE3IU9sRZdgjMVnM
-	 jy3dp1H/Zuz4PGuj6Z104UB3W3sOA7M9f+1UTTNXWyoSYb6NTtw8p1oX1twdjTXzVm
-	 pUTg/79Q/NvuA==
-Message-ID: <7ec9de4d-9e5d-4769-9bcf-3e1f3d2d816b@kernel.org>
-Date: Tue, 5 Mar 2024 08:33:27 +0900
+	s=arc-20240116; t=1709595455; c=relaxed/simple;
+	bh=+rEQ1y9VkSnTHwSogsWbOYliPcdNnsQLMPnehdv2m7I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jIbO1yyehgMO1j4DfL2uRg5JzLofJYVAAk5QqNM1g2B9zTnHCUm0oH97C0GHS2Wz3EUQ1SK35vyAcyICcIK2LW4E4cGy/uzhew6i/tyy1mncEi+ztBB9g+gRcSn6HRauJ4jf63OYL97+FDN9iEsrWppuFfTGcQxV5ctZ6hdg8uY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=JdRGt6z8; arc=none smtp.client-ip=213.97.179.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=7DsSMFlL5qg2azIH7l+MCgrvgUctaUBWbPa4DPjIV08=; b=JdRGt6z8KhZlxvQ8lBZ0Ci6gbA
+	DWSuQ5Zf0s+tchkJ6LPQkEUSWzGAQ58CBGFK4+ZWB2tP2B53MzSca/cEuV14E5gV9NFtvhHAmR5Yf
+	gWgSq931e4lJcZlyzmTE+sSbm7/wwzVjcJzPPZiUAc0duUZLhWUUhDziAaCzYUvyw94f9HO8GTGP9
+	kCn3YSbnxqzCh6+puXV3nbm3JWwxYH5WHAVRNCbP1Kr/UFjyO6JRI6tK0gn5+XB5smSuh4wfU0NDe
+	iCEXKgcP+cKkfnVdkuyAOqKSDQudycXGYehBTQndjshnYKcUieoig7+dL553ygWXjF6VBtj/c5Iwj
+	46gMeFGA==;
+Received: from [179.93.184.120] (helo=quatroqueijos.cascardo.eti.br)
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
+	id 1rhHs6-0062J8-Nw; Tue, 05 Mar 2024 00:37:27 +0100
+Date: Mon, 4 Mar 2024 20:37:21 -0300
+From: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
+To: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	Gwendal Grignou <gwendal@chromium.org>, dlunev@chromium.org
+Subject: Re: [PATCH] fat: ignore .. subdir and always add a link to dirs
+Message-ID: <ZeZbMVenoDNOFVik@quatroqueijos.cascardo.eti.br>
+References: <20240222203013.2649457-1-cascardo@igalia.com>
+ <87bk88oskz.fsf@mail.parknet.co.jp>
+ <Zdf8qPN5h74MzCQh@quatroqueijos.cascardo.eti.br>
+ <874jdzpov7.fsf@mail.parknet.co.jp>
+ <87zfvroa1c.fsf@mail.parknet.co.jp>
+ <ZdhsYAUCe9GVMnYE@quatroqueijos.cascardo.eti.br>
+ <87v86fnz2o.fsf@mail.parknet.co.jp>
+ <Zd6PdxOC8Gs+rX+j@quatroqueijos.cascardo.eti.br>
+ <87le75s1fg.fsf@mail.parknet.co.jp>
+ <Zd74fjlVJZic8UxI@quatroqueijos.cascardo.eti.br>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/7] ata: libata-sata: Factor out NCQ Priority
- configuration helpers
-To: Igor Pylypiv <ipylypiv@google.com>, Niklas Cassel <cassel@kernel.org>,
- John Garry <john.g.garry@oracle.com>, Jason Yan <yanaijie@huawei.com>,
- "James E.J. Bottomley" <jejb@linux.ibm.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- Jack Wang <jinpu.wang@cloud.ionos.com>, Hannes Reinecke <hare@suse.de>,
- Xiang Chen <chenxiang66@hisilicon.com>,
- Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
- Bart Van Assche <bvanassche@acm.org>
-Cc: TJ Adams <tadamsjr@google.com>, linux-ide@vger.kernel.org,
- linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240304220815.1766285-1-ipylypiv@google.com>
- <20240304220815.1766285-2-ipylypiv@google.com>
-Content-Language: en-US
-From: Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <20240304220815.1766285-2-ipylypiv@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zd74fjlVJZic8UxI@quatroqueijos.cascardo.eti.br>
 
-On 3/5/24 07:08, Igor Pylypiv wrote:
-> Export libata NCQ Priority configuration helpers to be reused
-> for libsas managed SATA devices.
+On Wed, Feb 28, 2024 at 06:10:29AM -0300, Thadeu Lima de Souza Cascardo wrote:
+> On Wed, Feb 28, 2024 at 12:38:43PM +0900, OGAWA Hirofumi wrote:
+> > Thadeu Lima de Souza Cascardo <cascardo@igalia.com> writes:
+> > 
+> > >> There are many corrupted images, and attacks. Allowing too wide is
+> > >> danger for fs.
+> > >> 
+> > >> BTW, this image works and pass fsck on windows? When I quickly tested
+> > >> ev3fs.zip (https://github.com/microsoft/pxt-ev3/issues/980) on windows
+> > >> on qemu, it didn't seem recognized as FAT. I can wrongly tested though.
+> > >> 
+> > >> Thanks.
+> > >> -- 
+> > >> OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+> > >
+> > > The test image I managed to create mounts just fine on Windows. New
+> > > subdirectories can be created there just as well.
+> > 
+> > Can you share the image somehow? And fsck (chkdsk, etc.) works without
+> > any complain?
+> > 
+> > Thanks.
+> > -- 
+> > OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
 > 
-> Signed-off-by: Igor Pylypiv <ipylypiv@google.com>
+> Checking the filesystem on Windows runs without any complains, but it turns the
+> directory into an useless lump of data. Without checking the filesystem,
+> creating and reading files from that directory works just fine.
+> 
+> I tried to use gzip or xz to compress the very sparse filesystem image that I
+> got, but they made it larger on disk than it really was. So here is a script
+> and pieces of the filesystem that will create a sparse 8GB image.
+> 
+> Thank you for looking into this.
+> Cascardo.
 
-Looks good.
+Hi, OGAWA Hirofumi.
 
-Acked-by: Damien Le Moal <dlemoal@kernel.org>
+What are your thoughts here? Should we make it possible to read such
+filesystems? Is the proposed approach acceptable?
 
-(I am assuming this is going to go through the scsi tree. I not, we can take it
-through libata tree too).
-
-
--- 
-Damien Le Moal
-Western Digital Research
-
+Thanks.
+Cascardo.
 
