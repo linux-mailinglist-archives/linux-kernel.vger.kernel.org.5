@@ -1,182 +1,266 @@
-Return-Path: <linux-kernel+bounces-90160-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90161-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25FD486FB3B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:59:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8642586FB3E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:00:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B4CB1B216A9
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 07:59:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F0E1C1F22A17
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:00:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B6C4171A6;
-	Mon,  4 Mar 2024 07:59:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HMl5ewI4"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BB94171A2;
-	Mon,  4 Mar 2024 07:59:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F8FD171A2;
+	Mon,  4 Mar 2024 08:00:24 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06FA714A8C;
+	Mon,  4 Mar 2024 08:00:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709539157; cv=none; b=JxyauE3fasGPmyEiyf68d0HqpAXqF3fVB5/lCusN4R998/DV5hhXR0Buqxr8BOWzbmC50aMcgB/IqQCQShV7fLeJvi/6ghTblUewcIs6qfPuFiCfRkYuIudLY5uXSz7hE7OC6tH0dt3DHsPJ2s9I3sK7lRHbYReRjdg0VZiVbGE=
+	t=1709539223; cv=none; b=H0fOFXGCrzVhmWvc1xGM0mvofw+uXPtmp5jjyRh2YFO1pSP39fPWd+slr2JKrAW6Wpbb+g/21byiCkEvtn2LoorXzckBYJbbtd3M/tyMVF+2P/lQ5mN1EZ76M4tZSkQswRbhYEzpA27fv4AJzuxXfIgnwNNJ2e9mctCyGiQcp4s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709539157; c=relaxed/simple;
-	bh=wbUpByb5oxuPadRm9JZleAn/NqozTy3sADip5yJwJ3M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kQObubfAgMxZr0oVU1/AdtpNo7z3MP+qJUw8tGQmnPokXKnWKhGPIfCr13jiD7/2wX/5nR78H7Rr8bLT2uyYpe021J9hRq94qvnW/bp2DpZa5wUh9l9eNEdCdcrbSNXQ/1+S9OjmPQ0I2xMLFdu4QcWTTig37dPdtNeUiIsvNic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HMl5ewI4; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709539156; x=1741075156;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=wbUpByb5oxuPadRm9JZleAn/NqozTy3sADip5yJwJ3M=;
-  b=HMl5ewI4bfFEgLfpEvUa+/RUTNs5rKLTDdNNBv0Wo1kgeL4X8v9PVf8T
-   cuQnB3IUhYQF2QV+iQN6s4wgA0V9bd4fYtlU9iBmq+QM7f4E6E6kyzmeE
-   H4xXk6Ww+qtud6lgWspITvdPbMZxff/ipmMlmmpP1ugXCjncFBKwDjbQK
-   0DbGjpXtWYY3OgadBOqIDoFKUepsbRJax6JS5ZRj646I/SCyvjcVYlgZc
-   xR/jMsXfcC5C+t79aGEkyLXMtXphrK5t/X+YgmWvsWE2259ydcjP5/y25
-   U3QhGPLEXtyKoEAjn3hfzZ5XCLPyrZEic68ThEqeyI9Jrf1fiaCKXolB4
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="26480268"
-X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
-   d="scan'208";a="26480268"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2024 23:59:13 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
-   d="scan'208";a="13469584"
-Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.124.239.60]) ([10.124.239.60])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2024 23:59:08 -0800
-Message-ID: <f5bbe9ac-ca35-4c3e-8cd7-249839fbb8b8@linux.intel.com>
-Date: Mon, 4 Mar 2024 15:59:05 +0800
+	s=arc-20240116; t=1709539223; c=relaxed/simple;
+	bh=Ua8b1ZWHmeVoMLH8CMKQ0vyoTyjiCGIEd+L6GpOdqow=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q53QVD2zi3kIIC3XHPOH3IlxtZn2KV3PegOmXkoq3jYKEeuH4ptyxVN4C6zq3+oFcZG1fkXrTdIJ3JG1x0X1IkxJxlejn8K6yok/yo8pofJQ7BHemUsqy0QoAVvyguMEgSpa4zcIQ2Yr0/AL/6WVM9g9lIP88I0t//8+BbrQxr4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1098D1FB;
+	Mon,  4 Mar 2024 00:00:58 -0800 (PST)
+Received: from pluto (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D16A93F762;
+	Mon,  4 Mar 2024 00:00:19 -0800 (PST)
+Date: Mon, 4 Mar 2024 08:00:17 +0000
+From: Cristian Marussi <cristian.marussi@arm.com>
+To: Pierre Gondois <pierre.gondois@arm.com>
+Cc: linux-kernel@vger.kernel.org,
+	Christian Loehle <christian.loehle@arm.com>,
+	Ionela Voinescu <ionela.voinescu@arm.com>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Viresh Kumar <viresh.kumar@linaro.org>,
+	linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH 2/3] firmware: arm_scmi: Populate fast channel rate_limit
+Message-ID: <ZeV_kdcPSb-MFesS@pluto>
+References: <20240222135702.2005635-1-pierre.gondois@arm.com>
+ <20240222135702.2005635-3-pierre.gondois@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] KVM: x86/svm/pmu: Set PerfMonV2 global control bits
- correctly
-Content-Language: en-US
-To: Sandipan Das <sandipan.das@amd.com>, Like Xu <like.xu.linux@gmail.com>
-Cc: seanjc@google.com, pbonzini@redhat.com, mizhang@google.com,
- jmattson@google.com, ravi.bangoria@amd.com, nikunj.dadhania@amd.com,
- santosh.shukla@amd.com, manali.shukla@amd.com, babu.moger@amd.com,
- kvm list <kvm@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20240301075007.644152-1-sandipan.das@amd.com>
- <06061a28-88c0-404b-98a6-83cc6cc8c796@gmail.com>
- <cc8699be-3aae-42aa-9c70-f8b6a9728ee3@amd.com>
-From: "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
-In-Reply-To: <cc8699be-3aae-42aa-9c70-f8b6a9728ee3@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240222135702.2005635-3-pierre.gondois@arm.com>
 
+On Thu, Feb 22, 2024 at 02:57:00PM +0100, Pierre Gondois wrote:
+> Arm SCMI spec. v3.2, s4.5.3.12 PERFORMANCE_DESCRIBE_FASTCHANNEL
+> defines a per-domain rate_limit for performance requests:
+> """
+> Rate Limit in microseconds, indicating the minimum time
+> required between successive requests. A value of 0
+> indicates that this field is not applicable or supported
+> on the platform.
+> """"
+> The field is first defined in SCMI v2.0.
+> 
+> Add support to fetch this value and advertise it through
+> a fast_switch_rate_limit() callback.
+> 
+> Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
 
-On 3/1/2024 5:00 PM, Sandipan Das wrote:
-> On 3/1/2024 2:07 PM, Like Xu wrote:
->> On 1/3/2024 3:50 pm, Sandipan Das wrote:
->>> With PerfMonV2, a performance monitoring counter will start operating
->>> only when both the PERF_CTLx enable bit as well as the corresponding
->>> PerfCntrGlobalCtl enable bit are set.
->>>
->>> When the PerfMonV2 CPUID feature bit (leaf 0x80000022 EAX bit 0) is set
->>> for a guest but the guest kernel does not support PerfMonV2 (such as
->>> kernels older than v5.19), the guest counters do not count since the
->>> PerfCntrGlobalCtl MSR is initialized to zero and the guest kernel never
->>> writes to it.
->> If the vcpu has the PerfMonV2 feature, it should not work the way legacy
->> PMU does. Users need to use the new driver to operate the new hardware,
->> don't they ? One practical approach is that the hypervisor should not set
->> the PerfMonV2 bit for this unpatched 'v5.19' guest.
->>
-> My understanding is that the legacy method of managing the counters should
-> still work because the enable bits in PerfCntrGlobalCtl are expected to be
-> set. The AMD PPR does mention that the PerfCntrEn bitfield of PerfCntrGlobalCtl
-> is set to 0x3f after a system reset. That way, the guest kernel can use either
+Hi,
 
+LGTM.
 
-If so, please add the PPR description here as comments.
+Reviewed-by: Cristian Marussi <cristian.marussi@arm.com>
 
+Thanks,
+Cristian
 
-> the new or legacy method.
->
->>> This is not observed on bare-metal as the default value of the
->>> PerfCntrGlobalCtl MSR after a reset is 0x3f (assuming there are six
->>> counters) and the counters can still be operated by using the enable
->>> bit in the PERF_CTLx MSRs. Replicate the same behaviour in guests for
->>> compatibility with older kernels.
->>>
->>> Before:
->>>
->>>     $ perf stat -e cycles:u true
->>>
->>>      Performance counter stats for 'true':
->>>
->>>                      0      cycles:u
->>>
->>>            0.001074773 seconds time elapsed
->>>
->>>            0.001169000 seconds user
->>>            0.000000000 seconds sys
->>>
->>> After:
->>>
->>>     $ perf stat -e cycles:u true
->>>
->>>      Performance counter stats for 'true':
->>>
->>>                227,850      cycles:u
->>>
->>>            0.037770758 seconds time elapsed
->>>
->>>            0.000000000 seconds user
->>>            0.037886000 seconds sys
->>>
->>> Reported-by: Babu Moger <babu.moger@amd.com>
->>> Fixes: 4a2771895ca6 ("KVM: x86/svm/pmu: Add AMD PerfMonV2 support")
->>> Signed-off-by: Sandipan Das <sandipan.das@amd.com>
->>> ---
->>>    arch/x86/kvm/svm/pmu.c | 1 +
->>>    1 file changed, 1 insertion(+)
->>>
->>> diff --git a/arch/x86/kvm/svm/pmu.c b/arch/x86/kvm/svm/pmu.c
->>> index b6a7ad4d6914..14709c564d6a 100644
->>> --- a/arch/x86/kvm/svm/pmu.c
->>> +++ b/arch/x86/kvm/svm/pmu.c
->>> @@ -205,6 +205,7 @@ static void amd_pmu_refresh(struct kvm_vcpu *vcpu)
->>>        if (pmu->version > 1) {
->>>            pmu->global_ctrl_mask = ~((1ull << pmu->nr_arch_gp_counters) - 1);
->>>            pmu->global_status_mask = pmu->global_ctrl_mask;
->>> +        pmu->global_ctrl = ~pmu->global_ctrl_mask;
-
-
-It seems to be more easily understand to calculate global_ctrl firstly 
-and then derive the globol_ctrl_mask (negative logic).
-
-diff --git a/arch/x86/kvm/svm/pmu.c b/arch/x86/kvm/svm/pmu.c
-index e886300f0f97..7ac9b080aba6 100644
---- a/arch/x86/kvm/svm/pmu.c
-+++ b/arch/x86/kvm/svm/pmu.c
-@@ -199,7 +199,8 @@ static void amd_pmu_refresh(struct kvm_vcpu *vcpu)
-kvm_pmu_cap.num_counters_gp);
-
-         if (pmu->version > 1) {
--               pmu->global_ctrl_mask = ~((1ull << 
-pmu->nr_arch_gp_counters) - 1);
-+               pmu->global_ctrl = (1ull << pmu->nr_arch_gp_counters) - 1;
-+               pmu->global_ctrl_mask = ~pmu->global_ctrl;
-                 pmu->global_status_mask = pmu->global_ctrl_mask;
-         }
-
->>>        }
->>>          pmu->counter_bitmask[KVM_PMC_GP] = ((u64)1 << 48) - 1;
->
+> ---
+>  drivers/firmware/arm_scmi/driver.c    |  5 ++++-
+>  drivers/firmware/arm_scmi/perf.c      | 32 +++++++++++++++++++++++----
+>  drivers/firmware/arm_scmi/powercap.c  | 12 ++++++----
+>  drivers/firmware/arm_scmi/protocols.h |  4 +++-
+>  include/linux/scmi_protocol.h         |  4 ++++
+>  5 files changed, 47 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+> index 3ea64b22cf0d..1d38ecfafc59 100644
+> --- a/drivers/firmware/arm_scmi/driver.c
+> +++ b/drivers/firmware/arm_scmi/driver.c
+> @@ -1617,7 +1617,7 @@ static void
+>  scmi_common_fastchannel_init(const struct scmi_protocol_handle *ph,
+>  			     u8 describe_id, u32 message_id, u32 valid_size,
+>  			     u32 domain, void __iomem **p_addr,
+> -			     struct scmi_fc_db_info **p_db)
+> +			     struct scmi_fc_db_info **p_db, u32 *rate_limit)
+>  {
+>  	int ret;
+>  	u32 flags;
+> @@ -1661,6 +1661,9 @@ scmi_common_fastchannel_init(const struct scmi_protocol_handle *ph,
+>  		goto err_xfer;
+>  	}
+>  
+> +	if (rate_limit)
+> +		*rate_limit = le32_to_cpu(resp->rate_limit) & GENMASK(19, 0);
+> +
+>  	phys_addr = le32_to_cpu(resp->chan_addr_low);
+>  	phys_addr |= (u64)le32_to_cpu(resp->chan_addr_high) << 32;
+>  	addr = devm_ioremap(ph->dev, phys_addr, size);
+> diff --git a/drivers/firmware/arm_scmi/perf.c b/drivers/firmware/arm_scmi/perf.c
+> index 37c80376bd0a..fbcbd703198a 100644
+> --- a/drivers/firmware/arm_scmi/perf.c
+> +++ b/drivers/firmware/arm_scmi/perf.c
+> @@ -789,23 +789,27 @@ static void scmi_perf_domain_init_fc(const struct scmi_protocol_handle *ph,
+>  
+>  	ph->hops->fastchannel_init(ph, PERF_DESCRIBE_FASTCHANNEL,
+>  				   PERF_LEVEL_GET, 4, dom->id,
+> -				   &fc[PERF_FC_LEVEL].get_addr, NULL);
+> +				   &fc[PERF_FC_LEVEL].get_addr, NULL,
+> +				   &fc[PERF_FC_LEVEL].rate_limit);
+>  
+>  	ph->hops->fastchannel_init(ph, PERF_DESCRIBE_FASTCHANNEL,
+>  				   PERF_LIMITS_GET, 8, dom->id,
+> -				   &fc[PERF_FC_LIMIT].get_addr, NULL);
+> +				   &fc[PERF_FC_LIMIT].get_addr, NULL,
+> +				   &fc[PERF_FC_LIMIT].rate_limit);
+>  
+>  	if (dom->info.set_perf)
+>  		ph->hops->fastchannel_init(ph, PERF_DESCRIBE_FASTCHANNEL,
+>  					   PERF_LEVEL_SET, 4, dom->id,
+>  					   &fc[PERF_FC_LEVEL].set_addr,
+> -					   &fc[PERF_FC_LEVEL].set_db);
+> +					   &fc[PERF_FC_LEVEL].set_db,
+> +					   &fc[PERF_FC_LEVEL].rate_limit);
+>  
+>  	if (dom->set_limits)
+>  		ph->hops->fastchannel_init(ph, PERF_DESCRIBE_FASTCHANNEL,
+>  					   PERF_LIMITS_SET, 8, dom->id,
+>  					   &fc[PERF_FC_LIMIT].set_addr,
+> -					   &fc[PERF_FC_LIMIT].set_db);
+> +					   &fc[PERF_FC_LIMIT].set_db,
+> +					   &fc[PERF_FC_LIMIT].rate_limit);
+>  
+>  	dom->fc_info = fc;
+>  }
+> @@ -974,6 +978,25 @@ static bool scmi_fast_switch_possible(const struct scmi_protocol_handle *ph,
+>  	return dom->fc_info && dom->fc_info[PERF_FC_LEVEL].set_addr;
+>  }
+>  
+> +static int scmi_fast_switch_rate_limit(const struct scmi_protocol_handle *ph,
+> +				       u32 domain, u32 *rate_limit)
+> +{
+> +	struct perf_dom_info *dom;
+> +
+> +	if (!rate_limit)
+> +		return -EINVAL;
+> +
+> +	dom = scmi_perf_domain_lookup(ph, domain);
+> +	if (IS_ERR(dom))
+> +		return PTR_ERR(dom);
+> +
+> +	if (!dom->fc_info)
+> +		return -EINVAL;
+> +
+> +	*rate_limit = dom->fc_info[PERF_FC_LEVEL].rate_limit;
+> +	return 0;
+> +}
+> +
+>  static enum scmi_power_scale
+>  scmi_power_scale_get(const struct scmi_protocol_handle *ph)
+>  {
+> @@ -996,6 +1019,7 @@ static const struct scmi_perf_proto_ops perf_proto_ops = {
+>  	.freq_get = scmi_dvfs_freq_get,
+>  	.est_power_get = scmi_dvfs_est_power_get,
+>  	.fast_switch_possible = scmi_fast_switch_possible,
+> +	.fast_switch_rate_limit = scmi_fast_switch_rate_limit,
+>  	.power_scale_get = scmi_power_scale_get,
+>  };
+>  
+> diff --git a/drivers/firmware/arm_scmi/powercap.c b/drivers/firmware/arm_scmi/powercap.c
+> index a4c6cd4716fe..604184c044ff 100644
+> --- a/drivers/firmware/arm_scmi/powercap.c
+> +++ b/drivers/firmware/arm_scmi/powercap.c
+> @@ -703,20 +703,24 @@ static void scmi_powercap_domain_init_fc(const struct scmi_protocol_handle *ph,
+>  	ph->hops->fastchannel_init(ph, POWERCAP_DESCRIBE_FASTCHANNEL,
+>  				   POWERCAP_CAP_SET, 4, domain,
+>  				   &fc[POWERCAP_FC_CAP].set_addr,
+> -				   &fc[POWERCAP_FC_CAP].set_db);
+> +				   &fc[POWERCAP_FC_CAP].set_db,
+> +				   &fc[POWERCAP_FC_CAP].rate_limit);
+>  
+>  	ph->hops->fastchannel_init(ph, POWERCAP_DESCRIBE_FASTCHANNEL,
+>  				   POWERCAP_CAP_GET, 4, domain,
+> -				   &fc[POWERCAP_FC_CAP].get_addr, NULL);
+> +				   &fc[POWERCAP_FC_CAP].get_addr, NULL,
+> +				   &fc[POWERCAP_FC_CAP].rate_limit);
+>  
+>  	ph->hops->fastchannel_init(ph, POWERCAP_DESCRIBE_FASTCHANNEL,
+>  				   POWERCAP_PAI_SET, 4, domain,
+>  				   &fc[POWERCAP_FC_PAI].set_addr,
+> -				   &fc[POWERCAP_FC_PAI].set_db);
+> +				   &fc[POWERCAP_FC_PAI].set_db,
+> +				   &fc[POWERCAP_FC_PAI].rate_limit);
+>  
+>  	ph->hops->fastchannel_init(ph, POWERCAP_DESCRIBE_FASTCHANNEL,
+>  				   POWERCAP_PAI_GET, 4, domain,
+> -				   &fc[POWERCAP_FC_PAI].get_addr, NULL);
+> +				   &fc[POWERCAP_FC_PAI].get_addr, NULL,
+> +				   &fc[POWERCAP_PAI_GET].rate_limit);
+>  
+>  	*p_fc = fc;
+>  }
+> diff --git a/drivers/firmware/arm_scmi/protocols.h b/drivers/firmware/arm_scmi/protocols.h
+> index e683c26f24eb..8b5d9ce4a33a 100644
+> --- a/drivers/firmware/arm_scmi/protocols.h
+> +++ b/drivers/firmware/arm_scmi/protocols.h
+> @@ -234,6 +234,7 @@ struct scmi_fc_info {
+>  	void __iomem *set_addr;
+>  	void __iomem *get_addr;
+>  	struct scmi_fc_db_info *set_db;
+> +	u32 rate_limit;
+>  };
+>  
+>  /**
+> @@ -268,7 +269,8 @@ struct scmi_proto_helpers_ops {
+>  				 u8 describe_id, u32 message_id,
+>  				 u32 valid_size, u32 domain,
+>  				 void __iomem **p_addr,
+> -				 struct scmi_fc_db_info **p_db);
+> +				 struct scmi_fc_db_info **p_db,
+> +				 u32 *rate_limit);
+>  	void (*fastchannel_db_ring)(struct scmi_fc_db_info *db);
+>  };
+>  
+> diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
+> index acd956ffcb84..fafedb3b6604 100644
+> --- a/include/linux/scmi_protocol.h
+> +++ b/include/linux/scmi_protocol.h
+> @@ -139,6 +139,8 @@ struct scmi_perf_domain_info {
+>   *	at a given frequency
+>   * @fast_switch_possible: indicates if fast DVFS switching is possible or not
+>   *	for a given device
+> + * @fast_switch_rate_limit: gets the minimum time (us) required between
+> + *	successive fast_switching requests
+>   * @power_scale_mw_get: indicates if the power values provided are in milliWatts
+>   *	or in some other (abstract) scale
+>   */
+> @@ -168,6 +170,8 @@ struct scmi_perf_proto_ops {
+>  			     unsigned long *rate, unsigned long *power);
+>  	bool (*fast_switch_possible)(const struct scmi_protocol_handle *ph,
+>  				     u32 domain);
+> +	int (*fast_switch_rate_limit)(const struct scmi_protocol_handle *ph,
+> +				      u32 domain, u32 *rate_limit);
+>  	enum scmi_power_scale (*power_scale_get)(const struct scmi_protocol_handle *ph);
+>  };
+>  
+> -- 
+> 2.25.1
+> 
 
