@@ -1,124 +1,157 @@
-Return-Path: <linux-kernel+bounces-90920-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90921-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF95C8706CA
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:17:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F32A8706CD
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:17:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A63A01F21CA0
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:17:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0574F283B00
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:17:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AC824CB28;
-	Mon,  4 Mar 2024 16:17:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9044E4CB3D;
+	Mon,  4 Mar 2024 16:17:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="MoTW53kM"
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=axis.com header.i=@axis.com header.b="BdAZStcd"
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2084.outbound.protection.outlook.com [40.107.20.84])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C65BC4CB23
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 16:16:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709569016; cv=none; b=VwBp8WMRQMMe5ByRjiLy9KA3NObCXT4y64zrfr/cirGMyfxGIYqPzI5yUdkHC9CXvHnGLj7zwXcltog7tEBqOHY3aFZtp0bKw3/HuUAqMASLXEk3Ln6g2+TX8Ad8WZNRGPyShU+K0AVMr4R6WT08ZspGG8pWAn4t2XvjOBnOciU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709569016; c=relaxed/simple;
-	bh=4qX90gAaeAFrZRINJudmZ0QqdDhJAmm6o0qc1B/GWAM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=takYY2XUKsFJHgbXnra7csOTQhFeSwIJP8/kyDYoGrG3efGijjJOxS4bi1AVaifCDuQTcuz5I4kxAgQkrvUsHcJnZs1d1dRSJhamGq+IewcSIfBHVu7CG/5E/p/IBw3dabHMHjnEhR1Cyw/eUYQUSmDzqoxO80L7n6Psh1zyKqk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=MoTW53kM; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-513298d6859so4323056e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 08:16:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1709569012; x=1710173812; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CdaQvHwf+ypTWs9CggIGE65EMaPW1/VFzdPOqyKDsys=;
-        b=MoTW53kMZVcrVCLu/YQstYE4WEbBX3gmujRjc8U3j437q9pstrWz8W/TjdzN4qtLsm
-         sc7RUTWf+NWTZR+QZfrL7wWAqhXgR/TBQJ9gmJyZ/dn0rPImZ6YOETetzviUh+pdQqxd
-         fvN5Cpv6JbD8wFM3yS8bBqCygF0daj5nMvvhuVdDSq8nmqlTgF97fgFO2xB8MAx92bBy
-         IAn/RIAJrPDRfkato24SdHlnGBdG61+fIcxwGbcbGSZMTeZ40SWTp6p2LhlRlzbP0KQZ
-         G7ADPSkf8BEJVy30z+TpxSWf/GGfWaksNY3kNWyzGJlm2tOgeRWDau9WoRm9k3YZ/dg5
-         Kqyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709569012; x=1710173812;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CdaQvHwf+ypTWs9CggIGE65EMaPW1/VFzdPOqyKDsys=;
-        b=On1YTCQz4pI/Pkv3+VB+4ik+nP46WyucHegOPu1/Nbah/YUbJguYdJ9eUL9IqSydJL
-         Kt3OsTV6O5+guwPOh1GZ5E8lLomLOiSrfeDLJJgxvpcJiGd3jIqVEWFErfen3ENSzdEo
-         LU9lgJfGBlEWDOYi7LB36g6hAEwFzZenvHPOsyKFLnGQMwTpDV4i5neIAA4iGDgt84I8
-         k4pEHm52+03utfYG5CJm3iVd4mKEM9UMa5K6TaTmhPrfaPsqz2oC+f5gOnhwZaaalzl4
-         KMJe8XqFkqBFGiiX2ZoqJorPnLK/zMUnTSE8lhjmQL34IkK/MOTN15pLr+UnzFYNV/nY
-         nB+w==
-X-Forwarded-Encrypted: i=1; AJvYcCU1JdySiS9nLePjk6QxvwUXt5Ia6Qm6HXQpG+2gR1Z6ZFug7FWwoAEbNVVMXMUjfIZjDRV/qRWK8/TZFo2oKx7I1YTB6iVziD4/e46d
-X-Gm-Message-State: AOJu0Yya1D2MoN0pWGns1qPUyczwPbD8udZM+TErjzMignGEdic9yofU
-	JivjULSEkNlu+jX8I+GfkfAMysn2KfKYHCwYiGCQ184JHYHY/wqAYkGx2fVSr9g=
-X-Google-Smtp-Source: AGHT+IHyM3uVBBXYWUwq/rKQH24A4FuocxVtTgvm3M0iSLCuJw6g5bXx5w3HG6HcSOEzQFYA4xHIZQ==
-X-Received: by 2002:a05:6512:251:b0:512:d877:df6f with SMTP id b17-20020a056512025100b00512d877df6fmr5958110lfo.2.1709569011686;
-        Mon, 04 Mar 2024 08:16:51 -0800 (PST)
-Received: from [192.168.1.70] ([84.102.31.43])
-        by smtp.gmail.com with ESMTPSA id i27-20020a170906265b00b00a441c8c56d0sm5000056ejc.218.2024.03.04.08.16.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Mar 2024 08:16:51 -0800 (PST)
-Message-ID: <52952362-dea8-40ec-a0f3-2bdbe26cb83f@baylibre.com>
-Date: Mon, 4 Mar 2024 17:16:48 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D357A46BA0;
+	Mon,  4 Mar 2024 16:17:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.84
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709569043; cv=fail; b=GuKkuHII3M8HM7K/3BTh0iUQoGpOZFTndOyGaxgMdyUMGG7xXN+l3tOuYs/vcxD9F1h7nLZBnfv1vGc7htTne/7Q5yLcLBeBkJag0gOyPgu8byj/gONkumpl0QNH2+q3683/e7fpak0YpJN6Va3ieqw/omukGbSST/Uj0w976OI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709569043; c=relaxed/simple;
+	bh=E0GRFQ+ddfg+20L048w6VNnG5ALKE4+unskzwcLn1BE=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aEnYzGtVlgMlNcMoqJjZJNBceQtsMqGRmhbIX8u9jcGdFWXlSoZJ6ca40TWFX6T0QPyInNeYOKy6XWzHJ/daSfnlT6p2bUSIQI4fb3ML7dN6xiHpwYnJGMOnte/XfZORTKFGPpo8Y9DRwuPQpxyIbL1aPOtMQXJuHLRnZkG6Y7Q=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=axis.com; spf=pass smtp.mailfrom=axis.com; dkim=pass (1024-bit key) header.d=axis.com header.i=@axis.com header.b=BdAZStcd; arc=fail smtp.client-ip=40.107.20.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=axis.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=axis.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iQozS9ChAUc84lfb44EDHC21JKuqEx6iKUBfNkxUbs4lrKdCW5zpah/WDn8cQ96OaBPpWWxqYEQtDOMPls4ckqItwSBYVpqkjclcNayAoikhpBDk4OHCtXLUejeitW85x7Ppa5GjJEK1ueYICTlRJWomJ1kaFHRgBjl6fP1D/AubEn0sldzn1lg3DTcb0Am35KkphEuls4vqT3k54pGfm/JufGLfh2kussH321QqolIKRSP72YsRM9gY8Oz5KE3pWvADh43ir405+hNCdnJt5zxcecVJCnplUPWmMRkxuKAUuLkecm2Xf9d13XzjibSvJ/J3q4pcMydAge81dgOkag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=CRCRyTbJyV0/VuX7YXxeUW4q4muUvHZImqHNkxPJ6LU=;
+ b=XZtT437QEYSKAlYghhuWmePafiWa8dDCsbolwSFzhrD0WqEC06PqbXNOuzjzIISIfiEVMWdLMn1JvCZM4dS+k2Am72PNks4SmdX0ZLEoQdqY4fxXyCYwa5kZJaTUrrGhpbGfcXyPc/9OfBGJz1RNdXnhquxgKGITEMuFQFCtnC7AcOnFlsBhWlyf5cQpm+D/20T/JZoGLOnyfupgcTjSuNtAlvBooehkTKPLV86S4O1ACQoMT4xnKuD2tm6dd2bsbfk7RMJQUUWyM8K9Rl6gASUopZ39xW7+ddexL1I2lKl4ld7P3h08S0zvfEeJX+b/+1S5AodUZbOtH5ztUwMxqA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
+ 195.60.68.100) smtp.rcpttodomain=kernel.org smtp.mailfrom=axis.com;
+ dmarc=fail (p=none sp=none pct=100) action=none header.from=axis.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axis.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CRCRyTbJyV0/VuX7YXxeUW4q4muUvHZImqHNkxPJ6LU=;
+ b=BdAZStcdA0jeiIbX24WdnuzNiPltBVeJOL+eLQri8Mf/BYtMXCxmI8Xq4F2Ofczbugvi4ZLNgDCMH7UsJWksUOy9U+TEH21/uhx6EhYygkMiZbIwUsY56quWrcqgeOMo1bVOgztR+/Kb4ozvuf1IOlhv3XdaO+BwkxWJHjzMnNo=
+Received: from AS9PR01CA0030.eurprd01.prod.exchangelabs.com
+ (2603:10a6:20b:542::8) by PA4PR02MB6591.eurprd02.prod.outlook.com
+ (2603:10a6:102:fd::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.38; Mon, 4 Mar
+ 2024 16:17:19 +0000
+Received: from AMS1EPF00000043.eurprd04.prod.outlook.com
+ (2603:10a6:20b:542:cafe::8e) by AS9PR01CA0030.outlook.office365.com
+ (2603:10a6:20b:542::8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.38 via Frontend
+ Transport; Mon, 4 Mar 2024 16:17:19 +0000
+X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 195.60.68.100)
+ smtp.mailfrom=axis.com; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=none header.from=axis.com;
+Received-SPF: Fail (protection.outlook.com: domain of axis.com does not
+ designate 195.60.68.100 as permitted sender) receiver=protection.outlook.com;
+ client-ip=195.60.68.100; helo=mail.axis.com;
+Received: from mail.axis.com (195.60.68.100) by
+ AMS1EPF00000043.mail.protection.outlook.com (10.167.16.40) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7362.11 via Frontend Transport; Mon, 4 Mar 2024 16:17:19 +0000
+Received: from SE-MAIL21W.axis.com (10.20.40.16) by se-mail02w.axis.com
+ (10.20.40.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Mon, 4 Mar
+ 2024 17:17:18 +0100
+Received: from se-mail02w.axis.com (10.20.40.8) by SE-MAIL21W.axis.com
+ (10.20.40.16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Mon, 4 Mar
+ 2024 17:17:18 +0100
+Received: from se-intmail01x.se.axis.com (10.0.5.60) by se-mail02w.axis.com
+ (10.20.40.8) with Microsoft SMTP Server id 15.1.2375.34 via Frontend
+ Transport; Mon, 4 Mar 2024 17:17:18 +0100
+Received: from pc36611-1939.se.axis.com (pc36611-1939.se.axis.com [10.88.125.175])
+	by se-intmail01x.se.axis.com (Postfix) with ESMTP id A39F5159D3;
+	Mon,  4 Mar 2024 17:17:18 +0100 (CET)
+Received: by pc36611-1939.se.axis.com (Postfix, from userid 363)
+	id 94643629C1; Mon,  4 Mar 2024 17:17:18 +0100 (CET)
+Date: Mon, 4 Mar 2024 17:17:18 +0100
+From: Jesper Nilsson <jesper.nilsson@axis.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+CC: Andi Shyti <andi.shyti@kernel.org>, Jesper Nilsson
+	<jesper.nilsson@axis.com>, Alim Akhtar <alim.akhtar@samsung.com>,
+	<linux-i2c@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-samsung-soc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<kernel@axis.com>
+Subject: Re: [PATCH] i2c: exynos5: Init data before registering interrupt
+ handler
+Message-ID: <20240304161718.GT30969@axis.com>
+References: <20240304-i2c_exynos5-v1-1-e91c889d2025@axis.com>
+ <vpe5jvnhz3r5cpfiofwrelp62awe74knbxrz47i2deflczx276@yahhrshr355r>
+ <1f4a2ada-0867-4ee0-bf27-4d69ab85b2e4@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] net: ethernet: ti: am65-cpsw: Add minimal XDP
- support
-Content-Language: en-US
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Russell King <linux@armlinux.org.uk>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linaro-mm-sig@lists.linaro.org
-References: <20240223-am65-cpsw-xdp-basic-v2-0-01c6caacabb6@baylibre.com>
- <20240223-am65-cpsw-xdp-basic-v2-2-01c6caacabb6@baylibre.com>
- <356f4dd4-eb0e-49fa-a9eb-4dffbe5c7e7c@lunn.ch>
-From: Julien Panis <jpanis@baylibre.com>
-In-Reply-To: <356f4dd4-eb0e-49fa-a9eb-4dffbe5c7e7c@lunn.ch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1f4a2ada-0867-4ee0-bf27-4d69ab85b2e4@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AMS1EPF00000043:EE_|PA4PR02MB6591:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7d4124bd-7559-4420-a63c-08dc3c6690bb
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	k1dEKfYVKl1+11EFlTfiBYTKYFBhMgb/edo88bJv5tKr8dMkUkHuWeScnxfNaUmEWmwr+roN81y7tUCoJIGVBj4XKiNMkZ3paHbg9FOzyqH4pQBMkRRz06Brio9hnJOzD2NaMLRBaFxpOaLM4XRWTknpir+umaP3BL2d5ZyimMiDhGG6OhWCbwNA+FTFZmOHXKHKp88xKH54uSZOSwf937KD2knNlLZqCFESKiJ1+Uh5NvsT+ihxz8uljq2MxpqeFquKax1uwvO/hTprfxpaBjzPm5wslooUcQak63m6008TG2Oi5evbJiKOtOczXXbTrE/D3rpCMzxepGMeDTQF4HC0xuaRuFuY6C/z1cH2xKOdAv0fzr8YcvsAdjk1lsLOHDIXpm71JCVhpUT/qfH3NOGbpbvBsE8OkH+M7wesPcHRK4F94+fezvH+IsibjtLXQfvWRYzjuA9rAe1AvTSfdIEkEqHyZsepPioF897ps89EpzOutybIbVvooBRmfu+t028PqepUecppzvBX6Qj764M5DFIMq8+Vwc7vFVxMDLf5+jBSm8h9ggP/TWTI4kBkCzIAOJzEQsFSyzaJOnU4dotn3sKAZACTVMdIU9gAULMTI9Az8WoANJprY7+ZF0x2c/eic9ekRuroAE/i6c4bxEfTuGQjIw/ZpeejGO3KHyI8VyaZ1cXKPkgXH8ootrDM02h27scPZ7K3oKCOwZxmb7IGcowdYFANrEmq/WRuFcxdeAKAmP3cl2qjmZKFvCJ2
+X-Forefront-Antispam-Report:
+	CIP:195.60.68.100;CTRY:SE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.axis.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(82310400014)(376005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: axis.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Mar 2024 16:17:19.2002
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7d4124bd-7559-4420-a63c-08dc3c6690bb
+X-MS-Exchange-CrossTenant-Id: 78703d3c-b907-432f-b066-88f7af9ca3af
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=78703d3c-b907-432f-b066-88f7af9ca3af;Ip=[195.60.68.100];Helo=[mail.axis.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	AMS1EPF00000043.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR02MB6591
 
-On 3/1/24 17:38, Andrew Lunn wrote:
-> On Fri, Mar 01, 2024 at 04:02:53PM +0100, Julien Panis wrote:
->> This patch adds XDP (eXpress Data Path) support to TI AM65 CPSW
->> Ethernet driver. The following features are implemented:
->> - NETDEV_XDP_ACT_BASIC (XDP_PASS, XDP_TX, XDP_DROP, XDP_ABORTED)
->> - NETDEV_XDP_ACT_REDIRECT (XDP_REDIRECT)
->> - NETDEV_XDP_ACT_NDO_XMIT (ndo_xdp_xmit callback)
->>
->> The page pool memory model is used to get better performance.
-> Do you have any benchmark numbers? It should help with none XDP
-> traffic as well. So maybe iperf numbers before and after?
->
-> 	Andrew
+On Mon, Mar 04, 2024 at 04:08:00PM +0100, Krzysztof Kozlowski wrote:
+> On 04/03/2024 16:04, Andi Shyti wrote:
+> >> -
+> >>  	i2c->variant = of_device_get_match_data(&pdev->dev);
+> >> +	if (!i2c->variant) {
+> >> +		dev_err(&pdev->dev, "can't match device variant\n");
+> >> +		return -ENODEV;
+> > 
+> > return dev_err_probe(), please.
+> 
+> How this condition even possibly happen? And how is this related to the
+> problem described here?
 
-OK, I will add benchmark numbers in the next version.
+No, it was not. That was part of the debugging before we understood
+the real problem.
 
-I will also fix a potential issue with TX buffer type, which is not properly
-handled in this v2. It should be set for each buffer, I think (instead of just
-being set for the tx channel before initiating xmit).
+> No, don't mix two different issues.
 
-Julien
+No problem, I can drop this part.
 
+> Best regards,
+> Krzysztof
+
+/^JN - Jesper Nilsson
+-- 
+               Jesper Nilsson -- jesper.nilsson@axis.com
 
