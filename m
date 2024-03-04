@@ -1,203 +1,196 @@
-Return-Path: <linux-kernel+bounces-90181-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90184-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BC7886FB71
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:15:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EE2C86FB75
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:16:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 275B21F22B6D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:15:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 06B681F22BAE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:16:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A5C71756B;
-	Mon,  4 Mar 2024 08:15:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="l01HFlZd";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="UnWQ2m0D";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Elb81x4X";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="F8siSzGl"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83B3E171CE;
+	Mon,  4 Mar 2024 08:15:53 +0000 (UTC)
+Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06920171A6;
-	Mon,  4 Mar 2024 08:15:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B30F7134B7;
+	Mon,  4 Mar 2024 08:15:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709540124; cv=none; b=aZmmbiuwuZQDwoEXIvE+GSneT+UN7dMRCJtWKzfQLCagZCyLVaJxs82fEOpX8UVo1pbYRMqqzhSqw1u73AEDt11HE2nXeY2siv6+jMhOcGBpgWv69Ef+vmTJnhCRmEEMFOdNoYCxSGungrYOqMqpeBTuO/QbWrWRbA2n7BZSvtk=
+	t=1709540153; cv=none; b=YZqP5zJ87aUh3Uv4uhBZwVvY0D9AopnvOM5o4W6IsAFMRaBhTDZ2/hrjXZsbaZZj84SAiRRVzOo7LozDd9Pl8YNTKGuBx/vmQ63VRMexkqVkwByjsLI3vOWZlGXFtZEL64JJbtRlixlQ51SJqcg8lnRLKJcifVUJcLZwBPbXchw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709540124; c=relaxed/simple;
-	bh=xtDY+koMXDOcmDgkQrKSlKFln0oMOLNo/L29ZJxzVeQ=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=sZbtb0lNQ4bw2BfpseYHZnGfWuGHXDSH1wDmDcztRBeJQidYYlRknJ1577E7pknFwClnVPStIurPmEZHdTUf4ywk9ORoDSYZl/22KQ3FhVnEAtN5Bd3xw/hrfNq4slZk2f8JTkOX6FsIjiyLIWrYDlfngfD7/YMBNzWwV8+/WwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=l01HFlZd; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=UnWQ2m0D; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Elb81x4X; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=F8siSzGl; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 0E61D68794;
-	Mon,  4 Mar 2024 08:15:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1709540120; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JZt+Y+jfJVrXUNZn7FxYOJsCw8lVDDLyEEI3tfW+wdA=;
-	b=l01HFlZdasj9oN+RdZfW0U5Qxnkwx5VWOpEopaOuByLsG4FYwE+led8RyFlhlGNjqY7PWv
-	Otj6m71Vbn0hxwy4u2KQa3ZHLcfbykfXlTCrkRQE3Ay3MGARUOf0JO3lGyQeEDFzCU2Fly
-	Sl/9WBS962eyQYchPnFA86i0krMOsng=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1709540120;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JZt+Y+jfJVrXUNZn7FxYOJsCw8lVDDLyEEI3tfW+wdA=;
-	b=UnWQ2m0D6dQL6klQrLpEWBfm+ew581DQhzms8MGBRDpSa39sCDgu7bkdTJPl54iry9Pmfk
-	9UO8413tBhM1LVCA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1709540119; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JZt+Y+jfJVrXUNZn7FxYOJsCw8lVDDLyEEI3tfW+wdA=;
-	b=Elb81x4XwxrV9Wc5XW3o2xoi28pS0clJZ5FlJGTgg8Yd91MSXqqgdf9mct5l5fBWOWByip
-	C+VvnKLAgWRB9K2YuNsWPi9Grv6nbIMjyDpfabn4i1mmOXKiOGftAg+hyOXHhC9+wkd7ld
-	BvTlLHqsR15ZScp8bDDi6GCa6DK9sY8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1709540119;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JZt+Y+jfJVrXUNZn7FxYOJsCw8lVDDLyEEI3tfW+wdA=;
-	b=F8siSzGlhgNh6ms8aTZQqgBluIbm2Vuy0W4McJzpfWmddtrlNJ+CoS5oeo9KHZv9Hy+b98
-	VnOhUcqhNgfhl2BA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C670E13A58;
-	Mon,  4 Mar 2024 08:15:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id GA0CLxaD5WVfaQAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Mon, 04 Mar 2024 08:15:18 +0000
-Date: Mon, 04 Mar 2024 09:15:18 +0100
-Message-ID: <871q8q2z1l.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Kenny Levinsen <kl@kl.wtf>
-Cc: Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ALSA: usb-audio: Name feature ctl using output if input is PCM
-In-Reply-To: <20240301231107.42679-1-kl@kl.wtf>
-References: <20240301231107.42679-1-kl@kl.wtf>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	s=arc-20240116; t=1709540153; c=relaxed/simple;
+	bh=pP51C4sP9CSG8FOpmcCbOPSbjYojvwquvBvojm83E1k=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=E2/7zMDYyDoNyhjezd+kdj4lECI12p8S3+GBz8KXdB7ocA/fjmMyVWriyylZAyRsgF8OG9GuRL7zWOdy/FvO8/vrQYg7oHQjUK/UwAo8GRZ8AL9cE0t26esFm+BHnXwZVPijNQZ6RX0rYC4AXNK5gg5n+yxR0RrtV+g0Zpl6HLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.29])
+	by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4TpB1w5YTQz9yLsw;
+	Mon,  4 Mar 2024 16:00:04 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.27])
+	by mail.maildlp.com (Postfix) with ESMTP id 38161140796;
+	Mon,  4 Mar 2024 16:15:36 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+	by APP2 (Coremail) with SMTP id GxC2BwCHvSEdg+Vlt+imAw--.57242S2;
+	Mon, 04 Mar 2024 09:15:35 +0100 (CET)
+Message-ID: <51ee454cf93c24afbfc9f159a1b8428d9d6e3be7.camel@huaweicloud.com>
+Subject: Re: [syzbot] [integrity?] [lsm?] KMSAN: uninit-value in
+ ima_add_template_entry
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+To: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>, syzbot
+	 <syzbot+7bc44a489f0ef0670bd5@syzkaller.appspotmail.com>, 
+	syzkaller-bugs@googlegroups.com, Gao Xiang <xiang@kernel.org>, Chao Yu
+	 <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>, Jeffle Xu
+	 <jefflexu@linux.alibaba.com>
+Cc: linux-kernel@vger.kernel.org, linux-erofs@lists.ozlabs.org, 
+	linux-integrity@vger.kernel.org, zohar@linux.ibm.com
+Date: Mon, 04 Mar 2024 09:15:21 +0100
+In-Reply-To: <ab2a337d-c2dd-437d-9ab8-e3b837f1ff1a@I-love.SAKURA.ne.jp>
+References: <0000000000002be12a0611ca7ff8@google.com>
+	 <40746a9ae6d2e76d748ec0bf7710bba7e49a53ac.camel@huaweicloud.com>
+	 <ab2a337d-c2dd-437d-9ab8-e3b837f1ff1a@I-love.SAKURA.ne.jp>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Elb81x4X;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=F8siSzGl
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.51 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCPT_COUNT_FIVE(0.00)[5];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Score: -3.51
-X-Rspamd-Queue-Id: 0E61D68794
-X-Spam-Flag: NO
+MIME-Version: 1.0
+X-CM-TRANSID:GxC2BwCHvSEdg+Vlt+imAw--.57242S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxCw15tFyxZw47Gw4kCw4UArb_yoWrWr4fpF
+	ZIgFWxAr48Jry8Jr1xJw1qgw17KryvkrWUGw18J34Iv3W0yry7Jr18tryrXrZrGryUAF4v
+	yr4xZryUKr1xZa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+	c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAMBF1jj5rvpAAAsp
 
-On Sat, 02 Mar 2024 00:11:07 +0100,
-Kenny Levinsen wrote:
-> 
-> When building feature controls from a unit without a name, we try to
-> derive a name first from the feature unit's input, then fall back to the
-> output terminal.
-> 
-> If a feature unit connects directly to a "USB Streaming" input terminal
-> rather than a mixer or other virtual type, the control receives the
-> somewhat meaningless name "PCM", even if the output had a descriptive
-> type such as "Headset" or "Speaker".
-> 
-> Here is an example of such AudioControl descriptor from a USB headset
-> which ends up named "PCM Playback" and is therefore not recognized as
-> headphones by userspace:
-> 
->       AudioControl Interface Descriptor:
->         bLength                12
->         bDescriptorType        36
->         bDescriptorSubtype      2 (INPUT_TERMINAL)
->         bTerminalID             4
->         wTerminalType      0x0101 USB Streaming
->         bAssocTerminal          5
->         bNrChannels             2
->         wChannelConfig     0x0003
->           Left Front (L)
->           Right Front (R)
->         iChannelNames           0
->         iTerminal               0
->       AudioControl Interface Descriptor:
->         bLength                 9
->         bDescriptorType        36
->         bDescriptorSubtype      3 (OUTPUT_TERMINAL)
->         bTerminalID             5
->         wTerminalType      0x0402 Headset
->         bAssocTerminal          4
->         bSourceID               6
->         iTerminal               0
->       AudioControl Interface Descriptor:
->         bLength                13
->         bDescriptorType        36
->         bDescriptorSubtype      6 (FEATURE_UNIT)
->         bUnitID                 6
->         bSourceID               4
->         bControlSize            2
->         bmaControls(0)     0x0002
->           Volume Control
->         bmaControls(1)     0x0000
->         bmaControls(2)     0x0000
->         iFeature                0
-> 
-> Other headsets and DACs I tried that used their output terminal for
-> naming only did so due to their input being an unnamed sidetone mixer.
-> 
-> Instead of always starting with the input terminal, check the type of it
-> first. If it seems uninteresting, invert the order and use the output
-> terminal first for naming.
-> 
-> This makes userspace recognize headsets with simple controls as
-> headphones, and leads to more consistent naming of playback devices
-> based on their outputs irrespective of sidetone mixers.
-> 
-> Signed-off-by: Kenny Levinsen <kl@kl.wtf>
+On Sun, 2024-03-03 at 23:54 +0900, Tetsuo Handa wrote:
+> On 2024/02/20 19:40, Roberto Sassu wrote:
+> > On Mon, 2024-02-19 at 22:41 -0800, syzbot wrote:
+> > > Hello,
+> > >=20
+> > > syzbot found the following issue on:
+> > >=20
+> > > HEAD commit:    4f5e5092fdbf Merge tag 'net-6.8-rc5' of git://git.ker=
+nel.o..
+> > > git tree:       upstream
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=3D135ba81c1=
+80000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=3De3dd779fb=
+a027968
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=3D7bc44a489f0=
+ef0670bd5
+> > > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for=
+ Debian) 2.40
+>=20
+> > I would add the VFS people in CC, in case they have some ideas.
+>=20
+> This is an erofs bug. Since the filesystem image in the reproducer
+> is crafted, decompression generates bogus result and
+> z_erofs_transform_plain() misbehaves.
 
-Thanks, applied now to for-next branch.
+Thank you Tetsuo, and Gao Xiang for fixing it!
 
+Roberto
 
-Takashi
+> You can obtain a single-threaded reproducer from
+> https://syzkaller.appspot.com/x/repro.c?x=3D1256096a180000 with below dif=
+f.
+>=20
+> ----------------------------------------
+> --- old/1256096a180000.c
+> +++ new/1256096a180000.c
+> @@ -676,6 +676,6 @@
+>    syscall(__NR_mmap, /*addr=3D*/0x21000000ul, /*len=3D*/0x1000ul, /*prot=
+=3D*/0ul,
+>            /*flags=3DMAP_FIXED|MAP_ANONYMOUS|MAP_PRIVATE*/ 0x32ul, /*fd=
+=3D*/-1,
+>            /*offset=3D*/0ul);
+> -  loop();
+> +  execute_one();
+>    return 0;
+>  }
+> ----------------------------------------
+>=20
+> With CONFIG_EROFS_FS_DEBUG=3Dy, the reproducer hits DBG_BUGON().
+> With debug printk() shown below, you can get output shown below.
+>=20
+> ----------------------------------------
+> diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
+> index d4cee95af14c..f221133a0731 100644
+> --- a/fs/erofs/decompressor.c
+> +++ b/fs/erofs/decompressor.c
+> @@ -323,7 +323,11 @@ static int z_erofs_transform_plain(struct z_erofs_de=
+compress_req *rq,
+>  	unsigned int cur =3D 0, ni =3D 0, no, pi, po, insz, cnt;
+>  	u8 *kin;
+> =20
+> -	DBG_BUGON(rq->outputsize > rq->inputsize);
+> +	if (rq->outputsize > rq->inputsize) {
+> +		pr_err("rq->inputsize=3D%u rq->outputsize=3D%u\n", rq->inputsize, rq->=
+outputsize);
+> +		pr_err("rq->pageofs_in=3D%u rq->pageofs_out=3D%u\n", rq->pageofs_in, r=
+q->pageofs_out);
+> +		pr_err("nrpages_in=3D%u nrpages_out=3D%u\n", nrpages_in, nrpages_out);
+> +	}
+>  	if (rq->alg =3D=3D Z_EROFS_COMPRESSION_INTERLACED) {
+>  		cur =3D bs - (rq->pageofs_out & (bs - 1));
+>  		pi =3D (rq->pageofs_in + rq->inputsize - cur) & ~PAGE_MASK;
+> @@ -352,7 +356,8 @@ static int z_erofs_transform_plain(struct z_erofs_dec=
+ompress_req *rq,
+>  		do {
+>  			no =3D (rq->pageofs_out + cur + pi) >> PAGE_SHIFT;
+>  			po =3D (rq->pageofs_out + cur + pi) & ~PAGE_MASK;
+> -			DBG_BUGON(no >=3D nrpages_out);
+> +			if (no >=3D nrpages_out)
+> +				pr_err("no=3D%u nrpages_out=3D%u\n", no, nrpages_out);
+>  			cnt =3D min(insz - pi, PAGE_SIZE - po);
+>  			if (rq->out[no] =3D=3D rq->in[ni]) {
+>  				memmove(kin + po,
+> @@ -366,7 +371,8 @@ static int z_erofs_transform_plain(struct z_erofs_dec=
+ompress_req *rq,
+>  		} while (pi < insz);
+>  		kunmap_local(kin);
+>  	}
+> -	DBG_BUGON(ni > nrpages_in);
+> +	if (ni > nrpages_in)
+> +		pr_err("ni=3D%u nrpages_in=3D%u\n", ni, nrpages_in);
+>  	return 0;
+>  }
+> =20
+> ----------------------------------------
+>=20
+> ----------------------------------------
+> [  138.991810][ T2983] loop0: detected capacity change from 0 to 16
+> [  139.804002][ T2983] erofs: (device loop0): mounted with root inode @ n=
+id 36.
+> [  139.810464][   T87] erofs: rq->inputsize=3D4096 rq->outputsize=3D8194
+> [  139.821540][   T87] erofs: rq->pageofs_in=3D0 rq->pageofs_out=3D0
+> [  139.824347][   T87] erofs: nrpages_in=3D1 nrpages_out=3D3
+> [  139.827008][   T87] erofs: ni=3D3 nrpages_in=3D1
+> [  139.873777][ T2983] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> [  139.881268][ T2983] BUG: KMSAN: uninit-value in ima_add_template_entry=
++0x626/0xa80
+> ----------------------------------------
+>=20
+> #syz set subsystems: erofs
+
 
