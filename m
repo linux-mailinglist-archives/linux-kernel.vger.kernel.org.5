@@ -1,235 +1,402 @@
-Return-Path: <linux-kernel+bounces-90058-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90059-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B33786F99E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 06:35:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C0B086F9A1
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 06:37:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF3AB1F2103E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 05:35:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7C4D1F210E0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 05:37:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0F8FBE4C;
-	Mon,  4 Mar 2024 05:35:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3B59BA31;
+	Mon,  4 Mar 2024 05:37:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JTjF6SoH"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="GxdzCPv0"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E656E53A6;
-	Mon,  4 Mar 2024 05:35:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.18
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709530525; cv=fail; b=IX+wP+CaELlRNG11jht2IPnfpJG93G0PnA5xkugvKFdf1hW+/i5KGtPDRBCEwr+J+XpRnldukVIHDuVy0XHBcw+7SZYiM8FmHMjUPDWSb57EKZJStduZx3ADo0qJd3jhtHat8DsmlRibmRAx+g32YKCd6kpmXLqE+9lH8fPgqXQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709530525; c=relaxed/simple;
-	bh=J8YV3ir412lIXpzS3abVoHSSgnnLgfW8/hycuHzInfQ=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=dE54PKjL7SUhupE9sez6I33430HgnIUD73otSeQyP2vs6E+hHdKccUw81Qu5gZXTA/Lqn38SrMgUwf1pUqKsydTjgHT/fMfZ1Oj8HTnQBX1ZaCP7okuQ/1MSnyPrPW3nlNpJeAgDTfHnDofCPDBf8fPjSpAPMSndF2JWOOKeGSE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JTjF6SoH; arc=fail smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A059933CF;
+	Mon,  4 Mar 2024 05:37:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709530635; cv=none; b=nhGTXvUzTGnPxkoeSIrrh0mTIIaCBttbNnWBDPqllU7RzE+Nj+dofEUdQAe/z/MwUnofKrhhfJ0YWAL8Aj8kp6UE6Lv71P1EP8V46F8ov3a+gEcJuzeL5Jw0lJqMSasb3XE1b89515Gqq5dhnn3o3S34SZem9i1K2yUT5fbfdRw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709530635; c=relaxed/simple;
+	bh=HjXWF3YIEhulQdNJEtfbqmTCEkvDaFvH0ggPzHbk8Cc=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=K+bQN5/LWlxr1Y/tSuJbg42blmgQDi0BJrIQCU7oXIyHsBUM1v3vLvWLA5R0x+8bHZZOJ3s8B2p2k3haJQa7L9x6n/RCP6j7LcKe3NqZuJUWzEg+vhde8gsyaJfoB8yGhhernauz5XVbiAxBUsDMA5RSDKaU7FmHSwMAM1aDi44=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=GxdzCPv0; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709530523; x=1741066523;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=J8YV3ir412lIXpzS3abVoHSSgnnLgfW8/hycuHzInfQ=;
-  b=JTjF6SoH/ed+5Nd6nq5mzNyRC4OweCYQ3xToipWWWpGZIYvUSJjGRvns
-   xpuZcUU4xHWuTVfwgtwbqpqD0ai83sIFWFwWXPARlDXN0HDbXDSusWYAC
-   Ey04t+amJjydng4uqJvFAzHOYfOpkbDWgC0Xt10mCMTl7IzQ0I2GtuvzI
-   QPDfky5SIiamZvhDeQ2L7nl4bNbygb54ldbEX3UP8rmDZbhU4GjuAFOWo
-   WPNJqJ+/5U4p2ctuv0MBp7azSxZu8LO0hpFWigVI1pVEXsiebpiQA9rGf
-   SKhT+IrUEGhHw5GFIte09uYU18CSkpRK2IznJk6z06Qqe/i81Z1oEYNwx
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="4130392"
-X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
-   d="scan'208";a="4130392"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2024 21:35:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
-   d="scan'208";a="32037315"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmviesa002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 03 Mar 2024 21:35:22 -0800
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1709530633; x=1741066633;
+  h=from:date:subject:mime-version:content-transfer-encoding:
+   message-id:to:cc;
+  bh=HjXWF3YIEhulQdNJEtfbqmTCEkvDaFvH0ggPzHbk8Cc=;
+  b=GxdzCPv0kdlDxubyZnN40Ef0ci5M0rolaxgGJA7+OR60xl1uQeFgNR1r
+   w8cXfl6uGsAbgHVq01SznhhkfM0QsdbgxMypWMbp13joklE0AomIx9j/x
+   zl2tAOKn0qMSvoGguI/kv37kDGDlDnroOs8UE7ZWeYr85fEpJf9+yeO0D
+   IDGgyeNMwV/7cOHbVGW6QbWoIoC7KXFCx9gXDHLbA7tnRqtUBbxZffyId
+   stk7W+NmavcpyKGnObuG3SJK/DroBtm8ELCc/PSYLEvAtOyAMpe5Lrpji
+   EozItrEL0Xjg3/Nbe+zBzWKmPXZ73Sjgq6LDYSbdJIcWIv/aqJmjR+u8+
+   Q==;
+X-CSE-ConnectionGUID: BFFWnpeARXSwNbz8PKIqCA==
+X-CSE-MsgGUID: TFY0ZBszR/y5IYBHvTBWdQ==
+X-IronPort-AV: E=Sophos;i="6.06,203,1705388400"; 
+   d="scan'208";a="18764271"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 03 Mar 2024 22:37:06 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 3 Mar 2024 21:35:21 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Sun, 3 Mar 2024 21:35:21 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.101)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Sun, 3 Mar 2024 21:35:20 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jhBPO4PNXF98/7FQSOFgcJK81YRuz64/eegBr6fgLU4ug2fneED7Ic5kHtqxh2kdoB65oTNIfut0WRp7z/Bj3htk53SxohTU+tyZGoCTynREmK9j4S8/NUr7GhVuXuzGMPsdIwboGvukqSpILRguHjkXPtQOgOfY5G7qM7lhsqsokX923Y9xxYxdmG7APo9sGYE2NsRnhjIKB10Am470kRFW3r0G3F/cRL+g+6KfzQLdQf9PpHFi7PufwlVQXRUTJSqqK5uc9Su7aY3m41d5WV6bVQlxMyxd2gdKXzRvP7YfwzLGLIhzaXP9v/7NXuswG/woX1XS6C6GDyqhHJHGPg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pRL5YxpgzRlUDp0BPNQ+RBS1Qdki9DlLlMQVU5rAn5E=;
- b=NPpoaQWRPkVAUMrLcAjojjELuksRHj/GsNTtWfm1tG0t/YuA52YgjQZESoPjFuPCzOvrwuo7cRCcZaZKfLtgNpcTFpMZ2XWl45NL1FIKpjvrz2hoJ5q+VxAII0JJvvW57tF6JhUBXz8YSJ2w//Tdjjnh5tQcPnM+CBHlOJOlPvR4KmAP5bYhAxvMGHcWnUVbJyqQbEwc1v5e/LiWd/V6CdFj5+ylQ4uqYGurXH3Q+vr0vwwaFqI80XTIV1XJFJnoK3JYy1CuSQ0WeaL4lP/rIQ6yVx8Fqq6WFenztfaq3UjUDXGCPOF4nT313KC/A9URh4EuAFwOFRkNBKDM2mdK6A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CO1PR11MB4820.namprd11.prod.outlook.com (2603:10b6:303:6f::8)
- by PH0PR11MB7524.namprd11.prod.outlook.com (2603:10b6:510:281::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.23; Mon, 4 Mar
- 2024 05:35:18 +0000
-Received: from CO1PR11MB4820.namprd11.prod.outlook.com
- ([fe80::65ce:9835:2c02:b61b]) by CO1PR11MB4820.namprd11.prod.outlook.com
- ([fe80::65ce:9835:2c02:b61b%7]) with mapi id 15.20.7362.019; Mon, 4 Mar 2024
- 05:35:18 +0000
-Message-ID: <dee823ca-7100-4289-8670-95047463c09d@intel.com>
-Date: Mon, 4 Mar 2024 13:35:10 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [linus:master] [readahead] ab4443fe3c: vm-scalability.throughput
- -21.4% regression
-Content-Language: en-US
-To: Yujie Liu <yujie.liu@intel.com>, Jan Kara <jack@suse.cz>
-CC: Oliver Sang <oliver.sang@intel.com>, <oe-lkp@lists.linux.dev>,
-	<lkp@intel.com>, <linux-kernel@vger.kernel.org>, Andrew Morton
-	<akpm@linux-foundation.org>, Matthew Wilcox <willy@infradead.org>, Guo Xuenan
-	<guoxuenan@huawei.com>, <linux-fsdevel@vger.kernel.org>,
-	<ying.huang@intel.com>, <feng.tang@intel.com>
-References: <202402201642.c8d6bbc3-oliver.sang@intel.com>
- <20240221111425.ozdozcbl3konmkov@quack3>
- <ZdakRFhEouIF5o6D@xsang-OptiPlex-9020>
- <20240222115032.u5h2phfxpn77lu5a@quack3>
- <20240222183756.td7avnk2srg4tydu@quack3> <ZeVVN75kh9Ey4M4G@yujie-X299>
-From: "Yin, Fengwei" <fengwei.yin@intel.com>
-In-Reply-To: <ZeVVN75kh9Ey4M4G@yujie-X299>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG3P274CA0024.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:be::36)
- To CO1PR11MB4820.namprd11.prod.outlook.com (2603:10b6:303:6f::8)
+ 15.1.2507.35; Sun, 3 Mar 2024 22:37:00 -0700
+Received: from che-lt-i70843lx.microchip.com (10.10.85.11) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2507.35 via Frontend Transport; Sun, 3 Mar 2024 22:36:54 -0700
+From: Dharma Balasubiramani <dharma.b@microchip.com>
+Date: Mon, 4 Mar 2024 11:06:39 +0530
+Subject: [PATCH v2] dt-bindings: display: atmel,lcdc: convert to dtschema
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PR11MB4820:EE_|PH0PR11MB7524:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1cb34912-7087-47f3-baa8-08dc3c0ce05e
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vl0ijupso+f9LbiasbtGvarBm2Z75IdvNxHxy6ztho06tG0HNuWzOdFPYZFzgf12882+c9Y61flw3VkuKU1UtqVl+ZmnmYWZEisXtGebVxI9kqRZVSMQtwSMJnu1u9iurTFzQ0AgclCFvMv4bVj3Pf1ZuUGwcGhnmrwlF3HK+l8KjaoezVKnJNSrv629MagBYHcWpGptS04PDLkD8DI2AUr53l+fWK8+fcCWEEeiJyls7tlCoNStkcoXda5Q4hu4fw4LGc3E6oFCyflqBd0JEBUfLoYyE1CRzC7RZF8j2lVYRROQmYZ4zhnJQVPM8MgrH5Q/08FC5HLMlt5M16brp2m0ifnDfu3T8TFH7DJoCbxriQglfYHWhuQwDygCCEJGMU024LUengB9iNrKiIL4CD72T8PvDRu2IEJGOZzCyDPMM3W6MYvm2wBje7Q9QFhiIT8tEBmBliHmzV6hy3J2XwaQo6qiy+JcFl7Q/Vew5L9khZVp4GapX+xfQ9hJtCcgNtBgjBc8jp59Hop6WTAXlT9ZCDNsMZnswk95eHcLkjq8IjuFMykxylnOEql6OTJL+cjHMv/RsPl60EfMBkHYv8WiQ0HaZWk89JGjwaioBTzvqVlqtjnb9AbIDl7F1FgG5n9aFJow+OhP8fSiWfVY/xPHFcoAF2dhHVx70bJf5Gc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB4820.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RTNvZyt1dEc1MnFBY1YyamJPUTU2dHEyS0VWYUVMWG0wNnc3aWpxZUt2V214?=
- =?utf-8?B?U0hKaEZLdVJJY1lQanFuUlN5YW13SXdaSjFHYmJUcjBxSFNQV2R1QjgwdDhl?=
- =?utf-8?B?UGlNKy9QR2lKWVlxUFdWTmlnRlNDUU5ya3ZiVE5nQWhYWFNWZEtLZmVsbGdv?=
- =?utf-8?B?UG1FbVAwL3E3WEh3NytrLy9DbFMyamwvRDFMYjNMeEI2Nm9ubExqV2Fsd0Zs?=
- =?utf-8?B?RStPcFNoaVVTaXcxaS83OCtKalZjOEpVMTV6QnVDdklLUEJjdmZaSDhXYWhp?=
- =?utf-8?B?Skpaams2TFhLVTNpWThNUzhEZDBOdVI1VWpNWG5sTG1VRlJiZUwwcWs3UUtL?=
- =?utf-8?B?VDNTajlpejlZYUcyVHJ5WmVUZ0FMcVByLzJ0YkI2TjBCUW9KSW1mcVJSOUI0?=
- =?utf-8?B?NFdQZXp4OXFxT1oxYkR6aklMa0F0ZHdOaW5iT2lBQld4VkYyU0E2YTQvSUVX?=
- =?utf-8?B?cnRNNWorOXliU1dzdXBuTUxTVTRKeDc0clVtMjlWd1pNWFk2SWNxQzAreFNv?=
- =?utf-8?B?MmJKOUVJekRsbzVjMW13VG83RGpvQS91dDUvUlJVcGloLzhSak54c1FrOTAr?=
- =?utf-8?B?b2VYYjNEZUY3L3dZQjZxK0RkYkhIYkNFUjkxMDAvUDZnN1I5cU9HZ1MzNjJl?=
- =?utf-8?B?WDBHVFBobTEvY0RnenNISE9jc3pRUkNON2dDQ1ptWHRmQ0l1NWwrZ1pVTDFa?=
- =?utf-8?B?Q2NDL0tNVW5mOGJJNUY5anN3RlcxNTNjTmV1UzZJdm56Umd0cm1TU2cybGR6?=
- =?utf-8?B?elNMN0I3YnFVMG5KaVhVMUtBeFJjeG0wbHBzT3d2QWRINm8xOTYyUXBHbnpJ?=
- =?utf-8?B?M1ozTlAvUTE5UEVWeitRVnVoR1djcks4RmpsM2NTNExzMXdsU2dPL0QyRmZ0?=
- =?utf-8?B?Rk54T3BBbzlHZU05NllQM0U5TEl1UVhJUU82RWxoMzJ0SmNVSGltb2V4Zisz?=
- =?utf-8?B?K3RaS2dRczhyRmJBV1Q2bmt2b3ZveW1KWTBKZjdJcDBBMThVSzZ2ZWpPNEdS?=
- =?utf-8?B?OXhuVmloUFNzQVYrd2NrOS9uQVlIZlVXWHExUERvd251WXh3RWRBeWpYV1Yz?=
- =?utf-8?B?Uldqa1FRUVA4bkJ3bFhzaVk4NHNmbFdTcjVrVGl3SEYwR0FkVFArZ0pYa3BE?=
- =?utf-8?B?ZURyZVFmMHFrdnlJdVI4b09tMnhGMmllUU5NckpESVpSZVlhbDBUOGo1V09L?=
- =?utf-8?B?MDBSWmZLT0llaksxZy9UaUtxQVAyUWppdDFUTDZzSEc0UDRsZ1EzbzNVT05t?=
- =?utf-8?B?VEpRWGQ3RlFnV25aeE5wdjVMYkYrblRFNHl1T3dxaWtQTUZrUkhLQko3eG9K?=
- =?utf-8?B?RmhaQXc2UjZUM3hNK1lTUEgrWGs4QXdUc0pQdjd1QTd5aks0em1RWStveE5I?=
- =?utf-8?B?cWtoVSsvNTd6QllPVk5Mc3FoQXhpVWZqMy8xbVR4MEp2eU5yZWZyWlo5eWpL?=
- =?utf-8?B?SUpLdCs2amgyT0NTV3ljVlhvcUN3WjhFZ3Y5TERkN0Z1b2xzZjFxaU9FdHds?=
- =?utf-8?B?RjlVbjhEQ1F0T2xHakZwQW93UmJmYm00YTlDbEZwOXkyekJwUTJ2NjFZU0la?=
- =?utf-8?B?K29XUG1kYi9vWjV1SW41MTJhVkl0R1BhMExOMk81S0wvS1h1SjExUlFpbnRQ?=
- =?utf-8?B?eGszMXMwNU5IZy9UWGZFSHVrOGtoMHMxdTMrQkQrVzQrbklvWW1xamx3T0J1?=
- =?utf-8?B?b2Y4UFFwTldHUXR5TGJrM0xVenBNZHhLMk1SMHRJNm5Hb0RMSUp6b1RER3JT?=
- =?utf-8?B?YWdraUV6M0xsb2JuMm5mYkgyeGE2VlA3UDBiNFpZaSs0dFB0STZWVnpob2kr?=
- =?utf-8?B?WXVUZVZPR2FSUFZRd0VWZ2hvUFhoR2tSSmJEUU9NeksxT3FHVXVHNXFsMWZV?=
- =?utf-8?B?VjJTeXVRZU85am5rb2ZQQ0huTGcxd0FYclpSWncvNHZnMVNvSERmNW16TGdq?=
- =?utf-8?B?dE1PUVFDMEFIbjEzOFN6MEhHNDROVUMxanA2c1NWSHdQWTVZa1RUa01tTlg1?=
- =?utf-8?B?ZTZvUXZpU2p6QTd5TkhKdkQ3YitNdTJqZStkc3lEc3FuMHRRTEQ3WTlkVm9y?=
- =?utf-8?B?TytaNjRvaE83QzZlSHJVblpMT1NrOFZaNmFqTzJoaitXalhJdk1IL2dzeWJZ?=
- =?utf-8?Q?Jk60Qw/iesSYNp+Q96upl00E8?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1cb34912-7087-47f3-baa8-08dc3c0ce05e
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB4820.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Mar 2024 05:35:18.4197
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: M90CKyU6siWdcZWcWOaZCoPAnDwL5YCHvweEvPxH723fwNAbUDyUYj1QQ9xfvT4twk5hfRudR8P84scb4u3X0Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB7524
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <20240304-lcdc-fb-v2-1-a14b463c157a@microchip.com>
+X-B4-Tracking: v=1; b=H4sIAOZd5WUC/2XMQQrCMBCF4auUWRtppqFVV95DujCTiRmwTUmkK
+ CV3N3br8n88vg0yJ+EMl2aDxKtkiXMNPDRA4T4/WImrDdiiaRE79SRHyltlTw4ZfUdnbaC+l8R
+ e3rt0G2sHya+YPju86t/6b6xaaWWoN2R7HAbnr5NQihRkOVKcYCylfAHkeWP8ogAAAA==
+To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
+	<mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
+	<airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Rob Herring
+	<robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>, Alexandre Belloni
+	<alexandre.belloni@bootlin.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>
+CC: <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	Dharma Balasubiramani <dharma.b@microchip.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1709530605; l=9543;
+ i=dharma.b@microchip.com; s=20240209; h=from:subject:message-id;
+ bh=HjXWF3YIEhulQdNJEtfbqmTCEkvDaFvH0ggPzHbk8Cc=;
+ b=94IRQwX7s9gnTfvI89sYFyGFfb2/zTDBlP2tesca5BXKYhwTOxOR2fmhzfCVTizuThfraY/xL
+ vlXlKQ8yR2iDuJ0PGZEAl+ibN2vL9V6ZHreClongs0/iqur3eXTsAtq
+X-Developer-Key: i=dharma.b@microchip.com; a=ed25519;
+ pk=kCq31LcpLAe9HDfIz9ZJ1U7T+osjOi7OZSbe0gqtyQ4=
 
-Hi Jan,
+Convert the atmel,lcdc bindings to DT schema.
+Changes during conversion: add missing clocks and clock-names properties.
 
-On 3/4/2024 12:59 PM, Yujie Liu wrote:
->  From the perf profile, we can see that the contention of folio lru lock
-> becomes more intense. We also did a simple one-file "dd" test. Looks
-> like it is more likely that low-order folios are allocated after commit
-> ab4443fe3c (Fengwei will help provide the data soon). Therefore, the
-> average folio size decreases while the total folio amount increases,
-> which leads to touching lru lock more often.
+Signed-off-by: Dharma Balasubiramani <dharma.b@microchip.com>
+---
+This patch converts the existing lcdc display text binding to JSON schema.
+The binding is split into two namely
+lcdc.yaml
+- Holds the frame buffer properties
+lcdc-display.yaml
+- Holds the display panel properties which is a phandle to the display
+property in lcdc fb node.
 
-I did following testing:
-   With a xfs image in tmpfs + mount it to /mnt and create 12G test file
-   (sparse-file), use one process to read it on a Ice Lake machine with
-   256G system memory. So we could make sure we are doing a sequential
-   file read with no page reclaim triggered.
+These bindings are tested against the existing at91 dts files using
+dtbs_check.
+---
+Changes in v2:
+- Run checkpatch and remove whitespace errors.
+- Add the standard interrupt flags.
+- Split the binding into two, namely lcdc.yaml and lcdc-display.yaml.
+- Link to v1: https://lore.kernel.org/r/20240223-lcdc-fb-v1-1-4c64cb6277df@microchip.com
+---
+ .../bindings/display/atmel,lcdc-display.yaml       | 98 ++++++++++++++++++++++
+ .../devicetree/bindings/display/atmel,lcdc.txt     | 87 -------------------
+ .../devicetree/bindings/display/atmel,lcdc.yaml    | 70 ++++++++++++++++
+ 3 files changed, 168 insertions(+), 87 deletions(-)
 
-   At the same time, profiling the distribution of order parameter of
-   filemap_alloc_folio() call to understand how the large folio order
-   for page cache is generated.
+diff --git a/Documentation/devicetree/bindings/display/atmel,lcdc-display.yaml b/Documentation/devicetree/bindings/display/atmel,lcdc-display.yaml
+new file mode 100644
+index 000000000000..ea4fd34b9e2c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/atmel,lcdc-display.yaml
+@@ -0,0 +1,98 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/atmel,lcdc-display.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Microchip's LCDC Display
++
++maintainers:
++  - Nicolas Ferre <nicolas.ferre@microchip.com>
++  - Dharma Balasubiramani <dharma.b@microchip.com>
++
++description:
++  The LCD Controller (LCDC) consists of logic for transferring LCD image data
++  from an external display buffer to a TFT LCD panel. The LCDC has one display
++  input buffer per layer that fetches pixels through the single bus host
++  interface and a look-up table to allow palletized display configurations. The
++  LCDC is programmable on a per layer basis, and supports different LCD
++  resolutions, window sizes, image formats and pixel depths.
++
++# We need a select here since this schema is applicable only for nodes with the
++# following properties
++
++select:
++  anyOf:
++    - required: [ 'atmel,dmacon' ]
++    - required: [ 'atmel,lcdcon2' ]
++    - required: [ 'atmel,guard-time' ]
++    - required: [ bits-per-pixel ]
++
++properties:
++  atmel,dmacon:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: dma controller configuration
++
++  atmel,lcdcon2:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: lcd controller configuration
++
++  atmel,guard-time:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: lcd guard time (Delay in frame periods)
++
++  bits-per-pixel:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: lcd panel bit-depth.
++
++  atmel,lcdcon-backlight:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description: enable backlight
++
++  atmel,lcdcon-backlight-inverted:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description: invert backlight PWM polarity
++
++  atmel,lcd-wiring-mode:
++    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
++    description: lcd wiring mode "RGB" or "BRG"
++
++  atmel,power-control-gpio:
++    description: gpio to power on or off the LCD (as many as needed)
++
++  display-timings:
++    $ref: panel/display-timings.yaml#
++
++required:
++  - atmel,dmacon
++  - atmel,lcdcon2
++  - atmel,guard-time
++  - bits-per-pixel
++
++additionalProperties: false
++
++examples:
++  - |
++    display: panel {
++      bits-per-pixel = <32>;
++      atmel,lcdcon-backlight;
++      atmel,dmacon = <0x1>;
++      atmel,lcdcon2 = <0x80008002>;
++      atmel,guard-time = <9>;
++      atmel,lcd-wiring-mode = <1>;
++
++      display-timings {
++        native-mode = <&timing0>;
++        timing0: timing0 {
++          clock-frequency = <9000000>;
++          hactive = <480>;
++          vactive = <272>;
++          hback-porch = <1>;
++          hfront-porch = <1>;
++          vback-porch = <40>;
++          vfront-porch = <1>;
++          hsync-len = <45>;
++          vsync-len = <1>;
++        };
++      };
++    };
+diff --git a/Documentation/devicetree/bindings/display/atmel,lcdc.txt b/Documentation/devicetree/bindings/display/atmel,lcdc.txt
+deleted file mode 100644
+index b5e355ada2fa..000000000000
+--- a/Documentation/devicetree/bindings/display/atmel,lcdc.txt
++++ /dev/null
+@@ -1,87 +0,0 @@
+-Atmel LCDC Framebuffer
+------------------------------------------------------
+-
+-Required properties:
+-- compatible :
+-	"atmel,at91sam9261-lcdc" , 
+-	"atmel,at91sam9263-lcdc" ,
+-	"atmel,at91sam9g10-lcdc" ,
+-	"atmel,at91sam9g45-lcdc" ,
+-	"atmel,at91sam9g45es-lcdc" ,
+-	"atmel,at91sam9rl-lcdc" ,
+-- reg : Should contain 1 register ranges(address and length).
+-	Can contain an additional register range(address and length)
+-	for fixed framebuffer memory. Useful for dedicated memories.
+-- interrupts : framebuffer controller interrupt
+-- display: a phandle pointing to the display node
+-
+-Required nodes:
+-- display: a display node is required to initialize the lcd panel
+-	This should be in the board dts.
+-- default-mode: a videomode within the display with timing parameters
+-	as specified below.
+-
+-Optional properties:
+-- lcd-supply: Regulator for LCD supply voltage.
+-
+-Example:
+-
+-	fb0: fb@00500000 {
+-		compatible = "atmel,at91sam9g45-lcdc";
+-		reg = <0x00500000 0x1000>;
+-		interrupts = <23 3 0>;
+-		pinctrl-names = "default";
+-		pinctrl-0 = <&pinctrl_fb>;
+-		display = <&display0>;
+-		#address-cells = <1>;
+-		#size-cells = <1>;
+-
+-	};
+-
+-Example for fixed framebuffer memory:
+-
+-	fb0: fb@00500000 {
+-		compatible = "atmel,at91sam9263-lcdc";
+-		reg = <0x00700000 0x1000 0x70000000 0x200000>;
+-		[...]
+-	};
+-
+-Atmel LCDC Display
+------------------------------------------------------
+-Required properties (as per of_videomode_helper):
+-
+- - atmel,dmacon: dma controller configuration
+- - atmel,lcdcon2: lcd controller configuration
+- - atmel,guard-time: lcd guard time (Delay in frame periods)
+- - bits-per-pixel: lcd panel bit-depth.
+-
+-Optional properties (as per of_videomode_helper):
+- - atmel,lcdcon-backlight: enable backlight
+- - atmel,lcdcon-backlight-inverted: invert backlight PWM polarity
+- - atmel,lcd-wiring-mode: lcd wiring mode "RGB" or "BRG"
+- - atmel,power-control-gpio: gpio to power on or off the LCD (as many as needed)
+-
+-Example:
+-	display0: display {
+-		bits-per-pixel = <32>;
+-		atmel,lcdcon-backlight;
+-		atmel,dmacon = <0x1>;
+-		atmel,lcdcon2 = <0x80008002>;
+-		atmel,guard-time = <9>;
+-		atmel,lcd-wiring-mode = <1>;
+-
+-		display-timings {
+-			native-mode = <&timing0>;
+-			timing0: timing0 {
+-				clock-frequency = <9000000>;
+-				hactive = <480>;
+-				vactive = <272>;
+-				hback-porch = <1>;
+-				hfront-porch = <1>;
+-				vback-porch = <40>;
+-				vfront-porch = <1>;
+-				hsync-len = <45>;
+-				vsync-len = <1>;
+-			};
+-		};
+-	};
+diff --git a/Documentation/devicetree/bindings/display/atmel,lcdc.yaml b/Documentation/devicetree/bindings/display/atmel,lcdc.yaml
+new file mode 100644
+index 000000000000..1b6f7e395006
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/atmel,lcdc.yaml
+@@ -0,0 +1,70 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/atmel,lcdc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Microchip's LCDC Framebuffer
++
++maintainers:
++  - Nicolas Ferre <nicolas.ferre@microchip.com>
++  - Dharma Balasubiramani <dharma.b@microchip.com>
++
++description:
++  The LCDC works with a framebuffer, which is a section of memory that contains
++  a complete frame of data representing pixel values for the display. The LCDC
++  reads the pixel data from the framebuffer and sends it to the LCD panel to
++  render the image.
++
++properties:
++  compatible:
++    enum:
++      - atmel,at91sam9261-lcdc
++      - atmel,at91sam9263-lcdc
++      - atmel,at91sam9g10-lcdc
++      - atmel,at91sam9g45-lcdc
++      - atmel,at91sam9g45es-lcdc
++      - atmel,at91sam9rl-lcdc
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    maxItems: 2
++
++  clock-names:
++    items:
++      - const: hclk
++      - const: lcdc_clk
++
++  display:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description: A phandle pointing to the display node.
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++  - display
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/at91.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++    fb@500000 {
++      compatible = "atmel,at91sam9g45-lcdc";
++      reg = <0x00500000 0x1000>;
++      interrupts = <23 IRQ_TYPE_LEVEL_HIGH 0>;
++      pinctrl-names = "default";
++      pinctrl-0 = <&pinctrl_fb>;
++      clocks = <&pmc PMC_TYPE_PERIPHERAL 23>, <&pmc PMC_TYPE_PERIPHERAL 23>;
++      clock-names = "hclk", "lcdc_clk";
++      display = <&display>;
++    };
 
-Here is what we got:
+---
+base-commit: 90d35da658da8cff0d4ecbb5113f5fac9d00eb72
+change-id: 20240223-lcdc-fb-b8d2e2f3c914
 
-- Commit f0b7a0d1d46625db:
-$ dd bs=4k if=/mnt/sparse-file of=/dev/null
-3145728+0 records in
-3145728+0 records out
-12884901888 bytes (13 GB, 12 GiB) copied, 2.52208 s, 5.01 GB/s
+Best regards,
+-- 
+Dharma Balasubiramani <dharma.b@microchip.com>
 
-filemap_alloc_folio
-      page order    : count     distribution
-         0          : 57       |                                        |
-         1          : 0        |                                        |
-         2          : 20       |                                        |
-         3          : 2        |                                        |
-         4          : 4        |                                        |
-         5          : 98300    |****************************************|
-
-- Commit ab4443fe3ca6:
-$ dd bs=4k if=/mnt/sparse-file of=/dev/null
-3145728+0 records in
-3145728+0 records out
-12884901888 bytes (13 GB, 12 GiB) copied, 2.51469 s, 5.1 GB/s
-
-filemap_alloc_folio
-      page order    : count     distribution
-         0          : 21       |                                        |
-         1          : 0        |                                        |
-         2          : 196615   |****************************************|
-         3          : 98303    |*******************                     |
-         4          : 98303    |*******************                     |
-
-
-Even the file read throughput is almost same. But the distribution of
-order looks like a regression with ab4443fe3ca6 (more smaller order
-page cache is generated than parent commit). Thanks.
-
-
-Regards
-Yin, Fengwei
 
