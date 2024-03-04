@@ -1,132 +1,146 @@
-Return-Path: <linux-kernel+bounces-91209-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91210-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91BFC870B3C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:12:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EE1B870B3E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:13:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 31BC91F21C46
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:12:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DF1C1C21FB9
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:13:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F333E7A70D;
-	Mon,  4 Mar 2024 20:12:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF30C7A159;
+	Mon,  4 Mar 2024 20:13:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JmKDPuZd"
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="TVgOPoQn"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A820879DD2
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 20:12:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82C4B62160
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 20:12:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709583146; cv=none; b=UKUm5kBhOmlC7EBr6aWWIvsxepRBuSeQ3ptM2dZvdht8/aj2nHl+FaaMD6lrrVlG35EJKkYPrVROE7AxX5/NPwTHMWM4Sck0DfpKxr3uaTerJRex3ZETaWRrY2quhJLG8nZae/biKKUghPEA+dsgDR3fL1AwSxRKRCzjhroPets=
+	t=1709583181; cv=none; b=qZYeJ7NQpoIr6Z5AH1b9f/3Fd/egSKajbGOgJWQwtyeH/8BnWir88g0YjURl7CUD5owaChA+LToZ8FDQFYYRANrnNf6TqtCPOZchx1WTEf4ZzOwtb/373B06/WQmh4zyAba0GYqpKBU+r2A4eE0uH4y5Uf11gHXWqGqlQa+b1co=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709583146; c=relaxed/simple;
-	bh=9e1w14lVhFmrPtPSUWZqcNue3UJPDbsF7j742qbsVu4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PXB1RoTfCsXxgyJiPWJ+eO5ydbZbfmVF7xiOY4j0q+0J53aVj/7L990FSwePAi+lmrKBA8jP4a/bdz4iBcbe9WtkkO3Z2HHQZq4P7GVABfGGkJIF6AJGGMBvukaa+xMExxPDDH1vbeoqHXf7tn0aV4qaKCBNuSRwAQDXnxdu+o4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=JmKDPuZd; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-60983233a0dso40744887b3.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 12:12:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709583143; x=1710187943; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IAiT61kggRPd5YDuiyv4v5ZMae/k0uuT4kkoEq4NmCU=;
-        b=JmKDPuZdkUWp65KnSpv+MevYQv7eI0Yc74bY4zjpl44bdDZRCCWZH4hcq/1WBcSCa2
-         KHoMBEVM6w6wWILhtMEWU57DVieWgKXcpETKgsfPOiAmTAsjtTu5InqbRRy2aPq2IX7b
-         jktsmts4LCGkTELXlCDqzrrb1Z353AVpXg21lT0H13XThZMGYKRwO2v1YPo2CL7jJx0E
-         NGhwvQcaJ7XPRQrUBf3lYND916eaqV1ai95g2IFpiDLDarzA9aUACOZm2Ym+MH2l53Ma
-         P08i6rPvY5PbMpCjbaXF8D0Ooo4lM56wjFqaRVGj8wElyDSUa4ls4VeVhpXc1bup/kEK
-         yjvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709583143; x=1710187943;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IAiT61kggRPd5YDuiyv4v5ZMae/k0uuT4kkoEq4NmCU=;
-        b=tZ7peHXMzx7L1GU4er/KxRPzgRn7L/+eQEwaBNY6UL9iNKIe3mlPOYYslREdeS4lvj
-         UVTnrgnPBk49RgaqH2boxhXuYnV6/y1oE8EOlKhEgh7nLLSs70pLHaFzP0x2IEwg1K43
-         g5UxXuTLhizjJJxCvvrk7PE5BdNe+dPrVsq6WQjhPDuzPbDP0LMWF9BbPwsbMrqmJkYM
-         Fdd5B6NmDU9CpyS+rP5Sx1DJu6ZxAcuoM15jjfMr8g0Ns4A8Oh7jghZEcAxW1uS61o0+
-         ZOWcMBRfdpSJW/Z4c8WUbQCNyoB/tXElh8hFtvmNYhJCYjSf+2b0FbcZdLoopsPMh7yr
-         FxFw==
-X-Forwarded-Encrypted: i=1; AJvYcCX9SJBWdD0FpZwJjNFdmZ1v93BO0ppRDzrbxYQgyb+bTky0IQfyX1HKt+4kYdGr8wW9j+JKJOFtAXhob45eKNaOpr595r1oKkcZk8pT
-X-Gm-Message-State: AOJu0YyBqqAqqofyVRV3zg6KIFZk6PiXpc/8bg+wmxzIofqxBlBJDQs3
-	SAT2Ut9xpTa9DU0pqWZ1pQQIaPPV98TEtXH7xuMQRh39H5wXhI1fEXed2yRP74f4NOdBcuNWGgG
-	fgvxIehBnHp0w4R2I+pUdjoNh0WhXvhsmOekyug==
-X-Google-Smtp-Source: AGHT+IEqPJr4eKDnDYSeNoerMYFKAQrjzVTavb++7VXTSjtLAfm4FVFMvf/uNcNvjlfalWRr+qEPl3nwmkUNiNJTO9E=
-X-Received: by 2002:a25:5f51:0:b0:dc6:be64:cfd1 with SMTP id
- h17-20020a255f51000000b00dc6be64cfd1mr7740725ybm.36.1709583143696; Mon, 04
- Mar 2024 12:12:23 -0800 (PST)
+	s=arc-20240116; t=1709583181; c=relaxed/simple;
+	bh=2dZWQKT9+VI4fN5HG83hCe2KIo74Iq/neyDLmBuYqs4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Mrs0cnWWwjfAvxTTyhd/p8EZd7j7eEKL19KgljQHV5/X5QsRsd62AWjB40UqGWhpC0qkbNCUdC821/d2G9Ox9G6F9UuJLghIqX7Y4i7Pyiu072fLGRWsa33kgHI0b1juC56CeaPChDZmzMywG39IFSiDMpc5gbo6ya79klKsOHA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=TVgOPoQn; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id D8BF940E01A2;
+	Mon,  4 Mar 2024 20:12:49 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 6J3TiTwB9LEu; Mon,  4 Mar 2024 20:12:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1709583167; bh=7AAnRCmUw6WY5dqLo5Ulda1PXQ665OL1WDw/NItN5FU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=TVgOPoQnrP7Ef3bPuHU9FCZXF1Nt5Xa5euDTlgjgpPP54KtRwJKY3UybEf2m6T3Ja
+	 2lXVliEWZibNzheT0OCdLuPqZk8D6v/+KRWhd3+NqkW58bMaesTpe8Yv8gyt3XOaJS
+	 GLwHWBpnxIM+Ont41u2YJInqy295yAZTFt+gv+l1GczAb9Tahw3PxMnUTIls1BV9UT
+	 7VsPXc62PXXX6yWFhNfGne28TuPReg77cofrtaPtYXtzS6Eak15iHLYs3/bUCv4IKO
+	 gfaBIvq9e2TOTFUdfO6u5A13I4CLZOkpcAFNRuRq8pG5+Gdt3bA3BrVacmF9RUmiQJ
+	 3FHmwrZSvp1HY8uiTuemUhujJ3T5g3NjouQ6Aa9x2CIh/0W6T3zbFdBATNW8ocAcyy
+	 v7krF+ako+2tA2t7yESGUCmcFjhPBQ+Ymmq/JcIIXmI5XxYROJlSXzL+4/gP566fzI
+	 ZXxYmFH2ub+Nen92EQ2yyPthuPaYViMMfmN7CPvJcj+dKDufghrNsyS6+DLWhvvQy/
+	 CX7LePeOVOmctQldS5SqmUTqPcZIcwiBSBu5EBp1uCY5HMDZeY9suBUqtMAxnzwNqw
+	 2vc5Jq1JOZAi2ykf6PfgcH/WEvsOFFluNu3zQa4pcpoGQZgP+PN9yfmyNEhI6WIWGf
+	 vvus8piHLBIGsJtGb0H+7wbI=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3CCD340E0185;
+	Mon,  4 Mar 2024 20:12:40 +0000 (UTC)
+Date: Mon, 4 Mar 2024 21:12:33 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: "Liang, Kan" <kan.liang@linux.intel.com>
+Cc: x86-ml <x86@kernel.org>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Alexander Antonov <alexander.antonov@linux.intel.com>,
+	lkml <linux-kernel@vger.kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: unchecked MSR access error: WRMSR to 0xd84 (tried to write
+ 0x0000000000010003) at rIP: 0xffffffffa025a1b8
+ (snbep_uncore_msr_init_box+0x38/0x60 [intel_uncore])
+Message-ID: <20240304201233.GDZeYrMc9exmV21PFB@fat_crate.local>
+References: <20240304181841.GCZeYQgbZk6fdntg-X@fat_crate.local>
+ <b16add91-30c4-43e6-bcf8-11ca8aeaa783@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240304175606.1200076-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20240304175606.1200076-1-andriy.shevchenko@linux.intel.com>
-From: Sam Protsenko <semen.protsenko@linaro.org>
-Date: Mon, 4 Mar 2024 14:12:12 -0600
-Message-ID: <CAPLW+4nqhMdiVNjZ+HJykBN6pSrZmwaeG6CHxfBTZ=-zwheVJA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] mmc: dw_mmc: Remove unused of_gpio.h
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Yangtao Li <frank.li@vivo.com>, linux-mmc@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Jaehoon Chung <jh80.chung@samsung.com>, 
-	Ulf Hansson <ulf.hansson@linaro.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Alim Akhtar <alim.akhtar@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <b16add91-30c4-43e6-bcf8-11ca8aeaa783@linux.intel.com>
 
-On Mon, Mar 4, 2024 at 11:56=E2=80=AFAM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> of_gpio.h is deprecated and subject to remove.
-> The driver doesn't use it, simply remove the unused header.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
+On Mon, Mar 04, 2024 at 02:22:50PM -0500, Liang, Kan wrote:
+> The number of available CBOXs on a SNBEP machine is determined at boot
+> time. It should not be larger than the maximum number of cores.
+> The recent commit 89b0f15f408f ("x86/cpu/topology: Get rid of
+> cpuinfo::x86_max_cores") change the boot_cpu_data.x86_max_cores to
+> topology_num_cores_per_package().
+> I guess the new function probably returns a different maximum number of
+> cores on the machine. But I don't have a SNBEP on my hands. Could you
+> please help to check whether a different maximum number of cores is
+> returned?
 
-Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
+Yeah, the topo rework looks at fault:
 
->  drivers/mmc/host/dw_mmc-exynos.c | 1 -
->  drivers/mmc/host/dw_mmc.c        | 1 -
->  2 files changed, 2 deletions(-)
->
-> diff --git a/drivers/mmc/host/dw_mmc-exynos.c b/drivers/mmc/host/dw_mmc-e=
-xynos.c
-> index 698408e8bad0..6dc057718d2c 100644
-> --- a/drivers/mmc/host/dw_mmc-exynos.c
-> +++ b/drivers/mmc/host/dw_mmc-exynos.c
-> @@ -11,7 +11,6 @@
->  #include <linux/mmc/host.h>
->  #include <linux/mmc/mmc.h>
->  #include <linux/of.h>
-> -#include <linux/of_gpio.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/slab.h>
->
-> diff --git a/drivers/mmc/host/dw_mmc.c b/drivers/mmc/host/dw_mmc.c
-> index 829af2c98a44..8e2d676b9239 100644
-> --- a/drivers/mmc/host/dw_mmc.c
-> +++ b/drivers/mmc/host/dw_mmc.c
-> @@ -35,7 +35,6 @@
->  #include <linux/bitops.h>
->  #include <linux/regulator/consumer.h>
->  #include <linux/of.h>
-> -#include <linux/of_gpio.h>
->  #include <linux/mmc/slot-gpio.h>
->
->  #include "dw_mmc.h"
-> --
-> 2.43.0.rc1.1.gbec44491f096
->
->
+before:
+
+online:              1
+initial_apicid:      0
+apicid:              0
+pkg_id:              0
+die_id:              0
+cu_id:               255
+core_id:             0
+logical_pkg_id:      0
+logical_die_id:      0
+llc_id:              0
+l2c_id:              0
+max_cores:           4
+max_die_per_pkg:     1
+smp_num_siblings:    2
+
+after:
+
+online:              1
+initial_apicid:      0
+apicid:              0
+pkg_id:              0
+die_id:              0
+cu_id:               255
+core_id:             0
+logical_pkg_id:      0
+logical_die_id:      0
+llc_id:              0
+l2c_id:              0
+amd_node_id:         0
+amd_nodes_per_pkg:   0
+num_threads:         32
+num_cores:           16
+max_dies_per_pkg:    1
+max_threads_per_core:2
+
+I'll let tglx poke at this.
+
+Thx!
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
