@@ -1,131 +1,174 @@
-Return-Path: <linux-kernel+bounces-90879-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90880-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76D18870631
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:51:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6705870636
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:51:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31EAA281A65
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:51:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BBB21F232C6
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:51:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 045A147F73;
-	Mon,  4 Mar 2024 15:51:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF434481DE;
+	Mon,  4 Mar 2024 15:51:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SDZXtRgi"
-Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kk42QveN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E376545BF6
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 15:51:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F25C747793;
+	Mon,  4 Mar 2024 15:51:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709567468; cv=none; b=KxkyRYXsUXb/dnGLBMDVJC60FwveQAvBNI2uYLslTsVV9WbbJnhHF+eojcfCSUr3SqRXQViD3Inredbbp9HAO9iaFPvcGY61/rgKZK6ZRGmLmz7yQ8b6Hz/S8GM4gifEPRmpOYUFC1nCyU24loTXQR0MF2okuffmBLiIm2o4hvc=
+	t=1709567501; cv=none; b=h2l8FoNhRhW7Jz81BtB09fUi7n+yve4YeJh3uoyjsYws5EFo/UfZygZgoDouMMiaR7EopdYL7Osh3mdtMO1WNh69Y8+eB6dWYVurCU0cV1TpgMW/ZdXa+ip5YcgGeVTvSkSdozXbJKDVlr/i4SK7JOEz+nakUzoBr+vVa26fPEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709567468; c=relaxed/simple;
-	bh=yBt5TwzmivGnFmrcNnjakHcmowxPO+T1ILDhjFfS+5s=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Adc+iYB3HZmwv9RAb/CF5sIgTEhQzWg4ltCKo/0ly9z8BSGfBgkAAiuudDdfTqxG8k+efoAhgpVgIcPVTyGfn4ywP2eFM3eILBUdp8rPomZb/YE+SgteCuuXEJ9kGzdSN9NmHkY8irXy+q3019UgLxCF9d1RXd8EJnHJfrraWhU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SDZXtRgi; arc=none smtp.client-ip=209.85.215.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5dca5c631ffso4377931a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 07:51:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709567466; x=1710172266; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sBUCyHuTZA9i0dCfsQh5d6xGpY6OHPS4YyBabmMxAP4=;
-        b=SDZXtRgiyj+5MbAIgJu07FhCICtaTMIu9JLGYC24BLs46xhb5qinRqL5sNiG7xAFgh
-         c4OfNJoLeO9P0c2wvvQfdW9kKoTs/hlsLXZCSJP0UMpIYFWDZsSQ4FB+EU2U71CxMFdc
-         One/V1kt7L1ynO8z3y0QkD4etJgPSNY0OIENB3j3SDtZVu/maykrTUady53rqEw4Y+Qs
-         izVc9lkmJ2GAIO4L4zxXAayIKoV0/o5Qr7v4g46SRd8K/4ZDhHyvSmkYdY1PqLc2NaQX
-         xJ8PM1YwzEmKj4rofdgdVHqB5+nYKSxb3twT66Zwk8A5NzmXjt3HQAxYb82UDjA/a+lN
-         rzUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709567466; x=1710172266;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sBUCyHuTZA9i0dCfsQh5d6xGpY6OHPS4YyBabmMxAP4=;
-        b=Vs1P7s+CB+Pt47IZIFyqnmSk6+SghyPMPHXF8NDZegF46WbMNLk4wBpGSzYkNkh8I6
-         iuE5xlwsgPcHfRcYc74adv7235EIKmFlWHuo3IvIbxTP48uN5QezS1SOQ8E+iM63jHV+
-         GrSaCtcX/H9qNYN3JUKLX58JGU2xvaTTsbUBCH9vJreQxqUkIYEhgGYdVs62TAKcS4O/
-         3smMLoRMGR4RCZnmNNJgDksW2S+yl/hpcjZWLtZgTZYTHGaq5ViwXkJVxx24qcvwwKx1
-         VrA/uDHif240hKvBOBH6nCkKsryidlpjemd3ym2fGnTqKZL9dEn5+8Y0h+q80bklfM56
-         kHdQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXhrZC1Bb9RZ3I6t255cS6W19KQcClErj7GNzeLN0tmo0eGe2Vi4r/XzdL4FJ3VlhHrWbatQ176MCYY9fenm8O4BtrlxiZjL6VPdWDQ
-X-Gm-Message-State: AOJu0Yyta1GUq02nrprxvb6Y4A9gJC+E8BMzMzwUlBniaTbnA/D9qwZz
-	DEwGVO9IC2oxXzQvEYeS/rLCj5d574KFvjAUg/S2TI9+aNe7wayGqfU+3pRu+ukj2dk0OxYez+c
-	zLg==
-X-Google-Smtp-Source: AGHT+IEVyjSh5NovjKr5fkDkRZyDvD0iMlIGtwRXV2B2y4ATUNzJdtnYgus2gWiVbWe/2y2bviGgzKsFeEE=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:5d0e:0:b0:5dc:eb5:19db with SMTP id
- r14-20020a635d0e000000b005dc0eb519dbmr27392pgb.0.1709567465769; Mon, 04 Mar
- 2024 07:51:05 -0800 (PST)
-Date: Mon, 4 Mar 2024 07:51:04 -0800
-In-Reply-To: <05449435-008c-4d51-b21f-03df1fa58e77@intel.com>
+	s=arc-20240116; t=1709567501; c=relaxed/simple;
+	bh=c+8XYXTL4MNDkZflKTWBzR1Wk2Ypz56BlkcuwFEXZhc=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=F13VxvXhV7E9dx7PLYfP3VrG2UJmoMGEjsG9IdrG3yNOGO3yuLqjMEVq3vFHdDE3PbM/jmJ1w/gqo/J0tLBD9gV7HM8YUC84IV7BlNWV4VchkoeaawVr6GBXohnC9gYOB3MXxytuoNceQG28r1LRFmuiA/5cVFzzH4bmFxYwZco=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kk42QveN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44784C433C7;
+	Mon,  4 Mar 2024 15:51:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709567500;
+	bh=c+8XYXTL4MNDkZflKTWBzR1Wk2Ypz56BlkcuwFEXZhc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=kk42QveNYWswu6Cne4CcCQ3NKRd8OSuCmtYXC+2wpbtLZf4gPV1H/XXREaZ7AKlLF
+	 0uXBJhrkiNJjJnTQGMwP42tFVzNHRauOLuQryNkOgU1dkytxhyzOxGXKZ4LwyqIi6y
+	 Cx4qnPxwQVj7T2CeUZqQA/o4MD79tUopgx61rU5eouVPcDPA4/EZwyYdahLRPDFkOV
+	 wPA2BPOZWst75iRJrhZ8KSxINI5yI1L28rPcapdSaJys/ZzSM5ABgDiOj+3PTHfUdt
+	 QhSBd3EHrKAWIMf7w2Lyn37NLpMQI8Vf4U1jTAesqIfGtJG36hTFnPZF5NXtDFn7ih
+	 w9EQBxT4aKofw==
+Date: Mon, 4 Mar 2024 09:51:38 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>, gregkh@linuxfoundation.org,
+	bhelgaas@google.com, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Ricky Wu <ricky_wu@realtek.com>,
+	Kees Cook <keescook@chromium.org>, Tony Luck <tony.luck@intel.com>,
+	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+	linux-hardening@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v3] driver core: Cancel scheduled pm_runtime_idle() on
+ device removal
+Message-ID: <20240304155138.GA482969@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240228024147.41573-1-seanjc@google.com> <20240228024147.41573-9-seanjc@google.com>
- <2237d6b1-1c90-4acd-99e9-f051556dd6ac@intel.com> <ZeEOC0mo8C4GL708@google.com>
- <05449435-008c-4d51-b21f-03df1fa58e77@intel.com>
-Message-ID: <ZeXt6A_w4etYCYP7@google.com>
-Subject: Re: [PATCH 08/16] KVM: x86/mmu: WARN and skip MMIO cache on private,
- reserved page faults
-From: Sean Christopherson <seanjc@google.com>
-To: Kai Huang <kai.huang@intel.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Yan Zhao <yan.y.zhao@intel.com>, Isaku Yamahata <isaku.yamahata@intel.com>, 
-	Michael Roth <michael.roth@amd.com>, Yu Zhang <yu.c.zhang@linux.intel.com>, 
-	Chao Peng <chao.p.peng@linux.intel.com>, Fuad Tabba <tabba@google.com>, 
-	David Matlack <dmatlack@google.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0grDNJkEcgw+34SBmNFL7qhSTz8ydC7BSkM7DiCatkKSA@mail.gmail.com>
 
-On Fri, Mar 01, 2024, Kai Huang wrote:
-> On 1/03/2024 12:06 pm, Sean Christopherson wrote:
-> > E.g. in this case, KVM will just skip various fast paths because of the RSVD flag,
-> > and treat the fault like a PRIVATE fault.  Hmm, but page_fault_handle_page_track()
-> > would skip write tracking, which could theoretically cause data corruption, so I
-> > guess arguably it would be safer to bail?
-> > 
-> > Anyone else have an opinion?  This type of bug should never escape development,
-> > so I'm a-ok effectively killing the VM.  Unless someone has a good argument for
-> > continuing on, I'll go with Kai's suggestion and squash this:
-> > 
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > index cedacb1b89c5..d796a162b2da 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -5892,8 +5892,10 @@ int noinline kvm_mmu_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa, u64 err
-> >                  error_code |= PFERR_PRIVATE_ACCESS;
-> >          r = RET_PF_INVALID;
-> > -       if (unlikely((error_code & PFERR_RSVD_MASK) &&
-> > -                    !WARN_ON_ONCE(error_code & PFERR_PRIVATE_ACCESS))) {
-> > +       if (unlikely(error_code & PFERR_RSVD_MASK)) {
-> > +               if (WARN_ON_ONCE(error_code & PFERR_PRIVATE_ACCESS))
-> > +                       return -EFAULT;
+On Mon, Mar 04, 2024 at 03:38:38PM +0100, Rafael J. Wysocki wrote:
+> On Thu, Feb 29, 2024 at 7:23 AM Kai-Heng Feng
+> <kai.heng.feng@canonical.com> wrote:
+> >
+> > When inserting an SD7.0 card to Realtek card reader, the card reader
+> > unplugs itself and morph into a NVMe device. The slot Link down on hot
+> > unplugged can cause the following error:
+> >
+> > pcieport 0000:00:1c.0: pciehp: Slot(8): Link Down
+> > BUG: unable to handle page fault for address: ffffb24d403e5010
+> > PGD 100000067 P4D 100000067 PUD 1001fe067 PMD 100d97067 PTE 0
+> > Oops: 0000 [#1] PREEMPT SMP PTI
+> > CPU: 3 PID: 534 Comm: kworker/3:10 Not tainted 6.4.0 #6
+> > Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M./H370M Pro4, BIOS P3.40 10/25/2018
+> > Workqueue: pm pm_runtime_work
+> > RIP: 0010:ioread32+0x2e/0x70
+> ...
+> > Call Trace:
+> >  <TASK>
+> >  ? show_regs+0x68/0x70
+> >  ? __die_body+0x20/0x70
+> >  ? __die+0x2b/0x40
+> >  ? page_fault_oops+0x160/0x480
+> >  ? search_bpf_extables+0x63/0x90
+> >  ? ioread32+0x2e/0x70
+> >  ? search_exception_tables+0x5f/0x70
+> >  ? kernelmode_fixup_or_oops+0xa2/0x120
+> >  ? __bad_area_nosemaphore+0x179/0x230
+> >  ? bad_area_nosemaphore+0x16/0x20
+> >  ? do_kern_addr_fault+0x8b/0xa0
+> >  ? exc_page_fault+0xe5/0x180
+> >  ? asm_exc_page_fault+0x27/0x30
+> >  ? ioread32+0x2e/0x70
+> >  ? rtsx_pci_write_register+0x5b/0x90 [rtsx_pci]
+> >  rtsx_set_l1off_sub+0x1c/0x30 [rtsx_pci]
+> >  rts5261_set_l1off_cfg_sub_d0+0x36/0x40 [rtsx_pci]
+> >  rtsx_pci_runtime_idle+0xc7/0x160 [rtsx_pci]
+> >  ? __pfx_pci_pm_runtime_idle+0x10/0x10
+> >  pci_pm_runtime_idle+0x34/0x70
+> >  rpm_idle+0xc4/0x2b0
+> >  pm_runtime_work+0x93/0xc0
+> >  process_one_work+0x21a/0x430
+> >  worker_thread+0x4a/0x3c0
+> ...
+
+> > This happens because scheduled pm_runtime_idle() is not cancelled.
 > 
-> -EFAULT is part of guest_memfd() memory fault ABI.  I didn't think over this
-> thoroughly but do you want to return -EFAULT here?
+> But rpm_resume() changes dev->power.request to RPM_REQ_NONE and if
+> pm_runtime_work() sees this, it will not run rpm_idle().
+> 
+> However, rpm_resume() doesn't deactivate the autosuspend timer if it
+> is running (see the comment in rpm_resume() regarding this), so it may
+> queue up a runtime PM work later.
+> 
+> If this is not desirable, you need to stop the autosuspend timer
+> explicitly in addition to calling pm_runtime_get_sync().
 
-Yes, I/we do.  There are many existing paths that can return -EFAULT from KVM_RUN
-without setting run->exit_reason to KVM_EXIT_MEMORY_FAULT.  Userspace is responsible
-for checking run->exit_reason on -EFAULT (and -EHWPOISON), i.e. must be prepared
-to handle a "bare" -EFAULT, where for all intents and purposes "handle" means
-"terminate the guest".
+I don't quite follow all this.  I think the race is between
+rtsx_pci_remove() (not resume) and rtsx_pci_runtime_idle().
 
-That's actually one of the reasons why KVM_EXIT_MEMORY_FAULT exists, it'd require
-an absurd amount of work and churn in KVM to *safely* return useful information
-on *all* -EFAULTs.  FWIW, I had hopes and dreams of actually doing exactly this,
-but have long since abandoned those dreams.
+  rtsx_pci_remove()
+  {
+    pm_runtime_get_sync()
+    pm_runtime_forbid()
+    ...
 
-In other words, KVM_EXIT_MEMORY_FAULT essentially communicates to userspace that
-(a) userspace can likely fix whatever badness triggered the -EFAULT, and (b) that
-KVM is in a state where fixing the underlying problem and resuming the guest is
-safe, e.g. won't corrupt the guest (because KVM is in a half-baked state).
+If this is an rtsx bug, what exactly should be added to
+rtsx_pci_remove()?
+
+Is there ever a case where we want any runtime PM work to happen
+during or after a driver .remove()?  If not, maybe the driver core
+should prevent that, which I think is basically what this patch does.
+
+If this is an rtsx driver bug, I'm concerned there may be many other
+drivers with a similar issue.  rtsx exercises this path more than most
+because the device switches between card reader and NVMe SSD using
+hotplug add/remove based on whether an SD card is inserted (see [1]).
+
+[1] https://lore.kernel.org/r/20231019143504.GA25140@wunner.de
+
+> > So before releasing the device, stop all runtime power managements by
+> > using pm_runtime_barrier() to fix the issue.
+> >
+> > Link: https://lore.kernel.org/all/2ce258f371234b1f8a1a470d5488d00e@realtek.com/
+> > Cc: Ricky Wu <ricky_wu@realtek.com>
+> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > ---
+> > v3:
+> >   Move the change the device driver core.
+> >
+> > v2:
+> >   Cover more cases than just pciehp.
+> >
+> >  drivers/base/dd.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/drivers/base/dd.c b/drivers/base/dd.c
+> > index 85152537dbf1..38c815e2b3a2 100644
+> > --- a/drivers/base/dd.c
+> > +++ b/drivers/base/dd.c
+> > @@ -1244,6 +1244,7 @@ static void __device_release_driver(struct device *dev, struct device *parent)
+> >
+> >         drv = dev->driver;
+> >         if (drv) {
+> > +               pm_runtime_barrier(dev);
+> 
+> This prevents the crash from occurring because pm_runtime_barrier()
+> calls pm_runtime_deactivate_timer() unconditionally AFAICS.
 
