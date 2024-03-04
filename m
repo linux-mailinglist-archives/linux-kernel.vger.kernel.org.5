@@ -1,89 +1,108 @@
-Return-Path: <linux-kernel+bounces-90717-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90718-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C08288703DB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:18:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFB928703E1
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:19:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7957E283795
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:18:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BC472842BC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:19:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6238B3FB1C;
-	Mon,  4 Mar 2024 14:18:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D86D43FE54;
+	Mon,  4 Mar 2024 14:19:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Q4XVbJKI";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="/E9Ixk3T"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="jXduoCnJ"
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33AF83EA89
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 14:18:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7751A3EA89;
+	Mon,  4 Mar 2024 14:19:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709561885; cv=none; b=G116K+7fAv8Qcl+3cS0I9JKEQgGgX3B17Ku9UVhHp7Svo8M6RCqxMmG9M7iB/oVd7nJ6+aUa6TR+IdvHz1JcPOPH1xMALn+iv7+tuNjsSBD1tjI/clHwEJcL9EeB/6GDHmMtfSsefPD/7rgRI6NEuY+G1dI9CDcICaI/fuycZKY=
+	t=1709561989; cv=none; b=iqKbg4NCkIGp6ydKB24Heyy7xoKl9c60xM+QLkvcPHelY/pW9Kwxm/S3vYj+Who5xtbU2xha8U32abgueE2+eKcjp53OPX9ResCnAVeBDKOayEpzhHe9sR4o9ALY/YYKo5IYFTuZi87g2Un9i5AFrOp615HXzVRwGD+dqokdgtA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709561885; c=relaxed/simple;
-	bh=wysMqA0NcoiYhrn6zwI2/1l5OR37mkkdjVbQDIWLhJM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=IWjaQbbFUlpoD3v2h6ynupJw1tP5i1DOpHrpcoVTaclzuBC0gXNJS7cYUhk5NYGOsxJHs8USJa95ZnSERO5ySGf9B3HF7EwS5rrLbvajBJTnVJ+qJWVbicuxK4Y1YQsMZQF+qAc6NJ3xqjo3sphw6jrvSByfgKXcZeP73Cj3IA8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Q4XVbJKI; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=/E9Ixk3T; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1709561882;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wysMqA0NcoiYhrn6zwI2/1l5OR37mkkdjVbQDIWLhJM=;
-	b=Q4XVbJKI0UeZ2ox3dwMrnDmR9kvuSdrVODv8vRY5YxPD4lNIPCjh375lBdUCzRU16Juzmo
-	ZQHBL4rL2UIXecTtKvcqG6D9bSjxHvRCHrmbKRW+IFSDBrMrXmbOwlanOwbrNfmTA7W7pi
-	egzTkKxTvNPZD5iBdRwbOBaOHBbvZ8w+BNuzbS9KMx3XLO775GRSjwFZAwi7FqgCsEDtaa
-	H3+ZzLAxasgDjXOAKM3MRdwACbGVRaZp37iav93FT33FFyXODLMv7kQP/gMdhu95SXfSwQ
-	SU72WyXcYsSaUMb9j3GTYQnFZjM/lHmELdZIcGvose1c+0b1G5ikrR36pEqZsg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1709561882;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wysMqA0NcoiYhrn6zwI2/1l5OR37mkkdjVbQDIWLhJM=;
-	b=/E9Ixk3TcwCiCBU07OgV3zyAp4HZIgJkO3N2kijNmrs9snwZY7MZaOFkzg7GcOh+iMsA2S
-	8jOUaCWik+jq8/Cg==
-To: peterx@redhat.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org, Yang Shi <shy828301@gmail.com>, "Kirill A
- . Shutemov" <kirill@shutemov.name>, Jason Gunthorpe <jgg@nvidia.com>,
- peterx@redhat.com, Muchun Song <muchun.song@linux.dev>, Andrew Morton
- <akpm@linux-foundation.org>, x86@kernel.org, Ingo Molnar
- <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
- <dave.hansen@linux.intel.com>
-Subject: Re: [PATCH v2 4/7] mm/x86: Drop two unnecessary pud_leaf() definitions
-In-Reply-To: <20240229084258.599774-5-peterx@redhat.com>
-References: <20240229084258.599774-1-peterx@redhat.com>
- <20240229084258.599774-5-peterx@redhat.com>
-Date: Mon, 04 Mar 2024 15:18:01 +0100
-Message-ID: <8734t6w06e.ffs@tglx>
+	s=arc-20240116; t=1709561989; c=relaxed/simple;
+	bh=yIwjiE4Jzff3Z6RlihGvSiuyIyME20oThR3476sqCaA=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=aumRqENatrbw1EH+3PBxyzl32awxJaqB3PdTHr5KtyN5Ve5Iay+Eg3PexFjZsQso8wwv/MDW5fwqaWrr2KmN4najIx5VMLR+4WgtFZLjhZE+DOEBIQ1RGtyGm2LhfByS2+52rK5gBUBrpc/5Vc13nebKqlZxwuej0Ac20I3ju6o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=jXduoCnJ; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=XgpSqZI8VTYKxdvqODzSX8ByICMsPCDICmVQgFEltPc=; b=jXduoCnJcGxL9hNaLYmYL+XCbO
+	+jkyio4C6vHsj1MtRWTE5tPc3KK+DiAOwDIlVQrOpdESSPXBKf8NfcXB3GF7nF4HXKlr1l6eRBf5J
+	r4P52MCa1Sv3vYUHBVA8k7LY9Kp03JjeQPXKl/TSTnbUjiLOUr7Dv6kBF6EKASNnkU3cSZLDrdEt0
+	OI9/Ie2pBcK7IrYCEa35aic+mQ9FQQfvtvzocE7wnvy6EQjFv6w/tZxuuen7rwsJO4HN2mGrA0Giw
+	0oAfaxteUJb/b123ucNa0wVfDJYuAyRxZXA8os2+LnYrhM/9lev9S0IKI/hQb39P0nrESrpux3ZbN
+	iJpy7Yqw==;
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rh9A6-000BrI-MO; Mon, 04 Mar 2024 15:19:26 +0100
+Received: from [178.197.248.27] (helo=linux.home)
+	by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rh9A4-000A5M-Qh; Mon, 04 Mar 2024 15:19:24 +0100
+Subject: Re: [xdp-hints] Re: [PATCH iwl-next,v3 0/2] XDP Tx Hardware Timestamp
+ for igc driver
+To: patchwork-bot+netdevbpf@kernel.org,
+ Song Yoong Siang <yoong.siang.song@intel.com>
+Cc: jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, richardcochran@gmail.com, ast@kernel.org,
+ hawk@kernel.org, john.fastabend@gmail.com, sdf@google.com,
+ vinicius.gomes@intel.com, florian.bezdeka@siemens.com, andrii@kernel.org,
+ eddyz87@gmail.com, mykolal@fb.com, martin.lau@linux.dev, song@kernel.org,
+ yonghong.song@linux.dev, kpsingh@kernel.org, haoluo@google.com,
+ jolsa@kernel.org, shuah@kernel.org, intel-wired-lan@lists.osuosl.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, xdp-hints@xdp-project.net
+References: <20240303083225.1184165-1-yoong.siang.song@intel.com>
+ <170956142658.15074.12322285485014543685.git-patchwork-notify@kernel.org>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <c87b4763-09eb-5cc3-c797-20ed8a25be0b@iogearbox.net>
+Date: Mon, 4 Mar 2024 15:19:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <170956142658.15074.12322285485014543685.git-patchwork-notify@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27204/Mon Mar  4 10:25:09 2024)
 
-On Thu, Feb 29 2024 at 16:42, peterx@redhat.com wrote:
-> From: Peter Xu <peterx@redhat.com>
->
-> pud_leaf() has a fallback macro defined in include/linux/pgtable.h already.
-> Drop the extra two for x86.
->
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: x86@kernel.org
-> Signed-off-by: Peter Xu <peterx@redhat.com>
+On 3/4/24 3:10 PM, patchwork-bot+netdevbpf@kernel.org wrote:
+> On Sun,  3 Mar 2024 16:32:23 +0800 you wrote:
+>> Implemented XDP transmit hardware timestamp metadata for igc driver.
+>>
+>> This patchset is tested with tools/testing/selftests/bpf/xdp_hw_metadata
+>> on Intel ADL-S platform. Below are the test steps and results.
+>>
+>> Test Step 1: Run xdp_hw_metadata app
+>>   sudo ./xdp_hw_metadata <iface> > /dev/shm/result.log
+>>
+>> [...]
+> 
+> Here is the summary with links:
+>    - [iwl-next,v3,1/2] selftests/bpf: xdp_hw_metadata reduce sleep interval
+>      https://git.kernel.org/bpf/bpf-next/c/01031fd47305
 
-Acked-by: Thomas Gleixner <tglx@linutronix.de>
+Fyi, Song/others, took in the small, standalone BPF selftest improvement.
+
+Thanks,
+Daniel
 
