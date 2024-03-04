@@ -1,478 +1,114 @@
-Return-Path: <linux-kernel+bounces-90298-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90299-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66B1E86FD0D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:20:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC4DA86FD1D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:21:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC7CB1F2529C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:20:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8A862834E8
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:21:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F8D61C2AE;
-	Mon,  4 Mar 2024 09:19:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6380320310;
+	Mon,  4 Mar 2024 09:21:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UNJvdlyq"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PCG5E6xp"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CEC512E73
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 09:19:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA39C12E73;
+	Mon,  4 Mar 2024 09:21:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709543970; cv=none; b=X3lEoj9LhpNeOoeuMHc2qsKckIUvVz4UgxeiLRfQjsodKGGVCc4l4KTHBH1OVkuYtaxsJsnaVaW6G8UT+lTyDYgiHHOpmV7SnmWrCflpCFCaMq1TjFM5jmbsvMi6qLnYW+gsuqWi+ShzHPJh32wMdgzbEufClteB22z/SacWxi8=
+	t=1709544078; cv=none; b=Ozhpf8DsmoOi3B+tAa4RjXYrByaxf3Dq9lBRCoZjF9PmJ4RN/Xv586CIZRPa6O3OkuvZZIvFCcpXHp6jHEYeTHFEuhGPvjweshivHYTfGCHo+smnqtD9AnLw2Fcj4u1kwSXCMRlUB1Bj8e5n1D2UpALH79fEx1CE5gqYRbbNSB8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709543970; c=relaxed/simple;
-	bh=JNlgBk51Owrz+9wcCIEhG6A3fzFqztbOy64rlJzeI/o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HwWh4+vMqM4+/xTxivhXSbjAOMfFo1x74Cz61XfNTUM5SluGoMqGmdEGq4eXoFOXTQkywDML/K7sfhfAaHc5GtQR7lp1TlQHUEev0rYJsUh/xUZXroiUrpfBPPdfWtG8vMr1O9+ZpnQryGjRwiFuEGwctVWhBTHBUrf5mtWWC54=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UNJvdlyq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84528C43394;
-	Mon,  4 Mar 2024 09:19:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709543969;
-	bh=JNlgBk51Owrz+9wcCIEhG6A3fzFqztbOy64rlJzeI/o=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=UNJvdlyqW+CCxxtDPBP4kuooxlw4AzWFHOWV3vbc9A4J6lnNX21sMNmI4DVRLoCow
-	 i1KoooVZPs+1QVOPJd7soYdqKTZ/87f0ymw0ICCOC+W0PfKUc4Y3+mzUiAkCO20RpR
-	 lIiCCI10KYZQvd5qLRPNDsGyfw5WDxyGsNskEgRmpeTM+IQ2eMETGfO/YbuVjY6X4r
-	 z5wWtDRDCeaD3EmUspVEe1MeTng1EEl0m4wwHBAiGbT4+qqNSp64I8Fw1HNmcHtp8i
-	 vp7Vlo5b/O9gA+G/9zE6rUyCmsX7WjSFrIe5TnEL4tXu/zlJ/8qd6N6z8jZ4+ohBbn
-	 KzYf8sTpcBGFQ==
-Message-ID: <b5f6ff2d-cc13-4527-9a1d-f2098a9d66fc@kernel.org>
-Date: Mon, 4 Mar 2024 17:19:22 +0800
+	s=arc-20240116; t=1709544078; c=relaxed/simple;
+	bh=qRumvw5r0fBe4cXijShx0jyie3b5Thf1Qym7Ach5dco=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=U9ZnPwnwakI7ib+vmpkg7J5a0gQ+QamGRuW4gqRVrpAORwx7dDqE9UnDtEpSa1E7zfYU1kn/fMHx3yGzOwghOWbqdPOsuFSPMdw29M/ZblUE+cIzFMkkU2cdK5H7LHyriuntpFuvPrEww9Tknx5QxA3KRyYAY5/DCi54onw1ugQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PCG5E6xp; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-56454c695e6so6982706a12.0;
+        Mon, 04 Mar 2024 01:21:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709544075; x=1710148875; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LQ3u5q2nv0ZE5qO0688fu4cC+VQcvGJyrmp0bnKgjzQ=;
+        b=PCG5E6xpH2frePv9C9aBinp54qqx9HRZtfxa8eNOD0kDkEhKH0K/2wlLmvlwIFQioh
+         n02dAqqPpIJ4P/c3K4st3gwdl0+zhLBpz1MfatUzYSHcPaPg0MVVtSNULkMs2KmNgUth
+         Il2Wa0twMq83n0RNehUS/sXLwsiL9CU0Y7Z6nF9992b1FNolawU/aIE/LPEhhzuNsPJp
+         /Xh617BVgCXi1sT7qRjXDnU/JYZfMzIRJaCZyjFaw+Y2/VN7sWYi9E1wgN0dlV0ztjFq
+         F62INg5+U80TuzBB8GSzpXWe2QP7gxybGry9SeLN3Gm1bW170MBYucMcGR98L9SOvAJU
+         lWeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709544075; x=1710148875;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LQ3u5q2nv0ZE5qO0688fu4cC+VQcvGJyrmp0bnKgjzQ=;
+        b=NwkzF+daS63ah4ojJ+zVmpYECPIfe0XcMQI0RAWzAgRlh5J6+IRNodBHJA7qqCMDWo
+         +E1ckg0uJQpu3qA4vtLGUn41RUqetcE1jrw9YWMcYY26Qz87sjAHOVcltKgE3D8iZR4G
+         QFJIrArLYzjeklQDCP0JFd5EDsuBacS7Y8mDcffRd3CaVGlvukXivWe1NErtzr12xc1Q
+         H8xfQrSbc/8TqTx1cuCI5D47rGlImiNqeS+tzo4EpRGt7Ol3XpFyj4+f1RDMMaFhdT3d
+         1Eubwr7q4MYJrZMeM+cHWegjOjiT3s4MVC9p5iqipCHo2F96uBqH0F9YdaLRC/3mWozA
+         1xNg==
+X-Forwarded-Encrypted: i=1; AJvYcCUpYpQxbORNVsXm8H/Tufg7eikgZ9PcxgbaZtL228t0eJh54gF4awIqhLenfLPNz++fhwNTKVgRy1SRYNvc75Cy5Bs1Qph/yzLb6rsi/FiE1W6+DcVGPMLr55jIiN/0y7dBvZZzkhJUMw==
+X-Gm-Message-State: AOJu0YzbMybb9rxHB3kmQzvFivkmIeebZ7yRWPrZE69fLPPhmtpgl26X
+	27BIlLkvbPIVpqOuSXHxiEdSKZ6Tb07Hwnk4OV6Czlo1pSZk12R4
+X-Google-Smtp-Source: AGHT+IEelsGlsw0Kh3DhH6d/QbArK0mkW5NdrPbf1vYlzlDJBMAGVF44/JYRgXkX3kBj57E4njT8aQ==
+X-Received: by 2002:a50:8d8b:0:b0:566:624a:9e3f with SMTP id r11-20020a508d8b000000b00566624a9e3fmr7710597edh.3.1709544075006;
+        Mon, 04 Mar 2024 01:21:15 -0800 (PST)
+Received: from gmail.com (1F2EF13F.nat.pool.telekom.hu. [31.46.241.63])
+        by smtp.gmail.com with ESMTPSA id m13-20020aa7d34d000000b0056486eaa669sm4374872edr.50.2024.03.04.01.21.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Mar 2024 01:21:14 -0800 (PST)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Mon, 4 Mar 2024 10:21:12 +0100
+From: Ingo Molnar <mingo@kernel.org>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"Borislav Petkov (AMD)" <bp@alien8.de>
+Subject: Re: linux-next: duplicate patches in the tip tree
+Message-ID: <ZeWSiIKiL+8H2LqO@gmail.com>
+References: <20240304092140.0adb0f26@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] f2fs: fix to check result of new_curseg in
- f2fs_allocate_segment_for_resize
-Content-Language: en-US
-To: Zhiguo Niu <niuzhiguo84@gmail.com>
-Cc: Zhiguo Niu <zhiguo.niu@unisoc.com>, jaegeuk@kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
- ke.wang@unisoc.com, hongyu.jin@unisoc.com
-References: <1709292976-13118-1-git-send-email-zhiguo.niu@unisoc.com>
- <7dc371ad-2448-4dd4-9551-8caef0a00d48@kernel.org>
- <CAHJ8P3+ZBuBu9Sdpm_6fxhY2sVyu97dXFKKLdtEF4shi_3Fs1Q@mail.gmail.com>
- <73197f36-4962-4a3d-a56c-8fd3494af7e5@kernel.org>
- <CAHJ8P3Kiys7ZESM-J2oEBYs1dd+zAVQ2zrvg5t02eqXRMEudXQ@mail.gmail.com>
-From: Chao Yu <chao@kernel.org>
-In-Reply-To: <CAHJ8P3Kiys7ZESM-J2oEBYs1dd+zAVQ2zrvg5t02eqXRMEudXQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240304092140.0adb0f26@canb.auug.org.au>
 
-On 2024/3/4 15:52, Zhiguo Niu wrote:
-> On Mon, Mar 4, 2024 at 3:17 PM Chao Yu <chao@kernel.org> wrote:
->>
->> On 2024/3/4 11:33, Zhiguo Niu wrote:
->>> On Mon, Mar 4, 2024 at 11:19 AM Chao Yu <chao@kernel.org> wrote:
->>>>
->>>> On 2024/3/1 19:36, Zhiguo Niu wrote:
->>>>> new_curseg may return error if get_new_segment fail, so its result
->>>>> should be check in its caller f2fs_allocate_segment_for_resize,
->>>>> alos pass this results to free_segment_range.
->>>>
->>>> Zhiguo,
->>>>
->>>> What about handling all error paths of new_curseg() and change_curseg()
->>>> in one patch?
->>> Dear Chao,
->>>
->>> Do you mean to merge it with the previous patch “f2fs: fix to check
->>> return value of f2fs_gc_range”?
->>> Because in addition to new_curseg/change_curseg error handling, there
->>> are some other changes in the previous patch.
->>> besides, I searched for new related codes, and there should be the
->>> only place left without error handling about new_curseg/
->>> change_curseg .
->>
->> Zhiguo, I meant something like this?
->>
->> Subject: [PATCH] f2fs: fix to handle error paths of {new,change}_curseg()
-> Dear Chao,
-> I got your meaning and I think this patch looks good.
-> Please ignore my patch and use your version:）.
 
-Zhiguo,
+* Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 
-This is a raw patch, can you please write commit message for it, and
-resend it once you've tested it.
+> Hi all,
+> 
+> The following commits are also in Linus Torvalds' tree as different
+> commits (but the same patches):
+> 
+>   9e1daa3bfccc ("x86/e820: Don't reserve SETUP_RNG_SEED in e820")
+> 
+> This is commit
+> 
+>   7fd817c90650 ("x86/e820: Don't reserve SETUP_RNG_SEED in e820")
+> 
+> in Linus' tree.
+
+This was only temporary, should be resolved in the next -next integration.
 
 Thanks,
 
-> thanks!
->>
->> ---
->>    fs/f2fs/f2fs.h    |  4 +--
->>    fs/f2fs/gc.c      |  7 +++--
->>    fs/f2fs/segment.c | 67 +++++++++++++++++++++++++++++++----------------
->>    fs/f2fs/super.c   |  4 ++-
->>    4 files changed, 54 insertions(+), 28 deletions(-)
->>
->> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
->> index 80789255bf68..03927f1b2ea1 100644
->> --- a/fs/f2fs/f2fs.h
->> +++ b/fs/f2fs/f2fs.h
->> @@ -3702,10 +3702,10 @@ int f2fs_disable_cp_again(struct f2fs_sb_info *sbi, block_t unusable);
->>    void f2fs_release_discard_addrs(struct f2fs_sb_info *sbi);
->>    int f2fs_npages_for_summary_flush(struct f2fs_sb_info *sbi, bool for_ra);
->>    bool f2fs_segment_has_free_slot(struct f2fs_sb_info *sbi, int segno);
->> -void f2fs_init_inmem_curseg(struct f2fs_sb_info *sbi);
->> +int f2fs_init_inmem_curseg(struct f2fs_sb_info *sbi);
->>    void f2fs_save_inmem_curseg(struct f2fs_sb_info *sbi);
->>    void f2fs_restore_inmem_curseg(struct f2fs_sb_info *sbi);
->> -void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
->> +int f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
->>                                          unsigned int start, unsigned int end);
->>    int f2fs_allocate_new_section(struct f2fs_sb_info *sbi, int type, bool force);
->>    int f2fs_allocate_pinning_section(struct f2fs_sb_info *sbi);
->> diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
->> index f8314765246a..854ad0a3f6ea 100644
->> --- a/fs/f2fs/gc.c
->> +++ b/fs/f2fs/gc.c
->> @@ -2033,8 +2033,11 @@ static int free_segment_range(struct f2fs_sb_info *sbi,
->>          mutex_unlock(&DIRTY_I(sbi)->seglist_lock);
->>
->>          /* Move out cursegs from the target range */
->> -       for (type = CURSEG_HOT_DATA; type < NR_CURSEG_PERSIST_TYPE; type++)
->> -               f2fs_allocate_segment_for_resize(sbi, type, start, end);
->> +       for (type = CURSEG_HOT_DATA; type < NR_CURSEG_PERSIST_TYPE; type++) {
->> +               err = f2fs_allocate_segment_for_resize(sbi, type, start, end);
->> +               if (err)
->> +                       goto out;
->> +       }
->>
->>          /* do GC to move out valid blocks in the range */
->>          err = f2fs_gc_range(sbi, start, end, dry_run, 0);
->> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
->> index 22241aba6564..2bcf01fde143 100644
->> --- a/fs/f2fs/segment.c
->> +++ b/fs/f2fs/segment.c
->> @@ -2863,7 +2863,7 @@ bool f2fs_segment_has_free_slot(struct f2fs_sb_info *sbi, int segno)
->>     * This function always allocates a used segment(from dirty seglist) by SSR
->>     * manner, so it should recover the existing segment information of valid blocks
->>     */
->> -static void change_curseg(struct f2fs_sb_info *sbi, int type)
->> +static int change_curseg(struct f2fs_sb_info *sbi, int type)
->>    {
->>          struct dirty_seglist_info *dirty_i = DIRTY_I(sbi);
->>          struct curseg_info *curseg = CURSEG_I(sbi, type);
->> @@ -2888,21 +2888,24 @@ static void change_curseg(struct f2fs_sb_info *sbi, int type)
->>          if (IS_ERR(sum_page)) {
->>                  /* GC won't be able to use stale summary pages by cp_error */
->>                  memset(curseg->sum_blk, 0, SUM_ENTRY_SIZE);
->> -               return;
->> +               return PTR_ERR(sum_page);
->>          }
->>          sum_node = (struct f2fs_summary_block *)page_address(sum_page);
->>          memcpy(curseg->sum_blk, sum_node, SUM_ENTRY_SIZE);
->>          f2fs_put_page(sum_page, 1);
->> +
->> +       return 0;
->>    }
->>
->>    static int get_ssr_segment(struct f2fs_sb_info *sbi, int type,
->>                                  int alloc_mode, unsigned long long age);
->>
->> -static void get_atssr_segment(struct f2fs_sb_info *sbi, int type,
->> +static int get_atssr_segment(struct f2fs_sb_info *sbi, int type,
->>                                          int target_type, int alloc_mode,
->>                                          unsigned long long age)
->>    {
->>          struct curseg_info *curseg = CURSEG_I(sbi, type);
->> +       int ret;
->>
->>          curseg->seg_type = target_type;
->>
->> @@ -2910,38 +2913,45 @@ static void get_atssr_segment(struct f2fs_sb_info *sbi, int type,
->>                  struct seg_entry *se = get_seg_entry(sbi, curseg->next_segno);
->>
->>                  curseg->seg_type = se->type;
->> -               change_curseg(sbi, type);
->> +               ret = change_curseg(sbi, type);
->>          } else {
->>                  /* allocate cold segment by default */
->>                  curseg->seg_type = CURSEG_COLD_DATA;
->> -               new_curseg(sbi, type, true);
->> +               ret = new_curseg(sbi, type, true);
->>          }
->>          stat_inc_seg_type(sbi, curseg);
->> +
->> +       return ret;
->>    }
->>
->> -static void __f2fs_init_atgc_curseg(struct f2fs_sb_info *sbi)
->> +static int __f2fs_init_atgc_curseg(struct f2fs_sb_info *sbi)
->>    {
->>          struct curseg_info *curseg = CURSEG_I(sbi, CURSEG_ALL_DATA_ATGC);
->> +       int ret;
->>
->>          if (!sbi->am.atgc_enabled)
->> -               return;
->> +               return 0;
->>
->>          f2fs_down_read(&SM_I(sbi)->curseg_lock);
->>
->>          mutex_lock(&curseg->curseg_mutex);
->>          down_write(&SIT_I(sbi)->sentry_lock);
->>
->> -       get_atssr_segment(sbi, CURSEG_ALL_DATA_ATGC, CURSEG_COLD_DATA, SSR, 0);
->> +       ret = get_atssr_segment(sbi, CURSEG_ALL_DATA_ATGC,
->> +                                       CURSEG_COLD_DATA, SSR, 0);
->>
->>          up_write(&SIT_I(sbi)->sentry_lock);
->>          mutex_unlock(&curseg->curseg_mutex);
->>
->>          f2fs_up_read(&SM_I(sbi)->curseg_lock);
->>
->> +       return ret;
->> +
->>    }
->> -void f2fs_init_inmem_curseg(struct f2fs_sb_info *sbi)
->> +
->> +int f2fs_init_inmem_curseg(struct f2fs_sb_info *sbi)
->>    {
->> -       __f2fs_init_atgc_curseg(sbi);
->> +       return __f2fs_init_atgc_curseg(sbi);
->>    }
->>
->>    static void __f2fs_save_inmem_curseg(struct f2fs_sb_info *sbi, int type)
->> @@ -3069,11 +3079,12 @@ static bool need_new_seg(struct f2fs_sb_info *sbi, int type)
->>          return false;
->>    }
->>
->> -void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
->> +int f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
->>                                          unsigned int start, unsigned int end)
->>    {
->>          struct curseg_info *curseg = CURSEG_I(sbi, type);
->>          unsigned int segno;
->> +       int ret = 0;
->>
->>          f2fs_down_read(&SM_I(sbi)->curseg_lock);
->>          mutex_lock(&curseg->curseg_mutex);
->> @@ -3084,9 +3095,9 @@ void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
->>                  goto unlock;
->>
->>          if (f2fs_need_SSR(sbi) && get_ssr_segment(sbi, type, SSR, 0))
->> -               change_curseg(sbi, type);
->> +               ret = change_curseg(sbi, type);
->>          else
->> -               new_curseg(sbi, type, true);
->> +               ret = new_curseg(sbi, type, true);
->>
->>          stat_inc_seg_type(sbi, curseg);
->>
->> @@ -3100,6 +3111,8 @@ void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
->>
->>          mutex_unlock(&curseg->curseg_mutex);
->>          f2fs_up_read(&SM_I(sbi)->curseg_lock);
->> +
->> +       return ret;
->>    }
->>
->>    static int __allocate_new_segment(struct f2fs_sb_info *sbi, int type,
->> @@ -3107,6 +3120,7 @@ static int __allocate_new_segment(struct f2fs_sb_info *sbi, int type,
->>    {
->>          struct curseg_info *curseg = CURSEG_I(sbi, type);
->>          unsigned int old_segno;
->> +       int ret;
->>
->>          if (type == CURSEG_COLD_DATA_PINNED && !curseg->inited)
->>                  goto allocate;
->> @@ -3119,8 +3133,9 @@ static int __allocate_new_segment(struct f2fs_sb_info *sbi, int type,
->>
->>    allocate:
->>          old_segno = curseg->segno;
->> -       if (new_curseg(sbi, type, true))
->> -               return -EAGAIN;
->> +       ret = new_curseg(sbi, type, true);
->> +       if (ret)
->> +               return ret;
->>          stat_inc_seg_type(sbi, curseg);
->>          locate_dirty_segment(sbi, old_segno);
->>          return 0;
->> @@ -3480,14 +3495,17 @@ int f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
->>          bool from_gc = (type == CURSEG_ALL_DATA_ATGC);
->>          struct seg_entry *se = NULL;
->>          bool segment_full = false;
->> +       int ret = 0;
->>
->>          f2fs_down_read(&SM_I(sbi)->curseg_lock);
->>
->>          mutex_lock(&curseg->curseg_mutex);
->>          down_write(&sit_i->sentry_lock);
->>
->> -       if (curseg->segno == NULL_SEGNO)
->> +       if (curseg->segno == NULL_SEGNO) {
->> +               ret = -ENOSPC;
->>                  goto out_err;
->> +       }
->>
->>          if (from_gc) {
->>                  f2fs_bug_on(sbi, GET_SEGNO(sbi, old_blkaddr) == NULL_SEGNO);
->> @@ -3541,17 +3559,17 @@ int f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
->>                  }
->>
->>                  if (from_gc) {
->> -                       get_atssr_segment(sbi, type, se->type,
->> +                       ret = get_atssr_segment(sbi, type, se->type,
->>                                                  AT_SSR, se->mtime);
->>                  } else {
->>                          if (need_new_seg(sbi, type))
->> -                               new_curseg(sbi, type, false);
->> +                               ret = new_curseg(sbi, type, false);
->>                          else
->> -                               change_curseg(sbi, type);
->> +                               ret = change_curseg(sbi, type);
->>                          stat_inc_seg_type(sbi, curseg);
->>                  }
->>
->> -               if (curseg->segno == NULL_SEGNO)
->> +               if (ret)
->>                          goto out_err;
->>          }
->>
->> @@ -3594,7 +3612,7 @@ int f2fs_allocate_data_block(struct f2fs_sb_info *sbi, struct page *page,
->>          up_write(&sit_i->sentry_lock);
->>          mutex_unlock(&curseg->curseg_mutex);
->>          f2fs_up_read(&SM_I(sbi)->curseg_lock);
->> -       return -ENOSPC;
->> +       return ret;
->>
->>    }
->>
->> @@ -3824,7 +3842,8 @@ void f2fs_do_replace_block(struct f2fs_sb_info *sbi, struct f2fs_summary *sum,
->>          /* change the current segment */
->>          if (segno != curseg->segno) {
->>                  curseg->next_segno = segno;
->> -               change_curseg(sbi, type);
->> +               if (change_curseg(sbi, type))
->> +                       goto out_unlock;
->>          }
->>
->>          curseg->next_blkoff = GET_BLKOFF_FROM_SEG0(sbi, new_blkaddr);
->> @@ -3850,12 +3869,14 @@ void f2fs_do_replace_block(struct f2fs_sb_info *sbi, struct f2fs_summary *sum,
->>          if (recover_curseg) {
->>                  if (old_cursegno != curseg->segno) {
->>                          curseg->next_segno = old_cursegno;
->> -                       change_curseg(sbi, type);
->> +                       if (change_curseg(sbi, type))
->> +                               goto out_unlock;
->>                  }
->>                  curseg->next_blkoff = old_blkoff;
->>                  curseg->alloc_type = old_alloc_type;
->>          }
->>
->> +out_unlock:
->>          up_write(&sit_i->sentry_lock);
->>          mutex_unlock(&curseg->curseg_mutex);
->>          f2fs_up_write(&SM_I(sbi)->curseg_lock);
->> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
->> index 0676c2dcbbf7..8c69257db8cc 100644
->> --- a/fs/f2fs/super.c
->> +++ b/fs/f2fs/super.c
->> @@ -4691,7 +4691,9 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
->>          if (err)
->>                  goto free_meta;
->>
->> -       f2fs_init_inmem_curseg(sbi);
->> +       err = f2fs_init_inmem_curseg(sbi);
->> +       if (err)
->> +               goto sync_free_meta;
->>
->>          /* f2fs_recover_fsync_data() cleared this already */
->>          clear_sbi_flag(sbi, SBI_POR_DOING);
->> --
->> 2.40.1
->>
->>
->>
->>>
->>> thanks!
->>>>
->>>> Thanks,
->>>>
->>>>>
->>>>> Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
->>>>> ---
->>>>>     fs/f2fs/f2fs.h    | 2 +-
->>>>>     fs/f2fs/gc.c      | 7 +++++--
->>>>>     fs/f2fs/segment.c | 9 +++++++--
->>>>>     3 files changed, 13 insertions(+), 5 deletions(-)
->>>>>
->>>>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
->>>>> index 4331012..39dda7d 100644
->>>>> --- a/fs/f2fs/f2fs.h
->>>>> +++ b/fs/f2fs/f2fs.h
->>>>> @@ -3701,7 +3701,7 @@ void f2fs_clear_prefree_segments(struct f2fs_sb_info *sbi,
->>>>>     void f2fs_init_inmem_curseg(struct f2fs_sb_info *sbi);
->>>>>     void f2fs_save_inmem_curseg(struct f2fs_sb_info *sbi);
->>>>>     void f2fs_restore_inmem_curseg(struct f2fs_sb_info *sbi);
->>>>> -void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
->>>>> +int f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
->>>>>                                         unsigned int start, unsigned int end);
->>>>>     int f2fs_allocate_new_section(struct f2fs_sb_info *sbi, int type, bool force);
->>>>>     int f2fs_allocate_pinning_section(struct f2fs_sb_info *sbi);
->>>>> diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
->>>>> index c60b747..7a458fa 100644
->>>>> --- a/fs/f2fs/gc.c
->>>>> +++ b/fs/f2fs/gc.c
->>>>> @@ -2037,8 +2037,11 @@ static int free_segment_range(struct f2fs_sb_info *sbi,
->>>>>         mutex_unlock(&DIRTY_I(sbi)->seglist_lock);
->>>>>
->>>>>         /* Move out cursegs from the target range */
->>>>> -     for (type = CURSEG_HOT_DATA; type < NR_CURSEG_PERSIST_TYPE; type++)
->>>>> -             f2fs_allocate_segment_for_resize(sbi, type, start, end);
->>>>> +     for (type = CURSEG_HOT_DATA; type < NR_CURSEG_PERSIST_TYPE; type++) {
->>>>> +             err = f2fs_allocate_segment_for_resize(sbi, type, start, end);
->>>>> +             if (err)
->>>>> +                     goto out;
->>>>> +     }
->>>>>
->>>>>         /* do GC to move out valid blocks in the range */
->>>>>         err = f2fs_gc_range(sbi, start, end, dry_run, 0);
->>>>> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
->>>>> index 1bb3019..2a07b9d 100644
->>>>> --- a/fs/f2fs/segment.c
->>>>> +++ b/fs/f2fs/segment.c
->>>>> @@ -3071,11 +3071,12 @@ static bool need_new_seg(struct f2fs_sb_info *sbi, int type)
->>>>>         return false;
->>>>>     }
->>>>>
->>>>> -void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
->>>>> +int f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
->>>>>                                         unsigned int start, unsigned int end)
->>>>>     {
->>>>>         struct curseg_info *curseg = CURSEG_I(sbi, type);
->>>>>         unsigned int segno;
->>>>> +     int err = 0;
->>>>>
->>>>>         f2fs_down_read(&SM_I(sbi)->curseg_lock);
->>>>>         mutex_lock(&curseg->curseg_mutex);
->>>>> @@ -3089,7 +3090,10 @@ void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
->>>>>                 change_curseg(sbi, type);
->>>>>         else
->>>>>                 new_curseg(sbi, type, true);
->>>>> -
->>>>> +     if (curseg->segno == NULL_SEGNO) {
->>>>> +             err = -ENOSPC;
->>>>> +             goto unlock;
->>>>> +     }
->>>>>         stat_inc_seg_type(sbi, curseg);
->>>>>
->>>>>         locate_dirty_segment(sbi, segno);
->>>>> @@ -3102,6 +3106,7 @@ void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
->>>>>
->>>>>         mutex_unlock(&curseg->curseg_mutex);
->>>>>         f2fs_up_read(&SM_I(sbi)->curseg_lock);
->>>>> +     return err;
->>>>>     }
->>>>>
->>>>>     static int __allocate_new_segment(struct f2fs_sb_info *sbi, int type,
+	Ingo
 
