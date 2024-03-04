@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-91306-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91308-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E6C9870D0D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:31:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F4DB870DAE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:36:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 60ADB1C20D80
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:31:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ACF0B1F2158E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:36:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EADB7C6CC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FEC37C6E3;
 	Mon,  4 Mar 2024 21:30:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eJsRK9Rf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E0OdNdLJ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81E997BB12;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94E9C7BB15;
 	Mon,  4 Mar 2024 21:30:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709587827; cv=none; b=UszZGb8eo2W3mErxDgOlTFh3RRelYHBZXItcaNV3zq3uS+T/ll1d4NaEZk39YuBhZc+nBlCarJwTUOD70KopmyfQ9EYnK3efTyRNAU7uiEKxSK9jS5XuErWgc3dbTbR2hbKDK+uMAw+E5a+RQuMKb2ssxP/tdbIV5h+79mXq6wM=
+	t=1709587827; cv=none; b=GmtBmm1hKkLMRO4hDxEfw2kNkqoVkyDgedbn0EFCAG6cE+MD9UrMlTFJ5GNetsxk+kN7vfb10xOtt/0RNZFarESMQJY7+3Rvk/1YH0orxV8ewA9FmcJ9JOktry7xtGDRkQSbWVgjQOkuFIyezV7J5CQaVAQ9otZlfs1813QoHZY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709587827; c=relaxed/simple;
-	bh=OUfeK5e6niTAqbSVycAFu/p0/23JImxIBKyCA9rtu7M=;
+	bh=wQM4E4uvvREbG1oZD2w8qlYgmeXO2Ul+K0vshQ5kJXg=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=vBFsJ/aFXNGGEPjzuZhAi1F/YkhOLaqEhRijMs+8b8YWWgy9yCkQZRaICG0ipBlDZ3d9QaqHwoHAGxaUeelcdKQIKiQUJXqJ2kUG3PIdeT4sq4P2/BsMukNOJZotNziBRKtr86ydNKl6qqKv0o8V/Jy7NwHGpddT28Y1Y+XPbXA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eJsRK9Rf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 53B70C433C7;
+	 In-Reply-To:To:Cc; b=Bui80npAGV5NQ1N2GZnwyP20HJ8t6aUKPtSu5a9Rt2533uRe1vQWoid+NMbmW4lxOn/KQHaWfvtPWfqFFeeSLnNez+rw/KlWqkRM6YDfFrY61bYYZ3Q9pkGqL0/OQGgPJA4iADvZx55+R00ru91Xd1sRPpPLz8VRBlfbug3tn08=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E0OdNdLJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 62622C433B2;
 	Mon,  4 Mar 2024 21:30:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1709587827;
-	bh=OUfeK5e6niTAqbSVycAFu/p0/23JImxIBKyCA9rtu7M=;
+	bh=wQM4E4uvvREbG1oZD2w8qlYgmeXO2Ul+K0vshQ5kJXg=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=eJsRK9RfjoaYsP8A5eWv+50Hg7D7XHWoyLmXtVIllY+UPhHp5d9dabzz034gt6f9F
-	 39tGo40mH0zqdffzmyT2HnpWqegsYH1poWRccMCeQCM/zoDfS9ev2DlaeT7vY5ZKW4
-	 Efuap+AM6DXhJb+GebOZkkSLe8jz3KbNZMoZXC/AZTvMc6ey4egeRvrqfZZ4Fehgrz
-	 dtEMZ80tjA5ng1lR+khrNd32R6I+bmS+Snm74odG5asFQyKL6D/I2jVU+yjgUTyDP3
-	 EqTQM2vx1mHDi1u66rAWwEmfzyf9m2nXmS3l8jWQkO1dPcfbELmCI7vTWUDxFSVPio
-	 purT7Z8Nil1+w==
+	b=E0OdNdLJwxx4n2N3kns2ufibbx9G5yVLeD1Bn6/FXfZglaOgIoDNrvYrRja9n0zFw
+	 c3qE171XnwpBbfNvC1qCbq/fODoVm4gXzgg1VKnjWBQw1p/YEbX15/v3w8gUVSdY1M
+	 eOLH4ldNuZxpqAWqbqpKzhXCRzCv3gco7mwpn4X1PG0OeT+uquC6rUOKMpC1kHzoh/
+	 VV5WNbRGMNNQgCSgc8R10FPI/lNENlEiS7HUjKID+MckRQpq+EHvgPCTqvJ5ck08z3
+	 +5xYb3d0I2IYX1VwsCkrZegosY20KWNev1bIzUP0Q5QUjf6zAaW43H0r6J+nRXkrc1
+	 lmW7qfXc15gqg==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3C4FEC3274B;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 44149D9A4B9;
 	Mon,  4 Mar 2024 21:30:27 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -51,38 +51,54 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 0/2] Bluetooth: mgmt: remove useless NULL checks
+Subject: Re: [PATCH v2] Bluetooth: btnxpuart: Fix btnxpuart_close
 From: patchwork-bot+bluetooth@kernel.org
 Message-Id: 
- <170958782724.29902.18161431292915050332.git-patchwork-notify@kernel.org>
+ <170958782727.29902.5588082329084966658.git-patchwork-notify@kernel.org>
 Date: Mon, 04 Mar 2024 21:30:27 +0000
-References: <20240301133916.1268403-1-r.smirnov@omp.ru>
-In-Reply-To: <20240301133916.1268403-1-r.smirnov@omp.ru>
-To: Roman Smirnov <r.smirnov@omp.ru>
-Cc: marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
- s.shtylyov@omp.ru, linux-bluetooth@vger.kernel.org,
- linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
+References: <20240304181421.14777-1-francesco@dolcini.it>
+In-Reply-To: <20240304181421.14777-1-francesco@dolcini.it>
+To: Francesco Dolcini <francesco@dolcini.it>
+Cc: amitkumar.karwar@nxp.com, neeraj.sanjaykale@nxp.com, marcel@holtmann.org,
+ luiz.dentz@gmail.com, marcel.ziswiler@toradex.com,
+ linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org, francesco.dolcini@toradex.com
 
 Hello:
 
-This series was applied to bluetooth/bluetooth-next.git (master)
+This patch was applied to bluetooth/bluetooth-next.git (master)
 by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
 
-On Fri, 1 Mar 2024 13:39:14 +0000 you wrote:
-> Svace reports NULL check after dereference in
-> mgmt_set_connectable_complete() and add_ext_adv_params_complete().
-> The following patches remove these checks.
+On Mon,  4 Mar 2024 19:14:21 +0100 you wrote:
+> From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
 > 
-> The second version has a more compact subjects compared to the
-> first version.
+> Fix scheduling while atomic BUG in btnxpuart_close(), properly
+> purge the transmit queue and free the receive skb.
+> 
+> [   10.973809] BUG: scheduling while atomic: kworker/u9:0/80/0x00000002
+> ...
+> [   10.980740] CPU: 3 PID: 80 Comm: kworker/u9:0 Not tainted 6.8.0-rc7-0.0.0-devel-00005-g61fdfceacf09 #1
+> [   10.980751] Hardware name: Toradex Verdin AM62 WB on Dahlia Board (DT)
+> [   10.980760] Workqueue: hci0 hci_power_off [bluetooth]
+> [   10.981169] Call trace:
+> ...
+> [   10.981363]  uart_update_mctrl+0x58/0x78
+> [   10.981373]  uart_dtr_rts+0x104/0x114
+> [   10.981381]  tty_port_shutdown+0xd4/0xdc
+> [   10.981396]  tty_port_close+0x40/0xbc
+> [   10.981407]  uart_close+0x34/0x9c
+> [   10.981414]  ttyport_close+0x50/0x94
+> [   10.981430]  serdev_device_close+0x40/0x50
+> [   10.981442]  btnxpuart_close+0x24/0x98 [btnxpuart]
+> [   10.981469]  hci_dev_close_sync+0x2d8/0x718 [bluetooth]
+> [   10.981728]  hci_dev_do_close+0x2c/0x70 [bluetooth]
+> [   10.981862]  hci_power_off+0x20/0x64 [bluetooth]
 > 
 > [...]
 
 Here is the summary with links:
-  - [v2,1/2] Bluetooth: mgmt: remove NULL check in mgmt_set_connectable_complete()
-    https://git.kernel.org/bluetooth/bluetooth-next/c/9f67e5ba6f6c
-  - [v2,2/2] Bluetooth: mgmt: remove NULL check in add_ext_adv_params_complete()
-    https://git.kernel.org/bluetooth/bluetooth-next/c/3da5589ad808
+  - [v2] Bluetooth: btnxpuart: Fix btnxpuart_close
+    https://git.kernel.org/bluetooth/bluetooth-next/c/3f40a47f3589
 
 You are awesome, thank you!
 -- 
