@@ -1,81 +1,69 @@
-Return-Path: <linux-kernel+bounces-90283-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90284-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F03886FCE1
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:14:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6ABBA86FCE6
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:15:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70D671C2241B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:14:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B4C01F23586
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:15:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2B661B801;
-	Mon,  4 Mar 2024 09:13:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06F861B95F;
+	Mon,  4 Mar 2024 09:15:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="obHW5v9R"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HP+FZFPX"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2943D20DDB;
-	Mon,  4 Mar 2024 09:13:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F82F12E73;
+	Mon,  4 Mar 2024 09:15:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709543623; cv=none; b=YwrIRQOJ2AfSilWzXvEcVKWiTwZ4rNtAhHsaGdXs82OfXO16S6cN8w06sgsvSdRW4mtnBjj6AeRRkTu8YEkmR+1R1gcgIDif8bNM2/zW0rGffGQsc2K1NOdy33mNu8EA5zSpOCgCGEwNoMVTqqfS6UOIAaRJOBc8d/SThsXYoNc=
+	t=1709543713; cv=none; b=Y9xzeLWP8mQqAkl3N+qp3hCE0lTLU3c1RZ0vR9scSgx7gj1kUodR5z5Q/UJ8tWiTFio2uepBeMXikEIi2pfz3HaRRG0MFe87bNz3M0qTz2RTfRfHkqjFRvSh4Vkfi9V92K0e+mJKX0pHl+bHQlWgwksscL5L/3Gy4m8xSt60p4E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709543623; c=relaxed/simple;
-	bh=P8nuIh++xRkNNRHSKN38/vYbt3eNpRBeOZLEj92Ny/w=;
+	s=arc-20240116; t=1709543713; c=relaxed/simple;
+	bh=/HGmx2mq7+zg1VO1bSo8RtqdxxMsZLXO968The90xlA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QN70G5gRPROvNxrNqGHe7rJr9HbcTJgO7t5w7T5kyKT87t1PD0mjsU8Mrvqwx5dkSHS+++oFPzI3tTMXSpWiyY/szYXTH5/aHiJY+opuaEET0USFoIbq+vhomzerqpqPRd2Os3+KfiYglFBn4TxmoWtUEJg0TDHt9XVIU5r8Pyw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=obHW5v9R; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 226CFC43394;
-	Mon,  4 Mar 2024 09:13:41 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=q37i9ms1wyoOX/LdGQST/U7xEXOSRkqhpLf/YXCS50hSAuFcyMfB4bC9Q66+tHBkL4gQO0KD3TeRBCjh7dEw572WHFAkvbzT2yR85VHL2mUGDEEB80jYFHzBWpgAVBs7proUxpr0+OgT+ldrpkyFa1R3pQIhKUxxNS0OY3Z96xY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HP+FZFPX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53598C433F1;
+	Mon,  4 Mar 2024 09:15:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709543622;
-	bh=P8nuIh++xRkNNRHSKN38/vYbt3eNpRBeOZLEj92Ny/w=;
+	s=k20201202; t=1709543712;
+	bh=/HGmx2mq7+zg1VO1bSo8RtqdxxMsZLXO968The90xlA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=obHW5v9RjMQ9WnrWLPFMjLWV257hOelNfFeUi7opg4XaHFH1jYvsSmmWjvU+k/axw
-	 meqe0KINf+My7gX+4spY/GRJTlTYWDAlzuaxT3fqLYZRsaW/xQjI9PVieQN3iyG5zH
-	 PLBaz70GBvK8I9ZuFov02duFazclGcujaK8wVR7YZPB1rIWAn43scKFtsRb0bWl4s6
-	 pTYo83efdcQq5E63+CfbeaC9r9BjBYp/XSd0+2ahnuStropgmtnWHr8p/jVAwcDRbY
-	 E01i/kI+19yN1HMCFfbWIPXHsiJu3p1jtOJY/XiGFJTneyphJNQL9mNzQxu2n65Nea
-	 cMtlmQE5fr33A==
-Date: Mon, 4 Mar 2024 10:13:39 +0100
-From: Wolfram Sang <wsa@kernel.org>
-To: =?utf-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	Gregory Clement <gregory.clement@bootlin.com>,
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-Subject: Re: [PATCH v2 03/11] i2c: nomadik: rename private struct pointers
- from dev to priv
-Message-ID: <ZeWQwzuEcj6E1N3K@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-	=?utf-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	Gregory Clement <gregory.clement@bootlin.com>,
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-References: <20240229-mbly-i2c-v2-0-b32ed18c098c@bootlin.com>
- <20240229-mbly-i2c-v2-3-b32ed18c098c@bootlin.com>
+	b=HP+FZFPXOKKVJQsIdgavlDGoYvqXJQUUJTik+VmyfcSVlIHCJoOStOdSi67o8BgPM
+	 RNxJ35itRHMj1xY40xFyKnCgdz3eUb8MP1wyTyhkKisRaFFZJxOXzFUwUuguJ2jNT2
+	 GqcVwRbfg/acC7TVu9+6Mfvs+gkXBi4QWXYhuEbnN9CSGMlzH+GPwt3QyHJj/Bx3tp
+	 Gpk/72avlZJlrZv+YakX+vBFNnYwKVT/EYQZUskVAkmgb05w5CnLqJK3yGfkQEr7gW
+	 QK00Wouky8PtAZDqSL9ruRet3bKRKQhct0Nhq2l5tqQpqGgxjXjFk/i6v3wuSzk4/U
+	 XwIwYdTcGOzbg==
+Date: Mon, 4 Mar 2024 10:15:10 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Randy Dunlap <rdunlap@infradead.org>, 
+	Guenter Roeck <groeck@google.com>, Linus Torvalds <torvalds@linuxfoundation.org>, 
+	Nikolai Kondrashov <spbnick@gmail.com>, Helen Koike <helen.koike@collabora.com>, linuxtv-ci@linuxtv.org, 
+	dave.pigott@collabora.com, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	linux-kselftest@vger.kernel.org, gustavo.padovan@collabora.com, pawiecz@collabora.com, 
+	tales.aparecida@gmail.com, workflows@vger.kernel.org, kernelci@lists.linux.dev, 
+	skhan@linuxfoundation.org, kunit-dev@googlegroups.com, nfraprado@collabora.com, 
+	davidgow@google.com, cocci@inria.fr, Julia.Lawall@inria.fr, laura.nao@collabora.com, 
+	ricardo.canuelo@collabora.com, kernel@collabora.com, gregkh@linuxfoundation.org
+Subject: Re: [PATCH 1/3] kci-gitlab: Introducing GitLab-CI Pipeline for
+ Kernel Testing
+Message-ID: <20240304-transparent-oriole-of-honeydew-f4174e@houat>
+References: <20240228225527.1052240-1-helen.koike@collabora.com>
+ <20240228225527.1052240-2-helen.koike@collabora.com>
+ <20240229-dancing-laughing-groundhog-d85161@houat>
+ <5d7ed81b-37f9-48e9-ab7e-484b74ca886c@gmail.com>
+ <CAHk-=wixVy3WYvjbt43ZSrCqPDsS76QJQSkXFbbPsAOs1MCSAQ@mail.gmail.com>
+ <CABXOdTeT2ip1uS2EG2w8pW7254Tnd=ZDNz-KC61-G-yqDTVgJA@mail.gmail.com>
+ <269232e6-41c9-4aa1-9320-662beabcd69b@infradead.org>
+ <CAMuHMdXuXV9WV3aANFTteuP8Q3JY6R5OWsVBedGOP7e_JguxqA@mail.gmail.com>
+ <CAMuHMdWi069YAvOoXe7sHJ_o702tY4tDQgL3sfApPR3aCnZboQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,49 +71,88 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="L0ioVPZ9vDuw4eEX"
+	protocol="application/pgp-signature"; boundary="pjbdi6a4euq6tzrc"
 Content-Disposition: inline
-In-Reply-To: <20240229-mbly-i2c-v2-3-b32ed18c098c@bootlin.com>
+In-Reply-To: <CAMuHMdWi069YAvOoXe7sHJ_o702tY4tDQgL3sfApPR3aCnZboQ@mail.gmail.com>
 
 
---L0ioVPZ9vDuw4eEX
+--pjbdi6a4euq6tzrc
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 29, 2024 at 07:10:51PM +0100, Th=C3=A9o Lebrun wrote:
-> Disambiguate the usage of dev as a variable name; it is usually best to
-> keep it reserved for struct device pointers. Avoid having multiple
-> names for the same struct pointer (previously: dev, nmk, nmk_i2c).
+On Mon, Mar 04, 2024 at 09:12:38AM +0100, Geert Uytterhoeven wrote:
+> On Sun, Mar 3, 2024 at 10:30=E2=80=AFAM Geert Uytterhoeven <geert@linux-m=
+68k.org> wrote:
+> > On Sun, Mar 3, 2024 at 3:30=E2=80=AFAM Randy Dunlap <rdunlap@infradead.=
+org> wrote:
+> > > On 3/2/24 14:10, Guenter Roeck wrote:
+> > > > While checkpatch is indeed of arguable value, I think it would help=
+ a
+> > > > lot not having to bother about the persistent _build_ failures on
+> > > > 32-bit systems. You mentioned the fancy drm CI system above, but th=
+ey
+> > > > don't run tests and not even test builds on 32-bit targets, which h=
+as
+> > > > repeatedly caused (and currently does cause) build failures in drm
+> > > > code when trying to build, say, arm:allmodconfig in linux-next. Most
+> > > > trivial build failures in linux-next (and, yes, sometimes mainline)
+> > > > could be prevented with a simple generic CI.
+> > >
+> > > Yes, definitely. Thanks for bringing that up.
+> >
+> > +1
 >=20
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+> > Kisskb can send out email when builds get broken, and when they get
+> > fixed again.  I receive such emails for the m68k builds.
+>=20
+> Like this (yes, one more in DRM; sometimes I wonder if DRM is meant only
+> for 64-bit little-endian platforms with +200 GiB/s memory bandwidth):
+>
+> ---8<-------------------------------------------------------------------
+> Subject: kisskb: FAILED linux-next/m68k-allmodconfig/m68k-gcc8 Mon Mar 04=
+, 06:35
+> To: geert@linux-m68k.org
+> Date: Mon, 04 Mar 2024 08:05:14 -0000
+>=20
+> FAILED linux-next/m68k-allmodconfig/m68k-gcc8 Mon Mar 04, 06:35
+>=20
+> http://kisskb.ellerman.id.au/kisskb/buildresult/15135537/
+>=20
+> Commit:   Add linux-next specific files for 20240304
+>           67908bf6954b7635d33760ff6dfc189fc26ccc89
+> Compiler: m68k-linux-gcc (GCC) 8.5.0 / GNU ld (GNU Binutils) 2.36.1
+>=20
+> Possible errors
+> ---------------
+>=20
+> ERROR: modpost: "__udivdi3" [drivers/gpu/drm/sun4i/sun4i-drm-hdmi.ko] und=
+efined!
+> make[3]: *** [scripts/Makefile.modpost:145: Module.symvers] Error 1
+> make[2]: *** [Makefile:1871: modpost] Error 2
+> make[1]: *** [Makefile:240: __sub-make] Error 2
+> make: *** [Makefile:240: __sub-make] Error 2
+>=20
+> No warnings found in log.
+> ------------------------------------------------------------------->8---
 
-I think this improves readability a lot. I didn't really review, but I
-do like such changes:
+The driver is meant for a controller featured in an SoC with a Cortex-A8
+ARM CPU and less than a GiB/s memory bandwidth.
 
-Acked-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+And I just sent a fix for that one, thanks for the report.
 
+Maxime
 
---L0ioVPZ9vDuw4eEX
+--pjbdi6a4euq6tzrc
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmXlkMMACgkQFA3kzBSg
-KbbC5g//d/FvD4vAs/4O309G+glAvRqqik/d5LlefofbXB0L2uWYyOJ53pla7mDx
-9RSJftrY31EwgtYEDBekpt70jlzV/IkCNqq3mxQWCC0sT+k8Su9FpFRpYgA6+9Qe
-NA0ssvMBPLn1RPhcuv9omX05jBwlSIbTuAdj8uF1g16PnJKKYEbxQme2DEU06ggh
-y9IXa2Gq+8Txr/GqkHOhBgZGCuMkDjVrTU7ozkUpjWIlq7ltn2xcVQwHTfXlcyvc
-Q6QWyAQFsuX2JUyqsYSlgxURYWficUz7ZvcJwwMB1HqqMywrXI17T09J95A/u5Fd
-JMwnWgmki6FauTpz6+6taOGqZ+8fCSI6UvjMz8nzgy7Pm3jKY38QSj0wmePXfpC8
-PXwjVjYCstrVnXAD3r54iAByGVdaysVD91t4BaPb542jM7EvvvE0P/ebmoDXgY65
-sAQY2Opm5R9Hk/YPWbW5+995BRKJa7Gzl9RmFyQTKTpF04tOLJQfK2CBXYtVhCAU
-pQF+a+Dh4lQv3/flGbCPGTq4Oup4Q+EAmSKTW2vv5a7jK6v9UF0lW0W2MOJ3z9L4
-JoFQYVYUABAFqADbiLATtpHiUTeNXobzuuqF4DjOyhXrnWt9l4tebG3xS/bylK2r
-hOfxVGJQgqYN8ZNgB29CF4rv4kIRz721CFxKghSlqn6SxZTYM5w=
-=WUmR
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZeWRHQAKCRDj7w1vZxhR
+xWFcAPoCgSeoB/8bmUbd4z1ay49ZfEoCqaiqzPyPCcSF7f1QgwD/d8uPHuZl+yLF
+9/aw+Ej9d0qSGEpya7QRzssHubW/7wA=
+=khgr
 -----END PGP SIGNATURE-----
 
---L0ioVPZ9vDuw4eEX--
+--pjbdi6a4euq6tzrc--
 
