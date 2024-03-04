@@ -1,108 +1,137 @@
-Return-Path: <linux-kernel+bounces-90017-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90018-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8170A86F8EF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 04:37:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F87C86F8F3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 04:40:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9BE671C20917
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 03:37:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E8756B20CD7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 03:40:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84D464C64;
-	Mon,  4 Mar 2024 03:37:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EB364C64;
+	Mon,  4 Mar 2024 03:40:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b="MG91fMa5"
-Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Oh9wgkeq"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51F196116;
-	Mon,  4 Mar 2024 03:37:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.29.241.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5FC22F35;
+	Mon,  4 Mar 2024 03:40:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709523430; cv=none; b=u20g09z0LWZPTmQXoJCYJuWKxHy2honITwckepX7KiP8FXCcgmlfx7tbPXI2Leyz3a9apDQe0Oe8rqcioETq5ETF2ykBOMQqjZcUINu+8g6q0M9cpfQH/TriHggkDslbP+LM4/7Yim3Atrp6DwGPmXSeIf2FXSJ7quP7QMeTfh8=
+	t=1709523601; cv=none; b=uuIC5ZAvpG5we8OqiAlWq9usZvlCD5Cdb7HZCLWziXmqB5G4hADjJaLOhCf9iNgyaV7FQVf3IZWla8+9gs0Xq8RVLnhEk5S1KjNugeHmu2sWVV/stw3s5CVzkZcVlq4UDKeZuyZVnCt1qZSSTq4Pm0BUbcRaQfxIy+gFhYfodAE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709523430; c=relaxed/simple;
-	bh=Ub2TVSCczszte0SH6YnSG2kxRnFXdOaAJHV7P++nO/4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=OULVivubscNWnJrJbFllXQ3+tfE/qs7dDqTzQ2FRaPdRwGDTsGzeXsBOZLt7+YdMfwa6cQ+ypqxBpfSetdoosFTJ9GkZrkEBPLRjF1UN29VGuWxMjkREPPjZcKxJU3wnjmYAENTb/xFjdnkNo2MzeV5UKPAttUSPGfn5TSOsVYY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au; spf=pass smtp.mailfrom=codeconstruct.com.au; dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b=MG91fMa5; arc=none smtp.client-ip=203.29.241.158
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeconstruct.com.au
-Received: from [192.168.68.112] (unknown [118.211.81.9])
-	by mail.codeconstruct.com.au (Postfix) with ESMTPSA id D378C20135;
-	Mon,  4 Mar 2024 11:36:56 +0800 (AWST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=codeconstruct.com.au; s=2022a; t=1709523420;
-	bh=Ub2TVSCczszte0SH6YnSG2kxRnFXdOaAJHV7P++nO/4=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=MG91fMa5eFHS5RGG6Z+Mz9vdgov4oJt8iz+az5ejbgvd6W6Fvohwi6rTaxktmDOEp
-	 0pZaqZTcq7QzyTtVEPYSl9ssScIrHNT9qeUanuLX7KQ+dVtDT03DnRHFpD+4oElSUs
-	 EhTKK+XeZoh+/6WB6ClLDHBhODiJAuH/2nFzdQwsdKFqRepkg0BvazWm9PEyBpKoBi
-	 6wSoiYK7g/iic3lBK+hpxLcrQzUWJVHKm0Ioqgk1oGs0gKWP1N17ptFkjXmAl6fWG9
-	 BRgXrlBErNl0bXjpmE7oOSz6/Ezg2YytteBdGuxhc3hSgQTuU5sr8abaFkmYrRVq/F
-	 gGwodKlOgpwmA==
-Message-ID: <33f423783b71a4e4dd6e8c37a8909a69c25fb24c.camel@codeconstruct.com.au>
-Subject: Re: [PATCH v6] dt-bindings: gpio: aspeed,ast2400-gpio: Convert to
- DT schema
-From: Andrew Jeffery <andrew@codeconstruct.com.au>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
- linus.walleij@linaro.org, krzysztof.kozlowski+dt@linaro.org,
- robh+dt@kernel.org,  conor+dt@kernel.org, joel@jms.id.au,
- linux-gpio@vger.kernel.org,  devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,  linux-aspeed@lists.ozlabs.org,
- linux-kernel@vger.kernel.org
-Date: Mon, 04 Mar 2024 14:06:55 +1030
-In-Reply-To: <CAMRc=Mfa1uUhkPNpLdcMsGC4=G+_MGzaxXRL7UVdfKJD_zF0+w@mail.gmail.com>
-References: <20240228003043.1167394-1-andrew@codeconstruct.com.au>
-	 <c2060450-4b76-4740-afe4-d14717245f01@linaro.org>
-	 <16ddd99007176da3f84462de217cb76c8fa4e1bd.camel@codeconstruct.com.au>
-	 <CAMRc=MeEyo7y-G1saydxtTRedNtHPaEeLANuzXt6KsiDU2jOWw@mail.gmail.com>
-	 <e55aa1321ccac8e6391ab65a5a439b49d265bfce.camel@codeconstruct.com.au>
-	 <CAMRc=Mfa1uUhkPNpLdcMsGC4=G+_MGzaxXRL7UVdfKJD_zF0+w@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+	s=arc-20240116; t=1709523601; c=relaxed/simple;
+	bh=PSql8T+SB1nHve+XLIxaaalYKdBXrVJvU38xsLLMMdQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=W5L1KsMUV5p8LEW4fBWykLdN1Ff6W3OzohBPXRXnPUpmXShMi1Wm/Cv9KHFMinpSeuAY9FUWMTC0NGiA5Qh3CaZCdVTvKynjOtF/0hoOYlgzEdYiVgTN5iIifnqI17Ra3qqLqwijEYP1SU3RY/UoUe+CeAPu/iIwFpVqo69dPmY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Oh9wgkeq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70044C433C7;
+	Mon,  4 Mar 2024 03:39:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709523601;
+	bh=PSql8T+SB1nHve+XLIxaaalYKdBXrVJvU38xsLLMMdQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Oh9wgkeqk/wDfQFQkSH8NnelRNo+gVDZoebrTJzmoK+9xli/KBi2D3cLwLdVWl0Cy
+	 +61oWLw5X1s5FgAVT0Y9jtvPu6bEljxwDCEDBVEvxM2wpEhaZ/UgQkoDJ7gxZKAnrB
+	 DEMP2I8FwCX/iFAajaMFQHEshpbjXboPsGprOJj8sU+MITr9yqjStN+UjGP+KM/09a
+	 YYWZYzZ5LgMAuQlHUo10UAc/+lpr4OUu8S3HUm8RWwYmysDD5Zje/kSI67MsU1rYLu
+	 g9pORQ9xEeedtgTn6pMwremyJO2Ua0a2rsZTkhshhiOpIetZScpHpCe7REFcgFOdx/
+	 MeRquWoyiuNQQ==
+From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>,
+	Jiri Olsa <jolsa@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	mhiramat@kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH v3 0/8] tracing/probes: Support function parameter access from return probe
+Date: Mon,  4 Mar 2024 12:39:56 +0900
+Message-Id: <170952359657.229804.14867636035660590574.stgit@devnote2>
+X-Mailer: git-send-email 2.34.1
+User-Agent: StGit/0.19
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Fri, 2024-03-01 at 09:18 +0100, Bartosz Golaszewski wrote:
-> On Fri, Mar 1, 2024 at 12:23=E2=80=AFAM Andrew Jeffery
-> <andrew@codeconstruct.com.au> wrote:
-> >=20
-> > On Thu, 2024-02-29 at 09:52 +0100, Bartosz Golaszewski wrote:
-> > > On Thu, Feb 29, 2024 at 4:21=E2=80=AFAM Andrew Jeffery
-> > > <andrew@codeconstruct.com.au> wrote:
-> > > >=20
-> > > > On Wed, 2024-02-28 at 08:47 +0100, Krzysztof Kozlowski wrote:
-> > > > >=20
-> > > > > You still have way too many examples. One is enough, two is still=
- okay.
-> > > > > We really do not want more of examples with minor differences.
-> > > >=20
-> > > > Noted, I'll keep them to a minimum in the future.
-> > > >=20
-> > >=20
-> > > As in: I'll still send a v7? I can trim the examples when applying,
-> > > just tell me which ones to drop.
-> >=20
-> > Ah, thanks. I wasn't planning to send a v7 given the R-b tag from
-> > Krzysztof for v6. I intended for "in the future" to mean for patches
-> > converting other bindings to DT schema. But if you're keen to trim some
-> > examples out I'd drop the aspeed,ast2400-gpio and aspeed,ast2500-gpio
-> > nodes, keeping just the aspeed,ast2600-gpio example.
-> >=20
-> > Andrew
->=20
-> It's ok, I applied it as is.
+Hi,
 
-Thanks!
+Here is version 3 series of patches to support accessing function entry data
+from function *return* probes (including kretprobe and fprobe-exit event).
+The previous version is here;
 
-Andrew
+https://lore.kernel.org/all/170891987362.609861.6767830614537418260.stgit@devnote2/
+
+In this version, [1/8] is a bugfix patch (but note that this is already pushed to
+probes-fixes-v6.8-rc5, just for reference), updated [4/8] changelog and build error,
+fixes selftests error [6/8], update document[8/8] and added Steve's reviewed-by.
+
+
+This allows us to access the results of some functions, which returns the
+error code and its results are passed via function parameter, such as an
+structure-initialization function.
+
+For example, vfs_open() will link the file structure to the inode and update
+mode. Thus we can trace that changes.
+
+ # echo 'f vfs_open mode=file->f_mode:x32 inode=file->f_inode:x64' >> dynamic_events
+ # echo 'f vfs_open%return mode=file->f_mode:x32 inode=file->f_inode:x64' >> dynamic_events 
+ # echo 1 > events/fprobes/enable 
+ # cat trace
+              sh-131     [006] ...1.  1945.714346: vfs_open__entry: (vfs_open+0x4/0x40) mode=0x2 inode=0x0
+              sh-131     [006] ...1.  1945.714358: vfs_open__exit: (do_open+0x274/0x3d0 <- vfs_open) mode=0x4d801e inode=0xffff888008470168
+             cat-143     [007] ...1.  1945.717949: vfs_open__entry: (vfs_open+0x4/0x40) mode=0x1 inode=0x0
+             cat-143     [007] ...1.  1945.717956: vfs_open__exit: (do_open+0x274/0x3d0 <- vfs_open) mode=0x4a801d inode=0xffff888005f78d28
+             cat-143     [007] ...1.  1945.720616: vfs_open__entry: (vfs_open+0x4/0x40) mode=0x1 inode=0x0
+             cat-143     [007] ...1.  1945.728263: vfs_open__exit: (do_open+0x274/0x3d0 <- vfs_open) mode=0xa800d inode=0xffff888004ada8d8
+
+So as you can see those fields are initialized at exit.
+
+This series is based on v6.8-rc5 kernel or you can checkout from
+
+https://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git/log/?h=topic/entry-data
+
+Thank you,
+
+---
+
+Masami Hiramatsu (Google) (8):
+      fprobe: Fix to allocate entry_data_size buffer with rethook instances
+      tracing/fprobe-event: cleanup: Fix a wrong comment in fprobe event
+      tracing/probes: Cleanup probe argument parser
+      tracing/probes: cleanup: Set trace_probe::nr_args at trace_probe_init
+      tracing: Remove redundant #else block for BTF args from README
+      tracing/probes: Support $argN in return probe (kprobe and fprobe)
+      selftests/ftrace: Add test cases for entry args at function exit
+      Documentation: tracing: Add entry argument access at function exit
+
+
+ Documentation/trace/fprobetrace.rst                |   31 +
+ Documentation/trace/kprobetrace.rst                |    9 
+ kernel/trace/fprobe.c                              |   14 -
+ kernel/trace/trace.c                               |    5 
+ kernel/trace/trace_eprobe.c                        |    8 
+ kernel/trace/trace_fprobe.c                        |   59 ++-
+ kernel/trace/trace_kprobe.c                        |   58 ++-
+ kernel/trace/trace_probe.c                         |  417 ++++++++++++++------
+ kernel/trace/trace_probe.h                         |   30 +
+ kernel/trace/trace_probe_tmpl.h                    |   10 
+ kernel/trace/trace_uprobe.c                        |   14 -
+ .../ftrace/test.d/dynevent/fprobe_entry_arg.tc     |   18 +
+ .../ftrace/test.d/dynevent/fprobe_syntax_errors.tc |    4 
+ .../ftrace/test.d/kprobe/kprobe_syntax_errors.tc   |    2 
+ .../ftrace/test.d/kprobe/kretprobe_entry_arg.tc    |   18 +
+ 15 files changed, 521 insertions(+), 176 deletions(-)
+ create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/fprobe_entry_arg.tc
+ create mode 100644 tools/testing/selftests/ftrace/test.d/kprobe/kretprobe_entry_arg.tc
+
+--
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
