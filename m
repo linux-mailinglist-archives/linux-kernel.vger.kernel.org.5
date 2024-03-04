@@ -1,286 +1,208 @@
-Return-Path: <linux-kernel+bounces-90864-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08F0587064D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:58:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCABF8705A1
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:36:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C8838B2CD7A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:44:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78044282940
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:36:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DB084F890;
-	Mon,  4 Mar 2024 15:39:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAA18481B7;
+	Mon,  4 Mar 2024 15:36:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dN/z8E/a"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="g6OJS6Jc"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 798C84E1B3;
-	Mon,  4 Mar 2024 15:39:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB6D93B29A;
+	Mon,  4 Mar 2024 15:36:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709566775; cv=none; b=Pqf1eI2UegtKUDuHo+370zqaHxO8m7gnFk7Y0Vh3CTXTwwlKVWfZIB0MldP74I/6iAjn2dalRmDOSFJW7E8YeSiYVMJ08JgGO3a6c+rv4/nEqiXWY47U7uXs+1q8/5e9+UQgf391ecfGAgvmlIXx/GfAXhsvk4BYHq8k7WO/RaQ=
+	t=1709566573; cv=none; b=ZWHKD5QxHf8Yr8IbkgEc0aC3r8z2h2Elmbv4VFYzV8Z+DWfS8kPqSXUV3RzYk4Qq01KMaVxKd+04mIL3f0Z06rGU2Nlh6SgSOAdBth+pn3sBnlf//sObVU7GAU/ID4KqSNBhX1oOFl8geR/JKMPaNxzeb67YZMjzRD9R+dpR+Mk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709566775; c=relaxed/simple;
-	bh=WyAFF4efHQkvhI2LMhQ5MDLPX/vPJq0gOCWzwgBSs5o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I2mGo1K072w0Zo7PEWasMvKPr7NRjIQEpxz4i1OzxwZPv/TMQZOC9DRxMkWRjvm2BbssGRRR/JGaorvWsH5oEudKpQNRvLxl9NS//f+Zd2aqAZo8zI8Tm0bCV/Em/aTaHtKGC81sWQE77hQkdZHHlbM+scso+szGvvwMoqyOa+g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dN/z8E/a; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709566773; x=1741102773;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=WyAFF4efHQkvhI2LMhQ5MDLPX/vPJq0gOCWzwgBSs5o=;
-  b=dN/z8E/afRx4eFz1buZqDvq8L2a/IRYyZTvr4/DqD4517U4kQv+2CugK
-   HGXAuHlEC0oaubRPmAlpoOPldzi+U2T8lCYC78VZbQV4gU4FhAXqs7snv
-   Ua+8Qd4JhC0RYkR0vooFyhnQRDWXAglgCzwRl/JK2D9UwVSHdU3r7WBvA
-   YdTdPcOmiV3BfblkXFDf6YYM++tXu4+CedGrsdhaARL31wc91Pf5f5GWA
-   zc45mBcf2rJcJJxU5L7tVKHFXe+DDntxX8zGAIb24F3jkHKqMP4segvps
-   3oJTIYPhE6LaQy+a1d+LUAkdfe4Ie3OX/EFzsW9AZxLKyMKWb55nBDYQ7
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="4229563"
-X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
-   d="scan'208";a="4229563"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 07:39:30 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
-   d="scan'208";a="9458305"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by orviesa006.jf.intel.com with ESMTP; 04 Mar 2024 07:39:28 -0800
-Date: Mon, 4 Mar 2024 23:35:16 +0800
-From: Xu Yilun <yilun.xu@linux.intel.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, seanjc@google.com,
-	michael.roth@amd.com, aik@amd.com
-Subject: Re: [PATCH v3 14/15] KVM: SEV: introduce KVM_SEV_INIT2 operation
-Message-ID: <ZeXqNLr2nfMJ0RhZ@yilunxu-OptiPlex-7050>
-References: <20240226190344.787149-1-pbonzini@redhat.com>
- <20240226190344.787149-15-pbonzini@redhat.com>
+	s=arc-20240116; t=1709566573; c=relaxed/simple;
+	bh=ySdztOBYEF3jOLO27ENS3g67Z23SqhZ5bWmdZAqUDvE=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=oFJ0DuuQxuPOETYLomC1SEDrtmO+m8rVrQuQ1QcveU8rB1ouzDxAixzHsZL/qJjjb97ROcnFKmbtd3Kdyra70DZpdjzeb5l1r40gO9wueygruZJVAgHXiBeq9ehEgp8eK/BEvnNm3niHljeFLvZoxom1KkxTTva25CS1cssf90Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=g6OJS6Jc; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id A931A1BF208;
+	Mon,  4 Mar 2024 15:36:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709566569;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=+lEurNTi9qfX5Aes1xgUAal4TCh7q2x2RHJVUpm+ago=;
+	b=g6OJS6JcWBSuyXa2duBldoQwxnFxkLAjLb2nyWJ01g3sP0iT/twWMnjpd4Ale5OPqNpade
+	VN9c3epcrRf0GcA6VUQwEzLzmpv814Umny6bjsdNCxfBqHJtwWLFCteUIBXO1LUmJE2Xdk
+	+q3zvt42iJp0vcR7L+VQj6og4DhcA77MGz5SOxj9Ooin2+Xc5/mnjhrpJJBmGakMsbnJoE
+	EZ+z1A/zFgJPxBvFMuHI8PmmZWJ8lcpwHGcoDh1T8K/nHeBBrMAQfH1c+dTOTGrFmPCueo
+	hAgBIhAi3gHvSdmlznzIzQPCGIOlVwDkbwVDcfdSaikKRIZO9O2RNHhRWiHqIw==
+From: Thomas Richard <thomas.richard@bootlin.com>
+Subject: [PATCH v4 00/18] Add suspend to ram support for PCIe on J7200
+Date: Mon, 04 Mar 2024 16:35:43 +0100
+Message-Id: <20240102-j7200-pcie-s2r-v4-0-6f1f53390c85@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240226190344.787149-15-pbonzini@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAE/q5WUC/33NTQ7CIBAF4Ks0rMXAAGnrynsYF5QOFqOlgYZom
+ t5d6M4Yu3zz872FRAwOIzlVCwmYXHR+zEEeKmIGPd6Quj5nAgwk4wzovQbG6GQc0giBoum4bus
+ WhapJfup0RNoFPZqhvD11nDGUxRTQutfWdLnmPLg4+/DeihMv078diVNGG4lK9VrlE3buvJ8fb
+ jwa/yQFS7APQAFQ2roHaNDALyD2AZEBZQClFlYbbr+BdV0/jQXLw0kBAAA=
+To: Linus Walleij <linus.walleij@linaro.org>, 
+ Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>, 
+ Tony Lindgren <tony@atomide.com>, 
+ Haojian Zhuang <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>, 
+ Aaro Koskinen <aaro.koskinen@iki.fi>, 
+ Janusz Krzysztofik <jmkrzyszt@gmail.com>, 
+ Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>, 
+ Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>, 
+ Philipp Zabel <p.zabel@pengutronix.de>, 
+ Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+ =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+ Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>
+Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, 
+ linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org, 
+ linux-pci@vger.kernel.org, gregory.clement@bootlin.com, 
+ theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com, u-kumar1@ti.com, 
+ Thomas Richard <thomas.richard@bootlin.com>, 
+ Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, 
+ Andy Shevchenko <andy.shevchenko@gmail.com>, 
+ Siddharth Vadapalli <s-vadapalli@ti.com>
+X-Mailer: b4 0.12.0
+X-GND-Sasl: thomas.richard@bootlin.com
 
-On Mon, Feb 26, 2024 at 02:03:43PM -0500, Paolo Bonzini wrote:
-> The idea that no parameter would ever be necessary when enabling SEV or
-> SEV-ES for a VM was decidedly optimistic.  In fact, in some sense it's
-> already a parameter whether SEV or SEV-ES is desired.  Another possible
-> source of variability is the desired set of VMSA features, as that affects
-> the measurement of the VM's initial state and cannot be changed
-> arbitrarily by the hypervisor.
-> 
-> Create a new sub-operation for KVM_MEMORY_ENCRYPT_OP that can take a struct,
-> and put the new op to work by including the VMSA features as a field of the
-> struct.  The existing KVM_SEV_INIT and KVM_SEV_ES_INIT use the full set of
-> supported VMSA features for backwards compatibility.
-> 
-> The struct also includes the usual bells and whistles for future
-> extensibility: a flags field that must be zero for now, and some padding
-> at the end.
-> 
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->  .../virt/kvm/x86/amd-memory-encryption.rst    | 40 +++++++++++++--
->  arch/x86/include/uapi/asm/kvm.h               |  9 ++++
->  arch/x86/kvm/svm/sev.c                        | 50 +++++++++++++++++--
->  3 files changed, 92 insertions(+), 7 deletions(-)
-> 
-> diff --git a/Documentation/virt/kvm/x86/amd-memory-encryption.rst b/Documentation/virt/kvm/x86/amd-memory-encryption.rst
-> index 5ed11bc16b96..b951d82af26c 100644
-> --- a/Documentation/virt/kvm/x86/amd-memory-encryption.rst
-> +++ b/Documentation/virt/kvm/x86/amd-memory-encryption.rst
-> @@ -75,15 +75,49 @@ are defined in ``<linux/psp-dev.h>``.
->  KVM implements the following commands to support common lifecycle events of SEV
->  guests, such as launching, running, snapshotting, migrating and decommissioning.
->  
-> -1. KVM_SEV_INIT
-> ----------------
-> +1. KVM_SEV_INIT2
-> +----------------
->  
-> -The KVM_SEV_INIT command is used by the hypervisor to initialize the SEV platform
-> +The KVM_SEV_INIT2 command is used by the hypervisor to initialize the SEV platform
->  context. In a typical workflow, this command should be the first command issued.
->  
-> +For this command to be accepted, either KVM_X86_SEV_VM or KVM_X86_SEV_ES_VM
-> +must have been passed to the KVM_CREATE_VM ioctl.  A virtual machine created
-> +with those machine types in turn cannot be run until KVM_SEV_INIT2 is invoked.
-> +
-> +Parameters: struct kvm_sev_init (in)
->  
->  Returns: 0 on success, -negative on error
->  
-> +::
-> +
-> +        struct struct kvm_sev_init {
+This add suspend to ram support for the PCIe (RC mode) on J7200 platform.
 
-Remove the duplicated "struct"
+In RC mode, the reset pin for endpoints is managed by a gpio expander on a
+i2c bus. This pin shall be managed in suspend_noirq() and resume_noirq().
+The suspend/resume has been moved to suspend_noirq()/resume_noirq() for
+pca953x (expander) and pinctrl-single.
 
-> +                __u64 vmsa_features;  /* initial value of features field in VMSA */
-> +                __u32 flags;          /* must be 0 */
-> +                __u32 pad[9];
-> +        };
-> +
-> +It is an error if the hypervisor does not support any of the bits that
-> +are set in ``flags`` or ``vmsa_features``.  ``vmsa_features`` must be
-> +0 for SEV virtual machines, as they do not have a VMSA.
-> +
-> +This command replaces the deprecated KVM_SEV_INIT and KVM_SEV_ES_INIT commands.
-> +The commands did not have any parameters (the ```data``` field was unused) and
-> +only work for the KVM_X86_DEFAULT_VM machine type (0).
-> +
-> +They behave as if:
-> +
-> +* the VM type is KVM_X86_SEV_VM for KVM_SEV_INIT, or KVM_X86_SEV_ES_VM for
-> +  KVM_SEV_ES_INIT
-> +
-> +* the ``flags`` and ``vmsa_features`` fields of ``struct kvm_sev_init`` are
-> +  set to zero
-> +
-> +If the ``KVM_X86_SEV_VMSA_FEATURES`` attribute does not exist, the hypervisor only
-> +supports KVM_SEV_INIT and KVM_SEV_ES_INIT.  In that case, note that KVM_SEV_ES_INIT
-> +might set the debug swap VMSA feature (bit 5) depending on the value of the
-> +``debug_swap`` parameter of ``kvm-amd.ko``.
-> +
->  2. KVM_SEV_LAUNCH_START
->  -----------------------
->  
-> diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
-> index 9d950b0b64c9..51b13080ed4b 100644
-> --- a/arch/x86/include/uapi/asm/kvm.h
-> +++ b/arch/x86/include/uapi/asm/kvm.h
-> @@ -690,6 +690,9 @@ enum sev_cmd_id {
->  	/* Guest Migration Extension */
->  	KVM_SEV_SEND_CANCEL,
->  
-> +	/* Second time is the charm; improved versions of the above ioctls.  */
-> +	KVM_SEV_INIT2,
-> +
->  	KVM_SEV_NR_MAX,
->  };
->  
-> @@ -701,6 +704,12 @@ struct kvm_sev_cmd {
->  	__u32 sev_fd;
->  };
->  
-> +struct kvm_sev_init {
-> +	__u64 vmsa_features;
-> +	__u32 flags;
-> +	__u32 pad[9];
-> +};
-> +
->  struct kvm_sev_launch_start {
->  	__u32 handle;
->  	__u32 policy;
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index 1248ccf433e8..909e67a9044b 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -239,23 +239,30 @@ static void sev_unbind_asid(struct kvm *kvm, unsigned int handle)
->  	sev_decommission(handle);
->  }
->  
-> -static int sev_guest_init(struct kvm *kvm, struct kvm_sev_cmd *argp)
-> +static int __sev_guest_init(struct kvm *kvm, struct kvm_sev_cmd *argp,
-> +			    struct kvm_sev_init *data,
-> +			    unsigned long vm_type)
->  {
->  	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-> +	bool es_active = kvm->arch.has_protected_state;
-> +	u64 valid_vmsa_features = es_active ? sev_supported_vmsa_features : 0;
->  	int ret;
->  
->  	if (kvm->created_vcpus)
->  		return -EINVAL;
->  
-> -	if (kvm->arch.vm_type != KVM_X86_DEFAULT_VM)
-> +	if (data->flags)
-> +		return -EINVAL;
-> +
-> +	if (data->vmsa_features & ~valid_vmsa_features)
->  		return -EINVAL;
->  
->  	if (unlikely(sev->active))
->  		return -EINVAL;
->  
->  	sev->active = true;
-> -	sev->es_active = argp->id == KVM_SEV_ES_INIT;
-> -	sev->vmsa_features = 0;
-> +	sev->es_active = es_active;
-> +	sev->vmsa_features = data->vmsa_features;
->  
->  	ret = sev_asid_new(sev);
->  	if (ret)
-> @@ -283,6 +290,38 @@ static int sev_guest_init(struct kvm *kvm, struct kvm_sev_cmd *argp)
->  	return ret;
->  }
->  
-> +static int sev_guest_init(struct kvm *kvm, struct kvm_sev_cmd *argp)
-> +{
-> +	struct kvm_sev_init data = {
-> +		.vmsa_features = 0,
-> +	};
-> +	unsigned long vm_type;
-> +
-> +	if (kvm->arch.vm_type != KVM_X86_DEFAULT_VM)
-                                 ^
+To do i2c accesses during suspend_noirq/resume_noirq, we need to force the
+wakeup of the i2c controller (which is autosuspended) during suspend
+callback. 
+It's the only way to wakeup the controller if it's autosuspended, as
+runtime pm is disabled in suspend_noirq and resume_noirq.
 
-Same here, KVM_X86_SEV_VM?
+The main change in the v4 is that now mux_chip_resume() returns zero or on
+the first error.
+The 2 patches on the pinctrl-single driver were squashed.
+And the subject line for the PCI patches was fixed.
+Other changes are detailed below.
 
-Thanks,
-Yilun
+Regards,
 
-> +		return -EINVAL;
-> +
-> +	vm_type = (argp->id == KVM_SEV_INIT ? KVM_X86_SEV_VM : KVM_X86_SEV_ES_VM);
-> +	return __sev_guest_init(kvm, argp, &data, vm_type);
-> +}
-> +
-> +static int sev_guest_init2(struct kvm *kvm, struct kvm_sev_cmd *argp)
-> +{
-> +	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-> +	struct kvm_sev_init data;
-> +
-> +	if (!sev->need_init)
-> +		return -EINVAL;
-> +
-> +	if (kvm->arch.vm_type != KVM_X86_SEV_VM &&
-> +	    kvm->arch.vm_type != KVM_X86_SEV_ES_VM)
-> +		return -EINVAL;
-> +
-> +	if (copy_from_user(&data, u64_to_user_ptr(argp->data), sizeof(data)))
-> +		return -EFAULT;
-> +
-> +	return __sev_guest_init(kvm, argp, &data, kvm->arch.vm_type);
-> +}
-> +
->  static int sev_bind_asid(struct kvm *kvm, unsigned int handle, int *error)
->  {
->  	unsigned int asid = sev_get_asid(kvm);
-> @@ -1898,6 +1937,9 @@ int sev_mem_enc_ioctl(struct kvm *kvm, void __user *argp)
->  	case KVM_SEV_INIT:
->  		r = sev_guest_init(kvm, &sev_cmd);
->  		break;
-> +	case KVM_SEV_INIT2:
-> +		r = sev_guest_init2(kvm, &sev_cmd);
-> +		break;
->  	case KVM_SEV_LAUNCH_START:
->  		r = sev_launch_start(kvm, &sev_cmd);
->  		break;
-> -- 
-> 2.39.1
-> 
-> 
-> 
+Thomas
+
+Signed-off-by: Thomas Richard <thomas.richard@bootlin.com>
+---
+Changes in v4:
+- all: use SoB/Co-developed-by for patches initially developed by Théo
+  Lebrun.
+- pinctrl-single: squash the two commits.
+- i2c-omap: fix line lenghts of the comment in omap_i2c_suspend().
+- mux: mux_chip_resume() return 0 or at the first error.
+- phy-j721e-wiz: clean code around dev_err_probe().
+- phy-j721e-wiz: use REF_CLK_100MHZ macros.
+- pci: fix subject line for all PCI patches.
+- pci-cadence: use fsleep() instead of usleep_range().
+- pci-cadence: remove cdns_torrent_clk_cleanup() call in
+  cdns_torrent_phy_resume_noirq().
+- pci-j721e: add a patch to use dev_err_probe() instead of dev_err() in the probe().
+- pci-j721e: fix unordered header files.
+- pci-j721e: remove some log spammers.
+- pci-j721e: add a missing clock disable in j721e_pcie_resume_noirq().
+- pci-j721e: simplify the patch "Add reset GPIO to struct j721e_pcie"
+- Link to v3: https://lore.kernel.org/r/20240102-j7200-pcie-s2r-v3-0-5c2e4a3fac1f@bootlin.com
+
+Changes in v3:
+- pinctrl-single: split patch in two parts, a first patch to remove the
+  dead code, a second to move suspend()/resume() callbacks to noirq.
+- i2c-omap: add a comments above the suspend_noirq() callback.
+- mux: now mux_chip_resume() try to restores all muxes, then return 0 if
+  all is ok or the first failure.
+- mmio: fix commit message.
+- phy-j721e-wiz: add a patch to use dev_err_probe() instead of dev_err() in
+  the wiz_clock_init() function.
+- phy-j721e-wiz: remove probe boolean for the wiz_clock_init(), rename the
+  function to wiz_clock_probe(), extract hardware configuration part in a
+  new function wiz_clock_init().
+- phy-cadence-torrent: use dev_err_probe() and fix commit messages
+- pcie-cadence-host: remove probe boolean for the cdns_pcie_host_setup()
+  function and extract the link setup part in a new function
+  cdns_pcie_host_link_setup().
+- pcie-cadence-host: make cdns_pcie_host_init() global.
+- pci-j721e: use the cdns_pcie_host_link_setup() cdns_pcie_host_init()
+  functions in the resume_noirq() callback.
+- Link to v2: https://lore.kernel.org/r/20240102-j7200-pcie-s2r-v2-0-8e4f7d228ec2@bootlin.com
+
+Changes in v2:
+- all: fix commits messages.
+- all: use DEFINE_NOIRQ_DEV_PM_OPS and pm_sleep_ptr macros.
+- all: remove useless #ifdef CONFIG_PM.
+- pinctrl-single: drop dead code
+- mux: add mux_chip_resume() function in mux core.
+- mmio: resume sequence is now a call to mux_chip_resume().
+- phy-cadence-torrent: fix typo in resume sequence (reset_control_assert()
+  instead of reset_control_put()).
+- phy-cadence-torrent: use PHY instead of phy.
+- pci-j721e: do not shadow cdns_pcie_host_setup return code in resume
+  sequence.
+- pci-j721e: drop dead code.
+- Link to v1: https://lore.kernel.org/r/20240102-j7200-pcie-s2r-v1-0-84e55da52400@bootlin.com
+
+---
+Thomas Richard (15):
+      gpio: pca953x: move suspend()/resume() to suspend_noirq()/resume_noirq()
+      pinctrl: pinctrl-single: move suspend()/resume() callbacks to noirq
+      i2c: omap: wakeup the controller during suspend() callback
+      mux: add mux_chip_resume() function
+      phy: ti: phy-j721e-wiz: use dev_err_probe() instead of dev_err()
+      phy: ti: phy-j721e-wiz: split wiz_clock_init() function
+      phy: ti: phy-j721e-wiz: add resume support
+      phy: cadence-torrent: extract calls to clk_get from cdns_torrent_clk
+      phy: cadence-torrent: register resets even if the phy is already configured
+      phy: cadence-torrent: add already_configured to struct cdns_torrent_phy
+      phy: cadence-torrent: remove noop_ops phy operations
+      phy: cadence-torrent: add suspend and resume support
+      PCI: cadence: Extract link setup sequence from cdns_pcie_host_setup()
+      PCI: cadence: Set cdns_pcie_host_init() global
+      PCI: j721e: Use dev_err_probe() in the probe() function
+
+Théo Lebrun (3):
+      mux: mmio: add resume support
+      PCI: j721e: Add reset GPIO to struct j721e_pcie
+      PCI: j721e: Add suspend and resume support
+
+ drivers/gpio/gpio-pca953x.c                        |   7 +-
+ drivers/i2c/busses/i2c-omap.c                      |  22 ++++
+ drivers/mux/core.c                                 |  29 +++++
+ drivers/mux/mmio.c                                 |  12 ++
+ drivers/pci/controller/cadence/pci-j721e.c         | 107 +++++++++++++++--
+ drivers/pci/controller/cadence/pcie-cadence-host.c |  44 ++++---
+ drivers/pci/controller/cadence/pcie-cadence.h      |  12 ++
+ drivers/phy/cadence/phy-cadence-torrent.c          | 120 ++++++++++++++-----
+ drivers/phy/ti/phy-j721e-wiz.c                     | 132 +++++++++++++--------
+ drivers/pinctrl/pinctrl-single.c                   |  28 ++---
+ include/linux/mux/driver.h                         |   1 +
+ 11 files changed, 384 insertions(+), 130 deletions(-)
+---
+base-commit: e76807cc177efce5bdb253de3c673b13c08be013
+change-id: 20240102-j7200-pcie-s2r-ecb1a979e357
+
+Best regards,
+-- 
+Thomas Richard <thomas.richard@bootlin.com>
+
 
