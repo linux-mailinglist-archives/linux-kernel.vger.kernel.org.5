@@ -1,175 +1,94 @@
-Return-Path: <linux-kernel+bounces-90286-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90290-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B82C786FCEC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:16:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E55686FCF7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:17:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC6B11C2226E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:16:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FEC31C2216E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:17:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EE5221112;
-	Mon,  4 Mar 2024 09:16:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71C03241E3;
+	Mon,  4 Mar 2024 09:16:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="S7cXE67V"
-Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tak5sBNU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0532B1B95C
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 09:16:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A269B23747;
+	Mon,  4 Mar 2024 09:16:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709543780; cv=none; b=RKu7fbpq/7J+ygfPogDR8CQgyxFhiEMeUDAVDmE4O3yeLKkBRfisaIGoJXpZTIAcwyYOif8WoubdTkutvkzYsDrliDnM0oaLiqwk/mOyxdVvpRW5zCgEy03Y7TH6YoL+/wh7VfidHeErDok5PUFglRiS9dxiLWUIxNydUGMz9m0=
+	t=1709543816; cv=none; b=ZySTT6uOMkcF5GGJesZsvpTZljkA1u3zsr715wG6xlvXHiJ6E7VJO24mI99MjU/RtRXXRb05yw3LAsfX0XRTeSYrWh6G3+2bJPLHbzmwP/mpu4d6j7BONTjwNt6FGhEYYpTZlwxSjDRxwvnSqT+unXBupjiX4s68du1+zIZzGyE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709543780; c=relaxed/simple;
-	bh=7/Cg7bSkP3P3KzE9IpfjIHLKep/5j0YfikDfAl96988=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=q6n8/OxX6p1eY2sxjsg60XFMOBAulFMiYjnr9k/bMLxTQKPFfC7yO8cVRsThMi/xJN+vTLhaSMxbtI9ut4AeHC8ba2u5k5ch5scNSfTN49q19+QnQ4OroGltWtpmhMad4UfBQcHp6G8rl6A395BovTn/FTJpcy9uOPK4IcUisMw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=S7cXE67V; arc=none smtp.client-ip=209.85.219.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-68fb7928970so19836776d6.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 01:16:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1709543778; x=1710148578; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AWM0i1D+FispfxeIOLK4vZoGix8afRI2zst62UErbPs=;
-        b=S7cXE67VDKzOS8oEhk2wOe1+UYaku8agA6xf2gN9Dgis7hG8ysJyI/YR1VOG1ckm0E
-         /KgB3L9GeFOmeV/rzKIkN48qvIQNwU7QNz3vDm6xG0Lu1bttYm0m/rLorUbwD9pxXs8l
-         ewSL50KVriy9aY4RCmrSDB7OXDfDBmLnhFevU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709543778; x=1710148578;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AWM0i1D+FispfxeIOLK4vZoGix8afRI2zst62UErbPs=;
-        b=XFNsm09AZDSyyKN2knXCEp2v+T3hkRpjNPQ9YXVk1cZpB9AkqfBKmiiUuwgAn80xou
-         YBWRbYoxEcm0EYiTdNx8Wx4mblmgkhTt6N8w1AQzAXsfbngPjVNte/tb4xg6lmJI6Osc
-         JIzwfbtExEAwBuwy9GUQb+Dls4wSZitgKxf1QWjQMIXRCrsWZbc33F7hROUJ4Sff/14V
-         xNLCjdSghioZ+mhotH87tQeHgFHm7qo0P21S/ngPUrBJw3NV0/ii31sRUHNBCKTOzO3C
-         f02CTbsLHKpV29/OGGpelYguCvE4gI/ftUYIqDdkTO/j7OHhwN2xOUTWb7qiIORjmq+M
-         AP/g==
-X-Forwarded-Encrypted: i=1; AJvYcCVoKg2JVY/kHHLL9Cums7T8Iir+oVb5iWFfNC1NT6BRw1LmS1XPA0wOsTRQsVK7m/kNHE4ePau4UZCQ7I26oJiaaTo5LPuR2G4xt6SI
-X-Gm-Message-State: AOJu0Ywn7u1Jxd8Zc1uCYl3kwBLY0D5SPBVe6yO71DniiTVhuJOISWX6
-	6cq2p/bFFAE4VnpxFDrY280o8gxfeGG2fICa8MCHtrZpo+DC08hWloWAnZNYzLU=
-X-Google-Smtp-Source: AGHT+IEm2Vy+25KaOUe7GI3ZHCTzoChFZCEpmhFYzCFLr9pJjidCxyJ165Vuq1Ldu2K64+OPrluirA==
-X-Received: by 2002:a0c:c20a:0:b0:68f:43f6:4834 with SMTP id l10-20020a0cc20a000000b0068f43f64834mr8682070qvh.26.1709543777882;
-        Mon, 04 Mar 2024 01:16:17 -0800 (PST)
-Received: from [10.5.0.2] ([91.196.69.189])
-        by smtp.gmail.com with ESMTPSA id b18-20020a0ccd12000000b0068f760929c0sm4898018qvm.71.2024.03.04.01.16.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Mar 2024 01:16:17 -0800 (PST)
-Message-ID: <f3ed94a9-e50e-4d4b-bede-cc3078d4acab@joelfernandes.org>
-Date: Mon, 4 Mar 2024 04:16:12 -0500
+	s=arc-20240116; t=1709543816; c=relaxed/simple;
+	bh=smtWowPoYhv7nEqimgeA8xDDf1PSEUGTNJKR2E0PKfE=;
+	h=Content-Type:Date:Message-Id:Cc:From:To:Subject:References:
+	 In-Reply-To; b=Q3RmKN6OLUsz6yLmY8jLbdjzcHa7nZMce2nP2pPS6XbVjrdYqa/zhaE1jcLS2Tsnyxj0SBIh1d4PsbL61MZnoqpX/u9pS78RiGRoc8NNJQ0xnfUKc0nAdwe3lLx6ZfK+hRrtRXczihL+8VHIwKm4PZIUdr79QJTvVSnrPM8iJpQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tak5sBNU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCFA8C433F1;
+	Mon,  4 Mar 2024 09:16:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709543816;
+	bh=smtWowPoYhv7nEqimgeA8xDDf1PSEUGTNJKR2E0PKfE=;
+	h=Date:Cc:From:To:Subject:References:In-Reply-To:From;
+	b=Tak5sBNUjnXkT+jt+oS3upMdOErw/XV1bnFuq3gV7KE6pHzfe53DwvyBxSTvqOmk5
+	 gtJg0BnwMKflLZksQRhxucvAfFIb/ngzzsCFglrW0Q+6p1EeIhxFRw4Ny+moOxJ9ER
+	 BzoxbjOE5qfdnmTNiLcXluFS6MPSkKUBZmhMVwQxgtV931ayWpAAycnqhggvNTDbiN
+	 TUarNka6cEvsIydUSzFXP+EthiiuBTrPHyva8eeA3dOJTtY+vHnzpNQMmCncVaP4gw
+	 pXY3aJEuuDAmwF0S3RkMKRMxJEtvLO0GMtM1KQGqwhvFHSi67MvIE1NqreluH6qjZV
+	 pY9M5r4PlCaCg==
+Content-Type: multipart/signed;
+ boundary=56c5c757e8efd87fd596512d7c6b13800a50b7e712b376cf74eec9ce7510;
+ micalg=pgp-sha256; protocol="application/pgp-signature"
+Date: Mon, 04 Mar 2024 10:16:53 +0100
+Message-Id: <CZKUPDY8GTHC.BQ9KN9FR2R0H@kernel.org>
+Cc: <kernel@collabora.com>, <kernel-janitors@vger.kernel.org>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+From: "Michael Walle" <mwalle@kernel.org>
+To: "Muhammad Usama Anjum" <usama.anjum@collabora.com>, "Tudor Ambarus"
+ <tudor.ambarus@linaro.org>, "Pratyush Yadav" <pratyush@kernel.org>, "Miquel
+ Raynal" <miquel.raynal@bootlin.com>, "Richard Weinberger" <richard@nod.at>,
+ "Vignesh Raghavendra" <vigneshr@ti.com>, "Takahiro Kuwano"
+ <Takahiro.Kuwano@infineon.com>
+Subject: Re: [PATCH v2] mtd: spi-nor: core: correct type of i
+X-Mailer: aerc 0.16.0
+References: <20240304090103.818092-1-usama.anjum@collabora.com>
+In-Reply-To: <20240304090103.818092-1-usama.anjum@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] net: raise RCU qs after each threaded NAPI poll
-Content-Language: en-US
-From: Joel Fernandes <joel@joelfernandes.org>
-To: paulmck@kernel.org
-Cc: Steven Rostedt <rostedt@goodmis.org>,
- Network Development <netdev@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org,
- kernel-team <kernel-team@cloudflare.com>
-References: <55900c6a-f181-4c5c-8de2-bca640c4af3e@paulmck-laptop>
- <10FC3F5F-AA33-4F81-9EB6-87EB2D41F3EE@joelfernandes.org>
- <99b2ccae-07f6-4350-9c55-25ec7ae065c0@paulmck-laptop>
- <CAEXW_YQ+40a1-hk5ZP+QJ54xniSutosC7MjMscJJy8fen-gU9Q@mail.gmail.com>
- <f1e77cd2-18b2-4ab1-8ce3-da2c6babbd53@paulmck-laptop>
- <CAEXW_YRDiTXJ_GwK5soSVno73yN9FUA5GjLYAOcCTtqQvPGcFA@mail.gmail.com>
-In-Reply-To: <CAEXW_YRDiTXJ_GwK5soSVno73yN9FUA5GjLYAOcCTtqQvPGcFA@mail.gmail.com>
+
+--56c5c757e8efd87fd596512d7c6b13800a50b7e712b376cf74eec9ce7510
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
-Hi Paul,
+On Mon Mar 4, 2024 at 10:01 AM CET, Muhammad Usama Anjum wrote:
+> The i should be signed to find out the end of the loop. Otherwise,
+> i >=3D 0 is always true and loop becomes infinite. Make its type to be
+> int.
+>
+> Fixes: 6a9eda34418f ("mtd: spi-nor: core: set mtd->eraseregions for non-u=
+niform erase map")
+> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
 
-On 3/2/2024 8:01 PM, Joel Fernandes wrote:
->> As you noted, one thing that Ankur's series changes is that preemption
->> can occur anywhere that it is not specifically disabled in kernels
->> built with CONFIG_PREEMPT_NONE=y or CONFIG_PREEMPT_VOLUNTARY=y.  This in
->> turn changes Tasks Rude RCU's definition of a quiescent state for these
->> kernels, adding all code regions where preemption is not specifically
->> disabled to the list of such quiescent states.
->>
->> Although from what I know, this is OK, it would be good to check the
->> calls to call_rcu_tasks_rude() or synchronize_rcu_tasks_rude() are set
->> up so as to expect these new quiescent states.  One example where it
->> would definitely be OK is if there was a call to synchronize_rcu_tasks()
->> right before or after that call to synchronize_rcu_tasks_rude().
->>
->> Would you be willing to check the call sites to verify that they
->> are OK with this change in 
-> Yes, I will analyze and make sure those users did not unexpectedly
-> assume something about AUTO (i.e. preempt enabled sections using
-> readers).
+Reviewed-by: Michael Walle <mwalle@kernel.org>
 
-Other than RCU test code, there are just 3 call sites for RUDE right now, all in
-ftrace.c.
+--56c5c757e8efd87fd596512d7c6b13800a50b7e712b376cf74eec9ce7510
+Content-Type: application/pgp-signature; name="signature.asc"
 
-(Long story short, PREEMPT_AUTO should not cause wreckage in TASKS_RCU_RUDE
-other than any preexisting wreckage that !PREEMPT_AUTO already had. Steve is on
-CC as well to CMIIW).
+-----BEGIN PGP SIGNATURE-----
 
-Case 1: For !CONFIG_DYNAMIC_FTRACE update of ftrace_trace_function
+iIgEABYIADAWIQQCnWSOYTtih6UXaxvNyh2jtWxG+wUCZeWRhRIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQzcodo7VsRvvI9QD+NBOU1OgPhPQF+0Iw2vVU+MRbcTw0ux1D
+p4zNxDJ+bogBAIO88z955ZP4Qg575PSYdMtAVZ7V6Xt8v3OTgB8inEwA
+=0b60
+-----END PGP SIGNATURE-----
 
-This config is itself expected to be slow. However seeing what it does, it is
-trying to make sure the global function pointer "ftrace_trace_function" is
-updated and any readers of that pointers would have finished reading it. I don't
-personally think preemption has to be disabled across the entirety of the
-section that calls into this function. So sensitivity to preempt disabling
-should not be relevant for this case IMO, but lets see if ftrace folks disagree
-(on CC). It has more to do with, any callers of this function pointer are no
-longer calling into the old function.
-
-Case 2: Trampoline structures accessing
-
-For this there is a code comment that says preemption will disabled so it should
-not be dependent on any of the preemptiblity modes, because preempt_disable()
-should disable preempt with PREEMPT_AUTO.
-
-		/*
-		 * We need to do a hard force of sched synchronization.
-		 * This is because we use preempt_disable() to do RCU, but
-		 * the function tracers can be called where RCU is not watching
-		 * (like before user_exit()). We can not rely on the RCU
-		 * infrastructure to do the synchronization, thus we must do it
-		 * ourselves.
-		 */
-		synchronize_rcu_tasks_rude();
-		[...]
-		ftrace_trampoline_free(ops);
-
-Code comment probably needs update because it says 'can not rely on RCU..' ;-)
-
-My *guess* is the preempt_disable() mentioned in this case is
-ftrace_ops_trampoline() where trampoline-related datas tructures are accessed
-for stack unwinding purposes. This is a data structure protection thing AFAICS
-and nothing to do with "trampoline execution" itself which needs "Tasks RCU" to
-allow for preemption in trampolines.
-
-Case 3: This has to do with update of function graph tracing and there is the
-same comment as case 2, where preempt will be disabled in readers, so it should
-be safe for PREEMPT_AUTO (famous last words).
-
-Though I am not yet able to locate that preempt_disable() which is not an
-PREEMPT_AUTO-related issue anyway. Maybe its buried in function graph tracing
-logic somewhere?
-
-Finally, my thought also was, if any of these thread usages/cases of Tasks RCU
-RUDE assume working only on a CONFIG_PREEMPT_NONE=y or
-CONFIG_PREEMPT_VOLUNTARY=y kernel, that could be worrying but AFAICS, they don't
-assume anything related to that.
-
-thanks,
-
- - Joel
+--56c5c757e8efd87fd596512d7c6b13800a50b7e712b376cf74eec9ce7510--
 
