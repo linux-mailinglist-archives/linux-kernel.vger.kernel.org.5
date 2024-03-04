@@ -1,221 +1,326 @@
-Return-Path: <linux-kernel+bounces-90471-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90473-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5B9E86FFB1
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:01:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F78186FFB5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:02:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D76D1F22A71
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:01:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26D9D282A6F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:02:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5412E381D0;
-	Mon,  4 Mar 2024 11:01:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA6C5383B6;
+	Mon,  4 Mar 2024 11:01:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=axis.com header.i=@axis.com header.b="Mo6hwwvp"
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2040.outbound.protection.outlook.com [40.107.20.40])
+	dkim=pass (1024-bit key) header.d=iki.fi header.i=@iki.fi header.b="svIJcZUi"
+Received: from meesny.iki.fi (meesny.iki.fi [195.140.195.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 348BFB654;
-	Mon,  4 Mar 2024 11:01:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.40
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5929376F9;
+	Mon,  4 Mar 2024 11:01:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=195.140.195.201
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709550082; cv=fail; b=eGYAtyGGcMu8fm7lQ9bUmjvBim3YYEdHvOic2rCNrfHdT9nl6a2gj70xTek0IPGl35RNenaIsZSu2pCmx4gOg9MRs3VRh0mo+NJhWdmpFgZuJzE/25poPXdL+SKFzz0eQRCLeSJrvbt/K7c5rDpntt9XF1qDf05gxNDoU/xsuLs=
+	t=1709550117; cv=pass; b=bTkYQRpFci0tus+v+51ILTrX8ryeUItR2f5migDPzpxpGZLUM0gwRMgcWtJs+wViCdCh5+L9djWW22d9xaYcjN0LPS5T6P4uhjkWWeK9IPZlZjsVMjJOxJycc6IwPhjg3wO2c0utFm2XGq/1g2FREYyOL3ce6UaxtNFvVTlORHU=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709550082; c=relaxed/simple;
-	bh=taEDUYVo0Xd2CqGzoJOj2Ho325kV+SsKkReUpIS++rs=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=d/ELFtL3ZtZzC76SfpMoOg8K4RDUHKqu64WkWUvfwu5xGyoOHFgQJA/aC5PXA827QdG5cZ+50Iu0CBiQ+N090iVhxUkYirec/BrAqM5pOj2SjgG3KBYcXutGuy+qZp4VOMtZFyBFm/aqVIiPzXDazIHtobTHPAXH5++WSSLQaYg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=axis.com; spf=pass smtp.mailfrom=axis.com; dkim=pass (1024-bit key) header.d=axis.com header.i=@axis.com header.b=Mo6hwwvp; arc=fail smtp.client-ip=40.107.20.40
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=axis.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=axis.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IiURKwBBLcGrdvOT8wnppYEl9Z4QJj+wvtEHWPp227kmcvK1WsodMYyvVKsaXEB5IjN0YvFypBLPeYIz4OxAjLwJ0iXbIfzENZNLBA8iC9PQmWJh16mIZzcK5eKkXBGKvJEmBXisAGQIpveUgmxYO38B3QXOV32YmqCgsg1CKrTCPQHhrnILKw+eHD+ZoWefbWY2Pca7WnpZ0Hp0Q3ZyVcUnhWDDgRS7jvP13ILPowqphYfGawDha7iNsm4gEITcsgD1YfWWbEAdEalJYe4KNh4Djmdt/hgwkN9HLl7ECdEcGqYO0vSvZy80S+bJrAKITsnl3cpc8lAPDNBjCSBFCw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=v+ZZbnIdkoGNUj57jIAS8nVuE1fh9JoC9AwLIvDdNmc=;
- b=Es3PyzAKGYwGLdJd2MdAwg64+4sL5P6sUIunqBckA/E3aZIfgXu2VW4WSYljPhP9K/rXI4M3uZlxT+LcvXIOVZNrY5ZH3B47pVacvpMn+CPrwjClCPAncOasWRJdUQFcBGx8FRmiqxqp6caQFroiWp8knxm9AhMztX81HRvh2qomIcc+JJyMwIxuQzwlRE96NmuVwl3Qna4PTyQ/h0M0AZ1/Mbt3zEbnarLmRrv42pIVSYEO0/P4uydTCVDkiYgJqe1/BFnWI9B/79xJvUC9HaprY3y7a16OYiao0yjwM/RYhz12+ER3SjxcPKNp7naMYHkz771crDZzSB1GxP+dBw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
- 195.60.68.100) smtp.rcpttodomain=kernel.org smtp.mailfrom=axis.com;
- dmarc=fail (p=none sp=none pct=100) action=none header.from=axis.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axis.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=v+ZZbnIdkoGNUj57jIAS8nVuE1fh9JoC9AwLIvDdNmc=;
- b=Mo6hwwvpqCngHVXfCi1Z3ew7Hm+83uvauoguNs9lpouu8inPtk05ihKzYU3v3cOOR3sKNgkrH7xRkM0ijNzxibPZZMkRFPjSkEHe26N3wynCbKHfTUSHreJ1ueUqvj9yhUMU09zBQrxGb9UPcMN3l9Gz1BFAgcyfOFBEdXYSktc=
-Received: from DU6P191CA0024.EURP191.PROD.OUTLOOK.COM (2603:10a6:10:540::14)
- by AM9PR02MB7108.eurprd02.prod.outlook.com (2603:10a6:20b:266::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.39; Mon, 4 Mar
- 2024 11:01:16 +0000
-Received: from DB1PEPF000509FD.eurprd03.prod.outlook.com
- (2603:10a6:10:540:cafe::b0) by DU6P191CA0024.outlook.office365.com
- (2603:10a6:10:540::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.39 via Frontend
- Transport; Mon, 4 Mar 2024 11:01:16 +0000
-X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 195.60.68.100)
- smtp.mailfrom=axis.com; dkim=none (message not signed)
- header.d=none;dmarc=fail action=none header.from=axis.com;
-Received-SPF: Fail (protection.outlook.com: domain of axis.com does not
- designate 195.60.68.100 as permitted sender) receiver=protection.outlook.com;
- client-ip=195.60.68.100; helo=mail.axis.com;
-Received: from mail.axis.com (195.60.68.100) by
- DB1PEPF000509FD.mail.protection.outlook.com (10.167.242.39) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7292.25 via Frontend Transport; Mon, 4 Mar 2024 11:01:16 +0000
-Received: from SE-MAIL21W.axis.com (10.20.40.16) by se-mail01w.axis.com
- (10.20.40.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Mon, 4 Mar
- 2024 12:01:15 +0100
-Received: from se-mail02w.axis.com (10.20.40.8) by SE-MAIL21W.axis.com
- (10.20.40.16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Mon, 4 Mar
- 2024 12:01:15 +0100
-Received: from se-intmail01x.se.axis.com (10.0.5.60) by se-mail02w.axis.com
- (10.20.40.8) with Microsoft SMTP Server id 15.1.2375.34 via Frontend
- Transport; Mon, 4 Mar 2024 12:01:15 +0100
-Received: from pc55637-2337.se.axis.com (pc55637-2337.se.axis.com [10.88.4.11])
-	by se-intmail01x.se.axis.com (Postfix) with ESMTP id 79B30159B0;
-	Mon,  4 Mar 2024 12:01:15 +0100 (CET)
-Received: by pc55637-2337.se.axis.com (Postfix, from userid 363)
-	id 7CE00209F3C1; Mon,  4 Mar 2024 12:01:15 +0100 (CET)
-From: Jesper Nilsson <jesper.nilsson@axis.com>
-Date: Mon, 4 Mar 2024 12:01:14 +0100
-Subject: [PATCH] i2c: exynos5: Init data before registering interrupt
- handler
+	s=arc-20240116; t=1709550117; c=relaxed/simple;
+	bh=E9BN46B+Rj1lKO3CZJlOHqbQerCwOrDcQDZX1K/rk+s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Mbh/qO9annWdAADlQYreOkiF6VEyXdHYanq3Yp7l3Owhd5nYOALFEsEAnSJ3+qpbqaFt9sekTg6HxZgGQAVsgOGjltpv2+jDW611kP/oNpmTgdo2TyIynspQ1Z+CKyuE0lBgc+OZ7P7MwTJ73z9ZFKbb3skRcJc/jKfI6afMM2I=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi; spf=pass smtp.mailfrom=iki.fi; dkim=pass (1024-bit key) header.d=iki.fi header.i=@iki.fi header.b=svIJcZUi; arc=pass smtp.client-ip=195.140.195.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iki.fi
+Received: from hillosipuli.retiisi.eu (2a00-1190-d1dd-0-c641-1eff-feae-163c.v6.cust.suomicom.net [IPv6:2a00:1190:d1dd:0:c641:1eff:feae:163c])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: sailus)
+	by meesny.iki.fi (Postfix) with ESMTPSA id 4TpG3V51YkzySP;
+	Mon,  4 Mar 2024 13:01:42 +0200 (EET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=meesny;
+	t=1709550105;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ihnx46YYG/dRc7H8/r1H+1hFqkaVemFb3zOnrBAgfz8=;
+	b=svIJcZUioCJUBjxbGCyVtun8B56hhr9i+TxbEd7QcsaD3FlVB1bq8U8l1xp7KA6jFnU7/+
+	dJsaQOjfAT+RYAS++hZtRHHCBeJixMmYWLsBZEBnpGmGWzc58KHEaehSiit+sA8AZoCFD1
+	JtGK7okTjoN53gAdRZiomBDy66cPrMg=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
+	s=meesny; t=1709550105;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ihnx46YYG/dRc7H8/r1H+1hFqkaVemFb3zOnrBAgfz8=;
+	b=xHVRmXEeSAUKuYAxHPyMLfMr1zXcsMfskKDDB4LohCh2huEmoEwrxP4Y9Vv2LkV1yjaaU8
+	Fqf35xp68cHWtUAygRwcXs0+F+LN690dFK4ERtJG3aH9tsKLzBMte/+z3HNln3L/BnUPCG
+	RYWtag0GBQIpldWGq0jcF2gd1MxzuWQ=
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
+ARC-Seal: i=1; s=meesny; d=iki.fi; t=1709550105; a=rsa-sha256; cv=none;
+	b=cxMxodOco+px9kKHNq4Jk2fAiCNr4mKTbIrATWuSHG7A627fNPwMU0hz/Mu+tusgp34F/X
+	AXbn70lMBsj5D2zrmNh9yDoysU4FCtrdq5X0aE5D6SEwVu2g/6gunLFd2OUuc7UHstXKrS
+	I05Uylwb3VwNimOGGIWvTUCrK5Xfq7s=
+Received: from valkosipuli.retiisi.eu (valkosipuli.localdomain [192.168.4.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 96B89634C94;
+	Mon,  4 Mar 2024 13:01:38 +0200 (EET)
+Date: Mon, 4 Mar 2024 11:01:38 +0000
+From: Sakari Ailus <sakari.ailus@iki.fi>
+To: Michael Riesch <michael.riesch@wolfvision.net>
+Cc: Mehdi Djait <mehdi.djait.k@gmail.com>, mchehab@kernel.org,
+	heiko@sntech.de, hverkuil-cisco@xs4all.nl,
+	krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+	conor+dt@kernel.org, linux-media@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	thomas.petazzoni@bootlin.com, alexandre.belloni@bootlin.com,
+	maxime.chevallier@bootlin.com, paul.kocialkowski@bootlin.com,
+	laurent.pinchart@ideasonboard.com,
+	Mehdi Djait <mehdi.djait@bootlin.com>
+Subject: Re: [RESEND Patch v13 2/3] media: rockchip: Add a driver for
+ Rockchip's camera interface
+Message-ID: <ZeWqEkcoYN6gXWS9@valkosipuli.retiisi.eu>
+References: <cover.1707677804.git.mehdi.djait.k@gmail.com>
+ <715d89214d1ed6a8bb16cbb6268718a737485560.1707677804.git.mehdi.djait.k@gmail.com>
+ <Zctwo3s9hso6mQvT@valkosipuli.retiisi.eu>
+ <ZdY5KrTfss4lTjPO@mehdi-archlinux>
+ <Zd24MhLYJlSTRysr@valkosipuli.retiisi.eu>
+ <ZeMSuihjcS_wXONr@mehdi-archlinux>
+ <0e68d986-8834-4586-9525-18ac99a3ce6d@wolfvision.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20240304-i2c_exynos5-v1-1-e91c889d2025@axis.com>
-X-B4-Tracking: v=1; b=H4sIAPmp5WUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDIyML3Uyj5PjUisq8/GJT3ZQkQ+NEc6PU1GSLJCWgjoKi1LTMCrBp0bG
- 1tQAgdi6bXQAAAA==
-To: Andi Shyti <andi.shyti@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski@linaro.org>, Alim Akhtar <alim.akhtar@samsung.com>
-CC: <linux-i2c@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-samsung-soc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<kernel@axis.com>, Jesper Nilsson <jesper.nilsson@axis.com>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1709550075; l=2710;
- i=jesper.nilsson@axis.com; s=20240216; h=from:subject:message-id;
- bh=taEDUYVo0Xd2CqGzoJOj2Ho325kV+SsKkReUpIS++rs=;
- b=42Xz07/u1gESiLkkx8zkvVy0spBZP95p3aFkIH9BUSDtZ4eERc12NHYCw1maC1j0y6Q/qteJt
- 5pAMd0Uh6bCB0kaO75nQwB1Ip1v2AkpTndpB5nn28qz/CvUhxiHUMyH
-X-Developer-Key: i=jesper.nilsson@axis.com; a=ed25519;
- pk=RDobTFVrTaE8iMP112Wk0CDiLdcV7I+OkaCECzhr/bI=
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB1PEPF000509FD:EE_|AM9PR02MB7108:EE_
-X-MS-Office365-Filtering-Correlation-Id: bd92e749-2c52-4bbb-d358-08dc3c3a69f9
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	6rF2IcZicHZYAIAjju7qPxXL7AP5Q6m5A/pDVQqhmnm/UVzxQ8DGdH4QhS6kKu3PBkbJTR3se2C3RaSNF9oa8Sh0CqkttpMwGo0S3DLRVbn/iaq3kSp2SPXvMqIeThvNdctAiP3oQED0iiVp2w1iuSjPecNIjAdJ8AkPrgnw+YYOzess9q/3TQKxo1AYjNrJJMdD1mot2wvL31SPE3yKO3lhXwKDTxrt1Hq5IC4RfO8apjnddNqxylUR43DZSWspJSdGRoePFp5tAZLr2UM4PrvAQUHCa1V/xeLtwjloOKPYTkkj6UiUUYx7z/ZlJIuUzUQQrAjz8rPJrrGwu4SWjwdOSJV9uw11BgD6lWdc0g6NIv5OVuzK327PEAYZGvSzLpBG/fax7M6ztbbg0g+9uGTYAcIaKaXiKQdS0Oyvnu98kfBelZBU1gfAenMB7IAJ45M9tAt5yutWIcQ3JwhNaez0Fm97n0olJeivRVXBT6ZumssfmvF6pfxpLDMeAtiG03EntsDlFFrp09Qtiao5VoAb2h2Js8iIsc97hHsSeXtDfOOnTtxxxZb7O8xXgJNKIMRXBxaX6J2hLifvqjgm7OIhSZir2aXlk88X0N3OmAYpjQFENly1+NjD2H/ZP4qszkPCwYrkwHhiMdL7wbaWB07tGPQH7sA398sncnoNlqBU1ecZ+ChO2Uo2ArgYuSAHjNzhDBVSBFlOmc9ZSCFiGnFC84OfuBXIdSO9jgJwi0vfo2sCr+rqb5gMzgKCTV7O
-X-Forefront-Antispam-Report:
-	CIP:195.60.68.100;CTRY:SE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.axis.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(376005)(82310400014);DIR:OUT;SFP:1101;
-X-OriginatorOrg: axis.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Mar 2024 11:01:16.2736
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: bd92e749-2c52-4bbb-d358-08dc3c3a69f9
-X-MS-Exchange-CrossTenant-Id: 78703d3c-b907-432f-b066-88f7af9ca3af
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=78703d3c-b907-432f-b066-88f7af9ca3af;Ip=[195.60.68.100];Helo=[mail.axis.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DB1PEPF000509FD.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR02MB7108
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0e68d986-8834-4586-9525-18ac99a3ce6d@wolfvision.net>
 
-devm_request_irq() is called before we initialize the "variant"
-member variable from of_device_get_match_data(), so if an interrupt
-is triggered inbetween, we can end up following a NULL pointer
-in the interrupt handler.
+Hi Michael, Mehdi,
 
-This problem was exposed when the I2C controller in question was
-(mis)configured to be used in both secure world and Linux.
+On Mon, Mar 04, 2024 at 10:25:23AM +0100, Michael Riesch wrote:
+> Hi Mehdi, Sakari,
+> 
+> On 3/2/24 12:51, Mehdi Djait wrote:
+> > Hi Sakari,
+> > 
+> > On Tue, Feb 27, 2024 at 10:23:46AM +0000, Sakari Ailus wrote:
+> >> Hi Mehdi,
+> >>
+> >> On Wed, Feb 21, 2024 at 06:55:54PM +0100, Mehdi Djait wrote:
+> >>> Hi Sakari,
+> >>>
+> >>> Thank you for the review!
+> >>>
+> >>> On Tue, Feb 13, 2024 at 01:37:39PM +0000, Sakari Ailus wrote:
+> >>>> Hi Mahdi,
+> >>>>
+> >>>> On Sun, Feb 11, 2024 at 08:03:31PM +0100, Mehdi Djait wrote:
+> >>>>> From: Mehdi Djait <mehdi.djait@bootlin.com>
+> >>>>>
+> >>>>> This introduces a V4L2 driver for the Rockchip CIF video capture controller.
+> >>>>>
+> >>>>> This controller supports multiple parallel interfaces, but for now only the
+> >>>>> BT.656 interface could be tested, hence it's the only one that's supported
+> >>>>> in the first version of this driver.
+> >>>>>
+> >>>>> This controller can be found on RK3066, PX30, RK1808, RK3128 and RK3288,
+> >>>>> but for now it's only been tested on the PX30.
+> >>>>>
+> >>>>> CIF is implemented as a video node-centric driver.
+> >>>>>
+> >>>>> Most of this driver was written following the BSP driver from Rockchip,
+> >>>>> removing the parts that either didn't fit correctly the guidelines, or that
+> >>>>> couldn't be tested.
+> >>>>>
+> >>>>> This basic version doesn't support cropping nor scaling and is only
+> >>>>> designed with one SDTV video decoder being attached to it at any time.
+> >>>>>
+> >>>>> This version uses the "pingpong" mode of the controller, which is a
+> >>>>> double-buffering mechanism.
+> >>>>>
+> >>>>> Reviewed-by: Michael Riesch <michael.riesch@wolfvision.net>
+> >>>>> Signed-off-by: Mehdi Djait <mehdi.djait@bootlin.com>
+> >>>>> Signed-off-by: Mehdi Djait <mehdi.djait.k@gmail.com>
+> >>>>> ---
+> >>>>>  MAINTAINERS                                   |    7 +
+> >>>>>  drivers/media/platform/rockchip/Kconfig       |    1 +
+> >>>>>  drivers/media/platform/rockchip/Makefile      |    1 +
+> >>>>>  drivers/media/platform/rockchip/cif/Kconfig   |   14 +
+> >>>>>  drivers/media/platform/rockchip/cif/Makefile  |    3 +
+> >>>>>  .../media/platform/rockchip/cif/cif-capture.c | 1111 +++++++++++++++++
+> >>>>>  .../media/platform/rockchip/cif/cif-capture.h |   20 +
+> >>>>>  .../media/platform/rockchip/cif/cif-common.h  |  128 ++
+> >>>>>  drivers/media/platform/rockchip/cif/cif-dev.c |  308 +++++
+> >>>>>  .../media/platform/rockchip/cif/cif-regs.h    |  127 ++
+> >>>>>  10 files changed, 1720 insertions(+)
+> >>>>>  create mode 100644 drivers/media/platform/rockchip/cif/Kconfig
+> >>>>>  create mode 100644 drivers/media/platform/rockchip/cif/Makefile
+> >>>>>  create mode 100644 drivers/media/platform/rockchip/cif/cif-capture.c
+> >>>>>  create mode 100644 drivers/media/platform/rockchip/cif/cif-capture.h
+> >>>>>  create mode 100644 drivers/media/platform/rockchip/cif/cif-common.h
+> >>>>>  create mode 100644 drivers/media/platform/rockchip/cif/cif-dev.c
+> >>>>>  create mode 100644 drivers/media/platform/rockchip/cif/cif-regs.h
+> >>>>>
+> >>>>> +static int cif_start_streaming(struct vb2_queue *queue, unsigned int count)
+> >>>>> +{
+> >>>>> +	struct cif_stream *stream = queue->drv_priv;
+> >>>>> +	struct cif_device *cif_dev = stream->cifdev;
+> >>>>> +	struct v4l2_device *v4l2_dev = &cif_dev->v4l2_dev;
+> >>>>> +	struct v4l2_subdev *sd;
+> >>>>> +	int ret;
+> >>>>> +
+> >>>>> +	if (!cif_dev->remote.sd) {
+> >>>>> +		ret = -ENODEV;
+> >>>>> +		v4l2_err(v4l2_dev, "No remote subdev detected\n");
+> >>>>> +		goto destroy_buf;
+> >>>>> +	}
+> >>>>> +
+> >>>>> +	ret = pm_runtime_resume_and_get(cif_dev->dev);
+> >>>>> +	if (ret < 0) {
+> >>>>> +		v4l2_err(v4l2_dev, "Failed to get runtime pm, %d\n", ret);
+> >>>>> +		goto destroy_buf;
+> >>>>> +	}
+> >>>>> +
+> >>>>> +	sd = cif_dev->remote.sd;
+> >>>>> +
+> >>>>> +	stream->cif_fmt_in = get_input_fmt(cif_dev->remote.sd);
+> >>>>
+> >>>> You should use the format on the local pad, not get it from a remote
+> >>>> sub-device.
+> >>>>
+> >>>> Link validation ensures they're the same (or at least compatible).
+> >>>>
+> >>>> Speaking of which---you don't have link_validate callbacks set for the
+> >>>> sub-device. See e.g. drivers/media/pci/intel/ipu3/ipu3-cio2.c for an
+> >>>> example.
+> >>>>
+> >>>
+> >>> ...
+> >>>
+> >>>>> +	if (!stream->cif_fmt_in)
+> >>>>> +		goto runtime_put;
+> >>>>> +
+> >>>>> +	ret = cif_stream_start(stream);
+> >>>>> +	if (ret < 0)
+> >>>>> +		goto stop_stream;
+> >>>>> +
+> >>>>> +	ret = v4l2_subdev_call(sd, video, s_stream, 1);
+> >>>>> +	if (ret < 0)
+> >>>>> +		goto stop_stream;
+> >>>>> +
+> >>>>> +	return 0;
+> >>>>> +
+> >>>>> +stop_stream:
+> >>>>> +	cif_stream_stop(stream);
+> >>>>> +runtime_put:
+> >>>>> +	pm_runtime_put(cif_dev->dev);
+> >>>>> +destroy_buf:
+> >>>>> +	cif_return_all_buffers(stream, VB2_BUF_STATE_QUEUED);
+> >>>>> +
+> >>>>> +	return ret;
+> >>>>> +}
+> >>>>> +
+> >>>>> +static int cif_set_fmt(struct cif_stream *stream,
+> >>>>> +		       struct v4l2_pix_format *pix)
+> >>>>> +{
+> >>>>> +	struct cif_device *cif_dev = stream->cifdev;
+> >>>>> +	struct v4l2_subdev_format sd_fmt;
+> >>>>> +	struct cif_output_fmt *fmt;
+> >>>>> +	int ret;
+> >>>>> +
+> >>>>> +	if (vb2_is_streaming(&stream->buf_queue))
+> >>>>> +		return -EBUSY;
+> >>>>> +
+> >>>>> +	fmt = find_output_fmt(stream, pix->pixelformat);
+> >>>>> +	if (!fmt)
+> >>>>> +		fmt = &out_fmts[0];
+> >>>>> +
+> >>>>> +	sd_fmt.which = V4L2_SUBDEV_FORMAT_ACTIVE;
+> >>>>> +	sd_fmt.pad = 0;
+> >>>>> +	sd_fmt.format.width = pix->width;
+> >>>>> +	sd_fmt.format.height = pix->height;
+> >>>>> +
+> >>>>> +	ret = v4l2_subdev_call(cif_dev->remote.sd, pad, set_fmt, NULL, &sd_fmt);
+> >>>>
+> >>>> The user space is responsible for controlling the sensor i.e. you shouldn't
+> >>>> call set_fmt sub-device op from this driver.
+> >>>>
+> >>>> As the driver is MC-enabled, generally the sub-devices act as a control
+> >>>> interface and the V4L2 video nodes are a data interface.
+> >>>>
+> >>>
+> >>> While this is true for MC-centric (Media Controller) drivers, this driver is
+> >>> video-node-centric (I mentioned this in the commit msg)
+> >>>
+> >>> From the Kernel Documentation:
+> >>> https://docs.kernel.org/userspace-api/media/v4l/open.html
+> >>>
+> >>> 1 - The devices that are fully controlled via V4L2 device nodes are
+> >>> called video-node-centric.
+> >>>
+> >>> 2- Note: A video-node-centric may still provide media-controller and
+> >>> sub-device interfaces as well. However, in that case the media-controller
+> >>> and the sub-device interfaces are read-only and just provide information
+> >>> about the device. The actual configuration is done via the video nodes.
+> >>
+> >> Are you sure you even want to do this?
+> >>
+> >> It'll limit what kind of sensors you can attach to the device and even more
+> >> so in the future as we're reworking the sensor APIs to allow better control
+> >> of the sensors, using internal pads (that require MC).
+> >>
+> >> There have been some such drivers in the past but many have been already
+> >> converted, or in some cases the newer hardware generation uses MC. Keeping
+> >> API compatibility is a requirement so you can't just "add support" later
+> >> on.
+> > 
+> > I totally agree that using the MC approach is better but this has nothing to
+> > do with me wanting this but due to constraints I unfortunately cannot control
+> > it is impossible to convert it now.
+> > 
+> > I would say the px30 driver is still very useful and people are going to use it: a follow-up patch series to
+> > add support for the Rockchip RK3568 Video Capture has already been sent:
+> > https://lore.kernel.org/linux-media/20240220-v6-8-topic-rk3568-vicap-v1-0-2680a1fa640b@wolfvision.net/
+> 
+> The driver is indeed useful as is, therefore I was rather hoping that it
+> would be accepted quickly to facilitate further additions (such as the
+> aforementioned RK3568 support series).
+> 
+> However, I was not aware that the video node centric vs. media
+> controller centric approach has significant implications on user space
+> and hence on backwards compatibility. Now that Sakari has pointed out
+> that one, I am leaning towards converting the driver to MC before it is
+> integrated in mainline.
+> 
+> I fully understand, though, that Mehdi is not in the position to make
+> the required changes due to time constraints. Maybe I can fill in and
+> invest some time in that, provided that
+>  - it is OK for Mehdi and the Bootlin people that I take over the series
+>    at hand, leaving the authorship intact of course, but adding my
+>    Co-developed-by:
+>  - Sakari (or someone else from the linux-media community) can provide a
+>    brief overview of what exactly needs to be done to do the conversion
+> It should be noted that right now I have no clue what needs to be
+> changed, which implies that the conversion will not happen any time soon.
 
-That this can happen is also reflected by the existing code that
-clears any pending interrupts from "u-boot or misc causes".
+You need to make the driver Media device centric. The V4L2 video nodes will
+remain a data interface only. In practice this mostly involves, from the
+current driver state, adding a sub-device for CIF device and removing
+sensor control via video node. The driver already registers the media
+device, that's good
 
-Move the clearing of pending interrupts and the call to
-devm_request_irq() to the end of probe.
-Additionally, return failure if we can't find a match in devicetree.
+See e.g. drivers/media/pci/intel/ipu3/ipu3-cio2.c for an example. There are
+probably other minor interface related matters, such as the use of
+V4L2_CAP_IO_MC capability flag.
 
-Signed-off-by: Jesper Nilsson <jesper.nilsson@axis.com>
----
- drivers/i2c/busses/i2c-exynos5.c | 32 ++++++++++++++++++--------------
- 1 file changed, 18 insertions(+), 14 deletions(-)
+> 
+> What do you think?
 
-diff --git a/drivers/i2c/busses/i2c-exynos5.c b/drivers/i2c/busses/i2c-exynos5.c
-index 385ef9d9e4d4..eba717e5cad7 100644
---- a/drivers/i2c/busses/i2c-exynos5.c
-+++ b/drivers/i2c/busses/i2c-exynos5.c
-@@ -906,24 +906,14 @@ static int exynos5_i2c_probe(struct platform_device *pdev)
- 	i2c->adap.algo_data = i2c;
- 	i2c->adap.dev.parent = &pdev->dev;
- 
--	/* Clear pending interrupts from u-boot or misc causes */
--	exynos5_i2c_clr_pend_irq(i2c);
--
- 	spin_lock_init(&i2c->lock);
- 	init_completion(&i2c->msg_complete);
- 
--	i2c->irq = ret = platform_get_irq(pdev, 0);
--	if (ret < 0)
--		goto err_clk;
--
--	ret = devm_request_irq(&pdev->dev, i2c->irq, exynos5_i2c_irq,
--			       IRQF_NO_SUSPEND, dev_name(&pdev->dev), i2c);
--	if (ret != 0) {
--		dev_err(&pdev->dev, "cannot request HS-I2C IRQ %d\n", i2c->irq);
--		goto err_clk;
--	}
--
- 	i2c->variant = of_device_get_match_data(&pdev->dev);
-+	if (!i2c->variant) {
-+		dev_err(&pdev->dev, "can't match device variant\n");
-+		return -ENODEV;
-+	}
- 
- 	ret = exynos5_hsi2c_clock_setup(i2c);
- 	if (ret)
-@@ -940,6 +930,20 @@ static int exynos5_i2c_probe(struct platform_device *pdev)
- 	clk_disable(i2c->clk);
- 	clk_disable(i2c->pclk);
- 
-+	/* Clear pending interrupts from u-boot or misc causes */
-+	exynos5_i2c_clr_pend_irq(i2c);
-+
-+	i2c->irq = ret = platform_get_irq(pdev, 0);
-+	if (ret < 0)
-+		goto err_clk;
-+
-+	ret = devm_request_irq(&pdev->dev, i2c->irq, exynos5_i2c_irq,
-+			       IRQF_NO_SUSPEND, dev_name(&pdev->dev), i2c);
-+	if (ret != 0) {
-+		dev_err(&pdev->dev, "cannot request HS-I2C IRQ %d\n", i2c->irq);
-+		goto err_clk;
-+	}
-+
- 	return 0;
- 
-  err_clk:
-
----
-base-commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a
-change-id: 20240228-i2c_exynos5-db13a72eec8b
-
-Best regards,
 -- 
-
-/^JN - Jesper Nilsson
--- 
-               Jesper Nilsson -- jesper.nilsson@axis.com
-
+Sakari Ailus
 
