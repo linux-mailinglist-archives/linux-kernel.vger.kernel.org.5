@@ -1,175 +1,146 @@
-Return-Path: <linux-kernel+bounces-90316-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90318-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB40286FD79
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:27:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15B2286FD83
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:27:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5AF2D1F240F2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:27:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFA692840A1
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:27:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F8AF3A1B5;
-	Mon,  4 Mar 2024 09:24:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47CE83BB33;
+	Mon,  4 Mar 2024 09:24:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="OCuSmq0j"
-Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UUN3Uv2o"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5B453A1B4;
-	Mon,  4 Mar 2024 09:24:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.153.144
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82B4424B52;
+	Mon,  4 Mar 2024 09:24:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709544259; cv=none; b=D9xP0qZTUpD4OftBEeHAwnQAo9QwXMc2ybPoxVzbJxE28dKc8U1AXv+1PdmCVE2eYMOhzdJ6w/WqD1VU9sKjs2jHIeMZPZUTRDNg+F64fhOUlWgupViadZgiOIhpF5AIawb6o9DGR8fvF1eLo8yrfi67hZ+Q41hOuViHvVyRT1U=
+	t=1709544268; cv=none; b=nQgQQQDbSHP3DPAbDnA0UIYPeQJPIC+ZRfR1j5piSaWGAXwMZIO8AGR+aN8QviDsCqPudpPUI3QEtafNZPWGX86XEISFXwMGtK0smvgyPgxe6fBVZBpHr2IVArNwPlfZKhnThYbBoPRu3TeKG9MCKsxyr8E9CGAHARi8NvIxMD0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709544259; c=relaxed/simple;
-	bh=ZNYJmH6JH98eqGuB5N4pR86eqdep53xLc9xBzuVhHUg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cb98yjOcx+35kE14Ekh/l/DhxayP5WGVruI2tUSm8TrPqJwKimI+tby4LFlAHnClZmN4bSUwZw1n20m+1dJsiXTfjXTPXhPlWqEdvM9PXtTidmCka6uKUUYHGJxebLayzt0t/aYib630CUqhB8+A0IJGfBsdE37mBmzf16We828=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=OCuSmq0j; arc=none smtp.client-ip=216.71.153.144
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1709544257; x=1741080257;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ZNYJmH6JH98eqGuB5N4pR86eqdep53xLc9xBzuVhHUg=;
-  b=OCuSmq0jYEkwFTH40z+9o0ATpEa5M2g+M2tF/1AxInTrlnoFzrx50GNA
-   CnDMAccG3gIPYAcwK/U723IxaVvdbltJB+FPtdTGxOL7UA47mE0snVgem
-   McQoV9gxFEH5EmUdBzCQ50bED91qM1o+++84qWuN8rcLoA6GYEBQaK58q
-   eK32t297Sy3I1UVCnjqgS82ZrinmmvudjHWK6BNFghQ8do3Q3lYUlA4Mf
-   EyyEv3zlyGQeLnLn+BtmOBGEyvT8oImKUXh12jlP6hViNpyJxYgU1gTh7
-   AxKiV9yaxgy7soCSYMrKg00xxiIbVHkIYeLXeNs4OkN3SctSuU1iPqpQy
-   g==;
-X-CSE-ConnectionGUID: V6yQldMlQCqlwEt5v/y4ZQ==
-X-CSE-MsgGUID: QWkrR/5IRbO7WHd5JPRA8w==
-X-IronPort-AV: E=Sophos;i="6.06,203,1705334400"; 
-   d="scan'208";a="11326514"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 04 Mar 2024 17:24:17 +0800
-IronPort-SDR: qY8wHVNb1m4xRgMIvaJOmkjcq4K0DnJUeC6hP2yCCnpCTqWiuNtmEYEm9PnpF6elHjWZ/R1iHu
- l0oVa934JMNw==
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 04 Mar 2024 00:33:30 -0800
-IronPort-SDR: ZmtozU8xo0e5aX8zlT7rq3/aIRmOvhI0hLB7OQZ97i52rOky9cZ6JZ00LINFbOSHA491aAcqDi
- TMLjQHDYuQyw==
-WDCIronportException: Internal
-Received: from bxygm33.ad.shared ([10.45.31.229])
-  by uls-op-cesaip02.wdc.com with ESMTP; 04 Mar 2024 01:24:15 -0800
-From: Avri Altman <avri.altman@wdc.com>
-To: "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-	"Martin K . Petersen" <martin.petersen@oracle.com>
-Cc: Bart Van Assche <bvanassche@acm.org>,
-	Bean Huo <beanhuo@micron.com>,
-	linux-scsi@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Avri Altman <avri.altman@wdc.com>
-Subject: [PATCH 4/4] scsi: ufs: Re-use compose_devman_upiu
-Date: Mon,  4 Mar 2024 11:23:46 +0200
-Message-ID: <20240304092346.654-5-avri.altman@wdc.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20240304092346.654-1-avri.altman@wdc.com>
-References: <20240304092346.654-1-avri.altman@wdc.com>
+	s=arc-20240116; t=1709544268; c=relaxed/simple;
+	bh=2LUWxPJ7TW2497VxW5UD93DyOzb9O1yBr/n7hITwxXo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LLWuPP0omhM/pE0PKGFFTFq1x0bYHVBQxLJk9Egk6zkOwMRkPWdrrSYpwH+Y15RfDgsF1ShzWvPUl4p8YTtf/rvt8KvD0WoyZ67rbF9ffHEFmiyuh4XK2JdOSJ/MgtHxSmxirLrRVsgr6tBJ0XpImIQ1Td6a5Rh10WDO9wfxRYs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UUN3Uv2o; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1142C433F1;
+	Mon,  4 Mar 2024 09:24:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709544268;
+	bh=2LUWxPJ7TW2497VxW5UD93DyOzb9O1yBr/n7hITwxXo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=UUN3Uv2ohBF0nigVndee0ggA14YMMczpQ7F3iOFVhYuYbc8xV6OO9M6Nn8/geoJKb
+	 Btcj7Xn+oQrE7zE2OXXdbEu0A6Ou4x+rng9Td62lSu6Lrge08xAEAKJrnDCLWq+pp8
+	 +TH57z4SUlAqzeBwYpLJWPAWtod47r7CeauBjcvaQ/wl7IIeLsK17iyqOsF78gZDS+
+	 u6s8tReOw6SzxE5z1eOc0XXXNL4MIxbNFbGLaxotNz9rX5BBFRuc01793LTKQsJFKo
+	 txXGW1rHDuKLwovhicWMhmtnIwy0qalyU64C+pO9MmmOWWC443fVQIoRGSgi7y8+V9
+	 h8N1T2uD2GSsA==
+Date: Mon, 4 Mar 2024 10:24:25 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: Guenter Roeck <groeck@google.com>
+Cc: Linus Torvalds <torvalds@linuxfoundation.org>, 
+	Nikolai Kondrashov <spbnick@gmail.com>, Helen Koike <helen.koike@collabora.com>, linuxtv-ci@linuxtv.org, 
+	dave.pigott@collabora.com, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	linux-kselftest@vger.kernel.org, gustavo.padovan@collabora.com, pawiecz@collabora.com, 
+	tales.aparecida@gmail.com, workflows@vger.kernel.org, kernelci@lists.linux.dev, 
+	skhan@linuxfoundation.org, kunit-dev@googlegroups.com, nfraprado@collabora.com, 
+	davidgow@google.com, cocci@inria.fr, Julia.Lawall@inria.fr, laura.nao@collabora.com, 
+	ricardo.canuelo@collabora.com, kernel@collabora.com, gregkh@linuxfoundation.org
+Subject: Re: [PATCH 1/3] kci-gitlab: Introducing GitLab-CI Pipeline for
+ Kernel Testing
+Message-ID: <20240304-rigorous-silkworm-of-awe-4eee8f@houat>
+References: <20240228225527.1052240-1-helen.koike@collabora.com>
+ <20240228225527.1052240-2-helen.koike@collabora.com>
+ <20240229-dancing-laughing-groundhog-d85161@houat>
+ <5d7ed81b-37f9-48e9-ab7e-484b74ca886c@gmail.com>
+ <CAHk-=wixVy3WYvjbt43ZSrCqPDsS76QJQSkXFbbPsAOs1MCSAQ@mail.gmail.com>
+ <CABXOdTeT2ip1uS2EG2w8pW7254Tnd=ZDNz-KC61-G-yqDTVgJA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="l5cpxnrigz7aanzy"
+Content-Disposition: inline
+In-Reply-To: <CABXOdTeT2ip1uS2EG2w8pW7254Tnd=ZDNz-KC61-G-yqDTVgJA@mail.gmail.com>
 
-Move out some code fragments so it can be used elsewhere.
 
-Signed-off-by: Avri Altman <avri.altman@wdc.com>
----
- drivers/ufs/core/ufshcd.c | 40 +++++++++++++++------------------------
- 1 file changed, 15 insertions(+), 25 deletions(-)
+--l5cpxnrigz7aanzy
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
-index a41cd7ed1e38..b6e27c6daf54 100644
---- a/drivers/ufs/core/ufshcd.c
-+++ b/drivers/ufs/core/ufshcd.c
-@@ -2840,6 +2840,17 @@ static inline void ufshcd_prepare_utp_nop_upiu(struct ufshcd_lrb *lrbp)
- 	memset(lrbp->ucd_rsp_ptr, 0, sizeof(struct utp_upiu_rsp));
- }
- 
-+static void __compose_devman_upiu(struct ufs_hba *hba, struct ufshcd_lrb *lrbp,
-+				  u8 *upiu_flags, int ehs_length)
-+{
-+	if (hba->ufs_version <= ufshci_version(1, 1))
-+		lrbp->command_type = UTP_CMD_TYPE_DEV_MANAGE;
-+	else
-+		lrbp->command_type = UTP_CMD_TYPE_UFS_STORAGE;
-+
-+	ufshcd_prepare_req_desc_hdr(lrbp, upiu_flags, DMA_NONE, ehs_length);
-+}
-+
- /**
-  * ufshcd_compose_devman_upiu - UFS Protocol Information Unit(UPIU)
-  *			     for Device Management Purposes
-@@ -2854,12 +2865,8 @@ static int ufshcd_compose_devman_upiu(struct ufs_hba *hba,
- 	u8 upiu_flags;
- 	int ret = 0;
- 
--	if (hba->ufs_version <= ufshci_version(1, 1))
--		lrbp->command_type = UTP_CMD_TYPE_DEV_MANAGE;
--	else
--		lrbp->command_type = UTP_CMD_TYPE_UFS_STORAGE;
-+	__compose_devman_upiu(hba, lrbp, &upiu_flags, 0);
- 
--	ufshcd_prepare_req_desc_hdr(lrbp, &upiu_flags, DMA_NONE, 0);
- 	if (hba->dev_cmd.type == DEV_CMD_TYPE_QUERY)
- 		ufshcd_prepare_utp_query_req_upiu(hba, lrbp, upiu_flags);
- 	else if (hba->dev_cmd.type == DEV_CMD_TYPE_NOP)
-@@ -7220,17 +7227,11 @@ static int ufshcd_issue_devman_upiu_cmd(struct ufs_hba *hba,
- 	u8 upiu_flags;
- 
- 	__compose_dev_cmd(hba, lrbp, cmd_type, 0, tag);
--
--	if (hba->ufs_version <= ufshci_version(1, 1))
--		lrbp->command_type = UTP_CMD_TYPE_DEV_MANAGE;
--	else
--		lrbp->command_type = UTP_CMD_TYPE_UFS_STORAGE;
-+	__compose_devman_upiu(hba, lrbp, &upiu_flags, 0);
- 
- 	/* update the task tag in the request upiu */
- 	req_upiu->header.task_tag = tag;
- 
--	ufshcd_prepare_req_desc_hdr(lrbp, &upiu_flags, DMA_NONE, 0);
--
- 	/* just copy the upiu request as it is */
- 	memcpy(lrbp->ucd_req_ptr, req_upiu, sizeof(*lrbp->ucd_req_ptr));
- 	if (desc_buff && desc_op == UPIU_QUERY_OPCODE_WRITE_DESC) {
-@@ -7371,24 +7372,13 @@ int ufshcd_advanced_rpmb_req_handler(struct ufs_hba *hba, struct utp_upiu_req *r
- 	u8 upiu_flags;
- 	u8 *ehs_data;
- 	u16 ehs_len;
-+	int ehs = (hba->capabilities & MASK_EHSLUTRD_SUPPORTED) ? 2 : 0;
- 
- 	/* Protects use of hba->reserved_slot. */
- 	ufshcd_dev_man_lock(hba);
- 
- 	__compose_dev_cmd(hba, lrbp, DEV_CMD_TYPE_RPMB, UFS_UPIU_RPMB_WLUN, tag);
--
--	/* Advanced RPMB starts from UFS 4.0, so its command type is UTP_CMD_TYPE_UFS_STORAGE */
--	lrbp->command_type = UTP_CMD_TYPE_UFS_STORAGE;
--
--	/*
--	 * According to UFSHCI 4.0 specification page 24, if EHSLUTRDS is 0, host controller takes
--	 * EHS length from CMD UPIU, and SW driver use EHS Length field in CMD UPIU. if it is 1,
--	 * HW controller takes EHS length from UTRD.
--	 */
--	if (hba->capabilities & MASK_EHSLUTRD_SUPPORTED)
--		ufshcd_prepare_req_desc_hdr(lrbp, &upiu_flags, dir, 2);
--	else
--		ufshcd_prepare_req_desc_hdr(lrbp, &upiu_flags, dir, 0);
-+	__compose_devman_upiu(hba, lrbp, &upiu_flags, ehs);
- 
- 	/* update the task tag */
- 	req_upiu->header.task_tag = tag;
--- 
-2.42.0
+On Sat, Mar 02, 2024 at 02:10:51PM -0800, Guenter Roeck wrote:
+> On Thu, Feb 29, 2024 at 12:21=E2=80=AFPM Linus Torvalds
+> <torvalds@linuxfoundation.org> wrote:
+> >
+> > On Thu, 29 Feb 2024 at 01:23, Nikolai Kondrashov <spbnick@gmail.com> wr=
+ote:
+> > >
+> > > However, I think a better approach would be *not* to add the .gitlab-=
+ci.yaml
+> > > file in the root of the source tree, but instead change the very same=
+ repo
+> > > setting to point to a particular entry YAML, *inside* the repo (somew=
+here
+> > > under "ci" directory) instead.
+> >
+> > I really don't want some kind of top-level CI for the base kernel proje=
+ct.
+> >
+> > We already have the situation that the drm people have their own ci
+> > model. II'm ok with that, partly because then at least the maintainers
+> > of that subsystem can agree on the rules for that one subsystem.
+> >
+> > I'm not at all interested in having something that people will then
+> > either fight about, or - more likely - ignore, at the top level
+> > because there isn't some global agreement about what the rules are.
+> >
+> > For example, even just running checkpatch is often a stylistic thing,
+> > and not everybody agrees about all the checkpatch warnings.
+> >
+>=20
+> While checkpatch is indeed of arguable value, I think it would help a
+> lot not having to bother about the persistent _build_ failures on
+> 32-bit systems. You mentioned the fancy drm CI system above, but they
+> don't run tests and not even test builds on 32-bit targets, which has
+> repeatedly caused (and currently does cause) build failures in drm
+> code when trying to build, say, arm:allmodconfig in linux-next. Most
+> trivial build failures in linux-next (and, yes, sometimes mainline)
+> could be prevented with a simple generic CI.
 
+Ultimately, the question here is about funding. Can we expect DRM CI to
+pay for builders out of the X.org foundation pocket to build kernel
+configurations that are seeing close to no development (arm), or not
+having any driver for (xtensa, m68k)?
+
+And if we would turn the argument around, I don't really expect, say,
+the clock framework, to validate that all DRM kunit tests pass for each
+commit they merge, even though one of them could totally break some of
+the DRM tests.
+
+If anything, it's more of a side-effect to the push for COMPILE_TEST
+than anything.
+
+Maxime
+
+--l5cpxnrigz7aanzy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZeWTSAAKCRDj7w1vZxhR
+xSj8AQCyTpMIin/6c/epWht/ByNq3x6vRhuDVJRVpgfH+Z8JzQD+I1wZvDEqG4mJ
+wgANqDrqoOloQd0b2wGJOBYmNB1fCw0=
+=KEqD
+-----END PGP SIGNATURE-----
+
+--l5cpxnrigz7aanzy--
 
