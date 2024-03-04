@@ -1,156 +1,154 @@
-Return-Path: <linux-kernel+bounces-90407-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90408-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 205E286FEC2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:18:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D41C286FEC5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:18:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DE511F23775
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:18:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 491DB1F23437
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:18:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEAED38F88;
-	Mon,  4 Mar 2024 10:15:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0FBA39AD0;
+	Mon,  4 Mar 2024 10:15:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HYH/d3qJ"
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nuvoton.com header.i=@nuvoton.com header.b="gWy9mdyV"
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2083.outbound.protection.outlook.com [40.107.117.83])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 404D238DEA
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 10:15:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709547304; cv=none; b=e49cVs+qEHByqfVFjwpmuDKnsqM8di2gqMhxUfMMn64wbfhgk/IkZknbkogLce8/+IIux0ZHs+rK9iQ76xJWybASKhVxzgV2kyNIOSnBZPYCzVpInB/hggnJWMEN8HsOGwxRmFBHfzOsvuZb/ocGH4dRRSgWJ3c6+FjyH+jQs1k=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709547304; c=relaxed/simple;
-	bh=nHNJeYfNBNJ9xMiXxh9TILtxSXYM7rX6QpJzZOkDurw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cFJyT5EuyAUULbsHJ/t0Kyx5J6Zov2wqeqcEneEYl1xcuDcUObIzayxin6JMDsTsHXvOt2GpxefiLVUCCGW1iR6Myi7yMczGSiJP5rE1up/mKGgJfcZVNb+mEDsVPlIJOSlCzsKNlxYaWa2RlPscRl3if+zs+VsfjrLwhDEA52s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HYH/d3qJ; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-513298d6859so3893748e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 02:15:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709547301; x=1710152101; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+N71wqWv249drMinLaztWYu6UMc95KoKU+EZgTsHKk0=;
-        b=HYH/d3qJIR9onHKxiZ1ivbb9SHAdxX447vgcN20WEC58c8vGhSD+bjgR174+yWN/I8
-         s++ZPJ8A1gdNEoDdblS+n48QHilOBgYkmp0QAI+FiW6PnL2z2w4qcnFdLjOApB6iysid
-         zE0KmoM/T2dtdUeP993kSafjUDkF0p0sVDvS+MhZdKH0fRe7Ozin6sxmz7XHdm8RTQ2G
-         rgN1JITulz9rSNSIQq1BdPDdMMaUd1QTV9QHR3eP5gO5PnMc770ejHnMaPkWhH5eLCVV
-         ILO0CWUKVq4gOcw1iieWLVpRz+9Dhi3wnYfX1IikBCn+sY1+MEOl+B9PB8446Af6xofC
-         tlNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709547301; x=1710152101;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+N71wqWv249drMinLaztWYu6UMc95KoKU+EZgTsHKk0=;
-        b=QOQ0k6YQ4sEtMhYE107SFbdNndHv9qSWv3x8LcXrBz5+QUF+daY5gRbif7JmRPYBdv
-         pKo+mAN324eodlWqXOjnNKNWxEl95VUgllOCEN4iGFKGLGZM6vQvVeIO7IdFefrbvqmL
-         3MW6vvwJEXRCZYlnkeTFfV8wekuKKMsgdXntcElfmo/0EVntsqzYmtQXFw1Hnf4BKC/p
-         a3jCDx78SQwDTnsJfHEOrOKMFeU9KTiJq01QSMJc0O/LgRO0ivbXcSi7c1qW9ukYsMfF
-         XD10T6c7X64bBdHrqEJBpwkIWzdd0Rmqyr0I4GXJg4BOVZ7w5e4z5Z6fDKhqDYQfb/cu
-         +0Mg==
-X-Forwarded-Encrypted: i=1; AJvYcCUF/+KVVStpZjgmrV21bg36hUBi80LOKp16cixiLit+zFVSaDZiB/iV2GAf+kfutYz0jUMFKp041TTxafGQxjgJ0w68jTBlZRRMGSwT
-X-Gm-Message-State: AOJu0YyqAdLwxOGpO2qA89heKWDzYBCnmDxj0sVsciXvAqAqIHq1JmUd
-	PgXFymIzJewjdNns/tVoCNc974d20EEWTx/9h0N6YzhKG2emVSkU5wL8ioH/LnU=
-X-Google-Smtp-Source: AGHT+IEmoTQNpJhlBEFBymKenckHc6iWq7+ohBmEQ4KWeCjchXincRN5Zfuqt7tPfiRwwdGgxK92fQ==
-X-Received: by 2002:a19:7512:0:b0:513:2de3:6274 with SMTP id y18-20020a197512000000b005132de36274mr4902251lfe.55.1709547301268;
-        Mon, 04 Mar 2024 02:15:01 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id lf7-20020a170907174700b00a44d66a16efsm2527968ejc.2.2024.03.04.02.14.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Mar 2024 02:15:00 -0800 (PST)
-Message-ID: <91f0a339-ac0e-49df-bd26-dbfe1485308f@linaro.org>
-Date: Mon, 4 Mar 2024 11:14:58 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50C983986D;
+	Mon,  4 Mar 2024 10:15:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.117.83
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709547339; cv=fail; b=M40EGF7zFjpCa1IVrG+DTw5AW4j4fGkiXMkUqaBjnJcMSIdM1grYgGpSDOHTZamHfzYomgy1ZcKvFRuonXvP8W6Dzee/tBvce7H8btLq9DNlEVCZez8PPQ6ZybANOTcrcjb3A1XRBcyo92vldVUJrO9OhnPuL4jiPt1cWTl0Scw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709547339; c=relaxed/simple;
+	bh=0khqBNUQxb9CtIDoPY6PVAOXP03RqEdHWBbtYLlkd/g=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=C7Z4Mf6YoNjVi9tS8RpiAjMruLKBYBy6P/RqpNYoD25fQh7aZF17hQhfoRdDZhbMqUp9gRDwjHPmNQ2/odFOQxWmgfwgQhRA+bGOeE0p8Iq4d9/mhx3wVvEe8cPeMGMTwdZImLEj0igARFtfvXLxVseBP8WyHoUqJgM6vtPL9Vs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=nuvoton.com; spf=pass smtp.mailfrom=nuvoton.com; dkim=pass (1024-bit key) header.d=nuvoton.com header.i=@nuvoton.com header.b=gWy9mdyV; arc=fail smtp.client-ip=40.107.117.83
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=nuvoton.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nuvoton.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PoQ4MWNvvOujda9N3uvq+KfFenEPOHenUiKNmSn85IFBckkQpu9vvsTaA6OXPOrt6vyjVmU7eoQqFJ55cyANDthN/PNGuIDr9PU1uewlu0yaNFY+41IBD0Qovggn1wFNDDxTjz44D5aw3JNyeH6m1QgLM/51w5A+hjkT2cAaW76bkxt7T856KJ/EBDP4u/dBBddiI96OhMqyNcgVqEKMl8huM5yMz11bnEeWjFVhRpMIURcp42pUrTa43VfEnxFUqpiWa1fSqu5xOwP7uad4ha3YLB+1C5nLx6g0iULqyPMEu7tq1nDLQ1w1GyAmX73H5vQimkWbFlDM+U9CQSAWBQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BbZlyRIuopFFJKT/MYPMSBytwonfG8AnNSxOYtJz73o=;
+ b=IPnbSKo/MpkJxigvu2WF1XSyNS28IuWT5TOWiFOqKv5WLDJQWMbYoawezh4m7CEg4Xn6DZT9jqNFaikmvkEm01acPcjWCg3awmjd5vEW6XIFsT4YjbgcJUxLEToK+vpb8OcLbQsULlzAOTkE7jrynpzwoyCKp9kg2UUCi6p1z4PMhQAdQd9kSct33OavhbYXS3cDyr3izOZiwbUPK/M/AkTsaGh7Md2P2XTcGCVaaWbGYp+9uilIKMMb70ySnwi/lwiTaEulq5D4uQYahi8z3n8DNnQqxUaYt4fdm5T0VzWR6xlywuIqmxxI+BZJKdTC4EKFfVvu97F568EiEIexfA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 211.75.126.7) smtp.rcpttodomain=kernel.org smtp.mailfrom=nuvoton.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=nuvoton.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nuvoton.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BbZlyRIuopFFJKT/MYPMSBytwonfG8AnNSxOYtJz73o=;
+ b=gWy9mdyVHWKDQZPiDmKGoVfN4lm64mhOe0vvjmaJOF2iKZywpLP9PJkjltkyxnHsbYkFdAjXV876wOY6rI5l3OY47sBpqYT0LRQo0wbFP6LfI3+yk9KQt6MINbO7iX5IETc1rD94VhSld99aVfvqy/vULamVYJeKr4ALJcKojgA=
+Received: from PS2PR01CA0040.apcprd01.prod.exchangelabs.com
+ (2603:1096:300:58::28) by PUZPR03MB7188.apcprd03.prod.outlook.com
+ (2603:1096:301:119::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.37; Mon, 4 Mar
+ 2024 10:15:32 +0000
+Received: from HK3PEPF0000021D.apcprd03.prod.outlook.com
+ (2603:1096:300:58:cafe::ad) by PS2PR01CA0040.outlook.office365.com
+ (2603:1096:300:58::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.38 via Frontend
+ Transport; Mon, 4 Mar 2024 10:15:32 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 211.75.126.7)
+ smtp.mailfrom=nuvoton.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nuvoton.com;
+Received-SPF: Pass (protection.outlook.com: domain of nuvoton.com designates
+ 211.75.126.7 as permitted sender) receiver=protection.outlook.com;
+ client-ip=211.75.126.7; helo=NTHCCAS01.nuvoton.com; pr=C
+Received: from NTHCCAS01.nuvoton.com (211.75.126.7) by
+ HK3PEPF0000021D.mail.protection.outlook.com (10.167.8.39) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7362.11 via Frontend Transport; Mon, 4 Mar 2024 10:15:32 +0000
+Received: from NTHCML01B.nuvoton.com (10.1.8.178) by NTHCCAS01.nuvoton.com
+ (10.1.8.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Mon, 4 Mar
+ 2024 18:15:29 +0800
+Received: from NTHCCAS04.nuvoton.com (10.1.8.29) by NTHCML01B.nuvoton.com
+ (10.1.8.178) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.14; Mon, 4 Mar
+ 2024 18:15:29 +0800
+Received: from localhost.localdomain (10.11.36.27) by NTHCCAS04.nuvoton.com
+ (10.1.8.29) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Mon, 4 Mar 2024 18:15:29 +0800
+From: Seven Lee <wtli@nuvoton.com>
+To: <broonie@kernel.org>
+CC: <lgirdwood@gmail.com>, <alsa-devel@alsa-project.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<robh+dt@kernel.org>, <conor+dt@kernel.org>, <YHCHuang@nuvoton.com>,
+	<KCHSU0@nuvoton.com>, <CTLIN0@nuvoton.com>, <SJLIN0@nuvoton.com>,
+	<wtli@nuvoton.com>, <scott6986@gmail.com>, <supercraig0719@gmail.com>,
+	<dardar923@gmail.com>
+Subject: [PATCH v3 0/2] ASoC: nau8325: Modify driver code and dtschema.
+Date: Mon, 4 Mar 2024 18:15:21 +0800
+Message-ID: <20240304101523.538989-1-wtli@nuvoton.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/2] pwm: sophgo: add pwm support for Sophgo CV1800 SoC
-Content-Language: en-US
-To: Jingbao Qiu <qiujingbao.dlmu@gmail.com>, u.kleine-koenig@pengutronix.de,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu
-Cc: linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
- dlan@gentoo.org, inochiama@outlook.com
-References: <20240304085933.1246964-1-qiujingbao.dlmu@gmail.com>
- <20240304090248.1247215-1-qiujingbao.dlmu@gmail.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240304090248.1247215-1-qiujingbao.dlmu@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NotSetDelaration: True
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: HK3PEPF0000021D:EE_|PUZPR03MB7188:EE_
+X-MS-Office365-Filtering-Correlation-Id: f189045e-be69-4877-941b-08dc3c34065d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	G1TkMTnQVNE3BG9y87Pjuf4mlRmTHSFR5SX4lXqJaoHBTh/AQW8uswHpbk0VKhDZCDXZgLQgSWo4nEBxT+0TXczKOb7Q5nxTC726s1lvC2vSK3tcuOXGa0gzFh0WOW9Vnj8hMhT5tMnE+hCGe4vhlD4dmfcs+t8yRHZakY+ui+mCRtiiAUimkpHpY2yg2D6DF2680oICLz3L5oCB+0/yII+6XWFXUpV4YXGqroCqgZBXnmUp1JJYLH+xuD2qn4pahWDFW4w6wWi2epYQNe01GDvcXC64pK+H3mh4aXDHwJ5M7OKGNDJTqUIc4DLDYEzDIMG051N6btLLFZVuLrp7V3xSoHyz2PsSrxGPe/I1SevRKVPiJp85DZkkIQXcf1kQ9MJGdYQFFDJ3NK4NTL3csTcHPaTtTLAgw9dvNpotrgBCtMaUr29ICwJM317h6DkBKHyOawF9JREj8+YUBxbD3n0VC3lzXIWLVhoID271S6ZzNHZ/w8Vh6rR06hMjjHS4PYCOK0WGhrzE4MFu/5x6EcsRgzZP1uVvWoqAxVW4kWchclzidbseJi9TRUNq8xK41Oxt25tKJCTh5Ch1NR5FomFovcoPK+lEWZZREITUvlPyzvaAIaNqvh7NzU2HWw6iCuRhn0XE/bCCFn8Pg8LaCVRr8siKEXaIw3x5fr7xxdDdvgrKtuqGaAraK0xlfPuNAwfOZLIdillLgSo2iBEb/702X5fmzu9n5dfnxCkX3gy2FeMV6bHCSOlY2PAbDxPa
+X-Forefront-Antispam-Report:
+	CIP:211.75.126.7;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:NTHCCAS01.nuvoton.com;PTR:211-75-126-7.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(36860700004)(376005)(82310400014);DIR:OUT;SFP:1101;
+X-OriginatorOrg: nuvoton.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Mar 2024 10:15:32.2061
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: f189045e-be69-4877-941b-08dc3c34065d
+X-MS-Exchange-CrossTenant-Id: a3f24931-d403-4b4a-94f1-7d83ac638e07
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=a3f24931-d403-4b4a-94f1-7d83ac638e07;Ip=[211.75.126.7];Helo=[NTHCCAS01.nuvoton.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	HK3PEPF0000021D.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PUZPR03MB7188
 
-On 04/03/2024 10:02, Jingbao Qiu wrote:
-> Implement the PWM driver for CV1800.
-> 
-> Signed-off-by: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
+Modify properties of "nuvoton,dac-vref" in dtschema.
+For driver code, changed dev_err() to dev_dbg().
 
-..
+Change:
+V1 -> V2:
+- Revise the driver description part for the C++ comment.
+- In the nau8325_clkdet_put function, modify the max variable to hard code.
+- Removed "Clock Detection" switch control.
+- modify the "ALC Enable" switch name.
+- Revise the dtschema for "nuvoton,dac-vref".
 
-> +
-> +	ret = devm_add_action_or_reset(&pdev->dev, devm_clk_rate_exclusive_put,
-> +				       priv->clk);
-> +	if (ret) {
-> +		clk_rate_exclusive_put(priv->clk);
-> +		return ret;
+V2 -> V3:
+- Properties use standard unit suffixes.
+- Modify the enum definition.
+- Driver code should be used dev_dbg().
 
-Please test this path - you have double put.
+Seven Lee (2):
+  ASoC: dt-bindings: Added schema for "nuvoton,nau8325"
+  ASoC: nau8325: new driver
 
-Best regards,
-Krzysztof
+ .../bindings/sound/nuvoton,nau8325.yaml       |  74 ++
+ sound/soc/codecs/nau8325.c                    | 856 ++++++++++++++++++
+ sound/soc/codecs/nau8325.h                    | 391 ++++++++
+ 3 files changed, 1321 insertions(+)
+ create mode 100755 Documentation/devicetree/bindings/sound/nuvoton,nau8325.yaml
+ create mode 100755 sound/soc/codecs/nau8325.c
+ create mode 100644 sound/soc/codecs/nau8325.h
+
+-- 
+2.25.1
 
 
