@@ -1,162 +1,293 @@
-Return-Path: <linux-kernel+bounces-90722-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D79D38703F7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:24:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23C8B8703F0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:23:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AA6AEB25A70
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:24:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 47F881C218E9
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:23:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B797041C64;
-	Mon,  4 Mar 2024 14:23:51 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 218D93FE5F;
+	Mon,  4 Mar 2024 14:23:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AsPt8hoD"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98F4C3FB32
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 14:23:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42B4C3FB0A;
+	Mon,  4 Mar 2024 14:23:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709562231; cv=none; b=qNTsMcQn/OL+irCJaD7Jsz4/nST0SfhcLq7ci0UcUMD1mth+TaVb991Up0Uctv4O+z6FM5q2It3Sr5KYoIh+0WsMdcIpX+B+Q/vxUY3oGlvH7DfkfVfqkFWQ/E3oLeZYmFsNxNgf3iAf/P91ttyuM5VkW6IvwhJYPWSUGiNzGpw=
+	t=1709562224; cv=none; b=IgvOkWcmFYnRyYowhJe+GF4Q1D9Jy5qbC2unpRqYE56FES96DyubXBCfOzNu3SKFlPsO5gmbmgk978/SiIX5iKuO9Zsh2iZSiT+3f1+XyjlcLOMgzRWHdQ8z18QAE9UjGs4cGWUvv3UOL+5ZUuH0EjnRIfZyJryFD262LuPwUdQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709562231; c=relaxed/simple;
-	bh=ObcxFbtc6CHI8exv2xXtNHEcKxe9mw8/hFp5f4FVeIQ=;
+	s=arc-20240116; t=1709562224; c=relaxed/simple;
+	bh=XXxnvR6/7pWjgGR4OrSNwADlQ09xHuL0Usz9cO3xdU4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZtbDlJJyOZQE9t5tHPe0kRfDnHk0t/SRCUUy5XGlGy1V8fTpJUhxJxh6ONwg/P/Pcm8pk1eZHde1LoCyMOsNmwiUFaBTRZSLt0bt09DEAbXxq23DBfkz5bt6Nd+8eOqKKDUsivHuBrtEpQoPHT43gMPlA17/cu0CbOn1csxr/ag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rh9Du-00016V-Bk; Mon, 04 Mar 2024 15:23:22 +0100
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rh9Dt-004N6X-1P; Mon, 04 Mar 2024 15:23:21 +0100
-Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ore@pengutronix.de>)
-	id 1rh9Ds-001ulU-30;
-	Mon, 04 Mar 2024 15:23:20 +0100
-Date: Mon, 4 Mar 2024 15:23:20 +0100
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: =?utf-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Russ Weight <russ.weight@linux.dev>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
-	Frank Rowand <frowand.list@gmail.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
-	Dent Project <dentproject@linuxfoundation.org>
-Subject: Re: [PATCH net-next v5 13/17] net: pse-pd: Use regulator framework
- within PSE framework
-Message-ID: <ZeXZWAq1QwqCUJAm@pengutronix.de>
-References: <20240227-feature_poe-v5-0-28f0aa48246d@bootlin.com>
- <20240227-feature_poe-v5-13-28f0aa48246d@bootlin.com>
- <ZeObuKHkPN3tiWz_@pengutronix.de>
- <20240304102708.5bb5d95c@kmaincent-XPS-13-7390>
- <84b300c7-8295-424b-9117-c604fb4cd73e@lunn.ch>
- <ZeXO_NhXZQajGZPr@pengutronix.de>
- <290c516e-6cf7-4db2-9b32-c9dc7200fe73@lunn.ch>
+	 Content-Type:Content-Disposition:In-Reply-To; b=kVPlKnnPBCUtyHrV4wn+uPVEUlZs9WEP7d4F8ws7/MnYL1rHNLDpbmnUxdlaYScuL7ZXgx2YF5NwUiz/TZcR5n7FDN3ywQizq/de+2kaPzaahKu6CjQ1rmjWfUuH78hHv1HaAHYB981cIC4OhlQe/iwLtmjLqk/fdocRGd2Gyx8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AsPt8hoD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90565C43390;
+	Mon,  4 Mar 2024 14:23:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709562223;
+	bh=XXxnvR6/7pWjgGR4OrSNwADlQ09xHuL0Usz9cO3xdU4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AsPt8hoDUStklKvbr9l5y2fCjUGifbeJjU76gbjhnARANwQXeq28a2bR771tR8nGT
+	 noq991Wu1u/PCmt4GmXY7fDKquRwzL5iof/dZkzUfh9seVFkRx739pgn8PWheEu6SG
+	 UWs0JrRh19UszyusQy3QxyfcQm8/sMHN5c88pWXSH+PdSW3/3avE5HPVXoLb9tKBdF
+	 TTIhXfxcJX8lBh50VfYt0ukdtiFqg/8esZM4/Etf2qaOf17eYQFv2EsnRZg7uqsvSu
+	 YR364dIhms7VAjpVoZ2rKs1VYiEaI6QPd6KwtY0QFiCXusYMaYeO3bErFJyEXF+YuE
+	 Zek//seAJQ1FA==
+Date: Mon, 4 Mar 2024 08:23:41 -0600
+From: Rob Herring <robh@kernel.org>
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: broonie@kernel.org, wenst@chromium.org, lgirdwood@gmail.com,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	matthias.bgg@gmail.com, perex@perex.cz, tiwai@suse.com,
+	trevor.wu@mediatek.com, maso.huang@mediatek.com,
+	xiazhengqiao@huaqin.corp-partner.google.com, arnd@arndb.de,
+	kuninori.morimoto.gx@renesas.com, shraash@google.com,
+	amergnat@baylibre.com, nicolas.ferre@microchip.com,
+	u.kleine-koenig@pengutronix.de, dianders@chromium.org,
+	frank.li@vivo.com, allen-kh.cheng@mediatek.com,
+	eugen.hristev@collabora.com, claudiu.beznea@tuxon.dev,
+	jarkko.nikula@bitmer.com, jiaxin.yu@mediatek.com,
+	alpernebiyasak@gmail.com, ckeepax@opensource.cirrus.com,
+	zhourui@huaqin.corp-partner.google.com, nfraprado@collabora.com,
+	alsa-devel@alsa-project.org, shane.chien@mediatek.com,
+	linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, kernel@collabora.com
+Subject: Re: [PATCH 19/22] ASoC: dt-bindings: mt8192: Document audio-routing
+ and dai-link subnode
+Message-ID: <20240304142341.GA156846-robh@kernel.org>
+References: <20240227120939.290143-1-angelogioacchino.delregno@collabora.com>
+ <20240227120939.290143-20-angelogioacchino.delregno@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <290c516e-6cf7-4db2-9b32-c9dc7200fe73@lunn.ch>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20240227120939.290143-20-angelogioacchino.delregno@collabora.com>
 
-On Mon, Mar 04, 2024 at 02:53:54PM +0100, Andrew Lunn wrote:
-> On Mon, Mar 04, 2024 at 02:39:08PM +0100, Oleksij Rempel wrote:
-> > On Mon, Mar 04, 2024 at 02:32:50PM +0100, Andrew Lunn wrote:
-> > > > > > +	psec = dev_find_pse_control(&phy->mdio.dev);
-> > > > > > +	if (IS_ERR(psec)) {
-> > > > > > +		rc = PTR_ERR(psec);
-> > > > > > +		goto unregister_phy;
-> > > > > > +	}
-> > > > > > +  
-> > > > > 
-> > > > > I do not think it is a good idea to make PSE controller depend on
-> > > > > phy->mdio.dev. The only reason why we have fwnode_find_pse_control()
-> > > > > here was the missing port abstraction.
-> > > > 
-> > > > I totally agree that having port abstraction would be more convenient.
-> > > > Maxime Chevallier is currently working on this and will post it after his
-> > > > multi-phy series get merged.
-> > > > Meanwhile, we still need a device pointer for getting the regulator. The
-> > > > phy->mdio.dev is the only one I can think of as a regulator consumer.
-> > > > Another idea?
-> > > 
-> > > Sorry, i've not been keeping up...
-> > > 
-> > > Doesn't the device tree binding determine this? Where is the consumer
-> > > in the tree?
-> > 
-> > The real consumer is outside of the system.
+On Tue, Feb 27, 2024 at 01:09:36PM +0100, AngeloGioacchino Del Regno wrote:
+> Document the dai-link subnodes and the audio-routing property, allowing
+> to describe machine specific audio hardware and links in device tree.
 > 
-> The device on the other end of the cable?
-
-yes.
-
-> > Withing the system, it would be the RJ45 port, but we have no
-> > abstraction for ports so far.
+> While at it, also deprecate the old properties which were previously
+> used with the driver's partially hardcoded configuration.
 > 
-> A Linux regulator is generally used in a producer/consumer pair. If
-> there is no consumer device, why have a producer? What is going to use
-> the consumer API?
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> ---
+>  .../sound/mt8192-mt6359-rt1015-rt5682.yaml    | 129 ++++++++++++++++--
+>  1 file changed, 121 insertions(+), 8 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml b/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
+> index 7e50f5d65c8f..78e221003750 100644
+> --- a/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
+> +++ b/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
+> @@ -20,6 +20,15 @@ properties:
+>        - mediatek,mt8192_mt6359_rt1015p_rt5682
+>        - mediatek,mt8192_mt6359_rt1015p_rt5682s
+>  
+> +  audio-routing:
+> +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
 
-We already consulted Mark Brown in precious iterations of this patch
-series and got his OK. I also described all advantages of using
-regulator framework within the PSE subsystem. I need to search it. Short answer,
-it is relatively common to have open-ended regulator with consumer outside of
-the system. A PSE system can be relatively complex, representing all
-supply dependencies from power supplies (one or multiple) to the ports
-will help to provide needed diagnostic information and power saving
-if port are disabled. Some functionality is currently not supported by
-the regulator framework, but need to be extended - power budged,
-priorities and reservation. All of this are not exclusive PSE
-challenges. So, using regulator framework seems to be a straightforward 
-decision.
+Already defined in sound-card-common.yaml. Add a $ref.
 
-> When we have a port representor, do we expect it to have active
-> elements? Something which will consume this regulator?
+> +    description:
+> +      A list of the connections between audio components. Each entry is a
+> +      pair of strings, the first being the connection's sink, the second
+> +      being the connection's source.
+> +      Valid names could be the input or output widgets of audio components,
+> +      power supplies, MicBias of codec and the software switch.
 
-Not in a usual sense. There are two levels of PSE control:
-- autodetected by PSE controller
-- fine tuned by using LLDP wich may respond to PD requests by allocating
-  more or reducing/disabling power.
+Generally the names are defined here.
 
-Regards,
-Oleksij
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+> +
+>    mediatek,platform:
+>      $ref: /schemas/types.yaml#/definitions/phandle
+>      description: The phandle of MT8192 ASoC platform.
+> @@ -27,10 +36,12 @@ properties:
+>    mediatek,hdmi-codec:
+>      $ref: /schemas/types.yaml#/definitions/phandle
+>      description: The phandle of HDMI codec.
+> +    deprecated: true
+>  
+>    headset-codec:
+>      type: object
+>      additionalProperties: false
+> +    deprecated: true
+>  
+>      properties:
+>        sound-dai:
+> @@ -41,6 +52,7 @@ properties:
+>    speaker-codecs:
+>      type: object
+>      additionalProperties: false
+> +    deprecated: true
+>  
+>      properties:
+>        sound-dai:
+> @@ -51,13 +63,83 @@ properties:
+>      required:
+>        - sound-dai
+>  
+> +patternProperties:
+> +  ".*-dai-link$":
+> +    type: object
+> +    description:
+> +      Container for dai-link level properties and CODEC sub-nodes.
+> +
+> +    properties:
+> +      link-name:
+> +        description: Indicates dai-link name and PCM stream name
+> +        items:
+> +          enum:
+> +            - I2S0
+> +            - I2S1
+> +            - I2S2
+> +            - I2S3
+> +            - I2S4
+> +            - I2S5
+> +            - I2S6
+> +            - I2S7
+> +            - I2S8
+> +            - I2S9
+> +            - TDM
+> +
+> +      codec:
+> +        description: Holds subnode which indicates codec dai.
+> +        type: object
+> +        additionalProperties: false
+> +        properties:
+> +          sound-dai:
+> +            minItems: 1
+> +            maxItems: 2
+> +        required:
+> +          - sound-dai
+> +
+> +      dai-format:
+> +        description: audio format
+> +        items:
+> +          enum:
+> +            - i2s
+> +            - right_j
+> +            - left_j
+> +            - dsp_a
+> +            - dsp_b
+> +
+> +      mediatek,clk-provider:
+> +        $ref: /schemas/types.yaml#/definitions/string
+> +        description: Indicates dai-link clock master.
+> +        items:
+> +          enum:
+> +            - cpu
+> +            - codec
+> +
+> +    additionalProperties: false
+
+Move this before properties.
+
+> +
+> +    required:
+> +      - link-name
+> +
+>  additionalProperties: false
+>  
+>  required:
+>    - compatible
+>    - mediatek,platform
+> -  - headset-codec
+> -  - speaker-codecs
+> +
+> +allOf:
+> +  # Disallow dai-link-xxx nodes if the legacy properties are specified
+
+xxx-dai-link?
+
+> +  - if:
+> +      patternProperties:
+> +        ".*-dai-link$": false
+> +    then:
+> +      required:
+> +        - headset-codec
+> +        - speaker-codecs
+> +    else:
+> +      properties:
+> +        headset-codec: false
+> +        speaker-codecs: false
+> +        mediatek,hdmi-codec: false
+
+Allowing both would preserve compatibility. That's not needed? If so, 
+say why in the commit msg.
+
+>  
+>  examples:
+>    - |
+> @@ -65,19 +147,50 @@ examples:
+>      sound: mt8192-sound {
+>          compatible = "mediatek,mt8192_mt6359_rt1015_rt5682";
+>          mediatek,platform = <&afe>;
+> -        mediatek,hdmi-codec = <&anx_bridge_dp>;
+>          pinctrl-names = "aud_clk_mosi_off",
+>                          "aud_clk_mosi_on";
+>          pinctrl-0 = <&aud_clk_mosi_off>;
+>          pinctrl-1 = <&aud_clk_mosi_on>;
+>  
+> -        headset-codec {
+> -            sound-dai = <&rt5682>;
+> +        audio-routing =
+> +                "Headphone Jack", "HPOL",
+> +                "Headphone Jack", "HPOR",
+> +                "IN1P", "Headset Mic",
+> +                "Speakers", "Speaker";
+> +
+> +        spk-playback-dai-link {
+> +                link-name = "I2S3";
+> +                dai-format = "i2s";
+> +                mediatek,clk-provider = "cpu";
+> +                codec {
+> +                        sound-dai = <&rt1015p>;
+> +                };
+> +        };
+> +
+> +        hs-playback-dai-link {
+> +                link-name = "I2S8";
+> +                dai-format = "i2s";
+> +                mediatek,clk-provider = "cpu";
+> +                codec {
+> +                        sound-dai = <&rt5682 0>;
+> +                };
+> +        };
+> +
+> +        hs-capture-dai-link {
+> +                link-name = "I2S9";
+> +                dai-format = "i2s";
+> +                mediatek,clk-provider = "cpu";
+> +                codec {
+> +                        sound-dai = <&rt5682 0>;
+> +                };
+>          };
+>  
+> -        speaker-codecs {
+> -            sound-dai = <&rt1015_l>,
+> -                        <&rt1015_r>;
+> +        displayport-dai-link {
+> +                link-name = "TDM";
+> +                dai-format = "dsp_a";
+> +                codec {
+> +                        sound-dai = <&anx_bridge_dp>;
+> +                };
+>          };
+>      };
+>  
+> -- 
+> 2.44.0
+> 
 
