@@ -1,297 +1,99 @@
-Return-Path: <linux-kernel+bounces-91057-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91056-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B797C87090F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:05:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1FF387090B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:05:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4651C1F25E70
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:05:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 603A428250F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:05:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C895C62170;
-	Mon,  4 Mar 2024 18:05:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED37961691;
+	Mon,  4 Mar 2024 18:05:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KBo3kTAa"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="S8axCc+3"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC18C6214C;
-	Mon,  4 Mar 2024 18:05:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEC613CF40;
+	Mon,  4 Mar 2024 18:05:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709575519; cv=none; b=O0JtZFemzaMzAZlux+WdZRhL6jVjxfVdBU5trxMX4bFsle5jmxOrXtT2Ra286kn0wTqRDA/iv1SjrkcXq4nRhcAefJFYwOVC02F9AyyydHdUMylHAJc/dVSov/L5kQ/DhJ0hO2rYKGxHEyMWVzPwx2W3bVB+JDcWDy/z2NJSyX8=
+	t=1709575516; cv=none; b=MnQzMPhfB5klulXq5aMy+4uE5euFSGgYV4ev732I1a70e1hJoeg1BHnG2LXO8SKqTN7XjqlfOJ88tT8PWAn9r9oj7SB2rSs+2cGaWXmOuEd8YOFRK6Akp6GQziRBX3PADYgFTCGsVWP9BuXkGH1EpPdbD+YbUHzR+NPnXx+cufA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709575519; c=relaxed/simple;
-	bh=ITqX/m4LMI7f8HrdMK/9Khp0LrIi2sxZUpdGbycpoq4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iwzIscmA19lg+7KNssadOMtsgNoO+cVlF6EzFQpJPbQwE9BhKPRQavwmqyvia1spQ4HyxQ4mRPFPZ7Sq5QUvFsMSe7tD7EGymy4EOKVdRZlEkMmWujmi5T3Mbr9XW7oK14IttUnFZoZ8x26NO6AQGRhQ5joAyXCXHtw5b6RarbY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KBo3kTAa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31450C433F1;
-	Mon,  4 Mar 2024 18:05:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709575518;
-	bh=ITqX/m4LMI7f8HrdMK/9Khp0LrIi2sxZUpdGbycpoq4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KBo3kTAatAZMO7zhDLDphgexXMPY6kMyyAMrZXeBasREtmhsiJ7INJNGU5LZycxkP
-	 PnSLRTis7zfRKpWD8C+upVt8GMgHwgx4SWF53h8xs6/fZ5XyDewiEFWyGPCrAeoHiT
-	 Hegbo+76XaT4Fnok4CEswLxJZ9ac2uJLvxliJh1GzisQTQIByxZfP/NcODa+F5O6Zt
-	 fixzstprzsw1vyx01Qb5qw6kGDndKAe6nS+74FCvLftrqaaeWUftjbTaF7cRoVaDYk
-	 3owDU8NFSPAsCLqT1FTgJzulOINYOjS2LB90VXq2+6Cqi/3bgG+d5FyU6l5naNYwW4
-	 IKKnmKAx6P/rA==
-Date: Mon, 4 Mar 2024 23:35:06 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Brian Masney <bmasney@redhat.com>,
-	Georgi Djakov <djakov@kernel.org>, linux-arm-msm@vger.kernel.org,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, vireshk@kernel.org,
-	quic_vbadigan@quicinc.com, quic_skananth@quicinc.com,
-	quic_nitegupt@quicinc.com, quic_parass@quicinc.com
-Subject: Re: [PATCH v8 7/7] PCI: qcom: Add OPP support to scale performance
- state of power domain
-Message-ID: <20240304180506.GE31079@thinkpad>
-References: <20240302-opp_support-v8-0-158285b86b10@quicinc.com>
- <20240302-opp_support-v8-7-158285b86b10@quicinc.com>
+	s=arc-20240116; t=1709575516; c=relaxed/simple;
+	bh=+PqoMC6PQY8ox0RzrFV0Txo65ucWo6osZJCfNRoWvEE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=iLkyht/CnWK+Zpqg12zuJNGSTQyUY1AI6PozJGVTk8/NRahE45DSYUmgCP0+vR2X9uZHSz7qlVw+lYRFeWo+Ga9tAZqltZorh60EXm/B4NuEmJTKf1ghZ7UMshQPzcT81u76CY5sfIBnjCSP2qYqyJ+Qbx4HukNej8OesMmvyUU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=S8axCc+3; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709575515; x=1741111515;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=+PqoMC6PQY8ox0RzrFV0Txo65ucWo6osZJCfNRoWvEE=;
+  b=S8axCc+34IXxoLzUPF0GpZQ2F28S+7PqQNReM8HbHVAB7QM8LkPYkwDc
+   nJZUzUJhPwrdivhIjQ2PExwTAOTKhbK/bHJkesr96WYWLyExxHz6TvpRs
+   eKoXU6R4xMa7Rnnw4sBM4YXNbeEmOzFnfnR6tvzLpCFmH8ZAX7ePt+Kf7
+   X4eNmGEd/WXnSKM2GDegPFj+7ZsDN/PA/x5HPsIOr2FyXDrEAa288Mlti
+   r1XfGCWY7CZcUMe8e1SVMcoQTR2mWrMLBEwl+KeSULIGZFGymr9sacR9t
+   eUmnMZGYi94/ODw+YAK417KElZfH+0yA3PNoSeWl+UL/9AbBLdPEco7IC
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="7855294"
+X-IronPort-AV: E=Sophos;i="6.06,204,1705392000"; 
+   d="scan'208";a="7855294"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 10:05:14 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="937040916"
+X-IronPort-AV: E=Sophos;i="6.06,204,1705392000"; 
+   d="scan'208";a="937040916"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 04 Mar 2024 10:05:12 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 6991715C; Mon,  4 Mar 2024 20:05:11 +0200 (EET)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Sean Young <sean@mess.org>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] media: rc: gpio-ir-recv: Remove unused of_gpio.h
+Date: Mon,  4 Mar 2024 20:05:10 +0200
+Message-ID: <20240304180510.1201042-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240302-opp_support-v8-7-158285b86b10@quicinc.com>
 
-On Sat, Mar 02, 2024 at 09:30:01AM +0530, Krishna chaitanya chundru wrote:
-> QCOM Resource Power Manager-hardened (RPMh) is a hardware block which
-> maintains hardware state of a regulator by performing max aggregation of
-> the requests made by all of the clients.
-> 
-> PCIe controller can operate on different RPMh performance state of power
-> domain based on the speed of the link. And this performance state varies
-> from target to target, like some controllers support GEN3 in NOM (Nominal)
-> voltage corner, while some other supports GEN3 in low SVS (static voltage
-> scaling).
-> 
-> The SoC can be more power efficient if we scale the performance state
-> based on the aggregate PCIe link bandwidth.
-> 
-> Add Operating Performance Points (OPP) support to vote for RPMh state based
-> on the aggregate link bandwidth.
-> 
-> OPP can handle ICC bw voting also, so move ICC bw voting through OPP
-> framework if OPP entries are present.
-> 
-> Different link configurations may share the same aggregate bandwidth,
-> e.g., a 2.5 GT/s x2 link and a 5.0 GT/s x1 link have the same bandwidth
-> and share the same OPP entry.
-> 
-> As we are moving ICC voting as part of OPP, don't initialize ICC if OPP
-> is supported.
-> 
-> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-> ---
->  drivers/pci/controller/dwc/pcie-qcom.c | 81 +++++++++++++++++++++++++++-------
->  1 file changed, 66 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> index a0266bfe71f1..2ec14bfafcfc 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> @@ -22,6 +22,7 @@
->  #include <linux/of.h>
->  #include <linux/of_gpio.h>
->  #include <linux/pci.h>
-> +#include <linux/pm_opp.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/platform_device.h>
->  #include <linux/phy/pcie.h>
-> @@ -244,6 +245,7 @@ struct qcom_pcie {
->  	const struct qcom_pcie_cfg *cfg;
->  	struct dentry *debugfs;
->  	bool suspended;
-> +	bool opp_supported;
+of_gpio.h is deprecated and subject to remove.
+The driver doesn't use it, simply remove the unused header.
 
-You can just use "pcie->icc_mem" to differentiate between OPP and ICC. No need
-of a new flag. 
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/media/rc/gpio-ir-recv.c | 1 -
+ 1 file changed, 1 deletion(-)
 
->  };
->  
->  #define to_qcom_pcie(x)		dev_get_drvdata((x)->dev)
-> @@ -1405,15 +1407,13 @@ static int qcom_pcie_icc_init(struct qcom_pcie *pcie)
->  	return 0;
->  }
->  
-> -static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
-> +static void qcom_pcie_icc_opp_update(struct qcom_pcie *pcie)
->  {
->  	struct dw_pcie *pci = pcie->pci;
-> -	u32 offset, status;
-> +	u32 offset, status, freq;
-> +	struct dev_pm_opp *opp;
->  	int speed, width;
-> -	int ret;
-> -
-> -	if (!pcie->icc_mem)
-> -		return;
-> +	int ret, mbps;
->  
->  	offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
->  	status = readw(pci->dbi_base + offset + PCI_EXP_LNKSTA);
-> @@ -1425,11 +1425,30 @@ static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
->  	speed = FIELD_GET(PCI_EXP_LNKSTA_CLS, status);
->  	width = FIELD_GET(PCI_EXP_LNKSTA_NLW, status);
->  
-> -	ret = icc_set_bw(pcie->icc_mem, 0, width * QCOM_PCIE_LINK_SPEED_TO_BW(speed));
-> -	if (ret) {
-> -		dev_err(pci->dev, "failed to set interconnect bandwidth: %d\n",
-> -			ret);
-> +	if (pcie->opp_supported) {
-> +		mbps = pcie_link_speed_to_mbps(pcie_link_speed[speed]);
-> +		if (mbps < 0)
-> +			return;
-> +
-> +		freq = mbps * 1000;
-> +		opp = dev_pm_opp_find_freq_exact(pci->dev, freq * width, true);
-> +		if (!IS_ERR(opp)) {
-> +			ret = dev_pm_opp_set_opp(pci->dev, opp);
-> +			if (ret)
-> +				dev_err(pci->dev, "Failed to set opp: freq %ld ret %d\n",
-> +					dev_pm_opp_get_freq(opp), ret);
-> +			dev_pm_opp_put(opp);
-> +		}
-> +	} else {
-> +		ret = icc_set_bw(pcie->icc_mem, 0,
-> +				 width * QCOM_PCIE_LINK_SPEED_TO_BW(speed));
-> +		if (ret) {
-> +			dev_err(pci->dev,
-> +				"failed to set interconnect bandwidth for pcie-mem: %d\n", ret);
-
-"PCIe-MEM"
-
-> +		}
->  	}
-> +
-> +	return;
->  }
->  
->  static int qcom_pcie_link_transition_count(struct seq_file *s, void *data)
-> @@ -1472,8 +1491,10 @@ static void qcom_pcie_init_debugfs(struct qcom_pcie *pcie)
->  static int qcom_pcie_probe(struct platform_device *pdev)
->  {
->  	const struct qcom_pcie_cfg *pcie_cfg;
-> +	unsigned long max_freq = INT_MAX;
->  	struct device *dev = &pdev->dev;
->  	struct qcom_pcie *pcie;
-> +	struct dev_pm_opp *opp;
->  	struct dw_pcie_rp *pp;
->  	struct resource *res;
->  	struct dw_pcie *pci;
-> @@ -1540,9 +1561,36 @@ static int qcom_pcie_probe(struct platform_device *pdev)
->  		goto err_pm_runtime_put;
->  	}
->  
-> -	ret = qcom_pcie_icc_init(pcie);
-> -	if (ret)
-> +	 /* OPP table is optional */
-> +	ret = devm_pm_opp_of_add_table(dev);
-> +	if (ret && ret != -ENODEV) {
-> +		dev_err_probe(dev, ret, "Failed to add OPP table\n");
->  		goto err_pm_runtime_put;
-> +	}
-> +
-> +	/*
-> +	 * Use highest OPP here if the OPP table is present. At the end of
-
-Why highest opp? For ICC, we set minimal bandwidth before.
-
-> +	 * the probe(), OPP will be updated using qcom_pcie_icc_opp_update().
-> +	 */
-> +	if (ret != -ENODEV) {
-
-if (!ret)
-
-> +		opp = dev_pm_opp_find_freq_floor(dev, &max_freq);
-> +		if (!IS_ERR(opp)) {
-> +			ret = dev_pm_opp_set_opp(dev, opp);
-> +			if (ret)
-> +				dev_err_probe(pci->dev, ret,
-> +					      "Failed to set opp: freq %ld\n",
-
-	"Failed to set OPP for freq: %ld\n"
-
-> +					      dev_pm_opp_get_freq(opp));
-> +			dev_pm_opp_put(opp);
-> +		}
-> +		pcie->opp_supported = true;
-> +	}
-> +
-> +	/* Skip ICC init if OPP is supported as ICC bw is handled by OPP */
-> +	if (!pcie->opp_supported) {
-> +		ret = qcom_pcie_icc_init(pcie);
-
-First check whether ICC is present or not and then check OPP as a fallback. This
-avoids an extra flag.
-
-- Mani
-
-> +		if (ret)
-> +			goto err_pm_runtime_put;
-> +	}
->  
->  	ret = pcie->cfg->ops->get_resources(pcie);
->  	if (ret)
-> @@ -1562,7 +1610,7 @@ static int qcom_pcie_probe(struct platform_device *pdev)
->  		goto err_phy_exit;
->  	}
->  
-> -	qcom_pcie_icc_update(pcie);
-> +	qcom_pcie_icc_opp_update(pcie);
->  
->  	if (pcie->mhi)
->  		qcom_pcie_init_debugfs(pcie);
-> @@ -1621,10 +1669,13 @@ static int qcom_pcie_suspend_noirq(struct device *dev)
->  			qcom_pcie_host_init(&pcie->pci->pp);
->  			pcie->suspended = false;
->  		}
-> -		qcom_pcie_icc_update(pcie);
-> +		qcom_pcie_icc_opp_update(pcie);
->  		return ret;
->  	}
->  
-> +	if (pcie->opp_supported)
-> +		dev_pm_opp_set_opp(pcie->pci->dev, NULL);
-> +
->  	return 0;
->  }
->  
-> @@ -1647,7 +1698,7 @@ static int qcom_pcie_resume_noirq(struct device *dev)
->  		pcie->suspended = false;
->  	}
->  
-> -	qcom_pcie_icc_update(pcie);
-> +	qcom_pcie_icc_opp_update(pcie);
->  
->  	return 0;
->  }
-> 
-> -- 
-> 2.42.0
-> 
-
+diff --git a/drivers/media/rc/gpio-ir-recv.c b/drivers/media/rc/gpio-ir-recv.c
+index 41eeec648803..b29a1a9f381d 100644
+--- a/drivers/media/rc/gpio-ir-recv.c
++++ b/drivers/media/rc/gpio-ir-recv.c
+@@ -9,7 +9,6 @@
+ #include <linux/gpio/consumer.h>
+ #include <linux/slab.h>
+ #include <linux/of.h>
+-#include <linux/of_gpio.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/pm_qos.h>
 -- 
-மணிவண்ணன் சதாசிவம்
+2.43.0.rc1.1.gbec44491f096
+
 
