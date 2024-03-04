@@ -1,151 +1,150 @@
-Return-Path: <linux-kernel+bounces-90772-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23AD88704BF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:03:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EB8A8704BD
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:03:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B89FA1F21BCA
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:03:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE88CB25547
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:02:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38E0F45BF6;
-	Mon,  4 Mar 2024 15:03:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 971EC4654E;
+	Mon,  4 Mar 2024 15:02:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f4I7lUmX"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pPl++o7H"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EFAA45945;
-	Mon,  4 Mar 2024 15:03:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C348745C1C;
+	Mon,  4 Mar 2024 15:02:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709564583; cv=none; b=kW0ySVdwiAW/Dd+AqSOUNOrDyicl0bj9sKyQxo8J41a+V21cKU13hS14gJbQDvGeoelvGOHAAsuWVqiX/ej/fCIxSkTP7wnpIaoc5Hdc/not7jhYJmWkXf+i5dVi40VBefKQxb4CPok7xesReK1IkA3NzhTcOUlQO67EfjYpoKg=
+	t=1709564572; cv=none; b=Kz5VhIYpzirqUIUSJJ45LddlPxrcqFzxFIL56CDT75hJaX9lEvsKomH2XyXuj0dZllpkukt6hk/FmjOsDY3JopaNuruJ3oGtwh8FlYdxCs362ReFkgsgtc+c7HAnMKqCGMhFFZYAHnuv+/GLt5Hoid2wUAODP0lThQ6KQ18gBmM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709564583; c=relaxed/simple;
-	bh=E7m7xNV1pXS9SED3gi2iwd2vJh0Ek189A/1Yh1JvJYs=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=DTlOgsN5oi22NeJZaLmhLT4jYWOwtkgB12+tKY4WSmNi3XZ5/Lk93ZO7RXQBoaPFunOqDN3GSZ/ZZ+HK8Ab9nfOCjX7ixvy8J5vh5ZsGHzrZxZI04MgXFj6Fwac+63fWIyRzQejGjRsQ5T7G4HgahpzT38sDoZYFGHn6eCQZLlA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f4I7lUmX; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d944e8f367so30548845ad.0;
-        Mon, 04 Mar 2024 07:03:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709564581; x=1710169381; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rnXcc/0pU6MGyLtNvp9rjgwSJZoETOROqPJlOVOWeAQ=;
-        b=f4I7lUmXaF2BxDpr4TxBgWY2gKw/zAlaiA+dz1iFtI4mMKWEvKiFVSA+5ZU60AyxpX
-         +eKqyI1dchTMjqFK+m0NT9yi3pVHV0YZ+GQBdjgI+N2Kn1wPPJtVE4Gs3aaoRDS0DemU
-         OktQCCiS2BUvTtjEfNkpmEXiNh9hSqsPIO+RMQ66m6V82HGqyYadWtrMlt3xZsuEOacd
-         Ih5ZnXfszDILs8pAmjL/O6ShAGChiM324AbizdoRgGg+98LeHZbrh8R3/lRbhUvt6kP5
-         ydnbPKZw/8PeoVKd8EcMxtH5KuuNykAyACl6v2tMMn1xea8fUuDHPXt6sFHHzCe2o9M3
-         qAQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709564581; x=1710169381;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rnXcc/0pU6MGyLtNvp9rjgwSJZoETOROqPJlOVOWeAQ=;
-        b=rcH79JsGIf+R3nUU9jMfLIw2ETBrDHPfMPEIpDeqLg24Cq7OyXndujfgdKvkED2ACk
-         D8zxcyzeuXn/VIDRIJjs/+FO/zDv4S2SraTlLORy4NDo5bFWeJFQ522nW9ITAqqgOqbE
-         dN0X0p67Oa92jbdkS1r/FtK5qeh1F9FPRr4GIDQB5i88dEvtQLrr1zuvApbM7BzbMbGz
-         vo0TAxv1C1vKUs4iwGtCibPU/920UgHqQR3oXgZHNqc4MYr4+qBr8hDRMriEyAwxr61R
-         T4o/hjh/DwJYWYMXTFI0hExKYGdQ94Dwq8vcWDiaxhEErOiF7E7+gx0fgGlzXuT7m9yA
-         6/Fg==
-X-Forwarded-Encrypted: i=1; AJvYcCWkdalI/PGPXRh6x1fjQg/f6tN2spzZiBLwVlTWtgsfw50qeQ2YNNGsepfzSrBhAoutZ+o6BE61bslM1mh70spbm0LuT1yiv62CGYcz
-X-Gm-Message-State: AOJu0YzXFIYojIgRlgm+kDrs79gUV0C2w0gA6XyGa2T3KcrT/Gn8NBWj
-	k0Ig/FHw/g/0yPjovsGJOh9IVIaLNKDXeRRv0l/cRHhAt8Ul4jv1VBd7fU10
-X-Google-Smtp-Source: AGHT+IHo7uSAOY7xHevAVNoD1yPBJfJR6TsI+tzQsEB+aQtTPbfOY8hhCOXO32d8l+xm5jAzUffExA==
-X-Received: by 2002:a17:902:ecd2:b0:1dc:c9f4:2dab with SMTP id a18-20020a170902ecd200b001dcc9f42dabmr10973649plh.1.1709564581287;
-        Mon, 04 Mar 2024 07:03:01 -0800 (PST)
-Received: from localhost.localdomain ([49.142.40.215])
-        by smtp.gmail.com with ESMTPSA id g1-20020a170902fe0100b001dc941f145dsm8639675plj.253.2024.03.04.07.02.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 07:03:00 -0800 (PST)
-From: skseofh@gmail.com
-To: robh+dt@kernel.org
-Cc: devicetree@vger.kernel.org,
-	frowand.list@gmail.com,
-	linux-kernel@vger.kernel.org,
-	skseofh@gmail.com
-Subject: [PATCH] of: fdt: modify small size memory check
-Date: Tue,  5 Mar 2024 00:02:26 +0900
-Message-Id: <20240304150227.166053-1-skseofh@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <CAL_JsqKNGjKq3vcUPFiPa9JNq-8=oP=uBSD=tyKaPMH3cvAkww@mail.gmail.com>
-References: <CAL_JsqKNGjKq3vcUPFiPa9JNq-8=oP=uBSD=tyKaPMH3cvAkww@mail.gmail.com>
+	s=arc-20240116; t=1709564572; c=relaxed/simple;
+	bh=NJq21IcMWpBFi3GGq2wDJ4XI/iHf+aVc6N3sYqI37K4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kET5vrKOGqZeYj/GWGBlB5nSSpT/yfJXiZGtCr8DfVx15+YwKUC1CeEhXbxnjo3Ep1/uWv/3l9wSSAiqwYs1bTaqujxH8/Bn8L89IxQ8wEHHraVXtdjWYUDvzEu85sudeDZbDeemKpKudUbODgh3WQ7C989KegMD/p0U7F6btrE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pPl++o7H; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B4D6C433C7;
+	Mon,  4 Mar 2024 15:02:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709564572;
+	bh=NJq21IcMWpBFi3GGq2wDJ4XI/iHf+aVc6N3sYqI37K4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=pPl++o7H+Cp4Q6tf5O3Gj21PmjH/SJB5KIG/HCbhHd+d2INNQ1h7QmlnC8Vb9W32V
+	 Tg3WhQHabCbF9Qjg58PGwYUQ4lDBiAhASMp06MukKsYJRoUKpHoF+Ue/C+k/4hO1Di
+	 lUUmjRjzJmjGy6CKSG2AHh05sP4j9rWWJwqjT1CrPyMUbkmIh5/BVJmf6QG75f9TP5
+	 gNBJPT3gjkBkquIWINkwlFbbzcfuBLF2ysl3ITRfkAZleDFoJ1hTECubVUrvwHJN0M
+	 T7itKqVY1rEOQOvLQJDfPZCdjHyvXE5Xdom4cy8ERuvXU02nA5nVeYNZs8fBA6QX/I
+	 4m8OF9OtZra1g==
+Date: Mon, 4 Mar 2024 09:02:48 -0600
+From: Rob Herring <robh@kernel.org>
+To: Herve Codina <herve.codina@bootlin.com>,
+	Saravana Kannan <saravanak@google.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Frank Rowand <frowand.list@gmail.com>,
+	Lizhi Hou <lizhi.hou@amd.com>, Max Zhen <max.zhen@amd.com>,
+	Sonal Santan <sonal.santan@amd.com>,
+	Stefano Stabellini <stefano.stabellini@xilinx.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+	Allan Nielsen <allan.nielsen@microchip.com>,
+	Horatiu Vultur <horatiu.vultur@microchip.com>,
+	Steen Hegelund <steen.hegelund@microchip.com>,
+	Luca Ceresoli <luca.ceresoli@bootlin.com>,
+	Nuno Sa <nuno.sa@analog.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v3 0/2] Synchronize DT overlay removal with devlink
+ removals
+Message-ID: <20240304150248.GA211460-robh@kernel.org>
+References: <20240229105204.720717-1-herve.codina@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240229105204.720717-1-herve.codina@bootlin.com>
 
+On Thu, Feb 29, 2024 at 11:52:01AM +0100, Herve Codina wrote:
+> Hi,
 
->>
->> From: Daero Lee <skseofh@gmail.com>
->>
->> After page aligning, the size may become zero. So I added exception
->> handling code for size 0.
->
->That may be true, but when would anyone only have memory regions of
->less than 2 pages. In any case memblock_add will just do nothing. What
->is the actual problem you are having?
->
->Rob
+Please CC Saravana on this.
 
-Ignore the previous mail.
-I modified the patch to clear this size check routine. Please check
-
--------------------------------------------------------------------------
-From 2135d37c37f8c369033f79102b17ddf5bb3ff838 Mon Sep 17 00:00:00 2001
-From: Daero Lee <skseofh@gmail.com>
-Date: Mon, 4 Mar 2024 23:21:14 +0900
-Subject: [PATCH] of: fdt: modify small size memory check
-
-Small size memory which is less than 1 PAGE_SIZE after page align
-should not be added to memblock.
-
-In this patch, the size check was modified to make it clear.
-
-Signed-off-by: Daero Lee <skseofh@gmail.com>
----
- drivers/of/fdt.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
-index bf502ba8da95..9cf844e664b0 100644
---- a/drivers/of/fdt.c
-+++ b/drivers/of/fdt.c
-@@ -1220,18 +1220,16 @@ int __init early_init_dt_scan_chosen(char *cmdline)
- void __init __weak early_init_dt_add_memory_arch(u64 base, u64 size)
- {
-        const u64 phys_offset = MIN_MEMBLOCK_ADDR;
-+       u64 abase = PAGE_ALIGN(base), aend = PAGE_ALIGN_DOWN(base + size);
-
--       if (size < PAGE_SIZE - (base & ~PAGE_MASK)) {
-+       if((aend - abase) < PAGE_SIZE) {
-                pr_warn("Ignoring memory block 0x%llx - 0x%llx\n",
-                        base, base + size);
-                return;
-        }
-
--       if (!PAGE_ALIGNED(base)) {
--               size -= PAGE_SIZE - (base & ~PAGE_MASK);
--               base = PAGE_ALIGN(base);
--       }
--       size &= PAGE_MASK;
-+       base = abase;
-+       size = (aend - abase) & PAGE_MASK;
-
-        if (base > MAX_MEMBLOCK_ADDR) {
-                pr_warn("Ignoring memory block 0x%llx - 0x%llx\n",
---
-2.25.1
-
+> 
+> In the following sequence:
+>   of_platform_depopulate(); /* Remove devices from a DT overlay node */
+>   of_overlay_remove(); /* Remove the DT overlay node itself */
+> 
+> Some warnings are raised by __of_changeset_entry_destroy() which  was
+> called from of_overlay_remove():
+>   ERROR: memory leak, expected refcount 1 instead of 2 ...
+> 
+> The issue is that, during the device devlink removals triggered from the
+> of_platform_depopulate(), jobs are put in a workqueue.
+> These jobs drop the reference to the devices. When a device is no more
+> referenced (refcount == 0), it is released and the reference to its
+> of_node is dropped by a call to of_node_put().
+> These operations are fully correct except that, because of the
+> workqueue, they are done asynchronously with respect to function calls.
+> 
+> In the sequence provided, the jobs are run too late, after the call to
+> __of_changeset_entry_destroy() and so a missing of_node_put() call is
+> detected by __of_changeset_entry_destroy().
+> 
+> This series fixes this issue introducing device_link_wait_removal() in
+> order to wait for the end of jobs execution (patch 1) and using this
+> function to synchronize the overlay removal with the end of jobs
+> execution (patch 2).
+> 
+> Compared to the previous iteration:
+>   https://lore.kernel.org/linux-kernel/20231130174126.688486-1-herve.codina@bootlin.com/
+> this v3 series:
+> - add the missing device.h
+> 
+> This series handles cases reported by Luca [1] and Nuno [2].
+>   [1]: https://lore.kernel.org/all/20231220181627.341e8789@booty/
+>   [2]: https://lore.kernel.org/all/20240205-fix-device-links-overlays-v2-2-5344f8c79d57@analog.com/
+> 
+> Best regards,
+> Hervé
+> 
+> Changes v2 -> v3
+>   - Patch 1
+>     No changes
+> 
+>   - Patch 2
+>     Add missing device.h
+> 
+> Changes v1 -> v2
+>   - Patch 1
+>     Rename the workqueue to 'device_link_wq'
+>     Add 'Fixes' tag and Cc stable
+> 
+>   - Patch 2
+>     Add device.h inclusion.
+>     Call device_link_wait_removal() later in the overlay removal
+>     sequence (i.e. in free_overlay_changeset() function).
+>     Drop of_mutex lock while calling device_link_wait_removal().
+>     Add	'Fixes'	tag and Cc stable
+> 
+> Herve Codina (2):
+>   driver core: Introduce device_link_wait_removal()
+>   of: overlay: Synchronize of_overlay_remove() with the devlink removals
+> 
+>  drivers/base/core.c    | 26 +++++++++++++++++++++++---
+>  drivers/of/overlay.c   | 10 +++++++++-
+>  include/linux/device.h |  1 +
+>  3 files changed, 33 insertions(+), 4 deletions(-)
+> 
+> -- 
+> 2.43.0
+> 
 
