@@ -1,263 +1,409 @@
-Return-Path: <linux-kernel+bounces-91373-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91374-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B81D871043
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 23:45:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7358D871047
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 23:46:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A324828265C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:45:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F51C282153
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:46:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7924C7BB02;
-	Mon,  4 Mar 2024 22:45:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12AA57C083;
+	Mon,  4 Mar 2024 22:46:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ieee.org header.i=@ieee.org header.b="cn+QkZD/"
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=invisiblethingslab.com header.i=@invisiblethingslab.com header.b="WskddAMw";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="eTPj3uI6"
+Received: from fhigh5-smtp.messagingengine.com (fhigh5-smtp.messagingengine.com [103.168.172.156])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28711E542
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 22:45:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E27573C28;
+	Mon,  4 Mar 2024 22:46:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.156
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709592316; cv=none; b=LxOYV2yMspMNDtlbvH6q1EKcgBa+29+uFRPEdOmZRVdA6dblLRFEdCYv1KOUaLKDrq+anFBzNs5wRPliESgJvdYa+J7QR4A8Ly9UsCl8JpkPeBuEPgrRsjp/bPTaW0g4nRqj6BAxbL0sdUBAVWcz72G1j8L11Cd/ANlH9u4Ysn8=
+	t=1709592372; cv=none; b=dwiDsPPzGRjYoFLJXktY8Zv2DZCOT3Za3XR4e5lqlMdo10kdim7B7Yp9w0ViopRe3xmZQGtzZ41CNzXVsADFrCD0NnpxubuORMhNFHQ9ogR8hb2rkt75L5RmWTHhXB4LgIPUExZ54OzTbEUuKJKdtFiaj2VTDl6/iBVXl0swl5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709592316; c=relaxed/simple;
-	bh=aC9J5h9TG1g5IlvTC2gEyvKkILLxaS4dqt9nGLZmBdo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iBAL2F8/DPVqf/Q/liqZo5rQMYeQ/go3ahM2wjWDkS/SDdKuLIUU4415wRyXO7t5pr9ivuIEe/exGtU2WBxXI5SaCrb+mfFsS1RR1gTBpHA89Tl5Rt3nA+b+AT2dqnV6u+CjWzBRqbz4zLrA55zmuogfay1AZMPgkx7zYi5WRK8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ieee.org; spf=pass smtp.mailfrom=ieee.org; dkim=pass (1024-bit key) header.d=ieee.org header.i=@ieee.org header.b=cn+QkZD/; arc=none smtp.client-ip=209.85.210.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ieee.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ieee.org
-Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6e4e673d9abso42368a34.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 14:45:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google; t=1709592313; x=1710197113; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=I+Fxv005Bljtv9CpGZILYWj6yRL9ebRsbwfnTT4ObqE=;
-        b=cn+QkZD/1OeIqzGuV6XN10fTGS7EtCqzxePZa+JP0YDuKfLSpEmd1mD6znZv0Il8cm
-         Gfoh6NsYgFrKbj/0Lu0VF43ZW6R/5nlJo+BLy+muKboKqsmdzLnS0E1wfzR3baET2oUJ
-         4Np/q/c5MIN+UfgGQIZx1FcZ6GH/jD9Wq/pls=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709592313; x=1710197113;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=I+Fxv005Bljtv9CpGZILYWj6yRL9ebRsbwfnTT4ObqE=;
-        b=ij1/h0NkO+9zOcYuCxEj6aAhyQwqSjpwAFnhBpI+VpJ1NR84PQgqW1xZhWA6jslRfB
-         UC6ggvhTIuD4DtUg4lAMvdVf8PgHusiRDUDhacY3ose1+wfe1crYHCRxuzWmZP94fOGr
-         o04V0UdfPk0Inyl8QZJT4qjSvkuhaUD8UuESq6ZbI++XXUURbqClyPFwZ3AsUAvjt6wr
-         lpmTZzTH2Paj8Q4Yg7R+9zuDm3UWc+QYFgaOj5I4hzxFadJYtdqG2ljqoJpFTqlneYmA
-         zeQ8oHg23T4ULKTS6GPYJ+Cu9Ld0WIV6ymvNWSz9P0KcJe2yGnxT4rEi1sFkTI/mPy/Z
-         I9uw==
-X-Forwarded-Encrypted: i=1; AJvYcCX/RIaLnXDFPx639rJa09NBvQXvnNtJq/jHVE172g6YpSVwcw4GRW+KGvM38eyiXMk5PmXQpnatbRZPTNfClDG7EQeu8IFN+CLwwWpZ
-X-Gm-Message-State: AOJu0YwTO6qN3V4s40EkR5O9vIvq0boUpmX7ETLSkLYZ658Ls/rZZTDq
-	3WGtMrnJK/vKgxMIyYj8X4V1xyUBZUWDeUEewn/DzebrMpv8UMmJxE9Pj7WQAw==
-X-Google-Smtp-Source: AGHT+IHwFpkN8MnzJO8v6QzGjMV+EtaCgHqeSkH/AD/dlWy+PnCER9M9nGsXrm63fRhTRQTlFnF8dw==
-X-Received: by 2002:a05:6870:64a6:b0:21f:dc71:c3f4 with SMTP id cz38-20020a05687064a600b0021fdc71c3f4mr64125oab.43.1709592313243;
-        Mon, 04 Mar 2024 14:45:13 -0800 (PST)
-Received: from [172.22.22.28] (c-73-228-159-35.hsd1.mn.comcast.net. [73.228.159.35])
-        by smtp.googlemail.com with ESMTPSA id pi36-20020a05620a37a400b00787c0e4ac78sm4808087qkn.106.2024.03.04.14.45.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Mar 2024 14:45:12 -0800 (PST)
-Message-ID: <1c5ab1e7-ac66-438c-bc49-0785810e9355@ieee.org>
-Date: Mon, 4 Mar 2024 16:45:11 -0600
+	s=arc-20240116; t=1709592372; c=relaxed/simple;
+	bh=68V6j83P2WpOy1AHlDu3IfWniVQwz5jF5hCZ+GBhryY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=O39JLKE8RvFkBQd6b9Qp1CmXz6oPF3PDSQ7h7kWvWWaDV3ZmrQkegRHHHZh852q/BsK5IroDG5AZkJBYuhj517iZuCL7NFyC4NOj288GpZ1rLed7VesyConjDVEB4pgHtpVKRXDZluXywwtpy54yOlbWQgVYnC2QJkQYgVgkXs8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=invisiblethingslab.com; spf=none smtp.mailfrom=invisiblethingslab.com; dkim=pass (2048-bit key) header.d=invisiblethingslab.com header.i=@invisiblethingslab.com header.b=WskddAMw; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=eTPj3uI6; arc=none smtp.client-ip=103.168.172.156
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=invisiblethingslab.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=invisiblethingslab.com
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailfhigh.nyi.internal (Postfix) with ESMTP id D34E81140144;
+	Mon,  4 Mar 2024 17:46:08 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute7.internal (MEProxy); Mon, 04 Mar 2024 17:46:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	invisiblethingslab.com; h=cc:cc:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1709592368;
+	 x=1709678768; bh=MazQbRNiMLTjCsnYC+DAQ7NahahSMfC8KextuceTqoM=; b=
+	WskddAMwtOjAw1OjSXU2fKcMtfpV6WMcJovM08z07SrMfkupbr3Do9GPf281zrT7
+	+J8X0pk7yeh43IleW9axSmwPEFQgTqY6cTrp4pPb3I+XOl1Ruf28T6nT8IPX5E6N
+	vCasIS7tlAfDuUbJ20Rd8v1kigl3oc+T7IE8YQwD6IBTavUs+SyytUSsxJHhsTfx
+	N+lmTwha9ndTR9+bZl97vPzYjXtysGx1xRV6lajwnzUb2fDryurTOGEvWqOFM1Tq
+	oYPcGrfLPKi1ZbYkYYm8D8vW79osWGagYiw683jgzjAn+dTcBH9gWg0gZldhbXJo
+	z57+DChvp+27jqfwQ4qSMg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1709592368; x=1709678768; bh=MazQbRNiMLTjCsnYC+DAQ7NahahS
+	MfC8KextuceTqoM=; b=eTPj3uI6ZuU+yzwKKptK9ilT20gELCgY8+KQSI8WLP+X
+	0rVtXycgVaoAZZaCYL41V4DlFB39kphFso2nPLjTnJVsofm9BbsOMH8k0UVk2iW9
+	M33uHehRgVIfdyHFGbh1zLErdK8WjeH0/xx2VxyaAN/jsFlloZpMOcxRp90leNcO
+	SLJGb6qpMib74EKa8yg7tiIf/TQpwWmzU3ml3WCdoHPM/iHMrsxnUy+r6LKloxdp
+	Zu0OqfnauyAEQtGXt9uk3LHLoN/o0lYNlw5rynsjVkYKcWdGxzHxZLmd+BOkZvKl
+	Rq3+JbE6Fe6gPz1eOlY2E6mrbRLXVn+cZ+sWU0mVsQ==
+X-ME-Sender: <xms:ME_mZd2V4td0ZU4H_g4lqraTa9Ww1SexM9CvKtrDWNOE2WIa9jtzXg>
+    <xme:ME_mZUF50JPv1UgP85ln_hJX6svntybiFyaLQ_NuV0wfdyQ3G7lEeXOQTmKqf58ii
+    ekp2EPhmFPo4g>
+X-ME-Received: <xmr:ME_mZd5eAFquNO_kxhRsUDI2jdVP4VU0a5jDPWmuSMiKW6OOVANmBZnNA8lXDGlx5vYKna3w3fI2Jzfa28mgPZd0kZktPrdQ4A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrheekgddtvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehgtderredttdejnecuhfhrohhmpeforghrvghk
+    ucforghrtgiihihkohifshhkihdqifpkrhgvtghkihcuoehmrghrmhgrrhgvkhesihhnvh
+    hishhisghlvghthhhinhhgshhlrggsrdgtohhmqeenucggtffrrghtthgvrhhnpefgudel
+    teefvefhfeehieetleeihfejhfeludevteetkeevtedtvdegueetfeejudenucevlhhush
+    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrghrmhgrrhgvkhes
+    ihhnvhhishhisghlvghthhhinhhgshhlrggsrdgtohhm
+X-ME-Proxy: <xmx:ME_mZa1E7-REhztHs1kFmExO1ytDVfT9hmJ0y5c-D3dtjGvnuL__sg>
+    <xmx:ME_mZQFwUwNUy9jWeIhzrvntjb-URBcEzSC4GOpVD4pWRjO5QIytfA>
+    <xmx:ME_mZb8y-gDDLMUPEWELD4AtmmVg3Bnb-1CjtoGqZH8jOdx10lNNSQ>
+    <xmx:ME_mZUCRCGJ8gffQVhLcRYO823ZrdlRbOuVy0IV4avERGPY1_HaCiA>
+Feedback-ID: i1568416f:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 4 Mar 2024 17:46:07 -0500 (EST)
+Date: Mon, 4 Mar 2024 23:46:04 +0100
+From: Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= <marmarek@invisiblethingslab.com>
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: Demi Marie Obenour <demi@invisiblethingslab.com>,
+	linux-usb@vger.kernel.org,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: usbip doesn't work with userspace code that accesses USB devices
+Message-ID: <ZeZPLX6z5pyn2Eh_@mail-itl>
+References: <ZeYov0k8njwcZzGX@itl-email>
+ <2024030406-kilogram-raving-33c5@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] greybus: Avoid fake flexible array for response data
-Content-Language: en-US
-To: Kees Cook <keescook@chromium.org>, Alex Elder <elder@kernel.org>
-Cc: Viresh Kumar <vireshk@kernel.org>, Johan Hovold <johan@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "Gustavo A . R . Silva" <gustavo@embeddedor.com>,
- greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>, linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org
-References: <20240304211940.it.083-kees@kernel.org>
-From: Alex Elder <elder@ieee.org>
-In-Reply-To: <20240304211940.it.083-kees@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-
-On 3/4/24 3:19 PM, Kees Cook wrote:
-> FORTIFY_SOURCE has been ignoring 0-sized destinations while the kernel
-> code base has been converted to flexible arrays. In order to enforce
-> the 0-sized destinations (e.g. with __counted_by), the remaining 0-sized
-> destinations need to be handled. Instead of converting an empty struct
-> into using a flexible array, just directly use a pointer without any
-> additional indirection. Remove struct gb_bootrom_get_firmware_response
-> and struct gb_fw_download_fetch_firmware_response.
-> 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-
-Thanks for adding the comments!  This looks good to me.
-
-Reviewed-by: Alex Elder <elder@linaro.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="bSEqgkMjtgBF/hET"
+Content-Disposition: inline
+In-Reply-To: <2024030406-kilogram-raving-33c5@gregkh>
 
 
+--bSEqgkMjtgBF/hET
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Date: Mon, 4 Mar 2024 23:46:04 +0100
+From: Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= <marmarek@invisiblethingslab.com>
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: Demi Marie Obenour <demi@invisiblethingslab.com>,
+	linux-usb@vger.kernel.org,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: usbip doesn't work with userspace code that accesses USB devices
 
-I want to call attention to a few other spots that should
-get a little more attention--related directly to what you're
-doing here.
+On Mon, Mar 04, 2024 at 09:04:00PM +0000, Greg KH wrote:
+> On Mon, Mar 04, 2024 at 03:01:51PM -0500, Demi Marie Obenour wrote:
+> > Qubes OS users are reporting that MTP doesn't work with USB passthrough.
+> > Fastboot (used for flashing a custom OS to an Android device) also
+> > doesn't work.  Kernel-mode drivers, such as Bluetooth and USB storage,
+> > seem to usually work as expected.  Since MTP and fastboot are both
+> > implemented in userspace, it appears that there is some problem with the
+> > interaction of usbip, our USB proxy (which is based on USBIP), and
+> > userspace programs that interact with USB devices directly.
+> >=20
+> > The bug report can be found at [1] and the source code for the USB proxy
+> > can be found at [2].  The script used on the sending side (the one with
+> > the physical USB controller) is at [3] and the script used by the
+> > receiving side (the one the device is attached to) is at [4].  All of
+> > these links are for the current version as of this email being sent, so
+> > that anyone looking at this email in the future doesn't get confused.
+> >=20
+> > Is this a bug in usbip, or is this due to usbip being used incorrectly?
+>=20
+> I'm amazed that usbip works with usbfs at all, I didn't think that was a
+> thing.
+>=20
+> If you have a reproducer, or some error messages somewhere, that might
+> be the easiest way forward.  In reading the bug report, it looks like
+> the "bridge" you all made can't handle the device disconnecting itself
+> properly?  But that's just a guess, could be anything.
 
-I noticed that the GB_CONTROL_TYPE_GET_MANIFEST response
-structure also contains only a flexible array.  It might
-be good to add a similar comment in gb_interface_enable(),
-above this line:
-         manifest = kmalloc(size, GFP_KERNEL);
-The definition of the gb_control_get_manifest_response structure
-could probably be replaced with a comment.
+Device disconnecting itself indeed is an issue (our proxy doesn't
+automatically reconnect it, at least not yet). But that's definitely not
+the only issue, things break also when disconnect is not involved.
+
+Terminology:
+1. sys-usb - a VM where USB controller (a PCI device) lives; here
+usbip-host is attached to the device
+2. testvm - target VM where usbip is connected; here vhci-hcd is used
+3. qvm-usb - tool that connects the above two (equivalent of
+userspace part of standard usbip)
+
+Specific steps:
+1. Connect android phone - at this point it's only in sys-usb
+2. Switch its mode to file transfer - observe reconnect in sys-usb
+3. Use qvm-usb to attach it to the testvm
+4. Call jmtpfs -d /mnt in testvm
 
 
-The response buffer for an I2C transfer consists only of incoming
-data.  There is already a comment in gb_i2c_operation_create()
-that says this:
-         /* Response consists only of incoming data */
-The definition of the gb_i2c_transfer_response structure should
-then go away, in favor of a comment saying this.
+It fails this way:
 
-The response buffer for a SPI transfer consists only of incoming
-data.  It is used three times in "driver/staging/greybus/spilib.c":
-- calc_rx_xfer_size() subtracts the size of the response structure,
-   and that should be replaced by a comment (and the structure
-   definition should go away)
-- gb_spi_decode_response() takes the response structure as an
-   argument.  That could be replaced with a void pointer instead,
-   with a comment.
-- gb_spi_transfer_one_message() is what passes the response buffer
-   to gb_spi_decode_response(), and could be adjusted to reflect
-   that the response consists only of data--rather than a struct
-   containing only a flexible array.
+    Device 0 (VID=3D18d1 and PID=3D4ee1) is a Google Inc Nexus/Pixel (MTP).
+    PTP_ERROR_IO: failed to open session, trying again after resetting USB =
+interface
+    LIBMTP libusb: Attempt to reset device
+    LIBMTP PANIC: failed to open session on second attempt
+    Cannot open requested device
+
+There is a short wait before first failure and then the reset fails as
+well (interestingly, device doesn't actually reset, it stays connected).
+
+At that time, testvm's dmesg shows:
+
+    [2126560.758005] vhci_hcd: unlink->seqnum 98
+    [2126560.758025] vhci_hcd: urb->status -104
+    [2126560.872413] usb 1-1: reset high-speed USB device number 3 using vh=
+ci_hcd
+    [2126560.992995] usb 1-1: SetAddress Request (3) to port 0
+    [2126561.162264] usb 1-1: reset high-speed USB device number 3 using vh=
+ci_hcd
+    [2126561.278584] usb 1-1: SetAddress Request (3) to port 0
+
+And sys-usb's dmesg:
+
+    [915567.691431] usbip-host 2-1: unlinked by a call to usb_unlink_urb()
+
+I've observed it also with wireshark in testvm, and there is a single packe=
+t sent (before the attempt to reset):
+
+    Frame 90: 80 bytes on wire (640 bits), 80 bytes captured (640 bits) on =
+interface usbmon1, id 0
+    USB URB
+        [Source: host]
+        [Destination: 1.3.1]
+        URB id: 0xffff888007cbaa80
+        URB type: URB_SUBMIT ('S')
+        URB transfer type: URB_BULK (0x03)
+        Endpoint: 0x01, Direction: OUT
+        Device: 3
+        URB bus id: 1
+        Device setup request: not relevant ('-')
+        Data: present ('\0')
+        URB sec: 1709589466
+        URB usec: 80050
+        URB status: Operation now in progress (-EINPROGRESS) (-115)
+        URB length [bytes]: 16
+        Data length [bytes]: 16
+        [Response in: 91]
+        [bInterfaceClass: Imaging (0x06)]
+        Unused Setup Header
+        Interval: 0
+        Start frame: 0
+        Copy of Transfer Flags: 0x00000000
+        Number of ISO descriptors: 0
+    Leftover Capture Data: 10000000010002100000000001000000
+
+And the same seen in sys-usb:
+
+    Frame 117: 80 bytes on wire (640 bits), 80 bytes captured (640 bits) on=
+ interface usbmon2, id 0
+    USB URB
+        [Source: host]
+        [Destination: 2.18.1]
+        URB id: 0xffff908b585f5480
+        URB type: URB_SUBMIT ('S')
+        URB transfer type: URB_BULK (0x03)
+        Endpoint: 0x01, Direction: OUT
+        Device: 18
+        URB bus id: 2
+        Device setup request: not relevant ('-')
+        Data: present ('\0')
+        URB sec: 1709591829
+        URB usec: 752585
+        URB status: Operation now in progress (-EINPROGRESS) (-115)
+        URB length [bytes]: 16
+        Data length [bytes]: 16
+        [Response in: 118]
+        [bInterfaceClass: Imaging (0x06)]
+        Unused Setup Header
+        Interval: 0
+        Start frame: 0
+        Copy of Transfer Flags: 0x00000000
+        Number of ISO descriptors: 0
+    Leftover Capture Data: 10000000010002100000000001000000
+
+And after few seconds it gets this "response":
+
+    Frame 91: 64 bytes on wire (512 bits), 64 bytes captured (512 bits) on =
+interface usbmon1, id 0
+    USB URB
+        [Source: 1.3.1]
+        [Destination: host]
+        URB id: 0xffff888007cbaa80
+        URB type: URB_COMPLETE ('C')
+        URB transfer type: URB_BULK (0x03)
+        Endpoint: 0x01, Direction: OUT
+        Device: 3
+        URB bus id: 1
+        Device setup request: not relevant ('-')
+        Data: not present ('>')
+        URB sec: 1709589471
+        URB usec: 83920
+        URB status: No such file or directory (-ENOENT) (-2)
+        URB length [bytes]: 0
+        Data length [bytes]: 0
+        [Request in: 90]
+        [Time from request: 5.003870000 seconds]
+        [bInterfaceClass: Imaging (0x06)]
+        Unused Setup Header
+        Interval: 0
+        Start frame: 0
+        Copy of Transfer Flags: 0x00000000
+        Number of ISO descriptors: 0
+
+and the same seen in sys-usb:
+
+    Frame 118: 64 bytes on wire (512 bits), 64 bytes captured (512 bits) on=
+ interface usbmon2, id 0
+    USB URB
+        [Source: 2.18.1]
+        [Destination: host]
+        URB id: 0xffff908b585f5480
+        URB type: URB_COMPLETE ('C')
+        URB transfer type: URB_BULK (0x03)
+        Endpoint: 0x01, Direction: OUT
+        Device: 18
+        URB bus id: 2
+        Device setup request: not relevant ('-')
+        Data: not present ('>')
+        URB sec: 1709591834
+        URB usec: 753529
+        URB status: Connection reset by peer (-ECONNRESET) (-104)
+        URB length [bytes]: 0
+        Data length [bytes]: 0
+        [Request in: 117]
+        [Time from request: 5.000944000 seconds]
+        [bInterfaceClass: Imaging (0x06)]
+        Unused Setup Header
+        Interval: 0
+        Start frame: 0
+        Copy of Transfer Flags: 0x00000000
+        Number of ISO descriptors: 0
 
 
-Kees:  I'm *not* asking you to deal with these, I'm just mentioning
-them to you.  My comments above (without someone else confirming)
-are not sufficient to dictate how to address these.
+Calling jmtpfs directly in sys-usb succeeds without device reset:
 
-					-Alex
+    Device 0 (VID=3D18d1 and PID=3D4ee1) is a Google Inc Nexus/Pixel (MTP).
+    Android device detected, assigning default bug flags
+    FUSE library version: 2.9.9
+    nullpath_ok: 0
+    nopath: 0
+    utime_omit_ok: 0
+    unique: 2, opcode: INIT (26), nodeid: 0, insize: 104, pid: 0
+    INIT: 7.37
+    flags=3D0x73fffffb
+    max_readahead=3D0x00020000
+       INIT: 7.19
+       flags=3D0x00000011
+       max_readahead=3D0x00020000
+       max_write=3D0x00020000
+       max_background=3D0
+       congestion_threshold=3D0
+       unique: 2, success, outsize: 40
+
+At that time, looking at wireshark in sys-usb, I see similar URB_BULK sent:
+
+    Frame 1171: 80 bytes on wire (640 bits), 80 bytes captured (640 bits) o=
+n interface usbmon2, id 0
+    USB URB
+        [Source: host]
+        [Destination: 2.18.1]
+        URB id: 0xffff908b4fe92180
+        URB type: URB_SUBMIT ('S')
+        URB transfer type: URB_BULK (0x03)
+        Endpoint: 0x01, Direction: OUT
+        Device: 18
+        URB bus id: 2
+        Device setup request: not relevant ('-')
+        Data: present ('\0')
+        URB sec: 1709591408
+        URB usec: 157571
+        URB status: Operation now in progress (-EINPROGRESS) (-115)
+        URB length [bytes]: 16
+        Data length [bytes]: 16
+        [Response in: 1172]
+        [bInterfaceClass: Imaging (0x06)]
+        Unused Setup Header
+        Interval: 0
+        Start frame: 0
+        Copy of Transfer Flags: 0x00000000
+        Number of ISO descriptors: 0
+    Leftover Capture Data: 10000000010002100000000001000000
+
+but this time it gets a response:
+
+    Frame 1172: 64 bytes on wire (512 bits), 64 bytes captured (512 bits) o=
+n interface usbmon2, id 0
+    USB URB
+        [Source: 2.18.1]
+        [Destination: host]
+        URB id: 0xffff908b4fe92180
+        URB type: URB_COMPLETE ('C')
+        URB transfer type: URB_BULK (0x03)
+        Endpoint: 0x01, Direction: OUT
+        Device: 18
+        URB bus id: 2
+        Device setup request: not relevant ('-')
+        Data: not present ('>')
+        URB sec: 1709591408
+        URB usec: 157806
+        URB status: Success (0)
+        URB length [bytes]: 16
+        Data length [bytes]: 0
+        [Request in: 1171]
+        [Time from request: 0.000235000 seconds]
+        [bInterfaceClass: Imaging (0x06)]
+        Unused Setup Header
+        Interval: 0
+        Start frame: 0
+        Copy of Transfer Flags: 0x00000000
+        Number of ISO descriptors: 0
+
+I'm happy to provide more information, debug logs etc, just tell me what
+:)
 
 
-> ---
-> Cc: Alex Elder <elder@kernel.org>
-> Cc: Viresh Kumar <vireshk@kernel.org>
-> Cc: Johan Hovold <johan@kernel.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Gustavo A. R. Silva <gustavo@embeddedor.com>
-> Cc: greybus-dev@lists.linaro.org
-> Cc: linux-staging@lists.linux.dev
->   v2: add comments about removed structs
->   v1: https://patchwork.kernel.org/project/linux-hardening/patch/20240216232824.work.862-kees@kernel.org/
-> ---
->   drivers/staging/greybus/bootrom.c         | 8 ++++----
->   drivers/staging/greybus/fw-download.c     | 8 ++++----
->   include/linux/greybus/greybus_protocols.h | 8 ++------
->   3 files changed, 10 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/staging/greybus/bootrom.c b/drivers/staging/greybus/bootrom.c
-> index 79581457c4af..c0d338db6b52 100644
-> --- a/drivers/staging/greybus/bootrom.c
-> +++ b/drivers/staging/greybus/bootrom.c
-> @@ -243,10 +243,10 @@ static int gb_bootrom_get_firmware(struct gb_operation *op)
->   	struct gb_bootrom *bootrom = gb_connection_get_data(op->connection);
->   	const struct firmware *fw;
->   	struct gb_bootrom_get_firmware_request *firmware_request;
-> -	struct gb_bootrom_get_firmware_response *firmware_response;
->   	struct device *dev = &op->connection->bundle->dev;
->   	unsigned int offset, size;
->   	enum next_request_type next_request;
-> +	u8 *firmware_response;
->   	int ret = 0;
->   
->   	/* Disable timeouts */
-> @@ -280,15 +280,15 @@ static int gb_bootrom_get_firmware(struct gb_operation *op)
->   		goto unlock;
->   	}
->   
-> -	if (!gb_operation_response_alloc(op, sizeof(*firmware_response) + size,
-> -					 GFP_KERNEL)) {
-> +	/* gb_bootrom_get_firmware_response contains only a byte array */
-> +	if (!gb_operation_response_alloc(op, size, GFP_KERNEL)) {
->   		dev_err(dev, "%s: error allocating response\n", __func__);
->   		ret = -ENOMEM;
->   		goto unlock;
->   	}
->   
->   	firmware_response = op->response->payload;
-> -	memcpy(firmware_response->data, fw->data + offset, size);
-> +	memcpy(firmware_response, fw->data + offset, size);
->   
->   	dev_dbg(dev, "responding with firmware (offs = %u, size = %u)\n",
->   		offset, size);
-> diff --git a/drivers/staging/greybus/fw-download.c b/drivers/staging/greybus/fw-download.c
-> index 543692c567f9..a06065fb0c5e 100644
-> --- a/drivers/staging/greybus/fw-download.c
-> +++ b/drivers/staging/greybus/fw-download.c
-> @@ -271,11 +271,11 @@ static int fw_download_fetch_firmware(struct gb_operation *op)
->   	struct gb_connection *connection = op->connection;
->   	struct fw_download *fw_download = gb_connection_get_data(connection);
->   	struct gb_fw_download_fetch_firmware_request *request;
-> -	struct gb_fw_download_fetch_firmware_response *response;
->   	struct fw_request *fw_req;
->   	const struct firmware *fw;
->   	unsigned int offset, size;
->   	u8 firmware_id;
-> +	u8 *response;
->   	int ret = 0;
->   
->   	if (op->request->payload_size != sizeof(*request)) {
-> @@ -325,8 +325,8 @@ static int fw_download_fetch_firmware(struct gb_operation *op)
->   		goto put_fw;
->   	}
->   
-> -	if (!gb_operation_response_alloc(op, sizeof(*response) + size,
-> -					 GFP_KERNEL)) {
-> +	/* gb_fw_download_fetch_firmware_response contains only a byte array */
-> +	if (!gb_operation_response_alloc(op, size, GFP_KERNEL)) {
->   		dev_err(fw_download->parent,
->   			"error allocating fetch firmware response\n");
->   		ret = -ENOMEM;
-> @@ -334,7 +334,7 @@ static int fw_download_fetch_firmware(struct gb_operation *op)
->   	}
->   
->   	response = op->response->payload;
-> -	memcpy(response->data, fw->data + offset, size);
-> +	memcpy(response, fw->data + offset, size);
->   
->   	dev_dbg(fw_download->parent,
->   		"responding with firmware (offs = %u, size = %u)\n", offset,
-> diff --git a/include/linux/greybus/greybus_protocols.h b/include/linux/greybus/greybus_protocols.h
-> index aeb8f9243545..820134b0105c 100644
-> --- a/include/linux/greybus/greybus_protocols.h
-> +++ b/include/linux/greybus/greybus_protocols.h
-> @@ -232,9 +232,7 @@ struct gb_fw_download_fetch_firmware_request {
->   	__le32			size;
->   } __packed;
->   
-> -struct gb_fw_download_fetch_firmware_response {
-> -	__u8			data[0];
-> -} __packed;
-> +/* gb_fw_download_fetch_firmware_response contains no other data */
->   
->   /* firmware download release firmware request */
->   struct gb_fw_download_release_firmware_request {
-> @@ -414,9 +412,7 @@ struct gb_bootrom_get_firmware_request {
->   	__le32			size;
->   } __packed;
->   
-> -struct gb_bootrom_get_firmware_response {
-> -	__u8			data[0];
-> -} __packed;
-> +/* gb_bootrom_get_firmware_response contains no other data */
->   
->   /* Bootrom protocol Ready to boot request */
->   struct gb_bootrom_ready_to_boot_request {
+--=20
+Best Regards,
+Marek Marczykowski-G=C3=B3recki
+Invisible Things Lab
 
+--bSEqgkMjtgBF/hET
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhrpukzGPukRmQqkK24/THMrX1ywFAmXmTy0ACgkQ24/THMrX
+1yzN1Af9EOVSPtEQjBHWrW1AGqMWTjtqT3lAMyvHLFM0DAtcrax8aE4FGiYbAuVN
+pXZpGo/ImF3/U2N+d/Bc121irv4q50BeqcALYd3CMObme1H6Jxr8/oqyhaorFJkv
+pPvtGw99MQQIxMdNrTMRdholD2s5yTOku8Sc90Yhr9pcPh+8I2Q6cEt7ho044WO8
+KkDMWMCV7u7T7nigs6SKiAEd8PJ8RG+syAWABV9ZBtbv/yC/XUVh7o1D4Qw5SdE5
+lXbhSCsDttorwW9EhY8wIcYKHfFFIwS4aRaYhC5EqW0BrpaUkD8zJRgAHtyC2rRh
+Fa3oof4uYGrAwXAu5eK74RF1nNZ1nQ==
+=ClV7
+-----END PGP SIGNATURE-----
+
+--bSEqgkMjtgBF/hET--
 
