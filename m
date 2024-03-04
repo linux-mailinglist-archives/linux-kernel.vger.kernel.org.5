@@ -1,156 +1,169 @@
-Return-Path: <linux-kernel+bounces-90978-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90976-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC09F8707F4
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:05:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E3AC8707EE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:04:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 921351F23484
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:05:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FE4E1C21125
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:04:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DD6E5FDD3;
-	Mon,  4 Mar 2024 17:05:05 +0000 (UTC)
-Received: from kanga.kvack.org (kanga.kvack.org [205.233.56.17])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D28265F578;
-	Mon,  4 Mar 2024 17:05:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.233.56.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CA755FDB0;
+	Mon,  4 Mar 2024 17:03:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="EJmp2YwZ"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1A025CDDD;
+	Mon,  4 Mar 2024 17:03:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709571905; cv=none; b=fsg8ueFK6BrQQ3cpW3jisO+MM46aIms3a924PgfVAyI8/XHo/7l22COPLzT/Y+9J98tlFRJFXIREy4BMqxW8l9RMutg5aM2fvr5ZjqJqpTdjaijr3Qs4y0huvDQle4Y0VfpV6tUhlIWDpl63yjQwMM5kS/xYW98uxZWPSQJV28g=
+	t=1709571838; cv=none; b=CSUMKjy+qDToJGlHn3lW5kmlN1S5gQ+KHMvVbdpHQU4pq0nz4x8TH1mryzuv2rgQg1jVNWftD+k1x9Gm/BGlr++4K1aCCNDr3fbEjeOzjmjkf3A8ShgRl+81X6cAiHu+iPxMbiZId90tW0hBIkax6n6Und7la2n1ldsqxWz2gpg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709571905; c=relaxed/simple;
-	bh=GykyLOySktTcdnN5xj9tScvKWkrbQcuU5PotoD4BMPc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Mime-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XoyPemB64Qv01PkzFcqBCOR+q0oBNeaiVO4RoVcm3ewPQTjvXbg6kf3mAdPCjjADvmQEgNcas4IWjw/IHIAQFFkHmxzOJVCm4Cs9RZMEv47T1AiykyZmhBBfEKiv1aAErnbe29VY1E/XnuH75ByPwq6OjWggnOlmuOuhW+zre48=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=communityfibre.ca; spf=pass smtp.mailfrom=communityfibre.ca; arc=none smtp.client-ip=205.233.56.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=communityfibre.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=communityfibre.ca
-Received: by kanga.kvack.org (Postfix, from userid 63042)
-	id 09E296B0080; Mon,  4 Mar 2024 12:03:43 -0500 (EST)
-Date: Mon, 4 Mar 2024 12:03:43 -0500
-From: Benjamin LaHaise <ben@communityfibre.ca>
-To: Bart Van Assche <bvanassche@acm.org>
-Cc: Edward Adam Davis <eadavis@qq.com>,
-	syzbot+b91eb2ed18f599dd3c31@syzkaller.appspotmail.com,
-	brauner@kernel.org, jack@suse.cz, linux-aio@kvack.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Subject: Re: [PATCH] fs/aio: fix uaf in sys_io_cancel
-Message-ID: <20240304170343.GO20455@kvack.org>
-References: <0000000000006945730612bc9173@google.com> <tencent_DC4C9767C786D2D2FDC64F099FAEFDEEC106@qq.com> <14f85d0c-8303-4710-b8b1-248ce27a6e1f@acm.org>
+	s=arc-20240116; t=1709571838; c=relaxed/simple;
+	bh=QVFxd1YSLwW2a7fCHIdyRN5o6f+rp+oB5zXu4FiVrfE=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=V6zUcrtaOHUKHl5k6WUHt0b23Asp9jiR4cHOIgw2Z/7gvTI6/inud3KuNE09XeLO6ApkFUNCyIVG96p0lalKOxphsjeNUkBHz2ymG/6TqPuXtD3hGdlf6hcBaheyQ9uaCZFsvm1k94ZoRA++STXGofxMxVeXLScePQcR3hC61eU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=EJmp2YwZ; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709571832;
+	bh=QVFxd1YSLwW2a7fCHIdyRN5o6f+rp+oB5zXu4FiVrfE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=EJmp2YwZN2npYth3cYKdcDbjC89Fb7BLm57YTX0okcstsmnZ2dZbh3wZR1kizg1Ub
+	 +Yyhexq7++bev8BdvIY8jg2WruI3TFqiC4b5fZu6ju3SEW2bWc46mgGXwB8WFLYZ2i
+	 BmyUK8/ZWSSB68ITN6ZouphhbjLQbni0j3qC/px+ewUQbX9jKo52QGBMGwSCYpKniE
+	 C20k2wE/ATntdD4anS+VAtEvfgv8w/UyXjQzqtEE3JD/VHMqh0HXLvqnHPrzMx4gO1
+	 BqE63y/PqhbfRgx2UlaXy3DfiC+fTAnNtHIeHoZIZgJv1Stwm24NtAm/+5i4IlQDbd
+	 vQXJnI6Jqs5Yw==
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bbrezillon)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 32BCB37820CC;
+	Mon,  4 Mar 2024 17:03:52 +0000 (UTC)
+Date: Mon, 4 Mar 2024 18:03:50 +0100
+From: Boris Brezillon <boris.brezillon@collabora.com>
+To: Steven Price <steven.price@arm.com>
+Cc: =?UTF-8?B?QWRyacOhbg==?= Larumbe <adrian.larumbe@collabora.com>, Rob
+ Herring <robh@kernel.org>, David Airlie <airlied@gmail.com>, Daniel Vetter
+ <daniel@ffwll.ch>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann
+ <tzimmermann@suse.de>, Jonathan Corbet <corbet@lwn.net>,
+ linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-doc@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] drm/panfrost: Replace fdinfo's profiling debugfs
+ knob with sysfs
+Message-ID: <20240304180350.74e7e385@collabora.com>
+In-Reply-To: <51167b19-5a2c-4749-8b8c-b2a0e6050a33@arm.com>
+References: <20240302154845.3223223-2-adrian.larumbe@collabora.com>
+	<20240302154845.3223223-3-adrian.larumbe@collabora.com>
+	<51167b19-5a2c-4749-8b8c-b2a0e6050a33@arm.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <14f85d0c-8303-4710-b8b1-248ce27a6e1f@acm.org>
-User-Agent: Mutt/1.4.2.2i
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 04, 2024 at 08:15:15AM -0800, Bart Van Assche wrote:
-> On 3/3/24 04:21, Edward Adam Davis wrote:
-> >The aio poll work aio_poll_complete_work() need to be synchronized with 
-> >syscall
-> >io_cancel(). Otherwise, when poll work executes first, syscall may access 
-> >the
-> >released aio_kiocb object.
-> >
-> >Fixes: 54cbc058d86b ("fs/aio: Make io_cancel() generate completions again")
-> >Reported-and-tested-by: 
-> >syzbot+b91eb2ed18f599dd3c31@syzkaller.appspotmail.com
-> >Signed-off-by: Edward Adam Davis <eadavis@qq.com>
-> >---
-> >  fs/aio.c | 5 ++---
-> >  1 file changed, 2 insertions(+), 3 deletions(-)
-> >
-> >diff --git a/fs/aio.c b/fs/aio.c
-> >index 28223f511931..0fed22ed9eb8 100644
-> >--- a/fs/aio.c
-> >+++ b/fs/aio.c
-> >@@ -1762,9 +1762,8 @@ static void aio_poll_complete_work(struct 
-> >work_struct *work)
-> >  	} /* else, POLLFREE has freed the waitqueue, so we must complete */
-> >  	list_del_init(&iocb->ki_list);
-> >  	iocb->ki_res.res = mangle_poll(mask);
-> >-	spin_unlock_irq(&ctx->ctx_lock);
-> >-
-> >  	iocb_put(iocb);
-> >+	spin_unlock_irq(&ctx->ctx_lock);
-> >  }
-> >  
-> >  /* assumes we are called with irqs disabled */
-> >@@ -2198,7 +2197,6 @@ SYSCALL_DEFINE3(io_cancel, aio_context_t, ctx_id, 
-> >struct iocb __user *, iocb,
-> >  			break;
-> >  		}
-> >  	}
-> >-	spin_unlock_irq(&ctx->ctx_lock);
-> >  
-> >  	/*
-> >  	 * The result argument is no longer used - the io_event is always
-> >@@ -2206,6 +2204,7 @@ SYSCALL_DEFINE3(io_cancel, aio_context_t, ctx_id, 
-> >struct iocb __user *, iocb,
-> >  	 */
-> >  	if (ret == 0 && kiocb->rw.ki_flags & IOCB_AIO_RW)
-> >  		aio_complete_rw(&kiocb->rw, -EINTR);
-> >+	spin_unlock_irq(&ctx->ctx_lock);
-> >  
-> >  	percpu_ref_put(&ctx->users);
+On Mon, 4 Mar 2024 16:04:34 +0000
+Steven Price <steven.price@arm.com> wrote:
 
-This is just so wrong there aren't even words to describe it.  I
-recommending reverting all of Bart's patches since they were not reviewed
-by anyone with a sufficient level of familiarity with fs/aio.c to get it
-right.
+> On 02/03/2024 15:48, Adri=C3=A1n Larumbe wrote:
+> > Debugfs isn't always available in production builds that try to squeeze
+> > every single byte out of the kernel image, but we still need a way to
+> > toggle the timestamp and cycle counter registers so that jobs can be
+> > profiled for fdinfo's drm engine and cycle calculations.
+> >=20
+> > Drop the debugfs knob and replace it with a sysfs file that accomplishes
+> > the same functionality, and document its ABI in a separate file.
+> >=20
+> > Signed-off-by: Adri=C3=A1n Larumbe <adrian.larumbe@collabora.com> =20
+>=20
+> I'm happy with this.
+>=20
+> Reviewed-by: Steven Price <steven.price@arm.com>
+>=20
+> Boris: are you happy with the sysfs ABI, or would you like to
+> investigate further the implications of leaving the counters enabled all
+> the time during execution before committing to the sysfs ABI?
 
-		-ben
+No, that's fine, but I have a few comments on the implementation.
 
-> I'm not enthusiast about the above patch because it increases the amount
-> of code executed with the ctx_lock held. Wouldn't something like the
-> untested patch below be a better solution?
-> 
-> Thanks,
-> 
-> Bart.
-> 
-> 
-> diff --git a/fs/aio.c b/fs/aio.c
-> index 28223f511931..c6fb10321e48 100644
-> --- a/fs/aio.c
-> +++ b/fs/aio.c
-> @@ -2177,6 +2177,7 @@ SYSCALL_DEFINE3(io_cancel, aio_context_t, ctx_id, 
-> struct iocb __user *, iocb,
->  	struct kioctx *ctx;
->  	struct aio_kiocb *kiocb;
->  	int ret = -EINVAL;
-> +	bool is_cancelled_rw = false;
->  	u32 key;
->  	u64 obj = (u64)(unsigned long)iocb;
-> 
-> @@ -2193,6 +2194,7 @@ SYSCALL_DEFINE3(io_cancel, aio_context_t, ctx_id, 
-> struct iocb __user *, iocb,
->  	/* TODO: use a hash or array, this sucks. */
->  	list_for_each_entry(kiocb, &ctx->active_reqs, ki_list) {
->  		if (kiocb->ki_res.obj == obj) {
-> +			is_cancelled_rw = kiocb->rw.ki_flags & IOCB_AIO_RW;
->  			ret = kiocb->ki_cancel(&kiocb->rw);
->  			list_del_init(&kiocb->ki_list);
->  			break;
-> @@ -2204,7 +2206,7 @@ SYSCALL_DEFINE3(io_cancel, aio_context_t, ctx_id, 
-> struct iocb __user *, iocb,
->  	 * The result argument is no longer used - the io_event is always
->  	 * delivered via the ring buffer.
->  	 */
-> -	if (ret == 0 && kiocb->rw.ki_flags & IOCB_AIO_RW)
-> +	if (ret == 0 && is_cancelled_rw)
->  		aio_complete_rw(&kiocb->rw, -EINTR);
-> 
->  	percpu_ref_put(&ctx->users);
-> 
-> 
+> > +static ssize_t
+> > +profiling_show(struct kobject *kobj, struct kobj_attribute *attr, char=
+ *buf)
+> > +{
+> > +	bool *profile_mode =3D
+> > +		&container_of(kobj, struct panfrost_device,
+> > +			      profiling.base)->profiling.profile_mode;
+> > +
+> > +	return sysfs_emit(buf, "%d\n", *profile_mode);
+> > +}
+> > +
+> > +static ssize_t
+> > +profiling_store(struct kobject *kobj, struct kobj_attribute *attr,
+> > +	       const char *buf, size_t count)
+> > +{
+> > +	bool *profile_mode =3D
+> > +		&container_of(kobj, struct panfrost_device,
+> > +			      profiling.base)->profiling.profile_mode;
+> > +	int err, value;
+> > +
+> > +	err =3D kstrtoint(buf, 0, &value);
 
--- 
-"Thought is the essence of where you are now."
+I'd suggest using kstrtobool() since you make the result a boolean
+anyway.
+
+> > +	if (err)
+> > +		return err;
+> > +
+> > +	*profile_mode =3D !!value;
+> > +
+> > +	return count;
+> > +}
+> > +
+> > +static const struct kobj_attribute profiling_status =3D
+> > +__ATTR(status, 0644, profiling_show, profiling_store);
+> > +
+> > +static const struct kobj_type kobj_profile_type =3D {
+> > +	.sysfs_ops =3D &kobj_sysfs_ops,
+> > +};
+
+DEVICE_ATTR(profiling, 0644, profiling_show, profiling_store);
+
+?
+
+> > +
+> > +int panfrost_sysfs_init(struct panfrost_device *pfdev)
+> > +{
+> > +	struct device *kdev =3D pfdev->ddev->primary->kdev;
+> > +	int err;
+> > +
+> > +	kobject_init(&pfdev->profiling.base, &kobj_profile_type);
+> > +
+> > +	err =3D kobject_add(&pfdev->profiling.base, &kdev->kobj, "%s", "profi=
+ling");
+
+Can we make it a device attribute instead of adding an extra kboj?
+
+> > +	if (err)
+> > +		return err;
+> > +
+> > +	err =3D sysfs_create_file(&pfdev->profiling.base, &profiling_status.a=
+ttr);
+> > +	if (err)
+> > +		kobject_del(&pfdev->profiling.base);
+> > +
+> > +	return err;
+> > +}
 
