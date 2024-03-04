@@ -1,142 +1,81 @@
-Return-Path: <linux-kernel+bounces-91298-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E211D870C6E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:25:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76241870C88
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:27:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96C3A1F26EF6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:25:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50A731C254BA
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:26:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D6633B795;
-	Mon,  4 Mar 2024 21:25:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 191135B1E9;
+	Mon,  4 Mar 2024 21:26:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="El15yIhS"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R3IviibI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B1251F95E
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 21:25:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C33E1F5FD;
+	Mon,  4 Mar 2024 21:26:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709587527; cv=none; b=SgA4w9ZktgwilrhuhpT4hF9ebXsSaicyV2SLtrPcN4XFR7MHHauppwDqofOWPp3g1U/fnfd2SzUOdsMJmDja8STUxNmg//rE5azdVNvwfzTp2IPC/z26cTwP/c5KW+NenbTVZpPS+jZpCp1yo47R0hTUwllzKk2lE4xmRo0LmOs=
+	t=1709587590; cv=none; b=YBNZcefiO/RxkpSwqhf3p15yK1ptLA7OnSArBc/RDcZuAiUAnljq0ItXgGCuTmdtJPPgUa5fzDgF+HIxN1ODin4f7nAMV+k7MRVJWHN0dxyLbqvB3RkYlP3j65h2I0f/XKT6TUQ1xL9yRPjCS4tuHkpoMuqnGz3u2Eeu/lr3Wvc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709587527; c=relaxed/simple;
-	bh=0TWUKCDgxRZFqQLCQUzZZnZ4A3GPQ9+rr11L3/1F5iE=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=PkzFywpeNx2z+szbuUNwfQt3/aazaHOrDynCkuf8t3VBTYUY6vaLxLtJujOafKnxubUct7sZkLiIMdmUXoIlpIXPjt18aSgso0UmnOZphmBPg3rkHuG+svZhsyheIdCKzVHu5iHesUG3ict4Hc2EGs3fteNbHcPB24Z84UxBk8E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=El15yIhS; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709587526; x=1741123526;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=0TWUKCDgxRZFqQLCQUzZZnZ4A3GPQ9+rr11L3/1F5iE=;
-  b=El15yIhSiCdvwteExWrriLndsXjE5z1pOCgSr99Zt0URP7OS58+fKaba
-   I4K30JpeYiXGmYdnG8yiCCXi4NV8ajr73TqiLT4KJhzQAsJb3o8p8KWv2
-   Pe/6gICzTlORF+wWgrLtWO9BiDU5iMvPOEc39fu2DU3pDTk6kRIj0RWdh
-   jNzCHv3LwYa404sTlt/NctaX4vCQnUPX90XrIAqW7DMivSf4olCIcyKNz
-   v8tX3vMU2CCELKbAn+5JcIcAe6QobiaVCvtOWsSbNYXDE7XFvRNSEqhiX
-   lXGAP5x30QQ9FRfhoPhv7xF7Cwk81grxC3Swh6amwQIuTb7K9GPmGZZnQ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="3962079"
-X-IronPort-AV: E=Sophos;i="6.06,204,1705392000"; 
-   d="scan'208";a="3962079"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 13:25:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,204,1705392000"; 
-   d="scan'208";a="9076106"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by orviesa010.jf.intel.com with ESMTP; 04 Mar 2024 13:25:23 -0800
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rhFoH-0002mT-0I;
-	Mon, 04 Mar 2024 21:25:21 +0000
-Date: Tue, 5 Mar 2024 05:25:11 +0800
-From: kernel test robot <lkp@intel.com>
-To: "David E. Box" <david.e.box@linux.intel.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Hans de Goede <hdegoede@redhat.com>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: drivers/platform/x86/intel/pmc/core_ssram.c:98:25: sparse: sparse:
- incorrect type in argument 1 (different address spaces)
-Message-ID: <202403050547.qnZtuNlN-lkp@intel.com>
+	s=arc-20240116; t=1709587590; c=relaxed/simple;
+	bh=CzbbppJj4URu/ZwENXc/SuZfwfRp3h53NmuSsst2lhU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qng4tSQkd5O4WHmrSkY4b2wKUsFXJOxWZQaVBM1YVVZ3mfHf9juECA7Y1JOmSLJuYQf8LeS7MkHcX/4NAlEiQSaXVPhkUFO25QS3xJVJ2Ez0LqEOAsukJ8glAuA11OYN8gubch0AL/SdhrQOOcxw/6p8OQ6t44LHPgeYVkti/FA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R3IviibI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE1DBC433F1;
+	Mon,  4 Mar 2024 21:26:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709587590;
+	bh=CzbbppJj4URu/ZwENXc/SuZfwfRp3h53NmuSsst2lhU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=R3IviibIpF8P/rEwyPHUlxmjM4bm7oKTCJ2hG5lucAODpyCpDjyIJ1rfH+Xeztw0F
+	 7vgs5XFLVSC5mmLBT5k3NYBL6tMv7CPDcaEnJlRxaa4BjqXGSfLkcnGXNtRMrfiePF
+	 pA/wbX6pMCvdWKePcmF5JNOVKd9TEcROjV6BWOoQCmqcthpPKTzk50ENyRWOnl4QNw
+	 exoCyPJ5B6IynansJAnBc+eVZ0lTGHFB03AX6Hl5hYS9ZtOhQqdfGdrtTD26VNAPQZ
+	 Cem1whi4fO4PwuON9cUh3xhN09Flhn12xqOhXyKe1nvX4zMqzDALyPIwDyXQM4hPJ3
+	 blDe15l9V0YhQ==
+Date: Mon, 4 Mar 2024 15:26:27 -0600
+From: Rob Herring <robh@kernel.org>
+To: Javier =?iso-8859-1?Q?Garc=EDa?= <javier.gar.tab@gmail.com>
+Cc: Jack Yu <jack.yu@realtek.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+	Rob Herring <robh+dt@kernel.org>, daniel.baluta@nxp.com,
+	alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>,
+	Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ASoC: dt-bindings: rt1015: Convert to dtschema
+Message-ID: <170958758740.1075337.15453587624816097337.robh@kernel.org>
+References: <20240304142315.14522-1-javier.gar.tab@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240304142315.14522-1-javier.gar.tab@gmail.com>
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   90d35da658da8cff0d4ecbb5113f5fac9d00eb72
-commit: a01486dc4bb17de976c6d0a4b1ad5f8106525dfb platform/x86/intel/pmc: Cleanup SSRAM discovery
-date:   3 months ago
-config: x86_64-randconfig-r111-20240304 (https://download.01.org/0day-ci/archive/20240305/202403050547.qnZtuNlN-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240305/202403050547.qnZtuNlN-lkp@intel.com/reproduce)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403050547.qnZtuNlN-lkp@intel.com/
+On Mon, 04 Mar 2024 15:23:07 +0100, Javier García wrote:
+> Convert the RT1015 Mono Class D Audio Amplifier to DT schema.
+> 
+> Signed-off-by: Javier García <javier.gar.tab@gmail.com>
+> ---
+>  .../bindings/sound/realtek,rt1015.yaml        | 41 +++++++++++++++++++
+>  .../devicetree/bindings/sound/rt1015.txt      | 23 -----------
+>  2 files changed, 41 insertions(+), 23 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/sound/realtek,rt1015.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/sound/rt1015.txt
+> 
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/platform/x86/intel/pmc/core_ssram.c:98:25: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const volatile *val @@     got void [noderef] __iomem *__val @@
-   drivers/platform/x86/intel/pmc/core_ssram.c:98:25: sparse:     expected void const volatile *val
-   drivers/platform/x86/intel/pmc/core_ssram.c:98:25: sparse:     got void [noderef] __iomem *__val
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-vim +98 drivers/platform/x86/intel/pmc/core_ssram.c
-
-    70	
-    71	static int
-    72	pmc_core_ssram_get_pmc(struct pmc_dev *pmcdev, int pmc_idx, u32 offset)
-    73	{
-    74		struct pci_dev *ssram_pcidev = pmcdev->ssram_pcidev;
-    75		void __iomem __free(pmc_core_iounmap) *tmp_ssram = NULL;
-    76		void __iomem __free(pmc_core_iounmap) *ssram = NULL;
-    77		const struct pmc_reg_map *map;
-    78		u64 ssram_base, pwrm_base;
-    79		u16 devid;
-    80	
-    81		if (!pmcdev->regmap_list)
-    82			return -ENOENT;
-    83	
-    84		ssram_base = ssram_pcidev->resource[0].start;
-    85		tmp_ssram = ioremap(ssram_base, SSRAM_HDR_SIZE);
-    86	
-    87		if (pmc_idx != PMC_IDX_MAIN) {
-    88			/*
-    89			 * The secondary PMC BARS (which are behind hidden PCI devices)
-    90			 * are read from fixed offsets in MMIO of the primary PMC BAR.
-    91			 */
-    92			ssram_base = get_base(tmp_ssram, offset);
-    93			ssram = ioremap(ssram_base, SSRAM_HDR_SIZE);
-    94			if (!ssram)
-    95				return -ENOMEM;
-    96	
-    97		} else {
-  > 98			ssram = no_free_ptr(tmp_ssram);
-    99		}
-   100	
-   101		pwrm_base = get_base(ssram, SSRAM_PWRM_OFFSET);
-   102		devid = readw(ssram + SSRAM_DEVID_OFFSET);
-   103	
-   104		map = pmc_core_find_regmap(pmcdev->regmap_list, devid);
-   105		if (!map)
-   106			return -ENODEV;
-   107	
-   108		return pmc_core_pmc_add(pmcdev, pwrm_base, map, PMC_IDX_MAIN);
-   109	}
-   110	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
