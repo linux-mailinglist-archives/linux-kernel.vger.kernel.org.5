@@ -1,90 +1,174 @@
-Return-Path: <linux-kernel+bounces-90332-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90333-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAADD86FDC7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:34:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB8A386FDCC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:39:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BE751F209E2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:34:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DDE651C224E6
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:39:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 538A520300;
-	Mon,  4 Mar 2024 09:34:11 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36C541B814;
-	Mon,  4 Mar 2024 09:34:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71E2520B33;
+	Mon,  4 Mar 2024 09:39:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hd1u5h0Y"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 223191BC3D
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 09:39:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709544850; cv=none; b=WUQRmjYceLixrOwhF1Dd1MkjbMUFOdAlVN9FyQHMsmH0E2XRJYRlvwh13DgsKLpzOCQ3Cur9PX2edqxVAl9KsIYUvYJgYorwfUP4OGfJUk9rgMjxas9GaZqzQfdTJ4b/KnYeokBpyY/9b0HC+4BDcN8zI1aGFXgHccPLHBv5xTY=
+	t=1709545149; cv=none; b=SH3CRR4lThlo64LEKa3H7+V4WXIZWimxNpgQO5IzaKfR2cgYJ4TnRGJt/mDCP9pQ4Dn4y9FyVJ7Mbig2l6Pv30QDs2uWQ9qpZoeco6+Iiq2BaMM/uX+We5dQSjSzE79EFrLKSshOuNo7KxLd73mWzqHpkyn1OeRdlMBZVxXYjgY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709544850; c=relaxed/simple;
-	bh=yOvvdN7W5EY5FGe34phRMuayj1yK5cLQ6X6H/fHvR+o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PLc6wg/9vB/wMm5Faux/GHAdkwbplUEyZylXS3SEBOkM9ZNzMz+jZwe6F6sxCSCr6a0ZLwbDJSpndqpIF58uraWLBGsP9LRFaQ/9S5fpR0I2VIt1yUtZQ4J9jfK7G92QEAUQqk8HHAJyetee/hpHGjF4Jtmn6S7jwO3BJhBggAk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 64FDD1FB;
-	Mon,  4 Mar 2024 01:34:44 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.69.81])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1FB5A3F762;
-	Mon,  4 Mar 2024 01:34:05 -0800 (PST)
-Date: Mon, 4 Mar 2024 09:34:03 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: "JiaLong.Yang" <jialong.yang@shingroup.cn>
-Cc: Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>, linux-s390@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arch/s390/perf: Register cpumf_pmu with type =
- PERF_TYPE_RAW
-Message-ID: <ZeWVi6pua5QVqz_y@FVFF77S0Q05N>
-References: <20240304022701.7362-1-jialong.yang@shingroup.cn>
+	s=arc-20240116; t=1709545149; c=relaxed/simple;
+	bh=zw1bKc+mpb3Eq0EH3dsgVKb7A+Jz5grqECA/b0F7Vl0=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=hBmTs9zgiN7p0oksEiWH1/h2fLRglCSMprQ2YuKO6daN2lp9+GQyMe3ilP2mjpFQHPVJv8Ed5Y0BNqxfBeyw/VBConi4tRxO+bl3nw/1KfH8hpqDJrPlZiL0Ft7REb8pUCDErN87wxvxwa2zi5fCFTp3Wis8A1CWqfj3r3hpbfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hd1u5h0Y; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709545148; x=1741081148;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=zw1bKc+mpb3Eq0EH3dsgVKb7A+Jz5grqECA/b0F7Vl0=;
+  b=hd1u5h0YIuJ1JRwH4eKRAzeM/TGb56ZZoWr3QNXCOdu1/Hd+FwfDILo8
+   ZP4SEj0vlAvXdq6GwTWHU6W3i20DDb3i7w8lbRTmMDMK9v6NAvCIeEFWY
+   wOVRvP6K+2C7uVJYa0o1RjsgN59Bb/G9OyLv+ofjeCiBNfP6GxK1NADSJ
+   RTsMyE8xfGspzGCrlp/JzY/ZPh0Kjp0CHm2K8H3aUBIH/3jNi4jw4C6NJ
+   MywMg5tcaJg0wZBCE5YDRJH//+HOzZjMqvYlSqGqH9VUJaHtjBiadtQEO
+   klz245xg5xnauQslwg2q00424RwQikOFTH7OTGXp9NPDVzxTNGOOKv+eF
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="21562712"
+X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
+   d="scan'208";a="21562712"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 01:39:07 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
+   d="scan'208";a="13495049"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.211.18]) ([10.254.211.18])
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 01:39:05 -0800
+Message-ID: <4fadb386-e441-4464-9af1-0d369aed717e@linux.intel.com>
+Date: Mon, 4 Mar 2024 17:39:03 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240304022701.7362-1-jialong.yang@shingroup.cn>
+User-Agent: Mozilla Thunderbird
+Cc: baolu.lu@linux.intel.com, "iommu@lists.linux.dev"
+ <iommu@lists.linux.dev>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/2] iommu/vt-d: Fix NULL domain on device release
+Content-Language: en-US
+To: "Tian, Kevin" <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>, "Badger, Eric" <ebadger@purestorage.com>
+References: <20240229094613.121575-1-baolu.lu@linux.intel.com>
+ <20240229094613.121575-3-baolu.lu@linux.intel.com>
+ <BN9PR11MB52764189F754ABF69D24E2AE8C232@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <2cc53838-c88f-43a0-b974-c5acb6f27849@linux.intel.com>
+ <BL1PR11MB5271815FE2D13186078BCED58C232@BL1PR11MB5271.namprd11.prod.outlook.com>
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <BL1PR11MB5271815FE2D13186078BCED58C232@BL1PR11MB5271.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 04, 2024 at 10:27:01AM +0800, JiaLong.Yang wrote:
-> The struct pmu cpumf_pmu has handled generic events. So it need some
-> flags to tell core this thing.
-
-It's not necessary to register as PERF_TYPE_RAW in order to handle raw events,
-and PERF_TYPE_RAW is not a flag.
-
-Have you encountered a functional problem, or was this found by inspection?
-
-Mark.
-
-> Signed-off-by: JiaLong.Yang <jialong.yang@shingroup.cn>
-> ---
->  arch/s390/kernel/perf_cpum_cf.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On 2024/3/4 16:59, Tian, Kevin wrote:
+>> From: Baolu Lu <baolu.lu@linux.intel.com>
+>> Sent: Monday, March 4, 2024 4:07 PM
+>>
+>> On 2024/3/4 15:36, Tian, Kevin wrote:
+>>>> From: Lu Baolu <baolu.lu@linux.intel.com>
+>>>> Sent: Thursday, February 29, 2024 5:46 PM
+>>>>
+>>>> +
+>>>> +/*
+>>>> + * Cache invalidation for changes to a scalable-mode context table
+>>>> + * entry.
+>>>> + *
+>>>> + * Section 6.5.3.3 of the VT-d spec:
+>>>> + * - Device-selective context-cache invalidation;
+>>>> + * - Domain-selective PASID-cache invalidation to affected domains
+>>>> + *   (can be skipped if all PASID entries were not-present);
+>>>> + * - Domain-selective IOTLB invalidation to affected domains;
+>>>
+>>> the spec talks about domain-selective but the code actually does
+>>> global invalidation.
+>>
+>> I should have included the following comments below:
+>>
+>> /* Given that we have no idea about which domain IDs and PASIDs were
+>>    * used in the pasid table, upgrade them to global PASID and IOTLB
+>>    * cache invalidation. This doesn't impact the performance significantly
+>>    * as the clearing context entry is not a critical path.
+>>    */
+>>
 > 
-> diff --git a/arch/s390/kernel/perf_cpum_cf.c b/arch/s390/kernel/perf_cpum_cf.c
-> index 41ed6e0f0a2a..6ba36cf50091 100644
-> --- a/arch/s390/kernel/perf_cpum_cf.c
-> +++ b/arch/s390/kernel/perf_cpum_cf.c
-> @@ -1213,7 +1213,7 @@ static int __init cpumf_pmu_init(void)
->  	debug_register_view(cf_dbg, &debug_sprintf_view);
->  
->  	cpumf_pmu.attr_groups = cpumf_cf_event_group();
-> -	rc = perf_pmu_register(&cpumf_pmu, "cpum_cf", -1);
-> +	rc = perf_pmu_register(&cpumf_pmu, "cpum_cf", PERF_TYPE_RAW);
->  	if (rc) {
->  		pr_err("Registering the cpum_cf PMU failed with rc=%i\n", rc);
->  		goto out2;
-> -- 
-> 2.25.1
+> but then it affects all other perf-critical paths which rely on the cache
+> for other devices...
+
+You are right. Good consideration.
+
 > 
-> 
+> It's preferable to restrict overhead to this release path only e.g. walking
+> the PASID table to identify affected DIDs and PASIDs instead of expanding
+> the impact to system wide.
+
+The sm_context_flush_caches() could be used in two different paths:
+- Deferred attachment case;
+- Normal device release path.
+
+For the formal case, we have to use global cache invalidation; but the
+the latter case, it's fine to skip these cache invalidation. The new
+helper probably looks like below.
+
+/*
+  * Cache invalidation for changes to a scalable-mode context table
+  * entry.
+  *
+  * Section 6.5.3.3 of the VT-d spec:
+  * - Device-selective context-cache invalidation;
+  * - Domain-selective PASID-cache invalidation to affected domains
+  *   (can be skipped if all PASID entries were not-present);
+  * - Domain-selective IOTLB invalidation to affected domains;
+  * - Global Device-TLB invalidation to affected functions.
+  *
+  * For kdump cases, old valid entries may be cached due to the in-flight
+  * DMA and copied pgtable, but there is no unmapping behaviour for them,
+  * thus we need explicit cache flushes for all affected domain IDs and
+  * PASIDs used in the copied PASID table. Given that we have no idea about
+  * which domain IDs and PASIDs were used in the copied tables, upgrade
+  * them to global PASID and IOTLB cache invalidation.
+  *
+  * For normal case, the iommu has been parked in blocking state. All PASID
+  * entries are in non-present now. Skip PASID and IOTLB cache invalidation.
+  */
+static void sm_context_flush_caches(struct device *dev)
+{
+         struct device_domain_info *info = dev_iommu_priv_get(dev);
+         struct intel_iommu *iommu = info->iommu;
+
+         iommu->flush.flush_context(iommu, 0, PCI_DEVID(info->bus, 
+info->devfn),
+                                    DMA_CCMD_MASK_NOBIT, 
+DMA_CCMD_DEVICE_INVL);
+         if (context_copied(iommu, info->bus, info->devfn)) {
+                 qi_flush_pasid_cache(iommu, 0, QI_PC_GLOBAL, 0);
+                 iommu->flush.flush_iotlb(iommu, 0, 0, 0, 
+DMA_TLB_GLOBAL_FLUSH);
+         }
+         devtlb_invalidation_with_pasid(iommu, dev, IOMMU_NO_PASID);
+}
+
+Does it look good for you?
+
+Best regards,
+baolu
 
