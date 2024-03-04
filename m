@@ -1,211 +1,146 @@
-Return-Path: <linux-kernel+bounces-91189-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91195-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34A2D870AFF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:51:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BD81870B0E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:56:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D19412865B5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:51:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D04FFB2280D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:55:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BD9679DDC;
-	Mon,  4 Mar 2024 19:51:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4552B79DD7;
+	Mon,  4 Mar 2024 19:55:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="oFGTEtVb"
-Received: from out162-62-57-210.mail.qq.com (out162-62-57-210.mail.qq.com [162.62.57.210])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="SFfEsAdi"
+Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50DE91E4AA;
-	Mon,  4 Mar 2024 19:51:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.210
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 219041AADE
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 19:55:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709581887; cv=none; b=p9xZOCTFS/wggE2ou6/BYpPlTWNuE3kXYsPGJ0D/hU/MjpxDH0NNxuOR1KV96YCjFXEykykQcyuyA+1g06QOZ/pzvt3UquiIehQVyOt3lzhP9xR4qV1AJmXhyMnGe95k7NEOjaG5VnWsv4WflIa44IRDWfpStHva+II5yOgA4aw=
+	t=1709582151; cv=none; b=t4JUu2bbAU4+D1PM9/6WY8ieE2kbv4wMgkaJRlbq9u9DuxCZoWhXPB9LTYz1Ve/Jr2ljqDjGXGxDfXwsxzCW2qLvNS3XZnpxptAqJj+KIvgDiDg9BVPGbz7ZR07uMOxkd8cgjl+0TxTODujZecftGFhIO+VuQrqK3ish6LPgouo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709581887; c=relaxed/simple;
-	bh=OhgJRXuTB3k0zKcrFF9pnuEs+xWlMUxr3v8NIsiXFgQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MtqR/cCkMCPYO4gYYAssay66dCEoiFmSIgWcpKqqHEc+4tMAH7be6ezg3Ml5MSNaMJ1/nAmBDSR4T1Lpon7ifTZ65J7vmcczsDoDi7uDxNn4CaugUmaBjdXn7uslwdRgQbPCjr26f9+s083bWWhRu/CPBcClPe9OzoqZ1wBLp7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=oFGTEtVb; arc=none smtp.client-ip=162.62.57.210
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1709581874; bh=aUV7ui9OssFAkAUYQZM978SYBGiOeof7R/xUNj09ngo=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=oFGTEtVbNh/0r2cdHOgOXs8YzgvHRR6AtX0InqYiIjNB6x+iQ+9Ud53psrKHSpB0P
-	 0W1YEXmLX1RnlfE1DOTDLPfQ19a/lKjjDFw/2fiHmVumx09z3egLMcXx01k/be7a0J
-	 sWrZxr0uajJxqd+L3KEqcSgqU6BnKVc3/zuYesYE=
-Received: from [IPV6:2001:da8:c800:d084:f0c8:5d03:8100:4abe] ([2001:da8:c800:d084:f0c8:5d03:8100:4abe])
-	by newxmesmtplogicsvrsza7-0.qq.com (NewEsmtp) with SMTP
-	id CCB30CA2; Tue, 05 Mar 2024 03:51:11 +0800
-X-QQ-mid: xmsmtpt1709581871t0bl0pgus
-Message-ID: <tencent_CD84A131884F52F041BBC3510D7732662705@qq.com>
-X-QQ-XMAILINFO: M5g+bqkaOkZD1nVsDzmb/KiRnIRVOiuy4VyXCY3MwN6yKbdbcBhWCfQBQafO08
-	 THBMK9a4n1j378qVIngxXGyXkyBcGa3If9za4BoFbgP0g4iw05d+QOlYLsSgQ5oBS7svrRwXWndt
-	 6Z1vjwzbhvHkNN8b5v8Ay6p4SY3QsgqHgO7QDygd4WJLfujun7vUQdJuDxgaBvnXpt7eqW3wfIEI
-	 3qVbwEgn18/la4PtbSHl8WNbONL1LpWG1pUXw8l3UfUTHnzKl1z0xzUvc/vKRbmcWstJ6h2Tsu4T
-	 Dl50kGgKfiqcuP45KrN40VPFxH4du4DOJJ5FUKc8Y9jSYxDys8xtrRWZLZqebCrh2itAcK0s4z+E
-	 jC3MKhvCgXilrB2Wd7HlU1CyfCALoF9Lw45DzxkyU5fV6cp8kJTbVlO3235dGnlP7LQEGOyeBv5g
-	 OYfmv0DI9C7jKRWncRXY4gMFf86Hak1XsI4hPjKcp10ihoeQ0P1/iMEcgXlDKL4Ipn/c7LW518V2
-	 CCk2k8RzeDbdFPr4Iukp3XIIrnqbpqgUXmKeppUp25BvyItceXfLoLu90s8vA0vf28Fy1SPyPdd6
-	 g/r8UdGBhDy7eQfLUhH7JTgZcJ5+2HMEkWboaQLalwCBlTNPxgNyjUpShZVauz1Fv8LcC38gXK8h
-	 EAT7YYdlqJrEethk7SG1+2WfOR9eImZKrB57WYg2+HQ2teq4dYf/1lOy8M2luMKwYIALAqfWMbDc
-	 LGZFXj4Z4d8aSvMMaoqw2zJLTPNxNVJXrguxx90TLCfJ1Z76AWh9gtZRq9iYfQohuMnk9xMzz0Or
-	 4nRcymljxOGp3Xf+mkf16mGULp6PGxwAxRGwbAuIwqLm4KLJtPrHfuOIjU8oiwMr1KPygl6M+ehD
-	 Q3VS7nFe7YRb3cBKD6vGrFrz5Ca4HsTIdbrFv+8EqgmdD9fAbL6VZUVc/g5q+zZAJxjso4pLyFJU
-	 dtcvaYMYNG988+fpLdiCTuWeiuRxg4XZRkMXNhZfCWeC6J9YlzXX+9gtUMB4YE
-X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
-X-OQ-MSGID: <fe2f0f7e-f01a-4fd3-95f9-2afc807a9430@cyyself.name>
-Date: Tue, 5 Mar 2024 03:51:10 +0800
+	s=arc-20240116; t=1709582151; c=relaxed/simple;
+	bh=Tog5zeobrRKVTjzHtvdP4CwzoUt0XlUpqhaKOA6akkA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=upozDxgGJqnqRCkPFnZu14Fr+NHtIJcd03tVgWHGZn8Yq07BdT9Onzpp8ALNBr9Qpjd9DA0DMZYvA8IcYUcOI0YcgyvMD5vRZ7PvIYZ9pkWVFNL10ll4zr00DjZfjtUJSfEAAO4q8y5IAGIT3z1EMP+vT7luqvTCZfvcitPnrZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=SFfEsAdi; arc=none smtp.client-ip=209.85.210.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-6e4e78f9272so426457a34.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 11:55:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1709582149; x=1710186949; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0NChCIovI4USYlbL0DUhfDLCbSUUEkB22ExtjdPhFtk=;
+        b=SFfEsAdi4tOaMFaHuRt5A0k3vLs7falbjoC1eqjJc4Uz8YY586EPHKkKWWGZ+YYMq4
+         u8qbzRjjvLG0qN5lfp38yddnm1fqTubajBc6w4rZg+qh90PB6ntU50r+Mb28cHZGAuWK
+         Db7IakFRfTSh8aSssYTB3HvKJsyUCPj+tL4DU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709582149; x=1710186949;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0NChCIovI4USYlbL0DUhfDLCbSUUEkB22ExtjdPhFtk=;
+        b=BKbZwFh7vmiz1+wwxEE7dylprFbsMaauRshH2WQwndr9nRepdAsqad45cOIkMqNhBs
+         oi4bnERXWc3kCDibSc57eEnkYBuPHe8h5RApWjqL4VZ4yNFrC/IzG9kn56qxFhrW/3Fl
+         kwCr8/FN7YinRFnhP0Zje81OkE6LhCFeM+Sf+JeSv0IwBf7F0fmtFTj0rcoS/3ZJV9tH
+         YVXPQfNraunx9Qg3MF+mLEPb1pC1KixJYTIVJqgET7g8XJ/D6WvoQgBWBLbIaku2I4lt
+         ggjlqCWmdUSPlrXiDq9/FOdTr1J8ayxhohPs/cwQu6pB4DkTwH89safCUzkC0IyLE7/C
+         vWeg==
+X-Forwarded-Encrypted: i=1; AJvYcCVXLWXB2PjEHf7LpkQSBDcdqyLDQanO+hq+zhqa0nBpoc3v7MEFKbDdJW202XhzER9I5sGEF6zNu7hgerMShoj4HYMsn9SAMY49P12V
+X-Gm-Message-State: AOJu0YwbWIsLTLvyeWuban+GE5uy7SMB2vsvKhBmoZEU/dEa9AA08sZb
+	q/ynHpVx7bL3sP2R05JOHJV7Md3SGaUbaBoXxVTAeWP254LHwT0wxme9aLV1qIgDEj1DyVC9Ih4
+	YjSnJAARlxbMRtDj5Zy44XDGvFIvCzDccuS2z
+X-Google-Smtp-Source: AGHT+IH/daYx78kTRsjvivGYL4lFX/eiSnMvvHZW7wCrYqUj4CUHMpbMfS/Z7+FVgRoBdMex8ZYd8yNiaMAznb2VoxY=
+X-Received: by 2002:a9d:6c4d:0:b0:6e4:ecc3:556a with SMTP id
+ g13-20020a9d6c4d000000b006e4ecc3556amr2250029otq.14.1709582149237; Mon, 04
+ Mar 2024 11:55:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/5] riscv: dts: add initial canmv-k230 and k230-evb dts
-Content-Language: en-US
-To: Conor Dooley <conor@kernel.org>
-Cc: linux-riscv@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Guo Ren <guoren@kernel.org>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <tencent_E15F8FE0B6769E6338AE690C7F4844A31706@qq.com>
- <tencent_1DB2D1914F4E30569BC4B103B724A6214405@qq.com>
- <20240304-veteran-frightful-b0700233c98f@spud>
-From: Yangyu Chen <cyy@cyyself.name>
-In-Reply-To: <20240304-veteran-frightful-b0700233c98f@spud>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240223223958.3887423-1-hsinyi@chromium.org> <20240223223958.3887423-2-hsinyi@chromium.org>
+ <87wmqqjmt9.fsf@intel.com> <CAJMQK-jSPg6vU3SLmRy7zwNHJ4yqO2hT6RaiYxA4ifZ7CzwD9Q@mail.gmail.com>
+ <CAD=FV=WU-2yystd40e+g9VNDNTiv5c=nP0uQg-AR03o7UGMTdA@mail.gmail.com>
+ <87bk7z6x1w.fsf@intel.com> <CAD=FV=Wzm9Y7m9Q6KqO7yWdnc1xToaRMb2f1s2TQMJqpqVYLOg@mail.gmail.com>
+ <CAA8EJpqHJTbc+TCpkccjx_eQH36zaNgcQ9QssecNeQUQgfYApQ@mail.gmail.com> <CAD=FV=XyV=V-USfq8kp058=FzRQq=bPA5A4GDb1p0zO-KPbtwQ@mail.gmail.com>
+In-Reply-To: <CAD=FV=XyV=V-USfq8kp058=FzRQq=bPA5A4GDb1p0zO-KPbtwQ@mail.gmail.com>
+From: Hsin-Yi Wang <hsinyi@chromium.org>
+Date: Mon, 4 Mar 2024 11:55:23 -0800
+Message-ID: <CAJMQK-gKF+ZeAe4Hp8di83Zx8gp-BJ0vuj6uzi0hsaxeju8GyQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] drm_edid: Add a function to get EDID base block
+To: Doug Anderson <dianders@chromium.org>
+Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Jani Nikula <jani.nikula@linux.intel.com>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
+	Sam Ravnborg <sam@ravnborg.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024/3/5 03:00, Conor Dooley wrote:
-> Hey,
-> 
-> Meant to reply here earlier but I got distracted.
-> 
-> On Sun, Mar 03, 2024 at 09:26:26PM +0800, Yangyu Chen wrote:
->> Add initial dts for CanMV-K230 and K230-EVB powered by Canaan Kendryte
->> K230 SoC [1].
->>
->> Some key considerations:
->> - Only enable BigCore which is 1.6GHz RV64GCBV
->>
->> Since is there cache coherence between two cores remains a mystery since
->> they have a dedicated L2 Cache. And the factory SDK uses it for other OS
->> by default.
->>
->> Meanwhile, although docs from Canaan said 1.6GHz Core with Vector is
->> CPU1, the csr.mhartid of this core is 0.
->>
->> - Support for "zba" "zbb" "zbc" "zbs" are tested by hand
->>
->> The user manual of C908 from T-Head does not document it specifically.
->> It just said it supports B extension V1.0-rc1. [2]
->>
->> - Support for "zicbom" is tested by hand
->>
->> Have tested with some out-of-tree drivers that need DMA and they do not
->> come to the dts currently.
->>
->> - Cache parameters are inferred from T-Head docs [2] and Cannan docs [1]
->>
->> L1i: 32KB, VIPT 4-Way set-associative, 64B Cacheline
->> L1d: 32KB, VIPT 4-Way set-associative, 64B Cacheline
->> L2: 256KB, PIPI 16-way set-associative, 64B Cacheline
->>
->> The numbers of cache sets are calculated from these parameters.
->>
->> - MMU only supports Sv39
->>
->> Since T-Head docs [2] says C908 should support sv48. However, it will fail
->> during the kernel probe. I also tested it by hand on M-Mode software,
->> writing sv48 to satp.mode will not trap but will leave the csr unchanged.
->>
->> [1] https://developer.canaan-creative.com/k230/dev/zh/00_hardware/K230_datasheet.html#chapter-1-introduction
->> [2] https://occ-intl-prod.oss-ap-southeast-1.aliyuncs.com/resource//1699268369347/XuanTie-C908-UserManual.pdf
->>
->> Signed-off-by: Yangyu Chen <cyy@cyyself.name>
->> ---
->>   arch/riscv/boot/dts/canaan/Makefile       |   2 +
->>   arch/riscv/boot/dts/canaan/canmv-k230.dts |  23 ++++
-> 
-> Could you name this file "k230-canmv.dts" please, so that the soc comes
-> first?
-> 
+On Mon, Mar 4, 2024 at 8:17=E2=80=AFAM Doug Anderson <dianders@chromium.org=
+> wrote:
+>
+> Hi,
+>
+> On Sun, Mar 3, 2024 at 1:30=E2=80=AFPM Dmitry Baryshkov
+> <dmitry.baryshkov@linaro.org> wrote:
+> >
+> > > The problem is that Dmitry didn't like the idea of using a hash and i=
+n
+> > > v2 Hsin-Yi has moved to using the name of the display. ...except of
+> > > course that eDP panels don't always properly specify
+> > > "EDID_DETAIL_MONITOR_NAME". See the discussion [1]. If you want to se=
+e
+> > > some of the EDIDs involved, you can see Hsin-Yi's post [2]. The panel=
+s
+> > > included stuff like this:
+> > >
+> > >     Alphanumeric Data String: 'AUO'
+> > >     Alphanumeric Data String: 'B116XAN04.0 '
+> > >
+> > > The fact that there is more than one string in there makes it hard to
+> > > just "return" the display name in a generic way. The way Hsin-Yi's
+> > > code was doing it was that it would consider it a match if the panel
+> > > name was in any of the strings...
+> > >
+> > > How about this as a solution: we change drm_edid_get_panel_id() to
+> > > return an opaque type (struct drm_edid_panel_id_blob) that's really
+> > > just the first block of the EDID but we can all pretend that it isn't=
+.
+> > > Then we can add a function in drm_edid.c that takes this opaque blob,
+> > > a 32-bit integer (as per drm_edid_encode_panel_id()), and a string
+> > > name and it can tell us if the blob matches?
+> >
+> > Would it be easier to push drm_edid_match to drm_edid.c? It looks way
+> > more simpler than the opaque blob.
+>
+> Yeah, that sounds reasonable / cleaner to me. Good idea! Maybe Hsin-Yi
+> will be able to try this out and see if there's a reason it wouldn't
+> work.
 
-OK. For patch v3.
+Thanks for all the suggestions. I sent out v3, which still has a blob
+type since we need
+1. get panel id
+2. do the string matching.
 
->>   arch/riscv/boot/dts/canaan/k230-evb.dts   |  23 ++++
->>   arch/riscv/boot/dts/canaan/k230.dtsi      | 146 ++++++++++++++++++++++
->>   4 files changed, 194 insertions(+)
->>   create mode 100644 arch/riscv/boot/dts/canaan/canmv-k230.dts
->>   create mode 100644 arch/riscv/boot/dts/canaan/k230-evb.dts
->>   create mode 100644 arch/riscv/boot/dts/canaan/k230.dtsi
->>
->> diff --git a/arch/riscv/boot/dts/canaan/Makefile b/arch/riscv/boot/dts/canaan/Makefile
->> index 987d1f0c41f0..b4a0ec668f9a 100644
->> --- a/arch/riscv/boot/dts/canaan/Makefile
->> +++ b/arch/riscv/boot/dts/canaan/Makefile
->> @@ -5,3 +5,5 @@ dtb-$(CONFIG_ARCH_CANAAN) += sipeed_maix_bit.dtb
->>   dtb-$(CONFIG_ARCH_CANAAN) += sipeed_maix_dock.dtb
->>   dtb-$(CONFIG_ARCH_CANAAN) += sipeed_maix_go.dtb
->>   dtb-$(CONFIG_ARCH_CANAAN) += sipeed_maixduino.dtb
->> +dtb-$(CONFIG_ARCH_CANAAN) += k230-evb.dtb
->> +dtb-$(CONFIG_ARCH_CANAAN) += canmv-k230.dtb
->> \ No newline at end of file
->> diff --git a/arch/riscv/boot/dts/canaan/canmv-k230.dts b/arch/riscv/boot/dts/canaan/canmv-k230.dts
->> new file mode 100644
->> index 000000000000..09777616d30e
->> --- /dev/null
->> +++ b/arch/riscv/boot/dts/canaan/canmv-k230.dts
->> @@ -0,0 +1,23 @@
->> +// SPDX-License-Identifier: GPL-2.0+
-> 
-> Is there a reason that you only put these under GPL-2.0+?
-> The usual license for DT stuff is (GPL-2.0 OR BSD-2-Clause), dual
-> licensing makes it easier for other projects to use the devicetrees.
-> 
+And I felt that packing these 2 steps into one function may make that
+function do multiple tasks?
 
-No. Just choose the same license from K210. I will change to both 
-GPL-2.0 or BSD-2-Caluse on patchv3.
+But let me know if it's preferred in this way.
 
->> +
->> +		plic: interrupt-controller@f00000000 {
->> +			compatible = "thead,c900-plic";
->> +			reg = <0xf 0x00000000 0x0 0x04000000>;
->> +			interrupts-extended = <&cpu0_intc 11>, <&cpu0_intc 9>;
->> +			interrupt-controller;
->> +			reg-names = "control";
->> +			#address-cells = <0>;
->> +			#interrupt-cells = <2>;
->> +			riscv,ndev = <208>;
->> +		};
->> +
->> +		clint: timer@f04000000 {
->> +			compatible = "thead,c900-clint";
->> +			reg = <0xf 0x04000000 0x0 0x04000000>;
->> +			interrupts-extended = <&cpu0_intc 3>, <&cpu0_intc 7>;
->> +		};
-> 
-> Both of these should have SoC-specific compatibles. Without them, this
-> should not pass dtbs_check. Did you run it?
-> 
+v3: https://lore.kernel.org/lkml/20240304195214.14563-1-hsinyi@chromium.org=
+/
 
-Sorry. I haven't run it before submitting patch v1. But I have run it 
-and got something fixed on patchv2.
-
-> Cheers,
-> Conor.
-> 
-
-To be honest, I want some review comments on the CPU node. As we know 
-K230 is a dual-core soc. But I didn't know the details of the bus, even 
-for is there was cache coherence between two cores. The factory SDK also 
-provides a linux dts having only one core. I don't know whether it is 
-acceptable.
-
+>
+> -Doug
 
