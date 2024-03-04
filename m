@@ -1,110 +1,107 @@
-Return-Path: <linux-kernel+bounces-90649-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 406238702B6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:29:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A54098702B8
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:30:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0E8B28A060
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:29:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44B021F22C55
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:30:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B74733E462;
-	Mon,  4 Mar 2024 13:29:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 608B13EA74;
+	Mon,  4 Mar 2024 13:29:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="KwqCMVpf"
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gjI9bCr7"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 111D03D982
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 13:29:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ECC33D982;
+	Mon,  4 Mar 2024 13:29:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709558981; cv=none; b=sKiyZk3qYvXCzapWpQDk/4HwIWmIUJdWNe7QYvkR+3jqigEPD+k7AGKGd4PEp1gd01DgKfcx3ewPF3RgN+zf6yiB5L3F2uXAmrsYJ5jGkSFiJuLuBxMtKZzV1nvaCAlyNBZkCaNXoqtWJE/oGrHVd5qDYBqKda/zZnS4SD2i6ws=
+	t=1709558986; cv=none; b=Yd4D68/pkVDWGbCNKGxvAuK2sGYhbp5+Bto3zgwvq4Y7VqU6D7Mej3CVMLO6fwGJhf6R0yzd78jqsADxFvzNGGPBmJLcvnwRz90Re4/LoD0sSFcfWPMotHsaDb69l4mOi+RT5j2uqjPj5OWUuWIm3C43nAO0ZOKKZko9tg/Z/Cs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709558981; c=relaxed/simple;
-	bh=j3zBV9qVoAJHdQmyeW5l585wwmTJ9B8Po4AWJH1NgJ0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VwPG271j5HDdcUFjhMwLkKynUUNgsvPusdORjhuHPOayu0E0S30g0Zlaktl6kJy/WvGpGQVqR5YjgoCG9EvMvYfpYR+8MWYDrQShulVipChi8tbFKsxId7FFX6xCeaKSNiQTOmozLeU5y+nlEStdXvNfnzJXJGb0RUMt/zD70cM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=KwqCMVpf; arc=none smtp.client-ip=194.117.254.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	sang-engineering.com; h=date:from:to:cc:subject:message-id
-	:references:mime-version:content-type:in-reply-to; s=k1; bh=j3zB
-	V9qVoAJHdQmyeW5l585wwmTJ9B8Po4AWJH1NgJ0=; b=KwqCMVpf9ImgiYNSR9je
-	RtUxWwRFmJbfA5Le1e9IV0rvDmnj8TfLTx9s7cCThrM4a2XMsU0MAk0dOnLiErCA
-	ZFgTDaG3FQi4ViuqGVkHJYQ642jxLyDn3zkS/VrFgcUX0tQAt+CWhe1IUwckCMXz
-	Xwis1BSRVLIIDBMaa5/cPsFiZAyr6mnPJnx7mO+QPY2I9WWkrsRKGl7KQDUK/GXe
-	onFh1GVBmDu/P4IBcR8+5ELpgj3Lo4IJFcH/RZcCSa5mrsL9Xiw29zO0r9pQ6maJ
-	pGZsSiQL6/15pO3CCaZX7wPG+nDj1PvuXyPBeg+J7sucUh3M43cvMBkjswls5iTt
-	5Q==
-Received: (qmail 3514478 invoked from network); 4 Mar 2024 14:29:30 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 4 Mar 2024 14:29:30 +0100
-X-UD-Smtp-Session: l3s3148p1@eEApt9USZtAujnuA
-Date: Mon, 4 Mar 2024 14:29:28 +0100
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: "Ricardo B. Marliere" <ricardo@marliere.net>
-Cc: linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] i2c: constify the struct device_type usage
-Message-ID: <ZeXMuHFfBqarnUfA@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	"Ricardo B. Marliere" <ricardo@marliere.net>,
-	linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20240219-device_cleanup-i2c-v1-1-1fc5a8749c6f@marliere.net>
+	s=arc-20240116; t=1709558986; c=relaxed/simple;
+	bh=DMUoXzNwINYPT6TKigZ3BhexDPsrhQRSpJ0qDR1BC2c=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=QETHn5f3hKtyc62ZDg3jtQQhXgxupY329pq3YWNw/zoHrIZVkkVKsDxAxEMXrm7QIk0z3gwv20FtthMK0PMr74XI5bfpflFu50hY8XNSkYFCASKAgA9pxiJ1AOdCUIpQKAzrc1Mt/0p7WT6IfPAvJIYDb9gas+mlp/6I0REDO0w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gjI9bCr7; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709558985; x=1741094985;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=DMUoXzNwINYPT6TKigZ3BhexDPsrhQRSpJ0qDR1BC2c=;
+  b=gjI9bCr7vhK7Z/saykTcwRxhZXES1ECdGWZd474ewGxfnZOZbT50csnK
+   /P0hFdPMiakqvp6QBbGu0u6ZZINZPPkpmA3PSc758FEKyn5R+eEHcyi9a
+   PoBtCxoX1hqSe8w12JjpCHQ2QvW08Ney+QeM3cs7z4F1aEuzA8PmiBecR
+   VgJvEX2XwghOMz+ZA7wrzZvMRdyV2IB9hpo0233eHH3G2JE+shBTLAY3x
+   Ul3/gEf1Yoqz+7rmq+guWaZ/94BwibqXNZP1C8N+9lgoJCzDzZFOEG4XH
+   969GJv96Mzp21UQS2obyIjb7UBA6dGLPq1fkl3U7IFrTBIvgrEuLHveXw
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="21507963"
+X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
+   d="scan'208";a="21507963"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 05:29:44 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
+   d="scan'208";a="9174755"
+Received: from ekohn-mobl1.ger.corp.intel.com (HELO localhost) ([10.246.49.145])
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 05:29:42 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Mon, 4 Mar 2024 15:29:39 +0200 (EET)
+To: "David E. Box" <david.e.box@linux.intel.com>
+cc: rajvi.jingar@linux.intel.com, platform-driver-x86@vger.kernel.org, 
+    LKML <linux-kernel@vger.kernel.org>, Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH V2 4/9] platform/x86/intel/sdsi: Add attribute to read
+ the current meter state
+In-Reply-To: <20240228000016.1685518-5-david.e.box@linux.intel.com>
+Message-ID: <8e9fe5a5-4270-a71d-bb36-4f7d0a1ca049@linux.intel.com>
+References: <20240228000016.1685518-1-david.e.box@linux.intel.com> <20240228000016.1685518-5-david.e.box@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="j+ose6nliXKhBxMm"
-Content-Disposition: inline
-In-Reply-To: <20240219-device_cleanup-i2c-v1-1-1fc5a8749c6f@marliere.net>
+Content-Type: multipart/mixed; boundary="8323328-917811586-1709558979=:986"
 
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
---j+ose6nliXKhBxMm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+--8323328-917811586-1709558979=:986
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-On Mon, Feb 19, 2024 at 09:38:47AM -0300, Ricardo B. Marliere wrote:
-> Since commit aed65af1cc2f ("drivers: make device_type const"), the driver
-> core can properly handle constant struct device_type. Move the
-> i2c_adapter_type and i2c_client_type variables to be constant structures =
-as
-> well, placing it into read-only memory which can not be modified at
-> runtime.
+On Tue, 27 Feb 2024, David E. Box wrote:
+
+> The meter_certificate file provides access to metering information that m=
+ay
+> be attested but is only updated every 8 hours. Add new attribute,
+> meter_current, to allow reading an untested snapshot of the current value=
+s.
 >=20
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> ---
+>=20
+> V2 - make control_flags a parameter to be eventually passed to
+>      sdsi_mbox_cmd_read(). This removes the need for a lock which had bee=
+n
+>      added to protect control_flags when it was a member of the private
+>      struct.
 
-Applied to for-next, thanks!
+Yes, thanks. It's more obvious now what's going on w/o all that lock=20
+trickery.
 
+Reviewed-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
 
---j+ose6nliXKhBxMm
-Content-Type: application/pgp-signature; name="signature.asc"
+--=20
+ i.
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmXlzLQACgkQFA3kzBSg
-KbZ+DQ/+NQm6Yzorm/eBd6O6EoKDh9XXr9Q3s68WmKXqv+z9sAUbPRgUbpJaC8Wp
-Q1JNTA0cO9iKQJIiUaJ5uYVJ9mAwbzUDC8bIkzw0xbLn8CpTkel3Kk24SGQ4pV39
-R+vTBSeFGG7qwWGkU1G//2hF9dQucXpxI86Uk+gY1Lp5te1HuqFoarYNI5A/yNns
-JV7PavMgTpUnaOF5NxD/QCBxxAPmh+wr6bU5E+nI/SuSHwSoV/9ojyWwo9t4F+GS
-fiMvv9u5Xp+A6eGa+9untKo01N2rTtFL+eWTYWiGwTeotn3rSQThmzFINp4OloxK
-9zTxZTisLDH2vhl87BiIRxreyY1e7Gbd1ALaJTMtdOp9ODQcOlhGxo5I8FgqpwRW
-nxEQJURTFU4qyYpZQRowafKpoN5Zgj3f0jJw4HeIfsMjuuD8qdIhVJDjboa4t+a7
-jF1ixQ5KrieJPMvpcjs2yROf2UCdt/zQcuj/AtOcgblueR4Yby91RjvQ5UFurCOd
-ugQdcIQtIn6CdCJzulxy1woNoUTZGE6TU/Bk8gEtbZhz5sCQbxkPZ1BmZAtaL2Cb
-+Gn7XN/PPN54/UoZroF2hEvrNtQywQgHfT4fI/7OzssRgdTji2EWBvGwf7G5XXp3
-O93fnSbdVHa2MDKWfF6dWWT2kMhHuS9xvRTdwXWwE1ZxXSC6O5U=
-=S+9g
------END PGP SIGNATURE-----
-
---j+ose6nliXKhBxMm--
+--8323328-917811586-1709558979=:986--
 
