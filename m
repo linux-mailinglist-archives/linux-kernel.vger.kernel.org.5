@@ -1,52 +1,74 @@
-Return-Path: <linux-kernel+bounces-90521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90522-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FBC4870091
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:43:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB928870093
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:43:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 57079B21CFB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:42:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7776E284CD2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:43:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3C613A287;
-	Mon,  4 Mar 2024 11:42:50 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D62639FEE;
-	Mon,  4 Mar 2024 11:42:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BBCE3A8C9;
+	Mon,  4 Mar 2024 11:43:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EZUDxhEb"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E652539FEE;
+	Mon,  4 Mar 2024 11:42:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709552570; cv=none; b=KoskiX1+vla202dQeST8ajhlJ5spex8w1BuL1pLimOLqMf9TRjIfw7Fj1s5O1KDYkmZ5azG3IAubaFY4ll4XFjLOC5HYYUeZN2pa2eE0s/IabNO5u3+BGBUQy6v8HMTbCfUkRU9jJG/FXS+T+ZEYjm4ACUaPnuTHVwlvVrwJRqk=
+	t=1709552581; cv=none; b=rDV+UIiYnzJw4hIaBm/RXcezBrsa9vyc04ZvQK7djsIA7vhGYNJwoxJpSbAHBAqj6YsLfH3p7R4yoSZ/5QYLTowPy+/jQIBTpV4DVGqlntVhrn4f6SokT6fof81cvXhDzLlliDZPMXpNItoWd7jpslkAvks+3iZ5vP3076FuKn8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709552570; c=relaxed/simple;
-	bh=dnzxzWXhjTBIQHDxWLCiIj/FNQoDuoU0e9AQhpZ82os=;
+	s=arc-20240116; t=1709552581; c=relaxed/simple;
+	bh=0wECyTFNn/czi0BC/9vnk0G4cpXjt7XdbPGnqVO5lDo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cAoBl0eHhwgWNre7kqlhaOGkki/I8mPn0cQh7/ylxlT0jmZxKKHaSJUcqfzae2UbkfmERYxvpgaWKNLilE5jS6Gv+HptO2tHEhOCLJBvTCPAp8kCe3bkfxVr1494hv/gNuH/9akh/QiLxpJ5EIbMWQgHy3RE4nN0kl/NbfPABmU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A77D51FB;
-	Mon,  4 Mar 2024 03:43:24 -0800 (PST)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 47FF73F738;
-	Mon,  4 Mar 2024 03:42:46 -0800 (PST)
-Date: Mon, 4 Mar 2024 11:42:43 +0000
-From: Sudeep Holla <sudeep.holla@arm.com>
-To: Viresh Kumar <viresh.kumar@linaro.org>
-Cc: Pierre Gondois <pierre.gondois@arm.com>, linux-kernel@vger.kernel.org,
-	Cristian Marussi <cristian.marussi@arm.com>,
-	Christian Loehle <christian.loehle@arm.com>,
-	Sudeep Holla <sudeep.holla@arm.com>,
-	Ionela Voinescu <ionela.voinescu@arm.com>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH 0/3]  scmi-cpufreq: Set transition_delay_us
-Message-ID: <ZeWzs_g6FvQlHQN7@bogus>
-References: <20240222135702.2005635-1-pierre.gondois@arm.com>
- <20240304070058.kfqg3ypssn5x6k7s@vireshk-i7>
+	 Content-Type:Content-Disposition:In-Reply-To; b=MQN1z886iX9t7lqE4WCBs71FOVlEFPTQW/EVxzfNAoo/jYD7z15q+zMHODMaSyNa3w9ce7TZGaOO36sgpT9v4aoUEucDm/M932ttGs8AkykCjeTcoMGyG0Mlb4DCS0rXCcpTSssxjdQKCFeAZXNPRNyZ9qVVECdEff7uL0/z+Pk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EZUDxhEb; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709552580; x=1741088580;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=0wECyTFNn/czi0BC/9vnk0G4cpXjt7XdbPGnqVO5lDo=;
+  b=EZUDxhEbVhucUImwTXGpniIeOXpDbtZwIHA5dXWFZa3iZ4aucrl/MWzl
+   14cbYEOKPgsUlK6MaCu++/iaV8YXMotNJVFop+zZESJ10+HQYG0DP3uiq
+   /ympFcHDuSPTIJ1s9A2lTP2iOGry8n20Tr01BUUsj0SqcoK8w1WNc22IC
+   IMv/uZiJHuO824gjrOZODRN/qZLdSSWQ7AIgu1bZUz6hbD/7QLaFnKX7s
+   MYBqivF94hl5frwRk5J7FTjWayisx5hSsbX0zb4L9ptnMC4hPHXNbXAPz
+   HrkZqUmBEEtce8Ru9gYtlMrOXdH6iruFoz4Ub7WhsD/r1453ddes99ZNw
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="7811175"
+X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
+   d="scan'208";a="7811175"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 03:42:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="914103611"
+X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
+   d="scan'208";a="914103611"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 03:42:56 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rh6ib-00000009hhP-1kXc;
+	Mon, 04 Mar 2024 13:42:53 +0200
+Date: Mon, 4 Mar 2024 13:42:53 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Vasileios Amoiridis <vassilisamir@gmail.com>
+Cc: jic23@kernel.org, lars@metafoo.de, ang.iglesiasg@gmail.com,
+	mazziesaccount@gmail.com, ak@it-klinger.de,
+	petre.rodan@subdimension.ro, phil@raspberrypi.com, 579lpy@gmail.com,
+	linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] iio: pressure: Add scale value for channels
+Message-ID: <ZeWzvewAtqKKfnwI@smile.fi.intel.com>
+References: <20240303165300.468011-1-vassilisamir@gmail.com>
+ <20240303165300.468011-3-vassilisamir@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,36 +77,102 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240304070058.kfqg3ypssn5x6k7s@vireshk-i7>
+In-Reply-To: <20240303165300.468011-3-vassilisamir@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Mon, Mar 04, 2024 at 12:30:58PM +0530, Viresh Kumar wrote:
-> On 22-02-24, 14:56, Pierre Gondois wrote:
-> > policy's fields definitions:
-> > `transition_delay_us`:
-> > The minimum amount of time between two consecutive freq. requests
-> > for one policy.
-> > `transition_latency`:
-> > Delta between freq. change request and effective freq. change on
-> > the hardware.
-> >
-> > cpufreq_policy_transition_delay_us() uses the `transition_delay_us`
-> > value if available. Otherwise a value is induced from the policy's
-> > `transition_latency`.
-> >
-> > The scmi-cpufreq driver doesn't populate the `transition_delay_us`.
-> > Values matching the definition are available through the SCMI
-> > specification.
-> > Add support to fetch these values and use them in the scmi-cpufreq
-> > driver.
->
-> How do we merge this series ? I can only pick the last commit.
+On Sun, Mar 03, 2024 at 05:52:58PM +0100, Vasileios Amoiridis wrote:
+> Add extra IIO_CHAN_INFO_SCALE in order to be able to have the scales
+> for the values in userspace. Can be used for triggered buffers.
 
-I have sent my PR for v6.9 already and was deferring this to v6.10
-The changes look good to me. If it doesn't conflict much with -next
-SCMI content, then I am happy to ack and you can take all of them
-together. Otherwise we can revisit strategy at -rc1. Thoughts ?
+..
 
---
-Regards,
-Sudeep
+
+> +	case IIO_CHAN_INFO_SCALE:
+> +		switch (chan->type) {
+> +		case IIO_HUMIDITYRELATIVE:
+> +			if (!strcmp(indio_dev->name, "bme280")) {
+> +				*val = 1000;
+> +				*val2 = 1024;
+> +				ret = IIO_VAL_FRACTIONAL;
+> +			} else {
+> +				ret = -EINVAL;
+> +			}
+
+No, just make these int arrays part of chip_info, then
+
+		case IIO_HUMIDITYRELATIVE:
+			if (chip_info->hrel) {
+				*val = chip_info->hrel[0];
+				*val2 = chip_info->hrel[1];
+				ret = IIO_VAL_FRACTIONAL;
+			} else {
+				ret = -EINVAL;
+			}
+
+> +			break;
+> +		case IIO_PRESSURE:
+> +			if ((!strcmp(indio_dev->name, "bmp085")) ||
+> +			    (!strcmp(indio_dev->name, "bmp180")) ||
+> +			    (!strcmp(indio_dev->name, "bmp181"))) {
+> +				*val = 1;
+> +				*val2 = 1000;
+> +				ret = IIO_VAL_FRACTIONAL;
+> +			} else if ((!strcmp(indio_dev->name, "bmp280")) ||
+> +				   (!strcmp(indio_dev->name, "bme280"))) {
+> +				*val = 1;
+> +				*val2 = 256000;
+> +				ret = IIO_VAL_FRACTIONAL;
+> +			} else if (!strcmp(indio_dev->name, "bmp380")) {
+> +				*val = 1;
+> +				*val2 = 100000;
+> +				ret = IIO_VAL_FRACTIONAL;
+> +			} else if (!strcmp(indio_dev->name, "bmp580")) {
+> +				*val = 1;
+> +				*val2 = 64000;
+> +				ret = IIO_VAL_FRACTIONAL;
+> +			} else {
+> +				ret = -EINVAL;
+> +			}
+> +			break;
+
+Ditto.
+
+> +		case IIO_TEMP:
+> +			if ((!strcmp(indio_dev->name, "bmp085")) ||
+> +			    (!strcmp(indio_dev->name, "bmp180")) ||
+> +			    (!strcmp(indio_dev->name, "bmp181"))) {
+> +				*val = 100;
+> +				*val2 = 1;
+> +				ret = IIO_VAL_FRACTIONAL;
+> +			} else if ((!strcmp(indio_dev->name, "bmp280")) ||
+> +				   (!strcmp(indio_dev->name, "bme280"))) {
+> +				*val = 10;
+> +				*val2 = 1;
+> +				ret = IIO_VAL_FRACTIONAL;
+> +			} else if (!strcmp(indio_dev->name, "bmp380")) {
+> +				*val = 10;
+> +				*val2 = 1;
+> +				ret = IIO_VAL_FRACTIONAL;
+> +			} else if (!strcmp(indio_dev->name, "bmp580")) {
+> +				*val = 1000;
+> +				*val2 = 16;
+> +				ret = IIO_VAL_FRACTIONAL_LOG2;
+> +			} else {
+> +				ret = -EINVAL;
+> +			}
+> +			break;
+
+Ditto.
+
+> +		default:
+> +			ret = -EINVAL;
+> +			break;
+> +		}
+> +		break;
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
