@@ -1,221 +1,443 @@
-Return-Path: <linux-kernel+bounces-91019-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91020-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0AF1870885
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:45:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63D34870888
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:47:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E16C1F22E23
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:45:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA2CCB2318B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:47:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E201612F7;
-	Mon,  4 Mar 2024 17:45:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BE5B6166F;
+	Mon,  4 Mar 2024 17:47:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BVWTkQqt"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="hV5i0GVD"
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2049.outbound.protection.outlook.com [40.107.6.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD7D1249F1
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 17:45:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709574321; cv=none; b=KqyrW4ZVmaNdVWUvQxsHDbAZAT13wkq5e/7k+t/sOb8A5qdF+BSSTey9gFzfXnHznaF3OdvHgALocsNxE9rslzXkaYFdi7zzB+RpnVnpv8xaSvphe0aH1i5d7tAIfS4cFK4ptcYso1GL6ZvpQdPjt5WZv8pRm2TGkdOpJiZAyow=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709574321; c=relaxed/simple;
-	bh=DJFh0Ns68NNZLWFZ1dPqWF0AXDgESfnpYjvCjHPZmQQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eFjBOb93jDcxUZ/9Ga0jnPw1HZEIG9eL4XmdSjL9oT6ACQR66kfGLcwi4GnkM6+Czgq02dg39OYGYMSzWy5rEMVaO+KZxCBhpxrzBhh9L6Am+B00MfyU/HUqtoaWSTPGW1QeV5nstR7nEMazazbIwmg3SrzeYXBt/fYRf8VwB8s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BVWTkQqt; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709574318;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=fvYPB4mVnCnJmx+wGFaBsbHFJyHxXWZZH+8erB8RAuQ=;
-	b=BVWTkQqtdsVH5QdcBLppg7/L0d3fZEpWyiAXCR93dn49uBSufdJvmQ4oGW2vC28tSKgwFN
-	p6Q70tdn+yA0FjedhEBOJb1R1xD2q4brBucsLLpmMmzhFDjwTaMww+2A2iYxIQrIiKoG2U
-	abxeByThGiAKtBcDApAbiSmkdHezhz8=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-642-cDDf0YuTONKEyuxXbK-fAg-1; Mon, 04 Mar 2024 12:45:15 -0500
-X-MC-Unique: cDDf0YuTONKEyuxXbK-fAg-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-33d308b0c76so2597365f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 09:45:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709574314; x=1710179114;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fvYPB4mVnCnJmx+wGFaBsbHFJyHxXWZZH+8erB8RAuQ=;
-        b=HlExOSRSrWSTBjOvi7kdhiAGIwDlBm4Aas2WsXbo/R4trQRywdftmBHgA7uQLnx+hG
-         6fDG+0aCztwKfvHITQvN9dEwkF0FqB/5OukvkC6WZtg2wC8eCRaaz4nwPIeW2c7IFFS7
-         NjzJnelVmeb3kPV6hjMnYFBG2YPZiNzjc0Mg+Yb8fcDjWXv98r2g52ZrAeIKpIUnYWZ1
-         QyzYK4Fi/yrG+QqYYpi57G/Ttzo9mHZkzgQHX8na3F4/gpbYuQtOx/ieTQ2nkIWWB9t7
-         pDfLA2K4FTRBRnqXl39EOmUY4rlic45hR5wjIvRHdCMEjQl2nMyaB/qoF+dvLqQQ/JK5
-         CArA==
-X-Forwarded-Encrypted: i=1; AJvYcCVuj+FZA50u6A7ulYKIsU0JhHUnTotFgXHe+MXh6s0P7a6yYyOo7ofxJtp0x3WzFw2TkYI3ZBMhBvuvGjpLYGw7xRtrk8+HjqV1vm/2
-X-Gm-Message-State: AOJu0Yyetq8bp+FSKVdYH3VoD5q8GiarLk0HtCZGcyawLfI6XQrogHKn
-	lnIvSz9THSBKTg4tCSfeaUrwYcuEhsBxmhhpNyR70kJfrVTRIaHTGM2x6KwkJmG9PB45Lk0bJBG
-	NkxOxJhnT/xPOZMs7QFyV8Xtb5bTEAIHGRpjevU+v2ob99/uFClW7AOjbaLgvQw==
-X-Received: by 2002:adf:d052:0:b0:33d:61c7:9b2c with SMTP id v18-20020adfd052000000b0033d61c79b2cmr153215wrh.34.1709574314168;
-        Mon, 04 Mar 2024 09:45:14 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHfSIScZUyUHr+intkv3X7lZCQsIDrLLSY2NfMGegPwvMGfJpkjJ/IHIgPw/s/cmx74Wojjag==
-X-Received: by 2002:adf:d052:0:b0:33d:61c7:9b2c with SMTP id v18-20020adfd052000000b0033d61c79b2cmr153203wrh.34.1709574313795;
-        Mon, 04 Mar 2024 09:45:13 -0800 (PST)
-Received: from toolbox.fritz.box ([2001:9e8:89b0:4c00:a0ac:17d3:a942:8863])
-        by smtp.gmail.com with ESMTPSA id f6-20020a5d6646000000b0033e34982311sm4737615wrw.81.2024.03.04.09.45.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 09:45:13 -0800 (PST)
-From: Sebastian Wick <sebastian.wick@redhat.com>
-To: 
-Cc: Harry Wentland <harry.wentland@amd.com>,
-	=?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/drm_connector: Document Colorspace property variants
-Date: Mon,  4 Mar 2024 18:45:08 +0100
-Message-ID: <20240304174512.145862-1-sebastian.wick@redhat.com>
-X-Mailer: git-send-email 2.44.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D10D360B94;
+	Mon,  4 Mar 2024 17:47:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.6.49
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709574441; cv=fail; b=ehaoLneGsItqfdUmcd6Qh+F0+L1ugCPVpNOAd61Wr0hbYvYdWcdck9wWUMuL1ylPBWAdftx3MBBwg75lX8yEkyc++Cl9H6vkFkRQKk6sPNDenNUSpsnPp74IJPfeiPSmXbMqMAc6sEAe77c4cIEo9Fmxfw45ovk3SO8rYdpPcOY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709574441; c=relaxed/simple;
+	bh=VU6GsskFtaxOE2tlkCxECjOzSzo975KAutjnUsfWL8I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=P9pLt9OqbgSjDOXr70KSB52JPqBs8cilfqlAdz/75TNCKRgYkFkmjPjL3kAWqny5kdZJtZI5yJePBuAAysooIqAMaDzlV8495WnDOCICIBDOD2mRmKRnyfJdiBTNhPZqIBqWLhjTIBxd9UNVLbOk7hyqWLBgbd8WJEbwkgTUp58=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=hV5i0GVD; arc=fail smtp.client-ip=40.107.6.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IoVuUOZutaMmrnbiyCQUrvh0sdpMmTWmRs8S4mYQWAHjiNMAqp5XIdZkdqzsgAc1bv0wsg5h5VITlWjKnvN9gV6mvbaG8/9VpCWpqkHZydFS6gUloJoJKepwkdDbFJNUGQ7rFIQrjvsXBj+a/udYJMG3nBwQXJwu8+caJHFIhoCunbEwBRByBMMx+IpK75Fu3iYcVJRWAqED8IXDC1oOUlqhMZ/434XF9z/WvoldpE1RFqfahtRXnbmn9wrKyrNUUact0+6+OjRjTQ6Kd7zsDbOIbeV73NY1vzWV22hANht4YRAkKFNsqPL8YC6UwVeyioyFQgMe9U+xRlHb8YKMXw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=f8pAQNWw5w1vtItsj0SrV7n+INIjzfrCRVerYtuKIFE=;
+ b=BT6uX7MW8dpcs2R9WKH+iHis/p3hcRx8kHlP/zHogMfwAMJI00aMr/2g1EQqqdeNTzCrm2y9B1v2eePC/DFzeaTV3ByMB85DOWgx9f515A3lGyiuXtg3fZWiCyfoGbim8lcCVAzSoHF3AsIOBawA8UbWfyU183VtOYmq2UnM2PiJJRLHQpMarqbsUSY4V5gOMVDRtrjDw9krGefJ/QF0EXFTAndN5r8szLrvBmA6cKVeMIXKza7MDcoispooNg8Tomd2e9dksWForjjeSdOqJzp0/9hehk4OuPzErJNg/HHbxNjgm8ry0lHKQ8rDaIlQCcs9jjD/oGg8gkLjb7vHqA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f8pAQNWw5w1vtItsj0SrV7n+INIjzfrCRVerYtuKIFE=;
+ b=hV5i0GVDRRKdUJsTe9nSOOJEyEo+/zKF0tpV3Er328abnTvZAMN/BTGvTBVK3zyy0yNoTj/S+IF9TTQxynVZorcVJJoOHefrBTwTgqvVxc5hpU1YnCm/qD3LceyF8s77OouP6c/vZ7cg6+2rw1pv+9NPmniOW/+HhwNUSMbkyFM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by AM8PR04MB7347.eurprd04.prod.outlook.com (2603:10a6:20b:1d0::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.41; Mon, 4 Mar
+ 2024 17:47:16 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6%3]) with mapi id 15.20.7339.033; Mon, 4 Mar 2024
+ 17:47:15 +0000
+Date: Mon, 4 Mar 2024 12:47:08 -0500
+From: Frank Li <Frank.li@nxp.com>
+To: Rob Herring <robh@kernel.org>
+Cc: conor@kernel.org, bhelgaas@google.com, conor+dt@kernel.org,
+	devicetree@vger.kernel.org, helgaas@kernel.org, imx@lists.linux.dev,
+	krzysztof.kozlowski+dt@linaro.org, kw@linux.com,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	lpieralisi@kernel.org
+Subject: Re: [PATCH v6 1/3] dt-bindings: pci: layerscape-pci: Convert to yaml
+ format
+Message-ID: <ZeYJHLpHb0UGv8S+@lizhi-Precision-Tower-5810>
+References: <20240301162741.765524-1-Frank.Li@nxp.com>
+ <20240301162741.765524-2-Frank.Li@nxp.com>
+ <20240304173204.GA777171-robh@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240304173204.GA777171-robh@kernel.org>
+X-ClientProxiedBy: SJ0PR05CA0043.namprd05.prod.outlook.com
+ (2603:10b6:a03:33f::18) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AM8PR04MB7347:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3b053a77-4a24-4814-1466-08dc3c732134
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	oOnpn7irosUNXjobL3GOUUseCFbuWBpSKD9IaV3vzROIIAMVrt57FS3aRyd4dXNy1735Ewb096qxI9mMICmmOKx3jW5p1Rhlf2EZw2Bm+Dbi7OLHU1NzdQtpMTY7UIPFUqX+jOwHQfce/Of5sF+l+4FaYuKJvEX5Pw2W1Ql8DpvzHmEvjBoeyJODG2DDRW0qF+tWVVg8My3CYBmeOy9e5659OQiwE8qVOcBe2xvkl7wbG5eprjzCzSfmjC17QrbHTWxEdILAu/xkxsFc5vD9c/0Pxki7zP+7lmFrzZ2+BmbhOU2pMmHSAWhLq+eyYWXWpjJffcL42a4oWdtFkZr2uDWlRQx9DW81hiz4hZDnKhxIVVcCvOfC0z+27PKyO6N+53zSk0YwT3hkxx4rvCLkN+ySW+qpisoa1AMlwAYTTI3u0XH78XnDiJzXGryiJiJHcJg17GMPev/0rK9HKAGfQy/hfbPCGB5Kv/JRE9LunOrAdtMyq8PeNXPfxEzDcPrHKf3HtrBUZHD65zCqCJC9FaKhC46mY86t2eFiXvqXMV0Cu3/cgDSnrlXgC/Z2EbkYIEU1UjFXCt+l816FuSGTnlPLkhYQXAR9OuJnvpnTQSHLPOCbw4yH7ISfu5KlBzDvWUHQPz8n1NFDAnC9rj/tKmXeg4NaQ7yHp55trCO3d08=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?vx9K4MvAgmYv7QUNAtJVl04b/CAKOBh09qx4iBNrowYAz6V2qjPGWyTw4pw/?=
+ =?us-ascii?Q?10pppiU3w7CEWsA1APA1RVsCDMcl/9s2tlzq+YmzYOPKB0U7eSgrIjlhf4Ol?=
+ =?us-ascii?Q?IM2vYYVlsqXau/MsGtFF33Nv2zjLPxuaMtmrN7vHDrEew5cs/3ZZ9DE/7V92?=
+ =?us-ascii?Q?GrntlgmJov3SmeJ/91KVJJbLQ1qB/X7EvBVN2NSxQCpXfU8b4vYWFishxfAb?=
+ =?us-ascii?Q?N0ug3Kr7dVfbCFMqbpNF1NE0bvoVbNaAXKMwo5epy+/VdJyeCGfvIai/LJJP?=
+ =?us-ascii?Q?DIq0/smO6qlcO3eR84Admy/WhbK29SDKaCRR5YffrLI7+oy22jIDYxtTKY9g?=
+ =?us-ascii?Q?o8qbXYa+mAAxmqer/omIL7QSsAQ4vY7XBQZQBBBtpA+8HzQAHkICKIws7ybB?=
+ =?us-ascii?Q?tXVJoiy+x1k//zpRw2DvjPxwlgs5r5kIaVvSWGC/cWXL9lWVP9Pq8kbfOpCU?=
+ =?us-ascii?Q?7qleeRHRA0aKqEitQ1QFadmv2V/OtR2q1739nU4GlzIsKNXp1qTYBIe8ZbhM?=
+ =?us-ascii?Q?ivJyHn8qGT+F7asi244aU1MvkQkNoQT3ubsTkdERiBwgbLR4JwNTqC8VzIqg?=
+ =?us-ascii?Q?koQ93bRYWrYAXqWcRMlxDVH2Hu+V0+R1yBpTMp4QfLliHn70pqqyAVMRW/c0?=
+ =?us-ascii?Q?bxCgETTwxMJlrzAnK1bQ8UpOgAMuR8xu5lJFTTGLes8s+LUoaJNp3G/KASWY?=
+ =?us-ascii?Q?MkqWzbinB1ZtAKrywTSe7UXpi4GPFFzSz9vbbr5DZdtQ0hL8Bm1m+nNNIhPu?=
+ =?us-ascii?Q?uiC9virNQ0aBa3DGbBh32SYXWKySmf8wwQDksPUfS0nwQf3AbemrrERVxgoX?=
+ =?us-ascii?Q?Iu+0fBrpl4UiBXdtDJ7tLO04DJDZBaeIESBlryHPP2daITlG2TaR6vwyQJfN?=
+ =?us-ascii?Q?zcDB/oqu+vsqcMJZrzeGTqQXMx+/zGX2K/QsNe1bbVkjhMjjaVRnu7BSUH2p?=
+ =?us-ascii?Q?LXOySow3JBtF8Yo7u+luPZt1fOuUbLwzU2AtdSep7SkfWhOl4G6PRESmKnaP?=
+ =?us-ascii?Q?XojF4K+GuHSa+93r59e1atMy9VjpfReSG0p7z0VIzFPY5L9H0pqwMqn61GR1?=
+ =?us-ascii?Q?f/KiLCIPPwX+kxEgF/AqHQpmyn0G++/zzp7Zihwhz+Yi7jV0W0fXdx0vUBMz?=
+ =?us-ascii?Q?qvtjSsmDcYXwcDv3Rq94RWyoKNhEYG4PiqnCiWIDBCdjVnH7LFuf9YvKtQBT?=
+ =?us-ascii?Q?sccRCdgU15I9q6in8Kwj0RtRoqYEA7yAC4BSeVVdVBIxGFR7HCCoet37eM7R?=
+ =?us-ascii?Q?K8Ay9t4ZzlSIQmUYTYROtV/B7Ruuk5rIwBTtONXI8HMViG/PtJ+nDa0DQshK?=
+ =?us-ascii?Q?kfFyR/CDb9+hFkJVyBmFtzof2q2L8GJ2GuvvalyWFKHRzik2qVx3PziYPVD7?=
+ =?us-ascii?Q?aWtVIXntB4m3VU+HpJmJ2/WMJOgDWz5+ZKJ0pKl//RNVBQOlDjtXf0sq+3RP?=
+ =?us-ascii?Q?EOhRjNniO9zzv6hsd3gS7rpbwOYRToR+h3rO6X/Dg24TnQBGlWNpGf8zETPi?=
+ =?us-ascii?Q?37Ew3n46a5PS/PDb5PicIdF15fWuG3jHEgTtiLLxgK4Xncwu9yrM9Z27zkuI?=
+ =?us-ascii?Q?YiAJVvNs0U7D7ZygYnvGIUXM9T+85NcCCaTG86GW?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3b053a77-4a24-4814-1466-08dc3c732134
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Mar 2024 17:47:15.7295
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: RyzHGsDxbH3MMd6MHN7HyOcl4+yPp13SBz4jBWOaVo1RB8vhtVYuVraZpTnu06e2UtMOGyFzsXh3OwsLmzXb4A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7347
 
-The initial idea of the Colorspace prop was that this maps 1:1 to
-InfoFrames/SDP but KMS does not give user space enough information nor
-control over the output format to figure out which variants can be used
-for a given KMS commit. At the same time, properties like Broadcast RGB
-expect full range quantization range being produced by user space from
-the CRTC and drivers to convert to the range expected by the sink for
-the chosen output format, mode, InfoFrames, etc.
+On Mon, Mar 04, 2024 at 11:32:04AM -0600, Rob Herring wrote:
+> On Fri, Mar 01, 2024 at 11:27:39AM -0500, Frank Li wrote:
+> > Split layerscape-pci.txt into two yaml files: fsl,layerscape-pcie-ep.yaml
+> > and fsl,layerscape-pcie.yaml.
+> > yaml files contain the same content as the original txt file.
+> > 
+> > Do below changes to pass dtb_binding check:
+> > - Remove dma-coherent and fsl,pcie-scfg because not every SOC need it.
+> 
+> You mean 'remove from required' right? Because they are still here.
+> 
+> > - Set unevaluatedProperties to true in fsl,layerscape-pcie.yaml.
+> 
+> Sorry, but that's not acceptable either. You need the $ref's in this 
+> patch.
 
-This change documents the reality of the Colorspace property. The
-Default variant unfortunately is very much driver specific and not
-reflected by the EDID. The BT2020 variants are in active use by generic
-compositors which have expectations from the driver about the
-conversions it has to do when selecting certain output formats.
 
-Everything else is also marked as undefined. Coming up with valid
-behavior that makes it usable from user space and consistent with other
-KMS properties for those variants is left as an exercise for whoever
-wants to use them.
+Rob:
 
-Signed-off-by: Sebastian Wick <sebastian.wick@redhat.com>
----
- drivers/gpu/drm/drm_connector.c | 67 ++++++++++++++++++++++++---------
- include/drm/drm_connector.h     |  8 ----
- 2 files changed, 49 insertions(+), 26 deletions(-)
+If I squash this 3 patches, it will match most your comments. And will back
+to my previous v3's patches, 
+https://lore.kernel.org/imx/20240214194145.2669744-1-Frank.Li@nxp.com/
 
-diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
-index b0516505f7ae..1c4ce7f90a76 100644
---- a/drivers/gpu/drm/drm_connector.c
-+++ b/drivers/gpu/drm/drm_connector.c
-@@ -2147,24 +2147,55 @@ EXPORT_SYMBOL(drm_mode_create_aspect_ratio_property);
-  * DOC: standard connector properties
-  *
-  * Colorspace:
-- *     This property helps select a suitable colorspace based on the sink
-- *     capability. Modern sink devices support wider gamut like BT2020.
-- *     This helps switch to BT2020 mode if the BT2020 encoded video stream
-- *     is being played by the user, same for any other colorspace. Thereby
-- *     giving a good visual experience to users.
-- *
-- *     The expectation from userspace is that it should parse the EDID
-- *     and get supported colorspaces. Use this property and switch to the
-- *     one supported. Sink supported colorspaces should be retrieved by
-- *     userspace from EDID and driver will not explicitly expose them.
-- *
-- *     Basically the expectation from userspace is:
-- *      - Set up CRTC DEGAMMA/CTM/GAMMA to convert to some sink
-- *        colorspace
-- *      - Set this new property to let the sink know what it
-- *        converted the CRTC output to.
-- *      - This property is just to inform sink what colorspace
-- *        source is trying to drive.
-+ *	This property selects the colorimetry and transfer characteristics user
-+ *	space configured the CRTC to produce.
-+ *	The transfer characteristics might get overwritten by the
-+ *	HDR_OUTPUT_METADATA property.
-+ *	The quantization range is always full (see the Broadcast RGB property).
-+ *
-+ *	The driver is expected to send the right metadata to the sink which can
-+ *	depend on the property value, the output mode and the output format.
-+ *	It's also responsible for converting to the output format, taking into
-+ *	account YCbCr conversion and quantization range.
-+ *
-+ *	For historical reasons this property exposes a number of variants which
-+ *	result in undefined behavior.
-+ *
-+ *	Default:
-+ *		The behavior is driver-specific.
-+ *	BT2020_RGB:
-+ *	BT2020_YCC:
-+ *		User space configures the state such that the CRTC produces RGB
-+ *		content with Rec. ITU-R BT.2020 colorimetry, Rec. ITU-R BT.2020
-+ *		(Table 4, RGB) transfer characteristics and full quantization
-+ *		range.
-+ *		User space can use the HDR_OUTPUT_METADATA property to set the
-+ *		transfer characteristics to PQ (Rec. ITU-R BT.2100 Table 4) or
-+ *		HLG (Rec. ITU-R BT.2100 Table 5) in which case, user space
-+ *		configures the CRTC to produce content with the respective
-+ *		transfer characteristics.
-+ *		Drivers can configure the sink to use an RGB format, tell the
-+ *		sink to expect Rec. ITU-R BT.2020 R'G'B' colorimetry and convert
-+ *		to the appropriate quantization range.
-+ *		Drivers can configure the sink to use a YCbCr format, tell the
-+ *		sink to expect Rec. ITU-R BT.2020 Y'C'BC'R colorimetry, convert
-+ *		to YCbCr using the Rec. ITU-R BT.2020 non-constant luminance
-+ *		conversion matrix and convert to the appropriate quantization
-+ *		range.
-+ *	SMPTE_170M_YCC:
-+ *	BT709_YCC:
-+ *	XVYCC_601:
-+ *	XVYCC_709:
-+ *	SYCC_601:
-+ *	opYCC_601:
-+ *	opRGB:
-+ *	BT2020_CYCC:
-+ *	DCI-P3_RGB_D65:
-+ *	DCI-P3_RGB_Theater:
-+ *	RGB_WIDE_FIXED:
-+ *	RGB_WIDE_FLOAT:
-+ *	BT601_YCC:
-+ *		The behavior is undefined.
-  *
-  * Because between HDMI and DP have different colorspaces,
-  * drm_mode_create_hdmi_colorspace_property() is used for HDMI connector and
-diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
-index fe88d7fc6b8f..02c42b01a3a7 100644
---- a/include/drm/drm_connector.h
-+++ b/include/drm/drm_connector.h
-@@ -437,14 +437,6 @@ enum drm_privacy_screen_status {
-  *
-  * DP definitions come from the DP v2.0 spec
-  * HDMI definitions come from the CTA-861-H spec
-- *
-- * A note on YCC and RGB variants:
-- *
-- * Since userspace is not aware of the encoding on the wire
-- * (RGB or YCbCr), drivers are free to pick the appropriate
-- * variant, regardless of what userspace selects. E.g., if
-- * BT2020_RGB is selected by userspace a driver will pick
-- * BT2020_YCC if the encoding on the wire is YUV444 or YUV420.
-   *
-  * @DRM_MODE_COLORIMETRY_DEFAULT:
-  *   Driver specific behavior.
--- 
-2.44.0
+Bjorn Helgaas suggest split to patches:
+https://lore.kernel.org/imx/20240226210842.GA211190@bhelgaas/
 
+First one will be equal to origial txt, then add change base on that.
+
+I need a clear direction before I continue on this.
+
+Frank
+
+> 
+> > 
+> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > ---
+> >  .../bindings/pci/fsl,layerscape-pcie-ep.yaml  |  87 +++++++++++++
+> >  .../bindings/pci/fsl,layerscape-pcie.yaml     | 121 ++++++++++++++++++
+> >  .../bindings/pci/layerscape-pci.txt           |  79 ------------
+> >  3 files changed, 208 insertions(+), 79 deletions(-)
+> >  create mode 100644 Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml
+> >  create mode 100644 Documentation/devicetree/bindings/pci/fsl,layerscape-pcie.yaml
+> >  delete mode 100644 Documentation/devicetree/bindings/pci/layerscape-pci.txt
+> > 
+> > diff --git a/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml b/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml
+> > new file mode 100644
+> > index 0000000000000..cf517e4e46a33
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml
+> > @@ -0,0 +1,87 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/pci/fsl,layerscape-pcie-ep.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Freescale Layerscape PCIe Root Complex(RC) controller
+> > +
+> > +maintainers:
+> > +  - Frank Li <Frank.Li@nxp.com>
+> > +
+> > +description:
+> > +  This PCIe RC controller is based on the Synopsys DesignWare PCIe IP
+> > +  and thus inherits all the common properties defined in snps,dw-pcie.yaml.
+> > +
+> > +  This controller derives its clocks from the Reset Configuration Word (RCW)
+> > +  which is used to describe the PLL settings at the time of chip-reset.
+> > +
+> > +  Also as per the available Reference Manuals, there is no specific 'version'
+> > +  register available in the Freescale PCIe controller register set,
+> > +  which can allow determining the underlying DesignWare PCIe controller version
+> > +  information.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    items:
+> > +      - enum:
+> > +          - fsl,ls1028a-pcie-ep
+> > +          - fsl,ls2046a-pcie-ep
+> > +          - fsl,ls2088a-pcie-ep
+> > +          - fsl,ls1046a-pcie-ep
+> > +          - fsl,ls1043a-pcie-ep
+> > +          - fsl,ls1012a-pcie-ep
+> > +          - fsl,lx2160ar2-pcie-ep
+> > +      - const: fsl,ls-pcie-ep
+> > +
+> > +  reg:
+> > +    description: base addresses and lengths of the PCIe controller register blocks.
+> 
+> You need to define how many entries and what they are.
+> 
+> Missing 'reg-names'?
+> 
+> > +
+> > +  interrupts:
+> > +    description: A list of interrupt outputs of the controller. Must contain an
+> > +      entry for each entry in the interrupt-names property.
+> 
+> You need to define how many entries and what they are.
+> 
+> > +
+> > +  interrupt-names:
+> > +    minItems: 1
+> > +    maxItems: 3
+> > +    description: It could include the following entries.
+> > +    items:
+> > +      oneOf:
+> > +        - description:
+> > +            Used for interrupt line which reports AER events when
+> > +            non MSI/MSI-X/INTx mode is used.
+> > +          const: aer
+> > +        - description:
+> > +            Used for interrupt line which reports PME events when
+> > +            non MSI/MSI-X/INTx mode is used.
+> > +          const: pme
+> > +        - description:
+> > +            Used for SoCs(like ls2080a, lx2160a, ls2080a, ls2088a, ls1088a)
+> > +            which has a single interrupt line for miscellaneous controller
+> > +            events(could include AER and PME events).
+> > +          const: intr
+> 
+> The way this works is the common schema defines all possible names. This 
+> schema needs to define how many entries, which names you use, and what 
+> is the order. So you need to add 'pme' and 'aer' to 
+> snps,dw-pcie-ep.yaml. 
+> 
+> I imagine the order of entries is a mess here, and I don't expect 
+> there's any new Layerscape platforms coming. So this binding can just 
+> say:
+> 
+> minItems: 1
+> maxItems: 3
+> items:
+>   enum: [ aer, pme, intr ]
+> 
+> > +
+> > +  fsl,pcie-scfg:
+> > +    $ref: /schemas/types.yaml#/definitions/phandle
+> > +    description: Must include two entries.
+> > +      The first entry must be a link to the SCFG device node
+> > +      The second entry is the physical PCIe controller index starting from '0'.
+> > +      This is used to get SCFG PEXN registers
+> > +
+> > +  dma-coherent:
+> > +    description: Indicates that the hardware IP block can ensure the coherency
+> > +      of the data transferred from/to the IP block. This can avoid the software
+> > +      cache flush/invalid actions, and improve the performance significantly
+> 
+> Already listed in the common schema, so you can drop.
+> 
+> > +
+> > +  big-endian:
+> > +    $ref: /schemas/types.yaml#/definitions/flag
+> > +    description: If the PEX_LUT and PF register block is in big-endian, specify
+> > +      this property.
+> > +
+> > +unevaluatedProperties: false
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - interrupt-names
+> > +
+> > diff --git a/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie.yaml b/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie.yaml
+> > new file mode 100644
+> > index 0000000000000..3f2d058701d22
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie.yaml
+> > @@ -0,0 +1,121 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/pci/fsl,layerscape-pcie.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Freescale Layerscape PCIe Root Complex(RC) controller
+> > +
+> > +maintainers:
+> > +  - Frank Li <Frank.Li@nxp.com>
+> > +
+> > +description:
+> > +  This PCIe RC controller is based on the Synopsys DesignWare PCIe IP
+> > +  and thus inherits all the common properties defined in snps,dw-pcie.yaml.
+> > +
+> > +  This controller derives its clocks from the Reset Configuration Word (RCW)
+> > +  which is used to describe the PLL settings at the time of chip-reset.
+> > +
+> > +  Also as per the available Reference Manuals, there is no specific 'version'
+> > +  register available in the Freescale PCIe controller register set,
+> > +  which can allow determining the underlying DesignWare PCIe controller version
+> > +  information.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - fsl,ls1021a-pcie
+> > +      - fsl,ls2080a-pcie
+> > +      - fsl,ls2085a-pcie
+> > +      - fsl,ls2088a-pcie
+> > +      - fsl,ls1088a-pcie
+> > +      - fsl,ls1046a-pcie
+> > +      - fsl,ls1043a-pcie
+> > +      - fsl,ls1012a-pcie
+> > +      - fsl,ls1028a-pcie
+> > +      - fsl,lx2160a-pcie
+> > +
+> > +  reg:
+> > +    description: base addresses and lengths of the PCIe controller register blocks.
+> 
+> You need to define how many entries and what they are.
+> 
+> 
+> > +
+> > +  interrupts:
+> > +    description: A list of interrupt outputs of the controller. Must contain an
+> > +      entry for each entry in the interrupt-names property.
+> 
+> You need to define how many entries and what they are.
+> 
+> > +
+> > +  interrupt-names:
+> > +    minItems: 1
+> > +    maxItems: 3
+> > +    description: It could include the following entries.
+> > +    items:
+> > +      oneOf:
+> > +        - description:
+> > +            Used for interrupt line which reports AER events when
+> > +            non MSI/MSI-X/INTx mode is used.
+> > +          const: aer
+> > +        - description:
+> > +            Used for interrupt line which reports PME events when
+> > +            non MSI/MSI-X/INTx mode is used.
+> > +          const: pme
+> > +        - description:
+> > +            Used for SoCs(like ls2080a, lx2160a, ls2080a, ls2088a, ls1088a)
+> > +            which has a single interrupt line for miscellaneous controller
+> > +            events(could include AER and PME events).
+> > +          const: intr
+> 
+> Similar comment here, but the names are already defined in 
+> snps,dw-pcie.yaml.
+> 
+> > +
+> > +  fsl,pcie-scfg:
+> > +    $ref: /schemas/types.yaml#/definitions/phandle
+> > +    description: Must include two entries.
+> > +      The first entry must be a link to the SCFG device node
+> > +      The second entry is the physical PCIe controller index starting from '0'.
+> > +      This is used to get SCFG PEXN registers
+> > +
+> > +  dma-coherent:
+> > +    description: Indicates that the hardware IP block can ensure the coherency
+> > +      of the data transferred from/to the IP block. This can avoid the software
+> > +      cache flush/invalid actions, and improve the performance significantly
+> 
+> Drop
+> 
+> > +
+> > +  big-endian:
+> > +    $ref: /schemas/types.yaml#/definitions/flag
+> > +    description: If the PEX_LUT and PF register block is in big-endian, specify
+> > +      this property.
+> > +
+> > +unevaluatedProperties: true
+> > +
+> > +required:
+> 
+> > +  - compatible
+> > +  - reg
+> 
+> Both required in common schema. Drop.
+> 
+> > +  - interrupt-names
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> > +
+> > +    soc {
+> > +      #address-cells = <2>;
+> > +      #size-cells = <2>;
+> > +
+> > +      pcie@3400000 {
+> > +        compatible = "fsl,ls1088a-pcie";
+> > +        reg = <0x00 0x03400000 0x0 0x00100000>, /* controller registers */
+> > +            <0x20 0x00000000 0x0 0x00002000>; /* configuration space */
+> > +        reg-names = "regs", "config";
+> > +        interrupts = <0 108 IRQ_TYPE_LEVEL_HIGH>; /* aer interrupt */
+> > +        interrupt-names = "aer";
+> > +        #address-cells = <3>;
+> > +        #size-cells = <2>;
+> > +        dma-coherent;
+> > +        device_type = "pci";
+> > +        bus-range = <0x0 0xff>;
+> > +        ranges = <0x81000000 0x0 0x00000000 0x20 0x00010000 0x0 0x00010000   /* downstream I/O */
+> > +                 0x82000000 0x0 0x40000000 0x20 0x40000000 0x0 0x40000000>; /* non-prefetchable memory */
+> > +        msi-parent = <&its>;
+> > +        #interrupt-cells = <1>;
+> > +        interrupt-map-mask = <0 0 0 7>;
+> > +        interrupt-map = <0000 0 0 1 &gic 0 0 0 109 IRQ_TYPE_LEVEL_HIGH>,
+> > +                        <0000 0 0 2 &gic 0 0 0 110 IRQ_TYPE_LEVEL_HIGH>,
+> > +                        <0000 0 0 3 &gic 0 0 0 111 IRQ_TYPE_LEVEL_HIGH>,
+> > +                        <0000 0 0 4 &gic 0 0 0 112 IRQ_TYPE_LEVEL_HIGH>;
+> > +        iommu-map = <0 &smmu 0 1>; /* Fixed-up by bootloader */
+> > +      };
+> > +    };
+> > +...
 
