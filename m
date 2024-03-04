@@ -1,285 +1,160 @@
-Return-Path: <linux-kernel+bounces-89981-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89982-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 382CF86F894
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 03:30:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAAA486F89C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 03:39:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E643C28116B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 02:30:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D2AE1C20C5E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 02:39:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71BC56FA9;
-	Mon,  4 Mar 2024 02:30:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DFAD1854;
+	Mon,  4 Mar 2024 02:39:49 +0000 (UTC)
 Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0D0C4C69
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 02:30:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 592E419A
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 02:39:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709519436; cv=none; b=hSTv45g+bQ/WHcmgfZHW8NOsU/ieN/JI/jjy+8Syeg4XRM5d2L6WIYHzGXT7fpD+37ZC2+Zs8FUI0gZFmFnNxdBYknP2xFWxUgUP0vsCt4NfemKP6xsRIT1fyVMWFUTsEe3XBpQrffPlIOtINNGAyCfP0flyOCigkgA8A9VcCWE=
+	t=1709519988; cv=none; b=HTzjNWuDya4R1/Q6HY9gOp9Mn1LdT9DL65uxR2ekotd2mKB/Cn4QivVpzHzED8sQ+ERkhtx6xx+OJsO6F/p+Ryfdv9+3qCfsW0haV3YfJuDIkREoa7yNSEUEoxXquKFrfppAe//CIpbs7IL1dZwMO72SyYPctL2aa+ZPYr3lvBI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709519436; c=relaxed/simple;
-	bh=/wMSez2yC0zHz3TtIns6bvleXd0BasoCTavjhzGH9P8=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=Iei1iw875hbpx1z2w6gHQyRycRp6ti7XXAMdJAq0k4sAtu6Oua/ubv1ggPj5aBFDjYShTgvvjd+YkND/fVnZrofbeXq/Goim29Gjgo6YkpQKMig+2eDzNya5Gcm6Dy3MxUEcQgr8zepM9E0Lu1Yp9R7zf04WEY8yReyc6OaPnnQ=
+	s=arc-20240116; t=1709519988; c=relaxed/simple;
+	bh=mzaSVeh4brKuSCIYyR/KgsMXISsvCDhXVxVlfuIfANk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eTR7nFdFjYYydxzRrgm9xr5wBIPOgR1cxA8JLFt2902k4zSBclqRKYdWnwJwKDWkg9NCEDxhw2ePlISlci7ctxhzgybHYfYF90TrFsQaiGncxXLoUo3TWGDu7UhLVIU/pPTiGwO9nkL++xjyngmV5ZkTTTKWp3et8WGsax0u2Bw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-d6dff70000001748-e8-65e53244aee4
+X-AuditID: a67dfc5b-d6dff70000001748-2a-65e5346b883a
+Date: Mon, 4 Mar 2024 11:39:34 +0900
 From: Byungchul Park <byungchul@sk.com>
-To: akpm@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	kernel_team@skhynix.com,
-	yuzhao@google.com,
-	ying.huang@intel.com,
-	hannes@cmpxchg.org
-Subject: [PATCH v5] mm, vmscan: retry kswapd's priority loop with cache_trim_mode off on failure
-Date: Mon,  4 Mar 2024 11:30:18 +0900
-Message-Id: <20240304023018.69705-1-byungchul@sk.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrOJMWRmVeSWpSXmKPExsXC9ZZnka6L0dNUg6eXVSzmrF/DZrF6k6/F
-	5V1z2CzurfnPanFy1mQWi3cTvrA6sHkcfvOe2WPBplKPxXteMnls+jSJ3ePEjN8sHp83yQWw
-	RXHZpKTmZJalFunbJXBldP97xlSw2qHi8aLZjA2MfQZdjJwcEgImEgeeHGOGsV+cW8kOYrMJ
-	qEvcuPETLC4iICsx9e95li5GLg5mgSmMEivutbOBJIQFEiRWPd3IAmKzCKhKzN/+BczmFTCV
-	eLBqFgvEUHmJ1RsOMIM0SwjcZZX42fufCSIhKXFwxQ2WCYzcCxgZVjEKZeaV5SZm5pjoZVTm
-	ZVboJefnbmIEBsey2j/ROxg/XQg+xCjAwajEw5vR+SRViDWxrLgy9xCjBAezkghvzS+gEG9K
-	YmVValF+fFFpTmrxIUZpDhYlcV6jb+UpQgLpiSWp2ampBalFMFkmDk6pBkYu9xPmyrl+qlYO
-	x5xCKy7bPg2areLyQ65xelZ3l5j+7c+KIecfbG9fp7TA6Bnvt0tfU2syTHiELtwOYJZQPiYa
-	HLD6bKLPya9JW/puTEy93+lbUfQj483xZXvnPbBb59akyCV+RmThvb4OSyO3EwfnW65vr2Cu
-	X1AZITHzEYsDs1jCMo6I/0osxRmJhlrMRcWJAJMvXxQKAgAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrHJMWRmVeSWpSXmKPExsXC5WfdrOti9DTVYP9GMYs569ewWaze5Gtx
-	eO5JVovLu+awWdxb85/V4uSsySwW7yZ8YXVg9zj85j2zx4JNpR6L97xk8tj0aRK7x4kZv1k8
-	Fr/4wOTxeZNcAHsUl01Kak5mWWqRvl0CV0b3v2dMBasdKh4vms3YwNhn0MXIySEhYCLx4txK
-	dhCbTUBd4saNn8wgtoiArMTUv+dZuhi5OJgFpjBKrLjXzgaSEBZIkFj1dCMLiM0ioCoxf/sX
-	MJtXwFTiwapZLBBD5SVWbzjAPIGRYwEjwypGkcy8stzEzBxTveLsjMq8zAq95PzcTYxAXy+r
-	/TNxB+OXy+6HGAU4GJV4eCeseZIqxJpYVlyZe4hRgoNZSYS35hdQiDclsbIqtSg/vqg0J7X4
-	EKM0B4uSOK9XeGqCkEB6YklqdmpqQWoRTJaJg1OqgbHZJUjak92xyWrSrOXXZbNaZx0sNW9Z
-	uEp1v0PSjIrw2DOf/n8Wt3qSnbRlPbtUfvT/Z8X3zuomeJ/ZE21uWZAceurUgxuNAgvLlhWG
-	tkdNUJh0KPT5pTl3HT2XVq62zZkRueTs0/v7bjSs6vu8jvtnjnNH8EqhfZG8X8RCFMILelvm
-	JLesbVdiKc5INNRiLipOBAAMUnki8QEAAA==
-X-CFilter-Loop: Reflected
+To: David Hildenbrand <david@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	kernel_team@skhynix.com, akpm@linux-foundation.org,
+	ying.huang@intel.com, vernhao@tencent.com,
+	mgorman@techsingularity.net, hughd@google.com, willy@infradead.org,
+	peterz@infradead.org, luto@kernel.org, tglx@linutronix.de,
+	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+	rjgolo@gmail.com
+Subject: Re: [RESEND PATCH v8 0/8] Reduce TLB flushes by 94% by improving
+ folio migration
+Message-ID: <20240304023934.GA13332@system.software.com>
+References: <20240226030613.22366-1-byungchul@sk.com>
+ <20240229092810.GC64252@system.software.com>
+ <54053f0d-024b-4064-8d82-235cc71b61f8@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <54053f0d-024b-4064-8d82-235cc71b61f8@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHIsWRmVeSWpSXmKPExsXC9ZZnoW6OydNUg4NbxC3mrF/DZvF5wz82
+	ixcb2hktvq7/xWzx9FMfi8XlXXPYLO6t+c9qcX7XWlaLHUv3MVlcOrCAyeJ47wEmi/n3PrNZ
+	bN40ldni+JSpjBa/fwAVn5w1mcVBwON7ax+Lx85Zd9k9Fmwq9di8Qstj8Z6XTB6bVnWyeWz6
+	NInd4925c+weJ2b8ZvGYdzLQ4/2+q2weW3/ZeTROvcbm8XmTXABfFJdNSmpOZllqkb5dAlfG
+	nb9PGAu+ild8vXOeqYFxiVAXIyeHhICJRPe1M4ww9qennSwgNouAisT/CQvB4mwC6hI3bvxk
+	BrFFBDQkNrVtALK5OJgF3jJJTJnTzAaSEBaIlljWNYUdxOYVsJC41TKDDaRISGAGo8Tq5ivM
+	EAlBiZMzn4BtYBbQkrjx7yVTFyMHkC0tsfwfB0iYU8BO4t+kc2CLRQWUJQ5sO84EMkdCYB27
+	xLQjN9ghLpWUOLjiBssERoFZSMbOQjJ2FsLYBYzMqxiFMvPKchMzc0z0MirzMiv0kvNzNzEC
+	Y3FZ7Z/oHYyfLgQfYhTgYFTi4c3ofJIqxJpYVlyZe4hRgoNZSYS35hdQiDclsbIqtSg/vqg0
+	J7X4EKM0B4uSOK/Rt/IUIYH0xJLU7NTUgtQimCwTB6dUAyPnZ62GOPkPrPNPlnhGCKx+/Gtv
+	8bfXU+3/1jzNLNizUdydv6fU8OfNKY2hVRwxD3iWcjKnGl//cmUNY13xkTXP5L/ZTWXM6TMO
+	33bt6YO3HWdK3HvrqxT5e4P+OBvE7Pzh+3Jzsf+7mIk+wdk//ITns510M2kPbinek/liPeeM
+	5O3yyqXSVUosxRmJhlrMRcWJAMUelSDBAgAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA02RW0hTYQDH+c45OzsbGx6XsQ+Foiko81oofFBI1EMfGaIgBBW0Qx5yOadt
+	KioFmmUoJfMymHOVZanpwu2MTEVkTGTtQcUskTAhcKQPteWFzMtsMyLffvwv/B/+DKkwU7GM
+	Vl/OG/ScTkVLKWnu6frU4kw/n+EJKpFt0E6jdUeIRiuOhwBtDm6TyL/WTKGJJz4Rmhu10WjJ
+	vi9CM6NvRGj41TiBPri7COR97CbQs6V1GrkEM4m87WaAdrbCYZ+1jTobjX89aKbwiPWLGHcJ
+	FdjVp8bdY6sEFvobaSystYrxj+lpMX5v2aHwU18+Dox/onH3SpDAb7ezcZ15nsbrwrG8qCvS
+	M4W8TlvJG9KzNdKixb1lULaprNpcnCFqwUtFE5AwkM2Ea/5GKsIUmwD3Tc9BhGk2ES4s/CYj
+	HMMmQaHBEWYpQ7LfCdhuq6cjxhH2KuxpahdHWM4i+Pm+hY6EFKwFwIH6j+RfIxr6OpYPFkhW
+	DRdCq0QTYMIcB3tDTESWsNkw1Dp9MHyUjYfuIS9hAnLrobb1UNv6v90FyH4Qo9VXlnBaXVaa
+	sbioWq+tSrtRWiKA8Fk9d3dbhsHG3AUPYBmgkslN9mVeIeIqjdUlHgAZUhUjv7MdluSFXHUN
+	byi9bqjQ8UYPiGMolVJ+8TKvUbA3uXK+mOfLeMM/l2AksbXgxey5lsmMLXNV51TAXRC1l0K9
+	RhqX83jcKVuSN2+kISEA+F0mpzM5q6CtJsXpHW2+Z42/xLWdJ775TROWTHvLu15DzteUxHFZ
+	GROQBpduKedvD6RKnBVD6QV1IadRNqvuS/Y74aP8zj7Zz2saamrsxEZH0J7umlDZcydVlLGI
+	O6kmDUbuDyUPXjKoAgAA
+X-CFilter-Loop: Reflected
 
-Sorry for noise. I should've applied v5's change in v4.
+On Thu, Feb 29, 2024 at 10:33:44AM +0100, David Hildenbrand wrote:
+> On 29.02.24 10:28, Byungchul Park wrote:
+> > On Mon, Feb 26, 2024 at 12:06:05PM +0900, Byungchul Park wrote:
+> > > Hi everyone,
+> > > 
+> > > While I'm working with a tiered memory system e.g. CXL memory, I have
+> > > been facing migration overhead esp. TLB shootdown on promotion or
+> > > demotion between different tiers. Yeah.. most TLB shootdowns on
+> > > migration through hinting fault can be avoided thanks to Huang Ying's
+> > > work, commit 4d4b6d66db ("mm,unmap: avoid flushing TLB in batch if PTE
+> > > is inaccessible"). See the following link:
+> > > 
+> > > https://lore.kernel.org/lkml/20231115025755.GA29979@system.software.com/
+> > > 
+> > > However, it's only for ones using hinting fault. I thought it'd be much
+> > > better if we have a general mechanism to reduce the number of TLB
+> > > flushes and TLB misses, that we can ultimately apply to any type of
+> > > migration, I tried it only for tiering for now tho.
+> > > 
+> > > I'm suggesting a mechanism called MIGRC that stands for 'Migration Read
+> > > Copy', to reduce TLB flushes by keeping source and destination of folios
+> > > participated in the migrations until all TLB flushes required are done,
+> > > only if those folios are not mapped with write permission PTE entries.
+> > > 
+> > > To achieve that:
+> > > 
+> > >     1. For the folios that map only to non-writable TLB entries, prevent
+> > >        TLB flush at migration by keeping both source and destination
+> > >        folios, which will be handled later at a better time.
+> > > 
+> > >     2. When any non-writable TLB entry changes to writable e.g. through
+> > >        fault handler, give up migrc mechanism so as to perform TLB flush
+> > >        required right away.
+> > > 
+> > > I observed a big improvement of TLB flushes # and TLB misses # at the
+> > > following evaluation using XSBench like:
+> > > 
+> > >     1. itlb flush was reduced by 93.9%.
+> > >     2. dtlb thread was reduced by 43.5%.
+> > >     3. stlb flush was reduced by 24.9%.
+> > 
+> > Hi guys,
+> 
+> Hi,
+> 
+> > 
+> > The TLB flush reduction is 25% ~ 94%, IMO, it's unbelievable.
+> 
+> Can't we find at least one benchmark that shows an actual improvement on
+> some system?
 
-Changes from v4:
-	1. Make other scans start with may_cache_trim_mode = 1.
+XSBench is more like a real workload that is used for performance
+analysis on high performance computing architectrues, not micro
+benchmark only for testing TLB things.
 
-Changes from v3:
-	1. Update the test result in the commit message with v4.
-	2. Retry the whole priority loop with cache_trim_mode off again,
-	   rather than forcing the mode off at the highest priority,
-	   when the mode doesn't work. (feedbacked by Johannes Weiner)
+XSBench : https://github.com/ANL-CESAR/XSBench
 
-Changes from v2:
-	1. Change the condition to stop cache_trim_mode.
+Not to mention TLB numbers, the performance improvement is a little but
+clearly positive as you can see the result I shared.
 
-	   From - Stop it if it's at high scan priorities, 0 or 1.
-	   To   - Stop it if it's at high scan priorities, 0 or 1, and
-	          the mode didn't work in the previous turn.
+	Byungchul
 
-	   (feedbacked by Huang Ying)
-
-	2. Change the test result in the commit message after testing
-	   with the new logic.
-
-Changes from v1:
-	1. Add a comment describing why this change is necessary in code
-	   and rewrite the commit message with how to reproduce and what
-	   the result is using vmstat. (feedbacked by Andrew Morton and
-	   Yu Zhao)
-	2. Change the condition to avoid cache_trim_mode from
-	   'sc->priority != 1' to 'sc->priority > 1' to reflect cases
-	   where the priority goes to zero all the way. (feedbacked by
-	   Yu Zhao)
---->8---
-From 58f1a0e41b9feea72d7fd4bd7bed1ace592e6e4c Mon Sep 17 00:00:00 2001
-From: Byungchul Park <byungchul@sk.com>
-Date: Mon, 4 Mar 2024 11:24:40 +0900
-Subject: [PATCH v5] mm, vmscan: retry kswapd's priority loop with cache_trim_mode off on failure
-
-With cache_trim_mode on, reclaim logic doesn't bother reclaiming anon
-pages.  However, it should be more careful to use the mode because it's
-going to prevent anon pages from being reclaimed even if there are a
-huge number of anon pages that are cold and should be reclaimed.  Even
-worse, that leads kswapd_failures to reach MAX_RECLAIM_RETRIES and
-stopping kswapd from functioning until direct reclaim eventually works
-to resume kswapd.
-
-So kswapd needs to retry its scan priority loop with cache_trim_mode
-off again if the mode doesn't work for reclaim.
-
-The problematic behavior can be reproduced by:
-
-   CONFIG_NUMA_BALANCING enabled
-   sysctl_numa_balancing_mode set to NUMA_BALANCING_MEMORY_TIERING
-   numa node0 (8GB local memory, 16 CPUs)
-   numa node1 (8GB slow tier memory, no CPUs)
-
-   Sequence:
-
-   1) echo 3 > /proc/sys/vm/drop_caches
-   2) To emulate the system with full of cold memory in local DRAM, run
-      the following dummy program and never touch the region:
-
-         mmap(0, 8 * 1024 * 1024 * 1024, PROT_READ | PROT_WRITE,
-              MAP_ANONYMOUS | MAP_PRIVATE | MAP_POPULATE, -1, 0);
-
-   3) Run any memory intensive work e.g. XSBench.
-   4) Check if numa balancing is working e.i. promotion/demotion.
-   5) Iterate 1) ~ 4) until numa balancing stops.
-
-With this, you could see that promotion/demotion are not working because
-kswapd has stopped due to ->kswapd_failures >= MAX_RECLAIM_RETRIES.
-
-Interesting vmstat delta's differences between before and after are like:
-
-   +-----------------------+-------------------------------+
-   | interesting vmstat    | before        | after         |
-   +-----------------------+-------------------------------+
-   | nr_inactive_anon      | 321935        | 1646193       |
-   | nr_active_anon        | 1780700       | 456388        |
-   | nr_inactive_file      | 30425         | 27836         |
-   | nr_active_file        | 14961         | 1217          |
-   | pgpromote_success     | 356           | 1310120       |
-   | pgpromote_candidate   | 21953245      | 1736872       |
-   | pgactivate            | 1844523       | 3292443       |
-   | pgdeactivate          | 50634         | 1526701       |
-   | pgfault               | 31100294      | 6715375       |
-   | pgdemote_kswapd       | 30856         | 1954199       |
-   | pgscan_kswapd         | 1861981       | 7100099       |
-   | pgscan_anon           | 1822930       | 7061135       |
-   | pgscan_file           | 39051         | 38964         |
-   | pgsteal_anon          | 386           | 1925214       |
-   | pgsteal_file          | 30470         | 28985         |
-   | pageoutrun            | 30            | 500           |
-   | numa_hint_faults      | 27418279      | 3090773       |
-   | numa_pages_migrated   | 356           | 1310120       |
-   +-----------------------+-------------------------------+
-
-Signed-off-by: Byungchul Park <byungchul@sk.com>
----
- mm/vmscan.c | 23 +++++++++++++++++++++--
- 1 file changed, 21 insertions(+), 2 deletions(-)
-
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index bba207f41b14..77948b0f8b5b 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -108,6 +108,9 @@ struct scan_control {
- 	/* Can folios be swapped as part of reclaim? */
- 	unsigned int may_swap:1;
- 
-+	/* Can cache_trim_mode be turned on as part of reclaim? */
-+	unsigned int may_cache_trim_mode:1;
-+
- 	/* Proactive reclaim invoked by userspace through memory.reclaim */
- 	unsigned int proactive:1;
- 
-@@ -1500,6 +1503,7 @@ unsigned int reclaim_clean_pages_from_list(struct zone *zone,
- 	struct scan_control sc = {
- 		.gfp_mask = GFP_KERNEL,
- 		.may_unmap = 1,
-+		.may_cache_trim_mode = 1,
- 	};
- 	struct reclaim_stat stat;
- 	unsigned int nr_reclaimed;
-@@ -2094,6 +2098,7 @@ static unsigned int reclaim_folio_list(struct list_head *folio_list,
- 		.may_writepage = 1,
- 		.may_unmap = 1,
- 		.may_swap = 1,
-+		.may_cache_trim_mode = 1,
- 		.no_demotion = 1,
- 	};
- 
-@@ -2268,7 +2273,8 @@ static void prepare_scan_control(pg_data_t *pgdat, struct scan_control *sc)
- 	 * anonymous pages.
- 	 */
- 	file = lruvec_page_state(target_lruvec, NR_INACTIVE_FILE);
--	if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE))
-+	if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE) &&
-+	    sc->may_cache_trim_mode)
- 		sc->cache_trim_mode = 1;
- 	else
- 		sc->cache_trim_mode = 0;
-@@ -5435,6 +5441,7 @@ static ssize_t lru_gen_seq_write(struct file *file, const char __user *src,
- 		.may_writepage = true,
- 		.may_unmap = true,
- 		.may_swap = true,
-+		.may_cache_trim_mode = 1,
- 		.reclaim_idx = MAX_NR_ZONES - 1,
- 		.gfp_mask = GFP_KERNEL,
- 	};
-@@ -6394,6 +6401,7 @@ unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
- 		.may_writepage = !laptop_mode,
- 		.may_unmap = 1,
- 		.may_swap = 1,
-+		.may_cache_trim_mode = 1,
- 	};
- 
- 	/*
-@@ -6439,6 +6447,7 @@ unsigned long mem_cgroup_shrink_node(struct mem_cgroup *memcg,
- 		.may_unmap = 1,
- 		.reclaim_idx = MAX_NR_ZONES - 1,
- 		.may_swap = !noswap,
-+		.may_cache_trim_mode = 1,
- 	};
- 
- 	WARN_ON_ONCE(!current->reclaim_state);
-@@ -6482,6 +6491,7 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
- 		.may_writepage = !laptop_mode,
- 		.may_unmap = 1,
- 		.may_swap = !!(reclaim_options & MEMCG_RECLAIM_MAY_SWAP),
-+		.may_cache_trim_mode = 1,
- 		.proactive = !!(reclaim_options & MEMCG_RECLAIM_PROACTIVE),
- 	};
- 	/*
-@@ -6744,6 +6754,7 @@ static int balance_pgdat(pg_data_t *pgdat, int order, int highest_zoneidx)
- 		.gfp_mask = GFP_KERNEL,
- 		.order = order,
- 		.may_unmap = 1,
-+		.may_cache_trim_mode = 1,
- 	};
- 
- 	set_task_reclaim_state(current, &sc.reclaim_state);
-@@ -6898,8 +6909,14 @@ static int balance_pgdat(pg_data_t *pgdat, int order, int highest_zoneidx)
- 			sc.priority--;
- 	} while (sc.priority >= 1);
- 
--	if (!sc.nr_reclaimed)
-+	if (!sc.nr_reclaimed) {
-+		if (sc.may_cache_trim_mode) {
-+			sc.may_cache_trim_mode = 0;
-+			goto restart;
-+		}
-+
- 		pgdat->kswapd_failures++;
-+	}
- 
- out:
- 	clear_reclaim_active(pgdat, highest_zoneidx);
-@@ -7202,6 +7219,7 @@ unsigned long shrink_all_memory(unsigned long nr_to_reclaim)
- 		.may_writepage = 1,
- 		.may_unmap = 1,
- 		.may_swap = 1,
-+		.may_cache_trim_mode = 1,
- 		.hibernation_mode = 1,
- 	};
- 	struct zonelist *zonelist = node_zonelist(numa_node_id(), sc.gfp_mask);
-@@ -7360,6 +7378,7 @@ static int __node_reclaim(struct pglist_data *pgdat, gfp_t gfp_mask, unsigned in
- 		.may_writepage = !!(node_reclaim_mode & RECLAIM_WRITE),
- 		.may_unmap = !!(node_reclaim_mode & RECLAIM_UNMAP),
- 		.may_swap = 1,
-+		.may_cache_trim_mode = 1,
- 		.reclaim_idx = gfp_zone(gfp_mask),
- 	};
- 	unsigned long pflags;
--- 
-2.17.1
-
+> Staring at the number TLB flushes is nice, but if it does not affect actual
+> performance of at least one benchmark why do we even care?
+> 
+> "12 files changed, 597 insertions(+), 59 deletions(-)"
+> 
+> is not negligible and needs proper review.
+> 
+> That review needs motivation. The current numbers do not seem to be
+> motivating enough :)
+> 
+> -- 
+> Cheers,
+> 
+> David / dhildenb
 
