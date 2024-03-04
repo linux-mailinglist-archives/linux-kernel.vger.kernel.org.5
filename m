@@ -1,162 +1,163 @@
-Return-Path: <linux-kernel+bounces-91198-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91199-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5E6E870B1A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:00:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 998E5870B1C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:02:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 248711C21942
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:00:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E7081F22D52
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:02:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FB8A7A15C;
-	Mon,  4 Mar 2024 20:00:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B65D7A706;
+	Mon,  4 Mar 2024 20:02:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="adHhjFIK"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=invisiblethingslab.com header.i=@invisiblethingslab.com header.b="J3MzlEp0";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="etKXsc+F"
+Received: from fout1-smtp.messagingengine.com (fout1-smtp.messagingengine.com [103.168.172.144])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0B0779DDC;
-	Mon,  4 Mar 2024 20:00:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C656A6166B;
+	Mon,  4 Mar 2024 20:02:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709582443; cv=none; b=aDzLB6rqq5RiGgPgwahz5CHqF2sxoQ2OQipdPvfrLPBt9K50w7gS6Xl4UcGXJ2M7ixHmYkwkRZ4ZzDbgMMhvUAHh5yeFA3a/6tP/7ST0mHLkI9Pv/WvajScnfFuNut9M25izaahK14LMjihsEbrBV/O8/0FMivXytDx2qbqp7A4=
+	t=1709582537; cv=none; b=khfjl2ZkaMhS+3CFh+pxuCDIutxmTBwRvnB0KQDZJvG/+tubXXOj25g7rEaLKGyN9tcaJoB3qAynOOda7omkAekZcolww2eammfEKzHUTVW+XjknxMj+5qN2PkB90v3Nxnhdlbj/czDS+ObuKee7Orqyq/gGbEaP0uChDXWsjzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709582443; c=relaxed/simple;
-	bh=XvM+66VhbbeNHen8cDDRkVqqLC5Yo36gqh2E2nY94W8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Z2umr7jkIOvi60dCSSRzsB2GjHcuJglFQJDhqLgNKFxVV2j/DfO5lvYolGWpuWUhah9KgC4h6GHGNNDtBECynIPv3H+wo+hBuuZNN9hbxJQOLjSAI2JzI5DNjoQ6EUehaT/pJC2j9acr4lHXDBnejUUk/5bl2h374ZGOdv61UXU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=adHhjFIK; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-412e7fe4497so6242165e9.1;
-        Mon, 04 Mar 2024 12:00:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709582440; x=1710187240; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qgHCyC+Ikfdy07nvjol19ApsqbmdnmuhNond4BBAt+Y=;
-        b=adHhjFIKterQ/D3wdaFNB4olqMlOZzaCE5jH/5OwX3h4nKC7erINpOOHd4kZXvfS29
-         uq8tFVO6LpfNSKUBrKPAfsmFPvIrdTzpTpQktVsfEdRl5dfsBs/rH2Up+FTOhPlCdFRM
-         8IhqJ/jA9ZLtJHi9PqYS5HqFNJbTVbDztfEgIBKkqxhRvWwGi64LroF/blqsM0d/e+8x
-         WXGx/he0dOiccJOzOEBJVTXeFXINxLsVeP34mDRKNUOlZZhAgDCJcQ6KMQ2VU/lN9dP7
-         k4i7eodXk3qdo+/Aa3lfwd+t6WnDvDX11u9Fdbus6z0Ywo7YWE64HFOYThjs4BcpcX/e
-         4wZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709582440; x=1710187240;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qgHCyC+Ikfdy07nvjol19ApsqbmdnmuhNond4BBAt+Y=;
-        b=ckYGJ85Na1jK/MnUmTdf1MBt627CS9tE6i0qMs+3pi+qEaEYmxvfnZjwpmtJxJwSeU
-         c4AnBGdFEpLfJf74gan2EE4MkS00Ka16uk8joEbQwUYC0JySkB2SiQ3wwsiDE3JRRZjF
-         DhKuNXVuwYLwK4Cw5+57DLPN2U8LYKpOrCYEJwfLulCdlRKxWoi/h8em5wYl/Wsuq+q6
-         DHnyWXIqThVTEHErKLQOvOkSJd1umnVJW/8NXIi6/y4mn8WxphRTuNeZt5eJVE/cmIah
-         YXh9+iWGuw0aDMProKDZJSfHRZR9rpDBG+fG2RSjCZbh7amlBidIR/lEK19LDOpi3HPe
-         FKjA==
-X-Forwarded-Encrypted: i=1; AJvYcCUnxZm1pt1eSgFcHTj/z5bUAuBiVdFfzupE4vEQz3rkTna/NijVAbzJY1tUlvFV3j7ppX2xWrkBQZnzdL5Y7cMofdwttuz09Zuw4xoJM43HVG75C6Rr8UIcUoTIIWndb0JIejnVSVGgeVYm7S20D8RjLomyY94hq+JU/ZNhocHF
-X-Gm-Message-State: AOJu0YzX7YySpUEznzgbQMVxKr3wcXIO18E8Lg6O+gldjTDP1Lo7apFc
-	Wpu0MaE+aYCLXZVSRd9sym1YD5JKJCl2B4TtOvIp8dyDiQpwmVJT
-X-Google-Smtp-Source: AGHT+IEG6VFBumkdiKt3bV/gFyaWTxyNPWjZ8t9eO9T+jnNpADN4tBLH9fymg1RHv/pFVFu+3LqEsw==
-X-Received: by 2002:a05:600c:4e8b:b0:412:b83c:d97d with SMTP id f11-20020a05600c4e8b00b00412b83cd97dmr8154909wmq.16.1709582439907;
-        Mon, 04 Mar 2024 12:00:39 -0800 (PST)
-Received: from eldamar.lan (c-82-192-242-114.customer.ggaweb.ch. [82.192.242.114])
-        by smtp.gmail.com with ESMTPSA id m11-20020a7bcb8b000000b00412dd56e0desm2428259wmi.1.2024.03.04.12.00.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 12:00:37 -0800 (PST)
-Sender: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com>
-Received: by eldamar.lan (Postfix, from userid 1000)
-	id C6ECABE2EE8; Mon,  4 Mar 2024 21:00:36 +0100 (CET)
-Date: Mon, 4 Mar 2024 21:00:36 +0100
-From: Salvatore Bonaccorso <carnil@debian.org>
-To: Jonathan Corbet <corbet@lwn.net>
-Cc: regressions@lists.linux.dev, stable@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Ben Hutchings <ben@decadent.org.uk>,
-	Kees Cook <keescook@chromium.org>, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Aditya Srivastava <yashsri421@gmail.com>, 1064035@bugs.debian.org
-Subject: Re: [regression 5.10.y] linux-doc builds: Global symbol "$args"
- requires explicit package name (did you forget to declare "my $args"?) at
- ./scripts/kernel-doc line 1236.
-Message-ID: <ZeYoZNJaZ4ejONTZ@eldamar.lan>
-References: <ZeHKjjPGoyv_b2Tg@eldamar.lan>
- <877ciiw1yp.fsf@meer.lwn.net>
+	s=arc-20240116; t=1709582537; c=relaxed/simple;
+	bh=W/uRvTZAsWCNOm/39QHPuHOMNmZlMmdJH0RBqn5B/bg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=m1wF3HvnW2jAqueh+XjvG0cDHXKAGR1idhspNKuZ4ZkvL6BPrU/27gmS1GC/+1zsx1TUIgyxDOuybvyH6B0YauhnBzrH3PGh7jBuQufKvcOVYgpvSJlsJpbqvmcqthvY0+cnW5NjFfigu1DTyVfkg0oCKdbj5N+45XV0piHTbXk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=invisiblethingslab.com; spf=none smtp.mailfrom=invisiblethingslab.com; dkim=pass (2048-bit key) header.d=invisiblethingslab.com header.i=@invisiblethingslab.com header.b=J3MzlEp0; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=etKXsc+F; arc=none smtp.client-ip=103.168.172.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=invisiblethingslab.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=invisiblethingslab.com
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailfout.nyi.internal (Postfix) with ESMTP id B08C013800CA;
+	Mon,  4 Mar 2024 15:02:14 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Mon, 04 Mar 2024 15:02:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	invisiblethingslab.com; h=cc:cc:content-type:content-type:date
+	:date:from:from:in-reply-to:message-id:mime-version:reply-to
+	:subject:subject:to:to; s=fm1; t=1709582534; x=1709668934; bh=9o
+	Pusn5+rCN4IKmwCH88m/ny24uGHTvOdf6B86ocg1I=; b=J3MzlEp0ldkck3bxq0
+	NxZoaeC8NZAhGP9aMtqXLV7dexLnFRrgF5rjzSohUAzFJ4xaU1HYgzebj5CwQkLo
+	rUVTz6rZ9MV9PXWarrVV0a7JgwWApcYCcfTLCNjkCK0PMRYjURdodkxFJTITaPwr
+	pFoCHicGxQtFmciijuG6zLFCJSmnGI9L+CGg4vwoTtTY3H6dimSDkYYmf4RZ3Vf4
+	phT4y+UYO3l4d4yFon+ZFFxVQh28WbjmLX5sEVK6SIL/5THjMtxFyB1vVIYxgH5K
+	8SBqG0+PAP6spLN5ZmkZmMyf33CsKFCTGiuIx53kvCulq8Etc2qaXUElHEK2OFHn
+	4m0w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:message-id
+	:mime-version:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1709582534; x=1709668934; bh=9oPusn5+rCN4IKmwCH88m/ny24uGHTvOdf6
+	B86ocg1I=; b=etKXsc+FIZ2XNc61BGudXU9/lZCyjO7zqK3RKpbMM2+VeaHWYy+
+	x+3TyIpKhinNdAUlvFWNsLT/uA1+DzVSsxGW95Ha4uq8p5hxYlUjNZnnDf+RTY9e
+	B1mimozVd04VPR3MrjFFRHPYtr2UXmDvNVBq+C+jLeh1mcdmzTZyLy+M5FkPnFNU
+	j3C34PYsq6VxWcPDmlh9dLFpqjWiIi0LphsVovU4xhcCOzT2OL54P9wMHTFtiJ3u
+	fa8sB4pZ5WCX3oPcJMumQo1JdR05dRpPriHNPJX12NK6MxlaQ3A0Fe8SvxKQRYjW
+	/Ijs4XaXxLx+Hh+anat+SR5WUtfc7/8hWEw==
+X-ME-Sender: <xms:xijmZQEzCmd0uL1KZkXvfamv4uZ_TX4Nawv1qJeWv2s2RVkrqmhrdw>
+    <xme:xijmZZW5DDTkGgxy0z_SjayvnVc0BJRxW1ZBS5iXU4M9FOXBY_qXaa4tXlVYIhiy4
+    u564cY1OFvFzco>
+X-ME-Received: <xmr:xijmZaI649rxjgSTjtYthJ4foVrBAwBg8Bp38mDEROL1tDsyEFLnRVZdpxHcpdGB6deFTZByaRKlpAjXVWMmiZECvTBVU1Ul_cK5la2iwIcNd_s8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrheejgddufedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkgggtugesghdtreertddtvdenucfhrhhomhepffgvmhhiucfo
+    rghrihgvucfqsggvnhhouhhruceouggvmhhisehinhhvihhsihgslhgvthhhihhnghhslh
+    grsgdrtghomheqnecuggftrfgrthhtvghrnhepteekvefggeeivdffleehudejveevfeeg
+    vdeghfeigfdvgffgudeuueefveeuveefnecuffhomhgrihhnpehgihhthhhusgdrtghomh
+    enucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpeguvghm
+    ihesihhnvhhishhisghlvghthhhinhhgshhlrggsrdgtohhm
+X-ME-Proxy: <xmx:xijmZSHvqCcw29Fs9XFS31b59iJFgy1EqwJgFqqjuvec4VV5Vm09eQ>
+    <xmx:xijmZWU7dfbpVD25yXL2LRAOpO7N6RBIZKZgj_1OkWo8PU8MIAw2og>
+    <xmx:xijmZVOkSRsW988witsGGJu5DJ2UU1V8dS8yrP0ojkEp8NppL7FxuA>
+    <xmx:xijmZThwZKIxTwfCBFY0DekA_wwFcVNvXsqVXlwivG7I5d6I0wNI3g>
+Feedback-ID: iac594737:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 4 Mar 2024 15:02:14 -0500 (EST)
+Date: Mon, 4 Mar 2024 15:01:51 -0500
+From: Demi Marie Obenour <demi@invisiblethingslab.com>
+To: linux-usb@vger.kernel.org
+Cc: Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= <marmarek@invisiblethingslab.com>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: usbip doesn't work with userspace code that accesses USB devices
+Message-ID: <ZeYov0k8njwcZzGX@itl-email>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="omYEQKG3r4GVCydy"
 Content-Disposition: inline
-In-Reply-To: <877ciiw1yp.fsf@meer.lwn.net>
 
-Hi Jonathan,
 
-On Mon, Mar 04, 2024 at 06:39:26AM -0700, Jonathan Corbet wrote:
-> Salvatore Bonaccorso <carnil@debian.org> writes:
-> 
-> > Hi,
-> >
-> > Ben Hutchings reported in https://bugs.debian.org/1064035 a problem
-> > with the kernel-doc builds once 3080ea5553cc ("stddef: Introduce
-> > DECLARE_FLEX_ARRAY() helper") got applied in 5.10.210 (as
-> > prerequisite of another fix in 5.10.y):
-> >
-> >> The backport of commit 3080ea5553cc "stddef: Introduce
-> >> DECLARE_FLEX_ARRAY() helper" modified scripts/kernel-doc and
-> >> introduced a syntax error:
-> >> 
-> >> Global symbol "$args" requires explicit package name (did you forget to declare "my $args"?) at ./scripts/kernel-doc line 1236.
-> >> Global symbol "$args" requires explicit package name (did you forget to declare "my $args"?) at ./scripts/kernel-doc line 1236.
-> >> Execution of ./scripts/kernel-doc aborted due to compilation errors.
-> >> 
-> >> This doesn't stop the documentation build process, but causes the
-> >> documentation that should be extracted by kernel-doc to be missing
-> >> from linux-doc-5.10.
-> >> 
-> >> We should be able to fix this by eithering backport commit
-> >> e86bdb24375a "scripts: kernel-doc: reduce repeated regex expressions
-> >> into variables" or replacing /$args/ with /([^,)]+)/.
-> >> 
-> >> Ben.
-> >
-> > What would be prefered here from stable maintainers point of view?
-> > AFAICS e86bdb24375a ("scripts: kernel-doc: reduce repeated regex
-> > expressions into variables") won't apply cleanly and needs some
-> > refactoring. The alternative pointed out by Ben would be to replace
-> > the /$args/ with  /([^,)]+)/.
-> 
-> Hmm...this is the first I see of any of this...
-> 
-> The latter fix seems like the more straightforward of the two.  The only
-> concern might be if there are other kernel-doc backports that might run
-> afoul of the same problem, hopefully not.
+--omYEQKG3r4GVCydy
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Date: Mon, 4 Mar 2024 15:01:51 -0500
+From: Demi Marie Obenour <demi@invisiblethingslab.com>
+To: linux-usb@vger.kernel.org
+Cc: Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= <marmarek@invisiblethingslab.com>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: usbip doesn't work with userspace code that accesses USB devices
 
-Ok. In the sprit of the stable series rules we might try the later and
-if it's not feasible pick the first variant?
+Qubes OS users are reporting that MTP doesn't work with USB passthrough.
+Fastboot (used for flashing a custom OS to an Android device) also
+doesn't work.  Kernel-mode drivers, such as Bluetooth and USB storage,
+seem to usually work as expected.  Since MTP and fastboot are both
+implemented in userspace, it appears that there is some problem with the
+interaction of usbip, our USB proxy (which is based on USBIP), and
+userspace programs that interact with USB devices directly.
 
-> But this makes me wonder if there are other stable kernels that are
-> affected as well.  I guess that, despite all of the testing being done
-> on stable updates, nobody is testing the docs build?
+The bug report can be found at [1] and the source code for the USB proxy
+can be found at [2].  The script used on the sending side (the one with
+the physical USB controller) is at [3] and the script used by the
+receiving side (the one the device is attached to) is at [4].  All of
+these links are for the current version as of this email being sent, so
+that anyone looking at this email in the future doesn't get confused.
 
-Only 5.10.y is affected AFAICT, and the reaso nis that the cherry-pick
-of ("stddef: Introduce DECLARE_FLEX_ARRAY() helper") in 5.10.y (as
-requisite of the smb fixes) requires as well e86bdb24375a ("scripts:
-kernel-doc: reduce repeated regex expressions into variables").
+Is this a bug in usbip, or is this due to usbip being used incorrectly?
+I'm happy to provide additional information needed to debug the problem,
+but I don't have access to the reporter's system.
 
-3080ea5553cc ("stddef: Introduce DECLARE_FLEX_ARRAY() helper") is in 
-5.10.210, 5.15.54 and 5.16-rc1.
+[1]: https://github.com/QubesOS/qubes-issues/issues/6330
+[2]: https://github.com/QubesOS/qubes-app-linux-usb-proxy/tree/57ab3940d450=
+b18e570da57886d65cb5707aa60f
+[3]: https://github.com/QubesOS/qubes-app-linux-usb-proxy/blob/57ab3940d450=
+b18e570da57886d65cb5707aa60f/src/usb-export
+[4]: https://github.com/QubesOS/qubes-app-linux-usb-proxy/blob/57ab3940d450=
+b18e570da57886d65cb5707aa60f/src/usb-import
+--=20
+Sincerely,
+Demi Marie Obenour (she/her/hers)
+Invisible Things Lab
 
-e86bdb24375a ("scripts: kernel-doc: reduce repeated regex expressions
-into variables") is in 5.14-rc1.
+--omYEQKG3r4GVCydy
+Content-Type: application/pgp-signature; name="signature.asc"
 
-So it's covered for the later series, but causes problems in the
-5.10.y.
+-----BEGIN PGP SIGNATURE-----
 
-Regards,
-Salvatore
+iQIzBAEBCgAdFiEEdodNnxM2uiJZBxxxsoi1X/+cIsEFAmXmKL8ACgkQsoi1X/+c
+IsEUCBAAvrO9zUYjf7lBdCcGpwQTWcfj1mmsdh5NKJF1RmfpmpuiZSoroJSfPtlF
+19ZDl6srLOxQC7Mu0k3JQaJIBSiYY6C3kLEafYG40ftCemosKBrK7z/hYcmNz2ZW
+wrrCO8ofcejvClFDjE89OP8KYD7/8SZpoB5rEr9mTxTFJyuwywUzT7dhCvQwNdu2
+oE9YUh2q43ENzcVgEydceRBZa8ELas+gqQ8oK0PSPR8cmhic9TjhkfHXvzgqzvR1
+t6pvs66quWK/BtaEMoW4gZN2+a2YZtimkaRIrngLYGDh+7zTPbyMp1rFVebgamAG
+qeFTtRTyFqkb4NUlDr+pDk8BbbpYJOS/HPiYWXHvx3zl/1m+FJkrF9pA1dg5Z1Jn
+eLzOJhHRcWeONu/m9Ic3Aunim4tggTCFktqtAj0P9RmuRiGhSs298SArhGbm3rHB
+8NpJKlzpz9C2rberQsxwvtuzWmS1tOyMmjhfb+REzI4BEaRWG57eamfztD6TzYbD
+TgmK4lP5rNlZjge4T1mUF4rcOPEMbCX7b0jbuqBseBBB7vSxhMCGhIlm2pIij+5g
+/+6krJDBVQieNpyOBCmXhZDqcaf4717Bre+BiVUm6p9cl2VRRPwieTiWe9JMLwYr
+40TbnuwS2nEox9AadwUQRzwhr/kt9dG7/4LCpHdhPrDQeTiiZk8=
+=OKcn
+-----END PGP SIGNATURE-----
+
+--omYEQKG3r4GVCydy--
 
