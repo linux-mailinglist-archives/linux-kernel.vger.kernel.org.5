@@ -1,136 +1,120 @@
-Return-Path: <linux-kernel+bounces-90076-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90054-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48F1D86F9E7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 07:14:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3F3A86F96A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 06:12:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70A961C20B93
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 06:14:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B87A28179E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 05:12:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD2F7C8CE;
-	Mon,  4 Mar 2024 06:14:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 313F76FB8;
+	Mon,  4 Mar 2024 05:12:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=damenly.org header.i=@damenly.org header.b="VehTBCH6"
-Received: from mail-108-mta96.mxroute.com (mail-108-mta96.mxroute.com [136.175.108.96])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="ZaV8S7NY"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A004CBE4C
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 06:13:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.175.108.96
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F8FF613A
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 05:12:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709532840; cv=none; b=cPKIy5rRAdwI5Gy2TXelxruHXIXM7YPCry0Xx5p/i7ZYQFndCHJJ9l2F9+VGVTZNEHR0FvQ7W7cvwtaZDYyR9wmObAdBJcx7qMWxf4JaT1t9wRukknbSirp1MdR295/9iPyR492nMcFmSvWUVe4RD35BCrwxjA2CzamJX220q9E=
+	t=1709529148; cv=none; b=YdKl/nt0notFeXmq2gs697dd5KNTaKDnnAzdY/xrcmRWIvkrZALdozvTI5ArAYSW1Go9NYjXJDw7sVkWztcnAgdQx75GYotjXFl7+fj/2xT+sfAcrOArDJMB2m+/VZdTGXaJoGuYA0bhqTIhRdMM2uNH3m0Ci3KHdnEEayrMqX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709532840; c=relaxed/simple;
-	bh=JA+ToT62ofN18tC9Y/a9EcQCQzLzVQ2/LikqbqFWxmQ=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 MIME-Version:Content-Type; b=TwN7hrmFFqK1Zw4O9FHtFZxSKzTNDcUCy6UDWNjp7VY4RDlrf+vsj7CTas+5ZZNqVVwy3QBD77duSXNF+KY5i+7VATC32401tZOiMywN9akY6eMrDtuN23XnHHTEBZpA+RRy7NyJP+nPi369na/W0DpUIIifPFzLsmE+nc9gd0A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=damenly.org; spf=pass smtp.mailfrom=damenly.org; dkim=pass (2048-bit key) header.d=damenly.org header.i=@damenly.org header.b=VehTBCH6; arc=none smtp.client-ip=136.175.108.96
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=damenly.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=damenly.org
-Received: from filter006.mxroute.com ([136.175.111.2] filter006.mxroute.com)
- (Authenticated sender: mN4UYu2MZsgR)
- by mail-108-mta96.mxroute.com (ZoneMTA) with ESMTPSA id 18e08143a6c0003bea.005
- for <linux-kernel@vger.kernel.org>
- (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
- Mon, 04 Mar 2024 06:08:47 +0000
-X-Zone-Loop: b5e7bc1f501381cbd12b8d0184a100cb8442c75b9a3b
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=damenly.org
-	; s=x; h=Content-Type:MIME-Version:Message-ID:In-reply-to:Date:Subject:Cc:To:
-	From:References:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=nYqwQY5WZpB5b6Y6JJAAKQwIZSkHfM0YPUUkqlGVit8=; b=VehTBCH6AwnsY01KTB2REayOUu
-	h1eNlti/BBAG8E9pYQoCgKCACBZKDWLs6WvX42i86tVb+OcCOp2TWR4pJBCT4wXU35r+TnwEpyFbv
-	5PxrNXtNP+BMLlSUjwrsEej8PFqgCjpYLgcyKlyY+Tk43TZsle4eB4hbVmW2HYZkv54gNjpkSXq4D
-	kjiwmv94Nb752a2YAZvRKZyUx9MCWT3QvxDF4yl74c9ZS3/DUmFJ2xh7P0vttceERpOy/uh4ZmVmR
-	bFwIb5l6g/2etsUDEnsDK15Ngc2WlUws08/5NYfZClQcD1OKIbHb2K/oDAg+M2kTg6Z/awO4R1jtz
-	LgDD0mAg==;
-References: <20240304032203.3480001-1-lizetao1@huawei.com>
-User-agent: mu4e 1.7.5; emacs 28.2
-From: Su Yue <l@damenly.org>
-To: Li Zetao <lizetao1@huawei.com>
-Cc: kent.overstreet@linux.dev, bfoster@redhat.com,
- linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] bcachefs: Fix null-ptr-deref in bch2_fs_alloc()
-Date: Mon, 04 Mar 2024 13:12:07 +0800
-In-reply-to: <20240304032203.3480001-1-lizetao1@huawei.com>
-Message-ID: <frx6edjh.fsf@damenly.org>
+	s=arc-20240116; t=1709529148; c=relaxed/simple;
+	bh=RkZR6AQGNumxUNeiUTcE2zH9/MxQFnrzWkHwzZzIdoo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=eUWMpaD1YhuK/uasOzQf34V1w7Ugqs8zqiU6GnhYWyQi9OMHrNszOAjaq0NFUwJT96u8nZx/k/kjdM5A5iWJszIinS0XgNTX8/Gtj+qC/THdEWcApcSxqE3wHANO7yNKh2ARqEo/H1wUjgWR+l+Mlg830zhWSa6dELi8uscidiM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ZaV8S7NY; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5654ef0c61fso22509a12.0
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 21:12:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709529144; x=1710133944; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EUR3SXQYlMBJ+S1TsUhop+VTYRh3FUB5752NRTIEWf8=;
+        b=ZaV8S7NYxn1hackDu4FBfGIe5dr0W7lzNLYC+HxKvJW8Rv7+Z6gqkKP/z1fMQeC1dn
+         E+ffuop3JvrDNaB8h7a7lWGQrJnqNHNoyFBg4WxtXKRfrrl+nIaXOqlcCCSiYPBKgtUB
+         xHSF6/FfJPZL0Hp7Sw1ELSuz3vqvJESBp4QoWLSSp8iUxaWw0Tuw5q+cvHZBikgYbqrp
+         mYhSX1bg1mDFTq2Csop5Y2rvIHtjvH1InfrpLhKy3I/daktYp3CYZJbsLqJPEOjpLPjU
+         Y9uWWmav2sX/xCgyK1myD3ijjJbMHvoC44AdUnJfA7RPbPeRvW/yUSFV8U+zRx8lyQlH
+         4rhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709529144; x=1710133944;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EUR3SXQYlMBJ+S1TsUhop+VTYRh3FUB5752NRTIEWf8=;
+        b=hqKNkS9C4FLCQxA2TTmN0dhQYw9i1TjnOlPUDPTG9ExVnqunul3dJOplA9+4FpshCz
+         Wn8yJqIplIqNqaOmweWhX5Na3Fa2CttWEaBOZ/Bf/DIr83eBHOtfQabOoVBYX8H0fMCi
+         8dgEcFwF28LFaBcWNpyeSEcY5wEVf/+utj2CnsvV6GnNXRT5rP9T/2KuFtTjin98rWf0
+         GqNkeoXLII1deQgcvRtp4ThpNCt9yano9d0F7q94onfiRgSYnImFy4JplS2EjLA5bCtU
+         pleGOoD/DAI81PO2oMfhajRYYNc6So3cHx5Zp+gAvjuBctlsol0rEFFx16YymEmFKHp8
+         gimg==
+X-Forwarded-Encrypted: i=1; AJvYcCX7LZ8ObLNPH1xOMGhL3Vj91Wox4tWbnLOAEfBNdIcM6B7z7MZ+TYRyI3TBoCJt4h/OxOWVlwFsFT3TbUxnyR3XjQkTvk2fw/j9tr/8
+X-Gm-Message-State: AOJu0YxDJoTEwEmSyO3nGUwiCEXNVP+xMdgn/Ojsy5Qlw4qbovykdRjV
+	dwHlCzMfeVNpuawq4FT4UxapbIhq8+l/JL/to6Fnw1OrgZIMc4JvVmKzVhLGmN97HZahDdj1dOe
+	aGsjmvmy1o4bOCvV6227wl1Bq5TfHPYzLtXLD
+X-Google-Smtp-Source: AGHT+IFk/yOw56LrMBCcjw5FkqWSmRn9c37C4hrrela5SKpQ0FiUwD8BBhxVSWUFxhxJtKdGT7I9Ik2nnrrNCi8cpxY=
+X-Received: by 2002:a05:6402:3496:b0:566:ff41:69f1 with SMTP id
+ v22-20020a056402349600b00566ff4169f1mr182364edc.3.1709529144406; Sun, 03 Mar
+ 2024 21:12:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
-X-Authenticated-Id: l@damenly.org
+References: <CANn89i+fJis6omMAuEmgkFy7iND97cA8WecRSVG6P=z15DpHnQ@mail.gmail.com>
+ <tencent_FD84E7D8C6D392F1C66E89816EF36ED48C06@qq.com>
+In-Reply-To: <tencent_FD84E7D8C6D392F1C66E89816EF36ED48C06@qq.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Mon, 4 Mar 2024 06:12:11 +0100
+Message-ID: <CANn89i+cfMWX_ybtP-VHX7PgLT-mwuUkYMuqsnUwZ3jki8oTcA@mail.gmail.com>
+Subject: Re: [PATCH] net/netrom: fix uninit-value in nr_route_frame
+To: Edward Adam Davis <eadavis@qq.com>
+Cc: davem@davemloft.net, kuba@kernel.org, linux-hams@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	ralf@linux-mips.org, syzbot+f770ce3566e60e5573ac@syzkaller.appspotmail.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-On Mon 04 Mar 2024 at 11:22, Li Zetao <lizetao1@huawei.com> wrote:
-
-> There is a null-ptr-deref issue reported by kasan:
+On Mon, Mar 4, 2024 at 6:05=E2=80=AFAM Edward Adam Davis <eadavis@qq.com> w=
+rote:
 >
->   KASAN: null-ptr-deref in range 
->   [0x0000000000000000-0x0000000000000007]
->   Call Trace:
->     <TASK>
->     bch2_fs_alloc+0x1092/0x2170 [bcachefs]
->     bch2_fs_open+0x683/0xe10 [bcachefs]
->     ...
+> [Syzbot reported]
 >
-> When initializing the name of bch_fs, it needs to dynamically 
-> alloc memory
-> to meet the length of the name. However, when name allocation 
-> failed, it
-> will cause a null-ptr-deref access exception in subsequent 
-> string copy.
+> [Fix]
+> Let's clear all skb data at alloc time.
 >
-bch2_printbuf_make_room() does return -ENOMEM but
-bch2_prt_printf() doesn't check the return code. And there are too 
-many
-callers of bch2_prt_printf() don't check allocation_failure.
-
-> Fix this issue by checking if name allocation is successful.
->
-> Fixes: 401ec4db6308 ("bcachefs: Printbuf rework")
-> Signed-off-by: Li Zetao <lizetao1@huawei.com>
+> Reported-and-tested-by: syzbot+f770ce3566e60e5573ac@syzkaller.appspotmail=
+com
+> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
 > ---
->  fs/bcachefs/super.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+>  net/core/skbuff.c | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> diff --git a/fs/bcachefs/super.c b/fs/bcachefs/super.c
-> index 6b23e11825e6..24fa41bbe7e3 100644
-> --- a/fs/bcachefs/super.c
-> +++ b/fs/bcachefs/super.c
-> @@ -818,13 +818,13 @@ static struct bch_fs *bch2_fs_alloc(struct 
-> bch_sb *sb, struct bch_opts opts)
->  		goto err;
->
->  	pr_uuid(&name, c->sb.user_uuid.b);
-> -	strscpy(c->name, name.buf, sizeof(c->name));
-> -	printbuf_exit(&name);
-> -
->  	ret = name.allocation_failure ? -BCH_ERR_ENOMEM_fs_name_alloc 
->  : 0;
->  	if (ret)
->  		goto err;
->
-IIRC, krealloc() doesn't free old pointer if new-size allocation 
-failed.
-There is no printbuf_exit called in label err then memory leak 
-happens.
+> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> index edbbef563d4d..5ca5a608daec 100644
+> --- a/net/core/skbuff.c
+> +++ b/net/core/skbuff.c
+> @@ -656,6 +656,7 @@ struct sk_buff *__alloc_skb(unsigned int size, gfp_t =
+gfp_mask,
+>          * to allow max possible filling before reallocation.
+>          */
+>         prefetchw(data + SKB_WITH_OVERHEAD(size));
+> +       memset(data, 0, size);
 
---
-Su
->
-> +	strscpy(c->name, name.buf, sizeof(c->name));
-> +	printbuf_exit(&name);
-> +
->  	/* Compat: */
->  	if (le16_to_cpu(sb->version) <= 
->  bcachefs_metadata_version_inode_v2 &&
->  	    !BCH_SB_JOURNAL_FLUSH_DELAY(sb))
+
+We are not going to accept such a change, for obvious performance reasons.
+
+Instead, please fix net/netrom/nr_route.c
+
+Thank you.
 
