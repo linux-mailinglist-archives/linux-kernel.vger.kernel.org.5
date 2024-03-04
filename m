@@ -1,70 +1,52 @@
-Return-Path: <linux-kernel+bounces-90653-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90654-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF83D8702BF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:30:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C4EF8702C3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:31:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8999E28B063
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:30:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D99A1C23C38
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:31:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 449D83F8FB;
-	Mon,  4 Mar 2024 13:30:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00E623E494;
+	Mon,  4 Mar 2024 13:31:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ieee.org header.i=@ieee.org header.b="W7ztoCkk"
-Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="ncl+PH7R"
+Received: from mout.web.de (mout.web.de [212.227.15.4])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BAFB3F8E0
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 13:30:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 939A93D547;
+	Mon,  4 Mar 2024 13:30:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709559008; cv=none; b=LahbTV7CIJUxdOoJ/9+fw7eo6XYNdac+II9/lyfgwLPysf9YtzDwLouLMFZ60lm5/IiaWQPOW6r93wN4Su994W8Xi9rX/KcL9MT4QbMxt0suH4UbWcREISOQLu7+0bEMmeMVjoRvkXZi8jL7eGU1PytGqOH2juOBeOTJyCqIaqg=
+	t=1709559060; cv=none; b=GCTwL6X2QV7FNF8fMJnsOu228cU0GqU5iEFaImr8B7vFyemeXBzRy9XUSX+2xx7YlUbQN8vV1fyOCF5QvdQUW19xuLgyu28XAk0uXclblfzenruXq3CAYY7qbqHcoSufE4TfL0kFg/kJGtV6h9PzlErt8YmTegjnoMruOr4pOM0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709559008; c=relaxed/simple;
-	bh=gqtpqLNc5VNKPRt4nq7SmRkkJCCZ5/sRGBe9XuewtZk=;
+	s=arc-20240116; t=1709559060; c=relaxed/simple;
+	bh=/tEpggeL4FP4g7AiM9zkr4WDOC8Z3r7V8asbPxSkyGc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TKpXNgQAy5rhiX+/1TQsR7iIh2OU9zDpq4dXh4j1y1b2dqgf3k1BjNV70jrsCVTsNvFRvVsBQ7Sf5HzeQbRGH7A6o/Xpp/SyDFJls4Bhe1QplyT1lqVhdpjt9DupsoeBHKacdeoAU1Z6oTZdPXcxTe/JwT/9jfjHfhavbgX9kZo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ieee.org; spf=pass smtp.mailfrom=ieee.org; dkim=pass (1024-bit key) header.d=ieee.org header.i=@ieee.org header.b=W7ztoCkk; arc=none smtp.client-ip=209.85.166.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ieee.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ieee.org
-Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7c84af127e3so43019839f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 05:30:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google; t=1709559006; x=1710163806; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=L7SwXBaphoRUbVIp4iZ+2oYSdcUsTrLJSfY5VS/Whck=;
-        b=W7ztoCkke4eEvFnXIaVR6bmhTMfy4CjWbgRy1LHt8ajSPP3mzcXoP/9dhFbq2lF/VC
-         YjW1K3IpgnLoNPnm8ffMfrk007dMpyJBlkOPu9atPcGIWxZAgcffHVZDZE8mscKwgHqP
-         Qh8tov+uQM2cCdHluGzKvN+DyBKsJ0ZoS/J2Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709559006; x=1710163806;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=L7SwXBaphoRUbVIp4iZ+2oYSdcUsTrLJSfY5VS/Whck=;
-        b=noyLVOhMKmUIWcwVHAitGIypxBIPtI5Rz2HcO26aO9rv2S0st4jFtFofDcT9VlLrZx
-         sxH4C9ETjogaKhlMTbRSrs1n4sqpGw1qRqxTVkIVBXblF8r6THSSeHqWX19zU28eTpuu
-         BT0sPD4lkJ2cfpS5yusQ3Lf9ZaH2zjtkMIhssqcGpMKTtb5U8Zr+7TwStY1Er3R9GuQ3
-         a+2LECQJj0js5Q4CHr599RFUFcbk4PoHmL9fWwNpO0ZoCE0C7OblW6E4QMNa69WTSQ+S
-         wSXxBZarMvdRfepqlJkfu0tsyMmY8Ygce/OaFp9rZTPedqFi97ApuoDadTJaC4IeU8W5
-         6FHw==
-X-Forwarded-Encrypted: i=1; AJvYcCVJ7tWdGWAmHYX4INaev5Z6Q1SiQwUwQUfuEVFWxdNqgjdPk+tC0DoRvnLDnmz2txDU5KtTDEBrmAAAtjVbaRV5pgBY5VBNZ48yu3XD
-X-Gm-Message-State: AOJu0YyijpIcqj5Wx0SSDV+0ns6Yy9w8HrkjKIKJiodgLTk2070kz3Xj
-	v2XPPlgMub2jl8rEnLHu97cY/DNwRZWmnwxf1/6PqxtTaTnT+cMBrlL1nAvNgQ==
-X-Google-Smtp-Source: AGHT+IHZPF+TKoIdFlXbZQRumkQ9OfKZzuKfCSc+Ixsdzf3z05qnw5Uj9WW5Md2UYTHTRGlwSbT0ZQ==
-X-Received: by 2002:a05:6602:1ca:b0:7c8:4adf:cdf3 with SMTP id w10-20020a05660201ca00b007c84adfcdf3mr3814286iot.18.1709559005688;
-        Mon, 04 Mar 2024 05:30:05 -0800 (PST)
-Received: from [172.22.22.28] (c-73-228-159-35.hsd1.mn.comcast.net. [73.228.159.35])
-        by smtp.googlemail.com with ESMTPSA id e21-20020a6b6915000000b007c7e0e8edc1sm1180657ioc.52.2024.03.04.05.30.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Mar 2024 05:30:04 -0800 (PST)
-Message-ID: <69825821-5b2c-44b1-b921-f077eedb3a71@ieee.org>
-Date: Mon, 4 Mar 2024 07:30:04 -0600
+	 In-Reply-To:Content-Type; b=tmMu5YFt+GppfcIoArLjAqdv9QNuL4CsLKrquzW+DMJ4lB0z+7bJyvlnx62kxDxnfPFxlTRuEnXF6oNl32ykx/bnV3FT3jaNzut4rIgtNi2IiTFUj14omgCz6OWL7+M8seqXdyRVxtAHArPIZwgECefP5l07aAH94TArUNXwJ54=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=ncl+PH7R; arc=none smtp.client-ip=212.227.15.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1709559036; x=1710163836; i=markus.elfring@web.de;
+	bh=/tEpggeL4FP4g7AiM9zkr4WDOC8Z3r7V8asbPxSkyGc=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=ncl+PH7RDK8EgVjFo0dI7eobj3Tfoy0REc8/bcluX7BG2pUvOmf3hn8kqKR60Ja5
+	 NuuGMNIASzR9eW4xZI9fv28eR7z63+a8I+Q4pwgTNQJrtRAoePbjW7ilThozzBVGl
+	 GBnphNtGILFiCBuLUETt1ubNZHkwHB+i1Pdx5k8ea6tPhTg8uY+q6qnwwcd7CSj1R
+	 nKK9K6uVYM7CZFx0JXem9p5CaGqapaeLoxnkdm/NmwIHH55/jAgSf9VZ9Vwd8UMQq
+	 Khj4Uw4NhKlXsZtiHGit6zduUrzJzOI0fcM38iXCZvGs+2m6VuhM2S6uw7/XaNKtL
+	 AYXr489Od65G1FY6Ow==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.86.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MeUXg-1r6h7X46hY-00aOsr; Mon, 04
+ Mar 2024 14:30:36 +0100
+Message-ID: <472d8a45-4657-458e-9ff3-8cf55dc2b214@web.de>
+Date: Mon, 4 Mar 2024 14:30:35 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,40 +54,50 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [greybus-dev] [PATCH] greybus: Fix deref of NULL in
- __gb_lights_flash_brightness_set
-Content-Language: en-US
-To: Rui Miguel Silva <rmfrfs@gmail.com>,
- Mikhail Lobanov <m.lobanov@rosalinux.ru>
-Cc: greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
- linux-kernel@vger.kernel.org
-References: <20240301190425.120605-1-m.lobanov@rosalinux.ru>
- <07df4b96-70c2-41de-9d76-1deb80447a79@ieee.org> <m3o7bwlhgf.fsf@gmail.com>
-From: Alex Elder <elder@ieee.org>
-In-Reply-To: <m3o7bwlhgf.fsf@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: Input: iqs626a - Use scope-based resource management in
+ iqs626_parse_events()
+Content-Language: en-GB
+To: Dan Carpenter <dan.carpenter@linaro.org>,
+ Julia Lawall <julia.lawall@inria.fr>, linux-input@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, Dmitry Torokhov
+ <dmitry.torokhov@gmail.com>, Jeff LaBundy <jeff@labundy.com>,
+ Rob Herring <robh@kernel.org>,
+ =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>
+References: <8a7607f8-d634-415e-8269-e26dcc0f9fdc@web.de>
+ <ZeU8ENmnPj3sKxAv@nixie71> <ZeVOPSt0L1D4BxuZ@google.com>
+ <e8a2b63f-4f9a-463b-b419-c5f673191111@web.de>
+ <b91fe21-fe2-eac8-d1ee-ea8922a08861@inria.fr>
+ <2be02b12-84ce-4f83-b104-685f3b7cfd95@moroto.mountain>
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <2be02b12-84ce-4f83-b104-685f3b7cfd95@moroto.mountain>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:LxD5vC+4LOqVHs7yIzbOKA23818+Gp/En37V4dAABNUZ5TrX+wI
+ bw/9vdaV9P1IDacEfzrfJDehUnoj7osEF3ZASu50ReF8g3z34C/5OLsCpsNZYdv0pMRvD6m
+ rJJUqfrGkU0kEtl9xBrOHICL/3gjwM6VohGiz/4ytLrBgM7p74dZ+AqVtBPcGLXR8tuYDv/
+ Goj1bis3eP/wuUp1oGLdQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:H8FdFt0dBl0=;vwIr9GfMvSe7f373BmX88rghrwq
+ fW1Q9/+iFM7Ozo3xXG9iaWY9jBzVDo12G89/fthHXTTKE7ZG1ijlmXe5XCozWYDIIaPjaGdqY
+ RmCQ31eaGgdMeWNzjcvD6E2+okP81C1wMBn2Q6dQlgqGHK7axW4Lj8KBZuvIpWE96rg7+I9OA
+ nSr5t7Fa7/KuDK9um6uUG1iwNAnCAFPhmeQ05d5QjjaMSM3gTeEI6jNSJBtXbUNzBWv9Ti0Tf
+ XsDShIY4k9U4OPK7CbxMPqEvU+JeW9XVd9YyLYPEIZR2HKqoWjIWTwMJZOOkrHjZ6Uv93tV4S
+ teXSrpbifYRJPW0BPEoc/h6+Vkns913pb6ubb4uJn29l4hd/QGrB4K4aUXRNhxqG6o8SDLy2S
+ n2etaJ3n2Q9A8HQOglyPoX5+w6p2omj5yTg9GOqWGzpI9aNYeJUipUpKMhm4oeoDEMXAebLZs
+ TU0+2iBz0n4c0zVFpnDm178mWqOn4p4HW2gyjPSNQkXfQhAfiBKx4Np1/tkgJGJ6EyOhPUTZa
+ 53F01F8h3TlXZAdlGJxgQGjHp+wmiK9w0eGFRCFUIVAFgfdv++UT24doWlQGJsp6e8bj2eP0q
+ 2b7zluINrU8nRg96tCfDTOGizV1Jf5bujcoQP1eIKgZ6llEOHLYYQ41LGulPx4x5aDcrQyJNy
+ rjDSww/ajsrL0uo4dCMcf+9rx7sXwg9VPGiZXXritlI0FbgoLfgHd4Z4CFy4h8z2WlfsAe7qT
+ R9tmY4T2kQEfDLOT9oc8Ssacu/5QFFnvgbjOatHyDtAlxm2RLwsCji4agqWh0i+gGMqXfntMY
+ 9CDzrRIz5NwDS6YnN5YfrkSNNmahZIpAF3XJIbtuua04Y=
 
-On 3/2/24 10:35 AM, Rui Miguel Silva wrote:
->> So anyway, I think this (and Dan's suggestion) should be
->> addressed, but your fix might not be correct.
->>
->> Rui, can you please shed some light on the situation?
-> As we talked,  this email was sent at the same time as my replies to
-> this thread and you think I addressed your concerns in that replies.
-> If not, just go ahead and ask again.
+> Generally kernel style is that you have to declare variables at the start of the block...
+> But that's becoming less universal now that it's not a compile error.
 
-Yes.
+Will it become more feasible to adjust the scope for further (local) variables?
 
-You said the intention was to return null if not found
-(rather than "the passed-in value as default").  So that
-bug should be fixed.  Dan says he'll re-send that.
-
-Either way, even if it's practically impossible, the
-get_channel_from_mode() *can* return NULL, therefore
-__gb_lights_flash_brightness_set() should be fixed to
-avoid dereferencing the return value in such a case.
-
-					-Alex
-
+Regards,
+Markus
 
