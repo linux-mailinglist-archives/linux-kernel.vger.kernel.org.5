@@ -1,60 +1,70 @@
-Return-Path: <linux-kernel+bounces-91047-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91048-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 773A78708E1
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:59:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 802228708E4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:59:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3272A28451C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:59:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CFDD6B26B65
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:59:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC83161691;
-	Mon,  4 Mar 2024 17:59:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86AFF6214A;
+	Mon,  4 Mar 2024 17:59:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VPLIRESo"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=ieee.org header.i=@ieee.org header.b="YLP1sK5P"
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8493062150;
-	Mon,  4 Mar 2024 17:58:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BC1E62144
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 17:59:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709575140; cv=none; b=ZXcpUaXWyET6y2LFGCyNvziTvWnAE8gVYwbKV6RN17SqFmE5l6PcTBMu2XCetlFSjbjPlp19qtPtiDTNccs+sm/K+jicqz2f9U10lostdF00r/oN+oQUCmvhNx3CRLXeK1w7sC6vTfoSyCovm8osAQGY+B1R/i5SpLfFFUtor8s=
+	t=1709575157; cv=none; b=WuC/HBXgLdxvO3FBRnQ7kC3ANNKwpGXtWFls3OOflO3nOzyeUR3l5q3j4vAbUTBgnzqD69nsbG0ksF+PeqS/6dHhbPeQYMCulhwi5E2aQVsgpMDxthY1e8ihpayWzi+aiRlhq/vSs3jjngC04XAxqUzkUH5oJqOLWr65S9Sr7g0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709575140; c=relaxed/simple;
-	bh=Ng1KjaV3I1cYA57hVXDMdsSLGHdHCK02lAVH0Q9/Thk=;
+	s=arc-20240116; t=1709575157; c=relaxed/simple;
+	bh=QLV4otpC/iCigb560l//jVarJg6qMxWTbZBnLBsPxAk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QVY1WQcf98E7DALpMfByq++jb/4BnaXr9tuzR+CGteXJAz7+6JvnAUNwyzydvbW+Ain86KILaD0xM1S5huU3JXFz0q8r9JajCxcjdu6kE6gH6QXI2u9PDo7IiSl/W0dgDSvYHrl8Pg4nG4YZURO+V2Im9qhKuVFFBmz7JKW4o4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VPLIRESo; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709575135; x=1741111135;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Ng1KjaV3I1cYA57hVXDMdsSLGHdHCK02lAVH0Q9/Thk=;
-  b=VPLIRESobZFc7rxKCWCjOSoBG6/HMv0RLe4g+ilLABk+N/JpIRQ6/U3v
-   6z1N/qX7heQzG1WFG83oj/XEKphM11L5Z+AlPAbbHXkCjNxz8U3s6hmsu
-   dlYDFupXpsZDuOMxKwp56F/SntPCwzdQ1GQNfGQ+VOAIxwsJIZamVoaZy
-   EtqML0G6b9RpI60XAc7A4v8WWICBC6F2RgcHwmMM3Zt3g4EYnqamZU6eT
-   Dj3rtOoC1gH6jHz7xwsi0D23mzbnfCofYbW1LvGA/OGO2FFhAcI9gOpU1
-   iS/Mr4fDinj2X5+pyD14pw6FVc2Kppgsn/CVUgnOfqdathDRQei6076w2
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="4243983"
-X-IronPort-AV: E=Sophos;i="6.06,204,1705392000"; 
-   d="scan'208";a="4243983"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 09:58:55 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,204,1705392000"; 
-   d="scan'208";a="9479142"
-Received: from takchich-mobl1.amr.corp.intel.com (HELO [10.209.93.46]) ([10.209.93.46])
-  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 09:58:55 -0800
-Message-ID: <a1a2da34-af20-471d-a637-ddd749ce809a@intel.com>
-Date: Mon, 4 Mar 2024 09:58:53 -0800
+	 In-Reply-To:Content-Type; b=sHJxrKUirZ23EnX0FWFsBdk2Trjt8EgS8NHGpbjzfCVUI01TFWiSBR7Ypoyb9lNlhXsn2Y4wAzA4yxp9yealJgsHY5Q+Bza1mzIodRqAmp6Zx3fpEzRMgvGlq62uh4cFDrhKFzPNEmUbQRjd0v9XrtjwjaMB4I0kNm0HMSBvazI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ieee.org; spf=pass smtp.mailfrom=ieee.org; dkim=pass (1024-bit key) header.d=ieee.org header.i=@ieee.org header.b=YLP1sK5P; arc=none smtp.client-ip=209.85.219.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ieee.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ieee.org
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dcbd1d4904dso5509689276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 09:59:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ieee.org; s=google; t=1709575155; x=1710179955; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=thA/I2PqPVLK4SnspFOCxqgcMVG1ux25WaxY6rArXhk=;
+        b=YLP1sK5PqRwVlvTHEpfqzI0kdksrkFwlnB8GRU49oubD5OmjosQ6x9NiT23VHbHYcu
+         KdWsfCsV7GXXrqGKww/9QUIlnrWOgahS9Eu/UHY9spAjjLun57wTOLHICbhmDtgzsLqk
+         eQcAa0zFuHpnhnhmAyxo9WCTTMh6//MG3ztBk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709575155; x=1710179955;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=thA/I2PqPVLK4SnspFOCxqgcMVG1ux25WaxY6rArXhk=;
+        b=Svmzf2fg5LwqpOSbTOIX/0HymOGoYTKVfzVaSrenRWyskagi+Umqv7uYR6ZcnH3Z9g
+         Vbq+TuenwnNlXk4oxMFCntgyI2wvZuGFDJzVQS/SiAbhKzeEUpBCiNKpBdKTyTkEK1iL
+         Cbx4XUQQWDerVpNQhH0VqcUpgv3IZZ/vovwKlaf1ClSvVLwKJH7+wVlJZ5trbPEcPcSM
+         0EZfNVu48TqXqpJnti6IyZ0MZXJWjG/+xCOByqbQ86BsNcO7JlMmN2Zq8pueKNF/csJn
+         7fwqkdcK5C//V3ME1yf4Oqe+rxBq7fnpeT5Eh4hJiQEgI+CAFvce+DOQceMTzbFymmq4
+         jAUA==
+X-Forwarded-Encrypted: i=1; AJvYcCUUX/0QRrCGjZ/OWi60XBVjpwjihjUQhyw8vHMeXum6SS20zHDGkdzorswuYx3e91DntbUBczuaXU5sEEz3vrQNS9IOkMC33NwbwLvo
+X-Gm-Message-State: AOJu0Yz/PfjSoCGVS3AhoPkXyw44jKFfJAtGXOiGcTtHm14LczrdeXfB
+	O3ANXPfUoO6GLalu+i3npYRFcHHCqxLHtVwZ7ni7vKf2leEpsYZrf1NA6RNXvQ==
+X-Google-Smtp-Source: AGHT+IExfeM10ZB/js7EB+v7jDmQcldpolr3vewnoOnOzAtVxGnjlDaiuVf+mmkl78AiuvoB2YKsrA==
+X-Received: by 2002:a25:68d1:0:b0:dc6:3610:c344 with SMTP id d200-20020a2568d1000000b00dc63610c344mr6983088ybc.13.1709575155031;
+        Mon, 04 Mar 2024 09:59:15 -0800 (PST)
+Received: from [172.22.22.28] (c-73-228-159-35.hsd1.mn.comcast.net. [73.228.159.35])
+        by smtp.googlemail.com with ESMTPSA id t106-20020a25aaf3000000b00dcc7b9115fcsm2365520ybi.3.2024.03.04.09.59.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Mar 2024 09:59:14 -0800 (PST)
+Message-ID: <b6cee7a2-d702-4248-977e-25a91c210c93@ieee.org>
+Date: Mon, 4 Mar 2024 11:59:13 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,76 +72,60 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [linus:master] [x86/bugs] 6613d82e61: stress-ng.mutex.ops_per_sec
- -7.9% regression
+Subject: Re: [PATCH] staging: greybus: put macro in a do - while loop
 Content-Language: en-US
-To: kernel test robot <yujie.liu@intel.com>,
- Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-kernel@vger.kernel.org,
- Dave Hansen <dave.hansen@linux.intel.com>, kvm@vger.kernel.org,
- ying.huang@intel.com, feng.tang@intel.com, fengwei.yin@intel.com
-References: <202403041300.a7fb1462-yujie.liu@intel.com>
-From: Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <202403041300.a7fb1462-yujie.liu@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To: Dileep Sankhla <dileepsankhla.ds@gmail.com>,
+ Greg KH <gregkh@linuxfoundation.org>
+Cc: greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+ linux-kernel@vger.kernel.org, pure.logic@nexus-software.ie,
+ johan@kernel.org, elder@kernel.org
+References: <20240225084017.418773-1-dileepsankhla.ds@gmail.com>
+ <2024022538-buffoon-praising-f748@gregkh>
+ <CAHxc4bsFj1=VFVDWbdwo3W3CmSyPG1585p2zBePpsD9qy6VKdA@mail.gmail.com>
+From: Alex Elder <elder@ieee.org>
+In-Reply-To: <CAHxc4bsFj1=VFVDWbdwo3W3CmSyPG1585p2zBePpsD9qy6VKdA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 3/3/24 21:53, kernel test robot wrote:
-> kernel test robot noticed a -7.9% regression of stress-ng.mutex.ops_per_sec on:
+On 2/25/24 3:49 AM, Dileep Sankhla wrote:
+> On Sun, Feb 25, 2024 at 2:26 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>> Did you test build this?
 > 
-> commit: 6613d82e617dd7eb8b0c40b2fe3acea655b1d611 ("x86/bugs: Use ALTERNATIVE() instead of mds_user_clear static key")
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> Hello Greg,
+> 
+> Yes. No new warning/error was encountered on building the kernel.
 
-This _looks_ like noise to me.
+Then your build must not have been compiling your changed
+code, because the result of your change produces code that
+will not compile successfully.
 
-Some benchmarks went up, some went down.  The differential profile shows
-random gunk that basically amounts to "my computer is slow" because it's
-mostly things that change when the result changes, like:
+If you look at where gb_loopback_stats_attrs() is called, it's
+used only at outer scope, in "drivers/staging/greybus/loopback.c".
 
->     182670            +9.0%     199032        stress-ng.mutex.nanosecs_per_mutex
+Adding do { ... } while() at outer scope is nonsensical.
 
-Does anyone think there's something substantial to chase after here?
+> 
+>>>   #define gb_loopback_attr(field, type)                                        \
+>>>   static ssize_t field##_show(struct device *dev,                              \
+>>
+>> Why did you only change one if you thought this was a valid change?
+> 
+> 1. As per my C background, I think no other macros in the above source
+> code file need to be enclosed in a do - while loop.
+
+gb_loopback_stats_attrs() must *not* be enclosed in a do..while loop.
+
+> 2. I am writing the patch because of the Eudyptula Challenge, and I
+> have to fix "one coding style problem" in any of the files in
+> drivers/staging/. The above one was one of them.
+
+I support the challenge.  But you need to be sure your fix actually
+works, and in particular (in this case) that it compiles correctly.
+
+					-Alex
+
+> 
+> Regards,
+> Dileep
+
 
