@@ -1,117 +1,153 @@
-Return-Path: <linux-kernel+bounces-90004-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90005-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CC7186F8D4
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 04:17:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5E8686F8D7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 04:19:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 38431B209DF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 03:17:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 771C0B20C56
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 03:19:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5E9D46AD;
-	Mon,  4 Mar 2024 03:17:25 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2919A4416;
+	Mon,  4 Mar 2024 03:19:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hEVOR3sc"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 408D417CE;
-	Mon,  4 Mar 2024 03:17:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A1AAA59
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 03:19:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709522245; cv=none; b=B7zzO7DZczpRgcLFPo7dXEkbC90luUxru6PvlaWaVVp+LR59zYbFkmh5FY6kyMFgO5utDdwxVXr4sngpmOD/YX1BB4nykH6rTno4gi/QdOkF9kfJuuMheUq4nUi8l2xK6C1H7dXjb/Y7yWr/bfFYLWS0zBX+O/MV3jRxE7cIrSg=
+	t=1709522379; cv=none; b=jf2jLjT174aAfqjtzwUpFyV6Kd9ddhBqB3OTg6/WdSn31bXBY0u7ik/D6/Hbl4rQ/pVRLASG1wBRwcYGqjA8tOi1OqouAMCPYGQlFGaptcTHY/3XyQG4V4CWQmAHLeMX/3pwT9U4JwZnON9lBNAjjRqJPQkFgKf4Rr1T7yWBZuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709522245; c=relaxed/simple;
-	bh=gTQA7FLDn6FvPp9uK3H01S69mE7JhpgTlSXnMal0glk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=H+pIwTFoA/PlCp+sEbR116jzuxqWRxAdBtr7wBtED1hlsVV6X2W4REN5gEJIJMegbnjzq0YLKqRtCm89MpWi+XgsFxMHfxdv4cAG04aHsFCBs6oYYgGWVg4a7/sn3Yf26MMDCWotUZHLvw8ytUkpHWd4gtA4qhDc0sIaoq/C4LA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 885d0ca386834035b293b24f6c48d103-20240304
-X-CID-O-RULE: Release_Ham
-X-CID-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:d37a901e-0f78-44e7-a3b6-2baebcb50536,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:-5
-X-CID-INFO: VERSION:1.1.37,REQID:d37a901e-0f78-44e7-a3b6-2baebcb50536,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:-5
-X-CID-META: VersionHash:6f543d0,CLOUDID:466d1181-4f93-4875-95e7-8c66ea833d57,B
-	ulkID:240304111709GTSTWZ2V,BulkQuantity:0,Recheck:0,SF:66|38|24|17|19|44|1
-	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC
-	:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,TF_CID_SPAM_SNR
-X-UUID: 885d0ca386834035b293b24f6c48d103-20240304
-X-User: huxiaoying@kylinos.cn
-Received: from localhost.localdomain [(112.64.161.44)] by mailgw
-	(envelope-from <huxiaoying@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 91826270; Mon, 04 Mar 2024 11:17:07 +0800
-From: Tom Hu <huxiaoying@kylinos.cn>
-To: linux-kernel@vger.kernel.org,
-	stern@rowland.harvard.edu,
-	gregkh@linuxfoundation.org
-Cc: linux-usb@vger.kernel.org,
-	usb-storage@lists.one-eyed-alien.net,
-	Tom Hu <huxiaoying@kylinos.cn>
-Subject: [PATCH v2] usb-storage: Add Brain USB3-FW to IGNORE_UAS
-Date: Mon,  4 Mar 2024 11:16:56 +0800
-Message-Id: <20240304031656.174888-1-huxiaoying@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1709522379; c=relaxed/simple;
+	bh=V+RFDPpTYUKW1qUvgdx7/B+Sd3EmYDwkX0GvYntj4Ro=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MMalEZc+bxw8b/U8WhPspr7Ms+5vXLGVEHOAGxKQg4aMg7gr8vnrZiQD3XOE2cvJz8hdqL029XFV0NUHKkiuSlX4wVD443/4ERsoa7L+Mzo5ezrzLX3bi+06bdaNEykXLl8W3EicP9XiK2hNcGi4j7KpZbURxM6q2m4GbyCkLys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hEVOR3sc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39A04C433C7;
+	Mon,  4 Mar 2024 03:19:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709522378;
+	bh=V+RFDPpTYUKW1qUvgdx7/B+Sd3EmYDwkX0GvYntj4Ro=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=hEVOR3scu9UZ5CjncLG9Z95wY0CxECuIZGKuolA5DJt+FI5jqwFdmXFzTqerGuvCv
+	 VeUQ5FUAoKvWq7BcZszk/dlUAXYOqyLNbUwgx/7fCtThCGDlavSAgKQ/VCJ/2uEmxh
+	 C0OsJmFm9SAAK3l7DbtAZjRRyj+GF5yySbJ9z6tmplQEHW0aoBL5S/XbbWQvdvmPN5
+	 7gS+QsNTrCoBuft9Vp/ULXpzk99WA7RorlDrUxQv3QHCSn+zdWiM8BCmJ5ZJfM9X9E
+	 BQFMU6wTIO1R0pzU80veEcMaC/vNYBk4Lh9lNNjDot809r4z2bIMPvJ2je/PkEJubg
+	 xkKUWkr7XSH4w==
+Message-ID: <7dc371ad-2448-4dd4-9551-8caef0a00d48@kernel.org>
+Date: Mon, 4 Mar 2024 11:19:29 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] f2fs: fix to check result of new_curseg in
+ f2fs_allocate_segment_for_resize
+Content-Language: en-US
+To: Zhiguo Niu <zhiguo.niu@unisoc.com>, jaegeuk@kernel.org
+Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+ niuzhiguo84@gmail.com, ke.wang@unisoc.com, hongyu.jin@unisoc.com
+References: <1709292976-13118-1-git-send-email-zhiguo.niu@unisoc.com>
+From: Chao Yu <chao@kernel.org>
+In-Reply-To: <1709292976-13118-1-git-send-email-zhiguo.niu@unisoc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-The UAS mode of BRAIN USB_HDD is reported to fail to work on several
-platforms with the following error message, then after re-connecting the
-device will be offlined and not working at all.
+On 2024/3/1 19:36, Zhiguo Niu wrote:
+> new_curseg may return error if get_new_segment fail, so its result
+> should be check in its caller f2fs_allocate_segment_for_resize,
+> alos pass this results to free_segment_range.
 
-[  622.518442][ 2] sd 8:0:0:0: [sda] tag#17 uas_eh_abort_handler 0 uas-tag 18
-                   inflight: CMD
-[  622.527575][ 2] sd 8:0:0:0: [sda] tag#17 CDB: Write(10) 2a 00 03 6f 88 00 00
-                   04 00 00
-[  622.536330][ 2] sd 8:0:0:0: [sda] tag#0 uas_eh_abort_handler 0 uas-tag 1
-                   inflight: CMD
-[  622.545266][ 2] sd 8:0:0:0: [sda] tag#0 CDB: Write(10) 2a 00 07 44 1a 88 00
-                   00 08 00
+Zhiguo,
 
-These disks have a broken uas implementation, the tag field of the status
-iu-s is not set properly, so we need to fall-back to usb-storage.
+What about handling all error paths of new_curseg() and change_curseg()
+in one patch?
 
----
-v2: remove junk information from patch.
+Thanks,
 
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Signed-off-by: Hu Xiaoying <huxiaoying@kylinos.cn>
----
- drivers/usb/storage/unusual_uas.h | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/drivers/usb/storage/unusual_uas.h b/drivers/usb/storage/unusual_uas.h
-index 1f8c9b16a0fb..98b7ff2c76ba 100644
---- a/drivers/usb/storage/unusual_uas.h
-+++ b/drivers/usb/storage/unusual_uas.h
-@@ -83,6 +83,13 @@ UNUSUAL_DEV(0x0bc2, 0x331a, 0x0000, 0x9999,
- 		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
- 		US_FL_NO_REPORT_LUNS),
- 
-+/* Reported-by: Tom Hu <huxiaoying@kylinos.cn> */
-+UNUSUAL_DEV(0x1234, 0x1234, 0x0000, 0x9999,
-+		"Brain",
-+		"External HDD",
-+		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
-+		US_FL_IGNORE_UAS),
-+
- /* Reported-by: Benjamin Tissoires <benjamin.tissoires@redhat.com> */
- UNUSUAL_DEV(0x13fd, 0x3940, 0x0000, 0x9999,
- 		"Initio Corporation",
--- 
-2.25.1
-
+> 
+> Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
+> ---
+>   fs/f2fs/f2fs.h    | 2 +-
+>   fs/f2fs/gc.c      | 7 +++++--
+>   fs/f2fs/segment.c | 9 +++++++--
+>   3 files changed, 13 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index 4331012..39dda7d 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -3701,7 +3701,7 @@ void f2fs_clear_prefree_segments(struct f2fs_sb_info *sbi,
+>   void f2fs_init_inmem_curseg(struct f2fs_sb_info *sbi);
+>   void f2fs_save_inmem_curseg(struct f2fs_sb_info *sbi);
+>   void f2fs_restore_inmem_curseg(struct f2fs_sb_info *sbi);
+> -void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
+> +int f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
+>   					unsigned int start, unsigned int end);
+>   int f2fs_allocate_new_section(struct f2fs_sb_info *sbi, int type, bool force);
+>   int f2fs_allocate_pinning_section(struct f2fs_sb_info *sbi);
+> diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
+> index c60b747..7a458fa 100644
+> --- a/fs/f2fs/gc.c
+> +++ b/fs/f2fs/gc.c
+> @@ -2037,8 +2037,11 @@ static int free_segment_range(struct f2fs_sb_info *sbi,
+>   	mutex_unlock(&DIRTY_I(sbi)->seglist_lock);
+>   
+>   	/* Move out cursegs from the target range */
+> -	for (type = CURSEG_HOT_DATA; type < NR_CURSEG_PERSIST_TYPE; type++)
+> -		f2fs_allocate_segment_for_resize(sbi, type, start, end);
+> +	for (type = CURSEG_HOT_DATA; type < NR_CURSEG_PERSIST_TYPE; type++) {
+> +		err = f2fs_allocate_segment_for_resize(sbi, type, start, end);
+> +		if (err)
+> +			goto out;
+> +	}
+>   
+>   	/* do GC to move out valid blocks in the range */
+>   	err = f2fs_gc_range(sbi, start, end, dry_run, 0);
+> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+> index 1bb3019..2a07b9d 100644
+> --- a/fs/f2fs/segment.c
+> +++ b/fs/f2fs/segment.c
+> @@ -3071,11 +3071,12 @@ static bool need_new_seg(struct f2fs_sb_info *sbi, int type)
+>   	return false;
+>   }
+>   
+> -void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
+> +int f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
+>   					unsigned int start, unsigned int end)
+>   {
+>   	struct curseg_info *curseg = CURSEG_I(sbi, type);
+>   	unsigned int segno;
+> +	int err = 0;
+>   
+>   	f2fs_down_read(&SM_I(sbi)->curseg_lock);
+>   	mutex_lock(&curseg->curseg_mutex);
+> @@ -3089,7 +3090,10 @@ void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
+>   		change_curseg(sbi, type);
+>   	else
+>   		new_curseg(sbi, type, true);
+> -
+> +	if (curseg->segno == NULL_SEGNO) {
+> +		err = -ENOSPC;
+> +		goto unlock;
+> +	}
+>   	stat_inc_seg_type(sbi, curseg);
+>   
+>   	locate_dirty_segment(sbi, segno);
+> @@ -3102,6 +3106,7 @@ void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int type,
+>   
+>   	mutex_unlock(&curseg->curseg_mutex);
+>   	f2fs_up_read(&SM_I(sbi)->curseg_lock);
+> +	return err;
+>   }
+>   
+>   static int __allocate_new_segment(struct f2fs_sb_info *sbi, int type,
 
