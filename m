@@ -1,161 +1,128 @@
-Return-Path: <linux-kernel+bounces-90943-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90944-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD48587074E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:36:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7C07870751
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:37:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B2141C20970
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:36:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6911528299A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:37:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 975BB4CB54;
-	Mon,  4 Mar 2024 16:36:45 +0000 (UTC)
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82C2F4D9ED;
+	Mon,  4 Mar 2024 16:37:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KYZoXbaS"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5AE91756D;
-	Mon,  4 Mar 2024 16:36:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B08C495F0;
+	Mon,  4 Mar 2024 16:36:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709570205; cv=none; b=JljURleTT4eVWBqtrqzcUoA65Ap74RIFMykRFOdqkMMmcSSCtQgPmKHuE0dBmvFqHbEykslfupibKSvQqnfBO9mFz6amjS9p8PiWquxzlAJgy+lOg4u0ZdMiTO+pRe9d2Z6qfOC+9Yj0ZDEEew33af7MakZPsUo514zjITvel8o=
+	t=1709570219; cv=none; b=FjYv2ciytNIqAqyF5SVPd5YIH5zHCjnVRwEiqNGwgLjJ5Gt5V0+p96hOiXM6BAqZnESVT7R4VOofPhw7fKJ6LMexJN+WwdZAlHO5gOxz8jdfxnzwzTuelHZxALPeyBYEnVq+FPVdRmrk1hM/QdTA12oKkfKOdL/9UO3k5yy0iW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709570205; c=relaxed/simple;
-	bh=DQkB7bsi1xFX4kYyEKMzTRCXSDivug9bERZkG+PiyVk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=g1PLfstWtXJu5AHFtv6vJozDqt3nn6AeGnq3Yz03gb1FraSCVcZUJro7lN0wgj1gj+mI9N2VVQClfNKsoGWolAcvK19Tu+YCs5akpfIaxgySpetWH9Sag1NTVJQYotspeD3N62TGncFEDvMgXavSXeJiS9KACO0rI0tSWxTuWCA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	s=arc-20240116; t=1709570219; c=relaxed/simple;
+	bh=xOyOxEs2LoaPprIcK9amuUKq49ywZ782kUPidDTbhpE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=GpSXLv4jN2JMAXLW+Mr9pH+d2ty8bte+S/q3qdOAFu6n5g6J+9erv1W4LFIQEL0WbWUa+uKEa+9i4HwjdPb4oKUvEFjMzSY1bj8dwBkk3ZBXqOY19ZRw8eSEdJBoXBvf40JJBnB5QCU1ONqRDpJQYfV6tRPbs9hIBbAaXrv2gWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KYZoXbaS; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6e09143c7bdso3175871b3a.3;
-        Mon, 04 Mar 2024 08:36:43 -0800 (PST)
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-412e795f458so5010535e9.3;
+        Mon, 04 Mar 2024 08:36:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709570216; x=1710175016; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=D57LV4PQlM/pc6do6owRfCiEmFwq5OiC/rPbAO2Ui6E=;
+        b=KYZoXbaSMOFw8K/OSrgdGeCZN+jK3CMjmG3/huWGbn7OhCtttDXLiLJsMn22TC4xci
+         kZITrCn6bFzs+YSslxN4Pd913PoyDxDaGYaTpQM5xKlNqg0pV73XrdhrgIM8ExFbQVMW
+         3RKjV55C3Zqet6JkHYbxDvlUDyLyOmTCAvo7Atj2P6Tu42Tsg5EPIe9amOoJDN6nif6U
+         dSIfkH8hN/0wj11q+m1cRJiO/DMtRyA8R9tp84mBxp5tGYNA2Ixf2t/wJSh0dtbHuvK3
+         yQZnet4sNb4eNyR4lAWb0Uy9k2wOfLiYPVUgGkNiqtt0CzvLtWZseb4vgRyJGzrqcOQS
+         6q9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709570203; x=1710175003;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MlDi0YrWDCXYNmQcYg0srfw9ph3/dQq4IPuLsyD6ZSQ=;
-        b=PtvgxnLKA5T4FDhbD6eu90jPz0cN5UKdWdzRR+U8fPlr7ajlNsFmGOMbDVmRJUCVbj
-         gcVdPufnsxBwl8Xz7uqohyys5vcAisCJiFqekUuKutIlrniinbTRP6kd7L6FWU4X8n5/
-         XaCarF7QydXKRXraJ57XmcK5oiUFI/xQpiB7Rj+cXYBWcFOmuK8yLkFKPGxPUcP/9VBb
-         d66xp03VPt9dLttUKXHlFWwyD1ZJdwQfxlaZuilW7+uKz3cBFFjnXkrVo1gD+M7hgsfE
-         qyjIsFzX2C5durKLvUD5qchE8cZlN/4NsqfhNmLa47ajMu4DgFvQK4aA1IUSZBZ8nLPK
-         6V/g==
-X-Forwarded-Encrypted: i=1; AJvYcCVpZ3yWTcz1ZeLk4w2ejKYdQ/kZFLZuT+01FXeuuZdRwLHOxWfi8o5jmFokmHcGzt+5JhzMueb/5xgL8bkXqmNj9bYQI5+LfnMu+0t+gYnB/SyMzVWnzn1cTBFe6gZJ77oG08WuEvJqSgvG3095Nw==
-X-Gm-Message-State: AOJu0Yz1L2n7JzSlo+np8bTKc5OjILElFXjyuNqJTwpXyETDrvhTUZh0
-	VUuJuKSY9D4ZscwMBUfvkPI54gXbKi6Jfro0AHuSZxujiwWpE/DZm+QG/En7sclyaBfAxo3o2ok
-	fvb02EC8BrUwJ2Hj2kFunOQonzcA=
-X-Google-Smtp-Source: AGHT+IHRWKQG1jGKrTLpTWr2pZTsKBvY+LaJUqx4iQTwj8XxpVZuOCBqbmO5i0orV5uFjxGGDImnVwfH8QSWhoe2zx0=
-X-Received: by 2002:a05:6a00:99c:b0:6e6:16b5:2eaa with SMTP id
- u28-20020a056a00099c00b006e616b52eaamr3796502pfg.7.1709570202870; Mon, 04 Mar
- 2024 08:36:42 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709570216; x=1710175016;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=D57LV4PQlM/pc6do6owRfCiEmFwq5OiC/rPbAO2Ui6E=;
+        b=nxVSCwg6/+x+KWpS3xKWjhGpj0BeBZwdDqox7IEv74IsQYfRR0rwFunEVN6/oOZ4bE
+         PdyGEu5klxs306nssZNFWOB2/o0uM6wQTT/OXDkCS7wIi9ZmE3fT3HFhBgNJjETZJcSo
+         THE0HEUefqUh5H9xFV2FWj5Y3U9gv/MieI4h1mV/MKknsq8sCNiLZbqkZy9hOo4YEbud
+         QIDgr5FcsG9FSm62/561UfqsWplv5KRp6Pp76mRfVLaTcngY1wFvcV5d5lQAhXPv297K
+         l2fCXVMYg6fwiLtC8lFsNGT/sOYibZmAofJjWDWy2r9JkB1iow0FwkALmcWt0+7Mk3ZA
+         8Jtg==
+X-Forwarded-Encrypted: i=1; AJvYcCW6oHTicWpSXEinUxJ+njYqS0ATCGFWecSOaNe0rmW+B+3sFrfENy4tIAZiLZgG2OKQqm6Hb/KrZ/AaCSfI4gz4wvG0B2+bWEi6MNSO5dxEhalpf8BqYpuRf2QA6X/qMSa5a689+2Gpb+/hxdqKLxrc+FiS
+X-Gm-Message-State: AOJu0YwoHFBWBiPava60URzV8KRqGZ9wP/RpbmG8rxEAbxcKUWptw9Oe
+	QsZAJNj+vLvTIFeATrs2RgNZQaNhVfAtR4yhYqWYSqgMCE5EWbTJ
+X-Google-Smtp-Source: AGHT+IGwhHmhMCQY5Wj9Ojyw77j2lS7hN7OmHTas5EyAlXpHFn/hpF7T3R90MIEi3AEaS8ApQIaj/g==
+X-Received: by 2002:a05:600c:4f83:b0:412:bef7:317c with SMTP id n3-20020a05600c4f8300b00412bef7317cmr8052982wmq.13.1709570216101;
+        Mon, 04 Mar 2024 08:36:56 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id k4-20020a05600c1c8400b00412e556d4besm2679933wms.48.2024.03.04.08.36.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Mar 2024 08:36:55 -0800 (PST)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: John Johansen <john.johansen@canonical.com>,
+	Paul Moore <paul@paul-moore.com>,
+	James Morris <jmorris@namei.org>,
+	"Serge E . Hallyn" <serge@hallyn.com>,
+	apparmor@lists.ubuntu.com,
+	linux-security-module@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] apparmor: remove useless static inline function is_deleted
+Date: Mon,  4 Mar 2024 16:36:55 +0000
+Message-Id: <20240304163655.771616-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240228005230.287113-1-namhyung@kernel.org> <ZeXTmdhu3Y_gC9ma@x1>
-In-Reply-To: <ZeXTmdhu3Y_gC9ma@x1>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Mon, 4 Mar 2024 08:36:30 -0800
-Message-ID: <CAM9d7chEoab71v8=th7NAWcsPPZV+oGiJPGfiCcjdS3L+u13dA@mail.gmail.com>
-Subject: Re: [PATCH 0/4] perf annotate: Improve memory usage for symbol histogram
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-perf-users@vger.kernel.org, Andi Kleen <ak@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-Hi Arnaldo,
+The inlined function is_deleted is redundant, it is not called at all
+from any function in security/apparmor/file.c and so it can be removed.
 
-On Mon, Mar 4, 2024 at 5:58=E2=80=AFAM Arnaldo Carvalho de Melo <acme@kerne=
-l.org> wrote:
->
-> On Tue, Feb 27, 2024 at 04:52:26PM -0800, Namhyung Kim wrote:
-> > This is another series of memory optimization in perf annotate.
->
-> > When perf annotate (or perf report/top with TUI) processes samples, it
-> > needs to save the sample period (overhead) at instruction level.  For
-> > now, it allocates an array to do that for the whole symbol when it
-> > hits any new symbol.  This comes with a lot of waste since samples can
-> > be very few and instructions span to multiple bytes.
->
-> > For example, when a sample hits symbol 'foo' that has size of 100 and
-> > that's the only sample falls into the symbol.  Then it needs to
-> > allocate a symbol histogram (sym_hist) and the its size would be
->
-> >   16 (header) + 16 (sym_hist_entry) * 100 (symbol_size) =3D 1616
->
-> > But actually it just needs 32 (header + sym_hist_entry) bytes.  Things
-> > get worse if the symbol size is bigger (and it doesn't have many
-> > samples in different places).  Also note that it needs separate
-> > histogram for each event.
->
-> > Let's split the sym_hist_entry and have it in a hash table so that it
-> > can allocate only necessary entries.
->
-> > No functional change intended.
->
-> I tried this before/after this series:
->
->   $ time perf annotate --stdio2 -i perf.data.annotate
->
-> For:
->
->   perf record -e '{cycles,instructions,cache-misses}' make -k CORESIGHT=
-=3D1 O=3D/tmp/build/$(basename $PWD)/ -C tools/perf install-bin
->
-> And found these odd cases:
->
->   $ diff -u before after
->   --- before    2024-02-28 15:38:25.086062812 -0300
->   +++ after     2024-02-29 14:12:05.606652725 -0300
->   @@ -2450826,7 +2450826,7 @@
->                                 =E2=86=93 je       1c62
->                                 =E2=86=92 call     operator delete(void*)=
-@plt
->                                 { return _M_dataplus._M_p; }
->   -                       1c62:   mov      0x13c0(%rsp),%rdi
->   +  0.00   0.00 100.00   1c62:   mov      0x13c0(%rsp),%rdi
->                                 if (_M_data() =3D=3D _M_local_data())
->                                   lea      0x13d0(%rsp),%rax
->                                   cmp      %rax,%rdi
->   @@ -2470648,7 +2470648,7 @@
->                                   mov      %rbx,%rdi
->                                 =E2=86=92 call     operator delete(void*)=
-@plt
->                                 using reference =3D T &;
->   -  0.00   0.00 100.00  11c65:   mov      0x8(%r12),%rax
->   +                      11c65:   mov      0x8(%r12),%rax
->                                 size_t size() const { return Size; }
->                                   mov      0x10(%r12),%ecx
->                                   mov      %rax,%rbp
->   $
->
->
-> This is a large function:
+Cleans up clang scan build warning:
+security/apparmor/file.c:153:20: warning: unused function
+'is_deleted' [-Wunused-function]
 
-Thanks for the test!  I think it missed the cast to 64-bit somewhere.
-I'll check and send v2 soon.
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ security/apparmor/file.c | 13 -------------
+ 1 file changed, 13 deletions(-)
 
-Thanks,
-Namhyung
+diff --git a/security/apparmor/file.c b/security/apparmor/file.c
+index c03eb7c19f16..d52a5b14dad4 100644
+--- a/security/apparmor/file.c
++++ b/security/apparmor/file.c
+@@ -144,19 +144,6 @@ int aa_audit_file(const struct cred *subj_cred,
+ 	return aa_audit(type, profile, &ad, file_audit_cb);
+ }
+ 
+-/**
+- * is_deleted - test if a file has been completely unlinked
+- * @dentry: dentry of file to test for deletion  (NOT NULL)
+- *
+- * Returns: true if deleted else false
+- */
+-static inline bool is_deleted(struct dentry *dentry)
+-{
+-	if (d_unlinked(dentry) && d_backing_inode(dentry)->i_nlink == 0)
+-		return true;
+-	return false;
+-}
+-
+ static int path_name(const char *op, const struct cred *subj_cred,
+ 		     struct aa_label *label,
+ 		     const struct path *path, int flags, char *buffer,
+-- 
+2.39.2
 
-
->
-> Samples: 574K of events 'anon group { cpu_core/cycles/u, cpu_core/instruc=
-tions/u, cpu_core/cache-misses/u }', 4000 Hz, Event count (approx.): 614695=
-751751, [percent: local period]$
-> clang::CompilerInvocation::ParseCodeGenArgs(clang::CodeGenOptions&, llvm:=
-:opt::ArgList&, clang::InputKind, clang::DiagnosticsEngine&, llvm::Triple c=
-onst&, std::__cxx11::basic_string<char, std
-> Percent
->
-> Probably when building the BPF skels in tools/perf/
->
-> - Arnaldo
 
