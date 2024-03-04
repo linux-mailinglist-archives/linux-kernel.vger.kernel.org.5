@@ -1,111 +1,137 @@
-Return-Path: <linux-kernel+bounces-90725-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90724-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE85B870407
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:26:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E589870400
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:25:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B995284875
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:26:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 588272847E5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:25:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5908B45BF6;
-	Mon,  4 Mar 2024 14:24:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06CE141C70;
+	Mon,  4 Mar 2024 14:24:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Rq4HWVZv";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="I4SzUl53"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ehaq55tS"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31DA83FE47;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C1BE3FB8B;
 	Mon,  4 Mar 2024 14:24:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709562287; cv=none; b=k9E750xZiULi464me+Y4vcpvBjn597G9Z7CSxcuC7ZU6AJhMG9jqQ39e/5p4t3jenDlhedPg28AwrCGdznRehzmGBZKRt3O58g72OdNekv21jWERi0zqvUsaWjxxWxpQlj9JjdU9t1b4RKx7MQq32BTsrWE/s38m9sTsh0fzGy4=
+	t=1709562284; cv=none; b=tCf8IPQrchVldnUxzU4+DFQM5guLABmbXhLA02wgRwzDrApgS5nbNyzh6b5kWOh0INVfZOc4DuQE+xbemAWgxgQrmjgtw45dx1VS3EukZrRZrM9c4C2Nnrw7vuy4m3ALiF1euyFgaJDamtIQBsnvElM2qR7+YBTDy/6dldr0M0s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709562287; c=relaxed/simple;
-	bh=mcKITX6v37iZwxRKJJBrkFjTf4ftbKe8/GBF0582cnc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=C87qesAFfNDTPiLqRbvwdgwP1X+igplvDmXNsHXPYryI4eh08PdbZ+XcBTMcsOnEvJ2XosYpDipdrjXx2j32Q3tUn8HkQf/GLlw5XimDKf7HmtncgrAHWQ/u9ESYNBFc8uxdDnNUKzzWg85G3FkFEYHOEOlBrm9/SYA4kq2xL04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Rq4HWVZv; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=I4SzUl53; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1709562280;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eHKSpmj3DHeQFSFdUlKh9foXfF7ZumMJ/fAU2N/1zwg=;
-	b=Rq4HWVZvvMHVESuVLtocY6NYdSEH/dE2Xp+N+TBjJXWY+OrV4fvA+rn/A7w0wJxyIjPIJf
-	QTa6R4Eb1wokypLG7dbaBsi5i8zhEDi9LU9bptZXEFvUbnDBg6gerU+lhPZyaHxNZkAOsS
-	mTzpDlnqKUJvNXA4L04jqwX3JzVkSU+ZGiPLJ/VCTxlTohnbPbe+z1CnQSRu+cce6LH9h0
-	Sa370W8eh0GbAfR9vmQvwZNst0eSpaxdW8ZouLeirMq3p8RKUQs7fQG3uvIt9pLE0Wq4zp
-	R3ZPirxAPzPASBf+TTa1N00LDKMiFM2cjj8a2CEL2UYtF0F7MnMFkxu8gmdXjQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1709562280;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=eHKSpmj3DHeQFSFdUlKh9foXfF7ZumMJ/fAU2N/1zwg=;
-	b=I4SzUl53PxaS52fDo8iHgVdIzZ8oprWFwZxy69wJaPobECSxLSjV/QRnCr94seWE4mCgtZ
-	MoFnmWnDVT3IBKAw==
-To: Bitao Hu <yaoma@linux.alibaba.com>, Doug Anderson <dianders@chromium.org>
-Cc: liusong@linux.alibaba.com, akpm@linux-foundation.org, pmladek@suse.com,
- kernelfans@gmail.com, deller@gmx.de, npiggin@gmail.com,
- tsbogend@alpha.franken.de, James.Bottomley@hansenpartnership.com,
- jan.kiszka@siemens.com, linux-kernel@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, yaoma@linux.alibaba.com
-Subject: Re: [PATCHv11 2/4] genirq: Provide a snapshot mechanism for
- interrupt statistics
-In-Reply-To: <3a89fafb-f62e-472f-b40b-8bf97954e9e3@linux.alibaba.com>
-References: <20240228072216.95130-1-yaoma@linux.alibaba.com>
- <20240228072216.95130-3-yaoma@linux.alibaba.com>
- <CAD=FV=U1b+8atmju_w4eRmVKmSqjj6WCsy5EawYqj31fQ1kvrw@mail.gmail.com>
- <87plwdwycx.ffs@tglx>
- <3a89fafb-f62e-472f-b40b-8bf97954e9e3@linux.alibaba.com>
-Date: Mon, 04 Mar 2024 15:24:39 +0100
-Message-ID: <87wmqiulaw.ffs@tglx>
+	s=arc-20240116; t=1709562284; c=relaxed/simple;
+	bh=KITP09qisQQ4/2pZCbAvCnZGgo1XzhvdRiFLcmTHqb4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RuHfJyOxT9t6whOLSevGq6jOqgoaP3CsnHFYWTLKRIs7+WRZm9squzOC6Q76+4LIcd2RyZpBqzplLDXg/LW24G52qpTM1xDDQV/bs3WEY80mkfjHx+l7HEMBeCMcBI9SxulgVAIAfer7ncmR+NtZpbXwxfKn6rPN/qtEyqnBPKs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ehaq55tS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56A25C433C7;
+	Mon,  4 Mar 2024 14:24:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709562283;
+	bh=KITP09qisQQ4/2pZCbAvCnZGgo1XzhvdRiFLcmTHqb4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Ehaq55tSG+2t9+StHrrqBipANU2b83k2yNcb1blrzEyGt4+jcqmbJN51d+wZP7VYI
+	 WjL780kUEccs2iD3JbCsxbUxOk/fIOJL24eDnlUwa/4tj9VjcX/Wt00Ygr4xkeR4BQ
+	 48mo7Af1s/UxBDHcU0OfM67z90hF/jhdsIRuTQEKwXzB3s9nMCaUPmQEpi8ZpflqbS
+	 sJw3BASxEWhmK6XUyPm9aCTyM2WiO6ufOpj2djBd9O3cJLc5U1AJwpNjDmfFROs9DU
+	 a+WRpD1q4ms9UY5U5DCQHf/gQ5Lxxq7wJjhvTc4nA4YwD2pxmEAfZJvbwT9u6baMCy
+	 tVWTyPR8PdQGQ==
+Date: Mon, 4 Mar 2024 08:24:42 -0600
+From: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
+To: Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc: Christian Brauner <brauner@kernel.org>, Serge Hallyn <serge@hallyn.com>,
+	Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>,
+	James Morris <jmorris@namei.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
+	Stephen Smalley <stephen.smalley.work@gmail.com>,
+	Ondrej Mosnacek <omosnace@redhat.com>,
+	Casey Schaufler <casey@schaufler-ca.com>,
+	Mimi Zohar <zohar@linux.ibm.com>,
+	Roberto Sassu <roberto.sassu@huawei.com>,
+	Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+	Eric Snowberg <eric.snowberg@oracle.com>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Miklos Szeredi <miklos@szeredi.hu>,
+	Amir Goldstein <amir73il@gmail.com>, linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-security-module@vger.kernel.org, audit@vger.kernel.org,
+	selinux@vger.kernel.org, linux-integrity@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-unionfs@vger.kernel.org
+Subject: Re: [PATCH v2 06/25] capability: provide helpers for converting
+ between xattrs and vfs_caps
+Message-ID: <ZeXZqueCPTNzZtku@do-x1extreme>
+References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
+ <20240221-idmap-fscap-refactor-v2-6-3039364623bd@kernel.org>
+ <7633ab5d5359116a602cdc8f85afd2561047960e.camel@huaweicloud.com>
+ <ZeIlwkUx5lNBrdS9@do-x1extreme>
+ <be91c7158b1b9bed35aa9c3205e8f8e467778a5f.camel@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <be91c7158b1b9bed35aa9c3205e8f8e467778a5f.camel@huaweicloud.com>
 
-On Mon, Mar 04 2024 at 20:00, Bitao Hu wrote:
->> +# Snapshot for interrupt statistics
->> +config GENERIC_IRQ_STAT_SNAPSHOT
->> +	bool
->> +
->>   # Support forced irq threading
->>   config IRQ_FORCED_THREADING
->>          bool
->
-> I think we should follow Douglas's suggestion by making
-> "config GENERIC_IRQ_STAT_SNAPSHOT" automatically selectable by
-> "config SOFTLOCKUP_DETECTOR_INTR_STORM". This can prevent users
-> from inadvertently disabling "config GENERIC_IRQ_STAT_SNAPSHOT"
-> while enabling "config SOFTLOCKUP_DETECTOR_INTR_STORM".
+On Mon, Mar 04, 2024 at 09:33:06AM +0100, Roberto Sassu wrote:
+> On Fri, 2024-03-01 at 13:00 -0600, Seth Forshee (DigitalOcean) wrote:
+> > On Fri, Mar 01, 2024 at 05:30:55PM +0100, Roberto Sassu wrote:
+> > > > +/*
+> > > > + * Inner implementation of vfs_caps_to_xattr() which does not return an
+> > > > + * error if the rootid does not map into @dest_userns.
+> > > > + */
+> > > > +static ssize_t __vfs_caps_to_xattr(struct mnt_idmap *idmap,
+> > > > +				   struct user_namespace *dest_userns,
+> > > > +				   const struct vfs_caps *vfs_caps,
+> > > > +				   void *data, size_t size)
+> > > > +{
+> > > > +	struct vfs_ns_cap_data *ns_caps = data;
+> > > > +	struct vfs_cap_data *caps = (struct vfs_cap_data *)ns_caps;
+> > > > +	kuid_t rootkuid;
+> > > > +	uid_t rootid;
+> > > > +
+> > > > +	memset(ns_caps, 0, size);
+> > > 
+> > > size -> sizeof(*ns_caps) (or an equivalent change)
+> > 
+> > This is zeroing out the passed buffer, so it should use the size passed
+> > for the buffer. sizeof(*ns_caps) could potentially be more than the size
+> > of the buffer.
+> 
+> Uhm, then maybe the problem is that you are passing the wrong argument?
+> 
+> ssize_t
+> do_getxattr(struct mnt_idmap *idmap, struct dentry *d,
+> 	struct xattr_ctx *ctx)
+> {
+> 	ssize_t error;
+> 	char *kname = ctx->kname->name;
+> 
+> 	if (is_fscaps_xattr(kname)) {
+> 		struct vfs_caps caps;
+> 		struct vfs_ns_cap_data data;
+> 		int ret;
+> 
+> 		ret = vfs_get_fscaps(idmap, d, &caps);
+> 		if (ret)
+> 			return ret;
+> 		/*
+> 		 * rootid is already in the mount idmap, so pass nop_mnt_idmap
+> 		 * so that it won't be mapped.
+> 		 */
+> 		ret = vfs_caps_to_user_xattr(&nop_mnt_idmap, current_user_ns(),
+> 					     &caps, &data, ctx->size);
+> 
+> 
+> ctx->size in my case is 1024 bytes.
 
-The above is not even configurable by the user. It's only selectable by
-some other config option.
-
-> +# Snapshot for interrupt statistics
-> +config GENERIC_IRQ_STAT_SNAPSHOT
-> +       bool
-> +       help
-> +
-> +         Say Y here to enable the kernel to provide a snapshot mechanism
-> +         for interrupt statistics.
-
-That makes is visible which is pointless because it's only relevant when
-there is an actual user.
-
-Thanks,
-
-        tglx
+Ah, yes that definitely isn't correct. I will fix it, thanks for finding
+it.
 
