@@ -1,112 +1,225 @@
-Return-Path: <linux-kernel+bounces-90447-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90448-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA93A86FF46
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:42:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3356E86FF48
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:42:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 07EDC1C213A7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:42:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5704B1C2106A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:42:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDAF43717D;
-	Mon,  4 Mar 2024 10:42:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A812381B4;
+	Mon,  4 Mar 2024 10:42:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="ltERCB8y"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z3k0cGIP"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D03BB654;
-	Mon,  4 Mar 2024 10:42:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72AEE376EA;
+	Mon,  4 Mar 2024 10:42:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709548922; cv=none; b=oDjE3z+mzAp9fUksX55Y5LiW2D5gVfM+FjopVsxCImM2y0hMnsP51bYfhtbncpIzsnYyq43VSqrAil5kLRUdDnwCQLTHL4IDFDpb0+gV8EUZ1rXhqP6jndNZFpEDgh1BJrFhkLCI2WJOiBLjey2l4NOJxrU6OmVnfJap0is736A=
+	t=1709548924; cv=none; b=HQA/V3qu2BVDsSXWtbDA6LJRoID5RZkWnt4peOaimN1JjW+UShzHbduLxHI0ts7C8NZBQUEr0FUXupmX82L8NYvV77DArEegRqknjdS0mbGw1Zyxu0rwLwLa+Oka3KJHX6E5HlPgowxBTo6YZ4n8YOUme4xyvgA9Jt9ctVwt9sg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709548922; c=relaxed/simple;
-	bh=+JybKZUAmD1s3bmTrSchyai48XNikWXuRgLyxam6z0o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UFyCVeXq52cF+X2HPFYVd5B8ommW2vmluxxr4O/Mjrtq374XVGyIllfARS29GMrB7DSv+FIHpBhSgX6XQVZFDQLHA2TrPxNWgpzdQHJW3RMbat6EeiTI3W4GSOcq1vKgv/pVPlsiyqRt5OGwqeljGaINt8qHk9yDXs3im7bvqpM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=ltERCB8y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DA83C433C7;
-	Mon,  4 Mar 2024 10:42:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1709548922;
-	bh=+JybKZUAmD1s3bmTrSchyai48XNikWXuRgLyxam6z0o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ltERCB8yAa0AMPJEpgzQS9Mbx+MMdX4t6PVSu/3nf+AZxPeRfx0+1DMY//JNr6jdF
-	 tHg/7M9hFnV/Jln+GGOrzBNYQGeYgWaCN5MUeTJUQJ4E6ijEOJPByuThwLfpXCPeDg
-	 OG3QZo2Gi3pZnIsOzs0Uil3poHWRtMmE+7WWYpTY=
-Date: Mon, 4 Mar 2024 11:41:46 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Rui Qi <qirui.001@bytedance.com>
-Cc: bp@alien8.de, mingo@redhat.com, tglx@linutronix.de, hpa@zytor.com,
-	jpoimboe@redhat.com, peterz@infradead.org, mbenes@suse.cz,
-	stable@vger.kernel.org, alexandre.chartre@oracle.com,
-	x86@kernel.org, linux-kernel@vger.kernel.org, yuanzhu@bytedance.com
-Subject: Re: [PATCH v2 0/3] Support intra-function call validation
-Message-ID: <2024030438-dropout-satisfy-b4c4@gregkh>
-References: <20240228024535.79980-1-qirui.001@bytedance.com>
+	s=arc-20240116; t=1709548924; c=relaxed/simple;
+	bh=j/9MXZqLNlB7z+z4uiEbgvB3SXfwgNbMNeIEF3YNDd4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=R9JyUcT0tW0TF5EaiCsQMCc25UGMAtzb/0lrWbu4mRPMpQao8ci85HPQKZn4LhDkes09kYQhOt+3OmVODpi0x0jXXWDX3WouKlGtFfaED9jF5GqodUTc0OhtUPDixXMBpfE4QZjHrSTbE9HTHIIEfa6t7XJL1Z6fEKhRzHbkRtQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z3k0cGIP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB1CBC43394;
+	Mon,  4 Mar 2024 10:42:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709548924;
+	bh=j/9MXZqLNlB7z+z4uiEbgvB3SXfwgNbMNeIEF3YNDd4=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=Z3k0cGIPI3nYMJmsQ8N7YnickC74gzvKssoXaaaDqHms2Bxe97Q3hkpCmMVyZe8/5
+	 /LoWBzcWmr5zrzU0CaYEhgQC4lfNsqQYzrkud0m0oMmn6qyug3JDeMC5KVgnRxG/IQ
+	 R1Lv7uvPMGy9lWrvnBdB6kWdeMLGXYRV9JFoox77JU1HJQ7GXYAYCYykKG91QxT+ds
+	 YJrGx+UhdY3YOsjH4Rk7/0VfKIqZnJE8bmlSRFIohTWZEj+BsgBzLdx6ExVYSpNhvJ
+	 nauiJ7rB7j4ZEetjQUbFNsItjkKIedzj9nbbcMuEEzHz1PS8QaEi1JdLZbxZ0YJsBF
+	 AZYoSVQbH+IyQ==
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-512e39226efso4082658e87.0;
+        Mon, 04 Mar 2024 02:42:03 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUgGQowS0z55/r64Aj4Euc/9mYlow/QLHVbsfT3eqdPqRAFBc+2CzqFdag895EEHu3h4KYyzKZZKpNA7dWTySB6HiNRrKL28y5sVIz18KKR+LaHCpIrxow8rkyDdGJbes4EoXsBuNBj
+X-Gm-Message-State: AOJu0Yw+U6/8NTsfoJE6hpUv0JFjH7bm/GOq/13B+T/9lTHnLWlQRLxd
+	H6OJN5g4UicOnwEfP41ORps/zprnBc5iuORFHa+Nh6SVobuHjZQtOcvDqqsTQiHlHINtChau08o
+	UK91j+rxleHC14OLZ6qKAJsh90oE=
+X-Google-Smtp-Source: AGHT+IHF5cyhdvl+sq5raqTeh/Gf8IAcdVMI4D5hsCjAdUx4xTzeNOJNIi/wS1fe7V7Ksui0AgUzhEwPY0OaunZalck=
+X-Received: by 2002:a05:6512:1305:b0:513:3e22:6e01 with SMTP id
+ x5-20020a056512130500b005133e226e01mr3350670lfu.16.1709548922118; Mon, 04 Mar
+ 2024 02:42:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240228024535.79980-1-qirui.001@bytedance.com>
+References: <20240215030002.281456-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20240215030002.281456-2-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CAC_iWj+p6gmcb4-_-f8Kr4Ds6EmSsq2D4GK1XymyybX7i1TMFw@mail.gmail.com>
+ <7bd53417-af59-43a8-965e-f63dfc827f3c@linux.intel.com> <CAC_iWjK3sXq1O4tgR0vEr9n2erfrr+9hqU+xUqiMK-TQa0t-hg@mail.gmail.com>
+In-Reply-To: <CAC_iWjK3sXq1O4tgR0vEr9n2erfrr+9hqU+xUqiMK-TQa0t-hg@mail.gmail.com>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Mon, 4 Mar 2024 11:41:50 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXHHWMhasBPpxWeAJwgQOBX2U0DuW=ADxGH+ppYeCQT15A@mail.gmail.com>
+Message-ID: <CAMj1kXHHWMhasBPpxWeAJwgQOBX2U0DuW=ADxGH+ppYeCQT15A@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] efi/libstub: Add Confidential Computing (CC)
+ measurement support
+To: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, 
+	linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Feb 28, 2024 at 10:45:32AM +0800, Rui Qi wrote:
-> Since kernel version 5.4.217 LTS, there has been an issue with the kernel live patching feature becoming unavailable. 
-> When compiling the sample code for kernel live patching, the following message is displayed when enabled:
-> 
-> livepatch: klp_check_stack: kworker/u256:6:23490 has an unreliable stack
-> 
-> Reproduction steps:
-> 1.git checkout v5.4.269 -b v5.4.269
-> 2.make defconfig
-> 3. Set CONFIG_LIVEPATCH=y、CONFIG_SAMPLE_LIVEPATCH=m
-> 4. make -j bzImage
-> 5. make samples/livepatch/livepatch-sample.ko
-> 6. qemu-system-x86_64 -kernel arch/x86_64/boot/bzImage -nographic -append "console=ttyS0" -initrd initrd.img -m 1024M
-> 7. insmod livepatch-sample.ko
-> 
-> Kernel live patch cannot complete successfully.
-> 
-> After some debugging, the immediate cause of the patch failure is an error in stack checking. The logs are as follows:
-> [ 340.974853] livepatch: klp_check_stack: kworker/u256:0:23486 has an unreliable stack
-> [ 340.974858] livepatch: klp_check_stack: kworker/u256:1:23487 has an unreliable stack
-> [ 340.974863] livepatch: klp_check_stack: kworker/u256:2:23488 has an unreliable stack
-> [ 340.974868] livepatch: klp_check_stack: kworker/u256:5:23489 has an unreliable stack
-> [ 340.974872] livepatch: klp_check_stack: kworker/u256:6:23490 has an unreliable stack
-> ......
-> 
-> BTW,if you use the v5.4.217 tag for testing, make sure to set CONFIG_RETPOLINE = y and CONFIG_LIVEPATCH = y, and other steps are consistent with v5.4.269
-> 
-> After investigation, The problem is strongly related to the commit 8afd1c7da2b0 ("x86/speculation: Change FILL_RETURN_BUFFER to work with objtool"),
-> which would cause incorrect ORC entries to be generated, and the v5.4.217 version can undo this commit to make kernel livepatch work normally. 
-> It is a back-ported upstream patch with some code adjustments,from the git log, the author also mentioned no intra-function call validation support.
-> 
-> Based on commit 6e1f54a4985b63bc1b55a09e5e75a974c5d6719b (Linux 5.4.269), This patchset adds stack validation support for intra-function calls, 
-> allowing the kernel live patching feature to work correctly.
-> 
-> Alexandre Chartre (2):
->   objtool: is_fentry_call() crashes if call has no destination
->   objtool: Add support for intra-function calls
-> 
-> Rui Qi (1):
->   x86/speculation: Support intra-function call validation
-> 
->  arch/x86/include/asm/nospec-branch.h          |  7 ++
->  include/linux/frame.h                         | 11 ++++
->  .../Documentation/stack-validation.txt        |  8 +++
->  tools/objtool/arch/x86/decode.c               |  6 ++
->  tools/objtool/check.c                         | 64 +++++++++++++++++--
->  5 files changed, 91 insertions(+), 5 deletions(-)
+On Tue, 27 Feb 2024 at 14:23, Ilias Apalodimas
+<ilias.apalodimas@linaro.org> wrote:
+>
+> Hi,
+>
+> Thanks for taking a shot at this.
+>
+> [...]
+>
+> > >> +               return status;
+> > >> +
+> > >> +       evt->event_data = (struct efi_tcg2_event){
+> > >> +               .event_size                     = size,
+> > >> +               .event_header.header_size       = sizeof(evt->event_data.event_header),
+> > >> +               .event_header.header_version    = EFI_TCG2_EVENT_HEADER_VERSION,
+> > >> +               .event_header.pcr_index         = events[event].pcr_index,
+> > >> +               .event_header.event_type        = EV_EVENT_TAG,
+> > >> +       };
+> > >> +
+> > >> +       evt->tagged_event = (struct efi_tcg2_tagged_event){
+> > >> +               .tagged_event_id                = events[event].event_id,
+> > >> +               .tagged_event_data_size         = events[event].event_data_len,
+> > >> +       };
+> > >> +
+> > >> +       memcpy(evt->tagged_event_data, events[event].event_data,
+> > >> +              events[event].event_data_len);
+> > >> +
+> > >> +       status = efi_call_proto(tcg2, hash_log_extend_event, 0,
+> > >> +                               load_addr, load_size, &evt->event_data);
+> > > The struct filling/memcpying looks similar across the 2 functions.  I
+> > > wonder if it makes sense to have a common function for that, with an
+> > > argument for the event data type.
+> >
+> > If we want to use helper function, the updated code looks like below.
+> >
+> > Are you fine with this version? (compile-tested only)
+> >
+> > +struct efi_tcg2_measured_event {
+> > +       efi_tcg2_event_t        event_data;
+> > +       efi_tcg2_tagged_event_t tagged_event;
+> > +       u8                      tagged_event_data[];
+> > +};
+> > +
+> > +struct efi_cc_measured_event {
+> > +       efi_cc_event_t  event_data;
+> > +       efi_tcg2_tagged_event_t tagged_event;
+> > +       u8                      tagged_event_data[];
+> > +};
+> > +
+> > +static void efi_tcg2_event_init(struct efi_tcg2_measured_event *evt,
+> > +                               size_t size,
+> > +                               enum efistub_event event)
+> > +{
+> > +       evt->event_data = (struct efi_tcg2_event){
+> > +               .event_size                     = size,
+> > +               .event_header.header_size       = sizeof(evt->event_data.event_header),
+> > +               .event_header.header_version    = EFI_TCG2_EVENT_HEADER_VERSION,
+> > +               .event_header.pcr_index         = events[event].pcr_index,
+> > +               .event_header.event_type        = EV_EVENT_TAG,
+> > +       };
+> > +
+> > +       evt->tagged_event = (struct efi_tcg2_tagged_event){
+> > +               .tagged_event_id                = events[event].event_id,
+> > +               .tagged_event_data_size         = events[event].event_data_len,
+> > +       };
+> > +
+> > +       memcpy(evt->tagged_event_data, events[event].event_data,
+> > +              events[event].event_data_len);
+> > +}
+> > +
+> > +static efi_status_t tcg2_efi_measure(efi_tcg2_protocol_t *tcg2,
+> > +                                    unsigned long load_addr,
+> > +                                    unsigned long load_size,
+> > +                                    enum efistub_event event)
+> > +{
+> > +       struct efi_tcg2_measured_event *evt;
+> > +       efi_status_t status;
+> > +       size_t size;
+> > +
+> > +       size = sizeof(*evt) + events[event].event_data_len;
+> > +
+> > +       status = efi_bs_call(allocate_pool, EFI_LOADER_DATA, size,
+> > +                            (void **)&evt);
+> > +       if (status != EFI_SUCCESS)
+> > +               return status;
+> > +
+> > +       efi_tcg2_event_init(evt, size, event);
+> > +
+> > +       status = efi_call_proto(tcg2, hash_log_extend_event, 0,
+> > +                               load_addr, load_size, &evt->event_data);
+> > +       efi_bs_call(free_pool, evt);
+> > +
+> > +       return status;
+> > +}
+> >
+> > +
+> > +static efi_status_t cc_efi_measure(efi_cc_protocol_t *cc,
+> > +                                  unsigned long load_addr,
+> > +                                  unsigned long load_size,
+> > +                                  enum efistub_event event)
+> > +{
+> > +       struct efi_cc_measured_event *evt;
+> > +       efi_cc_mr_index_t mr;
+> > +       efi_status_t status;
+> > +       size_t size;
+> > +
+> > +       status = efi_call_proto(cc, map_pcr_to_mr_index, events[event].pcr_index, &mr);
+> > +       if (status != EFI_SUCCESS) {
+> > +               efi_debug("CC_MEASURE: PCR to MR mapping failed\n");
+> > +               return status;
+> > +       }
+> > +
+> > +       size = sizeof(*evt) + events[event].event_data_len;
+> > +
+> > +       status = efi_bs_call(allocate_pool, EFI_LOADER_DATA, size, (void **)&evt);
+> > +       if (status != EFI_SUCCESS)
+> > +               return status;
+> > +
+> > +       efi_tcg2_event_init((struct efi_tcg2_measured_event *)evt, size, event);
+> > +
+> > +       evt->event_data = (struct efi_cc_event){
+> > +               .event_header.header_size       = sizeof(evt->event_data.event_header),
+> > +               .event_header.header_version    = EFI_CC_EVENT_HEADER_VERSION,
+> > +               .event_header.mr_index          = mr,
+> > +       };
+> > +
+> > +       status = efi_call_proto(cc, hash_log_extend_event, 0,
+> > +                               load_addr, load_size, &evt->event_data);
+> > +
+> > +       efi_bs_call(free_pool, evt);
+> > +
+> > +       return status;
+> > +}
+> >
+>
+> Yes, I think looks cleaner. Ard thoughts?
+>
 
-All now queued up, thanks!
+I'd prefer to radically unify this code much further.
 
-greg k-h
+AFAICT, the *only* difference is the need to call
+map_pcr_to_mr_index(), beyond that, everything is the same:
+- efi_tcg2_event is identical to efi_cc_event
+- the hash_log_extend_event() protocol member lives at the same offset
+in the protocol struct, and has the same prototype
+
+If we weren't as far along in the merge window, I'd ask you to respin
+with this in mind. However, we're at -rc7 and so to avoid missing the
+merge window, I went ahead and reworked the code. I'll send those out
+momentarily.
 
