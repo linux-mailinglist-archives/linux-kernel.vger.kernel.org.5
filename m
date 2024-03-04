@@ -1,100 +1,224 @@
-Return-Path: <linux-kernel+bounces-90418-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90421-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F8F086FEDC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:21:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F71E86FEE8
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:22:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9B07283B9E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:21:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16196282474
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:22:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C1C9381C6;
-	Mon,  4 Mar 2024 10:19:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="OCgp2CoX"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C22C239FC7;
+	Mon,  4 Mar 2024 10:20:31 +0000 (UTC)
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28B1936B1E;
-	Mon,  4 Mar 2024 10:19:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC460224F9;
+	Mon,  4 Mar 2024 10:20:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709547570; cv=none; b=RDKdyAJ7yEq3X8crlzwUlm1WFnTeuKprkeuoyWRbgB1Y5/TK3vsqMCqCMs3+igDUGIRYDy/p7YtyxCy9Rcs0nHoKH1MlF/848rWtq6AbQ91jYl36UJOmRLwC6V+ZjA9Y25acXQNXPdacewRYSc/d0GjZ8VARDXgY/Qw/mV6wWeQ=
+	t=1709547631; cv=none; b=L8bvgzOWt8wTxX8mp2FbDw6XktHOY3tJCVuD39iCyiD//JzSuZJstisDxkAQSGTHf4K/8Nu/8MlZ2KA/VBsgrfvBl1B4S81poPpdIxjvdrprjV1LmnfBMdqaHEMtvlto79/NCbvGv9/jInDQy4uNJxw3/l0z6qgWw5/7ODoyERY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709547570; c=relaxed/simple;
-	bh=2tdXFc+wFoh0S61YBR4n4vOfCj58NEEN6Q6jc6GNThk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KfavXTayAyn6kpuFRNaCw0fR+dbhkpTaEivDMlg0Pi8g+jPcw4ZRrZzZjQTbL2k3Q20kXlIlLhEpd9DTdjnx6LyanLv67l5ZXVIhB4+0Sf5X4qf2GbK+UAkOPTrgc3XeWPecdAgYV+7Gy9dKvLLuPN7GijSgzo6V26rPoE9fWO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=OCgp2CoX; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709547567;
-	bh=2tdXFc+wFoh0S61YBR4n4vOfCj58NEEN6Q6jc6GNThk=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=OCgp2CoXn9VBAcCUQ1SKG2JEL8s0SMWKGy24jlvKpb/dKePe4RKruvzpHXCG6z1n3
-	 tOnEBCh6oxrM22tJlL1vSKzVJucsYlwj6Z3nkYtjje16hS/Mbsz/oOLhMJh6XQuE27
-	 A455RHb/jX8N97Dnhw5mUq/+RqMxcgP+4U0B2mZP3pZU+pl0wCPdV/t9mrkMqgvurr
-	 GYaYa0jGubL2Ne11YhMXUZQpkK/fmEty8jVglek+6LAPjG4GENJxpk9/Ff05V0lBWV
-	 EvF1msgkmtALzclCYRpQAVl/yU/VA6T3qgzgpgVx4Ux6hiYG0XWEj96Q8QlzfhghR7
-	 UD6eRH592kUhw==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id C7A8A37813CB;
-	Mon,  4 Mar 2024 10:19:26 +0000 (UTC)
-Message-ID: <9cb2001f-77d5-47c3-9e8a-588bd83b01df@collabora.com>
-Date: Mon, 4 Mar 2024 11:19:26 +0100
+	s=arc-20240116; t=1709547631; c=relaxed/simple;
+	bh=w741xtU6JN1TVvn/J0kQJ41j00UtJv+ZD9k8RAXfQbs=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=KlN9AzOCug8h7IBmyEQPz9D8w0QMmmh4Gax/eXwBiDWzIzX/p6vRKSURtVj6VMRbU+AVew8H5LQ/pjUe4ALveXCdUHu71tC35k0DkPuBDysn8+5SoVYSJ6tvadTIY+OTZnxvWPSb+F6bB2Ru3PLR3LZMiZIUyku3SvANDN6Tvjg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.29])
+	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4TpDnn3kRdz9xGgp;
+	Mon,  4 Mar 2024 18:04:45 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.47])
+	by mail.maildlp.com (Postfix) with ESMTP id 992D0140796;
+	Mon,  4 Mar 2024 18:20:14 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+	by APP1 (Coremail) with SMTP id LxC2BwC3YBlNoOVlNsuwAw--.61382S2;
+	Mon, 04 Mar 2024 11:20:13 +0100 (CET)
+Message-ID: <dcbd9e7869d2fcce69546b53851d694b8ebad54e.camel@huaweicloud.com>
+Subject: Re: [PATCH v2 24/25] commoncap: use vfs fscaps interfaces
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+To: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>, Christian Brauner
+ <brauner@kernel.org>, Serge Hallyn <serge@hallyn.com>, Paul Moore
+ <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>, James Morris
+ <jmorris@namei.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara
+ <jack@suse.cz>, Stephen Smalley <stephen.smalley.work@gmail.com>, Ondrej
+ Mosnacek <omosnace@redhat.com>, Casey Schaufler <casey@schaufler-ca.com>,
+ Mimi Zohar <zohar@linux.ibm.com>, Roberto Sassu <roberto.sassu@huawei.com>,
+ Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, Eric Snowberg
+ <eric.snowberg@oracle.com>, "Matthew Wilcox (Oracle)"
+ <willy@infradead.org>, Jonathan Corbet <corbet@lwn.net>, Miklos Szeredi
+ <miklos@szeredi.hu>,  Amir Goldstein <amir73il@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, audit@vger.kernel.org, 
+	selinux@vger.kernel.org, linux-integrity@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-unionfs@vger.kernel.org
+Date: Mon, 04 Mar 2024 11:19:54 +0100
+In-Reply-To: <20240221-idmap-fscap-refactor-v2-24-3039364623bd@kernel.org>
+References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
+	 <20240221-idmap-fscap-refactor-v2-24-3039364623bd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] scsi: lpfc: correct size for wqe for memset
-Content-Language: en-US
-To: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- James Smart <james.smart@broadcom.com>,
- Dick Kennedy <dick.kennedy@broadcom.com>,
- "James E.J. Bottomley" <jejb@linux.ibm.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- Hannes Reinecke <hare@suse.com>
-Cc: kernel@collabora.com, kernel-janitors@vger.kernel.org,
- James Smart <jsmart2021@gmail.com>, linux-scsi@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240301144458.2810597-1-usama.anjum@collabora.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20240301144458.2810597-1-usama.anjum@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:LxC2BwC3YBlNoOVlNsuwAw--.61382S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxXr47ArWUtw13Kr1rWr4rKrg_yoWrKr47pF
+	WftF9xKrWrXry7Wr18ta1Dua4F9ayfGFW7urW293sYywnrGr1ftr4xCr18CFy3Cr97Wr1Y
+	k3ZFyr98GwsrAw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+	c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAkuxUUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAMBF1jj5rxjAAAsf
 
-Il 01/03/24 15:44, Muhammad Usama Anjum ha scritto:
-> The wqe is of type lpfc_wqe128. It should be memset with the same type.
-> 
-> Fixes: 6c621a2229b0 ("scsi: lpfc: Separate NVMET RQ buffer posting from IO resources SGL/iocbq/context")
-> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+On Wed, 2024-02-21 at 15:24 -0600, Seth Forshee (DigitalOcean) wrote:
+> Use the vfs interfaces for fetching file capabilities for killpriv
+> checks and from get_vfs_caps_from_disk(). While there, update the
+> kerneldoc for get_vfs_caps_from_disk() to explain how it is different
+> from vfs_get_fscaps_nosec().
+>=20
+> Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
 > ---
->   drivers/scsi/lpfc/lpfc_nvmet.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/lpfc/lpfc_nvmet.c b/drivers/scsi/lpfc/lpfc_nvmet.c
-> index 8258b771bd009..29bc6cd10fd69 100644
-> --- a/drivers/scsi/lpfc/lpfc_nvmet.c
-> +++ b/drivers/scsi/lpfc/lpfc_nvmet.c
-> @@ -1586,7 +1586,7 @@ lpfc_nvmet_setup_io_context(struct lpfc_hba *phba)
->   		wqe = &nvmewqe->wqe;
->   
->   		/* Initialize WQE */
-> -		memset(wqe, 0, sizeof(union lpfc_wqe));
-> +		memset(wqe, 0, sizeof(union lpfc_wqe128));
+>  security/commoncap.c | 30 +++++++++++++-----------------
+>  1 file changed, 13 insertions(+), 17 deletions(-)
+>=20
+> diff --git a/security/commoncap.c b/security/commoncap.c
+> index a0ff7e6092e0..751bb26a06a6 100644
+> --- a/security/commoncap.c
+> +++ b/security/commoncap.c
+> @@ -296,11 +296,12 @@ int cap_capset(struct cred *new,
+>   */
+>  int cap_inode_need_killpriv(struct dentry *dentry)
+>  {
+> -	struct inode *inode =3D d_backing_inode(dentry);
+> +	struct vfs_caps caps;
+>  	int error;
+> =20
+> -	error =3D __vfs_getxattr(dentry, inode, XATTR_NAME_CAPS, NULL, 0);
+> -	return error > 0;
+> +	/* Use nop_mnt_idmap for no mapping here as mapping is unimportant */
+> +	error =3D vfs_get_fscaps_nosec(&nop_mnt_idmap, dentry, &caps);
+> +	return error =3D=3D 0;
+>  }
+> =20
+>  /**
+> @@ -323,7 +324,7 @@ int cap_inode_killpriv(struct mnt_idmap *idmap, struc=
+t dentry *dentry)
+>  {
+>  	int error;
+> =20
+> -	error =3D __vfs_removexattr(idmap, dentry, XATTR_NAME_CAPS);
+> +	error =3D vfs_remove_fscaps_nosec(idmap, dentry);
 
-memset(wqe, 0, sizeof(*wqe));
+Uhm, I see that the change is logically correct... but the original
+code was not correct, since the EVM post hook is not called (thus the
+HMAC is broken, or an xattr change is allowed on a portable signature
+which should be not).
 
-Cheers,
-Angelo
+For completeness, the xattr change on a portable signature should not
+happen in the first place, so cap_inode_killpriv() would not be called.
+However, since EVM allows same value change, we are here.
+
+Here is how I discovered this problem.
+
+Example:
+
+# ls -l test-file
+-rw-r-Sr--. 1 3001 3001 5 Mar  4 10:11 test-file
+
+# getfattr -m - -d -e hex test-file
+# file: test-file
+security.capability=3D0x0100000202300000023000000000000000000000
+security.evm=3D0x05020498c82b5300663064023052a1aa6200d08b3db60a1c636b97b526=
+58af369ee0bf521cfca6c733671ebf5764b1b122f67030cfc688a111c19a7ed302303989596=
+6cf92217ea55c1405212ced1396c2d830ae55dbdb517c5d199c5a43638f90d430bad4819114=
+9dcc7c01f772ac
+security.ima=3D0x0404f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52=
+e6ccc26fd2
+security.selinux=3D0x756e636f6e66696e65645f753a6f626a6563745f723a756e6c6162=
+656c65645f743a733000
+
+# chown 3001 test-file
+
+# ls -l test-file
+-rw-r-Sr--. 1 3001 3001 5 Mar  4 10:14 test-file
+
+# getfattr -m - -d -e hex test-file
+# file: test-file
+security.evm=3D0x05020498c82b5300673065023100cdd772fa7f9c17aa66e654c7f9c124=
+de1ccfd36abbe5b8100b64a296164da45d0025fd2a2dec2e9580d5c82e5a32bfca02305ea34=
+58b74e53d743408f65e748dc6ee52964e3aedac7367a43080248f4e000c655eb8e1f4338bec=
+b81797ea37f0bca6
+security.ima=3D0x0404f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52=
+e6ccc26fd2
+security.selinux=3D0x756e636f6e66696e65645f753a6f626a6563745f723a756e6c6162=
+656c65645f743a733000
+
+
+which breaks EVM verification.
+
+Roberto
+
+>  	if (error =3D=3D -EOPNOTSUPP)
+>  		error =3D 0;
+>  	return error;
+> @@ -719,6 +720,10 @@ ssize_t vfs_caps_to_user_xattr(struct mnt_idmap *idm=
+ap,
+>   * @cpu_caps:	vfs capabilities
+>   *
+>   * Extract the on-exec-apply capability sets for an executable file.
+> + * For version 3 capabilities xattrs, returns the capabilities only if
+> + * they are applicable to current_user_ns() (i.e. that the rootid
+> + * corresponds to an ID which maps to ID 0 in current_user_ns() or an
+> + * ancestor), and returns -ENODATA otherwise.
+>   *
+>   * If the inode has been found through an idmapped mount the idmap of
+>   * the vfsmount must be passed through @idmap. This function will then
+> @@ -731,25 +736,16 @@ int get_vfs_caps_from_disk(struct mnt_idmap *idmap,
+>  			   struct vfs_caps *cpu_caps)
+>  {
+>  	struct inode *inode =3D d_backing_inode(dentry);
+> -	int size, ret;
+> -	struct vfs_ns_cap_data data, *nscaps =3D &data;
+> +	int ret;
+> =20
+>  	if (!inode)
+>  		return -ENODATA;
+> =20
+> -	size =3D __vfs_getxattr((struct dentry *)dentry, inode,
+> -			      XATTR_NAME_CAPS, &data, XATTR_CAPS_SZ);
+> -	if (size =3D=3D -ENODATA || size =3D=3D -EOPNOTSUPP)
+> +	ret =3D vfs_get_fscaps_nosec(idmap, (struct dentry *)dentry, cpu_caps);
+> +	if (ret =3D=3D -EOPNOTSUPP || ret =3D=3D -EOVERFLOW)
+>  		/* no data, that's ok */
+> -		return -ENODATA;
+> +		ret =3D -ENODATA;
+> =20
+> -	if (size < 0)
+> -		return size;
+> -
+> -	ret =3D vfs_caps_from_xattr(idmap, inode->i_sb->s_user_ns,
+> -				  cpu_caps, nscaps, size);
+> -	if (ret =3D=3D -EOVERFLOW)
+> -		return -ENODATA;
+>  	if (ret)
+>  		return ret;
+> =20
+>=20
+
 
