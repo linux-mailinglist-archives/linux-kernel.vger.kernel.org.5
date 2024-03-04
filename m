@@ -1,409 +1,213 @@
-Return-Path: <linux-kernel+bounces-91374-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91375-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7358D871047
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 23:46:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A5DA871049
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 23:46:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F51C282153
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:46:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68956B23AE5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:46:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12AA57C083;
-	Mon,  4 Mar 2024 22:46:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 133407C082;
+	Mon,  4 Mar 2024 22:46:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=invisiblethingslab.com header.i=@invisiblethingslab.com header.b="WskddAMw";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="eTPj3uI6"
-Received: from fhigh5-smtp.messagingengine.com (fhigh5-smtp.messagingengine.com [103.168.172.156])
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="RWvYVtcO"
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2060.outbound.protection.outlook.com [40.107.6.60])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E27573C28;
-	Mon,  4 Mar 2024 22:46:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.156
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709592372; cv=none; b=dwiDsPPzGRjYoFLJXktY8Zv2DZCOT3Za3XR4e5lqlMdo10kdim7B7Yp9w0ViopRe3xmZQGtzZ41CNzXVsADFrCD0NnpxubuORMhNFHQ9ogR8hb2rkt75L5RmWTHhXB4LgIPUExZ54OzTbEUuKJKdtFiaj2VTDl6/iBVXl0swl5c=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709592372; c=relaxed/simple;
-	bh=68V6j83P2WpOy1AHlDu3IfWniVQwz5jF5hCZ+GBhryY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=O39JLKE8RvFkBQd6b9Qp1CmXz6oPF3PDSQ7h7kWvWWaDV3ZmrQkegRHHHZh852q/BsK5IroDG5AZkJBYuhj517iZuCL7NFyC4NOj288GpZ1rLed7VesyConjDVEB4pgHtpVKRXDZluXywwtpy54yOlbWQgVYnC2QJkQYgVgkXs8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=invisiblethingslab.com; spf=none smtp.mailfrom=invisiblethingslab.com; dkim=pass (2048-bit key) header.d=invisiblethingslab.com header.i=@invisiblethingslab.com header.b=WskddAMw; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=eTPj3uI6; arc=none smtp.client-ip=103.168.172.156
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=invisiblethingslab.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=invisiblethingslab.com
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id D34E81140144;
-	Mon,  4 Mar 2024 17:46:08 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute7.internal (MEProxy); Mon, 04 Mar 2024 17:46:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	invisiblethingslab.com; h=cc:cc:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1709592368;
-	 x=1709678768; bh=MazQbRNiMLTjCsnYC+DAQ7NahahSMfC8KextuceTqoM=; b=
-	WskddAMwtOjAw1OjSXU2fKcMtfpV6WMcJovM08z07SrMfkupbr3Do9GPf281zrT7
-	+J8X0pk7yeh43IleW9axSmwPEFQgTqY6cTrp4pPb3I+XOl1Ruf28T6nT8IPX5E6N
-	vCasIS7tlAfDuUbJ20Rd8v1kigl3oc+T7IE8YQwD6IBTavUs+SyytUSsxJHhsTfx
-	N+lmTwha9ndTR9+bZl97vPzYjXtysGx1xRV6lajwnzUb2fDryurTOGEvWqOFM1Tq
-	oYPcGrfLPKi1ZbYkYYm8D8vW79osWGagYiw683jgzjAn+dTcBH9gWg0gZldhbXJo
-	z57+DChvp+27jqfwQ4qSMg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1709592368; x=1709678768; bh=MazQbRNiMLTjCsnYC+DAQ7NahahS
-	MfC8KextuceTqoM=; b=eTPj3uI6ZuU+yzwKKptK9ilT20gELCgY8+KQSI8WLP+X
-	0rVtXycgVaoAZZaCYL41V4DlFB39kphFso2nPLjTnJVsofm9BbsOMH8k0UVk2iW9
-	M33uHehRgVIfdyHFGbh1zLErdK8WjeH0/xx2VxyaAN/jsFlloZpMOcxRp90leNcO
-	SLJGb6qpMib74EKa8yg7tiIf/TQpwWmzU3ml3WCdoHPM/iHMrsxnUy+r6LKloxdp
-	Zu0OqfnauyAEQtGXt9uk3LHLoN/o0lYNlw5rynsjVkYKcWdGxzHxZLmd+BOkZvKl
-	Rq3+JbE6Fe6gPz1eOlY2E6mrbRLXVn+cZ+sWU0mVsQ==
-X-ME-Sender: <xms:ME_mZd2V4td0ZU4H_g4lqraTa9Ww1SexM9CvKtrDWNOE2WIa9jtzXg>
-    <xme:ME_mZUF50JPv1UgP85ln_hJX6svntybiFyaLQ_NuV0wfdyQ3G7lEeXOQTmKqf58ii
-    ekp2EPhmFPo4g>
-X-ME-Received: <xmr:ME_mZd5eAFquNO_kxhRsUDI2jdVP4VU0a5jDPWmuSMiKW6OOVANmBZnNA8lXDGlx5vYKna3w3fI2Jzfa28mgPZd0kZktPrdQ4A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrheekgddtvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtuggjsehgtderredttdejnecuhfhrohhmpeforghrvghk
-    ucforghrtgiihihkohifshhkihdqifpkrhgvtghkihcuoehmrghrmhgrrhgvkhesihhnvh
-    hishhisghlvghthhhinhhgshhlrggsrdgtohhmqeenucggtffrrghtthgvrhhnpefgudel
-    teefvefhfeehieetleeihfejhfeludevteetkeevtedtvdegueetfeejudenucevlhhush
-    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrghrmhgrrhgvkhes
-    ihhnvhhishhisghlvghthhhinhhgshhlrggsrdgtohhm
-X-ME-Proxy: <xmx:ME_mZa1E7-REhztHs1kFmExO1ytDVfT9hmJ0y5c-D3dtjGvnuL__sg>
-    <xmx:ME_mZQFwUwNUy9jWeIhzrvntjb-URBcEzSC4GOpVD4pWRjO5QIytfA>
-    <xmx:ME_mZb8y-gDDLMUPEWELD4AtmmVg3Bnb-1CjtoGqZH8jOdx10lNNSQ>
-    <xmx:ME_mZUCRCGJ8gffQVhLcRYO823ZrdlRbOuVy0IV4avERGPY1_HaCiA>
-Feedback-ID: i1568416f:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 4 Mar 2024 17:46:07 -0500 (EST)
-Date: Mon, 4 Mar 2024 23:46:04 +0100
-From: Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= <marmarek@invisiblethingslab.com>
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: Demi Marie Obenour <demi@invisiblethingslab.com>,
-	linux-usb@vger.kernel.org,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: usbip doesn't work with userspace code that accesses USB devices
-Message-ID: <ZeZPLX6z5pyn2Eh_@mail-itl>
-References: <ZeYov0k8njwcZzGX@itl-email>
- <2024030406-kilogram-raving-33c5@gregkh>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB9321C6AB;
+	Mon,  4 Mar 2024 22:46:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.6.60
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709592396; cv=fail; b=C6VvstiUHBJLtQ840UXrnX6vjSsTPl3QXyauHZ/l3cLQ3PxmxwVkvLh0/elbjeNa7j/cM8D6EIbzsS5owoEJJXTRcnandMZVRbe+377fyZJ9M2mZh5yu7XtoshIxopN8SWK9Hz9bQ3Ll03fCNvnUuDhKAeYyvRINMs7w7piyxUo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709592396; c=relaxed/simple;
+	bh=sMTD7H3pkXtumX02kxfIYE6xXXR25O5SYFmfqYo/NmY=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=PuGS77jjRlt7butospBRvvcAPgV3cBgYSNmP+52ogpl92wnLrAHEwkVXEOEJ4qOyFUL50SEsmxpLe2uPg0IrurJOqjIRBP6fsGrWmD08eo0q/hKeLeN53KpsOFXPaXdoxtCXhqdUmPwhjT4hgqtLtccsCiIAXTboDZ2lfT9HypU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=RWvYVtcO; arc=fail smtp.client-ip=40.107.6.60
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eyXPdjfx3urm0zKDcayPtrnaip0wOIpygZ2gpRkxTRY1U9IXqJ+06MqYTaEQn9mV28mIgYAkbyAd5qCymDo6vF/H3nwnvBWZXtns9PLzOrkRCxqrHXNr+PHw3BWErAFaeFu81Ym8ja//hQ4+f7HB2WwuULT/uLWxclF9uYG/jwWuz2tvT/hniOIMUYf4e07MCPSGQe8fVv+rzJmrLT5Fq5ijTmC/7Wa+gnD8m3M2LMXlF+0+O6/hhz/8dx08TGHFrxODEzISIPVPjLQIwt6r9myDELy9fVuMyI2aynT6zr1DPxUe+JVH1bHMg4MxrJxPXD1PadGcc+DZiI/8nw1XLA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=fUIkqXdRRiKSu4KArfKZ1xd5qDd8TVc+USYhMLrh0wA=;
+ b=X4QiL+SsAZ2d/nwrKD2xHqPMd056v/YvCwQlJgFXRwH1FMQuM1wg5xmS9F+9OHHx5OePGwtgoJAwOyO+mOmiSFCKZEFTSHYiKNwIsPoqQqlX7qnI0yqonrAg7JAqy136rnqu4wQk1u4rl6PrXp3yFE1xqE1Pfl18sEDGWhDH+K/GsxhKbempCZWam+Bx9ualUiaZuuvYA7YuhkQ/tu/nmKJKSCZFzgPJAUJ+R+hEIg4caDHGX2UGGv/3EEQaWzO0YI4SUl4kGEtoGPTRdAFZau18iO45wSCcloVqxU2Ug0c2HVZSKuQFgRdV24p/5sox9I/s668vAoKWTSDwjP8PXQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fUIkqXdRRiKSu4KArfKZ1xd5qDd8TVc+USYhMLrh0wA=;
+ b=RWvYVtcOUHM/gh3pQ1VFiQAWbNLJ/deDqvJ7tInhlAbBxjiHoxEwM2wAhfdmEqT89UH15arqPh/eYh4N8ZnGuvAVyIh5NMgs9IN3Fn3G4JM99Q83qmXWtLgxjTtvPVge+togNjHau/LTtH7S3buGOqK7g9qiAEm/zcL9sflKD3Y=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by AS4PR04MB9314.eurprd04.prod.outlook.com (2603:10a6:20b:4e5::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.41; Mon, 4 Mar
+ 2024 22:46:30 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6%3]) with mapi id 15.20.7339.033; Mon, 4 Mar 2024
+ 22:46:30 +0000
+From: Frank Li <Frank.Li@nxp.com>
+To: niklas.cassel@wdc.com
+Cc: Frank.li@nxp.com,
+	bhelgaas@google.com,
+	gustavo.pimentel@synopsys.com,
+	imx@lists.linux.dev,
+	jdmason@kudzu.us,
+	jingoohan1@gmail.com,
+	kw@linux.com,
+	linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org,
+	lpieralisi@kernel.org,
+	mani@kernel.org,
+	robh@kernel.org
+Subject: [PATCH v2 1/1] PCI: dwc: Fix index 0 incorrectly being interpreted as a free ATU slot
+Date: Mon,  4 Mar 2024 17:46:16 -0500
+Message-Id: <20240304224616.1238966-1-Frank.Li@nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SA1PR04CA0023.namprd04.prod.outlook.com
+ (2603:10b6:806:2ce::27) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="bSEqgkMjtgBF/hET"
-Content-Disposition: inline
-In-Reply-To: <2024030406-kilogram-raving-33c5@gregkh>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AS4PR04MB9314:EE_
+X-MS-Office365-Filtering-Correlation-Id: 41340640-29fb-43e6-c7d3-08dc3c9ceeed
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	hzRBCUPQ2Vt9P0ObmrVOEWzY6sUV43X4tJYsmR7ALnEh8swpNMaAqHff0lNwgFGgxtNbQBeikHe4loMXlYFb+ct+R3aRpihP/5mIj+aBg9TWXb65qmS18SyCy3sx4yu8YQ2aVIYDjmxU/+nlTQNeid/tpLfLuYrKjLIyjWwXanFISra1VlbUgtA71IPcBH9vTtP4yBxz8ym2OXdDubD0zVFSVjGaYyzgmNtFxl91GGWWn31Eswilhlk1S+zU2bzpKcJYTDgz9rgjSB5Xs+xUI++cvoFlE08VndMMVyhFlA5ictJ8JlIdgkWs4LhSquVHmnZ76OUNQuNWEMzZ09KwgPJ2t7UFYmz7BTk6yAks9Nz/fBJ/LXw5X78Dhn+mdPLR+l90baI32XCfDxm99rpu8YDf+JUwH8IbNnaqVefeUHhu/EAsjeN3m024dgC3Tf01Zh8cX5xuw7XlfpF5JKlT5br3HExLFC17RCvOtPSk5HYGPN8VZ8Gtt2IHEr0wk7W9zMGQy2sJnSQ6pYIFzo2GKemxHDsCpV2t4Ti+ASQWOREkYqGtD9zlpk+NKU40Sirj/pnxTtclanaC1u5IYmkGMa37g7MBNy9YapxsvlRqyLwFPV4KA0y2C5VFqwxD/lTjplNFomZZycVd9Ff87pXkhllp7hGT68j2xN3o0hDqL4Q=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?zq6k4FSgenee1i1qh/34jFUy0MrT7+r1Lw+6eubCVhHFgE9RajkPJN6mfuia?=
+ =?us-ascii?Q?3r4tDBC6ZcPHO/g1lbullfOldN61XTyYeUHBTbZV0IBe538rsOq0zKECggmw?=
+ =?us-ascii?Q?7SfOv1/5i4f0kOW7ds5uuLP/B7enHLKDzshbU1lLXMof8xbJiI0XVt25WNBG?=
+ =?us-ascii?Q?ydSImtMGL3gjud/r202aZTN0UVpsmxrKFQKRzJiWPPHoodDKksGh6GNJ/1T8?=
+ =?us-ascii?Q?KMIQJzHzSjME6D/g81eidc15f0YSh/Fr2yj6Bw0ZpMtxRFBDdb2WpZuY/BAC?=
+ =?us-ascii?Q?A8iyxrZhxKD23tV7Y5Y5K31fYQ8d6eA35ez4e8bwTPlVVDCVZBQd9ivKga50?=
+ =?us-ascii?Q?mBJjaP3JjRFhBZ75Ygft+tEUhyxha5rmsxOPoFC20U1CswucNIkDGX7RS8No?=
+ =?us-ascii?Q?e+MoSgKpLevfHNUsNdBixaHxK9Laqs6CWzIBc/fjVcEY5sOIgSMIgXiPPSsj?=
+ =?us-ascii?Q?Lqi2JV1WAjTmnGDB7KHh2+vzsfjOOBcDvoS1btZUSbMwor4uvMXQZCOaITvN?=
+ =?us-ascii?Q?7yQBMXAD6SLw35Oxmh14HMEdKYMAgUS+jPpyYQrwFH1xS//MFFaS+E8caZH7?=
+ =?us-ascii?Q?vpefyvZAyd290OFg8HxhfakFSioCcODpRKOuCWd2sbUHJ0T2ofKuBpoXDCXV?=
+ =?us-ascii?Q?7zOOpfw3bYJ1OMxdULpSD8ImdIJ/IB8Yv4fI+XHf2udV9HA56cXk0qngVrdO?=
+ =?us-ascii?Q?LmVV/f+pXM8bnn43Cc4Ihzlsxp6yPUJcLDHGHxrcIDz5s5ybWEIOBkSaNoUi?=
+ =?us-ascii?Q?piwKMHOlho5lHDjmpoYMLBIOhJABuwzQ91lIk9zCFsUSrZcxyz0np1fjDRAx?=
+ =?us-ascii?Q?Am31FDgtqhG7mIEdQtV8TBDlb/6ZGNFMLoWK3GW+kCrXmhBhzDms3yvPHI4w?=
+ =?us-ascii?Q?Kjh+acM0CPZw6dASHxXxJakNmyDTsm7+/g8svaVkzZ+CH1RD6c8ScMhnGi0U?=
+ =?us-ascii?Q?yZJAuYcfcFLVZfvUQ4HsmFK4kphizM+pR6O7GbBVNAxNcLLBs+BMwn0yZnJ2?=
+ =?us-ascii?Q?jCai3vUcONihsdillcRkNj2FCG0kSRGzehGlABVpeI1ZpYDUzdb9Kpcgnhhw?=
+ =?us-ascii?Q?I3OJB4ltSQJ7JsAic6b7uIn/4FTaSoZY9jg2yX2AJrJVF6F+jNGWuCRceZ5z?=
+ =?us-ascii?Q?6KPxcYW6A2sFkMf76H4J5q69aS1S/DX9oUNckuIg+URGVxmEC1B9/fGOmsvI?=
+ =?us-ascii?Q?Oapu9O01TC4+1X9WgWNgcOZDMH6RlHQ217vza1IMU3nXhC50++XhZOkGG+ce?=
+ =?us-ascii?Q?3iOf+6Bra0cGBY15SG3kSvcmdDmUozeRebDC9BCHG6YlM0Q489oi9j05mFJT?=
+ =?us-ascii?Q?A84dgwY6FSygQO22E5zz51RuS/iBdyMCKP22leTmGkf/FWi8YmVxqsbuFBpE?=
+ =?us-ascii?Q?cQDocRgGTbAQeAtgxAovaihlHvtGkTqAu3yrDO/Z3d5IBGn0pkcqztnR3p2v?=
+ =?us-ascii?Q?f1YBLWXzsM1sHndMhNVlwry0SvZ+YY5glkg4EO/LxHyfF4dKJPeDMMUWdStD?=
+ =?us-ascii?Q?poaBtxdbqVcLgUPDbtAhn8X5GbIfK7bU7fkcsikzQd8jJjU1ft0da4Fxzt6t?=
+ =?us-ascii?Q?82F9y7/n5abe+YjwZPg=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 41340640-29fb-43e6-c7d3-08dc3c9ceeed
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Mar 2024 22:46:30.1975
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: uHk72aOwwLTQPjz9FwKpUEMDLWsILYAhzpjYW1UkajZtKuWfIfd1gowWCQSwaHkO47tUD3xm897xyVz+yhKmNw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS4PR04MB9314
 
+dw_pcie_ep_inbound_atu()
+{
+	...
+	if (!ep->bar_to_atu[bar])
+		free_win = find_first_zero_bit(ep->ib_window_map, pci->num_ib_windows);
+	else
+		free_win = ep->bar_to_atu[bar];
+	...
+}
 
---bSEqgkMjtgBF/hET
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Date: Mon, 4 Mar 2024 23:46:04 +0100
-From: Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= <marmarek@invisiblethingslab.com>
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: Demi Marie Obenour <demi@invisiblethingslab.com>,
-	linux-usb@vger.kernel.org,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: usbip doesn't work with userspace code that accesses USB devices
+The atu index 0 is valid case for atu number. The find_first_zero_bit()
+will return 6 when second time call into this function if atu is 0. Suppose
+it should use branch 'free_win = ep->bar_to_atu[bar]'.
 
-On Mon, Mar 04, 2024 at 09:04:00PM +0000, Greg KH wrote:
-> On Mon, Mar 04, 2024 at 03:01:51PM -0500, Demi Marie Obenour wrote:
-> > Qubes OS users are reporting that MTP doesn't work with USB passthrough.
-> > Fastboot (used for flashing a custom OS to an Android device) also
-> > doesn't work.  Kernel-mode drivers, such as Bluetooth and USB storage,
-> > seem to usually work as expected.  Since MTP and fastboot are both
-> > implemented in userspace, it appears that there is some problem with the
-> > interaction of usbip, our USB proxy (which is based on USBIP), and
-> > userspace programs that interact with USB devices directly.
-> >=20
-> > The bug report can be found at [1] and the source code for the USB proxy
-> > can be found at [2].  The script used on the sending side (the one with
-> > the physical USB controller) is at [3] and the script used by the
-> > receiving side (the one the device is attached to) is at [4].  All of
-> > these links are for the current version as of this email being sent, so
-> > that anyone looking at this email in the future doesn't get confused.
-> >=20
-> > Is this a bug in usbip, or is this due to usbip being used incorrectly?
->=20
-> I'm amazed that usbip works with usbfs at all, I didn't think that was a
-> thing.
->=20
-> If you have a reproducer, or some error messages somewhere, that might
-> be the easiest way forward.  In reading the bug report, it looks like
-> the "bridge" you all made can't handle the device disconnecting itself
-> properly?  But that's just a guess, could be anything.
+Change 'bar_to_atu' to free_win + 1. Initialize bar_to_atu as 0 to indicate
+it have not allocate atu to the bar.
 
-Device disconnecting itself indeed is an issue (our proxy doesn't
-automatically reconnect it, at least not yet). But that's definitely not
-the only issue, things break also when disconnect is not involved.
+Reported-by: Niklas Cassel <Niklas.Cassel@wdc.com>
+Closes: https://lore.kernel.org/linux-pci/ZXt2A+Fusfz3luQV@x1-carbon/T/#u
+Fixes: 4284c88fff0e ("PCI: designware-ep: Allow pci_epc_set_bar() update inbound map address")
+Reviewed-by: Niklas Cassel <niklas.cassel@wdc.com>
+Signed-off-by: Frank Li <Frank.Li@nxp.com>
+---
 
-Terminology:
-1. sys-usb - a VM where USB controller (a PCI device) lives; here
-usbip-host is attached to the device
-2. testvm - target VM where usbip is connected; here vhci-hcd is used
-3. qvm-usb - tool that connects the above two (equivalent of
-userspace part of standard usbip)
+Notes:
+    Change from v1 to v2
+    - update subject
+    - use free_win + 1 solution
+    - still leave MAX_IATU_IN as 256. I am not sure if there are platfrom have
+    256 ATU. Suppose it only use max 6 in current EP framework.
+    - @Niklas, can you help test it. My platform become unstable today.
 
-Specific steps:
-1. Connect android phone - at this point it's only in sys-usb
-2. Switch its mode to file transfer - observe reconnect in sys-usb
-3. Use qvm-usb to attach it to the testvm
-4. Call jmtpfs -d /mnt in testvm
+ drivers/pci/controller/dwc/pcie-designware-ep.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
+diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
+index 5befed2dc02b7..ba932bafdb230 100644
+--- a/drivers/pci/controller/dwc/pcie-designware-ep.c
++++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
+@@ -139,7 +139,7 @@ static int dw_pcie_ep_inbound_atu(struct dw_pcie_ep *ep, u8 func_no, int type,
+ 	if (!ep->bar_to_atu[bar])
+ 		free_win = find_first_zero_bit(ep->ib_window_map, pci->num_ib_windows);
+ 	else
+-		free_win = ep->bar_to_atu[bar];
++		free_win = ep->bar_to_atu[bar] - 1;
+ 
+ 	if (free_win >= pci->num_ib_windows) {
+ 		dev_err(pci->dev, "No free inbound window\n");
+@@ -153,7 +153,11 @@ static int dw_pcie_ep_inbound_atu(struct dw_pcie_ep *ep, u8 func_no, int type,
+ 		return ret;
+ 	}
+ 
+-	ep->bar_to_atu[bar] = free_win;
++	/*
++	 * Always increment free_win before assignment, since value 0 is used to identify
++	 * unallocated mapping.
++	 */
++	ep->bar_to_atu[bar] = free_win + 1;
+ 	set_bit(free_win, ep->ib_window_map);
+ 
+ 	return 0;
+@@ -190,7 +194,10 @@ static void dw_pcie_ep_clear_bar(struct pci_epc *epc, u8 func_no, u8 vfunc_no,
+ 	struct dw_pcie_ep *ep = epc_get_drvdata(epc);
+ 	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
+ 	enum pci_barno bar = epf_bar->barno;
+-	u32 atu_index = ep->bar_to_atu[bar];
++	u32 atu_index = ep->bar_to_atu[bar] - 1;
++
++	if (!ep->bar_to_atu[bar])
++		return;
+ 
+ 	__dw_pcie_ep_reset_bar(pci, func_no, bar, epf_bar->flags);
+ 
+-- 
+2.34.1
 
-It fails this way:
-
-    Device 0 (VID=3D18d1 and PID=3D4ee1) is a Google Inc Nexus/Pixel (MTP).
-    PTP_ERROR_IO: failed to open session, trying again after resetting USB =
-interface
-    LIBMTP libusb: Attempt to reset device
-    LIBMTP PANIC: failed to open session on second attempt
-    Cannot open requested device
-
-There is a short wait before first failure and then the reset fails as
-well (interestingly, device doesn't actually reset, it stays connected).
-
-At that time, testvm's dmesg shows:
-
-    [2126560.758005] vhci_hcd: unlink->seqnum 98
-    [2126560.758025] vhci_hcd: urb->status -104
-    [2126560.872413] usb 1-1: reset high-speed USB device number 3 using vh=
-ci_hcd
-    [2126560.992995] usb 1-1: SetAddress Request (3) to port 0
-    [2126561.162264] usb 1-1: reset high-speed USB device number 3 using vh=
-ci_hcd
-    [2126561.278584] usb 1-1: SetAddress Request (3) to port 0
-
-And sys-usb's dmesg:
-
-    [915567.691431] usbip-host 2-1: unlinked by a call to usb_unlink_urb()
-
-I've observed it also with wireshark in testvm, and there is a single packe=
-t sent (before the attempt to reset):
-
-    Frame 90: 80 bytes on wire (640 bits), 80 bytes captured (640 bits) on =
-interface usbmon1, id 0
-    USB URB
-        [Source: host]
-        [Destination: 1.3.1]
-        URB id: 0xffff888007cbaa80
-        URB type: URB_SUBMIT ('S')
-        URB transfer type: URB_BULK (0x03)
-        Endpoint: 0x01, Direction: OUT
-        Device: 3
-        URB bus id: 1
-        Device setup request: not relevant ('-')
-        Data: present ('\0')
-        URB sec: 1709589466
-        URB usec: 80050
-        URB status: Operation now in progress (-EINPROGRESS) (-115)
-        URB length [bytes]: 16
-        Data length [bytes]: 16
-        [Response in: 91]
-        [bInterfaceClass: Imaging (0x06)]
-        Unused Setup Header
-        Interval: 0
-        Start frame: 0
-        Copy of Transfer Flags: 0x00000000
-        Number of ISO descriptors: 0
-    Leftover Capture Data: 10000000010002100000000001000000
-
-And the same seen in sys-usb:
-
-    Frame 117: 80 bytes on wire (640 bits), 80 bytes captured (640 bits) on=
- interface usbmon2, id 0
-    USB URB
-        [Source: host]
-        [Destination: 2.18.1]
-        URB id: 0xffff908b585f5480
-        URB type: URB_SUBMIT ('S')
-        URB transfer type: URB_BULK (0x03)
-        Endpoint: 0x01, Direction: OUT
-        Device: 18
-        URB bus id: 2
-        Device setup request: not relevant ('-')
-        Data: present ('\0')
-        URB sec: 1709591829
-        URB usec: 752585
-        URB status: Operation now in progress (-EINPROGRESS) (-115)
-        URB length [bytes]: 16
-        Data length [bytes]: 16
-        [Response in: 118]
-        [bInterfaceClass: Imaging (0x06)]
-        Unused Setup Header
-        Interval: 0
-        Start frame: 0
-        Copy of Transfer Flags: 0x00000000
-        Number of ISO descriptors: 0
-    Leftover Capture Data: 10000000010002100000000001000000
-
-And after few seconds it gets this "response":
-
-    Frame 91: 64 bytes on wire (512 bits), 64 bytes captured (512 bits) on =
-interface usbmon1, id 0
-    USB URB
-        [Source: 1.3.1]
-        [Destination: host]
-        URB id: 0xffff888007cbaa80
-        URB type: URB_COMPLETE ('C')
-        URB transfer type: URB_BULK (0x03)
-        Endpoint: 0x01, Direction: OUT
-        Device: 3
-        URB bus id: 1
-        Device setup request: not relevant ('-')
-        Data: not present ('>')
-        URB sec: 1709589471
-        URB usec: 83920
-        URB status: No such file or directory (-ENOENT) (-2)
-        URB length [bytes]: 0
-        Data length [bytes]: 0
-        [Request in: 90]
-        [Time from request: 5.003870000 seconds]
-        [bInterfaceClass: Imaging (0x06)]
-        Unused Setup Header
-        Interval: 0
-        Start frame: 0
-        Copy of Transfer Flags: 0x00000000
-        Number of ISO descriptors: 0
-
-and the same seen in sys-usb:
-
-    Frame 118: 64 bytes on wire (512 bits), 64 bytes captured (512 bits) on=
- interface usbmon2, id 0
-    USB URB
-        [Source: 2.18.1]
-        [Destination: host]
-        URB id: 0xffff908b585f5480
-        URB type: URB_COMPLETE ('C')
-        URB transfer type: URB_BULK (0x03)
-        Endpoint: 0x01, Direction: OUT
-        Device: 18
-        URB bus id: 2
-        Device setup request: not relevant ('-')
-        Data: not present ('>')
-        URB sec: 1709591834
-        URB usec: 753529
-        URB status: Connection reset by peer (-ECONNRESET) (-104)
-        URB length [bytes]: 0
-        Data length [bytes]: 0
-        [Request in: 117]
-        [Time from request: 5.000944000 seconds]
-        [bInterfaceClass: Imaging (0x06)]
-        Unused Setup Header
-        Interval: 0
-        Start frame: 0
-        Copy of Transfer Flags: 0x00000000
-        Number of ISO descriptors: 0
-
-
-Calling jmtpfs directly in sys-usb succeeds without device reset:
-
-    Device 0 (VID=3D18d1 and PID=3D4ee1) is a Google Inc Nexus/Pixel (MTP).
-    Android device detected, assigning default bug flags
-    FUSE library version: 2.9.9
-    nullpath_ok: 0
-    nopath: 0
-    utime_omit_ok: 0
-    unique: 2, opcode: INIT (26), nodeid: 0, insize: 104, pid: 0
-    INIT: 7.37
-    flags=3D0x73fffffb
-    max_readahead=3D0x00020000
-       INIT: 7.19
-       flags=3D0x00000011
-       max_readahead=3D0x00020000
-       max_write=3D0x00020000
-       max_background=3D0
-       congestion_threshold=3D0
-       unique: 2, success, outsize: 40
-
-At that time, looking at wireshark in sys-usb, I see similar URB_BULK sent:
-
-    Frame 1171: 80 bytes on wire (640 bits), 80 bytes captured (640 bits) o=
-n interface usbmon2, id 0
-    USB URB
-        [Source: host]
-        [Destination: 2.18.1]
-        URB id: 0xffff908b4fe92180
-        URB type: URB_SUBMIT ('S')
-        URB transfer type: URB_BULK (0x03)
-        Endpoint: 0x01, Direction: OUT
-        Device: 18
-        URB bus id: 2
-        Device setup request: not relevant ('-')
-        Data: present ('\0')
-        URB sec: 1709591408
-        URB usec: 157571
-        URB status: Operation now in progress (-EINPROGRESS) (-115)
-        URB length [bytes]: 16
-        Data length [bytes]: 16
-        [Response in: 1172]
-        [bInterfaceClass: Imaging (0x06)]
-        Unused Setup Header
-        Interval: 0
-        Start frame: 0
-        Copy of Transfer Flags: 0x00000000
-        Number of ISO descriptors: 0
-    Leftover Capture Data: 10000000010002100000000001000000
-
-but this time it gets a response:
-
-    Frame 1172: 64 bytes on wire (512 bits), 64 bytes captured (512 bits) o=
-n interface usbmon2, id 0
-    USB URB
-        [Source: 2.18.1]
-        [Destination: host]
-        URB id: 0xffff908b4fe92180
-        URB type: URB_COMPLETE ('C')
-        URB transfer type: URB_BULK (0x03)
-        Endpoint: 0x01, Direction: OUT
-        Device: 18
-        URB bus id: 2
-        Device setup request: not relevant ('-')
-        Data: not present ('>')
-        URB sec: 1709591408
-        URB usec: 157806
-        URB status: Success (0)
-        URB length [bytes]: 16
-        Data length [bytes]: 0
-        [Request in: 1171]
-        [Time from request: 0.000235000 seconds]
-        [bInterfaceClass: Imaging (0x06)]
-        Unused Setup Header
-        Interval: 0
-        Start frame: 0
-        Copy of Transfer Flags: 0x00000000
-        Number of ISO descriptors: 0
-
-I'm happy to provide more information, debug logs etc, just tell me what
-:)
-
-
---=20
-Best Regards,
-Marek Marczykowski-G=C3=B3recki
-Invisible Things Lab
-
---bSEqgkMjtgBF/hET
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhrpukzGPukRmQqkK24/THMrX1ywFAmXmTy0ACgkQ24/THMrX
-1yzN1Af9EOVSPtEQjBHWrW1AGqMWTjtqT3lAMyvHLFM0DAtcrax8aE4FGiYbAuVN
-pXZpGo/ImF3/U2N+d/Bc121irv4q50BeqcALYd3CMObme1H6Jxr8/oqyhaorFJkv
-pPvtGw99MQQIxMdNrTMRdholD2s5yTOku8Sc90Yhr9pcPh+8I2Q6cEt7ho044WO8
-KkDMWMCV7u7T7nigs6SKiAEd8PJ8RG+syAWABV9ZBtbv/yC/XUVh7o1D4Qw5SdE5
-lXbhSCsDttorwW9EhY8wIcYKHfFFIwS4aRaYhC5EqW0BrpaUkD8zJRgAHtyC2rRh
-Fa3oof4uYGrAwXAu5eK74RF1nNZ1nQ==
-=ClV7
------END PGP SIGNATURE-----
-
---bSEqgkMjtgBF/hET--
 
