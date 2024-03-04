@@ -1,112 +1,95 @@
-Return-Path: <linux-kernel+bounces-90703-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90707-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B025870398
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:07:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA1CA8703A5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 15:08:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A9BF1C226F0
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:07:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8602A286AFD
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:08:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7350405DC;
-	Mon,  4 Mar 2024 14:06:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iaxBuQMZ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F3B23F8E4;
+	Mon,  4 Mar 2024 14:08:07 +0000 (UTC)
+Received: from mail115-76.sinamail.sina.com.cn (mail115-76.sinamail.sina.com.cn [218.30.115.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD0643FB1D;
-	Mon,  4 Mar 2024 14:06:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13EA33F9FC
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 14:08:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709561210; cv=none; b=UymyO6BlxVAmrOYefayKuQsZFPaYumIp6ov87LCVNdQdNfoELLe48ClXYjm/HARc8Y3If+W6pdT/uniXOZ5bqjkIEBrfU9q0x0bynh/jcWUve+A+lRDSy1we8v3Pg718C/QD1aznE/75hBE0KvayvnEvTQ1AiJdMS+DcwRBMOak=
+	t=1709561287; cv=none; b=sPPOOw8XJlB4f5aq5IfzFyxdI2D2UemFhTJR+75va1MZBs4GcYyCb30lITl9cpAxLlNzmGJQg01VwT5yLJLO3dtSJZ/Va4FdRkMBFUVwARdzrcWke4uuKIqmbM5GuJvnrgonRnDJtDnL43mDerBQgxIHnTwkOzxe9qaonaWeXLM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709561210; c=relaxed/simple;
-	bh=xPL76FHS6HJ3s8ync8Ft9aXKhFA0XZzDoh4MMW7HTYk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gzcfRM9/oFXnyUhJvEM87IrrnrbIZjnsbx2pPoKczUcuZOjycDT5sZZ7IKw1cBUP/fuasRwZDw7l3MVpAyP38YBXomEsbZIRU1WOlmS0JT5XbK1ajpKn7d7Fx/eM9vu+NWz3rKDzM3X37dtci+eCxR6XvuS1BAbXDG2sfc6iu6A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iaxBuQMZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 240FCC43143;
-	Mon,  4 Mar 2024 14:06:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709561209;
-	bh=xPL76FHS6HJ3s8ync8Ft9aXKhFA0XZzDoh4MMW7HTYk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=iaxBuQMZPL708GUjbD43Ki86fiVubj9E5DaxUUAuIa+trp6r0+/5td1d5FOqNwcJv
-	 O2XhNtt/0b4+UhYXHEKzU9H1xnRu5WfIrimL5iDZ/OpgPS+rHIygqh0sKDWpf+OU/6
-	 cyVRdRpNqKYKdoBaN+No1tB+kHlBCLUu2l7FZ3s1su0gt7p/xzh6SeH1VQx+wVMwxh
-	 HqyhMw9DcRNjMm4Lvi732rPbwGScSPlvXVMf79su3xuHEt3JjiwId8zyjeaDCG+uwI
-	 7UEcTBVH7IRT84PO1G4+yvZDLSWfCHSD0zs7eGgxn7ObW9DVgeMnKX7e9M2ytZPgsR
-	 xHTxhadBnE7Zw==
-Date: Mon, 4 Mar 2024 08:06:47 -0600
-From: Rob Herring <robh@kernel.org>
-To: Saravana Kannan <saravanak@google.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Frank Rowand <frowand.list@gmail.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Daniel Scally <djrscally@gmail.com>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Len Brown <lenb@kernel.org>, kernel-team@android.com,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-efi@vger.kernel.org, linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v4 0/4] Add post-init-providers binding to improve
- suspend/resume stability
-Message-ID: <20240304140647.GA148861-robh@kernel.org>
-References: <20240222034624.2970024-1-saravanak@google.com>
+	s=arc-20240116; t=1709561287; c=relaxed/simple;
+	bh=RTTjJrKbQGC+to+9CcT3Rjd8f3nh2/o7sz3wwy6ugbI=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=OFntVRDCBTmvSP5R4tnZOJt+pBjWjRp/WiwjR0c7miNT1WT/3hD8ZofgIem/3NacSEW4S9STn/oKF9h8T5j4LtevLizpXvMQUa5HeWkONBU/1KWunS7P1rbnbGi3U329+kV6e/FjRbv3+CP/X5PC/liIWesbE7k/CSx/zKQ9AMQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([113.118.66.159])
+	by sina.com (10.75.12.45) with ESMTP
+	id 65E5D58D000033AD; Mon, 4 Mar 2024 22:07:15 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 4786531458218
+X-SMAIL-UIID: 51EAB7993DE54EFFBB1471E35B6BB18F-20240304-220715-1
+From: Hillf Danton <hdanton@sina.com>
+To: syzbot <syzbot+b91eb2ed18f599dd3c31@syzkaller.appspotmail.com>
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [fs?] KASAN: slab-use-after-free Read in sys_io_cancel
+Date: Mon,  4 Mar 2024 22:07:02 +0800
+Message-Id: <20240304140702.1457-1-hdanton@sina.com>
+In-Reply-To: <0000000000006945730612bc9173@google.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240222034624.2970024-1-saravanak@google.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 21, 2024 at 07:46:18PM -0800, Saravana Kannan wrote:
-> This patch series adds a "post-init-providers" device tree binding that
-> can be used to break dependency cycles in device tree and enforce a more
-> determinstic probe/suspend/resume order. This will also improve the
-> stability of global async probing and async suspend/resume and allow us
-> to enable them more easily. Yet another step away from playing initcall
-> chicken with probing and step towards fully async probing and
-> suspend/resume.
+On Sat, 02 Mar 2024 23:29:23 -0800
+> syzbot found the following issue on:
 > 
-> Patch 3 (the binding documentation) provides a lot more details and
-> examples.
-> 
-> v3->v4:
-> - Fixed MAINTAINERS file to go with the file rename.
-> 
-> v2->v3:
-> - Changes doc/code from "post-init-supplier" to "post-init-providers"
-> - Fixed some wording that was ambiguous for Conor.
-> - Fixed indentation, additionalProperies and white space issues in the
->   yaml syntax.
-> - Fixed syntax errors in the example.
-> 
-> v1->v2:
-> - Addressed Documentation/commit text errors pointed out by Rob
-> - Reordered MAINTAINERS chunk as pointed out by Krzysztof
-> 
-> Saravana Kannan (4):
->   driver core: Adds flags param to fwnode_link_add()
->   driver core: Add FWLINK_FLAG_IGNORE to completely ignore a fwnode link
->   dt-bindings: Add post-init-providers property
->   of: property: fw_devlink: Add support for "post-init-providers"
->     property
+> HEAD commit:    5ad3cb0ed525 Merge tag 'for-v6.8-rc2' of git://git.kernel...
+> git tree:       upstream
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13877412180000
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
 
-I'm assuming Greg takes this. You'll probably need to resend without the 
-binding. Submit it to dtschema please.
-
-Rob
+--- x/fs/aio.c
++++ y/fs/aio.c
+@@ -2194,6 +2194,8 @@ SYSCALL_DEFINE3(io_cancel, aio_context_t
+ 	list_for_each_entry(kiocb, &ctx->active_reqs, ki_list) {
+ 		if (kiocb->ki_res.obj == obj) {
+ 			ret = kiocb->ki_cancel(&kiocb->rw);
++			if (ret == 0)
++				refcount_inc(&kiocb->ki_refcnt);
+ 			list_del_init(&kiocb->ki_list);
+ 			break;
+ 		}
+@@ -2204,8 +2206,11 @@ SYSCALL_DEFINE3(io_cancel, aio_context_t
+ 	 * The result argument is no longer used - the io_event is always
+ 	 * delivered via the ring buffer.
+ 	 */
+-	if (ret == 0 && kiocb->rw.ki_flags & IOCB_AIO_RW)
+-		aio_complete_rw(&kiocb->rw, -EINTR);
++	if (ret == 0)
++		if (kiocb->rw.ki_flags & IOCB_AIO_RW)
++			aio_complete_rw(&kiocb->rw, -EINTR);
++		else
++			iocb_put(kiocb);
+ 
+ 	percpu_ref_put(&ctx->users);
+ 
+--
 
