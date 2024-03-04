@@ -1,259 +1,120 @@
-Return-Path: <linux-kernel+bounces-90476-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90477-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B12EA86FFC3
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:06:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74CD286FFCC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:08:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 671EA281938
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:06:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A60A11C2130E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:08:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EE48383B4;
-	Mon,  4 Mar 2024 11:06:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77059381CF;
+	Mon,  4 Mar 2024 11:08:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CQhfIRau"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="cvhY+2yH"
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97907376F9
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 11:06:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A68E0376FD
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 11:08:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709550399; cv=none; b=Prew5015M2DzOo9BmYwAU0gWo5ANAj8Hv9kllC9h4GD8nprmwxe6/O4VQ3XAl0+Cd49GP2+0v8k+5b1hs3kJz3nom91Zri53G+beq49INW0IHP8KEYV8qpScWIQpClAFqVi8kkFNmZJqwff+z3l7QlUkpToDJq9eMvLyMkCkYEM=
+	t=1709550490; cv=none; b=Ts+dLyTj4yLVoj2KH7RvXvUzE1ULSw3yxSaz5PpRE1yNQCb6lOUpYHFeXVnTMp35tRYEmAK6rp6c7Tcd6Fsq2VobZlG/j69Ge+9TIIXCobDl+CqYot+FwJtiOgWAjV+l04HZs5yk76zWQFvPUKkBZKWEb/H871oqR+cdRpY4MVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709550399; c=relaxed/simple;
-	bh=AKyYXQuGpHGdgrax2QfR8MIXUBvB9lMPOboMV9ivIg4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EwCuad/+R729TQ62ooLRLHW/3SS3zsOB615CGTz8QtnRaAT0T83AB7VCfYFQkwZK9sIzqphNSyPUlTFFRgAS5AW96FVV6+Qsk7lmLfg5hUR8e7VJ89morpquDdVKUsVhAhMwTkm56VuYfRhnmzwCJL/PoMKbiOQVqfXWRdsFuUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CQhfIRau; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709550395;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NgrMrv3/i2xavSJaYF0r12WWFk3+aFKbxQx5Q9iepN0=;
-	b=CQhfIRau1I3swnUL0vxL8v8zaOId4jkajp05iD7PuEBU9y4q1R+u1ymhCgIP9dlHlkzICc
-	vHgo6ghu/QS5zPevhwC2d4zBvMMVal5/jj6PYTbiQ1hB7bMAHiaG7VKFxQrvfNSKEFxx5e
-	jXHbPg3t56vn/0NzXPffe10Z7lazsqU=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-386-5TP5s09JPVSGl3jBxJLnog-1; Mon, 04 Mar 2024 06:06:34 -0500
-X-MC-Unique: 5TP5s09JPVSGl3jBxJLnog-1
-Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-29954faf16dso3406650a91.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 03:06:34 -0800 (PST)
+	s=arc-20240116; t=1709550490; c=relaxed/simple;
+	bh=n+ORGLPWsscytBavNsEjXESwpZOPq7HEsk0jq7q66WI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=H4nLRuOZ810II3WiEXN42yOgrvCkZ/Rp0rtDGsQC5s8H5yWIRB5P/IJ/br+bX0mzl2ZaXMzmKrMeQkkkt7dtasCIornP+lLsYhKEMoma7/dX85mrDyrcHqajmjfk4EGIHAjWGu/hwJoGv3wSX5wFNafyyUndJgiJSaTIFgadKcg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=cvhY+2yH; arc=none smtp.client-ip=209.85.216.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-29a5ed64502so562681a91.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 03:08:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1709550488; x=1710155288; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eMhY+Ysn3pgkNN53RXDJC69kYsS5QWPZaTpHTXLl49k=;
+        b=cvhY+2yHesiOcUN0qV3uWUjlqM1I9LjRTQd9gbq7Te+908L1BZwEtbRliE36NX9nEI
+         ctkW+VYyAFk6Kcyukv2YrRHYAgu5oyKVw7XpCdUcWVO3fHCACzwF3H2IopqWreGKF/he
+         LlhgF0nNpUeDNNRoRuxwfo68kbv4L4ib/lbyPrd/HkFJFYGqAP2pbu8N5Qw/KJKFl7/l
+         LtYSEIUX/U9A7kY/TRt3ERpE4aGlyOu8h+rmwytEIltOJdZMLHPx9p0yDhRT6ky6H+TL
+         VYly6+TlePJ9XGHXk+wtYno5Ab2evQ0nDZ5Fzm/KIHDzgiwdfEizp3aBsD4viXUfoyzx
+         /FSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709550393; x=1710155193;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NgrMrv3/i2xavSJaYF0r12WWFk3+aFKbxQx5Q9iepN0=;
-        b=itI7ZW47lz6vFm1SuB5VJzB+ncy5l43a+gvT+L1Y0nnuRG+LRXcdNgX/3NtxauWtjx
-         tHXxglSi7lnc4bJ5PGdi63LRaeJO4FYVaqBDGUYPlVRGaDv9F4Ar5NQPDpDsrToXQkVY
-         p4FIcPLvo1dGGX4MaA7hW2BvwAcPun4VMOvTUDpVNQ69UbvEFul/vtRN+I96VrY9pvcK
-         jqbFCWZ4GIxHb/01ETRY3fTJeZipXpWiWQxIPHxnWRWaCveeOTCYCeyISQWTPNADEl5x
-         /dzZ2lR11ehglIuVK6EiKCDb6W33pMTBdsrhA6R4xWq9H6w9RRK7VkxcSaqiFj+77HoP
-         TwNw==
-X-Forwarded-Encrypted: i=1; AJvYcCWXS0O95bsKKnkMzI4VBe13pPlrZk7mDL65nNuEQvTeMXoqnfhh6/RAyTOEYC9TT4NCf0BbDJ5dAhUAnUH4VvgyY0tLEM6qDjGZsFbh
-X-Gm-Message-State: AOJu0YwYGyQK0TCf3GBgM9QtSOq18hn70ymdSyKO/1Wa3VWrGKz2GyoY
-	y0Ss2Zs7klDUpTBfwiGTgaA8PV2YhEHnkTQsZO/8OG6fljaaok7qugQE/R8FuA1i+ywvh6x6c/T
-	IoMnKQ5jaPB2k6wE9VBvpIy3gU0/FpatvCJV/p/szBAzT9ASRGQMhAptOeKqtnrrjUYYjlyiFfL
-	cMfuyu/DTV8HzYQ1SUNcoyUYnZ/qJTFQpVy1DF
-X-Received: by 2002:a17:90a:5986:b0:299:63bd:c17d with SMTP id l6-20020a17090a598600b0029963bdc17dmr11339146pji.2.1709550393078;
-        Mon, 04 Mar 2024 03:06:33 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGcbtT5DaGGKaNkeEjvKzECNHenxMp1SBObuazw/kY0fiLXb12Bve5b/NrYyCNmUMboRp/o7HTlEgllktCgsP8=
-X-Received: by 2002:a17:90a:5986:b0:299:63bd:c17d with SMTP id
- l6-20020a17090a598600b0029963bdc17dmr11339121pji.2.1709550392734; Mon, 04 Mar
- 2024 03:06:32 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709550488; x=1710155288;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eMhY+Ysn3pgkNN53RXDJC69kYsS5QWPZaTpHTXLl49k=;
+        b=j4bGoC2lLQxt7Y8x2rASrY1o+x+M155M1w8DYzBis6J9mzbd1McdhRLeYLViuLVTUQ
+         yNeGXrgDCBznfMIo89o8G9gIiddYLB8AQETmblqk+jZ7WyuVlu9XaHKSLNVz0TQhXR1J
+         wDZD9xcdCBkDIIo6YWMiXdINQKooRj8EBrGhx+X9P8JH97j+3KmQ13fz1qo4JHMIwqU8
+         CtsBwb/iXowxcL13rB7wjGyQySxoehCNzukT4BiHEXI1brzRUNrhtjk3kDrdbJRqHl4i
+         zlRM1CjNt9jsV9u8cH8/6ht3H9TvECoj01VVZ4o5M1FHJP0QGrX3JkFTKx3TztCriM/X
+         wP1A==
+X-Forwarded-Encrypted: i=1; AJvYcCVOrL3yidmhZeoV05gFyamyYxdg/3OY3tUiV9xgFtdYlO5XLf0IiSyrMG5RZ85TAXkpGDVIYAS8oWv3stbeQbskFEtu9J5W3ehdELtm
+X-Gm-Message-State: AOJu0Yy7d4ndYsYK51t4qzhdrqhR9pk0LAX92hsGgQXVr4pkvnpBbdBo
+	fUf/RAswoT49ae2eYY12Ts4RpgQ9ILiBnZ9sbByaUOFJ4Dgj0Plj1+G71wKpNf8=
+X-Google-Smtp-Source: AGHT+IGOQo94WHV25YlaAOI9/UAmp0PGzV50hgsbaa2czYbAz8D3PyKNmMokKRXChQR+lciYWR3eFQ==
+X-Received: by 2002:a17:90a:db81:b0:299:c3d:c00e with SMTP id h1-20020a17090adb8100b002990c3dc00emr6910032pjv.3.1709550487816;
+        Mon, 04 Mar 2024 03:08:07 -0800 (PST)
+Received: from C02DW0BEMD6R.bytedance.net ([203.208.167.154])
+        by smtp.gmail.com with ESMTPSA id y5-20020a17090aca8500b0029b59bf77b4sm587410pjt.42.2024.03.04.03.08.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Mar 2024 03:08:07 -0800 (PST)
+From: Qi Zheng <zhengqi.arch@bytedance.com>
+To: akpm@linux-foundation.org,
+	vishal.moola@gmail.com,
+	hughd@google.com,
+	david@redhat.com,
+	rppt@kernel.org,
+	willy@infradead.org,
+	muchun.song@linux.dev
+Cc: linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	Qi Zheng <zhengqi.arch@bytedance.com>
+Subject: [PATCH 0/3] minor fixes and supplement for ptdesc
+Date: Mon,  4 Mar 2024 19:07:17 +0800
+Message-Id: <cover.1709541697.git.zhengqi.arch@bytedance.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240301095657.662111-1-yukuai1@huaweicloud.com>
- <CALTww2-GV-YBX1ey4juaVHjHz-wNS0xRBqBn=ucDXEb4WNbSOg@mail.gmail.com>
- <0091f7d1-2273-16ff-8285-5fa3f7e2e0f7@huaweicloud.com> <35feaa54-db9e-f0d6-d5a5-a10a45bb90a5@huaweicloud.com>
- <CALTww2-BmudurHbsbbqBMq+KgZs+hokqOJnovS5KDGEidHqZzA@mail.gmail.com> <CALTww2_tP9kZEeReystMVLT+UqE7gpHvLO6yrSJ_bjsfTOuaxQ@mail.gmail.com>
-In-Reply-To: <CALTww2_tP9kZEeReystMVLT+UqE7gpHvLO6yrSJ_bjsfTOuaxQ@mail.gmail.com>
-From: Xiao Ni <xni@redhat.com>
-Date: Mon, 4 Mar 2024 19:06:21 +0800
-Message-ID: <CALTww2_8B1XMaFEBtPeWae0Gse7ngqZuuRZMn32BdfW2-M8uYA@mail.gmail.com>
-Subject: Re: [PATCH -next 0/9] dm-raid, md/raid: fix v6.7 regressions part2
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: zkabelac@redhat.com, agk@redhat.com, snitzer@kernel.org, 
-	mpatocka@redhat.com, dm-devel@lists.linux.dev, song@kernel.org, 
-	heinzm@redhat.com, neilb@suse.de, jbrassow@redhat.com, 
-	linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org, yi.zhang@huawei.com, 
-	yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Mar 4, 2024 at 4:27=E2=80=AFPM Xiao Ni <xni@redhat.com> wrote:
->
-> On Mon, Mar 4, 2024 at 9:25=E2=80=AFAM Xiao Ni <xni@redhat.com> wrote:
-> >
-> > On Mon, Mar 4, 2024 at 9:24=E2=80=AFAM Yu Kuai <yukuai1@huaweicloud.com=
-> wrote:
-> > >
-> > > Hi,
-> > >
-> > > =E5=9C=A8 2024/03/04 9:07, Yu Kuai =E5=86=99=E9=81=93:
-> > > > Hi,
-> > > >
-> > > > =E5=9C=A8 2024/03/03 21:16, Xiao Ni =E5=86=99=E9=81=93:
-> > > >> Hi all
-> > > >>
-> > > >> There is a error report from lvm regression tests. The case is
-> > > >> lvconvert-raid-reshape-stripes-load-reload.sh. I saw this error wh=
-en I
-> > > >> tried to fix dmraid regression problems too. In my patch set,  aft=
-er
-> > > >> reverting ad39c08186f8a0f221337985036ba86731d6aafe (md: Don't regi=
-ster
-> > > >> sync_thread for reshape directly), this problem doesn't appear.
-> > > >
-> >
-> > Hi Kuai
-> > > > How often did you see this tes failed? I'm running the tests for ov=
-er
-> > > > two days now, for 30+ rounds, and this test never fail in my VM.
-> >
-> > I ran 5 times and it failed 2 times just now.
-> >
-> > >
-> > > Take a quick look, there is still a path from raid10 that
-> > > MD_RECOVERY_FROZEN can be cleared, and in theroy this problem can be
-> > > triggered. Can you test the following patch on the top of this set?
-> > > I'll keep running the test myself.
-> >
-> > Sure, I'll give the result later.
->
-> Hi all
->
-> It's not stable to reproduce this. After applying this raid10 patch it
-> failed once 28 times. Without the raid10 patch, it failed once 30
-> times, but it failed frequently this morning.
+Hi all,
 
-Hi all
+In this series, the [PATCH 1/3] and [PATCH 2/3] are fixes for some issues
+discovered during code inspection.
 
-After running 152 times with kernel 6.6, the problem can appear too.
-So it can return the state of 6.6. This patch set can make this
-problem appear quickly.
+The [PATCH 3/3] is a supplement to ptdesc conversion in s390, I don't know
+why this is not done in the commit 6326c26c1514 ("s390: convert various pgalloc
+functions to use ptdescs"), maybe I missed something. And since I don't have an
+s390 environment, I hope kernel test robot can help compile and test, and this
+is why I did not fold [PATCH 2/3] and [PATCH 3/3] into one patch.
 
-Best Regards
-Xiao
+Comments and suggestions are welcome.
 
+Thanks,
+Qi
 
->
-> Regards
-> Xiao
-> >
-> > Regards
-> > Xiao
-> > >
-> > > diff --git a/drivers/md/raid10.c b/drivers/md/raid10.c
-> > > index a5f8419e2df1..7ca29469123a 100644
-> > > --- a/drivers/md/raid10.c
-> > > +++ b/drivers/md/raid10.c
-> > > @@ -4575,7 +4575,8 @@ static int raid10_start_reshape(struct mddev *m=
-ddev)
-> > >          return 0;
-> > >
-> > >   abort:
-> > > -       mddev->recovery =3D 0;
-> > > +       if (mddev->gendisk)
-> > > +               mddev->recovery =3D 0;
-> > >          spin_lock_irq(&conf->device_lock);
-> > >          conf->geo =3D conf->prev;
-> > >          mddev->raid_disks =3D conf->geo.raid_disks;
-> > >
-> > > Thanks,
-> > > Kuai
-> > > >
-> > > > Thanks,
-> > > > Kuai
-> > > >
-> > > >>
-> > > >> I put the log in the attachment.
-> > > >>
-> > > >> On Fri, Mar 1, 2024 at 6:03=E2=80=AFPM Yu Kuai <yukuai1@huaweiclou=
-d.com> wrote:
-> > > >>>
-> > > >>> From: Yu Kuai <yukuai3@huawei.com>
-> > > >>>
-> > > >>> link to part1:
-> > > >>> https://lore.kernel.org/all/CAPhsuW7u1UKHCDOBDhD7DzOVtkGemDz_QnJ4=
-DUq_kSN-Q3G66Q@mail.gmail.com/
-> > > >>>
-> > > >>>
-> > > >>> part1 contains fixes for deadlocks for stopping sync_thread
-> > > >>>
-> > > >>> This set contains fixes:
-> > > >>>   - reshape can start unexpected, cause data corruption, patch 1,=
-5,6;
-> > > >>>   - deadlocks that reshape concurrent with IO, patch 8;
-> > > >>>   - a lockdep warning, patch 9;
-> > > >>>
-> > > >>> I'm runing lvm2 tests with following scripts with a few rounds no=
-w,
-> > > >>>
-> > > >>> for t in `ls test/shell`; do
-> > > >>>          if cat test/shell/$t | grep raid &> /dev/null; then
-> > > >>>                  make check T=3Dshell/$t
-> > > >>>          fi
-> > > >>> done
-> > > >>>
-> > > >>> There are no deadlock and no fs corrupt now, however, there are s=
-till
-> > > >>> four
-> > > >>> failed tests:
-> > > >>>
-> > > >>> ###       failed: [ndev-vanilla] shell/lvchange-raid1-writemostly=
-sh
-> > > >>> ###       failed: [ndev-vanilla] shell/lvconvert-repair-raid.sh
-> > > >>> ###       failed: [ndev-vanilla] shell/lvcreate-large-raid.sh
-> > > >>> ###       failed: [ndev-vanilla] shell/lvextend-raid.sh
-> > > >>>
-> > > >>> And failed reasons are the same:
-> > > >>>
-> > > >>> ## ERROR: The test started dmeventd (147856) unexpectedly
-> > > >>>
-> > > >>> I have no clue yet, and it seems other folks doesn't have this is=
-sue.
-> > > >>>
-> > > >>> Yu Kuai (9):
-> > > >>>    md: don't clear MD_RECOVERY_FROZEN for new dm-raid until resum=
-e
-> > > >>>    md: export helpers to stop sync_thread
-> > > >>>    md: export helper md_is_rdwr()
-> > > >>>    md: add a new helper reshape_interrupted()
-> > > >>>    dm-raid: really frozen sync_thread during suspend
-> > > >>>    md/dm-raid: don't call md_reap_sync_thread() directly
-> > > >>>    dm-raid: add a new helper prepare_suspend() in md_personality
-> > > >>>    dm-raid456, md/raid456: fix a deadlock for dm-raid456 while io
-> > > >>>      concurrent with reshape
-> > > >>>    dm-raid: fix lockdep waring in "pers->hot_add_disk"
-> > > >>>
-> > > >>>   drivers/md/dm-raid.c | 93 ++++++++++++++++++++++++++++++++++---=
--------
-> > > >>>   drivers/md/md.c      | 73 ++++++++++++++++++++++++++--------
-> > > >>>   drivers/md/md.h      | 38 +++++++++++++++++-
-> > > >>>   drivers/md/raid5.c   | 32 ++++++++++++++-
-> > > >>>   4 files changed, 196 insertions(+), 40 deletions(-)
-> > > >>>
-> > > >>> --
-> > > >>> 2.39.2
-> > > >>>
-> > > >
-> > > >
-> > > > .
-> > > >
-> > >
+Qi Zheng (3):
+  mm: pgtable: correct the wrong comment about ptdesc->__page_flags
+  mm: pgtable: add missing pt_index to struct ptdesc
+  s390: supplement for ptdesc conversion
+
+ arch/s390/include/asm/pgalloc.h |  4 ++--
+ arch/s390/mm/gmap.c             | 38 +++++++++++++++++----------------
+ arch/s390/mm/pgalloc.c          |  8 +++----
+ include/linux/mm_types.h        |  5 ++++-
+ 4 files changed, 30 insertions(+), 25 deletions(-)
+
+-- 
+2.30.2
 
 
