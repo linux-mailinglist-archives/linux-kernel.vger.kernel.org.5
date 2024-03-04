@@ -1,167 +1,185 @@
-Return-Path: <linux-kernel+bounces-90989-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90990-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22AF6870812
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:11:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2988B87081B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:14:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCF441F2373A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:11:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DE121C2032D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:14:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 516A060258;
-	Mon,  4 Mar 2024 17:11:30 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 345755D72B
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 17:11:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8575160271;
+	Mon,  4 Mar 2024 17:13:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DuEMUgu9"
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 556FE39AF1;
+	Mon,  4 Mar 2024 17:13:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709572289; cv=none; b=dGultzV3W4VsxgpT0sKyZC23bmnbm1yDZtVo8icGOxyiHROLxuG+bKJjBCegzqg8/72n2U4s1KTGXK4Uv1cGImDZJhpARvT1Yehxl9Tqf6c0ICKl2h4bDUsWDgnM4FKJcXRSkdaQGo6mASGu7HYNwoQFfIqdZ1/foWMSGFHOfsY=
+	t=1709572434; cv=none; b=Z+rap6dWJM7qwqyrWcZbRixhk99IRT5Jop+xqjpPyl7t0WBq1tosUHcsWoM6g1i2GXC6sUTau6gTarPzDuu9m0uidyL864oYPCAjoyTvUtZfiTzUeFVNR0Y26czvUtcVrH3dhUpYNU/lo6fCLqAE5h5299w3MUu9meWELK+YQq8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709572289; c=relaxed/simple;
-	bh=F0AhxNrMQYa399m9SObdQwh9VeOeMmvSZ2t1OUpqLuQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=evVOUhVb1p7tqCBy2Zyl4rAdc+5YxbKSa9tHXCTrH73cBHTrn3z/2f5zNZkvZXwZL+TDWCg9iAf2BXyptiQN20USzobS0fHChx8yilAPVNJ9qo5BHUwKy/hvFAYT1gi9OOixLYew5sGLd9/gocB/xRyRZfzTp5+8wn5xA+9oDeE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 32C4C1FB;
-	Mon,  4 Mar 2024 09:12:04 -0800 (PST)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B83A73F73F;
-	Mon,  4 Mar 2024 09:11:25 -0800 (PST)
-Message-ID: <d7bd7dce-ead2-4c9b-bb47-d4029c3ce6f7@arm.com>
-Date: Mon, 4 Mar 2024 17:11:23 +0000
+	s=arc-20240116; t=1709572434; c=relaxed/simple;
+	bh=aVsoSYr9lidkVGiDzBTySKzdgM/ZiOsURJBg5zuk/3I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YBM9NlaIiJV2ZwRjJfD+mjTtHr1ljp6RUGCL0hivSB5RPCtW0GbCRsnw+Kv7EJQhAG0W+0Q9Tx+alpDZ8VE4BI8xuGCvUYNjnkNRLq0cJwbH+yVKQD8BjKs1sPFbEy4tEbGrE+/n2Xe/dLlCKYJNf55hgLiO8O+rjWcuJMJWM5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DuEMUgu9; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6e59bbdd8c7so3856488b3a.3;
+        Mon, 04 Mar 2024 09:13:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709572432; x=1710177232; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=EBlQa3GtwlSFl/WzXIlG10CFy19K9d7iBWjjMCPyyvc=;
+        b=DuEMUgu9k8fQPQar9sOJZY9XuuSoWIfP++QENjZ6dFTyFWNVk4hlxAXUpdwG3M2ckP
+         a5sH+f+xDZenvVlYVLHSChrQa2joyRiachZwFxPxXRong73gLjrkxPyRedzDD8WkGCXk
+         uYAUaWo/qPV3OafGxmlIpnsgvU6zvAt8i4LPviaMX0HrTLbI9Xuf2oOrBox3gU8KYOhB
+         VkYy0BcIlHxn7NgJZE/TFqT4VAaSUApVionHiKX2B/yjdNX8HiTttxIBC55f/yMcdJje
+         SoatWoJ2KlxBTQvfhRFNrRntiHVjQNTGyofVnjOGf0YvppF9jCo1aAieup0WygsUEsyC
+         CgAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709572432; x=1710177232;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EBlQa3GtwlSFl/WzXIlG10CFy19K9d7iBWjjMCPyyvc=;
+        b=bDINECB5bNPvxiYVzYbx9LEhmaseFgQPoPChSbF0yWfNqDBX+FrZRpU676EQwyrsyV
+         BzmatFyxm7bNsi9iOTxfWZPW7avEkG/HfJilc6RNCXv3pIOk+3CjjcAD7Z9BPhfz6L4W
+         hTlsIDa7I02GOH5afMQsIn52owkZaUvCF1nGX7QHWy4E3V8m94UTq31xWPHO4WvTQVrk
+         8z1TNLzc7HH7BD4HkH0x3+/KMPIlX5iZSelnpWdQzkJvVUWjGc21J7g7chIwIaepbCm4
+         Ps9nnwBgkKiJf0ZljbpKGFJVZbq6QcxSoHJM13fgvz9GShQ37Kp/dMfn2FUusBFCQDxw
+         hbSw==
+X-Forwarded-Encrypted: i=1; AJvYcCVq2UFBvWdz7nNBsOYQwoRL3kUGpqJZHktBUP5E9WnY/MpQtjpiWYhme2hPFhGqqD/wvtiJgme3ekPdMO1AMZEH5cPcUycoQ0O//Fdgk6LF2Eb9sD/fFQO9rSyyJ/ghebuBHysndNKnDY9LFNy1wBL7rxIHoOmiuGGFmMsi1iaPy54zdHBtbVhsYz8=
+X-Gm-Message-State: AOJu0Yy9J9JFhUo1DUoRbe1u02JAAFs80oRXvQ6rQVRA1fEu6dq3IdDc
+	oOevGXRQLQ8qmtsvXjNFTyN1u3G263/jNH0Mo8yYZOAOANOoJECi
+X-Google-Smtp-Source: AGHT+IHMZPii8KNhV0sSfdA1ahnzkIkrriDy33cN1wcfC/2V5l4SBefB0+HcFMX/wVn2TFBpUvkivA==
+X-Received: by 2002:a05:6a00:4b42:b0:6e4:62ed:23c3 with SMTP id kr2-20020a056a004b4200b006e462ed23c3mr12677188pfb.9.1709572432503;
+        Mon, 04 Mar 2024 09:13:52 -0800 (PST)
+Received: from google.com ([2620:15c:9d:2:99d7:8333:f50c:d6a6])
+        by smtp.gmail.com with ESMTPSA id lp3-20020a056a003d4300b006e553f2b880sm7420133pfb.211.2024.03.04.09.13.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Mar 2024 09:13:52 -0800 (PST)
+Date: Mon, 4 Mar 2024 09:13:49 -0800
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Jeff LaBundy <jeff@labundy.com>
+Cc: Markus Elfring <Markus.Elfring@web.de>, linux-input@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Mattijs Korpershoek <mkorpershoek@baylibre.com>,
+	Rob Herring <robh@kernel.org>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	ye xingchen <ye.xingchen@zte.com.cn>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: Re: [PATCH v2] Input: iqs269a - Use scope-based resource management
+ in iqs269_parse_chan()
+Message-ID: <ZeYBTUQRAp2u3bXX@google.com>
+References: <6bf9f962-cf75-459d-89f4-2546063fc154@web.de>
+ <ZeT6UUFNq1ujMW17@google.com>
+ <b5f9c66e-d9c8-4dc6-8ce5-8d1dc5f0782d@web.de>
+ <ZeYAk830OUpaup5W@nixie71>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 6/6] swiotlb: Remove pointless stride adjustment for
- allocations >= PAGE_SIZE
-Content-Language: en-GB
-To: Michael Kelley <mhklinux@outlook.com>, =?UTF-8?B?UGV0ciBUZXNhxZnDrWs=?=
- <petr@tesarici.cz>
-Cc: Christoph Hellwig <hch@lst.de>, Will Deacon <will@kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Petr Tesarik <petr.tesarik1@huawei-partners.com>,
- "kernel-team@android.com" <kernel-team@android.com>,
- "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Dexuan Cui
- <decui@microsoft.com>, Nicolin Chen <nicolinc@nvidia.com>
-References: <20240228133930.15400-1-will@kernel.org>
- <20240228133930.15400-7-will@kernel.org>
- <SN6PR02MB4157A62353559DA8DB8BC4ADD45F2@SN6PR02MB4157.namprd02.prod.outlook.com>
- <SN6PR02MB41577D09E97B1D9645369D58D45F2@SN6PR02MB4157.namprd02.prod.outlook.com>
- <20240229133346.GA7177@lst.de>
- <SN6PR02MB4157314F142D05E279B7991ED45F2@SN6PR02MB4157.namprd02.prod.outlook.com>
- <20240229154756.GA10137@lst.de>
- <20240301163927.18358ee2@meshulam.tesarici.cz>
- <20240301180853.5ac20b27@meshulam.tesarici.cz>
- <8869c8b2-29c3-41e4-8f8a-5bcf9c0d22bb@arm.com>
- <20240301194212.3c64c9b2@meshulam.tesarici.cz>
- <SN6PR02MB41571DA1EE99BFAA65869024D4232@SN6PR02MB4157.namprd02.prod.outlook.com>
- <20240304120055.56035c21@meshulam.tesarici.cz>
- <ffd7646b-37b1-4cd2-822a-848b36b076c9@arm.com>
- <20240304165506.49e3b2d3@meshulam.tesarici.cz>
- <SN6PR02MB41576F53BE9B88EB52BBDC10D4232@SN6PR02MB4157.namprd02.prod.outlook.com>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <SN6PR02MB41576F53BE9B88EB52BBDC10D4232@SN6PR02MB4157.namprd02.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZeYAk830OUpaup5W@nixie71>
 
-On 04/03/2024 4:04 pm, Michael Kelley wrote:
-> From: Petr Tesařík <petr@tesarici.cz> Sent: Monday, March 4, 2024 7:55 AM
->>
->> On Mon, 4 Mar 2024 13:37:56 +0000
->> Robin Murphy <robin.murphy@arm.com> wrote:
->>
->>> On 04/03/2024 11:00 am, Petr Tesařík wrote:
->>> [...]
->>>>> Here's my take on tying all the threads together. There are
->>>>> four alignment combinations:
->>>>>
->>>>> 1. alloc_align_mask: zero; min_align_mask: zero
->>>>> 2. alloc_align_mask: zero; min_align_mask: non-zero
->>>>> 3. alloc_align_mask: non-zero; min_align_mask: zero/ignored
->>>>> 4. alloc_align_mask: non-zero; min_align_mask: non-zero
->>>>
->>>> What does "min_align_mask: zero/ignored" mean? Under which
->>>> circumstances should be a non-zero min_align_mask ignored?
+On Mon, Mar 04, 2024 at 11:10:43AM -0600, Jeff LaBundy wrote:
+> Hi Markus,
 > 
-> "Ignored" was my short-hand for the swiotlb_alloc() case where
-> orig_addr is zero.  Even if min_align_mask is set for the device, it
-> doesn't have any effect when orig_addr is zero.
+> On Mon, Mar 04, 2024 at 10:55:11AM +0100, Markus Elfring wrote:
+> > From: Markus Elfring <elfring@users.sourceforge.net>
+> > Date: Mon, 4 Mar 2024 10:30:52 +0100
+> > 
+> > Scope-based resource management became supported also for this software
+> > area by contributions of Jonathan Cameron on 2024-02-17.
+> > 
+> > device property: Add cleanup.h based fwnode_handle_put() scope based cleanup.
+> > https://lore.kernel.org/r/20240217164249.921878-3-jic23@kernel.org
+> > 
+> > 
+> > * Thus use the attribute “__free(fwnode_handle)”.
+> > 
+> > * Reduce the scope for the local variable “ev_node” into a for loop.
+> > 
+> > Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+> > ---
+> > 
+> > v2:
+> > An other cleanup technique was applied as requested by Dmitry Torokhov.
+> > 
+> > 
+> >  drivers/input/misc/iqs269a.c | 73 ++++++++++++++++++------------------
+> >  1 file changed, 37 insertions(+), 36 deletions(-)
+> > 
+> > diff --git a/drivers/input/misc/iqs269a.c b/drivers/input/misc/iqs269a.c
+> > index cd14ff9f57cf..9caee936927b 100644
+> > --- a/drivers/input/misc/iqs269a.c
+> > +++ b/drivers/input/misc/iqs269a.c
+> > @@ -557,7 +557,6 @@ static int iqs269_parse_chan(struct iqs269_private *iqs269,
+> >  			     const struct fwnode_handle *ch_node)
+> >  {
+> >  	struct i2c_client *client = iqs269->client;
+> > -	struct fwnode_handle *ev_node;
+> >  	struct iqs269_ch_reg *ch_reg;
+> >  	u16 engine_a, engine_b;
+> >  	unsigned int reg, val;
+> > @@ -734,47 +733,49 @@ static int iqs269_parse_chan(struct iqs269_private *iqs269,
+> >  	}
+> > 
+> >  	for (i = 0; i < ARRAY_SIZE(iqs269_events); i++) {
+> > -		ev_node = fwnode_get_named_child_node(ch_node,
+> > -						      iqs269_events[i].name);
+> > -		if (!ev_node)
+> > -			continue;
+> > -
+> > -		if (!fwnode_property_read_u32(ev_node, "azoteq,thresh", &val)) {
+> > -			if (val > IQS269_CHx_THRESH_MAX) {
+> > -				dev_err(&client->dev,
+> > -					"Invalid channel %u threshold: %u\n",
+> > -					reg, val);
+> > -				fwnode_handle_put(ev_node);
+> > -				return -EINVAL;
+> > +		{
+> > +			struct fwnode_handle *ev_node __free(fwnode_handle)
+> > +						      = fwnode_get_named_child_node(ch_node,
+> > +										    iqs269_events[i].name);
+> > +
+> > +			if (!ev_node)
+> > +				continue;
+> > +
+> > +			if (!fwnode_property_read_u32(ev_node, "azoteq,thresh", &val)) {
+> > +				if (val > IQS269_CHx_THRESH_MAX) {
+> > +					dev_err(&client->dev,
+> > +						"Invalid channel %u threshold: %u\n",
+> > +						reg, val);
+> > +					return -EINVAL;
+> > +				}
+> > +
+> > +				ch_reg->thresh[iqs269_events[i].th_offs] = val;
 > 
->>>>
->>>>> xen_swiotlb_map_page() and dma_direct_map_page() are #1 or #2
->>>>> via swiotlb_map() and swiotlb_tbl_map_single()
->>>>>
->>>>> iommu_dma_map_page() is #3 and #4 via swiotlb_tbl_map_single()
->>>>>
->>>>> swiotlb_alloc() is #3, directly to swiotlb_find_slots()
->>>>>
->>>>> For #1, the returned physical address has no constraints if
->>>>> the requested size is less than a page. For page size or
->>>>> greater, the discussed historical requirement for page
->>>>> alignment applies.
->>>>>
->>>>> For #2, min_align_mask governs the bits of the returned
->>>>> physical address that must match the original address. When
->>>>> needed, swiotlb must also allocate pre-padding aligned to
->>>>> IO_TLB_SIZE that precedes the returned physical address.  A
->>>>> request size <= swiotlb_max_mapping_size() will not exceed
->>>>> IO_TLB_SEGSIZE even with the padding. The historical
->>>>> requirement for page alignment does not apply because the
->>>>> driver has explicitly used the newer min_align_mask feature.
->>>>
->>>> What is the idea here? Is it the assumption that only old drivers rely
->>>> on page alignment, so if they use min_align_mask, it proves that they
->>>> are new and must not rely on page alignment?
->>>
->>> Yes, if a driver goes out of its way to set a min_align_mask which is
->>> smaller than its actual alignment constraint, that is clearly the
->>> driver's own bug. Strictly we only need to be sympathetic to drivers
->>> which predate min_align_mask, when implicitly relying on page alignment
->>> was all they had.
->>>
->>>>> For #3, alloc_align_mask specifies the required alignment. No
->>>>> pre-padding is needed. Per earlier comments from Robin[1],
->>>>> it's reasonable to assume alloc_align_mask (i.e., the granule)
->>>>> is >= IO_TLB_SIZE. The original address is not relevant in
->>>>> determining the alignment, and the historical page alignment
->>>>> requirement does not apply since alloc_align_mask explicitly
->>>>> states the alignment.
->>>
->>> FWIW I'm also starting to wonder about getting rid of the alloc_size
->>> argument and just have SWIOTLB round the end address up to
->>> alloc_align_mask itself as part of all these calculations. Seems like it
->>> could potentially end up a little simpler, maybe?
-> 
-> Yes, I was thinking exactly this.  But my reasoning was to solve the
-> bug in #4 that I previously pointed out.  If iommu_dma_map_page()
-> does *not* do
-> 
-> 	aligned_size = iova_align(iovad, size);
-> 
-> but swiotlb_tbl_map_single() rounds up the size based on
-> alloc_align_mask *after* adding the offset modulo
-> min_align_mask, then the rounded-up size won't exceed IO_TLB_SIZE,
-> regardless of which bits are set in orig_addr.
+> I may just be a curmudgeon, but this is another NAK for me. The dummy
+> curly braces and extra indentation make the code difficult to understand,
+> and this simply does not seem like a natural way to write a driver. Just
+> to remove 2-3 calls to fwnode_handle_put()?
 
-Ah, neat, I had a gut feeling that something like that might also fall 
-out, I just didn't feel like working through the details to see if 
-"simpler" could lead to "objectively better" :)
+The extra curly braces are absolutely not needed. The for loop's body
+already defines scope, __cleanup()s should be called at the end of the
+body.
 
-I guess at worst we might also need to pass an alloc_align_mask to 
-swiotlb_max_mapping_size() as well, but even that's not necessarily a 
-bad thing if it keeps the equivalent calculations close together within 
-SWIOTLB and makes things more robust overall.
+Thanks.
 
-Cheers,
-Robin.
+-- 
+Dmitry
 
