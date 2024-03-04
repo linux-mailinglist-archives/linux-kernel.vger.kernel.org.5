@@ -1,113 +1,100 @@
-Return-Path: <linux-kernel+bounces-90646-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90645-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E2D38702AE
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:27:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F22B08702AD
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:27:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 407871C23A6F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:27:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACA34285271
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:27:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A5CE3E46B;
-	Mon,  4 Mar 2024 13:27:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CD5C3D996;
+	Mon,  4 Mar 2024 13:27:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fazL1CHy"
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="0tlxS6qV"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36D1B3D3A8
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 13:27:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A0733D579;
+	Mon,  4 Mar 2024 13:27:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709558853; cv=none; b=Bc3Q+CTu/Xzbh2dKKbAo84prgMpt4tbyKA3KdJDaS2DlroTRUBGZ9iozbNbDjD4/CWS5qYZbicFjFuu3uS7cefbKLNf1ohstkBBSpe6p0CSzEtxWLSwPjq1bYPB1wF5Gfawe6s/gVZY3BdRyKfpMtLbqH9Kfg1Plv76TRBX21jM=
+	t=1709558852; cv=none; b=AebEmkeLPx3NsJJagoE2zWiqQysUssXK7pTykxblb0tmaJX0t8JNyc43ockhmL6spcLJosLpqA4Ynd0TBK8BVnjtkL/EB10hdnQSRvEcq2snz4OtDlUzUsKD6ufZYgaz9t30vTCUTSZU1sKl4CPu/HIwJZ3M7LdnZGi2/l8A2e4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709558853; c=relaxed/simple;
-	bh=+RqhSmrSrFYjO/WvnUVFmfbY5xP48JgVMgt8tLaHkuk=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=VQ3hFLT/I8Q2FRb0Jm6/dh4gPoUGc05sbgB3aQh813LkKF6btiKhfYjanJBASSsT1nuvgLCRircC8benEtGjlrWkkWnLK6GYZS5YTY2X/t8EePpJFKw/TzxBMhdN7sqzwHrLatMQU/qvxiN+88hVQLimLI9cyXJ8odlU5+eyQXA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=fazL1CHy; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56759dc7ea6so1070788a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 05:27:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709558849; x=1710163649; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+Il7WGqFl44AfF17lTuHv5NBgNOasTcj9Ggen1b7rvc=;
-        b=fazL1CHyhhZ0CdEwB1BikLwwqkx0a+KqrcYJZaeYAspjhFLVz6VxiVVEjRTYOquz4L
-         vVXPQpi9sfRLI6jBfc/pIOUb7KNZr/KTS4DkHdb9ODRSnNQ/8sz4+gCCiireiJybSzwV
-         MlBNYOoIX9YR95PLOCEsEsO0Q2psZnXBJ1Rw3hPnPRq2anj+a8GcAKycNjGUo4gmNamq
-         YVUXWCc+FgtAIa8f4ug0j3XYZk3j4qeLXDg0KkgJ0ywgiA3ry8UN0cYw+9wnlTlhjzw3
-         9umqsRGjB8qX/192UBJcYXfBEBMlG7AUjRFLEPWX1QhTjJBlTACLqf5UCFok7PaFUxVT
-         pLzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709558849; x=1710163649;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+Il7WGqFl44AfF17lTuHv5NBgNOasTcj9Ggen1b7rvc=;
-        b=cPIlFnhc0ZYZCrnbbJUBYGsp9+XNORytjuowm34rP+FTRFTCVcZEEnHy3YPzbEuEv/
-         lsa2UYBqynaA8WsdHaqAcHI23HzLNYBDh2DtlP+go7d49BOTWow2bgcO8xduqUwer/Kl
-         ZvPE236w17h4lIJmPxdGGFQvM5g6z8f8YiF38PRRv8NFqadhfLyFbb3zWy7IGQtSHLtU
-         4FZBTvwioHHHXbiapkKNFM+gC/u1Bpfsin/37fVRXKaTok23H4yta2GpX9BY5CnMCmum
-         15Q8ShPFtl9PmZIyVSBJ2Xpzho9k0dI+eSjuW1kQrywJCBECRMwxP18YsWaJNb1tV4FU
-         UgOw==
-X-Gm-Message-State: AOJu0YzD1+ivUELh39oKZ3KC/PL76Vc/B18UZd+EIcmwkTdFqXbt0VsG
-	W0kPZZXgQ3Q8H8+10KImI9IVzz++QqElT/FgqM8tHkqFXa5pqljnwIiOItXJL4KYBKAsmM5jIKr
-	1
-X-Google-Smtp-Source: AGHT+IEyllblhYtJQrtPvZ3Qg5J5x6MA5AQO1G5GPdXsMuXDvx7aa+s+I01lireZgZtMHmj5nurMeA==
-X-Received: by 2002:a17:906:1906:b0:a44:7db8:a343 with SMTP id a6-20020a170906190600b00a447db8a343mr6236750eje.76.1709558849464;
-        Mon, 04 Mar 2024 05:27:29 -0800 (PST)
-Received: from rayden (h-217-31-164-171.A175.priv.bahnhof.se. [217.31.164.171])
-        by smtp.gmail.com with ESMTPSA id x11-20020a170906710b00b00a4434e9938asm4803437ejj.84.2024.03.04.05.27.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 05:27:29 -0800 (PST)
-Date: Mon, 4 Mar 2024 14:27:27 +0100
-From: Jens Wiklander <jens.wiklander@linaro.org>
-To: arm@kernel.org, soc@kernel.org
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	op-tee@lists.trustedfirmware.org,
-	Sumit Garg <sumit.garg@linaro.org>
-Subject: [GIT PULL] OP-TEE fix for 6.8
-Message-ID: <20240304132727.GA3501807@rayden>
+	s=arc-20240116; t=1709558852; c=relaxed/simple;
+	bh=AXT83CsKS04YlrnMU/ETXsCuo5f4Okc9c/ART/JBAD8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mxdMeKGwGcEU8+P1IctlF0+ynVolL77j9sn0xjSLGroohDAHZ4siajpNTJNaoSKAeFtZEFFQtFoVAn2m1+BziDqS7wXN7JwZRVL7KAq1lHq5h0PpZVofTw/FlGaDVvy8R808Q0CSOFoNmLFEaBbcI47Ub11Rn9a4zf0oeQluWLk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=0tlxS6qV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BBC1C43390;
+	Mon,  4 Mar 2024 13:27:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1709558851;
+	bh=AXT83CsKS04YlrnMU/ETXsCuo5f4Okc9c/ART/JBAD8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=0tlxS6qVrdvzqApIqQuYs8I3eEuFgwlc+COKdoQ3ERDdpxCGpc/DDeGYuETJNPzI7
+	 xb6dqhGYn770z46p21tEFvimEoKrscjPCGydoEdmXSoiVChbwYjFByr4tEDYJxPFS/
+	 Ze2YUvOwkH0CQ+xedYdNgA8t3C8VnCVnlpuuIWLw=
+Date: Mon, 4 Mar 2024 14:27:29 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Salvatore Bonaccorso <carnil@debian.org>
+Cc: regressions@lists.linux.dev, stable@vger.kernel.org,
+	Ben Hutchings <ben@decadent.org.uk>,
+	Kees Cook <keescook@chromium.org>, Jonathan Corbet <corbet@lwn.net>,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Aditya Srivastava <yashsri421@gmail.com>, 1064035@bugs.debian.org
+Subject: Re: [regression 5.10.y] linux-doc builds: Global symbol "$args"
+ requires explicit package name (did you forget to declare "my $args"?) at
+ ./scripts/kernel-doc line 1236.
+Message-ID: <2024030412-street-phoenix-882e@gregkh>
+References: <ZeHKjjPGoyv_b2Tg@eldamar.lan>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <ZeHKjjPGoyv_b2Tg@eldamar.lan>
 
-Hello arm-soc maintainers,
+On Fri, Mar 01, 2024 at 01:31:10PM +0100, Salvatore Bonaccorso wrote:
+> Hi,
+> 
+> Ben Hutchings reported in https://bugs.debian.org/1064035 a problem
+> with the kernel-doc builds once 3080ea5553cc ("stddef: Introduce
+> DECLARE_FLEX_ARRAY() helper") got applied in 5.10.210 (as
+> prerequisite of another fix in 5.10.y):
+> 
+> > The backport of commit 3080ea5553cc "stddef: Introduce
+> > DECLARE_FLEX_ARRAY() helper" modified scripts/kernel-doc and
+> > introduced a syntax error:
+> > 
+> > Global symbol "$args" requires explicit package name (did you forget to declare "my $args"?) at ./scripts/kernel-doc line 1236.
+> > Global symbol "$args" requires explicit package name (did you forget to declare "my $args"?) at ./scripts/kernel-doc line 1236.
+> > Execution of ./scripts/kernel-doc aborted due to compilation errors.
+> > 
+> > This doesn't stop the documentation build process, but causes the
+> > documentation that should be extracted by kernel-doc to be missing
+> > from linux-doc-5.10.
+> > 
+> > We should be able to fix this by eithering backport commit
+> > e86bdb24375a "scripts: kernel-doc: reduce repeated regex expressions
+> > into variables" or replacing /$args/ with /([^,)]+)/.
+> > 
+> > Ben.
+> 
+> What would be prefered here from stable maintainers point of view?
+> AFAICS e86bdb24375a ("scripts: kernel-doc: reduce repeated regex
+> expressions into variables") won't apply cleanly and needs some
+> refactoring. The alternative pointed out by Ben would be to replace
+> the /$args/ with  /([^,)]+)/.
 
-Please pull this small fix for a panic in the OP-TEE driver that can occur
-in the error path when registering devices on the TEE bus.
+I'll take a patch that does either, your call :)
 
-Thanks,
-Jens
+thanks,
 
-The following changes since commit 41bccc98fb7931d63d03f326a746ac4d429c1dd3:
-
-  Linux 6.8-rc2 (2024-01-28 17:01:12 -0800)
-
-are available in the Git repository at:
-
-  https://git.linaro.org/people/jens.wiklander/linux-tee.git tags/optee-fix-for-v6.8
-
-for you to fetch changes up to 95915ba4b987cf2b222b0f251280228a1ff977ac:
-
-  tee: optee: Fix kernel panic caused by incorrect error handling (2024-03-04 09:49:03 +0100)
-
-----------------------------------------------------------------
-Fix kernel panic in OP-TEE driver
-
-----------------------------------------------------------------
-Sumit Garg (1):
-      tee: optee: Fix kernel panic caused by incorrect error handling
-
- drivers/tee/optee/device.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+greg k-h
 
