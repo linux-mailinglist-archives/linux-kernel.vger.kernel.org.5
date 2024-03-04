@@ -1,232 +1,101 @@
-Return-Path: <linux-kernel+bounces-91068-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91069-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 219F387092D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:11:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4465987092E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 19:11:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4590D1C245B9
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:11:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F41302863A4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:11:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5416B6168A;
-	Mon,  4 Mar 2024 18:11:24 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2425362146;
+	Mon,  4 Mar 2024 18:11:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="AwHs/4WY"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD4A961689
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 18:11:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12FCD61698
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 18:11:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709575883; cv=none; b=nMdCYdz85iIPp2bD63ql1g8lyKG2QpBjc6rwGQzehQYzuIA8B+rhxy+UMuzg4fq+SBol+MH+Q3WkzpfCAFKX7zga+jwBC/oiQFAXfFBxZIurmzrC47UbQ2TYTteamaSKTC4q4+adzVfxECNV8N2HAnb8vSVtLai7FYzDYQO4YlU=
+	t=1709575911; cv=none; b=G3HmkJLyLrA8H9/eDo5EtSr7fpaxUo2b8UmxuUbYNA972+tIsLYBYmoaqf5uDdJAYxW7wXcX6Fn2HtzZG69e3/NwQMG+dDb3BJAYkgZpzVbiwsfABkXmO7EwkYuSLqha4SB+faGIN5GMZeg2H0TwxKdYWRqpnYxwm8TA9jeUG94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709575883; c=relaxed/simple;
-	bh=OxKUW07uCPsIbUITY/K52x7PHUdIXQJWeSxv7ImbHXI=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=a62fqzWnvd81ffEDGx10SRB7Gx5tYIDfJUHV+uIBS5+BDS20TQumxldWGvHhs2D1AfYWwUNOoP/AOULvNl29TlKw91ZbZp+S0jPCEJfuqKOOa6wWwsm76GQF1iYtMxNx7mru1SludN10ZXNHP5SU8SCeGXcmARnYjgPUlts4dNk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7c8371ac855so202904539f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 10:11:21 -0800 (PST)
+	s=arc-20240116; t=1709575911; c=relaxed/simple;
+	bh=tcDiqbccYHi4AinqQLgnM+VghsYJV2IrozkELxqhwLE=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=SDjVRj/3y8nITUxEYB2a4k0F54J/tXSZDbSypjjeFm+UDoUzD04d9GbYe+QIivRCLUlnD6JxTzWMbBEBIVt8eZf4M++hFBJHl2l8fYMOsukPWiwmdTp946Z3l7VQelcbn6/xFmpDVw0qzAl8+PCFb5ms5vpfsTJ9G34pruwVWzE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--edliaw.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=AwHs/4WY; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--edliaw.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbf216080f5so7983267276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 10:11:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709575909; x=1710180709; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=4kLD90+hXSvFb0+fALtfseiTDbKyQ30y8gjmVqCojkg=;
+        b=AwHs/4WYyrFxMxsEbGAjIgm7Ytckw8FRNV4rYs5mSaIhmHu3U2REf6DxZ7MsoufDvM
+         cUPWlT4uLX5njt90uz27iB5Aqmr5dZ9OU5oyuLgkk1uprLEvCzz95JosQmdZuIEzgZxA
+         1wCrkI2Nq42FCbD35LcUGEZtzAYjF6ncGSGLLUUOctQ+Go5nSk0X8uKHxdm8wJtvS2IE
+         G3zlWyq9Misi0MaoCBFlELV/PGRQnNsYlRuA4K5AK9LVcbCfd9Cg5epyjOpYu524Po+M
+         5eO0CHN32nWblYHYSzfABZcNqgR5xOiX/d5Zn9VplKEBjQYp1SG7Ya27VwviYw1f89Qa
+         JKbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709575881; x=1710180681;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+        d=1e100.net; s=20230601; t=1709575909; x=1710180709;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=qy49v2YVGJ+vVdKRs4HHtEwF6G7H2IbHFsn5mHhGpWI=;
-        b=UEPDEdfO5JfQWlmcTqGhaGo7ytilP54+pG1w+OoFKBwwwz4hpdKEVWm+9g3wgh2NCd
-         RZAwLBb4xqIEDC6MtSrUw8A3YzhlRHctBDs2/izV0WDEVeeRAYH6bWYpls0+NgQtzr/v
-         1Sg8jHuOWbbvX7myMj5XNXK1jOHTP7L0hOqvYZi9T8uOQSvHEWJ0Jha8uD5EP2DF/Swq
-         EiiN0aI4YGFFriutpbAyvUYAz/zU6GElBE+EcQBBwkhHVnwc3Iwsgrwy+3qgXQLckxzN
-         yFPNSOoyfGjB/GzYwmnzXGi6Vg0qG6NOFGLlCVDOzC9kgVoACfvUarSBz4QP/J/y1Xrf
-         X5PA==
-X-Forwarded-Encrypted: i=1; AJvYcCXXOZ3UkSdnLTifkiMOsMp0yg8t0qrZif8Uu3uXZkWMCu9Uyr9O5YQvG5eNw4o06XjTIsiOT7jeRrdSVfmovyZ3JozlfdBrKrb6yC+R
-X-Gm-Message-State: AOJu0YzVd7u1XceA1Zova025VgVFM+GJ2YQ10Aj+AbP13XtFiOoSZ//V
-	FIhrNShrl+lrPBWJewmImU+767NQIF5jQZ7jTLPs+s+l5wuQ+YTAj3hdwosZ0Ss52ZPbg93yW7u
-	CI3PEqhu1BBcw5ps0DSv5wJx4fsERRttg0AilahaL/9myHJMoWjEyWQU=
-X-Google-Smtp-Source: AGHT+IHzFd/qiopJJ+DNnqRLo1DbAfH58/diZt6xDt2vebFqVhKZc5bLPWPqDpeD47x4y79w4i3DMOs+nJFLr22PpzSMWVw4+763
+        bh=4kLD90+hXSvFb0+fALtfseiTDbKyQ30y8gjmVqCojkg=;
+        b=kFfJapu0G1h54qKnEma1BS5xoGcreZ5rVilpLCaNCtC72lb1yEGe2AbqPpQi+9GHPs
+         751Te8g85So2DC38ZvsEpzpWQ4TPko51e33QMvs/pW578x5CcEWB1mJb4ybD+COxgS4a
+         W2k9LXekmj+eVeT7eMXJaBqaxqvgFHCQVAWo0FuTNLQEFUnJRn3CX6jq8ivP/i5+eoEL
+         mvTTVAr2ssdC/C12Sl/0vLn1/8qo3pS2/S5hVJgruFZxTC4tVGI2Be8+UgmChJJmze8n
+         PQv35tMzaX8QR646Zj/hvWL57XPNlT7kJILFwlM8UGOqbyaDaAYReb3/NL9HfMf8XSko
+         qNxg==
+X-Gm-Message-State: AOJu0YwEGeahZNeLWqNmo90w7e4MxUXcUk2YfQWKDNIuoERowofPqXgg
+	WcJFzotkHwq+96MmSk8bry4MC1/fg7nM2BnopV/DaFcHBhISIQtI3fsRbqtpT2NX/wrq0c7kyGd
+	O1HqB6/Mw/ADVYs2hCLtco2s0Uq361alXTrk6/jyx+jfIBmEk9drB+pJyAujaaRuo6S/FENdoP+
+	GDl1SP7VaYVP3nwrokUYeg+3jCJUpSrv9eE9JZB0Zb
+X-Google-Smtp-Source: AGHT+IHxwF/zU5cb5Vfvw5bR+wuloHPq0SidEq3LQN1W2vemc6jjWhYsFXPGqLxGNUu4w4mRsgdxwWFh/pQ=
+X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
+ (user=edliaw job=sendgmr) by 2002:a25:c786:0:b0:dc2:466a:23c4 with SMTP id
+ w128-20020a25c786000000b00dc2466a23c4mr2575853ybe.4.1709575908874; Mon, 04
+ Mar 2024 10:11:48 -0800 (PST)
+Date: Mon,  4 Mar 2024 18:11:31 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Received: by 2002:a05:6602:1643:b0:7c8:5e7c:52d2 with SMTP id
- y3-20020a056602164300b007c85e7c52d2mr61829iow.2.1709575881080; Mon, 04 Mar
- 2024 10:11:21 -0800 (PST)
-Date: Mon, 04 Mar 2024 10:11:21 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001bc4a00612d9a7f4@google.com>
-Subject: [syzbot] [fs?] KASAN: null-ptr-deref Write in do_pagemap_cmd
-From: syzbot <syzbot+02e64be5307d72e9c309@syzkaller.appspotmail.com>
-To: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.rc1.240.g4c46232300-goog
+Message-ID: <20240304181140.644212-1-edliaw@google.com>
+Subject: [PATCH v1 0/3] selftests/timers/posix_timers: various cleanups
+From: Edward Liaw <edliaw@google.com>
+To: linux-kernel@vger.kernel.org, John Stultz <jstultz@google.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Stephen Boyd <sboyd@kernel.org>, Shuah Khan <shuah@kernel.org>, 
+	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
+	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>
+Cc: linux-kselftest@vger.kernel.org, kernel-team@android.com, 
+	Edward Liaw <edliaw@google.com>, llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 
-Hello,
+I'm sending some patches that were orignally in
+https://lore.kernel.org/lkml/20230606132949.068951363@linutronix.de/
+to prevent the timer_distribution test from hanging and also fix some
+format inconsistencies.
 
-syzbot found the following issue on:
+Edward Liaw (3):
+  selftests/timers/posix_timers: Make signal distribution test less
+    fragile
+  selftests/timers/posix_timers: Use TAP reporting format
+  selftests/timers/posix_timers: Use llabs for long long
 
-HEAD commit:    381f163531d8 Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=108175ac180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2402d46ab3c7e581
-dashboard link: https://syzkaller.appspot.com/bug?extid=02e64be5307d72e9c309
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1125fa6a180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1211e332180000
+ tools/testing/selftests/timers/posix_timers.c | 196 ++++++++----------
+ 1 file changed, 89 insertions(+), 107 deletions(-)
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/47402e75ee62/disk-381f1635.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/a26a3a35fa67/vmlinux-381f1635.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/d8dae1be1fa4/Image-381f1635.gz.xz
+--
+2.44.0.rc1.240.g4c46232300-goog
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+02e64be5307d72e9c309@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: null-ptr-deref in instrument_atomic_read_write include/linux/instrumented.h:96 [inline]
-BUG: KASAN: null-ptr-deref in atomic_long_add_return_acquire include/linux/atomic/atomic-instrumented.h:3269 [inline]
-BUG: KASAN: null-ptr-deref in rwsem_read_trylock kernel/locking/rwsem.c:243 [inline]
-BUG: KASAN: null-ptr-deref in __down_read_common kernel/locking/rwsem.c:1249 [inline]
-BUG: KASAN: null-ptr-deref in __down_read_killable kernel/locking/rwsem.c:1273 [inline]
-BUG: KASAN: null-ptr-deref in down_read_killable+0x78/0x338 kernel/locking/rwsem.c:1551
-Write of size 8 at addr 0000000000000120 by task syz-executor185/6171
-
-CPU: 0 PID: 6171 Comm: syz-executor185 Tainted: G    B              6.8.0-rc6-syzkaller-g381f163531d8 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-Call trace:
- dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:291
- show_stack+0x2c/0x3c arch/arm64/kernel/stacktrace.c:298
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd0/0x124 lib/dump_stack.c:106
- print_report+0xe4/0x518 mm/kasan/report.c:491
- kasan_report+0xd8/0x138 mm/kasan/report.c:601
- kasan_check_range+0x254/0x294 mm/kasan/generic.c:189
- __kasan_check_write+0x20/0x30 mm/kasan/shadow.c:37
- instrument_atomic_read_write include/linux/instrumented.h:96 [inline]
- atomic_long_add_return_acquire include/linux/atomic/atomic-instrumented.h:3269 [inline]
- rwsem_read_trylock kernel/locking/rwsem.c:243 [inline]
- __down_read_common kernel/locking/rwsem.c:1249 [inline]
- __down_read_killable kernel/locking/rwsem.c:1273 [inline]
- down_read_killable+0x78/0x338 kernel/locking/rwsem.c:1551
- mmap_read_lock_killable include/linux/mmap_lock.h:155 [inline]
- do_pagemap_scan fs/proc/task_mmu.c:2460 [inline]
- do_pagemap_cmd+0x8d8/0x1240 fs/proc/task_mmu.c:2513
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl fs/ioctl.c:857 [inline]
- __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:857
- __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
- el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
-==================================================================
-Unable to handle kernel NULL pointer dereference at virtual address 0000000000000120
-Mem abort info:
-  ESR = 0x0000000096000006
-  EC = 0x25: DABT (current EL), IL = 32 bits
-  SET = 0, FnV = 0
-  EA = 0, S1PTW = 0
-  FSC = 0x06: level 2 translation fault
-Data abort info:
-  ISV = 0, ISS = 0x00000006, ISS2 = 0x00000000
-  CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-  GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-user pgtable: 4k pages, 48-bit VAs, pgdp=00000001129c0000
-[0000000000000120] pgd=080000011d13d003, p4d=080000011d13d003, pud=080000011cfae003, pmd=0000000000000000
-Internal error: Oops: 0000000096000006 [#1] PREEMPT SMP
-Modules linked in:
-CPU: 0 PID: 6171 Comm: syz-executor185 Tainted: G    B              6.8.0-rc6-syzkaller-g381f163531d8 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : __lse_atomic64_fetch_add_acquire arch/arm64/include/asm/atomic_lse.h:169 [inline]
-pc : __lse_atomic64_add_return_acquire arch/arm64/include/asm/atomic_lse.h:202 [inline]
-pc : arch_atomic64_add_return_acquire arch/arm64/include/asm/atomic.h:91 [inline]
-pc : raw_atomic64_add_return_acquire include/linux/atomic/atomic-arch-fallback.h:2703 [inline]
-pc : raw_atomic_long_add_return_acquire include/linux/atomic/atomic-long.h:163 [inline]
-pc : atomic_long_add_return_acquire include/linux/atomic/atomic-instrumented.h:3270 [inline]
-pc : rwsem_read_trylock kernel/locking/rwsem.c:243 [inline]
-pc : __down_read_common kernel/locking/rwsem.c:1249 [inline]
-pc : __down_read_killable kernel/locking/rwsem.c:1273 [inline]
-pc : down_read_killable+0x80/0x338 kernel/locking/rwsem.c:1551
-lr : instrument_atomic_read_write include/linux/instrumented.h:96 [inline]
-lr : atomic_long_add_return_acquire include/linux/atomic/atomic-instrumented.h:3269 [inline]
-lr : rwsem_read_trylock kernel/locking/rwsem.c:243 [inline]
-lr : __down_read_common kernel/locking/rwsem.c:1249 [inline]
-lr : __down_read_killable kernel/locking/rwsem.c:1273 [inline]
-lr : down_read_killable+0x78/0x338 kernel/locking/rwsem.c:1551
-sp : ffff8000978a79d0
-x29: ffff8000978a79d0 x28: ffff8000978a7b40 x27: dfff800000000000
-x26: 0000000000000000 x25: 0000000020ffd000 x24: ffff8000978a7b68
-x23: ffff700012f14f68 x22: ffff0000d8fdda2c x21: 0000000000000120
-x20: 0000000000000190 x19: ffff800080cef5fc x18: 0000000000000000
-x17: 3d3d3d3d3d3d3d3d x16: ffff800080275eb0 x15: 0000000000000001
-x14: 1ffff000123e3a9c x13: 0000000000000000 x12: 0000000000000000
-x11: ffff7000123e3a9d x10: 0000000000ff0100 x9 : 0000000000000000
-x8 : 0000000000000100 x7 : 0000000000000001 x6 : 0000000000000001
-x5 : ffff8000978a71d8 x4 : ffff80008ed81760 x3 : ffff8000801c0944
-x2 : 0000000000000001 x1 : 0000000000000000 x0 : 0000000000000000
-Call trace:
- raw_atomic64_add_return_acquire include/linux/atomic/atomic-arch-fallback.h:2703 [inline]
- raw_atomic_long_add_return_acquire include/linux/atomic/atomic-long.h:163 [inline]
- atomic_long_add_return_acquire include/linux/atomic/atomic-instrumented.h:3270 [inline]
- rwsem_read_trylock kernel/locking/rwsem.c:243 [inline]
- __down_read_common kernel/locking/rwsem.c:1249 [inline]
- __down_read_killable kernel/locking/rwsem.c:1273 [inline]
- down_read_killable+0x80/0x338 kernel/locking/rwsem.c:1551
- mmap_read_lock_killable include/linux/mmap_lock.h:155 [inline]
- do_pagemap_scan fs/proc/task_mmu.c:2460 [inline]
- do_pagemap_cmd+0x8d8/0x1240 fs/proc/task_mmu.c:2513
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl fs/ioctl.c:857 [inline]
- __arm64_sys_ioctl+0x14c/0x1c8 fs/ioctl.c:857
- __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
- el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
-Code: 52800101 974346ca d503201f 52802008 (f8a802a8) 
----[ end trace 0000000000000000 ]---
-----------------
-Code disassembly (best guess):
-   0:	52800101 	mov	w1, #0x8                   	// #8
-   4:	974346ca 	bl	0xfffffffffd0d1b2c
-   8:	d503201f 	nop
-   c:	52802008 	mov	w8, #0x100                 	// #256
-* 10:	f8a802a8 	ldadda	x8, x8, [x21] <-- trapping instruction
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
