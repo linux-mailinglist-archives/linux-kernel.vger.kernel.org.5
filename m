@@ -1,164 +1,129 @@
-Return-Path: <linux-kernel+bounces-90664-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90666-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B86CD87032C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:47:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31DE18702E2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:39:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8679285502
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:38:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1A3D28B0A7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:39:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ED5D3F9D9;
-	Mon,  4 Mar 2024 13:38:03 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B44DA3E497
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 13:38:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6119C3EA9F;
+	Mon,  4 Mar 2024 13:39:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="b/bY7CxO"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE9053EA94
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 13:38:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709559482; cv=none; b=WfsUO0L1UMEuKZhAndJ8uhEDb4ferjzEzr9tIC5JDXnGovlFdGi0e6phIlAh7AlW9MAVxWkKegSAjnQVy8PzcysYfG3cRrbOELWIkTGTUAoBEaCY3UvROX1A/2BboKaPxD7hf+LtccAzI40ysTsnfhDzK1DFUhd2MqzCgy+KbLU=
+	t=1709559541; cv=none; b=AfTaBmiOfDFP9+iDmH4h5mP/H4bMOz377By+sFTgCM/TNUoeeHSsxTKFa2dTR5+lk0qAz8sHgZeehZKy2bH+7iqpkeCYEydg5kk9wFMkSK4Xr/kMfZllxiWSn7C3p+K93e4hW7fW0eWyY49Z5dcMr8tccqUGkP9HtfokyrqJkuM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709559482; c=relaxed/simple;
-	bh=38TJYvdNVrM0MO1RETMbWp4toUBh2E4mWcOxm3EsUJs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BNrtF4GYcIOBU/A4ljhl/dkgixdyLuwzI02dgltEfulMDFefAOWXuDY2+QURmFaiA8CfHaRrkE7mow6mBG8T2XUJ58H1aWfz/Iq0lBDe4JGsVJnYFaKAv74qoIX98IjhlRW9cjsIplbufC1QijdOnaMtAdNWFJ55aSeFqeHVYkE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 976AF1FB;
-	Mon,  4 Mar 2024 05:38:36 -0800 (PST)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 72FC33F738;
-	Mon,  4 Mar 2024 05:37:58 -0800 (PST)
-Message-ID: <ffd7646b-37b1-4cd2-822a-848b36b076c9@arm.com>
-Date: Mon, 4 Mar 2024 13:37:56 +0000
+	s=arc-20240116; t=1709559541; c=relaxed/simple;
+	bh=eRJqtxF/hnl40Ku/oGPxOBYU8XPkZX8uhlixcF9S1Ug=;
+	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=qd0DPaKyNRBcvGdNv1sgZm/b4TNoNk9lHFwCjVqWa2H5dycpsg4T5to5iRwwsd6IUFL3TMMfvzYvJFL2gYd1JDVTIC05k8Knvm4+Pz+jhT6FFcy58X/X+EJBYaygpihFSne91rBWMPAmc2bHwNeW6ZxHW6qlXgfYsbj9o29ipTI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=b/bY7CxO; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 424DchRg000574;
+	Mon, 4 Mar 2024 07:38:43 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1709559523;
+	bh=kKqIu5RN4fHPUy9UGlC6mcF827/TZjj39JVabv7mJP0=;
+	h=Date:From:To:CC:Subject;
+	b=b/bY7CxO+ZxhPJnV1G5vkg+5DNb4zTgF4TD3mz+lMPL5f/bWII9znMJNns2TxvXRG
+	 g4hv+C3wkGeWMWCOJX7DuWTo9ft3qMN5UFSHsTEKPisHeisz9fNnw7WOqL8NS97wwe
+	 gzYDdvEIowm4V4ITWanZDH5Ehh9qvdaD5MFsJfM4=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 424DchEq013635
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 4 Mar 2024 07:38:43 -0600
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 4
+ Mar 2024 07:38:43 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 4 Mar 2024 07:38:43 -0600
+Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 424Dchvu044462;
+	Mon, 4 Mar 2024 07:38:43 -0600
+Date: Mon, 4 Mar 2024 07:38:43 -0600
+From: Nishanth Menon <nm@ti.com>
+To: Arnd <arnd@arndb.de>, Olof <olof@lixom.net>, SoC <soc@kernel.org>
+CC: <arm@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Tony
+ Lindgren <tony@atomide.com>
+Subject: [GIT PULL] ARM: dts: ti: keystone: Updates for v6.9
+Message-ID: <20240304133843.e6rm5va6w4oavgoy@posted>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 6/6] swiotlb: Remove pointless stride adjustment for
- allocations >= PAGE_SIZE
-Content-Language: en-GB
-To: =?UTF-8?B?UGV0ciBUZXNhxZnDrWs=?= <petr@tesarici.cz>,
- Michael Kelley <mhklinux@outlook.com>
-Cc: Christoph Hellwig <hch@lst.de>, Will Deacon <will@kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Petr Tesarik <petr.tesarik1@huawei-partners.com>,
- "kernel-team@android.com" <kernel-team@android.com>,
- "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Dexuan Cui
- <decui@microsoft.com>, Nicolin Chen <nicolinc@nvidia.com>
-References: <20240228133930.15400-1-will@kernel.org>
- <20240228133930.15400-7-will@kernel.org>
- <SN6PR02MB4157A62353559DA8DB8BC4ADD45F2@SN6PR02MB4157.namprd02.prod.outlook.com>
- <SN6PR02MB41577D09E97B1D9645369D58D45F2@SN6PR02MB4157.namprd02.prod.outlook.com>
- <20240229133346.GA7177@lst.de>
- <SN6PR02MB4157314F142D05E279B7991ED45F2@SN6PR02MB4157.namprd02.prod.outlook.com>
- <20240229154756.GA10137@lst.de>
- <20240301163927.18358ee2@meshulam.tesarici.cz>
- <20240301180853.5ac20b27@meshulam.tesarici.cz>
- <8869c8b2-29c3-41e4-8f8a-5bcf9c0d22bb@arm.com>
- <20240301194212.3c64c9b2@meshulam.tesarici.cz>
- <SN6PR02MB41571DA1EE99BFAA65869024D4232@SN6PR02MB4157.namprd02.prod.outlook.com>
- <20240304120055.56035c21@meshulam.tesarici.cz>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20240304120055.56035c21@meshulam.tesarici.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On 04/03/2024 11:00 am, Petr Tesařík wrote:
-[...]
->> Here's my take on tying all the threads together. There are
->> four alignment combinations:
->>
->> 1. alloc_align_mask: zero; min_align_mask: zero
->> 2. alloc_align_mask: zero; min_align_mask: non-zero
->> 3. alloc_align_mask: non-zero; min_align_mask: zero/ignored
->> 4. alloc_align_mask: non-zero; min_align_mask: non-zero
-> 
-> What does "min_align_mask: zero/ignored" mean? Under which
-> circumstances should be a non-zero min_align_mask ignored?
-> 
->> xen_swiotlb_map_page() and dma_direct_map_page() are #1 or #2
->> via swiotlb_map() and swiotlb_tbl_map_single()
->>
->> iommu_dma_map_page() is #3 and #4 via swiotlb_tbl_map_single()
->>
->> swiotlb_alloc() is #3, directly to swiotlb_find_slots()
->>
->> For #1, the returned physical address has no constraints if
->> the requested size is less than a page. For page size or
->> greater, the discussed historical requirement for page
->> alignment applies.
->>
->> For #2, min_align_mask governs the bits of the returned
->> physical address that must match the original address. When
->> needed, swiotlb must also allocate pre-padding aligned to
->> IO_TLB_SIZE that precedes the returned physical address.  A
->> request size <= swiotlb_max_mapping_size() will not exceed
->> IO_TLB_SEGSIZE even with the padding. The historical
->> requirement for page alignment does not apply because the
->> driver has explicitly used the newer min_align_mask feature.
-> 
-> What is the idea here? Is it the assumption that only old drivers rely
-> on page alignment, so if they use min_align_mask, it proves that they
-> are new and must not rely on page alignment?
+Hi Arnd, SoC team,
 
-Yes, if a driver goes out of its way to set a min_align_mask which is 
-smaller than its actual alignment constraint, that is clearly the 
-driver's own bug. Strictly we only need to be sympathetic to drivers 
-which predate min_align_mask, when implicitly relying on page alignment 
-was all they had.
+Apologies on a extremely late PR due to unavoidable personal
+circumstances. This is very minor change, and would be nice to have in
+v6.9. If it is too late, I can carry this forward for 6.10.
 
->> For #3, alloc_align_mask specifies the required alignment. No
->> pre-padding is needed. Per earlier comments from Robin[1],
->> it's reasonable to assume alloc_align_mask (i.e., the granule)
->> is >= IO_TLB_SIZE. The original address is not relevant in
->> determining the alignment, and the historical page alignment
->> requirement does not apply since alloc_align_mask explicitly
->> states the alignment.
+The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
 
-FWIW I'm also starting to wonder about getting rid of the alloc_size 
-argument and just have SWIOTLB round the end address up to 
-alloc_align_mask itself as part of all these calculations. Seems like it 
-could potentially end up a little simpler, maybe?
+  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
 
->> For #4, the returned physical address must match the bits
->> in the original address specified by min_align_mask.  swiotlb
->> swiotlb must also allocate pre-padding aligned to
->> alloc_align_mask that precedes the returned physical address.
->> Also per Robin[1], assume alloc_align_mask is >=
->> min_align_mask, which solves the conflicting alignment
->> problem pointed out by Petr[2]. Perhaps we should add a
->> "WARN_ON(alloc_align_mask < min_align_mask)" rather than
->> failing depending on which bits of the original address are
->> set. Again, the historical requirement for page alignment does
->> not apply.
-> 
-> AFAICS the only reason this works in practice is that there are only
-> two in-tree users of min_align_mask: NVMe and Hyper-V. Both use a mask
-> of 12 bits, and the IOVA granule size is never smaller than 4K.
+are available in the Git repository at:
 
-If we assume a nonzero alloc_align_mask exclusively signifies iommu-dma, 
-then for this situation SWIOTLB should only need to worry about the 
-intersection of alloc_align_mask & min_align_mask, since any 
-min_align_mask bits larger than the IOVA granule would need to be 
-accounted for in the IOVA allocation regardless of SWIOTLB.
-> If we want to rely on this, then I propose to make a BUG_ON() rather
-> than WARN_ON().
+  https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git tags/ti-keystone-dt-for-v6.9
 
-I've just proposed a patch to make it not matter for now - the nature of 
-iommu-dma makes it slightly more awkward to prevent SWIOTLB from ever 
-seeing this condition at all, so I chose not to do that, but as long as 
-swiotlb_tbl_map_single() does *something* for conflicting constraints 
-without completely falling over, which swiotlb_tbl_unmap_single can then 
-undo again, then it should be fine.
+for you to fetch changes up to 11621bedc016578e0b025b6f23458e9fe3f3caad:
 
-Thanks,
-Robin.
+  ARM: dts: keystone: Replace http urls with https (2024-02-05 08:50:55 -0600)
+
+----------------------------------------------------------------
+Keystone2 device tree updates for v6.9
+
+Cosmetic cleanups:
+* Replace http urls with https.
+
+----------------------------------------------------------------
+Nishanth Menon (1):
+      ARM: dts: keystone: Replace http urls with https
+
+ arch/arm/boot/dts/ti/keystone/keystone-clocks.dtsi      | 2 +-
+ arch/arm/boot/dts/ti/keystone/keystone-k2e-clocks.dtsi  | 2 +-
+ arch/arm/boot/dts/ti/keystone/keystone-k2e-evm.dts      | 2 +-
+ arch/arm/boot/dts/ti/keystone/keystone-k2e-netcp.dtsi   | 2 +-
+ arch/arm/boot/dts/ti/keystone/keystone-k2e.dtsi         | 2 +-
+ arch/arm/boot/dts/ti/keystone/keystone-k2g-evm.dts      | 2 +-
+ arch/arm/boot/dts/ti/keystone/keystone-k2g-ice.dts      | 2 +-
+ arch/arm/boot/dts/ti/keystone/keystone-k2g-netcp.dtsi   | 2 +-
+ arch/arm/boot/dts/ti/keystone/keystone-k2g.dtsi         | 2 +-
+ arch/arm/boot/dts/ti/keystone/keystone-k2hk-clocks.dtsi | 2 +-
+ arch/arm/boot/dts/ti/keystone/keystone-k2hk-evm.dts     | 2 +-
+ arch/arm/boot/dts/ti/keystone/keystone-k2hk-netcp.dtsi  | 2 +-
+ arch/arm/boot/dts/ti/keystone/keystone-k2hk.dtsi        | 2 +-
+ arch/arm/boot/dts/ti/keystone/keystone-k2l-clocks.dtsi  | 2 +-
+ arch/arm/boot/dts/ti/keystone/keystone-k2l-evm.dts      | 2 +-
+ arch/arm/boot/dts/ti/keystone/keystone-k2l-netcp.dtsi   | 2 +-
+ arch/arm/boot/dts/ti/keystone/keystone-k2l.dtsi         | 2 +-
+ arch/arm/boot/dts/ti/keystone/keystone.dtsi             | 2 +-
+ 18 files changed, 18 insertions(+), 18 deletions(-)
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
 
