@@ -1,263 +1,156 @@
-Return-Path: <linux-kernel+bounces-91400-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91401-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 381D68710F3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 00:10:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EE4D8710F4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 00:10:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D5897B25288
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 23:10:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AEF031C222D5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 23:10:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A29E47C6C0;
-	Mon,  4 Mar 2024 23:10:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E1AB7C0BF;
+	Mon,  4 Mar 2024 23:10:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VThtlmGx"
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="dfEtAnKm"
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 030A77BAE2
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 23:10:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9CA37C6C0
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 23:10:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709593823; cv=none; b=m1Ps+nWKJkdpd17zSWLg4h31XxDeBXcM2ekOt6samuqO0hqM5km9xWiVaj5HRO3GxcUyNBnJGQ87/g6whSaZKK1cDKEKQyRs12m3BMtSQltr/LnQGOD3r7Ri0hM4iUSm62jrl6fVXHoFQVyF0AIEbtZuNPh64Z3bFkhUCXX0qhU=
+	t=1709593843; cv=none; b=XP0kkUfWV+Ksa+Sv2rmHFyUEyv205sium5/Mb4EpTpaKphJIYzp6A+7s6S6VH0vJZLhHajC/Ncdqrr7r0aENL/xcqo6SnOhkNjYIv3aDZ8cBnESlslIsPRUIpKT5qtA5Q4lVekwpojDzTqVnME5Q10fsH2RKFGb1M8g+H0kZzNI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709593823; c=relaxed/simple;
-	bh=xD+RCUnKaiyIjhEEXDIXk61kThQxYInzrSJtpFucizM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=muIVeX9nfzAa7mJSNGfMD4kYD97bc79P10Nc3nms62BcPXlXK/aXy9cYmw6eT04fyha1QqU8eQ8TjrGuWj5M8KLGMdIGY2/Ay9GXVAzzhl1M0XKZrscMqQjWluLaKSvTTRydiiYhI6oIPf1XU7Jxbt0UBW0tEPZ68oeTkuZ8QW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VThtlmGx; arc=none smtp.client-ip=209.85.128.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-6098ba9959aso1479137b3.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 15:10:21 -0800 (PST)
+	s=arc-20240116; t=1709593843; c=relaxed/simple;
+	bh=wMZzStv0WI94dHIupt/3qTiQCvxmwKcJlo5DxooTw+8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nox3DCmVXNeCkuNCK5LDYP/g+uqSKJrbuMZB67WfeeDcklBthGm+LFlZmkRSiPTBCIie6z8eciksflUS+zU8KAIR8RLmNvrTBEZTPtq8T7OLnkMasuGq4cU+9hlWYsjfccGNgkFQ01zbVPHOFk24pNCwEyJMDrTBv6+1HGuvGQo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=dfEtAnKm; arc=none smtp.client-ip=209.85.216.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-29aa8c4710bso3676108a91.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 15:10:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709593821; x=1710198621; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=MDgkNYWU4DWfsyWb+GlMK9bHYQCTEtx1BFNrE0oEImA=;
-        b=VThtlmGx3ojrJJJPjXO98sjyVsF6Ua/ednaHEIeMBXe7xVWFi/JTz0oxsoHUrz5QM6
-         RAxXuQ7jgEpd6ZkxUCwwZgxXgAfQsySO9cC4pmLcPjbQq/+xXsqIb7jGPW5jqnJAlk8j
-         B/JtoSm+KAsOqsdQCtB3O4ynGdxTwqdAdUsJv2Mr29SHHWqbjy6gSr7uGHosLBQl8ck1
-         Dl5a8/q6Uma2hhIg1LF4+VSm6TDVvtafRCRSt1AldCPH2Ci7y4/hPPI1//mggoFqUb0p
-         5dfzwnCbsOTpYtjZx2KQQ1fgSKxEM5Tcjpm8/ZcQ463v726e220L/LpuP3uyZBHlgNcH
-         b5oQ==
+        d=chromium.org; s=google; t=1709593840; x=1710198640; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9msUTwBa3XNDAwjjPAvGjEpS0Gd3hVi8Z81nRq0fsvc=;
+        b=dfEtAnKmFSMK5QWlit8fTzTecWDN5ME/pgJL4QkLqSdE4mkkS77SfxSbjBmWp1hkAh
+         J/EecDWUnQQ7w62Utyq7enewe3MBG1fb2R5hF6butE1B6l7qkt/6So861QHDjisYX/Kc
+         0MU731QMcrPf0FsM5Lx3MHnE/Hc/Zkxm9/ylk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709593821; x=1710198621;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MDgkNYWU4DWfsyWb+GlMK9bHYQCTEtx1BFNrE0oEImA=;
-        b=VQ4cjmMz7ySnwJSFbXcKExwb2g/cBvXukWebiB4/PVjKeJh2IlsmD+prRmgzsVkkLZ
-         uzGwwR/29tzYV89cNmbNmRu7jfP6NI2kMm8bUJ/qW65bPZo8VJ4Rphp/Fr9MCg+7pIbr
-         NGZgldwNuAtu/SWBfIfY6EBY23a+jcKxGSA5cSQB2GTc397gDeX6aHUJW0hytWh+FwY4
-         zxo3yD/WUXjZxW6V6JOTDq+Jht0whgvYv62TPWhmx9kyJdub4gLEItul+xDl4ZJnhlff
-         9WU5hICBCktZYB+xoEk6u6oDE8jXaMLQD1U7cn07wJAnYO5WtAmmGs5Vri9pbkZXQ3Cl
-         ljpA==
-X-Forwarded-Encrypted: i=1; AJvYcCX6KEUBB6NiLLzCvgDLhyKHOWsBVN/hTiBIzcba0bM58Ehjskbs4caA6FUHY4K6iPJIWS8tUdOdEAUKvQ/C26+alOR/IdEsLW7fyl01
-X-Gm-Message-State: AOJu0Yyd/IWW2oX2VvZOHIovKyGA4tLucMn4/Az4MCQQg8mrigCL0yU9
-	2OvTeMNqEI15KSD20G8tP1kHCe4OyvnRcOI+PeibR5rBNJjPTce/7yQi9owxlYn2Y+yuYOE9fR0
-	mt8Y+CeMu0p8hSVLMtNojQKr4pajo6t80Skv28w==
-X-Google-Smtp-Source: AGHT+IGcubG2zCEwx0B1zfivsMQ7pWwmtzPaSlsXlK64sn8zBfoYfIkPKcZ6Ss3lt89bmQoRkMPn5GhXL+a/uIuio84=
-X-Received: by 2002:a05:6902:544:b0:dcc:9e88:b15 with SMTP id
- z4-20020a056902054400b00dcc9e880b15mr8059955ybs.41.1709593820947; Mon, 04 Mar
- 2024 15:10:20 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709593840; x=1710198640;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9msUTwBa3XNDAwjjPAvGjEpS0Gd3hVi8Z81nRq0fsvc=;
+        b=K88e/x/Axqln3Eqmqa29FCcalbufZT+JicIiAwfDiKS/u48ZWwDHVR8k5Z6DC0cOcI
+         vCmJwhOoJ3wo3NQty4k3tsu67nuX3ZqAmdy80IZ+zArqtSi7pwNFyAPaqRuDXM7Wxgi6
+         vKloTzFr82sij9b/T6JhTy03GGvjZNKill+i6Fjzdl2+QXEJn2N7WheKhDt+U6s6Diep
+         +D5uz211MP33Hm69y2j+VIFmkY99ZTXtD8ijr+lczt5cDc+bupCkpjaeEA+tb8x3ukJB
+         lSEvcBcMUMRtT9UCtEneafCV6xFg20ey97WgB7Rjc5/kaWu0U+W8boeZGl57pylr8A1U
+         vgHg==
+X-Forwarded-Encrypted: i=1; AJvYcCWnDLNcPo7oYfuUfmxCoy3V3z5paxahUHKMYtZFMWuuMxLAkM91Es5Jv0CNRccWKgpLnONOlwtENp5yFMyxhdGGJ476boQ/5hwMlTEK
+X-Gm-Message-State: AOJu0YzlolIUzxVpMiRaA03LHbnC5YINQExtKwaGG3m1YpErj23mNRSa
+	WQra3u5o5aiJBPNUJSHLi/Kf9deKw1YwlPzdIttEhvNNxKFtRC8+Ce2ONm/m8tXgoYrAbdjd2bg
+	=
+X-Google-Smtp-Source: AGHT+IEbAr3Hucp75eD8JSPbmT5fSEjkHtUZ6q2D8D6DXvd41jaoEyXkI1zB44xifF8tsNHZEQjQpA==
+X-Received: by 2002:a17:90a:e548:b0:29b:1bc5:cfda with SMTP id ei8-20020a17090ae54800b0029b1bc5cfdamr1080411pjb.16.1709593840120;
+        Mon, 04 Mar 2024 15:10:40 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id fa13-20020a17090af0cd00b00298f2ad430csm8380840pjb.0.2024.03.04.15.10.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Mar 2024 15:10:39 -0800 (PST)
+Date: Mon, 4 Mar 2024 15:10:39 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Alex Elder <elder@ieee.org>
+Cc: Alex Elder <elder@kernel.org>, Viresh Kumar <vireshk@kernel.org>,
+	Johan Hovold <johan@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Gustavo A . R . Silva" <gustavo@embeddedor.com>,
+	greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2] greybus: Avoid fake flexible array for response data
+Message-ID: <202403041507.BEF59739@keescook>
+References: <20240304211940.it.083-kees@kernel.org>
+ <1c5ab1e7-ac66-438c-bc49-0785810e9355@ieee.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240304195214.14563-1-hsinyi@chromium.org> <20240304195214.14563-3-hsinyi@chromium.org>
- <87a5nd4tsg.fsf@intel.com>
-In-Reply-To: <87a5nd4tsg.fsf@intel.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Tue, 5 Mar 2024 01:10:08 +0200
-Message-ID: <CAA8EJprt=B94En8SuuEDcBGVAaZ842_=eMSeCwk_e1Sif3J6oQ@mail.gmail.com>
-Subject: Re: [PATCH v3 2/4] drm/edid: Add a function to check monitor string
-To: Jani Nikula <jani.nikula@linux.intel.com>
-Cc: Hsin-Yi Wang <hsinyi@chromium.org>, Douglas Anderson <dianders@chromium.org>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>, 
-	Sam Ravnborg <sam@ravnborg.org>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1c5ab1e7-ac66-438c-bc49-0785810e9355@ieee.org>
 
-On Mon, 4 Mar 2024 at 22:38, Jani Nikula <jani.nikula@linux.intel.com> wrote:
->
-> On Mon, 04 Mar 2024, Hsin-Yi Wang <hsinyi@chromium.org> wrote:
-> > Add a function to check if the EDID base block contains a given string.
-> >
-> > One of the use cases is fetching panel from a list of panel names, since
-> > some panel vendors put the monitor name after EDID_DETAIL_MONITOR_STRING
-> > instead of EDID_DETAIL_MONITOR_NAME.
-> >
-> > Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> > ---
-> > v2->v3: move string matching to drm_edid
-> > ---
-> >  drivers/gpu/drm/drm_edid.c | 49 ++++++++++++++++++++++++++++++++++++++
-> >  include/drm/drm_edid.h     |  1 +
-> >  2 files changed, 50 insertions(+)
-> >
-> > diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
-> > index 13454bc64ca2..fcdc2bd143dd 100644
-> > --- a/drivers/gpu/drm/drm_edid.c
-> > +++ b/drivers/gpu/drm/drm_edid.c
-> > @@ -2789,6 +2789,55 @@ u32 drm_edid_get_panel_id(struct edid_base_block *base_block)
-> >  }
-> >  EXPORT_SYMBOL(drm_edid_get_panel_id);
-> >
-> > +/**
-> > + * drm_edid_has_monitor_string - Check if a EDID base block has certain string.
-> > + * @base_block: EDID base block to check.
-> > + * @str: pointer to a character array to hold the string to be checked.
-> > + *
-> > + * Check if the detailed timings section of a EDID base block has the given
-> > + * string.
-> > + *
-> > + * Return: True if the EDID base block contains the string, false otherwise.
-> > + */
-> > +bool drm_edid_has_monitor_string(struct edid_base_block *base_block, const char *str)
-> > +{
-> > +     unsigned int i, j, k, buflen = strlen(str);
-> > +
-> > +     for (i = 0; i < EDID_DETAILED_TIMINGS; i++) {
-> > +             struct detailed_timing *timing = &base_block->edid.detailed_timings[i];
-> > +             unsigned int size = ARRAY_SIZE(timing->data.other_data.data.str.str);
-> > +
-> > +             if (buflen > size || timing->pixel_clock != 0 ||
-> > +                 timing->data.other_data.pad1 != 0 ||
-> > +                 (timing->data.other_data.type != EDID_DETAIL_MONITOR_NAME &&
-> > +                  timing->data.other_data.type != EDID_DETAIL_MONITOR_STRING))
-> > +                     continue;
-> > +
-> > +             for (j = 0; j < buflen; j++) {
-> > +                     char c = timing->data.other_data.data.str.str[j];
-> > +
-> > +                     if (c != str[j] ||  c == '\n')
-> > +                             break;
-> > +             }
-> > +
-> > +             if (j == buflen) {
-> > +                     /* Allow trailing white spaces. */
-> > +                     for (k = j; k < size; k++) {
-> > +                             char c = timing->data.other_data.data.str.str[k];
-> > +
-> > +                             if (c == '\n')
-> > +                                     return true;
-> > +                             else if (c != ' ')
-> > +                                     break;
-> > +                     }
-> > +                     if (k == size)
-> > +                             return true;
-> > +             }
-> > +     }
-> > +
-> > +     return false;
-> > +}
-> > +
->
-> So we've put a lot of effort into converting from struct edid to struct
-> drm_edid, passing that around in drm_edid.c, with the allocation size it
-> provides, and generally cleaning stuff up.
->
-> I'm not at all happy to see *another* struct added just for the base
-> block, and detailed timing iteration as well as monitor name parsing
-> duplicated.
->
-> With struct drm_edid you can actually return an EDID that only has the
-> base block and size 128, even if the EDID indicates more
-> extensions. Because the whole thing is *designed* to handle that
-> gracefully. The allocated size matters, not what the blob originating
-> outside of the kernel tells you.
->
-> What I'm thinking is:
->
-> - Add some struct drm_edid_ident or similar. Add all the information
->   that's needed to identify a panel there. I guess initially that's
->   panel_id and name.
->
->     struct drm_edid_ident {
->         u32 panel_id;
->         const char *name;
->     };
->
-> - Add function:
->
->     bool drm_edid_match(const struct drm_edid *drm_edid, const struct drm_edid_ident *ident);
->
->   Check if stuff in ident matches drm_edid. You can use and extend the
->   existing drm_edid based iteration etc. in
->   drm_edid.c. Straightforward. The fields in ident can trivially be
->   extended later, and the stuff can be useful for other drivers and
->   quirks etc.
+On Mon, Mar 04, 2024 at 04:45:11PM -0600, Alex Elder wrote:
+> On 3/4/24 3:19 PM, Kees Cook wrote:
+> > FORTIFY_SOURCE has been ignoring 0-sized destinations while the kernel
+> > code base has been converted to flexible arrays. In order to enforce
+> > the 0-sized destinations (e.g. with __counted_by), the remaining 0-sized
+> > destinations need to be handled. Instead of converting an empty struct
+> > into using a flexible array, just directly use a pointer without any
+> > additional indirection. Remove struct gb_bootrom_get_firmware_response
+> > and struct gb_fw_download_fetch_firmware_response.
+> > 
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> 
+> Thanks for adding the comments!  This looks good to me.
+> 
+> Reviewed-by: Alex Elder <elder@linaro.org>
+> 
+> 
+> 
+> I want to call attention to a few other spots that should
+> get a little more attention--related directly to what you're
+> doing here.
+> 
+> I noticed that the GB_CONTROL_TYPE_GET_MANIFEST response
+> structure also contains only a flexible array.  It might
+> be good to add a similar comment in gb_interface_enable(),
+> above this line:
+>         manifest = kmalloc(size, GFP_KERNEL);
+> The definition of the gb_control_get_manifest_response structure
+> could probably be replaced with a comment.
+> 
+> 
+> The response buffer for an I2C transfer consists only of incoming
+> data.  There is already a comment in gb_i2c_operation_create()
+> that says this:
+>         /* Response consists only of incoming data */
+> The definition of the gb_i2c_transfer_response structure should
+> then go away, in favor of a comment saying this.
+> 
+> The response buffer for a SPI transfer consists only of incoming
+> data.  It is used three times in "driver/staging/greybus/spilib.c":
+> - calc_rx_xfer_size() subtracts the size of the response structure,
+>   and that should be replaced by a comment (and the structure
+>   definition should go away)
+> - gb_spi_decode_response() takes the response structure as an
+>   argument.  That could be replaced with a void pointer instead,
+>   with a comment.
+> - gb_spi_transfer_one_message() is what passes the response buffer
+>   to gb_spi_decode_response(), and could be adjusted to reflect
+>   that the response consists only of data--rather than a struct
+>   containing only a flexible array.
+> 
+> 
+> Kees:  I'm *not* asking you to deal with these, I'm just mentioning
+> them to you.  My comments above (without someone else confirming)
+> are not sufficient to dictate how to address these.
 
-That sounds perfect!
+Okay, thanks! Yeah, I took a look at struct gb_i2c_transfer_response and
+I think it might trip the memcpy checking too since it's zero sized, but
+it's on the source side, which isn't as strictly checked.
 
->
-> - Restructure struct edp_panel_entry to contain struct
->   drm_edid_ident. Change the iteration of edp_panels array to use
->   drm_edid_match() on the array elements and the edid.
->
-> - Add a function to read the EDID base block *but* make it return const
->   struct drm_edid *. Add warnings in the comments that it's only for
->   panel and for transition until it switches to reading full EDIDs.
->
->     const struct drm_edid *drm_edid_read_base_block(struct i2c_adapter *adapter);
->
->   This is the *only* hackish part of the whole thing, and it's nicely
->   isolated. For the most part you can use drm_edid_get_panel_id() code
->   for this, just return the blob wrapped in a struct drm_edid envelope.
->
-> - Remove function:
->
->     u32 drm_edid_get_panel_id(struct i2c_adapter *adapter);
->
-> - Refactor edid_quirk_list to use the same id struct and match function
->   and mechanism within drm_edid.c (can be follow-up too).
+I'll add a TODO item to track these, though.
 
-I wonder if we can take one step further and merge edp_panels to
-edid_quirk_list (as one of the follow-ups). Maybe just some bits of
-it.
-
-
-> - Once you change the panel code to read the whole EDID using
->   drm_edid_read family of functions in the future, you don't have to
->   change *anything* about the iteration or matching or anything, because
->   it's already passing struct drm_edid around.
->
->
-> I hope this covers everything.
->
-> BR,
-> Jani.
->
->
-> >  /**
-> >   * drm_edid_get_base_block - Get a panel's EDID base block
-> >   * @adapter: I2C adapter to use for DDC
-> > diff --git a/include/drm/drm_edid.h b/include/drm/drm_edid.h
-> > index 2455d6ab2221..248ddb0a6b5d 100644
-> > --- a/include/drm/drm_edid.h
-> > +++ b/include/drm/drm_edid.h
-> > @@ -416,6 +416,7 @@ struct edid *drm_get_edid(struct drm_connector *connector,
-> >                         struct i2c_adapter *adapter);
-> >  struct edid_base_block *drm_edid_get_base_block(struct i2c_adapter *adapter);
-> >  u32 drm_edid_get_panel_id(struct edid_base_block *base_block);
-> > +bool drm_edid_has_monitor_string(struct edid_base_block *base_block, const char *str);
-> >  struct edid *drm_get_edid_switcheroo(struct drm_connector *connector,
-> >                                    struct i2c_adapter *adapter);
-> >  struct edid *drm_edid_duplicate(const struct edid *edid);
->
-> --
-> Jani Nikula, Intel
-
-
+-Kees
 
 -- 
-With best wishes
-Dmitry
+Kees Cook
 
