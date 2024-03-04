@@ -1,157 +1,129 @@
-Return-Path: <linux-kernel+bounces-91384-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91385-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8413871081
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 23:54:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAE37871083
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 23:56:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 25C2D1C217E8
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:54:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4ED79B20B77
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:56:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FA127C0A1;
-	Mon,  4 Mar 2024 22:54:14 +0000 (UTC)
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F60D7C09A;
+	Mon,  4 Mar 2024 22:56:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="idzNyh1w"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3DE47B3FA;
-	Mon,  4 Mar 2024 22:54:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE25A7B3FA;
+	Mon,  4 Mar 2024 22:56:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709592854; cv=none; b=QGhBm8gDgxuM1FjcDsSjR6j6ck6Iw9d0nxPdEHTOXXm8ORiCXMBfLceAQRN9jOFBHXDUaV8GXIykOEb4IJGF3o1EQHbhMRkWcrph6p56mNDEs5ckX5Wa2fyvXM/FpY2BH+iG72MsZN4wT6wGhDTm5bxKUSwUvmcZLbyK+NZIoh4=
+	t=1709592983; cv=none; b=HRgNmaIJwSLdhGdHVQ+QgGcHHC9NVcHXGHG1VgCEoVSNql/KdvkEaQNr03YQ5CzO83Cz20+RFgAakkIcfqVuxx+tpwTkIsyK3yWNBAU5VnCOWn+vCj4qjjAvMCcV7/8S7F58zHkjr+xkBOTuKQ9/8La1MakEreiGXsskewtmQqs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709592854; c=relaxed/simple;
-	bh=gO9mH5Z0JvT/SaaCXTzhnv1+STJClW88KiE2NUjLdXs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=W4gG2/DJmBJ/W6oDBKdNutf8HSYZe8DnlDkcZTq2j3V2GTVT1jURuCfBPvGaQVDoCwJmbO0BrEs3/Z5eQ2nURsNQTczfY583sneyC6HRCVNeamtGpPv2SYyYCtigyoEBOUnHeUGAlOif17g6VSndrZ13d96UcFs6bgk+gmnjOxo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-29a940614easo3284091a91.3;
-        Mon, 04 Mar 2024 14:54:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709592852; x=1710197652;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=G5CES4TSoLXwloLCxuKSrwc7XyMKCyLWgf+m5vrjXfw=;
-        b=teLbTeWsMExBei0+e602Hx2HK8oLducFHLGz/wEv8LIE1M2QtYpIsqZhn9FI8Qqxk4
-         BB3uhC8yqRwhCJuUoTaxBlwVNzOwo1jPY0jq2jH8A7jYvtuYr6R/QvXZzfDb0xLaIoNy
-         NNCF1yOyk46wl4zlYYekJ6gUiHy63jEw7s2EDWhTKpwjJwsnoVVFvZBZnCvpssSH8DLn
-         nYgayWTBd+3jAuj90XrIWpzi9K05PeEIgu5JHveIMJdHvvtz/TrjLYXsy/5D1Rj/pypq
-         S2sNquCWmnK4VwFCmRWmfF47/dZPJjkySg3Ro9vjPekJc5eh588OAz/vVLUqFJ4LHzUd
-         IjZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUTtffb4v1Lc2PT9L65lVf8/n2H2gJRLVPEtTk2nKdgfE0qUxMB3FQrxJhf+z7FTmHAZwWVX0I8cVh1oTeGFAN0h0n6IaUeOjXWB4DxgFIk7m1WSfi5iBy8ukMhfB0J088F4h3eWrXQG4Y+qRhIZw==
-X-Gm-Message-State: AOJu0YxIOiCgOUg0UFU6D0jeSWyuKcJ/qaR28RJ8woZmYba5d7ylazso
-	b289h7W5xmZxEiwFlBIt1ox452iUgRqu/A1jUIOnjSdVyEdWpLH5kjnSs6DKBZEvSycWkxvqhKk
-	IxbyrB3uVyoLYw/01RSeKkbyAbMo=
-X-Google-Smtp-Source: AGHT+IH4eheqVGCCO+jxB3lin0rOkXq5DEPtLhniSrhGJcJ7W8Z2YPWgT39tCqKLjrV0RE5VKdSrWqqSGi7ocq0y3DI=
-X-Received: by 2002:a17:90a:d58a:b0:29a:2860:28b9 with SMTP id
- v10-20020a17090ad58a00b0029a286028b9mr7312356pju.48.1709592851935; Mon, 04
- Mar 2024 14:54:11 -0800 (PST)
+	s=arc-20240116; t=1709592983; c=relaxed/simple;
+	bh=Rca8aMJHIqobe+2cMX0r2HJ1hKWMth39li8Jrzh0q+Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IdevH/pcmOR+PLvLsAx5ku9H3E+2pr6zfUsrlIdpv2nxaN03oWYizj+vqtUTQTyX2QED+pWxcS9PPQxPt0M1/u+HwfkM/Bp9jkALVBaAO6hlijqLIR8kqEkzTkw2ngRIas5Qww3PXaQiKUNWwWSVrDa5THVoIZPQ3DPLZrRKFPg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=idzNyh1w; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0A81C433C7;
+	Mon,  4 Mar 2024 22:56:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709592982;
+	bh=Rca8aMJHIqobe+2cMX0r2HJ1hKWMth39li8Jrzh0q+Q=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=idzNyh1wbBFfPcAk+olSqkNX1veouQGtHnwbiW37ZtHp/r8KVR+WdaRL7YdT189KC
+	 BhTyV7818bJg4H2CuIRcu39XeBNhDi41dbkyvWF/vPaA1ZeRyldnykaAjNPNXmmNEX
+	 vAtViu02BG271a9Rf8zBWnrTyeV6/lsqUYfPT42bDr9pl98/TZ5I9FglR4R8yca76r
+	 8XLdmujf7FB5L/fF8uh1DPtY+ZBnvMFp4m5lhsMTdSHBPyiWN1mUKp2g4EJ6PRurhh
+	 RKUlOF63h6Sxx+fcfQ/iZYBypoXuF77PpO80F68zOXB+TP+bTas7po3FC1JrcXmAa+
+	 itVaciyyOGvGw==
+Date: Mon, 4 Mar 2024 23:56:19 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Uladzislau Rezki <urezki@gmail.com>
+Cc: "Paul E . McKenney" <paulmck@kernel.org>, RCU <rcu@vger.kernel.org>,
+	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	Boqun Feng <boqun.feng@gmail.com>, Hillf Danton <hdanton@sina.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
+Subject: Re: [PATCH v5 2/4] rcu: Reduce synchronize_rcu() latency
+Message-ID: <ZeZRk-1Kx-s0Nz34@pavilion.home>
+References: <20240220183115.74124-1-urezki@gmail.com>
+ <20240220183115.74124-3-urezki@gmail.com>
+ <Zd0ZtNu+Rt0qXkfS@lothringen>
+ <Zd91pR0fjiCUZTtP@pc636>
+ <ZeW2w08WZo4yapQp@localhost.localdomain>
+ <ZeX1cXWKv2kirDXg@pc638.lan>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240228005230.287113-1-namhyung@kernel.org> <ZeXTmdhu3Y_gC9ma@x1>
- <CAM9d7chEoab71v8=th7NAWcsPPZV+oGiJPGfiCcjdS3L+u13dA@mail.gmail.com>
-In-Reply-To: <CAM9d7chEoab71v8=th7NAWcsPPZV+oGiJPGfiCcjdS3L+u13dA@mail.gmail.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Mon, 4 Mar 2024 14:53:59 -0800
-Message-ID: <CAM9d7cggEAm3qyaBYVhpAXbGJ8LjJjK67WPds9dAFd_F5NJbhA@mail.gmail.com>
-Subject: Re: [PATCH 0/4] perf annotate: Improve memory usage for symbol histogram
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-perf-users@vger.kernel.org, Andi Kleen <ak@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZeX1cXWKv2kirDXg@pc638.lan>
 
-On Mon, Mar 4, 2024 at 8:36=E2=80=AFAM Namhyung Kim <namhyung@kernel.org> w=
-rote:
->
-> Hi Arnaldo,
->
-> On Mon, Mar 4, 2024 at 5:58=E2=80=AFAM Arnaldo Carvalho de Melo <acme@ker=
-nel.org> wrote:
-> >
-> > On Tue, Feb 27, 2024 at 04:52:26PM -0800, Namhyung Kim wrote:
-> > > This is another series of memory optimization in perf annotate.
-> >
-> > > When perf annotate (or perf report/top with TUI) processes samples, i=
-t
-> > > needs to save the sample period (overhead) at instruction level.  For
-> > > now, it allocates an array to do that for the whole symbol when it
-> > > hits any new symbol.  This comes with a lot of waste since samples ca=
-n
-> > > be very few and instructions span to multiple bytes.
-> >
-> > > For example, when a sample hits symbol 'foo' that has size of 100 and
-> > > that's the only sample falls into the symbol.  Then it needs to
-> > > allocate a symbol histogram (sym_hist) and the its size would be
-> >
-> > >   16 (header) + 16 (sym_hist_entry) * 100 (symbol_size) =3D 1616
-> >
-> > > But actually it just needs 32 (header + sym_hist_entry) bytes.  Thing=
-s
-> > > get worse if the symbol size is bigger (and it doesn't have many
-> > > samples in different places).  Also note that it needs separate
-> > > histogram for each event.
-> >
-> > > Let's split the sym_hist_entry and have it in a hash table so that it
-> > > can allocate only necessary entries.
-> >
-> > > No functional change intended.
-> >
-> > I tried this before/after this series:
-> >
-> >   $ time perf annotate --stdio2 -i perf.data.annotate
-> >
-> > For:
-> >
-> >   perf record -e '{cycles,instructions,cache-misses}' make -k CORESIGHT=
-=3D1 O=3D/tmp/build/$(basename $PWD)/ -C tools/perf install-bin
-> >
-> > And found these odd cases:
-> >
-> >   $ diff -u before after
-> >   --- before    2024-02-28 15:38:25.086062812 -0300
-> >   +++ after     2024-02-29 14:12:05.606652725 -0300
-> >   @@ -2450826,7 +2450826,7 @@
-> >                                 =E2=86=93 je       1c62
-> >                                 =E2=86=92 call     operator delete(void=
-*)@plt
-> >                                 { return _M_dataplus._M_p; }
-> >   -                       1c62:   mov      0x13c0(%rsp),%rdi
-> >   +  0.00   0.00 100.00   1c62:   mov      0x13c0(%rsp),%rdi
-> >                                 if (_M_data() =3D=3D _M_local_data())
-> >                                   lea      0x13d0(%rsp),%rax
-> >                                   cmp      %rax,%rdi
-> >   @@ -2470648,7 +2470648,7 @@
-> >                                   mov      %rbx,%rdi
-> >                                 =E2=86=92 call     operator delete(void=
-*)@plt
-> >                                 using reference =3D T &;
-> >   -  0.00   0.00 100.00  11c65:   mov      0x8(%r12),%rax
-> >   +                      11c65:   mov      0x8(%r12),%rax
-> >                                 size_t size() const { return Size; }
-> >                                   mov      0x10(%r12),%ecx
-> >                                   mov      %rax,%rbp
-> >   $
-> >
-> >
-> > This is a large function:
->
-> Thanks for the test!  I think it missed the cast to 64-bit somewhere.
-> I'll check and send v2 soon.
+Le Mon, Mar 04, 2024 at 05:23:13PM +0100, Uladzislau Rezki a écrit :
+> On Mon, Mar 04, 2024 at 12:55:47PM +0100, Frederic Weisbecker wrote:
+> The easiest way is to drop the patch. To address it we can go with:
+> 
+> <snip>
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 31f3a61f9c38..9aa2cd46583e 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1661,16 +1661,8 @@ static void rcu_sr_normal_gp_cleanup(void)
+>  	 * wait-head is released if last. The worker is not kicked.
+>  	 */
+>  	llist_for_each_safe(rcu, next, wait_tail->next) {
+> -		if (rcu_sr_is_wait_head(rcu)) {
+> -			if (!rcu->next) {
+> -				rcu_sr_put_wait_head(rcu);
+> -				wait_tail->next = NULL;
+> -			} else {
+> -				wait_tail->next = rcu;
+> -			}
+> -
+> +		if (rcu_sr_is_wait_head(rcu))
+>  			break;
+> -		}
+>  
+>  		rcu_sr_normal_complete(rcu);
+>  		// It can be last, update a next on this step.
+> <snip>
+> 
+> i.e. the process of users from GP is still there. The work is triggered
+> to perform a final complete(if there are users) + releasing wait-heads
+> so we do not race anymore.
 
-Yep, the offset variable in __symbol__inc_addr_samples()
-should be u64.
+It's worth mentioning that this doesn't avoid scheduling the workqueue.
+Except perhaps for the very first time rcu_sr_normal_gp_cleanup() is called,
+the workqueue will always have to be scheduled at least in order to release the
+wait_tail of the previous rcu_sr_normal_gp_cleanup() call.
 
-Thanks,
-Namhyung
+But indeed you keep the optimization that performs the completions themselves
+synchronously from the GP kthread if there aren't too many of them (which
+probably is the case most of the time).
+
+> I am OK with both cases. Dropping the patch will make it more simple
+> for sure.
+
+I am ok with both cases as well :-)
+
+You choose. But note that the time spent doing the completions from the GP
+kthread may come at the expense of delaying the start of the next grace period,
+on which further synchronous RCU calls may in turn depend on...
+
+Thanks.
+
+> 
+> --
+> Uladzislau Rezki
+> 
+> 
 
