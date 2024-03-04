@@ -1,497 +1,170 @@
-Return-Path: <linux-kernel+bounces-90028-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90029-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93CF086F90F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 04:42:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCB6986F910
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 04:43:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FF0B1F2134F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 03:42:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CB551F20F9C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 03:43:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C515D6127;
-	Mon,  4 Mar 2024 03:42:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A1EA539E;
+	Mon,  4 Mar 2024 03:43:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=NETORG5796793.onmicrosoft.com header.i=@NETORG5796793.onmicrosoft.com header.b="JBWIzy/D"
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2127.outbound.protection.outlook.com [40.107.102.127])
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="MYYwUZT7"
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2A6E4A3C;
-	Mon,  4 Mar 2024 03:42:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.127
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709523750; cv=fail; b=FMMKqu7tO4zHJkS4mkXQxMysJQ11kQ11jFnfty9G5OKfAyt9JbieT9YpuedjGZQQ7xWc0uKifHtH+TEPAiMqPawxBetNyJUXOttECVmZZoAbrUaM8ITRAyMTOd+QodOTb0wS/rvE6AyShhd9Yl9tcQlXfbFRI9G0/MoM0VCRF9o=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709523750; c=relaxed/simple;
-	bh=qX4FsUqCEIlvttVmK/YcWADf5sPuBst//S5n8vu4IrA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=AX5FQZ/IO4k9ilGaPCXH1RJ14TsjWfvwd94UWPd8DucD2CT60hnEfFKMbyIBU1qUgmiB66LCupn/m2GzgxOLYMO5ESCmAHAq24Cj03QsNOJccrlaKzHHuLLcLALQWcaZWTW/ABElP16pR2dwBr95ZEbKs7ev+gStkCuTSPGsC8o=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=labundy.com; spf=pass smtp.mailfrom=labundy.com; dkim=pass (1024-bit key) header.d=NETORG5796793.onmicrosoft.com header.i=@NETORG5796793.onmicrosoft.com header.b=JBWIzy/D; arc=fail smtp.client-ip=40.107.102.127
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=labundy.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=labundy.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hEbVYUwMBgVTjSetOis/d7lic548vY1FToTQJXC5VZGj7jQfpldk5YyzZkHSqmoBchTeSZAS8RnNywCl+T+4X6v+GKmrMoYJT0K5Hz1vdPhuZ2Q0zP3hcD7chNF9D9+67Td0/5lNL4HXhrWAGI9StEXi0ypDDJ+pNccMJdrp6PJwnshazavGdXKVVEiU/JLtv1D8emmVaIMg4il8m05a8uAK7nSiyQAOYKbq+yAg1n4e43bfsa9bQgCraTavx5GatclIFbWwnQDg2JB+xMekcC/oBaPQ2+lwGTBSekl78Nd1wMt5nckTY99/zyzIySOfSkcLnVTH1raGQGuq4NpyEQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uCluiekG3ZyRzr7j2lSBa2W8iU5vZZvvqn8fMIBTRj8=;
- b=igjhLOEx0Zj0hDTDVsMNI/T9s8qw6CyJsBwJ5fmPDXs5MqUE2g/D7HcSNi2nMkIzYIjuvLMJUCJhbC6PkQMhlabMJg406a1dtOM94cZd9zH70duxKNHZKcsHt18psD3k+mnnPnE6v860ANuEsXtjviUgSjSXsySZndQaY4cVOul5nkj33jUzRlite1u86ft3jhGrekkAnarZlpDdowdqApxoJcsBrfNCar8pPvFmU9y+HT+LF0Qerp9UwO9rQZPNhbv9kIk2GBC//R8gnS0ODRnKNDOsPYvaHnC7OVS99Vjzo8MbzpW5ZkduPXGH//ODSvotVQL75R+Cor2g0NopnA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=labundy.com; dmarc=pass action=none header.from=labundy.com;
- dkim=pass header.d=labundy.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=NETORG5796793.onmicrosoft.com; s=selector1-NETORG5796793-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uCluiekG3ZyRzr7j2lSBa2W8iU5vZZvvqn8fMIBTRj8=;
- b=JBWIzy/DSdlyh6Se9fwGVsXfKP/aZ81yP20HghkOuhLG2PCI/WsjgaMz7Bl1CvX32qVa1QpJ0hA3Jk5Sc++G0jPLVlyL9HUVeUslPNINuuhXyyR/wdOd+lBIC7pL6T3o2KmNisQYi/oOGTH3YdxdjcktGvIP0eMFCUsSEVc/qDo=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=labundy.com;
-Received: from SN4PR0801MB3774.namprd08.prod.outlook.com
- (2603:10b6:803:43::21) by PH0PR08MB8186.namprd08.prod.outlook.com
- (2603:10b6:510:172::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.38; Mon, 4 Mar
- 2024 03:42:23 +0000
-Received: from SN4PR0801MB3774.namprd08.prod.outlook.com
- ([fe80::bea5:3186:8a9f:52a]) by SN4PR0801MB3774.namprd08.prod.outlook.com
- ([fe80::bea5:3186:8a9f:52a%7]) with mapi id 15.20.7339.035; Mon, 4 Mar 2024
- 03:42:23 +0000
-Date: Sun, 3 Mar 2024 21:42:20 -0600
-From: Jeff LaBundy <jeff@labundy.com>
-To: Javier Carrasco <javier.carrasco@wolfvision.net>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Henrik Rydberg <rydberg@bitmath.org>,
-	Bastian Hecht <hechtb@gmail.com>,
-	Michael Riesch <michael.riesch@wolfvision.net>,
-	linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: Re: [PATCH v7 2/4] Input: touch-overlay - Add touchscreen overlay
- handling
-Message-ID: <ZeVDHP7PiVbAoE5b@nixie71>
-References: <20240119-feature-ts_virtobj_patch-v7-0-eda70985808f@wolfvision.net>
- <20240119-feature-ts_virtobj_patch-v7-2-eda70985808f@wolfvision.net>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240119-feature-ts_virtobj_patch-v7-2-eda70985808f@wolfvision.net>
-X-ClientProxiedBy: SN4PR0501CA0099.namprd05.prod.outlook.com
- (2603:10b6:803:42::16) To SN4PR0801MB3774.namprd08.prod.outlook.com
- (2603:10b6:803:43::21)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D89A34A34
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 03:43:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709523806; cv=none; b=d3DKW63zs+qPui/JPtYWUxRIOgnxq/l2bibi7B/PFvvBWz0ceZ68aUh9ALIMU8wYtXIM5cv+y0BOMyRIwQ0AWXhjRV5xkBSvABZBkTHeugGq1UV40OEUuWpirGfZh10k1gionT7Pixws82QZOkD+cGlXu+PgicSkvmCZ+uJzG4I=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709523806; c=relaxed/simple;
+	bh=WQdAjRAvd8yoUf68adlmp9MGoVa20z28kX5tHVe7lqo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pt4zr3wN3GSftv7KGxP4AhJsny2SN3Pw4py22raXbo95uONoxxKRlIwW5INkeQanrC4CVBkxLrh69ZbG/SHtLnA6+f4Wp+Gy7aFUgDKpwgFVn8b/uQ6M3WoJCn4Nvs/pWUNTfioxarQ7uq2p2iqjVkom1UJrWY44nqgITWFqJWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=MYYwUZT7; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [192.168.7.187] ([71.202.166.45])
+	(authenticated bits=0)
+	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 4243gVoE348953
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Sun, 3 Mar 2024 19:42:31 -0800
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 4243gVoE348953
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2024021201; t=1709523752;
+	bh=kxK3n3B02k0LufS4sQ2boXcylT29zMPGAu21KJsxq+w=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=MYYwUZT7OL67/hxy3KZBJ31D6Hai+1BwyQP3xEzwDmx33eOA05S5wkQIhYo94FiyX
+	 MH3Fldufn0+SFQkhyL8MYA31pVXi8Fa7gnr0/jEyJP7iGehmJmk1C91ZIpKEabUPLE
+	 UJme0Gyvn5ZfBylOYTBWk4TsoooBQpNmnHHzpuWSO50HPAtQ/ISWCUrpjmNyMVv7DM
+	 fsMyxw4WWe+J61faEY2QBOKl4Tr7KRc/FMEM4vyggGza2qo/LRyPEAn6xsd1iNuvjT
+	 uhXrb6IxmOJD8SyQIcxzaBOeLvZgOd6sZJC4SzrsOdRkpL7A0HEFM4Ql9ySOcGvlyt
+	 6uyR5BhdVNrsA==
+Message-ID: <382e966b-4cac-4e28-a230-53ac52f91bf9@zytor.com>
+Date: Sun, 3 Mar 2024 19:42:30 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN4PR0801MB3774:EE_|PH0PR08MB8186:EE_
-X-MS-Office365-Filtering-Correlation-Id: 07db0344-8161-43e5-3a41-08dc3bfd19ff
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	bFgYuayOob8bbZraGXod1OUa9MPUldGLHbUHbFq5hZaq2+m+qIdsjQwTS3ExPrMVgcSm7dyx9srSeB4Kgwma12rKXzxNVYEdGPbtLvS1zBC2XuVlS2hvB6Ls+6jdFrEDm+6CmdhCvp9lcSxZD1+crzt/wBo9HvPrR2hh5IT8UgLFaGZzgCcM+ayhftMC+4QYnr/ZEsE2uXQ7qdQNQrYxM88dAM/wLrTRF+vidtrEMph/fmTAcHPWnhrbl+gFA/BpCHzngCiX3ZgbPQbJWygm9O1BIn5dCQiGLFWaVoKSmJJJ/Ld4nmOX3bok8PS80/A7Fv1/ZzaBk4+5V9IQYMmX3ks4A/N4MroQyAnOJMu3dUL6Dxt7p+O+MOP8fFOL2HPcd7zC4qHntINR8CuHKHyBj26qN/YW5RQ4LqGehDlMi4An9CldlbBpWiaObq1kYFN0XQ3OvNcXoKjkd5uGTgy3Jy2jX2Bqa6WTqspwwBzueE62B4nDkanWLkEdYY2PNjpBTZXLbGUagstFLEe2Qu8/7lNqii5aVEzSwbxRDEGKFOKz4x1M6rzxEhxWQ2JlPd4CTI30xxUCB3u8DhlWzRMeQ2A09LpG4hVFIaliupOEgHEnGU0BwTGQlklLphKfw3ZcXpns6SZXhnVUADoW1AvHe79Mbz2Zr8JBv1rytc8vVc4=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0801MB3774.namprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?XN7bpPOlXwg4R3VVDc3qkbh+5uzCx6EjKKsX1XmQkYZO3ua4oDIJTjk+/d9K?=
- =?us-ascii?Q?RBUQR9wBp6sdtyNLUvJofiOpxY1B6kM150DEO45uBaNojk1bN9ZyXtAmY9mL?=
- =?us-ascii?Q?+kaeNO6l2Txy6DvRuBiA+8eCqcMIqEn8d684BS1o03V0RN9K7+oMPSuLpRr5?=
- =?us-ascii?Q?uWy/qRJxH1PG5jCOATfUQvIv57So6ZPb0EslZQmDlN3bHu+g94D0zq8rGVAo?=
- =?us-ascii?Q?Z6lADxpi9cehEGcuXzLAc9Y6pPMfwbcanC88uk2nEnLTVviNBsQ5993x5a7w?=
- =?us-ascii?Q?AwX7O756A3nmuOCavh0Pazp/W0K1a+mgctDEFYXM4gOF6zhD5DxRQwIpe9ea?=
- =?us-ascii?Q?xoL5RkXfpsjRZMzfy7FS98oMbfTxMgwFY/u+jI2mtKx9F3sEum7xQqPy4VGj?=
- =?us-ascii?Q?tvo6QlaWo0iVeb+Iyc+yVGL1c/+yc4XoXbzsVTh5eOpzhXCegUT8WswKz7uq?=
- =?us-ascii?Q?mvR9zhjvHtK22kNWaQInhjh/LVdAC1ItFs3+OUhF6gVSipQA/c545CITmMOm?=
- =?us-ascii?Q?4UGvaZASqFGYmY66gmNzBOiGhOkeKoae8Lj9nA/FgKq5k4ib0hNb1olChUqn?=
- =?us-ascii?Q?R0IRzrQ56CbOEaUoJRUs9frJue4ScXZXtlxjdaHtmVAQ4EhESJHEZLe172Qj?=
- =?us-ascii?Q?JnTta7XOxJVVOcKf7IZXtd+cb/t7+9N/J0XOEqAMFavX8rDq+ODOF9S/3olw?=
- =?us-ascii?Q?mDicDd4gnX+jEM2M3gIBUsSsgfPV4jBdoc32S63Yp+SU7vQabbADDwDi41AH?=
- =?us-ascii?Q?LEdbtg5r6Zxotdm6P88bhxRqkITzaZ5QhMevpZ3tKC5VEpIKQ3KSw2Xxtsd8?=
- =?us-ascii?Q?/BEywf35AgpT8M9U6ZV+jYRn4BrmzGxkN+2gwoSnVJxfQa3rRwWMwobFV3Jw?=
- =?us-ascii?Q?FjRFHEt44Hn92MqoQBi1bUaLuybkfOhVecYKQi8/lT20m6QatoILw/+misb/?=
- =?us-ascii?Q?ZXPS1uRj/Zv6suGF+UphQlgoMVSPaFZ/VKnoqU4T5Dkdc2pFvqMd7a3u04pw?=
- =?us-ascii?Q?vWfQqIEzAM+rCVROYbIyBYvUXlvWlbNjNpK5OVOGWoHS5bIqAwqJUdlrB4hc?=
- =?us-ascii?Q?xN/KZH6QCyV7r5c/AIKrHPtAfKJJJ2DBJvajabgsJKWRJ2fDijCZcTdthIRj?=
- =?us-ascii?Q?Zyw7dL+/8yicnXOvPn6TDVIZtCgbkTaoOrbcXKzVBuSjLhxpZryZJmx3ZGLP?=
- =?us-ascii?Q?udUGXk9GV2FK7qubOeklhvlMxC3iV5jNvK+GOBCYla/63zo2oNWYymseeJD/?=
- =?us-ascii?Q?1QsdS9kBWKzSzHEVjoS903InEOm6tZtx+Tvc7S++j2d5Fl12Cpoi6dsSu1Ti?=
- =?us-ascii?Q?iKQoGf60hQFTf66XDj42GjBpiR9SW0RADjPeSbQ+uGjgMu8EgO0ermALmhVN?=
- =?us-ascii?Q?jRCplvZHgKb28/O8iWIeuZAHMr/K1iU1RNfA0VrZ+5zTMW8hG9rIY58FPGu2?=
- =?us-ascii?Q?CRAVmyucwKkftXedmtIi3As9pEnomR/yiX/KoBNp9p8U1SiVXXinyKjaPwA5?=
- =?us-ascii?Q?4QCOFKJTddd6RXe73UZDjR124vJg1M9xTEqF81/AzCmw4H03MjFmfragDIQ8?=
- =?us-ascii?Q?vTylEG7DLK4lYzEoNm0oHk7NFrxjjqxRXsMeJhIU?=
-X-OriginatorOrg: labundy.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 07db0344-8161-43e5-3a41-08dc3bfd19ff
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR0801MB3774.namprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Mar 2024 03:42:23.0475
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 00b69d09-acab-4585-aca7-8fb7c6323e6f
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ysvVTu1q1wulpZerb7GwlvhkRUuCaYDIi/2H+AYgkWByhHheSr9bJF6FF7pbAAHtCTK9jD0S8lB18/Tf6oi5hQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR08MB8186
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/1] x86/fred: Fix init_task thread stack pointer
+ initialization
+Content-Language: en-US
+To: Brian Gerst <brgerst@gmail.com>
+Cc: linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com
+References: <20240301084046.3370376-1-xin@zytor.com>
+ <CAMzpN2j7xKcGx=+z8mu_2z2RsqjB-mpODdrOH7N1J2_OzuyEUQ@mail.gmail.com>
+ <c4fb7c39-c99c-4e4c-bd85-470f5d0dc4dd@zytor.com>
+ <CAMzpN2jpRov_zVp+8qXybS6dtm57uk1pfvRUUKeFGVGnC2G_Wg@mail.gmail.com>
+From: Xin Li <xin@zytor.com>
+Autocrypt: addr=xin@zytor.com; keydata=
+ xsDNBGUPz1cBDACS/9yOJGojBFPxFt0OfTWuMl0uSgpwk37uRrFPTTLw4BaxhlFL0bjs6q+0
+ 2OfG34R+a0ZCuj5c9vggUMoOLdDyA7yPVAJU0OX6lqpg6z/kyQg3t4jvajG6aCgwSDx5Kzg5
+ Rj3AXl8k2wb0jdqRB4RvaOPFiHNGgXCs5Pkux/qr0laeFIpzMKMootGa4kfURgPhRzUaM1vy
+ bsMsL8vpJtGUmitrSqe5dVNBH00whLtPFM7IbzKURPUOkRRiusFAsw0a1ztCgoFczq6VfAVu
+ raTye0L/VXwZd+aGi401V2tLsAHxxckRi9p3mc0jExPc60joK+aZPy6amwSCy5kAJ/AboYtY
+ VmKIGKx1yx8POy6m+1lZ8C0q9b8eJ8kWPAR78PgT37FQWKYS1uAroG2wLdK7FiIEpPhCD+zH
+ wlslo2ETbdKjrLIPNehQCOWrT32k8vFNEMLP5G/mmjfNj5sEf3IOKgMTMVl9AFjsINLHcxEQ
+ 6T8nGbX/n3msP6A36FDfdSEAEQEAAc0WWGluIExpIDx4aW5Aenl0b3IuY29tPsLBDQQTAQgA
+ NxYhBIUq/WFSDTiOvUIqv2u9DlcdrjdRBQJlD89XBQkFo5qAAhsDBAsJCAcFFQgJCgsFFgID
+ AQAACgkQa70OVx2uN1HUpgv/cM2fsFCQodLArMTX5nt9yqAWgA5t1srri6EgS8W3F+3Kitge
+ tYTBKu6j5BXuXaX3vyfCm+zajDJN77JHuYnpcKKr13VcZi1Swv6Jx1u0II8DOmoDYLb1Q2ZW
+ v83W55fOWJ2g72x/UjVJBQ0sVjAngazU3ckc0TeNQlkcpSVGa/qBIHLfZraWtdrNAQT4A1fa
+ sWGuJrChBFhtKbYXbUCu9AoYmmbQnsx2EWoJy3h7OjtfFapJbPZql+no5AJ3Mk9eE5oWyLH+
+ QWqtOeJM7kKvn/dBudokFSNhDUw06e7EoVPSJyUIMbYtUO7g2+Atu44G/EPP0yV0J4lRO6EA
+ wYRXff7+I1jIWEHpj5EFVYO6SmBg7zF2illHEW31JAPtdDLDHYcZDfS41caEKOQIPsdzQkaQ
+ oW2hchcjcMPAfyhhRzUpVHLPxLCetP8vrVhTvnaZUo0xaVYb3+wjP+D5j/3+hwblu2agPsaE
+ vgVbZ8Fx3TUxUPCAdr/p73DGg57oHjgezsDNBGUPz1gBDAD4Mg7hMFRQqlzotcNSxatlAQNL
+ MadLfUTFz8wUUa21LPLrHBkUwm8RujehJrzcVbPYwPXIO0uyL/F///CogMNx7Iwo6by43KOy
+ g89wVFhyy237EY76j1lVfLzcMYmjBoTH95fJC/lVb5Whxil6KjSN/R/y3jfG1dPXfwAuZ/4N
+ cMoOslWkfZKJeEut5aZTRepKKF54T5r49H9F7OFLyxrC/uI9UDttWqMxcWyCkHh0v1Di8176
+ jjYRNTrGEfYfGxSp+3jYL3PoNceIMkqM9haXjjGl0W1B4BidK1LVYBNov0rTEzyr0a1riUrp
+ Qk+6z/LHxCM9lFFXnqH7KWeToTOPQebD2B/Ah5CZlft41i8L6LOF/LCuDBuYlu/fI2nuCc8d
+ m4wwtkou1Y/kIwbEsE/6RQwRXUZhzO6llfoN96Fczr/RwvPIK5SVMixqWq4QGFAyK0m/1ap4
+ bhIRrdCLVQcgU4glo17vqfEaRcTW5SgX+pGs4KIPPBE5J/ABD6pBnUUAEQEAAcLA/AQYAQgA
+ JhYhBIUq/WFSDTiOvUIqv2u9DlcdrjdRBQJlD89ZBQkFo5qAAhsMAAoJEGu9DlcdrjdR4C0L
+ /RcjolEjoZW8VsyxWtXazQPnaRvzZ4vhmGOsCPr2BPtMlSwDzTlri8BBG1/3t/DNK4JLuwEj
+ OAIE3fkkm+UG4Kjud6aNeraDI52DRVCSx6xff3bjmJsJJMb12mWglN6LjdF6K+PE+OTJUh2F
+ dOhslN5C2kgl0dvUuevwMgQF3IljLmi/6APKYJHjkJpu1E6luZec/lRbetHuNFtbh3xgFIJx
+ 2RpgVDP4xB3f8r0I+y6ua+p7fgOjDLyoFjubRGed0Be45JJQEn7A3CSb6Xu7NYobnxfkwAGZ
+ Q81a2XtvNS7Aj6NWVoOQB5KbM4yosO5+Me1V1SkX2jlnn26JPEvbV3KRFcwV5RnDxm4OQTSk
+ PYbAkjBbm+tuJ/Sm+5Yp5T/BnKz21FoCS8uvTiziHj2H7Cuekn6F8EYhegONm+RVg3vikOpn
+ gao85i4HwQTK9/D1wgJIQkdwWXVMZ6q/OALaBp82vQ2U9sjTyFXgDjglgh00VRAHP7u1Rcu4
+ l75w1xInsg==
+In-Reply-To: <CAMzpN2jpRov_zVp+8qXybS6dtm57uk1pfvRUUKeFGVGnC2G_Wg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hi Javier,
+On 3/2/2024 5:20 AM, Brian Gerst wrote:
+> On Fri, Mar 1, 2024 at 11:18 PM Xin Li <xin@zytor.com> wrote:
+>>
+>> On 3/1/2024 5:15 AM, Brian Gerst wrote:
+>>> On Fri, Mar 1, 2024 at 3:41 AM Xin Li (Intel) <xin@zytor.com> wrote:
+>>> There is another spot in head_64.S that also needs this offset:
+>>
+>> I checked all references to __end_init_task before sending out this
+>> patch, and I doubt we need to make more similar changes.
+>>
+>> First of all, "movq    TASK_threadsp(%rcx), %rsp" you added in
+>> 3adee777ad0d ("x86/smpboot: Remove initial_stack on 64-bit") is exactly
+>> what we need to set up %rsp for the init task.
+>>
+>>> /* Set up the stack for verify_cpu() */
+>>> leaq (__end_init_task - PTREGS_SIZE)(%rip), %rsp
+>>
+>> As the comment says, it's a _temporary_ stack for calling verify_cpu()
+>> (but only for BSP, as APs use a different bring up stack), at which
+>> stage the concept of "task" has not formed. I'm thinking maybe it's
+>> better to do:
+>>
+>> /* Set up the stack for verify_cpu() */
+>> leaq __end_init_task(%rip), %rsp
+>>
+>> Previously it was "leaq    (__end_init_task - FRAME_SIZE)(%rip), %rsp",
+>> but the kernel unwinder goes up only to secondary_startup_64_no_verify()
+>> after the new way you introduced to set up %rsp for the init task, and
+>> it seems to me that there is no point to subtract FRAME_SIZE or
+>> PTREGS_SIZE.
+>>
+>> On the other hand, TOP_OF_KERNEL_STACK_PADDING is required for x86_32,
+>> but probably not for x86_64 (defined as 0 before FRED). The most
+>> important usage of TOP_OF_KERNEL_STACK_PADDING is to get the pt_regs
+>> pointer for a task, i.e., task_pt_regs(task), which assumes a fixed
+>> offset from the top of a task stack, but also limits the space that
+>> could be used by future hardware above the pt_regs structure. Thus I
+>> prefer to limit the usage of TOP_OF_KERNEL_STACK_PADDING on x86_64.
+> 
+> The point is to keep consistency with other kernel threads, which have
+> the pt_regs area cleared (see copy_thread()).  In particular, the CS
+> field can't have junk in it or else user_mode(regs) could return the
+> wrong result.  So the stack needs to start below pt_regs, or we need
+> to explicitly zero pt_regs later.
 
-On Fri, Jan 19, 2024 at 08:43:34AM +0100, Javier Carrasco wrote:
-> Some touch devices provide mechanical overlays with different objects
-> like buttons or clipped touchscreen surfaces.
-> 
-> In order to support these objects, add a series of helper functions
-> to the input subsystem to transform them into overlay objects via
-> device tree nodes.
-> 
-> These overlay objects consume the raw touch events and report the
-> expected input events depending on the object properties.
-> 
-> Note that the current implementation allows for multiple definitions
-> of touchscreen areas (regions that report touch events), but only the
-> first one will be used for the touchscreen device that the consumers
-> typically provide.
-> Should the need for multiple touchscreen areas arise, additional
-> touchscreen devices would be required at the consumer side.
-> There is no limitation in the number of touch areas defined as buttons.
-> 
-> Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
+Okay, I will add TOP_OF_KERNEL_STACK_PADDING to the spot in
+arch/x86/kernel/head_64.S, plus another spot in arch/x86/xen/xen-head.S.
 
-Apologies for the delay, but I think this looks great now. It can always
-be extended later in case another touchscreen driver needs additional
-functionality or visibility. You've addressed all of my feedback, and so:
+However, I still think it would be better to not have
+TOP_OF_KERNEL_STACK_PADDING in these spots, instead we should explicitly
+zero pt_regs later;  any *implicit* protocol is NOT welcome. I will find
+a timer later to check with the x86 maintainers :)
 
-Reviewed-by: Jeff LaBundy <jeff@labundy.com>
 
-> ---
->  MAINTAINERS                         |   7 +
->  drivers/input/Makefile              |   2 +-
->  drivers/input/touch-overlay.c       | 250 ++++++++++++++++++++++++++++++++++++
->  include/linux/input/touch-overlay.h |  22 ++++
->  4 files changed, 280 insertions(+), 1 deletion(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index a7c4cf8201e0..668687bf94df 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -21961,6 +21961,13 @@ L:	platform-driver-x86@vger.kernel.org
->  S:	Maintained
->  F:	drivers/platform/x86/toshiba-wmi.c
->  
-> +TOUCH OVERLAY
-> +M:	Javier Carrasco <javier.carrasco@wolfvision.net>
-> +L:	linux-input@vger.kernel.org
-> +S:	Maintained
-> +F:	drivers/input/touch-overlay.c
-> +F:	include/linux/input/touch-overlay.h
-> +
->  TPM DEVICE DRIVER
->  M:	Peter Huewe <peterhuewe@gmx.de>
->  M:	Jarkko Sakkinen <jarkko@kernel.org>
-> diff --git a/drivers/input/Makefile b/drivers/input/Makefile
-> index c78753274921..393e9f4d00dc 100644
-> --- a/drivers/input/Makefile
-> +++ b/drivers/input/Makefile
-> @@ -7,7 +7,7 @@
->  
->  obj-$(CONFIG_INPUT)		+= input-core.o
->  input-core-y := input.o input-compat.o input-mt.o input-poller.o ff-core.o
-> -input-core-y += touchscreen.o
-> +input-core-y += touchscreen.o touch-overlay.o
->  
->  obj-$(CONFIG_INPUT_FF_MEMLESS)	+= ff-memless.o
->  obj-$(CONFIG_INPUT_SPARSEKMAP)	+= sparse-keymap.o
-> diff --git a/drivers/input/touch-overlay.c b/drivers/input/touch-overlay.c
-> new file mode 100644
-> index 000000000000..42b6ad753a00
-> --- /dev/null
-> +++ b/drivers/input/touch-overlay.c
-> @@ -0,0 +1,250 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + *  Helper functions for overlay objects on touchscreens
-> + *
-> + *  Copyright (c) 2023 Javier Carrasco <javier.carrasco@wolfvision.net>
-> + */
-> +
-> +#include <linux/input.h>
-> +#include <linux/input/mt.h>
-> +#include <linux/input/touch-overlay.h>
-> +#include <linux/list.h>
-> +#include <linux/module.h>
-> +#include <linux/property.h>
-> +
-> +struct touch_overlay_segment {
-> +	struct list_head list;
-> +	u32 x_origin;
-> +	u32 y_origin;
-> +	u32 x_size;
-> +	u32 y_size;
-> +	u32 key;
-> +	bool pressed;
-> +	int slot;
-> +};
-> +
-> +static int touch_overlay_get_segment(struct fwnode_handle *segment_node,
-> +				     struct touch_overlay_segment *segment,
-> +				     struct input_dev *input)
-> +{
-> +	int error;
-> +
-> +	error = fwnode_property_read_u32(segment_node, "x-origin",
-> +					 &segment->x_origin);
-> +	if (error)
-> +		return error;
-> +
-> +	error = fwnode_property_read_u32(segment_node, "y-origin",
-> +					 &segment->y_origin);
-> +	if (error)
-> +		return error;
-> +
-> +	error = fwnode_property_read_u32(segment_node, "x-size",
-> +					 &segment->x_size);
-> +	if (error)
-> +		return error;
-> +
-> +	error = fwnode_property_read_u32(segment_node, "y-size",
-> +					 &segment->y_size);
-> +	if (error)
-> +		return error;
-> +
-> +	error = fwnode_property_read_u32(segment_node, "linux,code",
-> +					 &segment->key);
-> +	if (!error)
-> +		input_set_capability(input, EV_KEY, segment->key);
-> +	else if (error != -EINVAL)
-> +		return error;
-> +
-> +	return 0;
-> +}
-> +
-> +/**
-> + * touch_overlay_map - map overlay objects from the device tree and set
-> + * key capabilities if buttons are defined.
-> + * @list: pointer to the list that will hold the segments
-> + * @input: pointer to the already allocated input_dev
-> + *
-> + * Returns 0 on success and error number otherwise.
-> + *
-> + * If buttons are defined, key capabilities are set accordingly.
-> + */
-> +int touch_overlay_map(struct list_head *list, struct input_dev *input)
-> +{
-> +	struct fwnode_handle *overlay, *fw_segment;
-> +	struct device *dev = input->dev.parent;
-> +	struct touch_overlay_segment *segment;
-> +	int error;
-> +
-> +	overlay = device_get_named_child_node(dev, "touch-overlay");
-> +	if (!overlay)
-> +		return 0;
-> +
-> +	fwnode_for_each_child_node(overlay, fw_segment) {
-> +		segment = devm_kzalloc(dev, sizeof(*segment), GFP_KERNEL);
-> +		if (!segment) {
-> +			error = -ENOMEM;
-> +			fwnode_handle_put(overlay);
-> +			break;
-> +		}
-> +		error = touch_overlay_get_segment(fw_segment, segment, input);
-> +		if (error) {
-> +			fwnode_handle_put(overlay);
-> +			break;
-> +		}
-> +		list_add_tail(&segment->list, list);
-> +	}
-> +
-> +	return error;
-> +}
-> +EXPORT_SYMBOL(touch_overlay_map);
-> +
-> +/**
-> + * touch_overlay_get_touchscreen_abs - get abs size from the touchscreen area.
-> + * @list: pointer to the list that holds the segments
-> + * @x: horizontal abs
-> + * @y: vertical abs
-> + */
-> +void touch_overlay_get_touchscreen_abs(struct list_head *list, u16 *x, u16 *y)
-> +{
-> +	struct touch_overlay_segment *segment;
-> +	struct list_head *ptr;
-> +
-> +	list_for_each(ptr, list) {
-> +		segment = list_entry(ptr, struct touch_overlay_segment, list);
-> +		if (!segment->key) {
-> +			*x = segment->x_size - 1;
-> +			*y = segment->y_size - 1;
-> +			break;
-> +		}
-> +	}
-> +}
-> +EXPORT_SYMBOL(touch_overlay_get_touchscreen_abs);
-> +
-> +static bool touch_overlay_segment_event(struct touch_overlay_segment *seg,
-> +					u32 x, u32 y)
-> +{
-> +	if (!seg)
-> +		return false;
-> +
-> +	if (x >= seg->x_origin && x < (seg->x_origin + seg->x_size) &&
-> +	    y >= seg->y_origin && y < (seg->y_origin + seg->y_size))
-> +		return true;
-> +
-> +	return false;
-> +}
-> +
-> +/**
-> + * touch_overlay_mapped_touchscreen - check if a touchscreen area is mapped
-> + * @list: pointer to the list that holds the segments
-> + *
-> + * Returns true if a touchscreen area is mapped or false otherwise.
-> + */
-> +bool touch_overlay_mapped_touchscreen(struct list_head *list)
-> +{
-> +	struct touch_overlay_segment *segment;
-> +	struct list_head *ptr;
-> +
-> +	list_for_each(ptr, list) {
-> +		segment = list_entry(ptr, struct touch_overlay_segment, list);
-> +		if (!segment->key)
-> +			return true;
-> +	}
-> +
-> +	return false;
-> +}
-> +EXPORT_SYMBOL(touch_overlay_mapped_touchscreen);
-> +
-> +static bool touch_overlay_event_on_ts(struct list_head *list, u32 *x, u32 *y)
-> +{
-> +	struct touch_overlay_segment *segment;
-> +	struct list_head *ptr;
-> +	bool valid_touch = true;
-> +
-> +	if (!x || !y)
-> +		return false;
-> +
-> +	list_for_each(ptr, list) {
-> +		segment = list_entry(ptr, struct touch_overlay_segment, list);
-> +		if (segment->key)
-> +			continue;
-> +
-> +		if (touch_overlay_segment_event(segment, *x, *y)) {
-> +			*x -= segment->x_origin;
-> +			*y -= segment->y_origin;
-> +			return true;
-> +		}
-> +		/* ignore touch events outside the defined area */
-> +		valid_touch = false;
-> +	}
-> +
-> +	return valid_touch;
-> +}
-> +
-> +static bool touch_overlay_button_event(struct input_dev *input,
-> +				       struct touch_overlay_segment *segment,
-> +				       const u32 *x, const u32 *y, u32 slot)
-> +{
-> +	bool contact = x && y;
-> +
-> +	if (!contact && segment->pressed && segment->slot == slot) {
-> +		segment->pressed = false;
-> +		input_report_key(input, segment->key, false);
-> +		input_sync(input);
-> +		return true;
-> +	} else if (contact && touch_overlay_segment_event(segment, *x, *y)) {
-> +		segment->pressed = true;
-> +		segment->slot = slot;
-> +		input_report_key(input, segment->key, true);
-> +		input_sync(input);
-> +		return true;
-> +	}
-> +
-> +	return false;
-> +}
-> +
-> +/**
-> + * touch_overlay_process_event - process input events according to the overlay
-> + * mapping. This function acts as a filter to release the calling driver from
-> + * the events that are either related to overlay buttons or out of the overlay
-> + * touchscreen area, if defined.
-> + * @list: pointer to the list that holds the segments
-> + * @input: pointer to the input device associated to the event
-> + * @x: pointer to the x coordinate (NULL if not available - no contact)
-> + * @y: pointer to the y coordinate (NULL if not available - no contact)
-> + * @slot: slot associated to the event
-> + *
-> + * Returns true if the event was processed (reported for valid key events
-> + * and dropped for events outside the overlay touchscreen area) or false
-> + * if the event must be processed by the caller. In that case this function
-> + * shifts the (x,y) coordinates to the overlay touchscreen axis if required.
-> + */
-> +bool touch_overlay_process_event(struct list_head *list,
-> +				 struct input_dev *input,
-> +				 u32 *x, u32 *y, u32 slot)
-> +{
-> +	struct touch_overlay_segment *segment;
-> +	struct list_head *ptr;
-> +
-> +	/*
-> +	 * buttons must be prioritized over overlay touchscreens to account for
-> +	 * overlappings e.g. a button inside the touchscreen area.
-> +	 */
-> +	list_for_each(ptr, list) {
-> +		segment = list_entry(ptr, struct touch_overlay_segment, list);
-> +		if (segment->key &&
-> +		    touch_overlay_button_event(input, segment, x, y, slot)) {
-> +			return true;
-> +		}
-> +	}
-> +
-> +	/*
-> +	 * valid touch events on the overlay touchscreen are left for the client
-> +	 * to be processed/reported according to its (possibly) unique features.
-> +	 */
-> +	return !touch_overlay_event_on_ts(list, x, y);
-> +}
-> +EXPORT_SYMBOL(touch_overlay_process_event);
-> +
-> +MODULE_LICENSE("GPL");
-> +MODULE_DESCRIPTION("Helper functions for overlay objects on touch devices");
-> diff --git a/include/linux/input/touch-overlay.h b/include/linux/input/touch-overlay.h
-> new file mode 100644
-> index 000000000000..cef05c46000d
-> --- /dev/null
-> +++ b/include/linux/input/touch-overlay.h
-> @@ -0,0 +1,22 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Copyright (c) 2023 Javier Carrasco <javier.carrasco@wolfvision.net>
-> + */
-> +
-> +#ifndef _TOUCH_OVERLAY
-> +#define _TOUCH_OVERLAY
-> +
-> +#include <linux/types.h>
-> +
-> +struct input_dev;
-> +
-> +int touch_overlay_map(struct list_head *list, struct input_dev *input);
-> +
-> +void touch_overlay_get_touchscreen_abs(struct list_head *list, u16 *x, u16 *y);
-> +
-> +bool touch_overlay_mapped_touchscreen(struct list_head *list);
-> +
-> +bool touch_overlay_process_event(struct list_head *list, struct input_dev *input,
-> +				 u32 *x, u32 *y, u32 slot);
-> +
-> +#endif
-> 
-> -- 
-> 2.39.2
-> 
+> Ideally, the load from thread->sp should just shift RSP by phys_base,
+> pointing to the same memory location in the virtual mapping.
 
-Kind regards,
-Jeff LaBundy
+I prefer to do this explicitly as what's done now; it may be easier to
+understand for future kernel developers.
+
+Thanks!
+     Xin
 
