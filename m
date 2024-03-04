@@ -1,370 +1,188 @@
-Return-Path: <linux-kernel+bounces-91363-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91364-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60F66871011
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 23:28:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 404BD871013
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 23:29:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 181D5283F88
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:28:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32E3F1C20EC5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:29:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 552967BB02;
-	Mon,  4 Mar 2024 22:28:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E3517BAEF;
+	Mon,  4 Mar 2024 22:29:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qTQ7gLuC"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DOQJgDIM"
+Received: from mail-vk1-f169.google.com (mail-vk1-f169.google.com [209.85.221.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 326E9DDCB;
-	Mon,  4 Mar 2024 22:28:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D30358F58
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 22:29:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709591284; cv=none; b=HgaWH60YWoFBTDG/m0SC1ZYSnqy/SGk87RN5pMImivxQHxfDQsJPV3sPjb0FsoeCZZR+oZhK3vj2BWb9utBxPY/29usfTdTgdwz0ovRhYHhogNjTiKCLgaMfAqyz+FgRE9a8b0GYeNYZAPWt4mtUqDcC+0Err486gYmjUR5GeKk=
+	t=1709591386; cv=none; b=cUaprgEt+t3M7qfyOmEZNni8tGBpOILt5fOLPWHLfvvap1VFybhYTLLwxVdzPJFulKoqwEBjU1S7ektPt7Zy4vfadA4VEZuMPGGDjQF7x0JlmJizDSHWrLsKeyYIynNhmSr5fQmfNfkF1j/WEMt7dstCAIv0EtmTDruu4jf/6io=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709591284; c=relaxed/simple;
-	bh=O7ghxOz+tnaZWn/nOXvh3ShKeX06gALHOmHkv+3J2/Q=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=E3FM3+og1TckfM3tRgnz1C90kX/7goSrKrOOX2aHtSULZ+BIiL9z5IPtHJ1iH4DVUFUjyb97si1sm6HrtEaljXcV/GEvmTnQqxXLSvfu8Do0ru+DQZVAZS+PJmN/0TsZ1l69eoh13whQxfUtuCg98XE7HTGM+cAWcz4hjQQTpnM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qTQ7gLuC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11FB8C433F1;
-	Mon,  4 Mar 2024 22:27:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709591283;
-	bh=O7ghxOz+tnaZWn/nOXvh3ShKeX06gALHOmHkv+3J2/Q=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=qTQ7gLuCWzqyriT4oUSLlJ8sKltSRQlBobaQEXm43MZ45PttQThgFD5iMwWXUJfnG
-	 oofStCylr2SAU0p3mZh2UdqYoXzOoXy10WrbRe+bSl/iDJcE8aQzvSsz80X1K7kSha
-	 PW4wsh9pmIArriU4BePfo1E7HMVsMA4WNvcQ9tWUKIUiaj4QTowMS7Ur1VJyy9q8qk
-	 CwXFwli+u0ns7eTYxxzBFv7XbRdFcesMnY1i2DjORTe6OZizxsOVEtegrEC3PIHSZY
-	 hu/VtCABKlw9f861AkeoLKBfCVMCqg66H0FiiIXn0VDRAD1hkoSpTFZWUh3x6C/wpu
-	 AazA2tdooL7yw==
+	s=arc-20240116; t=1709591386; c=relaxed/simple;
+	bh=3NF7mMoktBFxBF80bacY2+8paBK1GDHPIOT027+cEuY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Cdolop/5hZ7153w6iTwSfFxaLuJEqd9YArQhh4vmar1ZutRyLhDRZeiIHMzQn9beQ8CiV/NiZjM+YdKJEEKFEAgudm/lSRmd4MH1Tc3u7zsyIc4lZXUrU61UDfKeF3HkZ3vmiMCIMkbRT/+ANFUYWsKfKB0KWKWqxFf4T2kgb+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DOQJgDIM; arc=none smtp.client-ip=209.85.221.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f169.google.com with SMTP id 71dfb90a1353d-4d355374878so6998e0c.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 14:29:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709591383; x=1710196183; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jirSeDVxTZlyRe9zYTwADzzdMh/h01z9Up/58VyB0jI=;
+        b=DOQJgDIMvXyUjW9gw7b87GSEOwDRSJx9u5z+rKNVApV2BWGjCioXpLhVLdpXpVjSGq
+         H4pTE0arJWiK9dlym0EW/Jbt6muNZcXoGCcW/DsWMOfIbY5Dls3Uvt9tUlDDh1FTwWob
+         S1AbeWbTnubNyButOFDZItzbGI3+tkJ7pnG1qbAVlFjPgBt4SaYL6dlv4mZtWrC7/MPO
+         CEMK4U2rm1pj9gOqN79s0DXU9iORWsqyDcw0j9fqCXNNJw+ML3oju+7oAI8a+h2jqi5v
+         iLSYMK4iLxAuK8hiE9cp93FlWDlQowp7GeK3rvEJj7h9TbLTbl8sd9ZnvaF/gSq0vOWY
+         G7ZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709591383; x=1710196183;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jirSeDVxTZlyRe9zYTwADzzdMh/h01z9Up/58VyB0jI=;
+        b=VkJoZyR3idU80RNMWT5QAR6ABjv7R7VTerWr3itDmPpDq++8iAY+zZ1uvTeyNYtR0Z
+         PgyM+Wa1yKx5U188B2VUhg+dEJParA9u3n1m4vFhF5rWc39sGYIc3DdRpjpl9f1VLj7S
+         JqEY66wSS5kWB/8BNF0i35fVJtkFam2tp3xM2uye5/4hozwBIe98PGi6ENTAtd5+jN8C
+         x2e56UpATBAzSplLQf75cMlB11UV4xYxChqCJsEcWUZ8N0KlQ+eLWHUpf4MRWTMKJZH8
+         PVYSNZ1UmFNGez1dXrmYmZqi81wcRCQ/DwaRCH0hwmekMChY1QnWHNV7qLS3ahC9q2+C
+         SpoQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX/o0k7zZzzgoDC6fnOaIHU7VXCTfwsivT5KeSFG4LPJvVJ3HxKgvVxbI4WNYxB6maIOPr3xqgQtJqGEn4Uvj6kyFuee5gjpYZ8jFT8
+X-Gm-Message-State: AOJu0Yz0x7Bxwu+E7PBXPZC7jEIDn4wuA9jI5fDY0KInr7L/lT+rQ6M9
+	M/8AeNaf4EfbEatyKKuFFXrkYp/htFrV2U78AYdrtorq8ivq2PLToamJp4YOFjpOQ4dGVesyBtY
+	vuYGLsONL5GTdTlt5BHqbQVArXtw=
+X-Google-Smtp-Source: AGHT+IEnmR9SSBt0Nu6nkL0livb/Wk+Stg5tA9Fjmnn32Rhz1c1Qu6OXcx9tIVyT4JfRhKcSOochQjpnpH+9s55RCVU=
+X-Received: by 2002:a05:6122:999:b0:4d3:4ac2:29f4 with SMTP id
+ g25-20020a056122099900b004d34ac229f4mr63078vkd.2.1709591383601; Mon, 04 Mar
+ 2024 14:29:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
+References: <20240304103757.235352-1-21cnbao@gmail.com> <706b7129-85f6-4470-9fd9-f955a8e6bd7c@arm.com>
+ <37f1e6da-412b-4bb4-88b7-4c49f21f5fe9@redhat.com> <CAGsJ_4yJ3yCyN_KgBO8W+jFx8RN6_JhS9OwX3FH6X_gpU7g62w@mail.gmail.com>
+ <804524c8-772c-42d0-93a5-90d77f13f304@redhat.com>
+In-Reply-To: <804524c8-772c-42d0-93a5-90d77f13f304@redhat.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Tue, 5 Mar 2024 11:29:31 +1300
+Message-ID: <CAGsJ_4yqUW46xyDtZ4X1wQZ2_0bLM85Euz2BufERa75Rg+gVyw@mail.gmail.com>
+Subject: Re: [RFC PATCH] mm: hold PTL from the first PTE while reclaiming a
+ large folio
+To: David Hildenbrand <david@redhat.com>
+Cc: Ryan Roberts <ryan.roberts@arm.com>, akpm@linux-foundation.org, linux-mm@kvack.org, 
+	chrisl@kernel.org, yuzhao@google.com, hanchuanhua@oppo.com, 
+	linux-kernel@vger.kernel.org, willy@infradead.org, ying.huang@intel.com, 
+	xiang@kernel.org, mhocko@suse.com, shy828301@gmail.com, 
+	wangkefeng.wang@huawei.com, Barry Song <v-songbaohua@oppo.com>, 
+	Hugh Dickins <hughd@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 05 Mar 2024 00:27:54 +0200
-Message-Id: <CZLBJ1HAC4TO.1F1C2IV0Z9RTF@suppilovahvero>
-Cc: "Shawn Guo" <shawnguo@kernel.org>, "Jonathan Corbet" <corbet@lwn.net>,
- "Sascha Hauer" <s.hauer@pengutronix.de>, "Pengutronix Kernel Team"
- <kernel@pengutronix.de>, "Fabio Estevam" <festevam@gmail.com>, "NXP Linux
- Team" <linux-imx@nxp.com>, "Ahmad Fatoum" <a.fatoum@pengutronix.de>, "sigma
- star Kernel Team" <upstream+dcp@sigma-star.at>, "David Howells"
- <dhowells@redhat.com>, "Li Yang" <leoyang.li@nxp.com>, "Paul Moore"
- <paul@paul-moore.com>, "James Morris" <jmorris@namei.org>, "Serge E.
- Hallyn" <serge@hallyn.com>, "Paul E. McKenney" <paulmck@kernel.org>, "Randy
- Dunlap" <rdunlap@infradead.org>, "Catalin Marinas"
- <catalin.marinas@arm.com>, "Rafael J. Wysocki"
- <rafael.j.wysocki@intel.com>, "Tejun Heo" <tj@kernel.org>, "Steven Rostedt
- (Google)" <rostedt@goodmis.org>, <linux-doc@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-integrity@vger.kernel.org>,
- <keyrings@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <linuxppc-dev@lists.ozlabs.org>,
- <linux-security-module@vger.kernel.org>, "Richard Weinberger"
- <richard@nod.at>, "David Oberhollenzer" <david.oberhollenzer@sigma-star.at>
-Subject: Re: [PATCH v5 1/6] crypto: mxs-dcp: Add support for hardware-bound
- keys
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "David Gstir" <david@sigma-star.at>, "Mimi Zohar" <zohar@linux.ibm.com>,
- "James Bottomley" <jejb@linux.ibm.com>, "Herbert Xu"
- <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>
-X-Mailer: aerc 0.15.2
-References: <20231215110639.45522-1-david@sigma-star.at>
- <20231215110639.45522-2-david@sigma-star.at>
-In-Reply-To: <20231215110639.45522-2-david@sigma-star.at>
 
-Further remarks.
-
-On Fri Dec 15, 2023 at 1:06 PM EET, David Gstir wrote:
-> DCP is capable of performing AES with two hardware-bound keys:
+On Tue, Mar 5, 2024 at 10:15=E2=80=AFAM David Hildenbrand <david@redhat.com=
+> wrote:
 >
-> - The one-time programmable (OTP) key which is burnt via on-chip fuses
-> - The unique key (UK) which is derived from the OTP key
 >
-> In addition to the two hardware-bound keys, DCP also supports
-> storing keys in 4 dedicated key slots within its secure memory area
-> (internal SRAM).
+> >>> Do we need a Fixes tag?
+> >
+> > I am not quite sure which commit should be here for a fixes tag.
+> > I think it's more of an optimization.
 >
-> These keys are not stored in main memory and are therefore
-> not directly accessible by the operating system. To use them
-> for AES operations, a one-byte key reference has to supplied
-> with the DCP operation descriptor in the control register.
+> Good, that helps!
 >
-> This adds support for using any of these 6 keys through the crypto API
-> via their key reference after they have been set up. The main purpose
-
-Please write actions always in imperative form. E.g. instead of "This
-adds" you could just as well simply write "Add", right?
-
-Also, "adding support" is somewhat abstract expression tbh. You should
-rather point out the driver exactly you are modifying (completely
-missing BTW) and what sort of new functionalities this mysetery word
-"support" maps into.
-
-More cocrete and dumbed you can ever be, the better is the commit
-message and more likely we also get the code changes you are doing.
-
-> is to add support for DCP-backed trusted keys. Other use cases are
-> possible too (see similar existing paes implementations), but these
-> should carefully be evaluated as e.g. enabling AF_ALG will give
-> userspace full access to use keys. In scenarios with untrustworthy
-> userspace, this will enable en-/decryption oracles.
+> >
+> >>>
+> >>
+> >> What would be the description of the problem we are fixing?
+> >>
+> >> 1) failing to unmap?
+> >>
+> >> That can happen with small folios as well IIUC.
+> >>
+> >> 2) Putting the large folio on the deferred split queue?
+> >>
+> >> That sounds more reasonable.
+> >
+> > I don't feel it is reasonable. Avoiding this kind of accident splitting
+> > from the kernel's improper code is a more reasonable approach
+> > as there is always a price to pay for splitting and unfolding PTEs
+> > etc.
+> >
+> > While we can't avoid splitting coming from userspace's
+> > MADV_DONTNEED, munmap, mprotect, we have a way
+> > to ensure the kernel itself doesn't accidently break up a
+> > large folio.
 >
-> Co-developed-by: Richard Weinberger <richard@nod.at>
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-> Co-developed-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-> Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-> Signed-off-by: David Gstir <david@sigma-star.at>
-> Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
-> ---
->  drivers/crypto/mxs-dcp.c | 104 ++++++++++++++++++++++++++++++++++-----
->  include/soc/fsl/dcp.h    |  17 +++++++
->  2 files changed, 110 insertions(+), 11 deletions(-)
->  create mode 100644 include/soc/fsl/dcp.h
+> Note that on the next vmscan we would retry, find the remaining present
+> entries and swapout that thing completely :)
+
+This is true, but since we can finish the job the first time, it seems
+second retry is a cost :-)
+
 >
-> diff --git a/drivers/crypto/mxs-dcp.c b/drivers/crypto/mxs-dcp.c
-> index f6b7bce0e656..2dc664fb2faf 100644
-> --- a/drivers/crypto/mxs-dcp.c
-> +++ b/drivers/crypto/mxs-dcp.c
-> @@ -15,6 +15,7 @@
->  #include <linux/platform_device.h>
->  #include <linux/stmp_device.h>
->  #include <linux/clk.h>
-> +#include <soc/fsl/dcp.h>
-> =20
->  #include <crypto/aes.h>
->  #include <crypto/sha1.h>
-> @@ -101,6 +102,7 @@ struct dcp_async_ctx {
->  	struct crypto_skcipher		*fallback;
->  	unsigned int			key_len;
->  	uint8_t				key[AES_KEYSIZE_128];
-> +	bool				key_referenced;
->  };
-> =20
->  struct dcp_aes_req_ctx {
-> @@ -155,6 +157,7 @@ static struct dcp *global_sdcp;
->  #define MXS_DCP_CONTROL0_HASH_TERM		(1 << 13)
->  #define MXS_DCP_CONTROL0_HASH_INIT		(1 << 12)
->  #define MXS_DCP_CONTROL0_PAYLOAD_KEY		(1 << 11)
-> +#define MXS_DCP_CONTROL0_OTP_KEY		(1 << 10)
->  #define MXS_DCP_CONTROL0_CIPHER_ENCRYPT		(1 << 8)
->  #define MXS_DCP_CONTROL0_CIPHER_INIT		(1 << 9)
->  #define MXS_DCP_CONTROL0_ENABLE_HASH		(1 << 6)
-> @@ -168,6 +171,8 @@ static struct dcp *global_sdcp;
->  #define MXS_DCP_CONTROL1_CIPHER_MODE_ECB	(0 << 4)
->  #define MXS_DCP_CONTROL1_CIPHER_SELECT_AES128	(0 << 0)
-> =20
-> +#define MXS_DCP_CONTROL1_KEY_SELECT_SHIFT	8
-> +
->  static int mxs_dcp_start_dma(struct dcp_async_ctx *actx)
->  {
->  	int dma_err;
-> @@ -224,13 +229,16 @@ static int mxs_dcp_run_aes(struct dcp_async_ctx *ac=
-tx,
->  	struct dcp *sdcp =3D global_sdcp;
->  	struct dcp_dma_desc *desc =3D &sdcp->coh->desc[actx->chan];
->  	struct dcp_aes_req_ctx *rctx =3D skcipher_request_ctx(req);
-> +	bool key_referenced =3D actx->key_referenced;
->  	int ret;
-> =20
-> -	key_phys =3D dma_map_single(sdcp->dev, sdcp->coh->aes_key,
-> -				  2 * AES_KEYSIZE_128, DMA_TO_DEVICE);
-> -	ret =3D dma_mapping_error(sdcp->dev, key_phys);
-> -	if (ret)
-> -		return ret;
-> +	if (!key_referenced) {
-> +		key_phys =3D dma_map_single(sdcp->dev, sdcp->coh->aes_key,
-> +					  2 * AES_KEYSIZE_128, DMA_TO_DEVICE);
-> +		ret =3D dma_mapping_error(sdcp->dev, key_phys);
-> +		if (ret)
-> +			return ret;
-> +	}
-> =20
->  	src_phys =3D dma_map_single(sdcp->dev, sdcp->coh->aes_in_buf,
->  				  DCP_BUF_SZ, DMA_TO_DEVICE);
-> @@ -255,8 +263,12 @@ static int mxs_dcp_run_aes(struct dcp_async_ctx *act=
-x,
->  		    MXS_DCP_CONTROL0_INTERRUPT |
->  		    MXS_DCP_CONTROL0_ENABLE_CIPHER;
-> =20
-> -	/* Payload contains the key. */
-> -	desc->control0 |=3D MXS_DCP_CONTROL0_PAYLOAD_KEY;
-> +	if (key_referenced)
-> +		/* Set OTP key bit to select the key via KEY_SELECT. */
-> +		desc->control0 |=3D MXS_DCP_CONTROL0_OTP_KEY;
-> +	else
-> +		/* Payload contains the key. */
-> +		desc->control0 |=3D MXS_DCP_CONTROL0_PAYLOAD_KEY;
-> =20
->  	if (rctx->enc)
->  		desc->control0 |=3D MXS_DCP_CONTROL0_CIPHER_ENCRYPT;
-> @@ -270,6 +282,9 @@ static int mxs_dcp_run_aes(struct dcp_async_ctx *actx=
-,
->  	else
->  		desc->control1 |=3D MXS_DCP_CONTROL1_CIPHER_MODE_CBC;
-> =20
-> +	if (key_referenced)
-> +		desc->control1 |=3D sdcp->coh->aes_key[0] << MXS_DCP_CONTROL1_KEY_SELE=
-CT_SHIFT;
-> +
->  	desc->next_cmd_addr =3D 0;
->  	desc->source =3D src_phys;
->  	desc->destination =3D dst_phys;
-> @@ -284,9 +299,9 @@ static int mxs_dcp_run_aes(struct dcp_async_ctx *actx=
-,
->  err_dst:
->  	dma_unmap_single(sdcp->dev, src_phys, DCP_BUF_SZ, DMA_TO_DEVICE);
->  err_src:
-> -	dma_unmap_single(sdcp->dev, key_phys, 2 * AES_KEYSIZE_128,
-> -			 DMA_TO_DEVICE);
-> -
-> +	if (!key_referenced)
-> +		dma_unmap_single(sdcp->dev, key_phys, 2 * AES_KEYSIZE_128,
-> +				 DMA_TO_DEVICE);
->  	return ret;
->  }
-> =20
-> @@ -453,7 +468,7 @@ static int mxs_dcp_aes_enqueue(struct skcipher_reques=
-t *req, int enc, int ecb)
->  	struct dcp_aes_req_ctx *rctx =3D skcipher_request_ctx(req);
->  	int ret;
-> =20
-> -	if (unlikely(actx->key_len !=3D AES_KEYSIZE_128))
-> +	if (unlikely(actx->key_len !=3D AES_KEYSIZE_128 && !actx->key_reference=
-d))
->  		return mxs_dcp_block_fallback(req, enc);
-> =20
->  	rctx->enc =3D enc;
-> @@ -500,6 +515,7 @@ static int mxs_dcp_aes_setkey(struct crypto_skcipher =
-*tfm, const u8 *key,
->  	 * there can still be an operation in progress.
->  	 */
->  	actx->key_len =3D len;
-> +	actx->key_referenced =3D false;
->  	if (len =3D=3D AES_KEYSIZE_128) {
->  		memcpy(actx->key, key, len);
->  		return 0;
-> @@ -516,6 +532,32 @@ static int mxs_dcp_aes_setkey(struct crypto_skcipher=
- *tfm, const u8 *key,
->  	return crypto_skcipher_setkey(actx->fallback, key, len);
->  }
-> =20
-> +static int mxs_dcp_aes_setrefkey(struct crypto_skcipher *tfm, const u8 *=
-key,
-> +				 unsigned int len)
-> +{
-> +	struct dcp_async_ctx *actx =3D crypto_skcipher_ctx(tfm);
-> +
-> +	if (len !=3D DCP_PAES_KEYSIZE)
-> +		return -EINVAL;
-> +
-> +	switch (key[0]) {
-> +	case DCP_PAES_KEY_SLOT0:
-> +	case DCP_PAES_KEY_SLOT1:
-> +	case DCP_PAES_KEY_SLOT2:
-> +	case DCP_PAES_KEY_SLOT3:
-> +	case DCP_PAES_KEY_UNIQUE:
-> +	case DCP_PAES_KEY_OTP:
-> +		memcpy(actx->key, key, len);
-> +		actx->key_len =3D len;
-> +		actx->key_referenced =3D true;
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int mxs_dcp_aes_fallback_init_tfm(struct crypto_skcipher *tfm)
->  {
->  	const char *name =3D crypto_tfm_alg_name(crypto_skcipher_tfm(tfm));
-> @@ -539,6 +581,13 @@ static void mxs_dcp_aes_fallback_exit_tfm(struct cry=
-pto_skcipher *tfm)
->  	crypto_free_skcipher(actx->fallback);
->  }
-> =20
-> +static int mxs_dcp_paes_init_tfm(struct crypto_skcipher *tfm)
-> +{
-> +	crypto_skcipher_set_reqsize(tfm, sizeof(struct dcp_aes_req_ctx));
-> +
-> +	return 0;
-> +}
-> +
->  /*
->   * Hashing (SHA1/SHA256)
->   */
-> @@ -889,6 +938,39 @@ static struct skcipher_alg dcp_aes_algs[] =3D {
->  		.ivsize			=3D AES_BLOCK_SIZE,
->  		.init			=3D mxs_dcp_aes_fallback_init_tfm,
->  		.exit			=3D mxs_dcp_aes_fallback_exit_tfm,
-> +	}, {
-> +		.base.cra_name		=3D "ecb(paes)",
-> +		.base.cra_driver_name	=3D "ecb-paes-dcp",
-> +		.base.cra_priority	=3D 401,
-> +		.base.cra_alignmask	=3D 15,
-> +		.base.cra_flags		=3D CRYPTO_ALG_ASYNC | CRYPTO_ALG_INTERNAL,
-> +		.base.cra_blocksize	=3D AES_BLOCK_SIZE,
-> +		.base.cra_ctxsize	=3D sizeof(struct dcp_async_ctx),
-> +		.base.cra_module	=3D THIS_MODULE,
-> +
-> +		.min_keysize		=3D DCP_PAES_KEYSIZE,
-> +		.max_keysize		=3D DCP_PAES_KEYSIZE,
-> +		.setkey			=3D mxs_dcp_aes_setrefkey,
-> +		.encrypt		=3D mxs_dcp_aes_ecb_encrypt,
-> +		.decrypt		=3D mxs_dcp_aes_ecb_decrypt,
-> +		.init			=3D mxs_dcp_paes_init_tfm,
-> +	}, {
-> +		.base.cra_name		=3D "cbc(paes)",
-> +		.base.cra_driver_name	=3D "cbc-paes-dcp",
-> +		.base.cra_priority	=3D 401,
-> +		.base.cra_alignmask	=3D 15,
-> +		.base.cra_flags		=3D CRYPTO_ALG_ASYNC | CRYPTO_ALG_INTERNAL,
-> +		.base.cra_blocksize	=3D AES_BLOCK_SIZE,
-> +		.base.cra_ctxsize	=3D sizeof(struct dcp_async_ctx),
-> +		.base.cra_module	=3D THIS_MODULE,
-> +
-> +		.min_keysize		=3D DCP_PAES_KEYSIZE,
-> +		.max_keysize		=3D DCP_PAES_KEYSIZE,
-> +		.setkey			=3D mxs_dcp_aes_setrefkey,
-> +		.encrypt		=3D mxs_dcp_aes_cbc_encrypt,
-> +		.decrypt		=3D mxs_dcp_aes_cbc_decrypt,
-> +		.ivsize			=3D AES_BLOCK_SIZE,
-> +		.init			=3D mxs_dcp_paes_init_tfm,
->  	},
->  };
-> =20
-> diff --git a/include/soc/fsl/dcp.h b/include/soc/fsl/dcp.h
-> new file mode 100644
-> index 000000000000..cda89e260c46
-> --- /dev/null
-> +++ b/include/soc/fsl/dcp.h
-> @@ -0,0 +1,17 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Copyright (C) 2021 sigma star gmbh
+> >
+> > In OPPO's phones, we ran into some weird bugs due to skipped PTEs
+> > in try_to_unmap_one. hardly could we fix it from the root cause. with
+> > various races, figuring out their timings was really a big pain :-)
+> >
+>
+> I can imagine. I assume, though, that it might be related to the way the
+> cont-pte bit was handled. Ryan's implementation should be able to cope
+> with that.
 
-nit: short description of the contents would not harm.
+I guess you are probably right. Ryan's implementation decouples CONT-PTE
+from mm core. nice to have it.
 
-> + */
-> +
-> +#ifndef MXS_DCP_H
-> +#define MXS_DCP_H
-> +
-> +#define DCP_PAES_KEYSIZE 1
-> +#define DCP_PAES_KEY_SLOT0 0x00
-> +#define DCP_PAES_KEY_SLOT1 0x01
-> +#define DCP_PAES_KEY_SLOT2 0x02
-> +#define DCP_PAES_KEY_SLOT3 0x03
-> +#define DCP_PAES_KEY_UNIQUE 0xfe
-> +#define DCP_PAES_KEY_OTP 0xff
-> +
-> +#endif /* MXS_DCP_H */
+>
+> > But we did "resolve" those bugs by entirely untouching all PTEs if we
+> > found some PTEs were skipped in try_to_unmap_one [1].
+> >
+> > While we find we only get the PTL from 2nd, 3rd but not
+> > 1st PTE, we entirely give up on try_to_unmap_one, and leave
+> > all PTEs untouched.
+> >
+> > /* we are not starting from head */
+> > if (!IS_ALIGNED((unsigned long)pvmw.pte, CONT_PTES * sizeof(*pvmw.pte))=
+) {
+> >                     ret =3D false;
+> >                     atomic64_inc(&perf_stat.mapped_walk_start_from_non_=
+head);
+> >                     set_pte_at(mm, address, pvmw.pte, pteval);
+> >                     page_vma_mapped_walk_done(&pvmw);
+> >                     break;
+> > }
+> > This will ensure all PTEs still have a unified state such as CONT-PTE
+> > after try_to_unmap fails.
+> > I feel this could have some false postive because when racing
+> > with unmap, 1st PTE might really become pte_none. So explicitly
+> > holding PTL from 1st PTE seems a better way.
+>
+> Can we estimate the "cost" of holding the PTL?
+>
 
-BR, Jarkko
+This is just moving PTL acquisition one or two PTE earlier in those corner
+cases. In normal cases, it doesn't affect when PTL is held.
+
+In normal cases, page_vma_mapped_walk will find PTE0 is present, thus hold
+PTL immediately. in corner cases, page_vma_mapped_walk races with break-
+before-make, after skipping one or two PTEs whose states are transferring,
+it will find a present pte then acquire lock.
+
+> --
+> Cheers,
+>
+> David / dhildenb
+
+Thanks
+Barry
 
