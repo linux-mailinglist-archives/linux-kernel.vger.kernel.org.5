@@ -1,120 +1,263 @@
-Return-Path: <linux-kernel+bounces-91322-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91323-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15249870E6C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:43:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6DA9870E76
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 22:44:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA6D81F21480
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:43:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 163B1B284C7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:44:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6FF378B4C;
-	Mon,  4 Mar 2024 21:43:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A14B27A736;
+	Mon,  4 Mar 2024 21:44:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="U3zf6rNl"
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lX9JTDcf"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 557418F58
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 21:43:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19EF479DDE
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 21:44:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709588628; cv=none; b=R46T+PlALIMasZiGeAJ4d5jo5pJxDxR5upVnzcMudHKlgN4S8qlOdekH7diR7sBWZ0SW1ZIhClQbS0mO63fY1L7Yd4Jk5k1/aiZd0DhvKCoWFIy9t00STdd4hN2Ge2rzESgX0ubKtrbYmX/Ja9qBYp0Bdde8+vwiYILrjrJ6mY4=
+	t=1709588645; cv=none; b=bkpzyHc9JdldAY1sOQTWVcZX82PliS5T9dhM/SnZDpJzcGrcRV/uEsQQitirN7QKPI1iarAbDlsOiR786pajP/gQtgFwKjuTdFGE2ivopWQ7dLeJWzHdzou5RNYzM3CwMkUFHA4uiFQoGwoUUezCI3Nq5Xa2yoQU2LuzR4kSevw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709588628; c=relaxed/simple;
-	bh=gEIk3KNMIpuofqC+pRyvAHlCkEZ7jlcfI4PEv6Mt9Fo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MbuNV0v1Ph1v+pZbUe7o64v5UNj58LTar+5YmGyIZ5q1mj3kgaNqrQK9TqIiaJ0iEIRYP23Upo//lxAW80VYAlzgLs/Z+JsE+sQCJlhUYMn6U5pMwjlYm+13V0VPRd4sMEJKGB6QvnLi4rw/C2sWuoL+DixtSl67VnG8Y0OA4LA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=U3zf6rNl; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=E1Q94e5EFIOf0PrpzPHEslcyP80xmoYX4L90KOBiz38=; b=U3zf6rNlW1YXMwSvvbRZuUDWRZ
-	Cl37Wj5eZvXsTJsanH+iaAWqoEpXQDzXg+9Jqeq3cPF/ouGZHidQuGM+vxalE6c9nvoRpmjIQQoLe
-	XO624T7oaQmd6onbC46xoce6QfY32hMNsd+sVDoNSPIqYMZejVixOm382IdZui/m1xK256g4KtJX2
-	b+vJzUXnP1dfmdlDuHlAMGxmdXHM14L9kx86q2VfGqsdfoN7j+pg4QBfPYzYKTrLHSse/A70H6wyT
-	wf5bXJfau6sm74EEXWM7E9P6xSbreBxezugkZbV+iqq9+wz95PxZ3RDEySFNzCCxjxMjpqNV3pEvi
-	d4Tky9dg==;
-Received: from [187.90.173.251] (helo=[192.168.1.60])
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-	id 1rhG5h-0060jN-5a; Mon, 04 Mar 2024 22:43:21 +0100
-Message-ID: <15015345-3068-2fb8-aa38-f32acf27e1d0@igalia.com>
-Date: Mon, 4 Mar 2024 18:43:05 -0300
+	s=arc-20240116; t=1709588645; c=relaxed/simple;
+	bh=k54BQDnVaDLi9qQtBZIIJpHAK+gAdsb5p17VfnKkCU8=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Cc:Content-Type; b=RLlyiexGKdkCeRiz6gJRVq4rs9+4KdPoNQz1rGvoGocl4fGggfN2t/Y1Lp8yH4N7M29J0UtZRym/Ko4yzBrPcJ1r59++O0CNJXcH/0ddMddsxw6u31v+C8U1L2Qi0kKZhkYNgZd7pRvPDSKph/TDfJlauND5N19f68u50aFTrvg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--pcc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lX9JTDcf; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--pcc.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-607838c0800so65771817b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 13:44:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709588643; x=1710193443; darn=vger.kernel.org;
+        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=3MOnsESfIdy6Gd0VffalW28MvP4fdvEt7PkqIUhr4mU=;
+        b=lX9JTDcfB9TcK1DeuC56mGtNBz6wM1Dzxo7DwJhoCO4n4HibMI+HR75BC1vJqFf563
+         3goIO4tGOsITquL/fnzjSMpf5aJ6cRvn9tvARPFuHEIvhsCj6Vk5f/lJbOY+UqqMJFHK
+         uv+oAfmVzdJ7T2gzpJPhzxAOUUTjo1EKhh6E+FPcCJH+nTdFsdGZR0VsGFYHFcTYCFt2
+         624aUVM8b4wQG8ESjMAA/lEz82hGmMl+JSxFQxv9pmKvPBI3d4gDMKVbAAV41OgzeZhC
+         LJkqgtcuBj5hPi68uLJVYlO1K4tp+CKQgnTkoA2NL70zdR5avE19/jWu8oo9LAc5avxo
+         /3jA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709588643; x=1710193443;
+        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3MOnsESfIdy6Gd0VffalW28MvP4fdvEt7PkqIUhr4mU=;
+        b=Cl5xSNMns7N4o3yFkaUpVsK7x1z+l1IGMjVU5cvT88aNKrgusUmmAEK6QsaiRSEaDA
+         W6taGIEEG91kuAm+vrRz5CY2R14JxSGO+Gp5o52Nd1gX2YmahErtcquwgQ47bfi7E0Uw
+         IKK6Exm5wTKTVUw55if/SZLrovkwrIlkmDCvC1gR+ydibP1GX1NtATdilEgklyis8g5H
+         aSCSqCpm5D8rotlovgm3ovCcWAL2Xo7UdhfUAuO1YqEF0ZJX8500AdK/G/unuGhCmPRi
+         9OrR0TeZnPNxsFtWhfwd1tjr8wPUOXAOukKKY/MPvTQPfngYY+poIjKBG3qTEfV/HUEj
+         pk/w==
+X-Forwarded-Encrypted: i=1; AJvYcCU+l4pvTNyfk/GBVQ8/ASg5DEmdUWnC3UVyTC8Gah8deSh6gcSgDlpqI/CGozl933IhP2B99KUeGxro+bI/knOBQZc5JVU2cV6Q+MsW
+X-Gm-Message-State: AOJu0YxOId7VPMKxlQX5JcBjL0byPB6OT9V+QXoL2rqKZ+6B6AmIHlqi
+	ijUJi0DhcimQROaFZq/HNowFdsCi3OTMu2hEqYrqlzhRstW95ksIO126zfNHwYvWww==
+X-Google-Smtp-Source: AGHT+IGd5VTnz4a2s40nN1Pu7WiZVsCbdLPK96GXidJg40QzZ2VjprVSIdXxjNRiYuuzfE/OpvX2AHk=
+X-Received: from pcc-desktop.svl.corp.google.com ([2620:15c:2d3:205:ced5:860f:bb76:b50a])
+ (user=pcc job=sendgmr) by 2002:a5b:e86:0:b0:dc7:4ca0:cbf0 with SMTP id
+ z6-20020a5b0e86000000b00dc74ca0cbf0mr138369ybr.3.1709588643163; Mon, 04 Mar
+ 2024 13:44:03 -0800 (PST)
+Date: Mon,  4 Mar 2024 13:43:49 -0800
+Message-Id: <20240304214350.501253-1-pcc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [RFC] How to test panic handlers, without crashing the kernel
-Content-Language: en-US
-To: John Ogness <john.ogness@linutronix.de>,
- Jocelyn Falempe <jfalempe@redhat.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Daniel Vetter <daniel@ffwll.ch>, Andrew Morton <akpm@linux-foundation.org>,
- "Peter Zijlstra (Intel)" <peterz@infradead.org>,
- Josh Poimboeuf <jpoimboe@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
- Kefeng Wang <wangkefeng.wang@huawei.com>, Lukas Wunner <lukas@wunner.de>,
- Uros Bizjak <ubizjak@gmail.com>, Petr Mladek <pmladek@suse.com>,
- Daniel Thompson <daniel.thompson@linaro.org>,
- Douglas Anderson <dianders@chromium.org>,
- "Michael Kelley (LINUX)" <mikelley@microsoft.com>
-Cc: "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
- David Airlie <airlied@redhat.com>, Thomas Zimmermann <tzimmermann@suse.de>
-References: <266579a9-fde6-40ff-b13d-fb2312db406c@redhat.com>
- <87edcpn1l3.fsf@jogness.linutronix.de>
-From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-In-Reply-To: <87edcpn1l3.fsf@jogness.linutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
+Subject: [PATCH v3] serial: Lock console when calling into driver before registration
+From: Peter Collingbourne <pcc@google.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
+	Petr Mladek <pmladek@suse.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	John Ogness <john.ogness@linutronix.de>, Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc: Peter Collingbourne <pcc@google.com>, linux-kernel@vger.kernel.org, 
+	linux-serial@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 04/03/2024 18:12, John Ogness wrote:
-> [...]
->> The second question is how to simulate a panic context in a
->> non-destructive way, so we can test the panic notifiers in CI, without
->> crashing the machine.
-> 
-> I'm wondering if a "fake panic" can be implemented that quiesces all the
-> other CPUs via NMI (similar to kdb) and then calls the panic
-> notifiers. And finally releases everything back to normal. That might
-> produce a fairly realistic panic situation and should be fairly
-> non-destructive (depending on what the notifiers do and how long they
-> take).
-> 
+During the handoff from earlycon to the real console driver, we have
+two separate drivers operating on the same device concurrently. In the
+case of the 8250 driver these concurrent accesses cause problems due
+to the driver's use of banked registers, controlled by LCR.DLAB. It is
+possible for the setup(), config_port(), pm() and set_mctrl() callbacks
+to set DLAB, which can cause the earlycon code that intends to access
+TX to instead access DLL, leading to missed output and corruption on
+the serial line due to unintended modifications to the baud rate.
 
-Hi Jocelyn / John,
+In particular, for setup() we have:
 
-one concern here is that the panic notifiers are kind of a no man's
-land, so we can have very simple / safe ones, while others are
-destructive in nature.
+univ8250_console_setup()
+-> serial8250_console_setup()
+-> uart_set_options()
+-> serial8250_set_termios()
+-> serial8250_do_set_termios()
+-> serial8250_do_set_divisor()
 
-An example of a good behaving notifier that is destructive is the
-Hyper-V one, that destroys an essential host-guest interface (called
-"vmbus connection"). What happens if we trigger this one just for
-testing purposes in a debugfs interface? Likely the guest would die...
+For config_port() we have:
 
-[+CCing Michael Kelley here since he seems interested in panic and is
-also expert in Hyper-V, just in case my example is bogus.]
+serial8250_config_port()
+-> autoconfig()
 
-So, maybe the problem could be split in 2: the non-notifiers portion of
-the panic path, and the the notifiers; maybe restricting the notifiers
-you'd run is a way to circumvent the risks, like if you could pass a
-list of the specific notifiers you aim to test, this could be
-interesting. Let's see what the others think and thanks for your work in
-the DRM panic notifier =)
+For pm() we have:
 
-Cheers,
+serial8250_pm()
+-> serial8250_do_pm()
+-> serial8250_set_sleep()
 
+For set_mctrl() we have (for some devices):
 
-Guilherme
+serial8250_set_mctrl()
+-> omap8250_set_mctrl()
+-> __omap8250_set_mctrl()
+
+To avoid such problems, let's make it so that the console is locked
+during pre-registration calls to these callbacks, which will prevent
+the earlycon driver from running concurrently.
+
+Remove the partial solution to this problem in the 8250 driver
+that locked the console only during autoconfig_irq(), as this would
+result in a deadlock with the new approach. The console continues
+to be locked during autoconfig_irq() because it can only be called
+through uart_configure_port().
+
+Although this patch introduces more locking than strictly necessary
+(and in particular it also locks during the call to rs485_config()
+which is not affected by this issue as far as I can tell), it follows
+the principle that it is the responsibility of the generic console
+code to manage the earlycon handoff by ensuring that earlycon and real
+console driver code cannot run concurrently, and not the individual
+drivers.
+
+Signed-off-by: Peter Collingbourne <pcc@google.com>
+Reviewed-by: John Ogness <john.ogness@linutronix.de>
+Link: https://linux-review.googlesource.com/id/I7cf8124dcebf8618e6b2ee543fa5b25532de55d8
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Cc: stable@vger.kernel.org
+---
+v3:
+- switch to if (err)
+
+v2:
+- add some comments
+
+ drivers/tty/serial/8250/8250_port.c |  6 ------
+ drivers/tty/serial/serial_core.c    | 12 ++++++++++++
+ kernel/printk/printk.c              | 21 ++++++++++++++++++---
+ 3 files changed, 30 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
+index 8ca061d3bbb9..1d65055dde27 100644
+--- a/drivers/tty/serial/8250/8250_port.c
++++ b/drivers/tty/serial/8250/8250_port.c
+@@ -1329,9 +1329,6 @@ static void autoconfig_irq(struct uart_8250_port *up)
+ 		inb_p(ICP);
+ 	}
+ 
+-	if (uart_console(port))
+-		console_lock();
+-
+ 	/* forget possible initially masked and pending IRQ */
+ 	probe_irq_off(probe_irq_on());
+ 	save_mcr = serial8250_in_MCR(up);
+@@ -1371,9 +1368,6 @@ static void autoconfig_irq(struct uart_8250_port *up)
+ 	if (port->flags & UPF_FOURPORT)
+ 		outb_p(save_ICP, ICP);
+ 
+-	if (uart_console(port))
+-		console_unlock();
+-
+ 	port->irq = (irq > 0) ? irq : 0;
+ }
+ 
+diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
+index d6a58a9e072a..ff85ebd3a007 100644
+--- a/drivers/tty/serial/serial_core.c
++++ b/drivers/tty/serial/serial_core.c
+@@ -2608,7 +2608,12 @@ uart_configure_port(struct uart_driver *drv, struct uart_state *state,
+ 			port->type = PORT_UNKNOWN;
+ 			flags |= UART_CONFIG_TYPE;
+ 		}
++		/* Synchronize with possible boot console. */
++		if (uart_console(port))
++			console_lock();
+ 		port->ops->config_port(port, flags);
++		if (uart_console(port))
++			console_unlock();
+ 	}
+ 
+ 	if (port->type != PORT_UNKNOWN) {
+@@ -2616,6 +2621,10 @@ uart_configure_port(struct uart_driver *drv, struct uart_state *state,
+ 
+ 		uart_report_port(drv, port);
+ 
++		/* Synchronize with possible boot console. */
++		if (uart_console(port))
++			console_lock();
++
+ 		/* Power up port for set_mctrl() */
+ 		uart_change_pm(state, UART_PM_STATE_ON);
+ 
+@@ -2632,6 +2641,9 @@ uart_configure_port(struct uart_driver *drv, struct uart_state *state,
+ 
+ 		uart_rs485_config(port);
+ 
++		if (uart_console(port))
++			console_unlock();
++
+ 		/*
+ 		 * If this driver supports console, and it hasn't been
+ 		 * successfully registered yet, try to re-register it.
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index f2444b581e16..89f2aa2e1172 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -3263,6 +3263,21 @@ static int __init keep_bootcon_setup(char *str)
+ 
+ early_param("keep_bootcon", keep_bootcon_setup);
+ 
++static int console_call_setup(struct console *newcon, char *options)
++{
++	int err;
++
++	if (!newcon->setup)
++		return 0;
++
++	/* Synchronize with possible boot console. */
++	console_lock();
++	err = newcon->setup(newcon, options);
++	console_unlock();
++
++	return err;
++}
++
+ /*
+  * This is called by register_console() to try to match
+  * the newly registered console with any of the ones selected
+@@ -3298,8 +3313,8 @@ static int try_enable_preferred_console(struct console *newcon,
+ 			if (_braille_register_console(newcon, c))
+ 				return 0;
+ 
+-			if (newcon->setup &&
+-			    (err = newcon->setup(newcon, c->options)) != 0)
++			err = console_call_setup(newcon, c->options);
++			if (err)
+ 				return err;
+ 		}
+ 		newcon->flags |= CON_ENABLED;
+@@ -3325,7 +3340,7 @@ static void try_enable_default_console(struct console *newcon)
+ 	if (newcon->index < 0)
+ 		newcon->index = 0;
+ 
+-	if (newcon->setup && newcon->setup(newcon, NULL) != 0)
++	if (console_call_setup(newcon, NULL) != 0)
+ 		return;
+ 
+ 	newcon->flags |= CON_ENABLED;
+-- 
+2.44.0.278.ge034bb2e1d-goog
+
 
