@@ -1,158 +1,157 @@
-Return-Path: <linux-kernel+bounces-90435-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F8E986FF1F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:33:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EED3386FF25
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:34:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2F48BB22EB3
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:33:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A0C5B21709
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:34:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35ED530336;
-	Mon,  4 Mar 2024 10:32:47 +0000 (UTC)
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E42DF2EB09;
+	Mon,  4 Mar 2024 10:34:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="yUycssvT"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5D3C2374B;
-	Mon,  4 Mar 2024 10:32:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 891D51A29F;
+	Mon,  4 Mar 2024 10:34:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709548366; cv=none; b=V5NpLQeBfbPIXuCC7sCRDkHDaxmlbFm0cWLdwJ0jPIwBm4vauItF+PibmzMg4LFayVz36K6jMBt0Wd4E0UEDyRPkYu9M6GFI8Vja8JdXiXi7eW9DfUcWQ+cO9JcLu9r+3E+kansfraJm0Sf2WAd5N+H/j8m8h0DFKSZxDeGZ30Y=
+	t=1709548448; cv=none; b=We0T+BOpWXFt2UPDEcDGnaD/YRXQI10EZvBIvekL6vQPo0mV3ONNN1wyAryx26AVA2vutMp4KPZ282PSM8ffEFgrADxEssx6wwGzfjG1LWQApu2xpqBdbAUidkTt8T1MhiWLxIR8NDwWB2ZOD1AYrAu+Y3LHWyJSEnr7c56QNVA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709548366; c=relaxed/simple;
-	bh=SgrhrKqFxPZUTMdnIQ3bg5MPDHm7GHUVOLSkAfhlWUw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lnHLRdYCoFoubNgjxwRbtXI/W3jekqgcw4n5SDfBwQxyBF2ki1eZQkUHDizqh/oQWrJAAqMiWaNgDsBTiDDS0FvIhUXOUPSVwfbqoMcn0tXvtOel0QTKL7PROdyTyQUui1ocXvMMQBRQlfEEFYFmGntdGVO2rGOEWrOlIhJfBwQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 181464E16F;
-	Mon,  4 Mar 2024 10:32:43 +0000 (UTC)
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id CE63C13419;
-	Mon,  4 Mar 2024 10:32:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id oKW5MEqj5WXVGgAAn2gu4w
-	(envelope-from <tzimmermann@suse.de>); Mon, 04 Mar 2024 10:32:42 +0000
-Message-ID: <eed9bb0f-486f-47f3-b4b5-c07adda4a1c7@suse.de>
-Date: Mon, 4 Mar 2024 11:32:42 +0100
+	s=arc-20240116; t=1709548448; c=relaxed/simple;
+	bh=X8hStsCEoYVAZ6F/f5AhI30DQJROTSe1ABt+YDwR7qE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=ha8Ry9PJe0MhdLQmebE4UxUBr1RkF2a0L1sMae/LkCiMpBgn/lBW34vw6dH4mAHMeIy6b9jJvJTJqiEvVX60448hq2QvIoR+AN6KC0IQ0wG1shIIxfxH2WVjCQ0foIl6lDP5QtOX0vmLwrMnVMmWXsGavO1QBbG3LD97jyhmjAo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=yUycssvT; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 424AWsLm059411;
+	Mon, 4 Mar 2024 04:32:54 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1709548374;
+	bh=dGqTM/o/z/iQYnEvV+JIGkw/hQ9dTMU9/eegiOjtL5M=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=yUycssvT7jbKY/9r4s3Z10FR8/TIMGCoktkB2/v0KdDTs6LLJi0pLxOtSG0R9sOnW
+	 EZ8Dgq0ea3oyebO8lT74vPPmwM8i/p9fRARDo0gxbRYeUuR16QYT11t/ldjSLjzsTU
+	 rNZ1ZWKriCC6NQLJflHXzWD6FWaOq3oJbHxmpsog=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 424AWsR4004236
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 4 Mar 2024 04:32:54 -0600
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 4
+ Mar 2024 04:32:53 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 4 Mar 2024 04:32:53 -0600
+Received: from [172.24.227.88] (uda0500640.dhcp.ti.com [172.24.227.88])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 424AWn0D060483;
+	Mon, 4 Mar 2024 04:32:49 -0600
+Message-ID: <8d92dcbb-828d-17f4-d199-c625505e7b0c@ti.com>
+Date: Mon, 4 Mar 2024 16:02:48 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] powerpc: include linux/backlight.h from asm/backlight.h
-To: Jani Nikula <jani.nikula@intel.com>, Michael Ellerman
- <mpe@ellerman.id.au>, linuxppc-dev@lists.ozlabs.org
-Cc: dri-devel@lists.freedesktop.org, lkft-triage@lists.linaro.org,
- linux-kernel@vger.kernel.org, Naresh Kamboju <naresh.kamboju@linaro.org>,
- Helge Deller <deller@gmx.de>, linux-fbdev@vger.kernel.org
-References: <CA+G9fYsAk5TbqqxFC2W4oHLGA0CbTHMxbeq8QayFXTU75YiueA@mail.gmail.com>
- <20240304095512.742348-1-jani.nikula@intel.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] net: hsr: Use full string description when opening HSR
+ network device
 Content-Language: en-US
-From: Thomas Zimmermann <tzimmermann@suse.de>
-Autocrypt: addr=tzimmermann@suse.de; keydata=
- xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
- XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
- BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
- hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
- 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
- AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
- AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
- AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
- lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
- U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
- vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
- 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
- j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
- T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
- 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
- GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
- hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
- EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
- C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
- yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
- SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
- Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
- 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
-In-Reply-To: <20240304095512.742348-1-jani.nikula@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Lukasz Majewski <lukma@denx.de>, Oleksij Rempel <o.rempel@pengutronix.de>
+CC: Eric Dumazet <edumazet@google.com>, Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <Tristram.Ha@microchip.com>,
+        "Sebastian Andrzej
+ Siewior" <bigeasy@linutronix.de>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Nikita
+ Zhandarovich" <n.zhandarovich@fintech.ru>,
+        Murali Karicheri
+	<m-karicheri2@ti.com>,
+        Ziyang Xuan <william.xuanziyang@huawei.com>,
+        <linux-kernel@vger.kernel.org>,
+        Ravi Gunasekaran <r-gunasekaran@ti.com>
+References: <20240304093220.4183179-1-lukma@denx.de>
+From: Ravi Gunasekaran <r-gunasekaran@ti.com>
+In-Reply-To: <20240304093220.4183179-1-lukma@denx.de>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	 REPLY(-4.00)[]
-X-Spam-Score: -4.00
-X-Rspamd-Queue-Id: 181464E16F
-X-Spam-Flag: NO
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hi
 
-Am 04.03.24 um 10:55 schrieb Jani Nikula:
-> Removal of the backlight include from fb.h uncovered an implicit
-> dependency in powerpc asm/backlight.h. Add the explicit include.
->
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> Closes: https://lore.kernel.org/r/CA+G9fYsAk5TbqqxFC2W4oHLGA0CbTHMxbeq8QayFXTU75YiueA@mail.gmail.com
-> Fixes: 11b4eedfc87d ("fbdev: Do not include <linux/backlight.h> in header")
-> Cc: Thomas Zimmermann <tzimmermann@suse.de>
-> Cc: Helge Deller <deller@gmx.de>
-> Cc: linux-fbdev@vger.kernel.org
-> Signed-off-by: Jani Nikula <jani.nikula@intel.com>
->
+
+On 3/4/24 3:02 PM, Lukasz Majewski wrote:
+> Up till now only single character ('A' or 'B') was used to provide
+> information of HSR slave network device status.
+> 
+> As it is also possible and valid, that Interlink network device may
+> be supported as well, the description must be more verbose. As a result
+> the full string description is now used.
+> 
+> Signed-off-by: Lukasz Majewski <lukma@denx.de>
 > ---
->
-> Not even compile tested!
+>  net/hsr/hsr_device.c | 13 ++++++-------
+>  1 file changed, 6 insertions(+), 7 deletions(-)
+> 
+> diff --git a/net/hsr/hsr_device.c b/net/hsr/hsr_device.c
+> index 9d71b66183da..9a60489fba96 100644
+> --- a/net/hsr/hsr_device.c
+> +++ b/net/hsr/hsr_device.c
+> @@ -142,30 +142,29 @@ static int hsr_dev_open(struct net_device *dev)
+>  {
+>  	struct hsr_priv *hsr;
+>  	struct hsr_port *port;
+> -	char designation;
+> +	char *designation = NULL;
+>  
+>  	hsr = netdev_priv(dev);
+> -	designation = '\0';
+>  
+>  	hsr_for_each_port(hsr, port) {
+>  		if (port->type == HSR_PT_MASTER)
+>  			continue;
+>  		switch (port->type) {
+>  		case HSR_PT_SLAVE_A:
+> -			designation = 'A';
+> +			designation = "Slave A";
 
-That's one of the cases that's hard to catch unless you get the config 
-right.
+"designation" is now a pointer and is being assigned value
+without even allocating memory for it.
 
-> ---
->   arch/powerpc/include/asm/backlight.h | 1 +
->   1 file changed, 1 insertion(+)
->
-> diff --git a/arch/powerpc/include/asm/backlight.h b/arch/powerpc/include/asm/backlight.h
-> index 1b5eab62ed04..275d5bb9aa04 100644
-> --- a/arch/powerpc/include/asm/backlight.h
-> +++ b/arch/powerpc/include/asm/backlight.h
-> @@ -10,6 +10,7 @@
->   #define __ASM_POWERPC_BACKLIGHT_H
->   #ifdef __KERNEL__
->   
-> +#include <linux/backlight.h>
-
-Thanks, but I think this should go directly into chipsfb.c. I would have 
-provided a patch already, if our mail server didn't have issues this 
-morning. Let me try again.
-
-Best regards
-Thomas
-
->   #include <linux/fb.h>
->   #include <linux/mutex.h>
->   
+>  			break;
+>  		case HSR_PT_SLAVE_B:
+> -			designation = 'B';
+> +			designation = "Slave B";
+>  			break;
+>  		default:
+> -			designation = '?';
+> +			designation = "Unknown";
+>  		}
+>  		if (!is_slave_up(port->dev))
+> -			netdev_warn(dev, "Slave %c (%s) is not up; please bring it up to get a fully working HSR network\n",
+> +			netdev_warn(dev, "%s (%s) is not up; please bring it up to get a fully working HSR network\n",
+>  				    designation, port->dev->name);
+>  	}
+>  
+> -	if (designation == '\0')
+> +	if (!designation)
+>  		netdev_warn(dev, "No slave devices configured\n");
+>  
+>  	return 0;
 
 -- 
---
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Frankenstrasse 146, 90461 Nuernberg, Germany
-GF: Ivo Totev, Andrew Myers, Andrew McDonald, Boudien Moerman
-HRB 36809 (AG Nuernberg)
-
+Regards,
+Ravi
 
