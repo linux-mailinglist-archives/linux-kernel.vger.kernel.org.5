@@ -1,29 +1,30 @@
-Return-Path: <linux-kernel+bounces-90363-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90364-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3565386FE20
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:56:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CDE186FE22
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:57:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0FA2B231E2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:56:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F1A05B2351F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:57:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0F1A249F1;
-	Mon,  4 Mar 2024 09:56:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 131DB225D2;
+	Mon,  4 Mar 2024 09:56:16 +0000 (UTC)
 Received: from mail-out.aladdin-rd.ru (mail-out.aladdin-rd.ru [91.199.251.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1303222625;
-	Mon,  4 Mar 2024 09:55:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F10B249E6;
+	Mon,  4 Mar 2024 09:56:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.199.251.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709546170; cv=none; b=eyvnlA8xdNLhTQpFpRCYtk6g/eD5HOgM75tOSC4xnU/o1lzpQtRbBtlt6wULidP0B1V4y/ggh12HX/paMuq1ucMW3GCRol1rxqHVkMDyZki2OrJSo/o38q/UXTLnPbWw69iix5UNnM7PMAIAF9cOobs4PSB+FQuEZBQ2Lo1gD0M=
+	t=1709546175; cv=none; b=EUbjb6sPTUcMcFvdTwH+A5HKBVSajVFxXKmkVkG1Vs5nTPZ/pT62N9IkMbQx0EuGFIKEYicZec+49RAZZxx65IYjZuIwkau1IN/Evm+IzaEEr7aYy5DitjlcFtHOnpeK+X3IQXr0q3sKPLJSmaVvAdLzz+4doiCDyvnfyOA9KHU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709546170; c=relaxed/simple;
-	bh=ZLWxTNvadb4hyjem5uvWUCn8AIITYg1bzbW2sx4kDIU=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=VmxLrt77IMoeUY2qkIz3+7oisEL+K31WkhvM2pamcxdR9XRYEus5nsg/YRBrZ+Iz12S4ubuR90bTsrlBB7q/ZKg6W74iiEKBPuOf516eJhqfnMuqbc1xTs7oO47EOvhQWP1G1AJXHCSmaB9s9T8Hk+FW7LpPLgTJMI6n2WgMShA=
+	s=arc-20240116; t=1709546175; c=relaxed/simple;
+	bh=lPMlhZe6Zu/FURCZR//Lp7oBo0dSFp8zW5k/9lO6GAk=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=D0nL3BLixh0opcXjWfE4Ix0HRYC1nBXZopoo4PkV7xGNsCGIosXBOrzNeLfG00I3NZaPQFoCQpqs7xElwMJtYpuWPi3D85JmsxxKq1Hubkhx6rAheMJlGQw6Wikjb7vLeV606/hI/VuAHxYJR6YEo5qyEB9o46gzH3xn1sLyNf4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aladdin.ru; spf=pass smtp.mailfrom=aladdin.ru; arc=none smtp.client-ip=91.199.251.16
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aladdin.ru
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aladdin.ru
@@ -33,11 +34,14 @@ CC: Daniil Dulov <d.dulov@aladdin.ru>, Vinod Koul <vkoul@kernel.org>, Bard
  Liao <yung-chuan.liao@linux.intel.com>, Pierre-Louis Bossart
 	<pierre-louis.bossart@linux.intel.com>, Sanyog Kale
 	<sanyog.r.kale@intel.com>, <alsa-devel@alsa-project.org>,
-	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>
-Subject: [PATCH 5.10/5.15/6.1 0/1] soundwire: stream: use consistent pattern for freeing buffers
-Date: Mon, 4 Mar 2024 12:55:41 +0300
-Message-ID: <20240304095542.4799-1-d.dulov@aladdin.ru>
+	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>, Ranjani
+ Sridharan <ranjani.sridharan@linux.intel.com>
+Subject: [PATCH 5.10/5.15/6.1 1/1] soundwire: stream: use consistent pattern for freeing buffers
+Date: Mon, 4 Mar 2024 12:55:42 +0300
+Message-ID: <20240304095542.4799-2-d.dulov@aladdin.ru>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240304095542.4799-1-d.dulov@aladdin.ru>
+References: <20240304095542.4799-1-d.dulov@aladdin.ru>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,10 +53,57 @@ Content-Type: text/plain
 X-ClientProxiedBy: EXCH-2016-03.aladdin.ru (192.168.1.103) To
  EXCH-2016-01.aladdin.ru (192.168.1.101)
 
-Svacer reports NULL-pointer dereference and double free issues in
-do_bank_switch() in case sdw_ml_sync_bank_switch() returns an error
-not on the first iteration of the list_for_each_entry() loop. These 
-problems are present in 5.10, 5.15 and 6.1 stable releases. These problems
-have been fixed by the following upstream patch that can be cleanly
-applied to 5.10, 5.15 and 6.1 branches.
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+commit 5ec0c8721c06fc55d8a0bb32c403228358987eb6 upstream
+
+The code should free the message buffer used for data, the message
+structure used for control and assign the latter to NULL. The last
+part is missing for multi-link cases, and the order is inconsistent
+for single-link cases.
+
+Link: https://github.com/thesofproject/linux/issues/4056
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Link: https://lore.kernel.org/r/20230119073211.85979-2-yung-chuan.liao@linux.intel.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Daniil Dulov <d.dulov@aladdin.ru>
+---
+ drivers/soundwire/stream.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
+index a377c3d02c55..ecde6fcb8be0 100644
+--- a/drivers/soundwire/stream.c
++++ b/drivers/soundwire/stream.c
+@@ -703,8 +703,8 @@ static int sdw_bank_switch(struct sdw_bus *bus, int m_rt_count)
+ 	}
+ 
+ 	if (!multi_link) {
+-		kfree(wr_msg);
+ 		kfree(wbuf);
++		kfree(wr_msg);
+ 		bus->defer_msg.msg = NULL;
+ 		bus->params.curr_bank = !bus->params.curr_bank;
+ 		bus->params.next_bank = !bus->params.next_bank;
+@@ -750,6 +750,7 @@ static int sdw_ml_sync_bank_switch(struct sdw_bus *bus, bool multi_link)
+ 	if (bus->defer_msg.msg) {
+ 		kfree(bus->defer_msg.msg->buf);
+ 		kfree(bus->defer_msg.msg);
++		bus->defer_msg.msg = NULL;
+ 	}
+ 
+ 	return 0;
+@@ -847,6 +848,7 @@ static int do_bank_switch(struct sdw_stream_runtime *stream)
+ 		if (bus->defer_msg.msg) {
+ 			kfree(bus->defer_msg.msg->buf);
+ 			kfree(bus->defer_msg.msg);
++			bus->defer_msg.msg = NULL;
+ 		}
+ 	}
+ 
+-- 
+2.25.1
+
 
