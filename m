@@ -1,121 +1,114 @@
-Return-Path: <linux-kernel+bounces-90897-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90899-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8920870688
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:06:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38161870690
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:07:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F0B03B2547E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:06:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CA75FB24B07
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 16:06:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CC37482DF;
-	Mon,  4 Mar 2024 16:05:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C1844BA94;
+	Mon,  4 Mar 2024 16:06:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hPZUFFoI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="mzHOxqSV"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C28414E1C1;
-	Mon,  4 Mar 2024 16:05:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16D85481DE;
+	Mon,  4 Mar 2024 16:06:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709568308; cv=none; b=TIjEl90S0ZEB+MQz1RZJRxrQ+L0f00STL7AOVjcJ0zHmnNyw3+HnlFe+NhdiC7GxrBUdKo7TBNG2eE+412oM7CKPF/IN6INnYFtNHFXFRmO9jRekBR9kBTsRau4Ma2HKkam9dDFdaGI2HCuJdbvvvwiettyrl9pyAFFEwpObHog=
+	t=1709568383; cv=none; b=D7wFpFnGJ20qdFAqEtlv7P+d9GsThZBiuhdmXnwD1WRp5EA+X6Mmlhn1LP3/EhmOEPOjfWPLOAHc+Z5Z3G8wZTemnm7R/TKIE4fKGpFRFQbB5OB5cwce3KXsTyr/ljUBk5RBAAztczyTuDpbh+AKkIevRcD+nYPtof/9cE7+54s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709568308; c=relaxed/simple;
-	bh=IqKjf/V5VV8UE4R3lEGBliAPiP3FkHrOso1nqZ3aCuQ=;
+	s=arc-20240116; t=1709568383; c=relaxed/simple;
+	bh=AlNDwPISgBcM6OVPgM4WaoPIp68689qJHcWCy+OYqyk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MirgCImQVNPC81Hq32dR8sCRr1jD3Y3l3st8aKYw15ARW8Pz2ZX5dawiylQubQgNopaXll0c7bUtlWYqgsxwhS1efB9+O+iLjdjY3vkcNRSc2Rap1VlRmU66WmRt69sbYoGsh+xDC8Q3uzC7AONXf0kvJAoXBXZodjOdjZzfZws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hPZUFFoI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10655C43390;
-	Mon,  4 Mar 2024 16:05:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709568308;
-	bh=IqKjf/V5VV8UE4R3lEGBliAPiP3FkHrOso1nqZ3aCuQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hPZUFFoISF7hoNFdL4xnmd1M1+T9744bsa0ut//cI3GKpuvePacbzacYODEpQ1W5Y
-	 u8uGDRH9+VYz7Yjuz7BwP6ilvpq7SZZCEFpnrmpMuGisdmSPKQb7rHGkFb+Gk5KPAe
-	 TK6E2wMKN59TlYacTHf/3lGf/YRz4bOjxt8K9wPuFGLde3itcwuXOd7EVvbGuR6RHL
-	 f3DuH1pJ8n5cJtyk1kIRZJwMspexJsb9YlZ7gqCOIWWK/hAIzysux3q+Dtm+h36w9u
-	 zSr2MHI5200MBnykWbm823kjJdKxWD9muE7sg3HmLwFmVpBr/v0r89Sa9SW/vZ/elK
-	 shgUZUIvnzILg==
-Date: Mon, 4 Mar 2024 17:05:05 +0100
-From: Maxime Ripard <mripard@kernel.org>
-To: Guenter Roeck <groeck@google.com>
-Cc: Linus Torvalds <torvalds@linuxfoundation.org>, 
-	Nikolai Kondrashov <spbnick@gmail.com>, Helen Koike <helen.koike@collabora.com>, linuxtv-ci@linuxtv.org, 
-	dave.pigott@collabora.com, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	linux-kselftest@vger.kernel.org, gustavo.padovan@collabora.com, pawiecz@collabora.com, 
-	tales.aparecida@gmail.com, workflows@vger.kernel.org, kernelci@lists.linux.dev, 
-	skhan@linuxfoundation.org, kunit-dev@googlegroups.com, nfraprado@collabora.com, 
-	davidgow@google.com, cocci@inria.fr, Julia.Lawall@inria.fr, laura.nao@collabora.com, 
-	ricardo.canuelo@collabora.com, kernel@collabora.com, gregkh@linuxfoundation.org
-Subject: Re: [PATCH 1/3] kci-gitlab: Introducing GitLab-CI Pipeline for
- Kernel Testing
-Message-ID: <20240304-ludicrous-grinning-goldfish-090aac@houat>
-References: <20240228225527.1052240-1-helen.koike@collabora.com>
- <20240228225527.1052240-2-helen.koike@collabora.com>
- <20240229-dancing-laughing-groundhog-d85161@houat>
- <5d7ed81b-37f9-48e9-ab7e-484b74ca886c@gmail.com>
- <CAHk-=wixVy3WYvjbt43ZSrCqPDsS76QJQSkXFbbPsAOs1MCSAQ@mail.gmail.com>
- <CABXOdTeT2ip1uS2EG2w8pW7254Tnd=ZDNz-KC61-G-yqDTVgJA@mail.gmail.com>
- <20240304-rigorous-silkworm-of-awe-4eee8f@houat>
- <CABXOdTc4MXcjwgGuJb4_69-4OFELD37x0B6oMr=4z=nxZ2HPXQ@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=BpOvEWSpQPoe9/JzQY4AKNkVpmlAF8KFEY5FzVEFPtRw1H5QuLWewF8Qs0ogeiYrxQ3s6sqML9N9KYI4L3I6CWZjNy1RBSMNGCdStTcLAKl5hPAFLLLHWcWJTzdEylxlwS/A7ui3iGjO2Hv0R6EgmiInl3BoT1yhhbV/8VnKLBw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=mzHOxqSV; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=8ESWzfwNLBdRiQerL5+aFQnFwsh7Ey/Kqyb4OBW7amg=; b=mzHOxqSVyQhSjRX4F5gBr6b//K
+	Z13FzT+KYEs/6y4GhaVF3Cxf3GvoUDAwYIFi2bOvk03KYDyQnzQog1PBU94N/pl4HYEfz9hQ9GMFa
+	g8UhNBtV7mfJ7oeTgjJr/9+0RaPwlq+vn3lEdEe2qlfmBEK9SOggUO/STE6swk31S/5U=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rhApo-009LBC-Gj; Mon, 04 Mar 2024 17:06:36 +0100
+Date: Mon, 4 Mar 2024 17:06:36 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: =?iso-8859-1?Q?J=E9r=E9mie?= Dautheribes <jeremie.dautheribes@bootlin.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>, Andrew Davis <afd@ti.com>,
+	netdev@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	=?iso-8859-1?Q?Miqu=E8l?= Raynal <miquel.raynal@bootlin.com>,
+	Yen-Mei Goh <yen-mei.goh@keysight.com>,
+	Maxime Chevallier <maxime.chevallier@bootlin.com>
+Subject: Re: [PATCH net-next 1/3] dt-bindings: net: dp83822: support
+ configuring RMII master/slave mode
+Message-ID: <d994001c-dff2-402d-bd19-7ddb0c148805@lunn.ch>
+References: <20240222103117.526955-1-jeremie.dautheribes@bootlin.com>
+ <20240222103117.526955-2-jeremie.dautheribes@bootlin.com>
+ <d14ba685-dc7e-4f99-a21e-bae9f3e6bc79@lunn.ch>
+ <860648fa-11f5-4e0d-ac4e-e81ea111ef31@bootlin.com>
+ <68112ecb-532f-4799-912d-16d6ceb9a6f3@lunn.ch>
+ <021dbe50-5eb9-4552-b2bb-80d58d3eb076@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="thflmdlthwp7swbs"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CABXOdTc4MXcjwgGuJb4_69-4OFELD37x0B6oMr=4z=nxZ2HPXQ@mail.gmail.com>
+In-Reply-To: <021dbe50-5eb9-4552-b2bb-80d58d3eb076@bootlin.com>
 
+> > We are normally interested in this 50Mhz reference clock. So i would
+> > drop all references to 25Mhz. It is not relevant to the binding, since
+> > it is nothing to do with connecting the PHY to the MAC, and it has a
+> > fixed value.
+> > 
+> > So you can simplify this down to:
+> > 
+> > RMII Master: Outputs a 50Mhz Reference clock which can be connected to the MAC.
+> > 
+> > RMII Slave: Expects a 50MHz Reference clock input, shared with the
+> > MAC.
+> > 
+> > > That said, would you like me to include this description (or some parts) in
+> > > the binding in addition to what I've already written? Or would you prefer me
+> > > to use a more meaningful property name?
+> > 
+> > We don't really have any vendor agnostic consistent naming. dp83867
+> > and dp83869 seems to call this ti,clk-output-sel. Since this is
+> > another dp83xxx device, it would be nice if there was consistency
+> > between all these TI devices. So could you check if the concept is the
+> > same, and if so, change dp83826 to follow what other TI devices do.
+> 
+> 
+> So I had a look at this ti,clk-output-sel property on the TI DP8386x
+> bindings, but unfortunately it does not correspond to our use case. In their
+> case, it is used to select one of the various internal clocks to output on
+> the CLK_OUT pin.
+> In our case, we would prefer to describe the direction of the clock (OUT in
+> master mode, IN in slave mode).
 
---thflmdlthwp7swbs
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I would suggest we keep with the current property name, but simplify
+the description. Focus on the reference clock, and ignore the crystal.
 
-On Mon, Mar 04, 2024 at 07:46:34AM -0800, Guenter Roeck wrote:
-> On Mon, Mar 4, 2024 at 1:24=E2=80=AFAM Maxime Ripard <mripard@kernel.org>=
- wrote:
-> [ ... ]
-> >
-> > If anything, it's more of a side-effect to the push for COMPILE_TEST
-> > than anything.
-> >
->=20
-> If the drm subsystem maintainers don't want people to build it with
-> COMPILE_TEST while at the same time not limiting it to platforms where
-> it doesn't even build, I'd suggest making it dependent on
-> !COMPILE_TEST.
-
-I don't think we want anything. My point was that you can't have an
-option that is meant to explore for bad practices and expose drivers
-that don't go through the proper abstraction, and at the same time
-complain that things gets broken. It's the whole point of it.
-
-> The same applies to all other subsystems where maintainers don't want
-> build tests to run but also don't want to add restrictions such as
-> "64-bit only". After all, this was just one example.
-
-We have drivers for some 32 bits platforms.
-
-Maxime
-
---thflmdlthwp7swbs
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZeXxMAAKCRDj7w1vZxhR
-xYlQAPwIi05mGTIAHwJKG4sBeZKb2fVtGkVhOtt6zHMKVCL4UgEA4a2ngKZUqIko
-YkvJr1Lsw7kRsL8JpjsPGMT6i86ACwY=
-=NUWE
------END PGP SIGNATURE-----
-
---thflmdlthwp7swbs--
+    Andrew
 
