@@ -1,112 +1,105 @@
-Return-Path: <linux-kernel+bounces-90106-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90109-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACF8A86FA70
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:05:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EDB586FA77
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:06:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A9BE2828B4
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 07:05:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 996111F2164D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 07:06:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F0AF134AE;
-	Mon,  4 Mar 2024 07:05:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9EFA134C8;
+	Mon,  4 Mar 2024 07:06:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Bugxc8gL"
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gZFF8td0"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD86F13FED
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 07:05:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5695911713;
+	Mon,  4 Mar 2024 07:06:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709535917; cv=none; b=Pt7ifs+cx+IarSIjn2q6URxuRJvrcHuw2l3FbzTwsmh631g+v1uQojdrIwJI+/VVJ049JMv6Xun64r+NfU4V6xDAdwrWBHgRDmcnepK2njVAngdESYdCl/BNoBJrtoGejslrxcu5Cs74JtaMO8KgoLuJ/XkEzjvefR/VULAiAEE=
+	t=1709535983; cv=none; b=A6hDM9i3OJHDZToChUFseZlQGK0SCZYnA5ewgzqfUfIlQxcI8BcM0Vq6i3DImMFPD23JvbTa2v8/dKBubZ8LOsD4rr5srJ71ggDckeZn8zfZ2m/9tM+US+VJUUSO3M9mGXmVQ0s16jQh4D5f9Mlsem6eTiEFf3nuvdNHFz0vUgY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709535917; c=relaxed/simple;
-	bh=hNjxuYC2EJdA/XoKsj5uylY7h9/KQd56NM+y23zLnFE=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=sNgGbYcaJxeB/ohIEQR8YI2Xu1FVpIQUQIWc7JDVJWRglPspKOI27MdrC4pInPpQV3aJzH6KpCec4PVsclM81j2GgYIHbpEJ56HnN2Ni1SgZ15CG8CrjycwZ/RLbuhXYcKue1mdDDOqT/cuuqesYRQhh4WrUJCNczQmF+vzqs98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Bugxc8gL; arc=none smtp.client-ip=209.85.208.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d275e63590so57272901fa.2
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 23:05:15 -0800 (PST)
+	s=arc-20240116; t=1709535983; c=relaxed/simple;
+	bh=bu/CNzq/D3hnEEr3AOVp/iiwUc8F/2qAm4XX6DSlh/o=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Content-Type; b=bzyCi6ardLGrmnGEDj7eNq6Ts8xNYLpS8UtlFCzv6iPJVvjE0gzwRFhWXq35dLyq1FYs/BieZM0H9I/SbclTMhNinauuQe0OoJxbUKpGWWzGJLstO7dJz5zU0iK9mhn6J2sz7jPIww8aMnCAy1TMUdx8sNIcr+d6e4Vc8K5/2tY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gZFF8td0; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-564fd9eea75so5904967a12.3;
+        Sun, 03 Mar 2024 23:06:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709535914; x=1710140714; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vZGUpUYM0VesXHneGzkSI0l8X+1IzpaMdy5MewuWCx4=;
-        b=Bugxc8gLbcQ2+cvQPJ/1O1DFqxrhaKmlchtewNFn8jQiaN0CIL2aQMwONd4nL0CDHd
-         AtqErT4VZ9KMLKWvGoniMCyzFC/iHsDv0HB8rQbxnkuQSzRey00zNq3yyVxZs65MkvJg
-         0p1+Wer5sc++3L4wuDunp7alm3GyyPpAJz+h0mVpBLi9/tW1+JHvLZs0lFAsOF1cOKDI
-         dfBaakynVSGgcFAhvx4XgPR+mG/ExQsR6AhoecAwgADHSYiINee1qwI4/n1uvWFpCEXb
-         SA+dVNFTazGX+fIZemnSY+ixGmgMavjAjcZXuXYKl3JE3Iw1j3rvS2ygQZDv9gN/sNpG
-         HzTA==
+        d=gmail.com; s=20230601; t=1709535980; x=1710140780; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bu/CNzq/D3hnEEr3AOVp/iiwUc8F/2qAm4XX6DSlh/o=;
+        b=gZFF8td0dWiSNPJd00QnbzsrsZvQf0WGbxpreTEjrykWKPcfP8FlLBTZJjx59j76z3
+         5klS565ryZ/hScCJe6uyyv6yrZ/o7wWZjvsmxZryni/K5k797q6GXX0Tz8o0Ju0IcVBv
+         EsVCEYZ1R/xnpvpLiH+tQXioJBL21bHpi78wiuQXPDpnTOXJCuZ4UgmYVCucnyeqyNzn
+         dRjkk4q2bmk0Xs4DdXqyWTLf/Hpi1XJfEJ4i93fspqyKG66c5YFNpjPtS5Dxea7weazL
+         eI5kqw6i3+e5f3fS4S8n4Zbj/f4XlvbgRiFbB97+y9wj3tfi/wXSFGl5u4FhEYYXh138
+         Iw4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709535914; x=1710140714;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vZGUpUYM0VesXHneGzkSI0l8X+1IzpaMdy5MewuWCx4=;
-        b=jsgFalayzSWVd/t+5FbDywKIjSDzZDCGrIyK0oxhGUVJ32lfzmERvPBftZNLFIGx3D
-         flkbaJ3zbaFHrkDtn7nVdq33bHOAUwCSrQM0csiJ9caAU96P436QkASfkKmZEI4Grkr9
-         ChUO9ZflTduSUsdS7ObJPkMYDYcwQs/Yp3/Ib1qJlTdRaGl8SGTlFJTnc0lJdW/VJeIZ
-         540RryIDnCBrT6QJ1Z9vL0vQIgkRIhqnigbce+ceuguG4bOMe9z1oxD6V3yn+4fkB07b
-         UnLBEYmeUOifEaaw+CfuBuUovoi4CSD3q9zoagjZKfV9D/Rwzii4jWr7p9AO2CJTLIcv
-         5bxg==
-X-Forwarded-Encrypted: i=1; AJvYcCUNIkf88rP14937ygDYNn2AeRBFtIjkkIZe2n0w9PWMeWMLZKou1frk7AeFLlgCIWkELcPnBR5Ow1BOQzF35KBGKPOxbaFLfaKkRcbL
-X-Gm-Message-State: AOJu0YwGnlHv3mSUG0rHqQeKSBOhmNb5qu7wKO0l8Yd4yhRA4Bbhk9AD
-	/bjP5aZYlEHHWOUUfhmDVB1yI9vHc9kynOQ5JWtx14lC+jVG/NrUCBthGGqStlz/RpEKGi+A4YV
-	1
-X-Google-Smtp-Source: AGHT+IFW8Mx8FI4E0PUY4m2TiAQNZqb8odfxy6I3n9gy3/58yevGa3GaBngabXuahye/TfmVqpHMyg==
-X-Received: by 2002:a2e:b711:0:b0:2d2:950e:2717 with SMTP id j17-20020a2eb711000000b002d2950e2717mr5298552ljo.35.1709535913963;
-        Sun, 03 Mar 2024 23:05:13 -0800 (PST)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id h19-20020a05600c351300b00412e5e67511sm928473wmq.16.2024.03.03.23.05.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Mar 2024 23:05:13 -0800 (PST)
-Date: Mon, 4 Mar 2024 10:05:09 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
-Subject: [PATCH] pinctrl: core: comment that pinctrl_add_gpio_range() is
- deprecated
-Message-ID: <533a7a10-c6eb-4ebe-adf1-f8dc95ae8d33@moroto.mountain>
+        d=1e100.net; s=20230601; t=1709535980; x=1710140780;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bu/CNzq/D3hnEEr3AOVp/iiwUc8F/2qAm4XX6DSlh/o=;
+        b=CoTrPUOo9XE0om33+LDQCicDy3OVjaCJbjxsNMg+/AYjgFQ8RYPJd8rRajUk/R5O5d
+         jGeLv9Rn5EwkbOUtHy/F9EuCKrFxUu+OZ6d8mY5hELWQJcQhZmJze0In71MD6imMmcTK
+         KeJSpfiD+lxHPJPdjT66D5o0Gc94xPIq54K6HHXino2OK0UDgOW+7q+jRyJ2yQAMWh7A
+         eToA+fBt2EyuB3U0SugRv0LPphH1l63CIDsVWMdL+I2Z2/UZixTf09VSpxX9wmJdWD8a
+         giHtV4eCjIHZK1KIfbFEMeU9ELvH4sL4HZbBdveCrPR0mwfNxtdg9kFPV4QhCEG50mt7
+         +Kig==
+X-Forwarded-Encrypted: i=1; AJvYcCVnB2OMcEUvbLfokZU4JNGiOWKHuUlkc5IMpEKO+A3u9imoYDn+IKkbJY36/E6eGJCB2eLviRxm4WXppqyPX451fPy7guPxO6YroHFeapKUaLiChbAySg9AObsIq+OEgggnjY/Dt4RAQ1Be8cC1rS3M2kxh2l65q3sZDvAzqPUnbW08zKljPF1S
+X-Gm-Message-State: AOJu0YyIlBi8mABJfj7OD/feI+1CoqhWlf0aYomDGULgiK/WsDpcVM9f
+	klLrROpB4PNu8Fb+clGR8IKepjbfvhawnRUEGn51WRTZHye7bSr4l95yO7ACaSVOY18qgfbSg3R
+	LOeAOxRGzBPGrgSj5+X5rImkuk10=
+X-Google-Smtp-Source: AGHT+IF7R4mdCSpEefF4n6saDdKVfyULSPlhKZqpG1teF+3r9bzzsrYNTGStc3z3IQjOySZ9x9xzBe2sNH5+7cPFfmU=
+X-Received: by 2002:a17:906:4108:b0:a45:4416:1fa4 with SMTP id
+ j8-20020a170906410800b00a4544161fa4mr1102563ejk.40.1709535979561; Sun, 03 Mar
+ 2024 23:06:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
+References: <20240304034632.GA21357@didi-ThinkCentre-M920t-N000>
+In-Reply-To: <20240304034632.GA21357@didi-ThinkCentre-M920t-N000>
+From: Jason Xing <kerneljasonxing@gmail.com>
+Date: Mon, 4 Mar 2024 15:05:43 +0800
+Message-ID: <CAL+tcoBbBgubwcghyT30Zk7g8SZYbTx1fKCvPDYqcJjQ8eGbOQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v2] tcp: Add skb addr and sock addr to arguments
+ of tracepoint tcp_probe.
+To: edumazet@google.com, rostedt@goodmis.org, mhiramat@kernel.org, 
+	mathieu.desnoyers@efficios.com, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	fuyuanli@didiglobal.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The pinctrl_add_gpio_range() function is deprecated add a comment so
-people don't accidentally use it in new code.
+On Mon, Mar 4, 2024 at 11:46=E2=80=AFAM fuyuanli <fuyuanli@didiglobal.com> =
+wrote:
+>
+> It is useful to expose skb addr and sock addr to user in tracepoint
+> tcp_probe, so that we can get more information while monitoring
+> receiving of tcp data, by ebpf or other ways.
+>
+> For example, we need to identify a packet by seq and end_seq when
+> calculate transmit latency between lay 2 and lay 4 by ebpf, but which is
+> not available in tcp_probe, so we can only use kprobe hooking
+> tcp_rcv_esatblised to get them. But we can use tcp_probe directly if skb
+> addr and sock addr are available, which is more efficient.
+>
+> Signed-off-by: fuyuanli <fuyuanli@didiglobal.com>
+> Link: https://lore.kernel.org/netdev/20240229052813.GA23899@didi-ThinkCen=
+tre-M920t-N000/
 
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
----
- drivers/pinctrl/core.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
-index ee56856cb80c..2d4412795ea4 100644
---- a/drivers/pinctrl/core.c
-+++ b/drivers/pinctrl/core.c
-@@ -412,6 +412,10 @@ static int pinctrl_get_device_gpio_range(struct gpio_chip *gc,
-  * @pctldev: pin controller device to add the range to
-  * @range: the GPIO range to add
-  *
-+ * DEPRECATED: Don't use this function in new code.  See section 2 of
-+ * Documentation/devicetree/bindings/gpio/gpio.txt on how to bind pinctrl and
-+ * gpio drivers.
-+ *
-  * This adds a range of GPIOs to be handled by a certain pin controller. Call
-  * this to register handled ranges after registering your pin controller.
-  */
--- 
-2.43.0
-
+Reviewed-by: Jason Xing <kerneljasonxing@gmail.com>
 
