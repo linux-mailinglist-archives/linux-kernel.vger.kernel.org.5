@@ -1,54 +1,49 @@
-Return-Path: <linux-kernel+bounces-90379-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90378-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A7AC86FE74
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:11:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E792086FE73
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:10:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8427DB207EF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:11:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2C03282461
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:10:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB518224FD;
-	Mon,  4 Mar 2024 10:10:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32686225D2;
+	Mon,  4 Mar 2024 10:10:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="V1g4ZJXg"
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD95A224E0
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 10:10:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.50.219
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TP/R0yQS"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7015620B33;
+	Mon,  4 Mar 2024 10:10:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709547058; cv=none; b=heFfD9arj9lBzC+Lv/BhUd25+VuqI9QT2VvNNGHGaMRaboa7arBA5bBUIaJbGVmTYWuUcPweNQVNO/F9AmIS/HBXDtwpO+SjzHaW+Szbe09uZeH6iTwiqMK4jHWTW1tBwJOCY6BW5EnszESU8TZQv8gXFKUqMpbmRw5KUUU9e7Q=
+	t=1709547028; cv=none; b=o6Qm1RuSeRIdfx3KQmhfv9864AbPbqW8sd0bwezsxLGuY34IiZp8D6VHPsVmnO9qdYwDBBTyRPDFwS4lbI7ROIWjc0ADMeX+/DDM9bP1Zmw6cMB157aSihS/tBoP5nxJwrZN2okbemnu8npEKRbzaC7WUS+lxS6X823GZjdPlvY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709547058; c=relaxed/simple;
-	bh=Qd+RI16juGVjN7zrBNOH3Q/KIOhwUI6VbC2DgVyOadg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=MO/YeUGvWRtlHJUSd14upQFdmyGBcLtZyBPs8I5ck2AkBFZUG+xheTaMH0bBAAe2FT5hgxqyOjFYlaUHOUPWETiypSchlNpIlu6iO6iahRKaMo3JzC0q6QQUzGiz8NXE/BT/BPbDckShu/JABiIGO8EVJ7t2KdQpZL4wFDC+o98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=V1g4ZJXg; arc=none smtp.client-ip=45.254.50.219
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=rWWze
-	ynqvpKTE8wM5BvJ7WhI4cRh2jw6a0Kbi0ZwsdA=; b=V1g4ZJXgnDduvAq01bKml
-	dVxaDiyDzC5H4z8/n32ZfrcKQKaIKR84bNNjoy39SlkZ4ACN02OkX7LyOHn3rPMt
-	3o5L/JA0VGQGxfl9d6OGJoZ6RYmMk3p9veoiCHDvQ2k/XdiEmDlo1ZL8lSo48HFe
-	dM9SAFp1cugZROOeyXS7fM=
-Received: from ProDesk.. (unknown [103.29.142.67])
-	by gzga-smtp-mta-g0-3 (Coremail) with SMTP id _____wD3n_jzneVlOacmAQ--.60415S2;
-	Mon, 04 Mar 2024 18:10:01 +0800 (CST)
-From: Andy Yan <andyshrk@163.com>
-To: heiko@sntech.de
-Cc: hjc@rock-chips.com,
-	s.hauer@pengutronix.de,
-	dri-devel@lists.freedesktop.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-rockchip@lists.infradead.org,
-	Andy Yan <andy.yan@rock-chips.com>
-Subject: [PATCH] drm/rockchip: vop2: Remove AR30 and AB30 format support
-Date: Mon,  4 Mar 2024 18:09:52 +0800
-Message-Id: <20240304100952.3592984-1-andyshrk@163.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1709547028; c=relaxed/simple;
+	bh=B826BG/LabvHzX/qTThYEXRApaxmS5m/7jaE3+DLICE=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=QC1/ADCRTVorhaxDo/PMOQYei37Hu1GMwtWSPtipm2NhWOfjVN/ZwfqoQkqERRFwh4sgX2PCIAxuIbXvwcobXcrvsemiLHb0pJWlozVDEROiXuCPIJ8r1zJ2lwhIaTOT94xXI7enwYELirE+WS0pu6QH1mFFVI0cDCDOMD6MCxA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TP/R0yQS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 2EFC9C433C7;
+	Mon,  4 Mar 2024 10:10:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709547028;
+	bh=B826BG/LabvHzX/qTThYEXRApaxmS5m/7jaE3+DLICE=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=TP/R0yQScU7A9oo7JK2IJK6F1Cu+pbJvFHFTfd3w7ecqrW/nF3MLpLuVyEl6sus/D
+	 l3DLo9YgpIHwomCL2w8MoYH3B4hZ4fyf22JS38RYyin1BgFlIqB2oj9VbGrj6+JOXA
+	 /Yv6Gcc66KokxBxI2rzUiaMSwHOTa34MZMpHcPJPP/vxYWbNP9bxs1mvK8UqMsiTHc
+	 K8wflKdElTFX5OuqA4Ci8UGu42NaLtv88IFFkPcSNW8Kl8fW4wqwb4nP8hOPV3ZUVr
+	 Pa3W+Ni7Xb9W0CoKuRxO5fdiAhv8zzt/8HvfheAyUiDvxTaMx5tXZuoZw6RxTMFjIT
+	 tsndoi4QFvUVg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 147ACD88F87;
+	Mon,  4 Mar 2024 10:10:28 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,41 +51,49 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD3n_jzneVlOacmAQ--.60415S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrKr47XrWkGr4DZw17ur45KFg_yoWfuwcEk3
-	47X3Wfur4xCrn8Jw12y3y7WrZFy3WI9Fs2ga9Yyan5AF1vvw1rXFy0vry7Gas8JF42kFs7
-	GF1jqry3CFn8WjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU1YL95UUUUU==
-X-CM-SenderInfo: 5dqg52xkunqiywtou0bp/xtbBEB6XXmVOCknmwAAAsJ
+Subject: Re: [PATCH net-next 0/3] gve: Add header split support
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170954702808.29163.14572409164565217897.git-patchwork-notify@kernel.org>
+Date: Mon, 04 Mar 2024 10:10:28 +0000
+References: <20240229212236.3152897-1-ziweixiao@google.com>
+In-Reply-To: <20240229212236.3152897-1-ziweixiao@google.com>
+To: Ziwei Xiao <ziweixiao@google.com>
+Cc: netdev@vger.kernel.org, jeroendb@google.com, pkaligineedi@google.com,
+ shailend@google.com, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, willemb@google.com, rushilg@google.com,
+ jfraker@google.com, jrkim@google.com, hramamurthy@google.com,
+ horms@kernel.org, linux-kernel@vger.kernel.org
 
-From: Andy Yan <andy.yan@rock-chips.com>
+Hello:
 
-The Alpha blending for 30 bit RGB/BGR are not
-functioning properly for rk3568/rk3588, so remove
-it from the format list.
+This series was applied to netdev/net-next.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-Fixes: bfd8a5c228fa ("drm/rockchip: vop2: Add more supported 10bit formats")
-Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
----
+On Thu, 29 Feb 2024 13:22:33 -0800 you wrote:
+> Currently, the ethtool's ringparam has added a new field tcp-data-split
+> for enabling and disabling header split. These three patches will
+> utilize that ethtool flag to support header split in GVE driver.
+> 
+> Jeroen de Borst (3):
+>   gve: Add header split device option
+>   gve: Add header split data path
+>   gve: Add header split ethtool stats
+> 
+> [...]
 
- drivers/gpu/drm/rockchip/rockchip_vop2_reg.c | 2 --
- 1 file changed, 2 deletions(-)
+Here is the summary with links:
+  - [net-next,1/3] gve: Add header split device option
+    https://git.kernel.org/netdev/net-next/c/0b43cf527d1d
+  - [net-next,2/3] gve: Add header split data path
+    https://git.kernel.org/netdev/net-next/c/5e37d8254e7f
+  - [net-next,3/3] gve: Add header split ethtool stats
+    https://git.kernel.org/netdev/net-next/c/056a70924a02
 
-diff --git a/drivers/gpu/drm/rockchip/rockchip_vop2_reg.c b/drivers/gpu/drm/rockchip/rockchip_vop2_reg.c
-index 48170694ac6b..18efb3fe1c00 100644
---- a/drivers/gpu/drm/rockchip/rockchip_vop2_reg.c
-+++ b/drivers/gpu/drm/rockchip/rockchip_vop2_reg.c
-@@ -17,9 +17,7 @@
- 
- static const uint32_t formats_cluster[] = {
- 	DRM_FORMAT_XRGB2101010,
--	DRM_FORMAT_ARGB2101010,
- 	DRM_FORMAT_XBGR2101010,
--	DRM_FORMAT_ABGR2101010,
- 	DRM_FORMAT_XRGB8888,
- 	DRM_FORMAT_ARGB8888,
- 	DRM_FORMAT_XBGR8888,
+You are awesome, thank you!
 -- 
-2.34.1
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
