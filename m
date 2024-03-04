@@ -1,128 +1,179 @@
-Return-Path: <linux-kernel+bounces-90110-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90111-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72EDB86FA79
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:07:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1377286FA7B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:08:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 97AFFB20CB3
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 07:07:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2D84281680
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 07:08:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4339134A3;
-	Mon,  4 Mar 2024 07:07:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB321134AD;
+	Mon,  4 Mar 2024 07:08:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="v3BwV6w6";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="TzZh3cXI"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6374912E4F;
-	Mon,  4 Mar 2024 07:07:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="OsJW4yDh"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95C3712E4F;
+	Mon,  4 Mar 2024 07:08:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709536067; cv=none; b=QwVetv2OrmF+zpD4/pSxb7eVS/p+QeaQg6n28sC3Q1w5D72dEGMbUEbIrX7HmbfDSJiltTajTY2Q1tFA9s7dThOOwyuf/H27weYCIi1urpicOmiex/yYxclpWuiPce0KTanxx+O3b80lwoHAJ/eQ335AceTrj/ZDXCLZ2loUM2c=
+	t=1709536099; cv=none; b=IDNywbP02tf81LtZc/zWX9rPqvisMFZT5SualRn+Chv94trFuzX/TFJ7P1rdeZkuXLMZqio1UJCXNobk6N+9D1N0tsOtasZ/Sjtsbf6NsJJT6tcO0X0WCXFayem3YUfumIUuBzTv2aNvaXxEwiV6qMpYXJXYJyE1fnBaooSGxv0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709536067; c=relaxed/simple;
-	bh=60SVu1KVHedJVfxJcO9wjvgnDUx3m4ZLvGGuTu8iRX0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=QQek5yBSqipQATADpbQ8+z2Fy2pLItvq04t67wj1CC+EMctzS7Gq7Kdhfpu5HiGT0LLKkeDcIsOF0n3yWDkZawEsNCfgaOVoq3jKUyG0eFMD7dOpA0IifJ6fRyJu5OWJp5jxMDjdRZt/XPNpF8WX948DZlmBFM2MlSJKn3kfng0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=v3BwV6w6; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=TzZh3cXI; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1709536064;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=60SVu1KVHedJVfxJcO9wjvgnDUx3m4ZLvGGuTu8iRX0=;
-	b=v3BwV6w6KaPN4Wp25kEa7zvrQRv6IeRbPnlSIPu2PjFRPH+HNW72t7QKZBcqIITs/lfF7R
-	lFb6pnVU2HmFXmU5SDSpeP0Ob/R2Tdu0NMhrVkLjLFdfHK+aWEHVEH4BJYgIl0NQTKeic2
-	8ll0FlaW93mvS4DRPSc5/uvxvcoQ7aM7cdfv02ISV0LuSruoN4fWsfLvnZ84v2IsWsqIJe
-	ZwX7RMPMARvPgCbDA6YSAy7+RWXl2JLOD1rTD6lGaL6pvTI7I96G2tYPAERAowHB3ezSBp
-	XNJUZnT43aFVL645x0uvcubl4sVNSjIDo8N67Fzb8aP6u3QJM8o5uN6bn17kfg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1709536064;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=60SVu1KVHedJVfxJcO9wjvgnDUx3m4ZLvGGuTu8iRX0=;
-	b=TzZh3cXIGv03GDF2Z7s7WIsb9G3jhkVcJ3YJBatqRbF/mjku8eCQSY0YyabxKE0oMYXcnh
-	kYWQLoGOIectnTBQ==
-To: Uros Bizjak <ubizjak@gmail.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, kernel test robot
- <lkp@intel.com>, oe-kbuild-all@lists.linux.dev,
- linux-kernel@vger.kernel.org, Arjan van de Ven <arjan@linux.intel.com>,
- x86@kernel.org, Luc Van Oostenryck <luc.vanoostenryck@gmail.com>, Sparse
- Mailing-list <linux-sparse@vger.kernel.org>, "Paul E. McKenney"
- <paulmck@kernel.org>
-Subject: Re: arch/x86/include/asm/processor.h:698:16: sparse: sparse:
- incorrect type in initializer (different address spaces)
-In-Reply-To: <CAFULd4aEe2KU=UXEt2=GeLQq2uTSFvydBiwAdSa7B6T61Am=5w@mail.gmail.com>
-References: <202403020457.RCJoQ3ts-lkp@intel.com> <87edctwr6y.ffs@tglx>
- <87a5nhwpus.ffs@tglx> <87y1b0vp8m.ffs@tglx> <87sf18vdsq.ffs@tglx>
- <87le70uwf0.ffs@tglx>
- <CAHk-=wiWhfdc4Sw2VBq_2nL2NDxmZS32xG4P7mBVwABGqUoJnw@mail.gmail.com>
- <87edcruvja.ffs@tglx>
- <CAFULd4bVEUBEidTLbHNzRaJbSjXm99yC8LT=jdzFWb7xnuFH7g@mail.gmail.com>
- <87bk7vuldh.ffs@tglx>
- <CAFULd4arHT+_fy9_oUNpmsvyfVPGaeB_pdeuqVS3UTpP5R757A@mail.gmail.com>
- <CAFULd4b0HN6eUJsOW6po8Hf16T3eMhjdKUvw-TS8yncNn-+Vyw@mail.gmail.com>
- <87bk7ux4e9.ffs@tglx>
- <CAFULd4aEe2KU=UXEt2=GeLQq2uTSFvydBiwAdSa7B6T61Am=5w@mail.gmail.com>
-Date: Mon, 04 Mar 2024 08:07:43 +0100
-Message-ID: <878r2ywk3k.ffs@tglx>
+	s=arc-20240116; t=1709536099; c=relaxed/simple;
+	bh=85CjglgMm8FIeWTxu2nlk+0mIr4+9dhpjr8AGjXgTj0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fPB/xAE3aK+JyNHFRdM+g5gKgd4bI/1bCNDJkZiyFJc/a0hm1NZ92derlHQa/ZWxztVQeNMvLymD2S1+BeJSkNaFmTPmnjxiAku8pnDv9LM9vF1/znh6E4xgzLOJiepoVWRPvd4DfE/BSJUt6FjUjPX0+2TYaEWDx80s3N82LgQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=OsJW4yDh; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1127)
+	id 1CE1220B74C0; Sun,  3 Mar 2024 23:08:17 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1CE1220B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1709536097;
+	bh=9pO23Pg5PwijYFQsb1h5+UWzqjRYkZ7j/df8N5fJN/8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OsJW4yDhbvbHNx7GnAKnTRfP/quYg8LO2oJxJ6v2+b6xuatqvDXie56KHJvZk3+1t
+	 Lq73c11RhfqbKt0QvQm9LmaqP1ryVkY5cELKAC/VZAe8c+PKMl7ENghGyuumM/52kO
+	 NmTJYGeZ9LcrU5piFiJK6ctqKmHVenAUsFAOHo1s=
+Date: Sun, 3 Mar 2024 23:08:17 -0800
+From: Saurabh Singh Sengar <ssengar@linux.microsoft.com>
+To: Wei Liu <wei.liu@kernel.org>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, decui@microsoft.com,
+	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+	dwmw@amazon.co.uk, peterz@infradead.org,
+	linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+	ssengar@microsoft.com, mhklinux@outlook.com
+Subject: Re: [PATCH v3] x86/hyperv: Use per cpu initial stack for vtl context
+Message-ID: <20240304070817.GA501@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1709452896-13342-1-git-send-email-ssengar@linux.microsoft.com>
+ <ZeVpG07p9ayjk7yb@liuwe-devbox-debian-v2>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZeVpG07p9ayjk7yb@liuwe-devbox-debian-v2>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-On Mon, Mar 04 2024 at 06:42, Uros Bizjak wrote:
+On Mon, Mar 04, 2024 at 06:24:27AM +0000, Wei Liu wrote:
+> On Sun, Mar 03, 2024 at 12:01:36AM -0800, Saurabh Sengar wrote:
+> > Currently, the secondary CPUs in Hyper-V VTL context lack support for
+> > parallel startup. Therefore, relying on the single initial_stack fetched
+> > from the current task structure suffices for all vCPUs.
+> > 
+> > However, common initial_stack risks stack corruption when parallel startup
+> > is enabled. In order to facilitate parallel startup, use the initial_stack
+> > from the per CPU idle thread instead of the current task.
+> > 
+> > Fixes: 18415f33e2ac ("cpu/hotplug: Allow "parallel" bringup up to CPUHP_BP_KICK_AP_STATE")
+> 
+> I don't think this patch is buggy. Instead, it exposes an assumption in
+> the VTL code. So this either should be dropped or point to the patch
+> which introduces the assumption.
+> 
+> Let me know what you would prefer.
 
-> On Mon, Mar 4, 2024 at 12:49=E2=80=AFAM Thomas Gleixner <tglx@linutronix.=
-de> wrote:
->>
->> On Sun, Mar 03 2024 at 21:24, Uros Bizjak wrote:
->> > On Sun, Mar 3, 2024 at 9:21=E2=80=AFPM Uros Bizjak <ubizjak@gmail.com>=
- wrote:
->> >> On Sun, Mar 3, 2024 at 9:10=E2=80=AFPM Thomas Gleixner <tglx@linutron=
-ix.de> wrote:
->> >> > That's so sad because it would provide us compiler based __percpu
->> >> > validation.
->> >>
->> >> Unfortunately, the c compiler can't strip qualifiers, so typeof() is
->> >> of limited use also when const and volatile qualifiers are used.
->> >> Perhaps some extension could be introduced to c standard to provide an
->> >> unqualified type, e.g. typeof_unqual().
->> >
->> > Oh, there is one in C23 [1].
->>
->> Yes. I found it right after ranting.
->>
->> gcc >=3D 14 and clang >=3D 16 have support for it of course only when ad=
-ding
->> -std=3Dc2x to the command line.
->>
->> Sigh. The name space qualifiers are non standard and then the thing
->> which makes them more useful is hidden behind a standard.
->
-> With GCC, you can use __typeof_unqual__ (please note underscores)
-> without -std=3Dc2x [1]:
->
-> "... Alternate spelling __typeof_unqual__ is available in all C modes
-> and provides non-atomic unqualified version of what __typeof__
-> operator returns..."
->
-> Please also see the example in my last post. It can be compiled without -=
-std=3D...
+The VTL code will crash if this fix is not present post above mentioned patch:
+18415f33e2ac ("cpu/hotplug: Allow "parallel" bringup up to CPUHP_BP_KICK_AP_STATE").
+So I would prefer a fixes which added the assumption in VTL:
 
-With gcc >=3D 14. Not so with clang...
+Fixes: 3be1bc2fe9d2 ("x86/hyperv: VTL support for Hyper-V")
+
+Please let me know if you need V4 for it.
+
+> 
+> Thanks,
+> Wei.
+> 
+> > Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
+> > Reviewed-by: Michael Kelley <mhklinux@outlook.com>
+> > ---
+> > [V3]
+> >  - Added the VTL code dependency on SMP to fix kernel build error
+> >    when SMP is disabled.
+> > 
+> >  arch/x86/hyperv/hv_vtl.c | 19 +++++++++++++++----
+> >  drivers/hv/Kconfig       |  1 +
+> >  2 files changed, 16 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/arch/x86/hyperv/hv_vtl.c b/arch/x86/hyperv/hv_vtl.c
+> > index 804b629ea49d..b4e233954d0f 100644
+> > --- a/arch/x86/hyperv/hv_vtl.c
+> > +++ b/arch/x86/hyperv/hv_vtl.c
+> > @@ -12,6 +12,7 @@
+> >  #include <asm/i8259.h>
+> >  #include <asm/mshyperv.h>
+> >  #include <asm/realmode.h>
+> > +#include <../kernel/smpboot.h>
+> >  
+> >  extern struct boot_params boot_params;
+> >  static struct real_mode_header hv_vtl_real_mode_header;
+> > @@ -58,7 +59,7 @@ static void hv_vtl_ap_entry(void)
+> >  	((secondary_startup_64_fn)secondary_startup_64)(&boot_params, &boot_params);
+> >  }
+> >  
+> > -static int hv_vtl_bringup_vcpu(u32 target_vp_index, u64 eip_ignored)
+> > +static int hv_vtl_bringup_vcpu(u32 target_vp_index, int cpu, u64 eip_ignored)
+> >  {
+> >  	u64 status;
+> >  	int ret = 0;
+> > @@ -72,7 +73,9 @@ static int hv_vtl_bringup_vcpu(u32 target_vp_index, u64 eip_ignored)
+> >  	struct ldttss_desc *ldt;
+> >  	struct desc_struct *gdt;
+> >  
+> > -	u64 rsp = current->thread.sp;
+> > +	struct task_struct *idle = idle_thread_get(cpu);
+> > +	u64 rsp = (unsigned long)idle->thread.sp;
+> > +
+> >  	u64 rip = (u64)&hv_vtl_ap_entry;
+> >  
+> >  	native_store_gdt(&gdt_ptr);
+> > @@ -199,7 +202,15 @@ static int hv_vtl_apicid_to_vp_id(u32 apic_id)
+> >  
+> >  static int hv_vtl_wakeup_secondary_cpu(u32 apicid, unsigned long start_eip)
+> >  {
+> > -	int vp_id;
+> > +	int vp_id, cpu;
+> > +
+> > +	/* Find the logical CPU for the APIC ID */
+> > +	for_each_present_cpu(cpu) {
+> > +		if (arch_match_cpu_phys_id(cpu, apicid))
+> > +			break;
+> > +	}
+> > +	if (cpu >= nr_cpu_ids)
+> > +		return -EINVAL;
+> >  
+> >  	pr_debug("Bringing up CPU with APIC ID %d in VTL2...\n", apicid);
+> >  	vp_id = hv_vtl_apicid_to_vp_id(apicid);
+> > @@ -213,7 +224,7 @@ static int hv_vtl_wakeup_secondary_cpu(u32 apicid, unsigned long start_eip)
+> >  		return -EINVAL;
+> >  	}
+> >  
+> > -	return hv_vtl_bringup_vcpu(vp_id, start_eip);
+> > +	return hv_vtl_bringup_vcpu(vp_id, cpu, start_eip);
+> >  }
+> >  
+> >  int __init hv_vtl_early_init(void)
+> > diff --git a/drivers/hv/Kconfig b/drivers/hv/Kconfig
+> > index 00242107d62e..862c47b191af 100644
+> > --- a/drivers/hv/Kconfig
+> > +++ b/drivers/hv/Kconfig
+> > @@ -16,6 +16,7 @@ config HYPERV
+> >  config HYPERV_VTL_MODE
+> >  	bool "Enable Linux to boot in VTL context"
+> >  	depends on X86_64 && HYPERV
+> > +	depends on SMP
+> >  	default n
+> >  	help
+> >  	  Virtual Secure Mode (VSM) is a set of hypervisor capabilities and
+> > -- 
+> > 2.34.1
+> > 
 
