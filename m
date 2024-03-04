@@ -1,302 +1,545 @@
-Return-Path: <linux-kernel+bounces-98157-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90614-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F7C08775CE
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 09:32:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57749870240
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:09:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0BD801F22F81
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Mar 2024 08:32:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7BC3F1C21912
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:09:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61F781DA52;
-	Sun, 10 Mar 2024 08:32:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="gI5Ost35"
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CB633EA9B;
+	Mon,  4 Mar 2024 13:07:40 +0000 (UTC)
+Received: from CHN02-BJS-obe.outbound.protection.partner.outlook.cn (mail-bjschn02on2107.outbound.protection.partner.outlook.cn [139.219.17.107])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D658410A1C;
-	Sun, 10 Mar 2024 08:31:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.11
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710059519; cv=none; b=qtRhq8h0rsGzrkcbBw2Q9rhXPF0osbt6Dh/vApdJvss4MB+8VwAFXGPAk297LyVcuRExdbN0EApXtihKSbi+7q1ERlACgw2rc5PRke4ceov/NpkVmg6DHrA6DjK38zDt+8UB+MIaqqjGYNghZxNisWzT9EXpvZCYjEVWx87PTqk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710059519; c=relaxed/simple;
-	bh=GLXQcFukMZ/tWAFDK1k8T7exP/WHkxREN+6d+etClTQ=;
-	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:References; b=mXuQKUy/a70EfOQWt9zThWwFxtUOVTJLo2f5jde28y7rA0374mBjxdZDuaplOvv1M6aKzWNBWXTErdhuVlmRF8IIEzMYxcu8AcAu7khQWZ33nWTmUBznVfFujwyNfpW6jVykmhHlWeDXWHHfYhLZWFrg0A4J68fFv8tE6Ll3kCg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=gI5Ost35; arc=none smtp.client-ip=210.118.77.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20240310082504euoutp012f9b7f9435bbb0b5a3dd47e9343c3516~7WbHvV7tM1596715967euoutp01Z;
-	Sun, 10 Mar 2024 08:25:04 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20240310082504euoutp012f9b7f9435bbb0b5a3dd47e9343c3516~7WbHvV7tM1596715967euoutp01Z
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1710059104;
-	bh=fSFfoLc3DfjlM0yn26NfvlNreAK+fQ3XZGtduReUWtk=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=gI5Ost35hpjzM80ww1b7UrxpiC119RgpVOvZDWZd1zYM408aJvEbE1XDwVS4eFNlh
-	 6/G6bWNV9CuL+Y1bxSnXwA3gL9+hT5SIoIdExiXP/T7eAMaGQevE7Pe1N+aWdWJC3b
-	 1yMv+8GkT4Edb/+zydK4NvLnxe3//roaJ2ibYgnY=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-	20240310082504eucas1p1221d3e1e1caed57c937b34d2c0c97709~7WbHipjHy1186111861eucas1p12;
-	Sun, 10 Mar 2024 08:25:04 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-	eusmges3new.samsung.com (EUCPMTA) with SMTP id 8F.48.09552.F5E6DE56; Sun, 10
-	Mar 2024 08:25:03 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-	20240310082503eucas1p13e9255dee8b6b22269821815eae5c033~7WbG6Ww_O3114831148eucas1p1D;
-	Sun, 10 Mar 2024 08:25:03 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240310082503eusmtrp13d00f5af6ad9b7cdb4599f73140b95ab~7WbG5bhav2181421814eusmtrp1x;
-	Sun, 10 Mar 2024 08:25:03 +0000 (GMT)
-X-AuditID: cbfec7f5-83dff70000002550-5b-65ed6e5fe46d
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-	eusmgms1.samsung.com (EUCPMTA) with SMTP id FC.38.09146.F5E6DE56; Sun, 10
-	Mar 2024 08:25:03 +0000 (GMT)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-	eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-	20240310082503eusmtip22544492af56202aeeb3ddb94d36f48b9~7WbGtcM560318103181eusmtip2R;
-	Sun, 10 Mar 2024 08:25:03 +0000 (GMT)
-Received: from localhost (106.210.248.173) by CAMSVWEXC02.scsc.local
-	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-	Sun, 10 Mar 2024 08:25:01 +0000
-Date: Sun, 3 Mar 2024 15:34:08 +0100
-From: Joel Granados <j.granados@samsung.com>
-To: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-CC: Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <keescook@chromium.org>,
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	<linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-	<netdev@vger.kernel.org>
-Subject: Re: [PATCH v2] sysctl: treewide: constify
- ctl_table_root::permissions
-Message-ID: <20240303143408.sxrbd7pykmyhwu5f@joelS2.panther.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBB7A3D55D;
+	Mon,  4 Mar 2024 13:07:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.17.107
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709557659; cv=fail; b=tqREbXdhSvVge+93v0CPGpu5epDf7ABEICQgc433X4OnebextnkQnnUjhslsI7gAwaeA3jJlQmT72YaTHtxNEcHtyfPLgLO3CBPts4MaSFabXDdzS2/9uX7sGN7EJ2szTiMQF8EM/1BRdWN3iZL153Khh7dU/i7tHs6plWzU50M=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709557659; c=relaxed/simple;
+	bh=eexKpw08DUxGgzkywEXB7FR4fjVoLBm6V1J0ohopiEw=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=ZbSk6HwE6ptuXTsHTR2bU6YiRhv0z6hkFpIohpEFM3JXabSCxk7w/136Dhsd7obJ/phLSuX76ABE/sy3PBCh/2jO2530jPopO8nwnkUI+/LKHOqy4BoHxdIQyigVwT4bUByVFxzb6Is1tQYjmek9bqUXZioAygKqTJ3Okqlf26w=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.17.107
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hdODi3GhUip+VpSOWq5YQkWfNI7S9YctMpA+rbiBVqOP4tlGJso8WmWaZ42fGuZsjDBYlZBnjirV6gRKox4ixDxqUZybWINXwljw+azSZpBeF6wsBu5LJzhim9D/vORUZ5yd1+dCe230x/rJ9vbaKIEwkO2G80atwMSzqA5xJqG4UAcGXp3xtlQ3aLmJjghcva1L2YtTF+u8FyYp7wriIb2yl56O9gUoAf/qcjqKshG0rbHF4teR7oswOGch2LyuZo2/dLnUtyhToCy0cuyqVgLcAQ28RNyo7vhsaVHzPR3ucw0ohIg24jZN0EPW9476QChnps2TESeQTwpIZNTnsA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cuLgaCec2X4iRlkDxeTa7P0vo5cmxd69iq/V87PCF9Y=;
+ b=VqBkB1YEnVM45AWYE4cRwCR6R9s5xxYU+8pZVN/eLDNwouND3DEwBwMiWhc5kizk1pL4UuELWnepF9CJuBUocyakoF3j6z721sRJiFr8ew/fFYy+nBBOdqFZZ+ODXasGxAuaE5xOBq02sEL0mbL/Xx0Bieo3DgHq1t7DFPVaeyGGWAvTGRlpNpKRYYk/RBuIaxkY5QfFcM8t3rz/36V3mkf/2RkSOa1VWrSlGOKKJW8dsBgPHnl2+9qHgJCCy2+Y0IqbssD3wJL9Af7iigYZERO+Mx1LIHTvGKzoqd1vNaAYA9AlLM9GGsw4FGdHD1Jwg7NnK6a8LYnhXOQmG9KokA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=starfivetech.com; dmarc=pass action=none
+ header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
+Received: from ZQ0PR01MB0981.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c550::13) by ZQ0PR01MB1205.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c550:1a::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.51; Mon, 4 Mar
+ 2024 12:52:59 +0000
+Received: from ZQ0PR01MB0981.CHNPR01.prod.partner.outlook.cn
+ ([fe80::521f:319d:d2e0:8b91]) by
+ ZQ0PR01MB0981.CHNPR01.prod.partner.outlook.cn ([fe80::521f:319d:d2e0:8b91%4])
+ with mapi id 15.20.7316.032; Mon, 4 Mar 2024 12:52:59 +0000
+From: Kevin Xie <kevin.xie@starfivetech.com>
+To: Lorenzo Pieralisi <lpieralisi@kernel.org>, Minda Chen
+	<minda.chen@starfivetech.com>
+CC: Conor Dooley <conor@kernel.org>, =?iso-8859-2?Q?Krzysztof_Wilczy=F1ski?=
+	<kw@linux.com>, Rob Herring <robh+dt@kernel.org>, Bjorn Helgaas
+	<bhelgaas@google.com>, Thomas Gleixner <tglx@linutronix.de>, Daire McNamara
+	<daire.mcnamara@microchip.com>, Emil Renner Berthing
+	<emil.renner.berthing@canonical.com>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-riscv@lists.infradead.org"
+	<linux-riscv@lists.infradead.org>, "linux-pci@vger.kernel.org"
+	<linux-pci@vger.kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer
+ Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Philipp
+ Zabel <p.zabel@pengutronix.de>, Mason Huo <mason.huo@starfivetech.com>,
+	Leyfoon Tan <leyfoon.tan@starfivetech.com>
+Subject: Re: [PATCH v15,RESEND 21/23] PCI: starfive: Add JH7110 PCIe
+ controller
+Thread-Topic: [PATCH v15,RESEND 21/23] PCI: starfive: Add JH7110 PCIe
+ controller
+Thread-Index: AQHaaWi8BSKFyVphIUWdBo9IckSBIrEhYxMAgAYv43A=
+Date: Mon, 4 Mar 2024 12:52:59 +0000
+Message-ID:
+ <ZQ0PR01MB098190462A6A394DA292BBE58223A@ZQ0PR01MB0981.CHNPR01.prod.partner.outlook.cn>
+References: <20240227103522.80915-1-minda.chen@starfivetech.com>
+ <20240227103522.80915-22-minda.chen@starfivetech.com>
+ <ZeCThFcD2HBg8/bx@lpieralisi>
+In-Reply-To: <ZeCThFcD2HBg8/bx@lpieralisi>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=starfivetech.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: ZQ0PR01MB0981:EE_|ZQ0PR01MB1205:EE_
+x-ms-office365-filtering-correlation-id: f2b54047-ea85-439b-fd3f-08dc3c4a051c
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ QTphUh/LN8KHmG9m7BmkerHtHZ9iy6p4bqmqW/7bszO6B84Lr5ujBu9YRPjMJ0C0B/G+lDzwkKlj1UbEl9GXRwGL+AylQWqDfDfnEUF1pE2gb13DKMy00tdW8WTKS03bM/whMTxdBFDrVTR1TS6pWRcbq82UUXCZ9YKMHaejQe9S2BHqPFOOK+v2JWAIo4LjOsX/zRwIHWoVBLo9hBhXGS/PNMQfpyhkElcsC7phuWIQNGFiogaBhvNF0B2Td1Ky7x7jDWd5vVxdDZuY02Cp6x0pB0sJT1ryuwJ6ore4ceZD728eV6vPWgG8woCfohT+CxxRxQ6mjUxwV+g9nrrY6j4fyYm7id+wOo778tphLbTIiEkWAzQcgUShIhiK5t4KS3G90gdiEhxGP5tcDP2frRut8Qxd1O6F/zZZOFw0d0dCQO3wXfnDeyYujhcNMIrdSY++UMqJdqmCFcTmXGC3MzsfAZY39NQLIfHB5yn/TeIEVYd6pqGHef5goV3wYLSSx21HPsHPqatZ45cmi4Ch52RF2LJT0dmjqLw+q3b5nJpSceMA09V6L659eEdu1czUnF6Ogzex7AeQwTXygn3Z7sHBGtdraUnhc9FSbJlXXNAI7AS1YBR3ZhWUVvHS84EA
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:zh-cn;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:ZQ0PR01MB0981.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(41320700004)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?iso-8859-2?Q?6lniIDTPobBD5zcLSUxHLgj1INA0blJhXaLdV3KBYShwzibrZc+vcabKVn?=
+ =?iso-8859-2?Q?H1JppykKF24G8Q8wHqxfHvRh1k+M4t0+M/gjGf2Kt4MSl8X1OBluUBQ6Z5?=
+ =?iso-8859-2?Q?eZhl7yYdsE7tAPv5q9A6jU7bssYrcUAc4PRaZCi/8e+2oXwE5TuHsMsV+r?=
+ =?iso-8859-2?Q?+v+/Osv46XxX1rdeM0cFrV+0omjerOTJjpaKNmUDV4NNfgi4v1dfaSS3KH?=
+ =?iso-8859-2?Q?ywSDmi0/AhsgIlYWSatjGkjVyqGC9LMb1gwxgJdXI7Xy8w1Nf4266A5cGx?=
+ =?iso-8859-2?Q?yWtiDgRTFRFilRc37wPwcos/DnW2rbNnl8IyUCDMNEXtvkxS73NhCogLHh?=
+ =?iso-8859-2?Q?yJcBEWDjOOPa2EAzIZ0rJh1u/tNuuaEkWmoC+CT1FAO+2w41oJxNX6UVaR?=
+ =?iso-8859-2?Q?9RHdXxHrGFXVXWwii6TbuaMqHf6Jyyhuqt5fBsExih5PKSuidN3eV5FPGJ?=
+ =?iso-8859-2?Q?qspL7Q8b5pcOhKmWouo+u+Yg3tf320oS2lIL6Fi6gtkIvRPzJD8qqz/Cx1?=
+ =?iso-8859-2?Q?4ueTHX937U+vlBVRvr0WY8Z3KIB/4I0oCrvMg8OQADq2NwcSWMGDWdnY3e?=
+ =?iso-8859-2?Q?Zmma6GG/g4c7pghzdlgSbf289PXI4IH+5nbOSxjR7gCG3HnYlj63neIbmX?=
+ =?iso-8859-2?Q?ZScOjWPjbS0QbQztGLqb7TKh6C99x8SxUFm0UteYFrmlM4ySLyA70wTxH2?=
+ =?iso-8859-2?Q?5+mlP+jHkNpYaH8PBwDFCKiDbhqyJZAnvyrzNhIrQ96i4s/dopuxYSfwku?=
+ =?iso-8859-2?Q?XzMy3cSDvTFZ2tcNKfdNjflvqvFihV4bFJNrbIBXuJ04c9Aq2YETDz041K?=
+ =?iso-8859-2?Q?iJ6NWfofwMiDdw2l1zQ1hbxnSLxA2aUqh88Xih9tDJScjRAHlX34Je9iG5?=
+ =?iso-8859-2?Q?UEv573QYfCqFdDlLovi/9k87YWoTVJCwsftRGC93A86g39O2uei2PoYAbi?=
+ =?iso-8859-2?Q?Sua+8FPdATvllvYy4KZS/x17FyqebIrpAxqreH74N/6g1sZ1t8OyVPXUSc?=
+ =?iso-8859-2?Q?i2US3miLQ1NwQORSwciUv46n3sU1PacZrf6HUFlU1eBVphgJvivtdOYi+J?=
+ =?iso-8859-2?Q?Em0LeHOuxNuUyXDlsEEeMIrlurOAgCqjISBgYQGcB8IMCVIcef04rF1kJI?=
+ =?iso-8859-2?Q?gE8UNFJOhFwgrxFy9Z2QY0VOudb+/cbqM+InLKsWlryPuGseAHzCcw+iFO?=
+ =?iso-8859-2?Q?nXkmJ8LbZVAb+WJeR9yWItazhUsMQoLeYJultU6ktBIYDT9Ld3j9TmZHGk?=
+ =?iso-8859-2?Q?kpPbqPkVB+yyouHpXtON4oWOwYgSBo8o4sLONBC6AWug6vu7NII9EBImtl?=
+ =?iso-8859-2?Q?mtilF2CJVci96aGucr1ghJQvEE199CC+1/hrDfenHNxqOOtHJ77ixsqnNO?=
+ =?iso-8859-2?Q?9lrhv8E7YTlMp/BhZ1XbtwPeRIKPfbXL73cZ4nDqHLpk4fqFFV98iNMv9g?=
+ =?iso-8859-2?Q?cMQzSR2vvH1OosuWfAAG2YoUNpBBDs19flWF/vIBaHXgHfP1SzC4QS4/GA?=
+ =?iso-8859-2?Q?NnJ1AcRxDJvE8bwcE6hGugVtn8Pn9OkzRqlI1WCipWGyx5atTrbPZBsFj3?=
+ =?iso-8859-2?Q?+6AqgJ49nKURBwd5SFe9amRqG0YLglwdEgBKXPWUlIxCY6ehBzQXRfuafk?=
+ =?iso-8859-2?Q?qvCUH0KGfqcStLyry6CgHMmkS6LNz7n7ODeuPUoXYl/op41yGXMMEmPg?=
+ =?iso-8859-2?Q?=3D=3D?=
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="qqan5da6s22ibigg"
-Content-Disposition: inline
-In-Reply-To: <20240223-sysctl-const-permissions-v2-1-0f988d0a6548@weissschuh.net>
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrCKsWRmVeSWpSXmKPExsWy7djP87rxeW9TDdonmFvMOd/CYvH02CN2
-	izPduRYXtvWxWuzZe5LF4vKuOWwWv388Y7K4MeEpo8WxBWIW306/YXTg8pjdcJHFY8vKm0we
-	CzaVemxa1cnm8X7fVTaPz5vkPPq7j7EHsEdx2aSk5mSWpRbp2yVwZSy/epGxoEO3YuG720wN
-	jMdUuxg5OSQETCSeLbjD3sXIxSEksIJR4v/9u8wgCSGBL4wSF5aGQyQ+M0osfLKBBabj3/tv
-	rBCJ5YwSa8+cYISruj3/IpSzlVFix7f9jCAtLAIqEid69oLZbAI6Euff3AHbISJgI7Hy22ew
-	5cwC+5gkPl5sYwdJCAsESMy78BTI5uDgFXCQOLdUDSTMKyAocXLmE7AzmAUqJHYuewJWwiwg
-	LbH8HwdImFMgUGL+vmdQlypLfJ30kQ3CrpU4teUWE8gqCYH9nBL7bk5lhEi4SCyfOReqQVji
-	1fEt7BC2jMTpyT0sEA2TGSX2//vADuGsZpRY1viVCaLKWqLlyhOoDkeJl7cnMYJcJCHAJ3Hj
-	rSDEoXwSk7ZNZ4YI80p0tAlBVKtJrL73hmUCo/IsJK/NQvLaLITXIMJ6EjemTmHDENaWWLbw
-	NTOEbSuxbt17lgWM7KsYxVNLi3PTU4uN81LL9YoTc4tL89L1kvNzNzECE9/pf8e/7mBc8eqj
-	3iFGJg7GQ4wqQM2PNqy+wCjFkpefl6okwvta522qEG9KYmVValF+fFFpTmrxIUZpDhYlcV7V
-	FPlUIYH0xJLU7NTUgtQimCwTB6dUA1O7IcPMxVnij89ZiR602i3wxM020vDf+eNpKjxHCh1W
-	uyc1t3+/KS3yxGeGx9G339/cL9LXcBKJYn2j93A/m33jXBNjuwkMK3nVFIsdv2zf8iSofbmP
-	Ytf/t9O4OEPO3JbtOR8ldvpjx8e3v3cwfr2ziVnKslapLo73/I4gBbGzWvKHC376q0f+4Dbt
-	6c5ZlDtx+p/6q4yOe5g+FZ+6dbRhpv92jwXdgcdE8w+/2Sb98uO6rVtE7CZPEOVqUbT67Rap
-	kTeji+9D/FrpxPqwc8uWFX07X7OnjelWcHjxojapo7PU8txvP9q+aKr1ZndNI76FEyf9srks
-	wBg8w/1H6fy8Beq6ml1KrYyvs4JFriuxFGckGmoxFxUnAgAVidKg9wMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpgleLIzCtJLcpLzFFi42I5/e/4Pd34vLepBs3tghZzzrewWDw99ojd
-	4kx3rsWFbX2sFnv2nmSxuLxrDpvF7x/PmCxuTHjKaHFsgZjFt9NvGB24PGY3XGTx2LLyJpPH
-	gk2lHptWdbJ5vN93lc3j8yY5j/7uY+wB7FF6NkX5pSWpChn5xSW2StGGFkZ6hpYWekYmlnqG
-	xuaxVkamSvp2NimpOZllqUX6dgl6GV0v+lgK2nQrbu5dx9TAeES1i5GTQ0LAROLf+2+sXYxc
-	HEICSxklGn7eYIFIyEhs/HKVFcIWlvhzrYsNougjo8S/T8eYQRJCAlsZJb694QexWQRUJE70
-	7GUEsdkEdCTOv7kDViMiYCOx8ttndpBmZoF9TBIfL7axgySEBfwkXi2fALSBg4NXwEHi3FI1
-	iAVLGCXufL0PtplXQFDi5MwnYBcxC5RJHN/4iwWknllAWmL5Pw6QMKdAoMT8fc+gjlaW+Drp
-	IxuEXSvx+e8zxgmMwrOQTJqFZNIshEkQYR2JnVvvsGEIa0ssW/iaGcK2lVi37j3LAkb2VYwi
-	qaXFuem5xYZ6xYm5xaV56XrJ+bmbGIHRv+3Yz807GOe9+qh3iJGJg/EQowpQ56MNqy8wSrHk
-	5eelKonwvtZ5myrEm5JYWZValB9fVJqTWnyI0RQYihOZpUST84FpKa8k3tDMwNTQxMzSwNTS
-	zFhJnNezoCNRSCA9sSQ1OzW1ILUIpo+Jg1OqgannwX9e/nWrD+cvlj78Imj+p1uf/kxbEy0V
-	uNPgzi3OgNfz2fx3Zs9eE7svKWTC2QmllVNfFL3UMyn63FG/pe3CHadNmmr1UnIzvkisUKjw
-	sN7lnMxp8+ZyYSH7W34rh92/JNnkl55bavnxwDTmOZ1PWWY4Nu6VTK/l6zW7E//EIeflqaWr
-	eM8/iTeZFJMZsoG/9u0zX/Y1u4vfBvPN6i4Q43saeLD2ibGHWXPtwr3FnELa+/pyD6y7k+P2
-	pSOuScThxHYT12BX+ZwHV4oOzF3zY+0K3sb4nKfWl/7eVkj7cmRCrNO2qvz1YYmmYq+213Cm
-	5GR2c17Xt3R9vJb/gunJsDnSGfZnPjO13amwZldiKc5INNRiLipOBAAypaXckwMAAA==
-X-CMS-MailID: 20240310082503eucas1p13e9255dee8b6b22269821815eae5c033
-X-Msg-Generator: CA
-X-RootMTR: 20240223155229eucas1p24a18fa79cda02a703bcceff3bd38c2ba
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20240223155229eucas1p24a18fa79cda02a703bcceff3bd38c2ba
-References: <CGME20240223155229eucas1p24a18fa79cda02a703bcceff3bd38c2ba@eucas1p2.samsung.com>
-	<20240223-sysctl-const-permissions-v2-1-0f988d0a6548@weissschuh.net>
+X-OriginatorOrg: starfivetech.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: ZQ0PR01MB0981.CHNPR01.prod.partner.outlook.cn
+X-MS-Exchange-CrossTenant-Network-Message-Id: f2b54047-ea85-439b-fd3f-08dc3c4a051c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Mar 2024 12:52:59.0654
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: lM55YT3CnU3zYaCoaf4LLoE6LnkzumqdHWRBljuZgKE6VQI/INoMxJCQTU9Sr83zvNqg7SR8cVgMVxL9I1w5WXNTy2PJ/Qv2ydvpvT2M6CQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: ZQ0PR01MB1205
 
---qqan5da6s22ibigg
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Tue, Feb 27, 2024 at 06:35:20PM +0800, Minda Chen wrote:
+> > Add StarFive JH7110 SoC PCIe controller platform driver codes, JH7110
+> > with PLDA host PCIe core.
+> >
+> > Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
+> > Co-developed-by: Kevin Xie <kevin.xie@starfivetech.com>
+> > Reviewed-by: Mason Huo <mason.huo@starfivetech.com>
+> > ---
+> >  MAINTAINERS                                 |   7 +
+> >  drivers/pci/controller/plda/Kconfig         |  12 +
+> >  drivers/pci/controller/plda/Makefile        |   1 +
+> >  drivers/pci/controller/plda/pcie-plda.h     |  71 ++-
+> >  drivers/pci/controller/plda/pcie-starfive.c | 473
+> > ++++++++++++++++++++
+> >  5 files changed, 563 insertions(+), 1 deletion(-)  create mode 100644
+> > drivers/pci/controller/plda/pcie-starfive.c
+> >
+> > diff --git a/MAINTAINERS b/MAINTAINERS index
+> > fc9576e69a71..d3b0a0fb754f 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -17078,6 +17078,13 @@ S:	Maintained
+> >  F:	Documentation/devicetree/bindings/pci/socionext,uniphier-pcie*
+> >  F:	drivers/pci/controller/dwc/pcie-uniphier*
+> >
+> > +PCIE DRIVER FOR STARFIVE JH71x0
+> > +M:	Kevin Xie <kevin.xie@starfivetech.com>
+> > +L:	linux-pci@vger.kernel.org
+> > +S:	Maintained
+> > +F:	Documentation/devicetree/bindings/pci/starfive*
+> > +F:	drivers/pci/controller/plda/pcie-starfive.c
+> > +
+> >  PCIE DRIVER FOR ST SPEAR13XX
+> >  M:	Pratyush Anand <pratyush.anand@gmail.com>
+> >  L:	linux-pci@vger.kernel.org
 
-Hey Thomas
-
-Just to be sure I'm following. This is V2 of "[PATCH] sysctl: treewide:
-constify ctl_table_root::set_ownership". Right? I ask, because the
-subject changes slightly.
-
-Best
-
-On Fri, Feb 23, 2024 at 04:52:16PM +0100, Thomas Wei=DFschuh wrote:
-> The permissions callback is not supposed to modify the ctl_table.
-> Enforce this expectation via the typesystem.
+> > diff --git a/drivers/pci/controller/plda/pcie-plda.h
+> > b/drivers/pci/controller/plda/pcie-plda.h
+> > index 7b69891700a4..04e385758a2f 100644
+> > --- a/drivers/pci/controller/plda/pcie-plda.h
+> > +++ b/drivers/pci/controller/plda/pcie-plda.h
+> > @@ -10,10 +10,20 @@
+> >  #define PLDA_MAX_NUM_MSI_IRQS			32
+> >
+> >  /* PCIe Bridge Phy Regs */
+> > +#define GEN_SETTINGS				0x80
+> > +#define  RP_ENABLE				1
+> > +#define PCIE_PCI_IDS_DW1			0x9c
+> > +#define  IDS_CLASS_CODE_SHIFT			16
+> > +#define  REVISION_ID_MASK			GENMASK(7, 0)
+> > +#define  CLASS_CODE_ID_MASK			GENMASK(31, 8)
+> >  #define PCIE_PCI_IRQ_DW0			0xa8
+> >  #define  MSIX_CAP_MASK				BIT(31)
+> >  #define  NUM_MSI_MSGS_MASK			GENMASK(6, 4)
+> >  #define  NUM_MSI_MSGS_SHIFT			4
+> > +#define PCI_MISC				0xb4
+> > +#define  PHY_FUNCTION_DIS			BIT(15)
+> > +#define PCIE_WINROM				0xfc
+> > +#define  PREF_MEM_WIN_64_SUPPORT		BIT(3)
+> >
+> >  #define IMASK_LOCAL				0x180
+> >  #define  DMA_END_ENGINE_0_MASK			0x00000000u
+> > @@ -65,6 +75,8 @@
+> >  #define ISTATUS_HOST				0x18c
+> >  #define IMSI_ADDR				0x190
+> >  #define ISTATUS_MSI				0x194
+> > +#define PMSG_SUPPORT_RX				0x3f0
+> > +#define  PMSG_LTR_SUPPORT			BIT(2)
+> >
+> >  /* PCIe Master table init defines */
+> >  #define ATR0_PCIE_WIN0_SRCADDR_PARAM		0x600u
+> > @@ -86,6 +98,8 @@
+> >  #define  PCIE_TX_RX_INTERFACE			0x00000000u
+> >  #define  PCIE_CONFIG_INTERFACE			0x00000001u
+> >
+> > +#define CONFIG_SPACE_ADDR_OFFSET		0x1000u
+> > +
+> >  #define ATR_ENTRY_SIZE				32
+> >
+> >  enum plda_int_event {
+> > @@ -200,4 +214,59 @@ static inline void plda_set_default_msi(struct
+> plda_msi *msi)
+> >  	msi->vector_phy =3D IMSI_ADDR;
+> >  	msi->num_vectors =3D PLDA_MAX_NUM_MSI_IRQS;  } -#endif
+> > +
+> > +static inline void plda_pcie_enable_root_port(struct plda_pcie_rp
+> > +*plda) {
+> > +	u32 value;
+> > +
+> > +	value =3D readl_relaxed(plda->bridge_addr + GEN_SETTINGS);
+> > +	value |=3D RP_ENABLE;
+> > +	writel_relaxed(value, plda->bridge_addr + GEN_SETTINGS); }
+> > +
+> > +static inline void plda_pcie_set_standard_class(struct plda_pcie_rp
+> > +*plda) {
+> > +	u32 value;
+> > +
+> > +	/* set class code and reserve revision id */
+> > +	value =3D readl_relaxed(plda->bridge_addr + PCIE_PCI_IDS_DW1);
+> > +	value &=3D REVISION_ID_MASK;
+> > +	value |=3D (PCI_CLASS_BRIDGE_PCI << IDS_CLASS_CODE_SHIFT);
+> > +	writel_relaxed(value, plda->bridge_addr + PCIE_PCI_IDS_DW1); }
+> > +
+> > +static inline void plda_pcie_set_pref_win_64bit(struct plda_pcie_rp
+> > +*plda) {
+> > +	u32 value;
+> > +
+> > +	value =3D readl_relaxed(plda->bridge_addr + PCIE_WINROM);
+> > +	value |=3D PREF_MEM_WIN_64_SUPPORT;
+> > +	writel_relaxed(value, plda->bridge_addr + PCIE_WINROM); }
 >=20
-> The patch was created with the following coccinelle script:
->=20
->   @@
->   identifier func, head, ctl;
->   @@
->=20
->   int func(
->     struct ctl_table_header *head,
->   - struct ctl_table *ctl)
->   + const struct ctl_table *ctl)
->   { ... }
->=20
-> (insert_entry() from fs/proc/proc_sysctl.c is a false-positive)
->=20
-> The three changed locations were validated through manually inspection
-> and compilation.
->=20
-> In addition a search for '.permissions =3D' was done over the full tree to
-> look for places that were missed by coccinelle.
-> None were found.
->=20
-> This change also is a step to put "struct ctl_table" into .rodata
-> throughout the kernel.
->=20
-> Signed-off-by: Thomas Wei=DFschuh <linux@weissschuh.net>
-> ---
-> To: Luis Chamberlain <mcgrof@kernel.org>
-> To: Kees Cook <keescook@chromium.org>
-> To: Joel Granados <j.granados@samsung.com>
-> To: David S. Miller <davem@davemloft.net>
-> Signed-off-by: Thomas Wei=DFschuh <linux@weissschuh.net>
->=20
-> Changes in v2:
-> - flesh out commit messages
-> - Integrate changes to set_ownership and ctl_table_args into a single
->   series
-> - Link to v1: https://lore.kernel.org/r/20231226-sysctl-const-permissions=
--v1-1-5cd3c91f6299@weissschuh.net
-> ---
-> The patch is meant to be merged via the sysctl tree.
->=20
-> There is an upcoming series that will introduce a new implementation of
-> .permission which would need to be adapted [0].
-> The adaption would be trivial as the 'table' parameter also not modified
-> there.
->=20
-> This change was originally part of the sysctl-const series [1].
-> To slim down that series and reduce the message load on other
-> maintainers to a minimumble, submit this patch on its own.
->=20
-> [0] https://lore.kernel.org/lkml/20240222160915.315255-1-aleksandr.mikhal=
-itsyn@canonical.com/
-> [1] https://lore.kernel.org/lkml/20231204-const-sysctl-v2-2-7a5060b11447@=
-weissschuh.net/
-> ---
->  include/linux/sysctl.h | 2 +-
->  ipc/ipc_sysctl.c       | 2 +-
->  kernel/ucount.c        | 2 +-
->  net/sysctl_net.c       | 2 +-
->  4 files changed, 4 insertions(+), 4 deletions(-)
->=20
-> diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
-> index ee7d33b89e9e..0a55b5aade16 100644
-> --- a/include/linux/sysctl.h
-> +++ b/include/linux/sysctl.h
-> @@ -207,7 +207,7 @@ struct ctl_table_root {
->  	void (*set_ownership)(struct ctl_table_header *head,
->  			      struct ctl_table *table,
->  			      kuid_t *uid, kgid_t *gid);
-> -	int (*permissions)(struct ctl_table_header *head, struct ctl_table *tab=
-le);
-> +	int (*permissions)(struct ctl_table_header *head, const struct ctl_tabl=
-e *table);
->  };
-> =20
->  #define register_sysctl(path, table)	\
-> diff --git a/ipc/ipc_sysctl.c b/ipc/ipc_sysctl.c
-> index 8c62e443f78b..b087787f608f 100644
-> --- a/ipc/ipc_sysctl.c
-> +++ b/ipc/ipc_sysctl.c
-> @@ -190,7 +190,7 @@ static int set_is_seen(struct ctl_table_set *set)
->  	return &current->nsproxy->ipc_ns->ipc_set =3D=3D set;
->  }
-> =20
-> -static int ipc_permissions(struct ctl_table_header *head, struct ctl_tab=
-le *table)
-> +static int ipc_permissions(struct ctl_table_header *head, const struct c=
-tl_table *table)
->  {
->  	int mode =3D table->mode;
-> =20
-> diff --git a/kernel/ucount.c b/kernel/ucount.c
-> index 4aa6166cb856..90300840256b 100644
-> --- a/kernel/ucount.c
-> +++ b/kernel/ucount.c
-> @@ -38,7 +38,7 @@ static int set_is_seen(struct ctl_table_set *set)
->  }
-> =20
->  static int set_permissions(struct ctl_table_header *head,
-> -				  struct ctl_table *table)
-> +			   const struct ctl_table *table)
->  {
->  	struct user_namespace *user_ns =3D
->  		container_of(head->set, struct user_namespace, set);
-> diff --git a/net/sysctl_net.c b/net/sysctl_net.c
-> index 051ed5f6fc93..ba9a49de9600 100644
-> --- a/net/sysctl_net.c
-> +++ b/net/sysctl_net.c
-> @@ -40,7 +40,7 @@ static int is_seen(struct ctl_table_set *set)
-> =20
->  /* Return standard mode bits for table entry. */
->  static int net_ctl_permissions(struct ctl_table_header *head,
-> -			       struct ctl_table *table)
-> +			       const struct ctl_table *table)
->  {
->  	struct net *net =3D container_of(head->set, struct net, sysctls);
-> =20
->=20
-> ---
-> base-commit: ffd2cb6b718e189e7e2d5d0c19c25611f92e061a
-> change-id: 20231226-sysctl-const-permissions-d7cfd02a7637
->=20
-> Best regards,
-> --=20
-> Thomas Wei=DFschuh <linux@weissschuh.net>
+> What does this do ?
 >=20
 
---=20
+This is an internal register to enable the prefetchable memory window
+64-bit addressing support. ( disabled by default)
+After this enable configuration, the address translation config in DTS
+and ATU about 64-bit prefetchable memory are useful.
 
-Joel Granados
+I will add the annotation here in the next version.
 
---qqan5da6s22ibigg
-Content-Type: application/pgp-signature; name="signature.asc"
+> > +static inline void plda_pcie_disable_ltr(struct plda_pcie_rp *plda) {
+> > +	u32 value;
+> > +
+> > +	value =3D readl_relaxed(plda->bridge_addr + PMSG_SUPPORT_RX);
+> > +	value &=3D ~PMSG_LTR_SUPPORT;
+> > +	writel_relaxed(value, plda->bridge_addr + PMSG_SUPPORT_RX); }
+> > +
+> > +static inline void plda_pcie_disable_func(struct plda_pcie_rp *plda)
+> > +{
+> > +	u32 value;
+> > +
+> > +	value =3D readl_relaxed(plda->bridge_addr + PCI_MISC);
+> > +	value |=3D PHY_FUNCTION_DIS;
+> > +	writel_relaxed(value, plda->bridge_addr + PCI_MISC); }
+> > +
+> > +static inline void plda_pcie_write_rc_bar(struct plda_pcie_rp *plda,
+> > +u64 val) {
+> > +	void __iomem *addr =3D plda->bridge_addr +
+> CONFIG_SPACE_ADDR_OFFSET;
+> > +
+> > +	writel_relaxed(lower_32_bits(val), addr + PCI_BASE_ADDRESS_0);
+> > +	writel_relaxed(upper_32_bits(val), addr + PCI_BASE_ADDRESS_1); }
+> > +#endif /* _PCIE_PLDA_H */
+> > diff --git a/drivers/pci/controller/plda/pcie-starfive.c
+> > b/drivers/pci/controller/plda/pcie-starfive.c
+> > new file mode 100644
+> > index 000000000000..9bb9f0e29565
+> > --- /dev/null
+> > +++ b/drivers/pci/controller/plda/pcie-starfive.c
+> > @@ -0,0 +1,473 @@
+> > +// SPDX-License-Identifier: GPL-2.0+
+> > +/*
+> > + * PCIe host controller driver for StarFive JH7110 Soc.
+> > + *
+> > + * Copyright (C) 2023 StarFive Technology Co., Ltd.
+> > + */
+> > +
+> > +#include <linux/bitfield.h>
+> > +#include <linux/clk.h>
+> > +#include <linux/delay.h>
+> > +#include <linux/gpio/consumer.h>
+> > +#include <linux/interrupt.h>
+> > +#include <linux/kernel.h>
+> > +#include <linux/mfd/syscon.h>
+> > +#include <linux/module.h>
+> > +#include <linux/of_address.h>
+> > +#include <linux/of_irq.h>
+> > +#include <linux/of_pci.h>
+> > +#include <linux/pci.h>
+> > +#include <linux/phy/phy.h>
+> > +#include <linux/platform_device.h>
+> > +#include <linux/pm_runtime.h>
+> > +#include <linux/regmap.h>
+> > +#include <linux/reset.h>
+> > +#include "../../pci.h"
+> > +
+> > +#include "pcie-plda.h"
+> > +
+> > +#define PCIE_FUNC_NUM			4
+> > +
+> > +/* system control */
+> > +#define STG_SYSCON_PCIE0_BASE			0x48
+> > +#define STG_SYSCON_PCIE1_BASE			0x1f8
+> > +
+> > +#define STG_SYSCON_AR_OFFSET			0x78
+> > +#define STG_SYSCON_AXI4_SLVL_AR_MASK		GENMASK(22, 8)
+> > +#define STG_SYSCON_AXI4_SLVL_PHY_AR(x)
+> 	FIELD_PREP(GENMASK(20, 17), x)
+> > +#define STG_SYSCON_AW_OFFSET			0x7c
+> > +#define STG_SYSCON_AXI4_SLVL_AW_MASK		GENMASK(14, 0)
+> > +#define STG_SYSCON_AXI4_SLVL_PHY_AW(x)
+> 	FIELD_PREP(GENMASK(12, 9), x)
+> > +#define STG_SYSCON_CLKREQ			BIT(22)
+> > +#define STG_SYSCON_CKREF_SRC_MASK		GENMASK(19, 18)
+> > +#define STG_SYSCON_RP_NEP_OFFSET		0xe8
+> > +#define STG_SYSCON_K_RP_NEP			BIT(8)
+> > +#define STG_SYSCON_LNKSTA_OFFSET		0x170
+> > +#define DATA_LINK_ACTIVE			BIT(5)
+> > +
+> > +/* Parameters for the waiting for link up routine */
+> > +#define LINK_WAIT_MAX_RETRIES	10
+> > +#define LINK_WAIT_USLEEP_MIN	90000
+> > +#define LINK_WAIT_USLEEP_MAX	100000
+> > +
+> > +struct starfive_jh7110_pcie {
+> > +	struct plda_pcie_rp plda;
+> > +	struct reset_control *resets;
+> > +	struct clk_bulk_data *clks;
+> > +	struct regmap *reg_syscon;
+> > +	struct gpio_desc *power_gpio;
+> > +	struct gpio_desc *reset_gpio;
+> > +	struct phy *phy;
+> > +
+> > +	unsigned int stg_pcie_base;
+> > +	int num_clks;
+> > +};
+> > +
+> > +/*
+> > + * The BAR0/1 of bridge should be hidden during enumeration to
+> > + * avoid the sizing and resource allocation by PCIe core.
+>=20
+> Please explain. This is what's preventing this driver to re-use the
+> PCI_HOST_COMMON infrastructure and it is unclear why.
+>=20
 
------BEGIN PGP SIGNATURE-----
+Sorry, we didn't explain it clearly enough here.
+JH7110 PCIe port BAR0/1 is configured as 64-bit prefetchable memory
+space, PCIe read and write requests targeting BAR0/1 are routed to so
+called 'Bridge Configuration space' in PLDA datasheet, which contains
+the bridge internal registers, such as interrupt, DMA & ATU registers...
 
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmXkik0ACgkQupfNUreW
-QU9rSwv7B1/Znla2Bxl973JJ28LEIA+WnUyU2NKROljS41pBxiSjMK8lNqbhRRZR
-Uu4a1VkqIeIH6OHWdFUnaVA8XaiHZkwxzba+Ub7U6eHznH0ysjSAQE9PsTagFHrf
-gsaiE7kA9rzpw5DYWHwvplF1qcezr1b3eO5dMMaSfr4xUb4BxvCX7+HJPO6x1bLj
-DHhbbQNnaQCie3L2yl2V4VOxafV8sWR4Vnbmp8we9GKkWJ1vvztKNisYFwefMt7h
-10ITailxrVPvbJeQIajnxRFZe/tVwXU19IKWw8R32ghlELLuHgnQMMt1q6MHjZ4s
-Jmiqhg+75YEFgOHi3fmRR0BBcC7DuL2gb4xzb9k2fTHWjmj22hudDChXH9Zehck6
-LsCbP2YfcbN9rEYa6WxxBPprEfQEYMt3VxL2qYTJR4qGCykBJVavrp7ozV6L9ifR
-ymKnJAhphprGBx5VmEWFby90DueGoiEuh61hhFdTBPDbuOFLD47YplHNIi3SH5DJ
-306eCaf1
-=oGDK
------END PGP SIGNATURE-----
+JH7110 can access the Bridge Configuration space by local bus, and don`t
+want the bridge internal registers accessed by the DMA from EP devices.
+Thus, they are unimplemented and should be hidden.
 
---qqan5da6s22ibigg--
+I will modify the annotation in next version if you think it is ok.
+
+> > + */
+> > +static bool starfive_pcie_hide_rc_bar(struct pci_bus *bus, unsigned in=
+t
+> devfn,
+> > +				      int offset)
+> > +{
+> > +	if (pci_is_root_bus(bus) && !devfn &&
+> > +	    (offset =3D=3D PCI_BASE_ADDRESS_0 || offset =3D=3D PCI_BASE_ADDRE=
+SS_1))
+> > +		return true;
+> > +
+> > +	return false;
+> > +}
+> > +
+> > +static int starfive_pcie_config_write(struct pci_bus *bus, unsigned in=
+t devfn,
+> > +				      int where, int size, u32 value) {
+> > +	if (starfive_pcie_hide_rc_bar(bus, devfn, where))
+> > +		return PCIBIOS_SUCCESSFUL;
+> > +
+> > +	return pci_generic_config_write(bus, devfn, where, size, value); }
+> > +
+> > +static int starfive_pcie_config_read(struct pci_bus *bus, unsigned int=
+ devfn,
+> > +				     int where, int size, u32 *value) {
+> > +	if (starfive_pcie_hide_rc_bar(bus, devfn, where)) {
+> > +		*value =3D 0;
+> > +		return PCIBIOS_SUCCESSFUL;
+> > +	}
+> > +
+> > +	return pci_generic_config_read(bus, devfn, where, size, value); }
+> > +
+> > +static int starfive_pcie_parse_dt(struct starfive_jh7110_pcie *pcie,
+> > +				  struct device *dev)
+> > +{
+> > +	int domain_nr;
+> > +
+> > +	pcie->num_clks =3D devm_clk_bulk_get_all(dev, &pcie->clks);
+> > +	if (pcie->num_clks < 0)
+> > +		return dev_err_probe(dev, pcie->num_clks,
+> > +				     "failed to get pcie clocks\n");
+> > +
+> > +	pcie->resets =3D devm_reset_control_array_get_exclusive(dev);
+> > +	if (IS_ERR(pcie->resets))
+> > +		return dev_err_probe(dev, PTR_ERR(pcie->resets),
+> > +				     "failed to get pcie resets");
+> > +
+> > +	pcie->reg_syscon =3D
+> > +		syscon_regmap_lookup_by_phandle(dev->of_node,
+> > +						"starfive,stg-syscon");
+> > +
+> > +	if (IS_ERR(pcie->reg_syscon))
+> > +		return dev_err_probe(dev, PTR_ERR(pcie->reg_syscon),
+> > +				     "failed to parse starfive,stg-syscon\n");
+> > +
+> > +	pcie->phy =3D devm_phy_optional_get(dev, NULL);
+> > +	if (IS_ERR(pcie->phy))
+> > +		return dev_err_probe(dev, PTR_ERR(pcie->phy),
+> > +				     "failed to get pcie phy\n");
+> > +
+> > +	domain_nr =3D of_get_pci_domain_nr(dev->of_node);
+> > +
+> > +	if (domain_nr < 0 || domain_nr > 1)
+> > +		return dev_err_probe(dev, -ENODEV,
+> > +				     "failed to get valid pcie domain\n");
+> > +
+> > +	if (domain_nr =3D=3D 0)
+> > +		pcie->stg_pcie_base =3D STG_SYSCON_PCIE0_BASE;
+> > +	else
+> > +		pcie->stg_pcie_base =3D STG_SYSCON_PCIE1_BASE;
+>=20
+> I don't agree with this. The domain number is a software allocated value
+> attached to a controller. It is written nowhere that you can't swap them =
+and
+> leave this code path broken.
+>=20
+
+We set 'linux,pci-domain =3D <0>' in our pcie0 DTS node, and <1> for=20
+pcie1. The value should be static now.
+
+As the STG system controller defines different bases in PCIe RP0 & RP1,
+we have to identify which controller is doing the hardware initialization.
+We discussed this before with other maintainers, do you have a better
+suggestion?
+
+> > +	pcie->reset_gpio =3D devm_gpiod_get_optional(dev, "perst",
+> > +						   GPIOD_OUT_HIGH);
+> > +	if (IS_ERR(pcie->reset_gpio))
+> > +		return dev_err_probe(dev, PTR_ERR(pcie->reset_gpio),
+> > +				     "failed to get perst-gpio\n");
+> > +
+> > +	pcie->power_gpio =3D devm_gpiod_get_optional(dev, "enable",
+> > +						   GPIOD_OUT_LOW);
+> > +	if (IS_ERR(pcie->power_gpio))
+> > +		return dev_err_probe(dev, PTR_ERR(pcie->power_gpio),
+> > +				     "failed to get power-gpio\n");
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static struct pci_ops starfive_pcie_ops =3D {
+> > +	.map_bus	=3D plda_pcie_map_bus,
+>=20
+> It looks like this is an ECAM driver with the read/config quirks for read=
+/write in
+> the method below. Please explain why they are needed.
+>=20
+
+Yes, that's for the hide RC BAR operations mentioned above.
+
+> > +	.read           =3D starfive_pcie_config_read,
+> > +	.write          =3D starfive_pcie_config_write,
+> > +};
+> > +
+> > +static int starfive_pcie_clk_rst_init(struct starfive_jh7110_pcie
+> > +*pcie) {
+> > +	struct device *dev =3D pcie->plda.dev;
+> > +	int ret;
+> > +
+> > +	/* PCIe PCI Standard Configuration Identification Settings. */
+> > +	plda_pcie_set_standard_class(plda);
+> > +
+> > +	/*
+> > +	 * The LTR message forwarding of PCIe Message Reception was set by
+> > +core
+>=20
+> "LTR message forwarding of PCIe Message Reception".
+>=20
+> What is this referring to ?
+>=20
+
+Sorry, this sentence is ambiguous.
+"PCIe Message Reception" is a register to enable the function about forward=
+ing
+specific PCIe messages to AXI application, such as ATS/LTR/OBFF messages...
+Here we clear bit 2 to disable the LTR message forwarding to the AXI applic=
+ation.
+
+I will modify the annotation in next version if you think it is ok.
+
+Thank you for your valuable comments.
+Kevin.
+
+> Thanks,
+> Lorenzo
+>=20
+> > +	 * as default, but the forward id & addr are also need to be reset.
+> > +	 * If we do not disable LTR message forwarding here, or set a legal
+> > +	 * forwarding address, the kernel will get stuck after the driver pro=
+be.
+> > +	 * To workaround, disable the LTR message forwarding support on
+> > +	 * PCIe Message Reception.
+> > +	 */
+> > +	plda_pcie_disable_ltr(plda);
+> > +
+> > +	/* Prefetchable memory window 64-bit addressing support */
+> > +	plda_pcie_set_pref_win_64bit(plda);
+> > +
+> >
+> > _______________________________________________
+> > linux-riscv mailing list
+> > linux-riscv@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-riscv
 
