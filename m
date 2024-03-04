@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-91255-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91257-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B06CF870BCF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:50:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05457870BD4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:50:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB8B41C2258E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:50:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE2671F23480
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:50:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B358FBFD;
-	Mon,  4 Mar 2024 20:50:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08F6F11185;
+	Mon,  4 Mar 2024 20:50:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="d16SegXg"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="aYPA7vlp"
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23E8AFBFC;
-	Mon,  4 Mar 2024 20:50:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07362FC1B;
+	Mon,  4 Mar 2024 20:50:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709585426; cv=none; b=NIsRfgnQ2nhS2EVM+kWFRqyNgg6Eln8D/P1ILE8nLH6bFQeUC8wdRthJkQKFIRmeZd+w8KF+Pqah1e5Rxci9g8zhyEi/oiGnK3AzcL8m1zufndv1IHo8sjQDy6OWEWuKwLrBzyTLY7gTJIRD0I2ei8n+Aa/4aNz259S1bHI/GrE=
+	t=1709585428; cv=none; b=sBWZ63rQ1xj3lhQ8KJeTbbHCLq8W9afDJd2Y8ZloqGytKmuG5/S2iWYstRhLln4y+NcTfU+fousKHahoy0ObN5lS419WE/LIQmcG/acHrUwjp6c27ypvM10W5oaPkB8A+X4VJiOgK+EnPHT/TwWTBOrBt096isZpztKWWmnZqKA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709585426; c=relaxed/simple;
-	bh=Tzw2KfuLD15TbMFuOFXHHB1XRezhD5nSZGMRaniwCjc=;
+	s=arc-20240116; t=1709585428; c=relaxed/simple;
+	bh=InnDeg4KpYAOhrHNOuqCqXKDex+tZ6eqIRBXCC4IeJk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Lv9O9FzTG9h7W+DrbpnPszWDAbTPURWp//7SPQZw4lOdY1JlAlJHxzsaZO6NWWPLnHk1H0HnPnz9CjpdSmLd0RqBhXBdP0P1coItLM8YuYVNx3b6DYW6aWNySjyQf/d0724aCS19dzDLe5brdi/sx1MgIh0bFjiyTl1frFDLVpE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=d16SegXg; arc=none smtp.client-ip=212.227.17.20
+	 MIME-Version; b=aNL0TAUW93dCOJVOzShRYuFfIIzatXjc8HSRqrdBiuVtYgwIp4rGb2pEoGTpYI4qXWXcnOCNAHxSyeFU0XUn44U6vqimmPtUUvlJJPP7LFH2ZlDh489hyRIQZbQO2nTNzSfyyuvvUhLV1lysUYU+BF3Sdt5t6a2hm1LM2/ASkKA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=aYPA7vlp; arc=none smtp.client-ip=212.227.15.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1709585415; x=1710190215; i=w_armin@gmx.de;
-	bh=Tzw2KfuLD15TbMFuOFXHHB1XRezhD5nSZGMRaniwCjc=;
+	t=1709585416; x=1710190216; i=w_armin@gmx.de;
+	bh=InnDeg4KpYAOhrHNOuqCqXKDex+tZ6eqIRBXCC4IeJk=;
 	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
 	 References;
-	b=d16SegXghKFTumuGkkSJx6f4RV1ky6fMQJybHZCObF8w4bmcMtMckIo0JtmaHa7x
-	 HTunq/yFlXXLk/uuwsodyeXqk4Rink/EUAAqWQombfByYhlEUzQUvrGTNDjnIYCVp
-	 Pe/27mip/vP46stwv8ZXmzeEGQPi9/6ona25taVv9ERcvyc68bPUFs38NqUkhj8Jl
-	 Ayc4OxUotNHQq9ESKVsKzpSzh+0GcugNPlV/sOiOGiQfjqvgIscnVZA4WBkItkOog
-	 yntuB29PubTtjxy1lpRZtdaQEsAcjV9SVHGO6Y4oxpqhajx9HpLLuMR5hqP6NNwe7
-	 NkfiT4o4+J7sOKUOfQ==
+	b=aYPA7vlp5PqwyVMA3XGFOTxV/ZK7dFHxvJNZNRRPRPNTvRfGc4HDaSclKzr7nrD3
+	 PKAaYyBAxfz5qeQSOXeo7crd15X3HNS0r1uTWpy++pU6AdLvjbxUk7kJJ8I7alkzM
+	 OGZ0Q0RPYG3dRUrQ9V9Djas0UuYr06mKb+6AWKFXNRphRVYjHo0yKPpYZqfe8tEbM
+	 pGfd8zSXzd0J/TwrXiR6/FyJTuXQHfSHqW8B90nVkVTzCHtoIIhfK4wVVTZfV32zz
+	 rxjUSmgNQG6lniEWG7RT9l5CGlGme9jZfySEPXvgSXEZxNCTXG8l9GT/5pNNQ9e4I
+	 zMh4XERlQ7vhRDSf/Q==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from mx-amd-b650.users.agdsn.de ([141.30.226.129]) by mail.gmx.net
- (mrgmx104 [212.227.17.168]) with ESMTPSA (Nemesis) id
- 1N3KPq-1qhH3U3Hyk-010Iqs; Mon, 04 Mar 2024 21:50:14 +0100
+ (mrgmx005 [212.227.17.190]) with ESMTPSA (Nemesis) id
+ 1MO9zH-1rWaAb190z-00OZ9r; Mon, 04 Mar 2024 21:50:16 +0100
 From: Armin Wolf <W_Armin@gmx.de>
 To: Shyam-sundar.S-k@amd.com
 Cc: hdegoede@redhat.com,
 	ilpo.jarvinen@linux.intel.com,
 	platform-driver-x86@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/4] platform/x86/amd/pmf: Fix return value of amd_pmf_start_policy_engine()
-Date: Mon,  4 Mar 2024 21:50:02 +0100
-Message-Id: <20240304205005.10078-2-W_Armin@gmx.de>
+Subject: [PATCH v3 2/4] platform/x86/amd/pmf: Do not use readl() for policy buffer access
+Date: Mon,  4 Mar 2024 21:50:03 +0100
+Message-Id: <20240304205005.10078-3-W_Armin@gmx.de>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240304205005.10078-1-W_Armin@gmx.de>
 References: <20240304205005.10078-1-W_Armin@gmx.de>
@@ -63,70 +63,55 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:8d9XMYhgFJgs7YKr08lxua9Cl9IWSRTR4jEtoSTH+T2j1YiT0fn
- PXb0xePM/Ie83TXJfniYWJ2H1Sbw4fmhvXhkKoJD4fhwuOkuM2TLzeu296L69mWOG31zQ/W
- xPfYXi9QRGn4SxRDRjMpv4jm5tk/fg2iNfuwazscEwp8ubzz5KVATePYs4wMl30TurcJFPV
- 1B1tG9JmSivVdLpzMXy6A==
+X-Provags-ID: V03:K1:c2SyZgQJ6gZfFEESo8W5Hr/xN00pZOAEr2Hvs0hHw7vJMBllFb3
+ 1izj5y7Je4SPe3ofpwh74FL3lU+oYPhJEKZbtlxXp6+grOnPZQv+/UbUUYEHiPQU5Gknz0M
+ zagUELqKKq3cZ8GEbTeiNe0v19S/xg3/93MxoeP86l39ygZA7zSay7MpqXiDnqTUzQQ8t2I
+ uMgGGMzQ5sKwxhD5VpSwA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:U5VYaQ7x7FU=;wYUHjOSSNN8XnWDFnkZLgYocNOw
- WrzTKLqtU4LOCimTxe+Xe1jPOYob3wTUM/KfPdBVdVbyChPjbwBohFOWJf6zHpMAnogsU8abA
- 8GUrTalxHX/RNHxhHU9OVrGtpzmcVhgmlH3Egfgebw7w+N8kwyRIbdMxd4PVToBH0vhHBKXP4
- uw9z/XGx1B9UR39aPUkIGLC/4Ulw7GF1Oj+IwaZnwJbpahVHUgeK7+IdmJvXKsT/OCNEYxtAO
- gEMN1ah6rziogBQ4a/u/jMXdBeTW7cXIpqZ7zH0gbLDZVYr5ZuMtSwIF1MOovfdjJBiJq8fix
- PBKSUKF11AkMEVe81K+ju5a1sXArRjSCo2b8obCdYLvGdV9ADgPrRms++0H+AO/Rh8gmMLvvC
- CqQerq2uWNLRpUAhjvjz1oZnMKLLq7yHroTFa2ozPq05O5o32dlAZsV+erZ2uE48EzVTp3aXI
- 8RImwlaSx+LgY3iQLY8idOqSjdENGFggSWtttUPxhO3yel2heXcqyQVFtcvoSQm/JVuz3Xg6v
- woAskANoOqggQITOVaYTRtj9wYm8HWR7hXC7XCZ6ysWfwbUs2CCYDNwTtqjBHmOTv5qqD/79W
- ZHz+5tQa73wkzm1EntQI8oMCNeEDTl47r+Ep5rdZGCDgxep6bXySaxhUMs7tANgdq1fuuAQoX
- s/VzihG3mFOwWlSc7NEiF1MMpBQU+9CO1C7T2sZ3G+xjM2AVIEQJEvLrtBiRDxA9CaH5aAA72
- WAJaHoWWeJYxyZOV0VEkncxIug0XJC/JecYNSYfa81ny8dzWNZOY+NrNf+QgfenEDuyDnjuQS
- kwkeQQvQb3pQMz7brX33XPb6HaiQOMUavXTRWDgHOiXBg=
+UI-OutboundReport: notjunk:1;M01:P0:pEZeRv1Hvlg=;sLZliRcOysRVcz3Z6ioV6gdLwn1
+ R6SQr/rVYPqlRjppHHhsXuPS3k3Evq40qI8pcqDRPrQBovIVu+j+6x134v4m5iQmZ4JEy2bm2
+ cdSXuyoAyvQCvr+87Um7XO/8lfPcNJEkEjOAO0dpVpbsAK5XHk3JTuN5HOo+9+4tEm6/TBc30
+ eEtTsmQh8cGWQaR2S/9GQm+3+neh4DDsWo5WtuLyOy8WPKtHt1WiXOU4EDwmHIrZi53RsZpUX
+ PMadGfDsrXakY/eshIMHuxz9veYXu1YuaBse+1MQCtcJznoBNaMI25dzKrwadwwV4gUDwGmJT
+ TfzLs9Hp2I9EbVq7zQ1oi6Kxbv9bJpJ5SdSJ6xyIi0MeqzOWwtTm5G8BHZPtRwPGL/j4EZDDR
+ xqD2SNk2O0PDcymDa1NqqKt3opF/n4kLxE7srHgvTD0/cma8Ik3iEPzi2o+5kDZf1IriadPP6
+ 5bLuXTcOIhIzjAfG3C1uf+Do87lm7atIhIzLWcT+gvi63PM3IGyfWVOhPav1PHu0ZL+i15Ihz
+ efx5QCD5mrIL+a2Ot91ej4TgKT9qmpnXznASngfiT6bFAWqyrDUif+dcZS6tg3u1ypZh9Grwx
+ i2NzfmIzheouhdA+HflkGA7M6Eh9760KFngbwUElR8wPQ83Kewxepm5TTHBp+uLpDo6zJSAl1
+ vuxchguwgh5S4NLRAyQX1ipwCIvbGE13L2h72AvJYVvK0MDQneRk7fobepeD6OM6fio39sLlK
+ 1DZ5yFvWC4sEx2zR0qno4QHE9/Vsi3yBMmYXNZ5kOYeQrPDgyegis2urRi4CnitQfZwfYy+yT
+ Q7KPjHqSyrXAbXFT76Szqm5QwrOFu4u3qtvwsF/bwbnWs=
 
-amd_pmf_start_policy_engine() returns an negative error code upon
-failure, so the TA_PMF_* error codes cannot be used here.
-
-Return -EIO instead. Also stop shadowing the return code in
-amd_pmf_get_pb_data().
+The policy buffer is allocated using normal memory allocation
+functions, so readl() should not be used on it.
 
 Compile-tested only.
 
-Suggested-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
 Fixes: 7c45534afa44 ("platform/x86/amd/pmf: Add support for PMF Policy Bin=
 ary")
 Signed-off-by: Armin Wolf <W_Armin@gmx.de>
 =2D--
- drivers/platform/x86/amd/pmf/tee-if.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/platform/x86/amd/pmf/tee-if.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/platform/x86/amd/pmf/tee-if.c b/drivers/platform/x86/=
 amd/pmf/tee-if.c
-index 16973bebf55f..13dd4462e1e3 100644
+index 13dd4462e1e3..58ec2c9606e1 100644
 =2D-- a/drivers/platform/x86/amd/pmf/tee-if.c
 +++ b/drivers/platform/x86/amd/pmf/tee-if.c
-@@ -269,7 +269,7 @@ static int amd_pmf_start_policy_engine(struct amd_pmf_=
+@@ -249,8 +249,8 @@ static int amd_pmf_start_policy_engine(struct amd_pmf_=
 dev *dev)
- 	} else {
- 		dev_err(dev->dev, "ta invoke cmd init failed err: %x\n", res);
- 		dev->smart_pc_enabled =3D PMF_SMART_PC_DISABLED;
--		return res;
-+		return -EIO;
- 	}
+ 	u32 cookie, length;
+ 	int res;
 
- 	return 0;
-@@ -309,8 +309,8 @@ static ssize_t amd_pmf_get_pb_data(struct file *filp, =
-const char __user *buf,
+-	cookie =3D readl(dev->policy_buf + POLICY_COOKIE_OFFSET);
+-	length =3D readl(dev->policy_buf + POLICY_COOKIE_LEN);
++	cookie =3D *(u32 *)(dev->policy_buf + POLICY_COOKIE_OFFSET);
++	length =3D *(u32 *)(dev->policy_buf + POLICY_COOKIE_LEN);
 
- 	amd_pmf_hex_dump_pb(dev);
- 	ret =3D amd_pmf_start_policy_engine(dev);
--	if (ret)
--		return -EINVAL;
-+	if (ret < 0)
-+		return ret;
-
- 	return length;
- }
+ 	if (cookie !=3D POLICY_SIGN_COOKIE || !length)
+ 		return -EINVAL;
 =2D-
 2.39.2
 
