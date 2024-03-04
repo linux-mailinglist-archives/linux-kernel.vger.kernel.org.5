@@ -1,163 +1,121 @@
-Return-Path: <linux-kernel+bounces-91199-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 998E5870B1C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:02:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5716870B20
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 21:03:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E7081F22D52
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:02:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E716E1C2200D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 20:03:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B65D7A706;
-	Mon,  4 Mar 2024 20:02:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 682DE7A706;
+	Mon,  4 Mar 2024 20:03:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=invisiblethingslab.com header.i=@invisiblethingslab.com header.b="J3MzlEp0";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="etKXsc+F"
-Received: from fout1-smtp.messagingengine.com (fout1-smtp.messagingengine.com [103.168.172.144])
+	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="o5HHxq2L"
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C656A6166B;
-	Mon,  4 Mar 2024 20:02:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.144
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B61B7A14B
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 20:02:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709582537; cv=none; b=khfjl2ZkaMhS+3CFh+pxuCDIutxmTBwRvnB0KQDZJvG/+tubXXOj25g7rEaLKGyN9tcaJoB3qAynOOda7omkAekZcolww2eammfEKzHUTVW+XjknxMj+5qN2PkB90v3Nxnhdlbj/czDS+ObuKee7Orqyq/gGbEaP0uChDXWsjzw=
+	t=1709582580; cv=none; b=qwh/EZ3xadDOFWpnhBQ4aXlKPmeLpj2R+X2lU8o0n6AFGSb6F1lgdekB49yAs6tEVtObx3m8rMQrhK47nOwnMojDGK9zpOpFDEnqSYQbI5IUUK86s+Cika2yBYr/i3pDYti9TwZpiEym0G0EK6ShhlJTJLheEh1GQ4rz81gzdxg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709582537; c=relaxed/simple;
-	bh=W/uRvTZAsWCNOm/39QHPuHOMNmZlMmdJH0RBqn5B/bg=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=m1wF3HvnW2jAqueh+XjvG0cDHXKAGR1idhspNKuZ4ZkvL6BPrU/27gmS1GC/+1zsx1TUIgyxDOuybvyH6B0YauhnBzrH3PGh7jBuQufKvcOVYgpvSJlsJpbqvmcqthvY0+cnW5NjFfigu1DTyVfkg0oCKdbj5N+45XV0piHTbXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=invisiblethingslab.com; spf=none smtp.mailfrom=invisiblethingslab.com; dkim=pass (2048-bit key) header.d=invisiblethingslab.com header.i=@invisiblethingslab.com header.b=J3MzlEp0; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=etKXsc+F; arc=none smtp.client-ip=103.168.172.144
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=invisiblethingslab.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=invisiblethingslab.com
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailfout.nyi.internal (Postfix) with ESMTP id B08C013800CA;
-	Mon,  4 Mar 2024 15:02:14 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Mon, 04 Mar 2024 15:02:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	invisiblethingslab.com; h=cc:cc:content-type:content-type:date
-	:date:from:from:in-reply-to:message-id:mime-version:reply-to
-	:subject:subject:to:to; s=fm1; t=1709582534; x=1709668934; bh=9o
-	Pusn5+rCN4IKmwCH88m/ny24uGHTvOdf6B86ocg1I=; b=J3MzlEp0ldkck3bxq0
-	NxZoaeC8NZAhGP9aMtqXLV7dexLnFRrgF5rjzSohUAzFJ4xaU1HYgzebj5CwQkLo
-	rUVTz6rZ9MV9PXWarrVV0a7JgwWApcYCcfTLCNjkCK0PMRYjURdodkxFJTITaPwr
-	pFoCHicGxQtFmciijuG6zLFCJSmnGI9L+CGg4vwoTtTY3H6dimSDkYYmf4RZ3Vf4
-	phT4y+UYO3l4d4yFon+ZFFxVQh28WbjmLX5sEVK6SIL/5THjMtxFyB1vVIYxgH5K
-	8SBqG0+PAP6spLN5ZmkZmMyf33CsKFCTGiuIx53kvCulq8Etc2qaXUElHEK2OFHn
-	4m0w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:message-id
-	:mime-version:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1709582534; x=1709668934; bh=9oPusn5+rCN4IKmwCH88m/ny24uGHTvOdf6
-	B86ocg1I=; b=etKXsc+FIZ2XNc61BGudXU9/lZCyjO7zqK3RKpbMM2+VeaHWYy+
-	x+3TyIpKhinNdAUlvFWNsLT/uA1+DzVSsxGW95Ha4uq8p5hxYlUjNZnnDf+RTY9e
-	B1mimozVd04VPR3MrjFFRHPYtr2UXmDvNVBq+C+jLeh1mcdmzTZyLy+M5FkPnFNU
-	j3C34PYsq6VxWcPDmlh9dLFpqjWiIi0LphsVovU4xhcCOzT2OL54P9wMHTFtiJ3u
-	fa8sB4pZ5WCX3oPcJMumQo1JdR05dRpPriHNPJX12NK6MxlaQ3A0Fe8SvxKQRYjW
-	/Ijs4XaXxLx+Hh+anat+SR5WUtfc7/8hWEw==
-X-ME-Sender: <xms:xijmZQEzCmd0uL1KZkXvfamv4uZ_TX4Nawv1qJeWv2s2RVkrqmhrdw>
-    <xme:xijmZZW5DDTkGgxy0z_SjayvnVc0BJRxW1ZBS5iXU4M9FOXBY_qXaa4tXlVYIhiy4
-    u564cY1OFvFzco>
-X-ME-Received: <xmr:xijmZaI649rxjgSTjtYthJ4foVrBAwBg8Bp38mDEROL1tDsyEFLnRVZdpxHcpdGB6deFTZByaRKlpAjXVWMmiZECvTBVU1Ul_cK5la2iwIcNd_s8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrheejgddufedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkgggtugesghdtreertddtvdenucfhrhhomhepffgvmhhiucfo
-    rghrihgvucfqsggvnhhouhhruceouggvmhhisehinhhvihhsihgslhgvthhhihhnghhslh
-    grsgdrtghomheqnecuggftrfgrthhtvghrnhepteekvefggeeivdffleehudejveevfeeg
-    vdeghfeigfdvgffgudeuueefveeuveefnecuffhomhgrihhnpehgihhthhhusgdrtghomh
-    enucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpeguvghm
-    ihesihhnvhhishhisghlvghthhhinhhgshhlrggsrdgtohhm
-X-ME-Proxy: <xmx:xijmZSHvqCcw29Fs9XFS31b59iJFgy1EqwJgFqqjuvec4VV5Vm09eQ>
-    <xmx:xijmZWU7dfbpVD25yXL2LRAOpO7N6RBIZKZgj_1OkWo8PU8MIAw2og>
-    <xmx:xijmZVOkSRsW988witsGGJu5DJ2UU1V8dS8yrP0ojkEp8NppL7FxuA>
-    <xmx:xijmZThwZKIxTwfCBFY0DekA_wwFcVNvXsqVXlwivG7I5d6I0wNI3g>
-Feedback-ID: iac594737:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 4 Mar 2024 15:02:14 -0500 (EST)
-Date: Mon, 4 Mar 2024 15:01:51 -0500
-From: Demi Marie Obenour <demi@invisiblethingslab.com>
-To: linux-usb@vger.kernel.org
-Cc: Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= <marmarek@invisiblethingslab.com>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: usbip doesn't work with userspace code that accesses USB devices
-Message-ID: <ZeYov0k8njwcZzGX@itl-email>
+	s=arc-20240116; t=1709582580; c=relaxed/simple;
+	bh=/LPidozw5UkwarCYzfBbkrQKWhhCq9LVcOP9y9lSJIM=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=A5Kgig6NnxeHnTmmjrpA+28MyRTW5tOSQGRqfVechHb48QBMLvuaKItUdRY12+4FKs83ZAbFQ2s8+g8yGwYSV/GFiBAyzW6fnuqDjyZXlYsUl0Ny1AsY5a2U5d9VNP6ZVbSXfhYX0h6bPbU1UZs4YjKAU2aB+5P4Kd0tC9Ary2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=o5HHxq2L; arc=none smtp.client-ip=202.36.163.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 9A7412C04C9;
+	Tue,  5 Mar 2024 09:02:48 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+	s=mail181024; t=1709582568;
+	bh=/LPidozw5UkwarCYzfBbkrQKWhhCq9LVcOP9y9lSJIM=;
+	h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+	b=o5HHxq2LjuPmSQ3VhN1oHwqVoNUEAxD/8C3ahWW2Qs5AKe6lhe4l/KO/oTaIx81YQ
+	 mSml93DIEV5XPAOYZ2m84f3fTRZ+OFPxh+sRC3E4cqcBbVap9eLdlr6EvS/cWywc0E
+	 zmB7nAnfTL8SyEvVInifrNqRjt6vI5bWNdDqU1M+qUb0i05Vr4QRsbxwjGdNZOvU9Y
+	 +qhcGIZuEIYGHteguox2wT8RJQBf5lYD9hmLVbvwcjgb1KYImGg5Kom0k5zw9vHepB
+	 BOLGEGk9GDqujoCcequf3eVGmNb5LMsZW79BCEtUKg+dlXeIPgsH5rJkgcqkv7ihCc
+	 +6rMwso6lAC4w==
+Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+	id <B65e628e80001>; Tue, 05 Mar 2024 09:02:48 +1300
+Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8:f753:6de:11c0:a008) by
+ svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8:f753:6de:11c0:a008) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 5 Mar 2024 09:02:48 +1300
+Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
+ svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
+ 15.02.1118.040; Tue, 5 Mar 2024 09:02:48 +1300
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: Andi Shyti <andi.shyti@kernel.org>, Wolfram Sang
+	<wsa+renesas@sang-engineering.com>
+CC: "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>,
+	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+	"linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RFT 1/3] dt-bindings: i2c: mpc: use proper binding for
+ transfer timeouts
+Thread-Topic: [PATCH RFT 1/3] dt-bindings: i2c: mpc: use proper binding for
+ transfer timeouts
+Thread-Index: AQHaav5GS1M8pxP1xEubQWdLBIKzKrEm3eAAgABQEQA=
+Date: Mon, 4 Mar 2024 20:02:48 +0000
+Message-ID: <89335a8e-4963-4992-a519-b88b15e3ff69@alliedtelesis.co.nz>
+References: <20240229105810.29220-5-wsa+renesas@sang-engineering.com>
+ <20240229105810.29220-6-wsa+renesas@sang-engineering.com>
+ <r3tho2bh3l23f5xkjc3ovq4xdehpsb3nz4ukbkremxvzq6shpe@kdsxfz4brskb>
+In-Reply-To: <r3tho2bh3l23f5xkjc3ovq4xdehpsb3nz4ukbkremxvzq6shpe@kdsxfz4brskb>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <4E6D7DA30971DF4BA5FC17CF8E09617F@atlnz.lc>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="omYEQKG3r4GVCydy"
-Content-Disposition: inline
+X-SEG-SpamProfiler-Analysis: v=2.4 cv=BKkQr0QG c=1 sm=1 tr=0 ts=65e628e8 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=K6JAEmCyrfEA:10 a=LDBv8-xUAAAA:8 a=wMjMLsQrkjzMquoGyIgA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 a=TIyoBwpO-cKII9bNTSam:22 a=DZeXCJrVpAJBw65Qk4Ds:22
+X-SEG-SpamProfiler-Score: 0
 
-
---omYEQKG3r4GVCydy
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Date: Mon, 4 Mar 2024 15:01:51 -0500
-From: Demi Marie Obenour <demi@invisiblethingslab.com>
-To: linux-usb@vger.kernel.org
-Cc: Marek =?utf-8?Q?Marczykowski-G=C3=B3recki?= <marmarek@invisiblethingslab.com>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: usbip doesn't work with userspace code that accesses USB devices
-
-Qubes OS users are reporting that MTP doesn't work with USB passthrough.
-Fastboot (used for flashing a custom OS to an Android device) also
-doesn't work.  Kernel-mode drivers, such as Bluetooth and USB storage,
-seem to usually work as expected.  Since MTP and fastboot are both
-implemented in userspace, it appears that there is some problem with the
-interaction of usbip, our USB proxy (which is based on USBIP), and
-userspace programs that interact with USB devices directly.
-
-The bug report can be found at [1] and the source code for the USB proxy
-can be found at [2].  The script used on the sending side (the one with
-the physical USB controller) is at [3] and the script used by the
-receiving side (the one the device is attached to) is at [4].  All of
-these links are for the current version as of this email being sent, so
-that anyone looking at this email in the future doesn't get confused.
-
-Is this a bug in usbip, or is this due to usbip being used incorrectly?
-I'm happy to provide additional information needed to debug the problem,
-but I don't have access to the reporter's system.
-
-[1]: https://github.com/QubesOS/qubes-issues/issues/6330
-[2]: https://github.com/QubesOS/qubes-app-linux-usb-proxy/tree/57ab3940d450=
-b18e570da57886d65cb5707aa60f
-[3]: https://github.com/QubesOS/qubes-app-linux-usb-proxy/blob/57ab3940d450=
-b18e570da57886d65cb5707aa60f/src/usb-export
-[4]: https://github.com/QubesOS/qubes-app-linux-usb-proxy/blob/57ab3940d450=
-b18e570da57886d65cb5707aa60f/src/usb-import
---=20
-Sincerely,
-Demi Marie Obenour (she/her/hers)
-Invisible Things Lab
-
---omYEQKG3r4GVCydy
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEdodNnxM2uiJZBxxxsoi1X/+cIsEFAmXmKL8ACgkQsoi1X/+c
-IsEUCBAAvrO9zUYjf7lBdCcGpwQTWcfj1mmsdh5NKJF1RmfpmpuiZSoroJSfPtlF
-19ZDl6srLOxQC7Mu0k3JQaJIBSiYY6C3kLEafYG40ftCemosKBrK7z/hYcmNz2ZW
-wrrCO8ofcejvClFDjE89OP8KYD7/8SZpoB5rEr9mTxTFJyuwywUzT7dhCvQwNdu2
-oE9YUh2q43ENzcVgEydceRBZa8ELas+gqQ8oK0PSPR8cmhic9TjhkfHXvzgqzvR1
-t6pvs66quWK/BtaEMoW4gZN2+a2YZtimkaRIrngLYGDh+7zTPbyMp1rFVebgamAG
-qeFTtRTyFqkb4NUlDr+pDk8BbbpYJOS/HPiYWXHvx3zl/1m+FJkrF9pA1dg5Z1Jn
-eLzOJhHRcWeONu/m9Ic3Aunim4tggTCFktqtAj0P9RmuRiGhSs298SArhGbm3rHB
-8NpJKlzpz9C2rberQsxwvtuzWmS1tOyMmjhfb+REzI4BEaRWG57eamfztD6TzYbD
-TgmK4lP5rNlZjge4T1mUF4rcOPEMbCX7b0jbuqBseBBB7vSxhMCGhIlm2pIij+5g
-/+6krJDBVQieNpyOBCmXhZDqcaf4717Bre+BiVUm6p9cl2VRRPwieTiWe9JMLwYr
-40TbnuwS2nEox9AadwUQRzwhr/kt9dG7/4LCpHdhPrDQeTiiZk8=
-=OKcn
------END PGP SIGNATURE-----
-
---omYEQKG3r4GVCydy--
+SGkgQW5kaSwNCg0KT24gNS8wMy8yNCAwNDoxNiwgQW5kaSBTaHl0aSB3cm90ZToNCj4gSGksDQo+
+DQo+IE9uIFRodSwgRmViIDI5LCAyMDI0IGF0IDExOjU4OjExQU0gKzAxMDAsIFdvbGZyYW0gU2Fu
+ZyB3cm90ZToNCj4+ICJpMmMtc2NsLWNsay1sb3ctdGltZW91dC11cyIgaGFzIGZsYXdzIGluIGl0
+c2VsZiBhbmQgdGhlIHVzYWdlIGhlcmUgaXMNCj4+IGFsbCB3cm9uZy4gVGhlIGRyaXZlciBkb2Vz
+bid0IHVzZSBpdCBhcyBhIG1heGltdW0gdGltZSBmb3IgY2xvY2sNCj4+IHN0cmV0Y2hpbmcgYnV0
+IHRoZSBtYXhpbXVtIHRpbWUgZm9yIGEgdG90YWwgdHJhbnNmZXIuIFdlIGFscmVhZHkgaGF2ZQ0K
+Pj4gYSBiaW5kaW5nIGZvciB0aGUgbGF0dGVyLiBDb252ZXJ0IHRoZSB3cm9uZyBiaW5kaW5nIGZy
+b20gZXhhbXBsZXMuDQo+Pg0KPj4gU2lnbmVkLW9mZi1ieTogV29sZnJhbSBTYW5nIDx3c2ErcmVu
+ZXNhc0BzYW5nLWVuZ2luZWVyaW5nLmNvbT4NCj4+IC0tLQ0KPj4gICBEb2N1bWVudGF0aW9uL2Rl
+dmljZXRyZWUvYmluZGluZ3MvaTJjL2kyYy1tcGMueWFtbCB8IDIgKy0NCj4+ICAgMSBmaWxlIGNo
+YW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pDQo+Pg0KPj4gZGlmZiAtLWdpdCBh
+L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9pMmMvaTJjLW1wYy55YW1sIGIvRG9j
+dW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2kyYy9pMmMtbXBjLnlhbWwNCj4+IGluZGV4
+IDcwZmI2OWI5MjNjNC4uYjFkN2QxNGMwYmU0IDEwMDY0NA0KPj4gLS0tIGEvRG9jdW1lbnRhdGlv
+bi9kZXZpY2V0cmVlL2JpbmRpbmdzL2kyYy9pMmMtbXBjLnlhbWwNCj4+ICsrKyBiL0RvY3VtZW50
+YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9pMmMvaTJjLW1wYy55YW1sDQo+PiBAQCAtOTYsNiAr
+OTYsNiBAQCBleGFtcGxlczoNCj4+ICAgICAgICAgICBpbnRlcnJ1cHRzID0gPDQzIDI+Ow0KPj4g
+ICAgICAgICAgIGludGVycnVwdC1wYXJlbnQgPSA8Jm1waWM+Ow0KPj4gICAgICAgICAgIGNsb2Nr
+LWZyZXF1ZW5jeSA9IDw0MDAwMDA+Ow0KPj4gLSAgICAgICAgaTJjLXNjbC1jbGstbG93LXRpbWVv
+dXQtdXMgPSA8MTAwMDA+Ow0KPj4gKyAgICAgICAgaTJjLXRyYW5zZmVyLXRpbWVvdXQtdXMgPSA8
+MTAwMDA+Ow0KPiBDaHJpcywgY2FuIHlvdSBwbGVhc2UgZ2l2ZSBpdCBhbiBhY2s/DQo+DQo+IFRo
+ZSB3aG9sZSBzZXJpZXMgaXMgY29oZXJlbnQgdG8gdGhpcyBjaGFuZ2UuDQoNCkxvb2tzIGxpa2Ug
+eW91IHdlcmVuJ3Qgb24gdGhlIFRvOiBsaXN0IGZvciB0aGUgY292ZXIgbGV0dGVyIHdoaWNoIEkg
+DQpyZXBsaWVkIHRvLg0KDQpGb3IgdGhlIHNlcmllcw0KDQpSZXZpZXdlZC1ieTogQ2hyaXMgUGFj
+a2hhbSA8Y2hyaXMucGFja2hhbUBhbGxpZWR0ZWxlc2lzLmNvLm56Pg0KDQphbmQgb24gYSBQMjA0
+MVJEQg0KDQpUZXN0ZWQtYnk6IENocmlzIFBhY2toYW0gPGNocmlzLnBhY2toYW1AYWxsaWVkdGVs
+ZXNpcy5jby5uej4NCg==
 
