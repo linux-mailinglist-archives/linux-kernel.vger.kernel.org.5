@@ -1,102 +1,181 @@
-Return-Path: <linux-kernel+bounces-90628-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90633-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 892B1870272
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:17:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87CB1870280
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:18:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1B9BBB27059
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:17:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42AFA2893E1
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:18:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 061363D98D;
-	Mon,  4 Mar 2024 13:17:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA9DE3F9FE;
+	Mon,  4 Mar 2024 13:17:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kvNGVIwV"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ufs5iE8T"
+Received: from mail-lj1-f202.google.com (mail-lj1-f202.google.com [209.85.208.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 067843D565;
-	Mon,  4 Mar 2024 13:17:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C1BC3E478
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 13:17:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709558227; cv=none; b=g9yAzGdORnYIOP6d0i25brQSbkIO11iPAAldYS7G8yVhbM2Gm4T4rSw1XExbjwVYYFb1XCNADIb8P/O2l/LdUjO7R28oCSS1z6Fut1HwxdwFCLb2ZpgZ6C1Ema0W5LjP83QJpfCJcWN00zgiS+ZlB9Wdp3OtAGoiVIf0QHqSrTk=
+	t=1709558259; cv=none; b=mX4pBose+pjBJ32f4LY4GP3ROgoIleNmhVwblXRllGnWPQF+i5h7FE1cY60EDb/KEF18K3mSQNo+slceR2Lm5TTveVUwEW72lIpo43nNKSnoZ6C2t0JB57FrZDsqqqsiKkoOjhMXNxTFZcwMVycMevnbDfhmdKyA5xue13FHsGw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709558227; c=relaxed/simple;
-	bh=aHO61Fw3YcuzKPVaQ0d2bWO0FKGgjcXcNHrY8DEIZZI=;
-	h=From:To:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=aBtuNH1MKIkhWKnG2kJp5ry2PBj9y6uVY5/D+AcIB9s/QhGpF87tE1lOA+3Ez8I3MVVteWLTt8wIh2hU/6tgyzAN1MTKZTNhb4TVPvq1THjtTIoxFkouvBh3m0euUQKeKg2d91WJ2qzfY1zkqlCvUvE670mTRXs0Z2m8u/XmmM0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kvNGVIwV; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709558227; x=1741094227;
-  h=from:to:in-reply-to:references:subject:message-id:date:
-   mime-version:content-transfer-encoding;
-  bh=aHO61Fw3YcuzKPVaQ0d2bWO0FKGgjcXcNHrY8DEIZZI=;
-  b=kvNGVIwVl2GVRmWVfO3bwxuZ1gQc6qC0VZtCeSjQTBdw9ru9/KVIaah3
-   kNCp6sguEkBAFEtzY8Rrrmgi7xhSl7S3xuZ71AZHKcbEOTRXdRZJTuMfI
-   1K2tRBvRANpO8p8AATkEWT5dnW6qa6V0FQBvB91H1/UBR5MAf6NpsJdJX
-   GuNGUC2lKHoKOnRtrG0sJi74pNmIcFg0psPde320V6qamBozQe5lS9qfq
-   GqDieNRpnsIboClRS6/2AF6KuYLz8lPsIaL/n5Vnnps66nMMYWY1MarSk
-   1M16px/1dK4rjBql91e6+sSO2aJi+XFh02+P9UnDmoNt+Y3Z6CCsJW9Zt
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="26512899"
-X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
-   d="scan'208";a="26512899"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 05:17:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
-   d="scan'208";a="9367135"
-Received: from ekohn-mobl1.ger.corp.intel.com (HELO localhost) ([10.246.49.145])
-  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 05:17:03 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To: rajvi.jingar@linux.intel.com, platform-driver-x86@vger.kernel.org, 
- linux-kernel@vger.kernel.org, sathyanarayanan.kuppuswamy@linux.intel.com, 
- hdegoede@redhat.com, "David E. Box" <david.e.box@linux.intel.com>
-In-Reply-To: <20240227190134.1592072-1-david.e.box@linux.intel.com>
-References: <20240227190134.1592072-1-david.e.box@linux.intel.com>
-Subject: Re: [PATCH V2 1/3] platform/x86/intel/vsec: Remove nuisance
- message
-Message-Id: <170955821765.5357.6032325294708039590.b4-ty@linux.intel.com>
-Date: Mon, 04 Mar 2024 15:16:57 +0200
+	s=arc-20240116; t=1709558259; c=relaxed/simple;
+	bh=xtpb796Eef+Npkk8DkktAG30VJMlry1p+CcpmAvgVko=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=XEofAscZHKyBqxwOPymwRT0GZ2jX8kU7bWhxWdrlDoD18+H0Tf2o9c8+YZszv0odmyi3fp+sUhZ8yuwbq6zOMo8RpjjrHLqVap44AyP6F+ytAqxuQb9l2tIb8TGzJ8i10BNLdEZEUOPx5afY34nMeRfGhi1BmHc81pbdK67yTaI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ufs5iE8T; arc=none smtp.client-ip=209.85.208.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com
+Received: by mail-lj1-f202.google.com with SMTP id 38308e7fff4ca-2d33fa7f791so21384841fa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 05:17:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709558256; x=1710163056; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=i/4QirR95nn8mSCBchMjwJLywe8ez0yluKn1k2WVJGo=;
+        b=ufs5iE8T6SUM3SxJMxhWI0ybjsXRRp2vGhz5W1ch5QMDnow2amdS4OJmgF1CYN73x0
+         s5bZxS7AY0+2EJtBh1HTs1IH+rilss3dkPi3B1uHxL15j+DeZqX7BGoR9EZd4BnHXUNB
+         h/989pXqS7bRblfHQSXPYhacV+EOFyr9I/HVuNePDgZzjdbdcGiU0utSK1I8k14IISAQ
+         tAFodPJaHbSc/p54J3E+KZBNQeyTVltyznkCLcw/vIilrYALyxECKLmwSQO2+qMzoEic
+         pdaMZcyC0CRK1RMcIsXh0u9mFgxH9IsKKNE1ysiMWrgVSPM5ubCm6LIo4JLdLp+g1JGa
+         nUrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709558256; x=1710163056;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=i/4QirR95nn8mSCBchMjwJLywe8ez0yluKn1k2WVJGo=;
+        b=RVrmQLfSv45WD0PVECi7g0d7OM/g0E7vX1dyd9hfFRr6bX8h+wMH2bF8Dt/CRAoh5o
+         Z1G0yil89LVmjsf4TU/MqNt52sS6Hr8tOwT2TTQnBCl/iEJIELJZ5Z5vOU0ZqMikfYAY
+         HNQxw5WtV2YPL8JN9FumjSG9yZnJAO5tP5zk1GhICqJjNTP874PgTEpT+yHD24Ev0psd
+         na4j5A4w5iN6efBA3TCbYUIQh3vZ5BAwGCtKb+yoPZmS+aU7YppkYibHudylPEWzadjV
+         m/CownLufnOsX1aCnpVsSrmXqF8qPiqdE3maL4g+9z5LzOqUqd1JY7aHt3pum0txoN64
+         5sow==
+X-Forwarded-Encrypted: i=1; AJvYcCVeLXbpImiQcngpdS99/fc7lmUYg273p4iLoDGJ9Aax3PN6g715sD8sgtQXHY7zsQZtoKpoDE3VjdwL8Y7bsJOFVWlbpzV7a7J4z3ux
+X-Gm-Message-State: AOJu0YxRaA4Tuu87RlZB+uhRvcFdxD8p4DV1uAbNXsVEswHsMRLBiEm8
+	/BpshparO7pxbHu9dGPdXk/mwa08RsHlzsL85WRWyXPG3zjW2LNZZetVuhKUXbZEA/YGGsE9vZQ
+	FYOf56FLC+NiECg==
+X-Google-Smtp-Source: AGHT+IE3TSw/DMbeWqZTscAHYFV6PqSINRRFR7klJO+aWhvKus14mEj/KzxhySNAYvfuSA12AxXSHcowxOCgESU=
+X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
+ (user=aliceryhl job=sendgmr) by 2002:a2e:98cb:0:b0:2d3:4f3:d40a with SMTP id
+ s11-20020a2e98cb000000b002d304f3d40amr8010ljj.10.1709558256206; Mon, 04 Mar
+ 2024 05:17:36 -0800 (PST)
+Date: Mon, 04 Mar 2024 13:17:03 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAM7J5WUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDYwMT3eKMxJT8ct3kxJwc3eKSxORsXctkQ0vzRBNjM8MUSyWgvoKi1LT MCrCZ0bG1tQDLQfwIYwAAAA==
+X-Developer-Key: i=aliceryhl@google.com; a=openpgp; fpr=49F6C1FAA74960F43A5B86A1EE7A392FDE96209F
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2936; i=aliceryhl@google.com;
+ h=from:subject:message-id; bh=xtpb796Eef+Npkk8DkktAG30VJMlry1p+CcpmAvgVko=;
+ b=owEBbQKS/ZANAwAKAQRYvu5YxjlGAcsmYgBl5cnnan4HCUgQZK98UVHzHWp5YlRy0EkNKXtgR
+ fcLYhZxYkyJAjMEAAEKAB0WIQSDkqKUTWQHCvFIvbIEWL7uWMY5RgUCZeXJ5wAKCRAEWL7uWMY5
+ RkUQEACaNXLGAZlgkY/g6CPmuS89btY9VsUchSYrg1LQQ6qqMvUjUR7Sprx1CYA5BkzAa8wtz65
+ w5wu1qbNoHofrngfIBizdwolmUgwx5isnQoybKDryw9qYK9XHpWF7c9u1ZoaQ8YPHXrYGVd7OPy
+ 5Q6VncTyN+Ma0mLiONueGNkfVZyyvM8kTvtMLPHGpIGv9JHC8KdH91n2+pMj453EqXJcVpbbCuX
+ qOsA7Ae0hfNIkVAgyK9aD+/5uD/BbnhJyJbQjcwEyH4RylV2ssqxWKHLCokWMEg5J7jTIlRBT7h
+ FMokdSSchf1TMMs9k8bIVrjia4k8gKSFFSHdJF0rdu+Qaz31/4N4I1D68RSzPP1/k12e5jbqUtO
+ LD1BnN4/rSGOUVgsGghHGQzTFQq+rk5xqAy1r3lElmakFtKjjMoibXpUc7WHc/NxI3lY0o8z9LK
+ 9k4jf7/k4iX2VILL7yYBzKM/B3xNtJ5VaKm2/AQIkpGb0ys0+iCSi+FWZixSK2qJ/HDi5n2Abi/
+ 6R1lGLD1RIIMgFgW8uOPmOBPDIgxBGc/wfqWMo2243VHDKuNOYhiF6KIfSye4cCq5e+OeICxPuh
+ YKHQrJauDLHq39pm/mLZRg6b4DJzX3yuyLli47NpxQ5g4intn3WdH9OpRKYK4Cv82aZwicHTg/B TxMNArNkHPF2yqg==
+X-Mailer: b4 0.13-dev-26615
+Message-ID: <20240304-shadow-call-stack-v1-1-f055eaf40a2c@google.com>
+Subject: [PATCH] rust: add flags for shadow call stack sanitizer
+From: Alice Ryhl <aliceryhl@google.com>
+To: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Jamie Cunliffe <Jamie.Cunliffe@arm.com>, Sami Tolvanen <samitolvanen@google.com>
+Cc: Masahiro Yamada <masahiroy@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nicolas Schier <nicolas@fjasle.eu>, Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier <maz@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, Mark Brown <broonie@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Kees Cook <keescook@chromium.org>, 
+	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	"=?utf-8?q?Bj=C3=B6rn_Roy_Baron?=" <bjorn3_gh@protonmail.com>, Benno Lossin <benno.lossin@proton.me>, 
+	Andreas Hindborg <a.hindborg@samsung.com>, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	rust-for-linux@vger.kernel.org, Alice Ryhl <aliceryhl@google.com>
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
 
-On Tue, 27 Feb 2024 11:01:32 -0800, David E. Box wrote:
+Add flags to support the shadow call stack sanitizer, both in the
+dynamic and non-dynamic modes.
 
-> intel_vsec_walk_header() is used to configure features from devices that
-> don't provide a PCI VSEC or DVSEC structure. Some of these features may
-> be unsupported and fail to load. Ignore them silently as we do for
-> unsupported features described by VSEC/DVSEC.
-> 
-> 
+Right now, the compiler will emit the warning "unknown feature specified
+for `-Ctarget-feature`: `reserve-x18`". However, the compiler still
+passes it to the codegen backend, so the flag will work just fine. Once
+rustc starts recognizing the flag (or provides another way to enable the
+feature), it will stop emitting this warning. See [1] for the relevant
+issue.
 
+Currently, the compiler thinks that the aarch64-unknown-none target
+doesn't support -Zsanitizer=shadow-call-stack, so the build will fail if
+you enable shadow call stack in non-dynamic mode. However, I still think
+it is reasonable to add the flag now, as it will at least fail the build
+when using an invalid configuration, until the Rust compiler is fixed to
+list -Zsanitizer=shadow-call-stack as supported for the target. See [2]
+for the feature request to add this.
 
-Thank you for your contribution, it has been applied to my local
-review-ilpo branch. Note it will show up in the public
-platform-drivers-x86/review-ilpo branch only once I've pushed my
-local branch there, which might take a while.
+I have tested this change with Rust Binder on an Android device using
+CONFIG_DYNAMIC_SCS. Without the -Ctarget-feature=+reserve-x18 flag, the
+phone crashes immediately on boot, and with the flag, the phone appears
+to work normally.
 
-The list of commits applied:
-[1/3] platform/x86/intel/vsec: Remove nuisance message
-      commit: ad742f6580e1d50a5482fc4f2ed0d248fa784677
-[2/3] platform/x86/intel/pmc/lnl: Remove SSRAM support
-      commit: 728720381879e9e0bc68ff9edca52261c1f5bc31
-[3/3] platform/x86/intel/pmc/arl: Put GNA device in D3
-      commit: a5e28e2b384fe5c8fed36907cf4297d629612bdb
+Link: https://github.com/rust-lang/rust/issues/121970 [1]
+Link: https://github.com/rust-lang/rust/issues/121972 [2]
+Signed-off-by: Alice Ryhl <aliceryhl@google.com>
+---
+It's not 100% clear to me whether this patch is enough for full SCS
+support in Rust. If there is some issue where this makes things compile
+and work without actually applying SCS to the Rust code, please let me
+know. Is there some way to verify that it is actually working?
 
---
- i.
+This patch raises the question of whether we should change the Rust
+aarch64 support to use a custom target.json specification. If we do
+that, then we can fix both the warning for dynamic SCS and the
+build-failure for non-dynamic SCS without waiting for a new version of
+rustc with the mentioned issues fixed.
+---
+ Makefile            | 1 +
+ arch/arm64/Makefile | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/Makefile b/Makefile
+index 0e36eff14608..345066643a76 100644
+--- a/Makefile
++++ b/Makefile
+@@ -936,6 +936,7 @@ ifdef CONFIG_SHADOW_CALL_STACK
+ ifndef CONFIG_DYNAMIC_SCS
+ CC_FLAGS_SCS	:= -fsanitize=shadow-call-stack
+ KBUILD_CFLAGS	+= $(CC_FLAGS_SCS)
++KBUILD_RUSTFLAGS += -Zsanitizer=shadow-call-stack
+ endif
+ export CC_FLAGS_SCS
+ endif
+diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
+index a88cdf910687..df3f21370165 100644
+--- a/arch/arm64/Makefile
++++ b/arch/arm64/Makefile
+@@ -103,6 +103,7 @@ endif
+ 
+ ifeq ($(CONFIG_SHADOW_CALL_STACK), y)
+ KBUILD_CFLAGS	+= -ffixed-x18
++KBUILD_RUSTFLAGS += -Ctarget-feature=+reserve-x18
+ endif
+ 
+ ifeq ($(CONFIG_CPU_BIG_ENDIAN), y)
+
+---
+base-commit: 90d35da658da8cff0d4ecbb5113f5fac9d00eb72
+change-id: 20240304-shadow-call-stack-9c197a4361d9
+
+Best regards,
+-- 
+Alice Ryhl <aliceryhl@google.com>
 
 
