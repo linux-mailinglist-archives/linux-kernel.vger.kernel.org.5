@@ -1,98 +1,124 @@
-Return-Path: <linux-kernel+bounces-89948-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-89949-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 431D586F7E7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 00:58:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 641E186F7F8
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 01:32:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C99C81F2115D
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Mar 2024 23:58:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 299AC1C2094F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 00:32:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 726B37AE78;
-	Sun,  3 Mar 2024 23:58:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5622AA41;
+	Mon,  4 Mar 2024 00:32:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CjXrdn9h"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T7fsotAN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E51F26CBEE
-	for <linux-kernel@vger.kernel.org>; Sun,  3 Mar 2024 23:58:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C89E385;
+	Mon,  4 Mar 2024 00:32:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709510332; cv=none; b=B+RZZk0kE4q/XFhw24EGmqtV6mvASwxGrIV2pibPsObkPxX0Vq36euu1wrQKud3b0pKslE/oZ5A5pD/Rm48IC5c8ol/FRfdryMuuVldWif+EvQ0GnqNH1C790bzFAv++sdLO966azRrenKs+SgXH5t24MTmsfbfHCOAzoZNxr/Q=
+	t=1709512368; cv=none; b=ATBqcP7czQEiC5QapQqZIx5QwLw4iwBCUQwe4kOQjZRkM6tdXfcK6lk88v87ECA43L+dDA+iDHSVjAb/MmPVeCwMIOttTZbU8VR4PL1nO9H0HdHVec8wrCCLizLFkSZEp5lvnCqyHE7eWYXZae55+evxj2fNVipLq8b8PZDPTCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709510332; c=relaxed/simple;
-	bh=cwctMdDhD+OxpkY3W3eOMu3a/HHSUXCkGV7ETxSV2Rk=;
-	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
-	 Content-Type:Date:Message-ID; b=WxGvg7I88nKDk2zr0dvg5+khweiN5PVQoBAsEczNpWhghQS2Dj08/W3JV/nU58JQlaVz6z4APkFQ+n8rIYcDNxaJGK4C+XcUkJFikyy7Mlv6M2t7rF9Y6a2cPoIpcZtNfmZ2BgA5P9nTxItfXUZrmFCW29c3HbSCQ7bbEXNeIcA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CjXrdn9h; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709510329;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CwgUwvTK5RnZGZzgBHSNiIrA39adWZ0Q9OWuqtSLT0g=;
-	b=CjXrdn9hRyv7jrpyK2SkK4lsRqXRMl6eBsSF9gqRD9ocNbXiX/mtqiYTGHJvZKx4DomIKy
-	uIUUZwDSt8FXJOEcYotQbXYNdmIKj6TlqG1+011V6yYZTeBhs8x7JCXf8321kIycIDeUTC
-	DmiQKUpnz+o5oNOMikm86lHQnDSfDLw=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-536-rp5AFWSJO8OaHZWYVEpo-Q-1; Sun, 03 Mar 2024 18:58:48 -0500
-X-MC-Unique: rp5AFWSJO8OaHZWYVEpo-Q-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 887A7811E81;
-	Sun,  3 Mar 2024 23:58:47 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.114])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 674EB40C6EBA;
-	Sun,  3 Mar 2024 23:58:46 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <20240302212702.15b04552@kernel.org>
-References: <20240302212702.15b04552@kernel.org> <20240301163807.385573-1-dhowells@redhat.com> <20240301163807.385573-19-dhowells@redhat.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: dhowells@redhat.com, netdev@vger.kernel.org,
-    Marc Dionne <marc.dionne@auristor.com>,
-    "David S.
- Miller" <davem@davemloft.net>,
-    Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-    linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 18/21] rxrpc: Use ktimes for call timeout tracking and set the timer lazily
+	s=arc-20240116; t=1709512368; c=relaxed/simple;
+	bh=UgCWly0UHLVcIo6ZXg1u/0Hm0vg0qVNbXLhu2wTP8mE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nhdslTlgB1zMfsk+XVAefg77TjDPiHqOClZs2xNerOfCVuluEliXhmPFT/9pwgfo9CXOs+CaKaFsZ4Lpf+oKVqJAivOmeIBGxexWs7/YfoobfeKtuhGCcFPztQlJvlJW7o+rkcLwLx2aG1cR2KpKFYWskyI20XCCePTTfqk7kWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T7fsotAN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D431AC433C7;
+	Mon,  4 Mar 2024 00:32:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709512368;
+	bh=UgCWly0UHLVcIo6ZXg1u/0Hm0vg0qVNbXLhu2wTP8mE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=T7fsotANAhkLwGycPo7xK06l+On1+9VnehWeiSvXLBJdvCl+6iL3zM6oqLVI6XQjl
+	 KwYAOA6G8Ec4sMdpv1Qz/PX/NldbaiwGbFoqtItH6zqZRY82UIZYgRmym8G9Du2y5Z
+	 5qmlE9jnEvkhvK364HvpH91ziIPMeTDBaiGhTsRKcR5AGo9HnySra1Jewjjr6Dhs2q
+	 7WNoIR045G/e7O63AwivPon6uZel6M08h0ukJecobQc88VmaTCE01dkiTwdd6t4jGm
+	 1aF2ZX6Ur/H32k1JCh+w9J1Fgi1u3zcPnL0XS3YGz2AvL/T5F5XkNWpK3ZZca7ALrO
+	 Enr2aUNb6loow==
+Date: Mon, 4 Mar 2024 01:32:45 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: kernel test robot <oliver.sang@intel.com>
+Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>, oe-lkp@lists.linux.dev,
+	lkp@intel.com, linux-kernel@vger.kernel.org, x86@kernel.org,
+	Thomas Gleixner <tglx@linutronix.de>, ying.huang@intel.com,
+	feng.tang@intel.com, fengwei.yin@intel.com
+Subject: Re: [tip:timers/core] [timers]  7ee9887703:  netperf.Throughput_Mbps
+ -1.2% regression
+Message-ID: <ZeUWreWcp4UWQ081@pavilion.home>
+References: <202403011511.24defbbd-oliver.sang@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <645801.1709510325.1@warthog.procyon.org.uk>
-Date: Sun, 03 Mar 2024 23:58:45 +0000
-Message-ID: <645802.1709510325@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <202403011511.24defbbd-oliver.sang@intel.com>
 
-Jakub Kicinski <kuba@kernel.org> wrote:
-
-> > Track the call timeouts as ktimes rather than jiffies as the latter's
-> > granularity is too high and only set the timer at the end of the event
-> > handling function.
+Le Fri, Mar 01, 2024 at 04:09:24PM +0800, kernel test robot a écrit :
 > 
-> This one has a 64b div somewhere, breaks 32b builds.
+> 
+> Hello,
+> 
+> kernel test robot noticed a -1.2% regression of netperf.Throughput_Mbps on:
+> 
+> 
+> commit: 7ee988770326fca440472200c3eb58935fe712f6 ("timers: Implement the hierarchical pull model")
+> https://git.kernel.org/cgit/linux/kernel/git/tip/tip.git timers/core
+> 
+> testcase: netperf
+> test machine: 128 threads 2 sockets Intel(R) Xeon(R) Gold 6338 CPU @ 2.00GHz (Ice Lake) with 256G memory
+> parameters:
+> 
+> 	ip: ipv4
+> 	runtime: 300s
+> 	nr_threads: 200%
+> 	cluster: cs-localhost
+> 	test: SCTP_STREAM
+> 	cpufreq_governor: performance
+> 
+> 
+> 
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <oliver.sang@intel.com>
+> | Closes: https://lore.kernel.org/oe-lkp/202403011511.24defbbd-oliver.sang@intel.com
+> 
+> 
+> Details are as below:
+> -------------------------------------------------------------------------------------------------->
+> 
+> 
+> The kernel config and materials to reproduce are available at:
+> https://download.01.org/0day-ci/archive/20240301/202403011511.24defbbd-oliver.sang@intel.com
+> 
+> =========================================================================================
+> cluster/compiler/cpufreq_governor/ip/kconfig/nr_threads/rootfs/runtime/tbox_group/test/testcase:
+>   cs-localhost/gcc-12/performance/ipv4/x86_64-rhel-8.3/200%/debian-12-x86_64-20240206.cgz/300s/lkp-icl-2sp2/SCTP_STREAM/netperf
+> 
+> commit: 
+>   57e95a5c41 ("timers: Introduce function to check timer base is_idle flag")
+>   7ee9887703 ("timers: Implement the hierarchical pull model")
 
-Ah - in the trace functions to make the ns-level durations into ms-level ones.
+Is this something that is observed also with the commits that follow in this
+branch?
 
-I wonder if it's better to just divide by 1024 - so something close to
-microseconds - or whether ktime_to_us() can be used there.
+Ie: would it be possible to compare instead:
 
-David
+    57e95a5c4117 (timers: Introduce function to check timer base is_idle flag)
+VS
+    b2cf7507e186 (timers: Always queue timers on the local CPU)
 
+Because the improvements introduced by 7ee9887703 are mostly relevant after
+b2cf7507e186.
+
+Thanks.
 
