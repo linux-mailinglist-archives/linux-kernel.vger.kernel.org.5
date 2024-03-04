@@ -1,124 +1,101 @@
-Return-Path: <linux-kernel+bounces-90983-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91005-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF0A5870807
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:09:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71F97870857
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 18:34:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF59EB27E36
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:08:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1160B1F2134A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 17:34:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 864665FDD3;
-	Mon,  4 Mar 2024 17:08:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52F21612E9;
+	Mon,  4 Mar 2024 17:34:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="advEshHs"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="KVJbzvVt"
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5A6C39AF1;
-	Mon,  4 Mar 2024 17:08:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 073D81E484;
+	Mon,  4 Mar 2024 17:34:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709572081; cv=none; b=MuGOauwvym+p9DtNjk0UU7faf7CCoUMcZJFHEm3qDxyXWhfC3J9m98lZmHDFTct5nN3SIyYP2K1WsG1eFOt3WCby2z+hoGZm6uE12IN9P7OQPu/HTbmtwX5tQWBf8zbKynn1sAWt5/3yRAiyBBBgRP0dAc2XTaicvHdqySoSAwM=
+	t=1709573674; cv=none; b=g9nrit9xTfD6gMxEWXAP69QhC9LABi9E2PSM4cyBhCIGSbMKgpTYSenO9UUBGojQGUGJDfnTISdOTYos5wWgfAKD3Ltc7zzpry+r6PT1tA9yfV6yQQO8gbhpk2HwDpUFBaErjZMrhtRfKJZQWZlERsD3fzDt/E752k40DfOxt8o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709572081; c=relaxed/simple;
-	bh=oo8N+RP2c/iFxHR/IdQJQEesKtVFD/spy8V9i7MIHuU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uvuzknVrJzxsIhAEQhcNT/N3Rn5WANcn+TPHtPp/vyi+N3NgQPJH2mS68e/PS/CIg//2fvi+O4Hoqng69666iFmyUTUp4CPzPr3vSnu1I8u9/XKDneCY3BYG0lF/ShH5s9erzayTmHfxNh/wET9NCbHm9YJHt+35rBgDf1e3rFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=advEshHs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 393A7C433F1;
-	Mon,  4 Mar 2024 17:08:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709572081;
-	bh=oo8N+RP2c/iFxHR/IdQJQEesKtVFD/spy8V9i7MIHuU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=advEshHsEmpUPOvyd59svVQwDfYQmy4ibHko62SjjRMD8AwzVJUw98yxTtzHe5oKw
-	 ItafxNx26LOmTHQJ962f1O5H4yiv5FPq26qMzfd/L7tQXHiK7xtCTOnROMkcuNDZAh
-	 Uyj631YdmxhqcyayqGanXu90ZduiMXCHTo0CLs3MMusmdUwFN2xbKVrEboQ/jRfpu0
-	 dgGqFWYcGyE60wMZ4P3QSENIM601mysZDpZikbw0pKwfyl7O4EsnuTYcrD7ipCrHfl
-	 Uq318gJ3Q8xfQleEn+cdZApVG4NFwd4tbIt4QerBSu6PwtxwK1MgwbNccd70rpNotB
-	 c3kP1lZYSLeMg==
-Date: Mon, 4 Mar 2024 11:07:59 -0600
-From: Rob Herring <robh@kernel.org>
-To: Conor Dooley <conor@kernel.org>
-Cc: Animesh Agarwal <animeshagarwal28@gmail.com>, mdf@kernel.org,
-	Wu Hao <hao.wu@intel.com>, Xu Yilun <yilun.xu@intel.com>,
-	Tom Rix <trix@redhat.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-fpga@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: altera-fpga2sdram-bridge: Convert to
- dtschema
-Message-ID: <20240304170759.GA752387-robh@kernel.org>
-References: <20240301161648.124859-1-animeshagarwal28@gmail.com>
- <20240301-uphold-numerous-305c3702805b@spud>
+	s=arc-20240116; t=1709573674; c=relaxed/simple;
+	bh=TUFC2oXSkwh1q+EPlqWlIYwORwjSCpCR0ZK+J1sWVDg=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ckVAg4+MUeQnDADjgfGBurcyj7sCG7zDQHeWnWV15N+x03gSx3Wd+jeOlYBuDEJb5aECeJLgwq005Qyb7L61gsqKZ4+NyXPZNkU8yj/EdXfQENMIpaQmKwP9F6NyPhpgveeI5ElPxFtLslMFgg14Yg4mRlTbf4Bv2KSp4vh6Q64=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=KVJbzvVt; arc=none smtp.client-ip=67.231.149.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 424H03rG023294;
+	Mon, 4 Mar 2024 11:08:58 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:content-transfer-encoding:in-reply-to; s=
+	PODMain02222019; bh=UmgdeD3y5bH8MTO7d9mjBfyE5hjIg3x+2bIjgp9F6A8=; b=
+	KVJbzvVtmtnT9Mz7C9idMb6aC/rJgH7jReMf23cfoKrPMhio0HJbfUcSlLc3c35o
+	16hGfV3YAurNHMZ5mCzS3kc7vt45xkDMs+TtQm2RmKPNFZSoAf3XqhcyT6+HtmVc
+	bGMeF2e+9OphoBDETNJOsMjTmvP6JXoJI8KxUg5T8ylZ2NCD/APavn1X3Icdy2oY
+	EiQ/phA0mtqdA/nHzMXHa7IKUiIPtQtXP3gKlNlXunYlwB1akH/r6FE9sU6tKhN2
+	It2olIOVuh+XmUq2LcCCG+tthL9DL/6UfAc03lUdhYNvcjZHKwCA86rHC6uAtMm3
+	Ch1+utbxVgn5UGNEWgEljQ==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3wm2d2j4uw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 04 Mar 2024 11:08:57 -0600 (CST)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Mon, 4 Mar 2024
+ 17:08:55 +0000
+Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1544.4 via Frontend Transport; Mon, 4 Mar 2024 17:08:55 +0000
+Received: from ediswmail9.ad.cirrus.com (ediswmail9.ad.cirrus.com [198.61.86.93])
+	by ediswmail9.ad.cirrus.com (Postfix) with ESMTPS id B6E48820241;
+	Mon,  4 Mar 2024 17:08:55 +0000 (UTC)
+Date: Mon, 4 Mar 2024 17:08:54 +0000
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+CC: <linus.walleij@linaro.org>, <linux-gpio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>
+Subject: Re: [PATCH] gpio: swnode: Don't use __free() on result of
+ swnode_get_gpio_device()
+Message-ID: <ZeYAJkHwPImooI9S@ediswmail9.ad.cirrus.com>
+References: <20240304160320.1054811-1-ckeepax@opensource.cirrus.com>
+ <CAMRc=MfAZC8yGXXYrCLeSxonOwozgxRdPC4h=aVgCMSkA7O_dA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <20240301-uphold-numerous-305c3702805b@spud>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMRc=MfAZC8yGXXYrCLeSxonOwozgxRdPC4h=aVgCMSkA7O_dA@mail.gmail.com>
+X-Proofpoint-ORIG-GUID: o8tyN_KVLbO71e-kPl2lMRBj3NUNHT8H
+X-Proofpoint-GUID: o8tyN_KVLbO71e-kPl2lMRBj3NUNHT8H
+X-Proofpoint-Spam-Reason: safe
 
-On Fri, Mar 01, 2024 at 04:23:30PM +0000, Conor Dooley wrote:
-> Hey,
+On Mon, Mar 04, 2024 at 05:34:27PM +0100, Bartosz Golaszewski wrote:
+> On Mon, Mar 4, 2024 at 5:03 PM Charles Keepax
+> <ckeepax@opensource.cirrus.com> wrote:
+> >
+> > swnode_get_gpio_device() can return an error pointer, however
+> > gpio_device_put() is not able to accept error values. Thus using
+> > __free() will result in dereferencing an invalid pointer.
+> >
 > 
-> On Fri, Mar 01, 2024 at 09:46:43PM +0530, Animesh Agarwal wrote:
-> > Convert the altera-fpga2sdram-bridge bindings to DT schema.
-> > 
-> > Signed-off-by: Animesh Agarwal <animeshagarwal28@gmail.com>
-> > ---
-> >  .../fpga/altera-fpga2sdram-bridge.txt         | 13 -----------
-> >  .../fpga/altera-fpga2sdram-bridge.yaml        | 23 +++++++++++++++++++
-> >  2 files changed, 23 insertions(+), 13 deletions(-)
-> >  delete mode 100644 Documentation/devicetree/bindings/fpga/altera-fpga2sdram-bridge.txt
-> >  create mode 100644 Documentation/devicetree/bindings/fpga/altera-fpga2sdram-bridge.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/fpga/altera-fpga2sdram-bridge.txt b/Documentation/devicetree/bindings/fpga/altera-fpga2sdram-bridge.txt
-> > deleted file mode 100644
-> > index 5dd0ff0f7b4e..000000000000
-> > --- a/Documentation/devicetree/bindings/fpga/altera-fpga2sdram-bridge.txt
-> > +++ /dev/null
-> > @@ -1,13 +0,0 @@
-> > -Altera FPGA To SDRAM Bridge Driver
-> > -
-> > -Required properties:
-> > -- compatible		: Should contain "altr,socfpga-fpga2sdram-bridge"
-> > -
-> > -See Documentation/devicetree/bindings/fpga/fpga-bridge.txt for generic bindings.
-> > -
-> > -Example:
-> > -	fpga_bridge3: fpga-bridge@ffc25080 {
-> > -		compatible = "altr,socfpga-fpga2sdram-bridge";
-> > -		reg = <0xffc25080 0x4>;
-> > -		bridge-enable = <0>;
-> > -	};
-> > diff --git a/Documentation/devicetree/bindings/fpga/altera-fpga2sdram-bridge.yaml b/Documentation/devicetree/bindings/fpga/altera-fpga2sdram-bridge.yaml
-> > new file mode 100644
-> > index 000000000000..88bf9e3151b6
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/fpga/altera-fpga2sdram-bridge.yaml
-> > @@ -0,0 +1,23 @@
-> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/fpga/altr-fpga2sdram-bridge.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Altera FPGA To SDRAM Bridge Driver
+> Can you post the steps to reproduce this? Because it should work[1].
 
-Bindings are for h/w blocks, not Drivers.
+Hmm... yeah that does look like it should work, I have had the
+patch sitting in my tree for a little while, let me double check
+and I will come back/resend if it is actually still needed.
 
-> > +
-> 
-> You're missing maintainers: (shouldn't dt_binding_check complain?)
-
-Yes. Patchwork says this failed to apply which is odd because it is 
-doubtful that altera-fpga2sdram-bridge.txt has been modified.
-
-Rob
+Thanks,
+Charles
 
