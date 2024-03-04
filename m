@@ -1,61 +1,61 @@
-Return-Path: <linux-kernel+bounces-90569-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90572-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDEE5870162
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:31:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34F5A870175
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:32:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 000D3B23377
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:31:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A31591F247EB
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 12:32:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A8B83EA77;
-	Mon,  4 Mar 2024 12:30:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 775F53FB0A;
+	Mon,  4 Mar 2024 12:30:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hofyveDH"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iuMqMfug"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78FF23D572;
-	Mon,  4 Mar 2024 12:30:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7201827702;
+	Mon,  4 Mar 2024 12:30:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709555451; cv=none; b=GoUwdBujqfcu5rZ8jUKdZ7Ini0B7BZDlsqxUzVTCoNhsktO7lJIQx2sV2T1skRMMG8aP5sq1YSyxF24Ib6aHJo5J/3FKHfrHMBDVwdz7Qs531GIcg418VRilP+ITFFsCw3gSWIVIloPhSpVyth7U6pHIwpYsboBIM0dx7PA4Jj4=
+	t=1709555453; cv=none; b=EEpoewB0FcWPDbKM1WE5UjYEFLhMGgXXeFYsxOWMi8Pvj8eQbgFNP9P7bTV3GUnMMcIeIEj+9HyXSKXcYMuKXmwYi5rNakZMXR48DQchxva77DcpQFiexaaFt0ZP67/GC50Ut6y1i6Qh0Y/nxS9gOYivOvhYBeE0RJAMGrvqi74=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709555451; c=relaxed/simple;
-	bh=VQzYesoWaSGdzPXgo5CExyTjqg7vEOXbasHg+xkm+2w=;
+	s=arc-20240116; t=1709555453; c=relaxed/simple;
+	bh=nVEDA7ZUIo9sof6a5P5qPlQ65k7G7XcDNwxgT3ojRHI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tdgmiQyHDDY++DDVnap8vki2wygfijCvVB4h+fAhI/bjGp8DvJFZLIeoVIMJaj972dM9yaWINZ4NazFONTgld/DfjQQG6ddv7/mmByUi+3hFfStL/bFjnTRi5RFcWiSgY1ji0aUs3CdaoJCKyiofTJ2IMUj63n0z0YdhZZ84Wlw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hofyveDH; arc=none smtp.client-ip=192.198.163.12
+	 MIME-Version; b=RVQsaSR752geNd0+023wLc3k6JtKc8b7nnsR1QS2ypRHLMD35mR81iV/qZmdl3HTu8zEgzWTaKM1MOsHaDRtq71p+Z9IqvJwr0ptttd4Rc8AYCZf/NQ7VtDTliLGsGnunTJcOselLUjLMf50KcAsvYEtSk72DRX/CRw8ZOKY2N4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iuMqMfug; arc=none smtp.client-ip=192.198.163.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709555449; x=1741091449;
+  t=1709555451; x=1741091451;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=VQzYesoWaSGdzPXgo5CExyTjqg7vEOXbasHg+xkm+2w=;
-  b=hofyveDHIqKQuX1KvwYi3H2OCTxs6pmyCqNrNzp1BI2YlCg5wc7s882I
-   MYbYVxvYd4PMXJxwpX+tyaxVdGH2go8CsBx3nOfWPiE0ZtwASLqlum8mM
-   m4o3aC0B3KYX7xtnmUvbyJ4MHmWzmkoWXuEVJj8qkaIOckwe6guyeWzIn
-   0yoHtLEI5bKMjsGrlSGyuk6n4E9M+iLusCVtk6A/TbNlSwVxgsiSE5uDK
-   iJO6lSDhyYpSb3KeO+Ck+KGvtaEXwVZ0UqiiKplQU9aCyuD6IHmo5/X5u
-   cHLg1NCcTWmQr5pDyoSnCzi2UCghy0jQlkSH2QACAel/iyrinC5KML+i9
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="7815086"
+  bh=nVEDA7ZUIo9sof6a5P5qPlQ65k7G7XcDNwxgT3ojRHI=;
+  b=iuMqMfuglYxfwwqjh5xeViEShZV4s3oyHfs0t+s2l2wFjRV40HEGFjku
+   /SXlCnhm2aaxVaLpX+Ootw96UJchxSck85nFmtiS838z0X/Ac+nfEwwLT
+   juQlKuUnOOBPKmuSpfUZL1wudD3gqF+RM7oX1phPvpTOBtfzc++0x8sjy
+   FNteX5VqpX5lQJWwdJ7wnomC2WIb+8WbEC9aPlTl5aqtylVIvF2t6o9/R
+   5Qyy32Oytw53lm4HxYBlBNXTuZbIGQXHJ8PAjfLIcXsDk4DSGZQwqY00q
+   S0BVCPwmHgaAvfe9Xos3czcJYDHeKfB4GJIMi4um6NBSNX8TK34PrYTeB
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="7815114"
 X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
-   d="scan'208";a="7815086"
+   d="scan'208";a="7815114"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 04:30:44 -0800
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 04:30:50 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="937040425"
+X-IronPort-AV: E=McAfee;i="6600,9927,11002"; a="937040426"
 X-IronPort-AV: E=Sophos;i="6.06,203,1705392000"; 
-   d="scan'208";a="937040425"
+   d="scan'208";a="937040426"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 04 Mar 2024 04:30:38 -0800
+  by fmsmga001.fm.intel.com with ESMTP; 04 Mar 2024 04:30:44 -0800
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 686C35BB; Mon,  4 Mar 2024 14:30:37 +0200 (EET)
+	id 73BFF697; Mon,  4 Mar 2024 14:30:37 +0200 (EET)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
@@ -80,11 +80,10 @@ Cc: Jiri Slaby <jirislaby@kernel.org>,
 	Thierry Reding <thierry.reding@gmail.com>,
 	Jonathan Hunter <jonathanh@nvidia.com>,
 	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Andi Shyti <andi.shyti@linux.intel.com>
-Subject: [PATCH v3 04/14] serial: 8250_aspeed_vuart: Switch to use uart_read_port_properties()
-Date: Mon,  4 Mar 2024 14:27:05 +0200
-Message-ID: <20240304123035.758700-5-andriy.shevchenko@linux.intel.com>
+	Masami Hiramatsu <mhiramat@kernel.org>
+Subject: [PATCH v3 05/14] serial: 8250_bcm2835aux: Switch to use uart_read_port_properties()
+Date: Mon,  4 Mar 2024 14:27:06 +0200
+Message-ID: <20240304123035.758700-6-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 In-Reply-To: <20240304123035.758700-1-andriy.shevchenko@linux.intel.com>
 References: <20240304123035.758700-1-andriy.shevchenko@linux.intel.com>
@@ -99,135 +98,186 @@ Content-Transfer-Encoding: 8bit
 Since we have now a common helper to read port properties
 use it instead of sparse home grown solution.
 
-Reviewed-by: Andi Shyti <andi.shyti@linux.intel.com>
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reviewed-by: Andrew Jeffery <andrew@codeconstruct.com.au>
+Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
 ---
- drivers/tty/serial/8250/8250_aspeed_vuart.c | 50 +++++++--------------
- 1 file changed, 15 insertions(+), 35 deletions(-)
+ drivers/tty/serial/8250/8250_bcm2835aux.c | 92 +++++++++++------------
+ 1 file changed, 42 insertions(+), 50 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_aspeed_vuart.c b/drivers/tty/serial/8250/8250_aspeed_vuart.c
-index 8c2aaf7af7b7..53d8eee9b1c8 100644
---- a/drivers/tty/serial/8250/8250_aspeed_vuart.c
-+++ b/drivers/tty/serial/8250/8250_aspeed_vuart.c
-@@ -419,8 +419,8 @@ static int aspeed_vuart_probe(struct platform_device *pdev)
- 	struct aspeed_vuart *vuart;
- 	struct device_node *np;
+diff --git a/drivers/tty/serial/8250/8250_bcm2835aux.c b/drivers/tty/serial/8250/8250_bcm2835aux.c
+index beac6b340ace..121a5ce86050 100644
+--- a/drivers/tty/serial/8250/8250_bcm2835aux.c
++++ b/drivers/tty/serial/8250/8250_bcm2835aux.c
+@@ -45,10 +45,6 @@ struct bcm2835aux_data {
+ 	u32 cntl;
+ };
+ 
+-struct bcm2835_aux_serial_driver_data {
+-	resource_size_t offset;
+-};
+-
+ static void bcm2835aux_rs485_start_tx(struct uart_8250_port *up)
+ {
+ 	if (!(up->port.rs485.flags & SER_RS485_RX_DURING_TX)) {
+@@ -85,10 +81,9 @@ static void bcm2835aux_rs485_stop_tx(struct uart_8250_port *up)
+ 
+ static int bcm2835aux_serial_probe(struct platform_device *pdev)
+ {
+-	const struct bcm2835_aux_serial_driver_data *bcm_data;
++	const struct software_node *bcm2835_swnode;
+ 	struct uart_8250_port up = { };
+ 	struct bcm2835aux_data *data;
+-	resource_size_t offset = 0;
  	struct resource *res;
--	u32 clk, prop, sirq[2];
- 	int rc, sirq_polarity;
-+	u32 prop, sirq[2];
- 	struct clk *vclk;
+ 	unsigned int uartclk;
+ 	int ret;
+@@ -101,12 +96,8 @@ static int bcm2835aux_serial_probe(struct platform_device *pdev)
+ 	/* initialize data */
+ 	up.capabilities = UART_CAP_FIFO | UART_CAP_MINI;
+ 	up.port.dev = &pdev->dev;
+-	up.port.regshift = 2;
+ 	up.port.type = PORT_16550;
+-	up.port.iotype = UPIO_MEM;
+-	up.port.fifosize = 8;
+-	up.port.flags = UPF_SHARE_IRQ | UPF_FIXED_PORT | UPF_FIXED_TYPE |
+-			UPF_SKIP_TEST | UPF_IOREMAP;
++	up.port.flags = UPF_FIXED_PORT | UPF_FIXED_TYPE | UPF_SKIP_TEST | UPF_IOREMAP;
+ 	up.port.rs485_config = serial8250_em485_config;
+ 	up.port.rs485_supported = serial8250_em485_supported;
+ 	up.rs485_start_tx = bcm2835aux_rs485_start_tx;
+@@ -122,12 +113,6 @@ static int bcm2835aux_serial_probe(struct platform_device *pdev)
+ 	if (IS_ERR(data->clk))
+ 		return dev_err_probe(&pdev->dev, PTR_ERR(data->clk), "could not get clk\n");
  
- 	np = pdev->dev.of_node;
-@@ -447,53 +447,35 @@ static int aspeed_vuart_probe(struct platform_device *pdev)
- 	port.port.status = UPSTAT_SYNC_FIFO;
- 	port.port.dev = &pdev->dev;
- 	port.port.has_sysrq = IS_ENABLED(CONFIG_SERIAL_8250_CONSOLE);
-+	port.port.flags = UPF_BOOT_AUTOCONF | UPF_IOREMAP | UPF_FIXED_PORT | UPF_FIXED_TYPE |
-+			  UPF_NO_THRE_TEST;
- 	port.bugs |= UART_BUG_TXRACE;
- 
- 	rc = sysfs_create_group(&vuart->dev->kobj, &aspeed_vuart_attr_group);
- 	if (rc < 0)
- 		return rc;
- 
--	if (of_property_read_u32(np, "clock-frequency", &clk)) {
-+	rc = uart_read_port_properties(&port.port);
-+	if (rc)
-+		goto err_sysfs_remove;
-+
-+	/* Get clk rate through clk driver if present */
-+	if (!port.port.uartclk) {
- 		vclk = devm_clk_get_enabled(dev, NULL);
- 		if (IS_ERR(vclk)) {
- 			rc = dev_err_probe(dev, PTR_ERR(vclk), "clk or clock-frequency not defined\n");
- 			goto err_sysfs_remove;
- 		}
- 
--		clk = clk_get_rate(vclk);
-+		port.port.uartclk = clk_get_rate(vclk);
+-	/* get the interrupt */
+-	ret = platform_get_irq(pdev, 0);
+-	if (ret < 0)
+-		return ret;
+-	up.port.irq = ret;
+-
+ 	/* map the main registers */
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	if (!res) {
+@@ -135,52 +120,40 @@ static int bcm2835aux_serial_probe(struct platform_device *pdev)
+ 		return -EINVAL;
  	}
  
- 	/* If current-speed was set, then try not to change it. */
- 	if (of_property_read_u32(np, "current-speed", &prop) == 0)
--		port.port.custom_divisor = clk / (16 * prop);
-+		port.port.custom_divisor = port.port.uartclk / (16 * prop);
+-	bcm_data = device_get_match_data(&pdev->dev);
++	up.port.mapbase = res->start;
++	up.port.mapsize = resource_size(res);
  
--	/* Check for shifted address mapping */
--	if (of_property_read_u32(np, "reg-offset", &prop) == 0)
--		port.port.mapbase += prop;
--
--	/* Check for registers offset within the devices address range */
--	if (of_property_read_u32(np, "reg-shift", &prop) == 0)
--		port.port.regshift = prop;
--
--	/* Check for fifo size */
--	if (of_property_read_u32(np, "fifo-size", &prop) == 0)
--		port.port.fifosize = prop;
--
+-	/* Some UEFI implementations (e.g. tianocore/edk2 for the Raspberry Pi)
+-	 * describe the miniuart with a base address that encompasses the auxiliary
+-	 * registers shared between the miniuart and spi.
+-	 *
+-	 * This is due to historical reasons, see discussion here :
+-	 * https://edk2.groups.io/g/devel/topic/87501357#84349
+-	 *
+-	 * We need to add the offset between the miniuart and auxiliary
+-	 * registers to get the real miniuart base address.
+-	 */
+-	if (bcm_data)
+-		offset = bcm_data->offset;
++	bcm2835_swnode = device_get_match_data(&pdev->dev);
++	if (bcm2835_swnode) {
++		ret = device_add_software_node(&pdev->dev, bcm2835_swnode);
++		if (ret)
++			return ret;
++	}
+ 
+-	up.port.mapbase = res->start + offset;
+-	up.port.mapsize = resource_size(res) - offset;
++	ret = uart_read_port_properties(&up.port);
++	if (ret)
++		goto rm_swnode;
+ 
 -	/* Check for a fixed line number */
--	rc = of_alias_get_id(np, "serial");
--	if (rc >= 0)
--		port.port.line = rc;
--
--	port.port.irq = irq_of_parse_and_map(np, 0);
- 	port.port.handle_irq = aspeed_vuart_handle_irq;
--	port.port.iotype = UPIO_MEM;
- 	port.port.type = PORT_ASPEED_VUART;
--	port.port.uartclk = clk;
--	port.port.flags = UPF_SHARE_IRQ | UPF_BOOT_AUTOCONF | UPF_IOREMAP
--		| UPF_FIXED_PORT | UPF_FIXED_TYPE | UPF_NO_THRE_TEST;
--
--	if (of_property_read_bool(np, "no-loopback-test"))
--		port.port.flags |= UPF_SKIP_TEST;
+-	ret = of_alias_get_id(pdev->dev.of_node, "serial");
+-	if (ret >= 0)
+-		up.port.line = ret;
++	up.port.regshift = 2;
++	up.port.fifosize = 8;
  
- 	if (port.port.fifosize)
- 		port.capabilities = UART_CAP_FIFO;
-@@ -503,7 +485,7 @@ static int aspeed_vuart_probe(struct platform_device *pdev)
- 
- 	rc = serial8250_register_8250_port(&port);
- 	if (rc < 0)
--		goto err_clk_disable;
-+		goto err_sysfs_remove;
- 
- 	vuart->line = rc;
- 	vuart->port = serial8250_get_port(vuart->line);
-@@ -529,7 +511,7 @@ static int aspeed_vuart_probe(struct platform_device *pdev)
- 	rc = aspeed_vuart_set_lpc_address(vuart, prop);
- 	if (rc < 0) {
- 		dev_err_probe(dev, rc, "invalid value in aspeed,lpc-io-reg property\n");
--		goto err_clk_disable;
-+		goto err_sysfs_remove;
+ 	/* enable the clock as a last step */
+ 	ret = clk_prepare_enable(data->clk);
+ 	if (ret) {
+-		dev_err(&pdev->dev, "unable to enable uart clock - %d\n",
+-			ret);
+-		return ret;
++		dev_err_probe(&pdev->dev, ret, "unable to enable uart clock\n");
++		goto rm_swnode;
  	}
  
- 	rc = of_property_read_u32_array(np, "aspeed,lpc-interrupts", sirq, 2);
-@@ -541,14 +523,14 @@ static int aspeed_vuart_probe(struct platform_device *pdev)
- 	rc = aspeed_vuart_set_sirq(vuart, sirq[0]);
- 	if (rc < 0) {
- 		dev_err_probe(dev, rc, "invalid sirq number in aspeed,lpc-interrupts property\n");
--		goto err_clk_disable;
-+		goto err_sysfs_remove;
- 	}
+ 	uartclk = clk_get_rate(data->clk);
+-	if (!uartclk) {
+-		ret = device_property_read_u32(&pdev->dev, "clock-frequency", &uartclk);
+-		if (ret) {
+-			dev_err_probe(&pdev->dev, ret, "could not get clk rate\n");
+-			goto dis_clk;
+-		}
+-	}
++	if (uartclk)
++		up.port.uartclk = uartclk;
  
- 	sirq_polarity = aspeed_vuart_map_irq_polarity(sirq[1]);
- 	if (sirq_polarity < 0) {
- 		rc = dev_err_probe(dev, sirq_polarity,
- 				   "invalid sirq polarity in aspeed,lpc-interrupts property\n");
--		goto err_clk_disable;
-+		goto err_sysfs_remove;
- 	}
+ 	/* the HW-clock divider for bcm2835aux is 8,
+ 	 * but 8250 expects a divider of 16,
+ 	 * so we have to multiply the actual clock by 2
+ 	 * to get identical baudrates.
+ 	 */
+-	up.port.uartclk = uartclk * 2;
++	up.port.uartclk *= 2;
  
- 	aspeed_vuart_set_sirq_polarity(vuart, sirq_polarity);
-@@ -559,8 +541,6 @@ static int aspeed_vuart_probe(struct platform_device *pdev)
+ 	/* register the port */
+ 	ret = serial8250_register_8250_port(&up);
+@@ -194,6 +167,8 @@ static int bcm2835aux_serial_probe(struct platform_device *pdev)
  
- 	return 0;
+ dis_clk:
+ 	clk_disable_unprepare(data->clk);
++rm_swnode:
++	device_remove_software_node(&pdev->dev);
+ 	return ret;
+ }
  
--err_clk_disable:
--	irq_dispose_mapping(port.port.irq);
- err_sysfs_remove:
- 	sysfs_remove_group(&vuart->dev->kobj, &aspeed_vuart_attr_group);
- 	return rc;
+@@ -203,10 +178,27 @@ static void bcm2835aux_serial_remove(struct platform_device *pdev)
+ 
+ 	serial8250_unregister_port(data->line);
+ 	clk_disable_unprepare(data->clk);
++	device_remove_software_node(&pdev->dev);
+ }
+ 
+-static const struct bcm2835_aux_serial_driver_data bcm2835_acpi_data = {
+-	.offset = 0x40,
++/*
++ * Some UEFI implementations (e.g. tianocore/edk2 for the Raspberry Pi)
++ * describe the miniuart with a base address that encompasses the auxiliary
++ * registers shared between the miniuart and spi.
++ *
++ * This is due to historical reasons, see discussion here:
++ * https://edk2.groups.io/g/devel/topic/87501357#84349
++ *
++ * We need to add the offset between the miniuart and auxiliary registers
++ * to get the real miniuart base address.
++ */
++static const struct property_entry bcm2835_acpi_properties[] = {
++	PROPERTY_ENTRY_U32("reg-offset", 0x40),
++	{ }
++};
++
++static const struct software_node bcm2835_acpi_node = {
++	.properties = bcm2835_acpi_properties,
+ };
+ 
+ static const struct of_device_id bcm2835aux_serial_match[] = {
+@@ -216,7 +208,7 @@ static const struct of_device_id bcm2835aux_serial_match[] = {
+ MODULE_DEVICE_TABLE(of, bcm2835aux_serial_match);
+ 
+ static const struct acpi_device_id bcm2835aux_serial_acpi_match[] = {
+-	{ "BCM2836", (kernel_ulong_t)&bcm2835_acpi_data },
++	{ "BCM2836", (kernel_ulong_t)&bcm2835_acpi_node },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(acpi, bcm2835aux_serial_acpi_match);
 -- 
 2.43.0.rc1.1.gbec44491f096
 
