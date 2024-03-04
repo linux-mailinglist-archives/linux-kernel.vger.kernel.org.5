@@ -1,124 +1,175 @@
-Return-Path: <linux-kernel+bounces-90460-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90462-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BFDD86FF7D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:51:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A25286FF85
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:53:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B49A21F261C0
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:51:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 046262827B0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:53:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B1DA25760;
-	Mon,  4 Mar 2024 10:51:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BADED383AF;
+	Mon,  4 Mar 2024 10:52:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="E4EHMFH0"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="AT52U+Vm"
+Received: from mout.web.de (mout.web.de [212.227.15.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58E53B654
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 10:51:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D03D381C6;
+	Mon,  4 Mar 2024 10:52:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709549502; cv=none; b=fGU6g1X33bludrPXtJfnb/l08uF1BpFfPEbbGdMkLdFWeInjYmub6nsaLghcvOwRn2QLKS1iQxy4ByloVI1go8o39zyvBWsiH/2uloPZBE15rtnl6JxpUMPwjV26TQQ5euej6TmTVIbMYuwMsewsNaECtDfe7dK9tXShejjkMAw=
+	t=1709549570; cv=none; b=e3MM8wmILyXiDWhoNIyrpBBhIhNG3ldWehuAFMMMX7W7u3uPDLXdtUGHyUUdVAw7EMFVvxdKMxbyOWnaOJdnoTmGp4zmdej7zopa1Zaut79TnngEoFK1A+sBHR3dFqEV0zy52mFrMIXF9ID1pZFiI0lDJWdLRzWBS1qq3eqbLyY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709549502; c=relaxed/simple;
-	bh=AWkFBgfU32UlDqkiUF9U7RS12kflTBdFk/tNRRbAdYs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TsFg1xGGbWp0E26UIFtaI2GLareE73j2nOVIz2xjull0jpCWC5pO0/bTmRocRq8EM1KIZra0W2a91eJFoUuFcQI7JtseLzZqzdt7dcCp4zC6NT6xWE6zJmyVZ/ZjyNcSJusNna40uBxr/nJYUNBnTyTeY+Y/DhEEqoHBlcmhsB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=E4EHMFH0; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709549500;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8KDGD6J5huIB/ELO1ZkJuBYCkJyRo8YAdd5Mvn33swU=;
-	b=E4EHMFH09RErNNjY72/tj8kmAJ4ZWMsz2Bd8YiyYmDgVdpXK0p6Ew4/HE3PM0dSjF1JQyn
-	OiweBTlPIzFanb1w7W/7RZj4EqPuoYd/RhiVWGOYESRCQKF92VSHZ2WmH/sqhX3LI+MzoY
-	lw/fdt1yk6xiMbtLOsalckmPcTR1sBs=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-515--l8jLQ_AN36e-Sv1IVWe5A-1; Mon, 04 Mar 2024 05:51:35 -0500
-X-MC-Unique: -l8jLQ_AN36e-Sv1IVWe5A-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D16C6862DC0;
-	Mon,  4 Mar 2024 10:51:34 +0000 (UTC)
-Received: from localhost (unknown [10.72.116.6])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id E9A09422A9;
-	Mon,  4 Mar 2024 10:51:33 +0000 (UTC)
-Date: Mon, 4 Mar 2024 18:51:26 +0800
-From: Baoquan He <bhe@redhat.com>
-To: Borislav Petkov <bp@alien8.de>
-Cc: X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	dyoung@redhat.com
-Subject: Re: [RFC PATCH 1/2] Revert "x86/kexec/64: Prevent kexec from 5-level
- paging to a 4-level only kernel"
-Message-ID: <ZeWnrhzU86pz7y5Z@MiWiFi-R3L-srv>
-References: <20240301185618.19663-1-bp@alien8.de>
- <20240301185618.19663-2-bp@alien8.de>
+	s=arc-20240116; t=1709549570; c=relaxed/simple;
+	bh=FT2/g61YhYN+8ZCyUZxvx5hkU5J0uv6XGFwiX085tNo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TbZ1rtmlDwD6nhyRaFw8w/ZcmhQnVNzIjYVlyrMRFpB429/2IGYYsTv0bTii9HQc8ZwzGew2C6u7t4BGRlWPZSa9ZMdDgGeMHZRxMkGf+BiSBVUqZjkdyHG92kiCxrBxdF85MkIO4TlHXNhYFagsnBObGz0U3C/tihs57rvbnvU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=AT52U+Vm; arc=none smtp.client-ip=212.227.15.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1709549544; x=1710154344; i=markus.elfring@web.de;
+	bh=FT2/g61YhYN+8ZCyUZxvx5hkU5J0uv6XGFwiX085tNo=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=AT52U+VmbJ70qVSrTjH+H0GvoqMl/7CcJIJ1vRPal+w7SxosWGmJM5kPW928O+bx
+	 OPQkeT0bJAMoeQKo4FoR1zznIfFeKJNWJobdHsDEOcdb2Rj/MXr6af564oJT8niwR
+	 xSp6u2UyKOtql/sNJ7HadZYgapeH0FoIEVPYjgkxoUdSuHGJ6s0Q5s9GtMexNRAev
+	 SDmABUlJyFFdLdy5s7wmdKURIb4YkhN5jBEUshdk6AWgamUQe3yK62IzRdgBIEOX/
+	 iagL/BaIC+Rl5hQQ7WGLVDeEsOrZJ/mrBhtrEsFsFEE4w+AizBNF4lCscFwBd/k8p
+	 IEGUB67rnDkDyXBgvA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.86.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MLifk-1rPZ2u0Vqi-00HlzH; Mon, 04
+ Mar 2024 11:52:24 +0100
+Message-ID: <e8a2b63f-4f9a-463b-b419-c5f673191111@web.de>
+Date: Mon, 4 Mar 2024 11:52:23 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240301185618.19663-2-bp@alien8.de>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+User-Agent: Mozilla Thunderbird
+Subject: [PATCH v2] Input: iqs626a - Use scope-based resource management in
+ iqs626_parse_events()
+Content-Language: en-GB
+To: linux-input@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>, Jeff LaBundy
+ <jeff@labundy.com>, Rob Herring <robh@kernel.org>,
+ =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>
+References: <8a7607f8-d634-415e-8269-e26dcc0f9fdc@web.de>
+ <ZeU8ENmnPj3sKxAv@nixie71> <ZeVOPSt0L1D4BxuZ@google.com>
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <ZeVOPSt0L1D4BxuZ@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:m7izMg7zQ3ujiwr/T4i1wuTtnimufvqygV+noYdyXIzz4uyU3Ux
+ L835cGjttLcO9bgCu1XscCxc7HNEGmmIePrURFSlhdSpiAhmRKtLX3101jD1uJL5NPf07Qv
+ adLg5KRP3ZvuVThOqJTZ1afINl5vL/xZby4A7aLjz3jerbu7aZHzM4j8ZVYX6CJqtUichfT
+ x+TtclgWq9zv5jIh/Tm7Q==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:gKrgivznJd8=;bk83A06BJZnGktz9KrO1i65bIn2
+ vcC/jQ+uRpGC7zokuV1sDwtqbBamNXzy2PzmncSdTmgurqMJ0wkBiJd/G6O0HNTpZqMOpBMn2
+ 1EgPeSZEYkSkLLDsHJCZqE5sW1Fs3e3EQlYtM37YCUOLGQ3KT9TLR9BzTGHakZgywyFzL68zB
+ oYFQbMDrySTlCCQcaW0jwbXXKQn5Vct4Gw22feSECIn/ARfdbhpzze3YH6aXxB54qHEPyyJhP
+ v/QDMHcZFDKnalVCsbNjY5Oro/NlyMReBe4ZA/qj4YjptQYlD53+m77gMhH8qKF1I2VCaFoDB
+ wtTcRSaYOBIl2KwOVSrlB6W2lLr/vMzQzWQzIdlLf1EXwibCOWT9gaN20D90fSkbE8bd3We+V
+ 8UrOCIPQISzHaGozIC3pKJ6qlqJaRQp/6cBcy0rK2GWh/xQbP6odMQZ1eVVmnq2UsccS/Bye0
+ zo707EsyjSorUCM64znysq2GSgaHdcYTaPhCpk4KhI5X2xMWuHZ+tne9aY2sz2Udjt24zGn+0
+ iRnYnQXFGjfSkq8GWreoww6v/go+lfxMF9/ZbUK2dPa6++T5AiBXzlAUXS1NlEXd2Yx/l4Pd6
+ dX1h9Iep1QZnMCDSA6lwpzkuDEHBk0VmGVffJEyvJ3KBpFahiai0bRacz1faG2m7IB+/0RQIr
+ mFNjebGigpNaNc4xgxF8KUdULFEr5uWyKVpEfM/FjldJa16rzmZIFTCAZsjBcZ1Qkhim92EUo
+ s4yASKjQ/z9amhHbctD+Ljk/Z0Kg3Z1ID3sd8asM//hfvENAcdAGvfMKmoUO+MLDH1iVgLIQw
+ DuvLQFK1X55UHR2D+y2L3efP8h8qKOuf2Ngh/c2g9Fo94=
 
-On 03/01/24 at 07:56pm, Borislav Petkov wrote:
-> From: "Borislav Petkov (AMD)" <bp@alien8.de>
-> 
-> This reverts commit ee338b9ee2822e65a85750da6129946c14962410.
-> 
-> This whole dynamic switching support is silly. I don't see a use case
-> where one would use an old kernel with CONFIG_X86_5LEVEL disabled to
-> kexec into. I.e., you use pretty much the same kernel.
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Mon, 4 Mar 2024 11:40:04 +0100
 
-It's not true. Customer may want to try to load a different kernel if
-they have taken many testings and trust that kdump kernel, or for
-debugging. The similar for kexec reboot into 2nd kernel. We don't
-enforce kexec/kdump to work on the same kernel as the 1st kernel. With
-the fail and message, user can take measure to avoid that. it's better
-the failure is encountered when failing to jump to kexec/kdump kernel.
+Scope-based resource management became supported also for this software
+area by contributions of Jonathan Cameron on 2024-02-17.
 
-I remmeber we have use case where customer used kdump kernel different
-than the 1st kernel. While I don't remember why.
+device property: Add cleanup.h based fwnode_handle_put() scope based clean=
+up.
+https://lore.kernel.org/r/20240217164249.921878-3-jic23@kernel.org
 
-> 
-> But I'm open to corrections.
-> 
-> Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-> ---
->  arch/x86/kernel/kexec-bzimage64.c | 5 -----
->  1 file changed, 5 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/kexec-bzimage64.c b/arch/x86/kernel/kexec-bzimage64.c
-> index cde167b0ea92..4f2e47338b7f 100644
-> --- a/arch/x86/kernel/kexec-bzimage64.c
-> +++ b/arch/x86/kernel/kexec-bzimage64.c
-> @@ -375,11 +375,6 @@ static int bzImage64_probe(const char *buf, unsigned long len)
->  		return ret;
->  	}
->  
-> -	if (!(header->xloadflags & XLF_5LEVEL) && pgtable_l5_enabled()) {
-> -		pr_err("bzImage cannot handle 5-level paging mode.\n");
-> -		return ret;
-> -	}
-> -
->  	/* I've got a bzImage */
->  	pr_debug("It's a relocatable bzImage64\n");
->  	ret = 0;
-> -- 
-> 2.43.0
-> 
+
+* Thus use the attribute =E2=80=9C__free(fwnode_handle)=E2=80=9D.
+
+* Reduce the scope for the local variable =E2=80=9Cev_node=E2=80=9D into a=
+ for loop.
+
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+=2D--
+
+v2:
+An other cleanup technique was applied as requested by Dmitry Torokhov
+and Jeff LaBundy.
+
+
+ drivers/input/misc/iqs626a.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/input/misc/iqs626a.c b/drivers/input/misc/iqs626a.c
+index 0dab54d3a060..86fcb5134f45 100644
+=2D-- a/drivers/input/misc/iqs626a.c
++++ b/drivers/input/misc/iqs626a.c
+@@ -462,7 +462,6 @@ iqs626_parse_events(struct iqs626_private *iqs626,
+ {
+ 	struct iqs626_sys_reg *sys_reg =3D &iqs626->sys_reg;
+ 	struct i2c_client *client =3D iqs626->client;
+-	struct fwnode_handle *ev_node;
+ 	const char *ev_name;
+ 	u8 *thresh, *hyst;
+ 	unsigned int val;
+@@ -501,6 +500,8 @@ iqs626_parse_events(struct iqs626_private *iqs626,
+ 		if (!iqs626_channels[ch_id].events[i])
+ 			continue;
+
++		struct fwnode_handle *ev_node __free(fwnode_handle);
++
+ 		if (ch_id =3D=3D IQS626_CH_TP_2 || ch_id =3D=3D IQS626_CH_TP_3) {
+ 			/*
+ 			 * Trackpad touch events are simply described under the
+@@ -530,7 +531,6 @@ iqs626_parse_events(struct iqs626_private *iqs626,
+ 					dev_err(&client->dev,
+ 						"Invalid input type: %u\n",
+ 						val);
+-					fwnode_handle_put(ev_node);
+ 					return -EINVAL;
+ 				}
+
+@@ -545,7 +545,6 @@ iqs626_parse_events(struct iqs626_private *iqs626,
+ 				dev_err(&client->dev,
+ 					"Invalid %s channel hysteresis: %u\n",
+ 					fwnode_get_name(ch_node), val);
+-				fwnode_handle_put(ev_node);
+ 				return -EINVAL;
+ 			}
+
+@@ -566,7 +565,6 @@ iqs626_parse_events(struct iqs626_private *iqs626,
+ 				dev_err(&client->dev,
+ 					"Invalid %s channel threshold: %u\n",
+ 					fwnode_get_name(ch_node), val);
+-				fwnode_handle_put(ev_node);
+ 				return -EINVAL;
+ 			}
+
+@@ -575,8 +573,6 @@ iqs626_parse_events(struct iqs626_private *iqs626,
+ 			else
+ 				*(thresh + iqs626_events[i].th_offs) =3D val;
+ 		}
+-
+-		fwnode_handle_put(ev_node);
+ 	}
+
+ 	return 0;
+=2D-
+2.44.0
 
 
