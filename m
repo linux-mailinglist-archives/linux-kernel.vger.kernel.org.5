@@ -1,126 +1,131 @@
-Return-Path: <linux-kernel+bounces-90282-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90283-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BC5786FCDC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:13:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F03886FCE1
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:14:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D81B1C223F4
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:13:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70D671C2241B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:14:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 174361BC44;
-	Mon,  4 Mar 2024 09:13:38 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2B661B801;
+	Mon,  4 Mar 2024 09:13:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="obHW5v9R"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 228EC1B27A
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 09:13:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2943D20DDB;
+	Mon,  4 Mar 2024 09:13:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709543617; cv=none; b=MxChbHjipmEWjB/ju4n4FlNqbZp/rdeoLWAc27gdvkBR/ljjsJszy65vbHCXZKZfBoBaKes9JAAiJDHLZPB07ynahXNS9IE3Pjy+OJvKZOpAOq0CvLavi152Kl7aVY2lKd9JL9OAY3L2q4k/EggB5IxW3pFLxy5XJP7dKfyrha4=
+	t=1709543623; cv=none; b=YwrIRQOJ2AfSilWzXvEcVKWiTwZ4rNtAhHsaGdXs82OfXO16S6cN8w06sgsvSdRW4mtnBjj6AeRRkTu8YEkmR+1R1gcgIDif8bNM2/zW0rGffGQsc2K1NOdy33mNu8EA5zSpOCgCGEwNoMVTqqfS6UOIAaRJOBc8d/SThsXYoNc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709543617; c=relaxed/simple;
-	bh=n4g6A/1gV2oAFkfciMKSmu9PWw+8nLkwQuD7vVTJDCk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=gmzmZMFF3rKFGNB2ZMtYJDTOXwz0Am6MvZgEPOTP6ICuUOeQV1wcP/QZZ11ygWvZlUoBRvlnE2Kvxg70RvvCU1rGheUeFec3XEKmOIMGBArO7Lq1hFFmG2c3ere1KxzN1WJ4p8JKD7cXHMTFUZWCRJPXvhMtBEgqPVlLqJjM2d4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rh4O3-00036d-5I; Mon, 04 Mar 2024 10:13:31 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rh4O2-004K1A-4l; Mon, 04 Mar 2024 10:13:30 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rh4O2-00GVS1-0B;
-	Mon, 04 Mar 2024 10:13:30 +0100
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Richard Cochran <richardcochran@gmail.com>,
-	Min Li <min.li.xe@renesas.com>
-Cc: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] ptp: fc3: Convert to platform remove callback returning void
-Date: Mon,  4 Mar 2024 10:13:25 +0100
-Message-ID: <20240304091325.717546-2-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1709543623; c=relaxed/simple;
+	bh=P8nuIh++xRkNNRHSKN38/vYbt3eNpRBeOZLEj92Ny/w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QN70G5gRPROvNxrNqGHe7rJr9HbcTJgO7t5w7T5kyKT87t1PD0mjsU8Mrvqwx5dkSHS+++oFPzI3tTMXSpWiyY/szYXTH5/aHiJY+opuaEET0USFoIbq+vhomzerqpqPRd2Os3+KfiYglFBn4TxmoWtUEJg0TDHt9XVIU5r8Pyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=obHW5v9R; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 226CFC43394;
+	Mon,  4 Mar 2024 09:13:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709543622;
+	bh=P8nuIh++xRkNNRHSKN38/vYbt3eNpRBeOZLEj92Ny/w=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=obHW5v9RjMQ9WnrWLPFMjLWV257hOelNfFeUi7opg4XaHFH1jYvsSmmWjvU+k/axw
+	 meqe0KINf+My7gX+4spY/GRJTlTYWDAlzuaxT3fqLYZRsaW/xQjI9PVieQN3iyG5zH
+	 PLBaz70GBvK8I9ZuFov02duFazclGcujaK8wVR7YZPB1rIWAn43scKFtsRb0bWl4s6
+	 pTYo83efdcQq5E63+CfbeaC9r9BjBYp/XSd0+2ahnuStropgmtnWHr8p/jVAwcDRbY
+	 E01i/kI+19yN1HMCFfbWIPXHsiJu3p1jtOJY/XiGFJTneyphJNQL9mNzQxu2n65Nea
+	 cMtlmQE5fr33A==
+Date: Mon, 4 Mar 2024 10:13:39 +0100
+From: Wolfram Sang <wsa@kernel.org>
+To: =?utf-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	Gregory Clement <gregory.clement@bootlin.com>,
+	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+Subject: Re: [PATCH v2 03/11] i2c: nomadik: rename private struct pointers
+ from dev to priv
+Message-ID: <ZeWQwzuEcj6E1N3K@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+	=?utf-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	Gregory Clement <gregory.clement@bootlin.com>,
+	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+References: <20240229-mbly-i2c-v2-0-b32ed18c098c@bootlin.com>
+ <20240229-mbly-i2c-v2-3-b32ed18c098c@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1785; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=n4g6A/1gV2oAFkfciMKSmu9PWw+8nLkwQuD7vVTJDCk=; b=owGbwMvMwMXY3/A7olbonx/jabUkhtSnE7YdyRIIWl+xzPDn90I2o7MZD72Eyp/eP7Zuj4j2m osb28PvdzIaszAwcjHIiimy2DeuybSqkovsXPvvMswgViaQKQxcnAIwEeFE9n9a9/6u+WFWXOQv +u1UEtvRaxeZOk68tGDxeyXPoPo5Q/lAou71GwKNnq+37bJt0g9Y73Z9xsE1fzUMVwrkSqzwuX6 7IvfErr8OZWmtLh7K8hvyX+22C/SQNys8/Kev9DXvhxzbNiXrLG2rOwIFsb8dXgSLBK2PLFual6 mQ3yEV6Wndt5aJt6R2Ru2VADfN5yLTnGOn+Bjsj6nzSjGbq27HUT9Nzv5zhlNKyESNaE6rO19es Xu8z41L0ZTN4X2sscLpSWO5/N9JGblzrkrGRzklLlHPSPip3ruR67ieUwn/rtNxhydJftq+6pTu MqB/ZrawPdQUPdsi2yATPDnXKL875/HFcrGF1cp7DwMA
-X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="L0ioVPZ9vDuw4eEX"
+Content-Disposition: inline
+In-Reply-To: <20240229-mbly-i2c-v2-3-b32ed18c098c@bootlin.com>
 
-The .remove() callback for a platform driver returns an int which makes
-many driver authors wrongly assume it's possible to do error handling by
-returning an error code. However the value returned is ignored (apart
-from emitting a warning) and this typically results in resource leaks.
 
-To improve here there is a quest to make the remove callback return
-void. In the first step of this quest all drivers are converted to
-remove_new(), which already returns void. Eventually after all drivers
-are converted, .remove_new() will be renamed to .remove().
+--L0ioVPZ9vDuw4eEX
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Trivially convert this driver from always returning zero in the remove
-callback to the void returning variant.
+On Thu, Feb 29, 2024 at 07:10:51PM +0100, Th=C3=A9o Lebrun wrote:
+> Disambiguate the usage of dev as a variable name; it is usually best to
+> keep it reserved for struct device pointers. Avoid having multiple
+> names for the same struct pointer (previously: dev, nmk, nmk_i2c).
+>=20
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
-Hello,
+I think this improves readability a lot. I didn't really review, but I
+do like such changes:
 
-note this driver is currently only available in next.
+Acked-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-Best regards
-Uwe
 
- drivers/ptp/ptp_fc3.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+--L0ioVPZ9vDuw4eEX
+Content-Type: application/pgp-signature; name="signature.asc"
 
-diff --git a/drivers/ptp/ptp_fc3.c b/drivers/ptp/ptp_fc3.c
-index 0e2286ba088a..6ef982862e27 100644
---- a/drivers/ptp/ptp_fc3.c
-+++ b/drivers/ptp/ptp_fc3.c
-@@ -996,13 +996,11 @@ static int idtfc3_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
--static int idtfc3_remove(struct platform_device *pdev)
-+static void idtfc3_remove(struct platform_device *pdev)
- {
- 	struct idtfc3 *idtfc3 = platform_get_drvdata(pdev);
- 
- 	ptp_clock_unregister(idtfc3->ptp_clock);
--
--	return 0;
- }
- 
- static struct platform_driver idtfc3_driver = {
-@@ -1010,7 +1008,7 @@ static struct platform_driver idtfc3_driver = {
- 		.name = "rc38xxx-phc",
- 	},
- 	.probe = idtfc3_probe,
--	.remove	= idtfc3_remove,
-+	.remove_new = idtfc3_remove,
- };
- 
- module_platform_driver(idtfc3_driver);
+-----BEGIN PGP SIGNATURE-----
 
-base-commit: 67908bf6954b7635d33760ff6dfc189fc26ccc89
--- 
-2.43.0
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmXlkMMACgkQFA3kzBSg
+KbbC5g//d/FvD4vAs/4O309G+glAvRqqik/d5LlefofbXB0L2uWYyOJ53pla7mDx
+9RSJftrY31EwgtYEDBekpt70jlzV/IkCNqq3mxQWCC0sT+k8Su9FpFRpYgA6+9Qe
+NA0ssvMBPLn1RPhcuv9omX05jBwlSIbTuAdj8uF1g16PnJKKYEbxQme2DEU06ggh
+y9IXa2Gq+8Txr/GqkHOhBgZGCuMkDjVrTU7ozkUpjWIlq7ltn2xcVQwHTfXlcyvc
+Q6QWyAQFsuX2JUyqsYSlgxURYWficUz7ZvcJwwMB1HqqMywrXI17T09J95A/u5Fd
+JMwnWgmki6FauTpz6+6taOGqZ+8fCSI6UvjMz8nzgy7Pm3jKY38QSj0wmePXfpC8
+PXwjVjYCstrVnXAD3r54iAByGVdaysVD91t4BaPb542jM7EvvvE0P/ebmoDXgY65
+sAQY2Opm5R9Hk/YPWbW5+995BRKJa7Gzl9RmFyQTKTpF04tOLJQfK2CBXYtVhCAU
+pQF+a+Dh4lQv3/flGbCPGTq4Oup4Q+EAmSKTW2vv5a7jK6v9UF0lW0W2MOJ3z9L4
+JoFQYVYUABAFqADbiLATtpHiUTeNXobzuuqF4DjOyhXrnWt9l4tebG3xS/bylK2r
+hOfxVGJQgqYN8ZNgB29CF4rv4kIRz721CFxKghSlqn6SxZTYM5w=
+=WUmR
+-----END PGP SIGNATURE-----
 
+--L0ioVPZ9vDuw4eEX--
 
