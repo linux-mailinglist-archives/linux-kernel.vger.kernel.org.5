@@ -1,168 +1,184 @@
-Return-Path: <linux-kernel+bounces-90651-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90652-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5D888702BA
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:30:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 30CE58702BE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 14:30:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90EBB28AC8B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:30:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DAE4B28AF5C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 13:30:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98AC33E497;
-	Mon,  4 Mar 2024 13:30:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82B213EA8F;
+	Mon,  4 Mar 2024 13:30:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="r/OZTe3P"
-Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
+	dkim=pass (1024-bit key) header.d=ieee.org header.i=@ieee.org header.b="GTJXaJ4s"
+Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 314E13E47B
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 13:30:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04E183EA78
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 13:30:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709559002; cv=none; b=S7FIZYfUhEIrsmkc3+bhm8AMcLT5s/8VANhBVqC+5ZrvIKzvdIemLRPbuQiMxXDojomalamJVTYr29nMs8dLtBLE64Eyv+boO6pInibAYBxoADAmU3gIJDIVOc2iYp+x1GHs3pL+AIB8DUNxT1RP+tmnyCb/oNYyphmcSvuruLE=
+	t=1709559007; cv=none; b=ebJZntFGr3C0Hxbz41+24SNC370dq25eZyIthSqhKvgjwPc60m8ThH3059pDFawatGvrZkBLJxxXNjW4ztZ4Y9Ef6BBsYQ8KmgLkdx8tGSYsWNZv5YkAj0p2la7/ZLNqlHgrxB6IK3tWD060OnktT2NlZQxY5No1111SC2QXSfI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709559002; c=relaxed/simple;
-	bh=Kvq+eQLmzuwBXg3/KAnR/i8Z5XbQ5PFh19ze8XW00cQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MVXujVukzbDuCcKR60DaKpap+xvMjz4Kg5DdluVV9pdtBqfpjJh4+SC4VHVju27yH/h7MWWmCz939Grri3eZt/biZnjwfarRSplrzik0XTxeqZvp6AG2CXTg417S30j5Tz0u2iikh28sgxygsoIdeADYJROWEwlb5yDCtdkmpXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=r/OZTe3P; arc=none smtp.client-ip=209.85.161.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-5a0a19c9bb7so3608945eaf.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 05:30:00 -0800 (PST)
+	s=arc-20240116; t=1709559007; c=relaxed/simple;
+	bh=1vEnJ3mMLFpedLVWqgpUF3Uwe7Sq/nt8yJh/SWaDQr4=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=p/Toc5s91uLbh77TeZEaMMUttBK+Tc5pXjZCj4j8GPo229F6sUxxykkdl6Z5An9Hy4E4H30aNKY+Q7rdznpgr2JPMWN0bAYmVrxalj8LD+QV7jO57ogJ9DhyZ7vzphEJOsBBpesieSGLz72QMjHYUWUKPqe5HYdUYlPFLst7ZxU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ieee.org; spf=pass smtp.mailfrom=ieee.org; dkim=pass (1024-bit key) header.d=ieee.org header.i=@ieee.org header.b=GTJXaJ4s; arc=none smtp.client-ip=209.85.166.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ieee.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ieee.org
+Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-7c83daf5dc3so60736039f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 05:30:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709559000; x=1710163800; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/e7MvSyz7Z89OuXpqB0EkQOVRxLJ+Jq5zuJtp0kF1KA=;
-        b=r/OZTe3PfCJ2y/Yd5bp7Hgi8sUdok2nya2byx8oDkSUPC2M1aYIHxgwx6Ps7hKP03Y
-         Y9hPF1yuJ7fcw+DMfnmpauvUROQ8XoH/55D8vDOAONsqayJK2P2H1B2oBI37cVQi+LMO
-         VxkhtZxB6JcpOvBPTXJUUCSZ/tWPVpmPZ6IutO30ie4Ei0sCROrQg0GSm4sRrZ5RC74w
-         Nf3vHkWlVTChjOFKfjxa91XQxLkQJ7QP52qJUNF3Ko+nUo5+BP06LIEIH2GeoaxRyEsd
-         7o6+kPqaTwck8sRoJ4/ny2QJMpyHW29loqyZdTVcLIcSaWRtsXulDpMWhgM/ufEqj85K
-         H3nQ==
+        d=ieee.org; s=google; t=1709559004; x=1710163804; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IZJ+jw9Y4deUW/fsj73N7A+2EVXwQ9W8Tou+nRgNMNY=;
+        b=GTJXaJ4s3K5zm4Tr9/dPaMQ3Rl6JENsrDkJQE9YFQLBA5BWbYaqehVsvqB8xNoiytz
+         PpbiSzTAFXyVzsLpAvAFC7P+hczlQ20JkOTuWIc6hZDUKJPolI9/5Q8p1k5/3W2ftz1i
+         +D4uMZV1ms+wR7ElnLdDFwrFkTUgmzQH2owCQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709559000; x=1710163800;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/e7MvSyz7Z89OuXpqB0EkQOVRxLJ+Jq5zuJtp0kF1KA=;
-        b=IJzYuEY1lhuqP72ADsmp47nStjyCyFy9kRSbw1v/beOhm8jMtn3oKq8tt8hzy90luP
-         aRzxGLABuzkT8x5VGPI7kKohL8C83wQycMMs8qC/eRcXUlmBPJz21VMhE0R3sCfpeKyp
-         t3xvPIDp/va8kdA4AWpyEqaCcnVj4jnvsddzzj2umHF/ADxA6Nkja3Iz7jCZI31uI+T1
-         /bUOAi3SxipLdfLhvAva1Lje31QmG19fDW5eMA0cExLSbG1/DF9464GnC8XOPjYrzPPH
-         ypAmzfWbkOAHzNH5c6RE0i1QLT08ngyDOINEkn4lK797trMsZuNkJa39R1HMK6Kjm9pJ
-         o9Vg==
-X-Forwarded-Encrypted: i=1; AJvYcCUDNeGh22yEb2PqwIIbDXxPfgtG1Axmw9wnp95+2xufPBIxkEoZRaItv0LStM0xpvF6J1IXroO9oF8xFhhHIOwBZ6bagLQvSK+f31Zz
-X-Gm-Message-State: AOJu0Yzf1qpgNqHWqtH2Tq8Kh8fZ8TS2XFPKfhFFnYxQ5U2YQ+mXbLO0
-	8g+qd9UzE+Jtv1+S2WdaD0bpGnb/0tqbt7VHyQCmAw81ipvRBDnGdFOTdn1j8sP/pJevDWTC0lr
-	RYWtJcgIekkoz/dmbhj+dt8Q843/zmtvowRtzHg==
-X-Google-Smtp-Source: AGHT+IFWKof4pbS0vl916ObLdAYi8NdADtcGYWdAKnMOW9r3+pOIJUpi024cyHkbmZimO/UAKryy7xGAUnICBATSPAI=
-X-Received: by 2002:a05:6820:1c8d:b0:5a1:27ad:9b9d with SMTP id
- ct13-20020a0568201c8d00b005a127ad9b9dmr4368315oob.1.1709559000241; Mon, 04
- Mar 2024 05:30:00 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709559004; x=1710163804;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IZJ+jw9Y4deUW/fsj73N7A+2EVXwQ9W8Tou+nRgNMNY=;
+        b=gylcZOYig/WIHOrjZJARC+AVs6yWP2fkTAEOVNBaMBaCQhuF/XHcd2kJwmf2Ra/wYJ
+         wwleGjiYlm3qUTGi4eKEboK8Dmngsb1OvIz22zOLIaDs7ZdS2uKxrXGRv62djk2Jxv19
+         Vd6ZoNirzjAG1pZ66OiLKDn2oHY1yQsaTy3HDe3zP26u8tl5uzILwImXfJaTS0Iutf8u
+         wzLfh8VfdhIsVWWHEH/ZG0QuTb1/aXSqfmEDNZ3zAAiCtZyd7YOFSaOXPLChxb+4GGhF
+         iHcwqId5Rg8MlsgUCplYbYxFYm6ej/gyeI+wzoYzjUAjtkhrcIBbbbUoP/BJgnUIhOxZ
+         xnNw==
+X-Forwarded-Encrypted: i=1; AJvYcCVn6dQaxC9NKhDkzSFlRxjVKu30/QNuRfyHXRIXBuKDLkjJnieeW8qm7fYTg0PjJgLPCWJnXysKMY8KU2Kt00/CJHcejf68ugDgQ9Xm
+X-Gm-Message-State: AOJu0Yxeo85bjdt/f2AiYvqlN+ZvHFbHUqehboQk5dnDC8bBkmxBE6XN
+	xan+eRizA6YvA6gTA5me2oO1gosshayFCE8UhqijqK+NYD6kivbk2V5NEfta4g==
+X-Google-Smtp-Source: AGHT+IHuslinA4m6pPWjYZ4+EYackuTruMDe5CoFzt76a27cqscJhBvDEE/JxdbZg/qfAMjeHbR1+Q==
+X-Received: by 2002:a05:6602:4892:b0:7c8:5235:3141 with SMTP id ee18-20020a056602489200b007c852353141mr3529308iob.21.1709559004011;
+        Mon, 04 Mar 2024 05:30:04 -0800 (PST)
+Received: from [172.22.22.28] (c-73-228-159-35.hsd1.mn.comcast.net. [73.228.159.35])
+        by smtp.googlemail.com with ESMTPSA id e21-20020a6b6915000000b007c7e0e8edc1sm1180657ioc.52.2024.03.04.05.30.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Mar 2024 05:30:03 -0800 (PST)
+Message-ID: <e435724c-33ac-446a-81ed-fc31b56d6206@ieee.org>
+Date: Mon, 4 Mar 2024 07:30:01 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240301143731.3494455-1-sumit.garg@linaro.org> <CAFA6WYOdyPG8xNCwchSzGW+KiaXZJ8LTYuKpyEbhV=tdYz=gUg@mail.gmail.com>
-In-Reply-To: <CAFA6WYOdyPG8xNCwchSzGW+KiaXZJ8LTYuKpyEbhV=tdYz=gUg@mail.gmail.com>
-From: Jens Wiklander <jens.wiklander@linaro.org>
-Date: Mon, 4 Mar 2024 14:29:49 +0100
-Message-ID: <CAHUa44HWiWNab1TbQxHVBZOpqbp+XhNGSNoL+pXrv7xJkHShxg@mail.gmail.com>
-Subject: Re: [PATCH] tee: optee: Fix kernel panic caused by incorrect error handling
-To: Sumit Garg <sumit.garg@linaro.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, op-tee@lists.trustedfirmware.org, 
-	ilias.apalodimas@linaro.org, jerome.forissier@linaro.org, 
-	linux-kernel@vger.kernel.org, mikko.rapeli@linaro.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [greybus-dev] [PATCH] greybus: Fix deref of NULL in
+ __gb_lights_flash_brightness_set
+Content-Language: en-US
+From: Alex Elder <elder@ieee.org>
+To: Mikhail Lobanov <m.lobanov@rosalinux.ru>,
+ Rui Miguel Silva <rmfrfs@gmail.com>
+Cc: greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+References: <20240301190425.120605-1-m.lobanov@rosalinux.ru>
+ <07df4b96-70c2-41de-9d76-1deb80447a79@ieee.org>
+In-Reply-To: <07df4b96-70c2-41de-9d76-1deb80447a79@ieee.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hi,
+On 3/2/24 9:31 AM, Alex Elder wrote:
+> On 3/1/24 1:04 PM, Mikhail Lobanov wrote:
+>> Dereference of null pointer in the __gb_lights_flash_brightness_set 
+>> function.
+>> Assigning the channel the result of executing the 
+>> get_channel_from_mode function
+>> without checking for NULL may result in an error.
+>>
+>> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> 
+> I think this is an actual problem but this might not be the
+> right fix.
 
-On Mon, Mar 4, 2024 at 6:45=E2=80=AFAM Sumit Garg <sumit.garg@linaro.org> w=
-rote:
->
-> + Arnd
->
-> On Fri, 1 Mar 2024 at 20:07, Sumit Garg <sumit.garg@linaro.org> wrote:
-> >
-> > The error path while failing to register devices on the TEE bus has a
-> > bug leading to kernel panic as follows:
-> >
-> > [   15.398930] Unable to handle kernel paging request at virtual addres=
-s ffff07ed00626d7c
-> > [   15.406913] Mem abort info:
-> > [   15.409722]   ESR =3D 0x0000000096000005
-> > [   15.413490]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
-> > [   15.418814]   SET =3D 0, FnV =3D 0
-> > [   15.421878]   EA =3D 0, S1PTW =3D 0
-> > [   15.425031]   FSC =3D 0x05: level 1 translation fault
-> > [   15.429922] Data abort info:
-> > [   15.432813]   ISV =3D 0, ISS =3D 0x00000005, ISS2 =3D 0x00000000
-> > [   15.438310]   CM =3D 0, WnR =3D 0, TnD =3D 0, TagAccess =3D 0
-> > [   15.443372]   GCS =3D 0, Overlay =3D 0, DirtyBit =3D 0, Xs =3D 0
-> > [   15.448697] swapper pgtable: 4k pages, 48-bit VAs, pgdp=3D00000000d9=
-e3e000
-> > [   15.455413] [ffff07ed00626d7c] pgd=3D1800000bffdf9003, p4d=3D1800000=
-bffdf9003, pud=3D0000000000000000
-> > [   15.464146] Internal error: Oops: 0000000096000005 [#1] PREEMPT SMP
-> >
-> > Commit 7269cba53d90 ("tee: optee: Fix supplicant based device enumerati=
-on")
-> > lead to the introduction of this bug. So fix it appropriately.
-> >
-> > Reported-by: Mikko Rapeli <mikko.rapeli@linaro.org>
-> > Closes: https://bugzilla.kernel.org/show_bug.cgi?id=3D218542
-> > Fixes: 7269cba53d90 ("tee: optee: Fix supplicant based device enumerati=
-on")
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> > ---
-> >  drivers/tee/optee/device.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
->
-> Jens, Arnd,
->
-> Is there any chance for this fix to make it into v6.8 release?
+The current API for get_channel_from_mode() allows a
+null pointer to be returned, but it seems that there
+is at least one case where that should never happen.
 
-I'm picking up this and have also just sent it in a pull request for
-v6.8. If it makes it into v6.8 remains to be seen.
+gb_lights_light_v4l2_register() issues a WARN_ON() if
+get_channel_from_mode returns NULL (and then proceeds
+to dereference it).  I know BUG_ON() isn't cool, but
+maybe we should avoid the dereference there.
 
-Thanks,
-Jens
+And other than __gb_lights_flash_brightness_set(),
+all callers properly handle a null pointer return.
 
->
-> -Sumit
->
-> > diff --git a/drivers/tee/optee/device.c b/drivers/tee/optee/device.c
-> > index 9d2afac96acc..d296c70ddfdc 100644
-> > --- a/drivers/tee/optee/device.c
-> > +++ b/drivers/tee/optee/device.c
-> > @@ -90,13 +90,14 @@ static int optee_register_device(const uuid_t *devi=
-ce_uuid, u32 func)
-> >         if (rc) {
-> >                 pr_err("device registration failed, err: %d\n", rc);
-> >                 put_device(&optee_device->dev);
-> > +               return rc;
-> >         }
-> >
-> >         if (func =3D=3D PTA_CMD_GET_DEVICES_SUPP)
-> >                 device_create_file(&optee_device->dev,
-> >                                    &dev_attr_need_supplicant);
-> >
-> > -       return rc;
-> > +       return 0;
-> >  }
-> >
-> >  static int __optee_enumerate_devices(u32 func)
-> > --
-> > 2.34.1
-> >
+Regardless of what I said before about commenting
+for an impossible situation, I think your fix is
+generally the right thing to do, but it should not
+return 0 if there is no torch mode channel, it
+should return -EINVAL or something.
+
+Please consider, and post a new version.  You
+could incorporate a similar change in the same
+patch for gb_lights_light_v4l2_register().
+
+					-Alex
+
+
+
+
+> The point of the call to get_channel_from_mode() is to get
+> the attached torch channel if the passed-in channel is a
+> flash channel.  It's *possible* that any flash channel will
+> *always* have an attached torch channel, but if so there
+> ought to be a comment to that effect near this call (to
+> explain why there's no need for the null pointer check).
+> 
+> I think Dan's suggestion should be implemented as well.
+> It's possible the intention really *was* to have
+> get_channel_from_mode() return the original channel pointer
+> if there is no attached channel with the requested mode.
+> But if so, that should be done differently.  I.e., Dan's
+> suggestion should be taken, and the callers should use the
+> passed-in channel if the call to get_channel_from_mode()
+> returns NULL.  (I hope that's clear.)
+> 
+> So anyway, I think this (and Dan's suggestion) should be
+> addressed, but your fix might not be correct.
+> 
+> Rui, can you please shed some light on the situation?
+> 
+>                      -Alex
+> 
+>>
+>> Fixes: 2870b52bae4c ("greybus: lights: add lights implementation")
+>> Signed-off-by: Mikhail Lobanov <m.lobanov@rosalinux.ru>
+>> ---
+>>   drivers/staging/greybus/light.c | 9 +++++++--
+>>   1 file changed, 7 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/staging/greybus/light.c 
+>> b/drivers/staging/greybus/light.c
+>> index 87d36948c610..929514350947 100644
+>> --- a/drivers/staging/greybus/light.c
+>> +++ b/drivers/staging/greybus/light.c
+>> @@ -148,10 +148,15 @@ static int 
+>> __gb_lights_flash_brightness_set(struct gb_channel *channel)
+>>                           GB_CHANNEL_MODE_TORCH);
+>>       /* For not flash we need to convert brightness to intensity */
+>> -    intensity = channel->intensity_uA.min +
+>> +
+>> +    if (channel) {
+>> +        intensity = channel->intensity_uA.min +
+>>               (channel->intensity_uA.step * channel->led->brightness);
+>> -    return __gb_lights_flash_intensity_set(channel, intensity);
+>> +        return __gb_lights_flash_intensity_set(channel, intensity);
+>> +    }
+>> +
+>> +    return 0;
+>>   }
+>>   #else
+>>   static struct gb_channel *get_channel_from_cdev(struct led_classdev 
+>> *cdev)
+> 
+
 
