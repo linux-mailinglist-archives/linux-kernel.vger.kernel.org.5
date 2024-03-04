@@ -1,203 +1,342 @@
-Return-Path: <linux-kernel+bounces-90015-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90016-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F316186F8E9
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 04:33:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B851686F8EC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 04:36:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA8972814B5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 03:33:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBCE71C20A18
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 03:36:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5397D4696;
-	Mon,  4 Mar 2024 03:33:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FfvpaLtt"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF1D42F35
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 03:33:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B5CE4696;
+	Mon,  4 Mar 2024 03:36:28 +0000 (UTC)
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA8F52F35
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 03:36:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709523197; cv=none; b=u0AfpWeDk6oIB+QUtZ27DFgLxLnbtM9f/0fuaSL/VizkJDnLHG7osxrII/I77GL5pUAqTbYGgYrXokn1HxcoAb0gHZpCubbKD8Qq5U+rpw/rcoWncIiomMRkMFnZjSWyOSZvViXrciqowl/kEGvQczX1BCEfzUVYiCk1ZQLBHUM=
+	t=1709523387; cv=none; b=Zo1EikWRGahkNHtk8TDO20p+BPiH9mgG/B0dJldrFOjAxfn13z+AwfQhpjXUucJxdH2bYDLdvf873tNnpu+mSNRAwpBupNXbPxaC5Hbf43seYU09GLFFJHLf13CJZTf5Z0qo/8YH47JqIn83bCFSWDdrputfFMRhQ1ifoxT+Bq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709523197; c=relaxed/simple;
-	bh=Z3a+J4afS0p+nxEqzHjSjJeaMq1vLrM6lKfKvJ91f+0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=V6J2KgxKTlXh40zZtelDsgr84zQBu3BHJdnghRbxDPLdpoKZ3r7RRLcx67P7QFFKebqWb0aMe9awJGM40RZD2RDwOwbr9SUtXsat6jgz5EKBYMMOeQB+9C/2TwDt8UXwnR6Mxki1mt74T+lawLKAWm9pNlnyXpwG+nyv+Ud58Iw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FfvpaLtt; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-56454c695e6so6623138a12.0
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 19:33:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709523194; x=1710127994; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LXzQeUxGWlBH373XqQNyUnK789ftXqphQPOVNjBeEBo=;
-        b=FfvpaLttzy3MHCP2+nwRxUxFlsfduIBzOOPeVMOSkcUogC1z8y1sACqD+v9zXyPzAf
-         5/HOtzqEm82edLHotVyN+MmGmNRtwxxDOjXgiAGJwQoxHYAtvNx3ZMUxnXkwOwVxt1zW
-         Ty3i+p3UsGEOJ4cN9L2SRKvVdgiQ2b+rGfTLSKUTcN5Nfg8C+FqxvXcSWC2sQJXZ/sme
-         IL9P1sCs8e4gSmbfcwR0WJX4sZrMNWg957doHuGZgKFg0h7vS79tBX0oEDtA9SRREB1C
-         D3AHXP2aLAYe50HlgwWAcY5G1rlhVPi69UdQSSbC/8oLRcPaiEoclGSH/p38jWcMc4QK
-         EyLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709523194; x=1710127994;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LXzQeUxGWlBH373XqQNyUnK789ftXqphQPOVNjBeEBo=;
-        b=iiv7oyIhfvaftrD3WKHQqmq6Ik8eC/LpekKZLIkgabs/uAQGB7E+OlYUf96aP1na3+
-         LSkb5NO5WY+ylkXpsSzC6uNySFOgdLLkfx+hzqJvhfaKcSMAPNEd/S7k7NmjptygOw9m
-         Mk67G5Xaz1xPWmezKWLo0heu4cgZrSnqPCsiTwCJfbUpyQ/dlpzga7RxXr5HFQ9gaUqH
-         l/CHTY+T5DbAiTOYkw5Eft0KaKxlhlJxrrmhq3EHAZpJgZjSjKW9aWfUWUb+C7k80QSm
-         zYbpgHxiKGTrKjs0yb9wkMa2YwP/kzYDs2stgnNMRnVvUkc3K/p9EbJmJJCgsRUJUUv7
-         Kkkg==
-X-Forwarded-Encrypted: i=1; AJvYcCU8AZkrUvVsOtTeXUDDh1fXI44UxL2zT18MrjG3jXcgehKdvrqW+8EIo0eBkL74cH5d81C8uQ37j7wA9sKdgKJULYnCdQJmWb8FJBwj
-X-Gm-Message-State: AOJu0YyTLenCFiRs2HlO2svehXO99Lk5j2gZh+7rkj9kZYzHTbq+RoLt
-	0PmbnjEKWOvIkGFzw7dc8zVBKiaSkGcCyIaW03gp6lbV8exHn1ixVC8dVq2O2uU2ZTVeMklnC4s
-	mZ9JbCIhZGITXeIIVEclBTaBrKd1TGCYNuuCL5w==
-X-Google-Smtp-Source: AGHT+IGz17seY6e3eCF7vnfl/hLXBedWth7fLNremT2TxQNnVfPVBrGM5Yn9Oe2DilkB1RlOTX6QmqJoOTapi29PXCQ=
-X-Received: by 2002:aa7:d517:0:b0:566:78ff:b24e with SMTP id
- y23-20020aa7d517000000b0056678ffb24emr7172003edq.17.1709523193979; Sun, 03
- Mar 2024 19:33:13 -0800 (PST)
+	s=arc-20240116; t=1709523387; c=relaxed/simple;
+	bh=lRXmpPTb26GY+opS+BFfxmzwgdMsrMTwhYv2Ci1NF3o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MvMTDi4lXaynoPIQv68CuknJZSLtfFwDcIQhJq8TarRm3YORnyCVWjl1foMoHf6GP0JMJKqIlNAIWUJD0/g9xxUEOlga55Q8x5LQlVWFUjo59DQH5PE+mtPBAwJDV48DOjswo+Gyy+gatnhs8ZQOO1S4XXLQhmvAjzGVUJlC2ug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-d6dff70000001748-e5-65e541b0c539
+Date: Mon, 4 Mar 2024 12:36:11 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: "Huang, Ying" <ying.huang@intel.com>
+Cc: akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, kernel_team@skhynix.com, yuzhao@google.com,
+	hannes@cmpxchg.org
+Subject: Re: [PATCH v5] mm, vmscan: retry kswapd's priority loop with
+ cache_trim_mode off on failure
+Message-ID: <20240304033611.GD13332@system.software.com>
+References: <20240304023018.69705-1-byungchul@sk.com>
+ <87bk7ubtd4.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <20240304030413.GC13332@system.software.com>
+ <877ciibrp9.fsf@yhuang6-desk2.ccr.corp.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1709292976-13118-1-git-send-email-zhiguo.niu@unisoc.com> <7dc371ad-2448-4dd4-9551-8caef0a00d48@kernel.org>
-In-Reply-To: <7dc371ad-2448-4dd4-9551-8caef0a00d48@kernel.org>
-From: Zhiguo Niu <niuzhiguo84@gmail.com>
-Date: Mon, 4 Mar 2024 11:33:02 +0800
-Message-ID: <CAHJ8P3+ZBuBu9Sdpm_6fxhY2sVyu97dXFKKLdtEF4shi_3Fs1Q@mail.gmail.com>
-Subject: Re: [PATCH] f2fs: fix to check result of new_curseg in f2fs_allocate_segment_for_resize
-To: Chao Yu <chao@kernel.org>
-Cc: Zhiguo Niu <zhiguo.niu@unisoc.com>, jaegeuk@kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, 
-	ke.wang@unisoc.com, hongyu.jin@unisoc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <877ciibrp9.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrCLMWRmVeSWpSXmKPExsXC9ZZnke5Gx6epBut0LOasX8NmsXqTr8Xl
+	XXPYLO6t+c9qcXLWZBaLdxO+sDqweRx+857ZY8GmUo/Fe14yeWz6NInd48SM3ywenzfJBbBF
+	cdmkpOZklqUW6dslcGVcfX+RtWBBZEXn/QmMDYztDl2MnBwSAiYSSx7tYYGx90zZBGazCKhI
+	bPi2hAnEZhNQl7hx4ycziC0ioCHxaeFy9i5GLg5mgcmMEs/2rwFrEBZIk5jxsQWsiFfAQuJg
+	701WkCIhgTOMEoemLGODSAhKnJz5BKyBWUBL4sa/l0AbOIBsaYnl/zhAwpwCdhJr+r8zgtii
+	AsoSB7YdZ4I4bg2bxJSN/BC2pMTBFTdYJjAKzEIydRaSqbMQpi5gZF7FKJSZV5abmJljopdR
+	mZdZoZecn7uJERjWy2r/RO9g/HQh+BCjAAejEg9vRueTVCHWxLLiytxDjBIczEoivDW/gEK8
+	KYmVValF+fFFpTmpxYcYpTlYlMR5jb6VpwgJpCeWpGanphakFsFkmTg4pRoYAx9/n7rLJtDZ
+	+nRnE88axl2K394vC9HoC95paNiSOKkkacOKu8eevV7UndlzxCN6ypWHNeWHeQw9OeuFt8lP
+	Z/y6In1TxaEJEzYc8T/0T/TK5W8vdizpVPqaFvXlbqlWQ3jUl+/miyYvY3X6lxp/5NeupQvy
+	1zvWhDoH+idfjzdUYXW1Wqg/X4mlOCPRUIu5qDgRAJ3w7eBnAgAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrLLMWRmVeSWpSXmKPExsXC5WfdrLvB8WmqwaMpRhZz1q9hs1i9ydfi
+	8NyTrBaXd81hs7i35j+rxclZk1ks3k34wurA7nH4zXtmjwWbSj0W73nJ5LHp0yR2jxMzfrN4
+	LH7xgcnj8ya5APYoLpuU1JzMstQifbsEroyr7y+yFiyIrOi8P4GxgbHdoYuRk0NCwERiz5RN
+	LCA2i4CKxIZvS5hAbDYBdYkbN34yg9giAhoSnxYuZ+9i5OJgFpjMKPFs/xqwBmGBNIkZH1vA
+	ingFLCQO9t5kBSkSEjjDKHFoyjI2iISgxMmZT8AamAW0JG78ewm0gQPIlpZY/o8DJMwpYCex
+	pv87I4gtKqAscWDbcaYJjLyzkHTPQtI9C6F7ASPzKkaRzLyy3MTMHFO94uyMyrzMCr3k/NxN
+	jMBAXVb7Z+IOxi+X3Q8xCnAwKvHwTljzJFWINbGsuDL3EKMEB7OSCG/NL6AQb0piZVVqUX58
+	UWlOavEhRmkOFiVxXq/w1AQhgfTEktTs1NSC1CKYLBMHp1QDo7RUicLvQItZESe8RMSNtAPm
+	rS04p6WnOzFuy88LLXFRt92yHiaGdMT96RIpYLn55W9dzoyqzz5rTcWK0he9uZN3SrL8ImOw
+	aktMh+1W9Y0dog2VDlNUxUQ9A0/yK6yZXHNCdhsbEx/zmk1/l60N45WMuM7hMzf+i5jP7vfL
+	tHMeKM7Z9YRDiaU4I9FQi7moOBEAKOlJN1ACAAA=
+X-CFilter-Loop: Reflected
 
-On Mon, Mar 4, 2024 at 11:19=E2=80=AFAM Chao Yu <chao@kernel.org> wrote:
->
-> On 2024/3/1 19:36, Zhiguo Niu wrote:
-> > new_curseg may return error if get_new_segment fail, so its result
-> > should be check in its caller f2fs_allocate_segment_for_resize,
-> > alos pass this results to free_segment_range.
->
-> Zhiguo,
->
-> What about handling all error paths of new_curseg() and change_curseg()
-> in one patch?
-Dear Chao,
+On Mon, Mar 04, 2024 at 11:29:06AM +0800, Huang, Ying wrote:
+> Byungchul Park <byungchul@sk.com> writes:
+> 
+> > On Mon, Mar 04, 2024 at 10:53:11AM +0800, Huang, Ying wrote:
+> >> Byungchul Park <byungchul@sk.com> writes:
+> >> 
+> >> > Sorry for noise. I should've applied v5's change in v4.
+> >> >
+> >> > Changes from v4:
+> >> > 	1. Make other scans start with may_cache_trim_mode = 1.
+> >> >
+> >> > Changes from v3:
+> >> > 	1. Update the test result in the commit message with v4.
+> >> > 	2. Retry the whole priority loop with cache_trim_mode off again,
+> >> > 	   rather than forcing the mode off at the highest priority,
+> >> > 	   when the mode doesn't work. (feedbacked by Johannes Weiner)
+> >> >
+> >> > Changes from v2:
+> >> > 	1. Change the condition to stop cache_trim_mode.
+> >> >
+> >> > 	   From - Stop it if it's at high scan priorities, 0 or 1.
+> >> > 	   To   - Stop it if it's at high scan priorities, 0 or 1, and
+> >> > 	          the mode didn't work in the previous turn.
+> >> >
+> >> > 	   (feedbacked by Huang Ying)
+> >> >
+> >> > 	2. Change the test result in the commit message after testing
+> >> > 	   with the new logic.
+> >> >
+> >> > Changes from v1:
+> >> > 	1. Add a comment describing why this change is necessary in code
+> >> > 	   and rewrite the commit message with how to reproduce and what
+> >> > 	   the result is using vmstat. (feedbacked by Andrew Morton and
+> >> > 	   Yu Zhao)
+> >> > 	2. Change the condition to avoid cache_trim_mode from
+> >> > 	   'sc->priority != 1' to 'sc->priority > 1' to reflect cases
+> >> > 	   where the priority goes to zero all the way. (feedbacked by
+> >> > 	   Yu Zhao)
+> >> > --->8---
+> >> > From 58f1a0e41b9feea72d7fd4bd7bed1ace592e6e4c Mon Sep 17 00:00:00 2001
+> >> > From: Byungchul Park <byungchul@sk.com>
+> >> > Date: Mon, 4 Mar 2024 11:24:40 +0900
+> >> > Subject: [PATCH v5] mm, vmscan: retry kswapd's priority loop with cache_trim_mode off on failure
+> >> >
+> >> > With cache_trim_mode on, reclaim logic doesn't bother reclaiming anon
+> >> > pages.  However, it should be more careful to use the mode because it's
+> >> > going to prevent anon pages from being reclaimed even if there are a
+> >> > huge number of anon pages that are cold and should be reclaimed.  Even
+> >> > worse, that leads kswapd_failures to reach MAX_RECLAIM_RETRIES and
+> >> > stopping kswapd from functioning until direct reclaim eventually works
+> >> > to resume kswapd.
+> >> >
+> >> > So kswapd needs to retry its scan priority loop with cache_trim_mode
+> >> > off again if the mode doesn't work for reclaim.
+> >> >
+> >> > The problematic behavior can be reproduced by:
+> >> >
+> >> >    CONFIG_NUMA_BALANCING enabled
+> >> >    sysctl_numa_balancing_mode set to NUMA_BALANCING_MEMORY_TIERING
+> >> >    numa node0 (8GB local memory, 16 CPUs)
+> >> >    numa node1 (8GB slow tier memory, no CPUs)
+> >> >
+> >> >    Sequence:
+> >> >
+> >> >    1) echo 3 > /proc/sys/vm/drop_caches
+> >> >    2) To emulate the system with full of cold memory in local DRAM, run
+> >> >       the following dummy program and never touch the region:
+> >> >
+> >> >          mmap(0, 8 * 1024 * 1024 * 1024, PROT_READ | PROT_WRITE,
+> >> >               MAP_ANONYMOUS | MAP_PRIVATE | MAP_POPULATE, -1, 0);
+> >> >
+> >> >    3) Run any memory intensive work e.g. XSBench.
+> >> >    4) Check if numa balancing is working e.i. promotion/demotion.
+> >> >    5) Iterate 1) ~ 4) until numa balancing stops.
+> >> >
+> >> > With this, you could see that promotion/demotion are not working because
+> >> > kswapd has stopped due to ->kswapd_failures >= MAX_RECLAIM_RETRIES.
+> >> >
+> >> > Interesting vmstat delta's differences between before and after are like:
+> >> >
+> >> >    +-----------------------+-------------------------------+
+> >> >    | interesting vmstat    | before        | after         |
+> >> >    +-----------------------+-------------------------------+
+> >> >    | nr_inactive_anon      | 321935        | 1646193       |
+> >> >    | nr_active_anon        | 1780700       | 456388        |
+> >> >    | nr_inactive_file      | 30425         | 27836         |
+> >> >    | nr_active_file        | 14961         | 1217          |
+> >> >    | pgpromote_success     | 356           | 1310120       |
+> >> >    | pgpromote_candidate   | 21953245      | 1736872       |
+> >> >    | pgactivate            | 1844523       | 3292443       |
+> >> >    | pgdeactivate          | 50634         | 1526701       |
+> >> >    | pgfault               | 31100294      | 6715375       |
+> >> >    | pgdemote_kswapd       | 30856         | 1954199       |
+> >> >    | pgscan_kswapd         | 1861981       | 7100099       |
+> >> >    | pgscan_anon           | 1822930       | 7061135       |
+> >> >    | pgscan_file           | 39051         | 38964         |
+> >> >    | pgsteal_anon          | 386           | 1925214       |
+> >> >    | pgsteal_file          | 30470         | 28985         |
+> >> >    | pageoutrun            | 30            | 500           |
+> >> >    | numa_hint_faults      | 27418279      | 3090773       |
+> >> >    | numa_pages_migrated   | 356           | 1310120       |
+> >> >    +-----------------------+-------------------------------+
+> >> >
+> >> > Signed-off-by: Byungchul Park <byungchul@sk.com>
+> >> > ---
+> >> >  mm/vmscan.c | 23 +++++++++++++++++++++--
+> >> >  1 file changed, 21 insertions(+), 2 deletions(-)
+> >> >
+> >> > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> >> > index bba207f41b14..77948b0f8b5b 100644
+> >> > --- a/mm/vmscan.c
+> >> > +++ b/mm/vmscan.c
+> >> > @@ -108,6 +108,9 @@ struct scan_control {
+> >> >  	/* Can folios be swapped as part of reclaim? */
+> >> >  	unsigned int may_swap:1;
+> >> >  
+> >> > +	/* Can cache_trim_mode be turned on as part of reclaim? */
+> >> > +	unsigned int may_cache_trim_mode:1;
+> >> > +
+> >> 
+> >> Although it's generally not good to use negative logic, I think that
+> >> it's better to name the flag as something like "no_cache_trim_mode" to
+> >> make it easier to initialize the flag to its default value ("0").
+> >
+> > No preference to me. But don't think it's better to use another of may_*
+> > in scan_control as Johannes Weiner suggested?
+> >
+> >> >  	/* Proactive reclaim invoked by userspace through memory.reclaim */
+> >> >  	unsigned int proactive:1;
+> >> >  
+> >> > @@ -1500,6 +1503,7 @@ unsigned int reclaim_clean_pages_from_list(struct zone *zone,
+> >> >  	struct scan_control sc = {
+> >> >  		.gfp_mask = GFP_KERNEL,
+> >> >  		.may_unmap = 1,
+> >> > +		.may_cache_trim_mode = 1,
+> >> >  	};
+> >> >  	struct reclaim_stat stat;
+> >> >  	unsigned int nr_reclaimed;
+> >> > @@ -2094,6 +2098,7 @@ static unsigned int reclaim_folio_list(struct list_head *folio_list,
+> >> >  		.may_writepage = 1,
+> >> >  		.may_unmap = 1,
+> >> >  		.may_swap = 1,
+> >> > +		.may_cache_trim_mode = 1,
+> >> >  		.no_demotion = 1,
+> >> >  	};
+> >> >  
+> >> > @@ -2268,7 +2273,8 @@ static void prepare_scan_control(pg_data_t *pgdat, struct scan_control *sc)
+> >> >  	 * anonymous pages.
+> >> >  	 */
+> >> >  	file = lruvec_page_state(target_lruvec, NR_INACTIVE_FILE);
+> >> > -	if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE))
+> >> > +	if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE) &&
+> >> > +	    sc->may_cache_trim_mode)
+> >> >  		sc->cache_trim_mode = 1;
+> >> >  	else
+> >> >  		sc->cache_trim_mode = 0;
+> >> > @@ -5435,6 +5441,7 @@ static ssize_t lru_gen_seq_write(struct file *file, const char __user *src,
+> >> >  		.may_writepage = true,
+> >> >  		.may_unmap = true,
+> >> >  		.may_swap = true,
+> >> > +		.may_cache_trim_mode = 1,
+> >> >  		.reclaim_idx = MAX_NR_ZONES - 1,
+> >> >  		.gfp_mask = GFP_KERNEL,
+> >> >  	};
+> >> > @@ -6394,6 +6401,7 @@ unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
+> >> >  		.may_writepage = !laptop_mode,
+> >> >  		.may_unmap = 1,
+> >> >  		.may_swap = 1,
+> >> > +		.may_cache_trim_mode = 1,
+> >> >  	};
+> >> >  
+> >> >  	/*
+> >> > @@ -6439,6 +6447,7 @@ unsigned long mem_cgroup_shrink_node(struct mem_cgroup *memcg,
+> >> >  		.may_unmap = 1,
+> >> >  		.reclaim_idx = MAX_NR_ZONES - 1,
+> >> >  		.may_swap = !noswap,
+> >> > +		.may_cache_trim_mode = 1,
+> >> >  	};
+> >> >  
+> >> >  	WARN_ON_ONCE(!current->reclaim_state);
+> >> > @@ -6482,6 +6491,7 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
+> >> >  		.may_writepage = !laptop_mode,
+> >> >  		.may_unmap = 1,
+> >> >  		.may_swap = !!(reclaim_options & MEMCG_RECLAIM_MAY_SWAP),
+> >> > +		.may_cache_trim_mode = 1,
+> >> >  		.proactive = !!(reclaim_options & MEMCG_RECLAIM_PROACTIVE),
+> >> >  	};
+> >> >  	/*
+> >> > @@ -6744,6 +6754,7 @@ static int balance_pgdat(pg_data_t *pgdat, int order, int highest_zoneidx)
+> >> >  		.gfp_mask = GFP_KERNEL,
+> >> >  		.order = order,
+> >> >  		.may_unmap = 1,
+> >> > +		.may_cache_trim_mode = 1,
+> >> >  	};
+> >> >  
+> >> >  	set_task_reclaim_state(current, &sc.reclaim_state);
+> >> > @@ -6898,8 +6909,14 @@ static int balance_pgdat(pg_data_t *pgdat, int order, int highest_zoneidx)
+> >> >  			sc.priority--;
+> >> >  	} while (sc.priority >= 1);
+> >> >  
+> >> > -	if (!sc.nr_reclaimed)
+> >> > +	if (!sc.nr_reclaimed) {
+> >> > +		if (sc.may_cache_trim_mode) {
+> >> 
+> >> sc.may_cache_trim_mode && cache_trim_mode ?
+> >
+> > I don't think so. cache_trim_mode has a chance to switch every
+> > prepare_scan_control() like:
+> >
+> >    if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE) &&
+> >        sc->may_cache_trim_mode)                                          
+> > 	sc->cache_trim_mode = 1;                                      
+> >    else                                                                  
+> > 	sc->cache_trim_mode = 0;                                      
+> >
+> > So referring to the last value is not a good idea.
+> 
+> We should only restart without cache_trim_mode if cache_trim_mode causes
+> issue.  If it isn't enabled with highest priority (lowest value), it
+> doesn't help to disable cache_trim_mode.
 
-Do you mean to merge it with the previous patch =E2=80=9Cf2fs: fix to check
-return value of f2fs_gc_range=E2=80=9D?
-Because in addition to new_curseg/change_curseg error handling, there
-are some other changes in the previous patch.
-besides, I searched for new related codes, and there should be the
-only place left without error handling about new_curseg/
-change_curseg .
+Yes, right. Lemme think it more and apply the consideration.
 
-thanks!
->
-> Thanks,
->
+> And, please take care of other "break" in the loop, for example, if
+> kthread_should_stop(), etc.
+
+I will. Thank you.
+
+	Byungchul
+
+> --
+> Best Regards,
+> Huang, Ying
+> 
+> > 	Byungchul
 > >
-> > Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
-> > ---
-> >   fs/f2fs/f2fs.h    | 2 +-
-> >   fs/f2fs/gc.c      | 7 +++++--
-> >   fs/f2fs/segment.c | 9 +++++++--
-> >   3 files changed, 13 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> > index 4331012..39dda7d 100644
-> > --- a/fs/f2fs/f2fs.h
-> > +++ b/fs/f2fs/f2fs.h
-> > @@ -3701,7 +3701,7 @@ void f2fs_clear_prefree_segments(struct f2fs_sb_i=
-nfo *sbi,
-> >   void f2fs_init_inmem_curseg(struct f2fs_sb_info *sbi);
-> >   void f2fs_save_inmem_curseg(struct f2fs_sb_info *sbi);
-> >   void f2fs_restore_inmem_curseg(struct f2fs_sb_info *sbi);
-> > -void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int ty=
-pe,
-> > +int f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int typ=
-e,
-> >                                       unsigned int start, unsigned int =
-end);
-> >   int f2fs_allocate_new_section(struct f2fs_sb_info *sbi, int type, boo=
-l force);
-> >   int f2fs_allocate_pinning_section(struct f2fs_sb_info *sbi);
-> > diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
-> > index c60b747..7a458fa 100644
-> > --- a/fs/f2fs/gc.c
-> > +++ b/fs/f2fs/gc.c
-> > @@ -2037,8 +2037,11 @@ static int free_segment_range(struct f2fs_sb_inf=
-o *sbi,
-> >       mutex_unlock(&DIRTY_I(sbi)->seglist_lock);
-> >
-> >       /* Move out cursegs from the target range */
-> > -     for (type =3D CURSEG_HOT_DATA; type < NR_CURSEG_PERSIST_TYPE; typ=
-e++)
-> > -             f2fs_allocate_segment_for_resize(sbi, type, start, end);
-> > +     for (type =3D CURSEG_HOT_DATA; type < NR_CURSEG_PERSIST_TYPE; typ=
-e++) {
-> > +             err =3D f2fs_allocate_segment_for_resize(sbi, type, start=
-, end);
-> > +             if (err)
-> > +                     goto out;
-> > +     }
-> >
-> >       /* do GC to move out valid blocks in the range */
-> >       err =3D f2fs_gc_range(sbi, start, end, dry_run, 0);
-> > diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-> > index 1bb3019..2a07b9d 100644
-> > --- a/fs/f2fs/segment.c
-> > +++ b/fs/f2fs/segment.c
-> > @@ -3071,11 +3071,12 @@ static bool need_new_seg(struct f2fs_sb_info *s=
-bi, int type)
-> >       return false;
-> >   }
-> >
-> > -void f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int ty=
-pe,
-> > +int f2fs_allocate_segment_for_resize(struct f2fs_sb_info *sbi, int typ=
-e,
-> >                                       unsigned int start, unsigned int =
-end)
-> >   {
-> >       struct curseg_info *curseg =3D CURSEG_I(sbi, type);
-> >       unsigned int segno;
-> > +     int err =3D 0;
-> >
-> >       f2fs_down_read(&SM_I(sbi)->curseg_lock);
-> >       mutex_lock(&curseg->curseg_mutex);
-> > @@ -3089,7 +3090,10 @@ void f2fs_allocate_segment_for_resize(struct f2f=
-s_sb_info *sbi, int type,
-> >               change_curseg(sbi, type);
-> >       else
-> >               new_curseg(sbi, type, true);
-> > -
-> > +     if (curseg->segno =3D=3D NULL_SEGNO) {
-> > +             err =3D -ENOSPC;
-> > +             goto unlock;
-> > +     }
-> >       stat_inc_seg_type(sbi, curseg);
-> >
-> >       locate_dirty_segment(sbi, segno);
-> > @@ -3102,6 +3106,7 @@ void f2fs_allocate_segment_for_resize(struct f2fs=
-_sb_info *sbi, int type,
-> >
-> >       mutex_unlock(&curseg->curseg_mutex);
-> >       f2fs_up_read(&SM_I(sbi)->curseg_lock);
-> > +     return err;
-> >   }
-> >
-> >   static int __allocate_new_segment(struct f2fs_sb_info *sbi, int type,
+> >> > +			sc.may_cache_trim_mode = 0;
+> >> > +			goto restart;
+> >> > +		}
+> >> > +
+> >> >  		pgdat->kswapd_failures++;
+> >> > +	}
+> >> >  
+> >> >  out:
+> >> >  	clear_reclaim_active(pgdat, highest_zoneidx);
+> >> > @@ -7202,6 +7219,7 @@ unsigned long shrink_all_memory(unsigned long nr_to_reclaim)
+> >> >  		.may_writepage = 1,
+> >> >  		.may_unmap = 1,
+> >> >  		.may_swap = 1,
+> >> > +		.may_cache_trim_mode = 1,
+> >> >  		.hibernation_mode = 1,
+> >> >  	};
+> >> >  	struct zonelist *zonelist = node_zonelist(numa_node_id(), sc.gfp_mask);
+> >> > @@ -7360,6 +7378,7 @@ static int __node_reclaim(struct pglist_data *pgdat, gfp_t gfp_mask, unsigned in
+> >> >  		.may_writepage = !!(node_reclaim_mode & RECLAIM_WRITE),
+> >> >  		.may_unmap = !!(node_reclaim_mode & RECLAIM_UNMAP),
+> >> >  		.may_swap = 1,
+> >> > +		.may_cache_trim_mode = 1,
+> >> >  		.reclaim_idx = gfp_zone(gfp_mask),
+> >> >  	};
+> >> >  	unsigned long pflags;
+> >> 
+> >> --
+> >> Best Regards,
+> >> Huang, Ying
 
