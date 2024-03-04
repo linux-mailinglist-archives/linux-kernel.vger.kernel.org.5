@@ -1,148 +1,139 @@
-Return-Path: <linux-kernel+bounces-90464-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7388A86FF96
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:56:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06B9486FFA1
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 11:58:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 938E61F23259
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:56:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 82664B24236
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:58:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DB41381A0;
-	Mon,  4 Mar 2024 10:56:33 +0000 (UTC)
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [195.130.137.90])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BB55381D5;
+	Mon,  4 Mar 2024 10:58:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="BqJS6S5r";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="McKmMK7J"
+Received: from wfhigh1-smtp.messagingengine.com (wfhigh1-smtp.messagingengine.com [64.147.123.152])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1E4C25760
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 10:56:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.130.137.90
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 206D9376F7
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 10:58:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709549792; cv=none; b=FtVRhfDaJUKmfzGPA+iymYNMe0xoONNGHj3nXeiKRAl2CKcsFZUG+p907KlOob6F36c2MJLuGXt0HPfIyKoYzxcLQ6OvMIaMMWJGbpyDQas0MNI6H2VVmmR3UH/mnpXwCa6Ymxv/01pNl7AlTB6d28/j4YE0If42Kh++JWJve7A=
+	t=1709549924; cv=none; b=HKfGq9BpFB/KKfcqHiD2/x+hmcpff+WqeQhxkSC+EjQ553thvay9LIbG50x8aZAg9rkwu4TojuuwqPacifbYqA8SLXGxAZNyu+B8Pz4KCwW1VUyDStFgUQg2OdNF12nLzAFEiNXOwQQxDdC1O7vY2FGPFlrOetqGKPT4R+bTVfE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709549792; c=relaxed/simple;
-	bh=J0ys2nCMeqQznpcv3TvixEojj3WOQhbihu0iZmOz7CM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=CqVHyo5ivR2+iq2UHCkEpr4W0bXY7OSQgf/iCXXjxHHQKT1C9PPN7qJ1BBz4c6dFql/HJISnHv1LP4Y0+wAVqaLpnRHKkMzVVsXV2syYA0AK54JzFhCmcpGLV8ZNgN6IH8pGgPT/QWiylO9V9Llin9FnkioD8YyvPvMGV92xi8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be; spf=none smtp.mailfrom=linux-m68k.org; arc=none smtp.client-ip=195.130.137.90
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=glider.be
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:2716:1247:52e8:4f90])
-	by albert.telenet-ops.be with bizsmtp
-	id uawR2B0022qflky06awRS0; Mon, 04 Mar 2024 11:56:27 +0100
-Received: from rox.of.borg ([192.168.97.57])
-	by ramsan.of.borg with esmtp (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rh5zR-002I7A-8W;
-	Mon, 04 Mar 2024 11:56:25 +0100
-Received: from geert by rox.of.borg with local (Exim 4.95)
-	(envelope-from <geert@linux-m68k.org>)
-	id 1rh5zc-007bnl-UC;
-	Mon, 04 Mar 2024 11:56:24 +0100
-From: Geert Uytterhoeven <geert+renesas@glider.be>
-To: Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Will Deacon <will@kernel.org>,
-	Waiman Long <longman@redhat.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Arnd Bergmann <arnd@arndb.de>
-Cc: linux-kernel@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	linux-s390@vger.kernel.org,
-	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v2] locking/spinlocks: Make __raw_* lock ops static
-Date: Mon,  4 Mar 2024 11:56:20 +0100
-Message-Id: <78c366485bff13753de758fd27fb6b465ed2850a.1709549641.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1709549924; c=relaxed/simple;
+	bh=249yk6eWEjjWoRhjonEKb38hHj3r4c1txX4WOVsv668=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=ro9ud49PCUjdPs26dHpO8MhJKQm0KKmn3Q1RpdR6rmZvwUIdHETHQI/UxU7jmK+4uWTE3t9dx3BhWxBn7EA50kh55ay63a97qwYDpUHuvdOqODaRqsO0Scg9CySmMwNiolGK3jGgY++rI8cNvBKWJUB9gSKvW0JSsYcUzf2azpc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=BqJS6S5r; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=McKmMK7J; arc=none smtp.client-ip=64.147.123.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfhigh.west.internal (Postfix) with ESMTP id CABDB1800072;
+	Mon,  4 Mar 2024 05:58:40 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Mon, 04 Mar 2024 05:58:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1709549920; x=1709636320; bh=LzF8Zv3PvX
+	VlkIrXqbIlnUe2pkXzxE7AeiA/nV9wZ/E=; b=BqJS6S5r3T52XC0SuE4vLtOSVe
+	qgAMGz/30FS1ct8VLOYEllUQ8nuL+hGIu8WeD0zAPGslqX4nw3cS842P2o7ColOU
+	ZOiSCyEha51V0ZAUbjBs1wRd+Bv2VaXorgzkOjpJr/dX18TiUEJCWpe0ZxTKNFA0
+	5ISyqaJds4LHxVvtpyp6SB3YvsfBP4epCaBEFF5VQY3jx4pjgY5xqNtkxWxDVwGv
+	0RGqk/ve+c88ARhncQZ5exdRoFyXmS6r2BpJBrB4Hm3h3EK6GCYtVyzDqt+wE0ul
+	CTiinKlKO0z05veQFQ43Bui60rkpYkoUDNN3/jY/sNNZdyrq4pjOqX0/FWtw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1709549920; x=1709636320; bh=LzF8Zv3PvXVlkIrXqbIlnUe2pkXz
+	xE7AeiA/nV9wZ/E=; b=McKmMK7J/QSsg6e0l+x9jZDQGYlrrn0CYR1bSZNAcIxN
+	eSnFz3Dpsnl/hVavIdDU5hArlkvIGiQdwk/iSFjrLpT8EAm23IlQ+cqQ1MrfpO/Q
+	JZqqetoFG0wN5vo95pqLBZxnpqBwptK6Jaq+MA4Lr8cqjnD8NUds7XMKaYmlqrQU
+	9FPVG+SspvflQ5kablMq1CrPLXLNIKBn2/7qC9cOA2W19k+Io8fje7vcl281XG0w
+	9KA2fDRZPwq4MqfN548Hq23+59FRgLLlGkOv2/RS+luDGvp/YAgZdgAk0O96gdcC
+	20isq7Yi1JTgq5Udh159sYURbQq0ZaH/bbI7TEmoqw==
+X-ME-Sender: <xms:X6nlZXEoL2IsNnaq2vb0f7CaiKWKhjPiEjHtMjwLFVW6wBiW7rLiTg>
+    <xme:X6nlZUXai7pXc8QCuJgNL6PzXuW16al638PBqiMD0CkHd7c1wIiSULx4eqtGJZg_d
+    i9fXKXlC7dy0Lqb3mQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrheejgddvudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
+    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    hnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:X6nlZZJFohizVSKnvmXVdVUY7CgqT8KnKj_rSlTxAzhV9ujwv163nw>
+    <xmx:X6nlZVE3FEvJ59TaS7RF8QY5PIa0xLTEnH4ZkMW2YiIHrS0XuiJX1A>
+    <xmx:X6nlZdUXPpoacw7aJCxNS_0LXr25KvbiaTh7FZcElq4hbH6FPaijZw>
+    <xmx:YKnlZbfXH5d_SU6YrLHwgofmuWmD7GpTgKPmS-6Nu2NMS6Y2urAm40kXLZI>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 70F7EB6008F; Mon,  4 Mar 2024 05:58:39 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-205-g4dbcac4545-fm-20240301.001-g4dbcac45
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-Id: <44216ff8-740b-45ca-9902-b52a04901655@app.fastmail.com>
+In-Reply-To: <Zdc0M9Uf2zn63P0e@kekkonen.localdomain>
+References: <20240219195807.517742-1-sakari.ailus@linux.intel.com>
+ <20240219195807.517742-2-sakari.ailus@linux.intel.com>
+ <MW5PR11MB5787130A75404600F47A7D9C8D562@MW5PR11MB5787.namprd11.prod.outlook.com>
+ <Zdc0M9Uf2zn63P0e@kekkonen.localdomain>
+Date: Mon, 04 Mar 2024 11:58:19 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Sakari Ailus" <sakari.ailus@linux.intel.com>,
+ "Wentong Wu" <wentong.wu@intel.com>
+Cc: "Hans de Goede" <hdegoede@redhat.com>,
+ "Tomas Winkler" <tomas.winkler@intel.com>,
+ "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] mei: vsc: Call wake_up() in the threaded IRQ handler
+Content-Type: text/plain
 
-If CONFIG_GENERIC_LOCKBREAK=y and CONFIG_DEBUG_LOCK_ALLOC=n
-(e.g. sh/sdk7786_defconfig):
+On Thu, Feb 22, 2024, at 12:46, Sakari Ailus wrote:
+> Hi Wentong,
+>
+> On Thu, Feb 22, 2024 at 03:26:18AM +0000, Wu, Wentong wrote:
+>> > From: Sakari Ailus <sakari.ailus@linux.intel.com>
+>> > 
+>> > The hard IRQ handler vsc_tp_irq() is called with a raw spinlock taken.
+>> > wake_up() acquires a spinlock, a sleeping lock on PREEMPT_RT.
+>> 
+>> Does this mean we can't use wake_up() in isr? 
+>
+> Good question. A lot of callers currently do.
 
-    kernel/locking/spinlock.c:68:17: warning: no previous prototype for '__raw_spin_lock' [-Wmissing-prototypes]
-    kernel/locking/spinlock.c:80:26: warning: no previous prototype for '__raw_spin_lock_irqsave' [-Wmissing-prototypes]
-    kernel/locking/spinlock.c:98:17: warning: no previous prototype for '__raw_spin_lock_irq' [-Wmissing-prototypes]
-    kernel/locking/spinlock.c:103:17: warning: no previous prototype for '__raw_spin_lock_bh' [-Wmissing-prototypes]
-    kernel/locking/spinlock.c:68:17: warning: no previous prototype for '__raw_read_lock' [-Wmissing-prototypes]
-    kernel/locking/spinlock.c:80:26: warning: no previous prototype for '__raw_read_lock_irqsave' [-Wmissing-prototypes]
-    kernel/locking/spinlock.c:98:17: warning: no previous prototype for '__raw_read_lock_irq' [-Wmissing-prototypes]
-    kernel/locking/spinlock.c:103:17: warning: no previous prototype for '__raw_read_lock_bh' [-Wmissing-prototypes]
-    kernel/locking/spinlock.c:68:17: warning: no previous prototype for '__raw_write_lock' [-Wmissing-prototypes]
-    kernel/locking/spinlock.c:80:26: warning: no previous prototype for '__raw_write_lock_irqsave' [-Wmissing-prototypes]
-    kernel/locking/spinlock.c:98:17: warning: no previous prototype for '__raw_write_lock_irq' [-Wmissing-prototypes]
-    kernel/locking/spinlock.c:103:17: warning: no previous prototype for '__raw_write_lock_bh' [-Wmissing-prototypes]
+If driver has a traditional (non-threaded) handler, it should
+always work fine: on non-PREEMPT_RT it can take the spinlock
+and on PREEMPT_RT it automatically turns into a threaded
+handler that can still call it.
 
-All __raw_* lock ops are internal functions without external callers.
-Hence fix this by making them static.
+> In this case, handle_edge_irq() takes the raw spinlock and acquiring the
+> wake queue spinlock in wake_up() leads to sleeping IRQs disabled (see
+> below).
+>
+> I don't think there's any harm in moving the wake_up() to the threaded
+> handler.
 
-Note that if CONFIG_GENERIC_LOCKBREAK=y, no lock ops are inlined, as all
-of CONFIG_INLINE_*_LOCK* depend on !GENERIC_LOCKBREAK.
+It causes an extra bit of latency for the non-PREEMPT_RT case
+because you now always have to go through two task switches.
+This is probably fine if you don't care about latency. 
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Acked-by: Waiman Long <longman@redhat.com>
----
-Compile-tested on all defconfigs that have CONFIG_GENERIC_LOCKBREAK=y:
-  - sh/sdk7786_defconfig,
-  - sh/shx3_defconfig,
-  - s390/debug_defconfig,
-and also on s390/debug_defconfig after changing:
-    CONFIG_DEBUG_LOCK_ALLOC=n
-    CONFIG_DEBUG_WW_MUTEX_SLOWPATH=n
-    CONFIG_LOCK_STAT=n
-    CONFIG_PROVE_LOCKING=n
+You can probably replace the open-coded completion (wait queue
+head plus atomic) with a normal 'struct completion' and
+call complete() in the isr instead. This one seems to only
+take a raw spinlock already.
 
-v2:
-  - Add Acked-by,
-  - Drop RFC,
-  - Improve patch description.
----
- kernel/locking/spinlock.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/locking/spinlock.c b/kernel/locking/spinlock.c
-index 8475a0794f8c5ad2..7009b568e6255d64 100644
---- a/kernel/locking/spinlock.c
-+++ b/kernel/locking/spinlock.c
-@@ -65,7 +65,7 @@ EXPORT_PER_CPU_SYMBOL(__mmiowb_state);
-  * towards that other CPU that it should break the lock ASAP.
-  */
- #define BUILD_LOCK_OPS(op, locktype)					\
--void __lockfunc __raw_##op##_lock(locktype##_t *lock)			\
-+static void __lockfunc __raw_##op##_lock(locktype##_t *lock)		\
- {									\
- 	for (;;) {							\
- 		preempt_disable();					\
-@@ -77,7 +77,7 @@ void __lockfunc __raw_##op##_lock(locktype##_t *lock)			\
- 	}								\
- }									\
- 									\
--unsigned long __lockfunc __raw_##op##_lock_irqsave(locktype##_t *lock)	\
-+static unsigned long __lockfunc __raw_##op##_lock_irqsave(locktype##_t *lock) \
- {									\
- 	unsigned long flags;						\
- 									\
-@@ -95,12 +95,12 @@ unsigned long __lockfunc __raw_##op##_lock_irqsave(locktype##_t *lock)	\
- 	return flags;							\
- }									\
- 									\
--void __lockfunc __raw_##op##_lock_irq(locktype##_t *lock)		\
-+static void __lockfunc __raw_##op##_lock_irq(locktype##_t *lock)	\
- {									\
- 	_raw_##op##_lock_irqsave(lock);					\
- }									\
- 									\
--void __lockfunc __raw_##op##_lock_bh(locktype##_t *lock)		\
-+static void __lockfunc __raw_##op##_lock_bh(locktype##_t *lock)		\
- {									\
- 	unsigned long flags;						\
- 									\
--- 
-2.34.1
-
+    Arnd
 
