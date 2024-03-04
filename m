@@ -1,155 +1,149 @@
-Return-Path: <linux-kernel+bounces-90147-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90275-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B22F86FB01
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 08:39:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DCF786FCC4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:09:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD6751C21339
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 07:39:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1658284184
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:09:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CDB117597;
-	Mon,  4 Mar 2024 07:39:14 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F6141B802;
+	Mon,  4 Mar 2024 09:09:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="m41JRwtT"
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE89A156DD;
-	Mon,  4 Mar 2024 07:39:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7309917748;
+	Mon,  4 Mar 2024 09:09:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709537953; cv=none; b=cy9PQ/DfEm59i8GAD4MEf9gs3NlyKqn2tEfC3UxFqXEvHqKLecFECRFBwokSGRcn8ABX2lHeGWDg3f8L1IBZZXQpArO0ZYv/OzwhWZuuUb5E/oHcK11lp/MIuTUGskOjcI1Rl0AZ2LnXdE/wkxyxYnptCyHeYQoLGfisOmzGZxw=
+	t=1709543369; cv=none; b=Fher7wAfTyCtnwSRtfZHZvmIGw5rxOF3/TlXyaE5oVciwrKhL1mfR9iJJM2BOOPZP7vH2M+MdkPrRRYyz0Cq+CO23uGr1FP5/xCbBU5FUO+P02QQ+WJt0ZpK4wsUsua7Emtmkp0SFrcqemxDbiYR/0e1pSBeRK82SKKz2tFiMcw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709537953; c=relaxed/simple;
-	bh=VLjUG5/RbFyaBqGFUGG8p3fEzuef3DpGiYiEehefCEo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=s670lqZuw6yx3tbH91JBDsq6yA7SImgFrlNj3TQUy+1W2XoIWXmB4AhInMqfYcD94vOXlY9PaM2R8mjh9SKasfxddCRuyg23db2uNmsktMyOiKR367N2Lnq2x6qigHU+KI3IWj0yP49wX5UrE4c2CpUexHSo92zzuTprnVX5Jog=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Tp9Yh4sJTz4f3kkH;
-	Mon,  4 Mar 2024 15:39:04 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 264F41A0172;
-	Mon,  4 Mar 2024 15:39:08 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.101.6])
-	by APP4 (Coremail) with SMTP id gCh0CgDXKGuXeuVlWUH1Fw--.2277S5;
-	Mon, 04 Mar 2024 15:39:07 +0800 (CST)
-From: Kemeng Shi <shikemeng@huaweicloud.com>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca
-Cc: linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	naresh.kamboju@linaro.org,
-	daniel.diaz@linaro.org,
-	linux@roeck-us.net,
-	brauner@kernel.org
-Subject: [PATCH v4 3/3] ext4: initialize sbi->s_freeclusters_counter and sbi->s_dirtyclusters_counter before use in kunit test
-Date: Tue,  5 Mar 2024 00:35:43 +0800
-Message-Id: <20240304163543.6700-4-shikemeng@huaweicloud.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20240304163543.6700-1-shikemeng@huaweicloud.com>
-References: <20240304163543.6700-1-shikemeng@huaweicloud.com>
+	s=arc-20240116; t=1709543369; c=relaxed/simple;
+	bh=NTeM1KJ3g7QyFyVSvupqryocHsXHyWEGZB+Y/y8Wfzc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=OZouDm+aHI/Hps+vLjQ32jwSlzc7fFdpx36k+NkNGO+nLz0JelmmGsq8W/YbJUU+Rt/8zVUkOpJum+ic2CIEt/3dJoZZxm9pCalUvAcYCz264iolie7taCKsb2bNQ2Q1FrvnIOnlQywpMnaviPv6bWCtOFVrrC47LHVdn1H4ngY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=m41JRwtT; arc=none smtp.client-ip=185.132.182.106
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4247gAFC026675;
+	Mon, 4 Mar 2024 09:41:56 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	selector1; bh=bJnRc0D0H74QihxsMJduhmW8GQyOwkO9RFjU12y0p4M=; b=m4
+	1JRwtTlXG3PcefLldIGEl77X0tUzuX+IDQXBAmHPBC+tOYP8w+XPQ9oqzVVDSJ8p
+	dG9F5BbzPgdp6eHuOSyBrgE3B9oIFZA8U5rdki+EXke2aT4mQyO0sXWsUVt5bXFA
+	3+dO8XJm8hfWyt1RSiRnQHT1angHmSEvKMivYax6ZkCoeHnWxSFAFjjtvH/a3WM4
+	/RFWp74L8NlLfmaFny43+2JvSpVzbB2HVogeui34sDQhYfT95ZMLKZ1MC4KqyuYO
+	EB++E08T+M3PlmY8fjXumYfQd0qtjfj/Du80U34MqRTLapNdflV0p6DblR6KSDWa
+	smqORLvSC+TfwCrRRMnA==
+Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3wktdkxss1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 04 Mar 2024 09:41:56 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 7E2584002D;
+	Mon,  4 Mar 2024 09:41:51 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id C3E60255E46;
+	Mon,  4 Mar 2024 09:41:16 +0100 (CET)
+Received: from [10.252.5.201] (10.252.5.201) by SHFDAG1NODE2.st.com
+ (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 4 Mar
+ 2024 09:41:15 +0100
+Message-ID: <562cdbfe-9353-4f5d-a804-34e158a190a7@foss.st.com>
+Date: Mon, 4 Mar 2024 09:41:14 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgDXKGuXeuVlWUH1Fw--.2277S5
-X-Coremail-Antispam: 1UD129KBjvJXoW7AFW3Jry5tFWxZw18XrWkJFb_yoW8Kr1xpF
-	Wjkr10kF48CrZ7WrsxJr98X3WYgw4v9a4fK34xuryrAFWayryrAF1kKF15Cr4vgrW8XFnY
-	vF1qg34UuF4rC37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUB0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
-	8IrcIa0xkI8VA2jI8067AKxVWUWwA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK
-	0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4
-	x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l
-	84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I
-	8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AK
-	xVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64
-	vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-	jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
-	x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
-	8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
-	0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUIq2MUUUUU
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5] counter: Introduce the COUNTER_COMP_FREQUENCY() macro
+To: William Breathitt Gray <william.gray@linaro.org>
+CC: <syednwaris@gmail.com>, <vigneshr@ti.com>, <jpanis@baylibre.com>,
+        <alexandre.torgue@foss.st.com>, <linux-iio@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20240301102505.591918-1-fabrice.gasnier@foss.st.com>
+ <ZeH6e02zzfAjw-sd@ishi>
+Content-Language: en-US
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+In-Reply-To: <ZeH6e02zzfAjw-sd@ishi>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE2.st.com
+ (10.75.129.70)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-04_04,2024-03-01_03,2023-05-22_02
 
-Fix that sbi->s_freeclusters_counter and sbi->s_dirtyclusters_counter are
-used before initialization.
+On 3/1/24 16:55, William Breathitt Gray wrote:
+> On Fri, Mar 01, 2024 at 11:25:05AM +0100, Fabrice Gasnier wrote:
+>> Now that there are two users for the "frequency" extension, introduce a
+>> new COUNTER_COMP_FREQUENCY() macro.
+>> This extension is intended to be a read-only signal attribute.
+>>
+>> Suggested-by: William Breathitt Gray <william.gray@linaro.org>
+>> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+>> ---
+>> Changes in v5
+>> - "frequency" extension is read-only, so there's no need to provide
+>>   a write parameter.
+>> - patch sent separately from "counter: Add stm32 timer events support" [1]
+>> [1] https://lore.kernel.org/lkml/20240227173803.53906-2-fabrice.gasnier@foss.st.com/
+>> ---
+>>  include/linux/counter.h | 7 +++++++
+>>  1 file changed, 7 insertions(+)
+>>
+>> diff --git a/include/linux/counter.h b/include/linux/counter.h
+>> index 702e9108bbb4..0ac36f815b7d 100644
+>> --- a/include/linux/counter.h
+>> +++ b/include/linux/counter.h
+>> @@ -602,6 +602,13 @@ struct counter_array {
+>>  #define COUNTER_COMP_FLOOR(_read, _write) \
+>>  	COUNTER_COMP_COUNT_U64("floor", _read, _write)
+>>  
+>> +#define COUNTER_COMP_FREQUENCY(_read) \
+>> +{ \
+>> +	.type = COUNTER_COMP_U64, \
+>> +	.name = "frequency", \
+>> +	.signal_u64_read = (_read), \
+>> +}
+>> +
+>>  #define COUNTER_COMP_POLARITY(_read, _write, _available) \
+>>  { \
+>>  	.type = COUNTER_COMP_SIGNAL_POLARITY, \
+>> -- 
+>> 2.25.1
+> 
+> Hi Fabrice,
+> 
+> Setting the structure members directly works, but why not use
+> COUNTER_COMP_SIGNAL_U64("frequency", _read, NULL) instead to keep the
+> code more succinct?
 
-Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-Reported-by: Guenter Roeck <linux@roeck-us.net>
----
- fs/ext4/mballoc-test.c | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+Hi William,
 
-diff --git a/fs/ext4/mballoc-test.c b/fs/ext4/mballoc-test.c
-index 4d9eb4807c98..19d74ebf5d83 100644
---- a/fs/ext4/mballoc-test.c
-+++ b/fs/ext4/mballoc-test.c
-@@ -45,6 +45,7 @@ static struct file_system_type mbt_fs_type = {
- 
- static int mbt_mb_init(struct super_block *sb)
- {
-+	ext4_fsblk_t block;
- 	int ret;
- 
- 	/* needed by ext4_mb_init->bdev_nonrot(sb->s_bdev) */
-@@ -69,8 +70,23 @@ static int mbt_mb_init(struct super_block *sb)
- 	if (ret != 0)
- 		goto err_out;
- 
-+	block = ext4_count_free_clusters(sb);
-+	ret = percpu_counter_init(&EXT4_SB(sb)->s_freeclusters_counter, block,
-+				  GFP_KERNEL);
-+	if (ret != 0)
-+		goto err_mb_release;
-+
-+	ret = percpu_counter_init(&EXT4_SB(sb)->s_dirtyclusters_counter, 0,
-+				  GFP_KERNEL);
-+	if (ret != 0)
-+		goto err_freeclusters;
-+
- 	return 0;
- 
-+err_freeclusters:
-+	percpu_counter_destroy(&EXT4_SB(sb)->s_freeclusters_counter);
-+err_mb_release:
-+	ext4_mb_release(sb);
- err_out:
- 	kfree(sb->s_bdev->bd_queue);
- 	kfree(sb->s_bdev);
-@@ -79,6 +95,8 @@ static int mbt_mb_init(struct super_block *sb)
- 
- static void mbt_mb_release(struct super_block *sb)
- {
-+	percpu_counter_destroy(&EXT4_SB(sb)->s_dirtyclusters_counter);
-+	percpu_counter_destroy(&EXT4_SB(sb)->s_freeclusters_counter);
- 	ext4_mb_release(sb);
- 	kfree(sb->s_bdev->bd_queue);
- 	kfree(sb->s_bdev);
-@@ -333,7 +351,7 @@ static int mbt_kunit_init(struct kunit *test)
- 				   ext4_mb_mark_context,
- 				   ext4_mb_mark_context_stub);
- 
--	/* stub function will be called in mt_mb_init->ext4_mb_init */
-+	/* stub function will be called in mbt_mb_init->ext4_mb_init */
- 	if (mbt_mb_init(sb) != 0) {
- 		mbt_ctx_release(sb);
- 		mbt_ext4_free_super_block(sb);
-@@ -534,6 +552,7 @@ static void test_mark_diskspace_used(struct kunit *test)
- 	struct test_range ranges[TEST_RANGE_COUNT];
- 	int i;
- 
-+
- 	mbt_generate_test_ranges(sb, ranges, TEST_RANGE_COUNT);
- 
- 	ac.ac_status = AC_STATUS_FOUND;
--- 
-2.30.0
+I originally wrote it this way, but I had a doubt since some macros use
+the structure members directly.
 
+I can update to use COUNTER_COMP_SIGNAL_U64() instead, that will spare
+few lines.
+
+Please let me know what you prefer (I guess your proposal above ?).
+
+Best Regards,
+Thanks,
+Fabrice
+
+> 
+> William Breathitt Gray
 
