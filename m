@@ -1,171 +1,246 @@
-Return-Path: <linux-kernel+bounces-90354-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90355-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6946586FDFE
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:51:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBC4486FE05
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 10:52:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C2BD1C20DB6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:51:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7094F1F21922
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 09:52:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB3323986D;
-	Mon,  4 Mar 2024 09:48:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85E88225A6;
+	Mon,  4 Mar 2024 09:50:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gOL1eoRB"
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="XYJypDTf"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2056.outbound.protection.outlook.com [40.107.243.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06BE93839F
-	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 09:48:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709545735; cv=none; b=BE7D6Raad1ajVTJ8BK8ctO68xRaDEwkZFgtYZ2tGunM0o94mc3KOCW9OC9giKXyMSR7gRWP4BpiL2yFwzTZW8imTUDh95X0/R+TmDJFjEylRme3spgSpdlda8WcXgkrDJ5APWmT9kYwqzsAPCscMOQc+5iyh9xTT93c0QAHGfzA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709545735; c=relaxed/simple;
-	bh=vdGrZwaI/Ookkfx04vBorgAmg1RU8pL6JYSXfdzQ9PY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CDS5yVtvuUXj70p6fRLPx+vOElRCTcu1Cd4Htbx3M9cP2LXTSRtnUD2PPIIJbrFHUNmWw37TsObY/DuruxCpg75JiBEIrV0AmOLTvFYIWytrj2eY4g0+ANeA5xputcGG+hL9xZnA00GyeJ/pe80qJiIjoAzmsyJtfbU4m0WmVLM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gOL1eoRB; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a28a6cef709so689876766b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 01:48:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709545732; x=1710150532; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eaJ13RYdVXWmZbDkVn4tVEtiI++AgEDK8GYib1p9JJ0=;
-        b=gOL1eoRBVB2dUVJHDflLCwkLxEXuc0M+wNx0qTrFP5kx6eyHI66SOj9fw1D9AGknAR
-         tKz/GKOmQuFpccgXUbRAsXQ7baqKpyOylLQXPmtz8hv1n/RKQGBhqv1mHdh1IZ42iIJX
-         qHcS+nFyYAgViyI1v8hA/Pdqt0YKaIhu31VTbtf3FKuJGMows5bDTQAeagEa9OnoXYbn
-         qyiaOaG3WrRP9fbqwHVSp7k5xC+RWJyA49o5VYKkFRsvwppD9WUZt5jGXoXU6BuGsAI2
-         695NDOPPOcNMzmLhj/lxpaaI2CCneQ95OhQSxRaomXpVcuscNrcX1BiatwbNM2bs29bf
-         ZBZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709545732; x=1710150532;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=eaJ13RYdVXWmZbDkVn4tVEtiI++AgEDK8GYib1p9JJ0=;
-        b=htubOOkW/SxVu4cN+wHmcoItNWCj1+tow/1nEJ1XlVvz7KxpAkxgzACo6fiGKLpKrY
-         4SjygF63bDLuFN3Gh5UohZ6RFKU2LkmIB6K6e2dGvA0Ac5GTjH/k2dfFV/chNvDgGax3
-         MrH4R2qTOkaoEJif/HGboDCEhb/w/MwT7Po+lA8/QWdjrNFGz7vDnPDxeYHLRyyL3Ti5
-         v0B5PS4KGFUPzn7rtJS0loD+1f1eJZPkfbRfFN7AWYl7pWY6lgneYLtvuPqeNjX5AztU
-         gNXTy3pwnzf0W+soS3hmI6IHXe14/ucK/iyBVyXJpB26GfCdKLFbMrdKuKdskiPYruYD
-         xIrQ==
-X-Gm-Message-State: AOJu0YypeAy36Tg1dhtIrmcdxJvsaQ7hv1GBpSmvmrAg56HOmLRQs9ae
-	L3wVsi1sKAfa6FXlt+XRPdktbE9KOyaBSAlIaft+zKSePEIYpoAVIsjEKeRLWFQ=
-X-Google-Smtp-Source: AGHT+IH6YqqEJKxD+XyOyFPhadLbYTSOXX1KeuXfpxyOUnOXhPuYTKnbKZYpveSWNXLdWl+VNgHj7w==
-X-Received: by 2002:a17:906:48c6:b0:a45:2038:4caa with SMTP id d6-20020a17090648c600b00a4520384caamr2023252ejt.76.1709545732374;
-        Mon, 04 Mar 2024 01:48:52 -0800 (PST)
-Received: from kepler.redhat.com (1F2EF13F.nat.pool.telekom.hu. [31.46.241.63])
-        by smtp.gmail.com with ESMTPSA id s22-20020a170906501600b00a42e2bc82dbsm4569839ejj.169.2024.03.04.01.48.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 01:48:51 -0800 (PST)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-From: Ingo Molnar <mingo@kernel.org>
-To: linux-kernel@vger.kernel.org
-Cc: Shrikanth Hegde <sshegde@linux.ibm.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Valentin Schneider <vschneid@redhat.com>
-Subject: [PATCH 9/9] sched/balancing: Rename run_rebalance_domains() => sched_balance_softirq()
-Date: Mon,  4 Mar 2024 10:48:31 +0100
-Message-Id: <20240304094831.3639338-10-mingo@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240304094831.3639338-1-mingo@kernel.org>
-References: <20240304094831.3639338-1-mingo@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7398222097;
+	Mon,  4 Mar 2024 09:49:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.56
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709545799; cv=fail; b=GC8I+aC9kVxPSbm2FTv42Zd/Nv2Go9hXNvfmSP0/lH2xIxwa6zmdFGw/Z9+e0IMSRR/QWrYM6Ec+hDNlPIwh9Yk/DkQjjzLPx5CSZ7tJJFekuVj7HwPYYpRoGQRIXuMdt//6UwC2CluOMzh01iLzsCqu9SEu28YUCHm0yCtjHuM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709545799; c=relaxed/simple;
+	bh=dW7I15909uvL4JCjyK36yiLHQGv5DczZ5Y5kjQ1LA68=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=uk1MX0AAiZ3PRQIejn1yvUKeF4HlLDGMnf8bQ59Tf03QiMSLIUqVbt76pDLv0ogTEI1GoTgbmI0wzsBIjngIO03NrOxYukQs3vhEPbRItvRG6qVqzFvhMH8oxsEu3KPWrxlbn/M7NLN7unXFA1AjX8fW77069wcEH+0ANdP8BVw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=XYJypDTf; arc=fail smtp.client-ip=40.107.243.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HbWDRfbai5vNukS3ArdbG1wvYATG6ImMof9+6oYTGRAZfO10FfB5uU8MtLB0+l48Gy91lJIHFjevSvCQ/B+yxKAPHVvWGZcOr/z2s2PAMR+ClAdzlQzxE1gdK6UQzGrb3OJ0gAREnI06cgh2RmMYpFHL4yW2iFycjDr94x20sLvVSWUCTqN5BVXDxucCUKndYY5D1HnzHzP0GPW1TIQonzq+k/m0e96JKao8w88YXAyE69m48e22uhbOCA+69ccQtmibrfzFf5ksMo5xP65KmK+yIWeTKQTfOjWP2rg+mZH/qIb9oi+2+BZ6hgR96kTAPRZn4HMPHVc/tUs+TVyFpw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ALmn7F2BvGTpSrBoF1l8sh0oiICfdLtXPeNQUFN2XCA=;
+ b=LTSTKs/hOx4HQM+4NOVTkzcjZ1X+5iZwedifwqHfZGy1W57oij8MTXQMGCALUgTFgznVcy5zTsIAR9EieHz3xOx8YwaTusd7TVqVyZT8Jvv1H58mduvd7Yb1O7bChQJVRmy5F7mlW1smrI6+Cw1OIh6Od3MPQ20CduaTvT1zjQI3AX5v5orivZ4d7RI0jIZa8nWZdbUxtFZ90nE+VTNi1QZXPJKkb468e0F/XSjMVPun2+SvLopgRBHFHiQTolN9RTfKxh0FKJpJHQv/CSb1VIk5TgIWhZV4QFmiMZsNyTRjYA8n7HpvBBLr2L/D21xPLoB5mVuTHQtQtJfh6JPwXQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=secunet.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ALmn7F2BvGTpSrBoF1l8sh0oiICfdLtXPeNQUFN2XCA=;
+ b=XYJypDTfjlaN2kV+6m59sAyzEez3faXNrz+kzp3Svc7UPoHkGLSAwRGjiYcU0Ix1vcSTpw77N/5z9fDmj9bKCSufKg2D2yxR+yra5K60Tw9onwmQo0R8cTzo/S8ITp3I1NRze/Qw+DdmlXZ9B4kfcagmvdScNrwJh3gFz3+LhzbD+B0kY4to819RPD8TiI++xs219yJVxKpqUMkNgxlwNORoC9OuG0QYpUzMqk0le19D2eJGObi3ltZwjNfYZX+SUd4mbtetXg6I7vr9niBjvjmx263+pFZ/ZewtFEDYy4i1Ctwp9qokni6U3vQqe/qpTdjSb4mCzWvBDzBXoX89dw==
+Received: from BN6PR17CA0042.namprd17.prod.outlook.com (2603:10b6:405:75::31)
+ by CYYPR12MB8654.namprd12.prod.outlook.com (2603:10b6:930:c9::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.38; Mon, 4 Mar
+ 2024 09:49:53 +0000
+Received: from BN1PEPF0000468E.namprd05.prod.outlook.com
+ (2603:10b6:405:75:cafe::2b) by BN6PR17CA0042.outlook.office365.com
+ (2603:10b6:405:75::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.38 via Frontend
+ Transport; Mon, 4 Mar 2024 09:49:53 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ BN1PEPF0000468E.mail.protection.outlook.com (10.167.243.139) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7362.11 via Frontend Transport; Mon, 4 Mar 2024 09:49:52 +0000
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Mon, 4 Mar 2024
+ 01:49:36 -0800
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail203.nvidia.com
+ (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12; Mon, 4 Mar
+ 2024 01:49:35 -0800
+Received: from c-237-113-200-209.mtl.labs.mlnx (10.127.8.14) by
+ mail.nvidia.com (10.129.68.9) with Microsoft SMTP Server id 15.2.1258.12 via
+ Frontend Transport; Mon, 4 Mar 2024 01:49:32 -0800
+From: Dragos Tatulea <dtatulea@nvidia.com>
+To: Steffen Klassert <steffen.klassert@secunet.com>, Herbert Xu
+	<herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>,
+	"David Ahern" <dsahern@kernel.org>, Eric Dumazet <edumazet@google.com>,
+	"Jakub Kicinski" <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
+CC: <leonro@nvidia.com>, <gal@nvidia.com>, Dragos Tatulea
+	<dtatulea@nvidia.com>, "Anatoli N . Chechelnickiy"
+	<Anatoli.Chechelnickiy@m.interpipe.biz>, Ian Kumlien <ian.kumlien@gmail.com>,
+	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [RFC] net: esp: fix bad handling of pages from page_pool
+Date: Mon, 4 Mar 2024 11:48:52 +0200
+Message-ID: <20240304094950.761233-1-dtatulea@nvidia.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN1PEPF0000468E:EE_|CYYPR12MB8654:EE_
+X-MS-Office365-Filtering-Correlation-Id: ad13d58e-a77a-4cae-78f2-08dc3c30709a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	b9b3FOnViBiE1pJu3drpoZmc2QsVYhy7cEfXmxfZTqLQyQDFS7GcoB6sIzSxqiZm6G/fWAXlawpVJYoZzUdacUDz0E70hS2qL6bfYGg8DQN+m4VlIUllc13ApGFPhxkX2zfYM/b59eFXs7MiDlHai0OZgqGGo1u/H7mjE+/r2NHWu6NZYvbp/rUMlMAZr/GZaf99dsofvjRlKcPGaj2f1QAvni7aHr4U/LkudAerb3wGCkVxM91lGCWDoiwkwt46y1wEfzZRu7LrKvyA5RHIvBhX/plopl4tm7U6s9ZZ5Do/vzqQrUbcrxwLhiKayed7r2KznrmY9LtXIA6rf/pFC+CllLzj27gAz9oRBNtYbz1MUS4TdyaaePeLdyjRkfOfkV6yqawYdhqwT7G+PgxbJ729PgGPFL4ccZk7zeTZsAltJWoL3RhfpY1t29N+nj6jEa1CmbHEjxQ8jw8cu9GR0hf26hkxx9/KdhAwmDKzzr1m+qIQKEkZbTzK6YHllODcwp7IZ0nXxcnBnSuVjR7a7grCOU+6maBQHnEDDSLa0aQKXWbJmjKOmnxiDPTcjVGzXECeN2fc5cq5Ef7WlsVNRjIMBWWs/NT+TMEc3m3k4DfbWNLR5Nqoh3fMCMWCjO1n/RK+yKSrjcB02qVbyXqQXbdE9JeBSl9TcQU/OUalKRSzgQd7rLWk4f0izYybt+N0aKSj232wz8WGrv85NiiHAO68NT74Z8ln4ihN3Hp5kB/Ql8SKVgs/nBgVPFUdJwqj
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230031)(376005)(36860700004)(82310400014);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Mar 2024 09:49:52.3005
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: ad13d58e-a77a-4cae-78f2-08dc3c30709a
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BN1PEPF0000468E.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR12MB8654
 
-run_rebalance_domains() is a misnomer, as it doesn't only
-run rebalance_domains(), but since the introduction of the
-NOHZ code it also runs nohz_idle_balance().
+When the skb is reorganized during esp_output (!esp->inline), the pages
+coming from the original skb fragments are supposed to be released back
+to the system through put_page. But if the skb fragment pages are
+originating from a page_pool, calling put_page on them will trigger a
+page_pool leak which will eventually result in a crash.
 
-Rename it to sched_balance_softirq(), reflecting its more
-generic purpose and that it's a softirq handler.
+This leak can be easily observed when using CONFIG_DEBUG_VM and doing
+ipsec + gre (non offloaded) forwarding:
 
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Valentin Schneider <vschneid@redhat.com>
+  BUG: Bad page state in process ksoftirqd/16  pfn:1451b6
+  page:00000000de2b8d32 refcount:0 mapcount:0 mapping:0000000000000000 index:0x1451b6000 pfn:0x1451b6
+  flags: 0x200000000000000(node=0|zone=2)
+  page_type: 0xffffffff()
+  raw: 0200000000000000 dead000000000040 ffff88810d23c000 0000000000000000
+  raw: 00000001451b6000 0000000000000001 00000000ffffffff 0000000000000000
+  page dumped because: page_pool leak
+  Modules linked in: ip_gre gre mlx5_ib mlx5_core xt_conntrack xt_MASQUERADE nf_conntrack_netlink nfnetlink iptable_nat nf_nat xt_addrtype br_netfilter rpcrdma rdma_ucm ib_iser libiscsi scsi_transport_iscsi ib_umad rdma_cm ib_ipoib iw_cm ib_cm ib_uverbs ib_core overlay zram zsmalloc fuse [last unloaded: mlx5_core]
+  CPU: 16 PID: 96 Comm: ksoftirqd/16 Not tainted 6.8.0-rc4+ #22
+  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+  Call Trace:
+   <TASK>
+   dump_stack_lvl+0x36/0x50
+   bad_page+0x70/0xf0
+   free_unref_page_prepare+0x27a/0x460
+   free_unref_page+0x38/0x120
+   esp_ssg_unref.isra.0+0x15f/0x200
+   esp_output_tail+0x66d/0x780
+   esp_xmit+0x2c5/0x360
+   validate_xmit_xfrm+0x313/0x370
+   ? validate_xmit_skb+0x1d/0x330
+   validate_xmit_skb_list+0x4c/0x70
+   sch_direct_xmit+0x23e/0x350
+   __dev_queue_xmit+0x337/0xba0
+   ? nf_hook_slow+0x3f/0xd0
+   ip_finish_output2+0x25e/0x580
+   iptunnel_xmit+0x19b/0x240
+   ip_tunnel_xmit+0x5fb/0xb60
+   ipgre_xmit+0x14d/0x280 [ip_gre]
+   dev_hard_start_xmit+0xc3/0x1c0
+   __dev_queue_xmit+0x208/0xba0
+   ? nf_hook_slow+0x3f/0xd0
+   ip_finish_output2+0x1ca/0x580
+   ip_sublist_rcv_finish+0x32/0x40
+   ip_sublist_rcv+0x1b2/0x1f0
+   ? ip_rcv_finish_core.constprop.0+0x460/0x460
+   ip_list_rcv+0x103/0x130
+   __netif_receive_skb_list_core+0x181/0x1e0
+   netif_receive_skb_list_internal+0x1b3/0x2c0
+   napi_gro_receive+0xc8/0x200
+   gro_cell_poll+0x52/0x90
+   __napi_poll+0x25/0x1a0
+   net_rx_action+0x28e/0x300
+   __do_softirq+0xc3/0x276
+   ? sort_range+0x20/0x20
+   run_ksoftirqd+0x1e/0x30
+   smpboot_thread_fn+0xa6/0x130
+   kthread+0xcd/0x100
+   ? kthread_complete_and_exit+0x20/0x20
+   ret_from_fork+0x31/0x50
+   ? kthread_complete_and_exit+0x20/0x20
+   ret_from_fork_asm+0x11/0x20
+   </TASK>
+
+The suggested fix is to use the page_pool release API first and then fallback
+to put_page.
+
+Signed-off-by: Dragos Tatulea <dtatulea@nvidia.com>
+Reported-by: Anatoli N.Chechelnickiy <Anatoli.Chechelnickiy@m.interpipe.biz>
+Reported-by: Ian Kumlien <ian.kumlien@gmail.com>
+Change-Id: I263cf91c1d13c2736a58927e8e0fc51296759450
 ---
- Documentation/scheduler/sched-domains.rst                    | 2 +-
- Documentation/translations/zh_CN/scheduler/sched-domains.rst | 2 +-
- kernel/sched/fair.c                                          | 6 +++---
- 3 files changed, 5 insertions(+), 5 deletions(-)
+ net/ipv4/esp4.c | 11 ++++++++---
+ net/ipv6/esp6.c | 11 ++++++++---
+ 2 files changed, 16 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/scheduler/sched-domains.rst b/Documentation/scheduler/sched-domains.rst
-index e57ad28301bd..6577b068f921 100644
---- a/Documentation/scheduler/sched-domains.rst
-+++ b/Documentation/scheduler/sched-domains.rst
-@@ -34,7 +34,7 @@ out of balance are tasks moved between groups.
- In kernel/sched/core.c, trigger_load_balance() is run periodically on each CPU
- through scheduler_tick(). It raises a softirq after the next regularly scheduled
- rebalancing event for the current runqueue has arrived. The actual load
--balancing workhorse, run_rebalance_domains()->rebalance_domains(), is then run
-+balancing workhorse, sched_balance_softirq()->rebalance_domains(), is then run
- in softirq context (SCHED_SOFTIRQ).
- 
- The latter function takes two arguments: the runqueue of current CPU and whether
-diff --git a/Documentation/translations/zh_CN/scheduler/sched-domains.rst b/Documentation/translations/zh_CN/scheduler/sched-domains.rst
-index e814d4c01141..fbc326668e37 100644
---- a/Documentation/translations/zh_CN/scheduler/sched-domains.rst
-+++ b/Documentation/translations/zh_CN/scheduler/sched-domains.rst
-@@ -36,7 +36,7 @@ CPU共享。任意两个组的CPU掩码的交集不一定为空，如果是这
- 
- 在kernel/sched/core.c中，trigger_load_balance()在每个CPU上通过scheduler_tick()
- 周期执行。在当前运行队列下一个定期调度再平衡事件到达后，它引发一个软中断。负载均衡真正
--的工作由run_rebalance_domains()->rebalance_domains()完成，在软中断上下文中执行
-+的工作由sched_balance_softirq()->rebalance_domains()完成，在软中断上下文中执行
- （SCHED_SOFTIRQ）。
- 
- 后一个函数有两个入参：当前CPU的运行队列、它在scheduler_tick()调用时是否空闲。函数会从
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 0eb2cafa1509..cdf0dbb9d3e3 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -12408,7 +12408,7 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+diff --git a/net/ipv4/esp4.c b/net/ipv4/esp4.c
+index 4dd9e5040672..3e07d78c887d 100644
+--- a/net/ipv4/esp4.c
++++ b/net/ipv4/esp4.c
+@@ -112,9 +112,14 @@ static void esp_ssg_unref(struct xfrm_state *x, void *tmp)
+ 	/* Unref skb_frag_pages in the src scatterlist if necessary.
+ 	 * Skip the first sg which comes from skb->data.
+ 	 */
+-	if (req->src != req->dst)
+-		for (sg = sg_next(req->src); sg; sg = sg_next(sg))
+-			put_page(sg_page(sg));
++	if (req->src != req->dst) {
++		for (sg = sg_next(req->src); sg; sg = sg_next(sg)) {
++			struct page *page = sg_page(sg);
++
++			if (!napi_pp_put_page(page, false))
++				put_page(page);
++		}
++	}
  }
  
- /*
-- * The run_rebalance_domains() softirq handler is triggered via SCHED_SOFTIRQ
-+ * The sched_balance_softirq() softirq handler is triggered via SCHED_SOFTIRQ
-  * from two places:
-  *
-  *  - the scheduler_tick(),
-@@ -12416,7 +12416,7 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
-  *  - from the SMP cross-call function nohz_csd_func(),
-  *    used by NOHZ idle balancing (with NOHZ_BALANCE_KICK set).
-  */
--static __latent_entropy void run_rebalance_domains(struct softirq_action *h)
-+static __latent_entropy void sched_balance_softirq(struct softirq_action *h)
- {
- 	struct rq *this_rq = this_rq();
- 	enum cpu_idle_type idle = this_rq->idle_balance;
-@@ -13217,7 +13217,7 @@ __init void init_sched_fair_class(void)
- #endif
- 	}
+ #ifdef CONFIG_INET_ESPINTCP
+diff --git a/net/ipv6/esp6.c b/net/ipv6/esp6.c
+index 6e6efe026cdc..b73f5773139d 100644
+--- a/net/ipv6/esp6.c
++++ b/net/ipv6/esp6.c
+@@ -129,9 +129,14 @@ static void esp_ssg_unref(struct xfrm_state *x, void *tmp)
+ 	/* Unref skb_frag_pages in the src scatterlist if necessary.
+ 	 * Skip the first sg which comes from skb->data.
+ 	 */
+-	if (req->src != req->dst)
+-		for (sg = sg_next(req->src); sg; sg = sg_next(sg))
+-			put_page(sg_page(sg));
++	if (req->src != req->dst) {
++		for (sg = sg_next(req->src); sg; sg = sg_next(sg)) {
++			struct page *page = sg_page(sg);
++
++			if (!napi_pp_put_page(page, false))
++				put_page(page);
++		}
++	}
+ }
  
--	open_softirq(SCHED_SOFTIRQ, run_rebalance_domains);
-+	open_softirq(SCHED_SOFTIRQ, sched_balance_softirq);
- 
- #ifdef CONFIG_NO_HZ_COMMON
- 	nohz.next_balance = jiffies;
+ #ifdef CONFIG_INET6_ESPINTCP
 -- 
-2.40.1
+2.42.0
 
 
