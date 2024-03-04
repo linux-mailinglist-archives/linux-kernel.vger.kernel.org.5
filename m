@@ -1,157 +1,182 @@
-Return-Path: <linux-kernel+bounces-90052-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-90053-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 785B986F966
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 06:10:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF31E86F968
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 06:11:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2DAC51F21909
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 05:10:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F15D1F218F5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Mar 2024 05:11:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A66C06FBD;
-	Mon,  4 Mar 2024 05:10:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98C916ABF;
+	Mon,  4 Mar 2024 05:11:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="BsMurF+d"
-Received: from out203-205-221-202.mail.qq.com (out203-205-221-202.mail.qq.com [203.205.221.202])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TliRnDVd"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D222946AD;
-	Mon,  4 Mar 2024 05:10:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E589728FC
+	for <linux-kernel@vger.kernel.org>; Mon,  4 Mar 2024 05:11:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709529004; cv=none; b=cRBgobY/sEspavqlsiQS47PNlcXcMVxPbCD74F1bvaYFxOHD2oeGCW0j9AUgP/KE8ZLJ+6YwayUteNz26e7emysEYGGPiDk5VjxXRYS04bj28UqsWmaYs2+OZvT57pyCSUdqej5MbgjSYVCIwtQLzOHWdByDX2W9+WPRWl6Ybf4=
+	t=1709529079; cv=none; b=LGHK0nnnBJmUE2frFYF64jwghkFEC8m7fgwEnd5L66ceDLyBZLv7+L8MZpgyxfzDsqByPt1Y0nw9vPJeabhuS7Bziqi1AhGScJXF2Blg2fqBW1nBFHMpYCwa8uAYUnDzsw7XTY6YUMnIV8sZ5/komMpZEoEtik4AESgjw2lMWp8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709529004; c=relaxed/simple;
-	bh=G/uUIcpfGezZClHWnrZDD9K0NYrXcF/UXKZ/8huSANM=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=rRhG8TmFolY1QzeMIvFxcnffnV9TmGF9f9w2BtZMZXwNgpbRDHSRDkZELvJMieTjjajoFI6qImsnVNpIBoYRUo9u+GlB+Yf7hidg51D45pO+gVmm00AvEhg9cKWRnlOij7rJvTF+hRHXFlb2b0N8j0v7IHwgULRoslXocnUwH9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=BsMurF+d; arc=none smtp.client-ip=203.205.221.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1709528691; bh=Uo6+rVGqUfEBi3BWpquQslrkKBAv6/iFpXZsRLuvnJM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=BsMurF+dAlUa39T20GoIub98PkcvLTh9NbQkMObuhCHwtGlUGwhojN1b4BMEwY5UC
-	 JdiBcyPI5ArAC4LBrPXBRcOYGM63wYtnFdwVHeKMfDev76jzp53Z4cbeJu97Wm2Yfd
-	 0AZrX93TgZpLs+JITlZIkeHs3TP25mpEt/ejFxjw=
-Received: from pek-lxu-l1.wrs.com ([111.198.228.140])
-	by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
-	id 12F9C638; Mon, 04 Mar 2024 13:04:47 +0800
-X-QQ-mid: xmsmtpt1709528687tnp1fwg6v
-Message-ID: <tencent_FD84E7D8C6D392F1C66E89816EF36ED48C06@qq.com>
-X-QQ-XMAILINFO: NkHKfw09D6j8L6Vf18I52L5AstsLXhNSNv1IFN95prqdn7p8CrYmjPJc7qeqCI
-	 6+CwfYyItX5blQhwk0B2JPeRrbw70RW+B0g7+BNEGhCr0Dr0bPE98UvTf/fUWHwks8os6lM4K8/0
-	 P2YejYU+PTDZ5XHCbpq8/gKSiXNTZtZue1b6LoilLQPG5nRvcmiVjZDE4Th2bk2BCwiaIbWx01EB
-	 oXiNL3EgFGevORNRomYUutnH1fyCZ+Nna3oOzvMER8wsAejB54iUT+C0qN6o3Z3meiCdHpaoWVfg
-	 /1WuTs4tmAHor12GkXz/4xzssJkUrTVx32pUj4LIuWOB/rGtURnR45FrVYkGl32LF67B6d5UEo51
-	 OA4Myv1/DhZmKlhRcLo9sJ8h3HC9bD6cXpVuNsChF79yUfanFfeAi9J2MxHKaDbxNdYSSkXqNNhX
-	 gJEh6WOI66t8K5ZTV8Jh11KW+/+d0UZ2ycdAX1vQ9LBuomhs/R3lXn5Y8SMgPQ7urj8Txs+AnWBd
-	 nrIemF62rxbMyw0URkss4g9Imyh8KpgV9WG17K/GQdzUw2band0qBDPO1WuVzPbkt1bsSgxBC/hv
-	 9I4LCe/baMolmXC9K1brXSe7h3S3ZRUbSUct/nZ4L1kAsrYT2W9BBl4AFRx0Qvnxmae/Q20+34Cr
-	 lxIW14JzgqhqqUgdoISMgC80rEiJDM3ieTPTgi+BI99e7ybRRk1UJZWuyI9eO3JZjsWL23HvE84r
-	 QMfLiqrcwZ+4Cw18dpfTzBqBdPvxOEdy9LvatFc190wTXWCDFoZuMrOcs4o85rltzrmbHibpBh1c
-	 WkuR1whUeIBwYKTllNFxwI9SrKCWssfXd2N31gGkJ89igk9dQ70lPAZ7/Xx7TGPK1arjd6VQgyz9
-	 OYaaVVRmzuAsaCQhjv0KxqkuhDwKCRHszGPEUWnH7SAVrDvkPq68aepldSC+ZtbYa0x2R9F6DIcc
-	 QvbcPROXLCGPjtLr8ySvSxd4EfPj84nSeARKoNRdadvUwrHHL/faWXo2u3UB0s
-X-QQ-XMRINFO: NS+P29fieYNw95Bth2bWPxk=
-From: Edward Adam Davis <eadavis@qq.com>
-To: edumazet@google.com
-Cc: davem@davemloft.net,
-	eadavis@qq.com,
-	kuba@kernel.org,
-	linux-hams@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	pabeni@redhat.com,
-	ralf@linux-mips.org,
-	syzbot+f770ce3566e60e5573ac@syzkaller.appspotmail.com,
-	syzkaller-bugs@googlegroups.com
-Subject: [PATCH] net/netrom: fix uninit-value in nr_route_frame
-Date: Mon,  4 Mar 2024 13:04:48 +0800
-X-OQ-MSGID: <20240304050447.1211572-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <CANn89i+fJis6omMAuEmgkFy7iND97cA8WecRSVG6P=z15DpHnQ@mail.gmail.com>
-References: <CANn89i+fJis6omMAuEmgkFy7iND97cA8WecRSVG6P=z15DpHnQ@mail.gmail.com>
+	s=arc-20240116; t=1709529079; c=relaxed/simple;
+	bh=ZOYW8UTMBYJQ6axlQIR7e8zg+0bO/l0sGmvwj+Klrdg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AmjnwKWgryelyOXNNWgTKKzAEvc1gkawEJF1YtNHZj+KjEL735YbX2kOqmFdVGoTyfpJDGg+2K9WkG27wjCnM5mxTTVYqnZ6jmayDpXsjsYNixNDdN8R444dPFt441eovRKp5oxQwDtr2+nhXc3falKFbaxRAGX88hMIJHzf/k0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TliRnDVd; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709529076;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VNtSjcwA+rZxPvjqQS2ZPVR3ZuvVQM7xXjlLPshD5do=;
+	b=TliRnDVdj340WlTdhj5zqOxFgRvvLIqBxX0aj6T12MJgQ0KAuBIOQCkjo7IgS0T7NB47fL
+	JtqW/WYb8DJ/IGO0RVMjgxohT3s8FMa28BUyb2AjVCiNRb5O5F0blIq9Rc1kXCmDyCWto/
+	1Y4HTOOd9BVEp+CXT1Db6Pl6WEagH+4=
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
+ [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-41-poOAT-8KNDWO-auA0ze_1w-1; Mon, 04 Mar 2024 00:11:14 -0500
+X-MC-Unique: poOAT-8KNDWO-auA0ze_1w-1
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-29954faf16dso3179833a91.1
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Mar 2024 21:11:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709529073; x=1710133873;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VNtSjcwA+rZxPvjqQS2ZPVR3ZuvVQM7xXjlLPshD5do=;
+        b=CWp75gMUnMtzM1kkMKOlPJa1M1YZGc5nFe46LfI1L6A5mMmj3zbjDT+naAcyua7wPl
+         U6IAsh3G81G8bfNEBKz1PIqTBLksLUWQ6Le/EUYn7RJ5ef9jBSSraGmVZX2Fu7Iec4uc
+         aWwMnkWXSHGcwUfJhvP/KU/FxvA6pQeBOGsCcqG0YLTUIfIa4F0EexJG63n9g47Qv+Fn
+         XIp2hEQMY9083Bk0b6R0aXFjTlT1IPeMOmbogwKDxAbkqGHHrwq9ZhwBTg1yFNGC4JmV
+         QI73ax+XbvW3G2OU0KkFaAUdHQ1FLJphQstIo535AVwR0unm/2BKvkUoUfec8eTaYzoE
+         ekkw==
+X-Forwarded-Encrypted: i=1; AJvYcCUGXAJqclY/HwjW2CsrSO/6vj/TCONTCV/GmHG/E72/+DgMTMpFtI0yvY+Oa4T7QCj4lNG9FzwN+FidE4nZdSSI+Z3n4MX2oKIMyIZu
+X-Gm-Message-State: AOJu0Yz91+pZcB8kcQBUvZ42jl2MrrR0+9ZuhIL/PQVBlo3Nzs3/oJfz
+	4gpuFc0etDTyh32Gj/WD8AvHqFc5ndnnixtOKd+nfW4JCf4jqDvTcTZVRmeIxrdzgACbZ2rC6t0
+	sVkm9o1cEAdHkgeBAbMwjuzRTxLPATyB6/xfeHAMAdnxP8hFua8iydY8w8lb/4KYegxn7kKDTxC
+	EB+vFID+vwKizU0NbLwFmwwVxhsA9p+WssrDEY
+X-Received: by 2002:a17:90b:4d91:b0:296:f2d5:6567 with SMTP id oj17-20020a17090b4d9100b00296f2d56567mr10845344pjb.4.1709529073569;
+        Sun, 03 Mar 2024 21:11:13 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGTvvRy71qBU2Sm7ohelOZtP1t+4VAgk6pSsu8CZIjm3Tj7+TC2Ap5yN47Wk/l6tTwscQQm97wyQISa0K29L+s=
+X-Received: by 2002:a17:90b:4d91:b0:296:f2d5:6567 with SMTP id
+ oj17-20020a17090b4d9100b00296f2d56567mr10845332pjb.4.1709529073243; Sun, 03
+ Mar 2024 21:11:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240207054701.616094-1-lulu@redhat.com> <20240207054701.616094-6-lulu@redhat.com>
+In-Reply-To: <20240207054701.616094-6-lulu@redhat.com>
+From: Jason Wang <jasowang@redhat.com>
+Date: Mon, 4 Mar 2024 13:11:02 +0800
+Message-ID: <CACGkMEuGwVwstzCGyYs90YjtE-QZGs1ztDKF4-gqFM_JZhSjmQ@mail.gmail.com>
+Subject: Re: [PATCH v4 5/5] Documentation: Add reconnect process for VDUSE
+To: Cindy Lu <lulu@redhat.com>
+Cc: mst@redhat.com, xieyongji@bytedance.com, linux-kernel@vger.kernel.org, 
+	maxime.coquelin@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-[Syzbot reported]
-BUG: KMSAN: uninit-value in nr_route_frame+0x4a9/0xfc0 net/netrom/nr_route.c:787
- nr_route_frame+0x4a9/0xfc0 net/netrom/nr_route.c:787
- nr_xmit+0x5a/0x1c0 net/netrom/nr_dev.c:144
- __netdev_start_xmit include/linux/netdevice.h:4980 [inline]
- netdev_start_xmit include/linux/netdevice.h:4994 [inline]
- xmit_one net/core/dev.c:3547 [inline]
- dev_hard_start_xmit+0x244/0xa10 net/core/dev.c:3563
- __dev_queue_xmit+0x33ed/0x51c0 net/core/dev.c:4351
- dev_queue_xmit include/linux/netdevice.h:3171 [inline]
- raw_sendmsg+0x64e/0xc10 net/ieee802154/socket.c:299
- ieee802154_sock_sendmsg+0x91/0xc0 net/ieee802154/socket.c:96
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg net/socket.c:745 [inline]
- ____sys_sendmsg+0x9c2/0xd60 net/socket.c:2584
- ___sys_sendmsg+0x28d/0x3c0 net/socket.c:2638
- __sys_sendmsg net/socket.c:2667 [inline]
- __do_sys_sendmsg net/socket.c:2676 [inline]
- __se_sys_sendmsg net/socket.c:2674 [inline]
- __x64_sys_sendmsg+0x307/0x490 net/socket.c:2674
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
+On Wed, Feb 7, 2024 at 1:47=E2=80=AFPM Cindy Lu <lulu@redhat.com> wrote:
+>
+> Add a document explaining the reconnect process, including what the
+> Userspace App needs to do and how it works with the kernel.
+>
+> Signed-off-by: Cindy Lu <lulu@redhat.com>
+> ---
+>  Documentation/userspace-api/vduse.rst | 32 +++++++++++++++++++++++++++
+>  1 file changed, 32 insertions(+)
+>
+> diff --git a/Documentation/userspace-api/vduse.rst b/Documentation/usersp=
+ace-api/vduse.rst
+> index bdb880e01132..a2be85e0e516 100644
+> --- a/Documentation/userspace-api/vduse.rst
+> +++ b/Documentation/userspace-api/vduse.rst
+> @@ -231,3 +231,35 @@ able to start the dataplane processing as follows:
+>     after the used ring is filled.
+>
+>  For more details on the uAPI, please see include/uapi/linux/vduse.h.
+> +
+> +HOW VDUSE devices reconnectoin works
 
-Uninit was created at:
- slab_post_alloc_hook mm/slub.c:3819 [inline]
- slab_alloc_node mm/slub.c:3860 [inline]
- kmem_cache_alloc_node+0x5cb/0xbc0 mm/slub.c:3903
- kmalloc_reserve+0x13d/0x4a0 net/core/skbuff.c:560
- __alloc_skb+0x352/0x790 net/core/skbuff.c:651
- alloc_skb include/linux/skbuff.h:1296 [inline]
- alloc_skb_with_frags+0xc8/0xbd0 net/core/skbuff.c:6394
- sock_alloc_send_pskb+0xa80/0xbf0 net/core/sock.c:2783
- sock_alloc_send_skb include/net/sock.h:1855 [inline]
- raw_sendmsg+0x367/0xc10 net/ieee802154/socket.c:282
- ieee802154_sock_sendmsg+0x91/0xc0 net/ieee802154/socket.c:96
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg net/socket.c:745 [inline]
- ____sys_sendmsg+0x9c2/0xd60 net/socket.c:2584
- ___sys_sendmsg+0x28d/0x3c0 net/socket.c:2638
- __sys_sendmsg net/socket.c:2667 [inline]
- __do_sys_sendmsg net/socket.c:2676 [inline]
- __se_sys_sendmsg net/socket.c:2674 [inline]
- __x64_sys_sendmsg+0x307/0x490 net/socket.c:2674
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
+Typos, let's use a spell checker.
 
-[Fix]
-Let's clear all skb data at alloc time.
+> +----------------
+> +0. Userspace APP checks if the device /dev/vduse/vduse_name exists.
+> +   If it does not exist, need to create the instance.goto step 1
+> +   If it does exist, it means this is a reconnect and goto step 3.
+> +
+> +1. Create a new VDUSE instance with ioctl(VDUSE_CREATE_DEV) on
+> +   /dev/vduse/control.
+> +
+> +2. When the ioctl(VDUSE_CREATE_DEV) function is called, the kernel alloc=
+ates memory
+> +   to save the reconnect information.
+> +
+> +3. Userspace App need to mmap the pages to userspace
 
-Reported-and-tested-by: syzbot+f770ce3566e60e5573ac@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
----
- net/core/skbuff.c | 1 +
- 1 file changed, 1 insertion(+)
+Need to describe what kind of pages need to be mapped. And what's more:
 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index edbbef563d4d..5ca5a608daec 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -656,6 +656,7 @@ struct sk_buff *__alloc_skb(unsigned int size, gfp_t gfp_mask,
- 	 * to allow max possible filling before reallocation.
- 	 */
- 	prefetchw(data + SKB_WITH_OVERHEAD(size));
-+	memset(data, 0, size);
- 
- 	/*
- 	 * Only clear those fields we need to clear, not those that we will
--- 
-2.43.0
+Does this require cooperation from the disconnected application? If
+yes, how to distinguish from the one that is not cooperative (doesn't
+support reconnection)?
+
+> +   Userspace App need to map Pages 0 to vq_number for vq status,
+> +   Users can define the structure for saving the reconnect information t=
+hemselves
+> +   in the userspace.
+> +
+> +4. Check if the infomatin sutiable for reconnect
+
+Typos again.
+
+> +   If this is reconnect:
+> +   Before attempting to reconnect, The userspace application need to the
+> +   ioctl VDUSE_DEV_GET_CONFIG,VDUSE_DEV_GET_STATUS,VDUSE_DEV_GET_FEATURE=
+S...
+
+"..." is not good, let's describe the steps in detail.
+
+> +   to get the and confirm if these information are suitable for reconnec=
+ting.
+> +
+> +5. Start the userspace App.
+
+I had a hard time understanding this, does it mean the application
+needs to restart itself?
+
+> +   While running, the application should store the relevant information =
+about
+> +   reconnections in mapped pages.
+> +   When calling ioctl VDUSE_VQ_GET_INFO from the userspace APP
+
+Abbrev is not good here. Let's use "application" for consistency.
+
+> to get vq information, it is necessary
+> +   to check if this is a reconnection.
+
+How to check whether or not it is reconnected?
+
+> If a reconnection has occurred, the vq-related information
+> +   must be get from the mapped pages.
+> +
+> +6. When the Userspace App exits, it is necessary to unmap all the reconn=
+ect pages.
+> --
+> 2.43.0
+>
+
+Thanks
 
 
