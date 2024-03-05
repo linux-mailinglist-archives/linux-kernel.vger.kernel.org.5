@@ -1,117 +1,120 @@
-Return-Path: <linux-kernel+bounces-92853-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92856-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEEC88726F4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:53:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E98AB872702
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:54:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F10F01C24817
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:53:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4817282F92
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:54:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 870BE1B7FC;
-	Tue,  5 Mar 2024 18:53:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F30E3FE24;
+	Tue,  5 Mar 2024 18:53:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="hqFHVFbb"
-Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VR0Eeyjp"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5140D1A5BA
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 18:53:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC7381B957;
+	Tue,  5 Mar 2024 18:53:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709664782; cv=none; b=bgaozO2GXTLb5kUkM0cs9ucVg/1Wlw2SaAaqBFCmFsv7zIWxebUK6ss57faRS6u3J/tEgH4YEZUfRvVXTWMw5OUKEBmbHrC49Bm4xf53ZoCbKsd00ZFulTqE8+53tmDZNOtwD/k6OVyWXYBZtiIG5eJogsnoImjwPs91bDcGB9w=
+	t=1709664816; cv=none; b=puND4GPBe5aTJWnkSskAt9FzPYnDb1p+vE16DwxviMmg1I7gjJBl7efEfOPhjHJxc41aXr3SzwO9NNDRrYeql32FEeYmXIVWksm+aQrngy9VeYd79DK8fP6zDLFEy6iuaKtq2GH7bSs6lmwi9qJXhNtQdLUXt0Dg8tnpGUYwz2A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709664782; c=relaxed/simple;
-	bh=M/226HSU/VUf3qLvN65ic9RPPkGkwgft5YY5sbbm7gc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FjWzLPMsaUrwbeoMJRIDJkiH/IVn1z6XeCOh8/de8DxV6NZ6ppET1o+XD8HvqCvWN5l98blIxTZ1RiF10DAXx5Z1Q4v3QvfDMk0oQuinuk6W3us2nqU5pjPbRy0My0ZrAGrflEEVYK7goQC7bkWkKOXRP9SplMsGzDyJMpCDYOU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=hqFHVFbb; arc=none smtp.client-ip=209.85.166.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-7c840d5aab4so37846939f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 10:53:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1709664780; x=1710269580; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MEpeeM5uDTk2y22FrTqvvuOsQMUYfWSmy4vGTzbuVno=;
-        b=hqFHVFbb6LRKiwI5WixhRyE98dhFYLTcGyyctMs6ru6iqluqIZ3JRIJQ9b8JRUIm8q
-         YpbFZUd93M4y9ye6TdQXvbgdSRyzmg5ZtkDQbC0Z4Wc/ORW8uAdk99qao8CAEKrh2et2
-         dpL0UAuGebAOc/rmLaQBLsO8blCVH4R9WWcIg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709664780; x=1710269580;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MEpeeM5uDTk2y22FrTqvvuOsQMUYfWSmy4vGTzbuVno=;
-        b=GfPeMOgvKnEYqOz6bmLaCfz8JRPzuU2hdoPs/9M3M3Uj4v7HMQ9Rry7bErMgETNtPn
-         z7qrUufng3oP6qnv5SG8Fq+VeBvfqp79Pl7YozVUBHgGHjOhjfqQk86ya8h3LJtRW1Cn
-         hyqQrYDSBQCOPSvTjMuqpvJl26X/jdV3v5aSVsSQdXxeujkoyt5ps6N1Lbanr2QeQPzI
-         DZtTzcw3ih0dD3nH8hcIGJC/yqxNG0ZJnCEe/nW8f7WmAGU2rj+xkeZsbFWmoBCoHCxy
-         KI5ilutWYkJN82Yl9f21XexJLvn7Fj3oKh91LcThe2RufRqcPhyT22L6jXJiBSy6QVEZ
-         Fygw==
-X-Forwarded-Encrypted: i=1; AJvYcCXc8oKSEf6NjZE5NjzOBZcHVYXutIYEraNyb3pJHm9A+nrI7h+lIdDhpI7Wt88lVl0yPgjoMNMnb2wi+Wp+1HkI/J9zKpT+rgaufMYV
-X-Gm-Message-State: AOJu0YwhK5Oo3dCFBXGUCciPl5AFk7GTqGdKNduUHW5Czq7CFsHu0Wek
-	zKr2koTjqhjD3FfscxhyAuEvQEXGqXFCOY7aaf9JJoj2bHvivPXsgWdmOq+Ji+k=
-X-Google-Smtp-Source: AGHT+IFbzWXOeIi0fJ2CcuZDZeGAyPP24qF/5v6BY/JvvzLzUHWNTrD8gyMXbXDyIPy+7NnluYrAjg==
-X-Received: by 2002:a05:6e02:2164:b0:365:4e45:63ee with SMTP id s4-20020a056e02216400b003654e4563eemr1378458ilv.1.1709664780276;
-        Tue, 05 Mar 2024 10:53:00 -0800 (PST)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id b6-20020a029586000000b00473e9bd8308sm3045833jai.124.2024.03.05.10.52.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Mar 2024 10:52:59 -0800 (PST)
-Message-ID: <5e9ca92a-ba9c-45d8-abcf-5bbd37a7546c@linuxfoundation.org>
-Date: Tue, 5 Mar 2024 11:52:57 -0700
+	s=arc-20240116; t=1709664816; c=relaxed/simple;
+	bh=UxSg3J7pmXgouiW5qzsuGHpZBdYmHL4bL7FyvyMHf+k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dlfNDkuxZS5yfGzVWiV6/+JgjqsYMCyRSb7M8C/uk4AgWQJoIL1B3fFOknn1l/+9WyTTbCq8EoBQXuo7fCPdjPUHOg3UsvCa6uE2K/cYveXPci9f0zzC6OMOMSJDGwXi6QBcVRn4QGy9rlUG+lv1vhItd6eZZp6eWSF3pzZfOpE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VR0Eeyjp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 390B3C43601;
+	Tue,  5 Mar 2024 18:53:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709664816;
+	bh=UxSg3J7pmXgouiW5qzsuGHpZBdYmHL4bL7FyvyMHf+k=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=VR0Eeyjp/78+DsOUI5efdN9B5bRcF6HFxoyvC5bWeVElq/VWUrAW0m3CZKkWd+/7m
+	 EWOsjMwJjrbelAFQUOJd4gCQmEYpb8qQ9o6GAEuNUC4gFQSvpshLsHCOHWJnfuabzm
+	 09ANuKESfkHOchOjLYVen0ph1WGHj6dRrgJfEcADIWSzTdYzj95l1MFd+dM71Lnert
+	 5UuVIzk/H2GE0K6qCuwKYph1b0GYbZiDzD55PIfVSD2Q6I9awi3YtDqTplCIGvB3C1
+	 qCE1U07l+G7WGbfteb5WeCDHyxuR1JjmfzFZTmAwysC+rzXhrRdFSvTrvdqsKZAPpQ
+	 aT7NxkPqiKRMw==
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d309a23d76so496691fa.1;
+        Tue, 05 Mar 2024 10:53:36 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVWyTkNS4fgL/XwUPQNXbZuW2tUyJugvB98cJOC1RPXO4sMCq6WsuVL653k7wEV2XOOPC5JeyArt3XmpiC9Icmqpz223swFBeY6ZjtCTADSxbbvbu0HCkDDq5ew9AK8pFj/O7QBGvCAASTJOk+31wgEaevBD41P1rQZdc+kO0cjt0y9DAm8TJNAZHL4TGyCMIvwc6x0e/fdKRwaLD9YnDrnVEHEc8OpPkApA5Apt4Px2WCpUZQskiECuXSNDCPVLcEo
+X-Gm-Message-State: AOJu0YzRssHPDILbq6mTXwSdr5hwY3RePeXdNy081lFzXiYQjpr22LV1
+	kg9A+AWxu1d2q/pJyuja7xjfEjbwJM6irLN7ncKm9Rqd/Q7JNccyR7QdRMDboFpsB5JZft90Je+
+	eqCaYmBTM6ea8VU3ucjrtBjOcBg==
+X-Google-Smtp-Source: AGHT+IEU/KBPArFsCWKj4b5nW5QhpIEG3gfe02KIC5UhsfknOlWHT6QJ/okiHavM97I63ii3T7OjJZvBcaAb43h3RQs=
+X-Received: by 2002:a2e:91d8:0:b0:2d3:9cc2:fca4 with SMTP id
+ u24-20020a2e91d8000000b002d39cc2fca4mr971547ljg.15.1709664814125; Tue, 05 Mar
+ 2024 10:53:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.7 000/162] 6.7.9-rc1 review
-Content-Language: en-US
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
- rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com,
- Shuah Khan <skhan@linuxfoundation.org>
-References: <20240304211551.833500257@linuxfoundation.org>
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20240304211551.833500257@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240121-sm7125-upstream-v4-0-f7d1212c8ebb@gmail.com>
+ <20240121-sm7125-upstream-v4-2-f7d1212c8ebb@gmail.com> <20240212222232.GB2655166-robh@kernel.org>
+ <CAA8EJpoymmOBc3CfNHJKBT8BNje_s2a5uGPde3QHYv3vQ97=-Q@mail.gmail.com> <CAL_JsqLGVBjiYt5tG0GFxxeHmNDD1PgJx3ab-n2x0nHPEaX9iQ@mail.gmail.com>
+In-Reply-To: <CAL_JsqLGVBjiYt5tG0GFxxeHmNDD1PgJx3ab-n2x0nHPEaX9iQ@mail.gmail.com>
+From: Rob Herring <robh@kernel.org>
+Date: Tue, 5 Mar 2024 12:53:21 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+wdu20iU5c-j6-V61nm6zuBOfDDqGdunjaGQLbc9BRmA@mail.gmail.com>
+Message-ID: <CAL_Jsq+wdu20iU5c-j6-V61nm6zuBOfDDqGdunjaGQLbc9BRmA@mail.gmail.com>
+Subject: Re: [PATCH v4 2/8] dt-bindings: ufs: qcom: Add SC7180 compatible string
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, David Wronek <davidwronek@gmail.com>, 
+	Bjorn Andersson <andersson@kernel.org>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, Herbert Xu <herbert@gondor.apana.org.au>, 
+	"David S. Miller" <davem@davemloft.net>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, Alim Akhtar <alim.akhtar@samsung.com>, 
+	Avri Altman <avri.altman@wdc.com>, Bart Van Assche <bvanassche@acm.org>, Andy Gross <agross@kernel.org>, 
+	Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>, 
+	cros-qcom-dts-watchers@chromium.org, linux-arm-msm@vger.kernel.org, 
+	linux-crypto@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org, 
+	linux-phy@lists.infradead.org, ~postmarketos/upstreaming@lists.sr.ht, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 3/4/24 14:21, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.7.9 release.
-> There are 162 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 06 Mar 2024 21:15:26 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.7.9-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.7.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Tue, Feb 13, 2024 at 12:11=E2=80=AFPM Rob Herring <robh@kernel.org> wrot=
+e:
+>
+> On Tue, Feb 13, 2024 at 4:30=E2=80=AFAM Dmitry Baryshkov
+> <dmitry.baryshkov@linaro.org> wrote:
+> >
+> > On Tue, 13 Feb 2024 at 00:22, Rob Herring <robh@kernel.org> wrote:
+> > >
+> > > On Sun, Jan 21, 2024 at 05:57:42PM +0100, David Wronek wrote:
+> > > > Document the compatible for the UFS found on SC7180.
+> > > >
+> > > > Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> > > > Signed-off-by: David Wronek <davidwronek@gmail.com>
+> > > > ---
+> > > >  Documentation/devicetree/bindings/ufs/qcom,ufs.yaml | 2 ++
+> > > >  1 file changed, 2 insertions(+)
+> > >
+> > > Should have been picked up by SCSI/UFS maintainers, but it
+> > > hasn't, so I applied it.
+> >
+> > And it now triggers schema warnings, because sc7180-ufshc has 7 clocks
+> > and 1 reg entries.
+>
+> And now dropped... Perhaps the dts changes should be too.
+>
+> Maybe QCom maintainers should require a report of dtbs_check on new
+> boards. My comparisons of Linus vs. next warnings often show an
+> increase in QCom warnings. Like right now:
+>
+> linus: arch/arm64/boot/dts/qcom:1990:265
+> next: arch/arm64/boot/dts/qcom:1610:298
 
-Compiled and booted on my test system. No dmesg regressions.
+Still a bunch of warnings in next. This binding should be resubmitted
+with fixes or the dts changes dropped.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
-
-thanks,
--- Shuah
+Rob
 
