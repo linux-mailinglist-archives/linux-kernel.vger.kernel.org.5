@@ -1,51 +1,60 @@
-Return-Path: <linux-kernel+bounces-92461-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92462-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66C2A872084
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:41:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A49C187208C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:42:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 06BC7B280AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:41:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBDF41C22BB5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:42:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCAD886136;
-	Tue,  5 Mar 2024 13:41:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC99685C7D;
+	Tue,  5 Mar 2024 13:42:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="DOCvtJWD"
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NvSLPpzu"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9594984A48;
-	Tue,  5 Mar 2024 13:41:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 472DF5676A;
+	Tue,  5 Mar 2024 13:42:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709646101; cv=none; b=blZk2CXhQ4m2u6NRUA/u9TjZ3+8JnpeXeGLgjuis8F9wAnVYZFbFeEuMiD9TidtxOlzxA/ljiVC/5oLjAkyh9EbL2nGteH2LfFJKGfHtczB9i54fJ5PturfdpvboVq+eF65KdvtIIXPHz+7UKyG5Pq74aU7wag3klUEx8DyuAP8=
+	t=1709646174; cv=none; b=T++4P9ztkMoA/MGtuixdzjvX+azGOrxcJgF+v+TWCc1cMRTeqOzrszghPa06SIgiHrMIlX0BaBRmm+h8+TihobGI7N864kp1H7Qip0lRIkswN9S3F1CHRbxloWBL7hcYMdB5FmvgrBuuQIyq1xYu1nLpGXYak3Cyxco//eK331E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709646101; c=relaxed/simple;
-	bh=W+2nNfu/SH120fh3upXQutRAF4cFUOE0j3C5s8jvs54=;
+	s=arc-20240116; t=1709646174; c=relaxed/simple;
+	bh=1TUXrK0mJ+n0Z9W20paGt+AZeDVv0d+6JACKRbEJcIU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DY6Wrirn568kV0CpbgFT53TBhG+a+Qd0GZSa1Ycj+Ux0ajpyoRSy6FLut5Y1clIOu3jAauaKiXwdTh58CTfBswgFWpBrQES8ABFi0KqW5G8EvHwKh81ga1IS8yhejXxd3Gcp4MpCadfLoX4JXPgIq2xZKuayEoLSGv4VIKx/3ck=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=DOCvtJWD; arc=none smtp.client-ip=217.70.183.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 136191BF20B;
-	Tue,  5 Mar 2024 13:41:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709646091;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DZDyctNRQfxHIrXGUPl9xyE+ahVMXlpoMQhkMhBvw8w=;
-	b=DOCvtJWDLZSm2JIeQ9Omeu4d1Hzx3R3n13mnOKJCS0QzLpxZ+i7VVBJsa00u2c3FzBbsZr
-	TmtD2SjBYbmETmRwp/+3T5y3zzza3j1KOfQ1xoW2OUELvxf4NQMhBDz6e3XWjVquzKlEJC
-	x+dgTmKckoL+noQtiQMSS547dTOKuynN+8mmywNWdhm87b8lE8dgTk45OOlyiPZvJeeGiO
-	sNI13I1pKmRGBOTt5JmHC9Bfhf5+aR8uhvo7caHoYM7kl+4HZ7orI3kIkQCB6w2oB2q9Ld
-	LuRUyZ8zDKFaO1V3pkg+qhqKCUBUnC7667dPZPzCnsziw+PqKqwchkGgI+CMBA==
-Message-ID: <85da1b70-d3fe-4117-a87c-53559b299867@bootlin.com>
-Date: Tue, 5 Mar 2024 14:41:29 +0100
+	 In-Reply-To:Content-Type; b=Qu32RHlxh8XqsbFeSIjeZievhJUnYGCDV8BXy6vgZhKkDAaHpLN9MnBuqlzzi0rWFF3ZjbzH7v1I3BT2OTTu/0r6vmR2QcZ6fpwvQLiL/CcXsh7EZLCUR9EacNxrr8KdRw1vynpZKZ8advzwHctrbhmdwPgGzFjDxlVnRj3UMP4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NvSLPpzu; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709646172; x=1741182172;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=1TUXrK0mJ+n0Z9W20paGt+AZeDVv0d+6JACKRbEJcIU=;
+  b=NvSLPpzuFE+wpZr4vmargD2hixWj3PKpnirSb7Wwi2y6Fww1xMfbbTDZ
+   szNlxbZWTaoSDXiGyqlVYYO6iBkdtMvV0zheQ3VvG5Ij9AHe0+0xR9q5l
+   m+LjHB+Js2Ww9ruFVdo7O7dG0o06RL5x66NVvyN0U5IblKX0NIGtbfwlS
+   rb3AtySDFSZvl87RA5uLRy0OBuwC079SMw8jeYlzYtXJDUsEQQnKTQZ30
+   +dlUpmEpoLVX2skhoA5rnof1sBwMwoN+YafM+6z46O1GpAYcxRZHhm+HM
+   7wYIwlhhJbyYI//CWlIMVLcvb/oxnHq/qJ/78IpCD+aMfmkKrBfVGRAel
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="4055200"
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="4055200"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 05:42:52 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="9321527"
+Received: from peizhenz-mobl2.ccr.corp.intel.com (HELO [10.124.242.47]) ([10.124.242.47])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 05:42:49 -0800
+Message-ID: <15567943-817b-4fb8-a4ab-2d97ce2c827a@linux.intel.com>
+Date: Tue, 5 Mar 2024 21:42:47 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,67 +62,97 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] dt-bindings: net: dp83822: change ti,rmii-mode
- description
-Content-Language: en-US
-To: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Andrew Davis <afd@ti.com>,
- Andrew Lunn <andrew@lunn.ch>
-Cc: netdev@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, Yen-Mei Goh <yen-mei.goh@keysight.com>,
- =?UTF-8?Q?Miqu=C3=A8l_Raynal?= <miquel.raynal@bootlin.com>
-References: <20240305133137.125020-1-jeremie.dautheribes@bootlin.com>
-From: =?UTF-8?B?SsOpcsOpbWllIERhdXRoZXJpYmVz?=
- <jeremie.dautheribes@bootlin.com>
-In-Reply-To: <20240305133137.125020-1-jeremie.dautheribes@bootlin.com>
+Subject: Re: [PATCH 09/21] KVM: VMX: Modify NMI and INTR handlers to take
+ intr_info as function argument
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, seanjc@google.com,
+ michael.roth@amd.com, isaku.yamahata@intel.com, thomas.lendacky@amd.com
+References: <20240227232100.478238-1-pbonzini@redhat.com>
+ <20240227232100.478238-10-pbonzini@redhat.com>
+From: Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <20240227232100.478238-10-pbonzini@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: jeremie.dautheribes@bootlin.com
+Content-Transfer-Encoding: 7bit
 
-Sorry I forgot to include the "net-next" entry in the subject, I'm 
-sending this patch again with the correct subject.
 
-On 05/03/2024 14:31, Jérémie Dautheribes wrote:
-> Drop reference to the 25MHz clock as it has nothing to do with connecting
-> the PHY and the MAC.
-> Add info about the reference clock direction between the PHY and the MAC
-> as it depends on the selected rmii mode.
-> 
-> Suggested-by: Andrew Lunn <andrew@lunn.ch>
-> Signed-off-by: Jérémie Dautheribes <jeremie.dautheribes@bootlin.com>
+
+On 2/28/2024 7:20 AM, Paolo Bonzini wrote:
+> From: Sean Christopherson <seanjc@google.com>
+>
+> TDX uses different ABI to get information about VM exit.  Pass intr_info to
+> the NMI and INTR handlers instead of pulling it from vcpu_vmx in
+> preparation for sharing the bulk of the handlers with TDX.
+>
+> When the guest TD exits to VMM, RAX holds status and exit reason, RCX holds
+> exit qualification etc rather than the VMCS fields because VMM doesn't have
+> access to the VMCS.  The eventual code will be
+>
+> VMX:
+>    - get exit reason, intr_info, exit_qualification, and etc from VMCS
+>    - call NMI/INTR handlers (common code)
+>
+> TDX:
+>    - get exit reason, intr_info, exit_qualification, and etc from guest
+>      registers
+>    - call NMI/INTR handlers (common code)
+>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+> Message-Id: <0396a9ae70d293c9d0b060349dae385a8a4fbcec.1705965635.git.isaku.yamahata@intel.com>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+
+Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
+
 > ---
-> This patch follows on from my previous patch series [1] which has already been
-> merged into the net-next tree and which added the "ti,rmii-mode" property.
-> As suggested by Andrew Lunn, this patch updates the description of this
-> property to make it more consistent with the master/slave relationship it
-> conveys.
-> 
-> [1] https://lore.kernel.org/all/20240222103117.526955-1-jeremie.dautheribes@bootlin.com/
-> 
->   Documentation/devicetree/bindings/net/ti,dp83822.yaml | 8 ++++----
->   1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/ti,dp83822.yaml b/Documentation/devicetree/bindings/net/ti,dp83822.yaml
-> index 8f23254c0458..784866ea392b 100644
-> --- a/Documentation/devicetree/bindings/net/ti,dp83822.yaml
-> +++ b/Documentation/devicetree/bindings/net/ti,dp83822.yaml
-> @@ -84,10 +84,10 @@ properties:
->       description: |
->          If present, select the RMII operation mode. Two modes are
->          available:
-> -         - RMII master, where the PHY operates from a 25MHz clock reference,
-> -         provided by a crystal or a CMOS-level oscillator
-> -         - RMII slave, where the PHY operates from a 50MHz clock reference,
-> -         provided by a CMOS-level oscillator
-> +         - RMII master, where the PHY outputs a 50MHz reference clock which can
-> +         be connected to the MAC.
-> +         - RMII slave, where the PHY expects a 50MHz reference clock input
-> +         shared with the MAC.
->          The RMII operation mode can also be configured by its straps.
->          If the strap pin is not set correctly or not set at all, then this can be
->          used to configure it.
+>   arch/x86/kvm/vmx/vmx.c | 16 +++++++---------
+>   1 file changed, 7 insertions(+), 9 deletions(-)
+>
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 3d8a7e4c8e37..8aedfe0fd78c 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -7000,24 +7000,22 @@ static void handle_nm_fault_irqoff(struct kvm_vcpu *vcpu)
+>   		rdmsrl(MSR_IA32_XFD_ERR, vcpu->arch.guest_fpu.xfd_err);
+>   }
+>   
+> -static void handle_exception_irqoff(struct vcpu_vmx *vmx)
+> +static void handle_exception_irqoff(struct kvm_vcpu *vcpu, u32 intr_info)
+>   {
+> -	u32 intr_info = vmx_get_intr_info(&vmx->vcpu);
+> -
+>   	/* if exit due to PF check for async PF */
+>   	if (is_page_fault(intr_info))
+> -		vmx->vcpu.arch.apf.host_apf_flags = kvm_read_and_reset_apf_flags();
+> +		vcpu->arch.apf.host_apf_flags = kvm_read_and_reset_apf_flags();
+>   	/* if exit due to NM, handle before interrupts are enabled */
+>   	else if (is_nm_fault(intr_info))
+> -		handle_nm_fault_irqoff(&vmx->vcpu);
+> +		handle_nm_fault_irqoff(vcpu);
+>   	/* Handle machine checks before interrupts are enabled */
+>   	else if (is_machine_check(intr_info))
+>   		kvm_machine_check();
+>   }
+>   
+> -static void handle_external_interrupt_irqoff(struct kvm_vcpu *vcpu)
+> +static void handle_external_interrupt_irqoff(struct kvm_vcpu *vcpu,
+> +					     u32 intr_info)
+>   {
+> -	u32 intr_info = vmx_get_intr_info(vcpu);
+>   	unsigned int vector = intr_info & INTR_INFO_VECTOR_MASK;
+>   	gate_desc *desc = (gate_desc *)host_idt_base + vector;
+>   
+> @@ -7040,9 +7038,9 @@ void vmx_handle_exit_irqoff(struct kvm_vcpu *vcpu)
+>   		return;
+>   
+>   	if (vmx->exit_reason.basic == EXIT_REASON_EXTERNAL_INTERRUPT)
+> -		handle_external_interrupt_irqoff(vcpu);
+> +		handle_external_interrupt_irqoff(vcpu, vmx_get_intr_info(vcpu));
+>   	else if (vmx->exit_reason.basic == EXIT_REASON_EXCEPTION_NMI)
+> -		handle_exception_irqoff(vmx);
+> +		handle_exception_irqoff(vcpu, vmx_get_intr_info(vcpu));
+>   }
+>   
+>   /*
+
 
