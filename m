@@ -1,239 +1,268 @@
-Return-Path: <linux-kernel+bounces-91779-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91782-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7103871675
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:14:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F092F871683
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:15:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3DCB11F251E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:14:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6D417B21895
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:15:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D92067D40D;
-	Tue,  5 Mar 2024 07:13:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9937A7E583;
+	Tue,  5 Mar 2024 07:14:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="WD3c54wF"
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="3xnEyCNc"
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 554C17D3FE
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 07:13:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E974F7D41B
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 07:14:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709622839; cv=none; b=jTxOFnHAKa4SontxcGci8ANMr2TsyDsoci51WHBNIIRzKn+5HDNN8JAFEAcVWns4P+rlIWDXYEMJ8edFSsORLoIq16iFvbXdW8WXbi/o5r0l//XwG3ygBNE/eJpMkj13/E1mfhsPYI/fIPTBotah2vKl4zFjREoIjo3KqS6OqKc=
+	t=1709622895; cv=none; b=a/thNkS5oRLI1/ijSuBILN9cvUGEdWlmPBC0WilePTRj+O/Psbc7kPYk/wQnialLXXDJAVJFHFIaYVNVpPkIDrxVm+yQKOToQRGLeiLXq+OcQwj7+r4n6kfoljIQ3VZUXUwhlc8UdoJQhLUrptL4hTipjGDuB9cFs5rDh18kwbQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709622839; c=relaxed/simple;
-	bh=qjn1MClIVlhpCS2WnOAUFuK98tnfyfZqG2al78vw7V0=;
-	h=From:To:Cc:In-Reply-To:Subject:Date:Message-ID:MIME-Version:
-	 Content-Type:References; b=ZnOwmwjXn9kIg3X55owsKcveGZheKqdUE6zI65PE5dVt6oxcHnkmha3NJTvPFAf9BdCMAUPuSdN+JUtkFIAnB7bjH+XvJBRUOnelnAtYIONzuCtlUDozERIsMpAt8etPOEr7dpMI8Z8x7oC86et6zB8HOACFPm/ANTe8r5fQBSg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=WD3c54wF; arc=none smtp.client-ip=203.254.224.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-	by mailout3.samsung.com (KnoxPortal) with ESMTP id 20240305071354epoutp03df26a0ac99118a0fe226d164e466a955~5zOjm-JzF3198631986epoutp03Z
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 07:13:54 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20240305071354epoutp03df26a0ac99118a0fe226d164e466a955~5zOjm-JzF3198631986epoutp03Z
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1709622834;
-	bh=i0/7wU6maBox3QHG8eiO+M+gy+7QDGcXbrlsWy7wG+M=;
-	h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-	b=WD3c54wFcGAfwInqvBVUAAi0ILHfepVpx6aey81v8G5lwbhvwDYaWAvrdd+w+XEfB
-	 6RvgnL9qQpvWyJJTnVCv63gUjZTUKQfYTz+XfEKLgwAxIFHOwh+F22w1/lmHO6gpVp
-	 gM/vF3ZAbulylHFXO8vc6eAoJjWavBgQKpyKvebg=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-	epcas2p2.samsung.com (KnoxPortal) with ESMTP id
-	20240305071353epcas2p23815bcdcce2643b6616dec4e5d6a5933~5zOjYHsSa3266232662epcas2p2V;
-	Tue,  5 Mar 2024 07:13:53 +0000 (GMT)
-Received: from epsmgec2p1-new.samsung.com (unknown [182.195.36.88]) by
-	epsnrtp1.localdomain (Postfix) with ESMTP id 4Tpmy93G8Gz4x9Q0; Tue,  5 Mar
-	2024 07:13:53 +0000 (GMT)
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-	epsmgec2p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	BB.C5.18994.136C6E56; Tue,  5 Mar 2024 16:13:53 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-	epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
-	20240305071353epcas2p4187f5e0311d9bd706c863f38ccf13869~5zOifERbV0955809558epcas2p4-;
-	Tue,  5 Mar 2024 07:13:53 +0000 (GMT)
-Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
-	epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-	20240305071353epsmtrp2ef2112899a60ebcf642de0a5583771c0~5zOiefrY_2507325073epsmtrp2x;
-	Tue,  5 Mar 2024 07:13:53 +0000 (GMT)
-X-AuditID: b6c32a4d-743ff70000004a32-c7-65e6c6311a3f
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-	epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	CE.34.07368.036C6E56; Tue,  5 Mar 2024 16:13:52 +0900 (KST)
-Received: from KORCO121695 (unknown [10.229.18.202]) by epsmtip2.samsung.com
-	(KnoxPortal) with ESMTPA id
-	20240305071352epsmtip2ea348fecbfe8206b300dec36946eac23~5zOiUQ4SZ3111131111epsmtip2Z;
-	Tue,  5 Mar 2024 07:13:52 +0000 (GMT)
-From: "bumyong.lee" <bumyong.lee@samsung.com>
-To: "'karthikeyan'" <karthikeyan@linumiz.com>, <vkoul@kernel.org>
-Cc: <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<parthiban@linumiz.com>, <saravanan@linumiz.com>
-In-Reply-To: <1553a526-6f28-4a68-88a8-f35bd22d9894@linumiz.com>
-Subject: RE: dmaengine: CPU stalls while loading bluetooth module
-Date: Tue, 5 Mar 2024 16:13:52 +0900
-Message-ID: <000001da6ecc$adb25420$0916fc60$@samsung.com>
+	s=arc-20240116; t=1709622895; c=relaxed/simple;
+	bh=y6zaOZvJ4cIVJ2qepjnDrcV6r6n/r5jEVFp4o5JpDlg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rx6wkrrZOlepq23Gs0yXHbH6d7tve+BceXh4g729RiiR84fRPXBhJo4BKctWp2as2glr/iLpccjjJyuMw0uDQtzBJLsTUrpLiBz+jm/hlHvmMFhwDJu1JrvMg9w3G2i7OgX2Mc7FogPXZI1LbZN/pW7s6aAgpjwsh1/2Lx4YZ5I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3xnEyCNc; arc=none smtp.client-ip=209.85.160.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-42ee0c326e8so192571cf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 23:14:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709622893; x=1710227693; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gZ6lNE1/SlOo2Yjm5/u+OE6lkumtZM5XSJ/KqzGtJ3Q=;
+        b=3xnEyCNcWJdP9DBGCyKMyXRkWAta2A7CR4YbXMJtqFYtXj4AbHlzTF5Tn8dlgDjT95
+         uVAnjebeVBOiWclGVltKar/0R+bkxlChJt6hUxvLDnZ7EKdS/3UIBSKYMjbzjl05ZB28
+         FwlWiJgLinGOtx3NQPaeIH26RDfZKVLQMAoSUf52Og0PwL/Ztrh7V7lm9hZaly4lADVF
+         rBUdIXvUu7bcGCLu+uL0pun0GspLW0iIjyBEU2vWGZNbQKf8iyc5DZT680JFPYHPIxV+
+         LJODNuGLqJndvM2ChUMy1WqQ3W2DGvRCZZqkKPR12iJzJpPfRxwuFniVlaKtrHcrD2Dt
+         ssfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709622893; x=1710227693;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gZ6lNE1/SlOo2Yjm5/u+OE6lkumtZM5XSJ/KqzGtJ3Q=;
+        b=bXq37xgNmNVGESTXc77B1FIlJbSjcpjghjToy72eFRusqKWsmlqLqdfBBYFgiXbomE
+         8BsEF4WTVG0L+H/EvIn+w1dtQOunMW9XW2A37X6l6zo1jyuXhyiVROFiKYXEoneXqpbv
+         gw8hxuuwDedDZNUpwOg8cGC3z/kp00zK3Nj72lRViRD8sFOjq0dt8+/fc8wRRF7Lm8R1
+         X4b2GT5Gi2zS1phaPAJ3BYkx60ItwYXc230j8FRIozz64ZUPNOBw1tu4TYBMRKu/REjj
+         wUXlyJeWoDT0uVeCU0p4Mv0roGcpWWCXxg4lwQn0AMaUczTD6nBbrjBWnDiv20BkJ9NT
+         ddVw==
+X-Forwarded-Encrypted: i=1; AJvYcCUhnRZuKU4kR0VSy3YTgpLulFDawUdFVonGKzwRknYaZF9gHWPPX01LDhSkhFeF523DSQtZNTR3Bs9m9j5pQeVMVqgI5DaTvJHwzzhW
+X-Gm-Message-State: AOJu0YxPN+XncXDQW8kZj4h0QjvLVik7uzCLgifxV8NboJLqna4nJ+q8
+	aErqgwVRHQeZy5UZGb333m0KymNX38ZlGHx1sr9BdruILFn/tJcUx0cjn9WmspaQvqg0gJfEpuL
+	wokK+AeIOgn2/41CQLvAoOUS2Zf3dBpGJ0BN9
+X-Google-Smtp-Source: AGHT+IEFOU5j+ArF55fdfXdcl8hFaVcAq2CRoTSvDHrwXdk+TBzUqq588pPOFFn7BNfYvwZzsxzAIGsV46EFXvApyc0=
+X-Received: by 2002:ac8:5c85:0:b0:42e:fa0e:2592 with SMTP id
+ r5-20020ac85c85000000b0042efa0e2592mr103522qta.12.1709622892609; Mon, 04 Mar
+ 2024 23:14:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240220111044.133776-1-herve.codina@bootlin.com>
+ <20240220111044.133776-3-herve.codina@bootlin.com> <CAGETcx_xkVJn1NvCmztAv13N-7ZGqZ+KfkFg-Xn__skEBiYtHw@mail.gmail.com>
+ <20240221095137.616d2aaa@bootlin.com>
+In-Reply-To: <20240221095137.616d2aaa@bootlin.com>
+From: Saravana Kannan <saravanak@google.com>
+Date: Mon, 4 Mar 2024 23:14:13 -0800
+Message-ID: <CAGETcx9eFuqwJTSrGz9Or8nfHCN3=kNO5KpXwdUxQ4Z7FxHZug@mail.gmail.com>
+Subject: Re: [PATCH 2/2] of: property: fw_devlink: Fix links to supplier when
+ created from phandles
+To: Herve Codina <herve.codina@bootlin.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, 
+	Shawn Guo <shawnguo@kernel.org>, Wolfram Sang <wsa@kernel.org>, Mark Brown <broonie@kernel.org>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org, 
+	devicetree@vger.kernel.org, Luca Ceresoli <luca.ceresoli@bootlin.com>, 
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, stable@vger.kernel.org, 
+	Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQMwipOl/cAOi38P2p1VCUOGtvzp0QMWgtoHrmPNqBA=
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupgk+LIzCtJLcpLzFFi42LZdljTQtfw2LNUg0u3hS1WT/3LarFjtabF
-	5V1z2Cx23/7DavFuj6LFzjsnmB3YPDat6mTz2P75FLvH501yAcxR2TYZqYkpqUUKqXnJ+SmZ
-	eem2St7B8c7xpmYGhrqGlhbmSgp5ibmptkouPgG6bpk5QFuVFMoSc0qBQgGJxcVK+nY2Rfml
-	JakKGfnFJbZKqQUpOQXmBXrFibnFpXnpenmpJVaGBgZGpkCFCdkZVz8HFPyXr5j94RhzA+M8
-	yS5GTg4JAROJzpPTGbsYuTiEBPYwSvRu2M8M4XxilPh9/g8rhPONUeLizg5GmJavr95AJfYy
-	SnR82s8C4bxklDi9v48NpIpNQFdi5suDLCC2iICjxIzPl1hBbGaBYolHTYfAJnEK2Ess6lvE
-	DmILA9X0TpoAVsMioCJx/OZCZhCbV8BSovn0eiYIW1Di5MwnLBBztCWWLXzNDHGRgsTPp8tY
-	IXZZSRy7u4UdokZEYnZnG9g/EgI/2SUWdy1hh2hwkTjw/wIrhC0s8er4Fqi4lMTnd3vZIOx8
-	iZlzbrBA2DUSX+/9g4oDHX3mJ1A9B9ACTYn1u/RBTAkBZYkjt6BO45PoOPyXHSLMK9HRJgRh
-	qko03ayHmCEtsezMDNYJjEqzkPw1C8lfs5DcPwth1QJGllWMUqkFxbnpqclGBYa6eanl8OhO
-	zs/dxAhOklq+Oxhfr/+rd4iRiYPxEKMEB7OSCG/NryepQrwpiZVVqUX58UWlOanFhxhNgaE9
-	kVlKNDkfmKbzSuINTSwNTMzMDM2NTA3MlcR577XOTRESSE8sSc1OTS1ILYLpY+LglGpgYnzo
-	ws+c8fZEWeTth4z3Ilx9TDLrZ767Icb24kZ+o2zbRe3Dp5f+b1x8mrfgpApXVK2K8zP/7Bih
-	s02X3s6XWMP/U/Uzz/uconOrdAM73e7za2Y/jbx54su6HKltlmZSjJqrHUpvPMy+IrjPTSos
-	Z7XCM9nHKhtaLR0/X9i+hfNh4rv7SgvZuYI1N/B9mD57R0t1G2+UKNff5k8e7Q+K5y9+YaN2
-	81l8nl3ve79pvoycL87+qj3ysfp3kEeL/eywLWlxnqciZz1cu+/IH4OKvxVT3+wUUXhQuHvO
-	xdkZKecN705a2RimrXmtyENLQZlx2RTnlnbvrepPWjouxd26ZOb03df88qnf0Xx9S3mMlFiK
-	MxINtZiLihMBXnZzaRsEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrELMWRmVeSWpSXmKPExsWy7bCSvK7BsWepBm9OW1msnvqX1WLHak2L
-	y7vmsFnsvv2H1eLdHkWLnXdOMDuweWxa1cnmsf3zKXaPz5vkApijuGxSUnMyy1KL9O0SuDKW
-	NVxhK/ghV3Hk2VzGBsapEl2MnBwSAiYSX1+9Ye1i5OIQEtjNKHFgySd2iIS0xIvWb6wQtrDE
-	/ZYjUEXPGSXe9yxhAUmwCehKzHx5EMjm4BARcJaYey8LJMwsUC5x7cBtJoj6CYwSrXfugQ3i
-	FLCXWNS3CGyBsICjRO+kCWBxFgEVieM3FzKD2LwClhLNp9czQdiCEidnPmGBGKot8fTmUzh7
-	2cLXzBDHKUj8fLoMbI6IgJXEsbtb2CFqRCRmd7YxT2AUnoVk1Cwko2YhGTULScsCRpZVjJKp
-	BcW56bnJhgWGeanlesWJucWleel6yfm5mxjB0aKlsYPx3vx/eocYmTgYDzFKcDArifDW/HqS
-	KsSbklhZlVqUH19UmpNafIhRmoNFSZzXcMbsFCGB9MSS1OzU1ILUIpgsEwenVAOTw39Nhlti
-	5Td/Rp3Jfd7p0ea27LmV6e22iVKGOy03/zgg7BgbzZEWzMy44n+2xLa539S5jM6dS5DxUprT
-	1ijCY3aIN31pDY8b/4qr54MS/io9tl+kF8s4yV3m8MVnrrtL+NR0Ou7t/rP6xy9Dw+wPDFeZ
-	NsyKe7hcfpGjxBfJbMUfEa7rEr59uSt0tipx650frObOe15KP+dLkxD+2Rt7zVaDvWCySN6X
-	OfZsWX6nHZ2/77ghxvSkJ/JD+Ea+l6mlWVffnD9vImA09Z7r3jtRYn+rRZfyvjZ8VLTw6eTJ
-	x1Uf9e/gfjtlX0KTnvXf6+G/9eZxndu2fUrCLK1Haw45L/hi8/3Mz8ycgOmba7JvKrEUZyQa
-	ajEXFScCAJau2D8FAwAA
-X-CMS-MailID: 20240305071353epcas2p4187f5e0311d9bd706c863f38ccf13869
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20240305062038epcas2p143c5e1e725d8a934b0208266a2f78ccb
-References: <CGME20240305062038epcas2p143c5e1e725d8a934b0208266a2f78ccb@epcas2p1.samsung.com>
-	<1553a526-6f28-4a68-88a8-f35bd22d9894@linumiz.com>
 
-Hello.
+On Wed, Feb 21, 2024 at 12:51=E2=80=AFAM Herve Codina <herve.codina@bootlin=
+com> wrote:
+>
+> Hi Saravana,
+>
+> On Tue, 20 Feb 2024 18:40:40 -0800
+> Saravana Kannan <saravanak@google.com> wrote:
+>
+> > On Tue, Feb 20, 2024 at 3:10=E2=80=AFAM Herve Codina <herve.codina@boot=
+lin.com> wrote:
+> > >
+> > > Since commit 1a50d9403fb9 ("treewide: Fix probing of devices in DT
+> > > overlays"), when using device-tree overlays, the FWNODE_FLAG_NOT_DEVI=
+CE
+> > > is set on each overlay nodes. This flag is cleared when a struct devi=
+ce
+> > > is actually created for the DT node.
+> > > Also, when a device is created, the device DT node is parsed for know=
+n
+> > > phandle and devlinks consumer/supplier links are created between the
+> > > device (consumer) and the devices referenced by phandles (suppliers).
+> > > As these supplier device can have a struct device not already created=
+,
+> > > the FWNODE_FLAG_NOT_DEVICE can be set for suppliers and leads the
+> > > devlink supplier point to the device's parent instead of the device
+> > > itself.
+> > >
+> > > Avoid this situation clearing the supplier FWNODE_FLAG_NOT_DEVICE jus=
+t
+> > > before the devlink creation if a device is supposed to be created and
+> > > handled later in the process.
+> > >
+> > > Fixes: 1a50d9403fb9 ("treewide: Fix probing of devices in DT overlays=
+")
+> > > Cc: <stable@vger.kernel.org>
+> > > Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> > > ---
+> > >  drivers/of/property.c | 16 +++++++++++++++-
+> > >  1 file changed, 15 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/of/property.c b/drivers/of/property.c
+> > > index 641a40cf5cf3..ff5cac477dbe 100644
+> > > --- a/drivers/of/property.c
+> > > +++ b/drivers/of/property.c
+> > > @@ -1097,6 +1097,7 @@ static void of_link_to_phandle(struct device_no=
+de *con_np,
+> > >                               struct device_node *sup_np)
+> > >  {
+> > >         struct device_node *tmp_np =3D of_node_get(sup_np);
+> > > +       struct fwnode_handle *sup_fwnode;
+> > >
+> > >         /* Check that sup_np and its ancestors are available. */
+> > >         while (tmp_np) {
+> > > @@ -1113,7 +1114,20 @@ static void of_link_to_phandle(struct device_n=
+ode *con_np,
+> > >                 tmp_np =3D of_get_next_parent(tmp_np);
+> > >         }
+> > >
+> > > -       fwnode_link_add(of_fwnode_handle(con_np), of_fwnode_handle(su=
+p_np));
+> > > +       /*
+> > > +        * In case of overlays, the fwnode are added with FWNODE_FLAG=
+_NOT_DEVICE
+> > > +        * flag set. A node can have a phandle that references an oth=
+er node
+> > > +        * added by the overlay.
+> > > +        * Clear the supplier's FWNODE_FLAG_NOT_DEVICE so that fw_dev=
+link links
+> > > +        * to this supplier instead of linking to its parent.
+> > > +        */
+> > > +       sup_fwnode =3D of_fwnode_handle(sup_np);
+> > > +       if (sup_fwnode->flags & FWNODE_FLAG_NOT_DEVICE) {
+> > > +               if (of_property_present(sup_np, "compatible") &&
+> > > +                   of_device_is_available(sup_np))
+> > > +                       sup_fwnode->flags &=3D ~FWNODE_FLAG_NOT_DEVIC=
+E;
+> > > +       }
+> > > +       fwnode_link_add(of_fwnode_handle(con_np), sup_fwnode);
+> >
+> > Nack.
+> >
+> > of_link_to_phandle() doesn't care about any of the fwnode flags. It
+> > just creates links between the consumer and supplier nodes. Don't add
+> > more intelligence into it please. Also, "compatible" doesn't really
+> > guarantee device creation and you can have devices created out of
+> > nodes with no compatible property. I finally managed to get away from
+> > looking for the "compatible" property. So, let's not add back a
+> > dependency on that property please.
+> >
+> > Can you please give a real example where you are hitting this? I have
+> > some thoughts on solutions, but I want to understand the issue fully
+> > before I make suggestions.
+> >
+>
+> I detected the issue with this overlay:
+> --- 8< ---
+> &{/}
+> {
+>         reg_dock_sys_3v3: regulator-dock-sys-3v3 {
+>                 compatible =3D "regulator-fixed";
+>                 regulator-name =3D "DOCK_SYS_3V3";
+>                 regulator-min-microvolt =3D <3300000>;
+>                 regulator-max-microvolt =3D <3300000>;
+>                 gpios =3D <&tca6424_dock_1 5 GPIO_ACTIVE_HIGH>; // DOCK_S=
+YS3V3_EN
+>                 enable-active-high;
+>                 regulator-always-on;
+>         };
+> };
+>
+> &i2c5 {
+>         tca6424_dock_1: gpio@22 {
+>                 compatible =3D "ti,tca6424";
+>                 reg =3D <0x22>;
+>                 gpio-controller;
+>                 #gpio-cells =3D <2>;
+>                 interrupt-parent =3D <&gpio4>;
+>                 interrupts =3D <1 IRQ_TYPE_EDGE_FALLING>;
+>                 interrupt-controller;
+>                 #interrupt-cells =3D <2>;
+>                 vcc-supply =3D <&reg_dock_ctrl_3v3>;
+>         };
+> };
+> --- 8< ---
+>
+> The regulator uses a gpio.
+> The supplier for the regulator was not the gpio chip (gpio@22) but the i2=
+c bus.
 
-> we have encountered CPU stalls in mainline kernel while loading the
-> bluetooth module. We have custom board based on rockchip rv1109 soc and
-> there is bluetooth chipset of relatek 8821cs. CPU is stalls  while realte=
-k
-> 8821cs module.
->=20
-> Bug/Regression:
-> In current mainline, we found CPU is stalls when we load bluetooth module=
-.
-> git bisect shows commit 22a9d9585812440211b0b34a6bc02ade62314be4
-> as a bad, which produce CPU stalls.
->=20
-> git show 22a9d9585812440211b0b34a6bc02ade62314be4
-> commit 22a9d9585812440211b0b34a6bc02ade62314be4
-> Author: Bumyong Lee <bumyong.lee=40samsung.com>
-> Date:   Tue Dec 19 14:50:26 2023 +0900
->=20
->      dmaengine: pl330: issue_pending waits until WFP state
->=20
->      According to DMA-330 errata notice=5B1=5D 71930, DMAKILL
->      cannot clear internal signal, named pipeline_req_active.
->      it makes that pl330 would wait forever in WFP state
->      although dma already send dma request if pl330 gets
->      dma request before entering WFP state.
->=20
->      The errata suggests that polling until entering WFP state
->      as workaround and then peripherals allows to issue dma request.
->=20
->      =5B1=5D: https://developer.arm.com/documentation/genc008428/latest
->=20
->      Signed-off-by: Bumyong Lee <bumyong.lee=40samsung.com>
->      Link:
-> https://lore.kernel.org/r/20231219055026.118695-1-bumyong.lee=40samsung.c=
-om
->      Signed-off-by: Vinod Koul <vkoul=40kernel.org>
->=20
-> diff --git a/drivers/dma/pl330.c b/drivers/dma/pl330.c index
-> 3cf0b38387ae..c29744bfdf2c 100644
-> --- a/drivers/dma/pl330.c
-> +++ b/drivers/dma/pl330.c
-> =40=40 -1053,6 +1053,9 =40=40 static bool _trigger(struct pl330_thread *t=
-hrd)
->=20
->          thrd->req_running =3D idx;
->=20
-> +       if (desc->rqtype =3D=3D DMA_MEM_TO_DEV =7C=7C desc->rqtype =3D=3D
-> DMA_DEV_TO_MEM)
-> +               UNTIL(thrd, PL330_STATE_WFP);
-> +
->          return true;
->   =7D
->=20
-> By reverting this commit, we have success in loading of bluetooth module.
->=20
->=20
+Thanks for the example. Let me think about this a bit on how we could
+fix this and get back to you.
 
-> Output of CPU stalls:
-> =23 modprobe hci_uart
-> =5B   27.024749=5D Bluetooth: HCI UART driver ver 2.3
-> =5B   27.025284=5D Bluetooth: HCI UART protocol Three-wire (H5) registere=
-d
-> =23 =5B   28.125338=5D dwmmc_rockchip ffc70000.mmc: Unexpected interrupt =
-latency
-> =5B   33.245339=5D dwmmc_rockchip ffc50000.mmc: Unexpected interrupt late=
-ncy
-> =5B  326.195321=5D rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
-> =5B  326.195880=5D rcu:     0-...0: (3 ticks this GP) idle=3De5f4/1/0x400=
-00000
-> softirq=3D551/552 fqs=3D420
-> =5B  326.196621=5D rcu:              hardirqs   softirqs   csw/system
-> =5B  326.197115=5D rcu:      number:        0          0            0
-> =5B  326.197612=5D rcu:     cputime:        0          0            0   =
-=3D=3D>
-> 10500(ms)
-> =5B  326.198231=5D rcu:     (detected by 1, t=3D2105 jiffies, g=3D-455, q=
-=3D17
-> ncpus=3D2)
-> =5B  326.198823=5D Sending NMI from CPU 1 to CPUs 0:
->=20
-> Expected Output:
-> =23 modprobe hci_uart
-> =5B   30.690321=5D Bluetooth: HCI UART driver ver 2.3
-> =5B   30.690852=5D Bluetooth: HCI UART protocol Three-wire (H5) registere=
-d
-> =23 =5B   31.453586=5D Bluetooth: hci0: RTL: examining hci_ver=3D08 hci_r=
-ev=3D000c
-> lmp_ver=3D08 lmp_subver=3D8821
-> =5B   31.458061=5D Bluetooth: hci0: RTL: rom_version status=3D0 version=
-=3D1
-> =5B   31.458608=5D Bluetooth: hci0: RTL: loading rtl_bt/rtl8821cs_fw.bin
-> =5B   31.465029=5D Bluetooth: hci0: RTL: loading rtl_bt/rtl8821cs_config.=
-bin
-> =5B   31.483926=5D Bluetooth: hci0: RTL: cfg_sz 25, total sz 36953
-> =5B   32.213105=5D Bluetooth: hci0: RTL: fw version 0x75b8f098
-> =5B   32.274216=5D Bluetooth: MGMT ver 1.22
-> =5B   32.285376=5D NET: Registered PF_ALG protocol family
+Please do ping me if I don't get back in a week or two.
 
-I discussed this issue. Could you refer to this=5B1=5D?
-I haven't received anymore reply from him after that.
-If you have any more opinion, please let me know.
+-Saravana
 
-=5B1=5D: https://lore.kernel.org/lkml/000001da3869=24ca643fa0=245f2cbee0=24=
-=40samsung.com/T/
-
-Best Regards
-
+>
+> I first tried to clear always the flag in of_link_to_phandle() without an=
+y check
+> to a "compatible" string and in that case, I broke pinctrl.
+>
+> All devices were waiting for the pinctrl they used (child of pinctrl devi=
+ce
+> node) even if the pinctrl driver was bound to the device.
+>
+> For pinctrl, the DT structure looks like the following:
+> --- 8< ---
+> {
+>         ...
+>         pinctrl@1234 {
+>                 reg =3D <1234>;
+>                 compatible =3D "vendor,chip";
+>
+>                 pinctrl_some_device: grp {
+>                         fsl,pins =3D < ... >;
+>                 };
+>         };
+>
+>         some_device@4567 {
+>                 compablile =3D "foo,bar";
+>                 reg =3D <4567>;
+>                 pinctrl-names =3D "default";
+>                 pinctrl-0 =3D <&pinctrl_some_device>;
+>                 ...
+>         };
+> };
+> --- 8< ---
+>
+> In that case the link related to pinctrl for some_device needs to be to t=
+he
+> 'pinctrl_some_device' node parent (i.e. the pinctrl@1234 node).
+>
+>
+> Best regards,
+> Herv=C3=A9
 
