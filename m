@@ -1,151 +1,203 @@
-Return-Path: <linux-kernel+bounces-91668-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91697-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77CCC8714D6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 05:38:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F9A8871558
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 06:43:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA3101C2138D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 04:38:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A5DF1C217BC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 05:43:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E43945C06;
-	Tue,  5 Mar 2024 04:38:25 +0000 (UTC)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A60962143;
+	Tue,  5 Mar 2024 05:43:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b="vT1SgjPm"
+Received: from outgoing4.flk.host-h.net (outgoing4.flk.host-h.net [188.40.0.90])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4794D29CE7
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 04:38:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80ECAAD5E;
+	Tue,  5 Mar 2024 05:43:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.0.90
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709613504; cv=none; b=G24vcf9r5nGO7Yqfam3NEsrDUDCkb/9fB6GQqID2k6NZm7+mJCIl/26T78wx+CUsdXTnXbwbmF8h+/CdrIR82gGlpHxqysy1MFkDmcshJtFmfum6y4YgftkHZw5Tt2LAn4Iuk79DaJ+DPVU74ioZimp4wZROB2Y7KIGvK2+mmpc=
+	t=1709617413; cv=none; b=dEQ8isIgcO5ZUTfIw70vnd+THcfupf5MJaDP5Up2+AyG5XGI4tj1/MHc5q7L9RjImN9tv1iZCBx7K8g08vQpzOLVOZX4SbHwJQsPXAJrZKNx6IM1Q7xomeEOS64yipiJTXz51cbpw9G7LCvurN6Ibk0Kpvle/LAj7eh0JO3O/r8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709613504; c=relaxed/simple;
-	bh=ZzgSUxjd+0JMmSh5H3+cRqdQUNC4JgQpQJPxIdfeCqQ=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=kOO1fGtllqY4L2xx8TEUinzF4r+itPuUolM2B5H6+PPM58fNVN4aYOEO07ZwIIFaORnzGwpMCSMMhHcUkcoJTYvHFjiIUgYf2Fw6C9GSsviYXsHqkrz7Uv5lqqOr9+8JeRRVMVKz0IaNOTngIHLGZowMXc6sU6Bo5pUH+W5gp9g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-36520abf45eso58197195ab.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 20:38:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709613502; x=1710218302;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QaaKwt8+QUYeabpyFqyQn6fckuTKQ7Ng3UILfLmGeCQ=;
-        b=fsrVqmxAuzwLN4IA7h8Hmj1gz6ICiINyuJdFhojl/Oc1sjXLNFfA0y4Px+fk9uKUQF
-         Ne239nFicwKvoyjTqC0ubPG+qUGPERC+9Vl6y3MB7KpbY44zWXvoylBAzRQZfcCD14Xd
-         NtyFJxKUg/GQHR98yOGMi9rZGY2lsTCOZLNxLGeLZc/6KYX89xj+RTDEemLPrRT/dKxq
-         f/0jPgcX9y4CP+Ew0FhtqChFo/UXNKoUxJ9hGtqLJTdlen8IzmIpAFwrVh+yC79x5vX2
-         icEKge8Z+/b2mFn80Jxhcs02vwLpOjy7tMcl7DNd6DuIl9+ww9sEKSxspOx3IoJ+iB53
-         2WpQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXAgDB5TqVw6oUatyB5Na4qKsIOI2hulJRp0Q+0fJBPnreXReX9MtWNociGjeljUwI34ACIF1ijXyx+NmnIlZ3ULfZLD3aqLWA2sxkG
-X-Gm-Message-State: AOJu0YzHhPlWhs/IalOG2Mn8o8i9TUxrTWcKd9Cg1FwGSHORpulI4KYO
-	tiDsKyLU0VuwTCMkszL717IuS7iapDmPPOdb3hggwYTnjxVTdVTV4fUxLQaIPTIkfQmVEeE5t4h
-	A937sd5Ra+tBXEKuQkGtjQNeDsD53AIedUL/whuufxwTcJHHb95OtgfA=
-X-Google-Smtp-Source: AGHT+IHCgoqg0ZRF/rgkn5/xYp7wXeGBsLO9OUot0yuT0Nh5GLAkzlCPk76lxqQkSFs7z5SgUsAX0VXPvsBG6KzxbH+l9G8HPmuk
+	s=arc-20240116; t=1709617413; c=relaxed/simple;
+	bh=jHCkCAy59+qTROMlQoxSDLh+kDJYlZc1/bee+CxnHbU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=r8PnVqlKMh2EPGFXTOZ1nj2aTBRjjiiDNOLG7jon2bTR9QkaVr8Wdu/a7ybT2Oarc3DgFwlUuut6Be8QJgcISKqs3jORcrr1srgSkYoiBYoUiustfllCuRB9o6N8C47uDxCRsTmqIvqgQ0d0FbiaOQx17TLTMxYm05ZpxnyKtPY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za; spf=pass smtp.mailfrom=risingedge.co.za; dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b=vT1SgjPm; arc=none smtp.client-ip=188.40.0.90
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=risingedge.co.za
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=risingedge.co.za; s=xneelo; h=Content-Transfer-Encoding:MIME-Version:
+	Message-Id:Date:Subject:Cc:To:From:reply-to:sender:bcc:in-reply-to:references
+	:content-type; bh=m3G7uqGep2jRTiY2MUFrRQpXBp2XUJrcB1aaHLU8GHM=; b=vT1SgjPmcYN
+	d1lFD6XiX8in9sqYFQRcj8Eoa8XyyDdh15JEydux/xq/eVD5DNWGqiDUixS6S2adw2tk62pafAA87
+	51h1dmdbGKc1JoPe4ytB4NSOgIXYV7sNUqfA6ZeYjsBFrKaw1Vcr1hfUfFU4Eua8b+8hhnZmBhQyv
+	pzrdKh3GzmHc+VR7ZsPkoZyiDSn/y4/fJd0RoXu0VTv9VjMXdNLbaDxuR+umJrjSPDBAow/kl8EVb
+	x//uqAlDcr6nFnqG7hGH+AEmS7ckGTVJn8GfZAb3YU+OCCkjoRu5Tu6NI2t+R15YUW990vC4eE2Fc
+	62IwLFzyd8PO+eCqW50XQ7A==;
+Received: from www31.flk1.host-h.net ([188.40.1.173])
+	by antispam1-flk1.host-h.net with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <justin.swartz@risingedge.co.za>)
+	id 1rhMbc-00HBd3-Hf; Tue, 05 Mar 2024 06:40:47 +0200
+Received: from [41.144.0.96] (helo=localhost.localdomain)
+	by www31.flk1.host-h.net with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <justin.swartz@risingedge.co.za>)
+	id 1rhMbW-0005M8-1G; Tue, 05 Mar 2024 06:40:38 +0200
+From: Justin Swartz <justin.swartz@risingedge.co.za>
+To: =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
+	Daniel Golle <daniel@makrotopia.org>,
+	DENG Qingfang <dqfext@gmail.com>,
+	Sean Wang <sean.wang@mediatek.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: Justin Swartz <justin.swartz@risingedge.co.za>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: [PATCH] net: dsa: mt7530: disable LEDs before reset
+Date: Tue,  5 Mar 2024 06:39:51 +0200
+Message-Id: <20240305043952.21590-1-justin.swartz@risingedge.co.za>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:b26:b0:363:d7d2:1ddd with SMTP id
- e6-20020a056e020b2600b00363d7d21dddmr475956ilu.0.1709613502328; Mon, 04 Mar
- 2024 20:38:22 -0800 (PST)
-Date: Mon, 04 Mar 2024 20:38:22 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000827c710612e269ff@google.com>
-Subject: [syzbot] [mm?] WARNING in try_to_unmap_one
-From: syzbot <syzbot+28895085dfb33190ed3c@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: justin.swartz@risingedge.co.za
+X-Virus-Scanned: Clear
+X-SpamExperts-Domain: risingedge.co.za
+X-SpamExperts-Username: 
+Authentication-Results: host-h.net; auth=pass (login) smtp.auth=@risingedge.co.za
+X-SpamExperts-Outgoing-Class: ham
+X-SpamExperts-Outgoing-Evidence: Combined (0.03)
+X-Recommended-Action: accept
+X-Filter-ID: Pt3MvcO5N4iKaDQ5O6lkdGlMVN6RH8bjRMzItlySaT8bSAwkwoC1TJJiWLFQYyDsPUtbdvnXkggZ
+ 3YnVId/Y5jcf0yeVQAvfjHznO7+bT5wCPRB8bAzJcv2cv+UqiTTc2+CpNcmBnO4XM3Sck4bwNogU
+ WCl1nkLBzZX0KuJ9bXiS85Z42w/+2OBolTNFbPomXFWCX8oNdggW7HE9XDTdSejrkEpbuUvwMvHx
+ 3T+KSG//gbuP7hnUK8NQdLwsVWKIv+fXqqb3FJ1Z7kkAIev0U9CKH/oA07tJunDPm536TODb5GPR
+ oyaaXp1VNA9dXvxV+mFktoWo3CKg4C3LDJ75vu2U4GT70q7ZqN/P49BncZ5XB7lfx9K88uL/WnJE
+ LAEP514Y/yfAEbrTclu3OeNcbACmFr3ts0d2E6vXySsvfMaT9Bjf4etJ827HW1/sdZ81dz6BqXHU
+ oYg+nmOeSIjjxA24TPuOyBrko5yKpcR03QEJ9DjWmjcfK/FpTD0spWG+rMYoj8CdNq4vLYsMDbt4
+ 2oUP1Ae/eGZl2OLANHAHEjHENEhX9cq65nsXPA0MIFDIPOMDW/6+MC+5Mq5RH9OoW0W22an/ubzj
+ InB/ImqScRfGyrhHVstPeAuxsRhUFJC4TtSvIahFt3uEpT0304dV2Yoz1SesQUA6bnjJZT6m9lal
+ 9vikoy50DqR3hu/rL5PGAoTDzn0QdoxFeruM0Uhu+dTUSiL7T3enG3jHhaXbbkcihnVW8zB2Qi26
+ vkVALycwzSdeC1kd8cXa71WqOc72jXbRpMw6Agze1f399OurHEyYS7nq+EBNvgiWKNNSkdVDPqq6
+ +NRG0tTqWfoM12ajaPKeGaSpuwkt9kMFaoxOFH1hIqsDqiY5NFuEmlCmGLsHMs4VIrisX+dtrxYn
+ /0jYEvj5QBAPtzfeVlNHdCJmwgf0M7fnqgzRvCMiN68tcHQey84mBB4XoB473XOJmIRPynE3O7YZ
+ oFBs6I7QuC1BjGNT52hVLEr/9PrrMm81h6IAYzikeIJfw26MB/V1E5BP9Gv0xI1YXOxC1lZqyFpL
+ AwQr6muMti2YanICQnMITeB2fd0UyjU/MIq3Vtx6CgQGHtezYqxGMqsKjARq8PBC4qgGsfAERwCB
+ JFs7XjZYbJPBsmpIto2O4JO2fx1gIuNHgi11AwJSTGCrOFs22K1ZnDqAw3gLmOBPHazhChxq9nGW
+ aSi6bFHidB1VgzDzDZn/+QEiRQv+PVjjwa+Z5RFCOMQwU3LvoOQWIGmR34v72byEdfFYVDBYJee7
+ gx/u82RtUwfD5ALHBf4EnQOzr8vuDU00mVfWLKEgol9rYV4JEcNP1rJoln/cD8h/RIvkzXRTCYvX
+ WLQhlD92+1l+zHfJg1FMwntsduNBxKPaTpE5L8d4VqFy6yKUFQtzhTlGiGL9B+FvFA6U1VLNI5ac
+ F+7LBSfmrQPvc5+YzzlWlzLxTUJwIIDSVMZhrIoAWTF5tIdhy/UIEBYDcZg+Q8UhuRLyBn1+pvlH
+ hV6a5QjptwQBGybQyDQ2/GYwPjlMcE57ESN6G+kn87CtwPdB/10jfVNpDbYnXJdSRQj8460WHJib
+ IxmU2pb4i4DTkMZeMiNI9JSIyUbtnrlbG4BI8o81FOo91axhCaqPShJzgHH7y4ZfQxML
+X-Report-Abuse-To: spam@antispamquarantine.host-h.net
 
-Hello,
+Disable LEDs just before resetting the MT7530 to avoid
+situations where the ESW_P4_LED_0 and ESW_P3_LED_0 pin
+states may cause an unintended external crystal frequency
+to be selected.
 
-syzbot found the following issue on:
+The HT_XTAL_FSEL (External Crystal Frequency Selection)
+field of HWTRAP (the Hardware Trap register) stores a
+2-bit value that represents the state of the ESW_P4_LED_0
+and ESW_P4_LED_0 pins (seemingly) sampled just after the
+MT7530 has been reset, as:
 
-HEAD commit:    87adedeba51a Merge tag 'net-6.8-rc7' of git://git.kernel.o..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15359306180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=dc48776003e506af
-dashboard link: https://syzkaller.appspot.com/bug?extid=28895085dfb33190ed3c
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: i386
+    ESW_P4_LED_0    ESW_P3_LED_0    Frequency
+    -----------------------------------------
+    0               1               20MHz
+    1               0               40MHz
+    1               1               25MHz
 
-Unfortunately, I don't have any reproducer for this issue yet.
+The value of HT_XTAL_FSEL is bootstrapped by pulling
+ESW_P4_LED_0 and ESW_P3_LED_0 up or down accordingly,
+but:
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-87adedeb.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/531f9afd8b25/vmlinux-87adedeb.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/015cfa882009/bzImage-87adedeb.xz
+  if a 40MHz crystal has been selected and
+  the ESW_P3_LED_0 pin is high during reset,
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+28895085dfb33190ed3c@syzkaller.appspotmail.com
+  or a 20MHz crystal has been selected and
+  the ESW_P4_LED_0 pin is high during reset,
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 109 at arch/x86/include/asm/pgtable.h:404 pte_uffd_wp arch/x86/include/asm/pgtable.h:404 [inline]
-WARNING: CPU: 1 PID: 109 at arch/x86/include/asm/pgtable.h:404 try_to_unmap_one+0x1a84/0x29b0 mm/rmap.c:1891
-Modules linked in:
-CPU: 1 PID: 109 Comm: kswapd0 Not tainted 6.8.0-rc6-syzkaller-00120-g87adedeba51a #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-RIP: 0010:pte_uffd_wp arch/x86/include/asm/pgtable.h:404 [inline]
-RIP: 0010:try_to_unmap_one+0x1a84/0x29b0 mm/rmap.c:1891
-Code: e9 d4 00 00 00 e8 8c 72 b4 ff 4d 89 ec 31 ff 41 83 e4 02 4c 89 e6 e8 8b 6d b4 ff 4d 85 e4 0f 84 8b 04 00 00 e8 6d 72 b4 ff 90 <0f> 0b 90 e8 64 72 b4 ff 48 83 cd 04 e9 21 f9 ff ff e8 56 72 b4 ff
-RSP: 0018:ffffc90000ddf110 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffffea0000021240 RCX: ffffffff81d771e5
-RDX: ffff88801ac80000 RSI: ffffffff81d771f3 RDI: 0000000000000007
-RBP: 07ffffffffa2e20a R08: 0000000000000007 R09: 0000000000000000
-R10: 0000000000000002 R11: 0000000000000004 R12: 0000000000000002
-R13: 0000000000849c47 R14: dffffc0000000000 R15: ffff8880118c2f80
-FS:  0000000000000000(0000) GS:ffff88802c300000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 0000000027f48000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- rmap_walk_anon+0x228/0x580 mm/rmap.c:2599
- rmap_walk mm/rmap.c:2676 [inline]
- rmap_walk mm/rmap.c:2671 [inline]
- try_to_unmap+0x174/0x1c0 mm/rmap.c:1956
- shrink_folio_list+0x1cc7/0x3ea0 mm/vmscan.c:1253
- evict_folios+0x6e7/0x1b90 mm/vmscan.c:4521
- try_to_shrink_lruvec+0x638/0xa10 mm/vmscan.c:4726
- shrink_one+0x3f8/0x7b0 mm/vmscan.c:4765
- shrink_many mm/vmscan.c:4828 [inline]
- lru_gen_shrink_node mm/vmscan.c:4929 [inline]
- shrink_node+0x21d0/0x3790 mm/vmscan.c:5888
- kswapd_shrink_node mm/vmscan.c:6693 [inline]
- balance_pgdat+0x9d2/0x1a90 mm/vmscan.c:6883
- kswapd+0x5be/0xc00 mm/vmscan.c:7143
- kthread+0x2c6/0x3b0 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:243
- </TASK>
+  then the value of HT_XTAL_FSEL will indicate
+  that a 25MHz crystal is present.
 
+By default, the state of the LED pins is PHY controlled
+to reflect the link state.
 
+To illustrate, if a board has:
+
+  5 ports with active low LED control,
+  and HT_XTAL_FSEL bootstrapped for 40MHz.
+
+When the MT7530 is powered up without any external
+connection, only the LED associated with Port 3 is
+illuminated as ESW_P3_LED_0 is low.
+
+In this state, directly after mt7530_setup()'s reset
+is performed, the HWTRAP register (0x7800) reflects
+the intended HT_XTAL_FSEL (HWTRAP bits 10:9) of 40MHz:
+
+  mt7530-mdio mdio-bus:1f: mt7530_read: 00007800 == 00007dcf
+
+  >>> bin(0x7dcf >> 9 & 0b11)
+  '0b10'
+
+But if a cable is connected to Port 3 and the link
+is active before mt7530_setup()'s reset takes place,
+then HT_XTAL_FSEL seems to be set for 25MHz:
+
+  mt7530-mdio mdio-bus:1f: mt7530_read: 00007800 == 00007fcf
+
+  >>> bin(0x7fcf >> 9 & 0b11)
+  '0b11'
+
+Once HT_XTAL_FSEL reflects 25MHz, none of the ports
+are functional until the MT7621 (or MT7530 itself)
+is reset.
+
+By disabling the LED pins just before reset, the chance
+of an unintended HT_XTAL_FSEL value is reduced.
+
+Signed-off-by: Justin Swartz <justin.swartz@risingedge.co.za>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/net/dsa/mt7530.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
+index 3c1f65759..8fa113126 100644
+--- a/drivers/net/dsa/mt7530.c
++++ b/drivers/net/dsa/mt7530.c
+@@ -2238,6 +2238,12 @@ mt7530_setup(struct dsa_switch *ds)
+ 		}
+ 	}
+ 
++	/* Disable LEDs before reset to prevent the MT7530 sampling a
++	 * potentially incorrect HT_XTAL_FSEL value.
++	 */
++	mt7530_write(priv, MT7530_LED_EN, 0);
++	usleep_range(1000, 1100);
++
+ 	/* Reset whole chip through gpio pin or memory-mapped registers for
+ 	 * different type of hardware
+ 	 */
+-- 
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
