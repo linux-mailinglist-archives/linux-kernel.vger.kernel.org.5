@@ -1,78 +1,176 @@
-Return-Path: <linux-kernel+bounces-92490-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92491-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3026E87211E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:08:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 455C8872125
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:10:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D2F271F22055
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:08:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3DD9282E62
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:10:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 667FD8615A;
-	Tue,  5 Mar 2024 14:08:40 +0000 (UTC)
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F06D98662E;
+	Tue,  5 Mar 2024 14:10:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tlcGZRPG"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91DAF8613C
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 14:08:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 210935102B;
+	Tue,  5 Mar 2024 14:10:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709647720; cv=none; b=CBVUGpEWV6ggbSHYn555qOjfJcp5eM/7zKmxJNbgyFFmdRobonAJhLUJzKNwZGsHZPlBokTDhOPC+47SOfZ+dHc1NDYAHSbEEdugWxYup82U6Q0iURDb86OSMMuS/wo2+ntGJdAM45R05okiofGbueVxLiCSJHaiQitAIYWM2Rw=
+	t=1709647823; cv=none; b=Qa2MzxvRBeMQQtrGpWGG+0CA1S1+FktrHHtfWkBrz/LLq4Z8kPJGg+AdihYgRy1/tBYex5txDUSBKD8rxybvz6zy5Qitlu0H81FZfo82hmQ7ncDsrxS5ILU+b0h1nsI5IdwGwHueeCPZwJuVh5W4Ql4ANCOGJjUUPA0ktWji4z0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709647720; c=relaxed/simple;
-	bh=ewIBfX/apZ/XRSsDq8e9bZDdrJfrqmhnRuRfiKH1Lmg=;
+	s=arc-20240116; t=1709647823; c=relaxed/simple;
+	bh=yligJ8IXn0rMPUgLLCLFsqkXEZzbgJx9pASoGxdfXR4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IKpY3sAT4ZKaIWGA/OTvY2V7/Px4+y+VMczcH4A6uAhGy4+Q+hrsEqM+Sy0QdC8OvUe+SHkk8Y/NoDYTQ2afCcajN5STdBjBfmgA0pM2OqqyT9Iw4e2Guw7EbCZ4XWejHziUYBhXsPgusmsqJkQMNkIlXm1db4pVPQxsQ5qX8Pg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 220A468C7B; Tue,  5 Mar 2024 15:08:34 +0100 (CET)
-Date: Tue, 5 Mar 2024 15:08:33 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Petr =?utf-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-Cc: Michael Kelley <mhklinux@outlook.com>, Will Deacon <will@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>, Christoph Hellwig <hch@lst.de>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Petr Tesarik <petr.tesarik1@huawei-partners.com>,
-	"kernel-team@android.com" <kernel-team@android.com>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Dexuan Cui <decui@microsoft.com>,
-	Nicolin Chen <nicolinc@nvidia.com>
-Subject: Re: [PATCH v5 6/6] swiotlb: Remove pointless stride adjustment for
- allocations >= PAGE_SIZE
-Message-ID: <20240305140833.GC3659@lst.de>
-References: <20240301180853.5ac20b27@meshulam.tesarici.cz> <8869c8b2-29c3-41e4-8f8a-5bcf9c0d22bb@arm.com> <20240301194212.3c64c9b2@meshulam.tesarici.cz> <SN6PR02MB41571DA1EE99BFAA65869024D4232@SN6PR02MB4157.namprd02.prod.outlook.com> <20240304120055.56035c21@meshulam.tesarici.cz> <ffd7646b-37b1-4cd2-822a-848b36b076c9@arm.com> <20240304165506.49e3b2d3@meshulam.tesarici.cz> <20240304160210.GB21077@willie-the-truck> <SN6PR02MB41571F68F8F9E003C4359948D4232@SN6PR02MB4157.namprd02.prod.outlook.com> <20240304200428.4111d78e@meshulam.tesarici.cz>
+	 Content-Type:Content-Disposition:In-Reply-To; b=FFXLlkfbN8mOlmwhn+yaxysdzKbxIufVFDjZ/nslE4Wsdr/b3i39EjFBcMhMT/NuJiC6y79CSQIvLd1wjEL/9hcr/S4iBZW1zYYevDwCB8k7spmZkL1Nle4N/VFi8t1AYEqEL6gwXmWdTUd/dErd5jjFQc6Z3pJahAgGNKlk3Rc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tlcGZRPG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61E72C433C7;
+	Tue,  5 Mar 2024 14:10:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709647822;
+	bh=yligJ8IXn0rMPUgLLCLFsqkXEZzbgJx9pASoGxdfXR4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=tlcGZRPGR3iQ3Rz6cSl+sC1Cd46r5Ye33DMAn5FrLL36CXD9BZQNfPcP+eD5kHU8P
+	 erNmTTXjdJzUzz6MpO4rPA74t7oPJs/J1h3bl8qVKDCyB/V3PA/wAqnsBHoUGg8mlK
+	 K/c8410PacOzLJ7pz2EhJ4+/OG0LzlthgNRgJds7EbXVB41PWzf0lKPtNbVRVIu0ps
+	 1+8c8Nb1LLq4IVbq2OnGm6GOAE2JQSoZVVxA4ath12jYeOaeiDSH/3Ksisngcs6gVG
+	 mMwYTdkTa0hLLZ7wMrGWN6Hh/FZvIbmSGo5qbKIt4LktOPc8uvkNwpxmtQd1K9araP
+	 yTgfP0En4Nimw==
+Date: Tue, 5 Mar 2024 08:10:20 -0600
+From: Rob Herring <robh@kernel.org>
+To: Vidya Sagar <vidyas@nvidia.com>
+Cc: bhelgaas@google.com, rafael@kernel.org, lenb@kernel.org,
+	will@kernel.org, lpieralisi@kernel.org, kw@linux.com,
+	frowand.list@gmail.com, linux-pci@vger.kernel.org,
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+	treding@nvidia.com, jonathanh@nvidia.com, kthota@nvidia.com,
+	mmaddireddy@nvidia.com, sagar.tv@gmail.com
+Subject: Re: [PATCH V4] PCI: Add support for preserving boot configuration
+Message-ID: <20240305141020.GA3259724-robh@kernel.org>
+References: <20240222124110.2681455-1-vidyas@nvidia.com>
+ <20240223080021.1692996-1-vidyas@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240304200428.4111d78e@meshulam.tesarici.cz>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20240223080021.1692996-1-vidyas@nvidia.com>
 
-On Mon, Mar 04, 2024 at 08:04:28PM +0100, Petr Tesařík wrote:
-> Sure, this will solve the allocations. But my understanding of this
-> same thread is that we don't need it here. The historical page order
-> alignment applies ONLY to allocations, NOT to mappings. It is
-> documented in Documentation/core-api/dma-api-howto.rst under Consistent
-> DMA mappings, for dma_alloc_coherent(). IIUC it does not apply to the
-> streaming DMA mappings. At least, it would explain why nobody
-> complained that the more strict guarantee for sizes greater than
-> PAGE_SIZE was not kept...
+On Fri, Feb 23, 2024 at 01:30:21PM +0530, Vidya Sagar wrote:
+> Add support for preserving the boot configuration done by the
+> platform firmware per host bridge basis, based on the presence of
+> 'linux,pci-probe-only' property in the respective PCI host bridge
+> device-tree node. It also unifies the ACPI and DT based boot flows
+> in this regard.
+> 
+> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+> ---
+> V4:
+> * Addressed Bjorn's review comments
+> 
+> V3:
+> * Unified ACPI and DT flows as part of addressing Bjorn's review comments
+> 
+> V2:
+> * Addressed issues reported by kernel test robot <lkp@intel.com>
+> 
+>  drivers/acpi/pci_root.c                  | 12 -------
+>  drivers/pci/controller/pci-host-common.c |  4 ---
+>  drivers/pci/of.c                         | 21 +++++++++++
+>  drivers/pci/probe.c                      | 46 ++++++++++++++++++------
+>  include/linux/of_pci.h                   |  6 ++++
+>  5 files changed, 62 insertions(+), 27 deletions(-)
+> 
+> diff --git a/drivers/acpi/pci_root.c b/drivers/acpi/pci_root.c
+> index 84030804a763..ddc2b3e89111 100644
+> --- a/drivers/acpi/pci_root.c
+> +++ b/drivers/acpi/pci_root.c
+> @@ -1008,7 +1008,6 @@ struct pci_bus *acpi_pci_root_create(struct acpi_pci_root *root,
+>  	int node = acpi_get_node(device->handle);
+>  	struct pci_bus *bus;
+>  	struct pci_host_bridge *host_bridge;
+> -	union acpi_object *obj;
+>  
+>  	info->root = root;
+>  	info->bridge = device;
+> @@ -1050,17 +1049,6 @@ struct pci_bus *acpi_pci_root_create(struct acpi_pci_root *root,
+>  	if (!(root->osc_ext_control_set & OSC_CXL_ERROR_REPORTING_CONTROL))
+>  		host_bridge->native_cxl_error = 0;
+>  
+> -	/*
+> -	 * Evaluate the "PCI Boot Configuration" _DSM Function.  If it
+> -	 * exists and returns 0, we must preserve any PCI resource
+> -	 * assignments made by firmware for this host bridge.
+> -	 */
+> -	obj = acpi_evaluate_dsm(ACPI_HANDLE(bus->bridge), &pci_acpi_dsm_guid, 1,
+> -				DSM_PCI_PRESERVE_BOOT_CONFIG, NULL);
+> -	if (obj && obj->type == ACPI_TYPE_INTEGER && obj->integer.value == 0)
+> -		host_bridge->preserve_config = 1;
+> -	ACPI_FREE(obj);
+> -
+>  	acpi_dev_power_up_children_with_adr(device);
+>  
+>  	pci_scan_child_bus(bus);
+> diff --git a/drivers/pci/controller/pci-host-common.c b/drivers/pci/controller/pci-host-common.c
+> index 6be3266cd7b5..e2602e38ae45 100644
+> --- a/drivers/pci/controller/pci-host-common.c
+> +++ b/drivers/pci/controller/pci-host-common.c
+> @@ -73,10 +73,6 @@ int pci_host_common_probe(struct platform_device *pdev)
+>  	if (IS_ERR(cfg))
+>  		return PTR_ERR(cfg);
+>  
+> -	/* Do not reassign resources if probe only */
+> -	if (!pci_has_flag(PCI_PROBE_ONLY))
+> -		pci_add_flags(PCI_REASSIGN_ALL_BUS);
+> -
+>  	bridge->sysdata = cfg;
+>  	bridge->ops = (struct pci_ops *)&ops->pci_ops;
+>  	bridge->msi_domain = true;
+> diff --git a/drivers/pci/of.c b/drivers/pci/of.c
+> index 51e3dd0ea5ab..f0f1156040a5 100644
+> --- a/drivers/pci/of.c
+> +++ b/drivers/pci/of.c
+> @@ -258,6 +258,27 @@ void of_pci_check_probe_only(void)
+>  }
+>  EXPORT_SYMBOL_GPL(of_pci_check_probe_only);
+>  
+> +/**
+> + * of_pci_bridge_preserve_resources - Return true if the boot configuration
+> + *                                    needs to be preserved
+> + * @node: Device tree node with the domain information.
+> + *
+> + * This function looks for "linux,pci-probe-only" property for a given
+> + * PCI controller's node and returns true if found. Having this property
+> + * for a PCI controller ensures that the kernel doesn't reconfigure the
+> + * BARs and bridge windows that are already done by the platform firmware.
+> + * NOTE: The scope of "linux,pci-probe-only" defined within a PCI bridge device
+> + *       is limited to the hierarchy under that particular bridge device. whereas
+> + *       the scope of "linux,pci-probe-only" defined within chosen node is
+> + *       system wide.
+> + *
+> + * Return: true if the property exists false otherwise.
+> + */
+> +bool of_pci_bridge_preserve_resources(struct device_node *node)
+> +{
+> +	return of_property_read_bool(node, "linux,pci-probe-only");
 
-Yes.  arm32 (and before the dma-direct conversion various other
-architectures) have relaxed the required to a PAGE_SIZE alignment,
-and at least no native dma direct has ever returned less than PAGE_SIZE
-alignment even for smaller allocations (as they are all rounded up
-to PAGE_SIZE).  So I think the documentation could also use some
-updating to match reality.
+This is the wrong type. The existing "linux,pci-probe-only" is a u32 and 
+non-zero value means probe-only. This would return true for 
+'linux,pci-probe-only = <0>'.
 
+Also, this should also check chosen. If you make this work accepting 
+NULL for node, then of_pci_check_probe_only() can be re-implemented to 
+use it.
+
+
+
+Rob
 
