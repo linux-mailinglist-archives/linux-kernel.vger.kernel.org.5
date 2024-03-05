@@ -1,123 +1,155 @@
-Return-Path: <linux-kernel+bounces-92819-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92820-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C5B0872679
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:23:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11C4C87267B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:24:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE5EC1C26AAB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:23:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C295E28BE48
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:24:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2B6518C36;
-	Tue,  5 Mar 2024 18:23:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D75E318C36;
+	Tue,  5 Mar 2024 18:24:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K8VaCplE"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jJo1F27w"
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EB9A1863C;
-	Tue,  5 Mar 2024 18:23:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FA3718628;
+	Tue,  5 Mar 2024 18:24:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709663003; cv=none; b=FNj5bFADeXhE4C6ktl/CoVZjSIHL4c9/xvVk/ctOJweUH4E9FcZLmNVhZJ63Pxy0lkYeB5tZVQiE5uZbQdymPWVTnvQmBHNVZ1eywnaeOtYLbK4AyTecxa5la6mft66RVikybU0SDKFtytZeXZxaELj3/JVjGXYnGOdn5Gyepec=
+	t=1709663045; cv=none; b=RDj+NKqQDDM/7abhINDV8b/ezXrl4hqMacqi55gpVAkpJ32dgXQE16OkQZJMqZorXsv1tYku9HJxingtUy8PD5jgcy0cQiQBY2a+QuboDphrs+0h4npFgeSLkQW5t+kozSxXCw6/xNI5WgeXxGsBOKzJmX5OtsNpNNz2VMwahRo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709663003; c=relaxed/simple;
-	bh=GsWX5uNbFBWOb7yRHYDe3Hj7I20tI6lGHveIAeX1x4w=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=FuHreZITFOPNg4UKBtp0vJwHht3lgDMIKc+seKEfmwM1zQW5TKQ/TLbJNo8d0dJjp8Pir9mEycz+mbXYKHBNFGB6MVD1SkQlCL7BGzFmTkeywJBJ23ibcaAZdOisW4+ZRmB4ucImFf3KfTVvwknt7zHTfDNdBOck2QEzzKRymWU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K8VaCplE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 699EEC433F1;
-	Tue,  5 Mar 2024 18:23:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709663002;
-	bh=GsWX5uNbFBWOb7yRHYDe3Hj7I20tI6lGHveIAeX1x4w=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=K8VaCplEo2vcXxeQ3F7Cq3ZQLNQwZktFuAa9dSZsNxnN3wktJJVgDjoSU9NSL9507
-	 kE/eAxdklTDS+q1wyxOCytywkU+BfIbt7h1NV+4mhog4tiSQfPLIln1FBvpx+qNyYV
-	 9x2w+U2a7/dbrTi72yB9YzthCzEhnIQcfjmm806O/VEHTKgybzmk8iKIGAE0HSG6Ao
-	 e4HTQ5KyTwvnjdhRS8WQgCgRoweDTg9A8s8YUUlBN7GFyCruW4L8wgrWjPlccbuPGw
-	 oqpRmQXg01FcaDd8UjBzoylf6wT2htc/1hp2ZR62i+cYy6YHtgY0Is3wBE1dUxtJSa
-	 kdVo61RUAoMfg==
-Date: Tue, 5 Mar 2024 12:23:20 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Paul Menzel <pmenzel@molgen.mpg.de>
-Cc: Bjorn Helgaas <bhelgaas@google.com>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	nvaert1986@hotmail.com, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI/DPC: Quirk PIO log size for Intel Raptor Lake Root
- Ports
-Message-ID: <20240305182320.GA541715@bhelgaas>
+	s=arc-20240116; t=1709663045; c=relaxed/simple;
+	bh=TdfupDTf1t5grk4CAdN9p9bu1bJf5wgJEBrWS5hljOg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=eT4eGTUeBsinTB1b+uRUm4hCWJfM7CeffWDU3uGxQHwOl5HK7A9cw7n+aAIqLdZP40XjIHhkxq12UD5KePSwm28Z/nZnKrJj1IjlxDAhspwzCWnzWf4dkx8dFDFTcz5N8BIfgDiOaWfXAdvqjgI78Cv51SdzjyIJ6zXzZFhe5nc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jJo1F27w; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-412ee276dc9so6458255e9.1;
+        Tue, 05 Mar 2024 10:24:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709663042; x=1710267842; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vewip57IplzR6mytY6eKGIRl6x4l2s/G9UmkfWElT2c=;
+        b=jJo1F27wG6ZlYZ4Lfj3ooioshZis+J3Rtgl3tnC9b+e8wJE9uCiceZ1RaqAODX2Irv
+         mPGzsU18LEkBDqY25FwF5mKi1FQwd3tde6XAdyg1QqCzPFqmnFzHqQLBv576Tsi/x85P
+         cFXMz+cQnr3nwR3fAx8CsDMGPgEwJogQmlnm7xrza0NVoEDDdUzGm8wPqMqR54oPPHNW
+         VkRPSR8JwdOp5RTTYPGPtTsg9ymVGhpjmySwRvTAgjk8ide50dtoq3Q/ID1fMezklk/P
+         T/BZ95NsEJNOx57WSbgz/5mNqEDLwzb9UK0vFrYfu8A5vM/eMZ+s4S+k7BLqt55pSNup
+         ar9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709663042; x=1710267842;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Vewip57IplzR6mytY6eKGIRl6x4l2s/G9UmkfWElT2c=;
+        b=dKz53j1hbJSZoHeZobNXhCPYk3SVtn7msCQyULto/ides2dpTcPySwe/lYIDPZgUYB
+         REvNMBnmFd0T0r2MM0y0wYWBkxMZBiVxnz1bDq4ABUS3x/3U8tK8upNKvscWh8Bpcz04
+         /GuloAoj7wwS8fNYD7XdVL9TYQFjn504elOTYuMZONbWuo9zck3C1G6EbYCqg8tUI3kB
+         KRra4G6bsH3aU7z+t9KJeTn2AjsEbgiE2i1VPGdHaY/3rzsKpl/RzCfRV/hkv2paYFFn
+         PG6g8ql+DpffTwJEhUKJkgA72vXESQvvvg7WR6PNDicIQJcRJpJBfcCfk39me3EZhRW4
+         xKgQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX4/yIQITTCf4EhsMjjyQ24JuNPBOibDRXvFSLBFnO+XTGtPeV+sNWDFB14Km5THBhpbBuGmzfYN3nEOENN7zxwvSBmSKjHcRe6OnqQ
+X-Gm-Message-State: AOJu0Ywyn23oOlTimPZjxCGcy98aNijkKsZLLgG+Wd+1tu3IZMBRDPqW
+	8qtX0ozSMQBbGllS5MgV6rxBe7XNgaAPGe+3MM+DMASnjLzdkJl0
+X-Google-Smtp-Source: AGHT+IHuLC2lqjmF/KzE+5aw87KqSBEd9s52FBcCsTOYoo6Oei/ieq/y3oovoRv5bXnPKrKBSFxAIw==
+X-Received: by 2002:a05:600c:3481:b0:412:e676:2ff1 with SMTP id a1-20020a05600c348100b00412e6762ff1mr4363859wmq.41.1709663041649;
+        Tue, 05 Mar 2024 10:24:01 -0800 (PST)
+Received: from [::1] ([2001:19f0:ac01:93b:5400:4ff:fe77:2098])
+        by smtp.gmail.com with ESMTPSA id l1-20020a05600c1d0100b00412ea52b102sm3592206wms.34.2024.03.05.10.23.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Mar 2024 10:24:01 -0800 (PST)
+From: Yuxin Wang <yuxinwang9999@gmail.com>
+To: Marcel Holtmann <marcel@holtmann.org>,
+	Johan Hedberg <johan.hedberg@gmail.com>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc: linux-bluetooth@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Yuxin Wang <yuxinwang9999@gmail.com>
+Subject: [PATCH] Bluetooth: Fix inconsistent LE packet sending behaviors
+Date: Tue,  5 Mar 2024 18:23:49 +0000
+Message-Id: <20240305182349.4182578-1-yuxinwang9999@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240305113057.56468-1-pmenzel@molgen.mpg.de>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 05, 2024 at 12:30:56PM +0100, Paul Menzel wrote:
-> Commit 5459c0b70467 ("PCI/DPC: Quirk PIO log size for certain Intel Root
-> Ports") and commit 3b8803494a06 ("PCI/DPC: Quirk PIO log size for Intel Ice
-> Lake Root Ports") add quirks for Ice, Tiger and Alder Lake Root Ports.
-> System firmware for Raptor Lake still has the bug, so Linux logs the
-> warning below on several Raptor Lake systems like Dell Precision 3581 with
-> Intel Raptor Lake processor (0W18NX) system firmware/BIOS version 1.10.1.
-> 
->     pci 0000:00:07.0: [8086:a76e] type 01 class 0x060400
->     pci 0000:00:07.0: PME# supported from D0 D3hot D3cold
->     pci 0000:00:07.0: PTM enabled (root), 4ns granularity
->     pci 0000:00:07.0: DPC: RP PIO log size 0 is invalid
->     pci 0000:00:07.1: [8086:a73f] type 01 class 0x060400
->     pci 0000:00:07.1: PME# supported from D0 D3hot D3cold
->     pci 0000:00:07.1: PTM enabled (root), 4ns granularity
->     pci 0000:00:07.1: DPC: RP PIO log size 0 is invalid
-> 
-> So, apply the quirk for Raptor Lake Root Ports as well.
-> 
-> This also enables the DPC driver to dump the RP PIO Log registers when DPC
-> is triggered.
-> 
-> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218560
-> Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
-> Cc: nvaert1986@hotmail.com
-> Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
+In the `hci_sched_le` function, the calculation of `quote` within
+`hci_chan_sent` may become incorrect after breaking from the inner
+while loop. The issue stems from `hci_chan_sent` using `hdev->le_cnt`
+instead of the updated `cnt`. As a result, `quote` may exceed `cnt`,
+leading to a negative `cnt` and causing further inconsistent behaviors.
 
-Added stable tag and applied to pci/dpc for v6.9 with tags:
+This patch modifies `cnt` to be a pointer, aligning with the pattern
+used in the nearby `hci_sched_iso` function.
 
-  Reported-by: <nvaert1986@hotmail.com>
-  Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218560
-  Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
-  Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-  Cc: <stable@vger.kernel.org>
-  Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
-  Cc: <nvaert1986@hotmail.com>
+Signed-off-by: Yuxin Wang <yuxinwang9999@gmail.com>
+---
+ net/bluetooth/hci_core.c | 19 +++++++------------
+ 1 file changed, 7 insertions(+), 12 deletions(-)
 
-nvaert1986@, thanks very much for your report.  Let me know if you
-prefer to omit your email or add your real name.  Happy to do either.
+diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+index 2821a42ce..785a6dde9 100644
+--- a/net/bluetooth/hci_core.c
++++ b/net/bluetooth/hci_core.c
+@@ -3750,19 +3750,19 @@ static void hci_sched_le(struct hci_dev *hdev)
+ {
+ 	struct hci_chan *chan;
+ 	struct sk_buff *skb;
+-	int quote, cnt, tmp;
++	int quote, *cnt, tmp;
+ 
+ 	BT_DBG("%s", hdev->name);
+ 
+ 	if (!hci_conn_num(hdev, LE_LINK))
+ 		return;
+ 
+-	cnt = hdev->le_pkts ? hdev->le_cnt : hdev->acl_cnt;
++	cnt = hdev->le_pkts ? &hdev->le_cnt : &hdev->acl_cnt;
+ 
+-	__check_timeout(hdev, cnt, LE_LINK);
++	__check_timeout(hdev, *cnt, LE_LINK);
+ 
+-	tmp = cnt;
+-	while (cnt && (chan = hci_chan_sent(hdev, LE_LINK, &quote))) {
++	tmp = *cnt;
++	while (*cnt && (chan = hci_chan_sent(hdev, LE_LINK, &quote))) {
+ 		u32 priority = (skb_peek(&chan->data_q))->priority;
+ 		while (quote-- && (skb = skb_peek(&chan->data_q))) {
+ 			BT_DBG("chan %p skb %p len %d priority %u", chan, skb,
+@@ -3777,7 +3777,7 @@ static void hci_sched_le(struct hci_dev *hdev)
+ 			hci_send_frame(hdev, skb);
+ 			hdev->le_last_tx = jiffies;
+ 
+-			cnt--;
++			(*cnt)--;
+ 			chan->sent++;
+ 			chan->conn->sent++;
+ 
+@@ -3787,12 +3787,7 @@ static void hci_sched_le(struct hci_dev *hdev)
+ 		}
+ 	}
+ 
+-	if (hdev->le_pkts)
+-		hdev->le_cnt = cnt;
+-	else
+-		hdev->acl_cnt = cnt;
+-
+-	if (cnt != tmp)
++	if (*cnt != tmp)
+ 		hci_prio_recalculate(hdev, LE_LINK);
+ }
+ 
+-- 
+2.39.2
 
-> ---
->  drivers/pci/quirks.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> index d797df6e5f3e..663d838fa861 100644
-> --- a/drivers/pci/quirks.c
-> +++ b/drivers/pci/quirks.c
-> @@ -6225,6 +6225,8 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x9a2b, dpc_log_size);
->  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x9a2d, dpc_log_size);
->  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x9a2f, dpc_log_size);
->  DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x9a31, dpc_log_size);
-> +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0xa73f, dpc_log_size);
-> +DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0xa76e, dpc_log_size);
->  #endif
->  
->  /*
-> -- 
-> 2.43.0
-> 
 
