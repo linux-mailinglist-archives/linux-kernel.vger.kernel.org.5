@@ -1,75 +1,76 @@
-Return-Path: <linux-kernel+bounces-92261-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92262-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E9D6871DA2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:28:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0587E871DA4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:28:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7ED3A1C2338E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:28:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21D351C23314
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:28:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3B8158224;
-	Tue,  5 Mar 2024 11:25:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F4C85B674;
+	Tue,  5 Mar 2024 11:25:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="BmPU6Sx7"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="YTaQZ8h/"
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E1C522068;
-	Tue,  5 Mar 2024 11:25:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0026B56758;
+	Tue,  5 Mar 2024 11:25:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709637934; cv=none; b=liN0r6m5AFo59MvHFz6RpCI3K35g+SY9Jb1MlN3lairId9HtgZGC42/JZ1Fn8RuAXKm3VTq+nX+/0IDcA+d4/kdxOIonN70KdVCwhx8u2POy8B+OnaqVvcEiDEIhPYZqzSYVHBFvWGNdSAC7NiyoAMgOyb8J7+kB8sAQxjNNhVU=
+	t=1709637935; cv=none; b=lBt6S1cs+FrTrsnZD8EFcTSTSRtNJvVoPXwR2PFdTktj6iVBXNJQNY8RQoPak0gR2ivN/myLz+PopxPTazow9UfK4T3zz31jkz5x/Bbq7NR99lxhqhcnRkmVked3NG86cx8Z55cuEiLsEf7Z/H8TKCgNj89Y7d+C8Iw7KFSqiiI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709637934; c=relaxed/simple;
-	bh=jnklyTAj9n7JSkFIdzS+epw/LCdYIxHvvE3dqFQWSI4=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=YU6SuhgQU9JaHZltDNiKZ0XaOcW4Qd42T2ze1CMKH/MBqnX3MZs9JIix2fDvhsgF7Mxjn+lcPnwSORc7nj8Gk62EoBWS9ose/HPmfU4+bd9HiM9vftpTvOSZ/EDcbryqxFz5Q9tW04RNON+B067gwBJYKMZ4SXT/UUH3mmynngQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=BmPU6Sx7; arc=none smtp.client-ip=209.85.214.170
+	s=arc-20240116; t=1709637935; c=relaxed/simple;
+	bh=WGIFWYFh3hQ9VXnIJFPQZwA2uJuy2dcs4lEb7YsAaFs=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=lWL5zXUIIw/RCP1oWOcA/0QUg32fgfWeTZTOQVCG+cTPTREJfB7KuYIWxHQGIYQTHD5WSivgvQzho9I9Nntq/Isjo/vgIrmNimpHlq+WLfAOhP+u3SAfNSjO8kqIxYT5lscgFeb7a78FBDowg2rhs1ofIuqlt8x6L7okrjvxXsw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=YTaQZ8h/; arc=none smtp.client-ip=209.85.210.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1dcad814986so49611865ad.0;
-        Tue, 05 Mar 2024 03:25:30 -0800 (PST)
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e5eb3dd2f8so2032203b3a.2;
+        Tue, 05 Mar 2024 03:25:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709637930; x=1710242730;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:dkim-signature:from:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=rnDdUmjYtBfgIhjZlrfRTYpbq7Ct5qpyZ49+VLZHb/o=;
-        b=GebvP4k+XZe/odYrCjXZBdsrYNtbdftYuoVMM+Ji0PuLCVOlqiFAnYKgpwV7WKvXbw
-         32eHnl24CTCWGvGxAdUHIGIrnIFgEzCLDA1TlL/E+UNme41Tg0R1MVhLCM6kOguAjqjq
-         fdAJlLRp+bZ2NmChgrUOvKG6yIj6Mxz3yvhWLd3/RiJPLVV7EjY099XKmifU5NQyaTAX
-         kkOKwy1n17uSef4OKCQV0qk0Rqs8uFA8UJfPzbbI9KaIryMh1B/1XQLms/TVW8gwKPG+
-         hnQL5dal79nmxWqdFsH4TN+KmCcG10AK7JG8/1kqbsLJ0xhin26M8SL8RPUx+eftxnHv
-         jqqw==
-X-Forwarded-Encrypted: i=1; AJvYcCWu+X4wukY/u5fxPcXdAWEhXQo7MXA2MwRPVkrnXexD9zVOEeEPGM9HFP4gJxOvfsH8OmaCyI9FTUSiPziRLEf/jqzwNIk9z7Ypz9Mw
-X-Gm-Message-State: AOJu0YxDWQH00lcxGxIvlc7HYVaeiVNRKUAaj63rqwMS76QfFPZIfyFf
-	MK44Jmk8hHwdHL3SjHEbC5cFyS4ryFFH7U5MgJbpsfBPL+B3d69m
-X-Google-Smtp-Source: AGHT+IHn0uUwpehKYAzzBla8rndd6v9xKeeKGNJLgtLMUMYQ4p5MXXoDbdCzgd0QmKDTCItvrR4sew==
-X-Received: by 2002:a17:902:c085:b0:1db:b36c:715f with SMTP id j5-20020a170902c08500b001dbb36c715fmr1326365pld.24.1709637930250;
-        Tue, 05 Mar 2024 03:25:30 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709637933; x=1710242733;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:dkim-signature:from:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DrnOmqUduKVY9054SARMGgmju4czNVg1PR7unBKC3kc=;
+        b=Ob8gJ5jlMw0+vNnAgvfkAOngZ65ChFVajuyNM3MeugsRJj7xvhhTDXMVGBn8LbZ9D7
+         3+pkj5orhJ+XWSTqtw+wDpl5wsK9mdhJRAS4qWgQA6sz6/dMzeI3GyBGJMW0QfuIBNTw
+         njNS7BdP0vq/bJAJkeDZIvRjMuZ2xjWVACuLRgZkY4VTB4tbJqf6RNtOoHUDQAl3WJXU
+         4b4NoCEoEDLA+3C/0OCqHlprGKICDK5zPWmb4a+aIvVwtnmneVHqXZQufUvHdmdF2w/1
+         nwhstYAyQJRKfb1tChckZjaUPACkWmJLAtvRGhavlXHJln9YFNknudLmjTilBMraU6Xo
+         qG1g==
+X-Forwarded-Encrypted: i=1; AJvYcCUjas7whmzOqiw2x9Px5JXWZCuMkrTkGGOq6sEs9p+F0Yub/WiT155R5YoUQyVF41QNmELrV+JfFdckwAEPqXi9tl689IJP2GWSWFe0
+X-Gm-Message-State: AOJu0YzEpskQQYHkdTrvXvGL7fBEfJSKwfYcvrju5DZyNEzE2wHVbftJ
+	KstgLBqbqDNtUXXFoBn1BwS04d8XnWtA28KJ7VSWDAhYlRuhLnS9hM3QRo4cCLAO3Q==
+X-Google-Smtp-Source: AGHT+IFIJmVBoT+yA2CUePnH6wIFVqf0RfgtXJnODic5dsn7mvbhUl/zcLllowmj0IICA8AdqXJBOw==
+X-Received: by 2002:aa7:88c1:0:b0:6e5:5425:d914 with SMTP id k1-20020aa788c1000000b006e55425d914mr12434691pff.2.1709637933258;
+        Tue, 05 Mar 2024 03:25:33 -0800 (PST)
 Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id q12-20020a170902a3cc00b001dbad2172cbsm10515638plb.8.2024.03.05.03.25.29
+        by smtp.gmail.com with ESMTPSA id i37-20020a631325000000b005dc36761ad1sm8200256pgl.33.2024.03.05.03.25.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 03:25:29 -0800 (PST)
+        Tue, 05 Mar 2024 03:25:32 -0800 (PST)
 From: "Ricardo B. Marliere" <ricardo@marliere.net>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1709637927;
+	s=2024; t=1709637931;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=rnDdUmjYtBfgIhjZlrfRTYpbq7Ct5qpyZ49+VLZHb/o=;
-	b=BmPU6Sx798oEqBcnvbPwiG3HOPvwz+X/yF1fxyyNMADAmk6M4pWiVBX/VjcE3f8gCmNx3L
-	rxn3x0goZg9g2ADaj7aTIyoBnZr69P3oDMcaBiYSCuvXpvHCHp7t9nMnb20qMhT9fA+v8/
-	oLFfSXANl9tIdUKsu2OLz9Gd5TQ5CJYS2KsrqFRj4/Cmxh86ae7dLV3wo8KuOMmrA0BlFB
-	k8Pu4n1qFeYJVQ9nPF7b40vv8qPCqdthFdXLUzA/k7jlo1+Gei1ukcaPAyRyj7I9Yvq+tu
-	c572rhImk7P7wVhXSNdxOfNUSOjUBocbZkG738kn/RPwS1SYJdr/ONcCP4odBg==
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DrnOmqUduKVY9054SARMGgmju4czNVg1PR7unBKC3kc=;
+	b=YTaQZ8h/Vb/fXGX8im75NlizIO9ffQMZtKZjnokc8kyip/LVx8veYTs1MaW89ALt8V8sEp
+	zx0Xe2Y4fcT8QumoUa3FprwVeP87a+PQPjafBap+us+ZvsYosTaQbKdUJxC7N6Zm5AQZ77
+	Y8YiL25d1SmM4cBEUOSv7nHFAAJqB/ScDH/2rKcf3ad4otLBBYPr7FAYB+0YjyzHWxTNSr
+	JctXmTCWEIYVs3icGC0H4sXYuWXPdeKtNiGPMbcGpmmO0/UNNTVjrWGTS4qSsfVrlu0e2d
+	wdvaUuT82yjp+Vhl3h+KKd+XySb6Az90DMT/KTcRxe/3/NJY5A0GXErTwoPH2A==
 Authentication-Results: ORIGINATING;
 	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Subject: [PATCH 0/6] s390: constify struct class usage
-Date: Tue, 05 Mar 2024 08:25:18 -0300
-Message-Id: <20240305-class_cleanup-s390-v1-0-c4ff1ec49ffd@marliere.net>
+Date: Tue, 05 Mar 2024 08:25:19 -0300
+Subject: [PATCH 1/6] s390: zcrypt: make zcrypt_class constant
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,9 +79,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAB4B52UC/x3MTQqAIBBA4avErBPsR8KuEhEyjjUgFg5FEN09a
- fkt3ntAKDMJjNUDmS4W3lNBU1eAm0srKfbF0Oq21502CqMTWTCSS+ehpLNaeTOEAREbgxZKeGQ
- KfP/TaX7fD81KyzxkAAAA
+Message-Id: <20240305-class_cleanup-s390-v1-1-c4ff1ec49ffd@marliere.net>
+References: <20240305-class_cleanup-s390-v1-0-c4ff1ec49ffd@marliere.net>
+In-Reply-To: <20240305-class_cleanup-s390-v1-0-c4ff1ec49ffd@marliere.net>
 To: Harald Freudenberger <freude@linux.ibm.com>, 
  Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
  Alexander Gordeev <agordeev@linux.ibm.com>, 
@@ -89,52 +90,140 @@ To: Harald Freudenberger <freude@linux.ibm.com>,
 Cc: linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org, 
  "Ricardo B. Marliere" <ricardo@marliere.net>, 
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1262; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=jnklyTAj9n7JSkFIdzS+epw/LCdYIxHvvE3dqFQWSI4=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl5wEgRfkiCCz9gKh2fAxyjfgOAvGhChXiiJb8M
- WXZTc6bDxGJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZecBIAAKCRDJC4p8Y4ZY
- phh1D/wP9rEfdH6o5Q7W4x2p1il9VVS/4KzOPg05OTeig41Stht65IM36qzHOVv5C+9cq1FkCWu
- 77rq/SNN2wuX6B3XwWymPWOG4iV2GQvDRcXJvMJNqusoGBIm0NiqrGKNEaARDJJ6AyeSYdM0il6
- KQ9umCMgziKtXNoN11kuvZkqn3CEVgcbgsZksSHETjs/YVKCF9pLOnW+3FBtMUd28FxmTCKmqDt
- +buXtFsIs+yq9WfoMY/pVWzFnWkg8jg216beKtbEd6xnVOKiTnFz29D5BtrvBlizmyhxuwgV3ln
- T1TEJH2pmc7OuoYnhVvDFoWi9m9W6jkH5qpivCUyYg0d1vmMnVMO21ccGgnBW30UoRRWajsUmZO
- ynSkdZFsKxhejG/P+doDriKnZEqv9bbD0JX4PS28mcRqrrg6daMu9i6i5MaBpZznZWhIf1+3OaA
- e3s5TjMmz+0h1t4naS9wrn9eqhZZgR+w4yn5K7HxA6CJIfZvGm+UZrOLj20ih91M6sUzHhlSTm+
- GzOYeoawZte5F/plye9MdN7ExqpzIpt+Nz+YUQFYMSJ8wtOWYN33pzb+QelqlZ/0HU8NMplNJGx
- uyR5bgbJ7xpgX9neWFCUIk9QDqIjv2kTQKPz/E6yG5nU/+LTm1QJcf0y8zI3TIi9nNN9WN5VDq3
- k688SmVWfOix4tQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4118; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=WGIFWYFh3hQ9VXnIJFPQZwA2uJuy2dcs4lEb7YsAaFs=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl5wEgURe+g1tpepus6BzVvP0vk980i/IPWroJI
+ /59/F/MGSeJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZecBIAAKCRDJC4p8Y4ZY
+ pogPEACmO8SwFAnU9wgtOI41rvLzi7JyoS05P4lm/jj4lLxAXflnBrnaP8JNAxjMlk0RXAZfm5C
+ vOP/xbV/3LPfLKsB3OKbToIBBtsGPHkpKJPUROzM0YnwZl0fGWjox+y2SqBg8VjKlnTMtEw6tsy
+ A0/Gx6ZtWQgO9Q6v0dC2Jsx+Aq/dxhpXZ3oiACwCHZxAxDl8MwgL8RDIoUjEty+vkEDmteadAZR
+ KflNPnXrhAWy4RobwDHBAqjOXRlzjUNCJi/Fnpt31FcO7N8ffoIR7NyU2/3S5OyaRnDnvjpePHH
+ wZNTqZKe9/SW5pgRF/VRl0v3SZv/yZiOSmwxU65ZD9RUMEfGmuT1Q1LGYLzS26kwbMvkj3hcsqh
+ 4ndSJIGFAceQewVfCd/X14p5lKmgXVqAwd6x+jh2qrrgFUrJ8EkmM74YrBNz2oIU975U47xs1Gx
+ rWjLPcTf165B7R4tyxz6zllhGseEPStyo/egzD59BN8SVzQtdieAN2B7L24niXmWGYVt6nLZBO1
+ RHQooqtjYrVs83DQv5GNRAzMia6UcaCBkWtLBWARj0bN63esCldbtSQi1nTcMvYjZ4c4CjpXbZ6
+ Sydfhv8zFnoTW91a4Ab6c8DSIswcR1stpmwUAutB4EHPjPC5k6/OBcxHQ5YMV/K/zSRfTS90/Fc
+ jSWA0BeBaz4/TUQ==
 X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
  fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
-This is a simple and straight forward cleanup series that aims to make the
-class structures in s390 constant. This has been possible since 2023 [1].
+Since commit 43a7206b0963 ("driver core: class: make class_register() take
+a const *"), the driver core allows for struct class to be in read-only
+memory, so move the zcrypt_class structure to be declared at build time
+placing it into read-only memory, instead of having to be dynamically
+allocated at boot time.
 
-[1]: https://lore.kernel.org/all/2023040248-customary-release-4aec@gregkh/
-
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
 ---
-Ricardo B. Marliere (6):
-      s390: zcrypt: make zcrypt_class constant
-      s390: vmur: make vmur_class constant
-      s390: vmlogrdr: make vmlogrdr_class constant
-      s390: tape: make tape_class constant
-      s390: raw3270: improve raw3270_init() readability
-      s390: raw3270: make class3270 constant
-
- drivers/s390/char/fs3270.c       |  8 ++++----
- drivers/s390/char/raw3270.c      | 32 ++++++++++++++++++++------------
- drivers/s390/char/raw3270.h      |  2 +-
- drivers/s390/char/tape_class.c   | 17 ++++++++---------
- drivers/s390/char/vmlogrdr.c     | 19 +++++++++----------
- drivers/s390/char/vmur.c         | 18 +++++++++---------
  drivers/s390/crypto/zcrypt_api.c | 33 +++++++++++++++++----------------
- 7 files changed, 68 insertions(+), 61 deletions(-)
----
-base-commit: 6a42aaf8e867f4876370c3d482ee0c21769dff58
-change-id: 20240305-class_cleanup-s390-d57f7ccc15c9
+ 1 file changed, 17 insertions(+), 16 deletions(-)
 
-Best regards,
+diff --git a/drivers/s390/crypto/zcrypt_api.c b/drivers/s390/crypto/zcrypt_api.c
+index e8742757085b..d0358bb6ccf2 100644
+--- a/drivers/s390/crypto/zcrypt_api.c
++++ b/drivers/s390/crypto/zcrypt_api.c
+@@ -116,7 +116,11 @@ EXPORT_SYMBOL(zcrypt_msgtype);
+ 
+ struct zcdn_device;
+ 
+-static struct class *zcrypt_class;
++static void zcdn_device_release(struct device *dev);
++static const struct class zcrypt_class = {
++	.name = ZCRYPT_NAME,
++	.dev_release = zcdn_device_release,
++};
+ static dev_t zcrypt_devt;
+ static struct cdev zcrypt_cdev;
+ 
+@@ -139,7 +143,7 @@ static int zcdn_destroy(const char *name);
+  */
+ static inline struct zcdn_device *find_zcdndev_by_name(const char *name)
+ {
+-	struct device *dev = class_find_device_by_name(zcrypt_class, name);
++	struct device *dev = class_find_device_by_name(&zcrypt_class, name);
+ 
+ 	return dev ? to_zcdn_dev(dev) : NULL;
+ }
+@@ -151,7 +155,7 @@ static inline struct zcdn_device *find_zcdndev_by_name(const char *name)
+  */
+ static inline struct zcdn_device *find_zcdndev_by_devt(dev_t devt)
+ {
+-	struct device *dev = class_find_device_by_devt(zcrypt_class, devt);
++	struct device *dev = class_find_device_by_devt(&zcrypt_class, devt);
+ 
+ 	return dev ? to_zcdn_dev(dev) : NULL;
+ }
+@@ -405,7 +409,7 @@ static int zcdn_create(const char *name)
+ 		goto unlockout;
+ 	}
+ 	zcdndev->device.release = zcdn_device_release;
+-	zcdndev->device.class = zcrypt_class;
++	zcdndev->device.class = &zcrypt_class;
+ 	zcdndev->device.devt = devt;
+ 	zcdndev->device.groups = zcdn_dev_attr_groups;
+ 	if (name[0])
+@@ -2067,12 +2071,9 @@ static int __init zcdn_init(void)
+ 	int rc;
+ 
+ 	/* create a new class 'zcrypt' */
+-	zcrypt_class = class_create(ZCRYPT_NAME);
+-	if (IS_ERR(zcrypt_class)) {
+-		rc = PTR_ERR(zcrypt_class);
++	rc = class_register(&zcrypt_class);
++	if (rc)
+ 		goto out_class_create_failed;
+-	}
+-	zcrypt_class->dev_release = zcdn_device_release;
+ 
+ 	/* alloc device minor range */
+ 	rc = alloc_chrdev_region(&zcrypt_devt,
+@@ -2088,35 +2089,35 @@ static int __init zcdn_init(void)
+ 		goto out_cdev_add_failed;
+ 
+ 	/* need some class specific sysfs attributes */
+-	rc = class_create_file(zcrypt_class, &class_attr_zcdn_create);
++	rc = class_create_file(&zcrypt_class, &class_attr_zcdn_create);
+ 	if (rc)
+ 		goto out_class_create_file_1_failed;
+-	rc = class_create_file(zcrypt_class, &class_attr_zcdn_destroy);
++	rc = class_create_file(&zcrypt_class, &class_attr_zcdn_destroy);
+ 	if (rc)
+ 		goto out_class_create_file_2_failed;
+ 
+ 	return 0;
+ 
+ out_class_create_file_2_failed:
+-	class_remove_file(zcrypt_class, &class_attr_zcdn_create);
++	class_remove_file(&zcrypt_class, &class_attr_zcdn_create);
+ out_class_create_file_1_failed:
+ 	cdev_del(&zcrypt_cdev);
+ out_cdev_add_failed:
+ 	unregister_chrdev_region(zcrypt_devt, ZCRYPT_MAX_MINOR_NODES);
+ out_alloc_chrdev_failed:
+-	class_destroy(zcrypt_class);
++	class_unregister(&zcrypt_class);
+ out_class_create_failed:
+ 	return rc;
+ }
+ 
+ static void zcdn_exit(void)
+ {
+-	class_remove_file(zcrypt_class, &class_attr_zcdn_create);
+-	class_remove_file(zcrypt_class, &class_attr_zcdn_destroy);
++	class_remove_file(&zcrypt_class, &class_attr_zcdn_create);
++	class_remove_file(&zcrypt_class, &class_attr_zcdn_destroy);
+ 	zcdn_destroy_all();
+ 	cdev_del(&zcrypt_cdev);
+ 	unregister_chrdev_region(zcrypt_devt, ZCRYPT_MAX_MINOR_NODES);
+-	class_destroy(zcrypt_class);
++	class_unregister(&zcrypt_class);
+ }
+ 
+ /*
+
 -- 
-Ricardo B. Marliere <ricardo@marliere.net>
+2.43.0
 
 
