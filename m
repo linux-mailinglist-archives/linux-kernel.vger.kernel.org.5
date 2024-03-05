@@ -1,133 +1,83 @@
-Return-Path: <linux-kernel+bounces-91543-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91542-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A94B1871373
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 03:15:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A993187136F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 03:14:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A06B1F230EA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 02:15:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 45953B20D1E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 02:14:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B108218639;
-	Tue,  5 Mar 2024 02:14:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 411251B59C;
+	Tue,  5 Mar 2024 02:14:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hGjt6YWO"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Xvjr4z9A"
+Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EBD718041
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 02:14:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2D4D1AADC
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 02:14:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.110
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709604856; cv=none; b=vC6nHpMc+EE8BjvEh3Q4jAXU8gORGdOTDjfiZ1H/bLkBY9nGTKhryNTslnxKtqaQK7eocgkIlJyy3wqiVkmBqdMNy+2CHmYQqW/hOynuBo3+CxL6cIVvjmvHUClUjsQeMHWrSNNym/f8HLvkT11I7vjJy8b8ytdh+4HexRsbQK4=
+	t=1709604847; cv=none; b=qMXoGDXYAKpChYgo5/JWQR0cgx+WxTtNy05/nPKa7rvpiQ7AO+1HRJL1MBZv52tChn6PneWjBXdN0nF0YEJsoncqNYBdhlKKP+8O1hFpWw/4nLERLVTy+RYZVIcbL5Qvlks4fbhWvcSKPugwHFTQlzqYfEuI3xUGG1C/1s41jDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709604856; c=relaxed/simple;
-	bh=IGZRWDazN2zylhLDLaR1zEMQEzaAe/lNYzTbi9dGg5A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=svvKFsbyMAaY1gCmCL+LeX6FHy1Riv74kAaVk8G20C8hzzDe9+SBExoupWlStk/Wi4GDxGF9Ma03DY1ksqoQT8JCOFqOOkAN3XWlNLaR+I8CzJfHl/WhpRSqTty5tj1m83j7EC4Fb0E1rM4dwWd3GnJ4GnwSDhvEsAHujxi/xjg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hGjt6YWO; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5658082d2c4so7043305a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 18:14:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709604853; x=1710209653; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j5OaE1yAPnXFqd9/rVrso6AMB2uzPejdz81y+lu6U9Y=;
-        b=hGjt6YWOrInDuoC8Wo1vU3Ig7vmwbNVSwlMBuSdDxIDcvFAfBbaahato0TJn/vQ/x+
-         PmCNVNA27BynSyBYZCJ73R+TPjabjwVKE7BKAjRLKhumQYu414viItljoR/FBq/+fZ3I
-         xo0gpoy6MzTL8rMjvRbjLfRgdpjpC79VfqJ7ULyyMhvoBykBxCoirZWo6+Tm/UkaEex7
-         RRu5f1mLcOxTwwZjYRmONvoOBgCEx0udFDgyHbJ3JhMEWrlof8E0NTmy1TN90cP9oPWA
-         BzQ/V2awqPiqVkj50XKE9q1SiW97bGKMTqs/RGo+Jm8MkY/wNGN1WT6xEXN6Fx9l5fbx
-         N38g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709604853; x=1710209653;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=j5OaE1yAPnXFqd9/rVrso6AMB2uzPejdz81y+lu6U9Y=;
-        b=QfLL7+xj8bNm/S951fgQ6RRQLpfzd/0Y5AnEQ1RuU78KMg/7d0hPqSuWmp3D6owVwI
-         0W8oQ1ikl5YwPsPevnmxYL4jRXbjcRc+hN2LZ9shkhAUt60I8WpTpuKztb6bWFsWxjkH
-         P/jokZanHwCdWvpcQKNTVMbYN2NtszJSTxCsXH+baFzcCmFBv+6qZmHgngCjsrhpIblU
-         MzdkqxQ7Z1IB72dyvmWJEvneSCVOqEbsDlSLC7edcf089rWOtxjfb9ugrm93RRJ6YfHR
-         8COxU+EOY9qXSBo3mkjSQTiTX/8DdW4vYupS40Z3jLSenbwQDYLc3uQINCqf+FqRy82s
-         mgKA==
-X-Forwarded-Encrypted: i=1; AJvYcCXpXQ8dmv0+GMqGOb7l1mchb4wk/j4TTcoBidjJI2Kt1Q1k5fHOzEn7k4VUndM62M7RfYVDvG0r7YhikMhb70nQFXN8srVf/TDfBC8W
-X-Gm-Message-State: AOJu0YyHiO0joguP74ih7ZPLBDWQkZxi3OkJAavD4674RBPo9vleHkfF
-	MTjWlR0c20bf0M/yRXlXdTwgxMaN4tYf+8nhK2zyoqZ8I0PhQOL5xl9B69jnQ7Q1yWvG6nkOx+8
-	WtKACMn0nu0XYz2yzEZ6Q1b6WSH/S+VdkoPaF
-X-Google-Smtp-Source: AGHT+IGg9U7IbxKRNfI2fcyJJ9fkxcYFv9013ElhjEX5PDmjOmQ1/lJ8GjkyLCdPWUWtvlGnjOJvqqtv0CIc4nhukgM=
-X-Received: by 2002:a17:906:711a:b0:a44:8fa9:d36f with SMTP id
- x26-20020a170906711a00b00a448fa9d36fmr7346866ejj.41.1709604852487; Mon, 04
- Mar 2024 18:14:12 -0800 (PST)
+	s=arc-20240116; t=1709604847; c=relaxed/simple;
+	bh=lK5YuSrbfE7Kx/eALl2rZ0XA8T+IedWcCy5Js7/rsFs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Ne1YmU326nLNOQzgxPCw2RfxwM33Fi2CuVqi0FTiBtPKsBiseHVatwjNdrl27XGTYAlBjFVtltAoDc8hakNhUvihR7Uvm5Zu1iRp81x5o0OJrPmcwCBCbMN0prdnYw6ZENmgtN4r8+nlZE0jIPVc3FyeUCGmWg82vp7xt8lb9RQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Xvjr4z9A; arc=none smtp.client-ip=115.124.30.110
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1709604842; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=iYWL+gVoEZhwFv5brMSLgBh5lKRPMNae3MhIIf17YYs=;
+	b=Xvjr4z9AQ/jXJKBP+WXKFIpi7Z/99TH9VDW5BNd8pofeTkIcf/TXFwDGc/6npugkala3DjlXGd2ZnBgQg1QIqdScyY2uIRt+u6jWYSmIRQewgB9cQXvf2knrL0M/d9woRTslKW/skW1Xuwv3RcwzwxdUV3fgMAptJbrNdVsEAXQ=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R331e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=dtcccc@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0W1sbocr_1709604840;
+Received: from 30.97.48.234(mailfrom:dtcccc@linux.alibaba.com fp:SMTPD_---0W1sbocr_1709604840)
+          by smtp.aliyun-inc.com;
+          Tue, 05 Mar 2024 10:14:01 +0800
+Message-ID: <5b863dfe-bb97-4bc9-a117-153b1ba087f0@linux.alibaba.com>
+Date: Tue, 5 Mar 2024 10:13:59 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240229212236.3152897-1-ziweixiao@google.com> <170954702808.29163.14572409164565217897.git-patchwork-notify@kernel.org>
-In-Reply-To: <170954702808.29163.14572409164565217897.git-patchwork-notify@kernel.org>
-From: Mina Almasry <almasrymina@google.com>
-Date: Mon, 4 Mar 2024 18:13:58 -0800
-Message-ID: <CAHS8izNC9-ZD-tn+FWK_uEc=50pKw3WEQosBBDg+LWxBgfy4Kw@mail.gmail.com>
-Subject: Re: [PATCH net-next 0/3] gve: Add header split support
-To: patchwork-bot+netdevbpf@kernel.org
-Cc: Ziwei Xiao <ziweixiao@google.com>, netdev@vger.kernel.org, jeroendb@google.com, 
-	pkaligineedi@google.com, shailend@google.com, davem@davemloft.net, 
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, willemb@google.com, 
-	rushilg@google.com, jfraker@google.com, jrkim@google.com, 
-	hramamurthy@google.com, horms@kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] sched/eevdf: Always update V if se->on_rq when
+ reweighting
+Content-Language: en-US
+To: Abel Wu <wuyun.abel@bytedance.com>, linux-kernel@vger.kernel.org
+Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira
+ <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>
+References: <20240304030042.2690-1-dtcccc@linux.alibaba.com>
+ <20240304030042.2690-2-dtcccc@linux.alibaba.com>
+ <ad801d18-6243-47c5-8e37-ce712ca5d0c5@bytedance.com>
+From: Tianchen Ding <dtcccc@linux.alibaba.com>
+In-Reply-To: <ad801d18-6243-47c5-8e37-ce712ca5d0c5@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 4, 2024 at 2:10=E2=80=AFAM <patchwork-bot+netdevbpf@kernel.org>=
- wrote:
->
-> Hello:
->
-> This series was applied to netdev/net-next.git (main)
-> by David S. Miller <davem@davemloft.net>:
->
-> On Thu, 29 Feb 2024 13:22:33 -0800 you wrote:
-> > Currently, the ethtool's ringparam has added a new field tcp-data-split
-> > for enabling and disabling header split. These three patches will
-> > utilize that ethtool flag to support header split in GVE driver.
-> >
-> > Jeroen de Borst (3):
-> >   gve: Add header split device option
-> >   gve: Add header split data path
-> >   gve: Add header split ethtool stats
-> >
-> > [...]
->
-> Here is the summary with links:
->   - [net-next,1/3] gve: Add header split device option
->     https://git.kernel.org/netdev/net-next/c/0b43cf527d1d
->   - [net-next,2/3] gve: Add header split data path
->     https://git.kernel.org/netdev/net-next/c/5e37d8254e7f
->   - [net-next,3/3] gve: Add header split ethtool stats
->     https://git.kernel.org/netdev/net-next/c/056a70924a02
->
-> You are awesome, thank you!
-> --
-> Deet-doot-dot, I am a bot.
-> https://korg.docs.kernel.org/patchwork/pwbot.html
->
+On 2024/3/4 20:06, Abel Wu wrote:
+> On 3/4/24 11:00 AM, Tianchen Ding Wrote:
+>> reweight_eevdf() needs the latest V to do accurate calculation for new
+>> ve and vd. So update V unconditionally when se is runnable.
+> 
+> As this should come along with commit eab03c23c2a1, I think it would
+> be better add a Fixes tag?
+> 
 
-The patches have already been merged so it probably doesn't matter,
-but FWIW I was able to rebase my changes on top of these and test with
-devmem TCP and everything looks fine. So, for what it's worth:
+I'm not sure. In fact avg_vruntime_sub() in reweight_entity() was first 
+introduced by af4cf40470c2, and at that time the algorithm about reweight was 
+not completed...
 
-Tested-by: Mina Almasry <almasrymina@google.com>
-
-Thanks Ziwei!
-
---=20
-Thanks,
-Mina
 
