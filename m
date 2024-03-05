@@ -1,120 +1,175 @@
-Return-Path: <linux-kernel+bounces-91453-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91454-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E47F8711B1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 01:28:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF23F8711B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 01:28:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF636282B39
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 00:28:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6487B1F21FAC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 00:28:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DC4317EF;
-	Tue,  5 Mar 2024 00:28:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF68F5664;
+	Tue,  5 Mar 2024 00:28:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lvyPTQ5Z"
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rc5+QLUe"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADE49EC2
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 00:28:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 378464C96
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 00:28:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709598494; cv=none; b=dD+MOorTuJfmJJMlSWdASCnB9q+rx7is8BaQPCxNRlbqydJeMkJqsq69yfZB+GMKCZ7whr4tlBU4YcCQ+g0v584P8HvgN/2sNS/6EKVDCjuFqbv6sdUrZ13TmOZNDluhR9BsCZkLNJqfgb20KR5ECbvdHeGpxYybvVOCkhkojNk=
+	t=1709598508; cv=none; b=n9tp+L+O1kzeU8Hd3XwK5rKIDwCKESv3ZwUdGrmZCFdkIOKfy29cQmh6PcKq6+DvK6erqku4mWyseTvYy80BxBYsvFkyzBq8bkY1jvny9YGNPwXl30D3zw1nggTBHHm7ajPCQ5Cuofd+gyHyTViEfT6/P6UQSNf73yW62RQsXhc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709598494; c=relaxed/simple;
-	bh=4AjwDlHx3YycEF4tI7pNTUo4oAM3+zIFAtp1wah21RI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Yil5OPhtwmWs+CULuAqHZaQOTfcE18SBOS0o37C/peqVb0jQ0gTX5XdwdsPYBFuV8yKEBJGBhgsWLrB2X1dyXt7VxB1hGXpyLo/LTl4A8764lSAp6iylykE8Pyql3gVs1PN1qXhhJiXo+Q8QK18gzHJghnq7BAE7gftq7DOljuE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lvyPTQ5Z; arc=none smtp.client-ip=209.85.208.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d2505352e6so64892041fa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 16:28:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709598491; x=1710203291; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UgihA/j9MMe4W3y4lHJTNEdOriPRYiwOGRsjM+J9mKU=;
-        b=lvyPTQ5ZbZXaGZvDLqAFKF0spichesYx7frXozgQSKM88zU+21JFcLVq0zxJhnBlKO
-         d4bCn/kOhn7bKCL/oUm975hzFBf9V3JcxG56HUVl+7vnUUCPtua2aYy7K6g0+Z/x1vst
-         MPPhPclxXnHqxvUkMtHKaz5qZKFxbz3vxeCbGqpLII0E6Zdd7+0/3Nq06XSrMMmPypW5
-         yBrzmRPIS9ZlC0aEvkIrmuBo3o3uzL7TeqiyRSQT8CfUOYjgm+spU2NDH/JPTg6MHk/X
-         xN6ulElgzibyMjNn0kkTSI6FvNLdy8W7CF+w6HnSvm2FxIN4w+m1Hpz07a9p7ysmcIQO
-         L92g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709598491; x=1710203291;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UgihA/j9MMe4W3y4lHJTNEdOriPRYiwOGRsjM+J9mKU=;
-        b=RSTW8wuzGhZqGgvqTBVtZ1+lgICHVrhIeUL0USTRO9ffrI3bSrp60HRmE8YKmheCfK
-         L4VgcdBMCMlH2+4hc3ViYlTlbfv3OESHs28HEZuvN9do09hzUszcaqEiyBQBhw9aQ312
-         2LY/0ZRYLZJhDY41LOieuG5DNc8vO52n+qWJNHYqSDTzwZmRsxqBvyK+jrvO35PC4PZt
-         7dtUN5EpYP9DuTfSzUQMI+IiRAijaPEJEqx3483bQTngwd8Zd5Q2i1cWv+m0gXhaR6R9
-         8aRx7ozpCSfvAD4ymhj0kWnEzzpUDjBOllP0Hh/F2kUCjTfJD0Dfgs4OJDlUZ5MDIokW
-         ZTnQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU3eDzaVwbvds8xy8Bp1V9GC5syce3Hv8wCJMrfzatqMPt4tBAMeP21p77/QaeOJGpRrMe4JzTXPE+1lLtmWd+R/jIh6MkEob0ognH7
-X-Gm-Message-State: AOJu0YzsE0c/TbMu+0199TnYza4EdWofGpMA/rC1d2x3ZeqIXQIkI142
-	QOaqdvCxtYkD/RgkSDZDeVQ/DcOOgCMEOesrLSaAr9/yHKMJj2hbesyaF34gG3s=
-X-Google-Smtp-Source: AGHT+IFDZK6sfIEdXRUKSjRI7ZdugsypJRMtPgYmqMfgXbm1nTdG+dB8phMOK0N67CVLvFXHeQOFIw==
-X-Received: by 2002:a05:6512:282c:b0:513:2c50:9644 with SMTP id cf44-20020a056512282c00b005132c509644mr257056lfb.12.1709598490724;
-        Mon, 04 Mar 2024 16:28:10 -0800 (PST)
-Received: from umbar.lan (dzyjmhybhls-s--zn36gy-3.rev.dnainternet.fi. [2001:14ba:a00e:a300:264b:feff:fe8b:be8a])
-        by smtp.gmail.com with ESMTPSA id s15-20020ac2464f000000b005133d11b261sm1149416lfo.92.2024.03.04.16.28.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 16:28:10 -0800 (PST)
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To: Rob Clark <robdclark@gmail.com>,
-	Abhinav Kumar <quic_abhinavk@quicinc.com>,
-	Sean Paul <sean@poorly.run>,
-	Marijn Suijten <marijn.suijten@somainline.org>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Steev Klimaszewski <steev@kali.org>,
-	linux-arm-msm@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	freedreno@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/3] drm/msm/dpu: debug commit_done timeouts
-Date: Tue,  5 Mar 2024 02:28:08 +0200
-Message-Id: <170959846405.1203069.5519628464509979288.b4-ty@linaro.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240226-fd-dpu-debug-timeout-v4-0-51eec83dde23@linaro.org>
-References: <20240226-fd-dpu-debug-timeout-v4-0-51eec83dde23@linaro.org>
+	s=arc-20240116; t=1709598508; c=relaxed/simple;
+	bh=S/MxXC0LyuU+rBL34uUkqZ7q4SGqxtyGFgsbajGBEcs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=L+VwmNRY968pfgzjUFjd/jxGKs36G34pERO8H0h2JcIGx4n/B9TTnN1t59yqqjnmUOjsi/lax0m0xDFjI6EvamwIjejqrFzRtLl1iKb1MFC4gmcJc6miroBTOJSAAWh98/SRz3B19uSyAnHQ+jXX3HKlwUaxl0Kzuuaov0fFGo4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rc5+QLUe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC955C433F1;
+	Tue,  5 Mar 2024 00:28:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709598507;
+	bh=S/MxXC0LyuU+rBL34uUkqZ7q4SGqxtyGFgsbajGBEcs=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Rc5+QLUe9qB1IOVNuhSSLxyA/R0diXuNTa/lnQ0xWy3WI3ViHgxYif7nCRHy1Afob
+	 YmFhQyaHqqsAkqr+dFrk96K24BdWJPn+o480Tr1RiqpM1AuYk0rSdVdS44PY1hBJjW
+	 oucE87ka0LPwAMFvotTo7hG3t9Rl4kK04LmqYLc/d+YsdLDY2hMRXT8l0AzgoQBIA+
+	 lYa8yr2l6dE+7T+G3/z3WtOJ67YxIeWPptUlZGhEcGviv45PHjODjF5+uJFvx2uo4Y
+	 3lfF2+g1qXDuYtld67zDYYxm8tm7SWEQqq8ZMHSm82xGSMi+2DTn34RUL7QDWEzby6
+	 68X47U8y8D4+g==
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Thomas Gleixner <tglx@linutronix.de>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>
+Subject: [PATCH] timer/migration: Fix quick check reporting late expiry
+Date: Tue,  5 Mar 2024 01:28:22 +0100
+Message-ID: <20240305002822.18130-1-frederic@kernel.org>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
+When a CPU is the last active in the hierarchy and it tries to enter
+into idle, the quick check looking up the next event towards cpuidle
+heuristics may report a too late expiry, such as in the following
+scenario:
 
-On Mon, 26 Feb 2024 04:27:58 +0200, Dmitry Baryshkov wrote:
-> In order to debug commit_done timeouts ([1]) display the sticky bits of
-> the CTL_FLUSH register and capture the devcore dump when the first such
-> timeout occurs.
-> 
-> [1] https://gitlab.freedesktop.org/drm/msm/-/issues/33
-> 
-> 
-> [...]
+                        [GRP1:0]
+                     migrator = NONE
+                     active   = NONE
+                     nextevt  = T0:0, T0:1
+                     /              \
+          [GRP0:0]                  [GRP0:1]
+       migrator = NONE           migrator = NONE
+       active   = NONE           active   = NONE
+       nextevt  = T0, T1         nextevt  = T2
+       /         \                /         \
+      0           1              2           3
+    idle       idle           idle         idle
 
-Applied, thanks!
+0) The whole system is idle, and CPU 0 was the last migrator. CPU 0 has
+a timer (T0), CPU 1 has a timer (T1) and CPU 2 has a timer (T2). The
+expire order is T0 < T1 < T2.
 
-[1/3] drm/msm/dpu: make "vblank timeout" more useful
-      https://gitlab.freedesktop.org/lumag/msm/-/commit/f1d0b196ff2e
-[2/3] drm/msm/dpu: split dpu_encoder_wait_for_event into two functions
-      https://gitlab.freedesktop.org/lumag/msm/-/commit/d72a3d35b7ef
-[3/3] drm/msm/dpu: capture snapshot on the first commit_done timeout
-      https://gitlab.freedesktop.org/lumag/msm/-/commit/4be445f5b6b6
+                        [GRP1:0]
+                     migrator = GRP0:0
+                     active   = GRP0:0
+                     nextevt  = T0:0(i), T0:1
+                   /              \
+          [GRP0:0]                  [GRP0:1]
+       migrator = CPU0           migrator = NONE
+       active   = CPU0           active   = NONE
+       nextevt  = T0(i), T1      nextevt  = T2
+       /         \                /         \
+      0           1              2           3
+    active       idle           idle         idle
 
-Best regards,
+1) CPU 0 becomes active. The (i) means a now ignored timer.
+
+                        [GRP1:0]
+                     migrator = GRP0:0
+                     active   = GRP0:0
+                     nextevt  = T0:1
+                     /              \
+          [GRP0:0]                  [GRP0:1]
+       migrator = CPU0           migrator = NONE
+       active   = CPU0           active   = NONE
+       nextevt  = T1             nextevt  = T2
+       /         \                /         \
+      0           1              2           3
+    active       idle           idle         idle
+
+2) CPU 0 handles remote. No timer actually expired but ignored timers
+   have been cleaned out and their sibling's timers haven't been
+   propagated. As a result the top level's next event is T2 and not T1.
+
+3) CPU 0 tries to enter idle without any global timer enqueued and calls
+   tmigr_quick_check(). The expiry of T2 is returned instead of the
+   expiry of T1.
+
+When the quick check returns an expiry that is too late, the cpuidle
+governor may pick up a C-state that is too deep. This may be result into
+undesired CPU wake up latency if the next timer is actually close enough.
+
+Fix this with assuming that expiries aren't sorted top-down while
+performing the quick check. Pick up instead the earliest encountered one
+while walking up the hierarchy.
+
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+---
+ kernel/time/timer_migration.c | 24 +++++++++++++++---------
+ 1 file changed, 15 insertions(+), 9 deletions(-)
+
+diff --git a/kernel/time/timer_migration.c b/kernel/time/timer_migration.c
+index d85aa2afb969..085b1d86aba9 100644
+--- a/kernel/time/timer_migration.c
++++ b/kernel/time/timer_migration.c
+@@ -1385,11 +1385,11 @@ u64 tmigr_cpu_deactivate(u64 nextexp)
+  *			  single group active on the way to top level)
+  * * nextevt		- when CPU is offline and has to handle timer on his own
+  *			  or when on the way to top in every group only a single
+- *			  child is active and but @nextevt is before next_expiry
+- *			  of top level group
+- * * next_expiry (top)	- value of top level group, when on the way to top in
+- *			  every group only a single child is active and @nextevt
+- *			  is after this value active child.
++ *			  child is active but @nextevt is before the lowest
++ * 		  next_expiry encountered while walking up to top level.
++ * * next_expiry	- value of lowest expiry encountered while walking groups
++ *			  if only a single child is active on each and @nextevt
++ *			  is after this lowest expiry.
+  */
+ u64 tmigr_quick_check(u64 nextevt)
+ {
+@@ -1408,10 +1408,16 @@ u64 tmigr_quick_check(u64 nextevt)
+ 	do {
+ 		if (!tmigr_check_lonely(group)) {
+ 			return KTIME_MAX;
+-		} else if (!group->parent) {
+-			u64 first_global = READ_ONCE(group->next_expiry);
+-
+-			return min_t(u64, nextevt, first_global);
++		} else {
++			/*
++			 * Since current CPU is active, events may not be sorted
++			 * from bottom to the top because the CPU's event is ignored
++			 * up to the top and its sibling's events not propagated upwards.
++			 * Thus keep track of the lowest observed expiry.
++			 */
++			nextevt = min_t(u64, nextevt, READ_ONCE(group->next_expiry));
++			if (!group->parent)
++				return nextevt;
+ 		}
+ 		group = group->parent;
+ 	} while (group);
 -- 
-Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+2.44.0
+
 
