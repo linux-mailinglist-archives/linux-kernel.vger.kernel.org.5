@@ -1,103 +1,45 @@
-Return-Path: <linux-kernel+bounces-92846-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92847-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA27B8726D6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:42:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB5538726D7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:44:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80DF0288D47
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:42:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06BC71C208A7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:44:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D82B12880D;
-	Tue,  5 Mar 2024 18:40:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PMRsMfof"
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51BF11A5BA;
+	Tue,  5 Mar 2024 18:44:07 +0000 (UTC)
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC80086657;
-	Tue,  5 Mar 2024 18:40:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E330A1C01
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 18:43:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709664053; cv=none; b=GIP+Ah348hFqGnxwFrHdh2a2Wjd32xzLdp9gJ9bII1CiVEYZizU5SF2uE+qY/0iuWp2BRH8WxiAt6l3HX76CPcK7YZsMSoa14Bb90SW/Ikjl6CnT2OU+d4Y2afhDqxzVdiaNpvVzk+AqFAfYpFyW8GDrQlzzkyiDIXXBpqEQUQE=
+	t=1709664246; cv=none; b=MBGjpCTUH3lSeMOgSH9F31UFYIROGUeDYzZ0bVxdF9zifTW1GqL0jbfJ0jK9HNM5CjmAXYtn9faTxIjbKf6d1VxMIgjd71RTfNeNInw1/mIDzmaYXFlykt2ZbTmtKkoAi5/G+B/jpgLRlo+7S2HzQSQhI6LdJXE8zSh1rSuv+HQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709664053; c=relaxed/simple;
-	bh=noyTquE0oeh4bMQGWb9TTkaxmt5wl0t40DilAAM+zUE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=T9l/81bRW/K/f7DEyIIx6+XJtbYF0TC2VCrWOAaCW7JhhoQf1gXcOcGhi+ySyvEYqQtie1R5VHXKlkAsNRxzSdlVjyB3X/gylt6nb/hKBwGUciW3vDdJfLaux+SEq4jhaeqi0B4+o4n9qe5Q+fDfC7PulKdhDJMHjdRYmdWCy6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PMRsMfof; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6e5d7f1f25fso2642904b3a.0;
-        Tue, 05 Mar 2024 10:40:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709664051; x=1710268851; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X0gUmPSeCCdcwdwoiei/E0Jjh2VpvFQYRxx27Vw8kHc=;
-        b=PMRsMfofxnZjQ1ufzMKFBDkoWmX7tK8N5DIcd0g8BMZFOrVUe3UtQdYTBA6isL1SyQ
-         vPl481VPJYdET9kspk0YxUY97lJaVsgxcolimnfGCxcS1vUKqWM4STqvp2ueSpJSJpCp
-         Jab0mZwzs8aYYl9sl4RCnFb1T4BD/E61CD8a/ZnSyO+xkQMeVtSllNdOvSaELU1Sbbod
-         0G/0RVFc0/yspWIExHl7mdnV7KPkRpy2xz5vZVD61mBnpoIeEm2OPTvIs7RvHXKekYgH
-         zOwDnGxwT0X4yYoo18Ge937b+Q38fMpzHHGYGcFmFb43X6kes0p5WJ7F1lBpqrfX99Qq
-         M+JA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709664051; x=1710268851;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=X0gUmPSeCCdcwdwoiei/E0Jjh2VpvFQYRxx27Vw8kHc=;
-        b=gy7tjKJlI77fZlrMzfrNWDMwBVDZRcuRWhFCIB3rbc4JsxazH5PWyVqhda1EK49bPr
-         5ZHM7fO9jZCqadOri6dIwoEKtW+IE5JMogju5WB+44LdqIyP50XgtR67v9uuFZSsqmnv
-         T9+qpYuTvWYucf0TCUARgJYL0xly1Q6ENV6Dew8J4z62CxGFZb7EmjVa/SB8SAalotJR
-         +4YPIRnhjWxPynYSF3h/a4PsUhPA2EHh+XilAZweWx/PKQWs44NI0dmT70fOsGU9FHs7
-         6p5KqCwsm7kMpI65IZT86YqAMOGNFL6czu8drjNn7amLbWjDHBuj5ZvRZF3se0ux0TQz
-         b6PQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU7TXW0ZpXWefkSjEir7ggGTZkUn6NK9sK9ubygQcOBuwrriNSpF9O6yzrzI0MfSOuq24Va2yLfrsaH/9vp6RCxK6BTT4PKtMPxY0RkMOmA7KUyapMBRurZQu5SIaxWuCVGB/TrKdcjUg==
-X-Gm-Message-State: AOJu0Yxsn0SSYZsdKsHGxzMELOuUxMoCC3ORrBwQqtceKhyMLppbsAWe
-	BARWIl9yc+VecDLjCRZC+aaooU8mM4aApWxbuSammPpgNFmUhThAKAlsLIZH
-X-Google-Smtp-Source: AGHT+IEh5cNC1e3ALin9EYEqP1JMKTTzvFIxop5uA7PitJpNaz0+Cvy9gmZD//Z/el6YtUoATah/OA==
-X-Received: by 2002:a05:6a21:3403:b0:1a0:e089:e25e with SMTP id yn3-20020a056a21340300b001a0e089e25emr2819250pzb.46.1709664050630;
-        Tue, 05 Mar 2024 10:40:50 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id p2-20020aa78602000000b006e24991dd5bsm9538237pfn.98.2024.03.05.10.40.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 10:40:49 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From: Guenter Roeck <linux@roeck-us.net>
-To: linux-kselftest@vger.kernel.org
-Cc: David Airlie <airlied@gmail.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	=?UTF-8?q?Ma=C3=ADra=20Canal?= <mcanal@igalia.com>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	Kees Cook <keescook@chromium.org>,
-	Daniel Diaz <daniel.diaz@linaro.org>,
-	David Gow <davidgow@google.com>,
-	Arthur Grillo <arthurgrillo@riseup.net>,
-	Brendan Higgins <brendan.higgins@linux.dev>,
-	Naresh Kamboju <naresh.kamboju@linaro.org>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Maxime Ripard <mripard@kernel.org>,
-	=?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org,
-	kunit-dev@googlegroups.com,
-	linux-arch@vger.kernel.org,
-	Guenter Roeck <linux@roeck-us.net>
-Subject: [RFC PATCH 5/5] loongarch: Add support for suppressing warning tracebacks
-Date: Tue,  5 Mar 2024 10:40:33 -0800
-Message-Id: <20240305184033.425294-6-linux@roeck-us.net>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240305184033.425294-1-linux@roeck-us.net>
-References: <20240305184033.425294-1-linux@roeck-us.net>
+	s=arc-20240116; t=1709664246; c=relaxed/simple;
+	bh=YSepaJODTP6f0jj2gdYgSOGN1WTX0Y0medx8vbhJYBU=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Q64eb/Ls8mtRr0Sb2y8l8RvcV+JfrbyLizxk7AyM8f8PnPU24CfJUgHcVdyaUwWlf1LGfkKkEnWM2R20plzniYYrg6uvzeUW2adHLOmgdynqP3LIRcf3HDKiRHYCNkxGAk9cif1iKjyK4iwv6hpuq5NOaT8KmxaBDl4jPgnronE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from localhost.localdomain (171.25.167.209) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Tue, 5 Mar
+ 2024 21:43:51 +0300
+From: Karina Yankevich <k.yankevich@omp.ru>
+To: Herbert Xu <herbert@gondor.apana.org.au>
+CC: Karina Yankevich <k.yankevich@omp.ru>, "David S. Miller"
+	<davem@davemloft.net>, <s.shtylyov@omp.ru>, <linux-kernel@vger.kernel.org>,
+	<lvc-project@linuxtesting.org>
+Subject: [PATCH] crypto: drbg - make drbg_kcapi_{ctr_bcc,kcapi_sym}() return void
+Date: Tue, 5 Mar 2024 21:43:16 +0300
+Message-ID: <20240305184322.337015-1-k.yankevich@omp.ru>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -105,103 +47,171 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 03/05/2024 18:25:50
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 183976 [Mar 05 2024]
+X-KSE-AntiSpam-Info: Version: 6.1.0.3
+X-KSE-AntiSpam-Info: Envelope from: k.yankevich@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 8 0.3.8 4a99897b35b48c45ee5c877607d26a2d9f419920
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 171.25.167.209 in (user)
+ dbl.spamhaus.org}
+X-KSE-AntiSpam-Info:
+	127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;omp.ru:7.1.1
+X-KSE-AntiSpam-Info: ApMailHostAddress: 171.25.167.209
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 03/05/2024 18:31:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 3/5/2024 3:17:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-Add support for selectively suppressing WARNING tracebacks to loongarch.
-This requires adding the function triggering tracebacks to the __bug_table
-object section.
+drgb_kcapi_sym() always returns 0, so make it return void instead.
+Consequently, make drbg_ctr_bcc() return void too.
 
-To limit image size impact, the pointer to the function name is only added
-to the __bug_table section if both CONFIG_KUNIT and CONFIG_DEBUG_BUGVERBOSE
-are enabled. Otherwise, the __func__ assembly parameter is replaced with a
-(dummy) NULL parameter to avoid an image size increase due to unused
-__func__ entries (this is necessary because __func__ is not a define but a
-virtual variable).
+Found by Linux Verification Center (linuxtesting.org) with the Svace static
+analysis tool.
 
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Karina Yankevich <k.yankevich@omp.ru>
 ---
- arch/loongarch/include/asm/bug.h | 38 +++++++++++++++++++++++---------
- 1 file changed, 27 insertions(+), 11 deletions(-)
+ crypto/drbg.c | 38 ++++++++++++--------------------------
+ 1 file changed, 12 insertions(+), 26 deletions(-)
 
-diff --git a/arch/loongarch/include/asm/bug.h b/arch/loongarch/include/asm/bug.h
-index d4ca3ba25418..25f2b5ae7702 100644
---- a/arch/loongarch/include/asm/bug.h
-+++ b/arch/loongarch/include/asm/bug.h
-@@ -3,47 +3,63 @@
- #define __ASM_BUG_H
+diff --git a/crypto/drbg.c b/crypto/drbg.c
+index 3addce90930c..2402ca788899 100644
+--- a/crypto/drbg.c
++++ b/crypto/drbg.c
+@@ -295,8 +295,8 @@ MODULE_ALIAS_CRYPTO("drbg_nopr_ctr_aes128");
  
- #include <asm/break.h>
-+#include <kunit/bug.h>
- #include <linux/stringify.h>
+ static void drbg_kcapi_symsetkey(struct drbg_state *drbg,
+ 				 const unsigned char *key);
+-static int drbg_kcapi_sym(struct drbg_state *drbg, unsigned char *outval,
+-			  const struct drbg_string *in);
++static void drbg_kcapi_sym(struct drbg_state *drbg, unsigned char *outval,
++			   const struct drbg_string *in);
+ static int drbg_init_sym_kernel(struct drbg_state *drbg);
+ static int drbg_fini_sym_kernel(struct drbg_state *drbg);
+ static int drbg_kcapi_sym_ctr(struct drbg_state *drbg,
+@@ -305,11 +305,10 @@ static int drbg_kcapi_sym_ctr(struct drbg_state *drbg,
+ #define DRBG_OUTSCRATCHLEN 256
  
- #ifndef CONFIG_DEBUG_BUGVERBOSE
--#define _BUGVERBOSE_LOCATION(file, line)
-+#define _BUGVERBOSE_LOCATION(file, func, line)
- #else
--#define __BUGVERBOSE_LOCATION(file, line)			\
-+#if IS_ENABLED(CONFIG_KUNIT)
-+# define HAVE_BUG_FUNCTION
-+# define __BUG_FUNC_PTR(func)  .long func - .;
-+#else
-+# define __BUG_FUNC_PTR(func)
-+#endif
-+
-+#define __BUGVERBOSE_LOCATION(file, func, line)			\
- 		.pushsection .rodata.str, "aMS", @progbits, 1;	\
- 	10002:	.string file;					\
- 		.popsection;					\
- 								\
- 		.long 10002b - .;				\
-+		__BUG_FUNC_PTR(func)				\
- 		.short line;
--#define _BUGVERBOSE_LOCATION(file, line) __BUGVERBOSE_LOCATION(file, line)
-+#define _BUGVERBOSE_LOCATION(file, func, line) __BUGVERBOSE_LOCATION(file, func, line)
- #endif
+ /* BCC function for CTR DRBG as defined in 10.4.3 */
+-static int drbg_ctr_bcc(struct drbg_state *drbg,
+-			unsigned char *out, const unsigned char *key,
+-			struct list_head *in)
++static void drbg_ctr_bcc(struct drbg_state *drbg,
++			 unsigned char *out, const unsigned char *key,
++			 struct list_head *in)
+ {
+-	int ret = 0;
+ 	struct drbg_string *curr = NULL;
+ 	struct drbg_string data;
+ 	short cnt = 0;
+@@ -326,9 +325,7 @@ static int drbg_ctr_bcc(struct drbg_state *drbg,
+ 			/* 10.4.3 step 4.2 */
+ 			if (drbg_blocklen(drbg) == cnt) {
+ 				cnt = 0;
+-				ret = drbg_kcapi_sym(drbg, out, &data);
+-				if (ret)
+-					return ret;
++				drbg_kcapi_sym(drbg, out, &data);
+ 			}
+ 			out[cnt] ^= *pos;
+ 			pos++;
+@@ -338,9 +335,7 @@ static int drbg_ctr_bcc(struct drbg_state *drbg,
+ 	}
+ 	/* 10.4.3 step 4.2 for last block */
+ 	if (cnt)
+-		ret = drbg_kcapi_sym(drbg, out, &data);
+-
+-	return ret;
++		drbg_kcapi_sym(drbg, out, &data);
+ }
  
- #ifndef CONFIG_GENERIC_BUG
--#define __BUG_ENTRY(flags)
-+#define __BUG_ENTRY(flags, func)
- #else
--#define __BUG_ENTRY(flags) 					\
-+#define __BUG_ENTRY(flags, func)				\
- 		.pushsection __bug_table, "aw";			\
- 		.align 2;					\
- 	10000:	.long 10001f - .;				\
--		_BUGVERBOSE_LOCATION(__FILE__, __LINE__)	\
-+		_BUGVERBOSE_LOCATION(__FILE__, func, __LINE__)	\
- 		.short flags; 					\
- 		.popsection;					\
- 	10001:
- #endif
+ /*
+@@ -387,7 +382,6 @@ static int drbg_ctr_df(struct drbg_state *drbg,
+ 		       unsigned char *df_data, size_t bytes_to_return,
+ 		       struct list_head *seedlist)
+ {
+-	int ret = -EFAULT;
+ 	unsigned char L_N[8];
+ 	/* S3 is input */
+ 	struct drbg_string S1, S2, S4, cipherin;
+@@ -458,9 +452,7 @@ static int drbg_ctr_df(struct drbg_state *drbg,
+ 		 */
+ 		drbg_cpu_to_be32(i, iv);
+ 		/* 10.4.2 step 9.2 -- BCC and concatenation with temp */
+-		ret = drbg_ctr_bcc(drbg, temp + templen, K, &bcc_list);
+-		if (ret)
+-			goto out;
++		drbg_ctr_bcc(drbg, temp + templen, K, &bcc_list);
+ 		/* 10.4.2 step 9.3 */
+ 		i++;
+ 		templen += drbg_blocklen(drbg);
+@@ -481,9 +473,7 @@ static int drbg_ctr_df(struct drbg_state *drbg,
+ 		 * implicit as the key is only drbg_blocklen in size based on
+ 		 * the implementation of the cipher function callback
+ 		 */
+-		ret = drbg_kcapi_sym(drbg, X, &cipherin);
+-		if (ret)
+-			goto out;
++		drbg_kcapi_sym(drbg, X, &cipherin);
+ 		blocklen = (drbg_blocklen(drbg) <
+ 				(bytes_to_return - generated_len)) ?
+ 			    drbg_blocklen(drbg) :
+@@ -493,13 +483,10 @@ static int drbg_ctr_df(struct drbg_state *drbg,
+ 		generated_len += blocklen;
+ 	}
  
--#define ASM_BUG_FLAGS(flags)					\
--	__BUG_ENTRY(flags)					\
-+#define ASM_BUG_FLAGS(flags, func)				\
-+	__BUG_ENTRY(flags, func)				\
- 	break		BRK_BUG
+-	ret = 0;
+-
+-out:
+ 	memset(iv, 0, drbg_blocklen(drbg));
+ 	memset(temp, 0, drbg_statelen(drbg) + drbg_blocklen(drbg));
+ 	memset(pad, 0, drbg_blocklen(drbg));
+-	return ret;
++	return 0;
+ }
  
--#define ASM_BUG()	ASM_BUG_FLAGS(0)
-+#define ASM_BUG()	ASM_BUG_FLAGS(0, .)
-+
-+#ifdef HAVE_BUG_FUNCTION
-+# define __BUG_FUNC    __func__
-+#else
-+# define __BUG_FUNC    NULL
-+#endif
+ /*
+@@ -1807,15 +1794,14 @@ static void drbg_kcapi_symsetkey(struct drbg_state *drbg,
+ 	crypto_cipher_setkey(tfm, key, (drbg_keylen(drbg)));
+ }
  
- #define __BUG_FLAGS(flags)					\
--	asm_inline volatile (__stringify(ASM_BUG_FLAGS(flags)));
-+	asm_inline volatile (__stringify(ASM_BUG_FLAGS(flags, %0)) : : "i" (__BUG_FUNC));
+-static int drbg_kcapi_sym(struct drbg_state *drbg, unsigned char *outval,
+-			  const struct drbg_string *in)
++static void drbg_kcapi_sym(struct drbg_state *drbg, unsigned char *outval,
++			   const struct drbg_string *in)
+ {
+ 	struct crypto_cipher *tfm = drbg->priv_data;
  
- #define __WARN_FLAGS(flags)					\
- do {								\
- 	instrumentation_begin();				\
--	__BUG_FLAGS(BUGFLAG_WARNING|(flags));			\
-+	if (!IS_SUPPRESSED_WARNING(__func__))			\
-+		__BUG_FLAGS(BUGFLAG_WARNING|(flags));		\
- 	instrumentation_end();					\
- } while (0)
+ 	/* there is only component in *in */
+ 	BUG_ON(in->len < drbg_blocklen(drbg));
+ 	crypto_cipher_encrypt_one(tfm, outval, in->buf);
+-	return 0;
+ }
  
+ static int drbg_kcapi_sym_ctr(struct drbg_state *drbg,
 -- 
-2.39.2
+2.44.0
 
 
