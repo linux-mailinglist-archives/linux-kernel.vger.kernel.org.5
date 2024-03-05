@@ -1,132 +1,154 @@
-Return-Path: <linux-kernel+bounces-91969-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91970-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62F1D871930
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:12:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5542787193A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:12:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7823DB25348
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:11:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 05C8A1F245DC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:12:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1623E50263;
-	Tue,  5 Mar 2024 09:11:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FE7D524D8;
+	Tue,  5 Mar 2024 09:12:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ixPBNacA"
-Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com [209.85.221.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VHAMZBJR"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1BAE4DA1F
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 09:11:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 304B84DA1F;
+	Tue,  5 Mar 2024 09:12:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709629911; cv=none; b=dpRuJcVb1XNNsHhqFSX7Gvk4uLcMxXZpWRFAnNJyfTewZl6UBW/A4zvGwmEx94rKhwLO5kyqcuSKr8Z8BsheEt8mM+6GEyLth2coaF3U/S/wfruWazgOmtq+/UcIm6fl+u89RL0ZV+QU3W9gj7G07zU4UGBlsnokfmPAA1upk/A=
+	t=1709629936; cv=none; b=gACL2+hl1sY0dlb/04uxAT7bIt62Jh3kNvkMz+l3XUkiqMbrw2GSZooMHe66B4h44uXNHUQCI+Y8kQNddOnRznWGEA9L3OCzWB+VIPxgDBgUvxHskWZDKzUyA6fRw4QM7yEGDZ0ZUVA+YJ8rSN0EsW6NdvD3Rlfe0+0uxwwCG5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709629911; c=relaxed/simple;
-	bh=lspHgMoDrQwCjSsOqQZMNObR97AWdxVqEXmXExyUvME=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UFTSMwUsGa/9oUNkD3t0xQkSAJJcemo9GJOY6m/QfaGBYE9vRQ5NsaiCqq8vFdGwHmbraFyJK9u7r6y4NNz4thvuOsLuDl/3Zkbi4kv6gEcf/xH2VFm7Ns0Q9YeQjYnJnsyWCDULarhoA0tp2SUoLaB9QujRzUzoh46nvsP31zw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ixPBNacA; arc=none smtp.client-ip=209.85.221.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f170.google.com with SMTP id 71dfb90a1353d-4d332d0db9cso1176361e0c.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 01:11:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709629909; x=1710234709; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HK4MOFklGD0kksSLsuZIfHxojou135gVm+eLOXKc4TA=;
-        b=ixPBNacAZbJ37BCTTj7pe5ptRU10Afa6LbYqjn3tiELLfmuLQaVT6PGwAsEj/D7nT0
-         zcJxzdzxaY7DlmI9dZIl17L6cM74QRWrJvjoqSd2K0Kbhk2KhTNElfqnqCjYVmyiXps0
-         2stB/9oim58S0QtzZNEEziIbzDqOqeAliVuaPQ7iGVJk+yZq1kazxs4w2iO7Y8n7O7sH
-         crzljuTzfNuOp56qR34zzBJqshokddRA6Uc8egQBVNq0PgUJ6MJZVp17vgfIwAzA3Sgu
-         4QDsOTr7vYH3/8pNDnPOZheMd290JF1XnoV6EegUog5WONRVFs8yzIt5t/noul2JIc8O
-         YJlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709629909; x=1710234709;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HK4MOFklGD0kksSLsuZIfHxojou135gVm+eLOXKc4TA=;
-        b=WrYbGWKjRoVw74IVJh0KT9lYznIPCQd+Xf5/h99dS5v65ec7d2GpDKfwxLzZvcY6H9
-         gejvX/9/3EYjV0GmqhTbAUISt2dBoRY6Y/s6F9oDhU77lb9CnMoX48Rvcele8VAm6bC2
-         IbrEqjBs12RdOV2owlfENq0PD2r02uiR58OCx63qztAsfA5dqK6YRCTbDicTcHCx8gUl
-         Er57ZSvB8v5fi3pwL/ReVzKCIylomst1iyfqcva9fjmvMs803dzIRtVLswPkICzteI92
-         lDVUDVffcxyUmNoWtCe9w41YhEXR8CYDkmY8FSQ6gHdS04PuPF2AxQVokFU603SL7nd9
-         1pWw==
-X-Forwarded-Encrypted: i=1; AJvYcCU5QaCxDdMs9dOhis7fIl2gCKnPHS5BdT/evE7iQ5guBAwUAh84SRqNyFbPtWmKsmLGhF5yJTItKeGCLJ3JlX6Stez2v0CmlrKvY/b7
-X-Gm-Message-State: AOJu0YxQSXFj0eOME2PlArS7VSQKJBUYf5OHBvwARHd3fFm+b1ju/IDD
-	3OXofbmrBk9pkOYm+lv4bBV5EcRTXE/9HVRrfn1PycuyiQE0rUOYMaYjz1nkn1K7ZV2wohTPyZ4
-	DEP4pIBRe3P9AHOEGuh/XpuQWu6Y=
-X-Google-Smtp-Source: AGHT+IE4lOQmCFcFkhWmA8JnrePAC2BlSKtHgiX+UOC2rbFU7aoFWdKcbH1dasCBbpDAPaXiQJXVUe0mhCSyJyVN90o=
-X-Received: by 2002:a05:6122:2521:b0:4d3:3359:b97d with SMTP id
- cl33-20020a056122252100b004d33359b97dmr1377973vkb.2.1709629908769; Tue, 05
- Mar 2024 01:11:48 -0800 (PST)
+	s=arc-20240116; t=1709629936; c=relaxed/simple;
+	bh=LQj0UdUDprFZhCk/sD0ivlB0RR+zzlR48MZkUdMbHFg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DySCKimLNW2oEK1/x35V1r9zaCURNEc9yFY4AzfV7QJVj5FTwR4xS6tI77dkCbfXlsRczfcNRut3lZElc8KHFTpsV9GILKyGcnqNl5wJEkSekvTQ3ooK9fIp2VjLPT3uAqF+oeIb4mO/upAKyANrqVFnGH+hT1ar+88CrKF7JH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VHAMZBJR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A036AC433C7;
+	Tue,  5 Mar 2024 09:12:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709629935;
+	bh=LQj0UdUDprFZhCk/sD0ivlB0RR+zzlR48MZkUdMbHFg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VHAMZBJR6iOLpsCagpRqBCTT6yOZZ/40nSbEHm6Deht9E7xa7MAJBGLwYAxT5N2AV
+	 qKjKeS42MQwQu7B5CNdNODxPK5aWJqje6X5cwSnQCQO/J8u9OD+EYKLBylhsMcO+at
+	 8TRgDbije51zVdjQ62cqeSPZjsLBGjbwyp7Y99g21Nvq0FFm3qGWM2vePr6XAvEkSA
+	 6ZsVoWMJrOh2P6znfrm73CEmJi+M4ZLE+YgpIoHKC08tRCPt9NELXlToCkxgpdgnfw
+	 N3KdD4dsQs1c+7TQ+Uu+dAlE17b+m/G1nzKWMh9cawmAj6ozeLIy2zCxLSioPfMW8y
+	 azUpWTy5lw/7w==
+Date: Tue, 5 Mar 2024 10:12:06 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
+Cc: Roberto Sassu <roberto.sassu@huaweicloud.com>, 
+	Serge Hallyn <serge@hallyn.com>, Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>, 
+	James Morris <jmorris@namei.org>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Jan Kara <jack@suse.cz>, Stephen Smalley <stephen.smalley.work@gmail.com>, 
+	Ondrej Mosnacek <omosnace@redhat.com>, Casey Schaufler <casey@schaufler-ca.com>, 
+	Mimi Zohar <zohar@linux.ibm.com>, Roberto Sassu <roberto.sassu@huawei.com>, 
+	Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, Eric Snowberg <eric.snowberg@oracle.com>, 
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>, Jonathan Corbet <corbet@lwn.net>, 
+	Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, 
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, audit@vger.kernel.org, selinux@vger.kernel.org, 
+	linux-integrity@vger.kernel.org, linux-doc@vger.kernel.org, linux-unionfs@vger.kernel.org
+Subject: Re: [PATCH v2 24/25] commoncap: use vfs fscaps interfaces
+Message-ID: <20240305-fachjargon-abmontieren-75b1d6c67a83@brauner>
+References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
+ <20240221-idmap-fscap-refactor-v2-24-3039364623bd@kernel.org>
+ <dcbd9e7869d2fcce69546b53851d694b8ebad54e.camel@huaweicloud.com>
+ <ZeXpbOsdRTbLsYe9@do-x1extreme>
+ <a7124afa6bed2fcadcb66efa08e256828cd6f8ab.camel@huaweicloud.com>
+ <ZeX9MRhU/EGhHkCY@do-x1extreme>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240304103757.235352-1-21cnbao@gmail.com> <878r2x9ly3.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <CAGsJ_4yKhoztyA1cuSjGEeVwJfNdhNPNidrX-D_dRazRL7D5hg@mail.gmail.com> <6c16c7c5-8cf4-4c30-b3a5-a9ab55b21114@arm.com>
-In-Reply-To: <6c16c7c5-8cf4-4c30-b3a5-a9ab55b21114@arm.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Tue, 5 Mar 2024 22:11:37 +1300
-Message-ID: <CAGsJ_4w1dhqCu6UA4LGt9XDU_2jmcmWm1=E9MzX2tRv85NrLuw@mail.gmail.com>
-Subject: Re: [RFC PATCH] mm: hold PTL from the first PTE while reclaiming a
- large folio
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: "Huang, Ying" <ying.huang@intel.com>, akpm@linux-foundation.org, linux-mm@kvack.org, 
-	david@redhat.com, chrisl@kernel.org, yuzhao@google.com, hanchuanhua@oppo.com, 
-	linux-kernel@vger.kernel.org, willy@infradead.org, xiang@kernel.org, 
-	mhocko@suse.com, shy828301@gmail.com, wangkefeng.wang@huawei.com, 
-	Barry Song <v-songbaohua@oppo.com>, Hugh Dickins <hughd@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZeX9MRhU/EGhHkCY@do-x1extreme>
 
-On Tue, Mar 5, 2024 at 10:08=E2=80=AFPM Ryan Roberts <ryan.roberts@arm.com>=
- wrote:
->
-> On 05/03/2024 08:56, Barry Song wrote:
-> > are writing pte to zero(break) before writing a new value(make). while
->
-> As an aside, "break-before-make" as defined in the Arm architecture would=
- also
-> require a TLBI, which usually isn't done for these
-> write-0-modify-prots-write-back operations. Arm doesn't require
-> "break-before-make" in these situations so its legal (as long as only cer=
-tain
-> bits are changed). To my understanding purpose of doing this is to avoid =
-races
-> with HW access/dirty flag updates; if the MMU wants to set either flag an=
-d finds
-> the PTE is 0 (invalid) it will cause an exception which will be queued wa=
-iting
-> for the PTL.
->
-> So I don't think you really mean break-before-make here.
+On Mon, Mar 04, 2024 at 10:56:17AM -0600, Seth Forshee (DigitalOcean) wrote:
+> On Mon, Mar 04, 2024 at 05:17:57PM +0100, Roberto Sassu wrote:
+> > On Mon, 2024-03-04 at 09:31 -0600, Seth Forshee (DigitalOcean) wrote:
+> > > On Mon, Mar 04, 2024 at 11:19:54AM +0100, Roberto Sassu wrote:
+> > > > On Wed, 2024-02-21 at 15:24 -0600, Seth Forshee (DigitalOcean) wrote:
+> > > > > Use the vfs interfaces for fetching file capabilities for killpriv
+> > > > > checks and from get_vfs_caps_from_disk(). While there, update the
+> > > > > kerneldoc for get_vfs_caps_from_disk() to explain how it is different
+> > > > > from vfs_get_fscaps_nosec().
+> > > > > 
+> > > > > Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
+> > > > > ---
+> > > > >  security/commoncap.c | 30 +++++++++++++-----------------
+> > > > >  1 file changed, 13 insertions(+), 17 deletions(-)
+> > > > > 
+> > > > > diff --git a/security/commoncap.c b/security/commoncap.c
+> > > > > index a0ff7e6092e0..751bb26a06a6 100644
+> > > > > --- a/security/commoncap.c
+> > > > > +++ b/security/commoncap.c
+> > > > > @@ -296,11 +296,12 @@ int cap_capset(struct cred *new,
+> > > > >   */
+> > > > >  int cap_inode_need_killpriv(struct dentry *dentry)
+> > > > >  {
+> > > > > -	struct inode *inode = d_backing_inode(dentry);
+> > > > > +	struct vfs_caps caps;
+> > > > >  	int error;
+> > > > >  
+> > > > > -	error = __vfs_getxattr(dentry, inode, XATTR_NAME_CAPS, NULL, 0);
+> > > > > -	return error > 0;
+> > > > > +	/* Use nop_mnt_idmap for no mapping here as mapping is unimportant */
+> > > > > +	error = vfs_get_fscaps_nosec(&nop_mnt_idmap, dentry, &caps);
+> > > > > +	return error == 0;
+> > > > >  }
+> > > > >  
+> > > > >  /**
+> > > > > @@ -323,7 +324,7 @@ int cap_inode_killpriv(struct mnt_idmap *idmap, struct dentry *dentry)
+> > > > >  {
+> > > > >  	int error;
+> > > > >  
+> > > > > -	error = __vfs_removexattr(idmap, dentry, XATTR_NAME_CAPS);
+> > > > > +	error = vfs_remove_fscaps_nosec(idmap, dentry);
+> > > > 
+> > > > Uhm, I see that the change is logically correct... but the original
+> > > > code was not correct, since the EVM post hook is not called (thus the
+> > > > HMAC is broken, or an xattr change is allowed on a portable signature
+> > > > which should be not).
+> > > > 
+> > > > For completeness, the xattr change on a portable signature should not
+> > > > happen in the first place, so cap_inode_killpriv() would not be called.
+> > > > However, since EVM allows same value change, we are here.
+> > > 
+> > > I really don't understand EVM that well and am pretty hesitant to try an
+> > > change any of the logic around it. But I'll hazard a thought: should EVM
+> > > have a inode_need_killpriv hook which returns an error in this
+> > > situation?
+> > 
+> > Uhm, I think it would not work without modifying
+> > security_inode_need_killpriv() and the hook definition.
+> > 
+> > Since cap_inode_need_killpriv() returns 1, the loop stops and EVM would
+> > not be invoked. We would need to continue the loop and let EVM know
+> > what is the current return value. Then EVM can reject the change.
+> > 
+> > An alternative way would be to detect that actually we are setting the
+> > same value for inode metadata, and maybe not returning 1 from
+> > cap_inode_need_killpriv().
+> > 
+> > I would prefer the second, since EVM allows same value change and we
+> > would have an exception if there are fscaps.
+> > 
+> > This solves only the case of portable signatures. We would need to
+> > change cap_inode_need_killpriv() anyway to update the HMAC for mutable
+> > files.
+> 
+> I see. In any case this sounds like a matter for a separate patch
+> series.
 
-I agree I use a stronger term. will change it to something lighter in v2.
-
->
-> > this behavior is within PTL in another thread,  page_vma_mapped_walk()
-> > of try_to_unmap_one thread won't take PTL till it meets a present PTE.
-> > for example, if another threads are modifying nr_pages PTEs under PTL,
-> > but we don't hold PTL, we might skip one or two PTEs at the beginning o=
-f
-> > a large folio.
-> > For a large folio, after try_to_unmap_one(), we may result in PTE0 and =
-PTE1
-> > untouched but PTE2~nr_pages-1 are set to swap entries.
-> >
-> > by holding PTL from PTE0 for large folios, we won't get these intermedi=
-ate
-> > values. At the moment we get PTL, other threads have done.
->
-
-Thanks
-Barry
+Agreed.
 
