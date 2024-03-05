@@ -1,87 +1,86 @@
-Return-Path: <linux-kernel+bounces-91576-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91578-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D14018713DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 03:47:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEB348713DF
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 03:48:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72D191F23A3E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 02:47:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6ACFEB239F9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 02:48:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C402129416;
-	Tue,  5 Mar 2024 02:47:17 +0000 (UTC)
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D619A29416;
+	Tue,  5 Mar 2024 02:47:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NntN6rcQ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4482A18032;
-	Tue,  5 Mar 2024 02:47:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18D3D18046;
+	Tue,  5 Mar 2024 02:47:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709606837; cv=none; b=FXZvZtq/gYHUC0IId6RhH3NTeq/9z5r6cG48UsSzNbJQZ7+4O3bbypC5UDBY2+ylt4r/0NCwu8w9iKUB4FT3ZxgwT45RYbLAfQ8tYe4z/WqPVr86DzXY7eIHP9dUvaL2ck4Y0EGEjJx398Gx+VD526s+7Ty2QJUJdBxJ3wgXtzQ=
+	t=1709606860; cv=none; b=U0Tl68XceqY7hDKz6EoJZdCa0k30ZWNCfZabSB+Dk3NYUs9Zq93tVOOGS96yPuxCsWJDQ6Q6KtgNs09+ZU1AdE90Qux+drMSsJgG70dhbsbsN79AbmHV7fm5lkwiu6gxTo1WFUtUmXZOqRWMGKvQ6pYdIAjtGxeSCrkyZCnMPTQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709606837; c=relaxed/simple;
-	bh=MuUyikP68WHPsllS/AZLIjAw7kG0ypfYkfKatNE3yQU=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=diPh5GlA/y9dPHpCBWOqIQz8Z7Q2INiIZsro8t3xOxbixmONtp6iZjBJRJRcirVRkdj2gOr4WEqHHeI8FIUcui5d4DgQODBnPPx2+/dtURYs8pm6DLCNmCapvazXi6zwH5UMhjTxua19kj2a2SucVU7YCl9XXKkFy18maRESHH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Tpg0b3WPYzNlt3;
-	Tue,  5 Mar 2024 10:45:35 +0800 (CST)
-Received: from canpemm100003.china.huawei.com (unknown [7.192.104.85])
-	by mail.maildlp.com (Postfix) with ESMTPS id 32BF114011A;
-	Tue,  5 Mar 2024 10:47:12 +0800 (CST)
-Received: from canpemm500004.china.huawei.com (7.192.104.92) by
- canpemm100003.china.huawei.com (7.192.104.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 5 Mar 2024 10:47:12 +0800
-Received: from [10.174.179.14] (10.174.179.14) by
- canpemm500004.china.huawei.com (7.192.104.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 5 Mar 2024 10:47:11 +0800
-Subject: Re: [PATCH v5 7/7] scsi: isci: Add libsas SATA sysfs attributes group
-To: Igor Pylypiv <ipylypiv@google.com>, Damien Le Moal <dlemoal@kernel.org>,
-	Niklas Cassel <cassel@kernel.org>, John Garry <john.g.garry@oracle.com>,
-	"James E.J. Bottomley" <jejb@linux.ibm.com>, "Martin K. Petersen"
-	<martin.petersen@oracle.com>, Jack Wang <jinpu.wang@cloud.ionos.com>, "Hannes
- Reinecke" <hare@suse.de>, Xiang Chen <chenxiang66@hisilicon.com>, "Artur
- Paszkiewicz" <artur.paszkiewicz@intel.com>, Bart Van Assche
-	<bvanassche@acm.org>
-CC: TJ Adams <tadamsjr@google.com>, <linux-ide@vger.kernel.org>,
-	<linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240305005103.1849325-1-ipylypiv@google.com>
- <20240305005103.1849325-8-ipylypiv@google.com>
-From: Jason Yan <yanaijie@huawei.com>
-Message-ID: <070e02e9-4250-4a19-4673-dd307121da86@huawei.com>
-Date: Tue, 5 Mar 2024 10:47:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+	s=arc-20240116; t=1709606860; c=relaxed/simple;
+	bh=0T1Pf6i0U9jq7TnISrUd+TgQ25I5SY6Dtbz66ISnEuI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=cnOH8Js59H4lT7WCCpPZEK/7OTUQKKo3fBxgLyZ8GKBxNB6grnONegb5ysT97rVIcwV5Dgoh3vkGhtSHJtwWiSOfLK9Ea0rf3+iqo0lRDuEzrFp0M7fbk7QXJAVrdtUh6sC8MLueQfrEUKfC+MDeEJlNzqgnaL4+/Qu1O7frKHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NntN6rcQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BBFCC433F1;
+	Tue,  5 Mar 2024 02:47:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709606859;
+	bh=0T1Pf6i0U9jq7TnISrUd+TgQ25I5SY6Dtbz66ISnEuI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=NntN6rcQrBzH+ryrj/O7wjmTpVTbXFR6scbPvOAVGwp8pyy9wCL/Q6TM5UzuXim7R
+	 5RhzKsRZyp9/sauT3Z2R9Nxr4epg6SDfH3ysSmAQINHlhpRnlbJgdXG5s9m1eza7UZ
+	 5/IyXBss8WTcXet09VmIAO9AwChSJqrDtOq5L/bXyjXuRNJ0dtOg1aJhlpAbPqr3gL
+	 g4/pF0lWyUP3BamLZ1Dj5t9oh9nRw4T3ByM3+Y7DZzw5+uXxSQtgUe/OCaYeq/aNAV
+	 CN5R5HR5e6tx0IrwxN/BFSaU1c6EhD/mYqHJPzmi2O/VgCuicAOypi8XE2kqSE7QmR
+	 Ywu4vPc11BmJw==
+Date: Mon, 4 Mar 2024 18:47:37 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Kory Maincent <kory.maincent@bootlin.com>
+Cc: Florian Fainelli <florian.fainelli@broadcom.com>, Broadcom internal
+ kernel review list <bcm-kernel-feedback-list@broadcom.com>, Andrew Lunn
+ <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>, Russell King
+ <linux@armlinux.org.uk>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Richard
+ Cochran <richardcochran@gmail.com>, Radu Pirea
+ <radu-nicolae.pirea@oss.nxp.com>, Jay Vosburgh <j.vosburgh@gmail.com>, Andy
+ Gospodarek <andy@greyhouse.net>, Nicolas Ferre
+ <nicolas.ferre@microchip.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Jonathan Corbet
+ <corbet@lwn.net>, Horatiu Vultur <horatiu.vultur@microchip.com>,
+ UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>, Vladimir
+ Oltean <vladimir.oltean@nxp.com>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, Maxime Chevallier
+ <maxime.chevallier@bootlin.com>, Rahul Rameshbabu <rrameshbabu@nvidia.com>
+Subject: Re: [PATCH net-next v9 07/13] ptp: Move from simple ida to xarray
+Message-ID: <20240304184737.30cac57b@kernel.org>
+In-Reply-To: <20240226-feature_ptp_netnext-v9-7-455611549f21@bootlin.com>
+References: <20240226-feature_ptp_netnext-v9-0-455611549f21@bootlin.com>
+	<20240226-feature_ptp_netnext-v9-7-455611549f21@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240305005103.1849325-8-ipylypiv@google.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500004.china.huawei.com (7.192.104.92)
 
-On 2024/3/5 8:51, Igor Pylypiv wrote:
-> The added sysfs attributes group enables the configuration of NCQ Priority
-> feature for HBAs that rely on libsas to manage SATA devices.
-> 
-> Reviewed-by: John Garry<john.g.garry@oracle.com>
-> Reviewed-by: Damien Le Moal<dlemoal@kernel.org>
-> Signed-off-by: Igor Pylypiv<ipylypiv@google.com>
-> ---
->   drivers/scsi/isci/init.c | 6 ++++++
->   1 file changed, 6 insertions(+)
+On Mon, 26 Feb 2024 14:39:58 +0100 Kory Maincent wrote:
+> +static DEFINE_XARRAY_FLAGS(ptp_clocks_map, XA_FLAGS_LOCK_IRQ | XA_FLAGS_ALLOC);
 
-Reviewed-by: Jason Yan <yanaijie@huawei.com>
+Why _IRQ? anything on the fastpath hopefully has a pointer to the clock
+already, I'd hope. And we often reserve ID 0 as invalid.
+
+IOW DEFINE_XARRAY_ALLOC1() ?
+
+BTW could be a standalone patch, Xarray conversion from IDA is an
+improvement in itself.
 
