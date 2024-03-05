@@ -1,79 +1,75 @@
-Return-Path: <linux-kernel+bounces-92472-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92405-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A8318720D7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:52:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67FC0871FC5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:05:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C31BF283EE4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:52:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A4121C204F9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:05:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4222E86131;
-	Tue,  5 Mar 2024 13:52:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BKM2NUpQ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84F505102B;
-	Tue,  5 Mar 2024 13:52:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18AE485954;
+	Tue,  5 Mar 2024 13:05:00 +0000 (UTC)
+Received: from mx.gpxsee.org (mx.gpxsee.org [37.205.14.76])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EAED85920;
+	Tue,  5 Mar 2024 13:04:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.205.14.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709646762; cv=none; b=oL/CyMx1dVbFsPwKSfDS1iG3Bsx+nU5NyyBIr0FsD6/wCWP7+G65iFyS2vkDwZ4MQFKv1/sKxHlqhF8ymspeZfh2dGpa1BTQgsrQ0CgF+1xCgh1Rw73B9A7kaCcnoqQc6Ua8Lj3FmmEgYHZ7bHo4G73bozk/PE9XyBqz4kFglpA=
+	t=1709643899; cv=none; b=dMxwc7XYeX2/KTaj2f3uf/48rwrMYvdiqagrUIK0hZ5eTr+WC921C4gmNSteryq1Sak0efTNG59zWMEDhMnitmh4on4h4paA8TO3CqtI+aT1Wu/t+twTKj5U7bW9A4XwBM6ln4KPLx7zfdYF2vazeMkea3xxEJjPSa+nu1CUeps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709646762; c=relaxed/simple;
-	bh=b/75Y8D1XYqdu9zUfIy3JxL+23E6PphPsfEVHE/48rQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZrX++itCdEZZQFKMADUi8AIPuxzkVZn1aV4Dvm2In6GsYnVG+DK6kfuf68VC1YN4bucX2IytFoqj7NcR3JzuhY6h47LeeyJRuGkNCF8C818U4eeEeGxQ9Hk67wYqcmG97BljtE66/86n7RVhGY9GS3KSjOUt+gJlVlCVi9AdaxM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BKM2NUpQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36561C43390;
-	Tue,  5 Mar 2024 13:52:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709646762;
-	bh=b/75Y8D1XYqdu9zUfIy3JxL+23E6PphPsfEVHE/48rQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BKM2NUpQgft7AsZWuxoIMvwBDZF1xTbBQOEactvkwuefEM+OwKD3DPTap+WoTWa8B
-	 cXzNKMYEMeRrGqtSJSrpA12US4xNQsPmhLoKTmSSR9d/qcyrVOjLIBDUT0oIoD1MaD
-	 +0xpsat3ZTKYp1Hea9/53t67yN1/cl+725l5d4GENhJi4XqjF1/yHrXcTQSpneOFxP
-	 dhu35qRTMR+INbOyalfx3BSapim4tUggNw1gYYRIa8GZktYuhwSWCQAbgbJBCF5D2x
-	 J7Q7FF5wiEuseAavYJ+olkgBbq87qU4VBZAurt93FRw1OtIKxaaoKE5+Yvi0ZjdCak
-	 kHTMiI8mQ5Avw==
-Date: Tue, 5 Mar 2024 13:52:38 +0000
-From: Simon Horman <horms@kernel.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com,
-	edumazet@google.com, Sabrina Dubroca <sd@queasysnail.net>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	dsahern@kernel.org
-Subject: Re: [PATCH net-next] net: macsec: Leverage core stats allocator
-Message-ID: <20240305135238.GG2357@kernel.org>
-References: <20240305113728.1974944-1-leitao@debian.org>
+	s=arc-20240116; t=1709643899; c=relaxed/simple;
+	bh=+f5WPj+Hs8JDeSBI7bZCvVcopKa+wIJUqwzofqncSOE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=jt7Y2ZZJtLRrB9cadvu1vsPeVXCpoAPKiFJTub/AQLW11W696vgTLg+1ApaucO5W5Vyv9yGpRFzGhYBeKxZ/xTzhM0EYc7fcdM7LkyTJtJaYdToJvrB2P4X92/BqHr3TKwX6I0zPejffHuwVNtpOW+VKy9vQuWVwk+OtZwJ5USM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gpxsee.org; spf=pass smtp.mailfrom=gpxsee.org; arc=none smtp.client-ip=37.205.14.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gpxsee.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gpxsee.org
+Received: from mgb4.digiteq.red (unknown [62.77.71.229])
+	by mx.gpxsee.org (Postfix) with ESMTPSA id E43F045DF1;
+	Tue,  5 Mar 2024 13:55:19 +0100 (CET)
+From: tumic@gpxsee.org
+To: Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	=?UTF-8?q?Martin=20T=C5=AFma?= <martin.tuma@digiteqautomotive.com>
+Subject: [PATCH 0/2] media: mgb4: YUV and variable framerate support
+Date: Tue,  5 Mar 2024 14:54:08 +0100
+Message-ID: <20240305135410.54694-1-tumic@gpxsee.org>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240305113728.1974944-1-leitao@debian.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 05, 2024 at 03:37:27AM -0800, Breno Leitao wrote:
-> With commit 34d21de99cea9 ("net: Move {l,t,d}stats allocation to core and
-> convert veth & vrf"), stats allocation could be done on net core
-> instead of in this driver.
-> 
-> With this new approach, the driver doesn't have to bother with error
-> handling (allocation failure checking, making sure free happens in the
-> right spot, etc). This is core responsibility now.
-> 
-> Remove the allocation in the macsec driver and leverage the network
-> core allocation instead.
-> 
-> Signed-off-by: Breno Leitao <leitao@debian.org>
+From: Martin Tůma <martin.tuma@digiteqautomotive.com>
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+Recent mgb4 FW update added support for the YUV image format and variable
+framerates independent of the signal framerate. The following patches extend
+the mgb4 driver with support for both features.
+
+Martin Tůma (2):
+  media: mgb4: Add support for YUV image formats
+  media: mgb4: Add support for V4L2_CAP_TIMEPERFRAME
+
+ Documentation/admin-guide/media/mgb4.rst |   8 +-
+ drivers/media/pci/mgb4/mgb4_core.c       |   2 +-
+ drivers/media/pci/mgb4/mgb4_core.h       |   2 +
+ drivers/media/pci/mgb4/mgb4_io.h         |  28 +-
+ drivers/media/pci/mgb4/mgb4_sysfs_out.c  |   9 +-
+ drivers/media/pci/mgb4/mgb4_vin.c        | 198 +++++++++++---
+ drivers/media/pci/mgb4/mgb4_vin.h        |   3 +-
+ drivers/media/pci/mgb4/mgb4_vout.c       | 316 ++++++++++++++++++++---
+ drivers/media/pci/mgb4/mgb4_vout.h       |   5 +-
+ 9 files changed, 491 insertions(+), 80 deletions(-)
+
+
+base-commit: 65e6a2773d655172143cc0b927cdc89549842895
+-- 
+2.44.0
 
 
