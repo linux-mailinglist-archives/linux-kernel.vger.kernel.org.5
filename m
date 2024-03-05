@@ -1,97 +1,126 @@
-Return-Path: <linux-kernel+bounces-92699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43DB587247C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:39:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E0C387247E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:40:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EBA8D1F26DF6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:39:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7006E1C24FC1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:40:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20399C129;
-	Tue,  5 Mar 2024 16:39:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99FACD527;
+	Tue,  5 Mar 2024 16:39:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e+50sRCA"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="xXfnP33J"
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59D6F8BF7;
-	Tue,  5 Mar 2024 16:39:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9151CA6F
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 16:39:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709656781; cv=none; b=lAqHptvHMLO3/QrmVpcBh8JYnQU/sP0M5v/Zkb3c/pBI+XOtouInU3JFB4gRlbmUkMG2/jgTTZvZtykknafcYV3RfXRDut5eustL8WcP++dPWEgDHJPUa274IHUxysm9rEvfynPWnr10kGo5A67OZSoxh8T2V4CTeNvEarZ0lKQ=
+	t=1709656784; cv=none; b=TyQljXYyRYyxSbiWxgE/URnxRMScFuy3JR1HivGVRZTp9+/yVV6LJYz782F8XTMVItg3xAxeAsP5puW7WPBMeUAtAv8R95V9iuvO6CjL1lE29oP7OTwFHckpXA/0o3bOW5T3VbEY4qXn5cjVcIOAGVbw7o2hZngbIXqJl2AMBxA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709656781; c=relaxed/simple;
-	bh=7vgMXiC1hDBo2W+mPCaSNE01HYivT5LVBqveRukvTZk=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PvCvnLJx2jGu8PSXs7qdYl5zNgGmY5GF/VGMiDQjR97jOrTRuDmiyTma3FrTA8KtreZ2b48AU0HthXa0W9XB/ou37e0j6nely8B96xGpYz9RKY0oEfTW4+d3DQWjPAqBOVnnDeb5dGvi4Q7kc2XKTaI/tYO4voRuryy9W0eLtlk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e+50sRCA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81467C433F1;
-	Tue,  5 Mar 2024 16:39:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709656780;
-	bh=7vgMXiC1hDBo2W+mPCaSNE01HYivT5LVBqveRukvTZk=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=e+50sRCAFYr9qssxAd2CCEJWSD8uQoONX21r70DvAh5vq/CV13lCDJ9kLNl/G08qi
-	 FbNe0AyeYDE4BTW6WG1J3ljJh7aOujNuPjGA6nbQRi9vyBA30MnY3m2PLTUTYms4LY
-	 gX0EUGQUBevvHchQpSM4v6ruUlfxhd0FXES/YJhbxhzLpmdzel/OCAM3LlzoNE0NaK
-	 mw9hp0COR3vTDCfGssJG8fv/Hi2mZNudmwrMzD9eo6FleRcHPbGzlR4ui7BDKYG/vT
-	 erQ4EKSrMJNEjVekC356EL2lA1/LJ0ve26ybTMK4pCfZX3V3NJhha2UD7AuNOKpXyn
-	 LXSWK5g0EXaOw==
-Date: Tue, 5 Mar 2024 08:39:38 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>, Florian Fainelli
- <florian.fainelli@broadcom.com>, Broadcom internal kernel review list
- <bcm-kernel-feedback-list@broadcom.com>, Andrew Lunn <andrew@lunn.ch>,
- Heiner Kallweit <hkallweit1@gmail.com>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
- <pabeni@redhat.com>, Richard Cochran <richardcochran@gmail.com>, Radu Pirea
- <radu-nicolae.pirea@oss.nxp.com>, Jay Vosburgh <j.vosburgh@gmail.com>, Andy
- Gospodarek <andy@greyhouse.net>, Nicolas Ferre
- <nicolas.ferre@microchip.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Jonathan Corbet
- <corbet@lwn.net>, Horatiu Vultur <horatiu.vultur@microchip.com>,
- UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>, Vladimir
- Oltean <vladimir.oltean@nxp.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, Maxime Chevallier
- <maxime.chevallier@bootlin.com>, Rahul Rameshbabu <rrameshbabu@nvidia.com>
-Subject: Re: [PATCH net-next v9 08/13] ptp: Add phc source and helpers to
- register specific PTP clock or get information
-Message-ID: <20240305083938.6977335f@kernel.org>
-In-Reply-To: <20240305163546.3b9f3ed9@kmaincent-XPS-13-7390>
-References: <20240226-feature_ptp_netnext-v9-0-455611549f21@bootlin.com>
-	<20240226-feature_ptp_netnext-v9-8-455611549f21@bootlin.com>
-	<20240304185734.5f1a476c@kernel.org>
-	<ZebZpspMCqjLES/W@shell.armlinux.org.uk>
-	<20240305111021.5c892d5a@kmaincent-XPS-13-7390>
-	<20240305065939.2d419ff2@kernel.org>
-	<20240305163546.3b9f3ed9@kmaincent-XPS-13-7390>
+	s=arc-20240116; t=1709656784; c=relaxed/simple;
+	bh=v8n6C/x7YN6DIQ+jMZ6n/yz9ciW7yWFqnt+WpoorFd4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NpKs4gEhLK3EoH6tPJXFFiTVYWQelFyIAmt15Yd/4MErtB7XpnSmve3nsbe61cX2boPNVrWSOkzu1AJIV0NDldzHOECgoATuwscx+QlJujoIwC2FnNVOLm6VQim8JbtpF/Fhm+cz4GXv3VBVLT1/XkG3iz6IZLyMnMqDVC+sX0I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=xXfnP33J; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e5769aa0b3so1270127b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 08:39:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1709656782; x=1710261582; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OA9jQLC4dwIGmYm8IP8YPIWjYwFgrRL6SgiiIMUwgk8=;
+        b=xXfnP33JIJzNhJ7VqgmcIhrn5S2y47Ber7hcjIGY00JXwGUXVR4IT08IhFIEIjAZKr
+         UOccuT3vCNJkGuFxOAWHHAZ3TlzwXPWD+r5DJ+GL2LG9aUUmQrnjcr9QQPb16DgLpTkJ
+         cw5dEgZB1t6fgDPR1YAfQlWbz7SWwoThdLF7xYCGGCvJnHQSEIC2C7+5wpLndL0Af6Xx
+         qQJCbIParz6555SVFXzcqW2ZgtPdVxndJ4TqxcAPu2qetL6S7UUjUca/HU9qfpD3f4Ab
+         DOou0dD5WR+Fze0aHsG5nVEo4Dh93UFymoS/X9Go+t4hwDPSGvNEa1Y9ZKBGW+uDfFrq
+         W5bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709656782; x=1710261582;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OA9jQLC4dwIGmYm8IP8YPIWjYwFgrRL6SgiiIMUwgk8=;
+        b=vyF1k9udOMF9VekoMqNiS8OF9lRJFe9bCbKYE7vEAE0dIf/EIPkQXvxg8w8ZAe5jab
+         Q/88mqou9kafF7W8y0RP8AgfrADFLFH7GgDSBExa9PxGqLjz7G5Y4b0+EW93eC3aA0Po
+         vG3wI6eoelPYb7HtokgPXgzdwUsEtrjYlT+zSXD8yyj0ocOu9rjYT77u1TydxQfPiU7J
+         +1u271U9waVss5A6zB67txrtioh1sQUrT8hh4O58PtoAcuA/7FEDHgC8wDd7riq8fvlZ
+         lQxEov9bupoV7k2P5QEvqGp0ft2IoxEYrF2ANIBxrms3YrXmg7Wb/grdFaixX1iuUBTu
+         e8Og==
+X-Forwarded-Encrypted: i=1; AJvYcCWPyNQ9BP0gshanJLorNJHe854YC4xRB/5iZ2db6qWiCBn4FW8hH0ADvBIhJp1QyIQJfqDC/UDIKQnzszB3jcR0aPBYpmB7kYDqCEte
+X-Gm-Message-State: AOJu0Yzs3syLFEVZpEKvxxFAg2+PFAZf2oRI2i91i0G3IXX/eYu/ir8X
+	n2Qll5kWCy6hwzNXQoesFM/g0XKh8AD8Ww627xXf/pDtNGE4CS5bsM0UcV3wH10=
+X-Google-Smtp-Source: AGHT+IEZZmdBTuGELgE5G3mET+Y5Q03hb/dCXOp8iblHOZ8cZ2iYyO9OCe8v6bCQwp8Fq5KTziHDaA==
+X-Received: by 2002:a05:6a00:1823:b0:6e6:4578:e309 with SMTP id y35-20020a056a00182300b006e64578e309mr1115104pfa.0.1709656781866;
+        Tue, 05 Mar 2024 08:39:41 -0800 (PST)
+Received: from [192.168.1.150] ([198.8.77.194])
+        by smtp.gmail.com with ESMTPSA id d4-20020a056a00198400b006e4fc1b1881sm4134950pfl.24.2024.03.05.08.39.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Mar 2024 08:39:41 -0800 (PST)
+Message-ID: <db1a16d1-a4c2-4c47-9a84-65e174123078@kernel.dk>
+Date: Tue, 5 Mar 2024 09:39:39 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] coredump: get machine check errors early rather than
+ during iov_iter
+Content-Language: en-US
+To: Christian Brauner <brauner@kernel.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Tong Tiangen <tongtiangen@huawei.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ wangkefeng.wang@huawei.com, Guohanjun <guohanjun@huawei.com>,
+ David Howells <dhowells@redhat.com>, Al Viro <viro@kernel.org>,
+ Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
+ Andrew Morton <akpm@linux-foundation.org>
+References: <20240305133336.3804360-1-tongtiangen@huawei.com>
+ <20240305-staatenlos-vergolden-5c67aef6e2bd@brauner>
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20240305-staatenlos-vergolden-5c67aef6e2bd@brauner>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 
-On Tue, 5 Mar 2024 16:35:46 +0100 K=C3=B6ry Maincent wrote:
-> > Still, wouldn't it be simpler to store all accessible PTP instances=20
-> > in the netdev? =20
->=20
-> You are talking about something like the phy topology but for the ptp?
->=20
-> Then when asking information on a PHC (tsinfo or hwtstamp config) from et=
-htool
-> we would have to look at the PHC topology of the netdev. This could work.=
- Not
-> sure it is much simpler, do you see other advantages that it could have?
+On 3/5/24 9:33 AM, Christian Brauner wrote:
+> On Tue, 05 Mar 2024 21:33:36 +0800, Tong Tiangen wrote:
+>> The commit f1982740f5e7 ("iov_iter: Convert iterate*() to inline funcs")
+>> leads to deadloop in generic_perform_write()[1], due to return value of
+>> copy_page_from_iter_atomic() changed from non-zero value to zero.
+>>
+>> The code logic of the I/O performance-critical path of the iov_iter is
+>> mixed with machine check[2], actually, there's no need to complicate it,
+>> a more appropriate method is to get the error as early as possible in
+>> the coredump process instead of during the I/O process. In addition,
+>> the iov_iter performance-critical path can have clean logic.
+>>
+>> [...]
+> 
+> I'll send this together with two other fixes we have pending.
 
-I was thinking just an array indexed by enum hwtstamp_source.
-But you're right, once we can express more than one phy per
-netdev we're basically back to doing similar walks. Fair.
+For what it's worth, checking the two patches, it's basically the one
+that Linus sent. I think it should have a From: based on that, and I
+also do not see Linus actually signing off on the patch, though that
+has been added to this one.
+
+Would probably be sane to get this one resent before applying, properly
+done.
+
+Missed that in the first look...
+
+-- 
+Jens Axboe
+
+
 
