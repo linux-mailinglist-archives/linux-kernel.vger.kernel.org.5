@@ -1,111 +1,110 @@
-Return-Path: <linux-kernel+bounces-91579-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91580-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 664CB8713E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 03:48:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 993CD8713E6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 03:49:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 95DEF1C2121D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 02:48:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55E0F286959
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 02:49:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F78C28E0D;
-	Tue,  5 Mar 2024 02:48:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C17F28E02;
+	Tue,  5 Mar 2024 02:49:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="Y/KPDcFv"
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RsK9c/pT"
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86B9E4C94;
-	Tue,  5 Mar 2024 02:48:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47ED02940B
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 02:49:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709606920; cv=none; b=Z1Dk8l94bxOzmOLReCoS0oyVIIi3k7p6t+0JBb7qE9pk1QWp5+W4bI2369mZSEq2eA5hPlPglZ0sYWQMcfEYW19M95x/cNH+wInc1iexo30zW1cq38Sx7rQLO0cTM1xhU/pkGTLhaMI1SEOdNV5util+BV9ZoFoP9Dez2NiezXo=
+	t=1709606948; cv=none; b=jLsQ4CBuXRI4g8idkUayMAgihE3ooKqTf2XGqm47IJcFpfbLwMa69e65lYRmsoyr6xR2Bpg5E01FkK/cdEENx2uaiQduFNLUNpktGes9IHVQrw6ifcqrpWfjTyiubjUouJtOV99aWetKNs07RtRTF2dp1LGDUpMu6Uil6AuEIAQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709606920; c=relaxed/simple;
-	bh=GAWZ8UNjl6s+DAbSwGc+vclJVErm7Zx0BP2duUjGpzQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Kc4wQvkblvUky5ODjOmzm+9XPo52NFkyiACwKWxYpU0YQD8TzmdWvEhAsHulLyi/wbuFd5uJV57S0H+MLmjuDnFAiDKjmx/W47wOkepFbXWj64OtHYeJhIV8AuYnaC4F8YswgHSvsLTU+PGhSTiEgRBl5xCQZ0WU/g0HsVNeZM0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=Y/KPDcFv; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1709606917;
-	bh=GAWZ8UNjl6s+DAbSwGc+vclJVErm7Zx0BP2duUjGpzQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Y/KPDcFvoghRdYr9T34mxYQHUW6r1saV2X1r9NgrpnqkmLuspKIyPoDO2lmiEqTSJ
-	 GjJwojFsKRqNbP7E4ZTAbBpb8JFZN96Qr1Usrqweru4pmnd9WodRs9lp2ocDJc8Cg9
-	 dLq7t8gVU/FdqLsukS3RNpC7C4bRc9/WUHswfOi0qhkElaeT2zpuRc2rFebIyngXZ5
-	 BUzN2YnPPDeUZ6k3SvVsJ1rySWoYGbuAoJFdmC4ZKrpTJeFdDDPty9Y+PLhjbjMJmB
-	 2YRx7GPPnqXmfgG0SaqIGLfjN1kHmilth+3vE37wx86zLSlVe3T26dySy2RKxeQNEj
-	 uC+Gyk75K8qAg==
-Received: from [IPV6:2606:6d00:100:4000:cacb:9855:de1f:ded2] (unknown [IPv6:2606:6d00:100:4000:cacb:9855:de1f:ded2])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4Tpg45376nzfMy;
-	Mon,  4 Mar 2024 21:48:37 -0500 (EST)
-Message-ID: <c3051fd1-2aaa-485f-b23d-d98c3579e166@efficios.com>
-Date: Mon, 4 Mar 2024 21:48:44 -0500
+	s=arc-20240116; t=1709606948; c=relaxed/simple;
+	bh=utFBf9M5dcRM6tABm4BVVtrrxHPeD0DczLAlTWsRgMo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ROBY3v4NGLhY8Rt4z++FTXS3kmnPUzsoJnbmHJzhnAAoBKI1Rs9APoCn4d6gK4Ta4C6NeBhx31t1rr0/Pg/GhEzuKN7HPEcxQa+N+Fuwwlh1UguCsFMm3wwoY7j/y8hXAdinmbWeemeMXgvvytD9wNxZCTVM+zor694ZDsawfws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RsK9c/pT; arc=none smtp.client-ip=209.85.215.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5e4613f2b56so4710746a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 18:49:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709606946; x=1710211746; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Etsiw27aFJ6ePlRv4kJKzIjRIrMxwFQzPpjYTTmiNpg=;
+        b=RsK9c/pTJ++TQl3V2zbH6NouowJWbVbGTKCr69wUHVjkauEjMEI4qQoAXLYX3B4mCx
+         lHqaS3XLI2nCUo3yUpDJPQ+t266s5ownviYf+qRF86MpjsfclIX6rudvEvwU6dtB1c55
+         9RBtjSThM3sCOliOVvxn8bDsfNV435F74eNPI4m4iyT/NtjxlRC/NUIUZqudMK9/MWXe
+         XmilVOlEMuS2mEqlEPGQ7iIH2b82G/9JkZ0oOvHV9iOiaWjO0OfX0QAc65Jr55IbyN46
+         YrbubySDuiPvO+CDiEhbpN0ddrphJkT8XIsBAIJpr8bwi5hMMzTQfR8wNgogdiPmetse
+         6faA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709606946; x=1710211746;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Etsiw27aFJ6ePlRv4kJKzIjRIrMxwFQzPpjYTTmiNpg=;
+        b=oJdNirStH7N7A6q//A5Des/7ToiiiOeS6cFRzvCypn/650nuevaLHnORnnGBIncavR
+         w4ewjRqsMyoYpwKAgM7F3L6VQBccx29aYk/Sce84HnLgWNb5Q/9qJAv5lypaW+M0DCQE
+         tYmbfMG51Mez6oYYvmAGjFPJY8+aJCRuteqz/Vx2lLfQbDo6eI3uT/AIToNesJeibDa8
+         Iqyp6hQNLgznhD34leBYyJe/F0URHiAMfcoiDMxS06OetI4p/0MNwYj0d/sQlRli8uh4
+         QOYwc/CQ26kl8PKSIKI/DuSy8mK8Gv2bhTKquSBu3Qw26tFqiQNn8n2dKWdHjeoRayrZ
+         lL/g==
+X-Forwarded-Encrypted: i=1; AJvYcCW5AqSNIxsdMyDea2yaAm3WhYiLK3Xns3UlrzkeHwfX3xVMjqDJB50zJccyzVWe4/oWHDRTQiYrs9YEuKnXJ+NbkNu76T0Hok4Kr7AB
+X-Gm-Message-State: AOJu0Ywz4mGNH+oZ8vC771g9xrdL2mes3oWvzr0aRqlG+UFK1f2T4u8H
+	8vjxSsv2soKQ3tZQx5GFn8r/xO7f/CtSoFh9Z/nY52S5C+KGBqVdCwx2dtD/
+X-Google-Smtp-Source: AGHT+IFk9yI11rYtUnsLd3T3/itcAQ/8dXD2j/JJua/SgqclOjI32ujKMZVqVKGMRDVQxz7mbNfDuQ==
+X-Received: by 2002:a05:6a21:3399:b0:1a0:dfcc:ca95 with SMTP id yy25-20020a056a21339900b001a0dfccca95mr653435pzb.18.1709606946607;
+        Mon, 04 Mar 2024 18:49:06 -0800 (PST)
+Received: from kernel.. ([2402:e280:214c:86:bce8:b689:c68d:28ed])
+        by smtp.gmail.com with ESMTPSA id v26-20020aa7851a000000b006e5b549949asm6324877pfn.206.2024.03.04.18.49.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Mar 2024 18:49:06 -0800 (PST)
+From: R SUNDAR <prosunofficial@gmail.com>
+To: maarten.lankhorst@linux.intel.com,
+	mripard@kernel.org,
+	tzimmermann@suse.de,
+	airlied@gmail.com,
+	daniel@ffwll.ch
+Cc: dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	R SUNDAR <prosunofficial@gmail.com>
+Subject: [PATCH] Removed funcs field description for kernel doc warning.
+Date: Tue,  5 Mar 2024 08:18:57 +0530
+Message-Id: <20240305024857.12783-1-prosunofficial@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] tracing: Have trace_marker writes be just half of
- TRACE_SEQ_SIZE
-Content-Language: en-US
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>,
- Masami Hiramatsu <mhiramat@kernel.org>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Sachin Sant <sachinp@linux.ibm.com>
-References: <20240304192710.4c99677c@gandalf.local.home>
- <469d31a7-f358-4547-bb17-0979b3515924@efficios.com>
- <20240304203516.45b7a551@gandalf.local.home>
- <20240304204119.7503ab0b@gandalf.local.home>
- <91f27ba1-15a4-402d-8301-e2b9d23f64b0@efficios.com>
- <20240304205943.081bea96@gandalf.local.home>
- <cef0b07e-f90d-4759-ae54-0f091e87edab@efficios.com>
- <20240304213538.13fe1f3b@gandalf.local.home>
- <20240304213750.1baef01d@gandalf.local.home>
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <20240304213750.1baef01d@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 2024-03-04 21:37, Steven Rostedt wrote:
-> On Mon, 4 Mar 2024 21:35:38 -0500
-> Steven Rostedt <rostedt@goodmis.org> wrote:
-> 
->>> And it's not for debugging, it's for validation of assumptions
->>> made about an upper bound limit defined for a compile-time
->>> check, so as the code evolves issues are caught early.
->>
->> validating is debugging.
-> 
-> Did Linus put you up to this? To test me to see if I'm learning how to say "No" ;-)
+/include/drm/drm_gem_vram_helper.h:185: warning: Excess struct member 'funcs' description in 'drm_vram_mm'
 
-No, he did not. I genuinely think that validating size limits like
-this either at compile time or, when they can vary at runtime like
-in this case, with a dynamic check, decreases the cognitive
-load on the reviewers. We can then assume that whatever limit
-was put in place is actually enforced and not just wishful
-thinking.
+Signed-off-by: R SUNDAR <prosunofficial@gmail.com>
+---
+ include/drm/drm_gem_vram_helper.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-If the "header" size upper bound is not validated at runtime, there
-is not much point in adding the BUILD_BUG_ON() based on that value
-in the first place, and you should then just add a runtime check that
-you don't overflow the output buffer before writing the output to it.
-
-Thanks,
-
-Mathieu
-
+diff --git a/include/drm/drm_gem_vram_helper.h b/include/drm/drm_gem_vram_helper.h
+index e18429f09e53..c89c9bafeb44 100644
+--- a/include/drm/drm_gem_vram_helper.h
++++ b/include/drm/drm_gem_vram_helper.h
+@@ -170,7 +170,6 @@ void drm_gem_vram_simple_display_pipe_cleanup_fb(
+  * @vram_base:	Base address of the managed video memory
+  * @vram_size:	Size of the managed video memory in bytes
+  * @bdev:	The TTM BO device.
+- * @funcs:	TTM BO functions
+  *
+  * The fields &struct drm_vram_mm.vram_base and
+  * &struct drm_vram_mm.vrm_size are managed by VRAM MM, but are
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+2.34.1
 
 
