@@ -1,79 +1,79 @@
-Return-Path: <linux-kernel+bounces-92735-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92736-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D127687251C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:03:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04799872521
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:06:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 48F851F27A51
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:03:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 032B71C2501E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:06:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A561314AB8;
-	Tue,  5 Mar 2024 17:03:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 522B5134CE;
+	Tue,  5 Mar 2024 17:06:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZSmmtBeD"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cNbw9MOE"
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A70D8DF5B;
-	Tue,  5 Mar 2024 17:03:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01EB413FF2
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 17:06:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709658182; cv=none; b=ZbbHYkWnC1XvwIw1/g9YTSutbrsbcU7uLxMi9lrYqo13qfhvfkVzeDedlKexNTQUo/VOeviwLrDcxssHbXRA+HwRJ6RaknFJUw/ZtabXY4zOhgD7LxvVySBC/9ULM+pDC0gUmud/b9N94C9U+flIWkJCU/T/PN40tJWSqSk5smU=
+	t=1709658364; cv=none; b=ZPheore3FdRrDBGiPnmrgPP5U+/jf98NwkiKrKv2ry4UbvhXX04NUHvUPQz+zm6jw+qP1NyDhdfeCo4P3XYJqOY96syMcFo0ZT4MpDthf3dwOZ+/CIuDkAucTuxB+glpZForYb6Uh0U0oSoZDpbe4WBI8I/D3BVOosK9kT6/i84=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709658182; c=relaxed/simple;
-	bh=ojCQANAjYBZG0ygQ8b19OkNar0PVfA55/UxSz2wSlhA=;
+	s=arc-20240116; t=1709658364; c=relaxed/simple;
+	bh=9hB7kebOY+ApV7hOhqdHnmKf9HqXW88QoEAtE22lPyY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B/eCMM0GN0zdRVvGOImMB89g3dR9/U0IoGb4PBSV5y4BniIvFOdlepI0yunp7La7fArYQ0/Y5LBFMtp65em8atAC1hnshLXpF98y7wOqajyvMJpTSmrLX2q2OBkfESUmFJKv1NyBwQ5Sm7ye6wh1Ca74trCP8d6B2aZnPzuh340=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZSmmtBeD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10016C433F1;
-	Tue,  5 Mar 2024 17:03:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709658182;
-	bh=ojCQANAjYBZG0ygQ8b19OkNar0PVfA55/UxSz2wSlhA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZSmmtBeDEMakkfa1ODU71ZTSLmsc/DoJTzjopXItAKLAiBMhT93DlgDK+5ibZRud5
-	 fwa98ZPN3/LZo7+zlG/b8JNkGckWBfHUV1Xr0HvcBdOBS1qnmYncMv/0gsDEf3wd2u
-	 Y3RmNermB9Xs3epNvE5apjAhkkGHnHTnISfyDKw+gZEKK01AzUirT/6ZnqPpXB2SBh
-	 yPezh8Wqk7J/t8LnzVGh/sI+T3Q5FK4AYYbe0+d1tfp4mb2DoIHbg8+mprPZjIndRo
-	 iZOc3rjn+eCJwgPe/3gUv/kggplO3wPfEgm6hh6Ljkx3OZerjJJRMlTgsJpVS3qOQN
-	 mPd4Ai1Gajgxw==
-Date: Tue, 5 Mar 2024 11:03:01 -0600
-From: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
-To: Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc: Christian Brauner <brauner@kernel.org>, Serge Hallyn <serge@hallyn.com>,
-	Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>,
-	James Morris <jmorris@namei.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-	Stephen Smalley <stephen.smalley.work@gmail.com>,
-	Ondrej Mosnacek <omosnace@redhat.com>,
-	Casey Schaufler <casey@schaufler-ca.com>,
-	Mimi Zohar <zohar@linux.ibm.com>,
-	Roberto Sassu <roberto.sassu@huawei.com>,
-	Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-	Eric Snowberg <eric.snowberg@oracle.com>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Amir Goldstein <amir73il@gmail.com>, linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-security-module@vger.kernel.org, audit@vger.kernel.org,
-	selinux@vger.kernel.org, linux-integrity@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-unionfs@vger.kernel.org
-Subject: Re: [PATCH v2 24/25] commoncap: use vfs fscaps interfaces
-Message-ID: <ZedQRThbc60h+VoA@do-x1extreme>
-References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
- <20240221-idmap-fscap-refactor-v2-24-3039364623bd@kernel.org>
- <dcbd9e7869d2fcce69546b53851d694b8ebad54e.camel@huaweicloud.com>
- <ZeXpbOsdRTbLsYe9@do-x1extreme>
- <a7124afa6bed2fcadcb66efa08e256828cd6f8ab.camel@huaweicloud.com>
- <ZeX9MRhU/EGhHkCY@do-x1extreme>
- <20240305-fachjargon-abmontieren-75b1d6c67a83@brauner>
- <3098aef3e5f924e5717b4ba4a34817d9f22ec479.camel@huaweicloud.com>
- <20240305-zyklisch-halluzinationen-98b782666cf8@brauner>
- <133a912d05fb0790ab3672103a21a4f8bfb70405.camel@huaweicloud.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=eExEV4uthUWe/MfH0pEhN0wxynlFvQntiDehO9bVXzAcV7xpcVSmYCdyOrPDX39NntUkP1b16xsjFWs47f/uYeFqWsP9fHwvTD72XA0St57SZ36bXViUdx4FCOmadyPCxCbJpBm4k8CfguzufMoYlhskdopsO6QipH+iMUAi5Vw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cNbw9MOE; arc=none smtp.client-ip=209.85.167.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-51331634948so3945305e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 09:06:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709658361; x=1710263161; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2Vv0jpxd/xF2263SdlkZJNOdtU51Ivq7MydTX7x7qB4=;
+        b=cNbw9MOE13CScemcKbheqsKbYSKGpPuoldgbZWGabiKO9A99J00pg1jGjozlQJelkP
+         vfkVmo8EYhTRu/7N6r3C7VAOb5DXGSswZMWgAY/wqd20d1iOGKcYemW6t3ABw0SmXMzp
+         43hX8R/v44sShLhIlzeIQqtG3+Y93Fk24VlWlyuqnofm3cDDjJZQMlHfG3e1OMbbgHUF
+         GgZCBijHw0t/8LKEBKBLgDLYwlluOGo8dPJfr3i0QmisjQft5Vtj1NWaN/y39Ibbl9M2
+         xIrux4ERkrH9YZzyZ3rxIQzdFydDgf3gApKhO2h31nZIc1LBwLQm8KEOgF+kKkQaPWga
+         3Y9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709658361; x=1710263161;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2Vv0jpxd/xF2263SdlkZJNOdtU51Ivq7MydTX7x7qB4=;
+        b=T6t77cnA6TOq9adLF+fIShlvtNEnOFD9+ckXnv8F0c+1Gx5Gc1mu1o2JLHuvSqtPpU
+         4gInHS9YKSWP/gjiMnESLtf25Jb/gbSwoemqmJuY46rsozl8nE1ZTY3jmbnEOk/KClDZ
+         yXLUZ0NdilPGVQobufYb5TYRUsjDltMzl12ASxR06pUugL5UJr/zs4pfwYkUpQeIo0Yu
+         YJzehbsFAfzmahQEyXxvh1CyLmRCET4AIK87N7dNG2EIwjsH6wQvXrY+50Zb6AW24ZMQ
+         w3o0ntLQ/eEWNKtQhTHhAd+IX15+YBtN4dwH94AJAKykOBJsGQiW5lVTuLlKda6VA2Ar
+         xXSg==
+X-Gm-Message-State: AOJu0YxaR5tmtr20L889+W2fA/4SRZMb9WFg9E2wgkPkM0NmGxF2Jkq7
+	/xwsPzWj8PPBdxf3CulaFY6IJwGRObMu7z7149plaEKZHZaF9Jtl
+X-Google-Smtp-Source: AGHT+IHBMwrDwxHyDONoPE8x+wLL5t36iq8HBi84FUfUY3f0bljsiU3xqW/J7kEHl4UnH8xUkv5Y4A==
+X-Received: by 2002:a19:ad08:0:b0:513:486a:579b with SMTP id t8-20020a19ad08000000b00513486a579bmr910603lfc.0.1709658360569;
+        Tue, 05 Mar 2024 09:06:00 -0800 (PST)
+Received: from HP-ENVY-Notebook (c83-255-0-123.bredband.tele2.se. [83.255.0.123])
+        by smtp.gmail.com with ESMTPSA id y17-20020a197511000000b005131cefefd8sm2238050lfe.240.2024.03.05.09.05.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Mar 2024 09:06:00 -0800 (PST)
+Date: Tue, 5 Mar 2024 18:05:58 +0100
+From: Jonathan Bergh <bergh.jonathan@gmail.com>
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH 2/2] staging: vme_user: Add a newline after variable
+ declarations
+Message-ID: <ZedQ9kyNwY+j7Umr@HP-ENVY-Notebook>
+References: <20240303100547.153636-1-bergh.jonathan@gmail.com>
+ <20240303100547.153636-2-bergh.jonathan@gmail.com>
+ <2024030549-sanding-finisher-dc6a@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,124 +82,40 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <133a912d05fb0790ab3672103a21a4f8bfb70405.camel@huaweicloud.com>
+In-Reply-To: <2024030549-sanding-finisher-dc6a@gregkh>
 
-On Tue, Mar 05, 2024 at 05:35:11PM +0100, Roberto Sassu wrote:
-> On Tue, 2024-03-05 at 17:26 +0100, Christian Brauner wrote:
-> > On Tue, Mar 05, 2024 at 01:46:56PM +0100, Roberto Sassu wrote:
-> > > On Tue, 2024-03-05 at 10:12 +0100, Christian Brauner wrote:
-> > > > On Mon, Mar 04, 2024 at 10:56:17AM -0600, Seth Forshee (DigitalOcean) wrote:
-> > > > > On Mon, Mar 04, 2024 at 05:17:57PM +0100, Roberto Sassu wrote:
-> > > > > > On Mon, 2024-03-04 at 09:31 -0600, Seth Forshee (DigitalOcean) wrote:
-> > > > > > > On Mon, Mar 04, 2024 at 11:19:54AM +0100, Roberto Sassu wrote:
-> > > > > > > > On Wed, 2024-02-21 at 15:24 -0600, Seth Forshee (DigitalOcean) wrote:
-> > > > > > > > > Use the vfs interfaces for fetching file capabilities for killpriv
-> > > > > > > > > checks and from get_vfs_caps_from_disk(). While there, update the
-> > > > > > > > > kerneldoc for get_vfs_caps_from_disk() to explain how it is different
-> > > > > > > > > from vfs_get_fscaps_nosec().
-> > > > > > > > > 
-> > > > > > > > > Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
-> > > > > > > > > ---
-> > > > > > > > >  security/commoncap.c | 30 +++++++++++++-----------------
-> > > > > > > > >  1 file changed, 13 insertions(+), 17 deletions(-)
-> > > > > > > > > 
-> > > > > > > > > diff --git a/security/commoncap.c b/security/commoncap.c
-> > > > > > > > > index a0ff7e6092e0..751bb26a06a6 100644
-> > > > > > > > > --- a/security/commoncap.c
-> > > > > > > > > +++ b/security/commoncap.c
-> > > > > > > > > @@ -296,11 +296,12 @@ int cap_capset(struct cred *new,
-> > > > > > > > >   */
-> > > > > > > > >  int cap_inode_need_killpriv(struct dentry *dentry)
-> > > > > > > > >  {
-> > > > > > > > > -	struct inode *inode = d_backing_inode(dentry);
-> > > > > > > > > +	struct vfs_caps caps;
-> > > > > > > > >  	int error;
-> > > > > > > > >  
-> > > > > > > > > -	error = __vfs_getxattr(dentry, inode, XATTR_NAME_CAPS, NULL, 0);
-> > > > > > > > > -	return error > 0;
-> > > > > > > > > +	/* Use nop_mnt_idmap for no mapping here as mapping is unimportant */
-> > > > > > > > > +	error = vfs_get_fscaps_nosec(&nop_mnt_idmap, dentry, &caps);
-> > > > > > > > > +	return error == 0;
-> > > > > > > > >  }
-> > > > > > > > >  
-> > > > > > > > >  /**
-> > > > > > > > > @@ -323,7 +324,7 @@ int cap_inode_killpriv(struct mnt_idmap *idmap, struct dentry *dentry)
-> > > > > > > > >  {
-> > > > > > > > >  	int error;
-> > > > > > > > >  
-> > > > > > > > > -	error = __vfs_removexattr(idmap, dentry, XATTR_NAME_CAPS);
-> > > > > > > > > +	error = vfs_remove_fscaps_nosec(idmap, dentry);
-> > > > > > > > 
-> > > > > > > > Uhm, I see that the change is logically correct... but the original
-> > > > > > > > code was not correct, since the EVM post hook is not called (thus the
-> > > > > > > > HMAC is broken, or an xattr change is allowed on a portable signature
-> > > > > > > > which should be not).
-> > > > > > > > 
-> > > > > > > > For completeness, the xattr change on a portable signature should not
-> > > > > > > > happen in the first place, so cap_inode_killpriv() would not be called.
-> > > > > > > > However, since EVM allows same value change, we are here.
-> > > > > > > 
-> > > > > > > I really don't understand EVM that well and am pretty hesitant to try an
-> > > > > > > change any of the logic around it. But I'll hazard a thought: should EVM
-> > > > > > > have a inode_need_killpriv hook which returns an error in this
-> > > > > > > situation?
-> > > > > > 
-> > > > > > Uhm, I think it would not work without modifying
-> > > > > > security_inode_need_killpriv() and the hook definition.
-> > > > > > 
-> > > > > > Since cap_inode_need_killpriv() returns 1, the loop stops and EVM would
-> > > > > > not be invoked. We would need to continue the loop and let EVM know
-> > > > > > what is the current return value. Then EVM can reject the change.
-> > > > > > 
-> > > > > > An alternative way would be to detect that actually we are setting the
-> > > > > > same value for inode metadata, and maybe not returning 1 from
-> > > > > > cap_inode_need_killpriv().
-> > > > > > 
-> > > > > > I would prefer the second, since EVM allows same value change and we
-> > > > > > would have an exception if there are fscaps.
-> > > > > > 
-> > > > > > This solves only the case of portable signatures. We would need to
-> > > > > > change cap_inode_need_killpriv() anyway to update the HMAC for mutable
-> > > > > > files.
-> > > > > 
-> > > > > I see. In any case this sounds like a matter for a separate patch
-> > > > > series.
-> > > > 
-> > > > Agreed.
-> > > 
-> > > Christian, how realistic is that we don't kill priv if we are setting
-> > > the same owner?
+On Tue, Mar 05, 2024 at 02:13:23PM +0000, Greg KH wrote:
+> On Sun, Mar 03, 2024 at 11:05:47AM +0100, Jonathan Bergh wrote:
+> > This patch makes the following change:
+> >  * Adds a newline after the variable declarations as per checkpatch's
+> >    warning
 > > 
-> > Uhm, I would need to see the wider context of the proposed change. But
-> > iiuc then you would be comparing current and new fscaps and if they are
-> > identical you don't kill privs? I think that would work. But again, I
-> > would need to see the actual context/change to say something meaningful.
+> > Signed-off-by: Jonathan Bergh <bergh.jonathan@gmail.com>
+> > ---
+> >  drivers/staging/vme_user/vme_tsi148.h | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/drivers/staging/vme_user/vme_tsi148.h b/drivers/staging/vme_user/vme_tsi148.h
+> > index 2a92497c5570..a1b8288b101a 100644
+> > --- a/drivers/staging/vme_user/vme_tsi148.h
+> > +++ b/drivers/staging/vme_user/vme_tsi148.h
+> > @@ -34,6 +34,7 @@ struct tsi148_driver {
+> >  	void __iomem *base;	/* Base Address of device registers */
+> >  	wait_queue_head_t dma_queue[2];
+> >  	wait_queue_head_t iack_queue;
+> > +
+> >  	void (*lm_callback[4])(void *);	/* Called in interrupt handler */
+> >  	void *lm_data[4];
+> >  	void *crcsr_kernel;
 > 
-> Ok, basically a software vendor can ship binaries with a signature over
-> file metadata, including UID/GID, etc.
-> 
-> A system can verify the signature through the public key of the
-> software vendor.
-> 
-> The problem is if someone (or even tar), executes chown on that binary,
-> fscaps are lost. Thus, signature verification will fail from now on.
-> 
-> EVM locks file metadata as soon as signature verification succeeds
-> (i.e. metadata are the same of those signed by the software vendor).
-> 
-> EVM locking works if someone is trying to set different metadata. But,
-> if I try to chown to the same owner as the one stored in the inode, EVM
-> allows it but the capability LSM removes security.capability, thus
-> invalidating the signature.
-> 
-> At least, it would be desirable that security.capability is not removed
-> when setting the same owner. If the owner is different, EVM will handle
-> that.
+> Please always look at the change to see if checkpatch is correct or not
+> (hint, for this one, it is not.)  Also see the archives for many people
+> who have done the same thing in the past :)
 
-When you say EVM "locks" file metadata, does that mean it prevents
-modification to file metadata?
+Got it, thanks for that. 
 
-What about changes to file data? This will also result in removing
-fscaps xattrs. Does EVM also block changes to file data when signature
-verification succeeds?
+> 
+> thanks,
+> 
+> greg k-h
 
