@@ -1,165 +1,136 @@
-Return-Path: <linux-kernel+bounces-93107-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93113-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D63C0872B1E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 00:35:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CA27872B2F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 00:37:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C2D91F25C0D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 23:35:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B07221F21D3C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 23:37:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1EF812F591;
-	Tue,  5 Mar 2024 23:34:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D24C137926;
+	Tue,  5 Mar 2024 23:34:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YxAaMzU7"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="HiQQC/Bw"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39B1012DD85
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 23:34:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1383C13443C;
+	Tue,  5 Mar 2024 23:34:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709681685; cv=none; b=WVjhIY0UzE6nG4WtbLnqiyjmvOc8Aj1zHypRf/nHBezePPkkFN/exIXKAqVDFt2ArumykpkrZOuS23Oi5pRSxXt/ldRHIPR9clfvv5m2hyskkVGDzfPKEPgSv4NBxGHgR9jvLK02xUOtuMe9yKaUM+DEjjtvaTi2d9KC/gB19Kw=
+	t=1709681694; cv=none; b=VXm1W/SjHVywqmuiGsS9TuQowDNa+m4WNouiOXhSklmHDJ0oXEa7Khss3VtE/Vk7M+m9NA+YoCxQFfxjfo1xY8bZDaCv3gETKeohdnI9DqXwtzaOxU6x0WUNoazND7xwsuuILNnrNaoYT1rhGkVoBtr+99rd5A2l7Ls010zhBIk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709681685; c=relaxed/simple;
-	bh=mjGXUPscyzpVG3/YOto1FjCGkFQQDTE0gGonriHY98w=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=nMf3RQOZ6Q8yH7ASv+3rEH7eawNflxc237maXsbHXvs/4Z5PvarNXbDSTkAOj8fW/bHfbAYtTEEscmZyrTAtrjdnULAVXlLl23mhLtlJeVU8h6bfYJBQDpvhvXN5g40ZnwvoTQPLlypEqdhzpQqQTqqJP2oMN3RrFwoqdKd4rJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YxAaMzU7; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6b26845cdso9555904276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 15:34:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709681683; x=1710286483; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1gASbbpl9VKufW/p1eS9vopJ2flHWgODS8RPQYfJDec=;
-        b=YxAaMzU7fzDLbVZY/bUoeW8wicv1vVQiDOMmwKSo6tazFLD/BETZZ5MLU6MMFzOtXE
-         a/YoMWENXrastmFTbcArIzkRlbGZVuKVC3zuDig2S/nyFUPt3wUqKLSBEzl31pf8Kd+k
-         ZBT+tJEmk97NVYt7Wl1lUya4t6bF2pDvMdZEC9ZFHUlJDMeiUh82UffLrcLqrFgTjPWu
-         mnsmDq0qyJ1UfXMyIY+TAJ+ITdlnj2MoHV08YfpPT+oUf1vxBh0f9u45VCrTIwA+oxqz
-         F0yHsykELtc9+yBYvJ3tRK67n94F802GwU44Mkzm4epExbyeaBDMclqvqfK2tjml9AFv
-         E2wQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709681683; x=1710286483;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1gASbbpl9VKufW/p1eS9vopJ2flHWgODS8RPQYfJDec=;
-        b=NXciPl3i6Edu36B1dv8EKV1L1V0f6YALzr0GHBBGT9RjjSw9h9d4KtPm2PKgFVSY7T
-         90nWvQsbhHCvGJE6ZdHvoH66is5b6Zn3JlKYKKF6HNF+MOY4EHLz3979x7BVV6vmCc4c
-         pMm1zs7oWzTSR1SjlZxcr7EbjOI0feAbVPhT4zsBNttkNaDSsAx8T9Ydub1T5NZejXt9
-         AixzUWIb/qBQvqHB6rdaQMRSneRQCZCYdM+W0imkv8cK5ToTzP9gZ9qLoP9r+cmcr6bR
-         ri1x2Zc91cci/cNgd0nEPfs7WWUJUJVifp/l2r6ylVsBZwcSXzcfXL83c16Lz/J9Nh7Q
-         acqw==
-X-Forwarded-Encrypted: i=1; AJvYcCVHSztl8umv2oM9ZVS8QYemLZqAmcjFT2lOeh2SAkXi2AnTtyQh4bCI2yK5/qcnCDz+jLPd9UNmcNCSpLGFARHV7esSqrlGEXRG6e3j
-X-Gm-Message-State: AOJu0YzuUD8OvRYK8cjJ1ltoti4/kMqM2NBKD1TeKSq30JIr2LxZPvU3
-	ZtB5YnAuCx/IOy1Db44hrAADlH2IXSpQ8MD1gIf7gDxc199BDrkWh0Gkr7nafDw6eOoqFLmf4wh
-	mE/MNF+REBLuMqUXifYFFBg==
-X-Google-Smtp-Source: AGHT+IGJFBT6ZMDA0dEeZzTBzmKy73noTis25Zy8vUrUgJBFhRjua/3NOgVhMlB7JHdd5gSR/MoWCpWVy9rzF1YapA==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:dbc9:0:b0:dc6:dfc6:4207 with SMTP
- id g192-20020a25dbc9000000b00dc6dfc64207mr3308643ybf.10.1709681683257; Tue,
- 05 Mar 2024 15:34:43 -0800 (PST)
-Date: Tue, 05 Mar 2024 23:34:37 +0000
-In-Reply-To: <20240305-strncpy-drivers-scsi-mpi3mr-mpi3mr_fw-c-v3-0-5b78a13ff984@google.com>
+	s=arc-20240116; t=1709681694; c=relaxed/simple;
+	bh=CgccsEajkJX3rGr/KEv9kEGO8zCtuDqpv508JqCMKs4=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=YnXGrHOL4GRVYEdaKxV/PsumhgxQ+o+HSPlkno28ZUVCbu0NxohEi0a1KP7gJl5DEl6H/2kXkGYN/aQrsq4iB5fNmxBqL9iMao+lBcErOIhcAB1EjJERAx9vJCpb0cLqu/37TKwR0wPr6BuI6hn4Kjyu38HQsPAOF8TfD1vO8r8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=HiQQC/Bw; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1709681682;
+	bh=AOh366utPLpjWO/Ipym/f07WE+ie0PHRov9sGyieLuc=;
+	h=Date:From:To:Cc:Subject:From;
+	b=HiQQC/Bw2k+NByUfW7F8V8qm5NS7sTxD3st9VRY/xmTMAe+WiYvUMIRcYLpNUdn3A
+	 vE9HnVtgVRbfGGEvWgLLSvxHHU4tNVTdpEpZkdBW3x7e+xgHcUxczoYeaz4Gmw7qJu
+	 iof4JQr3cxG39e7UXBnMgJpCFnFYioXdPFzGJna6wSjMCFJTSDI0SxLALU2sIYHZH4
+	 fTDjMVXBAyoVIjaocnzQ0ybHUBAmIDYyFeVeMyoJJZgfUbpkNG1DRhjgDV9f82D5Mn
+	 DZu4okzfBjpBhcdkCbSFPcNy20tEJVRqhVKMK/+SBI6ZHLj3CKxhOSzX4k7arTLR4a
+	 cC4b5kHqz2eZA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TqBjs01kpz4wc7;
+	Wed,  6 Mar 2024 10:34:40 +1100 (AEDT)
+Date: Wed, 6 Mar 2024 10:34:38 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Miklos Szeredi <miklos@szeredi.hu>
+Cc: Al Viro <viro@zeniv.linux.org.uk>, Alessio Balsini
+ <balsini@android.com>, Amir Goldstein <amir73il@gmail.com>, Linux Kernel
+ Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>, Miklos Szeredi <mszeredi@redhat.com>
+Subject: linux-next: manual merge of the fuse tree with Linus' tree
+Message-ID: <20240306103438.2c0a6f44@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240305-strncpy-drivers-scsi-mpi3mr-mpi3mr_fw-c-v3-0-5b78a13ff984@google.com>
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1709681680; l=2775;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=mjGXUPscyzpVG3/YOto1FjCGkFQQDTE0gGonriHY98w=; b=TMLnCvjFVMOwkdWXvxNNyfUCUsW2BsfpzmfuS/mjEg68OQGl6XD54ss0HA47iLLTV8RsqqduT
- qpps1Q+twCxDAMKk4tqCF9naIPIg6ZUUIkn8VVDTVqEiwCve9jn4uml
-X-Mailer: b4 0.12.3
-Message-ID: <20240305-strncpy-drivers-scsi-mpi3mr-mpi3mr_fw-c-v3-2-5b78a13ff984@google.com>
-Subject: [PATCH v3 2/7] scsi: mpt3sas: replace deprecated strncpy with strscpy
-From: Justin Stitt <justinstitt@google.com>
-To: Sathya Prakash Veerichetty <sathya.prakash@broadcom.com>, Kashyap Desai <kashyap.desai@broadcom.com>, 
-	Sumit Saxena <sumit.saxena@broadcom.com>, Sreekanth Reddy <sreekanth.reddy@broadcom.com>, 
-	"James E.J. Bottomley" <jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, 
-	Suganath Prabu Subramani <suganath-prabu.subramani@broadcom.com>, Ariel Elior <aelior@marvell.com>, 
-	Manish Chopra <manishc@marvell.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Saurav Kashyap <skashyap@marvell.com>, Javed Hasan <jhasan@marvell.com>, 
-	GR-QLogic-Storage-Upstream@marvell.com, Nilesh Javali <njavali@marvell.com>, 
-	Manish Rangankar <mrangankar@marvell.com>, Don Brace <don.brace@microchip.com>
-Cc: mpi3mr-linuxdrv.pdl@broadcom.com, linux-scsi@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Kees Cook <keescook@chromium.org>, MPT-FusionLinux.pdl@broadcom.com, 
-	netdev@vger.kernel.org, storagedev@microchip.com, 
-	Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/LkBvSJcC./c/m5YCppuATU5";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-The replacement in mpt3sas_base.c is a trivial one because desc is
-already zero-initialized meaning there is no functional change here.
+--Sig_/LkBvSJcC./c/m5YCppuATU5
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-For mpt3sas_transport.c, we know edev is zero-initialized as well while
-manufacture_reply comes from dma_alloc_coherent(). No functional change
-here either.
+Hi all,
 
-For all cases, use the more idiomatic strscpy() usage of:
-strscpy(dest, src, sizeof(dest))
+Today's linux-next merge of the fuse tree got a conflict in:
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
- drivers/scsi/mpt3sas/mpt3sas_base.c      |  2 +-
- drivers/scsi/mpt3sas/mpt3sas_transport.c | 18 +++++++++---------
- 2 files changed, 10 insertions(+), 10 deletions(-)
+  fs/fuse/inode.c
 
-diff --git a/drivers/scsi/mpt3sas/mpt3sas_base.c b/drivers/scsi/mpt3sas/mpt3sas_base.c
-index 8761bc58d965..c1e421cb8533 100644
---- a/drivers/scsi/mpt3sas/mpt3sas_base.c
-+++ b/drivers/scsi/mpt3sas/mpt3sas_base.c
-@@ -4774,7 +4774,7 @@ _base_display_ioc_capabilities(struct MPT3SAS_ADAPTER *ioc)
- 	char desc[17] = {0};
- 	u32 iounit_pg1_flags;
- 
--	strncpy(desc, ioc->manu_pg0.ChipName, 16);
-+	strscpy(desc, ioc->manu_pg0.ChipName, sizeof(desc));
- 	ioc_info(ioc, "%s: FWVersion(%02d.%02d.%02d.%02d), ChipRevision(0x%02x)\n",
- 		 desc,
- 		 (ioc->facts.FWVersion.Word & 0xFF000000) >> 24,
-diff --git a/drivers/scsi/mpt3sas/mpt3sas_transport.c b/drivers/scsi/mpt3sas/mpt3sas_transport.c
-index 421ea511b664..76f9a9177198 100644
---- a/drivers/scsi/mpt3sas/mpt3sas_transport.c
-+++ b/drivers/scsi/mpt3sas/mpt3sas_transport.c
-@@ -458,17 +458,17 @@ _transport_expander_report_manufacture(struct MPT3SAS_ADAPTER *ioc,
- 			goto out;
- 
- 		manufacture_reply = data_out + sizeof(struct rep_manu_request);
--		strncpy(edev->vendor_id, manufacture_reply->vendor_id,
--		     SAS_EXPANDER_VENDOR_ID_LEN);
--		strncpy(edev->product_id, manufacture_reply->product_id,
--		     SAS_EXPANDER_PRODUCT_ID_LEN);
--		strncpy(edev->product_rev, manufacture_reply->product_rev,
--		     SAS_EXPANDER_PRODUCT_REV_LEN);
-+		strscpy(edev->vendor_id, manufacture_reply->vendor_id,
-+			sizeof(edev->vendor_id));
-+		strscpy(edev->product_id, manufacture_reply->product_id,
-+			sizeof(edev->product_id));
-+		strscpy(edev->product_rev, manufacture_reply->product_rev,
-+			sizeof(edev->product_rev));
- 		edev->level = manufacture_reply->sas_format & 1;
- 		if (edev->level) {
--			strncpy(edev->component_vendor_id,
--			    manufacture_reply->component_vendor_id,
--			     SAS_EXPANDER_COMPONENT_VENDOR_ID_LEN);
-+			strscpy(edev->component_vendor_id,
-+				manufacture_reply->component_vendor_id,
-+				sizeof(edev->component_vendor_id));
- 			tmp = (u8 *)&manufacture_reply->component_id;
- 			edev->component_id = tmp[0] << 8 | tmp[1];
- 			edev->component_revision_id =
+between commit:
 
--- 
-2.44.0.278.ge034bb2e1d-goog
+  053fc4f755ad ("fuse: fix UAF in rcu pathwalks")
 
+from Linus' tree and commit:
+
+  44350256ab94 ("fuse: implement ioctls to manage backing files")
+
+from the fuse tree.
+
+I fixed it up (I think? see below) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc fs/fuse/inode.c
+index 516ea2979a90,02869edf72f3..000000000000
+--- a/fs/fuse/inode.c
++++ b/fs/fuse/inode.c
+@@@ -930,14 -942,6 +942,16 @@@ void fuse_conn_init(struct fuse_conn *f
+  }
+  EXPORT_SYMBOL_GPL(fuse_conn_init);
+ =20
+ +static void delayed_release(struct rcu_head *p)
+ +{
+ +	struct fuse_conn *fc =3D container_of(p, struct fuse_conn, rcu);
+ +
+ +	put_user_ns(fc->user_ns);
+++	if (IS_ENABLED(CONFIG_FUSE_PASSTHROUGH))
+++		fuse_backing_files_free(fc);
+ +	fc->release(fc);
+ +}
+ +
+  void fuse_conn_put(struct fuse_conn *fc)
+  {
+  	if (refcount_dec_and_test(&fc->count)) {
+
+--Sig_/LkBvSJcC./c/m5YCppuATU5
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXnrA4ACgkQAVBC80lX
+0Gy2Nwf7BIw0m7aawt3swN1ahcp9amUY30AMU9AT44OzzPpdAZN/KVNfSor7Vbx4
+/r4pSuPKPvINYPWtrDmLCu69aIDbHH1EAD5eziFGOVFjaam/z7fepkG2ZLpcg5cH
+DJtIa48uojDQiFZk4LiFamFY23Up39Df8Xxjw1HCbAA5vHsC0DgMeRpZ6zxxPE5t
+27o+jR/mwLijGVmfTGx7HuGdOta0VGpTgkZbo4jYaplEwkzDvxLMJd71ZwJBBYFB
+HAfGGSpqkrG4A+EhsO7KrSB1VSUMrqgMTAgkM0E3HBx2Mh25BXnR0M4Ibz0+5Sna
+xQPm7V57gGMyVGlQIynIVrgLgt/O/g==
+=cECx
+-----END PGP SIGNATURE-----
+
+--Sig_/LkBvSJcC./c/m5YCppuATU5--
 
