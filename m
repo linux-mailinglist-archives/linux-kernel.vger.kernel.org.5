@@ -1,176 +1,196 @@
-Return-Path: <linux-kernel+bounces-92491-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92545-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 455C8872125
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:10:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B521D8721F1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:50:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3DD9282E62
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:10:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E76731C2186E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:50:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F06D98662E;
-	Tue,  5 Mar 2024 14:10:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tlcGZRPG"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DEB4126F0F;
+	Tue,  5 Mar 2024 14:49:56 +0000 (UTC)
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 210935102B;
-	Tue,  5 Mar 2024 14:10:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAAC61F95E;
+	Tue,  5 Mar 2024 14:49:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709647823; cv=none; b=Qa2MzxvRBeMQQtrGpWGG+0CA1S1+FktrHHtfWkBrz/LLq4Z8kPJGg+AdihYgRy1/tBYex5txDUSBKD8rxybvz6zy5Qitlu0H81FZfo82hmQ7ncDsrxS5ILU+b0h1nsI5IdwGwHueeCPZwJuVh5W4Ql4ANCOGJjUUPA0ktWji4z0=
+	t=1709650195; cv=none; b=UJ9JVrSYY3mTB8uCJf1m/0WhHNNxIMACURxHrJ2t+7fOL1HFJVBeTvpmCCY+a7Uk1AoxutsAeAmHlms5uBVrBt2ln0zaVqgL/wfE3U5ZAi6ydBXET8M859oDWl0mrGnJOCxj4WomJ2GFP+gmFx+6Rnkfqwz4SKGKk/y4AvK2B88=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709647823; c=relaxed/simple;
-	bh=yligJ8IXn0rMPUgLLCLFsqkXEZzbgJx9pASoGxdfXR4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FFXLlkfbN8mOlmwhn+yaxysdzKbxIufVFDjZ/nslE4Wsdr/b3i39EjFBcMhMT/NuJiC6y79CSQIvLd1wjEL/9hcr/S4iBZW1zYYevDwCB8k7spmZkL1Nle4N/VFi8t1AYEqEL6gwXmWdTUd/dErd5jjFQc6Z3pJahAgGNKlk3Rc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tlcGZRPG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61E72C433C7;
-	Tue,  5 Mar 2024 14:10:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709647822;
-	bh=yligJ8IXn0rMPUgLLCLFsqkXEZzbgJx9pASoGxdfXR4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tlcGZRPGR3iQ3Rz6cSl+sC1Cd46r5Ye33DMAn5FrLL36CXD9BZQNfPcP+eD5kHU8P
-	 erNmTTXjdJzUzz6MpO4rPA74t7oPJs/J1h3bl8qVKDCyB/V3PA/wAqnsBHoUGg8mlK
-	 K/c8410PacOzLJ7pz2EhJ4+/OG0LzlthgNRgJds7EbXVB41PWzf0lKPtNbVRVIu0ps
-	 1+8c8Nb1LLq4IVbq2OnGm6GOAE2JQSoZVVxA4ath12jYeOaeiDSH/3Ksisngcs6gVG
-	 mMwYTdkTa0hLLZ7wMrGWN6Hh/FZvIbmSGo5qbKIt4LktOPc8uvkNwpxmtQd1K9araP
-	 yTgfP0En4Nimw==
-Date: Tue, 5 Mar 2024 08:10:20 -0600
-From: Rob Herring <robh@kernel.org>
-To: Vidya Sagar <vidyas@nvidia.com>
-Cc: bhelgaas@google.com, rafael@kernel.org, lenb@kernel.org,
-	will@kernel.org, lpieralisi@kernel.org, kw@linux.com,
-	frowand.list@gmail.com, linux-pci@vger.kernel.org,
-	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-	treding@nvidia.com, jonathanh@nvidia.com, kthota@nvidia.com,
-	mmaddireddy@nvidia.com, sagar.tv@gmail.com
-Subject: Re: [PATCH V4] PCI: Add support for preserving boot configuration
-Message-ID: <20240305141020.GA3259724-robh@kernel.org>
-References: <20240222124110.2681455-1-vidyas@nvidia.com>
- <20240223080021.1692996-1-vidyas@nvidia.com>
+	s=arc-20240116; t=1709650195; c=relaxed/simple;
+	bh=JrCH6EgXFgvmU54XTv3OGayoRVJM9AhD1jxlXOStzVg=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=i2JN4QmpyuocRYHMfYPzLgRA/dorJe0atwUTzV/WfbjZ/SZCmaE10QCH5cw23Yg0KzE2V6ptt3d8DYpqYoWi4bVg5jMNMaac1C3HhZrvMUnXiia/wqL2kj7supMW3IkmMQ577hYbzIoAHaRC6QQNeqit+I9K18B+BCfYFAYpcRI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
+Received: from i53875a9e.versanet.de ([83.135.90.158] helo=diego.localnet)
+	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <heiko@sntech.de>)
+	id 1rhVVj-0006jN-HS; Tue, 05 Mar 2024 15:11:15 +0100
+From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To: mchehab@kernel.org, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, mturquette@baylibre.com, sboyd@kernel.org,
+ p.zabel@pengutronix.de, jose.abreu@synopsys.com, nelson.costa@synopsys.com,
+ dmitry.osipenko@collabora.com, sebastian.reichel@collabora.com,
+ shawn.wen@rock-chips.com, nicolas.dufresne@collabora.com, hverkuil@xs4all.nl,
+ hverkuil-cisco@xs4all.nl, Shreeya Patel <shreeya.patel@collabora.com>
+Cc: kernel@collabora.com, linux-kernel@vger.kernel.org,
+ linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ linux-clk@vger.kernel.org, linux-arm@lists.infradead.org,
+ Shreeya Patel <shreeya.patel@collabora.com>
+Subject:
+ Re: [PATCH v2 4/6] arm64: dts: rockchip: Add device tree support for HDMI RX
+ Controller
+Date: Tue, 05 Mar 2024 15:11:14 +0100
+Message-ID: <7657358.31r3eYUQgx@diego>
+In-Reply-To: <20240305123648.8847-5-shreeya.patel@collabora.com>
+References:
+ <20240305123648.8847-1-shreeya.patel@collabora.com>
+ <20240305123648.8847-5-shreeya.patel@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240223080021.1692996-1-vidyas@nvidia.com>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 
-On Fri, Feb 23, 2024 at 01:30:21PM +0530, Vidya Sagar wrote:
-> Add support for preserving the boot configuration done by the
-> platform firmware per host bridge basis, based on the presence of
-> 'linux,pci-probe-only' property in the respective PCI host bridge
-> device-tree node. It also unifies the ACPI and DT based boot flows
-> in this regard.
-> 
-> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+Hi,
+
+
+Am Dienstag, 5. M=E4rz 2024, 13:36:46 CET schrieb Shreeya Patel:
+> Add device tree support for Synopsys DesignWare HDMI RX
+> Controller.
+>=20
+> Reviewed-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+> Tested-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+> Co-developed-by: Dingxian Wen <shawn.wen@rock-chips.com>
+> Signed-off-by: Dingxian Wen <shawn.wen@rock-chips.com>
+> Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
 > ---
-> V4:
-> * Addressed Bjorn's review comments
-> 
-> V3:
-> * Unified ACPI and DT flows as part of addressing Bjorn's review comments
-> 
-> V2:
-> * Addressed issues reported by kernel test robot <lkp@intel.com>
-> 
->  drivers/acpi/pci_root.c                  | 12 -------
->  drivers/pci/controller/pci-host-common.c |  4 ---
->  drivers/pci/of.c                         | 21 +++++++++++
->  drivers/pci/probe.c                      | 46 ++++++++++++++++++------
->  include/linux/of_pci.h                   |  6 ++++
->  5 files changed, 62 insertions(+), 27 deletions(-)
-> 
-> diff --git a/drivers/acpi/pci_root.c b/drivers/acpi/pci_root.c
-> index 84030804a763..ddc2b3e89111 100644
-> --- a/drivers/acpi/pci_root.c
-> +++ b/drivers/acpi/pci_root.c
-> @@ -1008,7 +1008,6 @@ struct pci_bus *acpi_pci_root_create(struct acpi_pci_root *root,
->  	int node = acpi_get_node(device->handle);
->  	struct pci_bus *bus;
->  	struct pci_host_bridge *host_bridge;
-> -	union acpi_object *obj;
->  
->  	info->root = root;
->  	info->bridge = device;
-> @@ -1050,17 +1049,6 @@ struct pci_bus *acpi_pci_root_create(struct acpi_pci_root *root,
->  	if (!(root->osc_ext_control_set & OSC_CXL_ERROR_REPORTING_CONTROL))
->  		host_bridge->native_cxl_error = 0;
->  
-> -	/*
-> -	 * Evaluate the "PCI Boot Configuration" _DSM Function.  If it
-> -	 * exists and returns 0, we must preserve any PCI resource
-> -	 * assignments made by firmware for this host bridge.
-> -	 */
-> -	obj = acpi_evaluate_dsm(ACPI_HANDLE(bus->bridge), &pci_acpi_dsm_guid, 1,
-> -				DSM_PCI_PRESERVE_BOOT_CONFIG, NULL);
-> -	if (obj && obj->type == ACPI_TYPE_INTEGER && obj->integer.value == 0)
-> -		host_bridge->preserve_config = 1;
-> -	ACPI_FREE(obj);
-> -
->  	acpi_dev_power_up_children_with_adr(device);
->  
->  	pci_scan_child_bus(bus);
-> diff --git a/drivers/pci/controller/pci-host-common.c b/drivers/pci/controller/pci-host-common.c
-> index 6be3266cd7b5..e2602e38ae45 100644
-> --- a/drivers/pci/controller/pci-host-common.c
-> +++ b/drivers/pci/controller/pci-host-common.c
-> @@ -73,10 +73,6 @@ int pci_host_common_probe(struct platform_device *pdev)
->  	if (IS_ERR(cfg))
->  		return PTR_ERR(cfg);
->  
-> -	/* Do not reassign resources if probe only */
-> -	if (!pci_has_flag(PCI_PROBE_ONLY))
-> -		pci_add_flags(PCI_REASSIGN_ALL_BUS);
-> -
->  	bridge->sysdata = cfg;
->  	bridge->ops = (struct pci_ops *)&ops->pci_ops;
->  	bridge->msi_domain = true;
-> diff --git a/drivers/pci/of.c b/drivers/pci/of.c
-> index 51e3dd0ea5ab..f0f1156040a5 100644
-> --- a/drivers/pci/of.c
-> +++ b/drivers/pci/of.c
-> @@ -258,6 +258,27 @@ void of_pci_check_probe_only(void)
->  }
->  EXPORT_SYMBOL_GPL(of_pci_check_probe_only);
->  
-> +/**
-> + * of_pci_bridge_preserve_resources - Return true if the boot configuration
-> + *                                    needs to be preserved
-> + * @node: Device tree node with the domain information.
-> + *
-> + * This function looks for "linux,pci-probe-only" property for a given
-> + * PCI controller's node and returns true if found. Having this property
-> + * for a PCI controller ensures that the kernel doesn't reconfigure the
-> + * BARs and bridge windows that are already done by the platform firmware.
-> + * NOTE: The scope of "linux,pci-probe-only" defined within a PCI bridge device
-> + *       is limited to the hierarchy under that particular bridge device. whereas
-> + *       the scope of "linux,pci-probe-only" defined within chosen node is
-> + *       system wide.
-> + *
-> + * Return: true if the property exists false otherwise.
-> + */
-> +bool of_pci_bridge_preserve_resources(struct device_node *node)
-> +{
-> +	return of_property_read_bool(node, "linux,pci-probe-only");
+> Changes in v2 :-
+>   - Fix some of the checkpatch errors and warnings
+>   - Rename resets, vo1-grf and HPD
+>   - Move hdmirx_cma node to the rk3588.dtsi file
+>=20
+>  .../boot/dts/rockchip/rk3588-pinctrl.dtsi     | 41 ++++++++++++++
+>  arch/arm64/boot/dts/rockchip/rk3588.dtsi      | 55 +++++++++++++++++++
+>  2 files changed, 96 insertions(+)
 
-This is the wrong type. The existing "linux,pci-probe-only" is a u32 and 
-non-zero value means probe-only. This would return true for 
-'linux,pci-probe-only = <0>'.
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3588.dtsi b/arch/arm64/boot/d=
+ts/rockchip/rk3588.dtsi
+> index 5519c1430cb7..8adb98b99701 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3588.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/rk3588.dtsi
+> @@ -7,6 +7,24 @@
+>  #include "rk3588-pinctrl.dtsi"
+> =20
+>  / {
+> +	reserved-memory {
+> +		#address-cells =3D <2>;
+> +		#size-cells =3D <2>;
+> +		ranges;
 
-Also, this should also check chosen. If you make this work accepting 
-NULL for node, then of_pci_check_probe_only() can be re-implemented to 
-use it.
+add blank line here
+
+> +		/*
+> +		 * The 4k HDMI capture controller works only with 32bit
+> +		 * phys addresses and doesn't support IOMMU. HDMI RX CMA
+> +		 * must be reserved below 4GB.
+> +		 */
+> +		hdmirx_cma: hdmirx_cma {
+
+phandles use "_", but node-names "-"
+
+> +			compatible =3D "shared-dma-pool";
+> +			alloc-ranges =3D <0x0 0x0 0x0 0xffffffff>;
+> +			size =3D <0x0 (160 * 0x100000)>; /* 160MiB */
+
+The comment above that node, could elaborate where the value of 160MB
+originates from. I assume it is to hold n-times of 4K frames or whatever,
+but it would be helpful for people to be able to read that.
 
 
+> +			no-map;
+> +			status =3D "disabled";
+> +		};
+> +	};
+> +
+>  	pcie30_phy_grf: syscon@fd5b8000 {
+>  		compatible =3D "rockchip,rk3588-pcie3-phy-grf", "syscon";
+>  		reg =3D <0x0 0xfd5b8000 0x0 0x10000>;
+> @@ -85,6 +103,38 @@ i2s10_8ch: i2s@fde00000 {
+>  		status =3D "disabled";
+>  	};
+> =20
+> +	hdmi_receiver: hdmi-receiver@fdee0000 {
 
-Rob
+Maybe rename the label to "hdmirx:" ... that way in a board enabling the
+cma region, both nodes would stay close to each other?
+
+
+> +		compatible =3D "rockchip,rk3588-hdmirx-ctrler", "snps,dw-hdmi-rx";
+> +		reg =3D <0x0 0xfdee0000 0x0 0x6000>;
+> +		power-domains =3D <&power RK3588_PD_VO1>;
+> +		rockchip,grf =3D <&sys_grf>;
+> +		rockchip,vo1-grf =3D <&vo1_grf>;
+> +		interrupts =3D <GIC_SPI 177 IRQ_TYPE_LEVEL_HIGH 0>,
+> +			     <GIC_SPI 436 IRQ_TYPE_LEVEL_HIGH 0>,
+> +			     <GIC_SPI 179 IRQ_TYPE_LEVEL_HIGH 0>;
+> +		interrupt-names =3D "cec", "hdmi", "dma";
+> +		clocks =3D <&cru ACLK_HDMIRX>,
+> +			 <&cru CLK_HDMIRX_AUD>,
+> +			 <&cru CLK_CR_PARA>,
+> +			 <&cru PCLK_HDMIRX>,
+> +			 <&cru CLK_HDMIRX_REF>,
+> +			 <&cru PCLK_S_HDMIRX>,
+> +			 <&cru HCLK_VO1>;
+> +		clock-names =3D "aclk",
+> +			      "audio",
+> +			      "cr_para",
+> +			      "pclk",
+> +			      "ref",
+> +			      "hclk_s_hdmirx",
+> +			      "hclk_vo1";
+
+the driver uses of_reserved_mem_device_init(), so doesn't this node need
+a "memory-region =3D <&hdmirx_cma>; or similar?
+
+
+> +		resets =3D <&cru SRST_A_HDMIRX>, <&cru SRST_P_HDMIRX>,
+> +			 <&cru SRST_HDMIRX_REF>, <&cru SRST_A_HDMIRX_BIU>;
+> +		reset-names =3D "axi", "apb", "ref", "biu";
+> +		pinctrl-0 =3D <&hdmim1_rx>;
+> +		pinctrl-names =3D "default";
+> +		status =3D "disabled";
+> +	};
+> +
+>  	pcie3x4: pcie@fe150000 {
+>  		compatible =3D "rockchip,rk3588-pcie", "rockchip,rk3568-pcie";
+>  		#address-cells =3D <3>;
+> @@ -339,3 +389,8 @@ pcie30phy: phy@fee80000 {
+>  		status =3D "disabled";
+>  	};
+>  };
+> +
+> +&hdmirx_cma {
+> +	status =3D "okay";
+> +};
+
+I'd assume a board that enables &hdmi_receiver would also enable hdmirx_cma
+and not the soc dtsi for _all_ boards?
+
+
+Thanks
+Heiko
+
+
 
