@@ -1,117 +1,115 @@
-Return-Path: <linux-kernel+bounces-92039-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92040-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD1D9871A17
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:59:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE04B871A20
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:02:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91E5C1F217DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:59:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A98E282C02
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:02:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D29C5473D;
-	Tue,  5 Mar 2024 09:58:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2137354770;
+	Tue,  5 Mar 2024 10:02:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hGMCiHho"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="VVi1O8qY"
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B460E548E7;
-	Tue,  5 Mar 2024 09:58:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BB9E4D9F9;
+	Tue,  5 Mar 2024 10:02:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709632732; cv=none; b=T9GyEa3FPQuMs425F5la+rBr7Xiq1oiZh0KofBeJJC2+0DI7W6L4odrI7RYtRTK2JdK9YfIphMsuMCWxTP6owHBiTpZSKkHPZZ2wKJMhMzMpAyNyUEgi0IcSBTgVJybUTbW3t+dzPWKfdiSOTl0EHSy5sUHDFcPKFFuR73Arp60=
+	t=1709632967; cv=none; b=WcJj0KHWqKQd3Wu6PqYF1VD0G2h5aLkQWfe9VjUv2mKB4RvxWm5KLb1m8F8gsPY7b1IiL/GGaH5y+tasjajE27r3uQbsPA8O2mQfkd+gTwHRRdTXA0BjKEadj1Ip3MwyBszKKahcuyrm8VH+LG1vZAIH/UaBWTGSzOvWEU4R1Dg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709632732; c=relaxed/simple;
-	bh=xQNCkif+cWsWirZCvZKKjYkiBuTmgq18brMqbbYj1mE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MUZxUom3VMo8r+k8Fuly/GxNvxQHk/mkCV9c4KKuoADT/bUNpRa2PxddV/49pVDjc9Wxqh4hMGZl82LYzVVo+YdgE/CFM387FABgKypwm9VuJEvbtd5D1G1xcpkfeQ8ZLkioJ2OrRQBdbhNb/ZaDB3kO2pM+lOWj1aqSKpbik9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hGMCiHho; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D484C433F1;
-	Tue,  5 Mar 2024 09:58:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709632732;
-	bh=xQNCkif+cWsWirZCvZKKjYkiBuTmgq18brMqbbYj1mE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=hGMCiHhofokcRE5JfgFOBmTbR2XvK/+ESy9pkicvirbuwtTsk1FbvVUXIhiCnwF2f
-	 jieg7Kj4Bk+aps669t2TBWsrzfNvn38QLIIb0+PAkxhlRnEql5eqqJIlXQmvMwYkD/
-	 q7cS6ET+3pUkCio0gPek9feIWB4Rvv++16nCaasTJmbE0WDuaFPRpP8l+wTr08ZEZv
-	 /mQCyNYuw70l97csKHeQ1aBmIHllTVcu0eUY02wcMjzg5C+aeE8uLKQt1DVVZmKWts
-	 YwOmqx3MPMfve5ys98I/9UKTXbeujBJ1VxkC3ujAE2//eBM4OXTntL7CsTVUljuhQe
-	 YYKAU4gazCqjg==
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a3566c0309fso55347366b.1;
-        Tue, 05 Mar 2024 01:58:52 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWMsrR6pLKS8xqoaUrfFnIhE1VF2zy4083+XEKsi0doB6jBOBLBk+IDzp0Y1C0hAXWZOT/R1ipy+pNm+s5roUZGKE2lyhPly8JFkYmkfiYrQWdjqtn2CLp81XgsRozNjKTNXPhy/oI4PxrO1Ko=
-X-Gm-Message-State: AOJu0YwwWiA9rUvg1PtMDf4ykOys/UIwbNe4j4jCGrbXRcnOc9ZRuCSd
-	kjcnP6Rof/HdNGwSdVtSwp697lH7ReEug1bj6THn9DBHpGdjMlky6XFT/Wad7cMJwgkjmaIQKJR
-	vE5jpY5zD89+PE2XlBBUTS35SBXA=
-X-Google-Smtp-Source: AGHT+IHiIQAvS5A4oVe//HltDZalqGs0CsEdZNSpWCZkYfoXaxa5FGY1eSNm6bboOTqxb3P0NPqbFzJ01MJjvR8bpAk=
-X-Received: by 2002:a17:906:aac5:b0:a45:3271:6c80 with SMTP id
- kt5-20020a170906aac500b00a4532716c80mr3542530ejb.25.1709632730800; Tue, 05
- Mar 2024 01:58:50 -0800 (PST)
+	s=arc-20240116; t=1709632967; c=relaxed/simple;
+	bh=D0vHsAJNAvotsrRPO6R/H2ATrWJBLX7q5KDT/CK6xHc=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=CM3BLAY4STbSB4pWrtpyy1MuOEQOXU0hz81HCLdsFW7jfW7PV0fLsHmDfH9NURUSDoiBWZSnSkmEzug8JVo6KeKCuLjYeq+841givfKyJLK+OiBBuBr/vDnWHCI948TJYKMzzC1UKg8KtKDTNOzsm7UE05veVCbGfXNMIGo6fLI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=VVi1O8qY; arc=none smtp.client-ip=217.70.183.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 73A50FF80D;
+	Tue,  5 Mar 2024 10:02:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709632957;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yTaRrrhLCd6vyS/QfkqHI3GV6BwIOBGsPobf3wIDHq0=;
+	b=VVi1O8qYd5QxG5YleJVNsRGWGhyJrG2nWLJCm/HkgI2Ns2NYFG2iQh0cYziYqsrmMUHu0I
+	cgaMBRsfv5YvqfisZwq5Tei8FTxe6Zl0s9fCH9H6VPpPOjLdbw89p+9qfpOaxhONG0Pv7L
+	YDgWeY0I3MmCSQKMOvk07wo5ciZPR8nXXzOrtH+hIuVvvdqswZa7ERshUtrr2w0EodQt5P
+	RU/p/Zh/qb/Rb4RoJ6jxh0Nk+/Io904/tm/HAmHoKfZXwKigWpzqgpJpwj5e6AuFlw4fLr
+	aMpfNnNck5UUseFDRkBkqlM/Rc9Sa5MRa6EAoyPirTYyhT2Jdrj9KES9HLgDfA==
+Date: Tue, 5 Mar 2024 11:02:33 +0100
+From: =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Florian Fainelli <florian.fainelli@broadcom.com>, Broadcom internal
+ kernel review list <bcm-kernel-feedback-list@broadcom.com>, Andrew Lunn
+ <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>, Russell King
+ <linux@armlinux.org.uk>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Richard
+ Cochran <richardcochran@gmail.com>, Radu Pirea
+ <radu-nicolae.pirea@oss.nxp.com>, Jay Vosburgh <j.vosburgh@gmail.com>, Andy
+ Gospodarek <andy@greyhouse.net>, Nicolas Ferre
+ <nicolas.ferre@microchip.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Jonathan Corbet
+ <corbet@lwn.net>, Horatiu Vultur <horatiu.vultur@microchip.com>,
+ UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>, Vladimir
+ Oltean <vladimir.oltean@nxp.com>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, Maxime Chevallier
+ <maxime.chevallier@bootlin.com>, Rahul Rameshbabu <rrameshbabu@nvidia.com>
+Subject: Re: [PATCH net-next v9 02/13] net: Make dev_get_hwtstamp_phylib
+ accessible
+Message-ID: <20240305110233.2aca99f7@kmaincent-XPS-13-7390>
+In-Reply-To: <20240305105627.1d277a76@kmaincent-XPS-13-7390>
+References: <20240226-feature_ptp_netnext-v9-0-455611549f21@bootlin.com>
+	<20240226-feature_ptp_netnext-v9-2-455611549f21@bootlin.com>
+	<20240304184048.1c1724fa@kernel.org>
+	<20240305105627.1d277a76@kmaincent-XPS-13-7390>
+Organization: bootlin
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240304141426.163517-1-wangrui@loongson.cn> <CANiq72mvdVrzN19PC8pNrvuBLkOEEQ3yX0WG6JcWc+RVaSM2nA@mail.gmail.com>
-In-Reply-To: <CANiq72mvdVrzN19PC8pNrvuBLkOEEQ3yX0WG6JcWc+RVaSM2nA@mail.gmail.com>
-From: Huacai Chen <chenhuacai@kernel.org>
-Date: Tue, 5 Mar 2024 17:58:42 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H666zsMadZuzvcRxxkUxSpkka1tt9AJO_WctHDL8j_HNg@mail.gmail.com>
-Message-ID: <CAAhV-H666zsMadZuzvcRxxkUxSpkka1tt9AJO_WctHDL8j_HNg@mail.gmail.com>
-Subject: Re: [PATCH] loongarch: rust: Switch to use built-in rustc target
-To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc: WANG Rui <wangrui@loongson.cn>, Miguel Ojeda <ojeda@kernel.org>, 
-	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Alice Ryhl <aliceryhl@google.com>, Jamie Cunliffe <Jamie.Cunliffe@arm.com>, 
-	Catalin Marinas <catalin.marinas@arm.com>, WANG Xuerui <kernel@xen0n.name>, 
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	loongarch@lists.linux.dev, loongson-kernel@lists.loongnix.cn
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: kory.maincent@bootlin.com
 
-Hi, Miguel,
+On Tue, 5 Mar 2024 10:56:27 +0100
+K=C3=B6ry Maincent <kory.maincent@bootlin.com> wrote:
 
-On Tue, Mar 5, 2024 at 12:07=E2=80=AFAM Miguel Ojeda
-<miguel.ojeda.sandonis@gmail.com> wrote:
->
-> On Mon, Mar 4, 2024 at 3:14=E2=80=AFPM WANG Rui <wangrui@loongson.cn> wro=
-te:
-> >
-> > This commit switches to using the built-in rustc
-> > loongarch64-unknown-none-softfloat target for LoongArch.
-> >
-> > The Rust samples have been tested with this commit.
-> >
-> > Signed-off-by: WANG Rui <wangrui@loongson.cn>
-> > ---
-> > base-commit: ("rust: Refactor the build target to allow the use of buil=
-tin targets")
->
-> I couldn't apply it on top of commit f82811e22b48 in arm64's tree
-> (which is the base? -- the offset differs significantly in the arch
-> Makefile), but I nevertheless applied it manually on top of that one,
-> build-tested it for loongarch64 and boot-tested it for x86_64:
->
-> Acked-by: Miguel Ojeda <ojeda@kernel.org>
-> Tested-by: Miguel Ojeda <ojeda@kernel.org>
-The base of the loongarch tree doesn't contain the arm64 modifications
-now, so this patch is better to be applied on the rust tree with my
-Acked-by. But if you have some trouble doing that, I can also manually
-merge the arm64 parts to the loongarch tree, and then apply this
-patch. Thanks.
+> > > diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> > > index f07c8374f29c..7f78aef73fe1 100644
+> > > --- a/include/linux/netdevice.h
+> > > +++ b/include/linux/netdevice.h
+> > > @@ -4005,6 +4005,8 @@ int generic_hwtstamp_set_lower(struct net_device
+> > > *dev, int dev_set_hwtstamp_phylib(struct net_device *dev,
+> > >  			    struct kernel_hwtstamp_config *cfg,
+> > >  			    struct netlink_ext_ack *extack);
+> > > +int dev_get_hwtstamp_phylib(struct net_device *dev,
+> > > +			    struct kernel_hwtstamp_config *cfg);   =20
+> >=20
+> > since we don't expect modules to call this, how about we move dev_set*
+> > and the new declaration to net/core/dev.h ? =20
+>=20
+> Ok for me.
 
-Huacai
+I replied to quickly.
+It seems this header in not include in ethtool part.=20
+This would imply adding #include "../core/dev.h" in the tsinfo.c file.
+Not sure this is what we want.
 
->
-> Thanks!
->
-> Cheers,
-> Miguel
+Regards,
+--=20
+K=C3=B6ry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
 
