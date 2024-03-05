@@ -1,121 +1,160 @@
-Return-Path: <linux-kernel+bounces-91515-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91516-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3112D87127C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 02:50:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13FD3871283
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 02:52:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6E971F23764
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 01:50:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD0901F23B2E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 01:52:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFACB17C9E;
-	Tue,  5 Mar 2024 01:50:40 +0000 (UTC)
-Received: from smtpbgau1.qq.com (smtpbgau1.qq.com [54.206.16.166])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D67C18026;
+	Tue,  5 Mar 2024 01:52:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nSzLJu53"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5280C17C76
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 01:50:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.206.16.166
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52E162F43;
+	Tue,  5 Mar 2024 01:52:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709603440; cv=none; b=Rv0ekZ/f2ax3KmuNs3pyDtIvRmVu6RE65muhsHUfMxZYM9QrUDupsXvejwfK7UQLAM4z2PqON7p9kJGB1sVQL/9fQRHa5wZzlhsc0LIJNheW57Y/USgF5cm9iFj2YimBQQT9eNGQwIUr8lzspNjZ4RywvVNdPZFZyLJ8SrpxgJ8=
+	t=1709603566; cv=none; b=fiyyAG7Gyqizo9cc8QXKhnTqmC9Qj59eS9jGDrdoiK3y3+YbT5HkqxboGdQx45Vv2Nv5EBukpa1Y6vK8Gby+xq1uduV2JAk2LN2M5BTVX+DEyv1hP2gvyhnMSnf1lnhxF9VKsOks9xr66+ixYY9OhXdkNkEWg+FLYSKcmDhObHU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709603440; c=relaxed/simple;
-	bh=fdNDQ1U9N/yDQkVjOe/xzJ3JKO1ZOkr5iCU9O3ao6mk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QEPZSMWZMA4HgwCEIAVi3qjRH/WCGIWMToNX+d4oAbQvwgBzG6dJPSeMvAiQwiZUTSk0+tvaGSfVg51JNKtc9oqlWcSTUW/bcaoaIDz8bgIpXWisHxg5tbNrwzAVc4D6EdenT+qOzI+owjEBSt5QWHyOPWPFia5MXyMNkEKvMKk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=54.206.16.166
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
-X-QQ-mid: bizesmtp62t1709603425tlfm1u6g
-X-QQ-Originating-IP: bOfoihEMseawlWRMJfUotn4eIapOK4hJzqa7PVtpX9M=
-Received: from localhost ( [112.22.30.30])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Tue, 05 Mar 2024 09:50:24 +0800 (CST)
-X-QQ-SSF: 01400000000000505000000A0001000
-X-QQ-FEAT: aBJFcW+uBGaR7RCsuQoBy5eXJ1KZuuHUtRBZZSI216HiitWH8P8cUz2Cg2MDR
-	6WqYitRnkgbwfvlT/0blMffY3wNXYkK5uMhGTeLXZ3Iuzb+eFyMN2aEkk9guJSpYlgC3KxY
-	z+w2R2C5Q6fQKuRLC2DGW2tGX9dDFRnhESPT9CPgwTyYsM6nuhviYA7jYWR/uu6q8X2SsM3
-	7Ji4l8FhFdCRxux7wuDMywVd5qLLnOfHlVjTv/OWCNiKTuJjcblHWtQ4FiOXZPSWLn84LRu
-	/5vh0+dzeb+rr68ICK34GULzlCh0ayPn7SqzI+y7JkGRd/4NlmebYRru5ssz+XRYCb9T937
-	PaGtuXjfD72hrxLllYKzb/3SWJKOct2fU9SMMw9uclhD8X3uPfUPkIgQ+ofXsCGeORpxxN7
-X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 14154700281966297232
-Date: Tue, 5 Mar 2024 09:50:23 +0800
-From: Dawei Li <dawei.li@shingroup.cn>
-To: lucas.demarchi@intel.com, ogabbay@kernel.org,
-	thomas.hellstrom@linux.intel.com
-Cc: maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-	tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-	intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] drm/xe: Declare __xe_lrc_*_ggtt_addr with __maybe__unused
-Message-ID: <1543D46042445CE9+ZeZ6X5Ng2rq3swoo@centos8>
-References: <20240204062324.3548268-1-dawei.li@shingroup.cn>
+	s=arc-20240116; t=1709603566; c=relaxed/simple;
+	bh=GRusyfa8TF2Nxs4bQB9i2a/gKinpT0tnMyNb3mj5cYE=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Subject:From:To:Cc:
+	 References:In-Reply-To; b=EQGXcWBwrLlj5jHMPssAc/2tCAX5WQYRy3DwATWg2T9PFF7nsiEDnoDW1VKzkI3pkNoXg0bn+jEKx8t/hDgagvRQfdZRRvCGoo/BrnAQSLwjD5vVWNggRxXDM2b1wRmDlZUGONSapA0NxlqC8EhN/1TlfCRQ0a0Yz89shS9cKlM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nSzLJu53; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2BEDC433F1;
+	Tue,  5 Mar 2024 01:52:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709603566;
+	bh=GRusyfa8TF2Nxs4bQB9i2a/gKinpT0tnMyNb3mj5cYE=;
+	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+	b=nSzLJu53wk1f1qMdYraehDndWs5Mo7yDzC6+kuwoc2efv4CimLQg4plE4s9+yR4gb
+	 jTpE1cOz9iKYGdYFkDi1JdfOObk2dJ4OwfIYNsQzkpk7sdzVrwUYNzaZD4CA301ShZ
+	 05MzEAFbN3DeADUIRitKnOvf8Hg5zw4Ax3zkCL9pmKZqWX92h7RT122GoQ8vJY3YyL
+	 C/73Y1D7B+lk5vHgm1Z8IK8SnTidEQJprV46M/7RQsq8i4/DjzBIOPHWuA7MCWD7gq
+	 aVAXBuf08xk+mlp+IzF4QrMVsZ2SkR7FMMbAwmV+x8zakfguT/xcQQ4TwW7GnPiifb
+	 tPhSJOgArc0Ag==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240204062324.3548268-1-dawei.li@shingroup.cn>
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz5a-1
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 05 Mar 2024 03:52:41 +0200
+Message-Id: <CZLFVTVPBFB4.3IIZULN3LKZGI@kernel.org>
+Subject: Re: [PATCH] Documentation: tpm_tis
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Randy Dunlap" <rdunlap@infradead.org>, <linux-doc@vger.kernel.org>
+Cc: "Jonathan Corbet" <corbet@lwn.net>, "Daniel P . Smith"
+ <dpsmith@apertussolutions.com>, "Lino Sanfilippo"
+ <l.sanfilippo@kunbus.com>, "Jason Gunthorpe" <jgg@ziepe.ca>, "Peter Huewe"
+ <peterhuewe@gmx.de>, "James Bottomley"
+ <James.Bottomley@HansenPartnership.com>, "Alexander Steffen"
+ <Alexander.Steffen@infineon.com>, <keyrings@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-integrity@vger.kernel.org>
+X-Mailer: aerc 0.17.0
+References: <20240304212734.43213-1-jarkko@kernel.org>
+ <aed28265-d677-491a-a045-24b351854b24@infradead.org>
+In-Reply-To: <aed28265-d677-491a-a045-24b351854b24@infradead.org>
 
-Hi,
+On Tue Mar 5, 2024 at 12:53 AM EET, Randy Dunlap wrote:
+>
+>
+> On 3/4/24 13:27, Jarkko Sakkinen wrote:
+> > Based recent discussions on LKML, provide preliminary bits of tpm_tis_c=
+ore
+> > dependent drivers. Includes only bare essentials but can be extended la=
+ter
+> > on case by case. This way some people may even want to read it later on=
+.
+> >=20
+> > Cc: Jonathan Corbet <corbet@lwn.net>
+> > CC: Daniel P. Smith <dpsmith@apertussolutions.com>
+> > Cc: Lino Sanfilippo <l.sanfilippo@kunbus.com>
+> > Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> > Cc: Peter Huewe <peterhuewe@gmx.de>
+> > Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
+> > Cc: Alexander Steffen <Alexander.Steffen@infineon.com>
+> > Cc: keyrings@vger.kernel.org
+> > Cc: linux-doc@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> > Cc: linux-integrity@vger.kernel.org
+> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > ---
+> >  Documentation/security/tpm/index.rst   |  1 +
+> >  Documentation/security/tpm/tpm_tis.rst | 30 ++++++++++++++++++++++++++
+> >  2 files changed, 31 insertions(+)
+> >  create mode 100644 Documentation/security/tpm/tpm_tis.rst
+> >=20
+>
+> > diff --git a/Documentation/security/tpm/tpm_tis.rst b/Documentation/sec=
+urity/tpm/tpm_tis.rst
+> > new file mode 100644
+> > index 000000000000..3cec0216a169
+> > --- /dev/null
+> > +++ b/Documentation/security/tpm/tpm_tis.rst
+> > @@ -0,0 +1,30 @@
+> > +.. SPDX-License-Identifier: GPL-2.0
+> > +
+> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
+> > +TPM FIFO interface Driver
+> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
+> > +
+> > +FIFO (First-In-First-Out) is the name of the hardware interface used b=
+y the
+> > +`tpm_tis_core` dependent drivers. The prefix "tis" is named after TPM
+> > +Interface Specification, which is the hardware interface specification=
+ for
+> > +TPM 1.x chips.
+> > +
+> > +Communication is based on a 5 KiB buffer shared by the TPM chip throug=
+h a
+> > +hardware bus or memory map. The buffer is further split to five equal =
+size
+> > +buffers, which provide equivalent sets of registers for communication
+> > +between CPU and TPM. The communication end points are called *localiti=
+es*
+> > +in the TCG terminology.
+> > +
+> > +When a kernel wants to send a commands to the TPM chip, it first reser=
+ves
+> > +locality 0 by setting `requestUse` bit in `TPM_ACCESS` register. The b=
+it is
+> > +cleared by the chip when the access is granted. Once completed its
+> > +communication, it sets `activeLocity` bit in the same register.
+>
+>       Is that              activeLocality ?
 
-On Sun, Feb 04, 2024 at 02:23:24PM +0800, Dawei Li wrote:
-> Kernel test robot reports building error:
-> 
-> drivers/gpu/drm/xe/xe_lrc.c:544:1: error: unused function
-> '__xe_lrc_regs_ggtt_addr' [-Werror,-Wunused-function]
-> 544 | DECL_MAP_ADDR_HELPERS(regs)
->     | ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> drivers/gpu/drm/xe/xe_lrc.c:536:19: note: expanded from macro
-> 'DECL_MAP_ADDR_HELPERS'
-> 536 | static inline u32 __xe_lrc_##elem##_ggtt_addr(struct xe_lrc *lrc) \
->     |                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> <scratch space>:54:1: note: expanded from here
-> 54 | __xe_lrc_regs_ggtt_addr
->    | ^~~~~~~~~~~~~~~~~~~~~~~
-> 
-> 1 error generated.
-> 
-> Declare __xe_lrc_*_ggtt_addr with __maybe_unused to address it.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202402010928.g3j2aSBL-lkp@intel.com/
-> Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
-> ---
->  drivers/gpu/drm/xe/xe_lrc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Yes.
 
-Just a gentle ping.
+>
+> > +
+> > +Pending localities are served in order by the chip descending orderm a=
+nd
+> > +one at a time:
+> > +
+> > +- Locality 0 has the lowest priority.
+> > +- Locality 5 has the highest priotiy.
+>
+>                                 priority.
+>
+> > +
+> > +Further information on purpose and meaning of the localities can be fo=
+und
+> > +from section 3.2 of TCG PC Client Platform TPM Profile Specification.
 
-Thanks,
+Thanks for the remarks. Too many typos but at least I think the story is
+is understandable and describes pretty well key elements of tpm_tis_core.
 
-    Dawei
-
-> 
-> diff --git a/drivers/gpu/drm/xe/xe_lrc.c b/drivers/gpu/drm/xe/xe_lrc.c
-> index 0ec5ad2539f1..f70e60a2f8a3 100644
-> --- a/drivers/gpu/drm/xe/xe_lrc.c
-> +++ b/drivers/gpu/drm/xe/xe_lrc.c
-> @@ -614,7 +614,7 @@ static inline struct iosys_map __xe_lrc_##elem##_map(struct xe_lrc *lrc) \
->  	iosys_map_incr(&map, __xe_lrc_##elem##_offset(lrc)); \
->  	return map; \
->  } \
-> -static inline u32 __xe_lrc_##elem##_ggtt_addr(struct xe_lrc *lrc) \
-> +static inline u32 __maybe_unused __xe_lrc_##elem##_ggtt_addr(struct xe_lrc *lrc) \
->  { \
->  	return xe_bo_ggtt_addr(lrc->bo) + __xe_lrc_##elem##_offset(lrc); \
->  } \
-> -- 
-> 2.27.0
-> 
+BR, Jarkko
 
