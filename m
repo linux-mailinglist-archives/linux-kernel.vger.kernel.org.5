@@ -1,398 +1,250 @@
-Return-Path: <linux-kernel+bounces-93121-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93122-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7678872B4E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 00:56:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94C47872B51
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 00:58:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53545B27EC0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 23:56:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1F08CB21D67
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 23:58:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98BCC12DDB0;
-	Tue,  5 Mar 2024 23:55:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F71812DDBF;
+	Tue,  5 Mar 2024 23:58:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VBLh9UyH"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N5z/JnQj"
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E39E3FB9B;
-	Tue,  5 Mar 2024 23:55:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19614171D2;
+	Tue,  5 Mar 2024 23:58:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709682956; cv=none; b=VBUfISSSvqUn58r5HgShUZY6i+6lZK+Xfh7j4j2fHv5uiFwomoGEsne5g+eLbh73fV+dQAI4+VXWflT/ThmH9t1i1N/AZo+Re0QjmXPKFUWXQ0fhH7P/seS5WGaoweVpo61LFZ8mUrU8oBocoRgk8k98XViknPtteuUMSHkUaO8=
+	t=1709683092; cv=none; b=GVNEkg4d5E/8hlmYNkhEyONq74SeQF9ikLfv5uIezkIJ5BF/Ye4uzLjAWTTtBt5bNRbBJCFShky8UT2Am0ek7Vs4iIG/M0yaOf1X5VMsmwZRb2o8pS66//DIvtIhlkl8n2d2vjkaobarpENZK/t8qGk7eaqooHP99osOHV0ZHrk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709682956; c=relaxed/simple;
-	bh=K2M8IRbGRRrt6WDdOgPA9jwzpbk47dmDS80DCvaK7XU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gAzGs4f0QHfrYKl/HnZkFr+DkzL+JvW+097a95WgouK8q0/ZgZSjnlS6TdxYCylD3QvU1lldgkmXzdH7SvtTJChj6XoGQ0K3T3nzHkOxxoEQKw1cXmogiKJJkmAJ9Mc7jAUbJKxbN4Hvjq0N/y2G2xL41YUcrz0zNpHBAQv7Sd0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VBLh9UyH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E91AC43390;
-	Tue,  5 Mar 2024 23:55:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709682956;
-	bh=K2M8IRbGRRrt6WDdOgPA9jwzpbk47dmDS80DCvaK7XU=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=VBLh9UyHVeZU6me7O+Cu8WEh3GfJFMu0KpJzjJYE8iVpGu+9hOVtreM5ihrGuxbJ0
-	 iwabB1kis7UU0eUIsdITR6FEFH9fe5S4QUzk5RH50U/9gmBCP/szS6RQTgGlLDA7/1
-	 JtoVnlI/k4DO9p6tmHgvs2dgFtblhTuMpH47lPbPgMmC3NLLYTFPS2x6rzLeGg3no+
-	 Q+ncXseP6CRvWqH3DJ1qgSv0tQ6X3l/iYdM4ApVyElo9FRwvFZCdlPZ46GnezXHccJ
-	 iXqbQmn5a95Wqumbn3VMGq1lyr8xD20kmlPFPbr530M4TUEsOq19Kh320YZ1EaptkQ
-	 5WYUyTcJTx4eQ==
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a450615d1c4so53787366b.0;
-        Tue, 05 Mar 2024 15:55:56 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWPA5pv+Vz0nVDs/FtlbPg4On5iUybQphJ7gpcVQ+Z0n+olFFgMjFp3Uxa0uaEMUQsNDNB+/Mt0w6JVyHYjUSYqVbwgxYsTlklrg7z4MCLLWtfISQzsJkCAlOdfEfQJXIS62GwHQnbDYA==
-X-Gm-Message-State: AOJu0YxTvhzr4CqT53e3pRr/1qQNPrkinuaq2OfqzONoblEpw/UJcUou
-	dfCDyjWKdP5YnhuZRbijZ9/je2eObjH3CAMwO1MV5p4uRB/Lo8etBHdLstMKPcKN+JJmbTNCbHG
-	RGWMV29jMUTZ+xKVuEpaJzsmUFKo=
-X-Google-Smtp-Source: AGHT+IEEFsHwpxSL5jtmu0+B7opm6luEOGNK+fpH5nEbajaCYnpeEq2XXk/nzuU6pKOwOcJtuajidg7FupBApWpkLZo=
-X-Received: by 2002:a17:906:a24a:b0:a45:a9ce:f814 with SMTP id
- bi10-20020a170906a24a00b00a45a9cef814mr3130018ejb.15.1709682954673; Tue, 05
- Mar 2024 15:55:54 -0800 (PST)
+	s=arc-20240116; t=1709683092; c=relaxed/simple;
+	bh=4hCUq/hjcZij7Vw+LDYWfYReVMXKhq7r70yM7c0jmfI=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XQBXJIkpkW8loVRzFCI6tUYS09q2jFZxRsP5hS2p1+1SGRWef6cJ80uwi9otRDY5dwllLpNBT3o6Yt1Jv8rIcTFoohUjjlxHsLHiR1SjErpzhiojB9HmGYKjoHRnGKuPeH74TUxpMrTd692TT8aB3iHrN6vhCAtTUMy7Ylz7AEU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N5z/JnQj; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6e56787e691so238179b3a.0;
+        Tue, 05 Mar 2024 15:58:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709683090; x=1710287890; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=CRPbTjVgyE4PYwh/jnpL0ufRys+ZJBqz1o3jrQedx1Q=;
+        b=N5z/JnQjQeIeVkuECWVQX5EBNV6WMJpKOuUWKAgu98+ww5EK+7tER3tTp2IWioS4OI
+         b3GS4WdCh9ldMmhyLaeG8+UPYu0AtI2P6UDZJ9bOtBTN6mjxl2GvfmdsJwPJqqp2u5Dg
+         QtBj+G80FK8xpC1/Jhu9T9LqOyXJZ4ZsFESD2mjQ8bZkRGOMkQ0ZhwtjAa3KG8GSXqh1
+         dt+93EzJwnYJY6kwlb6qWX7gJddn8yUMTs1fBY2KN59q/wHsv6Nr/PRs1f3tUWEpI7b4
+         qTrKXAUpWnMffqvjbm+JxMkrw7DCid2MOhPQIMIc+tU1Cwtiuop0GTUab6m9AeGsH9U/
+         gWXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709683090; x=1710287890;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CRPbTjVgyE4PYwh/jnpL0ufRys+ZJBqz1o3jrQedx1Q=;
+        b=fxnvIUYlFgFTF3AOc6+M14hYwz/nqqwLERjGXrdTSh6p4sVqZc83XDXyqz+lYv1bH5
+         E4+WVYcAskvtBda2/grpxugNQW+4LZWe6v4GF7Rd+oJ5S1ykAdFrKcN3ItWySwg72pCw
+         R7ZC7FqyYFK4Sv120TFnkhOAGeueZcqGEZ8zgD5eYvF2ZDlxjf4uI/46uuLxcbeeRYf1
+         SB5nlf+IrP4UwkO72QiECxTzt5Js2i+55zulQBFD1gSex0sKE0S7lukzbjt0VQTW2A+i
+         yZakM/uj+jWeV/yQ1MBbzSCjXWD7L8q5HCggnEnpR2qloeDpmZ0V6HcYZlpxMMdH3KxG
+         yQPw==
+X-Forwarded-Encrypted: i=1; AJvYcCUagw3p3GQp1tTIG+VEctIfmZ9VkpanYZxX5tZ393j/tenLJL9YmJx2f7D0fp6qtOGKPXvoI/lTM2Nn6OTw2ZUspMM4fqLu3u60rORI65uoHJAZh8ULOs8DunREKJsopQnISB2pFsE3J7x2Ny32MOjDp/yGL8eUBgXIV6RWqPn0u8of3Cs=
+X-Gm-Message-State: AOJu0YwDJ74QREu5IW1CjQOZFRKAqSnByFD5K+9fGVzCJlOiLQClVtzg
+	792wnV2lfNIH1HJCW/8jz4cGzpyIEr2Z4KOCB2w3bKdFHj/8yyX3
+X-Google-Smtp-Source: AGHT+IFkyfofyClB+sf4ug0A6uUDjt2ZbsKesCzqOAmB+JwKyE/QcgD3QAAH8mfPCIEOeeVjDbPGeg==
+X-Received: by 2002:a05:6a20:e111:b0:1a1:48df:d55c with SMTP id kr17-20020a056a20e11100b001a148dfd55cmr4371695pzb.0.1709683090406;
+        Tue, 05 Mar 2024 15:58:10 -0800 (PST)
+Received: from debian ([2601:641:300:14de:881:34a4:d51c:3425])
+        by smtp.gmail.com with ESMTPSA id jw13-20020a056a00928d00b006e5574db193sm9885184pfb.18.2024.03.05.15.58.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Mar 2024 15:58:10 -0800 (PST)
+From: fan <nifan.cxl@gmail.com>
+X-Google-Original-From: fan <fan@debian>
+Date: Tue, 5 Mar 2024 15:57:53 -0800
+To: shiju.jose@huawei.com
+Cc: linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
+	linux-mm@kvack.org, dan.j.williams@intel.com, dave@stgolabs.net,
+	jonathan.cameron@huawei.com, dave.jiang@intel.com,
+	alison.schofield@intel.com, vishal.l.verma@intel.com,
+	ira.weiny@intel.com, linux-edac@vger.kernel.org,
+	linux-kernel@vger.kernel.org, david@redhat.com,
+	Vilas.Sridharan@amd.com, leo.duran@amd.com, Yazen.Ghannam@amd.com,
+	rientjes@google.com, jiaqiyan@google.com, tony.luck@intel.com,
+	Jon.Grimm@amd.com, dave.hansen@linux.intel.com, rafael@kernel.org,
+	lenb@kernel.org, naoya.horiguchi@nec.com, james.morse@arm.com,
+	jthoughton@google.com, somasundaram.a@hpe.com,
+	erdemaktas@google.com, pgonda@google.com, duenwen@google.com,
+	mike.malvestuto@intel.com, gthelen@google.com,
+	wschwartz@amperecomputing.com, dferguson@amperecomputing.com,
+	tanxiaofei@huawei.com, prime.zeng@hisilicon.com,
+	kangkang.shen@futurewei.com, wanghuiqiang@huawei.com,
+	linuxarm@huawei.com
+Subject: Re: [RFC PATCH v6 01/12] cxl/mbox: Add GET_SUPPORTED_FEATURES
+ mailbox command
+Message-ID: <ZeexgfzE2LkiV_Na@debian>
+References: <20240215111455.1462-1-shiju.jose@huawei.com>
+ <20240215111455.1462-2-shiju.jose@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <tencent_587730262984A011834F42D0563BC6B10405@qq.com> <tencent_4AA6C678842835E2F069095268533A76E20A@qq.com>
-In-Reply-To: <tencent_4AA6C678842835E2F069095268533A76E20A@qq.com>
-From: Guo Ren <guoren@kernel.org>
-Date: Wed, 6 Mar 2024 07:55:43 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTSWZ8j19jSXsNH=b+_dS3o8yVBYHMg_xP6BDVPduYiifg@mail.gmail.com>
-Message-ID: <CAJF2gTSWZ8j19jSXsNH=b+_dS3o8yVBYHMg_xP6BDVPduYiifg@mail.gmail.com>
-Subject: Re: [PATCH v4 6/7] riscv: dts: add initial canmv-k230 and k230-evb dts
-To: Yangyu Chen <cyy@cyyself.name>
-Cc: linux-riscv@lists.infradead.org, Conor Dooley <conor@kernel.org>, 
-	Damien Le Moal <dlemoal@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240215111455.1462-2-shiju.jose@huawei.com>
 
-On Wed, Mar 6, 2024 at 3:39=E2=80=AFAM Yangyu Chen <cyy@cyyself.name> wrote=
-:
->
-> Add initial dts for CanMV-K230 and K230-EVB powered by Canaan Kendryte
-> K230 SoC [1].
->
-> Some key consideration:
-> - Only place BigCore which is 1.6GHz RV64GCBV
->
-> The existence of cache coherence between the two cores remains unknown
-> since they have dedicated L2 caches. And the factory SDK uses it for
-> other OS by default. I don't know whether the two CPUs on K230 SoC
-> can be used in one system. So only place BigCore here.
->
-> Meanwhile, although docs from Canaan said 1.6GHz Core with Vector is
-> CPU1, the csr.mhartid of this core is 0.
->
-> - Support for "zba" "zbb" "zbc" "zbs" are tested by hand
->
-> The user manual of C908 from T-Head does not document it specifically.
-> It just said it supports B extension V1.0-rc1. [2]
->
-> I have tested it by using this [3] which attempts to execute "add.uw",
-> "andn", "clmulr", "bclr" and they doesn't traps on K230. But on JH7110,
-> "clmulr" and "bclr" will trap.
->
-> - Support for "zicbom" is tested by hand
->
-> Have tested with some out-of-tree drivers from [4] that need DMA and they
-> do not come to the dts currently.
->
-> - Cache parameters are inferred from T-Head docs [2] and Canaan docs [1]
->
-> L1i: 32KB, VIPT 4-Way set-associative, 64B Cacheline
-L1i: VIPT non-aliasing
-> L1d: 32KB, VIPT 4-Way set-associative, 64B Cacheline
-L1d is PIPT
-> L2: 256KB, PIPT 16-way set-associative, 64B Cacheline
->
-> The numbers of cache sets are calculated from these parameters.
->
-> - MMU only supports Sv39
->
-> Since T-Head docs [2] say C908 should support Sv48. However, it will fail
-> during the kernel probe when running Linux on K230. I also tested it by
-> hand on M-Mode software, writing Sv48 to satp.mode will not trap but will
-> leave the csr unchanged. While writing Sv39 it will take effect. It shows
-> that this CPU does not support Sv48.
->
-> - Svpbmt and T-Head MAEE both supported
->
-> T-Head C908 does support both Svpbmt and T-Head MAEE for page-based memor=
-y
-> attributes and is controlled by csr.mxstatus. If the kernel wants to use
-> svpbmt, the m-mode software should set BIT(21) of csr.mxstatus to zero
-> before entering the s-mode kernel. Otherwise, the kernel will not boot as=
- 0
-> on T-Head MAEE represent to NonCachable Memory and it will lose dirty cac=
-he
-> lines modification that haven't been written back to the memory.
->
-> [1] https://developer.canaan-creative.com/k230/dev/zh/00_hardware/K230_da=
-tasheet.html#chapter-1-introduction
-> [2] https://occ-intl-prod.oss-ap-southeast-1.aliyuncs.com/resource//16992=
-68369347/XuanTie-C908-UserManual.pdf
-> [3] https://github.com/cyyself/rvb_test
-> [4] https://github.com/cyyself/linux/tree/k230-mainline
->
-> Signed-off-by: Yangyu Chen <cyy@cyyself.name>
+On Thu, Feb 15, 2024 at 07:14:43PM +0800, shiju.jose@huawei.com wrote:
+> From: Shiju Jose <shiju.jose@huawei.com>
+> 
+> Add support for GET_SUPPORTED_FEATURES mailbox command.
+> 
+> CXL spec 3.1 section 8.2.9.6 describes optional device specific features.
+> CXL devices supports features with changeable attributes.
+> Get Supported Features retrieves the list of supported device specific
+> features. The settings of a feature can be retrieved using Get Feature
+> and optionally modified using Set Feature.
+> 
+> Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
 > ---
->  arch/riscv/boot/dts/canaan/Makefile       |   2 +
->  arch/riscv/boot/dts/canaan/k230-canmv.dts |  24 ++++
->  arch/riscv/boot/dts/canaan/k230-evb.dts   |  24 ++++
->  arch/riscv/boot/dts/canaan/k230.dtsi      | 140 ++++++++++++++++++++++
->  4 files changed, 190 insertions(+)
->  create mode 100644 arch/riscv/boot/dts/canaan/k230-canmv.dts
->  create mode 100644 arch/riscv/boot/dts/canaan/k230-evb.dts
->  create mode 100644 arch/riscv/boot/dts/canaan/k230.dtsi
->
-> diff --git a/arch/riscv/boot/dts/canaan/Makefile b/arch/riscv/boot/dts/ca=
-naan/Makefile
-> index 987d1f0c41f0..7d54ea5c6f3d 100644
-> --- a/arch/riscv/boot/dts/canaan/Makefile
-> +++ b/arch/riscv/boot/dts/canaan/Makefile
-> @@ -1,6 +1,8 @@
->  # SPDX-License-Identifier: GPL-2.0
->  dtb-$(CONFIG_ARCH_CANAAN) +=3D canaan_kd233.dtb
->  dtb-$(CONFIG_ARCH_CANAAN) +=3D k210_generic.dtb
-> +dtb-$(CONFIG_ARCH_CANAAN) +=3D k230-canmv.dtb
-> +dtb-$(CONFIG_ARCH_CANAAN) +=3D k230-evb.dtb
->  dtb-$(CONFIG_ARCH_CANAAN) +=3D sipeed_maix_bit.dtb
->  dtb-$(CONFIG_ARCH_CANAAN) +=3D sipeed_maix_dock.dtb
->  dtb-$(CONFIG_ARCH_CANAAN) +=3D sipeed_maix_go.dtb
-> diff --git a/arch/riscv/boot/dts/canaan/k230-canmv.dts b/arch/riscv/boot/=
-dts/canaan/k230-canmv.dts
-> new file mode 100644
-> index 000000000000..3ab5c8de11a8
-> --- /dev/null
-> +++ b/arch/riscv/boot/dts/canaan/k230-canmv.dts
-> @@ -0,0 +1,24 @@
-> +// SPDX-License-Identifier: GPL-2.0 OR MIT
-> +/*
-> + * Copyright (C) 2024 Yangyu Chen <cyy@cyyself.name>
-> + */
+>  drivers/cxl/core/mbox.c | 23 +++++++++++++++
+>  drivers/cxl/cxlmem.h    | 62 +++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 85 insertions(+)
+> 
+> diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
+> index 27166a411705..191f51f3df0e 100644
+> --- a/drivers/cxl/core/mbox.c
+> +++ b/drivers/cxl/core/mbox.c
+> @@ -1290,6 +1290,29 @@ int cxl_set_timestamp(struct cxl_memdev_state *mds)
+>  }
+>  EXPORT_SYMBOL_NS_GPL(cxl_set_timestamp, CXL);
+>  
+> +int cxl_get_supported_features(struct cxl_memdev_state *mds,
+> +						struct cxl_mbox_get_supp_feats_in *pi,
+> +						void *feats_out)
+> +{
+> +	struct cxl_mbox_cmd mbox_cmd;
+> +	int rc;
 > +
-> +#include "k230.dtsi"
+> +	mbox_cmd = (struct cxl_mbox_cmd) {
+> +		.opcode = CXL_MBOX_OP_GET_SUPPORTED_FEATURES,
+> +		.size_in = sizeof(*pi),
+> +		.payload_in = pi,
+> +		.size_out = le32_to_cpu(pi->count),
+> +		.payload_out = feats_out,
+> +		.min_out = sizeof(struct cxl_mbox_get_supp_feats_out),
+> +	};
+> +	rc = cxl_internal_send_cmd(mds, &mbox_cmd);
+> +	if (rc < 0)
+> +		return rc;
 > +
-> +/ {
-> +       model =3D "Canaan CanMV-K230";
-> +       compatible =3D "canaan,canmv-k230", "canaan,kendryte-k230";
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_NS_GPL(cxl_get_supported_features, CXL);
 > +
-> +       chosen {
-> +               stdout-path =3D "serial0:115200n8";
-> +       };
-> +
-> +       ddr: memory@0 {
-> +               device_type =3D "memory";
-> +               reg =3D <0x0 0x0 0x0 0x1fdff000>;
-> +       };
-> +};
-> +
-> +&uart0 {
-> +       status =3D "okay";
-> +};
-> diff --git a/arch/riscv/boot/dts/canaan/k230-evb.dts b/arch/riscv/boot/dt=
-s/canaan/k230-evb.dts
-> new file mode 100644
-> index 000000000000..42720113c566
-> --- /dev/null
-> +++ b/arch/riscv/boot/dts/canaan/k230-evb.dts
-> @@ -0,0 +1,24 @@
-> +// SPDX-License-Identifier: GPL-2.0 OR MIT
-> +/*
-> + * Copyright (C) 2024 Yangyu Chen <cyy@cyyself.name>
-> + */
-> +
-> +#include "k230.dtsi"
-> +
-> +/ {
-> +       model =3D "Kendryte K230 EVB";
-> +       compatible =3D "canaan,k230-usip-lp3-evb", "canaan,kendryte-k230"=
-;
-> +
-> +       chosen {
-> +               stdout-path =3D "serial0:115200n8";
-> +       };
-> +
-> +       ddr: memory@0 {
-> +               device_type =3D "memory";
-> +               reg =3D <0x0 0x0 0x0 0x1fdff000>;
-> +       };
-> +};
-> +
-> +&uart0 {
-> +       status =3D "okay";
-> +};
-> diff --git a/arch/riscv/boot/dts/canaan/k230.dtsi b/arch/riscv/boot/dts/c=
-anaan/k230.dtsi
-> new file mode 100644
-> index 000000000000..0bcff67b78a8
-> --- /dev/null
-> +++ b/arch/riscv/boot/dts/canaan/k230.dtsi
-> @@ -0,0 +1,140 @@
-> +// SPDX-License-Identifier: GPL-2.0 OR MIT
-> +/*
-> + * Copyright (C) 2024 Yangyu Chen <cyy@cyyself.name>
-> + */
-> +
-> +#include <dt-bindings/interrupt-controller/irq.h>
-> +
-> +/dts-v1/;
-> +/ {
-> +       #address-cells =3D <2>;
-> +       #size-cells =3D <2>;
-> +       compatible =3D "canaan,kendryte-k230";
-> +
-> +       aliases {
-> +               serial0 =3D &uart0;
-> +       };
-> +
-> +       cpus {
-> +               #address-cells =3D <1>;
-> +               #size-cells =3D <0>;
-> +               timebase-frequency =3D <27000000>;
-> +
-> +               cpu@0 {
-> +                       compatible =3D "thead,c908", "riscv";
-> +                       device_type =3D "cpu";
-> +                       reg =3D <0>;
-> +                       riscv,isa =3D "rv64imafdcv_zba_zbb_zbc_zbs_zicbom=
-_svpbmt";
-> +                       riscv,isa-base =3D "rv64i";
-> +                       riscv,isa-extensions =3D "i", "m", "a", "f", "d",=
- "c", "v", "zba", "zbb",
-> +                                              "zbc", "zbs", "zicbom", "z=
-icntr", "zicsr",
-> +                                              "zifencei", "zihpm", "svpb=
-mt";
-If we use "isa-base + isa-extensions," why shall we keep riscv,isa?
-It's a little bit of a duplicate.
+>  int cxl_mem_get_poison(struct cxl_memdev *cxlmd, u64 offset, u64 len,
+>  		       struct cxl_region *cxlr)
+>  {
+> diff --git a/drivers/cxl/cxlmem.h b/drivers/cxl/cxlmem.h
+> index 5303d6942b88..23e4d98b9bae 100644
+> --- a/drivers/cxl/cxlmem.h
+> +++ b/drivers/cxl/cxlmem.h
+> @@ -529,6 +529,7 @@ enum cxl_opcode {
+>  	CXL_MBOX_OP_SET_TIMESTAMP	= 0x0301,
+>  	CXL_MBOX_OP_GET_SUPPORTED_LOGS	= 0x0400,
+>  	CXL_MBOX_OP_GET_LOG		= 0x0401,
+> +	CXL_MBOX_OP_GET_SUPPORTED_FEATURES	= 0x0500,
+>  	CXL_MBOX_OP_IDENTIFY		= 0x4000,
+>  	CXL_MBOX_OP_GET_PARTITION_INFO	= 0x4100,
+>  	CXL_MBOX_OP_SET_PARTITION_INFO	= 0x4101,
+> @@ -698,6 +699,64 @@ struct cxl_mbox_set_timestamp_in {
+>  
+>  } __packed;
+>  
+> +/* Get Supported Features CXL 3.1 Spec 8.2.9.6.1 */
 
-> +                       riscv,cbom-block-size =3D <64>;
-> +                       d-cache-block-size =3D <64>;
-> +                       d-cache-sets =3D <128>;
-> +                       d-cache-size =3D <32768>;
-> +                       i-cache-block-size =3D <64>;
-> +                       i-cache-sets =3D <128>;
-> +                       i-cache-size =3D <32768>;
-> +                       next-level-cache =3D <&l2_cache>;
-> +                       mmu-type =3D "riscv,sv39";
+In current code, block comments starts with /* and the real comments go
+from the second line.
+
+Fan
+> +/*
+> + * Get Supported Features input payload
+> + * CXL rev 3.1 section 8.2.9.6.1 Table 8-95
+> + */
+> +struct cxl_mbox_get_supp_feats_in {
+> +	__le32 count;
+> +	__le16 start_index;
+> +	u16 reserved;
+> +} __packed;
 > +
-> +                       cpu0_intc: interrupt-controller {
-> +                               compatible =3D "riscv,cpu-intc";
-> +                               interrupt-controller;
-> +                               #interrupt-cells =3D <1>;
-> +                       };
-> +               };
+> +/*
+> + * Get Supported Features Supported Feature Entry
+> + * CXL rev 3.1 section 8.2.9.6.1 Table 8-97
+> + */
+> +/* Supported Feature Entry : Payload out attribute flags */
+> +#define CXL_FEAT_ENTRY_FLAG_CHANGABLE	BIT(0)
+> +#define CXL_FEAT_ENTRY_FLAG_DEEPEST_RESET_PERSISTENCE_MASK	GENMASK(3, 1)
+> +#define CXL_FEAT_ENTRY_FLAG_PERSIST_ACROSS_FIRMWARE_UPDATE	BIT(4)
+> +#define CXL_FEAT_ENTRY_FLAG_SUPPORT_DEFAULT_SELECTION	BIT(5)
+> +#define CXL_FEAT_ENTRY_FLAG_SUPPORT_SAVED_SELECTION	BIT(6)
 > +
-> +               l2_cache: l2-cache {
-> +                       compatible =3D "cache";
-> +                       cache-block-size =3D <64>;
-> +                       cache-level =3D <2>;
-> +                       cache-size =3D <262144>;
-> +                       cache-sets =3D <256>;
-> +                       cache-unified;
-> +               };
-> +       };
-> +
-> +       apb_clk: apb-clk-clock {
-> +               compatible =3D "fixed-clock";
-> +               clock-frequency =3D <50000000>;
-> +               clock-output-names =3D "apb_clk";
-> +               #clock-cells =3D <0>;
-> +       };
-> +
-> +       soc {
-> +               compatible =3D "simple-bus";
-> +               interrupt-parent =3D <&plic>;
-> +               #address-cells =3D <2>;
-> +               #size-cells =3D <2>;
-> +               dma-noncoherent;
-> +               ranges;
-> +
-> +               plic: interrupt-controller@f00000000 {
-> +                       compatible =3D "canaan,k230-plic" ,"thead,c900-pl=
-ic";
-> +                       reg =3D <0xf 0x00000000 0x0 0x04000000>;
-> +                       interrupts-extended =3D <&cpu0_intc 11>, <&cpu0_i=
-ntc 9>;
-> +                       interrupt-controller;
-> +                       #address-cells =3D <0>;
-> +                       #interrupt-cells =3D <2>;
-> +                       riscv,ndev =3D <208>;
-> +               };
-> +
-> +               clint: timer@f04000000 {
-> +                       compatible =3D "canaan,k230-clint", "thead,c900-c=
-lint";
-> +                       reg =3D <0xf 0x04000000 0x0 0x04000000>;
-> +                       interrupts-extended =3D <&cpu0_intc 3>, <&cpu0_in=
-tc 7>;
-> +               };
-> +
-> +               uart0: serial@91400000 {
-> +                       compatible =3D "snps,dw-apb-uart";
-> +                       reg =3D <0x0 0x91400000 0x0 0x1000>;
-> +                       clocks =3D <&apb_clk>;
-> +                       interrupts =3D <16 IRQ_TYPE_LEVEL_HIGH>;
-> +                       reg-io-width =3D <4>;
-> +                       reg-shift =3D <2>;
-> +                       status =3D "disabled";
-> +               };
-> +
-> +               uart1: serial@91401000 {
-> +                       compatible =3D "snps,dw-apb-uart";
-> +                       reg =3D <0x0 0x91401000 0x0 0x1000>;
-> +                       clocks =3D <&apb_clk>;
-> +                       interrupts =3D <17 IRQ_TYPE_LEVEL_HIGH>;
-> +                       reg-io-width =3D <4>;
-> +                       reg-shift =3D <2>;
-> +                       status =3D "disabled";
-> +               };
-> +
-> +               uart2: serial@91402000 {
-> +                       compatible =3D "snps,dw-apb-uart";
-> +                       reg =3D <0x0 0x91402000 0x0 0x1000>;
-> +                       clocks =3D <&apb_clk>;
-> +                       interrupts =3D <18 IRQ_TYPE_LEVEL_HIGH>;
-> +                       reg-io-width =3D <4>;
-> +                       reg-shift =3D <2>;
-> +                       status =3D "disabled";
-> +               };
-> +
-> +               uart3: serial@91403000 {
-> +                       compatible =3D "snps,dw-apb-uart";
-> +                       reg =3D <0x0 0x91403000 0x0 0x1000>;
-> +                       clocks =3D <&apb_clk>;
-> +                       interrupts =3D <19 IRQ_TYPE_LEVEL_HIGH>;
-> +                       reg-io-width =3D <4>;
-> +                       reg-shift =3D <2>;
-> +                       status =3D "disabled";
-> +               };
-> +
-> +               uart4: serial@91404000 {
-> +                       compatible =3D "snps,dw-apb-uart";
-> +                       reg =3D <0x0 0x91404000 0x0 0x1000>;
-> +                       clocks =3D <&apb_clk>;
-> +                       interrupts =3D <20 IRQ_TYPE_LEVEL_HIGH>;
-> +                       reg-io-width =3D <4>;
-> +                       reg-shift =3D <2>;
-> +                       status =3D "disabled";
-> +               };
-> +       };
+> +enum cxl_feat_attr_value_persistence {
+> +	CXL_FEAT_ATTR_VALUE_PERSISTENCE_NONE,
+> +	CXL_FEAT_ATTR_VALUE_PERSISTENCE_CXL_RESET,
+> +	CXL_FEAT_ATTR_VALUE_PERSISTENCE_HOT_RESET,
+> +	CXL_FEAT_ATTR_VALUE_PERSISTENCE_WARM_RESET,
+> +	CXL_FEAT_ATTR_VALUE_PERSISTENCE_COLD_RESET,
+> +	CXL_FEAT_ATTR_VALUE_PERSISTENCE_MAX
 > +};
-> --
-> 2.43.0
->
-
-
---=20
-Best Regards
- Guo Ren
+> +
+> +#define CXL_FEAT_ENTRY_FLAG_PERSISTENCE_ACROSS_FW_UPDATE_MASK	BIT(4)
+> +#define CXL_FEAT_ENTRY_FLAG_PERSISTENCE_DEFAULT_SEL_SUPPORT_MASK	BIT(5)
+> +#define CXL_FEAT_ENTRY_FLAG_PERSISTENCE_SAVED_SEL_SUPPORT_MASK	BIT(6)
+> +
+> +struct cxl_mbox_supp_feat_entry {
+> +	uuid_t uuid;
+> +	__le16 feat_index;
+> +	__le16 get_feat_size;
+> +	__le16 set_feat_size;
+> +	__le32 attr_flags;
+> +	u8 get_feat_version;
+> +	u8 set_feat_version;
+> +	__le16 set_feat_effects;
+> +	u8 rsvd[18];
+> +}  __packed;
+> +
+> +/*
+> + * Get Supported Features output payload
+> + * CXL rev 3.1 section 8.2.9.6.1 Table 8-96
+> + */
+> +struct cxl_mbox_get_supp_feats_out {
+> +	__le16 entries;
+> +	__le16 nsuppfeats_dev;
+> +	u32 reserved;
+> +	struct cxl_mbox_supp_feat_entry feat_entries[];
+> +} __packed;
+> +
+>  /* Get Poison List  CXL 3.0 Spec 8.2.9.8.4.1 */
+>  struct cxl_mbox_poison_in {
+>  	__le64 offset;
+> @@ -829,6 +888,9 @@ void cxl_event_trace_record(const struct cxl_memdev *cxlmd,
+>  			    enum cxl_event_type event_type,
+>  			    const uuid_t *uuid, union cxl_event *evt);
+>  int cxl_set_timestamp(struct cxl_memdev_state *mds);
+> +int cxl_get_supported_features(struct cxl_memdev_state *mds,
+> +			       struct cxl_mbox_get_supp_feats_in *pi,
+> +			       void *feats_out);
+>  int cxl_poison_state_init(struct cxl_memdev_state *mds);
+>  int cxl_mem_get_poison(struct cxl_memdev *cxlmd, u64 offset, u64 len,
+>  		       struct cxl_region *cxlr);
+> -- 
+> 2.34.1
+> 
 
