@@ -1,142 +1,131 @@
-Return-Path: <linux-kernel+bounces-92307-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92176-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6208A871E2F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:45:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8F6A871C51
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:55:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A595DB2202B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:45:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 792D81F255CB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:55:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DCD75812B;
-	Tue,  5 Mar 2024 11:45:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A4B457326;
+	Tue,  5 Mar 2024 10:46:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="ZmY4lgUL"
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="1TKr1Kug"
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1767E54910;
-	Tue,  5 Mar 2024 11:45:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD74D11198
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 10:46:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709639144; cv=none; b=SPHPNDmEoIFklrYV7mKzq4QTyA32ARNy0t5Ke2pZDstdb0Bjdg0edr/5hKU7vvdpNNLo3sE0iCLsacFANyDjOMeWNOXNDNdQxg4qvHQhKDRtsvSUPVebXedsl9LExXWxHhZ+5TM64uL56n+4PhA0rvKEybWKA33JLINPShh6Xhs=
+	t=1709635567; cv=none; b=AquPlPmLcCNrR1QRP/ZcfYALR84lsKFlxm7OkrWCWJZa5I/6LdXlEN/SKWSiNR3AU2+TcFlAosa+dpvMEF5a/DoulwpQpOE8w+QcFnY4EnnUm0RYuxDiLemLrxLkJXpnEkD9NbalHW0Zo2AkRg7Fwb/8glMsjgkyDsFnU4pFBHs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709639144; c=relaxed/simple;
-	bh=FHUHlLigDUUjjEfAgynun0/iQyt0bpAOryZ/isN6/Cw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=c+R0ilkiRV8QabhzyksteLNI7vN/2u5XOchkPGBkM1TCpyyPi+HBbVEG3OqUZ44X7Bi1rKj1AifOBidqyfRZVQU1SjQCHzfpCnbbB5LZr0ysTDPnyCA/1TXKN5d72prR8ruYZJv2H8QiZM6s8RnMl7des0Nxz7657Ouekc8Mm3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=fail (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=ZmY4lgUL reason="signature verification failed"; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id 774bf1c7206d9c9b; Tue, 5 Mar 2024 11:45:39 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id D152C66AA0C;
-	Tue,  5 Mar 2024 11:45:38 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
-	s=dkim; t=1709635539;
-	bh=FHUHlLigDUUjjEfAgynun0/iQyt0bpAOryZ/isN6/Cw=;
-	h=From:To:Cc:Subject:Date;
-	b=ZmY4lgULCHBNmKGSZrEKSFDn7qZkfBnuwQiT6SudrIYceXh7lJpAlIWnOpyP4yqx8
-	 Q9YiCUEYFjcEMaKdnD6M4F8LDPyfGDm/uBy/F/MqDL9S7wHKSfL4XLyHuYTB5akHM6
-	 TeTBuWaet63AqwC328mM1yA0KPr4tFkDxCuBH+FXfeJLD7XkHvFwTd/MNirNM0K0yc
-	 b6mbgbv97F9I+UHX7Twkhp8O8R2BgpFNKNJEjQe8pgJ68TpVl3izmc8CqQFYAoPltY
-	 7SPMHmNm2OhTe5GVrZ37bPR05fxHkDwlj7pMfPvyRZo1oi4FRae0r38KA2yreDogsp
-	 Rv9IY9yYHZgtw==
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Linux PCI <linux-pci@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Linux PM <linux-pm@vger.kernel.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Ricky Wu <ricky_wu@realtek.com>, Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject:
- [PATCH v1] PM: runtime: PCI: Drain runtime-idle callbacks before driver
- removal
-Date: Tue, 05 Mar 2024 11:45:38 +0100
-Message-ID: <5761426.DvuYhMxLoT@kreacher>
+	s=arc-20240116; t=1709635567; c=relaxed/simple;
+	bh=XklbFoUwOSii+y74bxc36aiADpTAj4ZlGh81v8WRHIE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZTs9ITIABZthauu1BY5kE+xgQ92i0up9hk+iZcWEBRagTZqOJ8Ziq5w9KZPQvITcvjo5qExBomsbpBPSIN4m59hq6014Jj3E8ov15lcbmpVNHi5j7dbZqkXrF43PavtEJVmCrbNsE80eX0veCEViHKYIr7sVlUdN7JEjA6i+dzw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=1TKr1Kug; arc=none smtp.client-ip=209.85.221.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-33d146737e6so4233312f8f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 02:46:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1709635563; x=1710240363; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JVA1JqDTMPvckuRaTHq5sqq6pnFxGrbQ8TF6seYnelo=;
+        b=1TKr1KugBceesEMwMGGzcf/55Y5czeuKgOSW8hUF2A4z7TvXPZbUOYgeR1XgC1W/Xg
+         fKqN5vLnGGhZQyCuRQJSNo5wDVwWgzN+wl/3+IgVxcE/a9NgkVomCTb26LqDu5keSi2p
+         ADFNs7kMiKQom8xrncsefJ69WNlttJumkg5B3ok8fALTscJr7sHXGdRQIWawG8CKkn8v
+         8NBwMQPflifIgKMGDtNLbRnndmhwfDKlJ5sP7q99z8un65B8i2ph7TBDP4NDHH1zoqVO
+         hew7XKZ4Y74A56I0i3IaOqyfe6sQq/8lYaTAN1cPZ9s5xelmmU2PJgnuMZtXFOwWpdM3
+         gOtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709635563; x=1710240363;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JVA1JqDTMPvckuRaTHq5sqq6pnFxGrbQ8TF6seYnelo=;
+        b=BGjQ2VTTHJiY8+uh5CMgMjKk0wNrXbLcyS6Q+iqKu92o0AJoD/YC0uwMyiYFmzXOlE
+         LM8eN9YkYqpJ82TmpUTVuzaUE5v6tqnmloRmhAvIMPK0rvKmhsTiwCgytlsOhtnGwsLS
+         jrnlBjlhEQxMn/oexLBU5nBI/pszj0fINsV04TymWI0EbxEEjsyePXJ3PcFmAez9/96O
+         F10vgw0L92ZL8VW1DZJs3caTZ6w9BRAZJhlG0bD5JCyz19whFVeOEUuy0qwEDfvPT/+3
+         iXYr4OTOwa43nDVexqpN7515OI7v23WoVilQ1WXzzVcAmcXLKB49i5knMPERuH9epnMi
+         V2PA==
+X-Forwarded-Encrypted: i=1; AJvYcCUVqFrVtmzCmJuf2EKNhQyTcWrs7i7BLfTyrbWqZ2RemfKgZ+KdboqIAI7y1pLn+klSiA4J27KAArrFSTvuNJYbN/FhFSJfvYFG6MiB
+X-Gm-Message-State: AOJu0Yy0zt3vdtBSr56ZQNxO+q7fPFUfg0sJB9ZbmZxo71PtqzNhEyEL
+	3uaZ2K70t+vnnYt84xcvr+q6gj9BKDUR0KPo8ex6AOCaZ8UizEwMMTox9Zvyi0M=
+X-Google-Smtp-Source: AGHT+IE/L4A6bnauZ4LpcW6naeeYuRNA8WEWJrlnt645s9ZaWVjgn/tE11DGJ0F5XhXa7k+kx2lEzw==
+X-Received: by 2002:a05:6000:1249:b0:33d:2226:a28b with SMTP id j9-20020a056000124900b0033d2226a28bmr7827513wrx.37.1709635563236;
+        Tue, 05 Mar 2024 02:46:03 -0800 (PST)
+Received: from [192.168.1.70] ([84.102.31.43])
+        by smtp.gmail.com with ESMTPSA id d15-20020a5d644f000000b0033e052be14fsm14577187wrw.98.2024.03.05.02.46.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Mar 2024 02:46:02 -0800 (PST)
+Message-ID: <3a5f3950-e47f-409a-b881-0c8545778b91@baylibre.com>
+Date: Tue, 5 Mar 2024 11:46:00 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrheelgdduiecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeegfffhudejlefhtdegffekteduhfethffhieettefhkeevgfdvgfefieekiefgheenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepkedprhgtphhtthhopehlihhnuhigqdhptghisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohephhgvlhhgrggrsheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghl
- rdhorhhgpdhrtghpthhtoheprhgrfhgrvghlsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehgrhgvghhkhheslhhinhhugihfohhunhgurghtihhonhdrohhrgh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=8 Fuz1=8 Fuz2=8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/2] net: ethernet: ti: am65-cpsw: Add minimal XDP
+ support
+Content-Language: en-US
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Russell King <linux@armlinux.org.uk>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Sumit Semwal <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linaro-mm-sig@lists.linaro.org
+References: <20240223-am65-cpsw-xdp-basic-v2-0-01c6caacabb6@baylibre.com>
+ <20240223-am65-cpsw-xdp-basic-v2-2-01c6caacabb6@baylibre.com>
+ <356f4dd4-eb0e-49fa-a9eb-4dffbe5c7e7c@lunn.ch>
+From: Julien Panis <jpanis@baylibre.com>
+In-Reply-To: <356f4dd4-eb0e-49fa-a9eb-4dffbe5c7e7c@lunn.ch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On 3/1/24 17:38, Andrew Lunn wrote:
+> On Fri, Mar 01, 2024 at 04:02:53PM +0100, Julien Panis wrote:
+>> This patch adds XDP (eXpress Data Path) support to TI AM65 CPSW
+>> Ethernet driver. The following features are implemented:
+>> - NETDEV_XDP_ACT_BASIC (XDP_PASS, XDP_TX, XDP_DROP, XDP_ABORTED)
+>> - NETDEV_XDP_ACT_REDIRECT (XDP_REDIRECT)
+>> - NETDEV_XDP_ACT_NDO_XMIT (ndo_xdp_xmit callback)
+>>
+>> The page pool memory model is used to get better performance.
+> Do you have any benchmark numbers? It should help with none XDP
+> traffic as well. So maybe iperf numbers before and after?
+>
+> 	Andrew
 
-A race condition between the .runtime_idle() callback and the .remove()
-callback in the rtsx_pcr PCI driver leads to a kernel crash due to an
-unhandled page fault [1].
+Argh...Houston, we have a problem. I checked my v3, which is ready for
+submission, with iperf3:
+1) Before = without page pool -> 500 MBits/sec
+2) After = with page pool -> 442 MBits/sec
+-> ~ 10% worse with page pool here.
 
-The problem is that rtsx_pci_runtime_idle() is not expected to be
-running after pm_runtime_get_sync() has been called, but the latter
-doesn't really guarantee that.  It only guarantees that the suspend
-and resume callbacks will not be running when it returns.
+Unless the difference is not due to page pool. Maybe there's something else
+which is not good in my patch. I'm going to send the v3 which uses page pool,
+hopefully someone will find out something suspicious. Meanwhile, I'll carry on
+investigating: I'll check the results with my patch, by removing only the using of
+page pool.
 
-However, if a .runtime_idle() callback is already running when
-pm_runtime_get_sync() is called, the latter will notice that the
-runtime PM status of the device is RPM_ACTIVE and it will return right
-away without waiting for the former to complete.  In fact, it cannot
-wait for .runtime_idle() to complete because it may be called from that
-callback (it arguably does not make much sense to do that, but it is not
-strictly prohibited).
-
-Thus in general, whoever is providing a .runtime_idle() callback, they
-need to protect it from running in parallel with whatever code runs
-after pm_runtime_get_sync().  [Note that .runtime_idle() will not start
-after pm_runtime_get_sync() has returned, but it may continue running
-then if it has started earlier already.]
-
-One way to address that race condition is to call pm_runtime_barrier()
-after pm_runtime_get_sync() (not before it, because a nonzero value of
-the runtime PM usage counter is necessary to prevent runtime PM
-callbacks from being invoked) to wait for the runtime-idle callback to
-complete should it be running at that point.  A suitable place for
-doing that is in pci_device_remove() which calls pm_runtime_get_sync()
-before removing the driver, so it may as well call pm_runtime_barrier()
-subsequently, which will prevent the race in question from occurring,
-not just in the rtsx_pcr driver, but in any PCI drivers providing
-runtime-idle callbacks.
-
-Link: https://lore.kernel.org/lkml/20240229062201.49500-1-kai.heng.feng@canonical.com/ # [1]
-Reported-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Tested-by: Ricky Wu <ricky_wu@realtek.com>
-Cc: All applicable <stable@vger.kernel.org>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/pci/pci-driver.c |    7 +++++++
- 1 file changed, 7 insertions(+)
-
-Index: linux-pm/drivers/pci/pci-driver.c
-===================================================================
---- linux-pm.orig/drivers/pci/pci-driver.c
-+++ linux-pm/drivers/pci/pci-driver.c
-@@ -473,6 +473,13 @@ static void pci_device_remove(struct dev
- 
- 	if (drv->remove) {
- 		pm_runtime_get_sync(dev);
-+		/*
-+		 * If the driver provides a .runtime_idle() callback and it has
-+		 * started to run already, it may continue to run in parallel
-+		 * with the code below, so wait until all of the runtime PM
-+		 * activity has completed.
-+		 */
-+		pm_runtime_barrier(dev);
- 		drv->remove(pci_dev);
- 		pm_runtime_put_noidle(dev);
- 	}
+Julien
 
 
 
