@@ -1,129 +1,90 @@
-Return-Path: <linux-kernel+bounces-92713-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92718-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 799098724DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:51:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24F0F8724E5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:53:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 187051F2247E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:51:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71FB3B26D99
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:53:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2935FD28D;
-	Tue,  5 Mar 2024 16:51:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF55712E74;
+	Tue,  5 Mar 2024 16:53:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ubNN479q";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ubNN479q"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FWKMHhQ0"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1137944F
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 16:51:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77C6DDDA1;
+	Tue,  5 Mar 2024 16:53:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709657486; cv=none; b=pl/5O/qXynvBTxhz+INHdS8UXdSmWCVpMJ2iua+M0AuLyG+GP7I25GJrOpRlBijbhoj2ItvrZ7df3nIvVlMYwECzXbg/Vyhk6FZjNjkboKPur+/RxpbmjRggEyN4EYmG9zTzzWZuw17jLeanj8453RjbGyvj5/9i7EAvkZe8Mow=
+	t=1709657595; cv=none; b=LD/TqJp1Go9XSsaXF+YzIOVjtywiXysTiohwM2mxKNk3PSvRIV7JB9W/NjIwst9DgGGk147xhx6SVu6M/bdADdG9BsHOeNyQIR7boSozZyNtHxYTRzTBI5/IJMzZNDAQDVNhc0xLe9xtZaR9RVO3+edTcaVW/7GFOdeElUZnOyM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709657486; c=relaxed/simple;
-	bh=+h3A8Bm5b0t742BYM0yFIDDKYhbGb7+Tu99VKI0WctI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Z5ALL7c6GjN/QMiP1eoxtGr1ccrmNmg50kheU3siBVOWr5TYc2Mdsmot4y7SKuBvzhpgiqXkKJrfgyuNj3y5xpipTsKtkZ12Zc6OjLy1AymUScjvwnFgWLAZNrnCYarKMiTNui2zsoy7pORJc4MjI6AQJAO76RgRBOdPKkSdAOs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ubNN479q; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ubNN479q; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id A9C5941EF;
-	Tue,  5 Mar 2024 16:51:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1709657475; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=H/mHovDEYHLbXQ9vaXQEWsprbeUFOB8+RkbwNUTs8Xg=;
-	b=ubNN479qhTBXGWb8A3HgqszUDG1nQljNBn1GRHygNIU/NdOkgkFcbvuB3nYM9D+0YgeBpn
-	B4sr2iKUelSFO3RfSMMD/twksG2S5NIGuTHSrMn59mTfMVpMp8SSbZcTgUZw4AxjAuC1wB
-	+8IrIW0giXkwDoDpSbuPFHOEAsN7XaI=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1709657475; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=H/mHovDEYHLbXQ9vaXQEWsprbeUFOB8+RkbwNUTs8Xg=;
-	b=ubNN479qhTBXGWb8A3HgqszUDG1nQljNBn1GRHygNIU/NdOkgkFcbvuB3nYM9D+0YgeBpn
-	B4sr2iKUelSFO3RfSMMD/twksG2S5NIGuTHSrMn59mTfMVpMp8SSbZcTgUZw4AxjAuC1wB
-	+8IrIW0giXkwDoDpSbuPFHOEAsN7XaI=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A17B713A5B;
-	Tue,  5 Mar 2024 16:51:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 7ghoJ4NN52XkBQAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Tue, 05 Mar 2024 16:51:15 +0000
-Date: Tue, 5 Mar 2024 17:51:11 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: cve@kernel.org, linux-kernel@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: CVE-2023-52560: mm/damon/vaddr-test: fix memory leak in
- damon_do_test_apply_three_regions()
-Message-ID: <ZedNf9uP3_TjIy0g@tiehlicka>
-References: <2024030252-CVE-2023-52560-c3de@gregkh>
+	s=arc-20240116; t=1709657595; c=relaxed/simple;
+	bh=hLKYxNXf66Yo5bSdnZap/TeucSUeZz8DTJtzZ7PHN3g=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tkah7hgvq9sksbArYs9Lvr7uez2ZXE1wIJgPkO2kK19V5Vf6hZGqI/pw3bjJpLW5bfOz3n0JKswN4sox0NCUDliSYZG8fNeVw/06feIY55KKzNESpXV1Hmb5K52qtyimbTlMeziRh3Ww2HkBoQE1SOPUGUaZructGLsAMjYFAWQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FWKMHhQ0; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709657594; x=1741193594;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=hLKYxNXf66Yo5bSdnZap/TeucSUeZz8DTJtzZ7PHN3g=;
+  b=FWKMHhQ04TnV6ICcuvvKTHOtka6fzppdEmJBBG33ObeTDgwktkSml5lE
+   QM8V6OQ3fd6Kr72I4o+0RdQRjpW4t9rfKxip0LY5kfgb18OV388rIY1u7
+   L7o5o0QfXJhQrV2KIx6mnbiC+i3XoiFUOGKb8QFE1TvSEwS3gHQy/sDC4
+   ZngatQjQ5VRRtTAJXJX67EBO91UUurGb8zff4UJWMsG5qNa9SU0AM9dwV
+   +xbHcdmyLXd1QdxOa1NQaKZ5XCylK5kL4kQur6K10miSCJ+IuCS1DREne
+   +GQUtERU/HUCL9swmWWKjZJ2Q+QJ6fR/DfNVhnMYfRA49IfG6RvCu112b
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="7992142"
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="7992142"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 08:53:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="937042727"
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="937042727"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 05 Mar 2024 08:53:08 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 991911A6; Tue,  5 Mar 2024 18:53:07 +0200 (EET)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	linux-watchdog@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Wim Van Sebroeck <wim@linux-watchdog.org>,
+	Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH v1 0/3] watchdog: intel-mid_wdt: header and code cleanups
+Date: Tue,  5 Mar 2024 18:52:17 +0200
+Message-ID: <20240305165306.1366823-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2024030252-CVE-2023-52560-c3de@gregkh>
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=ubNN479q
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-5.00 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[3];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DWL_DNSWL_LOW(-1.00)[suse.com:dkim];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
-	 NEURAL_HAM_SHORT(-0.20)[-0.994];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-2.99)[99.95%]
-X-Spam-Score: -5.00
-X-Rspamd-Queue-Id: A9C5941EF
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
 
-On Sat 02-03-24 22:59:54, Greg KH wrote:
-> Description
-> ===========
-> 
-> In the Linux kernel, the following vulnerability has been resolved:
-> 
-> mm/damon/vaddr-test: fix memory leak in damon_do_test_apply_three_regions()
-> 
-> When CONFIG_DAMON_VADDR_KUNIT_TEST=y and making CONFIG_DEBUG_KMEMLEAK=y
-> and CONFIG_DEBUG_KMEMLEAK_AUTO_SCAN=y, the below memory leak is detected.
+A few cleanups against the driver, mostly making an order in the header
+inclusions.
 
-This is a kunit test case AFAICS. Is this really a CVE material?
+Andy Shevchenko (3):
+  watchdog: intel-mid_wdt: Remove unused intel-mid.h
+  watchdog: intel-mid_wdt: Don't use "proxy" headers
+  watchdog: intel-mid_wdt: Get platform data via dev_get_platdata()
+
+ drivers/watchdog/intel-mid_wdt.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
 -- 
-Michal Hocko
-SUSE Labs
+2.43.0.rc1.1.gbec44491f096
+
 
