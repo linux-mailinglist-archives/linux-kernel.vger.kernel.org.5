@@ -1,178 +1,92 @@
-Return-Path: <linux-kernel+bounces-92806-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92807-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2672187262F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:04:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE0B3872634
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:05:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A83DE1F27530
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:04:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4EE8F1F2761A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:05:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7180418EA5;
-	Tue,  5 Mar 2024 18:04:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35D4B1B96B;
+	Tue,  5 Mar 2024 18:04:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Lx/uVdSM"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uD+rzhRB"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1819718EAB
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 18:04:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EAB91B950;
+	Tue,  5 Mar 2024 18:04:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709661865; cv=none; b=FxbSKn2rY6anNliwwaCoZV1VmMoou2Wgrcz5sLsgaoaoi8/EsuXQTStai4p7wJ63GebW+scgjuGEhzWqENrqAI1GkI6dQxzEGDQy3hYqbiMYXfZ0efUG04s028meA0h0kl4B2zZyNK/CWR2WD39QteA2gmFdISmDjp7y0exgPzs=
+	t=1709661869; cv=none; b=eSDWaP1uZWbZ5SxhDTqAGbWMqA1P+7rccGLg8XWPdXcTwEJHOlH4UJ6CgF2FdqZHKgUOU25+S8NVVwT9rTTDQa/jwty1SDw7ADtAnvgASTEEIjfTNItgwMzfk1pMJRVt1Hae8AmsgceWxpYvLqW1AKhQO7Q3AfOR6w3DRgojGxM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709661865; c=relaxed/simple;
-	bh=KlteQmYHydWNBOpxdpzf+ptjubVxDcE/oTAcS8ClTCY=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=YM5V+I+4UydtpHhwp0L5hcVZQhWwURs5V+H8SDmSksVprad8VkFP3wnRQ9LYFecBoubPuU0lK/AbJn4g9QPX2LGqEqS6vDw9zXVBVzEK3LaxI5aHkXTMIINKZxDkVis9NCZ3Mfda4JGOqtqdB4HX6RhZv32p4axprLvQ7NvGM4s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Lx/uVdSM; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-609ce331defso12884257b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 10:04:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709661863; x=1710266663; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pEbrJLbsSQI/fw5oAKGC5MieHsStoqch1a0BdEdHBlY=;
-        b=Lx/uVdSMQf992dTYkIderi7voShRPjzxBfQcJleun8akA1s316Flk0UoDnRtcO4ujY
-         fQZ5op5ngmWIv2bWeSdXOXGtl4JXj9Kpdr3Y8zgWYcxSX2rlwpsGCaXqWcDuovjIlpXw
-         PLNAq3TtOamsHeLPsc2fwpSkQpStyv9N11mTrutYPZ+91/FZOohLvHFHGAQxXasM48Jj
-         6VEWFbuPEcTcMy5MwqTnLhq59/p/71Y2HA87+mTgy51kvGXXmwwr5LEJEf7s0DxscZVo
-         qv4AoFzFE6xGIV4x1yogkHo9XQpCg6GwADtYrnDqHBvOr97T1KeA8N2tt4X9js+fMvZ2
-         ySQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709661863; x=1710266663;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pEbrJLbsSQI/fw5oAKGC5MieHsStoqch1a0BdEdHBlY=;
-        b=WHpzM3+JHEguska1fm80aT09XOvFwqs9HdAQ/nP/er//bi4beSZ3VOceqI++VHv2cH
-         11VUpAB25HCeCUNtcJngq4ZkbjmcvEz3/mtzRgZp2cL5z8/DTjv5WIgTz7JJld4C9Fka
-         CNHUnloHgR6ovHmEl9LWLJl0h5cHb8CvqJg+DEVmKUJuFzCaZMDiqzC8zsM67uD5HNAS
-         RnyC/I9BOnDkYXcwKmjodh51rMDwd/tdMNlTEobETz6gG0L6Igm9RmxzDUnKnL5wN6Dd
-         bVPg31GkhkRn7izIu8fdGluq3nDNq72S7QUIy6kbKO9u/Mkdx1NcH6GQm68n/KX76vNb
-         d2bQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX8H2zFmgrMX873ZpeEsJaH1k1pJ0bVO0L56Dmjg2KnmnYgGTZHsCkkX3RyjxGaFeuGwCgVlMApMkWZYzIBzzNkvoqGh9GshhKVaOMx
-X-Gm-Message-State: AOJu0Yy+ixZSjtiGfkug9G50U6AJ0xk38XNzaIIhlTr5onnsrqYO3Ce1
-	5l7h1RQHeoJRTa60+1URMWi6M4zawUX7UqB1iPVGa9QWveuZnl536K3jdXGTT8NfsAKJOpMA/64
-	4Kw==
-X-Google-Smtp-Source: AGHT+IHQ9UsEAu7P7/CrKaWcVqX4oXUziFtlmyRIzxiyJyrSWM03oEu21H2c1A1L24BxK1ATy8oHmtOSpnM=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:690c:3507:b0:609:3c79:dbf1 with SMTP id
- fq7-20020a05690c350700b006093c79dbf1mr3570872ywb.8.1709661863151; Tue, 05 Mar
- 2024 10:04:23 -0800 (PST)
-Date: Tue, 5 Mar 2024 10:04:21 -0800
-In-Reply-To: <ZedUwKWW7PNkvUH1@google.com>
+	s=arc-20240116; t=1709661869; c=relaxed/simple;
+	bh=8uBoflw7ylg6FwA/YZf/wgGJPgmGBD3bhaSObnhOsRs=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=BdgfTVdOEUfFRZa+TbZ2Djj57YEExrN6nTitEHJgFOFLBN6KhDxTTLgcXE9g0VPvIWEQ8bIpy0YFHLwRD98aficC+Yh6pS1RvStZ41ztqm+1L0thXf6q7kc23ym9jkubpQnrlKm8phpVb6qr+Drve/2F7w7uuESjZsDcwT9vb5c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uD+rzhRB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4968C43390;
+	Tue,  5 Mar 2024 18:04:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709661868;
+	bh=8uBoflw7ylg6FwA/YZf/wgGJPgmGBD3bhaSObnhOsRs=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=uD+rzhRBR3WZRsGzIXZIPVQJnZzb6q6XALgHCnBmj2DvCfYQ7F4ewgG+YPHXxa/4u
+	 totVJc0mw9s8mQ6IpuaOyDciwZepaRg/MA1/KS75QfS9CZJcUSwJ70F6Aym4aoQW5h
+	 twn9tWsAX4FAga0kos0DAOwEtFc9TKbt+yWrhLzWAfaanQyt0teTLRIH3iTnYNNBTW
+	 ACoqVwWGYVxm0cw2ioVWkzSLGsh5X7GVXkmoJHO8DWQYGhvR8+/JRXl9jCzS/8NUWo
+	 d1aUreWkh8Mr1GEqeN+dsXGkiAOT2i8tE8Xbg1wYk7/wvy+lY9xZioq4zKQvPlfNuU
+	 b8FSYVWR4To/Q==
+Date: Tue, 5 Mar 2024 10:04:26 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+Cc: Florian Fainelli <florian.fainelli@broadcom.com>, Broadcom internal
+ kernel review list <bcm-kernel-feedback-list@broadcom.com>, Andrew Lunn
+ <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>, Russell King
+ <linux@armlinux.org.uk>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Richard
+ Cochran <richardcochran@gmail.com>, Radu Pirea
+ <radu-nicolae.pirea@oss.nxp.com>, Jay Vosburgh <j.vosburgh@gmail.com>, Andy
+ Gospodarek <andy@greyhouse.net>, Nicolas Ferre
+ <nicolas.ferre@microchip.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Jonathan Corbet
+ <corbet@lwn.net>, Horatiu Vultur <horatiu.vultur@microchip.com>,
+ UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>, Vladimir
+ Oltean <vladimir.oltean@nxp.com>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, Maxime Chevallier
+ <maxime.chevallier@bootlin.com>, Rahul Rameshbabu <rrameshbabu@nvidia.com>
+Subject: Re: [PATCH net-next v9 12/13] net: ethtool: tsinfo: Add support for
+ hwtstamp provider and get/set hwtstamp config
+Message-ID: <20240305100426.5ed724f3@kernel.org>
+In-Reply-To: <20240305175253.764f041a@kmaincent-XPS-13-7390>
+References: <20240226-feature_ptp_netnext-v9-0-455611549f21@bootlin.com>
+	<20240226-feature_ptp_netnext-v9-12-455611549f21@bootlin.com>
+	<20240304192733.1e8e08cc@kernel.org>
+	<20240305175253.764f041a@kmaincent-XPS-13-7390>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240301075007.644152-1-sandipan.das@amd.com> <06061a28-88c0-404b-98a6-83cc6cc8c796@gmail.com>
- <cc8699be-3aae-42aa-9c70-f8b6a9728ee3@amd.com> <f5bbe9ac-ca35-4c3e-8cd7-249839fbb8b8@linux.intel.com>
- <ZeYlEGORqeTPLK2_@google.com> <8a846ba5-d346-422e-817b-e00ab9701f19@gmail.com>
- <ZedUwKWW7PNkvUH1@google.com>
-Message-ID: <ZedepdnKSl6oFNUq@google.com>
-Subject: Re: [PATCH] KVM: x86/svm/pmu: Set PerfMonV2 global control bits correctly
-From: Sean Christopherson <seanjc@google.com>
-To: Like Xu <like.xu.linux@gmail.com>
-Cc: Dapeng Mi <dapeng1.mi@linux.intel.com>, Sandipan Das <sandipan.das@amd.com>, 
-	pbonzini@redhat.com, mizhang@google.com, jmattson@google.com, 
-	ravi.bangoria@amd.com, nikunj.dadhania@amd.com, santosh.shukla@amd.com, 
-	manali.shukla@amd.com, babu.moger@amd.com, kvm list <kvm@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 05, 2024, Sean Christopherson wrote:
-> On Tue, Mar 05, 2024, Like Xu wrote:
-> diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
-> index 87cc6c8809ad..f61ce26aeb90 100644
-> --- a/arch/x86/kvm/pmu.c
-> +++ b/arch/x86/kvm/pmu.c
-> @@ -741,6 +741,8 @@ static void kvm_pmu_reset(struct kvm_vcpu *vcpu)
->   */
->  void kvm_pmu_refresh(struct kvm_vcpu *vcpu)
->  {
-> +	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
-> +
->  	if (KVM_BUG_ON(kvm_vcpu_has_run(vcpu), vcpu->kvm))
->  		return;
->  
-> @@ -750,8 +752,18 @@ void kvm_pmu_refresh(struct kvm_vcpu *vcpu)
->  	 */
->  	kvm_pmu_reset(vcpu);
->  
-> -	bitmap_zero(vcpu_to_pmu(vcpu)->all_valid_pmc_idx, X86_PMC_IDX_MAX);
-> +	bitmap_zero(pmu->all_valid_pmc_idx, X86_PMC_IDX_MAX);
->  	static_call(kvm_x86_pmu_refresh)(vcpu);
-> +
-> +	/*
-> +	 * At RESET, both Intel and AMD CPUs set all enable bits for general
-> +	 * purpose counters in IA32_PERF_GLOBAL_CTRL (so that software that
-> +	 * was written for v1 PMUs don't unknowingly leave GP counters disabled
-> +	 * in the global controls).  Emulate that behavior when refreshing the
-> +	 * PMU so that userspace doesn't need to manually set PERF_GLOBAL_CTRL.
-> +	 */
-> +	if (kvm_pmu_has_perf_global_ctrl(pmu))
-> +		pmu->global_ctrl = GENMASK_ULL(pmu->nr_arch_gp_counters - 1, 0);
->  }
+On Tue, 5 Mar 2024 17:52:53 +0100 K=C3=B6ry Maincent wrote:
+> > > +		/* Does the hwtstamp supported in the netdev topology */
+> > > +		if (mod) {
+> > > +			hwtstamp.ptp =3D ptp_clock_get_by_index(phc_index);   =20
+> >=20
+> > This just returns a pointer without any refcounting, right?
+> > What guarantees the ptp object doesn't disappear? =20
+>=20
+> Could the ptp object disappears within rtnlock?
 
-Doh, this is based on kvm/kvm-uapi, I'll rebase to kvm-x86/next before posting.
+I believe so, yes.
 
-I'll also update the changelog to call out that KVM has always clobbered global_ctrl
-during PMU refresh, i.e. there is no danger of breaking existing setups by
-clobbering a value set by userspace, e.g. during live migration.
-
-Lastly, I'll also update the changelog to call out that KVM *did* actually set
-the general purpose counter enable bits in global_ctrl at "RESET" until v6.0,
-and that KVM intentionally removed that behavior because of what appears to be
-an Intel SDM bug.
-
-Of course, in typical KVM fashion, that old code was also broken in its own way
-(the history of this code is a comedy of errors).  Initial vPMU support in commit
-f5132b01386b ("KVM: Expose a version 2 architectural PMU to a guests") *almost*
-got it right, but for some reason only set the bits if the guest PMU was
-advertised as v1:
-
-        if (pmu->version == 1) {
-                pmu->global_ctrl = (1 << pmu->nr_arch_gp_counters) - 1;
-                return;
-        }
-
-
-Commit f19a0c2c2e6a ("KVM: PMU emulation: GLOBAL_CTRL MSR should be enabled on
-reset") then tried to remedy that goof, but botched things and also enabled the
-fixed counters:
-
-        pmu->global_ctrl = ((1 << pmu->nr_arch_gp_counters) - 1) |
-                (((1ull << pmu->nr_arch_fixed_counters) - 1) << X86_PMC_IDX_FIXED);
-        pmu->global_ctrl_mask = ~pmu->global_ctrl;
-
-Which was KVM's behavior up until commit c49467a45fe0 ("KVM: x86/pmu: Don't overwrite
-the pmu->global_ctrl when refreshing") incorrectly removed *everything*.  Very
-ironically, that commit came from Like.
-
-Author: Like Xu <likexu@tencent.com>
-Date:   Tue May 10 12:44:07 2022 +0800
-
-    KVM: x86/pmu: Don't overwrite the pmu->global_ctrl when refreshing
-    
-    Assigning a value to pmu->global_ctrl just to set the value of
-    pmu->global_ctrl_mask is more readable but does not conform to the
-    specification. The value is reset to zero on Power up and Reset but
-    stays unchanged on INIT, like most other MSRs.
-
-But wait, it gets even better.  Like wasn't making up that behavior, Intel's SDM
-circa December 2022 states that "Global Perf Counter Controls" is '0' at Power-Up
-and RESET.  But then the March 2023 SDM rolls out and says
-
-  IA32_PERF_GLOBAL_CTRL: Sets bits n-1:0 and clears the upper bits.
-
-So presumably someone at Intel noticed that what their CPUs do and what the
-documentation says didn't match.
-
-*sigh*
+> Maybe I should add refcounting.
 
