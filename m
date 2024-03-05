@@ -1,129 +1,147 @@
-Return-Path: <linux-kernel+bounces-92720-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78C2F8724E8
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:54:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 476618724EB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:55:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E40FEB213B2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:54:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D9CB1B21629
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:55:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 338A9D520;
-	Tue,  5 Mar 2024 16:54:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9090EDDAD;
+	Tue,  5 Mar 2024 16:55:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="AtE2uG4Y";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="uG38+eLu"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KAT0mdQc"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3C409457
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 16:54:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F345813FE0
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 16:55:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709657689; cv=none; b=bgbVkrlbDEy8NQPlZae3oVxcPT3dEBcwiMHon9sz+O1PuwfOJNr1lqEd4KHM9c0iA4W2/3v58ChWq0xZzVNZdXa15pwLlRGDzfvFpBcaAHqGr3sNhk2ntK/9Bn16d+1chl/XxCCX7o+d2TCtOX9wAdAxG7eNAZGycGg+ZYG+mjc=
+	t=1709657704; cv=none; b=c3hVrR/NGnjVaP5dQh6p/WZda0U/LYqTjYrRV4FK0YYFISa+Ocprr3kNspGwdQXJT0EsOQLjiD+Jhn0+649vB9OKDbpW5cJhFRx8ATJc+Yo4sFH2Z1Lut9xrMKu9n1F0dfQHQ1LC/cFniM/wPpp4ss3oN1gU7+iFpNntgDylayE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709657689; c=relaxed/simple;
-	bh=R7VW3Sc7b5eZ6KpyerW+b84HFQ3Blb6GJ63R1AmyMK8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WuouNazaSQtEtVcxI97wLWb6ha3RWiscp4oEUx2Cus6Jq70eoV6xhvx/0qsVLRZSckxRa8XEcSu/2ZrH4bmYyrpvgdwbGzrkdCiFxFJbaCzkXcTfbV9HBs+F2qKQhFE8mkX+U5pBu9nMrWpNTkivo563QzardHyQ/1gu8KsthA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=AtE2uG4Y; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=uG38+eLu; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id DC6EF6B9AD;
-	Tue,  5 Mar 2024 16:54:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1709657686; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1709657704; c=relaxed/simple;
+	bh=PRaonYPYUdbmRN+RYzUyp2iAubGYp/R4DwvNbWHE0/0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Gxa2+N/iJlOnm7rgCfys3tPHNT4H0fzO8Hr7yBO+YZVVicAUUXRP9vUWYWjm2gaUZiqn+ZHNWWBujMOLgurK12TRJ4HP+4+sU2nBb5kOblA5q71VpwhTCNyCUpXZuwGOiE0LvplqYjnURPwKa6FmhpXsishqCFLQybOq8o9uK8U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KAT0mdQc; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709657701;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=rQ12qku4XFEjo7lOAHiP1outVs/2KwQNkFoPjlWDM48=;
-	b=AtE2uG4YZClE/K1AxSaVoI0PrL/jd2ceTRfu7RXARKDimmFy8phidMgdANUvbidToSW8yX
-	BNevTGTW4nsSx/gFqNFalJfLrdWPmkWfFSF4fQ8EMgCIqujZ6KZX5JT2wKQWDJcayiivTU
-	iFho2zF+ETCqfmXbX3kELOnZ7Cc1bbU=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1709657685; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rQ12qku4XFEjo7lOAHiP1outVs/2KwQNkFoPjlWDM48=;
-	b=uG38+eLu5pIAMY+AXlOwekxMuCRYw8SJq8cNKk7o2zdNNJgTtgu2/96XVz48sVZGE02r4V
-	6q90wUpDmlwqENLt6hc6i9Su3nZxNLw0fjPVsjVQSkYzwhQi3oA3jhyBNWeQCFxuIMVLsL
-	ZQ8C6yQmnAn6OYRFRIxCFrOvv0jhjW0=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D531113A5B;
-	Tue,  5 Mar 2024 16:54:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id fIEJNFVO52XYBgAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Tue, 05 Mar 2024 16:54:45 +0000
-Date: Tue, 5 Mar 2024 17:54:45 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: cve@kernel.org, linux-kernel@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: CVE-2023-52521: bpf: Annotate bpf_long_memcpy with data_race
-Message-ID: <ZedOVc9h_VTBjHLD@tiehlicka>
-References: <2024030253-CVE-2023-52521-d847@gregkh>
+	bh=q2z9lZCL9Z3rimHOG8O2ywzmChw7nkWjJ7ypccwQP5g=;
+	b=KAT0mdQcwWzyfROxFekwASXIz4LS5E7te3iVnzr9ZVG6712BMGUYUm5shWakPbTPQyelDK
+	u6KV/uqeaLslUB77kVfda+wcpI+C0wFOIa/RYIXYkNr//xVZXt7f7Gm9CYo9jx+QYiBTqs
+	G3ouL4llISdhiWtpiCCYZdfTDYutufg=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-9-EjWsLqR6OTi7Hk1MrcroIA-1; Tue, 05 Mar 2024 11:55:00 -0500
+X-MC-Unique: EjWsLqR6OTi7Hk1MrcroIA-1
+Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-78825e5e374so468117585a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 08:55:00 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709657699; x=1710262499;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=q2z9lZCL9Z3rimHOG8O2ywzmChw7nkWjJ7ypccwQP5g=;
+        b=PkLgJ0Cqa200vfJ9smT6MypFXqz+5R0Vg3shPxyqRd/MxKR5SUR+73JhwgjKkH/Pai
+         j0EzOq4/kU/iHtv7rxJbmWWdOAE6+BZk6T9kCCqMyD4cvhlqehyU361l8vdtotNUrnfU
+         saSKJyZVfV8mGmhTqWnJ7WQuabALaNhYrfag7TuEB/19WU3+5xAXP2PJbcvJd5fJkOsc
+         DITdCeUHDfYCjjpYIM4W1sjJzZ8RKKdhyy4iR4gWERo0mV1ICY04G7E5x1b3Vk1a5zux
+         kn6G662jrCQsoXlSzwtzTggbpQK5sV4ZtS2E1MCURTcpPcCDSFp/h+h08EpXTSViwYxe
+         Ee3w==
+X-Forwarded-Encrypted: i=1; AJvYcCWOEJuAN2rj9C42BBFCa9B3Mtoe34t0aTuDjuRmTdKb7TZX1eiXGbTC7NWEltLjMHMun32BdGqp8p8CoXrycWpr1uTkgbYVXobZeGQZ
+X-Gm-Message-State: AOJu0YyI65L+iInyspPuxLPdRKEH0PgEsKpQKnSFMuMRouu+Tbc9T4Ld
+	JNJ9SjgnKQzTwjku/S9O7LUbnaHW4lr++mIvr1FcJQT46cEZHJFzSlQv+yOozqVyQ6s/ITMZRH8
+	2aoq1i5kBIy3BC3u40Py6ACjmchYc7GYaRTEo7mKwSeQAVh9upJ0yuNl4YqJiwDs6AmMizw==
+X-Received: by 2002:a05:620a:1482:b0:788:322f:e8ab with SMTP id w2-20020a05620a148200b00788322fe8abmr3727318qkj.2.1709657699561;
+        Tue, 05 Mar 2024 08:54:59 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IExv3MZheDgrjYzjAL3lBjTHXd+iKVpZeMtwriKBSS2qghKHcd7atNz/pH30IdbdmikOhTY+A==
+X-Received: by 2002:a05:620a:1482:b0:788:322f:e8ab with SMTP id w2-20020a05620a148200b00788322fe8abmr3727284qkj.2.1709657699281;
+        Tue, 05 Mar 2024 08:54:59 -0800 (PST)
+Received: from [10.32.64.131] (nat-pool-muc-t.redhat.com. [149.14.88.26])
+        by smtp.gmail.com with ESMTPSA id p14-20020ae9f30e000000b0078825e2c57dsm2507620qkg.76.2024.03.05.08.54.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Mar 2024 08:54:58 -0800 (PST)
+Message-ID: <93c832af-55df-4149-b9d1-1171528809c2@redhat.com>
+Date: Tue, 5 Mar 2024 17:54:56 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2024030253-CVE-2023-52521-d847@gregkh>
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=uG38+eLu
-X-Spamd-Result: default: False [-3.52 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[3];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DWL_DNSWL_LOW(-1.00)[suse.com:dkim];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-2.71)[98.74%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: DC6EF6B9AD
-X-Spam-Level: 
-X-Spam-Score: -3.52
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] nouveau/dmem: handle kcalloc() allocation failure
+Content-Language: en-US
+To: Duoming Zhou <duoming@zju.edu.cn>
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ daniel@ffwll.ch, airlied@gmail.com, lyude@redhat.com, kherbst@redhat.com,
+ timur@kernel.org, jani.nikula@linux.intel.com, nouveau@lists.freedesktop.org
+References: <20240305143936.25283-1-duoming@zju.edu.cn>
+From: Danilo Krummrich <dakr@redhat.com>
+Organization: RedHat
+In-Reply-To: <20240305143936.25283-1-duoming@zju.edu.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sat 02-03-24 22:53:05, Greg KH wrote:
-> Description
-> ===========
-> 
-> In the Linux kernel, the following vulnerability has been resolved:
-> 
-> bpf: Annotate bpf_long_memcpy with data_race
-> 
-> syzbot reported a data race splat between two processes trying to
-> update the same BPF map value via syscall on different CPUs:
-> 
->   BUG: KCSAN: data-race in bpf_percpu_array_update / bpf_percpu_array_update
+Hi Duoming,
 
-I would like to dispute this CVE. It adds data_race annotation which
-doesn't have any impact on the code generation.
--- 
-Michal Hocko
-SUSE Labs
+thanks for sending a V2.
+
+On 3/5/24 15:39, Duoming Zhou wrote:
+> The kcalloc() in nouveau_dmem_evict_chunk() will return null if
+> the physical memory has run out. As a result, if we dereference
+> src_pfns, dst_pfns or dma_addrs, the null pointer dereference bugs
+> will happen.
+> 
+> Moreover, the GPU is going away. If the kcalloc() fails, we could not
+> evict all pages mapping a chunk. So this patch adds a __GFP_NOFAIL
+> flag in kcalloc().
+> 
+> Fixes: 249881232e14 ("nouveau/dmem: evict device private memory during release")
+> Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
+> ---
+> Changes in v2:
+>    - Allocate with __GFP_NOFAIL.
+> 
+>   drivers/gpu/drm/nouveau/nouveau_dmem.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/nouveau/nouveau_dmem.c b/drivers/gpu/drm/nouveau/nouveau_dmem.c
+> index 12feecf71e7..f5ae9724ee2 100644
+> --- a/drivers/gpu/drm/nouveau/nouveau_dmem.c
+> +++ b/drivers/gpu/drm/nouveau/nouveau_dmem.c
+> @@ -378,9 +378,9 @@ nouveau_dmem_evict_chunk(struct nouveau_dmem_chunk *chunk)
+>   	dma_addr_t *dma_addrs;
+>   	struct nouveau_fence *fence;
+>   
+> -	src_pfns = kcalloc(npages, sizeof(*src_pfns), GFP_KERNEL);
+> -	dst_pfns = kcalloc(npages, sizeof(*dst_pfns), GFP_KERNEL);
+> -	dma_addrs = kcalloc(npages, sizeof(*dma_addrs), GFP_KERNEL);
+> +	src_pfns = kcalloc(npages, sizeof(*src_pfns), GFP_KERNEL | __GFP_NOFAIL);
+> +	dst_pfns = kcalloc(npages, sizeof(*dst_pfns), GFP_KERNEL | __GFP_NOFAIL);
+> +	dma_addrs = kcalloc(npages, sizeof(*dma_addrs), GFP_KERNEL | __GFP_NOFAIL);
+
+I think we should also switch to kvcalloc(), AFAICS we don't need 
+physically contiguous memory.
+
+Sorry I did not mention that in V1 already.
+
+- Danilo
+
+>   
+>   	migrate_device_range(src_pfns, chunk->pagemap.range.start >> PAGE_SHIFT,
+>   			npages);
+
 
