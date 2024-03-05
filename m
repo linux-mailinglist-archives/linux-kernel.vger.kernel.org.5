@@ -1,114 +1,93 @@
-Return-Path: <linux-kernel+bounces-92479-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92478-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E20BA8720FF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:59:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 619358720FD
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:59:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 997321F2643A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:59:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2832B20A89
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:59:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D1788664B;
-	Tue,  5 Mar 2024 13:59:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="BZLlVgOp"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7DD586146;
+	Tue,  5 Mar 2024 13:59:04 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00B41762DF
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2400986122
 	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 13:59:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709647145; cv=none; b=pLzHCjRmZE1JHfF1mQcfFSAYQxpeYg88JMsC7/ruqY8TNKUyyMo46o7AS79j3VHnu4VQ7Fwv9Qq4/5z2r4akCQo6bfDTe958NJW0/F2TSA3LZlf4o3CHhtTq7Tto7zTJy8HiYW1LyxdW6WnVnlP6kj39PPZCFu6KcuoVKSXvMZY=
+	t=1709647144; cv=none; b=ofl2llH0gYYA3B/pqfzUAz8eAYSQnfHQKIEeblP4sKQT4llmmPljoW5u206vZ4/J485kr+jm7U6FJTVnbXCO5LNcSQf4FnX65L9ciBAaOLSPUAcrg3Ufwu+VaNAAmT1nBcLN0A9KLLyan5PRG7k4ZZql6G8SNP6cXiIdayT+Nks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709647145; c=relaxed/simple;
-	bh=JRNihLQrU/+iEtpGvlfMV+4iDbB/4i030568B2Dcgm4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ECIO7e/GJpcsnC3aDg3QOer1vrH3aIHYA7hKyKIY3kaF1RXgZCYAhzZqsnpb+z/ij3DmZMjsUMiYykG0lkaEj77AYYOuEhBaOY4qv2sCi1Poy4otsjAnMZbWmtyL0NlCNM50rR+qgE65oxo1g3tHxc2+AaptklycUOiOtTxJhIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=BZLlVgOp; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1dcfe6e26c9so9159715ad.0
+	s=arc-20240116; t=1709647144; c=relaxed/simple;
+	bh=7l33o63t817PVAJxkpl+CDCljilBzWublR/7OYtNxNM=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=a0cF9OKjvy/aRUxJEj//37QVG70f7p63NCLZcEgcaf4qC3EcESK0gwUhxRnQPYyP/pOxqwVBDiV2nVF7y6KuEHrexiRPiXGDkCc3bOXXiJweN21cJtPAl1cXmU5a2rccmPwSrKqLDagL9It4MlTWgh7GxHE5Z31RNOLOFA3RG2Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7c49d118546so449465939f.0
         for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 05:59:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1709647142; x=1710251942; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QU7i/GFGA3BeZcXyAk0JvlJF5wgpx4zGSLUMIo15nLE=;
-        b=BZLlVgOpgg4M7yHZ/bAmieWGKzNEYJ/XR5FsYfsjqGCb4TPf1/oGKmJ/pYtSrZV9wi
-         HbAxVkW5KNWUNrkFxwoRNSrHL5wOvgwBC1ubTKJfIasd6QyB/pqqEk6tCStaQ7d2gXnq
-         ZvPVQd6IGvuA7u2OYLPd1PwpFjVbehh3Y364juyyfeyLtcYtWCP935s2qW/FM4xhFUnF
-         tVL4IFJeT1+5Lp4v1vnWPb0aMYqnxpU/gRd6tXUX9UCAk/LvBQwG/Xp1uxOVp1nhk4Vt
-         ayKYjLF6VYfnePUZsi2HrcP9cc5f1E4jSgP2tJcyl/n0K/0DLkRiNYcZy4oixwreVIiC
-         ekpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1709647142; x=1710251942;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QU7i/GFGA3BeZcXyAk0JvlJF5wgpx4zGSLUMIo15nLE=;
-        b=L85Hw3HTjo9RMt39bPHELirn6Y8/bUR77VLXA3nFjWtw/OhKaoHZ6Z3o233EhS0Gcq
-         FBzIkAvWX+dpTSycslskGvw8hjEsTS5nyjlREBNwtdF8+v+yvBIb48B9LNKHSnWXzPU3
-         TuARu3vLyIm5Ie+18atVBIIgwlFTWp8npd+KYN0Jtvu1+BxkDNVaxJt7KJ8glBfCiNeN
-         WYGG48I/ASd5gHee7igj6ZM6l5Q1F1RXiYJFl2FBS2dRSj5glH508pUAYGVzEtggqvx+
-         k0DzEtvXDHSrM+tjxCczWApk2HSCRn1hVhaTWnyQUU1H/1iSoxjM7pLs68zngo6ZvIHN
-         eoRA==
-X-Forwarded-Encrypted: i=1; AJvYcCW46JtIwCUVbaRb2d72G+lKUfaw44S/+7OXbj4P2O4Y/eOG6G/tULsXofkRAd2y9K5pXaHRj9EAfVWC8ib+FwL5ffrm4DDi7z1dxxZg
-X-Gm-Message-State: AOJu0YxbuKkEsLcTlyrsvoC7o34tUgC4rf7yL8T+riG8tI+URKB9QjT8
-	O1qTEjSlCGku4flZjvcsakUvzG4qMWo2IUzS0CUwt3KXs4NDYqFtHaT7Z1d2YUE=
-X-Google-Smtp-Source: AGHT+IF+Cyeo2mWoylUN+f5sX3aHqZjl0czKC66QZp6hGbPe4oQB/7UWKaqNwH8HfMckY+LPhaXuhw==
-X-Received: by 2002:a17:903:41cf:b0:1db:ce31:96b1 with SMTP id u15-20020a17090341cf00b001dbce3196b1mr478555ple.6.1709647142261;
-        Tue, 05 Mar 2024 05:59:02 -0800 (PST)
-Received: from [192.168.1.150] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id ld4-20020a170902fac400b001db5b39635dsm10625132plb.277.2024.03.05.05.59.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Mar 2024 05:59:01 -0800 (PST)
-Message-ID: <dc4933d0-f865-4da6-90b1-320daf2e4294@kernel.dk>
-Date: Tue, 5 Mar 2024 06:58:59 -0700
+        bh=ozqm1QJ84yI8HdJqurYAliOOcrvYW5cx3nOSejB731o=;
+        b=gXCzvSTbR4ONql/4VHczYggVBsNsmw1yl7exbi91Z7A001e2nk/CyKQ6glNgwUpBbg
+         IFACbRDEUlLvJrUkXLhyPkgec1GUsNscohHCF3X8Xbtuir23vkSImQlvb63QX5GXJDli
+         KvMglPEoCYt9ghrxo2I5REyObWrJcyF5F+k3Mp6LJP51MGNdkN+o5yyozhLHJ8egNb7X
+         Aur3N4Zn69D2Cf5Xkl1wHwVoRFy9VDoq19Xz3UeToYU8XGLM8s8vsBBcVMlLAhgWNDBX
+         cE1G0pK8I94eMMRo943pA4P+so2Yo3XfDpbU0s3xJ+wilzSu4I2V4nCvLJxU8B8G51Dc
+         T88A==
+X-Forwarded-Encrypted: i=1; AJvYcCWoILZIMfyLZl+XZjmMErjmYIyADMd+iZ0N5fVtT2lX1KgYN3l7ADAQ1Qhd3Awmydo/dFC1o9PjveevzT/pWOaZ8uHi2Al0JHOQf+S9
+X-Gm-Message-State: AOJu0YzrOE3kB0q3wO5KfsUd7tAg3knfDZHy4op8yVH1UiazF+eMfPkO
+	S7sdT+D2x4kXqDhwq1tMvyTMRK1jcQhoQ71QNRlQvBenJskv1JlZAjasT4YR/D0+U72P34uMHFo
+	K9IoLh8+DC03Epuh+YTvzq0/UezFPT6EYyl1RjjI79xdl2wCLOmxxBLY=
+X-Google-Smtp-Source: AGHT+IEP8n8qSf96nLlSO2rFxSJmbyVVUTknjVpsBlFop11mtXH7lx6mogLF/UQM1fodPwn/6hIAi5kpU8HrhUOEGbHhzUj7aJDi
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] coredump: get machine check errors early rather than
- during iov_iter
-Content-Language: en-US
-To: Tong Tiangen <tongtiangen@huawei.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- David Howells <dhowells@redhat.com>, Al Viro <viro@kernel.org>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- wangkefeng.wang@huawei.com, Guohanjun <guohanjun@huawei.com>
-References: <20240305133336.3804360-1-tongtiangen@huawei.com>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20240305133336.3804360-1-tongtiangen@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6638:35a7:b0:474:d2f6:f0d1 with SMTP id
+ v39-20020a05663835a700b00474d2f6f0d1mr81402jal.1.1709647142220; Tue, 05 Mar
+ 2024 05:59:02 -0800 (PST)
+Date: Tue, 05 Mar 2024 05:59:02 -0800
+In-Reply-To: <000000000000376d93060a5207ed@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009a8bce0612ea3e3c@google.com>
+Subject: Re: [syzbot] [kvm?] WARNING in kvm_mmu_notifier_invalidate_range_start
+ (3)
+From: syzbot <syzbot+c74f40907a9c0479af10@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, kvm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, pbonzini@redhat.com, seanjc@google.com, 
+	syzkaller-bugs@googlegroups.com, tintinm2017@gmail.com, 
+	usama.anjum@collabora.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 3/5/24 6:33 AM, Tong Tiangen wrote:
-> The commit f1982740f5e7 ("iov_iter: Convert iterate*() to inline funcs")
-> leads to deadloop in generic_perform_write()[1], due to return value of
-> copy_page_from_iter_atomic() changed from non-zero value to zero.
-> 
-> The code logic of the I/O performance-critical path of the iov_iter is
-> mixed with machine check[2], actually, there's no need to complicate it,
-> a more appropriate method is to get the error as early as possible in
-> the coredump process instead of during the I/O process. In addition,
-> the iov_iter performance-critical path can have clean logic.
+syzbot suspects this issue was fixed by commit:
 
-Looks good to me, and I'm a big fan of getting rid of the copy_mc bits
-on the generic iov iterator side:
+commit 4cccb6221cae6d020270606b9e52b1678fc8b71a
+Author: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Date:   Tue Jan 9 11:24:42 2024 +0000
 
-Reviewed-by: Jens Axboe <axboe@kernel.dk>
+    fs/proc/task_mmu: move mmu notification mechanism inside mm lock
 
--- 
-Jens Axboe
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1638c66c180000
+start commit:   b57b17e88bf5 Merge tag 'parisc-for-6.7-rc1-2' of git://git..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d950a2e2e34359e2
+dashboard link: https://syzkaller.appspot.com/bug?extid=c74f40907a9c0479af10
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15785fc4e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1469c9a8e80000
 
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: fs/proc/task_mmu: move mmu notification mechanism inside mm lock
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
