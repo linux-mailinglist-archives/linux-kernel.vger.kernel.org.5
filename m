@@ -1,89 +1,93 @@
-Return-Path: <linux-kernel+bounces-92557-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92558-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65B19872222
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:57:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEE62872225
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:57:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CFDB2B25490
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:57:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0CF7D1C20DA8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:57:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A626C126F1F;
-	Tue,  5 Mar 2024 14:57:17 +0000 (UTC)
-Received: from smtp238.sjtu.edu.cn (smtp238.sjtu.edu.cn [202.120.2.238])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 551D5126F15;
+	Tue,  5 Mar 2024 14:57:35 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73E89126F1D;
-	Tue,  5 Mar 2024 14:57:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.120.2.238
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 397B06127;
+	Tue,  5 Mar 2024 14:57:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709650637; cv=none; b=HFOg0PGkxeRAtYq08SkhPdQYqxrmTHDzOMX71zfCDYmyG0UqWrkX/b/SGbwsIT7L0ycMoj9dB5oN1SxDJ1jx25iqZQvmnREJ1jpCDlZjHWp0RiqZRW81+7ZxeS6nGCgX5oQpdlGypjKjdyBeOvdUN9mDO/SUdk86GHoEo+MbnZU=
+	t=1709650654; cv=none; b=TrIFRfZmbeU42aLgGKb0g/0R21hkjLqYx4tygEHaol7TPprwXgFjzcsQ1znpiZ88G48kw090Tr4ZqrkWLlUTjGNPXBnhUorEwWlrHSC+LAzdDPnpHF9rctqjtytCjVJOngulgFY4PZL6M/ibVeveIezEHpNj7GZO76JCEWOk3qQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709650637; c=relaxed/simple;
-	bh=MCI8FrWoh73Sxz96+HLoOzEC8uhjSDDNbG870C/UW8w=;
-	h=Date:From:To:Cc:Message-ID:Subject:MIME-Version:Content-Type; b=qOxc/J7maV/xVdzokK6tBOhxOlO8kKStS4+ulcyjoq+R73p/SGi/cO7qwkcoszHIgQtOmDcv6iDdqVktaqnE0bbzhWavtvRNB83jyQfqVh5jbMjshxYMxEAPQiu1lHooXjPuOY3I8IDtNDHj1XuA0Ezsv7+yo+uiNfPzGuhrlL8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sjtu.edu.cn; spf=pass smtp.mailfrom=sjtu.edu.cn; arc=none smtp.client-ip=202.120.2.238
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sjtu.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sjtu.edu.cn
-Received: from mta90.sjtu.edu.cn (unknown [10.118.0.90])
-	by smtp238.sjtu.edu.cn (Postfix) with ESMTPS id 9E76BBEDE;
-	Tue,  5 Mar 2024 22:57:03 +0800 (CST)
-Received: from mstore135.sjtu.edu.cn (unknown [10.118.0.135])
-	by mta90.sjtu.edu.cn (Postfix) with ESMTP id 62D5837C878;
-	Tue,  5 Mar 2024 22:57:03 +0800 (CST)
-Date: Tue, 5 Mar 2024 22:57:03 +0800 (CST)
-From: Zheyun Shen <szy0127@sjtu.edu.cn>
-To: Sean Christopherson <seanjc@google.com>
-Cc: pbonzini <pbonzini@redhat.com>, tglx <tglx@linutronix.de>, 
-	thomas lendacky <thomas.lendacky@amd.com>, kvm <kvm@vger.kernel.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <722904540.5000784.1709650623262.JavaMail.zimbra@sjtu.edu.cn>
-Subject: Re: [PATCH] KVM:SVM: Flush cache only on CPUs running SEV guest
+	s=arc-20240116; t=1709650654; c=relaxed/simple;
+	bh=TIcbgZnFoOSin4xcvPxLtTGuR+etJMTMZC+5XvU+ehA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YgWm0qXFNpF+m8jelDJ27v1joqqNLOHpd3Bp6r19SFIrBupScsV9uPfnPxBckSSvgdtjVZaCzMdYG8J42KHAYaBvPmk8gNWNahQ1cUdJdUw/SHseqKArDYNStSInD7GmquS7EJJd3GvxYuOneYt1SISfGiCyjHOKGGzkNl36Ew8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=fail smtp.mailfrom=kernel.org; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=kernel.org
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="29628910"
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="29628910"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 06:57:32 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="914142298"
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="914142298"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 06:57:29 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andy@kernel.org>)
+	id 1rhWEQ-0000000A0ft-0JAb;
+	Tue, 05 Mar 2024 16:57:26 +0200
+Date: Tue, 5 Mar 2024 16:57:25 +0200
+From: Andy Shevchenko <andy@kernel.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	andrew@lunn.ch, gregory.clement@bootlin.com,
+	sebastian.hesselbarth@gmail.com, lee@kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-leds@vger.kernel.org
+Subject: Re: [PATCH v4 1/3] auxdisplay: Add 7-segment LED display driver
+Message-ID: <Zecy1RsSfpmH-cvG@smile.fi.intel.com>
+References: <20240305035853.916430-1-chris.packham@alliedtelesis.co.nz>
+ <20240305035853.916430-2-chris.packham@alliedtelesis.co.nz>
+ <CAMuHMdXF+12PHa5A7WeyPMfvsGcJN13WaPuCbTmJU52Huq=osA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=GB2312
-Content-Transfer-Encoding: 7bit
-X-Mailer: Zimbra 10.0.6_GA_4585 (ZimbraWebClient - GC122 (Win)/10.0.6_GA_4585)
-Thread-Index: MUWiCXlfMum3WwlzB2dt/UpqVaVaDA==
-Thread-Topic: Flush cache only on CPUs running SEV guest
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMuHMdXF+12PHa5A7WeyPMfvsGcJN13WaPuCbTmJU52Huq=osA@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Mon, Mar 04, 2024, Sean Christopherson wrote:
-> Instead of copy+paste WBINVD+cpumask_clear() everywhere, add a prep patch to
-> replace relevant open coded calls to wbinvd_on_all_cpus() with calls to
-> sev_guest_memory_reclaimed().  Then only sev_guest_memory_reclaimed() needs to
-> updated, and IMO it helps document why KVM is blasting WBINVD.
+On Tue, Mar 05, 2024 at 09:23:07AM +0100, Geert Uytterhoeven wrote:
+> On Tue, Mar 5, 2024 at 4:59 AM Chris Packham
+> <chris.packham@alliedtelesis.co.nz> wrote:
 
-> I'm also pretty sure this should be a cpumask_var_t, and dynamically allocated
-> as appropriate.  And at that point, it should be allocated and filled if and only
-> if the CPU doesn't have X86_FEATURE_SME_COHERENT
+..
 
-I notice that several callers of wbinvd_on_all_cpus() must use wbinvd to flush cache
-instead of using clflush or just doing nothing if the CPU has X86_FEATURE_SME_COHERENT,
-according to https://github.com/AMDESE/linux/commit/2e2409afe5f0c284c7dfe5504058e8d115806a7d
-Therefore, I think the flush operation should be divided into two functions. One is the 
-optimized wbinvd, which does not consider X86_FEATURE_SME_COHERENT, and the other is 
-sev_guest_memory_reclaimed(), which should use clflush instead of wbinvd in case of 
-X86_FEATURE_SME_COHERENT. Thus the cpumask struct should be exist whether the CPU has
-X86_FEATURE_SME_COHERENT or not.
+> > +       priv->segment_gpios = devm_gpiod_get_array(dev, "segment", GPIOD_OUT_LOW);
+> > +       if (IS_ERR(priv->segment_gpios))
+> > +               return PTR_ERR(priv->segment_gpios);
+> 
+> This needs some validation of priv->segment_gpios->ndescs, else the
+> call to gpiod_set_array_value_cansleep() in seg_led_update() may
+> trigger an out-of-bounds access of the values bitmap.
 
-Besides, if we consider X86_FEATURE_SME_COHERENT to get rid of wbinvd in sev_guest_memory_reclaimed(),
-we should ensure the clflush is called on corresponding addresses, as mentioned in  
-https://github.com/AMDESE/linux/commit/d45829b351ee6ec5f54dd55e6aca1f44fe239fe6 
-However, caller of sev_guest_memory_reclaimed() (e.g., kvm_mmu_notifier_invalidate_range_start()) 
-only get HVA belongs to userspace(e.g., qemu), so calling clflush with this HVA may 
-lead to a page fault in kernel. I was wondering if notifying userspace applications to 
-do clflush themselves is the only solution here. But for the sake of safety, maybe KVM 
-cannot left the work for untrusted userspace applications?
+Alternatively we can call gpiod_count() beforehand and check its result.
 
-Or should I just temporarily ignore the X86_FEATURE_SME_COHERENT scenario which is hard to implement, 
-and just refine the patch only for wbinvd_on_all_cpus() ?
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Best regards,
-Zheyun Shen
+
 
