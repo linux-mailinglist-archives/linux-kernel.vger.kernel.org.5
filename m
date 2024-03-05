@@ -1,138 +1,99 @@
-Return-Path: <linux-kernel+bounces-92357-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92358-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7EB7871F10
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:24:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23626871F12
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:24:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62322B23358
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:24:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF91C1F25C3D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:24:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D62A35A4FF;
-	Tue,  5 Mar 2024 12:24:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XQJHsty3"
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E0DA5A4FF;
+	Tue,  5 Mar 2024 12:24:40 +0000 (UTC)
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86D4F59B5E
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 12:24:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 080AF5A4D3;
+	Tue,  5 Mar 2024 12:24:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709641457; cv=none; b=fcxviiCijrmKK7aZs3WFaPuCxHAw6RgO3z0aHSVMnrb/aLi2bxUjWCTp4Z61RPdHlJ26h6yyC1ov8346QYiD/T8TpUycHmxRu17MMwLy5K6NKtegkci3TkYOsKQZEHF2w5JPVLey923InVWjmtHZ5VkG8Ss3jobXbiXk6Ap852o=
+	t=1709641480; cv=none; b=FRSTodWxAZKvYvv+mOkRFSVnK/RC+VEbIhGvplVwp3AeoU3OflsuupDNAkJRoHymLhuykyIxU5DVU2TxjA8ysxtFFZHIqkECNczDQy0/o5ulLyBQfQlDHsQ0pgr0NNeWzvjhfH9U5UydrC4LRZfX9DRi0W6fdJFn0qPjGgbkykc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709641457; c=relaxed/simple;
-	bh=CS3p1MBudwYKblcteI/2NOPXI4ddkTXb99n7xdy/Gb4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jHvno4eZwRVUp9bORdfsi1q6dzitaWSAGSBA2aCMub6flNjHCc7HkcNJdS7/ZfaOoZwI8mlsZoLEQPPIpJPVH8NvZ/2498cri36hRIpp9dapNAOZxk/PK/MMN8Xr5jLBztVx82qWOwDeTuk4+Uz3emPVhWjpqbDA8QhGE/t3PKQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XQJHsty3; arc=none smtp.client-ip=209.85.128.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-60978479651so51357137b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 04:24:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709641454; x=1710246254; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CgWnngIT/gJ2CN/6Q6lG/bumlZMowmI03npuEMQCBAM=;
-        b=XQJHsty32one0Z/DC+DOsBj888PoIR9MgaSaINszUAU6nMN/yoYHrQZJ0BUbKiJO2+
-         hMycc3VXUJsXbYnmIenlWBjNLs7UmNNcP5yOkcu/+4347xOz1bdwiEuJZZqmFdUAAQV3
-         A3xE0EPQWIqki7bGqVUlzV65K3RrC7BZAAYvn1Hpk4RhX5Z20Z3RKL5AZcMdU++uuqdF
-         GQ1O/ERZnoA2J70Z5231Hvh9GpBgLWFgEXgngK/xbXJ7z7TA1M7OaVOb7vKQKQ+UegeY
-         9AJxiHMIa2FRToAF9RZFM6rONYsELFxPUtHehJqEqGLT18+c24vkuI1J1vCnsJnN75eM
-         vQdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709641454; x=1710246254;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CgWnngIT/gJ2CN/6Q6lG/bumlZMowmI03npuEMQCBAM=;
-        b=JpYSkP2mRqzYcZ8hycIb4nbMtArfaNEy5znQHotNAzvKcv6lh65MRRM6ez422L68rB
-         JddoDK5VHvHsnGsesDeMDv7KUtjpQAH7FG7OeEKbCGj9haTcTna64EXT6ADku3hO2ZsZ
-         uan98D+/zxg4zhnbEW5klGfXlEs7q95Y2Gc64RDUYHXKRApTMlL1YdkQ4g2ewTNEL/Oa
-         WiGnB0CzPN0VWdjauIHx0VeignkwzMn3NZx/VqJlZeeFAyV/teO+uW1gj3Xth5r3rZcs
-         7K9qjEpsNJMFShyd50X4QZqsNpxR4rm6g86lu6h6opLNJNV/0u7p37fijN2ZqhYGJmn9
-         GPsg==
-X-Gm-Message-State: AOJu0Yy5VG75l0dc0ZTtrFQon4JrujDUX7letK5btE1dZjHf+6GcQ3fR
-	wqcFTB9ItkSKVD23nZWyz6/+Olg2/9KFct/4u/wy3UXAYcBP3DGXDRv++gEScAedqoQXsns7fbs
-	X8EFKj/aS/qsEeKc6ZZb4bFIwZA1iJvsdNUoSBw==
-X-Google-Smtp-Source: AGHT+IHUBgwcmPr3wx5OxoHWv1ZUZdP1ZVL1rLQBhjwJNL8fZY5l0lFsxJWNgG2Iv1hIDyeVJFsQ1t3tYOxVyeL6KpA=
-X-Received: by 2002:a81:720a:0:b0:609:2104:3cf8 with SMTP id
- n10-20020a81720a000000b0060921043cf8mr12997879ywc.41.1709641454552; Tue, 05
- Mar 2024 04:24:14 -0800 (PST)
+	s=arc-20240116; t=1709641480; c=relaxed/simple;
+	bh=PohRUNojA0onN5wbko1v5Ue/xtz3QezDL8uESVZypJU=;
+	h=CC:Subject:From:To:References:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=PD42iOAqUlWGnmZNqf6pOFRYCoHRJfxeqEv8XHqILcjzn1Ij2jxWigPRSHvuG3yRjBDiszLt4G/ufoHJgLgy5PwRgY+5HddDxUcDsaUyqr2SYQWubi+3WRAbxt/iwtMiaY3D324mlwVmQELjo/LzTJhYBcEf2BevH3Cw3NhNIBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Tpvqm3PSnz1vw63;
+	Tue,  5 Mar 2024 20:23:48 +0800 (CST)
+Received: from canpemm500009.china.huawei.com (unknown [7.192.105.203])
+	by mail.maildlp.com (Postfix) with ESMTPS id 4AD0D1A016C;
+	Tue,  5 Mar 2024 20:24:28 +0800 (CST)
+Received: from [10.67.121.177] (10.67.121.177) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 5 Mar 2024 20:24:28 +0800
+CC: <hejunhao3@huawei.com>, <yangyicong@hisilicon.com>
+Subject: Re: [PATCH -next] drivers/perf: hisi: Fix build warning of
+ hisi-pcie-pmu.rst
+From: Yicong Yang <yangyicong@huawei.com>
+To: <will@kernel.org>, <sfr@canb.auug.org.au>, <linux-kernel@vger.kernel.org>,
+	<linux-next@vger.kernel.org>
+References: <20240305121003.4497-1-yangyicong@huawei.com>
+Message-ID: <071459df-223a-516f-2300-f013e3ddc1c9@huawei.com>
+Date: Tue, 5 Mar 2024 20:24:17 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240227153132.2611499-1-jens.wiklander@linaro.org> <20240227153132.2611499-2-jens.wiklander@linaro.org>
-In-Reply-To: <20240227153132.2611499-2-jens.wiklander@linaro.org>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Tue, 5 Mar 2024 13:24:02 +0100
-Message-ID: <CACRpkdZBWBio8kvKuVzj2CknCb4eS=VB2EqUsAK-vf4e328icg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] rpmb: add Replay Protected Memory Block (RPMB) subsystem
-To: Jens Wiklander <jens.wiklander@linaro.org>
-Cc: linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org, 
-	op-tee@lists.trustedfirmware.org, 
-	Shyam Saini <shyamsaini@linux.microsoft.com>, Ulf Hansson <ulf.hansson@linaro.org>, 
-	Jerome Forissier <jerome.forissier@linaro.org>, Sumit Garg <sumit.garg@linaro.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Bart Van Assche <bvanassche@acm.org>, 
-	Randy Dunlap <rdunlap@infradead.org>, Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Tomas Winkler <tomas.winkler@intel.com>, 
-	=?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240305121003.4497-1-yangyicong@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ canpemm500009.china.huawei.com (7.192.105.203)
 
-Hi Jens,
+The subject should be:
 
-thanks for your patch!
+docs: perf: hisi: Fix build warning of hisi-pcie-pmu.rst
 
-On Tue, Feb 27, 2024 at 4:31=E2=80=AFPM Jens Wiklander
-<jens.wiklander@linaro.org> wrote:
+Will get this fixed. Sorry for the mistake.
 
-> A number of storage technologies support a specialised hardware
-> partition designed to be resistant to replay attacks. The underlying
-> HW protocols differ but the operations are common. The RPMB partition
-> cannot be accessed via standard block layer, but by a set of specific
-> RPMB commands: WRITE, READ, GET_WRITE_COUNTER, and PROGRAM_KEY. Such a
-> partition provides authenticated and replay protected access, hence
-> suitable as a secure storage.
->
-> The initial aim of this patch is to provide a simple RPMB driver
-> interface which can be accessed by the optee driver to facilitate early
-> RPMB access to OP-TEE OS (secure OS) during the boot time.
->
-> A TEE device driver can claim the RPMB interface, for example, via
-> rpmb_interface_register() or rpmb_dev_find_device(). The RPMB driver
-> provides a callback to route RPMB frames to the RPMB device accessible
-> via rpmb_route_frames().
->
-> The detailed operation of implementing the access is left to the TEE
-> device driver itself.
->
-> Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
-> Signed-off-by: Alex Benn=C3=A9e <alex.bennee@linaro.org>
-> Signed-off-by: Shyam Saini <shyamsaini@linux.microsoft.com>
-> Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
-
-I would mention in the commit that the subsystem is currently
-only used with eMMC but is designed to be used also by UFS
-and NVME. Nevertheless, no big deal so:
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-
-> +config RPMB
-> +       tristate "RPMB partition interface"
-> +       depends on MMC
-
-depends on MMC || SCSI_UFSHCD || NVME_CORE
-?
-
-Or do we want to hold it off until we implement the backends?
-
-Yours,
-Linus Walleij
+On 2024/3/5 20:10, Yicong Yang wrote:
+> From: Yicong Yang <yangyicong@hisilicon.com>
+> 
+> `make htmldocs SPHINXDIRS="admin-guide"` shows below warnings:
+> Documentation/admin-guide/perf/hisi-pcie-pmu.rst:48: ERROR: Unexpected indentation.
+> Documentation/admin-guide/perf/hisi-pcie-pmu.rst:49: WARNING: Block quote ends without a blank line; unexpected unindent.
+> 
+> Fix this.
+> 
+> Closes: https://lore.kernel.org/lkml/20231011172250.5a6498e5@canb.auug.org.au/
+> Fixes: 89a032923d4b ("docs: perf: Update usage for target filter of hisi-pcie-pmu")
+> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+> ---
+>  Documentation/admin-guide/perf/hisi-pcie-pmu.rst | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/admin-guide/perf/hisi-pcie-pmu.rst b/Documentation/admin-guide/perf/hisi-pcie-pmu.rst
+> index 678d3865560c..5541ff40e06a 100644
+> --- a/Documentation/admin-guide/perf/hisi-pcie-pmu.rst
+> +++ b/Documentation/admin-guide/perf/hisi-pcie-pmu.rst
+> @@ -44,6 +44,7 @@ The related events usually used to calculate the bandwidth, latency or others.
+>  They need to start and end counting at the same time, therefore related events
+>  are best used in the same event group to get the expected value. There are two
+>  ways to know if they are related events:
+> +
+>  a) By event name, such as the latency events "xxx_latency, xxx_cnt" or
+>     bandwidth events "xxx_flux, xxx_time".
+>  b) By event type, such as "event=0xXXXX, event=0x1XXXX".
+> 
 
