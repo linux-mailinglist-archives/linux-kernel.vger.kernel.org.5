@@ -1,153 +1,129 @@
-Return-Path: <linux-kernel+bounces-92893-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92895-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E28388727A7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 20:38:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FD4A8727B5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 20:39:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A7D128D7CB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:38:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFD9128A854
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:39:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4D154CB28;
-	Tue,  5 Mar 2024 19:38:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C3C25C8E1;
+	Tue,  5 Mar 2024 19:39:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="Bm6Put7D"
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="jUyF7ZVN"
+Received: from out203-205-221-164.mail.qq.com (out203-205-221-164.mail.qq.com [203.205.221.164])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B850D1C01
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 19:38:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3954C5C5FD
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 19:39:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.164
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709667511; cv=none; b=ChzladgKrOO05n0sQNlBY6/BVgHqJS4EhV5bruMIz4HqXYXYhIxKpBYP0Psr1O0OfPxzfjqGAcuWu6oKaltU3HJ8WZvErkFextXLwxgSykZXRJa9Y0a5ipEsOUuhh65FjDO511yqnILnze6oJ48IQZgLfdLAQcj8/RFBEaPwZFc=
+	t=1709667545; cv=none; b=enP595kIezRbl0SznXEcHt7JwGojVEQ6YWVwEpfnU0hSWrRBL1HESvxlhUoMgqvYZs7aloC7TRszcMqQjVfQSQh5dbUYM4kYEdpXzFusDcov7860x2ToFGZ8jPEr+tHbp5aXBcmnPj5Dr1LsP6Hbjqf8AkVjpaYRdzSzQT6lT4E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709667511; c=relaxed/simple;
-	bh=P/X134+zoyg4s2Jot2r3ay2hXJWBr990/o9hJjnwWHg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=kOorzsObCfc3EHDCZx81lq08H79yauQRtsE7Y7ZBhem8waovFC1Gd3gZ4hS3PV0lHT1Q5+8bPXSnSq610nHNYnSqPiDt0ro591OLy/25xW4UAlKHwGKOHqsyZdpmIz77e6uc+TvA5F7qur/Yq/rAK0bWDDNtA1VkZNDek6gkL2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=Bm6Put7D; arc=none smtp.client-ip=209.85.215.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5dc949f998fso925401a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 11:38:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709667509; x=1710272309;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AXfr5UMOCR8axjFfy2MwIX+Lu8p2xjOpYgSyxav7TR4=;
-        b=n7MIobCAZi3HUtBUouoxKEpMfdjARMRyoudG+Mqiw3G1yDpbgJRRqKGP7TNkcCWOQt
-         qz+0Vjq2jOZJT9UwIjpZfi9IMmYrYBFMpKMQkMUUVLyqubR+vBXgzFn5JQ3O+GNZbBrA
-         drnIydS4Kv2JU3EhGY1i/Ja2hSrUAdtS38/7z67L3WmRzBcb7UMDctFXKOXezNkUiWVx
-         61yk8DUjsL6L/rnSeAH1ZjBSMFs+BQyuJXgFaMLELfEPFV37tYdYwvbWcK1FsaS9FJOn
-         5qjC8eGFdZ9iRNq1UFSB4QUX7iknbgFFzIghmEclzb/dXZHa/sPlMbZZpLFq1TEbXzWm
-         2VQw==
-X-Gm-Message-State: AOJu0YwcMq8Zs4Ny4gf58e7xNn4t93bnJbpzyFuZaK6drHXdiOshdwvP
-	KLeK/Bs14UJMo7DcVjoE+7PtJK/FS3Dje/GmiWLML5ufbcF5ZvyKN1jzYDuSDqpcyw==
-X-Google-Smtp-Source: AGHT+IGANiNPnKLY5iyZLa/wKEafOGgKGJRk1y7HKsI81neSolD6PcsxMI6uPGL7vdzCegINIrcrLA==
-X-Received: by 2002:a17:90a:d315:b0:299:8ff:40c0 with SMTP id p21-20020a17090ad31500b0029908ff40c0mr9832092pju.28.1709667508954;
-        Tue, 05 Mar 2024 11:38:28 -0800 (PST)
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id l22-20020a17090b079600b0029a8e5355fcsm10026978pjz.53.2024.03.05.11.38.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 11:38:28 -0800 (PST)
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1709667507;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=AXfr5UMOCR8axjFfy2MwIX+Lu8p2xjOpYgSyxav7TR4=;
-	b=Bm6Put7DwFpne8ftq8M9r7dESg4K8ewJy8R44hkVAqa4+CysF42OJxSBUNp4+DfsnTs5Hc
-	Bk2hkqBEvYxk57ky2DD9nZMOC1aLbMvttbDPgJypksIWtC+2+wub6T1hUrvso3kWKn2X5j
-	dS7Mq1lDRF1G/msObNq4IuqJKx7TSTnJUGFSQ9MsLPkmbvO1aXhSvt9md1j29EaW8gqino
-	5rYqYk7mWVwi1kV59p7aDBSWQIN8oXh1a/ruYAW+BTgLSqg8oe4KM5LBQnEqNwodwzibP/
-	Nx1k/AlO3oMP79HmAZeHNIk7s8U5I/9jJSH2HabpVBbiLBNZ7hTekYOG4rTuuw==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Tue, 05 Mar 2024 16:38:25 -0300
-Subject: [PATCH] pcmcia: cs: make pcmcia_socket_class constant
+	s=arc-20240116; t=1709667545; c=relaxed/simple;
+	bh=QRLQxeqsECyJ6uun0xKaJizzaw8Pb5i5/HMBcCU6mS0=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=GL09N3YbNLvmRQ86QyHCH2gL36qgLdM+caKB1jHxCXO00mBBmUG1uZB+xWxbBzLGz2C8LPRMRQpZFz5UoRksB/hIubpHFUQr+ipt9G7F4vfPzxbPALZftIyUJmDKayfp9SBh6V7swM21eV0q8HVMbMi1IE/LvG4E87ddYaROgac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=jUyF7ZVN; arc=none smtp.client-ip=203.205.221.164
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1709667541; bh=kvuS7K0wl30nwl4M5zznAdLvDfFhfeZr9JFWkFZyoG8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=jUyF7ZVN5cOHT7Ywj3qEcddLixQuTHRJrzo9lFkEJxCwYW8k7439qmqKjiwiemxg1
+	 u11+9RnBc4uGQLNtOFC3HLqX5Mob3ZRWgZBMBr1WIIvR9jUkxZqAzIF7VtJsiOg7YJ
+	 fTCyVOXDR3ZVb4HntwdA2boDQoLQiR4co5s/KeyU=
+Received: from cyy-pc.lan ([240e:379:2267:e200:bd8:e8f9:fb59:de48])
+	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
+	id 9B6B9246; Wed, 06 Mar 2024 03:38:54 +0800
+X-QQ-mid: xmsmtpt1709667538t7sldulm3
+Message-ID: <tencent_B68EA2B8703102213B8D437C47820EDA0608@qq.com>
+X-QQ-XMAILINFO: OVFdYp27KdlJUb+gPn8mDFZOGW5r7i3+Q9v+18k8KucXeEc9YIuJb4I3WmUHxm
+	 ihIZ6cZVFvYl74RBcWeAG3JRyn9PVdZXSoQ2MzQqJOfIdCk2c0jbDEoLDQD1NxDYaf2tHMvB7lmh
+	 tz+aorrbtZavPnn8lBWPPhp0xm/3kXOQqG143oUbiHXNfBi86aK608GSWQx3I2BjyA1vizn+da7N
+	 9mfM82wP9I5ai89I6PmQfY/K6fw8+p0jnRjxrQamwe5aJw0RPkNnjwHMePCHgRsb0gtH1kCZO9j/
+	 z2tOqw5g2mQmKMKZ2oDs3WJByl8I0hk1ot8Lm5UuQcUUbGXajXTWLLIoHlzJqq0U6O/xpxQ7CWuN
+	 ltqIed8qHEXB4JFHPvQdSOFeAZy+Rviij/wDLPNt8s3asK+H6jRNSI72mBM+nzgw3JQI1pr1wIiu
+	 sJN7uLZf7t50ygrUDDocu4wmwE2ZPSIjT6hgPhEPVneCuvgGMImdFzkEOV1aSgcp/6zs+biuFZsv
+	 Gag4oU2UCHUwIiPdjTBceksB6YSz7BoNqaFfWrS1Sze74wBYs1249eylSiBqFaheQGP9sB6Ca9qk
+	 RWqa65y7tNcTlrI++Pcd+YMsbP4/u23W54ayQ59MZ6S/V/tAh930LtZtGS33tUaIUu0ed5bSzbrE
+	 9Ja5fUU46WGS2yl9UgVQrBzrqBF3kTP5P43qBLtwFp4BoeL9qUDfFvLTxMrkTZq52DJZybhCzTuM
+	 6J8C4nkA2NSj0fsgoZj8vs/Y5Y4yrSaN3mo0rWchfso9MKWw/9eT+5rzQ37crmPfF3fCWzj2Hi0a
+	 VtbRM3zXiWO+uhKKAn2WeKff/cx4suP5fhgO0VZoJp9FIwsradJrIc0reNwH2utTTgMaog5tmN5T
+	 Hq6C5IZAxkmmwm1l4GL60KXDniW9NN2UBRo8dZACfMFAu1yQ5XIAYVS3HstxYQLa8OXG9XYnYnIb
+	 Euws5HmKNhRtXJKzG45Rqpk/VoNnFuCZzZTM4bj7pZek0K3gfC5GtvoscGH9W9bV0TJqOG7yMMeV
+	 tNWJhuPDOti+sDmSK2Eq3Ug1DG7tA=
+X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
+From: Yangyu Chen <cyy@cyyself.name>
+To: linux-riscv@lists.infradead.org
+Cc: Conor Dooley <conor@kernel.org>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Guo Ren <guoren@kernel.org>,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Yangyu Chen <cyy@cyyself.name>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v4 2/7] dt-bindings: add Canaan K230 boards compatible strings
+Date: Wed,  6 Mar 2024 03:38:26 +0800
+X-OQ-MSGID: <20240305193831.1084556-2-cyy@cyyself.name>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <tencent_587730262984A011834F42D0563BC6B10405@qq.com>
+References: <tencent_587730262984A011834F42D0563BC6B10405@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240305-class_cleanup-brodo-v1-1-9bac7b015641@marliere.net>
-X-B4-Tracking: v=1; b=H4sIALB052UC/x3MQQqAIBBA0avIrBPMCqqrRITpVAOh4lAE4d2Tl
- m/x/wuMiZBhFC8kvIkp+IK6EmAP43eU5IpBK92qRnXSnoZ5sScaf0W5puCCbLpNm6Eeer0qKGV
- MuNHzX6c55w+laSEGZQAAAA==
-To: Dominik Brodowski <linux@dominikbrodowski.net>
-Cc: linux-kernel@vger.kernel.org, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1858; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=P/X134+zoyg4s2Jot2r3ay2hXJWBr990/o9hJjnwWHg=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl53Swm6kHlOSIPs1UhLtSg+MdfWuMcywtuuEkJ
- KuJv1brarGJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZed0sAAKCRDJC4p8Y4ZY
- pl4aEACnZBgAW55z5Y4KPR71YvKK3gWZjKqPpvdj46dCyDV78AEV38YH9b7+Z1yu0xUNHFpatew
- xJ19stvaBgbq2aAWkqBDcNVIbxpGhFX2ffAL0m6YD9tyDbX4d6KwUE+I0WZojTfvfjQEUwhpmCd
- DZXg5MvqvQdk59Y2KhUoOKmhJ6XmJ5vZGHygo6zb84xsyPBkul5TWYiuAGbdUOgtAxw/7XyulQa
- JQsJXLO+3KCo01yKGz+Sja7yOBqUSAkmRz4D4jwrMmxBVxkbtVus6JJG27TWHe4l300lJTa1foC
- qtvDLi9NiTsCzzf4g6Vu4nZaVqJ+qPE47d/fK4869yRt+5HcZ0N/TnpbtkB+fdceRP1vWGeLxPG
- jQmLyJcwV5VWoUjOfXHZ3ma1adFXpEoFs/nbIwD+ZjHUL/FSqOCtDanpYhDSEk6DPF4tnDZXtZJ
- NJOLi3NYcjnQI8Aos7W1n1X6bbL00ftDm5heNziMAR+lThvbG+LL/2+y1TwqFSILSYy557yGcLm
- YbHTsnqNFQVCG5mWH/iz/Gc2OI/MEDo+mzDGfuq96GwZOvG1TfVii2Ra7IOnC0mu52r8TL4X/3y
- Zws4jXP6F9bXYyijs+gG/GGHAM7JYuAr3orFCFU4uq7CrZQ4IjY+wXl4U0orCl9/2hz8yN9/9qg
- pR8H/1cHpAw4lVA==
-X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
+Content-Transfer-Encoding: 8bit
 
-Since commit 43a7206b0963 ("driver core: class: make class_register() take
-a const *"), the driver core allows for struct class to be in read-only
-memory, so move the pcmcia_socket_class structure to be declared at build
-time placing it into read-only memory, instead of having to be dynamically
-allocated at boot time.
+Since K230 was released, K210 is no longer the only SoC in the Kendryte
+series, so remove the K210 string from the description. Also, add two
+boards based on k230 to compatible strings to allow them to be used in the
+dt.
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+Signed-off-by: Yangyu Chen <cyy@cyyself.name>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
 ---
- drivers/pcmcia/cs.c          | 2 +-
- drivers/pcmcia/cs_internal.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ Documentation/devicetree/bindings/riscv/canaan.yaml | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pcmcia/cs.c b/drivers/pcmcia/cs.c
-index b33be1e63c98..c75f55e1250a 100644
---- a/drivers/pcmcia/cs.c
-+++ b/drivers/pcmcia/cs.c
-@@ -892,7 +892,7 @@ static const struct dev_pm_ops pcmcia_socket_pm_ops = {
+diff --git a/Documentation/devicetree/bindings/riscv/canaan.yaml b/Documentation/devicetree/bindings/riscv/canaan.yaml
+index 41fd11f70a49..f9854ff43ac6 100644
+--- a/Documentation/devicetree/bindings/riscv/canaan.yaml
++++ b/Documentation/devicetree/bindings/riscv/canaan.yaml
+@@ -10,7 +10,7 @@ maintainers:
+   - Damien Le Moal <dlemoal@kernel.org>
  
- #endif /* CONFIG_PM */
+ description:
+-  Canaan Kendryte K210 SoC-based boards
++  Canaan Kendryte SoC-based boards
  
--struct class pcmcia_socket_class = {
-+const struct class pcmcia_socket_class = {
- 	.name = "pcmcia_socket",
- 	.dev_uevent = pcmcia_socket_uevent,
- 	.dev_release = pcmcia_release_socket,
-diff --git a/drivers/pcmcia/cs_internal.h b/drivers/pcmcia/cs_internal.h
-index 999332bc4378..02a83ca44e77 100644
---- a/drivers/pcmcia/cs_internal.h
-+++ b/drivers/pcmcia/cs_internal.h
-@@ -113,7 +113,7 @@ struct pcmcia_callback{
- /* cs.c */
- extern struct rw_semaphore pcmcia_socket_list_rwsem;
- extern struct list_head pcmcia_socket_list;
--extern struct class pcmcia_socket_class;
-+extern const struct class pcmcia_socket_class;
+ properties:
+   $nodename:
+@@ -42,6 +42,12 @@ properties:
+       - items:
+           - const: canaan,kendryte-k210
  
- int pccard_register_pcmcia(struct pcmcia_socket *s, struct pcmcia_callback *c);
- struct pcmcia_socket *pcmcia_get_socket_by_nr(unsigned int nr);
-
----
-base-commit: 1bec7691b32710ea27741f0f8b00c1dc98d92930
-change-id: 20240305-class_cleanup-brodo-35f2a91982b0
-
-Best regards,
++      - items:
++          - enum:
++              - canaan,canmv-k230
++              - canaan,k230-usip-lp3-evb
++          - const: canaan,kendryte-k230
++
+ additionalProperties: true
+ 
+ ...
 -- 
-Ricardo B. Marliere <ricardo@marliere.net>
+2.43.0
 
 
