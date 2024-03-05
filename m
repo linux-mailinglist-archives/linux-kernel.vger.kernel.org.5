@@ -1,253 +1,109 @@
-Return-Path: <linux-kernel+bounces-93115-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93116-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78960872B34
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 00:39:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 135E5872B36
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 00:39:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D1BC1C23283
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 23:39:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3EB0281492
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 23:39:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1C9812DD8F;
-	Tue,  5 Mar 2024 23:39:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB37D12DD9C;
+	Tue,  5 Mar 2024 23:39:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OH9VvmT6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DrXHOuG4"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5E7679953;
-	Tue,  5 Mar 2024 23:39:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28CC97E581;
+	Tue,  5 Mar 2024 23:39:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709681945; cv=none; b=Qf6AncSdkXSObOaODSafjcKj0UideGUZu/JVAYxAQBIKmw1nwbHnzI4nLMXJ8f+2LPgiqhQspkXDxHJnfAXujlhr3wzBtfIflZvDmWn2GYFEtJEZ2LzR6SLiEpHRmSpCvrxmq3sBvynowv2srZPeKtP/xOXt8FOTi1PqigmsP/Q=
+	t=1709681973; cv=none; b=czkmLdodNfhX/gIeMCLWP0sOvg2o2qW6YcFWt/GXBjFZpFNQ/Ei2o69vHbV75HVomPHdN/OqdgAyYVZHPUW0pg3ogBodkTU2QM60IddYCNacC1SngZ06ZloHz8GOaPixFbO85r/kciOf7Ol8b1YM+dSBhX/FQrjAUNqisOpjvt0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709681945; c=relaxed/simple;
-	bh=eF6fEU4NsP+4MAw9M3fSpU7V560O2SKhvnGSecXMnuU=;
+	s=arc-20240116; t=1709681973; c=relaxed/simple;
+	bh=0WKq2SVEvxpP+1ncC/HkwCmFo+bMUGrCOaZgdBI8xhg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nfOTV/tHNnGUg7ToevDdwZUvh7iMxeDzgM+rzAdzN/S1oZZQB1MjjArnYoIr2eVQOJjO4rQdvEd1YNIs4+t90HD2iF5g4IZ+txvwE9xW3GOgBzBZjjP2ygtgoq2FP+nLSsHjHZR2B2xx1KclOYWLrRk2y+FR2hvukSR5Wa5w8x0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OH9VvmT6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62632C43390;
-	Tue,  5 Mar 2024 23:39:05 +0000 (UTC)
+	 To:Cc:Content-Type; b=K/+zL8yOZe1KguKshSCqLaLjoom7H+XLTVd6lklzfzmPKb58ltpb+ZvKSSmy+wLyLTR/oS0mrMHczLjHc3Oiv1WW529Z8rwchLzcT2iQLaJzJoLCiAJKS1Z40vo8YXiHDASKhwCE0QX0TqodQu2VFoP8zYMjFy0TSggcpmY2UYo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DrXHOuG4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93758C433B1;
+	Tue,  5 Mar 2024 23:39:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709681945;
-	bh=eF6fEU4NsP+4MAw9M3fSpU7V560O2SKhvnGSecXMnuU=;
+	s=k20201202; t=1709681972;
+	bh=0WKq2SVEvxpP+1ncC/HkwCmFo+bMUGrCOaZgdBI8xhg=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=OH9VvmT66ki9cMYzzhwzkUmwlR3zTOBZDex5hAZj7d6jfQEeGMQ+2ez9DMY7DZcIl
-	 oNQS/InP7o2qHDblRo9602FBLdFTZ8J26VuP0Bz7AD7+s3xwS3//CCzhbxi0TnRs4i
-	 nHHAeMkhISa+2GtgY0lkTAsvJseEDZ4GZIipXP2Lq7NeUMdLLRBnegXeNyUQOdh9D1
-	 0PwU3Gdxx38Ti9AiFgV/i9DFTYXJuVuIMPK4TkP8y0INqKREaL+RWhG947UWSbOs4m
-	 9qnxlRtDYuw7hfi6hlUG3Ot4UyOytXPJwm5h5f0/W1Cqwwbkcifd013frP4Zt1SnQi
-	 7Y9IuPHi1Wv4g==
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-566e869f631so423851a12.0;
-        Tue, 05 Mar 2024 15:39:05 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXbPqfZWYSGZeNcuRP0m71gYWE5oGZFrJL4A5A5RNrBDr5g1Zht88a2fl0P2dM60rWGEt83Xe57gabtcwtWRnC3sRbbXy7ow3Jb6r3ufbiunaQuJKxmvrqW8FGxvFGx3WlwD+sumh6ufQ==
-X-Gm-Message-State: AOJu0YwnmLp9vwqBWx1p+Z04BEOfACyz94yQgakGHmhmjS1r7G5yFh9q
-	q/fi4+GyxNkIqXWwWEwhIvsc6MM5//jjSnF2XKVNvIk9Vf0KAL9v+NHHq+EELHyvJPOF3LfUZ96
-	4UHnku/TsZ39Tu3bmTWwSakLJKz8=
-X-Google-Smtp-Source: AGHT+IFuKxZwO7MsecCyojmGn06y7zA3qnEWqqCGWBGTqq07pyDG36n7t4pykLYIeRX5yUWIoibpmr6Lcd385o8uwjU=
-X-Received: by 2002:a05:6402:35d5:b0:566:ff31:7974 with SMTP id
- z21-20020a05640235d500b00566ff317974mr9185801edc.34.1709681943723; Tue, 05
- Mar 2024 15:39:03 -0800 (PST)
+	b=DrXHOuG4+0G2fQIj9hLT1rgzGoIDuTcUheEnY8vADe8Q7/qPJlCOOg+eIlNgk+dVO
+	 IcYLGu9lkBNOsxSjz03v/ERiwbeClJvEcGcShZP4zkqk3BwJy3zXqir285xBkPSSw5
+	 Rtz81FWyoiZIDjmcRW0kl2ctWXYy0mXkg4bV4zmfESxT+wsqDcPa31tNWCdfC0dn9W
+	 JXqfyjub+rbixVuyuCtxqE3G9Qg6jDTN4P0/ci13wOMSb0bvAp1Yi28Pwk7u/xYTRZ
+	 Tl6En0FBylAFBfmI3VF1RAbTTMbiGwgelgBsojTTFbguAKWvKL0/ReG5hjMzjxql/I
+	 ARJjLtR+u+gxg==
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-563c403719cso8421375a12.2;
+        Tue, 05 Mar 2024 15:39:32 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXNgXCmxkRmhhVWn5llKgs4VruYS3Ewv3hzUFckQmYPCiGnGrDp+BCZk2Cv/cm9gQBzCqK/RUg4KnhB0pspTNtWATeHzGnrcBGuXpGunKZ3X+Ov56resqc2o8NA7kxrw+eK+6qX3o8hIA==
+X-Gm-Message-State: AOJu0YyYfn6NORMsDKwjqsKvuuA0+ZJqW2B+EAvRVJywYgI/IIKMh9SY
+	CXqKiu4dAs/X/sh0vLKD5ebLjOabGt5v59+015pMUcyen4XOy/x6MhR7LDlaqg56vqikm/uor2q
+	BQb33sTyIKyoxy+ycoLIEqKV6FCc=
+X-Google-Smtp-Source: AGHT+IEB6V0Shy2ZvcaxQBZLlfsMO3KwwVzXupQ9uDjw1BFd30mhk74+4sUNNN+jon5kpSkKL5kyYuj5HLQYuJjmpDI=
+X-Received: by 2002:aa7:c594:0:b0:567:2cf:1ecc with SMTP id
+ g20-20020aa7c594000000b0056702cf1eccmr8400959edq.30.1709681971001; Tue, 05
+ Mar 2024 15:39:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <tencent_FC10B3C630BE27412FED2547245CBE18D807@qq.com> <tencent_6F35FEF31908DE6AEB385AE30AC658863C0A@qq.com>
-In-Reply-To: <tencent_6F35FEF31908DE6AEB385AE30AC658863C0A@qq.com>
+References: <tencent_FC10B3C630BE27412FED2547245CBE18D807@qq.com> <tencent_93C7B4F91D79712162D243201AF9F8520409@qq.com>
+In-Reply-To: <tencent_93C7B4F91D79712162D243201AF9F8520409@qq.com>
 From: Guo Ren <guoren@kernel.org>
-Date: Wed, 6 Mar 2024 07:38:52 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTS1-VQP=gQBx=SoUWsdap153EGOObKVn+2L7=kbP2CqFg@mail.gmail.com>
-Message-ID: <CAJF2gTS1-VQP=gQBx=SoUWsdap153EGOObKVn+2L7=kbP2CqFg@mail.gmail.com>
-Subject: Re: [PATCH v5 5/7] riscv: Kconfig.socs: Split ARCH_CANAAN and SOC_CANAAN_K210
+Date: Wed, 6 Mar 2024 07:39:19 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTT1YM-N-W-GsuhhXpBh7Hjip9GofJCSxzbGpxyncn+TTQ@mail.gmail.com>
+Message-ID: <CAJF2gTT1YM-N-W-GsuhhXpBh7Hjip9GofJCSxzbGpxyncn+TTQ@mail.gmail.com>
+Subject: Re: [PATCH v5 4/7] dt-bindings: interrupt-controller: Add Canaan K230 PLIC
 To: Yangyu Chen <cyy@cyyself.name>
 Cc: linux-riscv@lists.infradead.org, Conor Dooley <conor@kernel.org>, 
 	Damien Le Moal <dlemoal@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
 	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
 	Albert Ou <aou@eecs.berkeley.edu>, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+	linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-This patch cross so many subsystems, I am not sure about it. If I were
-you, I would keep SOC_CANAAN and just add SOC_CANAAN_K230.
-
-On Wed, Mar 6, 2024 at 7:04=E2=80=AFAM Yangyu Chen <cyy@cyyself.name> wrote=
+On Wed, Mar 6, 2024 at 4:03=E2=80=AFAM Yangyu Chen <cyy@cyyself.name> wrote=
 :
 >
-> Since we have Canaan Kendryte K230 with MMU now. The use of SOC_CANAAN
-> is no longer only referred to K210. Split them and add _K210 suffix
-> to the name for old SOC_CANAAN. And allows ARCH_CANAAN to be selected
-> for other Canaan SoCs.
+> Add compatible string for Canaan K230 PLIC.
 >
 > Signed-off-by: Yangyu Chen <cyy@cyyself.name>
+> Acked-by: Rob Herring <robh@kernel.org>
 > ---
->  arch/riscv/Kconfig.socs                        | 8 +++++---
->  arch/riscv/Makefile                            | 2 +-
->  arch/riscv/configs/nommu_k210_defconfig        | 3 ++-
->  arch/riscv/configs/nommu_k210_sdcard_defconfig | 3 ++-
->  drivers/clk/Kconfig                            | 4 ++--
->  drivers/pinctrl/Kconfig                        | 4 ++--
->  drivers/reset/Kconfig                          | 4 ++--
->  drivers/soc/Makefile                           | 2 +-
->  drivers/soc/canaan/Kconfig                     | 4 ++--
->  9 files changed, 19 insertions(+), 15 deletions(-)
+>  .../bindings/interrupt-controller/sifive,plic-1.0.0.yaml         | 1 +
+>  1 file changed, 1 insertion(+)
 >
-> diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
-> index 623de5f8a208..5710aee456ac 100644
-> --- a/arch/riscv/Kconfig.socs
-> +++ b/arch/riscv/Kconfig.socs
-> @@ -72,11 +72,13 @@ config SOC_VIRT
->           This enables support for QEMU Virt Machine.
->
->  config ARCH_CANAAN
-> -       def_bool SOC_CANAAN
-> +       bool "Canaan Kendryte SoC"
-> +       help
-> +         This enables support for Canaan Kendryte SoC platform hardware.
->
-> -config SOC_CANAAN
-> +config SOC_CANAAN_K210
->         bool "Canaan Kendryte K210 SoC"
-> -       depends on !MMU
-> +       depends on !MMU && ARCH_CANAAN
->         select CLINT_TIMER if RISCV_M_MODE
->         select ARCH_HAS_RESET_CONTROLLER
->         select PINCTRL
-> diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-> index 252d63942f34..fa6c389c3986 100644
-> --- a/arch/riscv/Makefile
-> +++ b/arch/riscv/Makefile
-> @@ -154,7 +154,7 @@ vdso-install-y                      +=3D arch/riscv/k=
-ernel/vdso/vdso.so.dbg
->  vdso-install-$(CONFIG_COMPAT)  +=3D arch/riscv/kernel/compat_vdso/compat=
-_vdso.so.dbg:../compat_vdso/compat_vdso.so
->
->  ifneq ($(CONFIG_XIP_KERNEL),y)
-> -ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_ARCH_CANAAN),yy)
-> +ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_SOC_CANAAN_K210),yy)
->  KBUILD_IMAGE :=3D $(boot)/loader.bin
->  else
->  ifeq ($(CONFIG_EFI_ZBOOT),)
-> diff --git a/arch/riscv/configs/nommu_k210_defconfig b/arch/riscv/configs=
-/nommu_k210_defconfig
-> index 7e75200543f4..2552e78074a3 100644
-> --- a/arch/riscv/configs/nommu_k210_defconfig
-> +++ b/arch/riscv/configs/nommu_k210_defconfig
-> @@ -27,7 +27,8 @@ CONFIG_EXPERT=3Dy
->  CONFIG_SLUB=3Dy
->  CONFIG_SLUB_TINY=3Dy
->  # CONFIG_MMU is not set
-> -CONFIG_SOC_CANAAN=3Dy
-> +CONFIG_ARCH_CANAAN=3Dy
-> +CONFIG_SOC_CANAAN_K210=3Dy
->  CONFIG_NONPORTABLE=3Dy
->  CONFIG_SMP=3Dy
->  CONFIG_NR_CPUS=3D2
-> diff --git a/arch/riscv/configs/nommu_k210_sdcard_defconfig b/arch/riscv/=
-configs/nommu_k210_sdcard_defconfig
-> index 0ba353e9ca71..8f67fb830585 100644
-> --- a/arch/riscv/configs/nommu_k210_sdcard_defconfig
-> +++ b/arch/riscv/configs/nommu_k210_sdcard_defconfig
-> @@ -19,7 +19,8 @@ CONFIG_EXPERT=3Dy
->  CONFIG_SLUB=3Dy
->  CONFIG_SLUB_TINY=3Dy
->  # CONFIG_MMU is not set
-> -CONFIG_SOC_CANAAN=3Dy
-> +CONFIG_ARCH_CANAAN=3Dy
-> +CONFIG_SOC_CANAAN_K210=3Dy
->  CONFIG_NONPORTABLE=3Dy
->  CONFIG_SMP=3Dy
->  CONFIG_NR_CPUS=3D2
-> diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
-> index 50af5fc7f570..7517a0dfd15c 100644
-> --- a/drivers/clk/Kconfig
-> +++ b/drivers/clk/Kconfig
-> @@ -451,8 +451,8 @@ config COMMON_CLK_FIXED_MMIO
->
->  config COMMON_CLK_K210
->         bool "Clock driver for the Canaan Kendryte K210 SoC"
-> -       depends on OF && RISCV && SOC_CANAAN
-> -       default SOC_CANAAN
-> +       depends on OF && RISCV && SOC_CANAAN_K210
-> +       default SOC_CANAAN_K210
->         help
->           Support for the Canaan Kendryte K210 RISC-V SoC clocks.
->
-> diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
-> index 8163a5983166..837b3bac8aac 100644
-> --- a/drivers/pinctrl/Kconfig
-> +++ b/drivers/pinctrl/Kconfig
-> @@ -217,13 +217,13 @@ config PINCTRL_INGENIC
->
->  config PINCTRL_K210
->         bool "Pinctrl driver for the Canaan Kendryte K210 SoC"
-> -       depends on RISCV && SOC_CANAAN && OF
-> +       depends on RISCV && SOC_CANAAN_K210 && OF
->         select GENERIC_PINMUX_FUNCTIONS
->         select GENERIC_PINCONF
->         select GPIOLIB
->         select OF_GPIO
->         select REGMAP_MMIO
-> -       default SOC_CANAAN
-> +       default SOC_CANAAN_K210
->         help
->           Add support for the Canaan Kendryte K210 RISC-V SOC Field
->           Programmable IO Array (FPIOA) controller.
-> diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-> index ccd59ddd7610..6499da7ecc3b 100644
-> --- a/drivers/reset/Kconfig
-> +++ b/drivers/reset/Kconfig
-> @@ -94,9 +94,9 @@ config RESET_INTEL_GW
->
->  config RESET_K210
->         bool "Reset controller driver for Canaan Kendryte K210 SoC"
-> -       depends on (SOC_CANAAN || COMPILE_TEST) && OF
-> +       depends on (SOC_CANAAN_K210 || COMPILE_TEST) && OF
->         select MFD_SYSCON
-> -       default SOC_CANAAN
-> +       default SOC_CANAAN_K210
->         help
->           Support for the Canaan Kendryte K210 RISC-V SoC reset controlle=
-r.
->           Say Y if you want to control reset signals provided by this
-> diff --git a/drivers/soc/Makefile b/drivers/soc/Makefile
-> index ba8f5b5460e1..fb2bd31387d0 100644
-> --- a/drivers/soc/Makefile
-> +++ b/drivers/soc/Makefile
-> @@ -7,7 +7,7 @@ obj-y                           +=3D apple/
->  obj-y                          +=3D aspeed/
->  obj-$(CONFIG_ARCH_AT91)                +=3D atmel/
->  obj-y                          +=3D bcm/
-> -obj-$(CONFIG_SOC_CANAAN)       +=3D canaan/
-> +obj-$(CONFIG_ARCH_CANAAN)      +=3D canaan/
->  obj-$(CONFIG_ARCH_DOVE)                +=3D dove/
->  obj-$(CONFIG_MACH_DOVE)                +=3D dove/
->  obj-y                          +=3D fsl/
-> diff --git a/drivers/soc/canaan/Kconfig b/drivers/soc/canaan/Kconfig
-> index 43ced2bf8444..3121d351fea6 100644
-> --- a/drivers/soc/canaan/Kconfig
-> +++ b/drivers/soc/canaan/Kconfig
-> @@ -2,9 +2,9 @@
->
->  config SOC_K210_SYSCTL
->         bool "Canaan Kendryte K210 SoC system controller"
-> -       depends on RISCV && SOC_CANAAN && OF
-> +       depends on RISCV && SOC_CANAAN_K210 && OF
->         depends on COMMON_CLK_K210
-> -       default SOC_CANAAN
-> +       default SOC_CANAAN_K210
->         select PM
->         select MFD_SYSCON
->         help
+> diff --git a/Documentation/devicetree/bindings/interrupt-controller/sifiv=
+e,plic-1.0.0.yaml b/Documentation/devicetree/bindings/interrupt-controller/=
+sifive,plic-1.0.0.yaml
+> index 709b2211276b..122f9b7b3f52 100644
+> --- a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-=
+1.0.0.yaml
+> +++ b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-=
+1.0.0.yaml
+> @@ -65,6 +65,7 @@ properties:
+>        - items:
+>            - enum:
+>                - allwinner,sun20i-d1-plic
+> +              - canaan,k230-plic
+>                - sophgo,cv1800b-plic
+>                - sophgo,cv1812h-plic
+>                - sophgo,sg2042-plic
 > --
 > 2.43.0
 >
-
+Reviewed-by: Guo Ren <guoren@kernel.org>
 
 --=20
 Best Regards
