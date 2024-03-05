@@ -1,146 +1,97 @@
-Return-Path: <linux-kernel+bounces-92698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92699-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 566FA872479
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:38:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43DB587247C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:39:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 88AC41C25036
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:38:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EBA8D1F26DF6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:39:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4914946F;
-	Tue,  5 Mar 2024 16:37:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20399C129;
+	Tue,  5 Mar 2024 16:39:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="y867hByO";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="RFTJ1q3f"
-Received: from fout5-smtp.messagingengine.com (fout5-smtp.messagingengine.com [103.168.172.148])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e+50sRCA"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD0878BF6;
-	Tue,  5 Mar 2024 16:37:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.148
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59D6F8BF7;
+	Tue,  5 Mar 2024 16:39:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709656674; cv=none; b=FvpzV5DO5x0rnNGC3JCu8a4HFxPn9BwjkQAnS2Uq17IEF0MokZ9mX4BfERK1lU8xc9YJXLds+d3aQ1IkKX1nVpd606oSzWkGZfa/2pmCDrB+IYPcA+0YmGW7uy39bE3bh/FyAut/NPexjTD5W2ws9TU509rfGQoKTm9lE3mp264=
+	t=1709656781; cv=none; b=lAqHptvHMLO3/QrmVpcBh8JYnQU/sP0M5v/Zkb3c/pBI+XOtouInU3JFB4gRlbmUkMG2/jgTTZvZtykknafcYV3RfXRDut5eustL8WcP++dPWEgDHJPUa274IHUxysm9rEvfynPWnr10kGo5A67OZSoxh8T2V4CTeNvEarZ0lKQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709656674; c=relaxed/simple;
-	bh=47j0dzSAzW5MEYKvxBhKLHXT49ngHPXkavyrh/wLtwE=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=uQ93rbOQs5satx7nI1ave47xobHNwSLe65PODT5buWMqGHPcy72RrgwhLq0ixOG2Yq8Vi/Q4C8QmY2Yg96l/SxHDYHLr0vKfsjjzC8GUoZY/Adv27HmXDwqOVIpQjHRASNTD8eLnwI2eDzPFGIXL1eUfzvACkdnzzXjngecBdlI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=y867hByO; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=RFTJ1q3f; arc=none smtp.client-ip=103.168.172.148
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfout.nyi.internal (Postfix) with ESMTP id C347213800DB;
-	Tue,  5 Mar 2024 11:37:51 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 05 Mar 2024 11:37:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1709656671;
-	 x=1709743071; bh=4+MYy7OZrk0mn8GWXY4I8q6DUEbRnqfsGbwPSkxAdSE=; b=
-	y867hByOENgGFnknD+qxt6Ld/N3IMCjlyvyKCoZ3sIGZ8wTAi1a6mnPsxuq8KMq1
-	CdODqy244HYamI/6S6Y8HasndG17kRb5ZE1c/TIHw6NhIkO4gmSjdVNIdNQkW9M4
-	BdvcfbHPUhXiN3MtXgrVN/+rPakw/OOfgwXThwFbP/Os+pGnRQ8NrKlUemYuQSiR
-	vwRcGVWnfEBjBo99bI7oB7XB94pViyoVyhfy94bSwMH9n4oLY8kkhqfX/842Jdt0
-	aUKlP/gEFMwYFwNXp7SRKo9gx08vxznpzfbaCcoyOjMulNqGnPPQhW5KuxEqp8Oz
-	bRJkKxFebPcpbgpse5oTbg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1709656671; x=
-	1709743071; bh=4+MYy7OZrk0mn8GWXY4I8q6DUEbRnqfsGbwPSkxAdSE=; b=R
-	FTJ1q3fzCgrr8z5nU3v5Ct6180xNjeq0/DUbMPBZS4TdrzVJl7jPpNLHyFy4gzs1
-	3UQ/JkN/y55NEVyhZsOcg4lP6COl0CBjMt/wlpwKEeQiMTlxw8hQEnpJnMaAOPsQ
-	lJbFh1dZXHB92Uyy5Fb+eiP7tiWHjBIRHpt8SxZ2FwESX2YC6mvW97nF3kLrTLD+
-	IQOeeX7I/qSe+8FjoNLFzknjUUkCc5drBUv76BB4LqM9oedtrbU8tiBP7gOJoMxj
-	Noh3DOJYviBJNvUeAOSPc6c8veW4YbpJcNcyzd6CmnvcQjS+IQ8fVyjcZaaff90o
-	oMKZ60RA2ooSH5p5nuNgA==
-X-ME-Sender: <xms:X0rnZd8c4n7AeOviEvoWHK3P4Wo5VuiwQ29r8ENvMaEtKCzqleeUAg>
-    <xme:X0rnZRvBwHNYnkc0D7XU0bW70HliKsbZa0trDgcxMWOA9opPNflL1_I4eIgGQCrt1
-    eOV2YCKy5TmwYHPr9I>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrheelgdekjecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepgfekueelgeeigefhudduledtkeefffejueelheelfedutedttdfgveeufeef
-    ieegnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:X0rnZbDS1Nz_xHjQg_GNHoHvLXN-uPoPzfCTcckATpolIxpmtjLk3Q>
-    <xmx:X0rnZRdBC1vJcCAuGF4U_OZwfShPUE6C-9fJRhc8JYEE4M-A95YHIw>
-    <xmx:X0rnZSMlvQ88KLM-elNG2nbnAwAbNhUPJiWScd_q87DdQTS4rM89fg>
-    <xmx:X0rnZXfgUEKc4_IsZHD2BemYzbNeYCCbfgg5JTaF6KNPgXb4LJ453w>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 6DFC4B600BF; Tue,  5 Mar 2024 11:37:51 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-208-g3f1d79aedb-fm-20240301.002-g3f1d79ae
+	s=arc-20240116; t=1709656781; c=relaxed/simple;
+	bh=7vgMXiC1hDBo2W+mPCaSNE01HYivT5LVBqveRukvTZk=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=PvCvnLJx2jGu8PSXs7qdYl5zNgGmY5GF/VGMiDQjR97jOrTRuDmiyTma3FrTA8KtreZ2b48AU0HthXa0W9XB/ou37e0j6nely8B96xGpYz9RKY0oEfTW4+d3DQWjPAqBOVnnDeb5dGvi4Q7kc2XKTaI/tYO4voRuryy9W0eLtlk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e+50sRCA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81467C433F1;
+	Tue,  5 Mar 2024 16:39:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709656780;
+	bh=7vgMXiC1hDBo2W+mPCaSNE01HYivT5LVBqveRukvTZk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=e+50sRCAFYr9qssxAd2CCEJWSD8uQoONX21r70DvAh5vq/CV13lCDJ9kLNl/G08qi
+	 FbNe0AyeYDE4BTW6WG1J3ljJh7aOujNuPjGA6nbQRi9vyBA30MnY3m2PLTUTYms4LY
+	 gX0EUGQUBevvHchQpSM4v6ruUlfxhd0FXES/YJhbxhzLpmdzel/OCAM3LlzoNE0NaK
+	 mw9hp0COR3vTDCfGssJG8fv/Hi2mZNudmwrMzD9eo6FleRcHPbGzlR4ui7BDKYG/vT
+	 erQ4EKSrMJNEjVekC356EL2lA1/LJ0ve26ybTMK4pCfZX3V3NJhha2UD7AuNOKpXyn
+	 LXSWK5g0EXaOw==
+Date: Tue, 5 Mar 2024 08:39:38 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>, Florian Fainelli
+ <florian.fainelli@broadcom.com>, Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>, Andrew Lunn <andrew@lunn.ch>,
+ Heiner Kallweit <hkallweit1@gmail.com>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
+ <pabeni@redhat.com>, Richard Cochran <richardcochran@gmail.com>, Radu Pirea
+ <radu-nicolae.pirea@oss.nxp.com>, Jay Vosburgh <j.vosburgh@gmail.com>, Andy
+ Gospodarek <andy@greyhouse.net>, Nicolas Ferre
+ <nicolas.ferre@microchip.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Jonathan Corbet
+ <corbet@lwn.net>, Horatiu Vultur <horatiu.vultur@microchip.com>,
+ UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>, Vladimir
+ Oltean <vladimir.oltean@nxp.com>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, Maxime Chevallier
+ <maxime.chevallier@bootlin.com>, Rahul Rameshbabu <rrameshbabu@nvidia.com>
+Subject: Re: [PATCH net-next v9 08/13] ptp: Add phc source and helpers to
+ register specific PTP clock or get information
+Message-ID: <20240305083938.6977335f@kernel.org>
+In-Reply-To: <20240305163546.3b9f3ed9@kmaincent-XPS-13-7390>
+References: <20240226-feature_ptp_netnext-v9-0-455611549f21@bootlin.com>
+	<20240226-feature_ptp_netnext-v9-8-455611549f21@bootlin.com>
+	<20240304185734.5f1a476c@kernel.org>
+	<ZebZpspMCqjLES/W@shell.armlinux.org.uk>
+	<20240305111021.5c892d5a@kmaincent-XPS-13-7390>
+	<20240305065939.2d419ff2@kernel.org>
+	<20240305163546.3b9f3ed9@kmaincent-XPS-13-7390>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <1859f2a9-b3fa-4d41-86e6-aa0a18fddad4@app.fastmail.com>
-In-Reply-To: 
- <DM6PR04MB65759DF9CAF6ECB5BA78E138FC222@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <20240227153132.2611499-1-jens.wiklander@linaro.org>
- <20240227153132.2611499-2-jens.wiklander@linaro.org>
- <CACRpkdZBWBio8kvKuVzj2CknCb4eS=VB2EqUsAK-vf4e328icg@mail.gmail.com>
- <DM6PR04MB65759DF9CAF6ECB5BA78E138FC222@DM6PR04MB6575.namprd04.prod.outlook.com>
-Date: Tue, 05 Mar 2024 17:37:31 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Avri Altman" <Avri.Altman@wdc.com>,
- "Linus Walleij" <linus.walleij@linaro.org>,
- "Jens Wiklander" <jens.wiklander@linaro.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mmc @ vger . kernel . org" <linux-mmc@vger.kernel.org>,
- "op-tee@lists.trustedfirmware.org" <op-tee@lists.trustedfirmware.org>,
- "Shyam Saini" <shyamsaini@linux.microsoft.com>,
- "Ulf Hansson" <ulf.hansson@linaro.org>,
- "Jerome Forissier" <jerome.forissier@linaro.org>,
- "Sumit Garg" <sumit.garg@linaro.org>,
- "Ilias Apalodimas" <ilias.apalodimas@linaro.org>,
- "Bart Van Assche" <bvanassche@acm.org>,
- "Randy Dunlap" <rdunlap@infradead.org>, "Ard Biesheuvel" <ardb@kernel.org>,
- "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
- "Tomas Winkler" <tomas.winkler@intel.com>,
- =?UTF-8?Q?Alex_Benn=C3=A9e?= <alex.bennee@linaro.org>
-Subject: Re: [PATCH v3 1/3] rpmb: add Replay Protected Memory Block (RPMB) subsystem
-Content-Type: text/plain;charset=utf-8
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 5, 2024, at 17:33, Avri Altman wrote:
->> On Tue, Feb 27, 2024 at 4:31=E2=80=AFPM Jens Wiklander <jens.wiklande=
-r@linaro.org> wrote:
->>=20
->> I would mention in the commit that the subsystem is currently only us=
-ed with
->> eMMC but is designed to be used also by UFS and NVME. Nevertheless, n=
-o big
->> deal so:
-> Moreover, as the years went by, the differences between mmc and ufs=20
-> grew:
-> In mmc there are 7 rpmb operations, in ufs 9.
-> In mmc the rpmb frame is 512Bytes, also in legacy ufs (up to including=20
-> ufs3.1), but in ufs4.0 onward it can be 4k with extended header.
-> See e.g.=20
-> https://patchwork.kernel.org/project/linux-scsi/patch/20221107131038.2=
-01724-3-beanhuo@iokpp.de/
-> In mmc the rpmb sequence is atomic, in ufs not.
-> In ufs rpmb is a wlun in mmc a partition.
-> Both protocols support in multi-region rpmb, but there are some=20
-> differences there.
+On Tue, 5 Mar 2024 16:35:46 +0100 K=C3=B6ry Maincent wrote:
+> > Still, wouldn't it be simpler to store all accessible PTP instances=20
+> > in the netdev? =20
+>=20
+> You are talking about something like the phy topology but for the ptp?
+>=20
+> Then when asking information on a PHC (tsinfo or hwtstamp config) from et=
+htool
+> we would have to look at the PHC topology of the netdev. This could work.=
+ Not
+> sure it is much simpler, do you see other advantages that it could have?
 
-How sure are we then that the user-visible ABI is sufficiently
-abstract to cover all the hardware implementations? Are any of the
-changes you mention going to be noticed by userspace or are they
-only visible to the kernel driver?
-
-      Arnd
+I was thinking just an array indexed by enum hwtstamp_source.
+But you're right, once we can express more than one phy per
+netdev we're basically back to doing similar walks. Fair.
 
