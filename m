@@ -1,115 +1,196 @@
-Return-Path: <linux-kernel+bounces-91973-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91976-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1EF8871943
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:13:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 940ED87194D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:15:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87FA728255F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:13:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B45E3B22681
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:15:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EDF150A7E;
-	Tue,  5 Mar 2024 09:13:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21958535B6;
+	Tue,  5 Mar 2024 09:15:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Gt0Ahmyo"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="ucBxdXl8"
+Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E61BD4DA1F;
-	Tue,  5 Mar 2024 09:13:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2968D50272
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 09:15:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.100
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709630013; cv=none; b=aFEDS3gfhenmmC12tEnOsq6BLYNYWUNc4UjkV8ufxAJushPRq/r7fvfm6DNLoRzNoOctrri8uRS/9JyK1Vl6EHXi4NhJopC9pSZMDBPscoxH848DMG2XgjDeusiJA7YyPaWE7LxzWMlgytj4Ol6ASWb41dhKWNnK0CRCCi0NYf0=
+	t=1709630104; cv=none; b=I4vH4NYcIj85nVhnDAA7SnO32p2bvKRt50fWs7UU+onEzq8Fvj7g6rOhUY5kga06VwG9vaTFDw2pTbHSCQYRNUahIwkySOxme+mW1VUgO+zpqvsm5XaIWZl8YG438CVv4f+1dC6TvDkfAOSv+W+O+SuNjOeWNSS50AHCF0tqAJ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709630013; c=relaxed/simple;
-	bh=3mXN8KKW4waYOcWzjRN9oSLaIcwuzNcqm3YSkZxcpzY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=qXc/ir3KYRwdSBhcvzp2fRoHyObTbrYIw7yjzC+UCn3OR4KPFPhNnjlDn3PY8qOeoxnWgNC/HqaFU7TT56b0VVGuszpnCMX9ZzcOZleX0Z5I8TsR3h41b7vHu/h2TtsEPnBVFHv9z/Qv3TTcpZ35k3qz0bX5bAMkmkDC0JCbIUk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Gt0Ahmyo; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709630012; x=1741166012;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=3mXN8KKW4waYOcWzjRN9oSLaIcwuzNcqm3YSkZxcpzY=;
-  b=Gt0Ahmyous3C15cJfbUaMnCp+ZskDMj2eu/chCdW81oul/E1pvRT8YcA
-   JGEN8XdOtFSSZ10smz/RARTlKHjrBh0I5BesAnFHKFrH7kmv1xq8PCywB
-   dAcj0HI04GugZhckXjK6nPygEzx14q3nSVrp7gTdSSDs0TabTmU5SNJUO
-   XjbQYIOG9KTU1ACh+L1arpx65DOVziq/NINxjQJXuYlCihcyGDxAOW25d
-   oCe2/ivPDIIZnZEKPQZiplyLqRs7OeaMJ1qyfp++oNunCys05aHkluCdi
-   m6futw8sPtVppHM7PVbiGiUoJ4tmHh6xtCkUwBsvcB7NunPIrT99IAzB8
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="4031546"
-X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
-   d="scan'208";a="4031546"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 01:13:30 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
-   d="scan'208";a="46836038"
-Received: from omakhlou-mobl4.amr.corp.intel.com (HELO localhost) ([10.252.51.143])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 01:13:24 -0800
-From: Jani Nikula <jani.nikula@intel.com>
-To: Thomas Zimmermann <tzimmermann@suse.de>, mpe@ellerman.id.au,
- naresh.kamboju@linaro.org, deller@gmx.de, npiggin@gmail.com,
- christophe.leroy@csgroup.eu, aneesh.kumar@kernel.org,
- naveen.n.rao@linux.ibm.com
-Cc: dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
- lkft-triage@lists.linaro.org, linux-kernel@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, Thomas Zimmermann <tzimmermann@suse.de>
-Subject: Re: [PATCH v2 2/3] macintosh/via-pmu-backlight: Include
- <linux/backlight.h>
-In-Reply-To: <20240305090910.26742-3-tzimmermann@suse.de>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20240305090910.26742-1-tzimmermann@suse.de>
- <20240305090910.26742-3-tzimmermann@suse.de>
-Date: Tue, 05 Mar 2024 11:13:20 +0200
-Message-ID: <87plw92g9b.fsf@intel.com>
+	s=arc-20240116; t=1709630104; c=relaxed/simple;
+	bh=CUZK1S/UTm1NptFywhh0dTVAXevwn1WjX6VxrAW5cmY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=lLOaMzM0c+GHebKOmB5QNpsvJ7lW5tkkOyRNfU61ASDCJi3/3t3ERIchvNDpr24Nk0BoDg1SRJKH1vXpDo2Jx3rd7k24exH482aHZIYAtbvi097X/FVLsP0GgxujTkp1ExHzr4ceHGnp2OSJB0MJip9RY0CRso/Skvx/ay2/yNs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=ucBxdXl8; arc=none smtp.client-ip=115.124.30.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1709630094; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=4tRsgiXWNN9mlTyxXmeapNYFeEWm+OEQOBRVCP5FFws=;
+	b=ucBxdXl8CxreHNWnOgqY1MLBj6gxl1ZGVhj+bSiJrdIqII4vNUsbwtiDdFwpg+KylafV1jU1ULLu/AMc6Dg10TnLkZtOOrvxrRqx+sWc1fIo/rTqbaMGOj9MkjfOb6PSCO286x9ZZR6135QpFpmBtNW5U4GLQBV/KZ+BNCCxIhs=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0W1tgGeK_1709630089;
+Received: from e69b19392.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0W1tgGeK_1709630089)
+          by smtp.aliyun-inc.com;
+          Tue, 05 Mar 2024 17:14:54 +0800
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
+To: linux-erofs@lists.ozlabs.org
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Gao Xiang <hsiangkao@linux.alibaba.com>
+Subject: [PATCH 1/6] erofs: convert z_erofs_onlinepage_.* to folios
+Date: Tue,  5 Mar 2024 17:14:43 +0800
+Message-Id: <20240305091448.1384242-1-hsiangkao@linux.alibaba.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-On Tue, 05 Mar 2024, Thomas Zimmermann <tzimmermann@suse.de> wrote:
-> Fix builds with CONFIG_PMAC_BACKLIGHT=y. The include statement for the
-> backlight header has recently been removed from <linux/fb.h>. Add it to
-> via-pmu-backlight.c to get the necessary symbols.
->
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> Closes: https://lore.kernel.org/dri-devel/CA+G9fYsAk5TbqqxFC2W4oHLGA0CbTHMxbeq8QayFXTU75YiueA@mail.gmail.com/
-> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-> Fixes: 11b4eedfc87d ("fbdev: Do not include <linux/backlight.h> in header")
-> Cc: Thomas Zimmermann <tzimmermann@suse.de>
-> Cc: Jani Nikula <jani.nikula@intel.com>
-> Cc: Helge Deller <deller@gmx.de>
-> Cc: linux-fbdev@vger.kernel.org
-> Cc: dri-devel@lists.freedesktop.org
+Online folios are locked file-backed folios which will eventually
+keep decoded (e.g. decompressed) data of each inode for end users to
+utilize.  It may belong to a few pclusters and contain other data (e.g.
+compressed data for inplace I/Os) temporarily in a time-sharing manner
+to reduce memory footprints for low-ended storage devices with high
+latencies under heary I/O pressure.
 
-Reviewed-by: Jani Nikula <jani.nikula@intel.com>
+Apart from folio_end_read() usage, it's a straight-forward conversion.
 
-> ---
->  drivers/macintosh/via-pmu-backlight.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/macintosh/via-pmu-backlight.c b/drivers/macintosh/via-pmu-backlight.c
-> index c2d87e7fa85be..89450645c2305 100644
-> --- a/drivers/macintosh/via-pmu-backlight.c
-> +++ b/drivers/macintosh/via-pmu-backlight.c
-> @@ -10,6 +10,7 @@
->  
->  #include <asm/ptrace.h>
->  #include <linux/adb.h>
-> +#include <linux/backlight.h>
->  #include <linux/pmu.h>
->  #include <asm/backlight.h>
+Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+---
+Some trivial folio conversions for compressed inodes aiming for v6.9.
 
+ fs/erofs/zdata.c | 50 +++++++++++++++++++++---------------------------
+ 1 file changed, 22 insertions(+), 28 deletions(-)
+
+diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
+index ff0aa72b0db3..5013fcd4965a 100644
+--- a/fs/erofs/zdata.c
++++ b/fs/erofs/zdata.c
+@@ -117,46 +117,39 @@ static inline unsigned int z_erofs_pclusterpages(struct z_erofs_pcluster *pcl)
+ }
+ 
+ /*
+- * bit 30: I/O error occurred on this page
+- * bit 0 - 29: remaining parts to complete this page
++ * bit 30: I/O error occurred on this folio
++ * bit 0 - 29: remaining parts to complete this folio
+  */
+-#define Z_EROFS_PAGE_EIO			(1 << 30)
++#define Z_EROFS_FOLIO_EIO			(1 << 30)
+ 
+-static inline void z_erofs_onlinepage_init(struct page *page)
++static void z_erofs_onlinefolio_init(struct folio *folio)
+ {
+ 	union {
+ 		atomic_t o;
+-		unsigned long v;
++		void *v;
+ 	} u = { .o = ATOMIC_INIT(1) };
+ 
+-	set_page_private(page, u.v);
+-	smp_wmb();
+-	SetPagePrivate(page);
++	folio->private = u.v;	/* valid only if file-backed folio is locked */
+ }
+ 
+-static inline void z_erofs_onlinepage_split(struct page *page)
++static void z_erofs_onlinefolio_split(struct folio *folio)
+ {
+-	atomic_inc((atomic_t *)&page->private);
++	atomic_inc((atomic_t *)&folio->private);
+ }
+ 
+-static void z_erofs_onlinepage_endio(struct page *page, int err)
++static void z_erofs_onlinefolio_end(struct folio *folio, int err)
+ {
+ 	int orig, v;
+ 
+-	DBG_BUGON(!PagePrivate(page));
+-
+ 	do {
+-		orig = atomic_read((atomic_t *)&page->private);
+-		v = (orig - 1) | (err ? Z_EROFS_PAGE_EIO : 0);
+-	} while (atomic_cmpxchg((atomic_t *)&page->private, orig, v) != orig);
++		orig = atomic_read((atomic_t *)&folio->private);
++		v = (orig - 1) | (err ? Z_EROFS_FOLIO_EIO : 0);
++	} while (atomic_cmpxchg((atomic_t *)&folio->private, orig, v) != orig);
+ 
+-	if (!(v & ~Z_EROFS_PAGE_EIO)) {
+-		set_page_private(page, 0);
+-		ClearPagePrivate(page);
+-		if (!(v & Z_EROFS_PAGE_EIO))
+-			SetPageUptodate(page);
+-		unlock_page(page);
+-	}
++	if (v & ~Z_EROFS_FOLIO_EIO)
++		return;
++	folio->private = 0;
++	folio_end_read(folio, !(v & Z_EROFS_FOLIO_EIO));
+ }
+ 
+ #define Z_EROFS_ONSTACK_PAGES		32
+@@ -965,6 +958,7 @@ static int z_erofs_read_fragment(struct super_block *sb, struct page *page,
+ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
+ 				struct page *page, bool ra)
+ {
++	struct folio *folio = page_folio(page);
+ 	struct inode *const inode = fe->inode;
+ 	struct erofs_map_blocks *const map = &fe->map;
+ 	const loff_t offset = page_offset(page);
+@@ -973,7 +967,7 @@ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
+ 	unsigned int cur, end, len, split;
+ 	int err = 0;
+ 
+-	z_erofs_onlinepage_init(page);
++	z_erofs_onlinefolio_init(folio);
+ 	split = 0;
+ 	end = PAGE_SIZE;
+ repeat:
+@@ -1035,7 +1029,7 @@ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
+ 	if (err)
+ 		goto out;
+ 
+-	z_erofs_onlinepage_split(page);
++	z_erofs_onlinefolio_split(folio);
+ 	if (fe->pcl->pageofs_out != (map->m_la & ~PAGE_MASK))
+ 		fe->pcl->multibases = true;
+ 	if (fe->pcl->length < offset + end - map->m_la) {
+@@ -1056,7 +1050,7 @@ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
+ 		goto repeat;
+ 
+ out:
+-	z_erofs_onlinepage_endio(page, err);
++	z_erofs_onlinefolio_end(folio, err);
+ 	return err;
+ }
+ 
+@@ -1159,7 +1153,7 @@ static void z_erofs_fill_other_copies(struct z_erofs_decompress_backend *be,
+ 			cur += len;
+ 		}
+ 		kunmap_local(dst);
+-		z_erofs_onlinepage_endio(bvi->bvec.page, err);
++		z_erofs_onlinefolio_end(page_folio(bvi->bvec.page), err);
+ 		list_del(p);
+ 		kfree(bvi);
+ 	}
+@@ -1316,7 +1310,7 @@ static int z_erofs_decompress_pcluster(struct z_erofs_decompress_backend *be,
+ 		/* recycle all individual short-lived pages */
+ 		if (z_erofs_put_shortlivedpage(be->pagepool, page))
+ 			continue;
+-		z_erofs_onlinepage_endio(page, err);
++		z_erofs_onlinefolio_end(page_folio(page), err);
+ 	}
+ 
+ 	if (be->decompressed_pages != be->onstack_pages)
 -- 
-Jani Nikula, Intel
+2.39.3
+
 
