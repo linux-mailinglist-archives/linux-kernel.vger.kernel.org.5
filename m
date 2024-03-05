@@ -1,149 +1,102 @@
-Return-Path: <linux-kernel+bounces-91910-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91911-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CF32871843
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:32:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 340D5871848
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:35:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E9771C2138C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:32:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3518A1C21535
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:35:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 334D44D9FF;
-	Tue,  5 Mar 2024 08:32:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 830474D13B;
+	Tue,  5 Mar 2024 08:35:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Uw/MJvFY"
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="JcrZlHlb"
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB4064D9F9;
-	Tue,  5 Mar 2024 08:32:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A8D32208E
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 08:35:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709627548; cv=none; b=AI7Nw3wn2oey3tR+Onu/IANZPqVf745KmyBB9ATQXdC1Gvo1PcJhyRY8UQdyeLxbkQIqkeHlL2+3Zi3e1GEHgZierJtNbm+9NzBGCWCYxb3N8lvk5njjFlsJsKagtWqk9PoKe7Ry8qigU/yNsRwoSs88qQo9wASr43F5j0m2gSc=
+	t=1709627720; cv=none; b=qNg1YIRoQXmu+LDpgtbr0xvFu0ts728ib1/ZU2L3lGm8A+vUtIkPgUbMIbOfZ5+TeeWEE37M8jem/Wt7/7tlwA0weewW96rvS/PaHOpIRFdLz6ktj+yIuMqGQl0YlRlF/5GJ8aTMQrD/Ctk+gEeZzPT49ep1XSBD8Y+UGOJPKmI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709627548; c=relaxed/simple;
-	bh=tqTaYVx4Sf4z2nZaPA9gTuNW0DhU57NkHahdzD5dQJ8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VoQxmdZ9w4W8SY8VuSOOPmm8qdlBo0+7+sMs84R1uDDbQV+Cz5j1iCoBo8viw6bc6R/vGYQ/03XVEEb2Ydepy5mwcAYRQ/KGU3aD+peNR8QnKoFKuRNkPvZ3VUr18iQOyzsS9YnEx/3NK2EYyR10rHwUpj0FDR+UuBmHe7nBv6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Uw/MJvFY; arc=none smtp.client-ip=209.85.208.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d180d6bd32so68156201fa.1;
-        Tue, 05 Mar 2024 00:32:26 -0800 (PST)
+	s=arc-20240116; t=1709627720; c=relaxed/simple;
+	bh=82vsJjoVoWmADD8rvpl3Qp5VtIdC1v3LD9anMkdwnio=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=ptH0ZqkmaS4kyyQ7bVKMQWeSJRvsDp7hVtZ2DSt037vdXvPactO/7E4IKfoPzVHMFz/c0DUXpjJGjyagpxGU4zvEziOS+P7j/yekq5SHu5h8ChE31zATMLSNwAigF2R6pdEw0BV3qIDJH3IHPa0rRHP8aShdVtdy/0NN3eOVUF0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=JcrZlHlb; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a3ddc13bbb3so1059942766b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 00:35:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709627545; x=1710232345; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ethXSKdD3YM8zYFiv0Mh/2ibhnJt7eqBZOvLVeN7M8o=;
-        b=Uw/MJvFYZtOLCSbgZP1qlnf76YVQQDORmx9QoCRz4VbgtTkBPXXjAB+U7hoIRFT8pc
-         FKssfeP47fRVC18Gvizob1ygF5Cf28oSSEm/tl1PuFQuzef0Dd8KzuKChmHfvW6x9D/f
-         /nu5iz/E8OpPjMqt4LWNHldEk96zkCcE2i9P1Lo8zMLUj39QUeGnPHtz1vI34rbOqB5X
-         56ylgx7rYnhs0ndxc+cRC0kbAnqZyznZNnb1eyx64LiOiBYwTxamQnpQcs8os5sv4+SO
-         0Qplw/rsWewcd9q7if8gHEoyY/iqieLYIy/RKX+sSoZheW/An5rOvZtT3VCPcthrc0rd
-         PqEA==
+        d=suse.com; s=google; t=1709627717; x=1710232517; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=PALRyszw+AlcpDZUROc9AgnCBJMpueCSeAJq71aQVJ8=;
+        b=JcrZlHlbBLWyDeejHHJws4S/uQJyPjUy61ll/9bQ93TjkBCJ/6jF4U5dT9AcYauxME
+         5Wim+A2q8J2yLP2vMzJTwuSuVNYZFdTz5UVvKpgsylGYZQL6oz11cQGrU7Af7EXwv/K7
+         uXvkhFTmeD+hAXuhtB9An5KGdJPwhGq3d4dMXuGF9lh9cGdpndAy4YXkr7sRRV3CCqy6
+         88Z6/hJZ0h0jucrdASJ/td4hyJKDDrLb+0EmdHNrcjHZqQqf1twvbTn5TyqNHrBja9/w
+         bQMLyiSV4wFv+g+leHUvKyHGo5tfRYQ+Uoyn7zDKv87jVYwqxj0Yy5yzOggpHheek4Wi
+         m3xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709627545; x=1710232345;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ethXSKdD3YM8zYFiv0Mh/2ibhnJt7eqBZOvLVeN7M8o=;
-        b=Eefihs7sW1Wrfm4MZmRnrTSeTNJUtQV2l3VcHWvEv/1k/KufLFOtBFJHTZkPYnWP6G
-         0C5wyO2S/xyz4XlklBVJeTX5TdhEDiLFyhSlbcOc5pODtPsOJ7K0SofyJP7NQbgGy3y7
-         /0io8xQYGLEcXGPf4YcvC2h5oNMnBxPekB7pyGo4eQKkYwle7wcaQuNFyR9FDNT1HBze
-         1dSm9qo/B+2yI1VPmm1iALa32QeRw/bO8Bn81KOc6frlpORoXz3WfgNLWn2yHkHBcnJO
-         9PXP+mnXYD9zPfiPbSeppsFIMSJynYUy5Z8yf0GWUBMDFprckRwAB+kZAHVhyH/3xcUO
-         3o4A==
-X-Forwarded-Encrypted: i=1; AJvYcCU9+xHeX8a1QP/+DpCzhyLz3EWJPP1lrKbP7BzLL/wJF75gDOVUQuhGVmp9GFQGRC7M99NWqf8v30EpkHsAJB9vbiP8JpbkJiXK52TIQ2XANYYR+P7isRtCV4lMVBpYpRiKghBcSYOrNA==
-X-Gm-Message-State: AOJu0YzI4QMiYGuCzMKgWGtSYzzGBMJZ2yauwsw9lPumvOPcuwLutlrR
-	pMNz3TMuDrInxZtIuQdxOYaPoLZFCKZkuVcm4I2/HgG7YsNhbG7yyRUaiojt30jy89lvdhxHJJF
-	4J8QdH99f7H68N6YgsxhSCpC+Tl8=
-X-Google-Smtp-Source: AGHT+IHOYeWGaFKAzUJPrDZmmHE+LVTyfiv0q3uVMfUxGU07PXgnFSmnCFMHXZtTfZpJfuf1uxbMfPp+8OPCiwRzXhU=
-X-Received: by 2002:a2e:a23b:0:b0:2d2:b915:e073 with SMTP id
- i27-20020a2ea23b000000b002d2b915e073mr631884ljm.27.1709627544665; Tue, 05 Mar
- 2024 00:32:24 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709627717; x=1710232517;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PALRyszw+AlcpDZUROc9AgnCBJMpueCSeAJq71aQVJ8=;
+        b=CuSkMirlfbRvD9f/qN3uRIYtQRezCwR5wdKdqZPsuuS0GKKU2hQmRNtWXw7ZtypWk/
+         Xb2o6gEauPD8dFXQ6QisCm4x8c+Y+hjuxuMl6fZ2TeuN3Xzz+qci+ACGw3iCJc+xujD1
+         SCWxHfCsXJqn7JRWTxP+pyhviCLo3gkWUQCu+q6cVvM+zTg56VkIJKw3xZasUvpzmQrA
+         thO/uj47bopFjGreoWDqASBzzOl4EbggGf3nriaEwrBRdrH8dZ7R24/xTKGYfG3/R2kk
+         FVXMJ2sn0dFbCFFOJ8rMiiW4keQnX457xLGpXanBBh9ITkkPe2gq+ApI285eZcR2iQlE
+         Lwyg==
+X-Forwarded-Encrypted: i=1; AJvYcCVKWitxAVgbuYQYtKolr/dgsQselyLrw8vKIgn52GnaXmwPdUuYlrS6M1ZGF9fFN/KC0kUY9zvC+w94j46JF/1P3UvCgV9u0zZ0x8Dp
+X-Gm-Message-State: AOJu0Yw5hZOfTcSLSmIRRyKIYfWiO2JmWM0KTU67gfoPmgd5p6OtYUiL
+	LcZh2a4VHupYw8qzX3KP8/9IzYeAXfxAN+h4URZBWFCYLR+ABkeEzDwCfol78Bs=
+X-Google-Smtp-Source: AGHT+IER8p93l0Uf/lQDwhGDEJk0Kqf+52LrfzFTfrA8CPi3Xno+ht4XI/iYhAltyL13LNun8owbZw==
+X-Received: by 2002:a17:906:d287:b0:a3f:50f0:7a0a with SMTP id ay7-20020a170906d28700b00a3f50f07a0amr2054787ejb.20.1709627716925;
+        Tue, 05 Mar 2024 00:35:16 -0800 (PST)
+Received: from ?IPV6:2001:a61:1366:6801:d8:8490:cf1a:3274? ([2001:a61:1366:6801:d8:8490:cf1a:3274])
+        by smtp.gmail.com with ESMTPSA id s21-20020a170906355500b00a44dfaf84f4sm3524870eja.153.2024.03.05.00.35.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Mar 2024 00:35:16 -0800 (PST)
+Message-ID: <a280d52a-c619-4e67-bda3-99e211b6d036@suse.com>
+Date: Tue, 5 Mar 2024 09:35:15 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1706603678.git.haibo1.xu@intel.com> <0be49d4d7d7e43933534aad6f72b35d3380519fd.1706603678.git.haibo1.xu@intel.com>
- <ZeatCIUZ/eJa1WHs@sunil-laptop>
-In-Reply-To: <ZeatCIUZ/eJa1WHs@sunil-laptop>
-From: Haibo Xu <xiaobo55x@gmail.com>
-Date: Tue, 5 Mar 2024 16:32:13 +0800
-Message-ID: <CAJve8onPknQLfZNwUMUm3SSy8rPOJoLvcbzNAFB64EuznEn2jA@mail.gmail.com>
-Subject: Re: [PATCH 4/4] ACPI: RISCV: Enable ACPI based NUMA
-To: Sunil V L <sunilvl@ventanamicro.com>
-Cc: Haibo Xu <haibo1.xu@intel.com>, ajones@ventanamicro.com, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
-	Robert Moore <robert.moore@intel.com>, Conor Dooley <conor.dooley@microchip.com>, 
-	Guo Ren <guoren@kernel.org>, Anup Patel <apatel@ventanamicro.com>, 
-	Alexandre Ghiti <alexghiti@rivosinc.com>, Greentime Hu <greentime.hu@sifive.com>, 
-	Sami Tolvanen <samitolvanen@google.com>, Jisheng Zhang <jszhang@kernel.org>, 
-	=?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, 
-	Baoquan He <bhe@redhat.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Chen Jiahao <chenjiahao16@huawei.com>, Arnd Bergmann <arnd@arndb.de>, 
-	James Morse <james.morse@arm.com>, "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>, 
-	Evan Green <evan@rivosinc.com>, Samuel Holland <samuel.holland@sifive.com>, 
-	Ard Biesheuvel <ardb@kernel.org>, Tony Luck <tony.luck@intel.com>, Yuntao Wang <ytcoode@gmail.com>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, Dan Williams <dan.j.williams@intel.com>, 
-	Alison Schofield <alison.schofield@intel.com>, linux-riscv@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, 
-	acpica-devel@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] sr9800: Add check for usbnet_get_endpoints
+To: Chen Ni <nichen@iscas.ac.cn>, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, justinstitt@google.com, andrew@lunn.ch,
+ linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240305075927.261284-1-nichen@iscas.ac.cn>
+Content-Language: en-US
+From: Oliver Neukum <oneukum@suse.com>
+In-Reply-To: <20240305075927.261284-1-nichen@iscas.ac.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Mar 5, 2024 at 1:26=E2=80=AFPM Sunil V L <sunilvl@ventanamicro.com>=
- wrote:
->
-> On Wed, Jan 31, 2024 at 10:32:01AM +0800, Haibo Xu wrote:
-> > Enable ACPI based NUMA for RISCV in Kconfig.
-> >
-> > Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
-> > ---
-> >  arch/riscv/Kconfig        | 1 +
-> >  drivers/acpi/numa/Kconfig | 2 +-
-> >  2 files changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> > index bffbd869a068..e586ab959f34 100644
-> > --- a/arch/riscv/Kconfig
-> > +++ b/arch/riscv/Kconfig
-> > @@ -438,6 +438,7 @@ config NUMA
-> >       select HAVE_SETUP_PER_CPU_AREA
-> >       select NEED_PER_CPU_EMBED_FIRST_CHUNK
-> >       select NEED_PER_CPU_PAGE_FIRST_CHUNK
-> > +     select ACPI_NUMA if ACPI
-> >       select OF_NUMA
-> >       select USE_PERCPU_NUMA_NODE_ID
-> >       help
-> > diff --git a/drivers/acpi/numa/Kconfig b/drivers/acpi/numa/Kconfig
-> > index 849c2bd820b9..525297c44250 100644
-> > --- a/drivers/acpi/numa/Kconfig
-> > +++ b/drivers/acpi/numa/Kconfig
-> > @@ -2,7 +2,7 @@
-> >  config ACPI_NUMA
-> >       bool "NUMA support"
-> >       depends on NUMA
-> > -     depends on (X86 || ARM64 || LOONGARCH)
-> > +     depends on (X86 || ARM64 || LOONGARCH || RISCV)
-> Is it possible to remove this if IA64 is removed now?
->
+On 05.03.24 08:59, Chen Ni wrote:
+> Add check for usbnet_get_endpoints() and return the error if it fails
+> in order to transfer the error.
 
-Yes. Arnd also suggest removing this totally.
-Will update it in v2.
+Hi,
 
-> Thanks,
-> Sunil
-> >       default y if ARM64
-> >
-> >  config ACPI_HMAT
-> > --
-> > 2.34.1
-> >
+thank you for the patch. The asix driver also fails
+to check for that failure. Could you make a similar patch?
+
+	Regards
+		Oliver
+
 
