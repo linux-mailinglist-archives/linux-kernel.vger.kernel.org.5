@@ -1,73 +1,52 @@
-Return-Path: <linux-kernel+bounces-92611-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92612-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 567E98722E0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:33:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 693A18722E4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:35:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 488881C21FD7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:33:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8CB661C22019
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:35:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 189771272D4;
-	Tue,  5 Mar 2024 15:33:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D671127B46;
+	Tue,  5 Mar 2024 15:35:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="RPHDQCFA"
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="bCH8N1/n"
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2046C1272CF
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 15:33:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC002126F1F;
+	Tue,  5 Mar 2024 15:35:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709652788; cv=none; b=MlF6d61qJqLyWrVOW3R9U2hzSmrqQvCF2lAEsz1UX2HN3FGvniujyuEjYekEmYJPabO6Kp7PJrIwpKo8l7HTKZO1cIBuLposwmhmRSDGVy57W4xtskZttnka8b3H6+ryHCel7A+hFp8uP9ITIKTkoaFXfHOOcTblRVmXX5YklTY=
+	t=1709652941; cv=none; b=TWXlSkxIkyEexN/KgAlyC0RyrQAhhjm8UuZp2IOcplMjwhg10RJpGbAEWhZ1GER9QHR6kSe3o6Oe9vDeHAvLhk4bZ55VoVNrFpM3U4zNen7kEb5caGkI3XOYLR6+219CyOkFPUxfMKcMP5+Omg0g+wV02xj8uxRrbPC7weS4vfg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709652788; c=relaxed/simple;
-	bh=dyLpAemXt5pVNnHmghn6IPXPVYR1xCgqubCzLUx41cs=;
+	s=arc-20240116; t=1709652941; c=relaxed/simple;
+	bh=qOaaWxqqe8GanHiAc/3KYE70MmepKsyd/OAvitJnpgk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JJlb/icvvJqVsH28dQGDeYmHCWV/rWTB3fhh4Vw9jbj6O2DFqteRYnBZrAKeGjVTsSnfIuEuJv2J0pyBPsrOOtFKmmRsW5ELcBU5nqY8UH9z8ucXwfYFey7XbEHyekhYiY0XZeXdztyswlIWx3MNw4KzhLSmLfFkcMrZbs3jdrc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=RPHDQCFA; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-412f0655d81so1887925e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 07:33:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1709652784; x=1710257584; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8r7IHy7kVKfRTqD23CgO2t0WRZctdWLP4DagcY/UzEU=;
-        b=RPHDQCFALmXiKAcFUgFxO5MndwZjJr5DgxKMSQdsUAJ/xKAo/xkEHyjXOFVrW3ljy7
-         gsDFoxDXnc69kZUZE04fnDG3OVRB/Rpp/7D9Doa7aiDoJHLs9KfJsFmE3tW24D4l7IeU
-         gtdt32MHgSF8Fi/bKkvd1h30GUkH2N3WjP2/AxNy1pyQxy9n9V5k0QZhD4pATMBTJpjV
-         Nz6Uf2GNl7HSSg9NgGedMD+aTIx3pN03j5Cv00t1sovm9AKNnEOmkwDMHCiBUMzLp7Qq
-         0mwFv/TQrNSSeQ2RvbOmigcZc7MPVbMmQ49Ypj2XcoKYJb7+mYYbPaM7HVczW9WPwqFk
-         3Iyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709652784; x=1710257584;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8r7IHy7kVKfRTqD23CgO2t0WRZctdWLP4DagcY/UzEU=;
-        b=t8yErJ3DJVTzD/hcpq3ZeiahaHZs8sWT77mybLU18WKNWd6MFGbdtJ3X0+R0TeM97R
-         Dz7iRR69SYzIrneQt4nnTJy2C2uDutxHfYp05uQgZAWsv/ikBo1WymrzvtIJjGTXBKAP
-         nVfa3nd1XOoX5WVoRxiyeNWRWkzFAI7JiEhjDBnfENNFjMVGHSlYXLZIk4/SwNrmM4JT
-         +dJ5DoaGn98PHea3HH8Nc7/aEE0aYEWGyiqm5P2IthBxaIgHWwe+UPF0jC0RbsK4qEtn
-         7txTaIZWAbHY0oeOE0XX5U6WsAdOrhPzY/NeqVOgwcmbYBBAOE5AOJ4SnpobNDtXppBp
-         cM0Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWYzrrSU28hRUFTkRd54/3udubx3KVn6in4r84ZeefT+IVsVRT1xq1l7LbRrZUJVm8HsU4TmvjlPSacWGfCkZyR5SOFM1qh3hcEfSu0
-X-Gm-Message-State: AOJu0YyMedgh1E6sm0N7weshC6D1u5ksxlpYsatlMAOjOZRKpFBt9Bbp
-	TdrwDAHmT4ZEmB78GnjuZmrHA5ECnd8661jeRykaUH+Sziz/yNhytNZxnmTa1sE=
-X-Google-Smtp-Source: AGHT+IEVNqjI7TrOIyxyC0zXS0GjDY1acqoeUroBUXxj1W59e4andupDbOlOfQsujmcheNGf/bEuNg==
-X-Received: by 2002:adf:b209:0:b0:33e:4797:5fa7 with SMTP id u9-20020adfb209000000b0033e47975fa7mr1964612wra.42.1709652784359;
-        Tue, 05 Mar 2024 07:33:04 -0800 (PST)
-Received: from [192.168.1.70] ([84.102.31.43])
-        by smtp.gmail.com with ESMTPSA id y10-20020adff14a000000b0033e1be7f3d8sm12894093wro.70.2024.03.05.07.33.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Mar 2024 07:33:03 -0800 (PST)
-Message-ID: <f0a9524a-08cd-4ec2-89f8-4dff9dd3e09e@baylibre.com>
-Date: Tue, 5 Mar 2024 16:33:01 +0100
+	 In-Reply-To:Content-Type; b=EWG4/zdFinVFUIYuKLCjfgdjlVvH75+6iGFBHhrGYNz9eSAVWDAVyczOK25SnzmZ1hJ3uqYBAhQVYt0FIZHSJWdh8IFWMo2TBo6rm4il5/VEhE/jkVVzMF//3aV9gIbV+7hjSC+14G6t+xiyE6e65tC4LQe5ViOvA5cIeEBJ8Po=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=bCH8N1/n; arc=none smtp.client-ip=212.227.15.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+	t=1709652911; x=1710257711; i=w_armin@gmx.de;
+	bh=qOaaWxqqe8GanHiAc/3KYE70MmepKsyd/OAvitJnpgk=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=bCH8N1/nVpoYaoXl2QDcJg6UNTMqbTuNNZ5WL7ksZSBzr9/uhgp8HA44M7p3pnwn
+	 SMQ5l7NUZUYbWh02klioNzj8H36tTHsR3X5f17XLmsrdoTw+SS5FtLsF2HYkepcF9
+	 5sKNGjhmgF9DXiCE8QQsk1d4K+74e5aWRxYMR1CKM7NYjyTmR7XbS8pGxPkztCIj0
+	 5CxX9YtYkNQrbSz9EpZ9W8iE1uz7nblaO72jRq6krpEN84hcx5ry+XLc+2gX1eolZ
+	 cPJxr7KgQrcGUJ6SE5zw2FM3+NpfNbYM7EomiUlsR1PKarNJRp91RP4mJrLuMMkW/
+	 QWW2x/TtTJ6fN/Z2zg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1Ml6qM-1r0jH03s7w-00lUXB; Tue, 05
+ Mar 2024 16:35:10 +0100
+Message-ID: <a85fa1fd-c210-4e65-96fa-bb556671b30d@gmx.de>
+Date: Tue, 5 Mar 2024 16:35:08 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,91 +54,263 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] net: ethernet: ti: am65-cpsw: Add minimal XDP
- support
+Subject: Re: [PATCH v4] platform/x86: add lenovo generic wmi driver
 Content-Language: en-US
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Russell King <linux@armlinux.org.uk>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Simon Horman <horms@kernel.org>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linaro-mm-sig@lists.linaro.org
-References: <20240223-am65-cpsw-xdp-basic-v2-0-01c6caacabb6@baylibre.com>
- <20240223-am65-cpsw-xdp-basic-v2-2-01c6caacabb6@baylibre.com>
- <356f4dd4-eb0e-49fa-a9eb-4dffbe5c7e7c@lunn.ch>
- <3a5f3950-e47f-409a-b881-0c8545778b91@baylibre.com>
- <be16d069-062e-489d-b8e9-19ef3ef90029@lunn.ch>
-From: Julien Panis <jpanis@baylibre.com>
-In-Reply-To: <be16d069-062e-489d-b8e9-19ef3ef90029@lunn.ch>
+To: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <thomas.weissschuh@linutronix.de>,
+ Ai Chao <aichao@kylinos.cn>
+Cc: hdegoede@redhat.com, ilpo.jarvinen@linux.intel.com,
+ linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+References: <20240305121315.1744363-1-aichao@kylinos.cn>
+ <20240305154002-7100004b-7ced-4ef0-9bbe-ad528e1869e2@linutronix.de>
+From: Armin Wolf <W_Armin@gmx.de>
+In-Reply-To: <20240305154002-7100004b-7ced-4ef0-9bbe-ad528e1869e2@linutronix.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:krtb9adck4rX5aaY32Z0/xXlT7sIXZqRwsIAeTkaCR4LFt7g6gr
+ gbCICJwgnFr4Vwd/tXeyODIfEPPbJVw8Sos5mMmrOkQ4MczOmUG7zS+xfP5yagJJYcJOwZl
+ TPFHSBIcTqwcSpBjfjY+eAvRjK3gRrMCOkzxM+9Oa/085cYaNnWJviaqFw2z6knCy5W3H9J
+ LTgCsmnKCaPYlqL/f2hRQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:3GakgJDJBO4=;NhVpk83dEMO0O8exgdDV2V7GIU4
+ 3AzPhEgaSsCxugjOUFTTyx6DjfO/x1bRqVwn0y8FVucWo106wI4FJ9eLn5hdC1HEtNsefbi1u
+ Qz1nzHFNg0wZH+x62ggWdw3XWCGhLFsJvSS8bvs++QoIBeKtF+Ge9q6YKNvWDC9X4A/KyFqsV
+ TIFoJxKk8k+qwt9RPuUKC2cFJdhSNslRdp5jsdY/175J0VnxaebAEamqw9GrmJ5Ns+N8L4lq9
+ cN82brjYgIwke0+ySJvKDWUXaS6Q13YDfpfiaeyg7f1OzI7V0Etu9EUBHeTCD2qiXIlwpFec3
+ kiy5ZZhH1TJBD6+x2cc6+VShOPBB9Wp1ONKn/4bxkUTL4epVK+69SOxuzO2Th4SwFyqhqDtJ3
+ pVHzAyOPxKUpreprc6CsDnC9RB6i8p5LVgRD2NeYxMjZN0CQft/hC4mwr9YAPoFYU0jqipYIO
+ exPlwHuX/lmxEPb8Ht7cLRAH+0bdRAdmS4Zjx8td2j/7c4XLvK05mXbBDPcrazviT+3Bb8b8X
+ o4ndYwMuCgA26+2b1qz8hjVrqdzP2NqRfiX6CpHqWuyrT81xWUKXSc2iqSiptqFRpi2YiltHG
+ eKHOsA56+I8gw9H5FaJ7tyULwGdKfQKeumA+yl7+hqPNMvpvkQgIsBnU9KKtZEpHLlZhH/d0O
+ ZuDtn4kV/yR5DlI4POWn4Qa8ZWMhzpji+n729IWnICXXFNbtsBPXDIvGIEKUcSwCRY5aWckAQ
+ vBxDFtrcsIdJNB6apUYdI0k6UnSnxqYl8jnsyYArkzXRFK4KIsdSxLPHvbjnh15Svfx1P818h
+ x5OO+tohfhsWD0aTSPOCTQ5IQNmokwXPhZkmvtWnQISnY=
 
-On 3/5/24 14:28, Andrew Lunn wrote:
-> On Tue, Mar 05, 2024 at 11:46:00AM +0100, Julien Panis wrote:
->> On 3/1/24 17:38, Andrew Lunn wrote:
->>> On Fri, Mar 01, 2024 at 04:02:53PM +0100, Julien Panis wrote:
->>>> This patch adds XDP (eXpress Data Path) support to TI AM65 CPSW
->>>> Ethernet driver. The following features are implemented:
->>>> - NETDEV_XDP_ACT_BASIC (XDP_PASS, XDP_TX, XDP_DROP, XDP_ABORTED)
->>>> - NETDEV_XDP_ACT_REDIRECT (XDP_REDIRECT)
->>>> - NETDEV_XDP_ACT_NDO_XMIT (ndo_xdp_xmit callback)
->>>>
->>>> The page pool memory model is used to get better performance.
->>> Do you have any benchmark numbers? It should help with none XDP
->>> traffic as well. So maybe iperf numbers before and after?
->>>
->>> 	Andrew
->> Argh...Houston, we have a problem. I checked my v3, which is ready for
->> submission, with iperf3:
->> 1) Before = without page pool -> 500 MBits/sec
->> 2) After = with page pool -> 442 MBits/sec
->> -> ~ 10% worse with page pool here.
+Am 05.03.24 um 15:48 schrieb Thomas Wei=C3=9Fschuh:
+
+> On Tue, Mar 05, 2024 at 08:13:15PM +0800, Ai Chao wrote:
+>> Add lenovo generic wmi driver to support camera button.
+>> The Camera button is a GPIO device. This driver receives ACPI notifyi
+>>   when the button pressed.
+> the button *is* pressed.
+>
+>
+> The subject does not mention that it is only about te camera button.
+>
+> I would be interested on which devices this driver was tested and is
+> expected to work with.
+>
+>> Signed-off-by: Ai Chao <aichao@kylinos.cn>
+>> ---
+>> v4: Remove lenovo_wmi_input_setup, move camera_mode into struct lenovo_=
+wmi_priv.
+>> v3: Remove lenovo_wmi_remove function.
+>> v2: Adjust GPL v2 to GPL, adjust sprintf to sysfs_emit.
 >>
->> Unless the difference is not due to page pool. Maybe there's something else
->> which is not good in my patch. I'm going to send the v3 which uses page pool,
->> hopefully someone will find out something suspicious. Meanwhile, I'll carry on
->> investigating: I'll check the results with my patch, by removing only the using of
->> page pool.
-> You can also go the other way. First add page pool support. For the
-> FEC, that improved its performance. Then add XDP, which i think
-> decreased the performance a little. It is extra processing in the hot
-> path, so a little loss is not unsurprising.
+>>   drivers/platform/x86/Kconfig             |  12 +++
+>>   drivers/platform/x86/Makefile            |   1 +
+>>   drivers/platform/x86/lenovo-wmi-camera.c | 118 ++++++++++++++++++++++=
++
+>>   3 files changed, 131 insertions(+)
+>>   create mode 100644 drivers/platform/x86/lenovo-wmi-camera.c
+>>
+>> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfi=
+g
+>> index bdd302274b9a..079f5aa5910c 100644
+>> --- a/drivers/platform/x86/Kconfig
+>> +++ b/drivers/platform/x86/Kconfig
+>> @@ -1001,6 +1001,18 @@ config INSPUR_PLATFORM_PROFILE
+>>   	To compile this driver as a module, choose M here: the module
+>>   	will be called inspur-platform-profile.
+>>
+>> +config LENOVO_WMI_CAMERA
+>> +	tristate "Lenovo WMI Camera Button driver"
+>> +	depends on ACPI_WMI
+>> +	depends on INPUT
+>> +	help
+>> +	  This driver provides support for Lenovo camera button. The Camera
+>> +	  button is a GPIO device. This driver receives ACPI notify when the
+>> +	  button pressed.
+>> +
+>> +	  To compile this driver as a module, choose M here: the module
+>> +	  will be called lenovo-wmi-camera.
+>> +
+>>   source "drivers/platform/x86/x86-android-tablets/Kconfig"
+>>
+>>   config FW_ATTR_CLASS
+>> diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makef=
+ile
+>> index 1de432e8861e..217e94d7c877 100644
+>> --- a/drivers/platform/x86/Makefile
+>> +++ b/drivers/platform/x86/Makefile
+>> @@ -66,6 +66,7 @@ obj-$(CONFIG_SENSORS_HDAPS)	+=3D hdaps.o
+>>   obj-$(CONFIG_THINKPAD_ACPI)	+=3D thinkpad_acpi.o
+>>   obj-$(CONFIG_THINKPAD_LMI)	+=3D think-lmi.o
+>>   obj-$(CONFIG_YOGABOOK)		+=3D lenovo-yogabook.o
+>> +obj-$(CONFIG_LENOVO_WMI_CAMERA)	+=3D lenovo-wmi-camera.o
+>>
+>>   # Intel
+>>   obj-y				+=3D intel/
+>> diff --git a/drivers/platform/x86/lenovo-wmi-camera.c b/drivers/platfor=
+m/x86/lenovo-wmi-camera.c
+>> new file mode 100644
+>> index 000000000000..77084266829c
+>> --- /dev/null
+>> +++ b/drivers/platform/x86/lenovo-wmi-camera.c
+>> @@ -0,0 +1,118 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * Lenovo WMI Camera Button Driver
+>> + *
+>> + * Author: Ai Chao <aichao@kylinos.cn>
+>> + * Copyright (C) 2024 KylinSoft Corporation.
+>> + */
+>> +
+>> +#include <linux/acpi.h>
+>> +#include <linux/device.h>
+>> +#include <linux/input.h>
+>> +#include <linux/module.h>
+>> +#include <linux/wmi.h>
+>> +
+>> +#define WMI_LENOVO_CAMERABUTTON_EVENT_GUID "50C76F1F-D8E4-D895-0A3D-62=
+F4EA400013"
+>> +
+>> +struct lenovo_wmi_priv {
+>> +	struct input_dev *idev;
+>> +	struct device *dev;
+>> +	u8 camera_mode;
+>> +};
+>> +
+>> +enum {
+>> +	CAMERA_BUTTON_PRESSED =3D 1,
+>> +};
+>> +
+>> +static ssize_t camerabutton_show(struct device *dev,
+>> +				 struct device_attribute *attr, char *buf)
+>> +{
+>> +	struct lenovo_wmi_priv *priv =3D dev_get_drvdata(dev);
+>> +
+>> +	return sysfs_emit(buf, "%u\n", priv->camera_mode);
+>> +}
+>> +DEVICE_ATTR_RO(camerabutton);
+>> +
+>> +static struct attribute *lenovo_wmi_attrs[] =3D {
+>> +	&dev_attr_camerabutton.attr,
+>> +	NULL,
+> No trailing comma after sentinel elements.
 >
-> What tends to be expensive with ARM is cache invalidation and
-> flush. So make sure you have the lengths correct. You don't want to
-> operate on more memory than necessary. No point flushing the full MTU
-> for a 64 byte TCP ACK, etc.
+>> +};
+>> +
+>> +static const struct attribute_group lenovo_wmi_group =3D {
+>> +	.attrs =3D lenovo_wmi_attrs,
+>> +};
+>> +
+>> +const struct attribute_group *lenovo_wmi_groups[] =3D {
+>> +	&lenovo_wmi_group,
+>> +	NULL,
+> Also no trailing comma.
 >
->        Andrew
+>> +};
+>> +
+>> +static void lenovo_wmi_notify(struct wmi_device *wdev, union acpi_obje=
+ct *obj)
+>> +{
+>> +	struct lenovo_wmi_priv *priv =3D dev_get_drvdata(&wdev->dev);
+>> +
+>> +	if (obj->type =3D=3D ACPI_TYPE_BUFFER &&
+>> +	    obj->buffer.pointer[0] <=3D CAMERA_BUTTON_PRESSED) {
+>> +		/* Camera mode:
+>> +		 *      0 camera close
+>> +		 *      1 camera open
+>> +		 */
+>> +		priv->camera_mode =3D obj->buffer.pointer[0];
+> This looks similar to a switch.
+> Would it be more useful for the user to report a standard switch instead
+> of a key event which needs to be correlated with the sysfs file?
 
-I changed back code step by step and could find what makes a significant
-difference. Here are the main tests achieved (results in Mbits/sec):
+I agree, maybe SW_CAMERA_LENS_COVER might be the right thing to use here,
+if those camera states (open/closed) are meant to symbolize camera shutter=
+ states.
 
-1) Page pool without XDP code -> res = 442
-Conclusion: No difference with or without XDP code.
+In such a case the initial switch state has to be retrieved, or else the i=
+nput device
+cannot be registered until the first event is received (similar how the hp=
+-wmi driver
+handles SW_CAMERA_LENS_COVER events).
 
-2) From 1), page pool removed and replaced by previous memory model
-based on dev_alloc_page() function -> res =418
-Conclusion: Your advice was good, that's better with page pool. :)
+Ai Chao, can you tell us if those two camera states are meant to act like =
+a switch (camera switched off,
+camera switched on) or meant to act like a key (camera button pressed, cam=
+era button released)?
 
-3) From 2), am65_cpsw_alloc_skb() function removed and replaced by
-netdev_alloc_skb_ip_align(), as used by the driver before -> res = 506
-Conclusion: Here is where the loss comes from.
-IOW, My am65_cpsw_alloc_skb() function is not good.
+>> +
+>> +		input_report_key(priv->idev, KEY_CAMERA, 1);
+>> +		input_sync(priv->idev);
+>> +		input_report_key(priv->idev, KEY_CAMERA, 0);
+>> +		input_sync(priv->idev);
+>> +	} else {
+>> +		dev_dbg(&wdev->dev, "Bad response type %d\n", obj->type);
+>> +	}
+>> +}
+>> +
+>> +static int lenovo_wmi_probe(struct wmi_device *wdev, const void *conte=
+xt)
+>> +{
+>> +	struct lenovo_wmi_priv *priv;
+>> +
+>> +	priv =3D devm_kzalloc(&wdev->dev, sizeof(*priv),
+>> +			    GFP_KERNEL);
+>> +	if (!priv)
+>> +		return -ENOMEM;
+>> +
+>> +	dev_set_drvdata(&wdev->dev, priv);
+>> +
+>> +	priv->idev =3D devm_input_allocate_device(&wdev->dev);
+>> +	if (!priv->idev)
+>> +		return -ENOMEM;
+>> +
+>> +	priv->idev->name =3D "Lenovo WMI Camera Button";
+>> +	priv->idev->phys =3D "wmi/input0";
+>> +	priv->idev->id.bustype =3D BUS_HOST;
+>> +	priv->idev->dev.parent =3D &wdev->dev;
+>> +	set_bit(EV_KEY, priv->idev->evbit);
+>> +	set_bit(KEY_CAMERA, priv->idev->keybit);
+> input_set_capability()?
+>
+>> +
+>> +	return input_register_device(priv->idev);
+>> +}
+>> +
+>> +static const struct wmi_device_id lenovo_wmi_id_table[] =3D {
+>> +	{ .guid_string =3D WMI_LENOVO_CAMERABUTTON_EVENT_GUID },
+>> +	{  }
+>> +};
+>> +
+>> +static struct wmi_driver lenovo_wmi_driver =3D {
+>> +	.driver =3D {
+>> +		.name =3D "lenovo-wmi-camera",
+>> +		.dev_groups =3D lenovo_wmi_groups,
+>> +		.probe_type =3D PROBE_PREFER_ASYNCHRONOUS,
+>> +	},
+>> +	.id_table =3D lenovo_wmi_id_table,
+>> +	.no_singleton =3D false,
 
-Initially, I mainly created this 'custom' am65_cpsw_alloc_skb() function
-because I thought that none of XDP memory models could be used along
-with netdev_alloc_skb_ip_align() function. Was I wrong ?
-By creating this custom am65_cpsw_alloc_skb(), I also wanted to handle
-the way headroom is reserved differently.
+The correct setting in this case would be ".no_singleton =3D true",
+since camera_mode now lives inside struct lenovo_wmi_priv.
 
-Julien
+Thanks,
+Armin Wolf
 
+>> +	.probe =3D lenovo_wmi_probe,
+>> +	.notify =3D lenovo_wmi_notify,
+>> +};
+>> +
+>> +module_wmi_driver(lenovo_wmi_driver);
+>> +
+>> +MODULE_DEVICE_TABLE(wmi, lenovo_wmi_id_table);
+>> +MODULE_AUTHOR("Ai Chao <aichao@kylinos.cn>");
+>> +MODULE_DESCRIPTION("Lenovo Generic WMI Driver");
+>> +MODULE_LICENSE("GPL");
+>> --
+>> 2.25.1
+>>
 
