@@ -1,108 +1,119 @@
-Return-Path: <linux-kernel+bounces-92572-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92573-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9D46872261
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:04:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38B02872262
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:05:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 59DAEB228B7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:04:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8A9E283811
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:05:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A60F127B4C;
-	Tue,  5 Mar 2024 15:03:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19C9C126F2E;
+	Tue,  5 Mar 2024 15:05:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H25+wX40"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FudN8fMC"
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68346126F02;
-	Tue,  5 Mar 2024 15:03:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D36BA126F02
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 15:05:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709651031; cv=none; b=gtJRKeVttmV1AvjmTnoT3tvG2HciSDoWw1CkRPMUdAJfTso/n0mFYXMXdJlUoSwoYybwMqq+eYh9YUpPPhc8NGQnxNJgVsG7bASugSBOjf+lbrHdzvOBLuHE7P8DEvXD5XDAj4Hps/k+9e37gOmwDmuL1eLlbT4Hm0idBFLVZwQ=
+	t=1709651114; cv=none; b=A77j43Qee1GLQXSJ912CcP0v9DKf7GLSudAKA6iDy2/QO+sPVBJ5xJqVm7MQCaZKVHUSC2n2g/J4oEBqkrPujTvg7wPjmOiEJQOKgsqgoERjvSnQgQ0sY6kZZdscCQ6F1R2BvBRrHDhJbc6hIYQGbH61uOCdctXG4+9qbKyi9IU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709651031; c=relaxed/simple;
-	bh=27+BJOW33H94LR/XIIVJMVaAXUoxZygcA3qpLGvJF24=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nNezikr7XiXXBy7cNonHVjFJjQBiJEJ0p9SJbl4XFXOQAkQQkEpvXLBab/UiMk6sg9Udp8h3s88P+2+7CAXdcTzPdj8QWWaFL2CDX6ZB2JZs5Yim1gu6heolqzL76uHxD/1lwBwKuouFaceQLB7ztQpzgGd4G6bBskcbHoGQDlc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H25+wX40; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15F54C43394;
-	Tue,  5 Mar 2024 15:03:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709651031;
-	bh=27+BJOW33H94LR/XIIVJMVaAXUoxZygcA3qpLGvJF24=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=H25+wX40QDVf7LQENEsoE+hzv6k+KxHFIJFJqewncfk3zIRbstB3rhpHi0ETdlw82
-	 VEdCuqG0OxjAK6RRCJJ3dkpfXpR2Y4r0s7+eDhee5mPTBhdAhMXhhobllARcOFzmK6
-	 1x4fjSBhTzY1OUUMu1jrrKWDm6yRWRd80z4mYzaSdsI+v0W63WpHbOcnBXPc6SbqFL
-	 mWchheN01FGp1BksphhLEZ3QRJPR+WULQHOUUcHXRTFPauqoKMbLS8DOsPwbkkfj/U
-	 KaRvyVlU+xGBOSlKIkEfmGJqSINj/MUjgm3tvYiSGJ2bw+bZ/E8eyKgvqZCGwU5Xxx
-	 CYn643lXYGh+g==
-Date: Tue, 5 Mar 2024 07:03:49 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-Cc: Florian Fainelli <florian.fainelli@broadcom.com>, Broadcom internal
- kernel review list <bcm-kernel-feedback-list@broadcom.com>, Andrew Lunn
- <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>, Russell King
- <linux@armlinux.org.uk>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Richard
- Cochran <richardcochran@gmail.com>, Radu Pirea
- <radu-nicolae.pirea@oss.nxp.com>, Jay Vosburgh <j.vosburgh@gmail.com>, Andy
- Gospodarek <andy@greyhouse.net>, Nicolas Ferre
- <nicolas.ferre@microchip.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Jonathan Corbet
- <corbet@lwn.net>, Horatiu Vultur <horatiu.vultur@microchip.com>,
- UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>, Vladimir
- Oltean <vladimir.oltean@nxp.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, Maxime Chevallier
- <maxime.chevallier@bootlin.com>, Rahul Rameshbabu <rrameshbabu@nvidia.com>
-Subject: Re: [PATCH net-next v9 07/13] ptp: Move from simple ida to xarray
-Message-ID: <20240305070349.5d1a8ff0@kernel.org>
-In-Reply-To: <20240305100259.006b3137@kmaincent-XPS-13-7390>
-References: <20240226-feature_ptp_netnext-v9-0-455611549f21@bootlin.com>
-	<20240226-feature_ptp_netnext-v9-7-455611549f21@bootlin.com>
-	<20240304184737.30cac57b@kernel.org>
-	<20240305100259.006b3137@kmaincent-XPS-13-7390>
+	s=arc-20240116; t=1709651114; c=relaxed/simple;
+	bh=C6PdQLiJ0DVMBz3a97RhoxDIZXOu6aQNf22UIVlKvsM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hNQl6G7BRg87acmS6HT8esbOktaiOvJ2mRvdiFrTsnqghsZHhJf4LqnsX//lIQISaN3XmMGnlTgPTVNA3bz2LqqfTpDSTUwIT6B761S/dnJ0Wf0CzDx8Q1cmI2HQ29x+8KrDP9En7kKrDUw+h8LUstV+Bm/zuuH/+15IkOY6swQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=FudN8fMC; arc=none smtp.client-ip=209.85.215.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5ca29c131ebso4877900a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 07:05:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709651112; x=1710255912; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=CY9ePlTsMQZsLDB5sNDMSa4N7bgq74vciIKCran/6p8=;
+        b=FudN8fMCwS3FB+Oh7wB/1kwUxcF54/GQqyu+7+JHtNaQurgMXEjDWCGqATXhK68AoL
+         Igr8iKGowjYBOnAYZxuJFYPqSs+NBLxkShVOQxQlbN5pMy8VQZZB7/KH1HgoykE8m9y6
+         5rkotJrlGtPmOOMw748vlLI5MCr85nHR1d6m83oSEpNvE7pr9C/83YL9Wj5H2MKqtxCu
+         Bap2wnlZSQb66SSSJSACGAWqTgLtPgtE9EC18fQfWNKmoZfWjv502jN4NqbaOytmffXf
+         3KZwdxX+6XxbhExYmtgvnExp2bFlmGiieWLWidaKIsdpv5I2b6E8OwsXz5uXVvrenACg
+         /CGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709651112; x=1710255912;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CY9ePlTsMQZsLDB5sNDMSa4N7bgq74vciIKCran/6p8=;
+        b=AsvjfxJBHVEQHmYPg7+IxKCyivvnUMtqHaCS/PzebSka9GHLNeN3upHZ0RXMmQW719
+         wnKuf410irUTLDbuknC6yN9I31spYW09V23zF9YW4Qt4s09keRvBmSOOYGYaOPjtBCQh
+         TMeQVZ38kOQ+LEvLiAaH6BzmAkiIWG5HH3aj59VZ6tw+05ENw4GgLJ1ldFIamRGmOFWF
+         1ondn0AACFh3gECyW/8L4snnR6Mj3AHAVLeO7As6vE2G7RoJzV94Uodlfc1loUJHnrIA
+         nkTw3plSX5aLZmHyCTv5X8w7Mf5P69hQI8wZ1mmt57QUvmMuyWiafl5k1iQPs6v4zsP8
+         ONuA==
+X-Gm-Message-State: AOJu0YzNsIeLgTqdjEDzTQIMUs3/Mp3MpjItHphuxxp/Xpk46/h6Pr6M
+	u+216HTz+V9Edzlozhe0g5USpu2mw9jonbKPpq4kZt7/r53UGnnF6bVQXCXinQP57gGV0iFv9n2
+	dqX/Ftw6kq3z0du+UuunmM8ukkY8mOpuxmD6teQ==
+X-Google-Smtp-Source: AGHT+IGje7+EK7kxbVLayc4vXIhORPovpXVwiLGAB4YMgQaczmiFmXsgP5U5949kdlKdY0ZJ0g6Q1RFXAqZJ/erhrFQ=
+X-Received: by 2002:a17:90b:4007:b0:29b:595b:f672 with SMTP id
+ ie7-20020a17090b400700b0029b595bf672mr4522520pjb.31.1709651111971; Tue, 05
+ Mar 2024 07:05:11 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+References: <20240305095111.777525-1-christian.loehle@arm.com>
+In-Reply-To: <20240305095111.777525-1-christian.loehle@arm.com>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Tue, 5 Mar 2024 16:05:00 +0100
+Message-ID: <CAKfTPtC6D4RTP3T8tqEJKA1drGbAANOaGPKqmELd1G8TLocizg@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: Remove stale FREQUENCY_UTIL comment
+To: Christian Loehle <christian.loehle@arm.com>
+Cc: linux-kernel@vger.kernel.org, mingo@redhat.com, peterz@infradead.org, 
+	dietmar.eggemann@arm.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, 5 Mar 2024 10:02:59 +0100 K=C3=B6ry Maincent wrote:
-> On Mon, 4 Mar 2024 18:47:37 -0800
-> Jakub Kicinski <kuba@kernel.org> wrote:
->=20
-> > On Mon, 26 Feb 2024 14:39:58 +0100 Kory Maincent wrote: =20
-> > > +static DEFINE_XARRAY_FLAGS(ptp_clocks_map, XA_FLAGS_LOCK_IRQ |
-> > > XA_FLAGS_ALLOC);   =20
-> >=20
-> > Why _IRQ? anything on the fastpath hopefully has a pointer to the clock
-> > already, I'd hope. And we often reserve ID 0 as invalid. =20
->=20
-> To keep the same flag as IDA_INIT_FLAGS, I am not expert in xarray so I j=
-ust
-> keep it without questioning it. Do you think I should remove it?
+On Tue, 5 Mar 2024 at 10:51, Christian Loehle <christian.loehle@arm.com> wrote:
+>
+> effective_cpu_util() flags were removed, so remove the comment part
+> mentioning it.
+>
+> commit 9c0b4bb7f6303 ("sched/cpufreq: Rework schedutil governor performance estimation")
+> reworked effective_cpu_util() removing enum cpu_util_type.
+>
+> Signed-off-by: Christian Loehle <christian.loehle@arm.com>
+> ---
+>  kernel/sched/fair.c | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 533547e3c90a..6b0c47d00fd3 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -7849,8 +7849,6 @@ eenv_pd_max_util(struct energy_env *eenv, struct cpumask *pd_cpus,
+>                  * Performance domain frequency: utilization clamping
+>                  * must be considered since it affects the selection
+>                  * of the performance domain frequency.
+> -                * NOTE: in case RT tasks are running, by default the
+> -                * FREQUENCY_UTIL's utilization can be max OPP.
 
-Yes, I believe those defaults are just "to be safe".
+Yes, it's no more accurate.
+Should we update the comment instead of deleting it as the effect is
+still there ?
+ "NOTE: in case RT tasks are running, by default the min utilization
+can be max OPP."
 
-> ID 0 was valid for phc. IMHO makes it invalid is not a good idea, it
-> will change the phc id value for current board on the field.
 
-Ah, right, let's keep it then. We'll have to use -1 as invalid.
-
-> > BTW could be a standalone patch, Xarray conversion from IDA is an
-> > improvement in itself. =20
->=20
-> Indeed. Do you prefer this patch to be standalone?
-
-May be a personal preference but I do feel like sending general
-improvements separately from large new features makes the process=20
-more smooth.
+>                  */
+>                 eff_util = effective_cpu_util(cpu, util, &min, &max);
+>
+> --
+> 2.34.1
+>
 
