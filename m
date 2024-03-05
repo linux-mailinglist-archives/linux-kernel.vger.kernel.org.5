@@ -1,115 +1,102 @@
-Return-Path: <linux-kernel+bounces-91915-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91917-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A43D8871853
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:37:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3FB887185F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:40:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 385DF282392
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:37:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 227D01C217FD
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:40:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C4964D13B;
-	Tue,  5 Mar 2024 08:37:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D57F4DA08;
+	Tue,  5 Mar 2024 08:40:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="AgCIe+Wj"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dm46b43Y"
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 443961EF01;
-	Tue,  5 Mar 2024 08:37:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DA4F2E40B
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 08:40:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709627865; cv=none; b=UoHCXngdC1mt5z3X8c+R+YYY++ZgD1lARk4bLD1TUCi/KYtrILj+8D7TQEBR/xVveTK67qCSXGHFfokBApiiH6o0o6F7tro8brDPP+Icj9JrXBSKNsqkNF83eTjWPcKqtlkmycDoLrHDEJ87tTEWv2/jbnsR1DdZ1DGi5NFY9SA=
+	t=1709628034; cv=none; b=eDQ8gfEav1jG/QYpVuDgqJ9HvbNEQC5g9AtAxdyJAdMn+cK1aYTm+ntGAA79IF1EEwOngpWVbveqkbSHSKl5F8WUrt8I32aBdyrYzv/qVHI/yBucsTFzxBuzvTvtWwmu7//eGzVFw6/O4/f/LOBbimP2NB3NsiuGvhZMsGNHyuQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709627865; c=relaxed/simple;
-	bh=FpAGb89Nhp9Tx4qmJbXKmvYtorSULzhPc0KcYtduHzM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p4qo4LV62McUg4fmO60c2Z41ovpxy393+XZvUufM5OmianchbsWpeOBz0VjjJ7XmvulL0E+xJ2zS0JEVLRTqziPrdrkmCMPJt8Jv4pQdxWd3CznzLomEmEs+UTIIY5iSZtNbQURkpvG5yHXnv3XxrgX56AJNvw596kSqC0YmLhE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=AgCIe+Wj; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=slMU9fALR2FKtthS6g2GplC/gm7hOVa33LfK6FZeUCo=; b=AgCIe+WjIze4L7uAzJboSfBRRT
-	usMNSmG6kawNKWQU4sVBqXGsijtuyTw277G0py0wCeYSN2OursIgPUd0coX/zDD+5m6REIKWYlaeT
-	jlEVhn/pdBxpfTP+ByL5JnH27FTP5ySvZilSUV53SGlHppmiKC8aJYUP+CeXxbTw73AowLPY6jfRJ
-	RcWXv63v2MN5dAmo0XOLLQHSHgmzPN9UxUkz9vEkYDxLjD/9w5jmaXX/w/iRgeQjl+3zTCFEaOdBM
-	2oMhYqcryDBIIhuLuRSnlbtuq++Qtv8XC5Tz6UWWMGHXF2RjwGePu9YA7eWzZfWS/6QvUO4cYXR3t
-	DoIa3oeg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:59010)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rhQIG-0006qe-1U;
-	Tue, 05 Mar 2024 08:37:00 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rhQIA-0005Gy-FG; Tue, 05 Mar 2024 08:36:54 +0000
-Date: Tue, 5 Mar 2024 08:36:54 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Kory Maincent <kory.maincent@bootlin.com>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	Richard Cochran <richardcochran@gmail.com>,
-	Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
-	Jay Vosburgh <j.vosburgh@gmail.com>,
-	Andy Gospodarek <andy@greyhouse.net>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Horatiu Vultur <horatiu.vultur@microchip.com>,
-	UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>,
-	Vladimir Oltean <vladimir.oltean@nxp.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	Maxime Chevallier <maxime.chevallier@bootlin.com>,
-	Rahul Rameshbabu <rrameshbabu@nvidia.com>
-Subject: Re: [PATCH net-next v9 08/13] ptp: Add phc source and helpers to
- register specific PTP clock or get information
-Message-ID: <ZebZpspMCqjLES/W@shell.armlinux.org.uk>
-References: <20240226-feature_ptp_netnext-v9-0-455611549f21@bootlin.com>
- <20240226-feature_ptp_netnext-v9-8-455611549f21@bootlin.com>
- <20240304185734.5f1a476c@kernel.org>
+	s=arc-20240116; t=1709628034; c=relaxed/simple;
+	bh=bB0O4HMGDhNSXPSOoSNvY3Pf+2eC4gmH3K4SALTxqyc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=c15Y5m+TlzkFhbinNqVSEvjO5yVmwhCDI75EgCNgoE3UjLZue5S1oBLdS9Jy/hR5MfQVjnx66+oBkpBqDePQ6ywkO+qDszs+mcF5hwEDVw9fsQUMdDdkeaS59PwjxwQVMgciM5WF40mpWJFtVaxInqJnmCfLYZDoxQ+MFEl7r9o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dm46b43Y; arc=none smtp.client-ip=91.218.175.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1709628029;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=DMJXg6OtFcxQuAUAyhKU1zyLUSvUQtK1GUV0JrguFxo=;
+	b=dm46b43YXNP9zkVCyO+0/lpGKCYDBys0uYEc1GVDE6/plSp1br3ZikApqV/XTwWkSTZVBs
+	XgEqgDLIa4N+m5r5Z45AwrjYEfKrf6oiOm93xqPyHcJ2OcgQbOdataGHoJO5B3OBIiGdTP
+	MdCd53OzGIQeiLI3+2ThBJ/fcQoYr8s=
+From: Chengming Zhou <chengming.zhou@linux.dev>
+To: vbabka@suse.cz
+Cc: akpm@linux-foundation.org,
+	cl@linux.com,
+	penberg@kernel.org,
+	rientjes@google.com,
+	iamjoonsoo.kim@lge.com,
+	roman.gushchin@linux.dev,
+	42.hyeyoo@gmail.com,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	Chengming Zhou <chengming.zhou@linux.dev>
+Subject: [PATCH] slab: remove PARTIAL_NODE slab_state
+Date: Tue,  5 Mar 2024 08:39:13 +0000
+Message-Id: <20240305083913.1494784-1-chengming.zhou@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240304185734.5f1a476c@kernel.org>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Mar 04, 2024 at 06:57:34PM -0800, Jakub Kicinski wrote:
-> On Mon, 26 Feb 2024 14:39:59 +0100 Kory Maincent wrote:
-> > Prepare for future hardware timestamp selection by adding source and
-> > corresponding pointers to ptp_clock structure. Additionally, introduce
-> > helpers for registering specific phydev or netdev PTP clocks, retrieving
-> > PTP clock information such as hwtstamp source or phydev/netdev pointers,
-> > and obtaining the ptp_clock structure from the phc index.
-> 
-> Can we assume there's one PHC per netdev?
-> We both store the netdev/phydev info in the ptp clock
-> and ptp clock in the netdev. Is there a reason for that?
+The PARTIAL_NODE slab_state has gone with SLAB removed, so just
+remove it.
 
-No. In the case of mvpp2 + marvell PHY, the two PTP implementations are
-entirely separate.
+Signed-off-by: Chengming Zhou <chengming.zhou@linux.dev>
+---
+ mm/slab.h                  | 1 -
+ tools/include/linux/slab.h | 1 -
+ 2 files changed, 2 deletions(-)
 
+diff --git a/mm/slab.h b/mm/slab.h
+index 96cb74be4b69..d2bc9b191222 100644
+--- a/mm/slab.h
++++ b/mm/slab.h
+@@ -363,7 +363,6 @@ static inline int objs_per_slab(const struct kmem_cache *cache,
+ enum slab_state {
+ 	DOWN,			/* No slab functionality yet */
+ 	PARTIAL,		/* SLUB: kmem_cache_node available */
+-	PARTIAL_NODE,		/* SLAB: kmalloc size for node struct available */
+ 	UP,			/* Slab caches usable but not all extras yet */
+ 	FULL			/* Everything is working */
+ };
+diff --git a/tools/include/linux/slab.h b/tools/include/linux/slab.h
+index 311759ea25e9..51b25e9c4ec7 100644
+--- a/tools/include/linux/slab.h
++++ b/tools/include/linux/slab.h
+@@ -18,7 +18,6 @@ bool slab_is_available(void);
+ enum slab_state {
+ 	DOWN,
+ 	PARTIAL,
+-	PARTIAL_NODE,
+ 	UP,
+ 	FULL
+ };
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+2.40.1
+
 
