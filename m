@@ -1,135 +1,153 @@
-Return-Path: <linux-kernel+bounces-92864-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92866-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B086872730
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 20:00:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15407872733
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 20:01:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9CFD91C20922
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:00:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE8451F2A3BC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:01:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D04222EF2;
-	Tue,  5 Mar 2024 19:00:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA6E124B29;
+	Tue,  5 Mar 2024 19:00:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="dn9JJQPI"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="gRrr9dbp"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ADAC1B26E;
-	Tue,  5 Mar 2024 19:00:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6AD222F08
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 19:00:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709665208; cv=none; b=qEUO9HbQmG0Vt2y/W8oX36IbTCMnqj/XAD80enmM3V62rYiOhg/mgqEETAIAZ6mB1QVMjAcid9PFtZeo8KZx+fDcCy8OywpOyVAQtrjWVJkWRxHYe6It6G3CgPhU2+38IYEI8khZimMQM/fX4ETq1by9NiYy4+TlAcLzO5PJeBI=
+	t=1709665253; cv=none; b=f7oorbtWQbGjhjZLWT4YmMEn6gLmUPEExZp6Y4lczeiqiXfULWGOx4++Hn85W7iDFiLgrlAUnb7kVp6z3LkccWir1rOdZMWxRJcBNgFA/mZVOvdChPy0RONk2VfMeQOrLzzs6sHRoYtr+gJV7vMmIkRE4XWIxZshvkXATRACHVM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709665208; c=relaxed/simple;
-	bh=4qkJBm4gkwtI+rJ9ehfIMvBznLFDSZW3rxdS4otCPPo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=kWPFAEhp1kRnkMTLKFpD0fuFEN4BwbO6NHZgycS8CLCG4pjao8WSB5u0PoSsQyRNBNiYDnwljvriQcyF1AsIlz8BDcPzG6l0y5jMJtIO5vEWKNnF8HRJx6L5ax9aYIHU3fDhfJoes9/jvia40x1sM015iO1P/lB+YhjbI4sshBM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=dn9JJQPI; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4258tQh7001427;
-	Tue, 5 Mar 2024 18:59:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=JGG8vIlqUux9Ze8A1exSbeSM6qeUkyMclht+somW8Ic=; b=dn
-	9JJQPI2zIj8ksEvox7sikiFO6e/lGx6WDZdokvMoLavGD1IxVMAfH0My10+pZ1Et
-	uwX1R6JrzdwL0G+Y3+10AHm0pOsTHyj0K2A/GTDEJCJEDh6zvBgP2C541Gf7VPzn
-	4gvunfr+MfchRaBwuj5TLPM0Qe2sKGkXB0b4+DycBDP333BRioWqbPplPvEBwKJq
-	lx5mCfguTFZc6i4c4aXzHIbxyPEtfokaczfWsAenoq8GEEdnR+R23D0nd+/fZ4AP
-	sbrTxo3dXaTT/SK9MDPDoCAILi066eMKRxUjF8NjDyd+Zw7sYPolddzf+Hg+PCEa
-	/plorgR4PnsQYCR3XWgg==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wp00x1bak-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 05 Mar 2024 18:59:31 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 425IxUCC028680
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 5 Mar 2024 18:59:30 GMT
-Received: from [10.71.110.192] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 5 Mar
- 2024 10:59:27 -0800
-Message-ID: <467b8479-dfd8-43a4-92eb-d19dc65989cd@quicinc.com>
-Date: Tue, 5 Mar 2024 10:59:20 -0800
+	s=arc-20240116; t=1709665253; c=relaxed/simple;
+	bh=QmTdKB4yOOP06NCtmMTaOrvl1jIYlU/8JoRLnoB7sjo=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=ILKjwH8CGOsc4Jog8Swi6pAmsOB+MGmq0TbqBMHQAXorrCdBC4+rz+/BM+smHPSXtqLx1xOpnv/sx5Oph6QFyHyBiQ7kWBgnEHB884HQ/cg7wpRYzSK2F4Ex9kGELg9psf+QHWr49echNKRK3dM9KObsG24fNWJaMYCIpdkhrj8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=gRrr9dbp; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1dd2c8f1204so7752125ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 11:00:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709665251; x=1710270051;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Hb1L1swpsjGv/VB4NPLiOOHq1jOcwD0LdASNCD5R9Tk=;
+        b=G1pwK1M1TgK8ZM/PjXqIi4xcJny3E3EVZXlyGi2vLE3XPqoYzgRMj0bpuJulBiOPUF
+         Yhv0sYEnmaIC9mTpk9sOaMTiTXWHJehAdLxgbG08q+UaEB7UqOtmyjrjxlRdQfFNLeUY
+         V3DMFdXfbUOnApmUE9k/9t9vkaZZZjycFBwfKw0BQDEaEIzwByI+iB02mKzOy+dc6nWr
+         Exb8OQ+zy1EVqXHqP33zY2N+9YwjgeRMVsIw0bv9tVyc12DmdrotzHKGOmBNZhiajjq1
+         N7ACp7AP4OhxpZxEvGPxNHizOFdZmlNzzqxqI11fh0ESPTF5ObEBLIomskrM/njXWUcD
+         KfJw==
+X-Gm-Message-State: AOJu0YwVmnZJoc3NQkh/ztOi+dK7owmze09ASwlnNdBk85zGu9ah2VGr
+	d+2bTjTDfGse53rxd7Vf1yQGHypR1ZSbhwGKksvjbhiYpGaTb9QlZ22oYD4X6a5ZHg==
+X-Google-Smtp-Source: AGHT+IH14lFh41CaEWdmhT0/PfazQV3MRkIfnWt8OiZXC7PbYKe1GDvhF/eW0AJpU3J+uC+yDy5ujQ==
+X-Received: by 2002:a17:903:48d:b0:1db:65a3:e17f with SMTP id jj13-20020a170903048d00b001db65a3e17fmr2613491plb.6.1709665250875;
+        Tue, 05 Mar 2024 11:00:50 -0800 (PST)
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id k23-20020a170902ba9700b001da105d6a83sm10853308pls.224.2024.03.05.11.00.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Mar 2024 11:00:50 -0800 (PST)
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2024; t=1709665248;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Hb1L1swpsjGv/VB4NPLiOOHq1jOcwD0LdASNCD5R9Tk=;
+	b=gRrr9dbpul4rQkW7C/XTiqMquWY4H/uL+0wn4GngPgYn9QqiHcAao+0a9qhcJIyC7PyE5w
+	6Y/i6CGnQzYp07+29OoeEo2JRPaa/DrylvJV9U7nx86HRS6uC/ogfN6Rwcggdj/YfBNd5Z
+	JKTwS1lH/ZPjZWrLCjy0PtcRZ8ZPVK9fiRslavgsjPKIstqdJaeF5/ZdQtHvtU6qmmUkV/
+	Yp7GZ/OmOCO0s8qtKV3oGXXk0exks6EIl/94UxxM2zLfjuroiP7tk8o7jozunWOJiORPfr
+	DIp9j4Nn0hw6Z+27fA3PQ8bMRCCx03gIrOrjfBjIMca4oMQgzwpnEdzFThUUaA==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+Date: Tue, 05 Mar 2024 16:00:45 -0300
+Subject: [PATCH] regulator: core: make regulator_class constant
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3] Restructure init sequence to set aside reserved
- memory earlier
-To: <chenhuacai@kernel.org>, <jonas@southpole.se>,
-        <stefan.kristiansson@saunalahti.fi>, <shorne@gmail.com>,
-        <ysato@users.sourceforge.jp>, <dalias@libc.org>,
-        <glaubitz@physik.fu-berlin.de>, <robh+dt@kernel.org>,
-        <frowand.list@gmail.com>
-CC: <linux-openrisc@vger.kernel.org>, <loongarch@lists.linux.dev>,
-        <linux-sh@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <kernel@quicinc.com>
-References: <1707524971-146908-1-git-send-email-quic_obabatun@quicinc.com>
-Content-Language: en-US
-From: Oreoluwa Babatunde <quic_obabatun@quicinc.com>
-In-Reply-To: <1707524971-146908-1-git-send-email-quic_obabatun@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: CB9Kpu3dCVofJSSAHKIFdpa3x8HFPqVI
-X-Proofpoint-GUID: CB9Kpu3dCVofJSSAHKIFdpa3x8HFPqVI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-05_16,2024-03-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- lowpriorityscore=0 clxscore=1011 mlxscore=0 mlxlogscore=675
- impostorscore=0 phishscore=0 adultscore=0 malwarescore=0 spamscore=0
- bulkscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403050152
+Message-Id: <20240305-class_cleanup-regulator-v1-1-4950345d6d8f@marliere.net>
+X-B4-Tracking: v=1; b=H4sIANxr52UC/x3MWwqDMBBG4a3IPBtIvZZuRUqJ8dcOhCgzphTEv
+ Rt8/B7OOUghDKVXcZDgx8przHiUBfmviwsMT9lU2aqxtW2ND0714wNcTJsRLCm4fRUzPXuMfVt
+ 3gKdcb4KZ//d5eJ/nBUeEtCxpAAAA
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: linux-kernel@vger.kernel.org, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Ricardo B. Marliere" <ricardo@marliere.net>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1697; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=QmTdKB4yOOP06NCtmMTaOrvl1jIYlU/8JoRLnoB7sjo=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl52vevnP5k+C9Pa0GCSYAZQNRL4nBl8BjZI5xC
+ Q9dInjSJH6JAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZedr3gAKCRDJC4p8Y4ZY
+ pmzMEACJgA0pzHRnv2tLDi7p0fcfQ4WgKK00XToLpKd697di9QN5iHmZMkr3pPgbdPREFpBeJ4u
+ IrtRD9tX4k9+/Qw6M3iWzDPyNEUQnU1ne8DkvLays/YLmtDyVKT7A1k6LWPRSEWiuZtDspXVsKQ
+ dKV4vx+er6nm5LqU8bzuSqT14DizR9Gju2MCcYhPyecnHayhOVshvA29Ib7yy1QhIO0BChWsocG
+ dUg0KGyObLKX8U+CBNh/tnS2dGmivIkK/sCxhBzxPHMwFRp2rZ3t1wZkvQ/YZ96MzCDPoooMOvj
+ vnuWyQtsw/q2JjbyG2s0Kta3gM/ea+84arI5biHA6WB8ZrkUK429i9/0qgf/qSNyuLhuWhwQCU9
+ TAL5dceEkUKDoZ9eBNCDN12PhwLk0lkSBmZM5b9af+1SAqrIinTyBs2WUUgK+kT+lSuU3HLdv7p
+ peoanxbjEPOjLZ1Tzymei8LDRpT5PtPi5BHJ517PtEETcS3i7jbT0gGAihc66tPGR+AKrjjFIx+
+ fQjfbBNrn+COilk2nmJViWdZG/o26ucBLvhBr9xKoZAp7r+RB3VRrvc1s9A/te5hxjJTw3T88NT
+ dML22cRvBxZ605Eg2Ms1LljT0WnIY6Ob+1PmZtf682zMDqcIGcisYeNwnkizYeiqTosNmF5XPFJ
+ 1Ub2NE2itKKoRfw==
+X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
+ fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
+Since commit 43a7206b0963 ("driver core: class: make class_register() take
+a const *"), the driver core allows for struct class to be in read-only
+memory, so move the regulator_class structure to be declared at build time
+placing it into read-only memory, instead of having to be dynamically
+allocated at boot time.
 
-On 2/9/2024 4:29 PM, Oreoluwa Babatunde wrote:
-> The loongarch, openric, and sh architectures allocate memory from
-> memblock before it gets the chance to set aside reserved memory regions.
-> This means that there is a possibility for memblock to allocate from
-> memory regions that are supposed to be reserved.
->
-> This series makes changes to the arch specific setup code to call the
-> functions responsible for setting aside the reserved memory regions earlier
-> in the init sequence.
-> Hence, by the time memblock starts being used to allocate memory, the
-> reserved memory regions should already be set aside, and it will no
-> longer be possible for allocations to come from them.
->
-> I am currnetly using an arm64 device, and so I will need assistance from
-> the relevant arch maintainers to help check if this breaks anything from
-> compilation to device bootup.
->
-> Oreoluwa Babatunde (3):
->   loongarch: Call arch_mem_init() before platform_init() in the init
->     sequence
->   openrisc: Call setup_memory() earlier in the init sequence
->   sh: Call paging_init() earlier in the init sequence
->
->  arch/loongarch/kernel/setup.c | 2 +-
->  arch/openrisc/kernel/setup.c  | 6 +++---
->  arch/sh/kernel/setup.c        | 4 ++--
->  3 files changed, 6 insertions(+), 6 deletions(-)
-Hello,
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+---
+ drivers/regulator/core.c     | 2 +-
+ drivers/regulator/internal.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Loongarch patch has already merged for this, but review is still pending
-from openrisc and sh architectures.
-Could someone please comment on these?
+diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
+index 17c98c5fa45f..d019ca6dee9b 100644
+--- a/drivers/regulator/core.c
++++ b/drivers/regulator/core.c
+@@ -5890,7 +5890,7 @@ static const struct dev_pm_ops __maybe_unused regulator_pm_ops = {
+ };
+ #endif
+ 
+-struct class regulator_class = {
++const struct class regulator_class = {
+ 	.name = "regulator",
+ 	.dev_release = regulator_dev_release,
+ 	.dev_groups = regulator_dev_groups,
+diff --git a/drivers/regulator/internal.h b/drivers/regulator/internal.h
+index fb4433068d29..77a502141089 100644
+--- a/drivers/regulator/internal.h
++++ b/drivers/regulator/internal.h
+@@ -58,7 +58,7 @@ struct regulator {
+ 	struct dentry *debugfs;
+ };
+ 
+-extern struct class regulator_class;
++extern const struct class regulator_class;
+ 
+ static inline struct regulator_dev *dev_to_rdev(struct device *dev)
+ {
 
-Regards,
+---
+base-commit: 996e1c6b09f70cdc37d55896f283d35501fb1ab1
+change-id: 20240305-class_cleanup-regulator-d87eb7536eec
 
-Oreoluwa
+Best regards,
+-- 
+Ricardo B. Marliere <ricardo@marliere.net>
+
 
