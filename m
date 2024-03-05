@@ -1,184 +1,267 @@
-Return-Path: <linux-kernel+bounces-92570-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92569-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6120087225A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:03:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C1EC872259
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:03:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 93A521C21013
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:03:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B01FD1C2120A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:03:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 296AD126F2F;
-	Tue,  5 Mar 2024 15:03:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70796126F37;
+	Tue,  5 Mar 2024 15:03:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ACrryp5E"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EOdiagnM"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05255126F02
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 15:03:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89C97126F02;
+	Tue,  5 Mar 2024 15:03:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709651021; cv=none; b=e5yZRCgDnMu8aSDIuX2rt3+jgeD452BC6OVOUbUN7dOiQsu0m2lWpurDd3eiAeCpnzZVgnYmsPG9D9ii2NIpFSCEiBH4JDjRcq57PdwCgwPk8WKodnvxaeNvFdcPgt8ye/EHCp0BwMN6HFO3hpXFIzTJBRV2x1V/vZfpPvULp6k=
+	t=1709651003; cv=none; b=awhVgyUF/eS7hF3fa17Qop7ral8nt4tGYcNn/y/p4frKw92QfebvKTUaRwAr7gZu3bUnrCJHUA1m59HzOAHooW5/cKSuVrPK9Ja517LTF9xOdwxO1lGk0czCuUyy7SZM3Tm3gd95uQLPC18psrVKh/zMDq6zpREhmJW/aNFbv54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709651021; c=relaxed/simple;
-	bh=ovK+xDrXZozbhrnptM8u3dp58JPuSazr4S6Xn+dv9UM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mr8two4xuKImpt0QIDMjkpWj2WamabK8Sot7OMA7zf1+1gJHyW7q2sHjQI0vaSi5RpGIDymR9PEtmOIf9Qqc4kBBPn5b1HCZQuvD4rSLvUatyotwYh9gmC0nH5Odvl/S8cCWr+tM9JHclYAwrMr/VaECH18NUw29jyy9LvOR0dI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ACrryp5E; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 425F205f003563;
-	Tue, 5 Mar 2024 15:03:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=d+err22il2gKfp4Cq1EkZkWnxavfLbojN62KH00FfHI=;
- b=ACrryp5EN5E0FMRjeX3wnQcZ2fkKYbP6lu06pb9PfEKB72CFm/A3gPXungSWnjv6Un6n
- FAU1N2zc/Yan9lA2TsZj5tS6cA2nYgQTVwFoZZwWRdUrhryctq9FAuiCcXjw831xQViq
- /2hk8cD4NnzLeq9y5/cLhSOlqZJoPVR3mDKvECLdp0+VXIohiI+4bqKMPPb899R9cSkK
- vO0Oki18hnT60j6CEH+c0iB2vrv68RC0frGZqBT0h+XFJiJv7Ufm2xgejSOiZOwP6SCy
- Tyq2jhWtbJ/Z5WF69L+5DY5FHrAj9Fcy1QW2yGdOB/hyM4QHXEDRAsyDqHxkqgmpdswf Vg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wp5p6r2wt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 05 Mar 2024 15:03:28 +0000
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 425F3Qlw011423;
-	Tue, 5 Mar 2024 15:03:26 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wp5p6r2r2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 05 Mar 2024 15:03:26 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 425DXsWm026296;
-	Tue, 5 Mar 2024 15:03:23 GMT
-Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wmfenr8bk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 05 Mar 2024 15:03:23 +0000
-Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
-	by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 425F3Kie25166156
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 5 Mar 2024 15:03:22 GMT
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8F48558052;
-	Tue,  5 Mar 2024 15:03:20 +0000 (GMT)
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 44CA858056;
-	Tue,  5 Mar 2024 15:03:16 +0000 (GMT)
-Received: from [9.43.117.244] (unknown [9.43.117.244])
-	by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Tue,  5 Mar 2024 15:03:15 +0000 (GMT)
-Message-ID: <251f9b0d-3e00-4ca7-829b-e622fc0b4c49@linux.ibm.com>
-Date: Tue, 5 Mar 2024 20:33:14 +0530
+	s=arc-20240116; t=1709651003; c=relaxed/simple;
+	bh=2mdrOFobw+z2H9C4Cm3HCZJiFsJR2HEgKEYWYzKiOyM=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=LTtgBumC9tdARYCZOb/wjWQpKZccUW3lul5cmBxZxSQbJK4mLKvmB+XxG6EGJveQyWzjzu/TTKkWfQp5ne2XoKvH5MRUGU5ni9r7EFch3x+tuadf4iOI9FjL+TT+JNL1vpLu8EdILRynNrMUl+DSbNYE2XNHN0e7/T7y80e+lhs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EOdiagnM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D76CC433C7;
+	Tue,  5 Mar 2024 15:03:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709651003;
+	bh=2mdrOFobw+z2H9C4Cm3HCZJiFsJR2HEgKEYWYzKiOyM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=EOdiagnMhEDSmA3O9ywwmSdokjgZN8utfeB3NA2rvO4XM2fZytggJWGVbeVdWfNbM
+	 KYnFa1+ZhMX+lyVz1LDw0RZiwYrtGz/DZN+UFYgTntbU7nE+HyKnevnVTcvb+vBFc9
+	 sf9VPCdNF69Yx15CHzNkiVh902i2pTJXQcbvYDekM5EQl6PdsiRIB0uyvVkW+FhJPB
+	 FhFOXhmbYi+DBLo/buQxDbSpk2sKOInL3Qhxn4NCyaUHM0eS/MoO4cj15glXgZ6Ywy
+	 oYQpWgskIHLmNczBFFzU0+HSMVMX+cLxYzrC+Ah/msBaHXLCS4t9VWziUXcjCpvesN
+	 rcKA5TZ3h6JcA==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rhWK8-009cCM-QI;
+	Tue, 05 Mar 2024 15:03:20 +0000
+Date: Tue, 05 Mar 2024 15:03:20 +0000
+Message-ID: <86r0go201z.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>
+Cc: kvmarm@lists.linux.dev,
+	kvm@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	oliver.upton@linux.dev,
+	darren@os.amperecomputing.com,
+	d.scott.phillips@amperecomputing.com
+Subject: Re: [RFC PATCH] kvm: nv: Optimize the unmapping of shadow S2-MMU tables.
+In-Reply-To: <6685c3a6-2017-4bc2-ad26-d11949097050@os.amperecomputing.com>
+References: <20240305054606.13261-1-gankulkarni@os.amperecomputing.com>
+	<86sf150w4t.wl-maz@kernel.org>
+	<6685c3a6-2017-4bc2-ad26-d11949097050@os.amperecomputing.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/2] sched/fair: Use helper function to access
- rd->overutilized
-Content-Language: en-US
-To: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: mingo@kernel.org, peterz@infradead.org, yu.c.chen@intel.com,
-        dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org,
-        nysal@linux.ibm.com, aboorvad@linux.ibm.com, srikar@linux.ibm.com,
-        vschneid@redhat.com, pierre.gondois@arm.com, morten.rasmussen@arm.com,
-        qyousef@layalina.io
-References: <20240301151725.874604-1-sshegde@linux.ibm.com>
- <20240301151725.874604-3-sshegde@linux.ibm.com>
- <CAKfTPtCzHf_R4SwR29FsnxXTv2J4Xrmh3gfoHcVPu3KU5OLDcQ@mail.gmail.com>
-From: Shrikanth Hegde <sshegde@linux.ibm.com>
-In-Reply-To: <CAKfTPtCzHf_R4SwR29FsnxXTv2J4Xrmh3gfoHcVPu3KU5OLDcQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 1Ea4MRrRlDrGcFoCfwWxYweaSFcUsZk4
-X-Proofpoint-GUID: kJZIEEvi5Hx6_BzxpNDfBek9WyZQeb1f
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-05_12,2024-03-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
- impostorscore=0 bulkscore=0 adultscore=0 lowpriorityscore=0 suspectscore=0
- mlxlogscore=789 spamscore=0 priorityscore=1501 mlxscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2403050120
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: gankulkarni@os.amperecomputing.com, kvmarm@lists.linux.dev, kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, oliver.upton@linux.dev, darren@os.amperecomputing.com, d.scott.phillips@amperecomputing.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
+On Tue, 05 Mar 2024 13:29:08 +0000,
+Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com> wrote:
+> 
+> 
+> 
+> On 05-03-2024 04:43 pm, Marc Zyngier wrote:
+> > [re-sending with kvmarm@ fixed]
+> > 
+> > On Tue, 05 Mar 2024 05:46:06 +0000,
+> > Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com> wrote:
+> >> 
+> >> As per 'commit 178a6915434c ("KVM: arm64: nv: Unmap/flush shadow stage 2
+> > 
+> > $ git describe --contains 178a6915434c --match=v\*
+> > fatal: cannot describe '178a6915434c141edefd116b8da3d55555ea3e63'
+> > 
+> 
+> My bad(I would have been more verbose), I missed to mention that this
+> patch is on top of NV-V11 patch series.
+> 
+> > This commit simply doesn't exist upstream. It only lives in a
+> > now deprecated branch that will never be merged.
+> > 
+> >> page tables")', when ever there is unmap of pages that
+> >> are mapped to L1, they are invalidated from both L1 S2-MMU and from
+> >> all the active shadow/L2 S2-MMU tables. Since there is no mapping
+> >> to invalidate the IPAs of Shadow S2 to a page, there is a complete
+> >> S2-MMU page table walk and invalidation is done covering complete
+> >> address space allocated to a L2. This has performance impacts and
+> >> even soft lockup for NV(L1 and L2) boots with higher number of
+> >> CPUs and large Memory.
+> >> 
+> >> Adding a lookup table of mapping of Shadow IPA to Canonical IPA
+> >> whenever a page is mapped to any of the L2. While any page is
+> >> unmaped, this lookup is helpful to unmap only if it is mapped in
+> >> any of the shadow S2-MMU tables. Hence avoids unnecessary long
+> >> iterations of S2-MMU table walk-through and invalidation for the
+> >> complete address space.
+> > 
+> > All of this falls in the "premature optimisation" bucket. Why should
+> > we bother with any of this when not even 'AT S1' works correctly,
+> 
+> Hmm, I am not aware of this, is this something new issue of V11?
 
-
-On 3/5/24 7:35 PM, Vincent Guittot wrote:
-> On Fri, 1 Mar 2024 at 16:18, Shrikanth Hegde <sshegde@linux.ibm.com> wrote:
->
-> 
-> It seems that is_rd_overutilized() is always used with
-> sched_energy_enabled() in the pattern:
-> 
-> If (sched_energy_enabled() && !is_rd_overutilized(rd))
->        do something
-> 
-> This pattern includes feec() case where we have in select_task_rq_fair():
-> 
-> If (sched_energy_enabled())
->        feec():
->        |->  if (is_rd_overutilized())
->        |->       goto unlock
-> 
-> which could be changed into
-> If (sched_energy_enabled() && !is_rd_overutilized(rd))
->        feec()
-> 
-> Then you can create the function is_rd_not_overutilized() instead of
-> is_rd_overutilized()
-> 
-> -static inline int is_rd_overutilized(struct root_domain *rd)
-> +static inline int is_rd_not_overutilized(struct root_domain *rd)
->  {
-> -       return READ_ONCE(rd->overutilized);
-> +       return sched_energy_enabled() && READ_ONCE(rd->overutilized);
->  }
-> 
-> and use is_rd_not_overutilized() instead
-> 
-
-Ok. Makes sense. I will keep this patch as is. and use the above 
-approach in a new patch. 
-
->> +
->>  static inline void set_rd_overutilized_status(struct root_domain *rd,
->>                                               unsigned int status)
->>  {
->> @@ -6686,13 +6695,14 @@ static inline void check_update_overutilized_status(struct rq *rq)
->>         if (!sched_energy_enabled())
->>                 return;
->>
->> -       if (!READ_ONCE(rq->rd->overutilized) && cpu_overutilized(rq->cpu))
->> +       if (!is_rd_overutilized(rq->rd) && cpu_overutilized(rq->cpu))
->>                 set_rd_overutilized_status(rq->rd, SG_OVERUTILIZED);
->>  }
->>  #else
->>  static inline void check_update_overutilized_status(struct rq *rq) { }
->>  static inline void set_rd_overutilized_status(struct root_domain *rd,
->>                                               unsigned int status) { }
->> +static inline int is_rd_overutilized(struct root_domain *rd) { }
-> 
-> It should be
-> static inline int is_rd_overutilized(struct root_domain *rd) { return 0; }
-
-ok. 
+it's been there since v0. All we have is a trivial implementation that
+doesn't survive the S1 page-tables being swapped out. It requires a
+full S1 PTW to be written.
 
 > 
->>  #endif
->>
->>  /* Runqueue only has SCHED_IDLE tasks enqueued */
->> @@ -7974,7 +7984,7 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
->>
->>         rcu_read_lock();
+> > making it trivial to prevent a guest from making forward progress? You
+> > also show no numbers that would hint at a measurable improvement under
+> > any particular workload.
+> 
+> This patch is avoiding long iterations of unmap which was resulting in
+> soft-lockup, when tried L1 and L2 with 192 cores.
+> Fixing soft lockup isn't a required fix for feature enablement?
 
->>
+No. All we care is correctness, not performance. Addressing
+soft-lockups is *definitely* a performance issue, which I'm 100% happy
+to ignore.
+
+[...]
+
+> >>   +static inline bool kvm_is_l1_using_shadow_s2(struct kvm_vcpu
+> >> *vcpu)
+> >> +{
+> >> +	return (vcpu->arch.hw_mmu != &vcpu->kvm->arch.mmu);
+> >> +}
+> > 
+> > Isn't that the very definition of "!in_hyp_ctxt()"? You are abusing
+> 
+> "!in_hyp_ctxt()" isn't true for non-NV case also?
+
+Surely you don't try to use this in non-NV contexts, right? Why would
+you try to populate a shadow reverse-map outside of a NV context?
+
+> This function added to know that L1 is NV enabled and using shadow S2.
+> 
+> > the hw_mmu pointer to derive something, but the source of truth is the
+> > translation regime, as defined by HCR_EL2.{E2H,TGE} and PSTATE.M.
+> > 
+> 
+> OK, I can try HCR_EL2.{E2H,TGE} and PSTATE.M instead of hw_mmu in next
+> version.
+
+No. Use is_hyp_ctxt().
+
+[...]
+
+> >> index 61bdd8798f83..3948681426a0 100644
+> >> --- a/arch/arm64/kvm/mmu.c
+> >> +++ b/arch/arm64/kvm/mmu.c
+> >> @@ -1695,6 +1695,13 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+> >>   					     memcache,
+> >>   					     KVM_PGTABLE_WALK_HANDLE_FAULT |
+> >>   					     KVM_PGTABLE_WALK_SHARED);
+> >> +		if ((nested || kvm_is_l1_using_shadow_s2(vcpu)) && !ret) {
+> > 
+> > I don't understand this condition. If nested is non-NULL, it's because
+> > we're using a shadow S2. So why the additional condition?
+> 
+> No, nested is set only for L2, for L1 it is not.
+> To handle L1 shadow S2 case, I have added this condition.
+
+But there is *no shadow* for L1 at all. The only way to get a shadow
+is to be outside of the EL2(&0) translation regime. El2(&0) itself is
+always backed by the canonical S2. By definition, L1 does not run with
+a S2 it is in control of. No S2, no shadow.
+
+[...]
+
+> > What guarantees that the mapping you have for L1 has the same starting
+> > address as the one you have for L2? L1 could have a 2MB mapping and L2
+> > only 4kB *in the middle*.
+> 
+> IIUC, when a page is mapped to 2MB in L1, it won't be
+> mapped to L2 and we iterate with the step of PAGE_SIZE and we should
+> be hitting the L2's IPA in lookup table, provided the L2 page falls in
+> unmap range.
+
+But then how do you handle the reverse (4kB at L1, 2MB at L2)? Without
+tracking of the *intersection*, this fails to be correctly detected.
+This is TLB matching 101.
+
+[...]
+
+> >> +			while (start < end) {
+> >> +				size = PAGE_SIZE;
+> >> +				/*
+> >> +				 * get the Shadow IPA if the page is mapped
+> >> +				 * to L1 and also mapped to any of active L2.
+> >> +				 */
+> > 
+> > Why is L1 relevant here?
+> 
+> We do map while L1 boots(early stage) in shadow S2, at that moment
+> if the L1 mapped page is unmapped/migrated we do need to unmap from
+> L1's S2 table also.
+
+Sure. But you can also get a page that is mapped in L2 and not mapped
+in the canonical S2, which is L1's. I more and more feel that you have
+a certain misconception of how L1 gets its pages mapped.
+
+> 
+> > 
+> >> +				ret = get_shadow_ipa(mmu, start, &shadow_ipa, &size);
+> >> +				if (ret)
+> >> +					kvm_unmap_stage2_range(mmu, shadow_ipa, size);
+> >> +				start += size;
+> >> +			}
+> >> +		}
+> >> +	}
+> >> +}
+> >> +
+> >>   /* expects kvm->mmu_lock to be held */
+> >>   void kvm_nested_s2_flush(struct kvm *kvm)
+> >>   {
+> > 
+> > There are a bunch of worrying issues with this patch. But more
+> > importantly, this looks like a waste of effort until the core issues
+> > that NV still has are solved, and I will not consider anything of the
+> > sort until then.
+> 
+> OK thanks for letting us know, I will pause the work on V2 of this
+> patch until then.
+> 
+> > 
+> > I get the ugly feeling that you are trying to make it look as if it
+> > was "production ready", which it won't be for another few years,
+> > specially if the few interested people (such as you) are ignoring the
+> > core issues in favour of marketing driven features ("make it fast").
+> > 
+> 
+> What are the core issues (please forgive me if you mentioned already)?
+> certainly we will prioritise them than this.
+
+AT is a big one. Maintenance interrupts are more or less broken. I'm
+slowly plugging PAuth, but there's no testing whatsoever (running
+Linux doesn't count). Lack of SVE support is also definitely a
+blocker.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
 
