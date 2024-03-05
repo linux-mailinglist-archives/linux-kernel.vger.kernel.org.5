@@ -1,135 +1,145 @@
-Return-Path: <linux-kernel+bounces-92543-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92442-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C69C68721E9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:48:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C503872038
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:32:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 711591F248F0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:48:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EA061C22B17
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:32:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C587126F0A;
-	Tue,  5 Mar 2024 14:48:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEBD88662E;
+	Tue,  5 Mar 2024 13:32:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b="sMf2jkiF"
-Received: from outgoing1.flk.host-h.net (outgoing1.flk.host-h.net [188.40.0.86])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RVgF4Zbw"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB0145466D;
-	Tue,  5 Mar 2024 14:48:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.0.86
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D47285953;
+	Tue,  5 Mar 2024 13:32:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709650112; cv=none; b=QtnNqb3XskYGhgXKY3DQx1DZhjE+u9G6Br9vzHreDhyCTResqKAFoXXqnOEmhTGe4k/Ll0pZsYtSH/Wuy+wX6eEEYe328N1BIwK419c1fsQWYjLwVzx21R2IXa07b5mSo2O6x+A6UhEbZonUwXvFpftmFGvl8/jcdLvbMqgX/XI=
+	t=1709645536; cv=none; b=qAuLKqWcnBFQD/pzdiPxX8bQplQdBGwjkGokmSgY5o6Cp1DWzNPnYNEI39yLNIeelh6MjeHDz0DIHv89yI9MccZnqEsqi+psfLI4DryNmeK0z1UIx/bNw6zbRczfamBDKLOrmV77WYrFunMJJjY1xW/8BzIwYT8bW6gSfH+QW4I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709650112; c=relaxed/simple;
-	bh=Z3KeHrQdpDSjg4cSnq8q0J2g7aKe+CAohyZ4YRaIpFM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=hrifF6dqIMoF7duSqTpQ4EXJzxWzFfqKRPFHkKCf3u7DmIV2MHRy5/PBbl4yK75Uhd+2FX0lhwrmGrq4t2/Tcy7OlwiTYlx6qfNAMGPtCpkBa4rogrWxpvMqPGhEWorIbgbnUCxSJYR4nE7KFUQPgbqwQoAdnTMRnRiDJSrGW+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za; spf=pass smtp.mailfrom=risingedge.co.za; dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b=sMf2jkiF; arc=none smtp.client-ip=188.40.0.86
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=risingedge.co.za
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=risingedge.co.za; s=xneelo; h=Content-Transfer-Encoding:MIME-Version:
-	Message-Id:Date:Subject:Cc:To:From:reply-to:sender:bcc:in-reply-to:references
-	:content-type; bh=Dix/pO2x7DYEXmcTYo5nW1d9BD0ZpWAC6dST2GHD2vA=; b=sMf2jkiFLDV
-	2aUBCtSm0UvGXw7xCQg9J4zkfGQvrVt5bQ2fKfJMILEcduJ4tBG0x8eoEDld9l2ruVSZ+z2kbGgC1
-	OR8LwhZpljYY32pTkLFwwZtJAz5T5HLRGPKo+jze5sVfitEAmvH8Y4OriH8Lqsqx51jlr3I6A4Ztq
-	GOHST0BmA6aIU4zDv8b8J3en2NBUD5nLvwKLWztyyzV/q8cVG1UUBCsAvv6u7uPdNlh4ji8Q1eb8C
-	MkSFoo8DX+vbF0/V6MZULxFcbSB36s5SiLga5n+GKytlmM88VwQ0FP2HYB8ma3M993Mx6ug337oeM
-	A5JTQznhXRrKwQzBwKUOYYA==;
-Received: from www31.flk1.host-h.net ([188.40.1.173])
-	by antispam3-flk1.host-h.net with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <justin.swartz@risingedge.co.za>)
-	id 1rhUuA-001apX-Hc; Tue, 05 Mar 2024 15:32:38 +0200
-Received: from [41.144.0.96] (helo=localhost.localdomain)
-	by www31.flk1.host-h.net with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <justin.swartz@risingedge.co.za>)
-	id 1rhUu8-0005sb-D1; Tue, 05 Mar 2024 15:32:24 +0200
-From: Justin Swartz <justin.swartz@risingedge.co.za>
-To: Martin Schiller <ms@dev.tdt.de>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: Justin Swartz <justin.swartz@risingedge.co.za>,
-	linux-x25@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] net: x25: remove dead links from Kconfig
-Date: Tue,  5 Mar 2024 15:31:38 +0200
-Message-Id: <20240305133139.29236-1-justin.swartz@risingedge.co.za>
+	s=arc-20240116; t=1709645536; c=relaxed/simple;
+	bh=FihEUwCX50+sOpSeSlKTyAI5nKu3cdR1twC0ge0m/T4=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=sLRy/Yyi8At6qEPhh466eViQxdCXatxMgk53Dbt1MQamboRmFpj9oPwVgwJdfpMldHG99sshGU+9LXRT3yEn+dn++az8DAEK/IgEVTcDNvDVOn6gv2f5Cn1+bb4ObiAbuq2H+2Y/uAm2RtXqsx1ETT1atTp/zzwDuiIAiYFCfts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RVgF4Zbw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 9E657C433F1;
+	Tue,  5 Mar 2024 13:32:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709645535;
+	bh=FihEUwCX50+sOpSeSlKTyAI5nKu3cdR1twC0ge0m/T4=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=RVgF4Zbw/9zjAw+nC5J2lWdYwfmD/InF3Dil3B3FQYMWyWLlgizzJke+63D9uLqvY
+	 tmECtsqVJa7H9Vt/xVG2Iw/AkppuDnrba80pe7i3zoHX56OkK9AHOz8Stgn9gG+SSw
+	 +5c/1jNhJig3LHDnDNubicBeB/gNMnu7Q1OgcD2DiJMWTb7QwAXQin9Lufhk2HmExh
+	 1uiSBewp1NMzYil19s6Mji+iI5E9K+49uo55M1943qGqT9iRWB5anC8wICaRSOOFE4
+	 7+CbJ11MnTJ1gegySw2Bezg/+Uy9lM5+4carVmRx2Z1aDjepDnHiLy8uepeR+IPQEo
+	 i0266NFg2od/g==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 82F7CC54798;
+	Tue,  5 Mar 2024 13:32:15 +0000 (UTC)
+From: Yang Xiwen via B4 Relay <devnull+forbidden405.outlook.com@kernel.org>
+Subject: [PATCH v5 0/5] phy: hisi-inno-phy: add support for
+ hi3798mv200-usb2-phy
+Date: Tue, 05 Mar 2024 21:32:11 +0800
+Message-Id: <20240305-inno-phy-v5-0-dc1cb130ea08@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: justin.swartz@risingedge.co.za
-X-Virus-Scanned: Clear
-X-SpamExperts-Domain: risingedge.co.za
-X-SpamExperts-Username: 
-Authentication-Results: host-h.net; auth=pass (login) smtp.auth=@risingedge.co.za
-X-SpamExperts-Outgoing-Class: ham
-X-SpamExperts-Outgoing-Evidence: Combined (0.03)
-X-Recommended-Action: accept
-X-Filter-ID: Pt3MvcO5N4iKaDQ5O6lkdGlMVN6RH8bjRMzItlySaT9BFpSshgZdgMLpZ1/ftQ8uPUtbdvnXkggZ
- 3YnVId/Y5jcf0yeVQAvfjHznO7+bT5w1OL79HMxE022P+rQy8YAdcSeERs4TOTnIH1kc1IWc5QvZ
- FNshWKOptDHV4rDuRrwD+zBJgS5HrOaXNfwbIcOpslpzQZPofqiTKbbOumrM1Ahcg0OQCe1UFSTL
- VX1PEI9kcFJ7mC+M3fkSvxOXcnIOjhh9biKiQoANZ/M+dhYIXxdYA5DCYv6MMCKeadXRzZkEvAAo
- NnFXprYbAz6gPUYKNm1gRFF2i3O7cygKtabI1caTYyXVRVReaTKIqXapBXQ6SEDiG08q6BgvyDW7
- 3UBJwzTEhgTtU7qydsRfxICAtI37lJC8G4ef8lY22yNyhLy8ZNBDpxcCl9WvEtu4BGz6+JKO/vS7
- EG2gDc+C8niViTuAVoxNXxfObDHTY9R9kOMB03AEjHq2zzYAxIiW6tWKEwBJ0Y5r/Ifw7gpxllqW
- qh1hAHI3nwCbzMT4k0hu17rkR2VEZyK4VXrfqC5ENAfcWEKt0SZ8melITUergkwVPYHrfa8GVwpl
- 6YSPTJ8WKUKinFA3k5Tcj/1EShAL4PF2W+n8Hj6CJNEWfIqe3AMrex08L8pZyQFEYMQabfOl4Iov
- Pg1PsShbZub3egBhMSkddtGkzDoCDN7V/f3066scTAKJY9yeQo6mFj+oBoJpRlWX4vjTQlD7O6wn
- npQLJZtbVa3xvGXfp826J8a7DErOLhdzJn/v5xKkWSd0caeqJ/t2+3veilCAGrFXkXD4oI+vIK/1
- NH5THMtlYvyHAYGOGpsHxDkFVDWJ1kN9NA6enCQxN+y/AP7Hwkn5qe9DeggJMKBj3vp74dfVTxFt
- 5O5oiyLWM/ONOO3o7I7qeta3MwLZGabXcnV552oMbtHJ3ZcnMZRQaOrn9BCbSjGUFnHQEHYOP+pS
- yxpciHfO4+QS8IwE7z4kCK74eEzERj8DODlNdNTe/+4bG5GHvx8kXQZ6KkM6Oo8fr3pIQE+Tur0x
- NxCuL8HoZUszBrq3huV3gkB+2Ty5zdX2+UhwtcDzp3q0CFHeRkIRCAe1wI3mSezkL0Odgl2TNyIR
- 4pSaiLxpHpeYfKG7Yu4jBlczMx1L5jSK60OT80m7/tzraDBlV1d5K5bY3LlRuQAi2Cph2PK+Rfkf
- SFXnDC0qBXDCRyMmNkwa//frYBrnXOB0PHbQD6cgMnC5M1rshWxsw1/gXTMtnmqhmzF4KZUIm82X
- davERDHbcD5xFI4Tc4UvrRQcxVnmH7g=
-X-Report-Abuse-To: spam@antispamquarantine.host-h.net
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIANse52UC/23MQQ6CMBCF4auQrq2ZzhQKrryHcUFLK41KCSDRG
+ O5udWMNLt9kvv/JRjt4O7Jd9mSDnf3oQxdHvsmYaevuZLlv4mYIKAFFwX3XBd63D15jUyp0hVZ
+ Ss/jeD9b5+yd1OMbd+nEKw+NTnsX7+icyCw5c1LoS6CAncvtwmy4hnLcmXNk7M2NKVUIxUtJO2
+ VJpsJVdU0ooQkIp0rIi07iyINJyTeWXEuQJlZHWQAjSVMYJ80uXZXkBnvnpFlMBAAA=
+To: Vinod Koul <vkoul@kernel.org>, 
+ Kishon Vijay Abraham I <kishon@kernel.org>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Jiancheng Xue <xuejiancheng@hisilicon.com>, 
+ Shawn Guo <shawn.guo@linaro.org>, Philipp Zabel <p.zabel@pengutronix.de>
+Cc: linux-phy@lists.infradead.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>, 
+ David Yang <mmyangfl@gmail.com>, Yang Xiwen <forbidden405@outlook.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1709645533; l=2619;
+ i=forbidden405@outlook.com; s=20230724; h=from:subject:message-id;
+ bh=FihEUwCX50+sOpSeSlKTyAI5nKu3cdR1twC0ge0m/T4=;
+ b=3ymo1/B20cCGRvoJeNsGWfYtGDcaFn42LOyz14PG9giPuRZQvqjiTXG++HxRuNK5BNmHVJ1zK
+ 1ci3BoVGn51AGTtNGey7HifuI4fQ3PfHW3J4obCzKlvy75IKWtm4hZW
+X-Developer-Key: i=forbidden405@outlook.com; a=ed25519;
+ pk=qOD5jhp891/Xzc+H/PZ8LWVSWE3O/XCQnAg+5vdU2IU=
+X-Endpoint-Received:
+ by B4 Relay for forbidden405@outlook.com/20230724 with auth_id=67
+X-Original-From: Yang Xiwen <forbidden405@outlook.com>
+Reply-To: <forbidden405@outlook.com>
 
-Remove the "You can read more about X.25 at" links provided in
-Kconfig as they have not pointed at any relevant pages for quite
-a while.
+This should be considered a hack. The proper solution would be
+extracting write_reg logic to a separate regmap driver. Leaving only
+"write BIT(2) to address 0x6" to the PHY driver.
 
-An old copy of https://www.sangoma.com/tutorials/x25/ can be
-retrieved via https://archive.org/web/ but nothing useful seems
-to have been preserved for http://docwiki.cisco.com/wiki/X.25
+A proper fix should be implemented later.
 
-For the sake of necromancy and those who really did want to
-read more about X.25, a previous incarnation of Kconfig included
-a link to:
-http://www.cisco.com/univercd/cc/td/doc/product/software/ios11/cbook/cx25.htm
-
-Which can still be read at:
-https://web.archive.org/web/20071013101232/http://cisco.com/en/US/docs/ios/11_0/router/configuration/guide/cx25.html
-
-Signed-off-by: Justin Swartz <justin.swartz@risingedge.co.za>
+Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
 ---
- net/x25/Kconfig | 2 --
- 1 file changed, 2 deletions(-)
+Changes in v5:
+- commit msg: bulk->array. (Philipp)
+- use devm_reset_control_array_exclusive() instead. (Philipp)
+- Link to v4: https://lore.kernel.org/r/20240305-inno-phy-v4-0-a03204c9cf1c@outlook.com
 
-diff --git a/net/x25/Kconfig b/net/x25/Kconfig
-index 68729aa3a..dc72302cb 100644
---- a/net/x25/Kconfig
-+++ b/net/x25/Kconfig
-@@ -17,8 +17,6 @@ config X25
- 	  if you want that) and the lower level data link layer protocol LAPB
- 	  (say Y to "LAPB Data Link Driver" below if you want that).
- 
--	  You can read more about X.25 at <https://www.sangoma.com/tutorials/x25/> and
--	  <http://docwiki.cisco.com/wiki/X.25>.
- 	  Information about X.25 for Linux is contained in the files
- 	  <file:Documentation/networking/x25.rst> and
- 	  <file:Documentation/networking/x25-iface.rst>.
+Changes in v4:
+- remove reference to histb-clock.h
+- remove fallback compatible as it has no use.
+- remove phy_type (belongs to host controller)
+- fix bot error (Rob Herring)
+- split YAML convertion into two commits, the other add mv100 compatible (Krzysztof Kozlowski)
+- Link to v3: https://lore.kernel.org/r/20240220-inno-phy-v3-0-893cdf8633b4@outlook.com
+
+Changes in v3:
+- address a few binding issue mistakenly missing in v2 (Krzysztof Kozlowski)
+  - add msg about hi3798mv100 being added to compatible list
+  - remove minItems for compatible
+  - remove | for reg:
+- fix existing dts (hi3798cv200.dtsi) due to binding change.
+- Link to v2: https://lore.kernel.org/r/20240217-inno-phy-v2-0-3bf7e87b0e9e@outlook.com
+
+Changes in v2:
+- rewrite commit msg to show why hisilicon,hi3798mv100-usb2-phy is added during YAML convertion.
+- split required: to multiple line
+- add allOf to wrap if:
+- remove perictrl wrapper and the second phy in the example
+- tested the binding both for mv200 and cv200 dts. fix some silly errors.
+- remove Pengcheng Li from To:
+Above all are suggested by Krzysztof
+- use reset_control_array_* APIs to ensure all resets are controlled
+- Link to v1: https://lore.kernel.org/r/20240216-inno-phy-v1-0-1ab912f0533f@outlook.com
+
+---
+Yang Xiwen (5):
+      phy: hisilicon: hisi-inno-phy: enable clocks for every ports
+      dt-bindings: phy: hisi-inno-usb2: convert to YAML
+      dt-bindings: phy: hisilicon,inno-usb2-phy: add support for Hi3798MV100 INNO PHY
+      dt-bindings: phy: hisi-inno-usb2: add compatible of hisilicon,hi3798mv200-usb2-phy
+      phy: hisilicon: hisi-inno-phy: add support for Hi3798MV200 INNO PHY
+
+ .../bindings/phy/hisilicon,inno-usb2-phy.yaml      | 119 +++++++++++++++++++++
+ .../devicetree/bindings/phy/phy-hisi-inno-usb2.txt |  71 ------------
+ drivers/phy/hisilicon/phy-hisi-inno-usb2.c         |  70 +++++++-----
+ 3 files changed, 162 insertions(+), 98 deletions(-)
+---
+base-commit: 8d3dea210042f54b952b481838c1e7dfc4ec751d
+change-id: 20240216-inno-phy-a2d872f6b74b
+
+Best regards,
 -- 
+Yang Xiwen <forbidden405@outlook.com>
 
 
