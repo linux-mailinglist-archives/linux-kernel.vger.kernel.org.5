@@ -1,155 +1,224 @@
-Return-Path: <linux-kernel+bounces-92820-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92821-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11C4C87267B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:24:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F94C87267C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:25:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C295E28BE48
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:24:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25A60287399
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:25:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D75E318C36;
-	Tue,  5 Mar 2024 18:24:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3556218AF4;
+	Tue,  5 Mar 2024 18:25:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jJo1F27w"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="bZDlQX2A"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FA3718628;
-	Tue,  5 Mar 2024 18:24:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFA911863C
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 18:24:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709663045; cv=none; b=RDj+NKqQDDM/7abhINDV8b/ezXrl4hqMacqi55gpVAkpJ32dgXQE16OkQZJMqZorXsv1tYku9HJxingtUy8PD5jgcy0cQiQBY2a+QuboDphrs+0h4npFgeSLkQW5t+kozSxXCw6/xNI5WgeXxGsBOKzJmX5OtsNpNNz2VMwahRo=
+	t=1709663099; cv=none; b=LYlHSIKZssGyQdg+8vZgdusHn/SL/bFTQzRVHfiKx8aPunADZSfIm9vQSVF9UzyX+juAyvJZJBfPauvxaoMRyh0+Q7f2WNI+O2+DG6EuJhzRuQOwigsJK38gil1JPaaAGSllpo7ZeegR5bGrN43+oTBIiTEVIQcdC0Bm1eZ4QUs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709663045; c=relaxed/simple;
-	bh=TdfupDTf1t5grk4CAdN9p9bu1bJf5wgJEBrWS5hljOg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=eT4eGTUeBsinTB1b+uRUm4hCWJfM7CeffWDU3uGxQHwOl5HK7A9cw7n+aAIqLdZP40XjIHhkxq12UD5KePSwm28Z/nZnKrJj1IjlxDAhspwzCWnzWf4dkx8dFDFTcz5N8BIfgDiOaWfXAdvqjgI78Cv51SdzjyIJ6zXzZFhe5nc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jJo1F27w; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-412ee276dc9so6458255e9.1;
-        Tue, 05 Mar 2024 10:24:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709663042; x=1710267842; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Vewip57IplzR6mytY6eKGIRl6x4l2s/G9UmkfWElT2c=;
-        b=jJo1F27wG6ZlYZ4Lfj3ooioshZis+J3Rtgl3tnC9b+e8wJE9uCiceZ1RaqAODX2Irv
-         mPGzsU18LEkBDqY25FwF5mKi1FQwd3tde6XAdyg1QqCzPFqmnFzHqQLBv576Tsi/x85P
-         cFXMz+cQnr3nwR3fAx8CsDMGPgEwJogQmlnm7xrza0NVoEDDdUzGm8wPqMqR54oPPHNW
-         VkRPSR8JwdOp5RTTYPGPtTsg9ymVGhpjmySwRvTAgjk8ide50dtoq3Q/ID1fMezklk/P
-         T/BZ95NsEJNOx57WSbgz/5mNqEDLwzb9UK0vFrYfu8A5vM/eMZ+s4S+k7BLqt55pSNup
-         ar9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709663042; x=1710267842;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Vewip57IplzR6mytY6eKGIRl6x4l2s/G9UmkfWElT2c=;
-        b=dKz53j1hbJSZoHeZobNXhCPYk3SVtn7msCQyULto/ides2dpTcPySwe/lYIDPZgUYB
-         REvNMBnmFd0T0r2MM0y0wYWBkxMZBiVxnz1bDq4ABUS3x/3U8tK8upNKvscWh8Bpcz04
-         /GuloAoj7wwS8fNYD7XdVL9TYQFjn504elOTYuMZONbWuo9zck3C1G6EbYCqg8tUI3kB
-         KRra4G6bsH3aU7z+t9KJeTn2AjsEbgiE2i1VPGdHaY/3rzsKpl/RzCfRV/hkv2paYFFn
-         PG6g8ql+DpffTwJEhUKJkgA72vXESQvvvg7WR6PNDicIQJcRJpJBfcCfk39me3EZhRW4
-         xKgQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX4/yIQITTCf4EhsMjjyQ24JuNPBOibDRXvFSLBFnO+XTGtPeV+sNWDFB14Km5THBhpbBuGmzfYN3nEOENN7zxwvSBmSKjHcRe6OnqQ
-X-Gm-Message-State: AOJu0Ywyn23oOlTimPZjxCGcy98aNijkKsZLLgG+Wd+1tu3IZMBRDPqW
-	8qtX0ozSMQBbGllS5MgV6rxBe7XNgaAPGe+3MM+DMASnjLzdkJl0
-X-Google-Smtp-Source: AGHT+IHuLC2lqjmF/KzE+5aw87KqSBEd9s52FBcCsTOYoo6Oei/ieq/y3oovoRv5bXnPKrKBSFxAIw==
-X-Received: by 2002:a05:600c:3481:b0:412:e676:2ff1 with SMTP id a1-20020a05600c348100b00412e6762ff1mr4363859wmq.41.1709663041649;
-        Tue, 05 Mar 2024 10:24:01 -0800 (PST)
-Received: from [::1] ([2001:19f0:ac01:93b:5400:4ff:fe77:2098])
-        by smtp.gmail.com with ESMTPSA id l1-20020a05600c1d0100b00412ea52b102sm3592206wms.34.2024.03.05.10.23.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 10:24:01 -0800 (PST)
-From: Yuxin Wang <yuxinwang9999@gmail.com>
-To: Marcel Holtmann <marcel@holtmann.org>,
-	Johan Hedberg <johan.hedberg@gmail.com>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc: linux-bluetooth@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Yuxin Wang <yuxinwang9999@gmail.com>
-Subject: [PATCH] Bluetooth: Fix inconsistent LE packet sending behaviors
-Date: Tue,  5 Mar 2024 18:23:49 +0000
-Message-Id: <20240305182349.4182578-1-yuxinwang9999@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1709663099; c=relaxed/simple;
+	bh=o9CJwYV786v6dPmGV9qZCaWyrfhHpxl39VvWKwVU68Y=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=OjlWIGBiJdj4g/Fa2568wVTOOylNROtFyTNjJgH7RfXFwy6724uc6qQTofEeDBYvSSG3EYekr2TcGrdRmr3gqx9Rq6jmPiFPYX3iH+LpgmWn4/7QcXqM8ln3qU4Ea2Em6yuxUcOjBheKMFuKmTr2eeqeAD9Gh2MBX6ZirzFLfhY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=bZDlQX2A; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 425Bjwps004111;
+	Tue, 5 Mar 2024 18:24:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type; s=
+	qcppdkim1; bh=eb5A4JDbuchBBafxqmTtCwKQlj+2d0meUpzdl7x3pG4=; b=bZ
+	DlQX2AZVmQ2Ysn5AiHZCP74B2xDpTEHzUkolr4+zzp4LjQfeW2GUiy4cvi0Yquoc
+	IIT732TBwE+ufyWAo2eaxdPqU49OjgFBu+6U/Ct00zvG1oUSsXYqK3Ca394TncDJ
+	3G2saNNEJWWYdNPVTDDKFFidpoDabuLu28ckfI0tlV99fBDjY5Osrk7+48kgmgNi
+	Z85YQg5vC1xNj/cFIyrf3wbBNu1Wkw2YrpfdCvYLwBNrXc8Bv3vMJ3oX/vlXwdIS
+	amt5f+dhHLBq76pu91FRKUu5F25ybgW9CWDlyrpo14/k1FVI5Br/htvGuxKx77uU
+	it1npCt9tMSjusqsRLaA==
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wp00x18tf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 05 Mar 2024 18:24:50 +0000 (GMT)
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 425IOnRW028679
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 5 Mar 2024 18:24:50 GMT
+Received: from hu-mojha-hyd.qualcomm.com (10.80.80.8) by
+ nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 5 Mar 2024 10:24:48 -0800
+From: Mukesh Ojha <quic_mojha@quicinc.com>
+To: <srinivas.kandagatla@linaro.org>
+CC: <linux-kernel@vger.kernel.org>, Mukesh Ojha <quic_mojha@quicinc.com>
+Subject: [PATCH] nvmem: qfprom: Add constraint read for some SoCs
+Date: Tue, 5 Mar 2024 23:54:40 +0530
+Message-ID: <1709663080-10957-1-git-send-email-quic_mojha@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: j0gtkOSewRoDh9tHxhjrOlpFdf9gXyro
+X-Proofpoint-GUID: j0gtkOSewRoDh9tHxhjrOlpFdf9gXyro
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-05_15,2024-03-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=0 clxscore=1015 mlxscore=0 mlxlogscore=999
+ impostorscore=0 phishscore=0 adultscore=0 malwarescore=0 spamscore=0
+ bulkscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403050147
 
-In the `hci_sched_le` function, the calculation of `quote` within
-`hci_chan_sent` may become incorrect after breaking from the inner
-while loop. The issue stems from `hci_chan_sent` using `hdev->le_cnt`
-instead of the updated `cnt`. As a result, `quote` may exceed `cnt`,
-leading to a negative `cnt` and causing further inconsistent behaviors.
+Few SoCs starting from sm8450 where fuse region is
+accessed using secure bus where it is not possible
+to do incremental bytewise reading, while it is
+possible to read 4 byte at a time.
 
-This patch modifies `cnt` to be a pointer, aligning with the pattern
-used in the nearby `hci_sched_iso` function.
+Add required support in qfprom driver to support
+reading fuse information on these SoCs.
 
-Signed-off-by: Yuxin Wang <yuxinwang9999@gmail.com>
+Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
 ---
- net/bluetooth/hci_core.c | 19 +++++++------------
- 1 file changed, 7 insertions(+), 12 deletions(-)
+ drivers/nvmem/qfprom.c | 56 +++++++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 51 insertions(+), 5 deletions(-)
 
-diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
-index 2821a42ce..785a6dde9 100644
---- a/net/bluetooth/hci_core.c
-+++ b/net/bluetooth/hci_core.c
-@@ -3750,19 +3750,19 @@ static void hci_sched_le(struct hci_dev *hdev)
- {
- 	struct hci_chan *chan;
- 	struct sk_buff *skb;
--	int quote, cnt, tmp;
-+	int quote, *cnt, tmp;
+diff --git a/drivers/nvmem/qfprom.c b/drivers/nvmem/qfprom.c
+index 116a39e804c7..8fce445f0320 100644
+--- a/drivers/nvmem/qfprom.c
++++ b/drivers/nvmem/qfprom.c
+@@ -68,6 +68,7 @@ struct qfprom_soc_data {
+  * @secclk:       Clock supply.
+  * @vcc:          Regulator supply.
+  * @soc_data:     Data that for things that varies from SoC to SoC.
++ * @soc_cdata:    Data that are relevant to convey SoC constraints.
+  */
+ struct qfprom_priv {
+ 	void __iomem *qfpraw;
+@@ -78,6 +79,7 @@ struct qfprom_priv {
+ 	struct clk *secclk;
+ 	struct regulator *vcc;
+ 	const struct qfprom_soc_data *soc_data;
++	const struct qfprom_soc_compatible_data *soc_cdata;
+ };
  
- 	BT_DBG("%s", hdev->name);
+ /**
+@@ -99,10 +101,14 @@ struct qfprom_touched_values {
+  *
+  * @keepout: Array of keepout regions for this SoC.
+  * @nkeepout: Number of elements in the keepout array.
++ * @word_size: Should be given for SoC where it is not possible
++ *	       to do incremental reading or bytewise and while
++ *	       it is possible read 4 byte at a time.
+  */
+ struct qfprom_soc_compatible_data {
+ 	const struct nvmem_keepout *keepout;
+ 	unsigned int nkeepout;
++	unsigned int word_size;
+ };
  
- 	if (!hci_conn_num(hdev, LE_LINK))
- 		return;
+ static const struct nvmem_keepout sc7180_qfprom_keepout[] = {
+@@ -125,6 +131,10 @@ static const struct qfprom_soc_compatible_data sc7280_qfprom = {
+ 	.nkeepout = ARRAY_SIZE(sc7280_qfprom_keepout)
+ };
  
--	cnt = hdev->le_pkts ? hdev->le_cnt : hdev->acl_cnt;
-+	cnt = hdev->le_pkts ? &hdev->le_cnt : &hdev->acl_cnt;
- 
--	__check_timeout(hdev, cnt, LE_LINK);
-+	__check_timeout(hdev, *cnt, LE_LINK);
- 
--	tmp = cnt;
--	while (cnt && (chan = hci_chan_sent(hdev, LE_LINK, &quote))) {
-+	tmp = *cnt;
-+	while (*cnt && (chan = hci_chan_sent(hdev, LE_LINK, &quote))) {
- 		u32 priority = (skb_peek(&chan->data_q))->priority;
- 		while (quote-- && (skb = skb_peek(&chan->data_q))) {
- 			BT_DBG("chan %p skb %p len %d priority %u", chan, skb,
-@@ -3777,7 +3777,7 @@ static void hci_sched_le(struct hci_dev *hdev)
- 			hci_send_frame(hdev, skb);
- 			hdev->le_last_tx = jiffies;
- 
--			cnt--;
-+			(*cnt)--;
- 			chan->sent++;
- 			chan->conn->sent++;
- 
-@@ -3787,12 +3787,7 @@ static void hci_sched_le(struct hci_dev *hdev)
- 		}
- 	}
- 
--	if (hdev->le_pkts)
--		hdev->le_cnt = cnt;
--	else
--		hdev->acl_cnt = cnt;
--
--	if (cnt != tmp)
-+	if (*cnt != tmp)
- 		hci_prio_recalculate(hdev, LE_LINK);
++static const struct qfprom_soc_compatible_data sm8450_qfprom = {
++	.word_size = 4,
++};
++
+ /**
+  * qfprom_disable_fuse_blowing() - Undo enabling of fuse blowing.
+  * @priv: Our driver data.
+@@ -317,21 +327,55 @@ static int qfprom_reg_write(void *context, unsigned int reg, void *_val,
+ 	return ret;
  }
  
++static int __qfprom_reg_constraint_read(void __iomem *base, unsigned int reg,
++					void *_val, size_t bytes,
++					unsigned int word_size)
++{
++	unsigned int i;
++	u8 *val = _val;
++	u32 read_val;
++	u8 *tmp;
++
++	for (i = 0; i < bytes; i++, reg++) {
++		if (i == 0 || reg % word_size == 0) {
++			read_val = readl(base + (reg & ~(word_size - 1)));
++			tmp = (u8 *)&read_val;
++		}
++
++		val[i] = tmp[reg & (word_size - 1)];
++	}
++
++	return 0;
++}
++
++static int __qfprom_reg_read(void __iomem *base, unsigned int reg, void *_val,
++			     size_t bytes)
++{
++	u8 *val = _val;
++	int words = bytes;
++	int i = 0;
++
++	while (words--)
++		*val++ = readb(base + reg + i++);
++
++	return 0;
++}
++
+ static int qfprom_reg_read(void *context,
+ 			unsigned int reg, void *_val, size_t bytes)
+ {
+ 	struct qfprom_priv *priv = context;
+-	u8 *val = _val;
+-	int i = 0, words = bytes;
+ 	void __iomem *base = priv->qfpcorrected;
+ 
+ 	if (read_raw_data && priv->qfpraw)
+ 		base = priv->qfpraw;
+ 
+-	while (words--)
+-		*val++ = readb(base + reg + i++);
++	if (priv->soc_cdata && priv->soc_cdata->word_size == 4)
++		return __qfprom_reg_constraint_read(base, reg,
++						    _val, bytes,
++						    priv->soc_cdata->word_size);
+ 
+-	return 0;
++	return __qfprom_reg_read(base, reg, _val, bytes);
+ }
+ 
+ static void qfprom_runtime_disable(void *data)
+@@ -390,6 +434,7 @@ static int qfprom_probe(struct platform_device *pdev)
+ 		econfig.nkeepout = soc_data->nkeepout;
+ 	}
+ 
++	priv->soc_cdata = soc_data;
+ 	/*
+ 	 * If more than one region is provided then the OS has the ability
+ 	 * to write.
+@@ -447,6 +492,7 @@ static const struct of_device_id qfprom_of_match[] = {
+ 	{ .compatible = "qcom,qfprom",},
+ 	{ .compatible = "qcom,sc7180-qfprom", .data = &sc7180_qfprom},
+ 	{ .compatible = "qcom,sc7280-qfprom", .data = &sc7280_qfprom},
++	{ .compatible = "qcom,sm8450-qfprom", .data = &sm8450_qfprom},
+ 	{/* sentinel */},
+ };
+ MODULE_DEVICE_TABLE(of, qfprom_of_match);
 -- 
-2.39.2
+2.7.4
 
 
