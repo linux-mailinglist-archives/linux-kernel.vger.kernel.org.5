@@ -1,113 +1,232 @@
-Return-Path: <linux-kernel+bounces-92870-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92871-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38637872742
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 20:04:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB80A872746
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 20:05:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A3C11C22A95
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:04:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7008028C4C4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:05:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EC6124B29;
-	Tue,  5 Mar 2024 19:04:36 +0000 (UTC)
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F929288DB;
+	Tue,  5 Mar 2024 19:05:08 +0000 (UTC)
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFDB51BF3C;
-	Tue,  5 Mar 2024 19:04:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50D8E4DA11;
+	Tue,  5 Mar 2024 19:05:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709665476; cv=none; b=DyQiuxARMnPh02TUa4h4EitPmXcKLX4/c/MZZWNgldfv3cSxfesl2fHZGTfr1stMLM7vVdJB1M6kXo6exKKqFsO1Flxq0Bn6gVOL1ip553QlG5Lr89A9bAuCaHFsoyyuqolqee74pqU1wQdziaF4KbBi4Q7DAJXzfJEZIt8/Uoc=
+	t=1709665508; cv=none; b=jPogaTfD68hn0tI2WwmWC0MYes3wIIcYTvdbnOHUZHkyjbgrbNVdV7d/GLBIjfyNW0eVvQ5ccpaU+9bLV/GNGLlq1sbShfGcdgO43g0tjdTao74+YWdAPXu3tnfsJbQjpV5c2XRzA4wd10dpE4tm4D6QRLpqRBgZr4q3uLutOBo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709665476; c=relaxed/simple;
-	bh=rLNadQH124qkvis5G8T5Ibj9jxNp33uFHpoXpJVOMkA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ESv4P0/SYRiVPp0sTi0IKoJw8gJdb3lxeJCt/hJM7x5SipCc2+RIUJa1aPXPGgXO1SVjF+vrvr20idO/duK7L98WJnLYi+4OjFKzVyqEl514Tm12No0ldzf/Z9kCtC7l2JiXjEnt6vGMl2ICkkgNxfhBzBu8aUyeqx2AiUovrDY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-29a74c88f74so4022311a91.3;
-        Tue, 05 Mar 2024 11:04:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709665474; x=1710270274;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=22MPWwbM3zhSE10kK+4F0IeX95NXlBV1KV/bo2U8AfY=;
-        b=vt6/zQsfhbUdqT+1IKfAFfT0bkVTytsg2P2bir4aM1Xe9Mqzf0m8vTzBdvZbHPR3Vs
-         NqfVK7PLTl4dzp6BPARD+DRU++gnAlxQrhUQxIXECYqMiJjpVi9x/FdrBoxSuR3b00f9
-         yIgyYmd33RDzTRwqbiAA+HsGmB5gPOBHcw5xHGkx4Swbx7zxylvvUniai31crjjzahj0
-         VorGGDBR7QYpcT8UKEkDhcdbRttoGy2D16/6J/AZGyzfwtlzGXt4dGSjuvN+0e3w2NBg
-         k96NI91MGWLT5fnu/edhCf+zQ3Oj13AHiD915XIDhKWKRS67o75ZuDkMI1YljiUdrPqi
-         q7TA==
-X-Forwarded-Encrypted: i=1; AJvYcCVMeQtwlcKmJOQFzRUMbSiJOLRHmj3a5wgQWAx+JaNLTSnxNoaTOBZJWepUPk8jFpfM1RY/c854f23nLX5leCHk6Dcg8Y90U4UU7GqA1TH6zq8C8gK5L/HxYUMjEdB+8vdIi+hpJ47GIQ==
-X-Gm-Message-State: AOJu0YxzU3unzZpjno+IrMvQjFfwsijzfWT6bIUORcS7UFw3gS1mRkbg
-	nagwn7kpAPKvbTspO8QGZF3HNdeoyGNZ3zSyaTm9+/IvLu8CEFaL
-X-Google-Smtp-Source: AGHT+IGT1YCGV1vjwrx6h0SEn3DJvK2qWVOsrijPQkE7dEHsjCiUdp8ItY0MTp+lElJS3fVrH8FvZw==
-X-Received: by 2002:a17:90a:17cb:b0:299:3511:1554 with SMTP id q69-20020a17090a17cb00b0029935111554mr10236225pja.40.1709665473853;
-        Tue, 05 Mar 2024 11:04:33 -0800 (PST)
-Received: from ?IPV6:2620:0:1000:8411:3e11:2c1a:c1ee:7fe1? ([2620:0:1000:8411:3e11:2c1a:c1ee:7fe1])
-        by smtp.gmail.com with ESMTPSA id q40-20020a17090a17ab00b00298cc4c56cdsm13167208pja.22.2024.03.05.11.04.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Mar 2024 11:04:33 -0800 (PST)
-Message-ID: <f6045888-bb53-4ba2-90a9-98fc6a5254ad@acm.org>
-Date: Tue, 5 Mar 2024 11:04:31 -0800
+	s=arc-20240116; t=1709665508; c=relaxed/simple;
+	bh=H1Qiv31s9Oe+qmeR5ZSKcolby0D5p691hIDNCYdTa8w=;
+	h=From:In-Reply-To:Content-Type:References:Date:Cc:To:MIME-Version:
+	 Message-ID:Subject; b=KAaKy9UgSLF+AkHW70l1eM/Zf9OsSvseIwQnS/cvCSl75q6mMbeRI/XhoPj5ksPoV8rRoMF27WjytdLuFI+keN+gzuZz7wxh+5WyeG+NnrjL5xIhBWeBbYLqAMw4nhj39juJIamMptbbHw3tG6tp3ceKUPe3Fu7gHp0t+dbxFsg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+Received: from harlem.collaboradmins.com (harlem.collaboradmins.com [IPv6:2a01:4f8:1c0c:5936::1])
+	by madrid.collaboradmins.com (Postfix) with ESMTP id 7262F378201D;
+	Tue,  5 Mar 2024 19:05:02 +0000 (UTC)
+From: "Shreeya Patel" <shreeya.patel@collabora.com>
+In-Reply-To: <7657358.31r3eYUQgx@diego>
+Content-Type: text/plain; charset="utf-8"
+X-Forward: 127.0.0.1
+References: <20240305123648.8847-1-shreeya.patel@collabora.com>
+ <20240305123648.8847-5-shreeya.patel@collabora.com> <7657358.31r3eYUQgx@diego>
+Date: Tue, 05 Mar 2024 19:05:02 +0000
+Cc: mchehab@kernel.org, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, mturquette@baylibre.com, sboyd@kernel.org, p.zabel@pengutronix.de, jose.abreu@synopsys.com, nelson.costa@synopsys.com, dmitry.osipenko@collabora.com, sebastian.reichel@collabora.com, shawn.wen@rock-chips.com, nicolas.dufresne@collabora.com, hverkuil@xs4all.nl, hverkuil-cisco@xs4all.nl, kernel@collabora.com, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-clk@vger.kernel.org, linux-arm@lists.infradead.org
+To: =?utf-8?q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] scsi: ufs: Re-use device management locking code
-Content-Language: en-US
-To: Avri Altman <avri.altman@wdc.com>,
- "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
- "Martin K . Petersen" <martin.petersen@oracle.com>
-Cc: Bean Huo <beanhuo@micron.com>, linux-scsi@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240304092346.654-1-avri.altman@wdc.com>
- <20240304092346.654-2-avri.altman@wdc.com>
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20240304092346.654-2-avri.altman@wdc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <45138-65e76d00-9-580ee380@232156106>
+Subject: =?utf-8?q?Re=3A?= [PATCH v2 4/6] =?utf-8?q?arm64=3A?==?utf-8?q?_dts=3A?=
+ =?utf-8?q?_rockchip=3A?= Add device tree support for HDMI RX Controller
+User-Agent: SOGoMail 5.10.0
+Content-Transfer-Encoding: quoted-printable
 
-On 3/4/24 01:23, Avri Altman wrote:
->   /**
->    * ufshcd_exec_dev_cmd - API for sending device management requests
->    * @hba: UFS hba
-> @@ -3291,11 +3305,6 @@ static int ufshcd_exec_dev_cmd(struct ufs_hba *hba,
->   	struct ufshcd_lrb *lrbp;
->   	int err;
->   
-> -	/* Protects use of hba->reserved_slot. */
-> -	lockdep_assert_held(&hba->dev_cmd.lock);
-> -
-> -	down_read(&hba->clk_scaling_lock);
-> -
->   	lrbp = &hba->lrb[tag];
->   	lrbp->cmd = NULL;
->   	err = ufshcd_compose_dev_cmd(hba, lrbp, cmd_type, tag);
+On Tuesday, March 05, 2024 19:41 IST, Heiko St=C3=BCbner <heiko@sntech.=
+de> wrote:
 
-Please restore the lockdep_assert_held() call.
+> Hi,
+>=20
 
-> -	/* Protects use of hba->reserved_slot. */
-> -	lockdep_assert_held(&hba->dev_cmd.lock);
-> -
-> -	down_read(&hba->clk_scaling_lock);
-> -
->   	lrbp = &hba->lrb[tag];
->   	lrbp->cmd = NULL;
->   	lrbp->task_tag = tag;
+Hi Heiko,
 
-Same comment here - please restore the lockdep_assert_held() call.
+>=20
+> Am Dienstag, 5. M=C3=A4rz 2024, 13:36:46 CET schrieb Shreeya Patel:
+> > Add device tree support for Synopsys DesignWare HDMI RX
+> > Controller.
+> >=20
+> > Reviewed-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+> > Tested-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+> > Co-developed-by: Dingxian Wen <shawn.wen@rock-chips.com>
+> > Signed-off-by: Dingxian Wen <shawn.wen@rock-chips.com>
+> > Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
+> > ---
+> > Changes in v2 :-
+> >   - Fix some of the checkpatch errors and warnings
+> >   - Rename resets, vo1-grf and HPD
+> >   - Move hdmirx=5Fcma node to the rk3588.dtsi file
+> >=20
+> >  .../boot/dts/rockchip/rk3588-pinctrl.dtsi     | 41 ++++++++++++++
+> >  arch/arm64/boot/dts/rockchip/rk3588.dtsi      | 55 +++++++++++++++=
+++++
+> >  2 files changed, 96 insertions(+)
+>=20
+> > diff --git a/arch/arm64/boot/dts/rockchip/rk3588.dtsi b/arch/arm64/=
+boot/dts/rockchip/rk3588.dtsi
+> > index 5519c1430cb7..8adb98b99701 100644
+> > --- a/arch/arm64/boot/dts/rockchip/rk3588.dtsi
+> > +++ b/arch/arm64/boot/dts/rockchip/rk3588.dtsi
+> > @@ -7,6 +7,24 @@
+> >  #include "rk3588-pinctrl.dtsi"
+> > =20
+> >  / {
+> > +	reserved-memory {
+> > +		#address-cells =3D <2>;
+> > +		#size-cells =3D <2>;
+> > +		ranges;
+>=20
+> add blank line here
+>=20
+> > +		/*
+> > +		 * The 4k HDMI capture controller works only with 32bit
+> > +		 * phys addresses and doesn't support IOMMU. HDMI RX CMA
+> > +		 * must be reserved below 4GB.
+> > +		 */
+> > +		hdmirx=5Fcma: hdmirx=5Fcma {
+>=20
+> phandles use "=5F", but node-names "-"
+>=20
+> > +			compatible =3D "shared-dma-pool";
+> > +			alloc-ranges =3D <0x0 0x0 0x0 0xffffffff>;
+> > +			size =3D <0x0 (160 * 0x100000)>; /* 160MiB */
+>=20
+> The comment above that node, could elaborate where the value of 160MB
+> originates from. I assume it is to hold n-times of 4K frames or whate=
+ver,
+> but it would be helpful for people to be able to read that.
+>=20
 
-Otherwise this patch looks good to me.
+right, we did the following calculation to come up with this value :-
+3840 * 2160 * 4 (bytes/pix) * 2 (frames/buffer) / 1000 / 1000 =3D 66M
+and then we do the 2x times of this value to be on the safer side
+and support all practical use-cases.
+
+I'll add some more details to the comment in v3.
+
+>=20
+> > +			no-map;
+> > +			status =3D "disabled";
+> > +		};
+> > +	};
+> > +
+> >  	pcie30=5Fphy=5Fgrf: syscon@fd5b8000 {
+> >  		compatible =3D "rockchip,rk3588-pcie3-phy-grf", "syscon";
+> >  		reg =3D <0x0 0xfd5b8000 0x0 0x10000>;
+> > @@ -85,6 +103,38 @@ i2s10=5F8ch: i2s@fde00000 {
+> >  		status =3D "disabled";
+> >  	};
+> > =20
+> > +	hdmi=5Freceiver: hdmi-receiver@fdee0000 {
+>=20
+> Maybe rename the label to "hdmirx:" ... that way in a board enabling =
+the
+> cma region, both nodes would stay close to each other?
+>=20
+
+Umm we already have receiver in the name so I am not sure if adding rx =
+will be
+a good idea. I was trying to keep it consistent with the names used in =
+other device tree files.
+In case you still feel otherwise then do let me know, I'll make the cha=
+nge.
+
+>=20
+> > +		compatible =3D "rockchip,rk3588-hdmirx-ctrler", "snps,dw-hdmi-rx=
+";
+> > +		reg =3D <0x0 0xfdee0000 0x0 0x6000>;
+> > +		power-domains =3D <&power RK3588=5FPD=5FVO1>;
+> > +		rockchip,grf =3D <&sys=5Fgrf>;
+> > +		rockchip,vo1-grf =3D <&vo1=5Fgrf>;
+> > +		interrupts =3D <GIC=5FSPI 177 IRQ=5FTYPE=5FLEVEL=5FHIGH 0>,
+> > +			     <GIC=5FSPI 436 IRQ=5FTYPE=5FLEVEL=5FHIGH 0>,
+> > +			     <GIC=5FSPI 179 IRQ=5FTYPE=5FLEVEL=5FHIGH 0>;
+> > +		interrupt-names =3D "cec", "hdmi", "dma";
+> > +		clocks =3D <&cru ACLK=5FHDMIRX>,
+> > +			 <&cru CLK=5FHDMIRX=5FAUD>,
+> > +			 <&cru CLK=5FCR=5FPARA>,
+> > +			 <&cru PCLK=5FHDMIRX>,
+> > +			 <&cru CLK=5FHDMIRX=5FREF>,
+> > +			 <&cru PCLK=5FS=5FHDMIRX>,
+> > +			 <&cru HCLK=5FVO1>;
+> > +		clock-names =3D "aclk",
+> > +			      "audio",
+> > +			      "cr=5Fpara",
+> > +			      "pclk",
+> > +			      "ref",
+> > +			      "hclk=5Fs=5Fhdmirx",
+> > +			      "hclk=5Fvo1";
+>=20
+> the driver uses of=5Freserved=5Fmem=5Fdevice=5Finit(), so doesn't thi=
+s node need
+> a "memory-region =3D <&hdmirx=5Fcma>; or similar?
+>=20
+
+yes, we should have the memory-region property here. My bad, I'll corre=
+ct this in v3.
+
+>=20
+> > +		resets =3D <&cru SRST=5FA=5FHDMIRX>, <&cru SRST=5FP=5FHDMIRX>,
+> > +			 <&cru SRST=5FHDMIRX=5FREF>, <&cru SRST=5FA=5FHDMIRX=5FBIU>;
+> > +		reset-names =3D "axi", "apb", "ref", "biu";
+> > +		pinctrl-0 =3D <&hdmim1=5Frx>;
+> > +		pinctrl-names =3D "default";
+> > +		status =3D "disabled";
+> > +	};
+> > +
+> >  	pcie3x4: pcie@fe150000 {
+> >  		compatible =3D "rockchip,rk3588-pcie", "rockchip,rk3568-pcie";
+> >  		#address-cells =3D <3>;
+> > @@ -339,3 +389,8 @@ pcie30phy: phy@fee80000 {
+> >  		status =3D "disabled";
+> >  	};
+> >  };
+> > +
+> > +&hdmirx=5Fcma {
+> > +	status =3D "okay";
+> > +};
+>=20
+> I'd assume a board that enables &hdmi=5Freceiver would also enable hd=
+mirx=5Fcma
+> and not the soc dtsi for =5Fall=5F boards?
+>=20
+
+Actually this node should be in the rock-5b.dts file instead of here.
+v1 had it correct but I made a mistake in v2 :(
+Thanks for pointing this out, I'll fix this and send a v3 soon.
+
 
 Thanks,
+Shreeya Patel
 
-Bart.
+>=20
+> Thanks
+> Heiko
+>=20
+>=20
+> =5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=
+=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F
+> Kernel mailing list -- kernel@mailman.collabora.com
+> To unsubscribe send an email to kernel-leave@mailman.collabora.com
+> This list is managed by https://mailman.collabora.com
+
 
