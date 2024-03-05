@@ -1,149 +1,77 @@
-Return-Path: <linux-kernel+bounces-92617-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92618-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E39AF8722F4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:38:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90C1D8722F6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:38:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FFFA2862DF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:38:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2FF941F25E16
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:38:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37D30127B54;
-	Tue,  5 Mar 2024 15:38:35 +0000 (UTC)
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59FFF127B50;
+	Tue,  5 Mar 2024 15:38:50 +0000 (UTC)
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DD7B1272B7;
-	Tue,  5 Mar 2024 15:38:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5097C85944;
+	Tue,  5 Mar 2024 15:38:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.27.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709653114; cv=none; b=PBiVXoV3ooAzvIXipj11i9k7Cw9+fFzzqBr9UUGXxQDg9Ii6ccxKYTTUErNEgPX/L8hLe3u+f0BmJTScCP0FypeCOYuSGYECMaL6vlpLnyUvWhCfxcOilT8INl/hhby94sOd49Xfq5q9wZaVlXTJjX9B37gWEGgBi42URrLQ/qc=
+	t=1709653129; cv=none; b=dkpf5OgyGeYTLbFfNVtBhcji30jb1s/hwMMl3NOsT0X8wXYTT6Q4FS40E6fy7eA5/+79BjAkhnmOSk8CTZlhxF3MEb1i3W8l7vO7B7ewxWGKjOutn7z770n+Lfrc6OOqC43utZnfuBlklcVDAMKHeoWfUKjqSA3eY+u53u9cCnc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709653114; c=relaxed/simple;
-	bh=D5pJEtWFcbrQJzHq8eXEwOZZKupXoLaKjU5YgHvZuN0=;
-	h=From:In-Reply-To:Content-Type:References:Date:Cc:To:MIME-Version:
-	 Message-ID:Subject; b=oZW1f8N6kgYdlKsMNbwBfBXAvHWbcE7qUEa99LhNYjwY/pAZ69dj/jjwFSyWUOcvsbEp08MqghuZqVy2KkXtmgOOWapJAHq4Ib1vDnEKm1u+XhTLRmpn4MIez5BL9cMfbsIn+MwQlBY7WxxFAHojOWEMsznvj+zK0egc2iCH+Pg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-Received: from harlem.collaboradmins.com (harlem.collaboradmins.com [IPv6:2a01:4f8:1c0c:5936::1])
-	by madrid.collaboradmins.com (Postfix) with ESMTP id 6863737813B5;
-	Tue,  5 Mar 2024 15:38:30 +0000 (UTC)
-From: "Adrian Ratiu" <adrian.ratiu@collabora.com>
-In-Reply-To: <202403050134.784D787337@keescook>
-Content-Type: text/plain; charset="utf-8"
-X-Forward: 127.0.0.1
-References: <20240301213442.198443-1-adrian.ratiu@collabora.com>
- <20240304-zugute-abtragen-d499556390b3@brauner>
- <202403040943.9545EBE5@keescook>
- <20240305-attentat-robust-b0da8137b7df@brauner> <202403050134.784D787337@keescook>
-Date: Tue, 05 Mar 2024 15:38:30 +0000
-Cc: "Christian Brauner" <brauner@kernel.org>, linux-fsdevel@vger.kernel.org, kernel@collabora.com, linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, "Guenter Roeck" <groeck@chromium.org>, "Doug Anderson" <dianders@chromium.org>, "Jann Horn" <jannh@google.com>, "Andrew Morton" <akpm@linux-foundation.org>, "Randy Dunlap" <rdunlap@infradead.org>, "Mike Frysinger" <vapier@chromium.org>
-To: "Kees Cook" <keescook@chromium.org>, vapier@chromium.org
+	s=arc-20240116; t=1709653129; c=relaxed/simple;
+	bh=7ovliyzJP+HYSxeckuD6+XQkQBinbhAkZ0/wznrdJg4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JOrYxK1gbo0opu3TF8u++VIWrcfDcYxEFlePqLYfTp921ghm53VCCp109U+CKaivW7b7HevzB/EuhFnVq7kDdm3PnrEBqQSciUzQl3WB131EbK7UXgYw9l5kXfUURZZq+5iqEclCjlZFouauDDIRjW+PK4jK3inPkl4g9Nmaci4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=gnumonks.org; arc=none smtp.client-ip=213.95.27.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
+Received: from [78.30.33.11] (port=42874 helo=gnumonks.org)
+	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <pablo@gnumonks.org>)
+	id 1rhWsE-00E3CU-S6; Tue, 05 Mar 2024 16:38:36 +0100
+Date: Tue, 5 Mar 2024 16:38:33 +0100
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: Breno Leitao <leitao@debian.org>
+Cc: Harald Welte <laforge@gnumonks.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	horms@kernel.org, dsahern@kernel.org,
+	"open list:GTP (GPRS Tunneling Protocol)" <osmocom-net-gprs@lists.osmocom.org>
+Subject: Re: [PATCH net-next 1/3] net: gtp: Leverage core stats allocator
+Message-ID: <Zec8eY4IeTyD8NYK@calendula>
+References: <20240305121524.2254533-1-leitao@debian.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <44043-65e73c80-15-1c4f8760@112682428>
-Subject: =?utf-8?q?Re=3A?= [PATCH v2] =?utf-8?q?proc=3A?= allow restricting 
- /proc/pid/mem writes
-User-Agent: SOGoMail 5.10.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240305121524.2254533-1-leitao@debian.org>
+X-Spam-Score: -1.9 (-)
 
-On Tuesday, March 05, 2024 11:41 EET, Kees Cook <keescook@chromium.org>=
- wrote:
+On Tue, Mar 05, 2024 at 04:15:21AM -0800, Breno Leitao wrote:
+> With commit 34d21de99cea9 ("net: Move {l,t,d}stats allocation to core and
+> convert veth & vrf"), stats allocation could be done on net core
+> instead of in this driver.
+> 
+> With this new approach, the driver doesn't have to bother with error
+> handling (allocation failure checking, making sure free happens in the
+> right spot, etc). This is core responsibility now.
+> 
+> Remove the allocation in the gtp driver and leverage the network
+> core allocation instead.
+> 
+> Signed-off-by: Breno Leitao <leitao@debian.org>
 
-> On Tue, Mar 05, 2024 at 09:59:47AM +0100, Christian Brauner wrote:
-> > > > Uhm, this will break the seccomp notifier, no? So you can't tur=
-n on
-> > > > SECURITY=5FPROC=5FMEM=5FRESTRICT=5FWRITE when you want to use t=
-he seccomp
-> > > > notifier to do system call interception and rewrite memory loca=
-tions of
-> > > > the calling task, no? Which is very much relied upon in various
-> > > > container managers and possibly other security tools.
-> > > >=20
-> > > > Which means that you can't turn this on in any of the regular d=
-istros.
-> > >=20
-> > > FWIW, it's a run-time toggle, but yes, let's make sure this works
-> > > correctly.
-> > >=20
-> > > > So you need to either account for the calling task being a secc=
-omp
-> > > > supervisor for the task whose memory it is trying to access or =
-you need
-> > > > to provide a migration path by adding an api that let's caller'=
-s perform
-> > > > these writes through the seccomp notifier.
-> > >=20
-> > > How do seccomp supervisors that use USER=5FNOTIF do those kinds o=
-f
-> > > memory writes currently? I thought they were actually using ptrac=
-e?
-> > > Everything I'm familiar with is just using SECCOMP=5FIOCTL=5FNOTI=
-F=5FADDFD,
-> > > and not doing fancy memory pokes.
-> >=20
-> > For example, incus has a seccomp supervisor such that each containe=
-r
-> > gets it's own goroutine that is responsible for handling system cal=
-l
-> > interception.
-> >=20
-> > If a container is started the container runtime connects to an AF=5F=
-UNIX
-> > socket to register with the seccomp supervisor. It stays connected =
-until
-> > it stops. Everytime a system call is performed that is registered i=
-n the
-> > seccomp notifier filter the container runtime will send a AF=5FUNIX
-> > message to the seccomp supervisor. This will include the following =
-fds:
-> >=20
-> > - the pidfd of the task that performed the system call (we should
-> >   actually replace this with SO=5FPEERPIDFD now that we have that)
-> > - the fd of the task's memory to /proc/<pid>/mem
-> >=20
-> > The seccomp supervisor will then perform the system call intercepti=
-on
-> > including the required memory reads and writes.
->=20
-> Okay, so the patch would very much break that. Some questions, though=
-:
-> - why not use process=5Fvm=5Fwritev()?
-> - does the supervisor depend on FOLL=5FFORCE?
->=20
-> Perhaps is is sufficient to block the use of FOLL=5FFORCE?
->=20
-> I took a look at the Chrome OS exploit, and I =5Fthink=5F it is depen=
-ding
-> on the FOLL=5FFORCE behavior (it searches for a symbol to overwrite t=
-hat
-> if I'm following correctly is in a read-only region), but some of the
-> binaries don't include source code, so I couldn't easily see what was
-> being injected. Mike or Adrian can you confirm this?
+Acked-by: Pablo Neira Ayuso <pablo@netfilter.org>
 
-I can't speak for what is acceptable for ChromeOS security because=20
-I'm not part of that project, so I'll let Mike answer whether blocking
-writes is mandatory for them or blocking FOLL=5FFORCE is enough.
-
-From a design perspective, the question is whether to
-1. block writes and allow known good exceptions=20
-or
-2. allow writes and block known bad/exploitable exceptions.=20
-=20
-I am looking into reproducing and adding an exception for the
-container syscall intercept use-case raised by Christian, because
-I think it's easier to justify allowing known good exceptions from
-a security perspective.
-
-Otherwise I'm fine with both approaches.
-
-@Mike WDYT ?
-
+Thanks, this was on my list.
 
