@@ -1,172 +1,174 @@
-Return-Path: <linux-kernel+bounces-92505-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92507-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F3AA872153
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:17:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8B8287215B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:20:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8E71283936
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:17:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ECD2E1C22006
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:20:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C4A086AE9;
-	Tue,  5 Mar 2024 14:16:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 936D686634;
+	Tue,  5 Mar 2024 14:20:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XoxnmDLh";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="XhXwXIIy";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XoxnmDLh";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="XhXwXIIy"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="oiujlpEd"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D160986AE2
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 14:16:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AE2685927;
+	Tue,  5 Mar 2024 14:20:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709648218; cv=none; b=js0M+zzGEIbfjtjbiHxlALKZt4i+bfcD7It3LMN3FXOpCho1AdGeRKSOigXPepaDC1XWC/u4HF7ufk0BeU36MaNMbbd5bNmzJw70tGO1RzT5K3FoRjZQzWClKNdbLp4UfuWWAiHPstvt9T7fIGKq7Eyk5yFqdD0H3/KTFkpoLZQ=
+	t=1709648406; cv=none; b=AdHPU/r50gThCnofM/5Wvk9eYrXkNgiGpnqrs6StKQEieXqVfHCRPZklsUJ4AgB031jc8XDrRstt2cp3Wkz2upL9eR+EsYeikCc55mBogfasH1l6Xg90Q3fWOf5vqfUgCueHkGHDJzTfDqFVmZsw3PGiEu6YOZHh/J1bBMIixKc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709648218; c=relaxed/simple;
-	bh=EMtrprSFJjYRlNByA46g7xUS+JmzBrqw1ixMLY+jf94=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=db97I4TY8F9dlPkalmixmqAKiqmjR7VNI9UQ0/rL3o6Fa8Qae4dzovRuG/KQw0nlJMamvUt5hAlU8SbyT98SzKNloQlxrh9JdPTVY1hfQSd5nV9Bp89gb8PbvnwmkJ66DZkmd8PfoJKXvvFDoNa8EBJZpx+0T7nv07+o6gDW3hM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=XoxnmDLh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=XhXwXIIy; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=XoxnmDLh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=XhXwXIIy; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	s=arc-20240116; t=1709648406; c=relaxed/simple;
+	bh=LjkGagwDQUYxBS8Ly5tIPDH+f57B7v3rXKFuRJpeBTM=;
+	h=Message-ID:Date:MIME-Version:Cc:To:From:Subject:Content-Type; b=gq+4EbSaX17LP87/bgUDxZV2bPsW2K2YZPtM+jKhao6Q06SeWFVFahELV2G72xk7i5SaxAXFC/T+LSy6oI+/4Seuv0XXQTDafUGQaRmJrAZlVI6lRkAioK4Nf31R4TPqHb3xCxmUX/SBr/se04SsDX7pktNgtgtQwL9wAfYpBqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=oiujlpEd; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709648403;
+	bh=LjkGagwDQUYxBS8Ly5tIPDH+f57B7v3rXKFuRJpeBTM=;
+	h=Date:Cc:To:From:Subject:From;
+	b=oiujlpEdKyN7b7vY1xSeM3scqEksLwiy67ChQxVTN5fiGKHkWz1LE+6h63aCcDHSH
+	 Tc8Z0aCzyxyqSIe3hxuaATKJmMv/vExKML8VdOO65FNUgmVP/oKAlYjaPph1MQrzy0
+	 2Wa/m7pQKdMPjlcpmuQ0MBOwbrs5361IQvXvusQ+DUsplqUZWDAALxBi7GH/aKbdf8
+	 bbLqPe+4WUJ2NJUfhorq1dyl2ZqU+HwjVbJr+A5wU+sneQag+SRpfp33jcFmVUp309
+	 x0MguzNvlG+VR5XaAILTYSp+VJfFmst85qpUmTMOeLJmoG9SCGMGy16XYoNNjvFFyr
+	 cCKqeiDmtnhWQ==
+Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id C55C3770A9;
-	Tue,  5 Mar 2024 14:16:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1709648214; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=E3OMLq/c7VcyXaAMReTMMSzBFkdO2IL60HjJQlKcYdM=;
-	b=XoxnmDLhtSwWnEZ5Vz+5a6ySWkFVp/XihrJPB6/7anvnI2U13FALvHrra9TJj5f3NEoAOR
-	gpT/cdyhXSRLLf/JhiorLca1vs1QPEf5HKEpKSprH+67AZru1LLfIbQeehyzo6ZAE2QdyI
-	KJrmqIlWlNF9Jg3OHa+rip/aycwxKo4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1709648214;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=E3OMLq/c7VcyXaAMReTMMSzBFkdO2IL60HjJQlKcYdM=;
-	b=XhXwXIIy+mZ+GJKPCn0Oe5bCe7p4aucj43BBFOlJLHt+rNuBaPKnNdKZdf3PH4T7BP0fyL
-	gJ3EPnrFBBFxwhBA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1709648214; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=E3OMLq/c7VcyXaAMReTMMSzBFkdO2IL60HjJQlKcYdM=;
-	b=XoxnmDLhtSwWnEZ5Vz+5a6ySWkFVp/XihrJPB6/7anvnI2U13FALvHrra9TJj5f3NEoAOR
-	gpT/cdyhXSRLLf/JhiorLca1vs1QPEf5HKEpKSprH+67AZru1LLfIbQeehyzo6ZAE2QdyI
-	KJrmqIlWlNF9Jg3OHa+rip/aycwxKo4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1709648214;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=E3OMLq/c7VcyXaAMReTMMSzBFkdO2IL60HjJQlKcYdM=;
-	b=XhXwXIIy+mZ+GJKPCn0Oe5bCe7p4aucj43BBFOlJLHt+rNuBaPKnNdKZdf3PH4T7BP0fyL
-	gJ3EPnrFBBFxwhBA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id BB18413A5D;
-	Tue,  5 Mar 2024 14:16:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id ue+rLVYp52XDRAAAn2gu4w
-	(envelope-from <jack@suse.cz>); Tue, 05 Mar 2024 14:16:54 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 73C72A0650; Tue,  5 Mar 2024 15:16:54 +0100 (CET)
-Date: Tue, 5 Mar 2024 15:16:54 +0100
-From: Jan Kara <jack@suse.cz>
-To: chengming.zhou@linux.dev
-Cc: jack@suse.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	vbabka@suse.cz, roman.gushchin@linux.dev,
-	Xiongwei.Song@windriver.com,
-	Chengming Zhou <zhouchengming@bytedance.com>
-Subject: Re: [PATCH] quota: remove SLAB_MEM_SPREAD flag usage
-Message-ID: <20240305141654.t4x62sco3pqr3t5n@quack3>
-References: <20240224135118.830073-1-chengming.zhou@linux.dev>
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2166B3780627;
+	Tue,  5 Mar 2024 14:19:59 +0000 (UTC)
+Message-ID: <02c8bf8e-1934-44ab-a886-e065b37366a7@collabora.com>
+Date: Tue, 5 Mar 2024 19:20:27 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240224135118.830073-1-chengming.zhou@linux.dev>
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=XoxnmDLh;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=XhXwXIIy
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.62 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-2.61)[98.28%]
-X-Spam-Score: -3.62
-X-Rspamd-Queue-Id: C55C3770A9
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ "kernel@collabora.com" <kernel@collabora.com>
+Content-Language: en-US
+To: Eric Biederman <ebiederm@xmission.com>, Kees Cook
+ <keescook@chromium.org>, Shuah Khan <shuah@kernel.org>,
+ Mark Brown <broonie@kernel.org>
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Subject: [Test Failure Report] exec: Test failures in execveat
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sat 24-02-24 13:51:18, chengming.zhou@linux.dev wrote:
-> From: Chengming Zhou <zhouchengming@bytedance.com>
-> 
-> The SLAB_MEM_SPREAD flag is already a no-op as of 6.8-rc1, remove
-> its usage so we can delete it from slab. No functional change.
-> 
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+Hello,
 
-Thanks. Added to my tree.
+I've been running execveat (execveat.c) locally on v6.1 and next-20240228.
+It has flaky test case. There are some test cases which fail consistently.
+The comment (not very clear) on top of failing cases is as following:
 
-								Honza
+/*
+ * Execute as a long pathname relative to "/".  If this is a script,
+ * the interpreter will launch but fail to open the script because its
+ * name ("/dev/fd/5/xxx....") is bigger than PATH_MAX.
+ *
+ * The failure code is usually 127 (POSIX: "If a command is not found,
+ * the exit status shall be 127."), but some systems give 126 (POSIX:
+ * "If the command name is found, but it is not an executable utility,
+ * the exit status shall be 126."), so allow either.
+ */
+The file name is just less than PATH_MAX (4096) and we are expecting the
+execveat() to fail with particular 99 or 127/128 error code. But kernel is
+returning 1 error code. Snippet from full output:
 
-> ---
->  fs/quota/dquot.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
-> index f73016c7bc39..dacbee455c03 100644
-> --- a/fs/quota/dquot.c
-> +++ b/fs/quota/dquot.c
-> @@ -3008,7 +3008,7 @@ static int __init dquot_init(void)
->  	dquot_cachep = kmem_cache_create("dquot",
->  			sizeof(struct dquot), sizeof(unsigned long) * 4,
->  			(SLAB_HWCACHE_ALIGN|SLAB_RECLAIM_ACCOUNT|
-> -				SLAB_MEM_SPREAD|SLAB_PANIC),
-> +				SLAB_PANIC),
->  			NULL);
->  
->  	order = 0;
-> -- 
-> 2.40.1
-> 
+# child 3493092 exited with 1 not 99 nor 99
+# child 3493094 exited with 1 not 127 nor 126
+
+I'm not sure if test is wrong or the kernel has changed the return error codes.
+
+Full test run output:
+/execveat
+TAP version 13
+1..51
+ok 1 Check success of execveat(3, '../execveat', 0)...
+ok 2 Check success of execveat(5, 'execveat', 0)...
+ok 3 Check success of execveat(7, 'execveat', 0)...
+ok 4 Check success of execveat(-100,
+'/home/usama/repos/ke...ftests/exec/execveat', 0)...
+ok 5 Check success of execveat(99,
+'/home/usama/repos/ke...ftests/exec/execveat', 0)...
+ok 6 Check success of execveat(9, '', 4096)...
+ok 7 Check success of execveat(18, '', 4096)...
+ok 8 Check success of execveat(10, '', 4096)...
+ok 9 Check success of execveat(15, '', 4096)...
+ok 10 Check success of execveat(15, '', 4096)...
+ok 11 Check success of execveat(16, '', 4096)...
+ok 12 Check failure of execveat(9, '', 0) with ENOENT
+ok 13 Check failure of execveat(9, '(null)', 4096) with EFAULT
+ok 14 Check success of execveat(5, 'execveat.symlink', 0)...
+ok 15 Check success of execveat(7, 'execveat.symlink', 0)...
+ok 16 Check success of execveat(-100,
+'/home/usama/repos/ke...xec/execveat.symlink', 0)...
+ok 17 Check success of execveat(11, '', 4096)...
+ok 18 Check success of execveat(11, '', 4352)...
+ok 19 Check failure of execveat(5, 'execveat.symlink', 256) with ELOOP
+ok 20 Check failure of execveat(7, 'execveat.symlink', 256) with ELOOP
+ok 21 Check failure of execveat(-100,
+'/home/usama/repos/kernel/linux_mainline/tools/testing/selftests/exec/execveat.symlink',
+256) with ELOOP
+ok 22 Check failure of execveat(5, 'pipe', 0) with EACCES
+ok 23 Check success of execveat(3, '../script', 0)...
+ok 24 Check success of execveat(5, 'script', 0)...
+ok 25 Check success of execveat(7, 'script', 0)...
+ok 26 Check success of execveat(-100,
+'/home/usama/repos/ke...elftests/exec/script', 0)...
+ok 27 Check success of execveat(14, '', 4096)...
+ok 28 Check success of execveat(14, '', 4352)...
+ok 29 Check failure of execveat(19, '', 4096) with ENOENT
+ok 30 Check failure of execveat(8, 'script', 0) with ENOENT
+ok 31 Check success of execveat(17, '', 4096)...
+ok 32 Check success of execveat(17, '', 4096)...
+ok 33 Check success of execveat(4, '../script', 0)...
+ok 34 Check success of execveat(4, 'script', 0)...
+ok 35 Check success of execveat(4, '../script', 0)...
+ok 36 Check failure of execveat(4, 'script', 0) with ENOENT
+ok 37 Check failure of execveat(5, 'execveat', 65535) with EINVAL
+ok 38 Check failure of execveat(5, 'no-such-file', 0) with ENOENT
+ok 39 Check failure of execveat(7, 'no-such-file', 0) with ENOENT
+ok 40 Check failure of execveat(-100, 'no-such-file', 0) with ENOENT
+ok 41 Check failure of execveat(5, '', 4096) with EACCES
+ok 42 Check failure of execveat(5, 'Makefile', 0) with EACCES
+ok 43 Check failure of execveat(12, '', 4096) with EACCES
+ok 44 Check failure of execveat(13, '', 4096) with EACCES
+ok 45 Check failure of execveat(99, '', 4096) with EBADF
+ok 46 Check failure of execveat(99, 'execveat', 0) with EBADF
+ok 47 Check failure of execveat(9, 'execveat', 0) with ENOTDIR
+# Invoke copy of 'execveat' via filename of length 4094:
+ok 48 Check success of execveat(20, '', 4096)...
+# execveat() failed, rc=-1 errno=2 (No such file or directory)
+not ok 49 Check success of execveat(6,
+'home/usama/repos/ker...yyyyyyyyyyyyyyyyyyyy', 0)...
+# child 3493092 exited with 1 not 99 nor 99
+not ok 49 Check success of execveat(6,
+'home/usama/repos/ker...yyyyyyyyyyyyyyyyyyyy', 0)...
+# Invoke copy of 'script' via filename of length 4094:
+ok 50 Check success of execveat(21, '', 4096)...
+# execveat() failed, rc=-1 errno=2 (No such file or directory)
+not ok 51 Check success of execveat(6,
+'home/usama/repos/ker...yyyyyyyyyyyyyyyyyyyy', 0)...
+# child 3493094 exited with 1 not 127 nor 126
+not ok 51 Check success of execveat(6,
+'home/usama/repos/ker...yyyyyyyyyyyyyyyyyyyy', 0)...
+2 tests failed
+# Totals: pass:49 fail:2 xfail:0 xpass:0 skip:0 error:0
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+BR,
+Muhammad Usama Anjum
 
