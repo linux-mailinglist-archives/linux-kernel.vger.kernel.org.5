@@ -1,98 +1,96 @@
-Return-Path: <linux-kernel+bounces-91718-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91729-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B3FA8715A8
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:08:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 40D868715BD
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:15:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D1EF1C210EF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 06:08:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7389F1C2118D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 06:15:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C9CD7D3F6;
-	Tue,  5 Mar 2024 06:08:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E298D7BAFF;
+	Tue,  5 Mar 2024 06:15:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="WP1SwgFe"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (1024-bit key) header.d=flyingcircus.io header.i=@flyingcircus.io header.b="QBOeYQWj"
+Received: from mail.flyingcircus.io (mail.flyingcircus.io [212.122.41.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9FB3FC1C;
-	Tue,  5 Mar 2024 06:08:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EBF9FC1C;
+	Tue,  5 Mar 2024 06:15:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.122.41.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709618917; cv=none; b=gCc/dHZgmdQqfnYpFEdHhrn3TgJStqcCJZ2mtCF/7m90UcmRi/HwINB8Rk5yDlKO99p8NXm2rW9qKTOzyii37nGv6eqYV+G1z6QLHzbMNCFwOkZv54tiriAiBT8+S/GbUQpXvrP/CmhQ+Ka7O0V23WtACFvQ48zBJhteM/ZVjjA=
+	t=1709619331; cv=none; b=WvpmEPTA17UwbU+Y2OXSQnfjrAQ3uod8buOkqJ/V07qgLCdRJ87mEXVqkbuBqOF79utd75gjsPEg1ocvGKSTuByEMBsga1vMbIjoML978YsEtwYHDcUIMFOuQxFLbmci3/06U9VHhwBinM/2kU+NDhYgzzDplLrE7cgWpErS+QE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709618917; c=relaxed/simple;
-	bh=9lc4pDkvuUw9UpBozHPb1wF+lwtvZHvSgcQf4nX95ys=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=bqh+52qLSd2hmKUzIL5NIZ46ysqh2EzAZ8xUAMGtNQ9B4e7voEMFMsgiwHt7OXQkJucTBMlfh248bC1DauTHqBSAf+FlmFVzcDbk1mKuJMarc29B6QJnTyf/W7ibUtHcar7Tmf960d4XdGVKxp+T+D/S5rnPi1LkC5GTmKmtuEo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=WP1SwgFe; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709618914;
-	bh=9lc4pDkvuUw9UpBozHPb1wF+lwtvZHvSgcQf4nX95ys=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WP1SwgFeImouN8ijdoAEsneRavtZHLpHQB9/a+KqZXeOHnlc10HKC0M9PMcHDtfgK
-	 DJYzXEKW9j4H4MSeXn1SRxhDEd8Y6/4yfLdHO8NAJRyWh6cB9k0E6OJwVh1yR5ucdy
-	 uG+2JV9xVs/yjQ4jb2xU9lV76u4NgVHmqfCFFMA+jbDITJJt/PHSHKLpKDvUqHt+68
-	 8P+9GjtU+b8w7vIUgDVAnJYOBtd9XZDBUiejLz5eeu8kn5f8d+4Hpgv7Xq6mqA83EH
-	 jMUDEW8nlNMrc/Y47fSW/SR2BSzU3XSv2ZnT6Rj1nB/7+E0VEAArv/RYJQM+qf950t
-	 HXiMPlEvRLNrg==
-Received: from localhost.localdomain (broslavsky.collaboradmins.com [68.183.210.73])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 6A8AA37820C6;
-	Tue,  5 Mar 2024 06:08:30 +0000 (UTC)
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-To: Shuah Khan <shuah@kernel.org>,
-	"T.J. Mercier" <tjmercier@google.com>,
-	Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc: kernel@collabora.com,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH v5 2/2] selftests: dmabuf-heap: add config file for the test
-Date: Tue,  5 Mar 2024 11:08:47 +0500
-Message-Id: <20240305060848.2478806-2-usama.anjum@collabora.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240305060848.2478806-1-usama.anjum@collabora.com>
-References: <20240305060848.2478806-1-usama.anjum@collabora.com>
+	s=arc-20240116; t=1709619331; c=relaxed/simple;
+	bh=k0S++Cu8Iyr6uXBN6ACI05p0wIHJD7IqUIi1EDWRXX0=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=eZVnPMNZIHHK4+XKEXiPz2i3joHpkb69Vxk3nUOU6pAE+3tyaigjqd7Rxpsk5ag+YNCRqIgw19Mtuh4lIyrY/pcCrJL4Wmb3HtapBe2SuDbMpwgA3yiJGjuJ5f4Qn2CawC++8kzkcveMwEXCEcIAJkMdhCTG+BYoma2Q9k4nNx4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=flyingcircus.io; spf=pass smtp.mailfrom=flyingcircus.io; dkim=pass (1024-bit key) header.d=flyingcircus.io header.i=@flyingcircus.io header.b=QBOeYQWj; arc=none smtp.client-ip=212.122.41.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=flyingcircus.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flyingcircus.io
+Content-Type: text/plain;
+	charset=utf-8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flyingcircus.io;
+	s=mail; t=1709618979;
+	bh=k0S++Cu8Iyr6uXBN6ACI05p0wIHJD7IqUIi1EDWRXX0=;
+	h=Subject:From:In-Reply-To:Date:Cc:References:To;
+	b=QBOeYQWjPjcVLq2dQ5HyXh22PMZs7KuESHcPaGtHEHmWgwM115uQLZdf4M0c48GBi
+	 ovEehHg1WSiwOjpDCXFmFJy7F+yOQpUPAthHdGOkOmNbbHebQ2hTKr7MIMjXZJQWnT
+	 lBL4chzEwOh1OHe4bq0TvoSNd+lkl725lOsu4NkM=
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.400.31\))
+Subject: Re: nfs4_schedule_state_manager stuck in tight loop
+From: Christian Theune <ct@flyingcircus.io>
+In-Reply-To: <ZdisssP88_9o0BXn@manet.1015granger.net>
+Date: Tue, 5 Mar 2024 07:09:19 +0100
+Cc: linux-nfs@vger.kernel.org,
+ jlayton@kernel.org,
+ linux-kernel@vger.kernel.org,
+ Linux regressions mailing list <regressions@lists.linux.dev>,
+ trondmy@hammerspace.com,
+ anna@kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <3404A3C2-31BE-4D39-A256-E3A1FB48ACFB@flyingcircus.io>
+References: <8B04DA70-ABEF-44A4-BBA7-60968E6CFA10@flyingcircus.io>
+ <ZdisssP88_9o0BXn@manet.1015granger.net>
+To: Chuck Lever <chuck.lever@oracle.com>
 
-The config fragment enlists all the config options needed for the test.
-This config is merged into the kernel's config on which this test is
-run.
+Hi,
 
-Reviewed-by: T.J. Mercier <tjmercier@google.com>
-Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
----
-Changes since v1:
-- Add reviewed-by tag
----
- tools/testing/selftests/dmabuf-heaps/config | 4 ++++
- 1 file changed, 4 insertions(+)
- create mode 100644 tools/testing/selftests/dmabuf-heaps/config
+not sure whether I may have missed a response that didn=E2=80=99t make =
+it back to me or any of the lists.
 
-diff --git a/tools/testing/selftests/dmabuf-heaps/config b/tools/testing/selftests/dmabuf-heaps/config
-new file mode 100644
-index 0000000000000..34bd294836df0
---- /dev/null
-+++ b/tools/testing/selftests/dmabuf-heaps/config
-@@ -0,0 +1,4 @@
-+CONFIG_DMABUF_HEAPS=y
-+CONFIG_DMABUF_HEAPS_SYSTEM=y
-+CONFIG_DRM_VGEM=y
-+
--- 
-2.39.2
+Just in case, because the CC didn=E2=80=99t include the original =
+addendum I made to my report:
+
+Addendum:
+
+I=E2=80=99ve checked kernel changelogs since then but didn=E2=80=99t =
+find anything that I could relate to this aside from *maybe* =
+dfda2a5eb66a685aa6d0b81c0cef1cf8bfe0b3c4 (rename(): fix the locking of =
+subdirectories) which mentions NFS but doesn=E2=80=99t describe the =
+potential impact.
+
+We=E2=80=99re running 5.15.148 now and as it=E2=80=99s been another 2 =
+months there might be the chance of another lockup in the near future ;)
+
+If anyone has ideas on how to debug/approach a reproducer I=E2=80=99d be =
+more than happy to help and try to provide more data.
+
+Cheers,
+Christian
+
+--=20
+Christian Theune =C2=B7 ct@flyingcircus.io =C2=B7 +49 345 219401 0
+Flying Circus Internet Operations GmbH =C2=B7 https://flyingcircus.io
+Leipziger Str. 70/71 =C2=B7 06108 Halle (Saale) =C2=B7 Deutschland
+HR Stendal HRB 21169 =C2=B7 Gesch=C3=A4ftsf=C3=BChrer: Christian Theune, =
+Christian Zagrodnick
 
 
