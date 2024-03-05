@@ -1,116 +1,110 @@
-Return-Path: <linux-kernel+bounces-92321-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92322-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 976F8871E70
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:00:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C7A3871E71
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:01:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5347E28511D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:00:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 488CC285215
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:01:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C4D65A793;
-	Tue,  5 Mar 2024 12:00:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D369A5A110;
+	Tue,  5 Mar 2024 12:00:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iX+Nvu4f"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kiA+knFa"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEE9659146;
-	Tue,  5 Mar 2024 12:00:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D8AD5B200
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 12:00:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709640032; cv=none; b=Ktua6ZK4N4wpvkMUTWUVKebGqiKENgUlN7e7k1XL4dPbhHDkPJEl2TInGgXDROkRUvDtJEcD1dTkK0gpykg1CKcn3QCyAPunPg8DPq5Rzmo5ttCKatj6xPK1WdCoueDV3RWw96BtZxcHb8Pv+5pyj+UQ+K640JLFxfk5h8bGfgU=
+	t=1709640045; cv=none; b=qJp8YVYDoQmFpkd0MZOYtJw77OZZILR8mtm11xEbf3ZeugmFsca1X/x3zeu73UsxAxlnu1z90PzgFHWaWDmwHPZ+4EUxFiHa4jrqz4Sc/vJs2ep/CgmV/Cw3jMl1+lAgWFVhJHU0kGGQaHijRpXaC1InzJiuYPvMkBnB6Hi1x2U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709640032; c=relaxed/simple;
-	bh=dksLaDVSy6nq7bP4e4YeQwSAmypjMREMKHNjaEVWxwQ=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=EEafmE3INa2nAlKucUPQIf3pArdiYsw0BiTzHST6EQSONbb/FemyfNZ0VFxJFKJJslLXmv4nKWTtGX2bNb1T7bcCZu0HAF9HAzUw9DSIbulWOZAMG5ouzVWYP9kojz9m7Ik9kZ0+cfNtfXfHZBh58PRlKzHwJPjmiRlsYuVL0Ko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iX+Nvu4f; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 195C8C43390;
-	Tue,  5 Mar 2024 12:00:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709640032;
-	bh=dksLaDVSy6nq7bP4e4YeQwSAmypjMREMKHNjaEVWxwQ=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=iX+Nvu4f89MlkCTlP8LkvOL+xzTIElbLQkK1ES/qoNu9WG6d8FTflxfdESs2PSYcb
-	 WGzbhP6RIvkRXlqX/D6Tj82ZCceKF/ZGDRqYI+fCoOV52NXAMQaeWB+TqBtbHaVWPz
-	 R2DMiRBj5AreLzi9BOOhaRNqMP3owHpMvcEhp+TysDU39AWRBCsJ46aCIptK7IE87A
-	 lchgT9n01mEeXfx32D7JBZxCn1TH5LY3Ujppkfnss0DAt/z9H7iftkExyoC21Tpmvt
-	 nzPRVf8Bf+ApB0kou3XaqEH71w++ZrBPtAnEuJSdtrLoDGWF3ycurkILxu/iYkdrwr
-	 Z770SFr6giXLg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E7A59D84BDF;
-	Tue,  5 Mar 2024 12:00:31 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1709640045; c=relaxed/simple;
+	bh=sRvqQdB8kRs9Wd4XZ5XIBXVpsTGVVIckK00iEDJ5uJQ=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=l06IEnKWGbyew8JHpkGgOpMWuvtKwhvpqTcNxMxityrZspiDc3ZIa8GaZANxUERkjXZKkTS59wX0UR69OW55JXsgYe14aKpT7pLGaFGNK4CY0sqDXs657PtigBNmXBD6BaNoqICp4lEgZQCqkdfpxbG+nUHKPyYaSShaWeeXv2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kiA+knFa; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709640043; x=1741176043;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=sRvqQdB8kRs9Wd4XZ5XIBXVpsTGVVIckK00iEDJ5uJQ=;
+  b=kiA+knFaFQeo1D8JIvnhBU3HlcFgU41T8vt7yBebA6/uKGztbDZE/0ZC
+   a+fL71Igfk04Q9+nHk0JJdq7zR9XJhI/i+nZmhndCpVQuwg7+OTvBJ4EE
+   eWwTuqUDn6vs4vPAb5+hm8TjUK2QtWJ1nq0rpiJwohMm8SlRSNV9cinn/
+   sizESEMyze5yWOybm7cE7zvOezwpTnt21RIF4dfLipgNKYeNMaiiPf3N7
+   d2qJoo4aRLBajHoxh6gC36PSATE3PeQOz/BWXrp1+6kz4Z0QPH2o+Wr4Z
+   nobExL+px2ZorVcFN2mxaSXJW0dlYyZ50NNv+j4sCcaKTd4gtLRRDxcr2
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="4044098"
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="4044098"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 04:00:42 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="9218674"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.249.173.205]) ([10.249.173.205])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 04:00:39 -0800
+Message-ID: <65479314-39e8-432e-8b9f-daf6c4aea72a@linux.intel.com>
+Date: Tue, 5 Mar 2024 20:00:36 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v3 0/9] MT7530 DSA Subdriver Improvements Act III
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170964003194.11081.15831016567274956859.git-patchwork-notify@kernel.org>
-Date: Tue, 05 Mar 2024 12:00:31 +0000
-References: <20240301-for-netnext-mt7530-improvements-3-v3-0-449f4f166454@arinc9.com>
-In-Reply-To: <20240301-for-netnext-mt7530-improvements-3-v3-0-449f4f166454@arinc9.com>
-To: =?utf-8?b?QXLEsW7DpyDDnE5BTCB2aWEgQjQgUmVsYXkgPGRldm51bGwrYXJpbmMudW5hbC5h?=@codeaurora.org,
-	=?utf-8?b?cmluYzkuY29tQGtlcm5lbC5vcmc+?=@codeaurora.org
-Cc: daniel@makrotopia.org, dqfext@gmail.com, sean.wang@mediatek.com,
- andrew@lunn.ch, f.fainelli@gmail.com, olteanv@gmail.com, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
- linux@armlinux.org.uk, mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
- bartel.eerdekens@constell8.be, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, arinc.unal@arinc9.com
+User-Agent: Mozilla Thunderbird
+Cc: baolu.lu@linux.intel.com, kevin.tian@intel.com, dwmw2@infradead.org,
+ will@kernel.org, lukas@wunner.de, yi.l.liu@intel.com,
+ dan.carpenter@linaro.org, iommu@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v14 0/3] fix vt-d hard lockup when hotplug ATS capable
+ device
+To: Ethan Zhao <haifeng.zhao@linux.intel.com>, bhelgaas@google.com,
+ robin.murphy@arm.com, jgg@ziepe.ca
+References: <20240301080727.3529832-1-haifeng.zhao@linux.intel.com>
+Content-Language: en-US
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20240301080727.3529832-1-haifeng.zhao@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hello:
-
-This series was applied to netdev/net-next.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
-
-On Fri, 01 Mar 2024 12:42:56 +0200 you wrote:
-> Hello!
+On 2024/3/1 16:07, Ethan Zhao wrote:
+> This patchset is used to fix vt-d hard lockup reported when surprise
+> unplug ATS capable endpoint device connects to system via PCIe switch
+> as following topology.
 > 
-> This is the third patch series with the goal of simplifying the MT7530 DSA
-> subdriver and improving support for MT7530, MT7531, and the switch on the
-> MT7988 SoC.
+>       +-[0000:15]-+-00.0  Intel Corporation Ice Lake Memory Map/VT-d
+>       |           +-00.1  Intel Corporation Ice Lake Mesh 2 PCIe
+>       |           +-00.2  Intel Corporation Ice Lake RAS
+>       |           +-00.4  Intel Corporation Device 0b23
+>       |           \-01.0-[16-1b]----00.0-[17-1b]--+-00.0-[18]----00.0
+>                                             NVIDIA Corporation Device 2324
+>       |                                           +-01.0-[19]----00.0
+>                            Mellanox Technologies MT2910 Family [ConnectX-7]
 > 
-> I have done a simple ping test to confirm basic communication on all switch
-> ports on MCM and standalone MT7530, and MT7531 switch with this patch
-> series applied.
+> User brought endpoint device 19:00.0's link down by flapping it's hotplug
+> capable slot 17:01.0 link control register, as sequence DLLSC response,
+> pciehp_ist() will unload device driver and power it off, durning device
+> driver is unloading an iommu device-TLB invalidation (Intel VT-d spec, or
+> 'ATS Invalidation' in PCIe spec) request issued to that link down device,
+> thus a long time completion/timeout waiting in interrupt context causes
+> continuous hard lockup warnning and system hang.
 > 
-> [...]
+> Other detail, see every patch commit log.
+> 
+> patch [1&2] were tested byyehaorong@bytedance.com  on stable v6.7-rc4.
+> patch [1-3] passed compiling on stable v6.8-rc4 (Baolu's rbtree branch).
 
-Here is the summary with links:
-  - [net-next,v3,1/9] net: dsa: mt7530: remove .mac_port_config for MT7988 and make it optional
-    https://git.kernel.org/netdev/net-next/c/6ebe414b48cf
-  - [net-next,v3,2/9] net: dsa: mt7530: set interrupt register only for MT7530
-    https://git.kernel.org/netdev/net-next/c/804cd5f7059e
-  - [net-next,v3,3/9] net: dsa: mt7530: do not use SW_PHY_RST to reset MT7531 switch
-    https://git.kernel.org/netdev/net-next/c/a565f98d7d25
-  - [net-next,v3,4/9] net: dsa: mt7530: get rid of useless error returns on phylink code path
-    https://git.kernel.org/netdev/net-next/c/adf4ae24ba42
-  - [net-next,v3,5/9] net: dsa: mt7530: get rid of priv->info->cpu_port_config()
-    https://git.kernel.org/netdev/net-next/c/22fa10170af5
-  - [net-next,v3,6/9] net: dsa: mt7530: get rid of mt753x_mac_config()
-    https://git.kernel.org/netdev/net-next/c/1192ed898c97
-  - [net-next,v3,7/9] net: dsa: mt7530: put initialising PCS devices code back to original order
-    https://git.kernel.org/netdev/net-next/c/3a87131e3d72
-  - [net-next,v3,8/9] net: dsa: mt7530: sort link settings ops and force link down on all ports
-    https://git.kernel.org/netdev/net-next/c/6324230b3b67
-  - [net-next,v3,9/9] net: dsa: mt7530: simplify link operations
-    https://git.kernel.org/netdev/net-next/c/b04097c7a745
+This series has been queued for iommu next.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Best regards,
+baolu
 
