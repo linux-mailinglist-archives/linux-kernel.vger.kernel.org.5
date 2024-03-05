@@ -1,170 +1,229 @@
-Return-Path: <linux-kernel+bounces-92714-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92715-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3C328724DC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:52:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D3CB8724DF
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:53:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A1C328199E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:52:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B10951C22E60
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:53:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5963CD28D;
-	Tue,  5 Mar 2024 16:52:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8BD1DDAD;
+	Tue,  5 Mar 2024 16:53:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DKwcPXtO"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="CZbUipyX"
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5C408F58
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 16:52:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EE70134A0;
+	Tue,  5 Mar 2024 16:52:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709657567; cv=none; b=POFm6hLVDSnXaUGgkYzA+XqtuS6L8o2Eeqxg9KF1nJR6H0lRlT6n9MwRERX2jy6daFrXZ11zaShXQgstltY5z7UrWCe0ypiLR1EJs2DaT+l5cm5P9c1zBYNp2IiKKXS+pTzAne3wqLJxrrglWtlS3eQwUxj3BrQ7qjKTFbBNCzE=
+	t=1709657582; cv=none; b=nX/pRd0YFW+c9x/yrsaYGOBR4QrMinGPGo3wmDrNbz86xWfFHr19IKc/NrGYrwa36AuBFbvFe5O/F+lM9BlDV1HT/sKGxjpVhFnd1j7YUYo8yvTIzlRjbXTfqPKZtzQ/8+G38PYorYh6OZvQnc4oEvRldy+SugY4rGZ7oYyHN3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709657567; c=relaxed/simple;
-	bh=STwejP1X5e/WFaw84WfyJRXrXcfv/sRsbhyOF44RY/I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=O1XhGPC9vnfJeHh0KrHJ5J4uPB2tAMoiZTdkOetfp91u+UiV+AZEePzmz5fYt9CfcftEMbJHTai747Slim2/XQWYKhUEo2EIfaO+knhU8NfeWOUtGd5efDhNMCAnJrT4GD8xsVBGZ7jy/yfGRcKNVM9NPZKJnTU/uwfkEfTNPMI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DKwcPXtO; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709657564;
+	s=arc-20240116; t=1709657582; c=relaxed/simple;
+	bh=wtYtDVJZiqM1pogoWHG3mgthzJAbRFC3EtRyyF4qw5w=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=kIXBHLtGwe1MrU17NfbLPYAnyZFyco9rN8njlaI7S97uUu46mGwHFGsMLPzHT1MijVXe/5KsW3mZ6tSAZ6pAZ5nhwy0bc3hVxPB7leIK0yw838wj9p3tgbmTQVfSub3HhAt+6Ft6x/QmvwwkLlIN3Z2hCY+3foP20v2hyZOrGP0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=CZbUipyX; arc=none smtp.client-ip=217.70.183.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 98E236000F;
+	Tue,  5 Mar 2024 16:52:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709657576;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=bP8Cc1m+j7lZNr0m4WpXqV8ri7Lz2AvWMe7Xo/Lhbm0=;
-	b=DKwcPXtOWQcDEEI6pxVEggQy1pEy/JFYVgFZcjCFIbu3h+aYJ1byDVujlftXnz/oFRnlGd
-	ihG2sTqGx2amvWeTU2gAQM3sNuzOMxnFkqKYv4EgGODNDPDsGnzMAF1NCA75PCthnXsAqM
-	BeP+fEytCr+zNVxJXAqmziUk6/N5WVY=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-462-ghsrp182NoGzXKNc_oW1yw-1; Tue, 05 Mar 2024 11:52:43 -0500
-X-MC-Unique: ghsrp182NoGzXKNc_oW1yw-1
-Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-51314c5a05aso4234739e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 08:52:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709657562; x=1710262362;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bP8Cc1m+j7lZNr0m4WpXqV8ri7Lz2AvWMe7Xo/Lhbm0=;
-        b=gmE/bpj89ARYGjRQFCHIeJjSR51WnP7ralkOzTtgwMa8rLhXHXYnK3Dqm572eL4UoV
-         1jOOVvoxjiloOwUmlg3F1FREfgLjC9Fz6u5PuiqSliYBwrTRz023m6Wxpr0aTauyTXxI
-         PE//Jq/74fMuy50QmmEO0FR27PwUH6lRnzDmE34q4Y7ac3PetilMgWm2A4qr0hO0YYPT
-         srhQndSn7p8iDctzLqBQ0ZiJKHUhqrgAQPOoQYlx5/5pnGP7NbYccsbd/P/6H/Gj/clp
-         gNanJBQ0IM0fVw4X+6zi4FeGROp1FVTB119gj3v/8w4DUNWht273uZrJJXDoAyw8bFw3
-         C2IA==
-X-Forwarded-Encrypted: i=1; AJvYcCW+Zgiy0JYxPsBwC9TlJCb7Xv9qD9DoUcgzEj020PFfwEMY00gBDRbZG12UYflgMZSC7HpYYYjYSd+CU6X8L4K0Hhbz0+cDxX6Z+jZ9
-X-Gm-Message-State: AOJu0YwiwdrT41vMMNM925GZANPfhQ7YsTuvBNoYhP7Pu/0NfQniYfj1
-	HgqUC5jCtmCLgyXFYbUwOGW3Krqag2+mFfS6zBTczeDmSzT336FQZz5CZUwnSDf1Y7nlhpzEVa8
-	0L5B6EXekM6bKVeFemr4CsikGCcysNTO69kjtuV4LIDGzPVKmbEgMEFoCpwabOA==
-X-Received: by 2002:a05:6512:312b:b0:513:5808:72f9 with SMTP id p11-20020a056512312b00b00513580872f9mr984017lfd.56.1709657562035;
-        Tue, 05 Mar 2024 08:52:42 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFkvF0km/ldN7XD5s/zPoV3sZCCMPiuDbsJPkUSMImq16qQCqbFD2ESBaFk5r999FxMgVV3bQ==
-X-Received: by 2002:a05:6512:312b:b0:513:5808:72f9 with SMTP id p11-20020a056512312b00b00513580872f9mr984003lfd.56.1709657561659;
-        Tue, 05 Mar 2024 08:52:41 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:c:37e0:ced3:55bd:f454:e722? ([2a01:e0a:c:37e0:ced3:55bd:f454:e722])
-        by smtp.gmail.com with ESMTPSA id o39-20020a05600c512700b00412d60cb914sm11594793wms.5.2024.03.05.08.52.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Mar 2024 08:52:41 -0800 (PST)
-Message-ID: <d1d2093c-72a3-4f64-9a8f-9844dc38f0c5@redhat.com>
-Date: Tue, 5 Mar 2024 17:52:40 +0100
+	bh=r/DJ06AQj7j8kFaAT82/9WOuSylUEZa/XluKSMLVR2c=;
+	b=CZbUipyXh0uIDFs7UIuHYQbXhuzXMGFrVmVOGNvAhHvPowzAFnNVPDo2G/WiPUra5Kgq0s
+	nztEcaah9if87869LbLxZjfBOoc/e9AacgFZ5R3KbDRf2/uRkTrszDuq7Pc/SCVHJY91qd
+	0n7stiMeN+EqUFlWfmwXcV+p1ZcqcH49S3SyerF8mgpHzyT0H53xLK2/CDc97S3VsnFkVF
+	8CgFoaUyaUL8vVMw1/BchY9/KmgNwAGxqCUpGMjhKTkrvRjxZiQIMUVmc5fyekQ+tDeo9N
+	Kw1PXxCRBwrLfsb+MlxSCquvAMBv0NTv+drYyOmrEi5kK8fsL2ihc9QkXM1toQ==
+Date: Tue, 5 Mar 2024 17:52:53 +0100
+From: =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Florian Fainelli <florian.fainelli@broadcom.com>, Broadcom internal
+ kernel review list <bcm-kernel-feedback-list@broadcom.com>, Andrew Lunn
+ <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>, Russell King
+ <linux@armlinux.org.uk>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Richard
+ Cochran <richardcochran@gmail.com>, Radu Pirea
+ <radu-nicolae.pirea@oss.nxp.com>, Jay Vosburgh <j.vosburgh@gmail.com>, Andy
+ Gospodarek <andy@greyhouse.net>, Nicolas Ferre
+ <nicolas.ferre@microchip.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Jonathan Corbet
+ <corbet@lwn.net>, Horatiu Vultur <horatiu.vultur@microchip.com>,
+ UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>, Vladimir
+ Oltean <vladimir.oltean@nxp.com>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, Maxime Chevallier
+ <maxime.chevallier@bootlin.com>, Rahul Rameshbabu <rrameshbabu@nvidia.com>
+Subject: Re: [PATCH net-next v9 12/13] net: ethtool: tsinfo: Add support for
+ hwtstamp provider and get/set hwtstamp config
+Message-ID: <20240305175253.764f041a@kmaincent-XPS-13-7390>
+In-Reply-To: <20240304192733.1e8e08cc@kernel.org>
+References: <20240226-feature_ptp_netnext-v9-0-455611549f21@bootlin.com>
+	<20240226-feature_ptp_netnext-v9-12-455611549f21@bootlin.com>
+	<20240304192733.1e8e08cc@kernel.org>
+Organization: bootlin
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC] How to test panic handlers, without crashing the kernel
-Content-Language: en-US, fr
-To: Michael Kelley <mhklinux@outlook.com>,
- "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
- John Ogness <john.ogness@linutronix.de>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Daniel Vetter <daniel@ffwll.ch>, Andrew Morton <akpm@linux-foundation.org>,
- "Peter Zijlstra (Intel)" <peterz@infradead.org>,
- Josh Poimboeuf <jpoimboe@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
- Kefeng Wang <wangkefeng.wang@huawei.com>, Lukas Wunner <lukas@wunner.de>,
- Uros Bizjak <ubizjak@gmail.com>, Petr Mladek <pmladek@suse.com>,
- Daniel Thompson <daniel.thompson@linaro.org>,
- Douglas Anderson <dianders@chromium.org>
-Cc: "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
- David Airlie <airlied@redhat.com>, Thomas Zimmermann <tzimmermann@suse.de>
-References: <266579a9-fde6-40ff-b13d-fb2312db406c@redhat.com>
- <87edcpn1l3.fsf@jogness.linutronix.de>
- <15015345-3068-2fb8-aa38-f32acf27e1d0@igalia.com>
- <SN6PR02MB4157AF2E765F7ED3B9487351D4222@SN6PR02MB4157.namprd02.prod.outlook.com>
-From: Jocelyn Falempe <jfalempe@redhat.com>
-In-Reply-To: <SN6PR02MB4157AF2E765F7ED3B9487351D4222@SN6PR02MB4157.namprd02.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: kory.maincent@bootlin.com
 
+On Mon, 4 Mar 2024 19:27:33 -0800
+Jakub Kicinski <kuba@kernel.org> wrote:
 
+> On Mon, 26 Feb 2024 14:40:03 +0100 Kory Maincent wrote:
+> > diff --git a/net/ethtool/common.c b/net/ethtool/common.c
+> > index b3f45c307301..37071929128a 100644
+> > --- a/net/ethtool/common.c
+> > +++ b/net/ethtool/common.c
+> > @@ -426,6 +426,7 @@ const char sof_timestamping_names[][ETH_GSTRING_LEN=
+] =3D {
+> >  	[const_ilog2(SOF_TIMESTAMPING_OPT_TX_SWHW)]  =3D "option-tx-swhw",
+> >  	[const_ilog2(SOF_TIMESTAMPING_BIND_PHC)]     =3D "bind-phc",
+> >  	[const_ilog2(SOF_TIMESTAMPING_OPT_ID_TCP)]   =3D "option-id-tcp",
+> > +	[const_ilog2(SOF_TIMESTAMPING_GHWTSTAMP)]    =3D "get-hwtstamp", =20
+>=20
+> What is this new SOF_TIMESTAMPING_GHWTSTAMP? If there's=20
+> a good reason for it to exist it should be documented in
+> Documentation/networking/timestamping.rst
 
-On 05/03/2024 17:23, Michael Kelley wrote:
-> From: Guilherme G. Piccoli <gpiccoli@igalia.com> Sent: Monday, March 4, 2024 1:43 PM
->>
->> On 04/03/2024 18:12, John Ogness wrote:
->>> [...]
->>>> The second question is how to simulate a panic context in a
->>>> non-destructive way, so we can test the panic notifiers in CI, without
->>>> crashing the machine.
->>>
->>> I'm wondering if a "fake panic" can be implemented that quiesces all the
->>> other CPUs via NMI (similar to kdb) and then calls the panic
->>> notifiers. And finally releases everything back to normal. That might
->>> produce a fairly realistic panic situation and should be fairly
->>> non-destructive (depending on what the notifiers do and how long they
->>> take).
->>>
->>
->> Hi Jocelyn / John,
->>
->> one concern here is that the panic notifiers are kind of a no man's
->> land, so we can have very simple / safe ones, while others are
->> destructive in nature.
->>
->> An example of a good behaving notifier that is destructive is the
->> Hyper-V one, that destroys an essential host-guest interface (called
->> "vmbus connection"). What happens if we trigger this one just for
->> testing purposes in a debugfs interface? Likely the guest would die...
->>
->> [+CCing Michael Kelley here since he seems interested in panic and is
->> also expert in Hyper-V, just in case my example is bogus.]
-> 
-> The Hyper-V example is valid. After hv_panic_vmbus_unload()
-> is called, the VM won't be able to do any disk, network, or graphics
-> frame buffer I/O. There's no recovery short of restarting the VM.
+/o\ Sorry I totally forgot about documentation here!
 
-Thanks for the confirmation.
-> 
-> Michael
-> 
-> [I have retired from Microsoft.  I'm still occasionally contributing
-> to Linux kernel work with email mhklinux@outlook.com.]
-> 
->>
->> So, maybe the problem could be split in 2: the non-notifiers portion of
->> the panic path, and the the notifiers; maybe restricting the notifiers
->> you'd run is a way to circumvent the risks, like if you could pass a
->> list of the specific notifiers you aim to test, this could be
->> interesting. Let's see what the others think and thanks for your work in
->> the DRM panic notifier =)
+> > +const struct nla_policy ethnl_tsinfo_get_policy[ETHTOOL_A_TSINFO_MAX +=
+ 1]
+> > =3D { [ETHTOOL_A_TSINFO_HEADER]		=3D
+> >  		NLA_POLICY_NESTED(ethnl_header_policy),
+> > +	[ETHTOOL_A_TSINFO_TIMESTAMPING] =3D { .type =3D NLA_NESTED },
+> > +	[ETHTOOL_A_TSINFO_HWTSTAMP_PROVIDER_NEST] =3D { .type =3D NLA_NESTED
+> > }, =20
+>=20
+> link the policy by NLA_POLICY_NESTED() so that user space can inspect
+> the sub-layers via the control family.
 
-Or maybe have two lists of panic notifiers, the safe and the destructive 
-list. So in case of fake panic, we can only call the safe notifiers.
+Ok thanks!
 
->>
->> Cheers,
->>
->>
->> Guilherme
-> 
+> > +
+> > +	if (!hwtst_tb[ETHTOOL_A_TSINFO_HWTSTAMP_PROVIDER_INDEX] ||
+> > +	    !hwtst_tb[ETHTOOL_A_TSINFO_HWTSTAMP_PROVIDER_QUALIFIER])
+> > +		return -EINVAL; =20
+>=20
+> NL_REQ_ATTR_CHECK()
 
+ok.
+
+>=20
+> > +	ret =3D
+> > nla_get_u32(hwtst_tb[ETHTOOL_A_TSINFO_HWTSTAMP_PROVIDER_INDEX]);
+> > +	if (ret < 0)
+> > +		return -EINVAL; =20
+>=20
+> How's the get_u32 going to return a negative value?
+> That's the purpose of this check?
+> The policy should contain the max expected value - NLA_POLICY_MAX().
+
+Right I will use more NLA_POLICY_* to check the values in next version.
+
+> >  		return ret;
+> > -	ret =3D __ethtool_get_ts_info(dev, &data->ts_info);
+> > +
+> > +	if (!netif_device_present(dev)) { =20
+>=20
+>  ethnl_ops_begin() checks for presence
+
+Ok thanks!
+
+>=20
+> > +	if (req->hwtst.index !=3D -1) {
+> > +		struct hwtstamp_provider hwtstamp;
+> > +
+> > +		hwtstamp.ptp =3D ptp_clock_get_by_index(req->hwtst.index);
+> > +		if (!hwtstamp.ptp) {
+> > +			ret =3D -ENODEV;
+> > +			goto out;
+> > +		}
+> > +		hwtstamp.qualifier =3D req->hwtst.qualifier;
+> > +
+> > +		ret =3D ethtool_get_ts_info_by_phc(dev, &data->ts_info,
+> > +						 &hwtstamp);
+> > +	} else {
+> > +		ret =3D __ethtool_get_ts_info(dev, &data->ts_info); =20
+>=20
+> Not sure I grok why we need 3 forms of getting the tstamp config.
+>=20
+> Please make sure to always update
+> Documentation/networking/ethtool-netlink.rst
+> when extending ethtool-nl.
+
+Yes sorry I forgot!
+The three cases are:
+- get hwtstamp config like ioctl SIOCGHWTSTAMP
+- get tsinfo of the current hwtstamp
+- get tsinfo of a specific hwtstamp
+
+> > +	if (ts_info->phc_index >=3D 0) {
+> > +		/* _TSINFO_HWTSTAMP_PROVIDER_NEST */
+> > +		len +=3D nla_total_size(sizeof(u32) * 2); =20
+>=20
+> That translates to two raw u32s into a single attribute.
+> Is that what you mean?
+
+Oh right that's not what I want. Thanks you!
+This is better:
+len +=3D 2 * nla_total_size(sizeof(u32));
+
+> > +	if (ts_info->phc_index >=3D 0) {
+> > +		ret =3D nla_put_u32(skb, ETHTOOL_A_TSINFO_PHC_INDEX,
+> > +				  ts_info->phc_index);
+> > +		if (ret)
+> > +			return -EMSGSIZE;
+> > +
+> > +		nest =3D nla_nest_start(skb,
+> > ETHTOOL_A_TSINFO_HWTSTAMP_PROVIDER_NEST);
+> > +		if (!nest)
+> > +			return -EMSGSIZE;
+> > +
+> > +		ret =3D nla_put_u32(skb,
+> > +				  ETHTOOL_A_TSINFO_HWTSTAMP_PROVIDER_INDEX,
+> > +				  ts_info->phc_index); =20
+>=20
+> You can assume nla_put_u32 only returns EMSGSIZE, so doing:
+>=20
+> if (nla_put_u32(....) ||
+>     nla_put_u32(....))
+> 	return -EMSGSIZE;
+>=20
+> is generally considered to be fine.
+
+Ok.
+
+> > +
+> > +		/* Does the hwtstamp supported in the netdev topology */
+> > +		if (mod) {
+> > +			hwtstamp.ptp =3D ptp_clock_get_by_index(phc_index); =20
+>=20
+> This just returns a pointer without any refcounting, right?
+> What guarantees the ptp object doesn't disappear?
+
+Could the ptp object disappears within rtnlock?
+Maybe I should add refcounting.
+
+Regards,
+--=20
+K=C3=B6ry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
 
