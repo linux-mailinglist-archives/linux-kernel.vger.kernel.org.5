@@ -1,249 +1,290 @@
-Return-Path: <linux-kernel+bounces-92446-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92447-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69AC0872040
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:33:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70BE9872044
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:34:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4D6E1F238E1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:33:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9594C1C22B73
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:34:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 604C91272A0;
-	Tue,  5 Mar 2024 13:32:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ddf/esF4"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4938B86136;
+	Tue,  5 Mar 2024 13:33:46 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68E6686122;
-	Tue,  5 Mar 2024 13:32:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E29F85C74;
+	Tue,  5 Mar 2024 13:33:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709645536; cv=none; b=ZqvCn0zjkLjXQDCxhUYrEKODdxIGFBg5uEDwsTWE5vKwZNi/Tcqq9SuqIxPTevBSgf4WHYl2Pkdgr5k1xf4/q61Gab0xCFs1c4mTvbc+DcSJdYWv7aAJ8f2PDXom66s3Mf4YS+Gb/+YTYnYwbbO96xFruy3ksa7nV0gK1KpI6ws=
+	t=1709645625; cv=none; b=lcH18OTDi/fW9w+v5o8UieWZdTKou9zup119i3TmUgkVfbKXllYVff6506klzgZszFDofB1316In5xt1uW+IktCr2Hy0DtJr54wnf4k8w4A3UH0ZJ35gtep+ASZ5Oo+T43NJEWTF2+CkWAIqNoZJlSofMLGCHBfshGLz7/kkFqM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709645536; c=relaxed/simple;
-	bh=X2pcqaEppLriKl5jH3VKRq9t3eq7W6iCl/g1gvcIKuw=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=MAM7bKYrAAl5uFYCmrqlAtEDgIatRCpmN1Eh9kweagxmYUGMgvGAqpBLAG7iCVA4g2htgwpjcGLlkfNI8fjqqgH2MQjk5nUyfhloW7rhCabzA1NlTjvI1Q8/M5wAwnjvQA+D4wp1ENMB5peA3Nfk0edGZiXsyt234ltDcctS0z0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ddf/esF4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id EB6A2C4166A;
-	Tue,  5 Mar 2024 13:32:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709645536;
-	bh=X2pcqaEppLriKl5jH3VKRq9t3eq7W6iCl/g1gvcIKuw=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=ddf/esF4RHNLGYbfxWPPnThG8FcTTMIpL7pQKEQ8MtvItx9bP5psPKzr4ygK2HpIv
-	 9mbB+TTTRPJ0/Wpg/vFomMAMQH+7PKNI3QO5CshgCq4FX3w3c/Q+9Ne1Tn75qIzgu8
-	 LKpgJqnjfKxP+Dk71KhhrM/2wuZewM3UfFMYgaR6Sf+6ynR1l97r1JTB5NimAsaFd0
-	 sl7alfDiNiBmNd5X9GJ1iOu0hoBNX9ZvFnE2x5U2Xa5NS11wC59RyG8QjE3+Hl9djY
-	 FQdkym7/Uy07U4ntsw0Lh2148RsTkn+DFGD9gJxLW0m+XKikzCPsncSUnl9ju7Dghf
-	 +ZAFbV3v8F/iw==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D893BC54798;
-	Tue,  5 Mar 2024 13:32:15 +0000 (UTC)
-From: Yang Xiwen via B4 Relay <devnull+forbidden405.outlook.com@kernel.org>
-Date: Tue, 05 Mar 2024 21:32:16 +0800
-Subject: [PATCH v5 5/5] phy: hisilicon: hisi-inno-phy: add support for
- Hi3798MV200 INNO PHY
+	s=arc-20240116; t=1709645625; c=relaxed/simple;
+	bh=ItAT0NnYhcPDafMCdVsOrCiekZ0qH74J7MJ5JNhPLu4=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=dyo+S0RA7Ucfl7MOM6yot4/xa42fUCrMNHOQJPqcPTckhQMrcKIsn2JI6c4wdaN9XGJn5bx7bemwV+yU4+TTJLYOxCZ/D95cpQLQUFUZs+rS+45iC5bhirj07QVbFkuiAPZuZe6E3SZNx0+JFrIhz0BG0dvetU4GnW+RtUwpU1A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TpxKh23rvz1h1Dg;
+	Tue,  5 Mar 2024 21:31:20 +0800 (CST)
+Received: from kwepemm600017.china.huawei.com (unknown [7.193.23.234])
+	by mail.maildlp.com (Postfix) with ESMTPS id 6F0DA1A016E;
+	Tue,  5 Mar 2024 21:33:40 +0800 (CST)
+Received: from localhost.localdomain (10.175.112.125) by
+ kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 5 Mar 2024 21:33:39 +0800
+From: Tong Tiangen <tongtiangen@huawei.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>, David Howells
+	<dhowells@redhat.com>, Al Viro <viro@kernel.org>, Jens Axboe
+	<axboe@kernel.dk>, Alexander Viro <viro@zeniv.linux.org.uk>, Christian
+ Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Andrew Morton
+	<akpm@linux-foundation.org>
+CC: <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Tong
+ Tiangen <tongtiangen@huawei.com>, <wangkefeng.wang@huawei.com>, Guohanjun
+	<guohanjun@huawei.com>
+Subject: [PATCH] coredump: get machine check errors early rather than during iov_iter
+Date: Tue, 5 Mar 2024 21:33:36 +0800
+Message-ID: <20240305133336.3804360-1-tongtiangen@huawei.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240305-inno-phy-v5-5-dc1cb130ea08@outlook.com>
-References: <20240305-inno-phy-v5-0-dc1cb130ea08@outlook.com>
-In-Reply-To: <20240305-inno-phy-v5-0-dc1cb130ea08@outlook.com>
-To: Vinod Koul <vkoul@kernel.org>, 
- Kishon Vijay Abraham I <kishon@kernel.org>, 
- Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Jiancheng Xue <xuejiancheng@hisilicon.com>, 
- Shawn Guo <shawn.guo@linaro.org>, Philipp Zabel <p.zabel@pengutronix.de>
-Cc: linux-phy@lists.infradead.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>, 
- David Yang <mmyangfl@gmail.com>, Yang Xiwen <forbidden405@outlook.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1709645533; l=5081;
- i=forbidden405@outlook.com; s=20230724; h=from:subject:message-id;
- bh=OaNSAYqVgjaJJu2us++JYHvopTtBdTV0BeYKpDi3R0o=;
- b=Nw6brnfN8pfAgTT5KgNfkoDEJgIi9IfSnGqii81cblSeDe0Ibkqpuw5oKVIQvnRhgPN68jL/A
- mPu0JoswG5QA8TnKAg8oPMyF60N9GbjveoPKcYGp8//AYNI6kl/YYKi
-X-Developer-Key: i=forbidden405@outlook.com; a=ed25519;
- pk=qOD5jhp891/Xzc+H/PZ8LWVSWE3O/XCQnAg+5vdU2IU=
-X-Endpoint-Received:
- by B4 Relay for forbidden405@outlook.com/20230724 with auth_id=67
-X-Original-From: Yang Xiwen <forbidden405@outlook.com>
-Reply-To: <forbidden405@outlook.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm600017.china.huawei.com (7.193.23.234)
 
-From: Yang Xiwen <forbidden405@outlook.com>
+The commit f1982740f5e7 ("iov_iter: Convert iterate*() to inline funcs")
+leads to deadloop in generic_perform_write()[1], due to return value of
+copy_page_from_iter_atomic() changed from non-zero value to zero.
 
-Direct MMIO resgiter access is used by Hi3798MV200. For other models,
-of_iomap() returns NULL due to insufficient length. So they are
-unaffected.
+The code logic of the I/O performance-critical path of the iov_iter is
+mixed with machine check[2], actually, there's no need to complicate it,
+a more appropriate method is to get the error as early as possible in
+the coredump process instead of during the I/O process. In addition,
+the iov_iter performance-critical path can have clean logic.
 
-Also Hi3798MV200 INNO PHY has an extra reset required to be deasserted,
-switch to reset_control_array_*() APIs for that.
+[1] https://lore.kernel.org/lkml/4e80924d-9c85-f13a-722a-6a5d2b1c225a@huawei.com/
+[2] commit 245f09226893 ("mm: hwpoison: coredump: support recovery from dump_user_range()")
 
-Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
+Fixes: f1982740f5e7 ("iov_iter: Convert iterate*() to inline funcs")
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
+Reviewed-by: David Howells <dhowells@redhat.com>
+Tested-by: David Howells <dhowells@redhat.com>
 ---
- drivers/phy/hisilicon/phy-hisi-inno-usb2.c | 66 ++++++++++++++++++------------
- 1 file changed, 40 insertions(+), 26 deletions(-)
+ fs/coredump.c       | 42 +++++++++++++++++++++++++++++++++++++++---
+ include/linux/uio.h | 16 ----------------
+ lib/iov_iter.c      | 23 -----------------------
+ 3 files changed, 39 insertions(+), 42 deletions(-)
 
-diff --git a/drivers/phy/hisilicon/phy-hisi-inno-usb2.c b/drivers/phy/hisilicon/phy-hisi-inno-usb2.c
-index b7e740eb4752..df154cd99ed8 100644
---- a/drivers/phy/hisilicon/phy-hisi-inno-usb2.c
-+++ b/drivers/phy/hisilicon/phy-hisi-inno-usb2.c
-@@ -10,6 +10,7 @@
- #include <linux/io.h>
- #include <linux/module.h>
- #include <linux/of.h>
-+#include <linux/of_address.h>
- #include <linux/phy/phy.h>
- #include <linux/platform_device.h>
- #include <linux/reset.h>
-@@ -24,6 +25,7 @@
+diff --git a/fs/coredump.c b/fs/coredump.c
+index f258c17c1841..ea155ffee14c 100644
+--- a/fs/coredump.c
++++ b/fs/coredump.c
+@@ -872,6 +872,9 @@ static int dump_emit_page(struct coredump_params *cprm, struct page *page)
+ 	loff_t pos;
+ 	ssize_t n;
  
- #define PHY_TYPE_0	0
- #define PHY_TYPE_1	1
-+#define PHY_TYPE_MMIO	2
- 
- #define PHY_TEST_DATA		GENMASK(7, 0)
- #define PHY_TEST_ADDR_OFFSET	8
-@@ -43,6 +45,7 @@
- #define PHY_CLK_ENABLE		BIT(2)
- 
- struct hisi_inno_phy_port {
-+	void __iomem *base;
- 	struct reset_control *utmi_rst;
- 	struct hisi_inno_phy_priv *priv;
- };
-@@ -50,7 +53,7 @@ struct hisi_inno_phy_port {
- struct hisi_inno_phy_priv {
- 	void __iomem *mmio;
- 	struct clk *ref_clk;
--	struct reset_control *por_rst;
-+	struct reset_control *rsts;
- 	unsigned int type;
- 	struct hisi_inno_phy_port ports[INNO_PHY_PORT_NUM];
- };
-@@ -62,26 +65,31 @@ static void hisi_inno_phy_write_reg(struct hisi_inno_phy_priv *priv,
- 	u32 val;
- 	u32 value;
- 
--	if (priv->type == PHY_TYPE_0)
--		val = (data & PHY_TEST_DATA) |
--		      ((addr << PHY_TEST_ADDR_OFFSET) & PHY0_TEST_ADDR) |
--		      ((port << PHY0_TEST_PORT_OFFSET) & PHY0_TEST_PORT) |
--		      PHY0_TEST_WREN | PHY0_TEST_RST;
--	else
--		val = (data & PHY_TEST_DATA) |
--		      ((addr << PHY_TEST_ADDR_OFFSET) & PHY1_TEST_ADDR) |
--		      ((port << PHY1_TEST_PORT_OFFSET) & PHY1_TEST_PORT) |
--		      PHY1_TEST_WREN | PHY1_TEST_RST;
--	writel(val, reg);
--
--	value = val;
--	if (priv->type == PHY_TYPE_0)
--		value |= PHY0_TEST_CLK;
--	else
--		value |= PHY1_TEST_CLK;
--	writel(value, reg);
--
--	writel(val, reg);
-+	if (priv->ports[port].base)
-+		/* FIXME: fill stride in priv */
-+		writel(data, (u32 *)priv->ports[port].base + addr);
-+	else {
-+		if (priv->type == PHY_TYPE_0)
-+			val = (data & PHY_TEST_DATA) |
-+			      ((addr << PHY_TEST_ADDR_OFFSET) & PHY0_TEST_ADDR) |
-+			      ((port << PHY0_TEST_PORT_OFFSET) & PHY0_TEST_PORT) |
-+			      PHY0_TEST_WREN | PHY0_TEST_RST;
-+		else
-+			val = (data & PHY_TEST_DATA) |
-+			      ((addr << PHY_TEST_ADDR_OFFSET) & PHY1_TEST_ADDR) |
-+			      ((port << PHY1_TEST_PORT_OFFSET) & PHY1_TEST_PORT) |
-+			      PHY1_TEST_WREN | PHY1_TEST_RST;
-+		writel(val, reg);
++	if (!page)
++		return 0;
 +
-+		value = val;
-+		if (priv->type == PHY_TYPE_0)
-+			value |= PHY0_TEST_CLK;
-+		else
-+			value |= PHY1_TEST_CLK;
-+		writel(value, reg);
-+
-+		writel(val, reg);
-+	}
+ 	if (cprm->to_skip) {
+ 		if (!__dump_skip(cprm, cprm->to_skip))
+ 			return 0;
+@@ -884,7 +887,6 @@ static int dump_emit_page(struct coredump_params *cprm, struct page *page)
+ 	pos = file->f_pos;
+ 	bvec_set_page(&bvec, page, PAGE_SIZE, 0);
+ 	iov_iter_bvec(&iter, ITER_SOURCE, &bvec, 1, PAGE_SIZE);
+-	iov_iter_set_copy_mc(&iter);
+ 	n = __kernel_write_iter(cprm->file, &iter, &pos);
+ 	if (n != PAGE_SIZE)
+ 		return 0;
+@@ -895,10 +897,41 @@ static int dump_emit_page(struct coredump_params *cprm, struct page *page)
+ 	return 1;
  }
  
- static void hisi_inno_phy_setup(struct hisi_inno_phy_priv *priv)
-@@ -104,7 +112,7 @@ static int hisi_inno_phy_init(struct phy *phy)
- 		return ret;
- 	udelay(REF_CLK_STABLE_TIME);
- 
--	reset_control_deassert(priv->por_rst);
-+	reset_control_deassert(priv->rsts);
- 	udelay(POR_RST_COMPLETE_TIME);
- 
- 	/* Set up phy registers */
-@@ -122,7 +130,7 @@ static int hisi_inno_phy_exit(struct phy *phy)
- 	struct hisi_inno_phy_priv *priv = port->priv;
- 
- 	reset_control_assert(port->utmi_rst);
--	reset_control_assert(priv->por_rst);
-+	reset_control_assert(priv->rsts);
- 	clk_disable_unprepare(priv->ref_clk);
- 
- 	return 0;
-@@ -158,15 +166,16 @@ static int hisi_inno_phy_probe(struct platform_device *pdev)
- 	if (IS_ERR(priv->ref_clk))
- 		return PTR_ERR(priv->ref_clk);
- 
--	priv->por_rst = devm_reset_control_get_exclusive(dev, NULL);
--	if (IS_ERR(priv->por_rst))
--		return PTR_ERR(priv->por_rst);
-+	priv->rsts = devm_reset_control_array_get_exclusive(dev);
-+	if (IS_ERR(priv->rsts))
-+		return PTR_ERR(priv->rsts);
- 
- 	priv->type = (uintptr_t) of_device_get_match_data(dev);
- 
- 	for_each_child_of_node(np, child) {
- 		struct reset_control *rst;
- 		struct phy *phy;
-+		void __iomem *base;
- 
- 		rst = of_reset_control_get_exclusive(child, NULL);
- 		if (IS_ERR(rst)) {
-@@ -174,7 +183,10 @@ static int hisi_inno_phy_probe(struct platform_device *pdev)
- 			return PTR_ERR(rst);
- 		}
- 
-+		base = of_iomap(child, 0);
++/*
++ * If we might get machine checks from kernel accesses during the
++ * core dump, let's get those errors early rather than during the
++ * IO. This is not performance-critical enough to warrant having
++ * all the machine check logic in the iovec paths.
++ */
++#ifdef copy_mc_to_kernel
 +
- 		priv->ports[i].utmi_rst = rst;
-+		priv->ports[i].base = base;
- 		priv->ports[i].priv = priv;
++#define dump_page_alloc() alloc_page(GFP_KERNEL)
++#define dump_page_free(x) __free_page(x)
++static struct page *dump_page_copy(struct page *src, struct page *dst)
++{
++	void *buf = kmap_local_page(src);
++	size_t left = copy_mc_to_kernel(page_address(dst), buf, PAGE_SIZE);
++
++	kunmap_local(buf);
++	return left ? NULL : dst;
++}
++
++#else
++
++#define dump_page_alloc() ((struct page *)8) // Not NULL
++#define dump_page_free(x) do { } while (0)
++#define dump_page_copy(src, dst) ((dst), (src))
++
++#endif
++
+ int dump_user_range(struct coredump_params *cprm, unsigned long start,
+ 		    unsigned long len)
+ {
+ 	unsigned long addr;
++	struct page *dump_page = dump_page_alloc();
++
++	if (!dump_page)
++		return 0;
  
- 		phy = devm_phy_create(dev, child, &hisi_inno_phy_ops);
-@@ -205,6 +217,8 @@ static const struct of_device_id hisi_inno_phy_of_match[] = {
- 	  .data = (void *) PHY_TYPE_0 },
- 	{ .compatible = "hisilicon,hi3798mv100-usb2-phy",
- 	  .data = (void *) PHY_TYPE_1 },
-+	{ .compatible = "hisilicon,hi3798mv200-usb2-phy",
-+	  .data = (void *) PHY_TYPE_MMIO },
- 	{ },
- };
- MODULE_DEVICE_TABLE(of, hisi_inno_phy_of_match);
-
+ 	for (addr = start; addr < start + len; addr += PAGE_SIZE) {
+ 		struct page *page;
+@@ -912,14 +945,17 @@ int dump_user_range(struct coredump_params *cprm, unsigned long start,
+ 		 */
+ 		page = get_dump_page(addr);
+ 		if (page) {
+-			int stop = !dump_emit_page(cprm, page);
++			int stop = !dump_emit_page(cprm, dump_page_copy(page, dump_page));
+ 			put_page(page);
+-			if (stop)
++			if (stop) {
++				dump_page_free(dump_page);
+ 				return 0;
++			}
+ 		} else {
+ 			dump_skip(cprm, PAGE_SIZE);
+ 		}
+ 	}
++	dump_page_free(dump_page);
+ 	return 1;
+ }
+ #endif
+diff --git a/include/linux/uio.h b/include/linux/uio.h
+index bea9c89922d9..00cebe2b70de 100644
+--- a/include/linux/uio.h
++++ b/include/linux/uio.h
+@@ -40,7 +40,6 @@ struct iov_iter_state {
+ 
+ struct iov_iter {
+ 	u8 iter_type;
+-	bool copy_mc;
+ 	bool nofault;
+ 	bool data_source;
+ 	size_t iov_offset;
+@@ -248,22 +247,8 @@ size_t _copy_from_iter_flushcache(void *addr, size_t bytes, struct iov_iter *i);
+ 
+ #ifdef CONFIG_ARCH_HAS_COPY_MC
+ size_t _copy_mc_to_iter(const void *addr, size_t bytes, struct iov_iter *i);
+-static inline void iov_iter_set_copy_mc(struct iov_iter *i)
+-{
+-	i->copy_mc = true;
+-}
+-
+-static inline bool iov_iter_is_copy_mc(const struct iov_iter *i)
+-{
+-	return i->copy_mc;
+-}
+ #else
+ #define _copy_mc_to_iter _copy_to_iter
+-static inline void iov_iter_set_copy_mc(struct iov_iter *i) { }
+-static inline bool iov_iter_is_copy_mc(const struct iov_iter *i)
+-{
+-	return false;
+-}
+ #endif
+ 
+ size_t iov_iter_zero(size_t bytes, struct iov_iter *);
+@@ -355,7 +340,6 @@ static inline void iov_iter_ubuf(struct iov_iter *i, unsigned int direction,
+ 	WARN_ON(direction & ~(READ | WRITE));
+ 	*i = (struct iov_iter) {
+ 		.iter_type = ITER_UBUF,
+-		.copy_mc = false,
+ 		.data_source = direction,
+ 		.ubuf = buf,
+ 		.count = count,
+diff --git a/lib/iov_iter.c b/lib/iov_iter.c
+index e0aa6b440ca5..cf2eb2b2f983 100644
+--- a/lib/iov_iter.c
++++ b/lib/iov_iter.c
+@@ -166,7 +166,6 @@ void iov_iter_init(struct iov_iter *i, unsigned int direction,
+ 	WARN_ON(direction & ~(READ | WRITE));
+ 	*i = (struct iov_iter) {
+ 		.iter_type = ITER_IOVEC,
+-		.copy_mc = false,
+ 		.nofault = false,
+ 		.data_source = direction,
+ 		.__iov = iov,
+@@ -244,27 +243,9 @@ size_t _copy_mc_to_iter(const void *addr, size_t bytes, struct iov_iter *i)
+ EXPORT_SYMBOL_GPL(_copy_mc_to_iter);
+ #endif /* CONFIG_ARCH_HAS_COPY_MC */
+ 
+-static __always_inline
+-size_t memcpy_from_iter_mc(void *iter_from, size_t progress,
+-			   size_t len, void *to, void *priv2)
+-{
+-	return copy_mc_to_kernel(to + progress, iter_from, len);
+-}
+-
+-static size_t __copy_from_iter_mc(void *addr, size_t bytes, struct iov_iter *i)
+-{
+-	if (unlikely(i->count < bytes))
+-		bytes = i->count;
+-	if (unlikely(!bytes))
+-		return 0;
+-	return iterate_bvec(i, bytes, addr, NULL, memcpy_from_iter_mc);
+-}
+-
+ static __always_inline
+ size_t __copy_from_iter(void *addr, size_t bytes, struct iov_iter *i)
+ {
+-	if (unlikely(iov_iter_is_copy_mc(i)))
+-		return __copy_from_iter_mc(addr, bytes, i);
+ 	return iterate_and_advance(i, bytes, addr,
+ 				   copy_from_user_iter, memcpy_from_iter);
+ }
+@@ -633,7 +614,6 @@ void iov_iter_kvec(struct iov_iter *i, unsigned int direction,
+ 	WARN_ON(direction & ~(READ | WRITE));
+ 	*i = (struct iov_iter){
+ 		.iter_type = ITER_KVEC,
+-		.copy_mc = false,
+ 		.data_source = direction,
+ 		.kvec = kvec,
+ 		.nr_segs = nr_segs,
+@@ -650,7 +630,6 @@ void iov_iter_bvec(struct iov_iter *i, unsigned int direction,
+ 	WARN_ON(direction & ~(READ | WRITE));
+ 	*i = (struct iov_iter){
+ 		.iter_type = ITER_BVEC,
+-		.copy_mc = false,
+ 		.data_source = direction,
+ 		.bvec = bvec,
+ 		.nr_segs = nr_segs,
+@@ -679,7 +658,6 @@ void iov_iter_xarray(struct iov_iter *i, unsigned int direction,
+ 	BUG_ON(direction & ~1);
+ 	*i = (struct iov_iter) {
+ 		.iter_type = ITER_XARRAY,
+-		.copy_mc = false,
+ 		.data_source = direction,
+ 		.xarray = xarray,
+ 		.xarray_start = start,
+@@ -703,7 +681,6 @@ void iov_iter_discard(struct iov_iter *i, unsigned int direction, size_t count)
+ 	BUG_ON(direction != READ);
+ 	*i = (struct iov_iter){
+ 		.iter_type = ITER_DISCARD,
+-		.copy_mc = false,
+ 		.data_source = false,
+ 		.count = count,
+ 		.iov_offset = 0
 -- 
-2.43.0
+2.25.1
 
 
