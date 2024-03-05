@@ -1,30 +1,30 @@
-Return-Path: <linux-kernel+bounces-92959-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92960-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0EA38728A3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 21:25:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 652008728A7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 21:26:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F26771C2280F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 20:25:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19C8A1F2C784
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 20:26:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29ADA12BF0B;
-	Tue,  5 Mar 2024 20:24:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 428D212C809;
+	Tue,  5 Mar 2024 20:24:54 +0000 (UTC)
 Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C6F212AAD1;
-	Tue,  5 Mar 2024 20:24:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 530AC12881F;
+	Tue,  5 Mar 2024 20:24:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.142.180.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709670283; cv=none; b=Fx+k0uXUKcF4As9LWMJ1zTII1vo66fw03XRAyJimvIyL1ulJ1trxOc8m8vHZ0Nx1+wYfOdKTtGIDCpSXGe8DL53XfccV9C+Cqlktb3EywQaW20DQA1Kb6/Lvx5QZdJ/VzyGRA6aWYNHTcRtg6Ruf3SKgha8TvIxnjdbchENWfi8=
+	t=1709670293; cv=none; b=jEMfGIJvA1aXFmsPJ2PO5QbINHdgXklww9VdLD+yFgC3vaURMoCLnSJvH+FcNl0ALCpSEf/Boew4rCYeuaAh6+yU+knqoGuZ2IoYbnfGze5ymTlzVgZAqgKp+BmT/5mjOBNJPJPKSqgLiegKCsa8Fxv764KQiwbhYgMgHtxNsTQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709670283; c=relaxed/simple;
-	bh=MrUm4sok0/sW2mdOlQzqjBZTUNsycS8FdxaU87EdmU4=;
+	s=arc-20240116; t=1709670293; c=relaxed/simple;
+	bh=YaB2y2wN9NfY5eb0MhPB3fO/s+7TOMJVq/CsEjdI+HM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iOF2Yhe3nwArx+EOeLsBDB7q7NUq1oZaeFCK0+VukZZw/8EAC57BOGopBbKEkBNbqwK6Tx75dTr2Kup5WtKizQNDYfPxLrHoxscrKKWtHKwObq6Q4gtToa+G56ta1KqGi1iNCI2FEaVq0WXnscSiog5Z+mU5U0Wf8zhIkNNNWbQ=
+	 Content-Type:Content-Disposition:In-Reply-To; b=WaQt1cS3wOgwF50qL+CpMinGWTD2TIl1f4nIL5UleMQHj9DuAuMu11vVA2AMJKCvBVzKVLqbHrqrlEgb7tozv/ZGZYqefXG//3HH/rO4J8azWw5KVy1XBJkeGtOVnR0IVLiS59UNDw2ZHnjxKTjZ56joJW+AdLdVh+FTUXvbg/8=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org; spf=pass smtp.mailfrom=makrotopia.org; arc=none smtp.client-ip=185.142.180.65
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=makrotopia.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=makrotopia.org
@@ -32,9 +32,9 @@ Received: from local
 	by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
 	 (Exim 4.96.2)
 	(envelope-from <daniel@makrotopia.org>)
-	id 1rhbKp-0001Q6-2t;
-	Tue, 05 Mar 2024 20:24:24 +0000
-Date: Tue, 5 Mar 2024 20:24:19 +0000
+	id 1rhbKz-0001RH-1q;
+	Tue, 05 Mar 2024 20:24:33 +0000
+Date: Tue, 5 Mar 2024 20:24:29 +0000
 From: Daniel Golle <daniel@makrotopia.org>
 To: Rob Herring <robh@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -62,8 +62,8 @@ Cc: Diping Zhang <diping.zhang@gl-inet.com>,
 	Jieying Zeng <jieying.zeng@gl-inet.com>,
 	Chad Monroe <chad.monroe@adtran.com>,
 	Adam Fox <adam.fox@adtran.com>, John Crispin <john@phrozen.org>
-Subject: [RFC PATCH v2 6/8] mmc: core: set card fwnode_handle
-Message-ID: <055787bb6085c32907ee1772522a6bfa49d5d2ef.1709667858.git.daniel@makrotopia.org>
+Subject: [RFC PATCH v2 7/8] mmc: block: set fwnode of disk devices
+Message-ID: <84aba89131f19c836ad0bc029bb74ea1d6f08d17.1709667858.git.daniel@makrotopia.org>
 References: <cover.1709667858.git.daniel@makrotopia.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -75,26 +75,40 @@ Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <cover.1709667858.git.daniel@makrotopia.org>
 
-Set fwnode in case it isn't set yet and of_node is present.
+Set fwnode of disk devices to 'block', 'boot0' and 'boot1' subnodes of
+the mmc-card. This is done in preparation for having the eMMC act as
+NVMEM provider.
 
 Signed-off-by: Daniel Golle <daniel@makrotopia.org>
 ---
- drivers/mmc/core/bus.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/mmc/core/block.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/mmc/core/bus.c b/drivers/mmc/core/bus.c
-index 0ddaee0eae54f..e1c5fc1b3ce4b 100644
---- a/drivers/mmc/core/bus.c
-+++ b/drivers/mmc/core/bus.c
-@@ -364,6 +364,8 @@ int mmc_add_card(struct mmc_card *card)
+diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+index bd165cef2bbc3..c3e9477743515 100644
+--- a/drivers/mmc/core/block.c
++++ b/drivers/mmc/core/block.c
+@@ -2461,6 +2461,7 @@ static struct mmc_blk_data *mmc_blk_alloc_req(struct mmc_card *card,
+ 					      int area_type,
+ 					      unsigned int part_type)
+ {
++	struct fwnode_handle *fwnode;
+ 	struct mmc_blk_data *md;
+ 	int devidx, ret;
+ 	char cap_str[10];
+@@ -2557,6 +2558,12 @@ static struct mmc_blk_data *mmc_blk_alloc_req(struct mmc_card *card,
  
- 	mmc_add_card_debugfs(card);
- 	card->dev.of_node = mmc_of_find_child_device(card->host, 0);
-+	if (card->dev.of_node && !card->dev.fwnode)
-+		card->dev.fwnode = &card->dev.of_node->fwnode;
+ 	blk_queue_write_cache(md->queue.queue, cache_enabled, fua_enabled);
  
- 	device_enable_async_suspend(&card->dev);
- 
++	fwnode = device_get_named_child_node(subname ? md->parent->parent :
++						       md->parent,
++					     subname ? subname : "block");
++	if (fwnode)
++		device_set_node(disk_to_dev(md->disk), fwnode);
++
+ 	string_get_size((u64)size, 512, STRING_UNITS_2,
+ 			cap_str, sizeof(cap_str));
+ 	pr_info("%s: %s %s %s%s\n",
 -- 
 2.44.0
 
