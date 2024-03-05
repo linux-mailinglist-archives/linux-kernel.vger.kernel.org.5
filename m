@@ -1,131 +1,140 @@
-Return-Path: <linux-kernel+bounces-91539-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91540-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46BA2871359
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 03:10:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B95B87135D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 03:11:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CBDBCB240A6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 02:10:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ADE291C20C16
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 02:11:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9684818654;
-	Tue,  5 Mar 2024 02:05:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70AAD18EA2;
+	Tue,  5 Mar 2024 02:09:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rnizyw7p"
-Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AcRR3ivT"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8712D17C9E;
-	Tue,  5 Mar 2024 02:05:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEFD118AE0;
+	Tue,  5 Mar 2024 02:09:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709604317; cv=none; b=rfA8cVLiCzE1qSLwpe6AwzW8y16m1hHId+XU+C2vqBTB35k3Mqzp+Q2jx8/oG5KnW3fwGGW1HkI4Bn4lk6AeLjnIuIAhYxSGybsD8nsPL923IFVmtvWVjbuJ7JvjqqQ2xW+4P0+mqv47v0kMzQY4gX1Kv35rmpQT6BNMBpGNZZ4=
+	t=1709604567; cv=none; b=EtqMFK0jlCAp3X5lgCQxZDcRIPN9654zCARBW4Xu+TMGGgAQ9iRK9jHSNn3UexyiSFNEIx7eINnXfBJ3/BSIq0acjWmFKgbks2vpPZpHi4NUQFDbyE5PTnzDS70Moa+jLd2fPjTi+5GumyAkCpYk/BkQQb/ExaqeADvNUVihYZg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709604317; c=relaxed/simple;
-	bh=mQfMQLmAIBV2TnuZl3ZY6h75I3PfxUcRIRutX3ur6xw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XJnAeet6sN0UzEhLy1ANulSrrvzW2I9f1NuUo2fD9Ducb+Kgn1brULFRIfNk2A8zpzfd3iQnzXONsB9YtD+abuiZsWIMdOQy63ko9Q0djQu1zoCn4F4QIlsuK2At/a0wMrIRo+8wDwWExdDh3NeSzPNZt8CO033jPKHreWWw/vw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rnizyw7p; arc=none smtp.client-ip=209.85.166.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f50.google.com with SMTP id ca18e2360f4ac-7bb5fda069bso334889539f.0;
-        Mon, 04 Mar 2024 18:05:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709604314; x=1710209114; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=dJuCH373LezeptXjAUVUX17sgHTpn3EnPm8FEMA/ybs=;
-        b=Rnizyw7pEsitMnzu/BLBKD/snZarhe4ApKFK1e/jSUAaEBxXtqHBRIaxKjedv0/jwJ
-         zIKPk1pexeEp8wBtmeH4y4c42nQEjcXckTb64ZLvWr4pBeNYYNGBDOdQgo35e/Bbz9et
-         5YzywQ1kEPbegEtIpkz90ZDl9s1T4YyotEHpn46T1uMztjBz0WUQToX6uRFRkxqbCcKX
-         fcnNbhzunXaWWI/R8zZ+/bMLwhsLECXTUs/kJItU2/KhbnSPOyAb5Cf/I1XsYRzbAOOj
-         AMOzJKHI8Sg5W54COEoldumDpa0z7YC3n66ObQDRevjVo9nE7XQ4s250ot/tXR0/5IZU
-         N2bA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709604314; x=1710209114;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dJuCH373LezeptXjAUVUX17sgHTpn3EnPm8FEMA/ybs=;
-        b=sVZUsp++U6c+N6SeSZdkwM6CzU6YQJ9SQebf6P/tnXwSjBdLq5UARbDpZyowkbQ/ek
-         KAj0+DztHDDrT14TVy9CQjz/bFKftN5CmDE2HxHqcALc8fyMbo7Ivbil1C5I66V5xFIY
-         mL39z/Ygc8w9JIO3tDkdrDBIpQ72ub11ORj3AVfppX4wieSxzo9a4VjYiTkU6mBVXFPD
-         1XRXXHfukhfWsKbnzoL/gihptKPlG2aTn15n6HAea9qy9qNjOj4mzNd/a6aqXZtJHqVz
-         FdF4vHRKOidaOqCd1goN++lYKbgolVEtfhAzrbMUDRTrrizIH+x7T02TeVizWoILSEaL
-         1ozQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWrS343ncmU1iX/imXH93EPxqfGfskWgvKPr53JTME4+d1nAz1KjHr3m7Alh8A51DSd+egwIoURjv4zGcg9Sl6kbMdFAtrjd2boSOqGY/bZKJGvvTHIY3yD52iXbD2a+x5C6GuUrhHK6A==
-X-Gm-Message-State: AOJu0YwiMfXLL68E4axWtqMUzT2JJmTFj1/yg1n/0Xv8RVjOwSZQSLOV
-	XG7P//FMzMknNcHk/twD42Gg6svC3fyRyFBeLH5neFnKGZfhRSgS
-X-Google-Smtp-Source: AGHT+IEAIhjfu9DwkDH1PlpTwYvXtDbjW4w0IaT9LIlexPIlg93AQjn3hVh6QqttEk1LXdSnSY9ZkQ==
-X-Received: by 2002:a5d:9502:0:b0:7c8:5ab2:6313 with SMTP id d2-20020a5d9502000000b007c85ab26313mr3171143iom.8.1709604314546;
-        Mon, 04 Mar 2024 18:05:14 -0800 (PST)
-Received: from aford-System-Version.lan ([2601:447:d002:5be:5872:22b6:b680:a683])
-        by smtp.gmail.com with ESMTPSA id g16-20020a056638061000b0047483de6cd5sm2590708jar.112.2024.03.04.18.05.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 18:05:14 -0800 (PST)
-From: Adam Ford <aford173@gmail.com>
-To: linux-arm-kernel@lists.infradead.org
-Cc: aford@beaconembedded.com,
-	Adam Ford <aford173@gmail.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	devicetree@vger.kernel.org,
-	imx@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: imx8mp-beacon-kit: Fix errors found from CHECK_DTBS
-Date: Mon,  4 Mar 2024 20:05:08 -0600
-Message-ID: <20240305020508.6379-1-aford173@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1709604567; c=relaxed/simple;
+	bh=qj75dh2h3V0Ogr8LY76p+EKGod0M/RRoAdWgom9wj64=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gxnLGORuTq07Mx+qtoWzRXc0SecLLHep8DluHzn1blysFPhpytwc529n1gfZMVHV6v66ZZTd0YfO0jCTtkPcrms5WHhGjbHB7Z5rq4M8Ic6i1dMuTyE0zXmdQtdsCLSF78n1ZOVqXkdsINvYhmQ5SnE/zilU/SrrfThYCcqMCcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AcRR3ivT; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709604566; x=1741140566;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=qj75dh2h3V0Ogr8LY76p+EKGod0M/RRoAdWgom9wj64=;
+  b=AcRR3ivTEFwxlY5bJjV4eTMNCHH1UvLPECEUS61ZagIMtaQc178PxgTQ
+   9f0STqg5bI2QZuTq9z4r4tJB4Z5DydMJSrE81LvCQ0nnXSAqvG/jdkswp
+   khChCXutI1AT7ACaWRdjWWY8B2GakwF6uheW8TUaNszjrDuTbTSLjnmol
+   GM2J3PQJnROEAujPxbjNmnUzCJorBN0gvz6TEcXzszDHGfUBFTXzNaPIn
+   TI/HUR4bxsuIJFzKkja3zb3fbxmLb2rRVfsZ5180yB5oXxuH1CAPHRvo1
+   oL6y4JouhPzMYqrttBHegcj48+goDgYK1gswc4wNNP5tPPqy+GQ8LjfLj
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="14775174"
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="14775174"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 18:09:25 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="40083153"
+Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.124.229.115]) ([10.124.229.115])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 18:09:21 -0800
+Message-ID: <f9fd8861-6bbb-469d-b0cb-2edc8598ecca@linux.intel.com>
+Date: Tue, 5 Mar 2024 10:09:20 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH pci-next] pci/edr: Ignore Surprise Down error on hot
+ removal
+To: Lukas Wunner <lukas@wunner.de>
+Cc: bhelgaas@google.com, Smita.KoralahalliChannabasappa@amd.com,
+ ilpo.jarvinen@linux.intel.com, sathyanarayanan.kuppuswamy@linux.intel.com,
+ linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, kbusch@kernel.org
+References: <20240304090819.3812465-1-haifeng.zhao@linux.intel.com>
+ <20240304115844.GA3541@wunner.de>
+From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+In-Reply-To: <20240304115844.GA3541@wunner.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-The adv7535 has some extra reg-name which can be removed since
-the defaults that are used when these are not assigned work
-just fine.  Removing them and adding some required regulators
-make the errors detected from CHECK_DTBS go away.
+On 3/4/2024 7:58 PM, Lukas Wunner wrote:
+> On Mon, Mar 04, 2024 at 04:08:19AM -0500, Ethan Zhao wrote:
+>> Per PCI firmware spec r3.3 sec 4.6.12, for firmware first mode DPC
+>> handling path, FW should clear UC errors logged by port and bring link
+>> out of DPC, but because of ambiguity of wording in the spec, some BIOSes
+>> doesn't clear the surprise down error and the error bits in pci status,
+>> still notify OS to handle it. thus following trick is needed in EDR when
+>> double reporting (hot removal interrupt && dpc notification) is hit.
+> Please provide more detailed information about the hardware and BIOS
+> affected by this.
+>
+You know, to disclose the detail hardware and BIOS info list might invovle
+very complex internal legal approval process.
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
----
-Requires: https://patchwork.kernel.org/project/linux-arm-kernel/patch/20240305004859.201085-2-aford173@gmail.com/
+To put it simply, at least one platform, such SPR and one customer's BIOS
+is affected.
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts b/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts
-index fba8fd04398d..b1cd0f0b9c13 100644
---- a/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts
-+++ b/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts
-@@ -302,12 +302,19 @@ pca6416_3: gpio@20 {
- 
- 	adv_bridge: hdmi@3d {
- 		compatible = "adi,adv7535";
--		reg = <0x3d>, <0x3c>, <0x3e>, <0x3f>;
--		reg-names = "main", "cec", "edid", "packet";
-+		reg = <0x3d>;
-+		reg-names = "main";
- 		interrupt-parent = <&gpio4>;
- 		interrupts = <27 IRQ_TYPE_EDGE_FALLING>;
- 		adi,dsi-lanes = <4>;
- 		#sound-dai-cells = <0>;
-+		avdd-supply = <&buck5>;
-+		dvdd-supply = <&buck5>;
-+		pvdd-supply = <&buck5>;
-+		a2vdd-supply = <&buck5>;
-+		v1p2-supply = <&buck5>;
-+		v3p3-supply = <&buck4>;
-+
- 
- 		ports {
- 			#address-cells = <1>;
--- 
-2.43.0
+If FFM(firmware first mode) and hotplug are executed. the side effect can
+be observed if it is affected, UC errors are reported along with pciehp
+log.
 
+>> -static void dpc_handle_surprise_removal(struct pci_dev *pdev)
+>> +bool  dpc_handle_surprise_removal(struct pci_dev *pdev)
+>>   {
+>> +	if (!dpc_is_surprise_removal(pdev))
+>> +		return false;
+> This change of moving dpc_is_surprise_removal() into
+> dpc_handle_surprise_removal() seems unrelated to the problem at hand.
+>
+> Please drop it if it's unnecessary to fix the issue.
+
+To only export one function dpc_is_surprise_removal()... or I have to
+export them both.
+Seems I should keep them intact or refactor them in separated patch ?
+
+>
+>
+>> --- a/drivers/pci/pcie/edr.c
+>> +++ b/drivers/pci/pcie/edr.c
+>> @@ -184,6 +184,9 @@ static void edr_handle_event(acpi_handle handle, u32 event, void *data)
+>>   		goto send_ost;
+>>   	}
+>>   
+>> +	if (dpc_handle_surprise_removal(edev))
+>> +		goto send_ost;
+>> +
+>>   	dpc_process_error(edev);
+>>   	pci_aer_raw_clear_status(edev);
+> This seems to be the only necessary change.  Please reduce the
+> patch to contain only it and no other refactoring.
+>
+> Please capitalize the "PCI/EDR: " prefix in the subject and add
+> a Fixes tag.
+
+Sure !
+
+Thanks,
+Ethan
+
+> Thanks,
+>
+> Lukas
 
