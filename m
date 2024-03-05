@@ -1,214 +1,159 @@
-Return-Path: <linux-kernel+bounces-92778-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92779-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10FB68725DD
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:45:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E8058725E4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:46:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 23D761C228AD
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:45:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D2F11F21FEB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:46:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FAC6175B6;
-	Tue,  5 Mar 2024 17:45:18 +0000 (UTC)
-Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F374D175A6;
+	Tue,  5 Mar 2024 17:46:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2woS2lS0"
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABE2917565
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 17:45:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB13317555
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 17:46:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709660717; cv=none; b=a+jL8RWA0wfwqLgJlxX5LZwOTNBAcxekcWXqoAFjoOfVRhel3iExiaXfKkrwfgP3ndGftEpxaEENfPGxY1Vwod6n99mjqcbXcjkwgHB1UYd22leqi5UvblFp0iLHVTOEhTN/8NjOx2WfkPguLSXVHD8JxskEVabPkyrzwyEc5PU=
+	t=1709660767; cv=none; b=njYjbYE0kVtmwU5yD19iQ1d0RLVdMPHLeUzrX9XT1jQBF31iKOUYGlLJY0c2+Br128b9J49WG1nQB9XeopdT2bi+GupHX+N07FpgmP7+O4dI/36FWbvQGne/6icPzG0DDIn+3Y1KFum0px9PsI3C6P/hqypTou8fTL5C0+7UGos=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709660717; c=relaxed/simple;
-	bh=IsePTlOOrrY+PtgSBJ/oAdEDQA2yIEUijGkssqsdR4o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Qx7zk0JPUo3Gy0IWXVPj5TGTzmJFO5yHp8Ny709zADMjz79pZbNt/8Ce/5nQwHu2GHnvk7Gx/g/WD6iWTSzJRRj0Re8q3xuKcNNiVG3eo0tUpP2DQgHsJyt6P2kWh7n+ZJu/MkrzziMy3hSmE/5XuAOVg/Pylfi1/zpf0HluXxc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=redhat.com; arc=none smtp.client-ip=209.85.219.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-6908b5037d5so3119876d6.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 09:45:15 -0800 (PST)
+	s=arc-20240116; t=1709660767; c=relaxed/simple;
+	bh=9MRLYZX4HE1Pc/fYNDu9fI5JTAIW4+zdyj8ssC8V+gI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XbUvDvjwjFEX50zhyIUHA0zKuWJksDk6Ujlpk4QEJp3KUbgQmJD3kGgglTMRBylbtGtIkyMLedNCQISmHnq98XjlBnrXsgsM2zJiVNnsB/1cvU9J3e13dBbyyLQ4zVo67dkGlf93UbqWh4XYkhk2SoJvt/oHXGCDfJwtvxKllWE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2woS2lS0; arc=none smtp.client-ip=209.85.128.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-609241c2696so847947b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 09:46:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709660765; x=1710265565; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aGRt8RiRcM7HoBToJhGy2IhtOk9BsPJwbK84po2hCcM=;
+        b=2woS2lS04OVB+822pbXhRI7/VMjRhK7cDgpkIM5/DOgl6MV6hKWK8Ex8lwfsONi8Xs
+         1+nqIoS61QyjJOWfvIubapg8yTnyz9gN/FaF2ZAGtFq6RoeZq8nMqP2aGd3dWP5QvUvH
+         50lbv6M/Je28zW/2Xy5MtFjnkWtz3FHue0PS0lPmGmXEliAUpxt3VKz18JXwYgQ4Bf9L
+         ckdW/ZLN9La3b0JxC3do9ASkqImKypYisntOjFMb+//FEgPxI+X8mr8NgNxgDMjHKIQD
+         uIiYgW2BC5gifNan6/ziN+Niju7c6K2UKajJNTVuJGH5HfbmfRIP5U3TdN+aRWoM9YHh
+         Kqig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709660715; x=1710265515;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gge8MXN2cBaJhAIuFm/jj/2ek2UAvG5SbyWzw+LqrLU=;
-        b=qnEp4a9D2UrmsW6kGaxSHHVxhQagBkPNboNuWzH8Gjfc0P+BOrfSpoiU8AKbCZx0v2
-         QsY0w6F8AM5BvMQrckFbgy59pU7I/f6bxGO0eoO+iNimbqwpWJByLRLRMF0xpd9kZ1lB
-         Jzsv/u1q1TnO20Uzbl4XtwTOCMCTL6lqf42Ql/eGHE2FZLxBOanr8+AGGDMinj3UfJTw
-         xib3CMYfR26xtLGdLtM9rkLzo5tjN2jDaOCZiOV5cjtVw4DQq9OaLRPpbRkj1jlCjvid
-         +tFFa2QNlbA/Msc+xKhWEYxgSCJbpjwJi4gDkVt7eY7lXj0k3FCJZsA7dY3gVav+URVL
-         Hkvw==
-X-Forwarded-Encrypted: i=1; AJvYcCVYGvlSuVxx+8x7609q7S683RgavRboopVcEGpjI6AMbMvaSSlvLZLaUeABd+OXFfwimZSEkFq+i9ujMUln7ln0jY868h29nxo+UP8K
-X-Gm-Message-State: AOJu0Yw+7KeT/QN3osGXARl7a0pjapKlqgWJzbhuB+N3l47LnP3JzCm1
-	TmohEa7IFXozEiBT2wvdCVTAIc5Js/rRvd+awJEM7m1pxjzOniQncOnnCrkRTA==
-X-Google-Smtp-Source: AGHT+IEGQenmJZKbs3r2wugRgZMmiHwHXfXTF7+9Vyf8Oe9KTMxb0vnDidm2CHu6mpJiWDFoJRg7Vw==
-X-Received: by 2002:ad4:4045:0:b0:690:7770:e6d4 with SMTP id r5-20020ad44045000000b006907770e6d4mr3044733qvp.34.1709660714673;
-        Tue, 05 Mar 2024 09:45:14 -0800 (PST)
-Received: from localhost (pool-68-160-141-91.bstnma.fios.verizon.net. [68.160.141.91])
-        by smtp.gmail.com with ESMTPSA id ny4-20020a056214398400b0068fe4669e71sm6425247qvb.91.2024.03.05.09.45.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 09:45:14 -0800 (PST)
-Date: Tue, 5 Mar 2024 12:45:13 -0500
-From: Mike Snitzer <snitzer@kernel.org>
-To: Patrick Plenefisch <simonpatp@gmail.com>
-Cc: Goffredo Baroncelli <kreijack@inwind.it>, linux-kernel@vger.kernel.org,
-	Alasdair Kergon <agk@redhat.com>,
-	Mikulas Patocka <mpatocka@redhat.com>, Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-	regressions@lists.linux.dev, dm-devel@lists.linux.dev,
-	linux-btrfs@vger.kernel.org, ming.lei@redhat.com
-Subject: Re: LVM-on-LVM: error while submitting device barriers
-Message-ID: <ZedaKUge-EBo4CuT@redhat.com>
-References: <CAOCpoWc_HQy4UJzTi9pqtJdO740Wx5Yd702O-mwXBE6RVBX1Eg@mail.gmail.com>
- <CAOCpoWf3TSQkUUo-qsj0LVEOm-kY0hXdmttLE82Ytc0hjpTSPw@mail.gmail.com>
- <CAOCpoWeNYsMfzh8TSnFqwAG1BhAYnNt_J+AcUNqRLF7zmJGEFA@mail.gmail.com>
- <672e88f2-8ac3-45fe-a2e9-730800017f53@libero.it>
- <CAOCpoWexiuYLu0fpPr71+Uzxw_tw3q4HGF9tKgx5FM4xMx9fWA@mail.gmail.com>
- <a1e30dab-dfde-418e-a0dd-3e294838e839@inwind.it>
- <CAOCpoWeB=2j+n+5K5ytj2maZxdrV80cxJcM5CL=z1bZKgpXPWQ@mail.gmail.com>
- <a783e5ed-db56-4100-956a-353170b1b7ed@inwind.it>
+        d=1e100.net; s=20230601; t=1709660765; x=1710265565;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aGRt8RiRcM7HoBToJhGy2IhtOk9BsPJwbK84po2hCcM=;
+        b=Q1YY0UThRs4TDzhTWeP3fd75KhZsMZn0QxdWC2Mh/ZFZhc6ej8yInB5szaOaoRA8We
+         sV3oK2M7uYJWqUeh6ZTYTAoCHwqrUnCI3+cYDcO/leKkzp+MQQwmsBB8Z4ZOTijjt/wr
+         x5NI6vfk482iMXxni5X0IH1nxk56EDHZG+EHykiGDSva5YDBdu9NvIiwchaF5tse1agL
+         m0lrHJ/E/g5LYjNurblvBI4JTlb0rDcf5t3iWZt1hMX/MxXNXhbvnKa/gmvCV1lcUVsU
+         sJlZxymuaJMEa6FBS/47uAMqdH6SnnO3ya4rKlyjw13TelWykDptcb+t9oNSlL8lZr8B
+         I/RA==
+X-Forwarded-Encrypted: i=1; AJvYcCWapFlJ1tw/EdAVXTZJJWfI8B5EguCwCYNV2znufoOTcUmKbPG6p1yTbFEvAJD/uRfvWo8nt5Ed3jnepWQQwXP/NmZj1S9R9sE2c0Ah
+X-Gm-Message-State: AOJu0YzwqBkOcL7OKamypD9PZqIKilo+n2WAEx/ZXuLKgjLo8nBWMPRn
+	ChsS3D8oXbe7EwFoXnCozSuIh4HPjyGVHvZnmC1UZwHgDdMYLH+XoluRakty3EHEgzaN/eqhuKS
+	FNIBpzyBJmY2PlDqzBIvKa+g/TNG80Fvd2mSR
+X-Google-Smtp-Source: AGHT+IEH4w81wtDgQ7qxtxm4j8GNKlHjLhmHdUhbPcgEgL2YwGAU2Z1QETpZifRDvMKeW4+uwUhNXQh+A2JI1zKU2JU=
+X-Received: by 2002:a81:85c5:0:b0:609:9171:130d with SMTP id
+ v188-20020a8185c5000000b006099171130dmr8371354ywf.19.1709660764517; Tue, 05
+ Mar 2024 09:46:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a783e5ed-db56-4100-956a-353170b1b7ed@inwind.it>
+References: <20240119033126.1802711-1-ototot@chromium.org>
+In-Reply-To: <20240119033126.1802711-1-ototot@chromium.org>
+From: "T.J. Mercier" <tjmercier@google.com>
+Date: Tue, 5 Mar 2024 09:45:53 -0800
+Message-ID: <CABdmKX3azAE9HPLBY3sEFm5YYM=AUp=-RArDjG+ksecx0O+6Gw@mail.gmail.com>
+Subject: Re: [PATCH] dma-buf: Add syntax highlighting to code listings in the document
+To: Tommy Chiang <ototot@chromium.org>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 29 2024 at  5:05P -0500,
-Goffredo Baroncelli <kreijack@inwind.it> wrote:
+On Thu, Jan 18, 2024 at 7:33=E2=80=AFPM Tommy Chiang <ototot@chromium.org> =
+wrote:
+>
+> This patch tries to improve the display of the code listing
+> on The Linux Kernel documentation website for dma-buf [1] .
+>
+> Originally, it appears that it was attempting to escape
+> the '*' character, but looks like it's not necessary (now),
+> so we are seeing something like '\*' on the webite.
+>
+> This patch removes these unnecessary backslashes and adds syntax
+> highlighting to improve the readability of the code listing.
+>
+> [1] https://docs.kernel.org/driver-api/dma-buf.html
+>
+> Signed-off-by: Tommy Chiang <ototot@chromium.org>
+> ---
+>  drivers/dma-buf/dma-buf.c | 15 +++++++++------
+>  1 file changed, 9 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+> index 8fe5aa67b167..e083a0ab06d7 100644
+> --- a/drivers/dma-buf/dma-buf.c
+> +++ b/drivers/dma-buf/dma-buf.c
+> @@ -1282,10 +1282,12 @@ EXPORT_SYMBOL_NS_GPL(dma_buf_move_notify, DMA_BUF=
+);
+>   *   vmap interface is introduced. Note that on very old 32-bit architec=
+tures
+>   *   vmalloc space might be limited and result in vmap calls failing.
+>   *
+> - *   Interfaces::
+> + *   Interfaces:
+>   *
+> - *      void \*dma_buf_vmap(struct dma_buf \*dmabuf, struct iosys_map \*=
+map)
+> - *      void dma_buf_vunmap(struct dma_buf \*dmabuf, struct iosys_map \*=
+map)
+> + *   .. code-block:: c
+> + *
+> + *     void *dma_buf_vmap(struct dma_buf *dmabuf, struct iosys_map *map)
+> + *     void dma_buf_vunmap(struct dma_buf *dmabuf, struct iosys_map *map=
+)
+>   *
+>   *   The vmap call can fail if there is no vmap support in the exporter,=
+ or if
+>   *   it runs out of vmalloc space. Note that the dma-buf layer keeps a r=
+eference
+> @@ -1342,10 +1344,11 @@ EXPORT_SYMBOL_NS_GPL(dma_buf_move_notify, DMA_BUF=
+);
+>   *   enough, since adding interfaces to intercept pagefaults and allow p=
+te
+>   *   shootdowns would increase the complexity quite a bit.
+>   *
+> - *   Interface::
+> + *   Interface:
+> + *
+> + *   .. code-block:: c
+>   *
+> - *      int dma_buf_mmap(struct dma_buf \*, struct vm_area_struct \*,
+> - *                    unsigned long);
+> + *     int dma_buf_mmap(struct dma_buf *, struct vm_area_struct *, unsig=
+ned long);
+>   *
+>   *   If the importing subsystem simply provides a special-purpose mmap c=
+all to
+>   *   set up a mapping in userspace, calling do_mmap with &dma_buf.file w=
+ill
+> --
+> 2.43.0.381.gb435a96ce8-goog
 
-> On 29/02/2024 21.22, Patrick Plenefisch wrote:
-> > On Thu, Feb 29, 2024 at 2:56 PM Goffredo Baroncelli <kreijack@inwind.it> wrote:
-> > > 
-> > > > Your understanding is correct. The only thing that comes to my mind to
-> > > > cause the problem is asymmetry of the SATA devices. I have one 8TB
-> > > > device, plus a 1.5TB, 3TB, and 3TB drives. Doing math on the actual
-> > > > extents, lowerVG/single spans (3TB+3TB), and
-> > > > lowerVG/lvmPool/lvm/brokenDisk spans (3TB+1.5TB). Both obviously have
-> > > > the other leg of raid1 on the 8TB drive, but my thought was that the
-> > > > jump across the 1.5+3TB drive gap was at least "interesting"
-> > > 
-> > > 
-> > > what about lowerVG/works ?
-> > > 
-> > 
-> > That one is only on two disks, it doesn't span any gaps
-> 
-> Sorry, but re-reading the original email I found something that I missed before:
-> 
-> > BTRFS error (device dm-75): bdev /dev/mapper/lvm-brokenDisk errs: wr
-> > 0, rd 0, flush 1, corrupt 0, gen 0
-> > BTRFS warning (device dm-75): chunk 13631488 missing 1 devices, max
->                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> > tolerance is 0 for writable mount
-> > BTRFS: error (device dm-75) in write_all_supers:4379: errno=-5 IO
-> > failure (errors while submitting device barriers.)
-> 
-> Looking at the code, it seems that if a FLUSH commands fails, btrfs
-> considers that the disk is missing. The it cannot mount RW the device.
-> 
-> I would investigate with the LVM developers, if it properly passes
-> the flush/barrier command through all the layers, when we have an
-> lvm over lvm (raid1). The fact that the lvm is a raid1, is important because
-> a flush command to be honored has to be honored by all the
-> devices involved.
+Reviewed-by: T.J. Mercier <tjmercier@google.com>
 
-Hi Patrick,
-
-Your initial report (start of this thread) mentioned that the
-regression occured with 5.19. The DM changes that landed during the
-5.19 merge window refactored quite a bit of DM core's handling for bio
-splitting (to simplify DM's newfound support for bio polling) -- Ming
-Lei (now cc'd) and I wrote these changes:
-
-e86f2b005a51 dm: simplify basic targets
-bdb34759a0db dm: use bio_sectors in dm_aceept_partial_bio
-b992b40dfcc1 dm: don't pass bio to __dm_start_io_acct and dm_end_io_acct
-e6926ad0c988 dm: pass dm_io instance to dm_io_acct directly
-d3de6d12694d dm: switch to bdev based IO accounting interfaces
-7dd76d1feec7 dm: improve bio splitting and associated IO accounting
-2e803cd99ba8 dm: don't grab target io reference in dm_zone_map_bio
-0f14d60a023c dm: improve dm_io reference counting
-ec211631ae24 dm: put all polled dm_io instances into a single list
-9d20653fe84e dm: simplify bio-based IO accounting further
-4edadf6dcb54 dm: improve abnormal bio processing
-
-I'll have a closer look at these DM commits (especially relative to
-flush bios and your stacked device usage).
-
-The last commit (4edadf6dcb54) is marginally relevant (but likely most
-easily reverted from v5.19-rc2, as a simple test to see if it somehow
-a problem... doubtful to be cause but worth a try).
-
-(FYI, not relevant because it is specific to REQ_NOWAIT but figured I'd
- mention it, this commit earlier in the 5.19 DM changes was bogus:
- 563a225c9fd2 dm: introduce dm_{get,put}_live_table_bio called from dm_submit_bio
- Jens fixed it with this stable@ commit:
- a9ce385344f9 dm: don't attempt to queue IO under RCU protection)
-
-> > > However yes, I agree that the pair of disks involved may be the answer
-> > > of the problem.
-> > > 
-> > > Could you show us the output of
-> > > 
-> > > $ sudo pvdisplay -m
-> > > 
-> > > 
-> > 
-> > I trimmed it, but kept the relevant bits (Free PE is thus not correct):
-> > 
-> > 
-> >    --- Physical volume ---
-> >    PV Name               /dev/lowerVG/lvmPool
-> >    VG Name               lvm
-> >    PV Size               <3.00 TiB / not usable 3.00 MiB
-> >    Allocatable           yes
-> >    PE Size               4.00 MiB
-> >    Total PE              786431
-> >    Free PE               82943
-> >    Allocated PE          703488
-> >    PV UUID               7p3LSU-EAHd-xUg0-r9vT-Gzkf-tYFV-mvlU1M
-> > 
-> >    --- Physical Segments ---
-> >    Physical extent 0 to 159999:
-> >      Logical volume      /dev/lvm/brokenDisk
-> >      Logical extents     0 to 159999
-> >    Physical extent 160000 to 339199:
-> >      Logical volume      /dev/lvm/a
-> >      Logical extents     0 to 179199
-> >    Physical extent 339200 to 349439:
-> >      Logical volume      /dev/lvm/brokenDisk
-> >      Logical extents     160000 to 170239
-> >    Physical extent 349440 to 351999:
-> >      FREE
-> >    Physical extent 352000 to 460026:
-> >      Logical volume      /dev/lvm/brokenDisk
-> >      Logical extents     416261 to 524287
-> >    Physical extent 460027 to 540409:
-> >      FREE
-> >    Physical extent 540410 to 786430:
-> >      Logical volume      /dev/lvm/brokenDisk
-> >      Logical extents     170240 to 416260
-
-Please provide the following from guest that activates /dev/lvm/brokenDisk:
-
-lsblk
-dmsetup table
-
-Please also provide the same from the host (just for completeness).
-
-Also, I didn't see any kernel logs that show DM-specific errors.  I
-doubt you'd have left any DM-specific errors out in your report.  So
-is btrfs the canary here?  To be clear: You're only seeing btrfs
-errors in the kernel log?
-
-Mike
+The code block highlighting is nice.
 
