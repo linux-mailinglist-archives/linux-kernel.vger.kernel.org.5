@@ -1,133 +1,93 @@
-Return-Path: <linux-kernel+bounces-92019-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92022-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 798568719DD
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:47:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 858EC8719E3
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:48:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 253A8B21517
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:47:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B73471C21290
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:48:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A6CC53802;
-	Tue,  5 Mar 2024 09:47:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="UuViqyXH"
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57CA9535D6;
+	Tue,  5 Mar 2024 09:48:06 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 342A9535AB;
-	Tue,  5 Mar 2024 09:46:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E509535AB
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 09:48:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709632022; cv=none; b=qWFkpEeNFDE9tkBGyf2XSItsqJBdyZdYuQ8styf0j9XJwrURdphxtIsVfZ8clqaOJklbZ9fgbk96gJokI1zpas/DaW5FHLSKJvpHBKzvyMeK4rqxYf3IgjjOEa1Zxv//YjLcby6+qkb2C8HcpLHWfwGS6iBH1wQnkXsPo1kjoZs=
+	t=1709632085; cv=none; b=soQJXnexXn3XHp4C5/v2KojALQXQz3oeYKeS2hpCjcPZBT19u2L10CdB57DbqeJP9P2xeglioE3Sd4um4Sb4TESDsVGMhYzgZRmth2seXqo1aWP3iDtcJ4Pyz/841G595/nlMQqJNqlDXtzSNcoNgIfevFnhbrJGezs4/h9B4Xg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709632022; c=relaxed/simple;
-	bh=SdVFrDX1tE7NitSkdJ8XNvewUL8AuhZd2lfMdZfjpSk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LHN7YfyMpDM1IJMWp5qbJdSQnH/sNSLnvDxcG6sHCysVvFkj6pzNv4c1PKnyP20VaxBRLZQ7jaTfbiYKX6cauhago9+V2K5KEUhMOiSQ786YyFyaGT8j/I59k+XgAGr+Q0lqo94paRT+QVgB3oXIUgMkweiheJIcjwvk0ijtW20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=UuViqyXH; arc=none smtp.client-ip=217.70.183.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id E88A91BF207;
-	Tue,  5 Mar 2024 09:46:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709632018;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=x3jvJ31UW5g1AteAWnKjkA5Ea0CCYOiyYufsygt7PXM=;
-	b=UuViqyXHpmyiPp4V/tHhbWt98t7steNc2d9YJ3j1pxEYOmcx0JzXo0aCcKu16ynreqimG0
-	SM81f8iJQHQrzdFsbMSRaNj1TMi9jjniMcy1hLgzPYUa6x8gYm1lLaRsEnNmQcjuolmB9I
-	VX041rAp1I6nuvhAXHji/rdEQB/OQOQLa0/cZHm8yLjFpZdJhdGbcoT0TqqihFmnh5w34J
-	ZVCxqGGsAjwMHerVXfQs3QfvzieGjuPn0dzp8+66ds5WU9juv15sUrU7bod87gx2rft2ax
-	L96KGP6+qgepjgKlh84xNAiOg6qpuftAcbe9vfqgjJX66YD/ceD4PWJu+pXWfQ==
-Message-ID: <ee36a60d-5b65-4eb8-ac41-e4b6be1cf81f@bootlin.com>
-Date: Tue, 5 Mar 2024 10:46:55 +0100
+	s=arc-20240116; t=1709632085; c=relaxed/simple;
+	bh=FUV2UfMDI7InnPdcCSNJGtUvjpOsTPaChu2eym3FVR8=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=UY1hqzV3UtswJ6V+7wjLnPGha9jZepxXiTlEY3P3V653xoKWoibNFTdj5viXcLLu1b9qHTSXBs+O3jGiGiMLWDmGn4eqjYdqaIS/Hi+CcCgH1GaCtyfI6SXBoLe+pAW5y202xwJkmyFO11RYzDlH/jx9XQqYwb/DYLEtWTD3R+I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7c858e555d1so168465039f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 01:48:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709632083; x=1710236883;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=F/PW67TWH8skqmU8vKJwkoq7t3qUI1ZITrOnwecy99Q=;
+        b=xC4AeehqvW8Ab4zoC7/23YP9SIX8loqYaS0xj+OSMgMHNLYFLse2OTyOyGbED+pIsR
+         l5HNHEmgfOdRzv9XYBv3ajQ8iaoesVdZfWx/o8Na+pAdOMDTezPqN5q0CpXiplyNZc2c
+         gKIdKBzuDK/13OB1i5gR2s8ECHNAmp/CaqQe9fwV1IxvN8CXw/wwNC7eubMvl4OaSlB1
+         OVWwf68UaKByHLmbweZ0oP+HX3FVNC8h+q76/ZrJyre5azWzPsnBZFCIytc5aVZWqWDe
+         K8ePjSuXKjmM/2LfdXMEOT7pu2q30CGK5bXcrKpjX6zLN8hZtsucDiWMJ23JPCSZ2NHi
+         zpBQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWSh+0GUTVvI8ZVWkne6CK1AsDwj37FfnEgSJ2VDkW57rRO7pTt6JJMKkJyH1TKwPLs7+8hHykdrgq1i+8Dpj01r8lArRZJ57vds1zx
+X-Gm-Message-State: AOJu0YzaFijNpQQ2EDwXxq5Revy3TCLWKiIAsqjS4qFIp6lVx0me/cEv
+	h4Y/i5GZR7jnuCufbQ3PrUxj25nVwcpoFF6MkY3fypwV5vRKZN8D35BzTNeQzwnf4meq1f4A/hs
+	tkld+aWPJWBlvJbYuTR9f9CcnBcT0m+U7cKlXqCT4KyV5dQy+EFbdkq8=
+X-Google-Smtp-Source: AGHT+IG6l3HNMZupoKsS/1gWkPsOulXpjgLde5BhCiJPeE6FXHMXeTqCfcGSOQh3Xyp9sknk0aj3dTMHR9Y5+rBXctugU6xVy/Vs
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/3] drm/panel: simple: add CMT430B19N00 LCD panel
- support
-Content-Language: en-US
-To: Maxime Ripard <mripard@kernel.org>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>,
- Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Thierry Reding
- <thierry.reding@gmail.com>, dri-devel@lists.freedesktop.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Yen-Mei Goh <yen-mei.goh@keysight.com>
-References: <20240304160454.96977-1-jeremie.dautheribes@bootlin.com>
- <20240304160454.96977-4-jeremie.dautheribes@bootlin.com>
- <20240304-inquisitive-kickass-pronghorn-c641ff@houat>
-From: =?UTF-8?B?SsOpcsOpbWllIERhdXRoZXJpYmVz?=
- <jeremie.dautheribes@bootlin.com>
-In-Reply-To: <20240304-inquisitive-kickass-pronghorn-c641ff@houat>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: jeremie.dautheribes@bootlin.com
+X-Received: by 2002:a05:6638:1611:b0:474:edd2:24d5 with SMTP id
+ x17-20020a056638161100b00474edd224d5mr360168jas.4.1709632083746; Tue, 05 Mar
+ 2024 01:48:03 -0800 (PST)
+Date: Tue, 05 Mar 2024 01:48:03 -0800
+In-Reply-To: <000000000000c925dc0604f9e2ef@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000c6e0a0612e6bd58@google.com>
+Subject: Re: [syzbot] [gfs2?] BUG: sleeping function called from invalid
+ context in gfs2_withdraw
+From: syzbot <syzbot+577d06779fa95206ba66@syzkaller.appspotmail.com>
+To: agruenba@redhat.com, axboe@kernel.dk, brauner@kernel.org, 
+	gfs2@lists.linux.dev, jack@suse.cz, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, rpeterso@redhat.com, 
+	syzkaller-bugs@googlegroups.com, yuran.pereira@hotmail.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Maxime,
+syzbot suspects this issue was fixed by commit:
 
-On 04/03/2024 17:25, Maxime Ripard wrote:
-> Hi,
-> 
-> On Mon, Mar 04, 2024 at 05:04:54PM +0100, Jérémie Dautheribes wrote:
->> Add support for Crystal Clear Technology CMT430B19N00 4.3" 480x272
->> TFT-LCD panel.
->>
->> Signed-off-by: Jérémie Dautheribes <jeremie.dautheribes@bootlin.com>
->> ---
->>   drivers/gpu/drm/panel/panel-simple.c | 29 ++++++++++++++++++++++++++++
->>   1 file changed, 29 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
->> index 20e3df1c59d4..b940220f56e2 100644
->> --- a/drivers/gpu/drm/panel/panel-simple.c
->> +++ b/drivers/gpu/drm/panel/panel-simple.c
->> @@ -1457,6 +1457,32 @@ static const struct panel_desc boe_hv070wsa = {
->>   	.connector_type = DRM_MODE_CONNECTOR_LVDS,
->>   };
->>   
->> +static const struct drm_display_mode cct_cmt430b19n00_mode = {
->> +	.clock = 9000,
->> +	.hdisplay = 480,
->> +	.hsync_start = 480 + 43,
->> +	.hsync_end = 480 + 43 + 8,
->> +	.htotal = 480 + 43 + 8 + 4,
->> +	.vdisplay = 272,
->> +	.vsync_start = 272 + 12,
->> +	.vsync_end = 272 + 12 + 8,
->> +	.vtotal = 272 + 12 + 8 + 4,
->> +	.flags = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
->> +};
-> 
-> Your pixel clock doesn't really match the rest of the timings:
-> 
-> (480 + 43 + 8 + 4) * (272 + 12 + 8 + 4) * 60 = 9501600
-> 
-> So a ~6% deviation.
-> 
-> What does the datasheet say?
+commit 6f861765464f43a71462d52026fbddfc858239a5
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Nov 1 17:43:10 2023 +0000
 
-Indeed it does not exactly match but the datasheet indicates that the 
-typical clock frequency is 9MHz and when this frequency is used, the 
-typical values of the other parameters are those we have defined in the 
-drm_display_mode structure. I don't see any information about the 
-accepted deviation either.
+    fs: Block writes to mounted block devices
 
-Best regards,
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=119f927a180000
+start commit:   6465e260f487 Linux 6.6-rc3
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8d7d7928f78936aa
+dashboard link: https://syzkaller.appspot.com/bug?extid=577d06779fa95206ba66
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10dbcdc1680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17a367b6680000
 
-Jérémie
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: fs: Block writes to mounted block devices
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
