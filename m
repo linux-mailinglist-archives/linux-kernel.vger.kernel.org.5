@@ -1,121 +1,127 @@
-Return-Path: <linux-kernel+bounces-91755-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91756-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E3CB87161E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:57:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 655D4871620
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:58:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D6F91F2149A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 06:57:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 810B01C21CB7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 06:58:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74F3E7D40B;
-	Tue,  5 Mar 2024 06:57:15 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A8847BAE1;
+	Tue,  5 Mar 2024 06:58:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="pgJM33lW"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0B461E520;
-	Tue,  5 Mar 2024 06:57:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBFFF4500B
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 06:58:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709621835; cv=none; b=sUmpwDt4RQggwBcg3y1bo/ZctD3WTPhbOGejgVqEwzFF/5Bk3SAxta0J62admC2JiLk7Y0A3eBrsFOtFVt+0YTw4WDCBYcOuG5Dlrn3w2ReUwbpUBxZqYqFmYFNqWmY4wtHN5qIvgBpaYHOZrqUpLT3DUzu8E++dImiBIryP3iE=
+	t=1709621913; cv=none; b=Oti+oxb/jEP/cjaz7Dge9Eg5FaH1ZzzpcsKZYdwH147y06pu400qmSZje8gnVkO2jGA47JpJ3tM+rzKwWiOPU0hAlE1JrDX8+9flX5gdgekTOGSI637q7PTB01bU35GtFKDtiCyw4D5jDSQkDcjza5LA5eX/fB66VrU1e6QcO5g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709621835; c=relaxed/simple;
-	bh=j5xdkyAxdoy8QAlxjMj5w7uWMdaAuQTOn/PLDJgCo3M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Gcg0z3nZaQ1bKF4qAxuvOQ6R5ROY2S90nZd5gSj45PMC0ttwRwJdC90GWbSWest5dHFlU9xFY8V/cKNaWS70g6GxI71GJmveuGMnPiiHv2GlDNdqdG7mDkpyp8fE7Snf3yEgX4lA9tNHWhwMWBzykZI6fBAIfrpN94fxSFz9EoE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TpmY138dPz1xqCv;
-	Tue,  5 Mar 2024 14:55:33 +0800 (CST)
-Received: from kwepemm600017.china.huawei.com (unknown [7.193.23.234])
-	by mail.maildlp.com (Postfix) with ESMTPS id D954718002D;
-	Tue,  5 Mar 2024 14:57:09 +0800 (CST)
-Received: from [10.174.179.234] (10.174.179.234) by
- kwepemm600017.china.huawei.com (7.193.23.234) with Microsoft SMTP Server
+	s=arc-20240116; t=1709621913; c=relaxed/simple;
+	bh=mpVjU72c7z+Xlt/7vdlHPPlT/GWydQ588zNtj9AVb7c=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=hVWl+QPewav4zcMLGOT98RnjM7zShGdSmVTQdOrIlcqZbZgwMJyjxdZuX/CJu1Kv3UXRd6ZJQDtwzlxEoJdg8NfYUygcYB4qY4MZrEHeR0UmGkUqnBWXQzSDZXcRaodlTjKCseyjzpzXUVUxZtesL6JklQqcTHJvGwixR39MzJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=pgJM33lW; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4254kG67010647;
+	Tue, 5 Mar 2024 06:58:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type; s=
+	qcppdkim1; bh=gK3b0IT3wiu25dWPzQzhc0q9hQdh5h0QM5PIZNTwpzk=; b=pg
+	JM33lWTHpDRZyblwaKdWmYc4BKhdBFmkT+W4uXFJ41HPNgJ0KMbQWZjPQ5Ns3UCJ
+	EXFzjJXdNLwkMKXeU+RtSbBEg0GNSWv7g44G9Wnyynxcty6x47wSIXrBzJkvhLp/
+	iVgkyCQZVugCqsp2ufMLIfQXNd96ZqmT+dEluFFnoKGA0cVAy/nOfneFWXkPP9/n
+	R3vpAWjT+xRrWN07jQAhW8upIxbSjtI/pj+W0LzacavxFAzIORikAi537NZpnNAu
+	2SMkqnc3jEvswar4LLmPS0BdnuqSWzYMB0U92p8pEzNAgwqmFUSukxOeFT2HZoLu
+	ZbcoTOClIWCUo8IdBbyg==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wnn34937n-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 05 Mar 2024 06:58:26 +0000 (GMT)
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4256wPc8009040
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 5 Mar 2024 06:58:25 GMT
+Received: from hu-mojha-hyd.qualcomm.com (10.80.80.8) by
+ nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 5 Mar 2024 14:57:08 +0800
-Message-ID: <7e6f9061-1bb9-4d7d-b679-c0183037cbf2@huawei.com>
-Date: Tue, 5 Mar 2024 14:57:08 +0800
+ 15.2.1118.40; Mon, 4 Mar 2024 22:58:22 -0800
+From: Mukesh Ojha <quic_mojha@quicinc.com>
+To: <srinivas.kandagatla@linaro.org>, <neil.armstrong@linaro.org>,
+        <khilman@baylibre.com>
+CC: <jbrunet@baylibre.com>, <martin.blumenstingl@googlemail.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-amlogic@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        Mukesh Ojha <quic_mojha@quicinc.com>
+Subject: [PATCH] nvmem: meson-mx-efuse: Remove nvmem_device from efuse struct
+Date: Tue, 5 Mar 2024 12:28:08 +0530
+Message-ID: <1709621888-3173-1-git-send-email-quic_mojha@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [bug report] dead loop in generic_perform_write() //Re: [PATCH v7
- 07/12] iov_iter: Convert iterate*() to inline funcs
-To: Linus Torvalds <torvalds@linux-foundation.org>, David Howells
-	<dhowells@redhat.com>
-CC: Al Viro <viro@kernel.org>, Jens Axboe <axboe@kernel.dk>, Christoph Hellwig
-	<hch@lst.de>, Christian Brauner <christian@brauner.io>, David Laight
-	<David.Laight@aculab.com>, Matthew Wilcox <willy@infradead.org>, Jeff Layton
-	<jlayton@kernel.org>, <linux-fsdevel@vger.kernel.org>,
-	<linux-block@vger.kernel.org>, <linux-mm@kvack.org>,
-	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Kefeng Wang
-	<wangkefeng.wang@huawei.com>
-References: <20230925120309.1731676-1-dhowells@redhat.com>
- <20230925120309.1731676-8-dhowells@redhat.com>
- <4e80924d-9c85-f13a-722a-6a5d2b1c225a@huawei.com>
- <CAHk-=whG+4ag+QLU9RJn_y47f1DBaK6b0qYq_6_eLkO=J=Mkmw@mail.gmail.com>
- <CAHk-=wjSjuDrS9gc191PTEDDow7vHy6Kd3DKDaG+KVH0NQ3v=w@mail.gmail.com>
- <e985429e-5fc4-a175-0564-5bb4ca8f662c@huawei.com>
- <CAHk-=wh06M-1c9h7wZzZ=1KqooAmazy_qESh2oCcv7vg-sY6NQ@mail.gmail.com>
- <CAHk-=wiBJRgA3iNqihR7uuft=5rog425X_b3uvgroG3fBhktwQ@mail.gmail.com>
- <769021.1709553367@warthog.procyon.org.uk>
- <CAHk-=wgrmt875HJNUY9a-ti0M6M1m6jHEGvCSjcOfXy_E7_X_w@mail.gmail.com>
-From: Tong Tiangen <tongtiangen@huawei.com>
-In-Reply-To: <CAHk-=wgrmt875HJNUY9a-ti0M6M1m6jHEGvCSjcOfXy_E7_X_w@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600017.china.huawei.com (7.193.23.234)
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: TEbPkxtb-smm8XtIyMUxAIr63JFkxxBd
+X-Proofpoint-ORIG-GUID: TEbPkxtb-smm8XtIyMUxAIr63JFkxxBd
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-05_04,2024-03-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
+ clxscore=1011 mlxlogscore=999 priorityscore=1501 lowpriorityscore=0
+ spamscore=0 mlxscore=0 malwarescore=0 phishscore=0 bulkscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403050053
 
+nvmem_device is used at one place while registering nvmem
+device and it is not required to be present in efuse struct
+for just this purpose.
 
+Drop nvmem_device and manage with nvmem device stack variable.
 
-在 2024/3/5 2:32, Linus Torvalds 写道:
-> On Mon, 4 Mar 2024 at 03:56, David Howells <dhowells@redhat.com> wrote:
->>
->> That said, I wonder if:
->>
->>          #ifdef copy_mc_to_kernel
->>
->> should be:
->>
->>          #ifdef CONFIG_ARCH_HAS_COPY_MC
-> 
-> Hmm. Maybe. We do have that
-> 
->    #ifdef copy_mc_to_kernel
-> 
-> pattern already in <linux/uaccess.h>, so clearly we've done it both ways.
-> 
-> I personally like the "just test for the thing you are using" model,
-> which is then why I did it that way, but I don't have hugely strong
-> opinions on it.
-> 
->> and whether it's possible to find out dynamically if MCEs can occur at all.
-> 
-> I really wanted to do something like that, and look at the source page
-> to decide "is this a pmem page that can cause machine checks", but I
-> didn't find any obvious way to do that.
-> 
-> Improvement suggestions more than welcome.
+Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
+---
+ drivers/nvmem/meson-mx-efuse.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-I used EINJ to simulate hardware memory error and tested it on an ARM64
-  server. This solution can solve the coredump deadloop problem.
+diff --git a/drivers/nvmem/meson-mx-efuse.c b/drivers/nvmem/meson-mx-efuse.c
+index 3ff04d5ca8f8..3f01fe03dde5 100644
+--- a/drivers/nvmem/meson-mx-efuse.c
++++ b/drivers/nvmem/meson-mx-efuse.c
+@@ -43,7 +43,6 @@ struct meson_mx_efuse_platform_data {
+ struct meson_mx_efuse {
+ 	void __iomem *base;
+ 	struct clk *core_clk;
+-	struct nvmem_device *nvmem;
+ 	struct nvmem_config config;
+ };
+ 
+@@ -223,9 +222,9 @@ static int meson_mx_efuse_probe(struct platform_device *pdev)
+ 		return PTR_ERR(efuse->core_clk);
+ 	}
+ 
+-	efuse->nvmem = devm_nvmem_register(&pdev->dev, &efuse->config);
++	nvmem = devm_nvmem_register(&pdev->dev, &efuse->config);
+ 
+-	return PTR_ERR_OR_ZERO(efuse->nvmem);
++	return PTR_ERR_OR_ZERO(nvmem);
+ }
+ 
+ static struct platform_driver meson_mx_efuse_driver = {
+-- 
+2.7.4
 
-I'll sort it out and send the patch.
-
-Thanks,
-Tong.
-
-> 
->                 Linus
-> .
 
