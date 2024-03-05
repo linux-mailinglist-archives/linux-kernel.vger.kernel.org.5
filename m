@@ -1,172 +1,193 @@
-Return-Path: <linux-kernel+bounces-92119-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92120-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07298871B5A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:34:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E747871B5B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:34:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96FFE1F22758
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:34:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8AA4B1F23DA0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:34:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FF175BAE7;
-	Tue,  5 Mar 2024 10:21:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 812A45C5E8;
+	Tue,  5 Mar 2024 10:21:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="LORY2kHf"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="MPWyb76k"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCCBB5490F
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 10:20:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A9B35C057
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 10:21:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709634060; cv=none; b=P7PbbwFSKSOTH54Jqs+BOInohWBRUexX8e5Mhi5rXD+3WVov51M+bReYRUXQRxOiZeexhLroZMgu2EK/qe6d+3LbBmirenMkAaWgZYAMMua6dHzkRJtMb7Kwa7EKYRBNwXVdcaLcHcZQT9+MJ/3V7v8HArmgQo6B1yfBJOr7jHU=
+	t=1709634075; cv=none; b=PZfL9AcMRBt6c4vznBcJlnigH/3ylxwM87AJtfogVECxAe0gNNFnDw9zBgp3qaa49IyIqMU8dfMvd8W1DW8Mc6M+eHtJ9L4BJDcmIXrLgdExRShfHE66NnMdY0fWLGUfV8LLHOrTBK+74ZI56Yxv5YprXcDTRBz6SkEHzUcT5Kg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709634060; c=relaxed/simple;
-	bh=BPEtYfyFZ3zIsSSumymVBNXkt5kDgI1A4gqsNs7DMws=;
+	s=arc-20240116; t=1709634075; c=relaxed/simple;
+	bh=BxEvxjk47/76zdsA1YUlbR7fGdOTYxlBDccqLjkzR9w=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JCHNuvvNisdvjlNfXzi8uMiZbOx8/XFHIiHLjBxZ+jqcTD+nltTFumIrGB3g10r03dh2ErC/FdRoJmKM7q74uPpRQG/kw5PmP0Vwj/Pwle8HXhcEq+Av0D5WeXAcqs+ns8KZP2CnpZ0gY5ZKb9U8DKyQOmuHDZK5QeYAEXRQ/sg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=LORY2kHf; arc=none smtp.client-ip=46.235.227.194
+	 In-Reply-To:Content-Type; b=tmTxVdShivHqg5K7qB12/mssX19Bme4Ck52xohchxEMPIOHFF8/Ocxml15ystNhdyDu+FDIMS0rTOnWx3NDqAIC2rb8bn/QN1LrANxK9uji9DVSbtoNfNghzWc+Vs4CH4l8PHzYqTjm2s8EhdAhI3tR8yr1kcay//theg3EMtfw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=MPWyb76k; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709634057;
-	bh=BPEtYfyFZ3zIsSSumymVBNXkt5kDgI1A4gqsNs7DMws=;
+	s=mail; t=1709634072;
+	bh=BxEvxjk47/76zdsA1YUlbR7fGdOTYxlBDccqLjkzR9w=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=LORY2kHfPljuF+0IEJo7vcxZLDuh04Xff+jT8HMdMATwYiBtkRza0yRd8FyyGZiFM
-	 p5gvq5ogsQXlg/lmCBt5CzgSn0fZf4xVOeDoPW0D2RLDvEMV0ZCdgr+4JK21oB3q9p
-	 Z9GXN1NnPDKMHAf+eYAvGjZebFZxH+GHa++fOEQbAli5Ru/kw3j4sulrvcW9Urhziu
-	 m+NWsTW5F6DZwTMgAXopF8zxMiOX7D42fBMAV0E+rtRNfNNMPZHMWuZ6/jYK/fB/8z
-	 YfLeRF4nFcTxgDFOqeUt8I2HDFyiXwxxfglxCt7P82RDEaKMpriqI3VxOhie906WX6
-	 3ZZ/G8lWD827w==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	b=MPWyb76kidi82FkShoO/iVrDqtghoeezV6J6NySWo6wkZoa9ZU/UeYpS9OBbJdH/y
+	 lPf6aEHVHXYZ1h8RAZ3E1ZS2xiLsZcMFcadiGXYSkwgtPySYAmhFyGBMbBFzKtEeDS
+	 NWMnCMiFcHLMwMnihkamjWwiVFXIuT37Wahi8plhSbh7zEHd++F0/frU45IlEtqXl/
+	 kH40jEh4Z7bKBJpqedtX+GVYE6Q3dkrFdlhNqBue6ebAvkiLLsYjOIV78MskegHt1T
+	 8G8nK+WV8Vv3cmYBQsrXvvojhTswLO2V1Ke63OfQvxG/FcuazelRNAO3DB+jXTnxj9
+	 L700EDWu8tpeg==
+Received: from [100.90.4.95] (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 70FC23781FEF;
-	Tue,  5 Mar 2024 10:20:56 +0000 (UTC)
-Message-ID: <e9cc42d7-db7f-4bd8-978e-72b97cfa8d41@collabora.com>
-Date: Tue, 5 Mar 2024 11:20:55 +0100
+	(Authenticated sender: david.heidelberg)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 743A23781FEF;
+	Tue,  5 Mar 2024 10:21:11 +0000 (UTC)
+Message-ID: <d6c5a3e3-62fd-4f59-8d43-b33881a98039@collabora.com>
+Date: Tue, 5 Mar 2024 11:21:09 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/5] mailbox: mtk-cmdq: Add support runtime get and set
- GCE event
+User-Agent: Mozilla Thunderbird Beta
+Subject: Re: [PATCH] drm/ci: update device type for volteer devices
+To: Vignesh Raman <vignesh.raman@collabora.com>,
+ dri-devel@lists.freedesktop.org
+Cc: daniels@collabora.com, helen.koike@collabora.com, airlied@gmail.com,
+ daniel@ffwll.ch, sergi.blanch.torne@collabora.com,
+ guilherme.gallo@collabora.com, robdclark@gmail.com,
+ jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+ rodrigo.vivi@intel.com, tvrtko.ursulin@linux.intel.com,
+ intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20240305101626.36357-1-vignesh.raman@collabora.com>
 Content-Language: en-US
-To: =?UTF-8?B?SmFzb24tSkggTGluICjmnpfnnb/npaUp?= <Jason-JH.Lin@mediatek.com>,
- "jassisinghbrar@gmail.com" <jassisinghbrar@gmail.com>,
- "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
- "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>
-Cc: "linux-mediatek@lists.infradead.org"
- <linux-mediatek@lists.infradead.org>,
- =?UTF-8?B?U2luZ28gQ2hhbmcgKOW8teiIiOWciyk=?= <Singo.Chang@mediatek.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- =?UTF-8?B?SmFzb24tY2ggQ2hlbiAo6Zmz5bu66LGqKQ==?=
- <Jason-ch.Chen@mediatek.com>, =?UTF-8?B?U2hhd24gU3VuZyAo5a6L5a2d6KyZKQ==?=
- <Shawn.Sung@mediatek.com>, =?UTF-8?B?TmFuY3kgTGluICjmnpfmrKPonqIp?=
- <Nancy.Lin@mediatek.com>,
- Project_Global_Chrome_Upstream_Group
- <Project_Global_Chrome_Upstream_Group@mediatek.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-References: <20240301111126.22035-1-jason-jh.lin@mediatek.com>
- <20240301111126.22035-6-jason-jh.lin@mediatek.com>
- <298c13ff-25a7-4d9c-ab51-4c22c07c245d@collabora.com>
- <35b6915dd195abba009dab64dc6002362292351c.camel@mediatek.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <35b6915dd195abba009dab64dc6002362292351c.camel@mediatek.com>
+From: David Heidelberg <david.heidelberg@collabora.com>
+Autocrypt: addr=david.heidelberg@collabora.com; keydata=
+ xjMEYlvLOxYJKwYBBAHaRw8BAQdA5CoWEzz4igpwK4h6lK6ZformRk84+ymcfkGNPwqEeILN
+ MURhdmlkIEhlaWRlbGJlcmcgPGRhdmlkLmhlaWRlbGJlcmdAY29sbGFib3JhLmNvbT7ClgQT
+ FggAPhYhBEo7kSl22BK0F1Np/mn1Z4YcHsAUBQJiW8s7AhsDBQkFo5qABQsJCAcCBhUKCQgL
+ AgQWAgMBAh4BAheAAAoJEGn1Z4YcHsAU84kBAK5YqSWAOuIumAqgWvke6BEsaIGWGQzXSuKj
+ er/TXuFuAQCwc9ITSVXWWTSpdFt2+4z7Wch8tIGlbIFcS9dCFddwCc44BGJbyzsSCisGAQQB
+ l1UBBQEBB0AEk7jXEwDApGOwMH/X0UAPBH8Y3isjxhNMjpyRcnl2CwMBCAfCfgQYFggAJhYh
+ BEo7kSl22BK0F1Np/mn1Z4YcHsAUBQJiW8s7AhsMBQkFo5qAAAoJEGn1Z4YcHsAU0PEA/j0Y
+ uAOKJCnnwrkf3ozPP0sutA5bojoARwcIaZKO/zvIAP9PwTC9DGLg+8LJm7m2Lyf0LxLA8FXD
+ wueLHBdwHg6zAQ==
+In-Reply-To: <20240305101626.36357-1-vignesh.raman@collabora.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------rZiod2GXREeubTimgoI7WYNP"
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------rZiod2GXREeubTimgoI7WYNP
+Content-Type: multipart/mixed; boundary="------------pHbxznB06gWrHjW6GsDe5viS";
+ protected-headers="v1"
+From: David Heidelberg <david.heidelberg@collabora.com>
+To: Vignesh Raman <vignesh.raman@collabora.com>,
+ dri-devel@lists.freedesktop.org
+Cc: daniels@collabora.com, helen.koike@collabora.com, airlied@gmail.com,
+ daniel@ffwll.ch, sergi.blanch.torne@collabora.com,
+ guilherme.gallo@collabora.com, robdclark@gmail.com,
+ jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+ rodrigo.vivi@intel.com, tvrtko.ursulin@linux.intel.com,
+ intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Message-ID: <d6c5a3e3-62fd-4f59-8d43-b33881a98039@collabora.com>
+Subject: Re: [PATCH] drm/ci: update device type for volteer devices
+References: <20240305101626.36357-1-vignesh.raman@collabora.com>
+In-Reply-To: <20240305101626.36357-1-vignesh.raman@collabora.com>
+Autocrypt-Gossip: addr=sergi.blanch.torne@collabora.com; keydata=
+ xjMEYl+2IBYJKwYBBAHaRw8BAQdAGtDWXnvbyLk13igbHNV+4xl0LqgoXtwFTZd7zuf+i43N
+ NlNlcmdpIEJsYW5jaCBUb3Juw6kgPHNlcmdpLmJsYW5jaC50b3JuZUBjb2xsYWJvcmEuY29t
+ PsKPBBMWCAA3AhsDBAsJCAcFFQgJCgsFFgIDAQAWIQQwWRK68l+taJfhwqAto5bHyTm9RwUC
+ ZEEcXwUJA8KZvwAKCRAto5bHyTm9R3pwAQDJRHp8BeXN7o3JOjvJgrYMc17moo3MOJKpoL+N
+ N63FhQEAonDZDMF6+/A9L3WgkUn8kpQSlvXqItnmllEI6XjYgwjOOARiX7YgEgorBgEEAZdV
+ AQUBAQdAr+LtIQtZCMvW6deAnfpWftbogPIZ8ST2m1qfFeSvg2oDAQgHwn4EGBYIACYCGwwW
+ IQQwWRK68l+taJfhwqAto5bHyTm9RwUCZEEcUAUJA8KZsAAKCRAto5bHyTm9R2j/AQDSQiuy
+ W2lKZOYpY2FIiBnVfCZct51qMeJEMSmF10B1nQD/XbmDXWJbgPxOHe7t2nbs2ZqaRRN+XtKQ
+ UVFjFOEZxw8=
+
+--------------pHbxznB06gWrHjW6GsDe5viS
+Content-Type: multipart/mixed; boundary="------------9Jatr3e1pWiQEeBDrsNehH2Z"
+
+--------------9Jatr3e1pWiQEeBDrsNehH2Z
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: base64
 
-Il 05/03/24 04:09, Jason-JH Lin (林睿祥) ha scritto:
-> Hi Angelo,
-> 
-> Thanks for the reviews.
-> 
-> On Mon, 2024-03-04 at 11:06 +0100, AngeloGioacchino Del Regno wrote:
->> Il 01/03/24 12:11, Jason-JH.Lin ha scritto:
->>> ISP drivers need to get and set GCE event in their runtime contorl
->>> flow.
->>> So add these functions to support get and set GCE by CPU.
->>>
->>> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
->>> Change-Id: I494c34ebc5ec26c82213f2bc03d2033d60652523
->>
->> Change-Id makes no sense upstream. Please drop.
-> 
-> OK, I'll drop it.
-> 
->>
->>> ---
->>>    drivers/mailbox/mtk-cmdq-mailbox.c       | 37
->>> ++++++++++++++++++++++++
->>>    include/linux/mailbox/mtk-cmdq-mailbox.h |  2 ++
->>>    2 files changed, 39 insertions(+)
->>>
->>> diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c
->>> b/drivers/mailbox/mtk-cmdq-mailbox.c
->>> index ead2200f39ba..d7c08249c898 100644
->>> --- a/drivers/mailbox/mtk-cmdq-mailbox.c
->>> +++ b/drivers/mailbox/mtk-cmdq-mailbox.c
->>> @@ -25,7 +25,11 @@
->>>    #define CMDQ_GCE_NUM_MAX		(2)
->>>    
->>>    #define CMDQ_CURR_IRQ_STATUS		0x10
->>> +#define CMDQ_SYNC_TOKEN_ID		0x60
->>> +#define CMDQ_SYNC_TOKEN_VALUE		0x64
->>> +#define CMDQ_TOKEN_ID_MASK			GENMASK(9, 0)
->>>    #define CMDQ_SYNC_TOKEN_UPDATE		0x68
->>> +#define CMDQ_TOKEN_UPDATE_VALUE			BIT(16)
->>>    #define CMDQ_THR_SLOT_CYCLES		0x30
->>>    #define CMDQ_THR_BASE			0x100
->>>    #define CMDQ_THR_SIZE			0x80
->>> @@ -83,6 +87,7 @@ struct cmdq {
->>>    	struct cmdq_thread	*thread;
->>>    	struct clk_bulk_data	clocks[CMDQ_GCE_NUM_MAX];
->>>    	bool			suspended;
->>> +	spinlock_t		event_lock; /* lock for gce event */
->>>    };
->>>    
->>>    struct gce_plat {
->>> @@ -113,6 +118,38 @@ u8 cmdq_get_shift_pa(struct mbox_chan *chan)
->>>    }
->>>    EXPORT_SYMBOL(cmdq_get_shift_pa);
->>>    
->>> +void cmdq_set_event(void *chan, u16 event_id)
->>> +{
->>> +	struct cmdq *cmdq = container_of(((struct mbox_chan *)chan)-
->>>> mbox,
->>> +		typeof(*cmdq), mbox);
->>
->> struct mbox_chan *mbc = chan;
->> struct cmdq *cmdq = container_of(mbc->mbox, ... etc); (and this fits
->> in one line)
->>
-> OK, I'll change it.
-> 
->>> +	unsigned long flags;
->>> +
->>> +	spin_lock_irqsave(&cmdq->event_lock, flags);
->>
->> Why do you need irqsave/irqrestore? I think I know, but please
->> explain.
->>
-> Because ISP driver may call cmdq_get_event() first than use
-> cmdq_set_event() to update the event status in one
-> mtk_imgsys_setevent() function frequently.
-> 
-> And mtk_imgsys_setevent() will be called in SW multi-thread after cmdq
-> callback from cmdq_irq_handler, so we use the spin_lock_irqsave to
-> avoid the race condition.
+UmV2aWV3ZWQtYnk6IERhdmlkIEhlaWRlbGJlcmcgPGRhdmlkLmhlaWRlbGJlcmdAY29sbGFi
+b3JhLmNvbT4NCg0KSWYgcG9zc2libGUsIHBsZWFzZSBtZXJnZSB0aGlzIEFTQVAsIGJlY2F1
+c2UgbWFqb3IgbW92ZSBvZiBtb3N0IG9mIHRoZSANCmRldmljZXMNCnRvIHR5cGUgYWNlci1j
+cDUxNC0yaC0xMTMwZzctdm9sdGVlciB3aWxsIGhhcHBlbiB0b21vcnJvdy4NCg0KVGhhbmsg
+eW91DQoNCk9uIDA1LzAzLzIwMjQgMTE6MTYsIFZpZ25lc2ggUmFtYW4gd3JvdGU6DQoNCj4g
+Vm9sdGVlciBkZXZpY2VzIGluIHRoZSBjb2xsYWJvcmEgbGFiIGFyZSBjYXRlZ29yaXplZCB1
+bmRlciB0aGUNCj4gYXN1cy1jeDk0MDAtdm9sdGVlciBkZXZpY2UgdHlwZS4gVGhlIG1ham9y
+aXR5IG9mIHRoZXNlIHVuaXRzDQo+IGhhcyBhbiBJbnRlbCBDb3JlIGk1LTExMzBHNyBDUFUs
+IHdoaWxlIHNvbWUgb2YgdGhlbSBoYXZlIGENCj4gSW50ZWwgQ29yZSBpNy0xMTYwRzcgQ1BV
+IGluc3RlYWQuIFNvIGR1ZSB0byB0aGlzIGRpZmZlcmVuY2UsDQo+IG5ldyBkZXZpY2UgdHlw
+ZSB0ZW1wbGF0ZSBpcyBhZGRlZCBmb3IgdGhlIEludGVsIENvcmUgaTUtMTEzMEc3DQo+IGFu
+ZCBpNy0xMTYwRzcgdmFyaWFudHMgb2YgdGhlIEFjZXIgQ2hyb21lYm9vayBTcGluIDUxNCAo
+Q1A1MTQtMkgpDQo+IHZvbHRlZXIgQ2hyb21lYm9va3MuIFNvIHVwZGF0ZSB0aGUgc2FtZSBp
+biBkcm0tY2kuDQo+DQo+IGh0dHBzOi8vZ2l0bGFiLmNvbGxhYm9yYS5jb20vbGF2YS9sYXZh
+Ly0vbWVyZ2VfcmVxdWVzdHMvMTQ5DQo+DQo+IFNpZ25lZC1vZmYtYnk6IFZpZ25lc2ggUmFt
+YW4gPHZpZ25lc2gucmFtYW5AY29sbGFib3JhLmNvbT4NCj4gLS0tDQo+ICAgZHJpdmVycy9n
+cHUvZHJtL2NpL3Rlc3QueW1sIHwgNiArKystLS0NCj4gICAxIGZpbGUgY2hhbmdlZCwgMyBp
+bnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQ0KPg0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVy
+cy9ncHUvZHJtL2NpL3Rlc3QueW1sIGIvZHJpdmVycy9ncHUvZHJtL2NpL3Rlc3QueW1sDQo+
+IGluZGV4IDA4NTc3NzNlNWM1Zi4uOGJjNjM5MTJmZGRiIDEwMDY0NA0KPiAtLS0gYS9kcml2
+ZXJzL2dwdS9kcm0vY2kvdGVzdC55bWwNCj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2NpL3Rl
+c3QueW1sDQo+IEBAIC0yNTIsMTEgKzI1MiwxMSBAQCBpOTE1OmNtbDoNCj4gICBpOTE1OnRn
+bDoNCj4gICAgIGV4dGVuZHM6DQo+ICAgICAgIC0gLmk5MTUNCj4gLSAgcGFyYWxsZWw6IDgN
+Cj4gKyAgcGFyYWxsZWw6IDUNCj4gICAgIHZhcmlhYmxlczoNCj4gLSAgICBERVZJQ0VfVFlQ
+RTogYXN1cy1jeDk0MDAtdm9sdGVlcg0KPiArICAgIERFVklDRV9UWVBFOiBhY2VyLWNwNTE0
+LTJoLTExMzBnNy12b2x0ZWVyDQo+ICAgICAgIEdQVV9WRVJTSU9OOiB0Z2wNCj4gLSAgICBS
+VU5ORVJfVEFHOiBtZXNhLWNpLXg4Ni02NC1sYXZhLWFzdXMtY3g5NDAwLXZvbHRlZXINCj4g
+KyAgICBSVU5ORVJfVEFHOiBtZXNhLWNpLXg4Ni02NC1sYXZhLWFjZXItY3A1MTQtMmgtMTEz
+MGc3LXZvbHRlZXINCj4gICANCj4gICAuYW1kZ3B1Og0KPiAgICAgZXh0ZW5kczoNCg0KLS0g
+DQpEYXZpZCBIZWlkZWxiZXJnDQpDb25zdWx0YW50IFNvZnR3YXJlIEVuZ2luZWVyDQoNCkNv
+bGxhYm9yYSBMdGQuDQpQbGF0aW51bSBCdWlsZGluZywgU3QgSm9obidzIElubm92YXRpb24g
+UGFyaywgQ2FtYnJpZGdlIENCNCAwRFMsIFVLDQpSZWdpc3RlcmVkIGluIEVuZ2xhbmQgJiBX
+YWxlcywgbm8uIDU1MTM3MTgNCg0K
+--------------9Jatr3e1pWiQEeBDrsNehH2Z
+Content-Type: application/pgp-keys; name="OpenPGP_0x69F567861C1EC014.asc"
+Content-Disposition: attachment; filename="OpenPGP_0x69F567861C1EC014.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
 
-I was imagining something like that, yes - thank you for explaining.
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
-Cheers,
-Angelo
+xjMEYlvLOxYJKwYBBAHaRw8BAQdA5CoWEzz4igpwK4h6lK6ZformRk84+ymcfkGN
+PwqEeILNMURhdmlkIEhlaWRlbGJlcmcgPGRhdmlkLmhlaWRlbGJlcmdAY29sbGFi
+b3JhLmNvbT7ClgQTFggAPhYhBEo7kSl22BK0F1Np/mn1Z4YcHsAUBQJiW8s7AhsD
+BQkFo5qABQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEGn1Z4YcHsAU84kBAK5Y
+qSWAOuIumAqgWvke6BEsaIGWGQzXSuKjer/TXuFuAQCwc9ITSVXWWTSpdFt2+4z7
+Wch8tIGlbIFcS9dCFddwCc44BGJbyzsSCisGAQQBl1UBBQEBB0AEk7jXEwDApGOw
+MH/X0UAPBH8Y3isjxhNMjpyRcnl2CwMBCAfCfgQYFggAJhYhBEo7kSl22BK0F1Np
+/mn1Z4YcHsAUBQJiW8s7AhsMBQkFo5qAAAoJEGn1Z4YcHsAU0PEA/j0YuAOKJCnn
+wrkf3ozPP0sutA5bojoARwcIaZKO/zvIAP9PwTC9DGLg+8LJm7m2Lyf0LxLA8FXD
+wueLHBdwHg6zAQ=3D=3D
+=3DOQS+
+-----END PGP PUBLIC KEY BLOCK-----
 
+--------------9Jatr3e1pWiQEeBDrsNehH2Z--
+
+--------------pHbxznB06gWrHjW6GsDe5viS--
+
+--------------rZiod2GXREeubTimgoI7WYNP
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYIAB0WIQRKO5EpdtgStBdTaf5p9WeGHB7AFAUCZebyFQAKCRBp9WeGHB7A
+FOPDAP9K1BPqWUkNIG7MbQhzonsxWvnKzAJTZAY8NQ4XqYgrjgD/Vq9OX1+60MAD
+VyVhhxyji1WKAZrbG3+YEc9/Y2U8gg4=
+=D7je
+-----END PGP SIGNATURE-----
+
+--------------rZiod2GXREeubTimgoI7WYNP--
 
