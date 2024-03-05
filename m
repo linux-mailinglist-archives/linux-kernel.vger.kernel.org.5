@@ -1,342 +1,242 @@
-Return-Path: <linux-kernel+bounces-91818-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91816-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AF1C871703
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:37:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BA078716FE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:35:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F0A41F22590
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:37:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6636283D60
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:35:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 901E97E590;
-	Tue,  5 Mar 2024 07:37:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DC7E7FBA4;
+	Tue,  5 Mar 2024 07:33:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XibZI4Hc"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OvHocoeL"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F10818E1D
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 07:37:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 673327FBC4;
+	Tue,  5 Mar 2024 07:33:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709624254; cv=none; b=lhfRrY0Jetp3D1nZo5itAQDBmrsXGPkllH1qtUSbGVVO1PyRQ7BGYFxMvV2XojA0tHLVYhJh6awFR+sdWdYJwbFkaD94M7raGMa2dgctZaUTTw5PDR5pt8F5sTnPf7gCHiZPdnutTuHmxdofQj23uVm/qVSZUXGwk6iocOc+Lsc=
+	t=1709624005; cv=none; b=cFQ0enIUrzSWMWRXRTyG8r3P/7Y+aHWbOMjCWyrBk4x3NUZbnxdI4HDp/rWfSykLFinL/eWWVPxNuKsIKGke2bG0tC6eu2QLYPU4Z2cVjEa5q9IA7gjxuC91uNsZ+XmD+gK+SXe/9HmUDEWOEXyM/y/E6XaAQKt1a6ZPnpvyqB0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709624254; c=relaxed/simple;
-	bh=6XAGGpqPCvNAQujByhz7IqI9xkwL0b0s7n98gDewalE=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=OW0cHHydE0M9fIICq1vDzkWdEzYTKG7vShQMU4xrnNaDytjNav6Jbpki8SNBvzCRp3iNAr6LcQ7GdljDBrK9GVrJlvRznr3ws2zmoTSwc1WhPZ7YfhnXFyJ1XMHisX0m6wXluUD5QlGSrFPCkxu5TVst2506i4UAJkCR4MdCpFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XibZI4Hc; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709624252; x=1741160252;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=6XAGGpqPCvNAQujByhz7IqI9xkwL0b0s7n98gDewalE=;
-  b=XibZI4Hc1rMivTXdw+Zhd76lIblqOV2Pyi1m6EWAJZI1VDkug021COdP
-   pwSlAbg7wP8kEFB43+xBnU4nIiAU4PuaLJv+Q005FcQC24E8ZTuY0qhhN
-   DYw2pR+NXDMwnUEGTScu9Hzx/+eUCx5kuF+MhtlXSSD0N9K3ggKcvuxAF
-   dd2+OKkVRa1s49GQPBsZh+FatLHIiBT57XbRRu/mUz+AS5ne/qX5PLHxx
-   bE6TsASfy0iCYKutTa0waTz/TRm/z6oqhjv2OIZnOubUt9ddcBLngfLNO
-   k65HW4Zz4PtF/1HlrPqsYJdz5MpaKxlemQB2gmcoHJb80wRgAUCeZvgCa
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="26616420"
-X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
-   d="scan'208";a="26616420"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 23:37:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
-   d="scan'208";a="32447585"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 23:37:29 -0800
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Byungchul Park <byungchul@sk.com>
-Cc: <akpm@linux-foundation.org>,  <linux-kernel@vger.kernel.org>,
-  <linux-mm@kvack.org>,  <kernel_team@skhynix.com>,  <yuzhao@google.com>,
-  <hannes@cmpxchg.org>
-Subject: Re: [PATCH v6] mm, vmscan: retry kswapd's priority loop with
- cache_trim_mode off on failure
-In-Reply-To: <20240305071232.GB37850@system.software.com> (Byungchul Park's
-	message of "Tue, 5 Mar 2024 16:12:32 +0900")
-References: <20240304033611.GD13332@system.software.com>
-	<20240304082118.20499-1-byungchul@sk.com>
-	<87zfvda1f8.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<20240305023708.GA60719@system.software.com>
-	<20240305024345.GB60719@system.software.com>
-	<20240305040930.GA21107@system.software.com>
-	<87le6x9p6u.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<20240305065846.GA37850@system.software.com>
-	<87cys99n1r.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<20240305071232.GB37850@system.software.com>
-Date: Tue, 05 Mar 2024 15:35:35 +0800
-Message-ID: <874jdl9lmg.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1709624005; c=relaxed/simple;
+	bh=YGTFf+aFcxTPkfOtBdEs9262UzHkIoYVYZfRjmj18Zs=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=tOGxqgsDc+IfngWmzNaySQbX/fdQRMSX4myBk3uP58jFwFWb8vN4vqq/Zam9MZU20v/8YDhYiNJGZ5rixjHHSaFYkMQiNO3XDmp1nkDF09a+WbSmLI5Qve++eCNcWHTvcEFExl0rhIUEz99lhmbeKle3CSCMKw/R0RKMarS8dro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OvHocoeL; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-56698eb5e1dso6933988a12.2;
+        Mon, 04 Mar 2024 23:33:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709624002; x=1710228802; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Gx7QPTKJai6jSFkj9+TJZzVP3EDqUm9KDYf3uq99HxA=;
+        b=OvHocoeLnu7NNeIOgtC+6nhcTERVmhmXLuwguQg923YZsLWykgjbuEj/06nHMN/ndz
+         8SIslbj6D72Sp4HYhH7slzZii8MXbZFbGqSY28AQS5L4qpKAFoa9u2y0m85LaXSSoiD2
+         1sX8xF6AM6mm+b/ghL75ZWS5hTOnjYZwLs6tdLo4UCJi1+3e/jfBracxkx4AfDPx7KPZ
+         VrCup5eec9TXLSNMPO0IXMhQjsD5gIOD8QzIEhhdn55TCVMbAKk0Rnib/PUbOIq2a2Nz
+         eOC6q/yDsBefuISs2rmmcFJLogpzn7Q2NDW+6ekdCcjX589o7UopyMs/cDKqAm72iqBz
+         Avsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709624002; x=1710228802;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Gx7QPTKJai6jSFkj9+TJZzVP3EDqUm9KDYf3uq99HxA=;
+        b=M0VTJ+IeJfiC90rt+lNgPOLaHZYalgADoSykDHu3+YCO2lTBfVJaK18/J429+Nqbil
+         Q0RvuNdwyeDQegdVWvKWAtokKFLT5FxmN4qV536Arzlt5SA7MTJLH8Dc+7m/hho7edTC
+         wgj8SQ0ktqQA60WRUu5z/XM6YFCisJVYM1AXRlH/f0es0yGsuq6KY4WDLQlDmOxW/ATx
+         BZaEbGNOFS8d/ykJodKPwuAi4ix/5UXQJdzAmtGAS88uXLOLUcmA2d5Jr+NAvkrXhJd2
+         QYTQUA9lhXuKa6iIGEel1S5UOuejD9dZ0e3BwixBnKofN5XNRN6/xe+0eddDX7r+ASQo
+         PdOg==
+X-Forwarded-Encrypted: i=1; AJvYcCVozzgaDL3iwUxVKAS8Ki98F1mQ6vrmqtdu94UuosMcdnbg+hzBjRDg7HeRIwjPR6MP/OChLHn5JUA7wcw6jIoR18Z0P3LTg0eB2MPhVYHT9jMbTmSJQAxf9k5esniHVQG4lP3TogS5zIfZpBOKTtVJSxWDiKwqrvzSywCztQYQ/w==
+X-Gm-Message-State: AOJu0YxbiqIphfTthVxlLoR0DUggeh3LrhKBIAVMw85nVBdfWoSNdWWn
+	/xrZ8Ppb7F9JWbZqQxV+SrB+hWKjDEFXw4hltcaAz4bvLJFr7KPw
+X-Google-Smtp-Source: AGHT+IHPvQtZwLezKjsSpiunSzo1ozz5dPp4RlMChtiuv+1LJpDBG7d+OgVW72CZXGBZnTesbmAcZQ==
+X-Received: by 2002:a50:fa83:0:b0:566:51fa:3647 with SMTP id w3-20020a50fa83000000b0056651fa3647mr6914461edr.10.1709624001492;
+        Mon, 04 Mar 2024 23:33:21 -0800 (PST)
+Received: from ?IPv6:2003:f6:ef1b:2000:15d4:fc17:481e:8afe? (p200300f6ef1b200015d4fc17481e8afe.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:15d4:fc17:481e:8afe])
+        by smtp.gmail.com with ESMTPSA id f16-20020aa7d850000000b00563f3ee5003sm5443887eds.91.2024.03.04.23.33.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Mar 2024 23:33:21 -0800 (PST)
+Message-ID: <2f497783da939f13d8c8faeab931cac0ef9c98eb.camel@gmail.com>
+Subject: Re: [PATCH v3 2/2] of: overlay: Synchronize of_overlay_remove()
+ with the devlink removals
+From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To: Saravana Kannan <saravanak@google.com>, Herve Codina
+	 <herve.codina@bootlin.com>
+Cc: Rob Herring <robh@kernel.org>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
+ Frank Rowand <frowand.list@gmail.com>, Lizhi Hou <lizhi.hou@amd.com>, Max
+ Zhen <max.zhen@amd.com>,  Sonal Santan <sonal.santan@amd.com>, Stefano
+ Stabellini <stefano.stabellini@xilinx.com>, Jonathan Cameron
+ <Jonathan.Cameron@huawei.com>, linux-kernel@vger.kernel.org, 
+ devicetree@vger.kernel.org, Allan Nielsen <allan.nielsen@microchip.com>, 
+ Horatiu Vultur <horatiu.vultur@microchip.com>, Steen Hegelund
+ <steen.hegelund@microchip.com>, Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ Nuno Sa <nuno.sa@analog.com>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, stable@vger.kernel.org
+Date: Tue, 05 Mar 2024 08:36:45 +0100
+In-Reply-To: <CAGETcx-tmyJA30GtdU_dO9tWFoK+rO5tm-On4tPR7oQotnMkqQ@mail.gmail.com>
+References: <20240229105204.720717-1-herve.codina@bootlin.com>
+	 <20240229105204.720717-3-herve.codina@bootlin.com>
+	 <acb69aa8c1a4c4e9849123ef538b9646a71507a0.camel@gmail.com>
+	 <20240304152202.GA222088-robh@kernel.org>
+	 <20240304174933.7ad023f9@bootlin.com>
+	 <CAGETcx-tmyJA30GtdU_dO9tWFoK+rO5tm-On4tPR7oQotnMkqQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
 
-Byungchul Park <byungchul@sk.com> writes:
+On Mon, 2024-03-04 at 22:47 -0800, Saravana Kannan wrote:
+> On Mon, Mar 4, 2024 at 8:49=E2=80=AFAM Herve Codina <herve.codina@bootlin=
+com> wrote:
+> >=20
+> > Hi Rob,
+> >=20
+> > On Mon, 4 Mar 2024 09:22:02 -0600
+> > Rob Herring <robh@kernel.org> wrote:
+> >=20
+> > ...
+> >=20
+> > > > > @@ -853,6 +854,14 @@ static void free_overlay_changeset(struct
+> > > > > overlay_changeset *ovcs)
+> > > > > =C2=A0{
+> > > > > =C2=A0 int i;
+> > > > >=20
+> > > > > + /*
+> > > > > +=C2=A0 * Wait for any ongoing device link removals before removi=
+ng some of
+> > > > > +=C2=A0 * nodes. Drop the global lock while waiting
+> > > > > +=C2=A0 */
+> > > > > + mutex_unlock(&of_mutex);
+> > > > > + device_link_wait_removal();
+> > > > > + mutex_lock(&of_mutex);
+> > > >=20
+> > > > I'm still not convinced we need to drop the lock. What happens if
+> > > > someone else
+> > > > grabs the lock while we are in device_link_wait_removal()? Can we
+> > > > guarantee that
+> > > > we can't screw things badly?
+> > >=20
+> > > It is also just ugly because it's the callers of
+> > > free_overlay_changeset() that hold the lock and now we're releasing i=
+t
+> > > behind their back.
+> > >=20
+> > > As device_link_wait_removal() is called before we touch anything, can=
+'t
+> > > it be called before we take the lock? And do we need to call it if
+> > > applying the overlay fails?
+>=20
+> Rob,
+>=20
+> This[1] scenario Luca reported seems like a reason for the
+> device_link_wait_removal() to be where Herve put it. That example
+> seems reasonable.
+>=20
+> [1] - https://lore.kernel.org/all/20231220181627.341e8789@booty/
+>=20
 
-> On Tue, Mar 05, 2024 at 03:04:48PM +0800, Huang, Ying wrote:
->> Byungchul Park <byungchul@sk.com> writes:
->> 
->> > On Tue, Mar 05, 2024 at 02:18:33PM +0800, Huang, Ying wrote:
->> >> Byungchul Park <byungchul@sk.com> writes:
->> >> 
->> >> > On Tue, Mar 05, 2024 at 11:43:45AM +0900, Byungchul Park wrote:
->> >> >> On Tue, Mar 05, 2024 at 11:37:08AM +0900, Byungchul Park wrote:
->> >> >> > On Tue, Mar 05, 2024 at 09:54:19AM +0800, Huang, Ying wrote:
->> >> >> > > Byungchul Park <byungchul@sk.com> writes:
->> >> >> > > 
->> >> >> > > > Changes from v5:
->> >> >> > > > 	1. Make it retry the kswapd's scan priority loop with
->> >> >> > > > 	   cache_trim_mode off *only if* the mode didn't work in the
->> >> >> > > > 	   previous loop. (feedbacked by Huang Ying)
->> >> >> > > > 	2. Take into account 'break's from the priority loop when making
->> >> >> > > > 	   the decision whether to retry. (feedbacked by Huang Ying)
->> >> >> > > > 	3. Update the test result in the commit message.
->> >> >> > > >
->> >> >> > > > Changes from v4:
->> >> >> > > > 	1. Make other scans start with may_cache_trim_mode = 1.
->> >> >> > > >
->> >> >> > > > Changes from v3:
->> >> >> > > > 	1. Update the test result in the commit message with v4.
->> >> >> > > > 	2. Retry the whole priority loop with cache_trim_mode off again,
->> >> >> > > > 	   rather than forcing the mode off at the highest priority,
->> >> >> > > > 	   when the mode doesn't work. (feedbacked by Johannes Weiner)
->> >> >> > > >
->> >> >> > > > Changes from v2:
->> >> >> > > > 	1. Change the condition to stop cache_trim_mode.
->> >> >> > > >
->> >> >> > > > 	   From - Stop it if it's at high scan priorities, 0 or 1.
->> >> >> > > > 	   To   - Stop it if it's at high scan priorities, 0 or 1, and
->> >> >> > > > 	          the mode didn't work in the previous turn.
->> >> >> > > >
->> >> >> > > > 	   (feedbacked by Huang Ying)
->> >> >> > > >
->> >> >> > > > 	2. Change the test result in the commit message after testing
->> >> >> > > > 	   with the new logic.
->> >> >> > > >
->> >> >> > > > Changes from v1:
->> >> >> > > > 	1. Add a comment describing why this change is necessary in code
->> >> >> > > > 	   and rewrite the commit message with how to reproduce and what
->> >> >> > > > 	   the result is using vmstat. (feedbacked by Andrew Morton and
->> >> >> > > > 	   Yu Zhao)
->> >> >> > > > 	2. Change the condition to avoid cache_trim_mode from
->> >> >> > > > 	   'sc->priority != 1' to 'sc->priority > 1' to reflect cases
->> >> >> > > > 	   where the priority goes to zero all the way. (feedbacked by
->> >> >> > > > 	   Yu Zhao)
->> >> >> > > >
->> >> >> > > > --->8---
->> >> >> > > > From f811ee583158fd53d0e94d32ce5948fac4b17cfe Mon Sep 17 00:00:00 2001
->> >> >> > > > From: Byungchul Park <byungchul@sk.com>
->> >> >> > > > Date: Mon, 4 Mar 2024 15:27:37 +0900
->> >> >> > > > Subject: [PATCH v6] mm, vmscan: retry kswapd's priority loop with cache_trim_mode off on failure
->> >> >> > > >
->> >> >> > > > With cache_trim_mode on, reclaim logic doesn't bother reclaiming anon
->> >> >> > > > pages.  However, it should be more careful to use the mode because it's
->> >> >> > > > going to prevent anon pages from being reclaimed even if there are a
->> >> >> > > > huge number of anon pages that are cold and should be reclaimed.  Even
->> >> >> > > > worse, that leads kswapd_failures to reach MAX_RECLAIM_RETRIES and
->> >> >> > > > stopping kswapd from functioning until direct reclaim eventually works
->> >> >> > > > to resume kswapd.
->> >> >> > > >
->> >> >> > > > So kswapd needs to retry its scan priority loop with cache_trim_mode
->> >> >> > > > off again if the mode doesn't work for reclaim.
->> >> >> > > >
->> >> >> > > > The problematic behavior can be reproduced by:
->> >> >> > > >
->> >> >> > > >    CONFIG_NUMA_BALANCING enabled
->> >> >> > > >    sysctl_numa_balancing_mode set to NUMA_BALANCING_MEMORY_TIERING
->> >> >> > > >    numa node0 (8GB local memory, 16 CPUs)
->> >> >> > > >    numa node1 (8GB slow tier memory, no CPUs)
->> >> >> > > >
->> >> >> > > >    Sequence:
->> >> >> > > >
->> >> >> > > >    1) echo 3 > /proc/sys/vm/drop_caches
->> >> >> > > >    2) To emulate the system with full of cold memory in local DRAM, run
->> >> >> > > >       the following dummy program and never touch the region:
->> >> >> > > >
->> >> >> > > >          mmap(0, 8 * 1024 * 1024 * 1024, PROT_READ | PROT_WRITE,
->> >> >> > > >               MAP_ANONYMOUS | MAP_PRIVATE | MAP_POPULATE, -1, 0);
->> >> >> > > >
->> >> >> > > >    3) Run any memory intensive work e.g. XSBench.
->> >> >> > > >    4) Check if numa balancing is working e.i. promotion/demotion.
->> >> >> > > >    5) Iterate 1) ~ 4) until numa balancing stops.
->> >> >> > > >
->> >> >> > > > With this, you could see that promotion/demotion are not working because
->> >> >> > > > kswapd has stopped due to ->kswapd_failures >= MAX_RECLAIM_RETRIES.
->> >> >> > > >
->> >> >> > > > Interesting vmstat delta's differences between before and after are like:
->> >> >> > > >
->> >> >> > > >    +-----------------------+-------------------------------+
->> >> >> > > >    | interesting vmstat    | before        | after         |
->> >> >> > > >    +-----------------------+-------------------------------+
->> >> >> > > >    | nr_inactive_anon      | 321935        | 1664772       |
->> >> >> > > >    | nr_active_anon        | 1780700       | 437834        |
->> >> >> > > >    | nr_inactive_file      | 30425         | 40882         |
->> >> >> > > >    | nr_active_file        | 14961         | 3012          |
->> >> >> > > >    | pgpromote_success     | 356           | 1293122       |
->> >> >> > > >    | pgpromote_candidate   | 21953245      | 1824148       |
->> >> >> > > >    | pgactivate            | 1844523       | 3311907       |
->> >> >> > > >    | pgdeactivate          | 50634         | 1554069       |
->> >> >> > > >    | pgfault               | 31100294      | 6518806       |
->> >> >> > > >    | pgdemote_kswapd       | 30856         | 2230821       |
->> >> >> > > >    | pgscan_kswapd         | 1861981       | 7667629       |
->> >> >> > > >    | pgscan_anon           | 1822930       | 7610583       |
->> >> >> > > >    | pgscan_file           | 39051         | 57046         |
->> >> >> > > >    | pgsteal_anon          | 386           | 2192033       |
->> >> >> > > >    | pgsteal_file          | 30470         | 38788         |
->> >> >> > > >    | pageoutrun            | 30            | 412           |
->> >> >> > > >    | numa_hint_faults      | 27418279      | 2875955       |
->> >> >> > > >    | numa_pages_migrated   | 356           | 1293122       |
->> >> >> > > >    +-----------------------+-------------------------------+
->> >> >> > > >
->> >> >> > > > Signed-off-by: Byungchul Park <byungchul@sk.com>
->> >> >> > > > ---
->> >> >> > > >  mm/vmscan.c | 21 ++++++++++++++++++++-
->> >> >> > > >  1 file changed, 20 insertions(+), 1 deletion(-)
->> >> >> > > >
->> >> >> > > > diff --git a/mm/vmscan.c b/mm/vmscan.c
->> >> >> > > > index bba207f41b14..6fe45eca7766 100644
->> >> >> > > > --- a/mm/vmscan.c
->> >> >> > > > +++ b/mm/vmscan.c
->> >> >> > > > @@ -108,6 +108,12 @@ struct scan_control {
->> >> >> > > >  	/* Can folios be swapped as part of reclaim? */
->> >> >> > > >  	unsigned int may_swap:1;
->> >> >> > > >  
->> >> >> > > > +	/* Not allow cache_trim_mode to be turned on as part of reclaim? */
->> >> >> > > > +	unsigned int no_cache_trim_mode:1;
->> >> >> > > > +
->> >> >> > > > +	/* Has cache_trim_mode failed at least once? */
->> >> >> > > > +	unsigned int cache_trim_mode_failed:1;
->> >> >> > > > +
->> >> >> > > >  	/* Proactive reclaim invoked by userspace through memory.reclaim */
->> >> >> > > >  	unsigned int proactive:1;
->> >> >> > > >  
->> >> >> > > > @@ -2268,7 +2274,8 @@ static void prepare_scan_control(pg_data_t *pgdat, struct scan_control *sc)
->> >> >> > > >  	 * anonymous pages.
->> >> >> > > >  	 */
->> >> >> > > >  	file = lruvec_page_state(target_lruvec, NR_INACTIVE_FILE);
->> >> >> > > > -	if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE))
->> >> >> > > > +	if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE) &&
->> >> >> > > > +	    !sc->no_cache_trim_mode)
->> >> >> > > >  		sc->cache_trim_mode = 1;
->> >> >> > > >  	else
->> >> >> > > >  		sc->cache_trim_mode = 0;
->> >> >> > > > @@ -5967,6 +5974,8 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
->> >> >> > > >  	 */
->> >> >> > > >  	if (reclaimable)
->> >> >> > > >  		pgdat->kswapd_failures = 0;
->> >> >> > > > +	else if (sc->cache_trim_mode)
->> >> >> > > > +		sc->cache_trim_mode_failed = 1;
->> >> >> > > >  }
->> >> >> > > >  
->> >> >> > > >  /*
->> >> >> > > > @@ -6898,6 +6907,16 @@ static int balance_pgdat(pg_data_t *pgdat, int order, int highest_zoneidx)
->> >> >> > > >  			sc.priority--;
->> >> >> > > >  	} while (sc.priority >= 1);
->> >> >> > > >  
->> >> >> > > > +	/*
->> >> >> > > > +	 * Restart only if it went through the priority loop all the way,
->> >> >> > > > +	 * but cache_trim_mode didn't work.
->> >> >> > > > +	 */
->> >> >> > > > +	if (!sc.nr_reclaimed && sc.priority < 1 &&
->> >> >> > > > +	    !sc.no_cache_trim_mode && sc.cache_trim_mode_failed) {
->> >> >> > > 
->> >> >> > > Can we just use sc.cache_trim_mode (instead of
->> >> >> > > sc.cache_trim_mode_failed) here?  That is, if cache_trim_mode is enabled
->> >> >> > 
->> >> >> > As Johannes mentioned, within a priority scan, all the numa nodes are
->> >> >> > scanned each with its own value of cache_trim_mode. So we cannot use
->> >> >> > cache_trim_mode for that purpose.
->> >> >> 
->> >> >> Ah, okay. Confining to kswapd, that might make sense. I will apply it if
->> >> >> there's no objection to it. Thanks.
->> >> >
->> >> > I didn't want to introduce two additional flags either, but it was
->> >> > possible to make it do exactly what we want it to do thanks to the flags.
->> >> > I'd like to keep this version if possible unless there are any other
->> >> > objections on it.
->> >> 
->> >> Sorry, I'm confused.  Whether does "cache_trim_mode == 1" do the trick?
->> >> If so, why not?  If not, why?
->> >
->> > kswapd might happen to go through:
->> >
->> > priority 12(== DEF_PRIORITY) + cache_trim_mode on -> fail
->> > priority 11 + cache_trim_mode on -> fail
->> > priority 10 + cache_trim_mode on -> fail
->> > priority 9 + cache_trim_mode on -> fail
->> > priority 8 + cache_trim_mode on -> fail
->> > priority 7 + cache_trim_mode on -> fail
->> > priority 6 + cache_trim_mode on -> fail
->> > priority 5 + cache_trim_mode on -> fail
->> > priority 4 + cache_trim_mode on -> fail
->> > priority 3 + cache_trim_mode on -> fail
->> > priority 2 + cache_trim_mode on -> fail
->> > priority 1 + cache_trim_mode off -> fail
->> >
->> > I'd like to retry even in this case. 
->> 
->> I don't think that we should retry in this case.  If the following case
->> fails,
->> 
->> > priority 1 + cache_trim_mode off -> fail
->> 
->> Why will we succeed after retrying?
->
-> At priority 1, anon pages will be partially scanned. However, there
-> might be anon pages that have never been scanned but can be reclaimed.
->
-> Do I get it wrong?
+I'm still not totally convinced about that. Why not putting the check right
+before checking the kref in __of_changeset_entry_destroy(). I'll contradict
+myself a bit because this is just theory but if we look at pci_stop_dev(), =
+which
+AFAIU, could be reached from a sysfs write(), we have:
 
-Yes.  In theory, that's possible.  But do you think that will be some
-practical issue?  So that, pgdat->kswapd_failures will reach max value?
+device_release_driver(&dev->dev);
+..
+of_pci_remove_node(dev);
+	of_changeset_revert(np->data);
+	of_changeset_destroy(np->data);
 
---
-Best Regards,
-Huang, Ying
+So looking at the above we would hit the same issue if we flush the queue i=
+n
+free_overlay_changeset() - as the queue won't be flushed at all and we coul=
+d
+have devlink removal due to device_release_driver(). Right?
 
-> 	Byungchul
->
->> --
->> Best Regards,
->> Huang, Ying
->> 
->> > Am I missing something?
->> >
->> > 	Byungchul
->> >
->> >> --
->> >> Best Regards,
->> >> Huang, Ying
->> >> 
->> >> > 	Byungchul
->> >> >
->> >> >> 	Byungchul
->> >> >> > 
->> >> >> > 	Byungchul
->> >> >> > 
->> >> >> > > for priority == 1 and failed to reclaim, we will restart.  If this
->> >> >> > > works, we can avoid to add another flag.
->> >> >> > > 
->> >> >> > > > +		sc.no_cache_trim_mode = 1;
->> >> >> > > > +		goto restart;
->> >> >> > > > +	}
->> >> >> > > > +
->> >> >> > > >  	if (!sc.nr_reclaimed)
->> >> >> > > >  		pgdat->kswapd_failures++;
->> >> >> > > 
->> >> >> > > --
->> >> >> > > Best Regards,
->> >> >> > > Huang, Ying
+Again, completely theoretical but seems like a reasonable one plus I'm not
+understanding the push against having the flush in
+__of_changeset_entry_destroy(). Conceptually, it looks the best place to me=
+ but
+I may be missing some issue in doing it there?
+
+> > >=20
+> >=20
+> > Indeed, having device_link_wait_removal() is not needed when applying t=
+he
+> > overlay fails.
+> >=20
+> > I can call device_link_wait_removal() from the caller of_overlay_remove=
+()
+> > but not before the lock is taken.
+> > We need to call it between __of_changeset_revert_notify() and
+> > free_overlay_changeset() and so, the lock is taken.
+> >=20
+> > This lead to the following sequence:
+> > --- 8< ---
+> > int of_overlay_remove(int *ovcs_id)
+> > {
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mutex_lock(&of_mutex);
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
+> >=20
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D __of_changeset_rever=
+t_notify(&ovcs->cset);
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
+> >=20
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret_tmp =3D overlay_notify(o=
+vcs, OF_OVERLAY_POST_REMOVE);
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
+> >=20
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mutex_unlock(&of_mutex);
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 device_link_wait_removal();
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mutex_lock(&of_mutex);
+> >=20
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 free_overlay_changeset(ovcs)=
+;
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mutex_unlock(&of_mutex);
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
+> > }
+> > --- 8< ---
+> >=20
+> > In this sequence, the question is:
+> > Do we need to release the mutex lock while device_link_wait_removal() i=
+s
+> > called ?
+>=20
+> In general I hate these kinds of sequences that release a lock and
+> then grab it again quickly. It's not always a bug, but my personal
+> take on that is 90% of these introduce a bug.
+>=20
+> Drop the unlock/lock and we'll deal a deadlock if we actually hit one.
+> I'm also fairly certain that device_link_wait_removal() can't trigger
+> something else that can cause an OF overlay change while we are in the
+> middle of one. And like Rob said, I'm not sure this unlock/lock is a
+> good solution for that anyway.
+
+Totally agree. Unless we really see a deadlock this is a very bad idea (IMH=
+O).
+Even on the PCI code, it seems to me that we're never destroying a changese=
+t
+from a device/kobj_type release callback. That would be super weird right?
+
+- Nuno S=C3=A1
+>=20
+
 
