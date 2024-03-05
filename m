@@ -1,186 +1,158 @@
-Return-Path: <linux-kernel+bounces-91999-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92002-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC44887198C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:26:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A28A871992
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:28:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A34782827F3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:26:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C76D1C21192
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:28:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87C2C52F8A;
-	Tue,  5 Mar 2024 09:26:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9449852F8A;
+	Tue,  5 Mar 2024 09:28:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ZWlVZcGN";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="jOQ63t/G";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ZWlVZcGN";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="jOQ63t/G"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b="qARyPTt4"
+Received: from omta34.uswest2.a.cloudfilter.net (omta34.uswest2.a.cloudfilter.net [35.89.44.33])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 389AC524BC
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 09:26:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ED6850272
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 09:28:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709630798; cv=none; b=tjnt0RTCovrlw8u3XMspU07GCuFYXQuyB8Gt2eRx7f61fEmaXIOFH8XvLvQsgXOYuY9JH472srPTs7gckcqEuSvmBsTuuH9GYkp1AehyqSbjVbfH7dFz6n2MMx0sFP4xVPJFzrKXamQ+gRHAsHJvsSk8W7eAb5We6p3mkrDIE10=
+	t=1709630885; cv=none; b=rRIvSmpRWEnMjwq4P/hV4CSEa7SoQyFOJiKgoPntyMpuydfST0DWzqieQZxU5oQqJL91DJs8+qc8qoEoBLskofoKahsq6xzuldIQpHwr9Jg/Fz4Dg0mH+oWU7aZRDxYi04cFNfsbIBPqXD5M7ld7pPy/KZFfcO6uLbWsFJThkGk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709630798; c=relaxed/simple;
-	bh=1GJ4pLEJiBySr2ubLiSDXv0LJGp0y8MnW0BrFhpcjXY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qOSxffOC+g2FlPyHih5CG4Njp9m3RmGtWTdvWSjCp+IL1wsEXCjCfwcvLhDaYGX3mCPkGFd/9OggMc8ztaz8MM89H22xfWbvG/ivvzlEBKw0yZiz/cRlD016OxpjiYoxQ16lGzUhthSG/tZljqcjG/MsOMOwyk0Bl4KwioIkwjA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ZWlVZcGN; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=jOQ63t/G; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ZWlVZcGN; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=jOQ63t/G; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 24BDA6A9DE;
-	Tue,  5 Mar 2024 09:26:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1709630795; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ykjUprM07ZrUOHmFkq+k2cT/hagJHglpYa3jkqSqAAE=;
-	b=ZWlVZcGNQw6+JjdmEp1eJLTz2bNCcCtRbE9tOeN8xnxRyMX8iqeePb8m+Szsp7h6g03V1t
-	oLlylabBYPbAS0ogh24jQu8RDLwBs5fQRqNETkhAIIXAt6o8mcHbwDi40EllF64Jth39FX
-	YBvIuBYYtjDyG9CES7FGjsO2wxcbnLY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1709630795;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ykjUprM07ZrUOHmFkq+k2cT/hagJHglpYa3jkqSqAAE=;
-	b=jOQ63t/Ge+ynva2BjFrpcgVtN6N4O5S23iUgkhiJhwtLUI38w0WT3tx4wggXqloVp0GvOv
-	LxFUYpgusmlv9xDA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1709630795; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ykjUprM07ZrUOHmFkq+k2cT/hagJHglpYa3jkqSqAAE=;
-	b=ZWlVZcGNQw6+JjdmEp1eJLTz2bNCcCtRbE9tOeN8xnxRyMX8iqeePb8m+Szsp7h6g03V1t
-	oLlylabBYPbAS0ogh24jQu8RDLwBs5fQRqNETkhAIIXAt6o8mcHbwDi40EllF64Jth39FX
-	YBvIuBYYtjDyG9CES7FGjsO2wxcbnLY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1709630795;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ykjUprM07ZrUOHmFkq+k2cT/hagJHglpYa3jkqSqAAE=;
-	b=jOQ63t/Ge+ynva2BjFrpcgVtN6N4O5S23iUgkhiJhwtLUI38w0WT3tx4wggXqloVp0GvOv
-	LxFUYpgusmlv9xDA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 6692D13466;
-	Tue,  5 Mar 2024 09:26:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id EwchFUrl5mVsZgAAn2gu4w
-	(envelope-from <osalvador@suse.de>); Tue, 05 Mar 2024 09:26:34 +0000
-Date: Tue, 5 Mar 2024 10:27:52 +0100
-From: Oscar Salvador <osalvador@suse.de>
-To: kernel test robot <oliver.sang@intel.com>
-Cc: oe-lkp@lists.linux.dev, lkp@intel.com,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Vlastimil Babka <vbabka@suse.cz>, Marco Elver <elver@google.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Alexander Potapenko <glider@google.com>,
-	Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org
-Subject: Re: [linux-next:master] [mm,page_owner]  4bedfb314b:
- BUG:KASAN:null-ptr-deref_in_init_page_owner
-Message-ID: <ZeblmHyVlxl_6HGC@localhost.localdomain>
-References: <202403051032.e2f865a-lkp@intel.com>
+	s=arc-20240116; t=1709630885; c=relaxed/simple;
+	bh=1kOTYFbWeoGCx7+g2m8ix/ZZJHqJzi8Ogi29BXPLWPA=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=jFOslOx/LDMyVySS9OpmKifk99iG+3DNPCTlTNrY+heX/Z3dMU/1IGMbBs8OoC7iQZuGFbmFuP+C97j6yEKE2t9f3xuJ8WI1628H+a+UtMWbjVZTmQfObueQAqTODDwp1GkwW8fszaXCgmcnd/h9OMc0P/oLBYpWBIbcoj5oIks=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net; spf=pass smtp.mailfrom=w6rz.net; dkim=pass (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b=qARyPTt4; arc=none smtp.client-ip=35.89.44.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=w6rz.net
+Received: from eig-obgw-6004a.ext.cloudfilter.net ([10.0.30.197])
+	by cmsmtp with ESMTPS
+	id hPQerdiQWHXmAhR5erCqca; Tue, 05 Mar 2024 09:28:02 +0000
+Received: from box5620.bluehost.com ([162.241.219.59])
+	by cmsmtp with ESMTPS
+	id hR5drgtiZ7GTYhR5drGMDz; Tue, 05 Mar 2024 09:28:02 +0000
+X-Authority-Analysis: v=2.4 cv=U6qUD/ru c=1 sm=1 tr=0 ts=65e6e5a2
+ a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
+ a=N659UExz7-8A:10 a=K6JAEmCyrfEA:10 a=-Ou01B_BuAIA:10 a=pFyQfRViAAAA:8
+ a=vYhB_8XAvPddomvlNgMA:9 a=3ZKOabzyN94A:10 a=pILNOxqGKmIA:10
+ a=Y6Wt1f1SdXxjDN_AVjWB:22 a=oJz5jJLG1JtSoe7EL652:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
+	s=default; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:
+	Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=oqRXspNib9mBkuYyhpRwm5r2tRAPVxE1pbc/m6GrAA8=; b=qARyPTt4g+VOyOUm6b1NJIFMDD
+	tFOXlPhhdI9NTTJjVunGKuQicc0dMtinlb0P3UxN8e0msGhtnmB8Dr4TITBv/MWhJaVYq32DJYXNj
+	vKrKodewHMdo0MgtnLd5Izt3bsHsV7GWB9YzbHs4YTrjm61gm+6Oc2yGb2XFssAdIIslelLZTHgvb
+	7biT17xlvE46Q9LoA+nOQrwDo+41Wbu4xGKSK3WOprQphDcPO1piQvVNLMG5DF6S/uJfOCGbQNNDS
+	j14xXUrDej4IwNfHiBW/kxs2Smh9BM8obk+uibM9Kyb3aKX8Hm/UT5GBTjfo2u58F4stW5dRU6pOf
+	OCWs/nYw==;
+Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:49192 helo=[10.0.1.47])
+	by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <re@w6rz.net>)
+	id 1rhR5b-0040YA-1Z;
+	Tue, 05 Mar 2024 02:27:59 -0700
+Subject: Re: [PATCH 6.7 000/163] 6.7.9-rc2 review
+To: Conor Dooley <conor.dooley@microchip.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev,
+ linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+ akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+ patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+ jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+ srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
+References: <20240305074649.580820283@linuxfoundation.org>
+ <20240305-arson-panhandle-afa453ccb0aa@wendy>
+From: Ron Economos <re@w6rz.net>
+Message-ID: <1a9a5456-ea3f-8a30-d8db-f49269966e71@w6rz.net>
+Date: Tue, 5 Mar 2024 01:27:57 -0800
+User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202403051032.e2f865a-lkp@intel.com>
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=ZWlVZcGN;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="jOQ63t/G"
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-1.63 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[11];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-0.984];
-	 FREEMAIL_CC(0.00)[lists.linux.dev,intel.com,kvack.org,linux-foundation.org,suse.cz,google.com,gmail.com,suse.com,vger.kernel.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.12)[67.19%]
-X-Spam-Score: -1.63
-X-Rspamd-Queue-Id: 24BDA6A9DE
-X-Spam-Flag: NO
+In-Reply-To: <20240305-arson-panhandle-afa453ccb0aa@wendy>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box5620.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - w6rz.net
+X-BWhitelist: no
+X-Source-IP: 98.207.139.8
+X-Source-L: No
+X-Exim-ID: 1rhR5b-0040YA-1Z
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:49192
+X-Source-Auth: re@w6rz.net
+X-Email-Count: 5
+X-Org: HG=bhshared;ORG=bluehost;
+X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfMk4trh9X1fs3alJL4Dwwc3BtfEhpnzHgdW3KOjEIBN5QzOIgkF4og/lUwhQsu1HAoLJNrXa4lQtxEHl9pluCyswZJ2Ix/T5KwFkQXqpfYGxNy5q9PDw
+ Eakwt2ceJ5466nTU1/NTxACPHeGUsdQUrFCm5+WGeRHCMt4nxfBQllcrxilCXpsjWU5ilNQZ/D8R1QAvdg6rL3ukQ7Hx4/+17Rg=
 
-On Tue, Mar 05, 2024 at 02:08:23PM +0800, kernel test robot wrote:
-> 
-> [    6.582562][    T0] Node 0, zone    DMA32: page owner found early allocated 0 pages
-> [    6.612136][    T0] Node 0, zone   Normal: page owner found early allocated 73871 pages
-> [    6.612762][    T0] ==================================================================
-> [ 6.613351][ T0] BUG: KASAN: null-ptr-deref in init_page_owner (arch/x86/include/asm/atomic.h:28) 
-> [    6.613893][    T0] Write of size 4 at addr 000000000000001c by task swapper/0
-> [    6.614434][    T0]
-> [    6.614600][    T0] CPU: 0 PID: 0 Comm: swapper Tainted: G                T  6.8.0-rc5-00256-g4bedfb314bdd #1 29e70169ace75ef72d53825e983f3dcb1d5756d9
-> [    6.615605][    T0] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-> [    6.616367][    T0] Call Trace:
-> [    6.616604][    T0]  <TASK>
-> [ 6.616816][ T0] ? dump_stack_lvl (lib/dump_stack.c:?) 
-> [ 6.617161][ T0] ? print_report (mm/kasan/report.c:?) 
-> [ 6.617499][ T0] ? init_page_owner (arch/x86/include/asm/atomic.h:28) 
+On 3/5/24 12:31 AM, Conor Dooley wrote:
+> On Tue, Mar 05, 2024 at 07:58:57AM +0000, Greg Kroah-Hartman wrote:
+>> This is the start of the stable review cycle for the 6.7.9 release.
+>> There are 163 patches in this series, all will be posted as a response
+>> to this one.  If anyone has any issues with these being applied, please
+>> let me know.
+>>
+>> Responses should be made by Thu, 07 Mar 2024 07:46:26 +0000.
+>> Anything received after that time might be too late.
+>> Samuel Holland <samuel.holland@sifive.com>
+>>      riscv: Save/restore envcfg CSR during CPU suspend
+>>
+>> Samuel Holland <samuel.holland@sifive.com>
+>>      riscv: Add a custom ISA extension for the [ms]envcfg CSR
+> I left a comment in response to the off-list email about this patch,
+> I don't think it's gonna work as the number this custom extension has
+> been given exceeds the max in 6.7/
+>
+> Cheers,
+> Conor.
+>
+>> Samuel Holland <samuel.holland@sifive.com>
+>>      riscv: Fix enabling cbo.zero when running in M-mode
 
-So, we are crashing here:
+Yeah, it doesn't work. Here's the new error:
 
-        /* Initialize dummy and failure stacks and link them to stack_list */
-        dummy_stack.stack_record = __stack_depot_get_stack_record(dummy_handle);
-        failure_stack.stack_record = __stack_depot_get_stack_record(failure_handle);
-        refcount_set(&dummy_stack.stack_record->count, 1);
-        refcount_set(&failure_stack.stack_record->count, 1);
+arch/riscv/kernel/cpufeature.c:180:9: error: implicit declaration of 
+function '__RISCV_ISA_EXT_SUPERSET'; did you mean 
+'RISCV_ISA_EXT_SVPBMT'? [-Werror=implicit-function-declaration]
+   180 |         __RISCV_ISA_EXT_SUPERSET(zicbom, RISCV_ISA_EXT_ZICBOM, 
+riscv_xlinuxenvcfg_exts),
+       |         ^~~~~~~~~~~~~~~~~~~~~~~~
+       |         RISCV_ISA_EXT_SVPBMT
+arch/riscv/kernel/cpufeature.c:180:34: error: 'zicbom' undeclared here 
+(not in a function)
+   180 |         __RISCV_ISA_EXT_SUPERSET(zicbom, RISCV_ISA_EXT_ZICBOM, 
+riscv_xlinuxenvcfg_exts),
+       |                                  ^~~~~~
+arch/riscv/kernel/cpufeature.c:181:34: error: 'zicboz' undeclared here 
+(not in a function)
+   181 |         __RISCV_ISA_EXT_SUPERSET(zicboz, RISCV_ISA_EXT_ZICBOZ, 
+riscv_xlinuxenvcfg_exts),
+       |                                  ^~~~~~
+cc1: some warnings being treated as errors
+make[4]: *** [scripts/Makefile.build:243: 
+arch/riscv/kernel/cpufeature.o] Error 1
+make[3]: *** [scripts/Makefile.build:480: arch/riscv/kernel] Error 2
+make[2]: *** [scripts/Makefile.build:480: arch/riscv] Error 2
 
-when trying to set the refcount. Allegedly, because dummy_handle is 0.
-I thought we fixed that with 
-
-commit 3ee34eabac2abb6b1b6fcdebffe18870719ad000
-Author: Oscar Salvador <osalvador@suse.de>
-Date:   Thu Feb 15 22:59:01 2024 +0100
-
-    lib/stackdepot: fix first entry having a 0-handle
-
-
-But I guess this is different.
-The obvious way out is to only set the refcount and link the stacks
-if their handles are not 0.
-
-Marco, could it be that stackdepot was too overloaded, that by the time
-page_owner gets initialized, there are no more space for its stacks, and
-hence return 0-handles?.
-
-
--- 
-Oscar Salvador
-SUSE Labs
 
