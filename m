@@ -1,147 +1,127 @@
-Return-Path: <linux-kernel+bounces-91444-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91445-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D234D871190
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 01:19:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 768DF871195
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 01:20:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 390F2B23CF1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 00:19:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2CF111F21D41
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 00:20:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85F5D1C11;
-	Tue,  5 Mar 2024 00:19:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="Y1ttMkUX"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ECFF20EB;
+	Tue,  5 Mar 2024 00:20:09 +0000 (UTC)
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36CDA647;
-	Tue,  5 Mar 2024 00:19:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4CB338F;
+	Tue,  5 Mar 2024 00:20:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709597961; cv=none; b=YPwZmSLbtOdMr27HnPBtywii9S+pWJcPyZ7Aii/AXUM4wfGj/yqdMVpGuNnbPTzbgOEhOo+dtO4ErhWOGxcgyVVvU15ZEUVFGTLRbCWgTXKJRAxEHubPTxXAX4vnoeqmbK3CQHe7XFrUv6HDmBza7txmVZ/kVXYP8jsayWeQrYs=
+	t=1709598009; cv=none; b=dmtf132D2qTG54L2rbJ1MWcKAcfIFN+rRH9jRcfMefnAQ1QbGA9UrmpFpVKxhYfMgHXPocxsF3GFwHFLsRrw/ncQCDHfRbRz/94raECYTQDAXpslzQb9ZozgRwdPSS9Q56Jb1rxGj1g02k79o0NLZVE5dDwcR/FVLb2p68mn42s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709597961; c=relaxed/simple;
-	bh=vWe/Iah/qneo1EiM9nKXq+OXjLo2iX4yMleyyY+4Lhk=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=h0yGjwHTYs4t2gox6s1L0TF+50juDTVVBTy9qwfD9Vx8/vbLJPnbxpYsJs6UcVE5QPST6aoXA0VmiWIdGFnNzCuqT9eZId9MNhTzBTtGq8D/lbEo/qzWoUsn7A4I84UptvK2NxMGE349hjbUdEkYE98qMcAfS8KjuC2qOYTBfeI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=Y1ttMkUX; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1709597956;
-	bh=wTnRdSHTrw7SLJclAIWYZgsb2Tzbj1bZxuYcSQ1MOuw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Y1ttMkUXqXydxSJrgpQqaRpYzmwWAmxzInPP9Ecb6+4H8R+VjDElSvhDGIO3L+P3t
-	 AydmMnfkSdEP/1PHwmq+C/f9nu5PDivNPXLrzLNzxxtbDcBY3vZLB8DAb749fS9gA+
-	 iKiYOAXgWOCKDDFQdS9tGDc+ilHMYGdU8YCeaqdZv1Td2KiUW9QCyjc0/hueop5t2F
-	 kARtajSK4fcZInFD3cidSkOYMIjWbrz22bzzasnf3ESOOapMaNggPIoWLHjvx6Accj
-	 00Rg6GIWKD6bBixDQ5BMJDzYa4btyFmD13thMHypfcRr7Y+PJ5is6qXHszbx4hHN87
-	 ivONrZJ6glr9g==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tpbll5srTz4wc9;
-	Tue,  5 Mar 2024 11:19:15 +1100 (AEDT)
-Date: Tue, 5 Mar 2024 11:19:15 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Eric Dumazet <edumazet@google.com>
-Cc: David Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Networking <netdev@vger.kernel.org>, Jiri
- Pirko <jiri@nvidia.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the net-next tree
-Message-ID: <20240305111915.742aaf1f@canb.auug.org.au>
-In-Reply-To: <CANn89iKsbT_qAdAiP6R6HRxic1YE3J6afMhWzF27Pbn2ifeCyg@mail.gmail.com>
-References: <20240301121108.5d39e4f9@canb.auug.org.au>
-	<CANn89iKpsHTQ9Zqz4cbCGOuj8sp5CCYGHe3Wvk2cyQL4HPADkw@mail.gmail.com>
-	<CANn89iKsbT_qAdAiP6R6HRxic1YE3J6afMhWzF27Pbn2ifeCyg@mail.gmail.com>
+	s=arc-20240116; t=1709598009; c=relaxed/simple;
+	bh=n2iJRsp0wDisq9D8A56Nk0XQND53SVEzey0fC0b0eoA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TfyIH01cLm9EnldVxllm24xxqtzdl/FJV0C1WdP71Lgyj9wdSCustdc1UYZZIMs1xfGFT4Hlm5udhfx9K64mRqrPB23BtQa0Y2wTtpD/imqUKhLbwjajjOVPh80Ht3r4tiinLH86FUYt5Srw1lpBhP6cQIMNE/eyF2lBtfGhlVU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d944e8f367so34723125ad.0;
+        Mon, 04 Mar 2024 16:20:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709598007; x=1710202807;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cThLIQ7kVxrLe0hSQIUMvSBEyZArR8R8aoZjQ4ZGD9Y=;
+        b=was2wiNeEz3ikHkDbBksGf5yMmRdYmVqVM4mu7xJlO4oPr6IefrML0XBo3xdlJ8hD/
+         lFTMEU3VQV+fKnr+MDM3Ne4aWsf7O1s6TfH8A4jKZzHr/ZDSDKH2zpr9emaFNqkNUxe2
+         fTFIBa6SuCPQ8ZDxBtds1LuOACLJZeeqMxNKL8d9KkY1AwYkgNkVxDB1H1MO5snhknb7
+         zGwoUtCcvXFt3G0WGoPRZ6P25fnNZ4TGp4GG4SEUtGJZxi58fAryhDEf5QctkvFuklxY
+         LYRJCp9TdjfvV1t71viqA96ZSc9NuJpKxbPnd/S3VSY4P1OAwUy8n13H9OdiucA2l3Dx
+         Y03Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWo5yZ2rqTsNvmWjDrXOE3bp+6qWFBFUTDTKCLUG6dJlKUyKPPodDg6g1fcFEfFnpMM106QVBNdsDFPnBTdB5EVLf3xhNZszHhjCXhQHaeyqRyGRpjCBGLb6izavl/+fj4i7clEkrYqhulxSvJVSsr3+W9shsUYR0N4SoJBZGZBAzpluy9JT06UJ9n2ucHlCQKMRXhJjBRajvSGMyNl
+X-Gm-Message-State: AOJu0YxWKbf4rfs9qmSbZJ8rwm7NLQwvIB/HkbPYbpK4ApFE1eLM3c5+
+	I0raVJn8zAHcuJTOlSObgFuoY7k5P2/tacZqqlfsly/2sVb0/MzVKslNXvLk
+X-Google-Smtp-Source: AGHT+IGBK4qsXJ6u6xsgg6YtuRQ4ARl1MW9KjGEbxUYd3grb5H4MLJb1AFN9dYWTVfSXWKh/RmLRuw==
+X-Received: by 2002:a17:902:d50b:b0:1dc:d773:ac with SMTP id b11-20020a170902d50b00b001dcd77300acmr381569plg.7.1709598006843;
+        Mon, 04 Mar 2024 16:20:06 -0800 (PST)
+Received: from ?IPV6:2620:0:1000:8411:9ba8:35e8:4ec5:44d1? ([2620:0:1000:8411:9ba8:35e8:4ec5:44d1])
+        by smtp.gmail.com with ESMTPSA id b6-20020a170902d50600b001dd0d07b3d8sm3298602plg.201.2024.03.04.16.20.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Mar 2024 16:20:06 -0800 (PST)
+Message-ID: <86f0af00-8765-4481-9245-1819fb2c6379@acm.org>
+Date: Mon, 4 Mar 2024 16:20:03 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_//0OK9MpWFRWZb=MOrx_m8GI";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 0/2] Introduce per-task io utilization boost
+Content-Language: en-US
+To: Christian Loehle <christian.loehle@arm.com>, linux-kernel@vger.kernel.org
+Cc: peterz@infradead.org, juri.lelli@redhat.com, mingo@redhat.com,
+ rafael@kernel.org, dietmar.eggemann@arm.com, vschneid@redhat.com,
+ vincent.guittot@linaro.org, Johannes.Thumshirn@wdc.com,
+ adrian.hunter@intel.com, ulf.hansson@linaro.org, andres@anarazel.de,
+ asml.silence@gmail.com, linux-pm@vger.kernel.org,
+ linux-block@vger.kernel.org, io-uring@vger.kernel.org,
+ Qais Yousef <qyousef@layalina.io>
+References: <20240304201625.100619-1-christian.loehle@arm.com>
+From: Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20240304201625.100619-1-christian.loehle@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
---Sig_//0OK9MpWFRWZb=MOrx_m8GI
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 3/4/24 12:16, Christian Loehle wrote:
+> Pixel 6 ufs Android 14 (7 runs for because device showed some variance)
+> [6605, 6622, 6633, 6652, 6690, 6697, 6754] sugov mainline
+> [7141, 7173, 7198, 7220, 7280, 7427, 7452] per-task tracking
+> [2390, 2392, 2406, 2437, 2464, 2487, 2813] sugov no iowait boost
+> [7812, 7837, 7837, 7851, 7900, 7959, 7980] performance governor
 
-Hi Eric,
+Variance of performance results for Pixel devices can be reduced greatly
+by disabling devfreq scaling, e.g. as follows (this may cause thermal
+issues if the system load is high enough):
 
-On Fri, 1 Mar 2024 10:54:19 +0100 Eric Dumazet <edumazet@google.com> wrote:
->
-> OK, I think the issue is caused by a hole at the start of
-> tcp_sock_write_rx group
->=20
-> I will send this patch for review, thanks !
->=20
-> diff --git a/include/linux/tcp.h b/include/linux/tcp.h
-> index 988a30ef6bfe956fa573f1f18c8284aa382dc1cc..55399ee2a57e736b55ed067fc=
-06ea620bbe62fd3
-> 100644
-> --- a/include/linux/tcp.h
-> +++ b/include/linux/tcp.h
-> @@ -304,7 +304,7 @@ struct tcp_sock {
->         __cacheline_group_end(tcp_sock_write_txrx);
->=20
->         /* RX read-write hotpath cache lines */
-> -       __cacheline_group_begin(tcp_sock_write_rx);
-> +       __cacheline_group_begin(tcp_sock_write_rx) __aligned(8);
->         u64     bytes_received;
->                                 /* RFC4898 tcpEStatsAppHCThruOctetsReceiv=
-ed
->                                  * sum(delta(rcv_nxt)), or how many bytes
-> diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-> index c82dc42f57c65df112f79080ff407cd98d11ce68..7e1b848398d04f2da2a91c3af=
-97b1e2e3895b8ee
-> 100644
-> --- a/net/ipv4/tcp.c
-> +++ b/net/ipv4/tcp.c
-> @@ -4651,7 +4651,7 @@ static void __init tcp_struct_check(void)
->         CACHELINE_ASSERT_GROUP_MEMBER(struct tcp_sock,
-> tcp_sock_write_tx, tsorted_sent_queue);
->         CACHELINE_ASSERT_GROUP_MEMBER(struct tcp_sock,
-> tcp_sock_write_tx, highest_sack);
->         CACHELINE_ASSERT_GROUP_MEMBER(struct tcp_sock,
-> tcp_sock_write_tx, ecn_flags);
-> -       CACHELINE_ASSERT_GROUP_SIZE(struct tcp_sock, tcp_sock_write_tx, 1=
-13);
-> +       CACHELINE_ASSERT_GROUP_SIZE(struct tcp_sock, tcp_sock_write_tx, 1=
-05);
->=20
->         /* TXRX read-write hotpath cache lines */
->         CACHELINE_ASSERT_GROUP_MEMBER(struct tcp_sock,
-> tcp_sock_write_txrx, pred_flags);
+      for d in $(adb shell echo /sys/class/devfreq/*); do
+	adb shell "cat $d/available_frequencies |
+		tr ' ' '\n' |
+		sort -n |
+		case $devfreq in
+			min) head -n1;;
+			max) tail -n1;;
+		esac > $d/min_freq"
+     done
 
-I will apply this patch to them merge of the net-next tree until it is
-applied there.
+> Showcasing some different IO scenarios, again all random read,
+> median out of 5 runs, all on rk3399 with NVMe.
+> e.g. io_uring6x4 means 6 threads with 4 iodepth each, results can be
+> obtained using:
+> fio --minimal --time_based --name=test --filename=/dev/nvme0n1 --runtime=30 --rw=randread --bs=4k --ioengine=io_uring --iodepth=4 --numjobs=6 --group_reporting | cut -d \; -f 8
 
---=20
-Cheers,
-Stephen Rothwell
+So buffered I/O was used during this test? Shouldn't direct I/O be used
+for this kind of tests (--buffered=0)? Additionally, which I/O scheduler
+was configured? I recommend --ioscheduler=none for this kind of tests.
 
---Sig_//0OK9MpWFRWZb=MOrx_m8GI
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+> - Higher cap is not always beneficial, we might place the task away
+> from the CPU where the interrupt handler is running, making it run
+> on an unboosted CPU which may have a bigger impact than the difference
+> between the CPU's capacity the task moved to. (Of course the boost will
+> then be reverted again, but a ping-pong every interval is possible).
 
------BEGIN PGP SIGNATURE-----
+In the above I see "the interrupt handler". Does this mean that the NVMe
+controller in the test setup only supports one completion interrupt for
+all completion queues instead of one completion interrupt per completion
+queue? There are already Android phones and developer boards available
+that support the latter, namely the boards equipped with a UFSHCI 4.0 
+controller.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXmZQMACgkQAVBC80lX
-0GwgVQf/UzJ5KS73jOaujls1vJ3m+uZjTGSV2CR9GXdSXMqzsrTvMsg9k5FaD7Qm
-2jEMT+LWqdsI3+9L3aeYpOADQl7rRIgFpecd1dRZVr57Wnq/8Ij+bKrgn7NNhLif
-O8U0S6ii8NafSDOXtIB0l/O6PgaEW+YtnlOYaCFKwzsAbxaYfAa/Ke54HwhgGGRO
-Bzm7CKxjcnYQ9xnyz88Ig2IKAipiuEUiPRgy3pVAyv914RXIwmwUSlDpxKR79e2p
-6XfQ2QsqZ4A113Oe5nTbrTU8VeAokO8epLwZEeE3w5rAE6f0EMDYgji3UQMzEGIo
-1axhga8xHAVTf8KqZTJUiRNAbdD0oA==
-=tMoX
------END PGP SIGNATURE-----
+Thanks,
 
---Sig_//0OK9MpWFRWZb=MOrx_m8GI--
+Bart.
 
