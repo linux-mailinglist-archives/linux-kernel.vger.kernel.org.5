@@ -1,97 +1,108 @@
-Return-Path: <linux-kernel+bounces-92757-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92758-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8B2D872593
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:24:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5E2B872597
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:25:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 771641F26384
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:24:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B5A3282A86
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:24:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19A5B14F98;
-	Tue,  5 Mar 2024 17:24:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C8001640B;
+	Tue,  5 Mar 2024 17:24:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QrNdYMDP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YwuXR1oO"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 596CB944F;
-	Tue,  5 Mar 2024 17:24:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C06C014A9D;
+	Tue,  5 Mar 2024 17:24:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709659459; cv=none; b=qrA8qMkyX558VbRh60H2uVwaAkkpESuwPGrDncUMHw9ar0ma1WI3WACOfCFRTcJlIcDy7+il9MzFrwOyiBZIGZmqA5r1QGXa7jl/iqxT4rJUjUBwm3lv3ACptjUTGhjloQpcFzYvJbmzCR9qWu2Hnv9w2FedHErTeNjeJQRJHmk=
+	t=1709659491; cv=none; b=V3Mzt9lrF8zRpw1A18MKLskAreoObH+Mduz87Hcii64mCuP2MdD13UM+mKZHDALzY3L8U3Z0uqAT1FCTKSGFrQoQQOf5Qu38hJT+ii6aQPuCAyMKNlOfHPqgkmG61pKU039ASoQqfBqjWM4SSrYLFBz2OjuOCh2FHK8K9ERqbHc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709659459; c=relaxed/simple;
-	bh=ulWrTp+lCV+gMNzuEsMt7+NdH9m0bIisaeuCfQ/H8QE=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=flSugAaGgIw4eTyqox2Vbdeh/ORZ+IUHUGZSoTfWEo5CgEMVKw+KNQF59XwsK9XgfWKPYa2p/PeK1D1GVmR//KPsNN46HeWMa0MIV/s78jb3erV8BfnBaSJnK4fOeROPhNfYD/XqVFGAMPO9J44Y14NpCbfivDgz49WXlPJ3yKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QrNdYMDP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE591C433F1;
-	Tue,  5 Mar 2024 17:24:17 +0000 (UTC)
+	s=arc-20240116; t=1709659491; c=relaxed/simple;
+	bh=QsenZAH1ku6PvZX7ejloa6VeWLc+wSXNgpDQ7jBBw5U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=c1TI3YXx0xnjI9ZVhCmWPOnwbIWhkUZPArPY3BtjRNUnKhHI3OR9ncp+hiDubCgw41R13vMre7J0Hq/Ah9AbTrrdSLXwZwhuxKQKpVFaATHzwWSW5GLDkbPwdJu9JOZxdAvq8xC/BYvZc+8OvgpWBYzbWDxhu/ZsWv43GpTO7CQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YwuXR1oO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11305C433F1;
+	Tue,  5 Mar 2024 17:24:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709659458;
-	bh=ulWrTp+lCV+gMNzuEsMt7+NdH9m0bIisaeuCfQ/H8QE=;
-	h=Date:From:To:Cc:Subject:From;
-	b=QrNdYMDPC/2tFJec41XasQKtNc041wNjuL5OO8PQ1hxCSb/ldGPYzjb0+xAueLtB5
-	 QyGGFFB3eXPzuD8MP59Xwfh4Q5HbPZ8mqASpYcTd/uywW43rD4H0J6Y2l6jP+aH9Uz
-	 03CnagADHeI4OrUvpjlxgEASx3VuVKCwrrhQOEKaV79BM2FUL/npnEXTRwFEVStAk+
-	 KZDzeX71Cfeehmxe/IkcDIVpGK5wnQChaFYQc8HqYHKfZqCElrcT+MmF5Kd+FYfu1c
-	 Q3jROYzeJxzSaf9T4pG53d9VHi2Cy9BP1G15pbrsOa9L7MgDEd0WXxq/+tRS7S1poW
-	 iu/QSAT4pDzlA==
-Date: Tue, 5 Mar 2024 11:24:15 -0600
-From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-	Clemens Ladisch <clemens@ladisch.de>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	linux-hardening@vger.kernel.org, alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org, linux1394-devel@lists.sourceforge.net
-Subject: [PATCH 0/2][next] firewire: Avoid -Wflex-array-member-not-at-end
- warnings
-Message-ID: <cover.1709658886.git.gustavoars@kernel.org>
+	s=k20201202; t=1709659491;
+	bh=QsenZAH1ku6PvZX7ejloa6VeWLc+wSXNgpDQ7jBBw5U=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YwuXR1oOn3cAnb66aX7pDqhqWQLptn4H9mnfjQtk/eTS9nk8mhADs3PIdTBJtx1v+
+	 eXYLcsE8SLBPnVvzQPmrR0WRuPjOwBtyluyHD/lk6499LHFcOSRPLxAIJg5uJ+z4pp
+	 q6tCLX6KoE6uIeS7G8tTGq0y/9S5pb6Y5+pSis931MFL0rAYzY3fsYxUrcLAmeCvSd
+	 hF5K+Xaz2Z2kDqD4eIAl0woUZKrIQki6a5BJSF44bN0Bl3IIPIhWGSG8V6tPyGKSc5
+	 l9Ir+vsBnXa/O+oRyIz1BpUXjV+XwEp7486g39dzlv+pC1fmgXkyKW9o6fI6yuO7Zi
+	 KJWXqw++Ejd+A==
+Date: Tue, 5 Mar 2024 17:24:46 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Yangyu Chen <cyy@cyyself.name>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>, krzysztof.kozlowski+dt@linaro.org,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, guoren@kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 6/7] riscv: dts: add initial canmv-k230 and k230-evb
+ dts
+Message-ID: <20240305-ripcord-engraving-af3310d62a67@spud>
+References: <mhng-f1aa91d4-211f-4eb4-a94d-a9d88b0d3f6a@palmer-ri-x1c9>
+ <7A86D933-B85F-4B29-8D6D-AB414A42AC06@cyyself.name>
+ <tencent_B2C1146D4947315C8018AE90EDC64F3E6207@qq.com>
+ <20240305-shorten-disallow-eae65fdc8fdb@spud>
+ <tencent_3638D6E106C784859837E6F3C10BDA688F0A@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="vhZQxYF104MnbLU5"
+Content-Disposition: inline
+In-Reply-To: <tencent_3638D6E106C784859837E6F3C10BDA688F0A@qq.com>
+
+
+--vhZQxYF104MnbLU5
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--Wflex-array-member-not-at-end is coming in GCC-14, and we are getting
-ready to enable it globally. So, we are deprecating flexible-array
-members in the middle of another struct.
+On Wed, Mar 06, 2024 at 01:17:29AM +0800, Yangyu Chen wrote:
+> > On Mar 6, 2024, at 01:01, Conor Dooley <conor@kernel.org> wrote:
+> > On Wed, Mar 06, 2024 at 12:37:16AM +0800, Yangyu Chen wrote:
 
-There are currently a couple of local structures (`u` and `template`)
-that are using a flexible `struct fw_iso_packet` as header for a couple
-of on-stack arrays.
+> >>> Link: https://github.com/cyyself/opensbi/commit/b113c1c01d700314a4a69=
+6297ec09031a9399354
+> >>>=20
+> >>> Furthermore, I wonder whether a CPU node like this would be acceptabl=
+e.
+> >>> I don't have any other details of how another CPU from K230 SoC works=
+ on
+> >>> Linux.
+> >=20
+> > A CPU node like what? It is not clear to me.
+>=20
+> It in the k230.dtsi file. Only has big core there.
 
-We make use of the `struct_group_tagged()` helper to separate the
-flexible array from the rest of the members in the flexible structure,
-and, with this, we can now declare objects of the type of the tagged
-struct, without embedding the flexible array in the middle of another
-struct.
+The node that is currently there looks fine to me.
 
-We also use `container_of()` whenever we need to retrieve a pointer to
-the flexible structure, through which the flexible-array member can be
-accessed.
+--vhZQxYF104MnbLU5
+Content-Type: application/pgp-signature; name="signature.asc"
 
-With these changes, we fix a couple of -Wflex-array-member-not-at-end
-warnings.
+-----BEGIN PGP SIGNATURE-----
 
-Gustavo A. R. Silva (2):
-  firewire: Avoid -Wflex-array-member-not-at-end warning
-  ALSA: firewire-lib: Avoid -Wflex-array-member-not-at-end warning
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZedVXgAKCRB4tDGHoIJi
+0saeAP4pPuYdIfPpajZxYSLmdBJkzM9jXmO55zWBkmcKkm1OrwEAjXqI9zESV97A
+Cl7lBRtyzckFGrJKMW1RI+mIFSqnGgg=
+=bd1D
+-----END PGP SIGNATURE-----
 
- drivers/firewire/core-cdev.c  |  9 +++++----
- include/linux/firewire.h      | 16 +++++++++-------
- sound/firewire/amdtp-stream.c |  8 +++++---
- 3 files changed, 19 insertions(+), 14 deletions(-)
-
--- 
-2.34.1
-
+--vhZQxYF104MnbLU5--
 
