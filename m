@@ -1,105 +1,109 @@
-Return-Path: <linux-kernel+bounces-92789-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92788-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00060872602
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:52:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20DF2872601
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:51:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFE2428A838
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:52:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D028328AEF6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:51:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B1CD175AD;
-	Tue,  5 Mar 2024 17:51:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA2BF18C38;
+	Tue,  5 Mar 2024 17:51:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="O19GfPtP"
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MKB5D2GP"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F88B175A6
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 17:51:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 182531863C;
+	Tue,  5 Mar 2024 17:51:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709661083; cv=none; b=HDV3UHXet6reuI73Udi8Y4Df4wtxCX/dcrqgoYiPYxF3521Dp0dXZgUCd4GAmo5ay71PCxTJd9rgMTIqjbkqt/6bJf0vVt3kZFwGVb/mg8ToB6ntE78+IvFqIQvtnTVKPK9w+lARp9AgMktOg9ddrI4kaIH6b1xGUs2Kfm+MLkI=
+	t=1709661069; cv=none; b=pSOFjdk5RMg6onzAOQGTqM/jGgEWs9Br1ENIh/olQXG1Epas792oqsuT/tB1DoOLKxgHcChH7WeNMWYogPUpn15OjoAZrGXQVxMFCtjN5y2oQ7fAD8At0Gbbw6Z0qMF7Z8v41lWHS5d/kcvNKWOtKZilh/wX4WN2oit0CIwVlZk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709661083; c=relaxed/simple;
-	bh=3qs0HAQZhk6vRqfVWwucVgVMDW9ITOlHkZVL0DNK5xM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MEforeihgDfB9660DzrQ845KhLor6oUH/YiSIpxrqxiUaBtgCJLjru/tVMQaPFtvm7PKxgmnvQ4HNaUGpqEYfTqQmpJV2nzwve6b2F9G5KmU1MgVdZ3os2bXlVgsK0PIB/PyEX5lGduB5TCS455qXpCeBx2wV+jbqIk+gJ+qdOk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=O19GfPtP; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=OryvIzzC78fLNiJM5tDS7CTV+mpBOEM5K+ePV0wOwPk=; b=O19GfPtPID2BGaSmWQCLguZxAP
-	D/yNCoLEHrezKsM6KVaOVznHugp7dZmQ//e7ggcsbplUqqJhCH9pwRbPA2g5ah3vBLXkEvj8cnrLT
-	GZIflT5D80XVUnT5yHDwOEFM61Sh7cBIDL2lgOU6UnE3cMTLesLzlB7g0lBN28hTq9S8psqLDCqDu
-	JbIGr4gg1lLFLK/3ZwSNYVHoyy1kJ9Pw0ArrN5VcBG2qxXVKYEE7EofhVyW+SFfa43ofdKOiKkgpQ
-	CGLoWX/ZYhjCMuCm67HuyOEY02WxXXv/xCetL/4B7xOdQEIpsBlYsZlfUzD/E80ly2gmCb+xnPYxJ
-	zgphCLag==;
-Received: from [187.90.173.251] (helo=[192.168.1.60])
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-	id 1rhYwM-006KfD-MC; Tue, 05 Mar 2024 18:50:58 +0100
-Message-ID: <3d0c4180-aa6d-4519-d6d8-8f16b98587dc@igalia.com>
-Date: Tue, 5 Mar 2024 14:50:51 -0300
+	s=arc-20240116; t=1709661069; c=relaxed/simple;
+	bh=i3sj+3QUUkb8LDWhJ8xja55O9dd546/LpAv+OJKYYSI=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=WL+q247difErRyccds4PyRrssjZRZrgEcQyxf0gFNNwO0QzqQMN83N9Grk7KJGcza9u7JulARlwrpnXAGln8ZeNgHAjzZqZd62apR78rjC9F92sG+mYSylG/mb0UtY/3uAYzyI2aCLOUN2SMaYT3+ZFeZwleUGVNKEsL6QFQMQY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MKB5D2GP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 990D9C433C7;
+	Tue,  5 Mar 2024 17:51:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709661068;
+	bh=i3sj+3QUUkb8LDWhJ8xja55O9dd546/LpAv+OJKYYSI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=MKB5D2GP1NSseE/csFxyOIwBe3jzJ47A+UDe6QrBkf888ziwxeza6b6QLb2Kqy9tj
+	 /j+aZZ7hGNpAqxY8GDiZIdwN3lKskqN+D+1JitxxV3IppynlbynfMEvaqs+R76Iv67
+	 C1ddcoDWTndj5sZjVSY0NioMyxkalw/qglh2pImcLcat6gA4cP2iv2ptxyNVCGVmjH
+	 L7mZWN+9z6o3bFER3brBCo4N6hwcbCMymFU3Gn5QQmdbLEyCl38bl5U6X0UyLj6qpO
+	 vOm8vGA+fb18aUNhbyTLUMwXM9B9qxJn4iaXZLJ9dKE8vJnuOnbYv0jvMQhyEYjtgm
+	 hyD3YbP3rn55Q==
+Date: Tue, 5 Mar 2024 11:51:07 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Lukas Wunner <lukas@wunner.de>, Bjorn Helgaas <bhelgaas@google.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof Wilczy??ski <kw@linux.com>, Rob Herring <robh@kernel.org>,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	quic_krichai@quicinc.com, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v3] PCI: Add D3 support for PCI bridges in DT based
+ platforms
+Message-ID: <20240305175107.GA539676@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [RFC] How to test panic handlers, without crashing the kernel
-Content-Language: en-US
-To: Jocelyn Falempe <jfalempe@redhat.com>,
- Michael Kelley <mhklinux@outlook.com>,
- John Ogness <john.ogness@linutronix.de>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Daniel Vetter <daniel@ffwll.ch>, Andrew Morton <akpm@linux-foundation.org>,
- "Peter Zijlstra (Intel)" <peterz@infradead.org>,
- Josh Poimboeuf <jpoimboe@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
- Kefeng Wang <wangkefeng.wang@huawei.com>, Lukas Wunner <lukas@wunner.de>,
- Uros Bizjak <ubizjak@gmail.com>, Petr Mladek <pmladek@suse.com>,
- Daniel Thompson <daniel.thompson@linaro.org>,
- Douglas Anderson <dianders@chromium.org>
-Cc: "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
- David Airlie <airlied@redhat.com>, Thomas Zimmermann <tzimmermann@suse.de>
-References: <266579a9-fde6-40ff-b13d-fb2312db406c@redhat.com>
- <87edcpn1l3.fsf@jogness.linutronix.de>
- <15015345-3068-2fb8-aa38-f32acf27e1d0@igalia.com>
- <SN6PR02MB4157AF2E765F7ED3B9487351D4222@SN6PR02MB4157.namprd02.prod.outlook.com>
- <d1d2093c-72a3-4f64-9a8f-9844dc38f0c5@redhat.com>
-From: "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-In-Reply-To: <d1d2093c-72a3-4f64-9a8f-9844dc38f0c5@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240305162537.GA8339@thinkpad>
 
-On 05/03/2024 13:52, Jocelyn Falempe wrote:
-> [...]
-> Or maybe have two lists of panic notifiers, the safe and the destructive 
-> list. So in case of fake panic, we can only call the safe notifiers.
+On Tue, Mar 05, 2024 at 09:55:37PM +0530, Manivannan Sadhasivam wrote:
+> On Thu, Feb 22, 2024 at 10:40:52AM +0100, Lukas Wunner wrote:
+> > On Wed, Feb 21, 2024 at 12:20:00PM -0600, Bjorn Helgaas wrote:
+> > >   1) D3hot doesn't work per spec.  This sounds like a hardware
+> > >      defect in the device that should be a quirk based on
+> > >      Vendor/Device ID, not something in DT.  I don't actually know if
+> > >      this is common, although there are several existing quirks that
+> > >      mention issues with D3.
+> > 
+> > My recollection is that putting Root Ports into D3hot on older x86
+> > systems would raise MCEs, which is why pci_bridge_d3_possible() only
+> > allows D3hot in cases which are known to work (e.g. Thunderbolt
+> > controllers, machines with a recent BIOS).  It was a conservative
+> > policy chosen to avoid regressions.
 > 
+> So pci_bridge_d3_possible() is only checking for D3hot capability?
+> If so, I'd rename it to pci_bridge_d3hot_possible() and also
+> 'bridge_d3' to 'bridge_d3hot' to make it explicit.
 
-I tried something like that:
-https://lore.kernel.org/lkml/20220427224924.592546-1-gpiccoli@igalia.com/
+Every device is required to support D3hot (and D3cold), so I think
+"d3_possible" and "d3hot_possible" are not very descriptive since they
+should always be *possible*.
 
-There were many suggestions, a completely refactor of the idea (panic
-lists are not really seen as reliable things).
+pci_bridge_d3_possible() seems to be more about whether hotplug and
+power management events work in D3hot and maybe some firmware
+coordination and validation concerns.
 
-Given that, I'm not really sure splitting in lists gonna fly; maybe
-restricting the test infrastructure to drm_panic plus some paths of
-panic would be enough for this debugfs interface, in principle? I mean,
-to unblock your work on the drm panic stuff.
+> Since the default value of 'd3cold_allowed' is true, I believe the
+> code expects all devices to support D0 and D3cold. Please correct me
+> if I'm wrong.
 
-Cheers,
+D3cold means "no main power", so every device "supports" that
+situation.  The only time 'd3cold_allowed' can be false is when a user
+has set it to false via sysfs, so I think it only reflects an
+administrative policy choice.
 
+I think the important question for the code is whether software can
+remove and restore main power and maybe something about what hotplug
+events or PME can be reported, and I have a really hard time following
+that decision path.
 
-Guilherme
+Bjorn
 
