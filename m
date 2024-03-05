@@ -1,124 +1,130 @@
-Return-Path: <linux-kernel+bounces-92425-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92426-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18FFB871FFA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:21:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3235E872000
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:23:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D57AB216C4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:21:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCE881F21CF8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:23:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC8C485C4E;
-	Tue,  5 Mar 2024 13:21:44 +0000 (UTC)
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C82ED85C46;
+	Tue,  5 Mar 2024 13:23:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="h93a51GN"
+Received: from mail-il1-f171.google.com (mail-il1-f171.google.com [209.85.166.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F7D15381E;
-	Tue,  5 Mar 2024 13:21:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C0DD85939
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 13:23:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709644904; cv=none; b=Juawz18U8MYCeBaPx9iFw5q15+dVqrmkxuITPaKVR+nQAmzJRa64Ca71nNpLAuYhwfZHOSgqCCYcEdCOIUu4+/O2EYN+K2O0JpD9U1lTqNkYPii/8gmxZxI41/pkie1lGwm0tsl86EOHMbjPzJJqMLJT/OiAMOB0NxLjKAyeFJA=
+	t=1709644988; cv=none; b=ckU6zLtNN6gAyV5Z3hJeNnULgiD8x81yfPEZ1jjKApqyi95HdxYdMbhOBTE/jcBDC1wmxdOjkSk9rP3XuPn3ILGQmCGNXRPmhQjufucjaYYb0XdIyTsO/2+eauRzA+8krXBSf0w5OGMRWvXc6xqRctM6IUSw9zzReWsyZufQa18=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709644904; c=relaxed/simple;
-	bh=Zsna3w0baJEu+CkVxCY9YDcgalMpnPzFpi6Ywn8rmb0=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=VSkh3i2Wda4dhBKpplNeBCifDrNWXZsztZl/2NeSO9KKXs1KLWYj82/uSFz39P/Ieo8yo2vZSR4AM3DDpIJ9Ym9FryC3NBvVsidnSbc42fKSzfmmY2Ghg2UXgBjLpAjCuhKEaKJb06Z4abGxZwlGBpB2LbDiAgcA6LCrAHoVtSk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Tpx3n5c24z1Q9l3;
-	Tue,  5 Mar 2024 21:19:17 +0800 (CST)
-Received: from canpemm500010.china.huawei.com (unknown [7.192.105.118])
-	by mail.maildlp.com (Postfix) with ESMTPS id 783061A016E;
-	Tue,  5 Mar 2024 21:21:38 +0800 (CST)
-Received: from canpemm500004.china.huawei.com (7.192.104.92) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 5 Mar 2024 21:21:38 +0800
-Received: from [10.174.179.14] (10.174.179.14) by
- canpemm500004.china.huawei.com (7.192.104.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 5 Mar 2024 21:21:37 +0800
-Subject: Re: [PATCH 6/6] scsi: isci: Use LIBSAS_SHT_BASE
-To: John Garry <john.g.garry@oracle.com>, <jejb@linux.ibm.com>,
-	<martin.petersen@oracle.com>, <chenxiang66@hisilicon.com>,
-	<jinpu.wang@cloud.ionos.com>, <artur.paszkiewicz@intel.com>,
-	<dlemoal@kernel.org>, <ipylypiv@google.com>
-CC: <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240305122452.340471-1-john.g.garry@oracle.com>
- <20240305122452.340471-7-john.g.garry@oracle.com>
-From: Jason Yan <yanaijie@huawei.com>
-Message-ID: <e3fcc620-d803-c8e3-651b-9781ecd8e87a@huawei.com>
-Date: Tue, 5 Mar 2024 21:21:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+	s=arc-20240116; t=1709644988; c=relaxed/simple;
+	bh=cED5HjnC7g7JyUtXb+osJjJOkCvVB2fjNwEhn+2BT9o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=f733Ufl+aiVQBS2XW5qbDJj4A42EybBUWtSJ4qn8PYeOIhdiAdkIv0me3w+VngN5+gGm4n+r5YasAagyuDEMfwCc6n993vxAVxFKFekgcFDNs7nYsIJO3prI0mw8z2RncvAXNRo7ivKQqYmTHpy8Zr77fBcvnz6COBk1D1ypd2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=h93a51GN; arc=none smtp.client-ip=209.85.166.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-36517375cc6so15658625ab.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 05:23:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709644985; x=1710249785; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jjX01WCP90W/l7pfrR9bOKQ3PAKnBAJRUzQuiATziOw=;
+        b=h93a51GNBdjyLHAVWDj0ri8c/GPVK3KkJ6gU1sBfeuDcLfx4VjIYBDyPBfdbmTdpEl
+         FFt9bX01WSZwITluvAkTAxxON03GBMklvdolqr1RkpUQ1Y8zwfmn4oAnID4BEBZOwzxu
+         t7XF751snK16c+OnP5OpJnuSrhtiCWWdlLkpA5mdRxELmnF9B66vxDjD29yvH4D+lEQs
+         Dg4AhuwTSSAY5ctEQM+qk7z1+1pb+b0O6MBHd151muZ6fLSUv4X7PtVGLaTk+gL72Ynn
+         RAfZ1lR77EwBu4SwS/1eAnjeTU4CRhYDgpsOYOrQFYeRFv1OrF7WNe5awwp9KJBhfrCk
+         Ihvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709644985; x=1710249785;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jjX01WCP90W/l7pfrR9bOKQ3PAKnBAJRUzQuiATziOw=;
+        b=E4fh78B8KuxVCWBuJvFVF6+rJEipwSrl+tjeyKd4uOWbukJYjrSGXApXTKw9J1/77o
+         vhKvkSdVLbSeZcb2FN/WCtO9Ls7ljun3TD20VBYw36r8vizdsIWMIfwJ+eOIdp0xodG2
+         /G45BefV+MzEgr4Dyi9YyTz1jXF54bt03y+P8L3B0vZ9ZMBvyQ3Z1Mt+eHYnxw2I/Dgw
+         P7yX1WuomdJY4jbw7R8Mx3KFJIk5t2bI1sjcHg0Gyh+sD8dpr2snSRtN1AZSd/dC7Lw3
+         lkGDubfmBVBRs1w+UGOYyFr1ToQ2uaQr2p3BN5xZ+5zlyb8gyn7SSs0p0XBfTKf7nm9X
+         RiFA==
+X-Forwarded-Encrypted: i=1; AJvYcCWHjxK6BH3QyA4ToQLthhevgVyYjUVTobhaYSMKkftsS70Nvz+UGReTHsPYB96twbmUMTmlBwOtl9D9MRdbE1MhxOTcG6baUWNiQd90
+X-Gm-Message-State: AOJu0Yyt3vZbErQuOe4tI8Qdhx/pkMWCyp5CxZ+rs+fY6a9x4ZcZvuJo
+	PDQmjNAFeEe8sZ9SA4y3pgGCZAqkqCrjoL9THMPgT5KUoMbbjlECT12Su7lbZRM=
+X-Google-Smtp-Source: AGHT+IG/knXJ7T9xFlaVocsJ+R34uVbYqcAGUadgZXjQaWVCnb+oitowDdNVzrmcplKooD46QXyR4A==
+X-Received: by 2002:a05:6e02:152b:b0:365:4004:83bc with SMTP id i11-20020a056e02152b00b00365400483bcmr14668251ilu.14.1709644985671;
+        Tue, 05 Mar 2024 05:23:05 -0800 (PST)
+Received: from [172.22.22.28] (c-73-228-159-35.hsd1.mn.comcast.net. [73.228.159.35])
+        by smtp.gmail.com with ESMTPSA id l3-20020a056e020dc300b0036287013d01sm3084242ilj.36.2024.03.05.05.23.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Mar 2024 05:23:05 -0800 (PST)
+Message-ID: <4e0adf8e-4434-4ead-9d8b-491aeb7e49c9@linaro.org>
+Date: Tue, 5 Mar 2024 07:23:03 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240305122452.340471-7-john.g.garry@oracle.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: linux-next: manual merge of the net-next tree with the pm tree
 Content-Language: en-US
+To: Stephen Rothwell <sfr@canb.auug.org.au>,
+ David Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Networking <netdev@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux Next Mailing List <linux-next@vger.kernel.org>,
+ "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+ Sakari Ailus <sakari.ailus@linux.intel.com>
+References: <20240305112641.6248c6fd@canb.auug.org.au>
+From: Alex Elder <elder@linaro.org>
+In-Reply-To: <20240305112641.6248c6fd@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500004.china.huawei.com (7.192.104.92)
 
-On 2024/3/5 20:24, John Garry wrote:
-> Use standard template for scsi_host_template structure to reduce
-> duplication.
+On 3/4/24 6:26 PM, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Signed-off-by: John Garry <john.g.garry@oracle.com>
-> ---
->   drivers/scsi/isci/init.c | 22 +---------------------
->   1 file changed, 1 insertion(+), 21 deletions(-)
+> Today's linux-next merge of the net-next tree got a conflict in:
 > 
-> diff --git a/drivers/scsi/isci/init.c b/drivers/scsi/isci/init.c
-> index d0a23ce4afba..49e64232def1 100644
-> --- a/drivers/scsi/isci/init.c
-> +++ b/drivers/scsi/isci/init.c
-> @@ -155,31 +155,11 @@ static const struct attribute_group *isci_sdev_groups[] = {
->   };
->   
->   static const struct scsi_host_template isci_sht = {
-> -
-> -	.module				= THIS_MODULE,
-> -	.name				= DRV_NAME,
-> -	.proc_name			= DRV_NAME,
-> -	.queuecommand			= sas_queuecommand,
-> -	.dma_need_drain			= ata_scsi_dma_need_drain,
-> -	.target_alloc			= sas_target_alloc,
-> -	.slave_configure		= sas_slave_configure,
-> +	LIBSAS_SHT_BASE
->   	.scan_finished			= isci_host_scan_finished,
->   	.scan_start			= isci_host_start,
-> -	.change_queue_depth		= sas_change_queue_depth,
-> -	.bios_param			= sas_bios_param,
->   	.can_queue			= ISCI_CAN_QUEUE_VAL,
-> -	.this_id			= -1,
->   	.sg_tablesize			= SG_ALL,
-> -	.max_sectors			= SCSI_DEFAULT_MAX_SECTORS,
-
-max_sectors is not defined in LIBSAS_SHT_BASE.
-
-Thanks,
-Jaosn
-
-> -	.eh_abort_handler		= sas_eh_abort_handler,
-> -	.eh_device_reset_handler        = sas_eh_device_reset_handler,
-> -	.eh_target_reset_handler        = sas_eh_target_reset_handler,
-> -	.slave_alloc			= sas_slave_alloc,
-> -	.target_destroy			= sas_target_destroy,
-> -	.ioctl				= sas_ioctl,
-> -#ifdef CONFIG_COMPAT
-> -	.compat_ioctl			= sas_ioctl,
-> -#endif
->   	.shost_groups			= isci_host_groups,
->   	.sdev_groups			= isci_sdev_groups,
->   	.track_queue_depth		= 1,
+>    drivers/net/ipa/ipa_smp2p.c
 > 
+> between commit:
+> 
+>    c0ef3df8dbae ("PM: runtime: Simplify pm_runtime_get_if_active() usage")
+> 
+> from the pm tree and commit:
+> 
+>    5245f4fd28d1 ("net: ipa: don't save the platform device")
+> 
+> from the net-next tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+
+
+Your fixup is correct.  It exactly matches the change in
+c0ef3df8dbaef ("PM: runtime: Simplify pm_runtime_get_if_active()
+usage"), which is in linux-next but not net-next.
+
+Thank you!  And if you need it:
+
+Reviewed-by: Alex Elder <elder@linaro.org>
+
+					-Alex
+
+
 
