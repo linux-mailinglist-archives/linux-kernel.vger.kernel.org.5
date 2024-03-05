@@ -1,304 +1,191 @@
-Return-Path: <linux-kernel+bounces-91519-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91512-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B79D6871287
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 02:57:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E400871276
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 02:49:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4034B281B3B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 01:57:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B2E911C224BB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 01:49:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B69DC17C76;
-	Tue,  5 Mar 2024 01:57:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B26D717C96;
+	Tue,  5 Mar 2024 01:49:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AMXTK9Li"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="esTPgzLJ"
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2054.outbound.protection.outlook.com [40.107.104.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 949C32F43
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 01:57:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709603831; cv=none; b=RjFjJvlbcGzAtc1LCpKGKYyOrWozsGIAJRQaSypeJL+O8sG19h/dRKax8vnhMr9MCnSL1OqrCWolRW7tjIasyIzhzYUyxcqxTjTsYV5zk/e4/imFZ+5zrLVbJVqc3+gpHisLJr13FBMN4KA/oU/wc4UcCSiTMKHKVlrWGiaPOZg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709603831; c=relaxed/simple;
-	bh=h7470jmyjrsjrrki75+l9L+bS5EMmOVKCTOcuVbUs3Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=f01ZJlkxe7CxFDO8mc485JBmQmT0m+QLri1dVd86lBOewFIy5/+vMKfz/XKPylzlQ6i4EA7HN+aBD+aypMsWr0hM1leGiGcf4h62OV/a7lbRhNb3UVXof25wDwM1Bcjo6EqfSjDF+/od3eh65DkNgm8MKrVLiQucH07LCKNCEig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AMXTK9Li; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-564372fb762so6622822a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 17:57:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709603828; x=1710208628; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Qw7us6PtslL66jWV5rgbddJX+ZH8W/kC7W1JeYDVces=;
-        b=AMXTK9LiEBjyaBIb/ECI11p+hJgt9gqtmLzgbNwLMeUEdO/Lrk1NZ5c/mIcFp689AM
-         DTqC4pEu7lqPxxqMN7+I3wwFK4syrRjQC38gxldvZeyEl7rmgz5+icit2WMJuiYzzsUR
-         t2eCnTB8EB/JEesekNrLETIGVNyJgb6utKudB6gIsQIurr6VlovEI/J946MS+op7/4C1
-         oXcZnBFNLb015jegEkZfoy2YIs6YfM+9+eyzjruPojTflkaJdKpeLu6Ix5LOI+8VWdOo
-         bQhwGzVb/xAkPd23l6WGvaGIOLvQhdhLt4i2pG5USp+ER8J+cHammeocCylJgJ2SeW78
-         Yy2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709603828; x=1710208628;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Qw7us6PtslL66jWV5rgbddJX+ZH8W/kC7W1JeYDVces=;
-        b=iDPIseCBL6VKcV1e9a9KTTn/rr59S937XqZtlHv7fXXK3yrYS8mEAO7YRMLzfUrXJ5
-         +gseETi8sOwiTT4cL/aFt0QeQmlGNjZsOdCjuZ7ZKhdF2BXqmTJsmdo17/KWI//R55Gl
-         cZ3W8jQhjcZ7ZLvdnkkAWPnC6gG3AnRo3mXcCrEIH+WhhjsWp6TYXnaOI1wPpxRuRKoO
-         0jPuVlauzA4rq6yNeak2OSiXa2GMY/SGgqUXSdrfqDlH0l0+6eGyEX8Ut3M1JVV3LujP
-         3SsQbmd6fSlVJLWzAHXfYDrF4bgC92KHkRuMkBYVjaMwLvOR+O0/e+zt5njAXj1DLRte
-         Nwcg==
-X-Forwarded-Encrypted: i=1; AJvYcCU4/U76RRN8wSjd4Os9F82ef9dnv6jAbjhYUq/H3AFs0hu1aOGTloS1vbiCxPT5fsuwY5EmTpM5Fdpmn2LVZvxUymABRKxbxmc48FEQ
-X-Gm-Message-State: AOJu0YykpKDh5bNkyoGkZM78kWZdFc1t653I8BtxE8ooREWKqed112dt
-	2LoT+S3riT4mcc/wC2oY43kWEXBxb/7hozEzqYqb1NAFG0oKExi804QKmZ8tLxwHoITcasVL3U3
-	6KgFrl0NhCtjAvE87UbU7i73XInE=
-X-Google-Smtp-Source: AGHT+IH/roTdZh/Go7x9sWPisWOSOQ3FEPoCnx1VP18PVkLL9PgiV1f6MXWEzhUqmNBNr6rZAzmGwd6hh1uAeKPjTUM=
-X-Received: by 2002:a50:a41b:0:b0:565:7b88:1cff with SMTP id
- u27-20020a50a41b000000b005657b881cffmr7787242edb.11.1709603827695; Mon, 04
- Mar 2024 17:57:07 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEDCF18026;
+	Tue,  5 Mar 2024 01:49:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.104.54
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709603357; cv=fail; b=hWl6Ee94y0cOxp948g4fIbFMzets1fS7DlgZQ/qq+b3+SFRB6UQiP9v7d7qjLvAlyrv+/WNx2inqQeOXsHbdyeINWASTWIcoTEPNIB3yFGH7Fo4m+xktkcEHvVt9jHoeUT/dzx6IOcc8kvSdXFSkTJZGppmJvJ6LS6t1PPm7wmM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709603357; c=relaxed/simple;
+	bh=w0B4jNOdGrj/R8zBykjKmmMQirfTlDwDSrmXPzyg4E4=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=igWv2wets3EiQNSjrrPbDUz2fYgdxlsPB/i20Rp4BDDYcoTZiWkqW8msT2lX2Ac+2VzBLYpP92erPEGbIzcdOE1LpjYxS6BmYxztP4BLH3N8RC+q6pM+Xb/oao1v+xl3Jb4qKRIGWiwg42SlOgN9RkUxuJXXaSP8qJYZMFrwpmU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=esTPgzLJ; arc=fail smtp.client-ip=40.107.104.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CIDw+kIg/lXekYBYtXngKA5hR8u7PrXm2mD7jdef8gIx3UHrTy2AV/vJtNW4j/sDynHkQCkSEBFwcHaAcj/LuM+RGaepBFhsXvlqBnmjtFI3l6CefKVm+aUO6G8lb1mnJruCFcBb8OtGQFDRmmtRX0YDL5IA3+8jWSMChHzbS2f90R2z+rJG2BHQqSyLfJTeNJMXB4tWm88YG3hUFEXUYvHVt/PuIgx9XbBETkZXvxH6c0woaTVTkOsTe6FRWlmej+FBmMK2RunsC0unRfZ2X+lxEuLPdKTTYjinfTIel7hoE2U9xCD6AmTmPv9oQgl0TECP67t/64WuJFyam3ER6A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=n+ZVVVw333Vd4QWWlnX7zC7MRQSjORjycBYC2Vxfm4U=;
+ b=lONTLTjuS8hBJgGI8Wkr8IvnI2696g400kHLFJDg8up3RlOBHPdrUTLVbEhNU+PmfSU9H4ekTDAxIMUo0j5HOvuJPOo0gP5XkuAo+4NNs1PIII+jzO+toupMJrIzd8Gu0XKxWpGoLkLAIBxoKWm4be24osQqJ5ZePJJUNySFIidDRH0y/RKS2r+zeiDOOhAEndakK4f/fmS9gJIDr+29q9030yQWnFUTN3llUx0oDLCCatykHYt+QIbFBdQPahUtjg1/96S+L7lqKxzo9B/mu3LxHHZm1qEjjPd3QP465wC/CdodmiO607JWA232cROKVGv1qmO0AIPzrNUZnJ4I2w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=n+ZVVVw333Vd4QWWlnX7zC7MRQSjORjycBYC2Vxfm4U=;
+ b=esTPgzLJy2KtWBPFAl5NNUJk4UqfX/vXLd6Hbr7v58v+ApikeMouX/gyXL194enujxUYXmrcEgzu0mpp7vyymmJlAwC1mu9iZpy2CXBNzlbjLqNFN56iLW8MlW1cg6Y2+h40weDhgcw1bQ+hrsRVr/GZT9R8JzWNyT2WnXFOfnI=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AS8PR04MB8404.eurprd04.prod.outlook.com (2603:10a6:20b:3f8::7)
+ by DU2PR04MB8933.eurprd04.prod.outlook.com (2603:10a6:10:2e0::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.39; Tue, 5 Mar
+ 2024 01:49:13 +0000
+Received: from AS8PR04MB8404.eurprd04.prod.outlook.com
+ ([fe80::643f:faca:24da:e9aa]) by AS8PR04MB8404.eurprd04.prod.outlook.com
+ ([fe80::643f:faca:24da:e9aa%5]) with mapi id 15.20.7339.035; Tue, 5 Mar 2024
+ 01:49:13 +0000
+From: Sherry Sun <sherry.sun@nxp.com>
+To: gregkh@linuxfoundation.org,
+	jirislaby@kernel.org,
+	u.kleine-koenig@pengutronix.de,
+	ilpo.jarvinen@linux.intel.com,
+	shenwei.wang@nxp.com,
+	alexander.sverdlin@siemens.com,
+	robert.hodaszi@digi.com,
+	robh@kernel.org,
+	tglx@linutronix.de
+Cc: linux-serial@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	imx@lists.linux.dev,
+	frank.li@nxp.com
+Subject: [PATCH V2] tty: serial: fsl_lpuart: avoid idle preamble pending if CTS is enabled
+Date: Tue,  5 Mar 2024 09:57:06 +0800
+Message-Id: <20240305015706.1050769-1-sherry.sun@nxp.com>
+X-Mailer: git-send-email 2.37.1
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SG2PR06CA0238.apcprd06.prod.outlook.com
+ (2603:1096:4:ac::22) To AS8PR04MB8404.eurprd04.prod.outlook.com
+ (2603:10a6:20b:3f8::7)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240111081743.2999210-1-chao@kernel.org> <ae43ed8a-49b5-44bf-8fea-a222091e9790@kernel.org>
- <ed3eecaf9e2f4c8fae2fd01241aa097e@BJMBX02.spreadtrum.com>
-In-Reply-To: <ed3eecaf9e2f4c8fae2fd01241aa097e@BJMBX02.spreadtrum.com>
-From: Zhiguo Niu <niuzhiguo84@gmail.com>
-Date: Tue, 5 Mar 2024 09:56:56 +0800
-Message-ID: <CAHJ8P3JzanzGqjuJ8ODMxE4rguxrQ-yd4Ho16RCDH9u975gOEA@mail.gmail.com>
-Subject: Re: [PATCH v3] f2fs: reduce expensive checkpoint trigger frequency
-To: =?UTF-8?B?54mb5b+X5Zu9IChaaGlndW8gTml1KQ==?= <Zhiguo.Niu@unisoc.com>
-Cc: "jaegeuk@kernel.org" <jaegeuk@kernel.org>, 
-	"linux-f2fs-devel@lists.sourceforge.net" <linux-f2fs-devel@lists.sourceforge.net>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Chao Yu <chao@kernel.org>, 
-	=?UTF-8?B?6YeR57qi5a6HIChIb25neXUgSmluKQ==?= <hongyu.jin@unisoc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS8PR04MB8404:EE_|DU2PR04MB8933:EE_
+X-MS-Office365-Filtering-Correlation-Id: b1cec08e-60e8-4bbc-4af5-08dc3cb6752e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	ZyCjSYtS2QE7PBC9IWTl4Ouw4gQylJr4ycV4sll4QQqsMA35KABQGEoLtpCcjnEDEmXPIQ5+Y0KfSV2+OUAw9/RgQlsyj3CmKV2kAJ+LGCIxSNIjc/jdk4tVPg6nIp8zJO3gesWpCyDsjv4D91whmpQha793g3tPBhhfRGh0TuoAhhtJ+F+5kimSPiwvqLENIhXiIqrezv+ia6tn65mz3qib3Y1+ZNYv47eouWlPHLYM1rp/OnRGri4D09HzEsiS5hNoDV+AQgPZHvuzau+jgVmZpo0c9H9dljfGfTzuso26kql9pTEMhzjpcQ6oeOHRLLJRbfHlRttBuhnVL08hjgyyhUJqVK+Wli1sptq3JZhcCdJbZEygC2vYq7W4P8tvhe+f1PlxkoDiMpUgP4GrVVO9WDuOrJWfN9HjjPZ/W01e9S6WHdtD1kkqwNlwqbmY215jm8/ZUnPGVQEIQiCUG13FogLvklXumMT/9UDxb5wfcoOg8T8j2V8Qv1pAbO1kyQ/rRE67+P2YIzC+GXuefNDi1N79BHAsf7NpAp3R0QxNYY9y3RhKVGDeQGtbtmiE8ZGq0wtmIjdDlVHEyklQJK3Z2hjjNtZkA/mxA5st2FcK9vI8v7pX7ldtgJYU59YA0nbbP9ASNKzSdrIBpR8lYBISsmHWwVYsIczwJfvpB5vIMv/Tv3q0YBdEAyQ7/MpWhPLUhaX+gSK43za7q9G+E743PTcDp9Qbd6H1Oh4SHNY=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8404.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?SUptR3VIdHdwdEtwaStnOHlmUXU3Q284YXhVMXNRMHlHQ1hiZW1rVVdrdzR4?=
+ =?utf-8?B?bEMvck51dlNXalFGOWNqclllb0E2cVc1TGdraXM2VDhGY1NxeFV0SktoU1Nk?=
+ =?utf-8?B?MGtnTU1sZFhQZStkcDc4WW8vTlowOXVpeUxqN3UxdkN0bDlYODVVN0lOSUR6?=
+ =?utf-8?B?eGJOUTBPM0U4aURuVU5uSGRLVERSRG5NamwxeXRWYlNVMHZHKzQvZjU2WXk3?=
+ =?utf-8?B?dDJqVmV6bWJud0VzK0w3SUg5NXkxTWpQRlFXdEV5WVdYUEQ0aGxxYUpuaEFr?=
+ =?utf-8?B?ZHdMVHpiTVNvZ2IwOEVvNWNQNGxma1lDOFRNR2hFK0VVeXB3YTNqZDBFUXlN?=
+ =?utf-8?B?V1BLaGk2K3EvdzFJeSt4ZU5qZ0dNYjFCbm90QUNnMzk2TmJ2VEw5RXNWTWZx?=
+ =?utf-8?B?STFFcVp6c3JJN0toUzNMM2xTUEpqQTNmVHRwSW1xcVNHM0VXSnlsYzRESGs2?=
+ =?utf-8?B?SU1aU21idWtZc3M3L3M0bjNSMXAyQ1RuY0lhNS9SY3pYZGZVSXkwODJQTWF0?=
+ =?utf-8?B?K2pVemhESWpVT1YyQnJNaGF4UkdrODBaODM3cVNqdS93alFMbC9lcGl0MDB6?=
+ =?utf-8?B?K3ZSL1lxUWNDMWpWVFpiRS9lMWY1THhWcytoTUhXZGlnNjRFMUdZMTNVdzJm?=
+ =?utf-8?B?VXc4TkI0ODc4bXVVMDlVZEQzblRkZTZvZVhOMndqVDBLUENkVlV5RzEyaUpF?=
+ =?utf-8?B?NkNVRDNSeEJYQTZqL0xvcWlMZURUcmhWSklaUWNuUXEvMGlhS0drejVLS0JZ?=
+ =?utf-8?B?Mm4yakdiRm1PTlgvZW56ZTVzdjBmTmgwV0Y5SmZzdE9hK3lFSXQvdVpJKzd3?=
+ =?utf-8?B?djZwM3VNS0xLamZmZmZ5VlpPcWF2V1lUMyt3ZkZ0Wkd2M2dlM1g3YU9FWkls?=
+ =?utf-8?B?UnV1TnJyN2hYSGtRNlkwYlNHOVJTUGxhcTQ0RVNzcVBtWkJhUGxYUE1BaXly?=
+ =?utf-8?B?WDNqYmpsSkwyMUNGeHQrRVpJeUJnSVF5dzY2WjRFZVFXdkwwc0VZMjIxN0g5?=
+ =?utf-8?B?Q3doM2ExUlRmREVlazg4UVpIVnBieDVwNjkrKzdJbnRDdThmeUJlTXJlTXlC?=
+ =?utf-8?B?V1dwOGRPNHd0eFQ0d1NzUkVyOEhUNmxPcjQwd21nd3pYYlRWMmRubE9rditO?=
+ =?utf-8?B?S2xiZDEwYUZpT3o0YjlzZTc3cFEwaldCSUh2eDhqV1JNeDRCd25CNDRMcm5R?=
+ =?utf-8?B?QTRSQ0JSNHROcjBvaUdnNFB3WldMK3V2bzJFNjBLOXFuVXJHTUVmZlk3aWpw?=
+ =?utf-8?B?NzczY05ieGtROTE0eitrZDVHcytNdWI0OU9GTW9QeHJIcUZKbEJmdzJqWXNH?=
+ =?utf-8?B?d0YvU0tVMkdHRDNqcnpZS2kxVFUzT1pLekVDb2ZxTWN4U0tmckhURC9BeldQ?=
+ =?utf-8?B?QjdjOWdkZXZnMTRtaTA2SlZ3cktSYmc2aXNvTVRxUUUxaHJSVXZmMk9QbVA3?=
+ =?utf-8?B?YndSRXFpRjlCOWRZTldrYnZSK1VlZUZ3d2FVSkNaQmJyd0FJdVo3M3VoaGdN?=
+ =?utf-8?B?ZlpxdSs1NG5QNkpzM3E5QjNoeEt6dk5SL0l3RTczUGtGZkhuSm1TSFhwTVRx?=
+ =?utf-8?B?UmZMNHB0blRqbGtsWmpLZkxIZEVybHAybzBpU3BCaG1UanVXVlluMmZ6OXNQ?=
+ =?utf-8?B?Z0dRQzAvaG1aNzZ2Tlc4K0UrZWFNamdNSFRVTUdFdEdtWklUREkweDBjbXpN?=
+ =?utf-8?B?NlFEdFVmYXZia1hSMGVFT3N6Q2xFOEFnNjNCZzQva05YZFF0U1RlN3l3SXVT?=
+ =?utf-8?B?YnNiMnUxbFFCbjdneWEvOUFFUUZFdXoxd0RUM0N3eFdWUEU5dmloNEwzMXNl?=
+ =?utf-8?B?Z0VOcjYvYXo4NHhsKzNzQ1BSMGlmc1BqS0NJVWxOamNINnVhT1lpRFNhZjRm?=
+ =?utf-8?B?dEQwUEtsVWl0Tk5IMk1Gb3FySHZtNXZVZnFWbVYvQmJPSmV1MSttei8zdnpG?=
+ =?utf-8?B?QTJPajF1bDhsUUN0dUVEVmtpU2IxR0VtYk9MamYvR1hzRnllQjFKblFTTStK?=
+ =?utf-8?B?WDlzOGxvSW5PbDJLak4zakoybjZWV3Y5ZWhkNW53czJjVTZ5TXVDY1ZKaUtS?=
+ =?utf-8?B?MWsxdVdhOXFHWXA1K25ieVRmNTVzL2l2NlRaUEJvbnVQbVdIbTN6TWprMjhM?=
+ =?utf-8?Q?aQvMaxMYI2rVfc85woRXorotZ?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b1cec08e-60e8-4bbc-4af5-08dc3cb6752e
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8404.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Mar 2024 01:49:13.0621
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: uN1SE0fTrhtJI3CDXgST9zlsPKFtircaCtaX77857copKCildsMjuGPdIHJZRA6ze0g0rL3BOqbJC4WCtgB0PA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8933
 
-Dear  Jaegeuk,
+If the remote uart device is not connected or not enabled after booting
+up, the CTS line is high by default. At this time, if we enable the flow
+control when opening the device(for example, using “stty -F /dev/ttyLP4
+crtscts” command), there will be a pending idle preamble(first writing 0
+and then writing 1 to UARTCTRL_TE will queue an idle preamble) that
+cannot be sent out, resulting in the uart port fail to close(waiting for
+TX empty), so the user space stty will have to wait for a long time or
+forever.
 
-Let me describe the problem process, it is reproduced by monkey stability t=
-est:
+This is an LPUART IP bug(idle preamble has higher priority than CTS),
+here add a workaround patch to enable TX CTS after enabling UARTCTRL_TE,
+so that the idle preamble does not get stuck due to CTS is deasserted.
 
- 1.SBI_NEED_CP flag bit is set=EF=BC=8C
- set_sbi_flag(F2FS_I_SB(inode), SBI_NEED_CP);
+Fixes: 380c966c093e ("tty: serial: fsl_lpuart: add 32-bit register interface support")
+Signed-off-by: Sherry Sun <sherry.sun@nxp.com>
+---
+Changes in V2:
+1. Move the "restore control register" comment message to the appropriate place.
+2. Add Fixes tag.
+---
+ drivers/tty/serial/fsl_lpuart.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
- 2.Ckpt thread is blocked by IO busy when it is doing CP,  it can not
-get request tag from block queue,
- PID: 505      TASK: ffffff80ed7f49c0  CPU: 4    COMMAND: "f2fs_ckpt-254:4"
- #0 [ffffffc015fcb330] __switch_to at ffffffc010196350
- #1 [ffffffc015fcb390] __schedule at ffffffc01168e53c
- #2 [ffffffc015fcb3f0] schedule at ffffffc01168ed7c
- #3 [ffffffc015fcb450] io_schedule at ffffffc01168f7a0
- #4 [ffffffc015fcb4c0] blk_mq_get_tag at ffffffc0101008a4
- #5 [ffffffc015fcb530] blk_mq_get_request at ffffffc0109241b0
- #6 [ffffffc015fcb5f0] blk_mq_make_request at ffffffc0109233bc
- #7 [ffffffc015fcb680] generic_make_request at ffffffc0100fc6ec
- #8 [ffffffc015fcb700] submit_bio at ffffffc0100fc3b8
- #9 [ffffffc015fcb750] __submit_bio at ffffffc01081a2e0
- #10 [ffffffc015fcb7d0] __submit_merged_bio at ffffffc01081b07c
- #11 [ffffffc015fcb8a0] f2fs_submit_page_write at ffffffc0100ecd3c
- #12 [ffffffc015fcb990] f2fs_do_write_meta_page at ffffffc010845738
- #13 [ffffffc015fcb9d0] __f2fs_write_meta_page at ffffffc01080a8f4
- #14 [ffffffc015fcbb60] f2fs_sync_meta_pages at ffffffc01080a684
- #15 [ffffffc015fcbca0] do_checkpoint at ffffffc01080f0a8
- #16 [ffffffc015fcbd10] f2fs_write_checkpoint at ffffffc01080e50c
- #17 [ffffffc015fcbdb0] __checkpoint_and_complete_reqs at ffffffc010810f54
- #18 [ffffffc015fcbe40] issue_checkpoint_thread at ffffffc0108113ec
- #19 [ffffffc015fcbe80] kthread at ffffffc0102665b0
+diff --git a/drivers/tty/serial/fsl_lpuart.c b/drivers/tty/serial/fsl_lpuart.c
+index 5ddf110aedbe..bbcbc91482af 100644
+--- a/drivers/tty/serial/fsl_lpuart.c
++++ b/drivers/tty/serial/fsl_lpuart.c
+@@ -2345,9 +2345,12 @@ lpuart32_set_termios(struct uart_port *port, struct ktermios *termios,
+ 
+ 	lpuart32_write(&sport->port, bd, UARTBAUD);
+ 	lpuart32_serial_setbrg(sport, baud);
+-	lpuart32_write(&sport->port, modem, UARTMODIR);
+-	lpuart32_write(&sport->port, ctrl, UARTCTRL);
++	/* disable CTS before enabling UARTCTRL_TE to avoid pending idle preamble */
++	lpuart32_write(&sport->port, modem & ~UARTMODIR_TXCTSE, UARTMODIR);
+ 	/* restore control register */
++	lpuart32_write(&sport->port, ctrl, UARTCTRL);
++	/* re-enable the CTS if needed */
++	lpuart32_write(&sport->port, modem, UARTMODIR);
+ 
+ 	if ((ctrl & (UARTCTRL_PE | UARTCTRL_M)) == UARTCTRL_PE)
+ 		sport->is_cs7 = true;
+-- 
+2.37.1
 
- 3.Subsequent regular file fsync will trigger ckpt because SBI_NEED_CP
-has not been cleared.
- In fact, these cases should not trigger ckpt.
-
- 4.If some processes that perform f2fs_do_sync_file are important processes
- in the system(such as init) and are blocked for too long, it will
-cause other problems in the system, ANR or android reboot
- PID: 287      TASK: ffffff80f9eb0ec0  CPU: 2    COMMAND: "init"
- #0 [ffffffc01389bab0] __switch_to at ffffffc010196350
- #1 [ffffffc01389bb10] __schedule at ffffffc01168e53c
- #2 [ffffffc01389bb70] schedule at ffffffc01168ed7c
- #3 [ffffffc01389bbc0] wait_for_completion at ffffffc011692368
- #4 [ffffffc01389bca0] f2fs_issue_checkpoint at ffffffc010810cb0
- #5 [ffffffc01389bd00] f2fs_sync_fs at ffffffc0107f4e1c
- #6 [ffffffc01389bdc0] f2fs_do_sync_file at ffffffc0107d4d44
- #7 [ffffffc01389be20] f2fs_sync_file at ffffffc0107d492c
- #8 [ffffffc01389be30] __arm64_sys_fsync at ffffffc0105d31d8
- #9 [ffffffc01389be70] el0_svc_common at ffffffc0101aa550
- #10 [ffffffc01389beb0] el0_svc_handler at ffffffc0100886fc
-
-and I tested Chao's patch can avoid the above case, please help
-consider this patch or
-any comment/suggestions about this?
-
-thanks!
-
-On Mon, Feb 26, 2024 at 9:22=E2=80=AFAM =E7=89=9B=E5=BF=97=E5=9B=BD (Zhiguo=
- Niu) <Zhiguo.Niu@unisoc.com> wrote:
->
->
-> Hi Jaegeuk
->
-> Sorry for disturbing you, Do you have any comments about this patch from =
-Chao, I=E2=80=99ve met this issue several times on our platform when do mon=
-key test.
-> Thanks!
->
-> -----=E9=82=AE=E4=BB=B6=E5=8E=9F=E4=BB=B6-----
-> =E5=8F=91=E4=BB=B6=E4=BA=BA: Chao Yu <chao@kernel.org>
-> =E5=8F=91=E9=80=81=E6=97=B6=E9=97=B4: 2024=E5=B9=B42=E6=9C=8819=E6=97=A5 =
-15:19
-> =E6=94=B6=E4=BB=B6=E4=BA=BA: jaegeuk@kernel.org
-> =E6=8A=84=E9=80=81: linux-f2fs-devel@lists.sourceforge.net; linux-kernel@=
-vger.kernel.org; =E7=89=9B=E5=BF=97=E5=9B=BD (Zhiguo Niu) <Zhiguo.Niu@uniso=
-c.com>
-> =E4=B8=BB=E9=A2=98: Re: [PATCH v3] f2fs: reduce expensive checkpoint trig=
-ger frequency
->
->
-> =E6=B3=A8=E6=84=8F: =E8=BF=99=E5=B0=81=E9=82=AE=E4=BB=B6=E6=9D=A5=E8=87=
-=AA=E4=BA=8E=E5=A4=96=E9=83=A8=E3=80=82=E9=99=A4=E9=9D=9E=E4=BD=A0=E7=A1=AE=
-=E5=AE=9A=E9=82=AE=E4=BB=B6=E5=86=85=E5=AE=B9=E5=AE=89=E5=85=A8=EF=BC=8C=E5=
-=90=A6=E5=88=99=E4=B8=8D=E8=A6=81=E7=82=B9=E5=87=BB=E4=BB=BB=E4=BD=95=E9=93=
-=BE=E6=8E=A5=E5=92=8C=E9=99=84=E4=BB=B6=E3=80=82
-> CAUTION: This email originated from outside of the organization. Do not c=
-lick links or open attachments unless you recognize the sender and know the=
- content is safe.
->
->
->
-> Jaegeuk,
->
-> Any comments?
->
-> On 2024/1/11 16:17, Chao Yu wrote:
-> > We may trigger high frequent checkpoint for below case:
-> > 1. mkdir /mnt/dir1; set dir1 encrypted 2. touch /mnt/file1; fsync
-> > /mnt/file1 3. mkdir /mnt/dir2; set dir2 encrypted 4. touch /mnt/file2;
-> > fsync /mnt/file2 ...
-> >
-> > Although, newly created dir and file are not related, due to commit
-> > bbf156f7afa7 ("f2fs: fix lost xattrs of directories"), we will trigger
-> > checkpoint whenever fsync() comes after a new encrypted dir created.
-> >
-> > In order to avoid such condition, let's record an entry including
-> > directory's ino into global cache when we initialize encryption policy
-> > in a checkpointed directory, and then only trigger checkpoint() when
-> > target file's parent has non-persisted encryption policy, for the case
-> > its parent is not checkpointed, need_do_checkpoint() has cover that by
-> > verifying it with f2fs_is_checkpointed_node().
-> >
-> > Reported-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
-> > Tested-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
-> > Reported-by: Yunlei He <heyunlei@hihonor.com>
-> > Signed-off-by: Chao Yu <chao@kernel.org>
-> > ---
-> > v3:
-> > - Recently, Zhiguo Niu reported the same issue, so I repost this patch
-> > for comments.
-> >   fs/f2fs/f2fs.h              |  2 ++
-> >   fs/f2fs/file.c              |  3 +++
-> >   fs/f2fs/xattr.c             | 16 ++++++++++++++--
-> >   include/trace/events/f2fs.h |  3 ++-
-> >   4 files changed, 21 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h index
-> > e2e0ca45f881..0094a8c85f4a 100644
-> > --- a/fs/f2fs/f2fs.h
-> > +++ b/fs/f2fs/f2fs.h
-> > @@ -279,6 +279,7 @@ enum {
-> >       APPEND_INO,             /* for append ino list */
-> >       UPDATE_INO,             /* for update ino list */
-> >       TRANS_DIR_INO,          /* for transactions dir ino list */
-> > +     ENC_DIR_INO,            /* for encrypted dir ino list */
-> >       FLUSH_INO,              /* for multiple device flushing */
-> >       MAX_INO_ENTRY,          /* max. list */
-> >   };
-> > @@ -1147,6 +1148,7 @@ enum cp_reason_type {
-> >       CP_FASTBOOT_MODE,
-> >       CP_SPEC_LOG_NUM,
-> >       CP_RECOVER_DIR,
-> > +     CP_ENC_DIR,
-> >   };
-> >
-> >   enum iostat_type {
-> > diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c index
-> > 8198afb5fb9c..18b33b1f0c83 100644
-> > --- a/fs/f2fs/file.c
-> > +++ b/fs/f2fs/file.c
-> > @@ -218,6 +218,9 @@ static inline enum cp_reason_type need_do_checkpoin=
-t(struct inode *inode)
-> >               f2fs_exist_written_data(sbi, F2FS_I(inode)->i_pino,
-> >                                                       TRANS_DIR_INO))
-> >               cp_reason =3D CP_RECOVER_DIR;
-> > +     else if (f2fs_exist_written_data(sbi, F2FS_I(inode)->i_pino,
-> > +                                                     ENC_DIR_INO))
-> > +             cp_reason =3D CP_ENC_DIR;
-> >
-> >       return cp_reason;
-> >   }
-> > diff --git a/fs/f2fs/xattr.c b/fs/f2fs/xattr.c index
-> > f290fe9327c4..cbd1b88297fe 100644
-> > --- a/fs/f2fs/xattr.c
-> > +++ b/fs/f2fs/xattr.c
-> > @@ -629,6 +629,7 @@ static int __f2fs_setxattr(struct inode *inode, int=
- index,
-> >                       const char *name, const void *value, size_t size,
-> >                       struct page *ipage, int flags)
-> >   {
-> > +     struct f2fs_sb_info *sbi =3D F2FS_I_SB(inode);
-> >       struct f2fs_xattr_entry *here, *last;
-> >       void *base_addr, *last_base_addr;
-> >       int found, newsize;
-> > @@ -772,8 +773,19 @@ static int __f2fs_setxattr(struct inode *inode, in=
-t index,
-> >       if (index =3D=3D F2FS_XATTR_INDEX_ENCRYPTION &&
-> >                       !strcmp(name, F2FS_XATTR_NAME_ENCRYPTION_CONTEXT)=
-)
-> >               f2fs_set_encrypted_inode(inode);
-> > -     if (S_ISDIR(inode->i_mode))
-> > -             set_sbi_flag(F2FS_I_SB(inode), SBI_NEED_CP);
-> > +
-> > +     if (S_ISDIR(inode->i_mode)) {
-> > +             /*
-> > +              * In restrict mode, fsync() always tries triggering chec=
-kpoint
-> > +              * for all metadata consistency, in other mode, it only t=
-riggers
-> > +              * checkpoint when parent's encryption metadata updates.
-> > +              */
-> > +             if (F2FS_OPTION(sbi).fsync_mode =3D=3D FSYNC_MODE_STRICT)
-> > +                     set_sbi_flag(F2FS_I_SB(inode), SBI_NEED_CP);
-> > +             else if (IS_ENCRYPTED(inode) &&
-> > +                     f2fs_is_checkpointed_node(sbi, inode->i_ino))
-> > +                     f2fs_add_ino_entry(sbi, inode->i_ino, ENC_DIR_INO=
-);
-> > +     }
-> >
-> >   same:
-> >       if (is_inode_flag_set(inode, FI_ACL_MODE)) { diff --git
-> > a/include/trace/events/f2fs.h b/include/trace/events/f2fs.h index
-> > 7ed0fc430dc6..48f2e399e184 100644
-> > --- a/include/trace/events/f2fs.h
-> > +++ b/include/trace/events/f2fs.h
-> > @@ -139,7 +139,8 @@ TRACE_DEFINE_ENUM(EX_BLOCK_AGE);
-> >               { CP_NODE_NEED_CP,      "node needs cp" },              \
-> >               { CP_FASTBOOT_MODE,     "fastboot mode" },              \
-> >               { CP_SPEC_LOG_NUM,      "log type is 2" },              \
-> > -             { CP_RECOVER_DIR,       "dir needs recovery" })
-> > +             { CP_RECOVER_DIR,       "dir needs recovery" },         \
-> > +             { CP_ENC_DIR,           "persist encryption policy" })
-> >
-> >   #define show_shutdown_mode(type)                                    \
-> >       __print_symbolic(type,                                          \
 
