@@ -1,87 +1,79 @@
-Return-Path: <linux-kernel+bounces-91662-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91663-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C39A8714CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 05:35:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A7418714CE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 05:35:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E0671C230CF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 04:35:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 35B9C1F214A1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 04:35:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5471405FF;
-	Tue,  5 Mar 2024 04:35:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08CAD3FE5D;
+	Tue,  5 Mar 2024 04:35:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QbzjnGw+"
-Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nNgosjcB"
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 683303398B
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 04:35:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3B153D39A
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 04:35:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709613309; cv=none; b=JLwKWXlkcRrBUROeXE5JlIj07sI50sEu5TA7aVX7A2BsnncbeVLEXn55cO20aBNGw20WMU4HmpYIJ5i0fFTvp6Vs3BUmG5daxo532tc1XF9HnuYll0qCFP2eTIKd2HiPPQ4waOe+8t3oGxrglZyzmMANhdY7iJZSRS02yFpdaiA=
+	t=1709613336; cv=none; b=T7i7PIq611NpftTvXk3DSDGCsSnQmYTN/d0u1Xmw6c9KRXLOY/PMUsPSPHPgtroLDNs5HClWDcCRqY9XVOTxlapK4xEmLcOqpJekeVlAcsHrEYM4fkBoGloEL9GhK/lewKIel6bNEyYfzvJe1yFZMUnWIpQZD8qr5zeyIZMHPrs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709613309; c=relaxed/simple;
-	bh=SyVpWR0YqhOvs/OxGe0jMoDi7DFJpkAA1b348TIrzyU=;
+	s=arc-20240116; t=1709613336; c=relaxed/simple;
+	bh=asko4xyRiFAMzyuyOz9L46wLJOHHpA8t33DB/iA4nso=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UdodJAyUI5uxa6wy75gzJ8OG/79oqEesE7KKExSz9+0XcqvH0zZP5mji8tlNLFNWDazSRmbY6kZLMO3optRN9cH2M4yR0lnBRcHtJibAsU0bttUe3hCc4wnfx/XIg5LH+V4SEWt3FJVsOQcBFhZ2LQlDkOVra2kwv/Uq4ndkQfU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QbzjnGw+; arc=none smtp.client-ip=209.85.167.177
+	 Content-Type:Content-Disposition:In-Reply-To; b=WoMPbvv4Q03Ojj3AmGduY3QRlmP9AASOHfFPFoWWR5Dd2tnjrNPxiDmb91+xPyQXHZCaba2IRnE4R+fsMqs8nQKZf9EJqxaFjd3XV/4ddgh8L29PMQbm8CAD7YrecfhePpxTzuqwWs/iUcMvvrqQTM+DovSHZb+eWXS4Qfk/Hz4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nNgosjcB; arc=none smtp.client-ip=209.85.210.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3c1ea5b42e7so1286865b6e.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 20:35:07 -0800 (PST)
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6e5dddd3b95so2180381b3a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 20:35:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709613306; x=1710218106; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1709613334; x=1710218134; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4vjRQzniHRafe2ZwDDGF6wB4iwR2l8xzXGYmTAavCjw=;
-        b=QbzjnGw+2IQNNqEDwdgZ6gcn47fHe1I1vHUf5l5XfrZqMvpuCmN/AnuTBkMkU+5Ki5
-         fYgQVg1KbAIZSSi7JNg6o5HA9GFKr+NvbHRgKJTdk7Ks7YzJ2/aAVFJ/oIPoXfrqdydM
-         esWpS8KxZjvTCmFOMaJnCPyjOzihVr2840Gz0LNgjGRMzSw+BjDFL0fTjd/WsBIkV14A
-         9l3RK21AfRg5Mw3IITMqmApMoSBIG+D3AXYMZ1vC4XqmgLQkStjVM3XIBfiYsLEFclV/
-         Rmpr4wi2C4X2sd3kPjzms/2dykqlnwdIWiuYDhPICoyTaT1F4KpzyrpuIPU5UHnt5Tyc
-         7FFg==
+        bh=2+cJ77QUjFvy52iS4N40eKiVLlok+nrPIGL+OqwFVkI=;
+        b=nNgosjcBqbgZ5iF1d0p05jyhe+I+xbkbqH1/AQMyGbhS6v8iBXNIzJvIH/thmaIKaN
+         2+U6qAuTcP3V8vUmiq6Wac1VNeJpCDsOmoSsjI6WyafJzNGk8qtpd42dxuc70DMLZy4u
+         OJ2E/r9SWUTAmotTmSBn4nM/Bawm8QlqSBI+wlYfvzxQtUCC8lDt5gr9qWiX2pB+y3Ek
+         e0m0I5CmrAW+6jjG8SsQQOpGncotIFzI2rXOxoNlikL8T7Nxru/k87mjffTO6dK51+1N
+         X3NdJ6fB9blyvFcmUYW8u8jUPsyHs6QG57cXtpiV0/lzyJFPhQnOzzGr22PDQHKWIQxD
+         /z2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709613306; x=1710218106;
+        d=1e100.net; s=20230601; t=1709613334; x=1710218134;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4vjRQzniHRafe2ZwDDGF6wB4iwR2l8xzXGYmTAavCjw=;
-        b=u8BiqudQUpe2+1FnfSWT4FkqQwqXR5GPQeRLAIJgERdsxwJ1x/6LSyaLL9K+4ylzKR
-         7veEXLdFwWiGc2fkRHc0nJmxk52x1MLYx9zGRSgVePJWCGaRRvw7eoO3E1YtikG65T2c
-         iR+un/Con1muX0ompVErjgSNKmfg7ynxM6/YwdmaJeKoqZ4N10E2QpbrojICvcP4oA72
-         0wwJFPhXKua89FyYiBtEWnrETdgHLclGl9VFUlOOgWLtaTaQGqPGcpEtMibh/EMIXvvF
-         mQVslgtI4neyvPhIyqnDM2GGiP+m3CZexJyug6xibaFcUf+EhXiejRrRRG8itsN7LD5V
-         XLrw==
-X-Forwarded-Encrypted: i=1; AJvYcCV3+76j7ZZQygnA1WWh1+Kq9jrRdgN86RTaoaWx7xMNjCNWUYoH27BZM3KByp6JLF7chGUMzWakaVhBJ4YyU+KkqQ2xIk1HmHYYGwbr
-X-Gm-Message-State: AOJu0YwMdKr7UQo/NF9DKJmWmGdVzhAKOVunP4Oin4o7sFmAoQcX018X
-	C+9oDWmxSRHyNI9D6dqY+VVWTHHKKKj0PJMLqJypzdq0xKsOVA4H3h52O3n5vCVcUQlqhjLE106
-	L
-X-Google-Smtp-Source: AGHT+IH1YAIyReoRbQYzHs76JwvjyUSpZA7Q97zMfBJJnoNqb6U2Bvgox8NitSny3i+OrmCHQknUpg==
-X-Received: by 2002:a05:6808:f8e:b0:3c1:ef91:c8e6 with SMTP id o14-20020a0568080f8e00b003c1ef91c8e6mr890197oiw.11.1709613306564;
-        Mon, 04 Mar 2024 20:35:06 -0800 (PST)
+        bh=2+cJ77QUjFvy52iS4N40eKiVLlok+nrPIGL+OqwFVkI=;
+        b=FWiR0S0NEwys016fxchmLxzgWBiMVmoywmL0DLDlnagkt1exGi8qIChohI/wRwV86Q
+         Tsnt7QYXAq/kKs9m4Bolj8C3VQoR20xZ7L6CILXS+1G+Efi1BHUAFblGf8oKlUgoH5xE
+         0Y0Gkbr4Cy0iYUVGLVxM5bpsg0kWOiH8TTu6aFR83SZQBNJoa44yw6IXhqkcMZdZyk8U
+         asKZuPRPl3infq21RbhXHwJvJmsCSVBaou8O4NGr2nTg2aTJ5LvYukz23lrWDJ9ETswO
+         9rdUUwGWuUPvakr36eG6dRE8I+PTMzfoSlS5T+WNQj/bfY3RVQyWOf3F0kUuKsfeLstn
+         PyrQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUMJxxaIgiCY8+s960gFdwDI5gnxzA4UeiLCXiU5q9VCOKwGhTX6HNyqixYJBzGgiJRbKjT51Y4Z509Q6eSWXIdH5RqaecppaW69y/L
+X-Gm-Message-State: AOJu0YyIuBMuV+nTmvg4T9S8J1HemPNVNoIg2eAJZlZOkVGago2qLEMd
+	0uSVxBXQswAOTJnia6qu4QYFyIWuJpOhEjYIR1FpjIEBvRnXaYB+Bgv05RNDvs0=
+X-Google-Smtp-Source: AGHT+IFmsqctG2F0e+DwL/+iKElFo8vsOSL/VgfrJGEJ1PK1BW1N4F1HSiiWpIqpVyCdKNpW2+EDfA==
+X-Received: by 2002:a05:6a21:1707:b0:1a0:eb42:a708 with SMTP id nv7-20020a056a21170700b001a0eb42a708mr943561pzb.18.1709613334025;
+        Mon, 04 Mar 2024 20:35:34 -0800 (PST)
 Received: from localhost ([122.172.85.206])
-        by smtp.gmail.com with ESMTPSA id ei30-20020a056a0080de00b006e5359e621csm8029647pfb.182.2024.03.04.20.35.05
+        by smtp.gmail.com with ESMTPSA id d15-20020a63fd0f000000b005dc87643cc3sm8236234pgh.27.2024.03.04.20.35.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 20:35:06 -0800 (PST)
-Date: Tue, 5 Mar 2024 10:05:03 +0530
+        Mon, 04 Mar 2024 20:35:33 -0800 (PST)
+Date: Tue, 5 Mar 2024 10:05:31 +0530
 From: Viresh Kumar <viresh.kumar@linaro.org>
-To: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Ilia Lin <ilia.lin@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH 3/3] cpufreq: qcom-nvmem: add support for IPQ5321
-Message-ID: <20240305043503.tgy5ahl243or7lm5@vireshk-i7>
-References: <20240228-ipq5321-sku-support-v1-0-14e4d4715f4b@quicinc.com>
- <20240228-ipq5321-sku-support-v1-3-14e4d4715f4b@quicinc.com>
- <20240304071222.cx3s37mphddk23bv@vireshk-i7>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the cpufreq-arm tree
+Message-ID: <20240305043531.anlwwmlu6hwogxxa@vireshk-i7>
+References: <20240305110914.69ed133b@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -90,36 +82,27 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240304071222.cx3s37mphddk23bv@vireshk-i7>
+In-Reply-To: <20240305110914.69ed133b@canb.auug.org.au>
 
-On 04-03-24, 12:42, Viresh Kumar wrote:
-> On 28-02-24, 20:21, Kathiravan Thirumoorthy wrote:
-> > Like all other SoCs in IPQ5332 family, cpufreq for IPQ5321 is also
-> > determined by the eFuse, with the maximum limit of 1.1GHz. Add support
-> > for the same.
-> > 
-> > Signed-off-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-> > ---
-> >  drivers/cpufreq/qcom-cpufreq-nvmem.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/drivers/cpufreq/qcom-cpufreq-nvmem.c b/drivers/cpufreq/qcom-cpufreq-nvmem.c
-> > index ea05d9d67490..0a46b5d49d32 100644
-> > --- a/drivers/cpufreq/qcom-cpufreq-nvmem.c
-> > +++ b/drivers/cpufreq/qcom-cpufreq-nvmem.c
-> > @@ -191,6 +191,7 @@ static int qcom_cpufreq_kryo_name_version(struct device *cpu_dev,
-> >  	case QCOM_ID_IPQ5312:
-> >  	case QCOM_ID_IPQ5302:
-> >  	case QCOM_ID_IPQ5300:
-> > +	case QCOM_ID_IPQ5321:
-> >  	case QCOM_ID_IPQ9514:
-> >  	case QCOM_ID_IPQ9550:
-> >  	case QCOM_ID_IPQ9554:
+On 05-03-24, 11:09, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Applied. Thanks.
+> After merging the cpufreq-arm tree, today's linux-next build (arm
+> multi_v7_defconfig) failed like this:
+> 
+> drivers/cpufreq/qcom-cpufreq-nvmem.c: In function 'qcom_cpufreq_kryo_name_version':
+> drivers/cpufreq/qcom-cpufreq-nvmem.c:194:14: error: 'QCOM_ID_IPQ5321' undeclared (first use in this function); did you mean 'QCOM_ID_IPQ5312'?
+>   194 |         case QCOM_ID_IPQ5321:
+>       |              ^~~~~~~~~~~~~~~
+>       |              QCOM_ID_IPQ5312
+> 
+> Caused by commit
+> 
+>   006af7c6958e ("cpufreq: qcom-nvmem: add support for IPQ5321")
+> 
+> I have used the cpufreq-arm tree from next-20240304 for today.
 
-Dropped since the previous commit it required too. Can we get the
-necessary acks for me to pick those ?
+Sorry about that, dropped now.
 
 -- 
 viresh
