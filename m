@@ -1,56 +1,57 @@
-Return-Path: <linux-kernel+bounces-92346-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92347-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F43C871EDE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:17:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBD5C871EE1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:17:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44FD7286E98
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:17:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C1CEB24734
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:17:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54B535C8F5;
-	Tue,  5 Mar 2024 12:15:37 +0000 (UTC)
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37A0D5CDE0;
+	Tue,  5 Mar 2024 12:15:39 +0000 (UTC)
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 326BA5A7A5;
-	Tue,  5 Mar 2024 12:15:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D235B5A792;
+	Tue,  5 Mar 2024 12:15:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709640936; cv=none; b=Ax5ubWXLUmHC7Nkz/R+p4IAuNh7bWlV1tgLGCJaYZO6IKtxHVxRhOmkwtKW27mJfdbeozdsrcfo4GFbHJLS25mBtPeFw/PDP60i86AfcMf7B4F34ezbK/kF41en2j90e5z2PxGGSkEyei81zsgYlclzPbmqWVH+dxI2WalOobks=
+	t=1709640938; cv=none; b=HRFPws1MFSPBUsMXiYg9sMPuuEsb9w15IgfekjV6OE+qe/eLP7OiZ5B3ss2E6ManfpGJM0gEnjqS4L7zRrFEmdrJnsEuLsfbub2yCZLy/ccbWenl+1kdX3bV+8skAm2+aQBEJqB1FM5qQ8WLPfj1NIxnNYBgYLHG9u7ylmv3mzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709640936; c=relaxed/simple;
-	bh=yrysr5iWvnRVbt2xL/EIfqttzTX5rUTHYqNzaLx5qcM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pXrtShTFtWFEtZlmXpNo6hoolrRtA+o/8w3d52LO2vKdNdlMlzlLreIZQEJRD//XlefSwgLmfsAPCyD6ty6Ij0t5RMrqeR6kZHSMmdfTbHF7ZE+fcE28Ei1dN9F2vYfea/BAUyH2TfqL5JOiAjoXM7yaUAN/tv2YRPlycV6+MWk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.44
+	s=arc-20240116; t=1709640938; c=relaxed/simple;
+	bh=woWMYc5OgL+cBIbSw0Bp6OpF6hwqiIc1KvuQj/MhjT0=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=G6b/hXtIl+bObCZBkOap+fd9dMnb7MQfsHCvxtu+m/hy36DQ+frr8pfSoox9mGe1cWnF5b3IcZHrBLu2g+EbD4VM8rwFCM8O2LD2YDVkZ6gqpuJod0h4lmA12b4znDwI9njCtIyWLed+X72MF+s01V111sj4EaEqrKFVyIYane8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a2f22bfb4e6so89482166b.0;
-        Tue, 05 Mar 2024 04:15:34 -0800 (PST)
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-563bb51c36eso7247506a12.2;
+        Tue, 05 Mar 2024 04:15:36 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709640933; x=1710245733;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JG3VSpSBId+LffdzAqb7pqYBWbcN1uLse2eKNRmus5E=;
-        b=pkevkpGKzBqWRHEwmigNroyoSZQy0DS4ru68UxJJhuND2vh7NWcg5h9IudToeGth2o
-         j9EaLo8qR8wiskgK3yOw3OsVoOJcL24unwlJT/5DeaiHczfztV1wd4kTfGGFGEYHrQh1
-         bo/eLXYgBM9VwqKs7LOATIMuV7Ib/0Sk9R2oyhkoIPkSwTdX0ostvk/yE2YEBzbN13Gx
-         R9nXxE7mYpja+b2Hk66zNnm/rb2F1zlf/LMHuEXxmgL51mXHmf66NQ6w5wgfF6sa6E4x
-         8ojmVLKYABx6QoSGgrKrNn/1V3jnug9vkr80+iAmIib6mxCrxXcBlVAoDaxVBdxYafmn
-         vXhg==
-X-Forwarded-Encrypted: i=1; AJvYcCWs9pBtAvHlyCC5pkfl5aVdEWzJnR7wxf8oGuD7LFNNiJXh48mcfABC83owp9CC9c/6OcpgGPnZAycBrpaPb85lF+Hzrm5pkQ8KYNEL
-X-Gm-Message-State: AOJu0YylXMaw6da+wnNuRqmghLAoU2P4zr7UGhsuaL13XQv/7oRXV6Wp
-	SxsFRV8gNhrUj5qg7mY8krtfNiVZlsDFp4u9BgtHZpQNP7kPXsVM
-X-Google-Smtp-Source: AGHT+IFR3WGZuebyFFvq/51EnY9cTbsjkK/kx7Ilk++87zUVxhXQMBrOMecLr6eR2TSNRBaf4SPz1Q==
-X-Received: by 2002:a17:906:6954:b0:a45:8f10:50c6 with SMTP id c20-20020a170906695400b00a458f1050c6mr2209901ejs.57.1709640933320;
-        Tue, 05 Mar 2024 04:15:33 -0800 (PST)
-Received: from localhost (fwdproxy-lla-120.fbsv.net. [2a03:2880:30ff:78::face:b00c])
-        by smtp.gmail.com with ESMTPSA id am19-20020a170906569300b00a44cb0bf11bsm4027184ejc.79.2024.03.05.04.15.32
+        d=1e100.net; s=20230601; t=1709640935; x=1710245735;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=73oxC7fiTEx14ckkL7VJ6pLMLA9f6p7sprpT+joqmVc=;
+        b=u97pXZfNqdZrVQzEVJKffvkxO3Gxyzq/50yTZThXDDI1gi7V9I0fB4klsXT19aqt2N
+         vOaQIoKq5PwaCfoz+WRqkOG7nOwwVkUq8zMcdU+O0v2eboUqaRXmHarOlRI9WJGjHaKc
+         2ukCDuhNyDhdJvA23Zv7tDHJM+vpRQQ6GzT6CkP/MrGbE/IRHdTBq6hr78uQtDxFSDWU
+         BZySVFPHUPAAMD5NJyyjg54l8KsOmK+EaHlI7RhGYz0Y7BfSMZ5gGF5a4MiBIuTJKltm
+         nSb1gHRtFSSHat0sBQSvcNNdGGweo9DwbtuTsFIcr3UIa+qqRVv+Uqi3SELMQzzw5zUY
+         +eiA==
+X-Forwarded-Encrypted: i=1; AJvYcCUzQpjz+HLm9sio43N2+MIwx4fpyBEcaBUkBFnDe2tzXQUv4dU8Ya/WvYDBHBrEr301PJ75Me3BgHkF9gxa9n6pPgafhqK4wczRO3og
+X-Gm-Message-State: AOJu0Yxt9/ROvuEC1Wz0cSq2WQEUv0owieXdsrD14xAPrV/0YEI7bcfB
+	O6dNpzusVdItNifOtKnSiDXlKqNlMvx6YuDG78h0z2iK4HmBWGKw
+X-Google-Smtp-Source: AGHT+IEgZP/25f03fXOd6Z9uDpCifrB6YeqYPf/fSwLvjFuOevo4KNmPHtiLcHQMRiGqrIZxE03Bmw==
+X-Received: by 2002:a50:954c:0:b0:565:8339:5753 with SMTP id v12-20020a50954c000000b0056583395753mr6511550eda.40.1709640935115;
+        Tue, 05 Mar 2024 04:15:35 -0800 (PST)
+Received: from localhost (fwdproxy-lla-005.fbsv.net. [2a03:2880:30ff:5::face:b00c])
+        by smtp.gmail.com with ESMTPSA id v3-20020aa7d9c3000000b0056629f5de88sm5707578eds.61.2024.03.05.04.15.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 04:15:32 -0800 (PST)
+        Tue, 05 Mar 2024 04:15:34 -0800 (PST)
 From: Breno Leitao <leitao@debian.org>
 To: Pablo Neira Ayuso <pablo@netfilter.org>,
 	Harald Welte <laforge@gnumonks.org>,
@@ -63,10 +64,12 @@ Cc: netdev@vger.kernel.org,
 	horms@kernel.org,
 	dsahern@kernel.org,
 	osmocom-net-gprs@lists.osmocom.org (open list:GTP (GPRS Tunneling Protocol))
-Subject: [PATCH net-next 1/3] net: gtp: Leverage core stats allocator
-Date: Tue,  5 Mar 2024 04:15:21 -0800
-Message-ID: <20240305121524.2254533-1-leitao@debian.org>
+Subject: [PATCH net-next 2/3] net: gtp: Remove generic .ndo_get_stats64
+Date: Tue,  5 Mar 2024 04:15:22 -0800
+Message-ID: <20240305121524.2254533-2-leitao@debian.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240305121524.2254533-1-leitao@debian.org>
+References: <20240305121524.2254533-1-leitao@debian.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,53 +78,32 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-With commit 34d21de99cea9 ("net: Move {l,t,d}stats allocation to core and
-convert veth & vrf"), stats allocation could be done on net core
-instead of in this driver.
+Commit 3e2f544dd8a33 ("net: get stats64 if device if driver is
+configured") moved the callback to dev_get_tstats64() to net core, so,
+unless the driver is doing some custom stats collection, it does not
+need to set .ndo_get_stats64.
 
-With this new approach, the driver doesn't have to bother with error
-handling (allocation failure checking, making sure free happens in the
-right spot, etc). This is core responsibility now.
-
-Remove the allocation in the gtp driver and leverage the network
-core allocation instead.
+Since this driver is now relying in NETDEV_PCPU_STAT_TSTATS, then, it
+doesn't need to set the dev_get_tstats64() generic .ndo_get_stats64
+function pointer.
 
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- drivers/net/gtp.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ drivers/net/gtp.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/drivers/net/gtp.c b/drivers/net/gtp.c
-index 2b46b7398ade..facbfba5d77f 100644
+index facbfba5d77f..a279f0cd1b4d 100644
 --- a/drivers/net/gtp.c
 +++ b/drivers/net/gtp.c
-@@ -717,10 +717,6 @@ static int gtp_dev_init(struct net_device *dev)
+@@ -940,7 +940,6 @@ static const struct net_device_ops gtp_netdev_ops = {
+ 	.ndo_init		= gtp_dev_init,
+ 	.ndo_uninit		= gtp_dev_uninit,
+ 	.ndo_start_xmit		= gtp_dev_xmit,
+-	.ndo_get_stats64	= dev_get_tstats64,
+ };
  
- 	gtp->dev = dev;
- 
--	dev->tstats = netdev_alloc_pcpu_stats(struct pcpu_sw_netstats);
--	if (!dev->tstats)
--		return -ENOMEM;
--
- 	return 0;
- }
- 
-@@ -729,7 +725,6 @@ static void gtp_dev_uninit(struct net_device *dev)
- 	struct gtp_dev *gtp = netdev_priv(dev);
- 
- 	gtp_encap_disable(gtp);
--	free_percpu(dev->tstats);
- }
- 
- static inline void gtp0_push_header(struct sk_buff *skb, struct pdp_ctx *pctx)
-@@ -970,6 +965,7 @@ static void gtp_link_setup(struct net_device *dev)
- 	dev->type = ARPHRD_NONE;
- 	dev->flags = IFF_POINTOPOINT | IFF_NOARP | IFF_MULTICAST;
- 
-+	dev->pcpu_stat_type = NETDEV_PCPU_STAT_TSTATS;
- 	dev->priv_flags	|= IFF_NO_QUEUE;
- 	dev->features	|= NETIF_F_LLTX;
- 	netif_keep_dst(dev);
+ static const struct device_type gtp_type = {
 -- 
 2.43.0
 
