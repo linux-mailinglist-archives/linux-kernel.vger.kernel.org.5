@@ -1,196 +1,185 @@
-Return-Path: <linux-kernel+bounces-91558-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91559-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAD3387139F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 03:31:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 581E88713A3
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 03:32:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54555B2131F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 02:31:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C20311F23067
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 02:32:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBF80286B3;
-	Tue,  5 Mar 2024 02:31:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8452286BF;
+	Tue,  5 Mar 2024 02:32:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CaOJAuEc"
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xc9OROup"
+Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50A6223CE;
-	Tue,  5 Mar 2024 02:30:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EDA9EDE;
+	Tue,  5 Mar 2024 02:32:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709605861; cv=none; b=q1E32GzPwsfb6F//r7qdM7g7cjKD8ySKCYy5rtJEk9rdIRMeW9T7t0GKs6FavZ7AqGlrbS4G03gat7hosxTWCh3C+R4C0zq1+sQcRZxSvrKc+AigzACo/Au7EK40LEj01DX27RVyTUbN5+9zYRYIK2XbZ98QSlwGWf5gAIjOT+Q=
+	t=1709605923; cv=none; b=DoyjGjrwYdf8ult8e96Cbn/146JdUnCjP1ke5HL+XObLGiL50KbvqsCE8qc+BxjjSN3oXqNeMf4HdryMWT5BCJGQcZbtH9ISoFqbZeb3ckhpTWb6ohhtxn/Q1nZLN7skUvysXgWijvyuJxoeBqKDJy8hN6PjKcYPhP6buHX9geM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709605861; c=relaxed/simple;
-	bh=pSsvsuUlut4jPJp7g2dGTj1A/pEOdbw7dEeVXx61AJw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rS6pbEfwOa/RTAACeRdqcg3A7xcNSvqIjJGRCnMmGfwpk3nbPVJbiH8+crKCh14cEtF3vVYYumemMePPVnxrCZVB6BsxSnR+pD74sdgTwTFXmmYNw+tSjtuz+xoemSPXkFxlzUYEvB2gSAwpumNkSNMQIKdRncCL3VWoP3vLRII=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CaOJAuEc; arc=none smtp.client-ip=209.85.167.49
+	s=arc-20240116; t=1709605923; c=relaxed/simple;
+	bh=hk4ffxNQWELF0B5T5gTeWLKMNq6Hkl+1UGHQBiJSKRw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YzDhXdXLjvQYzaGBgPMtvBT4UgjFQ0wvSLbRru67pHD9z9NSNmX91ZVkt73vN1jiorJnj7KVTkpRAsrPTN0KVsAo0WqL9kQwiM75MQYps7Jx67B0SOBBXesiDp5/1a46WTEoRQ8IAphQ3MWp46weZbHzJ9hO61WrfcyGL7hgVws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Xc9OROup; arc=none smtp.client-ip=209.85.210.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-512bc0e8ce1so5196373e87.0;
-        Mon, 04 Mar 2024 18:30:58 -0800 (PST)
+Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6e4f1660493so457186a34.0;
+        Mon, 04 Mar 2024 18:32:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709605857; x=1710210657; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FJxBJuXmvGHQUImyHIJdK0gOdBp3H9ixn+SkaIN8FCM=;
-        b=CaOJAuEc7tsgCr9+j7UU4ejSxi7nAB9TlUnZWzDBe0/jL260iYg9qSCADbZ6gbiHs3
-         zb3QwSX0kT3ot9a5l+XEkO5h+0KW0f3zr9X+dEo+PACo28cpnNsgEfTsPth5Z7tQ9/gw
-         OHj265jsVvfJzBaa/HYmtOrN7LurKrUTFkQfqm8yvJ+50eMSWR0Oxr77gVp3/sVQxR/B
-         qjSAikfTtOtPOb9HzY1knEno4P0AEz9yFd7s+9paA78pL4EU9BsPkAVDWEO8q71t4GYl
-         FCPV6+49lapnlSw3Bl94ZOOZUrIo1POqWSnp5Yc6pP+wlaHItpXlgDEM3e+KNEUCaDVj
-         LZ0A==
+        d=gmail.com; s=20230601; t=1709605920; x=1710210720; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DQS78kDIQyyXIAHjahu4pRvGKqSGcVFJuYh7FUonVEM=;
+        b=Xc9OROupavOHaIEzCzc/YIQVQbvXpH9KPX8BuAZ9LPwZunlt5EDLkGL44+fTQt/zUw
+         tYsvjzqk3DJo/lkmFR20IVqnWOT/qhJK+RFBTsBYVOOkNMK9jf+uASwdFAoznTuyJk1F
+         Q9DMFNQV7rjgUHIktvXq/br++I2f/+bq1lVEsVt/QWQsuQiHtfRkr0zudlDhS6VIH8Ea
+         ps0mTg6Ss9b4qdQAuVIcEsodWDqN6dRpx1AAt9aQa3zrhCkc4BjQDwDETbLGg3fBny5X
+         /+8pq10x+/gaYP43JfjJXRhNit6m+kxgS4yUEgFOtTkV6a4eyqeZBkxmu0Frp42K0eMk
+         ijpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709605857; x=1710210657;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FJxBJuXmvGHQUImyHIJdK0gOdBp3H9ixn+SkaIN8FCM=;
-        b=qZsmAqQSc/Kz+Eyv6eoIxDjyNcx0cmO9rq1ZDsc0jgIbPNx+hhknkXBI+me3TBvKfw
-         +RuV68b0cd9QCDJ8mpcehUkoOgXb+iaCOQv2aPVqf1i3dSJrJOv33K0zt+QAHGcK/w0v
-         o0WTTNY+KLmR0nKqZyqAqK2dA3yZ6JXkVKhYfijgjwWi4roskeVcVdKeaR6rvh7FAutf
-         EITJDv392v3R83s3VWYsU3cJ9VoNWcV16PaGPg1mvhmhq2tHKjZ68I6Txn/pYW+QC08D
-         LkiYz8RkFRCqTjwkzsJhGpOgDeTDr7+RAvN5iW/VEBnNJG71w30eNX0k9vYZNN75UEoE
-         VFUg==
-X-Forwarded-Encrypted: i=1; AJvYcCVJO/YtqrQwOhLTL8IlMY8qlnBkHQMyenkwGFVmx0yz0gJ6KIFHWGROnaDyLTMaE5DpDGWJFfzd9rjf4KOnfPqa3S/RuICNEr85ZOiGFovKV8t2xLo0laWu8LCXqAth7BwBvWoEhzijpw==
-X-Gm-Message-State: AOJu0YyhczQE8BzRP2SfabaexAmn1y9cFdIYPkhFIZpqsEXtL5g/ng4+
-	+QsigzOMjSfXHh90Il917gKSc1wm/iFtREIoAC7WtYYGk2/Xlk6lPzc0gklypObFZAd2cDIWWjM
-	J4WcE6BBgfrMM3mcga2Kbri9Yzu8=
-X-Google-Smtp-Source: AGHT+IGdw1R5rJC4pZeyLtaquozmyyYFWlB0fEy+eGf175BBa5M1tKyVDX4YV/pAnGtKDEywU6f1ZMxAAXweNheWd18=
-X-Received: by 2002:a05:6512:36d0:b0:512:e220:d3ab with SMTP id
- e16-20020a05651236d000b00512e220d3abmr275796lfs.65.1709605857043; Mon, 04 Mar
- 2024 18:30:57 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709605920; x=1710210720;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DQS78kDIQyyXIAHjahu4pRvGKqSGcVFJuYh7FUonVEM=;
+        b=kJ1tuF8MP3gxP9aNuLBQXr8tVqttVw2YF3N+1/fd90UZhh9d0oMfSrRB0TJt2cp1pN
+         XmgEWZfjUIXeFewjbQL286A1gBIeCSB0MynIR+BTPDrc1Zu07zw3Jj2tVunxqK6kc/Ux
+         Rb4HLROatS3s9GvPTD/V41FVX6jZ0cAN0RjBRCRxPFhIBDkcZhR3Snfme88V0t2hwrrf
+         9gc0wmGt5ZZfsbJjuPWczrKR5AYxn9nK80Xa7+xKLpIt/7PilbWSjx7k4u+PWlITw44g
+         gvldgf+NCWW0qPQZirKo87cXAl36ZgbIIz2+ivnfKgQUsc4c6g81RpjHpvr5iKrexLZ2
+         khJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV3fqaq2/dyhqThshRLoiMjdursjt8ZH6yBTeqO67mzs3rwxjhg/oCl9rnVcajDahpLlS+YwqTsWuhuzlNO0ckvyp/UJrHpgy1oCp/WldiLZjmF7YuO3rVxdE/T8hjXFu6l
+X-Gm-Message-State: AOJu0YwFEo1aycKcjgGD9xOM4voXaRdRchZolGb3jwmYuP1/MyMVaKlS
+	BoKmJ2sDwK6nctHDhTNlFr33/Jed356z5bEcvfdUk3puvnRl+7RdrcOBrcX0FbM=
+X-Google-Smtp-Source: AGHT+IGeh/sNbtF2r85uQWZaRW1uNmHaXmFmsrApiNZFT4slLKxfnAiVMzH6gJJojerhG10rysbivg==
+X-Received: by 2002:a05:6870:f6aa:b0:21e:95d9:dc7b with SMTP id el42-20020a056870f6aa00b0021e95d9dc7bmr587919oab.30.1709605920528;
+        Mon, 04 Mar 2024 18:32:00 -0800 (PST)
+Received: from [192.168.255.10] ([43.132.141.24])
+        by smtp.gmail.com with ESMTPSA id u20-20020a62d454000000b006e468cd0a5asm8540777pfl.178.2024.03.04.18.31.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Mar 2024 18:31:59 -0800 (PST)
+Message-ID: <8a846ba5-d346-422e-817b-e00ab9701f19@gmail.com>
+Date: Tue, 5 Mar 2024 10:31:55 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1706603678.git.haibo1.xu@intel.com>
-In-Reply-To: <cover.1706603678.git.haibo1.xu@intel.com>
-From: Haibo Xu <xiaobo55x@gmail.com>
-Date: Tue, 5 Mar 2024 10:30:45 +0800
-Message-ID: <CAJve8o=H+VVyQH6crAvnTUSjRV2pFDmEpy4ykpFBYSB3pOeiZQ@mail.gmail.com>
-Subject: Re: [PATCH 0/4] Add ACPI NUMA support for RISC-V
-To: Haibo Xu <haibo1.xu@intel.com>
-Cc: ajones@ventanamicro.com, sunilvl@ventanamicro.com, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
-	Robert Moore <robert.moore@intel.com>, Conor Dooley <conor.dooley@microchip.com>, 
-	Guo Ren <guoren@kernel.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>, 
-	Alexandre Ghiti <alexghiti@rivosinc.com>, Greentime Hu <greentime.hu@sifive.com>, 
-	Anup Patel <apatel@ventanamicro.com>, Sami Tolvanen <samitolvanen@google.com>, 
-	Jisheng Zhang <jszhang@kernel.org>, =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, 
-	Baoquan He <bhe@redhat.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Chen Jiahao <chenjiahao16@huawei.com>, Arnd Bergmann <arnd@arndb.de>, 
-	James Morse <james.morse@arm.com>, Evan Green <evan@rivosinc.com>, 
-	Samuel Holland <samuel.holland@sifive.com>, Yang Li <yang.lee@linux.alibaba.com>, 
-	Tony Luck <tony.luck@intel.com>, Ard Biesheuvel <ardb@kernel.org>, Yuntao Wang <ytcoode@gmail.com>, 
-	Dan Williams <dan.j.williams@intel.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	Alison Schofield <alison.schofield@intel.com>, linux-riscv@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, 
-	acpica-devel@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] KVM: x86/svm/pmu: Set PerfMonV2 global control bits
+ correctly
+To: Sean Christopherson <seanjc@google.com>,
+ Dapeng Mi <dapeng1.mi@linux.intel.com>
+Cc: Sandipan Das <sandipan.das@amd.com>, pbonzini@redhat.com,
+ mizhang@google.com, jmattson@google.com, ravi.bangoria@amd.com,
+ nikunj.dadhania@amd.com, santosh.shukla@amd.com, manali.shukla@amd.com,
+ babu.moger@amd.com, kvm list <kvm@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20240301075007.644152-1-sandipan.das@amd.com>
+ <06061a28-88c0-404b-98a6-83cc6cc8c796@gmail.com>
+ <cc8699be-3aae-42aa-9c70-f8b6a9728ee3@amd.com>
+ <f5bbe9ac-ca35-4c3e-8cd7-249839fbb8b8@linux.intel.com>
+ <ZeYlEGORqeTPLK2_@google.com>
+Content-Language: en-US
+From: Like Xu <like.xu.linux@gmail.com>
+In-Reply-To: <ZeYlEGORqeTPLK2_@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hi Sunil,
+On 5/3/2024 3:46 am, Sean Christopherson wrote:
+> On Mon, Mar 04, 2024, Dapeng Mi wrote:
+>>
+>> On 3/1/2024 5:00 PM, Sandipan Das wrote:
+>>> On 3/1/2024 2:07 PM, Like Xu wrote:
+>>>> On 1/3/2024 3:50 pm, Sandipan Das wrote:
+>>>>> With PerfMonV2, a performance monitoring counter will start operating
+>>>>> only when both the PERF_CTLx enable bit as well as the corresponding
+>>>>> PerfCntrGlobalCtl enable bit are set.
+>>>>>
+>>>>> When the PerfMonV2 CPUID feature bit (leaf 0x80000022 EAX bit 0) is set
+>>>>> for a guest but the guest kernel does not support PerfMonV2 (such as
+>>>>> kernels older than v5.19), the guest counters do not count since the
+>>>>> PerfCntrGlobalCtl MSR is initialized to zero and the guest kernel never
+>>>>> writes to it.
+>>>> If the vcpu has the PerfMonV2 feature, it should not work the way legacy
+>>>> PMU does. Users need to use the new driver to operate the new hardware,
+>>>> don't they ? One practical approach is that the hypervisor should not set
+>>>> the PerfMonV2 bit for this unpatched 'v5.19' guest.
+>>>>
+>>> My understanding is that the legacy method of managing the counters should
+>>> still work because the enable bits in PerfCntrGlobalCtl are expected to be
+>>> set. The AMD PPR does mention that the PerfCntrEn bitfield of PerfCntrGlobalCtl
+>>> is set to 0x3f after a system reset. That way, the guest kernel can use either
+>>
+>> If so, please add the PPR description here as comments.
+> 
+> Or even better, make that architectural behavior that's documented in the APM.
 
-Could you help review this patch set?
+On the AMD side, we can't even reason that "PerfMonV3" will be compatible with
+"PerfMonV2" w/o APM clarification which is a concern for both driver/virt impl.
 
-Thanks,
-Haibo
+> 
+>>>>> ---
+>>>>>     arch/x86/kvm/svm/pmu.c | 1 +
+>>>>>     1 file changed, 1 insertion(+)
+>>>>>
+>>>>> diff --git a/arch/x86/kvm/svm/pmu.c b/arch/x86/kvm/svm/pmu.c
+>>>>> index b6a7ad4d6914..14709c564d6a 100644
+>>>>> --- a/arch/x86/kvm/svm/pmu.c
+>>>>> +++ b/arch/x86/kvm/svm/pmu.c
+>>>>> @@ -205,6 +205,7 @@ static void amd_pmu_refresh(struct kvm_vcpu *vcpu)
+>>>>>         if (pmu->version > 1) {
+>>>>>             pmu->global_ctrl_mask = ~((1ull << pmu->nr_arch_gp_counters) - 1);
+>>>>>             pmu->global_status_mask = pmu->global_ctrl_mask;
+>>>>> +        pmu->global_ctrl = ~pmu->global_ctrl_mask;
+>>
+>> It seems to be more easily understand to calculate global_ctrl firstly and
+>> then derive the globol_ctrl_mask (negative logic).
+> 
+> Hrm, I'm torn.  On one hand, awful name aside (global_ctrl_mask should really be
+> something like global_ctrl_rsvd_bits), the computation of the reserved bits should
+> come from the capabilities of the PMU, not from the RESET value.
+> 
+> On the other hand, setting _all_ non-reserved bits will likely do the wrong thing
+> if AMD ever adds bits in PerfCntGlobalCtl that aren't tied to general purpose
+> counters.  But, that's a future theoretical problem, so I'm inclined to vote for
+> Sandipan's approach.
 
-On Wed, Jan 31, 2024 at 10:18=E2=80=AFAM Haibo Xu <haibo1.xu@intel.com> wro=
-te:
->
-> This patch series enable RISC-V ACPI NUMA support which was based on
-> the recently approved ACPI ECR[1].
->
-> Patch 1/4 is generated from the acpica PR[2] and should be merged through
-> the acpica project. Due to this dependency, other 3 patches can only be
-> merged after the corresponding ACPICA patch was pulled into linux.
->
-> Patch 2/4 add the common SRAT RINTC affinity structure handler.
-> Patch 3/4 add RISC-V specific acpi_numa.c file to parse NUMA information
-> from SRAT and SLIT ACPI tables.
-> Patch 4/4 add corresponding ACPI_NUMA config for RISC-V Kconfig.
->
-> Based-on: https://github.com/linux-riscv/linux-riscv/tree/for-next
->
-> [1] https://mantis.uefi.org/mantis/view.php?id=3D2433
-> [2] https://github.com/acpica/acpica/pull/926
->
-> Testing:
-> Since the ACPI AIA/PLIC support patch set is still under upstream review,
-> hence it is tested using the poll based HVC SBI console and RAM disk.
-> 1) Build latest Qemu with the following patch backported
->    https://lore.kernel.org/all/20240129094200.3581037-1-haibo1.xu@intel.c=
-om/
->    https://github.com/vlsunil/qemu/commit/42bd4eeefd5d4410a68f02d54fee406=
-d8a1269b0
->
-> 2) Build latest EDK-II
->    https://github.com/tianocore/edk2/blob/master/OvmfPkg/RiscVVirt/README=
-md
->
-> 3) Build Linux with the following configs enabled
->    CONFIG_RISCV_SBI_V01=3Dy
->    CONFIG_SERIAL_EARLYCON_RISCV_SBI=3Dy
->    CONFIG_HVC_RISCV_SBI=3Dy
->
-> 4) Build buildroot rootfs.cpio
->
-> 5) Launch the Qemu machine
->    qemu-system-riscv64 -nographic \
->    -machine virt,pflash0=3Dpflash0,pflash1=3Dpflash1 -smp 4 -m 8G \
->    -blockdev node-name=3Dpflash0,driver=3Dfile,read-only=3Don,filename=3D=
-RISCV_VIRT_CODE.fd \
->    -blockdev node-name=3Dpflash1,driver=3Dfile,filename=3DRISCV_VIRT_VARS=
-fd \
->    -object memory-backend-ram,size=3D4G,id=3Dm0 \
->    -object memory-backend-ram,size=3D4G,id=3Dm1 \
->    -numa node,memdev=3Dm0,cpus=3D0-1,nodeid=3D0 \
->    -numa node,memdev=3Dm1,cpus=3D2-3,nodeid=3D1 \
->    -numa dist,src=3D0,dst=3D1,val=3D30 \
->    -kernel linux/arch/riscv/boot/Image \
->    -initrd buildroot/output/images/rootfs.cpio \
->    -append "root=3D/dev/ram ro console=3Dhvc0 earlycon=3Dsbi"
->
-> [    0.000000] ACPI: SRAT: Node 0 PXM 0 [mem 0x80000000-0x17fffffff]
-> [    0.000000] ACPI: SRAT: Node 1 PXM 1 [mem 0x180000000-0x27fffffff]
-> [    0.000000] NUMA: NODE_DATA [mem 0x17fe3bc40-0x17fe3cfff]
-> [    0.000000] NUMA: NODE_DATA [mem 0x27fff4c40-0x27fff5fff]
-> ...
-> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> HARTID 0x0 -> Node 0
-> [    0.000000] ACPI: NUMA: SRAT: PXM 0 -> HARTID 0x1 -> Node 0
-> [    0.000000] ACPI: NUMA: SRAT: PXM 1 -> HARTID 0x2 -> Node 1
-> [    0.000000] ACPI: NUMA: SRAT: PXM 1 -> HARTID 0x3 -> Node 1
->
-> Haibo Xu (4):
->   ACPICA: SRAT: Add RISC-V RINTC affinity structure
->   ACPI: NUMA: Add handler for SRAT RINTC affinity structure
->   ACPI: RISCV: Add NUMA support based on SRAT and SLIT
->   ACPI: RISCV: Enable ACPI based NUMA
->
->  arch/riscv/Kconfig            |   1 +
->  arch/riscv/include/asm/acpi.h |  15 +++-
->  arch/riscv/kernel/Makefile    |   1 +
->  arch/riscv/kernel/acpi.c      |   5 --
->  arch/riscv/kernel/acpi_numa.c | 133 ++++++++++++++++++++++++++++++++++
->  arch/riscv/kernel/setup.c     |   4 +-
->  arch/riscv/kernel/smpboot.c   |   2 -
->  drivers/acpi/numa/Kconfig     |   2 +-
->  drivers/acpi/numa/srat.c      |  35 ++++++++-
->  include/acpi/actbl3.h         |  18 ++++-
->  include/linux/acpi.h          |   7 ++
->  11 files changed, 209 insertions(+), 14 deletions(-)
->  create mode 100644 arch/riscv/kernel/acpi_numa.c
->
-> --
-> 2.34.1
->
+I suspect that Intel hardware also has this behaviour [*] although guest
+kernels using Intel pmu version 1 are pretty much non-existent.
+
+[*] Table 10-1. IA-32 and Intel® 64 Processor States Following Power-up, Reset, 
+or INIT (Contd.)
+
+We need to update the selftest to guard this.
+
+> 
+>> diff --git a/arch/x86/kvm/svm/pmu.c b/arch/x86/kvm/svm/pmu.c
+>> index e886300f0f97..7ac9b080aba6 100644
+>> --- a/arch/x86/kvm/svm/pmu.c
+>> +++ b/arch/x86/kvm/svm/pmu.c
+>> @@ -199,7 +199,8 @@ static void amd_pmu_refresh(struct kvm_vcpu *vcpu)
+>> kvm_pmu_cap.num_counters_gp);
+>>
+>>          if (pmu->version > 1) {
+>> -               pmu->global_ctrl_mask = ~((1ull << pmu->nr_arch_gp_counters)
+>> - 1);
+>> +               pmu->global_ctrl = (1ull << pmu->nr_arch_gp_counters) - 1;
+>> +               pmu->global_ctrl_mask = ~pmu->global_ctrl;
+>>                  pmu->global_status_mask = pmu->global_ctrl_mask;
+>>          }
+>>
+>>>>>         }
+>>>>>           pmu->counter_bitmask[KVM_PMC_GP] = ((u64)1 << 48) - 1;
+>>>
+> 
 
