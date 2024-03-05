@@ -1,107 +1,176 @@
-Return-Path: <linux-kernel+bounces-92024-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92025-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 438548719EA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:49:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D451C8719EC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:49:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2ECE281A09
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:49:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3AA2FB21047
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:49:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8A2D535D1;
-	Tue,  5 Mar 2024 09:49:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA15D535BF;
+	Tue,  5 Mar 2024 09:49:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="lFsPXPEf"
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Hab/4V8O"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BDFA5025C;
-	Tue,  5 Mar 2024 09:48:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CFC4535AB;
+	Tue,  5 Mar 2024 09:49:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709632141; cv=none; b=qWFRzjaNlx0C8LPIbv2V4igeERT1dNoEnqbTz+WOWnofQ6shNiZM3U8OP749OFVya0TO4QuKibsC2siiKqwTq/hD2JKG4OcM3PtNAtrHSFx3PtHzyssWC50WBTMUl40faiKtgjAFoQhKcDedkkGQSo9FnQR71SHB2bJ0qV017w8=
+	t=1709632165; cv=none; b=vDPM8pmJAXzsCfTmuxXpkvHXhjRak1z64OVgJW86lGl37LfSqpiHI+HlVcIfqlUKnnxW9MpjWxT9SZUtE9e6JXFdJZHsxpFbwWq+GYbT5BNpwE6PBGRDrtKyVLAuQ5+X/AAbu7iCFnhd+W6CmHSHc6UBpaHy4UmKCnTBeoWB1ik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709632141; c=relaxed/simple;
-	bh=urqg0xbTeQw3SaHu2oQpg2NmfCmTqZ8GoiV35udIfjM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=INJ+vUy2vyLZrEAoUWQsxGl8+9ww66Ki9WVR4tpFV8Z0qooscUPyypUhoXMbCYWTNgAe/42K/I8rgOKGyeL2R0mmdHyt2Opgp+CJBnKkFTxwZyHNTJNh1k7OlLegFUyr9IgbPqLykutokOqY3l5X475WXvl9mScw06NW6T9j0YE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=lFsPXPEf; arc=none smtp.client-ip=217.70.183.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 472B91BF206;
-	Tue,  5 Mar 2024 09:48:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709632137;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Aw8pUe0MID70y933FGi7D+L6M1sIf5ieS9mZ3leciLE=;
-	b=lFsPXPEfA66AsRtfkm2k0eqMO8n1R78NnQCu16rwl0rxXnz1zd7Ic+aZQlxddbzIuTyf/Z
-	Ievu/+b86nO9T9w2JTRIBH6c5r4NWv9f81PuuHn8L7qIYblvipiPu/xvJ6HcSdpHD4ynLT
-	847BOix813JmNH1STAadsZNqxyNrLOF4IEvjnLvGZcHH5JQi1n5e9wEGQQZYRbF0Z54+Ci
-	iz9i9HwLa8j19Ll+bHlEt0JJ1eRRjLabj5lad2uNs6msYLDYsqNHrBSwWxTlZOl2voOCar
-	igBw08xlhiqKo4lNiZijWksSW9MsrTOmnYq/1+58thF/v47Jm406t0GV90eIPw==
-Message-ID: <5c3acbaa-dc95-4f8a-87cf-c62b6ccc442c@bootlin.com>
-Date: Tue, 5 Mar 2024 10:48:56 +0100
+	s=arc-20240116; t=1709632165; c=relaxed/simple;
+	bh=5E821RFhqqoYavc661H3Vby84CJMt3ugUPHZ0daBHkQ=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=J34ayuFnTShzCoNz2IzGUiRMq+Fub0F8RR7X+iyEZK5LutwANf0ntxkDFIIKUEMjjHAZk0l4xr0T4ZScr8PgMrULALhEc9/Rau0CxgxVer1s/aqmQ/SvFj/0AP0+itr2z+yTcxQdhaU0EBtj8ekpIEu5+5YXtio9QAWw/bGf91o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Hab/4V8O; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42553t6u029981;
+	Tue, 5 Mar 2024 09:49:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:date:subject:mime-version:content-type
+	:content-transfer-encoding:message-id:to:cc; s=qcppdkim1; bh=37x
+	Rd+lDnWXrIknF2wufL57eoqOYbhNwCDos2tpE4Ww=; b=Hab/4V8Ogipy1SXWbej
+	rMZBfN3pqRBAz3DiXVp4xm0NN+92fBoUapenjI+UKuiizakPcH+g57a0NRyhzF5w
+	6TJd5OffvbQgMx/c4CwQWes4JkfXmUcXWy3lJQXup7C4/PRS0aUtKQ7Rjpr2Dmbx
+	zpjlwrPrCHuyqARt5HlP/q4vYUeEPQL5HsCVHWCp1xq6PSh7TuD7vKcttIbSLCIK
+	CmNvCjUjReQJGhztLMlubHgP7Apl5a+sDS043N2TJ1TLfJ52xUAF1F7Rd8KXGlDF
+	BNVavQBL4krIDByDToWLAlrC/3DFmVwg7d+H/AGxHZdaW2tW7DoAG0ms+1lk9f3v
+	Eyw==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wnucrrnxj-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 05 Mar 2024 09:49:14 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4259nDpM027674
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 5 Mar 2024 09:49:13 GMT
+Received: from hu-krichai-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 5 Mar 2024 01:49:09 -0800
+From: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Date: Tue, 5 Mar 2024 15:19:01 +0530
+Subject: [PATCH v2] PCI: dwc: Enable runtime pm of the host bridge
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/3] panel-simple: add support for Crystal Clear
- CMT430B19N00
-Content-Language: en-US
-To: Conor Dooley <conor@kernel.org>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>,
- Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Thierry Reding
- <thierry.reding@gmail.com>, dri-devel@lists.freedesktop.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Yen-Mei Goh <yen-mei.goh@keysight.com>
-References: <20240304160454.96977-1-jeremie.dautheribes@bootlin.com>
- <20240304-drivable-property-feaeba782880@spud>
-From: =?UTF-8?B?SsOpcsOpbWllIERhdXRoZXJpYmVz?=
- <jeremie.dautheribes@bootlin.com>
-In-Reply-To: <20240304-drivable-property-feaeba782880@spud>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: jeremie.dautheribes@bootlin.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <20240305-runtime_pm_enable-v2-1-a849b74091d1@quicinc.com>
+X-B4-Tracking: v=1; b=H4sIAI7q5mUC/32NWw6CMBBFt0Lm25pOeRj8Yh+GEGhHmUQKttBoS
+ PduZQF+npPcc3fw5Jg8XLMdHAX2PNsE6pSBHnv7IMEmMSipCqmwFm6zK0/ULVNHth+eJAaj8VJ
+ jMZhSQtotju78Ppq3NvHIfp3d57gI+LP/agEFCpPXVSVzlKUsmtfGmq0+63mCNsb4BdVSMm60A
+ AAA
+To: Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel
+	<gustavo.pimentel@synopsys.com>,
+        Manivannan Sadhasivam
+	<manivannan.sadhasivam@linaro.org>,
+        Lorenzo Pieralisi
+	<lpieralisi@kernel.org>,
+        =?utf-8?q?Krzysztof_Wilczy=C5=84ski?=
+	<kw@linux.com>,
+        Rob Herring <robh@kernel.org>, Bjorn Helgaas
+	<bhelgaas@google.com>
+CC: <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_vbadigan@quicinc.com>, <quic_ramkri@quicinc.com>,
+        <quic_nitegupt@quicinc.com>, <quic_skananth@quicinc.com>,
+        <quic_parass@quicinc.com>,
+        Krishna chaitanya chundru
+	<quic_krichai@quicinc.com>
+X-Mailer: b4 0.13-dev-83828
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1709632149; l=2100;
+ i=quic_krichai@quicinc.com; s=20230907; h=from:subject:message-id;
+ bh=5E821RFhqqoYavc661H3Vby84CJMt3ugUPHZ0daBHkQ=;
+ b=G3dl0g0NBTsD6FjHqaBqA2TnM9x871FV2qppYqJMGXtQaJdm33pKXg7Ni/R7iYxTsnA96q7N+
+ 6SffEACZtmWBb2JTyyKrdpHHrJwKU5dwkObI0hkvKQHyB6LNZzDUhlr
+X-Developer-Key: i=quic_krichai@quicinc.com; a=ed25519;
+ pk=10CL2pdAKFyzyOHbfSWHCD0X0my7CXxj8gJScmn1FAg=
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: bBbxfCd8AWUJgsQOvlJrv9AZuqxY1ORy
+X-Proofpoint-ORIG-GUID: bBbxfCd8AWUJgsQOvlJrv9AZuqxY1ORy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-05_07,2024-03-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 bulkscore=0
+ spamscore=0 adultscore=0 mlxscore=0 phishscore=0 priorityscore=1501
+ malwarescore=0 impostorscore=0 mlxlogscore=999 lowpriorityscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403050078
 
-Hi Conor,
+The Controller driver is the parent device of the PCIe host bridge,
+PCI-PCI bridge and PCIe endpoint as shown below.
+	PCIe controller(Top level parent & parent of host bridge)
+			|
+			v
+	PCIe Host bridge(Parent of PCI-PCI bridge)
+			|
+			v
+	PCI-PCI bridge(Parent of endpoint driver)
+			|
+			v
+		PCIe endpoint driver
 
-On 04/03/2024 20:29, Conor Dooley wrote:
-> On Mon, Mar 04, 2024 at 05:04:51PM +0100, Jérémie Dautheribes wrote:
->> Hello everyone,
->>
->> This patch series add support for the Crystal Clear Technology
->> CMT430B19N00 4.3" 480x272 TFT-LCD panel.
->> It also adds Crystal Clear Technology to vendor-prefixes.yaml.
->>
->> Please note that unfortunately there is no public datasheet available
->> for this panel.
->>
->> Changes in v2:
->>    - add link to the Crystal Clear Technology website in commit message, as
->>    suggested by Conor Dooley and Neil Armstrong.
-> 
-> You forgot however to add the acks that I gave you for the two
-> dt-binding patches.
+Since runtime PM is disabled for host bridge, the state of the child
+devices under the host bridge is not taken into account by PM framework
+for the top level parent, PCIe controller. So PM framework, allows
+the controller driver to enter runtime PM irrespective of the state
+of the devices under the host bridge. And this causes the topology
+breakage and also possible PM issues.
 
+So enable pm runtime for the host bridge, so that controller driver
+goes to suspend only when all child devices goes to runtime suspend.
 
-Oops you are right, I'm sorry. Should I send a v3 containing these acks?
+Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+---
+Changes in v2:
+- Updated commit message as suggested by mani.
+- Link to v1: https://lore.kernel.org/r/20240219-runtime_pm_enable-v1-1-d39660310504@quicinc.com
+---
+ drivers/pci/controller/dwc/pcie-designware-host.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+index d5fc31f8345f..57756a73df30 100644
+--- a/drivers/pci/controller/dwc/pcie-designware-host.c
++++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+@@ -16,6 +16,7 @@
+ #include <linux/of_pci.h>
+ #include <linux/pci_regs.h>
+ #include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
+ 
+ #include "../../pci.h"
+ #include "pcie-designware.h"
+@@ -505,6 +506,9 @@ int dw_pcie_host_init(struct dw_pcie_rp *pp)
+ 	if (pp->ops->post_init)
+ 		pp->ops->post_init(pp);
+ 
++	pm_runtime_set_active(&bridge->dev);
++	pm_runtime_enable(&bridge->dev);
++
+ 	return 0;
+ 
+ err_stop_link:
+
+---
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+change-id: 20240219-runtime_pm_enable-bdc17914bd50
 
 Best regards,
+-- 
+Krishna chaitanya chundru <quic_krichai@quicinc.com>
 
-Jérémie
 
