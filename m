@@ -1,125 +1,84 @@
-Return-Path: <linux-kernel+bounces-92561-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92562-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 690E987222C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:58:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 645D187222E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:58:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6348C1C21553
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:58:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 95DF51C20E4F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:58:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74A83126F19;
-	Tue,  5 Mar 2024 14:58:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 036A61272BF;
+	Tue,  5 Mar 2024 14:58:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Wrc1E3ar"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f7WwB6yu"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2069585954;
-	Tue,  5 Mar 2024 14:58:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E9A91272AC;
+	Tue,  5 Mar 2024 14:58:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709650709; cv=none; b=noY2jQtL0098/zfu5pr1o8UU6RFe2sqF4upmwzmADASrEwLtdM0GAdLAIosX/tSBnvOVzVFR26u2b0GSR2lbOdGasFDHWIOMT/fLtkrYzfVlARxYLJVSO5ToH/niPoeKNL82KVancK+qK4EUYaS+yiRCFIeRkV9jeaHjHyxWAU8=
+	t=1709650712; cv=none; b=J08hEM/f3pTwdYT9QRtw/k+eAuwyDHQXCwm+pA5fE2AMeXFzHVFJ7gctGWneX6rI1xq6v+rvuW05/uUrl1phRmDCPPFD2ammcvCUrw8c+CXArElM+z5cFCPEn5es+Uu1oTHRMJzq6ELa41AnV30ozN26jjz0oUwmnyk6HxHLSS8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709650709; c=relaxed/simple;
-	bh=eDrl3N91i6VSsVPwRQLCSDjE2WRbc/dlF+GNZC+fUHM=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=SMrNIIeu77zV0elfYq/yEKG5QVnEyfAjx/8R268UdKAlpmfz5niEebmANb39tiKGTJA3LmyM55KHE9v1lsfT+uqv7bnPnL+L8ZU26+yne30RXSH69eb2rkzaUacInPn+XHEg2U9VlkEJ1MSuH64QehA5VLAesBQwQwryHoirDQw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Wrc1E3ar; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709650708; x=1741186708;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=eDrl3N91i6VSsVPwRQLCSDjE2WRbc/dlF+GNZC+fUHM=;
-  b=Wrc1E3arKi3kKCDADDOpIyO8b1GFvTiw+cRzYvt7L10BAQ4D+dIVULYH
-   UXXIlFSo5031AQsk03LShjU+4UwoB07mHbaeyrl8Qb2j+DtYDfapDR7cw
-   htikCss9vPqrCrCWhfI8HCgRJ3es+72TqH16NsQjMBIWM6rYkTpOGgunE
-   +tFNSsq9Hj5aitTHYhzeouwTOxFoufYi1CYUEPdvthV3k1Nimq6jBjFHb
-   meF5V4bJ4jpNcBPXgK769Jdiki9Y1ptRB2eJLBY/+cBmdDwvXJGgKQCgG
-   /zbXpKwAY3OvytJDWpYqmKsujZ4I1GIiO7696YBHuaXsE5GZkLvnqkL08
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="7149805"
-X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
-   d="scan'208";a="7149805"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 06:58:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
-   d="scan'208";a="9345361"
-Received: from spandruv-desk.jf.intel.com (HELO spandruv-desk.amr.corp.intel.com) ([10.54.75.14])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 06:58:27 -0800
-Message-ID: <ea2f6883e29453e9bdb134a183a0747ec06971f1.camel@linux.intel.com>
-Subject: Re: [PATCH v1] thermal: intel: int340x_thermal: Use thermal zone
- accessor functions
-From: srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
-To: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Linux PM
- <linux-pm@vger.kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, "Rafael J. Wysocki"
- <rafael@kernel.org>,  Lukasz Luba <lukasz.luba@arm.com>, Daniel Lezcano
- <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>, Stanislaw
- Gruszka <stanislaw.gruszka@linux.intel.com>
-Date: Tue, 05 Mar 2024 06:58:26 -0800
-In-Reply-To: <2724753.mvXUDI8C0e@kreacher>
-References: <2724753.mvXUDI8C0e@kreacher>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-3.fc36) 
+	s=arc-20240116; t=1709650712; c=relaxed/simple;
+	bh=h/P3goLMUxLj5fuwUwNyF1B5oRaia4FNBO96222ZKJI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=netJmhuBpIGEaJy0E3cbDnIychtkaicMN6lsn2SY6k/0VtnCeG7Mq+CyI4AbxUmgs+QT9q1gczF6IYuX23C4MIXIg0uEHePc2uBGNBJTXhtiB6/BrGk0pFT+LRAsKEDJyprhY0vVMgqg/v6O5kCRLzagb9t+cpMaAc+J0yFf4aQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f7WwB6yu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 914DAC433C7;
+	Tue,  5 Mar 2024 14:58:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709650711;
+	bh=h/P3goLMUxLj5fuwUwNyF1B5oRaia4FNBO96222ZKJI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=f7WwB6yujek5CUa0aO0at5Vo1A/YG6JiylctOK5N3NkPR5U2Dchi5EGBqkcl13tdq
+	 dCGFsOTsFG9UH1XRr4eBWtmN1BVkZfGGil8PX9NSM2zcQ7MeHGLbcGRPpfRhTvMIbV
+	 qqnk/9aGzKnym9o8Bm8lJNVVs8xckLGH6Zr+JN9wOPFmmBt3CqiBRcfPHhXKUlbD8J
+	 uuTzg8MwXuAFjYD1bMFLVvkOj044pXVyuECvc98hOgN5iPSfIVem508KiDQY8bLDVw
+	 OZGTLm/2h5uPsT7dZ4jQk/zhoRvQ+bTAomZvbcvQAytjfGI7LggqOIrIWkVJnBxJjl
+	 BTrBybamIsRZw==
+Date: Tue, 5 Mar 2024 08:58:29 -0600
+From: Rob Herring <robh@kernel.org>
+To: Yang Xiwen <forbidden405@outlook.com>
+Cc: Kishon Vijay Abraham I <kishon@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawn.guo@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-phy@lists.infradead.org,
+	Jiancheng Xue <xuejiancheng@hisilicon.com>,
+	Vinod Koul <vkoul@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>, devicetree@vger.kernel.org,
+	Kishon Vijay Abraham I <kishon@ti.com>,
+	David Yang <mmyangfl@gmail.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 3/5] dt-bindings: phy: hisilicon,inno-usb2-phy: add
+ support for Hi3798MV100 INNO PHY
+Message-ID: <170965070901.3343660.17802969888046943603.robh@kernel.org>
+References: <20240305-inno-phy-v4-0-a03204c9cf1c@outlook.com>
+ <20240305-inno-phy-v4-3-a03204c9cf1c@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240305-inno-phy-v4-3-a03204c9cf1c@outlook.com>
 
-On Tue, 2024-03-05 at 12:32 +0100, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->=20
-> Make int340x_thermal use the dedicated accessor functions for the
-> thermal zone device object address and the thermal zone type string.
->=20
-> This is requisite for future thermal core improvements.
->=20
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
- Reviewed-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 
+On Tue, 05 Mar 2024 10:19:48 +0800, Yang Xiwen wrote:
+> Hi3798MV100 also has a similar INNO USB2 PHY with slightly different
+> register fields offsets. Document it in the binding.
+> 
+> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
 > ---
-> =C2=A0drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c |=C2=
-=A0=C2=A0=C2=A0 3
-> ++-
-> =C2=A01 file changed, 2 insertions(+), 1 deletion(-)
->=20
-> Index: linux-
-> pm/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-
-> pm.orig/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c
-> +++ linux-
-> pm/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c
-> @@ -58,7 +58,8 @@ static int int340x_thermal_set_trip_temp
-> =C2=A0
-> =C2=A0static void int340x_thermal_critical(struct thermal_zone_device
-> *zone)
-> =C2=A0{
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0dev_dbg(&zone->device, "%s: cr=
-itical temperature reached\n",
-> zone->type);
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0dev_dbg(thermal_zone_device(zo=
-ne), "%s: critical temperature
-> reached\n",
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0thermal_zone_device_type(zone));
-> =C2=A0}
-> =C2=A0
-> =C2=A0static inline void *int_to_trip_priv(int i)
->=20
->=20
->=20
+>  Documentation/devicetree/bindings/phy/hisilicon,inno-usb2-phy.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+
+Reviewed-by: Rob Herring <robh@kernel.org>
 
 
