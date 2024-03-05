@@ -1,111 +1,138 @@
-Return-Path: <linux-kernel+bounces-91951-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91952-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 120FD8718E3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:05:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BE03B8718EC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:05:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB3F01F239D0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:05:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 738F41F2394C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:05:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFE8154904;
-	Tue,  5 Mar 2024 09:03:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4A3651C5F;
+	Tue,  5 Mar 2024 09:04:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="J0+RPNQo"
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Uza/fbAK"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9161750279;
-	Tue,  5 Mar 2024 09:03:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F5F64F897;
+	Tue,  5 Mar 2024 09:04:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709629392; cv=none; b=ptrM1pYrMYgT/iJIx5pWZrjUYBCQ956TSYAezL3APU1XH9EfZBAu3Gig0hgl2kbB+qTH+JTWZpM1fAFo/OVr3e8mQHW6SN+4L1MP8m9TdA5GKtyOq7NHNHdmNruRZWSO2jyw+j10xXbd5mAjzWx8CEvuyKezP6EkGDkezETzSXQ=
+	t=1709629476; cv=none; b=t2QeYxh5mgnrn5+Jm9fKXGRuhNAxJhmv/AowwKX7I9dCMHNo9mNt2Ku6f4nuV87myGc4kWFj10Je7bCIRWStL0rQJUr57selaLhQBAi+IYImQMC0e0QTnLNPfdAg9qDBq/UEdnMP4m6DsQXVfr3DKcwND2w1mz+k9ZiGnDQiWxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709629392; c=relaxed/simple;
-	bh=cNdEM8vfnnYOXnE1/pcVWlwHUFEK9a4YCyqrTtuWxqY=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=prQPrgRAM6dtmQDGEpaKb4NpnV1h1YBL5UU/ehX8uPTNsaR7rVCpaSDG0Mc1v/wVKtH72XzpQvcDoGjuJ8sAkRm0M0KizvPdC3Mr6HxGJTZbN8AFS1InQj0pifVZZcTSinDsF5gI0NjPDdbGj6f+4lgRtiSTMH1PWCIb6sqJU18=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=J0+RPNQo; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id CBBA41C0007;
-	Tue,  5 Mar 2024 09:02:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709629381;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cNdEM8vfnnYOXnE1/pcVWlwHUFEK9a4YCyqrTtuWxqY=;
-	b=J0+RPNQo0kcjTB3ttmpSW3fsCHfG2oBuLSV5YRYq7/iuchbARjyDkg63NdsGyVWILyMgkz
-	/+xZmZBTTg2nh0ZujNTW6e6BO/JgjmlHuV3VLvCXXvEAz8cw2dFfIauAntKOcVjP9KoYLs
-	W0IW5GwI73PadZElK0Gf5vVByQDUkAPA21sAkLCTHJJiZwe8VV0PDfS9NH8khrj7vrFFDq
-	5bXy1HOqq4lTJDy77JYDC+PgLLwqsalcFOEfxvqzB5S/x4q2q0o5RT2hM4IwJ0cPS6MYDN
-	krtZs2LQv3orKmyCJbzTxoTWTFil86eFX0R67KuVnMnrgIqMiZpH4r6C3K1wUA==
-Date: Tue, 5 Mar 2024 10:02:59 +0100
-From: =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Florian Fainelli <florian.fainelli@broadcom.com>, Broadcom internal
- kernel review list <bcm-kernel-feedback-list@broadcom.com>, Andrew Lunn
- <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>, Russell King
- <linux@armlinux.org.uk>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Richard
- Cochran <richardcochran@gmail.com>, Radu Pirea
- <radu-nicolae.pirea@oss.nxp.com>, Jay Vosburgh <j.vosburgh@gmail.com>, Andy
- Gospodarek <andy@greyhouse.net>, Nicolas Ferre
- <nicolas.ferre@microchip.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Jonathan Corbet
- <corbet@lwn.net>, Horatiu Vultur <horatiu.vultur@microchip.com>,
- UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>, Vladimir
- Oltean <vladimir.oltean@nxp.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, Maxime Chevallier
- <maxime.chevallier@bootlin.com>, Rahul Rameshbabu <rrameshbabu@nvidia.com>
-Subject: Re: [PATCH net-next v9 07/13] ptp: Move from simple ida to xarray
-Message-ID: <20240305100259.006b3137@kmaincent-XPS-13-7390>
-In-Reply-To: <20240304184737.30cac57b@kernel.org>
-References: <20240226-feature_ptp_netnext-v9-0-455611549f21@bootlin.com>
-	<20240226-feature_ptp_netnext-v9-7-455611549f21@bootlin.com>
-	<20240304184737.30cac57b@kernel.org>
-Organization: bootlin
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1709629476; c=relaxed/simple;
+	bh=7N8xIeprPgoxERgGFCpdp1nknqUERpb0vZx8jiEzfgA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ncrww3tZz0SF+ZeEqHSxcjT+jh+GfPQQPfc9H4qD5ctnzW8eqNFM/kugaQDSWUVee3N8MxewC/VdLonXMsn+IOAAqLWQll+8s3/G743lBQFj7u3SjaH2nj6ZOvr8zbX1J6wBy71qeUEKi/5kV4pmOU88o0+nvl0UUdZhdr2+nVQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Uza/fbAK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79C3EC433C7;
+	Tue,  5 Mar 2024 09:04:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709629475;
+	bh=7N8xIeprPgoxERgGFCpdp1nknqUERpb0vZx8jiEzfgA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Uza/fbAKpCubQp8iG3HBv+LL8E3D/7aueYJ+iTIJG6tiVEJmzBvrqhY+9771y6ipv
+	 B+pmMhjWf1hoBTzgtDqAQ76ALA/VSHK0ntL9eQODNYiBu+xwH9rt49wrnP4/eaOykG
+	 q92SYEGgQAbRd35X4Nx5pZeZwX5pWrnsOJwfRTVoBLLdzSjGh7b4AKQDcRTiSOoT7w
+	 sPhQA/LeK78Xfid+BO3WoMnRYlk6FZLaGez7m68sT9mJ+dfEBT8p41HcN8GOY165vB
+	 XJcwudR1eIJnA0VrOGc/o6Vt7+qwvpQU6saiZ1nrUO4J2HUVgRM1cnPk2/FDxBB/88
+	 dQo+a/y58+pDw==
+Date: Tue, 5 Mar 2024 09:04:29 +0000
+From: Lee Jones <lee@kernel.org>
+To: Abdel Alkuor <alkuor@gmail.com>
+Cc: Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Alice Chen <alice_chen@richtek.com>,
+	Jean-Jacques Hiblot <jjhiblot@traphandler.com>,
+	ChiYuan Huang <cy_huang@richtek.com>,
+	ChiaEn Wu <chiaen_wu@richtek.com>,
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+	=?iso-8859-1?Q?Andr=E9?= Apitzsch <git@apitzsch.eu>,
+	linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] leds: Add NCP5623 multi-led driver
+Message-ID: <20240305090429.GA5206@google.com>
+References: <20240217230956.630522-1-alkuor@gmail.com>
+ <20240217230956.630522-2-alkuor@gmail.com>
+ <20240301085046.GE1209090@google.com>
+ <ZeaRpSrkeFKAXIlq@abdel>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: kory.maincent@bootlin.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZeaRpSrkeFKAXIlq@abdel>
 
-On Mon, 4 Mar 2024 18:47:37 -0800
-Jakub Kicinski <kuba@kernel.org> wrote:
+On Mon, 04 Mar 2024, Abdel Alkuor wrote:
 
-> On Mon, 26 Feb 2024 14:39:58 +0100 Kory Maincent wrote:
-> > +static DEFINE_XARRAY_FLAGS(ptp_clocks_map, XA_FLAGS_LOCK_IRQ |
-> > XA_FLAGS_ALLOC); =20
->=20
-> Why _IRQ? anything on the fastpath hopefully has a pointer to the clock
-> already, I'd hope. And we often reserve ID 0 as invalid.
+> On Fri, Mar 01, 2024 at 08:50:46AM +0000, Lee Jones wrote:
+> 
+> Hi Lee,
+> > > +#define NCP5623_REG(x)			((x) << 0x5)
+> > 
+> > What's 0x5?  Probably worth defining.
+> This is a function offset. I'll add a define.
+> 
+> > 
+> > > +	guard(mutex)(&ncp->lock);
+> > 
+> > Are these self-unlocking?
+> Correct. Here is a short introduction about it
+> https://www.marcusfolkesson.se/blog/mutex-guards-in-the-linux-kernel/
 
-To keep the same flag as IDA_INIT_FLAGS, I am not expert in xarray so I just
-keep it without questioning it. Do you think I should remove it?
+Neat.
 
-ID 0 was valid for phc. IMHO makes it invalid is not a good idea, it
-will change the phc id value for current board on the field.
+> > > +	ncp->old_brightness = brightness;
+> > 
+> > The nomenclature is confusing here.
+> > 
+> > For the most part, this will carry the present value, no?
+> >
+> Yes, I'll change it to current_brightness instead
 
->=20
-> BTW could be a standalone patch, Xarray conversion from IDA is an
-> improvement in itself.
+Just 'brightness' will be fine.
 
-Indeed. Do you prefer this patch to be standalone?
+> > > +	ret = ncp5623_write(ncp->client,
+> > > +			    NCP5623_DIMMING_TIME_REG, pattern[0].delta_t / 8);
+> > 
+> > Why 8?  Magic numbers should be replaced with #defines.
+> > 
+> This is dim step in ms. I'll add a define for it.
+> 
+> > > +static int ncp5623_pattern_clear(struct led_classdev *led_cdev)
+> > > +{
+> > > +	return 0;
+> > > +}
+> > 
+> > Not sure I see the point in this.
+> > 
+> > Is the .pattern_clear() compulsorily?
+> >
+> Unfortunately, it is. For example, in pattern_trig_store_patterns, when
+> hw pattern is used, it is expected to have pattern_clear implemented.
+> 
+> static ssize_t pattern_trig_store_patterns(struct led_classdev *led_cdev,
+>                                             const char *buf, const u32 *buf_int,
+>                                             size_t count, bool hw_pattern)
+> {
+> 	...
+>          if (data->is_hw_pattern)
+>                  led_cdev->pattern_clear(led_cdev);
+>  	...
+> }
 
-Regards,
---=20
-K=C3=B6ry Maincent, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+Something's not right then.  If this is required, are you sure you're
+not meant to do something here?  If there are times when this is not
+required, it should be possible to omit it.
+
+-- 
+Lee Jones [李琼斯]
 
