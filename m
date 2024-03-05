@@ -1,181 +1,195 @@
-Return-Path: <linux-kernel+bounces-92965-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92966-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D8DD8728B9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 21:28:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAABA8728BB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 21:28:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 56811B23CE6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 20:28:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE8F21C2175C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 20:28:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A21A129A86;
-	Tue,  5 Mar 2024 20:28:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FD1C12B14E;
+	Tue,  5 Mar 2024 20:28:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="gueulsu5";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="L3f+lf4m"
-Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LZCe/x6z"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F8DF9460;
-	Tue,  5 Mar 2024 20:28:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.141.245
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709670484; cv=fail; b=MMoar7d6g5a2/DVaP7HavJd+DGbvW/9UAH8RHLQSZULnLoXU4dBE8eDG9TOnodVvEBAs6BV4RZu9trrWHxa3EUWgePIDCcaO4/jYXhYkbDyceWhKofNV18D2z28EI1utjlFVTNFPfUYxgZTYgRaSLMtMgnbiIJG1ZzxZFrbVrII=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709670484; c=relaxed/simple;
-	bh=5yRhIB7TmOw8weJOCblgeWvb0QZ2Via/S9bZ8EmJYzE=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=HUAxiOl6F5gdqrRTAJ/IKWi1S+8HLDDyOazuraf+VVPvsyhbO4+KAjnL9RZFpbcNF0V9LB50EodQYDuPGD+nVHoWipLRoG28ns4EXWZ/w2H2z9GoaKoFgdgM2hraVkBzSTSlSHGGyqWSj+vepldawLJ4+JVf1u4b6KTGXLTk1zI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=gueulsu5; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=L3f+lf4m; arc=fail smtp.client-ip=68.232.141.245
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1709670482; x=1741206482;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=5yRhIB7TmOw8weJOCblgeWvb0QZ2Via/S9bZ8EmJYzE=;
-  b=gueulsu5sOVqsfy2LrCmEbYtDAnDaIKM6h85LTcSBFr0F5BP3Egq8HKH
-   wJP9ycx5hs6p9RnYnFNToEywW9whJ369WY8R7DVI0e6mKLu8WahH6GapR
-   oUF8eeE3kOJFxfznztfJ311AJFfgeCyEUNNuv+1eE2KKMu9WYFQYmp9MU
-   1+GrXEAeGXg+FOsWHri1Q1LX868nYafwjhG7E20Qyb8384p0CMMCyeEAp
-   m5fguaJGVl8f/dqXqHoEnR77F47wtSRODydixEILufdqYH71cKV/JaTqW
-   wT8ffZtRTA5pkUaGQDxM+7rX8fBhAsQGlKTcdl6I9ZypbMIuUA0lKNBxx
-   Q==;
-X-CSE-ConnectionGUID: AIqbEkpNSSi1GLv6hR4uXw==
-X-CSE-MsgGUID: 9bOu/3cxS5S49Lhfu4/rgQ==
-X-IronPort-AV: E=Sophos;i="6.06,206,1705334400"; 
-   d="scan'208";a="11118912"
-Received: from mail-mw2nam10lp2101.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.101])
-  by ob1.hgst.iphmx.com with ESMTP; 06 Mar 2024 04:28:00 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k9El99xPzOUB2zsy19QP48X13z+0d28XSMI4UPZLQPif5fzFAYpdUtkN8SjECJWqlPRDPzuw3vaC5XWKy3TauM7soW798G470IqP5KQyOzo94kg2PcxRUA9mpIey/kdcFGkhNrbpn1HSjicoPFyjsJjmvushQzpv0EBKJ6cZ69e+szyA3WNQZPQXIWwtKkwP3h2USzYZKY1jqb71uhZyaxBwNkuenqyvPB/Sxgkepmsoi1q9szMXg6gdlqlfClQ+VBJK5UJlK70J194HvP7SX5qY/oal8kwZWn2bb5i5dGYVQwHVV059C+ywAf+KtW+Vqh0NX53iRygVDROGMKSd3Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5yRhIB7TmOw8weJOCblgeWvb0QZ2Via/S9bZ8EmJYzE=;
- b=Gs3fZkycxYygs3/NZMU6HZbatw/ql0hwxQabAgNRuvgSgCYNoyg8Lbav0eeYUqeyFjQbfxUW342KUkMgMZoFwkd4WtNBd7Y7OYNvh+wu14atWaMwp/TXiN+OxzWom/ok1/2hsRfO8Mz/XY48uu+CqX2XdWiwkH4ozLVFX7OqdGwdVleQ9EArnv5wKjYnnfl2m7tHsqCLuRSoMEfxRMYX+Bak/94WneI1D82u2Gsqy2o5vHkp+IrfIRM7wIMqyq15UV+7Pw/OsBmEyYzA1QtjF9Mnz/zrqwV+LiPiSbDHIW9kvVHl+BYsqPBo9b3MJ68mA6E3Ye4axYj/Xn60TVmOmg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5yRhIB7TmOw8weJOCblgeWvb0QZ2Via/S9bZ8EmJYzE=;
- b=L3f+lf4mci/k1nSfeJXgT2CL9Ng4BsGu7a0Ap1zQP4WOsxh+zJPwwDp5VxXnglj0SjVq6ZubH1optMqgkRP/VPvbbY8RHxqj0Kv9aoVMXWIDEeA6mOBssYzr0g2uBBVnVWvdHkNB5GAiu9v5VNtHkNkqvyLFCkmRBmUCUytNVDY=
-Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
- SJ0PR04MB7248.namprd04.prod.outlook.com (2603:10b6:a03:290::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.39; Tue, 5 Mar
- 2024 20:27:59 +0000
-Received: from DM6PR04MB6575.namprd04.prod.outlook.com
- ([fe80::5395:f1:f080:8605]) by DM6PR04MB6575.namprd04.prod.outlook.com
- ([fe80::5395:f1:f080:8605%3]) with mapi id 15.20.7339.035; Tue, 5 Mar 2024
- 20:27:59 +0000
-From: Avri Altman <Avri.Altman@wdc.com>
-To: Bart Van Assche <bvanassche@acm.org>, "James E . J . Bottomley"
-	<jejb@linux.vnet.ibm.com>, "Martin K . Petersen" <martin.petersen@oracle.com>
-CC: Bean Huo <beanhuo@micron.com>, "linux-scsi@vger.kernel.org"
-	<linux-scsi@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 2/4] scsi: ufs: Re-use exec_dev_cmd
-Thread-Topic: [PATCH 2/4] scsi: ufs: Re-use exec_dev_cmd
-Thread-Index: AQHabhW5jyV//9miXkC5d2tkHZoCC7EphUIAgAALvJCAAAVWAIAABKSA
-Date: Tue, 5 Mar 2024 20:27:59 +0000
-Message-ID:
- <DM6PR04MB6575A22B6916B16C2E8CBF74FC222@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <20240304092346.654-1-avri.altman@wdc.com>
- <20240304092346.654-3-avri.altman@wdc.com>
- <4f766df0-b1df-4e5f-8acd-31710ed4399b@acm.org>
- <DM6PR04MB65756C6716317F7E1E47FF50FC222@DM6PR04MB6575.namprd04.prod.outlook.com>
- <74445ebe-15b9-408a-9d5a-9d03d28d836a@acm.org>
-In-Reply-To: <74445ebe-15b9-408a-9d5a-9d03d28d836a@acm.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM6PR04MB6575:EE_|SJ0PR04MB7248:EE_
-x-ms-office365-filtering-correlation-id: 4cdd643d-2f06-411c-6227-08dc3d52bfcc
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- hZcL3DsIfDgHbpmSX3VKIJPEsqmsEVLJx9yuuvly05isnOYm5ZxdhVWjrkExrsBmQSEmQsqtU9z/49gZAIm49MBje34UFFn1YRFKGnWClwOuRNI8pJq7rzhyqqm9gTmzQN0HCGaFwAvEc60k+wdhkTeQjccRcxfUuANjeBQOnDKAlbbTAznwMsa1zmqknORR7opnPwoZauKRtDzXqvcaB7gys5a5ybS+LIC54zIenL5rlBl20B4imu50uMNeg5CDd7wRUyT6ZTROH1J6AWRqArx9O6uWxb3CIX8eAgXbDFKxNnEG359SxEjBs9IRzxbQ+lRkwwCCqMnlFczJ9muk/w5fxEQbh9z2LLE6oKfWG1w0sTc0rGcYQQMVkJl+OgiqtrQaqTcPQ65U9OJSUtsQ3mMEk3/vDgQ9rKJ6CBu5sX6rcqdmZXjPZPmNTkaJqD1WJICcQ87qSj2aJVAtJ4S8kXHmWfFp+f8TVy83L/dNMH7Y0Kzx0PghIJD5K7vt0OEIVZtxXPKY06z6tAZetBuNsFuDDRwrsJ6N7z8gCG9oFFh/tu9cAmzopfuEdmCtI61IWDJ3IFNh8rm1kJmtnkgcRTAOwRpaxOY7R3jzH6t/pqQOS3D3JMGx3s45Rc3h3Pf1aLIFDIwrgYgpHcFNFWvRFAcwxYBFGqD0deJmrvbP48vWYqvzYpSnZNXDrLn7BrdvpSBLiVulaC4bZv8mAL0JUw==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?YWVVdjdaOWs4dCsxUWkrTHNZTFp4dFFkUVoweG5DM2VrbmFHNFpLNUZCVEZ0?=
- =?utf-8?B?T3NSYzA0ZzhzcDFMWktqUE0yTTBzR0wxMjU3SjQ2dXRPNmYwNis2Q2pLTzN4?=
- =?utf-8?B?cUREcUFsOURYZzVtUFZZUEZ6UjBQY3Q2K2Yza1Z1RWZIeUdoY1dLUnlrKzJ2?=
- =?utf-8?B?ell2WHBvMnBkTVNJSHJQdFdrSTI3dGZ2bnVuaG5BMGM0ODAyOTVnbk5oZ0xE?=
- =?utf-8?B?eU1HUVZmWnQyQk5lUFp5QytiRkl0aUN5UEtZZ3V3Um4zaWxrbWNwNlpBcjJk?=
- =?utf-8?B?Nm1WWnNLOFh2am9UYkZhM0U1K2JPWmlxZTZ1empNUExzeGNYRTl4Y1A5WGZu?=
- =?utf-8?B?djFRdUlnU0RnTUE1TGgvQTE5TnlvVHpBL2lNQ2JVMTJBeTNHU05pNjVwUGlB?=
- =?utf-8?B?ZnRlelR6cmsxRDczd1FDZ3FhWUpJSW9iY3hmREI0d2dMVCtLV1hvSHZzUFZ1?=
- =?utf-8?B?Y0p1RjVxY1FwYm9EaG01ZWFId1JMRFRYa25CUENNSW5zaG00M1pVL3pUU0w2?=
- =?utf-8?B?ZDloT0k0b2lyRmYydHFMSVczOEVPYmZHKzJrSVhjdk5BQ1c2azZmUkM4aHhj?=
- =?utf-8?B?cU03Y3RZSlJtUkpzMVBBcytSSC9qL2dBODF1RWpnNVFVMzZBdy9pMEx3b3pN?=
- =?utf-8?B?ejBFV0ZGVjdJUWdjVEY3VnVZeFJkT3ZQNEFXUEF6RDVoK2txbi9kTTdUM1dz?=
- =?utf-8?B?Y3BGc0pITVpCVkJYNDB0a1UwMUoyL1N1MmJKQnp0VERuU3hocDVyQVFVOTlY?=
- =?utf-8?B?cXRxMVV4eldUMmlvMERTOHhIYU1LNnlSbkVab3lwNzV3dW84MXIwSDluSEps?=
- =?utf-8?B?RXMrUkF6emU5TXQ2UjB5TUhMSWlOZ1FrMmEzcGVBbllCd0tYbi9NNVpXcElI?=
- =?utf-8?B?N2RJVlhLNXptem9PZ2l6WUM2VkxydkVKTytxNGVRcWZGR3RydzduNDQvdVJY?=
- =?utf-8?B?Znl4cmc0cjVMaGdzTmxlckp6b0VyT2VuN2ZXaDFzZ1VPVGhSZmdPUlpyWXdS?=
- =?utf-8?B?R1dTeTVlUUFJdElESVVOdDhwUlhGZXBmWmljU1ljb29tZ3BZUnh4R3hWcnlQ?=
- =?utf-8?B?TVgyRUVyazNGK040RStkTitaN21tZnB3NDFxSzIwalJiOGNIRUxDZmYyeHN0?=
- =?utf-8?B?SFZ1d3NlK3RPRksrdXRsMjdoM3hjTU1BbTZtMjJRQ1hxY0oxTDE1VEErNFJG?=
- =?utf-8?B?RldCb1lMbjhpNWNBcmtSdS9kNnNrOXhSS0tPM2dWdEczdWU2ME1VNlQ0V3BE?=
- =?utf-8?B?QjI3RU81OTlLK0M3czd4VTFOdUtqV0piTXNnek5CMzJhNWdNM3hOM2VZV3RU?=
- =?utf-8?B?bFRaaWdLdWJxd3N0L0FhaTkzSTFFNEx0WExTRFpOUWRTaUI0V0dTTHJWd2dS?=
- =?utf-8?B?Zy9QWFhrRzdwZmR6ejViVnBSR3dlVlJWYXdaamY3YlVPTnRlOExPdXZLTHQ5?=
- =?utf-8?B?OUhYRk9za2ZzRTN3NFJyeDZZUVpCV05VVVNUZm1QQjEwMzdqVXRaSFNRdnNT?=
- =?utf-8?B?ZHVpVXliL3VqTFVTK0lNQWQxa1NDdERucXB6UE41ZzFndzZXdi8vckZXdGll?=
- =?utf-8?B?NWxpUFZKTkI0T1FjNDRUMjJGdFVRUnp5Rnd1Q243Q1lBZjMwSWtBei8rVVJV?=
- =?utf-8?B?blFhSTlJUlA0NGFjcFl3MUwxMHl6cC9aN1U4bWpCcVdHZTF4Q25XRUphNUNN?=
- =?utf-8?B?eHllai8wMzZLbzhMRkhGQWt5Q3NyWk5XUHI2eHo1ZmM5NE9BU3ZBeTMzOGl0?=
- =?utf-8?B?T3JMbFFudnJwNy85M1pndjNTaUJIS2QwcGZ4NnM0aTY4S2hSUDRsN0p3cmE2?=
- =?utf-8?B?M2huNEp0MXpOVm9uSDZVblc3Q2x5S0twNW12NlphejZZSU1wMW1qbTZhaDd3?=
- =?utf-8?B?QUljWWgxcWltUTJBWm1qMWJNZU05bm0raVc5QlAwQkR1dFJzeWNxU2QyMkd1?=
- =?utf-8?B?REJXWFNGWFlSVnJuV0lIZDRleFB1V2dDWkY1dm1iY0xhVm1xM0lVMFFTRlJW?=
- =?utf-8?B?L3R6VGkxeGcyWGVoTWRiYWxsOEZBUmJ5T0x1STNObGhpUFFUL1RGRHM5dDdw?=
- =?utf-8?B?UnJvRjArN1BuTzdwS1pUWWg2Y0tmdWZ1aVdrU1liWDdjbkNzVVM5cGVhRUNM?=
- =?utf-8?Q?nTkHKi+JR8//T9gzPVuvordtf?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87A4712AAD1;
+	Tue,  5 Mar 2024 20:28:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709670491; cv=none; b=NZ9r3s/I4RNNUkMAnRySPlH+mD9GiGwfXrDchSJ++SafjGcwf6LJpIsv+0ap7GVSUkehsoehjB92/0MeSthywve+557WPk0IxUDMQCQUlsGQxyYZIsxQAuOiYvw1b/8eObABXY1k54OWdmzHZCL3SRNLywRvUNfKFOjP5yMSdqo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709670491; c=relaxed/simple;
+	bh=kmcLJ6/b62wSq5EQn6v8rPVZtXbnK2V9uQJaCAkUcWY=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:Content-Type; b=fd4orpPWE09ipuzH8FdgoWqUWQ1fU3MtlD0QBuExUdUgFboahACmRgB3jUaRUlp5yTWcvFwUgxbZI1DzKnWnGhiY/hfUffMhwjAPmazZpHyXzl4EYc86YklZJWxTDuE30DnddR4FkzlmXybTNF9OSMAU1gnxCo0bXq/YjOqCF9A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LZCe/x6z; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE164C43390;
+	Tue,  5 Mar 2024 20:28:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709670490;
+	bh=kmcLJ6/b62wSq5EQn6v8rPVZtXbnK2V9uQJaCAkUcWY=;
+	h=Date:From:Subject:To:Cc:From;
+	b=LZCe/x6zPDcpQInwf5Zar2XFu8uevkHE3//EVlby9MGw1NT4rgKdXRpxxG8Yy7L4M
+	 AgVDzoc8Z8npDTf2sWxGwqM+WLColNrJxceWRYsVBbA2vFx+cULioe1dPHcKOfi1qN
+	 v0HC7ATJ7cRoXqXZ7byjqVquIfBZDoeqcIhNgceb8I77Fui7jw8K62pe9YlayuHGRU
+	 FKbBU8cQd7dxPM849L+Pj9yR+NnKNn5k3ukgdntbq8GSwGGzMenbW6Hy77KpTx1YDt
+	 Uss4Syk1u1mg9BJLXppmsvFBOslD70YmhItw/SZlpMWI8b3DUZpi+HdPuP+NuMRyVK
+	 gT0wQ2pPMX4Hw==
+Message-ID: <39119bd7-f0f0-4171-937a-b92b6e50a673@kernel.org>
+Date: Tue, 5 Mar 2024 21:28:08 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	F+w0wHiMHT9xxqCxDi+4gKln6aTC7OJFrv4MshA03ReELuQa6vwLyvbPBUGbruam9/bcAGOv5b7tmSYhyDCQJtJwg7vbXfw7xBO2twiPP/c+GYR/gWkiXC8BFpztGAYGjfi12rSa0Waby31H0KuKyWDX3+QWf6xLSASwonYHPBiFwgUb2i0v/GP/OV33QoCYle3qB7A5KNCYyzPLBAFZsZKsxrG5RhJAOqm2jWjMj3yiFuu/ImV+a/4i8WHhJGWDMmi1WW3u1XxOMKwIEHRMYtTvgEkI+1Rj06uyGWQJjE1hVFAP2J0/1WmAEWx5foAf1ZYAF7nS5cgHw83a97jyYOVDvEZCO65ils2WnnT+F9fvJBBsAdAeKFjl1lb4R6zA7rhay3QnzW9DdCZvwjpOfYIUt8rmopgVqSqCBKAo2HH8uvjeRUmOUmxZuSKcxZ1vnekjQEGIF/SWv+88EARIGfQU6i9RrN8wry42CJhKIWBTzHPD3qzwa6nyGxMb/LA8LeemlZh0cDq39xplWgQpGxo4uOu+9BhZBBBvPZlff+7wHagqoOJvP6y4IYuJLTnAMSz+CzkhaMwpZJzubvUx/MfCL175ap3cEzBYd6JP499TpodVt1IceED/xlKeYDNN
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4cdd643d-2f06-411c-6227-08dc3d52bfcc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Mar 2024 20:27:59.3999
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 1RL8DFYiUFoFHWbnuO2yXOi46cMpsJGe7YU9dJKu6isIlgk0ga5DGZhB+iqASl/PWv7i/HnZ2TAdXnVDPhUGpQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR04MB7248
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+From: Heiner Kallweit <hkall@kernel.org>
+Subject: [PATCH RFT] i2c: i801: Call i2c_register_spd for muxed child segments
+Autocrypt: addr=hkallweit1@gmail.com; keydata=
+ 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
+To: "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc: Wolfram Sang <wsa@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-PiANCj4gT24gMy81LzI0IDExOjU0LCBBdnJpIEFsdG1hbiB3cm90ZToNCj4gPiBCYXJ0IFZhbiBB
-c3NjaGUgd3JvdGU6DQo+ID4+IFBsZWFzZSByZXN0b3JlIHRoZSAibHJicC0+Y21kID0gTlVMTCIg
-YXNzaWdubWVudC4gSSBkb24ndCB0aGluayB0aGF0DQo+ID4+IGl0IGlzIHNhZmUgdG8gcmVtb3Zl
-IHRoYXQgYXNzaWdubWVudC4NCj4gID4NCj4gPiBUaGlzIGlzIGEgcmVkdW5kYW50IGFzc2lnbm1l
-bnQgLSBiZWluZyBzZXQgdG8gbnVsbCBpbg0KPiB1ZnNoY2RfY29tcG9zZV9kZXZfY21kLg0KPiAN
-Cj4gU2hvdWxkbid0IHRoaXMgYmUgbWVudGlvbmVkIGluIHRoZSBwYXRjaCBkZXNjcmlwdGlvbj8N
-CldpbGwgYWRkLg0KDQpUaGFua3MsDQpBdnJpDQoNCj4gDQo+IFRoYW5rcywNCj4gDQo+IEJhcnQu
-DQoNCg==
+So far i2c_register_spd() is supported only on systems with up to
+8 memory slots. Reason is that on a single SMBus only 8 SPD EEPROMS
+can be addressed. The following patch adds support for calling
+i2c_register_spd() on multiplexed SMBUS segments.
+
+Out-of-the-box only certain ASUS Z8 systems are supported.
+See mux_dmi_table[] in the i801 driver.
+These systems seem to be quite rare nowadays, so I'd appreciate
+if the owner of such a system could test the patch.
+
+For each DIMM module a message like the following should appear in dmesg.
+i2c i2c-11: Successfully instantiated SPD at 0x50
+A response including the full dmesg log would be perfect.
+
+For other systems with >8 memory slots, where the SMBUS is GPIO-muxed,
+it should be possible to add an appropriate entry to mux_dmi_table[].
+Then the patch should work as expected on such a system too.
+
+Note: This patch is applicable only after 8821c8376993 ("i2c: smbus:
+Prepare i2c_register_spd for usage on muxed segments").
+This patch showed up in linux-next from March 5th 2024.
+
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+---
+ drivers/i2c/busses/i2c-i801.c | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
+
+diff --git a/drivers/i2c/busses/i2c-i801.c b/drivers/i2c/busses/i2c-i801.c
+index 8f225cd7b..4b9d04f20 100644
+--- a/drivers/i2c/busses/i2c-i801.c
++++ b/drivers/i2c/busses/i2c-i801.c
+@@ -105,6 +105,7 @@
+ #include <linux/ioport.h>
+ #include <linux/init.h>
+ #include <linux/i2c.h>
++#include <linux/i2c-mux.h>
+ #include <linux/i2c-smbus.h>
+ #include <linux/acpi.h>
+ #include <linux/io.h>
+@@ -291,6 +292,7 @@ struct i801_priv {
+ #if IS_ENABLED(CONFIG_I2C_MUX_GPIO) && defined CONFIG_DMI
+ 	struct platform_device *mux_pdev;
+ 	struct gpiod_lookup_table *lookup;
++	struct notifier_block mux_notifier_block;
+ #endif
+ 	struct platform_device *tco_pdev;
+ 
+@@ -1388,6 +1390,23 @@ static const struct dmi_system_id mux_dmi_table[] = {
+ 	{ }
+ };
+ 
++static int i801_notifier_call(struct notifier_block *nb, unsigned long action,
++			      void *data)
++{
++	struct i801_priv *priv = container_of(nb, struct i801_priv, mux_notifier_block);
++	struct device *dev = data;
++
++	if (action != BUS_NOTIFY_ADD_DEVICE ||
++	    dev->type != &i2c_adapter_type ||
++	    i2c_root_adapter(dev) != &priv->adapter)
++		return NOTIFY_DONE;
++
++	/* Call i2c_register_spd for muxed child segments */
++	i2c_register_spd(to_i2c_adapter(dev));
++
++	return NOTIFY_OK;
++}
++
+ /* Setup multiplexing if needed */
+ static void i801_add_mux(struct i801_priv *priv)
+ {
+@@ -1425,6 +1444,9 @@ static void i801_add_mux(struct i801_priv *priv)
+ 	gpiod_add_lookup_table(lookup);
+ 	priv->lookup = lookup;
+ 
++	priv->mux_notifier_block.notifier_call = i801_notifier_call;
++	if (bus_register_notifier(&i2c_bus_type, &priv->mux_notifier_block))
++		return;
+ 	/*
+ 	 * Register the mux device, we use PLATFORM_DEVID_NONE here
+ 	 * because since we are referring to the GPIO chip by name we are
+@@ -1443,6 +1465,7 @@ static void i801_add_mux(struct i801_priv *priv)
+ 
+ static void i801_del_mux(struct i801_priv *priv)
+ {
++	bus_unregister_notifier(&i2c_bus_type, &priv->mux_notifier_block);
+ 	platform_device_unregister(priv->mux_pdev);
+ 	gpiod_remove_lookup_table(priv->lookup);
+ }
+-- 
+2.44.0
+
 
