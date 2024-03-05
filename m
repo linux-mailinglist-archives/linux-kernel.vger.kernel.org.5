@@ -1,73 +1,51 @@
-Return-Path: <linux-kernel+bounces-91865-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91866-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3BDF87179D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:09:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C778C8717A2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:09:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B756B1C21D2E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:09:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4A61CB20C6F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:09:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D58FE7F46B;
-	Tue,  5 Mar 2024 08:09:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MLPYemVb"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D43B7F476;
+	Tue,  5 Mar 2024 08:09:47 +0000 (UTC)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EA317EF0D
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 08:09:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64A3C7EF10;
+	Tue,  5 Mar 2024 08:09:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709626160; cv=none; b=R8LwR02rg2eMwE8bYQSpJTiKDTjwsUAb04WhB4uScubJmVVQW4zxfIqN/OkYVkrQ9evTaQixkr4g23JM46JVFMwrHpvhZSKI0fkLAbippdtVa0EHsozsBsIDqWEoqm5z4hDyjbdTRQ2YW+pHTBAsuzOttmkd11X3KauqtpWVsmI=
+	t=1709626187; cv=none; b=bJovsEwq+b8EfI1t9m1OkUcF6WiTOhBdF4z8ycojIyAcJYiJtw1KIITk4F4+fi+zzqhljA7yYoEKj/kyFJcPqY7YGPusguqAhpKnDoL1NS/A68saa4fhqZfnMgkfCmQwsb+umrIBEsiu7JgEzY8OsX56zkJRwJDp9+UYmkLTrGM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709626160; c=relaxed/simple;
-	bh=gxghkhfCwCcy3FiXcI5OlAqUdRUVdOy92wS9GSHk/80=;
+	s=arc-20240116; t=1709626187; c=relaxed/simple;
+	bh=qkrnG6n1PL95Lr2YnQjdMv4heNtX82wlLYoLFbdR3fA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rRPHg/pLGMgjBMJYtIJA9gSIEQKsjC8J0t256yGMkhrZTTHXuuKId2Qo8aJOMvStzf7NeCvs0UPznOFjO2dGY2mrvGYw23Mfoq7AbU5rdk4Ye1z5JFgM6mXE8mgfJyurksoJULMmcQW/Zx8qxzrUkSgSJxv7yYXsrGKmfkxaKL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=MLPYemVb; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d275e63590so77184931fa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 00:09:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709626156; x=1710230956; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nGlX+l5FrCtoGILdkXog1qk1JDD1pTX7Iy+8O9A+Pew=;
-        b=MLPYemVbAxSGxdpcow3wgkCzpuQYh11DZABqXRaT3uqrerSYx/th2ZnpY7CBv6jd9m
-         n6wep15P8HCiFToIXRnEtGKGshzl6XJdiwDeME3Bfx7XDmn+Jdo1n4hH0oo5+bd83gas
-         m+OHsCPqgcMX02dFRuaF8e/T92b1ewHzleugQrFJ3D5jwg2Xls5FO3P6ymg7DFZxd/7N
-         4zcd1yYXatHRXZ8i0LMuYmPPWltjanrDJxP8KRJKQTkmAHEIgIuw3nlbXm+HKLm/986U
-         4SEUwClW2ZneIM3FpEh7x9Gv2utfdHn8GtuziB0Cus7JKrhcCoIkd9fO3wkzUQHRllTU
-         DKsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709626156; x=1710230956;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nGlX+l5FrCtoGILdkXog1qk1JDD1pTX7Iy+8O9A+Pew=;
-        b=tLpbzTm80s0hUS8Hp3aTzHD8geXz8LBqi4UmbM6nfCURvEbjgH/zaaf/qLn1c7wwAN
-         LmOZ58B32AKXYB5nksUVlO8ymeOElsk0L4VW9TwicCJbfK510tpiBQYXr5vzBCh81nYi
-         qNwVaVPh9QjMuxcWWC8XLpFu0sYFg/lXhrHx3e1UbdXhadfg9jsk+FFxSYV/rPI0bS/u
-         +MOJrw6houaevMLbIF7cllhDyUVVZ3hFDHBh+eiBCAcU40T3ePW6EE2KxPwWa+4wqcjB
-         F83ARtO2HMKjJm8eYMYEKDPSWIdKYWXrPRsrLIK1cknracr0XQO6O9No+w1M/UQTZjf1
-         jYbQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW+m7z+6/O+M9Gu2BVcDfK1XcxR3wG1oK/hl+gi7zioGqyPkqnC5Bc6/NiXAVpnBZPwqM3HnR4H4puGMjiJpjSPOC6ElbmOi6fK5zuj
-X-Gm-Message-State: AOJu0YxXsq1kK3rDmQhpnqwiTEWYckwfepmNytxHARTphezwQuqQ2QCn
-	852rqGpfniSpp3Mem6veKx3v9iI6Y2ZjuN3BcgUI9y1Fkr6CTrFaizUXTctlSzs=
-X-Google-Smtp-Source: AGHT+IFlUpUmZuKjcod21fUszHyVvU9lm6lzrXoct8LfeGQXriWSYBPocI5sUhsrtUAYIa0x7W8XEQ==
-X-Received: by 2002:a2e:a7cc:0:b0:2d3:ada:29e9 with SMTP id x12-20020a2ea7cc000000b002d30ada29e9mr856360ljp.12.1709626156438;
-        Tue, 05 Mar 2024 00:09:16 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id m18-20020aa7c492000000b005662d3418dfsm5497551edq.74.2024.03.05.00.09.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Mar 2024 00:09:15 -0800 (PST)
-Message-ID: <1e7e0404-ccb4-4994-abc3-12c3f53c2603@linaro.org>
-Date: Tue, 5 Mar 2024 09:09:14 +0100
+	 In-Reply-To:Content-Type; b=naHGjh6f+AJ0WYHBl4g5Hl9ocvJZlfQyno0qLpBEafYHkeIOshFYA84aIVjljBDDOFf7HCFXQPzNuaidVE5rYFufsnuUawy2jYQ1SLHsCjrbyQhe4ctY/rqB8WFPqSbr1316oQ8KVdRYTwoQLhgqOZ6PcB5tgviCKSZq5lMikVU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id A7E56226E7;
+	Tue,  5 Mar 2024 08:09:43 +0000 (UTC)
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 5917713A5D;
+	Tue,  5 Mar 2024 08:09:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id j1RKFEfT5mXCUwAAn2gu4w
+	(envelope-from <tzimmermann@suse.de>); Tue, 05 Mar 2024 08:09:43 +0000
+Message-ID: <01d39b0d-ce72-4daa-8628-f47e031af5ca@suse.de>
+Date: Tue, 5 Mar 2024 09:09:42 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,99 +53,128 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/7] backlight: gpio: Simplify with dev_err_probe()
+Subject: Re: [PATCH] powerpc: include linux/backlight.h from asm/backlight.h
+To: Michael Ellerman <mpe@ellerman.id.au>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ Jani Nikula <jani.nikula@intel.com>,
+ "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Cc: "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+ Helge Deller <deller@gmx.de>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "lkft-triage@lists.linaro.org" <lkft-triage@lists.linaro.org>,
+ "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+ Naresh Kamboju <naresh.kamboju@linaro.org>
+References: <CA+G9fYsAk5TbqqxFC2W4oHLGA0CbTHMxbeq8QayFXTU75YiueA@mail.gmail.com>
+ <20240304095512.742348-1-jani.nikula@intel.com>
+ <eed9bb0f-486f-47f3-b4b5-c07adda4a1c7@suse.de>
+ <e5a0e44d-d2b9-49f0-9a08-fb7d9254266c@csgroup.eu>
+ <87frx5plan.fsf@mail.lhotse>
 Content-Language: en-US
-To: Daniel Thompson <daniel.thompson@linaro.org>
-Cc: Lee Jones <lee@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
- Helge Deller <deller@gmx.de>, dri-devel@lists.freedesktop.org,
- linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240304-backlight-probe-v1-0-e5f57d0df6e6@linaro.org>
- <20240304-backlight-probe-v1-1-e5f57d0df6e6@linaro.org>
- <20240304104000.GA102563@aspen.lan>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240304104000.GA102563@aspen.lan>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From: Thomas Zimmermann <tzimmermann@suse.de>
+Autocrypt: addr=tzimmermann@suse.de; keydata=
+ xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
+ XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
+ BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
+ hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
+ 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
+ AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
+ AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
+ AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
+ lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
+ U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
+ vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
+ 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
+ j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
+ T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
+ 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
+ GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
+ hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
+ EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
+ C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
+ yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
+ SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
+ Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
+ 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
+In-Reply-To: <87frx5plan.fsf@mail.lhotse>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	 REPLY(-4.00)[]
+X-Spam-Score: -4.00
+X-Rspamd-Queue-Id: A7E56226E7
+X-Spam-Flag: NO
 
-On 04/03/2024 11:40, Daniel Thompson wrote:
-> On Mon, Mar 04, 2024 at 11:11:38AM +0100, Krzysztof Kozlowski wrote:
->> Common pattern of handling deferred probe can be simplified with
->> dev_err_probe().  Less code and also it prints the error value.
->>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->> ---
->>  drivers/video/backlight/gpio_backlight.c | 10 +++-------
->>  1 file changed, 3 insertions(+), 7 deletions(-)
->>
->> diff --git a/drivers/video/backlight/gpio_backlight.c b/drivers/video/backlight/gpio_backlight.c
->> index d28c30b2a35d..9f960f853b6e 100644
->> --- a/drivers/video/backlight/gpio_backlight.c
->> +++ b/drivers/video/backlight/gpio_backlight.c
->> @@ -64,13 +64,9 @@ static int gpio_backlight_probe(struct platform_device *pdev)
->>  	def_value = device_property_read_bool(dev, "default-on");
->>
->>  	gbl->gpiod = devm_gpiod_get(dev, NULL, GPIOD_ASIS);
->> -	if (IS_ERR(gbl->gpiod)) {
->> -		ret = PTR_ERR(gbl->gpiod);
->> -		if (ret != -EPROBE_DEFER)
->> -			dev_err(dev,
->> -				"Error: The gpios parameter is missing or invalid.\n");
->> -		return ret;
->> -	}
->> +	if (IS_ERR(gbl->gpiod))
->> +		return dev_err_probe(dev, PTR_ERR(gbl->gpiod),
->> +				     "Error: The gpios parameter is missing or invalid.\n");
-> 
-> The "Error: " should be removed from the string. dev_err_probe() already prints
-> that.
+Hi
 
-Sure.
+Am 05.03.24 um 01:36 schrieb Michael Ellerman:
+> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+>> Le 04/03/2024 à 11:32, Thomas Zimmermann a écrit :
+>>> Hi
+>>>
+>>> Am 04.03.24 um 10:55 schrieb Jani Nikula:
+>>>> Removal of the backlight include from fb.h uncovered an implicit
+>>>> dependency in powerpc asm/backlight.h. Add the explicit include.
+>>>>
+>>>> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+>>>> Closes:
+>>>> https://lore.kernel.org/r/CA+G9fYsAk5TbqqxFC2W4oHLGA0CbTHMxbeq8QayFXTU75YiueA@mail.gmail.com
+>>>> Fixes: 11b4eedfc87d ("fbdev: Do not include <linux/backlight.h> in
+>>>> header")
+>>>> Cc: Thomas Zimmermann <tzimmermann@suse.de>
+>>>> Cc: Helge Deller <deller@gmx.de>
+>>>> Cc: linux-fbdev@vger.kernel.org
+>>>> Signed-off-by: Jani Nikula <jani.nikula@intel.com>
+>>>>
+>>>> ---
+>>>>
+>>>> Not even compile tested!
+>>> That's one of the cases that's hard to catch unless you get the config
+>>> right.
+>>>
+>>>> ---
+>>>>    arch/powerpc/include/asm/backlight.h | 1 +
+>>>>    1 file changed, 1 insertion(+)
+>>>>
+>>>> diff --git a/arch/powerpc/include/asm/backlight.h
+>>>> b/arch/powerpc/include/asm/backlight.h
+>>>> index 1b5eab62ed04..275d5bb9aa04 100644
+>>>> --- a/arch/powerpc/include/asm/backlight.h
+>>>> +++ b/arch/powerpc/include/asm/backlight.h
+>>>> @@ -10,6 +10,7 @@
+>>>>    #define __ASM_POWERPC_BACKLIGHT_H
+>>>>    #ifdef __KERNEL__
+>>>> +#include <linux/backlight.h>
+>>> Thanks, but I think this should go directly into chipsfb.c. I would have
+>>> provided a patch already, if our mail server didn't have issues this
+>>> morning. Let me try again.
+>> asm/backlight.h needs it for struct backlight_device
+>>
+>> At least if you don't want to include linux/backlight.h in
+>> asm/backlight.h, then you need a forward declaration of struct
+>> backlight_device;
+> It's preferable for asm headers not to include linux headers (to avoid
+> loops), so a forward declaration would be better IMHO.
 
-Best regards,
-Krzysztof
+The asm header shouldn't include <linux/fb.h> either. I'll send an 
+update to my patch to clean up everything.
+
+Best regards
+Thomas
+
+>
+> cheers
+
+-- 
+--
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Frankenstrasse 146, 90461 Nuernberg, Germany
+GF: Ivo Totev, Andrew Myers, Andrew McDonald, Boudien Moerman
+HRB 36809 (AG Nuernberg)
 
 
