@@ -1,168 +1,109 @@
-Return-Path: <linux-kernel+bounces-92141-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92142-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAA02871BCB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:43:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4DE3871BCD
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:43:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9BA981C2220F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:43:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A454F1F24A94
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:43:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D72C25F85B;
-	Tue,  5 Mar 2024 10:23:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F017C5FB91;
+	Tue,  5 Mar 2024 10:24:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jHM0j6zL"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OKdfHfcm"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3248655761
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 10:23:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B88D5F87D;
+	Tue,  5 Mar 2024 10:24:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709634239; cv=none; b=uUiXMOfseQEATEU5lWCVBa3uR0J4s1wRv4SyhEJle2zfBcyTE4KJ4DcIK4zB/Szg9fw/Ko50HMOqCc6Siie4PLeez0MUQNou+ceArkssIWxTHW7MWlI2XOrjl8fpi4CRysRnm08ZWOEZw1AY6i0wPQ1Ahvd8FeC7Hy/OlIYqJ1k=
+	t=1709634242; cv=none; b=rKUEV2TekXGvKU6j/G2D5io1R5ce4g24VXAwJ/LDoO2vp4uOTGU5J+uxfCghbYGixj+vnjahKXhORLFlqaKZ6Sl6qlZ6SnULwTffGXmxksSF+ufUwvEqoxJWfvale2QGqrd1dihxNhPx1q6aCRnuKaZwmvhNzn0Jsi/HX6iVRKc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709634239; c=relaxed/simple;
-	bh=PqHa9jZYY6n6dlsBNRS5MBKuLT4wieT6fvPpCzLLJ7E=;
+	s=arc-20240116; t=1709634242; c=relaxed/simple;
+	bh=i+xbX53pFEooWR3sjGG3TQr7rRgoWh5Ar98goRFmekY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=e8JaJMGeW15aj1g3d+YobBtNhNnf8akYXKZyMcDl7s+GGSXy4iZmzvVJEfZLozxJkS9zjw4JvYpZUVfgeaimBHayLSoXr4SCubtP1BqRHK6sCVaRPOIu2UAFqhvMQyAaWwnoFohSeoi1HHTcCPt2fqP+cKmtrtMrVBRw8ZRFQK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jHM0j6zL; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-55a179f5fa1so8037081a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 02:23:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709634235; x=1710239035; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=PlspS2X5YJwHI6bCWiB2Kxx+bO+ABr/mcVKBji0Oxwk=;
-        b=jHM0j6zLffqO/iNaKwTcxS1Va63ExTB+Y4QXrkQtiDryTRnuvDCMQW/avXwY6t2Gau
-         cXWpkE1cRfd2XUn8l+5N58f3fVBrjKJ5KwmE6UWaTe5myvMtfsfxNVnMmft6eDmtaXZr
-         Xk6FhiYn2Nufm046n+nzQU/nSm5N/C0gnxWEF0sJX7taXNKGwCxidr6VUnqwMkiMeod6
-         exOO3t2yrOJ/Q7+gF7C42J6lFTr6s/mZ5ZWai0NJkUWKWxvA0BWBvyJOycF+WIRV9XBJ
-         w/OZD+6PWQHAoYj7DoaJiEKcxd9PvD+2bMKujic4jnxvAiR0wYHm8mYUFh6MFiU0IJZt
-         lnOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709634235; x=1710239035;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PlspS2X5YJwHI6bCWiB2Kxx+bO+ABr/mcVKBji0Oxwk=;
-        b=PjHWLD+MmdLxyQW456KLqAgVfkQEs05RsB5k6xtNSaoZcgBQ5qShKNbOtu2bL0uDod
-         RkKfVxjxCWwIJXAOyy3tO7pqzPXtfnzIunZFlEFQ9/CXXrF816tWtw2HB4O+9ENUPtMG
-         sXw24fR50M4Yv/4cgh0ifHg9VP0U+ZC7CPJPZm+d5/LXuTD5QZcbtH2X5ybwV94MsuFo
-         7r3v2QzzbewGGmCbQmMQDWsJQx00AHcRp8JfWtVxyzdWF2BgMT+fpB1hcmWrSV97E2JR
-         8O7CZai/loogvu/DccTDm9/SFe2UtkcKbGVAUN2g7FF8PQmuVstEFVLWl/DWtpEtUzZ4
-         F73A==
-X-Forwarded-Encrypted: i=1; AJvYcCW7g/F+NOypruCiZ7FSrA7UcDHlPWaqx1zAEUvUXd1igMSfafwyF/U/tWa2JZkK0q6butT41ZkootwvOAiCx/JJjjFLe3Jwh3POqLTJ
-X-Gm-Message-State: AOJu0YxHzRlgtOXsXlozKcy4bMF6Z1O5Z2ttaKUvUg/gemirYxNoaGzM
-	2VDbQqVd8aRXyqP4Kg0eHFHQOWzm2Fs3bGf9v2RbuO+fdOJtKBrTECjriYQisjaH8dcw4J1Xra6
-	OOB0s+Ad2x7ACNB0HlQdlRHHwUtyiuZeC5EtPVQ==
-X-Google-Smtp-Source: AGHT+IGUwEp/+WhHA0uQ0uW2uvX6Vp5aF/NLRg8+micGN3CEaNubXYVANAb9auNn0QNapfA8iEZ3XcUbSMqmSS5KIi8=
-X-Received: by 2002:a05:6402:40cc:b0:567:1458:caa with SMTP id
- z12-20020a05640240cc00b0056714580caamr5847164edb.40.1709634235386; Tue, 05
- Mar 2024 02:23:55 -0800 (PST)
+	 To:Cc:Content-Type; b=gjdvspqsSb16zDDT1md4VGG36P8kxICtQ2TenHiOfQp0kDHBa+6faMnks842ErHAgiUryXLTVAf8rl5dctpW2Sdwzsw61qkHCYwwqsiWA6onZRJw8RpMyGa3L2xncFkUSPqWHi626RK1D8M54hC1AFHGW7AXWGQEz84F2W5kXn8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OKdfHfcm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9776C433B1;
+	Tue,  5 Mar 2024 10:24:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709634241;
+	bh=i+xbX53pFEooWR3sjGG3TQr7rRgoWh5Ar98goRFmekY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=OKdfHfcmPN+81pisf/rKa0Zwilc/5cJwS0t3t+RM7TVmVbw7w3TA7Hwu1DPzQ/9/Z
+	 Q2d01B9fxgMNYgG8rtUdxYx2TJx9Kb75eWVofGYYsyAkt+1OoQxvf21J4wYeRulShx
+	 5YRrbDHvpT1uCw9GfliSYHYk99ZIZ++iKdn6Ul70iWdcurULGz4CVmlwkCLlbNVsHp
+	 RhNOtBIU0w+0V7Phra3E4pNa118C0vmx+hyDA4RLrruqJ1elULt3RGtmkQiZ7BF3wq
+	 usTiEv+s3t6f1PmNdYQaKVE/qx3TY0Ow2pqrAxLWMraXAbKpVTcbnNas+CoEmjsE9k
+	 uWaZfuQHLu5YA==
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5658082d2c4so7531018a12.1;
+        Tue, 05 Mar 2024 02:24:01 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU6+s/xdfl8kcPQJ49Pwe2ygEHhgFPHyFJDuVfqzBuio4RjMbE4OOXWuNDBCCj+0CLtSrG/aIFp5LBuYrAhXCtrviY7ya6TIQop7W/CvfG8fw/aaQkRlNj+tD9hNTUqB1Ze4IZOuKib1YAbPvU=
+X-Gm-Message-State: AOJu0Yw+EJAad27P98e9FIM4ecjGWldX2T3MxfdGQ7r9cbECgY0m07ua
+	sFavsvu+a1jfjJBXKB1hcUCSNjbU/4uF+c6YjhoDC+gCPSMnqTyUlQwDThYzHiTpA/CIPiyl7ZX
+	WW7dKR7F2WHUNx6IAlaaKAirCE4s=
+X-Google-Smtp-Source: AGHT+IHlFvWBz3wnmsSjVMW5AspWGuH7n2lGRkbQpThZBFkZw5/Abym9wGNUQUXXO0A5jDAM1F8DOoKv++tOu+LpUqo=
+X-Received: by 2002:a17:906:4546:b0:a45:aef0:c3f0 with SMTP id
+ s6-20020a170906454600b00a45aef0c3f0mr67378ejq.68.1709634240144; Tue, 05 Mar
+ 2024 02:24:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240304211537.631764077@linuxfoundation.org>
-In-Reply-To: <20240304211537.631764077@linuxfoundation.org>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Tue, 5 Mar 2024 15:53:42 +0530
-Message-ID: <CA+G9fYsFuQDfvRGyUhLNuFXQc0yfu_eE3pnRYbUD7p9U7GEa9g@mail.gmail.com>
-Subject: Re: [PATCH 5.10 00/42] 5.10.212-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, 
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org, 
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de, 
-	jonathanh@nvidia.com, f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, 
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
+References: <20240304141426.163517-1-wangrui@loongson.cn> <CANiq72mvdVrzN19PC8pNrvuBLkOEEQ3yX0WG6JcWc+RVaSM2nA@mail.gmail.com>
+ <CAAhV-H666zsMadZuzvcRxxkUxSpkka1tt9AJO_WctHDL8j_HNg@mail.gmail.com> <CANiq72mHCNU2wGpELBbgOA8LKQhm_-RyG8+9bP9miYJOkUw2Uw@mail.gmail.com>
+In-Reply-To: <CANiq72mHCNU2wGpELBbgOA8LKQhm_-RyG8+9bP9miYJOkUw2Uw@mail.gmail.com>
+From: Huacai Chen <chenhuacai@kernel.org>
+Date: Tue, 5 Mar 2024 18:23:48 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H4-m8hETykn+i1pUzHEjAHtkm4rNXybAtDwc5QyXY+m6Q@mail.gmail.com>
+Message-ID: <CAAhV-H4-m8hETykn+i1pUzHEjAHtkm4rNXybAtDwc5QyXY+m6Q@mail.gmail.com>
+Subject: Re: [PATCH] loongarch: rust: Switch to use built-in rustc target
+To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc: WANG Rui <wangrui@loongson.cn>, Miguel Ojeda <ojeda@kernel.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>, Jamie Cunliffe <Jamie.Cunliffe@arm.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, WANG Xuerui <kernel@xen0n.name>, 
+	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	loongarch@lists.linux.dev, loongson-kernel@lists.loongnix.cn
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 5 Mar 2024 at 03:05, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Tue, Mar 5, 2024 at 6:10=E2=80=AFPM Miguel Ojeda
+<miguel.ojeda.sandonis@gmail.com> wrote:
 >
-> This is the start of the stable review cycle for the 5.10.212 release.
-> There are 42 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> On Tue, Mar 5, 2024 at 10:58=E2=80=AFAM Huacai Chen <chenhuacai@kernel.or=
+g> wrote:
+> >
+> > The base of the loongarch tree doesn't contain the arm64 modifications
+> > now, so this patch is better to be applied on the rust tree with my
+> > Acked-by. But if you have some trouble doing that, I can also manually
+> > merge the arm64 parts to the loongarch tree, and then apply this
+> > patch. Thanks.
 >
-> Responses should be made by Wed, 06 Mar 2024 21:15:26 +0000.
-> Anything received after that time might be too late.
+> The rust tree doesn't have the arm64 changes either (i.e. they are in
+> the arm64 tree), so we would have the same issue.
 >
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.212-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
+> Since it is quite late and there is no rush for this, I would suggest
+> applying it after the merge window in loongarch64 and thus avoiding a
+> merge. But, of course, up to you!
+OK, then you just need to do nothing, I will apply at a suitable time
+with your Acked-by.
+
+Huacai
+
 >
-> thanks,
+> Thanks!
 >
-> greg k-h
-
-Following build failures noticed on riscv.
-
-The riscv defconfig, tinyconfig and allnoconfig builds on 5.10.
-The riscv tinyconfig and allnoconfig builds on 5.15.
-
-linux.5.10.y build failures on riscv.
-riscv:
-
-  * gcc-8-defconfig
-  * clang-17-allnoconfig
-  * gcc-12-tinyconfig
-  * gcc-8-allnoconfig
-  * gcc-8-allmodconfig
-  * clang-17-defconfig
-  * gcc-12-defconfig
-  * clang-17-tinyconfig
-  * gcc-12-allmodconfig
-  * gcc-8-tinyconfig
-  * gcc-12-allnoconfig
-
-linux.5.15.y build failures on riscv.
-riscv:
-  build:
-    * gcc-12-tinyconfig
-    * gcc-8-allnoconfig
-    * clang-17-tinyconfig
-    * gcc-8-tinyconfig
-    * gcc-12-allnoconfig
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-arch/riscv/kernel/return_address.c:39:9: error: implicit declaration
-of function 'arch_stack_walk' [-Werror=implicit-function-declaration]
-   39 |         arch_stack_walk(save_return_addr, &data, current, NULL);
-      |         ^~~~~~~~~~~~~~~
-cc1: some warnings being treated as errors
-
-Suspecting patch,
-
-riscv: add CALLER_ADDRx support
-commit 680341382da56bd192ebfa4e58eaf4fec2e5bca7 upstream.
-
-steps to reproduce:
----
-# tuxmake --runtime podman --target-arch riscv --toolchain gcc-12
---kconfig defconfig
-
-
-Links:
- - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/v5.10.210-166-g4b0abedc88b0/testrun/22941782/suite/test/gcc-12-defconfig/details/
- - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/v5.10.210-166-g4b0abedc88b0/testrun/22941144/suite/test/gcc-12-defconfig/history/
- - https://storage.tuxsuite.com/public/linaro/lkft/builds/2dF5ke88GqtfanduGie1JGLUbVa/
-
- - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.15.y/v5.15.149-332-ge7cbbec10c6e/testrun/22942335/suite/test/gcc-12-allnoconfig/history/
- - https://storage.tuxsuite.com/public/linaro/lkft/builds/2dF68wn0dXbU2xGLRyzsxGdXTyB/
-
-
---
-Linaro LKFT
-https://lkft.linaro.org
+> Cheers,
+> Miguel
+>
 
