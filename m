@@ -1,132 +1,143 @@
-Return-Path: <linux-kernel+bounces-92175-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92307-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B713F871C49
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:54:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6208A871E2F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:45:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 55EFA1F255E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:54:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A595DB2202B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:45:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD11F605A5;
-	Tue,  5 Mar 2024 10:44:52 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D4C7604DD
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 10:44:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DCD75812B;
+	Tue,  5 Mar 2024 11:45:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="ZmY4lgUL"
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1767E54910;
+	Tue,  5 Mar 2024 11:45:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709635492; cv=none; b=lW90IzghvrAQ8wozmR5YhkdTuHWHPAPC5LsYh+7DF0WAJIdU8tvbnRSRVvd08oecU6CxErMfOg3PekcT0XfwtQuDQOnBuEDbENjdlIqFiYko8aX7/9xOHgs/TPdB7AsLe6NuDrj1f2JdOZqhsQdXA1WjopHVBBFlkplTQOnD1LU=
+	t=1709639144; cv=none; b=SPHPNDmEoIFklrYV7mKzq4QTyA32ARNy0t5Ke2pZDstdb0Bjdg0edr/5hKU7vvdpNNLo3sE0iCLsacFANyDjOMeWNOXNDNdQxg4qvHQhKDRtsvSUPVebXedsl9LExXWxHhZ+5TM64uL56n+4PhA0rvKEybWKA33JLINPShh6Xhs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709635492; c=relaxed/simple;
-	bh=1MRTtg6xxW+m8LZNKf6jYXnzCsJ63H6Z/wbBhOItJ6Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qOC7i/hqse0Peu+pDIn/7dI6BTRHgaayY+Jom+4kNTTcBNbKbtXhPeZS7zkG/4NokkwEhaVyZJPRkHmxQRdbSynY3GpN+fIrNxkUUrWW1pj2Tn1xeCK2CMbczTJgQQ9B8KSVg7DfQbkQ3+OI8vYTmtt73WlK8ac2m7k+YMeo+D8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7773D1FB;
-	Tue,  5 Mar 2024 02:45:26 -0800 (PST)
-Received: from [10.1.39.151] (XHFQ2J9959.cambridge.arm.com [10.1.39.151])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BDD363F762;
-	Tue,  5 Mar 2024 02:44:47 -0800 (PST)
-Message-ID: <19c2cf15-8789-4977-b149-83b53d2b6abb@arm.com>
-Date: Tue, 5 Mar 2024 10:44:46 +0000
+	s=arc-20240116; t=1709639144; c=relaxed/simple;
+	bh=FHUHlLigDUUjjEfAgynun0/iQyt0bpAOryZ/isN6/Cw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=c+R0ilkiRV8QabhzyksteLNI7vN/2u5XOchkPGBkM1TCpyyPi+HBbVEG3OqUZ44X7Bi1rKj1AifOBidqyfRZVQU1SjQCHzfpCnbbB5LZr0ysTDPnyCA/1TXKN5d72prR8ruYZJv2H8QiZM6s8RnMl7des0Nxz7657Ouekc8Mm3s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=fail (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=ZmY4lgUL reason="signature verification failed"; arc=none smtp.client-ip=79.96.170.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
+ id 774bf1c7206d9c9b; Tue, 5 Mar 2024 11:45:39 +0100
+Received: from kreacher.localnet (unknown [195.136.19.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id D152C66AA0C;
+	Tue,  5 Mar 2024 11:45:38 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
+	s=dkim; t=1709635539;
+	bh=FHUHlLigDUUjjEfAgynun0/iQyt0bpAOryZ/isN6/Cw=;
+	h=From:To:Cc:Subject:Date;
+	b=ZmY4lgULCHBNmKGSZrEKSFDn7qZkfBnuwQiT6SudrIYceXh7lJpAlIWnOpyP4yqx8
+	 Q9YiCUEYFjcEMaKdnD6M4F8LDPyfGDm/uBy/F/MqDL9S7wHKSfL4XLyHuYTB5akHM6
+	 TeTBuWaet63AqwC328mM1yA0KPr4tFkDxCuBH+FXfeJLD7XkHvFwTd/MNirNM0K0yc
+	 b6mbgbv97F9I+UHX7Twkhp8O8R2BgpFNKNJEjQe8pgJ68TpVl3izmc8CqQFYAoPltY
+	 7SPMHmNm2OhTe5GVrZ37bPR05fxHkDwlj7pMfPvyRZo1oi4FRae0r38KA2yreDogsp
+	 Rv9IY9yYHZgtw==
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: Linux PCI <linux-pci@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Linux PM <linux-pm@vger.kernel.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Ricky Wu <ricky_wu@realtek.com>, Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject:
+ [PATCH v1] PM: runtime: PCI: Drain runtime-idle callbacks before driver
+ removal
+Date: Tue, 05 Mar 2024 11:45:38 +0100
+Message-ID: <5761426.DvuYhMxLoT@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 4/4] mm: swap: Swap-out small-sized THP without
- splitting
-Content-Language: en-GB
-To: Barry Song <21cnbao@gmail.com>
-Cc: akpm@linux-foundation.org, david@redhat.com,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@suse.com,
- shy828301@gmail.com, wangkefeng.wang@huawei.com, willy@infradead.org,
- xiang@kernel.org, ying.huang@intel.com, yuzhao@google.com,
- chrisl@kernel.org, surenb@google.com, hanchuanhua@oppo.com
-References: <20231025144546.577640-5-ryan.roberts@arm.com>
- <20240205095155.7151-1-v-songbaohua@oppo.com>
- <d4f602db-403b-4b1f-a3de-affeb40bc499@arm.com>
- <CAGsJ_4wo7BiJWSKb1K_WyAai30KmfckMQ3-mCJPXZ892CtXpyQ@mail.gmail.com>
- <7061b9f4-b7aa-4dad-858c-53ee186c2d8f@arm.com>
- <CAGsJ_4w8YWMFjWu2i5NhbOA-pfemvzCHt4hB7rWiOpY63GVWSA@mail.gmail.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAGsJ_4w8YWMFjWu2i5NhbOA-pfemvzCHt4hB7rWiOpY63GVWSA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrheelgdduiecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeegfffhudejlefhtdegffekteduhfethffhieettefhkeevgfdvgfefieekiefgheenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepkedprhgtphhtthhopehlihhnuhigqdhptghisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohephhgvlhhgrggrsheskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghl
+ rdhorhhgpdhrtghpthhtoheprhgrfhgrvghlsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehgrhgvghhkhheslhhinhhugihfohhunhgurghtihhonhdrohhrgh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=8 Fuz1=8 Fuz2=8
 
-On 05/03/2024 09:54, Barry Song wrote:
-> On Tue, Mar 5, 2024 at 10:00 PM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>
->> Hi Barry,
->>
->> On 18/02/2024 23:40, Barry Song wrote:
->>> On Tue, Feb 6, 2024 at 1:14 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>>>
->>>> On 05/02/2024 09:51, Barry Song wrote:
->>>>> +Chris, Suren and Chuanhua
->>>>>
->>>>> Hi Ryan,
->> [...]
->>>>
->>>
->>> Hi Ryan,
->>> I am running into some races especially while enabling large folio swap-out and
->>> swap-in both. some of them, i am still struggling with the detailed
->>> timing how they
->>> are happening.
->>> but the below change can help remove those bugs which cause corrupted data.
->>
->> I'm getting quite confused with all the emails flying around on this topic. Here
->> you were reporting a data corruption bug and your suggested fix below is the one
->> you have now posted at [1]. But in the thread at [1] we concluded that it is not
->> fixing a functional correctness issue, but is just an optimization in some
->> corner cases. So does the corruption issue still manifest? Did you manage to
->> root cause it? Is it a problem with my swap-out series or your swap-in series,
->> or pre-existing?
-> 
-> Hi Ryan,
-> 
-> It is not a problem of your swap-out series, but a problem of my swap-in
-> series. The bug in swap-in series is triggered by the skipped PTEs in the
-> thread[1], but my swap-in code should still be able to cope with this situation
-> and survive it -  a large folio might be partially but not completely unmapped
-> after try_to_unmap_one(). 
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Ahh, understood, thanks!
+A race condition between the .runtime_idle() callback and the .remove()
+callback in the rtsx_pcr PCI driver leads to a kernel crash due to an
+unhandled page fault [1].
 
-> I actually replied to you and explained all
-> the details here[2], but guess you missed it :-)
+The problem is that rtsx_pci_runtime_idle() is not expected to be
+running after pm_runtime_get_sync() has been called, but the latter
+doesn't really guarantee that.  It only guarantees that the suspend
+and resume callbacks will not be running when it returns.
 
-I did read that mail, but the first line "They are the same" made me think this
-was solving a functional problem. And I still have a very shaky understanding of
-parts of the code that I haven't directly worked on, so sometimes some of the
-details go over my head - I'll get there eventually!
+However, if a .runtime_idle() callback is already running when
+pm_runtime_get_sync() is called, the latter will notice that the
+runtime PM status of the device is RPM_ACTIVE and it will return right
+away without waiting for the former to complete.  In fact, it cannot
+wait for .runtime_idle() to complete because it may be called from that
+callback (it arguably does not make much sense to do that, but it is not
+strictly prohibited).
 
-> 
-> [1] https://lore.kernel.org/linux-mm/20240304103757.235352-1-21cnbao@gmail.com/
-> [2] https://lore.kernel.org/linux-mm/CAGsJ_4zdh5kOG7QP4UDaE-wmLFiTEJC2PX-_LxtOj=QrZSvkCA@mail.gmail.com/
-> 
-> apology this makes you confused.
+Thus in general, whoever is providing a .runtime_idle() callback, they
+need to protect it from running in parallel with whatever code runs
+after pm_runtime_get_sync().  [Note that .runtime_idle() will not start
+after pm_runtime_get_sync() has returned, but it may continue running
+then if it has started earlier already.]
 
-No need to apologise - I appreciate your taking the time to write it all down in
-detail. It helps me to learn these areas of the code.
+One way to address that race condition is to call pm_runtime_barrier()
+after pm_runtime_get_sync() (not before it, because a nonzero value of
+the runtime PM usage counter is necessary to prevent runtime PM
+callbacks from being invoked) to wait for the runtime-idle callback to
+complete should it be running at that point.  A suitable place for
+doing that is in pci_device_remove() which calls pm_runtime_get_sync()
+before removing the driver, so it may as well call pm_runtime_barrier()
+subsequently, which will prevent the race in question from occurring,
+not just in the rtsx_pcr driver, but in any PCI drivers providing
+runtime-idle callbacks.
 
-> 
->>
->> [1] https://lore.kernel.org/linux-mm/20240304103757.235352-1-21cnbao@gmail.com/
->>
->> Thanks,
->> Ryan
->>
-> 
-> Thanks
-> Barry
+Link: https://lore.kernel.org/lkml/20240229062201.49500-1-kai.heng.feng@canonical.com/ # [1]
+Reported-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Tested-by: Ricky Wu <ricky_wu@realtek.com>
+Cc: All applicable <stable@vger.kernel.org>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/pci/pci-driver.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
+
+Index: linux-pm/drivers/pci/pci-driver.c
+===================================================================
+--- linux-pm.orig/drivers/pci/pci-driver.c
++++ linux-pm/drivers/pci/pci-driver.c
+@@ -473,6 +473,13 @@ static void pci_device_remove(struct dev
+ 
+ 	if (drv->remove) {
+ 		pm_runtime_get_sync(dev);
++		/*
++		 * If the driver provides a .runtime_idle() callback and it has
++		 * started to run already, it may continue to run in parallel
++		 * with the code below, so wait until all of the runtime PM
++		 * activity has completed.
++		 */
++		pm_runtime_barrier(dev);
+ 		drv->remove(pci_dev);
+ 		pm_runtime_put_noidle(dev);
+ 	}
+
+
 
 
