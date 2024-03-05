@@ -1,194 +1,171 @@
-Return-Path: <linux-kernel+bounces-91948-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91964-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43C458718DB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:04:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61F6687191F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:09:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C46951F2302B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:04:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6F164B2363C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:09:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F9FF52F68;
-	Tue,  5 Mar 2024 09:01:01 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B0844F890
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 09:00:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2433350272;
+	Tue,  5 Mar 2024 09:09:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="lBeeAbK8";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="u1MMH9wn";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="LNEt80FI";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="wFTIxbPd"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C468350248;
+	Tue,  5 Mar 2024 09:09:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709629260; cv=none; b=A5Y2Tv0hT2TSRPakyQWluGRxgHCK72WL915Yhok5il2cwXO01cr6DWLCMZ9p3rHeelu1YUkmXDR6b4+d8IXoeDu6ZlCuu5aDDlQwpLXxtnS+h2xbQMw+HpuRI9unNbp7Mg6rXYmab7j34S0NvdPb2h4n+KUIr7q5IYAekRyrFX0=
+	t=1709629757; cv=none; b=C++JmpSidj4xOO+91Ce73PlwG3QEg1fj4b0ZTgzkXSkfZuibFUZTpn2d4H8qFISyJtUdMrhwW6CqXMhJgdWii4cZQ9xtb/RDxYy4Cth2DOxk7pZe4MSNZ5mh7WNEp68oUB5RGU2znZcnSWlAETEtPobWrJ7AbTJjFp7B5YJFY7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709629260; c=relaxed/simple;
-	bh=fDEJlWEglnqvvSd0pGxsfGxm1zICSLOBshiHfoVcZIM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Y/Tuxw0/a46VwtVV4g8kpxIswL4GbBWGe9+NHPN/49quMKv9kojJZa06eO106tR406aQevBBdpe6BICZiD8AQpzvdHLFXAee/A4vm87j81oCXtqhyw0Y+PtfL+cJSjhw06OoTWPMVaKJc+4ubIX0qPXCQpoTYCju8zXUKaXckUw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0521E1FB;
-	Tue,  5 Mar 2024 01:01:35 -0800 (PST)
-Received: from [10.57.68.162] (unknown [10.57.68.162])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 269AC3F762;
-	Tue,  5 Mar 2024 01:00:56 -0800 (PST)
-Message-ID: <7061b9f4-b7aa-4dad-858c-53ee186c2d8f@arm.com>
-Date: Tue, 5 Mar 2024 09:00:54 +0000
+	s=arc-20240116; t=1709629757; c=relaxed/simple;
+	bh=6FtfTRMJ9KQpAFhbcdfJc+vgW9lBO5Msu+U0sj92YVc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ud1vCBd6PU58WzKwQ4ZcfgZHuoc88xlPPhsZFWvWaAAD3rUh/6cAPORPhnGHZxIFl7QyxORbmynm3pBK7/SMAV2Hl3KLmoL61qlFK4C3Ob2CISNxiVOvB9i//bC07nIAeysFrqlB8EmM8J52p/lUiBgaZ0q0A9WR1cKpcUg7LSk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=lBeeAbK8; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=u1MMH9wn; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=LNEt80FI; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=wFTIxbPd; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E10217666C;
+	Tue,  5 Mar 2024 09:09:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1709629754; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=Th/it1BW0cxTcajCDSkw5GZxs8x0WcNljdwQ9vEs7lk=;
+	b=lBeeAbK8WH21FUjXt4+xWPPdaBMyQlk+8geYFgAgr6wlDdfbz2N/b8xKK6bRTfKBPj+izb
+	oLpOpJUyWMPMX7+H1VeRvRYXeeCIPmFTGoCHJuE3F1rLPBX5rD3kqGnbehcUjaiHBXvz/C
+	SHa5HKCsn6MDst7qeR1ABMIj3g6vMpU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709629754;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=Th/it1BW0cxTcajCDSkw5GZxs8x0WcNljdwQ9vEs7lk=;
+	b=u1MMH9wnxcZ0wFK6jJM6z+AuBVAgahh7+0oNB/fiVE6PKpaPHXMzQ9Q9lXwJO2dEbu5X3v
+	40srVuxgoTli57Dw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1709629753; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=Th/it1BW0cxTcajCDSkw5GZxs8x0WcNljdwQ9vEs7lk=;
+	b=LNEt80FIoHdRKHjQtXk/OyAmCQLcdDvuGPhIzjDGGQldx7c/kgi0jEErD7GL7jLJpP6mMM
+	spVPIrUMCwgWFKbX8XWUoU8w+eN19VyLjANQyAotYPricrf6rCDALyHHc8d/LcsfIFTRDp
+	HzLq1L8/FaL54YRxqG0KxmiwaoSfTwM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709629753;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=Th/it1BW0cxTcajCDSkw5GZxs8x0WcNljdwQ9vEs7lk=;
+	b=wFTIxbPdteiwtr27ZfesXFwkCPaVGNcE62mfNw5etXaZeIk2VGTbJGE5phMf6vUdon7l2S
+	JfPvw7ZH0x6E8nDQ==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 8034913466;
+	Tue,  5 Mar 2024 09:09:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id /8a2HTnh5mUSYgAAn2gu4w
+	(envelope-from <tzimmermann@suse.de>); Tue, 05 Mar 2024 09:09:13 +0000
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: mpe@ellerman.id.au,
+	jani.nikula@intel.com,
+	naresh.kamboju@linaro.org,
+	deller@gmx.de,
+	npiggin@gmail.com,
+	christophe.leroy@csgroup.eu,
+	aneesh.kumar@kernel.org,
+	naveen.n.rao@linux.ibm.com
+Cc: dri-devel@lists.freedesktop.org,
+	linux-fbdev@vger.kernel.org,
+	lkft-triage@lists.linaro.org,
+	linux-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	Thomas Zimmermann <tzimmermann@suse.de>
+Subject: [PATCH v2 0/3] arch/powerpc: Resolve backlight include dependencies
+Date: Tue,  5 Mar 2024 10:00:57 +0100
+Message-ID: <20240305090910.26742-1-tzimmermann@suse.de>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 4/4] mm: swap: Swap-out small-sized THP without
- splitting
-Content-Language: en-GB
-To: Barry Song <21cnbao@gmail.com>
-Cc: akpm@linux-foundation.org, david@redhat.com,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@suse.com,
- shy828301@gmail.com, wangkefeng.wang@huawei.com, willy@infradead.org,
- xiang@kernel.org, ying.huang@intel.com, yuzhao@google.com,
- chrisl@kernel.org, surenb@google.com, hanchuanhua@oppo.com
-References: <20231025144546.577640-5-ryan.roberts@arm.com>
- <20240205095155.7151-1-v-songbaohua@oppo.com>
- <d4f602db-403b-4b1f-a3de-affeb40bc499@arm.com>
- <CAGsJ_4wo7BiJWSKb1K_WyAai30KmfckMQ3-mCJPXZ892CtXpyQ@mail.gmail.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAGsJ_4wo7BiJWSKb1K_WyAai30KmfckMQ3-mCJPXZ892CtXpyQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Spam-Level: **
+X-Spamd-Bar: ++
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=LNEt80FI;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=wFTIxbPd
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [2.09 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	 TO_DN_SOME(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FREEMAIL_TO(0.00)[ellerman.id.au,intel.com,linaro.org,gmx.de,gmail.com,csgroup.eu,kernel.org,linux.ibm.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-1.40)[90.88%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com,gmx.de];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[14];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
+X-Spam-Score: 2.09
+X-Rspamd-Queue-Id: E10217666C
+X-Spam-Flag: NO
 
-Hi Barry,
+After cleaning up <linux/fb.h> in commit 11b4eedfc87d ("fbdev: Do
+not include <linux/backlight.h> in header"), building with
+CONFIG_PMAC_BACKLIGHT=y returns errors about missing declarations.
+Patches 1 and 2 resolve the errors. Patch 1 has been reviewed at [1].
+Patch 3 removes another dependency between backlight and fbdev code.
 
-On 18/02/2024 23:40, Barry Song wrote:
-> On Tue, Feb 6, 2024 at 1:14 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>
->> On 05/02/2024 09:51, Barry Song wrote:
->>> +Chris, Suren and Chuanhua
->>>
->>> Hi Ryan,
-[...]
->>
-> 
-> Hi Ryan,
-> I am running into some races especially while enabling large folio swap-out and
-> swap-in both. some of them, i am still struggling with the detailed
-> timing how they
-> are happening.
-> but the below change can help remove those bugs which cause corrupted data.
+Compile tested with ppc6xx_defconfig.
 
-I'm getting quite confused with all the emails flying around on this topic. Here
-you were reporting a data corruption bug and your suggested fix below is the one
-you have now posted at [1]. But in the thread at [1] we concluded that it is not
-fixing a functional correctness issue, but is just an optimization in some
-corner cases. So does the corruption issue still manifest? Did you manage to
-root cause it? Is it a problem with my swap-out series or your swap-in series,
-or pre-existing?
+v2:
+	* via-pmu-backlight: fix build errors
+	* powerpc: resolve dependency between fbdev and backlight
 
-[1] https://lore.kernel.org/linux-mm/20240304103757.235352-1-21cnbao@gmail.com/
+[1] https://patchwork.freedesktop.org/series/130661/
 
-Thanks,
-Ryan
+Thomas Zimmermann (3):
+  fbdev/chipsfb: Include <linux/backlight.h>
+  macintosh/via-pmu-backlight: Include <linux/backlight.h>
+  arch/powerpc: Remove <linux/fb.h> from backlight code
 
-> 
-> index da2aab219c40..ef9cfbc84760 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -1953,6 +1953,16 @@ static unsigned int shrink_folio_list(struct
-> list_head *folio_list,
-> 
->                         if (folio_test_pmd_mappable(folio))
->                                 flags |= TTU_SPLIT_HUGE_PMD;
-> +                       /*
-> +                        * make try_to_unmap_one hold ptl from the very first
-> +                        * beginning if we are reclaiming a folio with multi-
-> +                        * ptes. otherwise, we may only reclaim a part of the
-> +                        * folio from the middle.
-> +                        * for example, a parallel thread might temporarily
-> +                        * set pte to none for various purposes.
-> +                        */
-> +                       else if (folio_test_large(folio))
-> +                               flags |= TTU_SYNC;
-> 
->                         try_to_unmap(folio, flags);
->                         if (folio_mapped(folio)) {
-> 
-> 
-> While we are swapping-out a large folio, it has many ptes, we change those ptes
-> to swap entries in try_to_unmap_one(). "while (page_vma_mapped_walk(&pvmw))"
-> will iterate all ptes within the large folio. but it will only begin
-> to acquire ptl when
-> it meets a valid pte as below /* xxxxxxx */
-> 
-> static bool map_pte(struct page_vma_mapped_walk *pvmw, spinlock_t **ptlp)
-> {
->         pte_t ptent;
-> 
->         if (pvmw->flags & PVMW_SYNC) {
->                 /* Use the stricter lookup */
->                 pvmw->pte = pte_offset_map_lock(pvmw->vma->vm_mm, pvmw->pmd,
->                                                 pvmw->address, &pvmw->ptl);
->                 *ptlp = pvmw->ptl;
->                 return !!pvmw->pte;
->         }
-> 
->        ...
->         pvmw->pte = pte_offset_map_nolock(pvmw->vma->vm_mm, pvmw->pmd,
->                                           pvmw->address, ptlp);
->         if (!pvmw->pte)
->                 return false;
-> 
->         ptent = ptep_get(pvmw->pte);
-> 
->         if (pvmw->flags & PVMW_MIGRATION) {
->                 if (!is_swap_pte(ptent))
->                         return false;
->         } else if (is_swap_pte(ptent)) {
->                 swp_entry_t entry;
->                 ...
->                 entry = pte_to_swp_entry(ptent);
->                 if (!is_device_private_entry(entry) &&
->                     !is_device_exclusive_entry(entry))
->                         return false;
->         } else if (!pte_present(ptent)) {
->                 return false;
->         }
->         pvmw->ptl = *ptlp;
->         spin_lock(pvmw->ptl);   /* xxxxxxx */
->         return true;
-> }
-> 
-> 
-> for various reasons,  for example, break-before-make for clearing access flags
-> etc. pte can be set to none. since page_vma_mapped_walk() doesn't hold ptl
-> from the beginning,  it might only begin to set swap entries from the middle of
-> a large folio.
-> 
-> For example, in case a large folio has 16 ptes, and 0,1,2 are somehow zero
-> in the intermediate stage of a break-before-make, ptl will be held
-> from the 3rd pte,
-> and swap entries will be set from 3rd pte as well. it seems not good as we are
-> trying to swap out a large folio, but we are swapping out a part of them.
-> 
-> I am still struggling with all the timing of races, but using PVMW_SYNC to
-> explicitly ask for ptl from the first pte seems a good thing for large folio
-> regardless of those races. it can avoid try_to_unmap_one reading intermediate
-> pte and further make the wrong decision since reclaiming pte-mapped large
-> folios is atomic with just one pte.
-> 
->> Sorry I haven't progressed this series as I had hoped. I've been concentrating
->> on getting the contpte series upstream. I'm hoping I will find some time to move
->> this series along by the tail end of Feb (hoping to get it in shape for v6.10).
->> Hopefully that doesn't cause you any big problems?
-> 
-> no worries. Anyway, we are already using your code to run various tests.
-> 
->>
->> Thanks,
->> Ryan
-> 
-> Thanks
-> Barry
+ arch/powerpc/include/asm/backlight.h        |  5 ++--
+ arch/powerpc/platforms/powermac/backlight.c | 26 ---------------------
+ drivers/macintosh/via-pmu-backlight.c       |  1 +
+ drivers/video/fbdev/chipsfb.c               |  1 +
+ 4 files changed, 4 insertions(+), 29 deletions(-)
+
+-- 
+2.44.0
 
 
