@@ -1,140 +1,361 @@
-Return-Path: <linux-kernel+bounces-92868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B7A6872739
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 20:02:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FB74872740
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 20:04:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 278E1287ADC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:02:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8F1A4B2499F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:04:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AEE422F08;
-	Tue,  5 Mar 2024 19:02:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 069FD1C2BD;
+	Tue,  5 Mar 2024 19:03:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="3Vx/ki12"
-Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="L676/Vmm"
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8CC41BC26
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 19:02:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6C4F1B81D
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 19:03:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709665343; cv=none; b=BFUTzJcLz3+6nEJeKojo9NY4KB/tyk7Y1OZB4p4UGF/NikxxJkjHAxjNJHrOPtFs3d4A0nF0m8/NcCl7VtlAVu3uqV0EgGDbNpp7WJzSYi0mWhTA+mb/n5kVOiSEZj/qYkjArPffoTH3C95fQgCludFrMkfOdgokTQTuH/l5ZZ0=
+	t=1709665432; cv=none; b=bkQIh21FEWg1sienfXMLZ39uc+cn6FvuIHX7xX3z+o8e92Yqs5kuGjjt5r1DtdbTJxG+LX+dNKoQp8MZ0hsIyRmmuswmi2GjtivC2zibFBIOogSV+ixosW3Pk7RNJ2mUHUiGuvVeNVFQKqr+cE2YXEGwY+H5IuP6FfIG3/pwC/M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709665343; c=relaxed/simple;
-	bh=K6FkNMPBXHerOI4xPkbioCN3A0D3+Ds7NwZGpoSSfe0=;
+	s=arc-20240116; t=1709665432; c=relaxed/simple;
+	bh=nFR4TtmFsAlAIreWQ4YESZrHvsrp/UDDXLgsdNPfX+0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RGOW+WZ/0Ob1FEfD3LZSyLv0LLmaJdJvOmWxqnI0oNRj68T1tpfYY0IalH53eIYFQdtr5isHWn3VrSmvAZ8WVtAO6L89BxGFVpF7tIodpjTIIbSEplaVt0bqt+U0ehOavhGLbVzEP04Djip2dAvf5PivQ4jsJnzTdeZjoP1QEok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=3Vx/ki12; arc=none smtp.client-ip=209.85.167.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3c1f5e14bdbso761003b6e.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 11:02:21 -0800 (PST)
+	 To:Cc:Content-Type; b=uOP3fVSusEFJlj7Qdfrj1RrvFAROS/jnX1DEkqTdQAvqZYWf3M0iRfDnnYpzsT4BW+9hBcSnwjRx/QJj986IoWU6lInvvLtvwAWa98nzrF1q46NtPjT8WkMpJzYIMZ8A9RgwxkISpVyCZrcvn/W1xV1RNisdGwvQOfspIA/jCnk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=L676/Vmm; arc=none smtp.client-ip=209.85.128.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-60974cb1cd7so54338107b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 11:03:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1709665341; x=1710270141; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xBwFyKsVTwVp75+p2nwkinAD6Bz4XTPqba7sPzbW0JE=;
-        b=3Vx/ki12OkG9eSjnqNnLIPf1HkuxdA4XBPXIjRZ9w58KHKzpNCzgY0JVed9PmQs4LI
-         rZ9jlpK49HC9sqwvDjREV8J9VNn+GE0NBnJwCflbv/bNI2/Y9OFwYBuxnnShhpAhTSkx
-         1zTiNizcpawsWPFQywsIh2ahOgYWYVqehEtp9Q9RBAQ9HGeKw4e4shhvgdGvKgxFm3Po
-         J3JKs9BO5ZEWtdifoNqtqap/d3dvVHwj2Y1MZW40JnEFckLOvySJaxgUoaizGMe+EsqL
-         UAMGnPMZ99nyV2tg3WTSwaXWHiN/wUYiUiwXzo5w4uwMxTZQYkD5XSgy2RQGOZWqdzbA
-         cXdw==
+        d=linaro.org; s=google; t=1709665428; x=1710270228; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=tj9v4Vuf7/2y1AftgKzFRQDegcxDIOospQ+FfL86Eno=;
+        b=L676/VmmmLy70P35DZW6kuet8lJt/ZSxZG/i/F+v8O0gPfJDf89y7wuvazA0/IJPlL
+         SmD/XhVwvqRCo4VoEmgdiJMlghCB+p+aLctJo/eIAvvnsUXKV0g684qx1+8Uk92eiCQ1
+         FdNXPVu1z0vrRuq3r46rRBwdsH/avm0IMtSogW4tiXP765Fq0GBwGBjoDkkr+je708am
+         Pd3zHP6hKipnSNgn79Y04wfhh8akFh+3x0GCgbqCbUujs0mt4sKO3e2TCtTS4xwKzlyH
+         TZuMdJrnQ87f/EYbUQTaNyIbjUHKV5DNh9sz3cYsfjuF61nOn7kbeeEbyRsYSV2vfJd0
+         BP9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709665341; x=1710270141;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xBwFyKsVTwVp75+p2nwkinAD6Bz4XTPqba7sPzbW0JE=;
-        b=DSs/gpT17EnnLy5zgoh7mo2W7Q3sReU218HKZ0p7WjRLbjI+gXaM8xGFksLuGUvVvk
-         dMLwVKt8Qc9pDfssgI+AjmSDe2UFUWp6/5qISq9BeyFbttq9FyZW11mpsOeAjg7gfuSI
-         V2p98J8vPxFCOH/L9nqqYy7Kpzv7dpUpe1XjB4c3A/XtkwndIIS9pS0snDJ3Vq2LYUZR
-         xEnup/bFCyeOX0R1SN+sBfMk5mXxALVnZq59alJI24saQZNYJGXu+sytAFDbACVC+wG5
-         TmxTeCQU2zeoxONbk/T95fc73YOsw8g9LMLV8LF25CoYdOmcdXAagpWPxJbnCvQSZNod
-         mOdQ==
-X-Gm-Message-State: AOJu0Yz2xUi/clDkkm2tl7wae1mPJHHG4O2nZD1aJyy56SltM2ODfeGV
-	eLhRFoNhN/1EcGBiJyqvOfMVAXQoL81ZP+xNCVbFe1GbCcnZjSXlftlVAt0k0pUJBA3t0Yo1//8
-	lmkFtWgk02vaPkNDN9XMxKU1WCGbCafSsmx5RNA==
-X-Google-Smtp-Source: AGHT+IEWrieqCghcMtuAiU8+E4g1wtb0MN+anUUpKGJrOGNU5YfOBzlImhJC+Y9W4AXeVKQmrFK59za9cu/REtKiSrk=
-X-Received: by 2002:a05:6808:14d:b0:3c2:1944:e2f9 with SMTP id
- h13-20020a056808014d00b003c21944e2f9mr223145oie.17.1709665340696; Tue, 05 Mar
- 2024 11:02:20 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709665428; x=1710270228;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tj9v4Vuf7/2y1AftgKzFRQDegcxDIOospQ+FfL86Eno=;
+        b=vvAt/hwCyrPyM1y+WsqCMsbYQD7Qq92jfF4btr1neOQeRoT49V2geXJmggsIOgmZh4
+         5rtL4LxuH0kXq3U4Nmc6qWY0n8+naKFPjZjKjmB5oc0PSrqsKL5fbTNfTohbjj2Z+yiD
+         UzXe6QubCvGPCqlYzL1bLvDzxUn6mIc2oXkpQwY2gbEjnfSpKTABBOBqjf5gjzw2ul1r
+         MtXmilAgGDUtfPRUVl3pnSTPKAbNwf7pMWAsmlr6G/IsAkwyC4PH7pfLiUTxByArcMAq
+         yW2r3JCWBcfL+h0I0iBkeUJAv/7d9j/dg2LjgCkeSs1Uh9WQG/0J3PR8FX2R/V9Z1Rfz
+         8fkA==
+X-Forwarded-Encrypted: i=1; AJvYcCWfsMeHI7IMByik+ujBg7TkMCbe1CnIGi5mZ44/t9UDIpVMFbcOcWWuqHQXacgsY/J4B/D/pBt+8KbHGeBPUqeQNX1y5+yK9fyRnXbE
+X-Gm-Message-State: AOJu0YykyyO32xB4Q/69+g3Hb7zKccC81IwJx0B9G9MVRWRnlkNHA3aC
+	SNuVejSoxLebKqOl3J9q3uNwrcdvWA42G1h04va0jXi1JJY2qRQz6QHT8Arlf2D52/ZkqFY33Ti
+	nLNxqX1it2qWwvppX6VZ6a+uURzRhixUhe11Y1Q==
+X-Google-Smtp-Source: AGHT+IGKTqAbWKDABfsvILiDuIbYZg+R6nM3PamcUphV0IunTEH42BYl3u2kfBq9aXyR4Rztu5fz84oLGcZHxGyJ0GY=
+X-Received: by 2002:a0d:e24c:0:b0:607:6ad3:8746 with SMTP id
+ l73-20020a0de24c000000b006076ad38746mr12668467ywe.46.1709665427665; Tue, 05
+ Mar 2024 11:03:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240305002124.7552-1-warthog618@gmail.com>
-In-Reply-To: <20240305002124.7552-1-warthog618@gmail.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Tue, 5 Mar 2024 20:02:09 +0100
-Message-ID: <CAMRc=McneyUZztqtdrsbGG1E+DWhBxq2cQH7OWMEStaJjKLkCA@mail.gmail.com>
-Subject: Re: [PATCH] selftest: gpio: remove obsolete gpio-mockup test
-To: Kent Gibson <warthog618@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-gpio@vger.kernel.org, bartosz.golaszewski@linaro.org, 
-	andriy.shevchenko@linux.intel.com, christophe.leroy@csgroup.eu, 
-	shuah@kernel.org, bamv2005@gmail.com, Pengfei Xu <pengfei.xu@intel.com>, 
-	Yi Lai <yi1.lai@intel.com>
+References: <1709657858-8563-1-git-send-email-quic_sriramd@quicinc.com> <1709657858-8563-2-git-send-email-quic_sriramd@quicinc.com>
+In-Reply-To: <1709657858-8563-2-git-send-email-quic_sriramd@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Tue, 5 Mar 2024 21:03:36 +0200
+Message-ID: <CAA8EJpph+R2oJjABvNQYwp=pZLxQPzzs41Hhw4feOdQ3eU-6UA@mail.gmail.com>
+Subject: Re: [RFC 1/3] dt-bindings: usb: qcom,dwc3: Add support for multiple power-domains
+To: Sriram Dash <quic_sriramd@quicinc.com>
+Cc: andersson@kernel.org, konrad.dybcio@linaro.org, vkoul@kernel.org, 
+	kishon@kernel.org, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
+	conor+dt@kernel.org, gregkh@linuxfoundation.org, quic_wcheng@quicinc.com, 
+	Thinh.Nguyen@synopsys.com, p.zabel@pengutronix.de, 
+	linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-usb@vger.kernel.org, quic_psodagud@quicinc.com, quic_nkela@quicinc.com, 
+	manivannan.sadhasivam@linaro.org, ulf.hansson@linaro.org, 
+	sudeep.holla@arm.com, quic_shazhuss@quicinc.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 5, 2024 at 1:26=E2=80=AFAM Kent Gibson <warthog618@gmail.com> w=
-rote:
+On Tue, 5 Mar 2024 at 18:58, Sriram Dash <quic_sriramd@quicinc.com> wrote:
 >
-> With the removal of the ARCH_NR_GPIOS, the number of available GPIOs
-> is effectively unlimited, causing the gpio-mockup module load failure
-> test that overflowed the number of GPIOs to unexpectedly succeed, and
-> so fail.
+> Some target systems allow multiple resources to be managed by firmware.
+> On these targets, tasks related to clocks, regulators, resets, and
+> interconnects can be delegated to the firmware, while the remaining
+> responsibilities are handled by Linux.
 >
-> The test is no longer relevant so remove it.
-> Promote the "no lines defined" test so there is still one load
-> failure test in the basic set.
+> To support the management of partial resources in Linux and leave the rest
+> to firmware, multiple power domains are introduced. Each power domain can
+> manage one or more resources, depending on the specific use case.
 >
-> Fixes: 7b61212f2a07 ("gpiolib: Get rid of ARCH_NR_GPIOS")
-> Reported-by: Pengfei Xu <pengfei.xu@intel.com>
-> Reported-by: Yi Lai <yi1.lai@intel.com>
-> Closes: https://lore.kernel.org/linux-gpio/ZC6OHBjdwBdT4sSb@xpf.sh.intel.=
-com/
-> Signed-off-by: Kent Gibson <warthog618@gmail.com>
+> These power domains handle SCMI calls to the firmware, enabling the
+> activation and deactivation of firmware-managed resources.
+>
+> Signed-off-by: Sriram Dash <quic_sriramd@quicinc.com>
 > ---
->  tools/testing/selftests/gpio/gpio-mockup.sh | 9 +++------
->  1 file changed, 3 insertions(+), 6 deletions(-)
+>  .../phy/qcom,sc8280xp-qmp-usb3-uni-phy.yaml        | 74 ++++++++++++++++------
+>  .../bindings/phy/qcom,usb-snps-femto-v2.yaml       | 49 ++++++++++++--
+>  .../devicetree/bindings/usb/qcom,dwc3.yaml         | 37 ++++++++++-
+>  3 files changed, 130 insertions(+), 30 deletions(-)
 >
-> diff --git a/tools/testing/selftests/gpio/gpio-mockup.sh b/tools/testing/=
-selftests/gpio/gpio-mockup.sh
-> index 0d6c5f7f95d2..fc2dd4c24d06 100755
-> --- a/tools/testing/selftests/gpio/gpio-mockup.sh
-> +++ b/tools/testing/selftests/gpio/gpio-mockup.sh
-> @@ -377,13 +377,10 @@ if [ "$full_test" ]; then
->         insmod_test "0,32,32,44,-1,22,-1,31" 32 12 22 31
->  fi
->  echo "2.  Module load error tests"
-> -echo "2.1 gpio overflow"
-> -# Currently: The max number of gpio(1024) is defined in arm architecture=
-.
-> -insmod_test "-1,1024"
-> +echo "2.1 no lines defined"
-> +insmod_test "0,0"
->  if [ "$full_test" ]; then
-> -       echo "2.2 no lines defined"
-> -       insmod_test "0,0"
-> -       echo "2.3 ignore range overlap"
-> +       echo "2.2 ignore range overlap"
->         insmod_test "0,32,0,1" 32
->         insmod_test "0,32,1,5" 32
->         insmod_test "0,32,30,35" 32
+> diff --git a/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-usb3-uni-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-usb3-uni-phy.yaml
+> index 1e2d4dd..53b9ba9 100644
+> --- a/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-usb3-uni-phy.yaml
+> +++ b/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-usb3-uni-phy.yaml
+> @@ -44,7 +44,32 @@ properties:
+>      maxItems: 5
+>
+>    power-domains:
+> -    maxItems: 1
+> +    description: specifies a phandle to PM domain provider node
+> +    minItems: 1
+> +    maxItems: 2
+> +
+> +  power-domain-names:
+> +    description:
+> +      A list of power domain name strings sorted in the same order as the
+> +      power-domains property.
+> +
+> +      For platforms where some resource are firmware managed, the name
+> +      corresponding to the index of an SCMI domain provider can be
+> +      "usb_core" or "usb_transfer".
+> +    items:
+> +      - const: usb_core
+> +      - const: usb_transfer
+> +
+> +  qmp,fw-managed:
+> +    description:
+> +      Some targets allow multiple resources to be managed by firmware.
+> +      On these targets, tasks related to clocks, regulators, resets, and
+> +      interconnects can be delegated to the firmware, while the remaining
+> +      responsibilities are handled by Linux.
+> +
+> +      Decide if the target resources will be managed by firmware or High level
+> +      OS.
+> +    type: boolean
+>
+>    resets:
+>      maxItems: 2
+> @@ -70,14 +95,6 @@ properties:
+>  required:
+>    - compatible
+>    - reg
+> -  - clocks
+> -  - clock-names
+> -  - resets
+> -  - reset-names
+> -  - vdda-phy-supply
+> -  - vdda-pll-supply
+> -  - "#clock-cells"
+> -  - clock-output-names
+>    - "#phy-cells"
+>
+>  allOf:
+> @@ -86,6 +103,33 @@ allOf:
+>          compatible:
+>            contains:
+>              enum:
+> +              - qcom,sa8775p-qmp-usb3-uni-phy
+> +              - qcom,sc8280xp-qmp-usb3-uni-phy
+> +              - qcom,x1e80100-qmp-usb3-uni-phy
+> +    then:
+> +      required:
+> +        - power-domains
+> +
+> +  - if:
+> +      not:
+> +        required:
+> +          - qmp,fw-managed
+> +    then:
+> +      required:
+> +        - clocks
+> +        - clock-names
+> +        - resets
+> +        - reset-names
+> +        - vdda-phy-supply
+> +        - vdda-pll-supply
+> +        - clock-output-names
+> +        - "#clock-cells"
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+>                - qcom,ipq6018-qmp-usb3-phy
+>                - qcom,ipq8074-qmp-usb3-phy
+>                - qcom,ipq9574-qmp-usb3-phy
+> @@ -144,18 +188,6 @@ allOf:
+>              - const: com_aux
+>              - const: pipe
+>
+> -  - if:
+> -      properties:
+> -        compatible:
+> -          contains:
+> -            enum:
+> -              - qcom,sa8775p-qmp-usb3-uni-phy
+> -              - qcom,sc8280xp-qmp-usb3-uni-phy
+> -              - qcom,x1e80100-qmp-usb3-uni-phy
+> -    then:
+> -      required:
+> -        - power-domains
+> -
+>  additionalProperties: false
+>
+>  examples:
+> diff --git a/Documentation/devicetree/bindings/phy/qcom,usb-snps-femto-v2.yaml b/Documentation/devicetree/bindings/phy/qcom,usb-snps-femto-v2.yaml
+> index 0f200e3..ad2f08f 100644
+> --- a/Documentation/devicetree/bindings/phy/qcom,usb-snps-femto-v2.yaml
+> +++ b/Documentation/devicetree/bindings/phy/qcom,usb-snps-femto-v2.yaml
+> @@ -49,6 +49,34 @@ properties:
+>      items:
+>        - const: ref
+>
+> +  power-domains:
+> +    description: specifies a phandle to PM domain provider node
+> +    minItems: 1
+> +    maxItems: 2
+> +
+> +  power-domain-names:
+> +    description:
+> +      A list of power domain name strings sorted in the same order as the
+> +      power-domains property.
+> +
+> +      For platforms where some resource are firmware managed, the name
+> +      corresponding to the index of an SCMI domain provider can be
+> +      "usb_core" or "usb_transfer".
+> +    items:
+> +      - const: usb_core
+> +      - const: usb_transfer
+> +
+> +  hsphy,fw-managed:
+> +    description:
+> +      Some targets allow multiple resources to be managed by firmware.
+> +      On these targets, tasks related to clocks, regulators, resets, and
+> +      interconnects can be delegated to the firmware, while the remaining
+> +      responsibilities are handled by Linux.
+> +
+> +      Decide if the target resources will be managed by firmware or High level
+> +      OS.
+> +    type: boolean
+> +
+>    resets:
+>      items:
+>        - description: PHY core reset
+> @@ -154,12 +182,21 @@ required:
+>    - compatible
+>    - reg
+>    - "#phy-cells"
+> -  - clocks
+> -  - clock-names
+> -  - resets
+> -  - vdda-pll-supply
+> -  - vdda18-supply
+> -  - vdda33-supply
+> +
+> +
+> +allOf:
+> +  - if:
+> +      not:
+> +        required:
+> +          - hsphy,fw-managed
+> +    then:
+> +      required:
+> +        - clocks
+> +        - clock-names
+> +        - resets
+> +        - vdda-pll-supply
+> +        - vdda18-supply
+> +        - vdda33-supply
+>
+>  additionalProperties: false
+>
+> diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> index 63d150b..5bf3a29 100644
+> --- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> +++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> @@ -64,7 +64,31 @@ properties:
+>
+>    power-domains:
+>      description: specifies a phandle to PM domain provider node
+> -    maxItems: 1
+> +    minItems: 1
+> +    maxItems: 2
+> +
+> +  power-domain-names:
+> +    description:
+> +      A list of power domain name strings sorted in the same order as the
+> +      power-domains property.
+> +
+> +      For platforms where some resource are firmware managed, the name
+> +      corresponding to the index of an SCMI domain provider can be
+> +      "usb_core" or "usb_transfer".
+> +    items:
+> +      - const: usb_core
+> +      - const: usb_transfer
+> +
+> +  qcom,fw-managed:
+> +    description:
+> +      Some targets allow multiple resources to be managed by firmware.
+> +      On these targets, tasks related to clocks, regulators, resets, and
+> +      interconnects can be delegated to the firmware, while the remaining
+> +      responsibilities are handled by Linux.
+> +
+> +      Decide if the target resources will be managed by firmware or High level
+> +      OS.
+> +    type: boolean
+
+I think this is an overkill. You know that SA8775 is going to use
+SCMI-based clocks / PD management. Thus I'd suggest adding new
+bindings file targeting qcom,sa8775-dwc3. Also you can drop the
+qcom,fw-managed property at all, let the driver decide basing on the
+compat string.
+
+
+>
+>    required-opps:
+>      maxItems: 1
+> @@ -148,13 +172,20 @@ required:
+>    - "#address-cells"
+>    - "#size-cells"
+>    - ranges
+> -  - clocks
+> -  - clock-names
+>    - interrupts
+>    - interrupt-names
+>
+>  allOf:
+>    - if:
+> +      not:
+> +        required:
+> +          - qcom,fw-managed
+> +    then:
+> +      required:
+> +        - clocks
+> +        - clock-names
+> +
+> +  - if:
+>        properties:
+>          compatible:
+>            contains:
 > --
-> 2.39.2
+> 2.7.4
 >
 >
 
-Applied, thanks!
 
-Bart
+--
+With best wishes
+Dmitry
 
