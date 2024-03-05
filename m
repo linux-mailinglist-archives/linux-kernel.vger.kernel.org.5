@@ -1,51 +1,51 @@
-Return-Path: <linux-kernel+bounces-91978-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91974-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C7A9871953
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:15:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E5B2871948
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:15:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D40691F21A7E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:15:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0378281569
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:15:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 143B6548EE;
-	Tue,  5 Mar 2024 09:15:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 545DD5103D;
+	Tue,  5 Mar 2024 09:15:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="YGwPsL5R"
-Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="cp3LZ+3X"
+Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3230652F67
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 09:15:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.113
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B39C14CB58
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 09:14:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709630106; cv=none; b=AVaYScbWuB1vuEgIXUHY9WG+5U5VsCYSXGjlnMwExloZRtSCS1L0b3BjFuVDj5KFE8r+u1HDYE7oxe01BmT8Ri3+LXtU+ylRXr4mscOZTLfh/A17YqdKzl/nFo+hVk5HKeEUDEsa+y3LJKTIlaeDCH/btbHdCdWlsRQMwhXt1po=
+	t=1709630102; cv=none; b=gbwPp72WeBZhQXbz1hahlhN1ezHJBQCfXivMm2nA+O1PjfT6almSqxUeCEGkD1qKjxxHOFVj9TjqOJKu+MOZg2tSRSJGC9hgLma5bkxEY9q16ROh9LdB1jV4UXXz7q2RY+5NfAAtWJSubnts2ryzQMOvUt+UhcmPnTeJlPUp220=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709630106; c=relaxed/simple;
-	bh=9wnm/M0nqJDVjRMKUUmYKlSQKSw1dJ4j4w50pLUUkrk=;
+	s=arc-20240116; t=1709630102; c=relaxed/simple;
+	bh=jd8pmbe5h/v8yw2xnreKcGyeHBa6GzmFFuFowwTWuQ4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=RLdn+y4DBc+/iXqsixVhPsrJHbIL9R7Nfu8FmXlgiK3mVu8RaIbQ2vE5Saebk/J30KnQu9pUyrt9tB/H8vnn79ZH2IoWiww5xGF/H6W3imTFo2swjMY/a9WhAtTxiLu736CrVib8F1Cw7bitUQKSysTXS+KpxelPdh4tLVSUhU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=YGwPsL5R; arc=none smtp.client-ip=115.124.30.113
+	 MIME-Version; b=PEPwAvXw6fLTi0w1SSE/w1YtLQpq1BJM+STUVpjmy612mDeqxhXA/w4cpfNm19Dww7SuftMrcOkzi6TxQW+wSkF9TVwhr4Wl4nKtmJ4rZA05x8aCPVHB85WV/bdbTzHvOUQk10xGb3j0wDCszfJ0mkCC1V7Ic6DYSX4glkqiZXQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=cp3LZ+3X; arc=none smtp.client-ip=115.124.30.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1709630096; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=GFDbGG8sHGCt0S8InIcbIqzI0LPCx+wjhzefgM3ZHC8=;
-	b=YGwPsL5RX02Gmgr9gQhBC4YBznh4v4UU2Ari9rk4jhjFjqT8qzCIKdwGC5Ig7lVLRhvcL9NiCCNw6YJcMpfyXwY0MPM7RMaoHU1+bWSJgFOinA2PSFrEf9pzCqOQclib4A9mRWDOKlfDuZVpZhc+Up00K8RmULu378bu6t+nKmY=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0W1tgGg5_1709630094;
-Received: from e69b19392.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0W1tgGg5_1709630094)
+	t=1709630097; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=FJUQnbv03TDanaApqCFhn5ON5sBfkERUUs9MYWmPJ3Q=;
+	b=cp3LZ+3XgRGkTZ9OU2ANUsC1CQ2YvwaMGMVFyAE6ctW6NVd0s7dii5PhWW+p5pbSgsGg7rkSSr42jOupvJhNYBCFe4SvdeCe9DeiZPhD4orQxajHF6Hxug4i4vSuuLjnyIZ3X+fkKamLt3Q+x3CwDEDtK4RyHgNS9Y45BoPrXuU=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0W1tgGgn_1709630095;
+Received: from e69b19392.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0W1tgGgn_1709630095)
           by smtp.aliyun-inc.com;
-          Tue, 05 Mar 2024 17:14:55 +0800
+          Tue, 05 Mar 2024 17:14:56 +0800
 From: Gao Xiang <hsiangkao@linux.alibaba.com>
 To: linux-erofs@lists.ozlabs.org
 Cc: LKML <linux-kernel@vger.kernel.org>,
 	Gao Xiang <hsiangkao@linux.alibaba.com>
-Subject: [PATCH 2/6] erofs: convert z_erofs_do_read_page() to folios
-Date: Tue,  5 Mar 2024 17:14:44 +0800
-Message-Id: <20240305091448.1384242-2-hsiangkao@linux.alibaba.com>
+Subject: [PATCH 3/6] erofs: get rid of `justfound` debugging tag
+Date: Tue,  5 Mar 2024 17:14:45 +0800
+Message-Id: <20240305091448.1384242-3-hsiangkao@linux.alibaba.com>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20240305091448.1384242-1-hsiangkao@linux.alibaba.com>
 References: <20240305091448.1384242-1-hsiangkao@linux.alibaba.com>
@@ -57,115 +57,100 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-It is a straight-forward conversion. Besides, it's renamed as
-z_erofs_scan_folio().
+`justfound` is introduced to identify cached folios that are just added
+to compressed bvecs so that more checks can be applied in the I/O
+submission path.
+
+EROFS is quite now stable compared to the codebase at that stage.
+`justfound` becomes a burden for upcoming features.  Drop it.
 
 Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 ---
- fs/erofs/zdata.c | 31 +++++++++++++++----------------
- 1 file changed, 15 insertions(+), 16 deletions(-)
+ fs/erofs/zdata.c | 20 +++-----------------
+ 1 file changed, 3 insertions(+), 17 deletions(-)
 
 diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
-index 5013fcd4965a..c25074657708 100644
+index c25074657708..75b05990b571 100644
 --- a/fs/erofs/zdata.c
 +++ b/fs/erofs/zdata.c
-@@ -955,21 +955,20 @@ static int z_erofs_read_fragment(struct super_block *sb, struct page *page,
- 	return 0;
- }
+@@ -565,17 +565,13 @@ static void z_erofs_bind_cache(struct z_erofs_decompress_frontend *fe)
  
--static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
--				struct page *page, bool ra)
-+static int z_erofs_scan_folio(struct z_erofs_decompress_frontend *fe,
-+			      struct folio *folio, bool ra)
- {
--	struct folio *folio = page_folio(page);
- 	struct inode *const inode = fe->inode;
- 	struct erofs_map_blocks *const map = &fe->map;
--	const loff_t offset = page_offset(page);
--	const unsigned int bs = i_blocksize(inode);
-+	const loff_t offset = folio_pos(folio);
-+	const unsigned int bs = i_blocksize(inode), fs = folio_size(folio);
- 	bool tight = true, exclusive;
- 	unsigned int cur, end, len, split;
- 	int err = 0;
+ 	for (i = 0; i < pclusterpages; ++i) {
+ 		struct page *page, *newpage;
+-		void *t;	/* mark pages just found for debugging */
  
- 	z_erofs_onlinefolio_init(folio);
- 	split = 0;
--	end = PAGE_SIZE;
-+	end = fs;
- repeat:
- 	if (offset + end - 1 < map->m_la ||
- 	    offset + end - 1 >= map->m_la + map->m_llen) {
-@@ -986,7 +985,7 @@ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
- 	++split;
+ 		/* Inaccurate check w/o locking to avoid unneeded lookups */
+ 		if (READ_ONCE(pcl->compressed_bvecs[i].page))
+ 			continue;
  
- 	if (!(map->m_flags & EROFS_MAP_MAPPED)) {
--		zero_user_segment(page, cur, end);
-+		folio_zero_segment(folio, cur, end);
- 		tight = false;
- 		goto next_part;
- 	}
-@@ -995,8 +994,8 @@ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
- 		erofs_off_t fpos = offset + cur - map->m_la;
- 
- 		len = min_t(unsigned int, map->m_llen - fpos, end - cur);
--		err = z_erofs_read_fragment(inode->i_sb, page, cur, cur + len,
--				EROFS_I(inode)->z_fragmentoff + fpos);
-+		err = z_erofs_read_fragment(inode->i_sb, &folio->page, cur,
-+			cur + len, EROFS_I(inode)->z_fragmentoff + fpos);
- 		if (err)
- 			goto out;
- 		tight = false;
-@@ -1011,18 +1010,18 @@ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
- 	}
- 
- 	/*
--	 * Ensure the current partial page belongs to this submit chain rather
-+	 * Ensure the current partial folio belongs to this submit chain rather
- 	 * than other concurrent submit chains or the noio(bypass) chain since
--	 * those chains are handled asynchronously thus the page cannot be used
-+	 * those chains are handled asynchronously thus the folio cannot be used
- 	 * for inplace I/O or bvpage (should be processed in a strict order.)
- 	 */
- 	tight &= (fe->mode > Z_EROFS_PCLUSTER_FOLLOWED_NOINPLACE);
--	exclusive = (!cur && ((split <= 1) || (tight && bs == PAGE_SIZE)));
-+	exclusive = (!cur && ((split <= 1) || (tight && bs == fs)));
- 	if (cur)
- 		tight &= (fe->mode >= Z_EROFS_PCLUSTER_FOLLOWED);
- 
- 	err = z_erofs_attach_page(fe, &((struct z_erofs_bvec) {
--					.page = page,
-+					.page = &folio->page,
- 					.offset = offset - map->m_la,
- 					.end = end,
- 				  }), exclusive);
-@@ -1789,7 +1788,7 @@ static void z_erofs_pcluster_readmore(struct z_erofs_decompress_frontend *f,
- 			if (PageUptodate(page))
- 				unlock_page(page);
- 			else
--				(void)z_erofs_do_read_page(f, page, !!rac);
-+				z_erofs_scan_folio(f, page_folio(page), !!rac);
- 			put_page(page);
+ 		page = find_get_page(mc, pcl->obj.index + i);
+-		if (page) {
+-			t = (void *)((unsigned long)page | 1);
+-			newpage = NULL;
+-		} else {
++		if (!page) {
+ 			/* I/O is needed, no possible to decompress directly */
+ 			standalone = false;
+ 			if (!shouldalloc)
+@@ -589,11 +585,10 @@ static void z_erofs_bind_cache(struct z_erofs_decompress_frontend *fe)
+ 			if (!newpage)
+ 				continue;
+ 			set_page_private(newpage, Z_EROFS_PREALLOCATED_PAGE);
+-			t = (void *)((unsigned long)newpage | 1);
  		}
+ 		spin_lock(&pcl->obj.lockref.lock);
+ 		if (!pcl->compressed_bvecs[i].page) {
+-			pcl->compressed_bvecs[i].page = t;
++			pcl->compressed_bvecs[i].page = page ? page : newpage;
+ 			spin_unlock(&pcl->obj.lockref.lock);
+ 			continue;
+ 		}
+@@ -1423,7 +1418,7 @@ static void z_erofs_fill_bio_vec(struct bio_vec *bvec,
+ 	struct z_erofs_bvec zbv;
+ 	struct address_space *mapping;
+ 	struct page *page;
+-	int justfound, bs = i_blocksize(f->inode);
++	int bs = i_blocksize(f->inode);
  
-@@ -1810,7 +1809,7 @@ static int z_erofs_read_folio(struct file *file, struct folio *folio)
- 	f.headoffset = (erofs_off_t)folio->index << PAGE_SHIFT;
+ 	/* Except for inplace pages, the entire page can be used for I/Os */
+ 	bvec->bv_offset = 0;
+@@ -1432,9 +1427,6 @@ static void z_erofs_fill_bio_vec(struct bio_vec *bvec,
+ 	spin_lock(&pcl->obj.lockref.lock);
+ 	zbv = pcl->compressed_bvecs[nr];
+ 	page = zbv.page;
+-	justfound = (unsigned long)page & 1UL;
+-	page = (struct page *)((unsigned long)page & ~1UL);
+-	pcl->compressed_bvecs[nr].page = page;
+ 	spin_unlock(&pcl->obj.lockref.lock);
+ 	if (!page)
+ 		goto out_allocpage;
+@@ -1465,9 +1457,6 @@ static void z_erofs_fill_bio_vec(struct bio_vec *bvec,
+ 	}
  
- 	z_erofs_pcluster_readmore(&f, NULL, true);
--	err = z_erofs_do_read_page(&f, &folio->page, false);
-+	err = z_erofs_scan_folio(&f, folio, false);
- 	z_erofs_pcluster_readmore(&f, NULL, false);
- 	z_erofs_pcluster_end(&f);
- 
-@@ -1851,7 +1850,7 @@ static void z_erofs_readahead(struct readahead_control *rac)
- 		folio = head;
- 		head = folio_get_private(folio);
- 
--		err = z_erofs_do_read_page(&f, &folio->page, true);
-+		err = z_erofs_scan_folio(&f, folio, true);
- 		if (err && err != -EINTR)
- 			erofs_err(inode->i_sb, "readahead error at folio %lu @ nid %llu",
- 				  folio->index, EROFS_I(inode)->nid);
+ 	lock_page(page);
+-	/* only true if page reclaim goes wrong, should never happen */
+-	DBG_BUGON(justfound && PagePrivate(page));
+-
+ 	/* the cached page is still in managed cache */
+ 	if (page->mapping == mc) {
+ 		/*
+@@ -1475,7 +1464,6 @@ static void z_erofs_fill_bio_vec(struct bio_vec *bvec,
+ 		 * `->private` pcluster hint.  Let's reconnect them.
+ 		 */
+ 		if (!PagePrivate(page)) {
+-			DBG_BUGON(!justfound);
+ 			/* compressed_bvecs[] already takes a ref */
+ 			attach_page_private(page, pcl);
+ 			put_page(page);
+@@ -1494,8 +1482,6 @@ static void z_erofs_fill_bio_vec(struct bio_vec *bvec,
+ 	 * allocate a new page for compressed data.
+ 	 */
+ 	DBG_BUGON(page->mapping);
+-	DBG_BUGON(!justfound);
+-
+ 	tocache = true;
+ 	unlock_page(page);
+ 	put_page(page);
 -- 
 2.39.3
 
