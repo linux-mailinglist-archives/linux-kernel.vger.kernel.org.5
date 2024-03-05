@@ -1,239 +1,123 @@
-Return-Path: <linux-kernel+bounces-91894-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91895-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BDAE87180A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:19:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3389187180B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:19:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C09DC1C2142A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:19:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 64C681C20D20
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:19:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E20697F48E;
-	Tue,  5 Mar 2024 08:17:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F39427F7ED;
+	Tue,  5 Mar 2024 08:17:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="UnbE/QWz"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="a+ECqh+t"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C77279F2;
-	Tue,  5 Mar 2024 08:17:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 839917F7D5
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 08:17:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709626647; cv=none; b=dl+K1U68eY3Lg8k7qdA28nLfbkWky7VqvlNn2mcJvzWkUjd3VA9lKZ6BesXJM1hg/VY5J/09fiRZsR1C0s07BrnSolmDyMqfhjLBCz5k+L3eMh3/cxJDdFLnNzdkOaHGjPkFGEyDDeL55nkJCvM3sBciLPHNqKQJY/XlkFnJtIY=
+	t=1709626672; cv=none; b=efn561uOyHRXvgW58F3wGQ/V0G+SCKSIBMLM7wuzkMacJT+jQs3ZkR1qaF+m8ohI3/M79YnVzl4CXtVnSXhWmgVj4aEBt0uLBwRIqpQLNZv8kCrUjlTMVadxqCYLHWOdTeN2wsPEQu2wyQjhuA/+4PdXmn7/oAHWQe7pJ3lIXQE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709626647; c=relaxed/simple;
-	bh=Scq4z644jE8YjDLQKqzdXOBUBpcHsdXLwob6hlsAETw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=lJulNJKa0ZNdKo8lmuL2Q+Rpy1aGJo2dg+JqRCoJAXj2kviBIs64lkK4XNHIuehkkkqNLZ2NBHCabE07fVr4Ll1WwOjYTgqQCG+1moivCOsYl+eKwyKFRveNllxhfDY2ew6SjBtn9VwgKBJr0rQTY+eIQmJVEH21tidFIDvQ1WQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=UnbE/QWz; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4257vWqx021648;
-	Tue, 5 Mar 2024 08:17:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=cpxkCg4LuU89alEVCTIshVZabpQiqCVC51QCdIoFkxA=; b=Un
-	bE/QWz5iRDauRir1AA8MP4lASbRhgmnQwL2ykKzqgiR6a26p9k+iDu4qQ0zxWumx
-	lQhHWq/pXnb9fti/4iDBwJsmyueuhYNDVpeo5lYtxyEfRyasiRqhKiBqLejYWEu8
-	1ttOzdz3z1pw2l0hFDYVV5Y6ORdZ7TCzGnMaPDk2uu67FvFln6wQc2mrgUxQP2yF
-	+VXr6ycy5aatYWeUpB0mbF+0yZVUsbGGMkK08nf61LnRqgk1ttAvcCjViBPf/dPd
-	JE6rg5pH+WKrjaVFMhfg8yTKnaMnBxIh9lqp/hdeZjKJlKaTg4ag3iV+lNMs61yG
-	izR88peM+RMyPnQjJ5eA==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wnarj2pq7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 05 Mar 2024 08:17:18 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4258HHHe029855
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 5 Mar 2024 08:17:17 GMT
-Received: from [10.216.49.73] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 5 Mar
- 2024 00:17:13 -0800
-Message-ID: <0c2c039e-b49e-4172-9c7f-24061e3ac5c6@quicinc.com>
-Date: Tue, 5 Mar 2024 13:47:05 +0530
+	s=arc-20240116; t=1709626672; c=relaxed/simple;
+	bh=dTiwFwokUkSifaC2lQmY8eSH1jMSEYMz7QMmSWuxxb8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=lqHcJuzkKjYqfkczKuGT1sEkM7OGEG3PO2MBlsQ04DsqncnPBRnPpi1IbK91EC7HLc7JphlkDmCvZZbeSSJNyisOxKIarx3TZxVY/zrTqH+XndIaXaqBnaBthR8gwYBQSWZd0zEXc/rs3htFhTNktefRTxeE7XrFcfl1Sjl7Zzw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=a+ECqh+t; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709626671; x=1741162671;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=dTiwFwokUkSifaC2lQmY8eSH1jMSEYMz7QMmSWuxxb8=;
+  b=a+ECqh+tAOwTAF8Oxvlick0RxYuarwRbfQ2hylSCN8ALabBqMMQy2XRC
+   CHdafbZ+22g42WY71Unf9VwDbtJzSVWziN8KkKjWatXj3yXTF9YdkRPaj
+   nOICnneUSa/no/yvNUhx0KKE+XMmS+HXsW9oq08prh8GPqnKIpEZFtaJM
+   AEM98PYQSZIgBYph5y1LpQ+vJx2Tz1fbMK1GCq48Wy5bOXOxKnrJC5Y6D
+   lO0s84ZmNN/yTlhxpw3GHmtE8LTdDw9mg24DCXfNAgYB2v2O0cTmpKUnH
+   NQuo3O26QgMpiVvRCSFwjW/FL/2Iofkzzy1uQCl3jS5FN1/AeTkKuQxB2
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="4020949"
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="4020949"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 00:17:50 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="13879915"
+Received: from omakhlou-mobl4.amr.corp.intel.com (HELO localhost) ([10.252.51.143])
+  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 00:17:45 -0800
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Doug Anderson <dianders@chromium.org>, Hsin-Yi Wang <hsinyi@chromium.org>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang
+ <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, Maarten
+ Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
+ <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David
+ Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, Dmitry
+ Baryshkov <dmitry.baryshkov@linaro.org>
+Subject: Re: [PATCH v3 2/4] drm/edid: Add a function to check monitor string
+In-Reply-To: <CAD=FV=UOhTGnhtc9gOQ5C_aAdgVcB+K7NL9RGm4umunF91Wkpg@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240304195214.14563-1-hsinyi@chromium.org>
+ <20240304195214.14563-3-hsinyi@chromium.org> <87a5nd4tsg.fsf@intel.com>
+ <CAJMQK-j4wGah=szyUW53hu-v6Q4QjgR7WMLKnspoFaO9oPfaQw@mail.gmail.com>
+ <874jdl4k01.fsf@intel.com>
+ <CAJMQK-iWHoh6s-hkcNULzZLjMg9UnTuWfjaJ=YfnHU3sQ1NBEg@mail.gmail.com>
+ <CAD=FV=UOhTGnhtc9gOQ5C_aAdgVcB+K7NL9RGm4umunF91Wkpg@mail.gmail.com>
+Date: Tue, 05 Mar 2024 10:17:42 +0200
+Message-ID: <87y1ax2iu1.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] usb: dwc3: qcom: Remove ACPI support from glue driver
-To: Johan Hovold <johan@kernel.org>
-CC: Bjorn Andersson <andersson@kernel.org>,
-        Wesley Cheng
-	<quic_wcheng@quicinc.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "Greg
- Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        Thinh Nguyen
-	<Thinh.Nguyen@synopsys.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_ppratap@quicinc.com>,
-        <quic_jackp@quicinc.com>
-References: <20240305042143.3455101-1-quic_kriskura@quicinc.com>
- <ZebFKlae0a-deBKl@hovoldconsulting.com>
-Content-Language: en-US
-From: Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-In-Reply-To: <ZebFKlae0a-deBKl@hovoldconsulting.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: RuZNma4jQxjzz2EndhVkXrzhs-Bhk-Gc
-X-Proofpoint-GUID: RuZNma4jQxjzz2EndhVkXrzhs-Bhk-Gc
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-05_05,2024-03-04_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=780 adultscore=0
- spamscore=0 impostorscore=0 mlxscore=0 malwarescore=0 phishscore=0
- suspectscore=0 bulkscore=0 priorityscore=1501 clxscore=1015
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403050065
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-
-
-On 3/5/2024 12:39 PM, Johan Hovold wrote:
-> On Tue, Mar 05, 2024 at 09:51:43AM +0530, Krishna Kurapati wrote:
->> Minimal ACPI support was added to the Qualcomm DWC3 glue driver in order to
->> enable USB on SDM850 and SC8180X compute platforms. The support is still
->> functional, but unnoticed regressions in other drivers indicates that no
->> one actually booting any of platforms dependent on this implementation.
+On Mon, 04 Mar 2024, Doug Anderson <dianders@chromium.org> wrote:
+> Hi,
+>
+> On Mon, Mar 4, 2024 at 4:19=E2=80=AFPM Hsin-Yi Wang <hsinyi@chromium.org>=
+ wrote:
 >>
->> The functionality provides is the bare minimum and is not expected to aid
->> in the effort of bringing full ACPI support to the driver in the future.
+>> > > Probably change to u32 drm_edid_get_panel_id(const struct drm_edid
+>> > > *);? Given that we still need to parse id from
+>> > > drm_edid_read_base_block().
+>> >
+>> > No, we no longer need to parse the id outside of drm_edid.c. You'll ha=
+ve
+>> > the id's in panel code in the form of struct drm_edid_ident (or
+>> > whatever), and use the match function to see if the opaque drm_edid
+>> > matches.
+>> >
+>> drm_panel prints the panel_id info on whether the panel is detected or n=
+ot.
+>> https://elixir.bootlin.com/linux/v6.8-rc7/source/drivers/gpu/drm/panel/p=
+anel-edp.c#L792
 >>
->> Remove the ACPI code from the Qualcomm DWC3 glue driver to aid in the
->> implementation of improvements that are actually used like multiport and
->> flattening device tree.
-> 
-> With a simple lookup function that returns the ACPI index based on name
-> this shouldn't be required to add multiport support even if it may
-> simplify it slightly. But IIRC it would help more with the devicetree
-> binding rework.
->   
+>> Is it okay to remove this information?
+>
+> Hmmm, I guess it also is exported via debugfs, actually. See
+> detected_panel_show() in panel-edp.c. We probably don't want to remove
+> that...
 
-I agree to both your comments.
-Actually both series are equally important to me. Adding a lookup 
-function must ACPI index must help multiport code without this patch as 
-well. But removing this is helping in multiport to write better code and 
-definitely helps in flattening series.
+You currently print the information via panel->detected_panel, which is
+a struct edp_panel_entry *. That doesn't change. It'll be slightly
+restructured to contain a struct drm_edid_ident, which will not be an
+opaque type.
 
->> Commit message by Bjorn Andersson.
->>
->> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
->> ---
->>   drivers/usb/dwc3/dwc3-qcom.c | 273 ++---------------------------------
->>   1 file changed, 11 insertions(+), 262 deletions(-)
-> 
-> You should update the Kconfig entry for USB_DWC3_QCOM as well and drop
-> the ACPI dependency.
-
-Missed it. Thanks for the catch. The following is the one right ?
-
-diff --git a/drivers/usb/dwc3/Kconfig b/drivers/usb/dwc3/Kconfig
-index 5fc27b20df63..31078f3d41b8 100644
---- a/drivers/usb/dwc3/Kconfig
-+++ b/drivers/usb/dwc3/Kconfig
-@@ -131,7 +131,7 @@ config USB_DWC3_QCOM
-         tristate "Qualcomm Platform"
-         depends on ARCH_QCOM || COMPILE_TEST
-         depends on EXTCON || !EXTCON
--       depends on (OF || ACPI)
-+       depends on OF
+BR,
+Jani.
 
 
-> 
->>   static int dwc3_qcom_probe(struct platform_device *pdev)
->>   {
->>   	struct device_node	*np = pdev->dev.of_node;
->>   	struct device		*dev = &pdev->dev;
->>   	struct dwc3_qcom	*qcom;
->>   	struct resource		*res, *parent_res = NULL;
-> 
-> You should drop parent_res as well.
-
-Ahh, thanks for the catch.
-
-> 
->> -	struct resource		local_res;
->>   	int			ret, i;
->>   	bool			ignore_pipe_clk;
->>   	bool			wakeup_source;
->> @@ -825,14 +659,6 @@ static int dwc3_qcom_probe(struct platform_device *pdev)
->>   	platform_set_drvdata(pdev, qcom);
->>   	qcom->dev = &pdev->dev;
->>   
->> -	if (has_acpi_companion(dev)) {
->> -		qcom->acpi_pdata = acpi_device_get_match_data(dev);
->> -		if (!qcom->acpi_pdata) {
->> -			dev_err(&pdev->dev, "no supporting ACPI device data\n");
->> -			return -EINVAL;
->> -		}
->> -	}
->> -
->>   	qcom->resets = devm_reset_control_array_get_optional_exclusive(dev);
->>   	if (IS_ERR(qcom->resets)) {
->>   		return dev_err_probe(&pdev->dev, PTR_ERR(qcom->resets),
->> @@ -860,41 +686,18 @@ static int dwc3_qcom_probe(struct platform_device *pdev)
->>   	}
->>   
->>   	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> -
->> -	if (np) {
->> -		parent_res = res;
->> -	} else {
->> -		memcpy(&local_res, res, sizeof(struct resource));
->> -		parent_res = &local_res;
->> -
->> -		parent_res->start = res->start +
->> -			qcom->acpi_pdata->qscratch_base_offset;
->> -		parent_res->end = parent_res->start +
->> -			qcom->acpi_pdata->qscratch_base_size;
->> -
->> -		if (qcom->acpi_pdata->is_urs) {
->> -			qcom->urs_usb = dwc3_qcom_create_urs_usb_platdev(dev);
->> -			if (IS_ERR_OR_NULL(qcom->urs_usb)) {
->> -				dev_err(dev, "failed to create URS USB platdev\n");
->> -				if (!qcom->urs_usb)
->> -					ret = -ENODEV;
->> -				else
->> -					ret = PTR_ERR(qcom->urs_usb);
->> -				goto clk_disable;
->> -			}
->> -		}
->> -	}
->> +	parent_res = res;
->>   
->>   	qcom->qscratch_base = devm_ioremap_resource(dev, parent_res);
-> 
-> And just use res here.
-
-ACK.
-
-> 
->>   	if (IS_ERR(qcom->qscratch_base)) {
->>   		ret = PTR_ERR(qcom->qscratch_base);
->> -		goto free_urs;
->> +		goto clk_disable;
->> }
-> 
-> Looks good to me otherwise.
-
-Thanks for the review. Wanted to reply to your comments on multiport 
-series depending on how this patch goes in upstream.
-
-Can I push out v2 or wait for a couple of days (as a standard practice 
-before putting a new version) ?
-
-Regards,
-Krishna,
+--=20
+Jani Nikula, Intel
 
