@@ -1,212 +1,193 @@
-Return-Path: <linux-kernel+bounces-92815-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92816-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 303D4872670
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:17:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 766D7872671
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:19:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 468B1B2310F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:17:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C9DCB23EF5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:19:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77DAE18AED;
-	Tue,  5 Mar 2024 18:17:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45B5C18645;
+	Tue,  5 Mar 2024 18:19:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="Ny91e9ox"
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="f+aoQw1v"
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0667E17BBA;
-	Tue,  5 Mar 2024 18:17:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.156.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDD4D17C73
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 18:18:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709662657; cv=none; b=A22wCcv7iPP0/wclqvL+pV9lUQFrVEwQkmlgnFtw+dIEqVWUJDUdXMsNXwVudeQeREPhaua00QiJeNQ7o6QVGIC+6yOk7aF4xurIoiGmizOz2UjZwkuSIHN1yha1STClZHIZbfMatqXb3E9teeOI5R/o4qm3tOcHpkjHX7bwLwk=
+	t=1709662740; cv=none; b=JVG6iXMBEJEvFF9nd259SgZxrTO8p0BUcZTkwzD/Eak4Py9VFWQ5QAxHQoePwc7HwdGw0Gs9nnUVTjYtlFXRJKgRzFiyNeG2NTs4Lm80sFDk7FRBC7J2a4gHSuv7UL8QhBFzHM7Yx3octA61DIQE+Dn0Zwzv2sxTLoHv7/8I0Q8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709662657; c=relaxed/simple;
-	bh=pKwUTjpsiCUTZE6Y7+RXqePazo0PBfe1Pm4l6OUy8aE=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Ig6uvTBT0fur7USTcLr1jJC7zrzgl8F43dYCdWJSxwKgkehehw6iCcEHhMnOun2LAHHTj/P7bVhkx/zAIsxzvBXgK8B8Ijaa1+ojoxyyDRawXky7WO8Puz9N1lRxPYeFvDUXHM2tMKpuzXAx5YGZbf2HQgU5nY4Ztxh8lw53swY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=Ny91e9ox; arc=none smtp.client-ip=67.231.156.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 425Dfvhx010320;
-	Tue, 5 Mar 2024 10:17:18 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=pfpt0220; bh=wUo4AMll
-	YeNPsaijKY9ERTjDT9BT1xnhIuAOleJqmzA=; b=Ny91e9oxQIOSy93pVxHhOqU+
-	EFRDt72CkiwwCOyOim2Nhi2jVwlulDm015+olrd0MY2pLisy4miVmywtOgnjCyTY
-	bTXIKM++2nHyk+R8a+22lZ1p/FJuj/gSYJpvgU8AlKqAtpgNO68zywb81smdKhj8
-	5dRLxQzKNrA+dOtoa5nqqTYest0oX+FfilNGTIUeDWo/ID29d7FJC//xZ7WZjbYZ
-	/p3ca3m+p9pOzmzF5+s67ihJuSEtUr8D5fJ7WiIzQ5MKKhZJptqhpNjf3iTkQuLH
-	Cj4LddfrY1xDv+Ke7NX5OCA9huDZHcFLWXnd3oRCC5sGLFYkMj1ucNK75NCw4w==
-Received: from dc6wp-exch02.marvell.com ([4.21.29.225])
-	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3wp13s230w-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 05 Mar 2024 10:17:17 -0800 (PST)
-Received: from DC6WP-EXCH02.marvell.com (10.76.176.209) by
- DC6WP-EXCH02.marvell.com (10.76.176.209) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.12; Tue, 5 Mar 2024 10:17:17 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC6WP-EXCH02.marvell.com
- (10.76.176.209) with Microsoft SMTP Server id 15.2.1258.12 via Frontend
- Transport; Tue, 5 Mar 2024 10:17:17 -0800
-Received: from hyd1425.marvell.com (unknown [10.29.37.83])
-	by maili.marvell.com (Postfix) with ESMTP id 4F53D5B693B;
-	Tue,  5 Mar 2024 10:17:13 -0800 (PST)
-From: Sai Krishna <saikrishnag@marvell.com>
-To: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <sgoutham@marvell.com>,
-        <gakula@marvell.com>, <hkelam@marvell.com>, <sbhatta@marvell.com>
-CC: Sai Krishna <saikrishnag@marvell.com>
-Subject: [net-next PATCH] octeontx2-pf: Add TC flower offload support for TCP flags
-Date: Tue, 5 Mar 2024 23:46:06 +0530
-Message-ID: <20240305181606.244208-1-saikrishnag@marvell.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1709662740; c=relaxed/simple;
+	bh=MtUhEwdZhD08cYNDeoVJ869oD8ivWXm6QaLStsSVeu0=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=LS6zw5YR11y9OKuWx1alA+v2m2qcqsHkqlJcFXmunoCHCrlr2NtXii7V5CtPpthS7wz/eV8a9w9ICT/eBuJL5KsD0EO8kLNLie+3jKWELM7rqH62ih4rPuamG8CgxndW8w7jPuYASmbZw3YB5yffc8il4ttAzwlUTKXXtrw6HFo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=f+aoQw1v; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1dd10a37d68so22615155ad.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 10:18:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709662738; x=1710267538;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HI8MIcEEjpVSHq6tmixm5MdGRtSK9TQ269Plf4i1Nbc=;
+        b=c8s1BbUPAHKxScvBEuSky1lMy+lMjQS5fEGG0MTXGUOxD7V6jyEvF6NUvtFYtQcE3G
+         xX7+EEfZGgybPPcNDdR3qOajZZfMdTzSUMh1XDqaB9AXcaYR0qXaOgclAzcEjQPbixs/
+         wjLdIS78z5sPNor4EJR7JCV/pak5APS040JbM41QGyu3Vqzz7WsLJFTwguQoxRcfAb04
+         eR0Yuw7CISgfqjdnwoYLRWE3ypecPTSAcdjGeO5hCNFTB8c/TWWGpC/mVe6fOC/Mmmb1
+         lncRLzu99E8zuTHhJ0f+/sh7edjg74RB5PkVEQiLquMLyB5HS993t5PDpB+2HeTNmglJ
+         +qZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVAy8bGy0D0bB29DbFAb9d+NZpoxpdLp+mOL3ec1a9S/OTJguJJg6Ijz9eEFDKwOcXSAo8ZlNUl22NOH9hIaM8aEKt7bB4VbsgmGtEx
+X-Gm-Message-State: AOJu0YxXbZ13XM2962oiS2Zl2TgbLvABOllx6KmTR8VZm3vAE3FnpGKE
+	OUkOCLNHbaZNA3+RVU/Xnaq/gdH3o9EDc4TlWbf658DZkcjOxHiL
+X-Google-Smtp-Source: AGHT+IHWTpTarFj5TMDKd9wHITF96/ovlRR+Xq9KPffH+QHtDH+oRMS1p0CIfMCSAsGTjloFdNYHfQ==
+X-Received: by 2002:a17:902:f688:b0:1db:e41f:bc0 with SMTP id l8-20020a170902f68800b001dbe41f0bc0mr3332848plg.30.1709662738049;
+        Tue, 05 Mar 2024 10:18:58 -0800 (PST)
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id d11-20020a170903208b00b001dcc109a621sm10858683plc.184.2024.03.05.10.18.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Mar 2024 10:18:57 -0800 (PST)
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2024; t=1709662736;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=HI8MIcEEjpVSHq6tmixm5MdGRtSK9TQ269Plf4i1Nbc=;
+	b=f+aoQw1vwJrWWobBExg1clhjh0AEXqLxrpDT750sMETiFtQ6hMTy5rJ8FeShDis0V8x4LD
+	3BjupLESMB40QFADO2NrtMjMxYf52Wqe62ejrL6l8fXlWRn6m/SKdDtRhGITsHFOdEi7ix
+	P/RZbqsefGMwcvtedFZuiwGxWT7f59I/OnEua73ISf3HTTeVZTzoZ0n2Gyn1KT+JInWIrC
+	+92cnD2HjIiE7ZzaZfdpmDlI9uPudcRP+bdWDkMKIxs0YGKix8f/va0+jvbEoRTGZxR8rV
+	Nf7ut25EGKsr9kmEdysLLb9BsrNbStzT1Lg4SiiBnNjRq+jDath1EJseDmJpPA==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+Date: Tue, 05 Mar 2024 15:18:51 -0300
+Subject: [PATCH] net: phy: core: make phy_class constant
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: oEmlo3HWSwhLJgjxdPc3iVx8i_OpghL9
-X-Proofpoint-ORIG-GUID: oEmlo3HWSwhLJgjxdPc3iVx8i_OpghL9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-05_15,2024-03-05_01,2023-05-22_02
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240305-class_cleanup-phy-v1-1-106013a644dc@marliere.net>
+X-B4-Tracking: v=1; b=H4sIAApi52UC/x3MSwqAMAwA0atI1hZq/SBeRURijRqQWhoUpXh3i
+ 8u3mIkgFJgEuixCoIuFD5dQ5BnYDd1KiudkMNpUutS1sjuKjHYndKdXfntU07RYVO1k0M6QOh9
+ o4ft/9sP7foC0dVhjAAAA
+To: Vinod Koul <vkoul@kernel.org>, 
+ Kishon Vijay Abraham I <kishon@kernel.org>
+Cc: linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Ricardo B. Marliere" <ricardo@marliere.net>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2768; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=MtUhEwdZhD08cYNDeoVJ869oD8ivWXm6QaLStsSVeu0=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl52IMzuzrSBdu88Sk6J8FL+ZjpyXhYGoTCLRjK
+ cbF37OLdCKJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZediDAAKCRDJC4p8Y4ZY
+ pvypEACRI3I07T9suJ6lkiDx7vvEBsJOmhwk2c+MTOmUANvxLGIjKEYEirKAH7aB1CxO2YRG54Z
+ /NRAugoybDeVCa/SRGp+jwii81xgVNlVFlcpuKzvYBouO72GfZz3irSK5Yjse3Trwdxv6XNnMHE
+ Lfd3c1SjZhUdeNBlNQzp8Wi39aemZboJtJ6SR1FwUxGRUG3ZGlj5nmjqqjx9abdE8NFut5BQt+8
+ vUQ3ew2mgsemHhYS9UeQH+Ijmhro5Fm2eBpgJvuqXLWWxUEH92A3G5+U8ToDfB9T0s0LQtvgLgb
+ zt0s3MwUenJ2YzAqZG2RRKRGhYzup4QP/q6WqvywmW1ysD9C6NOgdhiSrsWR1+V2Q/oSMeKpQI4
+ UX7EV8k6rR71tlEiERG3nkrUkx7wucusA6eWZIbySjpIxRr73Wwx7A/OfhMw2y3LKBB6TzRA+d0
+ 8cNFF5LeJ57yNO/+Cc8P+pSUd+dnAhGnJ2C57adV7HYDbpykiKZs/F2CPyEnR6oghzoKMYo85CF
+ LFHy+bBVf7Ju501+0x04K2exgyn5sn3suPl4LiD2mKOvW/f6e+XtVUsgpJ5wJSnKG1u9HeoShm4
+ nqM6MRanucU7oxeuFAHA9KARpDvFF+8oQxgUezIT6L6s5FR+zybbb2UpvC9WhHxtOlBTisbBS4/
+ v3xVveiSDFN0VXQ==
+X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
+ fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
-This patch adds TC offload support for matching TCP flags
-from TCP header.
+Since commit 43a7206b0963 ("driver core: class: make class_register() take
+a const *"), the driver core allows for struct class to be in read-only
+memory, so move the phy_class structure to be declared at build time
+placing it into read-only memory, instead of having to be dynamically
+allocated at boot time.
 
-Example usage:
-tc qdisc add dev eth0 ingress
-
-TC rule to drop the TCP SYN packets:
-tc filter add dev eth0 ingress protocol ip flower ip_proto tcp tcp_flags
-0x02/0x3f skip_sw action drop
-
-Signed-off-by: Sai Krishna <saikrishnag@marvell.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
 ---
- drivers/net/ethernet/marvell/octeontx2/af/mbox.h      |  1 +
- drivers/net/ethernet/marvell/octeontx2/af/npc.h       |  1 +
- .../net/ethernet/marvell/octeontx2/af/rvu_debugfs.c   |  4 ++++
- .../net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c    |  8 ++++++--
- drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c  | 11 +++++++++++
- 5 files changed, 23 insertions(+), 2 deletions(-)
+ drivers/phy/phy-core.c | 26 +++++++++++++++-----------
+ 1 file changed, 15 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-index 94217b9981a6..cfe8a8327e1b 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-@@ -1557,6 +1557,7 @@ struct flow_msg {
- 	u32 mpls_lse[4];
- 	u8 icmp_type;
- 	u8 icmp_code;
-+	__be16 tcp_flags;
- };
+diff --git a/drivers/phy/phy-core.c b/drivers/phy/phy-core.c
+index 7f9b4de772ee..5776d44fd32f 100644
+--- a/drivers/phy/phy-core.c
++++ b/drivers/phy/phy-core.c
+@@ -20,7 +20,12 @@
+ #include <linux/pm_runtime.h>
+ #include <linux/regulator/consumer.h>
  
- struct npc_install_flow_req {
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/npc.h b/drivers/net/ethernet/marvell/octeontx2/af/npc.h
-index 3e6de9d7dde3..d883157393ea 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/npc.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/npc.h
-@@ -217,6 +217,7 @@ enum key_fields {
- 	NPC_MPLS4_TTL,
- 	NPC_TYPE_ICMP,
- 	NPC_CODE_ICMP,
-+	NPC_TCP_FLAGS,
- 	NPC_HEADER_FIELDS_MAX,
- 	NPC_CHAN = NPC_HEADER_FIELDS_MAX, /* Valid when Rx */
- 	NPC_PF_FUNC, /* Valid when Tx */
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-index e6d7914ce61c..2500f5ba4f5a 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-@@ -2870,6 +2870,10 @@ static void rvu_dbg_npc_mcam_show_flows(struct seq_file *s,
- 			seq_printf(s, "%d ", ntohs(rule->packet.dport));
- 			seq_printf(s, "mask 0x%x\n", ntohs(rule->mask.dport));
- 			break;
-+		case NPC_TCP_FLAGS:
-+			seq_printf(s, "%d ", rule->packet.tcp_flags);
-+			seq_printf(s, "mask 0x%x\n", rule->mask.tcp_flags);
-+			break;
- 		case NPC_IPSEC_SPI:
- 			seq_printf(s, "0x%x ", ntohl(rule->packet.spi));
- 			seq_printf(s, "mask 0x%x\n", ntohl(rule->mask.spi));
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
-index c75669c8fde7..c181e7aa9eb6 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
-@@ -53,6 +53,7 @@ static const char * const npc_flow_names[] = {
- 	[NPC_MPLS4_TTL]     = "lse depth 4",
- 	[NPC_TYPE_ICMP] = "icmp type",
- 	[NPC_CODE_ICMP] = "icmp code",
-+	[NPC_TCP_FLAGS] = "tcp flags",
- 	[NPC_UNKNOWN]	= "unknown",
- };
- 
-@@ -530,6 +531,7 @@ do {									       \
- 	NPC_SCAN_HDR(NPC_DPORT_SCTP, NPC_LID_LD, NPC_LT_LD_SCTP, 2, 2);
- 	NPC_SCAN_HDR(NPC_TYPE_ICMP, NPC_LID_LD, NPC_LT_LD_ICMP, 0, 1);
- 	NPC_SCAN_HDR(NPC_CODE_ICMP, NPC_LID_LD, NPC_LT_LD_ICMP, 1, 1);
-+	NPC_SCAN_HDR(NPC_TCP_FLAGS, NPC_LID_LD, NPC_LT_LD_TCP, 12, 2);
- 	NPC_SCAN_HDR(NPC_ETYPE_ETHER, NPC_LID_LA, NPC_LT_LA_ETHER, 12, 2);
- 	NPC_SCAN_HDR(NPC_ETYPE_TAG1, NPC_LID_LB, NPC_LT_LB_CTAG, 4, 2);
- 	NPC_SCAN_HDR(NPC_ETYPE_TAG2, NPC_LID_LB, NPC_LT_LB_STAG_QINQ, 8, 2);
-@@ -574,7 +576,8 @@ static void npc_set_features(struct rvu *rvu, int blkaddr, u8 intf)
- 		       BIT_ULL(NPC_DPORT_TCP) | BIT_ULL(NPC_DPORT_UDP) |
- 		       BIT_ULL(NPC_SPORT_SCTP) | BIT_ULL(NPC_DPORT_SCTP) |
- 		       BIT_ULL(NPC_SPORT_SCTP) | BIT_ULL(NPC_DPORT_SCTP) |
--		       BIT_ULL(NPC_TYPE_ICMP) | BIT_ULL(NPC_CODE_ICMP);
-+		       BIT_ULL(NPC_TYPE_ICMP) | BIT_ULL(NPC_CODE_ICMP) |
-+		       BIT_ULL(NPC_TCP_FLAGS);
- 
- 	/* for tcp/udp/sctp corresponding layer type should be in the key */
- 	if (*features & proto_flags) {
-@@ -982,7 +985,8 @@ do {									      \
- 		       mask->icmp_type, 0);
- 	NPC_WRITE_FLOW(NPC_CODE_ICMP, icmp_code, pkt->icmp_code, 0,
- 		       mask->icmp_code, 0);
--
-+	NPC_WRITE_FLOW(NPC_TCP_FLAGS, tcp_flags, ntohs(pkt->tcp_flags), 0,
-+		       ntohs(mask->tcp_flags), 0);
- 	NPC_WRITE_FLOW(NPC_IPSEC_SPI, spi, ntohl(pkt->spi), 0,
- 		       ntohl(mask->spi), 0);
- 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-index 4fd44b6eecea..87bdb93cb066 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-@@ -638,6 +638,7 @@ static int otx2_tc_prepare_flow(struct otx2_nic *nic, struct otx2_tc_flow *node,
- 	      BIT(FLOW_DISSECTOR_KEY_IPSEC) |
- 	      BIT_ULL(FLOW_DISSECTOR_KEY_MPLS) |
- 	      BIT_ULL(FLOW_DISSECTOR_KEY_ICMP) |
-+	      BIT_ULL(FLOW_DISSECTOR_KEY_TCP) |
- 	      BIT_ULL(FLOW_DISSECTOR_KEY_IP))))  {
- 		netdev_info(nic->netdev, "unsupported flow used key 0x%llx",
- 			    dissector->used_keys);
-@@ -857,6 +858,16 @@ static int otx2_tc_prepare_flow(struct otx2_nic *nic, struct otx2_tc_flow *node,
- 		}
- 	}
- 
-+	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_TCP)) {
-+		struct flow_match_tcp match;
+-static struct class *phy_class;
++static void phy_release(struct device *dev);
++static const struct class phy_class = {
++	.name = "phy",
++	.dev_release = phy_release,
++};
 +
-+		flow_rule_match_tcp(rule, &match);
-+
-+		flow_spec->tcp_flags = match.key->flags;
-+		flow_mask->tcp_flags = match.mask->flags;
-+		req->features |= BIT_ULL(NPC_TCP_FLAGS);
+ static struct dentry *phy_debugfs_root;
+ static DEFINE_MUTEX(phy_provider_mutex);
+ static LIST_HEAD(phy_provider_list);
+@@ -706,7 +711,7 @@ struct phy *of_phy_simple_xlate(struct device *dev,
+ 	struct phy *phy;
+ 	struct class_dev_iter iter;
+ 
+-	class_dev_iter_init(&iter, phy_class, NULL, NULL);
++	class_dev_iter_init(&iter, &phy_class, NULL, NULL);
+ 	while ((dev = class_dev_iter_next(&iter))) {
+ 		phy = to_phy(dev);
+ 		if (args->np != phy->dev.of_node)
+@@ -969,7 +974,7 @@ struct phy *phy_create(struct device *dev, struct device_node *node,
+ 	device_initialize(&phy->dev);
+ 	mutex_init(&phy->mutex);
+ 
+-	phy->dev.class = phy_class;
++	phy->dev.class = &phy_class;
+ 	phy->dev.parent = dev;
+ 	phy->dev.of_node = node ?: dev->of_node;
+ 	phy->id = id;
+@@ -1238,14 +1243,13 @@ static void phy_release(struct device *dev)
+ 
+ static int __init phy_core_init(void)
+ {
+-	phy_class = class_create("phy");
+-	if (IS_ERR(phy_class)) {
+-		pr_err("failed to create phy class --> %ld\n",
+-			PTR_ERR(phy_class));
+-		return PTR_ERR(phy_class);
+-	}
++	int err;
+ 
+-	phy_class->dev_release = phy_release;
++	err = class_register(&phy_class);
++	if (err) {
++		pr_err("failed to register phy class");
++		return err;
 +	}
-+
- 	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_MPLS)) {
- 		struct flow_match_mpls match;
- 		u8 bit;
+ 
+ 	phy_debugfs_root = debugfs_create_dir("phy", NULL);
+ 
+@@ -1256,6 +1260,6 @@ device_initcall(phy_core_init);
+ static void __exit phy_core_exit(void)
+ {
+ 	debugfs_remove_recursive(phy_debugfs_root);
+-	class_destroy(phy_class);
++	class_unregister(&phy_class);
+ }
+ module_exit(phy_core_exit);
+
+---
+base-commit: 00ca8a15dafa990d391abc37f2b8256ddf909b35
+change-id: 20240305-class_cleanup-phy-668a148b2acd
+
+Best regards,
 -- 
-2.25.1
+Ricardo B. Marliere <ricardo@marliere.net>
 
 
