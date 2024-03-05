@@ -1,186 +1,117 @@
-Return-Path: <linux-kernel+bounces-93083-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93084-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E798872AE1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 00:14:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3349872AE6
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 00:16:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A43F1F27C9F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 23:14:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71F371F28978
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 23:16:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CDEC12D201;
-	Tue,  5 Mar 2024 23:14:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E94912D216;
+	Tue,  5 Mar 2024 23:16:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="NAfDVBqM"
-Received: from mail-il1-f175.google.com (mail-il1-f175.google.com [209.85.166.175])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BGA30tmM"
+Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE4BA12D218
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 23:13:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34A3D18EA2;
+	Tue,  5 Mar 2024 23:16:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709680439; cv=none; b=PTuSgZI5P+UMKeX2W52GS1G4PD+iB35bhAiy4+8JOWjkJFf13WRLOWHf1ttg2swe80xePE9T3SsaI69hZGePC2xpqatmNWRkc6sfVYr00uTw4vMa+hUDaugQDDO/MH5Atznt2y/OqBQMmSCG2tOkjiYe1ezZT2pp5uoJda0YXX0=
+	t=1709680566; cv=none; b=DYHDakwSPopFxbEqyZTg0eR0TmwSeYJXIdCrFp2iD4P9Cm8rLjrP1IgEblvzIlDjy0L0y6qxGiV7a+386watLpB+3SysFpDEhzmRd+YZ9/cAKady4OZJgbj69KIPs8MBiVeNfM4Ffg9fmuAfLu1417N/O40FkxdCGLsr//PFvpw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709680439; c=relaxed/simple;
-	bh=ZSE908MrL3W9EF4A9/FeE48VeA9QUapWInD9HpQG3I0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pGQeZVxedNKnwltrCfWPRsAPiGm6CC3QiMfTCfmY2zoZJjkFSYR0BbJADp2JTEXHewiZdYeMKNEDEi3Gt/NHbS5cuqtO6gyjvmgMAFRuMMcFOuy5Zo7ves3i8X9AjXDOrDIJf4NhEA8dM7QlCaJTgvwbPZrR7rPjmQMnJjazWhQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=NAfDVBqM; arc=none smtp.client-ip=209.85.166.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-il1-f175.google.com with SMTP id e9e14a558f8ab-36523b9fa11so26710365ab.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 15:13:57 -0800 (PST)
+	s=arc-20240116; t=1709680566; c=relaxed/simple;
+	bh=BX5UCsZaZvEcwO0RAc1U9LDYaucwh9+d9GDoVskdcbY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FHkzpGykHBpB29S3K9J3i9GIb08bginIccfweuEHx+l/ucIiA9K7uxMfPLbrmazbh4SYwEqctAa5LBwleY4V5ahyDsnQXD7Me2QLz3wH0oumkYog3ssLtZM4jdfw5YGP/rf6yVwLrwwMgqywF+PMUHWmK6iEXgDRnLh6S61FiEM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BGA30tmM; arc=none smtp.client-ip=209.85.222.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-7882e8f99eeso121097385a.0;
+        Tue, 05 Mar 2024 15:16:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709680437; x=1710285237; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QZKWR0J2srML+eyhC61XR43/wjQEkRkTGp8CW9dDv+M=;
-        b=NAfDVBqM+p5SRXWtSIgOYxV9sxY/2zgZfqzQCPpIYxRFqFXeQ5isK3k7txHHdhTuAo
-         NDu6m7gpRJRyJBDq5OJg7LNq5YEq7sHrhfWl/2mzVB26dNdsIPuFXVgZFv60c4cQ9AlY
-         T+ri09c0i6+A8oFm1NTtbz4pWQpPQtftBxI8U=
+        d=gmail.com; s=20230601; t=1709680564; x=1710285364; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RDoZ38kb+O9xSzSugryAPYQriNdo+srCEOEHpCuApdI=;
+        b=BGA30tmMZZIcTxeXBF0zO/vxY/duBf9WgK4ZnEbP6qnjzP0aEJP1dWfQ0NL+7U+Yjh
+         CXzmjlSGPqEfx0Qaq/J64NSyhrp2AJBnYECnJwWsiY5FvYkYRzDpR8Lj5bqoB8fh5EuC
+         6P0poMzoxdo9Z+HLw0RXmrHQSrHcYDEQz/G6w1f/sgj8Y94TsqYdaQQ8iBm/F9su9doL
+         A5P3GrNypazYAI4ZcW4DNDalQxUQFhNEXSiBGZrvDuBHsdr+zbCiAsCBgMhNL0cjOJ9S
+         XnM6yQXyfE8+qsXZAiFZXbtuh2slnytrkZZYsxNiswD0ufjxBRsM2b/KcsYNL6diV944
+         Zf0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709680437; x=1710285237;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QZKWR0J2srML+eyhC61XR43/wjQEkRkTGp8CW9dDv+M=;
-        b=LChFOukNB8toY284WVOBT7k36jPzros9taw50g1Vzho28bpkcQcRObQbyyU7xAWH06
-         /35Kdcj1SAgTNBqvkQ8WdVFTN/Do2C/4PMsm4iao4IROpiRd+/Ed2hmEf8jKOLbt+hXx
-         U3bVJn9ROHZy/ieAdHRNr3zc7mbMNJIxgrdyBpJgU2PVuu9m0bq9XWjPqHadYg1V5aP4
-         G7W8TmtyNAhS8q51dbJqsKRFuNx0dmRaryt71Ar7qeYWySuYYKGQ2NbV1tLX+d+hul1K
-         R3msQO5HFpaWQSSh3XfD4h50UYDxmiVjymHyCScMCB3xBZ3dxcjWVZVjZx73lf1cWLFm
-         sluw==
-X-Forwarded-Encrypted: i=1; AJvYcCWjLg3E68cLTt6FfqdB4LyQUpN2gPytDicAnY/33R+N1Hlo5b4RbuXYBQvvbI3JOYHTXquvYB1+KIyfPHQLK3pe5zFGWVtIF5Qz0Ydu
-X-Gm-Message-State: AOJu0YyWLQ4IOLzM/83rRothCiIEt4g+YZ3c0nKh1XEYGmRoo8LYa05h
-	kro6wei6FgHG56KBr+o1lA9UjI5EiIfgaM2niaanqVfwR8ttJPm9xM82Mjfs+KK6Yo/u+ZceSv/
-	XJ9aqvfFHnLdePiU+cBweLWcp67ank//JaT7E8QWI2dpwToA=
-X-Google-Smtp-Source: AGHT+IFDvVCNWLD5UqLerMM90o3fXxlm8K2ifoYGV8gIMJPQStPoeWDTtvtRilg2YO2qtDVgyzI7zQsgcgd4+aqlVDw=
-X-Received: by 2002:a05:6e02:1a68:b0:365:7607:3f5d with SMTP id
- w8-20020a056e021a6800b0036576073f5dmr17242881ilv.3.1709680436858; Tue, 05 Mar
- 2024 15:13:56 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709680564; x=1710285364;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RDoZ38kb+O9xSzSugryAPYQriNdo+srCEOEHpCuApdI=;
+        b=MZv0FJPpo99K1ZyHHo3QC/KlU5/UAxcIxaWe6OSGtw4o9w3wkhscSfpYp5v4oE/KjX
+         DOXRfFlwNft6bbs72oYrTqK+0M808IXN/vrUIo/pDacD40albrToSZUjvZqONjGeiEiC
+         ERygibJnPHz85xzAKpttVGQlPVF7XoWO9GbN6X0l5lJs6Ie5fjuQQTuzv/g6gFxcY1Ol
+         Ahb/7ewdnbFrku5NJ7+WLu+Scg59SYL96srv4sPSecnYECN6Cxl7mU0uRQCCd/qflTLY
+         JlgZB+d40n3gOfvKA9kbhDKl96p2qkNmfFlk1X2H3NIrMvnTrIS96PwiYG0Yc4gUVo1E
+         PlTw==
+X-Forwarded-Encrypted: i=1; AJvYcCX+zpIz+r3hSLwsMrSWyf5kHKZRhr/QLAxB5iBBs8AtI7nBEeDUKR7kPU+3Erv7AF4lBlvdSUXses+ci6FyEylAGZDVEU5HbnRstCF13gg5mXLvsO5aSUVHYLzKVaCYvBtP6T+e
+X-Gm-Message-State: AOJu0YwN5Z4FQBpuhZmUuAeVOemoyU09ZTge6f7jalYXWgRHfUSgoKP7
+	DtzGnmWNZ5xhurGpu447o3+Qo4jxosl0o6Phx01rVKg01cU5/X9R
+X-Google-Smtp-Source: AGHT+IG0Mcaxe5XMmScBT4TMCi5nhvOWwTmN0M7EOqg4bHc9fomkbwDqo6RjhqnT+KCIALEV+S0kLA==
+X-Received: by 2002:a05:620a:1a0f:b0:788:1f41:1ead with SMTP id bk15-20020a05620a1a0f00b007881f411eadmr4180716qkb.31.1709680564034;
+        Tue, 05 Mar 2024 15:16:04 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id c24-20020ae9e218000000b00788349c0098sm1178824qkc.50.2024.03.05.15.15.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Mar 2024 15:16:02 -0800 (PST)
+Message-ID: <bcc82364-df74-4de7-a242-0201431fea64@gmail.com>
+Date: Tue, 5 Mar 2024 15:15:57 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240305225652.22872-1-quic_mdtipton@quicinc.com>
-In-Reply-To: <20240305225652.22872-1-quic_mdtipton@quicinc.com>
-From: Rob Clark <robdclark@chromium.org>
-Date: Tue, 5 Mar 2024 15:13:46 -0800
-Message-ID: <CAJs_Fx4DKiBjzh0-F6aBFdsqGDiE9uppXAE84yrO3hxMSzwgjA@mail.gmail.com>
-Subject: Re: [PATCH] interconnect: Don't access req_list while it's being manipulated
-To: Mike Tipton <quic_mdtipton@quicinc.com>
-Cc: djakov@kernel.org, quic_rlaggysh@quicinc.com, quic_okukatla@quicinc.com, 
-	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v6 02/16] net: dsa: vsc73xx: convert to PHYLINK
+Content-Language: en-US
+To: Pawel Dembicki <paweldembicki@gmail.com>, netdev@vger.kernel.org
+Cc: Linus Walleij <linus.walleij@linaro.org>, Simon Horman
+ <horms@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+ Vladimir Oltean <olteanv@gmail.com>, "David S. Miller"
+ <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Claudiu Manoil <claudiu.manoil@nxp.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ UNGLinuxDriver@microchip.com, Russell King <linux@armlinux.org.uk>,
+ linux-kernel@vger.kernel.org
+References: <20240301221641.159542-1-paweldembicki@gmail.com>
+ <20240301221641.159542-3-paweldembicki@gmail.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20240301221641.159542-3-paweldembicki@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Mar 5, 2024 at 2:57=E2=80=AFPM Mike Tipton <quic_mdtipton@quicinc.c=
-om> wrote:
->
-> The icc_lock mutex was split into separate icc_lock and icc_bw_lock
-> mutexes in [1] to avoid lockdep splats. However, this didn't adequately
-> protect access to icc_node::req_list.
->
-> The icc_set_bw() function will eventually iterate over req_list while
-> only holding icc_bw_lock, but req_list can be modified while only
-> holding icc_lock. This causes races between icc_set_bw(), of_icc_get(),
-> and icc_put().
->
-> Example A:
->
->   CPU0                               CPU1
->   ----                               ----
->   icc_set_bw(path_a)
->     mutex_lock(&icc_bw_lock);
->                                      icc_put(path_b)
->                                        mutex_lock(&icc_lock);
->     aggregate_requests()
->       hlist_for_each_entry(r, ...
->                                        hlist_del(...
->         <r =3D invalid pointer>
->
-> Example B:
->
->   CPU0                               CPU1
->   ----                               ----
->   icc_set_bw(path_a)
->     mutex_lock(&icc_bw_lock);
->                                      path_b =3D of_icc_get()
->                                        of_icc_get_by_index()
->                                          mutex_lock(&icc_lock);
->                                          path_find()
->                                            path_init()
->     aggregate_requests()
->       hlist_for_each_entry(r, ...
->                                              hlist_add_head(...
->         <r =3D invalid pointer>
->
-> Fix this by ensuring icc_bw_lock is always held before manipulating
-> icc_node::req_list. The additional places icc_bw_lock is held don't
-> perform any memory allocations, so we should still be safe from the
-> original lockdep splats that motivated the separate locks.
->
-> [1] commit af42269c3523 ("interconnect: Fix locking for runpm vs reclaim"=
-)
->
-> Signed-off-by: Mike Tipton <quic_mdtipton@quicinc.com>
-> Fixes: af42269c3523 ("interconnect: Fix locking for runpm vs reclaim")
+On 3/1/24 14:16, Pawel Dembicki wrote:
+> This patch replaces the adjust_link api with the phylink apis that provide
+> equivalent functionality.
+> 
+> The remaining functionality from the adjust_link is now covered in the
+> phylink_mac_link_* and phylink_mac_config.
+> 
+> Removes:
+> .adjust_link
+> Adds:
+> .phylink_mac_config
+> .phylink_mac_link_up
+> .phylink_mac_link_down
+> 
+> Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
 
-Looks good from a memory/lockdep standpoint,
+Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
 
-Reviewed-by: Rob Clark <robdclark@chromium.org>
-
-> ---
->  drivers/interconnect/core.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/drivers/interconnect/core.c b/drivers/interconnect/core.c
-> index 5d1010cafed8..7e9b996b47c8 100644
-> --- a/drivers/interconnect/core.c
-> +++ b/drivers/interconnect/core.c
-> @@ -176,6 +176,8 @@ static struct icc_path *path_init(struct device *dev,=
- struct icc_node *dst,
->
->         path->num_nodes =3D num_nodes;
->
-> +       mutex_lock(&icc_bw_lock);
-> +
->         for (i =3D num_nodes - 1; i >=3D 0; i--) {
->                 node->provider->users++;
->                 hlist_add_head(&path->reqs[i].req_node, &node->req_list);
-> @@ -186,6 +188,8 @@ static struct icc_path *path_init(struct device *dev,=
- struct icc_node *dst,
->                 node =3D node->reverse;
->         }
->
-> +       mutex_unlock(&icc_bw_lock);
-> +
->         return path;
->  }
->
-> @@ -792,12 +796,16 @@ void icc_put(struct icc_path *path)
->                 pr_err("%s: error (%d)\n", __func__, ret);
->
->         mutex_lock(&icc_lock);
-> +       mutex_lock(&icc_bw_lock);
-> +
->         for (i =3D 0; i < path->num_nodes; i++) {
->                 node =3D path->reqs[i].node;
->                 hlist_del(&path->reqs[i].req_node);
->                 if (!WARN_ON(!node->provider->users))
->                         node->provider->users--;
->         }
-> +
-> +       mutex_unlock(&icc_bw_lock);
->         mutex_unlock(&icc_lock);
->
->         kfree_const(path->name);
-> --
-> 2.17.1
->
 
