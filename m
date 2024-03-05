@@ -1,283 +1,327 @@
-Return-Path: <linux-kernel+bounces-91788-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91789-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C0308716A5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:19:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5557D8716A8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:20:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C583F1F216FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:19:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D83161F2183F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:20:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D30367E11C;
-	Tue,  5 Mar 2024 07:19:32 +0000 (UTC)
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C63107E58F;
+	Tue,  5 Mar 2024 07:20:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="gUvpE67s"
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 757917E101;
-	Tue,  5 Mar 2024 07:19:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1040F4C637
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 07:20:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709623172; cv=none; b=mk31qsp27jRw/GLyB3OqselgZ+adFpyQAx1ByvebjMVrmNibneZZj8XTpEyle0Wegm/XN05EAKvfAkAkoOc4SFdgzGtyZEepjPJM/iAM9kvF7Zoi9AlCRmm3bXCOmNorFtsG4anwvsoMrzPDPLfwqqJEeCD3KDhkPncBPgA6v3w=
+	t=1709623208; cv=none; b=P/boHtU9U76htuNUfIFbUouMIg/2zLNF+0RHx7Twp7DG3uBtwFF1psG/kObaxJXhtY6wh0+t9BmvS4chq9/5IUZVLKxDh+ugItAy87DpjufzU2OiQCtb6F8kLTAlYctVO611tkXHF1HXs7bn2Qy6O6TogHiztxS98COgW64RJ5o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709623172; c=relaxed/simple;
-	bh=NcwVel1z7ZcoEyr8WPUWvegmKx13ucuVguofS4a7H/k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=M++qe432tNqdkETpypQr2ZLjjF32nkf8HlhRPZphnzWyAK+zc6ae20VhoWC9S9SFsrkTfJoApz4DxBr15HhMmhvrkfaX+MQwguHpxKk4nXOKmk28x7otvZp8nzgQQ/XVLouge0nSIpAsRjVjYBXPY9e3TxaqDe141aABET6Rbt4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-55a5e7fa471so7291737a12.1;
-        Mon, 04 Mar 2024 23:19:30 -0800 (PST)
+	s=arc-20240116; t=1709623208; c=relaxed/simple;
+	bh=zjRVqQ3MKLC2BuD5Q1xI+k8vnbV92CXcW95Tg8GFIOU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=P2CkdXvuZHJiOo4LMo8AMT9BUjvzwRKu3j/yYBt+o28EbCqGgZomFOuur29H08hxfAPg8soQbdMJXsxRi2ZIsQPNN0r4sM18ie2iYxBAfuCmg22YVpNBvlVxulV+NHO0qW9zZZ4DrxbQGqfjUaL7a5uZGKVM8qKyKMcVq/ewz6c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=gUvpE67s; arc=none smtp.client-ip=185.125.188.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com [209.85.214.198])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 49DDA3FB6D
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 07:20:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1709623203;
+	bh=D6usFkdRzvkX3msLdSSaO/8gvWBvV/3rw0fRdwxUjj4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type;
+	b=gUvpE67sS4UKZu0xR3BaLeBaGIa6IBuVb5SjI+RtIM8XNcAz7PiTSM/agMTCWTMC8
+	 GKbIcja6ZcaPRszm+3UCIQy1yFZZPNlR1UsFv/Jovp/VtbK6QfDDcr/doZn06svQb3
+	 J13XVlbIHKaTQsRMLm2lnDDz4in+KRnq1TlfCyL12OUZaWx77JLXjEyO7nN/Y0t6ku
+	 xXrd/y/7jcvgIFHR96oqvXrvpY2MgfkxSXJemK7GDe3zQ8AK3oRSBBFW/aEE5Rm6yC
+	 UVyP3r9nt14c3DQNnwA57jnki/Xr+vns05/LvOUURVIvNt9ypcWOXI4ez6BNOilfoL
+	 Zfwgvbm0AQmig==
+Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1dc685df4adso4356025ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 23:20:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709623169; x=1710227969;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=j+1baBckT7OXImwCfZaZCxZUfFd5GSKEsCREenSuOjg=;
-        b=GFQn8viwuehVmvHuHEOdfbPmw7DHwBh58QPaZPfdCixzI6LbcfXdsXfJIJjO9T07PD
-         0fZAq/Zr5RH31YiVem6viM7T+25xPK45PmKK4wTK69ccrRK9S/Sy5nLVkaGhraY0Hr7x
-         YLBcr48KHfCMhePi+9iQO/GMnyxnmod9X81/UR0u6WAaq9xo/OU+5cJh8eCNe+nNoo71
-         J0jUl5mt/2GG7JxJ5xPdii/KmT2GZPiCBA3Si6om404RxsDKj5C0IBEePV3L4Km66gte
-         1OPyab34/Wag8zSA0CPFUbxRqAUC5SioUIeGvkUePGR3g08zZYzb2YS+iWsGw/7GNPpI
-         WJpA==
-X-Forwarded-Encrypted: i=1; AJvYcCVYCMt9iLUZVHaEaobwWUnd/Dn5/hNQylrv98HC+LOPqMbRyoaxtudfAx7kPyFVCan6H0IZhMGSBWgBy0V91M0WuKK2kHQ6RWo0q+B4ybDPCBERryPKWU49eGVdAb5dNhQnJ8yhHfXr6wNO
-X-Gm-Message-State: AOJu0Yz7tLsk4T1NBB1R9AthHle3JR7483SiTRAs0gyhrO43J4kD7RCS
-	W4kNXUhBQb6aEEWCf0N1zvid6Ls7xPj0TNrozYY+idezsl10HRBzyqe2+ltE
-X-Google-Smtp-Source: AGHT+IHclhwaEt9hqmjKLRPcvn6J4CM61NaIoNux57lWnJWK6Hq57lryW1XeTdc4g/QchZ+JMkZFWw==
-X-Received: by 2002:a17:906:37d6:b0:a45:f05:7e10 with SMTP id o22-20020a17090637d600b00a450f057e10mr4497803ejc.24.1709623168600;
-        Mon, 04 Mar 2024 23:19:28 -0800 (PST)
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
-        by smtp.gmail.com with ESMTPSA id k23-20020a1709063e1700b00a42f6d48c72sm5766587eji.145.2024.03.04.23.19.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Mar 2024 23:19:28 -0800 (PST)
-Message-ID: <1cc70895-b520-4dde-971e-692041dfbcce@kernel.org>
-Date: Tue, 5 Mar 2024 08:19:27 +0100
+        d=1e100.net; s=20230601; t=1709623202; x=1710228002;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=D6usFkdRzvkX3msLdSSaO/8gvWBvV/3rw0fRdwxUjj4=;
+        b=cSm+4XxkRq5Gokp8v5pSk4YRsZnDAsMW9qGnQdGy/Jxuqrs/3Mv9YYWkn+4ZKxE/8K
+         ph7g0b7OsEddQ89p+Bu5agIWCyz0cbZQZolAya95ulxADIqSuJKDpRx2nyQyuvG736vy
+         eRLtRrU/8eKhd3MRmSQ3uQAdpTo+tD8x7Slld6YH59e94GtnFsZwqRj570K2fglqEVJ3
+         g3g2QnqpeNy1lAykg5HipEzLNSRSzjl4j+lbCABZjxVuoJ2FHFrZh8ol4CLfY/KSOy6j
+         2lQpE4wEP31uVd8JkoB9sADVIjcJCEcbpxPQdydX07jJnLoJaOXUmXPmohN7UuBH+u77
+         1t3g==
+X-Forwarded-Encrypted: i=1; AJvYcCWcJ7odDHB9pT3ekrYYwZ/IxWQF7dltxGLVXAoZTxEEGQicqe7KRi2btUGFAKmxwsgZL5s6fb9e1eDXPRb1ijWmZh4bFwjX+dV52/VY
+X-Gm-Message-State: AOJu0YyvAidcm9DT1PRgFbvbamQ5/8pmfIrS4F60kZ1Wx/wVe+6a0Gpf
+	+mHIJ81uoh/63YnFlIgHHn65BCEPdUAAfgMU/AST47GQltIxW/Z4qGxAp5lnEuRnkN1icbALnJ6
+	7zsj9PYbt9UNysVUkfjc6/CmbiCp44zSjhsRXIRVYdEQr91qNdbtHh5lIiUyExOZ5mZf+mR7kb4
+	LhgTs4WuY3KXz41iCaMEUOfsyOKeDWFmd+WGuToEHOX7KLOPhDAJ3v
+X-Received: by 2002:a17:903:4281:b0:1dc:db95:fd24 with SMTP id ju1-20020a170903428100b001dcdb95fd24mr829120plb.55.1709623201643;
+        Mon, 04 Mar 2024 23:20:01 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGxKgO1I9zqZ3sJIIcIT9prMwSV+RjXIc/zb4fI2VQ0+Uk6wMYaxqkHcDqF+MXjubPRbRMsXIG6WGTdsfpXw6M=
+X-Received: by 2002:a17:903:4281:b0:1dc:db95:fd24 with SMTP id
+ ju1-20020a170903428100b001dcdb95fd24mr829100plb.55.1709623201268; Mon, 04 Mar
+ 2024 23:20:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 tty] 8250: microchip: pci1xxxx: Refactor TX Burst code
- to use pre-existing APIs
-Content-Language: en-US
-To: Rengarajan.S@microchip.com, linux-serial@vger.kernel.org,
- gregkh@linuxfoundation.org, Kumaravel.Thiagarajan@microchip.com,
- UNGLinuxDriver@microchip.com, Tharunkumar.Pasumarthi@microchip.com,
- linux-kernel@vger.kernel.org
-References: <20240222134944.1131952-1-rengarajan.s@microchip.com>
- <5bf4ba6d-d8e3-4ba6-a889-cfae8c3ddabe@kernel.org>
- <e93048e64c3f8aa2731575d4b296c473e8dadb82.camel@microchip.com>
- <254db026-5f9d-497f-ac44-c81d9d5947cf@kernel.org>
- <53dd0d89466f0f06dfd2d63ab1ff29462a09aabb.camel@microchip.com>
- <e8b49c34-90a1-4610-b7cd-8eff1b1a312a@kernel.org>
- <f3b627f1d03c8db3d09f56a836e8733004b2287b.camel@microchip.com>
-From: Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <f3b627f1d03c8db3d09f56a836e8733004b2287b.camel@microchip.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <CAJZ5v0grDNJkEcgw+34SBmNFL7qhSTz8ydC7BSkM7DiCatkKSA@mail.gmail.com>
+ <20240304155138.GA482969@bhelgaas> <CAJZ5v0jS_x7=joXkHuuqQhO-FqkhGi44o-Nq-1FGhPQ5-1VhnQ@mail.gmail.com>
+ <CAJZ5v0idOkeod9-RmnNGCwMGG+9nYi8eJSBpQYWJnv=N+eVoWg@mail.gmail.com> <CAJZ5v0jJEo5p4Wr_bZjHHOfQG4WomX9pFtBwFnU6eMJRoCctOA@mail.gmail.com>
+In-Reply-To: <CAJZ5v0jJEo5p4Wr_bZjHHOfQG4WomX9pFtBwFnU6eMJRoCctOA@mail.gmail.com>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date: Tue, 5 Mar 2024 15:19:49 +0800
+Message-ID: <CAAd53p45R93wwK0BpX1c0j7gFH3puv8AJWCxK60-wQZ6SjNhcA@mail.gmail.com>
+Subject: Re: [PATCH v3] driver core: Cancel scheduled pm_runtime_idle() on
+ device removal
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Bjorn Helgaas <helgaas@kernel.org>, gregkh@linuxfoundation.org, bhelgaas@google.com, 
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Ricky Wu <ricky_wu@realtek.com>, Kees Cook <keescook@chromium.org>, 
+	Tony Luck <tony.luck@intel.com>, "Guilherme G. Piccoli" <gpiccoli@igalia.com>, 
+	linux-hardening@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 05. 03. 24, 5:15, Rengarajan.S@microchip.com wrote:
-> Hi Jiri,
-> 
-> On Mon, 2024-03-04 at 07:19 +0100, Jiri Slaby wrote:
->> [Some people who received this message don't often get email from
->> jirislaby@kernel.org. Learn why this is important at
->> https://aka.ms/LearnAboutSenderIdentification ]
->>
->> EXTERNAL EMAIL: Do not click links or open attachments unless you
->> know the content is safe
->>
->> On 04. 03. 24, 5:37, Rengarajan.S@microchip.com wrote:
->>> Hi Jiri,
->>>
->>> On Fri, 2024-02-23 at 10:26 +0100, Jiri Slaby wrote:
->>>> EXTERNAL EMAIL: Do not click links or open attachments unless you
->>>> know the content is safe
->>>>
->>>> On 23. 02. 24, 10:21, Rengarajan.S@microchip.com wrote:
->>>>> On Fri, 2024-02-23 at 07:08 +0100, Jiri Slaby wrote:
->>>>>> EXTERNAL EMAIL: Do not click links or open attachments unless
->>>>>> you
->>>>>> know the content is safe
->>>>>>
->>>>>> On 22. 02. 24, 14:49, Rengarajan S wrote:
->>>>>>> Updated the TX Burst implementation by changing the
->>>>>>> circular
->>>>>>> buffer
->>>>>>> processing with the pre-existing APIs in kernel. Also
->>>>>>> updated
->>>>>>> conditional
->>>>>>> statements and alignment issues for better readability.
->>>>>>
->>>>>> Hi,
->>>>>>
->>>>>> so why are you keeping the nested double loop?
->>>>>>
->>>>>
->>>>> Hi, in order to differentiate Burst mode handling with byte
->>>>> mode
->>>>> had
->>>>> seperate loops for both. Since, having single while loop also
->>>>> does
->>>>> not
->>>>> align with rx implementation (where we have seperate handling
->>>>> for
->>>>> burst
->>>>> and byte) have retained the double loop.
->>>>
->>>> So obviously, align RX to a single loop if possible. The current
->>>> TX
->>>> code
->>>> is very hard to follow and sort of unmaintainable (and buggy).
->>>> And
->>>> IMO
->>>> it's unnecessary as I proposed [1]. And even if RX cannot be one
->>>> loop,
->>>> you still can make TX easy to read as the two need not be the
->>>> same.
->>>>
->>>> [1]
->>>> https://lore.kernel.org/all/b8325c3f-bf5b-4c55-8dce-ef395edce251@kernel.org/
->>>
->>>
->>> while (data_empty_count) {
->>>      cnt = CIRC_CNT_TO_END();
->>>      if (!cnt)
->>>        break;
->>>      if (cnt < UART_BURST_SIZE || (tail & 3)) { // is_unaligned()
->>>        writeb();
->>>        cnt = 1;
->>>      } else {
->>>        writel()
->>>        cnt = UART_BURST_SIZE;
->>>      }
->>>      uart_xmit_advance(cnt);
->>>      data_empty_count -= cnt;
->>> }
->>>
->>> With the above implementation we are observing performance drop of
->>> 2
->>> Mbps at baud rate of 4 Mbps. The reason for this is the fact that
->>> for
->>> each iteration we are checking if the the data need to be processed
->>> via
->>> DWORDs or Bytes. The condition check for each iteration is causing
->>> the
->>> drop in performance.
->>
->> Hi,
->>
->> the check is by several orders of magnitude faster than the I/O
->> proper.
->> So I don't think that's the root cause.
->>
->>> With the previous implementation(with nested loops) the performance
->>> is
->>> found to be around 4 Mbps at baud rate of 4 Mbps. In that
->>> implementation we handle sending DWORDs continuosly until the
->>> transfer
->>> size < 4. Can you let us know any other alternatives for the above
->>> performance drop.
->>
->> Could you attach the patch you are testing?
-> 
-> Please find the updated pci1xxxx_process_write_data
-> 
-> 	u32 xfer_cnt;
-> 
->          while (*valid_byte_count) {
->                  xfer_cnt = CIRC_CNT_TO_END(xmit->head, xmit->tail,
->                                             UART_XMIT_SIZE);
-> 
->                  if (!xfer_cnt)
->                          break;
-> 
->                  if (xfer_cnt < UART_BURST_SIZE || (xmit->tail & 3)) {
+On Tue, Mar 5, 2024 at 2:10=E2=80=AFAM Rafael J. Wysocki <rafael@kernel.org=
+> wrote:
+>
+> On Mon, Mar 4, 2024 at 6:00=E2=80=AFPM Rafael J. Wysocki <rafael@kernel.o=
+rg> wrote:
+> >
+> > On Mon, Mar 4, 2024 at 5:41=E2=80=AFPM Rafael J. Wysocki <rafael@kernel=
+org> wrote:
+> > >
+> > > On Mon, Mar 4, 2024 at 4:51=E2=80=AFPM Bjorn Helgaas <helgaas@kernel.=
+org> wrote:
+> > > >
+> > > > On Mon, Mar 04, 2024 at 03:38:38PM +0100, Rafael J. Wysocki wrote:
+> > > > > On Thu, Feb 29, 2024 at 7:23=E2=80=AFAM Kai-Heng Feng
+> > > > > <kai.heng.feng@canonical.com> wrote:
+> > > > > >
+> > > > > > When inserting an SD7.0 card to Realtek card reader, the card r=
+eader
+> > > > > > unplugs itself and morph into a NVMe device. The slot Link down=
+ on hot
+> > > > > > unplugged can cause the following error:
+> > > > > >
+> > > > > > pcieport 0000:00:1c.0: pciehp: Slot(8): Link Down
+> > > > > > BUG: unable to handle page fault for address: ffffb24d403e5010
+> > > > > > PGD 100000067 P4D 100000067 PUD 1001fe067 PMD 100d97067 PTE 0
+> > > > > > Oops: 0000 [#1] PREEMPT SMP PTI
+> > > > > > CPU: 3 PID: 534 Comm: kworker/3:10 Not tainted 6.4.0 #6
+> > > > > > Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M./H3=
+70M Pro4, BIOS P3.40 10/25/2018
+> > > > > > Workqueue: pm pm_runtime_work
+> > > > > > RIP: 0010:ioread32+0x2e/0x70
+> > > > > ...
+> > > > > > Call Trace:
+> > > > > >  <TASK>
+> > > > > >  ? show_regs+0x68/0x70
+> > > > > >  ? __die_body+0x20/0x70
+> > > > > >  ? __die+0x2b/0x40
+> > > > > >  ? page_fault_oops+0x160/0x480
+> > > > > >  ? search_bpf_extables+0x63/0x90
+> > > > > >  ? ioread32+0x2e/0x70
+> > > > > >  ? search_exception_tables+0x5f/0x70
+> > > > > >  ? kernelmode_fixup_or_oops+0xa2/0x120
+> > > > > >  ? __bad_area_nosemaphore+0x179/0x230
+> > > > > >  ? bad_area_nosemaphore+0x16/0x20
+> > > > > >  ? do_kern_addr_fault+0x8b/0xa0
+> > > > > >  ? exc_page_fault+0xe5/0x180
+> > > > > >  ? asm_exc_page_fault+0x27/0x30
+> > > > > >  ? ioread32+0x2e/0x70
+> > > > > >  ? rtsx_pci_write_register+0x5b/0x90 [rtsx_pci]
+> > > > > >  rtsx_set_l1off_sub+0x1c/0x30 [rtsx_pci]
+> > > > > >  rts5261_set_l1off_cfg_sub_d0+0x36/0x40 [rtsx_pci]
+> > > > > >  rtsx_pci_runtime_idle+0xc7/0x160 [rtsx_pci]
+> > > > > >  ? __pfx_pci_pm_runtime_idle+0x10/0x10
+> > > > > >  pci_pm_runtime_idle+0x34/0x70
+> > > > > >  rpm_idle+0xc4/0x2b0
+> > > > > >  pm_runtime_work+0x93/0xc0
+> > > > > >  process_one_work+0x21a/0x430
+> > > > > >  worker_thread+0x4a/0x3c0
+> > > > > ...
+> > > >
+> > > > > > This happens because scheduled pm_runtime_idle() is not cancell=
+ed.
+> > > > >
+> > > > > But rpm_resume() changes dev->power.request to RPM_REQ_NONE and i=
+f
+> > > > > pm_runtime_work() sees this, it will not run rpm_idle().
+> > > > >
+> > > > > However, rpm_resume() doesn't deactivate the autosuspend timer if=
+ it
+> > > > > is running (see the comment in rpm_resume() regarding this), so i=
+t may
+> > > > > queue up a runtime PM work later.
+> > > > >
+> > > > > If this is not desirable, you need to stop the autosuspend timer
+> > > > > explicitly in addition to calling pm_runtime_get_sync().
+> > > >
+> > > > I don't quite follow all this.  I think the race is between
+> > > > rtsx_pci_remove() (not resume) and rtsx_pci_runtime_idle().
+> > >
+> > > I think so too and the latter is not expected to run.
+> > >
+> > > >   rtsx_pci_remove()
+> > > >   {
+> > > >     pm_runtime_get_sync()
+> > > >     pm_runtime_forbid()
+> > > >     ...
+> > > >
+> > > > If this is an rtsx bug, what exactly should be added to
+> > > > rtsx_pci_remove()?
+> > > >
+> > > > Is there ever a case where we want any runtime PM work to happen
+> > > > during or after a driver .remove()?  If not, maybe the driver core
+> > > > should prevent that, which I think is basically what this patch doe=
+s.
+> > >
+> > > No, it is not, because it doesn't actually prevent the race from
+> > > occurring, it just narrows the window quite a bit.
+> > >
+> > > It would be better to call pm_runtime_dont_use_autosuspend() instead
+> > > of pm_runtime_barrier().
+> > >
+> > > > If this is an rtsx driver bug, I'm concerned there may be many othe=
+r
+> > > > drivers with a similar issue.  rtsx exercises this path more than m=
+ost
+> > > > because the device switches between card reader and NVMe SSD using
+> > > > hotplug add/remove based on whether an SD card is inserted (see [1]=
+).
+> > >
+> > > This is a valid concern, so it is mostly a matter of where to disable
+> > > autosuspend.
+> > >
+> > > It may be the driver core in principle, but note that it calls
+> > > ->remove() after invoking pm_runtime_put_sync(), so why would it
+> > > disable autosuspend when it allows runtime PM to race with device
+> > > removal in general?
+> > >
+> > > Another way might be to add a pm_runtime_dont_use_autosuspend() call
+> > > at the beginning of pci_device_remove().
+> > >
+> > > Or just remove the optimization in question from rpm_resume() which i=
+s
+> > > quite confusing and causes people to make assumptions that lead to
+> > > incorrect behavior in this particular case.
+> >
+> > Well, scratch this.
+> >
+> > If rpm_idle() is already running at the time rpm_resume() is called,
+> > the latter may return right away without waiting, which is incorrect.
+> >
+> > rpm_resume() needs to wait for the "idle" callback to complete, so
+> > this (again, modulo GMail-induced whitespace mangling) should help:
+> >
+> > ---
+> >  drivers/base/power/runtime.c |    6 ++++--
+> >  1 file changed, 4 insertions(+), 2 deletions(-)
+> >
+> > Index: linux-pm/drivers/base/power/runtime.c
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > --- linux-pm.orig/drivers/base/power/runtime.c
+> > +++ linux-pm/drivers/base/power/runtime.c
+> > @@ -798,7 +798,8 @@ static int rpm_resume(struct device *dev
+> >      }
+> >
+> >      if (dev->power.runtime_status =3D=3D RPM_RESUMING ||
+> > -        dev->power.runtime_status =3D=3D RPM_SUSPENDING) {
+> > +        dev->power.runtime_status =3D=3D RPM_SUSPENDING ||
+> > +        dev->power.idle_notification) {
+> >          DEFINE_WAIT(wait);
+> >
+> >          if (rpmflags & (RPM_ASYNC | RPM_NOWAIT)) {
+> > @@ -826,7 +827,8 @@ static int rpm_resume(struct device *dev
+> >              prepare_to_wait(&dev->power.wait_queue, &wait,
+> >                      TASK_UNINTERRUPTIBLE);
+> >              if (dev->power.runtime_status !=3D RPM_RESUMING &&
+> > -                dev->power.runtime_status !=3D RPM_SUSPENDING)
+> > +                dev->power.runtime_status !=3D RPM_SUSPENDING &&
+> > +                !dev->power.idle_notification)
+> >                  break;
+> >
+> >              spin_unlock_irq(&dev->power.lock);
+>
+> Well, not really.
+>
+> The problem is that rtsx_pci_runtime_idle() is not expected to be
+> running after pm_runtime_get_sync(), but the latter doesn't really
+> guarantee that.  It only guarantees that the suspend/resume callbacks
+> will not be running after it returns.
+>
+> As I said above, if the ->runtime_idle() callback is already running
+> when pm_runtime_get_sync() runs, the latter will notice that the
+> status is RPM_ACTIVE and will return right away without waiting for
+> the former to complete.  In fact, it cannot wait for it to complete,
+> because it may be called from a ->runtime_idle() callback itself (it
+> arguably does not make much sense to do that, but it is not strictly
+> forbidden).
+>
+> So whoever is providing a ->runtime_idle() callback, they need to
+> protect it from running in parallel with whatever code runs after
+> pm_runtime_get_sync().  Note that ->runtime_idle() will not start
+> after pm_runtime_get_sync(), but it may continue running then if it
+> has started earlier already.
+>
+> Calling pm_runtime_barrier() after pm_runtime_get_sync() (not before
+> it) should suffice, but once the runtime PM usage counter is dropped,
+> rpm_idle() may run again, so this is only effective until the usage
+> counter is greater than 1.  This means that
+> __device_release_driver(() is not the right place to call it, because
+> the usage counter is dropped before calling device_remove() in that
+> case.
+>
+> The PCI bus type can prevent the race between driver-provided
+> ->runtime_idle() and ->remove() from occurring by adding a
+> pm_runtime_probe() call in the following way:
 
-Hi,
+Thanks for the detailed explanation. Does this mean only PCI bus needs
+this fix because other subsystems are not affected, or this needs to
+be implemented for each different bus types?
 
-OK, is it different if you remove the alignment checking (which should 
-be correct™ thing to do, but may/will slow down things on platforms 
-which don't care)?
+Kai-Heng
 
->                          writeb(xmit->buf[xmit->tail], port->membase +
->                                 UART_TX_BYTE_FIFO);
->                          xfer_cnt = UART_BYTE_SIZE;
->                  } else {
->                          writel(*(u32 *)&xmit->buf[xmit->tail],
-
-If you remove the "tail & 3" check, you can use get_unaligned() here and 
-need not care about unaligned accesses after all...
-
->                                 port->membase + UART_TX_BURST_FIFO);
->                          xfer_cnt = UART_BURST_SIZE;
->                  }
-> 
->                  uart_xmit_advance(port, xfer_cnt);
->                  *data_empty_count -= xfer_cnt;
->                  *valid_byte_count -= xfer_cnt;
->          }
-> 
-> Testing is done via minicom by transferring a 10 MB file at 4 Mbps,
-> 
-> After the minicom transfer with single instance:
-> 
-> Previous implementation(Nested While Loops):
-> Transferred 10 MB at 3900000 CPS
-> 
-> Current implementation:
-> Transferred 10 MB at 2459999 CPS
-
-
-
--- 
-js
-suse labs
-
+>
+> ---
+>  drivers/pci/pci-driver.c |    7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> Index: linux-pm/drivers/pci/pci-driver.c
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> --- linux-pm.orig/drivers/pci/pci-driver.c
+> +++ linux-pm/drivers/pci/pci-driver.c
+> @@ -473,6 +473,13 @@ static void pci_device_remove(struct dev
+>
+>      if (drv->remove) {
+>          pm_runtime_get_sync(dev);
+> +        /*
+> +         * If the driver provides a .runtime_idle() callback and it has
+> +         * started to run already, it may continue to run in parallel
+> +         * with the code below, so wait until all of the runtime PM
+> +         * activity has completed.
+> +         */
+> +        pm_runtime_barrier(dev);
+>          drv->remove(pci_dev);
+>          pm_runtime_put_noidle(dev);
+>      }
 
