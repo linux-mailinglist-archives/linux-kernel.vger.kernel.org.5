@@ -1,179 +1,181 @@
-Return-Path: <linux-kernel+bounces-91812-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91813-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 654738716F3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:34:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B24F78716F5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:34:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A2201F21E6B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:34:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 21E05B24779
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:34:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E22167EEE7;
-	Tue,  5 Mar 2024 07:32:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE5877EEF0;
+	Tue,  5 Mar 2024 07:32:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="PgKYhqGN"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="O9DOaTim"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 842027E58F;
-	Tue,  5 Mar 2024 07:32:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B5C57E564;
+	Tue,  5 Mar 2024 07:32:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709623922; cv=none; b=vBC3/Px+iYjBKtppDYYoYPZFOgQ4Lq0aSsy3j5UDfrUiCWX9YZLVOLBd27lELE2gmB4oic6UNCTh/CUxchXLKYT5Np4oGh9jn9+aPkLxgQfM+zxYEMHYYgWIljPRO8BqgiMER1p/ocsUbTc4adSpMXpVSIRtGRT5cMpAlUVERhg=
+	t=1709623973; cv=none; b=LAUKHtzRLCAkVu3GpIBPyfhYD7Nmx5yTNktxUit7PF6RDRVVs9RrWxCpAoKs11/FV6sYYqpAtpxTZfRz1K5DC1TdX4pXW225rLtz0hn2+cZyGYpoPhAi4WGCsaQdYLj0VumUtC+pa/iT6VURt/CoEdv+oabh9eNwgRf6XHWr3bk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709623922; c=relaxed/simple;
-	bh=BRmbYPu9uwZv0NohdrzAOM6oEjNLSw62KYQSbPqi+fw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=qMsO5OtI8dASLs6h4o4r6PB4Rv5WQPtYubx8yWG6sil+z6+epegZJZT9Hh43/0Z6uvTp2DlFIxaciCe2FXz4q8q7Cq+3lpKwcJQawG10qAzoNuANME5e7O6/1wpjptS7LH65Wh6ZtaVOhPSo+1atRAG16INXGjzkyWjjJD993IY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=PgKYhqGN; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4256Jttu014028;
-	Tue, 5 Mar 2024 07:31:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=wMbUenWZaYTavA7xWqeeZ0KV1Px9iK8tI8NYl+N974g=; b=Pg
-	KYhqGNpF2CsW4JZ9dfZKfrmXlievESq0K//abrY6QkfE6aV8Fe/udjbdOg4y5B5B
-	I9uU2fViG8DMTsH2nqq/J9M9RarVupVZL5yTdcgemUaCkDpfWpigG8WOe74w00hV
-	DfJmYLQYUJVgdUBDBry7vNQLoQTizUKQRpIY/VsJhRsqChANVci2ZwRs+fz15IF8
-	K+Apd1pVhLvVDfDmvSlR5NvNE9jiSxkm2e9uKy3sGkoluMC7ZyqBsXtOqQSPDwGQ
-	d6z8BrNvpbQ7wwhw/cWJLHjVOazj2GAd+ndcAfRuMg1r+3gDWx6F4xZp19V1m63o
-	mAEQbSpKSt2UF041OrjA==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wnx0y04c9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 05 Mar 2024 07:31:43 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4257Vgnr031877
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 5 Mar 2024 07:31:42 GMT
-Received: from [10.216.18.120] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 4 Mar
- 2024 23:31:39 -0800
-Message-ID: <6dcf6bc5-e1e5-8388-8bcb-c093a5fb61ed@quicinc.com>
-Date: Tue, 5 Mar 2024 13:01:12 +0530
+	s=arc-20240116; t=1709623973; c=relaxed/simple;
+	bh=YjfH/4uaFuWJtJMASjOecQcGKJu/nURAXgrynQrpwt8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MpRY+1zEs/tz+7zzZaDKuoY+S4/0H1vGqh0a4fDLxaed+PhSX6YxM4Jth8xFrXBqRamM2+aDWHGOS3JjcrM5Zgvi6P7evuy+K798vAoTYmig76YoKuCDW5G//s/NotcQMzzdfqThvGHVGvbWbSZhQoTpBOx4SNV+MCffeZsC/98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=O9DOaTim; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709623972; x=1741159972;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=YjfH/4uaFuWJtJMASjOecQcGKJu/nURAXgrynQrpwt8=;
+  b=O9DOaTimStvlbVtGp2xW6XQeU/RJwEAZouQQL4eDZMKRQf4JQwu7w66L
+   V2Z+vZq6S7iJGl+Nbda8aIuDtRYEk518eHXafmdTThC9/yWOkYbCW6Wyi
+   5ebkJNV9A6+EpekSfPLqcPW644l1awWQVYKyKxzzO+ongBqHJO0mmeLwK
+   eyRjQuXoKvKY39dKwJKov+h76VdpLkh9YPA42DM/V/IRi5f9gsIcXAmmI
+   5EuE7K6tjLZxnnrwaIn5XkLRmb6VP/4OixSG9NDdoahNbprCCGISCzrj+
+   C3ai9/zZa/7uQrfNMXMwFFLxj+CE7Oa6PySWpwooGwzXCFjIZG3QQ6nTe
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="4317376"
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="4317376"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 23:32:51 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="40160744"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 23:32:49 -0800
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+	by kekkonen.fi.intel.com (Postfix) with SMTP id 14A1211F871;
+	Tue,  5 Mar 2024 09:32:46 +0200 (EET)
+Date: Tue, 5 Mar 2024 07:32:46 +0000
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
+To: Dominik Brodowski <linux@dominikbrodowski.net>
+Cc: tomas.winkler@intel.com, mchehab@kernel.org, wentong.wu@intel.com,
+	hverkuil-cisco@xs4all.nl, linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: v6.8.0-rc6: mei_ace_probe / mei_vsc_probe: do not call blocking
+ ops when !TASK_RUNNING
+Message-ID: <ZebKnqynAiWBEkE6@kekkonen.localdomain>
+References: <Zd9wUv1zSJ59WS8i@shine.dominikbrodowski.net>
+ <Zd-BVmoFOiCxA632@kekkonen.localdomain>
+ <ZeAwhhW7DSEazs0F@shine.dominikbrodowski.net>
+ <ZeAymVVsI-CNj6Pc@kekkonen.localdomain>
+ <ZeC2jss4IAM4aPWy@shine.dominikbrodowski.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.0
-Subject: Re: [PATCH RESEND STABLE v6.1] iommu: Avoid races around default
- domain allocations
-To: Greg KH <gregkh@linuxfoundation.org>
-CC: Charan Teja Kalla <quic_charante@quicinc.com>,
-        Joerg Roedel
-	<joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy
-	<robin.murphy@arm.com>, <linux-kernel@vger.kernel.org>,
-        <iommu@lists.linux.dev>, <stable@vger.kernel.org>
-References: <cbf1295589bd90083ad6f75a7fbced01f327c047.1708680521.git.quic_nprakash@quicinc.com>
- <2024030403-self-morality-062e@gregkh>
-Content-Language: en-US
-From: Nikhil V <quic_nprakash@quicinc.com>
-In-Reply-To: <2024030403-self-morality-062e@gregkh>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 4JT4wgqE_gix773HeXXQ08JPCQ9hKfZi
-X-Proofpoint-ORIG-GUID: 4JT4wgqE_gix773HeXXQ08JPCQ9hKfZi
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-05_04,2024-03-04_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
- bulkscore=0 impostorscore=0 clxscore=1011 priorityscore=1501 adultscore=0
- mlxlogscore=755 lowpriorityscore=0 suspectscore=0 spamscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403050058
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZeC2jss4IAM4aPWy@shine.dominikbrodowski.net>
 
+Hi Dominik,
 
-
-On 3/4/2024 6:55 PM, Greg KH wrote:
-> On Mon, Mar 04, 2024 at 04:40:50PM +0530, Nikhil V wrote:
->> From: Charan Teja Kalla <quic_charante@quicinc.com>
->>
->> This fix is applicable for LTS kernel, 6.1.y. In latest kernels, this race
->> issue is fixed by the patch series [1] and [2]. The right thing to do here
->> would have been propagating these changes from latest kernel to the stable
->> branch, 6.1.y. However, these changes seems too intrusive to be picked for
->> stable branches. Hence, the fix proposed can be taken as an alternative
->> instead of backporting the patch series.
->> [1] https://lore.kernel.org/all/0-v8-81230027b2fa+9d-iommu_all_defdom_jgg@nvidia.com/
->> [2] https://lore.kernel.org/all/0-v5-1b99ae392328+44574-iommu_err_unwind_jgg@nvidia.com/
->>
->> Issue:
->> A race condition is observed when arm_smmu_device_probe and
->> modprobe of client devices happens in parallel. This results
->> in the allocation of a new default domain for the iommu group
->> even though it was previously allocated and the respective iova
->> domain(iovad) was initialized. However, for this newly allocated
->> default domain, iovad will not be initialized. As a result, for
->> devices requesting dma allocations, this uninitialized iovad will
->> be used, thereby causing NULL pointer dereference issue.
->>
->> Flow:
->> - During arm_smmu_device_probe, bus_iommu_probe() will be called
->> as part of iommu_device_register(). This results in the device probe,
->> __iommu_probe_device().
->>
->> - When the modprobe of the client device happens in parallel, it
->> sets up the DMA configuration for the device using of_dma_configure_id(),
->> which inturn calls iommu_probe_device(). Later, default domain is
->> allocated and attached using iommu_alloc_default_domain() and
->> __iommu_attach_device() respectively. It then ends up initializing a
->> mapping domain(IOVA domain) and rcaches for the device via
->> arch_setup_dma_ops()->iommu_setup_dma_ops().
->>
->> - Now, in the bus_iommu_probe() path, it again tries to allocate
->> a default domain via probe_alloc_default_domain(). This results in
->> allocating a new default domain(along with IOVA domain) via
->> __iommu_domain_alloc(). However, this newly allocated IOVA domain
->> will not be initialized.
->>
->> - Now, when the same client device tries dma allocations via
->> iommu_dma_alloc(), it ends up accessing the rcaches of the newly
->> allocated IOVA domain, which is not initialized. This results
->> into NULL pointer dereferencing.
->>
->> Fix this issue by adding a check in probe_alloc_default_domain()
->> to see if the iommu_group already has a default domain allocated
->> and initialized.
->>
->> Cc: <stable@vger.kernel.org> # see patch description, fix applicable only for 6.1.y
->> Signed-off-by: Charan Teja Kalla <quic_charante@quicinc.com>
->> Co-developed-by: Nikhil V <quic_nprakash@quicinc.com>
->> Signed-off-by: Nikhil V <quic_nprakash@quicinc.com>
->> ---
->>   drivers/iommu/iommu.c | 3 +++
->>   1 file changed, 3 insertions(+)
+On Thu, Feb 29, 2024 at 05:53:34PM +0100, Dominik Brodowski wrote:
+> Hi Sakari,
 > 
-> Why RESEND?  What happened to the first send?
+> Am Thu, Feb 29, 2024 at 07:30:33AM +0000 schrieb Sakari Ailus:
+> > On Thu, Feb 29, 2024 at 08:21:42AM +0100, Dominik Brodowski wrote:
+> > > Hi Sakari,
+> > > 
+> > > many thanks, this patch helps. Another issue persists, though:
+> > > 
+> > > 
+> > > $ dmesg | cut -c16- | grep -E "(mei|vsc)"
+> > > mei_me 0000:00:16.0: enabling device (0000 -> 0002)
+> > > mei_hdcp 0000:00:16.0-b638ab7e-94e2-4ea2-a552-d1c54b627f04: bound 0000:00:02.0 (ops i915_hdcp_ops)
+> > > mei_pxp 0000:00:16.0-fbf6fcf1-96cf-4e2e-a6a6-1bab8cbe36b1: bound 0000:00:02.0 (ops i915_pxp_tee_component_ops)
+> > > intel_vsc intel_vsc: silicon stepping version is 0:2
+> > > mei intel_vsc-92335fcf-3203-4472-af93-7b4453ac29da: deferred probe pending: (reason unknown)
+> > > mei intel_vsc-5db76cf6-0a68-4ed6-9b78-0361635e2447: deferred probe pending: (reason unknown)
+> > 
+> > You'll probably need the IPU bridge patches from that branch, too. Or you
+> > can try removing the intel-ipu6 driver and modprobing it again.
 > 
-> thanks,
+> Everything is built into the kernel here - and the kernel I run is pure
+> upstream (plus your patch), therefore no intel-ipu6 driver is available
+> (yet) or active.
 > 
-> greg k-h
+> > > During suspend entry (s2idle), the following messages are emitted:
+> > > 
+> > > ACPI Warning: \_SB.PC00.SPI1.SPFD.CVFD.SID: Insufficient arguments - Caller passed 0, method requires 1 (20230628/nsarguments-232)
+> > > intel_vsc intel_vsc: silicon stepping version is 0:2
+> > > PM: Some devices failed to suspend, or early wake event detected
+> > > ACPI Warning: \_SB.PC00.SPI1.SPFD.CVFD.SID: Insufficient arguments - Caller passed 0, method requires 1 (20230628/nsarguments-232)
+> > > intel_vsc intel_vsc: silicon stepping version is 0:2
+> > > vsc-tp spi-INTC1094:00: wakeup firmware failed ret: -110
+> > > vsc-tp spi-INTC1094:00: wakeup firmware failed ret: -110
+> > > intel_vsc intel_vsc: wait fw ready failed: -110
+> > > intel_vsc intel_vsc: hw_start failed ret = -110 fw status = 
+> > > intel_vsc intel_vsc: unexpected reset: dev_state = RESETTING fw status = 
+> > > ACPI Warning: \_SB.PC00.SPI1.SPFD.CVFD.SID: Insufficient arguments - Caller passed 0, method requires 1 (20230628/nsarguments-232)
+> > > intel_vsc intel_vsc: silicon stepping version is 0:2
+> > 
+> > I haven't tried suspending. Is this while streaming or not?
+> 
+> No streaming - in fact, without intel-ipu6 available (upstream + your patch,
+> see above).
+> 
+> 
+> I have now tried upstream plus the ipu6 branch; there I get one message
+> indicating that something is amiss:
+> 
+> 	vsc-tp spi-INTC1094:00: wakeup firmware failed ret: -110
+> 
+> And if I try to do a suspend&resume cycle, the machine hangs. A longer
+> snippet from dmesg from upstream+ipu6 branch:
+> 
+> mei_me 0000:00:16.0: enabling device (0000 -> 0002)
+> mei_hdcp 0000:00:16.0-b638ab7e-94e2-4ea2-a552-d1c54b627f04: bound 0000:00:02.0 (ops i915_hdcp_ops)
+> mei_pxp 0000:00:16.0-fbf6fcf1-96cf-4e2e-a6a6-1bab8cbe36b1: bound 0000:00:02.0 (ops i915_pxp_tee_component_ops)
+> intel-ipu6 0000:00:05.0: enabling device (0000 -> 0002)
+> intel-ipu6 0000:00:05.0: IPU6 in non-secure mode touch 0x0 mask 0xff
+> intel-ipu6 0000:00:05.0: FW version: 20230925
+> intel_vsc intel_vsc: silicon stepping version is 0:2
+> intel-ipu6 0000:00:05.0: IPU6 in non-secure mode touch 0x0 mask 0xff
+> intel-ipu6 0000:00:05.0: FW version: 20230925
+> intel-ipu6 0000:00:05.0: IPU6 in non-secure mode touch 0x0 mask 0xff
+> intel-ipu6 0000:00:05.0: FW version: 20230925
+> intel-ipu6 0000:00:05.0: IPU6 in non-secure mode touch 0x0 mask 0xff
+> intel-ipu6 0000:00:05.0: FW version: 20230925
+> intel-ipu6 0000:00:05.0: IPU6 in non-secure mode touch 0x0 mask 0xff
+> intel-ipu6 0000:00:05.0: FW version: 20230925
+> intel-ipu6 0000:00:05.0: IPU6 in non-secure mode touch 0x0 mask 0xff
+> intel-ipu6 0000:00:05.0: FW version: 20230925
+> intel-ipu6 0000:00:05.0: IPU6 in non-secure mode touch 0x0 mask 0xff
+> intel-ipu6 0000:00:05.0: FW version: 20230925
+> intel-ipu6 0000:00:05.0: IPU6 in non-secure mode touch 0x0 mask 0xff
+> intel-ipu6 0000:00:05.0: FW version: 20230925
+> intel-ipu6 0000:00:05.0: IPU6 in non-secure mode touch 0x0 mask 0xff
+> intel-ipu6 0000:00:05.0: FW version: 20230925
+> intel-ipu6 0000:00:05.0: IPU6 in non-secure mode touch 0x0 mask 0xff
+> intel-ipu6 0000:00:05.0: FW version: 20230925
+> vsc-tp spi-INTC1094:00: wakeup firmware failed ret: -110
+> intel-ipu6 0000:00:05.0: IPU6 in non-secure mode touch 0x0 mask 0xff
+> intel-ipu6 0000:00:05.0: FW version: 20230925
+> intel-ipu6 0000:00:05.0: IPU6 in non-secure mode touch 0x0 mask 0xff
+> intel-ipu6 0000:00:05.0: FW version: 20230925
+> intel-ipu6 0000:00:05.0: Found supported sensor OVTI01A0:00
+> intel-ipu6 0000:00:05.0: Connected 1 cameras
+> intel-ipu6 0000:00:05.0: IPU6-v3[465d] hardware version 5
 
+I haven't tried suspending but I know Wentong has. So this is odd.
 
-Hi Greg,
+Which system do you have? Could you provide your .config?
 
-There are no changes as such w.r.t first send, [1]. It is resent to gain 
-attention on this patch. Also, we have added a proper Cc: stable tag 
-with this patch.
+-- 
+Regards,
 
-
-[1] 
-https://lore.kernel.org/all/cbf1295589bd90083ad6f75a7fbced01f327c047.1708680521.git.quic_nprakash@quicinc.com/
-
-Thanks
-Nikhil V
+Sakari Ailus
 
