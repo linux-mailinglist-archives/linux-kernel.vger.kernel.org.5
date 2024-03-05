@@ -1,88 +1,136 @@
-Return-Path: <linux-kernel+bounces-92272-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92273-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A12BC871DBB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:30:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A36EC871DBD
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:30:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BA5428B177
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:30:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50DC81F29B42
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:30:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DCB55A11B;
-	Tue,  5 Mar 2024 11:27:24 +0000 (UTC)
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 343375A4D3;
+	Tue,  5 Mar 2024 11:27:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="kMzrVlij"
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 413C25917C
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 11:27:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E01758211
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 11:27:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709638043; cv=none; b=MejBIdSZUJEHDLxHsTSarY9Yk6ZkahFF75sVLCSYuHUdmF329UlzohSCH+hS/yji+tQDCwhyC2TaxWObwnPVtFK2ybQ9svFIxxn48zBm7kkvyiEupewjCKMK2KRa6bq38JMhgolNrjn89PgrjmvyfIzV0ouwqxfwwsAtCRms7vs=
+	t=1709638056; cv=none; b=OSVd1L+9wuX/a9/Ti3/CaowMaJDii4CeF2hn43+JDKgZdArhRW5zrOTEjGjJPJkfrihdOzQfP36wgO9/4ACY5lSqdDNqYdwutuivIdgWrbgRlOLZmJFNQk7ftRy0gsnlRnorIvZoFVgaZ7OZNdGkRcIRy34/dujdcif8AKkqaWo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709638043; c=relaxed/simple;
-	bh=EZAs+7yDmUmEfCChBu8JZgtnvW4sn/MdtQUYDU61rfI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:Cc:From:
-	 In-Reply-To:Content-Type; b=Uj7IzXECHOAGd7u5g5Lr1fFTEE/C1zuSPnLF0OO9De+ucFBdMBoy9YYvQx4G+IUG7WFRxotc1arVd7vo6ZIeodEBp1G4U9kh1/j1PLRpReIuH9FHJVit+bmgVz7NyxnDAvCihXk9Ue+JATkZtyJItytu73Ss3hOveyjwKfuIljg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from fsav312.sakura.ne.jp (fsav312.sakura.ne.jp [153.120.85.143])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 425BR7U0098036;
-	Tue, 5 Mar 2024 20:27:07 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav312.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav312.sakura.ne.jp);
- Tue, 05 Mar 2024 20:27:07 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav312.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 425BR79p098033
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Tue, 5 Mar 2024 20:27:07 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <dcf54740-7cc3-4017-ad1b-8626a22fc15e@I-love.SAKURA.ne.jp>
-Date: Tue, 5 Mar 2024 20:27:07 +0900
+	s=arc-20240116; t=1709638056; c=relaxed/simple;
+	bh=2WNnHztTUqQdcN20V9bA8+EOJpwgYApihwe/DDOcQus=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=ofL69WY9QylLVaW3fy0wmAFlbVxFPDHpVa+WGKmb4lQQfL69flZu7+HWPPmDlD1oULmeugps01ZDZOA5za2WWxiB4MPuXSiuB821mY0pNeFF8Yur+z4MlZ/knPgeFvdZVwG0Dg50FYAiZPZqEpxcgh08vBJRXx2iKYDT5xhKi+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=kMzrVlij; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1dbae7b8ff2so25779355ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 03:27:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1709638054; x=1710242854; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=S6lk2VSf0du4ELFj1o53K00Oxr2xrvdHE8vh0vkwTlg=;
+        b=kMzrVlij1We+pFIw0M4/sKXtVppfpVCMzAvHPBo6pW4aiRmSTXsz3hNEDRYvf4QT7/
+         S5q2IY4WVfop3XnT5BEGoDB4BPEPvUIgcXJOHVk03eNETFCeeCQhgySj2QLY3A3cZ4zg
+         PCGvFSY+fZrx9xqj9U2MZVp2dfn89+sXQcJDg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709638054; x=1710242854;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=S6lk2VSf0du4ELFj1o53K00Oxr2xrvdHE8vh0vkwTlg=;
+        b=haZDGhdVYAOUsXryD8JqpHNjqLAKaqFL0JWP4FkKlGXxyX5bjZtwG8KHjRgjfnDtqS
+         xHcZ3fgov2wQkYjJZOYEwFwa9L1G7MlHbqgJoU08ZHxwQcheIXfuRIQjyuaRXPnBcIpZ
+         24HcmMVjb4S1eDPPlRrJ30djRNtkEgFlfyA4w9bz+UpslX22PRkpJoBWu3W2b/0VXzzC
+         5r/uw1eZaqYLg+3MoqoIEOl0rgvADyeVfc5VXeVIWWbpmsKMGbyV5C3Q/uXnPn5GZGAW
+         gehPVRc8QVVyBxVLlhitDF4mcVu3Wn7ww6ZwzxJycuswpFRLETTtSaM8Hn9sHddH/ROq
+         Vl7w==
+X-Forwarded-Encrypted: i=1; AJvYcCVOSzLu7I/+DuUuyC929z+DJk2kCwOHYwcBj81Lfm3Nacy897tPW2Y7uCHUzME3uVGDfprMa2wwXbNASsF8rqQMQasO4ZzxrI+xbrCP
+X-Gm-Message-State: AOJu0YzcBXed/wkRetPf6GpSqsuZeEKYnx/0iN8ngWR/WlHZpGMMkoZm
+	CKzzUuim1jiJtcwxYOUNDXanEU/W/di9zaxfgtQyXZq0UVVWfyPGSyHB3VHWEw==
+X-Google-Smtp-Source: AGHT+IF+WI48qE7GkIClJ44xeG82/z0EBNUVoILGmHKbKaq3pKcJ4kmhGj+wfJpEJ6EhEvErdgTBoA==
+X-Received: by 2002:a17:902:e88b:b0:1db:d811:732a with SMTP id w11-20020a170902e88b00b001dbd811732amr1481426plg.37.1709638054295;
+        Tue, 05 Mar 2024 03:27:34 -0800 (PST)
+Received: from yuanhsinte1.c.googlers.com (36.157.124.34.bc.googleusercontent.com. [34.124.157.36])
+        by smtp.gmail.com with ESMTPSA id c5-20020a170902d48500b001db9cb62f7bsm10344720plg.153.2024.03.05.03.27.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Mar 2024 03:27:33 -0800 (PST)
+From: Hsin-Te Yuan <yuanhsinte@chromium.org>
+Date: Tue, 05 Mar 2024 11:27:26 +0000
+Subject: [PATCH] drm/bridge:anx7625:Update audio status while detecting
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [hardening?] [mm?] BUG: bad usercopy in fpa_set
-Content-Language: en-US
-To: Linux ARM <linux-arm-kernel@lists.infradead.org>
-References: <0000000000004cf5c205faf1c7f3@google.com>
-Cc: syzbot <syzbot+cb76c2983557a07cdb14@syzkaller.appspotmail.com>,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <0000000000004cf5c205faf1c7f3@google.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Message-Id: <20240305-anx7625-v1-1-83ed3ccfa64c@chromium.org>
+X-B4-Tracking: v=1; b=H4sIAJ0B52UC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDYwNT3cS8CnMzI1PdtFRDsxTjRMsUY/MUJaDqgqLUtMwKsEnRsbW1AGE
+ vZz5ZAAAA
+To: Andrzej Hajda <andrzej.hajda@intel.com>, 
+ Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, 
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
+ Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+ Hsin-Te Yuan <yuanhsinte@chromium.org>
+X-Mailer: b4 0.12.4
 
-Hello.
+Previously, the audio status was not updated during detection, leading
+to a persistent audio despite hot plugging events. To resolve this
+issue, update the audio status during detection.
 
-syzbot is reporting kernel memory overwrite attempt at fpa_set().
-I guessed that the amount to copy from/to should be sizeof(union fp_state)
-than sizeof(struct user_fp), for arch_ptrace(PTRACE_[SG]ETFPREGS) for arm
-is using offset == 0 and size == sizeof(union fp_state). But my guess did not
-solve the issue ( https://syzkaller.appspot.com/x/patch.diff?x=11e46dbc180000 ).
+Signed-off-by: Hsin-Te Yuan <yuanhsinte@chromium.org>
+---
+ drivers/gpu/drm/bridge/analogix/anx7625.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-On 2023/05/05 21:53, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    457391b03803 Linux 6.3
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=105b8bb0280000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=385e197a58ca4afe
-> dashboard link: https://syzkaller.appspot.com/bug?extid=cb76c2983557a07cdb14
-> compiler:       arm-linux-gnueabi-gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> userspace arch: arm
+diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
+index 29d91493b101a..9f0d0c5b8ebf5 100644
+--- a/drivers/gpu/drm/bridge/analogix/anx7625.c
++++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
+@@ -2481,15 +2481,22 @@ static void anx7625_bridge_atomic_disable(struct drm_bridge *bridge,
+ 	mutex_unlock(&ctx->aux_lock);
+ }
+ 
++static void
++anx7625_audio_update_connector_status(struct anx7625_data *ctx,
++				      enum drm_connector_status status);
++
+ static enum drm_connector_status
+ anx7625_bridge_detect(struct drm_bridge *bridge)
+ {
+ 	struct anx7625_data *ctx = bridge_to_anx7625(bridge);
+ 	struct device *dev = ctx->dev;
++	enum drm_connector_status status;
+ 
+ 	DRM_DEV_DEBUG_DRIVER(dev, "drm bridge detect\n");
+ 
+-	return anx7625_sink_detect(ctx);
++	status = anx7625_sink_detect(ctx);
++	anx7625_audio_update_connector_status(ctx, status);
++	return status;
+ }
+ 
+ static struct edid *anx7625_bridge_get_edid(struct drm_bridge *bridge,
 
-#syz set subsystems: arm
+---
+base-commit: 90d35da658da8cff0d4ecbb5113f5fac9d00eb72
+change-id: 20240305-anx7625-fe16d3a9d37d
+
+Best regards,
+-- 
+Hsin-Te Yuan <yuanhsinte@chromium.org>
 
 
