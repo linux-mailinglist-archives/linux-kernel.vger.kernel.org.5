@@ -1,206 +1,184 @@
-Return-Path: <linux-kernel+bounces-92458-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92459-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FC8087206B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:39:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82446872070
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:40:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED1601F25885
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:39:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DB937B27E23
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:40:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D0178613E;
-	Tue,  5 Mar 2024 13:39:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2376F8612E;
+	Tue,  5 Mar 2024 13:40:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IrD8rO5V"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b="s/UZXo5T"
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2120.outbound.protection.outlook.com [40.107.8.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9253055E77
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 13:38:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709645941; cv=none; b=Bh9Akb/vIz1wM/ogBebf/arKPD1I1E3UfkRnods3pnymPbUZeZeiPv/3RISkeNYiNkH5RWrjeYL3tnfVcuecGs/eIcq4I+RusBP1FzMfdHcbMhjH2wMhhDwy2UEAJgC6gyRImhsavC5G8usfiFIhY+iR5jZRo8E5H2NE/C/RKHQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709645941; c=relaxed/simple;
-	bh=ka/sHqtSSUL5w12UZDQHXFz+zGlrhqj/313XLMpnIyc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NjuJHAsavBubr3U8HVxCon9pUNpUamUx+C5llA0mJuIETlva9Eypfwy4yZA3o1shCycWYVc/HUZv1/ruyIu73aDQL2pHLmi7GA3y5icIoDTwEY4h64SzEwxWMjI43xB+65m3cOx5ZnP4kRYRq1+DlpPBrSHdElqYeen6pmu3zUg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IrD8rO5V; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709645938;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=11CPXNNF150pfEUFPWGbUJ1IKwl89RXoTZySYxmoYV8=;
-	b=IrD8rO5VKqHo3j03gJmZ8zIaPnbDi01UW5cZ2rLH/eNAh/mbvSlAbnp+YmVMZ06/APbdqr
-	iucEVykAHBNoADJioM9HK1TwIw7kDXf2zZMjb6+GqHdqtAbanaOKCzE/JCeYyVcCzp54Tj
-	B6+/nNmvr4hsvXpfWc8tf5hX6OmuTy8=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-617-cP5C9PVEOBezvZTpeXa6Jg-1; Tue, 05 Mar 2024 08:38:57 -0500
-X-MC-Unique: cP5C9PVEOBezvZTpeXa6Jg-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a436a38bf5bso68387866b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 05:38:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709645935; x=1710250735;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=11CPXNNF150pfEUFPWGbUJ1IKwl89RXoTZySYxmoYV8=;
-        b=g1FySn8gAA7GOud0mOIj1wKjmLJ8T5i41OEXJBILLQOiPh1d1gPX2308bdjQkJvUhN
-         HALNLIpdDO4jFojuypH9as07wGzOxRqCDk7dY2+sebLQWxcUbbJ7fyGKDopByejYJzqw
-         ziSNpYdDsIjfliHDTfkVu8xXNLoVI5wrJqIBSveOI5zjXwgHMI9PiL6d4hWl20V2+0zx
-         Ie2AyOVhSK8lMMc1R9+6I0JddY97g4cAfpk4IvQ2du9nYXzUo//VNlvCoL2xM23LYR7H
-         nzgwcFtvz89c+uu4rN2vU+LnG5CtqZDyFaRm0vPwHOb2y8WqRKp3skgTlkBoRiongWWg
-         EuZQ==
-X-Gm-Message-State: AOJu0YwMw9lyh50mp3U0uIEazHGV9AVwxP5IHQ1dCFPWFsR8IgpT9A85
-	GPvLim/aBfBkyGVc0mRP/f5UU7GEXQwPvVlwWXb0XBXgieIdIi4PmD9+d0OrqGQH8OCjO1HYhe8
-	1yjwDNAAHYBx+E6HVZC1qzuMfgrBqnyxMZfWJkzyq7JcXjlzz/Vlx3fkFi+Tog41Enz5zVAauOj
-	bet6bOSdUaWPhRfnMxI7H7DrmxuTXhpBnF+QZKOCS99TA2
-X-Received: by 2002:a17:907:a68b:b0:a3f:161b:cc13 with SMTP id vv11-20020a170907a68b00b00a3f161bcc13mr402057ejc.7.1709645935587;
-        Tue, 05 Mar 2024 05:38:55 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEGf3/3KYPfk68CgY/nW360g4A9tp+KNIVj9PFBRcH+lHdipruHA8YbSsz9ZbASe2wCJh5jOw==
-X-Received: by 2002:a17:907:a68b:b0:a3f:161b:cc13 with SMTP id vv11-20020a170907a68b00b00a3f161bcc13mr402031ejc.7.1709645935129;
-        Tue, 05 Mar 2024 05:38:55 -0800 (PST)
-Received: from kherbst.pingu ([77.20.15.65])
-        by smtp.gmail.com with ESMTPSA id wk16-20020a170907055000b00a4532d289edsm2641326ejb.116.2024.03.05.05.38.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 05:38:54 -0800 (PST)
-From: Karol Herbst <kherbst@redhat.com>
-To: linux-kernel@vger.kernel.org
-Cc: Lyude Paul <lyude@redhat.com>,
-	Danilo Krummrich <dakr@redhat.com>,
-	dri-devel@lists.freedesktop.org,
-	nouveau@lists.freedesktop.org,
-	Karol Herbst <kherbst@redhat.com>
-Subject: [PATCH v2 2/2] drm/nouveau: move more missing UAPI bits
-Date: Tue,  5 Mar 2024 14:38:53 +0100
-Message-ID: <20240305133853.2214268-2-kherbst@redhat.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240305133853.2214268-1-kherbst@redhat.com>
-References: <20240305133853.2214268-1-kherbst@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 750AF43AB0;
+	Tue,  5 Mar 2024 13:40:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.120
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709646014; cv=fail; b=QeUNqjD530ydK0H0hl4fhQnb1/kaqc2QE9+yj/E+Rq7Eq3A2bG13DJDkV9JautnxMD/GC5i1hpdKW3jxoFCJ+DFzmAGv+TW6Eu65EuVm80keEhHxLbh7uoa1HgQqsd1bI9Y8o4WGiO1xPTPyWRpf4OeveccSC//jILO/Lo6TkUQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709646014; c=relaxed/simple;
+	bh=cCpztWhtXV+qjaYGcBaGIA9v8xZO4O3wpyANkqbBZq0=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Pq1BdolRk3IeTDI5zSlfAs1oNCEO5c5AlgYLMKw2c7XqAd7WJfRntXwwEGxn3nMVMMS66VzkixXXfD3Q7az6rYBO+glm0o+PtHJCN8N7uQeSvKMOjMhGheVGir8/a7s3/KYt0H2ttink0UG66ODfw3XBMuICtYp/Jpn2Hkcs23E=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net; spf=pass smtp.mailfrom=wolfvision.net; dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b=s/UZXo5T; arc=fail smtp.client-ip=40.107.8.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wolfvision.net
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZLyN1GNRsQOwA79k95qNVLKmIgWOEItgPK6mSgls9v+aY0KoDW0a7gK+cBLtzJwuRH0RsNzujUun89X5GyENl/GloNEGwMXZLL49owFM+7Wbyst/HMjD7VYil+AoYLykbgwIZMyNj+VHFPKKw+kab+E9tgvwJzntbg6I9WkSNyuqCyJ2X94bCuGLOnwVGMjcWBbFp31C1xJMQ+/AhY5XnFCmj4m4EJfTW8SoJewTu6k/JO8sfQff3DLwkEt4FmgLcMzEYbhOJ5qg6hCIk9clQqX+RbXrmrGqI0+HRGsr7l+ziTAdNDL/omLB9keV3lCfP0hW9Jc3rArSIoHHHgRqdQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=W7E+YYBE/dHRdZUZn0zstzc2fjejFi8Hm4rPLzpSAqE=;
+ b=aKOpB6a/+RqK2ZtvlEAE5WKgXM/8OiUcN+JdacqDZGkYN9lazVaQA5S0Yn5MANrUax+LCFJovVS35zRu0rm3/9YOG0VdsaOcUnyi9eTCCVpbePUI+1McdpVniJkky7T8UC+HMLI695hhskrvacYoh1Nu1Lj/bXLuldELu4cUlEMmXGo+j8mZ4cwzO2J1j0IVeHFGEOLv/SbFKn7wQpIXyGhph7B81yAJAJQeDqQEvztwDzADNnAYNAUe8bfG8YJdLsWCABWrEDW9JrWJapTSH1eiC5Vct9IC3SV4kgqKArUnnk1fRYgS1YKrW4K0bDgMB5OtgZZsedEHT2MNkQCpJA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wolfvision.net; dmarc=pass action=none
+ header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=W7E+YYBE/dHRdZUZn0zstzc2fjejFi8Hm4rPLzpSAqE=;
+ b=s/UZXo5TGbRyGmqgV9D/zPD4Whi0ikuKq4sMDP+T33MryV9vjK81G7qGmOuvRX3aS5F7IM+S0DnNA6avSDuunA3nnG+WNZJ+K4RMCE3+uRenJmcLZPJ9S0AT4bfGtg9dYx8onMgYInI9axneso90pU/CZ+1WgPdACp/ntxdoGLA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wolfvision.net;
+Received: from VE1PR08MB4974.eurprd08.prod.outlook.com (2603:10a6:803:111::15)
+ by PA4PR08MB7596.eurprd08.prod.outlook.com (2603:10a6:102:272::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.38; Tue, 5 Mar
+ 2024 13:40:08 +0000
+Received: from VE1PR08MB4974.eurprd08.prod.outlook.com
+ ([fe80::9e35:6de9:e4fc:843f]) by VE1PR08MB4974.eurprd08.prod.outlook.com
+ ([fe80::9e35:6de9:e4fc:843f%7]) with mapi id 15.20.7339.035; Tue, 5 Mar 2024
+ 13:40:08 +0000
+Message-ID: <611caf62-1404-483e-8797-4096e0c3a433@wolfvision.net>
+Date: Tue, 5 Mar 2024 14:40:05 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 2/9] usb: misc: onboard_hub: use device supply names
+Content-Language: en-US
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Matthias Kaehlcke <mka@chromium.org>,
+ Helen Koike <helen.koike@collabora.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Russell King <linux@armlinux.org.uk>, linux-sound@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-usb@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-arm-kernel@lists.infradead.org
+References: <20240305-onboard_xvf3500-v7-0-ad3fb50e593b@wolfvision.net>
+ <20240305-onboard_xvf3500-v7-2-ad3fb50e593b@wolfvision.net>
+ <2024030557-mutable-subtype-f340@gregkh>
+From: Javier Carrasco <javier.carrasco@wolfvision.net>
+In-Reply-To: <2024030557-mutable-subtype-f340@gregkh>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR0P281CA0173.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:b4::20) To VE1PR08MB4974.eurprd08.prod.outlook.com
+ (2603:10a6:803:111::15)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VE1PR08MB4974:EE_|PA4PR08MB7596:EE_
+X-MS-Office365-Filtering-Correlation-Id: d0b14db1-ff4d-4f55-acd6-08dc3d19c5a6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	wVUWSA/dIzCb/8IxCTmngZQAoPWkHVmKEp7f4aBpbFGMVBz/0tWoc0wTa4v508y/Zu0eVZ15w2OAw7EFEkUNuS4hM8D3cHgEYimLK6kfBv7JGfQ9Ks0MRu+mUmeoWuSC4l1PAPtjbNpCanVEEL+V1cDAnvTynnjhN+mu6xcg1GGEhrB+uS8ONKo3sZR+6PQMOaHRpvj1NnXUWGtnYYmzc0Q/S0NLLmdBHNbj9AuSCYs1nu/LNZrzKg23yWzVSBwsgCUfvdgCbPhvhOFO58wTL8FLxRh5gXYG18EdkPmFvk3KvkdGGSlDKF+cwBgB2gjPpYhd1yLwqULxv0nq8VooRXqYoGNg0VnIU+AWxil6LMD/tkRl3NrxUU8YUQsoTQ+mRyt/JTOXdJTrLEFovgu8D8aGvvL9asRH5ufRe/vfRzN+Q4tiYzeRIKqculxSJu1CQchSHtytfvZAt3Z31bm2uMqMnSmEIQMo6ET6OxFmF0YkYDf/GeLxVNSOZh1l77nar5iAdE3j/QEnN4aad9OoOd/8zVPNsSKr+2e10acaU3lpiWvyl+hwEuLwJ5zIZMeYDPdLKH6ol3AcUVYTIrHCCFlzIUw93n0323nkwtJ9nEBsQflcO57jJKlURLbI1ppBemlvmmEXMYJ+vCaLyOPYTHrqYx1wSO8j+t7T+7nsbuA=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR08MB4974.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?LzNyUWlRM09PYU9Db0tpMDV6Y1J3S2gxTm5sT0s0dnNxYTd0NGNEQ0dHUVgx?=
+ =?utf-8?B?Yi9ROHRqalZhc2UzY1YyMnppYTg4UWVsUnltblpFcjZuRUk2cUtQWlQ2UTN1?=
+ =?utf-8?B?OEV1c2QxRXlVT3A4Z2RXWnJyWWZBanhaeTgvcjFxYTY0SW0wTWl5a29DUFM0?=
+ =?utf-8?B?SFA0WXRieUJGZWdjTlhCcmhJM0Z6dFNmbE02dXlSYzJMNC9EOGR4STZYNGdi?=
+ =?utf-8?B?ZlNlU0Z0UktUUFF6UnEzNW5McXJZeC9FWUJGejFNQ3ZRb2ZSM2xhTkxNMnNT?=
+ =?utf-8?B?ZHdhTWJjZU8zei8xWDRyMG11a1VPQWtUR1psUjlHWDhZL0w1bllGZEV0RGRS?=
+ =?utf-8?B?WkJ2eW1oQm9SOTQxbytncGlUTXVlTDFtazhCSi9lbTdRSHFWTTFEQWFDa0Ji?=
+ =?utf-8?B?MTFybWRaMzliRHlxQ011dzROMnkyYTdUUXh6N1NEdGpYeFpCQ0Zqcmx1ZXlU?=
+ =?utf-8?B?d2dGaXlkNFpvaXZDWVhVejJ5T0dhQjRUZW9iR1AxTjYrb3JWZ2VXRm1mdmJ4?=
+ =?utf-8?B?dVdUeHUvY05sc0dBMG9DaVRZMmhQSmtaZ2FYL0o4MnhjN0ZYMnBWNWd6N0Zs?=
+ =?utf-8?B?VGJtdmRZZDNnanBKQThHYXZIa0xJMG5PME51ZmhEVkFmTmsra1pXRFh4amJX?=
+ =?utf-8?B?aWJQaGJCYkQrYmR0dFE4enp5bUNTOGZzSzdmMzkvVjRGaCtkNHlhVTJTTlAw?=
+ =?utf-8?B?MEtTamNETEZoajlBcmQvRmUyNU56NS83cjhRUUVUeXVRbzJ0cHRLL0pQNWZR?=
+ =?utf-8?B?WmdVVmo3K0ZEYWJsOE5YcXdiVUgxeHp1R2ZWR3hxMnc1d3o5ZllkeHJ2NjFB?=
+ =?utf-8?B?T3ZRVGgxbHlTWHYvbnZDTzNibzdCRTZTMnJFSy9ZR2ZMa2xJd05nekNIVC9L?=
+ =?utf-8?B?V2g2K3piekhkVXdITHJ1ajNNK2pRTUdkZGdEeVBDQnl6M3BMWnlyWUdlalpT?=
+ =?utf-8?B?V0lHRXJ2ZmRQOE9adStyUGJZSnk1QTAraUFlZlpGc2Y1UzdwQ3ovelJHbU0z?=
+ =?utf-8?B?RHZ3T3hTZVRRODhucGNHWjRTT1I0YVZaaFpLWEszWnd4ajBlNzNTelRGRHZL?=
+ =?utf-8?B?RkJlNDdpZHpmYTZicWNSVU5FTXlVMVF2ODlWL3FIcWlnV24xRHJOQk5hbS92?=
+ =?utf-8?B?VWh6YzNIYTVHTlVCbC9qTlB0OGc3VnB4VkNFbnByLzhzOTNVcFJCRTJTcGg3?=
+ =?utf-8?B?clh5a3NPWERaWEtabzBMbllyK2NLbGVaUEhMazZHNnhCbkd1ak9MY2VablVN?=
+ =?utf-8?B?dUdsSnIvNFJaKzFSVlp6WnZqN2pNc0JRbys3VUJGdzhPUVFMQmtqZ2swVTJY?=
+ =?utf-8?B?Rk9tMkZuNkNxVy8rMDViRFpPaXdCK3l5MjJRc3ZqOWdGd051ZEY2bUVZV1Jq?=
+ =?utf-8?B?cVVZZEIvTU1TVUVYek9pUVZLYlhsOWYwaFBPV2FidGlEd2pEUXhOampzcXdp?=
+ =?utf-8?B?bkdnUm9BeVdydTREemNRVTV4WUNjdDYyMGdTTFBhWURHQUwyZUNBRVVEdVoy?=
+ =?utf-8?B?WlBUTldYTHVPL09kTWFJMVN4Qm8vSWo5UGhJdTIwQUp3SGp1MmRiaUdwWmxk?=
+ =?utf-8?B?R01lS3I1UWVFeFpNSzJJR1AzWHBUMmRaNmZmQ3Y1WFhQMFYxMjl4OUNFUWdJ?=
+ =?utf-8?B?ZXh6a0h0NVVvRXhjZytRUCsvMzJOSWY2QkgxWldnbThvak9IWllsMlZZS3R0?=
+ =?utf-8?B?Q1l1QXM4TWxadmI5aWNXSFhUZ0FWclpkT2taT2pweXBaVjkya01pZkU3QzJu?=
+ =?utf-8?B?VU5iL2hsQ3l2TWdoTFFIS2JpeUt0RVdmdnNLejlsanA3ckI2Z3Vndzh1dVRw?=
+ =?utf-8?B?ZHN6Z1lRVlJjVnYwQkNLeVBac1BLaC83cG16Tjg0SUlOUVpLQmd1Rmx1WnJF?=
+ =?utf-8?B?WTYwOC9CN1Z2R3IvdDZUZ3hMRDNXZzNHZTh6OFlKQVBhemlFMzNadEhNdWpH?=
+ =?utf-8?B?N3UwNVhsaTgzRVlnb09IS1l4WXR1cFR3Z1dYN3M5UytIMDJEWEFOeUloM1dV?=
+ =?utf-8?B?bTAyaHRyY3VMUEVkWlh6TnNTckVHUCtFSHBxd3hMbjJNamhrNXN1dHNqZnBH?=
+ =?utf-8?B?Y0VXeE1rbzZOR1R4N2J4VEhHU2JaaWRRekw5aktTZzY1MXZNOWdXM2wxaU16?=
+ =?utf-8?B?elZsQmpyZ0ttZmFkMDkwOTk4MmVpaFJ5YmpwWFdhcGk1NHIrZDR6cTB5R3kz?=
+ =?utf-8?Q?g84SLQFyYDsCQcZr3mckOL8=3D?=
+X-OriginatorOrg: wolfvision.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: d0b14db1-ff4d-4f55-acd6-08dc3d19c5a6
+X-MS-Exchange-CrossTenant-AuthSource: VE1PR08MB4974.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Mar 2024 13:40:08.1487
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: SruZP+ZL/OF6V/bvwKhupyXZxJ+mghvOcVFc3jVgTNhRLYVYTow9WCsZu3cRsVqjFwRGf57JMHtlxJgZBz7aVxJfyGgxqVfnrXEcxYgVlYo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR08MB7596
 
-Those are already de-facto UAPI, so let's just move it into the uapi
-header.
+On 05.03.24 14:34, Greg Kroah-Hartman wrote:
+> On Tue, Mar 05, 2024 at 06:55:02AM +0100, Javier Carrasco wrote:
+>> The current implementation uses generic names for the power supplies,
+>> which conflicts with proper name definitions in the device bindings.
+>>
+>> Add a per-device property to include real supply names and keep generic
+>> names for existing devices to keep backward compatibility.
+>>
+>> Acked-by: Matthias Kaehlcke <mka@chromium.org>
+>> Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
+>> ---
+>>  drivers/usb/misc/onboard_usb_hub.c | 49 ++++++++++++++++++++------------------
+>>  drivers/usb/misc/onboard_usb_hub.h | 12 ++++++++++
+>>  2 files changed, 38 insertions(+), 23 deletions(-)
+> 
+> Due to other patches to this file, this commit does not apply to my
+> tree.  Can you rebase and resend after -rc1 is out?
+> 
+> thanks,
+> 
+> greg k-h
 
-Signed-off-by: Karol Herbst <kherbst@redhat.com>
-Reviewed-by: Lyude Paul <lyude@redhat.com>
-Reviewed-by: Danilo Krummrich <dakr@redhat.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20240304183157.1587152-2-kherbst@redhat.com
----
- drivers/gpu/drm/nouveau/nouveau_abi16.c | 20 +++++++++++++++-----
- drivers/gpu/drm/nouveau/nouveau_abi16.h | 12 ------------
- include/uapi/drm/nouveau_drm.h          | 22 ++++++++++++++++++++++
- 3 files changed, 37 insertions(+), 17 deletions(-)
+Alright. I see that you have added 1/9 to usb-testing, and the rest of
+the series requires 2/9, so I will resend 2/9 - 9/9 after rebasing when
+-rc1 is out.
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_abi16.c b/drivers/gpu/drm/nouveau/nouveau_abi16.c
-index cd14f993bdd1b..92f9127b284ac 100644
---- a/drivers/gpu/drm/nouveau/nouveau_abi16.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_abi16.c
-@@ -312,11 +312,21 @@ nouveau_abi16_ioctl_channel_alloc(ABI16_IOCTL_ARGS)
- 	if (device->info.family >= NV_DEVICE_INFO_V0_KEPLER) {
- 		if (init->fb_ctxdma_handle == ~0) {
- 			switch (init->tt_ctxdma_handle) {
--			case 0x01: engine = NV_DEVICE_HOST_RUNLIST_ENGINES_GR    ; break;
--			case 0x02: engine = NV_DEVICE_HOST_RUNLIST_ENGINES_MSPDEC; break;
--			case 0x04: engine = NV_DEVICE_HOST_RUNLIST_ENGINES_MSPPP ; break;
--			case 0x08: engine = NV_DEVICE_HOST_RUNLIST_ENGINES_MSVLD ; break;
--			case 0x30: engine = NV_DEVICE_HOST_RUNLIST_ENGINES_CE    ; break;
-+			case NOUVEAU_FIFO_ENGINE_GR:
-+				engine = NV_DEVICE_HOST_RUNLIST_ENGINES_GR;
-+				break;
-+			case NOUVEAU_FIFO_ENGINE_VP:
-+				engine = NV_DEVICE_HOST_RUNLIST_ENGINES_MSPDEC;
-+				break;
-+			case NOUVEAU_FIFO_ENGINE_PPP:
-+				engine = NV_DEVICE_HOST_RUNLIST_ENGINES_MSPPP;
-+				break;
-+			case NOUVEAU_FIFO_ENGINE_BSP:
-+				engine = NV_DEVICE_HOST_RUNLIST_ENGINES_MSVLD;
-+				break;
-+			case NOUVEAU_FIFO_ENGINE_CE:
-+				engine = NV_DEVICE_HOST_RUNLIST_ENGINES_CE;
-+				break;
- 			default:
- 				return nouveau_abi16_put(abi16, -ENOSYS);
- 			}
-diff --git a/drivers/gpu/drm/nouveau/nouveau_abi16.h b/drivers/gpu/drm/nouveau/nouveau_abi16.h
-index 11c8c4a80079b..661b901d8ecc9 100644
---- a/drivers/gpu/drm/nouveau/nouveau_abi16.h
-+++ b/drivers/gpu/drm/nouveau/nouveau_abi16.h
-@@ -50,18 +50,6 @@ struct drm_nouveau_grobj_alloc {
- 	int      class;
- };
- 
--struct drm_nouveau_notifierobj_alloc {
--	uint32_t channel;
--	uint32_t handle;
--	uint32_t size;
--	uint32_t offset;
--};
--
--struct drm_nouveau_gpuobj_free {
--	int      channel;
--	uint32_t handle;
--};
--
- struct drm_nouveau_setparam {
- 	uint64_t param;
- 	uint64_t value;
-diff --git a/include/uapi/drm/nouveau_drm.h b/include/uapi/drm/nouveau_drm.h
-index 77d7ff0d5b110..5404d4cfff4c2 100644
---- a/include/uapi/drm/nouveau_drm.h
-+++ b/include/uapi/drm/nouveau_drm.h
-@@ -73,6 +73,16 @@ struct drm_nouveau_getparam {
- 	__u64 value;
- };
- 
-+/*
-+ * Those are used to support selecting the main engine used on Kepler.
-+ * This goes into drm_nouveau_channel_alloc::tt_ctxdma_handle
-+ */
-+#define NOUVEAU_FIFO_ENGINE_GR  0x01
-+#define NOUVEAU_FIFO_ENGINE_VP  0x02
-+#define NOUVEAU_FIFO_ENGINE_PPP 0x04
-+#define NOUVEAU_FIFO_ENGINE_BSP 0x08
-+#define NOUVEAU_FIFO_ENGINE_CE  0x30
-+
- struct drm_nouveau_channel_alloc {
- 	__u32     fb_ctxdma_handle;
- 	__u32     tt_ctxdma_handle;
-@@ -95,6 +105,18 @@ struct drm_nouveau_channel_free {
- 	__s32 channel;
- };
- 
-+struct drm_nouveau_notifierobj_alloc {
-+	__u32 channel;
-+	__u32 handle;
-+	__u32 size;
-+	__u32 offset;
-+};
-+
-+struct drm_nouveau_gpuobj_free {
-+	__s32 channel;
-+	__u32 handle;
-+};
-+
- #define NOUVEAU_GEM_DOMAIN_CPU       (1 << 0)
- #define NOUVEAU_GEM_DOMAIN_VRAM      (1 << 1)
- #define NOUVEAU_GEM_DOMAIN_GART      (1 << 2)
--- 
-2.44.0
+Best regards,
+Javier Carrasco
 
 
