@@ -1,159 +1,117 @@
-Return-Path: <linux-kernel+bounces-92038-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92039-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40A9B871A16
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:58:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD1D9871A17
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:59:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D689C1F21C1B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:58:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91E5C1F217DE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:59:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D23454770;
-	Tue,  5 Mar 2024 09:58:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D29C5473D;
+	Tue,  5 Mar 2024 09:58:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ambo0nUm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hGMCiHho"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3B1350246;
-	Tue,  5 Mar 2024 09:58:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B460E548E7;
+	Tue,  5 Mar 2024 09:58:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709632711; cv=none; b=CZm/byPVCrE7BAz9czEqel7T0PEV9pOn72RCAwPdgNx72Lq6MuvanT6jsnCsYc/WMTAz1GgiDtNEStQc5eJESl0Phh5N48HsrbDRQJzhWaZoMvIiOTuv9uRpBsJm83yz5O3/LwQ9sl0v5vaIRXY5E4VBfCNN580FhH7D+qVouJQ=
+	t=1709632732; cv=none; b=T9GyEa3FPQuMs425F5la+rBr7Xiq1oiZh0KofBeJJC2+0DI7W6L4odrI7RYtRTK2JdK9YfIphMsuMCWxTP6owHBiTpZSKkHPZZ2wKJMhMzMpAyNyUEgi0IcSBTgVJybUTbW3t+dzPWKfdiSOTl0EHSy5sUHDFcPKFFuR73Arp60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709632711; c=relaxed/simple;
-	bh=/4mH6blz+OXbyiAZdJXapeZYAAHshdm8yjRhaiNohG4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Gp/aF+TASY7rqHsTMYY146WTc+ex4CyBR4AjTaBkNKT8OF/EIXK1D4NbujjPqzCGUu/muqOfw5FkDUjM3ghMx1rXx9+5qKjJWxYYphrGq+wSUozqsEbQ5DQrp2Nj9ipN/WsRc5I4WhTfqJr5T8ilmhMZES6e/9zJsosBJ2Rv+wE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ambo0nUm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D4ECC433F1;
-	Tue,  5 Mar 2024 09:58:27 +0000 (UTC)
+	s=arc-20240116; t=1709632732; c=relaxed/simple;
+	bh=xQNCkif+cWsWirZCvZKKjYkiBuTmgq18brMqbbYj1mE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MUZxUom3VMo8r+k8Fuly/GxNvxQHk/mkCV9c4KKuoADT/bUNpRa2PxddV/49pVDjc9Wxqh4hMGZl82LYzVVo+YdgE/CFM387FABgKypwm9VuJEvbtd5D1G1xcpkfeQ8ZLkioJ2OrRQBdbhNb/ZaDB3kO2pM+lOWj1aqSKpbik9Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hGMCiHho; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D484C433F1;
+	Tue,  5 Mar 2024 09:58:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709632711;
-	bh=/4mH6blz+OXbyiAZdJXapeZYAAHshdm8yjRhaiNohG4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ambo0nUmKbxaZC2hyphDe3+VrmUQkQMnghESDL91tOcycm/8gzmlrBxbmyuP7owm5
-	 9YdNAqmjdAcc91XJxDV4+GSTpoMBy557B6lF1np0wFkis1b2oUxWzzblBu+PeJbVih
-	 D5UtafeVnQTOaeQnFhjMjm38EswV2h+tuACEpWbiVmiENBzotksuhpGJd6TZQvFwJH
-	 hevskSUIRUI/fA/8aYM6Mdwjoe4fmcKCgs/Ebu9xHYfOgc4U8Rm9CJLxAPnu9jkvSb
-	 Xld6fNHXfA5lIuwIetidOy9YqB3qUZiDx/ZN+bzC5WAfyXcAm7h8wruFJtRjicoy//
-	 ddcLizSRVMCxw==
-Date: Tue, 5 Mar 2024 10:58:25 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Kees Cook <keescook@chromium.org>
-Cc: Adrian Ratiu <adrian.ratiu@collabora.com>, 
-	linux-fsdevel@vger.kernel.org, kernel@collabora.com, linux-security-module@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, Guenter Roeck <groeck@chromium.org>, 
-	Doug Anderson <dianders@chromium.org>, Jann Horn <jannh@google.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Randy Dunlap <rdunlap@infradead.org>, 
-	Mike Frysinger <vapier@chromium.org>
-Subject: Re: [PATCH v2] proc: allow restricting /proc/pid/mem writes
-Message-ID: <20240305-kontakt-ticken-77fc8f02be1d@brauner>
-References: <20240301213442.198443-1-adrian.ratiu@collabora.com>
- <20240304-zugute-abtragen-d499556390b3@brauner>
- <202403040943.9545EBE5@keescook>
- <20240305-attentat-robust-b0da8137b7df@brauner>
- <202403050134.784D787337@keescook>
+	s=k20201202; t=1709632732;
+	bh=xQNCkif+cWsWirZCvZKKjYkiBuTmgq18brMqbbYj1mE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=hGMCiHhofokcRE5JfgFOBmTbR2XvK/+ESy9pkicvirbuwtTsk1FbvVUXIhiCnwF2f
+	 jieg7Kj4Bk+aps669t2TBWsrzfNvn38QLIIb0+PAkxhlRnEql5eqqJIlXQmvMwYkD/
+	 q7cS6ET+3pUkCio0gPek9feIWB4Rvv++16nCaasTJmbE0WDuaFPRpP8l+wTr08ZEZv
+	 /mQCyNYuw70l97csKHeQ1aBmIHllTVcu0eUY02wcMjzg5C+aeE8uLKQt1DVVZmKWts
+	 YwOmqx3MPMfve5ys98I/9UKTXbeujBJ1VxkC3ujAE2//eBM4OXTntL7CsTVUljuhQe
+	 YYKAU4gazCqjg==
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a3566c0309fso55347366b.1;
+        Tue, 05 Mar 2024 01:58:52 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWMsrR6pLKS8xqoaUrfFnIhE1VF2zy4083+XEKsi0doB6jBOBLBk+IDzp0Y1C0hAXWZOT/R1ipy+pNm+s5roUZGKE2lyhPly8JFkYmkfiYrQWdjqtn2CLp81XgsRozNjKTNXPhy/oI4PxrO1Ko=
+X-Gm-Message-State: AOJu0YwwWiA9rUvg1PtMDf4ykOys/UIwbNe4j4jCGrbXRcnOc9ZRuCSd
+	kjcnP6Rof/HdNGwSdVtSwp697lH7ReEug1bj6THn9DBHpGdjMlky6XFT/Wad7cMJwgkjmaIQKJR
+	vE5jpY5zD89+PE2XlBBUTS35SBXA=
+X-Google-Smtp-Source: AGHT+IHiIQAvS5A4oVe//HltDZalqGs0CsEdZNSpWCZkYfoXaxa5FGY1eSNm6bboOTqxb3P0NPqbFzJ01MJjvR8bpAk=
+X-Received: by 2002:a17:906:aac5:b0:a45:3271:6c80 with SMTP id
+ kt5-20020a170906aac500b00a4532716c80mr3542530ejb.25.1709632730800; Tue, 05
+ Mar 2024 01:58:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <202403050134.784D787337@keescook>
+References: <20240304141426.163517-1-wangrui@loongson.cn> <CANiq72mvdVrzN19PC8pNrvuBLkOEEQ3yX0WG6JcWc+RVaSM2nA@mail.gmail.com>
+In-Reply-To: <CANiq72mvdVrzN19PC8pNrvuBLkOEEQ3yX0WG6JcWc+RVaSM2nA@mail.gmail.com>
+From: Huacai Chen <chenhuacai@kernel.org>
+Date: Tue, 5 Mar 2024 17:58:42 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H666zsMadZuzvcRxxkUxSpkka1tt9AJO_WctHDL8j_HNg@mail.gmail.com>
+Message-ID: <CAAhV-H666zsMadZuzvcRxxkUxSpkka1tt9AJO_WctHDL8j_HNg@mail.gmail.com>
+Subject: Re: [PATCH] loongarch: rust: Switch to use built-in rustc target
+To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc: WANG Rui <wangrui@loongson.cn>, Miguel Ojeda <ojeda@kernel.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>, Jamie Cunliffe <Jamie.Cunliffe@arm.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, WANG Xuerui <kernel@xen0n.name>, 
+	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	loongarch@lists.linux.dev, loongson-kernel@lists.loongnix.cn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 05, 2024 at 01:41:29AM -0800, Kees Cook wrote:
-> On Tue, Mar 05, 2024 at 09:59:47AM +0100, Christian Brauner wrote:
-> > > > Uhm, this will break the seccomp notifier, no? So you can't turn on
-> > > > SECURITY_PROC_MEM_RESTRICT_WRITE when you want to use the seccomp
-> > > > notifier to do system call interception and rewrite memory locations of
-> > > > the calling task, no? Which is very much relied upon in various
-> > > > container managers and possibly other security tools.
-> > > > 
-> > > > Which means that you can't turn this on in any of the regular distros.
-> > > 
-> > > FWIW, it's a run-time toggle, but yes, let's make sure this works
-> > > correctly.
-> > > 
-> > > > So you need to either account for the calling task being a seccomp
-> > > > supervisor for the task whose memory it is trying to access or you need
-> > > > to provide a migration path by adding an api that let's caller's perform
-> > > > these writes through the seccomp notifier.
-> > > 
-> > > How do seccomp supervisors that use USER_NOTIF do those kinds of
-> > > memory writes currently? I thought they were actually using ptrace?
-> > > Everything I'm familiar with is just using SECCOMP_IOCTL_NOTIF_ADDFD,
-> > > and not doing fancy memory pokes.
-> > 
-> > For example, incus has a seccomp supervisor such that each container
-> > gets it's own goroutine that is responsible for handling system call
-> > interception.
-> > 
-> > If a container is started the container runtime connects to an AF_UNIX
-> > socket to register with the seccomp supervisor. It stays connected until
-> > it stops. Everytime a system call is performed that is registered in the
-> > seccomp notifier filter the container runtime will send a AF_UNIX
-> > message to the seccomp supervisor. This will include the following fds:
-> > 
-> > - the pidfd of the task that performed the system call (we should
-> >   actually replace this with SO_PEERPIDFD now that we have that)
-> > - the fd of the task's memory to /proc/<pid>/mem
-> > 
-> > The seccomp supervisor will then perform the system call interception
-> > including the required memory reads and writes.
-> 
-> Okay, so the patch would very much break that. Some questions, though:
-> - why not use process_vm_writev()?
+Hi, Miguel,
 
-Because it's inherently racy as I've explained in an earlier mail in
-this thread. Opening /proc/<pid>/mem we can guard via:
+On Tue, Mar 5, 2024 at 12:07=E2=80=AFAM Miguel Ojeda
+<miguel.ojeda.sandonis@gmail.com> wrote:
+>
+> On Mon, Mar 4, 2024 at 3:14=E2=80=AFPM WANG Rui <wangrui@loongson.cn> wro=
+te:
+> >
+> > This commit switches to using the built-in rustc
+> > loongarch64-unknown-none-softfloat target for LoongArch.
+> >
+> > The Rust samples have been tested with this commit.
+> >
+> > Signed-off-by: WANG Rui <wangrui@loongson.cn>
+> > ---
+> > base-commit: ("rust: Refactor the build target to allow the use of buil=
+tin targets")
+>
+> I couldn't apply it on top of commit f82811e22b48 in arm64's tree
+> (which is the base? -- the offset differs significantly in the arch
+> Makefile), but I nevertheless applied it manually on top of that one,
+> build-tested it for loongarch64 and boot-tested it for x86_64:
+>
+> Acked-by: Miguel Ojeda <ojeda@kernel.org>
+> Tested-by: Miguel Ojeda <ojeda@kernel.org>
+The base of the loongarch tree doesn't contain the arm64 modifications
+now, so this patch is better to be applied on the rust tree with my
+Acked-by. But if you have some trouble doing that, I can also manually
+merge the arm64 parts to the loongarch tree, and then apply this
+patch. Thanks.
 
-// Assume we hold @pidfd for supervised process
+Huacai
 
-int fd_mem = open("/proc/$pid/mem", O_RDWR);:
-
-if (pidfd_send_signal(pidfd, 0, ...) == 0)
-        write(fd_mem, ...);
-
-But we can't exactly do:
-
-process_vm_writev(pid, WRITE_TO_MEMORY, ...);
-if (pidfd_send_signal(pidfd, 0, ...) == 0)
-        write(fd_mem, ...);
-
-That's always racy. The process might have been reaped before we even
-call pidfd_send_signal() and we're writing to some random process
-memory.
-
-If we wanted to support this we'd need to implement a proposal I had a
-while ago:
-
-#define PROCESS_VM_RW_PIDFD (1 << 0)
-
-process_vm_readv(pidfd,  ..., PROCESS_VM_RW_PIDFD);
-process_vm_writev(pidfd, ..., PROCESS_VM_RW_PIDFD);
-
-which is similar to what we did for waitid(pidfd, P_PIDFD, ...)
-
-That would make it possible to use a pidfd instead of a pid in the two
-system calls. Then we can get rid of the raciness and actually use those
-system calls. As they are now, we can't.
-
-> - does the supervisor depend on FOLL_FORCE?
-
-Since the write handler for /proc/<pid>/mem does raise FOLL_FORCE
-unconditionally it likely would implicitly. But I'm not familiar enough
-with FOLL_FORCE to say for sure.
-
-> Perhaps is is sufficient to block the use of FOLL_FORCE?
-> 
-> I took a look at the Chrome OS exploit, and I _think_ it is depending
-> on the FOLL_FORCE behavior (it searches for a symbol to overwrite that
-> if I'm following correctly is in a read-only region), but some of the
-> binaries don't include source code, so I couldn't easily see what was
-> being injected. Mike or Adrian can you confirm this?
+>
+> Thanks!
+>
+> Cheers,
+> Miguel
 
