@@ -1,134 +1,190 @@
-Return-Path: <linux-kernel+bounces-92597-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92598-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41E878722A3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:24:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BB858722AD
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:25:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A2004B212D7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:24:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D1E61F22F2C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:25:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D0E01272D8;
-	Tue,  5 Mar 2024 15:24:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F12521272D4;
+	Tue,  5 Mar 2024 15:25:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="UhfaeAnI"
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="H0OaTWwX"
+Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2068.outbound.protection.outlook.com [40.107.104.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A6A2126F36;
-	Tue,  5 Mar 2024 15:24:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709652274; cv=none; b=VWXJLIk/h+VQ1Heg8jODhSx3y6a1ISSPd8fngctjtXhsVhbq2Oezmb3IudNvs7U+JTFyp6ND59+EL0nfhXioXxYNIQoaj1SLV3t0soHHaBBA3IJypjRIZAsteYcRYNV4cvDZvUqSyd00+XTvUKdZYqfKW7bknroB2n+QA0QxufI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709652274; c=relaxed/simple;
-	bh=qjlIRQeJBKz2vz5aisxD5IOrlTqfFDk0KcO4WDSaG8o=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Qfal3SQi2DORiOgDSH4FQM8DsTcrpkoPAkTai9h0sIDr9LDW76I2H2FLc4mziCdiz2Ca53W7L9sVbRcUuP6PXRfvze0U9qndIkGrCs0LQ8PDi6LkZ3yKsaGPVeNAX9WkW4KnJ3uhm1DbAlKgRjR7pfQaOTsEtd15w14RRGSVe+M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=UhfaeAnI; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id AFA0EE0002;
-	Tue,  5 Mar 2024 15:24:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709652269;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TC7BcVWBBaci9HUeR/cYeDY12xKiEfNlPcIEH+Cc0Io=;
-	b=UhfaeAnIOQbUnNE6KTFMqs54WVSJT5qGaJYgQ3zmXxYfnYO/oq/KMKfa97O0DFuS4gxDae
-	U84iL5lDUbL8yKfUP6E326+8tw0r6fEKbuaJbuPTQ8VK8KLkZiMkDMuDlTgkXgG3yZY6ZU
-	d3AcO6UMdix9Eh1Gu/9sf616R6xVZRRVZrwuTV20ubPxWpEwYkf5YirxAh+uVBtmSqPcbj
-	Q6z8Z8He8c6kwrH/kBGfsp/Gsl1LV9gDPzt6tJLnK6cd1OmAkKE5V5sgfjjcdXVpuiM+cb
-	+lNq8D9Tj0eBdFA500K4B1GPk64bCDQfOeJf79r465gWkJX4g3oVHcDNWx6t6Q==
-Date: Tue, 5 Mar 2024 16:24:27 +0100
-From: Luca Ceresoli <luca.ceresoli@bootlin.com>
-To: Markus Elfring <Markus.Elfring@web.de>, Dan Carpenter
- <dan.carpenter@linaro.org>
-Cc: linux-staging@lists.linux.dev, linux-tegra@vger.kernel.org,
- linux-media@vger.kernel.org, kernel-janitors@vger.kernel.org, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, Jonathan Hunter
- <jonathanh@nvidia.com>, Mauro Carvalho Chehab <mchehab@kernel.org>,
- Sowjanya Komatineni <skomatineni@nvidia.com>, Thierry Reding
- <thierry.reding@gmail.com>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: staging: media: tegra-video: Use common error handling code in
- tegra_vi_graph_parse_one()
-Message-ID: <20240305162427.49a9f013@booty>
-In-Reply-To: <f451ffba-db26-4a3b-a4b3-186c31f2ad64@web.de>
-References: <dbebaea7-289c-47d9-ba06-cd58a10ea662@web.de>
-	<20240301183936.505fcc72@booty>
-	<9f1b617f-06cb-4b22-a050-325424720c57@moroto.mountain>
-	<f451ffba-db26-4a3b-a4b3-186c31f2ad64@web.de>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AD201272BA;
+	Tue,  5 Mar 2024 15:25:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.104.68
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709652348; cv=fail; b=fqTn+gjvQ6wxjEBhZFTeZBHVhgnicEF6uKip1u48nVgGge2HQyjHSf+wDp9g3JiTrxmOCESZNjgPpVUfVP8w1t0TYWaUWsshIMA+q8PRKGcdP9+13aR3BeEBu0x7X8gKkqrLYsNtj5I8awyGtdHyGY8q+MF4P/2afZymw1mKEWU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709652348; c=relaxed/simple;
+	bh=Scj/oC08TsrH291VU2nlcWgGwkM8l6wRJByIYeK4KNc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=p9I2V+/ZvIiW4HKYXkeLWftyEsvk7eewuwPVPCMb7mnuovoXfwdmDkVVCsoIn9jZM2m1cqglglSJIu/oCUB8djZPNCm5i//nbcZuBndZCfjSnSoKjj1dJ1hR+lPmgpJczDvQ46wRT6M3hnrvbYkSgUW2r4T0OWH/1t/ip9/tH2o=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=H0OaTWwX; arc=fail smtp.client-ip=40.107.104.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kykX96bGoLGJzjAjXB04lq9jVXF8hbXDSV2XHmg4TH4jKvZM/QU1fyjr9HNS6HX1y9S2wacOITKg+gBMHVR7pNTo15rHKyO45ujA/Hm/XlsexSlMqZ/PDxUoJpAkOWm8e5XK3CDsuDtzW+JjtyGOYAvl03uKY/dQbNT6MyILdtbD0zjYgG9VP8sHWglnPV+T7gF7QOSWMkT1lAs9n12+TjbAaCSRdePNr5jbYlrGoja7a34iPX4vZIPXxrgRIp/c6ys/KUnKTgi9DU5nG1hYjamaexgtxYOzG+/u1iNfnmOTEExqNQ/Sjy19+4E4rPevBNhkTZ+25ji+6YroN/BK0g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3Lu3Yq3WHP9lBduZQx5T0rJBjZnXhQSjas2i17+EXb4=;
+ b=Pgk9JepzWFahjQuPWOJ+s4xt4Q/wKMUhgzEeLnrDvJeNLGXRQPcOFgA/ROJKr0m99hGvnYlsT8ScOCR9lyOyEjnCBNb4L/HfTDklydYs29ZYlLN9MKAR96nAYrOnMgCFxl3QABn0mupPbhcX50y1AYP7toa6XNQ794owvhSoMxFBV3O+79P2uloY0/qr+RTpWm6tzm76SQzV6moCLVZzIxU2eQyY0m0dfrlkI1SfUakcUwsL+LiM8Y/Nl+8vwtDIjpMiOIsurN18G98vpoWqdKFvZRS4j1YVomi+ugAsSq8TBtLV3H0mJB5Si2nlkljuyqmxipp0FKFiCwRiNDdh7w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3Lu3Yq3WHP9lBduZQx5T0rJBjZnXhQSjas2i17+EXb4=;
+ b=H0OaTWwX76Ty4R9VeyTgIH0KJS7ylexYDDUzsm85ueSdHH5/+bPLM+1GcgiBgvdHy04Huv+G0H/GRKdGo7oByBMxvOYYzAHX8mTaO6Dpg9ueNPheKh9ns5YecyVNzvI5tDMcp+33uK66YYQLiXWL7Jf5VBE3vYHVfSkG7DUYUDg=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by AS8PR04MB7944.eurprd04.prod.outlook.com (2603:10a6:20b:28a::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.39; Tue, 5 Mar
+ 2024 15:25:41 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6%3]) with mapi id 15.20.7339.035; Tue, 5 Mar 2024
+ 15:25:41 +0000
+Date: Tue, 5 Mar 2024 10:25:32 -0500
+From: Frank Li <Frank.li@nxp.com>
+To: Rob Herring <robh@kernel.org>
+Cc: conor@kernel.org, bhelgaas@google.com, conor+dt@kernel.org,
+	devicetree@vger.kernel.org, helgaas@kernel.org, imx@lists.linux.dev,
+	krzysztof.kozlowski+dt@linaro.org, kw@linux.com,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	lpieralisi@kernel.org
+Subject: Re: [PATCH v6 1/3] dt-bindings: pci: layerscape-pci: Convert to yaml
+ format
+Message-ID: <Zec5bAedt9n580xU@lizhi-Precision-Tower-5810>
+References: <20240301162741.765524-1-Frank.Li@nxp.com>
+ <20240301162741.765524-2-Frank.Li@nxp.com>
+ <20240304173204.GA777171-robh@kernel.org>
+ <ZeYJHLpHb0UGv8S+@lizhi-Precision-Tower-5810>
+ <20240305144636.GB3310214-robh@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240305144636.GB3310214-robh@kernel.org>
+X-ClientProxiedBy: BYAPR05CA0009.namprd05.prod.outlook.com
+ (2603:10b6:a03:c0::22) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: luca.ceresoli@bootlin.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AS8PR04MB7944:EE_
+X-MS-Office365-Filtering-Correlation-Id: b950ffb4-1c4b-4b17-3927-08dc3d2884bb
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	Ot7FQfErFEPZxxJKq/VgpXy68QRdESYZNmPV0wN9C815Ppocj2nim4v83sIdi9/6HlgL9LmVUrrulVTUutAaA3tdl8qzThuNr162xcfQSw8Fz4rhh6J5uYa0KYcFNI7Koj4wxVgH7EVvao+w0ngo56g3hUsPYlqpC4VWhKOB4o+vrzKVgg+EB/5M260P7kywlMQ1hmLLGSVrhQppGf3YSPidkzQ2Bppi5e2zDdQmTMaiVMDIkIBS9pRJlpZrlWcZb/e4dnVTKduQKH1rxl+jAGDZjKrMeX1pRrD+bsTuXrqQGuDEqB25xDkpFafm5TRFnXcZIwY+V7NgF/HvkD85wahvS8MFe6HalKtY1yNXla57bbxvIC2jJWheRHhCsoKKQchCvKzb0kncoJ3Lm3rZDnK0jSK0sIHOVptosxA89FkmeFAiwRcEwYPnzbo/+/aiR/RM1W688usNAkVIcP7KCeFgnXK8pPGN7MXhgH+LvA90ae0ONKD/u0nmozXoTSX01a7I/CrP91et2Sd93I/942gulw2SrlmxPbzhzkVd9bBWkE9CHM0bELfTJQFIfgfJ5whttTAy5WrTVYeP8LhYQPpAIhX1BR4f6NjHRcQVsXgb9HMVClN87IQ/brK6n1sZRQht6hxMHuBSGLrZkxYlKe/nqukeRQK5tS7YTBbML9I=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?99Yx80RZO/fNAznenL0CPE3O6qAcbKzqY8NKCVp1fypXDith95d2PosoZllj?=
+ =?us-ascii?Q?GwerhoH+aUZ8u596pYOZMqEIi/nQ7n3pSgsXO2yD6e1E/nz4yTVg04ueuK0R?=
+ =?us-ascii?Q?nhTk9MMhRel7KPIFW9c1CbYMR3/vwUz0MtYT3JGttlLvbcT4u0YHQhUg5p7C?=
+ =?us-ascii?Q?chtrkQY8DzPS1zSF3lFYOU2f8oMLY5tQnTNsQgeWyJjzKY6M76Mi0MXjiBgS?=
+ =?us-ascii?Q?hyC5AVxFrc2jbwIxoL7IPrLdV0SmR1Wc69FkNSA9MIEW8SAXlOUVFRzH8NQk?=
+ =?us-ascii?Q?qFdb2mYyBaXFOYyAHNaP9aWnf4q1Gd2kGx2QbtGC3KTrbbkGRkgdq52LlC67?=
+ =?us-ascii?Q?rDt4jexwnxi63godxRhtojX0gT1e5WPNyScz10xgpypdOG+sKqbX9Kja3hMZ?=
+ =?us-ascii?Q?za7TtghPbdiO8GgtrvLRGzFfJgenHa+0L180D1cOSUE5Ohq7UHBF0/A297nX?=
+ =?us-ascii?Q?j0i6tXgP/0p/9SEGbM4jEq9EYE98z3FZkreHI9FEpmAxmoJZKImtT8b6wJYk?=
+ =?us-ascii?Q?rEeY57IBtmUofjl4OfS5Rqya++t3D5BkqK/E3Lsd+3DfDY9/CLZ1+uDWK3b4?=
+ =?us-ascii?Q?IX7hU7v6QgjJ4neZ8ComSvdAUeQWtWYZ5zJHj1yEvOcKAwm+DwJnvqJgyJFV?=
+ =?us-ascii?Q?kojlcVQsGLmvy4SpMkOZkuJUbT49fUJKVLnsOh3DbLNfYGzYCQZQQsatF9tk?=
+ =?us-ascii?Q?ngiypiIcbvuB3bde+NB0n4VTPsKCqtRaXwIMRY/kCMN/pbEY31l+5yMNFTJ2?=
+ =?us-ascii?Q?u0AIZZkmZm0G/dUfP6AMjlO16AK3xhWDqnRxAFTFWbL+3bmYaRJuxCysjmY4?=
+ =?us-ascii?Q?+merz0hkThv6gi7euu7VBkI8U6jjFCRK8qZjZOVuYzXFDflgKnbCUV0HFaMf?=
+ =?us-ascii?Q?OPihOHkuUqkkp0Zx5J9CjuZxb8vP3OfGjOri13ujFrwe6Dy4YqjyCLTcOLvs?=
+ =?us-ascii?Q?kZFsgijqAX6ujYRHr+rC7NtnRJE5pQ/ipUCq8wBQX3ZoOCbt1RkV/UCytac5?=
+ =?us-ascii?Q?b8rYJw5PEMMn7IieeXDhbM817Q1u2V4l1lASN4GIAKnce4+Db2mW4NaXIlrM?=
+ =?us-ascii?Q?3O+0At56MM6X7O0rrCBvF3LiQ+NTaFIjqNk54MH6gnSitM+8FMNSddcWwc9j?=
+ =?us-ascii?Q?4XzLb3DMbg/HV67fXnyqjvueZAvh2RonZHkCMvjggVKcRDHHRpukw/tDqcOh?=
+ =?us-ascii?Q?1tUfTAjpN9IVJ7S6cvyLmK+dE/mB3TbJvKjZhxp0sG6kS9+R0zEK0jhPrI+x?=
+ =?us-ascii?Q?Q3tQLUdazAADFoy1cD0AIPytXZhnBGj4TEQprOINh0Z/BXFpTN7cwvGRyXeC?=
+ =?us-ascii?Q?LHbTXv9Fx6jiaNynMGJbKx0KllUDmlQOF7JoxvN/8o4DKfqzegGDAqOE9C7G?=
+ =?us-ascii?Q?Q0f8WEWB+DC8vsu5dJmSqAe2/hYSnLDGbZTcAzdfJIeAK/sU89lG9J6Da29v?=
+ =?us-ascii?Q?SXIHk1m3zPqrcxtDqFkk1jmQPUdg5JmFsVw8cByxl/KgUESkhPJVdAAMtp8P?=
+ =?us-ascii?Q?ArC4OeSLqnJk5cRi1gbfKObt9oSmlhLnJ+V5RwrHpvPl4RILwmzYFXnYoXFK?=
+ =?us-ascii?Q?NT1BcRzjm4KFYf/+ueM2+lVUbxGlCVU/K5SyXchX?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b950ffb4-1c4b-4b17-3927-08dc3d2884bb
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Mar 2024 15:25:41.5618
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: DalP+UZ09NAGfC2HRHgVE8BDPWF5q1lhqcRJHTk0XtAbholXH4BC8jZARisDaB1bmaCnBFDnM4KuKvPwhiAz1g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7944
 
-Hello Dan, Markus,
+On Tue, Mar 05, 2024 at 08:46:36AM -0600, Rob Herring wrote:
+> On Mon, Mar 04, 2024 at 12:47:08PM -0500, Frank Li wrote:
+> > On Mon, Mar 04, 2024 at 11:32:04AM -0600, Rob Herring wrote:
+> > > On Fri, Mar 01, 2024 at 11:27:39AM -0500, Frank Li wrote:
+> > > > Split layerscape-pci.txt into two yaml files: fsl,layerscape-pcie-ep.yaml
+> > > > and fsl,layerscape-pcie.yaml.
+> > > > yaml files contain the same content as the original txt file.
+> > > > 
+> > > > Do below changes to pass dtb_binding check:
+> > > > - Remove dma-coherent and fsl,pcie-scfg because not every SOC need it.
+> > > 
+> > > You mean 'remove from required' right? Because they are still here.
+> > > 
+> > > > - Set unevaluatedProperties to true in fsl,layerscape-pcie.yaml.
+> > > 
+> > > Sorry, but that's not acceptable either. You need the $ref's in this 
+> > > patch.
+> > 
+> > 
+> > Rob:
+> > 
+> > If I squash this 3 patches, it will match most your comments. And will back
+> > to my previous v3's patches, 
+> > https://lore.kernel.org/imx/20240214194145.2669744-1-Frank.Li@nxp.com/
+> 
+> Plus our review comments I hope...
+> 
+> > 
+> > Bjorn Helgaas suggest split to patches:
+> > https://lore.kernel.org/imx/20240226210842.GA211190@bhelgaas/
+> > 
+> > First one will be equal to origial txt, then add change base on that.
+> > 
+> > I need a clear direction before I continue on this.
+> 
+> Bjorn's suggestion doesn't work. I think it was confused in that you 
+> said you were 'adding' things. You aren't adding things, just fixing 
+> things to make the validation pass.
+> 
+> If you want to split things, you could add reg and/or interrupt names to 
+> the common schema first. And then add Layerscape schemas. But don't add 
+> things you turn around and remove in the very next patch. I think 
+> Krzysztof told you the very same thing.
 
-On Sat, 2 Mar 2024 11:40:26 +0100
-Markus Elfring <Markus.Elfring@web.de> wrote:
+@Bjorn:
+	Do you agree squash these 3 patches?  I don't want to split again.
+I prefer focus on the real value things. It is not difficult to review at
+one patches. Origianl txt actaully relately simple. 
 
-> >>> Add a jump target so that a bit of exception handling can be better r=
-eused
-> >>> at the end of this function implementation. =20
-> =E2=80=A6
-> >> Reviewed-by: Luca Ceresoli <luca.ceresoli@bootlin.com> =20
-> >
-> > These patches make the code worse. =20
+Frank
 
-This is of course a legitimate opinion. However Markus' patch
-implements what is recommended by the documentation and is in common
-use in the kernel code. A quick search found 73 occurrences in v6.8-rc7:
-
-$ expr $(pcregrep -r -M ':\n\tfwnode_handle_put'  drivers | wc -l) / 2
-73
-$
-
-300+ are found for of_node_put().
-
-> > If we're in the middle of a loop,
-> > then we should clean up the partial loop before doing the goto.
-> > Otherwise it creates a mess when we add a new allocation function after
-> > the end of the loop. =20
->=20
-> How does such a feedback fit to another known information source?
->=20
-> Section =E2=80=9C7) Centralized exiting of functions=E2=80=9D
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/D=
-ocumentation/process/coding-style.rst?h=3Dv6.8-rc6#n526
->
-> > Someone is going to add a _scoped() loop which uses cleanup.h magic to
-> > call _put automatically.  This is a good option. =20
->=20
-> I became also curious how scope-based resource management will influence
-> Linux coding styles further.
-> Will various collateral evolution become more interesting?
-
-After some research I think I found what Dan means:
-
-https://lore.kernel.org/all/20240225142714.286440-3-jic23@kernel.org/
-
-After reading the above thread, I agree using *_scoped() macros will
-be a good improvement. It is not yet in mainline as of v6.8-rc7, but
-it is in linux-next. So I think despite being valid this patch might
-still be discarded because a better solution should be available in a
-few weeks.
-
-Luca
-
---=20
-Luca Ceresoli, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+> 
+> Rob
 
