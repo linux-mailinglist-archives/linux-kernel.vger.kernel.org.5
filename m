@@ -1,249 +1,124 @@
-Return-Path: <linux-kernel+bounces-91447-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91448-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99F5F87119E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 01:24:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B7928711A2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 01:25:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A50F01C21A62
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 00:24:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD8711C2191F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 00:25:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1095E10F4;
-	Tue,  5 Mar 2024 00:24:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D72910F7;
+	Tue,  5 Mar 2024 00:25:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=elbertmai.com header.i=@elbertmai.com header.b="wVPo0b2m";
-	dkim=pass (2048-bit key) header.d=purelymail.com header.i=@purelymail.com header.b="CFylA4Mu"
-Received: from sendmail.purelymail.com (sendmail.purelymail.com [34.202.193.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="bA+suA2x"
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 318FCEC2
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 00:23:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=34.202.193.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD5EC38F
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 00:25:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709598241; cv=none; b=bOMEJBSImIlNIit7aqymiuV+aARCkrHS7l9B+tPdZRRkpAkpLJM4+QC4KK2vzMB3t99O2BwrniXn7my4BCE0OYWRKOeSQqCsWAK78laoaHYXbfd1LBY7Eb+VTgH0hGNC862KQMmhcL9Dcs5kowVignuGL0qHGkLVuPi4vzEWqhE=
+	t=1709598320; cv=none; b=MQkQYjbNwGqrP9bPMJYHTYMyVNxeqInFeMxm/vrJ4o8QtJkHfJ6S6js+RIBMKvd19R9D3MqLaUz5o8ngb1StbFfIx9E503QhSk0k1/d8CxiwhEz12ipoyqUnOMTdUeV/Y/pFL99qg/1o+otv0L/0ptdKd2whFYrKvMkE8M89Wsk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709598241; c=relaxed/simple;
-	bh=2HIV57sf1HLLLdhagTk1qNW0ej68RudT31B3zhms368=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=tp20I65jSJs96M17kxT3VQERLdIVDAKVP2KZZhP98fN6D6v4fJR0DNFjvH57vIF1RiYjShot4xxQqU2YbwkPOWLmvbGgJiFhvY/wdFChLqjqUh525+o3EiAjAT+6otW5NaT2apxlvDcCvIYf3p/bhFOKbpQUP8a/5weJGk9q3DU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=elbertmai.com; spf=pass smtp.mailfrom=elbertmai.com; dkim=pass (2048-bit key) header.d=elbertmai.com header.i=@elbertmai.com header.b=wVPo0b2m; dkim=pass (2048-bit key) header.d=purelymail.com header.i=@purelymail.com header.b=CFylA4Mu; arc=none smtp.client-ip=34.202.193.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=elbertmai.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=elbertmai.com
-Authentication-Results: purelymail.com; auth=pass
-DKIM-Signature: a=rsa-sha256; b=wVPo0b2mctEKgxoIAmhmDG6e4uZorR6Ab9hRKSUuOjRb1n53V3RM1tlm4s0jYs8uGbN2Dqe6Fkz6RfaMjVlgn4PlIMWcadWWQgrB6HXg4UHRtviHSseNCHiT+oGfXDBtGQqs4q96oT9x6KX5HAoPdHopXJFNahzSDbVaxMCWH5ts0GWMTsQL4ylQrPjmeey/zSiyt75L8x2Fo/stpxpe8v7SpXcgaNcTBDsmldc3P5DI2ngbwtewSYu4/8BZ3pohbcBqgX56O/69l2BKAYswlV59pfxzHUdqarpcfrGYoGa7KWOvqxOHoRjxgd7loUorx6HAjOFa6UgpYgVOZ9AotQ==; s=purelymail2; d=elbertmai.com; v=1; bh=2HIV57sf1HLLLdhagTk1qNW0ej68RudT31B3zhms368=; h=Received:From:To:Subject;
-DKIM-Signature: a=rsa-sha256; b=CFylA4MuSkFWNhsb7zv9C4JGGU5pxkssVVwow2GTbI44zktm/4oRdAI66p1Tuq7k7ig9HOvFFkcapH5ZAJyBuiNMm2ZYGAwj8TzWPe/KbhF4RmEIRQL9/1sediIz0jzLfRre4Z7+JCv3mZsoroCQ9jZHMEHqLswd2KkCPUollUypw3BLcYsJCMvIg2jo5SuPd+1t56dlyOKwaYP5hBnwif9FKwZIJiCtUFGdwUX3yAvOs0DyGTYydW1YTcS/TwQlFp/BIX6yTJPiehtN0/6SBFoZlJhZpdl0ZRCpge05PRSmAgOSmNhSyYuY9/VLMCTmirCJtBPLVoi5MucwyzVfPA==; s=purelymail2; d=purelymail.com; v=1; bh=2HIV57sf1HLLLdhagTk1qNW0ej68RudT31B3zhms368=; h=Feedback-ID:Received:From:To:Subject;
-Feedback-ID: 5995:1482:null:purelymail
-X-Pm-Original-To: linux-kernel@vger.kernel.org
-Received: by smtp.purelymail.com (Purelymail SMTP) with ESMTPSA id 1986472728;
-          (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
-          Tue, 05 Mar 2024 00:23:47 +0000 (UTC)
-From: Elbert Mai <code@elbertmai.com>
-To: gregkh@linuxfoundation.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-usb@vger.kernel.org,
-	Elbert Mai <code@elbertmai.com>
-Subject: [PATCH v2] usb: Export BOS descriptor to sysfs
-Date: Mon,  4 Mar 2024 16:23:01 -0800
-Message-Id: <20240305002301.95323-1-code@elbertmai.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1709598320; c=relaxed/simple;
+	bh=YBogo24J4oBkTlnWGyxK72muXgmgt39KFTxP1mpezRI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=naij6RZBKOxehEp2iN0oNwNmXjGf1lezqbJpcKUKAroyuvQxzw4e3CCzfreCuHdtgPLT5J8wmdyF6O2Z924mg1FGZegRYWSxAS+rCgDHyOSKZ/jDkRRxRgr3H5v68yce10fhS7D+2TUvaSvTXu5+P5VJ4FbZGOOkFW7+oXAZgyo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=bA+suA2x; arc=none smtp.client-ip=209.85.208.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d288bac3caso62405051fa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 16:25:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1709598316; x=1710203116; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YBogo24J4oBkTlnWGyxK72muXgmgt39KFTxP1mpezRI=;
+        b=bA+suA2xrKdibDvtfkDM4o8vPaDhdOOljTjQs48pp/RzrNGEfaRnD/GjpWt31BMCHO
+         im3CO6GGPdhO95S/aVFW2gIHNO/p7n6bKRBccXb93wQXm5Zbq6yAJzYPQX641oIlDJvq
+         NqA34feuNsZ3nd4wXNoEAf9uj92N+7cHGDooM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709598316; x=1710203116;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YBogo24J4oBkTlnWGyxK72muXgmgt39KFTxP1mpezRI=;
+        b=qQlDvo7CZFp0GD3Vb7Bh99wcITwViHUhJ5C4pKKbwR8DFBr7m1DgQ+IGnizTuuR9UR
+         JjkUJhT8aPbHtvqpQ8Ee/nPtdFu8VGa2rpExRXut384VMM8fl5ALaDLct0NQZ512FXvR
+         9WJSIrn/o3AKMOJGurZ08AoAAK1T+1Do9dHda+TKqunOCYjckfXl8m0H0qF66U8V3bXv
+         bJ9d5ROpnNohxDAiDU0MB86quIwwybbWQRbu66FN/G2Gx7ptBFPHKxrvrxRwxQKMj6MD
+         s5EirYMkCcwziCcqky57iVPDxTqOf8+n+potCyujCqgPaWVWGgzoa8WUar3wKeZ0H/Ec
+         idug==
+X-Forwarded-Encrypted: i=1; AJvYcCXy5BSrrx2l3UQ7cM6cC45Z+y0Oj+IO17Oa8KePLRLuPZgqHOKw7fNYMeJN4dW8AVox8M3bPe21HhvViii4Ohh3/nVd17PdXDAFuDkG
+X-Gm-Message-State: AOJu0Yz9QxYpNxT25dHTnL03Y4o9UKAsoI9It+EB9IlKF6Qz5UWTtlm3
+	x3pwx1VkuzBVB10mfGiMCd5sVl4jR2F4pbYeAxcTpSltfRIx2jxUcsP+cv2T7Q4Lwf+EIy5j4v6
+	gwy7w
+X-Google-Smtp-Source: AGHT+IGW9cGHqEysPgMaUYZ+A8/RgEztUlp9Pd6ekPS8G+FdK8DHXt+3qxIcgz7u4S1goQ8TWf8kFA==
+X-Received: by 2002:ac2:4e08:0:b0:513:49f7:70f with SMTP id e8-20020ac24e08000000b0051349f7070fmr207594lfr.57.1709598315759;
+        Mon, 04 Mar 2024 16:25:15 -0800 (PST)
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com. [209.85.128.43])
+        by smtp.gmail.com with ESMTPSA id lb10-20020a170906adca00b00a45380dfd09sm1947403ejb.105.2024.03.04.16.25.14
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Mar 2024 16:25:14 -0800 (PST)
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-412c79213c8so14225e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 16:25:14 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXEIwnywMX3R+MDO58zzyh4JzA745AVz/jg8WWWv/TaDgfAusIg4KBCXOt2hxNhv44n2m2tpE/XQsjfNyhLBVEgdOsPjLTuwkAK+f9x
+X-Received: by 2002:a05:600c:34d2:b0:412:e426:a1a7 with SMTP id
+ d18-20020a05600c34d200b00412e426a1a7mr22561wmq.1.1709598314010; Mon, 04 Mar
+ 2024 16:25:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240304195214.14563-1-hsinyi@chromium.org> <20240304195214.14563-3-hsinyi@chromium.org>
+ <87a5nd4tsg.fsf@intel.com> <CAJMQK-j4wGah=szyUW53hu-v6Q4QjgR7WMLKnspoFaO9oPfaQw@mail.gmail.com>
+ <874jdl4k01.fsf@intel.com> <CAJMQK-iWHoh6s-hkcNULzZLjMg9UnTuWfjaJ=YfnHU3sQ1NBEg@mail.gmail.com>
+In-Reply-To: <CAJMQK-iWHoh6s-hkcNULzZLjMg9UnTuWfjaJ=YfnHU3sQ1NBEg@mail.gmail.com>
+From: Doug Anderson <dianders@chromium.org>
+Date: Mon, 4 Mar 2024 16:24:58 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=UOhTGnhtc9gOQ5C_aAdgVcB+K7NL9RGm4umunF91Wkpg@mail.gmail.com>
+Message-ID: <CAD=FV=UOhTGnhtc9gOQ5C_aAdgVcB+K7NL9RGm4umunF91Wkpg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/4] drm/edid: Add a function to check monitor string
+To: Hsin-Yi Wang <hsinyi@chromium.org>
+Cc: Jani Nikula <jani.nikula@linux.intel.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-MIME-Autoconverted: from 8bit to quoted-printable by Purelymail
-Content-Type: text/plain; charset=UTF-8
 
-Motivation
-----------
+Hi,
 
-The binary device object store (BOS) of a USB device consists of the BOS
-descriptor followed by a set of device capability descriptors. One that is
-of interest to users is the platform descriptor. This contains a 128-bit
-UUID and arbitrary data, and it allows parties outside of USB-IF to add
-additional metadata about a USB device in a standards-compliant manner.
-Notable examples include the WebUSB and Microsoft OS 2.0 descriptors.
+On Mon, Mar 4, 2024 at 4:19=E2=80=AFPM Hsin-Yi Wang <hsinyi@chromium.org> w=
+rote:
+>
+> > > Probably change to u32 drm_edid_get_panel_id(const struct drm_edid
+> > > *);? Given that we still need to parse id from
+> > > drm_edid_read_base_block().
+> >
+> > No, we no longer need to parse the id outside of drm_edid.c. You'll hav=
+e
+> > the id's in panel code in the form of struct drm_edid_ident (or
+> > whatever), and use the match function to see if the opaque drm_edid
+> > matches.
+> >
+> drm_panel prints the panel_id info on whether the panel is detected or no=
+t.
+> https://elixir.bootlin.com/linux/v6.8-rc7/source/drivers/gpu/drm/panel/pa=
+nel-edp.c#L792
+>
+> Is it okay to remove this information?
 
-The kernel already retrieves and caches the BOS from USB devices if its
-bcdUSB is >=3D 0x0201. Because the BOS is flexible and extensible, we expor=
-t
-the entire BOS to sysfs so users can retrieve whatever device capabilities
-they desire, without requiring USB I/O or elevated permissions.
-
-Implementation
---------------
-
-Add bos_descriptors attribute to sysfs. This is a binary file and it works
-the same way as the existing descriptors attribute. The file exists only if
-the BOS is present in the USB device.
-
-Also create a binary attribute group, so the driver core can handle the
-creation of both the descriptors and bos_descriptors attributes in sysfs.
-
-Signed-off-by: Elbert Mai <code@elbertmai.com>
----
-Changes in v2:
- - Rename to bos_descriptors (plural) since the attribute contains the
-   entire BOS, not just the first descriptor in it.
- - Use binary attribute groups to let driver core handle attribute
-   creation for both descriptors and bos_descriptors.
- - The attribute is visible in sysfs only if the BOS is present in the
-   USB device.
-
- Documentation/ABI/testing/sysfs-bus-usb | 10 ++++
- drivers/usb/core/sysfs.c                | 78 +++++++++++++++++++------
- 2 files changed, 71 insertions(+), 17 deletions(-)
-
-diff --git a/Documentation/ABI/testing/sysfs-bus-usb b/Documentation/ABI/te=
-sting/sysfs-bus-usb
-index 614d216dff1d..102ee4215e48 100644
---- a/Documentation/ABI/testing/sysfs-bus-usb
-+++ b/Documentation/ABI/testing/sysfs-bus-usb
-@@ -293,3 +293,13 @@ Description:
- =09=09USB 3.2 adds Dual-lane support, 2 rx and 2 tx -lanes over Type-C.
- =09=09Inter-Chip SSIC devices support asymmetric lanes up to 4 lanes per
- =09=09direction. Devices before USB 3.2 are single lane (tx_lanes =3D 1)
-+
-+What:=09=09/sys/bus/usb/devices/.../bos_descriptors
-+Date:=09=09March 2024
-+Contact:=09Elbert Mai <code@elbertmai.com>
-+Description:
-+=09=09Binary file containing the cached binary device object store (BOS)
-+=09=09of the device. This consists of the BOS descriptor followed by the
-+=09=09set of device capability descriptors. All descriptors read from
-+=09=09this file are in bus-endian format. Note that the kernel will not
-+=09=09request the BOS from a device if its bcdUSB is less than 0x0201.
-diff --git a/drivers/usb/core/sysfs.c b/drivers/usb/core/sysfs.c
-index a2ca38e25e0c..a50b6f496eb6 100644
---- a/drivers/usb/core/sysfs.c
-+++ b/drivers/usb/core/sysfs.c
-@@ -870,16 +870,10 @@ static struct attribute_group dev_string_attr_grp =3D=
- {
- =09.is_visible =3D=09dev_string_attrs_are_visible,
- };
-=20
--const struct attribute_group *usb_device_groups[] =3D {
--=09&dev_attr_grp,
--=09&dev_string_attr_grp,
--=09NULL
--};
--
- /* Binary descriptors */
-=20
- static ssize_t
--read_descriptors(struct file *filp, struct kobject *kobj,
-+descriptors_read(struct file *filp, struct kobject *kobj,
- =09=09struct bin_attribute *attr,
- =09=09char *buf, loff_t off, size_t count)
- {
-@@ -901,7 +895,7 @@ read_descriptors(struct file *filp, struct kobject *kob=
-j,
- =09=09=09srclen =3D sizeof(struct usb_device_descriptor);
- =09=09} else {
- =09=09=09src =3D udev->rawdescriptors[cfgno];
--=09=09=09srclen =3D __le16_to_cpu(udev->config[cfgno].desc.
-+=09=09=09srclen =3D le16_to_cpu(udev->config[cfgno].desc.
- =09=09=09=09=09wTotalLength);
- =09=09}
- =09=09if (off < srclen) {
-@@ -916,11 +910,66 @@ read_descriptors(struct file *filp, struct kobject *k=
-obj,
- =09}
- =09return count - nleft;
- }
-+static BIN_ATTR_RO(descriptors, 18 + 65535); /* dev descr + max-size raw d=
-escriptor */
-+
-+static ssize_t
-+bos_descriptors_read(struct file *filp, struct kobject *kobj,
-+=09=09struct bin_attribute *attr,
-+=09=09char *buf, loff_t off, size_t count)
-+{
-+=09struct device *dev =3D kobj_to_dev(kobj);
-+=09struct usb_device *udev =3D to_usb_device(dev);
-+=09struct usb_host_bos *bos =3D udev->bos;
-+=09struct usb_bos_descriptor *desc;
-+=09size_t desclen, n =3D 0;
-+
-+=09if (bos) {
-+=09=09desc =3D bos->desc;
-+=09=09desclen =3D le16_to_cpu(desc->wTotalLength);
-+=09=09if (off < desclen) {
-+=09=09=09n =3D min(count, desclen - (size_t) off);
-+=09=09=09memcpy(buf, (void *) desc + off, n);
-+=09=09}
-+=09}
-+=09return n;
-+}
-+static BIN_ATTR_RO(bos_descriptors, 65535); /* max-size BOS */
-=20
--static struct bin_attribute dev_bin_attr_descriptors =3D {
--=09.attr =3D {.name =3D "descriptors", .mode =3D 0444},
--=09.read =3D read_descriptors,
--=09.size =3D 18 + 65535,=09/* dev descr + max-size raw descriptor */
-+/* When modifying this list, be sure to modify dev_bin_attrs_are_visible()
-+ * accordingly.
-+ */
-+static struct bin_attribute *dev_bin_attrs[] =3D {
-+=09&bin_attr_descriptors,
-+=09&bin_attr_bos_descriptors,
-+=09NULL
-+};
-+
-+static umode_t dev_bin_attrs_are_visible(struct kobject *kobj,
-+=09=09struct bin_attribute *a, int n)
-+{
-+=09struct device *dev =3D kobj_to_dev(kobj);
-+=09struct usb_device *udev =3D to_usb_device(dev);
-+
-+=09/* All USB devices have a device descriptor, so the descriptors
-+=09 * attribute always exists. No need to check for its visibility.
-+=09 */
-+=09if (a =3D=3D &bin_attr_bos_descriptors) {
-+=09=09if (udev->bos =3D=3D NULL)
-+=09=09=09return 0;
-+=09}
-+=09return a->attr.mode;
-+}
-+
-+static const struct attribute_group dev_bin_attr_grp =3D {
-+=09.bin_attrs =3D=09=09dev_bin_attrs,
-+=09.is_bin_visible =3D=09dev_bin_attrs_are_visible,
-+};
-+
-+const struct attribute_group *usb_device_groups[] =3D {
-+=09&dev_attr_grp,
-+=09&dev_string_attr_grp,
-+=09&dev_bin_attr_grp,
-+=09NULL
- };
-=20
- /*
-@@ -1038,10 +1087,6 @@ int usb_create_sysfs_dev_files(struct usb_device *ud=
-ev)
- =09struct device *dev =3D &udev->dev;
- =09int retval;
-=20
--=09retval =3D device_create_bin_file(dev, &dev_bin_attr_descriptors);
--=09if (retval)
--=09=09goto error;
--
- =09retval =3D add_persist_attributes(dev);
- =09if (retval)
- =09=09goto error;
-@@ -1071,7 +1116,6 @@ void usb_remove_sysfs_dev_files(struct usb_device *ud=
-ev)
-=20
- =09remove_power_attributes(dev);
- =09remove_persist_attributes(dev);
--=09device_remove_bin_file(dev, &dev_bin_attr_descriptors);
- }
-=20
- /* Interface Association Descriptor fields */
---=20
-2.34.1
-
+Hmmm, I guess it also is exported via debugfs, actually. See
+detected_panel_show() in panel-edp.c. We probably don't want to remove
+that...
 
