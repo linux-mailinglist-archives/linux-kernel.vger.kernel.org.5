@@ -1,111 +1,172 @@
-Return-Path: <linux-kernel+bounces-93103-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93104-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A02B4872B14
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 00:33:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB5C5872B15
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 00:34:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59DDB283909
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 23:33:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0AC661C2479A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 23:34:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9876F12D74B;
-	Tue,  5 Mar 2024 23:33:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 081FD12D74B;
+	Tue,  5 Mar 2024 23:34:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YwujledT"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="YDoNyAqj"
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D921812D20E;
-	Tue,  5 Mar 2024 23:33:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA54A12D219
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 23:33:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709681621; cv=none; b=s/w0QLgaxVMrxVBI9zvVOQEQ7aj28MqxH6mjCn7u32Ie2G8D0NEm7wc+VuJLuifMJINkgPxuMVJ0eyMqEpwJK+E6a7dMufj5r7v/msd1En2lb8ZX2m2RHMkugGQuNZLUgtdGrdHjvfNzSKk11m3PiK2Maf1wjxMi/MX1eTNJmjE=
+	t=1709681639; cv=none; b=TESK1X8pkJmPXqUAhInkXw0Kdl5syKYlZvPzz/NU82jOt37+kglfDOLQ/wBwjBigVEbNV2XO30q0FNAMeBouRkoSOzmQiczBaq1LO5VXdIRWTzkbDeSBOT/Sa2Bo1Nz7lTgrPXzSAX6ujXglFd+8MqdXBt7IKLMsUT14DJzwe9g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709681621; c=relaxed/simple;
-	bh=eLpdEbLb/e5fMTtGq4VE53hJODUQV0E7L2x6Fi1q+GQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=T9nzj+LEPIsw8AQ1jzswOEpXx0Ov/0PQD66FCYl7W/JvdKMTG1an5aA9EN2gUe3SkZCSwxiE6FxG5Fq3rvucIYVo5uXJIbn4RVEMUP0nQG4b88Ph47tkCvpbCi+x9botbPpWnJv6pbUoqrb2vYUtSkmDJeqsd2m7a46U8cQxZcw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YwujledT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F54EC433B1;
-	Tue,  5 Mar 2024 23:33:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709681621;
-	bh=eLpdEbLb/e5fMTtGq4VE53hJODUQV0E7L2x6Fi1q+GQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=YwujledT0wjoR1dOgkhjHbu20ofdHfBi85Be6kukJDk/vI4ww9ayamqiugYQimwnw
-	 OMoMOZHsO9Zfz0hoS5zBFvFCnAozYufp9nBstrdepb6/RrhnmGo/GkQHh7rK+sXYVq
-	 b3GqgLwkb3RCy7Sq7M8EkdixR9+bJryOr2AdkR83ZmEv0vQzXj2DTCW4QFfpxMOdfY
-	 MyopwrkrUKwsY5DiWqDlpG9MDZMZrIUtEdmbtH8fcbga4+evMzOU/ZwB4V3i35cvaW
-	 UbGjzNyPFKSO/60YmkpLXPk2ECmdIoTeOLzK9E7pAyYoUYZqRtQ45ZMx7is9ZTd3zN
-	 h7a8uLRrGYvxQ==
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d269b2ff48so18240891fa.3;
-        Tue, 05 Mar 2024 15:33:41 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVJIBbktlN0yH3FY3BailXOPxTECvH862FKw9N6g1gIE7CVQMb0bg5lO8JG3i26eIhVoKr4Mna6p5++SM8VwnrCygM3Rly3E7vYBCWRM3/IuTGx0GsxlYHYF/BQd5q1+4c0PTllgSeXOw==
-X-Gm-Message-State: AOJu0YwmemRS4KjMYP1gFnSY+LDem24GJtWoGLiALssskRbOukPvWTLK
-	IzIdofIo8ZRc4/E65H2dd+dmqJ6rP2gXrjq+GoOzZOJJvmqTw/yTQDSROpZCJ9drRKcyr73A3E3
-	UVwEnCNV0spu/K14Jvs0zMUfZego=
-X-Google-Smtp-Source: AGHT+IGg0aE/JTW6xwqaUQn2xbuKQVBVSRFqFG9CACRonHlxpjny0NRLymtQDYdaNsAxMQ9m2w/KjejdKarYzDPbMJA=
-X-Received: by 2002:a05:651c:793:b0:2d3:dcb0:56d9 with SMTP id
- g19-20020a05651c079300b002d3dcb056d9mr2172197lje.29.1709681619544; Tue, 05
- Mar 2024 15:33:39 -0800 (PST)
+	s=arc-20240116; t=1709681639; c=relaxed/simple;
+	bh=1SnJ59Ps7URmLCLfC/TBTkRIQ6+QZh83O+LxVECZ4eE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZUyMe5lON+6H/vxT48pv9uxL0pJ6Vb3K1PTSpqEl5v1uAyGJw9wNkj6Hq+lNrNzuN9tMDJPHyHyS4IYKdw710fZdb7+z7z/1QWXDibdMn2UjTDmQC+XLY1qpMSZ61jqeRShPlQRbyTebNUa8eQapprIGKVdD4F/G7KfBpurCGaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=YDoNyAqj; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e6381df003so273172b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 15:33:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1709681637; x=1710286437; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=SVqJYG4NwJpbVhIQ4ejb78hlZKAflZdt5zQRCQZdbhg=;
+        b=YDoNyAqjT4+JsgTrVnl6OAgF1k64GJMlbCpU5D4eDqNf2O9lAGCgFz+aAhOLoIHwhd
+         TD7DBSOjOK4eP0tZwdcV4Mv0gyUEaI4uyNQ2nrVSa7h412iV3qbbB3tAONSQjBafu044
+         us7oVi+DRKkVfH+7Aq5xqFtH94K1j+tykG6J4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709681637; x=1710286437;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SVqJYG4NwJpbVhIQ4ejb78hlZKAflZdt5zQRCQZdbhg=;
+        b=tO7fbsBE8tWePQyv0vSAJRzCtxT8bhPE5Y0xaTgNDoWB7sjwtdCKVLnsrZvcls8STG
+         5gEUonJPMcHjw/4rgu0zvizMug39LjEA2JNXrFKQTDo/yNJkojwhukWXNFDpS4trb3H9
+         6Kj6f32eAHDAysDXL5AV+QRHaNHT/LKY2011fcgquFU+7KFAyHAQsBzxhYhbdBy2qMlG
+         AFHkQ1wEDl9Kj1686ijYgQ1PhjGiFix8rIObCKVEcWXfyjb7z5NcgoP++ZZxRitzop/y
+         lyEJKsUW+8n5TxdnBgxsgxhnwX+Y9Vt0dQQ2QS7sjAtM7ibJNSiYw4MGDHhhhkQgwe45
+         Etgw==
+X-Forwarded-Encrypted: i=1; AJvYcCWcpETU4ORr+9x2CN6pyKIcGS80E/aqQN21AGavYuHIQDWQGc0t010cqJEAKrM+Om91VD4HS/k0AQv+G2zLfYMPnb5sxO0ttNM1vGEM
+X-Gm-Message-State: AOJu0YzSEle0M8Js+tAnPMFIjfEgn1SmdJKzcQcqdjXTUO8T/Mk4Eeex
+	1dkg41YvWa/6Xq5HXwEpeTxl0kFna5jHrwd9uxplnXcbuxgZgj3Wq1YaG4gm6g==
+X-Google-Smtp-Source: AGHT+IHQdYS5+xMryfTT1IOdZhcc6rZew5WCVjHi9VllATBYGMQVhc0/wPSb9IRr0q52NcbVnxEBdQ==
+X-Received: by 2002:a05:6a00:1ac7:b0:6e6:27d3:96ab with SMTP id f7-20020a056a001ac700b006e627d396abmr6963065pfv.16.1709681636969;
+        Tue, 05 Mar 2024 15:33:56 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id r5-20020aa79885000000b006e530aca55asm9524721pfl.123.2024.03.05.15.33.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Mar 2024 15:33:55 -0800 (PST)
+Date: Tue, 5 Mar 2024 15:33:54 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Jeremy Linton <jeremy.linton@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
+	will@kernel.org, Jason@zx2c4.com, gustavoars@kernel.org,
+	mark.rutland@arm.com, rostedt@goodmis.org, arnd@arndb.de,
+	broonie@kernel.org, guohui@uniontech.com, Manoj.Iyer@arm.com,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+	James Yang <james.yang@arm.com>,
+	Shiyou Huang <shiyou.huang@arm.com>
+Subject: Re: [PATCH 1/1] arm64: syscall: Direct PRNG kstack randomization
+Message-ID: <202403051526.0BE26F99E@keescook>
+References: <20240305221824.3300322-1-jeremy.linton@arm.com>
+ <20240305221824.3300322-2-jeremy.linton@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <tencent_587730262984A011834F42D0563BC6B10405@qq.com> <tencent_26733B06E132C458857C36DEF36D084A6A0A@qq.com>
-In-Reply-To: <tencent_26733B06E132C458857C36DEF36D084A6A0A@qq.com>
-From: Guo Ren <guoren@kernel.org>
-Date: Wed, 6 Mar 2024 07:33:28 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTQ_TCkkE9daRHzyY7fMcqULQUHj9vj7sVhtkp9Td__Fsw@mail.gmail.com>
-Message-ID: <CAJF2gTQ_TCkkE9daRHzyY7fMcqULQUHj9vj7sVhtkp9Td__Fsw@mail.gmail.com>
-Subject: Re: [PATCH v4 1/7] dt-bindings: riscv: Add T-HEAD C908 compatible
-To: Yangyu Chen <cyy@cyyself.name>
-Cc: linux-riscv@lists.infradead.org, Conor Dooley <conor@kernel.org>, 
-	Damien Le Moal <dlemoal@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Conor Dooley <conor.dooley@microchip.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240305221824.3300322-2-jeremy.linton@arm.com>
 
-On Wed, Mar 6, 2024 at 3:44=E2=80=AFAM Yangyu Chen <cyy@cyyself.name> wrote=
-:
->
-> The thead,c908 is a RISC-V CPU core from T-HEAD Semiconductor which used
-> in Canaan Kendryte K230 SoC.
->
-> Signed-off-by: Yangyu Chen <cyy@cyyself.name>
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+On Tue, Mar 05, 2024 at 04:18:24PM -0600, Jeremy Linton wrote:
+> The existing arm64 stack randomization uses the kernel rng to acquire
+> 5 bits of address space randomization. This is problematic because it
+> creates non determinism in the syscall path when the rng needs to be
+> generated or reseeded. This shows up as large tail latencies in some
+> benchmarks and directly affects the minimum RT latencies as seen by
+> cyclictest.
+> 
+> Other architectures are using timers/cycle counters for this function,
+> which is sketchy from a randomization perspective because it should be
+> possible to estimate this value from knowledge of the syscall return
+> time, and from reading the current value of the timer/counters.
+> 
+> So, a poor rng should be better than the cycle counter if it is hard
+> to extract the stack offsets sufficiently to be able to detect the
+> PRNG's period. Lets downgrade from get_random_u16() to
+> prandom_u32_state() under the theory that the danger of someone
+> guessing the 1 in 32 per call offset, is larger than that of being
+> able to extract sufficient history to accurately predict future
+> offsets. Further it should be safer to run with prandom_u32_state than
+> disabling stack randomization for those subset of applications where the
+> difference in latency is on the order of ~5X worse.
+> 
+> Reported-by: James Yang <james.yang@arm.com>
+> Reported-by: Shiyou Huang <shiyou.huang@arm.com>
+> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
 > ---
->  Documentation/devicetree/bindings/riscv/cpus.yaml | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml b/Document=
-ation/devicetree/bindings/riscv/cpus.yaml
-> index 9d8670c00e3b..e853a7fcee8a 100644
-> --- a/Documentation/devicetree/bindings/riscv/cpus.yaml
-> +++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
-> @@ -47,6 +47,7 @@ properties:
->                - sifive,u74
->                - sifive,u74-mc
->                - thead,c906
-> +              - thead,c908
->                - thead,c910
->                - thead,c920
->            - const: riscv
-> --
-> 2.43.0
->
-LGTM, Great job!
+>  arch/arm64/kernel/syscall.c | 42 ++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 41 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/kernel/syscall.c b/arch/arm64/kernel/syscall.c
+> index 9a70d9746b66..33b3ea4adff8 100644
+> --- a/arch/arm64/kernel/syscall.c
+> +++ b/arch/arm64/kernel/syscall.c
+> @@ -5,6 +5,7 @@
+>  #include <linux/errno.h>
+>  #include <linux/nospec.h>
+>  #include <linux/ptrace.h>
+> +#include <linux/prandom.h>
+>  #include <linux/randomize_kstack.h>
+>  #include <linux/syscalls.h>
+>  
+> @@ -37,6 +38,45 @@ static long __invoke_syscall(struct pt_regs *regs, syscall_fn_t syscall_fn)
+>  	return syscall_fn(regs);
+>  }
+>  
+> +#ifdef CONFIG_RANDOMIZE_KSTACK_OFFSET
+> +DEFINE_PER_CPU(struct rnd_state, kstackrng);
+> +
+> +static u16 kstack_rng(void)
+> +{
+> +	u32 rng = prandom_u32_state(this_cpu_ptr(&kstackrng));
+> +
+> +	return rng & 0x1ff;
+> +}
+> +
+> +/* Should we reseed? */
+> +static int kstack_rng_setup(unsigned int cpu)
+> +{
+> +	u32 rng_seed;
+> +
+> +	/* zero should be avoided as a seed */
+> +	do {
+> +		rng_seed = get_random_u32();
+> +	} while (!rng_seed);
+> +	prandom_seed_state(this_cpu_ptr(&kstackrng), rng_seed);
+> +	return 0;
+> +}
+> +
+> +static int kstack_init(void)
+> +{
+> +	int ret;
+> +
+> +	ret = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "arm64/cpuinfo:kstackrandomize",
+> +				kstack_rng_setup, NULL);
 
-Reviewed-by: Guo Ren <guoren@kernel.org>
+This will run initial seeding, but don't we need to reseed this with
+some kind of frequency?
 
---=20
-Best Regards
- Guo Ren
+Otherwise, seems fine to me.
+
+-- 
+Kees Cook
 
