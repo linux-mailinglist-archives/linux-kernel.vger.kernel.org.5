@@ -1,76 +1,76 @@
-Return-Path: <linux-kernel+bounces-92454-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92455-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E22F387205E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:38:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C90E2872061
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:38:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1214D1C23237
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:38:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C582285BC3
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:38:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABCC18614C;
-	Tue,  5 Mar 2024 13:38:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8D918663A;
+	Tue,  5 Mar 2024 13:38:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="IFAAh9Et"
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="jBwL6mKY"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C99C85C7B;
-	Tue,  5 Mar 2024 13:38:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8524F8615E;
+	Tue,  5 Mar 2024 13:38:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709645881; cv=none; b=PtD32EHCXa/s4tGvOiOHpDZ+NZwnTo+Cb/sIq6+kyk1+MswglI0O2y/tncRmW6585AgTbICGVYlrg0CmahqpayFn6xNnqjvviRPhzkefpOxKaGsNan3KuXBBhs9dpSIRGfx7lEX9OcaNTlqd0RfZqlTRHMX+Zim2Il+MouT17q4=
+	t=1709645885; cv=none; b=nPhNp4K6m+WF7aOEmlLFy8JSTefqUzOPUO1jKOZEEIZ0cuK1nG3v3KoKFIeDSMjzGGgSTZ3qOHBHIfMRT6oZPyK+IOHwFSpb6vVbWVTFX/XXDuf+rFYCv76XQqCKDhGVFmotIGy9aXwX+2Mk6XoZ69XG+X6wR9qVtxphWR4WcWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709645881; c=relaxed/simple;
-	bh=TNlY1e36myGTfYO8pTuVFOr+Ap0PleNaokblvqP8fmw=;
+	s=arc-20240116; t=1709645885; c=relaxed/simple;
+	bh=3F8rwXrhfyylZetLLMxD8EhNhOIe6vvR4rLOA84mL6E=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=t0g6cG5kBN0dD8qweW7k+Idl/JuFh8fTptZWipCvncF0uTp9yYRqxSL/kPCs9O26sduw/2Lb6Npe55zpN39Uru5n+kPABCi3KNopTSSISdHfveiSYa77VuUuMXvmw8ag+jZUgxgQrFUG9/9zuRwfsTNoYfABZbEbIfR8C4z580Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=IFAAh9Et; arc=none smtp.client-ip=209.85.215.175
+	 In-Reply-To:To:Cc; b=VTK3gJX3TSwt1jDOSkffxBrc/zaqrxNaOMUJ9S6Lq6z68QIaWQPeKA1WFV6nAlXGDccYjFR31Ty5lh1a8Vce3TodVB8DZ/vlXXtHMhLD1n1VrkXAmnz/dnDeh+YjLQYCxdEJ1z936S3QkdZspMR71nMh9vJ2Jh61k05SRLynKc4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=jBwL6mKY; arc=none smtp.client-ip=209.85.214.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5cedfc32250so4902766a12.0;
-        Tue, 05 Mar 2024 05:38:00 -0800 (PST)
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1dbae7b8ff2so26757675ad.3;
+        Tue, 05 Mar 2024 05:38:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709645880; x=1710250680;
+        d=1e100.net; s=20230601; t=1709645883; x=1710250683;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:dkim-signature:from:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=lNOF+/pr6oPp3zreBaQy80bebzg5O2KDW6z8yCKWOro=;
-        b=ZhHVQd6fu5QhYwp799FS8LbuUMc2mZSXWx8qtQLTRyQDmKXOhaNds0Q147QsKN8Q10
-         zF2gyVlgS7tnRibrTA7bYWmhGTebXqYy2tRUP3E7wXWFLXtO4WA/INUwgve/KsxvNll2
-         uf/wmOGobtnH2/CLxqh3l0ojinA8al9bmV8R/m+aXU+A30f6duAEhlRzBPVZSrs9n+64
-         IDI2MVzbBbwKXTwZfjZGnNxIDBanYMtPgtxXrIfuaKHZBjMCpXP6Becwspowq9mOxLwE
-         gerl+XXrvP0MMR8zx5WuHIbtM2/D/EdMJ5FeXShNVU6LinA/vl3K0m4ta+Jpf9nq+mr9
-         Rmig==
-X-Forwarded-Encrypted: i=1; AJvYcCWGZZyo2c3LydeSS3itQ9SPt56mr/OvZ8vyCMCnD79vCOP4UKn68TpRkbEEtj5eViPtVuMgfr7gyquvKySuiCYxUbn+iwN+CZVNiJUm
-X-Gm-Message-State: AOJu0Ywj+HokvshJy5YubqAu4NDuwj/RR6YSkfPvOOZp4XlgeA4joAJq
-	7VY9oFwgB8XGLg9ghstAsBaVn8xlEl6LUfgvvM37vZ4tT0jEGEN3Y+YOFv4d8zuN3Q==
-X-Google-Smtp-Source: AGHT+IHKko49MK0XfiDUXC91H6w3LCLLSXfcK8SMzT6staEd3Ru+UpGkiQyvb3JxiOBLM8tyDLEuMg==
-X-Received: by 2002:a05:6a20:4c20:b0:1a0:e03f:dee with SMTP id fm32-20020a056a204c2000b001a0e03f0deemr1308143pzb.43.1709645879688;
-        Tue, 05 Mar 2024 05:37:59 -0800 (PST)
+        bh=SQNlQEnrZpFxVhCSu8x09R56O9PkjIqUdvHfDcTSzpg=;
+        b=LDhy9AR9HdZjOjiaVodC80paAdNqrxtqQPshHAoJXWCkGNpDd2bR7GwcvdN6lGZqmb
+         HmJfPzv2Z/y0MBOYvEsunppqLPiixtmlSn/vEMi1Iji+42ABKcPZwZZHuhXAvIsu2NKR
+         Q2ZxBNkpeH2vFDoQxC8yKT8HpMfvqDFYg9+pejJ4FPtiVx7RBhNeOclu0xHCmo61fUqU
+         kTPsdA/c56ywG1IZtW+SWBt8rH2dd8YVcoTN5YvkTTmMy2WSxHXf5N5NJnIY87x/A0Zp
+         GgrfrPi9iUYb4Y/fxVaMXjAT81XaHXsEFSjpSgQslFFmVyYG7AzC8IrSz7OxSZdPfaMu
+         PK3Q==
+X-Forwarded-Encrypted: i=1; AJvYcCW2i0Og3fNoHzd9Z7hMNxsG5ooO3007AoG+0hEXtJaL4l9ViEtAqU0X7uX9WG2HUHLvwftNWBGi7jtYtt3Ha3wZPz/R4bBFvprBUJUL
+X-Gm-Message-State: AOJu0Yz1d8os/Z4kcrfkahucZ86la9Hj63cFk2MoC1JsYHhYO9VipRC+
+	aNgk69RQrWrnQfk1BP/w/bdOzf0W5AZeWH1H77i6MqAYwW6qDCmQ
+X-Google-Smtp-Source: AGHT+IE/P+HawYGAndvjB2sLHKglYwCNqf0kSj6bvzCwrNveS0bstjcptV2MtZeeJvrtL9J7SV60EQ==
+X-Received: by 2002:a17:902:eb88:b0:1dc:43d:962 with SMTP id q8-20020a170902eb8800b001dc043d0962mr1819754plg.42.1709645882805;
+        Tue, 05 Mar 2024 05:38:02 -0800 (PST)
 Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id rj10-20020a17090b3e8a00b0029996fd70e2sm9510232pjb.45.2024.03.05.05.37.58
+        by smtp.gmail.com with ESMTPSA id h6-20020a170902680600b001dcd00165a7sm10745537plk.38.2024.03.05.05.38.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 05:37:59 -0800 (PST)
+        Tue, 05 Mar 2024 05:38:02 -0800 (PST)
 From: "Ricardo B. Marliere" <ricardo@marliere.net>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1709645877;
+	s=2024; t=1709645881;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=lNOF+/pr6oPp3zreBaQy80bebzg5O2KDW6z8yCKWOro=;
-	b=IFAAh9Etq3IoxkwKUQ3sVwRHaxvadKKyX7ZIa9P+kAP2RW9vEvNI8qQK1lK9Ew3XBaguTk
-	i6u3xAn9rVp0j2pNg2FkHQJcQbTZtDhoHQEh9i+eW1gprawym2bIu+FAfcUdIhJrzy7K/1
-	zTUzdbF/A/fkCQaRa3zZ/b7ehAIAqfMbAYRv+OnkqSN9+BKTLr/TpoZYTCUBsVDmJjq5W5
-	RPbtn9n+TiPJ2J8dIPLL8VuUAJ8cLOqlvuGcUulvBtMSx30uR2lqVcsopXpGNkCRXFFZCy
-	+PuQekpbMzuPbN85QnU7xpFdqWVhzepyk4RCP/LX9QVN2+FXqVENV2pCX6CFZw==
+	bh=SQNlQEnrZpFxVhCSu8x09R56O9PkjIqUdvHfDcTSzpg=;
+	b=jBwL6mKYae6RatXXUtrnKJk62+pXT/fPuESyV0vneFAMSahLvyriJYorJUV53/h97zqepm
+	ARThXKt1eEc6m5oGB/1HZM/+9Z9opooU2U9GSu72y3NFr7r99+UU2OIITS8X1RQSE0F+3S
+	bw9XOqp5ySxj6t2YHvUPye2qtWQiUbKlegrw6/irwLb6dF4Xrl7n4lY3KZ4Xq+2lT+LAfU
+	40AtVFtn3tN6mK6yRMzRgvR2kvUrUY1LxemADOQNokpGhRirswGJmvM7XsRyu1sYOFJ80P
+	4YPHepWjYy5FhEO2kveP/6yupRtXSpLjbSHpDVc6BNc3xc1jJ9+ikjF8N4+IyA==
 Authentication-Results: ORIGINATING;
 	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Tue, 05 Mar 2024 10:37:50 -0300
-Subject: [PATCH 1/2] mips: mt: make mt_class constant
+Date: Tue, 05 Mar 2024 10:37:51 -0300
+Subject: [PATCH 2/2] mips: sibyte: make tb_class constant
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,33 +79,33 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240305-class_cleanup-mips-v1-1-e93726711468@marliere.net>
+Message-Id: <20240305-class_cleanup-mips-v1-2-e93726711468@marliere.net>
 References: <20240305-class_cleanup-mips-v1-0-e93726711468@marliere.net>
 In-Reply-To: <20240305-class_cleanup-mips-v1-0-e93726711468@marliere.net>
 To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, 
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
  "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2962; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=TNlY1e36myGTfYO8pTuVFOr+Ap0PleNaokblvqP8fmw=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl5yAuaeONegv9D8DreA4Gwy7oj1wOIDjIxcGFo
- jajy7t9iquJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZecgLgAKCRDJC4p8Y4ZY
- pt1rD/92sRV2fkWQRBwgt3KloAZaybdC3zfNJDNiTGWph+jwXFZpYYtJat7IFw1SIB5OqcTtL7A
- NAPP5quFmCyPvKdY5Uq5nvTaf8XX26pFoHqXKunvJSK5kxkWbTFZKbkAzx8aWJRfKyUBvz+5K+4
- EaAFn2EaDAdg0m6c+E1LJKMJRTrtqFdXMFZpqtHIEwA4U3cH46fKM5eSfzC/H+XHzZnPRgYinY4
- ftMjpVxDMQ68sdHn7OmeSh+zGjTyTulGADV/PNEgqDzq6ncnNm3himB3RB2DTPUBRINIoLS566b
- heF5iXJlSd992Prm6U8QG4uTQp2xfEfnhdtMOtddUIYXD1XfOSMXmtIApSy+/h8j0ivJtX8Zzz4
- cJmzgkiJGYDMQAGcXqeSh6m8mZxwKBxrONEnXUN8WR/DLQDQQDBIn6lFa7XtNQ2BUwlS34H073F
- 9WdjfUwbUvDBDMSbmKno3J591gar03R83Hi9QiaUM+aOi5Vst5AhbEBm0SHk4i9f5RJtX3czFpM
- yt+uaB+tltmwlsInwCA/viF68ryT416fYq5eDh8p39E6Wzes8y07O0RFkGRO1/DlZvZBOaJckC/
- 4y54nIRwhmyKwuajzTW0fSdG3qGauTKOSaeiCwHyi3afOsE1XYs/Q6lkuCFrf3oM6Pl5BaSEadM
- OHIMU7KHfda1ERg==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2414; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=3F8rwXrhfyylZetLLMxD8EhNhOIe6vvR4rLOA84mL6E=;
+ b=owEBbAKT/ZANAwAKAckLinxjhlimAcsmYgBl5yAuIMVDnFd8oEStRPuydUwWo2xrujQCF1hZl
+ FxuvZeIp32JAjIEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZecgLgAKCRDJC4p8Y4ZY
+ pis/D/jW/FGaYFU+9x9B3e5RPxsPAkrhoyzNI/O4/lD6gBb1zWMnvZDt7wYH1trrfKXGXS5OhNN
+ sR9WS6mThDMVw3Azax/TxygelPJ8lRAlgr4KJeQKmFTX1wtXZTM/paa1/wibbX2EeeMptJd2nBZ
+ mvEgkX2komqM2miBrm7A3gJ34mLyP13Cr9m6EY7Uq1iLDIOiQm1fEqCdQXT+BlWG6D3oDeq4tkQ
+ Y0kW/I5fZAtjYHAXd71suRuMuNtm4nwD8SbrysZYFTUN37ZdnjHRLVeafFxGV4nfvAdMM4GziSE
+ P2lpyVbIrq+NUZXJbQQI95/kL2FlsWOol60hwO3hyBc2ts3sWqlwf/UFEnl4N40wvY6DCVkso83
+ 3/Sfpwfc+9ad7EMswsy2m9wCcCs7jQppH1SdlR0PCN6khLQ/6ekC7w4NfBv8RLfCF9RsHeMhbEu
+ Xsn782UhHQN347gC8V+R/ZV7aHW3sMwgbnj1H3D3pU2gJXm6Ha7TS927jIJHFZQuTgeeX4CPgyg
+ CvdlW4dQ6yoPvN5cLkU0douPbywa8pM12/AYsPWcNYue45CefxY8gc6g3Uq+xDfEtO9iV3dRfqp
+ cdOGnwsuUSL7nBvXyu/OJVjA74NfwUPkjrPFm5TZC5X0HCsKksSTYjvzv/6heDcYN6RBBfCeACg
+ jO+YjFAOCRMau
 X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
  fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
 Since commit 43a7206b0963 ("driver core: class: make class_register() take
 a const *"), the driver core allows for struct class to be in read-only
-memory, so move the mt_class structure to be declared at build time placing
+memory, so move the tb_class structure to be declared at build time placing
 it into read-only memory, instead of having to be dynamically allocated at
 boot time.
 
@@ -115,87 +115,70 @@ Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
 ---
 KTODO: use device_register instead of device_create?
 ---
- arch/mips/include/asm/mips_mt.h |  2 +-
- arch/mips/kernel/mips-mt.c      | 14 ++++----------
- arch/mips/kernel/rtlx-mt.c      |  8 ++++----
- 3 files changed, 9 insertions(+), 15 deletions(-)
+ arch/mips/sibyte/common/sb_tbprof.c | 21 +++++++++------------
+ 1 file changed, 9 insertions(+), 12 deletions(-)
 
-diff --git a/arch/mips/include/asm/mips_mt.h b/arch/mips/include/asm/mips_mt.h
-index b444523ecd50..28917f1582b3 100644
---- a/arch/mips/include/asm/mips_mt.h
-+++ b/arch/mips/include/asm/mips_mt.h
-@@ -26,6 +26,6 @@ static inline void mips_mt_set_cpuoptions(void) { }
- #endif
+diff --git a/arch/mips/sibyte/common/sb_tbprof.c b/arch/mips/sibyte/common/sb_tbprof.c
+index 408db45efdc8..af5333986900 100644
+--- a/arch/mips/sibyte/common/sb_tbprof.c
++++ b/arch/mips/sibyte/common/sb_tbprof.c
+@@ -535,13 +535,14 @@ static const struct file_operations sbprof_tb_fops = {
+ 	.llseek		= default_llseek,
+ };
  
- struct class;
--extern struct class *mt_class;
-+extern const struct class mt_class;
- 
- #endif /* __ASM_MIPS_MT_H */
-diff --git a/arch/mips/kernel/mips-mt.c b/arch/mips/kernel/mips-mt.c
-index c07d64438b5b..c938ba208fc0 100644
---- a/arch/mips/kernel/mips-mt.c
-+++ b/arch/mips/kernel/mips-mt.c
-@@ -229,19 +229,13 @@ void mips_mt_set_cpuoptions(void)
- 	}
- }
- 
--struct class *mt_class;
-+const struct class mt_class = {
-+	.name = "mt",
+-static struct class *tb_class;
++static const struct class tb_class = {
++	.name = "sb_tracebuffer",
 +};
+ static struct device *tb_dev;
  
- static int __init mips_mt_init(void)
+ static int __init sbprof_tb_init(void)
  {
--	struct class *mtc;
--
--	mtc = class_create("mt");
--	if (IS_ERR(mtc))
--		return PTR_ERR(mtc);
--
--	mt_class = mtc;
--
--	return 0;
-+	return class_register(&mt_class);
- }
+ 	struct device *dev;
+-	struct class *tbc;
+ 	int err;
  
- subsys_initcall(mips_mt_init);
-diff --git a/arch/mips/kernel/rtlx-mt.c b/arch/mips/kernel/rtlx-mt.c
-index 38c6925a1bea..ff7535de42ca 100644
---- a/arch/mips/kernel/rtlx-mt.c
-+++ b/arch/mips/kernel/rtlx-mt.c
-@@ -95,11 +95,11 @@ int __init rtlx_module_init(void)
- 		atomic_set(&channel_wqs[i].in_open, 0);
- 		mutex_init(&channel_wqs[i].mutex);
+ 	if (register_chrdev(SBPROF_TB_MAJOR, DEVNAME, &sbprof_tb_fops)) {
+@@ -550,15 +551,11 @@ static int __init sbprof_tb_init(void)
+ 		return -EIO;
+ 	}
  
--		dev = device_create(mt_class, NULL, MKDEV(major, i), NULL,
-+		dev = device_create(&mt_class, NULL, MKDEV(major, i), NULL,
- 				    "%s%d", RTLX_MODULE_NAME, i);
- 		if (IS_ERR(dev)) {
- 			while (i--)
--				device_destroy(mt_class, MKDEV(major, i));
-+				device_destroy(&mt_class, MKDEV(major, i));
+-	tbc = class_create("sb_tracebuffer");
+-	if (IS_ERR(tbc)) {
+-		err = PTR_ERR(tbc);
++	err = class_register(&tb_class);
++	if (err)
+ 		goto out_chrdev;
+-	}
+-
+-	tb_class = tbc;
  
- 			err = PTR_ERR(dev);
- 			goto out_chrdev;
-@@ -127,7 +127,7 @@ int __init rtlx_module_init(void)
+-	dev = device_create(tbc, NULL, MKDEV(SBPROF_TB_MAJOR, 0), NULL, "tb");
++	dev = device_create(&tb_class, NULL, MKDEV(SBPROF_TB_MAJOR, 0), NULL, "tb");
+ 	if (IS_ERR(dev)) {
+ 		err = PTR_ERR(dev);
+ 		goto out_class;
+@@ -573,7 +570,7 @@ static int __init sbprof_tb_init(void)
+ 	return 0;
  
  out_class:
- 	for (i = 0; i < RTLX_CHANNELS; i++)
--		device_destroy(mt_class, MKDEV(major, i));
-+		device_destroy(&mt_class, MKDEV(major, i));
+-	class_destroy(tb_class);
++	class_unregister(&tb_class);
  out_chrdev:
- 	unregister_chrdev(major, RTLX_MODULE_NAME);
+ 	unregister_chrdev(SBPROF_TB_MAJOR, DEVNAME);
  
-@@ -139,7 +139,7 @@ void __exit rtlx_module_exit(void)
- 	int i;
+@@ -582,9 +579,9 @@ static int __init sbprof_tb_init(void)
  
- 	for (i = 0; i < RTLX_CHANNELS; i++)
--		device_destroy(mt_class, MKDEV(major, i));
-+		device_destroy(&mt_class, MKDEV(major, i));
+ static void __exit sbprof_tb_cleanup(void)
+ {
+-	device_destroy(tb_class, MKDEV(SBPROF_TB_MAJOR, 0));
++	device_destroy(&tb_class, MKDEV(SBPROF_TB_MAJOR, 0));
+ 	unregister_chrdev(SBPROF_TB_MAJOR, DEVNAME);
+-	class_destroy(tb_class);
++	class_unregister(&tb_class);
+ }
  
- 	unregister_chrdev(major, RTLX_MODULE_NAME);
- 
+ module_init(sbprof_tb_init);
 
 -- 
 2.43.0
