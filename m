@@ -1,213 +1,265 @@
-Return-Path: <linux-kernel+bounces-92738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92740-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21AAE87252D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:08:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95BB6872548
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:10:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F05DB1C21B74
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:08:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EFAC6B2527A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:09:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8CF31429F;
-	Tue,  5 Mar 2024 17:07:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WxVV/cxx"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 508F217BA6;
+	Tue,  5 Mar 2024 17:09:11 +0000 (UTC)
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D47E14265
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 17:07:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FBDE15E86;
+	Tue,  5 Mar 2024 17:09:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709658456; cv=none; b=lb6yJsuPSswDK+vU9MNXRc0iNnNY9Oel61Zr87ddahZgCar5Tq36sPhYH432E1TblvkMMjnA9UnVgIUNCwVob8ZItLFDDxNzizZhVVGaNz36WSmfIDdMi+5wrW/IJQiMQR5GLLqAufevBjD8B48qIPendoEWumyYocIuPcDjg10=
+	t=1709658550; cv=none; b=EQ6iwVAL97x0Se2TE4r3MDoB5i2VpBX9j4ubPPzhVT/jKjPRktKLaaERss+gqQtAHSb1ZwNLIsSawUP5iE+FxozuNsyY2RaPVg4IlcF8xIxPn5LjHgtgEBVvCQPt/992CAryluN8MMAg7QOSoE5C/lL1Dpbgu9BJSjLKI5sVPl4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709658456; c=relaxed/simple;
-	bh=azV7+Zmb8h3Ad2kZ67JTx3veTnU4KDUstFIT2BaE0Og=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Znh+mRLqihiGr4S7ladkLgqez6kgj1vuGEfpe2h0BU2zHnSHCYVmXqedjICuDHdWcMb+bxxSnogaMU+/g81XV1lYBp/z58LrWmubc9DqLGbZovyF6I6//YUyHf7boRvxTvfoaKU1zVMGHOAOcgYoF16Nu2GDfLYe9coI7U8p+GY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WxVV/cxx; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a293f2280c7so1024732566b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 09:07:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709658452; x=1710263252; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6qTdpRaahlDa9z2Zha5TherbMQ0/ES+OOUXltLCuc0Q=;
-        b=WxVV/cxxZ4H7/Qzj7yDbImosoikH79ap3VUOnFC65D7BZYnsjAXwYSIiLskbvO5hUZ
-         epyROsdEUYnyr7TDBS56CUkgRiJRaaWMCbZMUYDQGoHTSzw6PUzXCbzLDoQL5QLy94aE
-         ZrsPVtT6pf9k++tJrpSkuCiLQBH7OrQXTJolQLC8oDlPqQcW27ByW8a4d9fZ5t962tgE
-         ioeihkUdaHOOZDiezZOM4xpgPydAm6sApVEcD9T8Sn1AhwTNa0NeSWYKYJTVs1lowL28
-         uyAekIK628WOz9QVxUTSLg3H1Ei4k2v5hNZPsP2hgV5WBHNkXxGZ8VE2NDxiCA/Garxz
-         ZT2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709658452; x=1710263252;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6qTdpRaahlDa9z2Zha5TherbMQ0/ES+OOUXltLCuc0Q=;
-        b=MS3cEy7BUEBUaEQ0Gd0oMZQ2bjOlMzb/MxEp/K+czaYaom0SDzx4Y/U/WQ1EqNrIcg
-         YaS1uRBbglRKqt5g41a47LBXkTLxuClgfGqFUYY8SJwZ9Zk7AmuHn+Qe8qIXOHMLIwbu
-         HzoEAmEsVDKnvFh8yJmLWAxowj1vC1FiHhSd15YS9E48h/IvwrCJIak9pORG46T8Phi/
-         Gwwhbk3osWRgqWmHeQxB4tIKOp8sU1tp/Sih1mBMPw7dytw13NWiFRaegMoOXR1/lF0c
-         Y2ZT3mp1S405PbeERpb0lN70TN15mBN7rXHncjDKBVjaEYer7Wm8A1VolMqcK7RAYr5j
-         NXVQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUzYuEzKQQEOAtauNIk8YPLpX97cUYXlJXWsaevkk2v7pZv/F62C7A6UMIsYY/UauoCwiFxd91tFtJDM530HXwDHBKo2lcUFrkP44xW
-X-Gm-Message-State: AOJu0YwhDCwoUpSN7cnn21/H6Y0+buXKKbS4z/c5x7v5FmlvUI7rgind
-	rNFahYTiQA/WL4B+tC4jvyEZBjGeSq2fqm/03rNPjH6gLx29dQRgKLPHR+3Z6UA=
-X-Google-Smtp-Source: AGHT+IGmLwJ5FeUIToG60ygUbtaMv7yy4aE9s/KnfU++LDfwXYn0ZkTLUWLthAXl2MH7KgU0HP0rnw==
-X-Received: by 2002:a17:906:37d6:b0:a45:b1fc:52d with SMTP id o22-20020a17090637d600b00a45b1fc052dmr389723ejc.76.1709658452223;
-        Tue, 05 Mar 2024 09:07:32 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id o26-20020a1709061d5a00b00a44f6ce3e7fsm3709759ejh.77.2024.03.05.09.07.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Mar 2024 09:07:31 -0800 (PST)
-Message-ID: <86371fc0-ef49-4dc9-b98c-7c5131cd1227@linaro.org>
-Date: Tue, 5 Mar 2024 18:07:29 +0100
+	s=arc-20240116; t=1709658550; c=relaxed/simple;
+	bh=5f1IPY+FnnC1k2YnB4vovG/JbKhW1jfLaamJn7esrcM=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=fnV/0ldlyACKC5cyMabuHTsLokiKSy7tm3Zg46o2vA6EqeTrAvF8PVV2xDDK6NHqlrTNNQVoTwOJ437F1JylcGuLlCM7jeHa0x1J3MNALkjqCVlFC+Yh3jsvfoUviYZ61C/tEO6C5cZsLvBxrBRIjiBQDid0Ft3da5WLDxizfkQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.51])
+	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4Tq1pq4YcBz9y0Nb;
+	Wed,  6 Mar 2024 00:53:23 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.27])
+	by mail.maildlp.com (Postfix) with ESMTP id 1989D14059B;
+	Wed,  6 Mar 2024 01:09:02 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+	by APP2 (Coremail) with SMTP id GxC2BwAXTSGdUedlTf68Aw--.61170S2;
+	Tue, 05 Mar 2024 18:09:01 +0100 (CET)
+Message-ID: <9c739aae1677b2b7169025750f83c1126e91ebde.camel@huaweicloud.com>
+Subject: Re: [PATCH v2 24/25] commoncap: use vfs fscaps interfaces
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+To: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
+Cc: Christian Brauner <brauner@kernel.org>, Serge Hallyn <serge@hallyn.com>,
+  Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>, James
+ Morris <jmorris@namei.org>,  Alexander Viro <viro@zeniv.linux.org.uk>, Jan
+ Kara <jack@suse.cz>, Stephen Smalley <stephen.smalley.work@gmail.com>,
+ Ondrej Mosnacek <omosnace@redhat.com>,  Casey Schaufler
+ <casey@schaufler-ca.com>, Mimi Zohar <zohar@linux.ibm.com>, Roberto Sassu
+ <roberto.sassu@huawei.com>,  Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+ Eric Snowberg <eric.snowberg@oracle.com>, "Matthew Wilcox (Oracle)"
+ <willy@infradead.org>, Jonathan Corbet <corbet@lwn.net>, Miklos Szeredi
+ <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, 
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+ linux-security-module@vger.kernel.org, audit@vger.kernel.org, 
+ selinux@vger.kernel.org, linux-integrity@vger.kernel.org, 
+ linux-doc@vger.kernel.org, linux-unionfs@vger.kernel.org
+Date: Tue, 05 Mar 2024 18:08:41 +0100
+In-Reply-To: <ZedQRThbc60h+VoA@do-x1extreme>
+References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
+	 <20240221-idmap-fscap-refactor-v2-24-3039364623bd@kernel.org>
+	 <dcbd9e7869d2fcce69546b53851d694b8ebad54e.camel@huaweicloud.com>
+	 <ZeXpbOsdRTbLsYe9@do-x1extreme>
+	 <a7124afa6bed2fcadcb66efa08e256828cd6f8ab.camel@huaweicloud.com>
+	 <ZeX9MRhU/EGhHkCY@do-x1extreme>
+	 <20240305-fachjargon-abmontieren-75b1d6c67a83@brauner>
+	 <3098aef3e5f924e5717b4ba4a34817d9f22ec479.camel@huaweicloud.com>
+	 <20240305-zyklisch-halluzinationen-98b782666cf8@brauner>
+	 <133a912d05fb0790ab3672103a21a4f8bfb70405.camel@huaweicloud.com>
+	 <ZedQRThbc60h+VoA@do-x1extreme>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 1/3] dt-bindings: usb: qcom,dwc3: Add support for multiple
- power-domains
-Content-Language: en-US
-To: Sriram Dash <quic_sriramd@quicinc.com>, andersson@kernel.org,
- konrad.dybcio@linaro.org, vkoul@kernel.org, kishon@kernel.org,
- robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- gregkh@linuxfoundation.org, quic_wcheng@quicinc.com,
- Thinh.Nguyen@synopsys.com, p.zabel@pengutronix.de,
- linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-usb@vger.kernel.org, quic_psodagud@quicinc.com,
- quic_nkela@quicinc.com, manivannan.sadhasivam@linaro.org,
- ulf.hansson@linaro.org, sudeep.holla@arm.com, quic_shazhuss@quicinc.com
-References: <1709657858-8563-1-git-send-email-quic_sriramd@quicinc.com>
- <1709657858-8563-2-git-send-email-quic_sriramd@quicinc.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <1709657858-8563-2-git-send-email-quic_sriramd@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:GxC2BwAXTSGdUedlTf68Aw--.61170S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxtw1kurWUuw4DZF1DCFWrAFb_yoWxGw45pF
+	y5JFnrKF4DJr17Ar1xtw1UXF10yryxJF4UXrn8J34jyr1DKr17Gr4jyr17uF98Cr18Jr1j
+	vF1jyFy3Wrs8AwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
+	7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
+	Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY
+	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6x
+	AIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280
+	aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAkuxUUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgANBF1jj5cByQABsk
 
-On 05/03/2024 17:57, Sriram Dash wrote:
-> Some target systems allow multiple resources to be managed by firmware.
-> On these targets, tasks related to clocks, regulators, resets, and
-> interconnects can be delegated to the firmware, while the remaining
-> responsibilities are handled by Linux.
-> 
-> To support the management of partial resources in Linux and leave the rest
-> to firmware, multiple power domains are introduced. Each power domain can
-> manage one or more resources, depending on the specific use case.
-> 
-> These power domains handle SCMI calls to the firmware, enabling the
-> activation and deactivation of firmware-managed resources.
-> 
-> Signed-off-by: Sriram Dash <quic_sriramd@quicinc.com>
-> ---
->  .../phy/qcom,sc8280xp-qmp-usb3-uni-phy.yaml        | 74 ++++++++++++++++------
->  .../bindings/phy/qcom,usb-snps-femto-v2.yaml       | 49 ++++++++++++--
->  .../devicetree/bindings/usb/qcom,dwc3.yaml         | 37 ++++++++++-
->  3 files changed, 130 insertions(+), 30 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-usb3-uni-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-usb3-uni-phy.yaml
-> index 1e2d4dd..53b9ba9 100644
-> --- a/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-usb3-uni-phy.yaml
-> +++ b/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-usb3-uni-phy.yaml
-> @@ -44,7 +44,32 @@ properties:
->      maxItems: 5
->  
->    power-domains:
-> -    maxItems: 1
-> +    description: specifies a phandle to PM domain provider node
+On Tue, 2024-03-05 at 11:03 -0600, Seth Forshee (DigitalOcean) wrote:
+> On Tue, Mar 05, 2024 at 05:35:11PM +0100, Roberto Sassu wrote:
+> > On Tue, 2024-03-05 at 17:26 +0100, Christian Brauner wrote:
+> > > On Tue, Mar 05, 2024 at 01:46:56PM +0100, Roberto Sassu wrote:
+> > > > On Tue, 2024-03-05 at 10:12 +0100, Christian Brauner wrote:
+> > > > > On Mon, Mar 04, 2024 at 10:56:17AM -0600, Seth Forshee (DigitalOc=
+ean) wrote:
+> > > > > > On Mon, Mar 04, 2024 at 05:17:57PM +0100, Roberto Sassu wrote:
+> > > > > > > On Mon, 2024-03-04 at 09:31 -0600, Seth Forshee (DigitalOcean=
+) wrote:
+> > > > > > > > On Mon, Mar 04, 2024 at 11:19:54AM +0100, Roberto Sassu wro=
+te:
+> > > > > > > > > On Wed, 2024-02-21 at 15:24 -0600, Seth Forshee (DigitalO=
+cean) wrote:
+> > > > > > > > > > Use the vfs interfaces for fetching file capabilities f=
+or killpriv
+> > > > > > > > > > checks and from get_vfs_caps_from_disk(). While there, =
+update the
+> > > > > > > > > > kerneldoc for get_vfs_caps_from_disk() to explain how i=
+t is different
+> > > > > > > > > > from vfs_get_fscaps_nosec().
+> > > > > > > > > >=20
+> > > > > > > > > > Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@ke=
+rnel.org>
+> > > > > > > > > > ---
+> > > > > > > > > >  security/commoncap.c | 30 +++++++++++++---------------=
+--
+> > > > > > > > > >  1 file changed, 13 insertions(+), 17 deletions(-)
+> > > > > > > > > >=20
+> > > > > > > > > > diff --git a/security/commoncap.c b/security/commoncap.=
+c
+> > > > > > > > > > index a0ff7e6092e0..751bb26a06a6 100644
+> > > > > > > > > > --- a/security/commoncap.c
+> > > > > > > > > > +++ b/security/commoncap.c
+> > > > > > > > > > @@ -296,11 +296,12 @@ int cap_capset(struct cred *new,
+> > > > > > > > > >   */
+> > > > > > > > > >  int cap_inode_need_killpriv(struct dentry *dentry)
+> > > > > > > > > >  {
+> > > > > > > > > > -	struct inode *inode =3D d_backing_inode(dentry);
+> > > > > > > > > > +	struct vfs_caps caps;
+> > > > > > > > > >  	int error;
+> > > > > > > > > > =20
+> > > > > > > > > > -	error =3D __vfs_getxattr(dentry, inode, XATTR_NAME_CA=
+PS, NULL, 0);
+> > > > > > > > > > -	return error > 0;
+> > > > > > > > > > +	/* Use nop_mnt_idmap for no mapping here as mapping i=
+s unimportant */
+> > > > > > > > > > +	error =3D vfs_get_fscaps_nosec(&nop_mnt_idmap, dentry=
+, &caps);
+> > > > > > > > > > +	return error =3D=3D 0;
+> > > > > > > > > >  }
+> > > > > > > > > > =20
+> > > > > > > > > >  /**
+> > > > > > > > > > @@ -323,7 +324,7 @@ int cap_inode_killpriv(struct mnt_i=
+dmap *idmap, struct dentry *dentry)
+> > > > > > > > > >  {
+> > > > > > > > > >  	int error;
+> > > > > > > > > > =20
+> > > > > > > > > > -	error =3D __vfs_removexattr(idmap, dentry, XATTR_NAME=
+_CAPS);
+> > > > > > > > > > +	error =3D vfs_remove_fscaps_nosec(idmap, dentry);
+> > > > > > > > >=20
+> > > > > > > > > Uhm, I see that the change is logically correct... but th=
+e original
+> > > > > > > > > code was not correct, since the EVM post hook is not call=
+ed (thus the
+> > > > > > > > > HMAC is broken, or an xattr change is allowed on a portab=
+le signature
+> > > > > > > > > which should be not).
+> > > > > > > > >=20
+> > > > > > > > > For completeness, the xattr change on a portable signatur=
+e should not
+> > > > > > > > > happen in the first place, so cap_inode_killpriv() would =
+not be called.
+> > > > > > > > > However, since EVM allows same value change, we are here.
+> > > > > > > >=20
+> > > > > > > > I really don't understand EVM that well and am pretty hesit=
+ant to try an
+> > > > > > > > change any of the logic around it. But I'll hazard a though=
+t: should EVM
+> > > > > > > > have a inode_need_killpriv hook which returns an error in t=
+his
+> > > > > > > > situation?
+> > > > > > >=20
+> > > > > > > Uhm, I think it would not work without modifying
+> > > > > > > security_inode_need_killpriv() and the hook definition.
+> > > > > > >=20
+> > > > > > > Since cap_inode_need_killpriv() returns 1, the loop stops and=
+ EVM would
+> > > > > > > not be invoked. We would need to continue the loop and let EV=
+M know
+> > > > > > > what is the current return value. Then EVM can reject the cha=
+nge.
+> > > > > > >=20
+> > > > > > > An alternative way would be to detect that actually we are se=
+tting the
+> > > > > > > same value for inode metadata, and maybe not returning 1 from
+> > > > > > > cap_inode_need_killpriv().
+> > > > > > >=20
+> > > > > > > I would prefer the second, since EVM allows same value change=
+ and we
+> > > > > > > would have an exception if there are fscaps.
+> > > > > > >=20
+> > > > > > > This solves only the case of portable signatures. We would ne=
+ed to
+> > > > > > > change cap_inode_need_killpriv() anyway to update the HMAC fo=
+r mutable
+> > > > > > > files.
+> > > > > >=20
+> > > > > > I see. In any case this sounds like a matter for a separate pat=
+ch
+> > > > > > series.
+> > > > >=20
+> > > > > Agreed.
+> > > >=20
+> > > > Christian, how realistic is that we don't kill priv if we are setti=
+ng
+> > > > the same owner?
+> > >=20
+> > > Uhm, I would need to see the wider context of the proposed change. Bu=
+t
+> > > iiuc then you would be comparing current and new fscaps and if they a=
+re
+> > > identical you don't kill privs? I think that would work. But again, I
+> > > would need to see the actual context/change to say something meaningf=
+ul.
+> >=20
+> > Ok, basically a software vendor can ship binaries with a signature over
+> > file metadata, including UID/GID, etc.
+> >=20
+> > A system can verify the signature through the public key of the
+> > software vendor.
+> >=20
+> > The problem is if someone (or even tar), executes chown on that binary,
+> > fscaps are lost. Thus, signature verification will fail from now on.
+> >=20
+> > EVM locks file metadata as soon as signature verification succeeds
+> > (i.e. metadata are the same of those signed by the software vendor).
+> >=20
+> > EVM locking works if someone is trying to set different metadata. But,
+> > if I try to chown to the same owner as the one stored in the inode, EVM
+> > allows it but the capability LSM removes security.capability, thus
+> > invalidating the signature.
+> >=20
+> > At least, it would be desirable that security.capability is not removed
+> > when setting the same owner. If the owner is different, EVM will handle
+> > that.
+>=20
+> When you say EVM "locks" file metadata, does that mean it prevents
+> modification to file metadata?
 
-Please drop all redundant descriptions. Adding them is not even related
-to this patch.
+Yes, but only when metadata are in the final state (what the software
+vendor signed). Otherwise, modifications are still allowed.
 
-> +    minItems: 1
-> +    maxItems: 2
-> +
-> +  power-domain-names:
-> +    description:
-> +      A list of power domain name strings sorted in the same order as the
-> +      power-domains property.
-> +
-> +      For platforms where some resource are firmware managed, the name
-> +      corresponding to the index of an SCMI domain provider can be
-> +      "usb_core" or "usb_transfer".
-> +    items:
-> +      - const: usb_core
-> +      - const: usb_transfer
+That was needed to let tar set everything (xattrs and attrs).
 
-How is this related to fw-managed? I fail to see it. Don't mix
-independent problems in one patch.
+> What about changes to file data? This will also result in removing
+> fscaps xattrs. Does EVM also block changes to file data when signature
+> verification succeeds?
 
-> +
-> +  qmp,fw-managed:
+That would be the job of IMA. EVM would not be able to detect that. If
+the file has an EVM immutable and portable signature, IMA denies
+changes to it (assuming that an IMA appraisal policy was loaded, and
+that file matches a policy rule).
 
-Please do not upstream vendor code directly, but perform basic
-adjustment to upstream Linux kernel. There is no such company as gmp.
-
-Run this first through your internal review process.
-
-> +    description:
-> +      Some targets allow multiple resources to be managed by firmware.
-
-You miss clear mapping between compatibles and this property - allOf
-restricting it to specific SoCs.
-
-Is this different property than qcom,controlled-remotely?
-
-Best regards,
-Krzysztof
+Roberto
 
 
