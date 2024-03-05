@@ -1,158 +1,209 @@
-Return-Path: <linux-kernel+bounces-92913-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92915-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F5C587280F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 20:55:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 58161872816
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 20:57:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BBA7C1F283EC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:55:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C63A91F29A48
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:57:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81EF15BAE6;
-	Tue,  5 Mar 2024 19:55:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B9F0128823;
+	Tue,  5 Mar 2024 19:57:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="o1xDt343"
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LSIk3nNi"
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C1D624B59;
-	Tue,  5 Mar 2024 19:55:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2719E86655;
+	Tue,  5 Mar 2024 19:57:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709668534; cv=none; b=I7SOG9DGSQiQYjD9eFBIaPdR8YgSkZSBVLvc9TpIq+gqjjb4S8jF5QZKw8WM0QhQVxk90M5iZVU4RCilLm9lgrFDhhx5hAIo/WJK9Q8ciIBRD8Jdp4uGsCn757lL6DLhbUsTksgeUrYc1CRRs1eSYBfKf+TFbfS6TClAYvhaeMA=
+	t=1709668647; cv=none; b=J4jIlBBYDX/x4tNKohw86JxuRZav1oX54pne2tzZ3arFsASC4qtonNjs/7O7atb2Im7aRkmZ+H+uJDs+46AxGKwyGgQBx7UJWhVdzjGr1TSvS/pJ0dZ0l2DopU/9zZRv5w/jQyIjFKknMQ9mYsTVrjV1xlIumjTVxWTWVipFg3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709668534; c=relaxed/simple;
-	bh=5g5PeUs2Xr0sbJmSz3oVuKNnaFP8CxzfBpEI7WmRjZk=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=WGJAwLbRHK2qwARgA5JR1EvVutB/ZY97uFRqtAkToT/Jfw+UJmqRVOEonVhnBfq0YD7kZmdJnKmG8hKuiDriQN1V3A33vCaCa+NoEJrWs2PTXbfEKLABBUI0Zn7W9Nelr+iIMyamIYUqCFoM2v9Y4E4i1mBMOYc54WYoA9AReN8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=o1xDt343; arc=none smtp.client-ip=209.85.215.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
+	s=arc-20240116; t=1709668647; c=relaxed/simple;
+	bh=Tf02hoQl16ulLbLmEP49bOnvkajXwB0fzsbf6thcjWw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fFpBASoRiNRCs/2Mbd1p+wdtloecsZgxMIwFnhckwbKpCaItmgM5/Vze6Yho9ie02IClxXW3MwgVjeUM/4FI5DBM07XiqlduYyy9SGGz9UWpuclf7YooYVrq1fCeHIuyOS474pKJBcL2oPi7gC+KP+zmySgFnqhuewRtZmvpgI4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LSIk3nNi; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5dbd519bde6so5275326a12.1;
-        Tue, 05 Mar 2024 11:55:33 -0800 (PST)
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5132010e5d1so1505814e87.0;
+        Tue, 05 Mar 2024 11:57:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709668644; x=1710273444; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/LCfjpVRTkpgu1lCafQfXhP+gwqT7P5cckdXLDuP6tQ=;
+        b=LSIk3nNiiZbY0pM47hNQFwdQdMk3nhk62/AP3SGj4XabIU1hvO6BxC2Bm43p2YiQsl
+         1iAXqg3DY3XfmcDSPpTcz8PBqvg1d55kzyfG0cCZajcN3IO23O/c5faIf5yLNlPAP11B
+         9wiXvvHMnvGwuN+T1ekoSVuH4BHFeUwUAMLCMC7Cm/xShCjwvdhfoTVfo6MjBrxY6PZj
+         VzptsHlCroNvP2nbw2Ndn1uXmXzzZL0gTbCayNvJI+N/5nHNM0o7oE6OPgQKh6Y19UBt
+         xUbW7KgIyyohbUP7C8ZNAvHmcSIhquTEF88pSmz3+8CMYEP3Z6kQ6d1NpeSZFs3TUje8
+         b/Bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709668533; x=1710273333;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wAWw5ssJDn4vzurMzg4iaWJeKDfogx5EbUQszmk3BoU=;
-        b=fOyujHx2sygF7pnKfExgcElVq0WwfZZISrmAZj4rAXc8PnmCROQwwmguKZ3n0WTStI
-         hIlyXg5XuNeknvjNuPYWNfwknbXNDws+Zjzhf/wAOHV5XZvxOnCAv6dRrwwM+gQnz5Sc
-         LgB66vNE6dTsLeDZA2kL2XKURzxHf/zLG/6VblSLPxCs1uTswu4DaTfdgmDpmCUitV7O
-         wAD0EwdcrfoicP0U7H6Gk6Aae1q4lao7ecTmVRSFRAm78SGuUjPbdKs0/aW2oF6BXSEq
-         aZ1taAZgWF3UhQtujnEMgpCOiUMp3d5BpOMxGGby8Wo0uZgIFnSsCrz7TpY4n+oqRNKE
-         fgUA==
-X-Forwarded-Encrypted: i=1; AJvYcCVe7ahm4xVusCiBu8ZZBhaTMNljNvP3yA9UUWRPwqUYiVBp53EWjjafgtnE4YqCwx/qb1DZzguFp0Ytrpy2+vX547d9lmurfyAfHwk9syqyLI59xYqa5278+VxHFGzpVOttVyU3
-X-Gm-Message-State: AOJu0Yz+XiDdNiXGcfnKf2eI0+j1Ua5WlBcqyE0cG7zNInMxh605hMHU
-	zIZZCr9jaRwfxEAAYyLAalFk2wW43hMq3gzy0yum4w77rN5v9eGt
-X-Google-Smtp-Source: AGHT+IGUUnI38zxvvToo3773HNpuVccJz5KbhoVIfPsS4kC0d8I7rPtrt2sds+APSzfP9Ew0Bz+JpA==
-X-Received: by 2002:a05:6a20:3812:b0:1a0:cd54:6d9f with SMTP id p18-20020a056a20381200b001a0cd546d9fmr2268173pzf.23.1709668532692;
-        Tue, 05 Mar 2024 11:55:32 -0800 (PST)
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id p13-20020a635b0d000000b005c6e8fa9f24sm9619194pgb.49.2024.03.05.11.55.31
+        d=1e100.net; s=20230601; t=1709668644; x=1710273444;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/LCfjpVRTkpgu1lCafQfXhP+gwqT7P5cckdXLDuP6tQ=;
+        b=PiV2FZPgaKCkvsba5wwEOnOGF1KCW1ei0gFGqP2jYOUjBDSk1jxv6nAso7kVIPb5a9
+         x7Pyu2kk9QBM+dSIKc7iPcp5hvFL1dwPgHujJwqcc67nNJvI/U9HI/8j8vPu8LbIZ8p2
+         UxFomAcselp3AZiwB11OD6ZBlF+hIHTFpb/e3Yw+2JQcWdrfKtjZZl/e/qy2sKUAhyNl
+         xwHfFgvGadaz0bEJjogYlCqRix98qrHIYAWn2wm2L5XLeiZxAyZ53ol3xaZ6P7BwRrZq
+         HyDulwRnXCkM4+cRRMWEglc2VOuntZJSPKX3ixC5wiwrhLWzi4ymkMz+6bvLxUuXGw8A
+         uPsw==
+X-Forwarded-Encrypted: i=1; AJvYcCWI7M8RpMjIivJSJ2EUananM5IbNd8lV6zLrMHtrcEJEjh/Ohp8oIKKUAm/y1NpIwC9SXp6yeZ+76ywoOSxE02k6W0X9jf9pBpGqVJ5
+X-Gm-Message-State: AOJu0YwEIvzQXs1VatJjMHPwTfeEPQxMUXlUYI2t+J3ihv22kQukJOuU
+	+AUEC8E3jTob9WJb3ABiFyoXme5MukuzmLol4NbB7nKJNiGFC51k
+X-Google-Smtp-Source: AGHT+IHigmJfE4bms7fFQLqB00ZMh8tMjho2to1zq5vHuyOr7UbnT9ROnyp1AmJDdTM8RHVpzf4q6w==
+X-Received: by 2002:a05:6512:220f:b0:513:549a:1a67 with SMTP id h15-20020a056512220f00b00513549a1a67mr1995802lfu.4.1709668642729;
+        Tue, 05 Mar 2024 11:57:22 -0800 (PST)
+Received: from pc638.lan (host-185-121-47-193.sydskane.nu. [185.121.47.193])
+        by smtp.gmail.com with ESMTPSA id cf10-20020a056512280a00b005133fa4bc1asm1394437lfb.211.2024.03.05.11.57.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 11:55:32 -0800 (PST)
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1709668531;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=wAWw5ssJDn4vzurMzg4iaWJeKDfogx5EbUQszmk3BoU=;
-	b=o1xDt343909j+4XKO1ilHSWI51mTKrS0hz0gvn1vAINCChFHIAWqxGCd2cMAboBXIsbZGH
-	cvguAYhjB2/TIrWI6aVxO1Y+/HLG0mu5AQfxovLSJVBkC5aJAGX1jPSQGyc3pDUX/rIrP9
-	ir7CzO2mIQwkFaNvKqyjkOUc3gUAiT9pLVxHBvQFyY3kpkVUDoF59yOWHwFOr6SHqGYZMh
-	jVvJKFBUzjrYs7w8rj5eMD+qzYDwSLx1g7m3l05W3bKbjsY4AqTVKEV+WzhxWuLsn3c52s
-	immkWohZ9m4LHxaKEi7c+Bk2O2uTNcklhnsvsEfyfOMvMmVkVc2DiaB2RukS2Q==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Tue, 05 Mar 2024 16:55:24 -0300
-Subject: [PATCH wpan-next] wifi: cfg802154: make wpan_phy_class constant
+        Tue, 05 Mar 2024 11:57:22 -0800 (PST)
+From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+To: "Paul E . McKenney" <paulmck@kernel.org>
+Cc: RCU <rcu@vger.kernel.org>,
+	Neeraj upadhyay <Neeraj.Upadhyay@amd.com>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Hillf Danton <hdanton@sina.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
+	Frederic Weisbecker <frederic@kernel.org>
+Subject: [PATCH 1/2] rcu: Do not release a wait-head from a GP kthread
+Date: Tue,  5 Mar 2024 20:57:19 +0100
+Message-Id: <20240305195720.42687-1-urezki@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240305-class_cleanup-wpan-v1-1-376f751fd481@marliere.net>
-X-B4-Tracking: v=1; b=H4sIAKt452UC/x2M7QpAQBAAX0X729U5JF5F0jmLLa3r1lfJu7v8n
- JqZBwQDoUCTPBDwJKGNI2RpAm6xPKOiMTIYbQqd61K51Yr0bkXLh1eXt6wmU9dZlZuqGDTE0Ae
- c6P6nLfwG471D974fN9/73W8AAAA=
-To: Alexander Aring <alex.aring@gmail.com>, 
- Stefan Schmidt <stefan@datenfreihafen.org>, 
- Miquel Raynal <miquel.raynal@bootlin.com>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Cc: linux-wpan@vger.kernel.org, netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1639; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=5g5PeUs2Xr0sbJmSz3oVuKNnaFP8CxzfBpEI7WmRjZk=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl53iviWc0vfppzGfeoCCIqnWFtaeGWkcAeRlAS
- OiEHdGnJVeJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZed4rwAKCRDJC4p8Y4ZY
- po4XEACd5HZ/OZlLFhCxh5ObVkQPMRae+B1vuLJAnREVVFtOM0o79QHIotlmbL++WpeSFDy+aJa
- GQKCVrdY0Gvq69lwBKj4RvZJkgTszrN4fDWCWX/nlBj0az7lC6oFM2uvlaa3hXPCjhhQgTT3xGS
- naNLd/naSLKxVHRGxl9qvigAfXYQG7OrbO3uX3wq6IUAuDJNZdchl/bjGfPjsImuY1aeszKqwxD
- zRyKbXuBwOdvJaUe+8CK/I+LYFYP0G8KGMmVCnLeyn3+/+65JkN8HtTNd3aIeEIOZJ4jkyxvHY0
- YO5qT9FFN704eofotiNi3HlusThSUOZr/qSEfTGeB5xEivrldUXZGH4rA8hMj9D5jyqEVGXbYic
- f2Jlif6H/G/PV/ck1SHqX+40Lf8jWB/4IsNCwSeksJJFby5Nruw5gk8RV/ujWLPLd4qzgXlriy/
- EvohQtOD9iWo/A4GxStiEVKqWogOiGTnM5tQEVbrJnZcv9tpyviAxmy4hi6yd0jzA6vAbekU7Yn
- 6PNDWOIqCNTOljZgpJEBe79R82cRCipOG+UrUm7Gj3IFYzhIq4HV6Z8Jjdn1UMhNN4hUZyUOfvj
- TqfnLCbqcpCqlX2dRBf4fQzMcEmA1RbnxhBwFX6jM3avCFkpEg+Bt6vkTiFOg9YUAlUqy2woQp5
- n7Ta4MH3aTGys1g==
-X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
+Content-Transfer-Encoding: 8bit
 
-Since commit 43a7206b0963 ("driver core: class: make class_register() take
-a const *"), the driver core allows for struct class to be in read-only
-memory, so move the wpan_phy_class structure to be declared at build time
-placing it into read-only memory, instead of having to be dynamically
-allocated at boot time.
+Fix a below race by not releasing a wait-head from the
+GP-kthread as it can lead for reusing it whereas a worker
+can still access it thus execute newly added callbacks too
+early.
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+CPU 0                              CPU 1
+-----                              -----
+
+// wait_tail == HEAD1
+rcu_sr_normal_gp_cleanup() {
+    // has passed SR_MAX_USERS_WAKE_FROM_GP
+    wait_tail->next = next;
+    // done_tail = HEAD1
+    smp_store_release(&rcu_state.srs_done_tail, wait_tail);
+    queue_work() {
+        test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work)
+        __queue_work()
+    }
+}
+
+                               set_work_pool_and_clear_pending()
+                               rcu_sr_normal_gp_cleanup_work() {
+// new GP, wait_tail == HEAD2
+rcu_sr_normal_gp_cleanup() {
+    // executes all completion, but stop at HEAD1
+    wait_tail->next = HEAD1;
+    // done_tail = HEAD2
+    smp_store_release(&rcu_state.srs_done_tail, wait_tail);
+    queue_work() {
+        test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work)
+        __queue_work()
+    }
+}
+                                 // done = HEAD2
+                                 done = smp_load_acquire(&rcu_state.srs_done_tail);
+                                 // head = HEAD1
+                                 head = done->next;
+                                 done->next = NULL;
+                                 llist_for_each_safe() {
+                                 // completes all callbacks, release HEAD1
+                                 }
+                               }
+                               // Process second queue
+                               set_work_pool_and_clear_pending()
+                               rcu_sr_normal_gp_cleanup_work() {
+                               // done = HEAD2
+                               done = smp_load_acquire(&rcu_state.srs_done_tail);
+
+// new GP, wait_tail == HEAD3
+rcu_sr_normal_gp_cleanup() {
+    // Finds HEAD2 with ->next == NULL at the end
+    rcu_sr_put_wait_head(HEAD2)
+    ...
+
+// A few more GPs later
+rcu_sr_normal_gp_init() {
+     HEAD2 = rcu_sr_get_wait_head();
+     llist_add(HEAD2, &rcu_state.srs_next);
+                               // head == rcu_state.srs_next
+                               head = done->next;
+                               done->next = NULL;
+                               llist_for_each_safe() {
+                                // EXECUTE CALLBACKS TOO EARLY!!!
+                                }
+                               }
+
+Reported-by: Frederic Weisbecker <frederic@kernel.org>
+Fixes: 05a10b921000 ("rcu: Support direct wake-up of synchronize_rcu() users")
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- net/ieee802154/sysfs.c | 2 +-
- net/ieee802154/sysfs.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ kernel/rcu/tree.c | 22 ++++++++--------------
+ 1 file changed, 8 insertions(+), 14 deletions(-)
 
-diff --git a/net/ieee802154/sysfs.c b/net/ieee802154/sysfs.c
-index d2903933805c..6708160ebf9f 100644
---- a/net/ieee802154/sysfs.c
-+++ b/net/ieee802154/sysfs.c
-@@ -93,7 +93,7 @@ static SIMPLE_DEV_PM_OPS(wpan_phy_pm_ops, wpan_phy_suspend, wpan_phy_resume);
- #define WPAN_PHY_PM_OPS NULL
- #endif
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 31f3a61f9c38..475647620b12 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -1656,21 +1656,11 @@ static void rcu_sr_normal_gp_cleanup(void)
+ 	WARN_ON_ONCE(!rcu_sr_is_wait_head(wait_tail));
  
--struct class wpan_phy_class = {
-+const struct class wpan_phy_class = {
- 	.name = "ieee802154",
- 	.dev_release = wpan_phy_release,
- 	.dev_groups = pmib_groups,
-diff --git a/net/ieee802154/sysfs.h b/net/ieee802154/sysfs.h
-index 337545b639e9..69961e166257 100644
---- a/net/ieee802154/sysfs.h
-+++ b/net/ieee802154/sysfs.h
-@@ -5,6 +5,6 @@
- int wpan_phy_sysfs_init(void);
- void wpan_phy_sysfs_exit(void);
+ 	/*
+-	 * Process (a) and (d) cases. See an illustration. Apart of
+-	 * that it handles the scenario when all clients are done,
+-	 * wait-head is released if last. The worker is not kicked.
++	 * Process (a) and (d) cases. See an illustration.
+ 	 */
+ 	llist_for_each_safe(rcu, next, wait_tail->next) {
+-		if (rcu_sr_is_wait_head(rcu)) {
+-			if (!rcu->next) {
+-				rcu_sr_put_wait_head(rcu);
+-				wait_tail->next = NULL;
+-			} else {
+-				wait_tail->next = rcu;
+-			}
+-
++		if (rcu_sr_is_wait_head(rcu))
+ 			break;
+-		}
  
--extern struct class wpan_phy_class;
-+extern const struct class wpan_phy_class;
+ 		rcu_sr_normal_complete(rcu);
+ 		// It can be last, update a next on this step.
+@@ -1684,8 +1674,12 @@ static void rcu_sr_normal_gp_cleanup(void)
+ 	smp_store_release(&rcu_state.srs_done_tail, wait_tail);
+ 	ASSERT_EXCLUSIVE_WRITER(rcu_state.srs_done_tail);
  
- #endif /* __IEEE802154_SYSFS_H */
-
----
-base-commit: 42683294cc0a9ba010de5d978fd23fd1e778b192
-change-id: 20240305-class_cleanup-wpan-f299173274b0
-
-Best regards,
+-	if (wait_tail->next)
+-		queue_work(system_highpri_wq, &rcu_state.srs_cleanup_work);
++	/*
++	 * We schedule a work in order to perform a final processing
++	 * of outstanding users(if still left) and releasing wait-heads
++	 * added by rcu_sr_normal_gp_init() call.
++	 */
++	queue_work(system_highpri_wq, &rcu_state.srs_cleanup_work);
+ }
+ 
+ /*
 -- 
-Ricardo B. Marliere <ricardo@marliere.net>
+2.39.2
 
 
