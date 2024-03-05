@@ -1,109 +1,160 @@
-Return-Path: <linux-kernel+bounces-92531-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92532-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 269098721BA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:40:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAB038721BC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:40:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B4CB8B24B9C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:40:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16DD328A4FC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:40:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F99C86AC2;
-	Tue,  5 Mar 2024 14:40:24 +0000 (UTC)
-Received: from zg8tndyumtaxlji0oc4xnzya.icoremail.net (zg8tndyumtaxlji0oc4xnzya.icoremail.net [46.101.248.176])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B2A06127
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 14:40:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.101.248.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2647126F08;
+	Tue,  5 Mar 2024 14:40:29 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30DA56127;
+	Tue,  5 Mar 2024 14:40:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709649624; cv=none; b=Cj7qkdsQQt/HcV1KSps4cP2eHBYyZDzWY0hXUrLSu2W4lI2G1nZPFk5We8k0xON4dClKzKT0QpU0JG9cfOnE4sn46BuJsGSTjVAnmZ8yrD20gzh0RNwHY5P0LjzKIOM8HfLL/tsjVq/3GqQ+hadZMZL7nfJWCG2lsX2jY6Gpxs8=
+	t=1709649629; cv=none; b=oHX6gK2ykHNJXUetBgsNwgMbD6qdEA7JQD+VBGR8HGZqjvsPJcpUb3N2blwylerrlWpebTGXgqHTbO9HpxAMjUFS4ppTFmPZTbqZRNfxToMr/iw0nwayMkqv8lNEJ7WaDf8rcDgy/z4XaOuVhZ682ZIoR5WgdyAeGcMrS94NCQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709649624; c=relaxed/simple;
-	bh=CmL12mENihxxmalpXqGHbfuDwzIahIPBnLrrhx5NxCA=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=fnnSl6IUb104GsBNY16dlrAdLef9H8IHeD6+AF6nV96uQmdzJ0KR3+sJR4F0YT2wIP78kGIxAMmxogXCg6/q1pDdz2SJPNuU+eEF78lncjYVp4x7eRTx8hDNQT0lZTmBrCdCJfn2iQBGTizCzY180IhpcopBQ/wwJSV8tbfkcLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=46.101.248.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from ubuntu.localdomain (unknown [106.117.76.127])
-	by mail-app3 (Coremail) with SMTP id cC_KCgAX+zSoLudlI534AQ--.59749S2;
-	Tue, 05 Mar 2024 22:39:52 +0800 (CST)
-From: Duoming Zhou <duoming@zju.edu.cn>
-To: nouveau@lists.freedesktop.org
-Cc: dri-devel@lists.freedesktop.org,
+	s=arc-20240116; t=1709649629; c=relaxed/simple;
+	bh=TzU/yVqfFw2Z0bXsBGHvM4X/+uETrSFIV0dy36+M3uA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rERsTf0r2KrTXAUhPfgo/coyjcXobz0wZsJxPl2atE0vtEXe/2HivOZW2fBzq455bhkndEvomGB+ff8SFCWQgjiKsw43rLUV4w8QzOwhxmYJvwG0LpeurEMo1FpLNS6Tf5cbN16pGkgBW/DMrmFiem0WXOmy8Hvyp1vFJb8B8qU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87E4AC433F1;
+	Tue,  5 Mar 2024 14:40:26 +0000 (UTC)
+From: Huacai Chen <chenhuacai@loongson.cn>
+To: Huacai Chen <chenhuacai@kernel.org>
+Cc: loongarch@lists.linux.dev,
+	Xuefeng Li <lixuefeng@loongson.cn>,
+	Guo Ren <guoren@kernel.org>,
+	Xuerui Wang <kernel@xen0n.name>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
 	linux-kernel@vger.kernel.org,
-	daniel@ffwll.ch,
-	airlied@gmail.com,
-	dakr@redhat.com,
-	lyude@redhat.com,
-	kherbst@redhat.com,
-	timur@kernel.org,
-	jani.nikula@linux.intel.com,
-	Duoming Zhou <duoming@zju.edu.cn>
-Subject: [PATCH v2] nouveau/dmem: handle kcalloc() allocation failure
-Date: Tue,  5 Mar 2024 22:39:36 +0800
-Message-Id: <20240305143936.25283-1-duoming@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID:cC_KCgAX+zSoLudlI534AQ--.59749S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7trW5Aw4kur1fXw1DKr4kJFb_yoW8WrWfpF
-	Z7Gr12vF4jya1jvry8KF48CF13AanxJay8Ka9Fy3sI9Fn5ZFy7C3y2yFyUWayFvr1fCrWv
-	qr4kta4Y9F4jqwUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
-	Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x
-	0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2
-	zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
-	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWU
-	CwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
-	nIWIevJa73UjIFyTuYvjfUonmRUUUUU
-X-CM-SenderInfo: qssqjiasttq6lmxovvfxof0/1tbiAwULAWXmGFMTDgAqsz
+	loongson-kernel@lists.loongnix.cn,
+	Huacai Chen <chenhuacai@loongson.cn>,
+	stable@vger.kernel.org
+Subject: [PATCH] LoongArch: Define the __io_aw() hook as mmiowb()
+Date: Tue,  5 Mar 2024 22:39:58 +0800
+Message-ID: <20240305143958.1752241-1-chenhuacai@loongson.cn>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-The kcalloc() in nouveau_dmem_evict_chunk() will return null if
-the physical memory has run out. As a result, if we dereference
-src_pfns, dst_pfns or dma_addrs, the null pointer dereference bugs
-will happen.
+Commit fb24ea52f78e0d595852e ("drivers: Remove explicit invocations of
+mmiowb()") remove all mmiowb() in drivers, but it says:
 
-Moreover, the GPU is going away. If the kcalloc() fails, we could not
-evict all pages mapping a chunk. So this patch adds a __GFP_NOFAIL
-flag in kcalloc().
+"NOTE: mmiowb() has only ever guaranteed ordering in conjunction with
+spin_unlock(). However, pairing each mmiowb() removal in this patch with
+the corresponding call to spin_unlock() is not at all trivial, so there
+is a small chance that this change may regress any drivers incorrectly
+relying on mmiowb() to order MMIO writes between CPUs using lock-free
+synchronisation."
 
-Fixes: 249881232e14 ("nouveau/dmem: evict device private memory during release")
-Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
+The mmio in radeon_ring_commit() is protected by a mutex rather than a
+spinlock, but in the mutex fastpath it behaves similar to spinlock. We
+can add mmiowb() calls in the radeon driver but the maintainer says he
+doesn't like such a workaround, and radeon is not the only example of
+mutex protected mmio.
+
+So we should extend the mmiowb tracking system from spinlock to mutex,
+and maybe other locking primitives. This is not easy and error prone, so
+we solve it in the architectural code, by simply defining the __io_aw()
+hook as mmiowb(). And we no longer need to override queued_spin_unlock()
+so use the generic definition.
+
+Without this, we get such an error when run 'glxgears' on weak ordering
+architectures such as LoongArch:
+
+radeon 0000:04:00.0: ring 0 stalled for more than 10324msec
+radeon 0000:04:00.0: ring 3 stalled for more than 10240msec
+radeon 0000:04:00.0: GPU lockup (current fence id 0x000000000001f412 last fence id 0x000000000001f414 on ring 3)
+radeon 0000:04:00.0: GPU lockup (current fence id 0x000000000000f940 last fence id 0x000000000000f941 on ring 0)
+radeon 0000:04:00.0: scheduling IB failed (-35).
+[drm:radeon_gem_va_ioctl [radeon]] *ERROR* Couldn't update BO_VA (-35)
+radeon 0000:04:00.0: scheduling IB failed (-35).
+[drm:radeon_gem_va_ioctl [radeon]] *ERROR* Couldn't update BO_VA (-35)
+radeon 0000:04:00.0: scheduling IB failed (-35).
+[drm:radeon_gem_va_ioctl [radeon]] *ERROR* Couldn't update BO_VA (-35)
+radeon 0000:04:00.0: scheduling IB failed (-35).
+[drm:radeon_gem_va_ioctl [radeon]] *ERROR* Couldn't update BO_VA (-35)
+radeon 0000:04:00.0: scheduling IB failed (-35).
+[drm:radeon_gem_va_ioctl [radeon]] *ERROR* Couldn't update BO_VA (-35)
+radeon 0000:04:00.0: scheduling IB failed (-35).
+[drm:radeon_gem_va_ioctl [radeon]] *ERROR* Couldn't update BO_VA (-35)
+radeon 0000:04:00.0: scheduling IB failed (-35).
+[drm:radeon_gem_va_ioctl [radeon]] *ERROR* Couldn't update BO_VA (-35)
+
+Link: https://lore.kernel.org/dri-devel/29df7e26-d7a8-4f67-b988-44353c4270ac@amd.com/T/#t
+Link: https://lore.kernel.org/linux-arch/20240301130532.3953167-1-chenhuacai@loongson.cn/T/#t
+Cc: stable@vger.kernel.org
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
 ---
-Changes in v2:
-  - Allocate with __GFP_NOFAIL.
+ arch/loongarch/include/asm/Kbuild      |  1 +
+ arch/loongarch/include/asm/io.h        |  2 ++
+ arch/loongarch/include/asm/qspinlock.h | 18 ------------------
+ 3 files changed, 3 insertions(+), 18 deletions(-)
+ delete mode 100644 arch/loongarch/include/asm/qspinlock.h
 
- drivers/gpu/drm/nouveau/nouveau_dmem.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/gpu/drm/nouveau/nouveau_dmem.c b/drivers/gpu/drm/nouveau/nouveau_dmem.c
-index 12feecf71e7..f5ae9724ee2 100644
---- a/drivers/gpu/drm/nouveau/nouveau_dmem.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_dmem.c
-@@ -378,9 +378,9 @@ nouveau_dmem_evict_chunk(struct nouveau_dmem_chunk *chunk)
- 	dma_addr_t *dma_addrs;
- 	struct nouveau_fence *fence;
+diff --git a/arch/loongarch/include/asm/Kbuild b/arch/loongarch/include/asm/Kbuild
+index a97c0edbb866..2dbec7853ae8 100644
+--- a/arch/loongarch/include/asm/Kbuild
++++ b/arch/loongarch/include/asm/Kbuild
+@@ -6,6 +6,7 @@ generic-y += mcs_spinlock.h
+ generic-y += parport.h
+ generic-y += early_ioremap.h
+ generic-y += qrwlock.h
++generic-y += qspinlock.h
+ generic-y += rwsem.h
+ generic-y += segment.h
+ generic-y += user.h
+diff --git a/arch/loongarch/include/asm/io.h b/arch/loongarch/include/asm/io.h
+index c486c2341b66..4a8adcca329b 100644
+--- a/arch/loongarch/include/asm/io.h
++++ b/arch/loongarch/include/asm/io.h
+@@ -71,6 +71,8 @@ extern void __memcpy_fromio(void *to, const volatile void __iomem *from, size_t
+ #define memcpy_fromio(a, c, l) __memcpy_fromio((a), (c), (l))
+ #define memcpy_toio(c, a, l)   __memcpy_toio((c), (a), (l))
  
--	src_pfns = kcalloc(npages, sizeof(*src_pfns), GFP_KERNEL);
--	dst_pfns = kcalloc(npages, sizeof(*dst_pfns), GFP_KERNEL);
--	dma_addrs = kcalloc(npages, sizeof(*dma_addrs), GFP_KERNEL);
-+	src_pfns = kcalloc(npages, sizeof(*src_pfns), GFP_KERNEL | __GFP_NOFAIL);
-+	dst_pfns = kcalloc(npages, sizeof(*dst_pfns), GFP_KERNEL | __GFP_NOFAIL);
-+	dma_addrs = kcalloc(npages, sizeof(*dma_addrs), GFP_KERNEL | __GFP_NOFAIL);
++#define __io_aw() mmiowb()
++
+ #include <asm-generic/io.h>
  
- 	migrate_device_range(src_pfns, chunk->pagemap.range.start >> PAGE_SHIFT,
- 			npages);
+ #define ARCH_HAS_VALID_PHYS_ADDR_RANGE
+diff --git a/arch/loongarch/include/asm/qspinlock.h b/arch/loongarch/include/asm/qspinlock.h
+deleted file mode 100644
+index 34f43f8ad591..000000000000
+--- a/arch/loongarch/include/asm/qspinlock.h
++++ /dev/null
+@@ -1,18 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef _ASM_QSPINLOCK_H
+-#define _ASM_QSPINLOCK_H
+-
+-#include <asm-generic/qspinlock_types.h>
+-
+-#define queued_spin_unlock queued_spin_unlock
+-
+-static inline void queued_spin_unlock(struct qspinlock *lock)
+-{
+-	compiletime_assert_atomic_type(lock->locked);
+-	c_sync();
+-	WRITE_ONCE(lock->locked, 0);
+-}
+-
+-#include <asm-generic/qspinlock.h>
+-
+-#endif /* _ASM_QSPINLOCK_H */
 -- 
-2.17.1
+2.43.0
 
 
