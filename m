@@ -1,130 +1,170 @@
-Return-Path: <linux-kernel+bounces-92017-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91766-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB0FA8719C4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:42:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B7D84871644
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:09:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7BF151F242E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:42:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20A891F2413C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:09:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3834E535B9;
-	Tue,  5 Mar 2024 09:41:53 +0000 (UTC)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3807C4CB2E
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 09:41:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A74657D411;
+	Tue,  5 Mar 2024 07:09:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VZZKx7aq"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E37D845005;
+	Tue,  5 Mar 2024 07:09:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709631712; cv=none; b=Er3EDIpJTFlZgdJdBcfeDkfh8AsLzOFvVH9KPovdDKcL4zFPMwA6LPTdfKolihg8vhHLz/B9v+SJ9Q/lSXDMMAbcw5VVt377PVa6Zpay7xgWFuHw5KCPUmmqYDfwuEuUILKb3ZnA2PR5DTz+2eEiX0saLrpnG/L/aL0rmXk2pI0=
+	t=1709622565; cv=none; b=gOzRmBZ7raIUvDMsBPGRspOmtZMeaISA6F8CWsaHj++liyY0nmAjKbnT2Kcdznz3LKV32UMTVG4+/rg7/SVAzDQczMRLwVY/YwFQvPKOtHdf94QH5HjDr3Uj/G7aSqJh57CE98zlXrwR50VzS9DUnx7hke7wB6C6qaERastk/YU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709631712; c=relaxed/simple;
-	bh=Z2qwct6XTybj5nj/8GILqcSdKhOgcrszVOS6anSnpTM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sMsp1x3a2NB0qrh8rKucN9UZVFF6EepDl68Ij1e0vvmAgPU1rlU3thFrK74r6lCshLSWOTZTKQuDGlCF3YE/wQfYQE8Fwqo358oOmzpbE0nSdnISZx13MLlU9RxM3JrmVjXiVoEEbekFxnsh/BI1fCuF+yMKsmeJWSnh9i42CyM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [209.85.216.46])
-	by gateway (Coremail) with SMTP id _____8AxeejU6OZlmbIUAA--.32398S3;
-	Tue, 05 Mar 2024 17:41:42 +0800 (CST)
-Received: from mail-pj1-f46.google.com (unknown [209.85.216.46])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8CxPs_S6OZlEXVOAA--.11212S3;
-	Tue, 05 Mar 2024 17:41:39 +0800 (CST)
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-29a5f100c1aso3194785a91.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 01:41:39 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWTYfN4lRfVB4cGEfQqPWjUWTvcgLoge/ads7W8ZPXQMkoRqpW9vB6iLdq5YK++kHSdp04ZGk0I8jvW4jBwA+w/6ohslQQiMtyQAXTl
-X-Gm-Message-State: AOJu0YySYoyF5yIVDt2G9yRxFsyHw7ut5cr0WLcDeLvuYtvlHE0ISUiE
-	IavWi2beyLsHEKwWq9tiuclMrbesQQOH8Yp2rJghMrigmE+CK7GA+9JIZqQRb0C/jilhTFBibCF
-	Qo9CtFXA5zEMziZRAp+u9wFgrVnWf2u2ehD3NWQ==
-X-Google-Smtp-Source: AGHT+IFCOgUQy6Yrg/hGm/YPDL5pf6cIPrfQwg8VzhOdB0PFiQXbjuVLpWWugLmSn2Wclxftxj3A7UzLgXYKuu6Ie90=
-X-Received: by 2002:a25:1803:0:b0:dc6:aebb:168e with SMTP id
- 3-20020a251803000000b00dc6aebb168emr8119664yby.26.1709622525779; Mon, 04 Mar
- 2024 23:08:45 -0800 (PST)
+	s=arc-20240116; t=1709622565; c=relaxed/simple;
+	bh=iLJtfJRG3AykwJvs44aX4uKsd63Qlq1YiC9OCMcC31U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fOsAmeABDx/TZ9DfbtNODYS0Un2SuLv+rOvc80l/b696z3jk+HiI+HxtcVOQNHlO8/AOjb7p56Lmhu8bgX9FcQwrZabBaqxEbxRMx/6GtpC7ZBEMLRk94GPeJYh1IWRU2gfl8qsyjDy51B1E5TGaC3x1cA14JtmZSA1BcB9GIYw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VZZKx7aq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2FF9C433F1;
+	Tue,  5 Mar 2024 07:09:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709622564;
+	bh=iLJtfJRG3AykwJvs44aX4uKsd63Qlq1YiC9OCMcC31U=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VZZKx7aqHcP6Ly6lUphCoXqjWxAvksTF4ak3Y8fCg05LhRVZROMttCjmSkrJcPcnJ
+	 okAGM0RW/vHxwON1IvSMvVooywP0aEW/hsroPF4j6lU3rps8BnLdky865zVkUtzR5t
+	 QrVzxGgVK9ZQotLuqbUiFf69AvuQBaFj4NmeQdfLi8nEZkOH7UQS9EFNia1cA2FCpK
+	 uZca0/iiOLhTvkxsdGHf5B7BA1UAE6Vu5YEemVMlLa72Lb1U959dPH1lpuRdX6i2Ta
+	 JPKXxsTxF9ua9qzQ5Mb4qhJrJ2TEH9H5uEC5JHX/BRYvIYz7klwHNcIggsxcLO78y9
+	 afRcy0E/4hghA==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rhOva-000000002G7-0EMj;
+	Tue, 05 Mar 2024 08:09:30 +0100
+Date: Tue, 5 Mar 2024 08:09:30 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Krishna Kurapati <quic_kriskura@quicinc.com>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Wesley Cheng <quic_wcheng@quicinc.com>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+	linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org, quic_ppratap@quicinc.com,
+	quic_jackp@quicinc.com
+Subject: Re: [PATCH] usb: dwc3: qcom: Remove ACPI support from glue driver
+Message-ID: <ZebFKlae0a-deBKl@hovoldconsulting.com>
+References: <20240305042143.3455101-1-quic_kriskura@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240304141426.163517-1-wangrui@loongson.cn> <CANiq72mvdVrzN19PC8pNrvuBLkOEEQ3yX0WG6JcWc+RVaSM2nA@mail.gmail.com>
-In-Reply-To: <CANiq72mvdVrzN19PC8pNrvuBLkOEEQ3yX0WG6JcWc+RVaSM2nA@mail.gmail.com>
-From: WANG Rui <wangrui@loongson.cn>
-Date: Tue, 5 Mar 2024 15:08:35 +0800
-X-Gmail-Original-Message-ID: <CAHirt9iNPjHfMRS792E1MHbCQk1v6GnNVcb6LAvhskyyVg8bPw@mail.gmail.com>
-Message-ID: <CAHirt9iNPjHfMRS792E1MHbCQk1v6GnNVcb6LAvhskyyVg8bPw@mail.gmail.com>
-Subject: Re: [PATCH] loongarch: rust: Switch to use built-in rustc target
-To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Huacai Chen <chenhuacai@kernel.org>, 
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	Alice Ryhl <aliceryhl@google.com>, Jamie Cunliffe <Jamie.Cunliffe@arm.com>, 
-	Catalin Marinas <catalin.marinas@arm.com>, WANG Xuerui <kernel@xen0n.name>, 
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	loongarch@lists.linux.dev, loongson-kernel@lists.loongnix.cn
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-CM-TRANSID:AQAAf8CxPs_S6OZlEXVOAA--.11212S3
-X-CM-SenderInfo: pzdqw2txl6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj9xXoWrtryxWrWkCF48Cw13Gw17urX_yoWkXrb_X3
-	W7Cr1kGF1UuFs7Za48JrWruFn0q345tay3Z3ykXFsrXr95Zan8WFyDGa4av3Zay3yxWFs3
-	Kr1Fvwn8uw12gosvyTuYvTs0mTUanT9S1TB71UUUU8UqnTZGkaVYY2UrUUUUj1kv1TuYvT
-	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-	cSsGvfJTRUUUbf8YFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-	vaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	WUJVW8JwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-	Cr1j6rxdM2kKe7AKxVWUtVW8ZwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYI
-	kI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
-	GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMx
-	kF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4U
-	MxCIbckI1I0E14v26r1q6r43MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI
-	0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE
-	14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20x
-	vaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8
-	JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8Mq2tUUUUU==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240305042143.3455101-1-quic_kriskura@quicinc.com>
 
-On Tue, Mar 5, 2024 at 12:09=E2=80=AFAM Miguel Ojeda
-<miguel.ojeda.sandonis@gmail.com> wrote:
->
-> On Mon, Mar 4, 2024 at 3:14=E2=80=AFPM WANG Rui <wangrui@loongson.cn> wro=
-te:
-> >
-> > This commit switches to using the built-in rustc
-> > loongarch64-unknown-none-softfloat target for LoongArch.
-> >
-> > The Rust samples have been tested with this commit.
-> >
-> > Signed-off-by: WANG Rui <wangrui@loongson.cn>
-> > ---
-> > base-commit: ("rust: Refactor the build target to allow the use of buil=
-tin targets")
->
-> I couldn't apply it on top of commit f82811e22b48 in arm64's tree
-> (which is the base? -- the offset differs significantly in the arch
-> Makefile), but I nevertheless applied it manually on top of that one,
-> build-tested it for loongarch64 and boot-tested it for x86_64:
->
-> Acked-by: Miguel Ojeda <ojeda@kernel.org>
-> Tested-by: Miguel Ojeda <ojeda@kernel.org>
+On Tue, Mar 05, 2024 at 09:51:43AM +0530, Krishna Kurapati wrote:
+> Minimal ACPI support was added to the Qualcomm DWC3 glue driver in order to
+> enable USB on SDM850 and SC8180X compute platforms. The support is still
+> functional, but unnoticed regressions in other drivers indicates that no
+> one actually booting any of platforms dependent on this implementation.
+> 
+> The functionality provides is the bare minimum and is not expected to aid
+> in the effort of bringing full ACPI support to the driver in the future.
+> 
+> Remove the ACPI code from the Qualcomm DWC3 glue driver to aid in the
+> implementation of improvements that are actually used like multiport and
+> flattening device tree.
 
-Oops. The actual base is tag next-20240228. I just want to make it
-clear that this patch needs to be based on ("rust: Refactor the build
-target to allow the use of builtin targets").
+With a simple lookup function that returns the ACPI index based on name
+this shouldn't be required to add multiport support even if it may
+simplify it slightly. But IIRC it would help more with the devicetree
+binding rework.
+ 
+> Commit message by Bjorn Andersson.
+> 
+> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+> ---
+>  drivers/usb/dwc3/dwc3-qcom.c | 273 ++---------------------------------
+>  1 file changed, 11 insertions(+), 262 deletions(-)
 
-Thanks!
+You should update the Kconfig entry for USB_DWC3_QCOM as well and drop
+the ACPI dependency.
 
-Regards,
-Rui
+>  static int dwc3_qcom_probe(struct platform_device *pdev)
+>  {
+>  	struct device_node	*np = pdev->dev.of_node;
+>  	struct device		*dev = &pdev->dev;
+>  	struct dwc3_qcom	*qcom;
+>  	struct resource		*res, *parent_res = NULL;
 
->
-> Thanks!
->
-> Cheers,
-> Miguel
->
+You should drop parent_res as well.
 
+> -	struct resource		local_res;
+>  	int			ret, i;
+>  	bool			ignore_pipe_clk;
+>  	bool			wakeup_source;
+> @@ -825,14 +659,6 @@ static int dwc3_qcom_probe(struct platform_device *pdev)
+>  	platform_set_drvdata(pdev, qcom);
+>  	qcom->dev = &pdev->dev;
+>  
+> -	if (has_acpi_companion(dev)) {
+> -		qcom->acpi_pdata = acpi_device_get_match_data(dev);
+> -		if (!qcom->acpi_pdata) {
+> -			dev_err(&pdev->dev, "no supporting ACPI device data\n");
+> -			return -EINVAL;
+> -		}
+> -	}
+> -
+>  	qcom->resets = devm_reset_control_array_get_optional_exclusive(dev);
+>  	if (IS_ERR(qcom->resets)) {
+>  		return dev_err_probe(&pdev->dev, PTR_ERR(qcom->resets),
+> @@ -860,41 +686,18 @@ static int dwc3_qcom_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -
+> -	if (np) {
+> -		parent_res = res;
+> -	} else {
+> -		memcpy(&local_res, res, sizeof(struct resource));
+> -		parent_res = &local_res;
+> -
+> -		parent_res->start = res->start +
+> -			qcom->acpi_pdata->qscratch_base_offset;
+> -		parent_res->end = parent_res->start +
+> -			qcom->acpi_pdata->qscratch_base_size;
+> -
+> -		if (qcom->acpi_pdata->is_urs) {
+> -			qcom->urs_usb = dwc3_qcom_create_urs_usb_platdev(dev);
+> -			if (IS_ERR_OR_NULL(qcom->urs_usb)) {
+> -				dev_err(dev, "failed to create URS USB platdev\n");
+> -				if (!qcom->urs_usb)
+> -					ret = -ENODEV;
+> -				else
+> -					ret = PTR_ERR(qcom->urs_usb);
+> -				goto clk_disable;
+> -			}
+> -		}
+> -	}
+> +	parent_res = res;
+>  
+>  	qcom->qscratch_base = devm_ioremap_resource(dev, parent_res);
+
+And just use res here.
+
+>  	if (IS_ERR(qcom->qscratch_base)) {
+>  		ret = PTR_ERR(qcom->qscratch_base);
+> -		goto free_urs;
+> +		goto clk_disable;
+> }
+
+Looks good to me otherwise.
+
+Johan
 
