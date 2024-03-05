@@ -1,77 +1,76 @@
-Return-Path: <linux-kernel+bounces-92288-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92289-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43082871DF5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:34:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BF17871DF8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:34:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6658E1C2396D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:34:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FC1B1C23996
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:34:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4346B5917F;
-	Tue,  5 Mar 2024 11:34:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A0605786D;
+	Tue,  5 Mar 2024 11:34:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="j+XUpSrH"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="XZ4tYvqv"
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E386658208;
-	Tue,  5 Mar 2024 11:34:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00EB359B54;
+	Tue,  5 Mar 2024 11:34:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709638462; cv=none; b=pWfLScEgCDMyQs+bXBHcggrLfOI7aiQFeg3kJxDytlk6nIXlHu6aJIYnMPfMToezcK5dDKEE1jxBTGfYEzEKjIgSBbGB5ZRnHQKuBAFPRvv+pG8r3T9p/9tSvuTiHhxL7+HdqqrXTzRnkQ7UMa7kVBpzPiekrSmo5lZkDhsL1gI=
+	t=1709638465; cv=none; b=mYkeTosQAQM1/pzIB19v72AIbXi/51Q8ea69wGk8I2y7kJuk5Zid06yaAB9ZRJCNvDVQPAG00qOYmkn3dYZZZZZFvDArqdWFg4XaCE0M3n2OC/RwJ3uGhcK9eH3pJTFYMS2SIEu4iJB0AhVCZt9+9XPNafoXWoqDUBZzuf7TfpE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709638462; c=relaxed/simple;
-	bh=fpv0oJ9U8YagK74xk5eqtVNJ2I3xbky4omeorhNvWEo=;
+	s=arc-20240116; t=1709638465; c=relaxed/simple;
+	bh=TWafS46/cOn388vLX3knlaGbqPHumfrCMMRy3Z1uooE=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=hpZSy+yBOybvfKeE5VYxlVFz+qsiVm/mr4svigvylmrtUqSQTrI7lczcg9U1i4Fcmkh9R8CTuPtBVuz0tNoZdUOIvIaVHGCBNZ+uSL7cE9oLl4vlhRvyF4/XCAEgpZrTCIOIeVumFqV2C4xGL4KgOYImdEahdQoFDGElZC++j98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=j+XUpSrH; arc=none smtp.client-ip=209.85.214.173
+	 In-Reply-To:To:Cc; b=KvvzZN/le4w6dOdHws2Gu4wdQQWZtUyQFan+sGW/THECf8IOWu3HOL9Es/68g3Ob48qJ2MW2JwFk1uTUQq1tRj+H0Mu3erauX8S+s9rEAdpRnvBhTy2Z16BPKTBz9QULPgvxuWB0fzU93xO2DxJfvbEBztBmFGpBvKMu9Mf5Rxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=XZ4tYvqv; arc=none smtp.client-ip=209.85.216.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1dc0d11d1b7so45200445ad.2;
-        Tue, 05 Mar 2024 03:34:20 -0800 (PST)
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-299566373d4so3526407a91.1;
+        Tue, 05 Mar 2024 03:34:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709638460; x=1710243260;
+        d=1e100.net; s=20230601; t=1709638463; x=1710243263;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:dkim-signature:from:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=3HzkmhvWMwRuDdScv54hkeI0UvbzZ4pHSJ+FrUGu5/I=;
-        b=peLeijvVdl6wWkYVlrOwdiwymZT3z/A2rFZZtJuNsJKEr+Drc2HuNqScNeIQuHaV+u
-         p7TnVCK4eLE/r+gP6y+YKY20bF0X5LNymAz0SJtZlhAoBwyd8gOtM2TZPmrNPnzcmy2A
-         ETaTekwzgCMtQq8eWIT+4IDK5dnvC5uyn+QFZnrWy6wEfRcZDHx2yuC9k9OoJAkAjk2M
-         BKadKxGq0oAZWnFlkdSOhK+y6UrTdiC7pqBrwol28LoAtrKhRvHSwUfeyD9V5tV4JkhS
-         M2s+XxzAUNukkXfvESmcLwML+CRSsiF8lD++6W/DXeAPRiScL49JYrPGlvGijF4uVCsW
-         DThQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW63xHag4zR93zhQjRZQ6PXccpXTIBzxH2e2a4lJO/m3mFNVEAV3WNXT7GsEJTKjmzQJn0I+zZBAxzUu7v/Zmpx3GFhN3N4wZzGOHV/TPISRA7vcdfvBcu2ZmsjiuRr4kL2Mt8w8AtxVTmZT6wptldkLEm9BLDINekU06p82OAz+JkhoDO9LA==
-X-Gm-Message-State: AOJu0YxdQG3rzgSkwU9KJQYCm/exmOOyFe9hr9+6QccdNiXvufI14sE9
-	Zym6q8OPHtwufAQhQk0kNAaOlkn8btPQI1kRqOscX8n4pMGHJ/Wq
-X-Google-Smtp-Source: AGHT+IFTiJmUTFwl87q23IyWlhXuRr/fIfELN2hh99XRxtIMrOfTtlc6yGT90DD2gClkwJviU8MCGg==
-X-Received: by 2002:a17:902:db02:b0:1dc:d642:aace with SMTP id m2-20020a170902db0200b001dcd642aacemr1934203plx.0.1709638460079;
-        Tue, 05 Mar 2024 03:34:20 -0800 (PST)
+        bh=/dcQghrlt499tRG4k7pSkJgfZTHsndNjCFgJHR4E/Nw=;
+        b=hPJSsAZrid39pyZJpLvJFXUYYUpOOj4Daj+On9++jipnPBnr2NDnLY6oEiXVfffks8
+         zOCEokL+XaB6Bsk61L5shNupxbcYc85UUEQrW8ie3Km+eRlZFZuVApNiV235SeBKR/AE
+         9hjTX1PS6Gixu0R40xFz+eNZXKBh7JvjPBvno+Fj3ZL6n4w0mwbEVbd7dHjSZQd1TmHu
+         JatdbcFxmfbOfkFy7pU323rB5EYlobir7Odi3jn/BrOsKiEnvxROhDTmDyh1nF0dJ0/m
+         gNI5eX2JUr2k93Py055kX8bSxdnQz5EJv7EN07TcJDVjI2aeYB7I6ZtI9q0SSg+yU8sB
+         UvHA==
+X-Forwarded-Encrypted: i=1; AJvYcCXYRJsARuClPYyfBjrQefeaBXaahOPNLVmws9lF+3clBmz70IGstMJoZCpVUo3p/QQyGje0ZOQaJWx2cls+BKiJ8VZRS0HRBit10c8/0iDxWokvgSDZJJ+5hwOzq5WDLO7diVhzIofh8YZJDGq5O9G4O2W/Xp8KjcbJhHtkpKyLr/z2nbTyzA==
+X-Gm-Message-State: AOJu0Yw1gdS18JPKBnQh8W5t9OFS7dSYgmNNcJanOA0AF2zElEknfapc
+	gnfLGqvPZT7RhehpSKycu1qFs4YoJ74C5ts1Dn0cDB45+9qv151t
+X-Google-Smtp-Source: AGHT+IFcyb6MXz9bVUK2zcEKo8hC5CPMTtI/yp9MTxCAoF4zMPOkBO3dIzwpzNBPxsC8I9lzyEVifw==
+X-Received: by 2002:a17:90a:4813:b0:29a:5c44:2d03 with SMTP id a19-20020a17090a481300b0029a5c442d03mr8091761pjh.27.1709638463275;
+        Tue, 05 Mar 2024 03:34:23 -0800 (PST)
 Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id cp6-20020a170902e78600b001dd2bacf30asm1282755plb.162.2024.03.05.03.34.19
+        by smtp.gmail.com with ESMTPSA id il18-20020a17090b165200b0029b6a3e1794sm768448pjb.28.2024.03.05.03.34.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 03:34:19 -0800 (PST)
+        Tue, 05 Mar 2024 03:34:22 -0800 (PST)
 From: "Ricardo B. Marliere" <ricardo@marliere.net>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1709638458;
+	s=2024; t=1709638461;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=3HzkmhvWMwRuDdScv54hkeI0UvbzZ4pHSJ+FrUGu5/I=;
-	b=j+XUpSrHky5wTzgY91/qYAlt/Eobb6xpsXkETAUNAQflazQog3Z6gM6eUjxsWP8+1OAJBQ
-	IsjiefgwoZlPnvuY6tOMteS5pwkYa8iDU2t17+vP53hdXq+B7wIOneAI01IM+Ds+S4SmFv
-	VHJf+VLOHCi0NNDTXhgWWH/MqFYSQqpDjlfXq9zJTIxhEDJDqzfxKmpt/Dr5W3MeKv7pE4
-	DrvXMCHlo2D5BQRBGzEPZeoghyOO814TNr1MS9ICV/TPQ+uJ0zDgqSJWo5rWPWYO8Tjsps
-	rYWVkmZ/7+mH3jIRvUKfvWDW/plNg9wTTRaUXnrR1YmW8F16DGRN0pJa5m5e8g==
+	bh=/dcQghrlt499tRG4k7pSkJgfZTHsndNjCFgJHR4E/Nw=;
+	b=XZ4tYvqvlEXbwIiTnfnpVNU+/nPGkQx33TMQ2CFokzbx5DbGVJ5SYlfuWzFXV+9KNbGpKd
+	gU1hlJqRrGf86RYCUCpM3dJidFCXucKL6bawyl1EinFYYSY569Vn3P0IcDD6lYRykrtc7b
+	jgb6kTcCMpN22cU6wI2EGuQPknF/B/vHmqHa6yVpPVQQNsUNIM/KSqcDI0eFEjlGXLPMdi
+	eeYRFDX3WxchdPRRR8xvkTpic+8AexW79kaq81UwJ6066xWkjtOo6xqr7ATrXf8t2THUC/
+	0OPp5zT/Z1SbJpsA18GVbkp67mkUFjpcwc8lLatmChISqx4dFe0Z2oDFB4xL5A==
 Authentication-Results: ORIGINATING;
 	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Tue, 05 Mar 2024 08:34:10 -0300
-Subject: [PATCH RESEND drm-misc 1/4] drm/dp: make drm_dp_aux_dev_class
- constant
+Date: Tue, 05 Mar 2024 08:34:11 -0300
+Subject: [PATCH RESEND drm-misc 2/4] drm/sysfs: make drm_class constant
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -80,7 +79,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240305-class_cleanup-drm-v1-1-94f82740525a@marliere.net>
+Message-Id: <20240305-class_cleanup-drm-v1-2-94f82740525a@marliere.net>
 References: <20240305-class_cleanup-drm-v1-0-94f82740525a@marliere.net>
 In-Reply-To: <20240305-class_cleanup-drm-v1-0-94f82740525a@marliere.net>
 To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
@@ -97,108 +96,167 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  linux-fbdev@vger.kernel.org, linux-media@vger.kernel.org, 
  linaro-mm-sig@lists.linaro.org, 
  "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3018; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=fpv0oJ9U8YagK74xk5eqtVNJ2I3xbky4omeorhNvWEo=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl5wMzRRiMg907Bhn7rGA+MECc/mrwVvpNKldbH
- JB1VeLskzOJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZecDMwAKCRDJC4p8Y4ZY
- pvlXEACsfpJwMPU4ihjstqWt7WjHRrjk7T0s+v0WofI6JMO+xEgKiY5q5QAnL47p/YiWh5TpNVL
- 5X81jJXReN2sLxXFZL+9KZlM+M0dtzAlliyUOJu6qb53BIRZS0GNSc+tw+1P5DDkThI5VlrytgI
- PPk50hgRgYSrbKWXsANpT0N8+olqGjfwNbwvB4Hkc4XJWTEzBXunz/l1WDZs4GzB+KR88AX0GzR
- NXhcKcAfe4tyX8ybwg3F3L05PlMl9vPagrqBFKLs4Ua4KSvuBzopWwpAn2gZl3l8FBEKRactEmw
- nGVsSTHxVJCRPyXGEBxC8wNGhE2HjO5xfaFbF0hhjrKSmXk8oiUBKpqLNzL7QxdfyJaTEbb2ZVO
- pZvDn3a6XYSxCeBF48Nt8jR4XFyH9mFzL1mOfeAZPgFC4wodaKA+euH/UQj90y0PP8zWrjUETP/
- uni7JvVAoxo+Ppj4AiZOrWjq6DQz2PFO9CqX3M2wf24J9t17riKXXLNa9wIC98MDwN0MzeYps6b
- Xsfsn+uwgsCyHQam83Thn4la2EqGal2ca30xKhZiIvT5lS8g5BND/2Mru5Y3YLxyXUb/JmMO02Z
- d5LbGtzG+cO0C7dck6HxhKLZhW3gWEmKdlxDoLc9yG9gpdWxuWGalOdXN5G3e49cLtSz+vIdQBG
- 3AAPTLiufPZHqMw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4750; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=TWafS46/cOn388vLX3knlaGbqPHumfrCMMRy3Z1uooE=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl5wMzQiBiCjclrlZHoTJxk8xMwKf6UskNaNTXW
+ 9W/YR9DQ+iJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZecDMwAKCRDJC4p8Y4ZY
+ pv9pEACqUoH8iCZERpLB/OOzKOxqO6vTE6izkQWDbLe9hbraXujYS5JyxW1s0rDffD/x5NU1BNB
+ /njL5VMvSDIGflxGdslrgRzhBb/MedUSM1HcTDZlapNvtu23peHPD2iNsCWER4w9Ak/rnc3xMak
+ DTXA2p1sRJ1eKhgmmSJVmDQb3JBZPAUAuwe7HlxKIHkotWT5ahUd/mXOWM8n847jNJPZN3R4dc0
+ QcbEA7a7905yz1xrRiMPHIbK5K7ND5BOMERb+YXYdF8OlS7UynJdibJ2SKScThvoD09EBLDe0v5
+ ASAq8mBNzevgD118DLXHibbdHXm8et/InLSLFnIzxTeM2MRRj43J50YJPo2TSQbjYnio9c8Q6mm
+ 9ohwiOl5HG7fXnZieehZUkVWKwY/2hmyk8x3M9Ypin0CgPPsd/wPpg1ecICY5GPXiK7I9aa8BZv
+ sSoMttQsrvImjcMk+xnuM+KLTOK/I0LdxKMevjjMXki15kXG8FVTUA0p3Uwf47fbu3V0OgbR3JG
+ J1vG6FHo3oVS9Q4lctIwQENlX0lqED+i0ThU2sL/1uremnVo7TU5XU/HYBoIZJ2dQ0V57NnGaw/
+ b9Cogbxadf93lskA1kIAsmNdofdEhrmj0wSzjvTsgY6aNe8VIzDcwzkLv7tNMwEXlVmFkeynnSJ
+ QPNGH9n3xWVJM5g==
 X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
  fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
 Since commit 43a7206b0963 ("driver core: class: make class_register() take
 a const *"), the driver core allows for struct class to be in read-only
-memory, so move the drm_dp_aux_dev_class structure to be declared at build
-time placing it into read-only memory, instead of having to be dynamically
+memory, so move the drm_class structure to be declared at build time
+placing it into read-only memory, instead of having to be dynamically
 allocated at boot time.
 
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
 ---
- drivers/gpu/drm/display/drm_dp_aux_dev.c | 22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
+ drivers/gpu/drm/drm_internal.h       |  2 +-
+ drivers/gpu/drm/drm_privacy_screen.c |  2 +-
+ drivers/gpu/drm/drm_sysfs.c          | 44 ++++++++++++++++--------------------
+ 3 files changed, 21 insertions(+), 27 deletions(-)
 
-diff --git a/drivers/gpu/drm/display/drm_dp_aux_dev.c b/drivers/gpu/drm/display/drm_dp_aux_dev.c
-index 29555b9f03c8..213abde5b09f 100644
---- a/drivers/gpu/drm/display/drm_dp_aux_dev.c
-+++ b/drivers/gpu/drm/display/drm_dp_aux_dev.c
-@@ -54,7 +54,6 @@ struct drm_dp_aux_dev {
- #define AUX_MAX_OFFSET	(1 << 20)
- static DEFINE_IDR(aux_idr);
- static DEFINE_MUTEX(aux_idr_mutex);
--static struct class *drm_dp_aux_dev_class;
- static int drm_dev_major = -1;
+diff --git a/drivers/gpu/drm/drm_internal.h b/drivers/gpu/drm/drm_internal.h
+index 8e4faf0a28e6..a881cd442a9b 100644
+--- a/drivers/gpu/drm/drm_internal.h
++++ b/drivers/gpu/drm/drm_internal.h
+@@ -142,7 +142,7 @@ bool drm_master_internal_acquire(struct drm_device *dev);
+ void drm_master_internal_release(struct drm_device *dev);
  
- static struct drm_dp_aux_dev *drm_dp_aux_dev_get_by_minor(unsigned index)
-@@ -125,6 +124,11 @@ static struct attribute *drm_dp_aux_attrs[] = {
+ /* drm_sysfs.c */
+-extern struct class *drm_class;
++extern const struct class drm_class;
+ 
+ int drm_sysfs_init(void);
+ void drm_sysfs_destroy(void);
+diff --git a/drivers/gpu/drm/drm_privacy_screen.c b/drivers/gpu/drm/drm_privacy_screen.c
+index 6cc39e30781f..2fbd24ba5818 100644
+--- a/drivers/gpu/drm/drm_privacy_screen.c
++++ b/drivers/gpu/drm/drm_privacy_screen.c
+@@ -401,7 +401,7 @@ struct drm_privacy_screen *drm_privacy_screen_register(
+ 	mutex_init(&priv->lock);
+ 	BLOCKING_INIT_NOTIFIER_HEAD(&priv->notifier_head);
+ 
+-	priv->dev.class = drm_class;
++	priv->dev.class = &drm_class;
+ 	priv->dev.type = &drm_privacy_screen_type;
+ 	priv->dev.parent = parent;
+ 	priv->dev.release = drm_privacy_screen_device_release;
+diff --git a/drivers/gpu/drm/drm_sysfs.c b/drivers/gpu/drm/drm_sysfs.c
+index a953f69a34b6..90145f9256a2 100644
+--- a/drivers/gpu/drm/drm_sysfs.c
++++ b/drivers/gpu/drm/drm_sysfs.c
+@@ -58,7 +58,15 @@ static struct device_type drm_sysfs_device_connector = {
+ 	.name = "drm_connector",
  };
- ATTRIBUTE_GROUPS(drm_dp_aux);
  
-+static const struct class drm_dp_aux_dev_class = {
-+	.name = "drm_dp_aux_dev",
-+	.dev_groups = drm_dp_aux_groups,
-+};
+-struct class *drm_class;
++static char *drm_devnode(const struct device *dev, umode_t *mode)
++{
++	return kasprintf(GFP_KERNEL, "dri/%s", dev_name(dev));
++}
 +
- static int auxdev_open(struct inode *inode, struct file *file)
++const struct class drm_class = {
++	.name = "drm",
++	.devnode = drm_devnode,
++};
+ 
+ #ifdef CONFIG_ACPI
+ static bool drm_connector_acpi_bus_match(struct device *dev)
+@@ -93,11 +101,6 @@ static void drm_sysfs_acpi_register(void) { }
+ static void drm_sysfs_acpi_unregister(void) { }
+ #endif
+ 
+-static char *drm_devnode(const struct device *dev, umode_t *mode)
+-{
+-	return kasprintf(GFP_KERNEL, "dri/%s", dev_name(dev));
+-}
+-
+ static int typec_connector_bind(struct device *dev,
+ 				struct device *typec_connector, void *data)
  {
- 	unsigned int minor = iminor(inode);
-@@ -293,7 +297,7 @@ void drm_dp_aux_unregister_devnode(struct drm_dp_aux *aux)
- 
- 	minor = aux_dev->index;
- 	if (aux_dev->dev)
--		device_destroy(drm_dp_aux_dev_class,
-+		device_destroy(&drm_dp_aux_dev_class,
- 			       MKDEV(drm_dev_major, minor));
- 
- 	DRM_DEBUG("drm_dp_aux_dev: aux [%s] unregistering\n", aux->name);
-@@ -309,7 +313,7 @@ int drm_dp_aux_register_devnode(struct drm_dp_aux *aux)
- 	if (IS_ERR(aux_dev))
- 		return PTR_ERR(aux_dev);
- 
--	aux_dev->dev = device_create(drm_dp_aux_dev_class, aux->dev,
-+	aux_dev->dev = device_create(&drm_dp_aux_dev_class, aux->dev,
- 				     MKDEV(drm_dev_major, aux_dev->index), NULL,
- 				     "drm_dp_aux%d", aux_dev->index);
- 	if (IS_ERR(aux_dev->dev)) {
-@@ -330,11 +334,9 @@ int drm_dp_aux_dev_init(void)
+@@ -142,19 +145,16 @@ int drm_sysfs_init(void)
  {
- 	int res;
+ 	int err;
  
--	drm_dp_aux_dev_class = class_create("drm_dp_aux_dev");
--	if (IS_ERR(drm_dp_aux_dev_class)) {
--		return PTR_ERR(drm_dp_aux_dev_class);
--	}
--	drm_dp_aux_dev_class->dev_groups = drm_dp_aux_groups;
-+	res = class_register(&drm_dp_aux_dev_class);
-+	if (res)
-+		return res;
+-	drm_class = class_create("drm");
+-	if (IS_ERR(drm_class))
+-		return PTR_ERR(drm_class);
++	err = class_register(&drm_class);
++	if (err)
++		return err;
  
- 	res = register_chrdev(0, "aux", &auxdev_fops);
- 	if (res < 0)
-@@ -343,12 +345,12 @@ int drm_dp_aux_dev_init(void)
+-	err = class_create_file(drm_class, &class_attr_version.attr);
++	err = class_create_file(&drm_class, &class_attr_version.attr);
+ 	if (err) {
+-		class_destroy(drm_class);
+-		drm_class = NULL;
++		class_unregister(&drm_class);
+ 		return err;
+ 	}
  
+-	drm_class->devnode = drm_devnode;
+-
+ 	drm_sysfs_acpi_register();
  	return 0;
- out:
--	class_destroy(drm_dp_aux_dev_class);
-+	class_unregister(&drm_dp_aux_dev_class);
- 	return res;
+ }
+@@ -166,12 +166,9 @@ int drm_sysfs_init(void)
+  */
+ void drm_sysfs_destroy(void)
+ {
+-	if (IS_ERR_OR_NULL(drm_class))
+-		return;
+ 	drm_sysfs_acpi_unregister();
+-	class_remove_file(drm_class, &class_attr_version.attr);
+-	class_destroy(drm_class);
+-	drm_class = NULL;
++	class_remove_file(&drm_class, &class_attr_version.attr);
++	class_unregister(&drm_class);
  }
  
- void drm_dp_aux_dev_exit(void)
+ static void drm_sysfs_release(struct device *dev)
+@@ -372,7 +369,7 @@ int drm_sysfs_connector_add(struct drm_connector *connector)
+ 		return -ENOMEM;
+ 
+ 	device_initialize(kdev);
+-	kdev->class = drm_class;
++	kdev->class = &drm_class;
+ 	kdev->type = &drm_sysfs_device_connector;
+ 	kdev->parent = dev->primary->kdev;
+ 	kdev->groups = connector_dev_groups;
+@@ -550,7 +547,7 @@ struct device *drm_sysfs_minor_alloc(struct drm_minor *minor)
+ 			minor_str = "card%d";
+ 
+ 		kdev->devt = MKDEV(DRM_MAJOR, minor->index);
+-		kdev->class = drm_class;
++		kdev->class = &drm_class;
+ 		kdev->type = &drm_sysfs_device_minor;
+ 	}
+ 
+@@ -579,10 +576,7 @@ struct device *drm_sysfs_minor_alloc(struct drm_minor *minor)
+  */
+ int drm_class_device_register(struct device *dev)
  {
- 	unregister_chrdev(drm_dev_major, "aux");
--	class_destroy(drm_dp_aux_dev_class);
-+	class_unregister(&drm_dp_aux_dev_class);
+-	if (!drm_class || IS_ERR(drm_class))
+-		return -ENOENT;
+-
+-	dev->class = drm_class;
++	dev->class = &drm_class;
+ 	return device_register(dev);
  }
+ EXPORT_SYMBOL_GPL(drm_class_device_register);
 
 -- 
 2.43.0
