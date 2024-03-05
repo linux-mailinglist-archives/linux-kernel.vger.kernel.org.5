@@ -1,114 +1,90 @@
-Return-Path: <linux-kernel+bounces-92627-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92642-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9ED3987230D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:44:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E607E87234C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:57:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 53F181F223E4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:44:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 81E9FB24728
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:57:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53EF7127B65;
-	Tue,  5 Mar 2024 15:44:09 +0000 (UTC)
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 454C112838E;
+	Tue,  5 Mar 2024 15:56:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b="SF9VsMi3"
+Received: from sender4-op-o15.zoho.com (sender4-op-o15.zoho.com [136.143.188.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A93085944;
-	Tue,  5 Mar 2024 15:44:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709653448; cv=none; b=XrBa6uqePs2OPwaZqIoyFOK/cLT84ZczEWkToFGfefg3Nz+M2f3ljZVKHoZfBcs3Jn8Olh5HSMzGHQJlmGHQ1WKo1sEMJtjOSFbTopmo1tWjNXruknVG4QsY+5gIMekhRrS5ynrFR53KhJn8vwp7Gw4PTj0640jvm0SC1Y+sk2o=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709653448; c=relaxed/simple;
-	bh=MnnHCdDfPrQPB8WD5/lqBatvO68cm49it20wP3Yp/aY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SGdLYjcXLWBCitB1HPozNI2e3Gglt4G/vxWR/2b2NfVKoLoEx0icMYV2XAbSrJKGMNT5yty6D+7W19oKffH79FfFkadvqSYDsi57YvLbSNFGHausjBmQdaZdQbGq/0NcFqMHREOFCIFLvxk953oM9du7yG6H/9LEyzIe1qZRdMA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
-Received: from [141.14.220.34] (g34.guest.molgen.mpg.de [141.14.220.34])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pmenzel)
-	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 92E3261E5FE36;
-	Tue,  5 Mar 2024 16:43:49 +0100 (CET)
-Message-ID: <84dd5c01-906c-4e13-9d8c-e5350f718d56@molgen.mpg.de>
-Date: Tue, 5 Mar 2024 16:43:49 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8C685C604
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 15:55:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.15
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709654160; cv=pass; b=qtdXLNq5kO8Z7D66jq9HMslFdswkHf5c+xYUru8zfnbdRyEGoFz99Kr8K5jBS9aEEEs4SIUJZdHgDIfpVps0RE4t6DWItv4fOdoMNfJ4yXInoqDjaeeD7Fmqyro8gAO7hn6URBH66N/+JDchdj9p4r76vPVXsQqkSxHCkpiiLdE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709654160; c=relaxed/simple;
+	bh=KzsuZzqms1SpSDUV2y+JDVPqV/15KCbuT8pNLNMpXoc=;
+	h=Date:Message-ID:From:To:Subject:MIME-Version:Content-Type; b=RE8m+RH6wPTFwbJzDtFUp9hUP+K56Cxpub3jxBmCPsMTOdZyJo2upiq6MSoCU9hDBGnrTrwB0wdZteDBTjxrtR49OBRdF/5H/dgeW4FO8e8KnswMDfLKF0D+kXknZjONTALa9P76/TVyCiw/PLiVzSVya7qfx9hWOzKEAbVMK1Q=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux.beauty; spf=pass smtp.mailfrom=linux.beauty; dkim=pass (1024-bit key) header.d=linux.beauty header.i=me@linux.beauty header.b=SF9VsMi3; arc=pass smtp.client-ip=136.143.188.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux.beauty
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.beauty
+ARC-Seal: i=1; a=rsa-sha256; t=1709654152; cv=none; 
+	d=zohomail.com; s=zohoarc; 
+	b=mnaVLN5TQKLsO9vpo7V5Z7YozEO+k8yS6YlinagRUSGjbJq9LHybEVKN2u963dMZjCgAgyQtLDJckpX1rU/ho5puheaTyxTelFm91giUZrrZhoR5AJlvakWS+pdgepE5iS+mEIX/ojMtZ3EYNKXEyVxW3Cjkxw1LLXCydV8PPFQ=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+	t=1709654152; h=Content-Type:Date:Date:From:From:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To:Cc; 
+	bh=vDtouJ503DsmZpekKET0gTVEFHANxjrrVoxMk40zba8=; 
+	b=FlG2ZWTXQHrxGN7Hc/giqjpo+Ck7JTM05AdMEK3ZranlhTSC65C4dgqTtWC6Iy/G4IsqvdOnMXDAQ8h/xlhIWo3P+LybggebpA+TrYBFBUlfRRwdeZnfT9V5+d89dc8rQkBh3vk3OsSK3/wL7q6Ct2KcxpA7fTfWjEiBPKzE4Us=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+	dkim=pass  header.i=linux.beauty;
+	spf=pass  smtp.mailfrom=me@linux.beauty;
+	dmarc=pass header.from=<me@linux.beauty>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1709654152;
+	s=zmail; d=linux.beauty; i=me@linux.beauty;
+	h=Date:Date:Message-ID:From:From:To:To:Subject:Subject:MIME-Version:Content-Type:Message-Id:Reply-To:Cc;
+	bh=vDtouJ503DsmZpekKET0gTVEFHANxjrrVoxMk40zba8=;
+	b=SF9VsMi3uXxgZ6G3XmyV21jJXgvUseU7CKb1r6iNaWWZWpsIM2OOEkuGaM4g5KoB
+	tvQNk+XJnytLt7PA+Q+iYjs0HC0S38HPCoiF/c1WasiWc3uiamB3hxT+n0J2k7rkS+q
+	0JAJusUtKZ5oaIthuplSuQW4cIs71bQxlqV2jADw=
+Received: from lchen-jiaolong.linux.beauty (116.169.7.108 [116.169.7.108]) by mx.zohomail.com
+	with SMTPS id 1709654150072859.7482347338068; Tue, 5 Mar 2024 07:55:50 -0800 (PST)
+Date: Tue, 05 Mar 2024 23:44:14 +0800
+Message-ID: <87frx4r8dt.wl-me@linux.beauty>
+From: Li Chen <me@linux.beauty>
+To: Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>, Dwaipayan Ray <dwaipayanray1@gmail.com>, Lukas Bulwahn <lukas.bulwahn@gmail.com>, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH 0/1] Guiding Use of ssleep over msleep for Whole-Second Delays
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?ISO-8859-4?Q?Goj=F2?=) APEL-LB/10.8 EasyPG/1.0.0
+ Emacs/29.2 (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] tpm,tpm_tis: Avoid warning splat at shutdown
-Content-Language: en-US
-To: Lino Sanfilippo <l.sanfilippo@kunbus.com>
-Cc: jarkko@kernel.org, peterhuewe@gmx.de, LinoSanfilippo@gmx.de,
- p.rosenberger@kunbus.com, lukas@wunner.de, jgg@ziepe.ca,
- linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-References: <20240201113646.31734-1-l.sanfilippo@kunbus.com>
-From: Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <20240201113646.31734-1-l.sanfilippo@kunbus.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Dear Lino,
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-ZohoMailClient: External
 
 
-Thank you for the patch.
 
-Am 01.02.24 um 12:36 schrieb Lino Sanfilippo:
-> If interrupts are not activated the work struct 'free_irq_work' is not
-> initialized. This results in a warning splat at module shutdown.
-> 
-> Fix this by always initializing the work regardless of whether interrupts
-> are activated or not.
-> 
-> cc: stable@vger.kernel.org
-> Fixes: 481c2d14627d ("tpm,tpm_tis: Disable interrupts after 1000 unhandled IRQs")
-> Reported-by: Jarkko Sakkinen <jarkko@kernel.org>
-> Closes: https://lore.kernel.org/all/CX32RFOMJUQ0.3R4YCL9MDCB96@kernel.org/
-> Signed-off-by: Lino Sanfilippo <l.sanfilippo@kunbus.com>
-> ---
->   drivers/char/tpm/tpm_tis_core.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
-> index 1b350412d8a6..64c875657687 100644
-> --- a/drivers/char/tpm/tpm_tis_core.c
-> +++ b/drivers/char/tpm/tpm_tis_core.c
-> @@ -919,8 +919,6 @@ static int tpm_tis_probe_irq_single(struct tpm_chip *chip, u32 intmask,
->   	int rc;
->   	u32 int_status;
->   
-> -	INIT_WORK(&priv->free_irq_work, tpm_tis_free_irq_func);
-> -
->   	rc = devm_request_threaded_irq(chip->dev.parent, irq, NULL,
->   				       tis_int_handler, IRQF_ONESHOT | flags,
->   				       dev_name(&chip->dev), chip);
-> @@ -1132,6 +1130,7 @@ int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
->   	priv->phy_ops = phy_ops;
->   	priv->locality_count = 0;
->   	mutex_init(&priv->locality_count_mutex);
-> +	INIT_WORK(&priv->free_irq_work, tpm_tis_free_irq_func);
->   
->   	dev_set_drvdata(&chip->dev, priv);
+This change particularly targets replacing msleep() with ssleep() for
+delays that are clear multiples of 1000ms, enhancing code semantics and
+readability.
 
-This is commit d6fb14208e22 in jarkko/next.
+I'm contemplating a kernel-wide update to conform to this practice,
+pending community feedback. While a sed script
+(like '/\bmsleep\s*\(\s*([0-9]+000)\s*\);/{s/\bmsleep\s*\(\s*([0-9]+)000\s*\);/ssleep(\1);/g}')
+could automate this, I'm cautious of potential implications and seek
+your thoughts on both the patch and the idea of a broad codebase update.
 
-I tested this patch on top of Linux 6.8-rc7 on a Dell OptiPlex 5055 [1] 
-and it fixes the issue there too.
+Li Chen (1):
+  checkpatch: Add warning for msleep with durations suitable for ssleep
 
+ scripts/checkpatch.pl | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-Kind regards,
+-- 
+2.44.0
 
-Paul
-
-
-[1]: https://lore.kernel.org/all/CYJ163J3I09U.2XMVZ0BLWV1Y1@seitikki/
 
