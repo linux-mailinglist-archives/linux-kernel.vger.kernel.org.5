@@ -1,236 +1,224 @@
-Return-Path: <linux-kernel+bounces-92465-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92466-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CBF38720B2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:47:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F3818720BB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:47:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BEF8AB212C0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:47:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 837101C211B1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:47:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0701685C7B;
-	Tue,  5 Mar 2024 13:47:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 027FC8613A;
+	Tue,  5 Mar 2024 13:47:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UvxHncYk"
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="mew/wGtc"
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B42958593E;
-	Tue,  5 Mar 2024 13:47:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A8108593E;
+	Tue,  5 Mar 2024 13:47:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709646456; cv=none; b=p1qf/Wgd12Il4iPUkhtWJiwE24/bzw0DxVLe+MR81l8lDBqlcfNnqyo1Rj+w57Aie0O2FISq/RayNiDHkawiBX7awKqwlf4g44Hg6SxanNPp3t63uOGanGsJk3/K6wCO0c5yYv3EGA655MOvdBYqnCinIgCOV/FsLJTU1kNLu/w=
+	t=1709646471; cv=none; b=aKCW+eudsMqLWrU/lcGRBmaGOOSKzYRScb+UorgPV+i0TzviljT1BY66RTSRFDl+a7p3cKyqrsFTBeege8t1wMaaZBiTQA1D3mZK7UeqQWID75xpZ2nuSRnbu5KVmaTGCqmmggfWacIxCiI7l7M5/S9bMuu7Yw7q0mighZFlfe0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709646456; c=relaxed/simple;
-	bh=S5ZNv7E8RgnA9nV9q0H3S6osZ6ssuaeHV9OzVm1dFFY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cnqVEiRM9r+j5nTXRkRhxadh0SbOOGJjNjL2SKkvsuRd/eybMkv+TBgGUpDLsTrLZ2G54nZmOwX1vFGAUxTilSFwhyP8guJQqdBy4Y8elqhsfB/eqoP/jjH/+iVwU5OabQWU0HFdhRUBxfUi7Gbp4kiCpV1joPBYYCX259PLgSs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UvxHncYk; arc=none smtp.client-ip=209.85.215.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5d3907ff128so5532918a12.3;
-        Tue, 05 Mar 2024 05:47:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709646454; x=1710251254; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NdMAZiRIAHsJUc1Mjq85NsXecYABbu9svdLTciq/OhY=;
-        b=UvxHncYk8g9gYclCWu6+WJ0YfIESBUGAfXLOPTzGrMzb96ZJTh8WjIcoNso+4o716O
-         vPXOMHLbyPAik5cncIgLfkBnl4Urlbclqh7rpqzd8Aa8FB+PEJ7xjCBg1H8BNXBESyrT
-         czratn4oUa6bTZd96tUiorray17uM8YGjlQT0dIG/d6Hb9Ax4Ashb7FBCQ6h/PUmm5Xm
-         Y00Jv+br8ogtoD9ux1BvP+Ilc8+9sJx+KRme04ViZmh4gCYUxRvD6L3ovmi2NZB5Zky3
-         b0Ffb0uXTFoC8phcO76H4As80+ucLQVjuDgT1d3MdtDAJPKjycONXbMY9FwXIpR0wd65
-         Kf0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709646454; x=1710251254;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NdMAZiRIAHsJUc1Mjq85NsXecYABbu9svdLTciq/OhY=;
-        b=mo26yhWPQvDjuyAzEIL8d80Yn5yaFXDz2hMf8jvHj6GympEhgn1euTX+84kjm+PdNG
-         dArtRqksPExfCCaxRC5z3q+vfPX067vZLPLciNtsZ0D2uyBUrod6SzXwxanFJKKU1oSO
-         cxADsT2J2FrWP3LpUOUtDDaV3KZuZWtDm0JGvCVt9s3zozOZlf1kn0ooqRMIJDcZmnOA
-         1nGGp9fOi2aKJXr0y4GXgkxFd2JVGgfn64AHXRL1k2dAP9aUJ1bIJSpxdkS5naDE/elZ
-         aJhH0Q96UcbJ4jkykUTdoX8GcIXVn4TenU9Aclv26e45LHaK2lPmEVWOGFlrBVIVNR2F
-         VB1g==
-X-Forwarded-Encrypted: i=1; AJvYcCUvNIA9E19VKV+5BTJsTIT0EvQxBHl7XStAT4GlIKE/M/lTLgfa1bMNov0JeYZgMXqIBhTkR9KjDt7CS3Tz+RxgNF20udm9pD208wPe14i8ZG8oyfhLs5BK4/dwEVEb8Toig9c/pNXZc62g2+J0ghw=
-X-Gm-Message-State: AOJu0Yzs3hC2Vbd42uhwDgS5Et3q6y5JWDXsvOvoIb7BIHH5iJpKuVNh
-	V1pOnYzfrwZQa0kyMHTtq1jjSJax8tkSdcVXmPFtwICeUxfF/Go5wJJ0ewzRMKfOrwQqu16FNZf
-	h/YiT4R9kIBzGiR/I6W0zMlZSn7Y=
-X-Google-Smtp-Source: AGHT+IFIyTA9lyBuwaMRD+Ynxt5VrqnElevZJi9yhFl7HItD+Z67hgXbxvk0yLdnGIfu0In26xytbWEI6KxA1jrOO28=
-X-Received: by 2002:a17:90a:f191:b0:29b:2a8:9a89 with SMTP id
- bv17-20020a17090af19100b0029b02a89a89mr10234445pjb.21.1709646453778; Tue, 05
- Mar 2024 05:47:33 -0800 (PST)
+	s=arc-20240116; t=1709646471; c=relaxed/simple;
+	bh=PSQDKOjTYlxyNhw+5gg0aHr6AbyCsuy0sLTOZ2AjNf0=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=WgavJDu0foTNTKV6izsrRx8Pa4gXOE3uEUcLS1Mt61YqR/b+bK+gAe5Cfsj9pvMXbTBwVob9/XnOifC5rptkvj5usMmaQhh5s1N5vUwGBeSSDWdU1tLmqQV3ytm4dAL7ohdcnsjAq9DlocsNH4YmNil/98mfM9rZLvOlHy4iC3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=mew/wGtc; arc=none smtp.client-ip=37.18.73.165
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 4492B10000D;
+	Tue,  5 Mar 2024 16:47:38 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 4492B10000D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1709646458;
+	bh=fcKXA9lISEMg682+/DBPrSA2kktQOMdU0ud7akHaBpk=;
+	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version:From;
+	b=mew/wGtcPW1yjR9vUouwfuKRMUg+JtvkzC4/2j5wsnQXzRLPwZmgrl0cUEQ3k/xE/
+	 CozZw8m7QSBItRa1G3ZgTkzGy0Ymcq81Ea023w2lx9UqH4dxLk23oTRC/BNp/wrPmO
+	 BaHRuPzJJ7Iuyn6pZ2pZmLBSwLZRh2wvUgf3Wgi0M03ffVAP2+o78/QzEpQ2gyoNo+
+	 JQl3fvzl0FSBJg+xKM7fOT6RpYd5JCf+G9dvXAgqX8G2Zg3yr8TCUYyAiD+IzHATW2
+	 3dpkEnPIJ0Lp6Q9NxSAlTGuAIuxC8iVvsQHQkSkAeE1DeXzH7mDD1pGYvOzcFSaBcU
+	 jUIyLIdAXPBrQ==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Tue,  5 Mar 2024 16:47:38 +0300 (MSK)
+Received: from p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) by
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 5 Mar 2024 16:47:37 +0300
+Received: from p-i-exch-sc-m01.sberdevices.ru ([fe80::6d41:e8f1:b95e:ba1]) by
+ p-i-exch-sc-m01.sberdevices.ru ([fe80::6d41:e8f1:b95e:ba1%7]) with mapi id
+ 15.02.1118.040; Tue, 5 Mar 2024 16:47:37 +0300
+From: Alexey Romanov <avromanov@salutedevices.com>
+To: Jerome Brunet <jbrunet@baylibre.com>
+CC: "neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
+	"clabbe@baylibre.com" <clabbe@baylibre.com>, "herbert@gondor.apana.org.au"
+	<herbert@gondor.apana.org.au>, "davem@davemloft.net" <davem@davemloft.net>,
+	"robh+dt@kernel.org" <robh+dt@kernel.org>,
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+	"conor+dt@kernel.org" <conor+dt@kernel.org>, "khilman@baylibre.com"
+	<khilman@baylibre.com>, "martin.blumenstingl@googlemail.com"
+	<martin.blumenstingl@googlemail.com>, "vadim.fedorenko@linux.dev"
+	<vadim.fedorenko@linux.dev>, "linux-crypto@vger.kernel.org"
+	<linux-crypto@vger.kernel.org>, "linux-amlogic@lists.infradead.org"
+	<linux-amlogic@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, kernel <kernel@sberdevices.ru>
+Subject: Re: [PATCH v5 03/21] drivers: crypto: meson: make CLK controller
+ optional
+Thread-Topic: [PATCH v5 03/21] drivers: crypto: meson: make CLK controller
+ optional
+Thread-Index: AQHaa9yRWJ/V2yQniEGD1LRIiVhVdrEizjUAgASdYgCAAZG9AA==
+Date: Tue, 5 Mar 2024 13:47:37 +0000
+Message-ID: <20240305134732.z6eyo4nppj7oc2su@cab-wsm-0029881.sigma.sbrf.ru>
+References: <20240301132936.621238-1-avromanov@salutedevices.com>
+ <20240301132936.621238-4-avromanov@salutedevices.com>
+ <1jwmqmrmva.fsf@starbuckisacylon.baylibre.com>
+ <20240304134923.hk5xp5rs3itgw3pk@cab-wsm-0029881.sigma.sbrf.ru>
+In-Reply-To: <20240304134923.hk5xp5rs3itgw3pk@cab-wsm-0029881.sigma.sbrf.ru>
+Accept-Language: ru-RU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <591DBD4D237CE74D9FE5610D447E944D@sberdevices.ru>
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <6be2558b8462fc08095c24c9257563ab5f3ae013.1708001398.git.geert+renesas@glider.be>
- <kycepdxukfsww3tnxoo5hoiuo3vcgpqqmynokzhtl4vodgm6zc@ih4uhw7gz4jh>
- <CAMuHMdVf7ophCwKt-n_N-LBHV4+t14Gjb4d1O0T8FDk_9xMFtA@mail.gmail.com>
- <CAHCN7xJ65RP8TO7cS0p5DwE6zru5NEF0_JA+8siT_OpSeLD7pA@mail.gmail.com>
- <CAHCN7x+EnSU8qk5dBFco=0vkeknGq18qEN7vFmZs0_q83T_3+w@mail.gmail.com> <76065296ad514898e2b8c29cd921c104b3692ae0.camel@imgtec.com>
-In-Reply-To: <76065296ad514898e2b8c29cd921c104b3692ae0.camel@imgtec.com>
-From: Adam Ford <aford173@gmail.com>
-Date: Tue, 5 Mar 2024 07:47:22 -0600
-Message-ID: <CAHCN7xJ6uEghqDcUTKKQg7Lcg8uF55rz=vEHF=1xHRYfsDNGsA@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/imagination: DRM_POWERVR should depend on ARCH_K3
-To: Frank Binns <Frank.Binns@imgtec.com>
-Cc: "geert@linux-m68k.org" <geert@linux-m68k.org>, 
-	"marek.vasut@mailbox.org" <marek.vasut@mailbox.org>, "tzimmermann@suse.de" <tzimmermann@suse.de>, 
-	Matt Coster <Matt.Coster@imgtec.com>, "javierm@redhat.com" <javierm@redhat.com>, 
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, 
-	"linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>, "airlied@gmail.com" <airlied@gmail.com>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "nm@ti.com" <nm@ti.com>, 
-	"maarten.lankhorst@linux.intel.com" <maarten.lankhorst@linux.intel.com>, Sarah Walker <Sarah.Walker@imgtec.com>, 
-	"daniel@ffwll.ch" <daniel@ffwll.ch>, "mripard@kernel.org" <mripard@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 183875 [Feb 29 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.3
+X-KSMG-AntiSpam-Envelope-From: avromanov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, FromAlignment: s
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/02/29 19:21:00 #23899999
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-On Tue, Mar 5, 2024 at 5:58=E2=80=AFAM Frank Binns <Frank.Binns@imgtec.com>=
- wrote:
->
-> Hi Adam,
->
-> Sorry for not responding sooner. I've recently just returned from paterni=
-ty
-> leave, so just catching up on everything.
-
-Congratulations!
-
->
-> On Thu, 2024-02-15 at 11:22 -0600, Adam Ford wrote:
-> > On Thu, Feb 15, 2024 at 11:10=E2=80=AFAM Adam Ford <aford173@gmail.com>=
- wrote:
-> > > On Thu, Feb 15, 2024 at 10:54=E2=80=AFAM Geert Uytterhoeven
-> > > <geert@linux-m68k.org> wrote:
-> > > > Hi Maxime,
-> > > >
-> > > > On Thu, Feb 15, 2024 at 5:18=E2=80=AFPM Maxime Ripard <mripard@kern=
-el.org> wrote:
-> > > > > On Thu, Feb 15, 2024 at 01:50:09PM +0100, Geert Uytterhoeven wrot=
-e:
-> > > > > > Using the Imagination Technologies PowerVR Series 6 GPU require=
-s a
-> > > > > > proprietary firmware image, which is currently only available f=
-or Texas
-> > > > > > Instruments K3 AM62x SoCs.  Hence add a dependency on ARCH_K3, =
-to
-> > > > > > prevent asking the user about this driver when configuring a ke=
-rnel
-> > > > > > without Texas Instruments K3 Multicore SoC support.
-> > > > >
-> > > > > This wasn't making sense the first time you sent it, and now that=
- commit
-> > > > > log is just plain wrong. We have firmwares for the G6110, GX6250,
-> > > > > GX6650, BXE-4-32, and BXS-4-64 models, which can be found on (at =
-least)
-> > > > > Renesas, Mediatek, Rockchip, TI and StarFive, so across three
-> > > >
-> > > > I am so happy to be proven wrong!
-> > > > Yeah, GX6650 is found on e.g. R-Car H3, and GX6250 on e.g. R-Car M3=
--W.
-> > > >
-> > > > > architectures and 5 platforms. In two months.
-> > > >
-> > > > That sounds like great progress, thanks a lot!
-> > > >
-> > > Geert,
+On Mon, Mar 04, 2024 at 01:49:46PM +0000, Alexey Romanov wrote:
+> Hello Jerome,
+>=20
+> On Fri, Mar 01, 2024 at 04:21:20PM +0100, Jerome Brunet wrote:
+> >=20
+> > On Fri 01 Mar 2024 at 16:29, Alexey Romanov <avromanov@salutedevices.co=
+m> wrote:
+> >=20
+> > > Amlogic crypto IP doesn't take a clock input on some
+> > > SoCs: AXG / A1 / S4 / G12. So make it optional.
 > > >
-> > > > Where can I find these firmwares? Linux-firmware[1] seems to lack a=
-ll
-> > > > but the original K3 AM62x one.
+> >=20
+> > I commented this patch on v2 and the comment keep on being un-addressed=
+.
+> >=20
+> > The SoC either:
+> > * has a clock that is required for the IP to work
+> > * Or does not
+> >=20
+> > It is not something you are free to provide or not.
+> >=20
+> > For the record, I find very hard believe that some SoC would have clock=
+,
+> > and other would not, for the same HW.
+> >=20
+> > Isn't it more likely that the clock just happens to be left enabled by
+> > the bootloader on some SoC and it conviently allows to ignore it ?
+>=20
+>=20
+> S905X and newer SoC's uses DMA engine for crypto HW and they
+> don't required clock input to work. Clock input is needed for
+> blkmv engine.
+>=20
+> Therefore, I'm not sure that it is needed for GXL too (and the second
+> interrupt line). I tested it on vim1 board witouht them and everything
+> works correctly.
+
+Amlogic says that the crypto HW based on DMA engine doesn't require
+a clock input. GXL uses DMA engine, so, I think we have to remove
+whole clock controller calls in the next series from driver/dts/bindings.
+And the second interrupt line from crypto node in meson-gxl.dtsi too.
+
+>=20
+> >=20
+> > > Signed-off-by: Alexey Romanov <avromanov@salutedevices.com>
+> > > ---
+> > >  drivers/crypto/amlogic/amlogic-gxl-core.c | 14 +++-----------
+> > >  1 file changed, 3 insertions(+), 11 deletions(-)
 > > >
-> > > I think PowerVR has a repo [1], but the last time I checked it, the
-> > > BVNC for the firmware didn't match what was necessary for the GX6250
-> > > on the RZ/G2M.  I can't remember what the corresponding R-Car3 model
-> > > is.  I haven't tried recently because I was told more documentation
-> > > for firmware porting would be delayed until everything was pushed int=
-o
-> > > the kernel and Mesa.  Maybe there is a better repo and/or newer
-> > > firmware somewhere else.
-> > >
-> > I should have doubled checked the repo contents before I sent my last
-> > e-mail , but it appears the firmware  [2] for the RZ/G2M, might be
-> > present now. I don't know if there are driver updates necessary. I
-> > checked my e-mails, but I didn't see any notification, or I would have
-> > tried it earlier.  Either way, thank you Frank for adding it.  I'll
-> > try to test when I have some time.
-> >
->
-> You may have noticed from one of Matt's emails that we now have a set of =
-repos
-> (linux, linux-firmware and Mesa) in our own area on freedesktop.org GitLa=
-b:
-> https://gitlab.freedesktop.org/imagination/
->
-> We'll be using this as a staging area for work that isn't ready to be ups=
-treamed
-> yet (including firmware binaries).
->
+> > > diff --git a/drivers/crypto/amlogic/amlogic-gxl-core.c b/drivers/cryp=
+to/amlogic/amlogic-gxl-core.c
+> > > index e9e733ed98e0..a3a69a59f476 100644
+> > > --- a/drivers/crypto/amlogic/amlogic-gxl-core.c
+> > > +++ b/drivers/crypto/amlogic/amlogic-gxl-core.c
+> > > @@ -269,16 +269,11 @@ static int meson_crypto_probe(struct platform_d=
+evice *pdev)
+> > >  		dev_err(&pdev->dev, "Cannot request MMIO err=3D%d\n", err);
+> > >  		return err;
+> > >  	}
+> > > -	mc->busclk =3D devm_clk_get(&pdev->dev, "blkmv");
+> > > +
+> > > +	mc->busclk =3D devm_clk_get_optional_enabled(&pdev->dev, "blkmv");
+> > >  	if (IS_ERR(mc->busclk)) {
+> > >  		err =3D PTR_ERR(mc->busclk);
+> > > -		dev_err(&pdev->dev, "Cannot get core clock err=3D%d\n", err);
+> > > -		return err;
+> > > -	}
+> > > -
+> > > -	err =3D clk_prepare_enable(mc->busclk);
+> > > -	if (err !=3D 0) {
+> > > -		dev_err(&pdev->dev, "Cannot prepare_enable busclk\n");
+> > > +		dev_err(&pdev->dev, "Cannot get and enable core clock err=3D%d\n",=
+ err);
+> > >  		return err;
+> > >  	}
+> > > =20
+> > > @@ -306,7 +301,6 @@ static int meson_crypto_probe(struct platform_dev=
+ice *pdev)
+> > >  	meson_unregister_algs(mc);
+> > >  error_flow:
+> > >  	meson_free_chanlist(mc, mc->flow_cnt - 1);
+> > > -	clk_disable_unprepare(mc->busclk);
+> > >  	return err;
+> > >  }
+> > > =20
+> > > @@ -321,8 +315,6 @@ static void meson_crypto_remove(struct platform_d=
+evice *pdev)
+> > >  	meson_unregister_algs(mc);
+> > > =20
+> > >  	meson_free_chanlist(mc, mc->flow_cnt - 1);
+> > > -
+> > > -	clk_disable_unprepare(mc->busclk);
+> > >  }
+> > > =20
+> > >  static const struct meson_pdata meson_gxl_pdata =3D {
+> >=20
+> >=20
+> > --=20
+> > Jerome
+>=20
+> --=20
+> Thank you,
+> Alexey
 
-I tried to play with these a little, but it seems like there is still
-a fair amount of work to be done on the 6XT series. I tried to add the
-device tree support for several Renesas boards, but the series was
-NAK'd due to an inability to test it.
->
-> > > adam
-> > >
-> > > [1] https://gitlab.freedesktop.org/frankbinns/linux-firmware/-/tree/p=
-owervr/powervr?ref_type=3Dheads
-> >
-> > [2] - https://gitlab.freedesktop.org/frankbinns/linux-firmware/-/commit=
-/fecb3caebf29f37221fe0a20236e5e1415d39d0b
-> >
->
-> This is now the place to get the firmware for devices that aren't yet sup=
-ported
-> upstream:
-> https://gitlab.freedesktop.org/imagination/linux-firmware/-/commits/power=
-vr/?ref_type=3DHEADS
->
-I've been following several of these repos and checking for software
-updates in both the Firmware, driver and userspace layers.
-
-> With the firmware for the Renesas variant of GX6250 being found in this c=
-ommit:
-> https://gitlab.freedesktop.org/imagination/linux-firmware/-/commit/fecb3c=
-aebf29f37221fe0a20236e5e1415d39d0b
->
-
-If your group thinks they have stuff they want tested, I am willing to
-test them on the two platforms I have if I am CC'd on anything.
-
-Thanks for the work your group has done so far.  It'll be nice to see the w=
-ork.
-
-adam
-
-> Thanks
-> Frank
->
-> > >
-> > > > Thanks again!
-> > > >
-> > > > [1] https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-=
-firmware.git/
-> > > >
-> > > > Gr{oetje,eeting}s,
-> > > >
-> > > >                         Geert
-> > > >
-> > > > --
-> > > > Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@li=
-nux-m68k.org
-> > > >
-> > > > In personal conversations with technical people, I call myself a ha=
-cker. But
-> > > > when I'm talking to journalists I just say "programmer" or somethin=
-g like that.
-> > > >                                 -- Linus Torvalds
+--=20
+Thank you,
+Alexey=
 
