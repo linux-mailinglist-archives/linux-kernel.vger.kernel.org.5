@@ -1,154 +1,103 @@
-Return-Path: <linux-kernel+bounces-92983-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8B09872903
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 21:58:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0ABD872907
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 22:01:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0663F1C20432
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 20:58:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 406C51F286CD
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 21:01:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A615012BF35;
-	Tue,  5 Mar 2024 20:58:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65BDE12AAF5;
+	Tue,  5 Mar 2024 21:01:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VItnTInX"
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="WnMd0/Lp"
+Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38DE612BEB8
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 20:58:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9470C12AAF9;
+	Tue,  5 Mar 2024 21:00:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.143.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709672299; cv=none; b=fl56ozAxKdx9J3y9sWHI+WFY4aLFdPaze56391xJqujC9wOUxyWrkPDab4Bf3BNQBiJTw5575Ghh6Fic07Mlxe9ocqY++HCpvvv2sZjJsFaYcxqSn0z1Oy/YaiifKdYOvLinmy1aGkvkNbSaOF0jEGbouFpvmA203rjITvslBKs=
+	t=1709672459; cv=none; b=b2gtFOwOGZZjQai5seRfiXD1AYsQSfl//Ix2qoNMUUmNak4x1nYZ0IIegWgGABORl7qo4N7qovxVwGmAVQ4XEGeIxZhApWINWwOo40RLQL+7qYa5v7HRZu9mTtbG6aEEeEwHjZpkF8Z1p9MTnnFVFQA4EYWVLPTxK81wW0yKxBc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709672299; c=relaxed/simple;
-	bh=hz+ZxSOYv8PxZNrsTqx4IxtCpcRrFHGU/VQIYl36LGQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ULMtDMQA8wcsirMQU6WGiBMtZXwOJ/Er6JpkYypoigWwG6rIFi2Zj4AtaFTnNkTnsqtN1JBMoNenwUXTTs8a3yd4YrZ2vK4ViGpRAAwtZ50gHMxZwOlZCDfRkiEObccxfRcVUj1Fp5TLfUipbcgc79U+wp44eNoWAsUakcBc3Js=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VItnTInX; arc=none smtp.client-ip=209.85.160.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-428405a0205so75841cf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 12:58:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709672297; x=1710277097; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NM9bu0HcRSpvQ/lk6AsEXTNfL1CGnBbQK/LGwtIb+y4=;
-        b=VItnTInX7KAkkHOMp2ynIn3AlD2CYHHFuIraqXwe9THhasvj/qOOkonyVAxlRjOTWO
-         kPo8lezaR4nNpxQJfm6V4lsF68/BZH2fvpVfYyaXLccHLrbh+4MievBbhCLPf508tC2R
-         ZY+RuPcM+MhOetVT04AzXndvmTqnxvlWkNOKceGo6o+gTFbn0kB6Gs/VIRXG29TB7tsK
-         lW3FcunEAG/JJrDbd5B4fhdZBjc7bQSxKvqE7kGC55M4wdpEQZgfEHGhnzOBgmVV2tVC
-         chFM5sxG7LVxwOm4ONNVpchwCiDfe14GHs/s1MzYCG54VSk1Pc4Oa0EsDKwAnk0Wppkn
-         AKxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709672297; x=1710277097;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NM9bu0HcRSpvQ/lk6AsEXTNfL1CGnBbQK/LGwtIb+y4=;
-        b=a5E0tzRCjjMlp3OQ+fqMefBxMmpPJVdU3ucE0OFjZtiHixP4DIEfL6NvUa/DV9xQZr
-         qxCk2ooHWPEt3wXjDA70iwTNhpBpJt2ACjZQRK96+ytP/mBytgwDLKSF5TaeDX7Y7rmV
-         UKR5J66oAZMKrwAS1QwQuy5tHUff1ktK1Vr2T3OmHFJko7RbjYwNl9AFU97/OwT4w8oM
-         z4ZMdc/kTj6J9Q7CJwgIWctJeLbmAZnMuc8HEbc0esW0iN07CVCZ4EOSFSLeqoCEeE+5
-         Huavg5uoPDovxPtSb370+3kVHYH9P+DMiRAj1nVnWqBpfAFK9s8PTN+lXmwPtZOHlVZi
-         6krw==
-X-Forwarded-Encrypted: i=1; AJvYcCU/jgzYGFVin/nld5W453PmuiC3noJmYD372vJxg85Bo+eJ6GUP8D5tk/EeLBPWJ6zJhX5mpvGYyRJ6kpPtAIKyJ8gUktlbX904ufpc
-X-Gm-Message-State: AOJu0YwKCMLlTDNhZBqs3Lzz3c4gb10qjvfiphdR58uzQJaOxwoPXXlF
-	iwQ8TE87VUhiozi4/CMQqGEP+Q4qR69YTwb+BlDQkTC7LhEXOfNW3HseSJLgwW+JvQ3ZSlD5v1X
-	kdJ74RHWxfTUFC3B3D3w2r1mlGtvF3Py70ADd
-X-Google-Smtp-Source: AGHT+IGJuhFV2CSZhTpphuYInlBxp0BhTfrnQUeh2OvKsSqzEL4tX1NuAVfzJjBoxId+yPuVZh+Ut8IQpuDDq6mQdxI=
-X-Received: by 2002:ac8:59d5:0:b0:42f:a3c:2d4c with SMTP id
- f21-20020ac859d5000000b0042f0a3c2d4cmr72229qtf.13.1709672297226; Tue, 05 Mar
- 2024 12:58:17 -0800 (PST)
+	s=arc-20240116; t=1709672459; c=relaxed/simple;
+	bh=u9nBdyY2Zu/bsOk8ujnCI/Ne6Dmf1PlQ6sXI7ZNdlVQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Mbe4iLxDFbFOJjt8+IUawFa47wHJDXZDPKQh5h3nBAQzUGJTKgqI4n73oRtap9Rt8cHiUSnah3gqKi9YVzdip0Ae7lUOLk+oj2a4hCCA91OPZXGHqFZD6Q7Tn4qu64okW1lxccYLKclrs5dwH8G1vJes+K53lHOb6aIgU1dT4wU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=WnMd0/Lp; arc=none smtp.client-ip=68.232.143.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1709672457; x=1741208457;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=u9nBdyY2Zu/bsOk8ujnCI/Ne6Dmf1PlQ6sXI7ZNdlVQ=;
+  b=WnMd0/LpsdZ8M2BtsrRIK6YjtwRAQ+cBIkVlo7m06Vns1l0Rj8BBaMvM
+   ELnOZ4rkiPzT3p18J2bkNy4FsisElzqOGYdb16KNYHYn3LMh2RRA0iOQ2
+   YiOBRd6YSp2QLRB6dM2q4wpFzuRbhNW1laYnhrfCxbUS8PqV9lyb2KWdu
+   UmnZDpthOvrYifrDG4kIM9xHVHtfruvQBifmljojh2FHuofgqlOP+7VXN
+   OOTFk+wAFvfe1eF0ygaKh5xjmjg6fACSIMi9UTiXyWjN68zmdDSn5MV93
+   anzfqsWLgUXRzOoAeyLFIqQZrgiTaHfgtpJy7a9ie7ovbN3rY1RQWqQuz
+   A==;
+X-CSE-ConnectionGUID: TqszR4n2TlSLwmbtNw7Xbw==
+X-CSE-MsgGUID: OlrN9OUeT7eQ5q1FE/XOrQ==
+X-IronPort-AV: E=Sophos;i="6.06,206,1705334400"; 
+   d="scan'208";a="10855930"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 06 Mar 2024 05:00:56 +0800
+IronPort-SDR: Rt9R/jx9dnuzRa/Qt087XNDzD0R+qpyyVtCSjgiNpN0cw4FKITgPiN7vdAmA2B49+NH5FkCibc
+ L1WnhlDP3RNg==
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 05 Mar 2024 12:10:06 -0800
+IronPort-SDR: rsMfJvruKGXeOGjuRyl9e64RgoyIPbr5JGMjLJuyvDNdH+2sB3u4GbXLrkLB/6QeNoSFIXQ47J
+ X6e9lYOTia4g==
+WDCIronportException: Internal
+Received: from 87h6l33.ad.shared (HELO BXYGM33.ad.shared) ([10.225.32.8])
+  by uls-op-cesaip01.wdc.com with ESMTP; 05 Mar 2024 13:00:54 -0800
+From: Avri Altman <avri.altman@wdc.com>
+To: "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+	"Martin K . Petersen" <martin.petersen@oracle.com>
+Cc: Bart Van Assche <bvanassche@acm.org>,
+	Bean Huo <beanhuo@micron.com>,
+	linux-scsi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Avri Altman <avri.altman@wdc.com>
+Subject: [PATCH v2 0/4] Re-use device management code fragments
+Date: Tue,  5 Mar 2024 23:00:45 +0200
+Message-ID: <20240305210051.10847-1-avri.altman@wdc.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240301194037.532117-1-mic@digikod.net> <20240301194037.532117-4-mic@digikod.net>
-In-Reply-To: <20240301194037.532117-4-mic@digikod.net>
-From: Rae Moar <rmoar@google.com>
-Date: Tue, 5 Mar 2024 15:58:05 -0500
-Message-ID: <CA+GJov4BPGuuu+oivgX3Z0J8sb1bYLhrNRrex7qza45WNMtBcQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/7] kunit: Fix timeout message
-To: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
-Cc: Brendan Higgins <brendanhiggins@google.com>, David Gow <davidgow@google.com>, 
-	Kees Cook <keescook@chromium.org>, Shuah Khan <skhan@linuxfoundation.org>, 
-	Alan Maguire <alan.maguire@oracle.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, "H . Peter Anvin" <hpa@zytor.com>, 
-	Ingo Molnar <mingo@redhat.com>, James Morris <jamorris@linux.microsoft.com>, 
-	Luis Chamberlain <mcgrof@kernel.org>, 
-	"Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>, Marco Pagani <marpagan@redhat.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Sean Christopherson <seanjc@google.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Thara Gopinath <tgopinath@microsoft.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Vitaly Kuznetsov <vkuznets@redhat.com>, Wanpeng Li <wanpengli@tencent.com>, 
-	Zahra Tarkhani <ztarkhani@microsoft.com>, kvm@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	linux-um@lists.infradead.org, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 1, 2024 at 2:40=E2=80=AFPM Micka=C3=ABl Sala=C3=BCn <mic@digiko=
-d.net> wrote:
->
-> The exit code is always checked, so let's properly handle the -ETIMEDOUT
-> error code.
-
-Hello!
-
-This change looks good to me. Thanks!
--Rae
-
-Reviewed-by: Rae Moar <rmoar@google.com>
+v1->v2:
+ - Attend Bart's comments
 
 
->
-> Cc: Brendan Higgins <brendanhiggins@google.com>
-> Cc: David Gow <davidgow@google.com>
-> Cc: Rae Moar <rmoar@google.com>
-> Cc: Shuah Khan <skhan@linuxfoundation.org>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
-> Link: https://lore.kernel.org/r/20240301194037.532117-4-mic@digikod.net
-> ---
->
-> Changes since v1:
-> * Added Kees's Reviewed-by.
-> ---
->  lib/kunit/try-catch.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/lib/kunit/try-catch.c b/lib/kunit/try-catch.c
-> index 73f5007f20ea..cab8b24b5d5a 100644
-> --- a/lib/kunit/try-catch.c
-> +++ b/lib/kunit/try-catch.c
-> @@ -79,7 +79,6 @@ void kunit_try_catch_run(struct kunit_try_catch *try_ca=
-tch, void *context)
->         time_remaining =3D wait_for_completion_timeout(&try_completion,
->                                                      kunit_test_timeout()=
-);
->         if (time_remaining =3D=3D 0) {
-> -               kunit_err(test, "try timed out\n");
->                 try_catch->try_result =3D -ETIMEDOUT;
->                 kthread_stop(task_struct);
->         }
-> @@ -94,6 +93,8 @@ void kunit_try_catch_run(struct kunit_try_catch *try_ca=
-tch, void *context)
->                 try_catch->try_result =3D 0;
->         else if (exit_code =3D=3D -EINTR)
->                 kunit_err(test, "wake_up_process() was never called\n");
-> +       else if (exit_code =3D=3D -ETIMEDOUT)
-> +               kunit_err(test, "try timed out\n");
->         else if (exit_code)
->                 kunit_err(test, "Unknown error: %d\n", exit_code);
->
-> --
-> 2.44.0
->
+Device management commands are constructed for query commands that are
+being issued by the driver, but also for raw device management commands
+originated by the bsg module, and recently, by the advanced rpmb
+handler. Thus, the same code fragments, e.g. locking, composing the
+command, composing the upiu etc., appear over and over. Remove those
+duplications.  Theoretically, there should be no functional change.
+
+Avri Altman (4):
+  scsi: ufs: Re-use device management locking code
+  scsi: ufs: Re-use exec_dev_cmd
+  scsi: ufs: Re-use compose_dev_cmd
+  scsi: ufs: Re-use compose_devman_upiu
+
+ drivers/ufs/core/ufshcd.c | 204 ++++++++++++++++----------------------
+ 1 file changed, 86 insertions(+), 118 deletions(-)
+
+-- 
+2.42.0
+
 
