@@ -1,189 +1,216 @@
-Return-Path: <linux-kernel+bounces-92486-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92487-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63282872113
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:06:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D633A872117
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:07:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6B88BB223E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:06:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 643761F2205D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:07:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11C8E86141;
-	Tue,  5 Mar 2024 14:06:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F41178614D;
+	Tue,  5 Mar 2024 14:07:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EHA1BF9L"
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="WJo0BDiG"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5BA85676A
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 14:05:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 939458613A;
+	Tue,  5 Mar 2024 14:07:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709647561; cv=none; b=nJv+jtCcZWRVH00c1BrcY6vJd2hRATuZrhXy2e92azAbKEolL5KETrtfo7CsNZRW6LOWONVgOaDAgOKajS8qPg28LdLnSieMz2riMFVGXccxXEm6ZmiTtTwHduHEsfeW84kFdACVq24hub0WZnCqlvrqXGtqFTzcaPWu3xppg6E=
+	t=1709647638; cv=none; b=NFswNjSodoNUWjTEU2Xt0m9JK1ttiWDwnRo4+0PAshOuCDcqh7iiNEnJyEsg4LsRGZ+zl9k0TzEYycLfXaigkhDstyS3GaelDv9Gt87cbeWXhippUAmsmwu9hQdrKFHPCOnWD+pUhURvP1gAqoLkBhad9eU0pipW+LzEk1e/70E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709647561; c=relaxed/simple;
-	bh=T4PIDq9YbN7EXeKboyaiaQql26HqGIFxVk4Bm4vDlDc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pbxpBjJEIz4Ka+wxb1cXM9raPGzznwQS8APYixuoTzEbJfsLxaQU1rJti/tddZdBp37/+FBJ6Y5Sk3rmT9vJfBPQINEUr0KmU9gAkHjf/7sJty6WPFCXttbDkAcv2SOmY8wqzhv1fygXUyvqyd6QCr1BoM7eJPYIm28TnPvzyDs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=EHA1BF9L; arc=none smtp.client-ip=209.85.215.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5cedfc32250so4925114a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 06:05:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709647559; x=1710252359; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=x8l5SZlHRKRj2m05Qh9umaXWe72RlmywcWHoY7Z9nDY=;
-        b=EHA1BF9LaRM3tmElhWOs4Qu8pr4MWeaBjA7OOAZptgNgTPUhaIET4HWzCTDzemnlTw
-         VK0ZEBYGjdR0HmeV1Agd+73l+ONZ94z1R8c1+a+g3sS23aMNhj5yCEvP30i0nv9FcsVq
-         q5FPeA/wU92w4aQXykbR2+hAhCpAqDn3vnAewQTxBplTcLDeiaf0F6CTNlVp33XB1j3C
-         83V260y1L+gAue8yYwogu7NBrhzx4Kzct8vnFO2oid+PSVYPMjU+HbW/kQ+YnkEEOBAV
-         LUloZrGYHarwDHiRAwimkUC9Ey6KVBI8TSpl2qAa5DFSMv0bX+V5wop+DmVv7hMh2xHT
-         Bn2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709647559; x=1710252359;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=x8l5SZlHRKRj2m05Qh9umaXWe72RlmywcWHoY7Z9nDY=;
-        b=J7+Axd+X1/MqkoDhtDkTvcxwsW7yq6zC5WoJwGG5LuhtbCMEZzrvrpiqEKB2Bo99Gt
-         5993owBYGIFLTaS6YHvDbKiJlI9iUob37s+5/ONZDajan7ila5TPXIqGMrOzJx9xyENW
-         otQjgwRt/6y2+D+Ze42T8LNMU14ihLUmSJIaBipYiGYoJ1tFSe1Kdf6UPMhkxyojHiWu
-         7YHWUSrPXQtE8AFJ6Wo1fQnj2iyTRvVx5PiU4HVAdW21w7ZKAGHix8quqQJKSc/4vcAj
-         XAcGj09bkURPtWHvFzSanraAmux3tba3rSiQmfGt+9m010baaNMZo3qWPwZi+nKIt3Uk
-         +o/A==
-X-Forwarded-Encrypted: i=1; AJvYcCVvrzkAlzvZhml4+dV8rINKgvR3BBGsYu2aCZ5X3LTwt656R3KKAvYJklsYm1gQMKIG8NNpko3It1JsAlhm9/QZz5BDRQpycqkVKvUc
-X-Gm-Message-State: AOJu0Yw+M5kRF7is3rZzHRMXKuYDNgo4WDXmhQe9icG2gGZaWF6a+Nzi
-	ICCPGXNLepyOEV28L9c+azFY0kCZo80OIWatDEe73euDyaIm3+61wNAzDh0gMVxnn6S3OJyk8wy
-	wO/MrUBpZ0hoJeXxFapTPUZePIc8n6SXZ7mRNbQ==
-X-Google-Smtp-Source: AGHT+IFYSxhznVC8f5PWJnDse2rfS2MMz8y6Zp37w1PKXOvhv46BM7n54iaKZHofV7fmyaKNO0rzhB/yRgcGf1XV4d8=
-X-Received: by 2002:a17:90a:d24f:b0:29a:e097:50be with SMTP id
- o15-20020a17090ad24f00b0029ae09750bemr9580386pjw.31.1709647558676; Tue, 05
- Mar 2024 06:05:58 -0800 (PST)
+	s=arc-20240116; t=1709647638; c=relaxed/simple;
+	bh=SX5to30EhNbAVGigcYLVoaY+solEIJuRba9iTb4VyoI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=t8udJZAfRQZ7bobgRIn23UyZmMTkmfEam/xB4MVM3+X2Xav4Fd+q4+9eG29UtQsK2sloK+v/s/XNuQmIPkQUyaUC9z7wO1RsBegBluY7dEiOGI9jylTNdQWo/B/xYBFyPwvs6nI3n4SH3BdtVzBmke6NJbibnxwysKHbq5y0zyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=WJo0BDiG; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id EBD901BF203;
+	Tue,  5 Mar 2024 14:07:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709647632;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3FaprjU0HK8RgVI5QhbgK15bFxzuhMnZNXwzBpwlbU4=;
+	b=WJo0BDiGD/G+sF4Dv+i+C8fBUkMXamCRODSXLuTYB82Zv3J/SP5X3GWGiSa7oLX8IvnCkm
+	8MlueCfV2b5TdnrfiTitWiQXld19UIRXw6hoQ4P/ZZT8tduz81JhnfrSL4fsmkUAQ5DGeK
+	9SO24WkSVVEwAMEsoYFHlrCTRth+s4gzzxJwbWAY2NDUaJbWsp6Ry6/pnfgJzVjnVIQiCd
+	zxNfFHODiMpOZnIIXc4uRVVTwjfmN3D7JZ0vyHnK9yJZp7fvfp1Jt1zCKoCciQOgRfZwCy
+	q9eH+LkDRnmQJBjG8DNjss8NqWnwWLfQ8P6hXZVmzyqZ/Th6NYOi9Ow2v+G8lg==
+Date: Tue, 5 Mar 2024 15:07:09 +0100
+From: Luca Ceresoli <luca.ceresoli@bootlin.com>
+To: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Heiko
+ Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+ <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Thomas
+ Petazzoni <thomas.petazzoni@bootlin.com>,
+ linux-rockchip@lists.infradead.org, linux-sound@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 1/7] ASoC: rockchip: i2s-tdm: Fix inaccurate sampling
+ rates
+Message-ID: <20240305150709.02cc4a4e@booty>
+In-Reply-To: <2509388.gFrL1EYhQU@archbook>
+References: <20240221-rk3308-audio-codec-v3-0-dfa34abfcef6@bootlin.com>
+	<20240221-rk3308-audio-codec-v3-1-dfa34abfcef6@bootlin.com>
+	<2509388.gFrL1EYhQU@archbook>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240301151725.874604-1-sshegde@linux.ibm.com> <20240301151725.874604-3-sshegde@linux.ibm.com>
-In-Reply-To: <20240301151725.874604-3-sshegde@linux.ibm.com>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Tue, 5 Mar 2024 15:05:47 +0100
-Message-ID: <CAKfTPtCzHf_R4SwR29FsnxXTv2J4Xrmh3gfoHcVPu3KU5OLDcQ@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] sched/fair: Use helper function to access rd->overutilized
-To: Shrikanth Hegde <sshegde@linux.ibm.com>
-Cc: mingo@kernel.org, peterz@infradead.org, yu.c.chen@intel.com, 
-	dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org, nysal@linux.ibm.com, 
-	aboorvad@linux.ibm.com, srikar@linux.ibm.com, vschneid@redhat.com, 
-	pierre.gondois@arm.com, morten.rasmussen@arm.com, qyousef@layalina.io
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: luca.ceresoli@bootlin.com
 
-On Fri, 1 Mar 2024 at 16:18, Shrikanth Hegde <sshegde@linux.ibm.com> wrote:
->
-> Overutilized field is accessed directly in multiple places.
-> So it could use a helper function. That way one might be more
-> informed that it needs to be used only in case of EAS.
->
-> No change in functionality intended.
->
-> Signed-off-by: Shrikanth Hegde <sshegde@linux.ibm.com>
-> ---
->  kernel/sched/fair.c | 16 +++++++++++++---
->  1 file changed, 13 insertions(+), 3 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index a71f8a1506e4..650909a648d0 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6670,6 +6670,15 @@ static inline bool cpu_overutilized(int cpu)
->         return !util_fits_cpu(cpu_util_cfs(cpu), rq_util_min, rq_util_max, cpu);
->  }
->
-> +/*
-> + * Ensure that caller can do EAS. overutilized value
-> + * make sense only if EAS is enabled
-> + */
-> +static inline int is_rd_overutilized(struct root_domain *rd)
-> +{
-> +       return READ_ONCE(rd->overutilized);
-> +}
+Hello Nicolas,
 
-It seems that is_rd_overutilized() is always used with
-sched_energy_enabled() in the pattern:
+On Mon, 04 Mar 2024 19:40:52 +0100
+Nicolas Frattaroli <frattaroli.nicolas@gmail.com> wrote:
 
-If (sched_energy_enabled() && !is_rd_overutilized(rd))
-       do something
+[...]
 
-This pattern includes feec() case where we have in select_task_rq_fair():
+> Hello,
+> 
+> thank you for your patch series fixing this driver. Since I am the person
+> currently listed as the maintainer of it and was the person who originally
+> upstreamed it, I think I can provide some insight.
+> 
+> The mclk calculation and reparenting code indeed originates from the
+> downstream driver. As for why that driver did these calculations itself,
+> I do not know, but I do know why I did not remove them and rely on the
+> CCF to do the reparenting and such for me.
+> 
+> For starters, I did not know that the DAI and CCF code have functionality
+> to automatically reparent clocks based on the audio rate. The reason I did
+> not know this is because after looking at the official kernel documentation
+> at [1], I did not see any mention of this.
+> 
+> Similarly, the documentation for the CCF at [2] also makes no mention of
+> this feature. In general, guidance for how to properly write a DAI driver
+> in the kernel documentation is sparse, though I am extremely grateful to
+> broonie for his patience in answering some of my questions I had at the
+> time. The input of any of the reviewers at the time, including that of
+> Rockchip's engineer who wrote the downstream driver, made it a lot better
+> than it initially was.
+> 
+> Had somebody brought up the existence of this functionality during the
+> reviews of this driver's original submission, I would of course have
+> fixed this. I do not blame the reviewers or maintainers, as they have
+> enough on their plate as-is and don't owe me anything. But I am trying
+> to explain the circumstances here that lead to mclk being slightly broken
+> for this driver.
+> 
+> Naturally, now that I know that this functionality does exist, I can do
+> a web search (since in-tree documentation search was fruitless) for
+> "linux common clock framework reparenting", which as its second result
+> brings up a PDF of the slides of a talk by one of your co-workers.[3] The
+> slides do not contain the string "reparent", though they do tell me that
+> I am able to purchase Linux kernel development training from your
+> employer.
+> 
+> What I'm trying to say here is that I still don't know how the DAI
+> reparenting mclk through the CCF works, and I'd probably need to dig
+> into the implementation to even know that it does this. Furthermore,
+> your employer has an economic incentive to keep this information out
+> of the in-tree documentation.
 
-If (sched_energy_enabled())
-       feec():
-       |->  if (is_rd_overutilized())
-       |->       goto unlock
+I am very surprised by your opinion about our contributions, as we are
+trying to do exactly the opposite, being active members of the
+community and giving back in various ways. We are trying to contribute
+documentation and share knowledge as well: we release all of our
+training materials as Creative Commons (source code included), we
+contribute to the Buildroot and Yocto documentation and one of our
+colleagues is the maintainer of the Yocto Project documentation. We
+also wrote and/or maintain "practical working code examples" such as
+the simplest-yocto-setup [1] we recently published and the
+zynqmp-pmufw-builder [2], and published some video tutorials (I
+remember about one on device tree that seems very appreciated).
 
-which could be changed into
-If (sched_energy_enabled() && !is_rd_overutilized(rd))
-       feec()
+[1] https://github.com/bootlin/simplest-yocto-setup/
+[2] https://github.com/lucaceresoli/zynqmp-pmufw-builder/
 
-Then you can create the function is_rd_not_overutilized() instead of
-is_rd_overutilized()
+We also contributed to the Documentation directory of the Linux kernel
+tree, as git can show:
 
--static inline int is_rd_overutilized(struct root_domain *rd)
-+static inline int is_rd_not_overutilized(struct root_domain *rd)
- {
--       return READ_ONCE(rd->overutilized);
-+       return sched_energy_enabled() && READ_ONCE(rd->overutilized);
- }
+git shortlog --no-merges -s \
+  --author=free-electrons.com --author=bootlin.com \
+  -- Documentation/ ':!Documentation/devicetree/bindings/'
 
-and use is_rd_not_overutilized() instead
+Sure, we could do better, but I think we are definitely doing something.
 
-> +
->  static inline void set_rd_overutilized_status(struct root_domain *rd,
->                                               unsigned int status)
->  {
-> @@ -6686,13 +6695,14 @@ static inline void check_update_overutilized_status(struct rq *rq)
->         if (!sched_energy_enabled())
->                 return;
->
-> -       if (!READ_ONCE(rq->rd->overutilized) && cpu_overutilized(rq->cpu))
-> +       if (!is_rd_overutilized(rq->rd) && cpu_overutilized(rq->cpu))
->                 set_rd_overutilized_status(rq->rd, SG_OVERUTILIZED);
->  }
->  #else
->  static inline void check_update_overutilized_status(struct rq *rq) { }
->  static inline void set_rd_overutilized_status(struct root_domain *rd,
->                                               unsigned int status) { }
-> +static inline int is_rd_overutilized(struct root_domain *rd) { }
+About the CCF specifically, it is surely one of the areas of the kernel
+that has insufficient documentation. As a matter of fact, while some
+areas are very well documented, for others the only real documentation
+is the code. I don't like this fact, some contributions certainly help
+but documenting a complex subsystem written by others is definitely a
+very relevant effort.
 
-It should be
-static inline int is_rd_overutilized(struct root_domain *rd) { return 0; }
+However I don't think the sound documentation should describe clock
+reparenting: it is really a CCF feature that is available to any
+in-kernel clock user, i.e. pretty much every subsystem. It should
+definitely be described in the CCF docs, sure.
 
->  #endif
->
->  /* Runqueue only has SCHED_IDLE tasks enqueued */
-> @@ -7974,7 +7984,7 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
->
->         rcu_read_lock();
->         pd = rcu_dereference(rd->pd);
-> -       if (!pd || READ_ONCE(rd->overutilized))
-> +       if (!pd || is_rd_overutilized(rd))
->                 goto unlock;
->
->         /*
-> @@ -10859,7 +10869,7 @@ static struct sched_group *find_busiest_group(struct lb_env *env)
->         if (sched_energy_enabled()) {
->                 struct root_domain *rd = env->dst_rq->rd;
->
-> -               if (rcu_dereference(rd->pd) && !READ_ONCE(rd->overutilized))
-> +               if (rcu_dereference(rd->pd) && !is_rd_overutilized(rd))
->                         goto out_balanced;
->         }
->
-> --
-> 2.39.3
->
+> I hope that clears up any confusion as to "why such a complex yet
+> incorrect logic is present", and what ultimately lead you to having
+> to write this patch.
+
+Thanks for taking time to explain. This is very useful as there might
+have been reasons I didn't suspect for the code being as it is.
+
+The fact that you based your work on the downstream vendor kernel (as
+I did for the codec driver in this series) is probably the reason. Not
+only because the code quality of vendor kernels is sometimes
+considerably lower than the mainline kernel, but also because that
+driver might have been written when the reparenting logic in the CCF
+was not yet as complete and effective as it is today, so chances are
+the manual reparenting was correct initially.
+
+Also, the incorrect sampling rate is barely noticeable at most sampling
+rates up to 96 kHz, so I'm not blaming anybody for having introduced a
+bug that is not visible in all use cases. The only way to not introduce
+any bugs is not writing any code.
+
+> As for the patch itself, I'll hopefully get around to testing it this
+> week on an RK3566 board, as your cover letter does not list the platforms
+> this was tested for regressions on, so I assume you're just using RK3308.
+
+Your testing would be very useful!
+
+And yes, I developed and tested my patch on RK3308. Good point, added
+now to my commit log so it will appear in v4.
+
+> The RK356x has some linked clock things going on which mainline does not
+> yet model properly as far as I know (which is why some video related clocks
+> are marked as critical, and why things like [4] are needed for MIPI-DSI
+> output to work. So any changes that might fiddle with the parent clocks
+> I'd like to validate.
+
+Right, video clocks are tricky to get right and I've often seen them
+require manual hard-coding in the device tree, unfortunately.
+
+> If I don't get around to it in a timely manner
+> however, I'm fine with this patch as-is.
+
+Cool, thanks.
+
+Best regards,
+Luca
+
+-- 
+Luca Ceresoli, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
