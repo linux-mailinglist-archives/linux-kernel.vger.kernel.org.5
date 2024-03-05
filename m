@@ -1,120 +1,303 @@
-Return-Path: <linux-kernel+bounces-92613-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92615-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED2BE8722E7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:36:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C9BC8722ED
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:37:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A90EE2835B8
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:36:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9FA7A1C22130
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:37:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFD93127B4A;
-	Tue,  5 Mar 2024 15:35:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="pGe0d5y7"
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4925127B53;
+	Tue,  5 Mar 2024 15:36:50 +0000 (UTC)
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A5FC1272D4;
-	Tue,  5 Mar 2024 15:35:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 806731272B7;
+	Tue,  5 Mar 2024 15:36:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709652953; cv=none; b=upcb4InYVGT8qbNe6FuFciXIx/+Q0YENXqSIMf60CXk9s3h8AS6aplsOml7xbgKEn+3fl2PjK36G7yGn7uc3zrWEYIvD/VAXD3mSHhns4RryTpv3E0rzCQLp6GibVyhqU/IoL7dmKN6x0geMRkWW4D6qcAqORS+jR9CbySXiy1E=
+	t=1709653010; cv=none; b=EIXfI5eiMjysOjr2eLxnwEi2OW6SejEhKE+pyOft8L14J/+v+y/4+7iAS1sGaxCKh6hmzhrPDexre+02d4fn0u4QIw8MI2VnGrb0/dti/DVuadH6rFQMfjR9SIiPQjZ4kG7SMamXQWjZTR4gvXE4kBxH1btrbgkqul1fitGMn1Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709652953; c=relaxed/simple;
-	bh=GF32o6mLZBCNxYK9qX7xyh4y+U6z2NwNaLAEw9sMSOg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rOMuy47NTE6FMfHEJ7xBw3/wZWANDg5grKZbG5TmF6eAt0hM4jWu5RdYFCEHzQYrGpk6yG2ppGBIKEWER/hCDlKmzBX2Tbl/m7zK9/GSpiGyc7S8I/Vqyr+eRmjJfsCqI1h+k7/o1xZefyddG//4q9UYhZzotglkl3m6OXkcXMY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=pGe0d5y7; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id D4F131C000A;
-	Tue,  5 Mar 2024 15:35:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709652949;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UT4WtSDtpTkd9ywhcIQhF34YAJjW4wWxhDNZEztSJaI=;
-	b=pGe0d5y7UjCFlV9NPpXyD4m/RlxLnktAQKpFS3GlAopanJah/TXlc255UxEHdZhxGLqmT5
-	l7EM70RaKM07/P0dPFK9WhDhPFSI9H7yLPoaEAFBIhD00RjNGfjqb0j7J3Zq3e87ZaI26B
-	vkFjcDl50WDQV1/C4brQA82WOS+0h8mnONjcf4ub1P55l9vAyVmGYbH/1OZIywf6IzprV+
-	2Ha/JPtKo/6dNYtHccgoCc+iUEQyIVVWrBBftlBbt1eu6DmlzwbET2yVEDSDtSgO2gzxvz
-	uJ+U9KhVsxS+cM/3zdvbAtzCK96a232Gscm9Us0lUExJop6tijk/LaV70ahQGA==
-Date: Tue, 5 Mar 2024 16:35:46 +0100
-From: =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>, Florian Fainelli
- <florian.fainelli@broadcom.com>, Broadcom internal kernel review list
- <bcm-kernel-feedback-list@broadcom.com>, Andrew Lunn <andrew@lunn.ch>,
- Heiner Kallweit <hkallweit1@gmail.com>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
- <pabeni@redhat.com>, Richard Cochran <richardcochran@gmail.com>, Radu Pirea
- <radu-nicolae.pirea@oss.nxp.com>, Jay Vosburgh <j.vosburgh@gmail.com>, Andy
- Gospodarek <andy@greyhouse.net>, Nicolas Ferre
- <nicolas.ferre@microchip.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Jonathan Corbet
- <corbet@lwn.net>, Horatiu Vultur <horatiu.vultur@microchip.com>,
- UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>, Vladimir
- Oltean <vladimir.oltean@nxp.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, Maxime Chevallier
- <maxime.chevallier@bootlin.com>, Rahul Rameshbabu <rrameshbabu@nvidia.com>
-Subject: Re: [PATCH net-next v9 08/13] ptp: Add phc source and helpers to
- register specific PTP clock or get information
-Message-ID: <20240305163546.3b9f3ed9@kmaincent-XPS-13-7390>
-In-Reply-To: <20240305065939.2d419ff2@kernel.org>
-References: <20240226-feature_ptp_netnext-v9-0-455611549f21@bootlin.com>
-	<20240226-feature_ptp_netnext-v9-8-455611549f21@bootlin.com>
-	<20240304185734.5f1a476c@kernel.org>
-	<ZebZpspMCqjLES/W@shell.armlinux.org.uk>
-	<20240305111021.5c892d5a@kmaincent-XPS-13-7390>
-	<20240305065939.2d419ff2@kernel.org>
-Organization: bootlin
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1709653010; c=relaxed/simple;
+	bh=aPbFheI9M3TElH4HfEMIXBUx9AN8rebgLs/CmEGBGNI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FNWCp7zwbMtR6y5RQbr4yTlcP5162ELDrniHcBa33yuTOBdvhvcdZgmsXc8qGku6qXfC5C/G4jIzuqsiSRdPx3umWiBb7PiEuYvaaRv+21R3gRmebt1HYvgqJ1GyVANQcYnBnQJxXUQtcrYzs+wewFa/ojf4fZl1eqfhnX2RnwM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
+Received: from [141.14.220.34] (g34.guest.molgen.mpg.de [141.14.220.34])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pmenzel)
+	by mx.molgen.mpg.de (Postfix) with ESMTPSA id D6E2A61E5FE38;
+	Tue,  5 Mar 2024 16:35:48 +0100 (CET)
+Message-ID: <14cf3adb-7915-424e-b5ad-2c100cec183e@molgen.mpg.de>
+Date: Tue, 5 Mar 2024 16:35:48 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: kory.maincent@bootlin.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5] ice: Add get/set hw address for VFs using devlink
+ commands
+Content-Language: en-US
+To: Karthik Sundaravel <ksundara@redhat.com>
+Cc: jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, jiri@resnulli.us,
+ michal.swiatkowski@linux.intel.com, rjarry@redhat.com, aharivel@redhat.com,
+ vchundur@redhat.com, cfontain@redhat.com
+References: <20240305152641.53489-1-ksundara@redhat.com>
+From: Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <20240305152641.53489-1-ksundara@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, 5 Mar 2024 06:59:39 -0800
-Jakub Kicinski <kuba@kernel.org> wrote:
+Dear Karthik,
 
-> On Tue, 5 Mar 2024 11:10:21 +0100 K=C3=B6ry Maincent wrote:
-> > > No. In the case of mvpp2 + marvell PHY, the two PTP implementations a=
-re
-> > > entirely separate.   =20
-> >=20
-> > Yes the PTP clock can be independent from the netdev.
-> > We need to know which software layer register the PHC to be able to cal=
-l its
-> > callbacks.
-> >=20
-> > My commit log is a bit small here. I will enhance it in the next versio=
-n. =20
->=20
-> Still, wouldn't it be simpler to store all accessible PTP instances=20
-> in the netdev?
 
-You are talking about something like the phy topology but for the ptp?
+Thank you for your patch.
 
-Then when asking information on a PHC (tsinfo or hwtstamp config) from etht=
-ool
-we would have to look at the PHC topology of the netdev. This could work. N=
-ot
-sure it is much simpler, do you see other advantages that it could have?
+Am 05.03.24 um 16:26 schrieb Karthik Sundaravel:
+> Changing the MAC address of the VFs are not available
 
-Regards,
---=20
-K=C3=B6ry Maincent, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+Maybe:
+
+… is currently unsupported …
+
+or
+
+… is currently impossible …
+
+> via devlink. Add the function handlers to set and get
+> the HW address for the VFs.
+
+This fits into two lines (with a line length of 75 characters)
+
+> Signed-off-by: Karthik Sundaravel <ksundara@redhat.com>
+> ---
+
+Could you please add a change-log for each patch iteration?
+
+>   drivers/net/ethernet/intel/ice/ice_devlink.c | 78 +++++++++++++++++++-
+>   drivers/net/ethernet/intel/ice/ice_sriov.c   | 62 ++++++++++++++++
+>   drivers/net/ethernet/intel/ice/ice_sriov.h   |  8 ++
+>   3 files changed, 147 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/intel/ice/ice_devlink.c b/drivers/net/ethernet/intel/ice/ice_devlink.c
+> index 80dc5445b50d..39d4d79ac731 100644
+> --- a/drivers/net/ethernet/intel/ice/ice_devlink.c
+> +++ b/drivers/net/ethernet/intel/ice/ice_devlink.c
+> @@ -1576,6 +1576,81 @@ void ice_devlink_destroy_pf_port(struct ice_pf *pf)
+>   	devlink_port_unregister(&pf->devlink_port);
+>   }
+>   
+> +/**
+> + * ice_devlink_port_get_vf_fn_mac - .port_fn_hw_addr_get devlink handler
+> + * @port: devlink port structure
+> + * @hw_addr: MAC address of the port
+> + * @hw_addr_len: length of MAC address
+> + * @extack: extended netdev ack structure
+> + *
+> + * Callback for the devlink .port_fn_hw_addr_get operation
+> + * Return: zero on success or an error code on failure.
+> + */
+> +
+> +static int ice_devlink_port_get_vf_fn_mac(struct devlink_port *port,
+> +					  u8 *hw_addr, int *hw_addr_len,
+> +					  struct netlink_ext_ack *extack)
+> +{
+> +	struct devlink_port_attrs *attrs = &port->attrs;
+> +	struct devlink_port_pci_vf_attrs *pci_vf;
+> +	struct devlink *devlink = port->devlink;
+> +	struct ice_pf *pf;
+> +	struct ice_vf *vf;
+> +	int vf_id;
+
+The signature of `ice_get_vf_by_id()` uses u16 as type.
+
+> +
+> +	pf = devlink_priv(devlink);
+> +	pci_vf = &attrs->pci_vf;
+> +	vf_id = pci_vf->vf;
+> +
+> +	vf = ice_get_vf_by_id(pf, vf_id);
+> +	if (!vf) {
+> +		NL_SET_ERR_MSG_MOD(extack, "Unable to get the vf");
+
+Maybe also add the vf_id to theh error message?
+
+> +		return -EINVAL;
+> +	}
+> +	ether_addr_copy(hw_addr, vf->dev_lan_addr);
+> +	*hw_addr_len = ETH_ALEN;
+> +
+> +	ice_put_vf(vf);
+> +	return 0;
+> +}
+> +
+> +/**
+> + * ice_devlink_port_set_vf_fn_mac - .port_fn_hw_addr_set devlink handler
+> + * @port: devlink port structure
+> + * @hw_addr: MAC address of the port
+> + * @hw_addr_len: length of MAC address
+> + * @extack: extended netdev ack structure
+> + *
+> + * Callback for the devlink .port_fn_hw_addr_set operation
+> + * Return: zero on success or an error code on failure.
+> + */
+> +static int ice_devlink_port_set_vf_fn_mac(struct devlink_port *port,
+> +					  const u8 *hw_addr,
+> +					  int hw_addr_len,
+> +					  struct netlink_ext_ack *extack)
+> +
+> +{
+> +	struct devlink_port_attrs *attrs = &port->attrs;
+> +	struct devlink_port_pci_vf_attrs *pci_vf;
+> +	struct devlink *devlink = port->devlink;
+> +	struct ice_pf *pf;
+> +	u8 mac[ETH_ALEN];
+> +	int vf_id;
+> +
+> +	pf = devlink_priv(devlink);
+> +	pci_vf = &attrs->pci_vf;
+> +	vf_id = pci_vf->vf;
+> +
+> +	ether_addr_copy(mac, hw_addr);
+> +
+> +	return ice_set_vf_fn_mac(pf, vf_id, mac);
+> +}
+> +
+> +static const struct devlink_port_ops ice_devlink_vf_port_ops = {
+> +	.port_fn_hw_addr_get = ice_devlink_port_get_vf_fn_mac,
+> +	.port_fn_hw_addr_set = ice_devlink_port_set_vf_fn_mac,
+> +};
+> +
+>   /**
+>    * ice_devlink_create_vf_port - Create a devlink port for this VF
+>    * @vf: the VF to create a port for
+> @@ -1611,7 +1686,8 @@ int ice_devlink_create_vf_port(struct ice_vf *vf)
+>   	devlink_port_attrs_set(devlink_port, &attrs);
+>   	devlink = priv_to_devlink(pf);
+>   
+> -	err = devlink_port_register(devlink, devlink_port, vsi->idx);
+> +	err = devlink_port_register_with_ops(devlink, devlink_port,
+> +					     vsi->idx, &ice_devlink_vf_port_ops);
+>   	if (err) {
+>   		dev_err(dev, "Failed to create devlink port for VF %d, error %d\n",
+>   			vf->vf_id, err);
+> diff --git a/drivers/net/ethernet/intel/ice/ice_sriov.c b/drivers/net/ethernet/intel/ice/ice_sriov.c
+> index 31314e7540f8..73cf1d9e9daa 100644
+> --- a/drivers/net/ethernet/intel/ice/ice_sriov.c
+> +++ b/drivers/net/ethernet/intel/ice/ice_sriov.c
+> @@ -1216,6 +1216,68 @@ ice_get_vf_cfg(struct net_device *netdev, int vf_id, struct ifla_vf_info *ivi)
+>   	return ret;
+>   }
+>   
+> +/**
+> + * ice_set_vf_fn_mac
+> + * @pf: PF to be configure
+> + * @vf_id: VF identifier
+> + * @mac: MAC address
+> + *
+> + * program VF MAC address
+> + */
+> +int ice_set_vf_fn_mac(struct ice_pf *pf, int vf_id, u8 *mac)
+
+Also use u16 for `vf_id`?
+
+> +{
+> +	struct device *dev;
+> +	struct ice_vf *vf;
+> +	int ret;
+> +
+> +	dev = ice_pf_to_dev(pf);
+> +	if (is_multicast_ether_addr(mac)) {
+> +		dev_err(dev, "%pM not a valid unicast address\n", mac);
+> +		return -EINVAL;
+> +	}
+> +
+> +	vf = ice_get_vf_by_id(pf, vf_id);
+> +	if (!vf)
+> +		return -EINVAL;
+> +
+> +	/* nothing left to do, unicast MAC already set */
+> +	if (ether_addr_equal(vf->dev_lan_addr, mac) &&
+> +	    ether_addr_equal(vf->hw_lan_addr, mac)) {
+> +		ret = 0;
+> +		goto out_put_vf;
+> +	}
+> +
+> +	ret = ice_check_vf_ready_for_cfg(vf);
+> +	if (ret)
+> +		goto out_put_vf;
+> +
+> +	mutex_lock(&vf->cfg_lock);
+> +
+> +	/* VF is notified of its new MAC via the PF's response to the
+> +	 * VIRTCHNL_OP_GET_VF_RESOURCES message after the VF has been reset
+> +	 */
+> +	ether_addr_copy(vf->dev_lan_addr, mac);
+> +	ether_addr_copy(vf->hw_lan_addr, mac);
+> +	if (is_zero_ether_addr(mac)) {
+> +		/* VF will send VIRTCHNL_OP_ADD_ETH_ADDR message with its MAC */
+> +		vf->pf_set_mac = false;
+> +		dev_info(dev, "Removing MAC on VF %d. VF driver will be reinitialized\n",
+> +			 vf->vf_id);
+> +	} else {
+> +		/* PF will add MAC rule for the VF */
+> +		vf->pf_set_mac = true;
+> +		dev_info(dev, "Setting MAC %pM on VF %d. VF driver will be reinitialized\n",
+> +			 mac, vf_id);
+> +	}
+> +
+> +	ice_reset_vf(vf, ICE_VF_RESET_NOTIFY);
+> +	mutex_unlock(&vf->cfg_lock);
+> +
+> +out_put_vf:
+> +	ice_put_vf(vf);
+> +	return ret;
+> +}
+> +
+>   /**
+>    * ice_set_vf_mac
+>    * @netdev: network interface device structure
+> diff --git a/drivers/net/ethernet/intel/ice/ice_sriov.h b/drivers/net/ethernet/intel/ice/ice_sriov.h
+> index 346cb2666f3a..a03be184a806 100644
+> --- a/drivers/net/ethernet/intel/ice/ice_sriov.h
+> +++ b/drivers/net/ethernet/intel/ice/ice_sriov.h
+> @@ -28,6 +28,7 @@
+>   #ifdef CONFIG_PCI_IOV
+>   void ice_process_vflr_event(struct ice_pf *pf);
+>   int ice_sriov_configure(struct pci_dev *pdev, int num_vfs);
+> +int ice_set_vf_fn_mac(struct ice_pf *pf, int vf_id, u8 *mac);
+>   int ice_set_vf_mac(struct net_device *netdev, int vf_id, u8 *mac);
+>   int
+>   ice_get_vf_cfg(struct net_device *netdev, int vf_id, struct ifla_vf_info *ivi);
+> @@ -76,6 +77,13 @@ ice_sriov_configure(struct pci_dev __always_unused *pdev,
+>   	return -EOPNOTSUPP;
+>   }
+>   
+> +static inline int
+> +ice_set_vf_fn_mac(struct ice_pf __always_unused *pf,
+> +		  int __always_unused vf_id, u8 __always_unused *mac)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +
+>   static inline int
+>   ice_set_vf_mac(struct net_device __always_unused *netdev,
+>   	       int __always_unused vf_id, u8 __always_unused *mac)
+
+
+Kind regards,
+
+Paul
 
