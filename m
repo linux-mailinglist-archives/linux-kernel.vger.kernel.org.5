@@ -1,239 +1,151 @@
-Return-Path: <linux-kernel+bounces-91676-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91668-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C2798714E3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 05:40:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77CCC8714D6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 05:38:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 531D6282036
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 04:40:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA3101C2138D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 04:38:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B60677E581;
-	Tue,  5 Mar 2024 04:39:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KRc3sPI1"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E43945C06;
+	Tue,  5 Mar 2024 04:38:25 +0000 (UTC)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B2E87E563
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 04:39:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4794D29CE7
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 04:38:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709613561; cv=none; b=aTbq8ucDRTVwEpZ44hfzTc1KpiOCQI+dR5gj3VpTWeII1FCLXOJQYssSIhgsR+AwZcE9p/bojJ1OmSeTVlWob3oxGP0YGcznz+dv/hEYGz8tp3SRKMA1Sn9MjxrpMujj0to3Wb2U5K/Otmkptxp2WUcRUt8tfmHdwQRyJe+4tr4=
+	t=1709613504; cv=none; b=G24vcf9r5nGO7Yqfam3NEsrDUDCkb/9fB6GQqID2k6NZm7+mJCIl/26T78wx+CUsdXTnXbwbmF8h+/CdrIR82gGlpHxqysy1MFkDmcshJtFmfum6y4YgftkHZw5Tt2LAn4Iuk79DaJ+DPVU74ioZimp4wZROB2Y7KIGvK2+mmpc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709613561; c=relaxed/simple;
-	bh=JJwF0uimiVgK6AKyNaDALob98YEJRP85dZqZyruT1so=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Wnz6dTWvgqlDzAF4mLqal0OmYHTmBcwj7M4EnF+18aLURElNV67/pH+XsbLwgE12TC5P4UGZ7Z6uampK7HC5NowpxbHDNF4XWliTzdxM+TKv5wCiu/rgLgChYo5wzB7JiBZqKifO7/rKNsMzViZi/kXvIhrhsh3D245ibRbaoXA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KRc3sPI1; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709613558;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LjhEXhItmtgWJcOdZcIsr7lX1LpUjnzN2RuMZC/FUxw=;
-	b=KRc3sPI1cAWzYJmg+DmilETfghE62dfGBcGC/LpzUCSztD5V+DjrR2g8ntRNKHSyZ1A0CB
-	OiTRhsQNrW/ws6oOKRTAvNnLK/1LZ5Z+BMYjdIPCk2GeRI3po72d65JTMW5lwF8XNRtdXf
-	T8GL3AeKTWmfUSv4mESTeSndZ5jHbpw=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-651-SJW2FwMcNIWT4KdeDhGtsQ-1; Mon,
- 04 Mar 2024 23:39:13 -0500
-X-MC-Unique: SJW2FwMcNIWT4KdeDhGtsQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 790DC29AB3F0;
-	Tue,  5 Mar 2024 04:39:12 +0000 (UTC)
-Received: from x1n.redhat.com (unknown [10.72.116.31])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 0CE65C1F090;
-	Tue,  5 Mar 2024 04:39:06 +0000 (UTC)
-From: peterx@redhat.com
-To: linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>,
-	x86@kernel.org,
-	"Kirill A . Shutemov" <kirill@shutemov.name>,
-	Jason Gunthorpe <jgg@nvidia.com>,
-	Yang Shi <shy828301@gmail.com>,
-	peterx@redhat.com,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linuxppc-dev@lists.ozlabs.org,
-	Muchun Song <muchun.song@linux.dev>
-Subject: [PATCH v3 10/10] mm/treewide: Align up pXd_leaf() retval across archs
-Date: Tue,  5 Mar 2024 12:37:50 +0800
-Message-ID: <20240305043750.93762-11-peterx@redhat.com>
-In-Reply-To: <20240305043750.93762-1-peterx@redhat.com>
-References: <20240305043750.93762-1-peterx@redhat.com>
+	s=arc-20240116; t=1709613504; c=relaxed/simple;
+	bh=ZzgSUxjd+0JMmSh5H3+cRqdQUNC4JgQpQJPxIdfeCqQ=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=kOO1fGtllqY4L2xx8TEUinzF4r+itPuUolM2B5H6+PPM58fNVN4aYOEO07ZwIIFaORnzGwpMCSMMhHcUkcoJTYvHFjiIUgYf2Fw6C9GSsviYXsHqkrz7Uv5lqqOr9+8JeRRVMVKz0IaNOTngIHLGZowMXc6sU6Bo5pUH+W5gp9g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-36520abf45eso58197195ab.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 20:38:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709613502; x=1710218302;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QaaKwt8+QUYeabpyFqyQn6fckuTKQ7Ng3UILfLmGeCQ=;
+        b=fsrVqmxAuzwLN4IA7h8Hmj1gz6ICiINyuJdFhojl/Oc1sjXLNFfA0y4Px+fk9uKUQF
+         Ne239nFicwKvoyjTqC0ubPG+qUGPERC+9Vl6y3MB7KpbY44zWXvoylBAzRQZfcCD14Xd
+         NtyFJxKUg/GQHR98yOGMi9rZGY2lsTCOZLNxLGeLZc/6KYX89xj+RTDEemLPrRT/dKxq
+         f/0jPgcX9y4CP+Ew0FhtqChFo/UXNKoUxJ9hGtqLJTdlen8IzmIpAFwrVh+yC79x5vX2
+         icEKge8Z+/b2mFn80Jxhcs02vwLpOjy7tMcl7DNd6DuIl9+ww9sEKSxspOx3IoJ+iB53
+         2WpQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXAgDB5TqVw6oUatyB5Na4qKsIOI2hulJRp0Q+0fJBPnreXReX9MtWNociGjeljUwI34ACIF1ijXyx+NmnIlZ3ULfZLD3aqLWA2sxkG
+X-Gm-Message-State: AOJu0YzHhPlWhs/IalOG2Mn8o8i9TUxrTWcKd9Cg1FwGSHORpulI4KYO
+	tiDsKyLU0VuwTCMkszL717IuS7iapDmPPOdb3hggwYTnjxVTdVTV4fUxLQaIPTIkfQmVEeE5t4h
+	A937sd5Ra+tBXEKuQkGtjQNeDsD53AIedUL/whuufxwTcJHHb95OtgfA=
+X-Google-Smtp-Source: AGHT+IHCgoqg0ZRF/rgkn5/xYp7wXeGBsLO9OUot0yuT0Nh5GLAkzlCPk76lxqQkSFs7z5SgUsAX0VXPvsBG6KzxbH+l9G8HPmuk
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+X-Received: by 2002:a05:6e02:b26:b0:363:d7d2:1ddd with SMTP id
+ e6-20020a056e020b2600b00363d7d21dddmr475956ilu.0.1709613502328; Mon, 04 Mar
+ 2024 20:38:22 -0800 (PST)
+Date: Mon, 04 Mar 2024 20:38:22 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000827c710612e269ff@google.com>
+Subject: [syzbot] [mm?] WARNING in try_to_unmap_one
+From: syzbot <syzbot+28895085dfb33190ed3c@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-From: Peter Xu <peterx@redhat.com>
+Hello,
 
-Even if pXd_leaf() API is defined globally, it's not clear on the retval,
-and there are three types used (bool, int, unsigned log).
+syzbot found the following issue on:
 
-Always return a boolean for pXd_leaf() APIs.
+HEAD commit:    87adedeba51a Merge tag 'net-6.8-rc7' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15359306180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=dc48776003e506af
+dashboard link: https://syzkaller.appspot.com/bug?extid=28895085dfb33190ed3c
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: i386
 
-Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Peter Xu <peterx@redhat.com>
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-87adedeb.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/531f9afd8b25/vmlinux-87adedeb.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/015cfa882009/bzImage-87adedeb.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+28895085dfb33190ed3c@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 109 at arch/x86/include/asm/pgtable.h:404 pte_uffd_wp arch/x86/include/asm/pgtable.h:404 [inline]
+WARNING: CPU: 1 PID: 109 at arch/x86/include/asm/pgtable.h:404 try_to_unmap_one+0x1a84/0x29b0 mm/rmap.c:1891
+Modules linked in:
+CPU: 1 PID: 109 Comm: kswapd0 Not tainted 6.8.0-rc6-syzkaller-00120-g87adedeba51a #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:pte_uffd_wp arch/x86/include/asm/pgtable.h:404 [inline]
+RIP: 0010:try_to_unmap_one+0x1a84/0x29b0 mm/rmap.c:1891
+Code: e9 d4 00 00 00 e8 8c 72 b4 ff 4d 89 ec 31 ff 41 83 e4 02 4c 89 e6 e8 8b 6d b4 ff 4d 85 e4 0f 84 8b 04 00 00 e8 6d 72 b4 ff 90 <0f> 0b 90 e8 64 72 b4 ff 48 83 cd 04 e9 21 f9 ff ff e8 56 72 b4 ff
+RSP: 0018:ffffc90000ddf110 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffffea0000021240 RCX: ffffffff81d771e5
+RDX: ffff88801ac80000 RSI: ffffffff81d771f3 RDI: 0000000000000007
+RBP: 07ffffffffa2e20a R08: 0000000000000007 R09: 0000000000000000
+R10: 0000000000000002 R11: 0000000000000004 R12: 0000000000000002
+R13: 0000000000849c47 R14: dffffc0000000000 R15: ffff8880118c2f80
+FS:  0000000000000000(0000) GS:ffff88802c300000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 0000000027f48000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ rmap_walk_anon+0x228/0x580 mm/rmap.c:2599
+ rmap_walk mm/rmap.c:2676 [inline]
+ rmap_walk mm/rmap.c:2671 [inline]
+ try_to_unmap+0x174/0x1c0 mm/rmap.c:1956
+ shrink_folio_list+0x1cc7/0x3ea0 mm/vmscan.c:1253
+ evict_folios+0x6e7/0x1b90 mm/vmscan.c:4521
+ try_to_shrink_lruvec+0x638/0xa10 mm/vmscan.c:4726
+ shrink_one+0x3f8/0x7b0 mm/vmscan.c:4765
+ shrink_many mm/vmscan.c:4828 [inline]
+ lru_gen_shrink_node mm/vmscan.c:4929 [inline]
+ shrink_node+0x21d0/0x3790 mm/vmscan.c:5888
+ kswapd_shrink_node mm/vmscan.c:6693 [inline]
+ balance_pgdat+0x9d2/0x1a90 mm/vmscan.c:6883
+ kswapd+0x5be/0xc00 mm/vmscan.c:7143
+ kthread+0x2c6/0x3b0 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:243
+ </TASK>
+
+
 ---
- arch/riscv/include/asm/pgtable-64.h | 2 +-
- arch/riscv/include/asm/pgtable.h    | 2 +-
- arch/s390/include/asm/pgtable.h     | 4 ++--
- arch/sparc/include/asm/pgtable_64.h | 4 ++--
- arch/x86/include/asm/pgtable.h      | 8 ++++----
- include/linux/pgtable.h             | 8 ++++----
- 6 files changed, 14 insertions(+), 14 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/arch/riscv/include/asm/pgtable-64.h b/arch/riscv/include/asm/pgtable-64.h
-index b42017d76924..2c7e1661db01 100644
---- a/arch/riscv/include/asm/pgtable-64.h
-+++ b/arch/riscv/include/asm/pgtable-64.h
-@@ -190,7 +190,7 @@ static inline int pud_bad(pud_t pud)
- }
- 
- #define pud_leaf	pud_leaf
--static inline int pud_leaf(pud_t pud)
-+static inline bool pud_leaf(pud_t pud)
- {
- 	return pud_present(pud) && (pud_val(pud) & _PAGE_LEAF);
- }
-diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
-index add5cd30ab34..6839520dbcb1 100644
---- a/arch/riscv/include/asm/pgtable.h
-+++ b/arch/riscv/include/asm/pgtable.h
-@@ -241,7 +241,7 @@ static inline int pmd_bad(pmd_t pmd)
- }
- 
- #define pmd_leaf	pmd_leaf
--static inline int pmd_leaf(pmd_t pmd)
-+static inline bool pmd_leaf(pmd_t pmd)
- {
- 	return pmd_present(pmd) && (pmd_val(pmd) & _PAGE_LEAF);
- }
-diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
-index 9e08af5b9247..60950e7a25f5 100644
---- a/arch/s390/include/asm/pgtable.h
-+++ b/arch/s390/include/asm/pgtable.h
-@@ -706,7 +706,7 @@ static inline int pud_none(pud_t pud)
- }
- 
- #define pud_leaf pud_leaf
--static inline int pud_leaf(pud_t pud)
-+static inline bool pud_leaf(pud_t pud)
- {
- 	if ((pud_val(pud) & _REGION_ENTRY_TYPE_MASK) != _REGION_ENTRY_TYPE_R3)
- 		return 0;
-@@ -714,7 +714,7 @@ static inline int pud_leaf(pud_t pud)
- }
- 
- #define pmd_leaf pmd_leaf
--static inline int pmd_leaf(pmd_t pmd)
-+static inline bool pmd_leaf(pmd_t pmd)
- {
- 	return (pmd_val(pmd) & _SEGMENT_ENTRY_LARGE) != 0;
- }
-diff --git a/arch/sparc/include/asm/pgtable_64.h b/arch/sparc/include/asm/pgtable_64.h
-index 6ff0a28d5fd1..4d1bafaba942 100644
---- a/arch/sparc/include/asm/pgtable_64.h
-+++ b/arch/sparc/include/asm/pgtable_64.h
-@@ -681,7 +681,7 @@ static inline unsigned long pte_special(pte_t pte)
- }
- 
- #define pmd_leaf pmd_leaf
--static inline unsigned long pmd_leaf(pmd_t pmd)
-+static inline bool pmd_leaf(pmd_t pmd)
- {
- 	pte_t pte = __pte(pmd_val(pmd));
- 
-@@ -868,7 +868,7 @@ static inline pmd_t *pud_pgtable(pud_t pud)
- #define p4d_page(p4d)			NULL
- 
- #define pud_leaf pud_leaf
--static inline unsigned long pud_leaf(pud_t pud)
-+static inline bool pud_leaf(pud_t pud)
- {
- 	pte_t pte = __pte(pud_val(pud));
- 
-diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
-index cfc84c55d0e6..7621a5acb13e 100644
---- a/arch/x86/include/asm/pgtable.h
-+++ b/arch/x86/include/asm/pgtable.h
-@@ -252,7 +252,7 @@ static inline unsigned long pgd_pfn(pgd_t pgd)
- }
- 
- #define p4d_leaf p4d_leaf
--static inline int p4d_leaf(p4d_t p4d)
-+static inline bool p4d_leaf(p4d_t p4d)
- {
- 	/* No 512 GiB pages yet */
- 	return 0;
-@@ -261,7 +261,7 @@ static inline int p4d_leaf(p4d_t p4d)
- #define pte_page(pte)	pfn_to_page(pte_pfn(pte))
- 
- #define pmd_leaf pmd_leaf
--static inline int pmd_leaf(pmd_t pte)
-+static inline bool pmd_leaf(pmd_t pte)
- {
- 	return pmd_flags(pte) & _PAGE_PSE;
- }
-@@ -1086,7 +1086,7 @@ static inline pmd_t *pud_pgtable(pud_t pud)
- #define pud_page(pud)	pfn_to_page(pud_pfn(pud))
- 
- #define pud_leaf pud_leaf
--static inline int pud_leaf(pud_t pud)
-+static inline bool pud_leaf(pud_t pud)
- {
- 	return (pud_val(pud) & (_PAGE_PSE | _PAGE_PRESENT)) ==
- 		(_PAGE_PSE | _PAGE_PRESENT);
-@@ -1413,7 +1413,7 @@ static inline bool pgdp_maps_userspace(void *__ptr)
- }
- 
- #define pgd_leaf	pgd_leaf
--static inline int pgd_leaf(pgd_t pgd) { return 0; }
-+static inline bool pgd_leaf(pgd_t pgd) { return false; }
- 
- #ifdef CONFIG_PAGE_TABLE_ISOLATION
- /*
-diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-index a36cf4e124b0..85fc7554cd52 100644
---- a/include/linux/pgtable.h
-+++ b/include/linux/pgtable.h
-@@ -1777,16 +1777,16 @@ typedef unsigned int pgtbl_mod_mask;
-  * Only meaningful when called on a valid entry.
-  */
- #ifndef pgd_leaf
--#define pgd_leaf(x)	0
-+#define pgd_leaf(x)	false
- #endif
- #ifndef p4d_leaf
--#define p4d_leaf(x)	0
-+#define p4d_leaf(x)	false
- #endif
- #ifndef pud_leaf
--#define pud_leaf(x)	0
-+#define pud_leaf(x)	false
- #endif
- #ifndef pmd_leaf
--#define pmd_leaf(x)	0
-+#define pmd_leaf(x)	false
- #endif
- 
- #ifndef pgd_leaf_size
--- 
-2.44.0
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
