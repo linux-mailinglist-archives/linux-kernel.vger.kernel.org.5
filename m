@@ -1,192 +1,106 @@
-Return-Path: <linux-kernel+bounces-92528-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92529-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 293628721AF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:39:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 451198721B2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:39:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B68E52894DB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:39:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A4FE8B247F4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:39:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B13A126F05;
-	Tue,  5 Mar 2024 14:37:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51F5986ACB;
+	Tue,  5 Mar 2024 14:38:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ob0xAPCX"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="mu8gjg6d"
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C020786AF8;
-	Tue,  5 Mar 2024 14:37:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFDBA37145
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 14:38:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709649441; cv=none; b=PMHx0I2P5Oure0BR8R3kxii82eokhbIzQf+1ZLDcyCtOv4aV6V+X1wsrZo9WQGG+3gAy16jKJFwT7uSL8l10bCUl7Lwf8CCvR/5yjwXh9Lesluvmvlfy5HnoMUTRvvGcKQOf38ShL1u6ixRBs/gE05EJef/uCaZlNNVJxIBHYsU=
+	t=1709649538; cv=none; b=DJ21afew5nYX+2yOKooPzI8lWIC6F9wV3P3iB05ocAfTpWnrl/Kw0l96u9lkHMV5xSY7yUvcDzLauiX9wZcHHALArayBL8Phwh6Nj9Sz0+qpGpG+ljgbA4qFRqnftqUa8TLzUBcp1LxNi4ppqfkBispcUQE3O2AuWIKmf7lREVo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709649441; c=relaxed/simple;
-	bh=PFDRnUb1JFhpVTNgo/H8v1Eg/rAvjUdBBtspdiP1xLo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SuPzNUfaTNC6d6+gcqvKEypjeuB/SQTUkK/bqSluD+jC9rkMaMlSJcjDl02b7GQCjVRV5VGSZ2rW6VfIfB5dXe46b4xkBSkfQYE9FCW2ZSi+j6F6d4djXsDT/YYEq/4L5CokqWoQ5zUNLixVnAtgUpLzzeaWIosUSP2BiKFG51M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ob0xAPCX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 257D0C433F1;
-	Tue,  5 Mar 2024 14:37:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709649441;
-	bh=PFDRnUb1JFhpVTNgo/H8v1Eg/rAvjUdBBtspdiP1xLo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ob0xAPCXLnUUvG6vKIvGCdR4QIkvh+6lVlInUZZELMJzX4TugqXHs37YyBlGLqW5u
-	 Fk83edGu2/KijwfNBfro6CowJf5oGyManQdZK28oysOXKanTgHEiEmX401SNeWBGhr
-	 pDemzy0oMPFA5+vvoY98BpTvXvGnGAGjQBbxGojMdHQ9c+q++Bm9WZLnLBAvAX0UW6
-	 Vv2HBfeO2R83LicOAvCsR5BFcA3ZyZR5VqrvHISwVMgS3v+14iixMzeET7L2ua1UdP
-	 9FDISNiQfWepv9aZz4Tjiqtw6qSQg4PH0A820UB2TF1pCD+MnEaTeE7lG/YcD1mLfE
-	 JIwZLdlxlUMhw==
-Date: Tue, 5 Mar 2024 08:37:19 -0600
-From: Rob Herring <robh@kernel.org>
-To: Frank Li <Frank.li@nxp.com>
-Cc: conor@kernel.org, bhelgaas@google.com, conor+dt@kernel.org,
-	devicetree@vger.kernel.org, helgaas@kernel.org, imx@lists.linux.dev,
-	krzysztof.kozlowski+dt@linaro.org, kw@linux.com,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	lpieralisi@kernel.org
-Subject: Re: [PATCH v6 3/3] dt-bindings: pci: layerscape-pci-ep: Add
- snps,dw-pcie-ep.yaml reference
-Message-ID: <20240305143719.GA3310214-robh@kernel.org>
-References: <20240301162741.765524-1-Frank.Li@nxp.com>
- <20240301162741.765524-4-Frank.Li@nxp.com>
- <20240304182049.GA851904-robh@kernel.org>
- <ZeYcOUAb7NWjTh9m@lizhi-Precision-Tower-5810>
+	s=arc-20240116; t=1709649538; c=relaxed/simple;
+	bh=oMoaD15Q4RZurtXz9m0mjYyGcE+cC4GEA1JD8WLd12w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kTWwbgM34/eLnVisvoToOpj9AeOHjDyQMC0brqef+ShCyuDRdhYsH00MAD80VsfxheIHbocIxDBbj/3fuQw3JI7Xsej687OBTmbuN416B9Cb0ZKDz5oJ4EnfaItxOgJT2zf+G0U4spL0LGUcJb+CqFJOynL0Kmlea0P9CPDQmLs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=mu8gjg6d; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-512b3b04995so4307469e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 06:38:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google; t=1709649535; x=1710254335; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=oMoaD15Q4RZurtXz9m0mjYyGcE+cC4GEA1JD8WLd12w=;
+        b=mu8gjg6dD1CMKjtcrsSeXbJJa7zwEvW23eLM4jvo8l10xBWcPfceeKhHX44lN77+g7
+         95+MI5qWAqJ8dBTqTYS2SB2A/OSbkyWadinyQcSMaIXZM4wgSU1FcjW1OiqcU+yH8J0o
+         K/UhDa0w8cII223Jd4iqDgvpDmUov8LOuJ4TM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709649535; x=1710254335;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oMoaD15Q4RZurtXz9m0mjYyGcE+cC4GEA1JD8WLd12w=;
+        b=mwLCy2qNnHExlZG2uE3b20ZEEV9dufeWumT5+vuGS5jqKWO91zBaDn1gX6kzCt6LmK
+         3AfBK1DevXrdi3JnpZvSDWiZSKdKMfIOgIphV0WNbsPFYqveob3Wsr1+Nl8V6u9vFcF8
+         tGTKqEalTFh8qf6aAwKAqdmK0J/EjUlBS+kh/C3BzKa+kXwN7SdZ89sURGMk0N+WfKbx
+         Eh/LhvZbRq1MNUumcGpgXg6rxt0m6WG1caqKm4flmCO3ckwnO8WkpWYx+ufHyCwHWfP7
+         p1AuNde9hS/q8BTtYJMZgDV4Phk/WAAeha2zTZcv5yh3k8WWjHKyVGzJDmdGW0sk63AL
+         TJ8A==
+X-Forwarded-Encrypted: i=1; AJvYcCXMa32Q2KsCxJa6dYV0cWLumFyjSMhYv+/YKEUjoJoU+KK+fG9ZlW12q1Tx7lc4+u+CXbLxPRPnMHiGncZfGWSlBe38Z3HzgaUnDwHV
+X-Gm-Message-State: AOJu0YxTw3pAcHbnFfBs30QMF1WACybWYgP9y1pa051fm35tXS4x/zir
+	1feOYjd9ASr/Y7BXItMETKGzvG/tVzBd5iALLodxx5FMLv78iO4gls0jIOiWo4BE1t6K/JAf8sU
+	EtCWbm46dgTL+DKxjlSQrVq6CiQxjtZX/MHNc6M38y8OA8ZNA
+X-Google-Smtp-Source: AGHT+IHtd287Cim+U4qSt3a8db88CbzOFal6Gmy5OoASE9Fw7x+WgX5YbLauuKoFawGzS6YyLx5H0xL5YW8GyxOwFlc=
+X-Received: by 2002:ac2:54a3:0:b0:511:674d:88c5 with SMTP id
+ w3-20020ac254a3000000b00511674d88c5mr1505026lfk.13.1709649535128; Tue, 05 Mar
+ 2024 06:38:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZeYcOUAb7NWjTh9m@lizhi-Precision-Tower-5810>
+References: <20240108120824.122178-1-aleksandr.mikhalitsyn@canonical.com> <20240108120824.122178-3-aleksandr.mikhalitsyn@canonical.com>
+In-Reply-To: <20240108120824.122178-3-aleksandr.mikhalitsyn@canonical.com>
+From: Miklos Szeredi <miklos@szeredi.hu>
+Date: Tue, 5 Mar 2024 15:38:43 +0100
+Message-ID: <CAJfpegtixg+NRv=hUhvkjxFaLqb_Vhb6DSxmRNxXD-GHAGiHGg@mail.gmail.com>
+Subject: Re: [PATCH v1 2/9] fs/fuse: add FUSE_OWNER_UID_GID_EXT extension
+To: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+Cc: mszeredi@redhat.com, brauner@kernel.org, stgraber@stgraber.org, 
+	linux-fsdevel@vger.kernel.org, Seth Forshee <sforshee@kernel.org>, 
+	Amir Goldstein <amir73il@gmail.com>, Bernd Schubert <bschubert@ddn.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Mar 04, 2024 at 02:08:41PM -0500, Frank Li wrote:
-> On Mon, Mar 04, 2024 at 12:20:49PM -0600, Rob Herring wrote:
-> > On Fri, Mar 01, 2024 at 11:27:41AM -0500, Frank Li wrote:
-> > > Add snps,dw-pcie-ep.yaml.
-> > > 
-> > > Remove context that exist in snps,dw-pcie-ep.yaml.
-> > > 
-> > > Add an example for pcie-ep.
-> > > 
-> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > > ---
-> > >  .../bindings/pci/fsl,layerscape-pcie-ep.yaml  | 54 ++++++++++---------
-> > >  1 file changed, 29 insertions(+), 25 deletions(-)
-> > > 
-> > > diff --git a/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml b/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml
-> > > index cf517e4e46a33..07965683beece 100644
-> > > --- a/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml
-> > > +++ b/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml
-> > > @@ -10,8 +10,7 @@ maintainers:
-> > >    - Frank Li <Frank.Li@nxp.com>
-> > >  
-> > >  description:
-> > > -  This PCIe RC controller is based on the Synopsys DesignWare PCIe IP
-> > > -  and thus inherits all the common properties defined in snps,dw-pcie.yaml.
-> > > +  This PCIe RC controller is based on the Synopsys DesignWare PCIe IP.
-> > >  
-> > >    This controller derives its clocks from the Reset Configuration Word (RCW)
-> > >    which is used to describe the PLL settings at the time of chip-reset.
-> > > @@ -35,31 +34,18 @@ properties:
-> > >        - const: fsl,ls-pcie-ep
-> > >  
-> > >    reg:
-> > > -    description: base addresses and lengths of the PCIe controller register blocks.
-> > > +    maxItems: 2
-> > > +
-> > > +  reg-names:
-> > > +    maxItems: 2
-> > >  
-> > >    interrupts:
-> > > -    description: A list of interrupt outputs of the controller. Must contain an
-> > > -      entry for each entry in the interrupt-names property.
-> > > +    minItems: 1
-> > > +    maxItems: 3
-> > >  
-> > >    interrupt-names:
-> > >      minItems: 1
-> > >      maxItems: 3
-> > > -    description: It could include the following entries.
-> > > -    items:
-> > > -      oneOf:
-> > > -        - description:
-> > > -            Used for interrupt line which reports AER events when
-> > > -            non MSI/MSI-X/INTx mode is used.
-> > > -          const: aer
-> > > -        - description:
-> > > -            Used for interrupt line which reports PME events when
-> > > -            non MSI/MSI-X/INTx mode is used.
-> > > -          const: pme
-> > > -        - description:
-> > > -            Used for SoCs(like ls2080a, lx2160a, ls2080a, ls2088a, ls1088a)
-> > > -            which has a single interrupt line for miscellaneous controller
-> > > -            events(could include AER and PME events).
-> > > -          const: intr
-> > >  
-> > >    fsl,pcie-scfg:
-> > >      $ref: /schemas/types.yaml#/definitions/phandle
-> > > @@ -68,10 +54,7 @@ properties:
-> > >        The second entry is the physical PCIe controller index starting from '0'.
-> > >        This is used to get SCFG PEXN registers
-> > >  
-> > > -  dma-coherent:
-> > > -    description: Indicates that the hardware IP block can ensure the coherency
-> > > -      of the data transferred from/to the IP block. This can avoid the software
-> > > -      cache flush/invalid actions, and improve the performance significantly
-> > > +  dma-coherent: true
-> > >  
-> > >    big-endian:
-> > >      $ref: /schemas/types.yaml#/definitions/flag
-> > > @@ -85,3 +68,24 @@ required:
-> > >    - reg
-> > >    - interrupt-names
-> > >  
-> > > +allOf:
-> > > +  - $ref: /schemas/pci/snps,dw-pcie-ep.yaml#
-> > > +
-> > > +examples:
-> > > +  - |
-> > > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> > > +
-> > > +    soc {
-> > > +      #address-cells = <2>;
-> > > +      #size-cells = <2>;
-> > > +
-> > > +      pcie-ep@3400000 {
-> > > +        compatible = "fsl,ls1028a-pcie-ep", "fsl,ls-pcie-ep";
-> > > +        reg = <0x00 0x03400000 0x0 0x00100000
-> > > +              0x80 0x00000000 0x8 0x00000000>;
-> > > +        reg-names = "dbi", "addr_space";
-> > > +        interrupts = <GIC_SPI 108 IRQ_TYPE_LEVEL_HIGH>; /* PME interrupt */
-> > 
-> > PME or...
-> > 
-> > > +        interrupt-names = "app";
-> > 
-> > app? You seem to just be changing the names to make the example happy. 
-> > What do the dts files have? You need to make those pass.
-> 
-> It's on my plan.
-> 
-> First need change 'regs' to 'dbi'. 
-> 
-> https://lore.kernel.org/linux-pci/20240229194559.709182-1-Frank.Li@nxp.com/
-> 
-> After that, I can update all dts.
+On Mon, 8 Jan 2024 at 13:10, Alexander Mikhalitsyn
+<aleksandr.mikhalitsyn@canonical.com> wrote:
+>
+> To properly support vfs idmappings we need to provide
+> a fuse daemon with the correct owner uid/gid for
+> inode creation requests like mkdir, mknod, atomic_open,
+> symlink.
+>
+> Right now, fuse daemons use req->in.h.uid/req->in.h.gid
+> to set inode owner. These fields contain fsuid/fsgid of the
+> syscall's caller. And that's perfectly fine, because inode
+> owner have to be set to these values. But, for idmapped mounts
+> it's not the case and caller fsuid/fsgid != inode owner, because
+> idmapped mounts do nothing with the caller fsuid/fsgid, but
+> affect inode owner uid/gid. It means that we can't apply vfsid
+> mapping to caller fsuid/fsgid, but instead we have to introduce
+> a new fields to store inode owner uid/gid which will be appropriately
+> transformed.
 
-No! 
+Does fsuid/fsgid have any meaning to the server?
 
-I'm saying you shouldn't be changing the dts files. That's an ABI 
-which you are likely breaking. You should adjust the binding so the dts 
-files pass. The exception is if you know the change is safe and not 
-going to break the ABI or the dts is just been wrong all along (e.g. 
-missing a compatible the OS doesn't rely on).
+Shouldn't this just set in.h.uid/in.h.gid to the mapped ids?
 
-Rob
+Thanks,
+Miklos
 
