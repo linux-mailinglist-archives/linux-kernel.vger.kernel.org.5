@@ -1,109 +1,87 @@
-Return-Path: <linux-kernel+bounces-92832-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92833-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E51187269B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:34:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C667887269D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:34:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E41831F293D2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:34:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81A86285751
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:34:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6992B241E5;
-	Tue,  5 Mar 2024 18:33:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BDC4199BC;
+	Tue,  5 Mar 2024 18:34:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="a7nk0ZbF"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OPCF1SzI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4267F1B972
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 18:33:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 794A814A89;
+	Tue,  5 Mar 2024 18:34:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709663628; cv=none; b=O4duX84jhueNQlJH+sndx+qycZP6MS0iN2J3lh+yDYX3pv6Gylt+7zzKIa7XmiD0YLxOM8+zvCPYIOhLrg68gzvjeczdhrypcDw4h5meJ76q9f4zPBJnR27lv/vl0ww72n4PSnmGyKLEBsce14VMcB2CUKwvuT6RfApFzFV4zg8=
+	t=1709663685; cv=none; b=TbhaKKvJLaDtctCc4tNof2LZQWPhOYtQe4ROO4C+Au5ykWGavZFvz5esCGMLDIQTIMCCxRDFp9vvvOrDSutaIXI6FmTpD+Jgjpa4MiRs9wFWXExSUTVxyEs/9/0Bpi2FC1R7VFqk3KNzQd0Hfg6kABALWRf1gmCCWdh3gccLnR4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709663628; c=relaxed/simple;
-	bh=owF45A5U8RazsW2KrYptuABA1Q6yhy0RwNPs4QQaAno=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YAb0ocT4KPHg4vvmmZyMQYNNPzLDUW8+8IDqoPWRc1GKMUlp2n+1JC2bjb74JlZWmZt0bP4Jty6oShlA9PN5p0JChi6xkqu7fEOzsWY+wdfWf+5LY/WkSTsIjhL1QoUokfugck3skz/vpyUYbs6zEb3YbWjBXINhxcZiocBRR1M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=a7nk0ZbF; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1dc49b00bdbso54319575ad.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 10:33:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709663626; x=1710268426; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=uZoQI1fT8QfmmvEDY9ZYWRkDR8aVhX37TS8JWY66OSk=;
-        b=a7nk0ZbFLpOKCFbMBKU0gUAQUc7qq9urOdSEiVF65f8wWNcGnMeIsSpN9MREdmM0n2
-         /Z3N2EV6LDzSJPpi2G9bzoCzy4Lh52cfNOBF9OWxAwrtm6GPMPnCNp0jJQegnc/Gf+Ob
-         Aq9ed+/5oXavnOlTe8xg0YGd163lqwSdmFxVs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709663626; x=1710268426;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uZoQI1fT8QfmmvEDY9ZYWRkDR8aVhX37TS8JWY66OSk=;
-        b=YcoCURFtqLtQkABpjwJpOW/BvXL/dt5e6gEq/pTQ5kXA95CUWM24T7UBBryz5elQuk
-         QqMdj/c8cbGADSDC8VXCQjqCYMyKtHLEYLyrAZU2kFj70xzew71sIF+uP/s0fmplHZIY
-         r+eZQT40VBZ3Ky6Vfs7eZ0ZcewJ7C/joMICde5RwuJhdLh178SAYKP8s936yy3rIvDmo
-         VV0ZeoS21EWDH/5WzlqLCyNi5y4eagbNxrfHZVGwuoQOYnQpzLaQ/b6iU0pU/mkUTZaP
-         9FETH8w5JB9BjENgZNNFE26bByeoMSv/SWj0wn7vITkS3SZajFeKEiSNjxbcETBdzwlH
-         1zSA==
-X-Forwarded-Encrypted: i=1; AJvYcCUuRXqQF03M9PLM1h3ev4WsrJAPs2NvsTAEwAllYyqnjaaAuG+dg5lYcy8xsNqLvCqfL0AgAU/wdEfVdb0ySfJGfQRNNXqtkMo7P6xD
-X-Gm-Message-State: AOJu0Yy8drbXOxKejjvqhhlULh9XsxTkLEfHzrD3GMia1sOglMBsB0YF
-	lkJgZNvxPZcRQYjdQdrtusoNCUxM8whcajgtxe+F58q6VFQwydrDlZ1f13CXxg==
-X-Google-Smtp-Source: AGHT+IFWgP1XMzzTAo9S4FmzwND5LVJWMFuSfybGA+o5U5mxtPKyFuUMpJm5Tbtd0lqsISkQUgsviA==
-X-Received: by 2002:a17:902:a98c:b0:1db:cb13:10f1 with SMTP id bh12-20020a170902a98c00b001dbcb1310f1mr2522864plb.19.1709663626654;
-        Tue, 05 Mar 2024 10:33:46 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id i3-20020a170902c94300b001dc95205b56sm10890809pla.53.2024.03.05.10.33.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 10:33:46 -0800 (PST)
-Date: Tue, 5 Mar 2024 10:33:45 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Matthew Denton <mpdenton@chromium.org>,
-	Adrian Ratiu <adrian.ratiu@collabora.com>,
-	linux-fsdevel@vger.kernel.org, kernel@collabora.com,
-	linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org, Guenter Roeck <groeck@chromium.org>,
-	Doug Anderson <dianders@chromium.org>, Jann Horn <jannh@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Mike Frysinger <vapier@chromium.org>
-Subject: Re: [PATCH v2] proc: allow restricting /proc/pid/mem writes
-Message-ID: <202403051032.783210E95@keescook>
-References: <20240301213442.198443-1-adrian.ratiu@collabora.com>
- <20240304-zugute-abtragen-d499556390b3@brauner>
- <202403040943.9545EBE5@keescook>
- <20240305-attentat-robust-b0da8137b7df@brauner>
- <202403050134.784D787337@keescook>
- <20240305-kontakt-ticken-77fc8f02be1d@brauner>
- <20240305-gremien-faucht-29973b61fb57@brauner>
+	s=arc-20240116; t=1709663685; c=relaxed/simple;
+	bh=7Y5PRGDd3DbEB+kbePurEXliBR8uj4hnZjuQ5yw7JB4=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=qZC4TtJ5oxawiI8aDxkIUr/b7xOYHjodKzQbaKAXlpuNz9AuhE5/93VyXqqgHTcWavpY3L15cYivUti7asGkSvyvcdIW4JWJrUac/SnDFhf4FPPUVuJZWAunE+nOplLzOyO8k7l4kgnTONZMQfrdr/jJH6FW3E1vcrl+U821adY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OPCF1SzI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B93D7C433F1;
+	Tue,  5 Mar 2024 18:34:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709663685;
+	bh=7Y5PRGDd3DbEB+kbePurEXliBR8uj4hnZjuQ5yw7JB4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=OPCF1SzIAnjbI7quNW7xp8leOBA87Q/iPoF46n2xgeiI4a1Cos87Wb0VDkruHdU04
+	 bsZuU419RoPh0Di5UcpCARYEYYHRHCutJQwfmVa8pRPyFgh+JuK3/NzDqGQ7HXZpnq
+	 I6b/rDrnqf6Zjd120gqjXOOIFystR4LvUG6GpEV2TXqrPW+w7q9FqhEVYH+QcZR2Df
+	 o3dOtjocT6lAOW0LwLLHAgTApREV4tuPm590hYkD2Vljl8iiDXM5IkhvpoiJjYQ4xa
+	 825Pgx8io/8/akG5j5Zsuv7NwKrF41RzTVjbJi5wH37oEU3NHBQmsHGv1ibjrChncp
+	 dT92okxBd1CHA==
+Date: Tue, 5 Mar 2024 10:34:43 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: David Thompson <davthompson@nvidia.com>
+Cc: <davem@davemloft.net>, <edumazet@google.com>, <pabeni@redhat.com>,
+ <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Asmaa Mnebhi
+ <asmaa@nvidia.com>
+Subject: Re: [PATCH net-next v1] mlxbf_gige: add support to display pause
+ frame counters
+Message-ID: <20240305103443.70e1f619@kernel.org>
+In-Reply-To: <20240305151851.533-1-davthompson@nvidia.com>
+References: <20240305151851.533-1-davthompson@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240305-gremien-faucht-29973b61fb57@brauner>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Mar 05, 2024 at 12:03:21PM +0100, Christian Brauner wrote:
-> What btw, is the Linux sandbox on Chromium doing? Did they finally move
-> away from SECCOMP_RET_TRAP to SECCOMP_RET_USER_NOTIF? I see:
-> 
-> https://issues.chromium.org/issues/40145101
-> 
-> What ever became of this?
+On Tue, 5 Mar 2024 10:18:51 -0500 David Thompson wrote:
+> +	/* Read LLU counters only if they are enabled */
+> +	if (mlxbf_gige_llu_counters_enabled(priv)) {
+> +		data_lo = readl(priv->llu_base + MLXBF_GIGE_TX_PAUSE_CNT_LO);
+> +		data_hi = readl(priv->llu_base + MLXBF_GIGE_TX_PAUSE_CNT_HI);
+> +		pause_stats->tx_pause_frames = (data_hi << 32) | data_lo;
+> +
+> +		data_lo = readl(priv->llu_base + MLXBF_GIGE_RX_PAUSE_CNT_LO);
+> +		data_hi = readl(priv->llu_base + MLXBF_GIGE_RX_PAUSE_CNT_HI);
+> +		pause_stats->rx_pause_frames = (data_hi << 32) | data_lo;
+> +	} else {
+> +		pause_stats->tx_pause_frames = 0;
+> +		pause_stats->rx_pause_frames = 0;
 
-I'm not entirely sure. I don't think it's been a priority lately
-(obviously).
+Counters are not enabled, meaning we don't know how many frames were
+sent? Or pause frames are not enabled, therefore we know it's 0?
 
+If the latter we should add a comment clarifying that, if the former:
+
+ * @get_pause_stats: Report pause frame statistics. Drivers must not zero
+ *	statistics which they don't report. The stats structure is initialized
+ *	to ETHTOOL_STAT_NOT_SET indicating driver does not report statistics.
 -- 
-Kees Cook
+pw-bot: cr
 
