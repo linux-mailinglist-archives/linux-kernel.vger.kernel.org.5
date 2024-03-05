@@ -1,187 +1,128 @@
-Return-Path: <linux-kernel+bounces-92343-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92345-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F246D871ED4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:16:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30ACC871EDC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:17:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86AE72878A4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:16:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4FA8A1C224B2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:17:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E31135A0FA;
-	Tue,  5 Mar 2024 12:15:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB8395C8E5;
+	Tue,  5 Mar 2024 12:15:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="BGTAePN3"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="qvDZjgOt"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 507575BAD9
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 12:15:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51A165C602;
+	Tue,  5 Mar 2024 12:15:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709640924; cv=none; b=GDcfwujN3WuQ/cCc3Jfn4sI2BGsp6QypiyKdxV13nRDYMZYdjxv6Xc1VrVbtwvqxD+v+HVs+Hxjnt0sIqt7K4N/oLOGe0bjwGMXJGYamhFs9SDgsdhYKr4pdBZ6MMXVg64wDqswhTnvUbFiN3EidS+O4BPo/AlGyjyHCRRN/fvc=
+	t=1709640929; cv=none; b=gEim7u3C+F/+ublZrm1ZwFSZ2H+ILpOBF1A5zM+TenxqzcI8NuEP1Odj7a68ka++LDd/f+pKkDHqtHPc2CyUvcPKkiifC8twTnXDpuSgtmkonSYsHF98+id52mbsnzIHnaYD/o0PMqU4+cK3bgnFXs/+pFfkmCLBxJg0DZy2p3A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709640924; c=relaxed/simple;
-	bh=kW6ySO9UjKoPkDNKLl904Eg7AGlGAj8q4urpp8bhL+A=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=Xk8y+70qhxK1QH8CodXVHADKwif9mje/sOHItdkX2ZodBr+94sRUN1wiOxDiD3w1Rvdo3Rcz5+o4UM+jDCh2hGUaK1WVnWCOY+dQvwt3FEoG1NkApN4KosfppbeYXYoG9tzsMEB86gkgz8DMW07n5fmgottmA3MXhyq59q+WabM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=BGTAePN3; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1dd2dca2007so3624195ad.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 04:15:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709640921; x=1710245721;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hVie1ubg1vO+1LPda2Bilx+ZCICOse/T4HjTbJik150=;
-        b=uTNv2A0A54TYNZxay9Aj6ZzooZKi0av5ww5+vZo/bwUXiKNpy6WmqPnZb94MRU6Mao
-         6xFpp1liz3uYijQqrZO1WlUeaWNXuvcWhC/m4FnwVCBqZoNJVJtPFSRj4EAhDhB29dfl
-         a0X/GI3kJse3gQmYj1WwunNm3pIPVc07cPnW39gpng7C2RT8yJFPhAkHqW9c+VMeihIn
-         0Wtjk+6VXIU37PmbdIHz5AUdlFvOouISxHBdtCQgud9GD/Erfsc7qTBjtKZaaE30EYry
-         AkLZbDTmceiQ6jSXxQh1G70J33AJpiKuJ9oPZY4byczQSayzTp9+5WeGihh42k7PYLQo
-         Jc7Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUdeXTkxIPj0htUVqfZx7dRSzcZnYh6PQkYxUwJyTfYcDgfFz7Ws1zTHnaWpkfw/blwy1owZODM07geL5paaLS83Y7nEYk8QOEWe4G2
-X-Gm-Message-State: AOJu0Yy1/EvuN55MadixxGpblnXLMQawSVUc8lmznKNsWNzgNGu/u1R2
-	/n/QcSxxFP9p+pTnY8a5+CJPv9y+hvY1u+ieV/ABgYyg1n1jrKuG+YGuN3EyMFChvA==
-X-Google-Smtp-Source: AGHT+IGJOKhnhB8IG8kVYywr4PNMnLud3LPOcz2BGEvgb9t9EUw/+82Q9SP6kp1RrbEw8S9TIE5C6Q==
-X-Received: by 2002:a17:902:a389:b0:1db:cfa0:4045 with SMTP id x9-20020a170902a38900b001dbcfa04045mr1648983pla.60.1709640921328;
-        Tue, 05 Mar 2024 04:15:21 -0800 (PST)
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id u14-20020a17090341ce00b001dd1096e365sm4182621ple.281.2024.03.05.04.15.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 04:15:20 -0800 (PST)
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1709640919;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=hVie1ubg1vO+1LPda2Bilx+ZCICOse/T4HjTbJik150=;
-	b=BGTAePN3bozrIykaFwJ7dZRpAb3BkQUm8T27HtTgPzaCi4Jm5WG3/t8NFKNtGBKWMQo6vI
-	VR8DZQz063RYjfaq0Dt0oivWnNRDf5chrbwk5oVXUjaiV2JkX7i3G6cqOAotaQlunulpgF
-	IiiY8NOHzefaKVSSqwOw5SslHHaYVxLQs7hvb4nKIEEbmS5N67S8gFZLNEpZ/JhDYHAB+m
-	esgBwae0rbuvwMvTGCM2i4vWOckYvswPONJiJ5nWyrhiRcAkCndD67y/jjvMX9a+qvEAmd
-	YrGWD8FoqwuQPe2ETfmDvJb2TxgiLJlZ+4+kXpM7VLTK01nO7yLLbcK8rDBE4w==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Tue, 05 Mar 2024 09:15:14 -0300
-Subject: [PATCH] drm/amdkfd: make kfd_class constant
+	s=arc-20240116; t=1709640929; c=relaxed/simple;
+	bh=8XVY4yDvTbI92l/7aGIsmQNytdvsX7b8EhXWeJNDsv8=;
+	h=Message-ID:Subject:From:To:Cc:Date:Content-Type:MIME-Version; b=bS7R6XMt7+spS6USlYWcRIQNALP1nVgMtlc4fjuU2PKjTqEmpR/ceKkUYvtfunfvW21PlL+knGAKRD3uYi9yYj/MKQXK5oEfHh1d+2Ifa69ccuCoBZtttmV/X6rQFxrYBZwCm3fnLb20YOZFmUmA3TBjfGFj1lKYAjekL+4nHAo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=qvDZjgOt; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 425C2x3L007898;
+	Tue, 5 Mar 2024 12:15:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : content-type : content-transfer-encoding :
+ mime-version; s=pp1; bh=2B5vC5/EsMpHo+R4RtClTfGr+IYp86B+aXqVoME+TRQ=;
+ b=qvDZjgOtR446fZ6q9smD4Dwrtw7aCimSQGxIHRYO354t2Al9/a3Gt/Mg+dRYf9rtyqVO
+ Kw8HyzWZTWSh9BKetx2ukrDddo/YDgOfx7yLPw4Bfa/PknXJwgu72xqe+lChPQ9zEFjl
+ YyCxxLW0AH0ExkRJCKhw4AackBSvesQqKxGXt0kwoBiv4s7NMnqMXKf7P6BRqcpaqY89
+ dsa2cVdfdJmMQ2ZHgPjnMLMe69TOW0N2zlm0C4U20kkDqzdYE7EEN/Cc/p/23nT+y3Pj
+ RZEePT3QCUEBVFQ2I4ecXYOrgNAW4bav1kRWKuMRydZKSj1LKAWB+E7w9HrUguuqKFDj hw== 
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wp3248dr4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 05 Mar 2024 12:15:19 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 425A5gF4025387;
+	Tue, 5 Mar 2024 12:15:19 GMT
+Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wmetyfhr4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 05 Mar 2024 12:15:19 +0000
+Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
+	by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 425CFGat30998952
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 5 Mar 2024 12:15:18 GMT
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 864A95806F;
+	Tue,  5 Mar 2024 12:15:16 +0000 (GMT)
+Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 3B9E458051;
+	Tue,  5 Mar 2024 12:15:16 +0000 (GMT)
+Received: from li-5cd3c5cc-21f9-11b2-a85c-a4381f30c2f3.ibm.com (unknown [9.61.160.159])
+	by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Tue,  5 Mar 2024 12:15:16 +0000 (GMT)
+Message-ID: <987924a8c1e3e4e99a483e432f1418518af0b7aa.camel@linux.ibm.com>
+Subject: [GIT PULL] integrity: subsystem update for v6.8-rcX
+From: Mimi Zohar <zohar@linux.ibm.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-integrity <linux-integrity@vger.kernel.org>,
+        linux-kernel
+	 <linux-kernel@vger.kernel.org>,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Date: Tue, 05 Mar 2024 07:15:15 -0500
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: z5zaDE47WWQw6Y0qibrKsr02IJuVICjp
+X-Proofpoint-ORIG-GUID: z5zaDE47WWQw6Y0qibrKsr02IJuVICjp
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240305-class_cleanup-drm-amd-v1-1-ea99b37f26c7@marliere.net>
-X-B4-Tracking: v=1; b=H4sIANEM52UC/x3M3QpAQBBA4VfRXJtay6a8iqT9GUyxtBMpeXeby
- +/inAeEEpNAVzyQ6GLhPWZUZQF+sXEm5JANWulG1cqgX63I6Fey8TwwpA3tFtAF32pjXGsaBbk
- 9Ek18/99+eN8PW1ehI2cAAAA=
-To: Felix Kuehling <Felix.Kuehling@amd.com>, 
- Alex Deucher <alexander.deucher@amd.com>, 
- =?utf-8?q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
-Cc: amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, 
- linux-kernel@vger.kernel.org, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2580; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=kW6ySO9UjKoPkDNKLl904Eg7AGlGAj8q4urpp8bhL+A=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl5wzUrYRyC7QPry2Qt/QVSUFHko1BN60HYq8im
- pKi9crZA16JAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZecM1AAKCRDJC4p8Y4ZY
- pojlD/4+yZ4Gt+Nxg1Sgg2TByTe24SdCm8LDHQY7YesXADry34SCqGMvqx/PEXvJylFH9kcgh/s
- NPZLOCmapuanwhUJXelV4CqSQS4An59xgPNJuFvmUa4iS4O8Chj3vgPGjtZFpIOsObdTxY0nYmI
- KkBMeUrNPYlVTFUFhnvXSFjSvrd552Un0aSb/IO2+ArAIF43bNQFgC0AeruTxuLRew+OEgYuMR0
- Flkq4sUbzc2i/GJID7KgIzhPM5ZcTPVmapA3B8JXvQAgPHOoazUPMBg0ruRZSwX5973Ul3rzvjl
- F2SkfJSzAvP7BFU3CDkPfXujvWr0U53VRqruHd9Rzr4mreStGDiTDK7kW9pikwU6SK4zG6NDknB
- EgfWQnhxm9wvZmmkQNGEpO7FsyXpKY3ZTj/S4XkflIR3zrnYdZafhiSiz+LwI34TwMMkIp8QD9g
- Zw6fZAgGNlfkTrQOzl+FAqzn4psKVPu3lv8yy1ipGmJbxP0Okwywi/OMk/SBYt8344Iwsz2Nwgp
- q1mM+J5h5/czFQqZmcws2MN7RiFoJH4ccKcD7BgSBAUsgqYbGd/ltg9Y38pcj9021m9/jDxCaQN
- c0/KZdhyOj3Fn/HzGgXONhT9xz3178ZH8jAvtC7uWcH5g7GW8n4QU3EqKyZTBqiehwrHjSGRgGk
- 6cTcmFrf0f88Jxg==
-X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-05_08,2024-03-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ adultscore=0 mlxscore=0 mlxlogscore=999 impostorscore=0 suspectscore=0
+ spamscore=0 phishscore=0 priorityscore=1501 clxscore=1015 bulkscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2403050098
 
-Since commit 43a7206b0963 ("driver core: class: make class_register() take
-a const *"), the driver core allows for struct class to be in read-only
-memory, so move the kfd_class structure to be declared at build time
-placing it into read-only memory, instead of having to be dynamically
-allocated at boot time.
+Hi Linus,
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
----
- drivers/gpu/drm/amd/amdkfd/kfd_chardev.c | 21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+Here's a single fix to eliminate an unnecessary msg.
 
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_chardev.c b/drivers/gpu/drm/amd/amdkfd/kfd_chardev.c
-index f030cafc5a0a..dfa8c69532d4 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_chardev.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_chardev.c
-@@ -63,8 +63,10 @@ static const struct file_operations kfd_fops = {
- };
- 
- static int kfd_char_dev_major = -1;
--static struct class *kfd_class;
- struct device *kfd_device;
-+static const struct class kfd_class = {
-+	.name = kfd_dev_name,
-+};
- 
- static inline struct kfd_process_device *kfd_lock_pdd_by_id(struct kfd_process *p, __u32 gpu_id)
- {
-@@ -94,14 +96,13 @@ int kfd_chardev_init(void)
- 	if (err < 0)
- 		goto err_register_chrdev;
- 
--	kfd_class = class_create(kfd_dev_name);
--	err = PTR_ERR(kfd_class);
--	if (IS_ERR(kfd_class))
-+	err = class_register(&kfd_class);
-+	if (err)
- 		goto err_class_create;
- 
--	kfd_device = device_create(kfd_class, NULL,
--					MKDEV(kfd_char_dev_major, 0),
--					NULL, kfd_dev_name);
-+	kfd_device = device_create(&kfd_class, NULL,
-+				   MKDEV(kfd_char_dev_major, 0),
-+				   NULL, kfd_dev_name);
- 	err = PTR_ERR(kfd_device);
- 	if (IS_ERR(kfd_device))
- 		goto err_device_create;
-@@ -109,7 +110,7 @@ int kfd_chardev_init(void)
- 	return 0;
- 
- err_device_create:
--	class_destroy(kfd_class);
-+	class_unregister(&kfd_class);
- err_class_create:
- 	unregister_chrdev(kfd_char_dev_major, kfd_dev_name);
- err_register_chrdev:
-@@ -118,8 +119,8 @@ int kfd_chardev_init(void)
- 
- void kfd_chardev_exit(void)
- {
--	device_destroy(kfd_class, MKDEV(kfd_char_dev_major, 0));
--	class_destroy(kfd_class);
-+	device_destroy(&kfd_class, MKDEV(kfd_char_dev_major, 0));
-+	class_unregister(&kfd_class);
- 	unregister_chrdev(kfd_char_dev_major, kfd_dev_name);
- 	kfd_device = NULL;
- }
+thanks,
 
----
-base-commit: 8bc75586ea01f1c645063d3472c115ecab03e76c
-change-id: 20240305-class_cleanup-drm-amd-bdc7255b7540
+Mimi
 
-Best regards,
--- 
-Ricardo B. Marliere <ricardo@marliere.net>
+The following changes since commit 841c35169323cd833294798e58b9bf63fa4fa1de:
+
+  Linux 6.8-rc4 (2024-02-11 12:18:13 -0800)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git/ tags/integrity-v6.8-fix
+
+for you to fetch changes up to 85445b96429057d87446bcb24ec0cac9ea9c7fdf:
+
+  integrity: eliminate unnecessary "Problem loading X.509 certificate" msg (2024-02-16 08:04:17 -0500)
+
+----------------------------------------------------------------
+integrity-v6.8-fix
+
+----------------------------------------------------------------
+Coiby Xu (1):
+      integrity: eliminate unnecessary "Problem loading X.509 certificate" msg
+
+ security/integrity/digsig.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 
