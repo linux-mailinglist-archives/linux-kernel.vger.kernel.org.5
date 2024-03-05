@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-92861-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92862-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD016872710
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:56:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4792F872712
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:56:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A44628C885
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:56:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC9221F295A7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:56:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D1531BC26;
-	Tue,  5 Mar 2024 18:55:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AD901C28B;
+	Tue,  5 Mar 2024 18:56:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CcB5d5/g"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qd/ZLRij"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64FB118EBB;
-	Tue,  5 Mar 2024 18:55:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC1301B26E;
+	Tue,  5 Mar 2024 18:56:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709664954; cv=none; b=uMg6OfRcYIQw3ygUNTD+u7N2L26n5q+uJbm/9JbYHxyQniMhxlX6dvCFd/Va/Jv5z4mPdN88EOfTAafV0lVqtEwoepKwStMo1xOx7jGuf9Ljivd0iwfrdmvCzfU//fzpvv6N8YWbUl3zmYca+vAy8MNG1058bk29C6mdW34Pe3w=
+	t=1709664985; cv=none; b=N5cpIuPFZW1UVfo69jnSuIqBQ1AP9sjOHXNjZBGbMyr4UocsFUXH8TqFbTt1hYft6le1zfwMrl6moBlJ9IIp5D/UUPx2sQXxRdfN+DhmqP6Ax7asgk1InS6Y3pKpPJ52q0irGUZJRilZAaw54zn5Uo32zmIxQyTQNhrEWN5qKpw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709664954; c=relaxed/simple;
-	bh=XbKyIseOs3O4QkGJj/50dL2guXVpKbgyIoIhG/Hnj94=;
+	s=arc-20240116; t=1709664985; c=relaxed/simple;
+	bh=pTOiKNw8kRBoqvH5vAPiz3p6O7+BEgqHronxns/y2/I=;
 	h=Content-Type:MIME-Version:Subject:From:In-Reply-To:References:To:
-	 Cc:Message-ID:Date; b=uFuLlvCDoiV579UNyNEbAkRqMv92QMFCGGo1u59AXaO1hkbEHJwnA+iE6VIXRucIwfUfOlvefw4sKro+nbJHeGybB/bueKvCdZhoK82sWa8TZXNY5zxW0p2iU4qrCXFuVdZYJRpUC6LUaJHrSJ7O9HUpwCKn2j9Z6grbG+iOHoc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CcB5d5/g; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A119C433C7;
-	Tue,  5 Mar 2024 18:55:52 +0000 (UTC)
+	 Cc:Message-ID:Date; b=uIkU6juTNVpbS66mOCtmgGKps8Hr4IKrAY8oKBKZhEPuHoValA7W9Utz1zjtHBgT+GEAYmKuGBMT7g6hHCk0D0rwk6kVSyy+ZVNNI1IJR7EhO9YpxTexebATzBgKiP2Jwd0yHpVae8b0/Agu0bJqwUUX3X+OcfNHMdM4jzi3mBw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qd/ZLRij; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93248C433F1;
+	Tue,  5 Mar 2024 18:56:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709664953;
-	bh=XbKyIseOs3O4QkGJj/50dL2guXVpKbgyIoIhG/Hnj94=;
+	s=k20201202; t=1709664984;
+	bh=pTOiKNw8kRBoqvH5vAPiz3p6O7+BEgqHronxns/y2/I=;
 	h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-	b=CcB5d5/gC/g7UDGwpgMmsWBxKTt393MQDmK+u2fOPmGvTSYmsvd9J5VcWSEf7Ep43
-	 2ExA/MRqBN1q1sR8wTMH0PAIOVnd6yvGLcyY3QReg6O10jvB1gqItvtd1MzkIJPtKx
-	 rus55E01v5sT3ZMuYdBhC+QOvIKkftrtIw9Zlto69m0XSIXVqwmGk2Z4KaEucCPzJk
-	 19IPcmjncZTJLj2Z003d2OMfw4l59oeaIcEKge5pKboGfWkC01J1p7IXbm5nLzIceU
-	 6P7wHM2PF0VB/TgDbgSM7GWMGCmMjYteChBNC1M87VwfKlHESU0nzKqrYbrg3OgrlX
-	 WpytybP7fYk8w==
+	b=qd/ZLRij92a9SdWrQ39F/HOqSmUUE+lPW/oueSAnG4Rpv+GlcW33LZrpUk+dEpzNX
+	 ngDKtlUy5U9HJlk7NBYnKa5uMCGbpjdut3n9BpsHaXzHFl+7CNdy76vGp2I9jXByX2
+	 EvQVf7QikayPDpBWfMqIp177ZZ9r/6tJN/Pg3tJBV3miQ6u0F1HN4Bx24f3SEGxAsf
+	 Cui7dN+zB1E6IEf1pRqaQVg3lyTmpQ1YtHgCntVSLlLspQwKj6bXAvJN+9hNx5RSN6
+	 SvX7IMX7KY107aCrKjmY2j7UyG87An9Qwa46fZPSJvLg32PbT8+f/luUmxaOCGGvgX
+	 fO14YpJEb8xwQ==
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -47,49 +47,42 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] ssb: Fix potential NULL pointer dereference in
- ssb_device_uevent
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH v3] wifi: brcm80211: handle pmk_op allocation failure
 From: Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <20240229093756.129324-1-rand.sec96@gmail.com>
-References: <20240229093756.129324-1-rand.sec96@gmail.com>
-To: Rand Deeb <rand.sec96@gmail.com>
-Cc: Michael Buesch <m@bues.ch>, linux-wireless@vger.kernel.org,
- linux-kernel@vger.kernel.org, deeb.rand@confident.ru,
- lvc-project@linuxtesting.org, voskresenski.stanislav@confident.ru,
- Rand Deeb <rand.sec96@gmail.com>
+In-Reply-To: <20240229103153.18533-1-duoming@zju.edu.cn>
+References: <20240229103153.18533-1-duoming@zju.edu.cn>
+To: Duoming Zhou <duoming@zju.edu.cn>
+Cc: linux-kernel@vger.kernel.org, brcm80211-dev-list.pdl@broadcom.com,
+ brcm80211@lists.linux.dev, linux-wireless@vger.kernel.org,
+ justinstitt@google.com, quic_alokad@quicinc.com, jisoo.jang@yonsei.ac.kr,
+ petr.tesarik.ext@huawei.com, hdegoede@redhat.com, keescook@chromium.org,
+ johannes.berg@intel.com, arend.vanspriel@broadcom.com,
+ Duoming Zhou <duoming@zju.edu.cn>
 User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
-Message-ID: <170966495037.424347.1344425289163744212.kvalo@kernel.org>
-Date: Tue,  5 Mar 2024 18:55:52 +0000 (UTC)
+Message-ID: <170966497987.424347.4050351610859400431.kvalo@kernel.org>
+Date: Tue,  5 Mar 2024 18:56:21 +0000 (UTC)
 
-Rand Deeb <rand.sec96@gmail.com> wrote:
+Duoming Zhou <duoming@zju.edu.cn> wrote:
 
-> The ssb_device_uevent function first attempts to convert the 'dev' pointer
-> to 'struct ssb_device *'. However, it mistakenly dereferences 'dev' before
-> performing the NULL check, potentially leading to a NULL pointer
-> dereference if 'dev' is NULL.
+> The kzalloc() in brcmf_pmksa_v3_op() will return null if the
+> physical memory has run out. As a result, if we dereference
+> the null value, the null pointer dereference bug will happen.
 > 
-> To fix this issue, this patch moves the NULL check before dereferencing the
-> 'dev' pointer, ensuring that the pointer is valid before attempting to use
-> it.
+> Return -ENOMEM from brcmf_pmksa_v3_op() if kzalloc() fails
+> for pmk_op.
 > 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> 
-> Signed-off-by: Rand Deeb <rand.sec96@gmail.com>
-> Acked-by: Michael Büsch <m@bues.ch>
+> Fixes: a96202acaea4 ("wifi: brcmfmac: cfg80211: Add support for PMKID_V3 operations")
+> Acked-by: Arend van Spriel <arend.vanspriel@broadcom.com>
+> Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Failed to apply:
+Patch applied to wireless-next.git, thanks.
 
-error: sha1 information is lacking or useless (drivers/ssb/main.c).
-error: could not build fake ancestor
-hint: Use 'git am --show-current-patch=diff' to see the failed patch
-Applying: ssb: Fix potential NULL pointer dereference in ssb_device_uevent
-Patch failed at 0001 ssb: Fix potential NULL pointer dereference in ssb_device_uevent
-
-Patch set to Changes Requested.
+b4152222e04c wifi: brcm80211: handle pmk_op allocation failure
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20240229093756.129324-1-rand.sec96@gmail.com/
+https://patchwork.kernel.org/project/linux-wireless/patch/20240229103153.18533-1-duoming@zju.edu.cn/
 
 https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
