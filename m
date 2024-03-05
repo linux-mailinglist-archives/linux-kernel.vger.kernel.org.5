@@ -1,108 +1,134 @@
-Return-Path: <linux-kernel+bounces-91843-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91845-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74413871765
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:53:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F5C187176B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:54:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 15D4BB23355
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:53:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 36E5FB229F2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:54:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF84781749;
-	Tue,  5 Mar 2024 07:51:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5BE37F469;
+	Tue,  5 Mar 2024 07:52:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TpVVDPZN"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="LpGlrz6U"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F2ED7F476;
-	Tue,  5 Mar 2024 07:51:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01EF47E78B;
+	Tue,  5 Mar 2024 07:52:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709625073; cv=none; b=CgrV8HjoPjND+qOBfQ6GxeSfyXm/YaezOFk/dPXRxbAZS+MNjdbAzFSDboO5QXemGw8mhujol28Njtz7GsLt8C198cyYS5eO3mmtSS3vZ7bSZNxqq5AVcFZzp5Jh6IYNNVfZd2cqo6S7jOmkXE+gNv/nspLBF6od36Y+Q5l+YLM=
+	t=1709625146; cv=none; b=JvJV9uaQ2sciBrTvI8Uj5a3sVh1rQ183WeTszRftQ5iv5juCNBhK9ZOa/uqZUHFAYNmLuSZujBFMYzFg4w4xErqcoIv7/HEfCLaDgwNYwm9+fw6hlWnMD6YiLNWP5/sPDoSY+iMMKgqqT+b9XGu0ByHPeu1Vk9+eqP9eo3FH5SY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709625073; c=relaxed/simple;
-	bh=QDh37/hypKzqzSrGrTAeVEghHDvc7ycpYvDwVjDq178=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Lg/LyDcR0lpVMkSG5kF4nkOLjuC4QhztOBLMIruJuSa0fqPWPU1NZ4eUD09FzUdG0KeEE3yIpBPquxqGnPxjER8Bj03lZPgGa+1pWnAvcYxF+tpqhfLvjFnuw7P5t2zpS5ZhwJMW2L1UOhXaVfPLF5psb3SWDdkjeYY1o97evjw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TpVVDPZN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A39D7C32787;
-	Tue,  5 Mar 2024 07:51:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709625072;
-	bh=QDh37/hypKzqzSrGrTAeVEghHDvc7ycpYvDwVjDq178=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=TpVVDPZNLvOWwLBiGWzMobgo8QFbD2HtIFgHNJhEFy8bfZOvEj0Fd3b8/ua919/ad
-	 KJI7Nos9ELYJxxVORm2DQGo8+ewpZe5aNr0rmfcDOkkQD5uOBDlKVJvH/ihDuQUdG8
-	 PMP625X6YUd8jqHBF4T/LGZrmJYNiasDws21uELOQUCzRJbeD3F0U9dOC2P6ostAQ+
-	 DSHWx+BgNTHTVkYE0hPsxM49Enhn55uw519hrGKLR9OEdHP0tEw2ZyS/ehBFW8jQeR
-	 ZPkBhTExPxVDoV0rps1xUkinbRu+pHpkfWE0uiTxmUXugDcwqd/xNGJ1o5xmgTssaM
-	 YdUFS283RbZcQ==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9361FC54E41;
-	Tue,  5 Mar 2024 07:51:12 +0000 (UTC)
-From: Yang Xiwen via B4 Relay <devnull+forbidden405.outlook.com@kernel.org>
-Date: Tue, 05 Mar 2024 15:51:18 +0800
-Subject: [PATCH net-next v8 9/9] net: hisi_femac: remove unneeded
- MODULE_ALIAS()
+	s=arc-20240116; t=1709625146; c=relaxed/simple;
+	bh=AM09GKPYJH/8gNJ+NzSyVqjaenAF0cZN+Cb8vT4dlew=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=e6IpfZnpS/6UQh0t/I/RlAxgWojU3HkvwgGOQ6R5I0A29d1zwyDA6wcuMlDH63r8Up+ukI377tWKpeFyCgD9Xi6DDK6RHtTnDdFgvoCbJoUnYiqptddNKAprpiLyR7aHEBMiGnVNif4D5juTGYj08d37mWgI/YFzwXXsJQImDCM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=LpGlrz6U; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74159C43390;
+	Tue,  5 Mar 2024 07:52:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1709625143;
+	bh=AM09GKPYJH/8gNJ+NzSyVqjaenAF0cZN+Cb8vT4dlew=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=LpGlrz6U4DYo0szXcCLN3qySBTzVZK09L0wBZrGS5comnhFIvVJWxIm+PynYFkYdX
+	 1WwxtHQ+/h+An5Seq91B6O12hyMxiGuEhsOmqfEi4xqyOO5bqnB+TkRtmcLtv0uTr9
+	 FlEmJ28M/aW5DwvTPoqJNoQ8QCjctH8YvuEHxzXs=
+Date: Tue, 5 Mar 2024 07:52:20 +0000
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Elbert Mai <code@elbertmai.com>
+Cc: linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH v2] usb: Export BOS descriptor to sysfs
+Message-ID: <2024030515-cruelly-ungreased-3fd9@gregkh>
+References: <20240305002301.95323-1-code@elbertmai.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240305-net-v8-9-166aaeea2107@outlook.com>
-References: <20240305-net-v8-0-166aaeea2107@outlook.com>
-In-Reply-To: <20240305-net-v8-0-166aaeea2107@outlook.com>
-To: Yisen Zhuang <yisen.zhuang@huawei.com>, 
- Salil Mehta <salil.mehta@huawei.com>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>, 
- Heiner Kallweit <hkallweit1@gmail.com>, 
- Russell King <linux@armlinux.org.uk>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
- devicetree@vger.kernel.org, Yang Xiwen <forbidden405@outlook.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1709625070; l=761;
- i=forbidden405@outlook.com; s=20230724; h=from:subject:message-id;
- bh=dDYro7mR0AilpKVwze2YXBVItXvJMbJiAARD8z9wFaE=;
- b=BeUD2kK+uMFGXzTas40KU2U+vEaLDhYUP7EOP2nwDx+5ZlWez0w7QYlXS6M4ra9Pr0NV/EIQQ
- 52uVMHFo+q+BZHozbNe77BQ+Ns/oKGuptIDqIHnu+rr9Xq2eJCOG2tx
-X-Developer-Key: i=forbidden405@outlook.com; a=ed25519;
- pk=qOD5jhp891/Xzc+H/PZ8LWVSWE3O/XCQnAg+5vdU2IU=
-X-Endpoint-Received:
- by B4 Relay for forbidden405@outlook.com/20230724 with auth_id=67
-X-Original-From: Yang Xiwen <forbidden405@outlook.com>
-Reply-To: <forbidden405@outlook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240305002301.95323-1-code@elbertmai.com>
 
-From: Yang Xiwen <forbidden405@outlook.com>
+On Mon, Mar 04, 2024 at 04:23:01PM -0800, Elbert Mai wrote:
+> Motivation
+> ----------
+> 
+> The binary device object store (BOS) of a USB device consists of the BOS
+> descriptor followed by a set of device capability descriptors. One that is
+> of interest to users is the platform descriptor. This contains a 128-bit
+> UUID and arbitrary data, and it allows parties outside of USB-IF to add
+> additional metadata about a USB device in a standards-compliant manner.
+> Notable examples include the WebUSB and Microsoft OS 2.0 descriptors.
+> 
+> The kernel already retrieves and caches the BOS from USB devices if its
+> bcdUSB is >= 0x0201. Because the BOS is flexible and extensible, we export
+> the entire BOS to sysfs so users can retrieve whatever device capabilities
+> they desire, without requiring USB I/O or elevated permissions.
+> 
+> Implementation
+> --------------
+> 
+> Add bos_descriptors attribute to sysfs. This is a binary file and it works
+> the same way as the existing descriptors attribute. The file exists only if
+> the BOS is present in the USB device.
+> 
+> Also create a binary attribute group, so the driver core can handle the
+> creation of both the descriptors and bos_descriptors attributes in sysfs.
+> 
+> Signed-off-by: Elbert Mai <code@elbertmai.com>
+> ---
+> Changes in v2:
+>  - Rename to bos_descriptors (plural) since the attribute contains the
+>    entire BOS, not just the first descriptor in it.
+>  - Use binary attribute groups to let driver core handle attribute
+>    creation for both descriptors and bos_descriptors.
+>  - The attribute is visible in sysfs only if the BOS is present in the
+>    USB device.
 
-We already have MODULE_DEVICE_TABLE() that creates the correct alias.
-Remove unneeded MODULE_ALIAS().
+Very nice, thanks for this!
 
-Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
----
- drivers/net/ethernet/hisilicon/hisi_femac.c | 1 -
- 1 file changed, 1 deletion(-)
+One very minor comment, you can send a follow-on patch for this if you
+like:
 
-diff --git a/drivers/net/ethernet/hisilicon/hisi_femac.c b/drivers/net/ethernet/hisilicon/hisi_femac.c
-index a4f856710d96..ea8f60f292c1 100644
---- a/drivers/net/ethernet/hisilicon/hisi_femac.c
-+++ b/drivers/net/ethernet/hisilicon/hisi_femac.c
-@@ -1015,4 +1015,3 @@ module_platform_driver(hisi_femac_driver);
- MODULE_DESCRIPTION("Hisilicon Fast Ethernet MAC driver");
- MODULE_AUTHOR("Dongpo Li <lidongpo@hisilicon.com>");
- MODULE_LICENSE("GPL v2");
--MODULE_ALIAS("platform:hisi-femac");
+> +static umode_t dev_bin_attrs_are_visible(struct kobject *kobj,
+> +		struct bin_attribute *a, int n)
+> +{
+> +	struct device *dev = kobj_to_dev(kobj);
+> +	struct usb_device *udev = to_usb_device(dev);
+> +
+> +	/* All USB devices have a device descriptor, so the descriptors
+> +	 * attribute always exists. No need to check for its visibility.
+> +	 */
 
--- 
-2.43.0
+This comment is in the "wrong" style, I think checkpatch will complain
+about that, right?
 
+But it's a bit confusing, you say "no need to check", and then you:
+
+> +	if (a == &bin_attr_bos_descriptors) {
+> +		if (udev->bos == NULL)
+> +			return 0;
+> +	}
+
+check something :)
+
+How about this as a comment instead:
+	/*
+	 * If this is the BOS descriptor, check to verify if the device
+	 * has that descriptor at all or not.
+	 */
+
+That's all you need here, right?
+
+Anyway, again, very nice, I'll go queue this up and run it through the
+0-day tests.
+
+thanks!
+
+greg k -h
 
