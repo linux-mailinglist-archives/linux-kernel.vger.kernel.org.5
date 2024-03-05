@@ -1,172 +1,111 @@
-Return-Path: <linux-kernel+bounces-91950-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91951-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B22808718DF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:04:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 120FD8718E3
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:05:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65605284826
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:04:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB3F01F239D0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:05:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41EC0548E3;
-	Tue,  5 Mar 2024 09:02:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFE8154904;
+	Tue,  5 Mar 2024 09:03:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SsJgH1WE"
-Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com [209.85.222.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="J0+RPNQo"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00BFF5026A
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 09:02:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9161750279;
+	Tue,  5 Mar 2024 09:03:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709629353; cv=none; b=R7dzP0ZTFhMS72ujougrRl3ONW1MYm3k4WsOJXQY0EBInW18takBX88YWXEb9XM19g2SKIHO+gUhl2dHiRGgdm3EeZOtfE0AcriXgBD1IAsdqvAJYcheqIxbo4fQ3Xk+ViJ1Jt2rRkik0dxZpM5/ELpKpGBHI8ZUmFI0WWXVl/c=
+	t=1709629392; cv=none; b=ptrM1pYrMYgT/iJIx5pWZrjUYBCQ956TSYAezL3APU1XH9EfZBAu3Gig0hgl2kbB+qTH+JTWZpM1fAFo/OVr3e8mQHW6SN+4L1MP8m9TdA5GKtyOq7NHNHdmNruRZWSO2jyw+j10xXbd5mAjzWx8CEvuyKezP6EkGDkezETzSXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709629353; c=relaxed/simple;
-	bh=YTF54RnuRPU+Rv2eItHbB2OOwbzL8rjLvjPa2ZDXW8Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sXC1D9eleKj+d99S4uAanxqOWPs7ufMKTRkywlzTW9JLjHhThJMGRxrb3ELEsluumMVhnWsyN/v0+1wfvaL2CFtyylCiSNpbZK2dy+wdmIs3xRn7L9H37IHALt4XGVdGvC3sdhV1To4gjMXUiHHih3jI/uNH6DK4SEePMX8tEHI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SsJgH1WE; arc=none smtp.client-ip=209.85.222.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f48.google.com with SMTP id a1e0cc1a2514c-7da763255b7so1999850241.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 01:02:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709629351; x=1710234151; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=v9O4/C5JIqFC23mQvpNgI9LI8n16+t6tllhELPHKHyw=;
-        b=SsJgH1WET4x0+cIlwpMKvXUC9gAPoHKplNggN4ztwe8ehM3ugjPST3J6WAr+Mmr3tD
-         PMtcpGTf5vsad726ma60g1a3i9phPWlChH4j6cqVX+vHKil7AdUJvRMVVKimZMmrItZ7
-         NHhM3rcTo7GfxUlNf8j6DE2R9VUVloRC2o1wa1x5IJ8+DdYvpd1oOw4sbWED5AdwmoIT
-         dNBhJux1YawvYrxKPCZMpMnSSlCY2WHOZjp/FYOhGVJrPMs9OSnEFIqAmqKFmvBXEayr
-         dwr8aHy8mB1GhPOu2PRXQSIGht073ckpR3KZH2mabpQYaGpIWwKS53m6w1mocbgjsssj
-         bIuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709629351; x=1710234151;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=v9O4/C5JIqFC23mQvpNgI9LI8n16+t6tllhELPHKHyw=;
-        b=thyNAK76zeU7U8ZOSkGw1ycsjvMmdo8svBpC6Yu6mQnS2s/jGz+/M7uzjbJJGAq4aF
-         gECx2f5WsLqPiSjdiiiZ8QamXTVj6v2194YLI+WSZqobn1IoCkx39kiztcfVYUw3fLyL
-         xEigqdFYWwZXzMRQznKJmBBOx8MxIUTVw/FGLtBjGLwYOzuWDbEh2xsBr6RXJiRG4WPD
-         3yVGQiptj68byG48Xa9EWZcsx6eNVIw0a3X68gaMiFKvPq2DLsLdim3+/y6trCU4WZxB
-         nlqLFyiU6oDnY4HSdZXSQKB+owICKYfqPbc8t6fZIt/46hHzW2cfeTFcre5VG1MGs6+U
-         wHcA==
-X-Forwarded-Encrypted: i=1; AJvYcCX+6gnOHPdQIdQOo1ZukG04+0UVZzy0HKP8STR3GomwxaOAj+rOYb/HgxxqLpjM+zFKwpqwoJL7W1zlXWRK6DiRDUkCg8E06gImEP7I
-X-Gm-Message-State: AOJu0YyKyZrDpGxHQ5FAG4oUjc/4VllqSETLGpBxPLVfov80LUCv84Bi
-	KmmS4RzXAzavIDEXX5Mz7P4hAq8FPStMZJUEn8xogyEZQ/+hgo3NZvtNeYUyXNLy+0faVUjDwe7
-	Ttz14ERsiP/UfestqJkrql3Np2v0=
-X-Google-Smtp-Source: AGHT+IEstg6+xCVsEJBmJXw14YeuMGvQQFKdM/Rms94gAjBGAqimP19wTmiZegJOv2e5dCwOf93YtjJTvGronMossZg=
-X-Received: by 2002:a05:6122:30c:b0:4b8:383e:8266 with SMTP id
- c12-20020a056122030c00b004b8383e8266mr885132vko.11.1709629350734; Tue, 05 Mar
- 2024 01:02:30 -0800 (PST)
+	s=arc-20240116; t=1709629392; c=relaxed/simple;
+	bh=cNdEM8vfnnYOXnE1/pcVWlwHUFEK9a4YCyqrTtuWxqY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=prQPrgRAM6dtmQDGEpaKb4NpnV1h1YBL5UU/ehX8uPTNsaR7rVCpaSDG0Mc1v/wVKtH72XzpQvcDoGjuJ8sAkRm0M0KizvPdC3Mr6HxGJTZbN8AFS1InQj0pifVZZcTSinDsF5gI0NjPDdbGj6f+4lgRtiSTMH1PWCIb6sqJU18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=J0+RPNQo; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id CBBA41C0007;
+	Tue,  5 Mar 2024 09:02:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709629381;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cNdEM8vfnnYOXnE1/pcVWlwHUFEK9a4YCyqrTtuWxqY=;
+	b=J0+RPNQo0kcjTB3ttmpSW3fsCHfG2oBuLSV5YRYq7/iuchbARjyDkg63NdsGyVWILyMgkz
+	/+xZmZBTTg2nh0ZujNTW6e6BO/JgjmlHuV3VLvCXXvEAz8cw2dFfIauAntKOcVjP9KoYLs
+	W0IW5GwI73PadZElK0Gf5vVByQDUkAPA21sAkLCTHJJiZwe8VV0PDfS9NH8khrj7vrFFDq
+	5bXy1HOqq4lTJDy77JYDC+PgLLwqsalcFOEfxvqzB5S/x4q2q0o5RT2hM4IwJ0cPS6MYDN
+	krtZs2LQv3orKmyCJbzTxoTWTFil86eFX0R67KuVnMnrgIqMiZpH4r6C3K1wUA==
+Date: Tue, 5 Mar 2024 10:02:59 +0100
+From: =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Florian Fainelli <florian.fainelli@broadcom.com>, Broadcom internal
+ kernel review list <bcm-kernel-feedback-list@broadcom.com>, Andrew Lunn
+ <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>, Russell King
+ <linux@armlinux.org.uk>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Richard
+ Cochran <richardcochran@gmail.com>, Radu Pirea
+ <radu-nicolae.pirea@oss.nxp.com>, Jay Vosburgh <j.vosburgh@gmail.com>, Andy
+ Gospodarek <andy@greyhouse.net>, Nicolas Ferre
+ <nicolas.ferre@microchip.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Jonathan Corbet
+ <corbet@lwn.net>, Horatiu Vultur <horatiu.vultur@microchip.com>,
+ UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>, Vladimir
+ Oltean <vladimir.oltean@nxp.com>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, Maxime Chevallier
+ <maxime.chevallier@bootlin.com>, Rahul Rameshbabu <rrameshbabu@nvidia.com>
+Subject: Re: [PATCH net-next v9 07/13] ptp: Move from simple ida to xarray
+Message-ID: <20240305100259.006b3137@kmaincent-XPS-13-7390>
+In-Reply-To: <20240304184737.30cac57b@kernel.org>
+References: <20240226-feature_ptp_netnext-v9-0-455611549f21@bootlin.com>
+	<20240226-feature_ptp_netnext-v9-7-455611549f21@bootlin.com>
+	<20240304184737.30cac57b@kernel.org>
+Organization: bootlin
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240304103757.235352-1-21cnbao@gmail.com> <706b7129-85f6-4470-9fd9-f955a8e6bd7c@arm.com>
- <37f1e6da-412b-4bb4-88b7-4c49f21f5fe9@redhat.com> <CAGsJ_4yJ3yCyN_KgBO8W+jFx8RN6_JhS9OwX3FH6X_gpU7g62w@mail.gmail.com>
- <804524c8-772c-42d0-93a5-90d77f13f304@redhat.com> <CAGsJ_4yqUW46xyDtZ4X1wQZ2_0bLM85Euz2BufERa75Rg+gVyw@mail.gmail.com>
- <87r0gp868d.fsf@yhuang6-desk2.ccr.corp.intel.com>
-In-Reply-To: <87r0gp868d.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Tue, 5 Mar 2024 22:02:18 +1300
-Message-ID: <CAGsJ_4xUdqpWaYDrNV3Fbh=3cWyoDJz3AbWa=mfsKbka+MAVag@mail.gmail.com>
-Subject: Re: [RFC PATCH] mm: hold PTL from the first PTE while reclaiming a
- large folio
-To: "Huang, Ying" <ying.huang@intel.com>
-Cc: David Hildenbrand <david@redhat.com>, Ryan Roberts <ryan.roberts@arm.com>, akpm@linux-foundation.org, 
-	linux-mm@kvack.org, chrisl@kernel.org, yuzhao@google.com, 
-	hanchuanhua@oppo.com, linux-kernel@vger.kernel.org, willy@infradead.org, 
-	xiang@kernel.org, mhocko@suse.com, shy828301@gmail.com, 
-	wangkefeng.wang@huawei.com, Barry Song <v-songbaohua@oppo.com>, 
-	Hugh Dickins <hughd@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: kory.maincent@bootlin.com
 
-On Tue, Mar 5, 2024 at 8:55=E2=80=AFPM Huang, Ying <ying.huang@intel.com> w=
-rote:
->
-> Barry Song <21cnbao@gmail.com> writes:
->
-> > On Tue, Mar 5, 2024 at 10:15=E2=80=AFAM David Hildenbrand <david@redhat=
-com> wrote:
-> >> > But we did "resolve" those bugs by entirely untouching all PTEs if w=
-e
-> >> > found some PTEs were skipped in try_to_unmap_one [1].
-> >> >
-> >> > While we find we only get the PTL from 2nd, 3rd but not
-> >> > 1st PTE, we entirely give up on try_to_unmap_one, and leave
-> >> > all PTEs untouched.
-> >> >
-> >> > /* we are not starting from head */
-> >> > if (!IS_ALIGNED((unsigned long)pvmw.pte, CONT_PTES * sizeof(*pvmw.pt=
-e))) {
-> >> >                     ret =3D false;
-> >> >                     atomic64_inc(&perf_stat.mapped_walk_start_from_n=
-on_head);
-> >> >                     set_pte_at(mm, address, pvmw.pte, pteval);
-> >> >                     page_vma_mapped_walk_done(&pvmw);
-> >> >                     break;
-> >> > }
-> >> > This will ensure all PTEs still have a unified state such as CONT-PT=
-E
-> >> > after try_to_unmap fails.
-> >> > I feel this could have some false postive because when racing
-> >> > with unmap, 1st PTE might really become pte_none. So explicitly
-> >> > holding PTL from 1st PTE seems a better way.
-> >>
-> >> Can we estimate the "cost" of holding the PTL?
-> >>
-> >
-> > This is just moving PTL acquisition one or two PTE earlier in those cor=
-ner
-> > cases. In normal cases, it doesn't affect when PTL is held.
->
-> The mTHP may be mapped at the end of page table.  In that case, the PTL
-> will be held longer.  Or am I missing something?
+On Mon, 4 Mar 2024 18:47:37 -0800
+Jakub Kicinski <kuba@kernel.org> wrote:
 
-no. this patch doesn't change when we release PTL but change when we
-get PTL.
+> On Mon, 26 Feb 2024 14:39:58 +0100 Kory Maincent wrote:
+> > +static DEFINE_XARRAY_FLAGS(ptp_clocks_map, XA_FLAGS_LOCK_IRQ |
+> > XA_FLAGS_ALLOC); =20
+>=20
+> Why _IRQ? anything on the fastpath hopefully has a pointer to the clock
+> already, I'd hope. And we often reserve ID 0 as invalid.
 
-when the original code iterates nr_pages PTEs in a large folio, it will ski=
-p
-invalid PTEs, when it meets a valid one, it will acquire PTL. so if it gets
-intermediate PTE values some other threads are modifying, it might
-skip PTE0, or sometimes PTE0 and PTE1 according to my test. but
-arriving at PTE2, likely other threads have written a new value, so we
-will begin to hold PTL and iterate till the end of the large folio.
+To keep the same flag as IDA_INIT_FLAGS, I am not expert in xarray so I just
+keep it without questioning it. Do you think I should remove it?
 
-The proposal is that we directly get PTL from PTE0, thus we don't get
-intermediate values for the head of nr_pages PTEs. this will ensure
-a large folio is either completely unmapped or completely mapped.
-but not partially mapped and partially unmapped.
+ID 0 was valid for phc. IMHO makes it invalid is not a good idea, it
+will change the phc id value for current board on the field.
 
->
-> --
-> Best Regards,
-> Huang, Ying
->
->
-> > In normal cases, page_vma_mapped_walk will find PTE0 is present, thus h=
-old
-> > PTL immediately. in corner cases, page_vma_mapped_walk races with break=
--
-> > before-make, after skipping one or two PTEs whose states are transferri=
-ng,
-> > it will find a present pte then acquire lock.
-> >
-> >> --
-> >> Cheers,
-> >>
-> >> David / dhildenb
-> >
-Thanks
-Barry
+>=20
+> BTW could be a standalone patch, Xarray conversion from IDA is an
+> improvement in itself.
+
+Indeed. Do you prefer this patch to be standalone?
+
+Regards,
+--=20
+K=C3=B6ry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
 
