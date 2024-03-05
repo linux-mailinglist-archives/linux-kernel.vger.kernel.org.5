@@ -1,138 +1,188 @@
-Return-Path: <linux-kernel+bounces-91952-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91953-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE03B8718EC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:05:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C21F58718F8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:06:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 738F41F2394C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:05:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58877284B85
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:06:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4A3651C5F;
-	Tue,  5 Mar 2024 09:04:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0EEB53802;
+	Tue,  5 Mar 2024 09:05:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Uza/fbAK"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="SUA7qEcP";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="dK6WqAJW"
+Received: from wfout7-smtp.messagingengine.com (wfout7-smtp.messagingengine.com [64.147.123.150])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F5F64F897;
-	Tue,  5 Mar 2024 09:04:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B1635025C;
+	Tue,  5 Mar 2024 09:05:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709629476; cv=none; b=t2QeYxh5mgnrn5+Jm9fKXGRuhNAxJhmv/AowwKX7I9dCMHNo9mNt2Ku6f4nuV87myGc4kWFj10Je7bCIRWStL0rQJUr57selaLhQBAi+IYImQMC0e0QTnLNPfdAg9qDBq/UEdnMP4m6DsQXVfr3DKcwND2w1mz+k9ZiGnDQiWxY=
+	t=1709629509; cv=none; b=jLMkebHKu19+W/+rqGCDC47y3G9KZCUIQ8gd8Jbhh0yDiU9HW8go6sd9Q1rIgGwdCKre6zP/gQPoIvtNI3d6Nz6HusXlSTwOnPO5K6hM3oIUPjNHOLxdu+eKDB5QCDK8qgu8WxWrsTaM97SWtcCGMI4frwc6/QwjhdhtphAG1uk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709629476; c=relaxed/simple;
-	bh=7N8xIeprPgoxERgGFCpdp1nknqUERpb0vZx8jiEzfgA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ncrww3tZz0SF+ZeEqHSxcjT+jh+GfPQQPfc9H4qD5ctnzW8eqNFM/kugaQDSWUVee3N8MxewC/VdLonXMsn+IOAAqLWQll+8s3/G743lBQFj7u3SjaH2nj6ZOvr8zbX1J6wBy71qeUEKi/5kV4pmOU88o0+nvl0UUdZhdr2+nVQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Uza/fbAK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79C3EC433C7;
-	Tue,  5 Mar 2024 09:04:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709629475;
-	bh=7N8xIeprPgoxERgGFCpdp1nknqUERpb0vZx8jiEzfgA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Uza/fbAKpCubQp8iG3HBv+LL8E3D/7aueYJ+iTIJG6tiVEJmzBvrqhY+9771y6ipv
-	 B+pmMhjWf1hoBTzgtDqAQ76ALA/VSHK0ntL9eQODNYiBu+xwH9rt49wrnP4/eaOykG
-	 q92SYEGgQAbRd35X4Nx5pZeZwX5pWrnsOJwfRTVoBLLdzSjGh7b4AKQDcRTiSOoT7w
-	 sPhQA/LeK78Xfid+BO3WoMnRYlk6FZLaGez7m68sT9mJ+dfEBT8p41HcN8GOY165vB
-	 XJcwudR1eIJnA0VrOGc/o6Vt7+qwvpQU6saiZ1nrUO4J2HUVgRM1cnPk2/FDxBB/88
-	 dQo+a/y58+pDw==
-Date: Tue, 5 Mar 2024 09:04:29 +0000
-From: Lee Jones <lee@kernel.org>
-To: Abdel Alkuor <alkuor@gmail.com>
-Cc: Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Alice Chen <alice_chen@richtek.com>,
-	Jean-Jacques Hiblot <jjhiblot@traphandler.com>,
-	ChiYuan Huang <cy_huang@richtek.com>,
-	ChiaEn Wu <chiaen_wu@richtek.com>,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-	=?iso-8859-1?Q?Andr=E9?= Apitzsch <git@apitzsch.eu>,
-	linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] leds: Add NCP5623 multi-led driver
-Message-ID: <20240305090429.GA5206@google.com>
-References: <20240217230956.630522-1-alkuor@gmail.com>
- <20240217230956.630522-2-alkuor@gmail.com>
- <20240301085046.GE1209090@google.com>
- <ZeaRpSrkeFKAXIlq@abdel>
+	s=arc-20240116; t=1709629509; c=relaxed/simple;
+	bh=4vEnG02ligmP4LrcfFUAEQhjxpcNYEU0JASPzUPZp/M=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=OI7HcGOtHaAphoatAjA+1DDgwQxAeldkrMRefKnzo3G112Jk/ivKcweRdPFIPwP/pqmDUXByzyRIWtP/ojjH/QisoFH5fsfZp3Kpm0+iUaDsYNJV+GO0iLWn033aEfSsRzjibHYGxSqqvsc7G3HvhIqr0kveYWJZJEnQdtd5KQg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=SUA7qEcP; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=dK6WqAJW; arc=none smtp.client-ip=64.147.123.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.west.internal (Postfix) with ESMTP id 22F5F1C000A7;
+	Tue,  5 Mar 2024 04:05:06 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Tue, 05 Mar 2024 04:05:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1709629505; x=1709715905; bh=ekmA5RBZ+C
+	vAhdFbvGw1i/0H90ih8Imy4vkxYH5RFbI=; b=SUA7qEcPhA1VtahsdC2df931yx
+	WPbB2j3ZYmy701buT133pPpg1BhTzr7LF+TWNzdIkaWuMpprUFOS48zOhjCA8X4L
+	QrZ0PgfUBHST7vlB23iK8TH+TnQdfOWnY8aOrjupIq/qqANsZJWFyvJpyjWg49XQ
+	kjRXOzZoQ77VNo+thJ82UMaXMQWyNFyk79VVagp2IFPTRJrbjNr8CBts1AxVPG8M
+	bjO7GLbM23jEwBjN3BWsei4NC56uzvQrCWHyScODnQymG6o+zFz4Vj3N2qCbSW81
+	wItzocagCMHv3/TV7LNM6a5j/ru4N0O9LvD+qMa63R76kXfYgkWIAudRwfUQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1709629505; x=1709715905; bh=ekmA5RBZ+CvAhdFbvGw1i/0H90ih
+	8Imy4vkxYH5RFbI=; b=dK6WqAJWMa4c4fjlHpghFjdIt3LMY3xxMkWUuukHuwfJ
+	Fn5R3/jVLrvPK8HPH0xCLR/+EQRpUAFUnWeAiAO+ZCuiq7mxhTwCGwC3vudSRYpt
+	MeEvo6I1Ro59HzaAWLL9L8NGtrxfmpvxyurfxdpMhbcqggJi2damWFe0e3ex8i8z
+	Eqv+wuJnxl0fXLh/9OXryAC1UYrzcyYWGCIn8Zkc5jwx6wVXoHqm9AT52SlDjrOs
+	0f100LdiAiVQXqNw0pVjgHTryUqiRWP7/Beoq04XH3IJ2YH6FjRUMC91NnB331QM
+	8LzFD0JzIrOBD8QThpScqDeqGHRDE8eYEs7KAfNUMg==
+X-ME-Sender: <xms:QeDmZYcmTl0_cUKPjzetyUgwCOJP16-giZuGRCd23Fcaod5mvwuasg>
+    <xme:QeDmZaPNTc_AthIszgRYHzvvnFvvonjkI_CtQvZRuxXxbMGIW4iUjEpDMn314RxJy
+    bedEwcNX31bqifDbbs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrheekgdduvdegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:QeDmZZhYhQ4N-Vq4pFq8_Jb84muPkreZpR2XpPiBbPCfq5bfWtDhBA>
+    <xmx:QeDmZd-0Yr0yXb4o9AIDX5bt4MvLmUCpkIyuHvt2PZ4e6x8RKq95Ew>
+    <xmx:QeDmZUshX60bTjTnFeVR9hjLDGUNMOB81JWBVd_07wIqc9qNaUxp0g>
+    <xmx:QeDmZSCXGxdi68ql_0o-PZ2wrqACrIJGaPXzq2fBVieFxYOJvISpL5s74vQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 6329AB6008F; Tue,  5 Mar 2024 04:05:05 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-208-g3f1d79aedb-fm-20240301.002-g3f1d79ae
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZeaRpSrkeFKAXIlq@abdel>
+Message-Id: <5e2f9342-4ee9-4b30-9dcf-393e57e0f7c6@app.fastmail.com>
+In-Reply-To: <20240305020153.2787423-6-almasrymina@google.com>
+References: <20240305020153.2787423-1-almasrymina@google.com>
+ <20240305020153.2787423-6-almasrymina@google.com>
+Date: Tue, 05 Mar 2024 10:04:45 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Mina Almasry" <almasrymina@google.com>, Netdev <netdev@vger.kernel.org>,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, Linux-Arch <linux-arch@vger.kernel.org>,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org
+Cc: "David S . Miller" <davem@davemloft.net>,
+ "Eric Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
+ "Paolo Abeni" <pabeni@redhat.com>, "Jonathan Corbet" <corbet@lwn.net>,
+ "Richard Henderson" <richard.henderson@linaro.org>,
+ "Ivan Kokshaysky" <ink@jurassic.park.msu.ru>,
+ "Matt Turner" <mattst88@gmail.com>,
+ "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+ "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
+ "Helge Deller" <deller@gmx.de>, "Andreas Larsson" <andreas@gaisler.com>,
+ "Jesper Dangaard Brouer" <hawk@kernel.org>,
+ "Ilias Apalodimas" <ilias.apalodimas@linaro.org>,
+ "Steven Rostedt" <rostedt@goodmis.org>,
+ "Masami Hiramatsu" <mhiramat@kernel.org>,
+ "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>,
+ "Alexei Starovoitov" <ast@kernel.org>,
+ "Daniel Borkmann" <daniel@iogearbox.net>,
+ "Andrii Nakryiko" <andrii@kernel.org>,
+ "Martin KaFai Lau" <martin.lau@linux.dev>,
+ "Eduard Zingerman" <eddyz87@gmail.com>, "Song Liu" <song@kernel.org>,
+ "Yonghong Song" <yonghong.song@linux.dev>,
+ "John Fastabend" <john.fastabend@gmail.com>,
+ "KP Singh" <kpsingh@kernel.org>, "Stanislav Fomichev" <sdf@google.com>,
+ "Hao Luo" <haoluo@google.com>, "Jiri Olsa" <jolsa@kernel.org>,
+ "David Ahern" <dsahern@kernel.org>,
+ "Willem de Bruijn" <willemdebruijn.kernel@gmail.com>,
+ shuah <shuah@kernel.org>, "Sumit Semwal" <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ "Pavel Begunkov" <asml.silence@gmail.com>, "David Wei" <dw@davidwei.uk>,
+ "Jason Gunthorpe" <jgg@ziepe.ca>,
+ "Yunsheng Lin" <linyunsheng@huawei.com>,
+ "Shailend Chand" <shailend@google.com>,
+ "Harshitha Ramamurthy" <hramamurthy@google.com>,
+ "Shakeel Butt" <shakeelb@google.com>,
+ "Jeroen de Borst" <jeroendb@google.com>,
+ "Praveen Kaligineedi" <pkaligineedi@google.com>,
+ "Willem de Bruijn" <willemb@google.com>,
+ "Kaiyuan Zhang" <kaiyuanz@google.com>
+Subject: Re: [RFC PATCH net-next v6 05/15] netdev: support binding dma-buf to netdevice
+Content-Type: text/plain
 
-On Mon, 04 Mar 2024, Abdel Alkuor wrote:
+On Tue, Mar 5, 2024, at 03:01, Mina Almasry wrote:
 
-> On Fri, Mar 01, 2024 at 08:50:46AM +0000, Lee Jones wrote:
-> 
-> Hi Lee,
-> > > +#define NCP5623_REG(x)			((x) << 0x5)
-> > 
-> > What's 0x5?  Probably worth defining.
-> This is a function offset. I'll add a define.
-> 
-> > 
-> > > +	guard(mutex)(&ncp->lock);
-> > 
-> > Are these self-unlocking?
-> Correct. Here is a short introduction about it
-> https://www.marcusfolkesson.se/blog/mutex-guards-in-the-linux-kernel/
+> +int netdev_bind_dmabuf(struct net_device *dev, unsigned int dmabuf_fd,
+> +		       struct netdev_dmabuf_binding **out)
+> +{
+> +	struct netdev_dmabuf_binding *binding;
+> +	static u32 id_alloc_next;
+> +	struct scatterlist *sg;
+> +	struct dma_buf *dmabuf;
+> +	unsigned int sg_idx, i;
+> +	unsigned long virtual;
+> +	int err;
+> +
+> +	if (!capable(CAP_NET_ADMIN))
+> +		return -EPERM;
+> +
+> +	dmabuf = dma_buf_get(dmabuf_fd);
+> +	if (IS_ERR_OR_NULL(dmabuf))
+> +		return -EBADFD;
 
-Neat.
+You should never need to use IS_ERR_OR_NULL() for a properly
+defined kernel interface. This one should always return an
+error or a valid pointer, so don't check for NULL.
 
-> > > +	ncp->old_brightness = brightness;
-> > 
-> > The nomenclature is confusing here.
-> > 
-> > For the most part, this will carry the present value, no?
-> >
-> Yes, I'll change it to current_brightness instead
+> +	binding->attachment = dma_buf_attach(binding->dmabuf, dev->dev.parent);
+> +	if (IS_ERR(binding->attachment)) {
+> +		err = PTR_ERR(binding->attachment);
+> +		goto err_free_id;
+> +	}
+> +
+> +	binding->sgt =
+> +		dma_buf_map_attachment(binding->attachment, DMA_BIDIRECTIONAL);
+> +	if (IS_ERR(binding->sgt)) {
+> +		err = PTR_ERR(binding->sgt);
+> +		goto err_detach;
+> +	}
 
-Just 'brightness' will be fine.
+Should there be a check to verify that this buffer
+is suitable for network data?
 
-> > > +	ret = ncp5623_write(ncp->client,
-> > > +			    NCP5623_DIMMING_TIME_REG, pattern[0].delta_t / 8);
-> > 
-> > Why 8?  Magic numbers should be replaced with #defines.
-> > 
-> This is dim step in ms. I'll add a define for it.
-> 
-> > > +static int ncp5623_pattern_clear(struct led_classdev *led_cdev)
-> > > +{
-> > > +	return 0;
-> > > +}
-> > 
-> > Not sure I see the point in this.
-> > 
-> > Is the .pattern_clear() compulsorily?
-> >
-> Unfortunately, it is. For example, in pattern_trig_store_patterns, when
-> hw pattern is used, it is expected to have pattern_clear implemented.
-> 
-> static ssize_t pattern_trig_store_patterns(struct led_classdev *led_cdev,
->                                             const char *buf, const u32 *buf_int,
->                                             size_t count, bool hw_pattern)
-> {
-> 	...
->          if (data->is_hw_pattern)
->                  led_cdev->pattern_clear(led_cdev);
->  	...
-> }
+In general, dmabuf allows buffers that are uncached or reside
+in MMIO space of another device, but I think this would break
+when you get an skb with those buffers and try to parse the
+data inside of the kernel on architectures where MMIO space
+is not a normal pointer or unaligned access is disallowed on
+uncached data.
 
-Something's not right then.  If this is required, are you sure you're
-not meant to do something here?  If there are times when this is not
-required, it should be possible to omit it.
-
--- 
-Lee Jones [李琼斯]
+        Arnd
 
