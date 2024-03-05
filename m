@@ -1,238 +1,183 @@
-Return-Path: <linux-kernel+bounces-92685-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92686-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79349872459
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:31:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 053CF87245B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:32:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F6B5285655
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:31:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70E171F259EB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:32:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72FF08F49;
-	Tue,  5 Mar 2024 16:30:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 418D08F55;
+	Tue,  5 Mar 2024 16:31:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SWK5eHJ4"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AydxLkZz"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A253F10F7;
-	Tue,  5 Mar 2024 16:30:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA7E979D3
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 16:31:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709656257; cv=none; b=PsuN09kEtIzsXCcCD702/Lq45LW8YKt58Ru9D6ZpooJz2hYbsaUKbNs1BmLNAxyUzU2/vmVw3HV4bq8jkla28DwnrPsc1psOongHwinzB4c9OEvF/27FVumMfbpaMvzkBpPvJccCbRPeDo9jfD89UAP+U1uTR6/Y+bjtMoFwJvk=
+	t=1709656314; cv=none; b=itw7e0ep8EmyfKa4A1CdEY3HMVfVYmLR85GcWmIrQbiZKgjYMnXVsUK1vDPxDmebvQqrQMv71ZHb6lBno0/UEPqjZG/EwepPXAO5L/z9aOIiTSIvhoe0bikeOTjCV/UIO3OMA3x8Gu8tWNkgmf+f1ZH9QQJR6s/ENo6LpzQ1ZG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709656257; c=relaxed/simple;
-	bh=UjBEAVMdzvLalmwGNh/rQJ83m5pRMJtn7UmSXJVcmGI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LmUV+xMkShm0Ti8MN5K2XnfUCWLX+2eYVhFxQTy+3FgtKfeSjnVNA8YviMYxh4NLcqFEp5krekmoX9IVq0GqIroMmVt6VfetLHGv/JQcUwpfYS9gFkHehTmWTB2yB1Nr6PELQS15vQkKdvAAERt7Z5J5TnuQI7iLw++zZMaiDlk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SWK5eHJ4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28259C43390;
-	Tue,  5 Mar 2024 16:30:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709656257;
-	bh=UjBEAVMdzvLalmwGNh/rQJ83m5pRMJtn7UmSXJVcmGI=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=SWK5eHJ4KFwRb8vJnqk+5C4fZJ3mEn28cZBqaF1lX37hvkVB3K3d0X3piXIm0dyzr
-	 eML+41LdnPvg8nEuDVfF2xQP5UijhgpSzK7hh7EPOmUcf264YABeq3gT4YfUj4z2pz
-	 sI9UYi5rVd3MkthV8G5cQnsf9FYfzEBxsGVEucCMEkXiNYYxOfUoHkRmvn6x1sjEMl
-	 zHsW3c39Ig2Q9cY20bU8AvDAyQPLVnhmA/Xiem9LSJDdg31Cb459NBi09tBqSuyY6C
-	 7YB068rgyNLcITfhtt6TYwmvkCnn8Uxurec6M4Jmkub6RXrkpsmylXcF2dE4JhCCXE
-	 rvEK9l6L/igDQ==
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-513173e8191so7355317e87.1;
-        Tue, 05 Mar 2024 08:30:57 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV+NCS9XUXUj0JW+6IWTg+MDWsWHMLMtdX3ANslDs+Ty6njAU+2/3AVNfNVYjcQp3P/Hw3ygrAiDADCuqihcWxZX+zsb5HwR8lz52fkg6P+YR1A+eNh0SVWaoHqCpZ+tbF4kUOQhAAxdOGr
-X-Gm-Message-State: AOJu0YzJ77Q6iBjmd/kOo+UPiZ5z3H7BokFDku+3AiEQHLifVol9CGmi
-	hx3n3ODFb/SUG/2Deopvuxzn1rluaSXnrXY/xhYZzEqqZHcgEXCfLAjT/OK2HGj3unG/zm8hCj8
-	qYGrk9OPrl+wm6D+PGUTuQriGmrI=
-X-Google-Smtp-Source: AGHT+IFiPqEUjF7c5/b6AJpP+FSGeN2AXinKrPbenG+dYSxMtaeqEQP1fyxt+zhygfGtBe3r3ewBs2xKBH/PgUB//p0=
-X-Received: by 2002:a05:6512:219:b0:513:2caf:15ee with SMTP id
- a25-20020a056512021900b005132caf15eemr1652548lfo.28.1709656255566; Tue, 05
- Mar 2024 08:30:55 -0800 (PST)
+	s=arc-20240116; t=1709656314; c=relaxed/simple;
+	bh=/JbAVBt5dMRpm8wlJigwtQpNLZ0qkxBdk9oG80TTA54=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EmW3NEdsH/+1LhnsqtVlwTofFZiQsbi7QsJoq5sf0QA/tvT/xh9N3Amt3is9MKuwBPqIMEZPi7espLrDP2KHyWMLxAi4OLUjQ3ZI0ItQ6FSdSqgc/S3dYSUQRVGWYUUT7IUibW3XWD1abhkoODwJkhP0Bgi8Ands7eUdv4cnZOM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AydxLkZz; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709656311;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LXgCv056O/7zp95FcTfgFnOwWrzQXNCndhaAX1Dnxss=;
+	b=AydxLkZzn2J43MHHvIR+6bGFOIHnoYsmI9DNgw0Q9HT0KmQgKRjDxd7uY1a9QwIf4hZ55l
+	C3H9utQsqAZ7qE+X307fwnRJfhGgDZYO4Yp1xBfq9v25dTmICUeEp1QRz1OXHoq/g79B54
+	AUdlqH/cRIs40v0fQyDpOK3vRrfIP4g=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-101-myYpRxOeNumV2rAuKAcHCA-1; Tue, 05 Mar 2024 11:31:50 -0500
+X-MC-Unique: myYpRxOeNumV2rAuKAcHCA-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-412eeb789d9so3474785e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 08:31:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709656308; x=1710261108;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LXgCv056O/7zp95FcTfgFnOwWrzQXNCndhaAX1Dnxss=;
+        b=ZjYw+qptDWNSFMMwZ7nRS5AIgmlyrSjDLHSfK1iP87gsfrF+ASXLvGtYTkVMiP0+0c
+         My5SJsp0Nr8EZiL0q9OD4k69RiAg+H0C3AB9Ht+nAJgznjThLpjLuddWKRs2XKsWqH4h
+         mlOD+gcCihHRwI/W441nt87sZjipZFQA2G7VsHmUdFiVIXTFV0KRG2mKwgrAfX8eCMp7
+         cCkoVh52pGxTmeVvB8/Uhg8DsHrZaPQvWm4l8ZX8GvUnzu7YzrI2nq8Z6qo36KQg/LZt
+         s0/FxYB4k5tRNMcb8gpbruAscgMBV2lC6dSs/YbuljbABvvclc2QXUezD7N5RIAiMumB
+         tWRg==
+X-Forwarded-Encrypted: i=1; AJvYcCVKOlmttlZgvZJzRdBk1vXMoqVqqCyNyd5sgxqsDnOCksDy8Zdi8jnyMHoEuyaj5jGYvl5NSejfF53lLo4/8+6GkPpphXWtBJYPd+il
+X-Gm-Message-State: AOJu0Yz/sHm46Q+qVHNJyg3Hn/pYDHJgsF2jMFj8e1I/yBNNZ/Nf9EIS
+	77yissm4tmGZBQqYZ4SwTkjzLmG0hCu8eD72oY0GggTyusFOXJ5W91NxK6D0Sek4x0DyBCSwctj
+	Uy8tz6V9MkpCpx5r+ddwm8dcWxOGo5j8ivFp/Mh8iFP9HdXXhwbVLQNfgThvXX0R2bc7n4csc
+X-Received: by 2002:a05:600c:3b87:b0:412:e55e:83de with SMTP id n7-20020a05600c3b8700b00412e55e83demr4651279wms.7.1709656308493;
+        Tue, 05 Mar 2024 08:31:48 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFwWCPNQ67k9EXc/a4VhY4qoHguRPFEF+4DIsDEhV2/uKWWUge72Mjm5EOArMoOwGUPip+I8w==
+X-Received: by 2002:a05:600c:3b87:b0:412:e55e:83de with SMTP id n7-20020a05600c3b8700b00412e55e83demr4651262wms.7.1709656308137;
+        Tue, 05 Mar 2024 08:31:48 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:c:37e0:ced3:55bd:f454:e722? ([2a01:e0a:c:37e0:ced3:55bd:f454:e722])
+        by smtp.gmail.com with ESMTPSA id h3-20020adfa4c3000000b0033dd2a7167fsm15503470wrb.29.2024.03.05.08.31.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Mar 2024 08:31:47 -0800 (PST)
+Message-ID: <aa383f43-b57d-47f7-9b54-1169956586cb@redhat.com>
+Date: Tue, 5 Mar 2024 17:31:46 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240223092338.2433632-1-wenst@chromium.org> <CAK7LNAQmvyftnFJaByyjH+f4nxcNUKpjkDXwebEH5AhMF6U0Kw@mail.gmail.com>
- <CAGXv+5GmkZdqpNZDFN4dcTyZ-qVS0TjrrqBrBAei6DP+eXLnJg@mail.gmail.com>
- <CAK7LNAS8tLuHYcPTb5pJZixn5Hb0yjo0nmbrfSUr5Cd_pc+WMg@mail.gmail.com> <CAGXv+5HB7gXJ0x1uVdgbWaRWS8+rN6FwEgyGLObxr_cfyLty6A@mail.gmail.com>
-In-Reply-To: <CAGXv+5HB7gXJ0x1uVdgbWaRWS8+rN6FwEgyGLObxr_cfyLty6A@mail.gmail.com>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Wed, 6 Mar 2024 01:30:18 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARADnpCHvNWHLqb9acVNqzwDRuLiKbKe4XZwM4_Ts+ypg@mail.gmail.com>
-Message-ID: <CAK7LNARADnpCHvNWHLqb9acVNqzwDRuLiKbKe4XZwM4_Ts+ypg@mail.gmail.com>
-Subject: Re: [PATCH RFC] kbuild: create a list of all built DTB files
-To: Chen-Yu Tsai <wenst@chromium.org>
-Cc: Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, linux-kbuild@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Simon Glass <sjg@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Mar 4, 2024 at 1:37=E2=80=AFPM Chen-Yu Tsai <wenst@chromium.org> wr=
-ote:
->
-> On Thu, Feb 29, 2024 at 11:35=E2=80=AFPM Masahiro Yamada <masahiroy@kerne=
-l.org> wrote:
-> >
-> > On Thu, Feb 29, 2024 at 11:38=E2=80=AFAM Chen-Yu Tsai <wenst@chromium.o=
-rg> wrote:
-> > >
-> > > On Sun, Feb 25, 2024 at 4:21=E2=80=AFPM Masahiro Yamada <masahiroy@ke=
-rnel.org> wrote:
-> > > >
-> > > > On Fri, Feb 23, 2024 at 6:23=E2=80=AFPM Chen-Yu Tsai <wenst@chromiu=
-m.org> wrote:
-> > > > >
-> > > > > It is useful to have a list of all composite *.dtb files, along w=
-ith
-> > > > > their individual components, generated from the current build.
-> > > > >
-> > > > > With this commit, 'make dtbs' creates arch/*/boot/dts/dtbs-compon=
-ents,
-> > > > > which lists the composite dtb files created in the current build.=
- It
-> > > > > maintains the order of the dtb-y additions in Makefiles although =
-the
-> > > > > order is not important for DTBs.
-> > > > >
-> > > > > This compliments the list of all *.dtb and *.dtbo files in dtbs-l=
-ist,
-> > > > > which only includes the files directly added to dtb-y.
-> > > > >
-> > > > > For example, consider this case:
-> > > > >
-> > > > >     foo-dtbs :=3D foo_base.dtb foo_overlay.dtbo
-> > > > >     dtb-y :=3D bar.dtb foo.dtb
-> > > > >
-> > > > > In this example, the new list will include foo.dtb with foo_base.=
-dtb and
-> > > > > foo_overlay.dtbo on the same line, but not bar.dtb.
-> > > > >
-> > > > > Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
-> > > > > ---
-> > > > > Hi,
-> > > > >
-> > > > > I hacked up this new thing to list out the individual components =
-of each
-> > > > > composite dtb. I think this information would be useful for FIT i=
-mage
-> > > > > generation or other toolchains to consume. For example, instead o=
-f
-> > > > > including each dtb, a toolchain could realize that some are put t=
-ogether
-> > > > > using others, and if the bootloader supports it, put together com=
-mands
-> > > > > to reassemble the end result from the original parts.
-> > > > >
-> > > > > This is based on and complements Masahiro-san's recent dtbs-list =
-work.
-> > > >
-> > > >
-> > > >
-> > > > This is another format of my previous per-dtb "*.dtlst"
-> > > > (but I did not pick up 3/4, 4/4 because I did not know what we need=
- after all).
-> > > >
-> > > > This should be discussed together with how Simon's script will look=
- like.
-> > > >
-> > > > I can understand your Makefile code, but I still do not know
-> > > > how the entire overlay stuff will work in a big picture.
-> > >
-> > > How would you like to proceed? I can through together some changes on=
- top
-> > > of Simon's patches as an initial proposal if that helps?
-> > >
-> > > I can use your format if you prefer.
-> >
-> >
-> > How would you select base+addonX among
-> > other base+addonY or base+addonZ configurations?
->
-> I assume you are alluding to the existing in-tree composite DTs that
-> share the same board compatible strings?
-
-
-Yes.
-It is possible to implement it, but I do not see a point
-to implement what we do not know how to use.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC] How to test panic handlers, without crashing the kernel
+Content-Language: en-US, fr
+To: John Ogness <john.ogness@linutronix.de>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Daniel Vetter <daniel@ffwll.ch>, Andrew Morton <akpm@linux-foundation.org>,
+ "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+ Josh Poimboeuf <jpoimboe@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>, Lukas Wunner <lukas@wunner.de>,
+ Uros Bizjak <ubizjak@gmail.com>, "Guilherme G. Piccoli"
+ <gpiccoli@igalia.com>, Petr Mladek <pmladek@suse.com>,
+ Daniel Thompson <daniel.thompson@linaro.org>,
+ Douglas Anderson <dianders@chromium.org>
+Cc: "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+ David Airlie <airlied@redhat.com>, Thomas Zimmermann <tzimmermann@suse.de>
+References: <266579a9-fde6-40ff-b13d-fb2312db406c@redhat.com>
+ <87edcpn1l3.fsf@jogness.linutronix.de>
+From: Jocelyn Falempe <jfalempe@redhat.com>
+In-Reply-To: <87edcpn1l3.fsf@jogness.linutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
 
->
-> Under the current FIT image design with compatible strings populated from
-> the FDTs, I don't think there's any way to automatically select among the=
-m.
-> The FIT image simply does not have the information available. Nor do the
-> overlays themselves. The toolchain can only either include all of them
-> and let the bootloader figure things out, or filter out all the duplicate=
-s.
-> With the composite list, at least it will be able to consistently keep
-> only the base DT and drop the ones with the addons.
+On 04/03/2024 22:12, John Ogness wrote:
+> [Added printk maintainer and kdb folks]
+> 
+> Hi Jocelyn,
+> 
+> On 2024-03-01, Jocelyn Falempe <jfalempe@redhat.com> wrote:
+>> While writing a panic handler for drm devices [1], I needed a way to
+>> test it without crashing the machine.
+>> So from debugfs, I called
+>> atomic_notifier_call_chain(&panic_notifier_list, ...), but it has the
+>> side effect of calling all other panic notifiers registered.
+>>
+>> So Sima suggested to move that to the generic panic code, and test all
+>> panic notifiers with a dedicated debugfs interface.
+>>
+>> I can move that code to kernel/, but before doing that, I would like to
+>> know if you think that's the right way to test the panic code.
+> 
+> One major event that happens before the panic notifiers is
+> panic_other_cpus_shutdown(). This can cause special situations because
+> CPUs can be stopped while holding resources (such as raw spin
+> locks). And these are the situations that make it so tricky to have safe
+> and reliable notifiers. If triggered from debugfs, these situations will
+> never occur.
+> 
+> My concern is that the tests via debugfs will always succeed, but in the
+> real world panic notifiers are failing/hanging/exploding. IMHO useful
+> panic testing requires real panic'ing.
 
-It makes the purpose of this work even more obscure.
+Yes, but for the drm panic, it's still useful to check that the output 
+is working (ie: make sure the color format and the framebuffer address 
+are good). Also I've reworked the debugfs patch, so I don't have to call 
+all panic notifiers. It's now per device, so your can trigger the 
+drm_panic handler on a specific GPU.
 
-For the purpose of avoiding duplication,
-we can take the first DTB (or the smallest size)
-when we encounter a duplicated compatible string.
+> 
+> For my printk panic tests I trigger unknown NMIs while booting with
+> "unknown_nmi_panic". Particularly with Qemu this is quite easy and
+> amazingly effective at catching problems. In fact, a recent printk
+> series [0] fixed seven issues that were found through this method of
+> panic testing.
 
+Thanks for this tip, I used to test with "echo c > /proc/sysrq-trigger" 
+in the guest, but that's more permissive. I'm now testing with virsh 
+inject-nmi, and drm_panic is still working.
+> 
+>> The second question is how to simulate a panic context in a
+>> non-destructive way, so we can test the panic notifiers in CI, without
+>> crashing the machine.
+> 
+> I'm wondering if a "fake panic" can be implemented that quiesces all the
+> other CPUs via NMI (similar to kdb) and then calls the panic
+> notifiers. And finally releases everything back to normal. That might
+> produce a fairly realistic panic situation and should be fairly
+> non-destructive (depending on what the notifiers do and how long they
+> take).
+> 
+>> The worst case for a panic notifier, is when the panic occurs in NMI
+>> context, but I don't know how to simulate that. The goal would be to
+>> find early if a panic notifier tries to sleep, or do other things that
+>> are not allowed in a panic context.
+> 
+> Maybe with a new boot argument "unknown_nmi_fake_panic" that triggers
+> the fake panic instead?
+> 
+> John Ogness
+> 
+> [0] https://lore.kernel.org/lkml/20240207134103.1357162-1-john.ogness@linutronix.de
+> 
 
+Best regards,
 
->
-> In one of my previous replies to v9 I mentioned adding a user provided
-> mapping between "configuration" compatible string and FDT filename. The
-> mapping could be maintained in-tree for those base+addonXYZ FDTs if
-> desired.
+-- 
 
+Jocelyn
 
-That is one way, but I do not think such a configuration file
-is maintainable.
-
-Rob suggested overwriting the compatible string,
-but I do not think we got consensus.
-
-
-
-> Also, Simon's FIT image "extensions" proposal [1] adds more metadata to
-> the FIT image to cover these addons that currently don't have distinct
-> compatible strings.
-
-I think this is yet another way, but I am not sure
-how to derive the extension compatible string.
-
-
-
-
-
-
-Even if we decide to implement base/overlay split,
-we may not need to add anything to Makefile.
-
-We already have .*.cmd files, and we can know
-if it is a combined DTB or not, by parsing the .*.cmd
-from the python script.
-
-It might be a bit messy, but it is what we do
-in scripts/clang-tools/gen_compile_commands.py
-
-
-
-
-
-
-
-
-
->
->
-> ChenYu
->
-> [1] https://lore.kernel.org/u-boot/CAPnjgZ06s64C2ux1rABNAnMv3q4W++sjhNGCO=
-_uPMH_9sTF7Mw@mail.gmail.com/
---
-Best Regards
-Masahiro Yamada
 
