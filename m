@@ -1,53 +1,90 @@
-Return-Path: <linux-kernel+bounces-92801-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92802-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1247387261F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:02:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B169872624
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:02:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4D951F22E59
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:02:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 328A2285B25
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:02:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E644917BCD;
-	Tue,  5 Mar 2024 18:02:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4590B18041;
+	Tue,  5 Mar 2024 18:02:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="acGE0/E9"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="aI8/vsEf"
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36F3016427
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 18:02:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C79F15491;
+	Tue,  5 Mar 2024 18:02:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709661723; cv=none; b=W5pTCado+1ebO6fArZLsycZeU1W+qWvHyZ+8FQduIQhtpUHD0k0KR1hWa/SXTiEzy63AVARSiYph03vPBCJ88d3FJJBdDKv0+mABWdJhzfizVdKh0NI+lBIvGd3hNoEzNrb1ddpw84iu0BfYppHBo5tATlyWcKXGSep8JZgaMtw=
+	t=1709661747; cv=none; b=FcWcpS+ueV6KlUXvsHgyQp97AZPOBiQ2A3XvzM8F1+3fjX697ewYdfsAEFSqOD4inwyv8nF1/cQkBJEVGXsatH3myqUk3ypLHJCgfKJniIeqhz37ceeXF6LvhyB254kM0v+jv8jX2xxSxvCK0mkyF79vFismTniHb5YDEsWugzI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709661723; c=relaxed/simple;
-	bh=DuC3d/cwIEAQKuPyMuJn/MWa7uNznQPc1WusaND35/o=;
+	s=arc-20240116; t=1709661747; c=relaxed/simple;
+	bh=QqWrWCKsxZxMhKdI4i8NVKhYN7tvmXPQ4NdougnitWw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hgxKJyXI7yQEyW3fvDv8ixFEP4dnnXO8uFyV6PRMsIo7ecWQv3gBqQTGQod/cWq1ETB+HW6RvI91OczjH0UvLTJPh/WNy6Rz6sTDOacY9wKJm8GB+TRxVwL+pOWqCnu8fNmyGpQdA/u5NPlrfRumGRjfWWI9wTM+wmJcXnExo70=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=acGE0/E9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89C77C433C7;
-	Tue,  5 Mar 2024 18:02:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709661722;
-	bh=DuC3d/cwIEAQKuPyMuJn/MWa7uNznQPc1WusaND35/o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=acGE0/E9tmRibmy22wtC6gaejMjj/jz9L7AVbUxQnolYCbeX0EoCvWIoJHwojStI+
-	 XyBvAiIDTDnEra0DvqMXSY6YJXhsU0/Jc64r1V/QPAx2NzYjWwKgof2lZRHjxmjsyY
-	 72xTlVRxBnyY2/iSHxYtVHIkUc8mFRb7s8dW/SDZi84mKv+t8XeMK8UrtpSC8m2MB+
-	 F34swpWg8ONbvYKYzJKTJptOe8qN85A0FomY8hw6Im4EPnI/7dFD9/CURkzLv37YTt
-	 uJjrRRWSNkK851ykbVVkPZxme70O3Vk+QTrKEglGcNEfj9OszBfjnJ5sjmkQSbIm/+
-	 edkQy9QbRIxjA==
-Date: Tue, 5 Mar 2024 12:02:00 -0600
-From: Rob Herring <robh@kernel.org>
-To: Rob Herring <robh@kernel.org>
-Cc: Li Yang <leoyang.li@nxp.com>, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] soc: fsl: qbman: Remove RESERVEDMEM_OF_DECLARE usage
-Message-ID: <170966167830.3808046.18290518120456288771.robh@kernel.org>
-References: <20240201192931.1324130-1-robh@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=dvnIC0dOQ3bJJ6iRSI3poQTciE78qa1RyvGHRUyuzFuKDR/j2s+iLPRiKBbMfSl1sNleRYe4Ys8ieS1S5yP9wUtgNhnaNlyrTahgl/FAPDzZVNtYvA7vA8cSDzB/y+7zDLrzIN1jOPNGUemI7pejiw9DALX0BoxJU07kK8hdc8s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=aI8/vsEf; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1dba177c596so163185ad.0;
+        Tue, 05 Mar 2024 10:02:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709661744; x=1710266544;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:dkim-signature:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=YJ70Tv4h5AKfiBQVV4/s2rwMqfxMbFKTboyKv27NZLU=;
+        b=jmN13ZSunDJA/54gEfXJ+43IwAtWBv4bp1+SqvGdCYFx+xltyhbpZect8q5nUXyViG
+         293DjHWDyxOTwc4rsUyJu+d7i4Hp7dVJkprXoyLmNt0TEhZIgmYjzjOM4JoN0If+hrO2
+         8bMC9BMIT/LqTfEmjQftKhglRDqHN18oWh0Q8lvJ8mq2K+k9cnbk2zajZf90tK6wQY49
+         Ww1lfGdMwHFzymyop97rFN1KKQAeOjmtj4vP6r/aDZ28vHZzbEx/BOckMBVZs00TZgxn
+         53PqmuBVoi/CT9ybTg0J/o5RWJRunHI/WqxjrzARbu+zxO/PmQ6P26Er8Il4HAAkG6pl
+         opag==
+X-Forwarded-Encrypted: i=1; AJvYcCVfq23MAUlIZ1H430urlI3yjfCbAvmzJFN39jEvym2cKeubplSmnn1ZDDUdg5OoWa1IOHFL7nLTy4QpA+cMRx1ERwRwtSPsYkX6/8NqOfAnnkwuiWLYiN4zP+sCN89XNjiVHejnLNKTmGQV8stZw9zkyJ0U9qLXE5OMx2QXWT5w7K28kjr1Pw==
+X-Gm-Message-State: AOJu0YxnAsG6M7NWxSwaAtC+q+HFjsqHizql7eCilLFcHhoum1ufMoV4
+	KtDY+qHAers27cIlUW1FsCibu6cX/9FTpHhlBU9OVMHNOY1cuIeY
+X-Google-Smtp-Source: AGHT+IE+QeWdybpOmeVBdSyQw2r7Ej1xSRJHaUNhk4fq9R6Iz6FjMOYAhuLG29kBbDSLUmIvi0ExUw==
+X-Received: by 2002:a17:903:1cc:b0:1d9:a15:615d with SMTP id e12-20020a17090301cc00b001d90a15615dmr4010129plh.1.1709661744304;
+        Tue, 05 Mar 2024 10:02:24 -0800 (PST)
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id s14-20020a170902ea0e00b001dd38bce653sm28566plg.99.2024.03.05.10.02.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Mar 2024 10:02:23 -0800 (PST)
+Date: Tue, 5 Mar 2024 15:02:18 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2024; t=1709661742;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YJ70Tv4h5AKfiBQVV4/s2rwMqfxMbFKTboyKv27NZLU=;
+	b=aI8/vsEfN/Bld3c1dh2lfn+V3skU5KzIAqhIHcK7NAjAqJBfROsAnrKyK4eQ+UyoGoN+NP
+	zzlbhCR32haBdY7hr8R76en3m52BMB2qTNeH1riF0Yo4h/OL1vI/mWmODXCQHNS+kipiA1
+	eymqvBd6Un7r1WO2rW64vrCVs1RTBYhhHa5VzXn6zajrWFIiu79tGxfvIsfxqXPmL0AlKs
+	N2m7SPUbPh7LCr6ibTBZNTbKPxaVqX5e/9ntlV71Z0VfXAi7iszHHGH6a5F959mB1mZr1G
+	gXGLiFS6K0vFVxf9oxGTPFiWjVIUttDTGYfNoknFC+wlLnCrwH6+HqoE0dMHFg==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+To: "T.J. Mercier" <tjmercier@google.com>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Hans de Goede <hdegoede@redhat.com>, Helge Deller <deller@gmx.de>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, Benjamin Gaignard <benjamin.gaignard@collabora.com>, 
+	Brian Starkey <Brian.Starkey@arm.com>, John Stultz <jstultz@google.com>, 
+	Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, linux-fbdev@vger.kernel.org, 
+	linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
+Subject: Re: [PATCH RESEND drm-misc 4/4] dma-buf: heaps: make dma_heap_class
+ constant
+Message-ID: <gdkioaqffaoiocsybn22qwfpkgz6cujy5oklrdicgdcbatlsan@v7qjtak5jacn>
+References: <20240305-class_cleanup-drm-v1-0-94f82740525a@marliere.net>
+ <20240305-class_cleanup-drm-v1-4-94f82740525a@marliere.net>
+ <CABdmKX0VGyBdTo8gzEocyz2HFcqEtu_31PYVjWzioBdCbnXW6w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,26 +93,23 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240201192931.1324130-1-robh@kernel.org>
+In-Reply-To: <CABdmKX0VGyBdTo8gzEocyz2HFcqEtu_31PYVjWzioBdCbnXW6w@mail.gmail.com>
 
-
-On Thu, 01 Feb 2024 13:29:30 -0600, Rob Herring wrote:
-> There is no reason to use RESERVEDMEM_OF_DECLARE() as the initialization
-> hook just saves off the base address and size. Use of
-> RESERVEDMEM_OF_DECLARE() is reserved for non-driver code and
-> initialization which must be done early. For qbman, retrieving the
-> address and size can be done in probe just as easily.
+On  5 Mar 09:07, T.J. Mercier wrote:
 > 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  drivers/soc/fsl/qbman/bman_ccsr.c | 27 +++---------
->  drivers/soc/fsl/qbman/dpaa_sys.c  | 12 +++--
->  drivers/soc/fsl/qbman/dpaa_sys.h  |  4 +-
->  drivers/soc/fsl/qbman/qman_ccsr.c | 73 ++++++++++---------------------
->  4 files changed, 38 insertions(+), 78 deletions(-)
+> Reviewed-by: T.J. Mercier <tjmercier@google.com>
 > 
+> Is this really a resend? I don't see anything on lore and I can't
+> recall seeing this patch in my inbox before.
 
-No one is going to pick this up? I applied to the DT tree.
+Hi T.J. thanks for reviewing!
 
-Rob
+I'm sorry about that, I sent the series only to Greg before but I
+thought it had Cc'ed the lists as well. Then I realized it was sent
+publicly only once. Double mistake :(
+
+Best regards,
+-	Ricardo.
+
+
 
