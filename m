@@ -1,139 +1,163 @@
-Return-Path: <linux-kernel+bounces-92216-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92233-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18C15871CE3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:06:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56576871D2A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:14:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A7531F22930
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:06:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DAECBB2113E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:14:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F3615B685;
-	Tue,  5 Mar 2024 11:04:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A315C54917;
+	Tue,  5 Mar 2024 11:14:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KI7o8Snd"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=osasysteme.de header.i=@osasysteme.de header.b="SQBVLuZ2"
+Received: from secondary.pambor.com (secondary.pambor.com [46.38.233.203])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9F935B671;
-	Tue,  5 Mar 2024 11:04:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2FEC10A1B;
+	Tue,  5 Mar 2024 11:14:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.38.233.203
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709636692; cv=none; b=MnHxqphvn6L9BbZrcyJm6nUt9heVxAYNXbmKMKZAZ5EukDYgTsA0QfP67aYhzsMhsEGY7V2zRGCNAjrSJnGQQkvrBj2HmhoozGZJMnM4hPItGTfZXoNkrDYDr/PUpng923AxZL9uDZHInalyUolMiMr97PZgJUEj5FIEbqiWZOY=
+	t=1709637278; cv=none; b=EijdlGJBOo97GmQ27RHcXNqDCKXA9HgcWXs6z3wHX9+HMfX3FHUIm+qSVM8oLn/4g3g2W/QhLzpZoVMM/OsIMJHv0Jr9nHoyoCB0kF1sy/K22OjqjQwXehEAJL5OsnRx6qYrqV8y2c6pjljh35DhpzQSh/OVlUO9c416qMF67CY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709636692; c=relaxed/simple;
-	bh=VrgfVfXGL+bniwIr+Gqdl6c583H+xRtQ0rR4oYPIcrM=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=JB/+MobWQqzX2+5BMgJBuDxDoPFtapMyCEGoz7wdIo4kfxX+fCkzjBdM6RpPpX6dnwIaeBRzII6hdCmBkbiVSElrv68AwJPF4D4I8ROwppehWTorQyuJZugMzi4iHhAy2OnTpTUDTjCZoW9dq1y5E+j7rJ3BFsLsxGuWMh4FTtY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KI7o8Snd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6D97C43399;
-	Tue,  5 Mar 2024 11:04:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709636692;
-	bh=VrgfVfXGL+bniwIr+Gqdl6c583H+xRtQ0rR4oYPIcrM=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=KI7o8SndIscczSWBa0jSe5sXWiSDqkpwTMxTvZHwnyBl2vOBXKsC7mzoELrAIJ8AP
-	 Aus7KDMJTEtC4yWqTzrTtKsjX734wFEKPepsIp/n4O6xK/dj8/Qrf6aNqy1G5HxEFK
-	 kWXboG3D5EchpXWmm4UFeX9b7ljgIYbf2ONyBWa/4qN4kndKsleTxNMyExN/kTnrwV
-	 jHQ7PkSvg1QNLQ3eee6z7ubdgK+3jFW5QtJdvNomxv6hG1JdxNXv1FOdufJXDH/xgg
-	 5FDUGqHvB+Mnz/5o3LvkkN1PlqxIgiiHlqpQdfXYhHaaTfkPFn7o4liwc/C7XcqTds
-	 aCqtndlWcFu2w==
-From: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
-Date: Tue, 05 Mar 2024 12:04:33 +0100
-Subject: [PATCH net-next 4/4] mptcp: drop lookup_by_id in lookup_addr
+	s=arc-20240116; t=1709637278; c=relaxed/simple;
+	bh=g23TNXNaEuUBqK6ioN3KJo90x6OmVEv0VqAOHJZOjh8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tocYyC+iVWPTF0SJkyzoQ6VL8IG0oW3I0jG7ktYRx75/+CQsIQ6gJaCQRslrSnsL70SFW1rzvd2wRteWQhkQWsH6ogIa1AExSWpdPseEC0BWmZpCRGocpiLSUHtE5ayPj1OCPR1TWvrpamBmGma3EQMHAUugXdS7dnj2f4gQO+A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=osasysteme.de; spf=pass smtp.mailfrom=osasysteme.de; dkim=pass (2048-bit key) header.d=osasysteme.de header.i=@osasysteme.de header.b=SQBVLuZ2; arc=none smtp.client-ip=46.38.233.203
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=osasysteme.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=osasysteme.de
+Received: from localhost (localhost [127.0.0.1])
+	by secondary.pambor.com (Postfix) with ESMTP id 5125E6F03A2;
+	Tue,  5 Mar 2024 12:07:26 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=osasysteme.de;
+	s=19022017; t=1709636846;
+	bh=g23TNXNaEuUBqK6ioN3KJo90x6OmVEv0VqAOHJZOjh8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=SQBVLuZ2tEZi2HUL+R9jkg73Fuj7PnkaaQ4lWhuhLlla1oZqyPntz5wfpouFJwEw8
+	 wTA5UTRUu3/fbpAafL/kIMtHbARhDEzdQMLgPSzXTTnfUiAb2jdyva+M9bAKotqSF7
+	 xAMDNc56rt9+1D8yMjQiVnBVTwn/b5DPvtVfvVk4ml+emx60E7r4NhXRd/aV4qrvZI
+	 o2ac2xW0PW50akDVYC63HNMH/7UAXcG5CjYjNJY9hwL7g6fftxldeOqXAi2DCt40B9
+	 fZEs0qLEdf/ZqnLlvzi77/37obRc3is5LAs4E0UvcwZtNOLa6O/hXdoMzvR9f6BzHi
+	 2aXd1Dp4OJZRw==
+X-Virus-Scanned: Debian amavisd-new at secondary.pambor.com
+Received: from secondary.pambor.com ([127.0.0.1])
+	by localhost (secondary.pambor.com [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 2Qg1vcMd3cyn; Tue,  5 Mar 2024 12:07:23 +0100 (CET)
+Received: from chromebook.fritz.box (dynamic-2a02-3100-5dd1-2001-a8cd-25c2-d6af-d5f4.310.pool.telefonica.de [IPv6:2a02:3100:5dd1:2001:a8cd:25c2:d6af:d5f4])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.osasysteme.de (Postfix) with ESMTPSA id 6445C6F035F;
+	Tue,  5 Mar 2024 12:07:23 +0100 (CET)
+From: Tim Pambor <tp@osasysteme.de>
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Dan Murphy <dmurphy@ti.com>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Tim Pambor <tp@osasysteme.de>
+Subject: [PATCH net-next v3] net: phy: dp83822: Fix RGMII TX delay configuration
+Date: Tue,  5 Mar 2024 12:06:08 +0100
+Message-ID: <20240305110608.104072-1-tp@osasysteme.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240305-upstream-net-next-20240304-mptcp-misc-cleanup-v1-4-c436ba5e569b@kernel.org>
-References: <20240305-upstream-net-next-20240304-mptcp-misc-cleanup-v1-0-c436ba5e569b@kernel.org>
-In-Reply-To: <20240305-upstream-net-next-20240304-mptcp-misc-cleanup-v1-0-c436ba5e569b@kernel.org>
-To: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>, 
- Geliang Tang <geliang@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>, netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2274; i=matttbe@kernel.org;
- h=from:subject:message-id; bh=IRouLJLzOQvuPh1nmmYUU3MxKdU5480lf2zN3s0oVSE=;
- b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBl5vxDaCTvgU0QiI3890Plw4yMOhTvTcmFlgLYX
- g0H4OYsbQeJAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZeb8QwAKCRD2t4JPQmmg
- c/eFD/9U61UobHCI0eQctMtjgjY/zwtcGDFKiKx0mdpkxf70WmgWiSJIZYaqJTZYDwJQlEFzhEK
- tUs5/vXMS5KLs+1cHEzEg4gJrbuXCA5MqnfiBT8cTX0ERQTityTNiyAQbijClmBO3r32qidykpA
- b0OKdFDbu83C+pa9NYwrkPm/IDkTkgGwRYEPLLEGxUUf+znTaf6cLQCrdVHfkk6P/8Y9QSe9N2q
- xTSMEr8Z3s1MlbIvlEMztm+tvsb3tiFaUoYxdtFRiWyiFBimYdFT5B99yT4eLyJeZ59QMsT9Gdy
- fLDZZ9MG9P4zRjodU/bkZD+07B38W9Q8QfVVnTaIT3eHs6PDGLpcavRVgsLJInpRrrsilvClkLb
- SqvmQhibf0rin8ZEYvkVTMNGxY9K1Dlk9CvJydtTpz3zpLreW/WIqVWWiE5h3c9EmRaHUxKdov5
- GOgFUEQ38wP+5nR76MHCNYtar0KfLIDWTOe8oO7NO04T6EuFr3/NX7HaL0tVPRIHg4pR5prxkDD
- GgsTp1eQONh5GHeLG5oepkHMhp4ROlt1rkQ0jaSZBXdD3cyLISuxCPtrTsfGIslTxlUkR0Bq0pd
- 7GNc5+umCmR47oktMO776uqO+cAOT0zi8JDuyo02EriDQl7eNdztQ7XbJ78sXw0YfJY9nNbwrMx
- sdS/9uSd6pgV/fw==
-X-Developer-Key: i=matttbe@kernel.org; a=openpgp;
- fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
+Content-Transfer-Encoding: 8bit
 
-From: Geliang Tang <tanggeliang@kylinos.cn>
+The logic for enabling the TX clock shift is inverse of enabling the RX
+clock shift. The TX clock shift is disabled when DP83822_TX_CLK_SHIFT is
+set. Correct the current behavior and always write the delay configuration
+to ensure consistent delay settings regardless of bootloader configuration.
 
-When the lookup_by_id parameter of __lookup_addr() is true, it's the same
-as __lookup_addr_by_id(), it can be replaced by __lookup_addr_by_id()
-directly. So drop this parameter, let __lookup_addr() only looks up address
-on the local address list by comparing addresses in it, not address ids.
+Reference: https://www.ti.com/lit/ds/symlink/dp83822i.pdf p. 69
 
-Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
-Reviewed-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
-Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+Fixes: 8095295292b5 ("net: phy: DP83822: Add setting the fixed internal delay")
+Signed-off-by: Tim Pambor <tp@osasysteme.de>
 ---
- net/mptcp/pm_netlink.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+Changes in v3:
+  - Revert changes involving DP83822_RGMII_MODE_EN
+  - Rebase on net-next
+Changes in v2:
+  - Further cleanup of RGMII configuration
+  - Check for errors setting DP83822_RGMII_MODE_EN
+---
+ drivers/net/phy/dp83822.c | 37 ++++++++++++++++++++-----------------
+ 1 file changed, 20 insertions(+), 17 deletions(-)
 
-diff --git a/net/mptcp/pm_netlink.c b/net/mptcp/pm_netlink.c
-index 354083b8386f..5c17d39146ea 100644
---- a/net/mptcp/pm_netlink.c
-+++ b/net/mptcp/pm_netlink.c
-@@ -499,15 +499,12 @@ __lookup_addr_by_id(struct pm_nl_pernet *pernet, unsigned int id)
- }
- 
- static struct mptcp_pm_addr_entry *
--__lookup_addr(struct pm_nl_pernet *pernet, const struct mptcp_addr_info *info,
--	      bool lookup_by_id)
-+__lookup_addr(struct pm_nl_pernet *pernet, const struct mptcp_addr_info *info)
+diff --git a/drivers/net/phy/dp83822.c b/drivers/net/phy/dp83822.c
+index 95178e26a060..c3426a17e6d0 100644
+--- a/drivers/net/phy/dp83822.c
++++ b/drivers/net/phy/dp83822.c
+@@ -402,7 +402,7 @@ static int dp83822_config_init(struct phy_device *phydev)
  {
- 	struct mptcp_pm_addr_entry *entry;
+ 	struct dp83822_private *dp83822 = phydev->priv;
+ 	struct device *dev = &phydev->mdio.dev;
+-	int rgmii_delay;
++	int rgmii_delay = 0;
+ 	s32 rx_int_delay;
+ 	s32 tx_int_delay;
+ 	int err = 0;
+@@ -412,30 +412,33 @@ static int dp83822_config_init(struct phy_device *phydev)
+ 		rx_int_delay = phy_get_internal_delay(phydev, dev, NULL, 0,
+ 						      true);
  
- 	list_for_each_entry(entry, &pernet->local_addr_list, list) {
--		if ((!lookup_by_id &&
--		     mptcp_addresses_equal(&entry->addr, info, entry->addr.port)) ||
--		    (lookup_by_id && entry->addr.id == info->id))
-+		if (mptcp_addresses_equal(&entry->addr, info, entry->addr.port))
- 			return entry;
+-		if (rx_int_delay <= 0)
+-			rgmii_delay = 0;
+-		else
+-			rgmii_delay = DP83822_RX_CLK_SHIFT;
++		/* Set DP83822_RX_CLK_SHIFT to enable rx clk internal delay */
++		if (rx_int_delay > 0)
++			rgmii_delay |= DP83822_RX_CLK_SHIFT;
+ 
+ 		tx_int_delay = phy_get_internal_delay(phydev, dev, NULL, 0,
+ 						      false);
++
++		/* Set DP83822_TX_CLK_SHIFT to disable tx clk internal delay */
+ 		if (tx_int_delay <= 0)
+-			rgmii_delay &= ~DP83822_TX_CLK_SHIFT;
+-		else
+ 			rgmii_delay |= DP83822_TX_CLK_SHIFT;
+ 
+-		if (rgmii_delay) {
+-			err = phy_set_bits_mmd(phydev, DP83822_DEVADDR,
+-					       MII_DP83822_RCSR, rgmii_delay);
+-			if (err)
+-				return err;
+-		}
++		err = phy_modify_mmd(phydev, DP83822_DEVADDR, MII_DP83822_RCSR,
++				     DP83822_RX_CLK_SHIFT | DP83822_TX_CLK_SHIFT, rgmii_delay);
++		if (err)
++			return err;
++
++		err = phy_set_bits_mmd(phydev, DP83822_DEVADDR,
++				       MII_DP83822_RCSR, DP83822_RGMII_MODE_EN);
+ 
+-		phy_set_bits_mmd(phydev, DP83822_DEVADDR,
+-					MII_DP83822_RCSR, DP83822_RGMII_MODE_EN);
++		if (err)
++			return err;
+ 	} else {
+-		phy_clear_bits_mmd(phydev, DP83822_DEVADDR,
+-					MII_DP83822_RCSR, DP83822_RGMII_MODE_EN);
++		err = phy_clear_bits_mmd(phydev, DP83822_DEVADDR,
++					 MII_DP83822_RCSR, DP83822_RGMII_MODE_EN);
++
++		if (err)
++			return err;
  	}
- 	return NULL;
-@@ -537,7 +534,7 @@ static void mptcp_pm_create_subflow_or_signal_addr(struct mptcp_sock *msk)
  
- 		mptcp_local_address((struct sock_common *)msk->first, &mpc_addr);
- 		rcu_read_lock();
--		entry = __lookup_addr(pernet, &mpc_addr, false);
-+		entry = __lookup_addr(pernet, &mpc_addr);
- 		if (entry) {
- 			__clear_bit(entry->addr.id, msk->pm.id_avail_bitmap);
- 			msk->mpc_endpoint_id = entry->addr.id;
-@@ -1918,7 +1915,8 @@ int mptcp_pm_nl_set_flags(struct sk_buff *skb, struct genl_info *info)
- 		bkup = 1;
- 
- 	spin_lock_bh(&pernet->lock);
--	entry = __lookup_addr(pernet, &addr.addr, lookup_by_id);
-+	entry = lookup_by_id ? __lookup_addr_by_id(pernet, addr.addr.id) :
-+			       __lookup_addr(pernet, &addr.addr);
- 	if (!entry) {
- 		spin_unlock_bh(&pernet->lock);
- 		GENL_SET_ERR_MSG(info, "address not found");
-
+ 	if (dp83822->fx_enabled) {
 -- 
 2.43.0
 
