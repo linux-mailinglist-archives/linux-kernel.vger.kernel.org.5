@@ -1,144 +1,127 @@
-Return-Path: <linux-kernel+bounces-91656-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91659-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D29C08714BE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 05:30:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D63F8714C4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 05:32:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 106B31C2318A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 04:30:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E22001F2164E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 04:32:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0C313FE5D;
-	Tue,  5 Mar 2024 04:30:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CE913EA97;
+	Tue,  5 Mar 2024 04:32:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ORWxleWr"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HkGPjE5L"
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21A4929A2;
-	Tue,  5 Mar 2024 04:30:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5276729A2;
+	Tue,  5 Mar 2024 04:32:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709613049; cv=none; b=KbmC3PSq2MmRmZrbaqU+5XieelZ1g0MAkdXozIPk4W2SO4q8bjIGEJuP7brMdUxYsRod6D3MnOFnl+f1myEDAC+5JnLQtUoaGseUYQyDAu3kM0GEDUi1wyEPXrGfzsJpMmhXtjMLwCuLL3aa36KmaT3vLnreVCy3DGSXkv4yMrc=
+	t=1709613127; cv=none; b=VSxFa6Tqe/F4R2TJ8qCHnlXk6dxG4HbZ1yOHuQ+VK1ZJlb64JWoHvCeXi7VqzgAK1mBZgVudZxc6bLXnmJXOSWyXh/7TfDJXSrxh/FE7AV2Ay1APAKRGuEWrc+vRPI3MvRf1N3NDtAmB5uCnW8UhTN0QEyZMES/nT11Lz2P0ecE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709613049; c=relaxed/simple;
-	bh=9rARLDaLXDlmL73GSWpwPcSLa2+EkPEWN6GvaI9/NfE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=afHlkZT+mHvw587iA5Pn6QMBPUqf6YNPz3aXhyXv2nIr5DNDPn0GUwHerxYpivqlgqdEXeqZNKldWhb7jGV0fDW7RhTauYJYOJTBsSSeZw6CMgCO2GLXIt8P8o4hs8vZt/rWKz2DvRLiBGmKRWjXAl29abKPp2Ey1M5YD5LuCj0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ORWxleWr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27F7CC433F1;
-	Tue,  5 Mar 2024 04:30:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709613048;
-	bh=9rARLDaLXDlmL73GSWpwPcSLa2+EkPEWN6GvaI9/NfE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ORWxleWrgQvOCYRmP6nAJufsAa8n+T9LMtQdGSebziw1HfoS6rMdLYhkO06pnCcWk
-	 GNMFNODTLi6BNQUEhYyozWBmnVKwfPew+MO/9GwQndCKJ7TYxoAEgta2MAwSRncNGC
-	 1znNDWPh0KjE/7xKkAPOgz2Y7GuNbhd1VijvytFeaN0YzGYDJHGR2Q5wiGtfhRj9iU
-	 kgjOhs3PaVwlrk+spODCHlybrms6PKOsm3uXsOTtyHEqSjDgs9CQx8a+7VL+JkpHdG
-	 0m4dkYdTwHVcyN7Xa3Eo/Q4ts/zhWB4BKPhx1HZZLJXDs3yEb9amyLFO0ShTWQkUcS
-	 tvXWbFDKXAbtw==
-Message-ID: <474e78e7-9056-4b74-9ce2-592b8ee9411c@kernel.org>
-Date: Tue, 5 Mar 2024 13:30:45 +0900
+	s=arc-20240116; t=1709613127; c=relaxed/simple;
+	bh=SSauG8f7miAub2NYhDAYyCaW33Q/IdRj5+nLht4jlvw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=itlf+CzXXXiV6ReBh5rkQ32cjOn1e6PBUM+aNBRa4S2CL+guSwV8VahXHAe2XCGIT85PFx6lonXtWfqXMe/6G0dUzEMT9MXYCKuOo88KIYaeDShZAVYrTZFe/mujpO0VVIpJprTaw0NwV2tfCjT5sOhMooyuFIdihJ8+yylOjRo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HkGPjE5L; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6e57ab846a1so3306031b3a.3;
+        Mon, 04 Mar 2024 20:32:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709613126; x=1710217926; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RUsIcCqc0n65+aOxiM0hSyFnKyfuIyZZToEWRW7EiWM=;
+        b=HkGPjE5LXNjX9NkPUWNJbnB+jGsyUydIg14Km40YBUIlzAm87AgHzkmEVFIpLEuIvN
+         lAnBxPo5lVe8LR5KZiQFE9aYbXS9ov288f9/VPkEOAn8VVOkNTPRzRnTuPOyIVHGI2s+
+         VYkSGA3mo5g8R7HgqeylN3+d1iWb89vhY0n2Nu3bqWpdt70iOfywwEqp11tPCvqxIu9M
+         aU254dUgNJkaFvN33hV0OE28psUTYkFLK0ILrgySznawdP/5zFq9DoB2kVEgfKHu7vcD
+         ZvVo/AFSLxsz4vA4S67/POoVxU6IwBUIwk1vmeOe1hN5IS9v6rZ3N5+kXXnmBcclvqB4
+         GNMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709613126; x=1710217926;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RUsIcCqc0n65+aOxiM0hSyFnKyfuIyZZToEWRW7EiWM=;
+        b=l3o4EYzyhxImr6hIkCDFcX15LRYsNcaXUrlqnuoloccieAvgbeF0cmt6SS8K541jnX
+         Mr6r5zjOiSGWeSVlnjMn2ozKjDAHSjHg1xCs2ohcYinipnzS82V3PyUeKM1PnYU46Zeu
+         vXWpD5mYgcnaVRNJ8bv9NK/o5uI/avMp7IFfzfLaaY002spSy0uzSNGbKuisqs73wY05
+         GNYS73YY3yrrtT8lsj7X7GiU9bbi6g5bWUfiUFQw6icXLCbhHHA8Otw8DjaTLXyLbdy5
+         AHSfouFzkIovl9M10fWntv4Y5oXW1MQ44WgYVYVRzl4Hkk2DHC3AT2tMyER0m72QL6XG
+         XnhQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWUadaxL8gKw7vZTSGkzFwMI4vTC7RyYZyFbk4i7wYN0UNCUxoYaJkyW+gqBuV07s07AkKgurmrCKuPA42emqXS82CI6pPxYEomsPLlfwmUm/yednFjMbmov2J3AB3Ax8o1XKC4
+X-Gm-Message-State: AOJu0YwAy45gYQeB3POegbAmAxVC5vC0L77cRouWd7NoAUIU+4456wfU
+	taEYOCYoISPESJUwbETcc9319/kvkTo7DG7uEBT7SLu+lao9vKtWZEkV2M4anyQ=
+X-Google-Smtp-Source: AGHT+IHZ1C96qA12U3lQMwf0gIJuHT1w+JsoMpzvZ2EGHDm0ld2y+Xb2ndKyMn9HP3mN7nicmWTeLg==
+X-Received: by 2002:a05:6a00:1ad0:b0:6e5:9a0a:b668 with SMTP id f16-20020a056a001ad000b006e59a0ab668mr9802051pfv.27.1709613125578;
+        Mon, 04 Mar 2024 20:32:05 -0800 (PST)
+Received: from archie.me ([103.124.138.155])
+        by smtp.gmail.com with ESMTPSA id c17-20020aa78c11000000b006e5dc1b4866sm5202800pfd.144.2024.03.04.20.32.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Mar 2024 20:32:04 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+	id 5367918479810; Tue,  5 Mar 2024 11:32:02 +0700 (WIB)
+Date: Tue, 5 Mar 2024 11:32:02 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+	torvalds@linux-foundation.org, akpm@linux-foundation.org,
+	linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+	lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+	f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+	allen.lkml@gmail.com
+Subject: Re: [PATCH 6.7 000/162] 6.7.9-rc1 review
+Message-ID: <ZeagQq5Lo48TUmCJ@archie.me>
+References: <20240304211551.833500257@linuxfoundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] block: move capacity validation to blkpg_do_ioctl()
-Content-Language: en-US
-To: Li Lingfeng <lilingfeng@huaweicloud.com>, axboe@kernel.dk,
- min15.li@samsung.com
-Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, hch@lst.de,
- yangerkun@huawei.com, yukuai1@huaweicloud.com, houtao1@huawei.com,
- yi.zhang@huawei.com
-References: <20240305032132.548958-1-lilingfeng@huaweicloud.com>
-From: Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <20240305032132.548958-1-lilingfeng@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="o6vkPx93oPOd8dIi"
+Content-Disposition: inline
+In-Reply-To: <20240304211551.833500257@linuxfoundation.org>
 
-On 3/5/24 12:21, Li Lingfeng wrote:
-> From: Li Lingfeng <lilingfeng3@huawei.com>
-> 
-> Commit 6d4e80db4ebe ("block: add capacity validation in
-> bdev_add_partition()") add check of partition's start and end sectors to
-> prevent exceeding the size of the disk when adding partitions. However,
-> there is still no check for resizing partitions now.
-> Move the check to blkpg_do_ioctl() to cover resizing partitions.
-> 
-> Signed-off-by: Li Lingfeng <lilingfeng3@huawei.com>
-> ---
->  block/ioctl.c           |  9 ++++++++-
->  block/partitions/core.c | 11 -----------
->  2 files changed, 8 insertions(+), 12 deletions(-)
-> 
-> diff --git a/block/ioctl.c b/block/ioctl.c
-> index 438f79c564cf..de0cc0d215c6 100644
-> --- a/block/ioctl.c
-> +++ b/block/ioctl.c
-> @@ -18,7 +18,7 @@ static int blkpg_do_ioctl(struct block_device *bdev,
->  {
->  	struct gendisk *disk = bdev->bd_disk;
->  	struct blkpg_partition p;
-> -	sector_t start, length;
-> +	sector_t start, length, capacity, end;
->  
->  	if (!capable(CAP_SYS_ADMIN))
->  		return -EACCES;
-> @@ -41,6 +41,13 @@ static int blkpg_do_ioctl(struct block_device *bdev,
->  
->  	start = p.start >> SECTOR_SHIFT;
->  	length = p.length >> SECTOR_SHIFT;
-> +	capacity = get_capacity(disk);
-> +
-> +	if (check_add_overflow(start, length, &end))
-> +		return -EINVAL;
-> +
-> +	if (start >= capacity || end > capacity)
-> +		return -EINVAL;
->  
->  	switch (op) {
->  	case BLKPG_ADD_PARTITION:
-> diff --git a/block/partitions/core.c b/block/partitions/core.c
-> index 5f5ed5c75f04..b11e88c82c8c 100644
-> --- a/block/partitions/core.c
-> +++ b/block/partitions/core.c
-> @@ -419,21 +419,10 @@ static bool partition_overlaps(struct gendisk *disk, sector_t start,
->  int bdev_add_partition(struct gendisk *disk, int partno, sector_t start,
->  		sector_t length)
->  {
-> -	sector_t capacity = get_capacity(disk), end;
->  	struct block_device *part;
->  	int ret;
->  
->  	mutex_lock(&disk->open_mutex);
-> -	if (check_add_overflow(start, length, &end)) {
-> -		ret = -EINVAL;
-> -		goto out;
-> -	}
-> -
-> -	if (start >= capacity || end > capacity) {
-> -		ret = -EINVAL;
-> -		goto out;
-> -	}
-> -
 
-Why do you remove this ? The check will not be done when *existing* partitions
-are added. To do the check when *creating* a partition, make this code a helper
-and call that helper function here and from blkpg_do_ioctl() as well.
+--o6vkPx93oPOd8dIi
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->  	if (!disk_live(disk)) {
->  		ret = -ENXIO;
->  		goto out;
+On Mon, Mar 04, 2024 at 09:21:05PM +0000, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.7.9 release.
+> There are 162 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>=20
 
--- 
-Damien Le Moal
-Western Digital Research
+Successfully compiled and installed the kernel on my computer (Acer
+Aspire E15, Intel Core i3 Haswell). No noticeable regressions.
 
+Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--o6vkPx93oPOd8dIi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZeagPQAKCRD2uYlJVVFO
+o88YAQCZD4Jm+zkUub5+BFacdBLmgePDQQZ3Hn7LtSUmRmK2CQD/USt81uh+xzuU
+TDBTciGePK0Y34BHO9ZlC9dbjitq/wQ=
+=lIRS
+-----END PGP SIGNATURE-----
+
+--o6vkPx93oPOd8dIi--
 
