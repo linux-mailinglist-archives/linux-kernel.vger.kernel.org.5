@@ -1,131 +1,234 @@
-Return-Path: <linux-kernel+bounces-92382-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92389-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65E09871F4D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:37:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0ABD1871F69
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:40:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B6841F248A7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:37:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99549283438
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:40:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02C768592D;
-	Tue,  5 Mar 2024 12:37:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68A8E8592A;
+	Tue,  5 Mar 2024 12:39:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b="PrHjF7Tb"
-Received: from omta38.uswest2.a.cloudfilter.net (omta38.uswest2.a.cloudfilter.net [35.89.44.37])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iBNBeAhD"
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C2BB85655
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 12:37:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A07EA8564B;
+	Tue,  5 Mar 2024 12:39:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709642255; cv=none; b=KQo4Ue3IO0J20GxHBF/v1PO/0nlHFmwkxFq0s4E8o9K/U/f6J9sHOVufoJvFKqxu89M1yur8EnR/oB8g11MmYDtAgWtxdBBMCYYw2xQAM3N3k5ctvTcZ72biMM0+7D7U/mGWaOj0m04ysM9ReDj5svgXDIFg6dWspYW7uEVXgH0=
+	t=1709642378; cv=none; b=LvXV5nHkoqlkqhmSadSyhYyQ1ze3kjQ1Qa1kvqW5QchQGHZj8VEfG50Jh5YJJd8muBtEJwEZzndMY13xVppiqd7Y2gIIgAyvADyCEDXCa8vrBxhETahnwYQai9DAZWufl49FRyFpXGQ1WUUOGsDZZNF47ZFLqhpG2VCl2xNoHTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709642255; c=relaxed/simple;
-	bh=Q/8Sxgh8pwVTBdT13/X0vZm0jl6EgZhuDOQgkTY4vyI=;
-	h=Subject:To:Cc:References:In-Reply-To:From:Message-ID:Date:
-	 MIME-Version:Content-Type; b=GLtOan5SL5yoOauQcOxhuDq8o/5RCNnXUZQUQKJhjy02pajWv14XlAnMEMsKWoPa9QHEZIZqO+MGq9cDz2lG4gCH3oEfUDvZGaEue9VXs6lCZfOSkaoB1aLnCJ8JpYTiEXO1G8QhpCCSW67RcKht0ityAYR+cd7XJXTcUUauGcI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net; spf=pass smtp.mailfrom=w6rz.net; dkim=pass (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b=PrHjF7Tb; arc=none smtp.client-ip=35.89.44.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=w6rz.net
-Received: from eig-obgw-5010a.ext.cloudfilter.net ([10.0.29.199])
-	by cmsmtp with ESMTPS
-	id hPQVrX1PmDI6fhU30rU6t5; Tue, 05 Mar 2024 12:37:30 +0000
-Received: from box5620.bluehost.com ([162.241.219.59])
-	by cmsmtp with ESMTPS
-	id hU2zrKbKhK6tthU2zrRIoU; Tue, 05 Mar 2024 12:37:29 +0000
-X-Authority-Analysis: v=2.4 cv=OtRJyT/t c=1 sm=1 tr=0 ts=65e71209
- a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
- a=IkcTkHD0fZMA:10 a=K6JAEmCyrfEA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
- a=HaFmDPmJAAAA:8 a=piSU1mTir-CSjbXYDCMA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
-	s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-	Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=K6bBwShfnbeyZ6pC/jMFwJr3wSkYsmLTluFpNkwg/nY=; b=PrHjF7TbZlB4SKg5aOnh37Mmks
-	JfJOaBBHYmBPU3GckwtqUdEEx56wMKZIxn/4ylRGJLXTAv1KLSrsrmT48WOihIB0p+VN7AnafLHZm
-	/44EDROSHFQxHF1HD4PwFOWUzhnu7AnELvzeaBXrc/evXI1lM1YPylaca7GwPnhdKlarLeTxeLZDS
-	/PmoCxR1Jl8GX2SQbOAgz2wLosqdIPaz4Tme5L5PkNwOe264KLATfkwOY9tvt03Qm267S6jFWLy8t
-	v4HC230J1sijloOVQChOfG2UZZ2lHOjEwCcS9U9JqeHgSRWi8Pv0kwuqewMzF94NBm9pcjP0Lq/vd
-	RJsYS/hQ==;
-Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:49364 helo=[10.0.1.47])
-	by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <re@w6rz.net>)
-	id 1rhU2x-000pvx-1B;
-	Tue, 05 Mar 2024 05:37:27 -0700
-Subject: Re: [PATCH 6.7 000/161] 6.7.9-rc3 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
- rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
-References: <20240305112824.448003471@linuxfoundation.org>
-In-Reply-To: <20240305112824.448003471@linuxfoundation.org>
-From: Ron Economos <re@w6rz.net>
-Message-ID: <5a07da44-4abc-200a-7480-1f45dce1a68a@w6rz.net>
-Date: Tue, 5 Mar 2024 04:37:24 -0800
-User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+	s=arc-20240116; t=1709642378; c=relaxed/simple;
+	bh=ezLq/SOYCqGkMfTLNXZrH22S0sro4+1Jl1Dyq+wOc2M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JKnmGUD7+1l57jMFDZIY8y2DahvV16fpCiiE6hysvaZzyldbxi4Zpf9dj27zc4LWDOg4zwwYUEMMlz82hf4SoN5Mqqy+T/O5Ir9Hcm4OBN9N0uycxIgzO09lNGRFlRejZVYN4ia1LEgNVZ7MAjCt1vnR5XYHcFlcI5o/PETv7QE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iBNBeAhD; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a44628725e3so709386866b.0;
+        Tue, 05 Mar 2024 04:39:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709642375; x=1710247175; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1yezJlEM16+CfY6EoOA0jjgo+Cql82JRNjKq4aNy4a4=;
+        b=iBNBeAhDNNviqHFnZP6bBTYqlBKnq+TOz2mOZ0pd9RNRFi65HvRRUxISiRHqOJK0h8
+         6eJ4VxsHx9I5KCxFnGp7ykbAJXgdlfWW+3VYPQFu+ZcOJfhv0/86JnxlW6yomKmBopqR
+         ygETol6gA17sIwybB0y22Qxi1s2wYFc7682fbo7mV03dVkMM8NwjQNHre+cmP2Gc6dYT
+         DXzgU1YxRFbCvHSR0OSV9OIMXDCOj6gfW8OlKUvylME5z6drQGhH40TW0SwCK96qNvXa
+         qQF0dE+A31PytTKKrYJSMVTd7NL/Y9KrL3FSR0o7rz2361iAlwo72/3maFCDauI172E/
+         K6pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709642375; x=1710247175;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1yezJlEM16+CfY6EoOA0jjgo+Cql82JRNjKq4aNy4a4=;
+        b=T0Ba1zBSVFfFwtrkKn61w86DsMp3d+y+N+1UeOFSWaUC7YTqjzJLYdr19GOzUOQLbi
+         nYYeEnjJcm0fLyrT972C4zzSvFVGY/8ogRIzNSz8SYdfWbsThS96w9pjoDEB6TwOwc9Y
+         dxUnQ2tWuRhxZ8/8LwdXUQRw5Zy+6iHK8HLizcmUJNz9LQpUEUc5p55IE0lAV5FVhrM9
+         VavrbistpVkLSUxNh4JGczf6D8iuRGeWrVxPvM706tfoGOSKsKlolh34ot06aFIMuMMu
+         cw4pLgGAY27ujtHEMfs5K2U+Rl7agkXQJ6Z6WPS+gD36y8prtYYW4zs57rEHbqG3ETpR
+         /TEw==
+X-Forwarded-Encrypted: i=1; AJvYcCXGfJ6naZ79MlQ78Tu4UgQQpJtrZLlruJ+Md71h6jFqosGGCJnk6Bu4zLmHNvejkTv3+xLmu1mMQgLOx+DRszcFC7zoUMs81QlAMZwDQmb7UXiaivsohNZL+4Fh2cru7vsk2LLTCE/m7lqfS0b2yYzQtXAqHoirV/cxNXvAAX7fuoLJNhzDTH5U
+X-Gm-Message-State: AOJu0YzdAEb97xfrX2LnWTu5FXxlgLwVdoxjrddqYkLTyVmyQMVc2sNw
+	O1iiE1zEUCux/yV+ONr8IntHLD4sZk1xvRofnazKljYtB5PNb1ANkg7PZahADbZvqW3LXAm+koD
+	zK7AA2hEfpsGX98757QPS52vTTini5LvUrgw=
+X-Google-Smtp-Source: AGHT+IE9M+7eueWU9j7NIyeP0waYnHpZODoF/MgltiSqasKcB+g9ydSe32wCWJiPFKmICPWxFT6J4Wp1eHko7PeQSr8=
+X-Received: by 2002:a17:906:1517:b0:a45:4448:4376 with SMTP id
+ b23-20020a170906151700b00a4544484376mr3985527ejd.74.1709642374719; Tue, 05
+ Mar 2024 04:39:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - box5620.bluehost.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - w6rz.net
-X-BWhitelist: no
-X-Source-IP: 98.207.139.8
-X-Source-L: No
-X-Exim-ID: 1rhU2x-000pvx-1B
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:49364
-X-Source-Auth: re@w6rz.net
-X-Email-Count: 4
-X-Org: HG=bhshared;ORG=bluehost;
-X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfPf/szAVvznaVGJfykXHIMo8TCMWabO6S46aeAgXMABuamR9eCcpWsDqg/E2VPJJkavmvQvkiERe9TEukQf/czBkDEADdss8KY6k3GWSgjXhxV1qbrHv
- /r5c+ZqIFa+T7jk7LW5GMR1rTKsPqRnIGUZaR0M6czJPIQnmEWcgSVnwZfuyVeLLW35vEb+X1ru4EHM9DmxLzJaHgLdRSMvjov0=
+References: <20240301134637.27880-1-lukas.bulwahn@gmail.com> <87plwbxon7.fsf@meer.lwn.net>
+In-Reply-To: <87plwbxon7.fsf@meer.lwn.net>
+From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date: Tue, 5 Mar 2024 13:39:23 +0100
+Message-ID: <CAKXUXMypvMeiRGCXbX2ogJQ4KDBc6v-s7cH4t8Tk9=5NerBN1w@mail.gmail.com>
+Subject: Re: [PATCH 0/3] Towards a re-organized submitting patches
+To: Jonathan Corbet <corbet@lwn.net>
+Cc: workflows@vger.kernel.org, linux-doc@vger.kernel.org, 
+	kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 3/5/24 3:28 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.7.9 release.
-> There are 161 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Sun, Mar 3, 2024 at 5:31=E2=80=AFPM Jonathan Corbet <corbet@lwn.net> wro=
+te:
 >
-> Responses should be made by Thu, 07 Mar 2024 11:27:43 +0000.
-> Anything received after that time might be too late.
+> Lukas Bulwahn <lukas.bulwahn@gmail.com> writes:
 >
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.7.9-rc3.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.7.y
-> and the diffstat can be found below.
+> > Dear Jonathan,
+> >
+> > I wanted to clean up the development-process documentation. There is
+> > however no easy way to break the ice here:
+> >
+> > The elephant in the room is that there is some unclear relation between
+> > 5.Posting.rst, 6.Followthrough.rst and submitting-patches.rst.
+> > (Yes, I know each document has its own history...; but let us put the
+> > history aside for now.)
 >
-> thanks,
+> FWIW, the objective of those two documents is quite different; one is a
+> high-level overview of how the development process as a whole works, the
+> other is a detailed guide to submitting work for consideration.
 >
-> greg k-h
 
-All good now. Built and booted successfully on RISC-V RV64 (HiFive 
-Unmatched).
+Yes, that _objective_ is clear when reading the documents.
+However, unfortunately, the detailed guide to submitting work for
+consideration in submitting-patches.rst really is not that much more
+detailed than what 5.Posting and 6.Followthrough already recommend.
+A lot of the "details" in submitting-patches.rst is then also just
+details on topics that are much more an explanation than actual
+recommendation for specific actions.
 
-Tested-by: Ron Economos <re@w6rz.net>
+Let me clean things up in submitting-patches, and then start a proper
+comparison.
 
+> > Submitting-patches.rst contains information largely put together from
+> > different initial starting points and is partly outdated due to common
+> > workflows with git format-patch and git send-email.
+>
+> You should have seen it before I thrashed it a few years back :)
+>
+> > For a simple experiment, I moved the larger parts on the tags
+> > (signed-off-by, co-developed-by, acked-by, reported-by, etc.) into a
+> > separate document and then ran the numbers on submitting-patches again:
+> >
+> >   4329 submitting-patches.rst
+> >
+> > Nowt, the size of submitting-patches is actually below Posting and
+> > Followthrough.
+>
+> I don't think we should be driven by word counts.  I do think that
+> moving a bunch of information on tags to its own document could make
+> sense.
+>
+> > So, the difficult task to reach a coherent process description is to se=
+e
+> > some relation between these documents and then go through the editorial
+> > changes. I have come up with this kind of vision:
+> >
+> > Phase 1: Clean up submitting patches
+> >
+> >   Topics/Statements that can be easily cleaned up first do not get in
+> >   the way (at least mentally) when trying to understand the next steps.
+> >
+> >   E.g., as an experiment I moved the details on tags into a separate
+> >   document.
+>
+> Fine.
+>
+> > Phase 2: Make submitting-patches have one clear temporal flow.
+> >
+> >   The top-level structure should basically be along the temporal order =
+of
+> >   things: Prepare a patch, Post a patch, Respond to review, Send rework=
+ed
+> >   patches, Be patient before resending
+>
+> This makes sense as well.  I wonder if splitting the document along some
+> of those lines might also be a good idea, with submitting-patches.rst
+> becoming a relatively short overview deferring details to the others.
+> This is one of the most important docs we have, and it's far too much
+> for people to engage with all at once.
+>
+
+I understand that people nowadays do not read prose from top to
+bottom, as soon as it exceeds a certain length. So, for sure, we can
+consider splitting the current content into multiple pieces and add
+links between them. However, I also want to avoid that we have say 15
+documents of a hundred lines, and you are always jumping
+back-and-forth in your web browser while reading. I think the split is
+going to be into two or three documents if at all.
+
+I will do some experiments and suggest some splitting.
+
+> > Phase 3: Merge the pieces of content from Posting and Followthrough int=
+o
+> > submitting patches if it adds something to that document.
+> >
+> >   When both documents roughly cover the topics of similar depth, we loo=
+k
+> >   fine-grained into how to construct the one document that has the best
+> >   from both documents.
+> >
+> > Phase 4: Remove Posting and Followthrough and simply replace it in the
+> > process description with submitting patches.
+>
+> In broad terms, this seems like a good direction to me.
+>
+> Again, let's remember the different purposes of these documents.  The
+> development-process document is an overall description of the process,
+> so it doesn't need the details.  But when you say:
+>
+> > Posting will not be missed.
+>
+> I don't entirely agree.  But I don't doubt it could be a fraction of
+> what it is now.
+>
+
+When I say "Posting will not be missed", I mean the name
+"5.Posting.rst" will not be missed, as the future submitting-patches,
+partially existent on my hard disk right now, includes the best of
+5.Posting.rst as it is now, namely the natural flow of the
+explanation, the good style of writing, being precise and concise and
+the ability to address all audiences with a suitable text, e.g.,
+newcomers and experienced kernel developers enjoy reading it. Some
+important information in 5.Posting.rst should really also be mentioned
+in submitting-patches.rst.
+
+I think if submitting-patches.rst is structured and written well, the
+development process description can go from 4. Getting the code right
+to "5.Submitting patches" and the readers would not even notice that
+they once originated from very different sources and authors.
+
+> > So, here are some first changes to Phase 1 and Phase 2.
+>
+> At a first glance, these changes seem fine.  I think I'll hold them
+> until after the merge window so that others can think about what you're
+> up to, but I suspect there will be no reason not to apply this first set
+> then.
+>
+> Thanks for working on this material; it's some of the most important we
+> have and it definitely needs some attention.
+>
+
+I will continue working on it and see what I consider stable enough in
+moving around that it deserves to be posted to the mailing list. While
+working on the document, it is unfortunately a lot of temporary
+movement back and forth, or huge changes at once and it is a bit
+difficult to then extract the next natural change to propose, but I
+will see how I can present this best piece by piece.
+
+
+Lukas
 
