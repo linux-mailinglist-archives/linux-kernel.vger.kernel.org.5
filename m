@@ -1,175 +1,148 @@
-Return-Path: <linux-kernel+bounces-91606-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91607-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E135B871431
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 04:21:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 212B9871432
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 04:21:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44D10B20A21
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 03:21:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D3A701F2314F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 03:21:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF66E376E6;
-	Tue,  5 Mar 2024 03:21:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E9D93D0B5;
+	Tue,  5 Mar 2024 03:21:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VorYs+JN"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="d2CQENP3"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 639551865C;
-	Tue,  5 Mar 2024 03:21:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45DCB2942A
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 03:21:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709608865; cv=none; b=gi9axCILxXl0ph2LISaIhagLxv3mF2K0Z01JR12ZHjbrdkZB+0t/PIrungvX2cNG23+vUV84iigXE0q6LFDQ1h8SI99VTRXZknqHtUAcdimfMSchUFDx92S2E/N6330uuznyA+V5PmgwPM+Jh49aMsh0mPCht3bnPCnfs1SIE9M=
+	t=1709608869; cv=none; b=lKzCQLTcI50KrNCphC2OfFho1SS/KI1tLWzfLxOTWJA+iDELlDqbNVFhyrcG8XCgVXfLyF98KpdTpPspzEd63fi74Piwt77yJ4sJ6RZ2UrqTfeJXxdhI0s11A1eikzphJQkbr9wfRBguyxBU4ADRfTsJ/V+FsTdIsXwdtbBIkhs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709608865; c=relaxed/simple;
-	bh=fQxFj9FoBmTJzV/ZouAXdSy2rLJDNB1eESe76AOrgDI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=m1UhsJnx8FhzO3RPvqpkDjDGq2NAsckhOpmuubF8zd9s46zUthukW1kuBvREfJFsP69TTjHc8LVd/2ej8GpY+auvprjZtk+3hlVsfHneCY0IWHWeABHULLIb1LvqP42DIAStCV0X9t1OwNDRBybK/7ycisE9T2kynUsYlrSIwxA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VorYs+JN; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a44e3176120so287588366b.1;
-        Mon, 04 Mar 2024 19:21:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709608862; x=1710213662; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=g5OTOZkvI1iKHRZFDGgAFNCyc+OZsWpdVdz/BEQBjP4=;
-        b=VorYs+JN2iMVeIIpUm2WyXOPxI9BqGZYMR0xb3smQhOsDa2/EwJd7uZVlZpvbX0SUy
-         EZA0bhdJgqEZi1G4blynLdm+Rw2x3W9JIVEtutBI4LwPVYhapnmOIRfeOQ4/do5cHrav
-         m+22DLIUtpiqGKrpvCFPqaXGsTa6HouZXDzfMgiuMVuZsSZEqLGgjBOQmu7u5/a3ZB1E
-         VtgdJga+VmCJH65H3uVW/UGJQ8uzlf+LoTKGDK7C8g1U//FSmqKmjEz0SikrV8GJj12t
-         VEKFGVd7QGP/oMm6thIqJ0QVJBL4bPhobG0yup0sLaEsghBZognPhC5tsbtmRwLHp4/u
-         Hhfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709608862; x=1710213662;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=g5OTOZkvI1iKHRZFDGgAFNCyc+OZsWpdVdz/BEQBjP4=;
-        b=nXB2BQepfx86suOAnDWTVdQYZ3lNcjuiA5A/EZovkV85la8Ti+yYPF6ysmJqb8YYDc
-         gNmnSnsUQS0KYOvQqylSA5Up8LIzFCctqhiYzAQMItxE0ateQILLxPPpDI86piRK/fKR
-         sL4eYeqv3dyexJrPDYbxr4G3JKW2E++FGuuUnJAh82liUItmJh5wYPkuhpaEXfqjXWPs
-         y6tq4lWGyOfwD+yLMQdLv8NFSV8swKwnkTz27sFeBmhHdz3eBm4K85trHDZ4bPjVGhYH
-         7fbBxTvJAj9Wb7Fd34AtQv0rHh35yKS42qZY0x7sOVYsJAN8dG/Pz45yQZO2PzEajmnw
-         Or0w==
-X-Forwarded-Encrypted: i=1; AJvYcCWxDdfj00LLNyrRHOIWjzuQ7lX+ElQfu7Q7KDcgewjgBAI6gQK38rBdoZ0ptnfqXp0XbH71NTVDgNyRR5B72xr6WygniLeu
-X-Gm-Message-State: AOJu0YwW/cQZMjzroGrQtWGO7CF867yu+b/p6Kd1fPRNicUbDR5l1IPb
-	NrJI7Za3nciYMtrUXHQdBH4YgTqK7VuqR/0mLCbjX2WfaZhj8lGtWvPVdobaqHTlXKCwjdgqUZh
-	uzqgnPKdn7u8SZHZIFPhgCiqgonM=
-X-Google-Smtp-Source: AGHT+IGzCLorvfjl+krG6qfJI1O1/54XBrFfAYojjAa1cbuFXNug7cFrg5Gpu1as2dW/gXgop0TWPItpHFPcwFW/VFE=
-X-Received: by 2002:a17:906:695:b0:a45:1850:e6ed with SMTP id
- u21-20020a170906069500b00a451850e6edmr3968306ejb.6.1709608861517; Mon, 04 Mar
- 2024 19:21:01 -0800 (PST)
+	s=arc-20240116; t=1709608869; c=relaxed/simple;
+	bh=BAIZttYr9CFZu/K50YIXtIb0ZZE7+4WLZelPCaIjosg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=D/gRRJ60gZ31gw81cns4JgwePLts7erxlIiiZA/RWlq+8ZaA0T43OMh1GblhjhNB570CGOzT3CSiJiHAGjQtZ2MCrUf1KKMdUK2w4mUXmlQO8j0FjakhUbtY34NuqSea7fehJbDHfBdOvUocr5ZoGTsbdabaV1d1aMnN1n2krXk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=d2CQENP3; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709608863;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6h7TTCoR/Jp0ooBmr/f4+J3rHYWSV3rW1/afOQUBqeg=;
+	b=d2CQENP3L3CMuVKR+0xEklk+FQl2qjxV6kgmTXE9edhWjmANMHpeurevMFDFyvNTGqaBxa
+	sgeqr3MH1jfRNjAW9E/zTVPJgZPlcHeGn8AJZuSPhNm3D4xjvLPMDeld8zqNPk8aac9dKi
+	biXbMTwhG4h6Wcaldjs2D4Pq+b/9B0U=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-383-Gei35NVMMYGpMismXOy2zg-1; Mon, 04 Mar 2024 22:20:58 -0500
+X-MC-Unique: Gei35NVMMYGpMismXOy2zg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9107310726A4;
+	Tue,  5 Mar 2024 03:20:58 +0000 (UTC)
+Received: from [10.22.8.66] (unknown [10.22.8.66])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 481612166B31;
+	Tue,  5 Mar 2024 03:20:58 +0000 (UTC)
+Message-ID: <147b6e99-dc5a-4b40-a1b2-8b957459e76d@redhat.com>
+Date: Mon, 4 Mar 2024 22:20:58 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAEkJfYP5T4Xv7vn7GZnQ7ig6_QZB8B_g-DS9dk7xhxRntYNY7g@mail.gmail.com>
- <24641.1709606824@famine>
-In-Reply-To: <24641.1709606824@famine>
-From: Sam Sun <samsun1006219@gmail.com>
-Date: Tue, 5 Mar 2024 11:20:49 +0800
-Message-ID: <CAEkJfYMfU8bSrvpgSCgCG4-canwkq3dZKSUKbd0xsjLuLPGMQQ@mail.gmail.com>
-Subject: Re: [PATCH net] drivers/net/bonding: Fix out-of-bounds read in bond_option_arp_ip_targets_set()
-To: Jay Vosburgh <jay.vosburgh@canonical.com>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, andy@greyhouse.net, 
-	davem@davemloft.net, Eric Dumazet <edumazet@google.com>, kuba@kernel.org, 
-	pabeni@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm/kmemleak: Don't hold kmemleak_lock when calling
+ printk()
+Content-Language: en-US
+To: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, Audra Mitchell <aubaker@redhat.com>
+References: <20240228191444.481048-1-longman@redhat.com>
+ <ZeCh30o8i-wJVT7N@arm.com> <c5b07970-0523-420b-97ad-c08b50c69db2@redhat.com>
+ <ZeHrC56llcicOjLP@arm.com>
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <ZeHrC56llcicOjLP@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-On Tue, Mar 5, 2024 at 10:47=E2=80=AFAM Jay Vosburgh <jay.vosburgh@canonica=
-l.com> wrote:
->
-> Sam Sun <samsun1006219@gmail.com> wrote:
->
-> >Dear kernel developers and maintainers,
-> >
-> >We found a bug through our modified Syzkaller. In function
-> >bond_option_arp_ip_targets_set(), if newval->string is an empty
-> >string, newval->string+1 will point to the byte after the string,
-> >causing an out-of-bound read.  KASAN report is listed below.
->
->         Conceptually, the change here seems fine.  However, I don't
-> think including the full KASAN report adds much to the description
-> above.
->
 
-Thanks for pointing this out! I will remove this next time when I
-submit a patch.
-
-> >We developed a patch to fix this problem. Check the string length
-> >first before calling in4_pton().
-> >
-> >Reported-by: Yue Sun <samsun1006219@gmail.com>
-> >Signed-off-by: Yue Sun <samsun1006219@gmail.com>
-> >
-> >diff --git a/drivers/net/bonding/bond_options.c
-> >b/drivers/net/bonding/bond_options.c
-> >index f3f27f0bd2a6..a6d01055f455 100644
-> >--- a/drivers/net/bonding/bond_options.c
-> >+++ b/drivers/net/bonding/bond_options.c
-> >@@ -1198,7 +1198,7 @@ static int bond_option_arp_ip_targets_set(struct
-> >bonding *bond,
-> >     __be32 target;
-> >
-> >     if (newval->string) {
-> >-        if (!in4_pton(newval->string+1, -1, (u8 *)&target, -1, NULL)) {
-> >+        if (!strlen(newval->string) || !in4_pton(newval->string+1,
-> >-1, (u8 *)&target, -1, NULL)) {
+On 3/1/24 09:49, Catalin Marinas wrote:
+> On Thu, Feb 29, 2024 at 10:55:38AM -0500, Waiman Long wrote:
+>> On 2/29/24 10:25, Catalin Marinas wrote:
+>>> On Wed, Feb 28, 2024 at 02:14:44PM -0500, Waiman Long wrote:
+>>>> When some error conditions happen (like OOM), some kmemleak functions
+>>>> call printk() to dump out some useful debugging information while holding
+>>>> the kmemleak_lock. This may cause deadlock as the printk() function
+>>>> may need to allocate additional memory leading to a create_object()
+>>>> call acquiring kmemleak_lock again.
+>>>>
+>>>> Fix this deadlock issue by making sure that printk() is only called
+>>>> after releasing the kmemleak_lock.
+>>> I can't say I'm familiar with the printk() code but I always thought it
+>>> uses some ring buffers as it can be called from all kind of contexts and
+>>> allocation is not guaranteed.
+>>>
+>>> If printk() ends up taking kmemleak_lock through the slab allocator, I
+>>> wonder whether we have bigger problems. The lock order is always
+>>> kmemleak_lock -> object->lock but if printk() triggers a callback into
+>>> kmemleak, we can also get object->lock -> kmemleak_lock ordering, so
+>>> another potential deadlock.
+>> object->lock is per object whereas kmemleak_lock is global. When taking
+>> object->lock and doing a data dump leading to a call that takes the
+>> kmemlock, it is highly unlikely the it will need to take that particular
+>> object->lock again. I do agree that lockdep may still warn about it if that
+>> happens as all the object->lock's are likely to be treated to be in the same
+>> class.
+> Yeah, it's unlikely. I think it can only happen if there's a bug in
+> kmemleak (or slab) and the insertion fails because of the same object we
+> try to dump. But I suspect lockdep will complain either way.
 >
->         The text beginning with "-1," is a separate line, and something
-> messed up the tabs.  Also, this should be rewritten as
+>> I should probably clarify in the change log that the lockdep splat is
+>> actually,
+>>
+>> [ 3991.452558] Chain exists of: [ 3991.452559] console_owner -> &port->lock
+>> --> kmemleak_lock
+>>
+>> So if kmemleak calls printk() acquiring either console_owner or port->lock.
+>> It may cause deadlock.
+> Could you please share the whole lockdep warning? IIUC, it's not the
+> printk() code allocating memory but somewhere down the line in the tty
+> layer.
+Yes, I will do that in the next version.
 >
->                 if (!strlen(newval->string) ||
->                     !in4_pton(newval->string + 1, -1, (u8 *)&target, -1, =
-NULL)) {
+> Anyway, I had a look again at the kmemleak locking (I've been meaning to
+> simplify it for some time, drop the object->lock altogether). The only
+> time we nest object->lock within kmemleak_lock is during scan_block().
+> If we are unlucky to get some error on another CPU and dump that exact
+> object with printk(), it could lead to deadlock.
 >
->         to avoid a long line.
+> There's the dump_str_object_info() case as well triggered by a sysfs
+> write but luckily this takes the scan_mutex (same as during
+> scan_block()), so it solves the nesting problem.
 >
+> I think in those error cases we can even ignore the object->lock when
+> dumping the info. Yeah, it can race, maybe not showing exactly the
+> precise data in some rare cases, but in those OOM scenarios it's
+> probably the least of our problem.
 
-Yes you are right, I should have used the checkpatch script before
-submitting the patch. Sorry for the inconvenience.
+I was thinking about not taking the object->lock too. You are right that 
+under OOM, a little bit of racing doesn't really matter. Will do that in 
+the next version.
 
->         -J
->
-> >             netdev_err(bond->dev, "invalid ARP target %pI4 specified\n"=
-,
-> >                    &target);
-> >             return ret;
-> >
->
->
-> ---
->         -Jay Vosburgh, jay.vosburgh@canonical.com
+Cheers,
+Longman
 
-I modified the patch and it is listed below.
-
-Reported-by: Yue Sun <samsun1006219@gmail.com>
-Signed-off-by: Yue Sun <samsun1006219@gmail.com>
-diff --git a/drivers/net/bonding/bond_options.c
-b/drivers/net/bonding/bond_options.c
-index f3f27f0bd2a6..7f765b42fad4 100644
---- a/drivers/net/bonding/bond_options.c
-+++ b/drivers/net/bonding/bond_options.c
-@@ -1198,7 +1198,8 @@ static int bond_option_arp_ip_targets_set(struct
-bonding *bond,
-     __be32 target;
-
-     if (newval->string) {
--        if (!in4_pton(newval->string+1, -1, (u8 *)&target, -1, NULL)) {
-+        if (!strlen(newval->string) ||
-+            !in4_pton(newval->string+1, -1, (u8 *)&target, -1, NULL)) {
-             netdev_err(bond->dev, "invalid ARP target %pI4 specified\n",
-                    &target);
-             return ret;
-
-Best Regards,
-Yue
 
