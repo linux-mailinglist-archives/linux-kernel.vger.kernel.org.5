@@ -1,120 +1,192 @@
-Return-Path: <linux-kernel+bounces-92527-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92528-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78D4B8721A8
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:38:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 293628721AF
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:39:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB8D41C21647
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:38:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B68E52894DB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:39:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2B91128381;
-	Tue,  5 Mar 2024 14:37:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B13A126F05;
+	Tue,  5 Mar 2024 14:37:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="df4Hrjwu"
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ob0xAPCX"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EAA086AC6;
-	Tue,  5 Mar 2024 14:37:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C020786AF8;
+	Tue,  5 Mar 2024 14:37:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709649429; cv=none; b=HnIcsEhbexqNQu5ork5povV8IViExDLrHLTIoIPjzcEnGYxr0RUwX3X5rwEzLxyT/agnMEq50rUkR7HmMAnrWpnxDlQusMs1L8q+rk4J2gz0NC+1KqR1FjaX3VdcmljwNG5rSYU4rC+7wRQu4ojOvM5iC+08O9POXyjawcCb7QU=
+	t=1709649441; cv=none; b=PMHx0I2P5Oure0BR8R3kxii82eokhbIzQf+1ZLDcyCtOv4aV6V+X1wsrZo9WQGG+3gAy16jKJFwT7uSL8l10bCUl7Lwf8CCvR/5yjwXh9Lesluvmvlfy5HnoMUTRvvGcKQOf38ShL1u6ixRBs/gE05EJef/uCaZlNNVJxIBHYsU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709649429; c=relaxed/simple;
-	bh=dmp5KFcigV9N/0wkF+seHjqncGB1BmNzUlnwbTpFD8w=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=L2aMiTxnr153MrKuSQFst8jpPsk3V5KEFqqreg89WQdY1y4sCdzdQe3Dil9f9EA9Xb6dUAUo3kghWHN1762X+rW1yUy0SJU4zFsVJTg6+VXCHg6gC2OdPiAe/YuTBUwMt/zWIN0ThBBOS720VPrPAqsZqWJ7V5EZ/lKLz8nstCU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=df4Hrjwu; arc=none smtp.client-ip=217.70.183.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 5299EC0008;
-	Tue,  5 Mar 2024 14:37:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709649425;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=u6o1HAKXtBl5rVLvoNigCvVZ6wM33rLm44ZB/B7ufNg=;
-	b=df4HrjwuvptUVVpTjuESCaN83CMpEgi6TZgqQyQebF+TtMYicP6CvNanjzZhb+NMevKMaA
-	I/voGdKrmqBZa9J/ifD3qF8CkCDbjPBK+KpEEBReS/mGxPt6GCp5HTz3p6/fjKxx1lw9qs
-	uhOG++siVgIx/L/dSVXOAbusfzRwGzJn5QJj+9plfFdK49x7Dq4bJX+yeycd0YkOxmWtAZ
-	wlg1K66c5OxEbOHkqBxUe9V79yH4aYlzOzu1hIhTMtUY5JPTNReCkIVZMhL92fQd/caxhg
-	fJRu2JLjcDMDtyWG5e19/F8p31h8x2AUW+pQxYG/nlFo4Qxnk8skiOKK8821yA==
-From: Luca Ceresoli <luca.ceresoli@bootlin.com>
-Date: Tue, 05 Mar 2024 15:36:34 +0100
-Subject: [PATCH v4 7/7] arm64: dts: rockchip: add the internal audio codec
+	s=arc-20240116; t=1709649441; c=relaxed/simple;
+	bh=PFDRnUb1JFhpVTNgo/H8v1Eg/rAvjUdBBtspdiP1xLo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SuPzNUfaTNC6d6+gcqvKEypjeuB/SQTUkK/bqSluD+jC9rkMaMlSJcjDl02b7GQCjVRV5VGSZ2rW6VfIfB5dXe46b4xkBSkfQYE9FCW2ZSi+j6F6d4djXsDT/YYEq/4L5CokqWoQ5zUNLixVnAtgUpLzzeaWIosUSP2BiKFG51M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ob0xAPCX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 257D0C433F1;
+	Tue,  5 Mar 2024 14:37:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709649441;
+	bh=PFDRnUb1JFhpVTNgo/H8v1Eg/rAvjUdBBtspdiP1xLo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Ob0xAPCXLnUUvG6vKIvGCdR4QIkvh+6lVlInUZZELMJzX4TugqXHs37YyBlGLqW5u
+	 Fk83edGu2/KijwfNBfro6CowJf5oGyManQdZK28oysOXKanTgHEiEmX401SNeWBGhr
+	 pDemzy0oMPFA5+vvoY98BpTvXvGnGAGjQBbxGojMdHQ9c+q++Bm9WZLnLBAvAX0UW6
+	 Vv2HBfeO2R83LicOAvCsR5BFcA3ZyZR5VqrvHISwVMgS3v+14iixMzeET7L2ua1UdP
+	 9FDISNiQfWepv9aZz4Tjiqtw6qSQg4PH0A820UB2TF1pCD+MnEaTeE7lG/YcD1mLfE
+	 JIwZLdlxlUMhw==
+Date: Tue, 5 Mar 2024 08:37:19 -0600
+From: Rob Herring <robh@kernel.org>
+To: Frank Li <Frank.li@nxp.com>
+Cc: conor@kernel.org, bhelgaas@google.com, conor+dt@kernel.org,
+	devicetree@vger.kernel.org, helgaas@kernel.org, imx@lists.linux.dev,
+	krzysztof.kozlowski+dt@linaro.org, kw@linux.com,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	lpieralisi@kernel.org
+Subject: Re: [PATCH v6 3/3] dt-bindings: pci: layerscape-pci-ep: Add
+ snps,dw-pcie-ep.yaml reference
+Message-ID: <20240305143719.GA3310214-robh@kernel.org>
+References: <20240301162741.765524-1-Frank.Li@nxp.com>
+ <20240301162741.765524-4-Frank.Li@nxp.com>
+ <20240304182049.GA851904-robh@kernel.org>
+ <ZeYcOUAb7NWjTh9m@lizhi-Precision-Tower-5810>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240305-rk3308-audio-codec-v4-7-312acdbe628f@bootlin.com>
-References: <20240305-rk3308-audio-codec-v4-0-312acdbe628f@bootlin.com>
-In-Reply-To: <20240305-rk3308-audio-codec-v4-0-312acdbe628f@bootlin.com>
-To: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>, 
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
- Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- linux-rockchip@lists.infradead.org, linux-sound@vger.kernel.org, 
- alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, 
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
- Luca Ceresoli <luca.ceresoli@bootlin.com>
-X-Mailer: b4 0.13.0
-X-GND-Sasl: luca.ceresoli@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZeYcOUAb7NWjTh9m@lizhi-Precision-Tower-5810>
 
-The RK3308 has a built-in audio codec that connects internally to i2s_8ch_2
-or i2s_8ch_3.
+On Mon, Mar 04, 2024 at 02:08:41PM -0500, Frank Li wrote:
+> On Mon, Mar 04, 2024 at 12:20:49PM -0600, Rob Herring wrote:
+> > On Fri, Mar 01, 2024 at 11:27:41AM -0500, Frank Li wrote:
+> > > Add snps,dw-pcie-ep.yaml.
+> > > 
+> > > Remove context that exist in snps,dw-pcie-ep.yaml.
+> > > 
+> > > Add an example for pcie-ep.
+> > > 
+> > > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> > > ---
+> > >  .../bindings/pci/fsl,layerscape-pcie-ep.yaml  | 54 ++++++++++---------
+> > >  1 file changed, 29 insertions(+), 25 deletions(-)
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml b/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml
+> > > index cf517e4e46a33..07965683beece 100644
+> > > --- a/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml
+> > > +++ b/Documentation/devicetree/bindings/pci/fsl,layerscape-pcie-ep.yaml
+> > > @@ -10,8 +10,7 @@ maintainers:
+> > >    - Frank Li <Frank.Li@nxp.com>
+> > >  
+> > >  description:
+> > > -  This PCIe RC controller is based on the Synopsys DesignWare PCIe IP
+> > > -  and thus inherits all the common properties defined in snps,dw-pcie.yaml.
+> > > +  This PCIe RC controller is based on the Synopsys DesignWare PCIe IP.
+> > >  
+> > >    This controller derives its clocks from the Reset Configuration Word (RCW)
+> > >    which is used to describe the PLL settings at the time of chip-reset.
+> > > @@ -35,31 +34,18 @@ properties:
+> > >        - const: fsl,ls-pcie-ep
+> > >  
+> > >    reg:
+> > > -    description: base addresses and lengths of the PCIe controller register blocks.
+> > > +    maxItems: 2
+> > > +
+> > > +  reg-names:
+> > > +    maxItems: 2
+> > >  
+> > >    interrupts:
+> > > -    description: A list of interrupt outputs of the controller. Must contain an
+> > > -      entry for each entry in the interrupt-names property.
+> > > +    minItems: 1
+> > > +    maxItems: 3
+> > >  
+> > >    interrupt-names:
+> > >      minItems: 1
+> > >      maxItems: 3
+> > > -    description: It could include the following entries.
+> > > -    items:
+> > > -      oneOf:
+> > > -        - description:
+> > > -            Used for interrupt line which reports AER events when
+> > > -            non MSI/MSI-X/INTx mode is used.
+> > > -          const: aer
+> > > -        - description:
+> > > -            Used for interrupt line which reports PME events when
+> > > -            non MSI/MSI-X/INTx mode is used.
+> > > -          const: pme
+> > > -        - description:
+> > > -            Used for SoCs(like ls2080a, lx2160a, ls2080a, ls2088a, ls1088a)
+> > > -            which has a single interrupt line for miscellaneous controller
+> > > -            events(could include AER and PME events).
+> > > -          const: intr
+> > >  
+> > >    fsl,pcie-scfg:
+> > >      $ref: /schemas/types.yaml#/definitions/phandle
+> > > @@ -68,10 +54,7 @@ properties:
+> > >        The second entry is the physical PCIe controller index starting from '0'.
+> > >        This is used to get SCFG PEXN registers
+> > >  
+> > > -  dma-coherent:
+> > > -    description: Indicates that the hardware IP block can ensure the coherency
+> > > -      of the data transferred from/to the IP block. This can avoid the software
+> > > -      cache flush/invalid actions, and improve the performance significantly
+> > > +  dma-coherent: true
+> > >  
+> > >    big-endian:
+> > >      $ref: /schemas/types.yaml#/definitions/flag
+> > > @@ -85,3 +68,24 @@ required:
+> > >    - reg
+> > >    - interrupt-names
+> > >  
+> > > +allOf:
+> > > +  - $ref: /schemas/pci/snps,dw-pcie-ep.yaml#
+> > > +
+> > > +examples:
+> > > +  - |
+> > > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> > > +
+> > > +    soc {
+> > > +      #address-cells = <2>;
+> > > +      #size-cells = <2>;
+> > > +
+> > > +      pcie-ep@3400000 {
+> > > +        compatible = "fsl,ls1028a-pcie-ep", "fsl,ls-pcie-ep";
+> > > +        reg = <0x00 0x03400000 0x0 0x00100000
+> > > +              0x80 0x00000000 0x8 0x00000000>;
+> > > +        reg-names = "dbi", "addr_space";
+> > > +        interrupts = <GIC_SPI 108 IRQ_TYPE_LEVEL_HIGH>; /* PME interrupt */
+> > 
+> > PME or...
+> > 
+> > > +        interrupt-names = "app";
+> > 
+> > app? You seem to just be changing the names to make the example happy. 
+> > What do the dts files have? You need to make those pass.
+> 
+> It's on my plan.
+> 
+> First need change 'regs' to 'dbi'. 
+> 
+> https://lore.kernel.org/linux-pci/20240229194559.709182-1-Frank.Li@nxp.com/
+> 
+> After that, I can update all dts.
 
-Signed-off-by: Luca Ceresoli <luca.ceresoli@bootlin.com>
+No! 
 
----
+I'm saying you shouldn't be changing the dts files. That's an ABI 
+which you are likely breaking. You should adjust the binding so the dts 
+files pass. The exception is if you know the change is safe and not 
+going to break the ABI or the dts is just been wrong all along (e.g. 
+missing a compatible the OS doesn't rely on).
 
-Changed in v4: nothing
-Changed in v3: nothing
-
-Changed in v2:
- - use generic node name
----
- arch/arm64/boot/dts/rockchip/rk3308.dtsi | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3308.dtsi b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-index 662c55fe9b77..962ea893999b 100644
---- a/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-@@ -803,6 +803,20 @@ cru: clock-controller@ff500000 {
- 		assigned-clock-rates = <32768>;
- 	};
- 
-+	codec: codec@ff560000 {
-+		compatible = "rockchip,rk3308-codec";
-+		reg = <0x0 0xff560000 0x0 0x10000>;
-+		rockchip,grf = <&grf>;
-+		clock-names = "mclk_tx", "mclk_rx", "hclk";
-+		clocks = <&cru SCLK_I2S2_8CH_TX_OUT>,
-+			 <&cru SCLK_I2S2_8CH_RX_OUT>,
-+			 <&cru PCLK_ACODEC>;
-+		reset-names = "codec-reset";
-+		resets = <&cru SRST_ACODEC_P>;
-+		#sound-dai-cells = <0>;
-+		status = "disabled";
-+	};
-+
- 	gic: interrupt-controller@ff580000 {
- 		compatible = "arm,gic-400";
- 		reg = <0x0 0xff581000 0x0 0x1000>,
-
--- 
-2.34.1
-
+Rob
 
