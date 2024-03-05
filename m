@@ -1,128 +1,172 @@
-Return-Path: <linux-kernel+bounces-92118-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92119-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DBF1871B59
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:34:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07298871B5A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:34:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7FF8C1C2205C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:34:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96FFE1F22758
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:34:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD7315B5DB;
-	Tue,  5 Mar 2024 10:19:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FF175BAE7;
+	Tue,  5 Mar 2024 10:21:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="Z/JaDtsj"
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="LORY2kHf"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1602254907
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 10:19:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCCBB5490F
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 10:20:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709633990; cv=none; b=Z/WVAij3Ddz+rPIDrqC1e5NmovEVhitLLM8i8NBTPWXICFbe3u1z2fMMOo4QY/tG/+P3qD+al6LCWgpMip2tlvgJTpD3l/QUlmv5vRQhBZxv3qoHc6yN+X32tjhrKp2iByZ4+bXcuVuWLmP5pus7u8l50uXTKaZTUWOnLqxYjZg=
+	t=1709634060; cv=none; b=P7PbbwFSKSOTH54Jqs+BOInohWBRUexX8e5Mhi5rXD+3WVov51M+bReYRUXQRxOiZeexhLroZMgu2EK/qe6d+3LbBmirenMkAaWgZYAMMua6dHzkRJtMb7Kwa7EKYRBNwXVdcaLcHcZQT9+MJ/3V7v8HArmgQo6B1yfBJOr7jHU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709633990; c=relaxed/simple;
-	bh=WPYjAo35ueTIaoUFIBDZ9jCMG4Vux8IKHZr4s0+HkKo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tvbjUqVGNiYYHcKIjCHsEbUOYYUGu1ZJn+suRO1ZsmvNIAQd4moBgAX5KcKlFL3NDvOy+7QJifm/EjTfokLBaMszcbgtvv0C9oRu3Zvceffmg2MUaUi+kQp2T0FJ23ymZ4yfvAIRdWi4O/HbBNcgYOu03/iEgprwWRUS7QwcPGA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=Z/JaDtsj; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33e2268ed96so3427489f8f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 02:19:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1709633986; x=1710238786; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=H6OcsG3MUfMZHlFyq7Y4+mYfeDO+WAVX0fDPYMZUXpU=;
-        b=Z/JaDtsjgXeS8rE48iuKi92W+nmsXYOlLKsk2clwBw78pHpLaIVw+5E7uMDHt6AuOh
-         ePCusj2ys5+XYGg9JBtn6pjSgpoy3tuqAeucZywRcqcJghbeYI4tkIBHaysEB8TLmw3G
-         sJHsxN5sAhRYX1Fe/pEyKoOa6dkBoLSSm+dj54KSxHo7R+vuOzRktpFembYkanVWtIyR
-         st9DsI5GwCXu6xQ1d7VFwO+QdGBTPdmKsqIrk3JZABpqPuSXHBR38JcFIwH/DD8Q+7yE
-         3vI5FJaMTGtZxHJ3OKllIl5/BamM5zT9ramotSbNRqRnO/cQvLM+cg5Ggn6ETBqBw23b
-         fkDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709633986; x=1710238786;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H6OcsG3MUfMZHlFyq7Y4+mYfeDO+WAVX0fDPYMZUXpU=;
-        b=kfBjcyH+I2SOiS6yUDdevnLUjUHlRprUdtGSRNVhsjtRkWv7asLsSSvBcEKWi/N9c+
-         YFcrcWoEMmbqYXsKaParZIzrBqBpZ2RhKUWi3N4iGZI5WnoscZM93UPfBGpWsdQfjTgk
-         AoE+EjM923CdqqSiC8v4KYwDmNbANRXRY5CqAjhvWZZCoRftNE0EFmuRDFfCDWI/Y3C6
-         mD06MUibq44W54AGarSlvCh5/muj+g1cnIC2DvfZCv4Am+jmRzrEYZa2De3FMMDti8Am
-         xBtMNo/2RyYICNPjiAi1ZfkRw6YWscNn8cOcAiETR4cCMPxDUcPIbej70r3Ii4JtRjWX
-         xIGw==
-X-Forwarded-Encrypted: i=1; AJvYcCVeff9P30tU6f55dh35T5KFzeLe9gkZvqVdxdgIqd7fkGJjjbRP13EeWzK4LxbyBWKmZlH6pcNexQHouG/xKdcGddXqIEKXIdtZPPvE
-X-Gm-Message-State: AOJu0YyiisJzWHdVxLBnxPQnJR9ClIs4b8107z3Z6wF8oLZUx24kSxqN
-	d/dApVubSjWkQIJYw89RJQbRtcKeWTr76ex421toP6cuJgfsXldeFW5hCmT7IZw=
-X-Google-Smtp-Source: AGHT+IH/77zfXrO7ZIqGIgGa0F4+3NcxV6NtMMOieHxgw97x0APZizQxin7XgKQgimZtxUGjPwKeLw==
-X-Received: by 2002:a05:6000:1cd2:b0:33d:ab46:22d1 with SMTP id bf18-20020a0560001cd200b0033dab4622d1mr7739526wrb.29.1709633986091;
-        Tue, 05 Mar 2024 02:19:46 -0800 (PST)
-Received: from airbuntu (92.40.185.97.threembb.co.uk. [92.40.185.97])
-        by smtp.gmail.com with ESMTPSA id i10-20020adff30a000000b0033b6e26f0f9sm14577292wro.42.2024.03.05.02.19.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 02:19:45 -0800 (PST)
-Date: Tue, 5 Mar 2024 10:19:41 +0000
-From: Qais Yousef <qyousef@layalina.io>
-To: Shrikanth Hegde <sshegde@linux.ibm.com>
-Cc: mingo@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org,
-	yu.c.chen@intel.com, dietmar.eggemann@arm.com,
-	linux-kernel@vger.kernel.org, nysal@linux.ibm.com,
-	aboorvad@linux.ibm.com, srikar@linux.ibm.com, vschneid@redhat.com,
-	pierre.gondois@arm.com, morten.rasmussen@arm.com
-Subject: Re: [PATCH v4 2/2] sched/fair: Use helper function to access
- rd->overutilized
-Message-ID: <20240305101941.c5foq7v43xwohrzp@airbuntu>
-References: <20240301151725.874604-1-sshegde@linux.ibm.com>
- <20240301151725.874604-3-sshegde@linux.ibm.com>
- <20240303185441.km7c4u7yui3b5nl2@airbuntu>
- <5e5c0a81-3c60-437c-b164-e1245222d964@linux.ibm.com>
+	s=arc-20240116; t=1709634060; c=relaxed/simple;
+	bh=BPEtYfyFZ3zIsSSumymVBNXkt5kDgI1A4gqsNs7DMws=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JCHNuvvNisdvjlNfXzi8uMiZbOx8/XFHIiHLjBxZ+jqcTD+nltTFumIrGB3g10r03dh2ErC/FdRoJmKM7q74uPpRQG/kw5PmP0Vwj/Pwle8HXhcEq+Av0D5WeXAcqs+ns8KZP2CnpZ0gY5ZKb9U8DKyQOmuHDZK5QeYAEXRQ/sg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=LORY2kHf; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709634057;
+	bh=BPEtYfyFZ3zIsSSumymVBNXkt5kDgI1A4gqsNs7DMws=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=LORY2kHfPljuF+0IEJo7vcxZLDuh04Xff+jT8HMdMATwYiBtkRza0yRd8FyyGZiFM
+	 p5gvq5ogsQXlg/lmCBt5CzgSn0fZf4xVOeDoPW0D2RLDvEMV0ZCdgr+4JK21oB3q9p
+	 Z9GXN1NnPDKMHAf+eYAvGjZebFZxH+GHa++fOEQbAli5Ru/kw3j4sulrvcW9Urhziu
+	 m+NWsTW5F6DZwTMgAXopF8zxMiOX7D42fBMAV0E+rtRNfNNMPZHMWuZ6/jYK/fB/8z
+	 YfLeRF4nFcTxgDFOqeUt8I2HDFyiXwxxfglxCt7P82RDEaKMpriqI3VxOhie906WX6
+	 3ZZ/G8lWD827w==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 70FC23781FEF;
+	Tue,  5 Mar 2024 10:20:56 +0000 (UTC)
+Message-ID: <e9cc42d7-db7f-4bd8-978e-72b97cfa8d41@collabora.com>
+Date: Tue, 5 Mar 2024 11:20:55 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <5e5c0a81-3c60-437c-b164-e1245222d964@linux.ibm.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5/5] mailbox: mtk-cmdq: Add support runtime get and set
+ GCE event
+Content-Language: en-US
+To: =?UTF-8?B?SmFzb24tSkggTGluICjmnpfnnb/npaUp?= <Jason-JH.Lin@mediatek.com>,
+ "jassisinghbrar@gmail.com" <jassisinghbrar@gmail.com>,
+ "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+ "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>
+Cc: "linux-mediatek@lists.infradead.org"
+ <linux-mediatek@lists.infradead.org>,
+ =?UTF-8?B?U2luZ28gQ2hhbmcgKOW8teiIiOWciyk=?= <Singo.Chang@mediatek.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ =?UTF-8?B?SmFzb24tY2ggQ2hlbiAo6Zmz5bu66LGqKQ==?=
+ <Jason-ch.Chen@mediatek.com>, =?UTF-8?B?U2hhd24gU3VuZyAo5a6L5a2d6KyZKQ==?=
+ <Shawn.Sung@mediatek.com>, =?UTF-8?B?TmFuY3kgTGluICjmnpfmrKPonqIp?=
+ <Nancy.Lin@mediatek.com>,
+ Project_Global_Chrome_Upstream_Group
+ <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+References: <20240301111126.22035-1-jason-jh.lin@mediatek.com>
+ <20240301111126.22035-6-jason-jh.lin@mediatek.com>
+ <298c13ff-25a7-4d9c-ab51-4c22c07c245d@collabora.com>
+ <35b6915dd195abba009dab64dc6002362292351c.camel@mediatek.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <35b6915dd195abba009dab64dc6002362292351c.camel@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 03/04/24 13:58, Shrikanth Hegde wrote:
+Il 05/03/24 04:09, Jason-JH Lin (林睿祥) ha scritto:
+> Hi Angelo,
 > 
+> Thanks for the reviews.
 > 
-> On 3/4/24 12:24 AM, Qais Yousef wrote:
-> > On 03/01/24 20:47, Shrikanth Hegde wrote:
-> >> Overutilized field is accessed directly in multiple places.
-> >> So it could use a helper function. That way one might be more
-> >> informed that it needs to be used only in case of EAS.
-> >>
-> >> No change in functionality intended.
-> >>
-> >> Signed-off-by: Shrikanth Hegde <sshegde@linux.ibm.com>
-> > 
-> > Can we do the same for rd->overload too? A set_rd_overload_status() would be
-> > a nice addition too. Anyway.
+> On Mon, 2024-03-04 at 11:06 +0100, AngeloGioacchino Del Regno wrote:
+>> Il 01/03/24 12:11, Jason-JH.Lin ha scritto:
+>>> ISP drivers need to get and set GCE event in their runtime contorl
+>>> flow.
+>>> So add these functions to support get and set GCE by CPU.
+>>>
+>>> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
+>>> Change-Id: I494c34ebc5ec26c82213f2bc03d2033d60652523
+>>
+>> Change-Id makes no sense upstream. Please drop.
 > 
+> OK, I'll drop it.
 > 
-> We have some more experiments going around overload. 
-> For example, currently it is writing sg_status & SG_OVERLOAD without checking if it has 
-> changed first. On large systems that are not overloaded, that may help by reducing the 
-> bus traffic. 
+>>
+>>> ---
+>>>    drivers/mailbox/mtk-cmdq-mailbox.c       | 37
+>>> ++++++++++++++++++++++++
+>>>    include/linux/mailbox/mtk-cmdq-mailbox.h |  2 ++
+>>>    2 files changed, 39 insertions(+)
+>>>
+>>> diff --git a/drivers/mailbox/mtk-cmdq-mailbox.c
+>>> b/drivers/mailbox/mtk-cmdq-mailbox.c
+>>> index ead2200f39ba..d7c08249c898 100644
+>>> --- a/drivers/mailbox/mtk-cmdq-mailbox.c
+>>> +++ b/drivers/mailbox/mtk-cmdq-mailbox.c
+>>> @@ -25,7 +25,11 @@
+>>>    #define CMDQ_GCE_NUM_MAX		(2)
+>>>    
+>>>    #define CMDQ_CURR_IRQ_STATUS		0x10
+>>> +#define CMDQ_SYNC_TOKEN_ID		0x60
+>>> +#define CMDQ_SYNC_TOKEN_VALUE		0x64
+>>> +#define CMDQ_TOKEN_ID_MASK			GENMASK(9, 0)
+>>>    #define CMDQ_SYNC_TOKEN_UPDATE		0x68
+>>> +#define CMDQ_TOKEN_UPDATE_VALUE			BIT(16)
+>>>    #define CMDQ_THR_SLOT_CYCLES		0x30
+>>>    #define CMDQ_THR_BASE			0x100
+>>>    #define CMDQ_THR_SIZE			0x80
+>>> @@ -83,6 +87,7 @@ struct cmdq {
+>>>    	struct cmdq_thread	*thread;
+>>>    	struct clk_bulk_data	clocks[CMDQ_GCE_NUM_MAX];
+>>>    	bool			suspended;
+>>> +	spinlock_t		event_lock; /* lock for gce event */
+>>>    };
+>>>    
+>>>    struct gce_plat {
+>>> @@ -113,6 +118,38 @@ u8 cmdq_get_shift_pa(struct mbox_chan *chan)
+>>>    }
+>>>    EXPORT_SYMBOL(cmdq_get_shift_pa);
+>>>    
+>>> +void cmdq_set_event(void *chan, u16 event_id)
+>>> +{
+>>> +	struct cmdq *cmdq = container_of(((struct mbox_chan *)chan)-
+>>>> mbox,
+>>> +		typeof(*cmdq), mbox);
+>>
+>> struct mbox_chan *mbc = chan;
+>> struct cmdq *cmdq = container_of(mbc->mbox, ... etc); (and this fits
+>> in one line)
+>>
+> OK, I'll change it.
 > 
-> I will pick up this after we have some more data on the above. 
+>>> +	unsigned long flags;
+>>> +
+>>> +	spin_lock_irqsave(&cmdq->event_lock, flags);
+>>
+>> Why do you need irqsave/irqrestore? I think I know, but please
+>> explain.
+>>
+> Because ISP driver may call cmdq_get_event() first than use
+> cmdq_set_event() to update the event status in one
+> mtk_imgsys_setevent() function frequently.
+> 
+> And mtk_imgsys_setevent() will be called in SW multi-thread after cmdq
+> callback from cmdq_irq_handler, so we use the spin_lock_irqsave to
+> avoid the race condition.
 
-*thumps up*
+I was imagining something like that, yes - thank you for explaining.
 
-> 
-> > 
-> > Reviewed-by: Qais Yousef <qyousef@layalina.io>
-> > 
-> 
-> Thank you.
-> 
-> > 
-> > Thanks!
+Cheers,
+Angelo
+
 
