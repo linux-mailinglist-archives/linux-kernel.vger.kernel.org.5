@@ -1,133 +1,95 @@
-Return-Path: <linux-kernel+bounces-91436-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 382A7871178
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 01:13:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B71E7871175
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 01:12:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A0601C21778
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 00:13:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E97871C21680
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 00:11:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BCCA17FE;
-	Tue,  5 Mar 2024 00:13:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="a+Q6XbOS"
-Received: from out203-205-251-82.mail.qq.com (out203-205-251-82.mail.qq.com [203.205.251.82])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 563157FD;
+	Tue,  5 Mar 2024 00:11:55 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1757619E;
-	Tue,  5 Mar 2024 00:13:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.82
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF8BA1C01;
+	Tue,  5 Mar 2024 00:11:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709597597; cv=none; b=bNx2zdGj4vFFZqyoHpo0kDpfwILWJqVq6gBuL9MVMOf/lIj74dnv16WENZ7UHUopec9PSEsMxsHSGPIqqF/uEb2iKINmhHVX9igD0Wrzlfn9LxDi60Rrr3P94RhHLHfH7GEqBjA4bSDKgky/FggHE33Ga+FwSJPqupyhStSx6lA=
+	t=1709597514; cv=none; b=Dur7ch3z+nnrj21SGV32ghSQoxxZ0xjBu2YKm7OgI2cYVrL96IfK6W+Q/6hUOYmgTtqZ2bfVWTsyR7nGajJ7anEQBV+/ECcNzxgtp0MvQ9O+kfhOOPE/2+mWTKuG3jWczUA8OiooA1uJtA272yAUG0vR8Fs/o754JoHnEBqjf+0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709597597; c=relaxed/simple;
-	bh=dzFbbNoWWlnnW+Er1rHT6ITgFsCk7pt0FjAtfIvHjKA=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=WihBAHJbau/F7rJkFxzo4AENXs5/S0oekVm4dnyYzYRBJh2cQJKoBCyA1Y3Frq4tHJL4nVSo+7NHV7E8QArBCoj5q2yGH0FG+JK+7HWhvMzhqbdQGmFnS5kqAhmDbhwY+mGu3/ciZy/psip/DO7Mxs2jqDeDqNSM5EUJn9PpZK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=a+Q6XbOS; arc=none smtp.client-ip=203.205.251.82
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1709597592; bh=aS+G9OyqYa6igSB8+oaADpXxrUcRmnnV1ukdP5ZUw40=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=a+Q6XbOSmukfqsk5BhADoTL6N9O8ZPFHokSfvDKx1tRNldLLlBIFRmFUW+19INz5r
-	 LP1R+kOjE+W61qukbVNbP7v/3Q/cU7kpUCMuK4g2M3o+u4QPQUBF7hjSbGEU1wCPqJ
-	 y9Vx7pgVcCTkaRoXSmkOwpUyNcunl1gknmmqP/hc=
-Received: from pek-lxu-l1.wrs.com ([111.198.228.140])
-	by newxmesmtplogicsvrszc5-2.qq.com (NewEsmtp) with SMTP
-	id 347B76D1; Tue, 05 Mar 2024 08:13:07 +0800
-X-QQ-mid: xmsmtpt1709597587t8nqmzqn2
-Message-ID: <tencent_AFA7C146CBD2DFC65989A8EEDAAED20CB106@qq.com>
-X-QQ-XMAILINFO: NkHKfw09D6j8tI04hma5l8nCJ6P9+hd+dsjtTNBrGR4+PCP31iM+3PBXe5KZJB
-	 b5SHuN7SjZ9XBHFjoTKhtibV/PchFFHBcufAtaogoWpdjD6SGquoyq0j4dxsr0zt0f6/hWuuhuSg
-	 3MWzUVnEDQ3yl8er60CCTabeSlslvrxEONvGDXt24hMsa4SqHBtDujp/W6ADOx68Xd8mbEanAb0l
-	 7qfLl/VOvuL4Dp+nzHpBch8EG0A5R+WcltBOPLlAAkK3StBpm5Mqy+Y9cqa5+YKCb3myTSDlSqR4
-	 /cOzBBVjiD6snAMAhPPHZztbgj1ndvpex+S5c0b6NVjNg/FPzANrhTchIcrQzngMAOnGkC66QSGb
-	 DSzPEvuxm2zBp1GBkQ23xnFyKt6q2T6GKMzFhvtiGy60R6UljIUbmYQ8DAQMSycPyoNjWg8sRaoy
-	 pF+RcFc0z4qWzRz0ahXoaT+axeFAzPVUPO6piYErIyVXs5Rq+jLPXjZgA34rT4x2wGAvBLIFrZ8b
-	 0IiC7srFP27ObuxjGV8d7wf71vTs34XuQ0163YQ48UPRUXPRRqLjT56VN9U0u78TYMup0/gMbQPo
-	 qNjJvmcEO+gEyhC6NmUt7Onx/nngnE4D7qRWguNrwtTQ4c92B7tdrq3/7VKqq7XjruYd5skp5KZr
-	 otompzJBI+7xxvMMDjvNzXI/ZVd1dCC7etP9SZTeJsRKe89pjDbpQCm2Q2wwaghse1QZ/zN/9xb2
-	 E5MKiZ0z8P4KJFBBmNDoULmHH1wf/Mhp4wQoDWTLjRF5OB1KomTyA3kwfdLoUBaeRV4w5vxrBfnT
-	 OQoq9XRWROTWBmguSG5kNJmXoopDGDDWm9qQQIMNg5IrqfA70WxUsNdFVrsGEMY0Da0pjuvQ8gQr
-	 Jt6Nc0ULbQJZwXTQTmT095ofHs+tsmMeYgqb+NUbbSV4tXgAM/eWsVtnw0y0ZlR//WY/R6InXcwW
-	 PhIFFYIupNRfIh5gNmhVPrxVeca01g06y7tJnHfdI=
-X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
-From: Edward Adam Davis <eadavis@qq.com>
-To: horms@kernel.org
-Cc: allison.henderson@oracle.com,
-	davem@davemloft.net,
-	eadavis@qq.com,
-	edumazet@google.com,
-	kuba@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	netdev@vger.kernel.org,
-	pabeni@redhat.com,
-	rds-devel@oss.oracle.com,
-	santosh.shilimkar@oracle.com,
-	syzbot+d4faee732755bba9838e@syzkaller.appspotmail.com,
-	syzkaller-bugs@googlegroups.com
-Subject: [PATCH V2] net/rds: fix WARNING in rds_conn_connect_if_down
-Date: Tue,  5 Mar 2024 08:13:08 +0800
-X-OQ-MSGID: <20240305001307.2240958-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240304170707.GJ403078@kernel.org>
-References: <20240304170707.GJ403078@kernel.org>
+	s=arc-20240116; t=1709597514; c=relaxed/simple;
+	bh=i7v3W3Y5vvzGtyiJyPI0LclovnO1BrI5PFScP7n9qrg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=ZJ/rIoO7di1ipJR4OeAcJt6EghridyFlHd+7a+MQ/JKji8XVyywDpfwRtTzIE8rUD7J2C1jw9w9PrCK+4KsdFp3b8z7dxhpvUo03hKjssWLkelD/zmDDPsJ3bS0kpEvUIV7M3wPHFrc+Ds63j3mwgCgMdIEkwvpm+7lKIf5b7gk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB2FAC433C7;
+	Tue,  5 Mar 2024 00:11:53 +0000 (UTC)
+Date: Mon, 4 Mar 2024 19:13:42 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Linus Torvalds
+ <torvalds@linux-foundation.org>, Sachin Sant <sachinp@linux.ibm.com>
+Subject: [PATCH] tracing: Limit trace_seq size to just 8K and not depend on
+ architecture PAGE_SIZE
+Message-ID: <20240304191342.56fb1087@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-If connection isn't established yet, get_mr() will fail, trigger connection after
-get_mr().
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Fixes: 584a8279a44a ("RDS: RDMA: return appropriate error on rdma map failures") 
-Reported-and-tested-by: syzbot+d4faee732755bba9838e@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+The trace_seq buffer is used to print out entire events. It's typically
+set to PAGE_SIZE * 2 as there's some events that can be quite large.
+
+As a side effect, writes to trace_marker is limited by both the size of the
+trace_seq buffer as well as the ring buffer's sub-buffer size (which is a
+power of PAGE_SIZE). By limiting the trace_seq size, it also limits the
+size of the largest string written to trace_marker.
+
+trace_seq does not need to be dependent on PAGE_SIZE like the ring buffer
+sub-buffers need to be. Hard code it to 8K which is PAGE_SIZE * 2 on most
+architectures. This will also limit the size of trace_marker on those
+architectures with greater than 4K PAGE_SIZE.
+
+Link: https://lore.kernel.org/all/20240302111244.3a1674be@gandalf.local.home/
+
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- net/rds/rdma.c | 3 +++
- net/rds/send.c | 6 +-----
- 2 files changed, 4 insertions(+), 5 deletions(-)
+ include/linux/trace_seq.h | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/net/rds/rdma.c b/net/rds/rdma.c
-index fba82d36593a..a4e3c5de998b 100644
---- a/net/rds/rdma.c
-+++ b/net/rds/rdma.c
-@@ -301,6 +301,9 @@ static int __rds_rdma_map(struct rds_sock *rs, struct rds_get_mr_args *args,
- 			kfree(sg);
- 		}
- 		ret = PTR_ERR(trans_private);
-+		/* Trigger connection so that its ready for the next retry */
-+		if (ret == -ENODEV)
-+			rds_conn_connect_if_down(cp->cp_conn);
- 		goto out;
- 	}
+diff --git a/include/linux/trace_seq.h b/include/linux/trace_seq.h
+index 9ec229dfddaa..1ef95c0287f0 100644
+--- a/include/linux/trace_seq.h
++++ b/include/linux/trace_seq.h
+@@ -9,9 +9,15 @@
+ /*
+  * Trace sequences are used to allow a function to call several other functions
+  * to create a string of data to use.
++ *
++ * Have the trace seq to be 8K which is typically PAGE_SIZE * 2 on
++ * most architectures. The TRACE_SEQ_BUFFER_SIZE (which is
++ * TRACE_SEQ_SIZE minus the other fields of trace_seq), is the
++ * max size the output of a trace event may be.
+  */
  
-diff --git a/net/rds/send.c b/net/rds/send.c
-index 5e57a1581dc6..fa1640628b2f 100644
---- a/net/rds/send.c
-+++ b/net/rds/send.c
-@@ -1313,12 +1313,8 @@ int rds_sendmsg(struct socket *sock, struct msghdr *msg, size_t payload_len)
+-#define TRACE_SEQ_BUFFER_SIZE	(PAGE_SIZE * 2 - \
++#define TRACE_SEQ_SIZE		8192
++#define TRACE_SEQ_BUFFER_SIZE	(TRACE_SEQ_SIZE - \
+ 	(sizeof(struct seq_buf) + sizeof(size_t) + sizeof(int)))
  
- 	/* Parse any control messages the user may have included. */
- 	ret = rds_cmsg_send(rs, rm, msg, &allocated_mr, &vct);
--	if (ret) {
--		/* Trigger connection so that its ready for the next retry */
--		if (ret ==  -EAGAIN)
--			rds_conn_connect_if_down(conn);
-+	if (ret)
- 		goto out;
--	}
- 
- 	if (rm->rdma.op_active && !conn->c_trans->xmit_rdma) {
- 		printk_ratelimited(KERN_NOTICE "rdma_op %p conn xmit_rdma %p\n",
+ struct trace_seq {
 -- 
 2.43.0
 
