@@ -1,135 +1,149 @@
-Return-Path: <linux-kernel+bounces-92616-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92617-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93AED8722EF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:38:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E39AF8722F4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:38:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 323A51F25047
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:38:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FFFA2862DF
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:38:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1BA9127B45;
-	Tue,  5 Mar 2024 15:38:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mHUaJC8j"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37D30127B54;
+	Tue,  5 Mar 2024 15:38:35 +0000 (UTC)
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50A5885944;
-	Tue,  5 Mar 2024 15:37:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DD7B1272B7;
+	Tue,  5 Mar 2024 15:38:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709653080; cv=none; b=SMGFvGB6O11vTqKQz77655xVgon9tJs2nydVZlcv9BNrG8Ol0s2z2DpqFDdFwqgY1uBvPEs/Jxj5xBBPC5on1+607s4QqrDODAGqxLx103aeEVCNj6IS5GYTkMLsUDn+0ZyJcxPI/sFPvcuMn023jZWCthTXD7umheovawVk1d0=
+	t=1709653114; cv=none; b=PBiVXoV3ooAzvIXipj11i9k7Cw9+fFzzqBr9UUGXxQDg9Ii6ccxKYTTUErNEgPX/L8hLe3u+f0BmJTScCP0FypeCOYuSGYECMaL6vlpLnyUvWhCfxcOilT8INl/hhby94sOd49Xfq5q9wZaVlXTJjX9B37gWEGgBi42URrLQ/qc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709653080; c=relaxed/simple;
-	bh=xwm84H4f4tjwcSxxtvgbASvINMVOSckg9bf0UJkq3EY=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=kSoTN9nF871z0xC9eqXZRNGusAxV1MKA23Ce8/3482/4DlxTIyM+gZjRIJ4XPxGbFOhSLcsHdqzYFLBeDRkP7EJ9XACUl88kFoAu9+r5+fHi6me85mO2JW+RVKMaBeNLL1pCL4M4rJahLCJNmrwFH1IYX2rQWeVj0VTGaKjk9Vk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mHUaJC8j; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709653078; x=1741189078;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version:content-id;
-  bh=xwm84H4f4tjwcSxxtvgbASvINMVOSckg9bf0UJkq3EY=;
-  b=mHUaJC8jd/X65cvPRoO4/q8f56v2rjc0LO9ho0usS0PtDTtK5PVzi0Vl
-   k/Ey6JABbhA3uBxmyZgFgypqY8Rt/UX5XuEHP9HxRIvcWilnhAQsHsO19
-   bNsbXKmB1CNurqrgH/VhiDRvhSem6avJbg0R5jgxZrN75V1S4aiyZzgCp
-   zdxx4qrUiiBlG2cT72zMEXZA8oPZsrGfCYJuVn51XjFEMXou/h79uvpNE
-   Oet4+fklPRw4VlZLQIb3W2had6AxXhQquV1hsr7b0kl5NtR26soeNfS+N
-   2cglipKrvTSDQgLYs5QoNh3IyrXVD3Hs2CBzOZBQmZ/duNGEdbXhZ3sXW
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="21670783"
-X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
-   d="scan'208";a="21670783"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 07:37:57 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
-   d="scan'208";a="40301723"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.51.37])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 07:37:54 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Tue, 5 Mar 2024 17:37:49 +0200 (EET)
-To: Bjorn Helgaas <bhelgaas@google.com>
-cc: linux-pci@vger.kernel.org, Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, 
-    Rob Herring <robh@kernel.org>, 
-    =?ISO-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>, 
-    Igor Mammedov <imammedo@redhat.com>, Lukas Wunner <lukas@wunner.de>, 
-    Mika Westerberg <mika.westerberg@linux.intel.com>, 
-    Andy Shevchenko <andriy.shevchenko@intel.com>, 
-    "Rafael J . Wysocki" <rafael@kernel.org>, 
-    LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/7] PCI: Solve two bridge window sizing issues
-In-Reply-To: <20231222122901.49538-1-ilpo.jarvinen@linux.intel.com>
-Message-ID: <cdda64e3-3454-406d-55a2-cf79f7650b45@linux.intel.com>
-References: <20231222122901.49538-1-ilpo.jarvinen@linux.intel.com>
+	s=arc-20240116; t=1709653114; c=relaxed/simple;
+	bh=D5pJEtWFcbrQJzHq8eXEwOZZKupXoLaKjU5YgHvZuN0=;
+	h=From:In-Reply-To:Content-Type:References:Date:Cc:To:MIME-Version:
+	 Message-ID:Subject; b=oZW1f8N6kgYdlKsMNbwBfBXAvHWbcE7qUEa99LhNYjwY/pAZ69dj/jjwFSyWUOcvsbEp08MqghuZqVy2KkXtmgOOWapJAHq4Ib1vDnEKm1u+XhTLRmpn4MIez5BL9cMfbsIn+MwQlBY7WxxFAHojOWEMsznvj+zK0egc2iCH+Pg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+Received: from harlem.collaboradmins.com (harlem.collaboradmins.com [IPv6:2a01:4f8:1c0c:5936::1])
+	by madrid.collaboradmins.com (Postfix) with ESMTP id 6863737813B5;
+	Tue,  5 Mar 2024 15:38:30 +0000 (UTC)
+From: "Adrian Ratiu" <adrian.ratiu@collabora.com>
+In-Reply-To: <202403050134.784D787337@keescook>
+Content-Type: text/plain; charset="utf-8"
+X-Forward: 127.0.0.1
+References: <20240301213442.198443-1-adrian.ratiu@collabora.com>
+ <20240304-zugute-abtragen-d499556390b3@brauner>
+ <202403040943.9545EBE5@keescook>
+ <20240305-attentat-robust-b0da8137b7df@brauner> <202403050134.784D787337@keescook>
+Date: Tue, 05 Mar 2024 15:38:30 +0000
+Cc: "Christian Brauner" <brauner@kernel.org>, linux-fsdevel@vger.kernel.org, kernel@collabora.com, linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, "Guenter Roeck" <groeck@chromium.org>, "Doug Anderson" <dianders@chromium.org>, "Jann Horn" <jannh@google.com>, "Andrew Morton" <akpm@linux-foundation.org>, "Randy Dunlap" <rdunlap@infradead.org>, "Mike Frysinger" <vapier@chromium.org>
+To: "Kees Cook" <keescook@chromium.org>, vapier@chromium.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="8323328-1729510199-1709652635=:1003"
-Content-ID: <cc693734-3506-af03-e013-e615672682bd@linux.intel.com>
+Message-ID: <44043-65e73c80-15-1c4f8760@112682428>
+Subject: =?utf-8?q?Re=3A?= [PATCH v2] =?utf-8?q?proc=3A?= allow restricting 
+ /proc/pid/mem writes
+User-Agent: SOGoMail 5.10.0
+Content-Transfer-Encoding: quoted-printable
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Tuesday, March 05, 2024 11:41 EET, Kees Cook <keescook@chromium.org>=
+ wrote:
 
---8323328-1729510199-1709652635=:1003
-Content-Type: text/plain; CHARSET=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Content-ID: <c95136c0-b742-0650-6c3d-b4247b7f2e47@linux.intel.com>
-
-On Fri, 22 Dec 2023, Ilpo J=E4rvinen wrote:
-
-> Hi all,
+> On Tue, Mar 05, 2024 at 09:59:47AM +0100, Christian Brauner wrote:
+> > > > Uhm, this will break the seccomp notifier, no? So you can't tur=
+n on
+> > > > SECURITY=5FPROC=5FMEM=5FRESTRICT=5FWRITE when you want to use t=
+he seccomp
+> > > > notifier to do system call interception and rewrite memory loca=
+tions of
+> > > > the calling task, no? Which is very much relied upon in various
+> > > > container managers and possibly other security tools.
+> > > >=20
+> > > > Which means that you can't turn this on in any of the regular d=
+istros.
+> > >=20
+> > > FWIW, it's a run-time toggle, but yes, let's make sure this works
+> > > correctly.
+> > >=20
+> > > > So you need to either account for the calling task being a secc=
+omp
+> > > > supervisor for the task whose memory it is trying to access or =
+you need
+> > > > to provide a migration path by adding an api that let's caller'=
+s perform
+> > > > these writes through the seccomp notifier.
+> > >=20
+> > > How do seccomp supervisors that use USER=5FNOTIF do those kinds o=
+f
+> > > memory writes currently? I thought they were actually using ptrac=
+e?
+> > > Everything I'm familiar with is just using SECCOMP=5FIOCTL=5FNOTI=
+F=5FADDFD,
+> > > and not doing fancy memory pokes.
+> >=20
+> > For example, incus has a seccomp supervisor such that each containe=
+r
+> > gets it's own goroutine that is responsible for handling system cal=
+l
+> > interception.
+> >=20
+> > If a container is started the container runtime connects to an AF=5F=
+UNIX
+> > socket to register with the seccomp supervisor. It stays connected =
+until
+> > it stops. Everytime a system call is performed that is registered i=
+n the
+> > seccomp notifier filter the container runtime will send a AF=5FUNIX
+> > message to the seccomp supervisor. This will include the following =
+fds:
+> >=20
+> > - the pidfd of the task that performed the system call (we should
+> >   actually replace this with SO=5FPEERPIDFD now that we have that)
+> > - the fd of the task's memory to /proc/<pid>/mem
+> >=20
+> > The seccomp supervisor will then perform the system call intercepti=
+on
+> > including the required memory reads and writes.
 >=20
-> Here's a series that contains two fixes to PCI bridge window sizing
-> algorithm. Together, they should enable remove & rescan cycle to work
-> for a PCI bus that has PCI devices with optional resources and/or
-> disparity in BAR sizes.
+> Okay, so the patch would very much break that. Some questions, though=
+:
+> - why not use process=5Fvm=5Fwritev()?
+> - does the supervisor depend on FOLL=5FFORCE?
 >=20
-> For the second fix, I chose to expose find_empty_resource_slot() from
-> kernel/resource.c because it should increase accuracy of the cannot-fit
-> decision (currently that function is called find_resource()). In order
-> to do that sensibly, a few improvements seemed in order to make its
-> interface and name of the function sane before exposing it. Thus, the
-> few extra patches on resource side.
+> Perhaps is is sufficient to block the use of FOLL=5FFORCE?
+>=20
+> I took a look at the Chrome OS exploit, and I =5Fthink=5F it is depen=
+ding
+> on the FOLL=5FFORCE behavior (it searches for a symbol to overwrite t=
+hat
+> if I'm following correctly is in a read-only region), but some of the
+> binaries don't include source code, so I couldn't easily see what was
+> being injected. Mike or Adrian can you confirm this?
 
-Hi Bjorn,
+I can't speak for what is acceptable for ChromeOS security because=20
+I'm not part of that project, so I'll let Mike answer whether blocking
+writes is mandatory for them or blocking FOLL=5FFORCE is enough.
 
-Can you consider applying this series or do you have some comments on it?
-
-I'm a bit unsure these days if my emails even reach you successfully as I=
+From a design perspective, the question is whether to
+1. block writes and allow known good exceptions=20
+or
+2. allow writes and block known bad/exploitable exceptions.=20
 =20
-tend to often receive complaints from Gmail that it has blocked the emails=
-=20
-I send with git send-email detecting them as "unsolicited mail".
+I am looking into reproducing and adding an exception for the
+container syscall intercept use-case raised by Christian, because
+I think it's easier to justify allowing known good exceptions from
+a security perspective.
 
---=20
- i.
+Otherwise I'm fine with both approaches.
 
+@Mike WDYT ?
 
-> Unfortunately I don't have a reason to suspect these would help with
-> the issues related to the currently ongoing resource regression
-> thread [1].
->=20
-> [1] https://lore.kernel.org/linux-pci/ZXpaNCLiDM+Kv38H@marvin.atrad.com.a=
-u/
->=20
-> Ilpo J=E4rvinen (7):
->   PCI: Fix resource double counting on remove & rescan
->   resource: Rename find_resource() to find_empty_resource_slot()
->   resource: Document find_empty_resource_slot() and resource_constraint
->   resource: Use typedef for alignf callback
->   resource: Handle simple alignment inside __find_empty_resource_slot()
->   resource: Export find_empty_resource_slot()
->   PCI: Relax bridge window tail sizing rules
-
---8323328-1729510199-1709652635=:1003--
 
