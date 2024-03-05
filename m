@@ -1,185 +1,198 @@
-Return-Path: <linux-kernel+bounces-92329-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92330-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C099871E89
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:05:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41A04871E95
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:08:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FC8E1C22EC0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:05:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D60D91F254E0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:08:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9D635A4D5;
-	Tue,  5 Mar 2024 12:05:36 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8E6C58ABA;
-	Tue,  5 Mar 2024 12:05:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 706975A11B;
+	Tue,  5 Mar 2024 12:08:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="16TPWJKc"
+Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F0E859B44
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 12:08:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709640336; cv=none; b=X9FyCIb+218qnTcXxkOd4PuVScCiELc6MjB43ORIzUto+o3hHlXWCgs42Niq/JKqw6sqjAlR5Un7Pwqw8dnQbQ25mgjsvIXRtyGDNDvDhe1Q+aca1Mb+R9x/eJQAefhvu03vIX3z3RAO5XYSidxJNzUDOHm9uPuRwY/OnQOy6n4=
+	t=1709640516; cv=none; b=twVhOfj/wCn0DNqm/crOh4Ri+ET4Sz/On8LywO0xwP8Idy50t+CrLDA6GhuPPelsAUxhoCG8xrGXz1+0Glq8dfg1CwMU1pYTe1pSrw939behOnroPn7f182XsBC3UytLI/i2Uoi+pnQz9HLHKZSI9vZNhakI0C3zSXa+b8mMbHA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709640336; c=relaxed/simple;
-	bh=x2n3LYJaF3CcKkOqy6N20V4juYYDI/bsFT9DQVqOTOE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=D+Nh44t8NJJBLBfoLiBVzRqhbTpPnXGf4anvYwOwUnqZ50ca4359/gUFyXsE/wme1mSeUCh4Bu4Ht1NHk1+c04u+lzXEjhzYpfDF4aceIvgUUMrOCuTLbDDjf0hqSGoDVMDsMY4djSUA3xFNzGp0BIwvBk5bZPO5mZkVZy796L0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A49DE1FB;
-	Tue,  5 Mar 2024 04:06:08 -0800 (PST)
-Received: from [10.57.67.228] (unknown [10.57.67.228])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 25B763F73F;
-	Tue,  5 Mar 2024 04:05:25 -0800 (PST)
-Message-ID: <47afacda-3023-4eb7-b227-5f725c3187c2@arm.com>
-Date: Tue, 5 Mar 2024 12:05:23 +0000
+	s=arc-20240116; t=1709640516; c=relaxed/simple;
+	bh=HcK0l/BHXAgqHPymN9fB15z0EqjWog4wSbLUTN9ixjA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tT/C5sVJW0DgHm6U++S3xKzyNUtl1l6UBeh8kWeooA/JEd05QKT+y4jYlZ8i6EbndWYoEml2qNkkwCVrikfimXOKJYY1h/DT5SEeFla/frtYmpqOR9Wz41Pyk3U0GEUwPed5nUKH0kkQ4b6C5B3ZwimIS0ipE9SJmr1jmPRII6o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=16TPWJKc; arc=none smtp.client-ip=209.85.222.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-7db1a2c1f96so2038285241.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 04:08:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709640514; x=1710245314; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ue0JJLooATJd4KIk6vsk/JW10lt7mv7VvgdOgn+vX8E=;
+        b=16TPWJKcAuI0Abq7VndNv8Xa6dniCesiqzk26ySLiPFDzy5yfHmOFppQEgDbse/xzy
+         UW/DqqqMIlMC7iUCAMFgxLBkRPBBMcRWhywIl70yoL3FcPIkSmnq4/vvsiUhxcXTbg2A
+         T4qgI7XzuET+WmzPbl0IjYGKPtSMLPFOIH9t86ldrJpqQUifkMp7J/qrFSY1YGfBBkCf
+         JZklGmuEpHRqbm9J0OTQDznqlQIObiuK7LpW15CohtN7yG7wbK6ym5DYhVjdrCsi1N+p
+         ihluvnJBNippp2yZITtY2VnNCUeMSXkDebxCOChin8wLz0DICat/Tj09BKGrRHQLnV6i
+         x26g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709640514; x=1710245314;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ue0JJLooATJd4KIk6vsk/JW10lt7mv7VvgdOgn+vX8E=;
+        b=OXM7YfigG9zzDxzLLHdIDoQRBQ8a3HqiUOUMcf795ON0rnDcOECHwlzvYTCZWqiCuO
+         l4PbehAJZXv0KD3okGOWUDdiizS0bh0bxV24HvQR6cZ0DulhCPCd94DtpPBuGsyGAJ1F
+         ujVr1mP3daoJ4MaunOxNknyXPFQOTAV//nAbFs3pD2sh+A3NmjAuXZrkcHLAj/GR4X7o
+         ip/kK+PsL/hpwScU00/gsUu02BNphFc5UXKYQCY/KeBR8ulpAtHc3qoheWEBdVBG+WeE
+         4FNcJ/r9lECikrEEBG3RQIgvgv2xZN5kdUe0AtFK1GrAu+eLZjHa+9ByDDR5Y/c1ZZjt
+         9FUg==
+X-Forwarded-Encrypted: i=1; AJvYcCXZglN6W4eyd9i3hGOtccqVcf3ooi+t5SIoVyrd4Z7O7OINGO8jysAy9ZypwVAU+H0QHklXMLjrAzNsE9MDQvoElVBWniGPeonWghyg
+X-Gm-Message-State: AOJu0YyRwUy9WHaRhPS7VYy879LSB1W6wh0hS9BYpcKrNwCl2+Arj7hZ
+	FB3dH1aKmlCX9n3jZFBP0XVR+hGoTGHCkIKE4GQbPOaA0JctWZWOVjtzT8218Iwqvj/ssYwubvM
+	eoLcW/poD7YeQxzAabg8S/Gtyl6mvTutTPBk0
+X-Google-Smtp-Source: AGHT+IHbXJddAFtZgczMoWL38ASf21YaUKf6g2ubRMyi2RXEGet0mKq/ySvl6G/8eICpZnqJidkQWIm5ONtKFU97er4=
+X-Received: by 2002:a05:6102:da:b0:470:576b:62f8 with SMTP id
+ u26-20020a05610200da00b00470576b62f8mr1404722vsp.7.1709640513797; Tue, 05 Mar
+ 2024 04:08:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC RESEND 00/16] Split IOMMU DMA mapping operation to two steps
-To: Leon Romanovsky <leon@kernel.org>, Christoph Hellwig <hch@lst.de>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
- Chaitanya Kulkarni <chaitanyak@nvidia.com>
-Cc: Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
- Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
- Yishai Hadas <yishaih@nvidia.com>,
- Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
- Kevin Tian <kevin.tian@intel.com>,
- Alex Williamson <alex.williamson@redhat.com>,
- =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
- Andrew Morton <akpm@linux-foundation.org>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
- linux-rdma@vger.kernel.org, iommu@lists.linux.dev,
- linux-nvme@lists.infradead.org, kvm@vger.kernel.org, linux-mm@kvack.org,
- Bart Van Assche <bvanassche@acm.org>,
- Damien Le Moal <damien.lemoal@opensource.wdc.com>,
- Amir Goldstein <amir73il@gmail.com>,
- "josef@toxicpanda.com" <josef@toxicpanda.com>,
- "Martin K. Petersen" <martin.petersen@oracle.com>,
- "daniel@iogearbox.net" <daniel@iogearbox.net>,
- Dan Williams <dan.j.williams@intel.com>, "jack@suse.com" <jack@suse.com>,
- Leon Romanovsky <leonro@nvidia.com>, Zhu Yanjun <zyjzyj2000@gmail.com>
-References: <cover.1709635535.git.leon@kernel.org>
-From: Robin Murphy <robin.murphy@arm.com>
-Content-Language: en-GB
-In-Reply-To: <cover.1709635535.git.leon@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <CAH5fLgg0yGbuHnMbMB103Zssg4KSfXUR3kvhr0kuqTSah=6kWg@mail.gmail.com>
+ <20240305112017.125061-1-kernel@valentinobst.de> <CAH5fLgis7Usg_cfWM5rBKjRKsB4857PkyuCMrCU6PmEqTOMFiw@mail.gmail.com>
+ <CAH5fLgj=iuWNWy9jGvaD0SCcZg6GSj9XBgB0vZwL8EokobUPMg@mail.gmail.com>
+In-Reply-To: <CAH5fLgj=iuWNWy9jGvaD0SCcZg6GSj9XBgB0vZwL8EokobUPMg@mail.gmail.com>
+From: Alice Ryhl <aliceryhl@google.com>
+Date: Tue, 5 Mar 2024 13:08:22 +0100
+Message-ID: <CAH5fLggdR1UPNUa4R4CeJr+0cVRRr7cvyEQ3XhYaEqVD1cRtYA@mail.gmail.com>
+Subject: Re: [PATCH] rust: add flags for shadow call stack sanitizer
+To: Valentin Obst <kernel@valentinobst.de>
+Cc: Jamie.Cunliffe@arm.com, a.hindborg@samsung.com, alex.gaynor@gmail.com, 
+	ardb@kernel.org, benno.lossin@proton.me, bjorn3_gh@protonmail.com, 
+	boqun.feng@gmail.com, broonie@kernel.org, catalin.marinas@arm.com, 
+	gary@garyguo.net, keescook@chromium.org, linux-arm-kernel@lists.infradead.org, 
+	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	mark.rutland@arm.com, masahiroy@kernel.org, maz@kernel.org, nathan@kernel.org, 
+	ndesaulniers@google.com, nicolas@fjasle.eu, ojeda@kernel.org, 
+	rust-for-linux@vger.kernel.org, samitolvanen@google.com, wedsonaf@gmail.com, 
+	will@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024-03-05 11:18 am, Leon Romanovsky wrote:
-> This is complimentary part to the proposed LSF/MM topic.
-> https://lore.kernel.org/linux-rdma/22df55f8-cf64-4aa8-8c0b-b556c867b926@linux.dev/T/#m85672c860539fdbbc8fe0f5ccabdc05b40269057
-> 
-> This is posted as RFC to get a feedback on proposed split, but RDMA, VFIO and
-> DMA patches are ready for review and inclusion, the NVMe patches are still in
-> progress as they require agreement on API first.
-> 
-> Thanks
-> 
-> -------------------------------------------------------------------------------
-> The DMA mapping operation performs two steps at one same time: allocates
-> IOVA space and actually maps DMA pages to that space. This one shot
-> operation works perfectly for non-complex scenarios, where callers use
-> that DMA API in control path when they setup hardware.
-> 
-> However in more complex scenarios, when DMA mapping is needed in data
-> path and especially when some sort of specific datatype is involved,
-> such one shot approach has its drawbacks.
-> 
-> That approach pushes developers to introduce new DMA APIs for specific
-> datatype. For example existing scatter-gather mapping functions, or
-> latest Chuck's RFC series to add biovec related DMA mapping [1] and
-> probably struct folio will need it too.
-> 
-> These advanced DMA mapping APIs are needed to calculate IOVA size to
-> allocate it as one chunk and some sort of offset calculations to know
-> which part of IOVA to map.
+On Tue, Mar 5, 2024 at 12:31=E2=80=AFPM Alice Ryhl <aliceryhl@google.com> w=
+rote:
+>
+> On Tue, Mar 5, 2024 at 12:28=E2=80=AFPM Alice Ryhl <aliceryhl@google.com>=
+ wrote:
+> >
+> > On Tue, Mar 5, 2024 at 12:20=E2=80=AFPM Valentin Obst <kernel@valentino=
+bst.de> wrote:
+> > >
+> > > > >>> It's not 100% clear to me whether this patch is enough for full=
+ SCS
+> > > > >>> support in Rust. If there is some issue where this makes things=
+ compile
+> > > > >>> and work without actually applying SCS to the Rust code, please=
+ let me
+> > > > >>> know. Is there some way to verify that it is actually working?
+> > > > >>
+> > > > >> Perhaps you could write a Rust version of the CFI_BACKWARD test =
+in LKDTM?
+> > > > >>
+> > > > >> Alternatively, the simplest way to verify this is to look at the
+> > > > >> disassembly and verify that shadow stack instructions are emitte=
+d to
+> > > > >> Rust functions too. In case of dynamic SCS, you might need to du=
+mp
+> > > > >> function memory in a debugger to verify that PAC instructions we=
+re
+> > > > >> patched correctly. If they're not, the code will just quietly co=
+ntinue
+> > > > >> working without using shadow stacks.
+> > > > >
+> > > > > Was just in the process of doing that:
+> > > > >
+> > > > > - `paciasp`/`autiasp` pairs are emitted for functions in Rust mod=
+ules.
+> > > > > - Rust modules have no `.init.eh_frame` section, which implies th=
+at
+> > > > >   `module_finalize` is _not_ rewriting the pac insns when SCS is =
+dynamic.
+> > > > >   - Confirmed that behavior in the debugger (C modules and the C =
+part of the
+> > > > >     kernel are correctly rewritten, Rust modules execute with
+> > > > >     `paciasp`/`autiasp` still in place).
+> > > > > - Kernel boots just fine with Rust kunit tests, tested with and w=
+ithout dynamic
+> > > > >   SCS, i.e., on a CPU that supports PAC/BTI and one that does not=
+.
+> > > > > - Rust sample modules load and unload without problems as well.
+> > > > > - `x18` is indeed not used in the codegen.
+> > > > >
+> > > > > I guess we might be able to get this working when we tweak the bu=
+ild system
+> > > > > to emit the missing section for Rust modules.
+> > > >
+> > > > I suppose the -Cforce-unwind-tables=3Dy flag will most likely do it=
+.
+> > >
+> > > Yes, enabling this means that `.eh_frame` sections, which are convert=
+ed to
+> > > `.init.eh_frame` sections for loadable modules, are generated for Rus=
+t
+> > > objects.
+> > >
+> > > Tested booting, kunit tests, sample modules (as builtin and loadable)=
+ for
+> > > both, dynamic SCS active and inactive. Backtraces on Rust panicks als=
+o look
+> > > normal.
+> > >
+> > > Confirmed that in the debugger that builtin and external modules are
+> > > rewritten (or not rewritten if no dynamic SCS). Did not check that th=
+e
+> > > `eh_frame` sections are exhaustive, i.e., cover all `paciasp`/`autias=
+p`
+> > > pairs, only verified a few functions (in init text and normal text).
+> >
+> > Thank you for checking that!
+> >
+> > > > There's also an use_sync_unwind option, but it defaults to no, so i=
+t
+> > > > doesn't seem like we need to set it.
+> > >
+> > > Are those defaults stable or will we notice if they change? If not it=
+ might
+> > > make sense to set it explicitly anyways to avoid surprises in the fut=
+ure.
+> >
+> > The flag itself is unstable, so I imagine that nothing is promised abou=
+t it.
+> >
+> > I tried it, but I wasn't actually able to find a way to set it. I can
+> > see the flag in the rustc source code, but passing -Zuse-sync-unwind=3D=
+n
+> > results in "error: unknown unstable option: `use-sync-unwind`". Not
+> > sure what the issue is.
+>
+> Oh, I understand now. It's really recent and not in 1.73.0, which is
+> what I'm using in the Android build.
 
-I don't follow this part at all - at *some* point, something must know a 
-range of memory addresses involved in a DMA transfer, so that's where it 
-should map that range for DMA. Even in a badly-designed system where the 
-point it's most practical to make the mapping is further out and only 
-knows that DMA will touch some subset of a buffer, but doesn't know 
-exactly what subset yet, you'd usually just map the whole buffer. I 
-don't see why the DMA API would ever need to know about anything other 
-than pages/PFNs and dma_addr_ts (yes, it does also accept them being 
-wrapped together in scatterlists; yes, scatterlists are awful and it 
-would be nice to replace them with a better general DMA descriptor; that 
-is a whole other subject of its own).
+Sent v2 with what we have learned:
+https://lore.kernel.org/rust-for-linux/20240305-shadow-call-stack-v2-1-c7b4=
+a3f4d616@google.com/
 
-> Instead of teaching DMA to know these specific datatypes, let's separate
-> existing DMA mapping routine to two steps and give an option to advanced
-> callers (subsystems) perform all calculations internally in advance and
-> map pages later when it is needed.
-
- From a brief look, this is clearly an awkward reinvention of the IOMMU 
-API. If IOMMU-aware drivers/subsystems want to explicitly manage IOMMU 
-address spaces then they can and should use the IOMMU API. Perhaps 
-there's room for some quality-of-life additions to the IOMMU API to help 
-with common usage patterns, but the generic DMA mapping API is 
-absolutely not the place for it.
-
-Thanks,
-Robin.
-
-> In this series, three users are converted and each of such conversion
-> presents different positive gain:
-> 1. RDMA simplifies and speeds up its pagefault handling for
->     on-demand-paging (ODP) mode.
-> 2. VFIO PCI live migration code saves huge chunk of memory.
-> 3. NVMe PCI avoids intermediate SG table manipulation and operates
->     directly on BIOs.
-> 
-> Thanks
-> 
-> [1] https://lore.kernel.org/all/169772852492.5232.17148564580779995849.stgit@klimt.1015granger.net
-> 
-> Chaitanya Kulkarni (2):
->    block: add dma_link_range() based API
->    nvme-pci: use blk_rq_dma_map() for NVMe SGL
-> 
-> Leon Romanovsky (14):
->    mm/hmm: let users to tag specific PFNs
->    dma-mapping: provide an interface to allocate IOVA
->    dma-mapping: provide callbacks to link/unlink pages to specific IOVA
->    iommu/dma: Provide an interface to allow preallocate IOVA
->    iommu/dma: Prepare map/unmap page functions to receive IOVA
->    iommu/dma: Implement link/unlink page callbacks
->    RDMA/umem: Preallocate and cache IOVA for UMEM ODP
->    RDMA/umem: Store ODP access mask information in PFN
->    RDMA/core: Separate DMA mapping to caching IOVA and page linkage
->    RDMA/umem: Prevent UMEM ODP creation with SWIOTLB
->    vfio/mlx5: Explicitly use number of pages instead of allocated length
->    vfio/mlx5: Rewrite create mkey flow to allow better code reuse
->    vfio/mlx5: Explicitly store page list
->    vfio/mlx5: Convert vfio to use DMA link API
-> 
->   Documentation/core-api/dma-attributes.rst |   7 +
->   block/blk-merge.c                         | 156 ++++++++++++++
->   drivers/infiniband/core/umem_odp.c        | 219 +++++++------------
->   drivers/infiniband/hw/mlx5/mlx5_ib.h      |   1 +
->   drivers/infiniband/hw/mlx5/odp.c          |  59 +++--
->   drivers/iommu/dma-iommu.c                 | 129 ++++++++---
->   drivers/nvme/host/pci.c                   | 220 +++++--------------
->   drivers/vfio/pci/mlx5/cmd.c               | 252 ++++++++++++----------
->   drivers/vfio/pci/mlx5/cmd.h               |  22 +-
->   drivers/vfio/pci/mlx5/main.c              | 136 +++++-------
->   include/linux/blk-mq.h                    |   9 +
->   include/linux/dma-map-ops.h               |  13 ++
->   include/linux/dma-mapping.h               |  39 ++++
->   include/linux/hmm.h                       |   3 +
->   include/rdma/ib_umem_odp.h                |  22 +-
->   include/rdma/ib_verbs.h                   |  54 +++++
->   kernel/dma/debug.h                        |   2 +
->   kernel/dma/direct.h                       |   7 +-
->   kernel/dma/mapping.c                      |  91 ++++++++
->   mm/hmm.c                                  |  34 +--
->   20 files changed, 870 insertions(+), 605 deletions(-)
-> 
+Thanks!
 
