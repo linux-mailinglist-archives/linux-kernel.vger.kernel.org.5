@@ -1,130 +1,126 @@
-Return-Path: <linux-kernel+bounces-91661-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91662-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DCFE8714C8
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 05:34:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C39A8714CC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 05:35:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56736282800
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 04:34:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E0671C230CF
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 04:35:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87ACD3D396;
-	Tue,  5 Mar 2024 04:34:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5471405FF;
+	Tue,  5 Mar 2024 04:35:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b="r7vEzZN+"
-Received: from omta040.useast.a.cloudfilter.net (omta040.useast.a.cloudfilter.net [44.202.169.39])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QbzjnGw+"
+Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6EFF29A2
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 04:34:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.39
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 683303398B
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 04:35:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709613244; cv=none; b=TEye48knTOYjNFVBDXfJGb/njvtex1uK2mCnckVh4dQOlH+jxgnrofZqzcxIa5dPy0AkTjh6HcOwXbCIEzDtsU6uFt8QJh8IBxOw6riVgR6t8jCaEpPnH3Y5eAWwN7ad0aNTTwu6cZm+hZ0TnQ1vvFtETCdYmSIzUPxCFnrakIY=
+	t=1709613309; cv=none; b=JLwKWXlkcRrBUROeXE5JlIj07sI50sEu5TA7aVX7A2BsnncbeVLEXn55cO20aBNGw20WMU4HmpYIJ5i0fFTvp6Vs3BUmG5daxo532tc1XF9HnuYll0qCFP2eTIKd2HiPPQ4waOe+8t3oGxrglZyzmMANhdY7iJZSRS02yFpdaiA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709613244; c=relaxed/simple;
-	bh=LSYP9zV2PV7yY/kRPK54E20dDGu/PRw3bWvf0AdCa4o=;
-	h=Subject:To:Cc:References:In-Reply-To:From:Message-ID:Date:
-	 MIME-Version:Content-Type; b=knLpadJZ3tlO6cvYNJbRK1SfDO0EfbbtmOA9Vb9Co1WSm+Nxd9kWy3agIUCG13pgKkgQ8NddrrdSfxNcBLPeKuqtDYmvKAFlD4qSP8GZu18OmdSqUNHR7YxkCxjTa+VfQJw4ucv19Bkf0wuiT0QYMQN0E0lND2UkMKXZZw5I4Dg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net; spf=pass smtp.mailfrom=w6rz.net; dkim=pass (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b=r7vEzZN+; arc=none smtp.client-ip=44.202.169.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=w6rz.net
-Received: from eig-obgw-5005a.ext.cloudfilter.net ([10.0.29.234])
-	by cmsmtp with ESMTPS
-	id hGDnrEUtYl9dRhMV2ry39y; Tue, 05 Mar 2024 04:33:56 +0000
-Received: from box5620.bluehost.com ([162.241.219.59])
-	by cmsmtp with ESMTPS
-	id hMV1rLzgnREFhhMV1rcVBJ; Tue, 05 Mar 2024 04:33:55 +0000
-X-Authority-Analysis: v=2.4 cv=cuKdkU4i c=1 sm=1 tr=0 ts=65e6a0b3
- a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
- a=IkcTkHD0fZMA:10 a=K6JAEmCyrfEA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
- a=HaFmDPmJAAAA:8 a=49j0FZ7RFL9ueZfULrUA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
-	s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-	Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=+E1+06gSmjjSc5vHL45spY5rfsJuiT3VvxAb7wh1LTA=; b=r7vEzZN++5MkHhKE58D6sSDwts
-	YRjMpufiQrxadV6SL31SaWnUEOaOde5eVwlusoYVGfJ8Hd4tZS1Ap+AzAuh8S8757GPTjLnng7Zp3
-	1J4FmTZ/EL9KBipPrx1HC7RI+iDL0lYHxJGYT6T096U1QQU4YZ54yNi2p/ZoaBprx1JNZF2VArHOd
-	ZX6cYjOTbquhyllgcfhU40rrDtXB1PAjbiQ82o36Lgdji6ASn72yR/NGucdAEejjps5WvNsk5IaWK
-	kXCyIQyRcFz7quW5M7wDacr7eP5O/mm7vIRSWJRrH5S/H3SiLzNWsUUKv40Am+WbCreK91I6oYkyU
-	qcKveQMg==;
-Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:49112 helo=[10.0.1.47])
-	by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <re@w6rz.net>)
-	id 1rhMUz-0022Pg-1K;
-	Mon, 04 Mar 2024 21:33:53 -0700
-Subject: Re: [PATCH 6.1 000/215] 6.1.81-rc1 review
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
- rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com
-References: <20240304211556.993132804@linuxfoundation.org>
-In-Reply-To: <20240304211556.993132804@linuxfoundation.org>
-From: Ron Economos <re@w6rz.net>
-Message-ID: <fbfc8cfe-aeff-62fe-3ad7-c2894e1fcf2e@w6rz.net>
-Date: Mon, 4 Mar 2024 20:33:50 -0800
-User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+	s=arc-20240116; t=1709613309; c=relaxed/simple;
+	bh=SyVpWR0YqhOvs/OxGe0jMoDi7DFJpkAA1b348TIrzyU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UdodJAyUI5uxa6wy75gzJ8OG/79oqEesE7KKExSz9+0XcqvH0zZP5mji8tlNLFNWDazSRmbY6kZLMO3optRN9cH2M4yR0lnBRcHtJibAsU0bttUe3hCc4wnfx/XIg5LH+V4SEWt3FJVsOQcBFhZ2LQlDkOVra2kwv/Uq4ndkQfU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QbzjnGw+; arc=none smtp.client-ip=209.85.167.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3c1ea5b42e7so1286865b6e.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 20:35:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709613306; x=1710218106; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4vjRQzniHRafe2ZwDDGF6wB4iwR2l8xzXGYmTAavCjw=;
+        b=QbzjnGw+2IQNNqEDwdgZ6gcn47fHe1I1vHUf5l5XfrZqMvpuCmN/AnuTBkMkU+5Ki5
+         fYgQVg1KbAIZSSi7JNg6o5HA9GFKr+NvbHRgKJTdk7Ks7YzJ2/aAVFJ/oIPoXfrqdydM
+         esWpS8KxZjvTCmFOMaJnCPyjOzihVr2840Gz0LNgjGRMzSw+BjDFL0fTjd/WsBIkV14A
+         9l3RK21AfRg5Mw3IITMqmApMoSBIG+D3AXYMZ1vC4XqmgLQkStjVM3XIBfiYsLEFclV/
+         Rmpr4wi2C4X2sd3kPjzms/2dykqlnwdIWiuYDhPICoyTaT1F4KpzyrpuIPU5UHnt5Tyc
+         7FFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709613306; x=1710218106;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4vjRQzniHRafe2ZwDDGF6wB4iwR2l8xzXGYmTAavCjw=;
+        b=u8BiqudQUpe2+1FnfSWT4FkqQwqXR5GPQeRLAIJgERdsxwJ1x/6LSyaLL9K+4ylzKR
+         7veEXLdFwWiGc2fkRHc0nJmxk52x1MLYx9zGRSgVePJWCGaRRvw7eoO3E1YtikG65T2c
+         iR+un/Con1muX0ompVErjgSNKmfg7ynxM6/YwdmaJeKoqZ4N10E2QpbrojICvcP4oA72
+         0wwJFPhXKua89FyYiBtEWnrETdgHLclGl9VFUlOOgWLtaTaQGqPGcpEtMibh/EMIXvvF
+         mQVslgtI4neyvPhIyqnDM2GGiP+m3CZexJyug6xibaFcUf+EhXiejRrRRG8itsN7LD5V
+         XLrw==
+X-Forwarded-Encrypted: i=1; AJvYcCV3+76j7ZZQygnA1WWh1+Kq9jrRdgN86RTaoaWx7xMNjCNWUYoH27BZM3KByp6JLF7chGUMzWakaVhBJ4YyU+KkqQ2xIk1HmHYYGwbr
+X-Gm-Message-State: AOJu0YwMdKr7UQo/NF9DKJmWmGdVzhAKOVunP4Oin4o7sFmAoQcX018X
+	C+9oDWmxSRHyNI9D6dqY+VVWTHHKKKj0PJMLqJypzdq0xKsOVA4H3h52O3n5vCVcUQlqhjLE106
+	L
+X-Google-Smtp-Source: AGHT+IH1YAIyReoRbQYzHs76JwvjyUSpZA7Q97zMfBJJnoNqb6U2Bvgox8NitSny3i+OrmCHQknUpg==
+X-Received: by 2002:a05:6808:f8e:b0:3c1:ef91:c8e6 with SMTP id o14-20020a0568080f8e00b003c1ef91c8e6mr890197oiw.11.1709613306564;
+        Mon, 04 Mar 2024 20:35:06 -0800 (PST)
+Received: from localhost ([122.172.85.206])
+        by smtp.gmail.com with ESMTPSA id ei30-20020a056a0080de00b006e5359e621csm8029647pfb.182.2024.03.04.20.35.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Mar 2024 20:35:06 -0800 (PST)
+Date: Tue, 5 Mar 2024 10:05:03 +0530
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Ilia Lin <ilia.lin@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH 3/3] cpufreq: qcom-nvmem: add support for IPQ5321
+Message-ID: <20240305043503.tgy5ahl243or7lm5@vireshk-i7>
+References: <20240228-ipq5321-sku-support-v1-0-14e4d4715f4b@quicinc.com>
+ <20240228-ipq5321-sku-support-v1-3-14e4d4715f4b@quicinc.com>
+ <20240304071222.cx3s37mphddk23bv@vireshk-i7>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - box5620.bluehost.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - w6rz.net
-X-BWhitelist: no
-X-Source-IP: 98.207.139.8
-X-Source-L: No
-X-Exim-ID: 1rhMUz-0022Pg-1K
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:49112
-X-Source-Auth: re@w6rz.net
-X-Email-Count: 22
-X-Org: HG=bhshared;ORG=bluehost;
-X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfNUKDPqgIkO/S3JDWnWB6Z5SL6F8TG0e3WGAR7tASyTIauK2lTxVbk6NA045s/9Gp9OcTDDdqwqryYquWXyayVmvnmXPPJHEqH/sXXp8dyq0lSUorlxL
- 6lexJQuZ0tP8ef7l2facakyMs7n2NE4f7acMZpjFJPu7gFnMhmQSXTg55jgYc20z/lE0S17jBpFy3GJGNlze8fP0fsYEPZpCZWA=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240304071222.cx3s37mphddk23bv@vireshk-i7>
 
-On 3/4/24 1:21 PM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.81 release.
-> There are 215 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 06 Mar 2024 21:15:26 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.81-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 04-03-24, 12:42, Viresh Kumar wrote:
+> On 28-02-24, 20:21, Kathiravan Thirumoorthy wrote:
+> > Like all other SoCs in IPQ5332 family, cpufreq for IPQ5321 is also
+> > determined by the eFuse, with the maximum limit of 1.1GHz. Add support
+> > for the same.
+> > 
+> > Signed-off-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+> > ---
+> >  drivers/cpufreq/qcom-cpufreq-nvmem.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/drivers/cpufreq/qcom-cpufreq-nvmem.c b/drivers/cpufreq/qcom-cpufreq-nvmem.c
+> > index ea05d9d67490..0a46b5d49d32 100644
+> > --- a/drivers/cpufreq/qcom-cpufreq-nvmem.c
+> > +++ b/drivers/cpufreq/qcom-cpufreq-nvmem.c
+> > @@ -191,6 +191,7 @@ static int qcom_cpufreq_kryo_name_version(struct device *cpu_dev,
+> >  	case QCOM_ID_IPQ5312:
+> >  	case QCOM_ID_IPQ5302:
+> >  	case QCOM_ID_IPQ5300:
+> > +	case QCOM_ID_IPQ5321:
+> >  	case QCOM_ID_IPQ9514:
+> >  	case QCOM_ID_IPQ9550:
+> >  	case QCOM_ID_IPQ9554:
+> 
+> Applied. Thanks.
 
-Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
+Dropped since the previous commit it required too. Can we get the
+necessary acks for me to pick those ?
 
-Tested-by: Ron Economos <re@w6rz.net>
-
+-- 
+viresh
 
