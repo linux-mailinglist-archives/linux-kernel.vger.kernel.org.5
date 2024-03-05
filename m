@@ -1,163 +1,300 @@
-Return-Path: <linux-kernel+bounces-92271-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92257-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C14D871DBA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:30:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DA81871D96
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:27:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3DB81C23103
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:30:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 844C71F27754
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:27:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BD9B59B5C;
-	Tue,  5 Mar 2024 11:27:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 050D05A4CD;
+	Tue,  5 Mar 2024 11:20:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=valentinobst.de header.i=kernel@valentinobst.de header.b="q/icdnj/"
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.187])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="TnYwIv7J"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BD9F54917;
-	Tue,  5 Mar 2024 11:27:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.126.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 493FC54BFA;
+	Tue,  5 Mar 2024 11:20:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709638027; cv=none; b=iaQiCXzarsNvs7V8TOdVaYu1gjGiFZRsafp6Gn/85RQOkE2lRL+X76s8isX3whytCWJUvUvD0pAJ+j8RoUyv47aG/5G/7qDAvUk/UVSQ6JbzkPJLZ9/xchRpNJXCQHnP3JizY2UMYaqOTq5JIL/m2POGaUP3eEswykpdut0Ke64=
+	t=1709637628; cv=none; b=ipIaA2msvDAoOn5YHpVeMgORd9OQuC0pQWvqDy5oqQHEyXb6XV7K2zJORqLIT7GwWvQwz9w3dQmk8DCqeBl/P5agkeDiwGCeQUVzB6RcJaP1IQAO5SJTBDdxoNhsS0hjPixco4a7pdGwyomWhzbAwY/GnlIROqNb6TaVAl2i58g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709638027; c=relaxed/simple;
-	bh=8J3F7dpUbugfhUSCrPuCrCvwKLWOTzLlmXb9efyMG+Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BIS/0FZLF8OdpVeg3n2mkOpbAhIya+KGqIbjVcUrjfGdK1LezECjHIGEl0GpFyCW8Uc+Ud6Ag4Acl4iWwqMNCaoO2s4Vp8deaKmlV+KqfS5fJTE7yvO0VayF0M/6Jte3E5RF/FB87tr4wq+Crp8oGJY1KoBZwPaaq/bsNxjdr90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=valentinobst.de; spf=pass smtp.mailfrom=valentinobst.de; dkim=pass (2048-bit key) header.d=valentinobst.de header.i=kernel@valentinobst.de header.b=q/icdnj/; arc=none smtp.client-ip=212.227.126.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=valentinobst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=valentinobst.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=valentinobst.de;
-	s=s1-ionos; t=1709638007; x=1710242807; i=kernel@valentinobst.de;
-	bh=8J3F7dpUbugfhUSCrPuCrCvwKLWOTzLlmXb9efyMG+Q=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
-	 References;
-	b=q/icdnj/qAB2qiBv8Kg24voOdG/3+W25Sct4I/y+bU8i2P6nZ7y+7C8uKwAd0+G+
-	 EPeQleX5Uz70EEoM8KN3ZSikDoMjWs1Ad9loPVVOUEn4fLFXglI2HB+IFCNuqUVk0
-	 Y0EbunVsk5yPDO028PTeJg7gPgmO8xzqUPEiAmJTl21NX790GnAHaEJH7nAUjQZVT
-	 oZY3TLnZm1T+mK/xYvWQTSh0bPsS+LHw9WYzAsI64cJS4wSqZ9oH8uXufr7fwLJg0
-	 bJB0AgAVeIfIZRegjNZMhYiuNAVSk+a29l9rmI1f1W+pHPv8+VAEdiH8CzKK7Daw7
-	 KwYjT71uDpJzT+cmVQ==
-X-UI-Sender-Class: 55c96926-9e95-11ee-ae09-1f7a4046a0f6
-Received: from localhost.localdomain ([95.223.130.98]) by
- mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1Mwfj0-1qwTxX2Gi2-00yC8T; Tue, 05 Mar 2024 12:20:21 +0100
-From: Valentin Obst <kernel@valentinobst.de>
-To: aliceryhl@google.com
-Cc: Jamie.Cunliffe@arm.com,
-	a.hindborg@samsung.com,
-	alex.gaynor@gmail.com,
-	ardb@kernel.org,
-	benno.lossin@proton.me,
-	bjorn3_gh@protonmail.com,
-	boqun.feng@gmail.com,
-	broonie@kernel.org,
-	catalin.marinas@arm.com,
-	gary@garyguo.net,
-	keescook@chromium.org,
-	kernel@valentinobst.de,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kbuild@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	mark.rutland@arm.com,
-	masahiroy@kernel.org,
-	maz@kernel.org,
-	nathan@kernel.org,
-	ndesaulniers@google.com,
-	nicolas@fjasle.eu,
-	ojeda@kernel.org,
-	rust-for-linux@vger.kernel.org,
-	samitolvanen@google.com,
-	wedsonaf@gmail.com,
-	will@kernel.org
-Subject: Re: [PATCH] rust: add flags for shadow call stack sanitizer
-Date: Tue,  5 Mar 2024 12:20:17 +0100
-Message-ID: <20240305112017.125061-1-kernel@valentinobst.de>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <CAH5fLgg0yGbuHnMbMB103Zssg4KSfXUR3kvhr0kuqTSah=6kWg@mail.gmail.com>
-References: <CAH5fLgg0yGbuHnMbMB103Zssg4KSfXUR3kvhr0kuqTSah=6kWg@mail.gmail.com>
+	s=arc-20240116; t=1709637628; c=relaxed/simple;
+	bh=GXsOiAtv6TjNhMlnQXhWlrYVpj/iqWoURTS8NBhzIFs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OzBof1bd+j5FibgCVrAaVBV60RKQbYGKlFw5jltShdWd/mPihIPjZ8358W0w2Wc400IMfr6DIUjimlXJLO5OLntbKJfwBzFQw9zE+WVS/WCBdpnk0/+K2Gz6xnPG/zxJM2DmYMmGPoQXp3Gg9mt9RnmIow6s7RUiAV7sntPZjdc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=TnYwIv7J; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1709637624;
+	bh=GXsOiAtv6TjNhMlnQXhWlrYVpj/iqWoURTS8NBhzIFs=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=TnYwIv7JyXG+1tKJY1L6QFhBK6hLNXIqXnVmCOWEAOQdyPpnpkH5LPB+kuT2LVCG/
+	 Fj5f7vQbFC94/wLeTSHyQ3BNyuNUJQ8SHB1e5B7Uezm00IVPVQTOJr11SGWf4HqtzB
+	 EYUbJxHjOQgVEGBpkDYQRtw08lcQvjiG8H1BAu5Px3MK3YNUxGvdqwQGUPtac5/l7P
+	 aX9+cqGioGIisgyXez/GeONzviu8jgT1hqL6+wy0j9M3x4lpyfZYoTUlyh49nfc9mj
+	 LkY/NUiCWcQ5e+Ljb4uHWVVR7xNtq1rkq/51wjcy2bq6zTvIahX2HEu+a2BYIIqyzs
+	 /S9Y+DAD6lG+A==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id E69093780029;
+	Tue,  5 Mar 2024 11:20:21 +0000 (UTC)
+Message-ID: <0aa3dc07-67c8-40a4-9e83-f702979765c5@collabora.com>
+Date: Tue, 5 Mar 2024 12:20:21 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Provags-ID: V03:K1:gEEJ6cSatmSGonn8Io6yx8x3YGsfuJgCroTsfGdlZH25jmjFENX
- 28qC2V9HneRd0N2YxzZt834iCQM8rhN8kZ1MTw1f0AGpDu1VwXQh61OWz19AOEyqbUxCjob
- iX9omwwG+FLWXzCIAxr+UaGPmyrPutpQWF4d231oD/CP3w5IR/41gcuMix0mM3pGz74azUx
- ZmnHUMEi4UoT4S1eiAi6A==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:vedfcIpbmPY=;dZuHOCTtIcJA3uYMlVFkIktOqig
- WT8LPNbCsxSxVCGp2kyR8w2z9GBJsIBfW2JhKFiTeMPbNqhaeBp+aQwHLayiDjVKuCAGd/OAS
- lhpjdAjPhDDvt1F73nZ//+LEL1loUfl2DrImh3PR6xAEPN1CSueOWYG9SCqFuTJv5XMXEdJZ9
- kU+nZ0pZuWkw1MEY0TpS8UcXK4VArFEQ66JXzykqDSZvxDSmLJ6NhQqb4ns6BvuTrkEP3EEp1
- 4MUX7YGo/IYFrW4W+VWGubYlFNwvx8S260h4bzq5Tg0dNnHGlV8tI9JBTVo04lTqhXj9WZQWA
- BeSK1vicUOGSGuMmzX6zrMzbs84VikgL6mRszQ+vUpqMavmqla8vNRwJkEVM8gm+aE8ntJ5eq
- CeeeiLZ11z5MMn1NRfBFQCwFmVCXPYH3/6ehf8UISd8L7LjjPDN0cWvta/VJNx+LcMQkpKLYu
- vCHDWUZMWIJ7QvPXl9zxGgtB1mbrnc6phBSHZUArdcJrpZqk4VrtjKyhilotfE9jhuw464HGV
- q+tbJUIifmVzwijpNRJJ/RfubK6GvV7nigG1c2RGVWG7KNDrFnZ/F0l7xv3UYvAC4GFOomWhY
- HBbPBfmv1hZB9FK2VH3fe9xV+tg+0Pw1Pmr8YDldRdCVr0wjcf0P6ynOBKv9Zzcie6VTU51TM
- 57iFh+BQHKgGdCcfU01Dm+b8eSKiO1AIdUgWF3Ku7Mjz1OFQl4n9PK3MGniULBX397nd2jL0V
- x+Xauh1zQOIXGjlb0xTFF/uWOb4vioPj5BOFir7oLemipa9aRG4Y4s=
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 19/22] ASoC: dt-bindings: mt8192: Document audio-routing
+ and dai-link subnode
+Content-Language: en-US
+To: Rob Herring <robh@kernel.org>
+Cc: broonie@kernel.org, wenst@chromium.org, lgirdwood@gmail.com,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ matthias.bgg@gmail.com, perex@perex.cz, tiwai@suse.com,
+ trevor.wu@mediatek.com, maso.huang@mediatek.com,
+ xiazhengqiao@huaqin.corp-partner.google.com, arnd@arndb.de,
+ kuninori.morimoto.gx@renesas.com, shraash@google.com, amergnat@baylibre.com,
+ nicolas.ferre@microchip.com, u.kleine-koenig@pengutronix.de,
+ dianders@chromium.org, frank.li@vivo.com, allen-kh.cheng@mediatek.com,
+ eugen.hristev@collabora.com, claudiu.beznea@tuxon.dev,
+ jarkko.nikula@bitmer.com, jiaxin.yu@mediatek.com, alpernebiyasak@gmail.com,
+ ckeepax@opensource.cirrus.com, zhourui@huaqin.corp-partner.google.com,
+ nfraprado@collabora.com, alsa-devel@alsa-project.org,
+ shane.chien@mediatek.com, linux-sound@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ kernel@collabora.com
+References: <20240227120939.290143-1-angelogioacchino.delregno@collabora.com>
+ <20240227120939.290143-20-angelogioacchino.delregno@collabora.com>
+ <20240304142341.GA156846-robh@kernel.org>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20240304142341.GA156846-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> >>> It's not 100% clear to me whether this patch is enough for full SCS
-> >>> support in Rust. If there is some issue where this makes things compile
-> >>> and work without actually applying SCS to the Rust code, please let me
-> >>> know. Is there some way to verify that it is actually working?
-> >>
-> >> Perhaps you could write a Rust version of the CFI_BACKWARD test in LKDTM?
-> >>
-> >> Alternatively, the simplest way to verify this is to look at the
-> >> disassembly and verify that shadow stack instructions are emitted to
-> >> Rust functions too. In case of dynamic SCS, you might need to dump
-> >> function memory in a debugger to verify that PAC instructions were
-> >> patched correctly. If they're not, the code will just quietly continue
-> >> working without using shadow stacks.
-> >
-> > Was just in the process of doing that:
-> >
-> > - `paciasp`/`autiasp` pairs are emitted for functions in Rust modules.
-> > - Rust modules have no `.init.eh_frame` section, which implies that
-> >   `module_finalize` is _not_ rewriting the pac insns when SCS is dynamic.
-> >   - Confirmed that behavior in the debugger (C modules and the C part of the
-> >     kernel are correctly rewritten, Rust modules execute with
-> >     `paciasp`/`autiasp` still in place).
-> > - Kernel boots just fine with Rust kunit tests, tested with and without dynamic
-> >   SCS, i.e., on a CPU that supports PAC/BTI and one that does not.
-> > - Rust sample modules load and unload without problems as well.
-> > - `x18` is indeed not used in the codegen.
-> >
-> > I guess we might be able to get this working when we tweak the build system
-> > to emit the missing section for Rust modules.
->
-> I suppose the -Cforce-unwind-tables=y flag will most likely do it.
+Il 04/03/24 15:23, Rob Herring ha scritto:
+> On Tue, Feb 27, 2024 at 01:09:36PM +0100, AngeloGioacchino Del Regno wrote:
+>> Document the dai-link subnodes and the audio-routing property, allowing
+>> to describe machine specific audio hardware and links in device tree.
+>>
+>> While at it, also deprecate the old properties which were previously
+>> used with the driver's partially hardcoded configuration.
+>>
+>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>> ---
+>>   .../sound/mt8192-mt6359-rt1015-rt5682.yaml    | 129 ++++++++++++++++--
+>>   1 file changed, 121 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml b/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
+>> index 7e50f5d65c8f..78e221003750 100644
+>> --- a/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
+>> +++ b/Documentation/devicetree/bindings/sound/mt8192-mt6359-rt1015-rt5682.yaml
+>> @@ -20,6 +20,15 @@ properties:
+>>         - mediatek,mt8192_mt6359_rt1015p_rt5682
+>>         - mediatek,mt8192_mt6359_rt1015p_rt5682s
+>>   
+>> +  audio-routing:
+>> +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
+> 
+> Already defined in sound-card-common.yaml. Add a $ref.
+> 
 
-Yes, enabling this means that `.eh_frame` sections, which are converted to
-`.init.eh_frame` sections for loadable modules, are generated for Rust
-objects.
+Right. Done for v2.
 
-Tested booting, kunit tests, sample modules (as builtin and loadable) for
-both, dynamic SCS active and inactive. Backtraces on Rust panicks also look
-normal.
+>> +    description:
+>> +      A list of the connections between audio components. Each entry is a
+>> +      pair of strings, the first being the connection's sink, the second
+>> +      being the connection's source.
+>> +      Valid names could be the input or output widgets of audio components,
+>> +      power supplies, MicBias of codec and the software switch.
+> 
+> Generally the names are defined here.
+> 
 
-Confirmed that in the debugger that builtin and external modules are
-rewritten (or not rewritten if no dynamic SCS). Did not check that the
-`eh_frame` sections are exhaustive, i.e., cover all `paciasp`/`autiasp`
-pairs, only verified a few functions (in init text and normal text).
+..but those drivers want to support multiple codecs and multiple boards, so
+for each board we would maybe have to add (software defined) names in here
+which don't always correspond to a HW pin name (but that's not really a problem).
 
-> There's also an use_sync_unwind option, but it defaults to no, so it
-> doesn't seem like we need to set it.
+Sure a subset of the names can't change but, on the other hand, some others
+can (as in, may be added).
 
-Are those defaults stable or will we notice if they change? If not it might
-make sense to set it explicitly anyways to avoid surprises in the future.
+Hence the question:
 
-    - Best Valentin
+Is it mandatory to define the names in an enum here, or can that be avoided?
+If it is, I can add them no problem.
 
->
-> Alice
->
->
+>> +
+>>     mediatek,platform:
+>>       $ref: /schemas/types.yaml#/definitions/phandle
+>>       description: The phandle of MT8192 ASoC platform.
+>> @@ -27,10 +36,12 @@ properties:
+>>     mediatek,hdmi-codec:
+>>       $ref: /schemas/types.yaml#/definitions/phandle
+>>       description: The phandle of HDMI codec.
+>> +    deprecated: true
+>>   
+>>     headset-codec:
+>>       type: object
+>>       additionalProperties: false
+>> +    deprecated: true
+>>   
+>>       properties:
+>>         sound-dai:
+>> @@ -41,6 +52,7 @@ properties:
+>>     speaker-codecs:
+>>       type: object
+>>       additionalProperties: false
+>> +    deprecated: true
+>>   
+>>       properties:
+>>         sound-dai:
+>> @@ -51,13 +63,83 @@ properties:
+>>       required:
+>>         - sound-dai
+>>   
+>> +patternProperties:
+>> +  ".*-dai-link$":
+>> +    type: object
+>> +    description:
+>> +      Container for dai-link level properties and CODEC sub-nodes.
+>> +
+>> +    properties:
+>> +      link-name:
+>> +        description: Indicates dai-link name and PCM stream name
+>> +        items:
+>> +          enum:
+>> +            - I2S0
+>> +            - I2S1
+>> +            - I2S2
+>> +            - I2S3
+>> +            - I2S4
+>> +            - I2S5
+>> +            - I2S6
+>> +            - I2S7
+>> +            - I2S8
+>> +            - I2S9
+>> +            - TDM
+>> +
+>> +      codec:
+>> +        description: Holds subnode which indicates codec dai.
+>> +        type: object
+>> +        additionalProperties: false
+>> +        properties:
+>> +          sound-dai:
+>> +            minItems: 1
+>> +            maxItems: 2
+>> +        required:
+>> +          - sound-dai
+>> +
+>> +      dai-format:
+>> +        description: audio format
+>> +        items:
+>> +          enum:
+>> +            - i2s
+>> +            - right_j
+>> +            - left_j
+>> +            - dsp_a
+>> +            - dsp_b
+>> +
+>> +      mediatek,clk-provider:
+>> +        $ref: /schemas/types.yaml#/definitions/string
+>> +        description: Indicates dai-link clock master.
+>> +        items:
+>> +          enum:
+>> +            - cpu
+>> +            - codec
+>> +
+>> +    additionalProperties: false
+> 
+> Move this before properties.
+> 
+
+Done for v2.
+
+>> +
+>> +    required:
+>> +      - link-name
+>> +
+>>   additionalProperties: false
+>>   
+>>   required:
+>>     - compatible
+>>     - mediatek,platform
+>> -  - headset-codec
+>> -  - speaker-codecs
+>> +
+>> +allOf:
+>> +  # Disallow dai-link-xxx nodes if the legacy properties are specified
+> 
+> xxx-dai-link?
+> 
+
+Oh! Yes, thanks for catching this.
+
+That's what I initially wanted to do, but then I opted for xxx-dai-link and
+forgot to update this comment.
+
+Fixed for v2.
+
+>> +  - if:
+>> +      patternProperties:
+>> +        ".*-dai-link$": false
+>> +    then:
+>> +      required:
+>> +        - headset-codec
+>> +        - speaker-codecs
+>> +    else:
+>> +      properties:
+>> +        headset-codec: false
+>> +        speaker-codecs: false
+>> +        mediatek,hdmi-codec: false
+> 
+> Allowing both would preserve compatibility. That's not needed? If so,
+> say why in the commit msg.
+> 
+
+I'm thinking of writing:
+
+"Since describing machine specific audio hardware and links replaces the
+now deprecated old logic doing the same in a driver hardcoded fashion,
+it is not allowed to have both the old and new properties together."
+
+..but in short - both the old and the new can do exactly the same, but
+imo it doesn't make any sense to actually rely on both as:
+  1. It's redundant (and one set of them makes the other useless);
+  2. I want to avoid confusion (as the other set won't be parsed);
+  3. I'm trying to *enforce* consistency as MTK cards have different
+     bindings for .. really, no good reason;
+  4. I want to see custom stuff disappear completely (and/or as much as
+     possible anyway) and use something that is (at least somewhat) common
+     between all MTK and non-MTK or anyway as a start at least consistent
+     between MTK cards.
+
+In theory, though, speaking of the driver side, there's nothing preventing
+you from specifying both audio-routing xxx-dai-link and mediatek,hdmi-codec,
+as the drivers' action will be, in short
+    if (new_bindings)
+      forget_about_old_bindings_use_the_new_ones();
+    else
+      use_old_hardcoded_stuff(); /* and be sad */
+
+
+For that, I really don't want to allow both sets of properties - please, please,
+tell me that I don't *have to* remove this block :-)
+
+Cheers,
+Angelo
+
 
