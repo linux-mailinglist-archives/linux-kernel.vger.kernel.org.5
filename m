@@ -1,100 +1,153 @@
-Return-Path: <linux-kernel+bounces-91862-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91860-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EA1A871791
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:06:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97391871786
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:00:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E7791C211F2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:06:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C83601C22618
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:00:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E84267F471;
-	Tue,  5 Mar 2024 08:06:21 +0000 (UTC)
-Received: from cstnet.cn (unknown [159.226.251.81])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30CD77EF07;
+	Tue,  5 Mar 2024 08:00:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="opMY1aLN"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F8287EEE1;
-	Tue,  5 Mar 2024 08:06:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC1B17E112;
+	Tue,  5 Mar 2024 08:00:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709625981; cv=none; b=sI2ABXHDV0bYftyMMOIeHhXeJuZnEx+pLZrLaxTHmlCIkyI7VVGTSy7LwOFeV2Eko3CBkHhMRD5GPgLAS2c98kCHN6R7T560CurXBCVvKww1TY6VFK6NQN6ublN326iHJAWedgoAMZcdQWM6nM0pn3jIuJHyB7C8pPcraYVA1VI=
+	t=1709625644; cv=none; b=U4rC/ACO2n9DYvPZ4yhnkL0RPfEzGiQL8LlO/r25hHs5026kg6viKi4NtEII2qD0wnpmDZ1OSyUsCVEuaP4zft/Exj+OLusugU8EOJ7w5qtVnthaeZretryR7LKqMYSG0WyGI0oYhoakHybKpZo1km2gIVgkP+EPdRh/In45DSA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709625981; c=relaxed/simple;
-	bh=ySWIDViivnyBgPoRDA0NQG2nLO6tW6adzChOSmMQGcc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=PxQT6GddQTlm7zZ7SY+J0oV9jFnXg0GemVpHaAbBt4SPHAWUjNk0ZrU6Q04X9fUBPPIHyJyTQWgU+bhWaP4/CsQY3aozVyA+/FALBh+Epe3IYQNKHSF+vNSsqkekMxS47uYDbplep4wly3PQmUL+u5hVgKVMNROX1KC4+D+4s2A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
-Received: from localhost (unknown [124.16.138.129])
-	by APP-03 (Coremail) with SMTP id rQCowAD3_v7x0OZlJi1KBA--.14974S2;
-	Tue, 05 Mar 2024 15:59:45 +0800 (CST)
-From: Chen Ni <nichen@iscas.ac.cn>
-To: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	justinstitt@google.com,
-	andrew@lunn.ch,
-	linux-usb@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Chen Ni <nichen@iscas.ac.cn>
-Subject: [PATCH] sr9800: Add check for usbnet_get_endpoints
-Date: Tue,  5 Mar 2024 07:59:27 +0000
-Message-Id: <20240305075927.261284-1-nichen@iscas.ac.cn>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1709625644; c=relaxed/simple;
+	bh=gWFAJuQry3gzF9uH7O4D0aDTDmuwfZxjmqEXA+RPFLQ=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tHIYPS4rxGfLf7JWMXIlQ/Wer4AP6eT0VStuz81scm2X7BgVUWRY4beyPZxcjCs4Arzw2QouIboifsr2HyT6d2n0V/R9mTBGdaA2JgRKpfcbIXgcbXIi26TsKPVpsYyYMkHr8trYuySSMlFXBwnRSeaOxSNpKntaXv24S0+ScPc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=opMY1aLN; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1709625642; x=1741161642;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=gWFAJuQry3gzF9uH7O4D0aDTDmuwfZxjmqEXA+RPFLQ=;
+  b=opMY1aLNw84azCOOm8MEYFUR9SZu+S3Jh4uNPHhqXfHjqtH6yEWmcEiw
+   LBsMzMo0zZKVjq+OUSalP0h/X9mgVnfNAgD7wDQIGHa2SziI95xhErfmW
+   C7x6BnkI+nLz+BQ5gP60ekZ7zbmAZIfytiJhYHLhFQInuwhBkqALjjiYA
+   XF3kYa+PsSLH8I4+5h6fx4YgRPlcEfOG45yXzTacO8JyNDyAxA7f02nuZ
+   WTnDx/YHog+JOukD9Btfi5PjFvtwPCBuhejL88FEnzCeK4jXHIlv9+T6O
+   SYoUHg7qbMx8XHjjOYsKuenwHHDZ8xoIbsbOxm49eC45cyU8dnkEm2XBI
+   w==;
+X-CSE-ConnectionGUID: aFDr3hW/QMqfVKlnMUlmNA==
+X-CSE-MsgGUID: 6fJ54n74SV+WjGmrURhuaQ==
+X-IronPort-AV: E=Sophos;i="6.06,205,1705388400"; 
+   d="asc'?scan'208";a="18837278"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 05 Mar 2024 01:00:35 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 5 Mar 2024 01:00:24 -0700
+Received: from wendy (10.10.85.11) by chn-vm-ex01.mchp-main.com (10.10.85.143)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
+ Transport; Tue, 5 Mar 2024 01:00:21 -0700
+Date: Tue, 5 Mar 2024 07:59:37 +0000
+From: Conor Dooley <conor.dooley@microchip.com>
+To: Anup Patel <apatel@ventanamicro.com>
+CC: =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>, Conor Dooley
+	<conor@kernel.org>, Alexandre Ghiti <alexghiti@rivosinc.com>, Anup Patel
+	<anup@brainfault.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer
+ Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, Andrea Parri
+	<andrea@rivosinc.com>, Samuel Holland <samuel.holland@sifive.com>, Steven
+ Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Mark
+ Rutland <mark.rutland@arm.com>, <linux-riscv@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>, Andrea Parri
+	<parri.andrea@gmail.com>
+Subject: Re: [PATCH v3 2/2] riscv: Fix text patching when IPI are used
+Message-ID: <20240305-sarcasm-ending-0f7946490aea@wendy>
+References: <20240229121056.203419-1-alexghiti@rivosinc.com>
+ <20240229121056.203419-3-alexghiti@rivosinc.com>
+ <20240304-makeshift-bakeshop-26c9611de1a3@spud>
+ <87msrdzqxi.fsf@all.your.base.are.belong.to.us>
+ <CAK9=C2Xjgr9_H-sHkmAAc95dAm2jd+_dxLUxSM3RM3NrQJFKGQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:rQCowAD3_v7x0OZlJi1KBA--.14974S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7Gw4ktF17uF1UGw1kZr1rtFb_yoWxtwb_Cw
-	18uF15Wr1UGryqg39rKr4Svry3ZFs5XryxZFsYga9xZa4qqanxXry0vFn7JFn7ur1FvFnr
-	Cwn7GF95GrW8tjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbVkFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-	Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
-	0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
-	Y2ka0xkIwI1lc2xSY4AK67AK6r4xMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
-	1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
-	b7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
-	vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAI
-	cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
-	nxnUUI43ZEXa7VU10tC7UUUUU==
-X-CM-SenderInfo: xqlfxv3q6l2u1dvotugofq/
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ofyVMJD7bERZqUGb"
+Content-Disposition: inline
+In-Reply-To: <CAK9=C2Xjgr9_H-sHkmAAc95dAm2jd+_dxLUxSM3RM3NrQJFKGQ@mail.gmail.com>
 
-Add check for usbnet_get_endpoints() and return the error if it fails
-in order to transfer the error.
+--ofyVMJD7bERZqUGb
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
----
- drivers/net/usb/sr9800.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+On Tue, Mar 05, 2024 at 08:33:30AM +0530, Anup Patel wrote:
+> On Tue, Mar 5, 2024 at 1:54=E2=80=AFAM Bj=C3=B6rn T=C3=B6pel <bjorn@kerne=
+l.org> wrote:
+> >
+> > Conor Dooley <conor@kernel.org> writes:
+> >
+> > > On Thu, Feb 29, 2024 at 01:10:56PM +0100, Alexandre Ghiti wrote:
+> > >> For now, we use stop_machine() to patch the text and when we use IPI=
+s for
+> > >> remote icache flushes (which is emitted in patch_text_nosync()), the=
+ system
+> > >> hangs.
+> > >>
+> > >> So instead, make sure every CPU executes the stop_machine() patching
+> > >> function and emit a local icache flush there.
+> > >>
+> > >> Co-developed-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
+> > >> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
+> > >> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> > >> Reviewed-by: Andrea Parri <parri.andrea@gmail.com>
+> > >
+> > > What commit does this fix?
+> >
+> > Hmm. The bug is exposed when the AIA IPI are introduced, and used
+> > (instead of the firmware-based).
+> >
+> > I'm not sure this is something we'd like backported, but rather a
+> > prerequisite to AIA.
+> >
+> > @Anup @Alex WDYT?
+> >
+>=20
+> The current text patching never considered IPIs being injected
+> directly in S-mode from hart to another so we are seeing this
+> issue now with AIA IPIs.
+>=20
+> We certainly don't need to backport this fix since it's more
+> of a preparatory fix for AIA IPIs.
 
-diff --git a/drivers/net/usb/sr9800.c b/drivers/net/usb/sr9800.c
-index 143bd4ab160d..57947a5590cc 100644
---- a/drivers/net/usb/sr9800.c
-+++ b/drivers/net/usb/sr9800.c
-@@ -737,7 +737,9 @@ static int sr9800_bind(struct usbnet *dev, struct usb_interface *intf)
- 
- 	data->eeprom_len = SR9800_EEPROM_LEN;
- 
--	usbnet_get_endpoints(dev, intf);
-+	ret = usbnet_get_endpoints(dev, intf);
-+	if (ret)
-+		goto out;
- 
- 	/* LED Setting Rule :
- 	 * AABB:CCDD
--- 
-2.25.1
+Whether or not this is backportable, if it fixes a bug, it should get
+a Fixes: tag for the commit that it fixes. Fixes: isn't "the backport"
+tag, cc: stable is.
 
+--ofyVMJD7bERZqUGb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZebQ6QAKCRB4tDGHoIJi
+0qg3AQD+yvdHglvWYh8y5lWj9K/+QDa9GdWm0cjqVDuvHYScUgD9FI61pKq1ci91
+LXvSARs1oJvF0xK/zbm2iRwaXt4gCAw=
+=F+Fw
+-----END PGP SIGNATURE-----
+
+--ofyVMJD7bERZqUGb--
 
