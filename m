@@ -1,203 +1,213 @@
-Return-Path: <linux-kernel+bounces-91697-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91677-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F9A8871558
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 06:43:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95CF38714E7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 05:42:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A5DF1C217BC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 05:43:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 654EA1C232A6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 04:42:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A60962143;
-	Tue,  5 Mar 2024 05:43:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1A23405FF;
+	Tue,  5 Mar 2024 04:42:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b="vT1SgjPm"
-Received: from outgoing4.flk.host-h.net (outgoing4.flk.host-h.net [188.40.0.90])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="Ez0zoYlh"
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80ECAAD5E;
-	Tue,  5 Mar 2024 05:43:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.0.90
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC4162AE95
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 04:42:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709617413; cv=none; b=dEQ8isIgcO5ZUTfIw70vnd+THcfupf5MJaDP5Up2+AyG5XGI4tj1/MHc5q7L9RjImN9tv1iZCBx7K8g08vQpzOLVOZX4SbHwJQsPXAJrZKNx6IM1Q7xomeEOS64yipiJTXz51cbpw9G7LCvurN6Ibk0Kpvle/LAj7eh0JO3O/r8=
+	t=1709613732; cv=none; b=DG7aDC1rBs8Ohg3WpAGq10by9Iaz32q7sPb3pcl4FWtviH5tEAvAwpcqxDBar9c4zI0BSXqKM5l7WS2H2bD9iBLCEYFTAxkwuiipfdRDxsZD2uaUu9derGSmETG15Xs3vas9SIpQaSpHQvsSLmLaUQBUhcjbHWLnMIgsCuFCkME=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709617413; c=relaxed/simple;
-	bh=jHCkCAy59+qTROMlQoxSDLh+kDJYlZc1/bee+CxnHbU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=r8PnVqlKMh2EPGFXTOZ1nj2aTBRjjiiDNOLG7jon2bTR9QkaVr8Wdu/a7ybT2Oarc3DgFwlUuut6Be8QJgcISKqs3jORcrr1srgSkYoiBYoUiustfllCuRB9o6N8C47uDxCRsTmqIvqgQ0d0FbiaOQx17TLTMxYm05ZpxnyKtPY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za; spf=pass smtp.mailfrom=risingedge.co.za; dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b=vT1SgjPm; arc=none smtp.client-ip=188.40.0.90
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=risingedge.co.za
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=risingedge.co.za; s=xneelo; h=Content-Transfer-Encoding:MIME-Version:
-	Message-Id:Date:Subject:Cc:To:From:reply-to:sender:bcc:in-reply-to:references
-	:content-type; bh=m3G7uqGep2jRTiY2MUFrRQpXBp2XUJrcB1aaHLU8GHM=; b=vT1SgjPmcYN
-	d1lFD6XiX8in9sqYFQRcj8Eoa8XyyDdh15JEydux/xq/eVD5DNWGqiDUixS6S2adw2tk62pafAA87
-	51h1dmdbGKc1JoPe4ytB4NSOgIXYV7sNUqfA6ZeYjsBFrKaw1Vcr1hfUfFU4Eua8b+8hhnZmBhQyv
-	pzrdKh3GzmHc+VR7ZsPkoZyiDSn/y4/fJd0RoXu0VTv9VjMXdNLbaDxuR+umJrjSPDBAow/kl8EVb
-	x//uqAlDcr6nFnqG7hGH+AEmS7ckGTVJn8GfZAb3YU+OCCkjoRu5Tu6NI2t+R15YUW990vC4eE2Fc
-	62IwLFzyd8PO+eCqW50XQ7A==;
-Received: from www31.flk1.host-h.net ([188.40.1.173])
-	by antispam1-flk1.host-h.net with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <justin.swartz@risingedge.co.za>)
-	id 1rhMbc-00HBd3-Hf; Tue, 05 Mar 2024 06:40:47 +0200
-Received: from [41.144.0.96] (helo=localhost.localdomain)
-	by www31.flk1.host-h.net with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <justin.swartz@risingedge.co.za>)
-	id 1rhMbW-0005M8-1G; Tue, 05 Mar 2024 06:40:38 +0200
-From: Justin Swartz <justin.swartz@risingedge.co.za>
-To: =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
-	Daniel Golle <daniel@makrotopia.org>,
-	DENG Qingfang <dqfext@gmail.com>,
-	Sean Wang <sean.wang@mediatek.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: Justin Swartz <justin.swartz@risingedge.co.za>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: [PATCH] net: dsa: mt7530: disable LEDs before reset
-Date: Tue,  5 Mar 2024 06:39:51 +0200
-Message-Id: <20240305043952.21590-1-justin.swartz@risingedge.co.za>
+	s=arc-20240116; t=1709613732; c=relaxed/simple;
+	bh=ofKGUMTvxn3SKlpz50MdrEeThbOSHyLZrTEsteB2xT8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=V/YtMlJH0v/fQ5Q1o7U14FZxaCxBD8LXWK4yYq26uNODLkq/28kYEgw33Aw0n4fk1XTsCcDu4VuTnU1WsFZoWYZJyhWh0Rt0aH6dFJAn0xZOYZnZeKRlWn0N1B6ytQqiCoL1qefgHIuKG0Qi2ImVBlmcTydLdmIc8bkmemzKXH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=Ez0zoYlh; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e622b46f45so1388759b3a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 20:42:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1709613730; x=1710218530; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=yF4EwQqzBVk7XgdJQilAun1918XSEfc6vUXCeQtX3Tw=;
+        b=Ez0zoYlh05rjjLfw90z4mna/4PFMsJgIdqBpszhrmzTMPT3vm42k+cfrARCIQ4Kq53
+         NQxVUilkcC5bCW+B0DJ/6yjH7m4LeP04FAM8MH/mOSY8KUA9Bj9ZRKMfmod79VSbpmh2
+         sYwIXIC2abrXjWOCC2pa/JA+kp+UfRqW3fyWQC9omouNKLKCw5XfAzmMiPxbq7pyAHx6
+         EDqFeUyl656x7lHU/b3UlafF7sdY6pbfQCWnLdU5ATCVicV8TgUutLPP26tluheFcfX7
+         HSOUwcjj+WCTOyOhSmUCPC28tdM6wmW4tEgMN8NPr9oVVpZajRu9C/jZRlomCuWX77Xw
+         nZlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709613730; x=1710218530;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yF4EwQqzBVk7XgdJQilAun1918XSEfc6vUXCeQtX3Tw=;
+        b=FWLCCWG8dHg7ke27P7gxbRcoKBM6pS+FrAWqDHWHt1tiJJwNBj4AQf9Ouc+HNRldmh
+         7gLeiYFsip8GJbsqAhv2WJmAzFRE8oMEVZGx6Ttb1M/EN8qaPgSdAr6HYDBNetNHlHV6
+         uFP3W1cG73GIZFQTqIDShEXwZTVQdRt+n69sQrcRfxyDYHcdkE6qf6jgD9KnNhmPjOy4
+         QsCoHjvp6H0kV6PdohwM8VEUCnT8cLkBOSjvkvCWFFcxl8/wQPYU+fuzZY1Jl6aBaX9S
+         gNIm0//QbNJ+gUGMs9WzgjGhxrRSfRshszdcATsJBql0EjXKyvMFCfEOw5dXrR/dth3d
+         27jQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWc+g4gmyu6ilKtX/nfF2S1roDLArn+7S7v/aEJIWtDyxiy94VtZEkEvy6oRZe9MQC39hDhr2Ik7hD18kTEAyuNmDTz8JAfIdfSI6no
+X-Gm-Message-State: AOJu0YxoRWTfbZCuQESvB7rKknQ/uX6F0vJ2aNdupIc/7ssO+rbNc80W
+	nog0KWH3h782Jcnatao5u+WSuFncnTjWxCXs+ZGJFfmCFRJPaRU8C+2rQTLI9Gs=
+X-Google-Smtp-Source: AGHT+IHFeTjXThPCXKLo9RHXN66EbeSFne7ZcgdAIqKXetKAR8c1ZOC18G/a37FUmZWnIib779ErWA==
+X-Received: by 2002:aa7:8714:0:b0:6e6:136b:cfc with SMTP id b20-20020aa78714000000b006e6136b0cfcmr4986620pfo.4.1709613730220;
+        Mon, 04 Mar 2024 20:42:10 -0800 (PST)
+Received: from sunil-laptop ([106.51.184.12])
+        by smtp.gmail.com with ESMTPSA id x19-20020a63f713000000b005dbf22d6e1asm8416760pgh.56.2024.03.04.20.41.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Mar 2024 20:42:09 -0800 (PST)
+Date: Tue, 5 Mar 2024 10:11:56 +0530
+From: Sunil V L <sunilvl@ventanamicro.com>
+To: Haibo Xu <haibo1.xu@intel.com>
+Cc: xiaobo55x@gmail.com, ajones@ventanamicro.com,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>, Robert Moore <robert.moore@intel.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Guo Ren <guoren@kernel.org>, Anup Patel <apatel@ventanamicro.com>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Greentime Hu <greentime.hu@sifive.com>, Baoquan He <bhe@redhat.com>,
+	Jisheng Zhang <jszhang@kernel.org>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	=?utf-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Chen Jiahao <chenjiahao16@huawei.com>,
+	James Morse <james.morse@arm.com>, Evan Green <evan@rivosinc.com>,
+	Samuel Holland <samuel.holland@sifive.com>,
+	Ard Biesheuvel <ardb@kernel.org>, Tony Luck <tony.luck@intel.com>,
+	Yuntao Wang <ytcoode@gmail.com>,
+	Alison Schofield <alison.schofield@intel.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev
+Subject: Re: [PATCH 2/4] ACPI: NUMA: Add handler for SRAT RINTC affinity
+ structure
+Message-ID: <ZeailF+UYf/+4NQq@sunil-laptop>
+References: <cover.1706603678.git.haibo1.xu@intel.com>
+ <a1e20de53156f50385c7609507982f08866e859b.1706603678.git.haibo1.xu@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: justin.swartz@risingedge.co.za
-X-Virus-Scanned: Clear
-X-SpamExperts-Domain: risingedge.co.za
-X-SpamExperts-Username: 
-Authentication-Results: host-h.net; auth=pass (login) smtp.auth=@risingedge.co.za
-X-SpamExperts-Outgoing-Class: ham
-X-SpamExperts-Outgoing-Evidence: Combined (0.03)
-X-Recommended-Action: accept
-X-Filter-ID: Pt3MvcO5N4iKaDQ5O6lkdGlMVN6RH8bjRMzItlySaT8bSAwkwoC1TJJiWLFQYyDsPUtbdvnXkggZ
- 3YnVId/Y5jcf0yeVQAvfjHznO7+bT5wCPRB8bAzJcv2cv+UqiTTc2+CpNcmBnO4XM3Sck4bwNogU
- WCl1nkLBzZX0KuJ9bXiS85Z42w/+2OBolTNFbPomXFWCX8oNdggW7HE9XDTdSejrkEpbuUvwMvHx
- 3T+KSG//gbuP7hnUK8NQdLwsVWKIv+fXqqb3FJ1Z7kkAIev0U9CKH/oA07tJunDPm536TODb5GPR
- oyaaXp1VNA9dXvxV+mFktoWo3CKg4C3LDJ75vu2U4GT70q7ZqN/P49BncZ5XB7lfx9K88uL/WnJE
- LAEP514Y/yfAEbrTclu3OeNcbACmFr3ts0d2E6vXySsvfMaT9Bjf4etJ827HW1/sdZ81dz6BqXHU
- oYg+nmOeSIjjxA24TPuOyBrko5yKpcR03QEJ9DjWmjcfK/FpTD0spWG+rMYoj8CdNq4vLYsMDbt4
- 2oUP1Ae/eGZl2OLANHAHEjHENEhX9cq65nsXPA0MIFDIPOMDW/6+MC+5Mq5RH9OoW0W22an/ubzj
- InB/ImqScRfGyrhHVstPeAuxsRhUFJC4TtSvIahFt3uEpT0304dV2Yoz1SesQUA6bnjJZT6m9lal
- 9vikoy50DqR3hu/rL5PGAoTDzn0QdoxFeruM0Uhu+dTUSiL7T3enG3jHhaXbbkcihnVW8zB2Qi26
- vkVALycwzSdeC1kd8cXa71WqOc72jXbRpMw6Agze1f399OurHEyYS7nq+EBNvgiWKNNSkdVDPqq6
- +NRG0tTqWfoM12ajaPKeGaSpuwkt9kMFaoxOFH1hIqsDqiY5NFuEmlCmGLsHMs4VIrisX+dtrxYn
- /0jYEvj5QBAPtzfeVlNHdCJmwgf0M7fnqgzRvCMiN68tcHQey84mBB4XoB473XOJmIRPynE3O7YZ
- oFBs6I7QuC1BjGNT52hVLEr/9PrrMm81h6IAYzikeIJfw26MB/V1E5BP9Gv0xI1YXOxC1lZqyFpL
- AwQr6muMti2YanICQnMITeB2fd0UyjU/MIq3Vtx6CgQGHtezYqxGMqsKjARq8PBC4qgGsfAERwCB
- JFs7XjZYbJPBsmpIto2O4JO2fx1gIuNHgi11AwJSTGCrOFs22K1ZnDqAw3gLmOBPHazhChxq9nGW
- aSi6bFHidB1VgzDzDZn/+QEiRQv+PVjjwa+Z5RFCOMQwU3LvoOQWIGmR34v72byEdfFYVDBYJee7
- gx/u82RtUwfD5ALHBf4EnQOzr8vuDU00mVfWLKEgol9rYV4JEcNP1rJoln/cD8h/RIvkzXRTCYvX
- WLQhlD92+1l+zHfJg1FMwntsduNBxKPaTpE5L8d4VqFy6yKUFQtzhTlGiGL9B+FvFA6U1VLNI5ac
- F+7LBSfmrQPvc5+YzzlWlzLxTUJwIIDSVMZhrIoAWTF5tIdhy/UIEBYDcZg+Q8UhuRLyBn1+pvlH
- hV6a5QjptwQBGybQyDQ2/GYwPjlMcE57ESN6G+kn87CtwPdB/10jfVNpDbYnXJdSRQj8460WHJib
- IxmU2pb4i4DTkMZeMiNI9JSIyUbtnrlbG4BI8o81FOo91axhCaqPShJzgHH7y4ZfQxML
-X-Report-Abuse-To: spam@antispamquarantine.host-h.net
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a1e20de53156f50385c7609507982f08866e859b.1706603678.git.haibo1.xu@intel.com>
 
-Disable LEDs just before resetting the MT7530 to avoid
-situations where the ESW_P4_LED_0 and ESW_P3_LED_0 pin
-states may cause an unintended external crystal frequency
-to be selected.
+Hi Haibo,
 
-The HT_XTAL_FSEL (External Crystal Frequency Selection)
-field of HWTRAP (the Hardware Trap register) stores a
-2-bit value that represents the state of the ESW_P4_LED_0
-and ESW_P4_LED_0 pins (seemingly) sampled just after the
-MT7530 has been reset, as:
+On Wed, Jan 31, 2024 at 10:31:59AM +0800, Haibo Xu wrote:
+> Add RINTC affinity structure handler during parsing SRAT table.
+> The ARCH specific implementation will be added in next patch.
+> 
+> Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
+> ---
+>  drivers/acpi/numa/srat.c | 32 +++++++++++++++++++++++++++++++-
+>  include/linux/acpi.h     |  3 +++
+>  2 files changed, 34 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/acpi/numa/srat.c b/drivers/acpi/numa/srat.c
+> index 0214518fc582..503abcf6125d 100644
+> --- a/drivers/acpi/numa/srat.c
+> +++ b/drivers/acpi/numa/srat.c
+> @@ -165,6 +165,19 @@ acpi_table_print_srat_entry(struct acpi_subtable_header *header)
+>  		}
+>  	}
+>  	break;
+> +
+> +	case ACPI_SRAT_TYPE_RINTC_AFFINITY:
+> +		{
+> +			struct acpi_srat_rintc_affinity *p =
+> +			    (struct acpi_srat_rintc_affinity *)header;
+> +			pr_debug("SRAT Processor (acpi id[0x%04x]) in proximity domain %d %s\n",
+> +				 p->acpi_processor_uid,
+> +				 p->proximity_domain,
+> +				 (p->flags & ACPI_SRAT_RINTC_ENABLED) ?
+> +				 "enabled" : "disabled");
+> +		}
+> +		break;
+> +
+>  	default:
+>  		pr_warn("Found unsupported SRAT entry (type = 0x%x)\n",
+>  			header->type);
+> @@ -448,6 +461,21 @@ acpi_parse_gi_affinity(union acpi_subtable_headers *header,
+>  }
+>  #endif /* defined(CONFIG_X86) || defined (CONFIG_ARM64) */
+>  
+> +static int __init
+> +acpi_parse_rintc_affinity(union acpi_subtable_headers *header,
+> +			 const unsigned long end)
+Alignment doesn't look right. Could you please run checkpatch on all
+the patches?
 
-    ESW_P4_LED_0    ESW_P3_LED_0    Frequency
-    -----------------------------------------
-    0               1               20MHz
-    1               0               40MHz
-    1               1               25MHz
+> +{
+> +	struct acpi_srat_rintc_affinity *rintc_affinity;
+> +
+> +	rintc_affinity = (struct acpi_srat_rintc_affinity *)header;
+> +	acpi_table_print_srat_entry(&header->common);
+> +
+> +	/* let architecture-dependent part to do it */
+> +	acpi_numa_rintc_affinity_init(rintc_affinity);
+> +
+Is it required to have this commit first prior to architecture
+functionality? I am wondering whether it is logically better to
+implement the function first and then consume in next commit?
 
-The value of HT_XTAL_FSEL is bootstrapped by pulling
-ESW_P4_LED_0 and ESW_P3_LED_0 up or down accordingly,
-but:
+> +	return 0;
+> +}
+> +
+>  static int __initdata parsed_numa_memblks;
+>  
+>  static int __init
+> @@ -501,7 +529,7 @@ int __init acpi_numa_init(void)
+>  
+>  	/* SRAT: System Resource Affinity Table */
+>  	if (!acpi_table_parse(ACPI_SIG_SRAT, acpi_parse_srat)) {
+> -		struct acpi_subtable_proc srat_proc[4];
+> +		struct acpi_subtable_proc srat_proc[5];
+>  
+>  		memset(srat_proc, 0, sizeof(srat_proc));
+>  		srat_proc[0].id = ACPI_SRAT_TYPE_CPU_AFFINITY;
+> @@ -512,6 +540,8 @@ int __init acpi_numa_init(void)
+>  		srat_proc[2].handler = acpi_parse_gicc_affinity;
+>  		srat_proc[3].id = ACPI_SRAT_TYPE_GENERIC_AFFINITY;
+>  		srat_proc[3].handler = acpi_parse_gi_affinity;
+> +		srat_proc[4].id = ACPI_SRAT_TYPE_RINTC_AFFINITY;
+> +		srat_proc[4].handler = acpi_parse_rintc_affinity;
+>  
+>  		acpi_table_parse_entries_array(ACPI_SIG_SRAT,
+>  					sizeof(struct acpi_table_srat),
+> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+> index b7165e52b3c6..a65273db55c6 100644
+> --- a/include/linux/acpi.h
+> +++ b/include/linux/acpi.h
+> @@ -269,6 +269,9 @@ acpi_numa_gicc_affinity_init(struct acpi_srat_gicc_affinity *pa) { }
+>  
+>  int acpi_numa_memory_affinity_init (struct acpi_srat_mem_affinity *ma);
+>  
+> +static inline void
+> +acpi_numa_rintc_affinity_init(struct acpi_srat_rintc_affinity *pa) { }
+> +
+I think this can be fit in single like as we can have upto 100
+characters.
 
-  if a 40MHz crystal has been selected and
-  the ESW_P3_LED_0 pin is high during reset,
-
-  or a 20MHz crystal has been selected and
-  the ESW_P4_LED_0 pin is high during reset,
-
-  then the value of HT_XTAL_FSEL will indicate
-  that a 25MHz crystal is present.
-
-By default, the state of the LED pins is PHY controlled
-to reflect the link state.
-
-To illustrate, if a board has:
-
-  5 ports with active low LED control,
-  and HT_XTAL_FSEL bootstrapped for 40MHz.
-
-When the MT7530 is powered up without any external
-connection, only the LED associated with Port 3 is
-illuminated as ESW_P3_LED_0 is low.
-
-In this state, directly after mt7530_setup()'s reset
-is performed, the HWTRAP register (0x7800) reflects
-the intended HT_XTAL_FSEL (HWTRAP bits 10:9) of 40MHz:
-
-  mt7530-mdio mdio-bus:1f: mt7530_read: 00007800 == 00007dcf
-
-  >>> bin(0x7dcf >> 9 & 0b11)
-  '0b10'
-
-But if a cable is connected to Port 3 and the link
-is active before mt7530_setup()'s reset takes place,
-then HT_XTAL_FSEL seems to be set for 25MHz:
-
-  mt7530-mdio mdio-bus:1f: mt7530_read: 00007800 == 00007fcf
-
-  >>> bin(0x7fcf >> 9 & 0b11)
-  '0b11'
-
-Once HT_XTAL_FSEL reflects 25MHz, none of the ports
-are functional until the MT7621 (or MT7530 itself)
-is reset.
-
-By disabling the LED pins just before reset, the chance
-of an unintended HT_XTAL_FSEL value is reduced.
-
-Signed-off-by: Justin Swartz <justin.swartz@risingedge.co.za>
----
- drivers/net/dsa/mt7530.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index 3c1f65759..8fa113126 100644
---- a/drivers/net/dsa/mt7530.c
-+++ b/drivers/net/dsa/mt7530.c
-@@ -2238,6 +2238,12 @@ mt7530_setup(struct dsa_switch *ds)
- 		}
- 	}
- 
-+	/* Disable LEDs before reset to prevent the MT7530 sampling a
-+	 * potentially incorrect HT_XTAL_FSEL value.
-+	 */
-+	mt7530_write(priv, MT7530_LED_EN, 0);
-+	usleep_range(1000, 1100);
-+
- 	/* Reset whole chip through gpio pin or memory-mapped registers for
- 	 * different type of hardware
- 	 */
--- 
-
+>  #ifndef PHYS_CPUID_INVALID
+>  typedef u32 phys_cpuid_t;
+>  #define PHYS_CPUID_INVALID (phys_cpuid_t)(-1)
+> -- 
+> 2.34.1
+> 
 
