@@ -1,112 +1,74 @@
-Return-Path: <linux-kernel+bounces-91820-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91768-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D2CB87171B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:40:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 280D987164B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:10:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44155B217EF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:40:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CFD1F280FE8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:10:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC9F27E774;
-	Tue,  5 Mar 2024 07:39:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TkD8qXDb"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26C0B7D41C;
+	Tue,  5 Mar 2024 07:10:34 +0000 (UTC)
+Received: from CHN02-BJS-obe.outbound.protection.partner.outlook.cn (mail-bjschn02on2126.outbound.protection.partner.outlook.cn [139.219.17.126])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 922F17E593;
-	Tue,  5 Mar 2024 07:39:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B466445005;
+	Tue,  5 Mar 2024 07:10:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.17.126
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709624394; cv=fail; b=DEMIcUdoYEaOq1NzxVXvKPGJXegXKPnUbSayW4SPySvmmL3j0ewG7T8F4VPxN8ed5qvEmgMCbsIQRQtRLpnCmfuPwifCkjDj3IhyrcfbSWEI7VjRwKLuhSM3y4MRvF8nvT/wVDmX/wwOrsACWp7oLFQASgpQfYS53ZjhwXSPCqw=
+	t=1709622633; cv=fail; b=uNj+KiO2lcTwKzkfhLHg5CzL4j9D7G0fCuMuz2yueec/6P+funzx4Y+rZqfIDhqcBw1ReYcJUGozgNtdu40ddjUd+mpx69kqQ+pUgBrlup4cgEHfvuyGWEJHsjtryRpCSSLbNtcsyCle6nptg2ebiAw99a6nsIzpN/rbYxc+D24=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709624394; c=relaxed/simple;
-	bh=ov+dEunALEC5WNzdepGVukG+vRxuWKitPGTZgan5qd8=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=hPaMnXV39ovo7pdnCiW+ln/quUwX0O5frTxGVzbhrz2it8R2WEDZrNgazz0bYVLsHEiIBRZjpKK+Km6NV0Qxj4vuX4qgIkuZEQEinkYrl/E/gwAh+1oT+YAYkR1bf3garSqFyBhZzJOoc+glom/RPOgi78WQEmLUI8kz7tbdfPM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TkD8qXDb; arc=fail smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709624392; x=1741160392;
-  h=date:from:to:cc:subject:message-id:reply-to:references:
-   in-reply-to:mime-version;
-  bh=ov+dEunALEC5WNzdepGVukG+vRxuWKitPGTZgan5qd8=;
-  b=TkD8qXDb4rusrweOGmv+ns2UjHpkWKQqi2VC9Mv0QXAEVob4Y1puTH43
-   JHjXfggJ0Ct3PorhpnyuTslXI2mSkCEkqaaPyvdoCSleW+LfRRJQ/J8oG
-   gk15d/bzPlrdgskAkk4tATEq1sNWxkLMtHK6NZc1WsfuAL+7R4qYhIJmT
-   XWj0RmY0hOyPekoNCliXGP8wQ4qH8MuvJsumS0O99sxN8Z6EWlAJM7fa5
-   Yvm2bJIZWIHJX4lWQp3b+WKyQn18tdRgf3KVDidakaQ16u+zxiP3vLlh6
-   uP0pqAvaUXoGwPCCJNQfIM4JJJW1c3N2Z2Lr+du5OIwjCCVXSkcZA1Rxd
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="15586569"
-X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
-   d="scan'208";a="15586569"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 23:39:48 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
-   d="scan'208";a="13777367"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmviesa005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Mar 2024 23:39:48 -0800
-Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 4 Mar 2024 23:39:47 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 4 Mar 2024 23:39:47 -0800
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 4 Mar 2024 23:39:47 -0800
+	s=arc-20240116; t=1709622633; c=relaxed/simple;
+	bh=lCUd9sY4DiRxf5QwG7u31+btY1ga9PJzd8YghrHSDX0=;
+	h=From:To:Subject:Date:Message-Id:Content-Type:MIME-Version; b=i4Vftp7ABIGx7Rs+WYJ+fxa29Oyxm8SsD/4/7QFKZRAK5FvKnjFH4g+B12AIW5KfItM6Yj0HWqbibS07UIW9ADpMLXzF79gL+Uf/bfWJs2cKkrdxhYZNXfpi24FIpeE8GKea7nWWHUPf4csgtka0JCpU61ygtmf4Mg0vH5jQPa0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.17.126
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ENpo236j1kAQRIKGLb7xf0IjyKUAL9AXWcQs5VgTb8yafbV22FBvGFHuTfCCBxNYkjsKpJxLTBhTLe+OfrEfvqxx21wS18kPwP5RHhZPCmj0hWTn2kQJqC2fVJcwVlJjRE0lh56zJ9SNN69MZ5no9QNtUrdwV8Cd81hikS/Tv8BoEG9m9YtbrzXOR5uDOxMffzj2NwDYCViSBenSyd57y1gZK3d18iuOZ0f3K3zsatR8rWi51c3ORFC3PI5zXY24DXrCNOZ+1e1IeKAbcaJhTKvuamo6SehyPG2cJhrPCJZBXs/WyI4pC0gCcQ721xXq7lb+GcntdjYgOd3Ji2Wwsw==
+ b=LvIT1v9WybX863TpqX5plfNAlCO0OJ+QcdjGuLunzOyKG7q/W2Noof5PvwurpFbvBeJmsCC8Zzw5/fFImQsIlGpC7UXunZkXMxY3taZG9clWNwoonqxxYFl+L8LDvKrmDgiT5N6rN4IDpwRV2xvk5JhRT47S8BZVxuykjNMjynZLkERsRyTaE8i4VGbiPamarJaINqLSLC3rU8g9qEt0OXcPEoI7+raiIN92SAVCh0nJ6oPUkLDX+Ba4K3SWzhk/6l+xH1CW9pAE+WJkjO/I9pPjTBDooklO49sFX8sU3a2qy+3rAJjdWk24RjM9PBI1m/WU6fVeXRYjzlFJvgyhzg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ov+dEunALEC5WNzdepGVukG+vRxuWKitPGTZgan5qd8=;
- b=V3uvMLOxyIbjnLcOlrAZ90h7jEin7W1EP2xVVNNPVOOcYqlUA01py+5/1WW5Ca+ta4nwDs0GCH/NImPP1NRvihVC2xfVgkag4YSJlrz+V7ftEhNPBJf62Gg6DuI8vOdmU0CX6iarVGkbvXyWrchDYHWzpkoEUcl1F5xVY7Qj4y4GsO79yrN4zUFX/GY58XwwZfF2RW1Bp6oJyTMebav8ZvkJniA1aVzbzZbJfvImAehQ1hHUVmKGq+gtlb7bJEolGBm4dngvW57/ADl0OrqXddNoZ6MYX6MQefl0i7EQiZaj1xeN80CEqlydcL22uy2ToelX1/+fcnWePAbDA1BfJA==
+ bh=yCpmkM+i2ozDhf4c8Fe7JodACJFOXykq9RVlJpCOavw=;
+ b=hYDzHblEtdNKdOF5VuHZot+Q/v57daeYjdYMrbMB90MCQxQUG1b12xunL3280osICyjDzv0u6fOrFS9d96hPuWFLYfvyUi0ukt2s70S6vmwg1tRi2SA3hmHSbPL4Uf3kyd+BdTmkUbhWtjvEAKjdsfp3IniwEtkhpmLaTWNWXaCkyKQ6zE7AM+iUTVZPOwmLxkvAqgl0JuTwl30JeTVeu6fWhXlChwJZe7yUX6UMRVlWfnkUlcgsjMndpYbNtsW+Wv1+59sWRRSITV6NCDJlX037YMts1r+26xdDTBdtus++Ps2at7PQi3HCEzFcMl6WfAZ74P4hTYgVRTFNkCdDqQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
+ smtp.mailfrom=starfivetech.com; dmarc=pass action=none
+ header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6) by
- DM4PR11MB6357.namprd11.prod.outlook.com (2603:10b6:8:b5::11) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7362.23; Tue, 5 Mar 2024 07:39:45 +0000
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::55f1:8d0:2fa1:c7af]) by DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::55f1:8d0:2fa1:c7af%5]) with mapi id 15.20.7362.019; Tue, 5 Mar 2024
- 07:39:45 +0000
-Date: Tue, 5 Mar 2024 15:09:52 +0800
-From: Yan Zhao <yan.y.zhao@intel.com>
-To: Sagi Shahar <sagis@google.com>
-CC: <linux-kselftest@vger.kernel.org>, Ackerley Tng <ackerleytng@google.com>,
-	Ryan Afranji <afranji@google.com>, Erdem Aktas <erdemaktas@google.com>,
-	"Isaku Yamahata" <isaku.yamahata@intel.com>, Sean Christopherson
-	<seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan
-	<shuah@kernel.org>, "Peter Gonda" <pgonda@google.com>, Haibo Xu
-	<haibo1.xu@intel.com>, Chao Peng <chao.p.peng@linux.intel.com>, Vishal
- Annapurve <vannapurve@google.com>, Roger Wang <runanwang@google.com>, Vipin
- Sharma <vipinsh@google.com>, <jmattson@google.com>, <dmatlack@google.com>,
-	<linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>, <linux-mm@kvack.org>
-Subject: Re: [RFC PATCH v5 17/29] KVM: selftests: TDX: Add TDX MMIO reads test
-Message-ID: <ZebFQOQMjZAA2XXN@yzhao56-desk.sh.intel.com>
-Reply-To: Yan Zhao <yan.y.zhao@intel.com>
-References: <20231212204647.2170650-1-sagis@google.com>
- <20231212204647.2170650-18-sagis@google.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231212204647.2170650-18-sagis@google.com>
-X-ClientProxiedBy: SI2P153CA0014.APCP153.PROD.OUTLOOK.COM (2603:1096:4:140::6)
- To DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6)
+ header.d=none;dmarc=none action=none header.from=starfivetech.com;
+Received: from SHXPR01MB0670.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:26::16) by SHXPR01MB0462.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:1e::21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.51; Tue, 5 Mar
+ 2024 07:10:18 +0000
+Received: from SHXPR01MB0670.CHNPR01.prod.partner.outlook.cn
+ ([fe80::9ffd:1956:b45a:4a5d]) by
+ SHXPR01MB0670.CHNPR01.prod.partner.outlook.cn ([fe80::9ffd:1956:b45a:4a5d%6])
+ with mapi id 15.20.7249.041; Tue, 5 Mar 2024 07:10:18 +0000
+From: Jia Jie Ho <jiajie.ho@starfivetech.com>
+To: Herbert Xu <herbert@gondor.apana.org.au>,
+	"David S . Miller" <davem@davemloft.net>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
+	Vinod Koul <vkoul@kernel.org>,
+	linux-crypto@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	dmaengine@vger.kernel.org
+Subject: [PATCH v4 0/7] crypto: starfive: Add support for JH8100
+Date: Tue,  5 Mar 2024 15:09:59 +0800
+Message-Id: <20240305071006.2181158-1-jiajie.ho@starfivetech.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: NT0PR01CA0019.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c510:c::22) To SHXPR01MB0670.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:26::16)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -114,57 +76,103 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR11MB5966:EE_|DM4PR11MB6357:EE_
-X-MS-Office365-Filtering-Correlation-Id: b2e70175-9676-4538-dd26-08dc3ce76d36
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-TrafficTypeDiagnostic: SHXPR01MB0670:EE_|SHXPR01MB0462:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0f403a54-41f4-4231-68e9-08dc3ce35074
 X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: c4zYJNywUSuFeXQbdnQJH+ugJCV4uSz25hoJpWZ4HxEPv0P3QcDcZSwBGyHQBrIS2RAnEHMLeYRvlCVrwlyzyoZophhZ4KBJE2NMSbGpHxFBc11NCmlfqCl4mmCvi9scp2bfbckP4o2yloWllhrxrEi6/zXzQ3CaLR/SW3/qGkT1Aq7/LXh9EH+cQRpc1xRw+7xqtuhIDoaPGAyvqeHDfHRxz5eHYmjgHGxVGyCcKBsOgdR4j5q6eoP5K3AwTUKxZKwHFlWeieEu8glwXSx0B7DgoIYaDoGmbBhcmf+gYnE8jf1gnrU3bM8p0YAtA4Cyzd8RHQxKl5Gw8k82Nl4YPp8cmdgj2kVk+oMpbw2b686osSPQcrDZg6xatJe/gU+BrB9MXpcnj2nHDeBcfAdcHtK0ctbD9L1aRnwL3f6UORFO6GucJY0aw2efRkBk2K8il91w7h0+3GnrzwjEVY8oMJKRh2DFtRnLf5cgiMu/+LwOGwOoy33lLJ8R2L0HSWQuWCemyO4R6Rq/XE4xOI3OomX0ZoFaWbH7iX2afvxeJi1x/04ChBmFZQryS96Pr56l1y8tO0l3FUTUuUaCDH8MI0anZod5iuK3DMB0pf3s2wHhCdBx7/TbfgFffO42Y8TqN1TctWI6roV5Su/3fIOzh0xqfoTEm6Z/5Jowy/TGtz4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR11MB5966.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info:
+	Ryrcbg1ITEZrLmo0d1tmXV9n4ey29Whb9xf37D62//2EEE4us6i58OhkbPlWD3kaECmn8N/wKjZGIG/UYaYXRGF8TgDYMHAxd15MZYzc+8HxEn8znTjm/WslDPO6z0Jadh1MEJBANThXSlH0WSZxvExR90fHjAnjqx2ZTFjOFeK38qKqWW5dsJan3PMK0EDLuf4evyFoSIy/LuDN9C6vzfPfgFLes5khi/GnWhX+AeqKGihxGnJgOrcgY3IWcH6eqJCBSyzwPpxde1Sy0IIWoLPXOoGRgHBIXAWJd0VUOUdlxCn3bedRo9L1jERb8C0zL5RmXfdhPdbaHL9gHZzt0gldXDLEgmpo14iBYyacDUgaIuPWzCGdWr50r2H+TBtYjvFgqiQ+R20SvlK9XSwqfz+/BeNjgn8Pfa64wjp9g9r6j3G4ATgh3X5NoguxxbjNW1Uwe6YCTAUedfHmFWswfSEO+u4jN92rkHxxaPCkbXS3gQ8Eh8goeNIGYlhBOT/ieA/oIGAp29YbyupaDawFGlBOR//2eijz+x7v/3ZEJZkDB1oEZBAuU13tkbZdmgtu3XESEwGHnHkp6svjBLZGFqaO+XYcn1ybOXyI4/iqFx8RBNS+CZmOrCKiELl14T0ihJJpETw6AcjXCnIpN7C1Kg==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SHXPR01MB0670.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(41320700004)(38350700005)(921011);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9mvkgJaUdsu92zB+odRIuGXLTevOw98wyRKCAhZDM1+v7uEmKAiQ6KJQtNy3?=
- =?us-ascii?Q?BO076SzGQ/TesnR3i/rlxLrwdC3HthD8BaM6mhmM4ce8MeTKEcFDPoNMrqsQ?=
- =?us-ascii?Q?4dqDyM7ubUP75K+YkXdRdcXEqXnR1O4EmkJqkQ+aRvKHlO7l9MJpkDYhU2Bl?=
- =?us-ascii?Q?7kjoH1SxZ4jE0KYa87vJNb5VvOiaZI1f6WBAOdMymC+WQyofrdKi527+qEmH?=
- =?us-ascii?Q?RJSPJ4LHpWOJFL9k7wzW9Q9Y4rayaqYu1jdMwpWEXf5IUdiw7tpYVWyIpcuK?=
- =?us-ascii?Q?7Fabvbtr9CLFN25iOvzEYEdOMerVfnzviUhT+n8s8vembR+zjvpSntwaWSJ6?=
- =?us-ascii?Q?FaLu4LtHOM32L/pKmmHv8NqPJ8OtVWFNuySkjlftPdn0gy1a7xiormxXqGLw?=
- =?us-ascii?Q?IDTLF9oQQKBfcLiD9NQk3NtUhxhnXs9S5tXLXeXzg5ufcJCYEK5hPXawg/81?=
- =?us-ascii?Q?qB/nUOFoXm1yS5a9C73x2yPXDoHQWKNs6DuBNKn25iVBsCduvSRBEEnBsoEE?=
- =?us-ascii?Q?lMsjBuUSEu66iiVk4yzIohTPp1C/GZk8M9DcvWAMIg3JQI2tfBh970E1iPV2?=
- =?us-ascii?Q?da8Oj94ZdxXbuXfMWOEZIeJBiEhCVwB7ZJtvdgHA5+SrnXc/Rh9LDAcviU/Z?=
- =?us-ascii?Q?Nzay8YvOTFPh7SonNoffWGXnVgp8yNegwSQxDy6+Wal7ocSKlJcPqqVa/GIX?=
- =?us-ascii?Q?qctvDM5m8GAoMlSa3z3E2opvZK+TCh6DA94exRyFB/MRY9ufLJHubi+aqDBk?=
- =?us-ascii?Q?pdMwSj1SEe+3jHNk8g9NDbJ6JjFFaYT9GBkTEfrt+aOoklhGIwd4CzWHNZZn?=
- =?us-ascii?Q?gMlgzV2ogYNMmy8ZE6gQjn9hh15o3V/fBwaCosYZekp2Xr3LBa3xqW3TUAoo?=
- =?us-ascii?Q?jUsfr6TQRruBJFje2k3odfg9wjwrXxzA/PTHbYlJvCACU5wJ/H3HCltSgXS7?=
- =?us-ascii?Q?PmWUsSi0GnZ58Y+dLih8P4I7qlmAZ3rSJ8wAUYMP8qAyVds/7j0lZBsIbqGG?=
- =?us-ascii?Q?B3ymyVE8+l5baaMhAa8+Jd88qvsM0lv1av1dcR8Y5x1AfpOE6qpDXFd4Nw5n?=
- =?us-ascii?Q?1Jjl+hBEEKvCbK4p3zKqcvhWcwm7wLr9wEnZyOzhy2+4PRqK+RcMZtVOK1vg?=
- =?us-ascii?Q?5l/GOT9O50YGENAcy4uBjxNPB0R9BBuK/XPe2j1r0gSSkNnkIKsxDaYJyNID?=
- =?us-ascii?Q?yFyrHWZ1pztvLefttDPa1PT4rAk8bRNpsSpOWUq0F1Mgv7iEG/Kl7PZdC2Qp?=
- =?us-ascii?Q?HalfcqqOPZF45P1c6RhjbnOiciD4yRCKi8Wji5SnlmB6GJlyTeh1PQ5lWfOX?=
- =?us-ascii?Q?pfypHCxymSpClEbE/4seB7UkvCtqw14QpTib5XgTfqTZ5IiGUUkEoXgvKgh0?=
- =?us-ascii?Q?i/S1ULXusuVXcXJLrEsvjnKhcP+wBebBny1U1uNtnFAgIYsR3Sqt0jeyBpGA?=
- =?us-ascii?Q?raOjfKHNAYQlTm1OP3ZnlFnEJpmptxTbgrMJMmPB8N6/Z4bIWSg7cXx4/Edq?=
- =?us-ascii?Q?JBSUlEQDii+kkN33mVhu62h41+Y7pXrt0EBIuVg7jA72grT3rcFg6Ka1REsK?=
- =?us-ascii?Q?hoFcdQAsg6/vkUQ7yQf+pcW18kYri6eg+uOd9aMk?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: b2e70175-9676-4538-dd26-08dc3ce76d36
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR11MB5966.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?QCCYxNstuKTxnXd746rcA6fCdiosnwdK+SEvCaPe6S9GyG5UAiFxg6ikQNdQ?=
+ =?us-ascii?Q?jYCUWWqcgxMbwQt+hBnYKPQhv7GbYL3q9JTzX0yZBhVD4rbQHhvrakEEgknj?=
+ =?us-ascii?Q?rYSyIVDOZKh90BXszqq/BQTb2wUtBorE4VuXCMxwfVT+ytcvQCUWHQuVjElv?=
+ =?us-ascii?Q?XZMAlyXXH/pWXM6/QyUJNq24hnTO8UNfdYZ4eL3yvBWQWQPSE76xLuhGc2U2?=
+ =?us-ascii?Q?q8n0x44tpDRg6OenDHiRfW2oVuAumqY+VZGdk/8voI2BC676I9tSUiAPfBR6?=
+ =?us-ascii?Q?OMNxJaELpl9ZRIB8X+4ZeHL4NL6Lp+lzOPsPgLJIHf3CsGxGdt+a6abXdpz1?=
+ =?us-ascii?Q?4YqP9QJNXzmOLlP5sH+NAg+Qe0ybS60BSPoe+3hPj3Wf4rLQQv6b6ER2skHq?=
+ =?us-ascii?Q?EYly8DFxdbhlymNH/70q+rzAPxY+AQ/evPgrLGU32k+ldfl4LkANhDB49rLp?=
+ =?us-ascii?Q?ne5HCxYhePDjDAawTpnuDaYb4t/rXZA5qJ8zzaxwjCXXo4jQ+vSc2UcjvMEn?=
+ =?us-ascii?Q?DsFG4q+ixEB42AW0fCOP9VqJpu++caysdxq+9CCvx8yeTz9Vu3VgCbPUpBQ2?=
+ =?us-ascii?Q?+YvKbqD9n4C5S0/1QnCj7LLVMriSTOz9HlD+fOo2Fbdy0IGAGEbu+6fTDesP?=
+ =?us-ascii?Q?FjiOdIepfSPqnTtZUIjfLeG6t++Vb8s/alk2f+Sh+Q64ng8WWNg/XgD+81Mx?=
+ =?us-ascii?Q?vcoN5520asIu7ibi80vsTE1bILBOwgetdvuWWE15+VJmZnS4r5B1k12VasKa?=
+ =?us-ascii?Q?J+ECwnB8/3MFujn6ccuS3rtcjWMbc4rBRibSbnXh1N6p62bdIyVcGNCn5Uqb?=
+ =?us-ascii?Q?uS6hazwS35b23VqeGRShU6pFvOgodhM4UZ754OWRJxHp1keN1z/Zo3yft9h8?=
+ =?us-ascii?Q?fshYNkjcUva+wrxPTD0jZ0MS+MfFf6LAvMSOutAaB+tpU0xQ3Eple9QyzzfI?=
+ =?us-ascii?Q?d1iWvAZqFa8P36zh0TeEYlfdSMVC9ildcNIKqf4O31/r3i2lQhGXPlQUJkCR?=
+ =?us-ascii?Q?ne3OSR0MRRmRCoA0yRVVBWQPB8uyUhVgauIxE9NKO6cir+Jwoz3wRVzDlIjc?=
+ =?us-ascii?Q?39IO1ruZi5o9WJmDaVuf3zaJpqCBr3rJdiRxcuuCvm4NtkpoRbCayG462shx?=
+ =?us-ascii?Q?IUWKche/yQ3jkSTK9mT40GPFqjsnB8LDO73FeFM7H/PxYvMnsJlURfgOv11B?=
+ =?us-ascii?Q?G/eW1ZK90NTw8M/c8D8vy1+VCM6SNlfi5JoytVmae3WccHCRzocG6EHoaRXa?=
+ =?us-ascii?Q?wppnNrj41sjZMMLWcnCZIW+2bAS35Gmrk5tEgJb0SwEeVlJQTOHiqJFmdcbd?=
+ =?us-ascii?Q?mqbH0jbpZj4oSt7bR8slwbyFBtS8PZknaI6Rl076L5IWz1jYsfVApu2jqH11?=
+ =?us-ascii?Q?Bdj5c/a54V7pMtTDEF1Vm5BAUwNJQnAKkmSKbT7ssviAdHfJ+ihmN7sryrMl?=
+ =?us-ascii?Q?OZ9KuD+oHPHmTeZFGoNKV9hYhUayw++iHSrjjrxoXDFl2irklR7eJZ+vEj6+?=
+ =?us-ascii?Q?esd3Zzsc01q65xUTH7y8Ato9ECy/ll3HJcygblSD94aEKuSaJ1/RWBJAh2cy?=
+ =?us-ascii?Q?7m313lt48pDSeSo2BMPXRZCXI/WFaJq5ZgSJIXt5sU2tWyqwdS3i8ElXC/YP?=
+ =?us-ascii?Q?Aw=3D=3D?=
+X-OriginatorOrg: starfivetech.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0f403a54-41f4-4231-68e9-08dc3ce35074
+X-MS-Exchange-CrossTenant-AuthSource: SHXPR01MB0670.CHNPR01.prod.partner.outlook.cn
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Mar 2024 07:39:45.0914
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Mar 2024 07:10:18.5662
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 00PmxS2Ukc+sqGBcoz2TBP+ZbVj/j6UaBJgbZ1j18a3KmAmqhbDn9ck87KmKawe/WT/gX0nb2V81oBUZpJqa2A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB6357
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-UserPrincipalName: lhM/nDK+X0+9MgkrHB9/PYdvQA7JPk7qrrwUmprSCL8dXmHaB2gwb5BO1mDSMdjez7abdvrgYAxy4AQgjN7iuZ5dWQ8DKbfkqUwvnJnZcCk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SHXPR01MB0462
 
-> +/* Pick any address that was not mapped into the guest to test MMIO */
-> +#define TDX_MMIO_TEST_ADDR 0x200000000
-Also need to test below MMIO addresses
-(1) GPA with shared bit on.
-(2) GPA in memslot
+This patch series add driver support for StarFive JH8100 SoC crypto
+engine. Patch 1 adds compatible string and update irq descriptions for
+JH8100 device. Subsequent patches update current driver implementations
+to support both 7110 and 8100 variants.
+
+v3->v4:
+- Updated interrupts descriptions for jh8100-crypto compatible. (Rob)
+- Added patch 3 to skip unneeded key freeing for RSA module.
+
+v2->v3:
+- Use of device data instead of #ifdef CONFIG_ for different device
+  variants.
+- Updated dt bindings compatible and interrupts descriptions.
+- Added patch 4 to support hardware quirks for dw-axi-dmac driver.
+
+v1->v2:
+- Resolved build warnings reported by kernel test robot
+  https://lore.kernel.org/oe-kbuild-all/202312170614.24rtwf9x-lkp@intel.com/
+
+Jia Jie Ho (7):
+  dt-bindings: crypto: starfive: Add jh8100 support
+  crypto: starfive: Update hash dma usage
+  crypto: starfive: Skip unneeded key free
+  crypto: starfive: Use dma for aes requests
+  dmaengine: dw-axi-dmac: Support hardware quirks
+  crypto: starfive: Add sm3 support for JH8100
+  crypto: starfive: Add sm4 support for JH8100
+
+ .../crypto/starfive,jh7110-crypto.yaml        |   30 +-
+ drivers/crypto/starfive/Kconfig               |   30 +-
+ drivers/crypto/starfive/Makefile              |    5 +-
+ drivers/crypto/starfive/jh7110-aes.c          |  592 ++++++---
+ drivers/crypto/starfive/jh7110-cryp.c         |   77 +-
+ drivers/crypto/starfive/jh7110-cryp.h         |  114 +-
+ drivers/crypto/starfive/jh7110-hash.c         |  316 +++--
+ drivers/crypto/starfive/jh7110-rsa.c          |    3 +
+ drivers/crypto/starfive/jh8100-sm3.c          |  544 ++++++++
+ drivers/crypto/starfive/jh8100-sm4.c          | 1119 +++++++++++++++++
+ .../dma/dw-axi-dmac/dw-axi-dmac-platform.c    |   32 +-
+ drivers/dma/dw-axi-dmac/dw-axi-dmac.h         |    2 +
+ include/linux/dma/dw_axi.h                    |   11 +
+ 13 files changed, 2437 insertions(+), 438 deletions(-)
+ create mode 100644 drivers/crypto/starfive/jh8100-sm3.c
+ create mode 100644 drivers/crypto/starfive/jh8100-sm4.c
+ create mode 100644 include/linux/dma/dw_axi.h
+
+-- 
+2.34.1
+
 
