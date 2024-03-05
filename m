@@ -1,235 +1,316 @@
-Return-Path: <linux-kernel+bounces-92694-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92693-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 019E4872472
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:36:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FB0987246A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:35:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2396A1C25AB9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:36:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCDBE1F266ED
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:35:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48FACDDC6;
-	Tue,  5 Mar 2024 16:35:51 +0000 (UTC)
-Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E15D2BA50;
+	Tue,  5 Mar 2024 16:35:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ydu1fkxV"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC2198BF6;
-	Tue,  5 Mar 2024 16:35:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 313088BF6
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 16:35:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709656550; cv=none; b=fUxArBNx+sFLDhasVNBSA9wR/bwdpG8ZAGYvAUGj8W6KaTvw495u0XzDYc0RTHM/6cpWnk01XbgxqrxlYZPEIhhgSrqUOt4TiKvQUhlb33JQydRXtDOmk13NwKyrbaXvKtPBewqQOJBRheYP0l0neEjTmQbP2VkijKls6kkuO1w=
+	t=1709656537; cv=none; b=j4A01Jyt+Osd0AYH08tdc3o58yFyn3DPy8hOW6H7uX3khEJb90h6Fj6t6bcr4k05N3d7tSYv7ASBq/HBvvvGgZjxUdT1WwVf2GqF+iCZO0Pk0mgDxGSniwoVRN1uq7/sfBXsfBxEfwPVV2D/WDUiksmtM5yi5wKos1X5eQyNEbg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709656550; c=relaxed/simple;
-	bh=1pdeNcwiI6EsTl0SRaoPJVpuE3CKPxS67A9A0uH3rcw=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=I/UMJg7S/ufDsWQykburViVdO5hnLTOn6viGfGoEgTAtV7I6/vgZTuMZWFTgQbMY/fD6PKOyFsRH6WR630PugCwhRpxeV0U6n2/2hedT2EOYqOmZKBq/qptqYENwdd18Ah65V89604HRDtclLx/nJDXU0Lzr4p0qoV/rWtJQcKE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.51])
-	by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4Tq14K38T3z9y8HV;
-	Wed,  6 Mar 2024 00:20:01 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.47])
-	by mail.maildlp.com (Postfix) with ESMTP id 05A921406AE;
-	Wed,  6 Mar 2024 00:35:32 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-	by APP1 (Coremail) with SMTP id LxC2BwCnmhPDSedlWlTFAw--.63520S2;
-	Tue, 05 Mar 2024 17:35:31 +0100 (CET)
-Message-ID: <133a912d05fb0790ab3672103a21a4f8bfb70405.camel@huaweicloud.com>
-Subject: Re: [PATCH v2 24/25] commoncap: use vfs fscaps interfaces
-From: Roberto Sassu <roberto.sassu@huaweicloud.com>
-To: Christian Brauner <brauner@kernel.org>
-Cc: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>, Serge Hallyn
- <serge@hallyn.com>, Paul Moore <paul@paul-moore.com>, Eric Paris
- <eparis@redhat.com>, James Morris <jmorris@namei.org>, Alexander Viro
- <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, Stephen Smalley
- <stephen.smalley.work@gmail.com>, Ondrej Mosnacek <omosnace@redhat.com>, 
- Casey Schaufler <casey@schaufler-ca.com>, Mimi Zohar <zohar@linux.ibm.com>,
- Roberto Sassu <roberto.sassu@huawei.com>,  Dmitry Kasatkin
- <dmitry.kasatkin@gmail.com>, Eric Snowberg <eric.snowberg@oracle.com>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>, Jonathan Corbet
- <corbet@lwn.net>, Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein
- <amir73il@gmail.com>,  linux-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org,  linux-security-module@vger.kernel.org,
- audit@vger.kernel.org,  selinux@vger.kernel.org,
- linux-integrity@vger.kernel.org,  linux-doc@vger.kernel.org,
- linux-unionfs@vger.kernel.org
-Date: Tue, 05 Mar 2024 17:35:11 +0100
-In-Reply-To: <20240305-zyklisch-halluzinationen-98b782666cf8@brauner>
-References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
-	 <20240221-idmap-fscap-refactor-v2-24-3039364623bd@kernel.org>
-	 <dcbd9e7869d2fcce69546b53851d694b8ebad54e.camel@huaweicloud.com>
-	 <ZeXpbOsdRTbLsYe9@do-x1extreme>
-	 <a7124afa6bed2fcadcb66efa08e256828cd6f8ab.camel@huaweicloud.com>
-	 <ZeX9MRhU/EGhHkCY@do-x1extreme>
-	 <20240305-fachjargon-abmontieren-75b1d6c67a83@brauner>
-	 <3098aef3e5f924e5717b4ba4a34817d9f22ec479.camel@huaweicloud.com>
-	 <20240305-zyklisch-halluzinationen-98b782666cf8@brauner>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1709656537; c=relaxed/simple;
+	bh=8fCD3mFM356hHR4y4xRDKU/RTQ6W8aBHd+DS5kjFZ8Q=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=AS1Wm/PpSsJAxIhoPtT0W/PmnNt7nQa+48YLFvqKl0rbVK576P8UEtI0xUp32SOG1sxFb7z+7doCBHScNVLGGc5Tvct7LJJvtNTQ2skS0Kt+cP/hPP88vVfWeIXWG8cYivbO24oLNj+sFj8YJfAg4zcgJCs4oXC8D8mUQ4dkWg8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ydu1fkxV; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6b26eef6cso8036172276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 08:35:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709656535; x=1710261335; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QQmbrJT9dwObj4pbI1GLJWzAoRH+/arY+5jTHTxjCY8=;
+        b=ydu1fkxVFAc7z3RGL+4WyzY3aZDazHKwq4MeQAAQ2YnikxvC8koqWGnLclG81OJlWg
+         Sdx8MdmXo5N/Gq5VVRO8nyYBPgkcebJjkzLfiShMwN7hCys2iculWZfw642SXjire4rg
+         LztuBO7qRDCyncghmqghUWZ6CLQ8J8DoZ1qPQWIYA8PuoY+v1IOA0Y4P1ofvMMSCKB9Y
+         Za821EJ1WvzYydGdynnxCkk9u3YuIbH7nBXG8w9EeFKo1hmmgTcU3eFm1VAxRDWnBJe0
+         A1uRrTlXJvSRHAU+i5L0Up4Q4CF3WGZnO7uJ4WYyg6yr+3OVeMUrwCUvZHoziSjW22gu
+         0pIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709656535; x=1710261335;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=QQmbrJT9dwObj4pbI1GLJWzAoRH+/arY+5jTHTxjCY8=;
+        b=JtDPHybQCzE+MsbGhAunazLxNCCykGy8E7vimVUQEvMEnDxDbVi8CpLk4DBGwvbvCh
+         L551FBGgAphqSfCUsecDOizV9+7Ua3DzKCbhA883WDCpbiOxRL+TTbvSf1t/W2Ezy4eE
+         rYWdLfBtxipF1K3zuycY5r6f9P/YttKLh3VPd7yzpn3oVQ5Bku1Jj7PtHK5FLPWOkHZY
+         dov4arCvwxLTa/OzahU277fk/fsunqYZ6eblkxdaLkBmOjvmSv6VVfGpJBwczP2X4dNR
+         rN7CkAcmj+3O7UsRaSQ2BssiwFVa5Gn8zNgCWozdGqM9UXZgY+Pb6FQooSiW4XV4Oa+8
+         v5WA==
+X-Forwarded-Encrypted: i=1; AJvYcCVt2lCvM+7+g0ISBZIeWA7pX2rbxYPdfe83z4z5+v5M3yOnYX6atmuJtuWDGY24OEgAa9AEBze+KH80pmYm0+/Wx0B2lLTxvE0FA0aF
+X-Gm-Message-State: AOJu0Yx+anhWScP7J8NpILkI9ALGycKuKri4ahXrkxmzTWFgiEV4loLy
+	jbXDCgEE4Q+yfkv89GIXXJMYMLfLTeRlUeN6B9iFGVUvan+6xG1quLFVW/zTGiUNb7ajsOD3NPB
+	VKQ==
+X-Google-Smtp-Source: AGHT+IHruno/sPushTJHAVm2hrfJdFuFu3KW+MjOH2NiCDASBhOf9P5HCA7/lTJp7lXCzbWJ7NzURiaR8kQ=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:18d3:b0:dc7:865b:22c6 with SMTP id
+ ck19-20020a05690218d300b00dc7865b22c6mr485363ybb.8.1709656535232; Tue, 05 Mar
+ 2024 08:35:35 -0800 (PST)
+Date: Tue, 5 Mar 2024 08:35:33 -0800
+In-Reply-To: <20240305103506.613950-1-kraxel@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-CM-TRANSID:LxC2BwCnmhPDSedlWlTFAw--.63520S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxKFy3uw1xCw1xCrWrur1rZwb_yoW7Xw18pF
-	W5GFnrKF4DJr13Cr1xtw1UX3WFy34fJF4UXrn8J3yjyr1qkr1fGr4Syr17uFy5Cr1xtw4Y
-	vF1jyFyfWrn8A3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkIb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8C
-	rVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4
-	IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY
-	0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I
-	0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAI
-	cVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0x
-	vE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
-	87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IU1ebytUUUUU==
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgANBF1jj5cBhQAAsp
+Mime-Version: 1.0
+References: <20240305103506.613950-1-kraxel@redhat.com>
+Message-ID: <ZedJ1UmvaYZ4PWp6@google.com>
+Subject: Re: [PATCH v2] kvm: set guest physical bits in CPUID.0x80000008
+From: Sean Christopherson <seanjc@google.com>
+To: Gerd Hoffmann <kraxel@redhat.com>
+Cc: kvm@vger.kernel.org, Tom Lendacky <thomas.lendacky@amd.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	"maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, 
+	"open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 2024-03-05 at 17:26 +0100, Christian Brauner wrote:
-> On Tue, Mar 05, 2024 at 01:46:56PM +0100, Roberto Sassu wrote:
-> > On Tue, 2024-03-05 at 10:12 +0100, Christian Brauner wrote:
-> > > On Mon, Mar 04, 2024 at 10:56:17AM -0600, Seth Forshee (DigitalOcean)=
- wrote:
-> > > > On Mon, Mar 04, 2024 at 05:17:57PM +0100, Roberto Sassu wrote:
-> > > > > On Mon, 2024-03-04 at 09:31 -0600, Seth Forshee (DigitalOcean) wr=
-ote:
-> > > > > > On Mon, Mar 04, 2024 at 11:19:54AM +0100, Roberto Sassu wrote:
-> > > > > > > On Wed, 2024-02-21 at 15:24 -0600, Seth Forshee (DigitalOcean=
-) wrote:
-> > > > > > > > Use the vfs interfaces for fetching file capabilities for k=
-illpriv
-> > > > > > > > checks and from get_vfs_caps_from_disk(). While there, upda=
-te the
-> > > > > > > > kerneldoc for get_vfs_caps_from_disk() to explain how it is=
- different
-> > > > > > > > from vfs_get_fscaps_nosec().
-> > > > > > > >=20
-> > > > > > > > Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kernel=
-org>
-> > > > > > > > ---
-> > > > > > > >  security/commoncap.c | 30 +++++++++++++-----------------
-> > > > > > > >  1 file changed, 13 insertions(+), 17 deletions(-)
-> > > > > > > >=20
-> > > > > > > > diff --git a/security/commoncap.c b/security/commoncap.c
-> > > > > > > > index a0ff7e6092e0..751bb26a06a6 100644
-> > > > > > > > --- a/security/commoncap.c
-> > > > > > > > +++ b/security/commoncap.c
-> > > > > > > > @@ -296,11 +296,12 @@ int cap_capset(struct cred *new,
-> > > > > > > >   */
-> > > > > > > >  int cap_inode_need_killpriv(struct dentry *dentry)
-> > > > > > > >  {
-> > > > > > > > -	struct inode *inode =3D d_backing_inode(dentry);
-> > > > > > > > +	struct vfs_caps caps;
-> > > > > > > >  	int error;
-> > > > > > > > =20
-> > > > > > > > -	error =3D __vfs_getxattr(dentry, inode, XATTR_NAME_CAPS, =
-NULL, 0);
-> > > > > > > > -	return error > 0;
-> > > > > > > > +	/* Use nop_mnt_idmap for no mapping here as mapping is un=
-important */
-> > > > > > > > +	error =3D vfs_get_fscaps_nosec(&nop_mnt_idmap, dentry, &c=
-aps);
-> > > > > > > > +	return error =3D=3D 0;
-> > > > > > > >  }
-> > > > > > > > =20
-> > > > > > > >  /**
-> > > > > > > > @@ -323,7 +324,7 @@ int cap_inode_killpriv(struct mnt_idmap=
- *idmap, struct dentry *dentry)
-> > > > > > > >  {
-> > > > > > > >  	int error;
-> > > > > > > > =20
-> > > > > > > > -	error =3D __vfs_removexattr(idmap, dentry, XATTR_NAME_CAP=
-S);
-> > > > > > > > +	error =3D vfs_remove_fscaps_nosec(idmap, dentry);
-> > > > > > >=20
-> > > > > > > Uhm, I see that the change is logically correct... but the or=
-iginal
-> > > > > > > code was not correct, since the EVM post hook is not called (=
-thus the
-> > > > > > > HMAC is broken, or an xattr change is allowed on a portable s=
-ignature
-> > > > > > > which should be not).
-> > > > > > >=20
-> > > > > > > For completeness, the xattr change on a portable signature sh=
-ould not
-> > > > > > > happen in the first place, so cap_inode_killpriv() would not =
-be called.
-> > > > > > > However, since EVM allows same value change, we are here.
-> > > > > >=20
-> > > > > > I really don't understand EVM that well and am pretty hesitant =
-to try an
-> > > > > > change any of the logic around it. But I'll hazard a thought: s=
-hould EVM
-> > > > > > have a inode_need_killpriv hook which returns an error in this
-> > > > > > situation?
-> > > > >=20
-> > > > > Uhm, I think it would not work without modifying
-> > > > > security_inode_need_killpriv() and the hook definition.
-> > > > >=20
-> > > > > Since cap_inode_need_killpriv() returns 1, the loop stops and EVM=
- would
-> > > > > not be invoked. We would need to continue the loop and let EVM kn=
-ow
-> > > > > what is the current return value. Then EVM can reject the change.
-> > > > >=20
-> > > > > An alternative way would be to detect that actually we are settin=
-g the
-> > > > > same value for inode metadata, and maybe not returning 1 from
-> > > > > cap_inode_need_killpriv().
-> > > > >=20
-> > > > > I would prefer the second, since EVM allows same value change and=
- we
-> > > > > would have an exception if there are fscaps.
-> > > > >=20
-> > > > > This solves only the case of portable signatures. We would need t=
-o
-> > > > > change cap_inode_need_killpriv() anyway to update the HMAC for mu=
-table
-> > > > > files.
-> > > >=20
-> > > > I see. In any case this sounds like a matter for a separate patch
-> > > > series.
-> > >=20
-> > > Agreed.
-> >=20
-> > Christian, how realistic is that we don't kill priv if we are setting
-> > the same owner?
+KVM: x86:
+
+On Tue, Mar 05, 2024, Gerd Hoffmann wrote:
+> Set CPUID.0x80000008:EAX[23:16] to guest phys bits, i.e. the bits which
+> are actually addressable.  In most cases this is identical to the host
+> phys bits, but tdp restrictions (no 5-level paging) can limit this to
+> 48.
 >=20
-> Uhm, I would need to see the wider context of the proposed change. But
-> iiuc then you would be comparing current and new fscaps and if they are
-> identical you don't kill privs? I think that would work. But again, I
-> would need to see the actual context/change to say something meaningful.
+> Quoting AMD APM (revision 3.35):
+>=20
+>   23:16 GuestPhysAddrSize Maximum guest physical address size in bits.
+>                           This number applies only to guests using nested
+>                           paging. When this field is zero, refer to the
+>                           PhysAddrSize field for the maximum guest
+>                           physical address size. See =E2=80=9CSecure Virt=
+ual
+>                           Machine=E2=80=9D in APM Volume 2.
+>=20
+> Tom Lendacky confirmed the purpose of this field is software use,
+> hardware always returns zero here.
+>=20
+> Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+> ---
+>  arch/x86/kvm/mmu.h     |  2 ++
+>  arch/x86/kvm/cpuid.c   |  3 ++-
+>  arch/x86/kvm/mmu/mmu.c | 15 +++++++++++++++
+>  3 files changed, 19 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
+> index 60f21bb4c27b..42b5212561c8 100644
+> --- a/arch/x86/kvm/mmu.h
+> +++ b/arch/x86/kvm/mmu.h
+> @@ -100,6 +100,8 @@ static inline u8 kvm_get_shadow_phys_bits(void)
+>  	return boot_cpu_data.x86_phys_bits;
+>  }
+> =20
+> +int kvm_mmu_get_guest_phys_bits(void);
+> +
+>  void kvm_mmu_set_mmio_spte_mask(u64 mmio_value, u64 mmio_mask, u64 acces=
+s_mask);
+>  void kvm_mmu_set_me_spte_mask(u64 me_value, u64 me_mask);
+>  void kvm_mmu_set_ept_masks(bool has_ad_bits, bool has_exec_only);
+> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> index adba49afb5fe..12037f1b017e 100644
+> --- a/arch/x86/kvm/cpuid.c
+> +++ b/arch/x86/kvm/cpuid.c
+> @@ -1240,7 +1240,8 @@ static inline int __do_cpuid_func(struct kvm_cpuid_=
+array *array, u32 function)
+>  		else if (!g_phys_as)
 
-Ok, basically a software vendor can ship binaries with a signature over
-file metadata, including UID/GID, etc.
+Based on the new information that GuestPhysAddrSize is software-defined, an=
+d the
+fact that KVM and QEMU are planning on using GuestPhysAddrSize to communica=
+te
+the maximum *addressable* GPA, deriving PhysAddrSize from GuestPhysAddrSize=
+ is
+wrong.
 
-A system can verify the signature through the public key of the
-software vendor.
+E.g. if KVM is running as L1 on top of a new KVM, on a CPU with MAXPHYADDR=
+=3D52,
+and on a CPU without 5-level TDP, then KVM (as L1) will see:
 
-The problem is if someone (or even tar), executes chown on that binary,
-fscaps are lost. Thus, signature verification will fail from now on.
+  PhysAddrSize      =3D 52
+  GuestPhysAddrSize =3D 48
 
-EVM locks file metadata as soon as signature verification succeeds
-(i.e. metadata are the same of those signed by the software vendor).
+Propagating GuestPhysAddrSize to PhysAddrSize (which is confusingly g_phys_=
+as)
+will yield an L2 with
 
-EVM locking works if someone is trying to set different metadata. But,
-if I try to chown to the same owner as the one stored in the inode, EVM
-allows it but the capability LSM removes security.capability, thus
-invalidating the signature.
+  PhysAddrSize      =3D 48=20
+  GuestPhysAddrSize =3D 48
 
-At least, it would be desirable that security.capability is not removed
-when setting the same owner. If the owner is different, EVM will handle
-that.
+which is broken, because GPAs with bits 51:48!=3D0 are *legal*, but not add=
+ressable.
 
-Roberto
+>  			g_phys_as =3D phys_as;
+> =20
+> -		entry->eax =3D g_phys_as | (virt_as << 8);
+> +		entry->eax =3D g_phys_as | (virt_as << 8)
+> +			| kvm_mmu_get_guest_phys_bits() << 16;
+
+The APM explicitly states that GuestPhysAddrSize only applies to NPT.  KVM =
+should
+follow suit to avoid creating unnecessary ABI, and because KVM can address =
+any
+legal GPA when using shadow paging.
+
+>  		entry->ecx &=3D ~(GENMASK(31, 16) | GENMASK(11, 8));
+>  		entry->edx =3D 0;
+>  		cpuid_entry_override(entry, CPUID_8000_0008_EBX);
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 2d6cdeab1f8a..8bebb3e96c8a 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -5267,6 +5267,21 @@ static inline int kvm_mmu_get_tdp_level(struct kvm=
+_vcpu *vcpu)
+>  	return max_tdp_level;
+>  }
+> =20
+> +/*
+> + * return the actually addressable guest phys bits, which might be
+> + * less than host phys bits due to tdp restrictions.
+> + */
+> +int kvm_mmu_get_guest_phys_bits(void)
+> +{
+> +	if (tdp_enabled && shadow_phys_bits > 48) {
+> +		if (tdp_root_level && tdp_root_level !=3D PT64_ROOT_5LEVEL)
+> +			return 48;
+> +		if (max_tdp_level !=3D PT64_ROOT_5LEVEL)
+> +			return 48;
+
+I would prefer to not use shadow_phys_bits to cap the reported CPUID.0x8000=
+_0008,
+so that the logic isn't spread across the CPUID code and the MMU.  I don't =
+love
+that the two have duplicate logic, but there's no great way to handle that =
+since
+the MMU needs to be able to determine the effective host MAXPHYADDR even if
+CPUID.0x8000_0008 is unsupported.
+
+I'm thinking this, maybe spread across two patches: one to undo KVM's usage=
+ of
+GuestPhysAddrSize, and a second to then set GuestPhysAddrSize for userspace=
+?
+
+---
+ arch/x86/kvm/cpuid.c   | 38 ++++++++++++++++++++++++++++----------
+ arch/x86/kvm/mmu.h     |  2 ++
+ arch/x86/kvm/mmu/mmu.c |  5 +++++
+ 3 files changed, 35 insertions(+), 10 deletions(-)
+
+diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+index adba49afb5fe..ae03e69d7fb9 100644
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -1221,9 +1221,18 @@ static inline int __do_cpuid_func(struct kvm_cpuid_a=
+rray *array, u32 function)
+ 		entry->eax =3D entry->ebx =3D entry->ecx =3D 0;
+ 		break;
+ 	case 0x80000008: {
+-		unsigned g_phys_as =3D (entry->eax >> 16) & 0xff;
+-		unsigned virt_as =3D max((entry->eax >> 8) & 0xff, 48U);
+-		unsigned phys_as =3D entry->eax & 0xff;
++		unsigned int virt_as =3D max((entry->eax >> 8) & 0xff, 48U);
++
++		/*
++		 * KVM's ABI is to report the effective MAXPHYADDR for the guest
++		 * in PhysAddrSize (phys_as), and the maximum *addressable* GPA
++		 * in GuestPhysAddrSize (g_phys_as).  GuestPhysAddrSize is valid
++		 * if and only if TDP is enabled, in which case the max GPA that
++		 * can be addressed by KVM may be less than the max GPA that can
++		 * be legally generated by the guest, e.g. if MAXPHYADDR>48 but
++		 * the CPU doesn't support 5-level TDP.
++		 */
++		unsigned int phys_as, g_phys_as;
+=20
+ 		/*
+ 		 * If TDP (NPT) is disabled use the adjusted host MAXPHYADDR as
+@@ -1231,16 +1240,25 @@ static inline int __do_cpuid_func(struct kvm_cpuid_=
+array *array, u32 function)
+ 		 * reductions in MAXPHYADDR for memory encryption affect shadow
+ 		 * paging, too.
+ 		 *
+-		 * If TDP is enabled but an explicit guest MAXPHYADDR is not
+-		 * provided, use the raw bare metal MAXPHYADDR as reductions to
+-		 * the HPAs do not affect GPAs.
++		 * If TDP is enabled, the effective guest MAXPHYADDR is the same
++		 * as the raw bare metal MAXPHYADDR, as reductions to HPAs don't
++		 * affect GPAs.  The max addressable GPA is the same as the max
++		 * effective GPA, except that it's capped at 48 bits if 5-level
++		 * TDP isn't supported (hardware processes bits 51:48 only when
++		 * walking the fifth level page table).
+ 		 */
+-		if (!tdp_enabled)
+-			g_phys_as =3D boot_cpu_data.x86_phys_bits;
+-		else if (!g_phys_as)
++		if (!tdp_enabled) {
++			phys_as =3D boot_cpu_data.x86_phys_bits;
++			g_phys_as =3D 0;
++		} else {
++			phys_as =3D entry->eax & 0xff;
+ 			g_phys_as =3D phys_as;
+=20
+-		entry->eax =3D g_phys_as | (virt_as << 8);
++			if (kvm_mmu_get_max_tdp_level() < 5)
++				g_phys_as =3D min(g_phys_as, 48);
++		}
++
++		entry->eax =3D phys_as | (virt_as << 8) | (g_phys_as << 16);
+ 		entry->ecx &=3D ~(GENMASK(31, 16) | GENMASK(11, 8));
+ 		entry->edx =3D 0;
+ 		cpuid_entry_override(entry, CPUID_8000_0008_EBX);
+diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
+index 60f21bb4c27b..b410a227c601 100644
+--- a/arch/x86/kvm/mmu.h
++++ b/arch/x86/kvm/mmu.h
+@@ -100,6 +100,8 @@ static inline u8 kvm_get_shadow_phys_bits(void)
+ 	return boot_cpu_data.x86_phys_bits;
+ }
+=20
++u8 kvm_mmu_get_max_tdp_level(void);
++
+ void kvm_mmu_set_mmio_spte_mask(u64 mmio_value, u64 mmio_mask, u64 access_=
+mask);
+ void kvm_mmu_set_me_spte_mask(u64 me_value, u64 me_mask);
+ void kvm_mmu_set_ept_masks(bool has_ad_bits, bool has_exec_only);
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 2d6cdeab1f8a..ffd32400fd8c 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -5267,6 +5267,11 @@ static inline int kvm_mmu_get_tdp_level(struct kvm_v=
+cpu *vcpu)
+ 	return max_tdp_level;
+ }
+=20
++u8 kvm_mmu_get_max_tdp_level(void)
++{
++	return tdp_root_level ? tdp_root_level : max_tdp_level;
++}
++
+ static union kvm_mmu_page_role
+ kvm_calc_tdp_mmu_root_page_role(struct kvm_vcpu *vcpu,
+ 				union kvm_cpu_role cpu_role)
+
+base-commit: c0372e747726ce18a5fba8cdc71891bd795148f6
+--=20
 
 
