@@ -1,148 +1,107 @@
-Return-Path: <linux-kernel+bounces-92760-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92761-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B36A87259A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:25:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D1208725A2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:28:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6D0FAB219D6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:25:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1212F1F26F96
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:28:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EAEE16427;
-	Tue,  5 Mar 2024 17:25:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D5DF168DE;
+	Tue,  5 Mar 2024 17:28:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nGIoI2Rq"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kf+SqNR7"
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB00714AA3;
-	Tue,  5 Mar 2024 17:25:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A442714016;
+	Tue,  5 Mar 2024 17:28:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709659535; cv=none; b=fyS5zioiC+Yw9UGBABaY8Kx+NUreRcX4ChU+89diz9HOkJgffo2ocJcnRJEtDufclBphqEhXW+xV5AK6xUOckr04j0jJiyU313/fkqDQZBto6X24f2EBuZpaSFNKAU9d9rmEZEjXVoL6tVQDXSHMWlwYEKVfJYT2Hwg9HN9GDks=
+	t=1709659708; cv=none; b=hJdE2fXbJPJYQRXgnl9M+8pWIXbOhF0R6ji+gOTBMDlHatdbOondUpQJa/TzlIMAHYHpj5Klm4+6sOfLE36xnDjjKsKslSlMYK0/zJlfuP/xBY10xmKvT5z2VClrYJ5yxknVzjKIAOcS/jWpT0gsQsQZM1ooZjIQt4RJf7jvxyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709659535; c=relaxed/simple;
-	bh=4nFC5omIFOjOAJ+cP/UoTfF1yurBWzlnntNqzpar1uA=;
+	s=arc-20240116; t=1709659708; c=relaxed/simple;
+	bh=kNW5t8ukzxzZT7xpKqZojeyvFn3Q0ntJqTrSqBZhfKI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HfBtgAV6H+rNMgDeAlAdUi8CX/rDNANU2Pgg1V4p3FCfL2+D929f4JWlP4nfNIWm/n6NlndLMSR4I/eY6wD1X9IldsPjqb0IszrRt4jsVrVZY27kzd4YSj88BM1z4UbXm6zmUfjxq5tOpuqKHB3i5nBL4BOaQr+7YxU8kD/5g5I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nGIoI2Rq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADE95C433C7;
-	Tue,  5 Mar 2024 17:25:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709659535;
-	bh=4nFC5omIFOjOAJ+cP/UoTfF1yurBWzlnntNqzpar1uA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nGIoI2RqSSD+o5WgK9vgZYqgif+hg8huqzeRQfiT4srghDdJmIeoqQSII8KF0NwNc
-	 WhTFl3lISg2N3BXnnD8honFCDlkWkCLPzATIHWdliP3x3xjDnxmO6KuHzM2zL5APwC
-	 sAiyhqYbkWpDmbBP1JA/FAzosdQDSChqnfX/LBUGWTz9WUX/TEx3zPIzORcgYSm99b
-	 xYlQr6Z0yT4rAAWNEdQHP02sm4tNCDMnTGNARDBIrNaLW3sU3t2zXk1dvhGbcqpg0n
-	 2F/sl6ixgTHrDNsicoFbpZ7owAlaGBnYy+P+Se9N6NqcNkd121JRUA5eDQIObyb65h
-	 wno0/gZxqkbdw==
-Date: Tue, 5 Mar 2024 11:25:32 -0600
-From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-	Clemens Ladisch <clemens@ladisch.de>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	linux-hardening@vger.kernel.org, alsa-devel@alsa-project.org,
-	linux-sound@vger.kernel.org, linux1394-devel@lists.sourceforge.net
-Subject: [PATCH 2/2][next] ALSA: firewire-lib: Avoid
- -Wflex-array-member-not-at-end warning
-Message-ID: <d3a764eb76909b16b8a22d9ff530e5edf0e59e6b.1709658886.git.gustavoars@kernel.org>
-References: <cover.1709658886.git.gustavoars@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=brF7lwEoIAYMsZKKW3sBjBUVwU16Cl3cGrTr5oVoQfbjIDB+z6NGYZv0FVQOdFnKRRM0o1AX+GwF2pos05unyWM6NyyAlRzexfzqlAnZgRWMF5MlUjRfurvHTQ6ux4eL3uDBt6OPkSBRX0NbF1pz0CvTN/dgTUPlB/bmhQTDExg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kf+SqNR7; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e4d48a5823so4733924b3a.1;
+        Tue, 05 Mar 2024 09:28:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709659706; x=1710264506; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OcJq8X/piv1pkzdTu6ce3o3Fk2RAorMlIkYhy16kiAc=;
+        b=kf+SqNR7Aq8kpGMsIR0XCGX0ssyyF28dBIgXIcotp7oeWLBzc9xNqCX98wHnHDRk+v
+         ddIJ8wweI4Zu2kuq4MQUMRP/dxKlB4awxHjFh16zst6Lkucv7fMosCZJsZvWex8aghUk
+         ZmLcwGMUZou5ZdmmbvMXubf7m90UT3vXApuRiv/f3JCR6FpeEkER8TTJQOqg2uOOUBBR
+         wrdEbTO76mOCYdV2AHaf0XaF/XWqAW5CLTeRQ01pYNRqXpszDKKaSzISRSEx3uerlO95
+         zQ8XGZJVlSCKMq7synPMQi9lvtSASVHHwPONnLKOZI5hxK/M0N3GV/viCtWVjo7fKQ90
+         dvXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709659706; x=1710264506;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OcJq8X/piv1pkzdTu6ce3o3Fk2RAorMlIkYhy16kiAc=;
+        b=rVLFJ41Kz49wQqKPjw0zAzD9u07x9hz20mlBO3qke+52Cuy3Sq8o6kBQPg2rOk2sNW
+         vU3z2tX0g98+vXi7d7v6D+qndAJyVjQCo0a/0M7+Tw8NAqo/2S4M/BOE6pkP6AmOiZf5
+         kQrvV/ZNXWW6QwW0FntJ7FMwJZAMnpLAiuJzOqD3VTujzaEBpzQDhsniatFp1Py4EXTf
+         rgjNKwBfBJccIA9VtzSOAXP2X29nicSeyaRcn4msvT2mkYVfAoS8bnyybi60p9KQKotz
+         db+GWMgQ/3X6yJer/8adPgY+aD7T07E6JkCpRmkl+DALE+uTjUwJsswEySw2FChuNqhe
+         ud4g==
+X-Forwarded-Encrypted: i=1; AJvYcCWOgeMleaVddBTpZVbbalccmh9N6y7VipMgjf6V2v0Pj4RyJtd/E6UHAKiEJAK8W+UyPHbxVWZlSUav8RpIK/IlF2lDDhJogJtqwY3K
+X-Gm-Message-State: AOJu0Yz3Fw5s7VOID6UHQSiMk4AXvF14VYGbQynbQYvqmedRFc1NTh0u
+	WoKcauhxT1mc3sZ72HWo4yYUfhv8M2aqBdCEPQ79uUOIsxKzcfO4cb4yCI6i
+X-Google-Smtp-Source: AGHT+IEmOJ2e62dItA6FE7sEszI6bKvV3r+isvq7qUT76xII69ekEac1IyttXdhHW04mI+Y0wmmaoQ==
+X-Received: by 2002:a05:6a00:18a9:b0:6e5:6589:f949 with SMTP id x41-20020a056a0018a900b006e56589f949mr14544619pfh.1.1709659705670;
+        Tue, 05 Mar 2024 09:28:25 -0800 (PST)
+Received: from google.com ([2620:15c:9d:2:a5d5:fe74:fba8:86b5])
+        by smtp.gmail.com with ESMTPSA id r5-20020aa79885000000b006e530aca55asm9232463pfl.123.2024.03.05.09.28.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Mar 2024 09:28:25 -0800 (PST)
+Date: Tue, 5 Mar 2024 09:28:22 -0800
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Adam Ford <aford173@gmail.com>
+Cc: linux-input@vger.kernel.org, aford@beaconembedded.com,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Input: ili210x:  Allow IRQ to share GPIO
+Message-ID: <ZedWNlNaJQEWdA9a@google.com>
+References: <20240228114142.43803-1-aford173@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cover.1709658886.git.gustavoars@kernel.org>
+In-Reply-To: <20240228114142.43803-1-aford173@gmail.com>
 
--Wflex-array-member-not-at-end is coming in GCC-14, and we are getting
-ready to enable it globally.
+Hi Adam,
 
-There is currently a local structure `template` that is using a flexible
-`struct fw_iso_packet` as a header for an on-stack array
-`__be32 header[CIP_HEADER_QUADLETS];`.
+On Wed, Feb 28, 2024 at 05:41:42AM -0600, Adam Ford wrote:
+> The IRQ registration currently assumes that the GPIO is
+> dedicated to it, but that may not necessarily be the case.
+> If the board has another device sharing the IRQ, it won't be
+> registered and the touch detect fails.
 
-struct {
-	struct fw_iso_packet params;
-	__be32 header[CIP_HEADER_QUADLETS];
-} template = { {0}, {0} };
+I do not believe the driver is prepared to handle shared interrupts.
+First of all, it disables interrupts in the firmware update path, which
+will interfere with operation of other device using the same line.
 
-However, we are deprecating flexible arrays in the middle of another
-struct. So, in order to avoid this, we use the `struct_group_tagged()`
-helper to separate the flexible array from the rest of the members in
-the flexible structure:
+You also need to make sure the driver properly recognizes condition when
+interrupt is raised by another device and Ilitek controller does not
+have any data to transfer/return. In this case we need to make sure we
+do not log any errors, not release any active contacts, etc.
 
-struct fw_iso_packet {
-        struct_group_tagged(fw_iso_packet_hdr, hdr,
-                ... the rest of the members
-        );
-        u32 header[];           /* tx: Top of 1394 isoch. data_block    */
-};
+Thanks.
 
-With the change described above, we can now declare an object of the
-type of the tagged struct, without embedding the flexible array in the
-middle of another struct:
-
-struct {
-	struct fw_iso_packet_hdr params;
-	__be32 header[CIP_HEADER_QUADLETS];
-} template = { {0}, {0} };
-
-We also use `container_of()` whenever we need to retrieve a pointer to
-the flexible structure.
-
-So, with these changes, fix the following warning:
-
-sound/firewire/amdtp-stream.c: In function ‘process_rx_packets’:
-sound/firewire/amdtp-stream.c:1184:46: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
- 1184 |                         struct fw_iso_packet params;
-      |
-
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- sound/firewire/amdtp-stream.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index c9f153f85ae6..7ba1cd64d7f1 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -1181,12 +1181,14 @@ static void process_rx_packets(struct fw_iso_context *context, u32 tstamp, size_
- 
- 	for (i = 0; i < packets; ++i) {
- 		struct {
--			struct fw_iso_packet params;
-+			struct fw_iso_packet_hdr params;
- 			__be32 header[CIP_HEADER_QUADLETS];
- 		} template = { {0}, {0} };
-+		struct fw_iso_packet *params =
-+			container_of(&template.params, struct fw_iso_packet, hdr);
- 		bool sched_irq = false;
- 
--		build_it_pkt_header(s, desc->cycle, &template.params, pkt_header_length,
-+		build_it_pkt_header(s, desc->cycle, params, pkt_header_length,
- 				    desc->data_blocks, desc->data_block_counter,
- 				    desc->syt, i, curr_cycle_time);
- 
-@@ -1198,7 +1200,7 @@ static void process_rx_packets(struct fw_iso_context *context, u32 tstamp, size_
- 			}
- 		}
- 
--		if (queue_out_packet(s, &template.params, sched_irq) < 0) {
-+		if (queue_out_packet(s, params, sched_irq) < 0) {
- 			cancel_stream(s);
- 			return;
- 		}
 -- 
-2.34.1
-
+Dmitry
 
