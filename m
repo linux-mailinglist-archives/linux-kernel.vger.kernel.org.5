@@ -1,198 +1,120 @@
-Return-Path: <linux-kernel+bounces-92944-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92945-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 316C087286B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 21:17:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BC43C87286D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 21:17:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B10F61F27189
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 20:17:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A7A61F2B101
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 20:17:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC66C128830;
-	Tue,  5 Mar 2024 20:17:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE2B31272CC;
+	Tue,  5 Mar 2024 20:17:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="swfNuock"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d/SwgBKi"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B56D48613C;
-	Tue,  5 Mar 2024 20:17:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8825F12A169;
+	Tue,  5 Mar 2024 20:17:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709669848; cv=none; b=MPs6X6lrmlYqWebmXQ/5I3bqQR3ecvwq3T4zOVEYB68CdZ4WcfMHM0uG0FiRtdqd9I2SvEpk2IjfYWm76Kut8xo2MbGksR8zSD4kyl264qsZX/OrmE+SYyfvDo8M64+/P6Gotw4Gt+ygYMkgXqSalW/ZPyiBU4ZJKSgPPIs6tsY=
+	t=1709669855; cv=none; b=So9kcbtuR8X6RQPr3tgSTcV5GYRTZkEVY1hCiP9O2gnjXanYoON+NjeYgUdBMeo794p4aViCekOvCmOjHIYIskdqgcvfJPk3BLlhl+mPTYN2m7xgC6eAiiljqB/joD5chdqgjcHnRSEUTE4gnWqnU4lfXULOwF47IRydCj2pCDk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709669848; c=relaxed/simple;
-	bh=6861cbPK504ommcSxo2vB7OyTQCUdsGAtfNeJdvyvJY=;
+	s=arc-20240116; t=1709669855; c=relaxed/simple;
+	bh=l2EXv8vi0RUW5J6tQuVvt9CmmyBDzyGZCZDvAQCCYtA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IzFROUK0m6GpYtbDTdyi+oLYNxpXRdbqDHYfEwR3i3ClkK3jowiyNsbQAivv7Q4e3gVeq3phMbZUHAIG/s28lkkIUN4d9ihvsqUkL/m7tBzLF3+ZWPUmghSCFxesx6zoV3R7hu3J6r5t20L9/0jbvCCSC/9We1gQFbCLqKPEYqk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=swfNuock; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 149E6C433C7;
-	Tue,  5 Mar 2024 20:17:28 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=XagY1uZqa7fYVeJE9B+Q9EiElIqOBczxzg4EaC7wpR/9ZSJ1EJjTWZfAH+NfEikSUmSTsWXFP+qImi02XteZHKl1MGgXautBVDgPSCTBFbkLFjNKgv4iXZ+mEeEjuDWVPcYbblKEhQwLDKcMlGoOrEkdLO/x9DiWETjZBWHnlb0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d/SwgBKi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F348C433F1;
+	Tue,  5 Mar 2024 20:17:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709669848;
-	bh=6861cbPK504ommcSxo2vB7OyTQCUdsGAtfNeJdvyvJY=;
+	s=k20201202; t=1709669855;
+	bh=l2EXv8vi0RUW5J6tQuVvt9CmmyBDzyGZCZDvAQCCYtA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=swfNuockyppey7DGeXzQJ3jV8CHoQtMjHp1tiE7fBTRrtgry5fF8tz2FVlvPEAV/w
-	 ZnP/3cfuTJpBykA1G6yrNRUmWCYxv/E2uQ4LPbiQrBMhH9hvkWzK7XoegrbKPk9SLe
-	 SZHqAOFaAzXR11T0QSiXWiqRs60yH/suKf1rjNX871spM1nuIn5n9ppOxxyYC6SyxY
-	 au36vY+W5tuOYNZPgYU2R+XqlUBLN/BCfUt7FLqsnGBIFtctZdzWfeNokHD1omoL0+
-	 boRAr/Qw0yMvpqTS98E3TozZwpwGCFd7vMNpI4VMTb9DcFV0E86X+tit5pnMveWnXG
-	 bv2pFF0FZEx1A==
-Date: Tue, 5 Mar 2024 14:17:27 -0600
-From: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
-To: Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc: Christian Brauner <brauner@kernel.org>, Serge Hallyn <serge@hallyn.com>,
-	Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>,
-	James Morris <jmorris@namei.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-	Stephen Smalley <stephen.smalley.work@gmail.com>,
-	Ondrej Mosnacek <omosnace@redhat.com>,
-	Casey Schaufler <casey@schaufler-ca.com>,
-	Mimi Zohar <zohar@linux.ibm.com>,
-	Roberto Sassu <roberto.sassu@huawei.com>,
-	Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-	Eric Snowberg <eric.snowberg@oracle.com>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Amir Goldstein <amir73il@gmail.com>, linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-security-module@vger.kernel.org, audit@vger.kernel.org,
-	selinux@vger.kernel.org, linux-integrity@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-unionfs@vger.kernel.org
-Subject: Re: [PATCH v2 24/25] commoncap: use vfs fscaps interfaces
-Message-ID: <Zed91y4MYugjI1/K@do-x1extreme>
-References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
- <20240221-idmap-fscap-refactor-v2-24-3039364623bd@kernel.org>
- <dcbd9e7869d2fcce69546b53851d694b8ebad54e.camel@huaweicloud.com>
- <ZeXpbOsdRTbLsYe9@do-x1extreme>
- <a7124afa6bed2fcadcb66efa08e256828cd6f8ab.camel@huaweicloud.com>
- <ZeX9MRhU/EGhHkCY@do-x1extreme>
- <20240305-fachjargon-abmontieren-75b1d6c67a83@brauner>
- <3098aef3e5f924e5717b4ba4a34817d9f22ec479.camel@huaweicloud.com>
- <7058e2f93d16f910336a5380877b14a2e069ee9d.camel@huaweicloud.com>
+	b=d/SwgBKiVpbU+gobEaE+khhonkXjX9CcbX3egEb4H59ZT7IOGIb4+PsgVS3LUs6fo
+	 JZ0gWaNhTB8v5o60JDAahTmazFPnMJHbMCZgtGDcKIVTcbrGV+348AO+JoJGA1yD7Q
+	 HPInfewf2RK9FK9YH4xqjzOQQfzgEfU0pUxwqd9Sd5jqVS8zfMIOOHEQOro75yAZLr
+	 YPtacqSp2HSZIYN2XizhHWcGQRvmLyobEOI7WUUDOrjInvpbzrw/kM4UQ2/RiYPR7m
+	 WIgxb5S34p0a0UAmYcg//HpJwRXVuYxrgbj2E/KDJJVFuSIhhAOQ5wH79x+nRhpi+f
+	 LCE9GRB4i/vJw==
+Date: Tue, 5 Mar 2024 20:17:30 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Adam Ford <aford173@gmail.com>
+Cc: devicetree@vger.kernel.org, aford@beaconembedded.com,
+	Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Lucas Stach <l.stach@pengutronix.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: interrupt-controller: fsl,irqsteer: Allow
+ Power Domains
+Message-ID: <20240305-derby-grader-ace33d7d4ad1@spud>
+References: <20240305035814.74087-1-aford173@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="opsqrJQa1Lkfvv8K"
+Content-Disposition: inline
+In-Reply-To: <20240305035814.74087-1-aford173@gmail.com>
+
+
+--opsqrJQa1Lkfvv8K
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7058e2f93d16f910336a5380877b14a2e069ee9d.camel@huaweicloud.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 05, 2024 at 06:11:45PM +0100, Roberto Sassu wrote:
-> On Tue, 2024-03-05 at 13:46 +0100, Roberto Sassu wrote:
-> > On Tue, 2024-03-05 at 10:12 +0100, Christian Brauner wrote:
-> > > On Mon, Mar 04, 2024 at 10:56:17AM -0600, Seth Forshee (DigitalOcean) wrote:
-> > > > On Mon, Mar 04, 2024 at 05:17:57PM +0100, Roberto Sassu wrote:
-> > > > > On Mon, 2024-03-04 at 09:31 -0600, Seth Forshee (DigitalOcean) wrote:
-> > > > > > On Mon, Mar 04, 2024 at 11:19:54AM +0100, Roberto Sassu wrote:
-> > > > > > > On Wed, 2024-02-21 at 15:24 -0600, Seth Forshee (DigitalOcean) wrote:
-> > > > > > > > Use the vfs interfaces for fetching file capabilities for killpriv
-> > > > > > > > checks and from get_vfs_caps_from_disk(). While there, update the
-> > > > > > > > kerneldoc for get_vfs_caps_from_disk() to explain how it is different
-> > > > > > > > from vfs_get_fscaps_nosec().
-> > > > > > > > 
-> > > > > > > > Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
-> > > > > > > > ---
-> > > > > > > >  security/commoncap.c | 30 +++++++++++++-----------------
-> > > > > > > >  1 file changed, 13 insertions(+), 17 deletions(-)
-> > > > > > > > 
-> > > > > > > > diff --git a/security/commoncap.c b/security/commoncap.c
-> > > > > > > > index a0ff7e6092e0..751bb26a06a6 100644
-> > > > > > > > --- a/security/commoncap.c
-> > > > > > > > +++ b/security/commoncap.c
-> > > > > > > > @@ -296,11 +296,12 @@ int cap_capset(struct cred *new,
-> > > > > > > >   */
-> > > > > > > >  int cap_inode_need_killpriv(struct dentry *dentry)
-> > > > > > > >  {
-> > > > > > > > -	struct inode *inode = d_backing_inode(dentry);
-> > > > > > > > +	struct vfs_caps caps;
-> > > > > > > >  	int error;
-> > > > > > > >  
-> > > > > > > > -	error = __vfs_getxattr(dentry, inode, XATTR_NAME_CAPS, NULL, 0);
-> > > > > > > > -	return error > 0;
-> > > > > > > > +	/* Use nop_mnt_idmap for no mapping here as mapping is unimportant */
-> > > > > > > > +	error = vfs_get_fscaps_nosec(&nop_mnt_idmap, dentry, &caps);
-> > > > > > > > +	return error == 0;
-> > > > > > > >  }
-> > > > > > > >  
-> > > > > > > >  /**
-> > > > > > > > @@ -323,7 +324,7 @@ int cap_inode_killpriv(struct mnt_idmap *idmap, struct dentry *dentry)
-> > > > > > > >  {
-> > > > > > > >  	int error;
-> > > > > > > >  
-> > > > > > > > -	error = __vfs_removexattr(idmap, dentry, XATTR_NAME_CAPS);
-> > > > > > > > +	error = vfs_remove_fscaps_nosec(idmap, dentry);
-> > > > > > > 
-> > > > > > > Uhm, I see that the change is logically correct... but the original
-> > > > > > > code was not correct, since the EVM post hook is not called (thus the
-> > > > > > > HMAC is broken, or an xattr change is allowed on a portable signature
-> > > > > > > which should be not).
-> > > > > > > 
-> > > > > > > For completeness, the xattr change on a portable signature should not
-> > > > > > > happen in the first place, so cap_inode_killpriv() would not be called.
-> > > > > > > However, since EVM allows same value change, we are here.
-> > > > > > 
-> > > > > > I really don't understand EVM that well and am pretty hesitant to try an
-> > > > > > change any of the logic around it. But I'll hazard a thought: should EVM
-> > > > > > have a inode_need_killpriv hook which returns an error in this
-> > > > > > situation?
-> > > > > 
-> > > > > Uhm, I think it would not work without modifying
-> > > > > security_inode_need_killpriv() and the hook definition.
-> > > > > 
-> > > > > Since cap_inode_need_killpriv() returns 1, the loop stops and EVM would
-> > > > > not be invoked. We would need to continue the loop and let EVM know
-> > > > > what is the current return value. Then EVM can reject the change.
-> > > > > 
-> > > > > An alternative way would be to detect that actually we are setting the
-> > > > > same value for inode metadata, and maybe not returning 1 from
-> > > > > cap_inode_need_killpriv().
-> > > > > 
-> > > > > I would prefer the second, since EVM allows same value change and we
-> > > > > would have an exception if there are fscaps.
-> > > > > 
-> > > > > This solves only the case of portable signatures. We would need to
-> > > > > change cap_inode_need_killpriv() anyway to update the HMAC for mutable
-> > > > > files.
-> > > > 
-> > > > I see. In any case this sounds like a matter for a separate patch
-> > > > series.
-> > > 
-> > > Agreed.
-> > 
-> > Christian, how realistic is that we don't kill priv if we are setting
-> > the same owner?
-> > 
-> > Serge, would we be able to replace __vfs_removexattr() (or now
-> > vfs_get_fscaps_nosec()) with a security-equivalent alternative?
-> 
-> It seems it is not necessary.
-> 
-> security.capability removal occurs between evm_inode_setattr() and
-> evm_inode_post_setattr(), after the HMAC has been verified and before
-> the new HMAC is recalculated (without security.capability).
-> 
-> So, all good.
-> 
-> Christian, Seth, I pushed the kernel and the updated tests (all patches
-> are WIP):
-> 
-> https://github.com/robertosassu/linux/commits/evm-fscaps-v2/
-> 
-> https://github.com/robertosassu/ima-evm-utils/commits/evm-fscaps-v2/
-> 
-> 
-> The tests are passing:
-> 
-> https://github.com/robertosassu/ima-evm-utils/actions/runs/8159877004/job/22305521359
+On Mon, Mar 04, 2024 at 09:58:13PM -0600, Adam Ford wrote:
+> The i.MX8MP HDMI irqsteer depends on the HDMI power domain, so add
+> power-domains to the list of items which may be in the device tree.
 
-Thanks! I probably won't be able to take them exactly as-is due to other
-changes for the next version (rebasing onto the changes to make IMA and
-EVM LSMs, forbidding xattr handlers entirely for fscaps), but they will
-serve as a good road map for what needs to happen.
+What about the other irqsteers? If they don't all support power domains,
+then please restrict this property to the imx8mp.
+
+Thanks,
+Conor.
+
+>=20
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+>=20
+> diff --git a/Documentation/devicetree/bindings/interrupt-controller/fsl,i=
+rqsteer.yaml b/Documentation/devicetree/bindings/interrupt-controller/fsl,i=
+rqsteer.yaml
+> index 20ad4ad82ad6..7ccbb96434a4 100644
+> --- a/Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer=
+=2Eyaml
+> +++ b/Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer=
+=2Eyaml
+> @@ -59,6 +59,9 @@ properties:
+>        u32 value representing the number of input interrupts of this chan=
+nel,
+>        should be multiple of 32 input interrupts and up to 512 interrupts.
+> =20
+> +  power-domains:
+> +    maxItems: 1
+> +
+>  required:
+>    - compatible
+>    - reg
+> --=20
+> 2.43.0
+>=20
+
+--opsqrJQa1Lkfvv8K
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZed92gAKCRB4tDGHoIJi
+0jr1APsFbtB3864mzuVtuPpkxDy7QTcQrVND4jRT3rAav+ATagD7By8imbPxDeOC
+STrknUo9t6ArZTtoTVEC98BzTy5l8Ao=
+=fG/U
+-----END PGP SIGNATURE-----
+
+--opsqrJQa1Lkfvv8K--
 
