@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-92442-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92441-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C503872038
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEE36872039
 	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:32:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EA061C22B17
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:32:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 776F9B26BC7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:32:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEBD88662E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7BCC86628;
 	Tue,  5 Mar 2024 13:32:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RVgF4Zbw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cy+Dkvs3"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D47285953;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D43D85920;
 	Tue,  5 Mar 2024 13:32:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709645536; cv=none; b=qAuLKqWcnBFQD/pzdiPxX8bQplQdBGwjkGokmSgY5o6Cp1DWzNPnYNEI39yLNIeelh6MjeHDz0DIHv89yI9MccZnqEsqi+psfLI4DryNmeK0z1UIx/bNw6zbRczfamBDKLOrmV77WYrFunMJJjY1xW/8BzIwYT8bW6gSfH+QW4I=
+	t=1709645536; cv=none; b=augqiKaPLVXnIReK5UzpYDh8lVZOmwIDEkXpQFO/poUgo1+HMfdhOFPXMmfvUmrxW6Q72Bjbf67cT1exVldiuaVS5IH9Ov6sLCgcflpk6Q8QZuhpjujqqdJY6qs3U4KUls+WFIvSKyied6iYer0eq1g0tJwxYAjF1ktkCyaQzCo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709645536; c=relaxed/simple;
-	bh=FihEUwCX50+sOpSeSlKTyAI5nKu3cdR1twC0ge0m/T4=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=sLRy/Yyi8At6qEPhh466eViQxdCXatxMgk53Dbt1MQamboRmFpj9oPwVgwJdfpMldHG99sshGU+9LXRT3yEn+dn++az8DAEK/IgEVTcDNvDVOn6gv2f5Cn1+bb4ObiAbuq2H+2Y/uAm2RtXqsx1ETT1atTp/zzwDuiIAiYFCfts=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RVgF4Zbw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 9E657C433F1;
+	bh=esSfqR/EN2uGgQJhZInB3gQ5IgggyIpQkCwvAPI4KIE=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=mloBNOaEVZ25ZX2rN4EHRnCBGZ6ywtnwq0UcyWtGbajJytRULQfFbe/33wZ1jAifCdgjL/N2sj9zFNWmoP/qLdznC6G+aWTpJU4dgqmJHqcV+YaeucJ5bmQg9BLFErk83HG46owE0Dq5o8+IhBbnS2kmYxjiKLrOu7L1mH7Ndms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cy+Dkvs3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B9702C433C7;
 	Tue,  5 Mar 2024 13:32:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1709645535;
-	bh=FihEUwCX50+sOpSeSlKTyAI5nKu3cdR1twC0ge0m/T4=;
-	h=From:Subject:Date:To:Cc:Reply-To:From;
-	b=RVgF4Zbw/9zjAw+nC5J2lWdYwfmD/InF3Dil3B3FQYMWyWLlgizzJke+63D9uLqvY
-	 tmECtsqVJa7H9Vt/xVG2Iw/AkppuDnrba80pe7i3zoHX56OkK9AHOz8Stgn9gG+SSw
-	 +5c/1jNhJig3LHDnDNubicBeB/gNMnu7Q1OgcD2DiJMWTb7QwAXQin9Lufhk2HmExh
-	 1uiSBewp1NMzYil19s6Mji+iI5E9K+49uo55M1943qGqT9iRWB5anC8wICaRSOOFE4
-	 7+CbJ11MnTJ1gegySw2Bezg/+Uy9lM5+4carVmRx2Z1aDjepDnHiLy8uepeR+IPQEo
-	 i0266NFg2od/g==
+	bh=esSfqR/EN2uGgQJhZInB3gQ5IgggyIpQkCwvAPI4KIE=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=Cy+Dkvs3AUK003lAX1XA2Tm5K5lMTlK72LOSkm0x0mpV84Jip7Lgmv3wrTMKXjnlL
+	 U0efQ8gUG3yCPVTc2Cxpx5pCrjg6fCk2KEDne9UhJ1Ovi/Gq75JXcTK2+GbOEuQRBi
+	 yomYaiWuWq9utas1Ub2+L0RwzHqdoPRmazUGHs0hyTVacl87djBzrkPezmLbPisaEC
+	 g/UHtJDpUksgTgdSyj8KO+wRUgZXJmSbDeR3qxmD2S/YHk4a2l2sHvrcLZ4AR9IF+Z
+	 ygwXAwRshk+7KxbtgiDsrB1N+QKPVInSqt8cfNoBfYDVqGzqyMu5uxnsffvdPnTTW5
+	 KPqL/5iZvmaNw==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 82F7CC54798;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96AB1C54E49;
 	Tue,  5 Mar 2024 13:32:15 +0000 (UTC)
 From: Yang Xiwen via B4 Relay <devnull+forbidden405.outlook.com@kernel.org>
-Subject: [PATCH v5 0/5] phy: hisi-inno-phy: add support for
- hi3798mv200-usb2-phy
-Date: Tue, 05 Mar 2024 21:32:11 +0800
-Message-Id: <20240305-inno-phy-v5-0-dc1cb130ea08@outlook.com>
+Date: Tue, 05 Mar 2024 21:32:12 +0800
+Subject: [PATCH v5 1/5] phy: hisilicon: hisi-inno-phy: enable clocks for
+ every ports
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,10 +55,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIANse52UC/23MQQ6CMBCF4auQrq2ZzhQKrryHcUFLK41KCSDRG
- O5udWMNLt9kvv/JRjt4O7Jd9mSDnf3oQxdHvsmYaevuZLlv4mYIKAFFwX3XBd63D15jUyp0hVZ
- Ss/jeD9b5+yd1OMbd+nEKw+NTnsX7+icyCw5c1LoS6CAncvtwmy4hnLcmXNk7M2NKVUIxUtJO2
- VJpsJVdU0ooQkIp0rIi07iyINJyTeWXEuQJlZHWQAjSVMYJ80uXZXkBnvnpFlMBAAA=
+Message-Id: <20240305-inno-phy-v5-1-dc1cb130ea08@outlook.com>
+References: <20240305-inno-phy-v5-0-dc1cb130ea08@outlook.com>
+In-Reply-To: <20240305-inno-phy-v5-0-dc1cb130ea08@outlook.com>
 To: Vinod Koul <vkoul@kernel.org>, 
  Kishon Vijay Abraham I <kishon@kernel.org>, 
  Rob Herring <robh+dt@kernel.org>, 
@@ -70,11 +69,11 @@ Cc: linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>, 
  David Yang <mmyangfl@gmail.com>, Yang Xiwen <forbidden405@outlook.com>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1709645533; l=2619;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1709645533; l=971;
  i=forbidden405@outlook.com; s=20230724; h=from:subject:message-id;
- bh=FihEUwCX50+sOpSeSlKTyAI5nKu3cdR1twC0ge0m/T4=;
- b=3ymo1/B20cCGRvoJeNsGWfYtGDcaFn42LOyz14PG9giPuRZQvqjiTXG++HxRuNK5BNmHVJ1zK
- 1ci3BoVGn51AGTtNGey7HifuI4fQ3PfHW3J4obCzKlvy75IKWtm4hZW
+ bh=jGUbESXsyAvU27nkXjLoTOKtwqcjOT068eM8RNJCWfs=;
+ b=HPJ5ck0MlMZNGEmcLKzPz9CIqfO7rL3sKI59I3rFgOAsz0Fpfqj3r4qB5h9RDN5C7XGwYNkvH
+ Y449p9GY2fVBevg2VPT9H4W2fjNMDrjPlZ8Qa5GMzekCMWRNOoJRL5i
 X-Developer-Key: i=forbidden405@outlook.com; a=ed25519;
  pk=qOD5jhp891/Xzc+H/PZ8LWVSWE3O/XCQnAg+5vdU2IU=
 X-Endpoint-Received:
@@ -82,64 +81,34 @@ X-Endpoint-Received:
 X-Original-From: Yang Xiwen <forbidden405@outlook.com>
 Reply-To: <forbidden405@outlook.com>
 
-This should be considered a hack. The proper solution would be
-extracting write_reg logic to a separate regmap driver. Leaving only
-"write BIT(2) to address 0x6" to the PHY driver.
+From: Yang Xiwen <forbidden405@outlook.com>
 
-A proper fix should be implemented later.
+This is needed for port1 to work.
 
+Fixes: ba8b0ee81fbb ("phy: add inno-usb2-phy driver for hi3798cv200 SoC")
 Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
 ---
-Changes in v5:
-- commit msg: bulk->array. (Philipp)
-- use devm_reset_control_array_exclusive() instead. (Philipp)
-- Link to v4: https://lore.kernel.org/r/20240305-inno-phy-v4-0-a03204c9cf1c@outlook.com
+ drivers/phy/hisilicon/phy-hisi-inno-usb2.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Changes in v4:
-- remove reference to histb-clock.h
-- remove fallback compatible as it has no use.
-- remove phy_type (belongs to host controller)
-- fix bot error (Rob Herring)
-- split YAML convertion into two commits, the other add mv100 compatible (Krzysztof Kozlowski)
-- Link to v3: https://lore.kernel.org/r/20240220-inno-phy-v3-0-893cdf8633b4@outlook.com
+diff --git a/drivers/phy/hisilicon/phy-hisi-inno-usb2.c b/drivers/phy/hisilicon/phy-hisi-inno-usb2.c
+index c138cd4807d6..b7e740eb4752 100644
+--- a/drivers/phy/hisilicon/phy-hisi-inno-usb2.c
++++ b/drivers/phy/hisilicon/phy-hisi-inno-usb2.c
+@@ -86,8 +86,10 @@ static void hisi_inno_phy_write_reg(struct hisi_inno_phy_priv *priv,
+ 
+ static void hisi_inno_phy_setup(struct hisi_inno_phy_priv *priv)
+ {
++	int i;
+ 	/* The phy clk is controlled by the port0 register 0x06. */
+-	hisi_inno_phy_write_reg(priv, 0, 0x06, PHY_CLK_ENABLE);
++	for (i = 0; i < INNO_PHY_PORT_NUM; i++)
++		hisi_inno_phy_write_reg(priv, i, 0x06, PHY_CLK_ENABLE);
+ 	msleep(PHY_CLK_STABLE_TIME);
+ }
+ 
 
-Changes in v3:
-- address a few binding issue mistakenly missing in v2 (Krzysztof Kozlowski)
-  - add msg about hi3798mv100 being added to compatible list
-  - remove minItems for compatible
-  - remove | for reg:
-- fix existing dts (hi3798cv200.dtsi) due to binding change.
-- Link to v2: https://lore.kernel.org/r/20240217-inno-phy-v2-0-3bf7e87b0e9e@outlook.com
-
-Changes in v2:
-- rewrite commit msg to show why hisilicon,hi3798mv100-usb2-phy is added during YAML convertion.
-- split required: to multiple line
-- add allOf to wrap if:
-- remove perictrl wrapper and the second phy in the example
-- tested the binding both for mv200 and cv200 dts. fix some silly errors.
-- remove Pengcheng Li from To:
-Above all are suggested by Krzysztof
-- use reset_control_array_* APIs to ensure all resets are controlled
-- Link to v1: https://lore.kernel.org/r/20240216-inno-phy-v1-0-1ab912f0533f@outlook.com
-
----
-Yang Xiwen (5):
-      phy: hisilicon: hisi-inno-phy: enable clocks for every ports
-      dt-bindings: phy: hisi-inno-usb2: convert to YAML
-      dt-bindings: phy: hisilicon,inno-usb2-phy: add support for Hi3798MV100 INNO PHY
-      dt-bindings: phy: hisi-inno-usb2: add compatible of hisilicon,hi3798mv200-usb2-phy
-      phy: hisilicon: hisi-inno-phy: add support for Hi3798MV200 INNO PHY
-
- .../bindings/phy/hisilicon,inno-usb2-phy.yaml      | 119 +++++++++++++++++++++
- .../devicetree/bindings/phy/phy-hisi-inno-usb2.txt |  71 ------------
- drivers/phy/hisilicon/phy-hisi-inno-usb2.c         |  70 +++++++-----
- 3 files changed, 162 insertions(+), 98 deletions(-)
----
-base-commit: 8d3dea210042f54b952b481838c1e7dfc4ec751d
-change-id: 20240216-inno-phy-a2d872f6b74b
-
-Best regards,
 -- 
-Yang Xiwen <forbidden405@outlook.com>
+2.43.0
 
 
