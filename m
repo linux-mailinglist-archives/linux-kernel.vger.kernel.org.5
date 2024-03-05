@@ -1,529 +1,244 @@
-Return-Path: <linux-kernel+bounces-91689-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91690-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11E7B871526
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 06:08:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D667C871527
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 06:08:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9216D1F234DC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 05:08:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 061821C215D8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 05:08:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEF0A45977;
-	Tue,  5 Mar 2024 05:08:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C21945972;
+	Tue,  5 Mar 2024 05:08:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BZQJzO8D"
-Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="S3pAkncL"
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0EFA43ACF
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 05:08:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 645091805E
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 05:08:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.24
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709615289; cv=none; b=Z9zCbpS8QCgO3x7fDj35dMR8vtbKgz1zRq+PGLGop+45ic65oMGLnWdVQKw+7aWNUljorRO6UTkNyPqMF4U7g3HKIVffaorX9DKKyCEMgVuhi0XnBHZYSazU/iRveNJkQG5ezxhnMlIUZw6EvfF2HOg5K4Vt9p3Ny0JNGzBrQ3w=
+	t=1709615314; cv=none; b=H9waV/pYU9CNxRnSSHBNw7ZmHcQecMkP+822QzJaPXt6UKwN5yKK3chal/V6KGWhvTi2Jp9YNmCgVyFVbje4hVBhBuaP/rgbiksmserQTevm9VSFzVD0XwNawbQNm7h6jRVGhBnmlntE/8v4QQN/FEvExgddqN+EDFkebdpLZEM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709615289; c=relaxed/simple;
-	bh=aWzJVHoMY8IcZv6Nv3eWlKKDsu6FJmNiUIZktD43DQY=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=FsJmWK6hYrelrvY0IIlwkFfgJ4ynnsu8wy3Jf9I14egHoff3g1jmFZ0dReLeRmclePoRuNC56QAaNNNR5tzeqSKUIJ4FyBCPqZUmDVCFlCEJcP2Onkr7veiOR2lWsVqq9ZnE9sOSz2iS+D8YQhtSud/biBf/uXp1cINGB8YS1/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BZQJzO8D; arc=none smtp.client-ip=209.85.216.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-299727c3e8bso4289523a91.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 21:08:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709615287; x=1710220087; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HWU7wBm3j7C8IfxBOdhPsu6PdJWJN1Ia/lUiXC6HF3Y=;
-        b=BZQJzO8DSd6US/XT4UlEuluhKc+s6QWf1PjOc95Ui2GaC4qiejrtp9HoOiqLvxpSYg
-         WVleGs9NK8gKgox0al6/qMD9nPJ2hNTtbiRZwk/p2dsF03HQhDi/LERDF1MNlUF7Xc1W
-         l7jIC/q5PwlhHvGq6JmUs0pC85xdPzB2WwcbS9fyZhMQ0apm6yKD05MNp5V42eCFOFui
-         8sS+scVM2mtyRpirPjG6DtaJqXQ6fLKH4sXORvX44dd0oFFv3+Z5p0LgMp0gqrlj3q0X
-         8bOA3CVG/HwkMDBFH5XqBovpxfNsG4C+KUtxbstpCwZoEhMz+KWYN1NqLpEyNPiZ2QPw
-         //ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709615287; x=1710220087;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HWU7wBm3j7C8IfxBOdhPsu6PdJWJN1Ia/lUiXC6HF3Y=;
-        b=Lk+ABqfGDUF35By6swH1FQv1e/EBcSc+C4rkDiD/2RC+aDVbWC2b+sJ2RElfSRvVec
-         NK+QWdoFqgrgHtotVIYfQ764isYDWmDIAyIYWj91txfj5D69ThiKxqSMcq593P39WzqW
-         wRYsw1NJs7cjyFsQMNM4NkUOg7OX4GW7N1/K+gRCmwhYMWPuxSKOdHTCtEPV4OV68kci
-         KtfPmAkIh8Eok/DtDty0DSrie3Qx4AakUM/Ww3+h1VQU7i+ZGX2zDhbCwHD9CGzkdPad
-         VaLmr2IdkXGDK1hoHXE3tKd36FMQEf7mCMwtqx2NhfKAfqZFP63jKyOHv9TsuW9lrlNQ
-         7djg==
-X-Forwarded-Encrypted: i=1; AJvYcCUn3X0WSgLzd0A7MTz7iIXCcVV/HkYwhFq+Q2OQJXvwHHbshXI0iF/ISsOXeMpAGetdJLGPOESNnRs7cJa9kbvfkrs3lltwyIcZxn2r
-X-Gm-Message-State: AOJu0YxBEIJiS+1n8D3YsR2gn41g72Bd/+8D2aXj+IEN5WW7/TUmF74Y
-	tZM9ZFWJF9x+KmMw6dg4C7krFnklosCA/ywoBZMN+PQj4Wa+Ec0C5z2UslYQkptIwKAIrZKhl7k
-	crp9TsA8bNcjAje4CEw==
-X-Google-Smtp-Source: AGHT+IHcufTjzce2l/HOlP7S/qzPSAs8Hfz18YugVirkcv+kRqlB7j0g6WY9l/kN6M/5UCpXZdaGgxZTsqpFBzVd
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a17:90b:194d:b0:29b:4f15:5fd7 with SMTP
- id nk13-20020a17090b194d00b0029b4f155fd7mr18499pjb.2.1709615286936; Mon, 04
- Mar 2024 21:08:06 -0800 (PST)
-Date: Tue, 5 Mar 2024 05:08:04 +0000
-In-Reply-To: <20240304-zswap-xarray-v4-1-c4b45670cc30@kernel.org>
+	s=arc-20240116; t=1709615314; c=relaxed/simple;
+	bh=ismEow/yzrkwwhiLcdfA0vL6WXF7q6z+dwtQGVXyiYs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:From:In-Reply-To:
+	 Content-Type:References; b=FoxNy52aTsf+w3zL5pMweKjD7NNHHP3skZ2hWLZVW1VQrL4J03YmMHsj+tzMkkHGss/Aa/FCrEOngStRmbMkqaWI7/mfzpfC++wkxyJDfXh07x16KDckeXNWVtDOAf50R0oVzVMzSDAGYZCYUYxGJKB6pW6OH3i1yhTGrcTlKf0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=S3pAkncL; arc=none smtp.client-ip=203.254.224.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
+	by mailout1.samsung.com (KnoxPortal) with ESMTP id 20240305050828epoutp01be79766520e36584f707530e6c49c0ce~5xhC5E9ch3166731667epoutp01O
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 05:08:28 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20240305050828epoutp01be79766520e36584f707530e6c49c0ce~5xhC5E9ch3166731667epoutp01O
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1709615308;
+	bh=7wgZcV4LIo7eZvvgGuVKjwfreOjSKEa/3J0B5NMANQ8=;
+	h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
+	b=S3pAkncLzX8LUhzUr3/Ce5YgzG802THvtWHLxyz+IsFYmbGpgfP3dPjohdUZMmz0A
+	 ZXXM8GxgQvDgG7KKXBs/EgH/o79FnmhPLeF9Xf8Y06nDwpgVER9pXI2nl0eKk3BSPc
+	 gOOnoiSAonyOJLmhmNfkuwGBZmcmU25fQu5faxo8=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+	epcas2p2.samsung.com (KnoxPortal) with ESMTP id
+	20240305050828epcas2p2ac3a6297d2e062a8bea5d14784543827~5xhCgb0An2205322053epcas2p2L;
+	Tue,  5 Mar 2024 05:08:28 +0000 (GMT)
+Received: from epsmgec2p1.samsung.com (unknown [182.195.36.100]) by
+	epsnrtp4.localdomain (Postfix) with ESMTP id 4Tpk9R3vhrz4x9QD; Tue,  5 Mar
+	2024 05:08:27 +0000 (GMT)
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+	epsmgec2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+	D3.A2.08648.BC8A6E56; Tue,  5 Mar 2024 14:08:27 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+	epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
+	20240305050826epcas2p31f42fc40cecab0edc574ed7f57828e61~5xhBQLOAu0243002430epcas2p3_;
+	Tue,  5 Mar 2024 05:08:26 +0000 (GMT)
+Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
+	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240305050826epsmtrp118557d5f7c0a2ef9936664afb357e53c~5xhBPRF_C0656106561epsmtrp1e;
+	Tue,  5 Mar 2024 05:08:26 +0000 (GMT)
+X-AuditID: b6c32a43-721fd700000021c8-2f-65e6a8cb384c
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+	epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	60.74.08817.AC8A6E56; Tue,  5 Mar 2024 14:08:26 +0900 (KST)
+Received: from [10.229.8.168] (unknown [10.229.8.168]) by
+	epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+	20240305050826epsmtip2bf1362dc7ebf93b71fea7ea1c5b9979e~5xhA6dbvN1460914609epsmtip2v;
+	Tue,  5 Mar 2024 05:08:26 +0000 (GMT)
+Message-ID: <cbbeec8c-45c7-0f62-8947-90511fdc1f25@samsung.com>
+Date: Tue, 5 Mar 2024 14:08:19 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240304-zswap-xarray-v4-1-c4b45670cc30@kernel.org>
-Message-ID: <ZeaotMlpMl88lSlc@google.com>
-Subject: Re: [PATCH v4] zswap: replace RB tree with xarray
-From: Yosry Ahmed <yosryahmed@google.com>
-To: Chris Li <chrisl@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, Nhat Pham <nphamcs@gmail.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
-	Chengming Zhou <zhouchengming@bytedance.com>, Barry Song <v-songbaohua@oppo.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+	Thunderbird/102.11.0
+Subject: Re: [PATCH] spi: dt-bindings: samsung: make dma properties not
+ required
+To: Tudor Ambarus <tudor.ambarus@linaro.org>, Rob Herring <robh@kernel.org>,
+	Sam Protsenko <semen.protsenko@linaro.org>
+Cc: Mark Brown <broonie@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, andi.shyti@kernel.org,
+	conor+dt@kernel.org, linux-spi@vger.kernel.org,
+	linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, andre.draszik@linaro.org,
+	peter.griffin@linaro.org, willmcvicker@google.com, kernel-team@android.com
+Content-Language: en-US
+From: Jaewon Kim <jaewon02.kim@samsung.com>
+In-Reply-To: <0852a6bc-315c-49e2-84fe-7dadca71df3d@linaro.org>
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrJJsWRmVeSWpSXmKPExsWy7bCmhe7pFc9SDb5OELe4/7WD0WLLq80s
+	FlMfPmGzWLP3HJPF/CPnWC12bBex6HvxkNni8q45bBYzzu9jsmj8eJPdYsOMfywW//fsYLd4
+	3gcU+3QrzmLVp/+MDvwe23ZvY/VYsKnUY9OqTjaPO9f2sHl83iQXwBqVbZORmpiSWqSQmpec
+	n5KZl26r5B0c7xxvamZgqGtoaWGupJCXmJtqq+TiE6DrlpkDdKuSQlliTilQKCCxuFhJ386m
+	KL+0JFUhI7+4xFYptSAlp8C8QK84Mbe4NC9dLy+1xMrQwMDIFKgwITvjy4STjAX7FCqePP3P
+	3MD4RbKLkZNDQsBE4tK7RexdjFwcQgI7GCX+LF3JBpIQEvjEKLFraj6E/Y1RYsO0ZJiGiZPO
+	QTXsZZToffMbynnNKLG4cRYLSBWvgJ1E26QnTCA2i4CKxKafn9gg4oISJ2c+AasRFYiWaF12
+	HyjOwSEsECTx6agRSFhEoFJiwcftYDOZBT4wSey5vZIVJMEsIC5x68l8sJlsAtoS39cvBotz
+	Au06cucOG0SNvETz1tnMIM0SAkc4JCY0XANbICHgItH5yxXiA2GJV8e3sEPYUhIv+9ug7HyJ
+	titnoOwaiY0LLjFC2PYSi878ZAcZwyygKbF+lz7ERGWJI7dYILbySXQc/ssOEeaV6GgTgmhU
+	k7g/9RwbhC0jMenISiYI20Ni+YO77BMYFWchhcksJD/OQvLLLIS9CxhZVjGKpRYU56anJhsV
+	GMJjOjk/dxMjOA1rOe9gvDL/n94hRiYOxkOMEhzMSiK8Nb+epArxpiRWVqUW5ccXleakFh9i
+	NAXGzERmKdHkfGAmyCuJNzSxNDAxMzM0NzI1MFcS573XOjdFSCA9sSQ1OzW1ILUIpo+Jg1Oq
+	gSnkz9sKCYur+/cmVr1YvvahcmOa26Ib25oXNdw7n74pWXbWlFAF5XVxLR+c34UHrVP4pyWp
+	9z9uXqfWCjY3wXVyS5Yn+PBOuMXY5qM0nXehxrMtS7sMzadb7VpvuEnb2zyc8UqDxdWwS1te
+	hS6xuiW7Q/U9V/uyysWJ/IueBBZzWgf8q+fIUF10x5dB27K/v9ZuWp/ZDZmNs+zWS7skvmPk
+	yNcQ/3JQ4aQ+z5enycp58xYkTbbvenqVR+V85Qa+BXKCt07xbK8Qnrhu0757r5Ma6wOyOxb/
+	CFg238Mwy5hp15JJBo4rbGZ8PpDsWWMRKnpj/r+ba29OqHy8dJay5uGZZ1/0iM1+eEL4mQvv
+	gTtKLMUZiYZazEXFiQDNrvY+TAQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprNIsWRmVeSWpSXmKPExsWy7bCSvO6pFc9SDV6dMrK4/7WD0WLLq80s
+	FlMfPmGzWLP3HJPF/CPnWC12bBex6HvxkNni8q45bBYzzu9jsmj8eJPdYsOMfywW//fsYLd4
+	3gcU+3QrzmLVp/+MDvwe23ZvY/VYsKnUY9OqTjaPO9f2sHl83iQXwBrFZZOSmpNZllqkb5fA
+	lfFlwknGgn0KFU+e/mduYPwi2cXIySEhYCIxcdI5dhBbSGA3o0TbugyIuIzE8md9bBC2sMT9
+	liOsEDUvGSX61+SB2LwCdhJtk54wgdgsAioSm35+YoOIC0qcnPmEBcQWFYiWWP35AlAvB4ew
+	QJDEp6NGIGERgUqJrTM3ArVycTALfGCSOHJtPQuIIyTwhlli5dP7YMuYBcQlbj2ZD7aATUBb
+	4vv6xWBxTqDFR+7cYYOoMZPo2trFCGHLSzRvnc08gVFoFpI7ZiEZNQtJyywkLQsYWVYxSqYW
+	FOem5xYbFhjlpZbrFSfmFpfmpesl5+duYgTHn5bWDsY9qz7oHWJk4mA8xCjBwawkwlvz60mq
+	EG9KYmVValF+fFFpTmrxIUZpDhYlcd5vr3tThATSE0tSs1NTC1KLYLJMHJxSDUwp88PThGfK
+	33/k21avV199v/LfLqcHV3euyxFbf1ZStfa0qvsjm/23Pxg+NHzGo9RvGKhx+8XpOQLdbRuO
+	NrCmLjqVuW7S2otcS2/1d0reqEwN2DTT5s8F0ah1z/bzbPrNPZGJY16X1W6nfTZTGxZWXFj9
+	ruLp1c47kQzrr3n+Slu/99Xeb3LneuWTb05Q8a2ziymYELdPPZBld45OokfRwxjzNZasH/9O
+	LO40mVJsL8SsfEokUIXFdUrh0VxhZRHRCZu8ZgXtYX4Yk+a9Q3Z6rN7Z0OmBS3UvPexYebJf
+	/L+QX7FF+4PrCXMWmve3nPb5/1ZSclHm1O+3J92MP78+0SMywUZyd9OvrIvXH3kqsRRnJBpq
+	MRcVJwIARxyr/y4DAAA=
+X-CMS-MailID: 20240305050826epcas2p31f42fc40cecab0edc574ed7f57828e61
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20240304181554epcas2p19ce81f9801d4704862e76f785980213e
+References: <20240301115546.2266676-1-tudor.ambarus@linaro.org>
+	<CAPLW+4=6oYcs0NPXo4ffLiCvtNQ-tY1s_isaxTX8dcPkV56xMw@mail.gmail.com>
+	<cb426fb0-2f27-4c9b-89f5-7139354ea425@sirena.org.uk>
+	<f06328e4-b283-4302-b9c1-6473aa3cfa25@linaro.org>
+	<CAPLW+4kjXK=EWx__h0bX0rJMrL33E=t4YDzSOfObmvtG9aS+jg@mail.gmail.com>
+	<20240304165635.GA739022-robh@kernel.org>
+	<CGME20240304181554epcas2p19ce81f9801d4704862e76f785980213e@epcas2p1.samsung.com>
+	<0852a6bc-315c-49e2-84fe-7dadca71df3d@linaro.org>
 
-Hi Chris,
-
-On Mon, Mar 04, 2024 at 01:32:20PM -0800, Chris Li wrote:
-> Very deep RB tree requires rebalance at times. That
-> contributes to the zswap fault latencies. Xarray does not
-> need to perform tree rebalance. Replacing RB tree to xarray
-> can have some small performance gain.
-> 
-> One small difference is that xarray insert might fail with
-> ENOMEM, while RB tree insert does not allocate additional
-> memory.
-> 
-> The zswap_entry size will reduce a bit due to removing the
-> RB node, which has two pointers and a color field. Xarray
-> store the pointer in the xarray tree rather than the
-> zswap_entry. Every entry has one pointer from the xarray
-> tree. Overall, switching to xarray should save some memory,
-> if the swap entries are densely packed.
-> 
-> Notice the zswap_rb_search and zswap_rb_insert always
-> followed by zswap_rb_erase. Use xa_erase directly. The entry
-> erase into zswap_xa_insert as well. That saves one tree
-> lookup as well.
-> 
-> Remove zswap_invalidate_entry due to no need to call
-> zswap_rb_erase any more. Use zswap_free_entry instead.
-> 
-> The "struct zswap_tree" has been replaced by "struct xarray".
-> The tree spin lock has transferred to the xarray lock.
-> 
-> Run the kernel build testing 10 times for each version, averages:
-> (memory.max=2GB, zswap shrinker and writeback enabled, one 50GB swapfile.)
-
-Please add details about the number of threads and the number of CPUs as
-well.
-
-> 
-> mm-9a0181a3710eb                    xarray v4
-> user       3526.829                            3526.930
-> sys        532.754                             526.525
-> real       198.748                             198.850
-> 
-> ---
-> 
-> 
-> Signed-off-by: Chris Li <chrisl@kernel.org>
-> ---
-> Changes in v4:
-> - Remove zswap_xa_search_and_earse, use xa_erase directly.
-> - Move charge of objcg after zswap_xa_insert.
-> - Avoid erase old entry on insert fail error path.
-> - Remove not needed swap_zswap_tree change
-> - Link to v3: https://lore.kernel.org/r/20240302-zswap-xarray-v3-1-5900252f2302@kernel.org
-> 
-> Changes in v3:
-> - Use xa_cmpxchg instead of zswap_xa_search_and_delete in zswap_writeback_entry.
-> - Use xa_store in zswap_xa_insert directly. Reduce the scope of spinlock.
-> - Fix xa_store error handling for same page fill case.
-> - Link to v2: https://lore.kernel.org/r/20240229-zswap-xarray-v2-1-e50284dfcdb1@kernel.org
-> 
-> Changes in v2:
-> - Replace struct zswap_tree with struct xarray.
-> - Remove zswap_tree spinlock, use xarray lock instead.
-> - Fold zswap_rb_erase() into zswap_xa_search_and_delete() and zswap_xa_insert().
-> - Delete zswap_invalidate_entry(), use zswap_free_entry() instead.
-> - Link to v1: https://lore.kernel.org/r/20240117-zswap-xarray-v1-0-6daa86c08fae@kernel.org
-> ---
->  mm/zswap.c | 186 ++++++++++++++++++++++++-------------------------------------
->  1 file changed, 72 insertions(+), 114 deletions(-)
-> 
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index 011e068eb355..4f4a3f452b76 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -20,7 +20,6 @@
->  #include <linux/spinlock.h>
->  #include <linux/types.h>
->  #include <linux/atomic.h>
-> -#include <linux/rbtree.h>
->  #include <linux/swap.h>
->  #include <linux/crypto.h>
->  #include <linux/scatterlist.h>
-> @@ -71,6 +70,8 @@ static u64 zswap_reject_compress_poor;
->  static u64 zswap_reject_alloc_fail;
->  /* Store failed because the entry metadata could not be allocated (rare) */
->  static u64 zswap_reject_kmemcache_fail;
-> +/* Store failed because xarray can't insert the entry*/
-> +static u64 zswap_reject_xarray_fail;
->  
->  /* Shrinker work queue */
->  static struct workqueue_struct *shrink_wq;
-> @@ -196,7 +197,6 @@ static struct {
->   * This structure contains the metadata for tracking a single compressed
->   * page within zswap.
->   *
-> - * rbnode - links the entry into red-black tree for the appropriate swap type
->   * swpentry - associated swap entry, the offset indexes into the red-black tree
->   * length - the length in bytes of the compressed page data.  Needed during
->   *          decompression. For a same value filled page length is 0, and both
-> @@ -208,7 +208,6 @@ static struct {
->   * lru - handle to the pool's lru used to evict pages.
->   */
->  struct zswap_entry {
-> -	struct rb_node rbnode;
->  	swp_entry_t swpentry;
->  	unsigned int length;
->  	struct zswap_pool *pool;
-> @@ -220,12 +219,7 @@ struct zswap_entry {
->  	struct list_head lru;
->  };
->  
-> -struct zswap_tree {
-> -	struct rb_root rbroot;
-> -	spinlock_t lock;
-> -};
-> -
-> -static struct zswap_tree *zswap_trees[MAX_SWAPFILES];
-> +static struct xarray *zswap_trees[MAX_SWAPFILES];
->  static unsigned int nr_zswap_trees[MAX_SWAPFILES];
->  
->  /* RCU-protected iteration */
-> @@ -253,7 +247,7 @@ static bool zswap_has_pool;
->  * helpers and fwd declarations
->  **********************************/
->  
-> -static inline struct zswap_tree *swap_zswap_tree(swp_entry_t swp)
-> +static inline struct xarray *swap_zswap_tree(swp_entry_t swp)
->  {
->  	return &zswap_trees[swp_type(swp)][swp_offset(swp)
->  		>> SWAP_ADDRESS_SPACE_SHIFT];
-> @@ -805,60 +799,33 @@ void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg)
->  }
->  
->  /*********************************
-> -* rbtree functions
-> +* xarray functions
->  **********************************/
-> -static struct zswap_entry *zswap_rb_search(struct rb_root *root, pgoff_t offset)
-> -{
-> -	struct rb_node *node = root->rb_node;
-> -	struct zswap_entry *entry;
-> -	pgoff_t entry_offset;
-> -
-> -	while (node) {
-> -		entry = rb_entry(node, struct zswap_entry, rbnode);
-> -		entry_offset = swp_offset(entry->swpentry);
-> -		if (entry_offset > offset)
-> -			node = node->rb_left;
-> -		else if (entry_offset < offset)
-> -			node = node->rb_right;
-> -		else
-> -			return entry;
-> -	}
-> -	return NULL;
-> -}
->  
->  /*
->   * In the case that a entry with the same offset is found, a pointer to
-> - * the existing entry is stored in dupentry and the function returns -EEXIST
-> + * the existing entry is stored in old and erased from the tree.
-> + * Function return error on insert.
->   */
-> -static int zswap_rb_insert(struct rb_root *root, struct zswap_entry *entry,
-> -			struct zswap_entry **dupentry)
-> +static int zswap_xa_insert(struct xarray *tree, struct zswap_entry *entry,
-> +			   struct zswap_entry **old)
->  {
-> -	struct rb_node **link = &root->rb_node, *parent = NULL;
-> -	struct zswap_entry *myentry;
-> -	pgoff_t myentry_offset, entry_offset = swp_offset(entry->swpentry);
-> -
-> -	while (*link) {
-> -		parent = *link;
-> -		myentry = rb_entry(parent, struct zswap_entry, rbnode);
-> -		myentry_offset = swp_offset(myentry->swpentry);
-> -		if (myentry_offset > entry_offset)
-> -			link = &(*link)->rb_left;
-> -		else if (myentry_offset < entry_offset)
-> -			link = &(*link)->rb_right;
-> -		else {
-> -			*dupentry = myentry;
-> -			return -EEXIST;
-> -		}
-> -	}
-> -	rb_link_node(&entry->rbnode, parent, link);
-> -	rb_insert_color(&entry->rbnode, root);
-> -	return 0;
-> -}
-> +	int err;
-> +	struct zswap_entry *e;
-> +	pgoff_t offset = swp_offset(entry->swpentry);
->  
-> -static void zswap_rb_erase(struct rb_root *root, struct zswap_entry *entry)
-> -{
-> -	rb_erase(&entry->rbnode, root);
-> -	RB_CLEAR_NODE(&entry->rbnode);
-> +	e = xa_store(tree, offset, entry, GFP_KERNEL);
-> +	err = xa_err(e);
-> +
-> +	if (err) {
-> +		e = xa_erase(tree, offset);
-> +		if (err == -ENOMEM)
-> +			zswap_reject_alloc_fail++;
-> +		else
-> +			zswap_reject_xarray_fail++;
-
-I think this is too complicated, and as Chengming pointed out, I believe
-we can use xa_store() directly in zswap_store().
-
-I am also not sure what the need for zswap_reject_xarray_fail is. Are
-there any reasons why the store here can fail other than -ENOMEM? The
-docs say the only other option is -EINVAL, and looking at __xa_store(),
-it seems like this is only possible if xa_is_internal() is true (which
-means we are not passing in a properly aligned pointer IIUC).
-
-> +	}
-> +	*old = e;
-> +	return err;
->  }
->  
->  /*********************************
-> @@ -872,7 +839,6 @@ static struct zswap_entry *zswap_entry_cache_alloc(gfp_t gfp, int nid)
->  	entry = kmem_cache_alloc_node(zswap_entry_cache, gfp, nid);
->  	if (!entry)
->  		return NULL;
-> -	RB_CLEAR_NODE(&entry->rbnode);
->  	return entry;
->  }
->  
-> @@ -914,17 +880,6 @@ static void zswap_entry_free(struct zswap_entry *entry)
->  	zswap_update_total_size();
->  }
->  
-> -/*
-> - * The caller hold the tree lock and search the entry from the tree,
-> - * so it must be on the tree, remove it from the tree and free it.
-> - */
-> -static void zswap_invalidate_entry(struct zswap_tree *tree,
-> -				   struct zswap_entry *entry)
-> -{
-> -	zswap_rb_erase(&tree->rbroot, entry);
-> -	zswap_entry_free(entry);
-> -}
-> -
->  /*********************************
->  * compressed storage functions
->  **********************************/
-> @@ -1113,7 +1068,9 @@ static void zswap_decompress(struct zswap_entry *entry, struct page *page)
->  static int zswap_writeback_entry(struct zswap_entry *entry,
->  				 swp_entry_t swpentry)
->  {
-> -	struct zswap_tree *tree;
-> +	struct xarray *tree;
-> +	pgoff_t offset = swp_offset(swpentry);
-> +	struct zswap_entry *e;
->  	struct folio *folio;
->  	struct mempolicy *mpol;
->  	bool folio_was_allocated;
-> @@ -1150,19 +1107,14 @@ static int zswap_writeback_entry(struct zswap_entry *entry,
->  	 * be dereferenced.
->  	 */
->  	tree = swap_zswap_tree(swpentry);
-> -	spin_lock(&tree->lock);
-> -	if (zswap_rb_search(&tree->rbroot, swp_offset(swpentry)) != entry) {
-> -		spin_unlock(&tree->lock);
-> +	e = xa_cmpxchg(tree, offset, entry, NULL, GFP_KERNEL);
-> +	if (e != entry) {
-
-I think we can avoid adding 'e' and 'offset' local variables here and
-just do everything in the if condition. If you want to avoid the line
-break, then introducing 'offset' is fine, but I don't see any value from
-'e'.
+Hello all,
 
 
->  		delete_from_swap_cache(folio);
->  		folio_unlock(folio);
->  		folio_put(folio);
->  		return -ENOMEM;
->  	}
->  
-> -	/* Safe to deref entry after the entry is verified above. */
-> -	zswap_rb_erase(&tree->rbroot, entry);
-> -	spin_unlock(&tree->lock);
-> -
->  	zswap_decompress(entry, &folio->page);
->  
->  	count_vm_event(ZSWPWB);
-> @@ -1471,10 +1423,12 @@ bool zswap_store(struct folio *folio)
->  {
->  	swp_entry_t swp = folio->swap;
->  	pgoff_t offset = swp_offset(swp);
-> -	struct zswap_tree *tree = swap_zswap_tree(swp);
-> -	struct zswap_entry *entry, *dupentry;
-> +	struct xarray *tree = swap_zswap_tree(swp);
-> +	struct zswap_entry *entry, *old;
->  	struct obj_cgroup *objcg = NULL;
->  	struct mem_cgroup *memcg = NULL;
-> +	int err;
-> +	bool old_erased = false;
->  
->  	VM_WARN_ON_ONCE(!folio_test_locked(folio));
->  	VM_WARN_ON_ONCE(!folio_test_swapcache(folio));
-> @@ -1526,6 +1480,7 @@ bool zswap_store(struct folio *folio)
->  			kunmap_local(src);
->  			entry->length = 0;
->  			entry->value = value;
-> +			entry->pool = NULL;
+On 24. 3. 5. 03:15, Tudor Ambarus wrote:
+> Hi, Rob,
+>
+> On 3/4/24 16:56, Rob Herring wrote:
+>> On Sat, Mar 02, 2024 at 10:23:16AM -0600, Sam Protsenko wrote:
+>>> On Sat, Mar 2, 2024 at 3:36 AM Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
+>>>>
+>>>>
+>>>> On 01.03.2024 22:42, Mark Brown wrote:
+>>>>> On Fri, Mar 01, 2024 at 01:28:35PM -0600, Sam Protsenko wrote:
+>>>>>> On Fri, Mar 1, 2024 at 5:55 AM Tudor Ambarus <tudor.ambarus@linaro.org> wrote:
+>>>>>>> Since the addition of the driver in 2009, the driver selects between DMA
+>>>>>>> and polling mode depending on the transfer length - DMA mode for
+>>>>>>> transfers bigger than the FIFO depth, polling mode otherwise. All
+>>>>>>> versions of the IP support polling mode, make the dma properties not
+>>>>>>> required.
+>>>>>> AFAIU, the device tree has nothing to do with drivers, it's about
+>>>>>> hardware description. Does making DMA properties not required here
+>>>> correct
+>>>>
+>>>>>> mean that there are some HW out there which doesn't integrate DMA in
+>>>> no, to me it means that the IP can work without DMA, only in PIO mode,
+>>>> regardless if DMA is integrated or not. Not required means that the
+>>>> property is not mandatory, which is what I'm trying to achieve here.
+>>>>
+>>>>>> SPI blocks? Even if this change is ok (I'm not sure), the
+>>>>>> argumentation doesn't look sound to me.
+>>>> switching to PIO mode in the driver for sizes smaller than FIFO depths
+>>>> in the driver guarantees that all existing compatibles support PIO mode.
+>>>>
+>>>> Are you saying that if there is a physical line between an IP and DMA
+>>>> controller, then the DMA properties must always be specified in dt? I
+>>>> thought they can be marked as optional in this case, and that's what I
+>>>> did with this patch.
+>>>>
+>>> No, I would wait for maintainers to clarify on that bit. Change itself
+>>> can be ok. But the commit message shouldn't mention the driver,
+>>> because the driver uses (depends on) device tree, not vice versa. The
+>>> device tree can be used in other projects as well (like U-Boot and
+>>> OP-TEE), so it should be designed to be universal and not depend on
+>>> kernel drivers. The commit message should be based on particular HW
+>>> layout features and how the patch makes the bindings describe that HW
+>>> better. It shouldn't rely on driver implementations.
+>> If the controller is DMA capable then it should have dma properties. The
+> should have as in required/mandatory?
+>
+>> compatible should be enough to tell if it is a case of 'can only work
+> yes, I agree
+>
+>> with DMA'. Otherwise, it is going to be up to a specific user. Even
+>> within Linux, you may have a serial port that doesn't use DMA for the
+>> console, but uses it for the tty or serdev.
+>>
+>> Of course, if a new device is added without DMA properties and they
+>> are added later on, then they are going to be optional even though the
+>> DMA support is always there. I can't fully understand everyone's h/w.
+>>
+> The SPI controller that I'm working with has a dedicated channel to the
+> DMA controller. It can work without DMA too, just by polling registers
+> or by interrupts.
+>
+> I can't get the DMA controller to work correctly yet, and since the SPI
+> controller can work without DMA, I thought that I can mark the DMA
+> properties as optional, add the SPI node in dt without DMA, and add the
+> DMA properties later on, after I have the DMA controller working
+> correctly. Is this approach wrong?
+>
+> Thanks,
+> ta
+>
+>
 
-Why do we need to initialize the pool here? Is this is a bug fix for an
-existing problem or just keeping things clean? Either way I think it
-should be done separately, unless it is related to a change in this
-patch.
+I agree with this patch.
 
->  			atomic_inc(&zswap_same_filled_pages);
->  			goto insert_entry;
->  		}
-> @@ -1555,28 +1510,31 @@ bool zswap_store(struct folio *folio)
->  insert_entry:
->  	entry->swpentry = swp;
->  	entry->objcg = objcg;
-> -	if (objcg) {
-> -		obj_cgroup_charge_zswap(objcg, entry->length);
-> -		/* Account before objcg ref is moved to tree */
-> -		count_objcg_event(objcg, ZSWPOUT);
-> -	}
->  
->  	/* map */
-
-Let's remove this comment while we are here, it's pointless AFAICT.
-
-> -	spin_lock(&tree->lock);
->  	/*
->  	 * The folio may have been dirtied again, invalidate the
->  	 * possibly stale entry before inserting the new entry.
->  	 */
-> -	if (zswap_rb_insert(&tree->rbroot, entry, &dupentry) == -EEXIST) {
-> -		zswap_invalidate_entry(tree, dupentry);
-> -		WARN_ON(zswap_rb_insert(&tree->rbroot, entry, &dupentry));
-> +	err = zswap_xa_insert(tree, entry, &old);
-> +	if (old)
-> +		zswap_entry_free(old);
-> +	if (err) {
-> +		old_erased = true;
-
-I think this can be made simpler if we open code xa_store() here,
-especially that we already have cleanup code below under 'check_old'
-that removes the exisitng old entry. So zswap_xa_insert() replicates
-this cleanup, then we add this 'old_erased' boolean to avoid doing the
-cleanup below. It seems like it would much more straightforward with
-open-coding xa_store() here and relying on the existing cleanup for the
-old entry.  Also, if we initialize 'old' to NULL, we can use its value
-to figure out whether any cleanup is needed under 'check_old' or not.
-
-Taking a step back, I think we can further simplify this. What if we
-move the tree insertion to right after we allocate the zswap entry? In
-this case, if the tree insertion fails, we don't need to decrement the
-same filled counter. If the tree insertion succeeds and then something
-else fails, the existing cleanup code under 'check_old' will already
-clean up the tree insertion for us.
-
-If this works, we don't need to add extra cleanup code or move any code
-around. Something like:
-
-	entry = zswap_entry_cache_alloc(GFP_KERNEL, folio_nid(folio));
-	if (!entry) {
-		zswap_reject_kmemcache_fail++;
-		goto reject;
-	}
-
-	old = xa_store(tree, offset, entry, GFP_KERNEL);
-	if (xa_is_err(old)) {
-		old = NULL;
-		goto freepage;
-	}
-	if (old)
-		zswap_free_entry(old);
-
-	...
-check_old:
-	if (!old) {
-		old = xa_erase(tree, offset);
-		if (old)
-			zswap_entry_free(old);
-	}
+I don`t think DMA property needs to be "required" because it can operate 
+well without DMA property.
 
 
-WDYT?
+Last year, I put a patch that makes dma property optional.
 
-> +		goto insert_failed;
->  	}
-> +
-> +	if (objcg) {
-> +		obj_cgroup_charge_zswap(objcg, entry->length);
-> +		/* Account before objcg ref is moved to tree */
-> +		count_objcg_event(objcg, ZSWPOUT);
-> +	}
-> +
->  	if (entry->length) {
->  		INIT_LIST_HEAD(&entry->lru);
->  		zswap_lru_add(&zswap.list_lru, entry);
->  		atomic_inc(&zswap.nr_stored);
->  	}
-> -	spin_unlock(&tree->lock);
->  
->  	/* update stats */
->  	atomic_inc(&zswap_stored_pages);
-> @@ -1585,6 +1543,12 @@ bool zswap_store(struct folio *folio)
->  
->  	return true;
->  
-> +insert_failed:
-> +	if (!entry->length) {
-> +		atomic_dec(&zswap_same_filled_pages);
-> +		goto freepage;
-> +	}
-> +	zpool_free(zswap_find_zpool(entry), entry->handle);
->  put_pool:
->  	zswap_pool_put(entry->pool);
->  freepage:
-> @@ -1592,17 +1556,19 @@ bool zswap_store(struct folio *folio)
->  reject:
->  	if (objcg)
->  		obj_cgroup_put(objcg);
-> +
-> +	if (old_erased)
-> +		goto failed;
->  check_old:
->  	/*
->  	 * If the zswap store fails or zswap is disabled, we must invalidate the
->  	 * possibly stale entry which was previously stored at this offset.
->  	 * Otherwise, writeback could overwrite the new data in the swapfile.
->  	 */
-> -	spin_lock(&tree->lock);
-> -	entry = zswap_rb_search(&tree->rbroot, offset);
-> +	entry = xa_erase(tree, offset);
->  	if (entry)
-> -		zswap_invalidate_entry(tree, entry);
-> -	spin_unlock(&tree->lock);
-> +		zswap_entry_free(entry);
-> +failed:
->  	return false;
->  
->  shrink:
-[..]
+  - d1a7718ee8db (spi: s3c64xx: change polling mode to optional)
+
+- https://lore.kernel.org/r/20230502062813.112434-2-jaewon02.kim@samsung.com
+
+
+In the past, there was SoC without DMA, so it was a quirk that used 
+polling mode.
+
+Now, I want to change this to be optional to support cases where DMA is 
+not available according to OS environment(Virtual Machine).
+
+
+Thanks
+
+Jaewon Kim
+
 
