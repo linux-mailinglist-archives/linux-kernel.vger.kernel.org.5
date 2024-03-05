@@ -1,139 +1,159 @@
-Return-Path: <linux-kernel+bounces-91854-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91848-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 038A587177B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:56:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14DAB871771
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:55:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3556F1C22496
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:56:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9D9A1F22D34
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:55:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CB147F7F1;
-	Tue,  5 Mar 2024 07:55:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 224BB7FBDD;
+	Tue,  5 Mar 2024 07:53:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TjfO6vuE"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lHrRPUVQ"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 370AE7F7EE
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 07:55:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75F7C7FBD5
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 07:53:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709625323; cv=none; b=Fp/ipTTS4EvHzUR1r4tN/qtX9hsJOFfyH33FYUKtbAO/3xEZxEgDSQQeC/InQRvCVC9gWFKVyJ6UMAMGMTVCM2OuvMWZ3jW3H1QRdI22a4hZaWblD9hHwyM7YPK71xvOmn2JzTSf5QJdOK1VF+gz9TzOGcxtjes93YIpBI69/MQ=
+	t=1709625216; cv=none; b=o/r6KOHpX7HAdXUpgog6RWJg518UpCEvuZ3JHzMN5k0WOjfpNY28tUAT3wXhp2V/cldJS+cArKcZOru/pOd5kpZTz6a/4/b7/3668S3r2HntNCs1IiSlEHM+93sIBG5z5ooiEbM7sHZh63HXDfi+5hqmiIDf1p0a5I0jqrIkPTs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709625323; c=relaxed/simple;
-	bh=LkYVT4dDvTXDJ25e9h5t11zwb/QpgogamAOI+sx2zz4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=IYFqTDeC5SPnSjxMoQJ2ys7+ID2VOWpyTotCBKSX3/C9a0NCzl/inQMF9B/LzB24fS1WUehohOGrFPGG526kb2KofyNCh7OSKhMc77Mw2W3Q3/6T1llpYLnfrFNvkKOI4r9/U/lnpHPGqXvJSFGijQyqdN09h9awhFDjxCvi9ZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TjfO6vuE; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709625322; x=1741161322;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=LkYVT4dDvTXDJ25e9h5t11zwb/QpgogamAOI+sx2zz4=;
-  b=TjfO6vuEWFQq1X60ffkZjqrwO8HOYF475heCjpZvvUnclseYBK+4tbda
-   cNJ4z/Y0KZTlgSNiKxRSsCmL9K/kdlszZdae9coVWE0kU6qdKzeVieXzw
-   vfRXuSLUSc4fgCkjJvM5qxNuCXAxcMg/HbThJ1I0la2D0yuy8g0MYvPED
-   pPHeIyadejD5x/egj/N3n5uXSe1nipTuhOkbxD7hFic18pgWR1kNi09Sm
-   0yT4l7UnHJddfp2Q3yMqjywi372GlNVero95urya5noiMmehQRTXZzfge
-   xCdLgL9jKnoffNkcLlamovFDMAyPe82Xb2Ij2P6dgoPh0FTr2YYzJuOGL
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="26618723"
-X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
-   d="scan'208";a="26618723"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 23:55:22 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
-   d="scan'208";a="40272704"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 23:55:17 -0800
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Barry Song <21cnbao@gmail.com>
-Cc: David Hildenbrand <david@redhat.com>,  Ryan Roberts
- <ryan.roberts@arm.com>,  akpm@linux-foundation.org,  linux-mm@kvack.org,
-  chrisl@kernel.org,  yuzhao@google.com,  hanchuanhua@oppo.com,
-  linux-kernel@vger.kernel.org,  willy@infradead.org,  xiang@kernel.org,
-  mhocko@suse.com,  shy828301@gmail.com,  wangkefeng.wang@huawei.com,
-  Barry Song <v-songbaohua@oppo.com>,  Hugh Dickins <hughd@google.com>
-Subject: Re: [RFC PATCH] mm: hold PTL from the first PTE while reclaiming a
- large folio
-In-Reply-To: <CAGsJ_4yqUW46xyDtZ4X1wQZ2_0bLM85Euz2BufERa75Rg+gVyw@mail.gmail.com>
-	(Barry Song's message of "Tue, 5 Mar 2024 11:29:31 +1300")
-References: <20240304103757.235352-1-21cnbao@gmail.com>
-	<706b7129-85f6-4470-9fd9-f955a8e6bd7c@arm.com>
-	<37f1e6da-412b-4bb4-88b7-4c49f21f5fe9@redhat.com>
-	<CAGsJ_4yJ3yCyN_KgBO8W+jFx8RN6_JhS9OwX3FH6X_gpU7g62w@mail.gmail.com>
-	<804524c8-772c-42d0-93a5-90d77f13f304@redhat.com>
-	<CAGsJ_4yqUW46xyDtZ4X1wQZ2_0bLM85Euz2BufERa75Rg+gVyw@mail.gmail.com>
-Date: Tue, 05 Mar 2024 15:53:22 +0800
-Message-ID: <87r0gp868d.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1709625216; c=relaxed/simple;
+	bh=1hV0cF3diU48Z52x1dKAUOMlikMJbhSfandp1VEQFt0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZJylqCre4PcXAIS6nhhQ4FcucZrPhzpNwYx1TL3F/ZGgzXGNva+p1eUMR2m953n8Zh3bSwtJLeWs8AKOtkCRxeXnWQco4sCEwNZpCIjjL27dZZit1FXR/3Gx+YxiXDBuCANHUOrAVk2Zny/DuZ7wN9xFm8oef/OHx9vcox2rPWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lHrRPUVQ; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5640fef9fa6so6535804a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 23:53:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709625212; x=1710230012; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Qm7d8B+DkbJ7Jgiy9fqEkUg8rwERrs7SAxsLTaBklGw=;
+        b=lHrRPUVQOL03SU/ToEOdvsF7lHlYkSGJOcCwCY+uvPr024CB5Bc9E81Xn0ogP9aCxj
+         FDt+1ZLTv1o2Zyktjp/DXYHgfZTLUaoOfyi0a4M+nfkvJQNJpTQfm4yBFUh4ONQ2+muS
+         6pmndhIduxbhMBL3iBcJme5F6AsHo4YgwHvpEi8IyLoyNy0Y2VSTVELyB/wPPOVNnf7A
+         t0aJyWjIHqo/4kY6nRlimfiwNjDWRJVw8KFJYelk4U1K2/+wWi6LxVyzlWT4hZa6FcBW
+         nAN2YjqTwUZTUBTKZiVxAvqIS+wvBuq4XVCMZU40HDFBgpPK+qAJcWx2voExga/X6lVd
+         Q4mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709625212; x=1710230012;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Qm7d8B+DkbJ7Jgiy9fqEkUg8rwERrs7SAxsLTaBklGw=;
+        b=OJgeueXUeUlcxhCdEF1mZ8jHYRaflHI7GaDuYxlYKw/20qnzkQJnGTgR9nx6ZsVucG
+         5tIlJuL/QqYBT+LwChZiTfGjhwOmhPvLHo6MXYU+89G1p82JLkkEm5EePSCheBG9kyIm
+         /uetYYYHAtlAQZeg2NKc+j3BQ1+efA51PsAyFwfQvXC7aqHBIMBa+dHSpBhxxZIi70Z6
+         9c8NJKOkF/9VJ+2qZukGxNrQPd+OSqdh2VscG3zHD6VR9LGWqVWxy8hMQ0waJRQOFhbd
+         UDjVT0tADPCypdnZzKvyi7swYR/RfaE8aCq5HVNXgf+e8jEAVk3FWTVkUIWwj6ESAHjM
+         BeUg==
+X-Forwarded-Encrypted: i=1; AJvYcCUss/kIbM9X2MQWf5ipe9oJm00fvDqdguLoB2UvupPMBF5OE3xAPk9xk/0z88ePoc/2f1vh8yVyoGv579mRikMsokSL7crYiXxxbhN1
+X-Gm-Message-State: AOJu0YxW8MqA4pJ2GHoOZkUIyo2A1XzWu1sJI8mjJkJzvmi7EgR9aLTX
+	UmyX43mR7iCGp62zjpTcaX3uYHhlk5/g7hmp+SZ9dxcmZkWgfCYTbV4y+Z7eQfY=
+X-Google-Smtp-Source: AGHT+IEZ32OL5p3C/MNK75XGVpZbYBiG1XrQrcwjKmRbziO++5eFN+96jWxkKt5NXDnk5V1IvRU1dA==
+X-Received: by 2002:a17:906:cd03:b0:a44:511d:630b with SMTP id oz3-20020a170906cd0300b00a44511d630bmr7360893ejb.24.1709625211623;
+        Mon, 04 Mar 2024 23:53:31 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id tj10-20020a170907c24a00b00a4452ed413asm5538593ejc.16.2024.03.04.23.53.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Mar 2024 23:53:31 -0800 (PST)
+Message-ID: <55e5af68-bceb-4256-89f1-e0902821d6eb@linaro.org>
+Date: Tue, 5 Mar 2024 08:53:28 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/3] dt-bindings: Add Crystal Clear Technology vendor
+ prefix
+Content-Language: en-US
+To: =?UTF-8?B?SsOpcsOpbWllIERhdXRoZXJpYmVz?=
+ <jeremie.dautheribes@bootlin.com>, Neil Armstrong
+ <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>,
+ Sam Ravnborg <sam@ravnborg.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Thierry Reding <thierry.reding@gmail.com>
+Cc: dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, Yen-Mei Goh <yen-mei.goh@keysight.com>
+References: <20240304160454.96977-1-jeremie.dautheribes@bootlin.com>
+ <20240304160454.96977-2-jeremie.dautheribes@bootlin.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240304160454.96977-2-jeremie.dautheribes@bootlin.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Barry Song <21cnbao@gmail.com> writes:
+On 04/03/2024 17:04, Jérémie Dautheribes wrote:
+> Update Documentation/devicetree/bindings/vendor-prefixes.yaml to
+> include "cct" as a vendor prefix for "Crystal Clear Technology". CCT is
+> the vendor of the CMT430B19N00 TFT-LCD panel.
+> 
+> Link: http://www.cct.com.my/
+> Signed-off-by: Jérémie Dautheribes <jeremie.dautheribes@bootlin.com>
+> ---
 
-> On Tue, Mar 5, 2024 at 10:15=E2=80=AFAM David Hildenbrand <david@redhat.c=
-om> wrote:
->> > But we did "resolve" those bugs by entirely untouching all PTEs if we
->> > found some PTEs were skipped in try_to_unmap_one [1].
->> >
->> > While we find we only get the PTL from 2nd, 3rd but not
->> > 1st PTE, we entirely give up on try_to_unmap_one, and leave
->> > all PTEs untouched.
->> >
->> > /* we are not starting from head */
->> > if (!IS_ALIGNED((unsigned long)pvmw.pte, CONT_PTES * sizeof(*pvmw.pte)=
-)) {
->> >                     ret =3D false;
->> >                     atomic64_inc(&perf_stat.mapped_walk_start_from_non=
-_head);
->> >                     set_pte_at(mm, address, pvmw.pte, pteval);
->> >                     page_vma_mapped_walk_done(&pvmw);
->> >                     break;
->> > }
->> > This will ensure all PTEs still have a unified state such as CONT-PTE
->> > after try_to_unmap fails.
->> > I feel this could have some false postive because when racing
->> > with unmap, 1st PTE might really become pte_none. So explicitly
->> > holding PTL from 1st PTE seems a better way.
->>
->> Can we estimate the "cost" of holding the PTL?
->>
->
-> This is just moving PTL acquisition one or two PTE earlier in those corner
-> cases. In normal cases, it doesn't affect when PTL is held.
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-The mTHP may be mapped at the end of page table.  In that case, the PTL
-will be held longer.  Or am I missing something?
+Best regards,
+Krzysztof
 
---
-Best Regards,
-Huang, Ying
-
-
-> In normal cases, page_vma_mapped_walk will find PTE0 is present, thus hold
-> PTL immediately. in corner cases, page_vma_mapped_walk races with break-
-> before-make, after skipping one or two PTEs whose states are transferring,
-> it will find a present pte then acquire lock.
->
->> --
->> Cheers,
->>
->> David / dhildenb
->
-> Thanks
-> Barry
 
