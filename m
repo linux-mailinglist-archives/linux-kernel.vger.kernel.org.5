@@ -1,165 +1,120 @@
-Return-Path: <linux-kernel+bounces-92497-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92500-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9D42872135
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:13:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EA7BA87213D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:14:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65F0A282533
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:13:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A61AE283055
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:14:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 553228663A;
-	Tue,  5 Mar 2024 14:12:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 048248663E;
+	Tue,  5 Mar 2024 14:14:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="d7rLGd78";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2NeXmf8h";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="d7rLGd78";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2NeXmf8h"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Egj83881"
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E4D08662E;
-	Tue,  5 Mar 2024 14:12:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF82F5676A;
+	Tue,  5 Mar 2024 14:13:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709647970; cv=none; b=Qyqbf6vpaixfPAmMkZCIHIBG/E57r+JwSrlZPYJZefQad/EzPNVVwpeVVEL/iY5WgZykNBOriNSCW+rqQOzuPA/f3cpzOlJ7OWT38sZCPCWsVzRjTKWxAaxMJDl16ZVg/sdPOgiZBXqcYC2ocjF9v5/+qbSfXlrf9wX/WuZVsT4=
+	t=1709648040; cv=none; b=PeSlQv040EcTOiwb8A6djtEYZiJP8Lbp0LNEVSOtxsUIVXU9ppzB8QnXpUj2qaHQ7nhaEOuzcbZtppIIeMVE/j9cXML8QZ+HR2uhe9cAPRJswFmzBQhUwWwx3I5orAgXg/rDNVL4m8aXyT/w8oR/YQLXPWWZ4jSYoIZUIX6bIkI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709647970; c=relaxed/simple;
-	bh=jAvBGKZkDK+DJCXMX8Lptx599t3OO3/6NY//gbhJ8ac=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nYBGaKFlkWMvcLdHX8Q+rILQZIwA4pGRjE33m+9DC56w0YZHaM37rlFB1Mq+05hreH7b5Z2ndFXmVPY/1goD5ru3uyWCFfEhWP/yqbJ1oL5q93ARKx0RJuCIxVkoHAkJjlMEZt8EDaX5tW8qBz0sfeyZ09bSf9ugRYNj0U3pYmE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=d7rLGd78; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2NeXmf8h; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=d7rLGd78; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2NeXmf8h; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C51DA6B3AB;
-	Tue,  5 Mar 2024 14:12:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1709647966; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=F9/7CluG7BEEDZ/l4zmtYN6IZ3U75GnXdcDIdLJHyjQ=;
-	b=d7rLGd78mS8+FyfvMuPzfhnaNyDUU8T3D/lvmb+lKa5jChNJ9V58hMzOYowp+SFRr+2idK
-	YJrdvK+jMg+PeIt32R+Y2mzanoHDbJU/PVv59y/Hs8kt5AR5XU2UgomTFCHiP3mSJhfL0w
-	jRirKuwM/Fx6U9uyuTYfPWlymjs/sWc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1709647966;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=F9/7CluG7BEEDZ/l4zmtYN6IZ3U75GnXdcDIdLJHyjQ=;
-	b=2NeXmf8h7ijEs65Ra//CRJj1L5/wmxKjgtDrfOYp8WPbBYMR4dHEOql5vBVrkqYbbgX4nx
-	rNPGyR6oKY0rPLDA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1709647966; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=F9/7CluG7BEEDZ/l4zmtYN6IZ3U75GnXdcDIdLJHyjQ=;
-	b=d7rLGd78mS8+FyfvMuPzfhnaNyDUU8T3D/lvmb+lKa5jChNJ9V58hMzOYowp+SFRr+2idK
-	YJrdvK+jMg+PeIt32R+Y2mzanoHDbJU/PVv59y/Hs8kt5AR5XU2UgomTFCHiP3mSJhfL0w
-	jRirKuwM/Fx6U9uyuTYfPWlymjs/sWc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1709647966;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=F9/7CluG7BEEDZ/l4zmtYN6IZ3U75GnXdcDIdLJHyjQ=;
-	b=2NeXmf8h7ijEs65Ra//CRJj1L5/wmxKjgtDrfOYp8WPbBYMR4dHEOql5vBVrkqYbbgX4nx
-	rNPGyR6oKY0rPLDA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id B6B0813A5D;
-	Tue,  5 Mar 2024 14:12:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id CgaQLF4o52WSQwAAn2gu4w
-	(envelope-from <jack@suse.cz>); Tue, 05 Mar 2024 14:12:46 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 6AA6AA0650; Tue,  5 Mar 2024 15:12:46 +0100 (CET)
-Date: Tue, 5 Mar 2024 15:12:46 +0100
-From: Jan Kara <jack@suse.cz>
-To: chengming.zhou@linux.dev
-Cc: jack@suse.cz, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, vbabka@suse.cz,
-	roman.gushchin@linux.dev, Xiongwei.Song@windriver.com,
-	Chengming Zhou <zhouchengming@bytedance.com>
-Subject: Re: [PATCH] isofs: remove SLAB_MEM_SPREAD flag usage
-Message-ID: <20240305141246.p6bspc65seemkqyt@quack3>
-References: <20240224134901.829591-1-chengming.zhou@linux.dev>
+	s=arc-20240116; t=1709648040; c=relaxed/simple;
+	bh=5+gfrIDfeHsmtIuk5iQveNTak8sf8ygvObNXuM3iFjY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=hrs0pXgtq/MJnaGPFYS3r5+Grik6+bM53V9NSbiieTyC7+YRMoWomVrNnzsFlD+Dfk4KFED0jbSqGJxIk7XDt0z7vDZygbh/lsz3dS3I7ipW0N+EKIOAs9/nStnXamAP0utttdADVgxrRg9DBs6GzDn48+NqJs+/VbVR0paLTdc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Egj83881; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 68C3DE0006;
+	Tue,  5 Mar 2024 14:13:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709648035;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=TT5bRRrgclPHRKgI0rGkJaQyK+abn1+BXSmr76+zods=;
+	b=Egj83881srjpYjM+dfWciDSH7r1Nti0+wiIyO/dqJyBu7KV+5X/stI4ldk8dYzekWLWMGf
+	waKZtjWMVIFc3jzh5hmAGQUE0Pw746XGIxDA0B1+iKcmmKlkBclyEV5Y/gULH+2OOUKU0S
+	gt0gexb/4VapHIWJjGWJjNH+vIXKE5Fa/nI7gixbWu+Ao2aGuOM2Qgac9GjK1xaBfSc2g8
+	tv/y0aTIERdE9yimv0JY2ZfD9/PwFSaBXyLB6qQslMxl01JnqNJPapsGhpLE8xHUbX7zfS
+	Iai0zKrdjR+fJ6gaAgzFgMt44/oIxZLZ/DH+1cBuZWpcOgrCw9qw9fkJsLCPvQ==
+From: =?UTF-8?q?J=C3=A9r=C3=A9mie=20Dautheribes?= <jeremie.dautheribes@bootlin.com>
+To: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Andrew Davis <afd@ti.com>,
+	Andrew Lunn <andrew@lunn.ch>
+Cc: netdev@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Yen-Mei Goh <yen-mei.goh@keysight.com>,
+	=?UTF-8?q?Miqu=C3=A8l=20Raynal?= <miquel.raynal@bootlin.com>,
+	=?UTF-8?q?J=C3=A9r=C3=A9mie=20Dautheribes?= <jeremie.dautheribes@bootlin.com>
+Subject: [PATCH RESEND net-next] dt-bindings: net: dp83822: change ti,rmii-mode description
+Date: Tue,  5 Mar 2024 15:13:09 +0100
+Message-Id: <20240305141309.127669-1-jeremie.dautheribes@bootlin.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240224134901.829591-1-chengming.zhou@linux.dev>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -3.73
-X-Spamd-Result: default: False [-3.73 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[9];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-2.93)[99.70%]
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: jeremie.dautheribes@bootlin.com
 
-On Sat 24-02-24 13:49:01, chengming.zhou@linux.dev wrote:
-> From: Chengming Zhou <zhouchengming@bytedance.com>
-> 
-> The SLAB_MEM_SPREAD flag is already a no-op as of 6.8-rc1, remove
-> its usage so we can delete it from slab. No functional change.
-> 
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+Drop reference to the 25MHz clock as it has nothing to do with connecting
+the PHY and the MAC.
+Add info about the reference clock direction between the PHY and the MAC
+as it depends on the selected rmii mode.
 
-Thanks. I've added the patch to my tree.
+Suggested-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Jérémie Dautheribes <jeremie.dautheribes@bootlin.com>
+---
+This patch follows on from my previous patch series [1] which has already been 
+merged into the net-next tree and which added the "ti,rmii-mode" property.
+As suggested by Andrew Lunn, this patch updates the description of this 
+property to make it more consistent with the master/slave relationship it 
+conveys.
 
-								Honza
+[1] https://lore.kernel.org/all/20240222103117.526955-1-jeremie.dautheribes@bootlin.com/
 
-> ---
->  fs/isofs/inode.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/isofs/inode.c b/fs/isofs/inode.c
-> index 379c9edc907c..2a616a9f289d 100644
-> --- a/fs/isofs/inode.c
-> +++ b/fs/isofs/inode.c
-> @@ -93,7 +93,7 @@ static int __init init_inodecache(void)
->  	isofs_inode_cachep = kmem_cache_create("isofs_inode_cache",
->  					sizeof(struct iso_inode_info),
->  					0, (SLAB_RECLAIM_ACCOUNT|
-> -					SLAB_MEM_SPREAD|SLAB_ACCOUNT),
-> +					SLAB_ACCOUNT),
->  					init_once);
->  	if (!isofs_inode_cachep)
->  		return -ENOMEM;
-> -- 
-> 2.40.1
-> 
+Resending because I previously forgot to include the "net-next" entry in 
+the email subject.
+
+ Documentation/devicetree/bindings/net/ti,dp83822.yaml | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/net/ti,dp83822.yaml b/Documentation/devicetree/bindings/net/ti,dp83822.yaml
+index 8f23254c0458..784866ea392b 100644
+--- a/Documentation/devicetree/bindings/net/ti,dp83822.yaml
++++ b/Documentation/devicetree/bindings/net/ti,dp83822.yaml
+@@ -84,10 +84,10 @@ properties:
+     description: |
+        If present, select the RMII operation mode. Two modes are
+        available:
+-         - RMII master, where the PHY operates from a 25MHz clock reference,
+-         provided by a crystal or a CMOS-level oscillator
+-         - RMII slave, where the PHY operates from a 50MHz clock reference,
+-         provided by a CMOS-level oscillator
++         - RMII master, where the PHY outputs a 50MHz reference clock which can
++         be connected to the MAC.
++         - RMII slave, where the PHY expects a 50MHz reference clock input
++         shared with the MAC.
+        The RMII operation mode can also be configured by its straps.
+        If the strap pin is not set correctly or not set at all, then this can be
+        used to configure it.
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.34.1
+
 
