@@ -1,103 +1,163 @@
-Return-Path: <linux-kernel+bounces-92149-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92150-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B827871BF0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:46:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78818871BF2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:46:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F1CA91F25047
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:46:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E45E31F250D5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:46:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2631A57339;
-	Tue,  5 Mar 2024 10:32:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F32B548F1;
+	Tue,  5 Mar 2024 10:35:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o4qmZ1kr"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hhg1UTGm"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DB535733D;
-	Tue,  5 Mar 2024 10:32:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAE3C33D5
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 10:35:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709634731; cv=none; b=jzVmgHqvdYBWOWG7JErV5MuTjGX/mpJtEEDQ7L16GJ2Ol+aW1eJd/NkTSzeuLUosAfVGGZjY6G+PR94mgEd8T72iUGs0gKQffPmTN91No1cY48p/SdnjKjD7FENBPC+/IbEHptaDiy6qTv9gwwLrsBngFin7LpxvWz3nRu42Wb4=
+	t=1709634915; cv=none; b=SnBSxfyi48EOkuZIh+1K4r32Rd3K1hxXcYjD/NqWy3Lh1qRlYzRUVc9E5pNMhaRU4gl2tChI7CH79T/KeQdjFGBO5rrlvLziNuhMnqxpjmNSnTDYPNn0sKXDYPivfEym88FTonAHs1QWzwuxplYQ9O3MYMPiU3kdIPb9B+FZkc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709634731; c=relaxed/simple;
-	bh=bT/P5l+f4khig/abXkPdAzw4QrPxZvOmunHaLy7aIfM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GL4QPYCe4C+qc1YGJJO9fuDclC0lXpYSJr4p4lGy64bwhksnkMCwMf89YChJN9L45Lkiiw4JUh8hMPPXg3HRzh29TQ4MIjscfjd6uoEOkBr90rMtK1NufiDXjctc26M6k7I4zB962bjXGi2Rdu1WDB8nke0jQ+atVOxcIB42yng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o4qmZ1kr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94AB8C433F1;
-	Tue,  5 Mar 2024 10:32:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709634729;
-	bh=bT/P5l+f4khig/abXkPdAzw4QrPxZvOmunHaLy7aIfM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=o4qmZ1kry8QF5u2cGGcJHGekJvO4LVp9gJLHiDMyZeKrrsHxru9kyszflA3PBqstS
-	 4g5BFDTk6xNNSSFDeYhH1sbYNg2SQgmN1RLWNNQ13/rGp1+Ga8wJ7K4/CrnjR4+Pkf
-	 HNlvApkNpiVxttOI+rZyV6s+131ljOWIaZpAtFHM2vk11vhhH4YE7CMqOvSlSTLk13
-	 bVw9CzxuvfyNZ/tTCsrARaNWO6RUOa7eQiENZ0CrdeZLImqb6QLgSY32bo8Gfv1ToT
-	 OwY3LokMeSo7FuwmGXDz2jYrOEfYXdwnLZ4Ea/5/V8N5xilm+ijVC1wJL0PIHbLUmx
-	 wZS029d7LJcgA==
-Date: Tue, 5 Mar 2024 11:32:04 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Kees Cook <keescook@chromium.org>
-Cc: Adrian Ratiu <adrian.ratiu@collabora.com>, 
-	linux-fsdevel@vger.kernel.org, kernel@collabora.com, linux-security-module@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, Guenter Roeck <groeck@chromium.org>, 
-	Doug Anderson <dianders@chromium.org>, Jann Horn <jannh@google.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Randy Dunlap <rdunlap@infradead.org>, 
-	Mike Frysinger <vapier@chromium.org>
-Subject: Re: [PATCH v2] proc: allow restricting /proc/pid/mem writes
-Message-ID: <20240305-brotkrumen-vorbild-9709ce924d25@brauner>
-References: <20240301213442.198443-1-adrian.ratiu@collabora.com>
- <20240304-zugute-abtragen-d499556390b3@brauner>
- <202403040943.9545EBE5@keescook>
- <20240305-attentat-robust-b0da8137b7df@brauner>
- <202403050134.784D787337@keescook>
- <20240305-kontakt-ticken-77fc8f02be1d@brauner>
- <202403050211.86A44769@keescook>
+	s=arc-20240116; t=1709634915; c=relaxed/simple;
+	bh=rD7LNIXQgytgk1SuBjjFtl3xeLRotb12aTcaosK398I=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=MbKsXHa35yHpFNoWAaolicvSxlU+utEDSB9dO6JiwFMbMPp3Yq6Pj3wg4XoZG9bgKHwmXvb7nkaNy6y4xhpiu/Cx4pkk3s8v/r+Eozn91DRjX2MVNUF6m4ZsqHbPitphltF5Urt6NsVXkoWd6dnivKFFquW37DDed5D8wMvm0QU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hhg1UTGm; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709634912;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=NbpRvhegxzAibgmjukvrlXm7mMqQtfg7UO/OQspIw34=;
+	b=hhg1UTGm2xyc56N4Qgt7oOfIZbIMcbrAfzoAanwCwlVq896cBpxWgB3/0zMqCf93+Fr3np
+	KCGcegYMddUqplwRp/jeFzGaYIkjtv+8EhOPZIGq61P3/e/fZcIvV/evip68IzOrFK0P19
+	1ppPQfKxIS5lfQQ7p6ODm1ctYI/rquk=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-691-TVz_IhSJNWKUXLei6GDKIQ-1; Tue, 05 Mar 2024 05:35:09 -0500
+X-MC-Unique: TVz_IhSJNWKUXLei6GDKIQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B7A45803F60;
+	Tue,  5 Mar 2024 10:35:08 +0000 (UTC)
+Received: from sirius.home.kraxel.org (unknown [10.39.193.36])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 2F53D111FE;
+	Tue,  5 Mar 2024 10:35:08 +0000 (UTC)
+Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
+	id F363218000B2; Tue,  5 Mar 2024 11:35:06 +0100 (CET)
+From: Gerd Hoffmann <kraxel@redhat.com>
+To: kvm@vger.kernel.org
+Cc: Tom Lendacky <thomas.lendacky@amd.com>,
+	Gerd Hoffmann <kraxel@redhat.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+	"H. Peter Anvin" <hpa@zytor.com>,
+	linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND 64-BIT))
+Subject: [PATCH v2] kvm: set guest physical bits in CPUID.0x80000008
+Date: Tue,  5 Mar 2024 11:35:06 +0100
+Message-ID: <20240305103506.613950-1-kraxel@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <202403050211.86A44769@keescook>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-On Tue, Mar 05, 2024 at 02:12:26AM -0800, Kees Cook wrote:
-> On Tue, Mar 05, 2024 at 10:58:25AM +0100, Christian Brauner wrote:
-> > Since the write handler for /proc/<pid>/mem does raise FOLL_FORCE
-> > unconditionally it likely would implicitly. But I'm not familiar enough
-> > with FOLL_FORCE to say for sure.
-> 
-> I should phrase the question better. :) Is the supervisor writing into
-> read-only regions of the child process?
+Set CPUID.0x80000008:EAX[23:16] to guest phys bits, i.e. the bits which
+are actually addressable.  In most cases this is identical to the host
+phys bits, but tdp restrictions (no 5-level paging) can limit this to
+48.
 
-Hm... I suspect we don't. Let's take two concrete examples so you can
-tell me.
+Quoting AMD APM (revision 3.35):
 
-Incus intercepts the sysinfo() syscall. It prepares a struct sysinfo
-with cgroup aware values for the supervised process and then does:
+  23:16 GuestPhysAddrSize Maximum guest physical address size in bits.
+                          This number applies only to guests using nested
+                          paging. When this field is zero, refer to the
+                          PhysAddrSize field for the maximum guest
+                          physical address size. See “Secure Virtual
+                          Machine” in APM Volume 2.
 
-unix.Pwrite(siov.memFd, &sysinfo, sizeof(struct sysinfo), seccomp_data.args[0]))
+Tom Lendacky confirmed the purpose of this field is software use,
+hardware always returns zero here.
 
-It also intercepts some bpf system calls attaching bpf programs for the
-caller. If that fails we update the log buffer for the supervised
-process:
+Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+---
+ arch/x86/kvm/mmu.h     |  2 ++
+ arch/x86/kvm/cpuid.c   |  3 ++-
+ arch/x86/kvm/mmu/mmu.c | 15 +++++++++++++++
+ 3 files changed, 19 insertions(+), 1 deletion(-)
 
-union bpf_attr attr = {}, new_attr = {};
+diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
+index 60f21bb4c27b..42b5212561c8 100644
+--- a/arch/x86/kvm/mmu.h
++++ b/arch/x86/kvm/mmu.h
+@@ -100,6 +100,8 @@ static inline u8 kvm_get_shadow_phys_bits(void)
+ 	return boot_cpu_data.x86_phys_bits;
+ }
+ 
++int kvm_mmu_get_guest_phys_bits(void);
++
+ void kvm_mmu_set_mmio_spte_mask(u64 mmio_value, u64 mmio_mask, u64 access_mask);
+ void kvm_mmu_set_me_spte_mask(u64 me_value, u64 me_mask);
+ void kvm_mmu_set_ept_masks(bool has_ad_bits, bool has_exec_only);
+diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+index adba49afb5fe..12037f1b017e 100644
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -1240,7 +1240,8 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
+ 		else if (!g_phys_as)
+ 			g_phys_as = phys_as;
+ 
+-		entry->eax = g_phys_as | (virt_as << 8);
++		entry->eax = g_phys_as | (virt_as << 8)
++			| kvm_mmu_get_guest_phys_bits() << 16;
+ 		entry->ecx &= ~(GENMASK(31, 16) | GENMASK(11, 8));
+ 		entry->edx = 0;
+ 		cpuid_entry_override(entry, CPUID_8000_0008_EBX);
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 2d6cdeab1f8a..8bebb3e96c8a 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -5267,6 +5267,21 @@ static inline int kvm_mmu_get_tdp_level(struct kvm_vcpu *vcpu)
+ 	return max_tdp_level;
+ }
+ 
++/*
++ * return the actually addressable guest phys bits, which might be
++ * less than host phys bits due to tdp restrictions.
++ */
++int kvm_mmu_get_guest_phys_bits(void)
++{
++	if (tdp_enabled && shadow_phys_bits > 48) {
++		if (tdp_root_level && tdp_root_level != PT64_ROOT_5LEVEL)
++			return 48;
++		if (max_tdp_level != PT64_ROOT_5LEVEL)
++			return 48;
++	}
++	return shadow_phys_bits;
++}
++
+ static union kvm_mmu_page_role
+ kvm_calc_tdp_mmu_root_page_role(struct kvm_vcpu *vcpu,
+ 				union kvm_cpu_role cpu_role)
+-- 
+2.44.0
 
-// read struct bpf_attr from mem_fd
-ret = pread(mem_fd, &attr, attr_len, req->data.args[1]);
-if (ret < 0)
-        return -errno;
-
-// Do stuff with attr. Stuff fails. Update log buffer for supervised process:
-if ((new_attr.log_size) > 0 && (pwrite(mem_fd, new_attr.log_buf, new_attr.log_size, attr.log_buf) != new_attr.log_size))
-
-But I'm not sure if there are other use-cases that would require this.
 
