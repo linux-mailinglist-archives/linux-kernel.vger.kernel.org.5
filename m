@@ -1,165 +1,203 @@
-Return-Path: <linux-kernel+bounces-92509-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92508-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7976D87215F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:21:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D60F687215C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:21:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 194E91F22340
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:21:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 052DA1C22CFB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:21:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7AC98664C;
-	Tue,  5 Mar 2024 14:21:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACAEB8663E;
+	Tue,  5 Mar 2024 14:20:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hA3uTBDR"
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VBDqGrd9"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C6168662A;
-	Tue,  5 Mar 2024 14:21:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 306F086620;
+	Tue,  5 Mar 2024 14:20:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709648480; cv=none; b=IyohiVyw81sAo9HUnd7hN2XZb6QepgH4v5WDnJZVrU/lM/9WcMqMGSu/VkOxJ+cai0WStIYfWaRaNqmQDpAJpTQ3IaBqvQNC4OZgBqKZXLjxFZ9F4qh2DRW2BMU6NKeUf7S+nF5+K2ehfFcwEZDCi+ITKnXaw/Gd5mq4qR2HAJI=
+	t=1709648453; cv=none; b=CVgKTa3PT/7+mJNieoMWb0GCKmoQ223gmbE7P7MXow1hRLBizvrTPcgKIDRaj1/JUIpkxC7fsWVYb4Cb2WSy/BO/fo6KffcPnF+HKgC9Q3+ISa1XEFGdGFuEguHTQkWgN/zBGMvNlb7vwTb8rt2ZUy/NG9sK3gNPBXSNunY9JQY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709648480; c=relaxed/simple;
-	bh=4wsJ1D/gACw9m0Q0mBOCLnDEJZilKXztwEPm8R1Dap4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dlwpfNwnlfC6JGpWPozjBt0zqr5dkb/KvVQPDSTg88YU3goiZ6PtDyRhbovZRVfBxUKtwNbygQUI3mY0fsivlb6clesIfDnZkwTVozsVSICbJ5MGDIpqennHviWCUCGpWdAqtwGlXs+ylu/Ixd00nekWlrKIj1n7LrJDiGKgfNc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hA3uTBDR; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1709648453; c=relaxed/simple;
+	bh=/mWh2OD6uRPtHKCljyC+mTHt2RIMIS82/N/otIi/3C0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=U+edBKpM7pcbVAnf02VE/Bq/ARlnYH98RQAhe22vLXk9EP4OsF/WelWkyeXRs6Vz0tXCavO/4As3iOyVLKwpuZLouQ1MjPpRwmD8OG/5hN3ReKPr+8K25mzVSqzUrs9UI7saR+u20Lfx+DZb8z1mJFN7teSXKqZAF+Hphx8WVUU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VBDqGrd9; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a2f22bfb4e6so111068966b.0;
-        Tue, 05 Mar 2024 06:21:18 -0800 (PST)
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1dc0e5b223eso49088685ad.1;
+        Tue, 05 Mar 2024 06:20:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709648477; x=1710253277; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=v4wSy7E3YJQQeA67cWPwwJxebVYn1l0HIVjiXiLQflo=;
-        b=hA3uTBDR1ksY8Ege0wfgq7r1biweRyaGcq2wgpNuA/wJ2h8Gjk83WUMMBOKyh3pysO
-         5Thw9Twq+4/Bo2dp0XE3mnbPdAL9bQuro53SEFhWOpwFPW+2hHM/TtgsW2U/kQBZM3pw
-         sYdhsJPuwTTm3YmIkQ7voHUr+OypJk6tSw8ON9Kw+Wazm8sOqko59oDRHj7hSQKESeKi
-         8nW2VRRQErADN7lfVbz62Ufc+bSkBGGqSOchLP2gTCJbk3Nj3wkjbzLJkCIMQEhl9k3k
-         WEEkFcjjt22MdA3ueV1Qdp92ItunJgVhY+vDJMz4yLdDyAXHpKDvEdRH4XIF/fh9rDLX
-         acZA==
+        d=gmail.com; s=20230601; t=1709648451; x=1710253251; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=gygWpWy8v8mJ49lyWmrXwRjYqvXWve2mLTt3rfiyYYM=;
+        b=VBDqGrd9an0j/SvRZnCV+3Y8YvWU/SarWlVye2HjFpuO5HKsIRRx4Vuj6uQZsLvmEq
+         rdWFLKuqNf3NiBaGrxglFqihpnTXmP/bHWsg6FitBJd6hbSjjpb9FiZK8/clkTBlhkDR
+         vygUWzhxCEWFKmobIllKWOVo6/QzjhIzd5rMpATd1m8tlRfp2V9mpJsRD0jEviHuYaCt
+         CwFA6jdqG8QZSKrwonhfGzSkuTWMJPB2lK+SjsVlAwyobgXtYmdX80u+jSJiM4kr4pEc
+         kinuymwRDDKz5no3P9mXnY4pzRnpdnaXNImISlI8506pWhOSXlwHj24AaGBCnPxL8bO6
+         SuBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709648477; x=1710253277;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1709648451; x=1710253251;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=v4wSy7E3YJQQeA67cWPwwJxebVYn1l0HIVjiXiLQflo=;
-        b=XKjRffFC11HN+HgNrTGfsmx8Vtn+Zd8TPHWNOd6Tn9+bjd/WSEg9dgxtoPv2He2r0N
-         BJDpr5Ku2Q6ED4oxLF/tfI5rPL51VwLVUN91caSJtAQoH27RgN9PJO3nEPhFkOWRfAqi
-         v/gqmzOcoJNlQrxWgGcc01guEsoUbbq5zao9cWyIIYsare3prMlMO/9DAQcKrrB6+Kxi
-         YI4f3o8ZuI5lsAwA1SCxgFr70A/AdbAXlV4UHZoRAdEAfUpeenyStO+iEpapNYGOcvlt
-         /ME9c28n+Lcsapp9AJt8H/CzNLZ7Bpk2CaA1ZD/dHIE53A9+bt9C35gRp4WbMXHBQvZG
-         mEHw==
-X-Forwarded-Encrypted: i=1; AJvYcCX/rOl8vNBpf11TWiVjepoiGsvp02Aom4F4YqqgFFuLvT0WbQ4f0S8pv+Pklcqrcz6lcyDqv/E+m10okvrvLcTBDHowECMHRSygcFR5yCxyC9ZN6S8lMczmUTI+JJ7ctoObsq46hx0nJXV/sIPf92TyJvA5L1PTXe5fduNP9jyHq4uq8Q==
-X-Gm-Message-State: AOJu0Yx0OA9+BjK2Qn8yBK8mYSbXt+WVCyV36FcrVMR2oINt+oDmCoSh
-	HbK0SZzzdohK8K6S0utk7ofG6ip4buJkNyy0uROzvACRRRFF5UT4
-X-Google-Smtp-Source: AGHT+IFUK19xyeHDaX7M9KvSwKFpva6VNgisudcPFsUdhCKxLODsoNp+jjPI+KJMcT6WSAhre3/T/A==
-X-Received: by 2002:a17:906:4ecb:b0:a44:cd5f:9762 with SMTP id i11-20020a1709064ecb00b00a44cd5f9762mr6552774ejv.54.1709648476389;
-        Tue, 05 Mar 2024 06:21:16 -0800 (PST)
-Received: from fedora.. (d-zg1-234.globalnet.hr. [213.149.36.248])
-        by smtp.googlemail.com with ESMTPSA id k13-20020a1709067acd00b00a44f3fb4f07sm3597969ejo.191.2024.03.05.06.21.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 06:21:15 -0800 (PST)
-From: Robert Marko <robimarko@gmail.com>
-To: andersson@kernel.org,
-	konrad.dybcio@linaro.org,
-	andrew@lunn.ch,
-	hkallweit1@gmail.com,
-	linux@armlinux.org.uk,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	ansuelsmth@gmail.com,
-	linux-arm-msm@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Robert Marko <robimarko@gmail.com>,
-	kernel test robot <lkp@intel.com>
-Subject: [PATCH net-next v3] net: phy: qca807x: fix compilation when CONFIG_GPIOLIB is not set
-Date: Tue,  5 Mar 2024 15:20:33 +0100
-Message-ID: <20240305142113.795005-1-robimarko@gmail.com>
-X-Mailer: git-send-email 2.44.0
+        bh=gygWpWy8v8mJ49lyWmrXwRjYqvXWve2mLTt3rfiyYYM=;
+        b=H2lNYZ7ySvr3oMYDzud653n13kBn6Qfdyv0iYmR9SgNrWVt9x9ygSGOGnKIwBSx+mZ
+         b9knfKCYKstohlAwDYSUR1VQzI7DP6YVVkRAwaga5/nZd5nEYtZlf2fwvyzINGJc/0NQ
+         zzYkafa/XpUuw2atumjNfIDRvxQBPGUlBWpcsDkBxtLRx/UEGUuiMzVj8Be7Vc9TMapV
+         P+rVtxOkVdnOF2SvIrDCh2popkhzhK1xslWo+v+RSMP3MBYsUAp2b0udozZd+Gi71QYJ
+         y5yrZncsHm+mP+1PWCIiXuB+Ui0KexvFo3+y9tuuJX1NZRI4x76k1rIWuNBz4Ym2gLAD
+         QC/g==
+X-Forwarded-Encrypted: i=1; AJvYcCWUZ2DHbbhwUJiEKB1ew4b7+5fVOr1U2IaIgMukEYMwMMJizeztq1erdMgxgZyMTV6s9eZYad14YOdQ5LxlE1vEj0fpoNan0IRe/rin8Ghto/wTONXfqNx33Db7CDwgELoq82pEf49jTBXCPXfH1g==
+X-Gm-Message-State: AOJu0Yz7bBt1VcfSezkKF+zrSZJRVQhw0QsEAAh6vnOqWXpIkuf+raph
+	8HcaC3QJa9Y89x3qr5OGAO2r3oqYBW2TFo5hkqOIPzdix7DlSp3FsiBqljIY
+X-Google-Smtp-Source: AGHT+IHQfQt4GCuvBYtoUPk+xf9yTZtrSLqla6f1Xt7igcViuaIi/iZSooLWfZ3w/wi53+ZkeRqHoA==
+X-Received: by 2002:a17:902:9009:b0:1dc:cd2e:fc68 with SMTP id a9-20020a170902900900b001dccd2efc68mr1651067plp.27.1709648451315;
+        Tue, 05 Mar 2024 06:20:51 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id e8-20020a170902784800b001da001aed18sm10782840pln.54.2024.03.05.06.20.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Mar 2024 06:20:50 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <9e0a8efd-9af8-49eb-a9b9-950ee582921b@roeck-us.net>
+Date: Tue, 5 Mar 2024 06:20:48 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: hw_breakpoint unit test failures with various
+ architectures/platforms in qemu
+Content-Language: en-US
+To: Huacai Chen <chenhuacai@kernel.org>, Marco Elver <elver@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Dmitry Vyukov
+ <dvyukov@google.com>, linux-perf-users@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, loongarch@lists.linux.dev
+References: <f477329e-4ecf-4c6c-82b1-1e9b84443902@roeck-us.net>
+ <CANpmjNMZD7-HY9FNGKnWTzHJ+Kibf2++rHj=j+3UTFKZ+Hr+EQ@mail.gmail.com>
+ <CAAhV-H4KoFLM1Kf-42CuWbkvRuHOJkBzkudWUNpAY0KMUBqUkA@mail.gmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <CAAhV-H4KoFLM1Kf-42CuWbkvRuHOJkBzkudWUNpAY0KMUBqUkA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Kernel bot has discovered that if CONFIG_GPIOLIB is not set compilation
-will fail.
+On 3/5/24 01:05, Huacai Chen wrote:
+> Hi, Marco,
+> 
+> On Tue, Mar 5, 2024 at 4:34 AM Marco Elver <elver@google.com> wrote:
+>>
+>> On Mon, 4 Mar 2024 at 19:12, Guenter Roeck <linux@roeck-us.net> wrote:
+>>>
+>>> Hi,
+>>>
+>>> I see a number of failures and tracebacks when running the hw_breakpoint
+>>> unit tests on various architectures in qemu. Some examples are below.
+>>>
+>>> Is this a potential problem with the unit tests, with the hardware,
+>>> or with the qemu emulation of that hardware ?
+>>
+>> The test is testing the accounting logic (allocating/deallocating HW
+>> breakpoints), not actually using the breakpoints. That requires that
+>> the architecture reports the correct number of HW breakpoints
+>> available. It looks like it's not doing that.
+>>
+>>> In other words, is it worthwhile to look into this further, or would
+>>> it make more sense to just disable those tests if they fail on a
+>>> given hardware/platform ?
+>>
+>> It's an arch bug:
+>> https://lore.kernel.org/lkml/Ytl9L0Zn1PVuL1cB@FVFF77S0Q05N.cambridge.arm.com/
+>>
+>> Back then we decided to leave the test as-is, given it's reporting an
+>> actual issue. However, since then nothing has changed and the test
+>> continues to exist as a reminder the arch code needs fixing. I suspect
+>> none of us have the time to get to that soon, so we can either leave
+>> things as is, or skip the test on all the broken architectures.
+>>
+>> No idea what's going on with loongarch.
+> LoongArch's problem comes from QEMU, I have tested on real machine.
+> 
+> [    7.222500] KTAP version 1
+> [    7.226067] 1..1
+> [    7.228795]     KTAP version 1
+> [    7.232737]     # Subtest: hw_breakpoint
+> [    7.237512]     # module: hw_breakpoint_test
+> [    7.237520]     1..9
+> [    7.442899]     ok 1 test_one_cpu
+> [    7.443912]     ok 2 test_many_cpus
+> [    7.451298]     ok 3 test_one_task_on_all_cpus
+> [    7.456486]     ok 4 test_two_tasks_on_all_cpus
+> [    7.462291]     ok 5 test_one_task_on_one_cpu
+> [    7.468293]     ok 6 test_one_task_mixed
+> [    7.474405]     ok 7 test_two_tasks_on_one_cpu
+> [    7.479884]     ok 8 test_two_tasks_on_one_all_cpus
+> [    7.485699]     ok 9 test_task_on_all_and_one_cpu
+> [    7.491488] # hw_breakpoint: pass:9 fail:0 skip:0 total:9
+> [    7.496985] # Totals: pass:9 fail:0 skip:0 total:9
+> [    7.503179] ok 1 hw_breakpoint
+> 
+> Huacai
+> 
 
-Upon investigation the issue is that qca807x_gpio() is guarded by a
-preprocessor check but then it is called under
-if (IS_ENABLED(CONFIG_GPIOLIB)) in the probe call so the compiler will
-error out since qca807x_gpio() has not been declared if CONFIG_GPIOLIB has
-not been set.
+That is good to know. Thanks a lot for testing!
 
-Fixes: d1cb613efbd3 ("net: phy: qcom: add support for QCA807x PHY Family")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202403031332.IGAbZzwq-lkp@intel.com/
-Signed-off-by: Robert Marko <robimarko@gmail.com>
----
-Changes in v3:
-* Target net-next tree
-Changes in v2:
-* Reduce the code indent level
-
- drivers/net/phy/qcom/qca807x.c | 32 ++++++++++++++++----------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/net/phy/qcom/qca807x.c b/drivers/net/phy/qcom/qca807x.c
-index 780c28e2e4aa..672c6929119a 100644
---- a/drivers/net/phy/qcom/qca807x.c
-+++ b/drivers/net/phy/qcom/qca807x.c
-@@ -732,24 +732,24 @@ static int qca807x_probe(struct phy_device *phydev)
- 	priv->dac_disable_bias_current_tweak = of_property_read_bool(node,
- 								     "qcom,dac-disable-bias-current-tweak");
- 
--	if (IS_ENABLED(CONFIG_GPIOLIB)) {
--		/* Make sure we don't have mixed leds node and gpio-controller
--		 * to prevent registering leds and having gpio-controller usage
--		 * conflicting with them.
--		 */
--		if (of_find_property(node, "leds", NULL) &&
--		    of_find_property(node, "gpio-controller", NULL)) {
--			phydev_err(phydev, "Invalid property detected. LEDs and gpio-controller are mutually exclusive.");
--			return -EINVAL;
--		}
-+#if IS_ENABLED(CONFIG_GPIOLIB)
-+	/* Make sure we don't have mixed leds node and gpio-controller
-+	 * to prevent registering leds and having gpio-controller usage
-+	 * conflicting with them.
-+	 */
-+	if (of_find_property(node, "leds", NULL) &&
-+	    of_find_property(node, "gpio-controller", NULL)) {
-+		phydev_err(phydev, "Invalid property detected. LEDs and gpio-controller are mutually exclusive.");
-+		return -EINVAL;
-+	}
- 
--		/* Do not register a GPIO controller unless flagged for it */
--		if (of_property_read_bool(node, "gpio-controller")) {
--			ret = qca807x_gpio(phydev);
--			if (ret)
--				return ret;
--		}
-+	/* Do not register a GPIO controller unless flagged for it */
-+	if (of_property_read_bool(node, "gpio-controller")) {
-+		ret = qca807x_gpio(phydev);
-+		if (ret)
-+			return ret;
- 	}
-+#endif
- 
- 	/* Attach SFP bus on combo port*/
- 	if (phy_read(phydev, QCA807X_CHIP_CONFIGURATION)) {
--- 
-2.44.0
+Guenter
 
 
