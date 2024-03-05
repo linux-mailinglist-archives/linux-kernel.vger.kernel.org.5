@@ -1,106 +1,95 @@
-Return-Path: <linux-kernel+bounces-92529-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92530-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 451198721B2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:39:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D31E28721B4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:39:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A4FE8B247F4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:39:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E45F28525B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:39:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51F5986ACB;
-	Tue,  5 Mar 2024 14:38:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="mu8gjg6d"
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFDBA37145
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 14:38:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FAAA126F0C;
+	Tue,  5 Mar 2024 14:39:15 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AECA126F04;
+	Tue,  5 Mar 2024 14:39:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709649538; cv=none; b=DJ21afew5nYX+2yOKooPzI8lWIC6F9wV3P3iB05ocAfTpWnrl/Kw0l96u9lkHMV5xSY7yUvcDzLauiX9wZcHHALArayBL8Phwh6Nj9Sz0+qpGpG+ljgbA4qFRqnftqUa8TLzUBcp1LxNi4ppqfkBispcUQE3O2AuWIKmf7lREVo=
+	t=1709649555; cv=none; b=DOdthM2Br7zfWoQKB75HBXix+H4kkR0xjKGkI6YIyRGpKPr7aMF2lrGKoqGKE05ihsibGkAY0jfIL4WBGTmRQY9skqkzpwcR8w/5vyX4pbI0xTMo0VziqLYv8PH35uaM3LRpG5aYLgtVE5PU/cXbfScZsTsCPBhmI9urPuZjfWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709649538; c=relaxed/simple;
-	bh=oMoaD15Q4RZurtXz9m0mjYyGcE+cC4GEA1JD8WLd12w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kTWwbgM34/eLnVisvoToOpj9AeOHjDyQMC0brqef+ShCyuDRdhYsH00MAD80VsfxheIHbocIxDBbj/3fuQw3JI7Xsej687OBTmbuN416B9Cb0ZKDz5oJ4EnfaItxOgJT2zf+G0U4spL0LGUcJb+CqFJOynL0Kmlea0P9CPDQmLs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=mu8gjg6d; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-512b3b04995so4307469e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 06:38:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1709649535; x=1710254335; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=oMoaD15Q4RZurtXz9m0mjYyGcE+cC4GEA1JD8WLd12w=;
-        b=mu8gjg6dD1CMKjtcrsSeXbJJa7zwEvW23eLM4jvo8l10xBWcPfceeKhHX44lN77+g7
-         95+MI5qWAqJ8dBTqTYS2SB2A/OSbkyWadinyQcSMaIXZM4wgSU1FcjW1OiqcU+yH8J0o
-         K/UhDa0w8cII223Jd4iqDgvpDmUov8LOuJ4TM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709649535; x=1710254335;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oMoaD15Q4RZurtXz9m0mjYyGcE+cC4GEA1JD8WLd12w=;
-        b=mwLCy2qNnHExlZG2uE3b20ZEEV9dufeWumT5+vuGS5jqKWO91zBaDn1gX6kzCt6LmK
-         3AfBK1DevXrdi3JnpZvSDWiZSKdKMfIOgIphV0WNbsPFYqveob3Wsr1+Nl8V6u9vFcF8
-         tGTKqEalTFh8qf6aAwKAqdmK0J/EjUlBS+kh/C3BzKa+kXwN7SdZ89sURGMk0N+WfKbx
-         Eh/LhvZbRq1MNUumcGpgXg6rxt0m6WG1caqKm4flmCO3ckwnO8WkpWYx+ufHyCwHWfP7
-         p1AuNde9hS/q8BTtYJMZgDV4Phk/WAAeha2zTZcv5yh3k8WWjHKyVGzJDmdGW0sk63AL
-         TJ8A==
-X-Forwarded-Encrypted: i=1; AJvYcCXMa32Q2KsCxJa6dYV0cWLumFyjSMhYv+/YKEUjoJoU+KK+fG9ZlW12q1Tx7lc4+u+CXbLxPRPnMHiGncZfGWSlBe38Z3HzgaUnDwHV
-X-Gm-Message-State: AOJu0YxTw3pAcHbnFfBs30QMF1WACybWYgP9y1pa051fm35tXS4x/zir
-	1feOYjd9ASr/Y7BXItMETKGzvG/tVzBd5iALLodxx5FMLv78iO4gls0jIOiWo4BE1t6K/JAf8sU
-	EtCWbm46dgTL+DKxjlSQrVq6CiQxjtZX/MHNc6M38y8OA8ZNA
-X-Google-Smtp-Source: AGHT+IHtd287Cim+U4qSt3a8db88CbzOFal6Gmy5OoASE9Fw7x+WgX5YbLauuKoFawGzS6YyLx5H0xL5YW8GyxOwFlc=
-X-Received: by 2002:ac2:54a3:0:b0:511:674d:88c5 with SMTP id
- w3-20020ac254a3000000b00511674d88c5mr1505026lfk.13.1709649535128; Tue, 05 Mar
- 2024 06:38:55 -0800 (PST)
+	s=arc-20240116; t=1709649555; c=relaxed/simple;
+	bh=HHbVbOWDDOboNAEyisylzv0ctsMjCcsB4yqz0U8ueOc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=SWu1Fmue2QoARDhTZ1vSLEDR/3yTOtfzJ750y3EhmkQFWfobE+A1LvzRAiUkmoEP00nsHbyk7fiq5XEwngoi8JCJ77IbWUXt39m8/O7aWDFl0mC4wQotCKL/egKNGs6gDvf3ngsugLDl8/ZPXuzvOE1B3h9tXK3W07fkylvlzw0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 45E381FB;
+	Tue,  5 Mar 2024 06:39:49 -0800 (PST)
+Received: from donnerap.arm.com (donnerap.manchester.arm.com [10.32.100.28])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C986F3F73F;
+	Tue,  5 Mar 2024 06:39:11 -0800 (PST)
+From: Andre Przywara <andre.przywara@arm.com>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-gpio@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] pinctrl: pinmux: Suppress error message for -EPROBE_DEFER
+Date: Tue,  5 Mar 2024 14:38:59 +0000
+Message-Id: <20240305143859.2449147-1-andre.przywara@arm.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240108120824.122178-1-aleksandr.mikhalitsyn@canonical.com> <20240108120824.122178-3-aleksandr.mikhalitsyn@canonical.com>
-In-Reply-To: <20240108120824.122178-3-aleksandr.mikhalitsyn@canonical.com>
-From: Miklos Szeredi <miklos@szeredi.hu>
-Date: Tue, 5 Mar 2024 15:38:43 +0100
-Message-ID: <CAJfpegtixg+NRv=hUhvkjxFaLqb_Vhb6DSxmRNxXD-GHAGiHGg@mail.gmail.com>
-Subject: Re: [PATCH v1 2/9] fs/fuse: add FUSE_OWNER_UID_GID_EXT extension
-To: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-Cc: mszeredi@redhat.com, brauner@kernel.org, stgraber@stgraber.org, 
-	linux-fsdevel@vger.kernel.org, Seth Forshee <sforshee@kernel.org>, 
-	Amir Goldstein <amir73il@gmail.com>, Bernd Schubert <bschubert@ddn.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Mon, 8 Jan 2024 at 13:10, Alexander Mikhalitsyn
-<aleksandr.mikhalitsyn@canonical.com> wrote:
->
-> To properly support vfs idmappings we need to provide
-> a fuse daemon with the correct owner uid/gid for
-> inode creation requests like mkdir, mknod, atomic_open,
-> symlink.
->
-> Right now, fuse daemons use req->in.h.uid/req->in.h.gid
-> to set inode owner. These fields contain fsuid/fsgid of the
-> syscall's caller. And that's perfectly fine, because inode
-> owner have to be set to these values. But, for idmapped mounts
-> it's not the case and caller fsuid/fsgid != inode owner, because
-> idmapped mounts do nothing with the caller fsuid/fsgid, but
-> affect inode owner uid/gid. It means that we can't apply vfsid
-> mapping to caller fsuid/fsgid, but instead we have to introduce
-> a new fields to store inode owner uid/gid which will be appropriately
-> transformed.
+EPROBE_DEFER error returns are not really critical, since they cancel
+the probe process, but the kernel will return later and retry.
+However, depending on the probe order, this might issue quite some
+verbatim and scary, though pointless messages:
 
-Does fsuid/fsgid have any meaning to the server?
+[    2.388731] 300b000.pinctrl: pin-224 (5000000.serial) status -517
+[    2.397321] 300b000.pinctrl: could not request pin 224 (PH0) from group PH0  on device 300b000.pinctrl
 
-Shouldn't this just set in.h.uid/in.h.gid to the mapped ids?
+Replace dev_err() with dev_err_probe(), which not only drops the
+priority of the message from error to debug, but also puts some text
+into debugfs' devices_deferred file, for later reference.
 
-Thanks,
-Miklos
+Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+---
+ drivers/pinctrl/pinmux.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/pinctrl/pinmux.c b/drivers/pinctrl/pinmux.c
+index 23d2da0b99b92..a6d2fd1658128 100644
+--- a/drivers/pinctrl/pinmux.c
++++ b/drivers/pinctrl/pinmux.c
+@@ -188,8 +188,8 @@ static int pin_request(struct pinctrl_dev *pctldev,
+ 	}
+ out:
+ 	if (status)
+-		dev_err(pctldev->dev, "pin-%d (%s) status %d\n",
+-			pin, owner, status);
++		dev_err_probe(pctldev->dev, status, "pin-%d (%s)\n",
++			      pin, owner);
+ 
+ 	return status;
+ }
+@@ -441,7 +441,7 @@ int pinmux_enable_setting(const struct pinctrl_setting *setting)
+ 			pname = desc ? desc->name : "non-existing";
+ 			gname = pctlops->get_group_name(pctldev,
+ 						setting->data.mux.group);
+-			dev_err(pctldev->dev,
++			dev_err_probe(pctldev->dev, ret,
+ 				"could not request pin %d (%s) from group %s "
+ 				" on device %s\n",
+ 				pins[i], pname, gname,
+-- 
+2.25.1
+
 
