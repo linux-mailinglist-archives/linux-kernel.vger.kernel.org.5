@@ -1,440 +1,287 @@
-Return-Path: <linux-kernel+bounces-92644-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92648-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17E40872354
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:57:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E94587236B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:59:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C0191F2325B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:57:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25AEE283F0A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:59:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D86112839B;
-	Tue,  5 Mar 2024 15:57:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D206312839B;
+	Tue,  5 Mar 2024 15:59:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="atsjRvu1"
-Received: from smtp-bc0e.mail.infomaniak.ch (smtp-bc0e.mail.infomaniak.ch [45.157.188.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hkkXvzQL"
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FD5C127B6A
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 15:57:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.157.188.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3382B127B67;
+	Tue,  5 Mar 2024 15:59:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709654230; cv=none; b=ombAdqAZ2enuiQeF/8GJnXomjw3XxesLPJmmtoAVeqPt/7hdqwK2T94xCwfzxKZnVJWnJikMwCEK5xoPFGIvp9hbUfbdF93CqI2zNaAerWP3S6b83T+Y4xl6JyflYL3jTDhI/4GWFxOTG9VA/K/Q53D3NseTN57Jiw0oyneBQ98=
+	t=1709654379; cv=none; b=rnbrPFE0ZmeroAOu9fKTaYknOaKaN2Fx4lvWm9ViV9En2/VefAgcMQ1HpLmxmV/Sbb9bDUKX5pq3KL+5+JSXcmJahs0PCl88bHEfUNRGZntUHwr+z6qQlPp2xDnQmizMrgzD8RzVG7r/sPSAQEPtw7AGSt2KInlcBogGLhXdqi4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709654230; c=relaxed/simple;
-	bh=Rs0Jkg+AK63hN5zWADFuYAjfsZqO2y6I0/L5O6JIRnY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=aAclAqlyqx9LaR7TTJQfCZom4ejlUanEcXobasl6GOe9RWtIfpYfkC3u6Fy7DIENnY+poZ7k02CsfByiO8n3zt28lvXDekUf8xEcBMvyL/hUu8VR0ANfZ/98PVJjIGTddISGiJISjt/byojYIE5sM19hjMEPeydblG8fqAmfFSA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=atsjRvu1; arc=none smtp.client-ip=45.157.188.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
-Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
-	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Tq0Yr2mjkzMsdB1;
-	Tue,  5 Mar 2024 16:57:04 +0100 (CET)
-Received: from unknown by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4Tq0Yq5wDqzvh;
-	Tue,  5 Mar 2024 16:57:03 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-	s=20191114; t=1709654224;
-	bh=Rs0Jkg+AK63hN5zWADFuYAjfsZqO2y6I0/L5O6JIRnY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=atsjRvu1BWI6JXWh+8BdHrdtA+aGqHDnrdK8MvgL/ETV2s6tvSvZ4ozqYPUj6Vkpp
-	 jkfGKJrGUJgCwX0dwz2qigCKCBu+bT4DnMtbod1mxQspPPIahxqVAM/jfplDc1Efj9
-	 pi8iDJyPCP4dGO0733XCHEwodeCrtBK0Vz7Lgkhs=
-From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-To: Jakub Kicinski <kuba@kernel.org>,
-	Kees Cook <keescook@chromium.org>,
-	Mark Brown <broonie@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	davem@davemloft.net
-Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-	=?UTF-8?q?G=C3=BCnther=20Noack?= <gnoack@google.com>,
-	Will Drewry <wad@chromium.org>,
-	edumazet@google.com,
-	jakub@cloudflare.com,
-	pabeni@redhat.com,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH v1 2/2] selftests/harness: Merge TEST_F_FORK() into TEST_F()
-Date: Tue,  5 Mar 2024 16:56:48 +0100
-Message-ID: <20240305155648.1292566-3-mic@digikod.net>
-In-Reply-To: <20240305155648.1292566-1-mic@digikod.net>
-References: <20240305.eth2Ohcawa7u@digikod.net>
- <20240305155648.1292566-1-mic@digikod.net>
+	s=arc-20240116; t=1709654379; c=relaxed/simple;
+	bh=pMaYClOL1f2fCEBdpO9yV9QnHfTCoTbrFgJXNloevEM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ighxWR0jG8K8SAyFoXzTXmwZTauNENCgr/MomFurscUD/VgedMmp+N42JgvXdqicKgWZw200RpVGUYzC7gL4MEjRrOw3khS0IOC5OwyltUDCyKq3d0QYm8UBjyju/cC/pMxHttLJPyXpId/Kwzhzq+875VwE8fwopzYc82Wk5q4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hkkXvzQL; arc=none smtp.client-ip=209.85.219.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dc745927098so5119808276.3;
+        Tue, 05 Mar 2024 07:59:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709654377; x=1710259177; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=FCOuK42WVPhy1j4uSU/uGoBgIzJdOLgBH9p1sEa2EVw=;
+        b=hkkXvzQLXfsYnMrbGt7Rbhdcq+S4oh9HSHUh/QxHofhghWFHUbryaBaBjUYAR1Vdm3
+         iS6o41xL28Yj1CD3lvNWWTdF1O8T40l9MdbVeUcJTFb4cw8lladBCbwzts6ThnhwHhtU
+         Ulyt4Tx+0mLFXF0gpzaYaenMzWCmYRjVme7oxzUFKFpYb7BNVqEYmIJIo4H1bF7NHdFx
+         +A5Y1Pw3BFWYMezAjrqxvCfTtOJOeLgj6PkcS86l8lrINaf32DS3Ft/b2lcHrkJJJGrG
+         o9UdyDwNFE2A659IugDKkYDodz83m44UimLLGf2iUo3OaqVwaD4sJKalfWIy+JL3u/KS
+         ad4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709654377; x=1710259177;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FCOuK42WVPhy1j4uSU/uGoBgIzJdOLgBH9p1sEa2EVw=;
+        b=aLLHdQSjFYmFIXHpiQAp8gFIK77zFt9IHkkeBFGZeFxMuJM6l4BoDliG2ziWIXK7K/
+         yIoZGQlEi42ImOGNaLarGgyu7vIYKxMb5K6JjJwoNbh0FFwYpDfNZgeRg2YOcdqOKajo
+         bdv+hm9qZFo0V2lRcltCWyGfC9MgQTr5+BsSpdHcEIVFozWRz+7fURZduggy5yFqivsD
+         KPwjpCFLQqkdFig5KaycyK4mKeoIE2pGLqvnkiK3mtqQwEHRSEtJI42Id5FyXopEbR9f
+         Ck1/edA2U7gIRNDkDazFCly8u8uqM9dwmilY1diXNc33KS/EkxMyEq70sWazhVgcoYA4
+         9WNw==
+X-Forwarded-Encrypted: i=1; AJvYcCUc3xgCyVm0+2oIJT4NLRQ51kyHlYs1i9wIipPo2zOq6RbO9qNd2BzAp2hJqwlH1I8s6V+P/sWSc0F3JycVNGnOWeDdLoaoN3zQjMr1zRa1FzVWhI93yaEo5KzNnYcZubAX1ah/4664vGzMtXSAOWxWqQGdsCGFHcubd3UQGddvNN4snQ==
+X-Gm-Message-State: AOJu0YydcN+rieAliLOrg7FjoqGBBAbuUZEru1NPfaJzOIAwmfo0sovm
+	LCwZ8Q4l7MM0FG5zTANrVbiMfJ67OWsa1TNvCEIH4cKxoIjTluU7mRs1/HJQWFntGTMYKSKnU3u
+	BxdQA/tDJT7fDY6GCXEd+gkbCNP8=
+X-Google-Smtp-Source: AGHT+IGRKsPs+Rmg+G7IRByyGlLAIbv/gh2rXO2CsKTyMg8RVV0haXKjJswP3onDQp/fvGC2DQYEq3EkJUOgNJqf33E=
+X-Received: by 2002:a25:aa8a:0:b0:dce:2e9:a637 with SMTP id
+ t10-20020a25aa8a000000b00dce02e9a637mr11131475ybi.20.1709654377024; Tue, 05
+ Mar 2024 07:59:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Infomaniak-Routing: alpha
+References: <20240131182653.2673554-1-tmaimon77@gmail.com> <20240131182653.2673554-4-tmaimon77@gmail.com>
+ <74e003c6d80611ddd826ac21f48b4b3a.sboyd@kernel.org> <CAP6Zq1g5gwXvYzO5fnHxG-6__gSCpNBY7VeEPyr4Qtijya6EfQ@mail.gmail.com>
+ <8acf846e767884978f3bb98646433551.sboyd@kernel.org> <CAP6Zq1htKQ5v0tH9HGRejnKwJ5ZauUWG_CzYUKegkVL4Ek8UxA@mail.gmail.com>
+In-Reply-To: <CAP6Zq1htKQ5v0tH9HGRejnKwJ5ZauUWG_CzYUKegkVL4Ek8UxA@mail.gmail.com>
+From: Tomer Maimon <tmaimon77@gmail.com>
+Date: Tue, 5 Mar 2024 17:59:26 +0200
+Message-ID: <CAP6Zq1g4ksdLSVTm+PLqa5dSEidvHdpGZb=J9wKEftaH-Mg+bw@mail.gmail.com>
+Subject: Re: [PATCH v23 3/3] clk: npcm8xx: add clock controller
+To: Stephen Boyd <sboyd@kernel.org>
+Cc: benjaminfair@google.com, joel@jms.id.au, krzysztof.kozlowski+dt@linaro.org, 
+	mturquette@baylibre.com, robh+dt@kernel.org, tali.perry1@gmail.com, 
+	venture@google.com, yuenn@google.com, openbmc@lists.ozlabs.org, 
+	linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Replace Landlock-specific TEST_F_FORK() with an improved TEST_F() which
-brings four related changes:
+Hi Stephen,
 
-Run TEST_F()'s tests in a grandchild process to make it possible to
-drop privileges and delegate teardown to the parent.
+Appreciate it if you could reply to my email afew days ago, It is
+really important to us to move this driver to upstream.
 
-Compared to TEST_F_FORK(), simplify handling of the test grandchild
-process thanks to vfork(2), and makes it generic (e.g. no explicit
-conversion between exit code and _metadata).
+Thanks,
 
-Compared to TEST_F_FORK(), run teardown even when tests failed with an
-assert thanks to commit 63e6b2a42342 ("selftests/harness: Run TEARDOWN
-for ASSERT failures").
+Tomer
 
-By default teardown is run by the grandchild process, but it can be run
-by its parent process if _metadata->teardown_parent is set to true.
-
-Update Landlock tests' fixture setup to set _metadata->teardown, and
-remove now-invalid umount calls in Landlock test teardowns.
-
-Simplify the test harness code by removing the no_print and step fields
-which are not used.  I added this feature just after I made
-kselftest_harness.h more broadly available but this step counter
-remained even though it wasn't needed after all. See commit 369130b63178
-("selftests: Enhance kselftest_harness.h to print which assert failed").
-
-Replace spaces with tabs in one line of __TEST_F_IMPL().
-
-Cc: Günther Noack <gnoack@google.com>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Will Drewry <wad@chromium.org>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Mickaël Salaün <mic@digikod.net>
----
-
-v5:
- - Fix TEST_SIGNAL() by forwarding grandchild signal to parent.
- - By default, run teardown in the grandchild, but allow teardown to be
-   run in its parent if _metadata->teardown_parent is set to true.  This
-   fixes seccomp tests that have assumptions about the process
-   hierarchy.
- - Remove now-invalid umount calls in Landlock test teardowns.
-
-v4:
- - GAND -> GRAND
- - init child to 1, otherwise assert in setup triggers a longjmp
-   which in turn reads child without it ever getting initialized
-   (or being 0, i.e. we mistakenly assume we're in the grandchild)
----
- tools/testing/selftests/kselftest_harness.h | 72 ++++++++++-----------
- tools/testing/selftests/landlock/common.h   | 62 +-----------------
- tools/testing/selftests/landlock/fs_test.c  | 22 +++----
- 3 files changed, 48 insertions(+), 108 deletions(-)
-
-diff --git a/tools/testing/selftests/kselftest_harness.h b/tools/testing/selftests/kselftest_harness.h
-index e05ac8261046..4f192904dfd6 100644
---- a/tools/testing/selftests/kselftest_harness.h
-+++ b/tools/testing/selftests/kselftest_harness.h
-@@ -95,14 +95,6 @@
-  * E.g., #define TH_LOG_ENABLED 1
-  *
-  * If no definition is provided, logging is enabled by default.
-- *
-- * If there is no way to print an error message for the process running the
-- * test (e.g. not allowed to write to stderr), it is still possible to get the
-- * ASSERT_* number for which the test failed.  This behavior can be enabled by
-- * writing `_metadata->no_print = true;` before the check sequence that is
-- * unable to print.  When an error occur, instead of printing an error message
-- * and calling `abort(3)`, the test process call `_exit(2)` with the assert
-- * number as argument, which is then printed by the parent process.
-  */
- #define TH_LOG(fmt, ...) do { \
- 	if (TH_LOG_ENABLED) \
-@@ -363,6 +355,11 @@
-  * Defines a test that depends on a fixture (e.g., is part of a test case).
-  * Very similar to TEST() except that *self* is the setup instance of fixture's
-  * datatype exposed for use by the implementation.
-+ *
-+ * The @test_name code is run in a separate process sharing the same memory
-+ * (i.e. vfork), which means that the test process can update its privileges
-+ * without impacting the related FIXTURE_TEARDOWN() (e.g. to remove files from
-+ * a directory where write access was dropped).
-  */
- #define TEST_F(fixture_name, test_name) \
- 	__TEST_F_IMPL(fixture_name, test_name, -1, TEST_TIMEOUT_DEFAULT)
-@@ -384,17 +381,34 @@
- 	{ \
- 		/* fixture data is alloced, setup, and torn down per call. */ \
- 		FIXTURE_DATA(fixture_name) self; \
-+		pid_t child = 1; \
-+		int status = 0; \
- 		memset(&self, 0, sizeof(FIXTURE_DATA(fixture_name))); \
- 		if (setjmp(_metadata->env) == 0) { \
--			fixture_name##_setup(_metadata, &self, variant->data); \
--			/* Let setup failure terminate early. */ \
--                       if (!_metadata->passed || _metadata->skip) \
--				return; \
--			_metadata->setup_completed = true; \
--			fixture_name##_##test_name(_metadata, &self, variant->data); \
-+			/* Use the same _metadata. */ \
-+			child = vfork(); \
-+			if (child == 0) { \
-+				fixture_name##_setup(_metadata, &self, variant->data); \
-+				/* Let setup failure terminate early. */ \
-+				if (!_metadata->passed || _metadata->skip) \
-+					_exit(0); \
-+				_metadata->setup_completed = true; \
-+				fixture_name##_##test_name(_metadata, &self, variant->data); \
-+			} else if (child < 0 || child != waitpid(child, &status, 0)) { \
-+				ksft_print_msg("ERROR SPAWNING TEST GRANDCHILD\n"); \
-+				_metadata->passed = 0; \
-+			} \
- 		} \
--		if (_metadata->setup_completed) \
-+		if (child == 0) { \
-+			if (_metadata->setup_completed && !_metadata->teardown_parent) \
-+				fixture_name##_teardown(_metadata, &self, variant->data); \
-+			_exit(0); \
-+		} \
-+		if (_metadata->setup_completed && _metadata->teardown_parent) \
- 			fixture_name##_teardown(_metadata, &self, variant->data); \
-+		if (!WIFEXITED(status) && WIFSIGNALED(status)) \
-+			/* Forward signal to __wait_for_test(). */ \
-+			kill(getpid(), WTERMSIG(status)); \
- 		__test_check_assert(_metadata); \
- 	} \
- 	static struct __test_metadata \
-@@ -404,6 +418,7 @@
- 		.fixture = &_##fixture_name##_fixture_object, \
- 		.termsig = signal, \
- 		.timeout = tmout, \
-+		.teardown_parent = false, \
- 	 }; \
- 	static void __attribute__((constructor)) \
- 			_register_##fixture_name##_##test_name(void) \
-@@ -694,18 +709,12 @@
- 	for (; _metadata->trigger; _metadata->trigger = \
- 			__bail(_assert, _metadata))
- 
--#define __INC_STEP(_metadata) \
--	/* Keep "step" below 255 (which is used for "SKIP" reporting). */	\
--	if (_metadata->passed && _metadata->step < 253) \
--		_metadata->step++;
--
- #define is_signed_type(var)       (!!(((__typeof__(var))(-1)) < (__typeof__(var))1))
- 
- #define __EXPECT(_expected, _expected_str, _seen, _seen_str, _t, _assert) do { \
- 	/* Avoid multiple evaluation of the cases */ \
- 	__typeof__(_expected) __exp = (_expected); \
- 	__typeof__(_seen) __seen = (_seen); \
--	if (_assert) __INC_STEP(_metadata); \
- 	if (!(__exp _t __seen)) { \
- 		/* Report with actual signedness to avoid weird output. */ \
- 		switch (is_signed_type(__exp) * 2 + is_signed_type(__seen)) { \
-@@ -751,7 +760,6 @@
- #define __EXPECT_STR(_expected, _seen, _t, _assert) do { \
- 	const char *__exp = (_expected); \
- 	const char *__seen = (_seen); \
--	if (_assert) __INC_STEP(_metadata); \
- 	if (!(strcmp(__exp, __seen) _t 0))  { \
- 		__TH_LOG("Expected '%s' %s '%s'.", __exp, #_t, __seen); \
- 		_metadata->passed = 0; \
-@@ -837,10 +845,9 @@ struct __test_metadata {
- 	int trigger; /* extra handler after the evaluation */
- 	int timeout;	/* seconds to wait for test timeout */
- 	bool timed_out;	/* did this test timeout instead of exiting? */
--	__u8 step;
--	bool no_print; /* manual trigger when TH_LOG_STREAM is not available */
- 	bool aborted;	/* stopped test due to failed ASSERT */
- 	bool setup_completed; /* did setup finish? */
-+	bool teardown_parent; /* run teardown in a parent process */
- 	jmp_buf env;	/* for exiting out of test early */
- 	struct __test_results *results;
- 	struct __test_metadata *prev, *next;
-@@ -873,11 +880,8 @@ static inline int __bail(int for_realz, struct __test_metadata *t)
- 
- static inline void __test_check_assert(struct __test_metadata *t)
- {
--	if (t->aborted) {
--		if (t->no_print)
--			_exit(t->step);
-+	if (t->aborted)
- 		abort();
--	}
- }
- 
- struct __test_metadata *__active_test;
-@@ -954,13 +958,12 @@ void __wait_for_test(struct __test_metadata *t)
- 			case 0:
- 				t->passed = 1;
- 				break;
--			/* Other failure, assume step report. */
-+			/* Failure */
- 			default:
- 				t->passed = 0;
- 				fprintf(TH_LOG_STREAM,
--					"# %s: Test failed at step #%d\n",
--					t->name,
--					WEXITSTATUS(status));
-+					"# %s: Test failed\n",
-+					t->name);
- 			}
- 		}
- 	} else if (WIFSIGNALED(status)) {
-@@ -1114,8 +1117,6 @@ void __run_test(struct __fixture_metadata *f,
- 	t->passed = 1;
- 	t->skip = 0;
- 	t->trigger = 0;
--	t->step = 1;
--	t->no_print = 0;
- 	memset(t->results->reason, 0, sizeof(t->results->reason));
- 
- 	ksft_print_msg(" RUN           %s%s%s.%s ...\n",
-@@ -1137,8 +1138,7 @@ void __run_test(struct __fixture_metadata *f,
- 		/* Pass is exit 0 */
- 		if (t->passed)
- 			_exit(0);
--		/* Something else happened, report the step. */
--		_exit(t->step);
-+		_exit(1);
- 	} else {
- 		__wait_for_test(t);
- 	}
-diff --git a/tools/testing/selftests/landlock/common.h b/tools/testing/selftests/landlock/common.h
-index f40146d40763..401e2eb092a3 100644
---- a/tools/testing/selftests/landlock/common.h
-+++ b/tools/testing/selftests/landlock/common.h
-@@ -23,66 +23,8 @@
- #define __maybe_unused __attribute__((__unused__))
- #endif
- 
--/*
-- * TEST_F_FORK() is useful when a test drop privileges but the corresponding
-- * FIXTURE_TEARDOWN() requires them (e.g. to remove files from a directory
-- * where write actions are denied).  For convenience, FIXTURE_TEARDOWN() is
-- * also called when the test failed, but not when FIXTURE_SETUP() failed.  For
-- * this to be possible, we must not call abort() but instead exit smoothly
-- * (hence the step print).
-- */
--/* clang-format off */
--#define TEST_F_FORK(fixture_name, test_name) \
--	static void fixture_name##_##test_name##_child( \
--		struct __test_metadata *_metadata, \
--		FIXTURE_DATA(fixture_name) *self, \
--		const FIXTURE_VARIANT(fixture_name) *variant); \
--	__TEST_F_IMPL(fixture_name, test_name, -1, TEST_TIMEOUT_DEFAULT) \
--	{ \
--		int status; \
--		const pid_t child = fork(); \
--		if (child < 0) \
--			abort(); \
--		if (child == 0) { \
--			_metadata->no_print = 1; \
--			fixture_name##_##test_name##_child(_metadata, self, variant); \
--			if (_metadata->skip) \
--				_exit(255); \
--			if (_metadata->passed) \
--				_exit(0); \
--			_exit(_metadata->step); \
--		} \
--		if (child != waitpid(child, &status, 0)) \
--			abort(); \
--		if (WIFSIGNALED(status) || !WIFEXITED(status)) { \
--			_metadata->passed = 0; \
--			_metadata->step = 1; \
--			return; \
--		} \
--		switch (WEXITSTATUS(status)) { \
--		case 0: \
--			_metadata->passed = 1; \
--			break; \
--		case 255: \
--			_metadata->passed = 1; \
--			_metadata->skip = 1; \
--			break; \
--		default: \
--			_metadata->passed = 0; \
--			_metadata->step = WEXITSTATUS(status); \
--			break; \
--		} \
--	} \
--	static void fixture_name##_##test_name##_child( \
--		struct __test_metadata __attribute__((unused)) *_metadata, \
--		FIXTURE_DATA(fixture_name) __attribute__((unused)) *self, \
--		const FIXTURE_VARIANT(fixture_name) \
--			__attribute__((unused)) *variant)
--/* clang-format on */
--
--/* Makes backporting easier. */
--#undef TEST_F
--#define TEST_F(fixture_name, test_name) TEST_F_FORK(fixture_name, test_name)
-+/* TEST_F_FORK() should not be used for new tests. */
-+#define TEST_F_FORK(fixture_name, test_name) TEST_F(fixture_name, test_name)
- 
- #ifndef landlock_create_ruleset
- static inline int
-diff --git a/tools/testing/selftests/landlock/fs_test.c b/tools/testing/selftests/landlock/fs_test.c
-index 2d6d9b43d958..1d5952897e05 100644
---- a/tools/testing/selftests/landlock/fs_test.c
-+++ b/tools/testing/selftests/landlock/fs_test.c
-@@ -285,6 +285,8 @@ static void prepare_layout_opt(struct __test_metadata *const _metadata,
- 
- static void prepare_layout(struct __test_metadata *const _metadata)
- {
-+	_metadata->teardown_parent = true;
-+
- 	prepare_layout_opt(_metadata, &mnt_tmp);
- }
- 
-@@ -3861,9 +3863,7 @@ FIXTURE_SETUP(layout1_bind)
- 
- FIXTURE_TEARDOWN(layout1_bind)
- {
--	set_cap(_metadata, CAP_SYS_ADMIN);
--	EXPECT_EQ(0, umount(dir_s2d2));
--	clear_cap(_metadata, CAP_SYS_ADMIN);
-+	/* umount(dir_s2d2)) is handled by namespace lifetime. */
- 
- 	remove_layout1(_metadata);
- 
-@@ -4276,9 +4276,8 @@ FIXTURE_TEARDOWN(layout2_overlay)
- 	EXPECT_EQ(0, remove_path(lower_fl1));
- 	EXPECT_EQ(0, remove_path(lower_do1_fo2));
- 	EXPECT_EQ(0, remove_path(lower_fo1));
--	set_cap(_metadata, CAP_SYS_ADMIN);
--	EXPECT_EQ(0, umount(LOWER_BASE));
--	clear_cap(_metadata, CAP_SYS_ADMIN);
-+
-+	/* umount(LOWER_BASE)) is handled by namespace lifetime. */
- 	EXPECT_EQ(0, remove_path(LOWER_BASE));
- 
- 	EXPECT_EQ(0, remove_path(upper_do1_fu3));
-@@ -4287,14 +4286,11 @@ FIXTURE_TEARDOWN(layout2_overlay)
- 	EXPECT_EQ(0, remove_path(upper_do1_fo2));
- 	EXPECT_EQ(0, remove_path(upper_fo1));
- 	EXPECT_EQ(0, remove_path(UPPER_WORK "/work"));
--	set_cap(_metadata, CAP_SYS_ADMIN);
--	EXPECT_EQ(0, umount(UPPER_BASE));
--	clear_cap(_metadata, CAP_SYS_ADMIN);
-+
-+	/* umount(UPPER_BASE)) is handled by namespace lifetime. */
- 	EXPECT_EQ(0, remove_path(UPPER_BASE));
- 
--	set_cap(_metadata, CAP_SYS_ADMIN);
--	EXPECT_EQ(0, umount(MERGE_DATA));
--	clear_cap(_metadata, CAP_SYS_ADMIN);
-+	/* umount(MERGE_DATA)) is handled by namespace lifetime. */
- 	EXPECT_EQ(0, remove_path(MERGE_DATA));
- 
- 	cleanup_layout(_metadata);
-@@ -4691,6 +4687,8 @@ FIXTURE_SETUP(layout3_fs)
- 		SKIP(return, "this filesystem is not supported (setup)");
- 	}
- 
-+	_metadata->teardown_parent = true;
-+
- 	slash = strrchr(variant->file_path, '/');
- 	ASSERT_NE(slash, NULL);
- 	dir_len = (size_t)slash - (size_t)variant->file_path;
--- 
-2.44.0
-
+On Thu, 29 Feb 2024 at 23:29, Tomer Maimon <tmaimon77@gmail.com> wrote:
+>
+> Hi Stephen,
+>
+> Thanks for your reply.
+>
+> On Thu, 29 Feb 2024 at 00:48, Stephen Boyd <sboyd@kernel.org> wrote:
+> >
+> > Quoting Tomer Maimon (2024-02-25 10:00:35)
+> > > Hi Stephen,
+> > >
+> > > On Thu, 22 Feb 2024 at 07:58, Stephen Boyd <sboyd@kernel.org> wrote:
+> > > >
+> > > > Quoting Tomer Maimon (2024-01-31 10:26:53)
+> > > > > diff --git a/drivers/clk/clk-npcm8xx.c b/drivers/clk/clk-npcm8xx.c
+> > > > > new file mode 100644
+> > > > > index 000000000000..eacb579d30af
+> > > > > --- /dev/null
+> > > > > +++ b/drivers/clk/clk-npcm8xx.c
+> > > > > @@ -0,0 +1,509 @@
+> > > > > +// SPDX-License-Identifier: GPL-2.0
+> > > > > +/*
+> > > > > + * Nuvoton NPCM8xx Clock Generator
+> > > > > + * All the clocks are initialized by the bootloader, so this driver allows only
+> > > > [...]
+> > > > > +
+> > > > > +/* external clock definition */
+> > > > > +#define NPCM8XX_CLK_S_REFCLK   "refclk"
+> > > > > +
+> > > > > +/* pll definition */
+> > > > > +#define NPCM8XX_CLK_S_PLL0     "pll0"
+> > > > > +#define NPCM8XX_CLK_S_PLL1     "pll1"
+> > > > > +#define NPCM8XX_CLK_S_PLL2     "pll2"
+> > > > > +#define NPCM8XX_CLK_S_PLL_GFX  "pll_gfx"
+> > > > > +
+> > > > > +/* early divider definition */
+> > > > > +#define NPCM8XX_CLK_S_PLL2_DIV2                "pll2_div2"
+> > > > > +#define NPCM8XX_CLK_S_PLL_GFX_DIV2     "pll_gfx_div2"
+> > > > > +#define NPCM8XX_CLK_S_PLL1_DIV2                "pll1_div2"
+> > > > > +
+> > > > > +/* mux definition */
+> > > > > +#define NPCM8XX_CLK_S_CPU_MUX     "cpu_mux"
+> > > > > +
+> > > > > +/* div definition */
+> > > > > +#define NPCM8XX_CLK_S_TH          "th"
+> > > > > +#define NPCM8XX_CLK_S_AXI         "axi"
+> > > >
+> > > > Please inline all these string #defines to the place they're used.
+> > > The version V21 you mention using define only when the definition is
+> > > used more than once
+> > > https://www.spinics.net/lists/kernel/msg5045826.html
+> > > Should I remove all the string definitions and add the string to the array?
+> >
+> > If it's a clk name for a clk registered in this file it should be
+> > inlined. Is that the case for everything besides refclk? And even refclk
+> > could be inlined so that we don't have to jump to the definition of a
+> > string.
+> I will add the string in the clock arrays and remove all the string definitions.
+> >
+> > > > > +
+> > > > > +static unsigned long npcm8xx_clk_div_get_parent(struct clk_hw *hw,
+> > > > > +                                               unsigned long parent_rate)
+> > > > > +{
+> > > > > +       struct npcm8xx_clk *div = to_npcm8xx_clk(hw);
+> > > > > +       unsigned int val;
+> > > > > +
+> > > > > +       regmap_read(div->clk_regmap, div->offset, &val);
+> > > > > +       val = val >> div->shift;
+> > > > > +       val &= clk_div_mask(div->width);
+> > > > > +
+> > > > > +       return divider_recalc_rate(hw, parent_rate, val, NULL, div->flags,
+> > > > > +                                  div->width);
+> > > > > +}
+> > > > > +
+> > > > > +static const struct clk_ops npcm8xx_clk_div_ops = {
+> > > > > +       .recalc_rate = npcm8xx_clk_div_get_parent,
+> > > > > +};
+> > > > > +
+> > > > > +static int npcm8xx_clk_probe(struct platform_device *pdev)
+> > > > > +{
+> > > > > +       struct device_node *parent_np = of_get_parent(pdev->dev.of_node);
+> > > >
+> > > > The parent of this device is not a syscon.
+> > > Once I have registered the map that handles both reset and the clock
+> > > in general is syscon, this is why we will modify the DTS so the clock
+> > > and the reset will be under syscon father node
+> > >                 sysctrl: system-controller@f0801000 {
+> > >                         compatible = "syscon", "simple-mfd";
+> > >                         reg = <0x0 0xf0801000 0x0 0x1000>;
+> > >
+> > >                         rstc: reset-controller {
+> > >                                 compatible = "nuvoton,npcm845-reset";
+> > >                                 reg = <0x0 0xf0801000 0x0 0xC4>;
+> > >                                 #reset-cells = <2>;
+> > >                                 nuvoton,sysgcr = <&gcr>;
+> > >                         };
+> > >
+> > >                         clk: clock-controller {
+> > >                                 compatible = "nuvoton,npcm845-clk";
+> > >                                 #clock-cells = <1>;
+> > >                                 clocks = <&refclk>;
+> > >                                 clock-names = "refclk";
+> > >                         };
+> > >                 };
+> > > You can see other drivers that using the same method like
+> > > https://elixir.bootlin.com/linux/v6.8-rc5/source/Documentation/devicetree/bindings/clock/socionext,uniphier-clock.yaml
+> >
+> > You will need a similar file like
+> > Documentation/devicetree/bindings/soc/socionext/socionext,uniphier-perictrl.yaml
+> > then to describe the child nodes.
+> I can do it.
+> >
+> > Socionext may not be the best example to follow. I generally try to
+> > avoid syscon and simply put #reset-cells and #clock-cells in the node
+> If I remove syscon I can't use syscon_node_to_regmap function, What
+> should I use If I remove syscon? auxiliary bus? something else?
+> > for the device. You can use the auxiliary bus to register drivers for
+> > clk and reset and put them into the resepective driver directories.
+> I little bit confused, what is an auxiliary bus to register drivers,
+> can you provide me an example?
+> > Avoid syscon means random drivers can't reach into the device with a
+> > regmap handle and read/write registers that they're not supposed to.
+> Indeed, but the drivers could use the reset and clock memory map only
+> if the module is also a child node.
+>
+> Please let me know what is your preferred way to handle it:
+> 1. stick with syscon and upstream-defined documentation for the rst clk syscon.
+> 2. avoid syscon and use an auxiliary bus, appreciate if you could give
+> me an example of how it should be done.
+> 3. Avoid sycon and handle it differently.
+> >
+> > > >
+> > > > > +       struct clk_hw_onecell_data *npcm8xx_clk_data;
+> > > > > +       struct device *dev = &pdev->dev;
+> > > > > +       struct regmap *clk_regmap;
+> > > > > +       struct clk_hw *hw;
+> > > > > +       unsigned int i;
+> > > > > +
+> > > > > +       npcm8xx_clk_data = devm_kzalloc(dev, struct_size(npcm8xx_clk_data, hws,
+> > > > > +                                                        NPCM8XX_NUM_CLOCKS),
+> > > > > +                                       GFP_KERNEL);
+> > > > > +       if (!npcm8xx_clk_data)
+> > > > > +               return -ENOMEM;
+> > > > > +
+> > > > > +       clk_regmap = syscon_node_to_regmap(parent_np);
+> > > > > +       of_node_put(parent_np);
+> > > >
+> > > > Is there another binding update that is going to move this node to be a
+> > > > child of the syscon?
+> > > >
+> > > >                 gcr: system-controller@f0800000 {
+> > > >                         compatible = "nuvoton,npcm845-gcr", "syscon";
+> > > >                         reg = <0x0 0xf0800000 0x0 0x1000>;
+> > > >                 };
+> > > No, sorry but I'm not going to use the GCR node the handle the clock
+> > > and reset modules, the GCR has different memory space.
+> > > the clock driver will have the following device tree
+> >
+> > What does the reset driver use the CGR node for? The driver looks like
+> > it's using it to control USB phy resets.
+> Yes, the USB PHY reset is handled through the GCR registers.
+> >
+> > >                sysctrl: system-controller@f0801000 {
+> > >                         compatible = "syscon", "simple-mfd";
+> > >                         reg = <0x0 0xf0801000 0x0 0x1000>;
+> > >
+> > >                         rstc: reset-controller {
+> > >                                 compatible = "nuvoton,npcm845-reset";
+> > >                                 reg = <0x0 0xf0801000 0x0 0xC4>;
+> >
+> > This isn't a valid reg property for a child node like this.
+> O.K.
+> >
+> > >                                 #reset-cells = <2>;
+> > >                                 nuvoton,sysgcr = <&gcr>;
+> > >                         };
+> > >
+> > >                         clk: clock-controller {
+> > >                                 compatible = "nuvoton,npcm845-clk";
+> > >                                 #clock-cells = <1>;
+> > >                                 clocks = <&refclk>;
+> > >                                 clock-names = "refclk";
+> > >                         };
+> > >                 };
+>
+> Appreciate your guidance!
+>
+> Thanks,
+>
+> Tomer
 
