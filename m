@@ -1,93 +1,86 @@
-Return-Path: <linux-kernel+bounces-93082-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93080-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36476872ADC
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 00:14:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAD07872AD8
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 00:13:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 225441C24818
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 23:14:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 796A31F278C4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 23:13:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4291512E1D7;
-	Tue,  5 Mar 2024 23:13:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EF2F12D21E;
+	Tue,  5 Mar 2024 23:13:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IzNiGEzu"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NGO/QtB+"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4FB212DD90
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 23:13:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4585C12CDB5
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 23:13:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709680405; cv=none; b=EJ6vU/f2Yk6hYg5/oV4ibdC3xoFFMfUswMMXByqQAEvaE0AqMdqJxHFjqafYF+RWuKqST0aOMa3TB3BoiXN/o5oOVor4T/YkG7zWGy7xIQfmnlG81lVh7lQ5Hwu8iRlwuDnd4uyV3QmOzxpVTAKv9KvXpICQ5wPlqa5rovlCB5g=
+	t=1709680400; cv=none; b=qC9oyUzzbVUzaar0x+/9J9hVG7MzxBDxangBjS1qfdCJ2I81UpddsVQn1BpgEuQxapljx+Au9cjDoUwEYVuKKmi5J7bwN5VkRDPT2zLJix01zyhoRlEKGY4fzgz6kehnFYUGM2jfn6S5+TBFdGKOQbYq1Ih+/VzB3JMeGZwiV6M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709680405; c=relaxed/simple;
-	bh=cLhW8+AnPXF+x0lQb/dnv/o/Sf8sk08keva7j4YfP4M=;
+	s=arc-20240116; t=1709680400; c=relaxed/simple;
+	bh=aImrfmtDfx3FB/+qZwZjEHYe3YJ1fvdeSDAyqMnwGaI=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=sBAkwvHl71nW8RNlBswWA9aJcUY/1hAaAjG5gneQbGQATTJr/nFWliRtGCX4kCEelYXW9IsZGD+D4iubUZnH4HT2BunumVAXDEg+ACAH51JuHtBvg89CLY7D0ngP5X0j4/cN1SpHe38hG+1YEer8SrFf46NEal8AV2cMltfshCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IzNiGEzu; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version:Content-Type; b=ur+Va+b8HpiAlAtUXYFzJ+3YDOkGCeJCuEXJHKeZNmxgerCp51cnUn1zldxZFr3vt1y4bFbVNFFNyc9MUCPwGLlaN/Ngh6Cqp6YOdw50DX9aF5dDHV2aSGKZdc60D/CQLvqU1xMjglTO0RrxD0hNEAsN2i/2Tzqf5wFVNj0ntjA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NGO/QtB+; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709680402;
+	s=mimecast20190719; t=1709680398;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=A+hfIOAS3CirjTR2TDkQQzoNgn7WBbQgBJrbYh4eZAU=;
-	b=IzNiGEzuKmOopKbyTc143xoAaOL9oxCEQQeYzeGnDZFm1oSgO6pAqhTfGqQKFOTavjvi6N
-	4a9EoguIXR4bjJ2hlv3BmiFT/6BSOPqqyOtMMqSZkBHSGLC/Qn1ySoPyg10RLkyTsiWoZa
-	sWFiZKrVyKgW7wh1g3TPtDDiO/4ByEk=
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com
- [209.85.166.200]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=Q3dItyKuCBaDibB5NYXvGt5MwYld+3u7JGZxS0mkDfk=;
+	b=NGO/QtB+uBIM6IBqd3UDqnMy19oVk+MBWyvg8n4ZpLTomZLV/tsjeJEfZLr2ynmsr24N7B
+	Gd+hor+jiESxXvH4HJkiVUNoKeIaf82JJiOcdE0f/NmZB42eyPITwNeazpuvtAyerJaD2K
+	8cRM7rVsNlb0wpWBzA4PnlbrP7HMslc=
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com
+ [209.85.166.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-587-xxFt8O_9NfidoJbzod_iiA-1; Tue, 05 Mar 2024 18:13:21 -0500
-X-MC-Unique: xxFt8O_9NfidoJbzod_iiA-1
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3650bfcb2bfso2212645ab.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 15:13:21 -0800 (PST)
+ us-mta-300-_xQsej0BNKGBbQMcjylxtQ-1; Tue, 05 Mar 2024 18:13:16 -0500
+X-MC-Unique: _xQsej0BNKGBbQMcjylxtQ-1
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7c7c4065282so818500139f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 15:13:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709680400; x=1710285200;
+        d=1e100.net; s=20230601; t=1709680396; x=1710285196;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=A+hfIOAS3CirjTR2TDkQQzoNgn7WBbQgBJrbYh4eZAU=;
-        b=LXqkuzMTcCceaF1qwX6+ettN9sQsvS0PE9UuT5M3CU3EJRDhKtWk7CGd14C0B3ZUQz
-         vRBIQ9N3hZNFrPSfjRZ50TSRf0WzLA70xd1OCIm7QnzEOQw3GR2n4gwe/hG5pwuTBBwH
-         hoTilR/as/qrLr5fiuVyKvWW2Kgkfn6gg7clA5HvSiQwxd3tsE4bXhL9VZ9Xf4SYdJzo
-         SlLIts3lwNiEZGy+LgF7CmsX8iRoRqKIbS2FrYOH/+wYphTCyFZ5g02dUgbKIQobXAo+
-         nztNphfIxnwycFtT4tRp9ckOdC10pGE+5JyEJua89uqemcTGYeelrIyxXvE071DVJSDU
-         1Bpg==
-X-Forwarded-Encrypted: i=1; AJvYcCUebwa/xJpZG0KAvq0P4TTjyLJFVK0r2fhGcerJoIh7mH/35LOG+ATyXBCAZ2V4GNnd295EfgmiJN+ryXDFUqY/wsAAVO+SpmshGIRk
-X-Gm-Message-State: AOJu0Yz62l52u31ONA7WN9r9IJ/rrXsYYEzuCRCPsj25/2r9ifJ8mwul
-	ODBndtlYbaRO0CKZBMnulVN2sx8wc9aPIukfW0F7wcQBz1nYgFreQESvSy/zYgHiu63CYj3CNks
-	vRHK999dnv645m08rseSy6Eh0M0xjD4dLWAdExZUU/7Q2gi/bT8VE08xUrZ5ZFg==
-X-Received: by 2002:a05:6e02:20ea:b0:361:933c:3b04 with SMTP id q10-20020a056e0220ea00b00361933c3b04mr3503340ilv.7.1709680400426;
-        Tue, 05 Mar 2024 15:13:20 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IH2nNbJIhVFGias1huSm3/yhiAERbq5Ckc+7Kk03yYzrJLJ0gi6XO6zCth4naFRvHkOeLYHrw==
-X-Received: by 2002:a05:6e02:20ea:b0:361:933c:3b04 with SMTP id q10-20020a056e0220ea00b00361933c3b04mr3503335ilv.7.1709680400167;
-        Tue, 05 Mar 2024 15:13:20 -0800 (PST)
+        bh=Q3dItyKuCBaDibB5NYXvGt5MwYld+3u7JGZxS0mkDfk=;
+        b=BucHkUDJ5C1F01eBi6CMKKcArC2dWaR8iQBSVF5cYZA7ZfBwc8avdaTXhBU9gZ9PGm
+         O3t4cTGFZ02+HYaKd3OPYh2OwjZifZT1eKXNlW9Fw4WP8L+jGehRer2vOBXTJwBVCxLp
+         jC2huWaUGwtK+hIxY1JEfwOA2ddg3Sb+4rUZ2GhqrNYufcThlP/Vgt2RwEVxAgeSuu0E
+         ibt15tZtsRFWl4k7dq/Y8XqHX7YiLXTQxNnq8egkuMxX7Gb8fwwfW8AIBBh5GGehTI5u
+         Xmp6lQXVlh8F277JGrDFKNUvBtAaRC110NGRlBCEr/uolllndAVkDX1V+4sK/NVazpBp
+         jqjg==
+X-Forwarded-Encrypted: i=1; AJvYcCVK4GsC/gVenk0bCdriZxP/Ea6c7sVmih/nIlGiElHSPylihKu4BscsX39BSKMvhGF40oRAEo2uGfdyJxnjOXK7Xw83I2I4eQiq/LMr
+X-Gm-Message-State: AOJu0Yxpcb0qbieQ4aN62qF+CQibJIYg1WhOMspaxRyd1ydPOvWKlZBt
+	G8PEGMBHM1KWaUdtm2cY25YJ2zPQZHHzf/v+gL3bElKgYExF7poMtHavHTOivD6EHGHnUAdTm8q
+	m9l3H7DBmXpr+YJhiZx0ZrJ/iTrCl78QiViDaWqY2KG8AZRe+2VOCX0eZNhPXnw==
+X-Received: by 2002:a05:6602:1b19:b0:7c8:3efb:27ed with SMTP id dk25-20020a0566021b1900b007c83efb27edmr11120789iob.5.1709680396238;
+        Tue, 05 Mar 2024 15:13:16 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH37srbEnhilsYXZBiPUY4gv8GvCH6dccJsVm5NQe0om0obInCAFz9Q4eLaVKORUBVGtoL1eg==
+X-Received: by 2002:a05:6602:1b19:b0:7c8:3efb:27ed with SMTP id dk25-20020a0566021b1900b007c83efb27edmr11120775iob.5.1709680395954;
+        Tue, 05 Mar 2024 15:13:15 -0800 (PST)
 Received: from redhat.com ([38.15.36.11])
-        by smtp.gmail.com with ESMTPSA id c26-20020a02c9da000000b00474b48a629csm3084467jap.46.2024.03.05.15.13.18
+        by smtp.gmail.com with ESMTPSA id c26-20020a02c9da000000b00474b48a629csm3084467jap.46.2024.03.05.15.13.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 15:13:18 -0800 (PST)
-Date: Tue, 5 Mar 2024 16:12:56 -0700
+        Tue, 05 Mar 2024 15:13:15 -0800 (PST)
+Date: Tue, 5 Mar 2024 16:13:01 -0700
 From: Alex Williamson <alex.williamson@redhat.com>
-To: <ankita@nvidia.com>, Oliver Upton <oliver.upton@linux.dev>
-Cc: <jgg@nvidia.com>, <yishaih@nvidia.com>,
- <shameerali.kolothum.thodi@huawei.com>, <kevin.tian@intel.com>,
- <aniketa@nvidia.com>, <cjia@nvidia.com>, <kwankhede@nvidia.com>,
- <targupta@nvidia.com>, <vsethi@nvidia.com>, <acurrid@nvidia.com>,
- <apopple@nvidia.com>, <jhubbard@nvidia.com>, <danw@nvidia.com>,
- <rrameshbabu@nvidia.com>, <zhiw@nvidia.com>, <anuaggarwal@nvidia.com>,
- <mochs@nvidia.com>, <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- kvmarm@lists.linux.dev
-Subject: Re: [PATCH v2 1/1] vfio/nvgrace-gpu: Convey kvm to map device
- memory region as noncached
-Message-ID: <20240305161256.09bda6c4.alex.williamson@redhat.com>
-In-Reply-To: <20240229193934.2417-1-ankita@nvidia.com>
-References: <20240229193934.2417-1-ankita@nvidia.com>
+To: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: Antonios Motakis <a.motakis@virtualopensystems.com>, Eric Auger
+ <eric.auger@redhat.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] vfio: amba: Rename pl330_ids[] to vfio_amba_ids[]
+Message-ID: <20240305161301.573b0a41.alex.williamson@redhat.com>
+In-Reply-To: <1d1b873b59b208547439225aee1f24d6f2512a1f.1708945194.git.geert+renesas@glider.be>
+References: <1d1b873b59b208547439225aee1f24d6f2512a1f.1708945194.git.geert+renesas@glider.be>
 X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -98,96 +91,45 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Thu, 29 Feb 2024 19:39:34 +0000
-<ankita@nvidia.com> wrote:
+On Mon, 26 Feb 2024 12:09:26 +0100
+Geert Uytterhoeven <geert+renesas@glider.be> wrote:
 
-> From: Ankit Agrawal <ankita@nvidia.com>
+> Obviously drivers/vfio/platform/vfio_amba.c started its life as a
+> simplified copy of drivers/dma/pl330.c, but not all variable names were
+> updated.
 > 
-> The NVIDIA Grace Hopper GPUs have device memory that is supposed to be
-> used as a regular RAM. It is accessible through CPU-GPU chip-to-chip
-> cache coherent interconnect and is present in the system physical
-> address space. The device memory is split into two regions - termed
-> as usemem and resmem - in the system physical address space,
-> with each region mapped and exposed to the VM as a separate fake
-> device BAR [1].
-> 
-> Owing to a hardware defect for Multi-Instance GPU (MIG) feature [2],
-> there is a requirement - as a workaround - for the resmem BAR to
-> display uncached memory characteristics. Based on [3], on system with
-> FWB enabled such as Grace Hopper, the requisite properties
-> (uncached, unaligned access) can be achieved through a VM mapping (S1)
-> of NORMAL_NC and host mapping (S2) of MT_S2_FWB_NORMAL_NC.
-> 
-> KVM currently maps the MMIO region in S2 as MT_S2_FWB_DEVICE_nGnRE by
-> default. The fake device BARs thus displays DEVICE_nGnRE behavior in the
-> VM.
-> 
-> The following table summarizes the behavior for the various S1 and S2
-> mapping combinations for systems with FWB enabled [3].
-> S1           |  S2           | Result
-> NORMAL_NC    |  NORMAL_NC    | NORMAL_NC
-> NORMAL_NC    |  DEVICE_nGnRE | DEVICE_nGnRE
-> 
-> Recently a change was added that modifies this default behavior and
-> make KVM map MMIO as MT_S2_FWB_NORMAL_NC when a VMA flag
-> VM_ALLOW_ANY_UNCACHED is set [4]. Setting S2 as MT_S2_FWB_NORMAL_NC
-> provides the desired behavior (uncached, unaligned access) for resmem.
-> 
-> To use VM_ALLOW_ANY_UNCACHED flag, the platform must guarantee that
-> no action taken on the MMIO mapping can trigger an uncontained
-> failure. The Grace Hopper satisfies this requirement. So set
-> the VM_ALLOW_ANY_UNCACHED flag in the VMA.
-> 
-> Applied over next-20240227.
-> base-commit: 22ba90670a51
-> 
-> Link: https://lore.kernel.org/all/20240220115055.23546-4-ankita@nvidia.com/ [1]
-> Link: https://www.nvidia.com/en-in/technologies/multi-instance-gpu/ [2]
-> Link: https://developer.arm.com/documentation/ddi0487/latest/ section D8.5.5 [3]
-> Link: https://lore.kernel.org/all/20240224150546.368-1-ankita@nvidia.com/ [4]
-> 
-> Cc: Alex Williamson <alex.williamson@redhat.com>
-> Cc: Kevin Tian <kevin.tian@intel.com>
-> Cc: Jason Gunthorpe <jgg@nvidia.com>
-> Cc: Vikram Sethi <vsethi@nvidia.com>
-> Cc: Zhi Wang <zhiw@nvidia.com>
-> Signed-off-by: Ankit Agrawal <ankita@nvidia.com>
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 > ---
->  drivers/vfio/pci/nvgrace-gpu/main.c | 11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
+>  drivers/vfio/platform/vfio_amba.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/vfio/platform/vfio_amba.c b/drivers/vfio/platform/vfio_amba.c
+> index 6464b3939ebcfb53..485c6f9161a91be0 100644
+> --- a/drivers/vfio/platform/vfio_amba.c
+> +++ b/drivers/vfio/platform/vfio_amba.c
+> @@ -122,16 +122,16 @@ static const struct vfio_device_ops vfio_amba_ops = {
+>  	.detach_ioas	= vfio_iommufd_physical_detach_ioas,
+>  };
+>  
+> -static const struct amba_id pl330_ids[] = {
+> +static const struct amba_id vfio_amba_ids[] = {
+>  	{ 0, 0 },
+>  };
+>  
+> -MODULE_DEVICE_TABLE(amba, pl330_ids);
+> +MODULE_DEVICE_TABLE(amba, vfio_amba_ids);
+>  
+>  static struct amba_driver vfio_amba_driver = {
+>  	.probe = vfio_amba_probe,
+>  	.remove = vfio_amba_remove,
+> -	.id_table = pl330_ids,
+> +	.id_table = vfio_amba_ids,
+>  	.drv = {
+>  		.name = "vfio-amba",
+>  		.owner = THIS_MODULE,
 
-Applied to vfio next branch for v6.9.
-
-Oliver, FYI I did merge the branch you provided in [1] for this, thanks
-for the foresight in providing that.
+Applied to vfio next branch for v6.9.  Thanks,
 
 Alex
-
-[1]https://lore.kernel.org/all/170899100569.1405597.5047894183843333522.b4-ty@linux.dev/
-
-> 
-> diff --git a/drivers/vfio/pci/nvgrace-gpu/main.c b/drivers/vfio/pci/nvgrace-gpu/main.c
-> index 25814006352d..a7fd018aa548 100644
-> --- a/drivers/vfio/pci/nvgrace-gpu/main.c
-> +++ b/drivers/vfio/pci/nvgrace-gpu/main.c
-> @@ -160,8 +160,17 @@ static int nvgrace_gpu_mmap(struct vfio_device *core_vdev,
->  	 * The carved out region of the device memory needs the NORMAL_NC
->  	 * property. Communicate as such to the hypervisor.
->  	 */
-> -	if (index == RESMEM_REGION_INDEX)
-> +	if (index == RESMEM_REGION_INDEX) {
-> +		/*
-> +		 * The nvgrace-gpu module has no issues with uncontained
-> +		 * failures on NORMAL_NC accesses. VM_ALLOW_ANY_UNCACHED is
-> +		 * set to communicate to the KVM to S2 map as NORMAL_NC.
-> +		 * This opens up guest usage of NORMAL_NC for this mapping.
-> +		 */
-> +		vm_flags_set(vma, VM_ALLOW_ANY_UNCACHED);
-> +
->  		vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
-> +	}
->  
->  	/*
->  	 * Perform a PFN map to the memory and back the device BAR by the
 
 
