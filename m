@@ -1,176 +1,303 @@
-Return-Path: <linux-kernel+bounces-91433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91434-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3D1D87116E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 01:09:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DB5F871170
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 01:10:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21FCE1C22FCB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 00:09:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 494521C22FDB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 00:10:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B7012FB2;
-	Tue,  5 Mar 2024 00:09:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A9E5EC2;
+	Tue,  5 Mar 2024 00:09:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=aspeedtech.com header.i=@aspeedtech.com header.b="A9pF4+r1"
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2104.outbound.protection.outlook.com [40.107.255.104])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ER6GJ3B6"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ED8010F7;
-	Tue,  5 Mar 2024 00:09:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.255.104
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709597366; cv=fail; b=t+MF/XjMols1mAHW+Dm98lEiYiE7dv6z1eEjVoDcNNHGPSLEVD+t0V65cFtfrIfU+CVRTnfNvWHcOZZ6/fEvdcLPOpkcQ16K7Iy8+8sH5/1DDoO69OUfS2dKVpSST+a8dGvXImgzSV8To5fIvZSE0Hw6tHyqWNL31BUkJsMUFfY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709597366; c=relaxed/simple;
-	bh=lcUdsnuRaldYfIAcNfmTEokpzBDi5lmVezrAGT2XDbo=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=HbXBw8yPlTXYM8ewl6bXjvmkftrnMW5knxRuwui5i7B1jfX3UbOvj9M5IW7nfMvn+N5K6wJveDUF2gSP9OrDIaNvKexw9I7Eufb/iRFUf11enQbks5/FTCvNxkwC+P4HloClZHj4jGa3T78MrdA+E1Gy/ZFKgVa6Y4BQSFmW/go=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=aspeedtech.com; spf=pass smtp.mailfrom=aspeedtech.com; dkim=pass (2048-bit key) header.d=aspeedtech.com header.i=@aspeedtech.com header.b=A9pF4+r1; arc=fail smtp.client-ip=40.107.255.104
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=aspeedtech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aspeedtech.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EBV3FVeNTI9Kp7vHz4J6vWzoCHO4F/Pm/sFoUK8g0po+K7MD673Ff3+cDoDnXQui4ZEtBXbBes0S/zYjKa+Hzw4wOHFLwR76z194zfTvR5YuqJLz5e7lX89JLsr+blem2mrRU7YHZlfV4CWTwnTSyWNkAQL+L11cTwXczERBmuagRoYV2HdRr9WKvHUX6uKElQ6yJhNv38jkCqcv/3zP77yi9f/uaGHBSF5iMkRkqej9y3vjnmPzNm10yuhrhLV1nTbq9gZcdJqEdPuzA+8VLYwbDSzxx44qXdPaGUnUFvYL4zpbh/wewsmm7r+MmrCbq8HrnzDI+5C7Kbj7Qn2IyA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=RVcPwU/8OLeV5406ut0atXK52A94FnVD5VhYAV1SIUg=;
- b=hIQqQ63pCvLMW3jWiDw99KOkoZONhwf+IsAQ9ZQZxjHp43CufCUrWrI7lGGp6BjiAf9pdF56rDpPhzZ6JZs15vGvMSflQYVw429YKjcLFuKJB0U+Kt/Dcqdm9mKigsOINTpgO9ZFUqGCT6OSi67Rx6MSOtHjScD+HuqObJHAUp9A+sz3shsMbDrkB8ug3PG6khZ73vK8AR/p5eZG5NEgAfRHQYywZv8YugDCvVWyazPn0/ko68+RlZDAAAi2idN7ea/Q50vw+M+N9euXk7o+vRPGPfAvKL7l8Ke3Iu8Q8flTEiz0DIMM1nR5Znw17xInha1LeJz1zfdPlGzNFSJNnw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
- header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aspeedtech.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RVcPwU/8OLeV5406ut0atXK52A94FnVD5VhYAV1SIUg=;
- b=A9pF4+r1n4G908CQkHkghwB3bR7/NDjzzeKetmNvVTsFT2ONtJqQXW6aktuI22zCF2s4vE160COgFi3BpKyaDvmR0zuDm1rGHHDHan4yLl/IAwk8FO82V2rJ7nToX8hsoz50oWl+a32XGpbW1qS0ZQKQO39tMAUFGID6WvNRROYjef1t8eSYL+9j9+BD+pFaAD/jn9UwWa/9MfDUz92TeUEzjm7U7ENGjxN5hTwyo691vbXHKWPpOG2PDQ53sGFBAaKqYbcTNSDugFv7/EzpMcfpcinjRhpFeyZQOHCtGw0zXm+GzdmML6N9OH8zCqkRCVVQ8jDB94CfCEYLcV+7JQ==
-Received: from TYZPR06MB6191.apcprd06.prod.outlook.com (2603:1096:400:33d::12)
- by TYZPR06MB5179.apcprd06.prod.outlook.com (2603:1096:400:1f8::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.39; Tue, 5 Mar
- 2024 00:09:16 +0000
-Received: from TYZPR06MB6191.apcprd06.prod.outlook.com
- ([fe80::b1fd:b8e3:4dce:270b]) by TYZPR06MB6191.apcprd06.prod.outlook.com
- ([fe80::b1fd:b8e3:4dce:270b%5]) with mapi id 15.20.7339.035; Tue, 5 Mar 2024
- 00:09:16 +0000
-From: Tommy Huang <tommy_huang@aspeedtech.com>
-To: Wolfram Sang <wsa@kernel.org>
-CC: Andi Shyti <andi.shyti@kernel.org>, "brendan.higgins@linux.dev"
-	<brendan.higgins@linux.dev>, "p.zabel@pengutronix.de"
-	<p.zabel@pengutronix.de>, "linux-i2c@vger.kernel.org"
-	<linux-i2c@vger.kernel.org>, "openbmc@lists.ozlabs.org"
-	<openbmc@lists.ozlabs.org>, "benh@kernel.crashing.org"
-	<benh@kernel.crashing.org>, "joel@jms.id.au" <joel@jms.id.au>,
-	"andrew@aj.id.au" <andrew@aj.id.au>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-aspeed@lists.ozlabs.org"
-	<linux-aspeed@lists.ozlabs.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, BMC-SW <BMC-SW@aspeedtech.com>
-Subject: RE: [PATCH] i2c: aspeed: Fix the dummy irq expected print
-Thread-Topic: [PATCH] i2c: aspeed: Fix the dummy irq expected print
-Thread-Index:
- AQHaYNBg0EEa3X7oHECRXZPcHJI3VbEVVFwAgAA4R6CAAIwtAIABM1cggBDfJICAADXcUA==
-Date: Tue, 5 Mar 2024 00:09:16 +0000
-Message-ID:
- <TYZPR06MB6191E09E92A56D9B66EE86A0E1222@TYZPR06MB6191.apcprd06.prod.outlook.com>
-References: <20240216120455.4138642-1-tommy_huang@aspeedtech.com>
- <nbkkaktcozbhly44hii3zwie7ivsra3qxzdibyzhyhooxrudvb@zik6skmkki2c>
- <TYZPR06MB61911F076C8719C6A7D57B97E1562@TYZPR06MB6191.apcprd06.prod.outlook.com>
- <v4nawwb4rwjiy2g7xv2sfyhc545mhk4izb3g22f7jupcevjuzb@nxmqgf2zjyqs>
- <TYZPR06MB61912715EE2869DDB7C3763DE1552@TYZPR06MB6191.apcprd06.prod.outlook.com>
- <ZeY1i9_liCIjqNYL@ninjato>
-In-Reply-To: <ZeY1i9_liCIjqNYL@ninjato>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=aspeedtech.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYZPR06MB6191:EE_|TYZPR06MB5179:EE_
-x-ms-office365-filtering-correlation-id: a6bca3f9-e124-4430-a92d-08dc3ca87eee
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- QV1XQroFCg4+P5lkolXzx09pX6SPIryZX+ryQu/t55PqZDoBuz4Nq2iVfwZmBl/IQtteLWXvEqmARP6NFvHJiDWPPNGlY/IBuF7Nd7VXHts3i/lRPeyvWh2mz7dmG6+jaHZtllpmpukNKKopXICtBBb/XAUUt04PLrhGK8bnAXVn/AHEkEI9qSBMDvAQSs10ME6ECmYqOqsEkSIoW9V73xDKgSAjGaZTEuvqOQ2LhdKns58J3dpksnd3rad9cxnNhtmKrnfHEkp76sbCxM8Sl/2GIAdr09AsyNj4OGi5piXMmCFPC/k35BlTz4Yhi4nXRrhlaVrNlqkRbEau4Zyx2vR9Fa7xKm3zh2VKFekTWKlvC2bDzzTlYjEKhXu5R4xm6Zv1gJFyt4hfe99yLI3X5qxhsWv8YqYabV79idNF98yRxAh3TNXQJgfmRi+AouCzgAEN8fheGKwyk4bXPy/Z7YZke/skqLMCwGygIZsI/KdHlxUubXhw+TPxzSyisn/1qQSO7T8YyqSePLgLXCLKauaHtoAIn/g1wJshlTlV3DbhrITONSc7zlG9XW1AGkr6ZH3x1MHWAC7EjiXBvE1280uRpFybQesxE06RL0Uic9AlQt9Gj2BOY+YVQMjQebRAReYa4njBRy20GAniVKAZ7kEfINRES9zOae4LN47FvnPM+wl6wOp6+2NtH2CrPleqML/kgZSU8ZGJii4mQg/0yQ==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR06MB6191.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?4L5SkOXrXBwecO3QD5HEyM1gfXnJaO7mYALAvlZpOFV/Nd3P5pKm2IZ8umTW?=
- =?us-ascii?Q?A2S5JGw6y50brXHrUwYsjIIJQtI3200MqxFLoPR4Te7DIJSGGLJgE6T7XyUP?=
- =?us-ascii?Q?yR+u5ZC4+ZAspA3QJUIdTdXJ3KjJpJv1MBWYCR7wV5H6UnK3PLT0IHVb8m2j?=
- =?us-ascii?Q?lbABgl/lPxNXJ5yoELvMwzYHF3f5/CroCSNzepteIG4GiXNE9onlZEp1Sz2c?=
- =?us-ascii?Q?l7zQB/p+fnRB7mj3Uka6M/qp17P517SlCcy2l95m/DKLxE33kcwSpKePsGnK?=
- =?us-ascii?Q?5Xr5J2MmczI8SMwf4foAuD3Cv6MggHLQ//6K4GuplczFP6wCdf6moImeYYt2?=
- =?us-ascii?Q?y/xi+3UpM5SMqujmoNg/oDcOR8hdhUhhGd5e1D0Ue+L7775kwkpKnYClNSPS?=
- =?us-ascii?Q?t8D3VTmSAMOawDXV3O0t9y0nphlV5olo2qo1SMrqm1Yd8Sb81hniW8ZcCJ7Y?=
- =?us-ascii?Q?7Bnau6xGe2BAwXWrP4rkSPnT7OK5yLwdswjRQ3xYnaPzGI+2GzRpla7m+P/4?=
- =?us-ascii?Q?yJuroWyPjCAN6vTBxRdSU2mN4dWfQQ2XQAb5mGrpc247vLSyHBN1Z+vmpJua?=
- =?us-ascii?Q?7ot0cwDEptHpZnHRpFOiLGLY0P6TbZZLFuOTF9opEq+7lAyq7euRRenhJV1+?=
- =?us-ascii?Q?I5IexSPTWbonJki77M/aO5idlCNceBCC1wYN+fs4UFTjlNBsaY1rbhs4Gakt?=
- =?us-ascii?Q?eZiyPGpATjvxOV83nlTosdz8TvYKfMztRo6zPD3ubU78NPdoSt0SbKkEWeZb?=
- =?us-ascii?Q?exbKWXgazZRCWIT3ZFUzApxlAKrqWubwI2DE19GdX3lFKtq/YdEHsYZBJvLY?=
- =?us-ascii?Q?16tMt5bN6IkIqnfTkwf4gNy9QbrCevfulMWJoB/2T4CAbydtb7dgwEAmWeWi?=
- =?us-ascii?Q?bTmqQoE4DzVhoR+fOT0M8mAWmTvB8DmdCcT7DtQMEqVII67V+cBK8NFc2E8b?=
- =?us-ascii?Q?tzeEuZXc2oTPByOO0V1Y+s3gd2MAvJeQs00OM4gx4cms2LCbJKjVaKfYOIVu?=
- =?us-ascii?Q?RfLE/rse9WIV6f7mVuh3+5zKhpQOWyuhh+hNcaiNcvXKe7abZptY03rKM7NS?=
- =?us-ascii?Q?mGHWLHZvEkP8sTJRpGMNa2gMTJkkKSOE/MieR78/Tbmnler4SFq3PkUgL+l3?=
- =?us-ascii?Q?rh2VwfMMtfXeGo2p/aEcQNpZAMQFV1kE1Be1bMbGOdXzwz4Hg2ia0CKiwJcL?=
- =?us-ascii?Q?8kPIp+WFxjXISXoDiCLtoPF/Os3h3dx/3yXexpJ2rK4p9DgNBp7ZvfpR2fKg?=
- =?us-ascii?Q?I48Q7zmzN4XJ7LZ9l1NZElEBa0gAoJiDB/yWMEp0GJSx5oehntKi5vbtkvaR?=
- =?us-ascii?Q?UXpLQfoYoHg1Oezlmn2GUCRQuP/pQAmYJX5EgGeIbYbW+mMBv8TkCD9QlEXd?=
- =?us-ascii?Q?onjKsIQryMQeczf8dkjEczzbOeS1RfG5so8e67RkPfmZsTqkoVHO3PS7//cO?=
- =?us-ascii?Q?gO5eFyMJpkz0WMT8qpT4swrMQEbLTs000mu7YWsVEEssdUqLpv5glALnAlf/?=
- =?us-ascii?Q?26v9Ke+Q5W5YE61Ao/P7ghOt/3DaVcwDW/U+H8i7b7R5jOrYhbgkwDX4Dy0b?=
- =?us-ascii?Q?lvFBrQILn27em2PKoetH/ArGDtf5R5e9DzeVDj2WHtXJKiKDocqA0B2/ulO2?=
- =?us-ascii?Q?kg=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7A84EDE
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 00:09:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709597398; cv=none; b=Hf6VdW1qtY5OY2LTiUt2rhPF+LDj3DhH6rc6mET9XAx+355Vj6+zL5cJJFIFdqcNLHGFSlgfNYHsFmpzExCK+hov/9Z90RMA1vazuo//YF9BB1XrstQy8FMR5rBnQWbKVUMadbfVuyP/73MBRBULFB5TgpDDs57Y48pcZW1Vv/c=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709597398; c=relaxed/simple;
+	bh=sxwRPIeHhnGwmE6TMkVaxGE/qOGK/s2muW2cFbd2vEY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=gGfurYyMccjDTc3xekqBj6WcnH1uJHdPPTwznpEkUWQlOcjcswhgXI33aFIBrZVCAZmAUSgDJIpf3mjT9wrGkNPo89GfVtrgZaoqGOWgAENvOz47em3A8A0PZKp/TVyhlotsyhAqyY7TkXezG7PxRKT0dIw1MmMw0sqBh36Mhmo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ER6GJ3B6; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709597396; x=1741133396;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=sxwRPIeHhnGwmE6TMkVaxGE/qOGK/s2muW2cFbd2vEY=;
+  b=ER6GJ3B6K88HhiZpx8ztFEJU7Hzer2cfpO9agf1DAgXz7RraI/ISPdd5
+   tnp/YTSoaNwOXGLjeeglzMPPGqPwGR/ztm/ZxbBuVrRLBYNnIShBdXa6E
+   8GAgTdZnXdABq7YUJAf3J5KsAIHl7rm6muz2Gz9gkoyuit/U2nlUFwhKZ
+   JjthCnpwXmgCyMdw2uorB4e5VzlmaXjQYrXygW6bITnW83B/0jpqF1LtL
+   jhGIz2nSpz4nugnHy1ESAomjNMYcMRdLCnrjD3O0hKMD8lgbWH8sT/5Rw
+   3yc1ae67Xg/O0nhAbHTedhuOdWi7hoNmiS7pBGmI/HaZdQkt298JrQxes
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="3982369"
+X-IronPort-AV: E=Sophos;i="6.06,204,1705392000"; 
+   d="scan'208";a="3982369"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 16:09:49 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,204,1705392000"; 
+   d="scan'208";a="9076604"
+Received: from syakovle-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.51.3])
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 16:09:45 -0800
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Hsin-Yi Wang <hsinyi@chromium.org>
+Cc: Douglas Anderson <dianders@chromium.org>, Neil Armstrong
+ <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>,
+ Sam Ravnborg <sam@ravnborg.org>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, Dmitry Baryshkov
+ <dmitry.baryshkov@linaro.org>
+Subject: Re: [PATCH v3 2/4] drm/edid: Add a function to check monitor string
+In-Reply-To: <CAJMQK-j4wGah=szyUW53hu-v6Q4QjgR7WMLKnspoFaO9oPfaQw@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240304195214.14563-1-hsinyi@chromium.org>
+ <20240304195214.14563-3-hsinyi@chromium.org> <87a5nd4tsg.fsf@intel.com>
+ <CAJMQK-j4wGah=szyUW53hu-v6Q4QjgR7WMLKnspoFaO9oPfaQw@mail.gmail.com>
+Date: Tue, 05 Mar 2024 02:09:34 +0200
+Message-ID: <874jdl4k01.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: aspeedtech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR06MB6191.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a6bca3f9-e124-4430-a92d-08dc3ca87eee
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Mar 2024 00:09:16.1265
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: U2JaT7O7GFFVTRkS5IvagJTJAZWg2F9qNsUWVeZsAvqc/1wWW49hDDJ/X7A67coVUNal7iir2WBRiz6oGgr7NdQzPCXl4LPBBRVezRst5jU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR06MB5179
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi Wolfram,
+On Mon, 04 Mar 2024, Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+> On Mon, Mar 4, 2024 at 12:38=E2=80=AFPM Jani Nikula <jani.nikula@linux.in=
+tel.com> wrote:
+>>
+>> On Mon, 04 Mar 2024, Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+>> > Add a function to check if the EDID base block contains a given string.
+>> >
+>> > One of the use cases is fetching panel from a list of panel names, sin=
+ce
+>> > some panel vendors put the monitor name after EDID_DETAIL_MONITOR_STRI=
+NG
+>> > instead of EDID_DETAIL_MONITOR_NAME.
+>> >
+>> > Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+>> > ---
+>> > v2->v3: move string matching to drm_edid
+>> > ---
+>> >  drivers/gpu/drm/drm_edid.c | 49 ++++++++++++++++++++++++++++++++++++++
+>> >  include/drm/drm_edid.h     |  1 +
+>> >  2 files changed, 50 insertions(+)
+>> >
+>> > diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+>> > index 13454bc64ca2..fcdc2bd143dd 100644
+>> > --- a/drivers/gpu/drm/drm_edid.c
+>> > +++ b/drivers/gpu/drm/drm_edid.c
+>> > @@ -2789,6 +2789,55 @@ u32 drm_edid_get_panel_id(struct edid_base_bloc=
+k *base_block)
+>> >  }
+>> >  EXPORT_SYMBOL(drm_edid_get_panel_id);
+>> >
+>> > +/**
+>> > + * drm_edid_has_monitor_string - Check if a EDID base block has certa=
+in string.
+>> > + * @base_block: EDID base block to check.
+>> > + * @str: pointer to a character array to hold the string to be checke=
+d.
+>> > + *
+>> > + * Check if the detailed timings section of a EDID base block has the=
+ given
+>> > + * string.
+>> > + *
+>> > + * Return: True if the EDID base block contains the string, false oth=
+erwise.
+>> > + */
+>> > +bool drm_edid_has_monitor_string(struct edid_base_block *base_block, =
+const char *str)
+>> > +{
+>> > +     unsigned int i, j, k, buflen =3D strlen(str);
+>> > +
+>> > +     for (i =3D 0; i < EDID_DETAILED_TIMINGS; i++) {
+>> > +             struct detailed_timing *timing =3D &base_block->edid.det=
+ailed_timings[i];
+>> > +             unsigned int size =3D ARRAY_SIZE(timing->data.other_data=
+data.str.str);
+>> > +
+>> > +             if (buflen > size || timing->pixel_clock !=3D 0 ||
+>> > +                 timing->data.other_data.pad1 !=3D 0 ||
+>> > +                 (timing->data.other_data.type !=3D EDID_DETAIL_MONIT=
+OR_NAME &&
+>> > +                  timing->data.other_data.type !=3D EDID_DETAIL_MONIT=
+OR_STRING))
+>> > +                     continue;
+>> > +
+>> > +             for (j =3D 0; j < buflen; j++) {
+>> > +                     char c =3D timing->data.other_data.data.str.str[=
+j];
+>> > +
+>> > +                     if (c !=3D str[j] ||  c =3D=3D '\n')
+>> > +                             break;
+>> > +             }
+>> > +
+>> > +             if (j =3D=3D buflen) {
+>> > +                     /* Allow trailing white spaces. */
+>> > +                     for (k =3D j; k < size; k++) {
+>> > +                             char c =3D timing->data.other_data.data.=
+str.str[k];
+>> > +
+>> > +                             if (c =3D=3D '\n')
+>> > +                                     return true;
+>> > +                             else if (c !=3D ' ')
+>> > +                                     break;
+>> > +                     }
+>> > +                     if (k =3D=3D size)
+>> > +                             return true;
+>> > +             }
+>> > +     }
+>> > +
+>> > +     return false;
+>> > +}
+>> > +
+>>
+>> So we've put a lot of effort into converting from struct edid to struct
+>> drm_edid, passing that around in drm_edid.c, with the allocation size it
+>> provides, and generally cleaning stuff up.
+>>
+>> I'm not at all happy to see *another* struct added just for the base
+>> block, and detailed timing iteration as well as monitor name parsing
+>> duplicated.
+>>
+>> With struct drm_edid you can actually return an EDID that only has the
+>> base block and size 128, even if the EDID indicates more
+>> extensions. Because the whole thing is *designed* to handle that
+>> gracefully. The allocated size matters, not what the blob originating
+>> outside of the kernel tells you.
+>>
+>> What I'm thinking is:
+>>
+>> - Add some struct drm_edid_ident or similar. Add all the information
+>>   that's needed to identify a panel there. I guess initially that's
+>>   panel_id and name.
+>>
+>>     struct drm_edid_ident {
+>>         u32 panel_id;
+>>         const char *name;
+>>     };
+>>
+>> - Add function:
+>>
+>>     bool drm_edid_match(const struct drm_edid *drm_edid, const struct dr=
+m_edid_ident *ident);
+>>
+>>   Check if stuff in ident matches drm_edid. You can use and extend the
+>>   existing drm_edid based iteration etc. in
+>>   drm_edid.c. Straightforward. The fields in ident can trivially be
+>>   extended later, and the stuff can be useful for other drivers and
+>>   quirks etc.
+>>
+>> - Restructure struct edp_panel_entry to contain struct
+>>   drm_edid_ident. Change the iteration of edp_panels array to use
+>>   drm_edid_match() on the array elements and the edid.
+>>
+>> - Add a function to read the EDID base block *but* make it return const
+>>   struct drm_edid *. Add warnings in the comments that it's only for
+>>   panel and for transition until it switches to reading full EDIDs.
+>>
+>>     const struct drm_edid *drm_edid_read_base_block(struct i2c_adapter *=
+adapter);
+>>
+>>   This is the *only* hackish part of the whole thing, and it's nicely
+>>   isolated. For the most part you can use drm_edid_get_panel_id() code
+>>   for this, just return the blob wrapped in a struct drm_edid envelope.
+>
+> To clarify:
+> struct drm_edid currently is only internal to drm_edid.c. So with
+> change we will have to move it to the header drm_edid.h
 
-	Thanks for your comment.
-	I will resend it again.
+Absolutely not, struct drm_edid must remain an opaque type. The point is
+that you ask drm_edid.c if there's a match or not, and the panel code
+does not need to care what's inside struct drm_edid.
 
-	BR,
+>
+>>
+>> - Remove function:
+>>
+>>     u32 drm_edid_get_panel_id(struct i2c_adapter *adapter);
+>>
+>
+> Probably change to u32 drm_edid_get_panel_id(const struct drm_edid
+> *);? Given that we still need to parse id from
+> drm_edid_read_base_block().
 
-	By Tommy
+No, we no longer need to parse the id outside of drm_edid.c. You'll have
+the id's in panel code in the form of struct drm_edid_ident (or
+whatever), and use the match function to see if the opaque drm_edid
+matches.
 
-> -----Original Message-----
-> From: Wolfram Sang <wsa@kernel.org>
-> Sent: Tuesday, March 5, 2024 4:57 AM
-> To: Tommy Huang <tommy_huang@aspeedtech.com>
-> Cc: Andi Shyti <andi.shyti@kernel.org>; brendan.higgins@linux.dev;
-> p.zabel@pengutronix.de; linux-i2c@vger.kernel.org; openbmc@lists.ozlabs.o=
-rg;
-> benh@kernel.crashing.org; joel@jms.id.au; andrew@aj.id.au;
-> linux-arm-kernel@lists.infradead.org; linux-aspeed@lists.ozlabs.org;
-> linux-kernel@vger.kernel.org; BMC-SW <BMC-SW@aspeedtech.com>
-> Subject: Re: [PATCH] i2c: aspeed: Fix the dummy irq expected print
->=20
->=20
-> > 	Sure~
-> > 	Below is my re-word commit and fixes tag.
->=20
-> Please resend the patch with the reworded commit and the fixes tag added.
+>
+>> - Refactor edid_quirk_list to use the same id struct and match function
+>>   and mechanism within drm_edid.c (can be follow-up too).
+>>
+>
+> edid_quirk currently doesn't have panel names in it, and it might be a
+> bit difficult to get all the correct names of these panels without
+> having the datasheets.
+> One way is to leave the name as null and if the name is empty and skip
+> matching the name in drm_edid_match().
 
+Exactly. NULL in drm_edid_ident would mean "don't care". I think most of
+the ones in panel code also won't use the name for matching.
+
+BR,
+Jani.
+
+>
+>> - Once you change the panel code to read the whole EDID using
+>>   drm_edid_read family of functions in the future, you don't have to
+>>   change *anything* about the iteration or matching or anything, because
+>>   it's already passing struct drm_edid around.
+>>
+>>
+>> I hope this covers everything.
+>>
+>> BR,
+>> Jani.
+>>
+>>
+>> >  /**
+>> >   * drm_edid_get_base_block - Get a panel's EDID base block
+>> >   * @adapter: I2C adapter to use for DDC
+>> > diff --git a/include/drm/drm_edid.h b/include/drm/drm_edid.h
+>> > index 2455d6ab2221..248ddb0a6b5d 100644
+>> > --- a/include/drm/drm_edid.h
+>> > +++ b/include/drm/drm_edid.h
+>> > @@ -416,6 +416,7 @@ struct edid *drm_get_edid(struct drm_connector *co=
+nnector,
+>> >                         struct i2c_adapter *adapter);
+>> >  struct edid_base_block *drm_edid_get_base_block(struct i2c_adapter *a=
+dapter);
+>> >  u32 drm_edid_get_panel_id(struct edid_base_block *base_block);
+>> > +bool drm_edid_has_monitor_string(struct edid_base_block *base_block, =
+const char *str);
+>> >  struct edid *drm_get_edid_switcheroo(struct drm_connector *connector,
+>> >                                    struct i2c_adapter *adapter);
+>> >  struct edid *drm_edid_duplicate(const struct edid *edid);
+>>
+>> --
+>> Jani Nikula, Intel
+
+--=20
+Jani Nikula, Intel
 
