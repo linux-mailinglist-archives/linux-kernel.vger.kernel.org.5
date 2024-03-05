@@ -1,89 +1,106 @@
-Return-Path: <linux-kernel+bounces-92547-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92549-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EDF68721F5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:50:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D004872209
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:54:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A0D181C218F6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:50:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F71A1C21691
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:54:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67228126F0D;
-	Tue,  5 Mar 2024 14:50:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aroaaLoX"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2ADB86ACB;
-	Tue,  5 Mar 2024 14:50:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D7221272A3;
+	Tue,  5 Mar 2024 14:54:03 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECC4D6127;
+	Tue,  5 Mar 2024 14:54:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709650238; cv=none; b=Ym0HVoDo73he6keRDVfZLYGfx8RuMxepDC7HZbyvEVxdD/p0yJrDhhwKGv58PJZ/DwqrJ0MR1zaIZe8KUxKO06i4NTC+d4k1KuBUG0asYCNeiwc5WtDefu7yzbi4MerrpWb+3KNYXt35NYw2IYw/tfEJuetN//ePbpP+FJxkSMg=
+	t=1709650442; cv=none; b=e2BuvSi8DpyEdrUgsPyNzYRRmQAStvYFLCJuAmOiGDx2pJJSkgzCnWBuX9Nk14Qher3X242wMOf20a1UC6psVC1foQ6sCZNHTNiJnvAxPzOnOPSPOf/6m8IrRUYRJujlA293B5lnB82hViXdIoOHIKFUXrUDkuFrC91O3OoBvkg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709650238; c=relaxed/simple;
-	bh=VXWAauPjX6FDLOS5GEMcjByztQdG+D2U02KicMz1li0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QnRMB61nUmdpKo+BM6rdfS6M4elWFfQYzOXai7inDSDUMLONNyTHtEGlCVE2sxmRNh26RBYAMGSsRBihP4dCfzZUAPNTw2hzcEeFA8uCQ2FRpiBufuruNWETQSXH4qHVQ4ixMgdTArEZZi7D4spQuoHoAY8hkC1oLJRVewrGC4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aroaaLoX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEC40C433F1;
-	Tue,  5 Mar 2024 14:50:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709650238;
-	bh=VXWAauPjX6FDLOS5GEMcjByztQdG+D2U02KicMz1li0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=aroaaLoXlsoirx9FFY8ogRP7Q7XTLn/uH+JxdK6t/5yhLYKoRFZg8/J1VqSyDN9Ap
-	 3ZtVk+2EufojdutiFWwBzH5etqr05XbkzKTkSX/DbRHW4VwFEvOCLSjVp0ziZv/hyL
-	 Zw8Xhd+RnK1lTj8hrd6ZGYCbq5D5iQTLdkqLJo0P+bMh68p8knppuXSZaK0uyp4Dxm
-	 m5ptUVVJYmVZinsZiODsWmN4YT2qVCkBnnSkpBXiBp/EXJE+M7n6lexqKrmdwoHszS
-	 rZExK6O8qtNvqh++NWqFI5pw6WD7k2JHeKT2BdghRVFHP3Ku/psAsrqsU1EQrpq0zj
-	 QGhdxX8eMIyvg==
-Date: Tue, 5 Mar 2024 08:50:36 -0600
-From: Rob Herring <robh@kernel.org>
-To: David Heidelberg <david@ixit.cz>
-Cc: Stephen Boyd <sboyd@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	devicetree@vger.kernel.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	linux-kernel@vger.kernel.org, Viresh Kumar <vireshk@kernel.org>,
-	linux-pm@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
-	Nishanth Menon <nm@ti.com>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Viresh Kumar <viresh.kumar@linaro.org>
-Subject: Re: [PATCH] dt-bindings: opp: drop maxItems from inner items
-Message-ID: <170965023541.3333583.1849336475733290366.robh@kernel.org>
-References: <20240304234328.382467-1-david@ixit.cz>
+	s=arc-20240116; t=1709650442; c=relaxed/simple;
+	bh=RIA85WUsvoaR0l2yajYG2tSdVf08/i/yUJ9xFRgITs8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rFSh7Ut1DzGGyauojKimplDnkvHTwSHRNuuzpVQJk508AzNwyfKt5gFsjcS0XBR5in8N9rlnehHaCj2bEG5oBEOXXDtyFh4gNbmMSIvpsO2XlEElN9if/V4vBsRjyN4nr22APU2e/1pUsht6JzoI00gKe2GTrkLjP4rwk55IM6c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1F3541FB;
+	Tue,  5 Mar 2024 06:54:37 -0800 (PST)
+Received: from e129823.cambridge.arm.com (e129823.arm.com [10.1.197.6])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C47693F762;
+	Tue,  5 Mar 2024 06:53:58 -0800 (PST)
+From: "levi.yun" <yeoreum.yun@arm.com>
+To: catalin.marinas@arm.com,
+	will@kernel.org,
+	mark.rutland@arm.com,
+	peterz@infradead.org,
+	mathieu.desnoyers@efficios.com
+Cc: linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	nd@arm.com,
+	"levi.yun" <yeoreum.yun@arm.com>,
+	stable@vger.kernel.org,
+	Aaron Lu <aaron.lu@intel.com>
+Subject: [PATCH] arm64/mm: Add memory barrier for mm_cid
+Date: Tue,  5 Mar 2024 14:53:35 +0000
+Message-Id: <20240305145335.2696125-1-yeoreum.yun@arm.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240304234328.382467-1-david@ixit.cz>
+Content-Transfer-Encoding: 8bit
 
+Currently arm64's switch_mm() doesn't always have an smp_mb()
+which the core scheduler code has depended upon since commit:
 
-On Tue, 05 Mar 2024 00:43:06 +0100, David Heidelberg wrote:
-> With recent changes within matrix dimensions calculation,
-> dropping maxItems: 1 provides a warning-free run.
-> 
-> Fixes warning such as:
-> arch/arm64/boot/dts/qcom/sdm845-oneplus-enchilada.dtb: opp-table: opp-200000000:opp-hz:0: [200000000, 0, 0, 150000000, 0, 0, 0, 0, 300000000] is too long
-> 
-> Fixes: 3cb16ad69bef ("dt-bindings: opp: accept array of frequencies")
-> Suggested-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: David Heidelberg <david@ixit.cz>
-> ---
->  follow-up of https://lore.kernel.org/lkml/20231229191038.247258-1-david@ixit.cz/T/
-> 
->  Documentation/devicetree/bindings/opp/opp-v2-base.yaml | 2 --
->  1 file changed, 2 deletions(-)
-> 
+    commit 223baf9d17f25 ("sched: Fix performance regression introduced by mm_cid")
 
-Acked-by: Rob Herring <robh@kernel.org>
+If switch_mm() doesn't call smp_mb(), sched_mm_cid_remote_clear()
+can unset the activly used cid when it fails to observe active task after it
+sets lazy_put.
+
+By adding an smp_mb() in arm64's check_and_switch_context(),
+Guarantee to observe active task after sched_mm_cid_remote_clear()
+success to set lazy_put.
+
+Signed-off-by: levi.yun <yeoreum.yun@arm.com>
+Fixes: 223baf9d17f2 ("sched: Fix performance regression introduced by mm_cid")
+Cc: <stable@vger.kernel.org> # 6.4.x
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Aaron Lu <aaron.lu@intel.com>
+---
+ I'm really sorry if you got this multiple times.
+ I had some problems with the SMTP server...
+
+ arch/arm64/mm/context.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/arch/arm64/mm/context.c b/arch/arm64/mm/context.c
+index 188197590fc9..7a9e8e6647a0 100644
+--- a/arch/arm64/mm/context.c
++++ b/arch/arm64/mm/context.c
+@@ -268,6 +268,11 @@ void check_and_switch_context(struct mm_struct *mm)
+ 	 */
+ 	if (!system_uses_ttbr0_pan())
+ 		cpu_switch_mm(mm->pgd, mm);
++
++	/*
++	 * See the comments on switch_mm_cid describing user -> user transition.
++	 */
++	smp_mb();
+ }
+
+ unsigned long arm64_mm_context_get(struct mm_struct *mm)
+--
+LEVI:{C3F47F37-75D8-414A-A8BA-3980EC8A46D7}
 
 
