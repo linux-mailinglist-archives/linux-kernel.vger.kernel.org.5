@@ -1,60 +1,80 @@
-Return-Path: <linux-kernel+bounces-91913-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91914-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BA7487184C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:36:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2379387184D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:36:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D7C0E1F21A30
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:36:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 81D1FB2154C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:36:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 636144DA0E;
-	Tue,  5 Mar 2024 08:35:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BFC03A1D9;
+	Tue,  5 Mar 2024 08:35:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RGlpUwJ+"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="f80fuWE9"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EBA2249F1;
-	Tue,  5 Mar 2024 08:35:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9388249F1
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 08:35:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709627741; cv=none; b=K6tbzyXmzTFIbzIq4YP/4lX3gTtRnTGwfMMU9jHGdsUlurn7T0gWZ3guQSjzZFrcQtE3a06Rxz/98P/JGOJNdUfXanUNmt440DGIBWWQxZEB2Sm+vSX0mjt2LR/wLkZRN7XZuS0q7JWIrMDe1XRflqZaEm4qISUwzDGSmwy9gzU=
+	t=1709627751; cv=none; b=cnXIzcEuUF2uxNEf10CLwnSYcaWagV8eCCP079iUk+ljvDKU7FqGOsIX2G23qt0U6AkvQZ2RO0rkFyonyj//Uuqq1ddsczvO31BhKNmi6BJp4pjepwalh1ZZxLJfFSAwf47qZm3bfqsmPnWlscujRA0AyKUmAVgOUuvg0xzDB9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709627741; c=relaxed/simple;
-	bh=LPw3A2szBAoVVtalkXlJFKeMTfTKY/oEBwCzke2iCdE=;
+	s=arc-20240116; t=1709627751; c=relaxed/simple;
+	bh=HmSZWFhu3yDaImEBouH4zjOoFs+69G17QxKKmJOPmkg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DGPvdcZI1DL0B4o1OsLwG40ymNitH1movXfh3zur08F2O5FOVqDuq5CRFg4Wgr719qyjeQuFnM3lnlqyxQ/3luUCAf7YvjkkQCu7iaQOiVcTv0XwdftNnOumnIb/nddjIdQkMX03M4POZDywZuXahKOGtNwPFcXP1Zz1KeyAIdk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RGlpUwJ+; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709627739; x=1741163739;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=LPw3A2szBAoVVtalkXlJFKeMTfTKY/oEBwCzke2iCdE=;
-  b=RGlpUwJ+q/N4H+mop2HpXgJHcT/sCGI5xUGe3hEcYZ+GGGpFEUtT0RMk
-   jvI5XLGjmSEtkTDUwrSAu5K/b8lejmiZo0qFiJQ1NoLVwD+meecSeNOmB
-   SqRvZsoX278/U89KFJuw4j5j0VqoPzfVv4ua4x+qxE0FXxkPLO3m1fibC
-   1IzBL9AOHdrQbQvfbCRsytsqj1e73zeRY5BJNaf+Po3QXRNahI1zrFve6
-   PWhqIOKSF8IE76Sd6pgOx0Oe5lHwxtRQNi7WCqJDhnpsW2TKaTYZJglS/
-   T6m9h+MisU/QKkP0Gtf8E6JurSVlL/XUotkl0PNk+fXXEXdMumILs4Bf3
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="14746449"
-X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
-   d="scan'208";a="14746449"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 00:35:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
-   d="scan'208";a="9238207"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.8.218]) ([10.238.8.218])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 00:35:36 -0800
-Message-ID: <02794f06-1da7-4ea0-8c31-6a09aeadbcea@linux.intel.com>
-Date: Tue, 5 Mar 2024 16:35:34 +0800
+	 In-Reply-To:Content-Type; b=k49rK8kkKQqJ4glxoq1g1pBLF6zDXuXZ9BHQwDxuRApPbqS+VN4+wIjvTVNdesFd0Jyt+NT7oPgGx4kd05Yz1UvFE6hh7hly4vhk9rpoduPKph5jOhmZiRB7hyl7YySq3LWAT7jL3mHzpCYUPZz+hu3TZi4hZbufH9o2ykkQaJk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=f80fuWE9; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709627748;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=8d1YUHodfZWTVLWvoDOTeK1aIx0Y+TAs7cm2fq84YPM=;
+	b=f80fuWE9U0wIDS/QleVAxyvNw4bo6rT2JIv/+c21b71RuL4sCovhfuvNS92CszwUV1HBVd
+	W9RbHB1lAb5BQ760RWTtWSNjCpsLG6zOqAoRfgDqrE0ci9slWvcbB7ewuijrT4q9QLc72O
+	yhb93OeqwHZsmEZPV8yWRg4ultV8jGA=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-325-nyyVugeBM3-l7waLKVfyhQ-1; Tue, 05 Mar 2024 03:35:46 -0500
+X-MC-Unique: nyyVugeBM3-l7waLKVfyhQ-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-33e0edcf4f4so1806489f8f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 00:35:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709627746; x=1710232546;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8d1YUHodfZWTVLWvoDOTeK1aIx0Y+TAs7cm2fq84YPM=;
+        b=llTaaZ3Z/P8r+8Qphl+GBcRpyGk+Cz78Lp2D2SiUlb8i6vMrsRToQPhvhBOmrJ3bBD
+         6riicalsSW8JQjKj6VHuTskohT9WXvhaTMed8W4uYtZEV+XLq0g6BytzVbghzD1sm0mi
+         aHjz86hapnwXiTPl4onjhnXR49jw6HGyuEj2+WDq7sd3H8nK+OEmzQHeOAFiTEunaCMs
+         vKrRxa+ScV58nelQHwYw7/Vtz5eIw82wrxsB8Go9+PZTJuh2UNCkDcuQ0Yvt8zLA3Rpc
+         wPyHu1Jv+bwsa/hsTVxNbwOOY8cd7vGvM0n/UBZJdNtNeCZjPcuij7Heh+X+MIHDNrgR
+         tcCg==
+X-Forwarded-Encrypted: i=1; AJvYcCVIY5wAkBOLoCYpKOYrX+R4lKPIDi0L52PsaTIsSNlHCxCNEHYrMv3wGAc98Tl9rTRmBzKuuqR6eJnA5u8PPK5E4/ERTgjlxz5hjiWT
+X-Gm-Message-State: AOJu0Yw8KlbWfb2Qn78OIF3lB9eGcCtLQYN3ZKMIYP+FAoKV7qqG6mOU
+	fgri605A7aDVhHdWFk8b3/Fd5S3/7HGA0Aqymto36YDSxG1xusBv+BAqdLttQ2ppmkwOJtatHQf
+	axmrPNVkK5CrGfTgZ5hqhTG3moh038DCXDRWVobjAVEroQFLnSU28BuHrxLGdNQ==
+X-Received: by 2002:adf:e310:0:b0:33d:b627:c3ec with SMTP id b16-20020adfe310000000b0033db627c3ecmr8518467wrj.44.1709627745670;
+        Tue, 05 Mar 2024 00:35:45 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHZBtQKdW2t1vKhHjG/Koq/hUA7dl61rlzq8BNHioqIvkHGlzTSVprfjWax7VJPSYecDmi8Og==
+X-Received: by 2002:adf:e310:0:b0:33d:b627:c3ec with SMTP id b16-20020adfe310000000b0033db627c3ecmr8518445wrj.44.1709627745162;
+        Tue, 05 Mar 2024 00:35:45 -0800 (PST)
+Received: from ?IPV6:2003:cb:c73c:8100:600:a1e5:da94:a13a? (p200300cbc73c81000600a1e5da94a13a.dip0.t-ipconnect.de. [2003:cb:c73c:8100:600:a1e5:da94:a13a])
+        by smtp.gmail.com with ESMTPSA id d14-20020adf9c8e000000b0033e42ab5114sm3664191wre.2.2024.03.05.00.35.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Mar 2024 00:35:44 -0800 (PST)
+Message-ID: <9a5cb081-c4f1-4abe-bb86-02aaca4e5433@redhat.com>
+Date: Tue, 5 Mar 2024 09:35:43 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,182 +82,230 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 06/21] KVM: x86/mmu: Track shadow MMIO value on a per-VM
- basis
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, seanjc@google.com,
- michael.roth@amd.com, isaku.yamahata@intel.com, thomas.lendacky@amd.com
-References: <20240227232100.478238-1-pbonzini@redhat.com>
- <20240227232100.478238-7-pbonzini@redhat.com>
-From: Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <20240227232100.478238-7-pbonzini@redhat.com>
+Subject: Re: [PATCH v3 1/4] mm: swap: Remove CLUSTER_FLAG_HUGE from
+ swap_cluster_info:flags
+To: "Huang, Ying" <ying.huang@intel.com>, Ryan Roberts <ryan.roberts@arm.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Gao Xiang <xiang@kernel.org>,
+ Yu Zhao <yuzhao@google.com>, Yang Shi <shy828301@gmail.com>,
+ Michal Hocko <mhocko@suse.com>, Kefeng Wang <wangkefeng.wang@huawei.com>,
+ Hugh Dickins <hughd@google.com>, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org
+References: <20231025144546.577640-1-ryan.roberts@arm.com>
+ <20231025144546.577640-2-ryan.roberts@arm.com>
+ <d108bd79-086b-4564-838b-d41afa055137@redhat.com>
+ <6541e29b-f25a-48b8-a553-fd8febe85e5a@redhat.com>
+ <ee760679-7e3c-4a35-ad53-ca98b598ead5@arm.com>
+ <ba9101ae-a618-4afc-9515-a61f25376390@arm.com>
+ <2934125a-f2e2-417c-a9f9-3cb1e074a44f@redhat.com>
+ <049818ca-e656-44e4-b336-934992c16028@arm.com>
+ <d2fbfdd0-ad61-4fe2-a976-4dac7427bfc9@redhat.com>
+ <b642c7ff-c452-4066-ac12-dbf05e215cb9@arm.com>
+ <949b6c22-d737-4060-9ca1-a69d8e986d90@redhat.com>
+ <9ed743a7-0c5d-49d9-b8b2-d58364df1f5f@arm.com>
+ <65a66eb9-41f8-4790-8db2-0c70ea15979f@redhat.com>
+ <6cfc022a-0c7a-4fe6-aaa4-3d28aeacc982@arm.com>
+ <3d47ae7d-297a-441e-941c-5b2e34ba8759@redhat.com>
+ <3ae2da13-c33a-402f-9091-2c7328aea66a@arm.com>
+ <87plw99phz.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Content-Language: en-US
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <87plw99phz.fsf@yhuang6-desk2.ccr.corp.intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+On 05.03.24 07:11, Huang, Ying wrote:
+> Ryan Roberts <ryan.roberts@arm.com> writes:
+> 
+>> + Hugh
+>>
+>> On 04/03/2024 22:02, David Hildenbrand wrote:
+>>> On 04.03.24 22:55, Ryan Roberts wrote:
+>>>> On 04/03/2024 20:50, David Hildenbrand wrote:
+>>>>>>>>
+>>>>>>>> This is the existing free_swap_and_cache(). I think _swap_info_get() would
+>>>>>>>> break
+>>>>>>>> if this could race with swapoff(), and __swap_entry_free() looks up the
+>>>>>>>> cluster
+>>>>>>>> from an array, which would also be freed by swapoff if racing:
+>>>>>>>>
+>>>>>>>> int free_swap_and_cache(swp_entry_t entry)
+>>>>>>>> {
+>>>>>>>>        struct swap_info_struct *p;
+>>>>>>>>        unsigned char count;
+>>>>>>>>
+>>>>>>>>        if (non_swap_entry(entry))
+>>>>>>>>            return 1;
+>>>>>>>>
+>>>>>>>>        p = _swap_info_get(entry);
+>>>>>>>>        if (p) {
+>>>>>>>>            count = __swap_entry_free(p, entry);
+>>>>>>>
+>>>>>>> If count dropped to 0 and
+>>>>>>>
+>>>>>>>>            if (count == SWAP_HAS_CACHE)
+>>>>>>>
+>>>>>>>
+>>>>>>> count is now SWAP_HAS_CACHE, there is in fact no swap entry anymore. We
+>>>>>>> removed
+>>>>>>> it. That one would have to be reclaimed asynchronously.
+>>>>>>>
+>>>>>>> The existing code we would call swap_page_trans_huge_swapped() with the SI it
+>>>>>>> obtained via _swap_info_get().
+>>>>>>>
+>>>>>>> I also don't see what should be left protecting the SI. It's not locked
+>>>>>>> anymore,
+>>>>>>> the swapcounts are at 0. We don't hold the folio lock.
+>>>>>>>
+>>>>>>> try_to_unuse() will stop as soon as si->inuse_pages is at 0. Hm ...
+>>>>>>
+>>>>>> But, assuming the caller of free_swap_and_cache() acquires the PTL first, I
+>>>>>> think this all works out ok? While free_swap_and_cache() is running,
+>>>>>> try_to_unuse() will wait for the PTL. Or if try_to_unuse() runs first, then
+>>>>>> free_swap_and_cache() will never be called because the swap entry will have
+>>>>>> been
+>>>>>> removed from the PTE?
+>>>>>
+>>>>> But can't try_to_unuse() run, detect !si->inuse_pages and not even bother about
+>>>>> scanning any further page tables?
+>>>>>
+>>>>> But my head hurts from digging through that code.
+>>>>
+>>>> Yep, glad I'm not the only one that gets headaches from swapfile.c.
+>>>>
+>>>>>
+>>>>> Let me try again:
+>>>>>
+>>>>> __swap_entry_free() might be the last user and result in "count ==
+>>>>> SWAP_HAS_CACHE".
+>>>>>
+>>>>> swapoff->try_to_unuse() will stop as soon as soon as si->inuse_pages==0.
+>>>>>
+>>>>>
+>>>>> So the question is: could someone reclaim the folio and turn si->inuse_pages==0,
+>>>>> before we completed swap_page_trans_huge_swapped().
+>>>>>
+>>>>> Imagine the following: 2 MiB folio in the swapcache. Only 2 subpages are still
+>>>>> references by swap entries.
+>>>>>
+>>>>> Process 1 still references subpage 0 via swap entry.
+>>>>> Process 2 still references subpage 1 via swap entry.
+>>>>>
+>>>>> Process 1 quits. Calls free_swap_and_cache().
+>>>>> -> count == SWAP_HAS_CACHE
+>>>>> [then, preempted in the hypervisor etc.]
+>>>>>
+>>>>> Process 2 quits. Calls free_swap_and_cache().
+>>>>> -> count == SWAP_HAS_CACHE
+>>>>>
+>>>>> Process 2 goes ahead, passes swap_page_trans_huge_swapped(), and calls
+>>>>> __try_to_reclaim_swap().
+>>>>>
+>>>>> __try_to_reclaim_swap()->folio_free_swap()->delete_from_swap_cache()->put_swap_folio()->
+>>>>> free_swap_slot()->swapcache_free_entries()->swap_entry_free()->swap_range_free()->
+>>>>> ...
+>>>>> WRITE_ONCE(si->inuse_pages, si->inuse_pages - nr_entries);
+>>>>>
+>>>>>
+>>>>> What stops swapoff to succeed after process 2 reclaimed the swap cache but
+>>>>> before process 1 finished its call to swap_page_trans_huge_swapped()?
+>>>>
+>>>> Assuming you are talking about anonymous memory, process 1 has the PTL while
+>>>> it's executing free_swap_and_cache(). try_to_unuse() iterates over every vma in
+>>>> every mm, and it swaps-in a page for every PTE that holds a swap entry for the
+>>>> device being swapoff'ed. It takes the PTL while converting the swap entry to
+>>>> present PTE - see unuse_pte(). Process 1 must have beaten try_to_unuse() to the
+>>>> particular pte, because if try_to_unuse() got there first, it would have
+>>>> converted it from a swap entry to present pte and process 1 would never even
+>>>> have called free_swap_and_cache(). So try_to_unuse() will eventually wait on the
+>>>> PTL until process 1 has released it after free_swap_and_cache() completes. Am I
+>>>> missing something? Because that part feels pretty clear to me.
+>>>
+>>> Why should try_to_unuse() do *anything* if it already finds
+>>> si->inuse_pages == 0 because we (p1 } p2) just freed the swapentries and process
+>>> 2 managed to free the last remaining swapcache entry?
+>>
+>> Yeah ok. For some reason I thought unuse_mm() was iterating over all mms and so
+>> the `while (READ_ONCE(si->inuse_pages))` was only evaluated after iterating over
+>> every mm. Oops.
+>>
+>> So yes, I agree with you; I think this is broken. And I'm a bit worried this
+>> could be a can of worms; By the same logic, I think folio_free_swap(),
+>> swp_swapcount() and probably others are broken in the same way.
+> 
+> Don't worry too much :-), we have get_swap_device() at least.  We can
+> insert it anywhere we want because it's quite lightweight.  And, because
+> swapoff() is so rare, the race is theoretical only.
+> 
+> For this specific case, I had thought that PTL is enough.  But after
+> looking at this more, I found a race here too.  Until
+> __swap_entry_free() return, we are OK, nobody can reduce the swap count
+> because we held the PTL.  But, after that, even if its return value is
+> SWAP_HAS_CACHE (that is, in swap cache), parallel swap_unuse() or
+> __try_to_reclaim_swap() may remove the folio from swap cache, so free
+> the swap entry.  So, swapoff() can proceed to free the data structures
+> in parallel.
+> 
+> To fix the race, we can add get/put_swap_device() in
+> free_swap_and_cache().
+> 
+> For other places, we can check whether get/put_swap_device() has been
+> called in callers, and the swap reference we held has been decreased
+> (e.g., swap count protected by PTL, SWAP_HAS_CACHE protected by folio
+> lock).
 
+Yes, sounds reasonable. We should likely update the documentation of 
+get_swap_device(), that after decrementing the refcount, the SI might 
+become stale and should not be touched without a prior get_swap_device().
 
-On 2/28/2024 7:20 AM, Paolo Bonzini wrote:
-> From: Sean Christopherson <seanjc@google.com>
->
-> TDX will use a different shadow PTE entry value for MMIO from VMX.  Add
-> members to kvm_arch and track value for MMIO per-VM instead of global
+-- 
+Cheers,
 
-Nit: members -> a member, since only 'shadow_mmio_value' is added.
-
-> variables.  By using the per-VM EPT entry value for MMIO, the existing VMX
-> logic is kept working.  Introduce a separate setter function so that guest
-> TD can override later.
->
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> Message-Id: <229a18434e5d83f45b1fcd7bf1544d79db1becb6.1705965635.git.isaku.yamahata@intel.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-
-Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
-
-> ---
->   arch/x86/include/asm/kvm_host.h |  2 ++
->   arch/x86/kvm/mmu.h              |  1 +
->   arch/x86/kvm/mmu/mmu.c          |  8 +++++---
->   arch/x86/kvm/mmu/spte.c         | 10 ++++++++--
->   arch/x86/kvm/mmu/spte.h         |  4 ++--
->   arch/x86/kvm/mmu/tdp_mmu.c      |  6 +++---
->   6 files changed, 21 insertions(+), 10 deletions(-)
->
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 85dc0f7d09e3..a4514c2ef0ec 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1313,6 +1313,8 @@ struct kvm_arch {
->   	 */
->   	spinlock_t mmu_unsync_pages_lock;
->   
-> +	u64 shadow_mmio_value;
-> +
->   	struct iommu_domain *iommu_domain;
->   	bool iommu_noncoherent;
->   #define __KVM_HAVE_ARCH_NONCOHERENT_DMA
-> diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-> index 60f21bb4c27b..2c54ba5b0a28 100644
-> --- a/arch/x86/kvm/mmu.h
-> +++ b/arch/x86/kvm/mmu.h
-> @@ -101,6 +101,7 @@ static inline u8 kvm_get_shadow_phys_bits(void)
->   }
->   
->   void kvm_mmu_set_mmio_spte_mask(u64 mmio_value, u64 mmio_mask, u64 access_mask);
-> +void kvm_mmu_set_mmio_spte_value(struct kvm *kvm, u64 mmio_value);
->   void kvm_mmu_set_me_spte_mask(u64 me_value, u64 me_mask);
->   void kvm_mmu_set_ept_masks(bool has_ad_bits, bool has_exec_only);
->   
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index b5baf11359ad..195e46a1f00f 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -2515,7 +2515,7 @@ static int mmu_page_zap_pte(struct kvm *kvm, struct kvm_mmu_page *sp,
->   				return kvm_mmu_prepare_zap_page(kvm, child,
->   								invalid_list);
->   		}
-> -	} else if (is_mmio_spte(pte)) {
-> +	} else if (is_mmio_spte(kvm, pte)) {
->   		mmu_spte_clear_no_track(spte);
->   	}
->   	return 0;
-> @@ -4197,7 +4197,7 @@ static int handle_mmio_page_fault(struct kvm_vcpu *vcpu, u64 addr, bool direct)
->   	if (WARN_ON_ONCE(reserved))
->   		return -EINVAL;
->   
-> -	if (is_mmio_spte(spte)) {
-> +	if (is_mmio_spte(vcpu->kvm, spte)) {
->   		gfn_t gfn = get_mmio_spte_gfn(spte);
->   		unsigned int access = get_mmio_spte_access(spte);
->   
-> @@ -4813,7 +4813,7 @@ EXPORT_SYMBOL_GPL(kvm_mmu_new_pgd);
->   static bool sync_mmio_spte(struct kvm_vcpu *vcpu, u64 *sptep, gfn_t gfn,
->   			   unsigned int access)
->   {
-> -	if (unlikely(is_mmio_spte(*sptep))) {
-> +	if (unlikely(is_mmio_spte(vcpu->kvm, *sptep))) {
->   		if (gfn != get_mmio_spte_gfn(*sptep)) {
->   			mmu_spte_clear_no_track(sptep);
->   			return true;
-> @@ -6320,6 +6320,8 @@ static bool kvm_has_zapped_obsolete_pages(struct kvm *kvm)
->   
->   void kvm_mmu_init_vm(struct kvm *kvm)
->   {
-> +
-> +	kvm->arch.shadow_mmio_value = shadow_mmio_value;
->   	INIT_LIST_HEAD(&kvm->arch.active_mmu_pages);
->   	INIT_LIST_HEAD(&kvm->arch.zapped_obsolete_pages);
->   	INIT_LIST_HEAD(&kvm->arch.possible_nx_huge_pages);
-> diff --git a/arch/x86/kvm/mmu/spte.c b/arch/x86/kvm/mmu/spte.c
-> index 02a466de2991..318135daf685 100644
-> --- a/arch/x86/kvm/mmu/spte.c
-> +++ b/arch/x86/kvm/mmu/spte.c
-> @@ -74,10 +74,10 @@ u64 make_mmio_spte(struct kvm_vcpu *vcpu, u64 gfn, unsigned int access)
->   	u64 spte = generation_mmio_spte_mask(gen);
->   	u64 gpa = gfn << PAGE_SHIFT;
->   
-> -	WARN_ON_ONCE(!shadow_mmio_value);
-> +	WARN_ON_ONCE(!vcpu->kvm->arch.shadow_mmio_value);
->   
->   	access &= shadow_mmio_access_mask;
-> -	spte |= shadow_mmio_value | access;
-> +	spte |= vcpu->kvm->arch.shadow_mmio_value | access;
->   	spte |= gpa | shadow_nonpresent_or_rsvd_mask;
->   	spte |= (gpa & shadow_nonpresent_or_rsvd_mask)
->   		<< SHADOW_NONPRESENT_OR_RSVD_MASK_LEN;
-> @@ -411,6 +411,12 @@ void kvm_mmu_set_mmio_spte_mask(u64 mmio_value, u64 mmio_mask, u64 access_mask)
->   }
->   EXPORT_SYMBOL_GPL(kvm_mmu_set_mmio_spte_mask);
->   
-> +void kvm_mmu_set_mmio_spte_value(struct kvm *kvm, u64 mmio_value)
-> +{
-> +	kvm->arch.shadow_mmio_value = mmio_value;
-> +}
-> +EXPORT_SYMBOL_GPL(kvm_mmu_set_mmio_spte_value);
-> +
->   void kvm_mmu_set_me_spte_mask(u64 me_value, u64 me_mask)
->   {
->   	/* shadow_me_value must be a subset of shadow_me_mask */
-> diff --git a/arch/x86/kvm/mmu/spte.h b/arch/x86/kvm/mmu/spte.h
-> index 26bc95bbc962..1a163aee9ec6 100644
-> --- a/arch/x86/kvm/mmu/spte.h
-> +++ b/arch/x86/kvm/mmu/spte.h
-> @@ -264,9 +264,9 @@ static inline struct kvm_mmu_page *root_to_sp(hpa_t root)
->   	return spte_to_child_sp(root);
->   }
->   
-> -static inline bool is_mmio_spte(u64 spte)
-> +static inline bool is_mmio_spte(struct kvm *kvm, u64 spte)
->   {
-> -	return (spte & shadow_mmio_mask) == shadow_mmio_value &&
-> +	return (spte & shadow_mmio_mask) == kvm->arch.shadow_mmio_value &&
->   	       likely(enable_mmio_caching);
->   }
->   
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index c8a4d92497b4..d15c44a8e123 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -495,8 +495,8 @@ static void handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
->   		 * impact the guest since both the former and current SPTEs
->   		 * are nonpresent.
->   		 */
-> -		if (WARN_ON_ONCE(!is_mmio_spte(old_spte) &&
-> -				 !is_mmio_spte(new_spte) &&
-> +		if (WARN_ON_ONCE(!is_mmio_spte(kvm, old_spte) &&
-> +				 !is_mmio_spte(kvm, new_spte) &&
->   				 !is_removed_spte(new_spte)))
->   			pr_err("Unexpected SPTE change! Nonpresent SPTEs\n"
->   			       "should not be replaced with another,\n"
-> @@ -1028,7 +1028,7 @@ static int tdp_mmu_map_handle_target_level(struct kvm_vcpu *vcpu,
->   	}
->   
->   	/* If a MMIO SPTE is installed, the MMIO will need to be emulated. */
-> -	if (unlikely(is_mmio_spte(new_spte))) {
-> +	if (unlikely(is_mmio_spte(vcpu->kvm, new_spte))) {
->   		vcpu->stat.pf_mmio_spte_created++;
->   		trace_mark_mmio_spte(rcu_dereference(iter->sptep), iter->gfn,
->   				     new_spte);
+David / dhildenb
 
 
