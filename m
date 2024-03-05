@@ -1,256 +1,215 @@
-Return-Path: <linux-kernel+bounces-93037-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93038-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7F588729FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 23:12:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A53C872A0A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 23:18:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5ED41283E91
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 22:12:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31951281498
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 22:18:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EE6812D1FD;
-	Tue,  5 Mar 2024 22:12:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C052C12D20C;
+	Tue,  5 Mar 2024 22:18:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f1m5VrYC"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="BFS4jd69"
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7815B17BBF;
-	Tue,  5 Mar 2024 22:12:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57C9118E29
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 22:18:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709676755; cv=none; b=ohY+rSn2bBWQpKVq/DIjZ6AodWw162u9HJ4fdMmrnlT691ngnIyQ9OdHcZaMx7+PJepoz7gOA7MJp5K+tJlFuE+fylNyZs0Met6dCAZjTI9zzF/H3vOKwj7TM0pmHBBU+uUxjREs55zhJ4ATbevpyDyZ2MARXcmfWXmUGR7Epps=
+	t=1709677104; cv=none; b=pgDmbZFIzE14NHLJcAXywD2ux9tcwRKC2IUdGGOZI3Q+Ef0kyYJRZGcSz5Z/i6oDFmMVUpux3oD7ktvYaFo4CW/GffrtMYGkk1O7+qylF9xXCJy3ha+VAbEmgPBnV/sZNbNYI2x4Mocs/YnTQek77mCSoWBWI1O33wbrCv1+d+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709676755; c=relaxed/simple;
-	bh=V86iOJugE3FTlxMwknhidf2Vlg+oyA0yfcu8FM8Gnp8=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=gVVS9wTUf18Lf1X2z3QdkbIppgm0tsSE0tjmQQV1Kphh9SUz3aWwpzO8mZIAEQ9lHU9Nq5K2HlcmDovql02e3yGCrrH78/PvbQjQ7LRcgmiu6MgB/jUMa7NrW9WLjn0m6xy0FeTUW5L4YMpwUYBJUCruofE4l0RRYol2OxiGIkQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f1m5VrYC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C39DAC433F1;
-	Tue,  5 Mar 2024 22:12:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709676755;
-	bh=V86iOJugE3FTlxMwknhidf2Vlg+oyA0yfcu8FM8Gnp8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=f1m5VrYC4ZjpWkw/oNbiG8/4oV0qzFuGBv9NwH7pBLoVEGyjEHoE2mwMkyBwAMlQa
-	 ucEZuBOCHOoMOTAsCzMLqcK4C5HIy8OwRfl45LK2yMCtPnvK8glNGl74F64GAyVp/F
-	 FSj6y5z9u1exznmtGee734X1n3eBolxer5+hZQqfAea71qLAAlSl+In6MM7Bw2hd49
-	 cmhpQnPd+nC6D0X0E7ivseq0uo4voQyvV1t0cH8LmrtYmhF7pvAxZPb34Gq60fsWMI
-	 c/3TmQSjDUuiRndrGA6N5nWmrWrL23RT9tuC9qSX87v0cdmB3Aco9wPHpSD50XZDCW
-	 lrp3qx5sKwjQQ==
-Date: Tue, 5 Mar 2024 16:12:33 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] PCI/sysfs: Demacrofy pci_dev_resource_resize_attr(n)
- functions
-Message-ID: <20240305221233.GA554011@bhelgaas>
+	s=arc-20240116; t=1709677104; c=relaxed/simple;
+	bh=9LNA1jHQRqYIJJpk0uYCr8Kb8Les4QGDI28QnUsM6eE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Or+k2gLvq3eEW2oLi2OsDtQE7Zugv4oSEpQRukGzxVMPcoS/NbxYdfHF8Hw93hsqCmQ677DhXHNZKw0/bq1f911P78GDWaE27f/hbaz3Mzqu5VLAO4Gbva+HUp3LCH9XVNkBj9p37i+SUPAnM4X5E9xWqlsXcBQCITIMog7Yov4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=BFS4jd69; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e6092a84f4so2467849b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 14:18:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1709677102; x=1710281902; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZT0E+xfE6Is1penOGXY7BgtiBNf+i2fC3qJWRmlk8Ss=;
+        b=BFS4jd69etiy8e+I6URSYA682Vny1Eddas5uxxFrFsP8LcbOMt1pFtmBH9uzxIuTHx
+         7x+PvE4SR1iRwFONHSkrPHAXScC75P0VuKGdvpZcmQPimXzDdoJp9WRhvx1lF3udrImb
+         OJpuAwIuIIGU1VNlA7FT2AXLg2s/1AgOwbB1824T0Y6ZMvCzCCoUMNAZpVCSY6IQCXmv
+         PGEStm1wYoz7gQOCV5dk7nIqvgObyAHsbOrgvKn8TSCJpvobil+Wl6eSaV4pwo/oJopJ
+         jcjp460CW/wgTx4KheUjWdtgtAcfPRCR6AJ09bHL1mjuPOQfdWB9g5Joz9aGflNErJnY
+         Dtkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709677102; x=1710281902;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZT0E+xfE6Is1penOGXY7BgtiBNf+i2fC3qJWRmlk8Ss=;
+        b=dvgrTTL+iYAJzuMr0cIIdQpfu0i7o6LqbSGR8eAFeuYtRomjA5bFg4u2trB1iwxNZb
+         lRpoiiRw2cdQW2MapoglznljRiv0ER2N5ciRTIFZ3zFmEJeRM+zJJQKSe4Xmkou4AGFT
+         UsfdFLXU3pkGjehbK1kXrwVuVP9UH8a9jV3fjMnU31BirWCvyBHwa64VF9BvOsjTzz8f
+         HfGEG7UowJjGRQpSW3RRuUEnJsHfNQjG/oeY/reZeAcOzWSQnVqKC8D95JXj2yMa5HCL
+         IwueSxtTt+Wg4DcniKESnoMZLFoDMKTduRXTJuemy8fg2oHWni4+oYMDOu13pJ4DIdMO
+         cqTw==
+X-Forwarded-Encrypted: i=1; AJvYcCVpTkOtkCcW5XMwCJDotig13xkMflK3HU7QryiYLK9z464ZapzjFYcW1Zi7beZIMQWpeX7S4dibz3FLS3ig1L9LSXF1uxsIVHqjHdML
+X-Gm-Message-State: AOJu0Yx06fOnLzANzJ9LNDeyMunJ2cA8oAK7f4MUDsbZgxNcTW49fRtN
+	e5tbAkWA0NxzOt3Ldavjl8Kwj1nYvVFI982z6n0zoIOtnNfe4EiB2TFpMQLipJI=
+X-Google-Smtp-Source: AGHT+IHR0bYfjZNZ+IVZC/CMhYRQ0wwfWcjs6kg5rLZEnSmP6gWN+dGMC1lld5Hoz8sE/FQ74qoRFw==
+X-Received: by 2002:aa7:88c1:0:b0:6e5:5425:d914 with SMTP id k1-20020aa788c1000000b006e55425d914mr14317350pff.2.1709677101467;
+        Tue, 05 Mar 2024 14:18:21 -0800 (PST)
+Received: from dread.disaster.area (pa49-181-192-230.pa.nsw.optusnet.com.au. [49.181.192.230])
+        by smtp.gmail.com with ESMTPSA id fb26-20020a056a002d9a00b006e647059cccsm621041pfb.33.2024.03.05.14.18.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Mar 2024 14:18:21 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1rhd74-00FXJ3-0b;
+	Wed, 06 Mar 2024 09:18:18 +1100
+Date: Wed, 6 Mar 2024 09:18:18 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: John Garry <john.g.garry@oracle.com>
+Cc: djwong@kernel.org, hch@lst.de, viro@zeniv.linux.org.uk,
+	brauner@kernel.org, jack@suse.cz, chandan.babu@oracle.com,
+	axboe@kernel.dk, martin.petersen@oracle.com,
+	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+	ojaswin@linux.ibm.com, ritesh.list@gmail.com,
+	linux-block@vger.kernel.org
+Subject: Re: [PATCH v2 04/14] fs: xfs: Make file data allocations observe the
+ 'forcealign' flag
+Message-ID: <ZeeaKrmVEkcXYjbK@dread.disaster.area>
+References: <20240304130428.13026-1-john.g.garry@oracle.com>
+ <20240304130428.13026-5-john.g.garry@oracle.com>
+ <ZeZq0hRLeEV0PNd6@dread.disaster.area>
+ <f569d971-222a-4824-b5fe-2e0d8dc400cc@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240222114607.1837-1-ilpo.jarvinen@linux.intel.com>
+In-Reply-To: <f569d971-222a-4824-b5fe-2e0d8dc400cc@oracle.com>
 
-On Thu, Feb 22, 2024 at 01:46:06PM +0200, Ilpo Järvinen wrote:
-> pci_dev_resource_resize_attr(n) macro is invoked for six resources,
-> creating a large footprint function for each resource.
+On Tue, Mar 05, 2024 at 03:22:52PM +0000, John Garry wrote:
+> On 05/03/2024 00:44, Dave Chinner wrote:
+> > On Mon, Mar 04, 2024 at 01:04:18PM +0000, John Garry wrote:
+...
+> > IOWs, these are static geometry constraints and so should be checked
+> > and rejected at the point where alignments are specified (i.e.
+> > mkfs, mount and ioctls). Then the allocator can simply assume that
+> > forced inode alignments are always stripe alignment compatible and
+> > we don't need separate handling of two possibly incompatible
+> > alignments.
 > 
-> Rework the macro to only create a function that calls a helper function
-> so the compiler can decide if it warrants to inline the function or
-> not.
+> ok, makes sense.
 > 
-> With x86_64 defconfig, this saves roughly 2.5kB:
-> 
-> $ scripts/bloat-o-meter drivers/pci/pci-sysfs.o{.old,.new}
-> add/remove: 1/0 grow/shrink: 0/6 up/down: 512/-2934 (-2422)
-> Function                                     old     new   delta
-> __resource_resize_store                        -     512    +512
-> resource5_resize_store                       503      14    -489
-> resource4_resize_store                       503      14    -489
-> resource3_resize_store                       503      14    -489
-> resource2_resize_store                       503      14    -489
-> resource1_resize_store                       503      14    -489
-> resource0_resize_store                       500      11    -489
-> Total: Before=13399, After=10977, chg -18.08%
-> 
-> (The compiler seemingly chose to still inline __resource_resize_show()
-> which is fine, those functions are not very complex/large.)
-> 
-> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> Please note in case missed, I am mandating extsize hint for forcealign needs
+> to be a power-of-2. It just makes life easier for all the sub-extent
+> zero'ing later on.
 
-Applied to pci/sysfs for v6.9, thanks!
+That's fine - that will need to be documented in the xfsctl man
+page...
 
-> ---
->  drivers/pci/pci-sysfs.c | 138 +++++++++++++++++++++-------------------
->  1 file changed, 74 insertions(+), 64 deletions(-)
+> Also we need to enforce that the AG count to be compliant with the extsize
+                                      ^^^^^ size?
+
+> hint for forcealign; but since the extsize hint for forcealign needs to be
+> compliant with stripe unit, above, and stripe unit would be compliant wth AG
+> count (right?), then this would be a given.
+
+We already align AG size to stripe unit when a stripe unit is set,
+and ensure that we don't place all the AG headers on the same stripe
+unit.
+
+However, if there is no stripe unit we don't align the AG to
+anything. So, yes, AG sizing by mkfs will need to ensure that all
+AGs are correctly aligned to the underlying storage (integer
+multiple of the max atomic write size, right?)...
+
+> > More below....
+> > 
+> > > +	} else {
+> > > +		args->alignment = 1;
+> > > +	}
+> > 
+> > Just initialise the allocation args structure with a value of 1 like
+> > we already do?
 > 
-> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-> index 2321fdfefd7d..613c5fc4f0a2 100644
-> --- a/drivers/pci/pci-sysfs.c
-> +++ b/drivers/pci/pci-sysfs.c
-> @@ -1410,79 +1410,89 @@ static const struct attribute_group pci_dev_reset_attr_group = {
->  	.is_visible = pci_dev_reset_attr_is_visible,
->  };
->  
-> +static ssize_t __resource_resize_show(struct device *dev, int n, char *buf)
-> +{
-> +	struct pci_dev *pdev = to_pci_dev(dev);
-> +	ssize_t ret;
-> +
-> +	pci_config_pm_runtime_get(pdev);
-> +
-> +	ret = sysfs_emit(buf, "%016llx\n",
-> +			 (u64)pci_rebar_get_possible_sizes(pdev, n));
-> +
-> +	pci_config_pm_runtime_put(pdev);
-> +
-> +	return ret;
-> +}
-> +
-> +static ssize_t __resource_resize_store(struct device *dev, int n,
-> +				       const char *buf, size_t count)
-> +{
-> +	struct pci_dev *pdev = to_pci_dev(dev);
-> +	unsigned long size, flags;
-> +	int ret, i;
-> +	u16 cmd;
-> +
-> +	if (kstrtoul(buf, 0, &size) < 0)
-> +		return -EINVAL;
-> +
-> +	device_lock(dev);
-> +	if (dev->driver) {
-> +		ret = -EBUSY;
-> +		goto unlock;
-> +	}
-> +
-> +	pci_config_pm_runtime_get(pdev);
-> +
-> +	if ((pdev->class >> 8) == PCI_CLASS_DISPLAY_VGA) {
-> +		ret = aperture_remove_conflicting_pci_devices(pdev,
-> +						"resourceN_resize");
-> +		if (ret)
-> +			goto pm_put;
-> +	}
-> +
-> +	pci_read_config_word(pdev, PCI_COMMAND, &cmd);
-> +	pci_write_config_word(pdev, PCI_COMMAND,
-> +			      cmd & ~PCI_COMMAND_MEMORY);
-> +
-> +	flags = pci_resource_flags(pdev, n);
-> +
-> +	pci_remove_resource_files(pdev);
-> +
-> +	for (i = 0; i < PCI_STD_NUM_BARS; i++) {
-> +		if (pci_resource_len(pdev, i) &&
-> +		    pci_resource_flags(pdev, i) == flags)
-> +			pci_release_resource(pdev, i);
-> +	}
-> +
-> +	ret = pci_resize_resource(pdev, n, size);
-> +
-> +	pci_assign_unassigned_bus_resources(pdev->bus);
-> +
-> +	if (pci_create_resource_files(pdev))
-> +		pci_warn(pdev, "Failed to recreate resource files after BAR resizing\n");
-> +
-> +	pci_write_config_word(pdev, PCI_COMMAND, cmd);
-> +pm_put:
-> +	pci_config_pm_runtime_put(pdev);
-> +unlock:
-> +	device_unlock(dev);
-> +
-> +	return ret ? ret : count;
-> +}
-> +
->  #define pci_dev_resource_resize_attr(n)					\
->  static ssize_t resource##n##_resize_show(struct device *dev,		\
->  					 struct device_attribute *attr,	\
-> -					 char * buf)			\
-> +					 char *buf)			\
->  {									\
-> -	struct pci_dev *pdev = to_pci_dev(dev);				\
-> -	ssize_t ret;							\
-> -									\
-> -	pci_config_pm_runtime_get(pdev);				\
-> -									\
-> -	ret = sysfs_emit(buf, "%016llx\n",				\
-> -			 (u64)pci_rebar_get_possible_sizes(pdev, n));	\
-> -									\
-> -	pci_config_pm_runtime_put(pdev);				\
-> -									\
-> -	return ret;							\
-> +	return __resource_resize_show(dev, n, buf);			\
->  }									\
-> -									\
->  static ssize_t resource##n##_resize_store(struct device *dev,		\
->  					  struct device_attribute *attr,\
->  					  const char *buf, size_t count)\
->  {									\
-> -	struct pci_dev *pdev = to_pci_dev(dev);				\
-> -	unsigned long size, flags;					\
-> -	int ret, i;							\
-> -	u16 cmd;							\
-> -									\
-> -	if (kstrtoul(buf, 0, &size) < 0)				\
-> -		return -EINVAL;						\
-> -									\
-> -	device_lock(dev);						\
-> -	if (dev->driver) {						\
-> -		ret = -EBUSY;						\
-> -		goto unlock;						\
-> -	}								\
-> -									\
-> -	pci_config_pm_runtime_get(pdev);				\
-> -									\
-> -	if ((pdev->class >> 8) == PCI_CLASS_DISPLAY_VGA) {		\
-> -		ret = aperture_remove_conflicting_pci_devices(pdev,	\
-> -						"resourceN_resize");	\
-> -		if (ret)						\
-> -			goto pm_put;					\
-> -	}								\
-> -									\
-> -	pci_read_config_word(pdev, PCI_COMMAND, &cmd);			\
-> -	pci_write_config_word(pdev, PCI_COMMAND,			\
-> -			      cmd & ~PCI_COMMAND_MEMORY);		\
-> -									\
-> -	flags = pci_resource_flags(pdev, n);				\
-> -									\
-> -	pci_remove_resource_files(pdev);				\
-> -									\
-> -	for (i = 0; i < PCI_STD_NUM_BARS; i++) {			\
-> -		if (pci_resource_len(pdev, i) &&			\
-> -		    pci_resource_flags(pdev, i) == flags)		\
-> -			pci_release_resource(pdev, i);			\
-> -	}								\
-> -									\
-> -	ret = pci_resize_resource(pdev, n, size);			\
-> -									\
-> -	pci_assign_unassigned_bus_resources(pdev->bus);			\
-> -									\
-> -	if (pci_create_resource_files(pdev))				\
-> -		pci_warn(pdev, "Failed to recreate resource files after BAR resizing\n");\
-> -									\
-> -	pci_write_config_word(pdev, PCI_COMMAND, cmd);			\
-> -pm_put:									\
-> -	pci_config_pm_runtime_put(pdev);				\
-> -unlock:									\
-> -	device_unlock(dev);						\
-> -									\
-> -	return ret ? ret : count;					\
-> +	return __resource_resize_store(dev, n, buf, count);		\
->  }									\
->  static DEVICE_ATTR_RW(resource##n##_resize)
->  
-> -- 
-> 2.39.2
+> It was being done in this way to have just a single place where the value is
+> initialised. It can easily be kept as is.
+
+I'd prefer it as is, because then the value is always initialised
+correctly and we only override in the special cases....
+
+> > >   	args.minleft = ap->minleft;
+> > > @@ -3484,6 +3496,7 @@ xfs_bmap_btalloc_at_eof(
+> > >   {
+> > >   	struct xfs_mount	*mp = args->mp;
+> > >   	struct xfs_perag	*caller_pag = args->pag;
+> > > +	int			orig_alignment = args->alignment;
+> > >   	int			error;
+> > >   	/*
+> > > @@ -3558,10 +3571,10 @@ xfs_bmap_btalloc_at_eof(
+> > >   	/*
+> > >   	 * Allocation failed, so turn return the allocation args to their
+> > > -	 * original non-aligned state so the caller can proceed on allocation
+> > > -	 * failure as if this function was never called.
+> > > +	 * original state so the caller can proceed on allocation failure as
+> > > +	 * if this function was never called.
+> > >   	 */
+> > > -	args->alignment = 1;
+> > > +	args->alignment = orig_alignment;
+> > >   	return 0;
+> > >   }
+> > 
+> > As I said above, we can't set an alignment of > 1 here if we haven't
+> > accounted for that alignment in args->minalignslop above. This leads
+> > to unexpected ENOSPC conditions and filesystem shutdowns.
+> > 
+> > I suspect what we need to do is get rid of the separate stripe_align
+> > variable altogether and always just set args->alignment to what we
+> > need the extent start alignment to be, regardless of whether it is
+> > from stripe alignment or forced alignment.
 > 
+> ok, it sounds a bit simpler at least
+> 
+> > 
+> > Then the code in xfs_bmap_btalloc_at_eof() doesn't need to know what
+> > 'stripe_align' is - the exact EOF block allocation can simply save
+> > and restore the args->alignment value and use it for minalignslop
+> > calculations for the initial exact block allocation.
+> > 
+> > Then, if xfs_bmap_btalloc_at_eof() fails and xfs_inode_forcealign()
+> > is true, we can abort allocation immediately, and not bother to fall
+> > back on further aligned/unaligned attempts that will also fail or do
+> > the wrong them.
+> 
+> ok
+> 
+> > 
+> > Similarly, if we aren't doing EOF allocation, having args->alignment
+> > set means it will do the right thing for the first allocation
+> > attempt. Again, if that fails, we can check if
+> > xfs_inode_forcealign() is true and fail the aligned allocation
+> > instead of running the low space algorithm. This now makes it clear
+> > that we're failing the allocation because of the forced alignment
+> > requirement, and now the low space allocation code can explicitly
+> > turn off start alignment as it isn't required...
+> 
+> are you saying that low-space allocator can set args->alignment = 1 to be
+> explicit?
+
+Yes.
+
+-Dave.
+
+-- 
+Dave Chinner
+david@fromorbit.com
 
