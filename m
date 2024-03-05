@@ -1,156 +1,239 @@
-Return-Path: <linux-kernel+bounces-92937-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92938-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25ACC872854
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 21:10:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58150872856
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 21:11:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 51F861C289F0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 20:10:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE3D2B2986F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 20:11:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F9B8128807;
-	Tue,  5 Mar 2024 20:10:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEC29128383;
+	Tue,  5 Mar 2024 20:11:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MkB8x/Ri"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="iqRjI1Dy"
+Received: from smtp-42ae.mail.infomaniak.ch (smtp-42ae.mail.infomaniak.ch [84.16.66.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7392D5C5FD;
-	Tue,  5 Mar 2024 20:10:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACF1C17BDC
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 20:10:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=84.16.66.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709669414; cv=none; b=WKMCi4zg35+UyZATambPRMldUMMhARX9qd+4pRF1xlVHnwZej9UEkjzKbk5FDGfQkRn6wPUZwkEeU0blfBrBYQqZLK2lvZ/BqUeMY8+MWrK2CMOCeai+mWybj8hQdxdG4uS8iT1jWO2aupIVKYV7Cn7XUI5XSLtKGeWCQ8qeIwE=
+	t=1709669459; cv=none; b=FooYLf1Na/Al/955Wx0znzZ0RHrKPkw322lHONdt8OjyXnsckUTxeGxjW4IKsN9NMsmIB2F9Tf+NTHjIkcnFl7ptRcvoljIxFEPAkz6UTvpzaNzwN5UHK0fJOngCPNs6l4aRReV+x5VZcrP3zF8ZhzwlSaHkux7wCjpeeSujW+M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709669414; c=relaxed/simple;
-	bh=AYi3OAmTLgdEEKDdxYIjpcX/Nqk0mUN9Udva4vaPjAs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=enk7HdHh+5vIRG9clvJrjDOBFxCCgWqPzvPpFW4L6uIb5axxwQIfegpBke34KlK1fNXWuw7FDMwy30BMZpOL3qjqRZX7AbDpF51gKIzfGnpPah9x6PP0Q0CUqldfYpEVjzaBPZCaoRrSbSCxHhtY0qaqTIKgpeYk8F6gHlib6dw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MkB8x/Ri; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D21B0C433F1;
-	Tue,  5 Mar 2024 20:10:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709669414;
-	bh=AYi3OAmTLgdEEKDdxYIjpcX/Nqk0mUN9Udva4vaPjAs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MkB8x/RiiNjqHLdCWpmsWMLpUeeF5O0OMSeSGeB2lg2Ntk79dAULuRMuFrdR7gNSj
-	 JDuXbb+bxTKUistiZWtXc7mGsrzRMwT0C1uVR3yPg1VWIxzeVwujd2NK48KHq3Zw0w
-	 LckmIgOMI8qZt2tBSph/6tEYXZ+J5G4Ca9ksFiejZfWfBRsBKDKSfVeMb9nV6l/o6Z
-	 UGmD6UEj+oxSFlorbZmTDC37rMWqpO1amK+uax3OgFx/+3SRXZY7yGeezLRoOHqcBS
-	 gc15ZnYAWgvWzs6zEPggggcYfTD47IzWoK2IySdQn877TJRdVObGYJejCpa1ntWbFn
-	 Sr2JO/G+AO6ww==
-Date: Tue, 5 Mar 2024 20:10:08 +0000
-From: Conor Dooley <conor@kernel.org>
-To: =?iso-8859-1?Q?J=E9r=E9mie?= Dautheribes <jeremie.dautheribes@bootlin.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Andrew Davis <afd@ti.com>,
-	Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Yen-Mei Goh <yen-mei.goh@keysight.com>,
-	=?iso-8859-1?Q?Miqu=E8l?= Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH RESEND net-next] dt-bindings: net: dp83822: change
- ti,rmii-mode description
-Message-ID: <20240305-jawless-lingo-7a4261a2ba89@spud>
-References: <20240305141309.127669-1-jeremie.dautheribes@bootlin.com>
+	s=arc-20240116; t=1709669459; c=relaxed/simple;
+	bh=YagDFFA6rbmtQARJcRghj4PIMIy8y9znN8rxiNy6FWo=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=n8MR2zq30FhsXnZIleYovW/a7dttQq0UDBGHS4txKDNJynf85kBrk+/AMBplEP8SqhaBXhTu4tzflhYM5ANGLSL+CHs7echovjukGfl0vv10CKuVek0oWxWUzXyJr2eXnj5kjHWu7RRXRUI1EBgvji8neM6eFKCzzDm/YgF3+bo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=iqRjI1Dy; arc=none smtp.client-ip=84.16.66.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
+Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
+	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Tq6Bh3hBzzMqFcJ;
+	Tue,  5 Mar 2024 21:10:52 +0100 (CET)
+Received: from unknown by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4Tq6Bg4Rt6z3W;
+	Tue,  5 Mar 2024 21:10:51 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
+	s=20191114; t=1709669452;
+	bh=YagDFFA6rbmtQARJcRghj4PIMIy8y9znN8rxiNy6FWo=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=iqRjI1Dy24DR8Hdurm3d3isbc56yHWvmpEKMfRgZ0QEGyvKHer+cdIGDKvDQeYKas
+	 11oLvI7VsJYOxwcNZUAiNi8sfJJyapxPmMqHGWJCPMgb11x7Wk2vDMQCoG++3Tdt3x
+	 wtP9I51i9h8vpR3tiipkGYG2oxtCb/Z4Pq8eEIls=
+From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+To: "David S . Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Kees Cook <keescook@chromium.org>,
+	Mark Brown <broonie@kernel.org>,
+	Shuah Khan <shuah@kernel.org>
+Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
+	=?UTF-8?q?G=C3=BCnther=20Noack?= <gnoack@google.com>,
+	Will Drewry <wad@chromium.org>,
+	edumazet@google.com,
+	jakub@cloudflare.com,
+	pabeni@redhat.com,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH] selftests/harness: Fix TEST_F()'s vfork handling
+Date: Tue,  5 Mar 2024 21:10:29 +0100
+Message-ID: <20240305201029.1331333-1-mic@digikod.net>
+In-Reply-To: <20240305.sheeF9yain1O@digikod.net>
+References: <20240305.sheeF9yain1O@digikod.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="GEeM/2SHVlkuMks1"
-Content-Disposition: inline
-In-Reply-To: <20240305141309.127669-1-jeremie.dautheribes@bootlin.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Infomaniak-Routing: alpha
 
+Always run fixture setup in the grandchild process, and by default also
+run the teardown in the same process.  However, this change makes it
+possible to run the teardown in a parent process when
+_metadata->teardown_parent is set to true (e.g. in fixture setup).
 
---GEeM/2SHVlkuMks1
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fix TEST_SIGNAL() by forwarding grandchild's signal to its parent.  Fix
+seccomp tests by running the test setup in the parent of the test
+thread, as expected by the related test code.  Fix Landlock tests by
+waiting for the grandchild before processing _metadata.
 
-On Tue, Mar 05, 2024 at 03:13:09PM +0100, J=E9r=E9mie Dautheribes wrote:
-> Drop reference to the 25MHz clock as it has nothing to do with connecting
-> the PHY and the MAC.
-> Add info about the reference clock direction between the PHY and the MAC
-> as it depends on the selected rmii mode.
->=20
-> Suggested-by: Andrew Lunn <andrew@lunn.ch>
-> Signed-off-by: J=E9r=E9mie Dautheribes <jeremie.dautheribes@bootlin.com>
+Use of exit(3) in tests should be OK because the environment in which
+the vfork(2) call happen is already dedicated to the running test (with
+flushed stdio, setpgrp() call), see __run_test() and the call to fork(2)
+just before running the setup/test/teardown.  Even if the test
+configures its own exit handlers, they will not be run by the parent
+because it never calls exit(3), and the test function either ends with a
+call to _exit(2) or a signal.
 
-This feels like it should have a Fixes: tag.
-Otherwise
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Günther Noack <gnoack@google.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Will Drewry <wad@chromium.org>
+Fixes: 0710a1a73fb4 ("selftests/harness: Merge TEST_F_FORK() into TEST_F()")
+Link: https://lore.kernel.org/r/20240305201029.1331333-1-mic@digikod.net
+---
+ tools/testing/selftests/kselftest_harness.h | 28 +++++++++++++--------
+ tools/testing/selftests/landlock/fs_test.c  | 22 ++++++++--------
+ 2 files changed, 27 insertions(+), 23 deletions(-)
 
-Cheerrs,
-Conor.
+diff --git a/tools/testing/selftests/kselftest_harness.h b/tools/testing/selftests/kselftest_harness.h
+index 634be793ad58..4fd735e48ee7 100644
+--- a/tools/testing/selftests/kselftest_harness.h
++++ b/tools/testing/selftests/kselftest_harness.h
+@@ -382,29 +382,33 @@
+ 		/* fixture data is alloced, setup, and torn down per call. */ \
+ 		FIXTURE_DATA(fixture_name) self; \
+ 		pid_t child = 1; \
++		int status = 0; \
+ 		memset(&self, 0, sizeof(FIXTURE_DATA(fixture_name))); \
+ 		if (setjmp(_metadata->env) == 0) { \
+-			fixture_name##_setup(_metadata, &self, variant->data); \
+-			/* Let setup failure terminate early. */ \
+-			if (_metadata->exit_code) \
+-				return; \
+-			_metadata->setup_completed = true; \
+ 			/* Use the same _metadata. */ \
+ 			child = vfork(); \
+ 			if (child == 0) { \
++				fixture_name##_setup(_metadata, &self, variant->data); \
++				/* Let setup failure terminate early. */ \
++				if (_metadata->exit_code) \
++					_exit(0); \
++				_metadata->setup_completed = true; \
+ 				fixture_name##_##test_name(_metadata, &self, variant->data); \
+-				_exit(0); \
+-			} \
+-			if (child < 0) { \
++			} else if (child < 0 || child != waitpid(child, &status, 0)) { \
+ 				ksft_print_msg("ERROR SPAWNING TEST GRANDCHILD\n"); \
+ 				_metadata->exit_code = KSFT_FAIL; \
+ 			} \
+ 		} \
+-		if (child == 0) \
+-			/* Child failed and updated the shared _metadata. */ \
++		if (child == 0) { \
++			if (_metadata->setup_completed && !_metadata->teardown_parent) \
++				fixture_name##_teardown(_metadata, &self, variant->data); \
+ 			_exit(0); \
+-		if (_metadata->setup_completed) \
++		} \
++		if (_metadata->setup_completed && _metadata->teardown_parent) \
+ 			fixture_name##_teardown(_metadata, &self, variant->data); \
++		if (!WIFEXITED(status) && WIFSIGNALED(status)) \
++			/* Forward signal to __wait_for_test(). */ \
++			kill(getpid(), WTERMSIG(status)); \
+ 		__test_check_assert(_metadata); \
+ 	} \
+ 	static struct __test_metadata \
+@@ -414,6 +418,7 @@
+ 		.fixture = &_##fixture_name##_fixture_object, \
+ 		.termsig = signal, \
+ 		.timeout = tmout, \
++		.teardown_parent = false, \
+ 	 }; \
+ 	static void __attribute__((constructor)) \
+ 			_register_##fixture_name##_##test_name(void) \
+@@ -873,6 +878,7 @@ struct __test_metadata {
+ 	bool timed_out;	/* did this test timeout instead of exiting? */
+ 	bool aborted;	/* stopped test due to failed ASSERT */
+ 	bool setup_completed; /* did setup finish? */
++	bool teardown_parent; /* run teardown in a parent process */
+ 	jmp_buf env;	/* for exiting out of test early */
+ 	struct __test_results *results;
+ 	struct __test_metadata *prev, *next;
+diff --git a/tools/testing/selftests/landlock/fs_test.c b/tools/testing/selftests/landlock/fs_test.c
+index 98817a14c91b..9a6036fbf289 100644
+--- a/tools/testing/selftests/landlock/fs_test.c
++++ b/tools/testing/selftests/landlock/fs_test.c
+@@ -285,6 +285,8 @@ static void prepare_layout_opt(struct __test_metadata *const _metadata,
+ 
+ static void prepare_layout(struct __test_metadata *const _metadata)
+ {
++	_metadata->teardown_parent = true;
++
+ 	prepare_layout_opt(_metadata, &mnt_tmp);
+ }
+ 
+@@ -3861,9 +3863,7 @@ FIXTURE_SETUP(layout1_bind)
+ 
+ FIXTURE_TEARDOWN(layout1_bind)
+ {
+-	set_cap(_metadata, CAP_SYS_ADMIN);
+-	EXPECT_EQ(0, umount(dir_s2d2));
+-	clear_cap(_metadata, CAP_SYS_ADMIN);
++	/* umount(dir_s2d2)) is handled by namespace lifetime. */
+ 
+ 	remove_layout1(_metadata);
+ 
+@@ -4276,9 +4276,8 @@ FIXTURE_TEARDOWN(layout2_overlay)
+ 	EXPECT_EQ(0, remove_path(lower_fl1));
+ 	EXPECT_EQ(0, remove_path(lower_do1_fo2));
+ 	EXPECT_EQ(0, remove_path(lower_fo1));
+-	set_cap(_metadata, CAP_SYS_ADMIN);
+-	EXPECT_EQ(0, umount(LOWER_BASE));
+-	clear_cap(_metadata, CAP_SYS_ADMIN);
++
++	/* umount(LOWER_BASE)) is handled by namespace lifetime. */
+ 	EXPECT_EQ(0, remove_path(LOWER_BASE));
+ 
+ 	EXPECT_EQ(0, remove_path(upper_do1_fu3));
+@@ -4287,14 +4286,11 @@ FIXTURE_TEARDOWN(layout2_overlay)
+ 	EXPECT_EQ(0, remove_path(upper_do1_fo2));
+ 	EXPECT_EQ(0, remove_path(upper_fo1));
+ 	EXPECT_EQ(0, remove_path(UPPER_WORK "/work"));
+-	set_cap(_metadata, CAP_SYS_ADMIN);
+-	EXPECT_EQ(0, umount(UPPER_BASE));
+-	clear_cap(_metadata, CAP_SYS_ADMIN);
++
++	/* umount(UPPER_BASE)) is handled by namespace lifetime. */
+ 	EXPECT_EQ(0, remove_path(UPPER_BASE));
+ 
+-	set_cap(_metadata, CAP_SYS_ADMIN);
+-	EXPECT_EQ(0, umount(MERGE_DATA));
+-	clear_cap(_metadata, CAP_SYS_ADMIN);
++	/* umount(MERGE_DATA)) is handled by namespace lifetime. */
+ 	EXPECT_EQ(0, remove_path(MERGE_DATA));
+ 
+ 	cleanup_layout(_metadata);
+@@ -4691,6 +4687,8 @@ FIXTURE_SETUP(layout3_fs)
+ 		SKIP(return, "this filesystem is not supported (setup)");
+ 	}
+ 
++	_metadata->teardown_parent = true;
++
+ 	slash = strrchr(variant->file_path, '/');
+ 	ASSERT_NE(slash, NULL);
+ 	dir_len = (size_t)slash - (size_t)variant->file_path;
+-- 
+2.44.0
 
-> ---
-> This patch follows on from my previous patch series [1] which has already=
- been=20
-> merged into the net-next tree and which added the "ti,rmii-mode" property.
-> As suggested by Andrew Lunn, this patch updates the description of this=
-=20
-> property to make it more consistent with the master/slave relationship it=
-=20
-> conveys.
->=20
-> [1] https://lore.kernel.org/all/20240222103117.526955-1-jeremie.dautherib=
-es@bootlin.com/
->=20
-> Resending because I previously forgot to include the "net-next" entry in=
-=20
-> the email subject.
->=20
->  Documentation/devicetree/bindings/net/ti,dp83822.yaml | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/net/ti,dp83822.yaml b/Docu=
-mentation/devicetree/bindings/net/ti,dp83822.yaml
-> index 8f23254c0458..784866ea392b 100644
-> --- a/Documentation/devicetree/bindings/net/ti,dp83822.yaml
-> +++ b/Documentation/devicetree/bindings/net/ti,dp83822.yaml
-> @@ -84,10 +84,10 @@ properties:
->      description: |
->         If present, select the RMII operation mode. Two modes are
->         available:
-> -         - RMII master, where the PHY operates from a 25MHz clock refere=
-nce,
-> -         provided by a crystal or a CMOS-level oscillator
-> -         - RMII slave, where the PHY operates from a 50MHz clock referen=
-ce,
-> -         provided by a CMOS-level oscillator
-> +         - RMII master, where the PHY outputs a 50MHz reference clock wh=
-ich can
-> +         be connected to the MAC.
-> +         - RMII slave, where the PHY expects a 50MHz reference clock inp=
-ut
-> +         shared with the MAC.
->         The RMII operation mode can also be configured by its straps.
->         If the strap pin is not set correctly or not set at all, then thi=
-s can be
->         used to configure it.
-> --=20
-> 2.34.1
->=20
->=20
-
---GEeM/2SHVlkuMks1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZed8IAAKCRB4tDGHoIJi
-0n1lAQC/lciR2GVw8GYCLkEiSQmmwwa+9Kmk4x3SGxsDXf90pgEAmN5UV+eCjr+5
-3rhpbgfvWocWrxJve288DQcOaYDSKgY=
-=4+n1
------END PGP SIGNATURE-----
-
---GEeM/2SHVlkuMks1--
 
