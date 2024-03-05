@@ -1,197 +1,291 @@
-Return-Path: <linux-kernel+bounces-91743-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91744-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 535858715ED
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:39:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D2568715EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:40:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C75DE1F2283F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 06:39:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2EADE282FD8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 06:40:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89E831EA74;
-	Tue,  5 Mar 2024 06:38:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02B6C3CF6B;
+	Tue,  5 Mar 2024 06:40:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W52EngnI"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="cluv2n2W"
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EE4A2595;
-	Tue,  5 Mar 2024 06:38:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E64CF1EB2A
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 06:40:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709620735; cv=none; b=nPUFxcX4uG/yRgFzk9TFrQLp4vVj/grmb7iEqxAdkXv5uFnkMiGCyzleEEdT6Oaeii7FG61HxRr3aZynESSp8FWwqkTqxfnZG7Eb7AhkXZFVS8Jp1Pg0PlikW8aR5y5CVPt3Fe665d2VxAoal6grlY7qtFj8xiIEe9vpCwfkil4=
+	t=1709620832; cv=none; b=Lc+rK9lWaW4Y157TSwLZTGwN0B1OaQDvJyp6AT/GjA5VN2VA9U5lx5BCcBSe/+/nrLPF5mhtwfUAiQ5cT93ujise7e0ZsabFzMPfOg6qnjQIwFI2SqZf88DxObc/IP3ywq0Qv+O9XO/WfBREXKlQRMIhkEVW+6McZINdjAwNHY8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709620735; c=relaxed/simple;
-	bh=pYG9YvT1SMUI80eGsUOG68mve36mY43Rx4euUJS46Hg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=p+cLgqg2qcWvQ5M4Sy4TyUn4NKV9uE3n+CWYu5Tovahd6tBN1PEwIkePwHdkvfR9OqRZH5YFPkTHFBQR4TN6gM8gESDTIOZ+5noapO00OBvjgEhlT2KpFTWtscHKYzogbMc5SXCZfdLQu7lU6fGtUsO6QjGdLr6CDPS5/e1lqT4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W52EngnI; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a26ed1e05c7so887486366b.2;
-        Mon, 04 Mar 2024 22:38:53 -0800 (PST)
+	s=arc-20240116; t=1709620832; c=relaxed/simple;
+	bh=/zGsNOXv4+zfaOSRHm7OBxozNL0190WVf25gJGyLfQA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=be9iZR8YjXPLb2kOYDTFmDeLB2nRuJW9te8S0urVqx4BGByfiBQcIPMG4TcztBtW3oj+Kl5IEGbc69EsZZoSD6gXd/V/0l+Z6Y1ZUwT5AmDvsrvkFFfLTYpBLTZYwv6DugH4oRST9YPLtP+btrMTHPmxe02NDEKs8nExRluF86A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=cluv2n2W; arc=none smtp.client-ip=209.85.215.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-58962bf3f89so1728632a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 22:40:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709620732; x=1710225532; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=F4lqce3c2dFrm3B5RMfRQGgPIdA+euQy+6IrUb0/Id0=;
-        b=W52EngnIgmMLQJzaZZ/UyFaRRMVL5dzVOqsyUPUGX/oyAhCyDat6JSxY9LXsZUPPXo
-         V53d/gnk1/WyJD1VGNhLbxe9CwunJCA/NTFs6Aei98DCDzaGB5UlUwerOcsHqbJXRrGs
-         FScfO0cj4ZsDx69zkCQ/NMSveAsjIq5KTToVxXiJbhjgXUFksirajKv/dWkVIhZh9PEK
-         3/QHA7a+5627H2vHE179VwQvWcRO27ys+mrABBZKlBbv1ol28b+emVu0y/pmmqTUwk3e
-         puj13rKkPvaI4mgZt6jCvDfdgaZL5SDZeWbtPTzRiMjShQqLs5lU4o4Vsd/Yl30ou4ny
-         P8HA==
+        d=bytedance.com; s=google; t=1709620829; x=1710225629; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0QgV3Zw3oY3YOJXru9uVmRpPo1J7BQyYNw4d22nBVEk=;
+        b=cluv2n2Wz5zUjgfTeQwa7PQS8oEMIPydHF7MbTBZ3MfjxdWrUHFqgoGXjc+RzBsV5B
+         DzxVqnHtq6kOCjJ2jj9QSz0CyYPtv8WKSh3meUT+s23k3sFQVF1I9ESVxIGb4vwtKlav
+         kxJUVt6YZY/jYOBcMAhAZFwZpyeQfsc8H85QUn7eY4/uVojo9z+X3xkD9J0/5+pLa1le
+         l4aPRLqJiD7CSZYXi+iZuNQTqErE284vmlysxe9k33Vqh+03JdvqzJfZcKYBcVpmI8nv
+         jz6nMAqSEy8NhlOxibv0/GihTw9ZIPCyRQkXjffHrEO/kdOHS4ikwaysZbL+NLYGZssr
+         J8Sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709620732; x=1710225532;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=F4lqce3c2dFrm3B5RMfRQGgPIdA+euQy+6IrUb0/Id0=;
-        b=ovfFztfTQuBPoeogCP42ahZ3uWrUcivgz7As67f9t2hZT3aOi4RWJDQo+m9o7XvKZg
-         7ha/pYD5erQtFNhEfYXb7jhxf+ZZxn3LgBlE5w/0o4EsviDmBH9ZTgHi3ULXs3orLjPj
-         VL5G33Bvv2kaz5lpTV2azJOMGv1MdiLOc092ii3zZa1+5bzuQbLnXu8/o4a11UIR30yu
-         I7eYa33ng+UN2xxOYE1dfpnXQe5PEICM6qu5icg6LBT4y12Bf7tw1P4xJmKjJMbmBBiy
-         DszsWf78PUq+qgS1a972/rIxlZN6mghjU1oI4nNqV4tY9o3bMLOY0Bx2/o5rUZGZ1BOQ
-         favw==
-X-Forwarded-Encrypted: i=1; AJvYcCXWk5kC31JoAi0ljA/FJWEarAK8quLSigf+uSvlbkbFHn6qWHrED6fkVlu5R3VOqkv4qSS3TfIWKxAQdwHbyUAU1tyuz9kpR4UveGYH
-X-Gm-Message-State: AOJu0YwBl2P57d4XAAXoZk8ZoeJs0MMOWaZmFiy3io+PqZCYfucMNUph
-	gTn2hJ2RTKVswlHsxfe9YYgMCP89hGF5DwxS0im6fZg/++g09ncz
-X-Google-Smtp-Source: AGHT+IGVmyengybgMEYLP9jaaiQkDrzLZngRGvSpYReOsmzmqaFEqUyNbeUoNMbtPSluTsfARJzmdw==
-X-Received: by 2002:a17:906:355a:b0:a43:f1d9:400a with SMTP id s26-20020a170906355a00b00a43f1d9400amr8379855eja.26.1709620732183;
-        Mon, 04 Mar 2024 22:38:52 -0800 (PST)
-Received: from [127.0.1.1] (91-118-163-37.static.upcbusiness.at. [91.118.163.37])
-        by smtp.gmail.com with ESMTPSA id ts14-20020a170907c5ce00b00a3e70fec6a0sm5825462ejc.171.2024.03.04.22.38.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 22:38:51 -0800 (PST)
-From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Date: Tue, 05 Mar 2024 07:38:33 +0100
-Subject: [PATCH v2] Revert "Input: bcm5974 - check endpoint type before
- starting traffic"
+        d=1e100.net; s=20230601; t=1709620829; x=1710225629;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0QgV3Zw3oY3YOJXru9uVmRpPo1J7BQyYNw4d22nBVEk=;
+        b=NlY9n4Ca5WkK/pyjKZp1GNZEIH4WXd8amXFObxqzOvmgAfcdSVQqQq7IRNItLJ8ykY
+         BpveCOfS0kXChBhcFbZ6SPxlS7h4kaX69hpOhpUnWBfowt/GcshQ7kaXh83GIjccGXtT
+         /GCcHoLV0loyMDfWaBkDD8+YTOslQjXTSm8PpJryiAgPS7KSL50BESjfexdBNR79yTRr
+         JtXWsXpP/iIsCbV+q1Lm1Ah8wc8KAhVkGLP2xE5HoPQ4AN4aMyQGVmb8Tik4b/6IRwMp
+         uZsSIFl/Z41+4DpU/O40hOGWJTfp/Of1PUYMiKhhV5Tgk7ji7PcpUaAxDhEVh9ycaV9R
+         AErw==
+X-Gm-Message-State: AOJu0Yyv6SBYMaA0iFPyDOyY+sjlLZIy2rzp1uNbDPXXB+1gCJCfxPJl
+	BpbRSasjeBGwajtyv221A/BVDRF7egYZApKW6JxUU7OgprU6EzEscj6WyxXWY1OpJpEHgiUJOMb
+	m
+X-Google-Smtp-Source: AGHT+IHZxiz0iMVb2fIg/cpgI3VI363VCQaJJXpZy603Jnq8UN3YQ4PhIpNCXhOui9S5s+OR9lpBlw==
+X-Received: by 2002:a05:6a00:1704:b0:6e6:13ec:7170 with SMTP id h4-20020a056a00170400b006e613ec7170mr7623681pfc.0.1709620829075;
+        Mon, 04 Mar 2024 22:40:29 -0800 (PST)
+Received: from [10.84.154.17] ([203.208.167.155])
+        by smtp.gmail.com with ESMTPSA id f6-20020a056a000b0600b006e3a69eb6c4sm8147094pfu.219.2024.03.04.22.40.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Mar 2024 22:40:28 -0800 (PST)
+Message-ID: <e2b55630-170b-4269-9088-f226c7323ff5@bytedance.com>
+Date: Tue, 5 Mar 2024 14:39:08 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: linux-next: build failure after merge of the mm tree
+To: Stephen Rothwell <sfr@canb.auug.org.au>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20240305152634.014058aa@canb.auug.org.au>
+From: Qi Zheng <zhengqi.arch@bytedance.com>
+Content-Language: en-US
+In-Reply-To: <20240305152634.014058aa@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240305-revert_bcm5974_ep_check-v2-1-925ae9b188d9@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAOi95mUC/4WNUQ6CMBBEr0L225p2KYJ+eQ9DSClb2GiBtIRoC
- He3cgE/32TmzQaRAlOEW7ZBoJUjT2MCPGVgBzP2JLhLDChRy1wWIpUoLE1rfXEtdUNzYweyT5G
- XDs3FtFgqDWk9B3L8PsyPOvHAcZnC5zha1S/971yVUKJrtZMasagqd++94dfZTh7qfd+/DXjvL
- b4AAAA=
-To: Henrik Rydberg <rydberg@bitmath.org>, 
- Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
- regressions@lists.linux.dev, Jacopo Radice <jacopo.radice@outlook.com>, 
- Javier Carrasco <javier.carrasco.cruz@gmail.com>
-X-Mailer: b4 0.14-dev
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1709620731; l=3564;
- i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
- bh=pYG9YvT1SMUI80eGsUOG68mve36mY43Rx4euUJS46Hg=;
- b=Zde60qLLi5bS45p8h65QK5oRKpcER0GR/qAaBAv58kkMU7CT7Mfu2F8U3l0FqZ9ru4AWjft6q
- zA2zf4P+QHYAs9P3f4wQ14CvW9ZnCuMuAbpnbdvp7AW0A4B6Zged5B6
-X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
- pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
 
-This patch intended to fix an well-knonw issue in old drivers where the
-endpoint type is taken for granted, which is often triggered by fuzzers.
 
-That was the case for this driver [1], and although the fix seems to be
-correct, it uncovered another issue that leads to a regression [2], if
-the endpoints of the current interface are checked.
 
-The driver makes use of endpoints that belong to a different interface
-rather than the one it binds (it binds to the third interface, but also
-accesses an endpoint from a different one). The driver should claim the
-interfaces it requires, but that is still not the case.
+On 2024/3/5 12:26, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the mm tree, today's linux-next build (s390 defconfig)
+> failed like this:
+> 
+> In file included from include/linux/smp.h:12,
+>                   from include/linux/lockdep.h:14,
+>                   from include/linux/spinlock.h:63,
+>                   from include/linux/mmzone.h:8,
+>                   from include/linux/gfp.h:7,
+>                   from include/linux/mm.h:7,
+>                   from include/linux/pagewalk.h:5,
+>                   from arch/s390/mm/gmap.c:12:
+> arch/s390/mm/gmap.c: In function 'gmap_free':
+> include/linux/list.h:866:19: error: assignment to 'struct page *' from incompatible pointer type 'struct ptdesc *' [-Werror=incompatible-pointer-types]
+>    866 |                 n = list_next_entry(pos, member);                       \
+>        |                   ^
+> arch/s390/mm/gmap.c:212:17: note: in expansion of macro 'list_for_each_entry_safe'
+>    212 |                 list_for_each_entry_safe(ptdesc, next, &gmap->pt_list, pt_list)
+>        |                 ^~~~~~~~~~~~~~~~~~~~~~~~
+> include/linux/list.h:868:18: error: assignment to 'struct ptdesc *' from incompatible pointer type 'struct page *' [-Werror=incompatible-pointer-types]
+>    868 |              pos = n, n = list_next_entry(n, member))
+>        |                  ^
+> arch/s390/mm/gmap.c:212:17: note: in expansion of macro 'list_for_each_entry_safe'
+>    212 |                 list_for_each_entry_safe(ptdesc, next, &gmap->pt_list, pt_list)
+>        |                 ^~~~~~~~~~~~~~~~~~~~~~~~
+> In file included from include/linux/kernel.h:22,
+>                   from arch/s390/mm/gmap.c:11:
+> arch/s390/mm/gmap.c:212:72: error: 'struct page' has no member named 'pt_list'; did you mean 'pcp_list'?
+>    212 |                 list_for_each_entry_safe(ptdesc, next, &gmap->pt_list, pt_list)
+>        |                                                                        ^~~~~~~
+> include/linux/container_of.h:19:33: note: in definition of macro 'container_of'
+>     19 |         void *__mptr = (void *)(ptr);                                   \
+>        |                                 ^~~
+> include/linux/list.h:645:9: note: in expansion of macro 'list_entry'
+>    645 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+>        |         ^~~~~~~~~~
+> include/linux/list.h:868:27: note: in expansion of macro 'list_next_entry'
+>    868 |              pos = n, n = list_next_entry(n, member))
+>        |                           ^~~~~~~~~~~~~~~
+> arch/s390/mm/gmap.c:212:17: note: in expansion of macro 'list_for_each_entry_safe'
+>    212 |                 list_for_each_entry_safe(ptdesc, next, &gmap->pt_list, pt_list)
+>        |                 ^~~~~~~~~~~~~~~~~~~~~~~~
+> In file included from include/linux/container_of.h:5:
+> arch/s390/mm/gmap.c:212:72: error: 'struct page' has no member named 'pt_list'; did you mean 'pcp_list'?
+>    212 |                 list_for_each_entry_safe(ptdesc, next, &gmap->pt_list, pt_list)
+>        |                                                                        ^~~~~~~
+> include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
+>     78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+>        |                                                        ^~~~
+> include/linux/container_of.h:20:9: note: in expansion of macro 'static_assert'
+>     20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+>        |         ^~~~~~~~~~~~~
+> include/linux/container_of.h:20:23: note: in expansion of macro '__same_type'
+>     20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+>        |                       ^~~~~~~~~~~
+> include/linux/list.h:601:9: note: in expansion of macro 'container_of'
+>    601 |         container_of(ptr, type, member)
+>        |         ^~~~~~~~~~~~
+> include/linux/list.h:645:9: note: in expansion of macro 'list_entry'
+>    645 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+>        |         ^~~~~~~~~~
+> include/linux/list.h:868:27: note: in expansion of macro 'list_next_entry'
+>    868 |              pos = n, n = list_next_entry(n, member))
+>        |                           ^~~~~~~~~~~~~~~
+> arch/s390/mm/gmap.c:212:17: note: in expansion of macro 'list_for_each_entry_safe'
+>    212 |                 list_for_each_entry_safe(ptdesc, next, &gmap->pt_list, pt_list)
+>        |                 ^~~~~~~~~~~~~~~~~~~~~~~~
+> arch/s390/mm/gmap.c:212:72: error: 'struct page' has no member named 'pt_list'; did you mean 'pcp_list'?
+>    212 |                 list_for_each_entry_safe(ptdesc, next, &gmap->pt_list, pt_list)
+>        |                                                                        ^~~~~~~
+> include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
+>     78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+>        |                                                        ^~~~
+> include/linux/container_of.h:20:9: note: in expansion of macro 'static_assert'
+>     20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+>        |         ^~~~~~~~~~~~~
+> include/linux/container_of.h:20:23: note: in expansion of macro '__same_type'
+>     20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+>        |                       ^~~~~~~~~~~
+> include/linux/list.h:601:9: note: in expansion of macro 'container_of'
+>    601 |         container_of(ptr, type, member)
+>        |         ^~~~~~~~~~~~
+> include/linux/list.h:645:9: note: in expansion of macro 'list_entry'
+>    645 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+>        |         ^~~~~~~~~~
+> include/linux/list.h:868:27: note: in expansion of macro 'list_next_entry'
+>    868 |              pos = n, n = list_next_entry(n, member))
+>        |                           ^~~~~~~~~~~~~~~
+> arch/s390/mm/gmap.c:212:17: note: in expansion of macro 'list_for_each_entry_safe'
+>    212 |                 list_for_each_entry_safe(ptdesc, next, &gmap->pt_list, pt_list)
+>        |                 ^~~~~~~~~~~~~~~~~~~~~~~~
+> arch/s390/mm/gmap.c:212:72: error: 'struct page' has no member named 'pt_list'; did you mean 'pcp_list'?
+>    212 |                 list_for_each_entry_safe(ptdesc, next, &gmap->pt_list, pt_list)
+>        |                                                                        ^~~~~~~
+> include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
+>     78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+>        |                                                        ^~~~
+> include/linux/container_of.h:20:9: note: in expansion of macro 'static_assert'
+>     20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+>        |         ^~~~~~~~~~~~~
+> include/linux/container_of.h:21:23: note: in expansion of macro '__same_type'
+>     21 |                       __same_type(*(ptr), void),                        \
+>        |                       ^~~~~~~~~~~
+> include/linux/list.h:601:9: note: in expansion of macro 'container_of'
+>    601 |         container_of(ptr, type, member)
+>        |         ^~~~~~~~~~~~
+> include/linux/list.h:645:9: note: in expansion of macro 'list_entry'
+>    645 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+>        |         ^~~~~~~~~~
+> include/linux/list.h:868:27: note: in expansion of macro 'list_next_entry'
+>    868 |              pos = n, n = list_next_entry(n, member))
+>        |                           ^~~~~~~~~~~~~~~
+> arch/s390/mm/gmap.c:212:17: note: in expansion of macro 'list_for_each_entry_safe'
+>    212 |                 list_for_each_entry_safe(ptdesc, next, &gmap->pt_list, pt_list)
+>        |                 ^~~~~~~~~~~~~~~~~~~~~~~~
+> include/linux/compiler_types.h:390:27: error: expression in static assertion is not an integer
+>    390 | #define __same_type(a, b) __builtin_types_compatible_p(typeof(a), typeof(b))
+>        |                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> include/linux/build_bug.h:78:56: note: in definition of macro '__static_assert'
+>     78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+>        |                                                        ^~~~
+> include/linux/container_of.h:20:9: note: in expansion of macro 'static_assert'
+>     20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+>        |         ^~~~~~~~~~~~~
+> include/linux/container_of.h:20:23: note: in expansion of macro '__same_type'
+>     20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+>        |                       ^~~~~~~~~~~
+> include/linux/list.h:601:9: note: in expansion of macro 'container_of'
+>    601 |         container_of(ptr, type, member)
+>        |         ^~~~~~~~~~~~
+> include/linux/list.h:645:9: note: in expansion of macro 'list_entry'
+>    645 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+>        |         ^~~~~~~~~~
+> include/linux/list.h:868:27: note: in expansion of macro 'list_next_entry'
+>    868 |              pos = n, n = list_next_entry(n, member))
+>        |                           ^~~~~~~~~~~~~~~
+> arch/s390/mm/gmap.c:212:17: note: in expansion of macro 'list_for_each_entry_safe'
+>    212 |                 list_for_each_entry_safe(ptdesc, next, &gmap->pt_list, pt_list)
+>        |                 ^~~~~~~~~~~~~~~~~~~~~~~~
+> In file included from include/uapi/linux/posix_types.h:5,
+>                   from include/uapi/linux/types.h:14,
+>                   from include/linux/types.h:6,
+>                   from include/linux/kasan-checks.h:5,
+>                   from include/asm-generic/rwonce.h:26,
+>                   from arch/s390/include/asm/rwonce.h:29,
+>                   from include/linux/compiler.h:299,
+>                   from include/linux/array_size.h:5,
+>                   from include/linux/kernel.h:16:
+> arch/s390/mm/gmap.c:212:72: error: 'struct page' has no member named 'pt_list'; did you mean 'pcp_list'?
+>    212 |                 list_for_each_entry_safe(ptdesc, next, &gmap->pt_list, pt_list)
+>        |                                                                        ^~~~~~~
+> include/linux/stddef.h:16:58: note: in definition of macro 'offsetof'
+>     16 | #define offsetof(TYPE, MEMBER)  __builtin_offsetof(TYPE, MEMBER)
+>        |                                                          ^~~~~~
+> include/linux/list.h:601:9: note: in expansion of macro 'container_of'
+>    601 |         container_of(ptr, type, member)
+>        |         ^~~~~~~~~~~~
+> include/linux/list.h:645:9: note: in expansion of macro 'list_entry'
+>    645 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+>        |         ^~~~~~~~~~
+> include/linux/list.h:868:27: note: in expansion of macro 'list_next_entry'
+>    868 |              pos = n, n = list_next_entry(n, member))
+>        |                           ^~~~~~~~~~~~~~~
+> arch/s390/mm/gmap.c:212:17: note: in expansion of macro 'list_for_each_entry_safe'
+>    212 |                 list_for_each_entry_safe(ptdesc, next, &gmap->pt_list, pt_list)
+>        |                 ^~~~~~~~~~~~~~~~~~~~~~~~
+> cc1: some warnings being treated as errors
 
-Given that the regression is more severe than the issue found by
-syzkaller, the best approach is reverting the patch that causes the
-regression, and trying to fix the underlying problem before checking
-the endpoint types again.
+Thanks for reporting that, will fix it:
 
-Note that reverting this patch will probably trigger the syzkaller bug
-at some point.
+diff --git a/arch/s390/mm/gmap.c b/arch/s390/mm/gmap.c
+index 4d2674f89322..e43a5a3befd4 100644
+--- a/arch/s390/mm/gmap.c
++++ b/arch/s390/mm/gmap.c
+@@ -206,10 +206,10 @@ static void gmap_free(struct gmap *gmap)
 
-This reverts commit 2b9c3eb32a699acdd4784d6b93743271b4970899.
+         /* Free additional data for a shadow gmap */
+         if (gmap_is_shadow(gmap)) {
+-               struct ptdesc *ptdesc;
++               struct ptdesc *ptdesc, *n;
 
-Link: https://syzkaller.appspot.com/bug?extid=348331f63b034f89b622 [1]
-Link: https://lore.kernel.org/linux-input/87sf161jjc.wl-tiwai@suse.de/ [2]
+                 /* Free all page tables. */
+-               list_for_each_entry_safe(ptdesc, next, &gmap->pt_list, 
+pt_list)
++               list_for_each_entry_safe(ptdesc, n, &gmap->pt_list, pt_list)
+                         page_table_free_pgste(ptdesc);
+                 gmap_rmap_radix_tree_free(&gmap->host_to_rmap);
+                 /* Release reference to the parent */
 
-Fixes: b516b1b0dfcc ("Revert "Input: bcm5974 - check endpoint type before starting traffic"")
-Reported-by: Jacopo Radice <jacopo.radice@outlook.com>
-Closes: https://bugzilla.suse.com/show_bug.cgi?id=1220030
-Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
----
-Changes in v2:
-- Add "Reported-by", "Closes" and "Link" tags.
-- Use shorter lore link.
-- Link to v1: https://lore.kernel.org/r/20240305-revert_bcm5974_ep_check-v1-1-db4f0422588f@gmail.com
----
- drivers/input/mouse/bcm5974.c | 20 --------------------
- 1 file changed, 20 deletions(-)
-
-diff --git a/drivers/input/mouse/bcm5974.c b/drivers/input/mouse/bcm5974.c
-index 953992b458e9..ca150618d32f 100644
---- a/drivers/input/mouse/bcm5974.c
-+++ b/drivers/input/mouse/bcm5974.c
-@@ -19,7 +19,6 @@
-  * Copyright (C) 2006	   Nicolas Boichat (nicolas@boichat.ch)
-  */
- 
--#include "linux/usb.h"
- #include <linux/kernel.h>
- #include <linux/errno.h>
- #include <linux/slab.h>
-@@ -194,8 +193,6 @@ enum tp_type {
- 
- /* list of device capability bits */
- #define HAS_INTEGRATED_BUTTON	1
--/* maximum number of supported endpoints (currently trackpad and button) */
--#define MAX_ENDPOINTS	2
- 
- /* trackpad finger data block size */
- #define FSIZE_TYPE1		(14 * sizeof(__le16))
-@@ -894,18 +891,6 @@ static int bcm5974_resume(struct usb_interface *iface)
- 	return error;
- }
- 
--static bool bcm5974_check_endpoints(struct usb_interface *iface,
--				    const struct bcm5974_config *cfg)
--{
--	u8 ep_addr[MAX_ENDPOINTS + 1] = {0};
--
--	ep_addr[0] = cfg->tp_ep;
--	if (cfg->tp_type == TYPE1)
--		ep_addr[1] = cfg->bt_ep;
--
--	return usb_check_int_endpoints(iface, ep_addr);
--}
--
- static int bcm5974_probe(struct usb_interface *iface,
- 			 const struct usb_device_id *id)
- {
-@@ -918,11 +903,6 @@ static int bcm5974_probe(struct usb_interface *iface,
- 	/* find the product index */
- 	cfg = bcm5974_get_config(udev);
- 
--	if (!bcm5974_check_endpoints(iface, cfg)) {
--		dev_err(&iface->dev, "Unexpected non-int endpoint\n");
--		return -ENODEV;
--	}
--
- 	/* allocate memory for our device state and initialize it */
- 	dev = kzalloc(sizeof(struct bcm5974), GFP_KERNEL);
- 	input_dev = input_allocate_device();
-
----
-base-commit: 90d35da658da8cff0d4ecbb5113f5fac9d00eb72
-change-id: 20240305-revert_bcm5974_ep_check-37f2a6ab2714
-
-Best regards,
--- 
-Javier Carrasco <javier.carrasco.cruz@gmail.com>
-
+> 
+> Caused by commit
+> 
+>    859584c3ddba ("s390: supplement for ptdesc conversion")
+> 
+> from the mm-unstable branch of the mm tree.
+> 
+> I have reverted that commit for today.
 
