@@ -1,166 +1,85 @@
-Return-Path: <linux-kernel+bounces-93042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93048-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A561872A12
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 23:19:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42FDF872A1D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 23:21:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5A12B24465
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 22:19:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EBA1A1F26561
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 22:21:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B93C12E1DB;
-	Tue,  5 Mar 2024 22:18:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3FFC12D1FD;
+	Tue,  5 Mar 2024 22:20:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IdimvUrN"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="bPTXjEmR"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85B8912E1C5;
-	Tue,  5 Mar 2024 22:18:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AAAB12D1FA
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 22:20:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709677129; cv=none; b=X9vFW1pQR32BkkEx6tCoyujsBdQ0FKpoG2vJjN1VVvovUqc/ClqN0p9oTf/zmd/9SJUUhQPH0DGPsXD7IwPdDykM21okjmdMaD5ZRum6zgYUMLFPZWuqkEOMEpZJnL1KJinR00oZejReQJhA/dOpBetznb7IdiYnH8TMr9MmINo=
+	t=1709677221; cv=none; b=TSBMYKguhjTr0HGqg8OtDzMrQ6A2WFbOwMogaZThnYcXvjo9VaOt+b7bms6DtX1DqHZxDlU3sbs3m0lCioVWJpgCT4ApK1OVdRPFZN7ZGIY5OHLSG+wG1AJLI1glvPQRjDuIF1CiZjdVaCCjLetW6kDUHpYk3cuAwpqn1t5U6XA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709677129; c=relaxed/simple;
-	bh=iTV6eJf8dPD4YV3fq9RsQkZcP6Jo/J8HHPmDs3eIbuA=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=Ea/URaHRxAzGBbs3E5zvvZvsFDmp9uC4VSdMKJJ8CVs8Bu6NSR5kkObGU3AaxnqXDTpaG5Z4t0XH3qLMkfA0WtRrXXEQXiFt8ZcVJGhfkmncgOpJCD1YJUEcz9Z+RdOFy7Nl7+sgkFatO81mlG3NKhQNFGXtLToOkt4pz38dk4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IdimvUrN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 451E6C43394;
-	Tue,  5 Mar 2024 22:18:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709677129;
-	bh=iTV6eJf8dPD4YV3fq9RsQkZcP6Jo/J8HHPmDs3eIbuA=;
-	h=Date:From:To:Cc:Subject:From;
-	b=IdimvUrNFp9Jf7lRs7ECBbFx7mh+9YgqxFqBEfQKxNR8viJm6rZnc/RTYXac8Diu1
-	 63Itc3bLl3E6o3lqXS8sBG4g9gzajZmRm/IusPKLHEn72SIdpBtls1VcTquwyIgi0H
-	 TWHbNNbjjsOimHLa11fUe5RwjF+lJAMpr785GQ/rULMiqVcsACg5StUYC6ye6/BLK7
-	 VLea6ydfrvu4qjqyLJ775bq7aYR7mZqX7tu8C7JNkGtTQosUUxrPs8fveKr1QTTZuJ
-	 aUsNydoBRNU05f4/1UHhIBl6I2D0c5XQD3M/aov/ynUqC7RCInxq2KzsNdbDdXREcz
-	 yroGEG5ulIthQ==
-Date: Tue, 5 Mar 2024 16:18:46 -0600
-From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To: Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>
-Subject: [PATCH][next] fsnotify: Avoid -Wflex-array-member-not-at-end warning
-Message-ID: <ZeeaRuTpuxInH6ZB@neat>
+	s=arc-20240116; t=1709677221; c=relaxed/simple;
+	bh=ZTkmXtPxMavIvLui55rLxCNEIn2zGMJAQ36Kig5x2yo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SwvW++x1hrU3oghuhveOO9LC0ngUhWvNke5kPLvvVwwMHVQT75I2NizlKXGJrR56+LpeRKZ5TaaQASSN6+IRfwRBiQ0Zm0C3KBiPFQozmbIRGGrGK1EDytpyHsXPyz/C8Uh4bxfKVbfbVg3r6wqRUtiD5VGKBRFfWK7q/9ZMts8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=bPTXjEmR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DB09C433C7;
+	Tue,  5 Mar 2024 22:20:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1709677220;
+	bh=ZTkmXtPxMavIvLui55rLxCNEIn2zGMJAQ36Kig5x2yo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bPTXjEmRr2xT5Gi0he71DNjlJ4psENOp2G5NmwlG9FTl4mcaxd79gGP7RD5QmUWh0
+	 b5zdg9KVADZ+LxlNjJd7RWZmPkGZcCF5ifE3ITRJZ3aJvR11eoJes35P648xGbRDsq
+	 sH9ZfactiJZEIrgz1PbrCbiLui5xJzMugSSChYFQ=
+Date: Tue, 5 Mar 2024 22:20:17 +0000
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Michal Hocko <mhocko@suse.com>
+Cc: cve@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: CVE-2021-47090: mm/hwpoison: clear MF_COUNT_INCREASED before
+ retrying get_any_page()
+Message-ID: <2024030541-unhappily-staff-8662@gregkh>
+References: <2024030413-CVE-2021-47090-a429@gregkh>
+ <ZedoMIyhF8d_XLIV@tiehlicka>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZedoMIyhF8d_XLIV@tiehlicka>
 
--Wflex-array-member-not-at-end is coming in GCC-14, and we are getting
-ready to enable it globally.
+On Tue, Mar 05, 2024 at 07:45:04PM +0100, Michal Hocko wrote:
+> On Mon 04-03-24 19:11:17, Greg KH wrote:
+> > Description
+> > ===========
+> > 
+> > In the Linux kernel, the following vulnerability has been resolved:
+> > 
+> > mm/hwpoison: clear MF_COUNT_INCREASED before retrying get_any_page()
+> 
+> I would like to dispute this CVE. The interface is behind CAP_SYSADMIN
+> and allowing access to this to any untrusted party is risking serious
+> troubles. This is a testing only feature.
 
-There is currently a local structure `f` that is using a flexible
-`struct file_handle` as header for an on-stack place-holder for the
-flexible-array member `unsigned char f_handle[];`.
+This fixes a weakness in the kernel, one that is allowed to crash it,
+why isn't that a good thing to have a CVE entry for?  Are we saying that
+all VM_BUG_ON_PAGE() instances should not be accounted for?  That's not
+what the config option for CONFIG_DEBUG_VM says, it just says it will
+affect performance.
 
-struct {
-	struct file_handle handle;
-	u8 pad[MAX_HANDLE_SZ];
-} f;
+Also /sys/devices/system/memory/soft_offline_page doesn't say "can crash
+the system", so it should work properly, even if an admin uses it, it
+shouldn't shut the box down.
 
-However, we are deprecating flexible arrays in the middle of another
-struct. So, in order to avoid this, we use the `struct_group_tagged()`
-helper to separate the flexible array from the rest of the members in
-the flexible structure:
+confused,
 
-struct file_handle {
-        struct_group_tagged(file_handle_hdr, hdr,
-		... the rest of the members
-        );
-        unsigned char f_handle[];
-};
-
-With the change described above, we can now declare an object of the
-type of the tagged struct, without embedding the flexible array in the
-middle of another struct:
-
-struct {
-        struct file_handle_hdr handle;
-        u8 pad[MAX_HANDLE_SZ];
-} f;
-
-We also use `container_of()` whenever we need to retrieve a pointer to
-the flexible structure, through which the flexible-array member can be
-accessed, as in this case.
-
-So, with these changes, fix the following warning:
-
-fs/notify/fdinfo.c: In function ‘show_mark_fhandle’:
-fs/notify/fdinfo.c:45:36: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
-   45 |                 struct file_handle handle;
-      |                                    ^~~~~~
-
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- fs/notify/fdinfo.c | 8 +++++---
- include/linux/fs.h | 6 ++++--
- 2 files changed, 9 insertions(+), 5 deletions(-)
-
-diff --git a/fs/notify/fdinfo.c b/fs/notify/fdinfo.c
-index 5c430736ec12..740f5e68b397 100644
---- a/fs/notify/fdinfo.c
-+++ b/fs/notify/fdinfo.c
-@@ -42,15 +42,17 @@ static void show_fdinfo(struct seq_file *m, struct file *f,
- static void show_mark_fhandle(struct seq_file *m, struct inode *inode)
- {
- 	struct {
--		struct file_handle handle;
-+		struct file_handle_hdr handle;
- 		u8 pad[MAX_HANDLE_SZ];
- 	} f;
-+	struct file_handle *handle = container_of(&f.handle,
-+						  struct file_handle, hdr);
- 	int size, ret, i;
- 
- 	f.handle.handle_bytes = sizeof(f.pad);
- 	size = f.handle.handle_bytes >> 2;
- 
--	ret = exportfs_encode_fid(inode, (struct fid *)f.handle.f_handle, &size);
-+	ret = exportfs_encode_fid(inode, (struct fid *)handle->f_handle, &size);
- 	if ((ret == FILEID_INVALID) || (ret < 0)) {
- 		WARN_ONCE(1, "Can't encode file handler for inotify: %d\n", ret);
- 		return;
-@@ -63,7 +65,7 @@ static void show_mark_fhandle(struct seq_file *m, struct inode *inode)
- 		   f.handle.handle_bytes, f.handle.handle_type);
- 
- 	for (i = 0; i < f.handle.handle_bytes; i++)
--		seq_printf(m, "%02x", (int)f.handle.f_handle[i]);
-+		seq_printf(m, "%02x", (int)handle->f_handle[i]);
- }
- #else
- static void show_mark_fhandle(struct seq_file *m, struct inode *inode)
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 00fc429b0af0..7c131bcd948f 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -1030,8 +1030,10 @@ struct file {
-   __attribute__((aligned(4)));	/* lest something weird decides that 2 is OK */
- 
- struct file_handle {
--	__u32 handle_bytes;
--	int handle_type;
-+	struct_group_tagged(file_handle_hdr, hdr,
-+		__u32 handle_bytes;
-+		int handle_type;
-+	);
- 	/* file identifier */
- 	unsigned char f_handle[];
- };
--- 
-2.34.1
-
+greg k-h
 
