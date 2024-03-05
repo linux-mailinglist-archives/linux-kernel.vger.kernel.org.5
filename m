@@ -1,53 +1,54 @@
-Return-Path: <linux-kernel+bounces-93064-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93065-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 902FD872A5C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 23:43:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13BC0872A5F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 23:44:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C25EC1C24A5A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 22:43:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A897A1F269FB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 22:44:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11A1212D1F3;
-	Tue,  5 Mar 2024 22:43:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C7E212D1E3;
+	Tue,  5 Mar 2024 22:44:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N6Xg1ODR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o2fSTdGW"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52C8818AE0;
-	Tue,  5 Mar 2024 22:43:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF57F1EB33;
+	Tue,  5 Mar 2024 22:44:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709678613; cv=none; b=quZ3npHf/MpJ97T1qI0CBt0Z5/DJyy5GzgnwHlmmPgs5Aw8aZkJxqSzF74RXcG/2X9GbA8L119Q3cPIgwWXjYvEsuMNfKb4pgQE+oc19e0k0AxLJnz5Zc68uWpJ8uYR7KHgsC6kwp3zDuzTHe6qAjTYK85aLHqrFk4LcJu4RgbI=
+	t=1709678658; cv=none; b=UM/Pd5ig0hhMNyKEDuSQfDK7pO2/hsMaikMwTFt2jgbLBuWATsLn3jhSzjEy6H+ury4yRiESDBJzeX765xAG9wZdfGXp1n3ZEZHu4LqP7nL1cnFd2cklQil0ISz4sV2UtIz9aZ6ndG5SjiqrzWKk92syIx5M8cH8cPN01b5nJUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709678613; c=relaxed/simple;
-	bh=C1jm29FkASamL71zm7y/fD9Cy5RVlI8wo9G0DKX9sv8=;
+	s=arc-20240116; t=1709678658; c=relaxed/simple;
+	bh=W8lxsW+JDwVbeKpPv4XZGtjdXz0JvmAoEChxgdAQdaI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PHXKAaoIQdd+ZurfBRvuZn5Ey6v3mPSd4sQL9dprdU3zFriPFmcakoetGjISWG3ifOfI4D1OcxeYLwzoq2DmPnvzGff8sqGIM3f/Y5uIucrX7RDjtIk71yYcVHOYYmReBppGfR2L0T5p4q8Wb9feL470gYo/DWdOAI2JkgM1FsA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N6Xg1ODR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14853C433C7;
-	Tue,  5 Mar 2024 22:43:31 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=A/c3a/V8wJxTMjoMJRTueCvlezyoNAInhdJJrm4vvf6Gn5UvNDVRjszZzFKtgDr/BvU9ZEWqKTzcS3aH15Kv1/zbWCyTGwwWDFHvsNnZNHIvg/duSrTvLFWBZgmnKQ6qp6R4vIccTR6eikSpoNCT0G8+TYzyb2xbTjQ+3gEg3XQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o2fSTdGW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0922C433C7;
+	Tue,  5 Mar 2024 22:44:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709678612;
-	bh=C1jm29FkASamL71zm7y/fD9Cy5RVlI8wo9G0DKX9sv8=;
+	s=k20201202; t=1709678658;
+	bh=W8lxsW+JDwVbeKpPv4XZGtjdXz0JvmAoEChxgdAQdaI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=N6Xg1ODRIdZQ2MTbPFj0F07nB00h7iTaHHmUlL/WZT6xlhRhK5xcokEnTEbcx/jrv
-	 kwUgmo60G2A5KBBq3S4yzwCLFw+xfglVZLhTW8uVtrJql41U63Bhh8/vJIj2RF6Eum
-	 rGEkl9Uf+HZ2qr8iK7/cBzHXFtojgyDY3AKaJq7SkMYxzadsN9y58PM/TKR4+REm9i
-	 ovli+asKXgaN2hdG1bJfNgztuRAf+r9friNgK1wjAbGEB7N4z3JkjctDEezOH/qQez
-	 qtb7F4oWdgChoZ6AU5c4YqNeBKKKUQBvBO9j/XcAS8yuuVHJQ2TYgy0xyJIm85hT7O
-	 CMx6FiaPUSRLw==
-Date: Tue, 5 Mar 2024 23:43:28 +0100
+	b=o2fSTdGWEP7moLScZfFqb3jxtDs+1+En/JS8S98psYUmcpbmW8UumYlDa7G0+C6vk
+	 Z1wX50rnLjMmna7m09pyzacXqkj8p1G2+0KKOQps2PwzfQrOA7kTDs5MRjuUqFGXs5
+	 13rK3nPnb9KXBYF+DyrwRsodkBAb/8Ns4mdrUhBPAEmrPdUIbuAFPTTDp/Ai+6UmnE
+	 gr4sLQVrU0faiz/4XXwYi/unecxwCrLrhR4A0YJ0SamGhacrxrsVEuKY9hvRYDefvG
+	 FVGH7eADbzZ588z9Jv41DxZkYYnLyzIgqmPL8lW1bPN64P82alzJYq0fsXGe48nE/v
+	 sPMoH4FvSDyCQ==
+Date: Tue, 5 Mar 2024 23:44:14 +0100
 From: Andi Shyti <andi.shyti@kernel.org>
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	Sean Young <sean@mess.org>, Mauro Carvalho Chehab <mchehab@kernel.org>
-Subject: Re: [PATCH v1 0/5] media: ir-spi: A few cleanups
-Message-ID: <bjvrsyrv7e53tnwvtuhmqcjyjhb4mqe2svvatfdwnqagfb6btv@c6rborytz3gk>
+Subject: Re: [SPAM] [PATCH v1 1/5] media: ir-spi: Don't use "proxy" headers
+Message-ID: <oqrfn5dp47wh6znalbw4lazkkxk6qwb6cwronkuxvcnv3xodsz@blevdhasmwuz>
 References: <20240305174933.1370708-1-andriy.shevchenko@linux.intel.com>
+ <20240305174933.1370708-2-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,15 +57,18 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240305174933.1370708-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20240305174933.1370708-2-andriy.shevchenko@linux.intel.com>
 
 Hi Andy,
 
-On Tue, Mar 05, 2024 at 07:48:25PM +0200, Andy Shevchenko wrote:
-> While removing of_gpio.h where it's being unused, this driver seems to 
-> deserve more love. Hence this series.
+On Tue, Mar 05, 2024 at 07:48:26PM +0200, Andy Shevchenko wrote:
+> Update header inclusions to follow IWYU (Include What You Use)
+> principle.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-ehehe... thanks for the cleanup!
+Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
 
+Thanks,
 Andi
 
