@@ -1,134 +1,139 @@
-Return-Path: <linux-kernel+bounces-91845-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91854-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F5C187176B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:54:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 038A587177B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:56:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 36E5FB229F2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:54:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3556F1C22496
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:56:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5BE37F469;
-	Tue,  5 Mar 2024 07:52:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CB147F7F1;
+	Tue,  5 Mar 2024 07:55:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="LpGlrz6U"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TjfO6vuE"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01EF47E78B;
-	Tue,  5 Mar 2024 07:52:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 370AE7F7EE
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 07:55:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709625146; cv=none; b=JvJV9uaQ2sciBrTvI8Uj5a3sVh1rQ183WeTszRftQ5iv5juCNBhK9ZOa/uqZUHFAYNmLuSZujBFMYzFg4w4xErqcoIv7/HEfCLaDgwNYwm9+fw6hlWnMD6YiLNWP5/sPDoSY+iMMKgqqT+b9XGu0ByHPeu1Vk9+eqP9eo3FH5SY=
+	t=1709625323; cv=none; b=Fp/ipTTS4EvHzUR1r4tN/qtX9hsJOFfyH33FYUKtbAO/3xEZxEgDSQQeC/InQRvCVC9gWFKVyJ6UMAMGMTVCM2OuvMWZ3jW3H1QRdI22a4hZaWblD9hHwyM7YPK71xvOmn2JzTSf5QJdOK1VF+gz9TzOGcxtjes93YIpBI69/MQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709625146; c=relaxed/simple;
-	bh=AM09GKPYJH/8gNJ+NzSyVqjaenAF0cZN+Cb8vT4dlew=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e6IpfZnpS/6UQh0t/I/RlAxgWojU3HkvwgGOQ6R5I0A29d1zwyDA6wcuMlDH63r8Up+ukI377tWKpeFyCgD9Xi6DDK6RHtTnDdFgvoCbJoUnYiqptddNKAprpiLyR7aHEBMiGnVNif4D5juTGYj08d37mWgI/YFzwXXsJQImDCM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=LpGlrz6U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74159C43390;
-	Tue,  5 Mar 2024 07:52:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1709625143;
-	bh=AM09GKPYJH/8gNJ+NzSyVqjaenAF0cZN+Cb8vT4dlew=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LpGlrz6U4DYo0szXcCLN3qySBTzVZK09L0wBZrGS5comnhFIvVJWxIm+PynYFkYdX
-	 1WwxtHQ+/h+An5Seq91B6O12hyMxiGuEhsOmqfEi4xqyOO5bqnB+TkRtmcLtv0uTr9
-	 FlEmJ28M/aW5DwvTPoqJNoQ8QCjctH8YvuEHxzXs=
-Date: Tue, 5 Mar 2024 07:52:20 +0000
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Elbert Mai <code@elbertmai.com>
-Cc: linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH v2] usb: Export BOS descriptor to sysfs
-Message-ID: <2024030515-cruelly-ungreased-3fd9@gregkh>
-References: <20240305002301.95323-1-code@elbertmai.com>
+	s=arc-20240116; t=1709625323; c=relaxed/simple;
+	bh=LkYVT4dDvTXDJ25e9h5t11zwb/QpgogamAOI+sx2zz4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=IYFqTDeC5SPnSjxMoQJ2ys7+ID2VOWpyTotCBKSX3/C9a0NCzl/inQMF9B/LzB24fS1WUehohOGrFPGG526kb2KofyNCh7OSKhMc77Mw2W3Q3/6T1llpYLnfrFNvkKOI4r9/U/lnpHPGqXvJSFGijQyqdN09h9awhFDjxCvi9ZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TjfO6vuE; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709625322; x=1741161322;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=LkYVT4dDvTXDJ25e9h5t11zwb/QpgogamAOI+sx2zz4=;
+  b=TjfO6vuEWFQq1X60ffkZjqrwO8HOYF475heCjpZvvUnclseYBK+4tbda
+   cNJ4z/Y0KZTlgSNiKxRSsCmL9K/kdlszZdae9coVWE0kU6qdKzeVieXzw
+   vfRXuSLUSc4fgCkjJvM5qxNuCXAxcMg/HbThJ1I0la2D0yuy8g0MYvPED
+   pPHeIyadejD5x/egj/N3n5uXSe1nipTuhOkbxD7hFic18pgWR1kNi09Sm
+   0yT4l7UnHJddfp2Q3yMqjywi372GlNVero95urya5noiMmehQRTXZzfge
+   xCdLgL9jKnoffNkcLlamovFDMAyPe82Xb2Ij2P6dgoPh0FTr2YYzJuOGL
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="26618723"
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="26618723"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 23:55:22 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="40272704"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 23:55:17 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Barry Song <21cnbao@gmail.com>
+Cc: David Hildenbrand <david@redhat.com>,  Ryan Roberts
+ <ryan.roberts@arm.com>,  akpm@linux-foundation.org,  linux-mm@kvack.org,
+  chrisl@kernel.org,  yuzhao@google.com,  hanchuanhua@oppo.com,
+  linux-kernel@vger.kernel.org,  willy@infradead.org,  xiang@kernel.org,
+  mhocko@suse.com,  shy828301@gmail.com,  wangkefeng.wang@huawei.com,
+  Barry Song <v-songbaohua@oppo.com>,  Hugh Dickins <hughd@google.com>
+Subject: Re: [RFC PATCH] mm: hold PTL from the first PTE while reclaiming a
+ large folio
+In-Reply-To: <CAGsJ_4yqUW46xyDtZ4X1wQZ2_0bLM85Euz2BufERa75Rg+gVyw@mail.gmail.com>
+	(Barry Song's message of "Tue, 5 Mar 2024 11:29:31 +1300")
+References: <20240304103757.235352-1-21cnbao@gmail.com>
+	<706b7129-85f6-4470-9fd9-f955a8e6bd7c@arm.com>
+	<37f1e6da-412b-4bb4-88b7-4c49f21f5fe9@redhat.com>
+	<CAGsJ_4yJ3yCyN_KgBO8W+jFx8RN6_JhS9OwX3FH6X_gpU7g62w@mail.gmail.com>
+	<804524c8-772c-42d0-93a5-90d77f13f304@redhat.com>
+	<CAGsJ_4yqUW46xyDtZ4X1wQZ2_0bLM85Euz2BufERa75Rg+gVyw@mail.gmail.com>
+Date: Tue, 05 Mar 2024 15:53:22 +0800
+Message-ID: <87r0gp868d.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240305002301.95323-1-code@elbertmai.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 04, 2024 at 04:23:01PM -0800, Elbert Mai wrote:
-> Motivation
-> ----------
-> 
-> The binary device object store (BOS) of a USB device consists of the BOS
-> descriptor followed by a set of device capability descriptors. One that is
-> of interest to users is the platform descriptor. This contains a 128-bit
-> UUID and arbitrary data, and it allows parties outside of USB-IF to add
-> additional metadata about a USB device in a standards-compliant manner.
-> Notable examples include the WebUSB and Microsoft OS 2.0 descriptors.
-> 
-> The kernel already retrieves and caches the BOS from USB devices if its
-> bcdUSB is >= 0x0201. Because the BOS is flexible and extensible, we export
-> the entire BOS to sysfs so users can retrieve whatever device capabilities
-> they desire, without requiring USB I/O or elevated permissions.
-> 
-> Implementation
-> --------------
-> 
-> Add bos_descriptors attribute to sysfs. This is a binary file and it works
-> the same way as the existing descriptors attribute. The file exists only if
-> the BOS is present in the USB device.
-> 
-> Also create a binary attribute group, so the driver core can handle the
-> creation of both the descriptors and bos_descriptors attributes in sysfs.
-> 
-> Signed-off-by: Elbert Mai <code@elbertmai.com>
-> ---
-> Changes in v2:
->  - Rename to bos_descriptors (plural) since the attribute contains the
->    entire BOS, not just the first descriptor in it.
->  - Use binary attribute groups to let driver core handle attribute
->    creation for both descriptors and bos_descriptors.
->  - The attribute is visible in sysfs only if the BOS is present in the
->    USB device.
+Barry Song <21cnbao@gmail.com> writes:
 
-Very nice, thanks for this!
+> On Tue, Mar 5, 2024 at 10:15=E2=80=AFAM David Hildenbrand <david@redhat.c=
+om> wrote:
+>> > But we did "resolve" those bugs by entirely untouching all PTEs if we
+>> > found some PTEs were skipped in try_to_unmap_one [1].
+>> >
+>> > While we find we only get the PTL from 2nd, 3rd but not
+>> > 1st PTE, we entirely give up on try_to_unmap_one, and leave
+>> > all PTEs untouched.
+>> >
+>> > /* we are not starting from head */
+>> > if (!IS_ALIGNED((unsigned long)pvmw.pte, CONT_PTES * sizeof(*pvmw.pte)=
+)) {
+>> >                     ret =3D false;
+>> >                     atomic64_inc(&perf_stat.mapped_walk_start_from_non=
+_head);
+>> >                     set_pte_at(mm, address, pvmw.pte, pteval);
+>> >                     page_vma_mapped_walk_done(&pvmw);
+>> >                     break;
+>> > }
+>> > This will ensure all PTEs still have a unified state such as CONT-PTE
+>> > after try_to_unmap fails.
+>> > I feel this could have some false postive because when racing
+>> > with unmap, 1st PTE might really become pte_none. So explicitly
+>> > holding PTL from 1st PTE seems a better way.
+>>
+>> Can we estimate the "cost" of holding the PTL?
+>>
+>
+> This is just moving PTL acquisition one or two PTE earlier in those corner
+> cases. In normal cases, it doesn't affect when PTL is held.
 
-One very minor comment, you can send a follow-on patch for this if you
-like:
+The mTHP may be mapped at the end of page table.  In that case, the PTL
+will be held longer.  Or am I missing something?
 
-> +static umode_t dev_bin_attrs_are_visible(struct kobject *kobj,
-> +		struct bin_attribute *a, int n)
-> +{
-> +	struct device *dev = kobj_to_dev(kobj);
-> +	struct usb_device *udev = to_usb_device(dev);
-> +
-> +	/* All USB devices have a device descriptor, so the descriptors
-> +	 * attribute always exists. No need to check for its visibility.
-> +	 */
+--
+Best Regards,
+Huang, Ying
 
-This comment is in the "wrong" style, I think checkpatch will complain
-about that, right?
 
-But it's a bit confusing, you say "no need to check", and then you:
-
-> +	if (a == &bin_attr_bos_descriptors) {
-> +		if (udev->bos == NULL)
-> +			return 0;
-> +	}
-
-check something :)
-
-How about this as a comment instead:
-	/*
-	 * If this is the BOS descriptor, check to verify if the device
-	 * has that descriptor at all or not.
-	 */
-
-That's all you need here, right?
-
-Anyway, again, very nice, I'll go queue this up and run it through the
-0-day tests.
-
-thanks!
-
-greg k -h
+> In normal cases, page_vma_mapped_walk will find PTE0 is present, thus hold
+> PTL immediately. in corner cases, page_vma_mapped_walk races with break-
+> before-make, after skipping one or two PTEs whose states are transferring,
+> it will find a present pte then acquire lock.
+>
+>> --
+>> Cheers,
+>>
+>> David / dhildenb
+>
+> Thanks
+> Barry
 
