@@ -1,159 +1,87 @@
-Return-Path: <linux-kernel+bounces-91615-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91614-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D098E871440
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 04:28:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EECB87143E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 04:28:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED1321C20A98
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 03:28:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC074284766
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 03:28:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCBCA376EB;
-	Tue,  5 Mar 2024 03:28:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="HFUrb4Ms"
-Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48E673CF7C;
+	Tue,  5 Mar 2024 03:28:05 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D2213FE37
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 03:28:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EDCC3CF59
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 03:28:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709609291; cv=none; b=Vk1M9UxkB2esRM67nrbfHB5GrmervtitcLd6lnntlK8b1KyPl3eVQ6QX6TQIWxc2xywX6MXsY2zqB8jlsZoRU/aLL0obfxxQT4QTW5c7vago6gcCtRVOj3oxZ8PEgBKU5L7ynlXveSCFAXxiF0cCfpRkLnrYzL9k7cx7FzfydYI=
+	t=1709609284; cv=none; b=AFalGRTGyfuhfy5qk6iS5uJacIWLj6NfftzuV6nKTE8b1/FP4Nu44e1mvRZ42eq9xHGYILYWddk5AYadvMx+DIsOSrkAczinKza5xCFdHRVWjaATnxDuyrziB+0PwdekrB6Hs7v9h5SufM8SHE+ojVkmTyhsmE0G+CCtSTT5aNE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709609291; c=relaxed/simple;
-	bh=WamC2udXV+suNnmADkzTuVlaBpdRhCTM/8Q7q9WbMeM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uWPycMlFmSclyFhEqlEoPi/rLXUfvn6l2kvbAe1r9TjPoT89cZlzgRTRldi1NmYtvEnTMxvYIPTnwV60uwLGyMi8cZaukQzbJuYwcDKdJub+kLZn92b8O4pjAPx/QHVc/pcUWbUY5b2de75FJ8scYxdBQK/Rv5OrmyNhbQOPqzw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=HFUrb4Ms; arc=none smtp.client-ip=209.85.167.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3c1f55ba3ecso616243b6e.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 19:28:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1709609288; x=1710214088; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oQEHwzYRYJKhL3B500sQ7f4LkRj9XfhmOot1cZDRXYg=;
-        b=HFUrb4MsO4JcvsLa78buDYFti0el0zflpT8y0/yZvHmk4tsrKqCPEDPep5GyIBmq8f
-         gt29h8fZpYaDURK2kK02q0drJ8P5MruXjB4Icfq6z01T7JIkLhiTHvnw2z6qBM95WZTR
-         w8MlMAXvFknnf3dERTi+RT/y6KYJjAaxnTPoQtg+Q6hZJLuUqgp+SuKqaL956bxShrM2
-         Mb3qM0vJdctCYq732vDGpApkrWslT/8sHL6Lw2DsustveT6d23xGnlJ28u5aGr4zlYi8
-         EMLd4cPN7MwODCtARphsqbJH10UBwaG9ip+HaaslSdXopYhNFcTJUvWvQTRdRV1gxpFW
-         0WFg==
+	s=arc-20240116; t=1709609284; c=relaxed/simple;
+	bh=tet/bS0EsevuzlkPvDlUh75AZphggbmCYcKGWkej580=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=DyDc4tN++WMCdFji4SE/nAMkkrVLP/5PsLJVO1e1U6dIhjjhjUBN9ETj724Fm4X6zlyk7r6g2PivoNQQNSGUa5MPDeMmbZlw89+2RTcXVJmZaME1fYitjkcE3RdLyX1qwx3RH+ZdwTH3QRnRsNnVee7Vv/ddjX/OXbUs9ksWjWI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7c8364e4a31so265847239f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 19:28:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709609288; x=1710214088;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=oQEHwzYRYJKhL3B500sQ7f4LkRj9XfhmOot1cZDRXYg=;
-        b=clVQwz2tyNIkx2i3cLSD7YBmY2FnBJcESNCcYMktrcXGvqeX/wkB9Wc4hF4gqajJnt
-         MPYu3ofOaxSYUjUNUw/oIgSHHi9Fg2jJo28QHgnBfj3hjDcB2huyJzdv+dR5/DsG9MAc
-         KRIy6oCP+qmxxtb6QHCcGMyl/ZZ9qrrqQa+ur2/4FLaWfpEqV3Dvp2zID6a7ycSSgLHj
-         HSP4t5sk97b0AKECucJV5Z0lMSau0mQBunXKpjUoVayR5qBLYvcv6sfd40Esxvvc4w+8
-         jNFGfs5YUojCoTAeAueBfkvkxGu1ojG/b6zXhCt6NG7h6u1iqL8bCZCBJIvN1H2bW3IA
-         wVXQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUHTLMwEpeZHLCE2VjH6dFalfosCp64pq0BsSZtrVSz1eA9BqooWcIotodWCjmXV/UtG2JDp/dZY4TVDB7V1fX7yeI9Q4YAbGKTsaAY
-X-Gm-Message-State: AOJu0Yx8rMmGgTXisonsqpTOY5oO9eFRMmxvVkJwpMqZrcEUEpipNEQX
-	nMAOhn4ccOpgNUalCu0sbFgc+z3HVzvVHjuOUoxXdOHcWqT5x0agKMM5wsM0/Hc=
-X-Google-Smtp-Source: AGHT+IH2bQSMUzSN0S02zlOvSm/FNREnSgBFsEIuRGxZZenpRGxcP7zX2plnTQLrROGRE+fJmgepIw==
-X-Received: by 2002:a05:6808:1524:b0:3c1:ed50:7c2b with SMTP id u36-20020a056808152400b003c1ed507c2bmr807224oiw.47.1709609288317;
-        Mon, 04 Mar 2024 19:28:08 -0800 (PST)
-Received: from ?IPV6:fdbd:ff1:ce00:1d7c:876:e31b:5d3a:49d6? ([2001:c10:ff04:0:1000:0:1:6])
-        by smtp.gmail.com with ESMTPSA id b128-20020a62cf86000000b006e510c61d49sm8335459pfg.183.2024.03.04.19.28.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Mar 2024 19:28:07 -0800 (PST)
-Message-ID: <c98aa910-7b14-401d-a257-274682bb7486@bytedance.com>
-Date: Tue, 5 Mar 2024 11:28:01 +0800
+        d=1e100.net; s=20230601; t=1709609282; x=1710214082;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NSFHSo9Co9P7W5fZK5szvuZ2AD6NbOPhoGxNOkUeAew=;
+        b=gDVCeo4tC8Et1FboX7frnWdD9kBNNQMbHuN8RnaHQx0ASt8lM1z4CSRhlYEcG+/KPX
+         UrZiLC/+Fa2+IOjHBcE9Y4bPNUA+2uDs95OPg8HFKOVezOLJo8nXFoqUeaHb3l+34hlO
+         QoiG/hmVav6nXSSG/MiRvPml/F33ic+VYWAGBGwlj+tQf/8Pkvxu0Gc2o5XSa/GH7Euw
+         KkNjU4mpM5/xzLnbcsKWO9DGkikmfg8qGPQvFUQ8MceO+H5u+EydPgD7PVJGc9gxIn0e
+         WTbrGgcImkNT050ja5PKekXpAes6/1REXWFVYT/Z0f9ppQqSgsEF9/LLcaJQUe2j81yW
+         bX9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVO4IXQc5E8gKoXZasjsyqMtlvqtDJqHqo4wjN+gZRwioXj/o1BWbYP4LL9byaktWN3ZurnSfORKAdd9zYHNaZM0Xqx6RLMG+z7a/wi
+X-Gm-Message-State: AOJu0YxIZvk8JwCJQfhEutfarnrqJfj3bYW8G3K1Umyrg96/GsBHqaYc
+	QYDPMHNR4jCYYrWLatl6GBNY2ohBIwaAp97b3Nn2oa95hFwwUuua3+Lv5TPKFcSC9Wz/SQSzTd7
+	uJ7Gvhe3PbyY5JExp+OHybsVp907GG36l1jgbcmHSxVrwCAxBq5sMjHg=
+X-Google-Smtp-Source: AGHT+IFMGkSMv/9LccFdZ0cI7+p4p4ow3EycQRRvLmH59EMd4xya29i4GNQ6GJZlJvPXdGgieJFiosxwL3RY97Q42wPuR08S/OKw
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [External] Re: [PATCH v2 0/3] Support intra-function call
- validation
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: bp@alien8.de, mingo@redhat.com, tglx@linutronix.de, hpa@zytor.com,
- jpoimboe@redhat.com, peterz@infradead.org, mbenes@suse.cz,
- stable@vger.kernel.org, alexandre.chartre@oracle.com, x86@kernel.org,
- linux-kernel@vger.kernel.org, yuanzhu@bytedance.com
-References: <20240228024535.79980-1-qirui.001@bytedance.com>
- <2024030438-dropout-satisfy-b4c4@gregkh>
- <2024030404-conjoined-unlined-05c0@gregkh>
-From: Rui Qi <qirui.001@bytedance.com>
-In-Reply-To: <2024030404-conjoined-unlined-05c0@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:6f0b:0:b0:365:fe09:6450 with SMTP id
+ k11-20020a926f0b000000b00365fe096450mr8729ilc.4.1709609282572; Mon, 04 Mar
+ 2024 19:28:02 -0800 (PST)
+Date: Mon, 04 Mar 2024 19:28:02 -0800
+In-Reply-To: <tencent_2749AC6EC9EEFD0CA1A7D706C792C0467906@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fe1ece0612e16df3@google.com>
+Subject: Re: [syzbot] [fs?] KASAN: null-ptr-deref Write in do_pagemap_cmd
+From: syzbot <syzbot+02e64be5307d72e9c309@syzkaller.appspotmail.com>
+To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Greg,
-I checked out commit e133c1ee6d7271007fdba3dbe78818afd88943f9 (Linux 5.4.270), applied my patche set on top, enabled CONFIG_LIVEPATCH based on x86 defconfig, compiled without any issues. I couldn't even grep unwind_hint_empty in the codebase, so I'm quite puzzled about how this phenomenon occurred. Can you tell me how to reproduce this compilation error?
+Hello,
 
-In addition, my patchset only applies to the LTS branch of 5.4, not to other branches. Please be careful not to merge it into other branches.Other stable branches do not have the problem of such kernel livepatch issue.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-On 3/4/24 6:55 PM, Greg KH wrote:
-> On Mon, Mar 04, 2024 at 11:41:46AM +0100, Greg KH wrote:
->> On Wed, Feb 28, 2024 at 10:45:32AM +0800, Rui Qi wrote:
->>> Since kernel version 5.4.217 LTS, there has been an issue with the kernel live patching feature becoming unavailable.
->>> When compiling the sample code for kernel live patching, the following message is displayed when enabled:
->>>
->>> livepatch: klp_check_stack: kworker/u256:6:23490 has an unreliable stack
->>>
->>> Reproduction steps:
->>> 1.git checkout v5.4.269 -b v5.4.269
->>> 2.make defconfig
->>> 3. Set CONFIG_LIVEPATCH=y、CONFIG_SAMPLE_LIVEPATCH=m
->>> 4. make -j bzImage
->>> 5. make samples/livepatch/livepatch-sample.ko
->>> 6. qemu-system-x86_64 -kernel arch/x86_64/boot/bzImage -nographic -append "console=ttyS0" -initrd initrd.img -m 1024M
->>> 7. insmod livepatch-sample.ko
->>>
->>> Kernel live patch cannot complete successfully.
->>>
->>> After some debugging, the immediate cause of the patch failure is an error in stack checking. The logs are as follows:
->>> [ 340.974853] livepatch: klp_check_stack: kworker/u256:0:23486 has an unreliable stack
->>> [ 340.974858] livepatch: klp_check_stack: kworker/u256:1:23487 has an unreliable stack
->>> [ 340.974863] livepatch: klp_check_stack: kworker/u256:2:23488 has an unreliable stack
->>> [ 340.974868] livepatch: klp_check_stack: kworker/u256:5:23489 has an unreliable stack
->>> [ 340.974872] livepatch: klp_check_stack: kworker/u256:6:23490 has an unreliable stack
->>> ......
->>>
->>> BTW,if you use the v5.4.217 tag for testing, make sure to set CONFIG_RETPOLINE = y and CONFIG_LIVEPATCH = y, and other steps are consistent with v5.4.269
->>>
->>> After investigation, The problem is strongly related to the commit 8afd1c7da2b0 ("x86/speculation: Change FILL_RETURN_BUFFER to work with objtool"),
->>> which would cause incorrect ORC entries to be generated, and the v5.4.217 version can undo this commit to make kernel livepatch work normally.
->>> It is a back-ported upstream patch with some code adjustments,from the git log, the author also mentioned no intra-function call validation support.
->>>
->>> Based on commit 6e1f54a4985b63bc1b55a09e5e75a974c5d6719b (Linux 5.4.269), This patchset adds stack validation support for intra-function calls,
->>> allowing the kernel live patching feature to work correctly.
->>>
->>> Alexandre Chartre (2):
->>>    objtool: is_fentry_call() crashes if call has no destination
->>>    objtool: Add support for intra-function calls
->>>
->>> Rui Qi (1):
->>>    x86/speculation: Support intra-function call validation
->>>
->>>   arch/x86/include/asm/nospec-branch.h          |  7 ++
->>>   include/linux/frame.h                         | 11 ++++
->>>   .../Documentation/stack-validation.txt        |  8 +++
->>>   tools/objtool/arch/x86/decode.c               |  6 ++
->>>   tools/objtool/check.c                         | 64 +++++++++++++++++--
->>>   5 files changed, 91 insertions(+), 5 deletions(-)
->>
->> All now queued up, thanks!
-> 
-> Nope, these break the build:
-> 
-> ../arch/x86/include/asm/nospec-branch.h:313: Error: no such instruction: `unwind_hint_empty'
-> ../arch/x86/include/asm/nospec-branch.h:313: Error: no such instruction: `unwind_hint_empty'
-> 
-> How did you test them?  I'll go drop them from the queue now, sorry.
-> Please fix them up and resend when you have something that works.
-> 
-> greg k-h
+Reported-and-tested-by: syzbot+02e64be5307d72e9c309@syzkaller.appspotmail.com
+
+Tested on:
+
+commit:         90d35da6 Linux 6.8-rc7
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=1279a07a180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f7212ea23efeb053
+dashboard link: https://syzkaller.appspot.com/bug?extid=02e64be5307d72e9c309
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=1111146c180000
+
+Note: testing is done by a robot and is best-effort only.
 
