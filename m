@@ -1,110 +1,118 @@
-Return-Path: <linux-kernel+bounces-91439-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91441-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 234A987117F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 01:17:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C34B7871184
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 01:17:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B13D0281F60
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 00:17:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53CD52850C2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 00:17:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24C5E10E4;
-	Tue,  5 Mar 2024 00:17:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89F112579;
+	Tue,  5 Mar 2024 00:17:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rh16Qq+Q"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Kb3JD2ii"
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AB6F635
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 00:17:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF87363D
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 00:17:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709597833; cv=none; b=RL2vKgcYl8wfAVkN2F+B5iFz+GCf0F82k7zEBQDjqLadqx9wA1dhA6x49Oxt4FDeQYto7A/27Ay5nL75Beb9wg3+felMeTfe9k9jTcv4YepAjja+FeZaUbju9F2Qzuet8Q3bHjXCo0I448bFQhMPMZa6Ze+zRHRstC/X9Ldc2/o=
+	t=1709597857; cv=none; b=bryxynpageE71tA+Bf2bppoTc4xZrxu7X2/JvNch2iIVa0UE9DxM0lMwdNc6p5vVLQOBG/IMRNIUlOGSwZDRuPh1Z5jY9Zis1+an6Xa580W7yeMv61THfeoqeh102lzPLZedPM4wvUIYwz2TtmNt8xGe0B708kOg7B8FjNWhCZ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709597833; c=relaxed/simple;
-	bh=X24FBJ7XKj3QZoWahGRowLBOY8gsvUFkYviO7f+NmHI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YV/5g+SXdd8AwOW8fmzPITDDpPOnUiZpSf7aqHm6qCfH5Tj9hAts5HJyJ/uOcGG78ZYHdSnujbvMhLwEVp/gKhC4JwXeV0mH/kabv69pez3vLvWww8WvJ6nF2igUf2tkiBzXqrjHwC13WiGbcbnIUfLNogOhrIAOnsJD5zLoTUU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rh16Qq+Q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5B3AC433C7;
-	Tue,  5 Mar 2024 00:17:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709597832;
-	bh=X24FBJ7XKj3QZoWahGRowLBOY8gsvUFkYviO7f+NmHI=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Rh16Qq+QpyKJbfey5Su2Sp04RYCIIfFAzU9qcg7OcmOtsMQlXIYp4+bCZcghLTvo4
-	 NSC9pvM1mWWGLX3fHP0wojBk/mDWI75mgUuuUliUSTpmKKdteUqaoxPeQRq1lhPA5t
-	 AortwTaUJrHTrX61rm/yIYsKytn+RZrg/7dYGSWfzOyxdmTirsI0gZtb/wf4Yn3mME
-	 s+haz5gntfbcqfebHLHDOLWE9jsHh3HkOyW4RulZNmD4K60obOP4/bwp2uKGgg7PWS
-	 3V6h8DWWeXDBltPErP/DXxT19tDfZH20XpHustHpT+atpmcJaaImKIOT9apFC9PhB8
-	 IpQT1MIEMD/QQ==
-From: Jaegeuk Kim <jaegeuk@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net
-Cc: Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [PATCH] f2fs: add a proc entry show disk map
-Date: Mon,  4 Mar 2024 16:17:08 -0800
-Message-ID: <20240305001709.637722-1-jaegeuk@kernel.org>
-X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
+	s=arc-20240116; t=1709597857; c=relaxed/simple;
+	bh=EGdt9lHTEjDMZR1HMzL2el49l+RGwZsoTUfjQ6aH4DM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Eu+Vm2+rzKwaHst/UFF5fY6qdJTpXr4wSeFGRLgMDAuGYef4tF1UYWaG8gWMgR5vJmqG1iDVTvZycEFLrhoAq6H2fnVUgq8HMHdLEm8NmEYbhdsLncAdBSYXrTPzPb8h9J3JExrREqNUXF8FsIPD4uiB+n1M3Bg/77+qRQelvdw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Kb3JD2ii; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d275e63590so72943951fa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 16:17:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1709597853; x=1710202653; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=04RFNLETldESkGJGwcG8LM1lX28hFKdyu6jyBc5NNUg=;
+        b=Kb3JD2ii6BL1wVJ8B0eoLy0j3xwYHYDhQQKII09NHYl0/cE+wg8tlrM2PYrWfKr7ZW
+         t2u3NSB4R6Mm+p9CRbZP9AeGa7Pf/tuRm9jSyu17NbfvK07fkBEdu9pkeR1b4ucU4mha
+         DuMNdFAuPSFGIfjMS34DmchutKR3XznsvBrzY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709597853; x=1710202653;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=04RFNLETldESkGJGwcG8LM1lX28hFKdyu6jyBc5NNUg=;
+        b=N1JvhtQK3zS697pQl4LRiEU9u3NqhBVvB5lmRgWbHrpLtiIaNmjg8Fx2/Ma6Jy6Gl6
+         RSW3ZHJM26UvAZb7jjoeL/IOCrhRrYi1mpkYBJAfioHltAkDam9xIYTcASSmQM0VeDZb
+         tg+1eqdl6iIwdzccjJ70RzrNc7jyulTfb3ajJXQYfnJE+TXhv+wbNw7wcPdXyuMW7OIt
+         OaB5PyDFmR9fTdD0cJ4KvFYuujuzSRbJSa4wgE3tTYv0IbO5qk3/GhLS5ORFeDo3JMws
+         rXNMRXZUJK/M0m7cUVQY3ouvHdaAM+RWXwZozyipd8paenxjYSS0uXoG18vfRs/WN/F5
+         k5Dg==
+X-Gm-Message-State: AOJu0YxtF+yeFdmi5L5rzezVqbr6RhdMHwzaT3pCEHjRoyoLBZp8mhW6
+	7GmVXMGHHeqiTnPif4h6US2jo3thsJzkWtDeI95oD75KwSAmZAFqj2fF3n3RmZC/CPl7PSwJGvg
+	UOvQ=
+X-Google-Smtp-Source: AGHT+IEXTOqSwNo7t8edbmirFg7XmqOtY/3OQ+SftBDNP5nadb9K1Qi2SkhdZlGNuBl7HF3eqoSP7A==
+X-Received: by 2002:a2e:884a:0:b0:2d3:a1fd:4ad2 with SMTP id z10-20020a2e884a000000b002d3a1fd4ad2mr240078ljj.37.1709597853605;
+        Mon, 04 Mar 2024 16:17:33 -0800 (PST)
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
+        by smtp.gmail.com with ESMTPSA id y26-20020a2e321a000000b002d2ddcc12acsm1913955ljy.42.2024.03.04.16.17.32
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Mar 2024 16:17:33 -0800 (PST)
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-5101cd91017so7099123e87.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 16:17:32 -0800 (PST)
+X-Received: by 2002:a05:6512:3ca9:b0:513:2508:7b2a with SMTP id
+ h41-20020a0565123ca900b0051325087b2amr212844lfv.65.1709597852572; Mon, 04 Mar
+ 2024 16:17:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240302111244.3a1674be@gandalf.local.home> <CAHk-=wj376WMgZ24wKGEWDs_ojNtod-LDZBedPzDYRRcY60UYA@mail.gmail.com>
+ <20240302145958.05aabdd2@rorschach.local.home> <CAHk-=wgjhdRj1V847NTF4veMN_tCbrySiEHXO8RO3n05cNeXeA@mail.gmail.com>
+ <20240302154713.71e29402@rorschach.local.home> <CAHk-=wioeo5vyEWUZcGBKMsf3jnjrnnHc3uJiV=JjSKPdvZOEw@mail.gmail.com>
+ <20240303075937.36fc6043@rorschach.local.home> <CAHk-=wiLdWetJgKHB72VeDALZsjpggEyyuiZ2KmoY_g+3horwQ@mail.gmail.com>
+ <20240303140705.0f655e36@rorschach.local.home> <CAHk-=wiTGmAXfHiRB8ku4diLxRpN=Hac_q86=j65oiP3J5uXKg@mail.gmail.com>
+ <20240303160024.458d4f91@rorschach.local.home> <20240304164205.3245608a@gandalf.local.home>
+ <CAHk-=wgwy-p_zodT0JvkVkkd5MWy9NffC3jiDiczMMHPj1eQ9w@mail.gmail.com>
+ <20240304171034.08d037aa@gandalf.local.home> <CAHk-=wi53cJEKim7UvUXtdhQG1BR7oU5TABPXaOq5SmBKLSKYg@mail.gmail.com>
+ <20240304184725.55449e70@gandalf.local.home> <20240304185241.7ce42097@gandalf.local.home>
+In-Reply-To: <20240304185241.7ce42097@gandalf.local.home>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Mon, 4 Mar 2024 16:17:15 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgR7NrXTk8rJbWEv0PBN5z8kbyWaWqKO_UDnK1DXoSbqg@mail.gmail.com>
+Message-ID: <CAHk-=wgR7NrXTk8rJbWEv0PBN5z8kbyWaWqKO_UDnK1DXoSbqg@mail.gmail.com>
+Subject: Re: [GIT PULL] tracing: Prevent trace_marker being bigger than
+ unsigned short
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Sachin Sant <sachinp@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 
-This patch adds the disk map of block address ranges configured by multiple
-partitions.
+On Mon, 4 Mar 2024 at 15:50, Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> But this still isn't fixing anything. It's just adding a limit.
 
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
----
- fs/f2fs/sysfs.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+Limiting things to a common maximum size is a good thing. The kernel
+limits much  more important things for very good reasons.
 
-diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
-index 10f308b3128f..e81af6adb85b 100644
---- a/fs/f2fs/sysfs.c
-+++ b/fs/f2fs/sysfs.c
-@@ -1492,6 +1492,27 @@ static int __maybe_unused discard_plist_seq_show(struct seq_file *seq,
- 	return 0;
- }
- 
-+static int __maybe_unused disk_map_seq_show(struct seq_file *seq,
-+						void *offset)
-+{
-+	struct super_block *sb = seq->private;
-+	struct f2fs_sb_info *sbi = F2FS_SB(sb);
-+	int i;
-+
-+	seq_puts(seq, "Disk Map for multi devices:\n");
-+	if (!f2fs_is_multi_device(sbi))
-+		return 0;
-+
-+	for (i = 0; i < sbi->s_ndevs; i++) {
-+		seq_printf(seq, "%2d (zoned=%d): %20x - %20x",
-+			i, bdev_is_zoned(FDEV(i).bdev),
-+			FDEV(i).start_blk, FDEV(i).end_blk);
-+		seq_putc(seq, '\n');
-+	}
-+	return 0;
-+}
-+
-+
- int __init f2fs_init_sysfs(void)
- {
- 	int ret;
-@@ -1573,6 +1594,8 @@ int f2fs_register_sysfs(struct f2fs_sb_info *sbi)
- 				victim_bits_seq_show, sb);
- 	proc_create_single_data("discard_plist_info", 0444, sbi->s_proc,
- 				discard_plist_seq_show, sb);
-+	proc_create_single_data("disk_map", 0444, sbi->s_proc,
-+				disk_map_seq_show, sb);
- 	return 0;
- put_feature_list_kobj:
- 	kobject_put(&sbi->s_feature_list_kobj);
--- 
-2.44.0.278.ge034bb2e1d-goog
+The kernel really shouldn't have big strings. EVER.  And it literally
+shows in our kernel infrastructure. It showed in that vsnprintf
+precision thing. It shows in our implementation choices, where we tend
+to have simplistic implementations because doing things a byte at a
+time is simple and cheap when the strings are limited in size (and we
+don't want fancy and can't use vector state anyway).
 
+If something as core as a pathname can be limited to 4kB, then
+something as unimportant as a trace string had better be limited too.
+Because we simply DO NOT WANT to have to deal with longer strings in
+the kernel.
+
+             Linus
 
