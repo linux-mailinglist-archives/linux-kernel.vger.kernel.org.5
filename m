@@ -1,329 +1,239 @@
-Return-Path: <linux-kernel+bounces-91778-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91779-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25212871674
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:14:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7103871675
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:14:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 653ADB255B5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:14:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3DCB11F251E5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:14:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E22357E786;
-	Tue,  5 Mar 2024 07:12:46 +0000 (UTC)
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67C0B7D3E8
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 07:12:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D92067D40D;
+	Tue,  5 Mar 2024 07:13:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="WD3c54wF"
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 554C17D3FE
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 07:13:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709622766; cv=none; b=vGCI827Ei/GC7YjdQ5whFUI1oudDyMudLXLpIZeOvAc9hP0vEL2dO/qTpmIBLAuJ+Fqu374CA+QmxU3AzMoVJqPw/iunsCiMrK/EOT7dl1c++Ub4FnrVvEyiiFUoDGg1Py2H7YGd/MMlAogV13r5YhShH1/qcZTz+QM6wge3/ug=
+	t=1709622839; cv=none; b=jTxOFnHAKa4SontxcGci8ANMr2TsyDsoci51WHBNIIRzKn+5HDNN8JAFEAcVWns4P+rlIWDXYEMJ8edFSsORLoIq16iFvbXdW8WXbi/o5r0l//XwG3ygBNE/eJpMkj13/E1mfhsPYI/fIPTBotah2vKl4zFjREoIjo3KqS6OqKc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709622766; c=relaxed/simple;
-	bh=asXHNKtmC1JAF/qBeybMADStlhTLErDP8PUX2cgTWtQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mCWyUfqZadXzYwzTFKzuZqIKHL2LJf82qrbLX1LSrIaVF+lQgezlo1QpFeTgWV0ZbB1c/92hNyjQnJpepMC1rTljeCC6q0yxHPQaZYAXbhg7RhnjRZZA1G1xvsRVAu6YJL9ClFiKIpkvVWXCu9LEc3g1hy9hB0iFYf4d029dwzM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-d85ff70000001748-dc-65e6c5e6c5e3
-Date: Tue, 5 Mar 2024 16:12:32 +0900
-From: Byungchul Park <byungchul@sk.com>
-To: "Huang, Ying" <ying.huang@intel.com>
-Cc: akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, kernel_team@skhynix.com, yuzhao@google.com,
-	hannes@cmpxchg.org
-Subject: Re: [PATCH v6] mm, vmscan: retry kswapd's priority loop with
- cache_trim_mode off on failure
-Message-ID: <20240305071232.GB37850@system.software.com>
-References: <20240304033611.GD13332@system.software.com>
- <20240304082118.20499-1-byungchul@sk.com>
- <87zfvda1f8.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <20240305023708.GA60719@system.software.com>
- <20240305024345.GB60719@system.software.com>
- <20240305040930.GA21107@system.software.com>
- <87le6x9p6u.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <20240305065846.GA37850@system.software.com>
- <87cys99n1r.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	s=arc-20240116; t=1709622839; c=relaxed/simple;
+	bh=qjn1MClIVlhpCS2WnOAUFuK98tnfyfZqG2al78vw7V0=;
+	h=From:To:Cc:In-Reply-To:Subject:Date:Message-ID:MIME-Version:
+	 Content-Type:References; b=ZnOwmwjXn9kIg3X55owsKcveGZheKqdUE6zI65PE5dVt6oxcHnkmha3NJTvPFAf9BdCMAUPuSdN+JUtkFIAnB7bjH+XvJBRUOnelnAtYIONzuCtlUDozERIsMpAt8etPOEr7dpMI8Z8x7oC86et6zB8HOACFPm/ANTe8r5fQBSg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=WD3c54wF; arc=none smtp.client-ip=203.254.224.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+	by mailout3.samsung.com (KnoxPortal) with ESMTP id 20240305071354epoutp03df26a0ac99118a0fe226d164e466a955~5zOjm-JzF3198631986epoutp03Z
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 07:13:54 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20240305071354epoutp03df26a0ac99118a0fe226d164e466a955~5zOjm-JzF3198631986epoutp03Z
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1709622834;
+	bh=i0/7wU6maBox3QHG8eiO+M+gy+7QDGcXbrlsWy7wG+M=;
+	h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+	b=WD3c54wFcGAfwInqvBVUAAi0ILHfepVpx6aey81v8G5lwbhvwDYaWAvrdd+w+XEfB
+	 6RvgnL9qQpvWyJJTnVCv63gUjZTUKQfYTz+XfEKLgwAxIFHOwh+F22w1/lmHO6gpVp
+	 gM/vF3ZAbulylHFXO8vc6eAoJjWavBgQKpyKvebg=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+	epcas2p2.samsung.com (KnoxPortal) with ESMTP id
+	20240305071353epcas2p23815bcdcce2643b6616dec4e5d6a5933~5zOjYHsSa3266232662epcas2p2V;
+	Tue,  5 Mar 2024 07:13:53 +0000 (GMT)
+Received: from epsmgec2p1-new.samsung.com (unknown [182.195.36.88]) by
+	epsnrtp1.localdomain (Postfix) with ESMTP id 4Tpmy93G8Gz4x9Q0; Tue,  5 Mar
+	2024 07:13:53 +0000 (GMT)
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+	epsmgec2p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	BB.C5.18994.136C6E56; Tue,  5 Mar 2024 16:13:53 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+	epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
+	20240305071353epcas2p4187f5e0311d9bd706c863f38ccf13869~5zOifERbV0955809558epcas2p4-;
+	Tue,  5 Mar 2024 07:13:53 +0000 (GMT)
+Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
+	epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+	20240305071353epsmtrp2ef2112899a60ebcf642de0a5583771c0~5zOiefrY_2507325073epsmtrp2x;
+	Tue,  5 Mar 2024 07:13:53 +0000 (GMT)
+X-AuditID: b6c32a4d-743ff70000004a32-c7-65e6c6311a3f
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+	epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	CE.34.07368.036C6E56; Tue,  5 Mar 2024 16:13:52 +0900 (KST)
+Received: from KORCO121695 (unknown [10.229.18.202]) by epsmtip2.samsung.com
+	(KnoxPortal) with ESMTPA id
+	20240305071352epsmtip2ea348fecbfe8206b300dec36946eac23~5zOiUQ4SZ3111131111epsmtip2Z;
+	Tue,  5 Mar 2024 07:13:52 +0000 (GMT)
+From: "bumyong.lee" <bumyong.lee@samsung.com>
+To: "'karthikeyan'" <karthikeyan@linumiz.com>, <vkoul@kernel.org>
+Cc: <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<parthiban@linumiz.com>, <saravanan@linumiz.com>
+In-Reply-To: <1553a526-6f28-4a68-88a8-f35bd22d9894@linumiz.com>
+Subject: RE: dmaengine: CPU stalls while loading bluetooth module
+Date: Tue, 5 Mar 2024 16:13:52 +0900
+Message-ID: <000001da6ecc$adb25420$0916fc60$@samsung.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87cys99n1r.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrKLMWRmVeSWpSXmKPExsXC9ZZnke6zo89SDe42cFjMWb+GzWL1Jl+L
-	y7vmsFncW/Of1eLkrMksFu8mfGF1YPM4/OY9s8eCTaUei/e8ZPLY9GkSu8eJGb9ZPD5vkgtg
-	i+KySUnNySxLLdK3S+DK+DzhC3PB7uiKfde2MzcwfnboYuTkkBAwkXi5+yxbFyMHmL3kWxBI
-	mEVAReL2p5OsIDabgLrEjRs/mUFsEQENiU8Ll7N3MXJxMAtMZpR4tn8NC0hCWCBN4tWxz2BF
-	vAIWEkev7QMrEhLYwyxxePJWdoiEoMTJmU/AGpgFtCRu/HvJBLKYWUBaYvk/DpAwp4CdxKum
-	L2wgtqiAssSBbceZQOZICGxhk1hyaAoLxNGSEgdX3GCZwCgwC8nYWUjGzkIYu4CReRWjUGZe
-	WW5iZo6JXkZlXmaFXnJ+7iZGYGAvq/0TvYPx04XgQ4wCHIxKPLwn9j1NFWJNLCuuzD3EKMHB
-	rCTCW/PrSaoQb0piZVVqUX58UWlOavEhRmkOFiVxXqNv5SlCAumJJanZqakFqUUwWSYOTqkG
-	xuK5An6zLR82CPHd58zKcvV4GyLSYKD2+rG8nsmKXZt/XeXkDJ4S35X69ZOqtXze9WuvzjLd
-	futbLSlY3z9v72EXtRKDww4Pm8LeXDFXYg5IvGq0eqJJ1q4D298YWJ1wXjMzrvPgRedTvX6R
-	S/vrPRzCtUwULjJ3XgteNss+IWKzUMhOhuW+SizFGYmGWsxFxYkAVL/8OmgCAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrDLMWRmVeSWpSXmKPExsXC5WfdrPv06LNUg61rLS3mrF/DZrF6k6/F
-	4bknWS0u75rDZnFvzX9Wi5OzJrNYvJvwhdWB3ePwm/fMHgs2lXos3vOSyWPTp0nsHidm/Gbx
-	WPziA5PH501yAexRXDYpqTmZZalF+nYJXBmfJ3xhLtgdXbHv2nbmBsbPDl2MHBwSAiYSS74F
-	dTFycrAIqEjc/nSSFcRmE1CXuHHjJzOILSKgIfFp4XL2LkYuDmaByYwSz/avYQFJCAukSbw6
-	9hmsiFfAQuLotX1gRUICe5glDk/eyg6REJQ4OfMJWAOzgJbEjX8vmUAWMwtISyz/xwES5hSw
-	k3jV9IUNxBYVUJY4sO040wRG3llIumch6Z6F0L2AkXkVo0hmXlluYmaOqV5xdkZlXmaFXnJ+
-	7iZGYJguq/0zcQfjl8vuhxgFOBiVeHgvHH2aKsSaWFZcmXuIUYKDWUmEt+bXk1Qh3pTEyqrU
-	ovz4otKc1OJDjNIcLErivF7hqQlCAumJJanZqakFqUUwWSYOTqkGxpQVH7tP8vMaqc9cnrNu
-	+3zz/Nq592bp2dzhtfSdsyfC9nqFlJ2idOh7dR2xd/KTJ66uXm52Ou2l8UHHJ0cP1BxLXdfe
-	tjotyUq/pfCZQUlfY6jk063bM578uSBTJbxl+c0f22rtD1yJt0w+Mr3it+2yg07b1qw/1j17
-	drVz8tf6GA4ju9PH5iixFGckGmoxFxUnAgC08Av3TwIAAA==
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQMwipOl/cAOi38P2p1VCUOGtvzp0QMWgtoHrmPNqBA=
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupgk+LIzCtJLcpLzFFi42LZdljTQtfw2LNUg0u3hS1WT/3LarFjtabF
+	5V1z2Cx23/7DavFuj6LFzjsnmB3YPDat6mTz2P75FLvH501yAcxR2TYZqYkpqUUKqXnJ+SmZ
+	eem2St7B8c7xpmYGhrqGlhbmSgp5ibmptkouPgG6bpk5QFuVFMoSc0qBQgGJxcVK+nY2Rfml
+	JakKGfnFJbZKqQUpOQXmBXrFibnFpXnpenmpJVaGBgZGpkCFCdkZVz8HFPyXr5j94RhzA+M8
+	yS5GTg4JAROJzpPTGbsYuTiEBPYwSvRu2M8M4XxilPh9/g8rhPONUeLizg5GmJavr95AJfYy
+	SnR82s8C4bxklDi9v48NpIpNQFdi5suDLCC2iICjxIzPl1hBbGaBYolHTYfAJnEK2Ess6lvE
+	DmILA9X0TpoAVsMioCJx/OZCZhCbV8BSovn0eiYIW1Di5MwnLBBztCWWLXzNDHGRgsTPp8tY
+	IXZZSRy7u4UdokZEYnZnG9g/EgI/2SUWdy1hh2hwkTjw/wIrhC0s8er4Fqi4lMTnd3vZIOx8
+	iZlzbrBA2DUSX+/9g4oDHX3mJ1A9B9ACTYn1u/RBTAkBZYkjt6BO45PoOPyXHSLMK9HRJgRh
+	qko03ayHmCEtsezMDNYJjEqzkPw1C8lfs5DcPwth1QJGllWMUqkFxbnpqclGBYa6eanl8OhO
+	zs/dxAhOklq+Oxhfr/+rd4iRiYPxEKMEB7OSCG/NryepQrwpiZVVqUX58UWlOanFhxhNgaE9
+	kVlKNDkfmKbzSuINTSwNTMzMDM2NTA3MlcR577XOTRESSE8sSc1OTS1ILYLpY+LglGpgYnzo
+	ws+c8fZEWeTth4z3Ilx9TDLrZ767Icb24kZ+o2zbRe3Dp5f+b1x8mrfgpApXVK2K8zP/7Bih
+	s02X3s6XWMP/U/Uzz/uconOrdAM73e7za2Y/jbx54su6HKltlmZSjJqrHUpvPMy+IrjPTSos
+	Z7XCM9nHKhtaLR0/X9i+hfNh4rv7SgvZuYI1N/B9mD57R0t1G2+UKNff5k8e7Q+K5y9+YaN2
+	81l8nl3ve79pvoycL87+qj3ysfp3kEeL/eywLWlxnqciZz1cu+/IH4OKvxVT3+wUUXhQuHvO
+	xdkZKecN705a2RimrXmtyENLQZlx2RTnlnbvrepPWjouxd26ZOb03df88qnf0Xx9S3mMlFiK
+	MxINtZiLihMBXnZzaRsEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrELMWRmVeSWpSXmKPExsWy7bCSvK7BsWepBm9OW1msnvqX1WLHak2L
+	y7vmsFnsvv2H1eLdHkWLnXdOMDuweWxa1cnmsf3zKXaPz5vkApijuGxSUnMyy1KL9O0SuDKW
+	NVxhK/ghV3Hk2VzGBsapEl2MnBwSAiYSX1+9Ye1i5OIQEtjNKHFgySd2iIS0xIvWb6wQtrDE
+	/ZYjUEXPGSXe9yxhAUmwCehKzHx5EMjm4BARcJaYey8LJMwsUC5x7cBtJoj6CYwSrXfugQ3i
+	FLCXWNS3CGyBsICjRO+kCWBxFgEVieM3FzKD2LwClhLNp9czQdiCEidnPmGBGKot8fTmUzh7
+	2cLXzBDHKUj8fLoMbI6IgJXEsbtb2CFqRCRmd7YxT2AUnoVk1Cwko2YhGTULScsCRpZVjJKp
+	BcW56bnJhgWGeanlesWJucWleel6yfm5mxjB0aKlsYPx3vx/eocYmTgYDzFKcDArifDW/HqS
+	KsSbklhZlVqUH19UmpNafIhRmoNFSZzXcMbsFCGB9MSS1OzU1ILUIpgsEwenVAOTw39Nhlti
+	5Td/Rp3Jfd7p0ea27LmV6e22iVKGOy03/zgg7BgbzZEWzMy44n+2xLa539S5jM6dS5DxUprT
+	1ijCY3aIN31pDY8b/4qr54MS/io9tl+kF8s4yV3m8MVnrrtL+NR0Ou7t/rP6xy9Dw+wPDFeZ
+	NsyKe7hcfpGjxBfJbMUfEa7rEr59uSt0tipx650frObOe15KP+dLkxD+2Rt7zVaDvWCySN6X
+	OfZsWX6nHZ2/77ghxvSkJ/JD+Ea+l6mlWVffnD9vImA09Z7r3jtRYn+rRZfyvjZ8VLTw6eTJ
+	x1Uf9e/gfjtlX0KTnvXf6+G/9eZxndu2fUrCLK1Haw45L/hi8/3Mz8ycgOmba7JvKrEUZyQa
+	ajEXFScCAJau2D8FAwAA
+X-CMS-MailID: 20240305071353epcas2p4187f5e0311d9bd706c863f38ccf13869
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
 X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20240305062038epcas2p143c5e1e725d8a934b0208266a2f78ccb
+References: <CGME20240305062038epcas2p143c5e1e725d8a934b0208266a2f78ccb@epcas2p1.samsung.com>
+	<1553a526-6f28-4a68-88a8-f35bd22d9894@linumiz.com>
 
-On Tue, Mar 05, 2024 at 03:04:48PM +0800, Huang, Ying wrote:
-> Byungchul Park <byungchul@sk.com> writes:
-> 
-> > On Tue, Mar 05, 2024 at 02:18:33PM +0800, Huang, Ying wrote:
-> >> Byungchul Park <byungchul@sk.com> writes:
-> >> 
-> >> > On Tue, Mar 05, 2024 at 11:43:45AM +0900, Byungchul Park wrote:
-> >> >> On Tue, Mar 05, 2024 at 11:37:08AM +0900, Byungchul Park wrote:
-> >> >> > On Tue, Mar 05, 2024 at 09:54:19AM +0800, Huang, Ying wrote:
-> >> >> > > Byungchul Park <byungchul@sk.com> writes:
-> >> >> > > 
-> >> >> > > > Changes from v5:
-> >> >> > > > 	1. Make it retry the kswapd's scan priority loop with
-> >> >> > > > 	   cache_trim_mode off *only if* the mode didn't work in the
-> >> >> > > > 	   previous loop. (feedbacked by Huang Ying)
-> >> >> > > > 	2. Take into account 'break's from the priority loop when making
-> >> >> > > > 	   the decision whether to retry. (feedbacked by Huang Ying)
-> >> >> > > > 	3. Update the test result in the commit message.
-> >> >> > > >
-> >> >> > > > Changes from v4:
-> >> >> > > > 	1. Make other scans start with may_cache_trim_mode = 1.
-> >> >> > > >
-> >> >> > > > Changes from v3:
-> >> >> > > > 	1. Update the test result in the commit message with v4.
-> >> >> > > > 	2. Retry the whole priority loop with cache_trim_mode off again,
-> >> >> > > > 	   rather than forcing the mode off at the highest priority,
-> >> >> > > > 	   when the mode doesn't work. (feedbacked by Johannes Weiner)
-> >> >> > > >
-> >> >> > > > Changes from v2:
-> >> >> > > > 	1. Change the condition to stop cache_trim_mode.
-> >> >> > > >
-> >> >> > > > 	   From - Stop it if it's at high scan priorities, 0 or 1.
-> >> >> > > > 	   To   - Stop it if it's at high scan priorities, 0 or 1, and
-> >> >> > > > 	          the mode didn't work in the previous turn.
-> >> >> > > >
-> >> >> > > > 	   (feedbacked by Huang Ying)
-> >> >> > > >
-> >> >> > > > 	2. Change the test result in the commit message after testing
-> >> >> > > > 	   with the new logic.
-> >> >> > > >
-> >> >> > > > Changes from v1:
-> >> >> > > > 	1. Add a comment describing why this change is necessary in code
-> >> >> > > > 	   and rewrite the commit message with how to reproduce and what
-> >> >> > > > 	   the result is using vmstat. (feedbacked by Andrew Morton and
-> >> >> > > > 	   Yu Zhao)
-> >> >> > > > 	2. Change the condition to avoid cache_trim_mode from
-> >> >> > > > 	   'sc->priority != 1' to 'sc->priority > 1' to reflect cases
-> >> >> > > > 	   where the priority goes to zero all the way. (feedbacked by
-> >> >> > > > 	   Yu Zhao)
-> >> >> > > >
-> >> >> > > > --->8---
-> >> >> > > > From f811ee583158fd53d0e94d32ce5948fac4b17cfe Mon Sep 17 00:00:00 2001
-> >> >> > > > From: Byungchul Park <byungchul@sk.com>
-> >> >> > > > Date: Mon, 4 Mar 2024 15:27:37 +0900
-> >> >> > > > Subject: [PATCH v6] mm, vmscan: retry kswapd's priority loop with cache_trim_mode off on failure
-> >> >> > > >
-> >> >> > > > With cache_trim_mode on, reclaim logic doesn't bother reclaiming anon
-> >> >> > > > pages.  However, it should be more careful to use the mode because it's
-> >> >> > > > going to prevent anon pages from being reclaimed even if there are a
-> >> >> > > > huge number of anon pages that are cold and should be reclaimed.  Even
-> >> >> > > > worse, that leads kswapd_failures to reach MAX_RECLAIM_RETRIES and
-> >> >> > > > stopping kswapd from functioning until direct reclaim eventually works
-> >> >> > > > to resume kswapd.
-> >> >> > > >
-> >> >> > > > So kswapd needs to retry its scan priority loop with cache_trim_mode
-> >> >> > > > off again if the mode doesn't work for reclaim.
-> >> >> > > >
-> >> >> > > > The problematic behavior can be reproduced by:
-> >> >> > > >
-> >> >> > > >    CONFIG_NUMA_BALANCING enabled
-> >> >> > > >    sysctl_numa_balancing_mode set to NUMA_BALANCING_MEMORY_TIERING
-> >> >> > > >    numa node0 (8GB local memory, 16 CPUs)
-> >> >> > > >    numa node1 (8GB slow tier memory, no CPUs)
-> >> >> > > >
-> >> >> > > >    Sequence:
-> >> >> > > >
-> >> >> > > >    1) echo 3 > /proc/sys/vm/drop_caches
-> >> >> > > >    2) To emulate the system with full of cold memory in local DRAM, run
-> >> >> > > >       the following dummy program and never touch the region:
-> >> >> > > >
-> >> >> > > >          mmap(0, 8 * 1024 * 1024 * 1024, PROT_READ | PROT_WRITE,
-> >> >> > > >               MAP_ANONYMOUS | MAP_PRIVATE | MAP_POPULATE, -1, 0);
-> >> >> > > >
-> >> >> > > >    3) Run any memory intensive work e.g. XSBench.
-> >> >> > > >    4) Check if numa balancing is working e.i. promotion/demotion.
-> >> >> > > >    5) Iterate 1) ~ 4) until numa balancing stops.
-> >> >> > > >
-> >> >> > > > With this, you could see that promotion/demotion are not working because
-> >> >> > > > kswapd has stopped due to ->kswapd_failures >= MAX_RECLAIM_RETRIES.
-> >> >> > > >
-> >> >> > > > Interesting vmstat delta's differences between before and after are like:
-> >> >> > > >
-> >> >> > > >    +-----------------------+-------------------------------+
-> >> >> > > >    | interesting vmstat    | before        | after         |
-> >> >> > > >    +-----------------------+-------------------------------+
-> >> >> > > >    | nr_inactive_anon      | 321935        | 1664772       |
-> >> >> > > >    | nr_active_anon        | 1780700       | 437834        |
-> >> >> > > >    | nr_inactive_file      | 30425         | 40882         |
-> >> >> > > >    | nr_active_file        | 14961         | 3012          |
-> >> >> > > >    | pgpromote_success     | 356           | 1293122       |
-> >> >> > > >    | pgpromote_candidate   | 21953245      | 1824148       |
-> >> >> > > >    | pgactivate            | 1844523       | 3311907       |
-> >> >> > > >    | pgdeactivate          | 50634         | 1554069       |
-> >> >> > > >    | pgfault               | 31100294      | 6518806       |
-> >> >> > > >    | pgdemote_kswapd       | 30856         | 2230821       |
-> >> >> > > >    | pgscan_kswapd         | 1861981       | 7667629       |
-> >> >> > > >    | pgscan_anon           | 1822930       | 7610583       |
-> >> >> > > >    | pgscan_file           | 39051         | 57046         |
-> >> >> > > >    | pgsteal_anon          | 386           | 2192033       |
-> >> >> > > >    | pgsteal_file          | 30470         | 38788         |
-> >> >> > > >    | pageoutrun            | 30            | 412           |
-> >> >> > > >    | numa_hint_faults      | 27418279      | 2875955       |
-> >> >> > > >    | numa_pages_migrated   | 356           | 1293122       |
-> >> >> > > >    +-----------------------+-------------------------------+
-> >> >> > > >
-> >> >> > > > Signed-off-by: Byungchul Park <byungchul@sk.com>
-> >> >> > > > ---
-> >> >> > > >  mm/vmscan.c | 21 ++++++++++++++++++++-
-> >> >> > > >  1 file changed, 20 insertions(+), 1 deletion(-)
-> >> >> > > >
-> >> >> > > > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> >> >> > > > index bba207f41b14..6fe45eca7766 100644
-> >> >> > > > --- a/mm/vmscan.c
-> >> >> > > > +++ b/mm/vmscan.c
-> >> >> > > > @@ -108,6 +108,12 @@ struct scan_control {
-> >> >> > > >  	/* Can folios be swapped as part of reclaim? */
-> >> >> > > >  	unsigned int may_swap:1;
-> >> >> > > >  
-> >> >> > > > +	/* Not allow cache_trim_mode to be turned on as part of reclaim? */
-> >> >> > > > +	unsigned int no_cache_trim_mode:1;
-> >> >> > > > +
-> >> >> > > > +	/* Has cache_trim_mode failed at least once? */
-> >> >> > > > +	unsigned int cache_trim_mode_failed:1;
-> >> >> > > > +
-> >> >> > > >  	/* Proactive reclaim invoked by userspace through memory.reclaim */
-> >> >> > > >  	unsigned int proactive:1;
-> >> >> > > >  
-> >> >> > > > @@ -2268,7 +2274,8 @@ static void prepare_scan_control(pg_data_t *pgdat, struct scan_control *sc)
-> >> >> > > >  	 * anonymous pages.
-> >> >> > > >  	 */
-> >> >> > > >  	file = lruvec_page_state(target_lruvec, NR_INACTIVE_FILE);
-> >> >> > > > -	if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE))
-> >> >> > > > +	if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE) &&
-> >> >> > > > +	    !sc->no_cache_trim_mode)
-> >> >> > > >  		sc->cache_trim_mode = 1;
-> >> >> > > >  	else
-> >> >> > > >  		sc->cache_trim_mode = 0;
-> >> >> > > > @@ -5967,6 +5974,8 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
-> >> >> > > >  	 */
-> >> >> > > >  	if (reclaimable)
-> >> >> > > >  		pgdat->kswapd_failures = 0;
-> >> >> > > > +	else if (sc->cache_trim_mode)
-> >> >> > > > +		sc->cache_trim_mode_failed = 1;
-> >> >> > > >  }
-> >> >> > > >  
-> >> >> > > >  /*
-> >> >> > > > @@ -6898,6 +6907,16 @@ static int balance_pgdat(pg_data_t *pgdat, int order, int highest_zoneidx)
-> >> >> > > >  			sc.priority--;
-> >> >> > > >  	} while (sc.priority >= 1);
-> >> >> > > >  
-> >> >> > > > +	/*
-> >> >> > > > +	 * Restart only if it went through the priority loop all the way,
-> >> >> > > > +	 * but cache_trim_mode didn't work.
-> >> >> > > > +	 */
-> >> >> > > > +	if (!sc.nr_reclaimed && sc.priority < 1 &&
-> >> >> > > > +	    !sc.no_cache_trim_mode && sc.cache_trim_mode_failed) {
-> >> >> > > 
-> >> >> > > Can we just use sc.cache_trim_mode (instead of
-> >> >> > > sc.cache_trim_mode_failed) here?  That is, if cache_trim_mode is enabled
-> >> >> > 
-> >> >> > As Johannes mentioned, within a priority scan, all the numa nodes are
-> >> >> > scanned each with its own value of cache_trim_mode. So we cannot use
-> >> >> > cache_trim_mode for that purpose.
-> >> >> 
-> >> >> Ah, okay. Confining to kswapd, that might make sense. I will apply it if
-> >> >> there's no objection to it. Thanks.
-> >> >
-> >> > I didn't want to introduce two additional flags either, but it was
-> >> > possible to make it do exactly what we want it to do thanks to the flags.
-> >> > I'd like to keep this version if possible unless there are any other
-> >> > objections on it.
-> >> 
-> >> Sorry, I'm confused.  Whether does "cache_trim_mode == 1" do the trick?
-> >> If so, why not?  If not, why?
-> >
-> > kswapd might happen to go through:
-> >
-> > priority 12(== DEF_PRIORITY) + cache_trim_mode on -> fail
-> > priority 11 + cache_trim_mode on -> fail
-> > priority 10 + cache_trim_mode on -> fail
-> > priority 9 + cache_trim_mode on -> fail
-> > priority 8 + cache_trim_mode on -> fail
-> > priority 7 + cache_trim_mode on -> fail
-> > priority 6 + cache_trim_mode on -> fail
-> > priority 5 + cache_trim_mode on -> fail
-> > priority 4 + cache_trim_mode on -> fail
-> > priority 3 + cache_trim_mode on -> fail
-> > priority 2 + cache_trim_mode on -> fail
-> > priority 1 + cache_trim_mode off -> fail
-> >
-> > I'd like to retry even in this case. 
-> 
-> I don't think that we should retry in this case.  If the following case
-> fails,
-> 
-> > priority 1 + cache_trim_mode off -> fail
-> 
-> Why will we succeed after retrying?
+Hello.
 
-At priority 1, anon pages will be partially scanned. However, there
-might be anon pages that have never been scanned but can be reclaimed.
+> we have encountered CPU stalls in mainline kernel while loading the
+> bluetooth module. We have custom board based on rockchip rv1109 soc and
+> there is bluetooth chipset of relatek 8821cs. CPU is stalls  while realte=
+k
+> 8821cs module.
+>=20
+> Bug/Regression:
+> In current mainline, we found CPU is stalls when we load bluetooth module=
+.
+> git bisect shows commit 22a9d9585812440211b0b34a6bc02ade62314be4
+> as a bad, which produce CPU stalls.
+>=20
+> git show 22a9d9585812440211b0b34a6bc02ade62314be4
+> commit 22a9d9585812440211b0b34a6bc02ade62314be4
+> Author: Bumyong Lee <bumyong.lee=40samsung.com>
+> Date:   Tue Dec 19 14:50:26 2023 +0900
+>=20
+>      dmaengine: pl330: issue_pending waits until WFP state
+>=20
+>      According to DMA-330 errata notice=5B1=5D 71930, DMAKILL
+>      cannot clear internal signal, named pipeline_req_active.
+>      it makes that pl330 would wait forever in WFP state
+>      although dma already send dma request if pl330 gets
+>      dma request before entering WFP state.
+>=20
+>      The errata suggests that polling until entering WFP state
+>      as workaround and then peripherals allows to issue dma request.
+>=20
+>      =5B1=5D: https://developer.arm.com/documentation/genc008428/latest
+>=20
+>      Signed-off-by: Bumyong Lee <bumyong.lee=40samsung.com>
+>      Link:
+> https://lore.kernel.org/r/20231219055026.118695-1-bumyong.lee=40samsung.c=
+om
+>      Signed-off-by: Vinod Koul <vkoul=40kernel.org>
+>=20
+> diff --git a/drivers/dma/pl330.c b/drivers/dma/pl330.c index
+> 3cf0b38387ae..c29744bfdf2c 100644
+> --- a/drivers/dma/pl330.c
+> +++ b/drivers/dma/pl330.c
+> =40=40 -1053,6 +1053,9 =40=40 static bool _trigger(struct pl330_thread *t=
+hrd)
+>=20
+>          thrd->req_running =3D idx;
+>=20
+> +       if (desc->rqtype =3D=3D DMA_MEM_TO_DEV =7C=7C desc->rqtype =3D=3D
+> DMA_DEV_TO_MEM)
+> +               UNTIL(thrd, PL330_STATE_WFP);
+> +
+>          return true;
+>   =7D
+>=20
+> By reverting this commit, we have success in loading of bluetooth module.
+>=20
+>=20
 
-Do I get it wrong?
+> Output of CPU stalls:
+> =23 modprobe hci_uart
+> =5B   27.024749=5D Bluetooth: HCI UART driver ver 2.3
+> =5B   27.025284=5D Bluetooth: HCI UART protocol Three-wire (H5) registere=
+d
+> =23 =5B   28.125338=5D dwmmc_rockchip ffc70000.mmc: Unexpected interrupt =
+latency
+> =5B   33.245339=5D dwmmc_rockchip ffc50000.mmc: Unexpected interrupt late=
+ncy
+> =5B  326.195321=5D rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
+> =5B  326.195880=5D rcu:     0-...0: (3 ticks this GP) idle=3De5f4/1/0x400=
+00000
+> softirq=3D551/552 fqs=3D420
+> =5B  326.196621=5D rcu:              hardirqs   softirqs   csw/system
+> =5B  326.197115=5D rcu:      number:        0          0            0
+> =5B  326.197612=5D rcu:     cputime:        0          0            0   =
+=3D=3D>
+> 10500(ms)
+> =5B  326.198231=5D rcu:     (detected by 1, t=3D2105 jiffies, g=3D-455, q=
+=3D17
+> ncpus=3D2)
+> =5B  326.198823=5D Sending NMI from CPU 1 to CPUs 0:
+>=20
+> Expected Output:
+> =23 modprobe hci_uart
+> =5B   30.690321=5D Bluetooth: HCI UART driver ver 2.3
+> =5B   30.690852=5D Bluetooth: HCI UART protocol Three-wire (H5) registere=
+d
+> =23 =5B   31.453586=5D Bluetooth: hci0: RTL: examining hci_ver=3D08 hci_r=
+ev=3D000c
+> lmp_ver=3D08 lmp_subver=3D8821
+> =5B   31.458061=5D Bluetooth: hci0: RTL: rom_version status=3D0 version=
+=3D1
+> =5B   31.458608=5D Bluetooth: hci0: RTL: loading rtl_bt/rtl8821cs_fw.bin
+> =5B   31.465029=5D Bluetooth: hci0: RTL: loading rtl_bt/rtl8821cs_config.=
+bin
+> =5B   31.483926=5D Bluetooth: hci0: RTL: cfg_sz 25, total sz 36953
+> =5B   32.213105=5D Bluetooth: hci0: RTL: fw version 0x75b8f098
+> =5B   32.274216=5D Bluetooth: MGMT ver 1.22
+> =5B   32.285376=5D NET: Registered PF_ALG protocol family
 
-	Byungchul
+I discussed this issue. Could you refer to this=5B1=5D?
+I haven't received anymore reply from him after that.
+If you have any more opinion, please let me know.
 
-> --
-> Best Regards,
-> Huang, Ying
-> 
-> > Am I missing something?
-> >
-> > 	Byungchul
-> >
-> >> --
-> >> Best Regards,
-> >> Huang, Ying
-> >> 
-> >> > 	Byungchul
-> >> >
-> >> >> 	Byungchul
-> >> >> > 
-> >> >> > 	Byungchul
-> >> >> > 
-> >> >> > > for priority == 1 and failed to reclaim, we will restart.  If this
-> >> >> > > works, we can avoid to add another flag.
-> >> >> > > 
-> >> >> > > > +		sc.no_cache_trim_mode = 1;
-> >> >> > > > +		goto restart;
-> >> >> > > > +	}
-> >> >> > > > +
-> >> >> > > >  	if (!sc.nr_reclaimed)
-> >> >> > > >  		pgdat->kswapd_failures++;
-> >> >> > > 
-> >> >> > > --
-> >> >> > > Best Regards,
-> >> >> > > Huang, Ying
+=5B1=5D: https://lore.kernel.org/lkml/000001da3869=24ca643fa0=245f2cbee0=24=
+=40samsung.com/T/
+
+Best Regards
+
 
