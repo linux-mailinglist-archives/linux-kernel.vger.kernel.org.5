@@ -1,156 +1,186 @@
-Return-Path: <linux-kernel+bounces-92001-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91999-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E99C871991
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:27:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC44887198C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:26:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 806351C21FD3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:27:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A34782827F3
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:26:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FCC852F6F;
-	Tue,  5 Mar 2024 09:27:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87C2C52F8A;
+	Tue,  5 Mar 2024 09:26:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PUTCgjJA"
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ZWlVZcGN";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="jOQ63t/G";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ZWlVZcGN";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="jOQ63t/G"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2D4D524B1;
-	Tue,  5 Mar 2024 09:27:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 389AC524BC
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 09:26:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709630864; cv=none; b=MhZfK0sPfmmpzLTNx7eIqEX/VKBpkhyAekpYe12kllSz/EIT1KFe4twgX+5OWerB2qSGdadY/cmDn2HkcJuNcCd2uMG4JTTYXvyekr5AzSRQhCdAJ4Z2tOLBnc2FfizWkr/xFeYLe8hENUZsmioV/MJYzPAUgo8dO1txZ9FvMEw=
+	t=1709630798; cv=none; b=tjnt0RTCovrlw8u3XMspU07GCuFYXQuyB8Gt2eRx7f61fEmaXIOFH8XvLvQsgXOYuY9JH472srPTs7gckcqEuSvmBsTuuH9GYkp1AehyqSbjVbfH7dFz6n2MMx0sFP4xVPJFzrKXamQ+gRHAsHJvsSk8W7eAb5We6p3mkrDIE10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709630864; c=relaxed/simple;
-	bh=hhP4XU8PPTJplv1l0YzJ9uullD2EJhJdpXiJno/Icvk=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=S67sKZaj6Xx7j8VxEUnCcJZnCzcIrbV5QdYO2ZAhKaU2FL1i33OYNQVPy4S8WY5GgJ0uRDKZ+5LDxZSqeMkBFOMGlRvePRrgrV2oQUgnIeInY71v8dO6OXyaoalN9YNfvfn8GYfUy9QE0FhfpZSeahqdy+uxmOrCHcdzTbHcE1A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PUTCgjJA; arc=none smtp.client-ip=209.85.215.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-53fa455cd94so387126a12.2;
-        Tue, 05 Mar 2024 01:27:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709630862; x=1710235662; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to:date
-         :subject:cc:to:from:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hhP4XU8PPTJplv1l0YzJ9uullD2EJhJdpXiJno/Icvk=;
-        b=PUTCgjJAzeCKOOEjPebtJkF01LrwKBSpxW8uRE/Y+Bi5mcp91sV6x5Udt58tcg6Tqs
-         Rjb1BuRX/ghzVuSL2lrQRsi9XskD0HIA3ruqGK5Ii3vaZvuVwQiw7ssZPIDd/SljlJPp
-         Bptatylx4WqjQPNgEsRB+Jjc3auYx6fDrt4w7Gmq4/TQEknXJW/0ij2WJl/UO15Rm38F
-         t85RCuftTYH7m3sjutmoED4ttTDPTm0IC0ijG+kdo8Sw+O5PLR1Lzz4AeQGbLCG+2mfp
-         qOtJenGJXZGPjYQXdzT0J949a3bNRxud/wfJmwKnPq+ZkEnICu9K78bnlP4bGVrvYDTZ
-         Od2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709630862; x=1710235662;
-        h=content-transfer-encoding:mime-version:references:in-reply-to:date
-         :subject:cc:to:from:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=hhP4XU8PPTJplv1l0YzJ9uullD2EJhJdpXiJno/Icvk=;
-        b=I0zZyYspXhrJdYwmQGN52tR1vT3eyKC6pj0LVG92ehVSFlRRAFghz1dNVumfb6zrh1
-         dTNV83uUXZ1OrE1y7LXhjkuP08Gvxg4wLfyJnOgzGzCtE8+UuNsCTwHyMndDzV2NdeHJ
-         aF+mBE3eGiyouAvOewzVC7m8hJRIcDRkO4/mz1Ei1j633kd3ABtLeBRxL5rrSrcofzH/
-         YIOVpkvVf6PIaW1AallAYHjcP3mcOeXeVW321JXeoKylUYOIdvpyyf9rHLhVCmkOCTBI
-         lbzXa4t6fnmDho2+PGdfV7qiNyTjunmnfeBRkaayGprnCnlt444CnOA5Fs67vAG6wcc2
-         miuA==
-X-Forwarded-Encrypted: i=1; AJvYcCUnsx/XB7TTAsrHBCXVKrx/cJuOBYL/8Rb9tkFXmJMv3zcFMXi0voT6Bu8aa59/Daw4yii47nBftCa21szMjIE4iCcmwzQYHwyYsJ8sHUTaDLb0flr3pEp8hBXYpWRy0OhxYQ+DjvD7
-X-Gm-Message-State: AOJu0YwM7gEFgghHGdj0BrGRzEvSTTDEp/Nt4BUU63eS6R+yoO4uI96z
-	+25Bllh9IZXC2IiNpcsjQ6CXHgesEgzb1tw2GQ26Vk1h59X88nWD
-X-Google-Smtp-Source: AGHT+IGR1KL13nTmlMI521isttizQfqG/VQ8qF0ECHK2t/qEmkZsDpPCuyUscmFTfM1I8R7HnWlP8Q==
-X-Received: by 2002:a05:6a20:42a5:b0:1a1:4697:585e with SMTP id o37-20020a056a2042a500b001a14697585emr1318266pzj.18.1709630861848;
-        Tue, 05 Mar 2024 01:27:41 -0800 (PST)
-Received: from localhost.localdomain ([2402:3a80:863:befc:ec5c:8cb:6f1e:1f69])
-        by smtp.gmail.com with ESMTPSA id y16-20020a056a00181000b006e63039486esm1812329pfa.189.2024.03.05.01.27.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 01:27:41 -0800 (PST)
-Message-ID: <65e6e58d.050a0220.6580e.7a57@mx.google.com>
-X-Google-Original-Message-ID: <20240103122005.GA3347@francesco-nb> (raw)
-From: pratikmanvar09@gmail.com
-To: francesco@dolcini.it
-Cc: festevam@gmail.com,
-	jun.li@nxp.com,
-	kernel@pengutronix.de,
-	linux-arm-kernel@lists.infradead.org,
-	linux-imx@nxp.com,
-	linux-kernel@vger.kernel.org,
-	linux-pwm@vger.kernel.org,
-	oe-kbuild-all@lists.linux.dev,
-	pratik.manvar@ifm.com,
-	pratikmanvar09@gmail.com,
-	s.hauer@pengutronix.de,
-	shawnguo@kernel.org,
-	thierry.reding@gmail.com,
-	u.kleine-koenig@pengutronix.de,
-	xiaoning.wang@nxp.com
-Subject: Re: [PATCH v3] pwm: imx27: workaround of the pwm output bug
-Date: Tue,  5 Mar 2024 14:57:29 +0530
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240103110200.1018-1-pratikmanvar09@gmail.com>
-References: <20240103122005.GA3347@francesco-nb>
+	s=arc-20240116; t=1709630798; c=relaxed/simple;
+	bh=1GJ4pLEJiBySr2ubLiSDXv0LJGp0y8MnW0BrFhpcjXY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qOSxffOC+g2FlPyHih5CG4Njp9m3RmGtWTdvWSjCp+IL1wsEXCjCfwcvLhDaYGX3mCPkGFd/9OggMc8ztaz8MM89H22xfWbvG/ivvzlEBKw0yZiz/cRlD016OxpjiYoxQ16lGzUhthSG/tZljqcjG/MsOMOwyk0Bl4KwioIkwjA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ZWlVZcGN; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=jOQ63t/G; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ZWlVZcGN; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=jOQ63t/G; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 24BDA6A9DE;
+	Tue,  5 Mar 2024 09:26:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1709630795; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ykjUprM07ZrUOHmFkq+k2cT/hagJHglpYa3jkqSqAAE=;
+	b=ZWlVZcGNQw6+JjdmEp1eJLTz2bNCcCtRbE9tOeN8xnxRyMX8iqeePb8m+Szsp7h6g03V1t
+	oLlylabBYPbAS0ogh24jQu8RDLwBs5fQRqNETkhAIIXAt6o8mcHbwDi40EllF64Jth39FX
+	YBvIuBYYtjDyG9CES7FGjsO2wxcbnLY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709630795;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ykjUprM07ZrUOHmFkq+k2cT/hagJHglpYa3jkqSqAAE=;
+	b=jOQ63t/Ge+ynva2BjFrpcgVtN6N4O5S23iUgkhiJhwtLUI38w0WT3tx4wggXqloVp0GvOv
+	LxFUYpgusmlv9xDA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1709630795; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ykjUprM07ZrUOHmFkq+k2cT/hagJHglpYa3jkqSqAAE=;
+	b=ZWlVZcGNQw6+JjdmEp1eJLTz2bNCcCtRbE9tOeN8xnxRyMX8iqeePb8m+Szsp7h6g03V1t
+	oLlylabBYPbAS0ogh24jQu8RDLwBs5fQRqNETkhAIIXAt6o8mcHbwDi40EllF64Jth39FX
+	YBvIuBYYtjDyG9CES7FGjsO2wxcbnLY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1709630795;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ykjUprM07ZrUOHmFkq+k2cT/hagJHglpYa3jkqSqAAE=;
+	b=jOQ63t/Ge+ynva2BjFrpcgVtN6N4O5S23iUgkhiJhwtLUI38w0WT3tx4wggXqloVp0GvOv
+	LxFUYpgusmlv9xDA==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 6692D13466;
+	Tue,  5 Mar 2024 09:26:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id EwchFUrl5mVsZgAAn2gu4w
+	(envelope-from <osalvador@suse.de>); Tue, 05 Mar 2024 09:26:34 +0000
+Date: Tue, 5 Mar 2024 10:27:52 +0100
+From: Oscar Salvador <osalvador@suse.de>
+To: kernel test robot <oliver.sang@intel.com>
+Cc: oe-lkp@lists.linux.dev, lkp@intel.com,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Vlastimil Babka <vbabka@suse.cz>, Marco Elver <elver@google.com>,
+	Andrey Konovalov <andreyknvl@gmail.com>,
+	Alexander Potapenko <glider@google.com>,
+	Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org
+Subject: Re: [linux-next:master] [mm,page_owner]  4bedfb314b:
+ BUG:KASAN:null-ptr-deref_in_init_page_owner
+Message-ID: <ZeblmHyVlxl_6HGC@localhost.localdomain>
+References: <202403051032.e2f865a-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202403051032.e2f865a-lkp@intel.com>
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=ZWlVZcGN;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="jOQ63t/G"
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-1.63 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[11];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-0.984];
+	 FREEMAIL_CC(0.00)[lists.linux.dev,intel.com,kvack.org,linux-foundation.org,suse.cz,google.com,gmail.com,suse.com,vger.kernel.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.12)[67.19%]
+X-Spam-Score: -1.63
+X-Rspamd-Queue-Id: 24BDA6A9DE
+X-Spam-Flag: NO
 
-Hello Francesco,=0D
-=0D
-Sorry for the abysmal delay.=0D
-Thanks for your review and suggestions.=0D
-=0D
->Hello Pratik,=0D
->=0D
->On Wed, Jan 03, 2024 at 04:32:00PM +0530, pratikmanvar09@gmail.com wrote:=
-=0D
->> From: Clark Wang <xiaoning.wang@nxp.com>=0D
->> =0D
->> This fixes the pwm output bug when decrease the duty cycle.=0D
->> This is a limited workaround for the PWM IP issue TKT0577206.=0D
->> =0D
->> Root cause:=0D
->> When the SAR FIFO is empty, the new write value will be directly applied=
-=0D
->> to SAR even the current period is not over.=0D
->> If the new SAR value is less than the old one, and the counter is=0D
->> greater than the new SAR value, the current period will not filp the=0D
->> level. This will result in a pulse with a duty cycle of 100%.=0D
->> =0D
->> Workaround:=0D
->> Add an old value SAR write before updating the new duty cycle to SAR.=0D
->> This will keep the new value is always in a not empty fifo, and can be=0D
->> wait to update after a period finished.=0D
->> =0D
->> Limitation:=0D
->> This workaround can only solve this issue when the PWM period is longer=
-=0D
->> than 2us(or <500KHz).=0D
->> =0D
->> Reviewed-by: Jun Li <jun.li@nxp.com>=0D
->> Signed-off-by: Clark Wang <xiaoning.wang@nxp.com>=0D
->> Link: https://github.com/nxp-imx/linux-imx/commit/16181cc4eee61d87cbaba0=
-e5a479990507816317=0D
->> Tested-by: Pratik Manvar <pratik.manvar@ifm.com>=0D
->> Signed-off-by: Pratik Manvar <pratik.manvar@ifm.com>=0D
->=0D
->A very similar patch was already send in 2021 [1], did it had review=0D
->comments not addressed? Please have a look.=0D
->=0D
->In general please refrain from sending a new patch version every other=0D
->day, while every Linux kernel subsystem has different rules and a=0D
->difference pace of development, in this specific case sending a v3 just=0D
->adding your signed-off-by without allowing a little bit of time to wait=0D
->for more feedback is just not sane.=0D
-Ok, I will keep this in mind. Thanks!=0D
->=0D
->[1] https://lore.kernel.org/all/?q=3Ddfn%3Adrivers%2Fpwm%2Fpwm-imx27.c+AND=
-+b%3A%22Clark+Wang%22=0D
-Ok, I did not check this. I will look into this. Thanks!=0D
-=0D
-Thanks & Regards,=0D
-Pratik Manvar=
+On Tue, Mar 05, 2024 at 02:08:23PM +0800, kernel test robot wrote:
+> 
+> [    6.582562][    T0] Node 0, zone    DMA32: page owner found early allocated 0 pages
+> [    6.612136][    T0] Node 0, zone   Normal: page owner found early allocated 73871 pages
+> [    6.612762][    T0] ==================================================================
+> [ 6.613351][ T0] BUG: KASAN: null-ptr-deref in init_page_owner (arch/x86/include/asm/atomic.h:28) 
+> [    6.613893][    T0] Write of size 4 at addr 000000000000001c by task swapper/0
+> [    6.614434][    T0]
+> [    6.614600][    T0] CPU: 0 PID: 0 Comm: swapper Tainted: G                T  6.8.0-rc5-00256-g4bedfb314bdd #1 29e70169ace75ef72d53825e983f3dcb1d5756d9
+> [    6.615605][    T0] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> [    6.616367][    T0] Call Trace:
+> [    6.616604][    T0]  <TASK>
+> [ 6.616816][ T0] ? dump_stack_lvl (lib/dump_stack.c:?) 
+> [ 6.617161][ T0] ? print_report (mm/kasan/report.c:?) 
+> [ 6.617499][ T0] ? init_page_owner (arch/x86/include/asm/atomic.h:28) 
+
+So, we are crashing here:
+
+        /* Initialize dummy and failure stacks and link them to stack_list */
+        dummy_stack.stack_record = __stack_depot_get_stack_record(dummy_handle);
+        failure_stack.stack_record = __stack_depot_get_stack_record(failure_handle);
+        refcount_set(&dummy_stack.stack_record->count, 1);
+        refcount_set(&failure_stack.stack_record->count, 1);
+
+when trying to set the refcount. Allegedly, because dummy_handle is 0.
+I thought we fixed that with 
+
+commit 3ee34eabac2abb6b1b6fcdebffe18870719ad000
+Author: Oscar Salvador <osalvador@suse.de>
+Date:   Thu Feb 15 22:59:01 2024 +0100
+
+    lib/stackdepot: fix first entry having a 0-handle
+
+
+But I guess this is different.
+The obvious way out is to only set the refcount and link the stacks
+if their handles are not 0.
+
+Marco, could it be that stackdepot was too overloaded, that by the time
+page_owner gets initialized, there are no more space for its stacks, and
+hence return 0-handles?.
+
+
+-- 
+Oscar Salvador
+SUSE Labs
 
