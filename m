@@ -1,157 +1,106 @@
-Return-Path: <linux-kernel+bounces-92034-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92035-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 817B8871A03
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:54:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D9481871A06
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:55:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0CFA2B21746
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:54:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68703B20CC2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:55:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B3E5537E9;
-	Tue,  5 Mar 2024 09:54:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4659537E9;
+	Tue,  5 Mar 2024 09:54:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RMEGTLUf"
-Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com [209.85.221.177])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="WDSLeQKN"
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 407DA4CB58
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 09:54:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2EDE4CB58
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 09:54:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709632485; cv=none; b=Ahxuch5pTR/NiQPDCM4hrO+zMW9MzP6iNKaNFWtMfcUivzcZJ6dIVRZ6wZg4DZbc4eM0NNol+6CNPMNaHiRvnf9mQO7Q27PF+dv2f6A9NL4FKjfND+u5zsv1ELt7eY8Iiemgy9oAtDX4SheYis+SNEhuCZVY5b6DDBzW959Ed38=
+	t=1709632494; cv=none; b=qYKkN/Ujl7FVol35naU9kNzffgjv9X+nnnOCU1dsnRKB4Delxg4UDkI4bs/dMbcEWdj8/hH7uI+jyxP5vvdhN6uvNW/tqVuCZIPqtqTLdi1CrNNZsuWMf5G7IqzBHMZ7CnkMIIrA4nomjBV/lAm/L0lPkp1LA7BuyzbiKB6ivMU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709632485; c=relaxed/simple;
-	bh=47NCv4b4YKpld9Q77z5G+GQ2iwWBK8k/m1TvXxBlivw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hrUAmZrbUoENDGcOI8NGP9oNWXPJWPRiYUoWBgz1s+fSsyEyfZqXyqQsijmPN6fh2jxecdTgPPEPoZaeM2Nmwn1b5a82iH8hh50UIa6sYwQjUWi/d0Gh2QV8/S9cJTUSObOa3BADvH4pdd4Tj/1J89nrkkDYWzVW0/W1zF649vw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RMEGTLUf; arc=none smtp.client-ip=209.85.221.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f177.google.com with SMTP id 71dfb90a1353d-4d346e4242fso1469673e0c.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 01:54:44 -0800 (PST)
+	s=arc-20240116; t=1709632494; c=relaxed/simple;
+	bh=FzZFZgyknEs4e3j86cGsSsHpKR/7l45G9iBLLSVc8AY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ehGAlv9/sp2j/bMup4BIAxVgJ2eFXw82f4cOV5xNeLGn/tQO9RifJpYQ0D6tRIwtgjwRD7jvCS6q/NFBPrNQImS8itPLt+QOd/XAZGXfQpp6KOSyCejD+KG128I7Pj2ymlFwM7753fc7/gAjsGRCRPce1jmymwnHjK7tRINfYb0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=WDSLeQKN; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e5a50d91b4so5258705b3a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 01:54:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709632483; x=1710237283; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YS8qRK8B84XP7qfihivOLSDD2qIA4ikJ3We6CAGKbW0=;
-        b=RMEGTLUf8klNyQLjSqaNgr+/pIO0oL0c6aJYAPx6d47z3toE5FJ31xsiyrAThP7kjS
-         QoL4c7XKCBwFa3bxmLrAKnlNtVocuZQbRYYTewozuCaHKqhzqitHR8ynOnoMnjJQid7I
-         JRI/bDNoXkaa4SQ7BXoB5ABrDZLyycYDczYS+KbdsUiZ3VMSsfuKeW+xk8WglvggQmRf
-         1ye9VOFAKEVSNWKxnDgKjjObnRFR2HPL23EnvIqVmd2VT1/mUcl/P0z7JoletaxLwQek
-         KwvpSPHprmQp+uxLOLSqqcN1ZqGWWfwfICKtBabmR3IhHLSSP3/gu4EZjTVpB/gruYYb
-         CkhA==
+        d=chromium.org; s=google; t=1709632492; x=1710237292; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2WaxZu8cu5F/ocXV2z6I3xNk7GCsZx8449ky6SPWxlQ=;
+        b=WDSLeQKN5lQbnyACdsSmpxmXliSWb+A32mMTReGML0+oDJgysyP7YXZPIY/Zag6JTr
+         II0+wkBnXFYfx2xWMzLqSbu8+yhtzV8AOONtVeV+8oWuHimObnjX2d/Yi5tfcZvY02nz
+         j+Fnig+jAt7O89IF0nNcfwtuRS1WisJ9UmUd0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709632483; x=1710237283;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YS8qRK8B84XP7qfihivOLSDD2qIA4ikJ3We6CAGKbW0=;
-        b=HkGrFQJelvbcwLU/wQUGmNvE7g5eLPl2zuK0SFTWeGPv4O0sOxrz+GpdH2YaAj2yzD
-         5yVawG1Hu2n8XHmefVdXTVkUmbzAUDGDJk0y/G+JeYcgjr8nvZQ4os7gOTRWF20uRWYL
-         1AJBN9+s/OwuQOLTkd8wPxggRjZ3oUOANw38IYUNNNzq+DcBdIjSCgNXLpUD59dqEWma
-         N4eyVdPAG95eK5gOt5KB0jPMrCBEAs7ldFgbT27wjZaFuJIlqkV30JXMERp+AsadwWZM
-         yI7OvCTiYtWAZsW++L5pMIuI5XC6t+kHpRXf9djAjL1KV/cIc23fUiAgke0MCQYfc8mx
-         3mYg==
-X-Forwarded-Encrypted: i=1; AJvYcCU9c/rCOmaKJsEbH0b+5+4zugdz7QFC82CBV4C7RPC8J4ZQuMlOfcq4QGR/w6DbWCE/v6syovKe0Ry2vgdqNidGa/8GA2P4tMR2v9+D
-X-Gm-Message-State: AOJu0YyHGBoqUWscuViW/7up2Pa/xapTfBUZVeITV6251tjCclEVxkWM
-	K++35CJuvFer4clEiQxi9Z3OoOn1u/kJvBuNUEoOpWlDBFtiViXj1RWqdpdssBGJXFrDWYlPsx5
-	uaCiC6KGzjn+xznXVmhzyAc93/Mw=
-X-Google-Smtp-Source: AGHT+IE6lY0tbo4eaweKeUvXZ+0W4OCGGRJA+YI52RdDKntZSVDadGeNgZdZjqT4do7AqL3FN/QwY6jIr18IjTQbXN0=
-X-Received: by 2002:a05:6122:985:b0:4d1:3f59:5c79 with SMTP id
- g5-20020a056122098500b004d13f595c79mr1221720vkd.15.1709632483184; Tue, 05 Mar
- 2024 01:54:43 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709632492; x=1710237292;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2WaxZu8cu5F/ocXV2z6I3xNk7GCsZx8449ky6SPWxlQ=;
+        b=kbIel0mdHLUaXi0tz4X9Ss4dpGiAxy1f0RvJb+rKVdP0QAsM2w+c+E+wYS6FJxiYO6
+         NBQx4OM2WA5AbiuujkTHAd0Ym6grOofJVRIjgNdQsVuHvo6550FnB5hFxVbVaYg/OKL1
+         HeBkxm5GZ2LlJ/wxAGDKbLUN5CXAdTQAjjPV4FZFwRM8oGYAoz7S/G81VNeo/jXT+DLo
+         Df82bl9ZydBgybeMe9sR6MpbJ4FFOHiqP1Ljjl75zUgM96cNd0nXhUqi6gMTKAQkfOnn
+         sPS5Fdr2sD5ejAEomioLtRd0gdXM33iyKxjM3p3UShtz+R6uhzIsgQzeWWFDwR132OCc
+         gftA==
+X-Gm-Message-State: AOJu0Yw9EEhmwRfY7BdSNZeYR+Xrfvrswa8xrUqE6isVTas34Ha2JhaW
+	A7cERX/10mFRnSGf+PRBnLADPARoc2uQD57AilwkZvAPea9Oj6hfK1G/v9rh8g==
+X-Google-Smtp-Source: AGHT+IF8R2lPQE1BAnZGj0uGjIgyHQJOfW9Km2P3yA0Lw0k0iHZ/gvHtO6acTtaCb/1N1sMxfuQfLg==
+X-Received: by 2002:a05:6a20:394a:b0:1a1:41a3:9b54 with SMTP id r10-20020a056a20394a00b001a141a39b54mr1311201pzg.32.1709632491974;
+        Tue, 05 Mar 2024 01:54:51 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id a3-20020aa78643000000b006e0debc1b75sm8753970pfo.90.2024.03.05.01.54.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Mar 2024 01:54:51 -0800 (PST)
+Date: Tue, 5 Mar 2024 01:54:50 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the kspp tree
+Message-ID: <202403050153.07D12B800@keescook>
+References: <20240305145018.39b4e37b@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231025144546.577640-5-ryan.roberts@arm.com> <20240205095155.7151-1-v-songbaohua@oppo.com>
- <d4f602db-403b-4b1f-a3de-affeb40bc499@arm.com> <CAGsJ_4wo7BiJWSKb1K_WyAai30KmfckMQ3-mCJPXZ892CtXpyQ@mail.gmail.com>
- <7061b9f4-b7aa-4dad-858c-53ee186c2d8f@arm.com>
-In-Reply-To: <7061b9f4-b7aa-4dad-858c-53ee186c2d8f@arm.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Tue, 5 Mar 2024 22:54:31 +1300
-Message-ID: <CAGsJ_4w8YWMFjWu2i5NhbOA-pfemvzCHt4hB7rWiOpY63GVWSA@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] mm: swap: Swap-out small-sized THP without splitting
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: akpm@linux-foundation.org, david@redhat.com, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, mhocko@suse.com, shy828301@gmail.com, 
-	wangkefeng.wang@huawei.com, willy@infradead.org, xiang@kernel.org, 
-	ying.huang@intel.com, yuzhao@google.com, chrisl@kernel.org, surenb@google.com, 
-	hanchuanhua@oppo.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240305145018.39b4e37b@canb.auug.org.au>
 
-On Tue, Mar 5, 2024 at 10:00=E2=80=AFPM Ryan Roberts <ryan.roberts@arm.com>=
- wrote:
->
-> Hi Barry,
->
-> On 18/02/2024 23:40, Barry Song wrote:
-> > On Tue, Feb 6, 2024 at 1:14=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.c=
-om> wrote:
-> >>
-> >> On 05/02/2024 09:51, Barry Song wrote:
-> >>> +Chris, Suren and Chuanhua
-> >>>
-> >>> Hi Ryan,
-> [...]
-> >>
-> >
-> > Hi Ryan,
-> > I am running into some races especially while enabling large folio swap=
--out and
-> > swap-in both. some of them, i am still struggling with the detailed
-> > timing how they
-> > are happening.
-> > but the below change can help remove those bugs which cause corrupted d=
-ata.
->
-> I'm getting quite confused with all the emails flying around on this topi=
-c. Here
-> you were reporting a data corruption bug and your suggested fix below is =
-the one
-> you have now posted at [1]. But in the thread at [1] we concluded that it=
- is not
-> fixing a functional correctness issue, but is just an optimization in som=
-e
-> corner cases. So does the corruption issue still manifest? Did you manage=
- to
-> root cause it? Is it a problem with my swap-out series or your swap-in se=
-ries,
-> or pre-existing?
+On Tue, Mar 05, 2024 at 02:50:18PM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the kspp tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+> 
+> In file included from lib/string_kunit.c:8:
+> lib/string_kunit.c: In function 'test_strspn':
+> lib/string_kunit.c:176:25: error: format '%d' expects argument of type 'int', but argument 7 has type 'size_t' {aka 'long unsigned int'} [-Werror=format=]
+>   176 |                         "i:%d", i);
+>       |                         ^~~~~~  ~
+>       |                                 |
+>       |                                 size_t {aka long unsigned int}
 
-Hi Ryan,
+I was really scratching my head on this one. I didn't see the warning on
+my end because this is actually a result of the merge, namely KUnit
+becoming correctly stricter about format strings:
 
-It is not a problem of your swap-out series, but a problem of my swap-in
-series. The bug in swap-in series is triggered by the skipped PTEs in the
-thread[1], but my swap-in code should still be able to cope with this situa=
-tion
-and survive it -  a large folio might be partially but not completely unmap=
-ped
-after try_to_unmap_one(). I actually replied to you and explained all
-the details here[2], but guess you missed it :-)
+806cb2270237 ("kunit: Annotate _MSG assertion variants with gnu printf specifiers")
 
-[1] https://lore.kernel.org/linux-mm/20240304103757.235352-1-21cnbao@gmail.=
-com/
-[2] https://lore.kernel.org/linux-mm/CAGsJ_4zdh5kOG7QP4UDaE-wmLFiTEJC2PX-_L=
-xtOj=3DQrZSvkCA@mail.gmail.com/
+I will fix the format string! :)
 
-apology this makes you confused.
-
->
-> [1] https://lore.kernel.org/linux-mm/20240304103757.235352-1-21cnbao@gmai=
-l.com/
->
-> Thanks,
-> Ryan
->
-
-Thanks
-Barry
+-- 
+Kees Cook
 
