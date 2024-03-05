@@ -1,211 +1,184 @@
-Return-Path: <linux-kernel+bounces-92919-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92920-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 972B687281E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 20:59:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CD0887282A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 21:00:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A26A4B2B2CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:59:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1425928498F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 20:00:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F6D3288DB;
-	Tue,  5 Mar 2024 19:58:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A67BB128823;
+	Tue,  5 Mar 2024 20:00:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=squebb.ca header.i=@squebb.ca header.b="wTcVlK+g";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="oXUzkWLO"
-Received: from fhigh2-smtp.messagingengine.com (fhigh2-smtp.messagingengine.com [103.168.172.153])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="GQCcdh2M"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B18565A796;
-	Tue,  5 Mar 2024 19:58:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.153
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A05708563F
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 20:00:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709668707; cv=none; b=WcAiU/TkIk0wmokuPu7PLr7jATBVBzzbchbnERf3OwZ6eUVQXAUgMW97khux3tEhE5buOazsS+yAWHXgaqVID0dc+v1yLUAIXphW9Ie3kwbBhcAjQ17li1kdSmjFGVKKWca6CQzE3zDMeRAXL+KJWE+dJQ0tcWennWZx0rvwsB0=
+	t=1709668824; cv=none; b=arPFUN2OoLgCAqYGUJZ/s6OoePLmrS5URP/QEVM/wFPYhLTMc59YImZudWWn22EvKLGUX4l4uc+PizJ5kvzud0HCs05hoCqSRXV2cgXI9swGInb8DKX0Ua48oWPrzT7L4CqT4eJnb0WRCM7DBirq0lUBU6zSoU/XL76RgttyRqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709668707; c=relaxed/simple;
-	bh=eQLO8DF1kv6WfXsDwrMNOAtzyg8YsilIefEhAZZoC+k=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=CQY0yZhNusHu9HYbX8UWHnst0+bbZ5m3O/2Jf7NtKaQpU350oinA1/3oKQzglBQWZYme90NzkBZsNgHTEn8wVcoJj2KbCX/+uIdcPpFYZ07lR7Lh2GvxZXAgJhIJVVXk2vHh7lgksW5BfJyrYDE+ynNdqaUbpIr8RyrqPkLpTPg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squebb.ca; spf=pass smtp.mailfrom=squebb.ca; dkim=pass (2048-bit key) header.d=squebb.ca header.i=@squebb.ca header.b=wTcVlK+g; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=oXUzkWLO; arc=none smtp.client-ip=103.168.172.153
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squebb.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=squebb.ca
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id B407D114019C;
-	Tue,  5 Mar 2024 14:58:22 -0500 (EST)
-Received: from imap52 ([10.202.2.102])
-  by compute3.internal (MEProxy); Tue, 05 Mar 2024 14:58:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=squebb.ca; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1709668702; x=1709755102; bh=jqQczWPa8T
-	/gRaAla0AC5dW+jYjjTWOB+VZ7VK/lLK8=; b=wTcVlK+gW+JsMDRx0iEb2xWF5l
-	4Qp32Pwz+Fam014GaW+o14CajLsJpO392b7QJrxfmRcypn9mO6mK9aLZT6vixeRN
-	+vdgfSg4SZaAV93j5y+FScus/ZGNdsTkrs/yZygHO+gkB4534I1DLam/eWfpqgZL
-	QVLRb1r7PM3KuD6N0FXkR+iIaIY0wJeH5zB9OTWWtXULFKHJbxGYInkHcvj0uG14
-	YmWtkCai0atplufd/Np7b5TkxrSl94d1YdpfK6OjCbtA4PVveXTgh2CZdYYuv2j0
-	0mlJoBozfbACZGHTG4w5Lvzhcc66gg1cBZG/vRzOiZOVH8cd3C2eoo6yTlwQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1709668702; x=1709755102; bh=jqQczWPa8T/gRaAla0AC5dW+jYjj
-	TWOB+VZ7VK/lLK8=; b=oXUzkWLOsUWXGfKuL8TzWqEE8oUMFxI3lTpUOiSMDHv+
-	7UeCI3hp+tWYyHSGeO0afClRET0p76JQKIwKFyvyFsZnHGVLZZ6aHFl4ewuEuARt
-	Hmm8GZGORgmKrccsh8uTmfGD02ckWCuqDQb8tVHs/XPb4pfXlZwU5m6zxwTOe2wV
-	z25z/wesLm+r2fxT+OTWscuEdQyLGtei3zntSFlEId7NS3Ta3YbJ3NDjrM2OdPHq
-	eXKSFmCfgpy+21WV9xECOvupkjVfP5HgJWkWA7YNpsKm6aY6QnSEX842XbC3/uk0
-	KODgVq8kxHXxyJUh/O/tnr/LQGu/d0hQlLYGNfeXZg==
-X-ME-Sender: <xms:XnnnZTYwCdgIT7BToTLPO9pDaDGK7HaNV85Pu1PV3YQCLWcLtUw-HQ>
-    <xme:XnnnZSYn-MreMakt0ns-BDWerpwutACr0pNMOrBsKhaivAO7WBnMf0T14t23nWoGI
-    wP29c18i5uHolMR63U>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrheelgdduvdeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedfofgr
-    rhhkucfrvggrrhhsohhnfdcuoehmphgvrghrshhonhdqlhgvnhhovhhosehsqhhuvggssg
-    drtggrqeenucggtffrrghtthgvrhhnpeeiueefjeeiveetuddvkeetfeeltdevffevudeh
-    ffefjedufedvieejgedugeekhfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpehmphgvrghrshhonhdqlhgvnhhovhhosehsqhhuvggssgdrtggr
-X-ME-Proxy: <xmx:XnnnZV8nPWHVQheT3T2lEz0FkULOgExQOalma3CfBUvdka5NwvgHdg>
-    <xmx:XnnnZZqJ4ErX2lfSGZ1T-EwD70-A0U2LwVvXM4ffjzGRHC7ai7XOew>
-    <xmx:XnnnZeq2dj_mc1oB9Ssit8hf10mDTUPWbDZIxwAIOgTp5KHhgzkt7w>
-    <xmx:XnnnZd1E8_psoJFR639DhXbnWpjy85C1k9P-GG-KEOPUql0YQfIfMA>
-Feedback-ID: ibe194615:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 2AF6BC60098; Tue,  5 Mar 2024 14:58:22 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-208-g3f1d79aedb-fm-20240301.002-g3f1d79ae
+	s=arc-20240116; t=1709668824; c=relaxed/simple;
+	bh=zvCIxr8VBjsKzdRKj72ITiWaaPuXwUFhasVmFGiaDtk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dCi446Hfl4c0ialN6X1Uof8avHOv9Lm3JaoWec1BI3xh75ARvzTIZYJEZD1Q14it/uXeQCdkub8znUye+VG/aVPtIB12wmQeXm5CQbginnJh2QPDtxF1Q21uEsQb2j7xx5Gpq1Ha18JFXvOq9V1R3UKSo3W+nofRKtg2toZ7UkU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=GQCcdh2M; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a45b25f6f84so40309366b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 12:00:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709668821; x=1710273621; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Um7HQJN8N4J1bd3DjjlCtIBtcKYJjLGAY5O7WX29jhs=;
+        b=GQCcdh2MldH/YcpNngEOhJ93Lez+BG92jbvj3xTQKZfXfuaZNCzmOOZbV2gDMd4//R
+         RUDIXcB0aVfS9WSwFs7IJJQ/y1Qy/nicYVfdFQluHtxSMfgcamUEChzZrV6bE5RVAg+d
+         8x7sUhgoYrXyQAD3Q6LRJGRQxNsdjrhT6qN4tKbeqfoxWmkzMvDIL7erP/n5qj18xKHf
+         R8fBtNcxgwib9+mtc8yx+839STKOJlbtiDxY5Rzdvlj2/s7kRdLuo4E2+Lxyc/t5v71o
+         hE27KoRkiuOaRQejDkoDPRhF+QXyaz5wGJRSvG72AT2vKBH6JSBdgt/ZHxE3VsBBvnf8
+         rw+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709668821; x=1710273621;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Um7HQJN8N4J1bd3DjjlCtIBtcKYJjLGAY5O7WX29jhs=;
+        b=Kr2VX+5dBlg9fJiajdkP4pLHr1XmVrECGhEh41vlJn/UGZrUIimt1BEetovTHhyJ39
+         6Hj6IcVXXQOjMSIHGSpQvi6lSLf1RkCDsAlysQ1nO9XrvWD86OC+0w0Q0j3rj0dTr37O
+         2Ort+mLwWAlnAegKqJrr02X0hEQJ8l5FwZ4Yxc+UT143y3FHsTjc2N6CpR3ngl+IX/em
+         iZSSf+uZMY6Jr3WetVj3BJLr/Y2GuynYlOjRbuoxkKXeOdXdOS+YP61HPAAhhIey0Bqh
+         lIQuvMpd0XpdyWjmDQFHeQx3ZpqvAc0AM0RO3hkadtcfwkQsqBKtNys73F++kQ9c68Qw
+         rXqQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW5cN5A4Kdiab5jQIBDGoKbgJuITOikAlLpi6lepaKhXl9h1mNLG+lD5M+4K4ZuPaUPlCfdO3r5rXKYkH9040PEeWyV0zIzqUAS4sFp
+X-Gm-Message-State: AOJu0Yyx97BNaaDVHi9ccN6auyt911FjntsxRmwnOoERdeJ5AgLlgE/C
+	UwWeFdlol4H8jyZHVW9OsCHBQ0Zf+Xe5/pO9CGyVsnOHDQQep80X0WY03apCIU4JDKj3qX2BxUi
+	aFSMpLhiXP3dI29j+oF6+OfMiX7R0aKP0CpBO
+X-Google-Smtp-Source: AGHT+IHytdC7v7Vx7sLFDUTdLyz9HH4/B980RlTrZABliOPKZSD4E6pDWhlNI6pqEZujcxK31LaEVTdzhieo1tJYP+0=
+X-Received: by 2002:a17:906:394b:b0:a43:6146:a4df with SMTP id
+ g11-20020a170906394b00b00a436146a4dfmr7667230eje.21.1709668820535; Tue, 05
+ Mar 2024 12:00:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <798593af-f64d-4378-bacb-ea0c2323dc51@app.fastmail.com>
-In-Reply-To: <20240305-class_cleanup-platform-v1-1-9085c97b9355@marliere.net>
-References: <20240305-class_cleanup-platform-v1-1-9085c97b9355@marliere.net>
-Date: Tue, 05 Mar 2024 14:58:24 -0500
-From: "Mark Pearson" <mpearson-lenovo@squebb.ca>
-To: "Ricardo B. Marliere" <ricardo@marliere.net>,
- "Prasanth Ksr" <prasanth.ksr@dell.com>,
- "Hans de Goede" <hdegoede@redhat.com>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- "Jorge Lopez" <jorge.lopez2@hp.com>, "Mark Pearson" <markpearson@lenovo.com>
-Cc: Dell.Client.Kernel@dell.com,
- "platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>,
- linux-kernel@vger.kernel.org, "Greg KH" <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] platform/x86: make fw_attr_class constant
-Content-Type: text/plain
+References: <20240305020153.2787423-1-almasrymina@google.com>
+ <20240305020153.2787423-6-almasrymina@google.com> <5e2f9342-4ee9-4b30-9dcf-393e57e0f7c6@app.fastmail.com>
+In-Reply-To: <5e2f9342-4ee9-4b30-9dcf-393e57e0f7c6@app.fastmail.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Tue, 5 Mar 2024 12:00:08 -0800
+Message-ID: <CAHS8izPhvRDPVHr8mY2FffPCLYjKqaazjy5NFcnJSnLK+CdyCA@mail.gmail.com>
+Subject: Re: [RFC PATCH net-next v6 05/15] netdev: support binding dma-buf to netdevice
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	Linux-Arch <linux-arch@vger.kernel.org>, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, "David S . Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>, 
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, David Ahern <dsahern@kernel.org>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, shuah <shuah@kernel.org>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, 
+	Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, 
+	Harshitha Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeelb@google.com>, 
+	Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>, 
+	Willem de Bruijn <willemb@google.com>, Kaiyuan Zhang <kaiyuanz@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi
+On Tue, Mar 5, 2024 at 1:05=E2=80=AFAM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Tue, Mar 5, 2024, at 03:01, Mina Almasry wrote:
+>
+> > +int netdev_bind_dmabuf(struct net_device *dev, unsigned int dmabuf_fd,
+> > +                    struct netdev_dmabuf_binding **out)
+> > +{
+> > +     struct netdev_dmabuf_binding *binding;
+> > +     static u32 id_alloc_next;
+> > +     struct scatterlist *sg;
+> > +     struct dma_buf *dmabuf;
+> > +     unsigned int sg_idx, i;
+> > +     unsigned long virtual;
+> > +     int err;
+> > +
+> > +     if (!capable(CAP_NET_ADMIN))
+> > +             return -EPERM;
+> > +
+> > +     dmabuf =3D dma_buf_get(dmabuf_fd);
+> > +     if (IS_ERR_OR_NULL(dmabuf))
+> > +             return -EBADFD;
+>
+> You should never need to use IS_ERR_OR_NULL() for a properly
+> defined kernel interface. This one should always return an
+> error or a valid pointer, so don't check for NULL.
+>
 
-On Tue, Mar 5, 2024, at 1:55 PM, Ricardo B. Marliere wrote:
-> Since commit 43a7206b0963 ("driver core: class: make class_register() take
-> a const *"), the driver core allows for struct class to be in read-only
-> memory, so move the fw_attr_class structure to be declared at build time
-> placing it into read-only memory, instead of having to be dynamically
-> allocated at boot time.
->
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
-> ---
->  drivers/platform/x86/dell/dell-wmi-sysman/sysman.c | 2 +-
->  drivers/platform/x86/firmware_attributes_class.c   | 4 ++--
->  drivers/platform/x86/firmware_attributes_class.h   | 2 +-
->  drivers/platform/x86/hp/hp-bioscfg/bioscfg.c       | 2 +-
->  drivers/platform/x86/think-lmi.c                   | 2 +-
->  5 files changed, 6 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c 
-> b/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c
-> index b929b4f82420..9def7983d7d6 100644
-> --- a/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c
-> +++ b/drivers/platform/x86/dell/dell-wmi-sysman/sysman.c
-> @@ -25,7 +25,7 @@ struct wmi_sysman_priv wmi_priv = {
->  /* reset bios to defaults */
->  static const char * const reset_types[] = {"builtinsafe", 
-> "lastknowngood", "factory", "custom"};
->  static int reset_option = -1;
-> -static struct class *fw_attr_class;
-> +static const struct class *fw_attr_class;
-> 
-> 
->  /**
-> diff --git a/drivers/platform/x86/firmware_attributes_class.c 
-> b/drivers/platform/x86/firmware_attributes_class.c
-> index fafe8eaf6e3e..dd8240009565 100644
-> --- a/drivers/platform/x86/firmware_attributes_class.c
-> +++ b/drivers/platform/x86/firmware_attributes_class.c
-> @@ -10,11 +10,11 @@
->  static DEFINE_MUTEX(fw_attr_lock);
->  static int fw_attr_inuse;
-> 
-> -static struct class firmware_attributes_class = {
-> +static const struct class firmware_attributes_class = {
->  	.name = "firmware-attributes",
->  };
-> 
-> -int fw_attributes_class_get(struct class **fw_attr_class)
-> +int fw_attributes_class_get(const struct class **fw_attr_class)
->  {
->  	int err;
-> 
-> diff --git a/drivers/platform/x86/firmware_attributes_class.h 
-> b/drivers/platform/x86/firmware_attributes_class.h
-> index 486485cb1f54..363c75f1ac1b 100644
-> --- a/drivers/platform/x86/firmware_attributes_class.h
-> +++ b/drivers/platform/x86/firmware_attributes_class.h
-> @@ -5,7 +5,7 @@
->  #ifndef FW_ATTR_CLASS_H
->  #define FW_ATTR_CLASS_H
-> 
-> -int fw_attributes_class_get(struct class **fw_attr_class);
-> +int fw_attributes_class_get(const struct class **fw_attr_class);
->  int fw_attributes_class_put(void);
-> 
->  #endif /* FW_ATTR_CLASS_H */
-> diff --git a/drivers/platform/x86/hp/hp-bioscfg/bioscfg.c 
-> b/drivers/platform/x86/hp/hp-bioscfg/bioscfg.c
-> index 8c9f4f3227fc..2dc50152158a 100644
-> --- a/drivers/platform/x86/hp/hp-bioscfg/bioscfg.c
-> +++ b/drivers/platform/x86/hp/hp-bioscfg/bioscfg.c
-> @@ -24,7 +24,7 @@ struct bioscfg_priv bioscfg_drv = {
->  	.mutex = __MUTEX_INITIALIZER(bioscfg_drv.mutex),
->  };
-> 
-> -static struct class *fw_attr_class;
-> +static const struct class *fw_attr_class;
-> 
->  ssize_t display_name_language_code_show(struct kobject *kobj,
->  					struct kobj_attribute *attr,
-> diff --git a/drivers/platform/x86/think-lmi.c b/drivers/platform/x86/think-lmi.c
-> index 3a396b763c49..9eeef356e308 100644
-> --- a/drivers/platform/x86/think-lmi.c
-> +++ b/drivers/platform/x86/think-lmi.c
-> @@ -195,7 +195,7 @@ static const char * const level_options[] = {
->  	[TLMI_LEVEL_MASTER] = "master",
->  };
->  static struct think_lmi tlmi_priv;
-> -static struct class *fw_attr_class;
-> +static const struct class *fw_attr_class;
->  static DEFINE_MUTEX(tlmi_mutex);
-> 
->  /* Convert BIOS WMI error string to suitable error code */
->
-> ---
-> base-commit: 36c45cfc5cb3762b60707be2667c13d9a2562b34
-> change-id: 20240305-class_cleanup-platform-8010ec550021
->
-> Best regards,
-> -- 
-> Ricardo B. Marliere <ricardo@marliere.net>
+Thanks for clarifying. I will convert to IS_ERR().
 
-Looks good to me!
-Reviewed-by Mark Pearson <mpearson-lenovo@squebb.ca>
+> > +     binding->attachment =3D dma_buf_attach(binding->dmabuf, dev->dev.=
+parent);
+> > +     if (IS_ERR(binding->attachment)) {
+> > +             err =3D PTR_ERR(binding->attachment);
+> > +             goto err_free_id;
+> > +     }
+> > +
+> > +     binding->sgt =3D
+> > +             dma_buf_map_attachment(binding->attachment, DMA_BIDIRECTI=
+ONAL);
+> > +     if (IS_ERR(binding->sgt)) {
+> > +             err =3D PTR_ERR(binding->sgt);
+> > +             goto err_detach;
+> > +     }
+>
+> Should there be a check to verify that this buffer
+> is suitable for network data?
+>
+> In general, dmabuf allows buffers that are uncached or reside
+> in MMIO space of another device, but I think this would break
+> when you get an skb with those buffers and try to parse the
+> data inside of the kernel on architectures where MMIO space
+> is not a normal pointer or unaligned access is disallowed on
+> uncached data.
+>
+>         Arnd
 
-Mark
+A key goal of this patch series is that the kernel does not try to
+parse the skb frags that reside in the dma-buf for that precise
+reason. This is achieved using patch "net: add support for skbs with
+unreadable frags" which disables the kernel touching the payload in
+these skbs, and "tcp: RX path for devmem TCP" which implements a uapi
+where the kernel hands the data in the dmabuf to the userspace via a
+cmsg that gives the user a pointer to the data in the dmabuf (offset +
+size).
+
+So really AFACT the only restriction here is that the NIC should be
+able to DMA into the dmabuf that we're attaching, and dma_buf_attach()
+fails in this scenario so we're covered there.
+
+--=20
+Thanks,
+Mina
 
