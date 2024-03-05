@@ -1,126 +1,294 @@
-Return-Path: <linux-kernel+bounces-92602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92606-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 572C48722BB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:27:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C7A48722CA
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:28:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12D6D2838DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:27:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 507CA1C21E57
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:28:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39D55128399;
-	Tue,  5 Mar 2024 15:26:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0621F127B6A;
+	Tue,  5 Mar 2024 15:27:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="LD6puupe";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="fyE1OlkM"
-Received: from fhigh7-smtp.messagingengine.com (fhigh7-smtp.messagingengine.com [103.168.172.158])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gZNkScEF"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E50961272BD;
-	Tue,  5 Mar 2024 15:26:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CFC1127B63
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 15:27:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709652403; cv=none; b=KXs0OsWHKQ8gKIHxFLZwV5f732SXlYjC2nHoDdJQaTUWlX/1qLB1aWc9PXVa0A1qqWSrd7U+pNL0sAd4mrdr/hcIva85POEi5+PPx+hnRzgdu4NeGr3tlpkXhw+PO59RSvQHzZ2mk0f2CzfdZRyticv32vXkdqsJ5Wp9mRGn16M=
+	t=1709652423; cv=none; b=VHfuzmwBrhvAEWeM0QN/D8PQX8iTNoVkphlMDx7MaBEX8antX36XOTADRRUL9Do3IxfhwQhZKWhjHbeVI6gjZskLqWsyEoOREHXGyuu2NheZZHpF7DxB2AhKU0IVvaGpbUGc4KYGPDTEur0lCpkAVF9OVhzyte1ekpB4vEW340s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709652403; c=relaxed/simple;
-	bh=9maXCI32il46CAjYFMVaT0KmmG8v0yRwsxQO5+iiyJ8=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=iJToBBCSW4tuoBBgCdRdaV+59yhOo2t7J5EEFqrZuv2D6HSE99iFNjyJoQIdf1N3u1IddENYLD7gO7K4IyvlpVAYQGJ6uCogoEgTswpVQM9wseMBr+viUZCc8i1utdMnEX8NkP912DuxIOu+UVjJbtf/jfpfznBBFlR63HvA9ms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=LD6puupe; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=fyE1OlkM; arc=none smtp.client-ip=103.168.172.158
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id B628E11401A6;
-	Tue,  5 Mar 2024 10:26:39 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 05 Mar 2024 10:26:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1709652399; x=1709738799; bh=mM85GnrQKa
-	FCJuhHp4V9npg1BWZBV42eoS1VwxzuCH0=; b=LD6puupe+UYOkygnrRV11k93IG
-	FEk6aU9K7Z55tgyn2reA3mFxo0W4CYRmjjOAhKOEFTEGAPi7Ypmw1ehHwIA5K3ZK
-	eLV+VZQ8EsHofPtAV2c9qHouQRi/mNvfKrDK2tpeT4h1FsdaINq9uA3j25JAemq6
-	puN3yKfmv12w8vE2Vv//nflnuBhoncMRNRNx+zhb/sTru+Q3+2ckpN2Bm0GkgXo+
-	pKjrBIb0sKhkgiXB2aAjH+8NdoFIGpGKpdkKAg/nweksABcaB0aWs+KDWBkLE65Y
-	lzC4jGKnwivC9mlK8CAikGWM1d7lxtO4MtWR1Hs6Mohj/2ksa3zwcfBiHITA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1709652399; x=1709738799; bh=mM85GnrQKaFCJuhHp4V9npg1BWZB
-	V42eoS1VwxzuCH0=; b=fyE1OlkMCmXfWWiJZ5I3zI/w9Bi31o+HrIJZpPGwKbSf
-	JGx0KY48Zebpx83JVAqr6b+dXqCSZRKvnfDe/FB0zSMvNfWHwqhTPzd01xV7S9be
-	fBODFpYbHWJ0zJ+UoAGusUoFxokByyYAwcpHMQIgYpUeNfOQtDWw8ZYDQdnzTTdo
-	pyL6au0ELZqWY7stgLH7jwIjowUqqt4pPMB7TRRJEOjyYFIAM+AOO2VAc9l6exyj
-	RbJ6ridJpV1dLIzHmyLqiPEVNyXmje0alQaCBbZB4kpwv/SQEbER/rO43aHy0dcX
-	JTJ/bNZefEC8HP6qITO9XW+tXsjozIg1xv8RQ+klOw==
-X-ME-Sender: <xms:rjnnZQT_uezG3J2Isg5QTmSwV_S5nQuCAt2GlQOU0uvfFQfgef1Hfg>
-    <xme:rjnnZdxI9b3evSjdQYXvh-SLgMH1ZkRL9X5QTyTLLuYXP7jqP9xXBHPP8HMuPGVRS
-    SPgxZpXF9KVgzQVaWc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrheelgdejfecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
-    hnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:rjnnZd0FFiuD1NSQOSB6esRu9mO98ISH7SWQAC0hGSqoakLRtGCgCA>
-    <xmx:rjnnZUB5RHRgQb0ZBqkM10fCRCSvcmCIsvWkkGcEh47zjKRXoiuiNg>
-    <xmx:rjnnZZjkWokGwIT-6TJbYbcaFQeQX7z5PX73sAB8gMVKbcoh5_HSqQ>
-    <xmx:rznnZaUfdtytSpaj9K9kcFrXqUTdqR8krMDGrq3XzfZE22DbsEJRmA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 73417B6009B; Tue,  5 Mar 2024 10:26:38 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-208-g3f1d79aedb-fm-20240301.002-g3f1d79ae
+	s=arc-20240116; t=1709652423; c=relaxed/simple;
+	bh=kfxr13VdkOyL2ROU4/qMPEQNEmz/VT+DlXa4gwnGCwk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=IPXx2TMepgIzNQK8S1ffUV0oWDuVCzncqQRKM3LJYeSlXJPbz0nrxp/SbXXoL0VYmug0x90HO/CMULO4UOqfPranIJP9soSd5Bx5ntoJ90gK/NQEu/ZkgZ/pRjp5iZfOzNqIb84hjvVP392ALaUY0TPCOkQMtPbKmGvT+zrBWzA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gZNkScEF; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709652420;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=XlORlZ1q3eFv+NMcNqENcw6ahsCa1EEVIyv8mEPpDE0=;
+	b=gZNkScEFgU3M1rG8zhSFk8mEzVj4dQkBtQKlkJFmw9VwXXRf8eBjKxvk/fsG/+GoyPjyNn
+	71pLJxvN7+pdt+KMd//6XCAh3ydUo/vCLTwkn79K/bX1s0KM0JN9sxxTZf9w350oUu3Yq6
+	qD7EopHYc4zcgMnEaNWl7rTPZHGYM3c=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-369-QcK503W_MzaqyBw3dYpMVg-1; Tue,
+ 05 Mar 2024 10:26:53 -0500
+X-MC-Unique: QcK503W_MzaqyBw3dYpMVg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1F7EB29AA3B9;
+	Tue,  5 Mar 2024 15:26:53 +0000 (UTC)
+Received: from ksundara-mac.redhat.com (unknown [10.74.16.208])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 415791121306;
+	Tue,  5 Mar 2024 15:26:46 +0000 (UTC)
+From: Karthik Sundaravel <ksundara@redhat.com>
+To: jesse.brandeburg@intel.com,
+	anthony.l.nguyen@intel.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	intel-wired-lan@lists.osuosl.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: pmenzel@molgen.mpg.de,
+	jiri@resnulli.us,
+	michal.swiatkowski@linux.intel.com,
+	rjarry@redhat.com,
+	aharivel@redhat.com,
+	vchundur@redhat.com,
+	ksundara@redhat.com,
+	cfontain@redhat.com
+Subject: [PATCH v5] ice: Add get/set hw address for VFs using devlink commands
+Date: Tue,  5 Mar 2024 20:56:41 +0530
+Message-Id: <20240305152641.53489-1-ksundara@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <5648dca0-4853-4dfb-91cf-282a656beb1e@app.fastmail.com>
-In-Reply-To: <8d5780f5-1047-48d7-a9c9-09b95c7b5604@gaisler.com>
-References: 
- <20240224-sam-fix-sparc32-all-builds-v2-0-1f186603c5c4@ravnborg.org>
- <20240224-sam-fix-sparc32-all-builds-v2-4-1f186603c5c4@ravnborg.org>
- <8d5780f5-1047-48d7-a9c9-09b95c7b5604@gaisler.com>
-Date: Tue, 05 Mar 2024 16:26:18 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Andreas Larsson" <andreas@gaisler.com>,
- "Sam Ravnborg" <sam@ravnborg.org>, "Maciej W. Rozycki" <macro@orcam.me.uk>,
- sparclinux@vger.kernel.org, "Randy Dunlap" <rdunlap@infradead.org>
-Cc: "Miquel Raynal" <miquel.raynal@bootlin.com>,
- linux-parport@lists.infradead.org, "David S . Miller" <davem@davemloft.net>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/7] sparc32: Do not select ZONE_DMA
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-On Tue, Mar 5, 2024, at 16:06, Andreas Larsson wrote:
-> On 2024-02-24 18:42, Sam Ravnborg via B4 Relay wrote:
+Changing the MAC address of the VFs are not available
+via devlink. Add the function handlers to set and get
+the HW address for the VFs.
 
->> diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
->> index 734f23daecca..bdbde506c01e 100644
->> --- a/arch/sparc/Kconfig
->> +++ b/arch/sparc/Kconfig
->> @@ -62,7 +62,6 @@ config SPARC32
->>  	select HAVE_UID16
->>  	select LOCK_MM_AND_FIND_VMA
->>  	select OLD_SIGACTION
->> -	select ZONE_DMA
->
-> This however makes a number of PCI drivers that depend on
-> ZONE_DMA unselectable.
+Signed-off-by: Karthik Sundaravel <ksundara@redhat.com>
+---
+ drivers/net/ethernet/intel/ice/ice_devlink.c | 78 +++++++++++++++++++-
+ drivers/net/ethernet/intel/ice/ice_sriov.c   | 62 ++++++++++++++++
+ drivers/net/ethernet/intel/ice/ice_sriov.h   |  8 ++
+ 3 files changed, 147 insertions(+), 1 deletion(-)
 
-I think that is the correct thing to do then: the only
-drivers that I see with this dependency are PCI sound cards
-that apparently rely on DMA to the 16MB ISA range, which is
-not provided by sparc.
+diff --git a/drivers/net/ethernet/intel/ice/ice_devlink.c b/drivers/net/ethernet/intel/ice/ice_devlink.c
+index 80dc5445b50d..39d4d79ac731 100644
+--- a/drivers/net/ethernet/intel/ice/ice_devlink.c
++++ b/drivers/net/ethernet/intel/ice/ice_devlink.c
+@@ -1576,6 +1576,81 @@ void ice_devlink_destroy_pf_port(struct ice_pf *pf)
+ 	devlink_port_unregister(&pf->devlink_port);
+ }
+ 
++/**
++ * ice_devlink_port_get_vf_fn_mac - .port_fn_hw_addr_get devlink handler
++ * @port: devlink port structure
++ * @hw_addr: MAC address of the port
++ * @hw_addr_len: length of MAC address
++ * @extack: extended netdev ack structure
++ *
++ * Callback for the devlink .port_fn_hw_addr_get operation
++ * Return: zero on success or an error code on failure.
++ */
++
++static int ice_devlink_port_get_vf_fn_mac(struct devlink_port *port,
++					  u8 *hw_addr, int *hw_addr_len,
++					  struct netlink_ext_ack *extack)
++{
++	struct devlink_port_attrs *attrs = &port->attrs;
++	struct devlink_port_pci_vf_attrs *pci_vf;
++	struct devlink *devlink = port->devlink;
++	struct ice_pf *pf;
++	struct ice_vf *vf;
++	int vf_id;
++
++	pf = devlink_priv(devlink);
++	pci_vf = &attrs->pci_vf;
++	vf_id = pci_vf->vf;
++
++	vf = ice_get_vf_by_id(pf, vf_id);
++	if (!vf) {
++		NL_SET_ERR_MSG_MOD(extack, "Unable to get the vf");
++		return -EINVAL;
++	}
++	ether_addr_copy(hw_addr, vf->dev_lan_addr);
++	*hw_addr_len = ETH_ALEN;
++
++	ice_put_vf(vf);
++	return 0;
++}
++
++/**
++ * ice_devlink_port_set_vf_fn_mac - .port_fn_hw_addr_set devlink handler
++ * @port: devlink port structure
++ * @hw_addr: MAC address of the port
++ * @hw_addr_len: length of MAC address
++ * @extack: extended netdev ack structure
++ *
++ * Callback for the devlink .port_fn_hw_addr_set operation
++ * Return: zero on success or an error code on failure.
++ */
++static int ice_devlink_port_set_vf_fn_mac(struct devlink_port *port,
++					  const u8 *hw_addr,
++					  int hw_addr_len,
++					  struct netlink_ext_ack *extack)
++
++{
++	struct devlink_port_attrs *attrs = &port->attrs;
++	struct devlink_port_pci_vf_attrs *pci_vf;
++	struct devlink *devlink = port->devlink;
++	struct ice_pf *pf;
++	u8 mac[ETH_ALEN];
++	int vf_id;
++
++	pf = devlink_priv(devlink);
++	pci_vf = &attrs->pci_vf;
++	vf_id = pci_vf->vf;
++
++	ether_addr_copy(mac, hw_addr);
++
++	return ice_set_vf_fn_mac(pf, vf_id, mac);
++}
++
++static const struct devlink_port_ops ice_devlink_vf_port_ops = {
++	.port_fn_hw_addr_get = ice_devlink_port_get_vf_fn_mac,
++	.port_fn_hw_addr_set = ice_devlink_port_set_vf_fn_mac,
++};
++
+ /**
+  * ice_devlink_create_vf_port - Create a devlink port for this VF
+  * @vf: the VF to create a port for
+@@ -1611,7 +1686,8 @@ int ice_devlink_create_vf_port(struct ice_vf *vf)
+ 	devlink_port_attrs_set(devlink_port, &attrs);
+ 	devlink = priv_to_devlink(pf);
+ 
+-	err = devlink_port_register(devlink, devlink_port, vsi->idx);
++	err = devlink_port_register_with_ops(devlink, devlink_port,
++					     vsi->idx, &ice_devlink_vf_port_ops);
+ 	if (err) {
+ 		dev_err(dev, "Failed to create devlink port for VF %d, error %d\n",
+ 			vf->vf_id, err);
+diff --git a/drivers/net/ethernet/intel/ice/ice_sriov.c b/drivers/net/ethernet/intel/ice/ice_sriov.c
+index 31314e7540f8..73cf1d9e9daa 100644
+--- a/drivers/net/ethernet/intel/ice/ice_sriov.c
++++ b/drivers/net/ethernet/intel/ice/ice_sriov.c
+@@ -1216,6 +1216,68 @@ ice_get_vf_cfg(struct net_device *netdev, int vf_id, struct ifla_vf_info *ivi)
+ 	return ret;
+ }
+ 
++/**
++ * ice_set_vf_fn_mac
++ * @pf: PF to be configure
++ * @vf_id: VF identifier
++ * @mac: MAC address
++ *
++ * program VF MAC address
++ */
++int ice_set_vf_fn_mac(struct ice_pf *pf, int vf_id, u8 *mac)
++{
++	struct device *dev;
++	struct ice_vf *vf;
++	int ret;
++
++	dev = ice_pf_to_dev(pf);
++	if (is_multicast_ether_addr(mac)) {
++		dev_err(dev, "%pM not a valid unicast address\n", mac);
++		return -EINVAL;
++	}
++
++	vf = ice_get_vf_by_id(pf, vf_id);
++	if (!vf)
++		return -EINVAL;
++
++	/* nothing left to do, unicast MAC already set */
++	if (ether_addr_equal(vf->dev_lan_addr, mac) &&
++	    ether_addr_equal(vf->hw_lan_addr, mac)) {
++		ret = 0;
++		goto out_put_vf;
++	}
++
++	ret = ice_check_vf_ready_for_cfg(vf);
++	if (ret)
++		goto out_put_vf;
++
++	mutex_lock(&vf->cfg_lock);
++
++	/* VF is notified of its new MAC via the PF's response to the
++	 * VIRTCHNL_OP_GET_VF_RESOURCES message after the VF has been reset
++	 */
++	ether_addr_copy(vf->dev_lan_addr, mac);
++	ether_addr_copy(vf->hw_lan_addr, mac);
++	if (is_zero_ether_addr(mac)) {
++		/* VF will send VIRTCHNL_OP_ADD_ETH_ADDR message with its MAC */
++		vf->pf_set_mac = false;
++		dev_info(dev, "Removing MAC on VF %d. VF driver will be reinitialized\n",
++			 vf->vf_id);
++	} else {
++		/* PF will add MAC rule for the VF */
++		vf->pf_set_mac = true;
++		dev_info(dev, "Setting MAC %pM on VF %d. VF driver will be reinitialized\n",
++			 mac, vf_id);
++	}
++
++	ice_reset_vf(vf, ICE_VF_RESET_NOTIFY);
++	mutex_unlock(&vf->cfg_lock);
++
++out_put_vf:
++	ice_put_vf(vf);
++	return ret;
++}
++
+ /**
+  * ice_set_vf_mac
+  * @netdev: network interface device structure
+diff --git a/drivers/net/ethernet/intel/ice/ice_sriov.h b/drivers/net/ethernet/intel/ice/ice_sriov.h
+index 346cb2666f3a..a03be184a806 100644
+--- a/drivers/net/ethernet/intel/ice/ice_sriov.h
++++ b/drivers/net/ethernet/intel/ice/ice_sriov.h
+@@ -28,6 +28,7 @@
+ #ifdef CONFIG_PCI_IOV
+ void ice_process_vflr_event(struct ice_pf *pf);
+ int ice_sriov_configure(struct pci_dev *pdev, int num_vfs);
++int ice_set_vf_fn_mac(struct ice_pf *pf, int vf_id, u8 *mac);
+ int ice_set_vf_mac(struct net_device *netdev, int vf_id, u8 *mac);
+ int
+ ice_get_vf_cfg(struct net_device *netdev, int vf_id, struct ifla_vf_info *ivi);
+@@ -76,6 +77,13 @@ ice_sriov_configure(struct pci_dev __always_unused *pdev,
+ 	return -EOPNOTSUPP;
+ }
+ 
++static inline int
++ice_set_vf_fn_mac(struct ice_pf __always_unused *pf,
++		  int __always_unused vf_id, u8 __always_unused *mac)
++{
++	return -EOPNOTSUPP;
++}
++
+ static inline int
+ ice_set_vf_mac(struct net_device __always_unused *netdev,
+ 	       int __always_unused vf_id, u8 __always_unused *mac)
+-- 
+2.39.3 (Apple Git-145)
 
-      Arnd
 
