@@ -1,242 +1,166 @@
-Return-Path: <linux-kernel+bounces-91816-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91819-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BA078716FE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:35:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA109871716
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:39:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6636283D60
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:35:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 55EC3B21B5C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:39:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DC7E7FBA4;
-	Tue,  5 Mar 2024 07:33:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C500B7E771;
+	Tue,  5 Mar 2024 07:39:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OvHocoeL"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Zu/T7wl+"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 673327FBC4;
-	Tue,  5 Mar 2024 07:33:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8060D7E103;
+	Tue,  5 Mar 2024 07:39:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709624005; cv=none; b=cFQ0enIUrzSWMWRXRTyG8r3P/7Y+aHWbOMjCWyrBk4x3NUZbnxdI4HDp/rWfSykLFinL/eWWVPxNuKsIKGke2bG0tC6eu2QLYPU4Z2cVjEa5q9IA7gjxuC91uNsZ+XmD+gK+SXe/9HmUDEWOEXyM/y/E6XaAQKt1a6ZPnpvyqB0=
+	t=1709624353; cv=none; b=EaX59gIRwsoN1AXbvFHZL4kqbcTOwdgkE7h1Zoy3F/6brC4PuUtVCB5ImaUre00SkwafesBOJA0HCfXB5bkm52nMfJaNIBRBk1qU8TUcsPIC7XQGQDZAQjQPWzkFwFW5CkgcYmlGZSYPzx+V95gtqEOBgU4Jg2EvXQ+s/xAyEZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709624005; c=relaxed/simple;
-	bh=YGTFf+aFcxTPkfOtBdEs9262UzHkIoYVYZfRjmj18Zs=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=tOGxqgsDc+IfngWmzNaySQbX/fdQRMSX4myBk3uP58jFwFWb8vN4vqq/Zam9MZU20v/8YDhYiNJGZ5rixjHHSaFYkMQiNO3XDmp1nkDF09a+WbSmLI5Qve++eCNcWHTvcEFExl0rhIUEz99lhmbeKle3CSCMKw/R0RKMarS8dro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OvHocoeL; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-56698eb5e1dso6933988a12.2;
-        Mon, 04 Mar 2024 23:33:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709624002; x=1710228802; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Gx7QPTKJai6jSFkj9+TJZzVP3EDqUm9KDYf3uq99HxA=;
-        b=OvHocoeLnu7NNeIOgtC+6nhcTERVmhmXLuwguQg923YZsLWykgjbuEj/06nHMN/ndz
-         8SIslbj6D72Sp4HYhH7slzZii8MXbZFbGqSY28AQS5L4qpKAFoa9u2y0m85LaXSSoiD2
-         1sX8xF6AM6mm+b/ghL75ZWS5hTOnjYZwLs6tdLo4UCJi1+3e/jfBracxkx4AfDPx7KPZ
-         VrCup5eec9TXLSNMPO0IXMhQjsD5gIOD8QzIEhhdn55TCVMbAKk0Rnib/PUbOIq2a2Nz
-         eOC6q/yDsBefuISs2rmmcFJLogpzn7Q2NDW+6ekdCcjX589o7UopyMs/cDKqAm72iqBz
-         Avsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709624002; x=1710228802;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Gx7QPTKJai6jSFkj9+TJZzVP3EDqUm9KDYf3uq99HxA=;
-        b=M0VTJ+IeJfiC90rt+lNgPOLaHZYalgADoSykDHu3+YCO2lTBfVJaK18/J429+Nqbil
-         Q0RvuNdwyeDQegdVWvKWAtokKFLT5FxmN4qV536Arzlt5SA7MTJLH8Dc+7m/hho7edTC
-         wgj8SQ0ktqQA60WRUu5z/XM6YFCisJVYM1AXRlH/f0es0yGsuq6KY4WDLQlDmOxW/ATx
-         BZaEbGNOFS8d/ykJodKPwuAi4ix/5UXQJdzAmtGAS88uXLOLUcmA2d5Jr+NAvkrXhJd2
-         QYTQUA9lhXuKa6iIGEel1S5UOuejD9dZ0e3BwixBnKofN5XNRN6/xe+0eddDX7r+ASQo
-         PdOg==
-X-Forwarded-Encrypted: i=1; AJvYcCVozzgaDL3iwUxVKAS8Ki98F1mQ6vrmqtdu94UuosMcdnbg+hzBjRDg7HeRIwjPR6MP/OChLHn5JUA7wcw6jIoR18Z0P3LTg0eB2MPhVYHT9jMbTmSJQAxf9k5esniHVQG4lP3TogS5zIfZpBOKTtVJSxWDiKwqrvzSywCztQYQ/w==
-X-Gm-Message-State: AOJu0YxbiqIphfTthVxlLoR0DUggeh3LrhKBIAVMw85nVBdfWoSNdWWn
-	/xrZ8Ppb7F9JWbZqQxV+SrB+hWKjDEFXw4hltcaAz4bvLJFr7KPw
-X-Google-Smtp-Source: AGHT+IHPvQtZwLezKjsSpiunSzo1ozz5dPp4RlMChtiuv+1LJpDBG7d+OgVW72CZXGBZnTesbmAcZQ==
-X-Received: by 2002:a50:fa83:0:b0:566:51fa:3647 with SMTP id w3-20020a50fa83000000b0056651fa3647mr6914461edr.10.1709624001492;
-        Mon, 04 Mar 2024 23:33:21 -0800 (PST)
-Received: from ?IPv6:2003:f6:ef1b:2000:15d4:fc17:481e:8afe? (p200300f6ef1b200015d4fc17481e8afe.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:15d4:fc17:481e:8afe])
-        by smtp.gmail.com with ESMTPSA id f16-20020aa7d850000000b00563f3ee5003sm5443887eds.91.2024.03.04.23.33.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 23:33:21 -0800 (PST)
-Message-ID: <2f497783da939f13d8c8faeab931cac0ef9c98eb.camel@gmail.com>
-Subject: Re: [PATCH v3 2/2] of: overlay: Synchronize of_overlay_remove()
- with the devlink removals
-From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To: Saravana Kannan <saravanak@google.com>, Herve Codina
-	 <herve.codina@bootlin.com>
-Cc: Rob Herring <robh@kernel.org>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
- Frank Rowand <frowand.list@gmail.com>, Lizhi Hou <lizhi.hou@amd.com>, Max
- Zhen <max.zhen@amd.com>,  Sonal Santan <sonal.santan@amd.com>, Stefano
- Stabellini <stefano.stabellini@xilinx.com>, Jonathan Cameron
- <Jonathan.Cameron@huawei.com>, linux-kernel@vger.kernel.org, 
- devicetree@vger.kernel.org, Allan Nielsen <allan.nielsen@microchip.com>, 
- Horatiu Vultur <horatiu.vultur@microchip.com>, Steen Hegelund
- <steen.hegelund@microchip.com>, Luca Ceresoli <luca.ceresoli@bootlin.com>,
- Nuno Sa <nuno.sa@analog.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, stable@vger.kernel.org
-Date: Tue, 05 Mar 2024 08:36:45 +0100
-In-Reply-To: <CAGETcx-tmyJA30GtdU_dO9tWFoK+rO5tm-On4tPR7oQotnMkqQ@mail.gmail.com>
-References: <20240229105204.720717-1-herve.codina@bootlin.com>
-	 <20240229105204.720717-3-herve.codina@bootlin.com>
-	 <acb69aa8c1a4c4e9849123ef538b9646a71507a0.camel@gmail.com>
-	 <20240304152202.GA222088-robh@kernel.org>
-	 <20240304174933.7ad023f9@bootlin.com>
-	 <CAGETcx-tmyJA30GtdU_dO9tWFoK+rO5tm-On4tPR7oQotnMkqQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 
+	s=arc-20240116; t=1709624353; c=relaxed/simple;
+	bh=A28suRbme1QZpr/dRcM4LmjGdNPiTUN8DUTSDscbeIQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=iw6PBNRGVIbWYE/fFfwGJ878H+Fb6QqC+EImtUPrCXvp+8oJUNJQg6DeWQD4u/liEUFKD9XXmNHG32JLl3fBIsdTbEwj9rf16/zv6nnUEeDvWbE9bmtxdze4o7sJxh5ghbL/LalNPY3WBm+QLqEh4h03rY08EdndLRUYmtnYg80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Zu/T7wl+; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709624351; x=1741160351;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=A28suRbme1QZpr/dRcM4LmjGdNPiTUN8DUTSDscbeIQ=;
+  b=Zu/T7wl+oHr0nCwDeA6lP32g2ShtvLaUai8M6K6dykhTCGe/Pys1tvpe
+   BwY2Xtlvt1S24gRYTkepiD5vXsKMkX107YUafGtt8RVO+A3w8yCpEJ2rW
+   Q8L9Q4L1osZ/JXsqo/+jtMr47uczchfrd8cHz4fYuOwFu3bzwW1Sc5LdX
+   QH6fa3eeQtXOX0KWcimhwToy4Mu3VSCgKaEzXmsWOIB9wxw/wLZo17/af
+   qNbgfjzZsS0a5h+alKC+S3PgHNC1ngHzQeN6UpheGmH+JwXFtw3oBCf1m
+   V1Brc9uFciVbh1HUBI8VQiPedmzBR5SNHJFCSAtGIodw4h/P6Nr3iI8Vm
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="4742114"
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="4742114"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 23:39:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="9185248"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 23:39:05 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: "Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com>
+Cc: Gregory Price <gourry.memverge@gmail.com>,  aneesh.kumar@linux.ibm.com,
+  mhocko@suse.com,  tj@kernel.org,  john@jagalactic.com,  Eishan Mirakhur
+ <emirakhur@micron.com>,  Vinicius Tavares Petrucci
+ <vtavarespetr@micron.com>,  Ravis OpenSrc <Ravis.OpenSrc@micron.com>,
+  Alistair Popple <apopple@nvidia.com>,  "Rafael J. Wysocki"
+ <rafael@kernel.org>,  Len Brown <lenb@kernel.org>,  Andrew Morton
+ <akpm@linux-foundation.org>,  Dave Jiang <dave.jiang@intel.com>,  Dan
+ Williams <dan.j.williams@intel.com>,  Jonathan Cameron
+ <Jonathan.Cameron@huawei.com>,  linux-acpi@vger.kernel.org,
+  linux-kernel@vger.kernel.org,  linux-mm@kvack.org,  "Ho-Ren (Jack)
+ Chuang" <horenc@vt.edu>,  "Ho-Ren (Jack) Chuang" <horenchuang@gmail.com>,
+  linux-cxl@vger.kernel.org,  qemu-devel@nongnu.org
+Subject: Re: [External] Re: [PATCH v1 0/1] Improved Memory Tier Creation for
+ CPUless NUMA Nodes
+In-Reply-To: <CAKPbEqpVSsva3P2mEs5LThJZVO12u6nxuDA4KJOEhKNY811-hw@mail.gmail.com>
+	(Ho-Ren Chuang's message of "Mon, 4 Mar 2024 23:10:39 -0800")
+References: <20240301082248.3456086-1-horenchuang@bytedance.com>
+	<87frx6btqp.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<CAKPbEqr-0yPDW7qps24vJgVCtVOGy_Jm4kcc0FKUsL3d9APDsw@mail.gmail.com>
+	<87h6hl9og3.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<CAKPbEqpVSsva3P2mEs5LThJZVO12u6nxuDA4KJOEhKNY811-hw@mail.gmail.com>
+Date: Tue, 05 Mar 2024 15:37:10 +0800
+Message-ID: <87zfvd86zd.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2024-03-04 at 22:47 -0800, Saravana Kannan wrote:
-> On Mon, Mar 4, 2024 at 8:49=E2=80=AFAM Herve Codina <herve.codina@bootlin=
-com> wrote:
-> >=20
-> > Hi Rob,
-> >=20
-> > On Mon, 4 Mar 2024 09:22:02 -0600
-> > Rob Herring <robh@kernel.org> wrote:
-> >=20
-> > ...
-> >=20
-> > > > > @@ -853,6 +854,14 @@ static void free_overlay_changeset(struct
-> > > > > overlay_changeset *ovcs)
-> > > > > =C2=A0{
-> > > > > =C2=A0 int i;
-> > > > >=20
-> > > > > + /*
-> > > > > +=C2=A0 * Wait for any ongoing device link removals before removi=
-ng some of
-> > > > > +=C2=A0 * nodes. Drop the global lock while waiting
-> > > > > +=C2=A0 */
-> > > > > + mutex_unlock(&of_mutex);
-> > > > > + device_link_wait_removal();
-> > > > > + mutex_lock(&of_mutex);
-> > > >=20
-> > > > I'm still not convinced we need to drop the lock. What happens if
-> > > > someone else
-> > > > grabs the lock while we are in device_link_wait_removal()? Can we
-> > > > guarantee that
-> > > > we can't screw things badly?
-> > >=20
-> > > It is also just ugly because it's the callers of
-> > > free_overlay_changeset() that hold the lock and now we're releasing i=
-t
-> > > behind their back.
-> > >=20
-> > > As device_link_wait_removal() is called before we touch anything, can=
-'t
-> > > it be called before we take the lock? And do we need to call it if
-> > > applying the overlay fails?
->=20
-> Rob,
->=20
-> This[1] scenario Luca reported seems like a reason for the
-> device_link_wait_removal() to be where Herve put it. That example
-> seems reasonable.
->=20
-> [1] - https://lore.kernel.org/all/20231220181627.341e8789@booty/
->=20
+"Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com> writes:
 
-I'm still not totally convinced about that. Why not putting the check right
-before checking the kref in __of_changeset_entry_destroy(). I'll contradict
-myself a bit because this is just theory but if we look at pci_stop_dev(), =
-which
-AFAIU, could be reached from a sysfs write(), we have:
+> On Mon, Mar 4, 2024 at 10:36=E2=80=AFPM Huang, Ying <ying.huang@intel.com=
+> wrote:
+>>
+>> "Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com> writes:
+>>
+>> > On Sun, Mar 3, 2024 at 6:47=E2=80=AFPM Huang, Ying <ying.huang@intel.c=
+om> wrote:
+>> >>
+>> >> "Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com> writes:
+>> >>
+>> >> > The memory tiering component in the kernel is functionally useless =
+for
+>> >> > CPUless memory/non-DRAM devices like CXL1.1 type3 memory because th=
+e nodes
+>> >> > are lumped together in the DRAM tier.
+>> >> > https://lore.kernel.org/linux-mm/PH0PR08MB7955E9F08CCB64F23963B5C3A=
+860A@PH0PR08MB7955.namprd08.prod.outlook.com/T/
+>> >>
+>> >> I think that it's unfair to call it "useless".  Yes, it doesn't work =
+if
+>> >> the CXL memory device are not enumerate via drivers/dax/kmem.c.  So,
+>> >> please be specific about in which cases it doesn't work instead of too
+>> >> general "useless".
+>> >>
+>> >
+>> > Thank you and I didn't mean anything specific. I simply reused phrases
+>> > we discussed
+>> > earlier in the previous patchset. I will change them to the following =
+in v2:
+>> > "At boot time, current memory tiering assigns all detected memory nodes
+>> > to the same DRAM tier. This results in CPUless memory/non-DRAM devices,
+>> > such as CXL1.1 type3 memory, being unable to be assigned to the
+>> > correct memory tier,
+>> > leading to the inability to migrate pages between different types of m=
+emory."
+>> >
+>> > Please see if this looks more specific.
+>>
+>> I don't think that the description above is accurate.  In fact, there
+>> are 2 ways to enumerate the memory device,
+>>
+>> 1. Mark it as reserved memory (E820_TYPE_SOFT_RESERVED, etc.) in E820
+>>    table or something similar.
+>>
+>> 2. Mark it as normal memory (E820_TYPE_RAM) in E820 table or something
+>>    similar
+>>
+>> For 1, the memory device (including CXL memory) is onlined via
+>> drivers/dax/kmem.c, so will be put in proper memory tiers.  For 2, the
+>> memory device is indistinguishable with normal DRAM with current
+>> implementation.  And this is what this patch is working on.
+>>
+>> Right?
+>
+> Good point! How about this?:
+> "
+> When a memory device, such as CXL1.1 type3 memory, is emulated as
+> normal memory (E820_TYPE_RAM), the memory device is indistinguishable
+> from normal DRAM in terms of memory tiering with the current implementati=
+on.
+> The current memory tiering assigns all detected normal memory nodes
+> to the same DRAM tier. This results in normal memory devices with
+> different attributions being unable to be assigned to the correct memory =
+tier,
+> leading to the inability to migrate pages between different types of memo=
+ry.
+> "
 
-device_release_driver(&dev->dev);
-..
-of_pci_remove_node(dev);
-	of_changeset_revert(np->data);
-	of_changeset_destroy(np->data);
+Looks good me!  Thanks!
 
-So looking at the above we would hit the same issue if we flush the queue i=
-n
-free_overlay_changeset() - as the queue won't be flushed at all and we coul=
-d
-have devlink removal due to device_release_driver(). Right?
-
-Again, completely theoretical but seems like a reasonable one plus I'm not
-understanding the push against having the flush in
-__of_changeset_entry_destroy(). Conceptually, it looks the best place to me=
- but
-I may be missing some issue in doing it there?
-
-> > >=20
-> >=20
-> > Indeed, having device_link_wait_removal() is not needed when applying t=
-he
-> > overlay fails.
-> >=20
-> > I can call device_link_wait_removal() from the caller of_overlay_remove=
-()
-> > but not before the lock is taken.
-> > We need to call it between __of_changeset_revert_notify() and
-> > free_overlay_changeset() and so, the lock is taken.
-> >=20
-> > This lead to the following sequence:
-> > --- 8< ---
-> > int of_overlay_remove(int *ovcs_id)
-> > {
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mutex_lock(&of_mutex);
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
-> >=20
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D __of_changeset_rever=
-t_notify(&ovcs->cset);
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
-> >=20
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret_tmp =3D overlay_notify(o=
-vcs, OF_OVERLAY_POST_REMOVE);
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
-> >=20
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mutex_unlock(&of_mutex);
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 device_link_wait_removal();
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mutex_lock(&of_mutex);
-> >=20
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 free_overlay_changeset(ovcs)=
-;
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mutex_unlock(&of_mutex);
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ...
-> > }
-> > --- 8< ---
-> >=20
-> > In this sequence, the question is:
-> > Do we need to release the mutex lock while device_link_wait_removal() i=
-s
-> > called ?
->=20
-> In general I hate these kinds of sequences that release a lock and
-> then grab it again quickly. It's not always a bug, but my personal
-> take on that is 90% of these introduce a bug.
->=20
-> Drop the unlock/lock and we'll deal a deadlock if we actually hit one.
-> I'm also fairly certain that device_link_wait_removal() can't trigger
-> something else that can cause an OF overlay change while we are in the
-> middle of one. And like Rob said, I'm not sure this unlock/lock is a
-> good solution for that anyway.
-
-Totally agree. Unless we really see a deadlock this is a very bad idea (IMH=
-O).
-Even on the PCI code, it seems to me that we're never destroying a changese=
-t
-from a device/kobj_type release callback. That would be super weird right?
-
-- Nuno S=C3=A1
->=20
-
+--
+Best Regards,
+Huang, Ying
 
