@@ -1,70 +1,72 @@
-Return-Path: <linux-kernel+bounces-92297-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92298-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B51C1871E12
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:38:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16BF2871E14
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:38:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5A331C229B5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:38:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7013B22279
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:38:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F196257333;
-	Tue,  5 Mar 2024 11:38:07 +0000 (UTC)
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 493DE5733F;
+	Tue,  5 Mar 2024 11:38:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="eRA4T9XF"
+Received: from out203-205-221-173.mail.qq.com (out203-205-221-173.mail.qq.com [203.205.221.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8B7F54908;
-	Tue,  5 Mar 2024 11:38:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D20681C6AD;
+	Tue,  5 Mar 2024 11:38:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709638687; cv=none; b=d9mRPE0VhkO2vwPtTALzAf7QAYKGekwVO9KmLoyDoda3Zf2yKk6nRCB90Bme10s0OSjfH4WPj84BO7ZaSLgiKaSU99EmtCqiHWkaUtYeUBtg9XpNW+BbgyhOXwDdDrwL6BfWZABkQc4DE0fau/U7rSpDGt34yAXhqByIwRJjxsc=
+	t=1709638702; cv=none; b=uq/GbijIZW/aOZc+48sbYqHx3FqurbcMJEJxl4FGUmzBVBqO6MtPXyxTQ1IHg/tUEULKiYTngpFnb5S2VDkiGnOQSSiu2MX5kR2paKI6i9+3nCYUsSuX4gB9bUiUuFnxDEJj6703WG9jMANDGF81GMvbtB77wNLUL7eeoP1dzec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709638687; c=relaxed/simple;
-	bh=an0mJ4yI+Taqndo6C5ZxyINal5TwXXDiYE/eX/dyfXU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ebkBXAazRcjaoia3Z416CeH2i79ASP3hhVw4ik7PVtuoe8laacfcErPNTyzWUJFlTVgiJtnQZkO4u8xFdC/JNbmxecd1HcSry0KfHOEKbT5rLH2PLqfVsVJNo5e5dsJZJW/whtWbzP7Xcc2IPAAL/ncI9a2Dl8p0FKsh/eX8K4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a3ddc13bbb3so1090130866b.0;
-        Tue, 05 Mar 2024 03:38:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709638684; x=1710243484;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PZcy/13YPJy/Q8JEq2MiymPPGsNdrglf5cJPZckjBCg=;
-        b=lKcJOcUevr9rztc+PQ7gzAo4I8r9yNwKmuwzzaDIj0Af93HCG7vEOk4WVec4IOSr8v
-         iyr/0pbZvo4u+yiNG6zLMcF5ksNnPk5xi/yXqBH4gdpBKAyMaV6kbvYiqiF4t1XixyPj
-         LMb5GmYStYz97CJu+TzTBGFKO/oFKBSz+DdySmowE/YU29deFz+DS3gU6w2+IxwKYGC2
-         xfGa19yVSNdZ8S7DAw3yxsDLYf6yyTSxjpMbJ1Fy9hRjQcplKBdE2xxfO4+bIS1QRQh7
-         5FUftRkCH02zTFVs0E+moYSoI2yEknTL0XddbKjR904W5vOO2dOQDOZbCd+dH977L67K
-         YP8g==
-X-Forwarded-Encrypted: i=1; AJvYcCWEVsvSD9vwpQvl+sasR7f2HaDZEmdkxPzUZ/1K9nldQcvXbQHcHEy1UL0UI+mFeXI9PK70Tgeb7W6pkiiZNs40DVbeYGKs0gKrdXDV
-X-Gm-Message-State: AOJu0Yy+exG89NmNFGqGAeWGH97KD9HFHTwwwEY5dSd74rdcIVOiruIV
-	WPtgsJNa246iZAHf/SRK6+y736rkCCZJEjtVRMMiCXaj5nllUPLY
-X-Google-Smtp-Source: AGHT+IGTkQxVbnlou2GMNYIIuskCZMU5vmsYsWmRfmFLbTSF1PvqcFQlaiCgE+UViH0KdyBtPT4Ztw==
-X-Received: by 2002:a17:906:340b:b0:a45:74fb:f5c3 with SMTP id c11-20020a170906340b00b00a4574fbf5c3mr2319199ejb.28.1709638683891;
-        Tue, 05 Mar 2024 03:38:03 -0800 (PST)
-Received: from localhost (fwdproxy-lla-009.fbsv.net. [2a03:2880:30ff:9::face:b00c])
-        by smtp.gmail.com with ESMTPSA id rp25-20020a170906d97900b00a3d665c6778sm6038509ejb.12.2024.03.05.03.38.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 03:38:03 -0800 (PST)
-From: Breno Leitao <leitao@debian.org>
-To: kuba@kernel.org,
-	davem@davemloft.net,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	Sabrina Dubroca <sd@queasysnail.net>
-Cc: netdev@vger.kernel.org,
+	s=arc-20240116; t=1709638702; c=relaxed/simple;
+	bh=QzYHOd+dyVh7UrO6ChjHVt3V649waC8Wk+j1KEBrJfc=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=hjNqKagWssBgbauqbVLqOLWdwWfTboaMSH7hfO/UFoobaSwHVkneDk4vhX7fwwGb6RkELomQkX1Zp4Z3tCKfwGfKqhDLW8/yL7JMMBpZFqTAPPgvD7Eg7QIoEmUi657Yerckgyza0gMNgo8YQmL1dhtfopxhtHXWk/cy8Gb9kzE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=eRA4T9XF; arc=none smtp.client-ip=203.205.221.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1709638697; bh=N0nDmVEf6cg/5KEdeUPOw3ez2Rj/dBiw4YqbMxTZuvA=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=eRA4T9XFgmozE5Z5y8j8RaNVwuiEKYjyQGM8NVsyFlRCNHCZ4XLJUSXHv919Zcz3S
+	 gRVvxqNxFva/ZPcYpSqQOlwYSwOM5mVv5EWZl54DZhduy1/xfN5bmYo/Cf/cQoJELe
+	 R4QwRWcRiP6VIc6hgEAxrrxzX4v1dbOur8TnHm/0=
+Received: from pek-lxu-l1.wrs.com ([111.198.228.140])
+	by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
+	id 98F1DE68; Tue, 05 Mar 2024 19:38:15 +0800
+X-QQ-mid: xmsmtpt1709638695t7z4ovnkd
+Message-ID: <tencent_11194B111B6F25CEBA5FBB71336B9E9D1B08@qq.com>
+X-QQ-XMAILINFO: N7h1OCCDntujILhsONvPruo4uQ7+ppvZHX8EdiXAigos8aJey6DeGYUnmDConM
+	 DSFl654zgZ/AFCiGSsXgceYX6ctfWdajefqhCi6QaMO4jtxV1ab8Qb7uEktCPjCnVdEEkZCTvFhj
+	 PvKzoG1cA2A7/FVd5n+QWjiNl+Q62SU30vB7vTWA8mMS/hNTTsG5p6SnC597aGMahc8BGvcZacVw
+	 +VyHdQu4pO/XfSQa5OxzyvRM+tMs4WkZQC5Y/HaxOq8X2BZFb5QjiBtSiM7Qsh/nOxAp7/N5XA8a
+	 AXeTG4RNzDqDmcMIeUQh5hijdGHHvcYIK9mF44IYTWNW2e27fq3nRjte48VVmjBPjM5K49o2gaU2
+	 Dx8irZ111mdzT0u272QCl+CADUumLwDRaKl1hf7CzJWYwitlZy92LRxOTEDaeAxvhFQEYCCY0LAX
+	 b9DaMqFayvfNF4XOblTUnJz+rW9CyKy6s/xiQLkep3hFu4MHULnbJBWfTsIqnDdM5vsOcRNB0GsA
+	 eA4ZvU1n7mEsC52sQf9HGUSB3OQ/JgeBB0nsVp0pCWyV0Tvy1qQvZ88Rtij1aIufsog0Yut74l7w
+	 tYCPZ72fotajgMMXC2Q5inRjCGEPTaWEROLrK3DKgOqr92Ndrdy6MMGbPP/t9poAyV5PQAVAO90n
+	 RG5Wv/MdC585WYronqW8gNGGc4Oolu1VCj3fxfz1o8SSE5Uo8iO266zJaZb3M1NR8g3HNccfIzo+
+	 WgJuZo3AuULLtk+o5t58X7SsnGPzx0JdsKxfkwaBuj5tJu60JEcfiRvJHv92lM13ZNGtTcNxFaqC
+	 vNtC3wUL2jQJIdc6MkiaialzmwAG4kCvclajAhvq9mGVQhOb0HL8v7uBf3N0yYo3QF4kCswZz0YR
+	 IUlJcUgIdO0co3lkH7DqCfKX4OaQ8Wp34IoYj7dWh8jwolZmnvTn9mVO89td8/O+erHrlhmaHXyL
+	 7wE66pJqI=
+X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+02e64be5307d72e9c309@syzkaller.appspotmail.com
+Cc: linux-fsdevel@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	horms@kernel.org,
-	dsahern@kernel.org
-Subject: [PATCH net-next] net: macsec: Leverage core stats allocator
-Date: Tue,  5 Mar 2024 03:37:27 -0800
-Message-ID: <20240305113728.1974944-1-leitao@debian.org>
+	syzkaller-bugs@googlegroups.com
+Subject: [PATCH] mm/pagemap: fix null ptr deref in do_pagemap_cmd
+Date: Tue,  5 Mar 2024 19:38:16 +0800
+X-OQ-MSGID: <20240305113815.2950328-2-eadavis@qq.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <0000000000001bc4a00612d9a7f4@google.com>
+References: <0000000000001bc4a00612d9a7f4@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,55 +75,33 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-With commit 34d21de99cea9 ("net: Move {l,t,d}stats allocation to core and
-convert veth & vrf"), stats allocation could be done on net core
-instead of in this driver.
+When pagemap_open() runs in the kernel thread context, task->mm is NULL, it will
+causes the pagemap file object's file->private_date to be NULL when the pagemap
+file is opened, this will ultimately result in do_pagemap_cmd() referencing a 
+null pointer.
 
-With this new approach, the driver doesn't have to bother with error
-handling (allocation failure checking, making sure free happens in the
-right spot, etc). This is core responsibility now.
+So, before PAGEMAP_SCAN ioctl() call do_pagemap_scan(), need check mm first.
 
-Remove the allocation in the macsec driver and leverage the network
-core allocation instead.
-
-Signed-off-by: Breno Leitao <leitao@debian.org>
+Fixes: 52526ca7fdb9 ("fs/proc/task_mmu: implement IOCTL to get and optionally clear info about PTEs")
+Reported-and-tested-by: syzbot+02e64be5307d72e9c309@syzkaller.appspotmail.com
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
 ---
- drivers/net/macsec.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+ fs/proc/task_mmu.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/macsec.c b/drivers/net/macsec.c
-index 4b5513c9c2be..0206b84284ab 100644
---- a/drivers/net/macsec.c
-+++ b/drivers/net/macsec.c
-@@ -3519,18 +3519,13 @@ static int macsec_dev_init(struct net_device *dev)
- 	struct net_device *real_dev = macsec->real_dev;
- 	int err;
+diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+index 3f78ebbb795f..ab28666956d0 100644
+--- a/fs/proc/task_mmu.c
++++ b/fs/proc/task_mmu.c
+@@ -2510,6 +2510,8 @@ static long do_pagemap_cmd(struct file *file, unsigned int cmd,
  
--	dev->tstats = netdev_alloc_pcpu_stats(struct pcpu_sw_netstats);
--	if (!dev->tstats)
--		return -ENOMEM;
--
- 	err = gro_cells_init(&macsec->gro_cells, dev);
--	if (err) {
--		free_percpu(dev->tstats);
-+	if (err)
- 		return err;
--	}
+ 	switch (cmd) {
+ 	case PAGEMAP_SCAN:
++		if (!mm)
++			return -EINVAL;
+ 		return do_pagemap_scan(mm, arg);
  
- 	dev->features = real_dev->features & MACSEC_FEATURES;
- 	dev->features |= NETIF_F_LLTX | NETIF_F_GSO_SOFTWARE;
-+	dev->pcpu_stat_type = NETDEV_PCPU_STAT_TSTATS;
- 
- 	macsec_set_head_tail_room(dev);
- 
-@@ -3550,7 +3545,6 @@ static void macsec_dev_uninit(struct net_device *dev)
- 	struct macsec_dev *macsec = macsec_priv(dev);
- 
- 	gro_cells_destroy(&macsec->gro_cells);
--	free_percpu(dev->tstats);
- }
- 
- static netdev_features_t macsec_fix_features(struct net_device *dev,
+ 	default:
 -- 
 2.43.0
 
