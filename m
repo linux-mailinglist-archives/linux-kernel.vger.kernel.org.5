@@ -1,205 +1,283 @@
-Return-Path: <linux-kernel+bounces-91787-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91788-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E46318716A1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:18:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C0308716A5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:19:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C52F281517
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:18:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C583F1F216FC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:19:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0528F7E564;
-	Tue,  5 Mar 2024 07:18:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="Ei/synmt"
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2053.outbound.protection.outlook.com [40.107.15.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D30367E11C;
+	Tue,  5 Mar 2024 07:19:32 +0000 (UTC)
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BC8A17C7F;
-	Tue,  5 Mar 2024 07:18:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.15.53
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709623124; cv=fail; b=d+XCLuvr/m5WCRbokQr/AU7eTUgKH6aNtzbVcyQjiB3xxBWOyyeUsK0qscLp20OctxGQqfoQoMn7zaGRMZ0Mkm4XGcNRNbNowGA74J6OMD3/K0d2XFEkFLJpEGWTYUif+qnM+wMNPQDO7NNtj45cjGquemPMuLxXAqtjqkAbLTc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709623124; c=relaxed/simple;
-	bh=FD0qCHaQk1e1Q7H+c3IhKhMJNMLoF8d7IZ6o73H8J4g=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=e2B1QAxbYEtE7B4spEzIB/zsWYka7FI7BxUr2Iw0g1S2CHH24EGET1HH1zslRq0qeCJ0XgeJheoqxInIV27z88ZlrVDJXUvAsAKYQkQIBMz9v2YAT22HUXr1TtXEzDYRP1mfcHNxy420kQeejni+ZCwqnhdAgB65BHcbGSTPArc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=Ei/synmt; arc=fail smtp.client-ip=40.107.15.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RgcYZkINIAK8pI/dzUnXCQfInSS+BqOr1bfnA9upmnI5LpCpqNR6/c8T2/zrZk4ztIqPRap0vzEV+OEfQupe8DRoFA+5ia3XU5RBVp20UuKPp0L0rzFp8WbM7w0fR87oM4CrKMEZCzwk03L5krDbA1TCpXQvA/KJWoexQ4wHGzE+QvSb2urdv1Iu4ntcTrbS39dA0XWpK53WZ8+KzhSG17UWwmQ7Yy3xtVdHxfQQKM7SDYM3Fl7btKOiD9CqXHs5v5UtvbqDuoJw+QMLFfSj7xsFMpQ2bkIN6D1EKWVe2Gg066t6JAKg95cs5jEd7ph8zZ6/3n5RJibDFR7KgLugfw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FD0qCHaQk1e1Q7H+c3IhKhMJNMLoF8d7IZ6o73H8J4g=;
- b=kZ13i2tQmE0Jmc0rTrxdfZ2D8jdTfAlk4o9q/42oea8fMh0cCY2gDosCZvbpRPffPi6pEtGl7w3tDEHmO0trZBm9mXPgjhN0LFLsuS9b5LVpfQ58IE93RCCyEW1EnxEBHwh2OPF6DmbKpN/GQKUYisvJEOYOVNGB386clDEDeCIvu4T4/Iw5xMSZ6lrCX+TsfsOSBGytrp2Z/a6fwLvRcOr5g2/qHs+8eXj6b67wocpmjNYmxDOVSC/16RK3jBWofX/mOcKs2MOWN046ZmcOnPu7tf04qmb2YWcJqSYN05pxM13p2g0BRwdvQSv+VqA9la7elSp3PqPxiXed+6GKVw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FD0qCHaQk1e1Q7H+c3IhKhMJNMLoF8d7IZ6o73H8J4g=;
- b=Ei/synmtJIylgLgn3u9Fr/KKzeHPWjcVZPofpTQZ8wKr1lXqKGo05RcWjSZP32xEjgvWihXFEh3VHB41q/pzh6rERvzS4Lj8FvAAleQv87HN3qhm05Oz05X1MD3qh0kHku6QeNjwE9yhGpj3qHWqVdpkBcS8Xts78gGz15FU7MA=
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by PAWPR04MB9885.eurprd04.prod.outlook.com (2603:10a6:102:391::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.39; Tue, 5 Mar
- 2024 07:18:38 +0000
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::1232:ed97:118f:72fd]) by DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::1232:ed97:118f:72fd%4]) with mapi id 15.20.7339.035; Tue, 5 Mar 2024
- 07:18:39 +0000
-From: Peng Fan <peng.fan@nxp.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Rob Herring
-	<robh@kernel.org>, "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-CC: Abel Vesa <abelvesa@kernel.org>, Michael Turquette
-	<mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
-	<conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer
-	<s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>, "linux-clk@vger.kernel.org"
-	<linux-clk@vger.kernel.org>, "imx@lists.linux.dev" <imx@lists.linux.dev>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v3 1/2] dt-bindindgs: clock: support NXP i.MX95 BLK CTL
- module
-Thread-Topic: [PATCH v3 1/2] dt-bindindgs: clock: support NXP i.MX95 BLK CTL
- module
-Thread-Index: AQHaahlgOv6evYTjhE2qVPUINi25/rEnr0QAgADi1dCAADM3AIAAAIZg
-Date: Tue, 5 Mar 2024 07:18:38 +0000
-Message-ID:
- <DU0PR04MB9417551618EB1C723EF3FA9088222@DU0PR04MB9417.eurprd04.prod.outlook.com>
-References: <20240228-imx95-blk-ctl-v3-0-40ceba01a211@nxp.com>
- <20240228-imx95-blk-ctl-v3-1-40ceba01a211@nxp.com>
- <20240304143916.GA181628-robh@kernel.org>
- <DU0PR04MB941740A36E953A0E1AD690EC88222@DU0PR04MB9417.eurprd04.prod.outlook.com>
- <58cdfa7c-5483-4193-a5de-bb5fa72de637@linaro.org>
-In-Reply-To: <58cdfa7c-5483-4193-a5de-bb5fa72de637@linaro.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DU0PR04MB9417:EE_|PAWPR04MB9885:EE_
-x-ms-office365-filtering-correlation-id: 372b906e-d242-44d1-0a0f-08dc3ce47ac9
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- B5ba2efTvYtPKme0NgZo3wk89JRwLl3Fynzf3gZMxcKMfz9WVGzelhhljrXV+QMJFqrajSL6Y+IuiS6hP+z8qTM/79WAr2/B+dTMVL5gPot7ptkztyuzpQ/8GKOv66xWQEeu634aeCCFse9UwD7eUvG8uCnDtiAO4CN7X1CSioCeibawt7UtmJLA1FQof/nS4Mz3Qhg0NsMk8F8EwCRmO65nGXwz0Ci0CCsYmoFDyTSWUeH/M+lTxTGx8Fy7+8u/d1cjzw0Mh3X9ZYqYSNaeK+hS82LtF8Ld6k1J0FGYQIeD6HEE9usXoFw0biNwM2uTSbIcp2cb/rU5q+KGiijcvqSDsqs4wRp/hQ/dQD3hihBvFDqnjQoow7QnrZ/OObKl2IdW7RXXK1IziU+9sNHr9qXkQj0SjmA1Gw5uLtgpl5vV3AK2cRf5CPishNBqLZBp2CdSW3TmJgC54ErIeOKrVZT1OvKM/AQJtfYbNUqeaoDctWpGz6h/wEFC+VcuVOH2gTBTkAlKxXHYRDE8+g81HsFdG1iCGYOtLyNGn55NPse1gNisI060Lreh72g9vR01i8me64YdkieRDljp81SIYmLjF7vmSuLH/rsIm1omZU0lUaia562GSG1OCQYzN/Dp26RWeO2qqIPQhe2GFyjy022969XBbeYEoEojSlSIvvc+jFrNc/YP2lVca7u8IvLthK3d4aL/BYAYxEXUdOgYPIRXg1FSKwJmjkDYx8DI/WY=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?YkNTR09UdEljeTlUcTBXaUU1UEZmUDRsaitPNzZMV1FycllFN3pCYmhPL3ZW?=
- =?utf-8?B?d3JXR1RmUHkzRkVxN1NYSDNrNnVoQnVzVWQrSHdMZUszTjgzbXFCVXpVREJM?=
- =?utf-8?B?b3B4OFJ5R0VXOU1RRzNOZ2N4TExzcVNuWkMvejM3Z1pxL09lanI3VWFxcEFa?=
- =?utf-8?B?Ni8zSW03ci91TmZBeEZyRDlNUitNY2c2UndPazFJUU5xUE5zYjBEWW9zU0pB?=
- =?utf-8?B?OGhRaUd3bko3YkR3andtb1FXTUxiUElNVUNXeU5ybnFYNC9vdnVjQlRGREEw?=
- =?utf-8?B?aEsyYjFqanZzMDYxaEtZcTVTdTZFbGhCbkhFVHAxNCsxZFQ3eGRtYlFBMGZF?=
- =?utf-8?B?MWFiSlJpRmhWWWJZWiswWmFIMVYzY0dsaUFUMWFUMzNnMDJCMWFlbVZkNmhj?=
- =?utf-8?B?OXJhY3NsZGFsempUNmwvckdZZ0lLUVNwV2NGcEs2VlhuMFRiRmZPOUdNSHl2?=
- =?utf-8?B?dzFxMU0yajlENVJjem1MSDVLRUFzVGV6MlczaTVTWW9xK01WVEROeFFwYk5r?=
- =?utf-8?B?UmduTnhKc0o4blFFM3hZWGJEQ0pvMldnbnZXNE1sME14NkpRMkVzRkpIT2RL?=
- =?utf-8?B?SVJnL2VXTUpsUXZvSUxLV2VjWE9rdWFNNmRiR3NSc0lpbFZUalNCUjBqYThl?=
- =?utf-8?B?aWU2Q1BkbE9yam1ISzFRMysrdGZQZXI5YUUrc1VGUituRTlaejlaWU5peFN0?=
- =?utf-8?B?czAzVXlxZXRuT2tNWG1tLzBhV0V2UmpSNVhQVVR1VC90bVFEOGpyK040VlNx?=
- =?utf-8?B?RXdkMGw4Vm9Wa09BVkl4amkramF2NmYwa0M0ZkQycEE3clhpWHdrcStBcjJX?=
- =?utf-8?B?d1dPckJCWnlJZ3ByMTAwd1kwZDNMQm9OemZzL2J0dElOcGFvOXY0UHYxbndV?=
- =?utf-8?B?V1lGTVNDSnU4SmttaUd5djBhL0JZVEdDNFNFNGVCR0hrclltWGRCY0hzQy9L?=
- =?utf-8?B?czRCLytuZ25aMHE3bXpodjZ2eDlhZnpHOFBQWXpZQU90QitYSEhUTkphTWlr?=
- =?utf-8?B?TFlWUDRqZmJHUDBJREhBWVN3NVNGVGRSbzhhZFl5ZXBRVi9sZ0tZckxjVkVs?=
- =?utf-8?B?Ulc2MFJFMXZ0elhaQWl6MDZRZHRPMGovZXJYZUk1ZGxsQmtYY3lNTmdZWkg3?=
- =?utf-8?B?RlZkRlpZWktpb1VUN2xmdG93VThSTlhVSlc0MkplYVBBZ1krZUYwWmhaTHpp?=
- =?utf-8?B?aEF5WmZETDV6SDh1M3FQRHVBRHRkYzMxQjdOYmx4Z002WmtWbTdtcDNCMXR4?=
- =?utf-8?B?TmoxTVlhYnlKU0cxc1ljRjcvdm1zdG4wKzk3R2YyeVRXQlREdXkxdUpWdito?=
- =?utf-8?B?RkkrNitVdnlaMmdVcm5QNklsWDlTNXU1MklMK1pBUnJhOThBREpDa29oNmFE?=
- =?utf-8?B?eGhWd1BYMVlWd3BoWkpiODRCbjB4QndIZTY4QjlHNy9jOVdPU1JYWHlzSmkz?=
- =?utf-8?B?ei9oVy9Vb2JwZ1Vuclk4ZERCWE1nOWtsWmRDZ09ncU1iUnIzM1A3RHRkeWhY?=
- =?utf-8?B?NXVsUFA2VUxRZnhKdFpVbDM5bVRwRG5TS2NXTFR1ZEpvS3ZJOWxMYjhjZUdn?=
- =?utf-8?B?Q00yeWxSQUkrbDNEdy9xNGRkNVUzWjNObWFUeG80RmN6cGxSem4rc0QxWmhi?=
- =?utf-8?B?MWROYW5VbHRNa3N2ejU0Tm9ONDZjdktYUXR6Z3YxQTcrc0tWbDBIcjZQV0Za?=
- =?utf-8?B?VTM2NU9PSFlwTStlSGlQc2ZGTmVVZ0Z6RzltQ3FGdVFISDBwY2g5UmxrSjJE?=
- =?utf-8?B?czBWNm9ZM0JBRG1BdkdqU3Z6OGg5TmtkRElQQTVGclJUVDRLWHgwcXo4dEJK?=
- =?utf-8?B?UnEvN3hkODlabzlTRDF4N215LzM3NGpwTkZHWWw1NURlNWRDUWtmTlhLb2k5?=
- =?utf-8?B?U3QvcDVpbzMrNzRnTlgvQ1dWWFlCU2YycnRGeE8yMmJNY1Z1Qk9FZDJ1Wk12?=
- =?utf-8?B?bWpsQzhhS2E5a0VxZ0w1S2dHcmQwM3lEbXhpd1BGUUxqbDQyZTdjbFF3MitV?=
- =?utf-8?B?YVl6YnpBeFFKdTc1SHVJbDhYZXVMVUU1SzRVZHNJZmQ2Vll5MVk5MkNDNmRs?=
- =?utf-8?B?b2Q1dU9pWHBHakJyRzJ4S0Yvd1I0dW51NHZveldKKzBTZEhyS2NYMlZTYlRX?=
- =?utf-8?Q?322o=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 757917E101;
+	Tue,  5 Mar 2024 07:19:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709623172; cv=none; b=mk31qsp27jRw/GLyB3OqselgZ+adFpyQAx1ByvebjMVrmNibneZZj8XTpEyle0Wegm/XN05EAKvfAkAkoOc4SFdgzGtyZEepjPJM/iAM9kvF7Zoi9AlCRmm3bXCOmNorFtsG4anwvsoMrzPDPLfwqqJEeCD3KDhkPncBPgA6v3w=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709623172; c=relaxed/simple;
+	bh=NcwVel1z7ZcoEyr8WPUWvegmKx13ucuVguofS4a7H/k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=M++qe432tNqdkETpypQr2ZLjjF32nkf8HlhRPZphnzWyAK+zc6ae20VhoWC9S9SFsrkTfJoApz4DxBr15HhMmhvrkfaX+MQwguHpxKk4nXOKmk28x7otvZp8nzgQQ/XVLouge0nSIpAsRjVjYBXPY9e3TxaqDe141aABET6Rbt4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-55a5e7fa471so7291737a12.1;
+        Mon, 04 Mar 2024 23:19:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709623169; x=1710227969;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=j+1baBckT7OXImwCfZaZCxZUfFd5GSKEsCREenSuOjg=;
+        b=GFQn8viwuehVmvHuHEOdfbPmw7DHwBh58QPaZPfdCixzI6LbcfXdsXfJIJjO9T07PD
+         0fZAq/Zr5RH31YiVem6viM7T+25xPK45PmKK4wTK69ccrRK9S/Sy5nLVkaGhraY0Hr7x
+         YLBcr48KHfCMhePi+9iQO/GMnyxnmod9X81/UR0u6WAaq9xo/OU+5cJh8eCNe+nNoo71
+         J0jUl5mt/2GG7JxJ5xPdii/KmT2GZPiCBA3Si6om404RxsDKj5C0IBEePV3L4Km66gte
+         1OPyab34/Wag8zSA0CPFUbxRqAUC5SioUIeGvkUePGR3g08zZYzb2YS+iWsGw/7GNPpI
+         WJpA==
+X-Forwarded-Encrypted: i=1; AJvYcCVYCMt9iLUZVHaEaobwWUnd/Dn5/hNQylrv98HC+LOPqMbRyoaxtudfAx7kPyFVCan6H0IZhMGSBWgBy0V91M0WuKK2kHQ6RWo0q+B4ybDPCBERryPKWU49eGVdAb5dNhQnJ8yhHfXr6wNO
+X-Gm-Message-State: AOJu0Yz7tLsk4T1NBB1R9AthHle3JR7483SiTRAs0gyhrO43J4kD7RCS
+	W4kNXUhBQb6aEEWCf0N1zvid6Ls7xPj0TNrozYY+idezsl10HRBzyqe2+ltE
+X-Google-Smtp-Source: AGHT+IHclhwaEt9hqmjKLRPcvn6J4CM61NaIoNux57lWnJWK6Hq57lryW1XeTdc4g/QchZ+JMkZFWw==
+X-Received: by 2002:a17:906:37d6:b0:a45:f05:7e10 with SMTP id o22-20020a17090637d600b00a450f057e10mr4497803ejc.24.1709623168600;
+        Mon, 04 Mar 2024 23:19:28 -0800 (PST)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
+        by smtp.gmail.com with ESMTPSA id k23-20020a1709063e1700b00a42f6d48c72sm5766587eji.145.2024.03.04.23.19.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Mar 2024 23:19:28 -0800 (PST)
+Message-ID: <1cc70895-b520-4dde-971e-692041dfbcce@kernel.org>
+Date: Tue, 5 Mar 2024 08:19:27 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 372b906e-d242-44d1-0a0f-08dc3ce47ac9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Mar 2024 07:18:38.9628
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ki1s0Do2C7C+4wbUJhELNpN/IBcNgTKseL0H3+hY7Tmlmh94vLEUGyu7SdeJSZ43eqR/VIdbPYI/cRmmtF903w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWPR04MB9885
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 tty] 8250: microchip: pci1xxxx: Refactor TX Burst code
+ to use pre-existing APIs
+Content-Language: en-US
+To: Rengarajan.S@microchip.com, linux-serial@vger.kernel.org,
+ gregkh@linuxfoundation.org, Kumaravel.Thiagarajan@microchip.com,
+ UNGLinuxDriver@microchip.com, Tharunkumar.Pasumarthi@microchip.com,
+ linux-kernel@vger.kernel.org
+References: <20240222134944.1131952-1-rengarajan.s@microchip.com>
+ <5bf4ba6d-d8e3-4ba6-a889-cfae8c3ddabe@kernel.org>
+ <e93048e64c3f8aa2731575d4b296c473e8dadb82.camel@microchip.com>
+ <254db026-5f9d-497f-ac44-c81d9d5947cf@kernel.org>
+ <53dd0d89466f0f06dfd2d63ab1ff29462a09aabb.camel@microchip.com>
+ <e8b49c34-90a1-4610-b7cd-8eff1b1a312a@kernel.org>
+ <f3b627f1d03c8db3d09f56a836e8733004b2287b.camel@microchip.com>
+From: Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
+In-Reply-To: <f3b627f1d03c8db3d09f56a836e8733004b2287b.camel@microchip.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-PiBTdWJqZWN0OiBSZTogW1BBVENIIHYzIDEvMl0gZHQtYmluZGluZGdzOiBjbG9jazogc3VwcG9y
-dCBOWFAgaS5NWDk1IEJMSyBDVEwNCj4gbW9kdWxlDQo+IA0KPiBPbiAwNS8wMy8yMDI0IDA1OjEz
-LCBQZW5nIEZhbiB3cm90ZToNCj4gPj4+ICsNCj4gPj4+ICtleGFtcGxlczoNCj4gPj4+ICsgICMg
-Q2xvY2sgQ29udHJvbCBNb2R1bGUgbm9kZToNCj4gPj4+ICsgIC0gfA0KPiA+Pj4gKyAgICAjaW5j
-bHVkZSA8ZHQtYmluZGluZ3MvY2xvY2svbnhwLGlteDk1LWNsb2NrLmg+DQo+ID4+PiArDQo+ID4+
-PiArICAgIHN5c2NvbkA0YzQxMDAwMCB7DQo+ID4+DQo+ID4+IGNsb2NrLWNvbnRyb2xsZXJALi4u
-DQo+ID4NCj4gPiBCdXQgdGhpcyBpcyBhIHN5c2NvbiwgdXNpbmcgY2xvY2stY29udHJvbGxlciB3
-aWxsIHRyaWdnZXIgZHQgY2hlY2sNCj4gPiB3YXJuaW5nLg0KPiANCj4gV2hpY2ggd2FybmluZz8N
-Cg0KSSBqdXN0IHJlY2FsbGVkIHRoYXQgbm9kZSB3aXRoIHN5c2NvbiBpbiBjb21wYXRpYmxlIHN0
-cmluZyBuZWVkcw0KaGFzIHN5c2NvbiBhcyBub2RlLCBJIG1heWJlIHdyb25nLg0KDQo+IA0KPiA+
-Pg0KPiA+PiBBcyB0aGF0IGlzIHRoZSBtYWluIGZlYXR1cmUvZnVuY3Rpb24uDQo+ID4+DQo+ID4+
-PiArICAgICAgY29tcGF0aWJsZSA9ICJueHAsaW14OTUtdnB1bWl4LWNzciIsICJzeXNjb24iOw0K
-PiA+Pj4gKyAgICAgIHJlZyA9IDwweDRjNDEwMDAwIDB4MTAwMDA+Ow0KPiA+Pj4gKyAgICAgICNj
-bG9jay1jZWxscyA9IDwxPjsNCj4gPj4NCj4gPj4gUGxlYXNlIG1ha2UgdGhlIGV4YW1wbGUgYXMg
-ZnVsbCBhcyBwb3NzaWJsZS4gRm9yIGV4YW1wbGUsIGFkZA0KPiA+PiBtdXgtY29udHJvbGxlciBu
-b2RlLiBEbyBzb21lIG9mIHRoZSBibG9ja3Mgbm90IGhhdmUgbXV4IGN0cmw/DQo+ID4NCj4gPiBZ
-ZXMuIFRoZSBibGsgY3RybCBpcyBub3QganVzdCBmb3IgY2xvY2ssIHNvbWUgcmVnaXN0ZXJzIGhh
-cyBtdXggY3RybCwNCj4gPiBzdWNoIGFzIFBpeGVsX2xpbmtfc2VsLg0KPiANCj4gVGhlbiBtdXgt
-Y29udHJvbGxlciBzaG91bGQgbm90IGJlIGFsbG93ZWQgZm9yIHRoZW0uDQoNCllvdSBtZWFuIEkg
-c2hvdWxkIG5vdCBhZGQgbXV4LWNvbnRyb2xsZXIgdW5kZXIgdGhlIGJsayBjdHJsIG5vZGU/DQoN
-CldlIGhhdmUgc3VjaCBhIG5vZGUgaW4gZG93bnN0cmVhbSB0cmVlLCBpZiBtdXgtY29udHJvbGxl
-ciBpcw0Kbm90IGFsbG93ZWQsIHdvdWxkIHlvdSBwbGVhc2Ugc3VnZ2VzdCBvdGhlciBhcHByb2Fj
-aGVzPw0KICAgICAgICAgICAgICAgIGRpc3BsYXlfbWFzdGVyX2Nzcjogc3lzY29uQDRhZDEwMDAw
-IHsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KICAgICAg
-ICAgICAgICAgICAgICAgICAgY29tcGF0aWJsZSA9ICJmc2wsaW14OTUtZGlzcGxheS1tYXN0ZXIt
-Y3NyIiwgInN5c2NvbiI7ICAgICAgICAgICAgICAgICAgICAgIA0KICAgICAgICAgICAgICAgICAg
-ICAgICAgcmVnID0gPDB4MCAweDRhZDEwMDAwIDB4MCAweDEwMDAwPjsgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIA0KICAgICAgICAgICAgICAgICAgICAgICAgI2Nsb2Nr
-LWNlbGxzID0gPDE+OyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIA0KICAgICAgICAgICAgICAgICAgICAgICAgY2xvY2tzID0gPCZzY21pX2Ns
-ayBJTVg5NV9DTEtfQ0FNQVBCPjsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IA0KICAgICAgICAgICAgICAgICAgICAgICAgcG93ZXItZG9tYWlucyA9IDwmc2NtaV9kZXZwZCBJ
-TVg5NV9QRF9DQU1FUkE+OyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KICAgICAgICAgICAgICAgICAgICAg
-ICAgbXV4OiBtdXgtY29udHJvbGxlciB7ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBj
-b21wYXRpYmxlID0gIm1taW8tbXV4IjsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAjbXV4LWNvbnRyb2wt
-Y2VsbHMgPSA8MT47ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0K
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBtdXgtcmVnLW1hc2tzID0gPDB4NCAweDAw
-MDAwMDAxPjsgLyogUGl4ZWxfbGlua19zZWwgKi8gICAgICAgICAgICAgIA0KICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICBpZGxlLXN0YXRlcyA9IDwwPjsgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KICAgICAgICAgICAgICAgICAgICAgICAg
-fTsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIA0KICAgICAgICAgICAgICAgIH07DQoNClRoYW5rcywNClBlbmcu
-DQo+IA0KPiBCZXN0IHJlZ2FyZHMsDQo+IEtyenlzenRvZg0KDQo=
+On 05. 03. 24, 5:15, Rengarajan.S@microchip.com wrote:
+> Hi Jiri,
+> 
+> On Mon, 2024-03-04 at 07:19 +0100, Jiri Slaby wrote:
+>> [Some people who received this message don't often get email from
+>> jirislaby@kernel.org. Learn why this is important at
+>> https://aka.ms/LearnAboutSenderIdentification ]
+>>
+>> EXTERNAL EMAIL: Do not click links or open attachments unless you
+>> know the content is safe
+>>
+>> On 04. 03. 24, 5:37, Rengarajan.S@microchip.com wrote:
+>>> Hi Jiri,
+>>>
+>>> On Fri, 2024-02-23 at 10:26 +0100, Jiri Slaby wrote:
+>>>> EXTERNAL EMAIL: Do not click links or open attachments unless you
+>>>> know the content is safe
+>>>>
+>>>> On 23. 02. 24, 10:21, Rengarajan.S@microchip.com wrote:
+>>>>> On Fri, 2024-02-23 at 07:08 +0100, Jiri Slaby wrote:
+>>>>>> EXTERNAL EMAIL: Do not click links or open attachments unless
+>>>>>> you
+>>>>>> know the content is safe
+>>>>>>
+>>>>>> On 22. 02. 24, 14:49, Rengarajan S wrote:
+>>>>>>> Updated the TX Burst implementation by changing the
+>>>>>>> circular
+>>>>>>> buffer
+>>>>>>> processing with the pre-existing APIs in kernel. Also
+>>>>>>> updated
+>>>>>>> conditional
+>>>>>>> statements and alignment issues for better readability.
+>>>>>>
+>>>>>> Hi,
+>>>>>>
+>>>>>> so why are you keeping the nested double loop?
+>>>>>>
+>>>>>
+>>>>> Hi, in order to differentiate Burst mode handling with byte
+>>>>> mode
+>>>>> had
+>>>>> seperate loops for both. Since, having single while loop also
+>>>>> does
+>>>>> not
+>>>>> align with rx implementation (where we have seperate handling
+>>>>> for
+>>>>> burst
+>>>>> and byte) have retained the double loop.
+>>>>
+>>>> So obviously, align RX to a single loop if possible. The current
+>>>> TX
+>>>> code
+>>>> is very hard to follow and sort of unmaintainable (and buggy).
+>>>> And
+>>>> IMO
+>>>> it's unnecessary as I proposed [1]. And even if RX cannot be one
+>>>> loop,
+>>>> you still can make TX easy to read as the two need not be the
+>>>> same.
+>>>>
+>>>> [1]
+>>>> https://lore.kernel.org/all/b8325c3f-bf5b-4c55-8dce-ef395edce251@kernel.org/
+>>>
+>>>
+>>> while (data_empty_count) {
+>>>      cnt = CIRC_CNT_TO_END();
+>>>      if (!cnt)
+>>>        break;
+>>>      if (cnt < UART_BURST_SIZE || (tail & 3)) { // is_unaligned()
+>>>        writeb();
+>>>        cnt = 1;
+>>>      } else {
+>>>        writel()
+>>>        cnt = UART_BURST_SIZE;
+>>>      }
+>>>      uart_xmit_advance(cnt);
+>>>      data_empty_count -= cnt;
+>>> }
+>>>
+>>> With the above implementation we are observing performance drop of
+>>> 2
+>>> Mbps at baud rate of 4 Mbps. The reason for this is the fact that
+>>> for
+>>> each iteration we are checking if the the data need to be processed
+>>> via
+>>> DWORDs or Bytes. The condition check for each iteration is causing
+>>> the
+>>> drop in performance.
+>>
+>> Hi,
+>>
+>> the check is by several orders of magnitude faster than the I/O
+>> proper.
+>> So I don't think that's the root cause.
+>>
+>>> With the previous implementation(with nested loops) the performance
+>>> is
+>>> found to be around 4 Mbps at baud rate of 4 Mbps. In that
+>>> implementation we handle sending DWORDs continuosly until the
+>>> transfer
+>>> size < 4. Can you let us know any other alternatives for the above
+>>> performance drop.
+>>
+>> Could you attach the patch you are testing?
+> 
+> Please find the updated pci1xxxx_process_write_data
+> 
+> 	u32 xfer_cnt;
+> 
+>          while (*valid_byte_count) {
+>                  xfer_cnt = CIRC_CNT_TO_END(xmit->head, xmit->tail,
+>                                             UART_XMIT_SIZE);
+> 
+>                  if (!xfer_cnt)
+>                          break;
+> 
+>                  if (xfer_cnt < UART_BURST_SIZE || (xmit->tail & 3)) {
+
+Hi,
+
+OK, is it different if you remove the alignment checking (which should 
+be correct™ thing to do, but may/will slow down things on platforms 
+which don't care)?
+
+>                          writeb(xmit->buf[xmit->tail], port->membase +
+>                                 UART_TX_BYTE_FIFO);
+>                          xfer_cnt = UART_BYTE_SIZE;
+>                  } else {
+>                          writel(*(u32 *)&xmit->buf[xmit->tail],
+
+If you remove the "tail & 3" check, you can use get_unaligned() here and 
+need not care about unaligned accesses after all...
+
+>                                 port->membase + UART_TX_BURST_FIFO);
+>                          xfer_cnt = UART_BURST_SIZE;
+>                  }
+> 
+>                  uart_xmit_advance(port, xfer_cnt);
+>                  *data_empty_count -= xfer_cnt;
+>                  *valid_byte_count -= xfer_cnt;
+>          }
+> 
+> Testing is done via minicom by transferring a 10 MB file at 4 Mbps,
+> 
+> After the minicom transfer with single instance:
+> 
+> Previous implementation(Nested While Loops):
+> Transferred 10 MB at 3900000 CPS
+> 
+> Current implementation:
+> Transferred 10 MB at 2459999 CPS
+
+
+
+-- 
+js
+suse labs
+
 
