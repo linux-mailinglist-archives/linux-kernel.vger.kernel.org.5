@@ -1,188 +1,219 @@
-Return-Path: <linux-kernel+bounces-91704-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91715-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C569871570
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 06:53:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 484C687159C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 06:58:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3110C1C22141
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 05:53:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 052C9281818
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 05:58:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 024EA78B47;
-	Tue,  5 Mar 2024 05:53:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QZzL3XOL"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 448603C087;
+	Tue,  5 Mar 2024 05:57:23 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91CDF4CB23;
-	Tue,  5 Mar 2024 05:52:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E68FA2AE95;
+	Tue,  5 Mar 2024 05:57:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709617979; cv=none; b=eZvuU3lmVrnbMXqBBJ/s3nYXWEDoZaIlS3OOZRvVJBshJ7fZXY/svKV9WH7YdrlCuljja/zUz5amyGactl2PX1IASG1vNrtq0Oe3wnh20ak14dAgVrhaJ3/+cc+x8C1H51mP82ii1TLV2AUrLnWwDiu6kqseH+WS+HUVhMIe4GA=
+	t=1709618242; cv=none; b=V8I1TZQIh9OOFqN4d1ieflNSlaYcqvaIN49TQsJ2F5ePluvGT3qDJ6cHAKdt0oEHM1PiGjS7Xw5oYK1SNTFD8fZPlPkPHeoo+2GKgYrAitB5dnawAE9CXJC0Nfe3Hp78ShK9FhKNorWqOZ5nJm2eBxRjMpbMqiFlQm3ebbQv7MM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709617979; c=relaxed/simple;
-	bh=AYLW1//dy5xf/Pa6/bMw0sJZYBaMmhOjIUuu7n6/e20=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=tSfOaq1U/jS2XLdwxPd2bbBMZwypQ7btPV+ZXJtQj3RVg6sGXFjKUsZE2Q5Qvd9bWobaeu1Y5QKaKyzhMTRetd+tA4/QmBAI4nLoi0ef01lIb/8IYQPBGtVFoC8D5gbHbP9Mn7q22mWzluDQwexB9ututo4R6Wb/iYvgkr27JVk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QZzL3XOL; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a44ad785a44so421714766b.3;
-        Mon, 04 Mar 2024 21:52:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709617976; x=1710222776; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=iNfYyJIcPqgZYHnSjE0qasYntQo5CxIhhJdeJyjsmfw=;
-        b=QZzL3XOL1xc672TYpD8ukwE02VzHdss8nj1V4KsoThzvtccgcf4K+xXKfBFv0RBYtB
-         4FfWOSmpLSCqUjhEUFe8gJLm/SRGO8F27WBTyTxUNbulxSt8EQZVpdB7F4spCL3rrtCd
-         h6E/iln/1nxgoXhr/DpAWzzHxSn5Rk4xbLmD7IYrj4eGvjg7XyjVoV5DoJjSY+6EnIAZ
-         rJ0TIrYbcSIOXu9VlT/huDdoVGtLHPIgK2j1k1o9nJMeZRw2jzWwZH5wp9cct4BaWIdp
-         QqFGTdzFL/8XBAYuSTC9+SW+zRVh9i+pubdK8rSQB1S2rybU9si7qCyMO4QUMYRRtrwn
-         Ir7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709617976; x=1710222776;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=iNfYyJIcPqgZYHnSjE0qasYntQo5CxIhhJdeJyjsmfw=;
-        b=dAuT1Vr73EuyfM8Udfp3+R8mvIaTjqBAs/FmTe7OqhVieN2dX7T76/J/LxqKrB8959
-         a5m7bDHGGGeDQhW3yIC7odzOeB4b8qPVilzKOqVFqn9qUEvZeM0PgoIGqgEVYq+GXWAd
-         cf9BnhjR5ur/xRZaf3LsBbXP/3XggLmCVYjdN7FR9jKjhK2ThxEHJayh5nEGFnDRkSVb
-         mt/fZXEE0Z9U6CH1cyJXMmoDhw/4Fu9tukvYpG3vDjYd+aAO8U2HDdf7nlMyoeVAMsnn
-         ZMo2s5kAgMkI5febF0ZWAVMsRTgpfZqBBCOHQb0T4pOAuJK8onxSBIVBWw8e+AbFOTyM
-         TfCg==
-X-Forwarded-Encrypted: i=1; AJvYcCVL5f5dlHh79QUJZB1B9mDaC3I1s8fT1qH2Ym478SgXYJpQo0tpu4P8tRkAE+/mRsXNc+noaoDxygXiQu1onvRUvBAV0Jn8LY/QjKjp
-X-Gm-Message-State: AOJu0Yw+MNgxmT20ViSOBB9OhgDaNQKhZRo0c/HIKxH7vXDilVq2OAWV
-	WsRC4RNMHW4bmrS8TR3ik7sBVGiYm+RwlOxeZux5314UpRcjNw4h
-X-Google-Smtp-Source: AGHT+IGvy4VyIAdGOPrnkE7IhGVpRILLK08YsbaHw7JmOvxFg/w40x+sca9mmrhsXAZ8uYYraF94mw==
-X-Received: by 2002:a17:906:c7c3:b0:a3e:34e8:626f with SMTP id dc3-20020a170906c7c300b00a3e34e8626fmr7917401ejb.66.1709617975573;
-        Mon, 04 Mar 2024 21:52:55 -0800 (PST)
-Received: from [127.0.1.1] (91-118-163-37.static.upcbusiness.at. [91.118.163.37])
-        by smtp.gmail.com with ESMTPSA id lb24-20020a170906add800b00a4131367204sm5633692ejb.80.2024.03.04.21.52.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 21:52:54 -0800 (PST)
-From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Date: Tue, 05 Mar 2024 06:52:43 +0100
-Subject: [PATCH] Revert "Input: bcm5974 - check endpoint type before
- starting traffic"
+	s=arc-20240116; t=1709618242; c=relaxed/simple;
+	bh=ls+B1ltP0N7/jwz/5QBBYJTT6qIm/m7EuCGiX3tgNZ4=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Gv8gwa6CPNPIl/aFxmQrzm4EMNC66/+T+SR9J2tqncfMdS6+mbhKZbPAG+ZUg6Zo+y8OxyxLrnyeBhZF4oSi1AbfUZLXzelC/fTI3Bzj3nSNe2Ak5+zUn166yauyWZcUxW42VnCEw952vmrxJJRgHdyQUNKI21M3NfN/CjSqr68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TplBw2ch5z2BfKn;
+	Tue,  5 Mar 2024 13:54:48 +0800 (CST)
+Received: from kwepemi500006.china.huawei.com (unknown [7.221.188.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id 6F4FE1402CB;
+	Tue,  5 Mar 2024 13:57:08 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.2) by
+ kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 5 Mar 2024 13:57:07 +0800
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+To: <jgg@ziepe.ca>, <leon@kernel.org>
+CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
+Subject: [PATCH for-next] RDMA/hns: Append SCC context to the raw dump of QPC
+Date: Tue, 5 Mar 2024 13:52:57 +0800
+Message-ID: <20240305055257.823513-1-huangjunxian6@hisilicon.com>
+X-Mailer: git-send-email 2.30.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240305-revert_bcm5974_ep_check-v1-1-db4f0422588f@gmail.com>
-X-B4-Tracking: v=1; b=H4sIACqz5mUC/x2MWwqAIBAArxL7nWA+krpKhJittUQPNCKI7p70O
- TAzDySMhAna4oGIFyXatwxVWYCf3TYhozEzCC4Ul1yzLGE87eBX3Rhl8bB+Rr8waYJwtRuEqRT
- k+ogY6P7PXf++H3gbtSlpAAAA
-To: Henrik Rydberg <rydberg@bitmath.org>, 
- Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
- regressions@lists.linux.dev, 
- Javier Carrasco <javier.carrasco.cruz@gmail.com>
-X-Mailer: b4 0.14-dev
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1709617973; l=3264;
- i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
- bh=AYLW1//dy5xf/Pa6/bMw0sJZYBaMmhOjIUuu7n6/e20=;
- b=UMHi2tDKeW5/xZXMWhszo8IKwIEF/XFtfTC1wu/2uAqsqt23o93AXZH5YXy07BHLyF95heJKC
- CCY2je1DrW5AQw/LSqjiWqQ/UfXIwthZbU1UVxsSQma86cFcpidBO5V
-X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
- pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemi500006.china.huawei.com (7.221.188.68)
 
-This patch intended to fix an well-knonw issue in old drivers where the
-endpoint type is taken for granted, which is often triggered by fuzzers.
+From: wenglianfa <wenglianfa@huawei.com>
 
-That was the case for this driver [1], and although the fix seems to be
-correct, it uncovered another issue that leads to a regression [2] if
-the endpoints of the current interface are checked. The driver makes use
-of endpoints that belong to a different interface rather than the one it
-binds (it binds to the third interface, but also accesses an endpoint
-from a different one). The driver should claim the interfaces it
-requires, but that is still not the case.
+SCCC (SCC Context) is a context with QP granularity that contains
+information about congestion control. Dump SCCC and QPC together
+to improve troubleshooting.
 
-Given that the regression is more severe than the issue found by
-syzkaller, the best approach is reverting the patch that causes the
-regression, and trying to fix the underlying problem before checking
-the endpoint types again.
+When dumping raw QPC with rdmatool, there will be a total of 576 bytes
+data output, where the first 512 bytes is QPC and the last 64 bytes is
+SCCC. When congestion control is disabled, the 64 byte SCCC will be all 0.
 
-Note that reverting this patch will probably trigger the syzkaller bug
-at some point.
+Example:
+$rdma res show qp -jpr
+[ {
+        "ifindex": 0,
+        "ifname": "hns_0",
+	"data": [ 67,0,0,0... 512bytes
+		  4,0,2... 64bytes]
+  },...
+} ]
 
-[1] https://syzkaller.appspot.com/bug?extid=348331f63b034f89b622
-[2] https://lore.kernel.org/linux-input/ab9d758c-3ce9-42f6-99af-877055a589e6@leemhuis.info/T/#t
-
-This reverts commit 2b9c3eb32a699acdd4784d6b93743271b4970899.
-
-Fixes: b516b1b0dfcc ("Revert "Input: bcm5974 - check endpoint type before starting traffic"")
-Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Signed-off-by: wenglianfa <wenglianfa@huawei.com>
+Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
 ---
- drivers/input/mouse/bcm5974.c | 20 --------------------
- 1 file changed, 20 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_cmd.h      |  3 +++
+ drivers/infiniband/hw/hns/hns_roce_device.h   |  1 +
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c    | 25 +++++++++++++++++++
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.h    |  6 +++++
+ drivers/infiniband/hw/hns/hns_roce_restrack.c | 23 ++++++++++++++---
+ 5 files changed, 55 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/input/mouse/bcm5974.c b/drivers/input/mouse/bcm5974.c
-index 953992b458e9..ca150618d32f 100644
---- a/drivers/input/mouse/bcm5974.c
-+++ b/drivers/input/mouse/bcm5974.c
-@@ -19,7 +19,6 @@
-  * Copyright (C) 2006	   Nicolas Boichat (nicolas@boichat.ch)
-  */
+diff --git a/drivers/infiniband/hw/hns/hns_roce_cmd.h b/drivers/infiniband/hw/hns/hns_roce_cmd.h
+index 052a3d60905a..11dbbabebdc9 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_cmd.h
++++ b/drivers/infiniband/hw/hns/hns_roce_cmd.h
+@@ -108,6 +108,9 @@ enum {
+ 	HNS_ROCE_CMD_QUERY_CEQC		= 0x92,
+ 	HNS_ROCE_CMD_DESTROY_CEQC	= 0x93,
  
--#include "linux/usb.h"
- #include <linux/kernel.h>
- #include <linux/errno.h>
- #include <linux/slab.h>
-@@ -194,8 +193,6 @@ enum tp_type {
- 
- /* list of device capability bits */
- #define HAS_INTEGRATED_BUTTON	1
--/* maximum number of supported endpoints (currently trackpad and button) */
--#define MAX_ENDPOINTS	2
- 
- /* trackpad finger data block size */
- #define FSIZE_TYPE1		(14 * sizeof(__le16))
-@@ -894,18 +891,6 @@ static int bcm5974_resume(struct usb_interface *iface)
- 	return error;
++	/* SCC CTX commands */
++	HNS_ROCE_CMD_QUERY_SCCC		= 0xa2,
++
+ 	/* SCC CTX BT commands */
+ 	HNS_ROCE_CMD_READ_SCCC_BT0	= 0xa4,
+ 	HNS_ROCE_CMD_WRITE_SCCC_BT0	= 0xa5,
+diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+index bc015901a7d3..c3cbd0a494bf 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_device.h
++++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+@@ -947,6 +947,7 @@ struct hns_roce_hw {
+ 	int (*query_qpc)(struct hns_roce_dev *hr_dev, u32 qpn, void *buffer);
+ 	int (*query_mpt)(struct hns_roce_dev *hr_dev, u32 key, void *buffer);
+ 	int (*query_srqc)(struct hns_roce_dev *hr_dev, u32 srqn, void *buffer);
++	int (*query_sccc)(struct hns_roce_dev *hr_dev, u32 qpn, void *buffer);
+ 	int (*query_hw_counter)(struct hns_roce_dev *hr_dev,
+ 				u64 *stats, u32 port, int *hw_counters);
+ 	const struct ib_device_ops *hns_roce_dev_ops;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index 38e426f4afb5..ba7ae792d279 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -5317,6 +5317,30 @@ static int hns_roce_v2_query_srqc(struct hns_roce_dev *hr_dev, u32 srqn,
+ 	return ret;
  }
  
--static bool bcm5974_check_endpoints(struct usb_interface *iface,
--				    const struct bcm5974_config *cfg)
--{
--	u8 ep_addr[MAX_ENDPOINTS + 1] = {0};
--
--	ep_addr[0] = cfg->tp_ep;
--	if (cfg->tp_type == TYPE1)
--		ep_addr[1] = cfg->bt_ep;
--
--	return usb_check_int_endpoints(iface, ep_addr);
--}
--
- static int bcm5974_probe(struct usb_interface *iface,
- 			 const struct usb_device_id *id)
++static int hns_roce_v2_query_sccc(struct hns_roce_dev *hr_dev, u32 qpn,
++				  void *buffer)
++{
++	struct hns_roce_v2_scc_context *context;
++	struct hns_roce_cmd_mailbox *mailbox;
++	int ret;
++
++	mailbox = hns_roce_alloc_cmd_mailbox(hr_dev);
++	if (IS_ERR(mailbox))
++		return PTR_ERR(mailbox);
++
++	ret = hns_roce_cmd_mbox(hr_dev, 0, mailbox->dma, HNS_ROCE_CMD_QUERY_SCCC,
++				qpn);
++	if (ret)
++		goto out;
++
++	context = mailbox->buf;
++	memcpy(buffer, context, sizeof(*context));
++
++out:
++	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
++	return ret;
++}
++
+ static u8 get_qp_timeout_attr(struct hns_roce_dev *hr_dev,
+ 			      struct hns_roce_v2_qp_context *context)
  {
-@@ -918,11 +903,6 @@ static int bcm5974_probe(struct usb_interface *iface,
- 	/* find the product index */
- 	cfg = bcm5974_get_config(udev);
+@@ -6709,6 +6733,7 @@ static const struct hns_roce_hw hns_roce_hw_v2 = {
+ 	.query_qpc = hns_roce_v2_query_qpc,
+ 	.query_mpt = hns_roce_v2_query_mpt,
+ 	.query_srqc = hns_roce_v2_query_srqc,
++	.query_sccc = hns_roce_v2_query_sccc,
+ 	.query_hw_counter = hns_roce_hw_v2_query_counter,
+ 	.hns_roce_dev_ops = &hns_roce_v2_dev_ops,
+ 	.hns_roce_dev_srq_ops = &hns_roce_v2_dev_srq_ops,
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+index 359a74672ba1..df04bc8ede57 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+@@ -646,6 +646,12 @@ struct hns_roce_v2_qp_context {
+ #define QPCEX_SQ_RQ_NOT_FORBID_EN QPCEX_FIELD_LOC(23, 23)
+ #define QPCEX_STASH QPCEX_FIELD_LOC(82, 82)
  
--	if (!bcm5974_check_endpoints(iface, cfg)) {
--		dev_err(&iface->dev, "Unexpected non-int endpoint\n");
--		return -ENODEV;
--	}
--
- 	/* allocate memory for our device state and initialize it */
- 	dev = kzalloc(sizeof(struct bcm5974), GFP_KERNEL);
- 	input_dev = input_allocate_device();
-
----
-base-commit: 90d35da658da8cff0d4ecbb5113f5fac9d00eb72
-change-id: 20240305-revert_bcm5974_ep_check-37f2a6ab2714
-
-Best regards,
++#define SCC_CONTEXT_SIZE 16
++
++struct hns_roce_v2_scc_context {
++	__le32 data[SCC_CONTEXT_SIZE];
++};
++
+ #define	V2_QP_RWE_S 1 /* rdma write enable */
+ #define	V2_QP_RRE_S 2 /* rdma read enable */
+ #define	V2_QP_ATE_S 3 /* rdma atomic enable */
+diff --git a/drivers/infiniband/hw/hns/hns_roce_restrack.c b/drivers/infiniband/hw/hns/hns_roce_restrack.c
+index f7f3c4cc7426..356d98816949 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_restrack.c
++++ b/drivers/infiniband/hw/hns/hns_roce_restrack.c
+@@ -97,16 +97,33 @@ int hns_roce_fill_res_qp_entry_raw(struct sk_buff *msg, struct ib_qp *ib_qp)
+ {
+ 	struct hns_roce_dev *hr_dev = to_hr_dev(ib_qp->device);
+ 	struct hns_roce_qp *hr_qp = to_hr_qp(ib_qp);
+-	struct hns_roce_v2_qp_context context;
++	struct hns_roce_full_qp_ctx {
++		struct hns_roce_v2_qp_context qpc;
++		struct hns_roce_v2_scc_context sccc;
++	} context = {};
+ 	int ret;
+ 
+ 	if (!hr_dev->hw->query_qpc)
+ 		return -EINVAL;
+ 
+-	ret = hr_dev->hw->query_qpc(hr_dev, hr_qp->qpn, &context);
++	ret = hr_dev->hw->query_qpc(hr_dev, hr_qp->qpn, &context.qpc);
+ 	if (ret)
+-		return -EINVAL;
++		return ret;
++
++	/* If SCC is disabled or the query fails, the queried SCCC will
++	 * be all 0.
++	 */
++	if (!(hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_QP_FLOW_CTRL) ||
++	    !hr_dev->hw->query_sccc)
++		goto out;
++
++	ret = hr_dev->hw->query_sccc(hr_dev, hr_qp->qpn, &context.sccc);
++	if (ret)
++		ibdev_warn_ratelimited(&hr_dev->ib_dev,
++				       "failed to query SCCC, ret = %d.\n",
++				       ret);
+ 
++out:
+ 	ret = nla_put(msg, RDMA_NLDEV_ATTR_RES_RAW, sizeof(context), &context);
+ 
+ 	return ret;
 -- 
-Javier Carrasco <javier.carrasco.cruz@gmail.com>
+2.30.0
 
 
