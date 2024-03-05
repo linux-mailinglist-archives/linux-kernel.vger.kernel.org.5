@@ -1,159 +1,116 @@
-Return-Path: <linux-kernel+bounces-92011-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B195B8719AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:34:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 04A148719AA
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:33:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E2D7E1C22812
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:34:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 366891C227B9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:33:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E678652F99;
-	Tue,  5 Mar 2024 09:34:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D937252F85;
+	Tue,  5 Mar 2024 09:33:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="1GjDofeH"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="3Q5pX8xn"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEF0752F6A;
-	Tue,  5 Mar 2024 09:34:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04E4850272;
+	Tue,  5 Mar 2024 09:33:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709631255; cv=none; b=CwVmbTC3VWDsWFeG9a77v60SrAQ0+22QSYdVZgaLlMOj4aNbumDYC4/KlGnCIROyELXeS2LDXQSHw/3DdESX6cBNWrtsoiguznCobo9uNHujxidF+xiVnVYDB82AGqIy1U8SGPdhXVxKdVGCNYqgKibSdQCGMpsXAAnPhzT0dK4=
+	t=1709631224; cv=none; b=gZ+Q8rXaKQT5wCsw7w0tntc0EARvbP1kKBDwQlmXq/R/jcrj/D1/7U9apMM16VNOHOkmNcauI/xBtsAbYk0q/QyL1tDbb1y2F7VULle04dYCQ9BGObdF94R+J54OuPEi2qsosgegcQOn63B9lAvnZBQJqssf8mti9DXyz+nmkAk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709631255; c=relaxed/simple;
-	bh=T+7Q7gQskuw24wef7dAaNh5RUkK6uPhJY7sdZqTMIFY=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Oa4YmeoNK1O9bQvyONpAkWdAhrEpwdcZrj1WNKj3pqfem+EC4NAs4y7vJ2Wtdd8kx+yQFr6AOEDsjNGHzM04B8Ba/ulmTkAN/dHJV5shVb01/VUlJAvwPBtwAm8AEPMqGj61wr/gvn+kw7NKaaLamn/6GQIhYFO2+Gc3hJXJ1Ws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=1GjDofeH; arc=none smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1709631253; x=1741167253;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=T+7Q7gQskuw24wef7dAaNh5RUkK6uPhJY7sdZqTMIFY=;
-  b=1GjDofeHSagFvJHCgXShstittoYUF/LgrggDvGIf+f81xQO5cCN0qGvS
-   +XZ/2gxJ4RwFgM9rf+CJwGs+FK0K6TQorKQUM28xcMeBFN8GCocC3nmbj
-   hcz4lSmikPqcu4hAr1hbn84LpA75/1i50WKGBs+U3Ugn628yw03kXNI9+
-   nJ0Rzy8GCwkP8sK7o+SyFa4xx/Vx+deKnlc/g8ZeNP1eLUE+HXuGVMGST
-   2Pur3Oxt7H0gJf0n1YJCnvHxDgnj6UaTSIisbHCXia9/l7rJyev5hnIG6
-   htsD7yJel2fUDOUxYJFdVqoJeQlh1IJdMqro5dz8InWsU7UiRyB0NJvdT
-   Q==;
-X-CSE-ConnectionGUID: wgXCSyg+Q4GqTX7SY8rAAw==
-X-CSE-MsgGUID: 6EM9gp66SGKa0dtg7wp0Vg==
-X-IronPort-AV: E=Sophos;i="6.06,205,1705388400"; 
-   d="asc'?scan'208";a="17205101"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 05 Mar 2024 02:34:12 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 5 Mar 2024 02:33:32 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex04.mchp-main.com (10.10.85.152)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Tue, 5 Mar 2024 02:33:29 -0700
-Date: Tue, 5 Mar 2024 09:32:45 +0000
-From: Conor Dooley <conor.dooley@microchip.com>
-To: Luna Jernberg <droidbittin@gmail.com>
-CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, <stable@vger.kernel.org>,
-	<patches@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-	<torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-	<linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-	<lkft-triage@lists.linaro.org>, <pavel@denx.de>, <jonathanh@nvidia.com>,
-	<f.fainelli@gmail.com>, <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
-	<rwarsow@gmx.de>, <conor@kernel.org>, <allen.lkml@gmail.com>
-Subject: Re: [PATCH 6.7 000/163] 6.7.9-rc2 review
-Message-ID: <20240305-squeezing-backlit-d952f4503e57@wendy>
-References: <20240305074649.580820283@linuxfoundation.org>
- <20240305-arson-panhandle-afa453ccb0aa@wendy>
- <CADo9pHg4teVS7Lt1j+gOt4G9U=dZF9G92AUK=Km6PTdURkc0pg@mail.gmail.com>
- <20240305-series-flogging-e359bae88efd@wendy>
- <CADo9pHh6fnOz7d6+WCwkKz6_T4Ahru=0YDuc6q+KNnKYqQ2gBg@mail.gmail.com>
+	s=arc-20240116; t=1709631224; c=relaxed/simple;
+	bh=tyXjWQ6oTfBc0STjbgaI+jZeYhzMh6HZOelWe8HPHi0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=brjQh8WLN/9gU0Q/E34DprCxz0vRKsgtxYGiHWcXfXSHD7KSamxDTePTxtQmaDV/XnTzq6KEeTw9L1CeHsmk/CdYQBT4UMH27bf56xvDQ/+kHZq1+X+DDOTRGKfoABClh34DaiQbm8yKx1FljLS5kKukbpHHuN7pPeyY0519q3Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=3Q5pX8xn; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
+	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
+	In-Reply-To:References; bh=U2WukJ7OKv2T/LS0xNPodSXzP9djVjo0sK1RH9RhhXM=;
+	t=1709631222; x=1710063222; b=3Q5pX8xnp4vhCJafC/7EhGcPbbYzvPQ+sQd6BN8UUKeewTo
+	DYjylOb1Eql64Oc3Pt+rYks/aI8+0WtG6G4t5yrM1cCtUR7/hZsWp27+XFyfQ8vIoRvYn+sSbPpGB
+	WZ0+nb4x7x0QnQ7vrRZ+PwjjOgKiV6oywvH2tF1pNF1wy/RH3TCtieiR+35x/u/3D7V1OmC/DR8qv
+	80G+JnZueQkHgZKSflC08jWHW2pj63s0eBWlJOk8oqjltKL8jBJ6RHFAbsNbpxZaTYoa2gkxmxj2D
+	XMkbkmBQr2oytZI83RtxzIshO4JmJOcqAhENsO4yUrEmEfQIwHXf0lZH/ocUwrew==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rhRB5-0007zv-JF; Tue, 05 Mar 2024 10:33:39 +0100
+Message-ID: <83c6019f-9c6f-4ad1-87d5-e4f1bdaca93c@leemhuis.info>
+Date: Tue, 5 Mar 2024 10:33:39 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="UN1dzwzL0P7pYwKx"
-Content-Disposition: inline
-In-Reply-To: <CADo9pHh6fnOz7d6+WCwkKz6_T4Ahru=0YDuc6q+KNnKYqQ2gBg@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Lenovo ThinkPad X13s regerssions (was Re: Linux regressions report
+ for mainline [2024-02-25])
+Content-Language: en-US, de-DE
+To: Johan Hovold <johan@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Linux regressions mailing list <regressions@lists.linux.dev>
+References: <170886726066.1516351.14377022830495300698@leemhuis.info>
+ <Zd23ZKlNnDKPaU9I@hovoldconsulting.com>
+From: "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <Zd23ZKlNnDKPaU9I@hovoldconsulting.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1709631222;c7dc2368;
+X-HE-SMSGID: 1rhRB5-0007zv-JF
 
---UN1dzwzL0P7pYwKx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+[dropping Linus from CC, we can add him back later when needed]
 
-On Tue, Mar 05, 2024 at 10:21:46AM +0100, Luna Jernberg wrote:
-> Den tis 5 mars 2024 kl 10:20 skrev Conor Dooley <conor.dooley@microchip.c=
-om>:
-> >
-> > On Tue, Mar 05, 2024 at 10:07:37AM +0100, Luna Jernberg wrote:
-> > > Den tis 5 mars 2024 kl 09:32 skrev Conor Dooley <conor.dooley@microch=
-ip.com>:
-> > > >
-> > > > On Tue, Mar 05, 2024 at 07:58:57AM +0000, Greg Kroah-Hartman wrote:
-> > > > > This is the start of the stable review cycle for the 6.7.9 releas=
-e.
-> > > > > There are 163 patches in this series, all will be posted as a res=
-ponse
-> > > > > to this one.  If anyone has any issues with these being applied, =
-please
-> > > > > let me know.
-> > > > >
-> > > > > Responses should be made by Thu, 07 Mar 2024 07:46:26 +0000.
-> > > > > Anything received after that time might be too late.
-> > > >
-> > > > > Samuel Holland <samuel.holland@sifive.com>
-> > > > >     riscv: Save/restore envcfg CSR during CPU suspend
-> > > > >
-> > > > > Samuel Holland <samuel.holland@sifive.com>
-> > > > >     riscv: Add a custom ISA extension for the [ms]envcfg CSR
-> > > >
-> > > > I left a comment in response to the off-list email about this patch,
-> > > > I don't think it's gonna work as the number this custom extension h=
-as
-> > > > been given exceeds the max in 6.7/
-> > > > >
-> > > > > Samuel Holland <samuel.holland@sifive.com>
-> > > > >     riscv: Fix enabling cbo.zero when running in M-mode
-> > >
-> > > Works fine on my Arch Linux desktop with model name    : AMD Ryzen 5
-> > > 5600 6-Core Processor
-> > > after the Arch Linux manual intervention for new mkinitcpio settings
-> > > and version in Arch
-> > >
-> > > Tested by: Luna Jernberg <droidbittin@gmail.com>
-> >
-> > This problem is riscv only, your x86 machine should not be affected
-> > by it.
->=20
-> Ah alright then i know, did feel like compiling the latest test kernel
-> anyways, but thanks for the heads up
+On 27.02.24 11:20, Johan Hovold wrote:
+> On Sun, Feb 25, 2024 at 01:21:46PM +0000, Regzbot (on behalf of Thorsten Leemhuis) wrote:
+> 
+>> Johan Hovold also deals with multiple issues affecting Lenovo ThinkPad
+>> X13s, but he send out patch series to fix some or all of those[1], so
+>> with a bit of luck those issues will soon be fixed as well.
+>> https://lore.kernel.org/lkml/ZctVmLK4zTwcpW3A@hovoldconsulting.com/
 
-Ah, I understand now. You meant to reply saying that you had tested
-6.7.9-rc2 but you replied to me instead of Greg's original posting which
-confused me into thinking you tried to test these specific patches.
+As 6.8 final might be just five days away, could you please help me out
+with a short status update wrt. unresolved regressions from your side if
+you have a minute? It's easy to get lost in all those issues. :-/ :-D
 
+>> [1]
+>> https://lore.kernel.org/lkml/20240217150228.5788-1-johan+linaro@kernel.org/
+> 
+> This series addresses a use-after-free in the PMIC glink driver caused
+> by DRM bridge changes in rc1 and which can result in the internal
+> display not showing up on boot.
+> 
+> The DRM/SoC fixes here have now been merged to drm-misc for 6.8.
 
---UN1dzwzL0P7pYwKx
-Content-Type: application/pgp-signature; name="signature.asc"
+What about the others from that series? Can they wait till 6.9? Or are
+they on track for 6.8?
 
------BEGIN PGP SIGNATURE-----
+> [...]
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZebmvQAKCRB4tDGHoIJi
-0jhIAQClM9yQavCbDkoYin11QTej1ArzrXhWBjMeuKYGikpd5AD/dDwnEqxVMLDR
-d3O4OEYxS1hBkrGB+U39kaBzeuzPzg0=
-=QlJ9
------END PGP SIGNATURE-----
+> But also with these fixes, there are still a couple of regressions
+> related to the Qualcomm DRM runtime PM rework in 6.8-rc1. I'll send
+> separate reports to track those.
 
---UN1dzwzL0P7pYwKx--
+Any decision yet if they are going to be reverted for now?
+
+Am I right assuming those would fix
+https://lore.kernel.org/lkml/Zd3kvD02Qvsh2Sid@hovoldconsulting.com/
+which did not get even a single reply?
+
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
 
