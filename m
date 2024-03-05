@@ -1,110 +1,209 @@
-Return-Path: <linux-kernel+bounces-91737-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91738-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF28A8715D3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:24:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B00418715D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:24:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 64CEB1F221DB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 06:24:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 32585B21D49
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 06:24:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 439E37C0A1;
-	Tue,  5 Mar 2024 06:24:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A10EB7D07C;
+	Tue,  5 Mar 2024 06:24:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="U7NwhGUX"
-Received: from out162-62-57-252.mail.qq.com (out162-62-57-252.mail.qq.com [162.62.57.252])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="irfwNRNO"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB91A46521
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 06:24:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.252
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00EBB7BAE1;
+	Tue,  5 Mar 2024 06:24:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709619876; cv=none; b=ayVEz21tcodXfffFxhX7OvHkeck9I1n/JyoU2Wpd0sx2PPkJqeZOPBbMIScChb82+7ofS88trmppzPAn+J3q8pHJQ8EqN0b/VEHDvulZKZFDj1IzQrEdl/NWOznsC1U8QrxZSnK5qo/tK1EkEJXZMTZTGbV+VCEWlubRacOOfUA=
+	t=1709619889; cv=none; b=rInq46Eqa/mYd/USNXlEhtx9VwTZCL5R4kffBUov6LTgKU5P7iMGKbvKtH0mHeKJIjgCJWJz/TcydmOGJuYcyZMVTaBIBGvHTgmMIYmkiN9sHHar9xGGdHuDucXrma42HY3/EYmdidclav6SJt4e+tYg9b38u1DfFt+q1gCHSJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709619876; c=relaxed/simple;
-	bh=dE18vaGqW1u26WlxEwBm1HNfaT/R+phg+iUf/5S0VIs=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=aKQB7vSCCb2EfVqh7oHC4Cbx/vuJbRalmL9TnGrP9W2vh+QQtjk6N5A9/X1poYHUyGqbURoC2/C3WziaQHMPHSu5K0V7e9pVr3Tvhsv2v5+wskWi2JbDgIfpVM4VtYUrGMA7Fn4d/xY5KHIOzG5WTfxquLEt808EijEMUHbZlnc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=U7NwhGUX; arc=none smtp.client-ip=162.62.57.252
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1709619869; bh=TsV7flYFQYG54yZpLUHZV0gHbA6RRacBo4I7EqORDTE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=U7NwhGUXf2E7agNCE4dwFMQandCUit+6OKS/xpSD+Xk5SYkjiAGOfOhWoBsdcgMpa
-	 zbqp7LF1nKsx6lcbVIC+4FHNd8F/TMVYiK+hTTeCOjxG6QeL/z9kqm/sncnPU6MKI5
-	 cwkOfxyDmf9uruBbGzlTlA/4v1d0Xhuxzy4AxkpA=
-Received: from localhost.localdomain ([218.94.142.74])
-	by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
-	id 61A2EEB4; Tue, 05 Mar 2024 14:24:26 +0800
-X-QQ-mid: xmsmtpt1709619866t469u5zqe
-Message-ID: <tencent_9882B228F292088CDD68F10CF1C228742009@qq.com>
-X-QQ-XMAILINFO: MmpliBmRb3iCdtIc/8eFoFNKi2PKd+Oqlq/n3MDP5GDeJ87TlIBfCoHPDh9Glp
-	 fBOktgD+dCl5eaUITQ9mLy2lZHcw4GAcKv0wmVTYnvdPnJIJIYDiJbsAyav10zfQEvxfba91zfDH
-	 znWVbomF+mDY8MX87v75eFa6iY3K9/BjMbNboq8OcE5yA1j/YavGCo6qhkPaQG4Cy7Tazpg9A+l7
-	 LNa7IOmE8m64g+XF2wxhhVmfdmlMuGUk70p0c3dGN6HJivq6N6zAfr6rrlUGDoe6K7MdlKOysYOR
-	 xSd+SSWObpeBk1pXY3KyljKrs6iWfMBOPiYaa2yBqjICc/wlkO/8ZNQMP8LF2U5XoAdXVweN3CS8
-	 F+Zi4MX0xhvG1GM7dmky68xxmFD+ZN6LuCjFbwrM1O+hkgsR7dIx6GW3v2R2m4gpsdnTaRJIaj9F
-	 KLQa72fMupC6CwWGfCxbWiNJZvs76Y8O2QG4BKMg+aM6ZPsD5M4LKwXpHBCkE1LpY2ze2ZV2fSDz
-	 fxMjf0K9qBTn1fqQ2NXA4z+z0/MdGEXR+n3+V4faMV52bsMWh/GZRyQ0OUGbv5V48d+XkvfYTh+n
-	 y7hL+4L0WBFHOLvQiyu50lo0WJxNFb0gLpnHCdB02kUoVUhfY/LusGJrJkGuvHlWA6B/Ejz0ptcN
-	 lKwfuGXrgcPuP4iWbVW1wfbhI5+8foQp6S544i1HYczRqcdaPQHRORBIzaHl3itCI74FOg7Q+Nfw
-	 4iy8L0tAG4pciNIZXSnbzDstGaxDeNK+nzLe6eoOmVKMernoYy63S/B35Koywk8pCCXj/MOd6EmG
-	 BvUN6IHJFUPktijacAL5FY/jJUjVIxxpOZj2oO9nW+wuG2zoDGRcj1US2v0UWdVv0Sdgph4ir6+K
-	 6MDnK11qsWrN1fFrYoZ2dwSLOVW82GXKNcNaXgFBjIHuqAfs5HIO6HUF2Y7o06QdWc+/MPnq88tb
-	 P6LixdKzD8na3sAvkI0/bdwx9l143vn76pNjS6/kclPAnQOz/nF0HxMwyisOpvVJzGgZ8boKtIFJ
-	 XdAUXlMIrBIe+fZJ4WLFZKCGCSc08=
-X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
-From: linke li <lilinke99@qq.com>
-To: joel@joelfernandes.org
-Cc: boqun.feng@gmail.com,
-	dave@stgolabs.net,
-	frederic@kernel.org,
-	jiangshanlai@gmail.com,
-	josh@joshtriplett.org,
-	lilinke99@qq.com,
-	linux-kernel@vger.kernel.org,
-	mathieu.desnoyers@efficios.com,
-	paulmck@kernel.org,
-	qiang.zhang1211@gmail.com,
-	quic_neeraju@quicinc.com,
-	rcu@vger.kernel.org,
-	rostedt@goodmis.org
-Subject: Re: [PATCH] rcutorture: Fix rcu_torture_pipe_update_one()/rcu_torture_writer() data race and concurrency bug
-Date: Tue,  5 Mar 2024 14:24:20 +0800
-X-OQ-MSGID: <20240305062420.17398-1-lilinke99@qq.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-145)
-In-Reply-To: <f3624f39-bbb1-451d-8161-8518e4108d8e@joelfernandes.org>
-References: <f3624f39-bbb1-451d-8161-8518e4108d8e@joelfernandes.org>
+	s=arc-20240116; t=1709619889; c=relaxed/simple;
+	bh=Gp8RDpqAbtBudoNJG6a7uMv4LSn5RgcxXgofHv8t050=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BrqNLltb0plc1ATZ1cbyg+bZaqyR2UW8RVVB4zGvCN8yMMaMLtIbtKIZyNB0suCKJqtcVG2KrB18kchnUEfYxa9C5F8UN4ARv7CYEgwSlFmcgVFPxusZwK887IW+5ZDaB23JZSgK8q1zgA8E4XRx7xHUHqaY1wrs/IxYuySbQk0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=irfwNRNO; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709619888; x=1741155888;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Gp8RDpqAbtBudoNJG6a7uMv4LSn5RgcxXgofHv8t050=;
+  b=irfwNRNOn+m6NcSccmIMLn3KYYqqDvc1MtMVqWHBSyNErSmh3TH8u4hI
+   GSK0EXL8UlsSTgHOnnlesty09gMO+M1PaNOD92HDS5pMqp17bfgSyFwZT
+   rGfrFAVM8NRn9DbMjP7RPDC52EZmMmrvpsR6v+IdN5oIER05HwP44bbfP
+   NgvCiI96Q75U3XdLvSHJZ+86Wvmwyyhok952OeJPCL9qs2QX+e/5VL5ct
+   24pXsqAqWeQ/r8n+YIf2UW5kwk4GTWo4AtnofOhMPMmVVvw+ZI/U3G1gZ
+   dnP4CUjxbgZNau7E1rgD58r72zJ15Cf98iucMHtPp7W81JsxuNKJRWTNK
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="21606638"
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="21606638"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 22:24:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="13952277"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.8.218]) ([10.238.8.218])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 22:24:45 -0800
+Message-ID: <258e607d-d01c-4674-b6d0-c967fd805018@linux.intel.com>
+Date: Tue, 5 Mar 2024 14:24:42 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 01/21] KVM: x86: Split core of hypercall emulation to
+ helper function
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, seanjc@google.com,
+ michael.roth@amd.com, isaku.yamahata@intel.com, thomas.lendacky@amd.com
+References: <20240227232100.478238-1-pbonzini@redhat.com>
+ <20240227232100.478238-2-pbonzini@redhat.com>
+From: Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <20240227232100.478238-2-pbonzini@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> Anyway, a slightly related/different question:
-> 
-> Should that:
-> WRITE_ONCE(rp->rtort_pipe_count, rp->rtort_pipe_count + 1);
-> 
-> Be:
-> WRITE_ONCE(rp->rtort_pipe_count, READ_ONCE(rp->rtort_pipe_count) + 1);
-> 
-> ?
 
-Hi, Joel. Sorry, I am not very sure about this. I do a little research on
-it.
 
-I looked through all code in kernel that looks like this, both kinds are
-used. I also try to compile this file with and without the READ_ONCE in
-WRITE_ONCE using gcc-9. Their binary is just the same. 
+On 2/28/2024 7:20 AM, Paolo Bonzini wrote:
+> From: Sean Christopherson <seanjc@google.com>
+>
+> By necessity, TDX will use a different register ABI for hypercalls.
+> Break out the core functionality so that it may be reused for TDX.
+>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> Message-Id: <5134caa55ac3dec33fb2addb5545b52b3b52db02.1705965635.git.isaku.yamahata@intel.com>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 
-Thus I think in the current compiler version, they do not have a big
-difference, but if the compiler wants to optimize more, maybe the latter
-one is better.
+Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
+
+> ---
+>   arch/x86/include/asm/kvm_host.h |  4 +++
+>   arch/x86/kvm/x86.c              | 56 ++++++++++++++++++++++-----------
+>   2 files changed, 42 insertions(+), 18 deletions(-)
+>
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 724a0c778f79..85dc0f7d09e3 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -2133,6 +2133,10 @@ static inline void kvm_clear_apicv_inhibit(struct kvm *kvm,
+>   	kvm_set_or_clear_apicv_inhibit(kvm, reason, false);
+>   }
+>   
+> +unsigned long __kvm_emulate_hypercall(struct kvm_vcpu *vcpu, unsigned long nr,
+> +				      unsigned long a0, unsigned long a1,
+> +				      unsigned long a2, unsigned long a3,
+> +				      int op_64_bit, int cpl);
+>   int kvm_emulate_hypercall(struct kvm_vcpu *vcpu);
+>   
+>   int kvm_mmu_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa, u64 error_code,
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index b9dfe3179332..f10a5a617120 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -10046,26 +10046,15 @@ static int complete_hypercall_exit(struct kvm_vcpu *vcpu)
+>   	return kvm_skip_emulated_instruction(vcpu);
+>   }
+>   
+> -int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
+> +unsigned long __kvm_emulate_hypercall(struct kvm_vcpu *vcpu, unsigned long nr,
+> +				      unsigned long a0, unsigned long a1,
+> +				      unsigned long a2, unsigned long a3,
+> +				      int op_64_bit, int cpl)
+>   {
+> -	unsigned long nr, a0, a1, a2, a3, ret;
+> -	int op_64_bit;
+> -
+> -	if (kvm_xen_hypercall_enabled(vcpu->kvm))
+> -		return kvm_xen_hypercall(vcpu);
+> -
+> -	if (kvm_hv_hypercall_enabled(vcpu))
+> -		return kvm_hv_hypercall(vcpu);
+> -
+> -	nr = kvm_rax_read(vcpu);
+> -	a0 = kvm_rbx_read(vcpu);
+> -	a1 = kvm_rcx_read(vcpu);
+> -	a2 = kvm_rdx_read(vcpu);
+> -	a3 = kvm_rsi_read(vcpu);
+> +	unsigned long ret;
+>   
+>   	trace_kvm_hypercall(nr, a0, a1, a2, a3);
+>   
+> -	op_64_bit = is_64_bit_hypercall(vcpu);
+>   	if (!op_64_bit) {
+>   		nr &= 0xFFFFFFFF;
+>   		a0 &= 0xFFFFFFFF;
+> @@ -10074,7 +10063,7 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
+>   		a3 &= 0xFFFFFFFF;
+>   	}
+>   
+> -	if (static_call(kvm_x86_get_cpl)(vcpu) != 0) {
+> +	if (cpl) {
+>   		ret = -KVM_EPERM;
+>   		goto out;
+>   	}
+> @@ -10135,18 +10124,49 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
+>   
+>   		WARN_ON_ONCE(vcpu->run->hypercall.flags & KVM_EXIT_HYPERCALL_MBZ);
+>   		vcpu->arch.complete_userspace_io = complete_hypercall_exit;
+> +		/* stat is incremented on completion. */
+>   		return 0;
+>   	}
+>   	default:
+>   		ret = -KVM_ENOSYS;
+>   		break;
+>   	}
+> +
+>   out:
+> +	++vcpu->stat.hypercalls;
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(__kvm_emulate_hypercall);
+> +
+> +int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
+> +{
+> +	unsigned long nr, a0, a1, a2, a3, ret;
+> +	int op_64_bit;
+> +	int cpl;
+> +
+> +	if (kvm_xen_hypercall_enabled(vcpu->kvm))
+> +		return kvm_xen_hypercall(vcpu);
+> +
+> +	if (kvm_hv_hypercall_enabled(vcpu))
+> +		return kvm_hv_hypercall(vcpu);
+> +
+> +	nr = kvm_rax_read(vcpu);
+> +	a0 = kvm_rbx_read(vcpu);
+> +	a1 = kvm_rcx_read(vcpu);
+> +	a2 = kvm_rdx_read(vcpu);
+> +	a3 = kvm_rsi_read(vcpu);
+> +	op_64_bit = is_64_bit_hypercall(vcpu);
+> +	cpl = static_call(kvm_x86_get_cpl)(vcpu);
+> +
+> +	ret = __kvm_emulate_hypercall(vcpu, nr, a0, a1, a2, a3, op_64_bit, cpl);
+> +	if (nr == KVM_HC_MAP_GPA_RANGE && !ret)
+> +		/* MAP_GPA tosses the request to the user space. */
+> +		return 0;
+> +
+>   	if (!op_64_bit)
+>   		ret = (u32)ret;
+>   	kvm_rax_write(vcpu, ret);
+>   
+> -	++vcpu->stat.hypercalls;
+>   	return kvm_skip_emulated_instruction(vcpu);
+>   }
+>   EXPORT_SYMBOL_GPL(kvm_emulate_hypercall);
 
 
