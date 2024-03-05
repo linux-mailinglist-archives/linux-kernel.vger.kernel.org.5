@@ -1,268 +1,216 @@
-Return-Path: <linux-kernel+bounces-92824-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92825-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5A0A872686
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:26:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6109E87268A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:28:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D0A628BE5F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:26:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2C73287642
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:28:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19D7118E1F;
-	Tue,  5 Mar 2024 18:26:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDB2718C38;
+	Tue,  5 Mar 2024 18:28:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b="Gj3rJTE4"
-Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="pwH1+BqZ"
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2ED118AEA;
-	Tue,  5 Mar 2024 18:26:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.28.160.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9008D17C6E;
+	Tue,  5 Mar 2024 18:28:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709663182; cv=none; b=teyp7BtbfllPj8SefF/4qgWQaIVV5fNPBr3yGkcPVet0jGTZZXG6Bti0QlWad04OSpF/DVwOVACafMVaEfB5L70ppw6YLl0rXQiWYEjguf+NJ90GZQwu4PhaO0Vb/8VmDrAzL9RejcEzb/jI3F8cBgQtNnAwpfOFWcL25UCiYYI=
+	t=1709663316; cv=none; b=SuL4Kv9+dAlN5HnPlyUCqiefBkjxTi7NhL02xAIgveYA7f5YyONb35gzz0yodqC4fPgbn6M5QVMNDP+10/s5cZEuqy7gpHDM83WXgxwo93/EeSPP6h0+j5+HhZPSyIuru0zIWTP82/4CN5Q0yIjsx4/lmxGaPf4yfBanGevKEW8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709663182; c=relaxed/simple;
-	bh=WNffBT41r5F0XyJ7MFk8QsD65CMScBYk1QPLYhExK8U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LZAQUSriV5cSFz+r3lkXmW3xSjebiZNwYVgirgzvdMcT3skEcE4PRzs8yxJ/KY5uulLfCEQeywHCcuU80H767aTVPC6ont3xRarm1tF3Iqs7x+TNjAYEcYZxZupH/rjVTIewTFi70IRPGd4NLKjHHtF144cnMq374GBufNoLWHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=xen0n.name; spf=pass smtp.mailfrom=xen0n.name; dkim=pass (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b=Gj3rJTE4; arc=none smtp.client-ip=115.28.160.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=xen0n.name
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xen0n.name
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
-	t=1709663171; bh=WNffBT41r5F0XyJ7MFk8QsD65CMScBYk1QPLYhExK8U=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Gj3rJTE4Xx3wNJQce3qkYCM6NYncvK5hc0F86WWBKwv2x62hB2XsL2VccgAK0xs5s
-	 BG6+or8HD2sQlbxrbymoHoO5rdAmQfh8Ece349RdQGaJ5L0xKiGew2G03DpbzwAJEh
-	 dKrY3/3xm5Olljr7p+9afGsitGUuwP7AGyt9U0AE=
-Received: from [IPV6:240e:388:8d00:6500:3d21:65e4:41f4:2696] (unknown [IPv6:240e:388:8d00:6500:3d21:65e4:41f4:2696])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 18FFE60106;
-	Wed,  6 Mar 2024 02:26:11 +0800 (CST)
-Message-ID: <ec871702-388d-4a29-aec1-5cd6d1de6d0a@xen0n.name>
-Date: Wed, 6 Mar 2024 02:26:10 +0800
+	s=arc-20240116; t=1709663316; c=relaxed/simple;
+	bh=Wd4nB97WkmnQ07iPZrl3fmBvoORgOZueRs6Tmd0rsew=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=HItcEFzlIwkEmm25HSjs0/6GawWuTptKzS2ojoBDq/Jb7Evg3QA56dZD+4mgP3Zu3Q8yEXS9c8Ev2OgxCx9ux4l7Gssxo/uo1kXDKH5LkPv7ddxJqs75U2bqX6XIrM2adphwAAJbJ9y32LmqaIMxMqfUfJceuhcKyRV9DyHlG3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=pwH1+BqZ; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1dc75972f25so50230335ad.1;
+        Tue, 05 Mar 2024 10:28:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709663314; x=1710268114;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EIZGrDIx2HNqEOfNMffH0xGrL4BRDNdW8vcMfCZGuqA=;
+        b=RHEoEMExKYqa6b2y0xf6kqWKYVLX+W9m4z1Au0Ui4NzQRxz8ZTR/R8MgWbWfcNKDCo
+         oDqYlI+4GCT/iiedv0swLP9G+clsZ9NsONa4zV4y6tY48xZXzeX1KRFutJaL1xvkUW73
+         3OA2jZK5mrOk2bNH222sDHiBPLYCQ/wUCGpyGCgeQDcMPLzTE4ZGJK6Z5PmU+Ui5GJ1b
+         D8jhOccb5+l1dD5fXDLVcO5wBk4shpU5zC83h4hEFOfm0XeQtjciO46uQCkNUjKI09Hg
+         r3Hgo56OhKRS8MloD3dWF7EmiBEuf+fuV5eJHhzOnO2B1ko6iNSHzzoB/O80i6J1vRTg
+         uUsQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWwdYxc2ScYcTIyQ2VtPpvMS/4Up8w0yMLvSk4ZGyGYPd5F+dvcjggr3RKLEhDn9tZApBVqvZBuEdtvbPYErQob4HrnDsdVxQLyTRYp
+X-Gm-Message-State: AOJu0YyaO4fH6OYWOGpc5625xrMPC7wG9CxMMv7xBl3+J1QdIyT7Si0K
+	lihz9hBESNste8nAN+8oL+6ragJu6TkryNeyPwZuY77xURfoHEjdT0VyqkxWFB05bQ==
+X-Google-Smtp-Source: AGHT+IGHZ4XLby3hLCKJ+4SQBWbDIl7QfHNqESZkAKfONGXTP0VxURy0xn8c+2eMS+y8x154rDPnIA==
+X-Received: by 2002:a17:902:d503:b0:1dc:696d:ec6e with SMTP id b3-20020a170902d50300b001dc696dec6emr2818551plg.21.1709663313735;
+        Tue, 05 Mar 2024 10:28:33 -0800 (PST)
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id o8-20020a170902d4c800b001da1fae8a73sm10868975plg.12.2024.03.05.10.28.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Mar 2024 10:28:33 -0800 (PST)
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2024; t=1709663312;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=EIZGrDIx2HNqEOfNMffH0xGrL4BRDNdW8vcMfCZGuqA=;
+	b=pwH1+BqZvZEE2iKZkZ43z51F7qC9yDhes8lb/GHYHolxhALKv6pB29sRZIYyTtPseuuSGB
+	86fmk0ATNcOUe0U3NNvOttx+moQhuxoDSPbCNYkk/pxsuZ5Cub8VQyxHkJ+Bq5EAAPSYxK
+	ejQX9uRypsZWFKrSP1IGsrBZ3itAi8ByrolsSJN7cHLibUq49J1gsy6a6SGw73uVSpK+qN
+	+y0dCI7F2Vh/GgaRbB6Ew0W49+uLiZNIo8FReCnwKVccIiJExk0oM8aCRxdDpu5VzjdEEe
+	wv4Ww38Oo/z4b90vK0UxArAiRG3qvnpDYmSBVXJCSGJ+TjUuQydRz78mbSp0GQ==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+Date: Tue, 05 Mar 2024 15:28:27 -0300
+Subject: [PATCH] rpmsg: core: make rpmsg_class constant
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 7/7] Documentation: KVM: Add hypercall for LoongArch
-Content-Language: en-US
-To: maobibo <maobibo@loongson.cn>, Tianrui Zhao <zhaotianrui@loongson.cn>,
- Juergen Gross <jgross@suse.com>, Paolo Bonzini <pbonzini@redhat.com>,
- Jonathan Corbet <corbet@lwn.net>
-Cc: loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
- virtualization@lists.linux.dev, kvm@vger.kernel.org
-References: <20240302082532.1415200-1-maobibo@loongson.cn>
- <20240302084724.1415344-1-maobibo@loongson.cn>
- <846a5e46-4e8f-4f73-ac5b-323e78ec1bb1@xen0n.name>
- <853f2909-e455-bd1c-c6a4-6a13beb37125@loongson.cn>
-From: WANG Xuerui <kernel@xen0n.name>
-In-Reply-To: <853f2909-e455-bd1c-c6a4-6a13beb37125@loongson.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240305-class_cleanup-remoteproc-v1-1-19373374e003@marliere.net>
+X-B4-Tracking: v=1; b=H4sIAEpk52UC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDYwNT3eScxOLi+OSc1MS80gLdotTc/JLUgqL8ZF2jJFPjVCOzJCMLQ3M
+ loPaCotS0zAqw0dGxtbUAalgqj2oAAAA=
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Ricardo B. Marliere" <ricardo@marliere.net>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3570; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=Wd4nB97WkmnQ07iPZrl3fmBvoORgOZueRs6Tmd0rsew=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl52RNPaIJYQfc/KxQT5kyuo9oXac67GDElBqFC
+ evHdK2QrqyJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZedkTQAKCRDJC4p8Y4ZY
+ ps9MEACrt0gbXM+ZWC3lrBLVvrmhKKzqvy0LwtdszQLbJN3fQm9CbVTsqpKLyssFRZDg4d54MQd
+ 1VAAn8Uj9TznLFOErvVl/E4KKZxupHbikT7FI9rHJAomdXZaxUKW6CbKSOiu99Ce5BQhc5fwQML
+ OnpijHFbbUp8sZgxuy/nSACxoa7kPXlY7GfAVyABjBfaqIvYyOLAoBThzzoFYsaFRxHmDpGJYmG
+ VItSbtUAWrd4J5ERFxUKWA0Mbj9F/zr1D5ZQiRBDImcjmf44Udh3I43t1IcuxYnwDygfxNzmTim
+ HmmlY6SaODqP7rnZrvQdUbCl/kf3YElfref5UVEtWWLjNw/+ocjcfqD8S616sLLyi028dmZasR1
+ 2SBQ/xFZiK7vvgnkrQ7HIHs+8HK/dH5gDteaKDDJI6WDJO46uCOGlQNe532YYrNH2+xb3ueufVw
+ tzDPvVjvUiTUF8QkcoXC4REMtmFzr5NbtyEmPpS/O25NoRZSWbEaUYby3kuSPjBXeUNr4nJgrJm
+ oUhsnFis14G0/Hm+06P2Rc9hDxXVxlIzZ9fHnCHcR02hAQTeq+olLABovufEbyLHbgSA75wuUNZ
+ bEmlW8Juo3JlIoLeXo2WH+zWmk+IdrFrBJbGSMZLg0yALzy3+ESuBcXbgDdE40ji3LSCRE4Q3B8
+ W8hObVKTKXB53gA==
+X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
+ fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
-On 3/4/24 17:10, maobibo wrote:
-> On 2024/3/2 下午5:41, WANG Xuerui wrote:
->> On 3/2/24 16:47, Bibo Mao wrote:
->>> [snip]
->>> +Querying for existence
->>> +======================
->>> +
->>> +To find out if we're running on KVM or not, cpucfg can be used with 
->>> index
->>> +CPUCFG_KVM_BASE (0x40000000), cpucfg range between 0x40000000 - 
->>> 0x400000FF
->>> +is marked as a specially reserved range. All existing and future 
->>> processors
->>> +will not implement any features in this range.
->>> +
->>> +When Linux is running on KVM, cpucfg with index CPUCFG_KVM_BASE 
->>> (0x40000000)
->>> +returns magic string "KVM\0"
->>> +
->>> +Once you determined you're running under a PV capable KVM, you can 
->>> now use
->>> +hypercalls as described below.
->>
->> So this is still the approach similar to the x86 CPUID-based 
->> implementation. But here the non-privileged behavior isn't specified 
->> -- I see there is PLV checking in Patch 3 but it's safer to have the 
->> requirement spelled out here too.
->>
->> But I still think this approach touches more places than strictly 
->> needed. As it is currently the case in 
->> arch/loongarch/kernel/cpu-probe.c, the FEATURES IOCSR is checked for a 
->> bit IOCSRF_VM that already signifies presence of a hypervisor; if this 
->> information can be interpreted as availability of the HVCL instruction 
->> (which I suppose is the case -- a hypervisor can always 
->> trap-and-emulate in case HVCL isn't provided by hardware), here we can 
->> already start making calls with HVCL.
->>
->> We can and should define a uniform interface for probing the 
->> hypervisor kind, similar to the centrally-managed RISC-V SBI 
->> implementation ID registry [1]: otherwise future non-KVM hypervisors 
->> would have to
->>
->> 1. somehow pretend they are KVM and eventually fail to do so, leading 
->> to subtle incompatibilities,
->> 2. invent another way of probing for their existence,
->> 3. piggy-back on the current KVM definition, which is inelegant 
->> (reading the LoongArch-KVM-defined CPUCFG leaf only to find it's not 
->> KVM) and utterly makes the definition here *not* KVM-specific.
->>
->> [1]: 
->> https://github.com/riscv-non-isa/riscv-sbi-doc/blob/v2.0/src/ext-base.adoc
->>
-> Sorry, I know nothing about riscv. Can you describe how sbi_get_mimpid() 
-> is implemented in detailed? Is it a simple library or need trap into 
-> secure mode or need trap into hypervisor mode?
+Since commit 43a7206b0963 ("driver core: class: make class_register() take
+a const *"), the driver core allows for struct class to be in read-only
+memory, so move the rpmsg_class structure to be declared at build time
+placing it into read-only memory, instead of having to be dynamically
+allocated at boot time.
 
-For these simple interfaces you can expect trivial implementation. See 
-for example [OpenSBI]'s respective code.
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+---
+ drivers/rpmsg/rpmsg_char.c     |  2 +-
+ drivers/rpmsg/rpmsg_core.c     | 16 +++++++++-------
+ drivers/rpmsg/rpmsg_ctrl.c     |  2 +-
+ drivers/rpmsg/rpmsg_internal.h |  2 +-
+ 4 files changed, 12 insertions(+), 10 deletions(-)
 
-[OpenSBI]: 
-https://github.com/riscv-software-src/opensbi/blob/v1.4/lib/sbi/sbi_ecall.c#L29-L34
+diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
+index 1cb8d7474428..d7a342510902 100644
+--- a/drivers/rpmsg/rpmsg_char.c
++++ b/drivers/rpmsg/rpmsg_char.c
+@@ -423,7 +423,7 @@ static struct rpmsg_eptdev *rpmsg_chrdev_eptdev_alloc(struct rpmsg_device *rpdev
+ 	init_waitqueue_head(&eptdev->readq);
+ 
+ 	device_initialize(dev);
+-	dev->class = rpmsg_class;
++	dev->class = &rpmsg_class;
+ 	dev->parent = parent;
+ 	dev->groups = rpmsg_eptdev_groups;
+ 	dev_set_drvdata(dev, eptdev);
+diff --git a/drivers/rpmsg/rpmsg_core.c b/drivers/rpmsg/rpmsg_core.c
+index 4295c01a2861..0fa08266404d 100644
+--- a/drivers/rpmsg/rpmsg_core.c
++++ b/drivers/rpmsg/rpmsg_core.c
+@@ -20,7 +20,9 @@
+ 
+ #include "rpmsg_internal.h"
+ 
+-struct class *rpmsg_class;
++const struct class rpmsg_class = {
++	.name = "rpmsg",
++};
+ EXPORT_SYMBOL(rpmsg_class);
+ 
+ /**
+@@ -715,16 +717,16 @@ static int __init rpmsg_init(void)
+ {
+ 	int ret;
+ 
+-	rpmsg_class = class_create("rpmsg");
+-	if (IS_ERR(rpmsg_class)) {
+-		pr_err("failed to create rpmsg class\n");
+-		return PTR_ERR(rpmsg_class);
++	ret = class_register(&rpmsg_class);
++	if (ret) {
++		pr_err("failed to register rpmsg class\n");
++		return ret;
+ 	}
+ 
+ 	ret = bus_register(&rpmsg_bus);
+ 	if (ret) {
+ 		pr_err("failed to register rpmsg bus: %d\n", ret);
+-		class_destroy(rpmsg_class);
++		class_destroy(&rpmsg_class);
+ 	}
+ 	return ret;
+ }
+@@ -733,7 +735,7 @@ postcore_initcall(rpmsg_init);
+ static void __exit rpmsg_fini(void)
+ {
+ 	bus_unregister(&rpmsg_bus);
+-	class_destroy(rpmsg_class);
++	class_destroy(&rpmsg_class);
+ }
+ module_exit(rpmsg_fini);
+ 
+diff --git a/drivers/rpmsg/rpmsg_ctrl.c b/drivers/rpmsg/rpmsg_ctrl.c
+index c312794ba4b3..28f57945ccd9 100644
+--- a/drivers/rpmsg/rpmsg_ctrl.c
++++ b/drivers/rpmsg/rpmsg_ctrl.c
+@@ -150,7 +150,7 @@ static int rpmsg_ctrldev_probe(struct rpmsg_device *rpdev)
+ 	dev = &ctrldev->dev;
+ 	device_initialize(dev);
+ 	dev->parent = &rpdev->dev;
+-	dev->class = rpmsg_class;
++	dev->class = &rpmsg_class;
+ 
+ 	mutex_init(&ctrldev->ctrl_lock);
+ 	cdev_init(&ctrldev->cdev, &rpmsg_ctrldev_fops);
+diff --git a/drivers/rpmsg/rpmsg_internal.h b/drivers/rpmsg/rpmsg_internal.h
+index b950d6f790a3..a3ba768138f1 100644
+--- a/drivers/rpmsg/rpmsg_internal.h
++++ b/drivers/rpmsg/rpmsg_internal.h
+@@ -18,7 +18,7 @@
+ #define to_rpmsg_device(d) container_of(d, struct rpmsg_device, dev)
+ #define to_rpmsg_driver(d) container_of(d, struct rpmsg_driver, drv)
+ 
+-extern struct class *rpmsg_class;
++extern const struct class rpmsg_class;
+ 
+ /**
+  * struct rpmsg_device_ops - indirection table for the rpmsg_device operations
 
->> My take on this:
->>
->> To check if we are running on Linux KVM or not, first check IOCSR 0x8 
->> (``LOONGARCH_IOCSR_FEATURES``) for bit 11 (``IOCSRF_VM``); we are 
->> running under a hypervisor if the bit is set. Then invoke ``HVCL 0`` 
->> to find out the hypervisor implementation ID; a return value in 
->> ``$a0`` of 0x004d564b (``KVM\0``) means Linux KVM, in which case the 
->> rest of the convention applies.
->>
-> I do not think so. `HVCL 0` requires that hypercall ABIs need be unified 
-> for all hypervisors. Instead it is not necessary, each hypervisor can 
-> has its own hypercall ABI.
+---
+base-commit: b03aa6d4e9a74c4289929b6cf3c6bcc80270682d
+change-id: 20240305-class_cleanup-remoteproc-2b53e26b2817
 
-I don't think agreeing upon the ABI of HVCL 0 is going to affect ABI of 
-other hypercalls. Plus, as long as people don't invent something that 
-they think is smart and deviate from the platform calling convention, 
-I'd expect every hypervisor to have identical ABI apart from the exact 
-HVCL operation ID chosen.
-
->>> +
->>> +KVM hypercall ABI
->>> +=================
->>> +
->>> +Hypercall ABI on KVM is simple, only one scratch register a0 (v0) 
->>> and at most
->>> +five generic registers used as input parameter. FP register and 
->>> vector register
->>> +is not used for input register and should not be modified during 
->>> hypercall.
->>> +Hypercall function can be inlined since there is only one scratch 
->>> register.
->>
->> It should be pointed out explicitly that on hypercall return all 
-> Well, return value description will added. What do think about the 
-> meaning of return value for KVM_HCALL_FUNC_PV_IPI hypercall?  The number 
-> of CPUs with IPI delivered successfully like kvm x86 or simply 
-> success/failure?
->> architectural state except ``$a0`` is preserved. Or is the whole ``$a0 
->> - $t8`` range clobbered, just like with Linux syscalls?
->>
-> what is advantage with $a0 - > $t8 clobbered?
-
-Because then a hypercall is going to behave identical as an ordinary C 
-function call, which is easy for people and compilers to understand.
-
-> It seems that with linux Loongarch syscall, t0--t8 are clobber rather 
-> than a0-t8. Am I wrong?
-
-You're right, my memory has faded a bit. But I think my reasoning still 
-holds.
-
->>> +
->>> +The parameters are as follows:
->>> +
->>> +        ========    ================    ================
->>> +    Register    IN            OUT
->>> +        ========    ================    ================
->>> +    a0        function number        Return code
->>> +    a1        1st parameter        -
->>> +    a2        2nd parameter        -
->>> +    a3        3rd parameter        -
->>> +    a4        4th parameter        -
->>> +    a5        5th parameter        -
->>> +        ========    ================    ================
->>> +
->>> +Return codes can be as follows:
->>> +
->>> +    ====        =========================
->>> +    Code        Meaning
->>> +    ====        =========================
->>> +    0        Success
->>> +    -1        Hypercall not implemented
->>> +    -2        Hypercall parameter error
->>
->> What about re-using well-known errno's, like -ENOSYS for "hypercall 
->> not implemented" and -EINVAL for "invalid parameter"? This could save 
->> people some hair when more error codes are added in the future.
->>
-> No, I do not think so. Here is hypercall return value, some OS need see 
-> it. -ENOSYS/-EINVAL may be not understandable for non-Linux OS.
-
-As long as you accept the associated costs (documentation, potential 
-mapping back-and-forth, proper conveyance of information etc.) I have no 
-problem with that either.
-
->>> +    ====        =========================
->>> +
->>> +KVM Hypercalls Documentation
->>> +============================
->>> +
->>> +The template for each hypercall is:
->>> +1. Hypercall name
->>> +2. Purpose
->>> +
->>> +1. KVM_HCALL_FUNC_PV_IPI
->>> +------------------------
->>> +
->>> +:Purpose: Send IPIs to multiple vCPUs.
->>> +
->>> +- a0: KVM_HCALL_FUNC_PV_IPI
->>> +- a1: lower part of the bitmap of destination physical CPUIDs
->>> +- a2: higher part of the bitmap of destination physical CPUIDs
->>> +- a3: the lowest physical CPUID in bitmap
->>
->> "CPU ID", instead of "CPUID" for clarity: I suppose most people 
->> reading this also know about x86, so "CPUID" could evoke the wrong 
->> intuition.
->>
-> Both "CPU core id" or "CPUID" are ok for me since there is csr register 
-> named LOONGARCH_CSR_CPUID already.
-
-I was suggesting to minimize confusion even at theoretical level, 
-because you cannot assume anything about your readers. Feel free to 
-provide extra info (e.g. the "CPU core ID" you suggested) as long as it 
-helps to resolve any potential ambiguity / confusion.
-
->> This function is equivalent to the C signature "void hypcall(int func, 
->> u128 mask, int lowest_cpu_id)", which I think is fine, but one can 
->> also see that the return value description is missing.
->>
-> Sure, the return value description will added.
-> 
-> And it is not equivalent to the C signature "void hypcall(int func, u128 
-> mask, int lowest_cpu_id)". int/u128/stucture is not permitted with 
-> hypercall ABI, all parameter is "unsigned long".
-
-I was talking about the ABI in a C perspective, and the register usage 
-is identical. You can define the KVM hypercall ABI however you want but 
-having some nice analogy/equivalence would help a lot, especially for 
-people not already familiar with all the details.
-
+Best regards,
 -- 
-WANG "xen0n" Xuerui
-
-Linux/LoongArch mailing list: https://lore.kernel.org/loongarch/
+Ricardo B. Marliere <ricardo@marliere.net>
 
 
