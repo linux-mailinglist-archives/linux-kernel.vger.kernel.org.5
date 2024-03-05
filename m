@@ -1,180 +1,270 @@
-Return-Path: <linux-kernel+bounces-92280-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92282-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A5F1871DDC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:32:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F04E8871DE0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:33:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B7A41C236E6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:32:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7156286790
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:33:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9741056B65;
-	Tue,  5 Mar 2024 11:31:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 097355A113;
+	Tue,  5 Mar 2024 11:31:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4U/Q4yy5"
-Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com [209.85.221.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="X1YbpZKG"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4724F10A1B
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 11:31:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17E2B59B6D;
+	Tue,  5 Mar 2024 11:31:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709638295; cv=none; b=N+5Ge8waPZC8n79ugWE0O3BhRYby7JkQTBX8/8RbIg7c3BLgkPNnExsFdeHOc8WEXp8jN6LbxzT1jjGegl8prlLw0bSSZZRqQgfRrWw4FxW6yznDisenGO2kCrzd0oUHEsjkp1fK/v+qMFJfSVLWUi/z1mDEep9tXY47HsyyTog=
+	t=1709638313; cv=none; b=avcsvAz2fu5F0wgCTPIXM5bWIrcvGKAbWAuPSuFiKgzGoJnBW59yPFuXA3kRfl1FkjZ1Q2gF81E9KMNzNQzWDNC+IM5cxsBncnol0xPGYoqanqSje4pfnsnV280k77LZCDlj83Xkjf8s22zwQgqkl5R80Q1TD64FRUNsdrgpKEk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709638295; c=relaxed/simple;
-	bh=5Zj1cHjqoRSTv3wpW/vBf0JVKBwvW9Fvm4eCS+H0mCg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jAyRfjgkRxEqRiI1dOL1HYbjtIsYZoQTmi8Wj25f5Qo9GB+lLaHEGYXM4Pz2KvfmuoFS4sNH1QHkdGQVvd8I2KNk/HFI95Y4c8j6J92UdmX5+H/cyV2BvB1c+LJccBg3Rbp+++KyKnwTjXyFdZrUUESeMSLkp8p9TJvev0+VnXo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4U/Q4yy5; arc=none smtp.client-ip=209.85.221.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vk1-f173.google.com with SMTP id 71dfb90a1353d-4d36196a7f7so910634e0c.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 03:31:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709638293; x=1710243093; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RhnMDUA+SM/I153+o1QN9n9YimDuXxyDMythbZKsjIc=;
-        b=4U/Q4yy5LU2Kv4YG2/s0VMZV51Ls6JURgJFOk0fUKyd97jkFAV4SvlE0BQg0QhmNV3
-         Zcd3MiLBfo96/Al4ppgHMql/nE3TC8ZEKf8MsHr1O+cqi6ZFx1UQI1JD/jXlRhpQv1MZ
-         VtN/fI/zqsoO6u+pOblk5NFMNIevhNmLasScJr0w8oB61ry9Aq3jL3hcUR7Ve8I4V9/z
-         keYa3a2fCNs/ydmTwfx6ziTb7CL5PH8HPg/1aXoEpB+5t40C7F0yVaIZqGP4nbmghZbr
-         TMgOlJaLCBePuimhPcIy1MGgMnQ25bVBKW7saImW6/V8+mjtoj7TbLDOMn0bs0BYKd2z
-         gaIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709638293; x=1710243093;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RhnMDUA+SM/I153+o1QN9n9YimDuXxyDMythbZKsjIc=;
-        b=vCJgagGtz3p1Gdh2utvN+bJlYGlMYgXxwt/+JkZ4RYdtkiTcaXltZ+N6RKN2J6j3jt
-         +rcK60PnmTU++P9IFhpVNnfrIWe3tXdX1kGUE0Zqkk7exy0y09kNStd1zHSOlKFp1QxD
-         qAIr8HgzM/00d+CSAJM5l7AimRm8bUAerQv6jtk0GPjOum/dKvPU4FoHlHDCqywytvk2
-         OxBhgh6PUa/yfBmO6glN7DgoxQmx5wLQioUPJ/DxjfRYkpAfDJsg7lTxkd/mdsnKN2fz
-         9t9Fw1WWXd72XG24PuW4kYtLe3xl2shYxSRMTuoNgaArjGyg2BIUjDoAtMdoSIj43Af9
-         FCMg==
-X-Forwarded-Encrypted: i=1; AJvYcCWUk7g/DqLtQLHpQTd4ksUTk7hLDTEJqnU+v8/d+gFKjXhxbKf1rTcsglfX60z+DVTGWpV8aVREF0yXtK89OIeapCsSwfwlome07Uqt
-X-Gm-Message-State: AOJu0YyyUhPFLmLfmB2cL4Xdqo/BvHqcXl0ylK6+2m0rA7wDUIXVtwqp
-	brlLme4eOihxLnWmhhSBLNd27QeYAGZYi/UnXX0wrfI4Ljqf8DYSmm9NHiL9HbKd6ZFUrcNmEql
-	5/W3Xzk8N/wtXIR15XesB+yK1EorrEg3se9Ov
-X-Google-Smtp-Source: AGHT+IGaOEvWlQFESzWxdD8NjcuJeJMN74Ew0v7JqtHNHijwrN/HapW66Fiw7VfQvayzfRCfTo8TU44zbWbn9v1ig08=
-X-Received: by 2002:a67:e3b9:0:b0:471:e2ca:4023 with SMTP id
- j25-20020a67e3b9000000b00471e2ca4023mr1133906vsm.25.1709638292994; Tue, 05
- Mar 2024 03:31:32 -0800 (PST)
+	s=arc-20240116; t=1709638313; c=relaxed/simple;
+	bh=gxrgoYWphaDmzKtyhIBy9rE+l+KstbsIz61GKi/vygI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HV6NvuuV+mQGN+MqUIrTYtNEibetRtISt3fUGRYsEHXs+TgT59Bj/y0bLRrLUwQcVMaUc2zJOhFGp4fXuq703c9WYGtAaAJHO9/6HAuqv9hibDfFkjpRO4fek1MI19kVFytn+7LNsepZnbDE2JYF4SviMZa1V0ugDEw+dt8hTxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=X1YbpZKG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0E63C433F1;
+	Tue,  5 Mar 2024 11:31:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1709638312;
+	bh=gxrgoYWphaDmzKtyhIBy9rE+l+KstbsIz61GKi/vygI=;
+	h=From:To:Cc:Subject:Date:From;
+	b=X1YbpZKG19sj1CU4P3G9XctFbfQOoREiCCFQAXFao3+xJ0plZ+WD57NhC62h5cDTt
+	 DihutaVo0REuBG5cVXxSIrp+xFGbZO+hWaIiNAuNNFiusCMV9NHTXEJuaJw0CfOiXI
+	 1fqMeG5HXZSMK6gReK5YAEdQzcSAUPV3Uo9106/E=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: stable@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	patches@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	torvalds@linux-foundation.org,
+	akpm@linux-foundation.org,
+	linux@roeck-us.net,
+	shuah@kernel.org,
+	patches@kernelci.org,
+	lkft-triage@lists.linaro.org,
+	pavel@denx.de,
+	jonathanh@nvidia.com,
+	f.fainelli@gmail.com,
+	sudipm.mukherjee@gmail.com,
+	srw@sladewatkins.net,
+	rwarsow@gmx.de,
+	conor@kernel.org,
+	allen.lkml@gmail.com
+Subject: [PATCH 5.10 00/41] 5.10.212-rc2 review
+Date: Tue,  5 Mar 2024 11:31:49 +0000
+Message-ID: <20240305113119.020328586@linuxfoundation.org>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAH5fLgg0yGbuHnMbMB103Zssg4KSfXUR3kvhr0kuqTSah=6kWg@mail.gmail.com>
- <20240305112017.125061-1-kernel@valentinobst.de> <CAH5fLgis7Usg_cfWM5rBKjRKsB4857PkyuCMrCU6PmEqTOMFiw@mail.gmail.com>
-In-Reply-To: <CAH5fLgis7Usg_cfWM5rBKjRKsB4857PkyuCMrCU6PmEqTOMFiw@mail.gmail.com>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Tue, 5 Mar 2024 12:31:22 +0100
-Message-ID: <CAH5fLgj=iuWNWy9jGvaD0SCcZg6GSj9XBgB0vZwL8EokobUPMg@mail.gmail.com>
-Subject: Re: [PATCH] rust: add flags for shadow call stack sanitizer
-To: Valentin Obst <kernel@valentinobst.de>
-Cc: Jamie.Cunliffe@arm.com, a.hindborg@samsung.com, alex.gaynor@gmail.com, 
-	ardb@kernel.org, benno.lossin@proton.me, bjorn3_gh@protonmail.com, 
-	boqun.feng@gmail.com, broonie@kernel.org, catalin.marinas@arm.com, 
-	gary@garyguo.net, keescook@chromium.org, linux-arm-kernel@lists.infradead.org, 
-	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	mark.rutland@arm.com, masahiroy@kernel.org, maz@kernel.org, nathan@kernel.org, 
-	ndesaulniers@google.com, nicolas@fjasle.eu, ojeda@kernel.org, 
-	rust-for-linux@vger.kernel.org, samitolvanen@google.com, wedsonaf@gmail.com, 
-	will@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: quilt/0.67
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.212-rc2.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-5.10.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 5.10.212-rc2
+X-KernelTest-Deadline: 2024-03-07T11:31+00:00
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 5, 2024 at 12:28=E2=80=AFPM Alice Ryhl <aliceryhl@google.com> w=
-rote:
->
-> On Tue, Mar 5, 2024 at 12:20=E2=80=AFPM Valentin Obst <kernel@valentinobs=
-t.de> wrote:
-> >
-> > > >>> It's not 100% clear to me whether this patch is enough for full S=
-CS
-> > > >>> support in Rust. If there is some issue where this makes things c=
-ompile
-> > > >>> and work without actually applying SCS to the Rust code, please l=
-et me
-> > > >>> know. Is there some way to verify that it is actually working?
-> > > >>
-> > > >> Perhaps you could write a Rust version of the CFI_BACKWARD test in=
- LKDTM?
-> > > >>
-> > > >> Alternatively, the simplest way to verify this is to look at the
-> > > >> disassembly and verify that shadow stack instructions are emitted =
-to
-> > > >> Rust functions too. In case of dynamic SCS, you might need to dump
-> > > >> function memory in a debugger to verify that PAC instructions were
-> > > >> patched correctly. If they're not, the code will just quietly cont=
-inue
-> > > >> working without using shadow stacks.
-> > > >
-> > > > Was just in the process of doing that:
-> > > >
-> > > > - `paciasp`/`autiasp` pairs are emitted for functions in Rust modul=
-es.
-> > > > - Rust modules have no `.init.eh_frame` section, which implies that
-> > > >   `module_finalize` is _not_ rewriting the pac insns when SCS is dy=
-namic.
-> > > >   - Confirmed that behavior in the debugger (C modules and the C pa=
-rt of the
-> > > >     kernel are correctly rewritten, Rust modules execute with
-> > > >     `paciasp`/`autiasp` still in place).
-> > > > - Kernel boots just fine with Rust kunit tests, tested with and wit=
-hout dynamic
-> > > >   SCS, i.e., on a CPU that supports PAC/BTI and one that does not.
-> > > > - Rust sample modules load and unload without problems as well.
-> > > > - `x18` is indeed not used in the codegen.
-> > > >
-> > > > I guess we might be able to get this working when we tweak the buil=
-d system
-> > > > to emit the missing section for Rust modules.
-> > >
-> > > I suppose the -Cforce-unwind-tables=3Dy flag will most likely do it.
-> >
-> > Yes, enabling this means that `.eh_frame` sections, which are converted=
- to
-> > `.init.eh_frame` sections for loadable modules, are generated for Rust
-> > objects.
-> >
-> > Tested booting, kunit tests, sample modules (as builtin and loadable) f=
-or
-> > both, dynamic SCS active and inactive. Backtraces on Rust panicks also =
-look
-> > normal.
-> >
-> > Confirmed that in the debugger that builtin and external modules are
-> > rewritten (or not rewritten if no dynamic SCS). Did not check that the
-> > `eh_frame` sections are exhaustive, i.e., cover all `paciasp`/`autiasp`
-> > pairs, only verified a few functions (in init text and normal text).
->
-> Thank you for checking that!
->
-> > > There's also an use_sync_unwind option, but it defaults to no, so it
-> > > doesn't seem like we need to set it.
-> >
-> > Are those defaults stable or will we notice if they change? If not it m=
-ight
-> > make sense to set it explicitly anyways to avoid surprises in the futur=
-e.
->
-> The flag itself is unstable, so I imagine that nothing is promised about =
-it.
->
-> I tried it, but I wasn't actually able to find a way to set it. I can
-> see the flag in the rustc source code, but passing -Zuse-sync-unwind=3Dn
-> results in "error: unknown unstable option: `use-sync-unwind`". Not
-> sure what the issue is.
+This is the start of the stable review cycle for the 5.10.212 release.
+There are 41 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-Oh, I understand now. It's really recent and not in 1.73.0, which is
-what I'm using in the Android build.
+Responses should be made by Thu, 07 Mar 2024 11:31:02 +0000.
+Anything received after that time might be too late.
 
-Alice
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.212-rc2.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+and the diffstat can be found below.
+
+thanks,
+
+greg k-h
+
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 5.10.212-rc2
+
+Davide Caratti <dcaratti@redhat.com>
+    mptcp: fix double-free on socket dismantle
+
+Chuanhong Guo <gch981213@gmail.com>
+    mtd: spinand: gigadevice: fix Quad IO for GD5F1GQ5UExxG
+
+Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+    gpio: fix resource unwinding order in error path
+
+Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+    gpiolib: Fix the error path order in gpiochip_add_data_with_key()
+
+Arturas Moskvinas <arturas.moskvinas@gmail.com>
+    gpio: 74x164: Enable output pins after registers are reset
+
+Oscar Salvador <osalvador@suse.de>
+    fs,hugetlb: fix NULL pointer dereference in hugetlbs_fill_super
+
+Baokun Li <libaokun1@huawei.com>
+    cachefiles: fix memory leak in cachefiles_add_cache()
+
+Baokun Li <libaokun1@huawei.com>
+    ext4: avoid bb_free and bb_fragments inconsistency in mb_free_blocks()
+
+Paolo Abeni <pabeni@redhat.com>
+    mptcp: fix possible deadlock in subflow diag
+
+Paolo Bonzini <pbonzini@redhat.com>
+    x86/cpu/intel: Detect TME keyid bits before setting MTRR mask registers
+
+Bjorn Andersson <quic_bjorande@quicinc.com>
+    pmdomain: qcom: rpmhpd: Fix enabled_corner aggregation
+
+Elad Nachman <enachman@marvell.com>
+    mmc: sdhci-xenon: fix PHY init clock stability
+
+Elad Nachman <enachman@marvell.com>
+    mmc: sdhci-xenon: add timeout for PHY init complete
+
+Ivan Semenov <ivan@semenov.dev>
+    mmc: core: Fix eMMC initialization with 1-bit bus connection
+
+Curtis Klein <curtis.klein@hpe.com>
+    dmaengine: fsl-qdma: init irq after reg initialization
+
+Peng Ma <peng.ma@nxp.com>
+    dmaengine: fsl-qdma: fix SoC may hang on 16 byte unaligned read
+
+David Sterba <dsterba@suse.com>
+    btrfs: dev-replace: properly validate device names
+
+Johannes Berg <johannes.berg@intel.com>
+    wifi: nl80211: reject iftype change with mesh ID change
+
+Alexander Ofitserov <oficerovas@altlinux.org>
+    gtp: fix use-after-free and null-ptr-deref in gtp_newlink()
+
+Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+    tomoyo: fix UAF write bug in tomoyo_write_control()
+
+Dimitris Vlachos <dvlachos@ics.forth.gr>
+    riscv: Sparse-Memory/vmemmap out-of-bounds fix
+
+David Howells <dhowells@redhat.com>
+    afs: Fix endless loop in directory parsing
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: Drop leftover snd-rtctimer stuff from Makefile
+
+Hans de Goede <hdegoede@redhat.com>
+    power: supply: bq27xxx-i2c: Do not free non existing IRQ
+
+Arnd Bergmann <arnd@arndb.de>
+    efi/capsule-loader: fix incorrect allocation size
+
+Lin Ma <linma@zju.edu.cn>
+    rtnetlink: fix error logic of IFLA_BRIDGE_FLAGS writing back
+
+Ignat Korchagin <ignat@cloudflare.com>
+    netfilter: nf_tables: allow NFPROTO_INET in nft_(match/target)_validate()
+
+Kai-Heng Feng <kai.heng.feng@canonical.com>
+    Bluetooth: Enforce validation on max value of connection interval
+
+Luiz Augusto von Dentz <luiz.von.dentz@intel.com>
+    Bluetooth: hci_event: Fix handling of HCI_EV_IO_CAPA_REQUEST
+
+Zijun Hu <quic_zijuhu@quicinc.com>
+    Bluetooth: hci_event: Fix wrongly recorded wakeup BD_ADDR
+
+Ying Hsu <yinghsu@chromium.org>
+    Bluetooth: Avoid potential use-after-free in hci_error_reset
+
+Javier Carrasco <javier.carrasco.cruz@gmail.com>
+    net: usb: dm9601: fix wrong return value in dm9601_mdio_read
+
+Oleksij Rempel <linux@rempel-privat.de>
+    lan78xx: enable auto speed configuration for LAN7850 if no EEPROM is detected
+
+Eric Dumazet <edumazet@google.com>
+    ipv6: fix potential "struct net" leak in inet6_rtm_getaddr()
+
+Yunjian Wang <wangyunjian@huawei.com>
+    tun: Fix xdp_rxq_info's queue_index when detaching
+
+Florian Westphal <fw@strlen.de>
+    net: ip_tunnel: prevent perpetual headroom growth
+
+Ryosuke Yasuoka <ryasuoka@redhat.com>
+    netlink: Fix kernel-infoleak-after-free in __skb_datagram_iter
+
+Han Xu <han.xu@nxp.com>
+    mtd: spinand: gigadevice: Fix the get ecc status issue
+
+Reto Schneider <reto.schneider@husqvarnagroup.com>
+    mtd: spinand: gigadevice: Support GD5F1GQ5UExxG
+
+zhenwei pi <pizhenwei@bytedance.com>
+    crypto: virtio/akcipher - Fix stack overflow on memcpy
+
+Hans de Goede <hdegoede@redhat.com>
+    platform/x86: touchscreen_dmi: Allow partial (prefix) matches for ACPI names
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                           |   4 +-
+ arch/riscv/include/asm/pgtable.h                   |   2 +-
+ arch/x86/kernel/cpu/intel.c                        | 178 +++++++++++----------
+ .../crypto/virtio/virtio_crypto_akcipher_algs.c    |   5 +-
+ drivers/dma/fsl-qdma.c                             |  25 +--
+ drivers/firmware/efi/capsule-loader.c              |   2 +-
+ drivers/gpio/gpio-74x164.c                         |   4 +-
+ drivers/gpio/gpiolib.c                             |  12 +-
+ drivers/mmc/core/mmc.c                             |   2 +
+ drivers/mmc/host/sdhci-xenon-phy.c                 |  48 ++++--
+ drivers/mtd/nand/spi/gigadevice.c                  |  81 ++++++++--
+ drivers/net/gtp.c                                  |  12 +-
+ drivers/net/tun.c                                  |   1 +
+ drivers/net/usb/dm9601.c                           |   2 +-
+ drivers/net/usb/lan78xx.c                          |   3 +-
+ drivers/platform/x86/touchscreen_dmi.c             |   4 +-
+ drivers/power/supply/bq27xxx_battery_i2c.c         |   4 +-
+ drivers/soc/qcom/rpmhpd.c                          |   7 +-
+ fs/afs/dir.c                                       |   4 +-
+ fs/btrfs/dev-replace.c                             |  24 ++-
+ fs/cachefiles/bind.c                               |   3 +
+ fs/ext4/mballoc.c                                  |  39 ++---
+ fs/hugetlbfs/inode.c                               |   6 +-
+ net/bluetooth/hci_core.c                           |   7 +-
+ net/bluetooth/hci_event.c                          |  13 +-
+ net/bluetooth/l2cap_core.c                         |   8 +-
+ net/core/rtnetlink.c                               |  11 +-
+ net/ipv4/ip_tunnel.c                               |  28 +++-
+ net/ipv6/addrconf.c                                |   7 +-
+ net/mptcp/diag.c                                   |   3 +
+ net/mptcp/protocol.c                               |  49 ++++++
+ net/netfilter/nft_compat.c                         |  20 +++
+ net/netlink/af_netlink.c                           |   2 +-
+ net/wireless/nl80211.c                             |   2 +
+ security/tomoyo/common.c                           |   3 +-
+ sound/core/Makefile                                |   1 -
+ 36 files changed, 430 insertions(+), 196 deletions(-)
+
+
 
