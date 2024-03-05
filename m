@@ -1,171 +1,215 @@
-Return-Path: <linux-kernel+bounces-92340-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92341-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD0E0871ECD
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:15:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A692871ED0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:16:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9353C1F23C05
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:15:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F511B23BD6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:16:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB61C5B67C;
-	Tue,  5 Mar 2024 12:15:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74A995A79C;
+	Tue,  5 Mar 2024 12:15:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wlwGSpUt"
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OM/up9g3"
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 177965B5B5
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 12:15:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAB485B67B
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 12:15:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709640916; cv=none; b=msu9CaofcmSdlqSnEEEEGXuNA+67dScmiPlH4j4fxI7+1IiLYSqOTZmYPZx1yzV1O3J7feNgiUfPFQWS0wZHlNjMFk2k2NBA6Gk1LcvM0JMS7b9CzLPZcvSlUWCsIyNzgAe1MKkMC7e2wTiZ1+HsK8sUmWKEP5bkx2izyQ6kPaY=
+	t=1709640919; cv=none; b=pcYTALghMYZhgk8lQSTuOBcGKj15NLPBBLmOW6tZS9yNYs4gTOZE1y4OsQSKIKqtmgnloY/u8HEZCJv2+6Hyh6VdtMw7Tu6DoBrJOkoEYAW6WuiH2mT6pYjhBYAjIrfxkcv1oB2ubQT/7yRCf6hBqQN8sdI8SJtMRK7530+tg08=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709640916; c=relaxed/simple;
-	bh=g7XHUxRHu85gEg3FW1hsjzi+N1cNjvNBBFKV+KzP3B4=;
+	s=arc-20240116; t=1709640919; c=relaxed/simple;
+	bh=j/mszeX9ORsz5fjWmkU/e3unjh7kWHFSsDaC36s4PtU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=F1jdo70MKjwdGZF6uHSk9Hk8+5lrOVlSHo6ZPAgX7ObB89r4/e/Gk83rDnrvOqnIXOygQcLYk+BZ3j+lHOlNsYB/yQe7fac+xd/Ax6eQMwNH5cI+tfQr/CoGHZpSERL3q9oCi3rB1gfMb87og9I8Vn1Yzhpm3/WYFOLxhdVVopc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=wlwGSpUt; arc=none smtp.client-ip=209.85.219.171
+	 To:Cc:Content-Type; b=WE03pa1LgxiFym5UY+HV3lZ4u4AHy1sD1pIstgC59LUzbeCFl5gmnKi7oas8ECbsH8QpfT7W8+58yE/+VCpaFx42kz266Ka8X+Fxbpe+ZWSGgXUWWKIdtJDgA84Sk3XnUSCzStytl1MIuvK4AD0rURRpPUWY+YqHT3P8T5geC4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OM/up9g3; arc=none smtp.client-ip=209.85.219.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dccb1421bdeso566821276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 04:15:14 -0800 (PST)
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dd045349d42so625585276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 04:15:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709640914; x=1710245714; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1709640916; x=1710245716; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=D6ktVqDmV7ss5l9SPN0xrD5/Tg3eFMGNcebSziUH+H4=;
-        b=wlwGSpUtcQfN2v6GKRwzs64vl/MMHf4ERNAhx/2dLZbLFQ/8MsWTehTQh8hXvvx91p
-         FFHpGdMoAMVvgm3Gfqco6XRnwy9+f8uzfFV938ImW4UdRqTI5yt+znA5idhrUbHUHZ0/
-         Oz3j7NA2VOetrc+b1V8Xd9myZf24xZoLeipmPAvUaQGLViHRS64fn8YSB9tWbGYjDwX3
-         5tpqQx1upjUtV3X/TZaq3aIVwY/bnsRCHKSZKSDCgE7r8k4CY8ppafy+Qdiu+vRh/i3M
-         Ot4QZ3sVycuBEVQMVyOf4KfUK0fg6Y0grzomydKA4Iv9hdjFAKn1NSRS+3yuLYHJVnqu
-         h3fg==
+        bh=O3k9Q26KqpXO2O4o4Z5OcECU0fKN3tYgMC1M4NBA6YU=;
+        b=OM/up9g3t+SoYuCP8FfYxRHxJ9UP5pi75lJXhvO7s8A0rVtR1AaxtlT+bM5yKeqN2G
+         8SbFfoF1nj7EH8R1TH0PZ5eIwty3Fg2oJAzoA1Mbg6PyoCVsOnmdsHWiGFLRNRcPLA1x
+         vgBraekTYFiTYkFZ/7NCz61h07JmQncRDSls4nH+oiqVMpKK8p1ce8HzBSiFtD0fs03e
+         ohuP8U0AszrQf+1by0nMUJfGfpPSy3pVqvutCr8N/oCi613s9FJCICLNohPV4SIMV2jP
+         h0l6eXSwYmNY3j9Xt8boLBY48Tc5XClfrm5HAqBvQSof/nVE758WMZAnVTWB/RgH5PC/
+         9erw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709640914; x=1710245714;
+        d=1e100.net; s=20230601; t=1709640916; x=1710245716;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=D6ktVqDmV7ss5l9SPN0xrD5/Tg3eFMGNcebSziUH+H4=;
-        b=JdKkrI3ZBZPs7StktSoUmEJEpuxXF7G3EjynnBXrtMZtha3mlW4dqT0LDgma55Lf7l
-         DuDAgjWXhv+9ygk8lXM2WgrMAvoU+4985dZOrOU7yJstqWWQtRCehZf5jAnCP1LY20Er
-         5fi9JQ8cc9+WPR2xhqYfzJmpA4hccLOSUtnziQg6ESStAPVfSyhBgRcaQyPIYZLDuBj1
-         od8WOVI0PJhuMEIjDCFNfYN1DiaFTLTJVfpbx1kKOVNiro3UDk4OnzVCAk9F6FmT+777
-         2Z5gLcT5EiYf+PQx2+qseVVQS7LG/czX8lrezQxbwo4YVkTpDZ6RHpU2Cgaqep/0SWT8
-         9jDA==
-X-Forwarded-Encrypted: i=1; AJvYcCXRQyfyuHpNSxtJZKdvheHFLpkwc323eQfuHv5MpTv9MM6EyZyFIm+xWYY8SaSfNwBLuUI6xzIyv3iTp/Vv4bS8ES3WsShWwB4RyCku
-X-Gm-Message-State: AOJu0YyJLn3quzKkcbIUI8WB4ekoRf4/ay/FpMEFAn6p9cdbmgmDnLtT
-	NX2spzowrDkXMIppKZXhUAM/gQws2fAD+ZIeHF3e/w99kmqXWL5tKcXMn+4rA7/KUCqNClPNaFz
-	KUrn/F3/ZGLO249b6DMuTfh2rX8TnJ+Iqmr5t2g==
-X-Google-Smtp-Source: AGHT+IHJmE+6b6Odnde6C3f/sbKVeXzyy1wl+EKNqVOXCbMbm3t6RelV+5/PPHkUcAMaI42bBn2Jf21OcLZDfzyvrZM=
-X-Received: by 2002:a25:d883:0:b0:dcc:e9d:4a22 with SMTP id
- p125-20020a25d883000000b00dcc0e9d4a22mr8993815ybg.12.1709640913987; Tue, 05
- Mar 2024 04:15:13 -0800 (PST)
+        bh=O3k9Q26KqpXO2O4o4Z5OcECU0fKN3tYgMC1M4NBA6YU=;
+        b=Yg1l2aiEVJ2x6ZCRl+uGTRmM/QDXr2ZiIo/AkQjnqCmzo6yrq/tvKnIY3AhImuiEbn
+         XjKmafO5pnZ7J6laR5bdIMCEDZ5Dul4GKagoD/E32QIsJoxIarmhf493SwzMxgzgv9aM
+         S/ATzD5Tdp/hjfBYruiqGnshdMXoO0uQ9pFKp+mDGM7oBHnSFcPQwzqiqrQFRAuMTOpW
+         SiTSYizZJvNN1J8d2hWQ/PQKjonoUw1GbQBelN8EXjEEcXgVr/6JcbJaDvlo4qEjJGlC
+         2s5VAtfPS0Nke3lvnnCw2wNb+K33XSo3/GKm4NwXDgf4knzLfKT2VxhahIs80P9NRjKv
+         CQLw==
+X-Forwarded-Encrypted: i=1; AJvYcCWzXk+WoXK/xWDmBLbhv7mpoUadeONCSsqk8xTnhvvuqh9dXyjfXawbh6xWOqnN5tfPLWL3qQkpL0Uv5iWo9LTj41MFNIm/4yQqIoIj
+X-Gm-Message-State: AOJu0Ywz+0SudKGU0gnLouCYni0ywzIsT1ZJ1ScN3pGm0wTxoioHqH5M
+	1hUyrJUihH8Hx9neQUm9vDP2ZmvXeTqAC3+a0zy5o+uVmD6rJvYS9b4TxDOL5T9JW3/zWme8tF8
+	p6xvEz7GpAHkc4+b5g0NLir20zyUsRQ8//XixyChTzUvlHbTe
+X-Google-Smtp-Source: AGHT+IGk4eFIk1xSfMQIxCe96ENwj5QOTBbRvnLLzOU6KKjmzrvHuoZFf6okRbCguchxev/n93wBqmdvrMcNJ8Okst0=
+X-Received: by 2002:a5b:a43:0:b0:dc6:b617:a28c with SMTP id
+ z3-20020a5b0a43000000b00dc6b617a28cmr9333881ybq.5.1709640916589; Tue, 05 Mar
+ 2024 04:15:16 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240229-b4-mmc-hi3798mv200-v7-0-10c03f316285@outlook.com>
-In-Reply-To: <20240229-b4-mmc-hi3798mv200-v7-0-10c03f316285@outlook.com>
+References: <20240304184830.1319526-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20240304184830.1319526-1-andriy.shevchenko@linux.intel.com>
 From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Tue, 5 Mar 2024 13:14:38 +0100
-Message-ID: <CAPDyKFrKiJBONLhOj2KDWZug_BSZngUUxtrEnF+H+imfEctETg@mail.gmail.com>
-Subject: Re: [PATCH v7 0/5] mmc: add hi3798mv200 specific extensions of DWMMC
-To: forbidden405@outlook.com
-Cc: Jaehoon Chung <jh80.chung@samsung.com>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Andrew Jeffery <andrew@codeconstruct.com.au>, 
-	Joel Stanley <joel@jms.id.au>, Igor Opaniuk <igor.opaniuk@linaro.org>, 
-	tianshuliang <tianshuliang@hisilicon.com>, David Yang <mmyangfl@gmail.com>, 
-	linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-aspeed@lists.ozlabs.org, 
-	openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, 
-	Paul Menzel <pmenzel@molgen.mpg.de>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Date: Tue, 5 Mar 2024 13:14:40 +0100
+Message-ID: <CAPDyKFoToK_BUeMyDMB-HDJPKYWdi1TiQVwE6mNSQshUFQDLKw@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] mmc: mmc_spi: Don't mention DMA direction
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-On Thu, 29 Feb 2024 at 02:36, Yang Xiwen via B4 Relay
-<devnull+forbidden405.outlook.com@kernel.org> wrote:
+On Mon, 4 Mar 2024 at 19:48, Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 >
-> it's modified from hi3798cv200 driver, but quite a lot of code gets
-> rewritten because of the hardware differences. Actually cv200 DWMMC core
-> is called HIMCIV200 while mv200 DWMMC core is called HIMCIV300 in
-> downstream.
+> Since driver doesn't handle any DMA requests, drop any use of DMA bits,
+> such as DMA direction. Instead, use MMC_DATA_WRITE flag directly.
 >
-> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-The series, applied for next, thanks!
-
-Note that, I took the liberty of updating/clarifying the commit
-message of patch1, please let me know if there is anything you don't
-like with that.
+Applied for next, thanks!
 
 Kind regards
 Uffe
 
 
 > ---
-> Changes in v7:
-> - driver: simplify tuning logic (Ulf Hansson)
-> - bindings: fix patch order (Ulf Hansson)
-> - Link to v6: https://lore.kernel.org/r/20240221-b4-mmc-hi3798mv200-v6-0-bc41bf6a9769@outlook.com
+>  drivers/mmc/host/mmc_spi.c | 30 ++++++++++++++----------------
+>  1 file changed, 14 insertions(+), 16 deletions(-)
 >
-> Changes in v6:
-> - apply the comments to the first patch, add their trailers
-> - Link to v5: https://lore.kernel.org/r/20240220-b4-mmc-hi3798mv200-v5-0-f506c55f8e43@outlook.com
+> diff --git a/drivers/mmc/host/mmc_spi.c b/drivers/mmc/host/mmc_spi.c
+> index b8dda8160c4e..922275de0593 100644
+> --- a/drivers/mmc/host/mmc_spi.c
+> +++ b/drivers/mmc/host/mmc_spi.c
+> @@ -15,7 +15,6 @@
+>  #include <linux/slab.h>
+>  #include <linux/module.h>
+>  #include <linux/bio.h>
+> -#include <linux/dma-direction.h>
+>  #include <linux/crc7.h>
+>  #include <linux/crc-itu-t.h>
+>  #include <linux/scatterlist.h>
+> @@ -510,10 +509,7 @@ mmc_spi_command_send(struct mmc_spi_host *host,
+>   * so we explicitly initialize it to all ones on RX paths.
+>   */
+>  static void
+> -mmc_spi_setup_data_message(
+> -       struct mmc_spi_host     *host,
+> -       bool                    multiple,
+> -       enum dma_data_direction direction)
+> +mmc_spi_setup_data_message(struct mmc_spi_host *host, bool multiple, bool write)
+>  {
+>         struct spi_transfer     *t;
+>         struct scratch          *scratch = host->data;
+> @@ -523,7 +519,7 @@ mmc_spi_setup_data_message(
+>         /* for reads, readblock() skips 0xff bytes before finding
+>          * the token; for writes, this transfer issues that token.
+>          */
+> -       if (direction == DMA_TO_DEVICE) {
+> +       if (write) {
+>                 t = &host->token;
+>                 memset(t, 0, sizeof(*t));
+>                 t->len = 1;
+> @@ -547,7 +543,7 @@ mmc_spi_setup_data_message(
+>         t = &host->crc;
+>         memset(t, 0, sizeof(*t));
+>         t->len = 2;
+> -       if (direction == DMA_TO_DEVICE) {
+> +       if (write) {
+>                 /* the actual CRC may get written later */
+>                 t->tx_buf = &scratch->crc_val;
+>         } else {
+> @@ -570,10 +566,10 @@ mmc_spi_setup_data_message(
+>          * the next token (next data block, or STOP_TRAN).  We can try to
+>          * minimize I/O ops by using a single read to collect end-of-busy.
+>          */
+> -       if (multiple || direction == DMA_TO_DEVICE) {
+> +       if (multiple || write) {
+>                 t = &host->early_status;
+>                 memset(t, 0, sizeof(*t));
+> -               t->len = (direction == DMA_TO_DEVICE) ? sizeof(scratch->status) : 1;
+> +               t->len = write ? sizeof(scratch->status) : 1;
+>                 t->tx_buf = host->ones;
+>                 t->rx_buf = scratch->status;
+>                 t->cs_change = 1;
+> @@ -777,15 +773,15 @@ mmc_spi_data_do(struct mmc_spi_host *host, struct mmc_command *cmd,
+>  {
+>         struct spi_device       *spi = host->spi;
+>         struct spi_transfer     *t;
+> -       enum dma_data_direction direction = mmc_get_dma_dir(data);
+>         struct scatterlist      *sg;
+>         unsigned                n_sg;
+>         bool                    multiple = (data->blocks > 1);
+> -       const char              *write_or_read = (direction == DMA_TO_DEVICE) ? "write" : "read";
+> +       bool                    write = (data->flags & MMC_DATA_WRITE);
+> +       const char              *write_or_read = write ? "write" : "read";
+>         u32                     clock_rate;
+>         unsigned long           timeout;
 >
-> Changes in v5:
-> - pick the dependant patch: https://lore.kernel.org/all/20240215-mmc_phase-v1-1-f27644ee13e4@outlook.com/
->   to fix the bot build error.
-> - edit the semantic meaning of hisilicon,sap-dll-reg property (Rob Herring)
->   The suggestion is from the CRG driver side:
->   https://lore.kernel.org/all/20240218205741.GA1561527-robh@kernel.org/
-> - Link to v4: https://lore.kernel.org/r/20240217-b4-mmc-hi3798mv200-v4-0-0fdd9bd48532@outlook.com
+> -       mmc_spi_setup_data_message(host, multiple, direction);
+> +       mmc_spi_setup_data_message(host, multiple, write);
+>         t = &host->t;
 >
-> Changes in v4:
-> - rename dw_mmc-hi3798 back to hi3798cv200 - Suggested by Krzysztof Kozlowski.
-> - add r-bs to patch 1 and 2 - Reviewed by Krzysztof Kozlowski.
-> - Link to v3: https://lore.kernel.org/r/20240217-b4-mmc-hi3798mv200-v3-0-f15464176947@outlook.com
+>         if (t->speed_hz)
+> @@ -807,7 +803,7 @@ mmc_spi_data_do(struct mmc_spi_host *host, struct mmc_command *cmd,
 >
-> Changes in v3:
-> - dw_mmc-hi3798: fix bot error (Rob Herring)
-> - Link to v2: https://lore.kernel.org/r/20240216-b4-mmc-hi3798mv200-v2-0-010d63e6a1d5@outlook.com
+>                 /* allow pio too; we don't allow highmem */
+>                 kmap_addr = kmap(sg_page(sg));
+> -               if (direction == DMA_TO_DEVICE)
+> +               if (write)
+>                         t->tx_buf = kmap_addr + sg->offset;
+>                 else
+>                         t->rx_buf = kmap_addr + sg->offset;
+> @@ -818,7 +814,7 @@ mmc_spi_data_do(struct mmc_spi_host *host, struct mmc_command *cmd,
 >
-> Changes in v2:
-> - dw_mmc-hi3798mv200: use dev_err_probe() helper - Suggested by Krzysztof Kozlowski.
-> - dw_mmc-hi3798mv200: add missing err=0;
-> - dw_mmc-hi3798c(m)v200: remove unused MODULE_ALIAS() - Suggested by Krzysztof Kozlowski.
-> - binding: rename the binding, a lot of tweaks suggested by Krzysztof Kozlowski.
-> - Link to v1: https://lore.kernel.org/r/20240216-b4-mmc-hi3798mv200-v1-0-7d46db845ae6@outlook.com
+>                         dev_dbg(&spi->dev, "    %s block, %d bytes\n", write_or_read, t->len);
 >
-> ---
-> Yang Xiwen (5):
->       mmc: host: mmc_of_parse_clk_phase(): Pass struct device * instead of mmc_host *
->       mmc: dw_mmc-hi3798cv200: remove MODULE_ALIAS()
->       dt-bindings: mmc: dw-mshc-hi3798cv200: convert to YAML
->       dt-bindings: mmc: hisilicon,hi3798cv200-dw-mshc: add Hi3798MV200 binding
->       mmc: dw_mmc: add support for hi3798mv200
+> -                       if (direction == DMA_TO_DEVICE)
+> +                       if (write)
+>                                 status = mmc_spi_writeblock(host, t, timeout);
+>                         else
+>                                 status = mmc_spi_readblock(host, t, timeout);
+> @@ -833,7 +829,9 @@ mmc_spi_data_do(struct mmc_spi_host *host, struct mmc_command *cmd,
+>                 }
 >
->  .../bindings/mmc/hi3798cv200-dw-mshc.txt           |  40 ----
->  .../mmc/hisilicon,hi3798cv200-dw-mshc.yaml         |  97 ++++++++
->  drivers/mmc/core/host.c                            |   4 +-
->  drivers/mmc/host/Kconfig                           |   9 +
->  drivers/mmc/host/Makefile                          |   1 +
->  drivers/mmc/host/dw_mmc-hi3798cv200.c              |   1 -
->  drivers/mmc/host/dw_mmc-hi3798mv200.c              | 251 +++++++++++++++++++++
->  drivers/mmc/host/sdhci-of-aspeed.c                 |   2 +-
->  include/linux/mmc/host.h                           |   2 +-
->  9 files changed, 361 insertions(+), 46 deletions(-)
-> ---
-> base-commit: d206a76d7d2726f3b096037f2079ce0bd3ba329b
-> change-id: 20240121-b4-mmc-hi3798mv200-a5730edf122c
+>                 /* discard mappings */
+> -               if (direction == DMA_FROM_DEVICE)
+> +               if (write)
+> +                       /* nothing to do */;
+> +               else
+>                         flush_dcache_page(sg_page(sg));
+>                 kunmap(sg_page(sg));
 >
-> Best regards,
+> @@ -850,7 +848,7 @@ mmc_spi_data_do(struct mmc_spi_host *host, struct mmc_command *cmd,
+>          * that can affect the STOP_TRAN logic.   Complete (and current)
+>          * MMC specs should sort that out before Linux starts using CMD23.
+>          */
+> -       if (direction == DMA_TO_DEVICE && multiple) {
+> +       if (write && multiple) {
+>                 struct scratch  *scratch = host->data;
+>                 int             tmp;
+>                 const unsigned  statlen = sizeof(scratch->status);
 > --
-> Yang Xiwen <forbidden405@outlook.com>
+> 2.43.0.rc1.1.gbec44491f096
 >
 
