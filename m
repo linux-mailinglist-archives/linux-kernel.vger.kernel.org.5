@@ -1,62 +1,72 @@
-Return-Path: <linux-kernel+bounces-92774-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92775-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7370A8725C4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:35:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BBF68725CA
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:38:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 064C7283443
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:35:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 137BA1F265D7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:38:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F8E217581;
-	Tue,  5 Mar 2024 17:34:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 420C917581;
+	Tue,  5 Mar 2024 17:37:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hGyatJBw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="a9gYloUw"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E88E14286;
-	Tue,  5 Mar 2024 17:34:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E18DE16427;
+	Tue,  5 Mar 2024 17:37:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709660075; cv=none; b=h7BYWRLj7ATnOAOIGHkc8gxUDrELTkayeXIWzhPhygAPSg9dglMsQHn0lBvSC5Qeu88b+8zNUKP7PZdlwKp9oETKKnpwcDebTO3UMDz1zB+ACcbGbgqrXfgx00umlx7KbjuO9Hh8iKk5S/zSW3U4k0KDaz3V5pRLRbpI2YifWR0=
+	t=1709660274; cv=none; b=fa/cw01M6UMY8xcbE9u62z4/efZX3Sz7ZejnHC1XpO6bmmzGc9gh7frP+VkJiKb0PMC4NJtMi2tUrTKPfyw12B6xED10y47dTofCKR1j3TjYtcWVLzjt+fBIs3C3kCXCNvuMAV/Tc3xYybFTfEJAq7fJTSEFPch3Md6SNuOE8qk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709660075; c=relaxed/simple;
-	bh=ZsPxSyuYc9vaW5VTKLQu311nwctIAVH8PB6NJydYnxY=;
+	s=arc-20240116; t=1709660274; c=relaxed/simple;
+	bh=SPFp/5wiVzGfJXSCxTcdGU463JEV+G32mBsZrWelyIo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TrBdTeEdeH0U3IvHIySvOViHHrIbTs+0AWW6mnYDxRPVLV2/GUnJhthwonqrOxwwLwyzjre7+zDekl6f+5iT8QtPR11/KKx2MaI/rW+LBvl8gyXDtkBSxlt5rmTTKhLO4R2zRWG8nZTPfElhxchW7DeH/DpT4PwAaTHGAiCSJ0E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hGyatJBw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1961C433F1;
-	Tue,  5 Mar 2024 17:34:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709660075;
-	bh=ZsPxSyuYc9vaW5VTKLQu311nwctIAVH8PB6NJydYnxY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hGyatJBwpm4Etuumvf0FowW9lW/GOTz7awkUXlKbpNrpXrxbMxJYgeag1IYuCtIqm
-	 NatuINcV3U8V2xwXfEbC/Oc7DNe5w+AwVFulv/lT4KuMl+v0d8/YRekHPwHSg/LTLq
-	 6/6MGguQuttEEltDriifRz2L6r9eNzLHvuKZfwfKQLBBsIo2feanZ7SFeFgSSen/Wj
-	 c0Refj6C0uLdGG++wgtX9T1xNp5roW8LWDsl4eDiSltu4MyUaz6b9UKMlwXJk2miTy
-	 Q0CcqU1Noh2+nwOfvpRUdILbCM8cHbxh/RMxYZBGYBgCXmvgOOiSzymCmyDQqR8aaU
-	 f9WNHZ5viWEZg==
-Date: Tue, 5 Mar 2024 11:34:32 -0600
-From: Rob Herring <robh@kernel.org>
-To: Sebastian Reichel <sre@kernel.org>, Shawn Guo <shawnguo@kernel.org>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>, imx@lists.linux.dev,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Dong Aisheng <aisheng.dong@nxp.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: Re: [PATCH v5 0/6] UNI-T UTi260B support
-Message-ID: <20240305173432.GA3745196-robh@kernel.org>
-References: <20240226212740.2019837-1-sre@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Db6Yi6ppWnOnbrAbfHL3kAJeMB37JBmAs86moaAujrFbCTGt9HY/C7mX3UCfKW8dpdN1puVFnSetGtYaKaKTZp6ji2QLCyOvHJ35uGJ9iDv4TEwOtvf1ItxZGvgfWuv+hqc6tw8ikUe9QG8uckTulf+baYvYiPPJ8GIEP25ZaqY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=a9gYloUw; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709660273; x=1741196273;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=SPFp/5wiVzGfJXSCxTcdGU463JEV+G32mBsZrWelyIo=;
+  b=a9gYloUwJHauoByuDz0p7Is4eqUeqvNCmSzT3iiwwE8OggaTQGXGtRd7
+   sJKsC5fTiRZoSFkWdFSUzEXtsMi5c+EkzMBUHNPAONvoucCcC/eFfY7pL
+   G7SVo9pfm1drHP3McXQQxagJ4f0dzXqai9Y0utV26f6duDkAkIDSvrN0x
+   /4tkhWeFaIElxPrK/vePTgeXwMQ5Ml+He4AQyiCTHwe5Upd+5GlnTUhw3
+   WAK0Vcli589F8twwwRlWy4uEWUB239T8LK9KVNyA9rOV79TO+IvVnM6DR
+   CcswKMdc9Or62gRz4hu0+u+F5CPMrI62ePCbzHO8TVUTNLNGM+n9ywsbv
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="4092841"
+X-IronPort-AV: E=Sophos;i="6.06,206,1705392000"; 
+   d="scan'208";a="4092841"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 09:37:52 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="914146037"
+X-IronPort-AV: E=Sophos;i="6.06,206,1705392000"; 
+   d="scan'208";a="914146037"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 09:37:50 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rhYjc-0000000A391-1BLr;
+	Tue, 05 Mar 2024 19:37:48 +0200
+Date: Tue, 5 Mar 2024 19:37:47 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Sean Young <sean@mess.org>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: Re: [PATCH v1 1/1] media: ir-spi: Remove unused of_gpio.h
+Message-ID: <ZedYa962KkB4A3Pp@smile.fi.intel.com>
+References: <20240304180331.1200827-1-andriy.shevchenko@linux.intel.com>
+ <ZebisPvr_eFPm_0o@gofer.mess.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,23 +75,25 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240226212740.2019837-1-sre@kernel.org>
+In-Reply-To: <ZebisPvr_eFPm_0o@gofer.mess.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Mon, Feb 26, 2024 at 10:26:22PM +0100, Sebastian Reichel wrote:
-> From: Sebastian Reichel <sebastian.reichel@collabora.com>
+On Tue, Mar 05, 2024 at 09:15:28AM +0000, Sean Young wrote:
+> On Mon, Mar 04, 2024 at 08:03:31PM +0200, Andy Shevchenko wrote:
+
+..
+
+> > -#include <linux/of_gpio.h>
 > 
-> Hi,
-> 
-> This adds adds support for the UNI-T UTi260B thermal camera, which is based
-> on i.MX6ULL. The series first updates DT bindings, so that CHECK_DTBS no
-> longer reports any errors for i.MX6ULL (i.e. for an empty board). They are
-> not specific to the UTi260B and in fact that machine has most of the IP
-> handled by these patches marked as disabled. The last patch adds the actual
-> thermal camera DT.
+> This does not build, I get errors saying of_property_read_bool() is undefined.
+> I think we need linux/of.h instead of linux/of_gpio.h.
 
-I imagine that this has missed 6.9 for arm-soc, so I've applied the 
-binding patches. The anatop binding in particular fixes a warning in 
-dt_binding_check.
+Oh, good catch! The header block there is a mess.
+I will replace this patch by something better, I'll Cc you.
 
-Rob
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
