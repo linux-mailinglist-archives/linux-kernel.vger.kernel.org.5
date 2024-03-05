@@ -1,214 +1,203 @@
-Return-Path: <linux-kernel+bounces-92636-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92643-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC17E872340
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:55:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EAD5872351
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:57:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE4051C23226
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:55:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0A49FB249B1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:57:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D5D9128373;
-	Tue,  5 Mar 2024 15:55:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F171128834;
+	Tue,  5 Mar 2024 15:56:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xNJKp2+y"
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E9iaecWr"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C931127B68
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 15:55:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A47538664C;
+	Tue,  5 Mar 2024 15:56:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709654111; cv=none; b=lTLg+rIMXMdm5gmS8bmOtqj3hyW7Mk6hoR5bvbx74VjITYCorD/JqOpqz5dRTR1UjR1msL0t+Xl/tAP1noRvWE18R52JHShCAIW0cIS3m5cBK/Bsg8uwEQh9VvaeP3pITZ7N8e2sip1XZ6NCgTdIL5EBpdUhJJwZ89B8U9L/Y1A=
+	t=1709654183; cv=none; b=K7QoJ2Q3USUHIGLITG6pisNt8jmvFESii1TcKBTYA0ZI2e8lWCvOIV7S+UqRY4vS+Mb7K9Qfd3yJ2ZREsXJdjjvOBO6eBCnfTIdduCgkpmfD8uAG7MQ6edCR+IFdHt850vkLBPyLF/au1Kexks9OEY+cdJdrCJxhVkmjjz9Xi5I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709654111; c=relaxed/simple;
-	bh=0MFMA/5/EBNpSxHlCl5hMLR/T70CB1Xb8VS/QDE+tKI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FQl8AprTOXxuWQkmJIYQGpYfktETX/1GLNiUlhrjAaf/KyKWXk4FlJwRFQhFlA0/vE593oL9fi+T52P5XaqwIybWAkWH8C5T9SKpzVQFXupM+TzBcuOLngi6Ud5zuo0psWaR8Jd+wCak36fbbgs67BtG7MITdAfkgxEm90sFv1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xNJKp2+y; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5134d7e16a8so2118031e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 07:55:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709654107; x=1710258907; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3r7Bnl4XN924keLTWvY+GFPpZnAjIYOoWtnEA26PCh0=;
-        b=xNJKp2+ywCkCcKTDyR+ChK/CmT8lC0PNh9t46Hst7kvJ0vptAamGU6aYPQY8mtaj8n
-         B0qTh+tcEsuqY4tRm5xoruBi9UjofU2srBdUDs+BMFBAgjL/fyjB5OjH+tzei/M5L+Ng
-         OwAUOEOJTlqWr59cVfAlX4PprjHZcVxKDMzeAbK7n0R3ygAnXCo7ttbtDFKwUiI7OhvR
-         6tH/VcXXsJftL0Rupb2qAfJsktVw4cG0yycG/UY91PQoS6rXrXPfPsy3DiWYGUctB8Vf
-         AlrKdmfsWsSPQUQ9Tt280p2gr0rnKouJaD8r7o1Iu+JY0ZFIHI+JXCL1lEHtbrv/GxAo
-         b9JQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709654107; x=1710258907;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3r7Bnl4XN924keLTWvY+GFPpZnAjIYOoWtnEA26PCh0=;
-        b=CxOruQymcjONmLmeU0lINQ/D7WSPxnoJrIPECB6TKHGLszK6VaBpGu190vb/9joW1f
-         iFBaZuC96C+40AVr6Ff9rOmAogpDS1hSVJHLdfqw3xiNqbadtSZyuHT4Iwf6a9g74Rrj
-         ltwIMLgJ+wm6NBlheM3uT/GUDxTUSlDxCXmGwujdoOD2sEW9u9rzWVWRCvBvOmaGdDXJ
-         98rM+buMkkB6fpFg6Q4xbWM5DiffDbZXTe+7pscxW/zr5r/ywZbpJWwF9EO6SjMUEN2A
-         Kg0fLZ7TG/kkVnVPwheslZqmnIwWhGzJ/JITFnuO1CnAnsv5cRz8dllCEuP3s/ip2ZIe
-         o3gA==
-X-Forwarded-Encrypted: i=1; AJvYcCVGXDz2CNAafujkzdv6LKLKLSWQnZ952opu/8vVTo0QvOeEU9V7dRbNU6tiNLgoUzUr13EcX5ewVrh9zVDzAXJFhClYzEzrFmUin3A0
-X-Gm-Message-State: AOJu0Yz0PUyiappEmVwItlshuqaLGuiReHdGgXHtBwAJuSUIqww5w0tp
-	SCVvxV0vNGXVr93QjMJrEyQh8WJwSdHCuP2f2ifxDzXAnBzEsdeM2+pESmEMJHA=
-X-Google-Smtp-Source: AGHT+IEIp9OrNr80xjtbdelKWhdH9/KeI9jtSkLmT7psMLpSMiDSq32bgbtvdDcu2le8CfgT59OKBA==
-X-Received: by 2002:a19:5206:0:b0:512:d89e:946 with SMTP id m6-20020a195206000000b00512d89e0946mr1350557lfb.44.1709654107433;
-        Tue, 05 Mar 2024 07:55:07 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id n14-20020a170906118e00b00a45a72fadfcsm867761eja.23.2024.03.05.07.55.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Mar 2024 07:55:06 -0800 (PST)
-Message-ID: <27bdcc35-a821-4dc4-a410-a939ef0d9af6@linaro.org>
-Date: Tue, 5 Mar 2024 16:55:05 +0100
+	s=arc-20240116; t=1709654183; c=relaxed/simple;
+	bh=TClW89l6zuf+ZEEfzpNJwf1HXErewjgkilp5hBFVwlQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MzWIhXow5EqxYDNyzCSQ/fxf0dxgSKssTQhMHh5qQ4fFvWwVpOiFLmf5rV6ad8283c9bOQNVQ3hXFKK2pD9iARzAsnoyuTq0ZEObytI78iEWCmiaH17noCDeuN/YS0f0hL7KhKCNwNr1oqWGwZKZQAiivlRNAnMUA7hBxe+lS5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E9iaecWr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99030C43390;
+	Tue,  5 Mar 2024 15:56:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709654183;
+	bh=TClW89l6zuf+ZEEfzpNJwf1HXErewjgkilp5hBFVwlQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=E9iaecWrG8888Xa6QliXWQjI4gzxwVPpEAUnQhxTiv+xeOcytlVxOSoajWtyZWipD
+	 QbxgXwkV7craMvxf7+XJ5kdd3G8qTiQJuSrQ3Z52Dd7e2SfqUSHXtTB3WF+fmBVx4R
+	 wyfK+8EWGYtI5ap1nhnQRkw35qjSeeuHSKgIW6SQPr9UOeB2bhmYCrIFOYOkyVBtv/
+	 UkHYOBPIm7ICY0r2lI7wiCbM+CW1qM6NLEz2QAs8f2CS+WlhvOcLhP4UxWRJZ0wznh
+	 +hTkEcKJFF+QdrfQmFNYNWX0+ZV1067JuFO0ERu82mVm/GyaCIpwUaeouHownGR4B3
+	 SSvo60hm6yllQ==
+Date: Tue, 5 Mar 2024 16:56:15 +0100
+From: Lorenzo Pieralisi <lpieralisi@kernel.org>
+To: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: minda.chen@starfivetech.com, Conor Dooley <conor@kernel.org>,
+	kw@linux.com, robh+dt@kernel.org, bhelgaas@google.com,
+	tglx@linutronix.de, daire.mcnamara@microchip.com,
+	emil.renner.berthing@canonical.com,
+	krzysztof.kozlowski+dt@linaro.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-pci@vger.kernel.org, Paul Walmsley <paul.walmsley@sifive.com>,
+	aou@eecs.berkeley.edu, p.zabel@pengutronix.de,
+	mason.huo@starfivetech.com, leyfoon.tan@starfivetech.com,
+	kevin.xie@starfivetech.com
+Subject: Re: [PATCH v15,RESEND 22/23] PCI: starfive: Offload the NVMe timeout
+ workaround to host drivers.
+Message-ID: <ZedAn8IC+Mpm4Sqz@lpieralisi>
+References: <ZeCd+xqE6x2ZFtJN@lpieralisi>
+ <mhng-87e7ef5a-d60b-4057-960d-41bc901b6c7f@palmer-ri-x1c9>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] riscv: dts: starfive: replace underscores in node names
-Content-Language: en-US
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Emil Renner Berthing <kernel@esmil.dk>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Paul Walmsley
- <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
- Albert Ou <aou@eecs.berkeley.edu>, devicetree@vger.kernel.org,
- linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-clk <linux-clk@vger.kernel.org>
-References: <20240213144638.341509-1-krzysztof.kozlowski@linaro.org>
- <CAMuHMdWw0dteXO2jw4cwGvzKcL6vmnb96C=qgPgUqNDMtF6X0Q@mail.gmail.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CAMuHMdWw0dteXO2jw4cwGvzKcL6vmnb96C=qgPgUqNDMtF6X0Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <mhng-87e7ef5a-d60b-4057-960d-41bc901b6c7f@palmer-ri-x1c9>
 
-On 05/03/2024 15:44, Geert Uytterhoeven wrote:
-> Hi Krzysztof
+On Mon, Mar 04, 2024 at 10:08:06AM -0800, Palmer Dabbelt wrote:
+> On Thu, 29 Feb 2024 07:08:43 PST (-0800), lpieralisi@kernel.org wrote:
+> > On Tue, Feb 27, 2024 at 06:35:21PM +0800, Minda Chen wrote:
+> > > From: Kevin Xie <kevin.xie@starfivetech.com>
+> > > 
+> > > As the Starfive JH7110 hardware can't keep two inbound post write in
+> > > order all the time, such as MSI messages and NVMe completions. If the
+> > > NVMe completion update later than the MSI, an NVMe IRQ handle will miss.
+> > 
+> > Please explain what the problem is and what "NVMe completions" means
+> > given that you are talking about posted writes.
+> > 
+> > If you have a link to an erratum write-up it would certainly help.
 > 
-> On Tue, Feb 13, 2024 at 3:48 PM Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org> wrote:
->> Underscores should not be used in node names (dtc with W=2 warns about
->> them), so replace them with hyphens.
->>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> I think we really need to see that errata document.  Our formal memory model
+> doesn't account for device interactions so it's possible there's just some
+> arch fence we can make stronger in order to get things ordered again --
+> we've had similar problems with some other RISC-V chips, and while it ends
+> up being slow at least it's correct.
 > 
-> Thanks for your patch, which is now commit f03606470886e781 ("riscv:
-> dts: starfive: replace underscores in node names") in v6.8-rc6.
+> > This looks completely broken to me, if the controller can't guarantee
+> > PCIe transactions ordering it is toast, there is not even a point
+> > considering mainline merging.
 > 
-> This causes e.g. BeagleV Starlight to hang during boot without any
-> output.  Booting with "earlycon" reveals:
+> I wouldn't be at all surprised if that's the case.  Without some concrete
+> ISA mechanisms here we're sort of just stuck hoping the SOC vendors do the
+> right thing, which is always terrifying.
 > 
->     dw-apb-uart 12440000.serial: error -EINVAL: clock rate not defined
->     dw-apb-uart: probe of 12440000.serial failed with error -22
+> I'm not really a PCIe person so this is all a bit vague, but IIRC we had a
+> bunch of possible PCIe ordering violations in the SiFive memory system back
+> when I was there and we never really got a scheme for making sure things
+> were correct.
 > 
-> and indeed, p->uartclk = 0.
+> So I think we really do need to see that errata document to know what's
+> possible here.  Folks have been able to come up with clever solutions to
+> these problems before, maybe we'll get lucky again.
 > 
->> --- a/arch/riscv/boot/dts/starfive/jh7100.dtsi
->> +++ b/arch/riscv/boot/dts/starfive/jh7100.dtsi
->> @@ -113,28 +113,28 @@ cpu_crit {
->>                 };
->>         };
->>
->> -       osc_sys: osc_sys {
->> +       osc_sys: osc-sys {
->>                 compatible = "fixed-clock";
->>                 #clock-cells = <0>;
->>                 /* This value must be overridden by the board */
->>                 clock-frequency = <0>;
->>         };
->>
->> -       osc_aud: osc_aud {
->> +       osc_aud: osc-aud {
->>                 compatible = "fixed-clock";
->>                 #clock-cells = <0>;
->>                 /* This value must be overridden by the board */
->>                 clock-frequency = <0>;
->>         };
->>
->> -       gmac_rmii_ref: gmac_rmii_ref {
->> +       gmac_rmii_ref: gmac-rmii-ref {
->>                 compatible = "fixed-clock";
->>                 #clock-cells = <0>;
->>                 /* Should be overridden by the board when needed */
->>                 clock-frequency = <0>;
->>         };
->>
->> -       gmac_gr_mii_rxclk: gmac_gr_mii_rxclk {
->> +       gmac_gr_mii_rxclk: gmac-gr-mii-rxclk {
->>                 compatible = "fixed-clock";
->>                 #clock-cells = <0>;
->>                 /* Should be overridden by the board when needed */
+> > > As a workaround, we will wait a while before going to the generic
+> > > handle here.
+> > > 
+> > > Verified with NVMe SSD, USB SSD, R8169 NIC.
+> > > The performance are stable and even higher after this patch.
+> > 
+> > I assume this is a joke even though it does not make me laugh.
 > 
-> The clock driver relies on the clock names, which are (in the absence
-> of clock-output-names properties) identical to the actual node names:
-> 
-> drivers/clk/starfive/clk-starfive-jh7100.c:    parents[i].fw_name = "osc_sys";
-> drivers/clk/starfive/clk-starfive-jh7100.c:    parents[i].fw_name = "osc_aud";
-> drivers/clk/starfive/clk-starfive-jh7100.c:    parents[i].fw_name =
-> "gmac_rmii_ref";
-> drivers/clk/starfive/clk-starfive-jh7100.c:    parents[i].fw_name =
-> "gmac_gr_mii_rxclk";
-> 
-> Hence these clocks can no longer be found, and all children have a
-> zero clock rate, causing the breakage.
+> So you're new to RISC-V, then?  It gets way worse than this ;)
 
-Uh, sorry :( and thanks for the report. I'll add clock-output-names.
+To me this is just a PCI controller driver, arch does not matter.
 
-Best regards,
-Krzysztof
+What annoyed me is that we really can't state that this patch improves
+performance, sorry, the patch itself is not acceptable, let's try
+not to rub it in :)
 
+Please post an erratum write-up and we shall see what can be done.
+
+Thanks,
+Lorenzo
+
+> > Thanks,
+> > Lorenzo
+> > 
+> > > 
+> > > Signed-off-by: Kevin Xie <kevin.xie@starfivetech.com>
+> > > Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
+> > > ---
+> > >  drivers/pci/controller/plda/pcie-plda-host.c | 12 ++++++++++++
+> > >  drivers/pci/controller/plda/pcie-plda.h      |  1 +
+> > >  drivers/pci/controller/plda/pcie-starfive.c  |  1 +
+> > >  3 files changed, 14 insertions(+)
+> > > 
+> > > diff --git a/drivers/pci/controller/plda/pcie-plda-host.c b/drivers/pci/controller/plda/pcie-plda-host.c
+> > > index a18923d7cea6..9e077ddf45c0 100644
+> > > --- a/drivers/pci/controller/plda/pcie-plda-host.c
+> > > +++ b/drivers/pci/controller/plda/pcie-plda-host.c
+> > > @@ -13,6 +13,7 @@
+> > >  #include <linux/msi.h>
+> > >  #include <linux/pci_regs.h>
+> > >  #include <linux/pci-ecam.h>
+> > > +#include <linux/delay.h>
+> > > 
+> > >  #include "pcie-plda.h"
+> > > 
+> > > @@ -44,6 +45,17 @@ static void plda_handle_msi(struct irq_desc *desc)
+> > >  			       bridge_base_addr + ISTATUS_LOCAL);
+> > >  		status = readl_relaxed(bridge_base_addr + ISTATUS_MSI);
+> > >  		for_each_set_bit(bit, &status, msi->num_vectors) {
+> > > +			/*
+> > > +			 * As the Starfive JH7110 hardware can't keep two
+> > > +			 * inbound post write in order all the time, such as
+> > > +			 * MSI messages and NVMe completions.
+> > > +			 * If the NVMe completion update later than the MSI,
+> > > +			 * an NVMe IRQ handle will miss.
+> > > +			 * As a workaround, we will wait a while before
+> > > +			 * going to the generic handle here.
+> > > +			 */
+> > > +			if (port->msi_quirk_delay_us)
+> > > +				udelay(port->msi_quirk_delay_us);
+> > >  			ret = generic_handle_domain_irq(msi->dev_domain, bit);
+> > >  			if (ret)
+> > >  				dev_err_ratelimited(dev, "bad MSI IRQ %d\n",
+> > > diff --git a/drivers/pci/controller/plda/pcie-plda.h b/drivers/pci/controller/plda/pcie-plda.h
+> > > index 04e385758a2f..feccf285dfe8 100644
+> > > --- a/drivers/pci/controller/plda/pcie-plda.h
+> > > +++ b/drivers/pci/controller/plda/pcie-plda.h
+> > > @@ -186,6 +186,7 @@ struct plda_pcie_rp {
+> > >  	int msi_irq;
+> > >  	int intx_irq;
+> > >  	int num_events;
+> > > +	u16 msi_quirk_delay_us;
+> > >  };
+> > > 
+> > >  struct plda_event {
+> > > diff --git a/drivers/pci/controller/plda/pcie-starfive.c b/drivers/pci/controller/plda/pcie-starfive.c
+> > > index 9bb9f0e29565..5cfc30572b7f 100644
+> > > --- a/drivers/pci/controller/plda/pcie-starfive.c
+> > > +++ b/drivers/pci/controller/plda/pcie-starfive.c
+> > > @@ -391,6 +391,7 @@ static int starfive_pcie_probe(struct platform_device *pdev)
+> > > 
+> > >  	plda->host_ops = &sf_host_ops;
+> > >  	plda->num_events = PLDA_MAX_EVENT_NUM;
+> > > +	plda->msi_quirk_delay_us = 1;
+> > >  	/* mask doorbell event */
+> > >  	plda->events_bitmap = GENMASK(PLDA_INT_EVENT_NUM - 1, 0)
+> > >  			     & ~BIT(PLDA_AXI_DOORBELL)
+> > > --
+> > > 2.17.1
+> > > 
+> > > 
+> > > _______________________________________________
+> > > linux-riscv mailing list
+> > > linux-riscv@lists.infradead.org
+> > > http://lists.infradead.org/mailman/listinfo/linux-riscv
 
