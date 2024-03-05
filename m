@@ -1,75 +1,78 @@
-Return-Path: <linux-kernel+bounces-91873-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91879-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 815738717BA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:13:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AE638717C6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:14:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3A2C1C2111E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:13:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2122F1F222D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:14:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22F758003F;
-	Tue,  5 Mar 2024 08:12:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E59627F48E;
+	Tue,  5 Mar 2024 08:13:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ADOCVDV7"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TsUMR+fG"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67EB67F7E9;
-	Tue,  5 Mar 2024 08:12:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99DD17EF18
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 08:12:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709626342; cv=none; b=I19bnlvUgCXg1dWdcLn0SrJg5oIgjwR+QiagQCw68Zhm9iqc+Mugf5ZIM9Y2rmfN55l1MwZUuXo5Uzh3Qm34n0tvSdrV3hxAMibZAlp5sIxrVHGmshkusrdq2y1GhxRpV2YWNEwe6r8cO2cpTWuErCVL9BwHfip66zsoQ2GTYyU=
+	t=1709626381; cv=none; b=md9VgTIeCC6VXFr1mL9xGYnMbJAAoUF0z0R92YE4Y7NOxofgaDsBORG6iiZCIjLeoqnh/3phkeEP7yAnJlCwMh2EEVQqg3tSuo37Luzkfqynyaqd9IcTmMynGgKbyBgDTJFGTn9zqi/JvQ2qidowKtoxqql++/a2FAvECH7sQSI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709626342; c=relaxed/simple;
-	bh=88ek+UxDG050RNVEu9EGg8jJALfsBYFXgvNa3kzC4ho=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ekTUIuQXF90w9Az2Vuu55OThOa2SBT1/8a8lzhd4uwMJwOm+nF57TN1DAIKj7mVa0naGpVjuYgpeBtsSpVcmEl2A+sCIB+FGkP7RqxVMgOsmHbutN/KVyQxayIA5Xq3nVEbEehGd0n7GWZyYwTB8sJpgiFtfEptoDm/iOBeYwS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ADOCVDV7; arc=none smtp.client-ip=198.175.65.11
+	s=arc-20240116; t=1709626381; c=relaxed/simple;
+	bh=IxofcRReTS1GVC8uDxeeDlw/tDFak2/5TsEbHr6Ca50=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=A2npSF4YnX2DJsb4GclRAegVAYdtHt2jYxpVQAEWAt/RaMJGAAok0ejwp4Jm2Yyu3HfrVvQ0jcDDSkdKTazxjoKJ7xA8XYgwuuQpYIRm+4/2plgxfPku67TPN/hjU8ntJfaq794ankzp0AnRpH4cZUgXaxZSo8LDRgqscq08nhI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TsUMR+fG; arc=none smtp.client-ip=192.198.163.18
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709626341; x=1741162341;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=88ek+UxDG050RNVEu9EGg8jJALfsBYFXgvNa3kzC4ho=;
-  b=ADOCVDV7aBjjxuj/jiZ5MIIlaFElcJMl0tBO7YGlhinF30bODbaBOONi
-   CUMqpa+aZ7a5WTKOWiZj41E/tdAN4dSg3y0tXBX9f0TJ7YRs1Tp8UC+Jf
-   /6/GCPReFn+9num0pSP+Hgk1XH8FMn3OJEO09sx8mtn4stV3rV8WYC8iP
-   A9cEHFjUKwcO4qHtedvNBekaFQ42AMuQDeNssusIDnRw0dlAzsOXR2Jk5
-   s7tBQsH9BtfH1NPq7U44FPXg3/4SnY9C6Cb9zydzzRnHR9dcAuNdIL93a
-   OgzPEig739DR/UVlmNs3lBydQb5X+cbFV+PFN6OPfa7q3oyR7vznlzU+P
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="14743767"
+  t=1709626380; x=1741162380;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=IxofcRReTS1GVC8uDxeeDlw/tDFak2/5TsEbHr6Ca50=;
+  b=TsUMR+fGwcPgdBWypE3YldNwUS1eSUHfz+IcXEyQYVu7Mzx+OSiH2VQv
+   estKYqbj7+V+LdW7TVlXR+1UXrsHRt2U1EH8Ilz70p9kebqqyGQGstXNO
+   wMmEqzVuDIWyaKOzmW6ga6/MjfeCfd36onDFxfO+KhpoOgOxC/zHimrjO
+   9Sh2YVEK89HEHKm7jldI1RCBFWRL8d2XOzNHU62uMp6nY7lkLzKl2cm1N
+   HecRU2/qbv3FQY3Cb8kOPB1ohKg28Tn09sd1d+LF1MiNtoIsKQHTE/HQ4
+   FguMYI01nNB5EIq9mA4ClCKBc7SG6gLdRZhFoFff5evbolljZG9wh3+T3
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="4024630"
 X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
-   d="scan'208";a="14743767"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 00:12:20 -0800
+   d="scan'208";a="4024630"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 00:12:59 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
-   d="scan'208";a="40282761"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 00:12:19 -0800
-Date: Tue, 5 Mar 2024 00:12:19 -0800
-From: Isaku Yamahata <isaku.yamahata@linux.intel.com>
-To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc: "Huang, Kai" <kai.huang@intel.com>, isaku.yamahata@intel.com,
-	kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
-	erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, chen.bo@intel.com,
-	hang.yuan@intel.com, tina.zhang@intel.com,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 008/130] x86/tdx: Warning with 32bit build
- shift-count-overflow
-Message-ID: <20240305081219.GC10568@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <a50918ba3415be4186a91161fe3bbd839153d8b2.1708933498.git.isaku.yamahata@intel.com>
- <2f6897c0-1b57-45b3-a1f1-9862b0e4c884@intel.com>
- <jvyz3nuz225ry6ss6hs42jyuvrytsnsi2l74cwibtt5sedaimb@v2vilg4mbhws>
+   d="scan'208";a="9465960"
+Received: from omakhlou-mobl4.amr.corp.intel.com (HELO localhost) ([10.252.51.143])
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 00:12:50 -0800
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Hsin-Yi Wang <hsinyi@chromium.org>
+Cc: Douglas Anderson <dianders@chromium.org>, Neil Armstrong
+ <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>,
+ Sam Ravnborg <sam@ravnborg.org>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, Dmitry Baryshkov
+ <dmitry.baryshkov@linaro.org>
+Subject: Re: [PATCH v3 2/4] drm/edid: Add a function to check monitor string
+In-Reply-To: <CAJMQK-i284bO=dSOZTsgJaMMWDCqXmYB_SDJbhx3U1s-U==S2A@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240304195214.14563-1-hsinyi@chromium.org>
+ <20240304195214.14563-3-hsinyi@chromium.org> <87a5nd4tsg.fsf@intel.com>
+ <CAJMQK-j4wGah=szyUW53hu-v6Q4QjgR7WMLKnspoFaO9oPfaQw@mail.gmail.com>
+ <874jdl4k01.fsf@intel.com>
+ <CAJMQK-i284bO=dSOZTsgJaMMWDCqXmYB_SDJbhx3U1s-U==S2A@mail.gmail.com>
+Date: Tue, 05 Mar 2024 10:12:46 +0200
+Message-ID: <871q8p3xmp.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,37 +80,48 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <jvyz3nuz225ry6ss6hs42jyuvrytsnsi2l74cwibtt5sedaimb@v2vilg4mbhws>
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 01, 2024 at 01:36:43PM +0200,
-"Kirill A. Shutemov" <kirill.shutemov@linux.intel.com> wrote:
-
-> On Thu, Feb 29, 2024 at 11:49:13AM +1300, Huang, Kai wrote:
-> > 
-> > 
-> > On 26/02/2024 9:25 pm, isaku.yamahata@intel.com wrote:
-> > > From: Isaku Yamahata <isaku.yamahata@intel.com>
-> > > 
-> > > This patch fixes the following warnings.
-> > > 
-> > >     In file included from arch/x86/kernel/asm-offsets.c:22:
-> > >     arch/x86/include/asm/tdx.h:92:87: warning: shift count >= width of type [-Wshift-count-overflow]
-> > >     arch/x86/include/asm/tdx.h:20:21: note: expanded from macro 'TDX_ERROR'
-> > >     #define TDX_ERROR                       _BITUL(63)
-> > > 
-> > >                                             ^~~~~~~~~~
-> > > 
-> 
-> I think you trim the warning message. I don't see the actual user of the
-> define. Define itself will not generate the warning. You need to actually
-> use it outside of preprocessor. I don't understand who would use it in
-> 32-bit code. Maybe fixing it this way masking other issue.
+On Mon, 04 Mar 2024, Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+> On Mon, Mar 4, 2024 at 4:09=E2=80=AFPM Jani Nikula <jani.nikula@linux.int=
+el.com> wrote:
+>>
+>> On Mon, 04 Mar 2024, Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+>> > To clarify:
+>> > struct drm_edid currently is only internal to drm_edid.c. So with
+>> > change we will have to move it to the header drm_edid.h
+>>
+>> Absolutely not, struct drm_edid must remain an opaque type. The point is
+>> that you ask drm_edid.c if there's a match or not, and the panel code
+>> does not need to care what's inside struct drm_edid.
+>>
 >
-> That said, I don't object the change itself. We just need to understand
-> the context more.
+> Sorry I might be misunderstanding about the requests here:
+>
+> If drm_edid should remain opaque, then struct drm_edid remains opaque,
+> drm_edid_match() should take struct edid *edid as a parameter? just as
+> other exposed functions in drm_edid.
 
-v18 used it as stub function. v19 dropped it as the stub was not needed.
--- 
-Isaku Yamahata <isaku.yamahata@linux.intel.com>
+No, it should take struct drm_edid *.
+
+> If panel edp doesn't hold drm_edid returned from
+> drm_edid_read_base_block(), what should it use to iterate the
+> edp_panels array?
+
+Panel edp can hold a *pointer* to struct drm_edid * without knowing the
+full type. This is one of the points of struct drm_edid. Focus more of
+the EDID parsing within drm_edid.c instead of having everyone parse it
+to varying degrees of correctness.
+
+>
+> for (panel =3D edp_panels; panel->panel_id; panel++)
+>     if(drm_edid_match(drm_edid, panel->ident))
+>         ...
+>
+
+BR,
+Jani.
+
+--=20
+Jani Nikula, Intel
 
