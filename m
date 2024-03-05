@@ -1,163 +1,114 @@
-Return-Path: <linux-kernel+bounces-92480-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92479-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9865E872102
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:59:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E20BA8720FF
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:59:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4BA902831BA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:59:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 997321F2643A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:59:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DA6286AD4;
-	Tue,  5 Mar 2024 13:59:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D1788664B;
+	Tue,  5 Mar 2024 13:59:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CXzJyOlS"
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="BZLlVgOp"
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F26CA86ACD;
-	Tue,  5 Mar 2024 13:59:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00B41762DF
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 13:59:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709647150; cv=none; b=ZzwMkbBwqcv/tQ+LUZ7ThAd3jzKbyBhgsp/FcW7eUZiujPzO6bes0tRy2NE/dRY2xMES6xCbq4P5oqA6Wg2Pyyrs4IlN+FW3Boeo4lCv1uFGXip5COBruJcjmh66gE/ebd947dSar51J/KT1pivdTfA7asDoIgVA879L7GGApco=
+	t=1709647145; cv=none; b=pLzHCjRmZE1JHfF1mQcfFSAYQxpeYg88JMsC7/ruqY8TNKUyyMo46o7AS79j3VHnu4VQ7Fwv9Qq4/5z2r4akCQo6bfDTe958NJW0/F2TSA3LZlf4o3CHhtTq7Tto7zTJy8HiYW1LyxdW6WnVnlP6kj39PPZCFu6KcuoVKSXvMZY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709647150; c=relaxed/simple;
-	bh=wET7lxWL5+a6cOW+e8Hm2QP+6ArrR8fvDaiOmdw834Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=uHMSbQVMREOFcP1e7JbPNU/s7KygR20vo/d4hRxqC5mY/170ZffiKUkKLTgVUHH26TuRhVOjWISNbAY06rKdhivAfrAaj2lDVUP3w127e/jzdNcG6+5Q3zgfpYzl5m4XjsqXMpQij11B65lLCHxEVUfU26jwISTtIge8TLJpZXI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CXzJyOlS; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a45606c8444so249609066b.3;
-        Tue, 05 Mar 2024 05:59:08 -0800 (PST)
+	s=arc-20240116; t=1709647145; c=relaxed/simple;
+	bh=JRNihLQrU/+iEtpGvlfMV+4iDbB/4i030568B2Dcgm4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ECIO7e/GJpcsnC3aDg3QOer1vrH3aIHYA7hKyKIY3kaF1RXgZCYAhzZqsnpb+z/ij3DmZMjsUMiYykG0lkaEj77AYYOuEhBaOY4qv2sCi1Poy4otsjAnMZbWmtyL0NlCNM50rR+qgE65oxo1g3tHxc2+AaptklycUOiOtTxJhIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=BZLlVgOp; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1dcfe6e26c9so9159715ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 05:59:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709647147; x=1710251947; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ezrez5zBjAnZtqpMJIhkt3FNVFaisJDMP2rkEI9ICVk=;
-        b=CXzJyOlSDrfQH7q0ZinhZN8W0Ccagp0O/fEPMQv2hnoxcrB0Y6NesPRTS0Samq/uDp
-         +3Ml6f98obkiAg6szccsLxw3/MpZwFsyUMgyhhm8CKu2uqORbMelB4wKebObQyMFigaK
-         +Bxn0pirB5pSRxDeNZxVmeZxqNxfF+KWmTekxIpGGAcWF4PPoDFAdRKDPVWrP6Y85+8G
-         S+/wOtXxicHJrJzkntpuJh1mcYbqlu7R98ceK+628IMz86yr7Emgu9MydaXHO2z+KSsP
-         4a1HiqnIhB8iCfedAoy+ScY3ZYXxVK2KwZ0w1npEeJMiM5yTtOCYIInudCaN6Yf1CmSp
-         fc8g==
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1709647142; x=1710251942; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QU7i/GFGA3BeZcXyAk0JvlJF5wgpx4zGSLUMIo15nLE=;
+        b=BZLlVgOpgg4M7yHZ/bAmieWGKzNEYJ/XR5FsYfsjqGCb4TPf1/oGKmJ/pYtSrZV9wi
+         HbAxVkW5KNWUNrkFxwoRNSrHL5wOvgwBC1ubTKJfIasd6QyB/pqqEk6tCStaQ7d2gXnq
+         ZvPVQd6IGvuA7u2OYLPd1PwpFjVbehh3Y364juyyfeyLtcYtWCP935s2qW/FM4xhFUnF
+         tVL4IFJeT1+5Lp4v1vnWPb0aMYqnxpU/gRd6tXUX9UCAk/LvBQwG/Xp1uxOVp1nhk4Vt
+         ayKYjLF6VYfnePUZsi2HrcP9cc5f1E4jSgP2tJcyl/n0K/0DLkRiNYcZy4oixwreVIiC
+         ekpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709647147; x=1710251947;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Ezrez5zBjAnZtqpMJIhkt3FNVFaisJDMP2rkEI9ICVk=;
-        b=KpZ27rwAdC18xldxb5ywsMQGzjJNXCnaBG+J6EOS6y2kGJJG6v7myrZURxInQmGRHf
-         cgvZPDHGW1sxvzjMglpOD/5ijnFuntGkt6n4VvQp5so+1Jqy6C+VgNFRaYrLg2ZMMiNs
-         4ntfNfK/9/yIKPfXRbs0YMI46MmSTok/Yhw/SmQKMmz/yMeJ7wUFShiw0OdmInxTE8ZP
-         H47BsMeV9Hu95mcUJDtAAT6R3k1gls1WNz+Sdmfa5Tu7MfcpnXJWLhvEm+giIcQFyY2i
-         yaNlL2u0/VXFa7DCOSWtiTVYQ4LKpKLBfH69fMMnXj5iCVW9gZkJWQhx67WC9vBdabgd
-         t9QQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWv5P3AYERmbBI9ZJLKSP3qIrSDv79v7tBpBMSfJzApELgiMYfofi+ZwMSZAhrTJQyBl0GLQopoLE1RQrK/okrHnXRG2goo7ddNT42P7i5SAj4mRzlqNGnD6nQJX7oFZweEHW9ii3jPuKlCqMYeReUvEArSYPs3cO0+jSlGRPyqyAkThA==
-X-Gm-Message-State: AOJu0YwTyAPcRScv9c1soNT+f8DsiXk90vmEedzJj3bOrNx1mbKQuPHw
-	gYe9Fty8WO3ypJMvFhBFSRKKzJPmv3hnI2E+7BtXiEjFWsP8UVxL
-X-Google-Smtp-Source: AGHT+IHrhZPJko2SywuNbpTAwYF28eOpJ53IJ0IeI8AGRN6zAa5BkcIVAS6wVzoso2hAPNesVP+Caw==
-X-Received: by 2002:a17:906:e2cc:b0:a44:dadc:654e with SMTP id gr12-20020a170906e2cc00b00a44dadc654emr6470785ejb.39.1709647147061;
-        Tue, 05 Mar 2024 05:59:07 -0800 (PST)
-Received: from fedora.. (d-zg1-234.globalnet.hr. [213.149.36.248])
-        by smtp.googlemail.com with ESMTPSA id z20-20020a170906271400b00a441cb52bfcsm6093783ejc.165.2024.03.05.05.59.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 05:59:06 -0800 (PST)
-From: Robert Marko <robimarko@gmail.com>
-To: andrew@lunn.ch,
-	hkallweit1@gmail.com,
-	linux@armlinux.org.uk,
-	andersson@kernel.org,
-	konrad.dybcio@linaro.org,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	ansuelsmth@gmail.com,
-	netdev@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Robert Marko <robimarko@gmail.com>,
-	kernel test robot <lkp@intel.com>
-Subject: [PATCH net v2] net: phy: qca807x: fix compilation when CONFIG_GPIOLIB is not set
-Date: Tue,  5 Mar 2024 14:58:18 +0100
-Message-ID: <20240305135903.3752568-1-robimarko@gmail.com>
-X-Mailer: git-send-email 2.44.0
+        d=1e100.net; s=20230601; t=1709647142; x=1710251942;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QU7i/GFGA3BeZcXyAk0JvlJF5wgpx4zGSLUMIo15nLE=;
+        b=L85Hw3HTjo9RMt39bPHELirn6Y8/bUR77VLXA3nFjWtw/OhKaoHZ6Z3o233EhS0Gcq
+         FBzIkAvWX+dpTSycslskGvw8hjEsTS5nyjlREBNwtdF8+v+yvBIb48B9LNKHSnWXzPU3
+         TuARu3vLyIm5Ie+18atVBIIgwlFTWp8npd+KYN0Jtvu1+BxkDNVaxJt7KJ8glBfCiNeN
+         WYGG48I/ASd5gHee7igj6ZM6l5Q1F1RXiYJFl2FBS2dRSj5glH508pUAYGVzEtggqvx+
+         k0DzEtvXDHSrM+tjxCczWApk2HSCRn1hVhaTWnyQUU1H/1iSoxjM7pLs68zngo6ZvIHN
+         eoRA==
+X-Forwarded-Encrypted: i=1; AJvYcCW46JtIwCUVbaRb2d72G+lKUfaw44S/+7OXbj4P2O4Y/eOG6G/tULsXofkRAd2y9K5pXaHRj9EAfVWC8ib+FwL5ffrm4DDi7z1dxxZg
+X-Gm-Message-State: AOJu0YxbuKkEsLcTlyrsvoC7o34tUgC4rf7yL8T+riG8tI+URKB9QjT8
+	O1qTEjSlCGku4flZjvcsakUvzG4qMWo2IUzS0CUwt3KXs4NDYqFtHaT7Z1d2YUE=
+X-Google-Smtp-Source: AGHT+IF+Cyeo2mWoylUN+f5sX3aHqZjl0czKC66QZp6hGbPe4oQB/7UWKaqNwH8HfMckY+LPhaXuhw==
+X-Received: by 2002:a17:903:41cf:b0:1db:ce31:96b1 with SMTP id u15-20020a17090341cf00b001dbce3196b1mr478555ple.6.1709647142261;
+        Tue, 05 Mar 2024 05:59:02 -0800 (PST)
+Received: from [192.168.1.150] ([198.8.77.194])
+        by smtp.gmail.com with ESMTPSA id ld4-20020a170902fac400b001db5b39635dsm10625132plb.277.2024.03.05.05.59.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Mar 2024 05:59:01 -0800 (PST)
+Message-ID: <dc4933d0-f865-4da6-90b1-320daf2e4294@kernel.dk>
+Date: Tue, 5 Mar 2024 06:58:59 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] coredump: get machine check errors early rather than
+ during iov_iter
+Content-Language: en-US
+To: Tong Tiangen <tongtiangen@huawei.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ David Howells <dhowells@redhat.com>, Al Viro <viro@kernel.org>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ wangkefeng.wang@huawei.com, Guohanjun <guohanjun@huawei.com>
+References: <20240305133336.3804360-1-tongtiangen@huawei.com>
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20240305133336.3804360-1-tongtiangen@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Kernel bot has discovered that if CONFIG_GPIOLIB is not set compilation
-will fail.
+On 3/5/24 6:33 AM, Tong Tiangen wrote:
+> The commit f1982740f5e7 ("iov_iter: Convert iterate*() to inline funcs")
+> leads to deadloop in generic_perform_write()[1], due to return value of
+> copy_page_from_iter_atomic() changed from non-zero value to zero.
+> 
+> The code logic of the I/O performance-critical path of the iov_iter is
+> mixed with machine check[2], actually, there's no need to complicate it,
+> a more appropriate method is to get the error as early as possible in
+> the coredump process instead of during the I/O process. In addition,
+> the iov_iter performance-critical path can have clean logic.
 
-Upon investigation the issue is that qca807x_gpio() is guarded by a
-preprocessor check but then it is called under
-if (IS_ENABLED(CONFIG_GPIOLIB)) in the probe call so the compiler will
-error out since qca807x_gpio() has not been declared if CONFIG_GPIOLIB has
-not been set.
+Looks good to me, and I'm a big fan of getting rid of the copy_mc bits
+on the generic iov iterator side:
 
-Fixes: d1cb613efbd3 ("net: phy: qcom: add support for QCA807x PHY Family")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202403031332.IGAbZzwq-lkp@intel.com/
-Signed-off-by: Robert Marko <robimarko@gmail.com>
----
-Changes in v2:
-* Reduce the code indent level
+Reviewed-by: Jens Axboe <axboe@kernel.dk>
 
- drivers/net/phy/qcom/qca807x.c | 32 ++++++++++++++++----------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/net/phy/qcom/qca807x.c b/drivers/net/phy/qcom/qca807x.c
-index 780c28e2e4aa..672c6929119a 100644
---- a/drivers/net/phy/qcom/qca807x.c
-+++ b/drivers/net/phy/qcom/qca807x.c
-@@ -732,24 +732,24 @@ static int qca807x_probe(struct phy_device *phydev)
- 	priv->dac_disable_bias_current_tweak = of_property_read_bool(node,
- 								     "qcom,dac-disable-bias-current-tweak");
- 
--	if (IS_ENABLED(CONFIG_GPIOLIB)) {
--		/* Make sure we don't have mixed leds node and gpio-controller
--		 * to prevent registering leds and having gpio-controller usage
--		 * conflicting with them.
--		 */
--		if (of_find_property(node, "leds", NULL) &&
--		    of_find_property(node, "gpio-controller", NULL)) {
--			phydev_err(phydev, "Invalid property detected. LEDs and gpio-controller are mutually exclusive.");
--			return -EINVAL;
--		}
-+#if IS_ENABLED(CONFIG_GPIOLIB)
-+	/* Make sure we don't have mixed leds node and gpio-controller
-+	 * to prevent registering leds and having gpio-controller usage
-+	 * conflicting with them.
-+	 */
-+	if (of_find_property(node, "leds", NULL) &&
-+	    of_find_property(node, "gpio-controller", NULL)) {
-+		phydev_err(phydev, "Invalid property detected. LEDs and gpio-controller are mutually exclusive.");
-+		return -EINVAL;
-+	}
- 
--		/* Do not register a GPIO controller unless flagged for it */
--		if (of_property_read_bool(node, "gpio-controller")) {
--			ret = qca807x_gpio(phydev);
--			if (ret)
--				return ret;
--		}
-+	/* Do not register a GPIO controller unless flagged for it */
-+	if (of_property_read_bool(node, "gpio-controller")) {
-+		ret = qca807x_gpio(phydev);
-+		if (ret)
-+			return ret;
- 	}
-+#endif
- 
- 	/* Attach SFP bus on combo port*/
- 	if (phy_read(phydev, QCA807X_CHIP_CONFIGURATION)) {
 -- 
-2.44.0
+Jens Axboe
 
 
