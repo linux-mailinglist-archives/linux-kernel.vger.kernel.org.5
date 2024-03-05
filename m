@@ -1,354 +1,214 @@
-Return-Path: <linux-kernel+bounces-92777-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92778-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AD028725D3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:41:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10FB68725DD
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:45:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF2CE1C22C4B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:41:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 23D761C228AD
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:45:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DFA21758F;
-	Tue,  5 Mar 2024 17:41:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ZsesKOzP"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FAC6175B6;
+	Tue,  5 Mar 2024 17:45:18 +0000 (UTC)
+Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4471915491;
-	Tue,  5 Mar 2024 17:41:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABE2917565
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 17:45:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709660504; cv=none; b=QtMP2Y3IJQ31ku6urkhKCGnsdL0ItflIFkjjroVNYaQCBuC70fi/MLhz0staVvbCqOrqTUsjOWrc9fOS5/Nzmg+SDlRnROOdnCccSt1xZO4E6S84YSGEE8bY3PDTVUzAVWMTmAIT7p47dg4cStxzNVfqKIuB+syFMCUHWqFmGdI=
+	t=1709660717; cv=none; b=a+jL8RWA0wfwqLgJlxX5LZwOTNBAcxekcWXqoAFjoOfVRhel3iExiaXfKkrwfgP3ndGftEpxaEENfPGxY1Vwod6n99mjqcbXcjkwgHB1UYd22leqi5UvblFp0iLHVTOEhTN/8NjOx2WfkPguLSXVHD8JxskEVabPkyrzwyEc5PU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709660504; c=relaxed/simple;
-	bh=dEOcX7ts0CpeQ5mnGZH9/CVe2nv0JFPTsHKcVUs7UNY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=SdePfT35E2Y3RPP4PXtdHJ6u/LV1L83csgYkoK1GtGxHmLA0igG3efRI5eYoBWMvIiwOTSEpcdPp1SnviL4tJH/d0ufxs90/bucLOuidAzTtJKqDXR7P43TB0jmmr97El3yNCsgE/1+eobj/ny88oPfMuGRI+JZtstCxathJ2zs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=ZsesKOzP; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 425HfWMm027513;
-	Tue, 5 Mar 2024 11:41:32 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1709660492;
-	bh=JCWjl0BkOxGw1vEMjrhJgcRX6D+KAW5pA9teZ2XhUwY=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=ZsesKOzPCzNZi1kPpvs9r2axQCC131f1yEz6kNeMTb0LzaFZP2G+GoGk8B59b3d/N
-	 fW+oPKreHFebvoI14+ow3ODVeqN4DfMraHrCpdqtyDIZe6lDlXY9RKuz8xRYfAX/hs
-	 kLdEfWJPloA6ue+pIprHcH8x5819TL5boM/Qoky4=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 425HfW1D041037
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 5 Mar 2024 11:41:32 -0600
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 5
- Mar 2024 11:41:31 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 5 Mar 2024 11:41:31 -0600
-Received: from [10.249.42.149] ([10.249.42.149])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 425HfVFd000416;
-	Tue, 5 Mar 2024 11:41:31 -0600
-Message-ID: <e7114cb4-e24f-4e78-a89f-4e2e2e704b8a@ti.com>
-Date: Tue, 5 Mar 2024 11:41:31 -0600
+	s=arc-20240116; t=1709660717; c=relaxed/simple;
+	bh=IsePTlOOrrY+PtgSBJ/oAdEDQA2yIEUijGkssqsdR4o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Qx7zk0JPUo3Gy0IWXVPj5TGTzmJFO5yHp8Ny709zADMjz79pZbNt/8Ce/5nQwHu2GHnvk7Gx/g/WD6iWTSzJRRj0Re8q3xuKcNNiVG3eo0tUpP2DQgHsJyt6P2kWh7n+ZJu/MkrzziMy3hSmE/5XuAOVg/Pylfi1/zpf0HluXxc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=redhat.com; arc=none smtp.client-ip=209.85.219.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-6908b5037d5so3119876d6.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 09:45:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709660715; x=1710265515;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gge8MXN2cBaJhAIuFm/jj/2ek2UAvG5SbyWzw+LqrLU=;
+        b=qnEp4a9D2UrmsW6kGaxSHHVxhQagBkPNboNuWzH8Gjfc0P+BOrfSpoiU8AKbCZx0v2
+         QsY0w6F8AM5BvMQrckFbgy59pU7I/f6bxGO0eoO+iNimbqwpWJByLRLRMF0xpd9kZ1lB
+         Jzsv/u1q1TnO20Uzbl4XtwTOCMCTL6lqf42Ql/eGHE2FZLxBOanr8+AGGDMinj3UfJTw
+         xib3CMYfR26xtLGdLtM9rkLzo5tjN2jDaOCZiOV5cjtVw4DQq9OaLRPpbRkj1jlCjvid
+         +tFFa2QNlbA/Msc+xKhWEYxgSCJbpjwJi4gDkVt7eY7lXj0k3FCJZsA7dY3gVav+URVL
+         Hkvw==
+X-Forwarded-Encrypted: i=1; AJvYcCVYGvlSuVxx+8x7609q7S683RgavRboopVcEGpjI6AMbMvaSSlvLZLaUeABd+OXFfwimZSEkFq+i9ujMUln7ln0jY868h29nxo+UP8K
+X-Gm-Message-State: AOJu0Yw+7KeT/QN3osGXARl7a0pjapKlqgWJzbhuB+N3l47LnP3JzCm1
+	TmohEa7IFXozEiBT2wvdCVTAIc5Js/rRvd+awJEM7m1pxjzOniQncOnnCrkRTA==
+X-Google-Smtp-Source: AGHT+IEGQenmJZKbs3r2wugRgZMmiHwHXfXTF7+9Vyf8Oe9KTMxb0vnDidm2CHu6mpJiWDFoJRg7Vw==
+X-Received: by 2002:ad4:4045:0:b0:690:7770:e6d4 with SMTP id r5-20020ad44045000000b006907770e6d4mr3044733qvp.34.1709660714673;
+        Tue, 05 Mar 2024 09:45:14 -0800 (PST)
+Received: from localhost (pool-68-160-141-91.bstnma.fios.verizon.net. [68.160.141.91])
+        by smtp.gmail.com with ESMTPSA id ny4-20020a056214398400b0068fe4669e71sm6425247qvb.91.2024.03.05.09.45.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Mar 2024 09:45:14 -0800 (PST)
+Date: Tue, 5 Mar 2024 12:45:13 -0500
+From: Mike Snitzer <snitzer@kernel.org>
+To: Patrick Plenefisch <simonpatp@gmail.com>
+Cc: Goffredo Baroncelli <kreijack@inwind.it>, linux-kernel@vger.kernel.org,
+	Alasdair Kergon <agk@redhat.com>,
+	Mikulas Patocka <mpatocka@redhat.com>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	regressions@lists.linux.dev, dm-devel@lists.linux.dev,
+	linux-btrfs@vger.kernel.org, ming.lei@redhat.com
+Subject: Re: LVM-on-LVM: error while submitting device barriers
+Message-ID: <ZedaKUge-EBo4CuT@redhat.com>
+References: <CAOCpoWc_HQy4UJzTi9pqtJdO740Wx5Yd702O-mwXBE6RVBX1Eg@mail.gmail.com>
+ <CAOCpoWf3TSQkUUo-qsj0LVEOm-kY0hXdmttLE82Ytc0hjpTSPw@mail.gmail.com>
+ <CAOCpoWeNYsMfzh8TSnFqwAG1BhAYnNt_J+AcUNqRLF7zmJGEFA@mail.gmail.com>
+ <672e88f2-8ac3-45fe-a2e9-730800017f53@libero.it>
+ <CAOCpoWexiuYLu0fpPr71+Uzxw_tw3q4HGF9tKgx5FM4xMx9fWA@mail.gmail.com>
+ <a1e30dab-dfde-418e-a0dd-3e294838e839@inwind.it>
+ <CAOCpoWeB=2j+n+5K5ytj2maZxdrV80cxJcM5CL=z1bZKgpXPWQ@mail.gmail.com>
+ <a783e5ed-db56-4100-956a-353170b1b7ed@inwind.it>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] dt-bindings: hwinfo: ti,k3-socinfo: Add nvmem-cells
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Markus
- Schneider-Pargmann <msp@baylibre.com>
-CC: Rob Herring <robh@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Vignesh
- Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20240206143711.2410135-1-msp@baylibre.com>
- <20240206143711.2410135-3-msp@baylibre.com>
- <20240206184305.GA1875492-robh@kernel.org>
- <z56fiu2jpokp57sjvnrdcbfy7brpq2ag4yxpektqlhtidecx4n@vc7dsurhxorb>
- <cb75c098-521e-4eed-bc3e-7237f8a6498f@linaro.org>
- <ut63wrhsewkpfdgaatd6hqmj5upvyamjhf2rsecju2v2o3hdod@kyi5sezcggl7>
- <48902771-5d3b-448a-8a74-ac18fb4f1a86@linaro.org>
- <sowpixx2u4d5alj4udzr3qt47zevylukhpwkw3pfwnogqjse5w@xrxcozzvog6v>
- <620a2dca-1901-43d4-8b2b-7ae823705a6e@linaro.org>
- <1fe44306-b507-4017-8f47-598a76d9dbee@ti.com>
- <44c5d664-e738-44b4-bafe-06f2e1fc1fe7@linaro.org>
-From: Andrew Davis <afd@ti.com>
-In-Reply-To: <44c5d664-e738-44b4-bafe-06f2e1fc1fe7@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a783e5ed-db56-4100-956a-353170b1b7ed@inwind.it>
 
-On 3/5/24 11:01 AM, Krzysztof Kozlowski wrote:
-> On 05/03/2024 15:42, Andrew Davis wrote:
->> On 3/5/24 8:11 AM, Krzysztof Kozlowski wrote:
->>> On 05/03/2024 12:17, Markus Schneider-Pargmann wrote:
->>>> Hi Krzysztof,
->>>>
->>>> On Tue, Mar 05, 2024 at 08:43:03AM +0100, Krzysztof Kozlowski wrote:
->>>>> On 04/03/2024 11:36, Markus Schneider-Pargmann wrote:
->>>>>> Hi,
->>>>>>
->>>>>> On Sat, Feb 17, 2024 at 03:25:30PM +0100, Krzysztof Kozlowski wrote:
->>>>>>> On 14/02/2024 10:31, Markus Schneider-Pargmann wrote:
->>>>>>>> Hi Rob,
->>>>>>>>
->>>>>>>> On Tue, Feb 06, 2024 at 06:43:05PM +0000, Rob Herring wrote:
->>>>>>>>> On Tue, Feb 06, 2024 at 03:37:09PM +0100, Markus Schneider-Pargmann wrote:
->>>>>>>>>> The information k3-socinfo requires is stored in an efuse area. This
->>>>>>>>>> area is required by other devices/drivers as well, so using nvmem-cells
->>>>>>>>>> can be a cleaner way to describe which information are used.
->>>>>>>>>>
->>>>>>>>>> If nvmem-cells are supplied, the address range is not required.
->>>>>>>>>> Cells chipvariant, chippartno and chipmanufacturer are introduced to
->>>>>>>>>> cover all required information.
->>>>>>>>>>
->>>>>>>>>> Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
->>>>>>>>>> Reviewed-by: Andrew Davis <afd@ti.com>
->>>>>>>>>> ---
->>>>>>>>>>    .../bindings/hwinfo/ti,k3-socinfo.yaml        | 23 ++++++++++++++++++-
->>>>>>>>>>    1 file changed, 22 insertions(+), 1 deletion(-)
->>>>>>>>>>
->>>>>>>>>> diff --git a/Documentation/devicetree/bindings/hwinfo/ti,k3-socinfo.yaml b/Documentation/devicetree/bindings/hwinfo/ti,k3-socinfo.yaml
->>>>>>>>>> index dada28b47ea0..f085b7275b7d 100644
->>>>>>>>>> --- a/Documentation/devicetree/bindings/hwinfo/ti,k3-socinfo.yaml
->>>>>>>>>> +++ b/Documentation/devicetree/bindings/hwinfo/ti,k3-socinfo.yaml
->>>>>>>>>> @@ -26,9 +26,24 @@ properties:
->>>>>>>>>>      reg:
->>>>>>>>>>        maxItems: 1
->>>>>>>>>>    
->>>>>>>>>> +  nvmem-cells:
->>>>>>>>>> +    $ref: /schemas/types.yaml#/definitions/phandle-array
->>>>>>>>>> +
->>>>>>>>>> +  nvmem-cell-names:
->>>>>>>>>> +    items:
->>>>>>>>>> +      - const: chipvariant
->>>>>>>>>> +      - const: chippartno
->>>>>>>>>> +      - const: chipmanufacturer
->>>>>>>>>> +
->>>>>>>>>>    required:
->>>>>>>>>>      - compatible
->>>>>>>>>> -  - reg
->>>>>>>>>> +
->>>>>>>>>> +oneOf:
->>>>>>>>>> +  - required:
->>>>>>>>>> +      - reg
->>>>>>>>>> +  - required:
->>>>>>>>>> +      - nvmem-cells
->>>>>>>>>> +      - nvmem-cell-names
->>>>>>>>>>    
->>>>>>>>>>    additionalProperties: false
->>>>>>>>>>    
->>>>>>>>>> @@ -38,3 +53,9 @@ examples:
->>>>>>>>>>            compatible = "ti,am654-chipid";
->>>>>>>>>>            reg = <0x43000014 0x4>;
->>>>>>>>>>        };
->>>>>>>>>> +  - |
->>>>>>>>>> +    chipid: chipid@14 {
->>>>>>>>>> +        compatible = "ti,am654-chipid";
->>>>>>>>>
->>>>>>>>> This isn't compatible if you have a completely different way to access
->>>>>>>>> it.
->>>>>>>>
->>>>>>>> Thanks, it is not entirely clear to me how I could go forward with this?
->>>>>>>> Are you suggesting to use a different compatible? Or is it something
->>>>>>>> else I could do to proceed with this conversion?
->>>>>>>
->>>>>>> What you claim now, is that you have one device with entirely different
->>>>>>> interfaces and programming model. So either this is not the same device
->>>>>>> or you just wrote bindings to whatever you have in driver.
->>>>>>>
->>>>>>> Nothing in commit msg explains this.
->>>>>>>
->>>>>>> What you should do? Depends. If you just write bindings for driver, then
->>>>>>> stop. It's a NAK. Instead write bindings for hardware.
->>>>>>>
->>>>>>> If the first choice, just the hardware is somehow like this, then
->>>>>>> explain in commit msg and device description, how this device can be
->>>>>>> connected over other bus, not MMIO. You can draw some schematics in
->>>>>>> commit msg explaining architecture etc.
->>>>>>
->>>>>> Sorry the information provided in the commit message is not very clear.
->>>>>>
->>>>>> The basic access to the registes is still MMIO. nvmem is used to have a
->>>>>> better abstraction and cleaner description of the hardware.
->>>>>>
->>>>>> Currently most of the data is exported using the parent syscon device.
->>>>>> The relevant data is read-only and contained in a single register with
->>>>>> offset 0x14:
->>>>>>     - Chip variant
->>>>>>     - Chip part number
->>>>>>     - Chip manufacturer
->>>>>>
->>>>>> There are more read-only registers in this section of address space.
->>>>>> These are relevant to other components as they define the operating
->>>>>> points for example. For the OPP table relevant are chip variant and chip
->>>>>> speed (which is in a different register).
->>>>>>
->>>>>> Instead of devices refering to this whole register range of 0x20000 in
->>>>>
->>>>> Whaaaaat?
->>>>>
->>>>>> size, I would like to introduce this nvmem abstraction in between that
->>>>>> describes the information and can directly be referenced by the devices
->>>>>> that depend on it. In this case the above mentioned register with offset
->>>>>> 0x14 is instead described as nvmem-layout like this:
->>>>>>
->>>>>> 	nvmem-layout {
->>>>>> 		compatible = "fixed-layout";
->>>>>> 		#address-cells = <1>;
->>>>>> 		#size-cells = <1>;
->>>>>>
->>>>>> 		chip_manufacturer: jtagidmfg@14 {
->>>>>> 			reg = <0x14 0x2>;
->>>>>> 			bits = <1 11>;
->>>>>> 		};
->>>>>>
->>>>>> 		chip_partno: jtagidpartno@15 {
->>>>>> 			reg = <0x15 0x3>;
->>>>>> 			bits = <4 16>;
->>>>>> 		};
->>>>>>
->>>>>> 		chip_variant: jtagidvariant@17 {
->>>>>> 			reg = <0x17 0x1>;
->>>>>> 			bits = <4 4>;
->>>>>> 		};
->>>>>>
->>>>>> 		chip_speed: jtaguseridspeed@18 {
->>>>>> 			reg = <0x18 0x4>;
->>>>>> 			bits = <6 5>;
->>>>>> 		};
->>>>>>
->>>>>> The underlying registers are still the same but they are not hidden
->>>>>> by the syscon phandles anymore.
->>>>>>
->>>>>> The device that consumes this data would now use
->>>>>>
->>>>>> 	nvmem-cells = <&chip_variant>, <&chip_speed>;
->>>>>> 	nvmem-cell-names = "chipvariant", "chipspeed";
->>>>>>
->>>>>> instead of
->>>>>>
->>>>>> 	syscon = <&wkup_conf>;
->>>>>
->>>>> syscon allows you this as well - via phandle arguments.
->>>>>
->>>>> nvmem is for non-volatile memory, like OCOTP and eFUSE. This is not for
->>>>> accessing regular MMIO registers of system-controller, regardless
->>>>> whether they are read-only or not (regmap handles this nicely, BTW).
->>>>> Although probably Apple efuses and few others can confuse here. It still
->>>>> looks like you convert regular system-controller block into nvmem,
->>>>> because you prefer that Linux driver abstraction...
->>>>
->>>> The above mentioned data is set in the factory. There is other
->>>> non-volatile data, like device feature registers, in the same address
->>>> region, as well as OTP data like MAC and USB IDs. But it is not a pure
->>>> non-volatile memory region. The data is copied into these registers by
->>>> the ROM at boot.
->>>
->>> Still entire block is MMIO IP in your SoC, not a efuse/OTP hardware.
->>> nvmem is not for regular MMIO registers which are sometimes R, sometimes RW.
->>
->> Most eFuse/OTP hardware is accessed via MMIO, not sure what that changes.
+On Thu, Feb 29 2024 at  5:05P -0500,
+Goffredo Baroncelli <kreijack@inwind.it> wrote:
+
+> On 29/02/2024 21.22, Patrick Plenefisch wrote:
+> > On Thu, Feb 29, 2024 at 2:56 PM Goffredo Baroncelli <kreijack@inwind.it> wrote:
+> > > 
+> > > > Your understanding is correct. The only thing that comes to my mind to
+> > > > cause the problem is asymmetry of the SATA devices. I have one 8TB
+> > > > device, plus a 1.5TB, 3TB, and 3TB drives. Doing math on the actual
+> > > > extents, lowerVG/single spans (3TB+3TB), and
+> > > > lowerVG/lvmPool/lvm/brokenDisk spans (3TB+1.5TB). Both obviously have
+> > > > the other leg of raid1 on the 8TB drive, but my thought was that the
+> > > > jump across the 1.5+3TB drive gap was at least "interesting"
+> > > 
+> > > 
+> > > what about lowerVG/works ?
+> > > 
+> > 
+> > That one is only on two disks, it doesn't span any gaps
 > 
-> Just check exiting NVMEM drivers, except Apple I think most if not all
-> are not syscon blocks.
+> Sorry, but re-reading the original email I found something that I missed before:
 > 
-
-We don't want it to be a syscon block either. Syscon is just another Linux
-interface for accessing MMIO areas that found its way in to DT. NVMEM
-is another way, which as a DT construct is more "correct" as the area
-we are describing here *is* a non-volatile memory. Not a "syscon"?? whatever
-that is.
-
-> Following such approach, each hardware block, even USB or PCI, which
-> exposes a read-only register with some fused value, e.g. version, should
-> be nvmem?
+> > BTRFS error (device dm-75): bdev /dev/mapper/lvm-brokenDisk errs: wr
+> > 0, rd 0, flush 1, corrupt 0, gen 0
+> > BTRFS warning (device dm-75): chunk 13631488 missing 1 devices, max
+>                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> > tolerance is 0 for writable mount
+> > BTRFS: error (device dm-75) in write_all_supers:4379: errno=-5 IO
+> > failure (errors while submitting device barriers.)
 > 
-
-If those fused values are grouped into a region then yes, why not. Wouldn't
-that be more correct to describe them as they actually are instead of
-hiding them behind a "syscon" block?
-
->>
->> This "block" is a whole bunch of smaller logical chunks of registers,
->> some are actually mapped to eFuses like our MAC addresses. Regions
->> like factory fused MAC addresses are exactly what nvmem does well[0].
->>
->> Yes, we *could* just have this whole area be one massive blanked syscon
->> region that every driver just manually pokes into with syscon phandles
->> everywhere. But that is hacky and hides details, it is not how DT normally
->> looks. We would like to correctly model our device now with nodes for each
->> "reg" region. We took the syscon shortcut before, and we want to correct
->> that mistake.
+> Looking at the code, it seems that if a FLUSH commands fails, btrfs
+> considers that the disk is missing. The it cannot mount RW the device.
 > 
-> Wait, you now mix up hardware description with Linux interface.
-> Describing each register as nvmem field is not a better way of
-> describing hardware. It is unnecessarily too granular and results in
-> huge and unmaintainable DTS. It is however convenient because it is nice
-> API for other devices. 
+> I would investigate with the LVM developers, if it properly passes
+> the flush/barrier command through all the layers, when we have an
+> lvm over lvm (raid1). The fact that the lvm is a raid1, is important because
+> a flush command to be honored has to be honored by all the
+> devices involved.
 
-It is not convenient. How we have it currently as a blanket syscon node
-that each driver can simply poke whatever address it wants is much easier.
-We are now trying to do the more difficult (but more correct) thing here by
-modeling our non-volatile memory areas as they are as nvmem nodes.
+Hi Patrick,
 
-> But claiming that MMIO register block is better
-> represented as nvmem is not correct. It is still MMIO block with
-> registers, like everywhere else in every other device.
-> 
+Your initial report (start of this thread) mentioned that the
+regression occured with 5.19. The DM changes that landed during the
+5.19 merge window refactored quite a bit of DM core's handling for bio
+splitting (to simplify DM's newfound support for bio polling) -- Ming
+Lei (now cc'd) and I wrote these changes:
 
-Everything is MMIO on these SoCs, we don't have any sideband band
-IO ports. Following that to its logical conclusion we should just
-make the entire memory space reg = <0x0 0xffffffff> one big syscon node
-then have all other driver phandle into that for their MMIO access.
+e86f2b005a51 dm: simplify basic targets
+bdb34759a0db dm: use bio_sectors in dm_aceept_partial_bio
+b992b40dfcc1 dm: don't pass bio to __dm_start_io_acct and dm_end_io_acct
+e6926ad0c988 dm: pass dm_io instance to dm_io_acct directly
+d3de6d12694d dm: switch to bdev based IO accounting interfaces
+7dd76d1feec7 dm: improve bio splitting and associated IO accounting
+2e803cd99ba8 dm: don't grab target io reference in dm_zone_map_bio
+0f14d60a023c dm: improve dm_io reference counting
+ec211631ae24 dm: put all polled dm_io instances into a single list
+9d20653fe84e dm: simplify bio-based IO accounting further
+4edadf6dcb54 dm: improve abnormal bio processing
 
->>
->> So what are our options? Is the objection here that this is a new nvmem
->> way of modeling this region changes the compatible "ti,am654-chipid"? If
->> so then would you be open to us adding a new compatible that uses the
->> nvmem nodes? We could then convert over one by one and keeping full
->> backwards compatibility while we do it.
-> 
-> Switching from MMIO to nvmem for chipid is a different interface, so as
-> Rob pointed out devices are not really compatible. You claim that
-> devices are compatible, because there is *NO REAL NVMEM* but MMIO
-> wrapped in nvmem. So do you see the logic here?
-> 
+I'll have a closer look at these DM commits (especially relative to
+flush bios and your stacked device usage).
 
-If the interface changing means it is not compatible then that is
-fine, we would use a different compatible string to identify the
-interface to be used.
+The last commit (4edadf6dcb54) is marginally relevant (but likely most
+easily reverted from v5.19-rc2, as a simple test to see if it somehow
+a problem... doubtful to be cause but worth a try).
 
-This is not uncommon, the example that comes to my mind is "gpio-leds".
-We used to just have named GPIO pins for our LEDs, now we can
-put "gpio-leds" on top to better represent what is going on in HW.
-Even though physically nothing changed, we just now have a better way
-to model that HW in DT.
+(FYI, not relevant because it is specific to REQ_NOWAIT but figured I'd
+ mention it, this commit earlier in the 5.19 DM changes was bogus:
+ 563a225c9fd2 dm: introduce dm_{get,put}_live_table_bio called from dm_submit_bio
+ Jens fixed it with this stable@ commit:
+ a9ce385344f9 dm: don't attempt to queue IO under RCU protection)
 
-Andrew
+> > > However yes, I agree that the pair of disks involved may be the answer
+> > > of the problem.
+> > > 
+> > > Could you show us the output of
+> > > 
+> > > $ sudo pvdisplay -m
+> > > 
+> > > 
+> > 
+> > I trimmed it, but kept the relevant bits (Free PE is thus not correct):
+> > 
+> > 
+> >    --- Physical volume ---
+> >    PV Name               /dev/lowerVG/lvmPool
+> >    VG Name               lvm
+> >    PV Size               <3.00 TiB / not usable 3.00 MiB
+> >    Allocatable           yes
+> >    PE Size               4.00 MiB
+> >    Total PE              786431
+> >    Free PE               82943
+> >    Allocated PE          703488
+> >    PV UUID               7p3LSU-EAHd-xUg0-r9vT-Gzkf-tYFV-mvlU1M
+> > 
+> >    --- Physical Segments ---
+> >    Physical extent 0 to 159999:
+> >      Logical volume      /dev/lvm/brokenDisk
+> >      Logical extents     0 to 159999
+> >    Physical extent 160000 to 339199:
+> >      Logical volume      /dev/lvm/a
+> >      Logical extents     0 to 179199
+> >    Physical extent 339200 to 349439:
+> >      Logical volume      /dev/lvm/brokenDisk
+> >      Logical extents     160000 to 170239
+> >    Physical extent 349440 to 351999:
+> >      FREE
+> >    Physical extent 352000 to 460026:
+> >      Logical volume      /dev/lvm/brokenDisk
+> >      Logical extents     416261 to 524287
+> >    Physical extent 460027 to 540409:
+> >      FREE
+> >    Physical extent 540410 to 786430:
+> >      Logical volume      /dev/lvm/brokenDisk
+> >      Logical extents     170240 to 416260
 
-> Best regards,
-> Krzysztof
-> 
-> 
+Please provide the following from guest that activates /dev/lvm/brokenDisk:
+
+lsblk
+dmsetup table
+
+Please also provide the same from the host (just for completeness).
+
+Also, I didn't see any kernel logs that show DM-specific errors.  I
+doubt you'd have left any DM-specific errors out in your report.  So
+is btrfs the canary here?  To be clear: You're only seeing btrfs
+errors in the kernel log?
+
+Mike
 
