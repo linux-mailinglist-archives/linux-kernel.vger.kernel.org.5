@@ -1,316 +1,110 @@
-Return-Path: <linux-kernel+bounces-92693-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92695-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FB0987246A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:35:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D840B872473
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:36:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCDBE1F266ED
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:35:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D257A1F24BFF
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:36:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E15D2BA50;
-	Tue,  5 Mar 2024 16:35:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B87BCC8CE;
+	Tue,  5 Mar 2024 16:36:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ydu1fkxV"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gbhhivSC"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 313088BF6
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 16:35:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D5AA8F58
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 16:36:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709656537; cv=none; b=j4A01Jyt+Osd0AYH08tdc3o58yFyn3DPy8hOW6H7uX3khEJb90h6Fj6t6bcr4k05N3d7tSYv7ASBq/HBvvvGgZjxUdT1WwVf2GqF+iCZO0Pk0mgDxGSniwoVRN1uq7/sfBXsfBxEfwPVV2D/WDUiksmtM5yi5wKos1X5eQyNEbg=
+	t=1709656612; cv=none; b=XioaHBkXHpwpKlrnPCxPImnMh1YmUVX3FqyNAPG5KyKrGS+S4hqWm1+ZLyXpDYjsXxf3I52TyEpvaQWgWLDSWCFc0iLWsRHXYx1XyTwQB5tbDZgp49A55D9fPoRBC6iUBu28zjBIt0PJoX+HyRaEXrQSh/ypr4D+U0/1OBhbO/k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709656537; c=relaxed/simple;
-	bh=8fCD3mFM356hHR4y4xRDKU/RTQ6W8aBHd+DS5kjFZ8Q=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=AS1Wm/PpSsJAxIhoPtT0W/PmnNt7nQa+48YLFvqKl0rbVK576P8UEtI0xUp32SOG1sxFb7z+7doCBHScNVLGGc5Tvct7LJJvtNTQ2skS0Kt+cP/hPP88vVfWeIXWG8cYivbO24oLNj+sFj8YJfAg4zcgJCs4oXC8D8mUQ4dkWg8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ydu1fkxV; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6b26eef6cso8036172276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 08:35:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709656535; x=1710261335; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QQmbrJT9dwObj4pbI1GLJWzAoRH+/arY+5jTHTxjCY8=;
-        b=ydu1fkxVFAc7z3RGL+4WyzY3aZDazHKwq4MeQAAQ2YnikxvC8koqWGnLclG81OJlWg
-         Sdx8MdmXo5N/Gq5VVRO8nyYBPgkcebJjkzLfiShMwN7hCys2iculWZfw642SXjire4rg
-         LztuBO7qRDCyncghmqghUWZ6CLQ8J8DoZ1qPQWIYA8PuoY+v1IOA0Y4P1ofvMMSCKB9Y
-         Za821EJ1WvzYydGdynnxCkk9u3YuIbH7nBXG8w9EeFKo1hmmgTcU3eFm1VAxRDWnBJe0
-         A1uRrTlXJvSRHAU+i5L0Up4Q4CF3WGZnO7uJ4WYyg6yr+3OVeMUrwCUvZHoziSjW22gu
-         0pIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709656535; x=1710261335;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=QQmbrJT9dwObj4pbI1GLJWzAoRH+/arY+5jTHTxjCY8=;
-        b=JtDPHybQCzE+MsbGhAunazLxNCCykGy8E7vimVUQEvMEnDxDbVi8CpLk4DBGwvbvCh
-         L551FBGgAphqSfCUsecDOizV9+7Ua3DzKCbhA883WDCpbiOxRL+TTbvSf1t/W2Ezy4eE
-         rYWdLfBtxipF1K3zuycY5r6f9P/YttKLh3VPd7yzpn3oVQ5Bku1Jj7PtHK5FLPWOkHZY
-         dov4arCvwxLTa/OzahU277fk/fsunqYZ6eblkxdaLkBmOjvmSv6VVfGpJBwczP2X4dNR
-         rN7CkAcmj+3O7UsRaSQ2BssiwFVa5Gn8zNgCWozdGqM9UXZgY+Pb6FQooSiW4XV4Oa+8
-         v5WA==
-X-Forwarded-Encrypted: i=1; AJvYcCVt2lCvM+7+g0ISBZIeWA7pX2rbxYPdfe83z4z5+v5M3yOnYX6atmuJtuWDGY24OEgAa9AEBze+KH80pmYm0+/Wx0B2lLTxvE0FA0aF
-X-Gm-Message-State: AOJu0Yx+anhWScP7J8NpILkI9ALGycKuKri4ahXrkxmzTWFgiEV4loLy
-	jbXDCgEE4Q+yfkv89GIXXJMYMLfLTeRlUeN6B9iFGVUvan+6xG1quLFVW/zTGiUNb7ajsOD3NPB
-	VKQ==
-X-Google-Smtp-Source: AGHT+IHruno/sPushTJHAVm2hrfJdFuFu3KW+MjOH2NiCDASBhOf9P5HCA7/lTJp7lXCzbWJ7NzURiaR8kQ=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:18d3:b0:dc7:865b:22c6 with SMTP id
- ck19-20020a05690218d300b00dc7865b22c6mr485363ybb.8.1709656535232; Tue, 05 Mar
- 2024 08:35:35 -0800 (PST)
-Date: Tue, 5 Mar 2024 08:35:33 -0800
-In-Reply-To: <20240305103506.613950-1-kraxel@redhat.com>
+	s=arc-20240116; t=1709656612; c=relaxed/simple;
+	bh=skdid8rQ4xd9PkZPQyKNIOYz4OeOwi8ESlxyTh1j/DU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Rlguu712BzVRe8Ve9BhHt5/BVezVln+qttrVG6Hx5citkNvm20N/DE5rRx3MopZz4HCY5JIfRmEqTibsU0G8OLoQRT1ete7F5dck5OEEWckxFiQRPbu2DSMVXWnjxaBjC0xDxEEHVxsZmenWQtrPTUZWk+HqJ652fdBbyMrTIMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gbhhivSC; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709656610; x=1741192610;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=skdid8rQ4xd9PkZPQyKNIOYz4OeOwi8ESlxyTh1j/DU=;
+  b=gbhhivSCMR0x/0Oa1rbdp8hM50feEvtgazW3l6gknFbs/4vrN3fExOXV
+   I75EZ09XvR8hv2Tn5/zqFjXeA7b++SJllL5qII16NwgBWaXyhjwkKOpNE
+   CchYSsLCJapZKzWF2mv1By65MYTBgsPk35udcgMVO9nimWHxlmSgIN8Fp
+   hncifklI3VROm9swf3JTn0SHOPdrTYC3ETdZ9wWB1C06RNR/roOz+eIOy
+   Dz/yZnbsQ1z7LtQqii256V8dmXdXeQBQ6Fpti+TW/uCW6nspLEY3keQAP
+   SstDU75MdUxq5JVYckmAV7Y3RXn3qXgmjh+FtaQU4QHRigNGwowfzpPX/
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="4082277"
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="4082277"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 08:36:49 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="914144720"
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="914144720"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 08:36:46 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rhXmV-0000000A29n-06Xy;
+	Tue, 05 Mar 2024 18:36:43 +0200
+Date: Tue, 5 Mar 2024 18:36:42 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Dave Hansen <dave.hansen@intel.com>
+Cc: Mateusz =?utf-8?Q?Jo=C5=84czyk?= <mat.jonczyk@o2.pl>,
+	Mario Limonciello <mario.limonciello@amd.com>,
+	linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH v1 1/1] x86/rtc: Remove unused intel-mid.h
+Message-ID: <ZedKGoPoTgWfOVNO@smile.fi.intel.com>
+References: <20240305161024.1364098-1-andriy.shevchenko@linux.intel.com>
+ <14750023-e5fb-45f7-9c28-9510ce5a5994@intel.com>
+ <ZedI9vCoCf9KtHcr@smile.fi.intel.com>
+ <0c7c00c0-3b4a-41b3-8664-9ea6ee7e0814@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240305103506.613950-1-kraxel@redhat.com>
-Message-ID: <ZedJ1UmvaYZ4PWp6@google.com>
-Subject: Re: [PATCH v2] kvm: set guest physical bits in CPUID.0x80000008
-From: Sean Christopherson <seanjc@google.com>
-To: Gerd Hoffmann <kraxel@redhat.com>
-Cc: kvm@vger.kernel.org, Tom Lendacky <thomas.lendacky@amd.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	"maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, 
-	"open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0c7c00c0-3b4a-41b3-8664-9ea6ee7e0814@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-KVM: x86:
+On Tue, Mar 05, 2024 at 08:34:59AM -0800, Dave Hansen wrote:
+> On 3/5/24 08:31, Andy Shevchenko wrote:
+> >> Any chance you'd like to look a _bit_ more widely and just clean up all
+> >> of the unnecessary intel-mid.h #includes that are scattered around?
+> > All relative patches just have been sent. They are independent, hence sent
+> > separately. Please, apply, what you can, if there is no objection.
 
-On Tue, Mar 05, 2024, Gerd Hoffmann wrote:
-> Set CPUID.0x80000008:EAX[23:16] to guest phys bits, i.e. the bits which
-> are actually addressable.  In most cases this is identical to the host
-> phys bits, but tdp restrictions (no 5-level paging) can limit this to
-> 48.
->=20
-> Quoting AMD APM (revision 3.35):
->=20
->   23:16 GuestPhysAddrSize Maximum guest physical address size in bits.
->                           This number applies only to guests using nested
->                           paging. When this field is zero, refer to the
->                           PhysAddrSize field for the maximum guest
->                           physical address size. See =E2=80=9CSecure Virt=
-ual
->                           Machine=E2=80=9D in APM Volume 2.
->=20
-> Tom Lendacky confirmed the purpose of this field is software use,
-> hardware always returns zero here.
->=20
-> Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
-> ---
->  arch/x86/kvm/mmu.h     |  2 ++
->  arch/x86/kvm/cpuid.c   |  3 ++-
->  arch/x86/kvm/mmu/mmu.c | 15 +++++++++++++++
->  3 files changed, 19 insertions(+), 1 deletion(-)
->=20
-> diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-> index 60f21bb4c27b..42b5212561c8 100644
-> --- a/arch/x86/kvm/mmu.h
-> +++ b/arch/x86/kvm/mmu.h
-> @@ -100,6 +100,8 @@ static inline u8 kvm_get_shadow_phys_bits(void)
->  	return boot_cpu_data.x86_phys_bits;
->  }
-> =20
-> +int kvm_mmu_get_guest_phys_bits(void);
-> +
->  void kvm_mmu_set_mmio_spte_mask(u64 mmio_value, u64 mmio_mask, u64 acces=
-s_mask);
->  void kvm_mmu_set_me_spte_mask(u64 me_value, u64 me_mask);
->  void kvm_mmu_set_ept_masks(bool has_ad_bits, bool has_exec_only);
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index adba49afb5fe..12037f1b017e 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -1240,7 +1240,8 @@ static inline int __do_cpuid_func(struct kvm_cpuid_=
-array *array, u32 function)
->  		else if (!g_phys_as)
+> Ahh, thanks for the context.  Any chance you could share that up front
+> next time? ;)
 
-Based on the new information that GuestPhysAddrSize is software-defined, an=
-d the
-fact that KVM and QEMU are planning on using GuestPhysAddrSize to communica=
-te
-the maximum *addressable* GPA, deriving PhysAddrSize from GuestPhysAddrSize=
- is
-wrong.
+Hmm... I'm not sure how. If it's a cover letter, then it requires a series,
+which seems an overkill, commenting on a single patch sounds a bit weird to
+me.
 
-E.g. if KVM is running as L1 on top of a new KVM, on a CPU with MAXPHYADDR=
-=3D52,
-and on a CPU without 5-level TDP, then KVM (as L1) will see:
+> I'll stick this in the x86 queue.
 
-  PhysAddrSize      =3D 52
-  GuestPhysAddrSize =3D 48
+Thank you!
 
-Propagating GuestPhysAddrSize to PhysAddrSize (which is confusingly g_phys_=
-as)
-will yield an L2 with
+-- 
+With Best Regards,
+Andy Shevchenko
 
-  PhysAddrSize      =3D 48=20
-  GuestPhysAddrSize =3D 48
-
-which is broken, because GPAs with bits 51:48!=3D0 are *legal*, but not add=
-ressable.
-
->  			g_phys_as =3D phys_as;
-> =20
-> -		entry->eax =3D g_phys_as | (virt_as << 8);
-> +		entry->eax =3D g_phys_as | (virt_as << 8)
-> +			| kvm_mmu_get_guest_phys_bits() << 16;
-
-The APM explicitly states that GuestPhysAddrSize only applies to NPT.  KVM =
-should
-follow suit to avoid creating unnecessary ABI, and because KVM can address =
-any
-legal GPA when using shadow paging.
-
->  		entry->ecx &=3D ~(GENMASK(31, 16) | GENMASK(11, 8));
->  		entry->edx =3D 0;
->  		cpuid_entry_override(entry, CPUID_8000_0008_EBX);
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 2d6cdeab1f8a..8bebb3e96c8a 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -5267,6 +5267,21 @@ static inline int kvm_mmu_get_tdp_level(struct kvm=
-_vcpu *vcpu)
->  	return max_tdp_level;
->  }
-> =20
-> +/*
-> + * return the actually addressable guest phys bits, which might be
-> + * less than host phys bits due to tdp restrictions.
-> + */
-> +int kvm_mmu_get_guest_phys_bits(void)
-> +{
-> +	if (tdp_enabled && shadow_phys_bits > 48) {
-> +		if (tdp_root_level && tdp_root_level !=3D PT64_ROOT_5LEVEL)
-> +			return 48;
-> +		if (max_tdp_level !=3D PT64_ROOT_5LEVEL)
-> +			return 48;
-
-I would prefer to not use shadow_phys_bits to cap the reported CPUID.0x8000=
-_0008,
-so that the logic isn't spread across the CPUID code and the MMU.  I don't =
-love
-that the two have duplicate logic, but there's no great way to handle that =
-since
-the MMU needs to be able to determine the effective host MAXPHYADDR even if
-CPUID.0x8000_0008 is unsupported.
-
-I'm thinking this, maybe spread across two patches: one to undo KVM's usage=
- of
-GuestPhysAddrSize, and a second to then set GuestPhysAddrSize for userspace=
-?
-
----
- arch/x86/kvm/cpuid.c   | 38 ++++++++++++++++++++++++++++----------
- arch/x86/kvm/mmu.h     |  2 ++
- arch/x86/kvm/mmu/mmu.c |  5 +++++
- 3 files changed, 35 insertions(+), 10 deletions(-)
-
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index adba49afb5fe..ae03e69d7fb9 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -1221,9 +1221,18 @@ static inline int __do_cpuid_func(struct kvm_cpuid_a=
-rray *array, u32 function)
- 		entry->eax =3D entry->ebx =3D entry->ecx =3D 0;
- 		break;
- 	case 0x80000008: {
--		unsigned g_phys_as =3D (entry->eax >> 16) & 0xff;
--		unsigned virt_as =3D max((entry->eax >> 8) & 0xff, 48U);
--		unsigned phys_as =3D entry->eax & 0xff;
-+		unsigned int virt_as =3D max((entry->eax >> 8) & 0xff, 48U);
-+
-+		/*
-+		 * KVM's ABI is to report the effective MAXPHYADDR for the guest
-+		 * in PhysAddrSize (phys_as), and the maximum *addressable* GPA
-+		 * in GuestPhysAddrSize (g_phys_as).  GuestPhysAddrSize is valid
-+		 * if and only if TDP is enabled, in which case the max GPA that
-+		 * can be addressed by KVM may be less than the max GPA that can
-+		 * be legally generated by the guest, e.g. if MAXPHYADDR>48 but
-+		 * the CPU doesn't support 5-level TDP.
-+		 */
-+		unsigned int phys_as, g_phys_as;
-=20
- 		/*
- 		 * If TDP (NPT) is disabled use the adjusted host MAXPHYADDR as
-@@ -1231,16 +1240,25 @@ static inline int __do_cpuid_func(struct kvm_cpuid_=
-array *array, u32 function)
- 		 * reductions in MAXPHYADDR for memory encryption affect shadow
- 		 * paging, too.
- 		 *
--		 * If TDP is enabled but an explicit guest MAXPHYADDR is not
--		 * provided, use the raw bare metal MAXPHYADDR as reductions to
--		 * the HPAs do not affect GPAs.
-+		 * If TDP is enabled, the effective guest MAXPHYADDR is the same
-+		 * as the raw bare metal MAXPHYADDR, as reductions to HPAs don't
-+		 * affect GPAs.  The max addressable GPA is the same as the max
-+		 * effective GPA, except that it's capped at 48 bits if 5-level
-+		 * TDP isn't supported (hardware processes bits 51:48 only when
-+		 * walking the fifth level page table).
- 		 */
--		if (!tdp_enabled)
--			g_phys_as =3D boot_cpu_data.x86_phys_bits;
--		else if (!g_phys_as)
-+		if (!tdp_enabled) {
-+			phys_as =3D boot_cpu_data.x86_phys_bits;
-+			g_phys_as =3D 0;
-+		} else {
-+			phys_as =3D entry->eax & 0xff;
- 			g_phys_as =3D phys_as;
-=20
--		entry->eax =3D g_phys_as | (virt_as << 8);
-+			if (kvm_mmu_get_max_tdp_level() < 5)
-+				g_phys_as =3D min(g_phys_as, 48);
-+		}
-+
-+		entry->eax =3D phys_as | (virt_as << 8) | (g_phys_as << 16);
- 		entry->ecx &=3D ~(GENMASK(31, 16) | GENMASK(11, 8));
- 		entry->edx =3D 0;
- 		cpuid_entry_override(entry, CPUID_8000_0008_EBX);
-diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
-index 60f21bb4c27b..b410a227c601 100644
---- a/arch/x86/kvm/mmu.h
-+++ b/arch/x86/kvm/mmu.h
-@@ -100,6 +100,8 @@ static inline u8 kvm_get_shadow_phys_bits(void)
- 	return boot_cpu_data.x86_phys_bits;
- }
-=20
-+u8 kvm_mmu_get_max_tdp_level(void);
-+
- void kvm_mmu_set_mmio_spte_mask(u64 mmio_value, u64 mmio_mask, u64 access_=
-mask);
- void kvm_mmu_set_me_spte_mask(u64 me_value, u64 me_mask);
- void kvm_mmu_set_ept_masks(bool has_ad_bits, bool has_exec_only);
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 2d6cdeab1f8a..ffd32400fd8c 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -5267,6 +5267,11 @@ static inline int kvm_mmu_get_tdp_level(struct kvm_v=
-cpu *vcpu)
- 	return max_tdp_level;
- }
-=20
-+u8 kvm_mmu_get_max_tdp_level(void)
-+{
-+	return tdp_root_level ? tdp_root_level : max_tdp_level;
-+}
-+
- static union kvm_mmu_page_role
- kvm_calc_tdp_mmu_root_page_role(struct kvm_vcpu *vcpu,
- 				union kvm_cpu_role cpu_role)
-
-base-commit: c0372e747726ce18a5fba8cdc71891bd795148f6
---=20
 
 
