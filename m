@@ -1,276 +1,122 @@
-Return-Path: <linux-kernel+bounces-93014-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93017-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 746C08729A4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 22:46:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87297872979
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 22:33:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4EDF7B28474
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 21:32:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 36C2C1F2237F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 21:33:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F47A12CDA8;
-	Tue,  5 Mar 2024 21:32:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kLDQesw9"
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D31D412D206;
+	Tue,  5 Mar 2024 21:32:35 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D9E612BE98
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 21:32:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC5A612D1F7
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 21:32:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709674334; cv=none; b=a6NaSi2Wh7JkrWj/Oz4H9uRWqhJpjGgz8G4s80ZfFsFe4ZfhrOEwP4ACBUChXW5e/KVHZDshvIUkT6BHZcnaMdALmxCU05aHW9g6NMWwPgO+Oehlai95KLy/D0eh0Qlyp8XffUGBl75LOdcjExmyURycwrCQzvCYpm9VyFdRj6w=
+	t=1709674355; cv=none; b=G0OvtHwots2BQiv9r3HBoiWxJHaDEO2N9ur5GLXxEfkV/H2oPgLx4ctx7+MpqZJqIQvunYjt42k5FlsU29Qumn10H7yU/q16QvJR+rWtx5XfpzXKjA65lqSFl+0Gn7GWHveCTMsR1XtHJ5qQ62Q/bKpKP+LqMXMZFK6OLTGiPn8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709674334; c=relaxed/simple;
-	bh=2ZPXv69KRnZGaiTeZKI9iodcUDQkJ3Xfpldq4g4nfhw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GugFpEN6jRmV51BVH2X+SkIB4O1z67orQVv4DRyyEQML0pHvEEEDRtUI15Xpv3JGmGCC7NMQk700oFD7xDYSlgI1lGfWjmv+gfNmqXS4++dP/gJ3IrFKe2V66UtEaVvFJuny8/mtUZbr03m7qEdQhcVVE/mV6xf7QMYH8lUzqHw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kLDQesw9; arc=none smtp.client-ip=95.215.58.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <3d71d615-1310-4aee-ba7f-f0d2670817cb@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1709674330;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9Eda8L/E50+vkPtrt+0gUrFiZFHoOF06xD4xnQtsBU4=;
-	b=kLDQesw99GSUGBVjcGfg6ZpViOSREEut/y9Sbzik7DmyihJtqGWRR+vxd5DOpZucUROOf+
-	1xtloLfBH2x1Y9v+R9Q0GFD08Z6aFzxW6GV+feTPw85ZjFAed1ypY+ZYsiMFl89Np2RtL2
-	N1jgnNIJPpVLiGe+XxwK0C/PEEgwuJo=
-Date: Tue, 5 Mar 2024 22:32:04 +0100
+	s=arc-20240116; t=1709674355; c=relaxed/simple;
+	bh=0KCo74JW0R7cj4rrSXgXdNuuxSCj5INfxzKV5DEPMwA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=qFXyZdFky7ZB0iZ9+KaMkoWUVzwK73Uf5yEH4PUNXnqv1Wqf3McgbOeLqLzQeASLA9Rf+7OezjGekwDdF5XxXHX4mqvUECAczRjbPZ2VTuHrjfSur6t7BIr+mNvxKnrYBUvSfmYRP0bnrAcIaiZXDYiIjE/dAG1Wr9/spz4swnM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rhcOf-0006re-CA; Tue, 05 Mar 2024 22:32:25 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rhcOe-004cmN-N6; Tue, 05 Mar 2024 22:32:24 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rhcOe-000IT5-22;
+	Tue, 05 Mar 2024 22:32:24 +0100
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Nishanth Menon <nm@ti.com>,
+	Tero Kristo <kristo@kernel.org>,
+	Santosh Shilimkar <ssantosh@kernel.org>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	kernel@pengutronix.de
+Subject: [PATCH 3/3] reset: ti-sci: Convert to platform remove callback returning void
+Date: Tue,  5 Mar 2024 22:32:05 +0100
+Message-ID:  <ab374da386cafd6748aac5bdf66e6be3e1860509.1709674157.git.u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <cover.1709674157.git.u.kleine-koenig@pengutronix.de>
+References: <cover.1709674157.git.u.kleine-koenig@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH rdma-next v3 2/2] RDMA/mana_ib: Use virtual address in dma
- regions for MRs
-To: Konstantin Taranov <kotaranov@linux.microsoft.com>,
- kotaranov@microsoft.com, sharmaajay@microsoft.com, longli@microsoft.com,
- jgg@ziepe.ca, leon@kernel.org
-Cc: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1709560361-26393-1-git-send-email-kotaranov@linux.microsoft.com>
- <1709560361-26393-3-git-send-email-kotaranov@linux.microsoft.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <1709560361-26393-3-git-send-email-kotaranov@linux.microsoft.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1732; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=0KCo74JW0R7cj4rrSXgXdNuuxSCj5INfxzKV5DEPMwA=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBl549WCXF5BB4pcMzdyMRiMUfC7yDpKh2iaJHow RBlvhGCM+qJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZeePVgAKCRCPgPtYfRL+ TtJsCACwBOqedx5DD+BLQigiE6xZs8ztjqp5kRLf//PAGCMnfX/ObpPhFqIhvSyD3otWmb9MGFn OYMdWzA9bXwJYnwhCI7WZ39j+2/9BOdpgspbWxJqRhlC1LAuouekvnUQfwnZqppChsys1oWjFkX WOUJYgObSAkljvVJs+U5i57UHsGKnQDW5LWz3ZsNvojHh+XptjjQtxY5z9oBkS5YX5k8jOsqhp+ J15eFel536801i1Im7KsOGtGzkb26fvbHI5sv1mDUAzvaEwla+4S6+swMmQK/30/lIJmHQ/jv0u qy/WCGuCqnHYLWv6u3IAgICb1ThFIq2R7Tjh3LlImw8eAYei
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-在 2024/3/4 14:52, Konstantin Taranov 写道:
-> From: Konstantin Taranov <kotaranov@microsoft.com>
-> 
-> Introduce mana_ib_create_dma_region() to create dma regions with iova
-> for MRs. It allows creating MRs with any page offset. Previously,
-> only page-aligned addresses worked.
-> 
-> For dma regions that must have a zero dma offset (e.g., for queues),
-> mana_ib_create_zero_offset_dma_region() is added.
-> To get the zero offset, ib_umem_find_best_pgoff() is used with zero
-> pgoff_bitmask.
-> 
-> Fixes: 0266a177631d ("RDMA/mana_ib: Add a driver for Microsoft Azure Network Adapter")
-> Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
-> ---
->   drivers/infiniband/hw/mana/cq.c      |  4 +--
->   drivers/infiniband/hw/mana/main.c    | 40 +++++++++++++++++++++-------
->   drivers/infiniband/hw/mana/mana_ib.h |  7 +++--
->   drivers/infiniband/hw/mana/mr.c      |  4 +--
->   drivers/infiniband/hw/mana/qp.c      |  6 ++---
->   drivers/infiniband/hw/mana/wq.c      |  4 +--
->   6 files changed, 45 insertions(+), 20 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/mana/cq.c b/drivers/infiniband/hw/mana/cq.c
-> index 83d20c3f0..4a71e678d 100644
-> --- a/drivers/infiniband/hw/mana/cq.c
-> +++ b/drivers/infiniband/hw/mana/cq.c
-> @@ -48,7 +48,7 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
->   		return err;
->   	}
->   
-> -	err = mana_ib_gd_create_dma_region(mdev, cq->umem, &cq->gdma_region);
-> +	err = mana_ib_create_zero_offset_dma_region(mdev, cq->umem, &cq->gdma_region);
->   	if (err) {
->   		ibdev_dbg(ibdev,
->   			  "Failed to create dma region for create cq, %d\n",
-> @@ -57,7 +57,7 @@ int mana_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
->   	}
->   
->   	ibdev_dbg(ibdev,
-> -		  "mana_ib_gd_create_dma_region ret %d gdma_region 0x%llx\n",
-> +		  "create_dma_region ret %d gdma_region 0x%llx\n",
->   		  err, cq->gdma_region);
->   
->   	/*
-> diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
-> index dd570832d..71e33feee 100644
-> --- a/drivers/infiniband/hw/mana/main.c
-> +++ b/drivers/infiniband/hw/mana/main.c
-> @@ -301,8 +301,8 @@ mana_ib_gd_add_dma_region(struct mana_ib_dev *dev, struct gdma_context *gc,
->   	return 0;
->   }
->   
-> -int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
-> -				 mana_handle_t *gdma_region)
-> +static int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
-> +					mana_handle_t *gdma_region, unsigned long page_sz)
->   {
->   	struct gdma_dma_region_add_pages_req *add_req = NULL;
->   	size_t num_pages_processed = 0, num_pages_to_handle;
-> @@ -314,7 +314,6 @@ int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
->   	size_t max_pgs_create_cmd;
->   	struct gdma_context *gc;
->   	size_t num_pages_total;
-> -	unsigned long page_sz;
->   	unsigned int tail = 0;
->   	u64 *page_addr_list;
->   	void *request_buf;
-> @@ -323,12 +322,6 @@ int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
->   	gc = mdev_to_gc(dev);
->   	hwc = gc->hwc.driver_data;
->   
-> -	/* Hardware requires dma region to align to chosen page size */
-> -	page_sz = ib_umem_find_best_pgsz(umem, PAGE_SZ_BM, 0);
-> -	if (!page_sz) {
-> -		ibdev_dbg(&dev->ib_dev, "failed to find page size.\n");
-> -		return -ENOMEM;
-> -	}
->   	num_pages_total = ib_umem_num_dma_blocks(umem, page_sz);
->   
->   	max_pgs_create_cmd =
-> @@ -414,6 +407,35 @@ int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
->   	return err;
->   }
->   
-> +int mana_ib_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
-> +			      mana_handle_t *gdma_region, u64 virt)
-> +{
-> +	unsigned long page_sz;
-> +
-> +	page_sz = ib_umem_find_best_pgsz(umem, PAGE_SZ_BM, virt);
-> +	if (!page_sz) {
-> +		ibdev_dbg(&dev->ib_dev, "Failed to find page size.\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	return mana_ib_gd_create_dma_region(dev, umem, gdma_region, page_sz);
-> +}
-> +
-> +int mana_ib_create_zero_offset_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
-> +					  mana_handle_t *gdma_region)
-> +{
-> +	unsigned long page_sz;
-> +
-> +	/* Hardware requires dma region to align to chosen page size */
-> +	page_sz = ib_umem_find_best_pgoff(umem, PAGE_SZ_BM, 0);
-> +	if (!page_sz) {
-> +		ibdev_dbg(&dev->ib_dev, "Failed to find page size.\n");
-> +		return -EINVAL;
-> +	}
+The .remove() callback for a platform driver returns an int which makes
+many driver authors wrongly assume it's possible to do error handling by
+returning an error code. However the value returned is ignored (apart
+from emitting a warning) and this typically results in resource leaks.
 
-Thanks a lot. I am fine with it.
-Reviewed-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+To improve here there is a quest to make the remove callback return
+void. In the first step of this quest all drivers are converted to
+remove_new(), which already returns void. Eventually after all drivers
+are converted, .remove_new() will be renamed to .remove().
 
-Zhu Yanjun
+Trivially convert this driver from always returning zero in the remove
+callback to the void returning variant.
 
-> +
-> +	return mana_ib_gd_create_dma_region(dev, umem, gdma_region, page_sz);
-> +}
-> +
->   int mana_ib_gd_destroy_dma_region(struct mana_ib_dev *dev, u64 gdma_region)
->   {
->   	struct gdma_context *gc = mdev_to_gc(dev);
-> diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
-> index 6a03ae645..f83390eeb 100644
-> --- a/drivers/infiniband/hw/mana/mana_ib.h
-> +++ b/drivers/infiniband/hw/mana/mana_ib.h
-> @@ -160,8 +160,11 @@ static inline struct net_device *mana_ib_get_netdev(struct ib_device *ibdev, u32
->   
->   int mana_ib_install_cq_cb(struct mana_ib_dev *mdev, struct mana_ib_cq *cq);
->   
-> -int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
-> -				 mana_handle_t *gdma_region);
-> +int mana_ib_create_zero_offset_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
-> +					  mana_handle_t *gdma_region);
-> +
-> +int mana_ib_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
-> +			      mana_handle_t *gdma_region, u64 virt);
->   
->   int mana_ib_gd_destroy_dma_region(struct mana_ib_dev *dev,
->   				  mana_handle_t gdma_region);
-> diff --git a/drivers/infiniband/hw/mana/mr.c b/drivers/infiniband/hw/mana/mr.c
-> index ee4d4f834..b70b13484 100644
-> --- a/drivers/infiniband/hw/mana/mr.c
-> +++ b/drivers/infiniband/hw/mana/mr.c
-> @@ -127,7 +127,7 @@ struct ib_mr *mana_ib_reg_user_mr(struct ib_pd *ibpd, u64 start, u64 length,
->   		goto err_free;
->   	}
->   
-> -	err = mana_ib_gd_create_dma_region(dev, mr->umem, &dma_region_handle);
-> +	err = mana_ib_create_dma_region(dev, mr->umem, &dma_region_handle, iova);
->   	if (err) {
->   		ibdev_dbg(ibdev, "Failed create dma region for user-mr, %d\n",
->   			  err);
-> @@ -135,7 +135,7 @@ struct ib_mr *mana_ib_reg_user_mr(struct ib_pd *ibpd, u64 start, u64 length,
->   	}
->   
->   	ibdev_dbg(ibdev,
-> -		  "mana_ib_gd_create_dma_region ret %d gdma_region %llx\n", err,
-> +		  "create_dma_region ret %d gdma_region %llx\n", err,
->   		  dma_region_handle);
->   
->   	mr_params.pd_handle = pd->pd_handle;
-> diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
-> index 5d4c05dcd..6e7627745 100644
-> --- a/drivers/infiniband/hw/mana/qp.c
-> +++ b/drivers/infiniband/hw/mana/qp.c
-> @@ -357,8 +357,8 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
->   	}
->   	qp->sq_umem = umem;
->   
-> -	err = mana_ib_gd_create_dma_region(mdev, qp->sq_umem,
-> -					   &qp->sq_gdma_region);
-> +	err = mana_ib_create_zero_offset_dma_region(mdev, qp->sq_umem,
-> +						    &qp->sq_gdma_region);
->   	if (err) {
->   		ibdev_dbg(&mdev->ib_dev,
->   			  "Failed to create dma region for create qp-raw, %d\n",
-> @@ -367,7 +367,7 @@ static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
->   	}
->   
->   	ibdev_dbg(&mdev->ib_dev,
-> -		  "mana_ib_gd_create_dma_region ret %d gdma_region 0x%llx\n",
-> +		  "create_dma_region ret %d gdma_region 0x%llx\n",
->   		  err, qp->sq_gdma_region);
->   
->   	/* Create a WQ on the same port handle used by the Ethernet */
-> diff --git a/drivers/infiniband/hw/mana/wq.c b/drivers/infiniband/hw/mana/wq.c
-> index 372d36151..7c9c69962 100644
-> --- a/drivers/infiniband/hw/mana/wq.c
-> +++ b/drivers/infiniband/hw/mana/wq.c
-> @@ -46,7 +46,7 @@ struct ib_wq *mana_ib_create_wq(struct ib_pd *pd,
->   	wq->wq_buf_size = ucmd.wq_buf_size;
->   	wq->rx_object = INVALID_MANA_HANDLE;
->   
-> -	err = mana_ib_gd_create_dma_region(mdev, wq->umem, &wq->gdma_region);
-> +	err = mana_ib_create_zero_offset_dma_region(mdev, wq->umem, &wq->gdma_region);
->   	if (err) {
->   		ibdev_dbg(&mdev->ib_dev,
->   			  "Failed to create dma region for create wq, %d\n",
-> @@ -55,7 +55,7 @@ struct ib_wq *mana_ib_create_wq(struct ib_pd *pd,
->   	}
->   
->   	ibdev_dbg(&mdev->ib_dev,
-> -		  "mana_ib_gd_create_dma_region ret %d gdma_region 0x%llx\n",
-> +		  "create_dma_region ret %d gdma_region 0x%llx\n",
->   		  err, wq->gdma_region);
->   
->   	/* WQ ID is returned at wq_create time, doesn't know the value yet */
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+ drivers/reset/reset-ti-sci.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/reset/reset-ti-sci.c b/drivers/reset/reset-ti-sci.c
+index cc01fa5b0bea..d384da0982fa 100644
+--- a/drivers/reset/reset-ti-sci.c
++++ b/drivers/reset/reset-ti-sci.c
+@@ -235,20 +235,18 @@ static int ti_sci_reset_probe(struct platform_device *pdev)
+ 	return reset_controller_register(&data->rcdev);
+ }
+ 
+-static int ti_sci_reset_remove(struct platform_device *pdev)
++static void ti_sci_reset_remove(struct platform_device *pdev)
+ {
+ 	struct ti_sci_reset_data *data = platform_get_drvdata(pdev);
+ 
+ 	reset_controller_unregister(&data->rcdev);
+ 
+ 	idr_destroy(&data->idr);
+-
+-	return 0;
+ }
+ 
+ static struct platform_driver ti_sci_reset_driver = {
+ 	.probe = ti_sci_reset_probe,
+-	.remove = ti_sci_reset_remove,
++	.remove_new = ti_sci_reset_remove,
+ 	.driver = {
+ 		.name = "ti-sci-reset",
+ 		.of_match_table = ti_sci_reset_of_match,
+-- 
+2.43.0
 
 
