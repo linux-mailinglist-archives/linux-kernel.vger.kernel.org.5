@@ -1,73 +1,71 @@
-Return-Path: <linux-kernel+bounces-92979-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92980-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DBBE8728F0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 21:51:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE1418728F5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 21:55:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE9E02848AE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 20:51:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E95471C2222B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 20:55:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45FD912B168;
-	Tue,  5 Mar 2024 20:51:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C99412AAD3;
+	Tue,  5 Mar 2024 20:55:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kU0xokt6"
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bOEnPUEZ"
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F6101758C;
-	Tue,  5 Mar 2024 20:51:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 389935C5FD
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 20:55:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709671909; cv=none; b=hs6HPrnoCxf6eloAIm/1W4SpDY50ezoilrdAzquKfUXWC0z9VtT3NFjYBEHnqVbOdiMsQY0UzYRyHkEssZEm2iiAKtLJi4Uzw8kyCOGvVUg2i0bRDsFGt5StuCCixDuEV1CBt8Q9rIoEBmpwBlfFIztEn3IH1CLTLwJMdND6Wig=
+	t=1709672129; cv=none; b=t9GJt12/2e+CrB7/VOiFVycBRi1mRw2MeyTFR9oYG+rSz5PHaGvTVcqFH4FDO1uqC5PPswgazArzEOONWprPyZO13z7HwVNl9Qtk69Bbz8QZEKerkwtZW1L8b+hsf+efcv8befhq5EYeiV0aAwhZ3ibgQNBS2oyMUK3Cc4RIH4w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709671909; c=relaxed/simple;
-	bh=SjSiPVcEcyD4W6ufsE2+x5JmNWbIASUDZW/T1vteaWg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=n1X3dFwvLBCXMib2aTOVzped5rHr4Qqg6UFsXhj9wgS3AoXnjoKLYEZS8PdNp9Nn4yriOkl693RSuEzJeLx6tgrypcpE9jbUKEmjWxiFWvIbVhut6w75BioK959FalLJ/KSIOflN04gOTmQw1rcu0vh4P2/HDzX6WwWGCRsTz2g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kU0xokt6; arc=none smtp.client-ip=209.85.216.44
+	s=arc-20240116; t=1709672129; c=relaxed/simple;
+	bh=BN1b6zvn0mXQcEw8gr8v8xPVeOlkbb0NQ2kIIOQHa94=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=Dg936HJaLXePJ4ijnX1UyQkzPfXA5KLiRjXdsOLobFv/857EV9Rhg4NPNlP4mRbSTIox4sLhrplMCHxuwoWPSXAWPTGHWYGLjxEFbjr4LsygpHJZDLF0yDCJ25s2vKgfP+iz5PWpZ2saySXscMlSaYXIDB/Kn7CxTzZo/c4O+Lc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bOEnPUEZ; arc=none smtp.client-ip=209.85.218.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2998950e951so3704897a91.2;
-        Tue, 05 Mar 2024 12:51:47 -0800 (PST)
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a3fb8b0b7acso779224966b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 12:55:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709671907; x=1710276707; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fnn+qBNjgeLnA7Zdn1ytKrCjMf49ommBffpdqi1uL14=;
-        b=kU0xokt6UoFnier7/ZVXswWvplgnhv1jZWawElQc1u3Vn68aYtVWnwEP9UlJqU4XXu
-         OXv5UosW6uRBTCDOA3IoWHkJHyYQ9bSR1bT+T9CJycKfNSoTIOjjPTOUhpCmp257Qy1N
-         cOzucKbaJcP/x5TI+F2IMEb+ilO+p/+LQzqsgDEMi89sgJ2/D3qSP3o1YO9CWQqJz6ft
-         OGbe8TOzdyyjxo8wVF/ij2376r4Dvj8LwdHhZI7wkkXR8J9/GXwmRDUfDdrai4jy7tUf
-         A1OngfUIo9qhsnUG6yP69qqAs+w283zcCfsR+Q+Ezi/pV+a1yHmP/DCm1JDtoCHsBgKo
-         Sywg==
+        d=gmail.com; s=20230601; t=1709672126; x=1710276926; darn=vger.kernel.org;
+        h=content-transfer-encoding:autocrypt:subject:from:cc:to
+         :content-language:user-agent:mime-version:date:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oP24OS7ZzqD+Zl+BkOuZfNprFfPd65vwT7x7albUKok=;
+        b=bOEnPUEZGo2zYYgsjc6jdFhPr39G46QgCuLUMDdJDsMUzcvD44c6bPTy1Ejgx/f+7U
+         /UIvlimPa+SKetAjFG1f8shdmzxtdq9H8526BdMuGXSmX4e7TXDLb8oijBHXgdmjT7k4
+         VNfrC058g0zjxJD9z96y0gPnkjgOKdKPyAoCdvPWlHZg7XUmZotIDTvTVSV/D/QaSu8y
+         8tjMz9qs7CaLSloTujfLdY1PzCFn9kCdyKI6hu7Kt0Nk6CLppfRvqi64hd0AyvER1uxU
+         L+2ZEDINoS6+4LWRblhiyt4jW3ADXPEzik/9wqFWVricS9TFZnX9/r3vPCONZQH14CVu
+         Np7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709671907; x=1710276707;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1709672126; x=1710276926;
+        h=content-transfer-encoding:autocrypt:subject:from:cc:to
+         :content-language:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fnn+qBNjgeLnA7Zdn1ytKrCjMf49ommBffpdqi1uL14=;
-        b=g/Stgee53wrL/H1grT2qTJVoagCh+hJuvK+BcQWnxBt+L6wH+e4xwMnc1GsqIUCP0C
-         z+/Q/UYfbbbfKw01VbxHVgenVtyXnADu+KTBuna4l5L3qu0CJEHQLFGZDlNeby1qI306
-         mM8e6WJeOWPRoNAzGYeOVFwgoGNrXI5+Oro5rCnyDhRlhdGFn2PlcjLGDvQtddgPIef7
-         AzuTZZT4F3GfCYly5mXUiFa4v3U3oWtjGEusd5ZmY9raemPn1rK88C6atguWn5YnmY+4
-         LWkNizIjKiib0GHYxPDXh9U9UrM+ILV3JZ48C5Zxeky/aAF/3CHYJ+MnFPObOIJ4vioZ
-         C5sQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU5pbRri/UqremLP1n9jS/+T5rLfsfG7U9LdQ/PJJFccDAdCPaNd7mEW4179LnDAKr1JvvLs73LJlPlabDE2YCqPSCNW0F35OiqTqziSSz1hHVGekbo1ssVg2d6G8ljZOhXFB6A
-X-Gm-Message-State: AOJu0YwdYMJi3PlCF8551Cr6jCJ96H6gXpFaUGeEKmFz4d/uoAb7AKFr
-	OMjYQ9mqtSzV6r+VFoXOV3jFnGjWN+3J/5eIFK8a0My3AbKrL7Rk
-X-Google-Smtp-Source: AGHT+IF3mm4NwyqtTufGOJgmT7DBewSlt5bothb7FXlxENeR6anuCge2sR0DoCkr4rlTwamTf1QdZA==
-X-Received: by 2002:a17:90a:dd82:b0:299:489f:a126 with SMTP id l2-20020a17090add8200b00299489fa126mr9619659pjv.41.1709671907174;
-        Tue, 05 Mar 2024 12:51:47 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id ep2-20020a17090ae64200b0029932d175c3sm580395pjb.0.2024.03.05.12.51.42
+        bh=oP24OS7ZzqD+Zl+BkOuZfNprFfPd65vwT7x7albUKok=;
+        b=rnLpN0m2p8BhpNWt9fQFXdnt8oQwODrkdpm1iLfUDc1XUyQifV+2RPcpXRRD1k/6md
+         11sUcEEySeOBqOq1tojbXz8W5mCPKbdebsU/XANiYIPPmAcGXeh55HvzEw/bjjyxiBjY
+         2VcowWaiSuzKPC457gRKY45oU79MRGI36NfLn9s+arqM+I1x7Uunh7hw7yixmniRD1Iq
+         UeQs1+k/R9pibumQB6PSKWGgzQBgMGWj/QiiDQvJCpd0VqSVd/Q8FooD/4DMFB71pU6u
+         LJ8CmomV6l+6i/nCEmOkfOWVBajwqdYgcpj9bgW89wOTj+D3XnmNFy7c+YV7L/jM3Fkl
+         zQ/w==
+X-Gm-Message-State: AOJu0Yx8NPVrxqQBz2zjrfcTEFgy/qE7mICL0fecsQ0qIJKAcoVrdapp
+	3vY8OjZYWK7sFhC+4Cv+Ha/65ZPwT4XuwU8LL4KYv9Fw387e4rlN
+X-Google-Smtp-Source: AGHT+IHSrhTYl6q2VuQD4XG7sZkLrlViBxtvmS9oLq/KExJkUc7zwwXWdZpsW+kuutlXNDTk4vUUsg==
+X-Received: by 2002:a17:906:c7cc:b0:a44:7a34:e620 with SMTP id dc12-20020a170906c7cc00b00a447a34e620mr9040115ejb.4.1709672126245;
+        Tue, 05 Mar 2024 12:55:26 -0800 (PST)
+Received: from ?IPV6:2a01:c22:724c:8900:6035:9a03:530d:5671? (dynamic-2a01-0c22-724c-8900-6035-9a03-530d-5671.c22.pool.telefonica.de. [2a01:c22:724c:8900:6035:9a03:530d:5671])
+        by smtp.googlemail.com with ESMTPSA id s2-20020a1709060d6200b00a45a73e0be9sm1097405ejh.180.2024.03.05.12.55.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Mar 2024 12:51:45 -0800 (PST)
-Message-ID: <5a8f45b5-3199-433f-bbf5-cfe7c9e77e45@gmail.com>
-Date: Tue, 5 Mar 2024 12:51:41 -0800
+        Tue, 05 Mar 2024 12:55:25 -0800 (PST)
+Message-ID: <b1d69d07-14a9-4f10-9155-a0a46d8ea872@gmail.com>
+Date: Tue, 5 Mar 2024 21:55:26 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,45 +73,100 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5.15 00/83] 5.15.151-rc2 review
 Content-Language: en-US
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
-Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
- conor@kernel.org, allen.lkml@gmail.com
-References: <20240305113135.403426564@linuxfoundation.org>
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20240305113135.403426564@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Jean Delvare <jdelvare@suse.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+From: Heiner Kallweit <hkallweit1@gmail.com>
+Subject: [PATCH] firmware: dmi: Add info message for number of populated and
+ total memory slots
+Autocrypt: addr=hkallweit1@gmail.com; keydata=
+ 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
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 3/5/24 03:31, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.151 release.
-> There are 83 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 07 Mar 2024 11:31:11 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.151-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+As part of adding support for calling i2c_register_spd() on muxed SMBUS
+segments the same message has been removed from i2c_register_spd().
+However users may find it useful, therefore reintroduce it as part of
+the DMI scan code.
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+---
+ drivers/firmware/dmi_scan.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+diff --git a/drivers/firmware/dmi_scan.c b/drivers/firmware/dmi_scan.c
+index 015c95a82..2c682b580 100644
+--- a/drivers/firmware/dmi_scan.c
++++ b/drivers/firmware/dmi_scan.c
+@@ -42,6 +42,7 @@ static struct dmi_memdev_info {
+ 	u8 type;		/* DDR2, DDR3, DDR4 etc */
+ } *dmi_memdev;
+ static int dmi_memdev_nr;
++static int dmi_memdev_populated_nr;
+ 
+ static const char * __init dmi_string_nosave(const struct dmi_header *dm, u8 s)
+ {
+@@ -448,6 +449,9 @@ static void __init save_mem_devices(const struct dmi_header *dm, void *v)
+ 	else
+ 		bytes = (u64)get_unaligned((u32 *)&d[0x1C]) << 20;
+ 
++	if (bytes)
++		dmi_memdev_populated_nr++;
++
+ 	dmi_memdev[nr].size = bytes;
+ 	nr++;
+ }
+@@ -824,6 +828,8 @@ void __init dmi_setup(void)
+ 		return;
+ 
+ 	dmi_memdev_walk();
++	pr_info("DMI: Memory slots populated: %d/%d\n",
++		dmi_memdev_populated_nr, dmi_memdev_nr);
+ 	dump_stack_set_arch_desc("%s", dmi_ids_string);
+ }
+ 
 -- 
-Florian
+2.44.0
 
 
