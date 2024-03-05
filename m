@@ -1,199 +1,181 @@
-Return-Path: <linux-kernel+bounces-92318-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92319-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7B73871E63
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:59:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32BE1871E66
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:59:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7503C1F230ED
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:59:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 93347284FE5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:59:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC64456758;
-	Tue,  5 Mar 2024 11:58:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CB5256758;
+	Tue,  5 Mar 2024 11:59:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Xnx657rB"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MKXRo6WF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74A6758ACA
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 11:58:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D8A858AC3;
+	Tue,  5 Mar 2024 11:59:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709639936; cv=none; b=PB2pVWfrzsiCGP1I8+DQ57DKJ6Shv5+zjHu9tSnVoLQQXv1F8LIV4lR/KhoGF0rxkDsMUkThpt7GSRD5Z1YB7s59LfeJl6Kj2G+GFVx1yg0PejEcg2Ki3pO826xMkWA2awis+jpEBInyyC3YnsCA6ihVS39LZkrWyMu90auP/MA=
+	t=1709639948; cv=none; b=TmlDRq3FIkMWjdQVAbESXu6ZnoiLZmgxiRKyAUzl6cHh8iJfkHv+Zjz4jeSdtRu+AVXGKHG91RJgFqc/bMuBVz/gPAoqUnHWzOcBLqOs2x60rzXo1/P4UpRUADK2fBJ3/ZlAeeNPNZxMd5gtRjXVCeW9+MGncL3wjplnasq9dRk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709639936; c=relaxed/simple;
-	bh=7PxlTkj360DZ8nVuDS7rKHmqSVpwgjXZS4/4TNCTeKw=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=fH+KmhmPdfyg44n/9123dJOhS35XgMgeQ6y5TAarzcRJr+ewaATbn6DeidPFu0UcHmjIdyxopKc8ATQaz8EZxGvDIu7XA0aU0eG5Nst69/o5j6ptRrBqZ0KT+w77gwPlsrTQzmYu93EGZv6VqsyWtHIH1NLYd/MWnpqA4w+Cr04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Xnx657rB; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcc0bcf9256so7184534276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 03:58:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709639933; x=1710244733; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Hozc51XP3BO0o1BYePnyEPgabGPbvjIMHS8HEHlaKbA=;
-        b=Xnx657rBaMiBX6jYcDXgyextEpC94ydCQENbgsOkoYkdS+hJcNF+rxZIplP681EUeh
-         IeRPXPsjH7OpyDmXpZWX5lsLzEZcCjktBoaVScUK4/Pi/RvPZhQfyyTfX28N60G7c8iz
-         sFAqNNi1nXcxP+eHGa7hG3jnpbwK/1u4Amr9/9Oml2kgU1S/qj8tLoxNxc3iELIjotS6
-         vGzKPgfcUxTX6SO1BGPFkwFLHYyeEtiMCPFtWqQZHeAYQi7jNpXenNcOjx/8bpvsHPJ8
-         R69J3xXs5qxSvkP2jjmhRKB0hTTAXZciyvCMzBad/e1gw55fdLbuDguKrldjgVRShToU
-         r15Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709639933; x=1710244733;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Hozc51XP3BO0o1BYePnyEPgabGPbvjIMHS8HEHlaKbA=;
-        b=OFe1hPs2xs68Y+8F7g6Fz1m2tNb+FINxzH2PhmJlWnKOEuIqQsTauLnUbiZB+kS45w
-         arXpaMToZvG7uqoz4TwUSXBVuNHjUWSLSM3brjrALv8Jkz52J9ob+Aot3h2w7u7P01zc
-         ItYqmo8sok6ScuP52Z9xxZ55UAIhgkWp+HYCZXF91u03gGGkSnoVldQ0pp9+AlS4JUle
-         rmPKFK9oUDpzjH/BvGnw3DygW+97VlHzb+Eokt5NNwmkMrEVXWmxaZtFVYCh/hPY4Fkz
-         ROs/8Z4xgrbEGFtkYrMw0nY+hSG05FfTlg8n2YtdpJWZ3Exob/guccbT+1ueRDHNiupD
-         Buqg==
-X-Forwarded-Encrypted: i=1; AJvYcCXLnrrKXM1eo2L0d89dQwNb/1PgVdtYx5WuZjkU4AF3BdVye0drpBEIyPSS1V8l/vMxchhEETMJnv6a7dwq729Hms7919lFBe+pV1y2
-X-Gm-Message-State: AOJu0YzfpUdIAXml7u9WZOiSur5FGlnweIeBbkk4IyhmFWet6MvM8XTJ
-	Ryxnuj0XcAxzoZ2VcA6s7XXKNZ9LBKoOkhQoma9diNEl44+dTQWlUEo4DicvQ2nTBQzT9ztyGeq
-	HK3kGRTd/OYg2AQ==
-X-Google-Smtp-Source: AGHT+IGtkyRjezXpYuKLv219plL2ChUtQcYNxwWKysP9iLUmgqXXI4qu/9Fzh+shZ2KYFCoqcQICZQfvC50NeFc=
-X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
- (user=aliceryhl job=sendgmr) by 2002:a05:6902:f02:b0:dcc:53c6:1133 with SMTP
- id et2-20020a0569020f0200b00dcc53c61133mr387214ybb.13.1709639933402; Tue, 05
- Mar 2024 03:58:53 -0800 (PST)
-Date: Tue, 05 Mar 2024 11:58:45 +0000
+	s=arc-20240116; t=1709639948; c=relaxed/simple;
+	bh=ZuHKS4WAfQy4zt4fPmW1MgMJAVVJ8fjt3YlL0SdUHfI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sM4UaSaLN2Q7wDPk9fsRbeobdWS8rNnrZeGhJpT2Zlhs14ysxSw7zrgABegfk1et68bvFBZR2TSIJTS7xYUCItwtbr5Wg59LpJkulUT2C1AEwAPHmi6/EGXdijtIioX7Jc0gujm19lZv2Ngk2nbPt5B92eB0vYsRXri2O2O5R+g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MKXRo6WF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE7B1C433F1;
+	Tue,  5 Mar 2024 11:59:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709639947;
+	bh=ZuHKS4WAfQy4zt4fPmW1MgMJAVVJ8fjt3YlL0SdUHfI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MKXRo6WFJlbuF0hc8/AmsuglcuJS9koXJ3sPvTx+zLcBRVxmvf4vG0EtTQnHsCziK
+	 Yxpcj4okjhli/Q7pm+66sgXKWdTJ0PvkUk4Gvn7PmKKLKRBWC2j2X686CDz45r3gZE
+	 0NiZk2sZo8CkPVbCSxLqBeigoGXXm7DnObJozyXLKxhrAhGAPekzN9BGacR5twv1nl
+	 urIXbUrL8NECZqsJ9l67JYti/JtWE8gIrp2OH8k+cjdw8XLbcbnE6Qtsjuu/mxIvZH
+	 jIufYlgl2O7GCcft1UPfvnwTuZmjp2RCXBuA4ITjVG7OsldnVsqSq8CJWtUS52ZdYG
+	 IrC8VCO3toD5w==
+Date: Tue, 5 Mar 2024 11:59:00 +0000
+From: Lee Jones <lee@kernel.org>
+To: Abdel Alkuor <alkuor@gmail.com>
+Cc: Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Alice Chen <alice_chen@richtek.com>,
+	Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+	ChiYuan Huang <cy_huang@richtek.com>,
+	=?iso-8859-1?Q?Andr=E9?= Apitzsch <git@apitzsch.eu>,
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+	Jean-Jacques Hiblot <jjhiblot@traphandler.com>,
+	ChiaEn Wu <chiaen_wu@richtek.com>, linux-leds@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] leds: Add NCP5623 multi-led driver
+Message-ID: <20240305115900.GC86322@google.com>
+References: <20240305042049.1533279-1-alkuor@gmail.com>
+ <20240305042049.1533279-2-alkuor@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAPQI52UC/32NQQ7CIBBFr9LM2jFAqaauvIfpYgJTIGIx0FRN0
- 7uLPYDL95L//gqFc+ACl2aFzEsoIU0V1KEB42lyjMFWBiWUFq3QWDzZ9EJDMWKZydyxN7I/k25
- P0vZQd8/MY3jvzdtQ2Ycyp/zZLxb5s/9qi0SJo+g6plELUubqUnKRjyY9YNi27Qu11U05swAAA A==
-X-Developer-Key: i=aliceryhl@google.com; a=openpgp; fpr=49F6C1FAA74960F43A5B86A1EE7A392FDE96209F
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3571; i=aliceryhl@google.com;
- h=from:subject:message-id; bh=7PxlTkj360DZ8nVuDS7rKHmqSVpwgjXZS4/4TNCTeKw=;
- b=owEBbQKS/ZANAwAKAQRYvu5YxjlGAcsmYgBl5wj2Nz7DwoaN21odkmrdYihFSQ09qs4VB8MPj
- FpmgQm0ExKJAjMEAAEKAB0WIQSDkqKUTWQHCvFIvbIEWL7uWMY5RgUCZecI9gAKCRAEWL7uWMY5
- Rs3ID/4oaO+LZxloHPGCoqFKPWlzfItOuEOtdeeU0RXJy7AFuvU46WHtf5LmMCTFx21GbRMctzM
- lXiTlnvg+NParm1UlZRTYcSI2fT3ffsuNZ7a+eUDHT1/VcYLJEG2iRqPir4JfKcQfwD8qWspIZb
- xFRuc0oibWDAw5+3BQfBucrriRhsektrObfPcZ9fK+9U/LCPCDCjQ/arfo3ezaF1g1OPk5UlRDc
- CqA2yCabuxDwhsXmoapOJPdaCR/vssc+a1tOnDLoDgqCOxub5ijuOpF9H8LrH0XHiStj2+nOeS1
- Wt1mk9UmPZG96xCcTb1EzKnGGYc7pJAW+V/GfYbVao26Ts/Jp/7GBJazP8m6s7MuJtaYBP/Iju8
- Ne7kzcI3zhGo5uietKjBmkRYmYadS70sgALRLc8K8fsSyWsBAnX9bficLF881wbl8bxcXItqCCb
- GZH4vYCdepHU+P0hcftGgrdNaGS2HBKeP1ebN3ZlP3ce368NxI9vvMe7cpyEhjK6YeLqOlYiHmD
- g0B2i7urc5sg/d1+8CY3GuAknH5sEoAj0oRMQSNbqIumMpAA6BeU3JtooBbT6Z20rgW4AYwpyOY
- 81J4C56kflgYLvy8ZjABiuVgHzN0RmY//KX+QpCt3erqq6DD893efurBgfQkTb93d5EC4JrUtYK ixKX+pqjxnEuEIQ==
-X-Mailer: b4 0.13-dev-26615
-Message-ID: <20240305-shadow-call-stack-v2-1-c7b4a3f4d616@google.com>
-Subject: [PATCH v2] rust: add flags for shadow call stack sanitizer
-From: Alice Ryhl <aliceryhl@google.com>
-To: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Jamie Cunliffe <Jamie.Cunliffe@arm.com>, Sami Tolvanen <samitolvanen@google.com>
-Cc: Masahiro Yamada <masahiroy@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Nicolas Schier <nicolas@fjasle.eu>, Ard Biesheuvel <ardb@kernel.org>, Marc Zyngier <maz@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Mark Brown <broonie@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Kees Cook <keescook@chromium.org>, 
-	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	"=?utf-8?q?Bj=C3=B6rn_Roy_Baron?=" <bjorn3_gh@protonmail.com>, Benno Lossin <benno.lossin@proton.me>, 
-	Andreas Hindborg <a.hindborg@samsung.com>, Valentin Obst <kernel@valentinobst.de>, 
-	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, rust-for-linux@vger.kernel.org, 
-	Alice Ryhl <aliceryhl@google.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240305042049.1533279-2-alkuor@gmail.com>
 
-Add flags to support the shadow call stack sanitizer, both in the
-dynamic and non-dynamic modes.
+On Mon, 04 Mar 2024, Abdel Alkuor wrote:
 
-Right now, the compiler will emit the warning "unknown feature specified
-for `-Ctarget-feature`: `reserve-x18`". However, the compiler still
-passes it to the codegen backend, so the flag will work just fine. Once
-rustc starts recognizing the flag (or provides another way to enable the
-feature), it will stop emitting this warning. See [1] for the relevant
-issue.
+> NCP5623 is DC-DC multi-LEDs driver which has three PWMs that can be
+> programmed up to 32 steps giving 32768 colors hue.
+> 
+> NCP5623 driver supports gradual dimming upward/downward with programmable
+> delays. Also, the driver supports driving a single LED or multi-LED
+> like RGB.
+> 
+> Signed-off-by: Abdel Alkuor <alkuor@gmail.com>
+> ---
+> Changes in v3:
+>  - Add defines for magic numbers
+>  - Fix code style
+>  - Add a comment how ncp->delay is calculated
+>  - Don't free mc_node when probe is successful
+>  - Link to v2: https://lore.kernel.org/all/20240217230956.630522-2-alkuor@gmail.com/
+> 
+> Changes in v2:
+>  - Remove all custom attributes and use hw pattern instead
+>  - Remove filename from the driver description
+>  - Fix coding style
+>  - Destroy the muttex in shutdown callback
+>  - Register mcled device using none devm version as unregistering mcled device
+>    calls ncp5632_set_led which uses mutex hence we need to make sure the
+>    mutex is still available during the unregistering process.
+>  - Link to v1: https://lore.kernel.org/linux-kernel/20240208130115.GM689448@google.com/T/
+>  drivers/leds/rgb/Kconfig        |  11 ++
+>  drivers/leds/rgb/Makefile       |   1 +
+>  drivers/leds/rgb/leds-ncp5623.c | 271 ++++++++++++++++++++++++++++++++
+>  3 files changed, 283 insertions(+)
+>  create mode 100644 drivers/leds/rgb/leds-ncp5623.c
+> 
+> diff --git a/drivers/leds/rgb/Kconfig b/drivers/leds/rgb/Kconfig
+> index a6a21f564673..81ab6a526a78 100644
+> --- a/drivers/leds/rgb/Kconfig
+> +++ b/drivers/leds/rgb/Kconfig
+> @@ -27,6 +27,17 @@ config LEDS_KTD202X
+>  	  To compile this driver as a module, choose M here: the module
+>  	  will be called leds-ktd202x.
+>  
+> +config LEDS_NCP5623
+> +	tristate "LED support for NCP5623"
+> +	depends on I2C
+> +	depends on OF
+> +	help
+> +	  This option enables support for ON semiconductor NCP5623
+> +	  Triple Output I2C Controlled RGB LED Driver.
+> +
+> +	  To compile this driver as a module, choose M here: the module
+> +	  will be called leds-ncp5623.
+> +
+>  config LEDS_PWM_MULTICOLOR
+>  	tristate "PWM driven multi-color LED Support"
+>  	depends on PWM
+> diff --git a/drivers/leds/rgb/Makefile b/drivers/leds/rgb/Makefile
+> index 243f31e4d70d..a501fd27f179 100644
+> --- a/drivers/leds/rgb/Makefile
+> +++ b/drivers/leds/rgb/Makefile
+> @@ -2,6 +2,7 @@
+>  
+>  obj-$(CONFIG_LEDS_GROUP_MULTICOLOR)	+= leds-group-multicolor.o
+>  obj-$(CONFIG_LEDS_KTD202X)		+= leds-ktd202x.o
+> +obj-$(CONFIG_LEDS_NCP5623)		+= leds-ncp5623.o
+>  obj-$(CONFIG_LEDS_PWM_MULTICOLOR)	+= leds-pwm-multicolor.o
+>  obj-$(CONFIG_LEDS_QCOM_LPG)		+= leds-qcom-lpg.o
+>  obj-$(CONFIG_LEDS_MT6370_RGB)		+= leds-mt6370-rgb.o
+> diff --git a/drivers/leds/rgb/leds-ncp5623.c b/drivers/leds/rgb/leds-ncp5623.c
+> new file mode 100644
+> index 000000000000..b669c55c5483
+> --- /dev/null
+> +++ b/drivers/leds/rgb/leds-ncp5623.c
+> @@ -0,0 +1,271 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * NCP5623 Multi-LED Driver
+> + *
+> + * Author: Abdel Alkuor <alkuor@gmail.com>
+> + * Datasheet: https://www.onsemi.com/pdf/datasheet/ncp5623-d.pdf
+> + */
+> +
+> +#include <linux/i2c.h>
+> +#include <linux/module.h>
+> +
+> +#include <linux/led-class-multicolor.h>
+> +
+> +#define NCP5623_FUNCTION_OFFSET		0x5
+> +#define NCP5623_REG(x)			((x) << NCP5623_FUNCTION_OFFSET)
+> +
+> +#define NCP5623_SHUTDOWN_REG		NCP5623_REG(0x0)
+> +#define NCP5623_ILED_REG		NCP5623_REG(0x1)
+> +#define NCP5623_PWM_REG(index)		NCP5623_REG(0x2 + (index))
+> +#define NCP5623_UPWARD_STEP_REG		NCP5623_REG(0x5)
+> +#define NCP5623_DOWNWARD_STEP_REG	NCP5623_REG(0x6)
+> +#define NCP5623_DIMMING_TIME_REG	NCP5623_REG(0x7)
+> +
+> +#define NCP5623_MAX_BRIGHTNESS		0x1f
+> +#define NCP5623_MAX_DIM_TIME		240 /* ms */
+> +#define NCP5623_DIM_STEP		8   /* ms */
 
-Currently, the compiler thinks that the aarch64-unknown-none target
-doesn't support -Zsanitizer=shadow-call-stack, so the build will fail if
-you enable shadow call stack in non-dynamic mode. However, I still think
-it is reasonable to add the flag now, as it will at least fail the build
-when using an invalid configuration, until the Rust compiler is fixed to
-list -Zsanitizer=shadow-call-stack as supported for the target. See [2]
-for the feature request to add this.
+Patch applied, however ...
 
-I have tested this change with Rust Binder on an Android device using
-CONFIG_DYNAMIC_SCS. Without the -Ctarget-feature=+reserve-x18 flag, the
-phone crashes immediately on boot, and with the flag, the phone appears
-to work normally.
+Please follow-up with the following changes:
 
-This contains a TODO to add the -Zuse-sync-unwind=n flag. The flag
-defaults to n, so it isn't a problem today, but the flag is unstable, so
-the default could change in a future compiler release.
+#define NCP5623_MAX_DIM_TIME_MS		240
+#define NCP5623_DIM_STEP_MS		8
 
-Link: https://github.com/rust-lang/rust/issues/121970 [1]
-Link: https://github.com/rust-lang/rust/issues/121972 [2]
-Signed-off-by: Alice Ryhl <aliceryhl@google.com>
----
-This patch raises the question of whether we should change the Rust
-aarch64 support to use a custom target.json specification. If we do
-that, then we can fix both the warning for dynamic SCS and the
-build-failure for non-dynamic SCS without waiting for a new version of
-rustc with the mentioned issues fixed.
----
-Changes in v2:
-- Add -Cforce-unwind-tables flag.
-- Link to v1: https://lore.kernel.org/r/20240304-shadow-call-stack-v1-1-f055eaf40a2c@google.com
----
- Makefile            | 1 +
- arch/arm64/Makefile | 4 ++++
- 2 files changed, 5 insertions(+)
-
-diff --git a/Makefile b/Makefile
-index 0e36eff14608..345066643a76 100644
---- a/Makefile
-+++ b/Makefile
-@@ -936,6 +936,7 @@ ifdef CONFIG_SHADOW_CALL_STACK
- ifndef CONFIG_DYNAMIC_SCS
- CC_FLAGS_SCS	:= -fsanitize=shadow-call-stack
- KBUILD_CFLAGS	+= $(CC_FLAGS_SCS)
-+KBUILD_RUSTFLAGS += -Zsanitizer=shadow-call-stack
- endif
- export CC_FLAGS_SCS
- endif
-diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-index a88cdf910687..9bd5522c18e9 100644
---- a/arch/arm64/Makefile
-+++ b/arch/arm64/Makefile
-@@ -48,9 +48,12 @@ KBUILD_AFLAGS	+= $(call cc-option,-mabi=lp64)
- ifneq ($(CONFIG_UNWIND_TABLES),y)
- KBUILD_CFLAGS	+= -fno-asynchronous-unwind-tables -fno-unwind-tables
- KBUILD_AFLAGS	+= -fno-asynchronous-unwind-tables -fno-unwind-tables
-+KBUILD_RUSTFLAGS += -Cforce-unwind-tables=n
- else
- KBUILD_CFLAGS	+= -fasynchronous-unwind-tables
- KBUILD_AFLAGS	+= -fasynchronous-unwind-tables
-+# TODO: Pass -Zuse-sync-unwind=n once we upgrade to Rust 1.77.0
-+KBUILD_RUSTFLAGS += -Cforce-unwind-tables=y
- endif
- 
- ifeq ($(CONFIG_STACKPROTECTOR_PER_TASK),y)
-@@ -103,6 +106,7 @@ endif
- 
- ifeq ($(CONFIG_SHADOW_CALL_STACK), y)
- KBUILD_CFLAGS	+= -ffixed-x18
-+KBUILD_RUSTFLAGS += -Ctarget-feature=+reserve-x18
- endif
- 
- ifeq ($(CONFIG_CPU_BIG_ENDIAN), y)
-
----
-base-commit: 90d35da658da8cff0d4ecbb5113f5fac9d00eb72
-change-id: 20240304-shadow-call-stack-9c197a4361d9
-
-Best regards,
 -- 
-Alice Ryhl <aliceryhl@google.com>
-
+Lee Jones [李琼斯]
 
