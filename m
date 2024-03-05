@@ -1,145 +1,147 @@
-Return-Path: <linux-kernel+bounces-93132-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93131-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9670872B6F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 01:01:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6B52872B6C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 01:01:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D99E81C2473B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 00:01:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71FF4283C1F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 00:01:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F00412FB09;
-	Tue,  5 Mar 2024 23:58:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22CDB137775;
+	Tue,  5 Mar 2024 23:58:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yOmB7hBU"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TkKw9JSK"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41D37137909
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 23:58:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62A37137901;
+	Tue,  5 Mar 2024 23:58:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709683136; cv=none; b=E/1f45eiIwKpqscG/40OjWBXzrd7YA4DAowUm6v76da+6SaBja+hspaaPV7vqhyDNrBpCcLF2btMAxhdCDJfg21Z443qVM9udtKf7iWsJi4U5efG/bbvmf50gilG3P29Nx77XcOtcqQB68AQ6Fe2U3YD8jpfL2W/GR7iJjVW0xo=
+	t=1709683133; cv=none; b=emqe8XFrbZF/3T/A1uy8mLtqz/TwhTfQLITHHVvWW0dwT695/DLXmySsL6VxjdS5ZQhBCY6vY6CkC1moMi6WWQiIQ668s5GpXBsUQ2D6TKXGnFpBzuwmj3qB3AidMS4k6xZZcVA3e6UndfJ26340S+OrrXtMDl48qdHF8AnGgxo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709683136; c=relaxed/simple;
-	bh=0quR6jT1iSZ5BUKkLzcCS0XyF7BMV8/RZalK9QAAEWQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WPuXv6c3dm2zNf0QrNdKRgHkK68grCqpHldVK4qr36luzFQAyAcUFXA/b2bpHa6/XXg3evitUG9K3lkCkS4ypVUec432+ChPBv29AlB1kZp4S0H8MY1OTdX6fej8+/4yqFfTvwdtv5Cc5UmuJ2maqK5xyNCQXqpdKtD+qGFjXZc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yOmB7hBU; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1dc3b4b9b62so2428075ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 15:58:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709683134; x=1710287934; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=yoeMjmCuBFOKAs53t5huIMO06TFd6SVXa5LbxptBQg0=;
-        b=yOmB7hBUnGgDpMLaksSaAij6gPpATQPwEuwoen7roHm4gqr90Owej/M933wiZbyJBH
-         2E/dx+uMRfcG9qdS4C4QVy3ILBuruBJooiRre+FwTjWrTgZyjcNKAC+muoaa1XeJUZwM
-         qFzCcCEJRErM3sJFCeHwRQfp4TC8tddpFA6gaRY7L+csCacbor5687Gyg9y1DjoCKer5
-         9411C0szysHsnDbFL38wyY7F8VbXkxjMoOcNNLChAhTzbbSYXO4SNC2dDZzzE0bnJ97+
-         3pnZ6mWA/t1herrco1Tg8aqgT0k6IcvoiaUaJkaWhn07Wacj3VF43eJuo9hfzCg5W6F/
-         HwKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709683134; x=1710287934;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yoeMjmCuBFOKAs53t5huIMO06TFd6SVXa5LbxptBQg0=;
-        b=Qc3+68bFReWWETt9mEKiNCkCupFEZXtTZURPo8kvKakupgs2FRZy5NXzh6TT+npv3s
-         Mmb9Sg7BQqBgEIVOXW53orjbmYrLxc1zJj8AHW0pJtcpiMbLBIbjC8ONJeTxJQ7WVUTh
-         gOXQwxrBWe723pcIo+fowMHiqnmPS2VefpP2WFQY6aSOXY/FHnKFI+Q0gi7Zy2kEtU3B
-         J2TNAlYuRDbQ8Qv/SuscQeSNwn/NvMei9O4RUoLQLxZSuTsxrdEztqGHoVkPuTKGWP0j
-         01ZcOMZV9OvRCgAuHgtB7vWvTCP6JevVz8FzncNNDodrN/44HJkpVEWCSI2HyVyxAN89
-         pZPg==
-X-Forwarded-Encrypted: i=1; AJvYcCW4MY/g4jMqZCHP0K8FVgRpnX09giHnFVt6ww4bUN1yfdi8r+FLg/TE3DFT0ekYohfx2BwDpDKOcq7YgjMIIFLyy8Umnx46C4zexnBE
-X-Gm-Message-State: AOJu0YxEDFB9Z8UxUQ3rhqY0FFbpA/Cqxr1CIQwJ/xUXiqoxIFsc1szL
-	ooQIo0OviXLjkTmm9VwWdDwWkvwkRJcoqwCxyAf3Nqm1b/WmF2YCspgrLJbQTg==
-X-Google-Smtp-Source: AGHT+IE1MfSHWIiwGN8h37c7Vg/clchaBXy9FgZ6ivdHBH6i1PR5ZY0IJdVjuGpFO1PZNM0CRrcv6w==
-X-Received: by 2002:a17:902:c403:b0:1dc:88bd:64db with SMTP id k3-20020a170902c40300b001dc88bd64dbmr4959704plk.21.1709683134149;
-        Tue, 05 Mar 2024 15:58:54 -0800 (PST)
-Received: from google.com ([2620:15c:2c5:13:69ff:df2c:aa81:7b74])
-        by smtp.gmail.com with ESMTPSA id y18-20020a170902e19200b001dc95e7e191sm11153788pla.298.2024.03.05.15.58.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 15:58:53 -0800 (PST)
-Date: Tue, 5 Mar 2024 15:58:48 -0800
-From: Igor Pylypiv <ipylypiv@google.com>
-To: John Garry <john.g.garry@oracle.com>
-Cc: Damien Le Moal <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>,
-	Jason Yan <yanaijie@huawei.com>,
-	"James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Jack Wang <jinpu.wang@cloud.ionos.com>,
-	Hannes Reinecke <hare@suse.de>,
-	Xiang Chen <chenxiang66@hisilicon.com>,
-	Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
-	Bart Van Assche <bvanassche@acm.org>,
-	TJ Adams <tadamsjr@google.com>, linux-ide@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/7] scsi: libsas: Define NCQ Priority sysfs
- attributes for SATA devices
-Message-ID: <ZeexuDYlmaDoDmtv@google.com>
-References: <20240305005103.1849325-1-ipylypiv@google.com>
- <20240305005103.1849325-3-ipylypiv@google.com>
- <3fb62749-8c66-47ae-9b8b-7e670ebf4841@oracle.com>
+	s=arc-20240116; t=1709683133; c=relaxed/simple;
+	bh=4m3UYcXB+SiijSFEXT4aO9oLM2P/SBGwSBd5v733kis=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dJIva6oo+FXvjDx/S4vePsboMe6WB8IfPLexyxlFkHQ1U53Fn3eO9hkZgoCx4m3XVm0215f4cbHFn4it+XOs4IA4PYMw3bGeSpL2EXZynFWltuKqon552Gmr+ufoPXnoFeOfwYBmhhAYj1if+MURIdd+8ML/K6X6rMbepqIvTOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TkKw9JSK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18D0CC433C7;
+	Tue,  5 Mar 2024 23:58:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709683132;
+	bh=4m3UYcXB+SiijSFEXT4aO9oLM2P/SBGwSBd5v733kis=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=TkKw9JSKB5H6BhFodbbUblRTJv/WG01QKKMY8DWwWA1Zg661jA6QWfSi5DcgZ5CYY
+	 gOqtfC6yzNgqsHKVFS/DrSaEzC0hg899TWegmtszDWoeUJvTw6YyMUOHEBsrQL05Bt
+	 +od0e/wmluRxRknht3ZPQ3NMAFn87ba2oR8dROdgS8m0f1Ux9/Hrn1S8nNIUdI3wgr
+	 XQwFyZcRswsjwAlnDXBBNtCfDgF1FI1i52RxFSzK98bey37mXJ9ahEH1eaupPZ0W+3
+	 xXnyRvOfKgN9WCKWXT7LGcwY6QE4vlkmRba3HS5X36qjoyynC90RMonbnx0a8CuveJ
+	 W2aqQZ3cTSvqA==
+Message-ID: <311bdf17-c16f-41d8-8366-10f9b00adf27@kernel.org>
+Date: Wed, 6 Mar 2024 08:58:49 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3fb62749-8c66-47ae-9b8b-7e670ebf4841@oracle.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 5/7] riscv: Kconfig.socs: Allow SOC_CANAAN with MMU for
+ K230
+To: Conor Dooley <conor@kernel.org>, Yangyu Chen <cyy@cyyself.name>
+Cc: linux-riscv@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Guo Ren <guoren@kernel.org>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Conor Dooley <conor.dooley@microchip.com>
+References: <tencent_BB2364BBF1812F4E304F7BDDD11E57356605@qq.com>
+ <tencent_0432DA968E39B81431F921F38D747C008208@qq.com>
+ <ef8df22f-dac8-4652-bf17-d10254e6abfb@kernel.org>
+ <tencent_E56A833916E00EC7B4840C34FAF1250ADE0A@qq.com>
+ <20240305-fascism-enrich-06483ddeb149@spud>
+Content-Language: en-US
+From: Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <20240305-fascism-enrich-06483ddeb149@spud>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Mar 05, 2024 at 11:29:11AM +0000, John Garry wrote:
-> On 05/03/2024 00:50, Igor Pylypiv wrote:
-> >   static inline void sas_ata_disabled_notice(void)
-> > @@ -123,6 +125,10 @@ static inline int sas_ata_add_dev(struct domain_device *parent, struct ex_phy *p
-> >   	sas_ata_disabled_notice();
-> >   	return -ENODEV;
-> >   }
-> > +
-> > +static const struct attribute_group sas_ata_sdev_attr_group = {
-> > +	.attrs = NULL,
-> > +};
+On 3/6/24 02:20, Conor Dooley wrote:
+> On Tue, Mar 05, 2024 at 03:47:15PM +0800, Yangyu Chen wrote:
+>> On 2024/3/5 07:46, Damien Le Moal wrote:
+>>> On 3/5/24 06:05, Yangyu Chen wrote:
+>>>> Since K230 was released, SOC_CANAAN is no longer only referred to the K210.
+>>>> Remove it depends on !MMU will allow building dts for K230 and remove the
+>>>> K210 string from the help message.
+>>>>
+>>>> Signed-off-by: Yangyu Chen <cyy@cyyself.name>
+>>>> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+>>>> ---
+>>>>   arch/riscv/Kconfig.socs | 5 ++---
+>>>>   1 file changed, 2 insertions(+), 3 deletions(-)
+>>>>
+>>>> diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
+>>>> index 623de5f8a208..b4e9b7f75510 100644
+>>>> --- a/arch/riscv/Kconfig.socs
+>>>> +++ b/arch/riscv/Kconfig.socs
+>>>> @@ -75,13 +75,12 @@ config ARCH_CANAAN
+>>>>   	def_bool SOC_CANAAN
+>>>>   config SOC_CANAAN
+>>>> -	bool "Canaan Kendryte K210 SoC"
+>>>> -	depends on !MMU
+>>>
+>>> This seems wrong to me. The k210 support does require no-mmu. So why remove
+>>> this ?
+>>
+>> It just allows SOC_CANAAN to be selected when MMU=y. With this patch,
+>> nommu_k210_defconfig still works.
 > 
-> I just noticed a build issue.
-> 
-> With CONFIG_SCSI_SAS_ATA not set, I get this for W=1 build:
-> 
-> In file included from drivers/scsi/hisi_sas/hisi_sas.h:29,
->                 from drivers/scsi/hisi_sas/hisi_sas_v1_hw.c:7:
-> ./include/scsi/sas_ata.h:129:37: error: ‘sas_ata_sdev_attr_group’
-> defined but not used [-Werror=unused-const-variable=]
->  129 | static const struct attribute_group sas_ata_sdev_attr_group = {
+> I think the concern here is that this would allow people to build a
+> kernel for the k120 with the MMU enabled, not that the existing nommu
+> build will be affected.
 
-Thanks for catching this, John!
-For some reason I only get this warning with gcc but not with clang.
+Yes, this is my concern. Apologies for the lack of clarity.
 
 > 
-> I suppose that marking sas_ata_sdev_attr_group as __maybe_unused is ok, but
-> less than ideal. The linker should strip it out of files when unused.
+> Maybe you could squash in something like the following?
+> 
+> diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
+> index b4e9b7f75510..75d55059163f 100644
+> --- a/arch/riscv/Kconfig.socs
+> +++ b/arch/riscv/Kconfig.socs
+> @@ -72,15 +72,19 @@ config SOC_VIRT
+>  	  This enables support for QEMU Virt Machine.
+>  
+>  config ARCH_CANAAN
+> -	def_bool SOC_CANAAN
+> +	bool "Canaan Kendryte SoCs"
+> +	help
+> +	  This enables support for Canaan Kendryte SoC platform hardware.
+>  
+>  config SOC_CANAAN
+> -	bool "Canaan Kendryte SoC"
+> +	bool "Canaan Kendryte K210 SoC"
+> +	depends on !MMU
+> +	depends on ARCH_CANAAN
+>  	select CLINT_TIMER if RISCV_M_MODE
+>  	select ARCH_HAS_RESET_CONTROLLER
+>  	select PINCTRL
+>  	select COMMON_CLK
+>  	help
+> -	  This enables support for Canaan Kendryte SoC platform hardware.
+> +	  This enables support for Canaan Kendryte K210 SoC platform hardware.
+>  
+>  endmenu # "SoC selection"
+> 
+> (Which reminds me, I really need to go and finish sorting out the ARCH_
+> stuff)
 
-Looks like adding the __maybe_unused attribute is a prefferred way since
-it is mentioned in the Linux kernel coding style:
-https://www.kernel.org/doc/html/v6.7/process/coding-style.html#conditional-compilation
+-- 
+Damien Le Moal
+Western Digital Research
 
-Added the __maybe_unused attribute in v6. Thank you!
-
-> 
-> I think that this is also ok:
-> 
-> #define sas_ata_sdev_attr_group (struct attribute_group) {}
-> 
-> The compiler here will create a empty structure and have
-> &sas_ata_sdev_attr_group point at it.
-> 
-> Thanks,
-> John
 
