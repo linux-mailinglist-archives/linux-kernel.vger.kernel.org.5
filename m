@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-93092-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93088-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6F1E872AFE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 00:27:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2D74872AF0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 00:18:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB3BA1C245B7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 23:27:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D6FA288CF5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 23:18:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C045B12DD91;
-	Tue,  5 Mar 2024 23:26:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7FB712D74C;
+	Tue,  5 Mar 2024 23:18:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b="sbaTKvBm"
+	dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b="ObgII6FR"
 Received: from ahti.lucaweiss.eu (ahti.lucaweiss.eu [128.199.32.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DEEB128374;
-	Tue,  5 Mar 2024 23:26:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7880F1426F;
+	Tue,  5 Mar 2024 23:18:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=128.199.32.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709681208; cv=none; b=bmnMPzHfBd0eOE5oVm+G1Whg59KKmI7I7CQf4QNkkvzbjG8higx1C+7bBBBSPlLsmuPKbLzWLmW3ApWGzO3OAhvzugqNf8a1ri0a1FFIKPu7Tbgx9Rlqlip0O9Ke5DHHN08v+ieE2H6OPdkWWINfFi3VFA1CjAgEz6MuNfg94a8=
+	t=1709680716; cv=none; b=AE9uGflt4Tj1w9J8d10Y7SRgqm0nFBQB7xdy68BV27PRQfIL+fPkwR04kqV9yskJIbHm523F6e5RRrGmzFt5jzNzHv6cI5l7H5Om0RnRBfSRj95HdW+WXcO90h//hOOAjvaKsglIgMLhp90wPZGOb5s1E4nISFMW+tNy3GB++Uo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709681208; c=relaxed/simple;
-	bh=2BAC8prJg5yf1usqspCzk9cPk0M5L7xBiL4UcGSLCPs=;
+	s=arc-20240116; t=1709680716; c=relaxed/simple;
+	bh=/C52Li910U/Xv4kbIe7X14ZNBKEUjlNpqKLVWNOvhnc=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=VKZZgl8wxFFR3vF5H4/MrglLPKaIjja2uA/+chv8/ORkZMHy6SgrbR2jfr5VxV6Lo7vt25OLEiorQLBiNdbBzNkbhpZmy/XZ+0i93n6MVUWIaeH1r9Tdp3hPy4HEbB19Gul9pmYP28K74CbvRa6GcFNn4GR9XzrtAfRxUks59UE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz; spf=pass smtp.mailfrom=z3ntu.xyz; dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b=sbaTKvBm; arc=none smtp.client-ip=128.199.32.197
+	 In-Reply-To:To:Cc; b=bbzIiXqrxVKe5G/8qtvR8TPKrbSsockKZaRzhyTB/Zk2dh88r19JrKOiQ+GcnyPnq3tXiglFmmby82cT2owqLWihHHoC5cJFui+wet6K5EUiYt6Yrh6llNEZ2adwYYmaS1RsG6Ir28NbpGfCaK+0wmwralCjccd0R53VStLT9Ow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz; spf=pass smtp.mailfrom=z3ntu.xyz; dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b=ObgII6FR; arc=none smtp.client-ip=128.199.32.197
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=z3ntu.xyz
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=s1;
-	t=1709680706; bh=2BAC8prJg5yf1usqspCzk9cPk0M5L7xBiL4UcGSLCPs=;
+	t=1709680706; bh=/C52Li910U/Xv4kbIe7X14ZNBKEUjlNpqKLVWNOvhnc=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=sbaTKvBmDiFRC5opqIOvKpWJEWQSUiwSeIMvhetcVaIdepjIH6TA/Vdo2EqnubMPo
-	 m2FNfte4jkS/BskyLsU+Q6adePa3/EHQRg95hOemrYsd4wF47i1x7GhklAObAlNNtK
-	 B6Y2A3C0nChgdPbH/gPmhGZFM5+tkART1I8PRxC0=
+	b=ObgII6FRsRxQKfJWCEZIZI2sbkhAWko8Tyc8SUiqkDB9JODY7wksWDtANJdktTJBM
+	 LpiKRyhUaPaUuDIuhxwBsc7UfABMwcP3cHg8VZHQpTykGAXR6ROh4jGMSOT2ft42ER
+	 0QmChD4CVLjt7dW/UHbSDgzqTkXdbsMhZ1Wvdpvk=
 From: Luca Weiss <luca@z3ntu.xyz>
-Date: Wed, 06 Mar 2024 00:18:07 +0100
-Subject: [PATCH 4/5] ARM: dts: qcom: msm8974pro-castor: Add
- debounce-interval for keys
+Date: Wed, 06 Mar 2024 00:18:08 +0100
+Subject: [PATCH 5/5] ARM: dts: qcom: msm8974pro-castor: Rename wifi node
+ name
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -48,7 +48,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240306-castor-changes-v1-4-2286eaf85fff@z3ntu.xyz>
+Message-Id: <20240306-castor-changes-v1-5-2286eaf85fff@z3ntu.xyz>
 References: <20240306-castor-changes-v1-0-2286eaf85fff@z3ntu.xyz>
 In-Reply-To: <20240306-castor-changes-v1-0-2286eaf85fff@z3ntu.xyz>
 To: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
@@ -59,48 +59,42 @@ To: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
 Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
  linux-kernel@vger.kernel.org, Luca Weiss <luca@z3ntu.xyz>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=945; i=luca@z3ntu.xyz;
- h=from:subject:message-id; bh=2BAC8prJg5yf1usqspCzk9cPk0M5L7xBiL4UcGSLCPs=;
- b=owEBbQKS/ZANAwAIAXLYQ7idTddWAcsmYgBl56g+F6B1hXGnRxC7F7HnYyGoBzsyRRhWlb1u6
- j+kcTJVZOGJAjMEAAEIAB0WIQQ5utIvCCzakboVj/py2EO4nU3XVgUCZeeoPgAKCRBy2EO4nU3X
- VpTxEACPdpFe1qyZ6hvdzwvq40zADoUQCaSgjW2AFeriE0Sabq2gduhNdxczGm/jEM0rCfh7eR1
- w1/LxUk5MMquVTQYCwc5JujKb6eYxptuNPFCTjHS+JbbO7/NroKbSScOb4lIPav+h0ATnThUTwK
- RxdydhhrCr0nQwomrn84gLHwwNg45LI0SO260XEIrhhUKAJmggX7iJuspI/xSDzwyz0JSFe8TWG
- 8oh+qZifqWd6bcTX6acon4ShWItv/KqYWOvphPWzxtTglAwb4/VnIYtIa0wXtLeUhJFQmCf7jkp
- e3ToZnBdrdTILi16CycuxcjYbPM6oM28145MdQwnE1zNzQkg5jY4cHsLsHC4EopAYadl/7P5ggm
- GwwYPqFeGvT8pwS7hWdUtR4pJmmLcJxzNtn2p8WkX/6gI8ZxhUZbqO33AJLzfwHMClvin4VPm5D
- xDnO5dgALY3mjukmqOvRfnUv/8fo5aAyzjvqivCVVbd/gt2v7LBlK+nRcVvSsxITARvH+rOW1Qf
- 2Zv3uxbtx9dwYqk764oboqCqtdNopCcSa5nk6aQsRVGkfBD1fDPEvyZGXsH14EE8GkFzJIcQUEl
- 8mVremH+dxIdkG8vvR8FJPTOX1uoyCyZFjimV5eYxrkbJweobmwmrk3WKd+tEyrkhBotQ0Fbzvv
- RItRR2nP2WsnKaw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=753; i=luca@z3ntu.xyz;
+ h=from:subject:message-id; bh=/C52Li910U/Xv4kbIe7X14ZNBKEUjlNpqKLVWNOvhnc=;
+ b=owEBbQKS/ZANAwAIAXLYQ7idTddWAcsmYgBl56g/3eUrJtBMR8VCVrRvCl1GSrxTDzhsfdlPP
+ gqBPHO/R06JAjMEAAEIAB0WIQQ5utIvCCzakboVj/py2EO4nU3XVgUCZeeoPwAKCRBy2EO4nU3X
+ VtK9EACTRjjDnqwPDz+cWdlPlvDgsujpyQZ3JoVP4JpuuewjzZ29hsMUMVs2HX5J5gwdLXHJpok
+ NJRpPFaMODJKDPy+9XsNM/e8wDke150Ka4lz1LBgL2TmFsIui1/pAyf1LtV3arZ7ApLkvd/LtA0
+ 2xm8dAjB6X72IVYPwhSLqwe3QKxMFM+ALK7pQ9HU/8hPOtLYke50fW3JeAKh0ZeJtBBfUGc6TGh
+ TUMQp0BBjNYKaXJmYuR/R8hcJ7xnkAYA1wtNGmj4eVHdvDrOOn8l6AaHJ/1MV4LrAcnkoRJFN3q
+ jsdnyVmghdvJztv5I13cVNhmUmkGWgjy/lPMKw3SEMHXjxXV3YSgcpsx0mJ8sSiNyTDPsEUlgp1
+ X1wG6Z39UPscRglJETlkfRtXPY/gda0/JkRZTyrqWVZFNx2O/h14QpbPn5E4bUo3Ho9edl++1kz
+ ypiuqHKspfXUg9Kgo9JTiwxnBXzq60Fdx6Rv5mD9Gl8u25Eez10UtZb+FIw2s1/MYV1msWUdj/r
+ Z0wqrqxnc/2b6YgnYVbmXbdeagRILe9j1zfi5oGvvqIJzeXkcfnbTwEQnKfXP/iXBeBNUBH9gLr
+ 7Ump4bs/pPOERsRIK5/PuPIGFW3GPlROE9a+9cNPrwepQPLetPv4qrlDRHOS01+5KzgXtqj0ZmV
+ NxTaWzEzpSJi7WQ==
 X-Developer-Key: i=luca@z3ntu.xyz; a=openpgp;
  fpr=BD04DA24C971B8D587B2B8D7FAF69CF6CD2D02CD
 
-Set the debounce-interval for the GPIO keys.
+Give the wifi node a generic node name 'wifi'.
 
 Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
 ---
- arch/arm/boot/dts/qcom/qcom-msm8974pro-sony-xperia-shinano-castor.dts | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/arm/boot/dts/qcom/qcom-msm8974pro-sony-xperia-shinano-castor.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/arm/boot/dts/qcom/qcom-msm8974pro-sony-xperia-shinano-castor.dts b/arch/arm/boot/dts/qcom/qcom-msm8974pro-sony-xperia-shinano-castor.dts
-index 97b55bda9189..c9f74bf2f8bd 100644
+index c9f74bf2f8bd..20f98a9e49ea 100644
 --- a/arch/arm/boot/dts/qcom/qcom-msm8974pro-sony-xperia-shinano-castor.dts
 +++ b/arch/arm/boot/dts/qcom/qcom-msm8974pro-sony-xperia-shinano-castor.dts
-@@ -32,12 +32,14 @@ key-volume-down {
- 			label = "volume_down";
- 			gpios = <&pm8941_gpios 2 GPIO_ACTIVE_LOW>;
- 			linux,code = <KEY_VOLUMEDOWN>;
-+			debounce-interval = <15>;
- 		};
+@@ -547,7 +547,7 @@ &sdhc_3 {
  
- 		key-volume-up {
- 			label = "volume_up";
- 			gpios = <&pm8941_gpios 5 GPIO_ACTIVE_LOW>;
- 			linux,code = <KEY_VOLUMEUP>;
-+			debounce-interval = <15>;
- 		};
- 	};
+ 	status = "okay";
+ 
+-	bcrmf@1 {
++	wifi@1 {
+ 		compatible = "brcm,bcm4339-fmac", "brcm,bcm4329-fmac";
+ 		reg = <1>;
  
 
 -- 
