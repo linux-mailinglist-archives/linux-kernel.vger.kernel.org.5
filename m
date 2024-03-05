@@ -1,170 +1,239 @@
-Return-Path: <linux-kernel+bounces-91766-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91767-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7D84871644
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:09:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FFC7871647
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:10:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20A891F2413C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:09:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 884C51F243EC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:10:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A74657D411;
-	Tue,  5 Mar 2024 07:09:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B909A7D40B;
+	Tue,  5 Mar 2024 07:09:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VZZKx7aq"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="C1WFQn7u"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E37D845005;
-	Tue,  5 Mar 2024 07:09:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF1477D3F6;
+	Tue,  5 Mar 2024 07:09:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709622565; cv=none; b=gOzRmBZ7raIUvDMsBPGRspOmtZMeaISA6F8CWsaHj++liyY0nmAjKbnT2Kcdznz3LKV32UMTVG4+/rg7/SVAzDQczMRLwVY/YwFQvPKOtHdf94QH5HjDr3Uj/G7aSqJh57CE98zlXrwR50VzS9DUnx7hke7wB6C6qaERastk/YU=
+	t=1709622596; cv=none; b=cChpQeeprB0e6BoRvlYlSseXbQaTtlHq1bWYOQLI8b4p2/Yqzn0CLY+E04FfK2cCo/2tJ6KU6CmyNQpcc2GdG2n7d3exc/G7jJTUQpcjIgaWbadcnOb+5xOmCOLtcwRRYEg2vTuTTQKDjwlnx2b9Yu/vBJGrAlRgz8HF/05B0CQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709622565; c=relaxed/simple;
-	bh=iLJtfJRG3AykwJvs44aX4uKsd63Qlq1YiC9OCMcC31U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fOsAmeABDx/TZ9DfbtNODYS0Un2SuLv+rOvc80l/b696z3jk+HiI+HxtcVOQNHlO8/AOjb7p56Lmhu8bgX9FcQwrZabBaqxEbxRMx/6GtpC7ZBEMLRk94GPeJYh1IWRU2gfl8qsyjDy51B1E5TGaC3x1cA14JtmZSA1BcB9GIYw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VZZKx7aq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2FF9C433F1;
-	Tue,  5 Mar 2024 07:09:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709622564;
-	bh=iLJtfJRG3AykwJvs44aX4uKsd63Qlq1YiC9OCMcC31U=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VZZKx7aqHcP6Ly6lUphCoXqjWxAvksTF4ak3Y8fCg05LhRVZROMttCjmSkrJcPcnJ
-	 okAGM0RW/vHxwON1IvSMvVooywP0aEW/hsroPF4j6lU3rps8BnLdky865zVkUtzR5t
-	 QrVzxGgVK9ZQotLuqbUiFf69AvuQBaFj4NmeQdfLi8nEZkOH7UQS9EFNia1cA2FCpK
-	 uZca0/iiOLhTvkxsdGHf5B7BA1UAE6Vu5YEemVMlLa72Lb1U959dPH1lpuRdX6i2Ta
-	 JPKXxsTxF9ua9qzQ5Mb4qhJrJ2TEH9H5uEC5JHX/BRYvIYz7klwHNcIggsxcLO78y9
-	 afRcy0E/4hghA==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rhOva-000000002G7-0EMj;
-	Tue, 05 Mar 2024 08:09:30 +0100
-Date: Tue, 5 Mar 2024 08:09:30 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Krishna Kurapati <quic_kriskura@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Wesley Cheng <quic_wcheng@quicinc.com>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-	linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org, quic_ppratap@quicinc.com,
-	quic_jackp@quicinc.com
-Subject: Re: [PATCH] usb: dwc3: qcom: Remove ACPI support from glue driver
-Message-ID: <ZebFKlae0a-deBKl@hovoldconsulting.com>
-References: <20240305042143.3455101-1-quic_kriskura@quicinc.com>
+	s=arc-20240116; t=1709622596; c=relaxed/simple;
+	bh=MnBtUSdZcoCoste9RSTFcwDFvJSGAo578I2Y/4w+c2w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bUtvq6J9utfkCP6w7IcerJDgIw0h1OMH57XkPCC/xKppd7+JZn+OvVHesZLYVcqSS2KYh5UzVCYfsbzjmGOp8NNBv372xImg3pd+2gm6N6siW9bdMBymJ6oLxtB0M+1j1v1kX0vd5ih9DCa56zQ2UFOuU1zYl9/4N9CCrHFE9rQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=C1WFQn7u; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709622595; x=1741158595;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=MnBtUSdZcoCoste9RSTFcwDFvJSGAo578I2Y/4w+c2w=;
+  b=C1WFQn7ubABGdJE0gw2ql+z/MA01FZXfKvgK7qiyRDVNS6hnJ2DcknbS
+   LE3uvlznpZgvtIrvtXkFvoilifajmY1jTneBRgJQhRG0VLkU17jZ+TYHD
+   DcpRgQTcdNs4avs5BoLk2VwD0hnvXQtVO/+q0nuT/cwv6rJxMzZH9d+ge
+   ipFBZ2g9tUXaC1tnVtrenKhoFKsPigqyuESa6Je8Guxwnu7VUSWxtMbeZ
+   dXqio2XM4iMLHU9y+KCQ0ACBY90qGaQJcPZz5qOJFNZDKbyj3K6LRcWoa
+   kyZcbEw+fo6sQC+DEJ7WWiC2/zCaFy2kBfUWu9EEHtEyaw+AHPlAZVekK
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="4019210"
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="4019210"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 23:09:54 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="13773274"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.8.218]) ([10.238.8.218])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 23:09:51 -0800
+Message-ID: <24bd2571-852e-47e6-a08b-17e808d14fd5@linux.intel.com>
+Date: Tue, 5 Mar 2024 15:09:48 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240305042143.3455101-1-quic_kriskura@quicinc.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 03/21] KVM: x86/mmu: Replace hardcoded value 0 for the
+ initial value for SPTE
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, seanjc@google.com,
+ michael.roth@amd.com, isaku.yamahata@intel.com, thomas.lendacky@amd.com
+References: <20240227232100.478238-1-pbonzini@redhat.com>
+ <20240227232100.478238-4-pbonzini@redhat.com>
+From: Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <20240227232100.478238-4-pbonzini@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Mar 05, 2024 at 09:51:43AM +0530, Krishna Kurapati wrote:
-> Minimal ACPI support was added to the Qualcomm DWC3 glue driver in order to
-> enable USB on SDM850 and SC8180X compute platforms. The support is still
-> functional, but unnoticed regressions in other drivers indicates that no
-> one actually booting any of platforms dependent on this implementation.
-> 
-> The functionality provides is the bare minimum and is not expected to aid
-> in the effort of bringing full ACPI support to the driver in the future.
-> 
-> Remove the ACPI code from the Qualcomm DWC3 glue driver to aid in the
-> implementation of improvements that are actually used like multiport and
-> flattening device tree.
 
-With a simple lookup function that returns the ACPI index based on name
-this shouldn't be required to add multiport support even if it may
-simplify it slightly. But IIRC it would help more with the devicetree
-binding rework.
- 
-> Commit message by Bjorn Andersson.
-> 
-> Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+
+On 2/28/2024 7:20 AM, Paolo Bonzini wrote:
+> From: Sean Christopherson <seanjc@google.com>
+>
+> The TDX support will need the "suppress #VE" bit (bit 63) set as the
+> initial value for SPTE.  To reduce code change size, introduce a new macro
+> SHADOW_NONPRESENT_VALUE for the initial value for the shadow page table
+> entry (SPTE) and replace hard-coded value 0 for it.  Initialize shadow page
+> tables with their value.
+>
+> The plan is to unconditionally set the "suppress #VE" bit for both AMD and
+> Intel as: 1) AMD hardware uses the bit 63 as NX for present SPTE and
+> ignored for non-present SPTE; 2) for conventional VMX guests, KVM never
+> enables the "EPT-violation #VE" in VMCS control and "suppress #VE" bit is
+> ignored by hardware.
+>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> Message-Id: <acdf09bf60cad12c495005bf3495c54f6b3069c9.1705965635.git.isaku.yamahata@intel.com>
+> [Remove unnecessary CONFIG_X86_64 check. - Paolo]
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 > ---
->  drivers/usb/dwc3/dwc3-qcom.c | 273 ++---------------------------------
->  1 file changed, 11 insertions(+), 262 deletions(-)
+>   arch/x86/kvm/mmu/mmu.c         | 14 +++++++++-----
+>   arch/x86/kvm/mmu/paging_tmpl.h |  2 +-
+>   arch/x86/kvm/mmu/spte.h        |  2 ++
+>   arch/x86/kvm/mmu/tdp_mmu.c     | 14 +++++++-------
+>   4 files changed, 19 insertions(+), 13 deletions(-)
 
-You should update the Kconfig entry for USB_DWC3_QCOM as well and drop
-the ACPI dependency.
+Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
 
->  static int dwc3_qcom_probe(struct platform_device *pdev)
->  {
->  	struct device_node	*np = pdev->dev.of_node;
->  	struct device		*dev = &pdev->dev;
->  	struct dwc3_qcom	*qcom;
->  	struct resource		*res, *parent_res = NULL;
+BTW, does it prefer to add "No functional change intended." in changelog for
+a patch like this?
 
-You should drop parent_res as well.
+>
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index e4cc7f764980..b5baf11359ad 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -567,9 +567,9 @@ static u64 mmu_spte_clear_track_bits(struct kvm *kvm, u64 *sptep)
+>   
+>   	if (!is_shadow_present_pte(old_spte) ||
+>   	    !spte_has_volatile_bits(old_spte))
+> -		__update_clear_spte_fast(sptep, 0ull);
+> +		__update_clear_spte_fast(sptep, SHADOW_NONPRESENT_VALUE);
+>   	else
+> -		old_spte = __update_clear_spte_slow(sptep, 0ull);
+> +		old_spte = __update_clear_spte_slow(sptep, SHADOW_NONPRESENT_VALUE);
+>   
+>   	if (!is_shadow_present_pte(old_spte))
+>   		return old_spte;
+> @@ -603,7 +603,7 @@ static u64 mmu_spte_clear_track_bits(struct kvm *kvm, u64 *sptep)
+>    */
+>   static void mmu_spte_clear_no_track(u64 *sptep)
+>   {
+> -	__update_clear_spte_fast(sptep, 0ull);
+> +	__update_clear_spte_fast(sptep, SHADOW_NONPRESENT_VALUE);
+>   }
+>   
+>   static u64 mmu_spte_get_lockless(u64 *sptep)
+> @@ -1950,7 +1950,8 @@ static bool kvm_sync_page_check(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
+>   
+>   static int kvm_sync_spte(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp, int i)
+>   {
+> -	if (!sp->spt[i])
+> +	/* sp->spt[i] has initial value of shadow page table allocation */
+> +	if (sp->spt[i] == SHADOW_NONPRESENT_VALUE)
+>   		return 0;
+>   
+>   	return vcpu->arch.mmu->sync_spte(vcpu, sp, i);
+> @@ -6173,7 +6174,10 @@ int kvm_mmu_create(struct kvm_vcpu *vcpu)
+>   	vcpu->arch.mmu_page_header_cache.kmem_cache = mmu_page_header_cache;
+>   	vcpu->arch.mmu_page_header_cache.gfp_zero = __GFP_ZERO;
+>   
+> -	vcpu->arch.mmu_shadow_page_cache.gfp_zero = __GFP_ZERO;
+> +	vcpu->arch.mmu_shadow_page_cache.init_value =
+> +		SHADOW_NONPRESENT_VALUE;
+> +	if (!vcpu->arch.mmu_shadow_page_cache.init_value)
+> +		vcpu->arch.mmu_shadow_page_cache.gfp_zero = __GFP_ZERO;
+>   
+>   	vcpu->arch.mmu = &vcpu->arch.root_mmu;
+>   	vcpu->arch.walk_mmu = &vcpu->arch.root_mmu;
+> diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
+> index 4d4e98fe4f35..bebd73cd61bb 100644
+> --- a/arch/x86/kvm/mmu/paging_tmpl.h
+> +++ b/arch/x86/kvm/mmu/paging_tmpl.h
+> @@ -911,7 +911,7 @@ static int FNAME(sync_spte)(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp, int
+>   	gpa_t pte_gpa;
+>   	gfn_t gfn;
+>   
+> -	if (WARN_ON_ONCE(!sp->spt[i]))
+> +	if (WARN_ON_ONCE(sp->spt[i] == SHADOW_NONPRESENT_VALUE))
+>   		return 0;
+>   
+>   	first_pte_gpa = FNAME(get_level1_sp_gpa)(sp);
+> diff --git a/arch/x86/kvm/mmu/spte.h b/arch/x86/kvm/mmu/spte.h
+> index a129951c9a88..4d1799ba2bf8 100644
+> --- a/arch/x86/kvm/mmu/spte.h
+> +++ b/arch/x86/kvm/mmu/spte.h
+> @@ -149,6 +149,8 @@ static_assert(MMIO_SPTE_GEN_LOW_BITS == 8 && MMIO_SPTE_GEN_HIGH_BITS == 11);
+>   
+>   #define MMIO_SPTE_GEN_MASK		GENMASK_ULL(MMIO_SPTE_GEN_LOW_BITS + MMIO_SPTE_GEN_HIGH_BITS - 1, 0)
+>   
+> +#define SHADOW_NONPRESENT_VALUE	0ULL
+> +
+>   extern u64 __read_mostly shadow_host_writable_mask;
+>   extern u64 __read_mostly shadow_mmu_writable_mask;
+>   extern u64 __read_mostly shadow_nx_mask;
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index d078157e62aa..c8a4d92497b4 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -603,7 +603,7 @@ static inline int tdp_mmu_zap_spte_atomic(struct kvm *kvm,
+>   	 * here since the SPTE is going from non-present to non-present.  Use
+>   	 * the raw write helper to avoid an unnecessary check on volatile bits.
+>   	 */
+> -	__kvm_tdp_mmu_write_spte(iter->sptep, 0);
+> +	__kvm_tdp_mmu_write_spte(iter->sptep, SHADOW_NONPRESENT_VALUE);
+>   
+>   	return 0;
+>   }
+> @@ -740,8 +740,8 @@ static void __tdp_mmu_zap_root(struct kvm *kvm, struct kvm_mmu_page *root,
+>   			continue;
+>   
+>   		if (!shared)
+> -			tdp_mmu_iter_set_spte(kvm, &iter, 0);
+> -		else if (tdp_mmu_set_spte_atomic(kvm, &iter, 0))
+> +			tdp_mmu_iter_set_spte(kvm, &iter, SHADOW_NONPRESENT_VALUE);
+> +		else if (tdp_mmu_set_spte_atomic(kvm, &iter, SHADOW_NONPRESENT_VALUE))
+>   			goto retry;
+>   	}
+>   }
+> @@ -808,8 +808,8 @@ bool kvm_tdp_mmu_zap_sp(struct kvm *kvm, struct kvm_mmu_page *sp)
+>   	if (WARN_ON_ONCE(!is_shadow_present_pte(old_spte)))
+>   		return false;
+>   
+> -	tdp_mmu_set_spte(kvm, kvm_mmu_page_as_id(sp), sp->ptep, old_spte, 0,
+> -			 sp->gfn, sp->role.level + 1);
+> +	tdp_mmu_set_spte(kvm, kvm_mmu_page_as_id(sp), sp->ptep, old_spte,
+> +			 SHADOW_NONPRESENT_VALUE, sp->gfn, sp->role.level + 1);
+>   
+>   	return true;
+>   }
+> @@ -843,7 +843,7 @@ static bool tdp_mmu_zap_leafs(struct kvm *kvm, struct kvm_mmu_page *root,
+>   		    !is_last_spte(iter.old_spte, iter.level))
+>   			continue;
+>   
+> -		tdp_mmu_iter_set_spte(kvm, &iter, 0);
+> +		tdp_mmu_iter_set_spte(kvm, &iter, SHADOW_NONPRESENT_VALUE);
+>   
+>   		/*
+>   		 * Zappings SPTEs in invalid roots doesn't require a TLB flush,
+> @@ -1276,7 +1276,7 @@ static bool set_spte_gfn(struct kvm *kvm, struct tdp_iter *iter,
+>   	 * invariant that the PFN of a present * leaf SPTE can never change.
+>   	 * See handle_changed_spte().
+>   	 */
+> -	tdp_mmu_iter_set_spte(kvm, iter, 0);
+> +	tdp_mmu_iter_set_spte(kvm, iter, SHADOW_NONPRESENT_VALUE);
+>   
+>   	if (!pte_write(range->arg.pte)) {
+>   		new_spte = kvm_mmu_changed_pte_notifier_make_spte(iter->old_spte,
 
-> -	struct resource		local_res;
->  	int			ret, i;
->  	bool			ignore_pipe_clk;
->  	bool			wakeup_source;
-> @@ -825,14 +659,6 @@ static int dwc3_qcom_probe(struct platform_device *pdev)
->  	platform_set_drvdata(pdev, qcom);
->  	qcom->dev = &pdev->dev;
->  
-> -	if (has_acpi_companion(dev)) {
-> -		qcom->acpi_pdata = acpi_device_get_match_data(dev);
-> -		if (!qcom->acpi_pdata) {
-> -			dev_err(&pdev->dev, "no supporting ACPI device data\n");
-> -			return -EINVAL;
-> -		}
-> -	}
-> -
->  	qcom->resets = devm_reset_control_array_get_optional_exclusive(dev);
->  	if (IS_ERR(qcom->resets)) {
->  		return dev_err_probe(&pdev->dev, PTR_ERR(qcom->resets),
-> @@ -860,41 +686,18 @@ static int dwc3_qcom_probe(struct platform_device *pdev)
->  	}
->  
->  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> -
-> -	if (np) {
-> -		parent_res = res;
-> -	} else {
-> -		memcpy(&local_res, res, sizeof(struct resource));
-> -		parent_res = &local_res;
-> -
-> -		parent_res->start = res->start +
-> -			qcom->acpi_pdata->qscratch_base_offset;
-> -		parent_res->end = parent_res->start +
-> -			qcom->acpi_pdata->qscratch_base_size;
-> -
-> -		if (qcom->acpi_pdata->is_urs) {
-> -			qcom->urs_usb = dwc3_qcom_create_urs_usb_platdev(dev);
-> -			if (IS_ERR_OR_NULL(qcom->urs_usb)) {
-> -				dev_err(dev, "failed to create URS USB platdev\n");
-> -				if (!qcom->urs_usb)
-> -					ret = -ENODEV;
-> -				else
-> -					ret = PTR_ERR(qcom->urs_usb);
-> -				goto clk_disable;
-> -			}
-> -		}
-> -	}
-> +	parent_res = res;
->  
->  	qcom->qscratch_base = devm_ioremap_resource(dev, parent_res);
-
-And just use res here.
-
->  	if (IS_ERR(qcom->qscratch_base)) {
->  		ret = PTR_ERR(qcom->qscratch_base);
-> -		goto free_urs;
-> +		goto clk_disable;
-> }
-
-Looks good to me otherwise.
-
-Johan
 
