@@ -1,153 +1,110 @@
-Return-Path: <linux-kernel+bounces-92172-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92174-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DF28871C3C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:53:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48A66871C48
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:54:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2B05B23270
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:53:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E8DE2B2471C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:54:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 731CE63101;
-	Tue,  5 Mar 2024 10:43:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CB6F60267;
+	Tue,  5 Mar 2024 10:44:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z3xr6nd8"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="k94ZMr/X"
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAFC262A0F;
-	Tue,  5 Mar 2024 10:43:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3298F55E77
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 10:44:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709635412; cv=none; b=feUXBZQIyGh7rAMk66Rc6W/bPbotj8awzTeYs1h00BkSerxq9Tty4ifY9Dr4yLl/KYii4E3MbEoyARN6HGfyNHZ4brsKgWmT1CwtLEeatVSSDt+y5xBRSHY0t/J+Ih5bGh4v3puTo7baD/cc0JwCfhpANyjeQIpsOiIjYnJqZMM=
+	t=1709635485; cv=none; b=hM50DZ90BG+jcmiuQWdc/qVqdhtMq67TvzC8r3+N09IH7meZPFGePrZE3S4R8c0Gm6Aof3DT/LteSvxYeGyhCA8B3ELeH+S3HjrXOobgGa9TyGh04uBw8irWdpAG0Zj9qAYeoVperTd9L07p7z7lxTzsAxxygwTcGT7pincv4+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709635412; c=relaxed/simple;
-	bh=TXr6T5gctPLk+weuAPDK0CvjU5ZW8VNUAi1/4q57pf4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=X5HmHNeYjad11w9aADxzAHtVI1tiYOAicIrNYcetS3t3lCpSooUJ0oKeGlkZGFdW9DSKhTtICIAXE5Uis8526Wfn4CxwXL+lbPeUcQFpz50Zb5q46l7HpmqU4BjWrz82Uij6nra7SJI2KEEVWfMV+KZx1zv4fRl+cqKdKXljDzM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z3xr6nd8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0665C43390;
-	Tue,  5 Mar 2024 10:43:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709635412;
-	bh=TXr6T5gctPLk+weuAPDK0CvjU5ZW8VNUAi1/4q57pf4=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=Z3xr6nd8OG2diHS35Sun6lQrVCP54cyxSEd4HvDucM4XZ7Lr8zqeqJ02UZpl2Md/x
-	 hmiIaKDefnhqvqd5uDoIsrdm+iSYJWI6HLTIey2yhv8i3sddQ0727t8qptOFucttNU
-	 e38+geUzX8IgZ0+q6POWx9Ws+b4rVsY2ildKn7Zw4wmdewBqvlNck5Y2VV5yal875O
-	 twJhRpKX52VrlX5id37RwaJQZDzXXFh+9bVPcIdIrB9vpT/vEPWNXw7/5WkW2mbto7
-	 sOLHHTw6m2LjCLDJZ5FhtV2mnicq5ZhYCjn1xm07bQzrUByaH7/dkl29wWtf+GVbsm
-	 nnpc8UlDMPZoA==
-From: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
-Date: Tue, 05 Mar 2024 11:42:43 +0100
-Subject: [PATCH net-next 13/13] selftests: userspace pm: avoid relaunching
- pm events
+	s=arc-20240116; t=1709635485; c=relaxed/simple;
+	bh=QeHrKsgsTP2nrj7upJ4BboKEwdaU/NwMM1tn9hOgY5w=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=M4JxHw5tzVYJ0UVFNkOtvXc5taBFiLzim0jVFZC8dq2wKgUiBLHq4gOfoa+/1PLAtizwCrd4/NPnSgY30ckeZlS/FKEoPd0LNQWXT6BwturO9Udy/VPNVwZ5hJMwj9XQzB0Uk4HcIWt3CUg85CRLW5qbIZDJvw0ZxHVlDQ4r4DM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=k94ZMr/X; arc=none smtp.client-ip=194.117.254.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	sang-engineering.com; h=from:to:cc:subject:date:message-id
+	:mime-version:content-transfer-encoding; s=k1; bh=kgcjcX6n1YPrYY
+	QV0p8f+mPuuBgvuJhzdYh16iDnb6A=; b=k94ZMr/XRFWNL0orq+NEkPMuA8wz7o
+	+zr4AFlGnFpMsrWa7oA4Huzgh2ayeBeV88149SiQgRrynirm7cBwabv4ATcLbp5R
+	JK3plXuEZyXgs3TLYS3SWXTiUa1rzEGF7jOMlA0cHa1IA9bPD/JKUKaXSot40UVs
+	O22+u1K+n3qo9FyTPGdEsha3zCak58CaIBZBRdgZxAetUk3OKqxQ4Xmewf9Zu1wo
+	XjYNR5DO5JU4xNZCKzZTTvZCJ0S4CiKT8MneGiuaoFBU/rx9mEYFcdSc2eFa2yX+
+	FXcOV69z8zoDkyg76d7bIGauOOgYkWE8Xcw1jrP4R0VuCc1slpVmsDCw==
+Received: (qmail 3843203 invoked from network); 5 Mar 2024 11:44:32 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 5 Mar 2024 11:44:32 +0100
+X-UD-Smtp-Session: l3s3148p1@OPH+hucS0sggAwDPXyskAOYD60938Lkb
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: linux-renesas-soc@vger.kernel.org
+Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	Dirk Behme <dirk.behme@de.bosch.com>,
+	stable@vger.kernel.org,
+	Ulf Hansson <ulf.hansson@linaro.org>,
+	Chris Ball <cjb@laptop.org>,
+	Guennadi Liakhovetski <g.liakhovetski@gmx.de>,
+	linux-mmc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] mmc: tmio: avoid concurrent runs of mmc_request_done()
+Date: Tue,  5 Mar 2024 11:42:56 +0100
+Message-ID: <20240305104423.3177-2-wsa+renesas@sang-engineering.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240305-upstream-net-next-20240304-selftests-mptcp-shared-code-shellcheck-v1-13-66618ea5504e@kernel.org>
-References: <20240305-upstream-net-next-20240304-selftests-mptcp-shared-code-shellcheck-v1-0-66618ea5504e@kernel.org>
-In-Reply-To: <20240305-upstream-net-next-20240304-selftests-mptcp-shared-code-shellcheck-v1-0-66618ea5504e@kernel.org>
-To: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>, 
- Geliang Tang <geliang@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>
-Cc: netdev@vger.kernel.org, linux-kselftest@vger.kernel.org, 
- linux-kernel@vger.kernel.org, "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2205; i=matttbe@kernel.org;
- h=from:subject:message-id; bh=TXr6T5gctPLk+weuAPDK0CvjU5ZW8VNUAi1/4q57pf4=;
- b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBl5vcdWvZOlF2dPM/bD8EnzbOzzLBJwJOoByS1P
- 3r1cAhJyQ+JAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZeb3HQAKCRD2t4JPQmmg
- c4+5EADm9uVDUc6EJ98F/z11Xr2mgCzFqi6CL43XvSyGOX2H9WUjRqBpXarILE96pJKA0UqTBud
- 4HmdnxUonGh90yAdafBjv1euH4YvmFcXytveabyynQGhCiTlzBLYivAzRosBvMualqwYleGuyRG
- 9zidzrEbtrX/7veysAJKcmt/FL+bhPevPZiluISaVG+4RAyPcg9+t6WXOX4VEYzJoXz/3bfyWsv
- dkjliFqmtY48uUDXNo4mSZtmosKYw/T9Nc7JbkvxKYIeEUp7MnhADjl7NMUU+Og0ekR4Nilz5Ms
- jJgVfeZDqgGBsG8UFCQKlIWugY2N0VTmztjNSxc9L2XZZawoRo5kjwRab5Pnu4oLLbmPUH9AmJk
- iyMrZS81zhAAIndOYMMyihupT8qtainXlGsR23p9Ob79Kc8scwwNFO3TF3agFrBlnDM6v2bMrof
- qNBr/EYSSRyCxVZT57pijkWzAzN3wKWCkqMt+QN5VQSDvwrNYKSLNZAsgxBqpsADyYo/0fx49oR
- pJD3aU2Xm0MMooFItelhJ9TB+5tVY4qVj/g8UYwiY0iKwRe/5F6TZDmf7phc9moYHeSTcfBh61I
- K5j1PWe+gcLNGDXfPgKDGEpPlhf43E9YJLBSjgzM0YbXcxcSDFHJJmRuU91EeetOukvKlRtTEiQ
- AmeOZFiLFh7j2RA==
-X-Developer-Key: i=matttbe@kernel.org; a=openpgp;
- fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
+Content-Transfer-Encoding: 8bit
 
-'make_connection' is launched twice: once for IPv4, once for IPv6.
+With the to-be-fixed commit, the reset_work handler cleared 'host->mrq'
+outside of the spinlock protected critical section. That leaves a small
+race window during execution of 'tmio_mmc_reset()' where the done_work
+handler could grab a pointer to the now invalid 'host->mrq'. Both would
+use it to call mmc_request_done() causing problems (see link below).
 
-But then, the "pm_nl_ctl events" was launched a first time, killed, then
-relaunched after for no particular reason.
+However, 'host->mrq' cannot simply be cleared earlier inside the
+critical section. That would allow new mrqs to come in asynchronously
+while the actual reset of the controller still needs to be done. So,
+like 'tmio_mmc_set_ios()', an ERR_PTR is used to prevent new mrqs from
+coming in but still avoiding concurrency between work handlers.
 
-We can then move this code, and the generation of the temp file to
-exchange, to the init part, and remove extra conditions that no longer
-needed.
-
-Reviewed-by: Mat Martineau <martineau@kernel.org>
-Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+Reported-by: Dirk Behme <dirk.behme@de.bosch.com>
+Closes: https://lore.kernel.org/all/20240220061356.3001761-1-dirk.behme@de.bosch.com/
+Fixes: df3ef2d3c92c ("mmc: protect the tmio_mmc driver against a theoretical race")
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Tested-by: Dirk Behme <dirk.behme@de.bosch.com>
+Reviewed-by: Dirk Behme <dirk.behme@de.bosch.com>
+Cc: stable@vger.kernel.org # 3.0+
 ---
- tools/testing/selftests/net/mptcp/userspace_pm.sh | 29 ++++++++++-------------
- 1 file changed, 13 insertions(+), 16 deletions(-)
 
-diff --git a/tools/testing/selftests/net/mptcp/userspace_pm.sh b/tools/testing/selftests/net/mptcp/userspace_pm.sh
-index 3200d0b96d53..b0cce8f065d8 100755
---- a/tools/testing/selftests/net/mptcp/userspace_pm.sh
-+++ b/tools/testing/selftests/net/mptcp/userspace_pm.sh
-@@ -149,17 +149,23 @@ ip -net "$ns2" addr add dead:beef:1::2/64 dev ns2eth1 nodad
- ip -net "$ns2" addr add dead:beef:2::2/64 dev ns2eth1 nodad
- ip -net "$ns2" link set ns2eth1 up
- 
-+file=$(mktemp)
-+mptcp_lib_make_file "$file" 2 1
-+
-+# Capture netlink events over the two network namespaces running
-+# the MPTCP client and server
-+client_evts=$(mktemp)
-+mptcp_lib_events "${ns2}" "${client_evts}" client_evts_pid
-+server_evts=$(mktemp)
-+mptcp_lib_events "${ns1}" "${server_evts}" server_evts_pid
-+sleep 0.5
-+
- print_title "Init"
- print_test "Created network namespaces ns1, ns2"
- test_pass
- 
- make_connection()
- {
--	if [ -z "$file" ]; then
--		file=$(mktemp)
--	fi
--	mptcp_lib_make_file "$file" 2 1
--
- 	local is_v6=$1
- 	local app_port=$app4_port
- 	local connect_addr="10.0.1.1"
-@@ -173,17 +179,8 @@ make_connection()
- 		is_v6="v4"
- 	fi
- 
--	# Capture netlink events over the two network namespaces running
--	# the MPTCP client and server
--	if [ -z "$client_evts" ]; then
--		client_evts=$(mktemp)
--	fi
--	mptcp_lib_events "${ns2}" "${client_evts}" client_evts_pid
--	if [ -z "$server_evts" ]; then
--		server_evts=$(mktemp)
--	fi
--	mptcp_lib_events "${ns1}" "${server_evts}" server_evts_pid
--	sleep 0.5
-+	:>"$client_evts"
-+	:>"$server_evts"
- 
- 	# Run the server
- 	ip netns exec "$ns1" \
+Change since v1/RFT: added Dirk's tags and stable tag
 
+@Ulf: this is nasty, subtle stuff. Would be awesome to have it in 6.8
+already!
+
+ drivers/mmc/host/tmio_mmc_core.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/mmc/host/tmio_mmc_core.c b/drivers/mmc/host/tmio_mmc_core.c
+index be7f18fd4836..c253d176db69 100644
+--- a/drivers/mmc/host/tmio_mmc_core.c
++++ b/drivers/mmc/host/tmio_mmc_core.c
+@@ -259,6 +259,8 @@ static void tmio_mmc_reset_work(struct work_struct *work)
+ 	else
+ 		mrq->cmd->error = -ETIMEDOUT;
+ 
++	/* No new calls yet, but disallow concurrent tmio_mmc_done_work() */
++	host->mrq = ERR_PTR(-EBUSY);
+ 	host->cmd = NULL;
+ 	host->data = NULL;
+ 
 -- 
 2.43.0
 
