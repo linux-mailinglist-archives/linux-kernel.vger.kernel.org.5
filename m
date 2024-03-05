@@ -1,483 +1,259 @@
-Return-Path: <linux-kernel+bounces-92139-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92138-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 274A9871BC5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:42:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06296871BC0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:41:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67C12282266
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:42:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 720521F23B62
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:41:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB28F77622;
-	Tue,  5 Mar 2024 10:23:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A84176EF3;
+	Tue,  5 Mar 2024 10:23:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JfOhzVZU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="t67obG0p"
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACD3F76EF6;
-	Tue,  5 Mar 2024 10:23:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0D8E5F574
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 10:23:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709634207; cv=none; b=bzrG3krquETQUBoJQYGMChoF7qirXTnyF6WAzr8PXKSzdhXymsQ0quTzbTCg0KcwvxAtIufhcbAYx/62GPVavjpnoJoBNDhIHfFojgGwONh0gf5XOObF7lLH3qs6p+UY3aR4wJrnRVfy1ExqHB9A2jvn0LYzA6h9sooPltYCMD0=
+	t=1709634206; cv=none; b=OXB9uVsW0jlkuffZ8x2Jmld2SBszsbCtUSxkmw8MFl2dPNPuqxgA1tm4WMux2atvLCGISBh8R/hLk02CCeXG5l5gSXrWblIeCDrWooIoU0/fXqdxLfhWbVAkM/YpK7LdNQzZOy5LfkI7yEgg+cwdqJAVUxvL7xp3jNI8dwrutuo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709634207; c=relaxed/simple;
-	bh=POBXmxmfWLR3OdaBK59TZEAySmTXPtp10vl7hcXrrqE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Su7SfLrOofQJzwWYPqB54HXNVbcn8fTdBu+kO5nNPIn1bg0EO6ydb+2AMAKci8jCj+2Y5DYEleQqVRihwwy+B1nUrWlsflE1v+jxwlLPS1Jf3JlyBGKk8w+vfIXteLOMAr1WvXp5bUi5TZw2bbhtTQyYR7PS1HHiz+nilBeAn7k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JfOhzVZU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8375BC433F1;
-	Tue,  5 Mar 2024 10:23:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709634206;
-	bh=POBXmxmfWLR3OdaBK59TZEAySmTXPtp10vl7hcXrrqE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=JfOhzVZU+PbAcYQ1NVtZEVt8RuGzFpDwvJhc8ZmNR/MQVL5rFEvZdI69ZI/CfRn/9
-	 lDgTnl3e4vosZKaNqjHmg2gD0OzDdqkJbEILuC92XRwFJP0oBxZbFVGeaBD7BIEEcz
-	 /gPzVTSeBDKGQSe2wWMvfIiFkByrXNbsadAf08OawLxQBl8iQ1z3LeH/j4eWcLP0bv
-	 Om5VKAISLfH8L+ZLD4Ctsjw+8zkFVTnaS/Sk8mAS2fAh6CnbKFtI06ECPVUFOxQa/J
-	 zriDWTohGgJ3TPzImH+yT9rlBAUvo/wPEFost8Rs0sPhO279SVYIuUWU7IFsKaHp+s
-	 s/6ryTSTZ4GSA==
-From: Leon Romanovsky <leon@kernel.org>
-To: Christoph Hellwig <hch@lst.de>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Chaitanya Kulkarni <chaitanyak@nvidia.com>
-Cc: Chaitanya Kulkarni <kch@nvidia.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Jens Axboe <axboe@kernel.dk>,
-	Keith Busch <kbusch@kernel.org>,
-	Sagi Grimberg <sagi@grimberg.me>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	=?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	iommu@lists.linux.dev,
-	linux-nvme@lists.infradead.org,
-	kvm@vger.kernel.org,
-	linux-mm@kvack.org,
-	Bart Van Assche <bvanassche@acm.org>,
-	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-	Amir Goldstein <amir73il@gmail.com>,
-	"josef@toxicpanda.com" <josef@toxicpanda.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>,
-	Dan Williams <dan.j.williams@intel.com>,
-	"jack@suse.com" <jack@suse.com>,
-	Leon Romanovsky <leonro@nvidia.com>,
-	Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: [RFC 16/16] nvme-pci: use blk_rq_dma_map() for NVMe SGL
-Date: Tue,  5 Mar 2024 12:22:17 +0200
-Message-ID: <016fc02cbfa9be3c156a6f74df38def1e09c08f1.1709631413.git.leon@kernel.org>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <cover.1709631800.git.leon@kernel.org>
-References: <cover.1709631800.git.leon@kernel.org>
+	s=arc-20240116; t=1709634206; c=relaxed/simple;
+	bh=cgRGXD9ZFjusYxyNzcIsYAnQbaC1CKsDHAOhr1XdZBo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Z+D22HfATArpE0UmIcro5cEJ1ThmUkj+SlnGvNyEBNf5sqTDMIi3vxXxZLHY/HeMGmIgviqaTk8PwubRYd5rV7bCMcgpmn7V+D7RnVHiaT9qwpYZ88uJK3Zz41zVOBL29bpgbFKk2lU5CjCSWUQK1Mzmj0Uzx+lNIiZ3GA+FAlI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=t67obG0p; arc=none smtp.client-ip=209.85.128.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-412eddd14b9so2454725e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 02:23:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1709634203; x=1710239003; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=pH0qNdvDcbtYm421RfhQxAod4eV9sm4IcyGy9K/hDoU=;
+        b=t67obG0pTGP5ix63P9NrvmXX1PM+WPdyfgxjMK/XpvygVEneqSRihQrwNOvg9cyVNp
+         HojWe/Wtygq48VwdN7or0c7hHGbAaWe/UOLM5OSHrNQZvSu4walcKDS45we6FvNXQdlo
+         4uAzjS3+GmdDPs4OCX82c1NLr55SHg+jAVViQxAD4D9agAC+/SeGHLSOSoXn4CIgnXqS
+         aiWmCNATjOAVW3Z6Dd+yL8bJQOb3pUtAX2o4uVoFd5VCigf3lbI596jbX+bmiG/c7mTu
+         sP3QC1Y2Ac3W3RmN5AM5H/AfdCN08v+SsAbKfnaswaC8rUiN9+G6vY6MhXkHYpoE+ZN/
+         F1YQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709634203; x=1710239003;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pH0qNdvDcbtYm421RfhQxAod4eV9sm4IcyGy9K/hDoU=;
+        b=LsbIRLBOC+qtKoV6oqEiM2iTpG3WYMdAgZvgoJl0Is2IG0cnWngxiEJKTE2mpbtpAL
+         XtJMF5To82r9lOy4uKDtHkqyONy85Tn0195i6OJmzc2VDN3kXDCngx9RWAPchoWCEIqN
+         2kt6qM0MRDVb4KW2+oTk0Q8g14VObXwbF0viXMgmOr1wL60Bu3eolp9XET+I5PWWQeT7
+         Skrrm9KJ+PmiCEd8aux38qPTiTW5qHOzErgs6FPmAiITrweh8kYLhQ1ZelEnuO+6jNxN
+         PG/tJjmqFDtAsZS9N0th/RJhGtuy0zJ+YieXp9okDtuETvFEapbFvNOta0IsMoroqUmV
+         HTsQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVNn2FRirM30f8YxUQgRlqYro98UKcCOVocUqdTVp5nN8CfdUbpZBM/7rezZCssbH71ES15QT3QJTSwQBZBAq5CEUtXjPiu7dDL/EVk
+X-Gm-Message-State: AOJu0YzxgH80mcKPC2u96yDhZWIdlU36wwFHwpuWbZxbk5+qP2M1UON1
+	oWHM1M+4yE2zCBke9BOG1+kglzQEHDP/zTyeYHjznji/m57gurKlx9M7HVrXd8M=
+X-Google-Smtp-Source: AGHT+IEmW4xhNvYCQRq7z/XW3e5WjGjb5U6gcA5VwQNvde/0sfKrlD5FcAYT9Bvi8rbtFb0Mme++Sw==
+X-Received: by 2002:a05:600c:c17:b0:412:ef30:2fc6 with SMTP id fm23-20020a05600c0c1700b00412ef302fc6mr421878wmb.30.1709634202825;
+        Tue, 05 Mar 2024 02:23:22 -0800 (PST)
+Received: from airbuntu (92.40.185.97.threembb.co.uk. [92.40.185.97])
+        by smtp.gmail.com with ESMTPSA id d10-20020a05600c3aca00b00412e8370a93sm3715659wms.27.2024.03.05.02.23.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Mar 2024 02:23:22 -0800 (PST)
+Date: Tue, 5 Mar 2024 10:23:18 +0000
+From: Qais Yousef <qyousef@layalina.io>
+To: Shrikanth Hegde <sshegde@linux.ibm.com>
+Cc: dietmar.eggemann@arm.com, pierre.gondois@arm.com, mingo@kernel.org,
+	peterz@infradead.org, vincent.guittot@linaro.org,
+	yu.c.chen@intel.com, linux-kernel@vger.kernel.org,
+	nysal@linux.ibm.com, aboorvad@linux.ibm.com, srikar@linux.ibm.com,
+	vschneid@redhat.com, morten.rasmussen@arm.com
+Subject: Re: [PATCH v4 1/2] sched/fair: Add EAS checks before updating
+ overutilized
+Message-ID: <20240305102318.6qfib44f2ciffomw@airbuntu>
+References: <20240301151725.874604-1-sshegde@linux.ibm.com>
+ <20240301151725.874604-2-sshegde@linux.ibm.com>
+ <20240303185059.wvjkrrn7liwl4wtv@airbuntu>
+ <5c6259a2-fadd-41c6-aa41-91f3af01272c@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <5c6259a2-fadd-41c6-aa41-91f3af01272c@linux.ibm.com>
 
-From: Chaitanya Kulkarni <kch@nvidia.com>
+On 03/04/24 13:54, Shrikanth Hegde wrote:
+> 
+> 
+> On 3/4/24 12:20 AM, Qais Yousef wrote:
+> > On 03/01/24 20:47, Shrikanth Hegde wrote:
+> >> Overutilized field of root domain is only used for EAS(energy aware scheduler)
+> 
+> [...]
+> 
+> 
+> Hi Qais, Thanks for taking a look. 
+> 
+> >> ---
+> >>  kernel/sched/fair.c | 49 +++++++++++++++++++++++++++------------------
+> >>  1 file changed, 30 insertions(+), 19 deletions(-)
+> >>
+> >> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> >> index 6a16129f9a5c..a71f8a1506e4 100644
+> >> --- a/kernel/sched/fair.c
+> >> +++ b/kernel/sched/fair.c
+> >> @@ -6670,15 +6670,29 @@ static inline bool cpu_overutilized(int cpu)
+> >>  	return !util_fits_cpu(cpu_util_cfs(cpu), rq_util_min, rq_util_max, cpu);
+> >>  }
+> >>
+> >> -static inline void update_overutilized_status(struct rq *rq)
+> >> +static inline void set_rd_overutilized_status(struct root_domain *rd,
+> >> +					      unsigned int status)
+> >>  {
+> >> -	if (!READ_ONCE(rq->rd->overutilized) && cpu_overutilized(rq->cpu)) {
+> >> -		WRITE_ONCE(rq->rd->overutilized, SG_OVERUTILIZED);
+> >> -		trace_sched_overutilized_tp(rq->rd, SG_OVERUTILIZED);
+> >> -	}
+> > 
+> > Can we add
+> > 
+> > 	if (!sched_energy_enabled())
+> > 		return;
+> 
+> This is very close to what i had till v2. But it was pointed out that, it 
+> would end up calling sched_energy_enabled twice in  check_update_overutilized_status. 
 
-Update nvme_iod structure to hold iova, list of DMA linked addresses and
-total linked count, first one is needed in the request submission path
-to create a request to DMA mapping and last two are needed in the
-request completion path to remove the DMA mapping. In nvme_map_data()
-initialize iova with device, direction, and iova dma length with the
-help of blk_rq_get_dma_length(). Allocate iova using dma_alloc_iova().
-and call in nvme_pci_setup_sgls().
+It's a static key. It will either patch the code to be a NOP and return, or
+work normally. I don't see a problem.
 
-Call newly added blk_rq_dma_map() to create request to DMA mapping and
-provide a callback function nvme_pci_sgl_map(). In the callback
-function initialize NVMe SGL dma addresses.
+> In check_update_overutilized_status, it would be better to avoid access to 
+> overutilized and computing cpu_overutilized if EAS is not enabled. 
 
-Finally in nvme_unmap_data() unlink the dma address and free iova.
+cpu_overutilized() could gain a protection with sched_energy_enabled() too.
+I think it's better to encapsulate the deps within the function.
 
-Full disclosure:-
------------------
+> 
+> I am okay with either code. keeping sched_energy_enabled in set_rd_overutilized_status
+> would be less code and more readable. But would call sched_energy_enabled twice. 
+> 
+> Dietmar, Pierre, 
+> Could you please provide your inputs here? 
 
-This is an RFC to demonstrate the newly added DMA APIs can be used to
-map/unmap bvecs without the use of sg list, hence I've modified the pci
-code to only handle SGLs for now. Once we have some agreement on the
-structure of new DMA API I'll add support for PRPs along with all the
-optimization that I've removed from the code for this RFC for NVMe SGLs
-and PRPs.
+I prefer not sprinkling sched_energy_enabled() for every user. But FWIW the
+code looks correct to me and these stylistic issues are not a blocker for me
 
-I was able to run fio verification job successfully :-
+Reviewed-by: Qais Yousef <qyousef@layalina.io>
 
-$ fio fio/verify.fio --ioengine=io_uring --filename=/dev/nvme0n1
-                     --loops=10
-write-and-verify: (g=0): rw=randwrite, bs=(R) 8192B-8192B, (W) 8192B-8192B,
-	(T) 8192B-8192B, ioengine=io_uring, iodepth=16
-fio-3.36
-Starting 1 process
-Jobs: 1 (f=1): [V(1)][81.6%][r=12.2MiB/s][r=1559 IOPS][eta 03m:00s]
-write-and-verify: (groupid=0, jobs=1): err= 0: pid=4435: Mon Mar  4 20:54:48 2024
-  read: IOPS=2789, BW=21.8MiB/s (22.9MB/s)(6473MiB/297008msec)
-    slat (usec): min=4, max=5124, avg=356.51, stdev=604.30
-    clat (nsec): min=1593, max=23376k, avg=5377076.99, stdev=2039189.93
-     lat (usec): min=493, max=23407, avg=5733.58, stdev=2103.22
-    clat percentiles (usec):
-     |  1.00th=[ 1172],  5.00th=[ 2114], 10.00th=[ 2835], 20.00th=[ 3654],
-     | 30.00th=[ 4228], 40.00th=[ 4752], 50.00th=[ 5276], 60.00th=[ 5800],
-     | 70.00th=[ 6325], 80.00th=[ 7046], 90.00th=[ 8094], 95.00th=[ 8979],
-     | 99.00th=[10421], 99.50th=[11076], 99.90th=[12780], 99.95th=[14222],
-     | 99.99th=[16909]
-  write: IOPS=2608, BW=20.4MiB/s (21.4MB/s)(10.0GiB/502571msec); 0 zone resets
-    slat (usec): min=4, max=5787, avg=382.68, stdev=649.01
-    clat (nsec): min=521, max=23650k, avg=5751363.17, stdev=2676065.35
-     lat (usec): min=95, max=23674, avg=6134.04, stdev=2813.48
-    clat percentiles (usec):
-     |  1.00th=[  709],  5.00th=[ 1270], 10.00th=[ 1958], 20.00th=[ 3261],
-     | 30.00th=[ 4228], 40.00th=[ 5014], 50.00th=[ 5800], 60.00th=[ 6521],
-     | 70.00th=[ 7373], 80.00th=[ 8225], 90.00th=[ 9241], 95.00th=[ 9896],
-     | 99.00th=[11469], 99.50th=[11863], 99.90th=[13960], 99.95th=[15270],
-     | 99.99th=[17695]
-   bw (  KiB/s): min= 1440, max=132496, per=99.28%, avg=20715.88, stdev=13123.13, samples=1013
-   iops        : min=  180, max=16562, avg=2589.34, stdev=1640.39, samples=1013
-  lat (nsec)   : 750=0.01%
-  lat (usec)   : 2=0.01%, 4=0.01%, 100=0.01%, 250=0.01%, 500=0.07%
-  lat (usec)   : 750=0.79%, 1000=1.22%
-  lat (msec)   : 2=5.94%, 4=18.87%, 10=69.53%, 20=3.58%, 50=0.01%
-  cpu          : usr=1.01%, sys=98.95%, ctx=1591, majf=0, minf=2286
-  IO depths    : 1=0.1%, 2=0.1%, 4=0.1%, 8=0.1%, 16=100.0%, 32=0.0%, >=64=0.0%
-     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
-     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.1%, 32=0.0%, 64=0.0%, >=64=0.0%
-     issued rwts: total=828524,1310720,0,0 short=0,0,0,0 dropped=0,0,0,0
-     latency   : target=0, window=0, percentile=100.00%, depth=16
-
-Run status group 0 (all jobs):
-   READ: bw=21.8MiB/s (22.9MB/s), 21.8MiB/s-21.8MiB/s (22.9MB/s-22.9MB/s),
-	io=6473MiB (6787MB), run=297008-297008msec
-  WRITE: bw=20.4MiB/s (21.4MB/s), 20.4MiB/s-20.4MiB/s (21.4MB/s-21.4MB/s),
-	io=10.0GiB (10.7GB), run=502571-502571msec
-
-Disk stats (read/write):
-  nvme0n1: ios=829189/1310720, sectors=13293416/20971520, merge=0/0,
-	ticks=836561/1340351, in_queue=2176913, util=99.30%
-
-Signed-off-by: Chaitanya Kulkarni <kch@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/nvme/host/pci.c | 220 +++++++++-------------------------------
- 1 file changed, 49 insertions(+), 171 deletions(-)
-
-diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index e6267a6aa380..140939228409 100644
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -236,7 +236,9 @@ struct nvme_iod {
- 	unsigned int dma_len;	/* length of single DMA segment mapping */
- 	dma_addr_t first_dma;
- 	dma_addr_t meta_dma;
--	struct sg_table sgt;
-+	struct dma_iova_attrs iova;
-+	dma_addr_t dma_link_address[128];
-+	u16 nr_dma_link_address;
- 	union nvme_descriptor list[NVME_MAX_NR_ALLOCATIONS];
- };
- 
-@@ -521,25 +523,10 @@ static inline bool nvme_pci_use_sgls(struct nvme_dev *dev, struct request *req,
- 	return true;
- }
- 
--static void nvme_free_prps(struct nvme_dev *dev, struct request *req)
--{
--	const int last_prp = NVME_CTRL_PAGE_SIZE / sizeof(__le64) - 1;
--	struct nvme_iod *iod = blk_mq_rq_to_pdu(req);
--	dma_addr_t dma_addr = iod->first_dma;
--	int i;
--
--	for (i = 0; i < iod->nr_allocations; i++) {
--		__le64 *prp_list = iod->list[i].prp_list;
--		dma_addr_t next_dma_addr = le64_to_cpu(prp_list[last_prp]);
--
--		dma_pool_free(dev->prp_page_pool, prp_list, dma_addr);
--		dma_addr = next_dma_addr;
--	}
--}
--
- static void nvme_unmap_data(struct nvme_dev *dev, struct request *req)
- {
- 	struct nvme_iod *iod = blk_mq_rq_to_pdu(req);
-+	u16 i;
- 
- 	if (iod->dma_len) {
- 		dma_unmap_page(dev->dev, iod->first_dma, iod->dma_len,
-@@ -547,9 +534,8 @@ static void nvme_unmap_data(struct nvme_dev *dev, struct request *req)
- 		return;
- 	}
- 
--	WARN_ON_ONCE(!iod->sgt.nents);
--
--	dma_unmap_sgtable(dev->dev, &iod->sgt, rq_dma_dir(req), 0);
-+	for (i = 0; i < iod->nr_dma_link_address; i++)
-+		dma_unlink_range(&iod->iova, iod->dma_link_address[i]);
- 
- 	if (iod->nr_allocations == 0)
- 		dma_pool_free(dev->prp_small_pool, iod->list[0].sg_list,
-@@ -557,120 +543,15 @@ static void nvme_unmap_data(struct nvme_dev *dev, struct request *req)
- 	else if (iod->nr_allocations == 1)
- 		dma_pool_free(dev->prp_page_pool, iod->list[0].sg_list,
- 			      iod->first_dma);
--	else
--		nvme_free_prps(dev, req);
--	mempool_free(iod->sgt.sgl, dev->iod_mempool);
--}
--
--static void nvme_print_sgl(struct scatterlist *sgl, int nents)
--{
--	int i;
--	struct scatterlist *sg;
--
--	for_each_sg(sgl, sg, nents, i) {
--		dma_addr_t phys = sg_phys(sg);
--		pr_warn("sg[%d] phys_addr:%pad offset:%d length:%d "
--			"dma_address:%pad dma_length:%d\n",
--			i, &phys, sg->offset, sg->length, &sg_dma_address(sg),
--			sg_dma_len(sg));
--	}
--}
--
--static blk_status_t nvme_pci_setup_prps(struct nvme_dev *dev,
--		struct request *req, struct nvme_rw_command *cmnd)
--{
--	struct nvme_iod *iod = blk_mq_rq_to_pdu(req);
--	struct dma_pool *pool;
--	int length = blk_rq_payload_bytes(req);
--	struct scatterlist *sg = iod->sgt.sgl;
--	int dma_len = sg_dma_len(sg);
--	u64 dma_addr = sg_dma_address(sg);
--	int offset = dma_addr & (NVME_CTRL_PAGE_SIZE - 1);
--	__le64 *prp_list;
--	dma_addr_t prp_dma;
--	int nprps, i;
--
--	length -= (NVME_CTRL_PAGE_SIZE - offset);
--	if (length <= 0) {
--		iod->first_dma = 0;
--		goto done;
--	}
--
--	dma_len -= (NVME_CTRL_PAGE_SIZE - offset);
--	if (dma_len) {
--		dma_addr += (NVME_CTRL_PAGE_SIZE - offset);
--	} else {
--		sg = sg_next(sg);
--		dma_addr = sg_dma_address(sg);
--		dma_len = sg_dma_len(sg);
--	}
--
--	if (length <= NVME_CTRL_PAGE_SIZE) {
--		iod->first_dma = dma_addr;
--		goto done;
--	}
--
--	nprps = DIV_ROUND_UP(length, NVME_CTRL_PAGE_SIZE);
--	if (nprps <= (256 / 8)) {
--		pool = dev->prp_small_pool;
--		iod->nr_allocations = 0;
--	} else {
--		pool = dev->prp_page_pool;
--		iod->nr_allocations = 1;
--	}
--
--	prp_list = dma_pool_alloc(pool, GFP_ATOMIC, &prp_dma);
--	if (!prp_list) {
--		iod->nr_allocations = -1;
--		return BLK_STS_RESOURCE;
--	}
--	iod->list[0].prp_list = prp_list;
--	iod->first_dma = prp_dma;
--	i = 0;
--	for (;;) {
--		if (i == NVME_CTRL_PAGE_SIZE >> 3) {
--			__le64 *old_prp_list = prp_list;
--			prp_list = dma_pool_alloc(pool, GFP_ATOMIC, &prp_dma);
--			if (!prp_list)
--				goto free_prps;
--			iod->list[iod->nr_allocations++].prp_list = prp_list;
--			prp_list[0] = old_prp_list[i - 1];
--			old_prp_list[i - 1] = cpu_to_le64(prp_dma);
--			i = 1;
--		}
--		prp_list[i++] = cpu_to_le64(dma_addr);
--		dma_len -= NVME_CTRL_PAGE_SIZE;
--		dma_addr += NVME_CTRL_PAGE_SIZE;
--		length -= NVME_CTRL_PAGE_SIZE;
--		if (length <= 0)
--			break;
--		if (dma_len > 0)
--			continue;
--		if (unlikely(dma_len < 0))
--			goto bad_sgl;
--		sg = sg_next(sg);
--		dma_addr = sg_dma_address(sg);
--		dma_len = sg_dma_len(sg);
--	}
--done:
--	cmnd->dptr.prp1 = cpu_to_le64(sg_dma_address(iod->sgt.sgl));
--	cmnd->dptr.prp2 = cpu_to_le64(iod->first_dma);
--	return BLK_STS_OK;
--free_prps:
--	nvme_free_prps(dev, req);
--	return BLK_STS_RESOURCE;
--bad_sgl:
--	WARN(DO_ONCE(nvme_print_sgl, iod->sgt.sgl, iod->sgt.nents),
--			"Invalid SGL for payload:%d nents:%d\n",
--			blk_rq_payload_bytes(req), iod->sgt.nents);
--	return BLK_STS_IOERR;
-+	dma_free_iova(&iod->iova);
- }
- 
- static void nvme_pci_sgl_set_data(struct nvme_sgl_desc *sge,
--		struct scatterlist *sg)
-+				 dma_addr_t dma_addr,
-+				 unsigned int dma_len)
- {
--	sge->addr = cpu_to_le64(sg_dma_address(sg));
--	sge->length = cpu_to_le32(sg_dma_len(sg));
-+	sge->addr = cpu_to_le64(dma_addr);
-+	sge->length = cpu_to_le32(dma_len);
- 	sge->type = NVME_SGL_FMT_DATA_DESC << 4;
- }
- 
-@@ -682,25 +563,37 @@ static void nvme_pci_sgl_set_seg(struct nvme_sgl_desc *sge,
- 	sge->type = NVME_SGL_FMT_LAST_SEG_DESC << 4;
- }
- 
-+struct nvme_pci_sgl_map_data {
-+	struct nvme_iod *iod;
-+	struct nvme_sgl_desc *sgl_list;
-+};
-+
-+static void nvme_pci_sgl_map(void *data, u32 cnt, dma_addr_t dma_addr,
-+			    dma_addr_t offset, u32 len)
-+{
-+	struct nvme_pci_sgl_map_data *d = data;
-+	struct nvme_sgl_desc *sgl_list = d->sgl_list;
-+	struct nvme_iod *iod = d->iod;
-+
-+	nvme_pci_sgl_set_data(&sgl_list[cnt], dma_addr, len);
-+	iod->dma_link_address[cnt] = offset;
-+	iod->nr_dma_link_address++;
-+}
-+
- static blk_status_t nvme_pci_setup_sgls(struct nvme_dev *dev,
- 		struct request *req, struct nvme_rw_command *cmd)
- {
-+	unsigned int entries = blk_rq_nr_phys_segments(req);
- 	struct nvme_iod *iod = blk_mq_rq_to_pdu(req);
--	struct dma_pool *pool;
- 	struct nvme_sgl_desc *sg_list;
--	struct scatterlist *sg = iod->sgt.sgl;
--	unsigned int entries = iod->sgt.nents;
-+	struct dma_pool *pool;
- 	dma_addr_t sgl_dma;
--	int i = 0;
-+	int linked_count;
-+	struct nvme_pci_sgl_map_data data;
- 
- 	/* setting the transfer type as SGL */
- 	cmd->flags = NVME_CMD_SGL_METABUF;
- 
--	if (entries == 1) {
--		nvme_pci_sgl_set_data(&cmd->dptr.sgl, sg);
--		return BLK_STS_OK;
--	}
--
- 	if (entries <= (256 / sizeof(struct nvme_sgl_desc))) {
- 		pool = dev->prp_small_pool;
- 		iod->nr_allocations = 0;
-@@ -718,11 +611,13 @@ static blk_status_t nvme_pci_setup_sgls(struct nvme_dev *dev,
- 	iod->list[0].sg_list = sg_list;
- 	iod->first_dma = sgl_dma;
- 
--	nvme_pci_sgl_set_seg(&cmd->dptr.sgl, sgl_dma, entries);
--	do {
--		nvme_pci_sgl_set_data(&sg_list[i++], sg);
--		sg = sg_next(sg);
--	} while (--entries > 0);
-+	data.iod = iod;
-+	data.sgl_list = sg_list;
-+
-+	linked_count = blk_rq_dma_map(req, nvme_pci_sgl_map, &data,
-+				       &iod->iova);
-+
-+	nvme_pci_sgl_set_seg(&cmd->dptr.sgl, sgl_dma, linked_count);
- 
- 	return BLK_STS_OK;
- }
-@@ -788,36 +683,20 @@ static blk_status_t nvme_map_data(struct nvme_dev *dev, struct request *req,
- 							     &cmnd->rw, &bv);
- 		}
- 	}
--
--	iod->dma_len = 0;
--	iod->sgt.sgl = mempool_alloc(dev->iod_mempool, GFP_ATOMIC);
--	if (!iod->sgt.sgl)
-+	iod->iova.dev = dev->dev;
-+	iod->iova.dir = rq_dma_dir(req);
-+	iod->iova.attrs = DMA_ATTR_NO_WARN;
-+	iod->iova.size = blk_rq_get_dma_length(req);
-+	if (!iod->iova.size)
- 		return BLK_STS_RESOURCE;
--	sg_init_table(iod->sgt.sgl, blk_rq_nr_phys_segments(req));
--	iod->sgt.orig_nents = blk_rq_map_sg(req->q, req, iod->sgt.sgl);
--	if (!iod->sgt.orig_nents)
--		goto out_free_sg;
- 
--	rc = dma_map_sgtable(dev->dev, &iod->sgt, rq_dma_dir(req),
--			     DMA_ATTR_NO_WARN);
--	if (rc) {
--		if (rc == -EREMOTEIO)
--			ret = BLK_STS_TARGET;
--		goto out_free_sg;
--	}
-+	rc = dma_alloc_iova(&iod->iova);
-+	if (rc)
-+		return BLK_STS_RESOURCE;
- 
--	if (nvme_pci_use_sgls(dev, req, iod->sgt.nents))
--		ret = nvme_pci_setup_sgls(dev, req, &cmnd->rw);
--	else
--		ret = nvme_pci_setup_prps(dev, req, &cmnd->rw);
--	if (ret != BLK_STS_OK)
--		goto out_unmap_sg;
--	return BLK_STS_OK;
-+	iod->dma_len = 0;
- 
--out_unmap_sg:
--	dma_unmap_sgtable(dev->dev, &iod->sgt, rq_dma_dir(req), 0);
--out_free_sg:
--	mempool_free(iod->sgt.sgl, dev->iod_mempool);
-+	ret = nvme_pci_setup_sgls(dev, req, &cmnd->rw);
- 	return ret;
- }
- 
-@@ -841,7 +720,6 @@ static blk_status_t nvme_prep_rq(struct nvme_dev *dev, struct request *req)
- 
- 	iod->aborted = false;
- 	iod->nr_allocations = -1;
--	iod->sgt.nents = 0;
- 
- 	ret = nvme_setup_cmd(req->q->queuedata, req);
- 	if (ret)
--- 
-2.44.0
-
+> 
+> 
+> > 
+> > here and avoid sprinkling the condition in other various places instead?
+> > 
+> >> +	WRITE_ONCE(rd->overutilized, status);
+> >> +	trace_sched_overutilized_tp(rd, !!status);
+> >> +}
+> >> +
+> >> +static inline void check_update_overutilized_status(struct rq *rq)
+> >> +{
+> >> +	/*
+> >> +	 * overutilized field is used for load balancing decisions only
+> >> +	 * if energy aware scheduler is being used
+> >> +	 */
+> > 
+> > nit: I think this comment is unnecessary but I don't mind keeping it
+> > 
+> >> +	if (!sched_energy_enabled())
+> >> +		return;
+> >> +
+> >> +	if (!READ_ONCE(rq->rd->overutilized) && cpu_overutilized(rq->cpu))
+> >> +		set_rd_overutilized_status(rq->rd, SG_OVERUTILIZED);
+> >>  }
+> >>  #else
+> >> -static inline void update_overutilized_status(struct rq *rq) { }
+> >> +static inline void check_update_overutilized_status(struct rq *rq) { }
+> >> +static inline void set_rd_overutilized_status(struct root_domain *rd,
+> >> +					      unsigned int status) { }
+> >>  #endif
+> >>
+> >>  /* Runqueue only has SCHED_IDLE tasks enqueued */
+> >> @@ -6779,7 +6793,7 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
+> >>  	 * and the following generally works well enough in practice.
+> >>  	 */
+> >>  	if (!task_new)
+> >> -		update_overutilized_status(rq);
+> >> +		check_update_overutilized_status(rq);
+> >>
+> >>  enqueue_throttle:
+> >>  	assert_list_leaf_cfs_rq(rq);
+> >> @@ -9902,7 +9916,7 @@ static inline void update_sg_lb_stats(struct lb_env *env,
+> >>  		if (nr_running > 1)
+> >>  			*sg_status |= SG_OVERLOAD;
+> >>
+> >> -		if (cpu_overutilized(i))
+> >> +		if (sched_energy_enabled() && cpu_overutilized(i))
+> > 
+> > I think we can drop sched_energy_enable() here if we add it to
+> > set_rd_overutilized_status()
+> 
+> we can avoid additional call to cpu_overutilized. So we should keep it. 
+> 
+> > 
+> >>  			*sg_status |= SG_OVERUTILIZED;
+> >>
+> >>  #ifdef CONFIG_NUMA_BALANCING
+> >> @@ -10596,19 +10610,16 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
+> >>  		env->fbq_type = fbq_classify_group(&sds->busiest_stat);
+> >>
+> >>  	if (!env->sd->parent) {
+> >> -		struct root_domain *rd = env->dst_rq->rd;
+> >> -
+> >>  		/* update overload indicator if we are at root domain */
+> >> -		WRITE_ONCE(rd->overload, sg_status & SG_OVERLOAD);
+> >> +		WRITE_ONCE(env->dst_rq->rd->overload, sg_status & SG_OVERLOAD);
+> >>
+> >>  		/* Update over-utilization (tipping point, U >= 0) indicator */
+> >> -		WRITE_ONCE(rd->overutilized, sg_status & SG_OVERUTILIZED);
+> >> -		trace_sched_overutilized_tp(rd, sg_status & SG_OVERUTILIZED);
+> >> -	} else if (sg_status & SG_OVERUTILIZED) {
+> >> -		struct root_domain *rd = env->dst_rq->rd;
+> >> -
+> >> -		WRITE_ONCE(rd->overutilized, SG_OVERUTILIZED);
+> >> -		trace_sched_overutilized_tp(rd, SG_OVERUTILIZED);
+> >> +		if (sched_energy_enabled()) {
+> > 
+> > ditto
+> 
+> First comment would apply for these two.
+> 
+> >> +			set_rd_overutilized_status(env->dst_rq->rd,
+> >> +						   sg_status & SG_OVERUTILIZED);
+> >> +		}
+> >> +	} else if (sched_energy_enabled() && (sg_status & SG_OVERUTILIZED)) {
+> > 
+> > ditto
+> > 
+> >> +		set_rd_overutilized_status(env->dst_rq->rd, SG_OVERUTILIZED);
+> >>  	}
+> >>
+> >>  	update_idle_cpu_scan(env, sum_util);
+> >> @@ -12609,7 +12620,7 @@ static void task_tick_fair(struct rq *rq, struct task_struct *curr, int queued)
+> >>  		task_tick_numa(rq, curr);
+> >>
+> >>  	update_misfit_status(curr, rq);
+> >> -	update_overutilized_status(task_rq(curr));
+> >> +	check_update_overutilized_status(task_rq(curr));
+> >>
+> >>  	task_tick_core(rq, curr);
+> >>  }
+> >> --
+> >> 2.39.3
+> >>
 
