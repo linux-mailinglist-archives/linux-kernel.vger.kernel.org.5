@@ -1,76 +1,76 @@
-Return-Path: <linux-kernel+bounces-92432-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92433-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0687B872016
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:27:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8367872018
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:27:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A5901C25460
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:27:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 14B10B2624A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:27:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C3A785C73;
-	Tue,  5 Mar 2024 13:26:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8EE486633;
+	Tue,  5 Mar 2024 13:26:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="jerpBw7w"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="G1N++5mh"
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7117C85C66;
-	Tue,  5 Mar 2024 13:26:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A74078614C;
+	Tue,  5 Mar 2024 13:26:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709645197; cv=none; b=g9gUEEr4Gd2HWmFdlewApNiH5pC1euOmysd0sw0PcGq30xs21wsdjkSRt8akAySJ149uzNA44WMYT5MYvhOZGx4Q9VNVDBmsX7UxHmmehgYplB77GxrP+0dPPluxcGDTzu5KGCMtEPxCrXSu8W8Lw57JWWdBr6JuniCLBMNXWBk=
+	t=1709645201; cv=none; b=JAOi7Mi02KmZkRhLCAljbJktyCxJXUyCJaBZZJei9o9mbuC7GExx3N3OzOvXMA9CofZh1UhZc4ET2x8+pQSEtwcNC+Q5/RiCzfReUajfNohanRTxh14u5WcL8dTfi0Q6DvXEOZ+pl7obdO00bCULX0sHr7jASIPld36O6/5utkU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709645197; c=relaxed/simple;
-	bh=2EEnqmB5TIgpdWkzBN0rc4jY7UzdMAzOCkdrC/xG+o4=;
+	s=arc-20240116; t=1709645201; c=relaxed/simple;
+	bh=HK8LB9QJ8mSrtcVi7IoyDMwKj+da6n0YpnV8wKpMhXQ=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Cpb+K7JBSD03xP+ehr1KfqB6e33Ukx/gQ4kNlo6AWyk4tFSJqgYzUOanHQ+xLKyDynU5IiZAUl/dCML87mKjbLRYR5Co37Gz7CxOlqPpRmOoUGqNM38nHwmfeCeGve4hj/Q8xlefK41Cv+Q/L7c3rHIAS2GtYLEDyCOlZE0J5jQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=jerpBw7w; arc=none smtp.client-ip=209.85.214.182
+	 In-Reply-To:To:Cc; b=rmbfnKvagZsDGz5Ln5zOc0pojLQR5zfkFteZryWf0VlpDWRmFIpUeGI46/V0C/tcTeUtHFfzoe0DYIme7d20n7W1JRncSdOEFI8xyeO5WoFGAcFE3Is7sChqbAGbThR3NFjtCB7UQV78f9xo5RXjA6CxgtGh4ouBK7ITnZgcrt0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=G1N++5mh; arc=none smtp.client-ip=209.85.210.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d7232dcb3eso41488965ad.2;
-        Tue, 05 Mar 2024 05:26:36 -0800 (PST)
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6da202aa138so4123721b3a.2;
+        Tue, 05 Mar 2024 05:26:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709645196; x=1710249996;
+        d=1e100.net; s=20230601; t=1709645199; x=1710249999;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:dkim-signature:from:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=/uomTNW6tq+hyrTNAG5g2zGDC1DnWcLXlavN+iH9FRM=;
-        b=Rt89Mv+Xov3QklPEo5rpnyZXtetSuhuY9uy8nf7jlm6A8HapDuruLxGEKkJOJDGS98
-         FIAn4u3YMZ2zeROkcev6qOckrlygYS9cTr6TGR/z0vCqofkquawux7LZEDmTAy6jRX3n
-         lF9DH0G22Rtu0e9USpGeU9WCL5gYckmYnthzwd44DLaaEdzVBtwff51afndJlY6sFgOl
-         fGHq1N93L8+/Uqa+DDaUhZL5mO7nuSzMvmMrsCEFl7N0CdnBrM4IB5K4z7Od8IF7QFnA
-         pJ4CknmeKlpPQAnUOIc36OJR4GQXJnYINlLNxAzX3scPGHrDbGQS2Ss3xOhpyPfysLIf
-         zB+A==
-X-Forwarded-Encrypted: i=1; AJvYcCWKaGYTI/EypuCZ2xIR+OZh6ZGXiHRa6HU+GquieugaMmJwZvLWDo+MQvgtLTvODLUK3L71buDTFmMR9KeIPs8xzDBdP04JUo29syCAa3aBfrZ9c75tUQAA/f+t8pSacT1gPJlP85I2D2w=
-X-Gm-Message-State: AOJu0YxtW4vs4uNmlKiaeVE3fmhIKbbuB6+7Fd/RfLlJK7qgjngpD+Ll
-	UgQsCSl8pVEca31EsojLp88RlE7pcz72I6iY6qv0wWF8HQQUqgeynoK8X+/AjURBbQ==
-X-Google-Smtp-Source: AGHT+IExGzbYjgr3rMYTSsQMOwiWJgtTlcptZBnwe8v3yqdJAR7bTlZoOX9WMdE1+6vVYhB2Cxplqg==
-X-Received: by 2002:a17:902:d4d1:b0:1d9:a647:5579 with SMTP id o17-20020a170902d4d100b001d9a6475579mr1949268plg.1.1709645195761;
-        Tue, 05 Mar 2024 05:26:35 -0800 (PST)
+        bh=NLV8P6DpyW79g9n98lCR51WBPdxINm+PK1VfaCZgZ2g=;
+        b=XgoI/Ks/e0p72ULGkvOVXfyg/nXKxCwZvV0vJr4KOgCTPdPPkJeXj2TOlxbh/YYota
+         2ZOUnrDCIzOwQSRLAaJwo6ZK792uyGXKkNt8IyvUg8rZdXDhB/+0jG8U/B+Km1uJrlN9
+         C699zTFM2tKqwcFiH2Nok+Bz/rIIqHHCXvDbp87oLJk7AtgjJFaDgyhip4QJbQ68JvgN
+         pQ0jiww5MvWJTBNckD3buDd+ZQvGH0OfiXHIzW6PNhtyGW3Jkrmsnbx4TM1xOHczXitO
+         CgIbSvViG3DIOuitfdGOKEcAjTkFtDfVIjvVMSEuXEexPF13cYF7lOOlpxSzuZ/TJQNw
+         RYEg==
+X-Forwarded-Encrypted: i=1; AJvYcCWOcSUj2XbWdhQiXKY2QwNz0N8By6zKjQ8AKiUMiU7Cmtu0QQIz4XKFZYTXXdXDFp636bP6lpySWWGEMaA6wmpGTAo9Vk8w22L+EfMH4zmfO7cEc2BCjlifvoCRLLlipI7S7+sgpqs/e3c=
+X-Gm-Message-State: AOJu0YzT/PpMTU457DvDlxyuK1+pL8ehnDGc/xpr/KfJK4f7aR7xxWP0
+	vqqa0AIqOh3dcsG9WQbzCuWLO6tH7ov1KmKL7pA01mCsPVjEZOCi
+X-Google-Smtp-Source: AGHT+IFMVpTxgwa8CWp274EVMmUymPxeYlUf2+35ENxL0u93SgGhGRKmJsEn4FIzu4unopQee4RzPw==
+X-Received: by 2002:a17:902:7207:b0:1dd:2e6:b951 with SMTP id ba7-20020a170902720700b001dd02e6b951mr2146082plb.12.1709645198955;
+        Tue, 05 Mar 2024 05:26:38 -0800 (PST)
 Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id o5-20020a170902d4c500b001d8f6ae51aasm10472564plg.64.2024.03.05.05.26.35
+        by smtp.gmail.com with ESMTPSA id d3-20020a170903230300b001db7d3276fbsm10484676plh.27.2024.03.05.05.26.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 05:26:35 -0800 (PST)
+        Tue, 05 Mar 2024 05:26:38 -0800 (PST)
 From: "Ricardo B. Marliere" <ricardo@marliere.net>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1709645194;
+	s=2024; t=1709645197;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/uomTNW6tq+hyrTNAG5g2zGDC1DnWcLXlavN+iH9FRM=;
-	b=jerpBw7wmS3/Y579CuvLYlnksVBtVQz5mS12UX57G/0CgoM0fqT+tqJvACG2PZch9xshkb
-	yw+mwCD9l5D9HTCqdNCuSp7OcfNL5gbcOMZSd9nW004DqTKAcvMIX7DBFuCcEsFBeLE58N
-	/5MWDyHg6L5mxgLbQGBuNpnaV6n8WAtXmH1i1q5YNAbPLKuZ3Cq2XQQ8KEVIdUfLwaViDI
-	mZiW1TSuWUSH34gulFxB6a1Ukk/x1qJDF3Fd+LQmJx7L82y/HKgdgpsOm9KxA+AI0+RCWx
-	ioG88NNjby84LLMVKUn6RBhH9IpT18FYPcSVTdUxuMd3/Vx/ybojPJYxhrcKTg==
+	bh=NLV8P6DpyW79g9n98lCR51WBPdxINm+PK1VfaCZgZ2g=;
+	b=G1N++5mhhxHD5t4eqVq2sn2lSXRo3vRFFF3YjDxmR/Ejdf2cyDZWtFrQRx1tOG+G8at9ne
+	WKKE3rvVuDMpgfmEIfbx8tKPAMQNoDR7q8MMdKJ/Ua5m0ThM9IECKAcce/zTywuhYYiy/T
+	oYsaXttHS5s82TKwgZZB+pYa4R6EVYc4GGmc5Ra+py6YdPi5rkLbvHUnk0dxoEd0TiSewD
+	nNKzqwHGCDyGfl4DzG/L6Z7NKhqi9QJIdXGsOOp9s9xzkRq+CWlIODbU1U5PePaek97shi
+	ZKk0IG4CaYdbekf+d8UWvWef+dJvNUbdEZw2qiiiCWzkioViOVjdQX12ba1cuQ==
 Authentication-Results: ORIGINATING;
 	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Tue, 05 Mar 2024 10:26:25 -0300
-Subject: [PATCH 1/2] media: dvbdev: make dvb_class constant
+Date: Tue, 05 Mar 2024 10:26:26 -0300
+Subject: [PATCH 2/2] media: lirc_dev: make lirc_class constant
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,33 +79,33 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240305-class_cleanup-media-v1-1-53e1538973cd@marliere.net>
+Message-Id: <20240305-class_cleanup-media-v1-2-53e1538973cd@marliere.net>
 References: <20240305-class_cleanup-media-v1-0-53e1538973cd@marliere.net>
 In-Reply-To: <20240305-class_cleanup-media-v1-0-53e1538973cd@marliere.net>
 To: Mauro Carvalho Chehab <mchehab@kernel.org>, Sean Young <sean@mess.org>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
  linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, 
  "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2610; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=2EEnqmB5TIgpdWkzBN0rc4jY7UzdMAzOCkdrC/xG+o4=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl5x2DNHXMH+WsvYrtzME8gDyGqHFfmait7CMVf
- 1/mOpqK7tGJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZecdgwAKCRDJC4p8Y4ZY
- ptV7D/9ZWGQJP3XhGWFggsdzeT+OnKJQNyaDjNr184adAoKk8UOVRTfiQm66GFHso1vzSQ21ygQ
- qmUy/sOSeEcP891r3WhsqeTg8puyfNFl2Y7REOKN1GVH22pVavVxci4sA3zuWTKHLwJRNoaq1Pq
- mtR9AFf5bAHX/UBaUcmJSkEknK0zwl+hnvetXRvGuluAmDEPlMazC5giHwrqjTVQZ4wws8K/gCp
- nGPJfPF/eYIL3xEMu7hds4LpO/QnUXtm/zHOF1xbfH89I3hatiBj/oQgPhC/LyaMZ8ak/8VoLpd
- TNa+Wg/y9FzRqxPS6QyQ4U1e8+O4ffc+Vm6fjHKNh9xN60bvFG26OhG+QgqZ2ZLEB9rsh0MaCGj
- LdmHMlL0Y94wvQXJxggXRsODR+VgguFfAwCvwg1IOjyAOSUkhu1SzFN+2CLx66DN3AJGLXcsh+d
- QzvWN+zrwwoJpsuiXLuDXbGBZLUPDlruOxq5DP7qCs5s+lcCx6as71tIfJK8ePPzn5hC+70f9ug
- BIhHdLf5yVnDdYPpUvirPdwrluwPIFLbg6MvyH/695zcZkymR0N2Q2RuTGalVb2XIH/d+l3JxD7
- CDGK8RlFHWqErv6lKJY5p0TVgITbXC3HnGV8msl8vxscwf3R9aBxrK8yIcMri0nPeRXjAgEvSWF
- E0UKtgE5JFpmkiQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2204; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=HK8LB9QJ8mSrtcVi7IoyDMwKj+da6n0YpnV8wKpMhXQ=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl5x2DJX8Y0mYNbTp+faeCBlcb7d9roIChNlCh9
+ LkYYIZLZvqJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZecdgwAKCRDJC4p8Y4ZY
+ plFgD/4oPVXKHJWVhySynp0jUQEQnj/OM8VBhehaR2rav2ZlVXJgq9LPa76TH7aSN/gtsx3hK5q
+ EfzgetwBnQLXff9sbUPxwT5Hr1dKMTzrWrGRzqqFWXl/NKj+N4LkNZCjCnYASMnAY8UWM3YZl05
+ rXp5qeUs4dwfAGHduSEZYQ9jick2lfKUhbQ3n+uurL2StCPUgokbTdBm1sipl5mY1ru55YNvxod
+ 0HNcitEWbBe6B6H1/MyOeDhaUoSM/MjLeKr3Gl8Hlfsxsx3KFdXfAaKZX09HPormfDXBZ7lBlJ0
+ rvsIvCJlKMCtu4pslwu4rq4tPhV258wwZw+Q01NS8/CRmbhbZZIu5bhpUCP8Sso86BswX+Wal42
+ udgSd6gQWbi8HBbeZOeOrw46aJM9WGxGRV2Jkpo2GcGIbnz57Ty7cw1RsryWiuBjfnxXHhgxe+k
+ CNIZnJFYlwXz9xQYshjHS9EuWFOEwbZ5frTTWYHFmKA9A1MRPyoWU7enKw5/CVAFLvR3pAnaCBC
+ +6l4NgLOqJH/r573KrzzpcjqAYnq3k9lACSrhsmAuhjvbhd+YaU8dBGHvIu4J2djI/3KMlZMpdN
+ /UCPZ4NFEaVs/5wK/5IdtxDtxTJ7WBYJ+5XkCANY7Ok7TrjSctSYeZWvmPwq1gcrMEzznzeciyC
+ b6lhBjjqEQB/3mw==
 X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
  fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
 Since commit 43a7206b0963 ("driver core: class: make class_register() take
 a const *"), the driver core allows for struct class to be in read-only
-memory, so move the dvb_class structure to be declared at build time
+memory, so move the lirc_class structure to be declared at build time
 placing it into read-only memory, instead of having to be dynamically
 allocated at boot time.
 
@@ -113,71 +113,61 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
 ---
- drivers/media/dvb-core/dvbdev.c | 23 +++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
+ drivers/media/rc/lirc_dev.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/media/dvb-core/dvbdev.c b/drivers/media/dvb-core/dvbdev.c
-index 733d0bc4b4cc..dcbf68b00240 100644
---- a/drivers/media/dvb-core/dvbdev.c
-+++ b/drivers/media/dvb-core/dvbdev.c
-@@ -78,7 +78,13 @@ static const u8 minor_type[] = {
- #define MAX_DVB_MINORS		(DVB_MAX_ADAPTERS * 64)
- #endif
+diff --git a/drivers/media/rc/lirc_dev.c b/drivers/media/rc/lirc_dev.c
+index a537734832c5..89551f28e99d 100644
+--- a/drivers/media/rc/lirc_dev.c
++++ b/drivers/media/rc/lirc_dev.c
+@@ -27,7 +27,9 @@ static dev_t lirc_base_dev;
+ static DEFINE_IDA(lirc_ida);
  
--static struct class *dvb_class;
-+static int dvb_uevent(const struct device *dev, struct kobj_uevent_env *env);
-+static char *dvb_devnode(const struct device *dev, umode_t *mode);
-+static const struct class dvb_class = {
-+	.name = "dvb",
-+	.dev_uevent = dvb_uevent,
-+	.devnode = dvb_devnode,
+ /* Only used for sysfs but defined to void otherwise */
+-static struct class *lirc_class;
++static const struct class lirc_class = {
++	.name = "lirc",
 +};
  
- static struct dvb_device *dvb_minors[MAX_DVB_MINORS];
- static DECLARE_RWSEM(minor_rwsem);
-@@ -561,7 +567,7 @@ int dvb_register_device(struct dvb_adapter *adap, struct dvb_device **pdvbdev,
- 		return ret;
- 	}
+ /**
+  * lirc_raw_event() - Send raw IR data to lirc to be relayed to userspace
+@@ -724,7 +726,7 @@ int lirc_register(struct rc_dev *dev)
+ 		return minor;
  
--	clsdev = device_create(dvb_class, adap->device,
-+	clsdev = device_create(&dvb_class, adap->device,
- 			       MKDEV(DVB_MAJOR, minor),
- 			       dvbdev, "dvb%d.%s%d", adap->num, dnames[type], id);
- 	if (IS_ERR(clsdev)) {
-@@ -600,7 +606,7 @@ void dvb_remove_device(struct dvb_device *dvbdev)
- 
- 	dvb_media_device_free(dvbdev);
- 
--	device_destroy(dvb_class, MKDEV(DVB_MAJOR, dvbdev->minor));
-+	device_destroy(&dvb_class, MKDEV(DVB_MAJOR, dvbdev->minor));
- 
- 	list_del(&dvbdev->list_head);
- }
-@@ -1096,13 +1102,10 @@ static int __init init_dvbdev(void)
- 		goto error;
- 	}
- 
--	dvb_class = class_create("dvb");
--	if (IS_ERR(dvb_class)) {
--		retval = PTR_ERR(dvb_class);
-+	retval = class_register(&dvb_class);
-+	if (retval != 0)
- 		goto error;
--	}
--	dvb_class->dev_uevent = dvb_uevent;
--	dvb_class->devnode = dvb_devnode;
-+
- 	return 0;
- 
- error:
-@@ -1115,7 +1118,7 @@ static void __exit exit_dvbdev(void)
+ 	device_initialize(&dev->lirc_dev);
+-	dev->lirc_dev.class = lirc_class;
++	dev->lirc_dev.class = &lirc_class;
+ 	dev->lirc_dev.parent = &dev->dev;
+ 	dev->lirc_dev.release = lirc_release_device;
+ 	dev->lirc_dev.devt = MKDEV(MAJOR(lirc_base_dev), minor);
+@@ -789,15 +791,13 @@ int __init lirc_dev_init(void)
  {
- 	struct dvbdevfops_node *node, *next;
+ 	int retval;
  
--	class_destroy(dvb_class);
-+	class_unregister(&dvb_class);
- 	cdev_del(&dvb_device_cdev);
- 	unregister_chrdev_region(MKDEV(DVB_MAJOR, 0), MAX_DVB_MINORS);
+-	lirc_class = class_create("lirc");
+-	if (IS_ERR(lirc_class)) {
+-		pr_err("class_create failed\n");
+-		return PTR_ERR(lirc_class);
+-	}
++	retval = class_register(&lirc_class);
++	if (retval)
++		return retval;
+ 
+ 	retval = alloc_chrdev_region(&lirc_base_dev, 0, RC_DEV_MAX, "lirc");
+ 	if (retval) {
+-		class_destroy(lirc_class);
++		class_unregister(&lirc_class);
+ 		pr_err("alloc_chrdev_region failed\n");
+ 		return retval;
+ 	}
+@@ -810,7 +810,7 @@ int __init lirc_dev_init(void)
+ 
+ void __exit lirc_dev_exit(void)
+ {
+-	class_destroy(lirc_class);
++	class_unregister(&lirc_class);
+ 	unregister_chrdev_region(lirc_base_dev, RC_DEV_MAX);
+ }
  
 
 -- 
