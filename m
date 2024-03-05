@@ -1,243 +1,445 @@
-Return-Path: <linux-kernel+bounces-92230-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92231-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79FEE871D1F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:12:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A8F96871D21
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:13:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28052285C9C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:12:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49D2A287BC6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:13:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C877548F6;
-	Tue,  5 Mar 2024 11:12:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 816575491A;
+	Tue,  5 Mar 2024 11:13:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Rhlj1ltm"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TAxm36U+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCE5A566D
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 11:12:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A688566D;
+	Tue,  5 Mar 2024 11:13:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709637147; cv=none; b=XiGBaHDod3i1wK17kOVczVoKDtYeX3XuumFVDXH9UM24HYimbyRw7f/riAL1ZDK383esnpo4nu0cmPKofMMqb/+xjIqh5S2IjJGt3yNQWxGi5Y3UCAZm5X83Z9GSWqUcLtqDD5szADW2R/gL7ow+/FnPYqLwBG3F5BIIqIBbcgM=
+	t=1709637208; cv=none; b=CEL/Iul9pBMfQ7qoDe/EXg/fVsa1fWEfs5NSIx1kP1XmxImOvUUIuSnC+ANK/HS5dxD+8bbbI2cnG5fL0XoGxes8sCcVg3PFEqeV/pPg461GBR7hZvUFnuDSV4XWHOjO2aJZV8pTra3s71vXUxln4gaWHnxsgqX6rbLDyX5fep0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709637147; c=relaxed/simple;
-	bh=/8RgNZ/pL48W7/zF85BzN1nTc006TcPDtgbRodGQmAw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mEO8waexZPUpJtQkcXfCLLXeJ+d8IO/J4GLig/V2CSbcdtJQtgfny0Lu3zv06yxTObXlWGzSa/WH2X3pvbu/0kHFZJ4Pmt8UlCP08UrIZ9CnG8OFpkKzi+RyVXK/GiEgnGu03VnVtLlOL3HhUa6J7Oeb3/9brji+c367Extyp30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Rhlj1ltm; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 425AvUae030348;
-	Tue, 5 Mar 2024 11:12:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=JjolfC5LWMpuVZ/45XF64mjgvB5hzzQSkfrbIAioEh4=;
- b=Rhlj1ltmYcKiw7oZwCZyztbYX+Kx8AlaVdr9r0xNZqiCTAqN5zeLKnxWQ9wSV1tDy0o7
- yUADM0VLQKdVMx0AIV+dUVNAW22X8Xmlo5RCF3RqHhRGDPG3mgZaAwvfrhfLeRw4rT6V
- jWf+1SkvzdQlmbh8ocmwadwv0fYPsvBtYLsgJ6q23gRgT6akDokG9xXsfjeh16wKyXSn
- FCn4yI/tFOrg2kJP0Eh2Ec7InMW/VaC3xNsYOoa4KNmPrvWyscak0ptUmHmBvLlNszRx
- EgFgvZPgCt46cKxX6lvpzqU/HdhqtAtBpHJ4/+wfXjy7oROxqrmBj+g2aWTW6z+f0u7n EQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wp23h8k09-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 05 Mar 2024 11:12:06 +0000
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 425Aw23U002551;
-	Tue, 5 Mar 2024 11:12:06 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wp23h8k00-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 05 Mar 2024 11:12:06 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42596UAg010910;
-	Tue, 5 Mar 2024 11:12:05 GMT
-Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wmh526kyp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 05 Mar 2024 11:12:05 +0000
-Received: from smtpav02.dal12v.mail.ibm.com (smtpav02.dal12v.mail.ibm.com [10.241.53.101])
-	by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 425BC2wk13894326
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 5 Mar 2024 11:12:04 GMT
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 391F758051;
-	Tue,  5 Mar 2024 11:12:02 +0000 (GMT)
-Received: from smtpav02.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D69DB58068;
-	Tue,  5 Mar 2024 11:11:59 +0000 (GMT)
-Received: from [9.43.11.170] (unknown [9.43.11.170])
-	by smtpav02.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Tue,  5 Mar 2024 11:11:59 +0000 (GMT)
-Message-ID: <bf612672-f7c3-4585-ac31-e02a1ebf614c@linux.ibm.com>
-Date: Tue, 5 Mar 2024 16:41:58 +0530
+	s=arc-20240116; t=1709637208; c=relaxed/simple;
+	bh=+nKFvbjIEO/C4qNxSG508FL/jDF0Yk3m2k2wKnF96aY=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=L8qkS1YBiR8WhaSLR/18qzmZftsqGNUtjT9gAV0UZt/T5wXL3+usLbsaNJfWwwIAz8ethH3v/iwUNtE/Y1kuDZ8OzBPmC+IbLJLF8YkGh023oMF5GhqyMUN0oPaoL65SdafvcD5sXBL6WqgN/M+XwMCvmS010KB+TM8bcqL3/64=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TAxm36U+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1C32C433C7;
+	Tue,  5 Mar 2024 11:13:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709637207;
+	bh=+nKFvbjIEO/C4qNxSG508FL/jDF0Yk3m2k2wKnF96aY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=TAxm36U+NwPNwM2RVKs70IwU81D7DxFLmY9tXDKNKCmxwSqewPSfmZjDg+bLaqTop
+	 ES0/laclWMonOb9tGF7pmMqMLuxCa4qXXRc49B3uayANbEEcO84gHfUnB/QiBEymTg
+	 WB/GXxJLhOTtq+1kV3mefSEmcolPHBKIYzeVvw/H6baAeypVlvW+4953iTDJ3IjJyo
+	 awjwQDwhrsYyhW2n7xk5dQQvlNBe4/T4UZzCxtfPcJYAsc1iezgUx8ceqkFi17Poxd
+	 Mb03N2A5Yl7eGg0LNrQihcnWHgiempQEcvgjseWtdNOYcGO1dxLj+1KilEdTrnLQNi
+	 xHvXb50hSShmw==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rhSjd-009XWE-Ff;
+	Tue, 05 Mar 2024 11:13:25 +0000
+Date: Tue, 05 Mar 2024 11:13:22 +0000
+Message-ID: <86sf150w4t.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>
+Cc: kvmarm@lists.linux.dev,	kvm@vger.kernel.org,	linux-arm-kernel@lists.infradead.org,	linux-kernel@vger.kernel.org,	oliver.upton@linux.dev,	darren@os.amperecomputing.com,	d.scott.phillips@amperecomputing.com
+Subject: Re: [RFC PATCH] kvm: nv: Optimize the unmapping of shadow S2-MMU tables.
+In-Reply-To: <20240305054606.13261-1-gankulkarni@os.amperecomputing.com>
+References: <20240305054606.13261-1-gankulkarni@os.amperecomputing.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/9] sched/balancing: Switch the
- 'DEFINE_SPINLOCK(balancing)' spinlock into an 'atomic_t
- sched_balance_running' flag
-Content-Language: en-US
-To: Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org
-Cc: Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Valentin Schneider <vschneid@redhat.com>
-References: <20240304094831.3639338-1-mingo@kernel.org>
- <20240304094831.3639338-2-mingo@kernel.org>
-From: Shrikanth Hegde <sshegde@linux.ibm.com>
-In-Reply-To: <20240304094831.3639338-2-mingo@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: ykbUEYPIc_M2F3nuMZVYZkJZUVCv1mqn
-X-Proofpoint-GUID: ttYggmbhUUsnVbGR72Ngjo1yDcO8kizv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-05_08,2024-03-04_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
- priorityscore=1501 malwarescore=0 mlxlogscore=999 impostorscore=0
- mlxscore=0 spamscore=0 phishscore=0 lowpriorityscore=0 clxscore=1015
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2403050090
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: gankulkarni@os.amperecomputing.com, kvmarm@lists.linux.dev, kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, oliver.upton@linux.dev, darren@os.amperecomputing.com, d.scott.phillips@amperecomputing.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
+[re-sending with kvmarm@ fixed]
 
-
-On 3/4/24 3:18 PM, Ingo Molnar wrote:
-> The 'balancing' spinlock added in:
+On Tue, 05 Mar 2024 05:46:06 +0000,
+Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com> wrote:
 > 
->   08c183f31bdb ("[PATCH] sched: add option to serialize load balancing")
-> 
+> As per 'commit 178a6915434c ("KVM: arm64: nv: Unmap/flush shadow stage 2
 
-[...]
+$ git describe --contains 178a6915434c --match=v\*
+fatal: cannot describe '178a6915434c141edefd116b8da3d55555ea3e63'
 
+This commit simply doesn't exist upstream. It only lives in a
+now deprecated branch that will never be merged.
+
+> page tables")', when ever there is unmap of pages that
+> are mapped to L1, they are invalidated from both L1 S2-MMU and from
+> all the active shadow/L2 S2-MMU tables. Since there is no mapping
+> to invalidate the IPAs of Shadow S2 to a page, there is a complete
+> S2-MMU page table walk and invalidation is done covering complete
+> address space allocated to a L2. This has performance impacts and
+> even soft lockup for NV(L1 and L2) boots with higher number of
+> CPUs and large Memory.
 > 
+> Adding a lookup table of mapping of Shadow IPA to Canonical IPA
+> whenever a page is mapped to any of the L2. While any page is
+> unmaped, this lookup is helpful to unmap only if it is mapped in
+> any of the shadow S2-MMU tables. Hence avoids unnecessary long
+> iterations of S2-MMU table walk-through and invalidation for the
+> complete address space.
+
+All of this falls in the "premature optimisation" bucket. Why should
+we bother with any of this when not even 'AT S1' works correctly,
+making it trivial to prevent a guest from making forward progress? You
+also show no numbers that would hint at a measurable improvement under
+any particular workload.
+
+I am genuinely puzzled that you are wasting valuable engineering time
+on *this*.
+
+>
+> Signed-off-by: Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>
+> ---
+>  arch/arm64/include/asm/kvm_emulate.h |   5 ++
+>  arch/arm64/include/asm/kvm_host.h    |  14 ++++
+>  arch/arm64/include/asm/kvm_nested.h  |   4 +
+>  arch/arm64/kvm/mmu.c                 |  19 ++++-
+>  arch/arm64/kvm/nested.c              | 113 +++++++++++++++++++++++++++
+>  5 files changed, 152 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_emulate.h b/arch/arm64/include/asm/kvm_emulate.h
+> index 5173f8cf2904..f503b2eaedc4 100644
+> --- a/arch/arm64/include/asm/kvm_emulate.h
+> +++ b/arch/arm64/include/asm/kvm_emulate.h
+> @@ -656,4 +656,9 @@ static inline bool kvm_is_shadow_s2_fault(struct kvm_vcpu *vcpu)
+>  		vcpu->arch.hw_mmu->nested_stage2_enabled);
+>  }
 >  
-> -static DEFINE_SPINLOCK(balancing);
+> +static inline bool kvm_is_l1_using_shadow_s2(struct kvm_vcpu *vcpu)
+> +{
+> +	return (vcpu->arch.hw_mmu != &vcpu->kvm->arch.mmu);
+> +}
+
+Isn't that the very definition of "!in_hyp_ctxt()"? You are abusing
+the hw_mmu pointer to derive something, but the source of truth is the
+translation regime, as defined by HCR_EL2.{E2H,TGE} and PSTATE.M.
+
+> +
+>  #endif /* __ARM64_KVM_EMULATE_H__ */
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index 8da3c9a81ae3..f61c674c300a 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -144,6 +144,13 @@ struct kvm_vmid {
+>  	atomic64_t id;
+>  };
+>  
+> +struct mapipa_node {
+> +	struct rb_node node;
+> +	phys_addr_t ipa;
+> +	phys_addr_t shadow_ipa;
+> +	long size;
+> +};
+> +
+>  struct kvm_s2_mmu {
+>  	struct kvm_vmid vmid;
+>  
+> @@ -216,6 +223,13 @@ struct kvm_s2_mmu {
+>  	 * >0: Somebody is actively using this.
+>  	 */
+>  	atomic_t refcnt;
+> +
+> +	/*
+> +	 * For a Canonical IPA to Shadow IPA mapping.
+> +	 */
+> +	struct rb_root nested_mapipa_root;
+
+Why isn't this a maple tree? If there is no overlap between mappings
+(and it really shouldn't be any), why should we use a bare-bone rb-tree?
+
+> +	rwlock_t mmu_lock;
+
+Hell no. We have plenty of locking already, and there is no reason why
+this should gain its own locking. I can't see a case where you would
+take this lock outside of holding the *real* mmu_lock -- extra bonus
+point for the ill-chosen name.
+
+> +
+>  };
+>  
+>  static inline bool kvm_s2_mmu_valid(struct kvm_s2_mmu *mmu)
+> diff --git a/arch/arm64/include/asm/kvm_nested.h b/arch/arm64/include/asm/kvm_nested.h
+> index da7ebd2f6e24..c31a59a1fdc6 100644
+> --- a/arch/arm64/include/asm/kvm_nested.h
+> +++ b/arch/arm64/include/asm/kvm_nested.h
+> @@ -65,6 +65,9 @@ extern void kvm_init_nested(struct kvm *kvm);
+>  extern int kvm_vcpu_init_nested(struct kvm_vcpu *vcpu);
+>  extern void kvm_init_nested_s2_mmu(struct kvm_s2_mmu *mmu);
+>  extern struct kvm_s2_mmu *lookup_s2_mmu(struct kvm_vcpu *vcpu);
+> +extern void add_shadow_ipa_map_node(
+> +		struct kvm_s2_mmu *mmu,
+> +		phys_addr_t ipa, phys_addr_t shadow_ipa, long size);
+>  
+>  union tlbi_info;
+>  
+> @@ -123,6 +126,7 @@ extern int kvm_s2_handle_perm_fault(struct kvm_vcpu *vcpu,
+>  extern int kvm_inject_s2_fault(struct kvm_vcpu *vcpu, u64 esr_el2);
+>  extern void kvm_nested_s2_wp(struct kvm *kvm);
+>  extern void kvm_nested_s2_unmap(struct kvm *kvm);
+> +extern void kvm_nested_s2_unmap_range(struct kvm *kvm, struct kvm_gfn_range *range);
+>  extern void kvm_nested_s2_flush(struct kvm *kvm);
+>  int handle_wfx_nested(struct kvm_vcpu *vcpu, bool is_wfe);
+>  
+> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> index 61bdd8798f83..3948681426a0 100644
+> --- a/arch/arm64/kvm/mmu.c
+> +++ b/arch/arm64/kvm/mmu.c
+> @@ -1695,6 +1695,13 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>  					     memcache,
+>  					     KVM_PGTABLE_WALK_HANDLE_FAULT |
+>  					     KVM_PGTABLE_WALK_SHARED);
+> +		if ((nested || kvm_is_l1_using_shadow_s2(vcpu)) && !ret) {
+
+I don't understand this condition. If nested is non-NULL, it's because
+we're using a shadow S2. So why the additional condition?
+
+> +			struct kvm_s2_mmu *shadow_s2_mmu;
+> +
+> +			ipa &= ~(vma_pagesize - 1);
+> +			shadow_s2_mmu = lookup_s2_mmu(vcpu);
+> +			add_shadow_ipa_map_node(shadow_s2_mmu, ipa, fault_ipa, vma_pagesize);
+> +		}
+>  	}
+>  
+>  	/* Mark the page dirty only if the fault is handled successfully */
+> @@ -1918,7 +1925,7 @@ bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range)
+>  			     (range->end - range->start) << PAGE_SHIFT,
+>  			     range->may_block);
+>  
+> -	kvm_nested_s2_unmap(kvm);
+> +	kvm_nested_s2_unmap_range(kvm, range);
+>  	return false;
+>  }
+>  
+> @@ -1953,7 +1960,7 @@ bool kvm_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+>  			       PAGE_SIZE, __pfn_to_phys(pfn),
+>  			       KVM_PGTABLE_PROT_R, NULL, 0);
+>  
+> -	kvm_nested_s2_unmap(kvm);
+> +	kvm_nested_s2_unmap_range(kvm, range);
+>  	return false;
+>  }
+>  
+> @@ -2223,12 +2230,18 @@ void kvm_arch_memslots_updated(struct kvm *kvm, u64 gen)
+>  void kvm_arch_flush_shadow_memslot(struct kvm *kvm,
+>  				   struct kvm_memory_slot *slot)
+>  {
+> +	struct kvm_gfn_range range;
+> +
+>  	gpa_t gpa = slot->base_gfn << PAGE_SHIFT;
+>  	phys_addr_t size = slot->npages << PAGE_SHIFT;
+>  
+> +	range.start = gpa;
+> +	range.end = gpa + size;
+> +	range.may_block = true;
+> +
+>  	write_lock(&kvm->mmu_lock);
+>  	kvm_unmap_stage2_range(&kvm->arch.mmu, gpa, size);
+> -	kvm_nested_s2_unmap(kvm);
+> +	kvm_nested_s2_unmap_range(kvm, &range);
+>  	write_unlock(&kvm->mmu_lock);
+>  }
+>  
+> diff --git a/arch/arm64/kvm/nested.c b/arch/arm64/kvm/nested.c
+> index f88d9213c6b3..888ec9fba4a0 100644
+> --- a/arch/arm64/kvm/nested.c
+> +++ b/arch/arm64/kvm/nested.c
+> @@ -565,6 +565,88 @@ void kvm_s2_mmu_iterate_by_vmid(struct kvm *kvm, u16 vmid,
+>  	write_unlock(&kvm->mmu_lock);
+>  }
+>  
 > +/*
-> + * This flag serializes load-balancing passes over large domains
-> + * (such as SD_NUMA) - only once load-balancing instance may run
-> + * at a time, to reduce overhead on very large systems with lots
-> + * of CPUs and large NUMA distances.
-> + *
-> + * - Note that load-balancing passes triggered while another one
-> + *   is executing are skipped and not re-tried.
-> + *
-> + * - Also note that this does not serialize sched_balance_domains()
-> + *   execution, as non-SD_SERIALIZE domains will still be
-> + *   load-balanced in parallel.
+> + * Create a node and add to lookup table, when a page is mapped to
+> + * Canonical IPA and also mapped to Shadow IPA.
 > + */
-> +static atomic_t sched_balance_running = ATOMIC_INIT(0);
+> +void add_shadow_ipa_map_node(struct kvm_s2_mmu *mmu,
+> +			phys_addr_t ipa,
+> +			phys_addr_t shadow_ipa, long size)
+> +{
+> +	struct rb_root *ipa_root = &(mmu->nested_mapipa_root);
+> +	struct rb_node **node = &(ipa_root->rb_node), *parent = NULL;
+> +	struct mapipa_node *new;
+> +
+> +	new = kzalloc(sizeof(struct mapipa_node), GFP_KERNEL);
+> +	if (!new)
+> +		return;
+> +
+> +	new->shadow_ipa = shadow_ipa;
+> +	new->ipa = ipa;
+> +	new->size = size;
+> +
+> +	write_lock(&mmu->mmu_lock);
+> +
+> +	while (*node) {
+> +		struct mapipa_node *tmp;
+> +
+> +		tmp = container_of(*node, struct mapipa_node, node);
+> +		parent = *node;
+> +		if (new->ipa < tmp->ipa) {
+> +			node = &(*node)->rb_left;
+> +		} else if (new->ipa > tmp->ipa) {
+> +			node = &(*node)->rb_right;
+> +		} else {
+> +			write_unlock(&mmu->mmu_lock);
+> +			kfree(new);
+> +			return;
+> +		}
+> +	}
+> +
+> +	rb_link_node(&new->node, parent, node);
+> +	rb_insert_color(&new->node, ipa_root);
+> +	write_unlock(&mmu->mmu_lock);
+
+All this should be removed in favour of simply using a maple tree.
+
+> +}
+> +
+> +/*
+> + * Iterate over the lookup table of Canonical IPA to Shadow IPA.
+> + * Return Shadow IPA, if the page mapped to Canonical IPA is
+> + * also mapped to a Shadow IPA.
+> + *
+> + */
+> +bool get_shadow_ipa(struct kvm_s2_mmu *mmu, phys_addr_t ipa, phys_addr_t *shadow_ipa, long *size)
+
+static?
+
+> +{
+> +	struct rb_node *node;
+> +	struct mapipa_node *tmp = NULL;
+> +
+> +	read_lock(&mmu->mmu_lock);
+> +	node = mmu->nested_mapipa_root.rb_node;
+> +
+> +	while (node) {
+> +		tmp = container_of(node, struct mapipa_node, node);
+> +
+> +		if (tmp->ipa == ipa)
+
+What guarantees that the mapping you have for L1 has the same starting
+address as the one you have for L2? L1 could have a 2MB mapping and L2
+only 4kB *in the middle*.
+
+> +			break;
+> +		else if (ipa > tmp->ipa)
+> +			node = node->rb_right;
+> +		else
+> +			node = node->rb_left;
+> +	}
+> +
+> +	read_unlock(&mmu->mmu_lock);
+
+Why would you drop the lock here....
+
+> +
+> +	if (tmp && tmp->ipa == ipa) {
+> +		*shadow_ipa = tmp->shadow_ipa;
+> +		*size = tmp->size;
+> +		write_lock(&mmu->mmu_lock);
+
+.. if taking it again here? What could have changed in between?
+
+> +		rb_erase(&tmp->node, &mmu->nested_mapipa_root);
+> +		write_unlock(&mmu->mmu_lock);
+> +		kfree(tmp);
+> +		return true;
+> +	}
+> +	return false;
+> +}
+
+So simply hitting in the reverse mapping structure *frees* it? Meaning
+that you cannot use it as a way to update a mapping?
+
+> +
+>  /* Must be called with kvm->mmu_lock held */
+>  struct kvm_s2_mmu *lookup_s2_mmu(struct kvm_vcpu *vcpu)
+>  {
+> @@ -674,6 +756,7 @@ void kvm_init_nested_s2_mmu(struct kvm_s2_mmu *mmu)
+>  	mmu->tlb_vttbr = 1;
+>  	mmu->nested_stage2_enabled = false;
+>  	atomic_set(&mmu->refcnt, 0);
+> +	mmu->nested_mapipa_root = RB_ROOT;
+>  }
 >  
->  /*
+>  void kvm_vcpu_load_hw_mmu(struct kvm_vcpu *vcpu)
+> @@ -760,6 +843,36 @@ void kvm_nested_s2_unmap(struct kvm *kvm)
+>  	}
+>  }
+>  
+> +void kvm_nested_s2_unmap_range(struct kvm *kvm, struct kvm_gfn_range *range)
+> +{
+> +	int i;
+> +	long size;
+> +	bool ret;
+> +
+> +	for (i = 0; i < kvm->arch.nested_mmus_size; i++) {
+> +		struct kvm_s2_mmu *mmu = &kvm->arch.nested_mmus[i];
+> +
+> +		if (kvm_s2_mmu_valid(mmu)) {
+> +			phys_addr_t shadow_ipa, start, end;
+> +
+> +			start = range->start << PAGE_SHIFT;
+> +			end = range->end << PAGE_SHIFT;
+> +
+> +			while (start < end) {
+> +				size = PAGE_SIZE;
+> +				/*
+> +				 * get the Shadow IPA if the page is mapped
+> +				 * to L1 and also mapped to any of active L2.
+> +				 */
 
-Continuing the discussion related whether this balancing lock is 
-contended or not. 
+Why is L1 relevant here?
 
+> +				ret = get_shadow_ipa(mmu, start, &shadow_ipa, &size);
+> +				if (ret)
+> +					kvm_unmap_stage2_range(mmu, shadow_ipa, size);
+> +				start += size;
+> +			}
+> +		}
+> +	}
+> +}
+> +
+>  /* expects kvm->mmu_lock to be held */
+>  void kvm_nested_s2_flush(struct kvm *kvm)
+>  {
 
-It was observed in large system (1920CPU, 16 NUMA Nodes) cacheline containing the 
-balancing trylock was contended and rebalance_domains was seen as part of the traces. 
+There are a bunch of worrying issues with this patch. But more
+importantly, this looks like a waste of effort until the core issues
+that NV still has are solved, and I will not consider anything of the
+sort until then.
 
-So did some experiments on smaller system. This system as 224 CPUs and 6 NUMA nodes.
-Added probe points in rebalance_domains. If lock is not contended, then lock should
-success and both probe points should match. If not, there should be contention. 
-Below are the system details and perf probe -L rebalance_domains.
+I get the ugly feeling that you are trying to make it look as if it
+was "production ready", which it won't be for another few years,
+specially if the few interested people (such as you) are ignoring the
+core issues in favour of marketing driven features ("make it fast").
 
-NUMA:                    
-  NUMA node(s):          6
-  NUMA node0 CPU(s):     0-31
-  NUMA node1 CPU(s):     32-71
-  NUMA node4 CPU(s):     72-111
-  NUMA node5 CPU(s):     112-151
-  NUMA node6 CPU(s):     152-183
-  NUMA node7 CPU(s):     184-223
+Thanks,
 
+	M.
 
-------------------------------------------------------------------------------------------------------------------
-#perf probe -L rebalance_domains
-<rebalance_domains@/shrikanth/sched_tip/kernel/sched/fair.c:0>
-      0  static void rebalance_domains(struct rq *rq, enum cpu_idle_type idle)
-         {
-      2         int continue_balancing = 1;
-      3         int cpu = rq->cpu;
-[...]
+-- 
+Without deviation from the norm, progress is not possible.
 
-
-     33                 interval = get_sd_balance_interval(sd, busy);
-
-                        need_serialize = sd->flags & SD_SERIALIZE;
-     36                 if (need_serialize) {
-     37                         if (!spin_trylock(&balancing))
-                                        goto out;
-                        }
-
-     41                 if (time_after_eq(jiffies, sd->last_balance + interval)) {
-     42                         if (load_balance(cpu, rq, sd, idle, &continue_balancing)) {
-                                        /*
-                                         * The LBF_DST_PINNED logic could have changed
-                                         * env->dst_cpu, so we can't know our idle
-                                         * state even if we migrated tasks. Update it.
-                                         */
-     48                                 idle = idle_cpu(cpu) ? CPU_IDLE : CPU_NOT_IDLE;
-     49                                 busy = idle != CPU_IDLE && !sched_idle_cpu(cpu);
-                                }
-     51                         sd->last_balance = jiffies;
-     52                         interval = get_sd_balance_interval(sd, busy);
-                        }
-     54                 if (need_serialize)
-     55                         spin_unlock(&balancing);
-         out:
-     57                 if (time_after(next_balance, sd->last_balance + interval)) {
-                                next_balance = sd->last_balance + interval;
-                                update_next_balance = 1;
-                        }
-                }
-
-perf probe --list
-  probe:rebalance_domains_L37 (on rebalance_domains+856)
-  probe:rebalance_domains_L55 (on rebalance_domains+904)
-------------------------------------------------------------------------------------------------------------------
-
-Perf records are collected for 10 seconds in different system loads. load is created using stress-ng. 
-Contention is calculated as (1-L55/L37)*100
-
-system is idle:  		<--	No contention
-1K probe:rebalance_domains_L37
-1K probe:rebalance_domains_L55
-
-
-system is at 25% loa: 		<-- 	4.4% contention
-223K probe:rebalance_domains_L37: 1 chunks LOST!
-213K probe:rebalance_domains_L55: 1 chunks LOST!
-
-
-
-system is at 50% load		<--	12.5% contention
-168K probe:rebalance_domains_L37
-147K probe:rebalance_domains_L55
-
-
-system is at 75% load		<-- 	25.6% contention
-113K probe:rebalance_domains_L37
-84K probe:rebalance_domains_L55
-
-87
-system is at 100% load		<--	87.5% contention.
-64K probe:rebalance_domains_L37
-8K probe:rebalance_domains_L55
-
-
-A few reasons for contentions could be: 
-1. idle load balance is running and some other cpu is becoming idle, and tries newidle_balance. 
-2. when system is busy, every CPU would do busy balancing, it would contend for the lock. It will not do balance as 
-   should_we_balance says this CPU need not balance. It bails out and release the lock. 
+-- 
+Without deviation from the norm, progress is not possible.
 
