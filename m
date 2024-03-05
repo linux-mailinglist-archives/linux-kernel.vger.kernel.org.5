@@ -1,141 +1,120 @@
-Return-Path: <linux-kernel+bounces-91928-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91929-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65F35871896
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:50:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CF828718B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:54:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B0AC0B21671
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:50:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5E411F22F4A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:54:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 106F31EF1A;
-	Tue,  5 Mar 2024 08:50:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wgB85y0s"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB9A84DA1C
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 08:50:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27EAD4F207;
+	Tue,  5 Mar 2024 08:54:49 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B22164EB2E
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 08:54:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709628637; cv=none; b=LAW4L+pl+NN9/2iLYskKcHWPbRrO3uKr1Y4y1vvxS38Oo1FDLcwCI3ZCINC0l5zcTqLyaAaV6noDgFWrXVA6jlhRyki6s9yxJU+LwzCjFuTwln+hyEcFWCY3ZpfYm9NC6PufLS3XM1Z2pg6quC01hsKg4D+cRLOWvIXrTIrBKls=
+	t=1709628888; cv=none; b=ZUBANOSAZ3kaLwkP9IlEDr5N1dy5xemdOXvP6roZ5+8lrJ80ynN/IQUliUYmSau0rv57n/Aty+Nb7uN7fPh1B9PsLBxX/ri9nd1L8+BaYftaRCixqJ38LPnob90l0MUW3YPKiGmt1D9R5ieMM1rqebQZ5WCAobEisQf43AbrtWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709628637; c=relaxed/simple;
-	bh=/qaRgOCPIEFkrZRFeRFcZiqUAPgGaXs8wvM/tEPQzCw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lhEQl6L5RZupsndSofzGmfTWtFeXQVjW4x0wn0SGkpVhffpHgqoPYi6ie1RxCGvnOBiiOmhj6fGltHTv2SMo4ayzEiTR0gUCPsrdO39z1yAftrBgSJmK4mAAt4XcvZXumFUh1nD1GRfoc4cBb8dvppcs6bj4FxtBvT9jOZ//QMg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=wgB85y0s; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-563d56ee65cso8124640a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 00:50:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709628634; x=1710233434; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jT7ZsmNph1HICQhGYk/X5PZRUWWUGk3/PHQvVwvJTOo=;
-        b=wgB85y0s6rf4i2vIzrgObujA09hgoBt7adI9IZOTwi6FrRA3PMf5vJ1An2UTkwImsU
-         Py6ZjRaJJnJebSDWj3EmZq9+uUAp1+cMTmlyYOCzD5bhdAPTdZpX52Y0BKKIBVD35571
-         bOs0aK7sVzcqTsaFRjYipop4g9HDrbo098GQ5TpomE6nI1oHeU6GtT6O3lSrcP0/KAdi
-         Ptd3+vHAqD/wd2kngPt9owa7iEyo/yazTT7OnHd8qkKwUrOY7MgIbGdngUs9Lcbaqr40
-         PjzUYwxQ1o6T3NfcqPUkMRM5Iwj+bfb621d0+/sLHgbHnVFSgvDRa1PpZ9v51iX9nqt8
-         ATrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709628634; x=1710233434;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jT7ZsmNph1HICQhGYk/X5PZRUWWUGk3/PHQvVwvJTOo=;
-        b=gxLbMcTx7wf+Qn//TndJjxLX+mYs2bJhcTBkzdv4dhtV7Sfux/JW+ek+ZfJGkKnXtB
-         HZI1ohbrgl8sdcM3u1pNxb4YBgiHWAnVxI/JKbyZJ3ubHpHAY/tfEuBbzj7rcfl+d8gY
-         FBbUEy3BUuwEKuXPPQBDxQ2FBI7mNmFTRhMLjkzua8/nnMIqmBkNoP7Ix2aGTN2XnXQ6
-         VEmOUn6UtIRl5rITEAgORSpGpibswumRVuPlnLO/ODi2I7efdDL71h2qaGFsQl8f+zTY
-         nxhmVbJMzbinRsgHGAGBPxNSpD/fI4sylD03aUnw7i9FeE7bUX3NEq3Bk01gkI9d4DUC
-         8w6g==
-X-Forwarded-Encrypted: i=1; AJvYcCUmBWuBIGTxsmV8Dss+loOzwXQe3W0P5G63ybBuReP2gH0JptZzi9ryHR6aMNSF2VC8orxqudf1Y+ab9XFdYtYq1kkxb42NELYyiLOs
-X-Gm-Message-State: AOJu0YyyYZPJDH7vnurM8HMQjJYuXlBMHcad1S1wN2I0ljQ6h+lVSjLW
-	N2WhxI15jzqdOVYGK7Q6Z8YsxD39auYkmQANRWXmXqu97/ji2TJjOy9kOOXabdg=
-X-Google-Smtp-Source: AGHT+IHJS+2LhiDD7zxJqHM589abVoaxutSaB3e9mIWp3cLj6gDlecOCLPFEcxg3I6gVnMuHzHEJSQ==
-X-Received: by 2002:a17:906:c06:b0:a44:1978:c73f with SMTP id s6-20020a1709060c0600b00a441978c73fmr7660917ejf.61.1709628633846;
-        Tue, 05 Mar 2024 00:50:33 -0800 (PST)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id ef5-20020a17090697c500b00a449cb924dbsm4457506ejb.124.2024.03.05.00.50.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 00:50:33 -0800 (PST)
-Date: Tue, 5 Mar 2024 11:50:29 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Shradha Todi <shradha.t@samsung.com>
-Cc: linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org, mturquette@baylibre.com,
-	sboyd@kernel.org, jingoohan1@gmail.com, lpieralisi@kernel.org,
-	kw@linux.com, robh@kernel.org, bhelgaas@google.com,
-	krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com,
-	linux@armlinux.org.uk, m.szyprowski@samsung.com,
-	manivannan.sadhasivam@linaro.org, pankaj.dubey@samsung.com,
-	gost.dev@samsung.com
-Subject: Re: [PATCH v6 1/2] clk: Provide managed helper to get and enable
- bulk clocks
-Message-ID: <f00eed31-4baf-4d5c-934d-8223d1ab554d@moroto.mountain>
-References: <20240220084046.23786-1-shradha.t@samsung.com>
- <CGME20240220084120epcas5p1e8980539667c3d9da20f49fc645d8f4c@epcas5p1.samsung.com>
- <20240220084046.23786-2-shradha.t@samsung.com>
+	s=arc-20240116; t=1709628888; c=relaxed/simple;
+	bh=tnNibRNRdjaA8Xi/uPjpYadktxh5V7TKOXOENJEfRQs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FHCVTsf6P3Sxmw7R3U87FOnlP3j4uhPEIZ/1Bkkecip1KWWesZopEHcxhlfUUuvxtikt27wkrcZ87ORNmvYvjJQx0Yra0F4r93SJJEDlPVVAZw+CA2wCjlZ+55HPO2TL9w2Lp9vZemsxLTDDO0MQFfLkdXcX1z2xeUKBFZEqqDk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 495B41FB;
+	Tue,  5 Mar 2024 00:55:22 -0800 (PST)
+Received: from [10.57.68.162] (unknown [10.57.68.162])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4CF103F762;
+	Tue,  5 Mar 2024 00:54:43 -0800 (PST)
+Message-ID: <e5e14ef9-1bd2-45a8-818d-e92910e97f8f@arm.com>
+Date: Tue, 5 Mar 2024 08:54:41 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240220084046.23786-2-shradha.t@samsung.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH] mm: hold PTL from the first PTE while reclaiming a
+ large folio
+Content-Language: en-GB
+To: Barry Song <21cnbao@gmail.com>
+Cc: akpm@linux-foundation.org, linux-mm@kvack.org, david@redhat.com,
+ chrisl@kernel.org, yuzhao@google.com, hanchuanhua@oppo.com,
+ linux-kernel@vger.kernel.org, willy@infradead.org, ying.huang@intel.com,
+ xiang@kernel.org, mhocko@suse.com, shy828301@gmail.com,
+ wangkefeng.wang@huawei.com, Barry Song <v-songbaohua@oppo.com>,
+ Hugh Dickins <hughd@google.com>
+References: <20240304103757.235352-1-21cnbao@gmail.com>
+ <706b7129-85f6-4470-9fd9-f955a8e6bd7c@arm.com>
+ <CAGsJ_4wx7oSzt4vn6B+LRoZetMhH-fDXRFrCFRyoqVOakLidjg@mail.gmail.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CAGsJ_4wx7oSzt4vn6B+LRoZetMhH-fDXRFrCFRyoqVOakLidjg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 20, 2024 at 02:10:45PM +0530, Shradha Todi wrote:
-> +int __must_check devm_clk_bulk_get_all_enable(struct device *dev,
-> +					      struct clk_bulk_data **clks)
-> +{
-> +	struct clk_bulk_devres *devres;
-> +	int ret;
-> +
-> +	devres = devres_alloc(devm_clk_bulk_release_all_enable,
-> +			      sizeof(*devres), GFP_KERNEL);
-> +	if (!devres)
-> +		return -ENOMEM;
-> +
-> +	ret = clk_bulk_get_all(dev, &devres->clks);
-> +	if (ret > 0) {
+On 04/03/2024 21:57, Barry Song wrote:
+> On Tue, Mar 5, 2024 at 1:21 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>
+>> Hi Barry,
+>>
+>> On 04/03/2024 10:37, Barry Song wrote:
+>>> From: Barry Song <v-songbaohua@oppo.com>
+>>>
+>>> page_vma_mapped_walk() within try_to_unmap_one() races with other
+>>> PTEs modification such as break-before-make, while iterating PTEs
+>>> of a large folio, it will only begin to acquire PTL after it gets
+>>> a valid(present) PTE. break-before-make intermediately sets PTEs
+>>> to pte_none. Thus, a large folio's PTEs might be partially skipped
+>>> in try_to_unmap_one().
+>>
+>> I just want to check my understanding here - I think the problem occurs for
+>> PTE-mapped, PMD-sized folios as well as smaller-than-PMD-size large folios? Now
+>> that I've had a look at the code and have a better understanding, I think that
+>> must be the case? And therefore this problem exists independently of my work to
+>> support swap-out of mTHP? (From your previous report I was under the impression
+>> that it only affected mTHP).
+> 
+> I think this affects all large folios with PTEs entries more than 1. but hugeTLB
+> is handled as a whole in try_to_unmap_one and its rmap is removed all
+> together, i feel hugeTLB doesn't have this problem.
+> 
+>>
+>> Its just that the problem is becoming more pronounced because with mTHP,
+>> PTE-mapped large folios are much more common?
+> 
+> right. as now large folios become a more common case, and it is my case
+> running in millions of phones.
+> 
+> BTW, I feel we can somehow learn from hugeTLB, for example, we can reclaim
+> all PTEs all together rather than iterating PTEs one by one. This will improve
+> performance. for example, a batched
+> set_ptes_to_swap_entries()
+> {
+> }
+> then we only need to loop once for a large folio, right now we are looping
+> nr_pages times.
 
-I feel like this should be >= instead of >.  There aren't any callers
-of this function yet so we can't see what's in *clks at the start but
-it's easy to imagine a situation where it's bad data.
+You still need a pte-pte loop somewhere. In hugetlb's case it's in the arch
+implementation. HugeTLB ptes are all a fixed size for a given VMA, which makes
+things a bit easier too, whereas in the regular mm, they are now a variable size.
 
-> +		*clks = devres->clks;
-> +		devres->num_clks = ret;
-> +	} else {
-> +		devres_free(devres);
-> +		return ret;
+David and I introduced folio_pte_batch() to help gather batches of ptes, and it
+uses the contpte bit to avoid iterating over intermediate ptes. And I'm adding
+swap_pte_batch() which does a similar thing for swap entry batching in v4 of my
+swap-out series.
 
-When clk_bulk_get_all() returns zero then we return success here.
+For your set_ptes_to_swap_entries() example, I'm not sure what it would do other
+than loop over the PTEs setting an incremented swap entry to each one? How is
+that more performant?
 
-regards,
-dan carpenter
-
-> +	}
-> +
-> +	ret = clk_bulk_prepare_enable(devres->num_clks, *clks);
-> +	if (!ret) {
-> +		devres_add(dev, devres);
-> +	} else {
-> +		clk_bulk_put_all(devres->num_clks, devres->clks);
-> +		devres_free(devres);
-> +	}
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(devm_clk_bulk_get_all_enable);
-> +
+Thanks,
+Ryan
 
 
