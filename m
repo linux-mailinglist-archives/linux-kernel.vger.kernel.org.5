@@ -1,187 +1,555 @@
-Return-Path: <linux-kernel+bounces-93091-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93098-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B571872AF7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 00:24:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E3974872B09
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 00:28:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C56A7281F74
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 23:24:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94B7928C52C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 23:28:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E99A912D21E;
-	Tue,  5 Mar 2024 23:24:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 908CD12DD88;
+	Tue,  5 Mar 2024 23:28:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="k2d1o7a7"
-Received: from TY3P286CU002.outbound.protection.outlook.com (mail-japaneastazolkn19011003.outbound.protection.outlook.com [52.103.43.3])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g7tUP/v7"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F05517E581;
-	Tue,  5 Mar 2024 23:24:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.103.43.3
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709681056; cv=fail; b=NWlF75FY9Bpkc/bUuIPM/INZSvgnRovMhULYfw9WyU2PmGfABldDKaCUzCESbPJiOpP9keUbvDY97KKPyiQOK6OVpikQ5oSjhwb9yy9gvrLwXHugd7p7VV+kqln0yz6l1TnAEoEr8vknaCEdODRYQ4bEaWDXPNPZwyeUbs6Zl64=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709681056; c=relaxed/simple;
-	bh=mG3qZ0NSU54f0iqeqUGV3cjeAENa7Lb4JokdEsWEZrc=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=W/v26WsdD6yLv2dNQbd5BWAXPvJ7LSpCUGx4c/md2vzy1kVsCnYsUIRTnSMTkxDWNPMEzrQ9/78IVhMcHOq0xnZ/hbecFtaBv96zwAf+KSI2zNefhpdwih6tPS+7urG/UTjotKB8TK3Qw73wgBQW/qhOc/dXN4XskID7/1JLmkc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=k2d1o7a7; arc=fail smtp.client-ip=52.103.43.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BrUF0BBGiiyYmFNk8qdJWe4MJR9xEYMxraV8h8Rfy8pQ2ka9JfG4unQKmZGon88L/BMgm3gBPhzrOhJ/zUdic7DbgX603+PmJu8+/HK/eS3AEtRA+XZPUwjKXQtt1LU5JLvMR5ZfmYV840tox8Jix8sDRKDVaHJEmzX40P2qHnDOzjYTjUeZvojjvQt/Gk2LOQ3EpLNX4EcwYZFQmgXzfpHdl2g6Puu5xkGZChRRegZ4r6Lq7DbdfBhUlT5vz8xD1GXEjWAqbcRBwKaA85I0nURolGmIhCIIgdXc/f0nBdtYGantjbM+f+WkvyTg41IkJTuzuTOLtTXd2bnrmdw0vg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mG3qZ0NSU54f0iqeqUGV3cjeAENa7Lb4JokdEsWEZrc=;
- b=oIGM3QNt7oBHw6++y4xi6Bn9VkRQ3MAxs8BonATzhtaomUjE6v118t3iwrcf78RagQzndZc74OubvxOJo45vvJGbSzBd3XRYdOOV7JGVe3sez6Qyl2KtQ6E0KQR0ciLmVqYX1Zv3vFgCRO7rKaU782tSL591PXB5FNRJfH1/H0rXEl7lXWz7BOYmaXomNnrrIbGyLYcqxAyDaTzSXDN6VLDj0T7CAOM298Ctmal2H3scGiUCtBUgfheKk78PaYk2jYKd09ttvVKAVmFPWzrGE4YJ5QDMlPw4JElW5FfY1uwu7PcGHzcIKuyM/bWUZ/f2qiDN5w9RCpOsW/Golz8DjA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mG3qZ0NSU54f0iqeqUGV3cjeAENa7Lb4JokdEsWEZrc=;
- b=k2d1o7a7dut+NSwA4V91Kp0r1mu7JhFzcTeMRMeQe0M7PvLV80BqSMNobQ9ywAUU62ku6hqUvcKPcQetzhIxssbZWIJPPErirF4+2Taii4jXVTXPXRAV+Ar9WSZXZdYsLPOTm+nYnxjTs2wTL799KoyFdr66+KBVQ006NdxiNEQg84HLD6T4T6S7zx9YNHT3OcNDWNcyzzixsJ1SWyNbP0gYl9YarbG/eg6l/nJkqMyhyW/+/pbazRBWBFOyqs6A9o3Kn1sdE9CBQFk7wC095LcoF6iuKTEfXTWBgEDuhXoIQeYmXQXuN9WtCd84LxPOj0ZTUZ9yn84nJVVL5UkPNg==
-Received: from TY3P286MB2611.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:23e::10)
- by TYVP286MB3166.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:29b::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.39; Tue, 5 Mar
- 2024 23:24:10 +0000
-Received: from TY3P286MB2611.JPNP286.PROD.OUTLOOK.COM
- ([fe80::58f5:1590:22a9:6f6]) by TY3P286MB2611.JPNP286.PROD.OUTLOOK.COM
- ([fe80::58f5:1590:22a9:6f6%4]) with mapi id 15.20.7339.035; Tue, 5 Mar 2024
- 23:24:10 +0000
-From: Qu Shengyu <wiagn233@outlook.com>
-To: Conor Dooley <conor@kernel.org>
-CC: Qu Shengyu <wiagn233@outlook.com>, "ganboing@gmail.com"
-	<ganboing@gmail.com>, "kernel@esmil.dk" <kernel@esmil.dk>,
-	"robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"paul.walmsley@sifive.com" <paul.walmsley@sifive.com>, "palmer@dabbelt.com"
-	<palmer@dabbelt.com>, "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-	"lee@kernel.org" <lee@kernel.org>, "andre.przywara@arm.com"
-	<andre.przywara@arm.com>, "jernej.skrabec@gmail.com"
-	<jernej.skrabec@gmail.com>, "linux-riscv@lists.infradead.org"
-	<linux-riscv@lists.infradead.org>, "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "stable@vger.kernel.org"
-	<stable@vger.kernel.org>
-Subject: Re: [PATCH v1] riscv: dts: starfive: Remove PMIC interrupt info for
- Visionfive 2 board
-Thread-Topic: [PATCH v1] riscv: dts: starfive: Remove PMIC interrupt info for
- Visionfive 2 board
-Thread-Index: AQHabyBCK3akJNOj+km1UpRZx4upRrEpjAeAgAA+LGg=
-Date: Tue, 5 Mar 2024 23:24:10 +0000
-Message-ID:
- <TY3P286MB2611ACAF9F648ACA2BE157FE98222@TY3P286MB2611.JPNP286.PROD.OUTLOOK.COM>
-References:
- <TY3P286MB2611C5F5833F3E3E1AE838CA98222@TY3P286MB2611.JPNP286.PROD.OUTLOOK.COM>
- <20240305-macarena-fiber-f2460d371150@spud>
-In-Reply-To: <20240305-macarena-fiber-f2460d371150@spud>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-ms-exchange-messagesentrepresentingtype: 1
-x-tmn:
- [xYMP4Tm9vBkRUVeWtzAHGEK1k1R1Ds0nonLzW7u+H36bo8rssxhDgHC2xFBL4an6GkDjyezOvtA=]
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TY3P286MB2611:EE_|TYVP286MB3166:EE_
-x-ms-office365-filtering-correlation-id: 9a7047b1-54bb-4b0b-1693-08dc3d6b5ca9
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- mosxes1o2U/qQRr2zm57uU3z43OF3uA9DArt8Ne4TeyHWrfOArInGzl7hGMCDfjNwOK2nMh5m5vbtkFLlWMs/d3JWkA/AbFk2JjgmZo55IL2qZjU/zAADhbcQ8fz+QgPqtoG4eiCChzWuKHFEiB0Hms018f1atwuOOoHuNZ+MMswBxehqLqzucGp5YETy9efNnlrKxRVNBFc/fmJ5Agbfcj/lboPsdgKL9lbZ0jwngBLMk9e6Ba5M8qO8Ce9y6kLzb3GISRke/Q9OdRyHPlVfVjlzc68Sk89FCrNoz8NCSnCX6AzgzkRTKRH3d4b1yBUSmDyrp+4k5T5rFVxJOH5DlKhZPjTVCs2HwuFndHk4G7I0W8/stCq6y7k9aicl/+fGG++CG7Vi64fzNtm9tyOrTe5D1aRoE21WCW29HaMiW/gXV5CQZOsXH+Hwl4qbJFw9TSXPinKOxux3kunGi2ReNIRfjXx8a9XCVLgtdraqXEp5Irg0Cd0j0lqrMHQokaQTfu0FiaP5AbFX4+HY8Nq7qPvdLKAivr4J4Tstr/ps/j7lSiIYFFG3LB4BLLQnpoJQm2X/LKdme1ePtzqYmaU0sy22Hnq2c1XewnzI+k95swL/dag75rrhdAz5tAFnHfRogiw8qF9GVDql7MH9/LkXy/fgt/YVPrxQ3V5zz3k+Seg3ZSW0i7Na64HdItQNt4V
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?WGlJZWYvUmVLdVFoK3FuL2JWeUxWWFQvQk80VXFFMjAzSERLSVlHYmhidVFj?=
- =?utf-8?B?ZnNabGx4R1IwTWd0b1NZT1FwQ2kva0hCVVE1ajYxOStyamlUV0YrNmM3YmNk?=
- =?utf-8?B?UWRxM1c3R2RtMXFCV1cvYStIQ3VNeUZmRVFXbE9hL1lRV3lKbjZ6eTh1ek9C?=
- =?utf-8?B?enVrK3dnNlBJMXo5ZEczUDdvNi93SzkrdmpLMkNIOTdxRUVNck5YQzBBdmRw?=
- =?utf-8?B?QXFDNkVuMmZYWWJnQzE3WE5HV1poQzhzYUNQd0xFUkxINytoOHMvMnNPaWt6?=
- =?utf-8?B?OFJERU9mVFMzbi85cTJwRlFYYkxVRDdKOHBFWGhwSm93K1haZEV1SklqQ2Vi?=
- =?utf-8?B?QXhCamJVcnNxTGRjdmRGaWlIbzZ5b1pSTFMvUHFLUXh0blNpdTN1dUV5Kzhx?=
- =?utf-8?B?QjBEcURpdTlqbzhjVjBpVFhyancrQVd1OGZZR21wYXk5eWFxK3JCUkY5YSs2?=
- =?utf-8?B?aEE5aE5PekVqNWpyNkxuTUNaTmJJZWpmY0dMd3I3OUVDZVhVaGxtQWdEMndh?=
- =?utf-8?B?L1BkUzF0TVZMR2U4ZysvR213OUxCNVRvam5lVmM3UmhUT043V2MvSUQvcFhI?=
- =?utf-8?B?WEs1aElmRnZ6VHUxWUhiODhxT2lWbDd1WTBuRGJYb0RGTUlqTHVxNlR2WU1h?=
- =?utf-8?B?MVhUTTZteEQ5aVBYaVN5eG5OTnhzbndqbnJITSt4RFBZaVJpRzM5VElYUml4?=
- =?utf-8?B?Mk9ib3FqY1d6OFh6M2NkYzlzWG5rekN0Z3J4dVBHS29BTHJRTGpXa1ZTdVF4?=
- =?utf-8?B?eTlnYVdjMXNhcnFtUUw3UWNYSmRtRVdxWk9KMGVSMTJzRWNxL0drRVE0K1BM?=
- =?utf-8?B?dXhSRzNPRW1HelkvZzA5NnhpdFZNazA0b290RVczY0JKUUh5SU5pN1Q3QnVx?=
- =?utf-8?B?QlpDa0VUU3ArSlpyVU51aXF1RmFDQ2NPb3NyVDUzTEhoZWlRL3NSczRYK2Rp?=
- =?utf-8?B?UU80U0N2bVZkZldwTWJzUGVlTDY5bTZWYWhYcVMyK3ZUUG5MTHVGQWROaUZF?=
- =?utf-8?B?cEYrOWRieFIxcnRJZEsrMnl1eS9ESTlRMkJXNGluQWxDcjcrckxnYmEzRGlJ?=
- =?utf-8?B?QXNnMkxSVnN0NW5BeFdSeUE3R2kyZ0dsa3VWSGlUNWgrMmtRRkhubDE5WTZq?=
- =?utf-8?B?Zm9RVWU1blhMVldaQ254ODNRT1ViTW1Kd1Nqd1ZVOFZtT2VWYnVmZy9ZcXB5?=
- =?utf-8?B?cVFhUDF1QUNpSkdzdGVEeFNVUEtNQm9KMGpUdE9jSjM1SVVHNTF0bWR0Uzhz?=
- =?utf-8?B?blk4MytTMVdIMitSVk85YWpWM1Q2VkxOa05IalY2YlBycmxGb2xlWlZHcFQv?=
- =?utf-8?B?T05UMzVNZk03SURVV281di9idW96ZVNQcGZPSlhIK1dPc1FXOHlrRHNmeUhL?=
- =?utf-8?B?T2s2L3BQSGhROE45K0JTYStwRktGRjRZUW9VeUw5cXdLaUxTSHZISmRWMDNK?=
- =?utf-8?B?L2s2ZkRjbmFXbGQzcmFKYmJOUHhGR1M3aS9zYkE5WjJDeVpFRC9EbVE2cGJl?=
- =?utf-8?B?bzdPRFVwWVNpQ1NkNFJzK3JKazA3eGNvV1h5UjRhLzlPdk1kRjI3MEFhbXVD?=
- =?utf-8?B?MUxMRUJhR2VOekg5TVhxQS80dml3V0JXMSswS1RYNUplNUhCM1lKT2ZQcjJx?=
- =?utf-8?B?aS9BZXIyQ0k0WFBCUUg3Q05PTTMzMnFGRjVGeXZ3Tmp3NFpWc0Q5UzNNV1Yz?=
- =?utf-8?B?SXJSVjhEMGRMekh3T1JjY2Q2NDJmRFJFWGd2cDYza0dDVFI1djNDUUlyd05x?=
- =?utf-8?Q?iM+8+yngdfXsT5QDMY=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A32312DD93
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 23:28:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709681289; cv=none; b=LHhn9jh6ucnlBOAweq/3gDlkBMFMT2jvv+6H+5w6lkZWgpUII8juxN8QWJD/MpbUTIsM0AEVLgMI+TQJF8vHjyta1rVd24WChROsae5LY/dh3uPZECb9LdvoVn4YN315MjNC9zwoEc1sjdZMCU+peRIphzy/3lAwOvbT+eP0OWo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709681289; c=relaxed/simple;
+	bh=l+GpLrX8jXy5ARpVu7GDS5gYwHPbaQFyya1zTGS42eI=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=KRJW8yPtB6GkJ7D2wQxHanG2NzoUj7Io8kHJcD/9ugJPuiA4vvoWcfFfYbDyGrnbdOHy50yRxi+Nw7b2HqKo5/NUbEIRnnQXFGQUjeKlgw4v5IURq+7nOlVy+W+RwpeX1w3VTYSnwPU0sAe9OXIjUJgYOq5C4ENb6ZTNxkYxYa4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=g7tUP/v7; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709681286; x=1741217286;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=l+GpLrX8jXy5ARpVu7GDS5gYwHPbaQFyya1zTGS42eI=;
+  b=g7tUP/v7Zi5vw2Orus8r0JQCa7SVITcs4OxQD+daM/ugJ9FyWafr/Hi1
+   V35lRDhkVJPgu+DLg2NXVhHS1V2pxgLcGK3KEkj54iD1wuNPOnsNwy7lt
+   t2uXO/xYJOAlNUn0C7vmkRom8qHU4QG4xr7OLb61CrMoMmL3hP/Ag8VzZ
+   AWquOqdd/dl1MlKAoaIrypX1esx29mTvy5Xjvcukg4ODyQnM9fO7bmNrk
+   1Dd9nPLuHhoP76lwO8dqSpnzbNfVnPwgFzujoTOFhSOh7VyF1SsVYgZBv
+   2BAUt7+5IWYJ/oc9FIMBt3l3LdUhCWFFAPneNIQYL1Lt+JIThOPg6jnDe
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11004"; a="14915851"
+X-IronPort-AV: E=Sophos;i="6.06,206,1705392000"; 
+   d="scan'208";a="14915851"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 15:28:05 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,206,1705392000"; 
+   d="scan'208";a="14033880"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by fmviesa005.fm.intel.com with ESMTP; 05 Mar 2024 15:28:03 -0800
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rheCW-0003jx-2n;
+	Tue, 05 Mar 2024 23:28:00 +0000
+Date: Wed, 6 Mar 2024 07:27:11 +0800
+From: kernel test robot <lkp@intel.com>
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	"Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars:testing/WFAMNAE-next20240305 1/1]
+ include/linux/bpf-cgroup.h:191:15: warning: comparison of distinct pointer
+ types ('struct bpf_prog_array *' and 'struct bpf_prog_array_hdr *')
+Message-ID: <202403060704.3XRbwOZ1-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TY3P286MB2611.JPNP286.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9a7047b1-54bb-4b0b-1693-08dc3d6b5ca9
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Mar 2024 23:24:10.4854
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYVP286MB3166
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-SGkgQ29ub3IsDQoNClRoYW5rcyBmb3IgcmVwbHkuIEnigJltIHNvcnJ5IGZvciB0aGlzLCBidXQg
-bXkgZGlzdHJv4oCZcyBkdC1zY2hlbWENCmlzIHRvbyBvbGQgdG8gcnVuIGR0YnMtY2hlY2suIFdp
-bGwgZml4IGluIG5leHQgdmVyc2lvbi4NCg0KQmVzdCByZWdhcmRzDQoNCj4g5ZyoIDIwMjTlubQz
-5pyINuaXpe+8jDAzOjQx77yMQ29ub3IgRG9vbGV5IDxjb25vckBrZXJuZWwub3JnPiDlhpnpgZPv
-vJoNCj4gDQo+IO+7v09uIFdlZCwgTWFyIDA2LCAyMDI0IGF0IDAxOjExOjUwQU0gKzA4MDAsIFNo
-ZW5neXUgUXUgd3JvdGU6DQo+PiBTaW5jZSBjb21taXQgYjJjYjJhZTIyMjc4ZjE5MThmNzUyNmI4
-OTc2MGVlMDBiNGE4MTM5MyAoIm1mZDogYXhwMjB4Og0KPj4gR2VuZXJhbGlzZSBoYW5kbGluZyB3
-aXRob3V0IGludGVycnVwdCIpLCBpbnRlcnJ1cHQgaW5mbyBwYXJ0IGZvciB0aGUNCj4+IEFYUDE1
-MDYwIFBNSUMgaXMgbm90IG5lZWRlZCBhbnltb3JlIGZvciBTdGF0Zml2ZSBWaXNpb25maXZlIDIg
-Ym9hcmQuDQo+PiBBbmQgdGhpcyB3b3VsZCBjYXVzZSBrZXJuZWwgdG8gdHJ5IHRvIGVuYWJsZSBp
-bnRlcnJ1cHQgbGluZSAwLCB3aGljaCBpcw0KPj4gbm90IGV4cGVjdGVkLiBTbyBkZWxldGUgdGhp
-cyBwYXJ0IGZyb20gZGV2aWNlIHRyZWUuDQo+IA0KPiBpbnRlcnJ1cHQtY29udHJvbGxlci8jaW50
-ZXJydXB0LWNlbGxzIGFyZSByZXF1aXJlZCBwcm9wZXJ0aWVzLCB5b3UgY2FuJ3QNCj4gZGVsZXRl
-IHRoZW0uIElmIHlvdSByYW4gZHRic19jaGVjayB5b3UnZCBzZWUgdGhhdCBpdCBjb21wbGFpbnMg
-YWJvdXQNCj4gdGhpcyBwYXRjaC4NCj4gDQo+IElmIHlvdSBqdXN0IHJlbW92ZSB0aGUgaW50ZXJy
-dXB0cyBwcm9wZXJ0eSwgd2hhdCBoYXBwZW5zPw0KPiANCj4+IENjOiBzdGFibGVAdmdlci5rZXJu
-ZWwub3JnDQo+PiBGaXhlczogYjJjYjJhZTIyMjc4ICgibWZkOiBheHAyMHg6IEdlbmVyYWxpc2Ug
-aGFuZGxpbmcgd2l0aG91dCBpbnRlcnJ1cHQiKQ0KPiANCj4gVGhpcyBGaXhlcyB0YWcgY2Fubm90
-IGJlIHJpZ2h0LCBhIGR0cyBwYXRjaCBjYW5ub3QgZml4IGEgZHJpdmVyLiBUaGUgZHRzDQo+IHBh
-dGNoIHRoYXQgaW5jb3JyZWN0bHkgc2FpZCB0aGlzIHVzZWQgaW50ZXJydXB0IDAgaXMgd2hhdCBz
-aG91bGQgYmUgaW4gdGhlDQo+IEZpeGVzIHRhZy4NCj4gDQo+IFRoYW5rcywNCj4gQ29ub3IuDQo+
-IA0KPj4gUmVwb3J0ZWQtYnk6IEJvIEdhbiA8Z2FuYm9pbmdAZ21haWwuY29tPg0KPiANCj4gQ2xv
-c2VzOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9saW51eC1yaXNjdi9jOGI2ZTk2MC0yNDU5LTEz
-MGYtZTRlNC03YzljMmViYWE2ZDNAZ21haWwuY29tLw0KPiANCj4+IFNpZ25lZC1vZmYtYnk6IFNo
-ZW5neXUgUXUgPHdpYWduMjMzQG91dGxvb2suY29tPg0KPj4gLS0tDQo+PiBhcmNoL3Jpc2N2L2Jv
-b3QvZHRzL3N0YXJmaXZlL2poNzExMC1zdGFyZml2ZS12aXNpb25maXZlLTIuZHRzaSB8IDMgLS0t
-DQo+PiAxIGZpbGUgY2hhbmdlZCwgMyBkZWxldGlvbnMoLSkNCj4+IA0KPj4gZGlmZiAtLWdpdCBh
-L2FyY2gvcmlzY3YvYm9vdC9kdHMvc3RhcmZpdmUvamg3MTEwLXN0YXJmaXZlLXZpc2lvbmZpdmUt
-Mi5kdHNpIGIvYXJjaC9yaXNjdi9ib290L2R0cy9zdGFyZml2ZS9qaDcxMTAtc3RhcmZpdmUtdmlz
-aW9uZml2ZS0yLmR0c2kNCj4+IGluZGV4IGI4OWU5NzkxZWZhNy4uNmJlYmFiZTNmYTM3IDEwMDY0
-NA0KPj4gLS0tIGEvYXJjaC9yaXNjdi9ib290L2R0cy9zdGFyZml2ZS9qaDcxMTAtc3RhcmZpdmUt
-dmlzaW9uZml2ZS0yLmR0c2kNCj4+ICsrKyBiL2FyY2gvcmlzY3YvYm9vdC9kdHMvc3RhcmZpdmUv
-amg3MTEwLXN0YXJmaXZlLXZpc2lvbmZpdmUtMi5kdHNpDQo+PiBAQCAtMTg5LDkgKzE4OSw2IEBA
-ICZpMmM1IHsNCj4+ICAgIGF4cDE1MDYwOiBwbWljQDM2IHsNCj4+ICAgICAgICBjb21wYXRpYmxl
-ID0gIngtcG93ZXJzLGF4cDE1MDYwIjsNCj4+ICAgICAgICByZWcgPSA8MHgzNj47DQo+PiAtICAg
-ICAgICBpbnRlcnJ1cHRzID0gPDA+Ow0KPj4gLSAgICAgICAgaW50ZXJydXB0LWNvbnRyb2xsZXI7
-DQo+PiAtICAgICAgICAjaW50ZXJydXB0LWNlbGxzID0gPDE+Ow0KPj4gDQo+PiAgICAgICAgcmVn
-dWxhdG9ycyB7DQo+PiAgICAgICAgICAgIHZjY18zdjM6IGRjZGMxIHsNCj4+IC0tDQo+PiAyLjM5
-LjINCj4+IA0K
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/WFAMNAE-next20240305
+head:   3a02035a7f980ddbf41dd11815bb4e5f29e104d5
+commit: 3a02035a7f980ddbf41dd11815bb4e5f29e104d5 [1/1] treewide: Address -Wflex-array-member-not-at-end warnings
+config: riscv-defconfig (https://download.01.org/0day-ci/archive/20240306/202403060704.3XRbwOZ1-lkp@intel.com/config)
+compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project 325f51237252e6dab8e4e1ea1fa7acbb4faee1cd)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240306/202403060704.3XRbwOZ1-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403060704.3XRbwOZ1-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   In file included from security/apparmor/lsm.c:11:
+   In file included from include/linux/lsm_hooks.h:29:
+   In file included from include/linux/security.h:33:
+   In file included from include/linux/mm.h:2208:
+   include/linux/vmstat.h:522:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
+     522 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
+         |                               ~~~~~~~~~~~ ^ ~~~
+   In file included from security/apparmor/lsm.c:11:
+   In file included from include/linux/lsm_hooks.h:29:
+   In file included from include/linux/security.h:35:
+   include/linux/bpf.h:736:48: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     736 |         ARG_PTR_TO_MAP_VALUE_OR_NULL    = PTR_MAYBE_NULL | ARG_PTR_TO_MAP_VALUE,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:737:43: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     737 |         ARG_PTR_TO_MEM_OR_NULL          = PTR_MAYBE_NULL | ARG_PTR_TO_MEM,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+   include/linux/bpf.h:738:43: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     738 |         ARG_PTR_TO_CTX_OR_NULL          = PTR_MAYBE_NULL | ARG_PTR_TO_CTX,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+   include/linux/bpf.h:739:45: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     739 |         ARG_PTR_TO_SOCKET_OR_NULL       = PTR_MAYBE_NULL | ARG_PTR_TO_SOCKET,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:740:44: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     740 |         ARG_PTR_TO_STACK_OR_NULL        = PTR_MAYBE_NULL | ARG_PTR_TO_STACK,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:741:45: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     741 |         ARG_PTR_TO_BTF_ID_OR_NULL       = PTR_MAYBE_NULL | ARG_PTR_TO_BTF_ID,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:745:38: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     745 |         ARG_PTR_TO_UNINIT_MEM           = MEM_UNINIT | ARG_PTR_TO_MEM,
+         |                                           ~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+   include/linux/bpf.h:747:45: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     747 |         ARG_PTR_TO_FIXED_SIZE_MEM       = MEM_FIXED_SIZE | ARG_PTR_TO_MEM,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+   include/linux/bpf.h:770:48: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     770 |         RET_PTR_TO_MAP_VALUE_OR_NULL    = PTR_MAYBE_NULL | RET_PTR_TO_MAP_VALUE,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:771:45: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     771 |         RET_PTR_TO_SOCKET_OR_NULL       = PTR_MAYBE_NULL | RET_PTR_TO_SOCKET,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:772:47: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     772 |         RET_PTR_TO_TCP_SOCK_OR_NULL     = PTR_MAYBE_NULL | RET_PTR_TO_TCP_SOCK,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:773:50: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     773 |         RET_PTR_TO_SOCK_COMMON_OR_NULL  = PTR_MAYBE_NULL | RET_PTR_TO_SOCK_COMMON,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:775:49: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     775 |         RET_PTR_TO_DYNPTR_MEM_OR_NULL   = PTR_MAYBE_NULL | RET_PTR_TO_MEM,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+   include/linux/bpf.h:776:45: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     776 |         RET_PTR_TO_BTF_ID_OR_NULL       = PTR_MAYBE_NULL | RET_PTR_TO_BTF_ID,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:777:43: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     777 |         RET_PTR_TO_BTF_ID_TRUSTED       = PTR_TRUSTED    | RET_PTR_TO_BTF_ID,
+         |                                           ~~~~~~~~~~~    ^ ~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:888:44: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_reg_type') [-Wenum-enum-conversion]
+     888 |         PTR_TO_MAP_VALUE_OR_NULL        = PTR_MAYBE_NULL | PTR_TO_MAP_VALUE,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:889:42: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_reg_type') [-Wenum-enum-conversion]
+     889 |         PTR_TO_SOCKET_OR_NULL           = PTR_MAYBE_NULL | PTR_TO_SOCKET,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~
+   include/linux/bpf.h:890:46: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_reg_type') [-Wenum-enum-conversion]
+     890 |         PTR_TO_SOCK_COMMON_OR_NULL      = PTR_MAYBE_NULL | PTR_TO_SOCK_COMMON,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:891:44: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_reg_type') [-Wenum-enum-conversion]
+     891 |         PTR_TO_TCP_SOCK_OR_NULL         = PTR_MAYBE_NULL | PTR_TO_TCP_SOCK,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~
+   include/linux/bpf.h:892:42: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_reg_type') [-Wenum-enum-conversion]
+     892 |         PTR_TO_BTF_ID_OR_NULL           = PTR_MAYBE_NULL | PTR_TO_BTF_ID,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~
+   In file included from security/apparmor/lsm.c:23:
+   In file included from include/linux/netfilter_ipv6.h:11:
+   In file included from include/net/tcp.h:47:
+>> include/linux/bpf-cgroup.h:191:15: warning: comparison of distinct pointer types ('struct bpf_prog_array *' and 'struct bpf_prog_array_hdr *') [-Wcompare-distinct-pointer-types]
+     191 |         return array != &bpf_empty_prog_array.hdr;
+         |                ~~~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~~
+   In file included from security/apparmor/lsm.c:23:
+   In file included from include/linux/netfilter_ipv6.h:11:
+   include/net/tcp.h:2450:27: error: incompatible pointer types initializing 'const struct ip_options *' with an expression of type 'struct ip_options_hdr *' [-Werror,-Wincompatible-pointer-types]
+    2450 |         const struct ip_options *opt = &TCP_SKB_CB(skb)->header.h4.opt;
+         |                                  ^     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   22 warnings and 1 error generated.
+--
+   In file included from net/core/filter.c:21:
+   In file included from include/linux/bpf_verifier.h:7:
+   In file included from include/linux/bpf.h:21:
+   In file included from include/linux/kallsyms.h:13:
+   In file included from include/linux/mm.h:2208:
+   include/linux/vmstat.h:522:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
+     522 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
+         |                               ~~~~~~~~~~~ ^ ~~~
+   In file included from net/core/filter.c:21:
+   In file included from include/linux/bpf_verifier.h:7:
+   include/linux/bpf.h:736:48: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     736 |         ARG_PTR_TO_MAP_VALUE_OR_NULL    = PTR_MAYBE_NULL | ARG_PTR_TO_MAP_VALUE,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:737:43: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     737 |         ARG_PTR_TO_MEM_OR_NULL          = PTR_MAYBE_NULL | ARG_PTR_TO_MEM,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+   include/linux/bpf.h:738:43: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     738 |         ARG_PTR_TO_CTX_OR_NULL          = PTR_MAYBE_NULL | ARG_PTR_TO_CTX,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+   include/linux/bpf.h:739:45: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     739 |         ARG_PTR_TO_SOCKET_OR_NULL       = PTR_MAYBE_NULL | ARG_PTR_TO_SOCKET,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:740:44: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     740 |         ARG_PTR_TO_STACK_OR_NULL        = PTR_MAYBE_NULL | ARG_PTR_TO_STACK,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:741:45: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     741 |         ARG_PTR_TO_BTF_ID_OR_NULL       = PTR_MAYBE_NULL | ARG_PTR_TO_BTF_ID,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:745:38: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     745 |         ARG_PTR_TO_UNINIT_MEM           = MEM_UNINIT | ARG_PTR_TO_MEM,
+         |                                           ~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+   include/linux/bpf.h:747:45: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     747 |         ARG_PTR_TO_FIXED_SIZE_MEM       = MEM_FIXED_SIZE | ARG_PTR_TO_MEM,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+   include/linux/bpf.h:770:48: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     770 |         RET_PTR_TO_MAP_VALUE_OR_NULL    = PTR_MAYBE_NULL | RET_PTR_TO_MAP_VALUE,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:771:45: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     771 |         RET_PTR_TO_SOCKET_OR_NULL       = PTR_MAYBE_NULL | RET_PTR_TO_SOCKET,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:772:47: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     772 |         RET_PTR_TO_TCP_SOCK_OR_NULL     = PTR_MAYBE_NULL | RET_PTR_TO_TCP_SOCK,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:773:50: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     773 |         RET_PTR_TO_SOCK_COMMON_OR_NULL  = PTR_MAYBE_NULL | RET_PTR_TO_SOCK_COMMON,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:775:49: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     775 |         RET_PTR_TO_DYNPTR_MEM_OR_NULL   = PTR_MAYBE_NULL | RET_PTR_TO_MEM,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+   include/linux/bpf.h:776:45: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     776 |         RET_PTR_TO_BTF_ID_OR_NULL       = PTR_MAYBE_NULL | RET_PTR_TO_BTF_ID,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:777:43: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     777 |         RET_PTR_TO_BTF_ID_TRUSTED       = PTR_TRUSTED    | RET_PTR_TO_BTF_ID,
+         |                                           ~~~~~~~~~~~    ^ ~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:888:44: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_reg_type') [-Wenum-enum-conversion]
+     888 |         PTR_TO_MAP_VALUE_OR_NULL        = PTR_MAYBE_NULL | PTR_TO_MAP_VALUE,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:889:42: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_reg_type') [-Wenum-enum-conversion]
+     889 |         PTR_TO_SOCKET_OR_NULL           = PTR_MAYBE_NULL | PTR_TO_SOCKET,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~
+   include/linux/bpf.h:890:46: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_reg_type') [-Wenum-enum-conversion]
+     890 |         PTR_TO_SOCK_COMMON_OR_NULL      = PTR_MAYBE_NULL | PTR_TO_SOCK_COMMON,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:891:44: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_reg_type') [-Wenum-enum-conversion]
+     891 |         PTR_TO_TCP_SOCK_OR_NULL         = PTR_MAYBE_NULL | PTR_TO_TCP_SOCK,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~
+   include/linux/bpf.h:892:42: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_reg_type') [-Wenum-enum-conversion]
+     892 |         PTR_TO_BTF_ID_OR_NULL           = PTR_MAYBE_NULL | PTR_TO_BTF_ID,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~
+   In file included from net/core/filter.c:39:
+   In file included from include/linux/skmsg.h:13:
+   In file included from include/net/tcp.h:47:
+>> include/linux/bpf-cgroup.h:191:15: warning: comparison of distinct pointer types ('struct bpf_prog_array *' and 'struct bpf_prog_array_hdr *') [-Wcompare-distinct-pointer-types]
+     191 |         return array != &bpf_empty_prog_array.hdr;
+         |                ~~~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~~
+   In file included from net/core/filter.c:39:
+   In file included from include/linux/skmsg.h:13:
+   include/net/tcp.h:2450:27: error: incompatible pointer types initializing 'const struct ip_options *' with an expression of type 'struct ip_options_hdr *' [-Werror,-Wincompatible-pointer-types]
+    2450 |         const struct ip_options *opt = &TCP_SKB_CB(skb)->header.h4.opt;
+         |                                  ^     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   net/core/filter.c:1726:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
+    1726 |         .arg3_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
+   net/core/filter.c:2042:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
+    2042 |         .arg1_type      = ARG_PTR_TO_MEM | PTR_MAYBE_NULL | MEM_RDONLY,
+         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+   net/core/filter.c:2044:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
+    2044 |         .arg3_type      = ARG_PTR_TO_MEM | PTR_MAYBE_NULL | MEM_RDONLY,
+         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+   net/core/filter.c:2583:35: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
+    2583 |         .arg2_type      = ARG_PTR_TO_MEM | PTR_MAYBE_NULL | MEM_RDONLY,
+         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+   net/core/filter.c:4600:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
+    4600 |         .arg4_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
+   net/core/filter.c:4614:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
+    4614 |         .arg4_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
+   net/core/filter.c:4814:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
+    4814 |         .arg2_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
+   net/core/filter.c:4840:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
+    4840 |         .arg2_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
+   net/core/filter.c:5012:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
+    5012 |         .arg4_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
+   net/core/filter.c:5026:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
+    5026 |         .arg4_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
+   net/core/filter.c:5075:45: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
+    5075 |         .arg1_type      = ARG_PTR_TO_BTF_ID_SOCK_COMMON | PTR_MAYBE_NULL,
+         |                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+   net/core/filter.c:5483:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
+    5483 |         .arg4_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
+   net/core/filter.c:5517:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
+    5517 |         .arg4_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
+   net/core/filter.c:5551:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
+    5551 |         .arg4_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
+   net/core/filter.c:5585:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
+    5585 |         .arg4_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
+   net/core/filter.c:5760:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
+    5760 |         .arg2_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
+   net/core/filter.c:6397:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
+    6397 |         .arg3_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
+   net/core/filter.c:6407:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
+    6407 |         .arg3_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
+   net/core/filter.c:6785:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
+    6785 |         .arg2_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
+   net/core/filter.c:6804:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
+    6804 |         .arg2_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
+   net/core/filter.c:6823:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
+    6823 |         .arg2_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
+   net/core/filter.c:6847:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
+    6847 |         .arg2_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
+   net/core/filter.c:6871:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
+    6871 |         .arg2_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
+   net/core/filter.c:6895:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
+    6895 |         .arg2_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
+   net/core/filter.c:6912:45: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
+    6912 |         .arg1_type      = ARG_PTR_TO_BTF_ID_SOCK_COMMON | OBJ_RELEASE,
+         |                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~
+   net/core/filter.c:6933:35: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
+    6933 |         .arg2_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
+   net/core/filter.c:6957:35: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
+    6957 |         .arg2_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
+   net/core/filter.c:6981:35: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
+    6981 |         .arg2_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
+   net/core/filter.c:7001:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
+    7001 |         .arg2_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
+   net/core/filter.c:7020:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
+    7020 |         .arg2_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
+   net/core/filter.c:7039:30: warning: bitwise operation between different enumeration types ('enum bpf_arg_type' and 'enum bpf_type_flag') [-Wenum-enum-conversion]
+    7039 |         .arg2_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+         |                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~
+--
+   In file included from net/core/skmsg.c:4:
+   In file included from include/linux/skmsg.h:7:
+   In file included from include/linux/bpf.h:21:
+   In file included from include/linux/kallsyms.h:13:
+   In file included from include/linux/mm.h:2208:
+   include/linux/vmstat.h:522:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
+     522 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
+         |                               ~~~~~~~~~~~ ^ ~~~
+   In file included from net/core/skmsg.c:4:
+   In file included from include/linux/skmsg.h:7:
+   include/linux/bpf.h:736:48: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     736 |         ARG_PTR_TO_MAP_VALUE_OR_NULL    = PTR_MAYBE_NULL | ARG_PTR_TO_MAP_VALUE,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:737:43: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     737 |         ARG_PTR_TO_MEM_OR_NULL          = PTR_MAYBE_NULL | ARG_PTR_TO_MEM,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+   include/linux/bpf.h:738:43: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     738 |         ARG_PTR_TO_CTX_OR_NULL          = PTR_MAYBE_NULL | ARG_PTR_TO_CTX,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+   include/linux/bpf.h:739:45: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     739 |         ARG_PTR_TO_SOCKET_OR_NULL       = PTR_MAYBE_NULL | ARG_PTR_TO_SOCKET,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:740:44: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     740 |         ARG_PTR_TO_STACK_OR_NULL        = PTR_MAYBE_NULL | ARG_PTR_TO_STACK,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:741:45: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     741 |         ARG_PTR_TO_BTF_ID_OR_NULL       = PTR_MAYBE_NULL | ARG_PTR_TO_BTF_ID,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:745:38: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     745 |         ARG_PTR_TO_UNINIT_MEM           = MEM_UNINIT | ARG_PTR_TO_MEM,
+         |                                           ~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+   include/linux/bpf.h:747:45: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_arg_type') [-Wenum-enum-conversion]
+     747 |         ARG_PTR_TO_FIXED_SIZE_MEM       = MEM_FIXED_SIZE | ARG_PTR_TO_MEM,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+   include/linux/bpf.h:770:48: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     770 |         RET_PTR_TO_MAP_VALUE_OR_NULL    = PTR_MAYBE_NULL | RET_PTR_TO_MAP_VALUE,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:771:45: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     771 |         RET_PTR_TO_SOCKET_OR_NULL       = PTR_MAYBE_NULL | RET_PTR_TO_SOCKET,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:772:47: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     772 |         RET_PTR_TO_TCP_SOCK_OR_NULL     = PTR_MAYBE_NULL | RET_PTR_TO_TCP_SOCK,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:773:50: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     773 |         RET_PTR_TO_SOCK_COMMON_OR_NULL  = PTR_MAYBE_NULL | RET_PTR_TO_SOCK_COMMON,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:775:49: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     775 |         RET_PTR_TO_DYNPTR_MEM_OR_NULL   = PTR_MAYBE_NULL | RET_PTR_TO_MEM,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~
+   include/linux/bpf.h:776:45: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     776 |         RET_PTR_TO_BTF_ID_OR_NULL       = PTR_MAYBE_NULL | RET_PTR_TO_BTF_ID,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:777:43: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_return_type') [-Wenum-enum-conversion]
+     777 |         RET_PTR_TO_BTF_ID_TRUSTED       = PTR_TRUSTED    | RET_PTR_TO_BTF_ID,
+         |                                           ~~~~~~~~~~~    ^ ~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:888:44: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_reg_type') [-Wenum-enum-conversion]
+     888 |         PTR_TO_MAP_VALUE_OR_NULL        = PTR_MAYBE_NULL | PTR_TO_MAP_VALUE,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:889:42: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_reg_type') [-Wenum-enum-conversion]
+     889 |         PTR_TO_SOCKET_OR_NULL           = PTR_MAYBE_NULL | PTR_TO_SOCKET,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~
+   include/linux/bpf.h:890:46: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_reg_type') [-Wenum-enum-conversion]
+     890 |         PTR_TO_SOCK_COMMON_OR_NULL      = PTR_MAYBE_NULL | PTR_TO_SOCK_COMMON,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~
+   include/linux/bpf.h:891:44: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_reg_type') [-Wenum-enum-conversion]
+     891 |         PTR_TO_TCP_SOCK_OR_NULL         = PTR_MAYBE_NULL | PTR_TO_TCP_SOCK,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~
+   include/linux/bpf.h:892:42: warning: bitwise operation between different enumeration types ('enum bpf_type_flag' and 'enum bpf_reg_type') [-Wenum-enum-conversion]
+     892 |         PTR_TO_BTF_ID_OR_NULL           = PTR_MAYBE_NULL | PTR_TO_BTF_ID,
+         |                                           ~~~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~
+   In file included from net/core/skmsg.c:4:
+   In file included from include/linux/skmsg.h:13:
+   In file included from include/net/tcp.h:47:
+>> include/linux/bpf-cgroup.h:191:15: warning: comparison of distinct pointer types ('struct bpf_prog_array *' and 'struct bpf_prog_array_hdr *') [-Wcompare-distinct-pointer-types]
+     191 |         return array != &bpf_empty_prog_array.hdr;
+         |                ~~~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~~
+   In file included from net/core/skmsg.c:4:
+   In file included from include/linux/skmsg.h:13:
+   include/net/tcp.h:2450:27: error: incompatible pointer types initializing 'const struct ip_options *' with an expression of type 'struct ip_options_hdr *' [-Werror,-Wincompatible-pointer-types]
+    2450 |         const struct ip_options *opt = &TCP_SKB_CB(skb)->header.h4.opt;
+         |                                  ^     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   net/core/skmsg.c:735:2: error: incomplete definition of type 'struct cm_work'
+     735 |         INIT_DELAYED_WORK(&psock->work, sk_psock_backlog);
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/workqueue.h:325:2: note: expanded from macro 'INIT_DELAYED_WORK'
+     325 |         __INIT_DELAYED_WORK(_work, _func, 0)
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/workqueue.h:310:13: note: expanded from macro '__INIT_DELAYED_WORK'
+     310 |                 INIT_WORK(container_of(&(_work)->work, struct cm_work, hdr), (_func));                  \
+         |                 ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/container_of.h:20:47: note: expanded from macro 'container_of'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |                                                      ^
+   note: (skipping 3 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
+   include/linux/workqueue.h:300:15: note: expanded from macro 'INIT_WORK'
+     300 |         __INIT_WORK((_work), (_func), 0)
+         |         ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
+   include/linux/workqueue.h:296:19: note: expanded from macro '__INIT_WORK'
+     296 |                 __INIT_WORK_KEY(_work, _func, _onstack, &__key);        \
+         |                 ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/workqueue.h:285:16: note: expanded from macro '__INIT_WORK_KEY'
+     285 |                 __init_work((_work), _onstack);                         \
+         |                              ^~~~~
+   net/core/skmsg.c:735:2: note: forward declaration of 'struct cm_work'
+   include/linux/workqueue.h:325:2: note: expanded from macro 'INIT_DELAYED_WORK'
+     325 |         __INIT_DELAYED_WORK(_work, _func, 0)
+         |         ^
+   include/linux/workqueue.h:310:49: note: expanded from macro '__INIT_DELAYED_WORK'
+     310 |                 INIT_WORK(container_of(&(_work)->work, struct cm_work, hdr), (_func));                  \
+         |                                                               ^
+   net/core/skmsg.c:735:2: error: offsetof of incomplete type 'struct cm_work'
+     735 |         INIT_DELAYED_WORK(&psock->work, sk_psock_backlog);
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/workqueue.h:325:2: note: expanded from macro 'INIT_DELAYED_WORK'
+     325 |         __INIT_DELAYED_WORK(_work, _func, 0)
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/workqueue.h:310:13: note: expanded from macro '__INIT_DELAYED_WORK'
+     310 |                 INIT_WORK(container_of(&(_work)->work, struct cm_work, hdr), (_func));                  \
+         |                           ^                            ~~~~~~
+   include/linux/container_of.h:23:21: note: expanded from macro 'container_of'
+      23 |         ((type *)(__mptr - offsetof(type, member))); })
+         |                            ^        ~~~~
+   note: (skipping 1 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
+   include/linux/workqueue.h:300:15: note: expanded from macro 'INIT_WORK'
+     300 |         __INIT_WORK((_work), (_func), 0)
+         |                      ^~~~~
+   include/linux/workqueue.h:296:19: note: expanded from macro '__INIT_WORK'
+     296 |                 __INIT_WORK_KEY(_work, _func, _onstack, &__key);        \
+         |                                 ^~~~~
+   include/linux/workqueue.h:285:16: note: expanded from macro '__INIT_WORK_KEY'
+     285 |                 __init_work((_work), _onstack);                         \
+         |                              ^~~~~
+   net/core/skmsg.c:735:2: note: forward declaration of 'struct cm_work'
+   include/linux/workqueue.h:325:2: note: expanded from macro 'INIT_DELAYED_WORK'
+     325 |         __INIT_DELAYED_WORK(_work, _func, 0)
+         |         ^
+   include/linux/workqueue.h:310:49: note: expanded from macro '__INIT_DELAYED_WORK'
+     310 |                 INIT_WORK(container_of(&(_work)->work, struct cm_work, hdr), (_func));                  \
+         |                                                               ^
+   net/core/skmsg.c:735:2: error: passing 'void' to parameter of incompatible type 'struct work_struct *'
+     735 |         INIT_DELAYED_WORK(&psock->work, sk_psock_backlog);
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/workqueue.h:325:2: note: expanded from macro 'INIT_DELAYED_WORK'
+     325 |         __INIT_DELAYED_WORK(_work, _func, 0)
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/workqueue.h:310:3: note: expanded from macro '__INIT_DELAYED_WORK'
+     310 |                 INIT_WORK(container_of(&(_work)->work, struct cm_work, hdr), (_func));                  \
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/workqueue.h:300:2: note: expanded from macro 'INIT_WORK'
+     300 |         __INIT_WORK((_work), (_func), 0)
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/workqueue.h:296:3: note: expanded from macro '__INIT_WORK'
+     296 |                 __INIT_WORK_KEY(_work, _func, _onstack, &__key);        \
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/workqueue.h:285:15: note: expanded from macro '__INIT_WORK_KEY'
+     285 |                 __init_work((_work), _onstack);                         \
+         |                             ^~~~~~~
+   include/linux/workqueue.h:260:52: note: passing argument to parameter 'work' here
+     260 | static inline void __init_work(struct work_struct *work, int onstack) { }
+         |                                                    ^
+   net/core/skmsg.c:735:2: error: incomplete definition of type 'struct cm_work'
+     735 |         INIT_DELAYED_WORK(&psock->work, sk_psock_backlog);
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/workqueue.h:325:2: note: expanded from macro 'INIT_DELAYED_WORK'
+     325 |         __INIT_DELAYED_WORK(_work, _func, 0)
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/workqueue.h:310:13: note: expanded from macro '__INIT_DELAYED_WORK'
+     310 |                 INIT_WORK(container_of(&(_work)->work, struct cm_work, hdr), (_func));                  \
+         |                 ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/container_of.h:20:47: note: expanded from macro 'container_of'
+      20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||       \
+         |                                                      ^
+   note: (skipping 3 expansions in backtrace; use -fmacro-backtrace-limit=0 to see all)
+   include/linux/workqueue.h:300:15: note: expanded from macro 'INIT_WORK'
+.
+
+
+vim +191 include/linux/bpf-cgroup.h
+
+de9cbbaadba5ad Roman Gushchin 2018-08-02  178  
+b741f1630346de Roman Gushchin 2018-09-28  179  int bpf_percpu_cgroup_storage_copy(struct bpf_map *map, void *key, void *value);
+b741f1630346de Roman Gushchin 2018-09-28  180  int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
+b741f1630346de Roman Gushchin 2018-09-28  181  				     void *value, u64 flags);
+b741f1630346de Roman Gushchin 2018-09-28  182  
+46531a30364bd4 Pavel Begunkov 2022-01-27  183  /* Opportunistic check to see whether we have any BPF program attached*/
+46531a30364bd4 Pavel Begunkov 2022-01-27  184  static inline bool cgroup_bpf_sock_enabled(struct sock *sk,
+46531a30364bd4 Pavel Begunkov 2022-01-27  185  					   enum cgroup_bpf_attach_type type)
+46531a30364bd4 Pavel Begunkov 2022-01-27  186  {
+46531a30364bd4 Pavel Begunkov 2022-01-27  187  	struct cgroup *cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
+46531a30364bd4 Pavel Begunkov 2022-01-27  188  	struct bpf_prog_array *array;
+46531a30364bd4 Pavel Begunkov 2022-01-27  189  
+46531a30364bd4 Pavel Begunkov 2022-01-27  190  	array = rcu_access_pointer(cgrp->bpf.effective[type]);
+46531a30364bd4 Pavel Begunkov 2022-01-27 @191  	return array != &bpf_empty_prog_array.hdr;
+46531a30364bd4 Pavel Begunkov 2022-01-27  192  }
+46531a30364bd4 Pavel Begunkov 2022-01-27  193  
+
+:::::: The code at line 191 was first introduced by commit
+:::::: 46531a30364bd483bfa1b041c15d42a196e77e93 cgroup/bpf: fast path skb BPF filtering
+
+:::::: TO: Pavel Begunkov <asml.silence@gmail.com>
+:::::: CC: Alexei Starovoitov <ast@kernel.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
