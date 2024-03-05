@@ -1,108 +1,182 @@
-Return-Path: <linux-kernel+bounces-92758-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92759-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5E2B872597
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:25:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 853B4872599
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:25:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B5A3282A86
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:24:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 151061F26011
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:25:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C8001640B;
-	Tue,  5 Mar 2024 17:24:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77AF214F64;
+	Tue,  5 Mar 2024 17:24:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YwuXR1oO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z903NSju"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C06C014A9D;
-	Tue,  5 Mar 2024 17:24:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9BCD17582;
+	Tue,  5 Mar 2024 17:24:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709659491; cv=none; b=V3Mzt9lrF8zRpw1A18MKLskAreoObH+Mduz87Hcii64mCuP2MdD13UM+mKZHDALzY3L8U3Z0uqAT1FCTKSGFrQoQQOf5Qu38hJT+ii6aQPuCAyMKNlOfHPqgkmG61pKU039ASoQqfBqjWM4SSrYLFBz2OjuOCh2FHK8K9ERqbHc=
+	t=1709659498; cv=none; b=JfCHO1CLAQiKAMd+BOr5honlFPUvTBgTNgmJAsOUBYnUlXTGmxEJcOE68DENZ2HzQhnb7kKJhOypRbMhLSbzLH0HpV/GhmSyDqT7nSp7Zm9zxb9XVprPcRDY2gtBeUBmF7AkhfdG5q6WHkVAixk2rcOtQslsW0fsZn8hGCd90fU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709659491; c=relaxed/simple;
-	bh=QsenZAH1ku6PvZX7ejloa6VeWLc+wSXNgpDQ7jBBw5U=;
+	s=arc-20240116; t=1709659498; c=relaxed/simple;
+	bh=0lwIjheUVVinIAmrLyBNdgK66HWaAqekBzSfCyt9IXA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=c1TI3YXx0xnjI9ZVhCmWPOnwbIWhkUZPArPY3BtjRNUnKhHI3OR9ncp+hiDubCgw41R13vMre7J0Hq/Ah9AbTrrdSLXwZwhuxKQKpVFaATHzwWSW5GLDkbPwdJu9JOZxdAvq8xC/BYvZc+8OvgpWBYzbWDxhu/ZsWv43GpTO7CQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YwuXR1oO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11305C433F1;
-	Tue,  5 Mar 2024 17:24:48 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZpcOet2AJhSn5nUxdxY4pFbLo01bUGNgwb0ejp5So9KVjnnsYTSQ2cYjQXmcubz5PW9MPb7I7Bk3GFat0lOeTD1G8Oo1DnqKmxBncZf5m8dg+1WBT4Ds9IEIkBgK6uGDQWsJ4loW0b9TV5j480iyczy8whu+zJqqgnH07y6gV9Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z903NSju; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 427CCC433F1;
+	Tue,  5 Mar 2024 17:24:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709659491;
-	bh=QsenZAH1ku6PvZX7ejloa6VeWLc+wSXNgpDQ7jBBw5U=;
+	s=k20201202; t=1709659498;
+	bh=0lwIjheUVVinIAmrLyBNdgK66HWaAqekBzSfCyt9IXA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YwuXR1oOn3cAnb66aX7pDqhqWQLptn4H9mnfjQtk/eTS9nk8mhADs3PIdTBJtx1v+
-	 eXYLcsE8SLBPnVvzQPmrR0WRuPjOwBtyluyHD/lk6499LHFcOSRPLxAIJg5uJ+z4pp
-	 q6tCLX6KoE6uIeS7G8tTGq0y/9S5pb6Y5+pSis931MFL0rAYzY3fsYxUrcLAmeCvSd
-	 hF5K+Xaz2Z2kDqD4eIAl0woUZKrIQki6a5BJSF44bN0Bl3IIPIhWGSG8V6tPyGKSc5
-	 l9Ir+vsBnXa/O+oRyIz1BpUXjV+XwEp7486g39dzlv+pC1fmgXkyKW9o6fI6yuO7Zi
-	 KJWXqw++Ejd+A==
-Date: Tue, 5 Mar 2024 17:24:46 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Yangyu Chen <cyy@cyyself.name>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>, krzysztof.kozlowski+dt@linaro.org,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, guoren@kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 6/7] riscv: dts: add initial canmv-k230 and k230-evb
- dts
-Message-ID: <20240305-ripcord-engraving-af3310d62a67@spud>
-References: <mhng-f1aa91d4-211f-4eb4-a94d-a9d88b0d3f6a@palmer-ri-x1c9>
- <7A86D933-B85F-4B29-8D6D-AB414A42AC06@cyyself.name>
- <tencent_B2C1146D4947315C8018AE90EDC64F3E6207@qq.com>
- <20240305-shorten-disallow-eae65fdc8fdb@spud>
- <tencent_3638D6E106C784859837E6F3C10BDA688F0A@qq.com>
+	b=Z903NSjuRS54CjitvIUAHCtyiTeYD9kpF16xaR6iCL0pBoY7G2j1sdFwYrxw9llc3
+	 vAneSCEfELCgq9mk8dxSj/AJSDfxpBXh9Of7zHDuhZgbHAJVxkAPbYfl++P3FK7PFB
+	 ep2fLKsOtkra6ll9CtSwoHrap4qqibhT7NhvSAsbvhhSAbPu4D6lEVM+8v8wbrxjeD
+	 J+RXr4lNozZ6SEp6K5qX54J4yelJI2ZD5Q14HEPyj3rVU/e1/PvAXhhSsVP7b+Ay2T
+	 fI6tLHe/LNMDZMrS3K4cUImbIQPtrpmQ8XFYMUZCyUphwI5obMSq0gHxYRJAXyh1z/
+	 gC/rlOZXKIS3Q==
+Date: Tue, 5 Mar 2024 11:24:55 -0600
+From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+	Clemens Ladisch <clemens@ladisch.de>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	linux-hardening@vger.kernel.org, alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org, linux1394-devel@lists.sourceforge.net
+Subject: [PATCH 1/2][next] firewire: Avoid -Wflex-array-member-not-at-end
+ warning
+Message-ID: <eac86b3b9b84859528c346977a8f879188dc61e0.1709658886.git.gustavoars@kernel.org>
+References: <cover.1709658886.git.gustavoars@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="vhZQxYF104MnbLU5"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <tencent_3638D6E106C784859837E6F3C10BDA688F0A@qq.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cover.1709658886.git.gustavoars@kernel.org>
 
+-Wflex-array-member-not-at-end is coming in GCC-14, and we are getting
+ready to enable it globally.
 
---vhZQxYF104MnbLU5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+There is currently a local structure `u` that is using a flexible
+`struct fw_iso_packet` as header for an on-stack array `u8 header[256]`.
 
-On Wed, Mar 06, 2024 at 01:17:29AM +0800, Yangyu Chen wrote:
-> > On Mar 6, 2024, at 01:01, Conor Dooley <conor@kernel.org> wrote:
-> > On Wed, Mar 06, 2024 at 12:37:16AM +0800, Yangyu Chen wrote:
+struct {
+	struct fw_iso_packet packet;
+	u8 header[256];
+} u;
 
-> >>> Link: https://github.com/cyyself/opensbi/commit/b113c1c01d700314a4a69=
-6297ec09031a9399354
-> >>>=20
-> >>> Furthermore, I wonder whether a CPU node like this would be acceptabl=
-e.
-> >>> I don't have any other details of how another CPU from K230 SoC works=
- on
-> >>> Linux.
-> >=20
-> > A CPU node like what? It is not clear to me.
->=20
-> It in the k230.dtsi file. Only has big core there.
+However, we are deprecating flexible arrays in the middle of another
+struct. So, in order to avoid this, we use the `struct_group_tagged()`
+helper to separate the flexible array from the rest of the members in
+the flexible structure:
 
-The node that is currently there looks fine to me.
+struct fw_iso_packet {
+        struct_group_tagged(fw_iso_packet_hdr, hdr,
+		... the rest of the members
+        );
+        u32 header[];           /* tx: Top of 1394 isoch. data_block    */
+};
 
---vhZQxYF104MnbLU5
-Content-Type: application/pgp-signature; name="signature.asc"
+With the change described above, we can now declare an object of the
+type of the tagged struct, without embedding the flexible array in the
+middle of another struct:
 
------BEGIN PGP SIGNATURE-----
+struct {
+        struct fw_iso_packet_hdr packet;
+        u8 header[256];
+} u;
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZedVXgAKCRB4tDGHoIJi
-0saeAP4pPuYdIfPpajZxYSLmdBJkzM9jXmO55zWBkmcKkm1OrwEAjXqI9zESV97A
-Cl7lBRtyzckFGrJKMW1RI+mIFSqnGgg=
-=bd1D
------END PGP SIGNATURE-----
+We also use `container_of()` whenever we need to retrieve a pointer to
+the flexible structure, through which the flexible-array member can be
+accessed, as in this case.
 
---vhZQxYF104MnbLU5--
+So, with these changes, fix the following warning:
+
+drivers/firewire/core-cdev.c: In function ‘ioctl_queue_iso’:
+drivers/firewire/core-cdev.c:1129:38: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
+ 1129 |                 struct fw_iso_packet packet;
+      |                                      ^~~~~~
+
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/firewire/core-cdev.c |  9 +++++----
+ include/linux/firewire.h     | 16 +++++++++-------
+ 2 files changed, 14 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/firewire/core-cdev.c b/drivers/firewire/core-cdev.c
+index 6274b86eb943..e1f1daa2e667 100644
+--- a/drivers/firewire/core-cdev.c
++++ b/drivers/firewire/core-cdev.c
+@@ -1126,9 +1126,11 @@ static int ioctl_queue_iso(struct client *client, union ioctl_arg *arg)
+ 	u32 control;
+ 	int count;
+ 	struct {
+-		struct fw_iso_packet packet;
++		struct fw_iso_packet_hdr packet;
+ 		u8 header[256];
+ 	} u;
++	struct fw_iso_packet *packet =
++			container_of(&u.packet, struct fw_iso_packet, hdr);
+ 
+ 	if (ctx == NULL || a->handle != 0)
+ 		return -EINVAL;
+@@ -1192,7 +1194,7 @@ static int ioctl_queue_iso(struct client *client, union ioctl_arg *arg)
+ 		if (next > end)
+ 			return -EINVAL;
+ 		if (copy_from_user
+-		    (u.packet.header, p->header, transmit_header_bytes))
++		    (packet->header, p->header, transmit_header_bytes))
+ 			return -EFAULT;
+ 		if (u.packet.skip && ctx->type == FW_ISO_CONTEXT_TRANSMIT &&
+ 		    u.packet.header_length + u.packet.payload_length > 0)
+@@ -1200,8 +1202,7 @@ static int ioctl_queue_iso(struct client *client, union ioctl_arg *arg)
+ 		if (payload + u.packet.payload_length > buffer_end)
+ 			return -EINVAL;
+ 
+-		if (fw_iso_context_queue(ctx, &u.packet,
+-					 &client->buffer, payload))
++		if (fw_iso_context_queue(ctx, packet, &client->buffer, payload))
+ 			break;
+ 
+ 		p = next;
+diff --git a/include/linux/firewire.h b/include/linux/firewire.h
+index dd9f2d765e68..becd3a60d0fb 100644
+--- a/include/linux/firewire.h
++++ b/include/linux/firewire.h
+@@ -456,13 +456,15 @@ void fw_core_remove_descriptor(struct fw_descriptor *desc);
+  * scatter-gather streaming (e.g. assembling video frame automatically).
+  */
+ struct fw_iso_packet {
+-	u16 payload_length;	/* Length of indirect payload		*/
+-	u32 interrupt:1;	/* Generate interrupt on this packet	*/
+-	u32 skip:1;		/* tx: Set to not send packet at all	*/
+-				/* rx: Sync bit, wait for matching sy	*/
+-	u32 tag:2;		/* tx: Tag in packet header		*/
+-	u32 sy:4;		/* tx: Sy in packet header		*/
+-	u32 header_length:8;	/* Length of immediate header		*/
++	struct_group_tagged(fw_iso_packet_hdr, hdr,
++		u16 payload_length;	/* Length of indirect payload		*/
++		u32 interrupt:1;	/* Generate interrupt on this packet	*/
++		u32 skip:1;		/* tx: Set to not send packet at all	*/
++		/* rx: Sync bit, wait for matching sy	*/
++		u32 tag:2;		/* tx: Tag in packet header		*/
++		u32 sy:4;		/* tx: Sy in packet header		*/
++		u32 header_length:8;	/* Length of immediate header		*/
++	);
+ 	u32 header[];		/* tx: Top of 1394 isoch. data_block	*/
+ };
+ 
+-- 
+2.34.1
+
 
