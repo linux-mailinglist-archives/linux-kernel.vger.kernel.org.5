@@ -1,158 +1,326 @@
-Return-Path: <linux-kernel+bounces-91652-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91653-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 348B98714B1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 05:23:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 379E88714B4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 05:26:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5004282F66
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 04:23:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AED5B1F226C5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 04:26:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD9FE3FB9B;
-	Tue,  5 Mar 2024 04:23:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 556883FB32;
+	Tue,  5 Mar 2024 04:26:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lmtDUjwi"
-Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="g/U0eumi"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9243A2940D;
-	Tue,  5 Mar 2024 04:23:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84CA52940D;
+	Tue,  5 Mar 2024 04:26:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709612587; cv=none; b=MDJpEV5FwjlbzJanKMIJBAVmIBJmL0WnSHjGHor8865sAxS6P8ZJENdHEuhiIDH9osurIx5zLQ0b0KXI74UaOSaklHLzF1HcGEkCqw7QUGpUXecYntK2goD0uVbSy7Bkz5Xz5f6JeCSGHhb4mHtZo2oOafWQEMRv/NXlP+c4L8c=
+	t=1709612802; cv=none; b=ouih7xU73pnf9GBd4AM77f13UnWWobMUtRb6L1F2eS67MFEESFzoC/hDjOdoXUExx0lYGGPvUAA2+oOh7lPawtsWHry0bmOXy/arfSJFhQxtWC8HRnMjlUKIH5tK89MjpGrZcwJEg9PKeVA7B3w/hIBzrP8EsgbnGsd1IBolfnE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709612587; c=relaxed/simple;
-	bh=yQNBbjLLiqAPFBqtBerGf1G2HRZprMYdpTiF0eQeK4k=;
-	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=ky1PmfgXoUDPXvc+q9nBKc1GJSUzgyOlaLY3unz5ogR1IEZ49944+nI8jTKrv6QOZm5uluUF1L9/+RS3w26UWnV9P5gvDTQF68wiyKali65UCXiPkYviW+tRJkQ8I24WiiJv01G6oVr5n6pC5JprVzQoJTzvQSBI7Yxf5LLl0r0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lmtDUjwi; arc=none smtp.client-ip=209.85.167.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3c1f582673bso579866b6e.2;
-        Mon, 04 Mar 2024 20:23:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709612584; x=1710217384; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fzMmBUOjgJ7iR9AaCreLenUOKeyl+lWeAI9zCHfBr1c=;
-        b=lmtDUjwi7DcyV5PGQgdtZsYF1fz07cw9n9zUeLoSRKZcpFT0c7HBQf0xhbe/Y0+3QP
-         QeTDiMXgMolcsNOyrj2q4W2mlWZtroJmbZzS8ism5LU/tViKvkVLmo+iCfo0gHFPybHb
-         e+83DFVC2QBa0wAoiQXsfC/7PELv5LcxvFpfkiS59jomrfBtye8exsAuoydW2rueftzj
-         jWgizpOY2iyReCEVmdybJX7WJAEofWHgwUESpPA7V0nrg7vQ53H1vNPYTtcGrSyRMrnr
-         YLjdcqRUxFk05xZPKxQOiwLpQaaX4jgE9ypEqFTxyRLWYez+1X46TVUR6F/GW46xCcAz
-         mKew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709612584; x=1710217384;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=fzMmBUOjgJ7iR9AaCreLenUOKeyl+lWeAI9zCHfBr1c=;
-        b=slYs+TfxmYy4eWzuswuyS56LobAXCm4SLbczxBavcMW/szcN3780zqxdhhT5NV+5W+
-         xYQSr1vrMEoOk8cypH26JprbffnJB4JM7rcIqa3YyXEmkAKmnkzZa2r98dfM4n6BU21Q
-         k5DoUgN1dFG3lo+YlT7qYS/RGKZutohr6PUyzLoRbdvmcgFWqRl3wIIK+C7kYQBctfsv
-         gsLpnVeZ3jyGxk/IBq0mbzMY6m6hjxsIQUVJvpf1EcpuHpN6MCXZPy+am5woWYpCw/b+
-         e07aneZ49+pSog9BtA+fLksSWgkY0vVlIwdY3zdnnsL3D8S9Hf5MFSCkdNg3Reu0Y9ee
-         vJrA==
-X-Forwarded-Encrypted: i=1; AJvYcCWaqsjalYf/GCJTN65E/QNEv/0omGqc+DzDo/BVLtTxozraxizsCU3UVU09sbULdUoIuiof71biaPb80QDUsMe5l0U0mknh7UNGjQS4fnPGHKgYtP4F5cjcRrhtssZo00n+t6zp0CxnUvktv8Ai9TnGiZSXiexkmq4QqMlc+1Mt
-X-Gm-Message-State: AOJu0YxF3rGoyDrWM1gu/1eSj/a8vLyQ8itUnJvHt4cKoCBcbvvOBC+Y
-	//81mko7q2zZ/3zsV2KD7uynhAxd12AUv7uY2An0aThjT7tBZA/2
-X-Google-Smtp-Source: AGHT+IFFLUatCbrLcMXVuav5X7tGY8ZmQkBrBn5N3BUtEsRTOKjsncHTzek04PM66AOZAh/JjzEGcw==
-X-Received: by 2002:a05:6808:9b6:b0:3c1:c9ad:7525 with SMTP id e22-20020a05680809b600b003c1c9ad7525mr703622oig.29.1709612584464;
-        Mon, 04 Mar 2024 20:23:04 -0800 (PST)
-Received: from [10.0.2.15] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id x15-20020a056a00270f00b006e56d880015sm3050662pfv.140.2024.03.04.20.23.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Mar 2024 20:23:04 -0800 (PST)
-Message-ID: <e876e3c8-109d-4bc8-9916-05a4bc4ee9ac@gmail.com>
-Date: Tue, 5 Mar 2024 13:23:00 +0900
+	s=arc-20240116; t=1709612802; c=relaxed/simple;
+	bh=N9u8SHVw55L7uBQnxShMclZqCtnvf65Mu/kXFlP3mtw=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=pR9KHGgYa3M20Hz7+bhWFQDpCFD/tc/sW5jqQ/MBt6QoXeOtBkhHzBmTZCERJucoeGWTVgH8/APsX0wMzHrZb38umd45cq23JHTOodcfLDCgvA8RxMFdm8Ta4gHgC6vOg0XEuzQlLoZTb9Bdcw8THnRMY/buAsZ4cdNyX8wrYmE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=g/U0eumi; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1709612795;
+	bh=UShGOdlC0yH2lVkxBd6+rii1RiQ+gqN2oJMUTKKrQ/o=;
+	h=Date:From:To:Cc:Subject:From;
+	b=g/U0eumii7+m1tvWz/S2Vy6tkvNa6Cao5sHJ8TvcFl0tHsX1nBTlpuZmsoHnwyxDQ
+	 mfmt+YBi5V37TXAS97bfvBRvrmdKJCrX0LJ81RnVQtrcI9bA7q2dKxb5lbDlDJrzDI
+	 7njBFq640xNs5wyytRPOsWoMMkZGFpNk5GfFQcwrMpthJfGToGgj7liTfDalkMItnj
+	 Y3Nu5c8H+hlIvRrCGCOeA9M6ksicEjkXaJTZC264Q4bEaoERJ0DKHK+Dp+pES8xdp0
+	 tRDh3pmjGDKnX0/NPMoxWUzCGQMpYgCQRF7Hj/m/riqgmSXpj/ZDaod3HmWAXcWXNi
+	 bzrTtl+fgRZUQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TpjF66pbCz4wcF;
+	Tue,  5 Mar 2024 15:26:34 +1100 (AEDT)
+Date: Tue, 5 Mar 2024 15:26:34 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Qi Zheng <zhengqi.arch@bytedance.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the mm tree
+Message-ID: <20240305152634.014058aa@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Cc: Thorsten Blum <thorsten.blum@toblux.com>, Breno Leitao
- <leitao@debian.org>, Jakub Kicinski <kuba@kernel.org>,
- "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, Vegard Nossum <vegard.nossum@oracle.com>,
- Jani Nikula <jani.nikula@linux.intel.com>, Akira Yokosawa <akiyks@gmail.com>
-From: Akira Yokosawa <akiyks@gmail.com>
-Subject: [PATCH] docs: Makefile: Add dependency to $(YNL_INDEX) for targets
- other than htmldocs
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/.4=IcelQfVYeu9k8d+ZvOta";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-Commit f061c9f7d058 ("Documentation: Document each netlink family")
-added recipes for YAML -> RST conversion.
-Then commit 7da8bdbf8f5d ("docs: Makefile: Fix make cleandocs by
-deleting generated .rst files") made sure those converted .rst files
-are cleaned by "make cleandocs".
+--Sig_/.4=IcelQfVYeu9k8d+ZvOta
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-However, they took care of htmldocs build only.
+Hi all,
 
-If one of other targets such as latexdocs or epubdocs is built
-without building htmldocs, missing .rst files can cause additional
-WARNINGs from sphinx-build as follow:
+After merging the mm tree, today's linux-next build (s390 defconfig)
+failed like this:
 
-    ./Documentation/userspace-api/netlink/specs.rst:18: WARNING: undefined label: 'specs'
-    ./Documentation/userspace-api/netlink/netlink-raw.rst:64: WARNING: unknown document: '../../networking/netlink_spec/rt_link'
-    ./Documentation/userspace-api/netlink/netlink-raw.rst:64: WARNING: unknown document: '../../networking/netlink_spec/tc'
-    ./Documentation/userspace-api/netlink/index.rst:21: WARNING: undefined label: 'specs'
+In file included from include/linux/smp.h:12,
+                 from include/linux/lockdep.h:14,
+                 from include/linux/spinlock.h:63,
+                 from include/linux/mmzone.h:8,
+                 from include/linux/gfp.h:7,
+                 from include/linux/mm.h:7,
+                 from include/linux/pagewalk.h:5,
+                 from arch/s390/mm/gmap.c:12:
+arch/s390/mm/gmap.c: In function 'gmap_free':
+include/linux/list.h:866:19: error: assignment to 'struct page *' from inco=
+mpatible pointer type 'struct ptdesc *' [-Werror=3Dincompatible-pointer-typ=
+es]
+  866 |                 n =3D list_next_entry(pos, member);                =
+       \
+      |                   ^
+arch/s390/mm/gmap.c:212:17: note: in expansion of macro 'list_for_each_entr=
+y_safe'
+  212 |                 list_for_each_entry_safe(ptdesc, next, &gmap->pt_li=
+st, pt_list)
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/list.h:868:18: error: assignment to 'struct ptdesc *' from in=
+compatible pointer type 'struct page *' [-Werror=3Dincompatible-pointer-typ=
+es]
+  868 |              pos =3D n, n =3D list_next_entry(n, member))
+      |                  ^
+arch/s390/mm/gmap.c:212:17: note: in expansion of macro 'list_for_each_entr=
+y_safe'
+  212 |                 list_for_each_entry_safe(ptdesc, next, &gmap->pt_li=
+st, pt_list)
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from include/linux/kernel.h:22,
+                 from arch/s390/mm/gmap.c:11:
+arch/s390/mm/gmap.c:212:72: error: 'struct page' has no member named 'pt_li=
+st'; did you mean 'pcp_list'?
+  212 |                 list_for_each_entry_safe(ptdesc, next, &gmap->pt_li=
+st, pt_list)
+      |                                                                    =
+    ^~~~~~~
+include/linux/container_of.h:19:33: note: in definition of macro 'container=
+_of'
+   19 |         void *__mptr =3D (void *)(ptr);                            =
+       \
+      |                                 ^~~
+include/linux/list.h:645:9: note: in expansion of macro 'list_entry'
+  645 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+      |         ^~~~~~~~~~
+include/linux/list.h:868:27: note: in expansion of macro 'list_next_entry'
+  868 |              pos =3D n, n =3D list_next_entry(n, member))
+      |                           ^~~~~~~~~~~~~~~
+arch/s390/mm/gmap.c:212:17: note: in expansion of macro 'list_for_each_entr=
+y_safe'
+  212 |                 list_for_each_entry_safe(ptdesc, next, &gmap->pt_li=
+st, pt_list)
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from include/linux/container_of.h:5:
+arch/s390/mm/gmap.c:212:72: error: 'struct page' has no member named 'pt_li=
+st'; did you mean 'pcp_list'?
+  212 |                 list_for_each_entry_safe(ptdesc, next, &gmap->pt_li=
+st, pt_list)
+      |                                                                    =
+    ^~~~~~~
+include/linux/build_bug.h:78:56: note: in definition of macro '__static_ass=
+ert'
+   78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+      |                                                        ^~~~
+include/linux/container_of.h:20:9: note: in expansion of macro 'static_asse=
+rt'
+   20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||  =
+     \
+      |         ^~~~~~~~~~~~~
+include/linux/container_of.h:20:23: note: in expansion of macro '__same_typ=
+e'
+   20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||  =
+     \
+      |                       ^~~~~~~~~~~
+include/linux/list.h:601:9: note: in expansion of macro 'container_of'
+  601 |         container_of(ptr, type, member)
+      |         ^~~~~~~~~~~~
+include/linux/list.h:645:9: note: in expansion of macro 'list_entry'
+  645 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+      |         ^~~~~~~~~~
+include/linux/list.h:868:27: note: in expansion of macro 'list_next_entry'
+  868 |              pos =3D n, n =3D list_next_entry(n, member))
+      |                           ^~~~~~~~~~~~~~~
+arch/s390/mm/gmap.c:212:17: note: in expansion of macro 'list_for_each_entr=
+y_safe'
+  212 |                 list_for_each_entry_safe(ptdesc, next, &gmap->pt_li=
+st, pt_list)
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~
+arch/s390/mm/gmap.c:212:72: error: 'struct page' has no member named 'pt_li=
+st'; did you mean 'pcp_list'?
+  212 |                 list_for_each_entry_safe(ptdesc, next, &gmap->pt_li=
+st, pt_list)
+      |                                                                    =
+    ^~~~~~~
+include/linux/build_bug.h:78:56: note: in definition of macro '__static_ass=
+ert'
+   78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+      |                                                        ^~~~
+include/linux/container_of.h:20:9: note: in expansion of macro 'static_asse=
+rt'
+   20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||  =
+     \
+      |         ^~~~~~~~~~~~~
+include/linux/container_of.h:20:23: note: in expansion of macro '__same_typ=
+e'
+   20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||  =
+     \
+      |                       ^~~~~~~~~~~
+include/linux/list.h:601:9: note: in expansion of macro 'container_of'
+  601 |         container_of(ptr, type, member)
+      |         ^~~~~~~~~~~~
+include/linux/list.h:645:9: note: in expansion of macro 'list_entry'
+  645 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+      |         ^~~~~~~~~~
+include/linux/list.h:868:27: note: in expansion of macro 'list_next_entry'
+  868 |              pos =3D n, n =3D list_next_entry(n, member))
+      |                           ^~~~~~~~~~~~~~~
+arch/s390/mm/gmap.c:212:17: note: in expansion of macro 'list_for_each_entr=
+y_safe'
+  212 |                 list_for_each_entry_safe(ptdesc, next, &gmap->pt_li=
+st, pt_list)
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~
+arch/s390/mm/gmap.c:212:72: error: 'struct page' has no member named 'pt_li=
+st'; did you mean 'pcp_list'?
+  212 |                 list_for_each_entry_safe(ptdesc, next, &gmap->pt_li=
+st, pt_list)
+      |                                                                    =
+    ^~~~~~~
+include/linux/build_bug.h:78:56: note: in definition of macro '__static_ass=
+ert'
+   78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+      |                                                        ^~~~
+include/linux/container_of.h:20:9: note: in expansion of macro 'static_asse=
+rt'
+   20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||  =
+     \
+      |         ^~~~~~~~~~~~~
+include/linux/container_of.h:21:23: note: in expansion of macro '__same_typ=
+e'
+   21 |                       __same_type(*(ptr), void),                   =
+     \
+      |                       ^~~~~~~~~~~
+include/linux/list.h:601:9: note: in expansion of macro 'container_of'
+  601 |         container_of(ptr, type, member)
+      |         ^~~~~~~~~~~~
+include/linux/list.h:645:9: note: in expansion of macro 'list_entry'
+  645 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+      |         ^~~~~~~~~~
+include/linux/list.h:868:27: note: in expansion of macro 'list_next_entry'
+  868 |              pos =3D n, n =3D list_next_entry(n, member))
+      |                           ^~~~~~~~~~~~~~~
+arch/s390/mm/gmap.c:212:17: note: in expansion of macro 'list_for_each_entr=
+y_safe'
+  212 |                 list_for_each_entry_safe(ptdesc, next, &gmap->pt_li=
+st, pt_list)
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/compiler_types.h:390:27: error: expression in static assertio=
+n is not an integer
+  390 | #define __same_type(a, b) __builtin_types_compatible_p(typeof(a), t=
+ypeof(b))
+      |                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/linux/build_bug.h:78:56: note: in definition of macro '__static_ass=
+ert'
+   78 | #define __static_assert(expr, msg, ...) _Static_assert(expr, msg)
+      |                                                        ^~~~
+include/linux/container_of.h:20:9: note: in expansion of macro 'static_asse=
+rt'
+   20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||  =
+     \
+      |         ^~~~~~~~~~~~~
+include/linux/container_of.h:20:23: note: in expansion of macro '__same_typ=
+e'
+   20 |         static_assert(__same_type(*(ptr), ((type *)0)->member) ||  =
+     \
+      |                       ^~~~~~~~~~~
+include/linux/list.h:601:9: note: in expansion of macro 'container_of'
+  601 |         container_of(ptr, type, member)
+      |         ^~~~~~~~~~~~
+include/linux/list.h:645:9: note: in expansion of macro 'list_entry'
+  645 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+      |         ^~~~~~~~~~
+include/linux/list.h:868:27: note: in expansion of macro 'list_next_entry'
+  868 |              pos =3D n, n =3D list_next_entry(n, member))
+      |                           ^~~~~~~~~~~~~~~
+arch/s390/mm/gmap.c:212:17: note: in expansion of macro 'list_for_each_entr=
+y_safe'
+  212 |                 list_for_each_entry_safe(ptdesc, next, &gmap->pt_li=
+st, pt_list)
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from include/uapi/linux/posix_types.h:5,
+                 from include/uapi/linux/types.h:14,
+                 from include/linux/types.h:6,
+                 from include/linux/kasan-checks.h:5,
+                 from include/asm-generic/rwonce.h:26,
+                 from arch/s390/include/asm/rwonce.h:29,
+                 from include/linux/compiler.h:299,
+                 from include/linux/array_size.h:5,
+                 from include/linux/kernel.h:16:
+arch/s390/mm/gmap.c:212:72: error: 'struct page' has no member named 'pt_li=
+st'; did you mean 'pcp_list'?
+  212 |                 list_for_each_entry_safe(ptdesc, next, &gmap->pt_li=
+st, pt_list)
+      |                                                                    =
+    ^~~~~~~
+include/linux/stddef.h:16:58: note: in definition of macro 'offsetof'
+   16 | #define offsetof(TYPE, MEMBER)  __builtin_offsetof(TYPE, MEMBER)
+      |                                                          ^~~~~~
+include/linux/list.h:601:9: note: in expansion of macro 'container_of'
+  601 |         container_of(ptr, type, member)
+      |         ^~~~~~~~~~~~
+include/linux/list.h:645:9: note: in expansion of macro 'list_entry'
+  645 |         list_entry((pos)->member.next, typeof(*(pos)), member)
+      |         ^~~~~~~~~~
+include/linux/list.h:868:27: note: in expansion of macro 'list_next_entry'
+  868 |              pos =3D n, n =3D list_next_entry(n, member))
+      |                           ^~~~~~~~~~~~~~~
+arch/s390/mm/gmap.c:212:17: note: in expansion of macro 'list_for_each_entr=
+y_safe'
+  212 |                 list_for_each_entry_safe(ptdesc, next, &gmap->pt_li=
+st, pt_list)
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~
+cc1: some warnings being treated as errors
 
-Add dependency to $(YNL_INDEX) for other targets and allow any targets
-to be built cleanly right after "make cleandocs".
+Caused by commit
 
-Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
-Cc: stable@vger.kernel.org  # v6.7
-Cc: Thorsten Blum <thorsten.blum@toblux.com>
-Cc: Breno Leitao <leitao@debian.org>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: David S. Miller <davem@davemloft.net>
----
-Hi,
+  859584c3ddba ("s390: supplement for ptdesc conversion")
 
-While the first offending commit went through the -net tree, 
-I'd like Jon to pick this up provided there is no objection from
-Jakub or davem.
+from the mm-unstable branch of the mm tree.
 
-I know there are complaints against generating files under the
-documentation source tree (thread under [1]). 
-So this is a tentative workaround until someone comes up with
-a proper way to fix the fundamental issue.
+I have reverted that commit for today.
+--=20
+Cheers,
+Stephen Rothwell
 
-I wouldn't add Fixes tags.  Almost all the people care only of
-htmldocs...
+--Sig_/.4=IcelQfVYeu9k8d+ZvOta
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-[1]: https://lore.kernel.org/linux-doc/874jevjgvo.fsf@intel.com/
+-----BEGIN PGP SIGNATURE-----
 
-        Thanks, Akira
----
- Documentation/Makefile | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXmnvoACgkQAVBC80lX
+0GyZYwf/ftCln71ecRZeT3axK+7vVkkW5IqGMvJwLalLizgeGNr47zChTxz0deT5
+7MExnh4V94UcvLNuKOPisN0IIKxqexo1CtmpFSZxB01WORSrWR4T0nV9YOs0p2IB
+VT5NzYwilI1K6hODzqXJKE1IJM+O+3EpPi2iq+/QuVn/urZmf01yu/fh7LaLsLy0
+DmO1Jc332TAWAWUUrdJ9e0kDu3QP2pVCK7dKdEcnsibQGS7L3Y9fCe0Jq7NsEQmj
+gwDjJWSfexDI5SAlwLVCRkq2lVY1MQreDeHRK3H3okSsxiKucMa7/TGxE+lheIPK
+mQjW0mevXQYKGN/DydlPlEQoBRn82A==
+=+1yw
+-----END PGP SIGNATURE-----
 
-diff --git a/Documentation/Makefile b/Documentation/Makefile
-index 4479910166fc..b68f8c816897 100644
---- a/Documentation/Makefile
-+++ b/Documentation/Makefile
-@@ -111,7 +111,9 @@ $(YNL_INDEX): $(YNL_RST_FILES)
- $(YNL_RST_DIR)/%.rst: $(YNL_YAML_DIR)/%.yaml $(YNL_TOOL)
- 	$(Q)$(YNL_TOOL) -i $< -o $@
- 
--htmldocs: $(YNL_INDEX)
-+htmldocs texinfodocs latexdocs epubdocs xmldocs: $(YNL_INDEX)
-+
-+htmldocs:
- 	@$(srctree)/scripts/sphinx-pre-install --version-check
- 	@+$(foreach var,$(SPHINXDIRS),$(call loop_cmd,sphinx,html,$(var),,$(var)))
- 
-
-base-commit: a800c6f5b0573847722c5ec70e0ce5cde6ca13dd
--- 
-2.34.1
-
+--Sig_/.4=IcelQfVYeu9k8d+ZvOta--
 
