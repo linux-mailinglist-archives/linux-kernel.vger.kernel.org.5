@@ -1,111 +1,154 @@
-Return-Path: <linux-kernel+bounces-92187-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92188-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7623A871C6A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:58:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6ADA871C6E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:58:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A2F92853F5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:58:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52AE31F25B11
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:58:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 433B55C8F4;
-	Tue,  5 Mar 2024 10:52:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA32F5CDC5;
+	Tue,  5 Mar 2024 10:53:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="v8CyoauD"
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="KvjwfHYP"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB52E5C8E0;
-	Tue,  5 Mar 2024 10:52:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8740B548E0;
+	Tue,  5 Mar 2024 10:53:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709635974; cv=none; b=u8lyePg1BNBFeVzXBdL6NL1zugG9cYUnldaxBhixBxHwS1yuwyV6bguCh632oNqQ4TC8FyJbQ4Eh2WEnfu/655+7+Gto+uqZkLNnsE0jqvigvC+sFqDGUJAo5cjBPcNXUeKlSo9VH0YhX6bjd53tk4Jk/ilAjMOX+nAaX+yYDEA=
+	t=1709636022; cv=none; b=eCW8tTv6lmk5QekYsLTSNKtU8rQFqgdLyyRFXK5P+2rYIjvVPhgqdEZdqjpD+uMNm741+LIzennOLRbK6i7NdMxAopxi0KYe4N6Rw8jQnPZBJM59tfmrWZsCkDQIEGlXm4c39QwmD1NasqpXZ2HejDwsNhme+r/9po85/96WORE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709635974; c=relaxed/simple;
-	bh=w+dzZ9SEn7tNT1Gh8wYoSCpe+IryaeeidHzbyNkP7R8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ukzYJ6ukUNjr87hZg3QdhZuauosmX5BLh28z+bLy+kmEdFD8ZWJ+8JQ/Bq98BJ7nWjC9yOtrcJRZbR6LIPGJqMm72RdzXFmicro2PvhOTpNqs9y5oREy/pFbqd2zwBICgOHL65v+gDfgOgeTucscR7HpgpQrkuUESGkXXZp5fiw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=pass (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=v8CyoauD; arc=none smtp.client-ip=79.96.170.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.4.0)
- id 479f57587ba60efd; Tue, 5 Mar 2024 11:52:49 +0100
-Received: from kreacher.localnet (unknown [195.136.19.94])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by cloudserver094114.home.pl (Postfix) with ESMTPSA id E84CD66AA16;
-	Tue,  5 Mar 2024 11:52:48 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
-	s=dkim; t=1709635969;
-	bh=w+dzZ9SEn7tNT1Gh8wYoSCpe+IryaeeidHzbyNkP7R8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=v8CyoauDU8ZpynYuaBRbQtMVQY4vxX7UkOSK/3KNruxCLZtSCXy2r82yRb29bkITt
-	 l9kqVMPyBAG/qFk7EfczirDfnRL5BtOEDc6KULz/4grnLJ0W1I5atc/GejFHymQ5sC
-	 Hkm4RAKzD8DdQS+DbM05dD5lLy5IY636+8ZpfyqHXt1rKE4iNK8k/H9t9nbvuBWYrS
-	 1kuYBXF9nJ1O2xkaYJO7TlCZgWu0BEGcHT1m+YHAlNKaQXkzSg4bGAo2Cekh8DSOw/
-	 2aF7jtMJOQqkpyqdJTIVM8aq6xY/eoUgFYtXrtlO0SfOfZolEpHrl+fM2zykVToQcD
-	 PD+Jq2Mwdk5AA==
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: David Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Networking <netdev@vger.kernel.org>,
- Alex Elder <elder@linaro.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux Next Mailing List <linux-next@vger.kernel.org>,
- "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
- Sakari Ailus <sakari.ailus@linux.intel.com>
-Subject: Re: linux-next: manual merge of the net-next tree with the pm tree
-Date: Tue, 05 Mar 2024 11:52:48 +0100
-Message-ID: <4903748.31r3eYUQgx@kreacher>
-In-Reply-To: <20240305112641.6248c6fd@canb.auug.org.au>
-References: <20240305112641.6248c6fd@canb.auug.org.au>
+	s=arc-20240116; t=1709636022; c=relaxed/simple;
+	bh=+EDeY2yT2n/cIzmd+Fwdxy+Nb2MpMS4znvqdlwWBR9E=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=vBdJ56HZ8BvsBfWJxDaXIP1dgczhpmLtC8Y0BdHKwres1lT+Sp8Ct0ZEKq7iQ9qucgh0yYLx09mV5PJ7/30ohcxRBXY6AuddXEnxGIeJx6bnLPxQ49zndK8e1KljPmOPDDtjbXYYn3mK7zWsteuN0jPc1o3wcsICSUFq7UXvhyo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=KvjwfHYP; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4258cUul014068;
+	Tue, 5 Mar 2024 10:53:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=qcppdkim1; bh=xiVexQtak33mp1KuoCuep
+	OlA2edRPR1tpbMxzI9BHVY=; b=KvjwfHYPrmlHqli1tRWm2GhLJEdakPWXjivsE
+	s427SYHZQ34BHDEjEZm5mCGI8GlvQvzkEb1C+srNBsR71fioWZylU1ve03x91M9h
+	Rq/gt0XeQB8UK9nlevn5SsVBd093VJT2OJK7k5lzNXZNoHoMEaonPb6+j6fRQgYZ
+	ki41oI46rgUTv2yYrrvAXm/Mecof47hWXSpEp0PP2NTeT58GvRqo2XaRKcWB1Vhi
+	ZFP2CeiiX88a60XZQ5tKkO7hjHVg4f17dKUaAGqt33SxKtmaFIbD6Yn0uh9IFKzA
+	AMsZKKRiy49Ua6wilU6IWKLHb+RTs9wQu1e0fliAPtmw1Z5gw==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wp028892c-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 05 Mar 2024 10:53:23 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 425ArMGH012399
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 5 Mar 2024 10:53:22 GMT
+Received: from hu-pkondeti-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 5 Mar 2024 02:53:14 -0800
+Date: Tue, 5 Mar 2024 16:23:12 +0530
+From: Pavan Kondeti <quic_pkondeti@quicinc.com>
+To: Elliot Berman <quic_eberman@quicinc.com>
+CC: Alex Elder <elder@linaro.org>,
+        Srinivas Kandagatla
+	<srinivas.kandagatla@linaro.org>,
+        Murali Nalajal <quic_mnalajal@quicinc.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Srivatsa Vaddagiri
+	<quic_svaddagi@quicinc.com>,
+        Carl van Schaik <quic_cvanscha@quicinc.com>,
+        Philip Derrin <quic_pderrin@quicinc.com>,
+        Prakruthi Deepak Heragu
+	<quic_pheragu@quicinc.com>,
+        Jonathan Corbet <corbet@lwn.net>, Rob Herring
+	<robh+dt@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        "Fuad
+ Tabba" <tabba@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "Andrew
+ Morton" <akpm@linux-foundation.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-mm@kvack.org>
+Subject: Re: [PATCH v17 01/35] docs: gunyah: Introduce Gunyah Hypervisor
+Message-ID: <6f98238d-25d9-4120-810a-4b8b19c1ef5d@quicinc.com>
+References: <20240222-gunyah-v17-0-1e9da6763d38@quicinc.com>
+ <20240222-gunyah-v17-1-1e9da6763d38@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrheelgddukecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopedutddprhgtphhtthhopehsfhhrsegtrghnsgdrrghuuhhgrdhorhhgrdgruhdprhgtphhtthhopegurghvvghmsegurghvvghmlhhofhhtrdhnvghtpdhrtghpthhtohepkhhusggrsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehprggsvghnihesrhgvughhrghtrdgtohhmpdhrtghpthhtohepnhgvthguvghvsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthht
- ohepvghluggvrheslhhinhgrrhhordhorhhg
-X-DCC--Metrics: v370.home.net.pl 1024; Body=10 Fuz1=10 Fuz2=10
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240222-gunyah-v17-1-1e9da6763d38@quicinc.com>
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: WVHQJJ_TVjtAPqZKVZkx35bx7TCdrEtx
+X-Proofpoint-ORIG-GUID: WVHQJJ_TVjtAPqZKVZkx35bx7TCdrEtx
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-05_08,2024-03-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=0 mlxlogscore=248 suspectscore=0 phishscore=0 spamscore=0
+ malwarescore=0 mlxscore=0 clxscore=1011 bulkscore=0 impostorscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2403050087
 
-Hi Stephen,
+On Thu, Feb 22, 2024 at 03:16:24PM -0800, Elliot Berman wrote:
+> Gunyah is an open-source Type-1 hypervisor developed by Qualcomm. It
+> does not depend on any lower-privileged OS/kernel code for its core
+> functionality. This increases its security and can support a smaller
+> trusted computing based when compared to Type-2 hypervisors.
 
-On Tuesday, March 5, 2024 1:26:41 AM CET Stephen Rothwell wrote:
-> Hi all,
-> 
-> Today's linux-next merge of the net-next tree got a conflict in:
-> 
->   drivers/net/ipa/ipa_smp2p.c
-> 
-> between commit:
-> 
->   c0ef3df8dbae ("PM: runtime: Simplify pm_runtime_get_if_active() usage")
-> 
-> from the pm tree and commit:
-> 
->   5245f4fd28d1 ("net: ipa: don't save the platform device")
-> 
-> from the net-next tree.
-> 
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
+%s/based/base
 
-The conflict resolution looks good to me, thank you!
+> 
+> Add documentation describing the Gunyah hypervisor and the main
+> components of the Gunyah hypervisor which are of interest to Linux
+> virtualization development.
+> 
+> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
+> +- Virtual platform:
+> +
+> +  Architectural devices such as interrupt controllers and CPU timers are
+> +  directly provided by the hypervisor as well as core virtual platform devices
+> +  and system APIs such as ARM PSCI.
+> +
+> +- Device Virtualization:
+> +
+> +  Para-virtualization of devices is supported using inter-VM communication and
+> +  virtio transport support. Select stage 2 faults by virtual machines that use
 
+%s/Select/Selected
+
+> +  proxy-scheduled vCPUs can be handled directly by Linux to provide Type-2
+> +  hypervisor style on-demand paging and/or device emulation.
+> +
 
 
+The doc patch looks good to me.
+
+Thanks,
+Pavan
 
