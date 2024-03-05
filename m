@@ -1,161 +1,111 @@
-Return-Path: <linux-kernel+bounces-91633-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91634-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1F74871472
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 04:55:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C2BE871476
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 04:58:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 221551C21A11
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 03:55:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF782283FF6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 03:58:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A249D3B193;
-	Tue,  5 Mar 2024 03:55:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDECD3B193;
+	Tue,  5 Mar 2024 03:58:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FVOUEUva"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RetoxQ3P"
+Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 230AA27441;
-	Tue,  5 Mar 2024 03:55:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2E6E29CF3;
+	Tue,  5 Mar 2024 03:58:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709610933; cv=none; b=e0ZBj3smbXO4smG6F3mc7AZq1gSsVGFSUVf0FksVRzuVcKTbWd6gt3Wf3nxRyTxED0Zfid0KWHc01fWIOF1b7XvWJx0hjZHJf1kvYSpAEyAvE5iVV4SmpTvX3Wplb2uH7O8xNnNZpv3EBxR5iU5ZpMwFIr3Mca/0bNcnZi+2Ndg=
+	t=1709611101; cv=none; b=trEPgd9+Im1QcGc4bdXjyGXfh7MRrrcvAyGrk4GGQ1mHI/Dl6AaDn54KPfmw0ZV3/SK1CXV0lfQId4rVGH2VdGZjUqKCKUUQW/wSKPiosIpVoKvm6VOVQ9gVhUdb5A9B48SJOa7wJVPiqfaNUIOU5PNhMXxk5YOekFAkXckZrAQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709610933; c=relaxed/simple;
-	bh=VKB1fixRTwhbAOmMV/PfK3xoWcTLoDoP3w8zcVJSMvE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cGMBkmKgczsD/iHzE4w3KSmJNvmZ/L303BvSHiQaJjDXRfKLZWQHvw1KPGatmZlc2Eh+4IgRWDtFDGlUZzWHPOUDxGujnzNGhqfe5pM9urTt+qWhkys2e2dnmy2A6EXl63Rlsp133XR0BblhbUr81c2YIcE9ZbP8l9/bud5Gz38=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FVOUEUva; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709610931; x=1741146931;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=VKB1fixRTwhbAOmMV/PfK3xoWcTLoDoP3w8zcVJSMvE=;
-  b=FVOUEUvaAdjglnxU79DhN5UGLD4lLXiOw2rRwiYsHxZdkNBzYlE1XePs
-   UbzPQo8NM5pQE5DXyoOL2KxdkaND23uHAEW+SZ+wqa0aMnBQL5QEiBgBr
-   gxMLuSx6rgy6sBDWh/fccG1llJBu4Xc0RAysH//ggiTqkAy2UA9sWFR1E
-   MfxXmy/vmhYytxgKYthdPuAKSI3ddJFah/jIFY+Zri/Ygl7Qk/kbxMy5V
-   rV9foQVG3ep+ruSCz9VrO/CIR/ufYJGVFVoCB4Vn6MVPg/m7DhtefDflR
-   5Y1PMwaT1MdBxQHXiznN39P20cAI5uaFWJfJ/KH7HmNHEmyO66EA4juT1
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="4001570"
-X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
-   d="scan'208";a="4001570"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 19:55:30 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
-   d="scan'208";a="9193182"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.125.243.127]) ([10.125.243.127])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 19:55:28 -0800
-Message-ID: <89d600e4-483f-46f3-945d-9e895f90d25b@intel.com>
-Date: Tue, 5 Mar 2024 11:55:24 +0800
+	s=arc-20240116; t=1709611101; c=relaxed/simple;
+	bh=/ewHYUJ3YLGaIZEIYqXd2+CArmnmPZOCHS4dCKsHWxA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FBMRxa/2nn8xAEJn+XI8NGshEdyEleA9/nOBx9Q6uUFpfFCar79dWE7qifKJd/+UK1jxLd9uBpt2dhpqx0W5eDCTBaILmD6erMb9lRwfjluOXH/B0eTqaPOpy3XY4GOOrn33NOqip3hoCoiAgRCaB9W8hJxx2FFXY/drhD1SnLs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RetoxQ3P; arc=none smtp.client-ip=209.85.166.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7c8060a8489so230155339f.0;
+        Mon, 04 Mar 2024 19:58:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709611098; x=1710215898; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IvpUYcfwUzbBslhqAs1XVtkNLO8M/CQ6n2J0d2KVjvM=;
+        b=RetoxQ3PibEwyar/La/QnApCxczHP4MD1wgnZoaiIjyG4eLZDdx3tRHLQ0bUMvXfi1
+         EUQquD4VGH3rBiafaTLGADej27GJpatDtYm2EPnNkTZYuhJtgZqLt5gkqm60bqeNhJks
+         rzM6ZjHp/iU3RfJgmZgbPGeGzCgUoEE16aqTXlDMbi8aj9lnEj5Ogjx/c+fDCwA2ELOs
+         jhdyxEdEUlX+z/QfOSLH4ubaomhalwMuIOGJBek7NkIKaYBtJIU33SWBPz9W9gM3whwO
+         Unp9ouzgglvjfzq5na+Xn9x+miVMgYds/haRH7X9+G9sRSbL9c5qyv8w7fBNXNMrOrP7
+         EofQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709611098; x=1710215898;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IvpUYcfwUzbBslhqAs1XVtkNLO8M/CQ6n2J0d2KVjvM=;
+        b=ezyJuagE984mpNcXA6Y3eDFnyg8qWT/xTIaQCVDY6rIYeS5ogmVYDzvx9vy2qTIE8h
+         G4CT7uIhEgnPk0SIjnVI+Nk4aMEDk8P4jBDPEm6ijCMQwtSNcsRyfWgXay4YCfF7hWHy
+         MgiX/x5Y7xsHpc3MgXRg/87y+kJSN3ZrgEqBWZxBsRZJ/5YH0lNCgtQNAKVzpugxQBGu
+         wUNNeM0oflBF8l4beEgM8k4AB7nLb6RHERFea3r3My+ZLGoqNxeRJpXzoXbdE6x2gYZI
+         z5LM22xjMhLidfPCyYSUQVGSCKRXPel3/QbqGhEkFxGMHmEwwZevTvJv+FdDySgKinhs
+         4NKg==
+X-Forwarded-Encrypted: i=1; AJvYcCUH9PPZecHlMc44qYZLxQOTS9ApQCvvQLbyTPUbKa4OMOIu3Yvvi/gX/dgSXfofoaTX52FIWGpMMKrF0WebA2CwOC+FNjifDRUUpcT3
+X-Gm-Message-State: AOJu0YyQpooZmPha4UT/+H+HBhaFHyZdgWDczN7hU/F6Eorwz65WDdm+
+	uS6UltqOxghMH3EFQ/kR29BQujUxEv7IkZr9FnUFaMcCVCnf/Awgfre8yrtWFLy9wg==
+X-Google-Smtp-Source: AGHT+IEJKLF/uQABIS0lxPXhnRg7SYmxuoAzCktXTURapooOv57T1rsw6Y9kbqx9mjd8ZoE5enI2cA==
+X-Received: by 2002:a05:6602:97:b0:7c8:30cb:10a4 with SMTP id h23-20020a056602009700b007c830cb10a4mr8789320iob.1.1709611098549;
+        Mon, 04 Mar 2024 19:58:18 -0800 (PST)
+Received: from aford-System-Version.lan ([2601:447:d002:5be:5872:22b6:b680:a683])
+        by smtp.gmail.com with ESMTPSA id g10-20020a056638060a00b004748293c1fasm2639496jar.70.2024.03.04.19.58.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Mar 2024 19:58:18 -0800 (PST)
+From: Adam Ford <aford173@gmail.com>
+To: devicetree@vger.kernel.org
+Cc: aford@beaconembedded.com,
+	Adam Ford <aford173@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: interrupt-controller: fsl,irqsteer: Allow Power Domains
+Date: Mon,  4 Mar 2024 21:58:13 -0600
+Message-ID: <20240305035814.74087-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 04/16] KVM: x86/mmu: Pass full 64-bit error code when
- handling page faults
-Content-Language: en-US
-To: Sean Christopherson <seanjc@google.com>,
- Paolo Bonzini <pbonzini@redhat.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- Yan Zhao <yan.y.zhao@intel.com>, Isaku Yamahata <isaku.yamahata@intel.com>,
- Michael Roth <michael.roth@amd.com>, Yu Zhang <yu.c.zhang@linux.intel.com>,
- Chao Peng <chao.p.peng@linux.intel.com>, Fuad Tabba <tabba@google.com>,
- David Matlack <dmatlack@google.com>
-References: <20240228024147.41573-1-seanjc@google.com>
- <20240228024147.41573-5-seanjc@google.com>
-From: Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <20240228024147.41573-5-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 2/28/2024 10:41 AM, Sean Christopherson wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
-> 
-> Plumb the full 64-bit error code throughout the page fault handling code
-> so that KVM can use the upper 32 bits, e.g. SNP's PFERR_GUEST_ENC_MASK
-> will be used to determine whether or not a fault is private vs. shared.
-> 
-> Note, passing the 64-bit error code to FNAME(walk_addr)() does NOT change
-> the behavior of permission_fault() when invoked in the page fault path, as
-> KVM explicitly clears PFERR_IMPLICIT_ACCESS in kvm_mmu_page_fault().
-> 
-> Continue passing '0' from the async #PF worker, as guest_memfd() and thus
-> private memory doesn't support async page faults.
-> 
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> [mdr: drop references/changes on rebase, update commit message]
-> Signed-off-by: Michael Roth <michael.roth@amd.com>
-> [sean: drop truncation in call to FNAME(walk_addr)(), rewrite changelog]
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+The i.MX8MP HDMI irqsteer depends on the HDMI power domain, so add
+power-domains to the list of items which may be in the device tree.
 
-Reviewed-by: Xiaoyao Li <xiaoyao.li@intel.com>
+Signed-off-by: Adam Ford <aford173@gmail.com>
 
-
-> ---
->   arch/x86/kvm/mmu/mmu.c          | 3 +--
->   arch/x86/kvm/mmu/mmu_internal.h | 4 ++--
->   arch/x86/kvm/mmu/mmutrace.h     | 2 +-
->   3 files changed, 4 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index e2fd74e06ff8..408969ac1291 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -5860,8 +5860,7 @@ int noinline kvm_mmu_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa, u64 err
->   	}
->   
->   	if (r == RET_PF_INVALID) {
-> -		r = kvm_mmu_do_page_fault(vcpu, cr2_or_gpa,
-> -					  lower_32_bits(error_code), false,
-> +		r = kvm_mmu_do_page_fault(vcpu, cr2_or_gpa, error_code, false,
->   					  &emulation_type);
->   		if (KVM_BUG_ON(r == RET_PF_INVALID, vcpu->kvm))
->   			return -EIO;
-> diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-> index 0eea6c5a824d..1fab1f2359b5 100644
-> --- a/arch/x86/kvm/mmu/mmu_internal.h
-> +++ b/arch/x86/kvm/mmu/mmu_internal.h
-> @@ -190,7 +190,7 @@ static inline bool is_nx_huge_page_enabled(struct kvm *kvm)
->   struct kvm_page_fault {
->   	/* arguments to kvm_mmu_do_page_fault.  */
->   	const gpa_t addr;
-> -	const u32 error_code;
-> +	const u64 error_code;
->   	const bool prefetch;
->   
->   	/* Derived from error_code.  */
-> @@ -288,7 +288,7 @@ static inline void kvm_mmu_prepare_memory_fault_exit(struct kvm_vcpu *vcpu,
->   }
->   
->   static inline int kvm_mmu_do_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
-> -					u32 err, bool prefetch, int *emulation_type)
-> +					u64 err, bool prefetch, int *emulation_type)
->   {
->   	struct kvm_page_fault fault = {
->   		.addr = cr2_or_gpa,
-> diff --git a/arch/x86/kvm/mmu/mmutrace.h b/arch/x86/kvm/mmu/mmutrace.h
-> index ae86820cef69..195d98bc8de8 100644
-> --- a/arch/x86/kvm/mmu/mmutrace.h
-> +++ b/arch/x86/kvm/mmu/mmutrace.h
-> @@ -260,7 +260,7 @@ TRACE_EVENT(
->   	TP_STRUCT__entry(
->   		__field(int, vcpu_id)
->   		__field(gpa_t, cr2_or_gpa)
-> -		__field(u32, error_code)
-> +		__field(u64, error_code)
->   		__field(u64 *, sptep)
->   		__field(u64, old_spte)
->   		__field(u64, new_spte)
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer.yaml b/Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer.yaml
+index 20ad4ad82ad6..7ccbb96434a4 100644
+--- a/Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer.yaml
++++ b/Documentation/devicetree/bindings/interrupt-controller/fsl,irqsteer.yaml
+@@ -59,6 +59,9 @@ properties:
+       u32 value representing the number of input interrupts of this channel,
+       should be multiple of 32 input interrupts and up to 512 interrupts.
+ 
++  power-domains:
++    maxItems: 1
++
+ required:
+   - compatible
+   - reg
+-- 
+2.43.0
 
 
