@@ -1,134 +1,115 @@
-Return-Path: <linux-kernel+bounces-91972-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91973-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87E35871940
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:13:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1EF8871943
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:13:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 289ADB258EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:13:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87FA728255F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:13:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DCC5524B1;
-	Tue,  5 Mar 2024 09:13:21 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 643B14DA1F;
-	Tue,  5 Mar 2024 09:13:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EDF150A7E;
+	Tue,  5 Mar 2024 09:13:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Gt0Ahmyo"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E61BD4DA1F;
+	Tue,  5 Mar 2024 09:13:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709630001; cv=none; b=ffZ7JDtOXu9dTItT/cYgUvBUdkuh5zHRTYpS9Zw/hfoLRaD+ikZBhv5j8LbzD/Jvmpeo6K2CuqLEwfPBKKgoiUHWZtzR1PREapbLDSSk7x1k6voAJ65J1RWNJNF94BuKWQnUTA0wi5WOQ1zqzGvw80q4akE3JSQwHz4lXGwB/j0=
+	t=1709630013; cv=none; b=aFEDS3gfhenmmC12tEnOsq6BLYNYWUNc4UjkV8ufxAJushPRq/r7fvfm6DNLoRzNoOctrri8uRS/9JyK1Vl6EHXi4NhJopC9pSZMDBPscoxH848DMG2XgjDeusiJA7YyPaWE7LxzWMlgytj4Ol6ASWb41dhKWNnK0CRCCi0NYf0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709630001; c=relaxed/simple;
-	bh=8yEMbLlsXSdgz1MHS6KtgJSRcTWMl7TRJdDzd5wFNtg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=q2OZvQAWZvdOwDOSCllBw2kXH6FK5Jg8rDrAPzGMOzoT6PvEn4qC07gvJI72kYVFbMM4sCQWXC5l4jmoBqT+Z3T8FmQpjTV7/k9fBiU2g1xDcxbADSmWz/9t2K34AVc70HjcnOljatjhU5cDuCIf4t7Tbs4N9fbLISVeMtkL+4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4DD8BDA7;
-	Tue,  5 Mar 2024 01:13:55 -0800 (PST)
-Received: from [10.1.29.29] (e133047.arm.com [10.1.29.29])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 305C03F762;
-	Tue,  5 Mar 2024 01:13:16 -0800 (PST)
-Message-ID: <0dc6a839-2922-40ac-8854-2884196da9b9@arm.com>
-Date: Tue, 5 Mar 2024 09:13:14 +0000
+	s=arc-20240116; t=1709630013; c=relaxed/simple;
+	bh=3mXN8KKW4waYOcWzjRN9oSLaIcwuzNcqm3YSkZxcpzY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=qXc/ir3KYRwdSBhcvzp2fRoHyObTbrYIw7yjzC+UCn3OR4KPFPhNnjlDn3PY8qOeoxnWgNC/HqaFU7TT56b0VVGuszpnCMX9ZzcOZleX0Z5I8TsR3h41b7vHu/h2TtsEPnBVFHv9z/Qv3TTcpZ35k3qz0bX5bAMkmkDC0JCbIUk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Gt0Ahmyo; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709630012; x=1741166012;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=3mXN8KKW4waYOcWzjRN9oSLaIcwuzNcqm3YSkZxcpzY=;
+  b=Gt0Ahmyous3C15cJfbUaMnCp+ZskDMj2eu/chCdW81oul/E1pvRT8YcA
+   JGEN8XdOtFSSZ10smz/RARTlKHjrBh0I5BesAnFHKFrH7kmv1xq8PCywB
+   dAcj0HI04GugZhckXjK6nPygEzx14q3nSVrp7gTdSSDs0TabTmU5SNJUO
+   XjbQYIOG9KTU1ACh+L1arpx65DOVziq/NINxjQJXuYlCihcyGDxAOW25d
+   oCe2/ivPDIIZnZEKPQZiplyLqRs7OeaMJ1qyfp++oNunCys05aHkluCdi
+   m6futw8sPtVppHM7PVbiGiUoJ4tmHh6xtCkUwBsvcB7NunPIrT99IAzB8
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="4031546"
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="4031546"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 01:13:30 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="46836038"
+Received: from omakhlou-mobl4.amr.corp.intel.com (HELO localhost) ([10.252.51.143])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 01:13:24 -0800
+From: Jani Nikula <jani.nikula@intel.com>
+To: Thomas Zimmermann <tzimmermann@suse.de>, mpe@ellerman.id.au,
+ naresh.kamboju@linaro.org, deller@gmx.de, npiggin@gmail.com,
+ christophe.leroy@csgroup.eu, aneesh.kumar@kernel.org,
+ naveen.n.rao@linux.ibm.com
+Cc: dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+ lkft-triage@lists.linaro.org, linux-kernel@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [PATCH v2 2/3] macintosh/via-pmu-backlight: Include
+ <linux/backlight.h>
+In-Reply-To: <20240305090910.26742-3-tzimmermann@suse.de>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240305090910.26742-1-tzimmermann@suse.de>
+ <20240305090910.26742-3-tzimmermann@suse.de>
+Date: Tue, 05 Mar 2024 11:13:20 +0200
+Message-ID: <87plw92g9b.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 0/2] Introduce per-task io utilization boost
-To: Bart Van Assche <bvanassche@acm.org>, linux-kernel@vger.kernel.org
-Cc: peterz@infradead.org, juri.lelli@redhat.com, mingo@redhat.com,
- rafael@kernel.org, dietmar.eggemann@arm.com, vschneid@redhat.com,
- vincent.guittot@linaro.org, Johannes.Thumshirn@wdc.com,
- adrian.hunter@intel.com, ulf.hansson@linaro.org, andres@anarazel.de,
- asml.silence@gmail.com, linux-pm@vger.kernel.org,
- linux-block@vger.kernel.org, io-uring@vger.kernel.org,
- Qais Yousef <qyousef@layalina.io>
-References: <20240304201625.100619-1-christian.loehle@arm.com>
- <86f0af00-8765-4481-9245-1819fb2c6379@acm.org>
-Content-Language: en-US
-From: Christian Loehle <christian.loehle@arm.com>
-In-Reply-To: <86f0af00-8765-4481-9245-1819fb2c6379@acm.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-Hi Bart,
+On Tue, 05 Mar 2024, Thomas Zimmermann <tzimmermann@suse.de> wrote:
+> Fix builds with CONFIG_PMAC_BACKLIGHT=y. The include statement for the
+> backlight header has recently been removed from <linux/fb.h>. Add it to
+> via-pmu-backlight.c to get the necessary symbols.
+>
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Closes: https://lore.kernel.org/dri-devel/CA+G9fYsAk5TbqqxFC2W4oHLGA0CbTHMxbeq8QayFXTU75YiueA@mail.gmail.com/
+> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+> Fixes: 11b4eedfc87d ("fbdev: Do not include <linux/backlight.h> in header")
+> Cc: Thomas Zimmermann <tzimmermann@suse.de>
+> Cc: Jani Nikula <jani.nikula@intel.com>
+> Cc: Helge Deller <deller@gmx.de>
+> Cc: linux-fbdev@vger.kernel.org
+> Cc: dri-devel@lists.freedesktop.org
 
-On 05/03/2024 00:20, Bart Van Assche wrote:
-> On 3/4/24 12:16, Christian Loehle wrote:
->> Pixel 6 ufs Android 14 (7 runs for because device showed some variance)
->> [6605, 6622, 6633, 6652, 6690, 6697, 6754] sugov mainline
->> [7141, 7173, 7198, 7220, 7280, 7427, 7452] per-task tracking
->> [2390, 2392, 2406, 2437, 2464, 2487, 2813] sugov no iowait boost
->> [7812, 7837, 7837, 7851, 7900, 7959, 7980] performance governor
-> 
-> Variance of performance results for Pixel devices can be reduced greatly
-> by disabling devfreq scaling, e.g. as follows (this may cause thermal
-> issues if the system load is high enough):
-> 
->      for d in $(adb shell echo /sys/class/devfreq/*); do
->     adb shell "cat $d/available_frequencies |
->         tr ' ' '\n' |
->         sort -n |
->         case $devfreq in
->             min) head -n1;;
->             max) tail -n1;;
->         esac > $d/min_freq"
->     done
-> 
+Reviewed-by: Jani Nikula <jani.nikula@intel.com>
 
-Thanks for the hint!
+> ---
+>  drivers/macintosh/via-pmu-backlight.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/macintosh/via-pmu-backlight.c b/drivers/macintosh/via-pmu-backlight.c
+> index c2d87e7fa85be..89450645c2305 100644
+> --- a/drivers/macintosh/via-pmu-backlight.c
+> +++ b/drivers/macintosh/via-pmu-backlight.c
+> @@ -10,6 +10,7 @@
+>  
+>  #include <asm/ptrace.h>
+>  #include <linux/adb.h>
+> +#include <linux/backlight.h>
+>  #include <linux/pmu.h>
+>  #include <asm/backlight.h>
 
->> Showcasing some different IO scenarios, again all random read,
->> median out of 5 runs, all on rk3399 with NVMe.
->> e.g. io_uring6x4 means 6 threads with 4 iodepth each, results can be
->> obtained using:
->> fio --minimal --time_based --name=test --filename=/dev/nvme0n1 --runtime=30 --rw=randread --bs=4k --ioengine=io_uring --iodepth=4 --numjobs=6 --group_reporting | cut -d \; -f 8
-> 
-> So buffered I/O was used during this test? Shouldn't direct I/O be used
-> for this kind of tests (--buffered=0)? Additionally, which I/O scheduler
-> was configured? I recommend --ioscheduler=none for this kind of tests.
-
-Yes I opted for buffered I/O, I guess it's the eternal question if you
-should benchmark the device/stack (O_DIRECT) or be more realistic to actual
-use cases (probably). I opted for the latter, but since it's 4K randread
-on significantly large devices the results don't differ too much.
-
-
->> - Higher cap is not always beneficial, we might place the task away
->> from the CPU where the interrupt handler is running, making it run
->> on an unboosted CPU which may have a bigger impact than the difference
->> between the CPU's capacity the task moved to. (Of course the boost will
->> then be reverted again, but a ping-pong every interval is possible).
-> 
-> In the above I see "the interrupt handler". Does this mean that the NVMe
-> controller in the test setup only supports one completion interrupt for
-> all completion queues instead of one completion interrupt per completion
-> queue? There are already Android phones and developer boards available
-> that support the latter, namely the boards equipped with a UFSHCI 4.0 controller.
-
-No, both NVMe test setups have one completion interrupt per completion queue,
-so this caveat doesn't affect them, higher capacity CPU is strictly better.
-The UFS and both mmc setups (eMMC with CQE and sdcard) only have one completion
-interrupt (on CPU0 on my setup).
-The difference between the CPU capacities on the Pixel6 is able to make up for this.
-The big CPU is still the best to run these single-threaded fio benchmarks on in terms
-of throughput.
-FWIW you do gain an additional ~20% (in my specific setup) if you move the ufshcd
-interrupt to a big CPU, too. Similarly for the mmc.
-Unfortunately the infrastructure is far from being there for the scheduler to move the
-interrupt to the same performance domain as the task, which is often optimal both in
-terms of throughput and in terms of power.
-I'll go looking for a stable testing platform with UFS as you mentioned, benefits of this
-patch will of course be greatly increased.
-Thanks!
-
-Best Regards,
-Christian
+-- 
+Jani Nikula, Intel
 
