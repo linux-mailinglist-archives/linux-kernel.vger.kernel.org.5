@@ -1,190 +1,198 @@
-Return-Path: <linux-kernel+bounces-92881-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92882-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55D35872776
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 20:22:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CA7A872781
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 20:22:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE7B3B24580
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:22:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9EAE81F25F2D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:22:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93BDA5675D;
-	Tue,  5 Mar 2024 19:22:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BB0E60EF8;
+	Tue,  5 Mar 2024 19:22:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aX8Y8+Zd"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HB+2fcJF"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1A01250FE;
-	Tue,  5 Mar 2024 19:22:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32AA638FAF
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 19:22:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709666533; cv=none; b=HxJu1y8ReJ75ph0ra31vHdeWQ2/zmHaMspaXf5LTAJltcILgWunegNnqaZakl2YabBEyqIEpB9J5HiEtgJZnFtY4pFPNedFYQrscSL+/fGxm5ifHm+9ipzC6uvyoGALMJ5s3IGRTM0lAZwGk0IIVpbVXixFbQZHQa38Es72w8SU=
+	t=1709666554; cv=none; b=BHyjhHrUPgHAxILJRnHw/j5HwMZTBeQvVntU9cHnCxHPwU0St6kACG4kAVHsYOiXkPKRGMw0A34pM344DoCEtkBUkiK585REvX40lOSu3GypKENbeXAx1xo3eVZfhnUE8QCNTkLiLAIwFFiVP3GxqUFORyibcvM3BWI+st+VcFk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709666533; c=relaxed/simple;
-	bh=WK1G/NaCYvxTxQ/E6MRFLMHXXETCzVWrlTphyKmWH/s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q2fFRpoDMQ/NKkqOvkEh/UB0/LcS9m4jCsUuOTIomrlACWzG/qooyiIGbJEzMftsRIctsoQ70N90U68C0iabCBK/Lkq6+CZV8mxCBIVGKb82pAohwh7XTjaqvDqG341j6/pDMcdOAP4SQHuNIAMCmdIQfn9L6c495bchnzn4Jvs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aX8Y8+Zd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B45EC433C7;
-	Tue,  5 Mar 2024 19:22:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709666533;
-	bh=WK1G/NaCYvxTxQ/E6MRFLMHXXETCzVWrlTphyKmWH/s=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=aX8Y8+Zdk66foHU/vgrLhRefbVfoikrZmF/gHYbKS8iwxqGuKMao8AKX2dUTTPLZE
-	 PPxBFJmD30zUO1nCZDHPHHT+OZaih4sHfTFhtPUHQ5w9WRu6MK+nx1GImp19ggsEcQ
-	 Nh5nbkHh6rAUaJsRiOuulf/KSZsrYE+czREyXeiEGhGDTnzzwssBu6lIidtAZNxaxI
-	 ezPNglsH/T3IB1JRycxGEq996pd55valJ8I+djh8U9C4lbdLXAxMgYX9tR9OdQAWv2
-	 opbvye3lD/s9F+4xQ5sSjKXB9aHxIzsWtkrplp+GdYMd32CvC6PHWOZM0m9C0ZjXXj
-	 fxGHEoE90EXJQ==
-Date: Tue, 5 Mar 2024 13:22:09 -0600
-From: Bjorn Andersson <andersson@kernel.org>
-To: Sriram Dash <quic_sriramd@quicinc.com>
-Cc: konrad.dybcio@linaro.org, vkoul@kernel.org, kishon@kernel.org, 
-	robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	gregkh@linuxfoundation.org, quic_wcheng@quicinc.com, Thinh.Nguyen@synopsys.com, 
-	p.zabel@pengutronix.de, linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org, 
-	quic_psodagud@quicinc.com, quic_nkela@quicinc.com, manivannan.sadhasivam@linaro.org, 
-	ulf.hansson@linaro.org, sudeep.holla@arm.com, quic_shazhuss@quicinc.com
-Subject: Re: [RFC 2/3] USB: dwc3: qcom: Add support for firmware managed
- resources
-Message-ID: <ltjrdqxvupzjdqa22fvpzndeh7pc7zfmi5ybqxu2izjnnxjon7@jojqkltzukvv>
-References: <1709657858-8563-1-git-send-email-quic_sriramd@quicinc.com>
- <1709657858-8563-3-git-send-email-quic_sriramd@quicinc.com>
+	s=arc-20240116; t=1709666554; c=relaxed/simple;
+	bh=kV74Yj1MzqVyf6NNGDQ2CeGxlzKebgu7sxAA/z9x7pk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=di9iMuJtmr/L0BIsdBY2ZoJeLTIcJtiQAPsZuWTXgenrCFTKyVBV8FuNx6x187gB+Tls8jQB+5nRzHZk59ZkAwmH8/Ammi226wcchEqXkOkAh3ztXjpOTh81Hwf476zRpempOCn0cBnXlmVhpUq5cd55lgiC19MJlvFd1C1I0xc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=HB+2fcJF; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a4515f8e13cso348136566b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 11:22:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709666549; x=1710271349; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Zz04MsiLPf1EieQ9O8SZKHnfGRYziipBu1MQvsGASi0=;
+        b=HB+2fcJF8i4aysA250J5V59Sykrt6RAA7OXvzat/EnHx2gkocUpUFfYcL8Laz1ldgo
+         uiq13FWYw/j0TY+/6iyX/O6AUybIRCjMfzwKCPIgKaUfkCNCLj3y0UY2V8JiX33j0wen
+         OwgHQb+0rmI4v39A53bSy1Om0beyGkFDa3QQvfHNJTTfum6Inur6L+BWAqkAGRFlS9YP
+         3xSpuMB/U6nEoVyuBlUgOtuPjXyCtuh77HZyW+u7qIRHC47PKwtOqESealfxelh235M8
+         Z7o8aAj05QR3jtuf8U2ilcjw+0l2nsg02feqIqxDTH5A3GXCM5ehYD5yLdpoqIGWrNBh
+         rl2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709666549; x=1710271349;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Zz04MsiLPf1EieQ9O8SZKHnfGRYziipBu1MQvsGASi0=;
+        b=B7SVzLW6YqLSrXHzPNr1LaJZQyJvCpmXyORxoE4Jsf7dLpQWoEIHUwhL9q+Cij1d+J
+         6XI05VxvW9jTsErFOWz06re6f+AjnNz+kEhSMcsIpDt9OaQ/SG5V3oMXJeO4HbjNs+Yh
+         zU1jJRDJ5yk08NL1zcUTlZNO6RjGBJGCIrtePtCn/ceXJY+bvhtOKXjhujGtBtoAjiFc
+         1U4DcXAirVXlfmnJMkM70+BlIxz1BpNQmZpVdnCVOML00hv8kJFfzz8gp7ut5SMEwCEE
+         aDvGAvuLLpbiEcPsD2HS3mk1kymABjJWCQUakjPhDpk20C4GTm5qvyPuLUkdsk8uM68x
+         Cs/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCW+eNGOhAemUI4eF2II7K5yGlt3+D4OkkEke41uh4iUv/FGhIOjavn7zhpwS0ls9dgxK6/42AJ2B7IxwHiD6+J/2inhYaQqFAQCJ2oo
+X-Gm-Message-State: AOJu0YxrxDQFd/gwDvc1+r+/KkStC7RiwhK4hV/3COUFCRnGhCUa0TuM
+	sUIlMqx0TJLbPXW7eQSkQUDBpEtqGZCT84SksRSgRo8AvyFmuo02gb0149iGnwQuFr0UvSQRq+U
+	njyK93LHVpo0CzaPlYEj7iBKLthrvKVaXbIAr/EKgMRYJ5AJPwqwU
+X-Google-Smtp-Source: AGHT+IGfm5Q9d1QQtEV+FHngrLRB7RaEIdB98iS7LcjxrbCUYiUnZIxAhZ7sX2WiKXZhI6ep9u27+39/LAWZPVIzVjw=
+X-Received: by 2002:a17:906:1cd5:b0:a44:15c3:c8e9 with SMTP id
+ i21-20020a1709061cd500b00a4415c3c8e9mr10269704ejh.28.1709666549065; Tue, 05
+ Mar 2024 11:22:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1709657858-8563-3-git-send-email-quic_sriramd@quicinc.com>
+References: <20240305020153.2787423-1-almasrymina@google.com>
+ <20240305020153.2787423-13-almasrymina@google.com> <a2d926be-695a-484b-b2b5-098da47e372e@app.fastmail.com>
+In-Reply-To: <a2d926be-695a-484b-b2b5-098da47e372e@app.fastmail.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Tue, 5 Mar 2024 11:22:15 -0800
+Message-ID: <CAHS8izPbBHz=rr65ZtCy-+OGPbXXaY66_5EFSXw2bbhfGweRWg@mail.gmail.com>
+Subject: Re: [RFC PATCH net-next v6 12/15] tcp: RX path for devmem TCP
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	Linux-Arch <linux-arch@vger.kernel.org>, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, "David S . Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>, 
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, David Ahern <dsahern@kernel.org>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, shuah <shuah@kernel.org>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, 
+	Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, 
+	Harshitha Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeelb@google.com>, 
+	Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>, 
+	Willem de Bruijn <willemb@google.com>, Kaiyuan Zhang <kaiyuanz@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 05, 2024 at 10:27:37PM +0530, Sriram Dash wrote:
-> Some target systems allow multiple resources to be managed by firmware.
-> On these targets, tasks related to clocks, regulators, resets, and
-> interconnects can be delegated to the firmware, while the remaining
-> responsibilities are handled by Linux.
-> 
-> The driver is responsible for managing multiple power domains and
-> linking them to consumers as needed. Incase there is only single
-> power domain, it is considered to be a standard GDSC hooked on to
-> the qcom dt node which is read and assigned to device structure
-> (by genpd framework) before the driver probe even begins.
-> 
-> This differentiation logic allows the driver to determine whether
-> device resources are managed by Linux or firmware, ensuring
-> backward compatibility.
-> 
-> Furthermore, minor cleanup is performed for the private data of
+On Tue, Mar 5, 2024 at 12:42=E2=80=AFAM Arnd Bergmann <arnd@arndb.de> wrote=
+:
+>
+> On Tue, Mar 5, 2024, at 03:01, Mina Almasry wrote:
+> > --- a/arch/alpha/include/uapi/asm/socket.h
+> > +++ b/arch/alpha/include/uapi/asm/socket.h
+> >  #define SO_PEERPIDFD         77
+> > +#define SO_DEVMEM_LINEAR     79
+> > +#define SO_DEVMEM_DMABUF     80
+> > --- a/arch/mips/include/uapi/asm/socket.h
+> > +++ b/arch/mips/include/uapi/asm/socket.h
+> >  #define SO_PEERPIDFD         77
+> > +#define SO_DEVMEM_LINEAR     79
+> > +#define SO_DEVMEM_DMABUF     80
+> > --- a/arch/parisc/include/uapi/asm/socket.h
+> > +++ b/arch/parisc/include/uapi/asm/socket.h
+> >  #define SO_PEERPIDFD         0x404B
+> > +#define SO_DEVMEM_LINEAR     98
+> > +#define SO_DEVMEM_DMABUF     99
+> > --- a/arch/sparc/include/uapi/asm/socket.h
+> > +++ b/arch/sparc/include/uapi/asm/socket.h
+> >  #define SO_PEERPIDFD             0x0056
+> > +#define SO_DEVMEM_LINEAR         0x0058
+> > +#define SO_DEVMEM_DMABUF         0x0059
+> > --- a/include/uapi/asm-generic/socket.h
+> > +++ b/include/uapi/asm-generic/socket.h
+> > @@ -135,6 +135,11 @@
+> >  #define SO_PEERPIDFD         77
+> > +#define SO_DEVMEM_LINEAR     98
+> > +#define SO_DEVMEM_DMABUF     99
+>
+> These look inconsistent. I can see how you picked the
+> alpha and mips numbers, but how did you come up with
+> the generic and parisc ones? Can you follow the existing
+> scheme instead?
+>
 
-No "futhermore"s please, separate matters should be proposed as separate
-patches. Perhaps these can be sent separately and merged immediately?
+Sorry, yes, this is a bit weird. I'll change this to use the next
+available entry rather than leave a gap.
 
-> the SNPS Femto PHY. However, ACPI handling is omitted due to the
-> absence of clients on the ACPI side.
-> 
-> Signed-off-by: Sriram Dash <quic_sriramd@quicinc.com>
-> ---
->  drivers/phy/qualcomm/phy-qcom-qmp-usb.c       | 290 ++++++++++++++++++++------
->  drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c | 213 +++++++++++++++----
->  drivers/usb/dwc3/dwc3-qcom.c                  | 259 +++++++++++++++++------
+> > diff --git a/include/uapi/linux/uio.h b/include/uapi/linux/uio.h
+> > index 059b1a9147f4..ad92e37699da 100644
+> > --- a/include/uapi/linux/uio.h
+> > +++ b/include/uapi/linux/uio.h
+> > @@ -20,6 +20,16 @@ struct iovec
+> >       __kernel_size_t iov_len; /* Must be size_t (1003.1g) */
+> >  };
+> >
+> > +struct dmabuf_cmsg {
+> > +     __u64 frag_offset;      /* offset into the dmabuf where the frag =
+starts.
+> > +                              */
+> > +     __u32 frag_size;        /* size of the frag. */
+> > +     __u32 frag_token;       /* token representing this frag for
+> > +                              * DEVMEM_DONTNEED.
+> > +                              */
+> > +     __u32  dmabuf_id;       /* dmabuf id this frag belongs to. */
+> > +};
+>
+> This structure requires a special compat handler to run
+> x86-32 binaries on x86-64 because of the different alignment
+> requirements. Any uapi-visible structures should be defined
+> to avoid this and just have no holes in them. Maybe extend
+> one of the __u32 members to __u64 or add another 32-bit padding field?
+>
 
-You're making independent changes across three different drivers across
-two different subsystems, with different maintainers, this is not
-acceptable as a single patch.
+Honestly the 32-bit fields as-is are somewhat comically large. I don't
+think extending the __u32 -> __u64 is preferred because I don't see us
+needing that much, so maybe I can add another 32-bit padding field.
+Does this look good to you?
 
->  3 files changed, 594 insertions(+), 168 deletions(-)
-> 
-> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-usb.c b/drivers/phy/qualcomm/phy-qcom-qmp-usb.c
-> index 8525393..1ac1b50 100644
-> --- a/drivers/phy/qualcomm/phy-qcom-qmp-usb.c
-> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-usb.c
-> @@ -21,6 +21,9 @@
->  
->  #include "phy-qcom-qmp-common.h"
->  
-> +#include <linux/pm_opp.h>
-> +#include <linux/pm_domain.h>
+struct dmabuf_cmsg {
+  __u64 frag_offset;
+  __u32 frag_size;
+  __u32 frag_token;
+  __u32 dmabuf_id;
+  __u32 ext; /* reserved for future flags */
+};
 
-Why are these includes alone here? Integrate your changes with the
-driver properly.
+Another option is to actually compress frag_token & dmabuf_id to be
+32-bit combined size if that addresses your concern. I prefer that
+less in case they end up being too small for future use cases.
 
-> +
->  #include "phy-qcom-qmp.h"
->  #include "phy-qcom-qmp-pcs-misc-v3.h"
->  #include "phy-qcom-qmp-pcs-misc-v4.h"
-> @@ -1212,6 +1215,9 @@ struct qmp_phy_cfg {
->  	unsigned int pcs_usb_offset;
->  };
->  
-> +#define DOMAIN_GENPD_TRANSFER			0
-> +#define DOMAIN_GENPD_CORE			1
-
-Does this really represent the hardware? What hardware constructs does
-"transfer" and "core" maps to?
-
-> +
->  struct qmp_usb {
->  	struct device *dev;
->  
-> @@ -1236,6 +1242,19 @@ struct qmp_usb {
->  	struct phy *phy;
->  
->  	struct clk_fixed_rate pipe_clk_fixed;
-> +
-> +	struct dev_pm_domain_list *pd_list;
-> +	struct device *genpd_core;
-> +	struct device *genpd_transfer;
-> +
-> +	bool fw_managed;
-> +	/* separate resource management for fw_managed vs locally managed devices */
-> +	struct qmp_usb_device_ops {
-> +		int (*bus_resume_resource)(struct qmp_usb *qmp);
-
-Not only does these function pointers make the drivers much harder to
-follow, your naming of these seems chosen to maximize the confusion.
-
-In your managed case this doesn't seem to relate to any "bus", in the
-"local" case, this doesn't relate to a "bus", and these callbacks are
-decoupled from the actual runtime resume and suspend cycle of the QMP
-device itself...
-
-> +		int (*runtime_resume_resource)(struct qmp_usb *qmp);
-> +		int (*bus_suspend_resource)(struct qmp_usb *qmp);
-> +		int (*runtime_suspend_resource)(struct qmp_usb *qmp);
-> +	} qmp_usb_device_ops;
->  };
->  
->  static inline void qphy_setbits(void __iomem *base, u32 offset, u32 val)
-> @@ -1598,6 +1617,41 @@ static const struct qmp_phy_cfg x1e80100_usb3_uniphy_cfg = {
->  	.regs			= qmp_v7_usb3phy_regs_layout,
->  };
->  
-> +static void qmp_fw_managed_domain_remove(struct qmp_usb *qmp)
-> +{
-> +	dev_pm_domain_detach_list(qmp->pd_list);
-> +}
-> +
-> +static int qmp_fw_managed_domain_init(struct qmp_usb *qmp)
-> +{
-> +	struct device *dev = qmp->dev;
-> +	struct dev_pm_domain_attach_data pd_data = {
-> +		.pd_flags	= PD_FLAG_NO_DEV_LINK,
-
-Iiuc, you attach the two power-domains with NO_DEV_LINK, such that the
-pm runtime state of the device itself won't reflect on the power
-domains, and then you hand-code all the involved logic yourself?
-
-Why can't you integrate with the device and use its runtime state?
-Please clearly explain why you're doing it like this in your commit
-messages.
-
-Regards,
-Bjorn
+--=20
+Thanks,
+Mina
 
