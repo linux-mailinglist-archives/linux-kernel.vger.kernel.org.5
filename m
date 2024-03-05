@@ -1,130 +1,158 @@
-Return-Path: <linux-kernel+bounces-92354-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92371-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBAFC871EFD
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:21:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47F77871F29
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:28:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 07D0F1C231E4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:21:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41725B24FBD
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:28:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33BE15A783;
-	Tue,  5 Mar 2024 12:21:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C3E55BAFD;
+	Tue,  5 Mar 2024 12:27:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="iJ+9TT5d"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iKlym7RD"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FD0D5491A;
-	Tue,  5 Mar 2024 12:21:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 048445B68A
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 12:27:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709641284; cv=none; b=IWPnw5BDBRO1A+0mDilYMkflXkGqAiRrI9TUqX+EiELvsYLXHO9MIu+4MzyJPN4s/EnDAS2tx1h2U6rnb0Kia3el/+hTpDcPMUDgegEI6dd/nbVISELypihoifjbl8ewb+QRAsfype4NkSgNTH2EUibdwiaW91f1kXQlFbCmzLs=
+	t=1709641655; cv=none; b=YiYyKpr3mA7Z3C5tPH32+OS0uN1K2Yt3dZZqyQOl5BWkjGXoA5dYJ4BDzhIYaXk6dof9NCkmwzE0ffu4VJbmghOZ0WDJk6yswhwzXchBnEzXYdVxvpFVjiP7kzaMonIH8VMuI4ZC1rm24nso4r56EKVi4MAYhc+OLEL0c67HhuY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709641284; c=relaxed/simple;
-	bh=GN1G4NyMvWBolsspYbu0gF+ZyFJ3Ms4SmSjQgZCesZk=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=XCMCBIMLb6vyleJ59fXZAExY8CrfuX0Q24Yzqz/utkpbSU6sgpeulLWdXvWiehK2EBXmjqeHKwwpU8XXLT1fdt0w2NNerPndI1GTaNkaH6tUTYzYRPaTwK79sZCERXa0T4ZfxYUmQfAnzBd7bdvL3Dx2qPeaZ3rnH2o+wpHcaHQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=iJ+9TT5d; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1dc13fb0133so41329365ad.3;
-        Tue, 05 Mar 2024 04:21:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709641282; x=1710246082;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:dkim-signature:from:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=RpDVIywGu+mJvIXOFGxusadZf1l18EI+lUGuf5OSG+4=;
-        b=R1pwsboTgLv0Q+aJShFP3sihtAbizo0JYA9MD0MZTLwaPdywArMxhFgHrXUXW5c6Ae
-         YWSUwx+9FnFsNg5TOp2V+loWD1uoo3bRGVWyoZJfn616F8pg6iwUIaGerJ85/+E9Qyck
-         8I8YINFDqU2LsacMp5yNGVGA0rMxbm9SWlfhwl3peHQDHkj6JsTxsJY5R6t5mWs1k+Xw
-         0RAMM5Mx2HVBB6VveRAoIuA9/EDm/HbIFXfWKQidfBBQWjYdbN/ctjx7b2Rsj3EBMRof
-         kXIcoTIIBCN2S/++ZLKhG9vKDkJp8kb5bF+WbATsCYcyrAfU47F6DCzwGsITMThugzAJ
-         YaYg==
-X-Forwarded-Encrypted: i=1; AJvYcCWIe3befuwjHjUPFI8uB6r2ZN440sBQTdEwuTxuf+E2p3wZputuWq6B3MkahITFsd3uHXCvAZMR6qaKFVMjeIdE39qZTfaZNL1sH/WzLhMV50ypLnKKH2ziJmUZoQswIqPRsxsSt0064PM=
-X-Gm-Message-State: AOJu0YxCFF7BS+rol8Z1rwrv5UHzQbryYEXeZl35l+D/FN53XyTsQw3m
-	De4OgvoR5aJlXQc4Dcewl376NLam0brCsO5QXjIjgeqD7FImBeVx
-X-Google-Smtp-Source: AGHT+IHpuMsf1ZJiOZka7p/FiwnMuc/YVUhf1GFTqo6hGAt/L35GMeh9daxAanvulu3wfU0Wk0zdRg==
-X-Received: by 2002:a17:902:cec9:b0:1dd:151b:fa9e with SMTP id d9-20020a170902cec900b001dd151bfa9emr1851559plg.63.1709641282330;
-        Tue, 05 Mar 2024 04:21:22 -0800 (PST)
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id j12-20020a170902c3cc00b001dca9a6fdf1sm10417663plj.183.2024.03.05.04.21.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 04:21:21 -0800 (PST)
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1709641280;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=RpDVIywGu+mJvIXOFGxusadZf1l18EI+lUGuf5OSG+4=;
-	b=iJ+9TT5dKkMjIRx6HClkAtVYkv5PJw1hJ2pBMHTSHZAU2Cwwiaz6oDN1HQjLJZkZBkg44k
-	oJwJV/wspoHpN/bhReO/C1kYz8Ym4d0pkvSjvWclaVcG6YejmoSD53YkjBY6sYYP9YcNdd
-	Uu3q8tw1UaIWEcs/82XxeaN70bAlL075PlmMUgGL4zu7w82GZdmXRErGlrvHZJGkNl0H1o
-	uZforwhiX9rLptLwKZ/ctiV/ER1IRtRMaKxzK9i9iLN7xSgDYIx0nThgdvopGvQvcpjafR
-	utMLG3Znu6Scdkl+ZqeK2VsUQOmF7kgUZypSFQhilD2yop71ZgW7hje0cI4wRw==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Subject: [PATCH 0/2] video: backlight: constify struct class usage
-Date: Tue, 05 Mar 2024 09:21:16 -0300
-Message-Id: <20240305-class_cleanup-backlight-v1-0-c0e15cc25be1@marliere.net>
+	s=arc-20240116; t=1709641655; c=relaxed/simple;
+	bh=maKNjl3/k7YtNAhNUBytDuUXRmMI86juobu03Z7Ayi0=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Hf687CcAs0ZYyoe7/czp7khVhwjYFglPpiz/VooRmvl5hY8NPqNbemoz6oNNdlFgnlJ3R5OPnadOru5YHbMGmfudMWNxVjPeNUp/A1tFiPQQ3+U7L++4/4MJjgC+v/zQguNm7JSK57Y6YBf7Ni2utEAP2hPs9/TEpsrCBuDIF48=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iKlym7RD; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709641654; x=1741177654;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=maKNjl3/k7YtNAhNUBytDuUXRmMI86juobu03Z7Ayi0=;
+  b=iKlym7RD50XrfGRApYpZBGTUV3HfJacix0vQ7aB8yTRhDpc2rw2BUXGy
+   znYnFtz9OtQVRj8ZYMxa0ZACvGC8tuMVxni5CfH8SPcWYEdbH9HIRvpVh
+   tYkpFeWuVrfCVP5Fi4w2nqrmuqLA/Pz13XyrW70gvSrL/7YFaaWMstPL1
+   1Cq/A8G4zexvmt+RisrrCyO9Xqea9NiLW7BgPjVHwARwTJWFqm1qRSBtq
+   xDJMzDQJ6jrazzw/cASTiFwG5vR9UDPMJzaqHF/7QACf8WkZ60fCbHzlH
+   Wd+iU5Kxw5dWfcyUoQ9ClXFvUrNSsnbwmReow48a9X51M9j5QPaiz73qa
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="21648471"
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="21648471"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 04:27:34 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="9330112"
+Received: from allen-box.sh.intel.com ([10.239.159.127])
+  by orviesa010.jf.intel.com with ESMTP; 05 Mar 2024 04:27:32 -0800
+From: Lu Baolu <baolu.lu@linux.intel.com>
+To: Joerg Roedel <joro@8bytes.org>
+Cc: Ethan Zhao <haifeng.zhao@linux.intel.com>,
+	Eric Badger <ebadger@purestorage.com>,
+	iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 4/8] iommu: Add static iommu_ops->release_domain
+Date: Tue,  5 Mar 2024 20:21:17 +0800
+Message-Id: <20240305122121.211482-5-baolu.lu@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240305122121.211482-1-baolu.lu@linux.intel.com>
+References: <20240305122121.211482-1-baolu.lu@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIADwO52UC/x3MQQqDMBBA0avIrBsYEy21VykicRx1MKSSURHEu
- zd0+Rb/X6CchBXexQWJD1H5xozyUQDNPk5sZMgGi7ZCh7Wh4FU7Cuzjvpre0xJkmjfztH1Tkns
- h1gy5XhOPcv7Pn/a+fwyupjJpAAAA
-To: Lee Jones <lee@kernel.org>, 
- Daniel Thompson <daniel.thompson@linaro.org>, 
- Jingoo Han <jingoohan1@gmail.com>, Helge Deller <deller@gmx.de>
-Cc: dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, "Ricardo B. Marliere" <ricardo@marliere.net>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=815; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=GN1G4NyMvWBolsspYbu0gF+ZyFJ3Ms4SmSjQgZCesZk=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl5w49ttMZGRTTzHYaea508k7VdAAv+U7ckzf2N
- /sm626lc0mJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZecOPQAKCRDJC4p8Y4ZY
- pnYdD/9qO73gM1EqWw5mEM2tjBt0xEpPH7+BhtYqEeXSt9wLxreoBjFgEIIdt6Pjb8+HT0NMVOR
- 7QFk/LhkWF0x3mRveAAeV9IpmlmwCynDkZmNq0S+Dzcb3vdONtUGfB10fBG1JQW8Rq2GSEMF4tl
- qVYEsSj/hqZ3I9Kbf8ZxaAqmEn53mF3AbsCq5HIr9RHASNjLyfLyIhKDvQ2M7cVjLZs+GAensbz
- cVIfpLdMVMjL500gO1kHvIu/OiO5A7YboYhzbluh/YKMqqVv7SmKnRUGWi3RE5xjue+hs+R9BvF
- QmGDYygj63SNsJMe/XHjq82KfdJIkK+7r3fGRCIcgW0kapVDj1JVwO1Jtia4r0bY3FnlCAmZZbE
- 6BC/1AEtxu9Tqem9SpCQWR3cKppkNKiMKl3dmYwvJsYWIEwQpp7eD3i3BAVhaTAcr7WNKc6y74Y
- nOsYcoVypc5G4JiMc15z77lD5NcliNqbgss7rw+dNvSCvsohCN5Ft3MlyPr2HdBYRJ0YSK44TQz
- FAelFLufkW/fKuLgYG3p5u9BAkHm3w8FGZC5xeVXeiZs2JqRwgKWM8QFk6o5TKaaBU/Mp5+E6tR
- C4xA+ul3A24g6qGPW9HXD0WEFPrhRC6kjPJWciPAp1F1BE4QgheZULODGFmCqG8R0pz6Ash/CmY
- bcg2BTnQ5o9Ocug==
-X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
+Content-Transfer-Encoding: 8bit
 
-This is a simple and straight forward cleanup series that aims to make the
-class structures in backlight constant. This has been possible since 2023
-[1].
+The current device_release callback for individual iommu drivers does the
+following:
 
-[1]: https://lore.kernel.org/all/2023040248-customary-release-4aec@gregkh/
+1) Silent IOMMU DMA translation: It detaches any existing domain from the
+   device and puts it into a blocking state (some drivers might use the
+   identity state).
+2) Resource release: It releases resources allocated during the
+   device_probe callback and restores the device to its pre-probe state.
 
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+Step 1 is challenging for individual iommu drivers because each must check
+if a domain is already attached to the device. Additionally, if a deferred
+attach never occurred, the device_release should avoid modifying hardware
+configuration regardless of the reason for its call.
+
+To simplify this process, introduce a static release_domain within the
+iommu_ops structure. It can be either a blocking or identity domain
+depending on the iommu hardware. The iommu core will decide whether to
+attach this domain before the device_release callback, eliminating the
+need for repetitive code in various drivers.
+
+Consequently, the device_release callback can focus solely on the opposite
+operations of device_probe, including releasing all resources allocated
+during that callback.
+
+Co-developed-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+Link: https://lore.kernel.org/r/20240305013305.204605-2-baolu.lu@linux.intel.com
 ---
-Ricardo B. Marliere (2):
-      video: backlight: make backlight_class constant
-      video: backlight: lcd: make lcd_class constant
+ include/linux/iommu.h |  1 +
+ drivers/iommu/iommu.c | 19 +++++++++++++++----
+ 2 files changed, 16 insertions(+), 4 deletions(-)
 
- drivers/video/backlight/backlight.c | 29 ++++++++++++++++-------------
- drivers/video/backlight/lcd.c       | 23 +++++++++++++----------
- 2 files changed, 29 insertions(+), 23 deletions(-)
----
-base-commit: cd1995b6ac7384149ad755b74e3c3eb25195ab81
-change-id: 20240305-class_cleanup-backlight-62b91c38005e
-
-Best regards,
+diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+index af6c367ed673..2e925b5eba53 100644
+--- a/include/linux/iommu.h
++++ b/include/linux/iommu.h
+@@ -585,6 +585,7 @@ struct iommu_ops {
+ 	struct module *owner;
+ 	struct iommu_domain *identity_domain;
+ 	struct iommu_domain *blocked_domain;
++	struct iommu_domain *release_domain;
+ 	struct iommu_domain *default_domain;
+ };
+ 
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index eb50543bf956..098869007c69 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -462,13 +462,24 @@ static void iommu_deinit_device(struct device *dev)
+ 
+ 	/*
+ 	 * release_device() must stop using any attached domain on the device.
+-	 * If there are still other devices in the group they are not effected
++	 * If there are still other devices in the group, they are not affected
+ 	 * by this callback.
+ 	 *
+-	 * The IOMMU driver must set the device to either an identity or
+-	 * blocking translation and stop using any domain pointer, as it is
+-	 * going to be freed.
++	 * If the iommu driver provides release_domain, the core code ensures
++	 * that domain is attached prior to calling release_device. Drivers can
++	 * use this to enforce a translation on the idle iommu. Typically, the
++	 * global static blocked_domain is a good choice.
++	 *
++	 * Otherwise, the iommu driver must set the device to either an identity
++	 * or a blocking translation in release_device() and stop using any
++	 * domain pointer, as it is going to be freed.
++	 *
++	 * Regardless, if a delayed attach never occurred, then the release
++	 * should still avoid touching any hardware configuration either.
+ 	 */
++	if (!dev->iommu->attach_deferred && ops->release_domain)
++		ops->release_domain->ops->attach_dev(ops->release_domain, dev);
++
+ 	if (ops->release_device)
+ 		ops->release_device(dev);
+ 
 -- 
-Ricardo B. Marliere <ricardo@marliere.net>
+2.34.1
 
 
