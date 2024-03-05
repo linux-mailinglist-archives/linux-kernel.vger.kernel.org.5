@@ -1,159 +1,293 @@
-Return-Path: <linux-kernel+bounces-91849-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91850-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76A58871773
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:55:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 008ED871774
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:55:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99AF71C209DC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:55:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F1971F22A0D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:55:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D198F80604;
-	Tue,  5 Mar 2024 07:53:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A40DD8062E;
+	Tue,  5 Mar 2024 07:54:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vUqNvcUo"
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pcO7Xmma"
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E67380051
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 07:53:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D8278062A
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 07:54:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709625224; cv=none; b=R065g9cKShZ4EJA4rw2wOP/Tm23ti4yI8b6JvDoUrsJlvkG2wzLrCG0TVe2QGnIEmUCf6PcIcWIuUXhB8QKNvfUrPvykXJeoLudkbM7iZFscEMZWPANW0FnisTOkumvQXtLEHyn4yHwyljhUzeO7YF/ZETQxb+QjRlKat23QNi4=
+	t=1709625249; cv=none; b=G3psVxU7bsRlN7eGPfRUqy4tV9PjCfIDrEwuZ5znySwtJnbJu8YyZrh5dFJd0HMtpP4UGGZZch2ZbslR2oKoCPLIfg7IN/2YrL2AVzI6Vi/W88h2AZ0HKiByQuvHy+4XXHLRX/yWcmIBK3UBOy2SpFONlwnkra/ZAYZEOxnd0Xs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709625224; c=relaxed/simple;
-	bh=8Dd+1025BPSDP1w0Yg2tLvCllyBOmx4/3Ers4B9UpQs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ljMtksgLeIEy66/sQSmkdYvT8OqN3pbkDbPSC5xFMyr4fXSI0xg7omlPQ+ZiowdvkZDGJHqgFRykNIfciz+6mQQtPYI09IVK56tHRSSw/zSJ7RBZOOEK/HuffnANMBQaSpupo98497SFb1+b3dzek3EIM+0lB0wXqWNfCqnm1JE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vUqNvcUo; arc=none smtp.client-ip=209.85.167.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-51320ca689aso6440857e87.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 23:53:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709625220; x=1710230020; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=B4SPQAzElDyq14vPvLj+BILESqGYT5m1eVTz0qWhhJM=;
-        b=vUqNvcUoysV85jtNYUKTmSmrygpz9p+nafMEeH+PamJQgXg6GxD9aBcxTSqJlok+6C
-         CbibBJE0Ef3HPPLPi5JS/CL9ByeyiDSpB+LbMjcxM8cnlX2HfdMTnDdOI7v7rbfXP3cE
-         5EgvlLfn5JR7lYDivsGwMrs9MTZXktHTp6mfvp9wD2kC0f6zb6ms4evewYrUU4qdafGz
-         aiHC0FSYYqd5q3Gkan2RKx3wg1qq5SSDcPuUVw0k+zIxv/wb7c/Eb1OrrBB9+JLwOeyn
-         5FeRQioo4ChcWG1yQ52bME9Apvyr4Lf0cwR5F+Ba5bmufUTOIzw4FsQgidSk5eTeztAg
-         9nyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709625220; x=1710230020;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=B4SPQAzElDyq14vPvLj+BILESqGYT5m1eVTz0qWhhJM=;
-        b=IvOchNzh/1gi1clh5LgCxnneVNfPRCr8Fp61w+u+1PGVmbrLQbEeUP69HQjOipfyX6
-         GWkVZwGi3lqAWFaibf8ZJXpzrQjzxrGgHeiuU5Tbq/vaI2IQzZp975bPTUSZdoIwDmpS
-         NEeMtYLPMalO+NjNIJCBaq63+c8bqTmtQ0GZxuk4QXBGZL70ErLowzzS/kR0o7Gticif
-         QgRyuFbX5u/iTnqyeNCjIdiJFpMi8TL4vQTbCr4sDixhs9tlk5I0rtHbZCtlZEP7rIdA
-         cXEk9dUv33A5ZJUFL5tmQLWRHrrA2rkhzzZ8AlsiGym7pk0QcTYB9lvSDwF8N4dZ4ARZ
-         GVeQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVWqDPaSKREjxoK213ugfXmykFHijAnK88rVUbH7aXNJYJ83IxNCugbX0DFguwgopsqUlNzQ2J8CoMsUPbjaxnv5MvYAEBrmP5pLYKY
-X-Gm-Message-State: AOJu0Yx/458JCjOCawlKly0gbHO3KjVSTXbulTj7kUXdSDgYMJ7zMQBF
-	PA6hYMwgrghaPqHC2W48EgKnq9GWjoi2+s2VpcecIPelwXmCIXlQZgrdTS5/IrY=
-X-Google-Smtp-Source: AGHT+IFeNSisyBNvSpi9O8TxVaLR/w4lX20QLwTGhN64glgx6zi3ujE3VfhVBZhTMyzCdySNTk3fKg==
-X-Received: by 2002:a05:6512:2c99:b0:513:3fa6:efe3 with SMTP id dw25-20020a0565122c9900b005133fa6efe3mr899103lfb.8.1709625220477;
-        Mon, 04 Mar 2024 23:53:40 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id tj10-20020a170907c24a00b00a4452ed413asm5538593ejc.16.2024.03.04.23.53.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Mar 2024 23:53:39 -0800 (PST)
-Message-ID: <6642af07-27ee-4364-92d2-89aab0014b01@linaro.org>
-Date: Tue, 5 Mar 2024 08:53:37 +0100
+	s=arc-20240116; t=1709625249; c=relaxed/simple;
+	bh=y4KP0Z/wmn1brf+U8MSu6siWXYTGKFuzFs/M8GtvysQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=oncISpsFyMxxbNqgumcnTDtUvsvzsOtpKrQB62+UM1ipSF+U/YS4sJwcik+8OzSRP10j+13KM2WnYkJnhRrnM+pfJh+7PWLjCw2cRvZO3/cS3YSZb+PGsWfXDOMZeBgcOPiKWDj9qwvYxJB9/pSmZFwrs6rcqs4NLBmc2fZb/Qo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pcO7Xmma; arc=none smtp.client-ip=95.215.58.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1709625245;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GxATmqBlQcF/EJ5kBIVDHEOYeOEx3YPhEio6KYFOETw=;
+	b=pcO7Xmma3GJNF/hFdo7RBa5GCJ8H183eLyC3T6gsdNlu++hf86a5nM9x5lQcXNXYgrJzVX
+	hpV4BMBelKWyUVGGJaSp6Wwo+FBzoi+eiFPFfFALKb4R8miHOZVH0AYN1D6CDweLmjTK66
+	uJ81eKBGR0I1JUkt5cMX1eTNNsjIftE=
+From: Chengming Zhou <chengming.zhou@linux.dev>
+To: akpm@linux-foundation.org
+Cc: hannes@cmpxchg.org,
+	yosryahmed@google.com,
+	nphamcs@gmail.com,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	Chengming Zhou <chengming.zhou@linux.dev>,
+	kernel test robot <oliver.sang@intel.com>
+Subject: [PATCH mm-unstable] mm/zswap: global lru and shrinker shared by all zswap_pools fix
+Date: Tue,  5 Mar 2024 07:53:45 +0000
+Message-Id: <20240305075345.1493214-1-chengming.zhou@linux.dev>
+In-Reply-To: <20240210-zswap-global-lru-v3-1-200495333595@bytedance.com>
+References: <20240210-zswap-global-lru-v3-1-200495333595@bytedance.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/3] dt-bindings: display: simple: add support for
- Crystal Clear CMT430B19N00
-Content-Language: en-US
-To: =?UTF-8?B?SsOpcsOpbWllIERhdXRoZXJpYmVz?=
- <jeremie.dautheribes@bootlin.com>, Neil Armstrong
- <neil.armstrong@linaro.org>, Jessica Zhang <quic_jesszhan@quicinc.com>,
- Sam Ravnborg <sam@ravnborg.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Thierry Reding <thierry.reding@gmail.com>
-Cc: dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, Yen-Mei Goh <yen-mei.goh@keysight.com>
-References: <20240304160454.96977-1-jeremie.dautheribes@bootlin.com>
- <20240304160454.96977-3-jeremie.dautheribes@bootlin.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240304160454.96977-3-jeremie.dautheribes@bootlin.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On 04/03/2024 17:04, Jérémie Dautheribes wrote:
-> Add Crystal Clear Technology CMT430B19N00 4.3" 480x272 TFT-LCD panel
-> compatible string.
-> 
-> Signed-off-by: Jérémie Dautheribes <jeremie.dautheribes@bootlin.com>
-> ---
->  .../devicetree/bindings/display/panel/panel-simple.yaml         | 2 ++
->  1 file changed, 2 insertions(+)
+The commit bf9b7df23cb3 ("mm/zswap: global lru and shrinker shared by
+all zswap_pools") introduced a new lock to protect zswap_next_shrink,
+instead of reusing zswap_pools_lock.
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+But the problem is that it's initialized only when zswap enabled,
+which causes bug if zswap_memcg_offline_cleanup() called without
+zswap enabled.
 
-Best regards,
-Krzysztof
+Fix it by using DEFINE_SPINLOCK() to statically initialize them
+and define them as multiple static variables to keep in consistent
+with the existing global variables in zswap.
+
+Fixes: bf9b7df23cb3 ("mm/zswap: global lru and shrinker shared by all zswap_pools")
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Closes: https://lore.kernel.org/oe-lkp/202403051008.a8cf8a94-lkp@intel.com
+Signed-off-by: Chengming Zhou <chengming.zhou@linux.dev>
+---
+ mm/zswap.c | 77 +++++++++++++++++++++++++++---------------------------
+ 1 file changed, 38 insertions(+), 39 deletions(-)
+
+diff --git a/mm/zswap.c b/mm/zswap.c
+index da90933c6d20..9a3237752082 100644
+--- a/mm/zswap.c
++++ b/mm/zswap.c
+@@ -180,15 +180,16 @@ struct zswap_pool {
+ 	char tfm_name[CRYPTO_MAX_ALG_NAME];
+ };
+ 
+-static struct {
+-	struct list_lru list_lru;
+-	atomic_t nr_stored;
+-	struct shrinker *shrinker;
+-	struct work_struct shrink_work;
+-	struct mem_cgroup *next_shrink;
+-	/* The lock protects next_shrink. */
+-	spinlock_t shrink_lock;
+-} zswap;
++/* Global LRU lists shared by all zswap pools. */
++static struct list_lru zswap_list_lru;
++/* counter of pages stored in all zswap pools. */
++static atomic_t zswap_nr_stored = ATOMIC_INIT(0);
++
++/* The lock protects zswap_next_shrink updates. */
++static DEFINE_SPINLOCK(zswap_shrink_lock);
++static struct mem_cgroup *zswap_next_shrink;
++static struct work_struct zswap_shrink_work;
++static struct shrinker *zswap_shrinker;
+ 
+ /*
+  * struct zswap_entry
+@@ -798,10 +799,10 @@ void zswap_folio_swapin(struct folio *folio)
+ void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg)
+ {
+ 	/* lock out zswap shrinker walking memcg tree */
+-	spin_lock(&zswap.shrink_lock);
+-	if (zswap.next_shrink == memcg)
+-		zswap.next_shrink = mem_cgroup_iter(NULL, zswap.next_shrink, NULL);
+-	spin_unlock(&zswap.shrink_lock);
++	spin_lock(&zswap_shrink_lock);
++	if (zswap_next_shrink == memcg)
++		zswap_next_shrink = mem_cgroup_iter(NULL, zswap_next_shrink, NULL);
++	spin_unlock(&zswap_shrink_lock);
+ }
+ 
+ /*********************************
+@@ -900,9 +901,9 @@ static void zswap_entry_free(struct zswap_entry *entry)
+ 	if (!entry->length)
+ 		atomic_dec(&zswap_same_filled_pages);
+ 	else {
+-		zswap_lru_del(&zswap.list_lru, entry);
++		zswap_lru_del(&zswap_list_lru, entry);
+ 		zpool_free(zswap_find_zpool(entry), entry->handle);
+-		atomic_dec(&zswap.nr_stored);
++		atomic_dec(&zswap_nr_stored);
+ 		zswap_pool_put(entry->pool);
+ 	}
+ 	if (entry->objcg) {
+@@ -1274,7 +1275,7 @@ static unsigned long zswap_shrinker_scan(struct shrinker *shrinker,
+ 
+ 	nr_protected =
+ 		atomic_long_read(&lruvec->zswap_lruvec_state.nr_zswap_protected);
+-	lru_size = list_lru_shrink_count(&zswap.list_lru, sc);
++	lru_size = list_lru_shrink_count(&zswap_list_lru, sc);
+ 
+ 	/*
+ 	 * Abort if we are shrinking into the protected region.
+@@ -1291,7 +1292,7 @@ static unsigned long zswap_shrinker_scan(struct shrinker *shrinker,
+ 		return SHRINK_STOP;
+ 	}
+ 
+-	shrink_ret = list_lru_shrink_walk(&zswap.list_lru, sc, &shrink_memcg_cb,
++	shrink_ret = list_lru_shrink_walk(&zswap_list_lru, sc, &shrink_memcg_cb,
+ 		&encountered_page_in_swapcache);
+ 
+ 	if (encountered_page_in_swapcache)
+@@ -1317,7 +1318,7 @@ static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
+ #else
+ 	/* use pool stats instead of memcg stats */
+ 	nr_backing = zswap_pool_total_size >> PAGE_SHIFT;
+-	nr_stored = atomic_read(&zswap.nr_stored);
++	nr_stored = atomic_read(&zswap_nr_stored);
+ #endif
+ 
+ 	if (!nr_stored)
+@@ -1325,7 +1326,7 @@ static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
+ 
+ 	nr_protected =
+ 		atomic_long_read(&lruvec->zswap_lruvec_state.nr_zswap_protected);
+-	nr_freeable = list_lru_shrink_count(&zswap.list_lru, sc);
++	nr_freeable = list_lru_shrink_count(&zswap_list_lru, sc);
+ 	/*
+ 	 * Subtract the lru size by an estimate of the number of pages
+ 	 * that should be protected.
+@@ -1374,7 +1375,7 @@ static int shrink_memcg(struct mem_cgroup *memcg)
+ 	for_each_node_state(nid, N_NORMAL_MEMORY) {
+ 		unsigned long nr_to_walk = 1;
+ 
+-		shrunk += list_lru_walk_one(&zswap.list_lru, nid, memcg,
++		shrunk += list_lru_walk_one(&zswap_list_lru, nid, memcg,
+ 					    &shrink_memcg_cb, NULL, &nr_to_walk);
+ 	}
+ 	return shrunk ? 0 : -EAGAIN;
+@@ -1387,9 +1388,9 @@ static void shrink_worker(struct work_struct *w)
+ 
+ 	/* global reclaim will select cgroup in a round-robin fashion. */
+ 	do {
+-		spin_lock(&zswap.shrink_lock);
+-		zswap.next_shrink = mem_cgroup_iter(NULL, zswap.next_shrink, NULL);
+-		memcg = zswap.next_shrink;
++		spin_lock(&zswap_shrink_lock);
++		zswap_next_shrink = mem_cgroup_iter(NULL, zswap_next_shrink, NULL);
++		memcg = zswap_next_shrink;
+ 
+ 		/*
+ 		 * We need to retry if we have gone through a full round trip, or if we
+@@ -1403,7 +1404,7 @@ static void shrink_worker(struct work_struct *w)
+ 		 * memcg is not killed when we are reclaiming.
+ 		 */
+ 		if (!memcg) {
+-			spin_unlock(&zswap.shrink_lock);
++			spin_unlock(&zswap_shrink_lock);
+ 			if (++failures == MAX_RECLAIM_RETRIES)
+ 				break;
+ 
+@@ -1413,15 +1414,15 @@ static void shrink_worker(struct work_struct *w)
+ 		if (!mem_cgroup_tryget_online(memcg)) {
+ 			/* drop the reference from mem_cgroup_iter() */
+ 			mem_cgroup_iter_break(NULL, memcg);
+-			zswap.next_shrink = NULL;
+-			spin_unlock(&zswap.shrink_lock);
++			zswap_next_shrink = NULL;
++			spin_unlock(&zswap_shrink_lock);
+ 
+ 			if (++failures == MAX_RECLAIM_RETRIES)
+ 				break;
+ 
+ 			goto resched;
+ 		}
+-		spin_unlock(&zswap.shrink_lock);
++		spin_unlock(&zswap_shrink_lock);
+ 
+ 		ret = shrink_memcg(memcg);
+ 		/* drop the extra reference */
+@@ -1542,7 +1543,7 @@ bool zswap_store(struct folio *folio)
+ 
+ 	if (objcg) {
+ 		memcg = get_mem_cgroup_from_objcg(objcg);
+-		if (memcg_list_lru_alloc(memcg, &zswap.list_lru, GFP_KERNEL)) {
++		if (memcg_list_lru_alloc(memcg, &zswap_list_lru, GFP_KERNEL)) {
+ 			mem_cgroup_put(memcg);
+ 			goto put_pool;
+ 		}
+@@ -1573,8 +1574,8 @@ bool zswap_store(struct folio *folio)
+ 	}
+ 	if (entry->length) {
+ 		INIT_LIST_HEAD(&entry->lru);
+-		zswap_lru_add(&zswap.list_lru, entry);
+-		atomic_inc(&zswap.nr_stored);
++		zswap_lru_add(&zswap_list_lru, entry);
++		atomic_inc(&zswap_nr_stored);
+ 	}
+ 	spin_unlock(&tree->lock);
+ 
+@@ -1606,7 +1607,7 @@ bool zswap_store(struct folio *folio)
+ 	return false;
+ 
+ shrink:
+-	queue_work(shrink_wq, &zswap.shrink_work);
++	queue_work(shrink_wq, &zswap_shrink_work);
+ 	goto reject;
+ }
+ 
+@@ -1773,16 +1774,14 @@ static int zswap_setup(void)
+ 	if (!shrink_wq)
+ 		goto shrink_wq_fail;
+ 
+-	zswap.shrinker = zswap_alloc_shrinker();
+-	if (!zswap.shrinker)
++	zswap_shrinker = zswap_alloc_shrinker();
++	if (!zswap_shrinker)
+ 		goto shrinker_fail;
+-	if (list_lru_init_memcg(&zswap.list_lru, zswap.shrinker))
++	if (list_lru_init_memcg(&zswap_list_lru, zswap_shrinker))
+ 		goto lru_fail;
+-	shrinker_register(zswap.shrinker);
++	shrinker_register(zswap_shrinker);
+ 
+-	INIT_WORK(&zswap.shrink_work, shrink_worker);
+-	atomic_set(&zswap.nr_stored, 0);
+-	spin_lock_init(&zswap.shrink_lock);
++	INIT_WORK(&zswap_shrink_work, shrink_worker);
+ 
+ 	pool = __zswap_pool_create_fallback();
+ 	if (pool) {
+@@ -1801,7 +1800,7 @@ static int zswap_setup(void)
+ 	return 0;
+ 
+ lru_fail:
+-	shrinker_free(zswap.shrinker);
++	shrinker_free(zswap_shrinker);
+ shrinker_fail:
+ 	destroy_workqueue(shrink_wq);
+ shrink_wq_fail:
+-- 
+2.40.1
 
 
