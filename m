@@ -1,106 +1,113 @@
-Return-Path: <linux-kernel+bounces-91983-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAE2387195F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:17:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE741871962
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:17:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7AD43B263C0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:17:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C5E11C21D22
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:17:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C678A5478B;
-	Tue,  5 Mar 2024 09:16:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02330548F4;
+	Tue,  5 Mar 2024 09:16:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="skilj3ol"
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	dkim=pass (2048-bit key) header.d=gigaio-com.20230601.gappssmtp.com header.i=@gigaio-com.20230601.gappssmtp.com header.b="WpE4j7K+"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D2A750276
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 09:16:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72E43548EA
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 09:16:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709630177; cv=none; b=jQCJRtYPIItnH4lC3SYxCdvz9fW4ze/tnNjxkWSxwecEecOvw0X1NjgXSiZxJaZzKQsOYatmAg4KdRE7IddtoUtF3f/iSQV24wcDdXfM30tdO+6xrzybmZEg0b47ECGJ5etUnYMFI3LbhFjrOpUMHwknhpsj41aqmVlG7RCqUKI=
+	t=1709630183; cv=none; b=S7L1gFDzrTEOm7c9663wRsOOjHi3sMsXmSxPRK9i2LOIGc5i2re/c58f1bC2dRT/0d97IERCL/L1nJhtJgTsUwbW0mDtfRhlWQ/6gyUzSIi8AbrROlS5JHhRZY3djuJ7B30xr51d/5mpx2Tla+hFUt3W/xmWUQIxZli38ZELquw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709630177; c=relaxed/simple;
-	bh=pUEkTUaEinq7lTGTudWbBzE6b8iQHi6XhoJnUFsMyNY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YyL5hx2uVkWkoPlDxh7bihiGcQgiq6DT9uOWmTOI27DBXZjczXtKKzn1akfkkdlqfQ8DUaCNaeGGhwrbYvijwVP44rHwY4h4F/qLFgisLGyrsHHq29ex8hYkHW0YLeGg+h5AsP4Zk2Jhg9EJENln6DVo4gYLXElQc2IJ/HWp6wI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=skilj3ol; arc=none smtp.client-ip=209.85.167.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-513160a49c1so2840e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 01:16:15 -0800 (PST)
+	s=arc-20240116; t=1709630183; c=relaxed/simple;
+	bh=yiKhp6KJcFR9q/KIu+xeAwLGxnWC+zdo5nHV1bhoK+A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CzzgSAAc3I17HyEclpV4kE8OSJu1h2JVbwOKYgi5Ufw3KyhXvhLs/aSmpcj4i63Q4HmAJ97MRoavAGPtF1yd26Mk0aLsMv97HnppwIWkWsnaXr6pbYdtmP0ATjkyl+JgHK+geBeub4bXI5Tln5wJJW73977liviAvQS9D06lGWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gigaio.com; spf=pass smtp.mailfrom=gigaio.com; dkim=pass (2048-bit key) header.d=gigaio-com.20230601.gappssmtp.com header.i=@gigaio-com.20230601.gappssmtp.com header.b=WpE4j7K+; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gigaio.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gigaio.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a441d7c6125so45083366b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 01:16:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709630174; x=1710234974; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pUEkTUaEinq7lTGTudWbBzE6b8iQHi6XhoJnUFsMyNY=;
-        b=skilj3olUBDEob/9lHWfOaAN7YyHitXQ42f0owOVhH+sA3a1ZroLBId0aph8tfI+Ek
-         hgwrg0PBLfwYr4KO1G6ZDhrp2ojmSos1/jSqX5Ruebbk+DId7U9my4aWHYrEWsSduhxg
-         Zf4b4U38jA94GHjvgzZyQIrTFr96fXIM2Mg+8J0FZ2aoueF+OAopfrfwPRnD5iL29YWz
-         KhPY4bscBJ+Thj/0zISFZxL53KCbSWe9mcdnJZDWBw75btJk3wvliA7IkwrlBDN3qwdG
-         F1/6OL6hojpGwg3VNZ0GYUEWq1gfSsLDYJZnwE9OoSlos2oq4ceg1KdMAIy2OdVmcz5y
-         8PWg==
+        d=gigaio-com.20230601.gappssmtp.com; s=20230601; t=1709630179; x=1710234979; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=iPBi9r3lHBDng3XDD5aeE1d+492pjGn2mIX5fAf9OKA=;
+        b=WpE4j7K++ukYqnM4XfdGs8Y4PkCHi8/RIb+3v7E0mycYfSdxFg/Jt++ltzgQzn5tCa
+         h/jYbWRYVQOIygfHBUqjTpU+e15S7KGgAl8TuqhF7T45Wbg7PavXSem7BR92R87yhqNd
+         ZiOPEixvEXgBLBHwxUmh0STYSaV+I8+f8NrAi460DVvFKfVSoE43qTeAWSnQFPJ4vF0P
+         KbFlOktijsichbXYAgg71p9AVubensl0D+p2tkpwY8rFZ6z9QOdVlChLslvaH4ufPbrr
+         crEbWTUZjM1Pig03GsyUNISdxAu90uw2XmDf/rMjzgfvi99L+Et+2G9R91prlGhCfJ9c
+         2TsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709630174; x=1710234974;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pUEkTUaEinq7lTGTudWbBzE6b8iQHi6XhoJnUFsMyNY=;
-        b=FvnUxo7EMgAzRJU78JHmbKSHbXVfTsPK0V/pudIT8wzzG4LHn9V7izxTOA3kVZvDjP
-         ahrHUvVpEziaSlJcIWf8T7CSuiw26t+y03hkizR+PF+bZioxImS4XhCb7Bp/jilFQzaF
-         ZfmOBTp7HCJrZy8iSdjG/j8gWxM6rSAfWUd3X9AHBAsyuSHk8Ok23bXJ7TFyIA8944lo
-         VsXJv81BU72uAKuzTOM5iH4lUmaNH68l4oWlK1LyMrrj7RpwLU2/okUkAJbht3WeGBwK
-         tBSGT0q3Qs4nfVI8kypI8heMZWydoakAefQU1L6VYKdPKDKzcfgfbvDZ9TVabgY9+t9K
-         XYkw==
-X-Forwarded-Encrypted: i=1; AJvYcCW3U4v+RKZb3//difaHnP+9lNn32dwwEJJVvmMGxGauzAZSNA2LyPknRJTAieDlpy6g8pmsLA/iHJGhOj3zuKqHm05c6YWni6i4UfxL
-X-Gm-Message-State: AOJu0YwMvK1ovPYNZXTqWlAuKdy1jZcVuex++IHSIOjR3BDXP67f21QY
-	nbJ8tXlf52HIQJ9T1ndfFE4cuG6XOjOJze2tXFWaSFAOJiug4XC3LKwtzV/dW09UvGLNHokbjwu
-	xsIbtOkgSoS9gYV2seFO9nJzdR4BgDZ4JbdAZ
-X-Google-Smtp-Source: AGHT+IGBTWDXRnEWgmFcgD/VIsmWhDVWePD6mfb41wRN4IYM0DkvXH5kA4vk5l9vJ/V7q4SYeVmBzdk3b7Lmu1q5dL8=
-X-Received: by 2002:a19:385c:0:b0:513:1cf2:e14f with SMTP id
- d28-20020a19385c000000b005131cf2e14fmr59092lfj.4.1709630173911; Tue, 05 Mar
- 2024 01:16:13 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709630179; x=1710234979;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iPBi9r3lHBDng3XDD5aeE1d+492pjGn2mIX5fAf9OKA=;
+        b=QEv/M9MLGMbYl6z7yv4ae4l7/IAjbEozmuhq8aznJhMeg9efjSIMGfq5D/evRa15ab
+         YyWA7T1GI2IS6qJ4w8SU3dvDKBPaGk+4cnNp0wWKHWIv/pirjmXf1BKwOr/XFgf37YB/
+         oT3945VibHrwHPhAWsX+si71Gmi/K27B8/CjkSE9933xyyh68OJv1jKk82+2VP24jTjU
+         TNZakp/vR1zkWm41PjTYvGlmmjZiy8eYxMZiUjGw9j+odQY+ltcymEOJctG50QZu6rrZ
+         H/D9Yioz9b/TIUw8PaF2Ibc8FMr9o+fekWMHMoQVFEfThcvLl86MB+e286mlIfNgUHeY
+         iGNw==
+X-Forwarded-Encrypted: i=1; AJvYcCXPkrBbg0hop/ARkBIWmGcEOZZ5GpufnwtrjcuPyUeieqsQE0ijde7Kt/dm0/PAbrBT7FIJagb+ryxWOYMd6W/cHUTQm2kATpBx+fCO
+X-Gm-Message-State: AOJu0YwtVdJK8boKS/OF3kq16bwcAoW99dLJBDlNl5uNC4I9iWNUy0Rq
+	Dbo3dB3CXRf7YAhTiU9/1psbrQGweZJmx8sOdvVsz0vX1YRbwulOdA4GGfGxirw=
+X-Google-Smtp-Source: AGHT+IHfvOhSVsYjaSCWWUD0ZFLGTx4eEbMw7HppfGGSMvr/ztDQHwlLFmMci36aLbidhc3TAhA5ww==
+X-Received: by 2002:a17:906:5585:b0:a45:231:9b4b with SMTP id y5-20020a170906558500b00a4502319b4bmr4642108ejp.20.1709630178541;
+        Tue, 05 Mar 2024 01:16:18 -0800 (PST)
+Received: from [192.168.1.104] ([46.151.20.23])
+        by smtp.gmail.com with ESMTPSA id wk15-20020a170907054f00b00a4519304f8bsm2777355ejb.14.2024.03.05.01.16.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Mar 2024 01:16:18 -0800 (PST)
+Message-ID: <1a2f36bd-4913-401a-84cd-c3f77725fbaf@gigaio.com>
+Date: Tue, 5 Mar 2024 10:16:17 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240228185116.1269-1-vamshigajjela@google.com> <ZeA7dVBmm1yuf6F9@hovoldconsulting.com>
-In-Reply-To: <ZeA7dVBmm1yuf6F9@hovoldconsulting.com>
-From: VAMSHI GAJJELA <vamshigajjela@google.com>
-Date: Tue, 5 Mar 2024 14:46:01 +0530
-Message-ID: <CAMTSyjq6rOSeZND4iRdg_ooLf6P8rpx7oU5+tfCGjN1JVHhesg@mail.gmail.com>
-Subject: Re: [PATCH] spmi: hisi-spmi-controller: Do not override device identifier
-To: Johan Hovold <johan@kernel.org>
-Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>, Stephen Boyd <sboyd@kernel.org>, 
-	Johan Hovold <johan+linaro@kernel.org>, Caleb Connolly <caleb.connolly@linaro.org>, 
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V9 1/2] dmaengine: amd: Add empty Kconfig and Makefile for
+ AMD drivers
+To: Lizhi Hou <lizhi.hou@amd.com>, vkoul@kernel.org,
+ dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: nishads@amd.com, sonal.santan@amd.com, max.zhen@amd.com
+References: <1709053709-33742-1-git-send-email-lizhi.hou@amd.com>
+ <1709053709-33742-2-git-send-email-lizhi.hou@amd.com>
+Content-Language: en-US
+From: Tadeusz Struk <tstruk@gigaio.com>
+In-Reply-To: <1709053709-33742-2-git-send-email-lizhi.hou@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Feb 29, 2024 at 1:38=E2=80=AFPM Johan Hovold <johan@kernel.org> wro=
-te:
->
-> On Thu, Feb 29, 2024 at 12:21:16AM +0530, Vamshi Gajjela wrote:
-> > 'nr' member of struct spmi_controller, which serves as an identifier
-> > for the controller/bus. This value is a dynamic ID assigned in
-> > spmi_controller_alloc, and overriding it from the driver results in an
-> > ida_free error "ida_free called for id=3Dxx which is not allocated".
-> >
-> > Signed-off-by: Vamshi Gajjela <vamshigajjela@google.com>
-> > Fixes: 70f59c90c819 ("staging: spmi: add Hikey 970 SPMI controller driv=
-er")
-> > Cc: stable@vger.kernel.org
-> > ---
->
-> This is v2, which should be indicated in the patch subject and with a
-> short changelog here (e.g. mentioning the split and rebase on 6.8-rc).
-ack, Thanks
->
-> Johan
+On 2/27/24 18:08, Lizhi Hou wrote:
+> Add amd/ for AMD dmaengine drivers. Create empty Kconfig and Makefile
+> underneath.
+> 
+> Signed-off-by: Lizhi Hou<lizhi.hou@amd.com>
+> ---
+>   drivers/dma/Kconfig      | 2 ++
+>   drivers/dma/Makefile     | 1 +
+>   drivers/dma/amd/Kconfig  | 1 +
+>   drivers/dma/amd/Makefile | 4 ++++
+>   4 files changed, 8 insertions(+)
+>   create mode 100644 drivers/dma/amd/Kconfig
+>   create mode 100644 drivers/dma/amd/Makefile
+
+Hi Lizhi,
+I think you may want to change the order of the patches.
+Adding the Kconfig and Makefile changes in the first patch,
+and the code itself in the second patch will hurt git bisect.
+Just swap them around.
+--
+Regards,
+Tadeusz
 
