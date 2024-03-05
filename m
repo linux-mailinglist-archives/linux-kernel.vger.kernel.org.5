@@ -1,140 +1,163 @@
-Return-Path: <linux-kernel+bounces-93024-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93025-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 809C68729A8
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 22:47:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95C8B8729AC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 22:48:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EBABB1F22FF8
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 21:47:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 200BE1F2505B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 21:48:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B21C12CD8B;
-	Tue,  5 Mar 2024 21:46:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 537BA12CDA8;
+	Tue,  5 Mar 2024 21:48:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eHiuENwA"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="PcsRHUsp"
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2082.outbound.protection.outlook.com [40.107.244.82])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB31926AD0;
-	Tue,  5 Mar 2024 21:46:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709675218; cv=none; b=D3795pQhh1OpPwS9G+fHfwXeywcPNfyKHPZxbe9Nh31oo4E3o3PUq8O4OcE0gUaNkSpkiW//V4FNixOIjXGw1QZsgyu9711QSCMQ7ePWMl8CcZq98lkLxWBAuK8p8N0qVgbuANLylP2g8TiHNbxMpka/Z/wRQk5eLh9gokfs+N0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709675218; c=relaxed/simple;
-	bh=OD6AI2U1UEuP5wU1R3uEeYZuHVK+Wompw+JThsAf25I=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=iy2rHFbVVVQrMi1QNvjwWAr8F5Id2t+GGRWdQOog6TcX0FbucqGeybWuk9qfG9YnQt4Y6o6p39mycr4d3p+DrxSi0X9B3e3Xvbp8UMEJf33eGW+1rgemAt4N6pa3iYsxLlxVJ5ctOVaD7WbZEG4dNJAeqWHT48J2uD7REQqHWls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eHiuENwA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF473C433C7;
-	Tue,  5 Mar 2024 21:46:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709675218;
-	bh=OD6AI2U1UEuP5wU1R3uEeYZuHVK+Wompw+JThsAf25I=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=eHiuENwAYxHUsepW+xTvgywZLlprjoNJMN0yJ3UUR0k+RwcLSA3OMNud8SVKsZMg2
-	 fE0cePXaknQfgYbddSWDI/dEWFhdn3PeYnt3baR3ewYOCHFmUchCC1dDMZG2TIQ6R6
-	 A3dJ7UyHnCKlPWjglDFP2kl5pA3YdZuUHShwNHl7nhcL3D6OKXDWPxyz6M7ASE6xwN
-	 6JqOrHqyF4jaMMw1SOWM0irCg7K372zEZdMQd294aZyxr6+60n4oCu1wKmJvMotCl0
-	 mqGb4AdZBjFiAJM3Clx399ATS7lJdrlyal2PzRx9VbcnuIQ/1RwlpvDenzW40ZUaZf
-	 5vf3aAMwPbEcg==
-Date: Tue, 5 Mar 2024 15:46:56 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: linux-pci@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	"David E . Box" <david.e.box@linux.intel.com>,
-	Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Tasev Nikola <tasev.stefanoska@skynet.be>,
-	Mark Enriquez <enriquezmark36@gmail.com>,
-	Thomas Witt <kernel@witt.link>,
-	Werner Sembach <wse@tuxedocomputers.com>,
-	Vidya Sagar <vidyas@nvidia.com>,
-	Kai-Heng Feng <kai.heng.feng@canonical.com>,
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-	Ricky Wu <ricky_wu@realtek.com>,
-	Mario Limonciello <mario.limonciello@amd.com>,
-	Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH v7 0/5] PCI/ASPM: Save/restore L1 PM Substates for
- suspend/resume
-Message-ID: <20240305214656.GA550701@bhelgaas>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A96AF26AD0;
+	Tue,  5 Mar 2024 21:48:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.82
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709675302; cv=fail; b=OPa/m5vBS73LNd4j9pZ/7eQ6YcDKqCEjg4fzEO9UzfxF5D6hWBw7u4E/mKPsztanowAyxv0yWC3lFMP3N6TQmk2pzeIozw4z0gYAES0kRhT4n/VHAhgsEwzyfbHzxOVBIdOky8mXdf6Wi0U9hLfvLHqPcmITgM13K15j8vxA3oE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709675302; c=relaxed/simple;
+	bh=DO9ZLdqayctvaNxtNtR9FRhIZP7oIx5arMfW/38SeM0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=Kb10uT9wGhFe+/eLBZJkELRTcyfvb9vAcP0WlWkh0IKNDOa5WhrFScvBeWtPrurhoDhA37OOeNgBwGKtBYaZxJNr5Gj6zWTkwxMo6hrTmGO9joMHZpLZmG/sWE7rMcAcz5xR2ClVs/G/O9HqteW6bCnF4zsF1UzhRWPcyWjPWIQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=PcsRHUsp; arc=fail smtp.client-ip=40.107.244.82
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Y5VfubOj45/hKFlfRB2UNQwHZ895Ow9/2e0tRIrIN+oVJCerzCrSxS6wBUThc9Vb4H9DT8QEvCCvZeE6qXbDJysm1OoJAJcRP9drWcvMFfXDBot2Q/XoKULd95aE4etxUPHQ1S45jn0Q0DhCLp3m+pyrfZZDJYE7dPeQl5lO677reMsPbYzPXJLB+qZh+VUfmPywOKAIgKIaHJquAGNavTOR6dzb/KYT7sWZ6G1zScI8Ts16egQLtBDIszk+UEWY2KXZO/JOTGmHSNsKVDIr02OU/EUAsmSTZj7R+kTEuecoimP2V1BmdfdrqZaBDAuwYSg/dWt8UBkSV5K20ass/g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FzM3nAdTQKFAluqMpiiJUVW+52Ir4cHXnRsw3fgXWz0=;
+ b=hym1rGOgyu4ZkR7Tp17lZV1fs6ZUMMxVr5PCbzOwxXH1ganGrlS3D5GFtLTP4sFj39jvClzTQqCo1Rq9MJg0pG4zSQKJjog7keTiPWNgjhzWwXTYh4KuROMhv1jUsuDCMf6UM/Ku0dbzGa/ezzcNxdxkaKxiWzl3BJrOajPNmh1O7McyWcy1mITJXI5mYjuT8RTh+2FwiiXV8c9N45SokX4bHu1lToOTKttSCujpZKjg7ESQl+l7er42RHg4jF3TW2qZ3BbzN32+Rt8h5So0zoZ6g/v4Qi7vrfh2tj184BPMO7tRMEOzIYDLI5Koxlgn+weik01TeYHCENV4OX20rQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=gigaio.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FzM3nAdTQKFAluqMpiiJUVW+52Ir4cHXnRsw3fgXWz0=;
+ b=PcsRHUspAatUbOhC0Yqz8gQP1rEFKsBEHINTm4itWZHLTUSJrXSzbrfL1d1t53Sp3XeHcesHyGlHu/ti08rfYUnMyiVsfF9N90V91Pwq/EHQ7E+2kCHr4RYCxyjbdTbl42kXUCXyQaf3FagxO+u+3y9RuHib77wQYD545hl5ZZI=
+Received: from MN2PR14CA0026.namprd14.prod.outlook.com (2603:10b6:208:23e::31)
+ by LV2PR12MB5895.namprd12.prod.outlook.com (2603:10b6:408:173::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.38; Tue, 5 Mar
+ 2024 21:48:11 +0000
+Received: from MN1PEPF0000ECDA.namprd02.prod.outlook.com
+ (2603:10b6:208:23e:cafe::49) by MN2PR14CA0026.outlook.office365.com
+ (2603:10b6:208:23e::31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.39 via Frontend
+ Transport; Tue, 5 Mar 2024 21:48:11 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ MN1PEPF0000ECDA.mail.protection.outlook.com (10.167.242.134) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7362.11 via Frontend Transport; Tue, 5 Mar 2024 21:48:11 +0000
+Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 5 Mar
+ 2024 15:48:10 -0600
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB05.amd.com
+ (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 5 Mar
+ 2024 15:48:10 -0600
+Received: from [172.19.74.144] (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
+ Transport; Tue, 5 Mar 2024 15:48:10 -0600
+Message-ID: <b3200804-b00f-b0dc-f6eb-28e87e8aa157@amd.com>
+Date: Tue, 5 Mar 2024 13:48:09 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240223205851.114931-1-helgaas@kernel.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH V9 1/2] dmaengine: amd: Add empty Kconfig and Makefile for
+ AMD drivers
+Content-Language: en-US
+To: Tadeusz Struk <tstruk@gigaio.com>, <vkoul@kernel.org>,
+	<dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC: <nishads@amd.com>, <sonal.santan@amd.com>, <max.zhen@amd.com>
+References: <1709053709-33742-1-git-send-email-lizhi.hou@amd.com>
+ <1709053709-33742-2-git-send-email-lizhi.hou@amd.com>
+ <1a2f36bd-4913-401a-84cd-c3f77725fbaf@gigaio.com>
+From: Lizhi Hou <lizhi.hou@amd.com>
+In-Reply-To: <1a2f36bd-4913-401a-84cd-c3f77725fbaf@gigaio.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Received-SPF: None (SATLEXMB05.amd.com: lizhi.hou@amd.com does not designate
+ permitted sender hosts)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN1PEPF0000ECDA:EE_|LV2PR12MB5895:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6b1440c4-e15b-4566-fcef-08dc3d5df3f1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	6dXuZ4AysRiFgPuTzW1zq1vHsd0nGaZ7dIOu1QffwefL2vr6Ynoc+LLFE4tiX/PMDIBa9PYiBe1dHX4KUAVAGwqh0uVJp6cjrq4FTAu8tPUXDFVDu1XYIG4LpJgMF5Qjv8Ac/VVt4OlnLVxgVoIDaMBZhWxcXA6OJTljvlOlUtUYRYyjTTjrGIW1LEE14Ixvwgy7hNZQvy2KhjNnlkplp/U5XtndZ7LFuCP/HDIURVULS3Vz+CcduJ9WZZMbYraETdpz0hXQ3IgRENqUe7FwrPM3B/eEiY8tuu9AKuxXdIpt2GHT+zrL+5/H+D+KwdaMTqEhypi9qHe8kbr7xwDOZxX/FqjxbiKn71tX1NSAOR2dBsHOwvKxkhjlBWYhnjjnMWc2BqeCPpa7iJ+0W1h3WgvZ6Q4JP1KNv+HyCrWHfL11TZNUaXS3SmTxYGVnJTS+F21o+wzRuy0LS4iD8XPVlXc/cLn4InqrvEONKLLgBnpHYcts/oJ1w6TFlOPv5wpV+6wfRSl6dCw5uiKsMd2cGbknqKQraJ5eW8S+oJ9mF9qbcPSxwVp2T0BXjDD5e5UmC3IhAAZSEbo2GeNU32bBsGjBJb9T/+Qq8iq3AwFcdlq51Pzz0TIMBDAFFxoK0x0zJBh03rHA9TNHxq0C4LhWdbiOCAvH3eUIcl8jWLt31EQ5duK2/PkbCaAlGUVJjciHnnYeNDNkKPvfUtuByz4yPbsTfqT5ZiSUOFu7qw13MGIVmJu/IDv2wAaniQLcwD2N
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(376005)(82310400014);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Mar 2024 21:48:11.3274
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6b1440c4-e15b-4566-fcef-08dc3d5df3f1
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	MN1PEPF0000ECDA.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB5895
 
-On Fri, Feb 23, 2024 at 02:58:46PM -0600, Bjorn Helgaas wrote:
-> From: Bjorn Helgaas <bhelgaas@google.com>
-> 
-> This is some rework of David's series to preserve ASPM L1 substate
-> configuration across suspend/resume.
-> 
-> We've had several attempts to make this work:
-> 
->   (unlabeled): https://lore.kernel.org/r/20240128233212.1139663-1-david.e.box@linux.intel.com
->   v5: https://lore.kernel.org/r/20231221011250.191599-1-david.e.box@linux.intel.com
->   v4: https://lore.kernel.org/all/20231002070044.2299644-1-mika.westerberg@linux.intel.com/
->   v3: https://lore.kernel.org/linux-pci/20230925074636.2893747-1-mika.westerberg@linux.intel.com/
->   v2: https://lore.kernel.org/linux-pci/20230911073352.3472918-1-mika.westerberg@linux.intel.com/
->   v1: https://lore.kernel.org/linux-pci/20230627062442.54008-1-mika.westerberg@linux.intel.com/
-> 
-> The most recent posting is the unlabeled one mentioned above, and I'm
-> calling it v6 and this rework v7.
-> 
-> Changes since the unlabeled v6:
-> 
->   - Rename pci_save_aspm_state() to pci_save_aspm_l1ss_state() (this
->     is the reason for opening this again, because Vidya's patch [1]
->     had to do some incidental renaming).
-> 
->   - Rename pcie_restore_aspm_l1ss() to pci_restore_aspm_l1ss_state()
->     to match.
-> 
->   - Move the PCI_EXP_LNKCTL_ASPMC from pci_restore_aspm_state() to
->     pci_restore_pcie_state() so both writes are in the same place.
-> 
->   - Rename pci_aspm_get_l1ss() to pci_configure_aspm_l1ss() and add
->     the save_buffer there as well.
-> 
->   - Split [1/5] into two patches: move pci_configure_ltr() and
->     pci_bridge_reconfigure_ltr() to aspm.c, and build aspm.c
->     unconditionally.
-> 
->   - Squash [2/5] and [3/5] since [2/5] didn't add any functionality
->     itself so they seem like a single logical change.
-> 
-> [1] https://lore.kernel.org/r/20230125133830.20620-1-vidyas@nvidia.com
-> 
-> David E. Box (5):
->   PCI/ASPM: Move pci_configure_ltr() to aspm.c
->   PCI/ASPM: Always build aspm.c
->   PCI/ASPM: Move pci_save_ltr_state() to aspm.c
->   PCI/ASPM: Save L1 PM Substates Capability for suspend/resume
->   PCI/ASPM: Call pci_save_ltr_state() from pci_save_pcie_state()
-> 
->  drivers/pci/pci.c         |  89 ++++------------
->  drivers/pci/pci.h         |  13 ++-
->  drivers/pci/pcie/Makefile |   2 +-
->  drivers/pci/pcie/aspm.c   | 215 ++++++++++++++++++++++++++++++++++++++
->  drivers/pci/probe.c       |  62 +----------
->  include/linux/pci.h       |   2 +-
->  6 files changed, 252 insertions(+), 131 deletions(-)
 
-I applied these as pci/aspm for v6.9, replacing the original unlabeled
-v6 that has been in -next.
+On 3/5/24 01:16, Tadeusz Struk wrote:
+> On 2/27/24 18:08, Lizhi Hou wrote:
+>> Add amd/ for AMD dmaengine drivers. Create empty Kconfig and Makefile
+>> underneath.
+>>
+>> Signed-off-by: Lizhi Hou<lizhi.hou@amd.com>
+>> ---
+>>   drivers/dma/Kconfig      | 2 ++
+>>   drivers/dma/Makefile     | 1 +
+>>   drivers/dma/amd/Kconfig  | 1 +
+>>   drivers/dma/amd/Makefile | 4 ++++
+>>   4 files changed, 8 insertions(+)
+>>   create mode 100644 drivers/dma/amd/Kconfig
+>>   create mode 100644 drivers/dma/amd/Makefile
+>
+> Hi Lizhi,
+> I think you may want to change the order of the patches.
+> Adding the Kconfig and Makefile changes in the first patch,
+> and the code itself in the second patch will hurt git bisect.
+> Just swap them around.
 
-I also added the patch I suggested at
-https://lore.kernel.org/r/20240223213733.GA115410@bhelgaas to disable
-L1 inside pci_restore_aspm_l1ss_state() where we actually depend on it
-being disabled.
+This patch was introduced for another AMD driver ae4dma patchset.
 
-Bjorn
+It looks ae4dma plan has changed.
+
+I am going to merge this 2 patches into 1 patch.
+
+
+Thanks,
+
+Lizhi
+
+> -- 
+> Regards,
+> Tadeusz
 
