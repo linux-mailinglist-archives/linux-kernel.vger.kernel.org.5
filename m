@@ -1,124 +1,418 @@
-Return-Path: <linux-kernel+bounces-93002-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93003-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9CDC87293B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 22:17:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44C3F872965
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 22:27:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 737FC1F2358C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 21:17:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B031B2D7F2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 21:17:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C5D912B16B;
-	Tue,  5 Mar 2024 21:17:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FE4312D1E9;
+	Tue,  5 Mar 2024 21:17:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tf2xOb1E"
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="f+zkeIIL"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 007C61B81D
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 21:16:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0326812BEBB
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 21:17:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709673419; cv=none; b=QFyrSCFgH3T7KEoR7wIvSchL3auH2NjueqQeperle0CQlM4q8pdzYiW9yiuJ9E9s60QGiaPpww/hpzsMWI/ZO64nZwfqqPT0OwlgPwGM9U+txslAmJWefghfiEyLmTkVTIZ8BR7TmXKY/9URYBRTzGmLr6qDSl/v+/To93R2eD8=
+	t=1709673448; cv=none; b=MyhIBTUS40SkJaHUfbJ7orzeAmprUgR0lU2nANDDylXT8cBuBZ/32haXUVFhB7TUYVSzIco39TWJDo9CBM2HAxHZLcZx40+4ySyZwF39DvPKW4BIeCce6/QCU0Y9AoMYIPx3nLxV3gzyPUlb8J0kD6WHUmXcrp36MX4aYaVVX28=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709673419; c=relaxed/simple;
-	bh=k3lbq9SSH8UrBjWLea184EF/re2YnLcUGUKOBhCs/kE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=P2TFE5mFnGnmmEBaLkYBHzt0f52cJj38IWvU0W9UNix6W9H5x8QzEjzpIj1JAytOHnniSCZQjGkCcapcxsX/y7y6kCNk7dIUd9DAefktQyFbPpZFP2Q9TvMYHKVbJsVI3VAMcj/7JjOaxmmT5J+dn18F5eYYbfG7p1OnMnsOLko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=tf2xOb1E; arc=none smtp.client-ip=209.85.167.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-513298d6859so1418720e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 13:16:56 -0800 (PST)
+	s=arc-20240116; t=1709673448; c=relaxed/simple;
+	bh=Zzs14TQDrBLvAr1o9JtK6vm+FLEBbfjXCr1LPciToqM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ebpjf2s+Raiz+0l2K0u3Tn94LDqMPMfpBHoyF3PLdtKMME2maSrvAPrJE0Cfo6T2/XKzF/dx2nG7EB7w0lOEwwa3VDbKKiIRnyo/iFrglNtgiCe4utf/TOrApZg5SjajE7MjKI3P9kjxJbV+A8DmkvY9Y9gsjKdIxZ4fHhvSVYw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=f+zkeIIL; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a293f2280c7so25874166b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 13:17:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709673415; x=1710278215; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sVdcNBcoAiJYRV+66geixgS685+t5mEWuPqbixAd63s=;
-        b=tf2xOb1EBY+vO9hm8WGSLQMrHT+iHTO2M80nGItdZ6xIcS5pijid4PlhT9FoOBVsnG
-         lG1C3avrWGJJnU8WTuWrhas8TRtCUx8WYfTY5/S8I7thHhFDeOLiukHoRh/FFkHfSLU3
-         nV7Ik4tkfQoqOZZ/UHyhTbMv5EdJl53zvSHinS6rzRM9FmVVUbb6fljkA3uvBFzW6BRc
-         J8X4bB9z2ubZirvkCTwkZi3CK5LqA4AhsMfIMO6Cf8CadoHd37uBJXHARJ1oXC3EhAT8
-         5IP7ENZrbMjy76FPRjQeaEe+4J3yx0iae1iMk8U+nQCUnfYc9L5whTwcEZemB23ZLJCs
-         +/5g==
+        d=google.com; s=20230601; t=1709673443; x=1710278243; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LpvlKXjZceUyV7T13tDS41t/F1Xa1LPW/laeLkdBF1g=;
+        b=f+zkeIIL3MaYM5PZ+7iWNhbUPnElC1PozZSc3vG7/g0+xAiXtxTX0jGzm4OkukjKj+
+         Ewed6xKfesI0HEa5m7zQonRJ2pjlKxAUa8tBqiAUmr4RbgWi2/dbQKdauu2aIafD9DDi
+         Ghu9no2/qlPRW04bDfIx95FhJamSFgtmIL62MzhYo/wY9BAVKY4ctX4UJOFKGmUvD4B2
+         /dT+b0RVAl/VFXCxbdWtSXMiwW30ZHuxO/KNwghkR//2XF1E1t/OnGu0/kHEEYxV/ZFy
+         lYYuIyAgsMf7/qlF0Gb3IkvynzO+FN+vnrHlmF9kii3ZWz5hNnSh52TkqTYMD+AfZJnH
+         rP2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709673415; x=1710278215;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sVdcNBcoAiJYRV+66geixgS685+t5mEWuPqbixAd63s=;
-        b=q7zRFwtHInppWBOvadAkh1TyLwpD1pqn4AN2b6buSNr6ci+ez7VXPYhU8j6+r6gKuh
-         vi2ut6VJKJdDJkX86HYfB5sJm2QOsS+OZ81S/7oa4+LDNgzJIPD/NxzjsPePwgC2DD8g
-         QvhqH5Od+kBK7NTObinreYs37udsy+FyeQoo707yzRxO+FFj77P8+ZRZ79q5/RIOHtwj
-         uwtuK3GQ4U5I3/duKiNZvoII0VrqgImmsj1BGFzvQ3ukeuohivdo8m6tVQneV8ABaQYY
-         9EUrBP3Z/kJ9ytZmigPfko5z4/719YzdWCevfWMaytB5AmCbZ0L/xhrMCVF1qY4eOsQN
-         thAA==
-X-Forwarded-Encrypted: i=1; AJvYcCUMHhgzpDjMpHAM99292YNf72GNHvYxF4PPJahT1AjX5QtZig0hj7snma13sO8ncXmyev7I55DSRri1rfvdDffHwkWwhg+69yf9j/5j
-X-Gm-Message-State: AOJu0YzJXzLxMQ8gQltj5hPw+F0c/vM1pjKEQ67Tlw3C2/2sK7ptqraS
-	/PPIdpPIZk/MChAQQEHoHsF6mtiIlDZtwHgGg4+kuQd9yDfJ7PGbmpetf/l7oSM=
-X-Google-Smtp-Source: AGHT+IH3Hd0YBY5DKLui7FOvR0mfzUmy4ygWjHSTygOgSbAzcr4xkbf3ukYBlk9XCz0pNxVe8jB4HQ==
-X-Received: by 2002:a05:6512:3055:b0:513:2ead:4f86 with SMTP id b21-20020a056512305500b005132ead4f86mr2610715lfb.12.1709673415066;
-        Tue, 05 Mar 2024 13:16:55 -0800 (PST)
-Received: from [172.30.204.154] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id i10-20020a198c4a000000b0051330fe710dsm1994042lfj.169.2024.03.05.13.16.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Mar 2024 13:16:54 -0800 (PST)
-Message-ID: <d784e46d-974d-4bf3-a2d3-491e7ad19701@linaro.org>
-Date: Tue, 5 Mar 2024 22:16:54 +0100
+        d=1e100.net; s=20230601; t=1709673443; x=1710278243;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LpvlKXjZceUyV7T13tDS41t/F1Xa1LPW/laeLkdBF1g=;
+        b=hKPaKe4uuQOSOtP7h7MlIhF6YZqVXyT46U6WAXksHiF/oLGI3WH4oK9+9+GKRQjpRY
+         fZxkHWHY8YT1gt8duqvTAOqVsgtWN9zMfTJN1tVouIvwe1Ye2eaMKqduHCiLExvR+mQY
+         F7Kqj4yO0FGGRNMiLX63AnLuKz/AB/1Jmaa8vqgmsIV2p1kLhXhPbx3b6j1x978EDcmZ
+         l2uiWqCIjcQw4EBCZKwe9Pb0zGu3c8pJgeOG+77nQjzfPtQyW8zoCs3EZe6ZYihNoWP/
+         yZ09z9Xk1SV11k3tbYCKkVXvle141cry+bpvyP2Wlhera/ggAkfy07M85IQowlGtUa1W
+         oOiw==
+X-Forwarded-Encrypted: i=1; AJvYcCWAc1ckwsaEkHCbJmwE7coIXdfC/khjIwqLjn1FnSvFOtRHFC5R9wXIa3d1VWycNbeNV7IRVr8oXC49M6vA5jYnigdHJXi4TUt2CRol
+X-Gm-Message-State: AOJu0YzKTAvNE1e0Yn2FWnfQjeuVUiNBOpZCYZxyF5facAXZGZuf8Rks
+	4nyALn9nGrQZlmgV3BceoiGAtfSoszsDWR7rgn/lIZM3fJ1nQYhRazJNk4YqeQMwh0QztOTMnd/
+	2CIA2SIX6FTRQCvHZz+9EZWTUJwA6eoi2qNgb
+X-Google-Smtp-Source: AGHT+IHlC+vBw635Kt73+dsHbQtM7EL6jyFCQWoNIhJRg5JiyGmYfM2wu4YJxtfkn8eGdUtq4eym/8JfbCk0TV4RoFA=
+X-Received: by 2002:a17:906:3c17:b0:a43:86f3:b00b with SMTP id
+ h23-20020a1709063c1700b00a4386f3b00bmr8581734ejg.0.1709673442968; Tue, 05 Mar
+ 2024 13:17:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] slimbus: qcom-ngd-ctrl: Reduce auto suspend delay
-Content-Language: en-US
-To: Viken Dadhaniya <quic_vdadhani@quicinc.com>, andersson@kernel.org,
- srinivas.kandagatla@linaro.org, linux-arm-msm@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: quic_msavaliy@quicinc.com, quic_vtanuku@quicinc.com,
- quic_anupkulk@quicinc.com, quic_cchiluve@quicinc.com
-References: <20240304135000.21432-1-quic_vdadhani@quicinc.com>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20240304135000.21432-1-quic_vdadhani@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240305020153.2787423-1-almasrymina@google.com>
+ <20240305020153.2787423-6-almasrymina@google.com> <da42cea9-c169-599e-f087-d38c419e3dab@huawei.com>
+In-Reply-To: <da42cea9-c169-599e-f087-d38c419e3dab@huawei.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Tue, 5 Mar 2024 13:17:08 -0800
+Message-ID: <CAHS8izM7GbvWHrH=h9q0oG0DMU649EjT1udNEW_8F-hGeC15EQ@mail.gmail.com>
+Subject: Re: [RFC PATCH net-next v6 05/15] netdev: support binding dma-buf to netdevice
+To: Yunsheng Lin <linyunsheng@huawei.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>, 
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, David Ahern <dsahern@kernel.org>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, 
+	Shailend Chand <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
+	Shakeel Butt <shakeelb@google.com>, Jeroen de Borst <jeroendb@google.com>, 
+	Praveen Kaligineedi <pkaligineedi@google.com>, Willem de Bruijn <willemb@google.com>, 
+	Kaiyuan Zhang <kaiyuanz@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Mar 5, 2024 at 4:55=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.com=
+> wrote:
+>
+> On 2024/3/5 10:01, Mina Almasry wrote:
+>
+> ...
+>
+> >
+> > The netdev_dmabuf_binding struct is refcounted, and releases its
+> > resources only when all the refs are released.
+> >
+> > Signed-off-by: Willem de Bruijn <willemb@google.com>
+> > Signed-off-by: Kaiyuan Zhang <kaiyuanz@google.com>
+> > Signed-off-by: Mina Almasry <almasrymina@google.com>
+> >
+> > ---
+> >
+> > RFC v6:
+> > - Validate rx queue index
+> > - Refactor new functions into devmem.c (Pavel)
+>
+> It seems odd that the functions or stucts in a file called devmem.c
+> are named after 'dmabuf' instead of 'devmem'.
+>
+
+So my intention with this naming that devmem.c contains all the
+functions for all devmem tcp specific support. Currently the only
+devmem we support is dmabuf. In the future, other devmem may be
+supported and it can fit nicely in devmem.c. For example, if we want
+to extend devmem TCP to support NVMe devices, we need to add support
+for p2pdma, maybe, and we can add that support under the devmem.c
+umbrella rather than add new files.
+
+But I can rename to dmabuf.c if there is strong objection to the current na=
+me.
+
+> >
+>
+> ...
+>
+> > diff --git a/include/net/netmem.h b/include/net/netmem.h
+> > index d8b810245c1d..72e932a1a948 100644
+> > --- a/include/net/netmem.h
+> > +++ b/include/net/netmem.h
+> > @@ -8,6 +8,16 @@
+> >  #ifndef _NET_NETMEM_H
+> >  #define _NET_NETMEM_H
+> >
+> > +#include <net/devmem.h>
+> > +
+> > +/* net_iov */
+> > +
+> > +struct net_iov {
+> > +     struct dmabuf_genpool_chunk_owner *owner;
+> > +};
+> > +
+> > +/* netmem */
+> > +
+> >  /**
+> >   * typedef netmem_ref - a nonexistent type marking a reference to gene=
+ric
+> >   * network memory.
+> > diff --git a/net/core/Makefile b/net/core/Makefile
+> > index 821aec06abf1..592f955c1241 100644
+> > --- a/net/core/Makefile
+> > +++ b/net/core/Makefile
+> > @@ -13,7 +13,7 @@ obj-y                    +=3D dev.o dev_addr_lists.o =
+dst.o netevent.o \
+> >                       neighbour.o rtnetlink.o utils.o link_watch.o filt=
+er.o \
+> >                       sock_diag.o dev_ioctl.o tso.o sock_reuseport.o \
+> >                       fib_notifier.o xdp.o flow_offload.o gro.o \
+> > -                     netdev-genl.o netdev-genl-gen.o gso.o
+> > +                     netdev-genl.o netdev-genl-gen.o gso.o devmem.o
+> >
+> >  obj-$(CONFIG_NETDEV_ADDR_LIST_TEST) +=3D dev_addr_lists_test.o
+> >
+> > diff --git a/net/core/dev.c b/net/core/dev.c
+> > index fe054cbd41e9..bbea1b252529 100644
+> > --- a/net/core/dev.c
+> > +++ b/net/core/dev.c
+> > @@ -155,6 +155,9 @@
+> >  #include <net/netdev_rx_queue.h>
+> >  #include <net/page_pool/types.h>
+> >  #include <net/page_pool/helpers.h>
+> > +#include <linux/genalloc.h>
+> > +#include <linux/dma-buf.h>
+> > +#include <net/devmem.h>
+> >
+> >  #include "dev.h"
+> >  #include "net-sysfs.h"
+> > diff --git a/net/core/devmem.c b/net/core/devmem.c
+> > new file mode 100644
+> > index 000000000000..779ad990971e
+> > --- /dev/null
+> > +++ b/net/core/devmem.c
+> > @@ -0,0 +1,293 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +/*
+> > + *      Devmem TCP
+> > + *
+> > + *      Authors:     Mina Almasry <almasrymina@google.com>
+> > + *                   Willem de Bruijn <willemdebruijn.kernel@gmail.com=
+>
+> > + *                   Kaiyuan Zhang <kaiyuanz@google.com
+> > + */
+> > +
+> > +#include <linux/types.h>
+> > +#include <linux/mm.h>
+> > +#include <linux/netdevice.h>
+> > +#include <trace/events/page_pool.h>
+> > +#include <net/netdev_rx_queue.h>
+> > +#include <net/page_pool/types.h>
+> > +#include <net/page_pool/helpers.h>
+> > +#include <linux/genalloc.h>
+> > +#include <linux/dma-buf.h>
+> > +#include <net/devmem.h>
+> > +
+> > +/* Device memory support */
+> > +
+> > +#ifdef CONFIG_DMA_SHARED_BUFFER
+>
+> I still think it is worth adding its own config for devmem or dma-buf
+> for networking, thinking about the embeded system.
+>
+
+FWIW Willem did weigh on this previously and said he prefers to have
+it unguarded by a CONFIG, but I will submit to whatever the consensus
+here. It shouldn't be a huge deal to add a CONFIG technically
+speaking.
+
+> > +static void netdev_dmabuf_free_chunk_owner(struct gen_pool *genpool,
+> > +                                        struct gen_pool_chunk *chunk,
+> > +                                        void *not_used)
+>
+> It seems odd to still keep the netdev_ prefix as it is not really related
+> to netdev, perhaps use 'net_' or something better.
+>
+
+Yes, thanks for catching. I can change to net_devmem_ maybe or net_dmabuf_*=
+.
+
+> > +{
+> > +     struct dmabuf_genpool_chunk_owner *owner =3D chunk->owner;
+> > +
+> > +     kvfree(owner->niovs);
+> > +     kfree(owner);
+> > +}
+> > +
+> > +void __netdev_dmabuf_binding_free(struct netdev_dmabuf_binding *bindin=
+g)
+> > +{
+> > +     size_t size, avail;
+> > +
+> > +     gen_pool_for_each_chunk(binding->chunk_pool,
+> > +                             netdev_dmabuf_free_chunk_owner, NULL);
+> > +
+> > +     size =3D gen_pool_size(binding->chunk_pool);
+> > +     avail =3D gen_pool_avail(binding->chunk_pool);
+> > +
+> > +     if (!WARN(size !=3D avail, "can't destroy genpool. size=3D%lu, av=
+ail=3D%lu",
+> > +               size, avail))
+> > +             gen_pool_destroy(binding->chunk_pool);
+> > +
+> > +     dma_buf_unmap_attachment(binding->attachment, binding->sgt,
+> > +                              DMA_BIDIRECTIONAL);
+>
+> For now DMA_FROM_DEVICE seems enough as tx is not supported yet.
+>
+
+Yes, good catch. I suspect we want to reuse this code for TX path. But
+for now, I'll test with DMA_FROM_DEVICE and if I see no issues I'll
+apply this change.
+
+> > +     dma_buf_detach(binding->dmabuf, binding->attachment);
+> > +     dma_buf_put(binding->dmabuf);
+> > +     xa_destroy(&binding->bound_rxq_list);
+> > +     kfree(binding);
+> > +}
+> > +
+> > +static int netdev_restart_rx_queue(struct net_device *dev, int rxq_idx=
+)
+> > +{
+> > +     void *new_mem;
+> > +     void *old_mem;
+> > +     int err;
+> > +
+> > +     if (!dev || !dev->netdev_ops)
+> > +             return -EINVAL;
+> > +
+> > +     if (!dev->netdev_ops->ndo_queue_stop ||
+> > +         !dev->netdev_ops->ndo_queue_mem_free ||
+> > +         !dev->netdev_ops->ndo_queue_mem_alloc ||
+> > +         !dev->netdev_ops->ndo_queue_start)
+> > +             return -EOPNOTSUPP;
+> > +
+> > +     new_mem =3D dev->netdev_ops->ndo_queue_mem_alloc(dev, rxq_idx);
+> > +     if (!new_mem)
+> > +             return -ENOMEM;
+> > +
+> > +     err =3D dev->netdev_ops->ndo_queue_stop(dev, rxq_idx, &old_mem);
+> > +     if (err)
+> > +             goto err_free_new_mem;
+> > +
+> > +     err =3D dev->netdev_ops->ndo_queue_start(dev, rxq_idx, new_mem);
+> > +     if (err)
+> > +             goto err_start_queue;
+> > +
+> > +     dev->netdev_ops->ndo_queue_mem_free(dev, old_mem);
+> > +
+> > +     return 0;
+> > +
+> > +err_start_queue:
+> > +     dev->netdev_ops->ndo_queue_start(dev, rxq_idx, old_mem);
+>
+> It might worth mentioning why queue start with old_mem will always
+> success here as the return value seems to be ignored here.
+>
+
+So the old queue, we stopped it, and if we fail to bring up the new
+queue, then we want to start the old queue back up to get the queue
+back to a workable state.
+
+I don't see what we can do to recover if restarting the old queue
+fails. Seems like it should be a requirement that the driver tries as
+much as possible to keep the old queue restartable.
+
+I can improve this by at least logging or warning if restarting the
+old queue fails.
+
+> > +
+> > +err_free_new_mem:
+> > +     dev->netdev_ops->ndo_queue_mem_free(dev, new_mem);
+> > +
+> > +     return err;
+> > +}
+> > +
+> > +/* Protected by rtnl_lock() */
+> > +static DEFINE_XARRAY_FLAGS(netdev_dmabuf_bindings, XA_FLAGS_ALLOC1);
+> > +
+> > +void netdev_unbind_dmabuf(struct netdev_dmabuf_binding *binding)
+> > +{
+> > +     struct netdev_rx_queue *rxq;
+> > +     unsigned long xa_idx;
+> > +     unsigned int rxq_idx;
+> > +
+> > +     if (!binding)
+> > +             return;
+> > +
+> > +     if (binding->list.next)
+> > +             list_del(&binding->list);
+>
+> The above does not seems to be a good pattern to delete a entry, is
+> there any reason having a checking before the list_del()? seems like
+> defensive programming?
+>
+
+I think I needed to apply this condition to handle the case where
+netdev_unbind_dmabuf() is called when binding->list is not initialized
+or is empty.
+
+netdev_nl_bind_rx_doit() will call unbind to free a partially
+allocated binding in error paths, so, netdev_unbind_dmabuf() may be
+called with a partially initialized binding. This is why we check for
+binding->list is initialized here and check that rxq->binding =3D=3D
+binding below. The main point is that netdev_unbind_dmabuf() may be
+asked to unbind a partially bound dmabuf due to error paths.
+
+Maybe a comment here will test this better. I will double confirm the
+check is needed for the error paths in netdev_nl_bind_rx_doit().
+
+> > +
+> > +     xa_for_each(&binding->bound_rxq_list, xa_idx, rxq) {
+> > +             if (rxq->binding =3D=3D binding) {
+>
+> It seems like defensive programming here too?
+>
+> > +                     /* We hold the rtnl_lock while binding/unbinding
+> > +                      * dma-buf, so we can't race with another thread =
+that
+> > +                      * is also modifying this value. However, the dri=
+ver
+> > +                      * may read this config while it's creating its
+> > +                      * rx-queues. WRITE_ONCE() here to match the
+> > +                      * READ_ONCE() in the driver.
+> > +                      */
+> > +                     WRITE_ONCE(rxq->binding, NULL);
+> > +
+> > +                     rxq_idx =3D get_netdev_rx_queue_index(rxq);
+> > +
+> > +                     netdev_restart_rx_queue(binding->dev, rxq_idx);
+> > +             }
+> > +     }
+> > +
+> > +     xa_erase(&netdev_dmabuf_bindings, binding->id);
+> > +
+> > +     netdev_dmabuf_binding_put(binding);
+> > +}
+> > +
+>
 
 
-
-On 3/4/24 14:50, Viken Dadhaniya wrote:
-> Currently we have auto suspend delay of 1s which is
-> very high and it takes long time to driver for runtime
-> suspend after use case is done.
-> 
-> Hence to optimize runtime PM ops, reduce auto suspend
-> delay to 100ms.
-> 
-> Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
-> ---
-
-What determines 1s to be high and 100ms to be low enough? Could
-you share some more reasoning?
-
->   drivers/slimbus/qcom-ngd-ctrl.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
-> index efeba8275a66..5de45a0e3da5 100644
-> --- a/drivers/slimbus/qcom-ngd-ctrl.c
-> +++ b/drivers/slimbus/qcom-ngd-ctrl.c
-> @@ -81,7 +81,7 @@
->   #define SLIM_USR_MC_DISCONNECT_PORT	0x2E
->   #define SLIM_USR_MC_REPEAT_CHANGE_VALUE	0x0
->   
-> -#define QCOM_SLIM_NGD_AUTOSUSPEND	MSEC_PER_SEC
-> +#define QCOM_SLIM_NGD_AUTOSUSPEND	(MSEC_PER_SEC / 10)
-
-This could be a good opportunity to inline this value..
-
-Konrad
+--=20
+Thanks,
+Mina
 
