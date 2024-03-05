@@ -1,172 +1,146 @@
-Return-Path: <linux-kernel+bounces-93104-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93105-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB5C5872B15
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 00:34:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5617E872B18
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 00:34:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0AC661C2479A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 23:34:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC18C1F24C21
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 23:34:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 081FD12D74B;
-	Tue,  5 Mar 2024 23:34:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DEC012DD88;
+	Tue,  5 Mar 2024 23:34:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="YDoNyAqj"
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="RmN1ZzW9"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA54A12D219
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 23:33:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1A4812D747
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 23:34:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709681639; cv=none; b=TESK1X8pkJmPXqUAhInkXw0Kdl5syKYlZvPzz/NU82jOt37+kglfDOLQ/wBwjBigVEbNV2XO30q0FNAMeBouRkoSOzmQiczBaq1LO5VXdIRWTzkbDeSBOT/Sa2Bo1Nz7lTgrPXzSAX6ujXglFd+8MqdXBt7IKLMsUT14DJzwe9g=
+	t=1709681683; cv=none; b=TdiHZHH+frJZcaLFDwKoq/PXNb7JgZx2TFUjZYxuzzzH3TWAnRyjYEwy33IdX/fyjwlftJ2bS4iptNL4PXePnkNB8YdwH/Op47kWxm0JbbTGXfFS1yVZw8k6wjtdoJ5DL7Yv4dqtzMLGvf0dzqX4FIusRJ4Hhm3A5p0h0yBCQTM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709681639; c=relaxed/simple;
-	bh=1SnJ59Ps7URmLCLfC/TBTkRIQ6+QZh83O+LxVECZ4eE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZUyMe5lON+6H/vxT48pv9uxL0pJ6Vb3K1PTSpqEl5v1uAyGJw9wNkj6Hq+lNrNzuN9tMDJPHyHyS4IYKdw710fZdb7+z7z/1QWXDibdMn2UjTDmQC+XLY1qpMSZ61jqeRShPlQRbyTebNUa8eQapprIGKVdD4F/G7KfBpurCGaU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=YDoNyAqj; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e6381df003so273172b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 15:33:57 -0800 (PST)
+	s=arc-20240116; t=1709681683; c=relaxed/simple;
+	bh=S2o1sUo5KPLCPT2eyiGeGCz4MtuFwjosW26PC//SCFw=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=ecVi3Ehn4TFsbmy8Yj/tIu8v5osLDR1Dh6Vq4rzcbi3QxTlS4CgdTfBquhMoqzB+diiC5hVIXV0HoYPmlkOaUGCwDuGoxbYKUetWKmmFGNzzIiHPZjX8xtU922EcPc+3+8bP23YWsK+NB0RjueTZFMlaZDW3g8A99YMBYgxAP3E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=RmN1ZzW9; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6b26ce0bbso2461387276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 15:34:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709681637; x=1710286437; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=SVqJYG4NwJpbVhIQ4ejb78hlZKAflZdt5zQRCQZdbhg=;
-        b=YDoNyAqjT4+JsgTrVnl6OAgF1k64GJMlbCpU5D4eDqNf2O9lAGCgFz+aAhOLoIHwhd
-         TD7DBSOjOK4eP0tZwdcV4Mv0gyUEaI4uyNQ2nrVSa7h412iV3qbbB3tAONSQjBafu044
-         us7oVi+DRKkVfH+7Aq5xqFtH94K1j+tykG6J4=
+        d=google.com; s=20230601; t=1709681681; x=1710286481; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=fm3EeStFIzAk85+vETH72VSgC7KPPApaIiaC0eURHqc=;
+        b=RmN1ZzW9FdcuR7PVuB/v7qcXHrQFO0w5STOiKBtu4S+YuYNxAL3kO4wiD2IBNpx1zj
+         mr9hy/1d+92CxI0Lkaz37cMlcmonqqk/P2J5pA3yR8YWUwRPAn1rUWL5MHZZ7nK6r7Ny
+         IikuzMXR1g3GphqN781L1EjWKFIafm1qlyoqk+rAnysaa54OlQpRUXI8e/KKeIPgpuxy
+         xOnDgDXCe/dIHmDfaSodMS7G6HeYs27nJgyvtZlfmRo762lv6aBBv7wsL7QApuMw/Zv3
+         RFUW6a3MVh6KN1MlMmsGz8jyIXSWQysyP49UXwG/F8NS6ohCTMp1IlKLo16+2aq+2qZX
+         9Tzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709681637; x=1710286437;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SVqJYG4NwJpbVhIQ4ejb78hlZKAflZdt5zQRCQZdbhg=;
-        b=tO7fbsBE8tWePQyv0vSAJRzCtxT8bhPE5Y0xaTgNDoWB7sjwtdCKVLnsrZvcls8STG
-         5gEUonJPMcHjw/4rgu0zvizMug39LjEA2JNXrFKQTDo/yNJkojwhukWXNFDpS4trb3H9
-         6Kj6f32eAHDAysDXL5AV+QRHaNHT/LKY2011fcgquFU+7KFAyHAQsBzxhYhbdBy2qMlG
-         AFHkQ1wEDl9Kj1686ijYgQ1PhjGiFix8rIObCKVEcWXfyjb7z5NcgoP++ZZxRitzop/y
-         lyEJKsUW+8n5TxdnBgxsgxhnwX+Y9Vt0dQQ2QS7sjAtM7ibJNSiYw4MGDHhhhkQgwe45
-         Etgw==
-X-Forwarded-Encrypted: i=1; AJvYcCWcpETU4ORr+9x2CN6pyKIcGS80E/aqQN21AGavYuHIQDWQGc0t010cqJEAKrM+Om91VD4HS/k0AQv+G2zLfYMPnb5sxO0ttNM1vGEM
-X-Gm-Message-State: AOJu0YzSEle0M8Js+tAnPMFIjfEgn1SmdJKzcQcqdjXTUO8T/Mk4Eeex
-	1dkg41YvWa/6Xq5HXwEpeTxl0kFna5jHrwd9uxplnXcbuxgZgj3Wq1YaG4gm6g==
-X-Google-Smtp-Source: AGHT+IHQdYS5+xMryfTT1IOdZhcc6rZew5WCVjHi9VllATBYGMQVhc0/wPSb9IRr0q52NcbVnxEBdQ==
-X-Received: by 2002:a05:6a00:1ac7:b0:6e6:27d3:96ab with SMTP id f7-20020a056a001ac700b006e627d396abmr6963065pfv.16.1709681636969;
-        Tue, 05 Mar 2024 15:33:56 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id r5-20020aa79885000000b006e530aca55asm9524721pfl.123.2024.03.05.15.33.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 15:33:55 -0800 (PST)
-Date: Tue, 5 Mar 2024 15:33:54 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Jeremy Linton <jeremy.linton@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
-	will@kernel.org, Jason@zx2c4.com, gustavoars@kernel.org,
-	mark.rutland@arm.com, rostedt@goodmis.org, arnd@arndb.de,
-	broonie@kernel.org, guohui@uniontech.com, Manoj.Iyer@arm.com,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-	James Yang <james.yang@arm.com>,
-	Shiyou Huang <shiyou.huang@arm.com>
-Subject: Re: [PATCH 1/1] arm64: syscall: Direct PRNG kstack randomization
-Message-ID: <202403051526.0BE26F99E@keescook>
-References: <20240305221824.3300322-1-jeremy.linton@arm.com>
- <20240305221824.3300322-2-jeremy.linton@arm.com>
+        d=1e100.net; s=20230601; t=1709681681; x=1710286481;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fm3EeStFIzAk85+vETH72VSgC7KPPApaIiaC0eURHqc=;
+        b=ggjKVSlsKou5qsminBmzcR0RulXEtX9O51P42eP6WZEJDX+ew5Xc/eulU0KovS0k1K
+         fVJkLANLMp7tJWd3VoXBksUD3jBZLACIREL9Jn1Wzbu/jrh7yCrSI/oIT7CzGcrTccJG
+         7J94UnaVSrwfBFK3NhWEQrOqoeuthYC6a0fVV8+OpikOVWmyrA2kPcZ71mmQVoAgBhz2
+         nLZ6oER2bMhZh9ITSeVzUbgMx6deWYQm1rZwOYtkoFjE3YBkThiZPKVILc1UihsU3pM7
+         OuINs7eYb7o7Npqky9R6Pb8uGqUPXYslfDHMq8HDnQUpHofPRIve26UUcCLeRsprqlPC
+         Kuig==
+X-Forwarded-Encrypted: i=1; AJvYcCXrv2eg8Zj2KCG9KVkZq8XA/yVrQln00XArqP77ySGCauhBQXZ7icXBml8DxVMEExvUc43Uxcy9L+faxAGfNLDMyb56tRCUXwMs2G3B
+X-Gm-Message-State: AOJu0YzPKHhzTE7yLgv2nt166iAUDseJDgm6k+vlD0IzvLPA8LR8VHiR
+	GZbbXF1+kDEP2+tgB1lCh8d88XtdKUp8Rwou5dG+oBuPHCp2M7AFrVgIgkjiFb7TXDwxfyT+8AP
+	vaQb2Q7CxMQR6NuwCzMjTVw==
+X-Google-Smtp-Source: AGHT+IE+EhihKFp1AV0Ks/kBpof4c1iU4PMM+jPwxyvoWQq6aQK8OKeCF5YhNVfPqDUvBkRb9ZGIsn+AXaILjgfRtg==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:6902:100d:b0:dc6:cd85:bcd7 with
+ SMTP id w13-20020a056902100d00b00dc6cd85bcd7mr3654071ybt.3.1709681680784;
+ Tue, 05 Mar 2024 15:34:40 -0800 (PST)
+Date: Tue, 05 Mar 2024 23:34:35 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240305221824.3300322-2-jeremy.linton@arm.com>
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAAys52UC/42NQQrCMBBFryJZO5JMFKsr7yEi7SRpB2xTkhIV6
+ d1Ni4Luuvq8v3jvJaINbKM4rl4i2MSRfZdBr1eCmrKrLbDJLFDiViIixCF01D/BBE42RIgUGdq
+ edRs+c3V3IFCV0tLsVGWIRLb1wTp+zKXzJXPDcfDhOYeTmt5vQy9uJAUSDmR0UaCTeylPtff1z W7It2KKJPwVF8vFmMWmJFsZ7ciV/+JxHN/chAtgOAEAAA==
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1709681680; l=1992;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=S2o1sUo5KPLCPT2eyiGeGCz4MtuFwjosW26PC//SCFw=; b=7+8qHAZ3oM99JvbuQ8eRN3JlnaRULZJKRxqW9xULkS6m9ejvTAmpvoT4okFTNUEmqyWppEJMS
+ /ubJMnIj5IHBaWp0g/NyZfEQ9Q/5xWAYcIJ7VQlBmgLtDPyP70qCPpJ
+X-Mailer: b4 0.12.3
+Message-ID: <20240305-strncpy-drivers-scsi-mpi3mr-mpi3mr_fw-c-v3-0-5b78a13ff984@google.com>
+Subject: [PATCH v3 0/7] scsi: replace deprecated strncpy
+From: Justin Stitt <justinstitt@google.com>
+To: Sathya Prakash Veerichetty <sathya.prakash@broadcom.com>, Kashyap Desai <kashyap.desai@broadcom.com>, 
+	Sumit Saxena <sumit.saxena@broadcom.com>, Sreekanth Reddy <sreekanth.reddy@broadcom.com>, 
+	"James E.J. Bottomley" <jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>, 
+	Suganath Prabu Subramani <suganath-prabu.subramani@broadcom.com>, Ariel Elior <aelior@marvell.com>, 
+	Manish Chopra <manishc@marvell.com>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Saurav Kashyap <skashyap@marvell.com>, Javed Hasan <jhasan@marvell.com>, 
+	GR-QLogic-Storage-Upstream@marvell.com, Nilesh Javali <njavali@marvell.com>, 
+	Manish Rangankar <mrangankar@marvell.com>, Don Brace <don.brace@microchip.com>
+Cc: mpi3mr-linuxdrv.pdl@broadcom.com, linux-scsi@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Kees Cook <keescook@chromium.org>, MPT-FusionLinux.pdl@broadcom.com, 
+	netdev@vger.kernel.org, storagedev@microchip.com, 
+	Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
 
-On Tue, Mar 05, 2024 at 04:18:24PM -0600, Jeremy Linton wrote:
-> The existing arm64 stack randomization uses the kernel rng to acquire
-> 5 bits of address space randomization. This is problematic because it
-> creates non determinism in the syscall path when the rng needs to be
-> generated or reseeded. This shows up as large tail latencies in some
-> benchmarks and directly affects the minimum RT latencies as seen by
-> cyclictest.
-> 
-> Other architectures are using timers/cycle counters for this function,
-> which is sketchy from a randomization perspective because it should be
-> possible to estimate this value from knowledge of the syscall return
-> time, and from reading the current value of the timer/counters.
-> 
-> So, a poor rng should be better than the cycle counter if it is hard
-> to extract the stack offsets sufficiently to be able to detect the
-> PRNG's period. Lets downgrade from get_random_u16() to
-> prandom_u32_state() under the theory that the danger of someone
-> guessing the 1 in 32 per call offset, is larger than that of being
-> able to extract sufficient history to accurately predict future
-> offsets. Further it should be safer to run with prandom_u32_state than
-> disabling stack randomization for those subset of applications where the
-> difference in latency is on the order of ~5X worse.
-> 
-> Reported-by: James Yang <james.yang@arm.com>
-> Reported-by: Shiyou Huang <shiyou.huang@arm.com>
-> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
-> ---
->  arch/arm64/kernel/syscall.c | 42 ++++++++++++++++++++++++++++++++++++-
->  1 file changed, 41 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/kernel/syscall.c b/arch/arm64/kernel/syscall.c
-> index 9a70d9746b66..33b3ea4adff8 100644
-> --- a/arch/arm64/kernel/syscall.c
-> +++ b/arch/arm64/kernel/syscall.c
-> @@ -5,6 +5,7 @@
->  #include <linux/errno.h>
->  #include <linux/nospec.h>
->  #include <linux/ptrace.h>
-> +#include <linux/prandom.h>
->  #include <linux/randomize_kstack.h>
->  #include <linux/syscalls.h>
->  
-> @@ -37,6 +38,45 @@ static long __invoke_syscall(struct pt_regs *regs, syscall_fn_t syscall_fn)
->  	return syscall_fn(regs);
->  }
->  
-> +#ifdef CONFIG_RANDOMIZE_KSTACK_OFFSET
-> +DEFINE_PER_CPU(struct rnd_state, kstackrng);
-> +
-> +static u16 kstack_rng(void)
-> +{
-> +	u32 rng = prandom_u32_state(this_cpu_ptr(&kstackrng));
-> +
-> +	return rng & 0x1ff;
-> +}
-> +
-> +/* Should we reseed? */
-> +static int kstack_rng_setup(unsigned int cpu)
-> +{
-> +	u32 rng_seed;
-> +
-> +	/* zero should be avoided as a seed */
-> +	do {
-> +		rng_seed = get_random_u32();
-> +	} while (!rng_seed);
-> +	prandom_seed_state(this_cpu_ptr(&kstackrng), rng_seed);
-> +	return 0;
-> +}
-> +
-> +static int kstack_init(void)
-> +{
-> +	int ret;
-> +
-> +	ret = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "arm64/cpuinfo:kstackrandomize",
-> +				kstack_rng_setup, NULL);
+This series contains multiple replacements of strncpy throughout the
+scsi subsystem.
 
-This will run initial seeding, but don't we need to reseed this with
-some kind of frequency?
+strncpy() is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces. The details of each replacement will be in their respective
+patch.
 
-Otherwise, seems fine to me.
+---
+Changes in v3:
+- update trailers (thanks Kees)
+- Link to v2: https://lore.kernel.org/r/20240228-strncpy-drivers-scsi-mpi3mr-mpi3mr_fw-c-v2-0-dacebd3fcfa0@google.com
 
--- 
-Kees Cook
+Changes in v2:
+- for (1/7): change strscpy to simple const char* assignments
+- Link to v1: https://lore.kernel.org/r/20240223-strncpy-drivers-scsi-mpi3mr-mpi3mr_fw-c-v1-0-9cd3882f0700@google.com
+
+---
+Justin Stitt (7):
+      scsi: mpi3mr: replace deprecated strncpy with assignments
+      scsi: mpt3sas: replace deprecated strncpy with strscpy
+      scsi: qedf: replace deprecated strncpy with strscpy
+      scsi: qla4xxx: replace deprecated strncpy with strscpy
+      scsi: devinfo: replace strncpy and manual pad
+      scsi: smartpqi: replace deprecated strncpy with strscpy
+      scsi: wd33c93: replace deprecated strncpy with strscpy
+
+ drivers/net/ethernet/qlogic/qed/qed_main.c |  2 +-
+ drivers/scsi/mpi3mr/mpi3mr_fw.c            | 10 +++++-----
+ drivers/scsi/mpt3sas/mpt3sas_base.c        |  2 +-
+ drivers/scsi/mpt3sas/mpt3sas_transport.c   | 18 +++++++++---------
+ drivers/scsi/qedf/qedf_main.c              |  2 +-
+ drivers/scsi/qla4xxx/ql4_mbx.c             | 17 ++++++++++++-----
+ drivers/scsi/qla4xxx/ql4_os.c              | 14 +++++++-------
+ drivers/scsi/scsi_devinfo.c                | 18 ++++++++++--------
+ drivers/scsi/smartpqi/smartpqi_init.c      |  5 ++---
+ drivers/scsi/wd33c93.c                     |  4 +---
+ 10 files changed, 49 insertions(+), 43 deletions(-)
+---
+base-commit: 39133352cbed6626956d38ed72012f49b0421e7b
+change-id: 20240222-strncpy-drivers-scsi-mpi3mr-mpi3mr_fw-c-1b130d51bdcc
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
+
 
