@@ -1,65 +1,51 @@
-Return-Path: <linux-kernel+bounces-91733-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91731-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E9A18715C9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:21:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 839D78715C5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:20:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B4B92B23538
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 06:20:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E00B283766
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 06:20:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67E3F7D3F6;
-	Tue,  5 Mar 2024 06:20:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B63C97C085;
+	Tue,  5 Mar 2024 06:20:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linumiz.com header.i=@linumiz.com header.b="aA6RsbfO"
-Received: from omta34.uswest2.a.cloudfilter.net (omta34.uswest2.a.cloudfilter.net [35.89.44.33])
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="nooo8JGX"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 340647E10D
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 06:20:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C38329437;
+	Tue,  5 Mar 2024 06:20:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709619639; cv=none; b=s8gP+Q4jz5Xogpjhxe9BOlWYmmyL/ivbe6IQOJrFOTnfAKvUM4ChGmb7W/p5+kPYtTJXpOfw3tyhbPxoyGNpsDNfOo8zxReaZzP7BMQrrgoOiirb+Mczl/dfswBG5+AHVjv26xsu2CXsdS0muDHGxn0hcGto8pyrwfvWIC2q7jk=
+	t=1709619627; cv=none; b=rYO+7mAkkXnVvBt1KzYNp1diCN/REDWo1Ag+UjDD/OiL8PRVMylaaCQ+INdMIokNHiw3oW6syqF5ZLvGHPKWZkk9I7b6mpJ706h+MzswelpBldyab49LT7wsxif6z5ykyyQEAQr5cdwLBXeMt5HEMyvJklR/vSmQNjIUy7HXT3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709619639; c=relaxed/simple;
-	bh=RDc2FgK9KBEAoEybt2cK76Njw4wXKy3QNd6y2peeaIE=;
-	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=NcJvOhQEzQts8MwZmZN3T98rnWbO4KLNohcCDfX0F8Ces7qyEAYk01pkVwqKQrKP2yrOUU7AO4jkYnXCzsGhZ8Jdw4F6GxD45/4ZSwPAyBfl7eSkV9pcGU6/1phLC7He66YH9uTZCOQZfpp3pkLvLefBLFH6CH9Mt5LGKHwwB6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linumiz.com; spf=pass smtp.mailfrom=linumiz.com; dkim=pass (2048-bit key) header.d=linumiz.com header.i=@linumiz.com header.b=aA6RsbfO; arc=none smtp.client-ip=35.89.44.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linumiz.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linumiz.com
-Received: from eig-obgw-5005a.ext.cloudfilter.net ([10.0.29.234])
-	by cmsmtp with ESMTPS
-	id hG5Brbv0fHXmAhOAFrBiW3; Tue, 05 Mar 2024 06:20:35 +0000
-Received: from md-in-79.webhostbox.net ([43.225.55.182])
-	by cmsmtp with ESMTPS
-	id hOABrNOukREFhhOADrdcqU; Tue, 05 Mar 2024 06:20:34 +0000
-X-Authority-Analysis: v=2.4 cv=cuKdkU4i c=1 sm=1 tr=0 ts=65e6b9b2
- a=LfuyaZh/8e9VOkaVZk0aRw==:117 a=kofhyyBXuK/oEhdxNjf66Q==:17
- a=IkcTkHD0fZMA:10 a=K6JAEmCyrfEA:10 a=oz0wMknONp8A:10 a=hD80L64hAAAA:8
- a=7CQSdrXTAAAA:8 a=VwQbUJbxAAAA:8 a=LywAyCD41A-1GUSnf9cA:9 a=QEXdDO2ut3YA:10
- a=a-qgeE7W1pNrGK8U0ZQC:22 a=AjGcO6oz07-iQ99wixmX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=linumiz.com
-	; s=default; h=Content-Transfer-Encoding:Content-Type:Subject:From:Cc:To:
-	MIME-Version:Date:Message-ID:Sender:Reply-To:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=VUyE2CiKhsfUXFjkUTpgRFfJaUNoDyxfOrTQvJ6ukKc=; b=aA6RsbfOajw6u/Q+b719qtWWve
-	j7DzUOMiahS7+wiMZ7GxnrG29K1nooZD+tey/3ozbFNmEBcQmrSdr8YuYU7IYjJB8wUxu1nzQwXmL
-	JPsmY5BV4oyO9hrwgrMHRU1Q+S4GPRGON6J38cljVnzOvADNlBYz0fOakGwW7yEsQuLxF4wWDT84v
-	wY6EUo16Skc3dZ6/Z5cZxWJi4TY8+xpV19ZU2nsRHAq2NPFa1bUHfwBeDRo/9heAfVZwac3Uc0Kz1
-	3lCZshjuo8b38286ANAl5QuWzvWprMlV8XuEJTVnBW9Z0kdk5PqghafQrMFAkqAcGUQcv0H6MleFl
-	kFokNYkA==;
-Received: from [122.165.245.213] (port=54194 helo=[192.168.1.21])
-	by md-in-79.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <karthikeyan@linumiz.com>)
-	id 1rhOAA-002kMF-03;
-	Tue, 05 Mar 2024 11:50:30 +0530
-Message-ID: <1553a526-6f28-4a68-88a8-f35bd22d9894@linumiz.com>
-Date: Tue, 5 Mar 2024 11:50:03 +0530
+	s=arc-20240116; t=1709619627; c=relaxed/simple;
+	bh=XtxMs+32eXb+O0tOlP+RiquoUnx+cPRNE8UtljjeICU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jXEL9x/S/1636O5GgxDhLUrkhzsXiTZ/AHPbEzrrE6aJ6qqab1VuVe2IgbXWTuTBPZ6UKt1r5bxMCcJ+mKDM+O5aCPF4N6KLUmmahxvFEmCGspMtQRhTqbEcFyCafzHTGeBtAB9D4KVsydB05Nd6/MLSu/CmjuFkUGS2Jor2/Yo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=nooo8JGX; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
+	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
+	In-Reply-To:References; bh=/Yy37cKtsYVqB5e9llo9kr/9z30Da+A+PjrUO4HJ8S8=;
+	t=1709619625; x=1710051625; b=nooo8JGXcCd72Jvydg/3fl/7m62P/uJ+Y6LI0vdqRYH44zu
+	BfHakO/jVzfW6fpZ5DHC7+9vyp8pxIuvrtFaYFi03Y5GLFdJMUlpDbyZ/46j6novUvZU5Q2GayfM/
+	m0H3aaF05mH9UsgmtwL0/7wIOP8reC/5eG3nNDoF86vYzsZfrf7tVT2ThesHoZX6JAPXZik5Sfoes
+	51yC9ncz5KTHc8ATaifjcJaEPC+09s3ZIau+zrXHHizTfaoNWcrGT/h9Tjg9V9WpXdVn2tkUdudFI
+	0At4fUtUvTIAdEGeYJCQnHlxdd6lz5AJ3s2tWSs8i5firxbEof+Dr4kQ7DgTZGBQ==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rhO9x-0008AZ-9Y; Tue, 05 Mar 2024 07:20:17 +0100
+Message-ID: <1c13f4f7-fa02-4864-8621-bfd738546fc2@leemhuis.info>
+Date: Tue, 5 Mar 2024 07:20:16 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,119 +53,65 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: vkoul@kernel.org, bumyong.lee@samsung.com
-Cc: dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
- parthiban@linumiz.com, saravanan@linumiz.com
-From: karthikeyan <karthikeyan@linumiz.com>
-Subject: dmaengine: CPU stalls while loading bluetooth module
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH] Revert "Input: bcm5974 - check endpoint type before
+ starting traffic"
+Content-Language: en-US, de-DE
+To: Javier Carrasco <javier.carrasco.cruz@gmail.com>,
+ Henrik Rydberg <rydberg@bitmath.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+ regressions@lists.linux.dev
+References: <20240305-revert_bcm5974_ep_check-v1-1-db4f0422588f@gmail.com>
+From: "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <20240305-revert_bcm5974_ep_check-v1-1-db4f0422588f@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - md-in-79.webhostbox.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - linumiz.com
-X-BWhitelist: no
-X-Source-IP: 122.165.245.213
-X-Source-L: No
-X-Exim-ID: 1rhOAA-002kMF-03
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.1.21]) [122.165.245.213]:54194
-X-Source-Auth: karthikeyan@linumiz.com
-X-Email-Count: 1
-X-Org: HG=dishared_whb_net_legacy;ORG=directi;
-X-Source-Cap: bGludW1jbWM7aG9zdGdhdG9yO21kLWluLTc5LndlYmhvc3Rib3gubmV0
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfMgiBHd5wB21jxDOc9zZheDjDd7uayCDtvdwxCwuKhE8e0ST4xDRgPivRjxjTeqYFbWNKGSZRIHUQxbComS1LxSEaFr/TuABJSolynMihgNt4q1CKIUg
- wH5gkBk4XeJCJsLDbBtOkn0jigD7p3z1KzR7rZhhuS/elwLoxASLLuAXnwShc2mRXb/3dXUapmMtqZhJFFnITjceDS13cfc7nD1cSv6HhYX+xh3zWmfQPxt9
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1709619625;30703a26;
+X-HE-SMSGID: 1rhO9x-0008AZ-9Y
 
-Hi all,
+On 05.03.24 06:52, Javier Carrasco wrote:
+> This patch intended to fix an well-knonw issue in old drivers where the
+> endpoint type is taken for granted, which is often triggered by fuzzers.
+> 
+> That was the case for this driver [1], and although the fix seems to be
+> correct, it uncovered another issue that leads to a regression [2] if
+> the endpoints of the current interface are checked. The driver makes use
+> of endpoints that belong to a different interface rather than the one it
+> binds (it binds to the third interface, but also accesses an endpoint
+> from a different one). The driver should claim the interfaces it
+> requires, but that is still not the case.
+> 
+> Given that the regression is more severe than the issue found by
+> syzkaller, the best approach is reverting the patch that causes the
+> regression, and trying to fix the underlying problem before checking
+> the endpoint types again.
+> 
+> Note that reverting this patch will probably trigger the syzkaller bug
+> at some point.
+>> [1] https://syzkaller.appspot.com/bug?extid=348331f63b034f89b622
+> [2] https://lore.kernel.org/linux-input/ab9d758c-3ce9-42f6-99af-877055a589e6@leemhuis.info/T/#t
 
-we have encountered CPU stalls in mainline kernel while loading the 
-bluetooth module. We have custom board based on rockchip rv1109 soc
-and there is bluetooth chipset of relatek 8821cs. CPU is stalls  while 
-realtek 8821cs module.
+FWIW, these should be Link: or Closes tags, as explained in the docs.
+And there is a better lore link. And there is the bugzilla entry as well.
+Hence...
+ 
+> This reverts commit 2b9c3eb32a699acdd4784d6b93743271b4970899.
+> 
+> Fixes: b516b1b0dfcc ("Revert "Input: bcm5974 - check endpoint type before starting traffic"")
 
-Bug/Regression:
-In current mainline, we found CPU is stalls when we load bluetooth 
-module. git bisect shows commit 22a9d9585812440211b0b34a6bc02ade62314be4 
-as a bad, which produce CPU stalls.
+you might want to add them here like this:
 
-git show 22a9d9585812440211b0b34a6bc02ade62314be4
-commit 22a9d9585812440211b0b34a6bc02ade62314be4
-Author: Bumyong Lee <bumyong.lee@samsung.com>
-Date:   Tue Dec 19 14:50:26 2023 +0900
+ Link: https://syzkaller.appspot.com/bug?extid=348331f63b034f89b622 [1]
+ Link: https://lore.kernel.org/linux-input/87sf161jjc.wl-tiwai@suse.de/ [2]
+ Link: https://bugzilla.suse.com/show_bug.cgi?id=1220030
 
-     dmaengine: pl330: issue_pending waits until WFP state
+In an ideal world we also would add a "Reported-by: Jacopo Radice" before
+the bugzilla line, as the details in the suse bugtracker apparently is
+public, but it's likely better to not go down that path.
 
-     According to DMA-330 errata notice[1] 71930, DMAKILL
-     cannot clear internal signal, named pipeline_req_active.
-     it makes that pl330 would wait forever in WFP state
-     although dma already send dma request if pl330 gets
-     dma request before entering WFP state.
+> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
 
-     The errata suggests that polling until entering WFP state
-     as workaround and then peripherals allows to issue dma request.
-
-     [1]: https://developer.arm.com/documentation/genc008428/latest
-
-     Signed-off-by: Bumyong Lee <bumyong.lee@samsung.com>
-     Link: 
-https://lore.kernel.org/r/20231219055026.118695-1-bumyong.lee@samsung.com
-     Signed-off-by: Vinod Koul <vkoul@kernel.org>
-
-diff --git a/drivers/dma/pl330.c b/drivers/dma/pl330.c
-index 3cf0b38387ae..c29744bfdf2c 100644
---- a/drivers/dma/pl330.c
-+++ b/drivers/dma/pl330.c
-@@ -1053,6 +1053,9 @@ static bool _trigger(struct pl330_thread *thrd)
-
-         thrd->req_running = idx;
-
-+       if (desc->rqtype == DMA_MEM_TO_DEV || desc->rqtype == 
-DMA_DEV_TO_MEM)
-+               UNTIL(thrd, PL330_STATE_WFP);
-+
-         return true;
-  }
-
-By reverting this commit, we have success in loading of bluetooth module.
-
-
-Output of CPU stalls:
-# modprobe hci_uart
-[   27.024749] Bluetooth: HCI UART driver ver 2.3
-[   27.025284] Bluetooth: HCI UART protocol Three-wire (H5) registered
-# [   28.125338] dwmmc_rockchip ffc70000.mmc: Unexpected interrupt latency
-[   33.245339] dwmmc_rockchip ffc50000.mmc: Unexpected interrupt latency
-[  326.195321] rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
-[  326.195880] rcu:     0-...0: (3 ticks this GP) idle=e5f4/1/0x40000000 
-softirq=551/552 fqs=420
-[  326.196621] rcu:              hardirqs   softirqs   csw/system
-[  326.197115] rcu:      number:        0          0            0
-[  326.197612] rcu:     cputime:        0          0            0   ==> 
-10500(ms)
-[  326.198231] rcu:     (detected by 1, t=2105 jiffies, g=-455, q=17 
-ncpus=2)
-[  326.198823] Sending NMI from CPU 1 to CPUs 0:
-
-Expected Output:
-# modprobe hci_uart
-[   30.690321] Bluetooth: HCI UART driver ver 2.3
-[   30.690852] Bluetooth: HCI UART protocol Three-wire (H5) registered
-# [   31.453586] Bluetooth: hci0: RTL: examining hci_ver=08 hci_rev=000c 
-lmp_ver=08 lmp_subver=8821
-[   31.458061] Bluetooth: hci0: RTL: rom_version status=0 version=1
-[   31.458608] Bluetooth: hci0: RTL: loading rtl_bt/rtl8821cs_fw.bin
-[   31.465029] Bluetooth: hci0: RTL: loading rtl_bt/rtl8821cs_config.bin
-[   31.483926] Bluetooth: hci0: RTL: cfg_sz 25, total sz 36953
-[   32.213105] Bluetooth: hci0: RTL: fw version 0x75b8f098
-[   32.274216] Bluetooth: MGMT ver 1.22
-[   32.285376] NET: Registered PF_ALG protocol family
-
-Thanks,
-Karthikeyan K
+Ciao, Thorsten
 
