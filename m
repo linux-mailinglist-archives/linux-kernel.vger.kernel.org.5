@@ -1,279 +1,326 @@
-Return-Path: <linux-kernel+bounces-92629-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92630-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0162487231F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:50:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5130D872321
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:50:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81FDB1F226A0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:50:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BBCFEB22ED4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:50:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22A6F127B65;
-	Tue,  5 Mar 2024 15:50:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A994B127B66;
+	Tue,  5 Mar 2024 15:50:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QlODpShP"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b="bI/3mKHY"
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CEF5127B50
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 15:50:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A58E4127B53
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 15:50:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709653813; cv=none; b=tPxNkcb6hhg7s5OJjrIuXv1YLscC9WSUH+Z/X6ps61D2vqM4IpWY7F3UBID+WmOrU/NHGbnKYo6JkIPpwsgDkFVA/F4HTP1WEYvoWS95k0Jp3RJf11Z74mVJN6Ka20N321kFKN+zI5VqgdCPJ+AhVqNQBRx+cqJWacRKY7LgS84=
+	t=1709653837; cv=none; b=KBS9LJ70fT5RNL4UmyhKOZG4nxDlT6+rvwWSeuGmm3pMl/ydTPq69m+sPcPQa2bRX76uEqLUNxcmLCTDc7QXpwC3EfEuKIYgk5zze2ERW6DTtePh7TcNi0pL0y709IbGaa2sFoYI4BvE2zwkGlJNeM4ZR9rUeYLhtN7M7yNqPXo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709653813; c=relaxed/simple;
-	bh=QeyiRiKtFUmv85nxdL/Xv6ZWP8RdUk5xNvksulmsHOY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iChDUFt9u36+FLoP3E0cEybf4kjwjEm/AdQUDXTtgk8nQVtF8n8AcKWvOyJ6OhiU8xN8liXIxrFQT1ndPLB6qiIICgYbZkDT9WEVrsSAmb0aB0Kg27wIGtUbFjm5YR2EwjdCz18LktDwBLP6u1J05MxnU+G59HPtc7K/BLoVcG4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QlODpShP; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709653806;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=zCIy443PV1bMExvsymG7IFjtByoanOECI8kV/uhdu4Q=;
-	b=QlODpShPQnivpfkePLibszwfSI6lNzzKgom5zuURyuqh+v2ySBvjbWqQy322wXOrsreeCQ
-	UaZrgOlCSgSV0TsCKCL//oyYjZ3KyrvAILbQYVLb2mJYAP5tN5rQtSqz2jA0kthTm53SZj
-	OterMIHXbimipf728QdwpZro1pBWJak=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-45-FXf8J3NKPRKbcsZOFR1GYw-1; Tue, 05 Mar 2024 10:50:03 -0500
-X-MC-Unique: FXf8J3NKPRKbcsZOFR1GYw-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-33deb0e69daso2396130f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 07:50:02 -0800 (PST)
+	s=arc-20240116; t=1709653837; c=relaxed/simple;
+	bh=gre3Gs3nmOqCN6F8EWRmGKYHGuddHuaxSogJsIu6aG4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jgw7XG0l4ORlhk/57cP5wT9snEddDKCv4f4CmquPbqhRjbEif80fmuOUxH2Nwnnf1Bz1OLKlgjKnET0U0Cl/zqBfKYxty46t2uBDlBWPpI9EatzRhC3ODpuFqon0XRjHxmLAMXpLZDi3BmKA04TH2KJdwhyYtuljJR/fmfVwPFA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com; spf=pass smtp.mailfrom=cloud.com; dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b=bI/3mKHY; arc=none smtp.client-ip=209.85.161.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloud.com
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-5a142375987so395241eaf.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 07:50:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=citrix.com; s=google; t=1709653835; x=1710258635; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=cSwqEeyJX27O1JLT5yCpxeLX8dCP1IAM2t3/nC3O9uc=;
+        b=bI/3mKHYMo+imJ9k/Nn0rQe8t9aLkE9vWE5TOptIteGlRwk/YXppKxzaiZ+nl4vEnb
+         u0kQ8UyvS9wcL3Herhu9wZgEvjl1XGY+Gz+aNe9AAXOnNbF5kgdbq5MHUqi9ixkyqMvW
+         GB9oiwjEN4wTpfgKtnd7bZZtG4jSMEWbCLVX0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709653802; x=1710258602;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zCIy443PV1bMExvsymG7IFjtByoanOECI8kV/uhdu4Q=;
-        b=hRIk5TC8UwTEElKXIXZSWmSbXyuOOBd4ULGw4z3kc9ZpMkl8/l3mwDE/QCTEZFmPM7
-         32t5o2w34tPaByzJrnAjwqEZgLlFYG+CRukTfHs3+f6oTmwaIYDKVZAD7fQ38CvYZc1j
-         954WYQMazQ1xWwfAVnWZUNGGYYV1djYEbz1yB0nvvjstgyolec6R/JBoK8HSqbg/hXEP
-         83ffYyGV3PsaGODcdnBfzWmqGcuQQbffFz0IJd5JIcZcv9p6ab11H+klPDUs0VfHTNoO
-         Lqqr+ui/dujKcuycFzEnVlWEkmK2w932F94ddc8DhFMWmsVo4XYO4bjZoTY7HUrzZgMI
-         egLQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV3fWknI1O4vr3dc1vu7ZyVTczrcsFjG1tj5CJOkwtEXwX8SOOirQqRly1IjNRERBgDhe7uVltA2qr2p7sGZ71TRzE25IHzK5fbTGPW
-X-Gm-Message-State: AOJu0Yy0viIk2Sb1R95TGGgbPsP7AOhsTwXM7LMS2UYQ5L5AJqzT4Zna
-	yrdX86NDcIfEGTR6/YoDeJmipRPvVUvHXnAFvmW1qq51bzBnfllL2yExX63Ci8agvGYKuC/MS49
-	6j+9Xq8zb+9Ty9l14SLkQ2Zk/CmCItgvhh4znLMvDJYPk1cjwNx47NEYwGdA1YMCWA0/3dQ==
-X-Received: by 2002:adf:9dc4:0:b0:33e:1ee0:62ac with SMTP id q4-20020adf9dc4000000b0033e1ee062acmr8455507wre.5.1709653802058;
-        Tue, 05 Mar 2024 07:50:02 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFmrb4M094kjpI+xCb6K9TxDuygeKpMipcdzxLgCU/VQBNhWcXn8spbARz+uJ/HiNVXNVb6kw==
-X-Received: by 2002:adf:9dc4:0:b0:33e:1ee0:62ac with SMTP id q4-20020adf9dc4000000b0033e1ee062acmr8455490wre.5.1709653801518;
-        Tue, 05 Mar 2024 07:50:01 -0800 (PST)
-Received: from ?IPV6:2003:cb:c73c:8100:600:a1e5:da94:a13a? (p200300cbc73c81000600a1e5da94a13a.dip0.t-ipconnect.de. [2003:cb:c73c:8100:600:a1e5:da94:a13a])
-        by smtp.gmail.com with ESMTPSA id ch10-20020a5d5d0a000000b0033e26c81b11sm10380878wrb.92.2024.03.05.07.50.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Mar 2024 07:50:01 -0800 (PST)
-Message-ID: <cb738797-77d9-4e20-a54c-f70385cdbd95@redhat.com>
-Date: Tue, 5 Mar 2024 16:50:00 +0100
+        d=1e100.net; s=20230601; t=1709653835; x=1710258635;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cSwqEeyJX27O1JLT5yCpxeLX8dCP1IAM2t3/nC3O9uc=;
+        b=rjjVAYwOMxJHxKyeDChvPhEPNCXpHt8Kunt8LxJ2q+1QCxP/4bDR3OTC2bK2dt90WT
+         66p723RG3pS4GI6f43l95M6aWS2FnCUvCGm0yXBQGNm0fLfG/RSXU4iy8rmAVcB5WbtC
+         6XCyxxTcCi0tgY7o+WIroK9SewCKK0UgYq2K5xxSQtChUU4BNhsktA05QCyikvbX3dZu
+         30DTBT7Fntkor4MnOaGG2pjJBqByv9b4ReB0FNsk2yMo1feHF7d9qmt2e9gWl2DiaN3y
+         fBzcfDdcrOG+tbS1lFu9dIzRx1FxUf0GPNIAp80Qd5DXIDCiqqwQSUQQvLDLrjTgaj92
+         bk4A==
+X-Forwarded-Encrypted: i=1; AJvYcCUfgOBD/61RfH36hkT/k4fxJ6oi6iYJcVPYGo6vPRQzNrZ2mn4xnvWqh2z3TKzWSPouh5k1nyGT9UHr18DIeVn0v4nvpl77GDOIY8H+
+X-Gm-Message-State: AOJu0Yyp2XvU1bvGASmczPIjCZd7OQlec6gw0L6updZeq3D9SQeWJKHk
+	dF2g0kpAfnTLiqt3nq5gar51+Qjua8x9ewDnIxDcM7cHUIHSCbll2Lve+g/L1H8=
+X-Google-Smtp-Source: AGHT+IE/IMcuOiiWALJVnleoLZ9uK203bZmDz0H+yNwVrrrVSNk44jf3q+brmAGBQFsabIchMvDbPw==
+X-Received: by 2002:a05:6358:7587:b0:17b:f880:a3c1 with SMTP id x7-20020a056358758700b0017bf880a3c1mr2489415rwf.17.1709653834543;
+        Tue, 05 Mar 2024 07:50:34 -0800 (PST)
+Received: from localhost ([213.195.118.74])
+        by smtp.gmail.com with ESMTPSA id pf10-20020a056214498a00b0068f914ac80bsm6380202qvb.50.2024.03.05.07.50.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Mar 2024 07:50:34 -0800 (PST)
+Date: Tue, 5 Mar 2024 16:50:32 +0100
+From: Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
+To: Stefano Stabellini <sstabellini@kernel.org>
+Cc: xen-devel@lists.xenproject.org, Juergen Gross <jgross@suse.com>,
+	Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+	linux-kernel@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
+	Andrew Cooper <andrew.cooper3@citrix.com>
+Subject: Re: [PATCH RFC] x86/xen: attempt to inflate the memory balloon on PVH
+Message-ID: <Zec_SGeM5bF3DPgj@macbook>
+References: <20240220174341.56131-1-roger.pau@citrix.com>
+ <alpine.DEB.2.22.394.2402221701190.754277@ubuntu-linux-20-04-desktop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] mm: swap: Fix race between free_swap_and_cache() and
- swapoff()
-Content-Language: en-US
-To: Ryan Roberts <ryan.roberts@arm.com>,
- Andrew Morton <akpm@linux-foundation.org>, "Huang, Ying"
- <ying.huang@intel.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20240305151349.3781428-1-ryan.roberts@arm.com>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240305151349.3781428-1-ryan.roberts@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <alpine.DEB.2.22.394.2402221701190.754277@ubuntu-linux-20-04-desktop>
 
-On 05.03.24 16:13, Ryan Roberts wrote:
-> There was previously a theoretical window where swapoff() could run and
-> teardown a swap_info_struct while a call to free_swap_and_cache() was
-> running in another thread. This could cause, amongst other bad
-> possibilities, swap_page_trans_huge_swapped() (called by
-> free_swap_and_cache()) to access the freed memory for swap_map.
+On Thu, Feb 22, 2024 at 05:16:09PM -0800, Stefano Stabellini wrote:
+> On Tue, 20 Feb 2024, Roger Pau Monne wrote:
+> > When running as PVH or HVM Linux will use holes in the memory map as scratch
+> > space to map grants, foreign domain pages and possibly miscellaneous other
+> > stuff.  However the usage of such memory map holes for Xen purposes can be
+> > problematic.  The request of holesby Xen happen quite early in the kernel boot
+> > process (grant table setup already uses scratch map space), and it's possible
+> > that by then not all devices have reclaimed their MMIO space.  It's not
+> > unlikely for chunks of Xen scratch map space to end up using PCI bridge MMIO
+> > window memory, which (as expected) causes quite a lot of issues in the system.
 > 
-> This is a theoretical problem and I haven't been able to provoke it from
-> a test case. But there has been agreement based on code review that this
-> is possible (see link below).
-> 
-> Fix it by using get_swap_device()/put_swap_device(), which will stall
-> swapoff(). There was an extra check in _swap_info_get() to confirm that
-> the swap entry was valid. This wasn't present in get_swap_device() so
-> I've added it. I couldn't find any existing get_swap_device() call sites
-> where this extra check would cause any false alarms.
-> 
-> Details of how to provoke one possible issue (thanks to David Hilenbrand
-> for deriving this):
+> Am I understanding correctly that XEN_BALLOON_MEMORY_HOTPLUG doesn't
+> help because it becomes available too late in the PVH boot sequence? 
 
-Almost
+No, not really, the hoptplug mechanism is available as early as the
+balloon driver requires, the issue is that when Linux starts making
+use of such unpopulated ranges (for example in order to map the shared
+info page) many drivers have not yet reserved their MMIO regions, and so it's
+not uncommon for the balloon driver to end up using address ranges that
+would otherwise be used by device BARs for example.
 
-"s/Hilenbrand/Hildenbrand/" :)
+This causes havoc, Linux starts to reposition device BARs, sometimes
+it can manage to re-position them, otherwise some devices are not
+usable.
 
+> > At least for PVH dom0 we have the possibility of using regions marked as
+> > UNUSABLE in the e820 memory map.  Either if the region is UNUSABLE in the
+> > native memory map, or it has been converted into UNUSABLE in order to hide RAM
+> > regions from dom0, the second stage translation page-tables can populate those
+> > areas without issues.
+> > 
+> > PV already has this kind of logic, where the balloon driver is inflated at
+> > boot.  Re-use the current logic in order to also inflate it when running as
+> > PVH.  onvert UNUSABLE regions up to the ratio specified in EXTRA_MEM_RATIO to
+> > RAM, while reserving them using xen_add_extra_mem() (which is also moved so
+> > it's no longer tied to CONFIG_PV).
+> > 
+> > Signed-off-by: Roger Pau Monné <roger.pau@citrix.com>
+> > ---
+> > RFC reasons:
+> > 
+> >  * Note that it would be preferred for the hypervisor to provide an explicit
+> >    range to be used as scratch mapping space, but that requires changes to Xen,
+> >    and it's not fully clear whether Xen can figure out the position of all MMIO
+> >    regions at boot in order to suggest a scratch mapping region for dom0.
+> > 
+> >  * Should the whole set of xen_{add,del,chk,inv}_extra_mem() functions be moved
+> >    to a different file?  For the purposes of PVH only xen_add_extra_mem() is
+> >    moved and the chk and inv ones are PV specific and might not want moving to
+> >    a separate file just to guard them with CONFIG_PV.
+> > ---
+> >  arch/x86/include/asm/xen/hypervisor.h |  1 +
+> >  arch/x86/platform/pvh/enlighten.c     |  3 ++
+> >  arch/x86/xen/enlighten.c              | 32 +++++++++++++
+> >  arch/x86/xen/enlighten_pvh.c          | 68 +++++++++++++++++++++++++++
+> >  arch/x86/xen/setup.c                  | 44 -----------------
+> >  arch/x86/xen/xen-ops.h                | 14 ++++++
+> >  drivers/xen/balloon.c                 |  2 -
+> >  7 files changed, 118 insertions(+), 46 deletions(-)
+> > 
+> > diff --git a/arch/x86/include/asm/xen/hypervisor.h b/arch/x86/include/asm/xen/hypervisor.h
+> > index a9088250770f..31e2bf8d5db7 100644
+> > --- a/arch/x86/include/asm/xen/hypervisor.h
+> > +++ b/arch/x86/include/asm/xen/hypervisor.h
+> > @@ -62,6 +62,7 @@ void xen_arch_unregister_cpu(int num);
+> >  #ifdef CONFIG_PVH
+> >  void __init xen_pvh_init(struct boot_params *boot_params);
+> >  void __init mem_map_via_hcall(struct boot_params *boot_params_p);
+> > +void __init xen_reserve_extra_memory(struct boot_params *bootp);
+> >  #endif
+> >  
+> >  /* Lazy mode for batching updates / context switch */
+> > diff --git a/arch/x86/platform/pvh/enlighten.c b/arch/x86/platform/pvh/enlighten.c
+> > index 00a92cb2c814..a12117f3d4de 100644
+> > --- a/arch/x86/platform/pvh/enlighten.c
+> > +++ b/arch/x86/platform/pvh/enlighten.c
+> > @@ -74,6 +74,9 @@ static void __init init_pvh_bootparams(bool xen_guest)
+> >  	} else
+> >  		xen_raw_printk("Warning: Can fit ISA range into e820\n");
+> >  
+> > +	if (xen_guest)
+> > +		xen_reserve_extra_memory(&pvh_bootparams);
+> > +
+> >  	pvh_bootparams.hdr.cmd_line_ptr =
+> >  		pvh_start_info.cmdline_paddr;
+> >  
+> > diff --git a/arch/x86/xen/enlighten.c b/arch/x86/xen/enlighten.c
+> > index 3c61bb98c10e..a01ca255b0c6 100644
+> > --- a/arch/x86/xen/enlighten.c
+> > +++ b/arch/x86/xen/enlighten.c
+> > @@ -6,6 +6,7 @@
+> >  #include <linux/console.h>
+> >  #include <linux/cpu.h>
+> >  #include <linux/kexec.h>
+> > +#include <linux/memblock.h>
+> >  #include <linux/slab.h>
+> >  #include <linux/panic_notifier.h>
+> >  
+> > @@ -350,3 +351,34 @@ void xen_arch_unregister_cpu(int num)
+> >  }
+> >  EXPORT_SYMBOL(xen_arch_unregister_cpu);
+> >  #endif
+> > +
+> > +/* Amount of extra memory space we add to the e820 ranges */
+> > +struct xen_memory_region xen_extra_mem[XEN_EXTRA_MEM_MAX_REGIONS] __initdata;
+> > +
+> > +void __init xen_add_extra_mem(unsigned long start_pfn, unsigned long n_pfns)
+> > +{
+> > +	unsigned int i;
+> > +
+> > +	/*
+> > +	 * No need to check for zero size, should happen rarely and will only
+> > +	 * write a new entry regarded to be unused due to zero size.
+> > +	 */
+> > +	for (i = 0; i < XEN_EXTRA_MEM_MAX_REGIONS; i++) {
+> > +		/* Add new region. */
+> > +		if (xen_extra_mem[i].n_pfns == 0) {
+> > +			xen_extra_mem[i].start_pfn = start_pfn;
+> > +			xen_extra_mem[i].n_pfns = n_pfns;
+> > +			break;
+> > +		}
+> > +		/* Append to existing region. */
+> > +		if (xen_extra_mem[i].start_pfn + xen_extra_mem[i].n_pfns ==
+> > +		    start_pfn) {
+> > +			xen_extra_mem[i].n_pfns += n_pfns;
+> > +			break;
+> > +		}
+> > +	}
+> > +	if (i == XEN_EXTRA_MEM_MAX_REGIONS)
+> > +		printk(KERN_WARNING "Warning: not enough extra memory regions\n");
+> > +
+> > +	memblock_reserve(PFN_PHYS(start_pfn), PFN_PHYS(n_pfns));
+> > +}
+> > diff --git a/arch/x86/xen/enlighten_pvh.c b/arch/x86/xen/enlighten_pvh.c
+> > index ada3868c02c2..c28f073c1df5 100644
+> > --- a/arch/x86/xen/enlighten_pvh.c
+> > +++ b/arch/x86/xen/enlighten_pvh.c
+> > @@ -1,6 +1,7 @@
+> >  // SPDX-License-Identifier: GPL-2.0
+> >  #include <linux/acpi.h>
+> >  #include <linux/export.h>
+> > +#include <linux/mm.h>
+> >  
+> >  #include <xen/hvc-console.h>
+> >  
+> > @@ -72,3 +73,70 @@ void __init mem_map_via_hcall(struct boot_params *boot_params_p)
+> >  	}
+> >  	boot_params_p->e820_entries = memmap.nr_entries;
+> >  }
+> > +
+> > +/*
+> > + * Reserve e820 UNUSABLE regions to inflate the memory balloon.
+> > + *
+> > + * On PVH dom0 the host memory map is used, RAM regions available to dom0 are
+> > + * located as the same place as in the native memory map, but since dom0 gets
+> > + * less memory than the total amount of host RAM the ranges that can't be
+> > + * populated are converted from RAM -> UNUSABLE.  Use such regions (up to the
+> > + * ratio signaled in EXTRA_MEM_RATIO) in order to inflate the balloon driver at
+> > + * boot.  Doing so prevents the guest (even if just temporary) from using holes
+> > + * in the memory map in order to map grants or foreign addresses, and
+> > + * hopefully limits the risk of a clash with a device MMIO region.  Ideally the
+> > + * hypervisor should notify us which memory ranges are suitable for creating
+> > + * foreign mappings, but that's not yet implemented.
+> > + */
+> > +void __init xen_reserve_extra_memory(struct boot_params *bootp)
+> > +{
+> > +	unsigned int i, ram_pages = 0, extra_pages;
+> > +
+> > +	for (i = 0; i < bootp->e820_entries; i++) {
+> > +		struct boot_e820_entry *e = &bootp->e820_table[i];
+> > +
+> > +		if (e->type != E820_TYPE_RAM)
+> > +			continue;
+> > +		ram_pages += PFN_DOWN(e->addr + e->size) - PFN_UP(e->addr);
+> > +	}
+> > +
+> > +	/* Max amount of extra memory. */
+> > +	extra_pages = EXTRA_MEM_RATIO * ram_pages;
+> > +
+> > +	/*
+> > +	 * Convert UNUSABLE ranges to RAM and reserve them for foreign mapping
+> > +	 * purposes.
+> > +	 */
+> > +	for (i = 0; i < bootp->e820_entries && extra_pages; i++) {
+> > +		struct boot_e820_entry *e = &bootp->e820_table[i];
+> > +		unsigned long pages;
+> > +
+> > +		if (e->type != E820_TYPE_UNUSABLE)
+> > +			continue;
+> > +
+> > +		pages = min(extra_pages,
+> > +			PFN_DOWN(e->addr + e->size) - PFN_UP(e->addr));
+> > +
+> > +		if (pages != (PFN_DOWN(e->addr + e->size) - PFN_UP(e->addr))) {
+> > +			struct boot_e820_entry *next;
+> > +
+> > +			if (bootp->e820_entries ==
+> > +			    ARRAY_SIZE(bootp->e820_table))
+> > +				/* No space left to split - skip region. */
+> > +				continue;
+> > +
+> > +			/* Split entry. */
+> > +			next = e + 1;
+> > +			memmove(next, e,
+> > +				(bootp->e820_entries - i) * sizeof(*e));
+> > +			bootp->e820_entries++;
+> > +			next->addr = PAGE_ALIGN(e->addr) + PFN_PHYS(pages);
+> > +			e->size = next->addr - e->addr;
+> > +			next->size -= e->size;
 > 
-> --8<-----
+> Is this really worth doing? Can we just skip this range and continue or
+> simply break out and call it a day? Or even add the whole range instead?
 > 
-> __swap_entry_free() might be the last user and result in
-> "count == SWAP_HAS_CACHE".
-> 
-> swapoff->try_to_unuse() will stop as soon as soon as si->inuse_pages==0.
-> 
-> So the question is: could someone reclaim the folio and turn
-> si->inuse_pages==0, before we completed swap_page_trans_huge_swapped().
-> 
-> Imagine the following: 2 MiB folio in the swapcache. Only 2 subpages are
-> still references by swap entries.
-> 
-> Process 1 still references subpage 0 via swap entry.
-> Process 2 still references subpage 1 via swap entry.
-> 
-> Process 1 quits. Calls free_swap_and_cache().
-> -> count == SWAP_HAS_CACHE
-> [then, preempted in the hypervisor etc.]
-> 
-> Process 2 quits. Calls free_swap_and_cache().
-> -> count == SWAP_HAS_CACHE
-> 
-> Process 2 goes ahead, passes swap_page_trans_huge_swapped(), and calls
-> __try_to_reclaim_swap().
-> 
-> __try_to_reclaim_swap()->folio_free_swap()->delete_from_swap_cache()->
-> put_swap_folio()->free_swap_slot()->swapcache_free_entries()->
-> swap_entry_free()->swap_range_free()->
-> ...
-> WRITE_ONCE(si->inuse_pages, si->inuse_pages - nr_entries);
-> 
-> What stops swapoff to succeed after process 2 reclaimed the swap cache
-> but before process1 finished its call to swap_page_trans_huge_swapped()?
-> 
-> --8<-----
-> 
-> Fixes: 7c00bafee87c ("mm/swap: free swap slots in batch")
-> Closes: https://lore.kernel.org/linux-mm/65a66eb9-41f8-4790-8db2-0c70ea15979f@redhat.com/
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> ---
-> 
-> Applies on top of v6.8-rc6 and mm-unstable (b38c34939fe4).
-> 
-> Thanks,
-> Ryan
-> 
->   mm/swapfile.c | 14 +++++++++++---
->   1 file changed, 11 insertions(+), 3 deletions(-)
-> 
-> diff --git a/mm/swapfile.c b/mm/swapfile.c
-> index 2b3a2d85e350..f580e6abc674 100644
-> --- a/mm/swapfile.c
-> +++ b/mm/swapfile.c
-> @@ -1281,7 +1281,9 @@ struct swap_info_struct *get_swap_device(swp_entry_t entry)
->   	smp_rmb();
->   	offset = swp_offset(entry);
->   	if (offset >= si->max)
-> -		goto put_out;
-> +		goto bad_offset;
-> +	if (data_race(!si->swap_map[swp_offset(entry)]))
-> +		goto bad_free;
-> 
->   	return si;
->   bad_nofile:
-> @@ -1289,9 +1291,14 @@ struct swap_info_struct *get_swap_device(swp_entry_t entry)
->   out:
->   	return NULL;
->   put_out:
-> -	pr_err("%s: %s%08lx\n", __func__, Bad_offset, entry.val);
->   	percpu_ref_put(&si->users);
->   	return NULL;
-> +bad_offset:
-> +	pr_err("%s: %s%08lx\n", __func__, Bad_offset, entry.val);
-> +	goto put_out;
-> +bad_free:
-> +	pr_err("%s: %s%08lx\n", __func__, Unused_offset, entry.val);
-> +	goto put_out;
->   }
-> 
->   static unsigned char __swap_entry_free(struct swap_info_struct *p,
-> @@ -1609,13 +1616,14 @@ int free_swap_and_cache(swp_entry_t entry)
->   	if (non_swap_entry(entry))
->   		return 1;
-> 
-> -	p = _swap_info_get(entry);
-> +	p = get_swap_device(entry);
->   	if (p) {
->   		count = __swap_entry_free(p, entry);
->   		if (count == SWAP_HAS_CACHE &&
->   		    !swap_page_trans_huge_swapped(p, entry))
->   			__try_to_reclaim_swap(p, swp_offset(entry),
->   					      TTRS_UNMAPPED | TTRS_FULL);
-> +		put_swap_device(p);
->   	}
->   	return p != NULL;
->   }
-> --
-> 2.25.1
-> 
+> The reason I am asking is that I am expecting E820_TYPE_UNUSABLE regions
+> not to be huge. Splitting one just to cover the few remaining pages out
+> of extra_pages doesn't seem worth it?
 
-LGTM
+No, they are usually quite huge on PVH dom0, because when building a
+PVH dom0 the E820_TYPE_RAM ranges that are not made available to dom0
+because of a dom0_mem option end up being reported as
+E820_TYPE_UNUSABLE in the e820 provided to dom0.
 
-Are you planning on sending a doc extension for get_swap_device()?
+That's mostly the motivation of the change, to be able to reuse those
+ranges as scratch space for foreign mappings.
 
--- 
-Cheers,
+Ideally the hypervisor should somehow report suitable ranges in the
+address space for domains to create foreign mappings, but this does
+require an amount of extra work I don't have time to do ATM, hence
+this stopgap proposal.
 
-David / dhildenb
+> Everything else looks OK to me.
 
+Thanks, Roger.
 
