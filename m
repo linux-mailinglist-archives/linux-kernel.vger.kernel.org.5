@@ -1,166 +1,238 @@
-Return-Path: <linux-kernel+bounces-92684-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92685-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8087287244E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:28:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79349872459
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:31:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A47341C24ED0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:28:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F6B5285655
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:31:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F88D12D1EC;
-	Tue,  5 Mar 2024 16:26:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72FF08F49;
+	Tue,  5 Mar 2024 16:30:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mCLAEoGx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SWK5eHJ4"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9322C128374;
-	Tue,  5 Mar 2024 16:26:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A253F10F7;
+	Tue,  5 Mar 2024 16:30:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709655976; cv=none; b=tLQb6OR32SGRSRbNL+Hcrpz6XiQflvAIyZUCTOQCIf2TDwdr4DwiP7UODbY4HNfk1zxQ2rBRe0+HingJE7i6COXog1D7p6xfMquaa2/Mwu/q7VIUwihKXFkDDW3ubhD9JSX1vkeGOPrPcEe/c4ZLMA3Uk+r4BWPFOw/6bVsjjTg=
+	t=1709656257; cv=none; b=PsuN09kEtIzsXCcCD702/Lq45LW8YKt58Ru9D6ZpooJz2hYbsaUKbNs1BmLNAxyUzU2/vmVw3HV4bq8jkla28DwnrPsc1psOongHwinzB4c9OEvF/27FVumMfbpaMvzkBpPvJccCbRPeDo9jfD89UAP+U1uTR6/Y+bjtMoFwJvk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709655976; c=relaxed/simple;
-	bh=rJDCbsppxsCZ/6gOdhGNkAd2bfvRU7iE7Ysglyc+jqA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tL5PWemt8F36jDiMAtRRraxUQRq61Ts5un1xrfMXeTTL3jWbQ5VwscrAMWPcmwuZ8ohUAAXRx9QqxFafzT5ec+uONlH3ZRLvwsfP2/XBWeIJ0EfH3S6AEd9Yb7k5JzG01OonA78SbP5voYwOgWbVEtqUexRh7KrPY9r1+W7iSpU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mCLAEoGx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBE78C43390;
-	Tue,  5 Mar 2024 16:26:10 +0000 (UTC)
+	s=arc-20240116; t=1709656257; c=relaxed/simple;
+	bh=UjBEAVMdzvLalmwGNh/rQJ83m5pRMJtn7UmSXJVcmGI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LmUV+xMkShm0Ti8MN5K2XnfUCWLX+2eYVhFxQTy+3FgtKfeSjnVNA8YviMYxh4NLcqFEp5krekmoX9IVq0GqIroMmVt6VfetLHGv/JQcUwpfYS9gFkHehTmWTB2yB1Nr6PELQS15vQkKdvAAERt7Z5J5TnuQI7iLw++zZMaiDlk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SWK5eHJ4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28259C43390;
+	Tue,  5 Mar 2024 16:30:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709655976;
-	bh=rJDCbsppxsCZ/6gOdhGNkAd2bfvRU7iE7Ysglyc+jqA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mCLAEoGxZC5006mHitJaoWtcNzJEIHdHVyzoN4RrD2KkYX82tM0YjFhucIxLOnwf+
-	 hEbkkIh3icM7xU2GQ6hSzfWnuB8lmInH+goeDYWbitDBOVG+8NFpMYyvgLST0sGqd6
-	 ZYfFGVSaUp/2ITdxhKmnshuznERdD47lSMOomdXMtv6/o7cMEYTlEKvS9mYgXJfylJ
-	 QZU39f1XRVlKhQepG1YHi/6JSsIYzCBGfdcmlimq3k88R0HjtUeTmjyaRmLIJaCo2b
-	 oXdnxvxOZUTCdi6kxcVU/YrQgedb+YZr7SPnX7kNkczD+9BqpHQicydKkG3tWmjMcO
-	 93N6jg6WAXBmQ==
-Date: Tue, 5 Mar 2024 17:26:08 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc: "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>, 
-	Serge Hallyn <serge@hallyn.com>, Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>, 
-	James Morris <jmorris@namei.org>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Jan Kara <jack@suse.cz>, Stephen Smalley <stephen.smalley.work@gmail.com>, 
-	Ondrej Mosnacek <omosnace@redhat.com>, Casey Schaufler <casey@schaufler-ca.com>, 
-	Mimi Zohar <zohar@linux.ibm.com>, Roberto Sassu <roberto.sassu@huawei.com>, 
-	Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, Eric Snowberg <eric.snowberg@oracle.com>, 
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>, Jonathan Corbet <corbet@lwn.net>, 
-	Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, 
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, audit@vger.kernel.org, selinux@vger.kernel.org, 
-	linux-integrity@vger.kernel.org, linux-doc@vger.kernel.org, linux-unionfs@vger.kernel.org
-Subject: Re: [PATCH v2 24/25] commoncap: use vfs fscaps interfaces
-Message-ID: <20240305-zyklisch-halluzinationen-98b782666cf8@brauner>
-References: <20240221-idmap-fscap-refactor-v2-0-3039364623bd@kernel.org>
- <20240221-idmap-fscap-refactor-v2-24-3039364623bd@kernel.org>
- <dcbd9e7869d2fcce69546b53851d694b8ebad54e.camel@huaweicloud.com>
- <ZeXpbOsdRTbLsYe9@do-x1extreme>
- <a7124afa6bed2fcadcb66efa08e256828cd6f8ab.camel@huaweicloud.com>
- <ZeX9MRhU/EGhHkCY@do-x1extreme>
- <20240305-fachjargon-abmontieren-75b1d6c67a83@brauner>
- <3098aef3e5f924e5717b4ba4a34817d9f22ec479.camel@huaweicloud.com>
+	s=k20201202; t=1709656257;
+	bh=UjBEAVMdzvLalmwGNh/rQJ83m5pRMJtn7UmSXJVcmGI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=SWK5eHJ4KFwRb8vJnqk+5C4fZJ3mEn28cZBqaF1lX37hvkVB3K3d0X3piXIm0dyzr
+	 eML+41LdnPvg8nEuDVfF2xQP5UijhgpSzK7hh7EPOmUcf264YABeq3gT4YfUj4z2pz
+	 sI9UYi5rVd3MkthV8G5cQnsf9FYfzEBxsGVEucCMEkXiNYYxOfUoHkRmvn6x1sjEMl
+	 zHsW3c39Ig2Q9cY20bU8AvDAyQPLVnhmA/Xiem9LSJDdg31Cb459NBi09tBqSuyY6C
+	 7YB068rgyNLcITfhtt6TYwmvkCnn8Uxurec6M4Jmkub6RXrkpsmylXcF2dE4JhCCXE
+	 rvEK9l6L/igDQ==
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-513173e8191so7355317e87.1;
+        Tue, 05 Mar 2024 08:30:57 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCV+NCS9XUXUj0JW+6IWTg+MDWsWHMLMtdX3ANslDs+Ty6njAU+2/3AVNfNVYjcQp3P/Hw3ygrAiDADCuqihcWxZX+zsb5HwR8lz52fkg6P+YR1A+eNh0SVWaoHqCpZ+tbF4kUOQhAAxdOGr
+X-Gm-Message-State: AOJu0YzJ77Q6iBjmd/kOo+UPiZ5z3H7BokFDku+3AiEQHLifVol9CGmi
+	hx3n3ODFb/SUG/2Deopvuxzn1rluaSXnrXY/xhYZzEqqZHcgEXCfLAjT/OK2HGj3unG/zm8hCj8
+	qYGrk9OPrl+wm6D+PGUTuQriGmrI=
+X-Google-Smtp-Source: AGHT+IFiPqEUjF7c5/b6AJpP+FSGeN2AXinKrPbenG+dYSxMtaeqEQP1fyxt+zhygfGtBe3r3ewBs2xKBH/PgUB//p0=
+X-Received: by 2002:a05:6512:219:b0:513:2caf:15ee with SMTP id
+ a25-20020a056512021900b005132caf15eemr1652548lfo.28.1709656255566; Tue, 05
+ Mar 2024 08:30:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <3098aef3e5f924e5717b4ba4a34817d9f22ec479.camel@huaweicloud.com>
+References: <20240223092338.2433632-1-wenst@chromium.org> <CAK7LNAQmvyftnFJaByyjH+f4nxcNUKpjkDXwebEH5AhMF6U0Kw@mail.gmail.com>
+ <CAGXv+5GmkZdqpNZDFN4dcTyZ-qVS0TjrrqBrBAei6DP+eXLnJg@mail.gmail.com>
+ <CAK7LNAS8tLuHYcPTb5pJZixn5Hb0yjo0nmbrfSUr5Cd_pc+WMg@mail.gmail.com> <CAGXv+5HB7gXJ0x1uVdgbWaRWS8+rN6FwEgyGLObxr_cfyLty6A@mail.gmail.com>
+In-Reply-To: <CAGXv+5HB7gXJ0x1uVdgbWaRWS8+rN6FwEgyGLObxr_cfyLty6A@mail.gmail.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Wed, 6 Mar 2024 01:30:18 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARADnpCHvNWHLqb9acVNqzwDRuLiKbKe4XZwM4_Ts+ypg@mail.gmail.com>
+Message-ID: <CAK7LNARADnpCHvNWHLqb9acVNqzwDRuLiKbKe4XZwM4_Ts+ypg@mail.gmail.com>
+Subject: Re: [PATCH RFC] kbuild: create a list of all built DTB files
+To: Chen-Yu Tsai <wenst@chromium.org>
+Cc: Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Simon Glass <sjg@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 05, 2024 at 01:46:56PM +0100, Roberto Sassu wrote:
-> On Tue, 2024-03-05 at 10:12 +0100, Christian Brauner wrote:
-> > On Mon, Mar 04, 2024 at 10:56:17AM -0600, Seth Forshee (DigitalOcean) wrote:
-> > > On Mon, Mar 04, 2024 at 05:17:57PM +0100, Roberto Sassu wrote:
-> > > > On Mon, 2024-03-04 at 09:31 -0600, Seth Forshee (DigitalOcean) wrote:
-> > > > > On Mon, Mar 04, 2024 at 11:19:54AM +0100, Roberto Sassu wrote:
-> > > > > > On Wed, 2024-02-21 at 15:24 -0600, Seth Forshee (DigitalOcean) wrote:
-> > > > > > > Use the vfs interfaces for fetching file capabilities for killpriv
-> > > > > > > checks and from get_vfs_caps_from_disk(). While there, update the
-> > > > > > > kerneldoc for get_vfs_caps_from_disk() to explain how it is different
-> > > > > > > from vfs_get_fscaps_nosec().
-> > > > > > > 
-> > > > > > > Signed-off-by: Seth Forshee (DigitalOcean) <sforshee@kernel.org>
-> > > > > > > ---
-> > > > > > >  security/commoncap.c | 30 +++++++++++++-----------------
-> > > > > > >  1 file changed, 13 insertions(+), 17 deletions(-)
-> > > > > > > 
-> > > > > > > diff --git a/security/commoncap.c b/security/commoncap.c
-> > > > > > > index a0ff7e6092e0..751bb26a06a6 100644
-> > > > > > > --- a/security/commoncap.c
-> > > > > > > +++ b/security/commoncap.c
-> > > > > > > @@ -296,11 +296,12 @@ int cap_capset(struct cred *new,
-> > > > > > >   */
-> > > > > > >  int cap_inode_need_killpriv(struct dentry *dentry)
-> > > > > > >  {
-> > > > > > > -	struct inode *inode = d_backing_inode(dentry);
-> > > > > > > +	struct vfs_caps caps;
-> > > > > > >  	int error;
-> > > > > > >  
-> > > > > > > -	error = __vfs_getxattr(dentry, inode, XATTR_NAME_CAPS, NULL, 0);
-> > > > > > > -	return error > 0;
-> > > > > > > +	/* Use nop_mnt_idmap for no mapping here as mapping is unimportant */
-> > > > > > > +	error = vfs_get_fscaps_nosec(&nop_mnt_idmap, dentry, &caps);
-> > > > > > > +	return error == 0;
-> > > > > > >  }
-> > > > > > >  
-> > > > > > >  /**
-> > > > > > > @@ -323,7 +324,7 @@ int cap_inode_killpriv(struct mnt_idmap *idmap, struct dentry *dentry)
-> > > > > > >  {
-> > > > > > >  	int error;
-> > > > > > >  
-> > > > > > > -	error = __vfs_removexattr(idmap, dentry, XATTR_NAME_CAPS);
-> > > > > > > +	error = vfs_remove_fscaps_nosec(idmap, dentry);
-> > > > > > 
-> > > > > > Uhm, I see that the change is logically correct... but the original
-> > > > > > code was not correct, since the EVM post hook is not called (thus the
-> > > > > > HMAC is broken, or an xattr change is allowed on a portable signature
-> > > > > > which should be not).
-> > > > > > 
-> > > > > > For completeness, the xattr change on a portable signature should not
-> > > > > > happen in the first place, so cap_inode_killpriv() would not be called.
-> > > > > > However, since EVM allows same value change, we are here.
-> > > > > 
-> > > > > I really don't understand EVM that well and am pretty hesitant to try an
-> > > > > change any of the logic around it. But I'll hazard a thought: should EVM
-> > > > > have a inode_need_killpriv hook which returns an error in this
-> > > > > situation?
-> > > > 
-> > > > Uhm, I think it would not work without modifying
-> > > > security_inode_need_killpriv() and the hook definition.
-> > > > 
-> > > > Since cap_inode_need_killpriv() returns 1, the loop stops and EVM would
-> > > > not be invoked. We would need to continue the loop and let EVM know
-> > > > what is the current return value. Then EVM can reject the change.
-> > > > 
-> > > > An alternative way would be to detect that actually we are setting the
-> > > > same value for inode metadata, and maybe not returning 1 from
-> > > > cap_inode_need_killpriv().
-> > > > 
-> > > > I would prefer the second, since EVM allows same value change and we
-> > > > would have an exception if there are fscaps.
-> > > > 
-> > > > This solves only the case of portable signatures. We would need to
-> > > > change cap_inode_need_killpriv() anyway to update the HMAC for mutable
-> > > > files.
-> > > 
-> > > I see. In any case this sounds like a matter for a separate patch
-> > > series.
-> > 
-> > Agreed.
-> 
-> Christian, how realistic is that we don't kill priv if we are setting
-> the same owner?
+On Mon, Mar 4, 2024 at 1:37=E2=80=AFPM Chen-Yu Tsai <wenst@chromium.org> wr=
+ote:
+>
+> On Thu, Feb 29, 2024 at 11:35=E2=80=AFPM Masahiro Yamada <masahiroy@kerne=
+l.org> wrote:
+> >
+> > On Thu, Feb 29, 2024 at 11:38=E2=80=AFAM Chen-Yu Tsai <wenst@chromium.o=
+rg> wrote:
+> > >
+> > > On Sun, Feb 25, 2024 at 4:21=E2=80=AFPM Masahiro Yamada <masahiroy@ke=
+rnel.org> wrote:
+> > > >
+> > > > On Fri, Feb 23, 2024 at 6:23=E2=80=AFPM Chen-Yu Tsai <wenst@chromiu=
+m.org> wrote:
+> > > > >
+> > > > > It is useful to have a list of all composite *.dtb files, along w=
+ith
+> > > > > their individual components, generated from the current build.
+> > > > >
+> > > > > With this commit, 'make dtbs' creates arch/*/boot/dts/dtbs-compon=
+ents,
+> > > > > which lists the composite dtb files created in the current build.=
+ It
+> > > > > maintains the order of the dtb-y additions in Makefiles although =
+the
+> > > > > order is not important for DTBs.
+> > > > >
+> > > > > This compliments the list of all *.dtb and *.dtbo files in dtbs-l=
+ist,
+> > > > > which only includes the files directly added to dtb-y.
+> > > > >
+> > > > > For example, consider this case:
+> > > > >
+> > > > >     foo-dtbs :=3D foo_base.dtb foo_overlay.dtbo
+> > > > >     dtb-y :=3D bar.dtb foo.dtb
+> > > > >
+> > > > > In this example, the new list will include foo.dtb with foo_base.=
+dtb and
+> > > > > foo_overlay.dtbo on the same line, but not bar.dtb.
+> > > > >
+> > > > > Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+> > > > > ---
+> > > > > Hi,
+> > > > >
+> > > > > I hacked up this new thing to list out the individual components =
+of each
+> > > > > composite dtb. I think this information would be useful for FIT i=
+mage
+> > > > > generation or other toolchains to consume. For example, instead o=
+f
+> > > > > including each dtb, a toolchain could realize that some are put t=
+ogether
+> > > > > using others, and if the bootloader supports it, put together com=
+mands
+> > > > > to reassemble the end result from the original parts.
+> > > > >
+> > > > > This is based on and complements Masahiro-san's recent dtbs-list =
+work.
+> > > >
+> > > >
+> > > >
+> > > > This is another format of my previous per-dtb "*.dtlst"
+> > > > (but I did not pick up 3/4, 4/4 because I did not know what we need=
+ after all).
+> > > >
+> > > > This should be discussed together with how Simon's script will look=
+ like.
+> > > >
+> > > > I can understand your Makefile code, but I still do not know
+> > > > how the entire overlay stuff will work in a big picture.
+> > >
+> > > How would you like to proceed? I can through together some changes on=
+ top
+> > > of Simon's patches as an initial proposal if that helps?
+> > >
+> > > I can use your format if you prefer.
+> >
+> >
+> > How would you select base+addonX among
+> > other base+addonY or base+addonZ configurations?
+>
+> I assume you are alluding to the existing in-tree composite DTs that
+> share the same board compatible strings?
 
-Uhm, I would need to see the wider context of the proposed change. But
-iiuc then you would be comparing current and new fscaps and if they are
-identical you don't kill privs? I think that would work. But again, I
-would need to see the actual context/change to say something meaningful.
+
+Yes.
+It is possible to implement it, but I do not see a point
+to implement what we do not know how to use.
+
+
+
+>
+> Under the current FIT image design with compatible strings populated from
+> the FDTs, I don't think there's any way to automatically select among the=
+m.
+> The FIT image simply does not have the information available. Nor do the
+> overlays themselves. The toolchain can only either include all of them
+> and let the bootloader figure things out, or filter out all the duplicate=
+s.
+> With the composite list, at least it will be able to consistently keep
+> only the base DT and drop the ones with the addons.
+
+It makes the purpose of this work even more obscure.
+
+For the purpose of avoiding duplication,
+we can take the first DTB (or the smallest size)
+when we encounter a duplicated compatible string.
+
+
+
+>
+> In one of my previous replies to v9 I mentioned adding a user provided
+> mapping between "configuration" compatible string and FDT filename. The
+> mapping could be maintained in-tree for those base+addonXYZ FDTs if
+> desired.
+
+
+That is one way, but I do not think such a configuration file
+is maintainable.
+
+Rob suggested overwriting the compatible string,
+but I do not think we got consensus.
+
+
+
+> Also, Simon's FIT image "extensions" proposal [1] adds more metadata to
+> the FIT image to cover these addons that currently don't have distinct
+> compatible strings.
+
+I think this is yet another way, but I am not sure
+how to derive the extension compatible string.
+
+
+
+
+
+
+Even if we decide to implement base/overlay split,
+we may not need to add anything to Makefile.
+
+We already have .*.cmd files, and we can know
+if it is a combined DTB or not, by parsing the .*.cmd
+from the python script.
+
+It might be a bit messy, but it is what we do
+in scripts/clang-tools/gen_compile_commands.py
+
+
+
+
+
+
+
+
+
+>
+>
+> ChenYu
+>
+> [1] https://lore.kernel.org/u-boot/CAPnjgZ06s64C2ux1rABNAnMv3q4W++sjhNGCO=
+_uPMH_9sTF7Mw@mail.gmail.com/
+--
+Best Regards
+Masahiro Yamada
 
