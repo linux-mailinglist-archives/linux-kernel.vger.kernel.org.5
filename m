@@ -1,127 +1,164 @@
-Return-Path: <linux-kernel+bounces-91901-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91900-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4098F871820
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:21:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 553E187181E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:21:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C863F2827E6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:21:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 01DCBB21CC7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:21:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CCCB7FBA3;
-	Tue,  5 Mar 2024 08:21:08 +0000 (UTC)
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85B057F496;
+	Tue,  5 Mar 2024 08:20:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hzNZC/Qi"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 272F57F7FC;
-	Tue,  5 Mar 2024 08:21:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5847A7F482;
+	Tue,  5 Mar 2024 08:20:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709626867; cv=none; b=FAvWVmu5bWTTAH7cAGR32qZbOMO1mUghzyMwmoJ9FXcRqN8F6kBP/VhOp+xPyi5doWJxPsvgsdhIdrPkyfbNYZYQkG8P4f60JjD/8QPUcs0FVOCcin3BUzZ8lVztGR+lrbNLqwqUM6tJb9RNyewtWjHmnlzUVmZL+khdnT33G2Q=
+	t=1709626855; cv=none; b=Oj9zI+luyOIeU5pJHWWdAYT7Z+K8/kqN5YUpibktCSgYUWHx7oTj8ngfLeEhI7mncfA5kZG4dxgoN0V6yWEMuXRBNiN+XfdLC5T44ZnCneTZEq6953eNdlYxFVP/C9J2NmOQWRVPgFI4TLxmPfyTnsge695SR/ZZSTTo9+yDkbY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709626867; c=relaxed/simple;
-	bh=96liCdQ/6gUqP6tRhpRaW4I5SFxA+uBNhElug/7lyAc=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=rQXp458Nu8oPKATZh73P5TTC69UcH3MAQ7QikM7PDY2PKLMJzZKwi6ffJSIUxMuSEQ87cNKJTqCxPhmcpRP8y8g/HM/vJFjwtS/w/q6Q4FidI+W5ElXzur4wDhyxKssEhWL4AAAMXHrYHL0dQEZ+S+yNwNXeLqFpCIQEyFTHum4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from localhost.localdomain (78.37.41.175) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Tue, 5 Mar
- 2024 11:20:55 +0300
-From: Roman Smirnov <r.smirnov@omp.ru>
-To: Daniel Vetter <daniel@ffwll.ch>, Helge Deller <deller@gmx.de>
-CC: Roman Smirnov <r.smirnov@omp.ru>, Sergey Shtylyov <s.shtylyov@omp.ru>,
-	Karina Yankevich <k.yankevich@omp.ru>, <linux-fbdev@vger.kernel.org>,
-	<dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-	<lvc-project@linuxtesting.org>
-Subject: [PATCH] fbmon: prevent division by zero in fb_videomode_from_videomode()
-Date: Tue, 5 Mar 2024 11:20:40 +0300
-Message-ID: <20240305082040.7445-1-r.smirnov@omp.ru>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1709626855; c=relaxed/simple;
+	bh=hZo+4VkfzgWJKPhG/ii63dRyDDI+/MxjXieNWDVvQMU=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=sQV9cXkBmkudgVIexQpOMt8/u7Wt/FkGvTRIbzf4feAyRe8FD7fcbYZhjgpZRYepMvNnfXx9ST8z0m9fvOhAKPNUMYPzHJpLgvDwNSd9977qSk0QFSTAvz+1XYY2bgy7ztkUWE7TI0lKs1Ii/W1dvzLwNUN3QYrAV2sklp4u38o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hzNZC/Qi; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1dca160163dso51964535ad.3;
+        Tue, 05 Mar 2024 00:20:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709626853; x=1710231653; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ENVdbWViMNbdMsk2tYBUD+u8dUrBMYPUAx5W7hzKOFo=;
+        b=hzNZC/Qi8H/SscKrlapDWqj+mELUkXZz3MC4rkG8Pmm/xtiHz843DSJT/cDIL2o95B
+         XKA9hb3W+oP9/sPamtzhaFPCm6otIKNNUpY1Gbw8iDCVaAW5gRLFAC9uT3g20dMmwlsl
+         RSL/F6+TQ+kuyhdwO0AxccLsC3kCl0bPNBz6WWwJ+ETkBQ+WEMgIDQ0VaYt8qFokOuzU
+         l5fEy9F0G5nJUDdKaoqS8UvVpK8PfCmP6EYiDHbD9i0VFLIyNuzmk+SDUmcQf+NQsGZD
+         AjlADDeQXiAoKrfoUSurPuddBd14vfM+DZsqh+h9+dzNRlWLNF9TqEH9DUqlJ9BlNfBC
+         0V0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709626853; x=1710231653;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ENVdbWViMNbdMsk2tYBUD+u8dUrBMYPUAx5W7hzKOFo=;
+        b=gdUOowWt220pbCoDyAfGkAV2nwtz+1a1qzGQevh6UblcJFlNRSjntfe3kt9ZXcVrX4
+         tVO5F+IkhoIfbmTBPlkjxdd1whhD7iwvQklmHD0VUVh1ZpDnV1ugtf2ThPWDoFUNjsH/
+         pM4v/OPsA7zGHrguLkOLkux8UK6Y7B430IzQr0Zo5+Vy2amYO7EC/Ipv7zJvEf+NjN+S
+         StKNjkQfeYZOFzeKHa2Fkxpf6T0jOXZW/hpa7YKbSpEJFLhjnfUGPs3M2m4WvT0R1Vt6
+         ygsEhiL9mBmLif/jMOxCbPcSurOaPTR4UveVUnHMgAvDfT/tzvC380V63IT4QFimCgLQ
+         +OYw==
+X-Forwarded-Encrypted: i=1; AJvYcCWk2/ObfjFr8v0Dny/SnAJz5oLLrQYQfcf2NE9/pCjoUgOZKEpjvcN7XCMY5zBvNNbJUgD4LQNnQ/KYgyPtHyADeMy7qTg2z4+nIYaAkky/lQul11+uziW5i/OPDj1TiJ/j0bwxUelqQpk=
+X-Gm-Message-State: AOJu0YxTA9k9RAg+AYv8eiXQuuIUZLaof2Hzx/DBDkBvBgVElT6l4Wk5
+	Wi6l/3V6CwdCwO9jwh2ZfVyo7N1oP3Vba+YL3qZ1SdvCYyxtIrmW
+X-Google-Smtp-Source: AGHT+IGRIXT23C4Loa9kbMHMWmSzvg6b+GSBp7ilkDEE0aeiD2V7Hmv5vccuK/1kB+/XZYehRpgWHQ==
+X-Received: by 2002:a17:90a:c01:b0:299:39e0:98cb with SMTP id 1-20020a17090a0c0100b0029939e098cbmr9160055pjs.15.1709626853359;
+        Tue, 05 Mar 2024 00:20:53 -0800 (PST)
+Received: from linux-l9pv.suse ([124.11.22.254])
+        by smtp.gmail.com with ESMTPSA id mf12-20020a17090b184c00b002904cba0ffbsm11239864pjb.32.2024.03.05.00.20.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 05 Mar 2024 00:20:53 -0800 (PST)
+From: "Lee, Chun-Yi" <joeyli.kernel@gmail.com>
+X-Google-Original-From: "Lee, Chun-Yi" <jlee@suse.com>
+To: Justin Sanders <justin@coraid.com>
+Cc: Jens Axboe <axboe@kernel.dk>,
+	Pavel Emelianov <xemul@openvz.org>,
+	Kirill Korotaev <dev@openvz.org>,
+	"David S . Miller" <davem@davemloft.net>,
+	linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Chun-Yi Lee <jlee@suse.com>
+Subject: [PATCH] aoe: fix the potential use-after-free problem in aoecmd_cfg_pkts
+Date: Tue,  5 Mar 2024 16:20:48 +0800
+Message-Id: <20240305082048.25526-1-jlee@suse.com>
+X-Mailer: git-send-email 2.12.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 03/05/2024 08:01:11
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 183947 [Mar 05 2024]
-X-KSE-AntiSpam-Info: Version: 6.1.0.3
-X-KSE-AntiSpam-Info: Envelope from: r.smirnov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 8 0.3.8 4a99897b35b48c45ee5c877607d26a2d9f419920
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 78.37.41.175 in (user) dbl.spamhaus.org}
-X-KSE-AntiSpam-Info:
-	omp.ru:7.1.1;78.37.41.175:7.4.1,7.7.3;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: {cloud_iprep_silent}
-X-KSE-AntiSpam-Info: ApMailHostAddress: 78.37.41.175
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 03/05/2024 08:07:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 3/5/2024 3:38:00 AM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-The expression htotal * vtotal can have a zero value 
-on overflow. It is necessary to prevent division by
-zero like in fb_var_to_videomode().
+From: Chun-Yi Lee <jlee@suse.com>
 
-Found by Linux Verification Center (linuxtesting.org) with Svace.
+This patch is against CVE-2023-6270. The description of cve is:
 
-Signed-off-by: Roman Smirnov <r.smirnov@omp.ru>
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+  A flaw was found in the ATA over Ethernet (AoE) driver in the Linux
+  kernel. The aoecmd_cfg_pkts() function improperly updates the refcnt on
+  `struct net_device`, and a use-after-free can be triggered by racing
+  between the free on the struct and the access through the `skbtxq`
+  global queue. This could lead to a denial of service condition or
+  potential code execution.
+
+In aoecmd_cfg_pkts(), it always calls dev_put(ifp) when skb initial
+code is finished. But the net_device ifp will still be used in
+later tx()->dev_queue_xmit() in kthread. Which means that the
+dev_put(ifp) should NOT be called in the success path of skb
+initial code in aoecmd_cfg_pkts(). Otherwise tx() may run into
+use-after-free because the net_device is freed.
+
+This patch removed the dev_put(ifp) in the success path in
+aoecmd_cfg_pkts(), and added dev_put() after skb xmit in tx().
+
+Link: https://nvd.nist.gov/vuln/detail/CVE-2023-6270
+Fixes: 7562f876cd93 ("[NET]: Rework dev_base via list_head (v3)")
+Signed-off-by: Chun-Yi Lee <jlee@suse.com>
 ---
- drivers/video/fbdev/core/fbmon.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/block/aoe/aoecmd.c | 12 ++++++------
+ drivers/block/aoe/aoenet.c |  1 +
+ 2 files changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/video/fbdev/core/fbmon.c b/drivers/video/fbdev/core/fbmon.c
-index 79e5bfbdd34c..bd98b138da6a 100644
---- a/drivers/video/fbdev/core/fbmon.c
-+++ b/drivers/video/fbdev/core/fbmon.c
-@@ -1311,7 +1311,7 @@ int fb_get_mode(int flags, u32 val, struct fb_var_screeninfo *var, struct fb_inf
- int fb_videomode_from_videomode(const struct videomode *vm,
- 				struct fb_videomode *fbmode)
- {
--	unsigned int htotal, vtotal;
-+	unsigned int htotal, vtotal, hfreq;
+diff --git a/drivers/block/aoe/aoecmd.c b/drivers/block/aoe/aoecmd.c
+index d7317425be51..cc9077b588d7 100644
+--- a/drivers/block/aoe/aoecmd.c
++++ b/drivers/block/aoe/aoecmd.c
+@@ -419,13 +419,16 @@ aoecmd_cfg_pkts(ushort aoemajor, unsigned char aoeminor, struct sk_buff_head *qu
+ 	rcu_read_lock();
+ 	for_each_netdev_rcu(&init_net, ifp) {
+ 		dev_hold(ifp);
+-		if (!is_aoe_netif(ifp))
+-			goto cont;
++		if (!is_aoe_netif(ifp)) {
++			dev_put(ifp);
++			continue;
++		}
  
- 	fbmode->xres = vm->hactive;
- 	fbmode->left_margin = vm->hback_porch;
-@@ -1345,7 +1345,8 @@ int fb_videomode_from_videomode(const struct videomode *vm,
- 		 vm->vsync_len;
- 	/* prevent division by zero */
- 	if (htotal && vtotal) {
--		fbmode->refresh = vm->pixelclock / (htotal * vtotal);
-+		hfreq = vm->pixelclock / htotal;
-+		fbmode->refresh = hfreq / vtotal;
- 	/* a mode must have htotal and vtotal != 0 or it is invalid */
- 	} else {
- 		fbmode->refresh = 0;
+ 		skb = new_skb(sizeof *h + sizeof *ch);
+ 		if (skb == NULL) {
+ 			printk(KERN_INFO "aoe: skb alloc failure\n");
+-			goto cont;
++			dev_put(ifp);
++			continue;
+ 		}
+ 		skb_put(skb, sizeof *h + sizeof *ch);
+ 		skb->dev = ifp;
+@@ -440,9 +443,6 @@ aoecmd_cfg_pkts(ushort aoemajor, unsigned char aoeminor, struct sk_buff_head *qu
+ 		h->major = cpu_to_be16(aoemajor);
+ 		h->minor = aoeminor;
+ 		h->cmd = AOECMD_CFG;
+-
+-cont:
+-		dev_put(ifp);
+ 	}
+ 	rcu_read_unlock();
+ }
+diff --git a/drivers/block/aoe/aoenet.c b/drivers/block/aoe/aoenet.c
+index c51ea95bc2ce..923a134fd766 100644
+--- a/drivers/block/aoe/aoenet.c
++++ b/drivers/block/aoe/aoenet.c
+@@ -63,6 +63,7 @@ tx(int id) __must_hold(&txlock)
+ 			pr_warn("aoe: packet could not be sent on %s.  %s\n",
+ 				ifp ? ifp->name : "netif",
+ 				"consider increasing tx_queue_len");
++		dev_put(ifp);
+ 		spin_lock_irq(&txlock);
+ 	}
+ 	return 0;
 -- 
-2.34.1
+2.35.3
 
 
