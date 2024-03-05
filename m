@@ -1,224 +1,159 @@
-Return-Path: <linux-kernel+bounces-92821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92823-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F94C87267C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:25:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1479872684
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:25:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25A60287399
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:25:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1EFA41C26881
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:25:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3556218AF4;
-	Tue,  5 Mar 2024 18:25:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE1DC1A587;
+	Tue,  5 Mar 2024 18:25:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="bZDlQX2A"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="pix2Nnie"
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFA911863C
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 18:24:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BA4A1AAAE;
+	Tue,  5 Mar 2024 18:25:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709663099; cv=none; b=LYlHSIKZssGyQdg+8vZgdusHn/SL/bFTQzRVHfiKx8aPunADZSfIm9vQSVF9UzyX+juAyvJZJBfPauvxaoMRyh0+Q7f2WNI+O2+DG6EuJhzRuQOwigsJK38gil1JPaaAGSllpo7ZeegR5bGrN43+oTBIiTEVIQcdC0Bm1eZ4QUs=
+	t=1709663132; cv=none; b=S0cIfbt8KMJC+0mIJMR0PcaglxAXg76lqL23c5lDo2gvZerQTmpdHI4Ff2cRfoctLqfjZsQ9RqAeDJk7SyeNMz5t5o3m/HIJKSnF2K1EV+2HAqrsmYA4gtK1G9RYvhktfpqER2R2/LOHwQvB6fDVK+ssouhQfeW3m1TjUF9BzEk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709663099; c=relaxed/simple;
-	bh=o9CJwYV786v6dPmGV9qZCaWyrfhHpxl39VvWKwVU68Y=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=OjlWIGBiJdj4g/Fa2568wVTOOylNROtFyTNjJgH7RfXFwy6724uc6qQTofEeDBYvSSG3EYekr2TcGrdRmr3gqx9Rq6jmPiFPYX3iH+LpgmWn4/7QcXqM8ln3qU4Ea2Em6yuxUcOjBheKMFuKmTr2eeqeAD9Gh2MBX6ZirzFLfhY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=bZDlQX2A; arc=none smtp.client-ip=205.220.180.131
+	s=arc-20240116; t=1709663132; c=relaxed/simple;
+	bh=f5eWXg8q9+04983HKC25i0B2Cij6OAJzv1WgCCfc3eo=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
+	 In-Reply-To:Content-Type; b=HVfjWBm/VjDfUeHaXI5kB21YVbDA00c8vmTg9l0gJh5m8ZPxAEpYADhgZI1RRhFk/Ywwr/MzvhgZzYvEmj4OpYZRt9F+LSGfH0N3pncsSj1hPE8f9I12UVf+gB0P2RwmsIPdw1jRYC+4+AKyvEyYo45HWWCfRItrkqduZR2q3dA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=pix2Nnie; arc=none smtp.client-ip=205.220.180.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 425Bjwps004111;
-	Tue, 5 Mar 2024 18:24:51 GMT
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 425Fm2T2030069;
+	Tue, 5 Mar 2024 18:25:17 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version:content-type; s=
-	qcppdkim1; bh=eb5A4JDbuchBBafxqmTtCwKQlj+2d0meUpzdl7x3pG4=; b=bZ
-	DlQX2AZVmQ2Ysn5AiHZCP74B2xDpTEHzUkolr4+zzp4LjQfeW2GUiy4cvi0Yquoc
-	IIT732TBwE+ufyWAo2eaxdPqU49OjgFBu+6U/Ct00zvG1oUSsXYqK3Ca394TncDJ
-	3G2saNNEJWWYdNPVTDDKFFidpoDabuLu28ckfI0tlV99fBDjY5Osrk7+48kgmgNi
-	Z85YQg5vC1xNj/cFIyrf3wbBNu1Wkw2YrpfdCvYLwBNrXc8Bv3vMJ3oX/vlXwdIS
-	amt5f+dhHLBq76pu91FRKUu5F25ybgW9CWDlyrpo14/k1FVI5Br/htvGuxKx77uU
-	it1npCt9tMSjusqsRLaA==
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wp00x18tf-1
+	message-id:date:mime-version:subject:from:to:references
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=2kl5tMFEKrj+g3qzJ7Yn8a+ESpyaPJUxELxULpjiqso=; b=pi
+	x2NniezncgxxR80ZzKSp058LQQKAD4JPUS2xx8OeytsP9oRnA3vOLAcFttNHaQfO
+	newmEnUbCBHrZVR3+aCdbeGFXeY9dd+rpuju75EkGWYWRyOGfq5PbuoqQ4Vnp5/l
+	s50wej/d7nt0mOw53pXJkZ/x/wNEZVJbhrKV866EXYlj+QpCzNh1kXlowe1U1U2c
+	zPje5nmBIb2MBftKHDwlOHhgDmJp4cDhBD6oySJHZIp1sgDFkj9LONTEdpWx7K2w
+	oRFwV9UB14ZTtWIx1R55e+qGb0VneRlBqZC9taPwsAlMTSs0hfc732B/AnCVEZEj
+	svPMN2CNW9c4x0KN3L2A==
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wp6bv8cps-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 05 Mar 2024 18:24:50 +0000 (GMT)
+	Tue, 05 Mar 2024 18:25:16 +0000 (GMT)
 Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 425IOnRW028679
+	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 425IPFLH009942
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 5 Mar 2024 18:24:50 GMT
-Received: from hu-mojha-hyd.qualcomm.com (10.80.80.8) by
- nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 5 Mar 2024 10:24:48 -0800
-From: Mukesh Ojha <quic_mojha@quicinc.com>
-To: <srinivas.kandagatla@linaro.org>
-CC: <linux-kernel@vger.kernel.org>, Mukesh Ojha <quic_mojha@quicinc.com>
-Subject: [PATCH] nvmem: qfprom: Add constraint read for some SoCs
-Date: Tue, 5 Mar 2024 23:54:40 +0530
-Message-ID: <1709663080-10957-1-git-send-email-quic_mojha@quicinc.com>
-X-Mailer: git-send-email 2.7.4
+	Tue, 5 Mar 2024 18:25:15 GMT
+Received: from [10.216.51.173] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 5 Mar
+ 2024 10:25:08 -0800
+Message-ID: <a2e863e2-9c8b-47c2-b4d8-5664d954cd49@quicinc.com>
+Date: Tue, 5 Mar 2024 23:55:04 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 3/3] arm64: dts: qcom: sa8775p-ride: Enable support for
+ firmware managed resources
+Content-Language: en-US
+From: Sriram Dash <quic_sriramd@quicinc.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>, <vkoul@kernel.org>,
+        <kishon@kernel.org>, <robh@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <gregkh@linuxfoundation.org>, <quic_wcheng@quicinc.com>,
+        <Thinh.Nguyen@synopsys.com>, <p.zabel@pengutronix.de>,
+        <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <quic_psodagud@quicinc.com>, <quic_nkela@quicinc.com>,
+        <manivannan.sadhasivam@linaro.org>, <ulf.hansson@linaro.org>,
+        <sudeep.holla@arm.com>, <quic_shazhuss@quicinc.com>,
+        <devicetree@vger.kernel.org>
+References: <1709657858-8563-1-git-send-email-quic_sriramd@quicinc.com>
+ <1709657858-8563-4-git-send-email-quic_sriramd@quicinc.com>
+ <b9142874-0afb-40a6-9008-b33bd8f56840@linaro.org>
+ <399555e8-d8fa-46b7-8b15-3d3a4a30809b@quicinc.com>
+In-Reply-To: <399555e8-d8fa-46b7-8b15-3d3a4a30809b@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nasanex01c.na.qualcomm.com (10.45.79.139)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: j0gtkOSewRoDh9tHxhjrOlpFdf9gXyro
-X-Proofpoint-GUID: j0gtkOSewRoDh9tHxhjrOlpFdf9gXyro
+X-Proofpoint-GUID: Fg58HcmEETQqSWqLAm75O0fTg6deT8lC
+X-Proofpoint-ORIG-GUID: Fg58HcmEETQqSWqLAm75O0fTg6deT8lC
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-03-05_15,2024-03-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- lowpriorityscore=0 clxscore=1015 mlxscore=0 mlxlogscore=999
- impostorscore=0 phishscore=0 adultscore=0 malwarescore=0 spamscore=0
- bulkscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ phishscore=0 mlxscore=0 bulkscore=0 suspectscore=0 priorityscore=1501
+ adultscore=0 malwarescore=0 mlxlogscore=999 impostorscore=0 clxscore=1015
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2402120000 definitions=main-2403050147
 
-Few SoCs starting from sm8450 where fuse region is
-accessed using secure bus where it is not possible
-to do incremental bytewise reading, while it is
-possible to read 4 byte at a time.
-
-Add required support in qfprom driver to support
-reading fuse information on these SoCs.
-
-Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
----
- drivers/nvmem/qfprom.c | 56 +++++++++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 51 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/nvmem/qfprom.c b/drivers/nvmem/qfprom.c
-index 116a39e804c7..8fce445f0320 100644
---- a/drivers/nvmem/qfprom.c
-+++ b/drivers/nvmem/qfprom.c
-@@ -68,6 +68,7 @@ struct qfprom_soc_data {
-  * @secclk:       Clock supply.
-  * @vcc:          Regulator supply.
-  * @soc_data:     Data that for things that varies from SoC to SoC.
-+ * @soc_cdata:    Data that are relevant to convey SoC constraints.
-  */
- struct qfprom_priv {
- 	void __iomem *qfpraw;
-@@ -78,6 +79,7 @@ struct qfprom_priv {
- 	struct clk *secclk;
- 	struct regulator *vcc;
- 	const struct qfprom_soc_data *soc_data;
-+	const struct qfprom_soc_compatible_data *soc_cdata;
- };
- 
- /**
-@@ -99,10 +101,14 @@ struct qfprom_touched_values {
-  *
-  * @keepout: Array of keepout regions for this SoC.
-  * @nkeepout: Number of elements in the keepout array.
-+ * @word_size: Should be given for SoC where it is not possible
-+ *	       to do incremental reading or bytewise and while
-+ *	       it is possible read 4 byte at a time.
-  */
- struct qfprom_soc_compatible_data {
- 	const struct nvmem_keepout *keepout;
- 	unsigned int nkeepout;
-+	unsigned int word_size;
- };
- 
- static const struct nvmem_keepout sc7180_qfprom_keepout[] = {
-@@ -125,6 +131,10 @@ static const struct qfprom_soc_compatible_data sc7280_qfprom = {
- 	.nkeepout = ARRAY_SIZE(sc7280_qfprom_keepout)
- };
- 
-+static const struct qfprom_soc_compatible_data sm8450_qfprom = {
-+	.word_size = 4,
-+};
-+
- /**
-  * qfprom_disable_fuse_blowing() - Undo enabling of fuse blowing.
-  * @priv: Our driver data.
-@@ -317,21 +327,55 @@ static int qfprom_reg_write(void *context, unsigned int reg, void *_val,
- 	return ret;
- }
- 
-+static int __qfprom_reg_constraint_read(void __iomem *base, unsigned int reg,
-+					void *_val, size_t bytes,
-+					unsigned int word_size)
-+{
-+	unsigned int i;
-+	u8 *val = _val;
-+	u32 read_val;
-+	u8 *tmp;
-+
-+	for (i = 0; i < bytes; i++, reg++) {
-+		if (i == 0 || reg % word_size == 0) {
-+			read_val = readl(base + (reg & ~(word_size - 1)));
-+			tmp = (u8 *)&read_val;
-+		}
-+
-+		val[i] = tmp[reg & (word_size - 1)];
-+	}
-+
-+	return 0;
-+}
-+
-+static int __qfprom_reg_read(void __iomem *base, unsigned int reg, void *_val,
-+			     size_t bytes)
-+{
-+	u8 *val = _val;
-+	int words = bytes;
-+	int i = 0;
-+
-+	while (words--)
-+		*val++ = readb(base + reg + i++);
-+
-+	return 0;
-+}
-+
- static int qfprom_reg_read(void *context,
- 			unsigned int reg, void *_val, size_t bytes)
- {
- 	struct qfprom_priv *priv = context;
--	u8 *val = _val;
--	int i = 0, words = bytes;
- 	void __iomem *base = priv->qfpcorrected;
- 
- 	if (read_raw_data && priv->qfpraw)
- 		base = priv->qfpraw;
- 
--	while (words--)
--		*val++ = readb(base + reg + i++);
-+	if (priv->soc_cdata && priv->soc_cdata->word_size == 4)
-+		return __qfprom_reg_constraint_read(base, reg,
-+						    _val, bytes,
-+						    priv->soc_cdata->word_size);
- 
--	return 0;
-+	return __qfprom_reg_read(base, reg, _val, bytes);
- }
- 
- static void qfprom_runtime_disable(void *data)
-@@ -390,6 +434,7 @@ static int qfprom_probe(struct platform_device *pdev)
- 		econfig.nkeepout = soc_data->nkeepout;
- 	}
- 
-+	priv->soc_cdata = soc_data;
- 	/*
- 	 * If more than one region is provided then the OS has the ability
- 	 * to write.
-@@ -447,6 +492,7 @@ static const struct of_device_id qfprom_of_match[] = {
- 	{ .compatible = "qcom,qfprom",},
- 	{ .compatible = "qcom,sc7180-qfprom", .data = &sc7180_qfprom},
- 	{ .compatible = "qcom,sc7280-qfprom", .data = &sc7280_qfprom},
-+	{ .compatible = "qcom,sm8450-qfprom", .data = &sm8450_qfprom},
- 	{/* sentinel */},
- };
- MODULE_DEVICE_TABLE(of, qfprom_of_match);
--- 
-2.7.4
-
+On 3/5/2024 11:33 PM, Sriram Dash wrote:
+> On 3/5/2024 10:38 PM, Krzysztof Kozlowski wrote:
+>> On 05/03/2024 17:57, Sriram Dash wrote:
+>>> Establish the channel and domain mapping for the power domains to 
+>>> connect
+>>> with firmware, enabling the firmware to handle the assigned resources.
+>>> Since these delegated resources will remain invisible to the operating
+>>> system, ensure that any references to them are removed.
+>>>
+>>> Signed-off-by: Sriram Dash <quic_sriramd@quicinc.com>
+>>> ---
+>>>   arch/arm64/boot/dts/qcom/sa8775p-ride.dts | 96 
+>>> +++++++++++++++++++++++++------
+>>>   1 file changed, 77 insertions(+), 19 deletions(-)
+>>
+>> Do not mix DTS patches with submissions to netdev or USB.
+>>
+>> Please put it inside your internal guides, so you will not be repeating
+>> this over and over.
+>>
+> 
+> Sure. Will take care. Thanks.
+> 
+>>>
+>>> diff --git a/arch/arm64/boot/dts/qcom/sa8775p-ride.dts 
+>>> b/arch/arm64/boot/dts/qcom/sa8775p-ride.dts
+>>> index 26ad05b..b6c9cac 100644
+>>> --- a/arch/arm64/boot/dts/qcom/sa8775p-ride.dts
+>>> +++ b/arch/arm64/boot/dts/qcom/sa8775p-ride.dts
+>>> @@ -764,8 +764,18 @@
+>>>   };
+>>>   &usb_0 {
+>>> -    pinctrl-names = "default";
+>>> -    pinctrl-0 = <&usb0_en_state>;
+>>> +    /delete-property/ clocks;
+>>> +    /delete-property/ clock-names;
+>>> +    /delete-property/ assigned-clocks;
+>>> +    /delete-property/ assigned-clock-rates;
+>>> +    /delete-property/ required-opps;
+>>> +    /delete-property/ resets;
+>>> +    /delete-property/ interconnects;
+>>> +    /delete-property/ interconnect-names;
+>>> +
+>>> +    power-domains = <TODO>, <TODO>;
+>>
+>> This wasn't even tested.
+>>
+> 
+> This is tested with the specific power domains in place
+> of <TODO>. SCMI interface is used for the power domains.
+> 
+>> Best regards,
+>> Krzysztof
+>>
 
