@@ -1,96 +1,144 @@
-Return-Path: <linux-kernel+bounces-91729-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91722-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40D868715BD
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:15:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACC058715AE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:10:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7389F1C2118D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 06:15:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2ED8928348C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 06:10:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E298D7BAFF;
-	Tue,  5 Mar 2024 06:15:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94CC87BAFE;
+	Tue,  5 Mar 2024 06:09:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=flyingcircus.io header.i=@flyingcircus.io header.b="QBOeYQWj"
-Received: from mail.flyingcircus.io (mail.flyingcircus.io [212.122.41.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qflZbLNR"
+Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EBF9FC1C;
-	Tue,  5 Mar 2024 06:15:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.122.41.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D87457B3CA
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 06:09:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709619331; cv=none; b=WvpmEPTA17UwbU+Y2OXSQnfjrAQ3uod8buOkqJ/V07qgLCdRJ87mEXVqkbuBqOF79utd75gjsPEg1ocvGKSTuByEMBsga1vMbIjoML978YsEtwYHDcUIMFOuQxFLbmci3/06U9VHhwBinM/2kU+NDhYgzzDplLrE7cgWpErS+QE=
+	t=1709618996; cv=none; b=Hg5uTaXcdTwZdsgx7GItIGfUkUn8g/dEAyPnV06/2codSZ9zJoRAVuV8yYLFEyPRpOC+1kepCYuTCshLZSoFmpcyrxozuWYxW0tbCoti1maDMsurO2HnV2npElJyPJzgRFqb53yl2Sb7fbWZOeS7513JRiNRhGy7A97BGaeLYck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709619331; c=relaxed/simple;
-	bh=k0S++Cu8Iyr6uXBN6ACI05p0wIHJD7IqUIi1EDWRXX0=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=eZVnPMNZIHHK4+XKEXiPz2i3joHpkb69Vxk3nUOU6pAE+3tyaigjqd7Rxpsk5ag+YNCRqIgw19Mtuh4lIyrY/pcCrJL4Wmb3HtapBe2SuDbMpwgA3yiJGjuJ5f4Qn2CawC++8kzkcveMwEXCEcIAJkMdhCTG+BYoma2Q9k4nNx4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=flyingcircus.io; spf=pass smtp.mailfrom=flyingcircus.io; dkim=pass (1024-bit key) header.d=flyingcircus.io header.i=@flyingcircus.io header.b=QBOeYQWj; arc=none smtp.client-ip=212.122.41.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=flyingcircus.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flyingcircus.io
-Content-Type: text/plain;
-	charset=utf-8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flyingcircus.io;
-	s=mail; t=1709618979;
-	bh=k0S++Cu8Iyr6uXBN6ACI05p0wIHJD7IqUIi1EDWRXX0=;
-	h=Subject:From:In-Reply-To:Date:Cc:References:To;
-	b=QBOeYQWjPjcVLq2dQ5HyXh22PMZs7KuESHcPaGtHEHmWgwM115uQLZdf4M0c48GBi
-	 ovEehHg1WSiwOjpDCXFmFJy7F+yOQpUPAthHdGOkOmNbbHebQ2hTKr7MIMjXZJQWnT
-	 lBL4chzEwOh1OHe4bq0TvoSNd+lkl725lOsu4NkM=
+	s=arc-20240116; t=1709618996; c=relaxed/simple;
+	bh=TNBK9fUwJLsaAImw1Jf5Q46P/Y3QQThaMK9QPXp0nsk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AqC8SRKyRGgSl9F9b3cI5ng4hcYSS4HszlI9SJk2hCHXmLv+Y98jzsuEJvzbIJ9S5zmAejKd76OrnpAKotnbUnEJ7KVlu/ktbwp4zNNg0ixzBlAuqbBMjO90437hpnoHPgdurGX9pOk4NUQpmGfCWqIzArfcHtE7+veAgdOAFLk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qflZbLNR; arc=none smtp.client-ip=209.85.161.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-595aa5b1fe0so186299eaf.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 22:09:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709618993; x=1710223793; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/BDLkvHSjKn2xGeDzvhFh1c2vd6PQCy331MBE5g4t/8=;
+        b=qflZbLNRn5UYMHmzoq7FzxVgibF+WGlXxko2jmmO98SAzngob3DLY/V6urUs0ZEjww
+         Ji0FhgZ+MgTscwNqUf5PenfKLThxAYfKdGqovEWjDkFRfVa8oMuDLLgYPfX9ysfydJKy
+         gohgmc9UoZsEMU95OgZPvJ2aQOD5Sw9lmYBZs/tSzjEFH3VxILcTaGQaeR9pagZZ3eAU
+         HEh6J8FA6SxfZj2LEcOdO0JFLXKesszHQNtonJPWlqXoKyUQTNpR2ROdtGLZxJtBp+SL
+         5aDMgO/+hVW+PAvEjrqMv+XKbX3vZXbvgCeGHJV/lr8modOMd/eW5B3WTX/od30JnR+M
+         1rtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709618993; x=1710223793;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/BDLkvHSjKn2xGeDzvhFh1c2vd6PQCy331MBE5g4t/8=;
+        b=YJH9AcuoJg+Bu9aTFQnxYx3bwyXjlTl7NKeuEOt6dW2uTRIhEY41mGVWrJO2e4ddFA
+         UFp4Zfvzh0edPU0gc+mDCkV5/kER9arnL9mhFaZYWr8AzT17EmfcZYwh72pk/TPUltxX
+         AZy0JHTFnUJR1kHOGGS+ME1mh3ksC7qC/RyipvWXMoYPBRNiA1LcqEWoVyyZfsKpZZF5
+         GuZM02Ih0t7s3zvmG7NtCzb3pnHcogYbkBa9kk/tzgNML/EsdkLFv7ggH1AlWPT1OuMZ
+         U+bAHsb/ccGaWQb1AXCKYubw08RrejGmwCVyy92DrGMfXlAWTDjgvMZzFH4jaOZjUkkj
+         x2jQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX9CRgzyO3eXMLafsXlipWHQPu6UEyrNFl7uf8A8aNTW/jgFll4LQ4PNr6or1PVJO9SD7C1ci0NTiENT9YJFRtsenJaD3l0CD5SBRoV
+X-Gm-Message-State: AOJu0YzncVNbpsPY+viTfW29C4saUO2/cEEIzAiIdlwO03P8atZ+ivEM
+	fkkUkh0s+LBhmygKtj11LTgtaIWFtbXfuroW04u+ruaO0tiYom47RC/wlL78KpQ=
+X-Google-Smtp-Source: AGHT+IEIWFOfaFbEh9f6ob6ornvM/SZDefnANJC8LnnWZLbBx3Vndoh0MwTSPcdNEYdKAsuDpqmoSQ==
+X-Received: by 2002:a05:6359:458d:b0:17a:e9db:bc10 with SMTP id no13-20020a056359458d00b0017ae9dbbc10mr974302rwb.20.1709618992856;
+        Mon, 04 Mar 2024 22:09:52 -0800 (PST)
+Received: from localhost ([122.172.85.206])
+        by smtp.gmail.com with ESMTPSA id c11-20020a63da0b000000b005bd980cca56sm8302545pgh.29.2024.03.04.22.09.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Mar 2024 22:09:51 -0800 (PST)
+Date: Tue, 5 Mar 2024 11:39:49 +0530
+From: Viresh Kumar <viresh.kumar@linaro.org>
+To: Dhruva Gole <d-gole@ti.com>
+Cc: Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+	Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	kernel test robot <lkp@intel.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 1/2] OPP: debugfs: Fix warning with W=1 builds
+Message-ID: <20240305060949.pjzb54zkcelt5xgz@vireshk-i7>
+References: <ab75239d2280e506e5b9386b8aeb9edf97cd3294.1709551295.git.viresh.kumar@linaro.org>
+ <66af18e0-56eb-401f-900d-a83f6e52c603@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.400.31\))
-Subject: Re: nfs4_schedule_state_manager stuck in tight loop
-From: Christian Theune <ct@flyingcircus.io>
-In-Reply-To: <ZdisssP88_9o0BXn@manet.1015granger.net>
-Date: Tue, 5 Mar 2024 07:09:19 +0100
-Cc: linux-nfs@vger.kernel.org,
- jlayton@kernel.org,
- linux-kernel@vger.kernel.org,
- Linux regressions mailing list <regressions@lists.linux.dev>,
- trondmy@hammerspace.com,
- anna@kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <3404A3C2-31BE-4D39-A256-E3A1FB48ACFB@flyingcircus.io>
-References: <8B04DA70-ABEF-44A4-BBA7-60968E6CFA10@flyingcircus.io>
- <ZdisssP88_9o0BXn@manet.1015granger.net>
-To: Chuck Lever <chuck.lever@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <66af18e0-56eb-401f-900d-a83f6e52c603@ti.com>
 
-Hi,
+On 04-03-24, 17:08, Dhruva Gole wrote:
+> Hi,
+> 
+> On 04/03/24 16:52, Viresh Kumar wrote:
+> > We currently get the following warning:
+> > 
+> > debugfs.c:105:54: error: '%d' directive output may be truncated writing between 1 and 11 bytes into a region of size 8 [-Werror=format-truncation=]
+> >                   snprintf(name, sizeof(name), "supply-%d", i);
+> >                                                        ^~
+> > debugfs.c:105:46: note: directive argument in the range [-2147483644, 2147483646]
+> >                   snprintf(name, sizeof(name), "supply-%d", i);
+> >                                                ^~~~~~~~~~~
+> > debugfs.c:105:17: note: 'snprintf' output between 9 and 19 bytes into a destination of size 15
+> >                   snprintf(name, sizeof(name), "supply-%d", i);
+> > 
+> > Fix this and another potential issues it by allocating larger arrays.
+> 
+> Just to keep in mind while applying maybe: s/another/other
+> 
+> > Use the exact string format to allocate the arrays without getting into
+> > these issues again.
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Closes: https://lore.kernel.org/oe-kbuild-all/202402141313.81ltVF5g-lkp@intel.com/
+> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> > ---
+> > V2: Use string name while allocating memory for the array to fix potential
+> > issues later on.
+> > 
+> >   drivers/opp/debugfs.c | 8 ++++----
+> >   1 file changed, 4 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/opp/debugfs.c b/drivers/opp/debugfs.c
+> > index ec030b19164a..27c3748347af 100644
+> > --- a/drivers/opp/debugfs.c
+> > +++ b/drivers/opp/debugfs.c
+> > @@ -56,11 +56,11 @@ static void opp_debug_create_bw(struct dev_pm_opp *opp,
+> >   				struct dentry *pdentry)
+> >   {
+> >   	struct dentry *d;
+> > -	char name[20];
+> > +	char name[] = "icc-path-XXXXXXXXXX"; /* Integers can take 10 chars max */
 
-not sure whether I may have missed a response that didn=E2=80=99t make =
-it back to me or any of the lists.
+Integers can take 11 chars max, I forgot the negative symbol. Added
+space for another byte and pushed the changes.
 
-Just in case, because the CC didn=E2=80=99t include the original =
-addendum I made to my report:
+> Feels like a better solution to me than the previous revision, thanks!
+> 
+> 
+> Reviewed-by: Dhruva Gole <d-gole@ti.com>
 
-Addendum:
+Thanks.
 
-I=E2=80=99ve checked kernel changelogs since then but didn=E2=80=99t =
-find anything that I could relate to this aside from *maybe* =
-dfda2a5eb66a685aa6d0b81c0cef1cf8bfe0b3c4 (rename(): fix the locking of =
-subdirectories) which mentions NFS but doesn=E2=80=99t describe the =
-potential impact.
-
-We=E2=80=99re running 5.15.148 now and as it=E2=80=99s been another 2 =
-months there might be the chance of another lockup in the near future ;)
-
-If anyone has ideas on how to debug/approach a reproducer I=E2=80=99d be =
-more than happy to help and try to provide more data.
-
-Cheers,
-Christian
-
---=20
-Christian Theune =C2=B7 ct@flyingcircus.io =C2=B7 +49 345 219401 0
-Flying Circus Internet Operations GmbH =C2=B7 https://flyingcircus.io
-Leipziger Str. 70/71 =C2=B7 06108 Halle (Saale) =C2=B7 Deutschland
-HR Stendal HRB 21169 =C2=B7 Gesch=C3=A4ftsf=C3=BChrer: Christian Theune, =
-Christian Zagrodnick
-
+-- 
+viresh
 
