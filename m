@@ -1,141 +1,178 @@
-Return-Path: <linux-kernel+bounces-92808-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92806-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BB00872637
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:05:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2672187262F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:04:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB40F28A688
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:05:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A83DE1F27530
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:04:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A19BB241E0;
-	Tue,  5 Mar 2024 18:04:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7180418EA5;
+	Tue,  5 Mar 2024 18:04:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="nmiYXkXB"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Lx/uVdSM"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9257512E7E;
-	Tue,  5 Mar 2024 18:04:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1819718EAB
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 18:04:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709661876; cv=none; b=KdRIOqf1XbBU2ZLuCCWOMk/GZASYulKAMNscxlBTU4IH18Yp+5Lw4bFMxCGb01waJYwvSi4/Trr8q8mO5XptWUGl03/vDLiG9+HGq5FOw7zi4pm2Lf4xmg59yCcVRIz78LaEx6Qm69gkBBkez+8AjSebXu1sI3/+eQmksllU2J0=
+	t=1709661865; cv=none; b=FxbSKn2rY6anNliwwaCoZV1VmMoou2Wgrcz5sLsgaoaoi8/EsuXQTStai4p7wJ63GebW+scgjuGEhzWqENrqAI1GkI6dQxzEGDQy3hYqbiMYXfZ0efUG04s028meA0h0kl4B2zZyNK/CWR2WD39QteA2gmFdISmDjp7y0exgPzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709661876; c=relaxed/simple;
-	bh=KKaXc5Gf1bPywyMA3vROKr+bIO/DG51ozDBuV4FN71I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=k+449tUPePaZkParDF6rvegoExwy/ijd25BJyaZTJpgzleDExf6so2zv2AeBRGBRNzV0/bltX2RS2yme0k0vUJNLXFH+tjstKPc+oCtOh18sOpg52rDpgz7tLFKfN49B16AymxNpuwQItGoLMWOaiCwsoKcOxFh9DfOhFJmHLlo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=nmiYXkXB; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 425ER8Pb032429;
-	Tue, 5 Mar 2024 18:04:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=sghqC+om+7KfQnUHnhcBPIALJGyNo7LhaapE291B5b0=; b=nm
-	iYXkXBm7jZSjeA42OzytxgY+zrHhWjnWN5eYlP17xcH70zIVD87ELqKuqWpUUr3Q
-	RRLsAwgkD4FrsojfOb2VkUNll1GKNIufLtc2xmAxZNxmh18QpxWZf/L093ZQxauc
-	Ea4f9NdoHLamn6Tb8A/aa1KLsXKzNQTGNaRJ2kIFu5jUXymDxIQmomUQfWXZnn+9
-	QqMUTbrCd9TeppRhfpwiSv/p8Fij5fM+3/5BbCFkxnmWptAMRGsHl8NiT17vIwMM
-	kL/8oeBxbiFr40fhPxOna3hxI5lDpiwaEjVdDHivHEST4xOdMhs5CwXI35KTT6FS
-	Y7eJLPsZR2VoJMANmJCQ==
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wp02898bh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 05 Mar 2024 18:04:20 +0000 (GMT)
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 425I4Kqj010381
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 5 Mar 2024 18:04:20 GMT
-Received: from [10.216.51.173] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 5 Mar
- 2024 10:04:12 -0800
-Message-ID: <1a47c20a-abda-4493-a8f0-ff7b4e144d9c@quicinc.com>
-Date: Tue, 5 Mar 2024 23:34:12 +0530
+	s=arc-20240116; t=1709661865; c=relaxed/simple;
+	bh=KlteQmYHydWNBOpxdpzf+ptjubVxDcE/oTAcS8ClTCY=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=YM5V+I+4UydtpHhwp0L5hcVZQhWwURs5V+H8SDmSksVprad8VkFP3wnRQ9LYFecBoubPuU0lK/AbJn4g9QPX2LGqEqS6vDw9zXVBVzEK3LaxI5aHkXTMIINKZxDkVis9NCZ3Mfda4JGOqtqdB4HX6RhZv32p4axprLvQ7NvGM4s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Lx/uVdSM; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-609ce331defso12884257b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 10:04:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709661863; x=1710266663; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=pEbrJLbsSQI/fw5oAKGC5MieHsStoqch1a0BdEdHBlY=;
+        b=Lx/uVdSMQf992dTYkIderi7voShRPjzxBfQcJleun8akA1s316Flk0UoDnRtcO4ujY
+         fQZ5op5ngmWIv2bWeSdXOXGtl4JXj9Kpdr3Y8zgWYcxSX2rlwpsGCaXqWcDuovjIlpXw
+         PLNAq3TtOamsHeLPsc2fwpSkQpStyv9N11mTrutYPZ+91/FZOohLvHFHGAQxXasM48Jj
+         6VEWFbuPEcTcMy5MwqTnLhq59/p/71Y2HA87+mTgy51kvGXXmwwr5LEJEf7s0DxscZVo
+         qv4AoFzFE6xGIV4x1yogkHo9XQpCg6GwADtYrnDqHBvOr97T1KeA8N2tt4X9js+fMvZ2
+         ySQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709661863; x=1710266663;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pEbrJLbsSQI/fw5oAKGC5MieHsStoqch1a0BdEdHBlY=;
+        b=WHpzM3+JHEguska1fm80aT09XOvFwqs9HdAQ/nP/er//bi4beSZ3VOceqI++VHv2cH
+         11VUpAB25HCeCUNtcJngq4ZkbjmcvEz3/mtzRgZp2cL5z8/DTjv5WIgTz7JJld4C9Fka
+         CNHUnloHgR6ovHmEl9LWLJl0h5cHb8CvqJg+DEVmKUJuFzCaZMDiqzC8zsM67uD5HNAS
+         RnyC/I9BOnDkYXcwKmjodh51rMDwd/tdMNlTEobETz6gG0L6Igm9RmxzDUnKnL5wN6Dd
+         bVPg31GkhkRn7izIu8fdGluq3nDNq72S7QUIy6kbKO9u/Mkdx1NcH6GQm68n/KX76vNb
+         d2bQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX8H2zFmgrMX873ZpeEsJaH1k1pJ0bVO0L56Dmjg2KnmnYgGTZHsCkkX3RyjxGaFeuGwCgVlMApMkWZYzIBzzNkvoqGh9GshhKVaOMx
+X-Gm-Message-State: AOJu0Yy+ixZSjtiGfkug9G50U6AJ0xk38XNzaIIhlTr5onnsrqYO3Ce1
+	5l7h1RQHeoJRTa60+1URMWi6M4zawUX7UqB1iPVGa9QWveuZnl536K3jdXGTT8NfsAKJOpMA/64
+	4Kw==
+X-Google-Smtp-Source: AGHT+IHQ9UsEAu7P7/CrKaWcVqX4oXUziFtlmyRIzxiyJyrSWM03oEu21H2c1A1L24BxK1ATy8oHmtOSpnM=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:690c:3507:b0:609:3c79:dbf1 with SMTP id
+ fq7-20020a05690c350700b006093c79dbf1mr3570872ywb.8.1709661863151; Tue, 05 Mar
+ 2024 10:04:23 -0800 (PST)
+Date: Tue, 5 Mar 2024 10:04:21 -0800
+In-Reply-To: <ZedUwKWW7PNkvUH1@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 0/3] Enable firmware-managed USB resources on Qcom targets
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>, <vkoul@kernel.org>,
-        <kishon@kernel.org>, <robh@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <gregkh@linuxfoundation.org>, <quic_wcheng@quicinc.com>,
-        <Thinh.Nguyen@synopsys.com>, <p.zabel@pengutronix.de>,
-        <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>, <quic_psodagud@quicinc.com>,
-        <quic_nkela@quicinc.com>, <manivannan.sadhasivam@linaro.org>,
-        <ulf.hansson@linaro.org>, <sudeep.holla@arm.com>,
-        <quic_shazhuss@quicinc.com>
-References: <1709657858-8563-1-git-send-email-quic_sriramd@quicinc.com>
- <4d2501a7-d56d-4736-95d7-41556166859b@linaro.org>
-From: Sriram Dash <quic_sriramd@quicinc.com>
-In-Reply-To: <4d2501a7-d56d-4736-95d7-41556166859b@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 2IOJRVrWpQ7_YUUjAOmM_nf0gKuKdET4
-X-Proofpoint-ORIG-GUID: 2IOJRVrWpQ7_YUUjAOmM_nf0gKuKdET4
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-05_15,2024-03-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- lowpriorityscore=0 mlxlogscore=951 suspectscore=0 phishscore=0 spamscore=0
- malwarescore=0 mlxscore=0 clxscore=1015 bulkscore=0 impostorscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403050144
+Mime-Version: 1.0
+References: <20240301075007.644152-1-sandipan.das@amd.com> <06061a28-88c0-404b-98a6-83cc6cc8c796@gmail.com>
+ <cc8699be-3aae-42aa-9c70-f8b6a9728ee3@amd.com> <f5bbe9ac-ca35-4c3e-8cd7-249839fbb8b8@linux.intel.com>
+ <ZeYlEGORqeTPLK2_@google.com> <8a846ba5-d346-422e-817b-e00ab9701f19@gmail.com>
+ <ZedUwKWW7PNkvUH1@google.com>
+Message-ID: <ZedepdnKSl6oFNUq@google.com>
+Subject: Re: [PATCH] KVM: x86/svm/pmu: Set PerfMonV2 global control bits correctly
+From: Sean Christopherson <seanjc@google.com>
+To: Like Xu <like.xu.linux@gmail.com>
+Cc: Dapeng Mi <dapeng1.mi@linux.intel.com>, Sandipan Das <sandipan.das@amd.com>, 
+	pbonzini@redhat.com, mizhang@google.com, jmattson@google.com, 
+	ravi.bangoria@amd.com, nikunj.dadhania@amd.com, santosh.shukla@amd.com, 
+	manali.shukla@amd.com, babu.moger@amd.com, kvm list <kvm@vger.kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
 
-On 3/5/2024 10:42 PM, Krzysztof Kozlowski wrote:
-> On 05/03/2024 17:57, Sriram Dash wrote:
->> Some target systems allow multiple resources to be managed by firmware.
-> 
-> Which? Why this is so vague...
-> 
+On Tue, Mar 05, 2024, Sean Christopherson wrote:
+> On Tue, Mar 05, 2024, Like Xu wrote:
+> diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
+> index 87cc6c8809ad..f61ce26aeb90 100644
+> --- a/arch/x86/kvm/pmu.c
+> +++ b/arch/x86/kvm/pmu.c
+> @@ -741,6 +741,8 @@ static void kvm_pmu_reset(struct kvm_vcpu *vcpu)
+>   */
+>  void kvm_pmu_refresh(struct kvm_vcpu *vcpu)
+>  {
+> +	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
+> +
+>  	if (KVM_BUG_ON(kvm_vcpu_has_run(vcpu), vcpu->kvm))
+>  		return;
+>  
+> @@ -750,8 +752,18 @@ void kvm_pmu_refresh(struct kvm_vcpu *vcpu)
+>  	 */
+>  	kvm_pmu_reset(vcpu);
+>  
+> -	bitmap_zero(vcpu_to_pmu(vcpu)->all_valid_pmc_idx, X86_PMC_IDX_MAX);
+> +	bitmap_zero(pmu->all_valid_pmc_idx, X86_PMC_IDX_MAX);
+>  	static_call(kvm_x86_pmu_refresh)(vcpu);
+> +
+> +	/*
+> +	 * At RESET, both Intel and AMD CPUs set all enable bits for general
+> +	 * purpose counters in IA32_PERF_GLOBAL_CTRL (so that software that
+> +	 * was written for v1 PMUs don't unknowingly leave GP counters disabled
+> +	 * in the global controls).  Emulate that behavior when refreshing the
+> +	 * PMU so that userspace doesn't need to manually set PERF_GLOBAL_CTRL.
+> +	 */
+> +	if (kvm_pmu_has_perf_global_ctrl(pmu))
+> +		pmu->global_ctrl = GENMASK_ULL(pmu->nr_arch_gp_counters - 1, 0);
+>  }
 
-SA8775 will be using it as pilot. Will include the target name.
+Doh, this is based on kvm/kvm-uapi, I'll rebase to kvm-x86/next before posting.
 
->> On these targets, tasks related to clocks, regulators, resets, and
->> interconnects can be delegated to the firmware, while the remaining
->> responsibilities are handled by Linux.
->>
->> To support the management of partial resources in Linux and leave the rest
->> to firmware, multiple power domains are introduced. Each power domain can
->> manage one or more resources, depending on the specific use case.
->>
->> These power domains handle SCMI calls to the firmware, enabling the
->> activation and deactivation of firmware-managed resources.
->>
->> The driver is responsible for managing multiple power domains and
->> linking them to consumers as needed. Incase there is only single
->> power domain, it is considered to be a standard GDSC hooked on to
->> the qcom dt node which is read and assigned to device structure
->> (by genpd framework) before the driver probe even begins.
-> 
-> This will break the ABI. Sorry, come with an ABI stable solution.
-> 
+I'll also update the changelog to call out that KVM has always clobbered global_ctrl
+during PMU refresh, i.e. there is no danger of breaking existing setups by
+clobbering a value set by userspace, e.g. during live migration.
 
-The plan is to include multiple power-domains and fw-managed
-property or similar in the device tree and fw-managed property
-will be deciding if we need some resource management offloaded
-to firmware. So, OS is always in control here. The decision
-making will be done in the drivers. Also, there will be no
-separate vendor hooks.
+Lastly, I'll also update the changelog to call out that KVM *did* actually set
+the general purpose counter enable bits in global_ctrl at "RESET" until v6.0,
+and that KVM intentionally removed that behavior because of what appears to be
+an Intel SDM bug.
 
-> Best regards,
-> Krzysztof
-> 
+Of course, in typical KVM fashion, that old code was also broken in its own way
+(the history of this code is a comedy of errors).  Initial vPMU support in commit
+f5132b01386b ("KVM: Expose a version 2 architectural PMU to a guests") *almost*
+got it right, but for some reason only set the bits if the guest PMU was
+advertised as v1:
+
+        if (pmu->version == 1) {
+                pmu->global_ctrl = (1 << pmu->nr_arch_gp_counters) - 1;
+                return;
+        }
+
+
+Commit f19a0c2c2e6a ("KVM: PMU emulation: GLOBAL_CTRL MSR should be enabled on
+reset") then tried to remedy that goof, but botched things and also enabled the
+fixed counters:
+
+        pmu->global_ctrl = ((1 << pmu->nr_arch_gp_counters) - 1) |
+                (((1ull << pmu->nr_arch_fixed_counters) - 1) << X86_PMC_IDX_FIXED);
+        pmu->global_ctrl_mask = ~pmu->global_ctrl;
+
+Which was KVM's behavior up until commit c49467a45fe0 ("KVM: x86/pmu: Don't overwrite
+the pmu->global_ctrl when refreshing") incorrectly removed *everything*.  Very
+ironically, that commit came from Like.
+
+Author: Like Xu <likexu@tencent.com>
+Date:   Tue May 10 12:44:07 2022 +0800
+
+    KVM: x86/pmu: Don't overwrite the pmu->global_ctrl when refreshing
+    
+    Assigning a value to pmu->global_ctrl just to set the value of
+    pmu->global_ctrl_mask is more readable but does not conform to the
+    specification. The value is reset to zero on Power up and Reset but
+    stays unchanged on INIT, like most other MSRs.
+
+But wait, it gets even better.  Like wasn't making up that behavior, Intel's SDM
+circa December 2022 states that "Global Perf Counter Controls" is '0' at Power-Up
+and RESET.  But then the March 2023 SDM rolls out and says
+
+  IA32_PERF_GLOBAL_CTRL: Sets bits n-1:0 and clears the upper bits.
+
+So presumably someone at Intel noticed that what their CPUs do and what the
+documentation says didn't match.
+
+*sigh*
 
