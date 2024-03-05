@@ -1,261 +1,180 @@
-Return-Path: <linux-kernel+bounces-92236-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92237-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FAE9871D34
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:17:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AF60871D3A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:19:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 75A35B231FF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:17:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6828E1C20F43
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:19:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6DDB548FF;
-	Tue,  5 Mar 2024 11:17:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8643E56472;
+	Tue,  5 Mar 2024 11:18:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="1k3VDPOt"
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r002UdI0"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B889C5786A
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 11:17:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8C0A548FB;
+	Tue,  5 Mar 2024 11:18:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709637445; cv=none; b=IAPGcvL6DmulwsvVu8oKzIGUQOaxKxfGlxZ0UlJc8GlEp2erWOkk/uMufJt52V1cOosnpR3nQm8Ng6OO9MFkJ9gkKvQ9rnJCmCKVlnANlo015/MdnelR/X1wGBYCvgimMkYM8fCe5kfYtJtmQ9r4PoSRgSMzxM9rbJBfO45R5Eg=
+	t=1709637534; cv=none; b=ImC5dSX2H4w9Zcji9Zg+ObiyXaPt8Y8jtnNhsU0qQKDwD7LhOwL+oWolbYqsisIZ4HZmINfJ+W/fLh33jFE/GVKO8x2cFeHZVUkkvZKCr6wzbKrIPIi58HoPiQ5nPCTtlghTT/GHiaKY0sz7H962jkAW+765kz7ezASlO3ZYWR8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709637445; c=relaxed/simple;
-	bh=ag16qgtV0b3r73sf9dBSndiHcOqr5fxKPRVdAlFbtIs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MZbpVRlKOMCINlS83K09BtktdntZZ8zz0sj+BDpuKfEyxhbQDFFhikeg5R6M36m/4B1xjjQJCPD4isl1w1CznBveyzlxoYAGZSvpuNbdsssxnt9kazYN+fk1G7Yv603w2kWvkectr4W2FXGZxr2uOm6IKoUh4fhL+DPtbdupWno=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=1k3VDPOt; arc=none smtp.client-ip=209.85.167.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-51321e71673so6369953e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 03:17:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1709637441; x=1710242241; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=j2ULHLhroOyDBrYbmargHZ3lXfCo0OB1feNvDkZhuNg=;
-        b=1k3VDPOtpZ6Qzv9F8C27gggRpsMaNSD62wBNyEKAsf8gw7aVpKzo+gYokaAlBCpDbo
-         5e48kE413hmuZVyQzVUPF0zpCejArn+AI/HJ1fbgmjCpI+qksh8i8/t70qpxezaHScHO
-         MYm5F/f8ULb/0ch0itZC6xXOJXeCcA4pAFcXK8H2UFbkrR7eQliPNERq4FaaF3SPd6X+
-         U3F5HaRgzCcOsRwxtCdzSa0BLriHn04CrbN3RQsfoR4s2s0h1o6K7CbJjxyq7m8x2LNV
-         13LDdD0WG5r2dWj64EiaSjstQoAU56JJ+VpjUtJx7TkwWBe6Y/HQ7sY5mUEekpvDZ1lc
-         yl6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709637441; x=1710242241;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j2ULHLhroOyDBrYbmargHZ3lXfCo0OB1feNvDkZhuNg=;
-        b=MQELw11YBGkKKfElAsVvkP6K2CT49rGsWAAssmYS8joTXVMLuu/+/ZlO/xPS3DnVZ/
-         9TnnLAVInkD0SLpIhU1g6nUkOqYU5AwobR/X5w3uGaW3k1DFX/pf+/mjTdCthVpxgQ+V
-         Rx78QjDddhoSdr1Oe4aWpd6mWIwkgYOxcTiHLLLdrbTqcUTLY/KVGX4txvBxBEWo5tjb
-         LTJuIIQXm8/jOZlmcDSCJ+Q3JNV65g0EEY0qN1QGzPHraSIifG31Mea1hzrd7pj62G+H
-         oQc+pcf8GgYrRAhR04DyIxOGYzhWJbiGcU8PW7Okyij7bJW4P51RNv+SZYBYyZENj9Az
-         uIUw==
-X-Forwarded-Encrypted: i=1; AJvYcCUXVy0J29hXW3uNyWsa+oPXrAapa5hCjebn0x/nK5G6V2nazMvPAL765hYloghogXH445T/pdF0XixN2AKPn4WMHejhweB02j01C83K
-X-Gm-Message-State: AOJu0YxUCQM2d9LLyZpxomyWfj2G/KAcjh2uestMSXsNi7LiABWs9+hv
-	faVcoQOPnZoFD1nRPcLGv8I8wlQc+c5mB3jjWVDj8YstukH/UbNeAmAWRsdDVRw=
-X-Google-Smtp-Source: AGHT+IHCfdanPuTNNxlu2M0jKSAisxwUOSu72YtEDH8PxdOjlG67vui+HF5ei4BhpYu0Mex9c5cPrg==
-X-Received: by 2002:a05:6512:b8c:b0:513:2102:7afe with SMTP id b12-20020a0565120b8c00b0051321027afemr1333821lfv.7.1709637440593;
-        Tue, 05 Mar 2024 03:17:20 -0800 (PST)
-Received: from blmsp ([2001:4091:a246:821e:6f3b:6b50:4762:8343])
-        by smtp.gmail.com with ESMTPSA id pw20-20020a17090720b400b00a450164cec6sm3223199ejb.194.2024.03.05.03.17.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 03:17:20 -0800 (PST)
-Date: Tue, 5 Mar 2024 12:17:19 +0100
-From: Markus Schneider-Pargmann <msp@baylibre.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Rob Herring <robh@kernel.org>, Nishanth Menon <nm@ti.com>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Santosh Shilimkar <ssantosh@kernel.org>, 
-	Andrew Davis <afd@ti.com>, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] dt-bindings: hwinfo: ti,k3-socinfo: Add nvmem-cells
-Message-ID: <sowpixx2u4d5alj4udzr3qt47zevylukhpwkw3pfwnogqjse5w@xrxcozzvog6v>
-References: <20240206143711.2410135-1-msp@baylibre.com>
- <20240206143711.2410135-3-msp@baylibre.com>
- <20240206184305.GA1875492-robh@kernel.org>
- <z56fiu2jpokp57sjvnrdcbfy7brpq2ag4yxpektqlhtidecx4n@vc7dsurhxorb>
- <cb75c098-521e-4eed-bc3e-7237f8a6498f@linaro.org>
- <ut63wrhsewkpfdgaatd6hqmj5upvyamjhf2rsecju2v2o3hdod@kyi5sezcggl7>
- <48902771-5d3b-448a-8a74-ac18fb4f1a86@linaro.org>
+	s=arc-20240116; t=1709637534; c=relaxed/simple;
+	bh=NxhQVbYsKSwyvGgGk5qfaF5a/Y1wAzitab7stbdLKEk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VI9SaCC4Q8VqXbsinGVdNZrzh6IY88g73STuTSWR4u6Rl8j2LSfjq0TocVvhLuAHjkYgiepZp34bbds3d6H1MbAsXfIB5i/Jcv389rcvQPrzNVdnmF+mHxmjzRf0oSdPtgBQAiJySJ6vsw6no1d3TQhS/kgqb9fLLHjN0Fu7188=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r002UdI0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 531A2C433F1;
+	Tue,  5 Mar 2024 11:18:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709637534;
+	bh=NxhQVbYsKSwyvGgGk5qfaF5a/Y1wAzitab7stbdLKEk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=r002UdI01gg2rXuVaeOK/D1fhwvZco1HuVKXX0raiRp4PUfsfXV1wc5RAqWyZvJGK
+	 mRH29l4+teuQlcz7MYEH/XOhAk5fjO/D/+ObXI96O5zHSMTDzcXW1equc4uEnI9Kre
+	 2BcxvXeVYU69p4m+lD0jFj6BxZAVk5SYUzkfEQXMq9ZQADbWBmK/mOgQSEndSNXrmU
+	 N0zqFP6N8iRdWJolF3xUwGboWwTM+WK03mm/r/4T6jt0HRL4N+JZfELJzmdMuRU5c2
+	 3ntsHZLDUHj1RvDsUQibOL0qdzbtw4jvy9b1b8vryqWssRm+htmwj9BHKQEKphbBXH
+	 1E2fwP28bIgFw==
+From: Leon Romanovsky <leon@kernel.org>
+To: Christoph Hellwig <hch@lst.de>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Joerg Roedel <joro@8bytes.org>,
+	Will Deacon <will@kernel.org>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Chaitanya Kulkarni <chaitanyak@nvidia.com>
+Cc: Jonathan Corbet <corbet@lwn.net>,
+	Jens Axboe <axboe@kernel.dk>,
+	Keith Busch <kbusch@kernel.org>,
+	Sagi Grimberg <sagi@grimberg.me>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	=?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	linux-rdma@vger.kernel.org,
+	iommu@lists.linux.dev,
+	linux-nvme@lists.infradead.org,
+	kvm@vger.kernel.org,
+	linux-mm@kvack.org,
+	Bart Van Assche <bvanassche@acm.org>,
+	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+	Amir Goldstein <amir73il@gmail.com>,
+	"josef@toxicpanda.com" <josef@toxicpanda.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	"daniel@iogearbox.net" <daniel@iogearbox.net>,
+	Dan Williams <dan.j.williams@intel.com>,
+	"jack@suse.com" <jack@suse.com>,
+	Leon Romanovsky <leonro@nvidia.com>,
+	Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: [RFC RESEND 00/16] Split IOMMU DMA mapping operation to two steps
+Date: Tue,  5 Mar 2024 13:18:31 +0200
+Message-ID: <cover.1709635535.git.leon@kernel.org>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <48902771-5d3b-448a-8a74-ac18fb4f1a86@linaro.org>
+Content-Transfer-Encoding: 8bit
 
-Hi Krzysztof,
+This is complimentary part to the proposed LSF/MM topic.
+https://lore.kernel.org/linux-rdma/22df55f8-cf64-4aa8-8c0b-b556c867b926@linux.dev/T/#m85672c860539fdbbc8fe0f5ccabdc05b40269057
 
-On Tue, Mar 05, 2024 at 08:43:03AM +0100, Krzysztof Kozlowski wrote:
-> On 04/03/2024 11:36, Markus Schneider-Pargmann wrote:
-> > Hi,
-> > 
-> > On Sat, Feb 17, 2024 at 03:25:30PM +0100, Krzysztof Kozlowski wrote:
-> >> On 14/02/2024 10:31, Markus Schneider-Pargmann wrote:
-> >>> Hi Rob,
-> >>>
-> >>> On Tue, Feb 06, 2024 at 06:43:05PM +0000, Rob Herring wrote:
-> >>>> On Tue, Feb 06, 2024 at 03:37:09PM +0100, Markus Schneider-Pargmann wrote:
-> >>>>> The information k3-socinfo requires is stored in an efuse area. This
-> >>>>> area is required by other devices/drivers as well, so using nvmem-cells
-> >>>>> can be a cleaner way to describe which information are used.
-> >>>>>
-> >>>>> If nvmem-cells are supplied, the address range is not required.
-> >>>>> Cells chipvariant, chippartno and chipmanufacturer are introduced to
-> >>>>> cover all required information.
-> >>>>>
-> >>>>> Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
-> >>>>> Reviewed-by: Andrew Davis <afd@ti.com>
-> >>>>> ---
-> >>>>>  .../bindings/hwinfo/ti,k3-socinfo.yaml        | 23 ++++++++++++++++++-
-> >>>>>  1 file changed, 22 insertions(+), 1 deletion(-)
-> >>>>>
-> >>>>> diff --git a/Documentation/devicetree/bindings/hwinfo/ti,k3-socinfo.yaml b/Documentation/devicetree/bindings/hwinfo/ti,k3-socinfo.yaml
-> >>>>> index dada28b47ea0..f085b7275b7d 100644
-> >>>>> --- a/Documentation/devicetree/bindings/hwinfo/ti,k3-socinfo.yaml
-> >>>>> +++ b/Documentation/devicetree/bindings/hwinfo/ti,k3-socinfo.yaml
-> >>>>> @@ -26,9 +26,24 @@ properties:
-> >>>>>    reg:
-> >>>>>      maxItems: 1
-> >>>>>  
-> >>>>> +  nvmem-cells:
-> >>>>> +    $ref: /schemas/types.yaml#/definitions/phandle-array
-> >>>>> +
-> >>>>> +  nvmem-cell-names:
-> >>>>> +    items:
-> >>>>> +      - const: chipvariant
-> >>>>> +      - const: chippartno
-> >>>>> +      - const: chipmanufacturer
-> >>>>> +
-> >>>>>  required:
-> >>>>>    - compatible
-> >>>>> -  - reg
-> >>>>> +
-> >>>>> +oneOf:
-> >>>>> +  - required:
-> >>>>> +      - reg
-> >>>>> +  - required:
-> >>>>> +      - nvmem-cells
-> >>>>> +      - nvmem-cell-names
-> >>>>>  
-> >>>>>  additionalProperties: false
-> >>>>>  
-> >>>>> @@ -38,3 +53,9 @@ examples:
-> >>>>>          compatible = "ti,am654-chipid";
-> >>>>>          reg = <0x43000014 0x4>;
-> >>>>>      };
-> >>>>> +  - |
-> >>>>> +    chipid: chipid@14 {
-> >>>>> +        compatible = "ti,am654-chipid";
-> >>>>
-> >>>> This isn't compatible if you have a completely different way to access 
-> >>>> it. 
-> >>>
-> >>> Thanks, it is not entirely clear to me how I could go forward with this?
-> >>> Are you suggesting to use a different compatible? Or is it something
-> >>> else I could do to proceed with this conversion?
-> >>
-> >> What you claim now, is that you have one device with entirely different
-> >> interfaces and programming model. So either this is not the same device
-> >> or you just wrote bindings to whatever you have in driver.
-> >>
-> >> Nothing in commit msg explains this.
-> >>
-> >> What you should do? Depends. If you just write bindings for driver, then
-> >> stop. It's a NAK. Instead write bindings for hardware.
-> >>
-> >> If the first choice, just the hardware is somehow like this, then
-> >> explain in commit msg and device description, how this device can be
-> >> connected over other bus, not MMIO. You can draw some schematics in
-> >> commit msg explaining architecture etc.
-> > 
-> > Sorry the information provided in the commit message is not very clear.
-> > 
-> > The basic access to the registes is still MMIO. nvmem is used to have a
-> > better abstraction and cleaner description of the hardware.
-> > 
-> > Currently most of the data is exported using the parent syscon device.
-> > The relevant data is read-only and contained in a single register with
-> > offset 0x14:
-> >   - Chip variant
-> >   - Chip part number
-> >   - Chip manufacturer
-> > 
-> > There are more read-only registers in this section of address space.
-> > These are relevant to other components as they define the operating
-> > points for example. For the OPP table relevant are chip variant and chip
-> > speed (which is in a different register).
-> > 
-> > Instead of devices refering to this whole register range of 0x20000 in
-> 
-> Whaaaaat?
-> 
-> > size, I would like to introduce this nvmem abstraction in between that
-> > describes the information and can directly be referenced by the devices
-> > that depend on it. In this case the above mentioned register with offset
-> > 0x14 is instead described as nvmem-layout like this:
-> > 
-> > 	nvmem-layout {
-> > 		compatible = "fixed-layout";
-> > 		#address-cells = <1>;
-> > 		#size-cells = <1>;
-> > 
-> > 		chip_manufacturer: jtagidmfg@14 {
-> > 			reg = <0x14 0x2>;
-> > 			bits = <1 11>;
-> > 		};
-> > 
-> > 		chip_partno: jtagidpartno@15 {
-> > 			reg = <0x15 0x3>;
-> > 			bits = <4 16>;
-> > 		};
-> > 
-> > 		chip_variant: jtagidvariant@17 {
-> > 			reg = <0x17 0x1>;
-> > 			bits = <4 4>;
-> > 		};
-> > 
-> > 		chip_speed: jtaguseridspeed@18 {
-> > 			reg = <0x18 0x4>;
-> > 			bits = <6 5>;
-> > 		};
-> > 
-> > The underlying registers are still the same but they are not hidden
-> > by the syscon phandles anymore.
-> > 
-> > The device that consumes this data would now use
-> > 
-> > 	nvmem-cells = <&chip_variant>, <&chip_speed>;
-> > 	nvmem-cell-names = "chipvariant", "chipspeed";
-> > 
-> > instead of
-> > 
-> > 	syscon = <&wkup_conf>;
-> 
-> syscon allows you this as well - via phandle arguments.
-> 
-> nvmem is for non-volatile memory, like OCOTP and eFUSE. This is not for
-> accessing regular MMIO registers of system-controller, regardless
-> whether they are read-only or not (regmap handles this nicely, BTW).
-> Although probably Apple efuses and few others can confuse here. It still
-> looks like you convert regular system-controller block into nvmem,
-> because you prefer that Linux driver abstraction...
+This is posted as RFC to get a feedback on proposed split, but RDMA, VFIO and
+DMA patches are ready for review and inclusion, the NVMe patches are still in
+progress as they require agreement on API first.
 
-The above mentioned data is set in the factory. There is other
-non-volatile data, like device feature registers, in the same address
-region, as well as OTP data like MAC and USB IDs. But it is not a pure
-non-volatile memory region. The data is copied into these registers by
-the ROM at boot.
+Thanks
 
-Best,
-Markus
+-------------------------------------------------------------------------------
+The DMA mapping operation performs two steps at one same time: allocates
+IOVA space and actually maps DMA pages to that space. This one shot
+operation works perfectly for non-complex scenarios, where callers use
+that DMA API in control path when they setup hardware.
+
+However in more complex scenarios, when DMA mapping is needed in data
+path and especially when some sort of specific datatype is involved,
+such one shot approach has its drawbacks.
+
+That approach pushes developers to introduce new DMA APIs for specific
+datatype. For example existing scatter-gather mapping functions, or
+latest Chuck's RFC series to add biovec related DMA mapping [1] and
+probably struct folio will need it too.
+
+These advanced DMA mapping APIs are needed to calculate IOVA size to
+allocate it as one chunk and some sort of offset calculations to know
+which part of IOVA to map.
+
+Instead of teaching DMA to know these specific datatypes, let's separate
+existing DMA mapping routine to two steps and give an option to advanced
+callers (subsystems) perform all calculations internally in advance and
+map pages later when it is needed.
+
+In this series, three users are converted and each of such conversion
+presents different positive gain:
+1. RDMA simplifies and speeds up its pagefault handling for
+   on-demand-paging (ODP) mode.
+2. VFIO PCI live migration code saves huge chunk of memory.
+3. NVMe PCI avoids intermediate SG table manipulation and operates
+   directly on BIOs.
+
+Thanks
+
+[1] https://lore.kernel.org/all/169772852492.5232.17148564580779995849.stgit@klimt.1015granger.net
+
+Chaitanya Kulkarni (2):
+  block: add dma_link_range() based API
+  nvme-pci: use blk_rq_dma_map() for NVMe SGL
+
+Leon Romanovsky (14):
+  mm/hmm: let users to tag specific PFNs
+  dma-mapping: provide an interface to allocate IOVA
+  dma-mapping: provide callbacks to link/unlink pages to specific IOVA
+  iommu/dma: Provide an interface to allow preallocate IOVA
+  iommu/dma: Prepare map/unmap page functions to receive IOVA
+  iommu/dma: Implement link/unlink page callbacks
+  RDMA/umem: Preallocate and cache IOVA for UMEM ODP
+  RDMA/umem: Store ODP access mask information in PFN
+  RDMA/core: Separate DMA mapping to caching IOVA and page linkage
+  RDMA/umem: Prevent UMEM ODP creation with SWIOTLB
+  vfio/mlx5: Explicitly use number of pages instead of allocated length
+  vfio/mlx5: Rewrite create mkey flow to allow better code reuse
+  vfio/mlx5: Explicitly store page list
+  vfio/mlx5: Convert vfio to use DMA link API
+
+ Documentation/core-api/dma-attributes.rst |   7 +
+ block/blk-merge.c                         | 156 ++++++++++++++
+ drivers/infiniband/core/umem_odp.c        | 219 +++++++------------
+ drivers/infiniband/hw/mlx5/mlx5_ib.h      |   1 +
+ drivers/infiniband/hw/mlx5/odp.c          |  59 +++--
+ drivers/iommu/dma-iommu.c                 | 129 ++++++++---
+ drivers/nvme/host/pci.c                   | 220 +++++--------------
+ drivers/vfio/pci/mlx5/cmd.c               | 252 ++++++++++++----------
+ drivers/vfio/pci/mlx5/cmd.h               |  22 +-
+ drivers/vfio/pci/mlx5/main.c              | 136 +++++-------
+ include/linux/blk-mq.h                    |   9 +
+ include/linux/dma-map-ops.h               |  13 ++
+ include/linux/dma-mapping.h               |  39 ++++
+ include/linux/hmm.h                       |   3 +
+ include/rdma/ib_umem_odp.h                |  22 +-
+ include/rdma/ib_verbs.h                   |  54 +++++
+ kernel/dma/debug.h                        |   2 +
+ kernel/dma/direct.h                       |   7 +-
+ kernel/dma/mapping.c                      |  91 ++++++++
+ mm/hmm.c                                  |  34 +--
+ 20 files changed, 870 insertions(+), 605 deletions(-)
+
+-- 
+2.44.0
+
 
