@@ -1,109 +1,90 @@
-Return-Path: <linux-kernel+bounces-92189-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92190-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCB75871C72
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:59:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0487F871C79
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:59:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D14C285659
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:59:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64701B258C5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:59:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFC435D460;
-	Tue,  5 Mar 2024 10:53:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C75A5D491;
+	Tue,  5 Mar 2024 10:54:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="fPR76suc"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="KOtvR2uk"
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 112F058AD0;
-	Tue,  5 Mar 2024 10:53:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE1AB5D470;
+	Tue,  5 Mar 2024 10:54:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709636036; cv=none; b=rcTvzYkq9C5ko1tfJYWoeIQManIDZHEBV3WC+jtPimI3XRTWt1x1o0O8Dwe4gMOqDREXiC3ItWzHtbJd+5+FTzhBHsZpGhFUMXUVeLwf+5SETH2v2hNYCyiqpDbIG8GJeHaudXLo90mjJ0Ffq4SOIYKUpVb7yq1rv9+BGlfyjZo=
+	t=1709636084; cv=none; b=SFs/thFEmTuMHF2MD26qFmcxoOOvMrNpGSIN2Bj10anmKtsBlalPU4wBrPmf0Fao1byYC6ya/2QAZHHzXIknYXvc//oCxdZ3rpTSkRr+xRyVXS/jf1BS+X8b1jF3e/8GEArQ+b1AkibGhCKCZDBg4cYeEAvakGR8mQRZnsWqr+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709636036; c=relaxed/simple;
-	bh=i4uWsuRa5/4DJKP1MupYCLB+thuPY6zku9TxPsa/2Pc=;
+	s=arc-20240116; t=1709636084; c=relaxed/simple;
+	bh=oxRVpdLJF2FGYqRu9QIMQZ4jI/4N8Pa67tYhC3kRTdM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=lLjKQqeH6RVLmrjMboENkmGY5DO/b07nh23THuQNiD6/lNWO5jcd7Y6hoDGGHEIuRU0yTEATBBBJynhPTn9Mp2A13T8lJ7CCkzuc1s9+rtkCAb27ZUJGUZT293KJBJOwT47ex0X5ZtEZsJDMKqw2auYvqOaw5rjib3pvh+mXW+g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=fPR76suc; arc=none smtp.client-ip=205.220.180.131
+	 In-Reply-To:Content-Type; b=nyNFBrJZaiwOvVTGrdyZjnMThX8WPYkvYubdx5JyUe/EWSWMZyLsup4JuXaZIwhZOnf2HTjl6zye4ylZoMRiAWNSBI0LiagB2YvlPByMOvt44kqdqCHrwXt1QJBgL7WVtVNo2/nny84UgVYpTctSA/1IZdKIB+EkO0/5z/m6SB8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=KOtvR2uk; arc=none smtp.client-ip=205.220.180.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
 Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4252EW5Y011488;
-	Tue, 5 Mar 2024 10:53:46 GMT
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4258n2KA031464;
+	Tue, 5 Mar 2024 10:54:39 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	message-id:date:mime-version:subject:to:cc:references:from
 	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=pXnI3OiNTCdkH18BMDZXDRzlbP1Jbh2GqRwo9zrrAI8=; b=fP
-	R76sucuzdB9nmQ8UtkSEKTdzxaCmdZVyT6ojBarfo/IbeXh1YOU3KZMNUr3APNWn
-	cEDIgdcqts/3W2WRdZpKCpM/z+VrdgJ74XwkhGjx7Jjfq8SVKOlVnQ9V2MhixXY7
-	Z3lrgv8BOavhp168HkA0KwtW4EQfjpneY7hn1qUhu2CJBorCz1XICUl4FO8CbMzP
-	fCciNz96osmwdSzBq04d6NujzQ+JM9ivoHxOJl67BbNeLPm6/YLdjyX1NalZTps9
-	7dxOjKLEonXpoM1a7EZQPMBY6A8D1mrj2NeBOPsjzscj9Kefr9EcTf5DKscViMR/
-	MeW5vnlzMu8i9L5pyO3A==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wnqwhs680-1
+	qcppdkim1; bh=Q+2JuocJ0ml2lss8W2wnTp8l9G02UA/Lm3HYCXFFg/4=; b=KO
+	tvR2ukBl4/73NTRxjwEJaadCUuNEP6diZpCajfBcIxGrnGZ3owvxZfP5FKE8htUq
+	p2h0rV7mN1Tg8NGd6/fBjzYSUPremVDyxpAcJz1M+ilytYj+GLNs1o8/0pMvvppD
+	f+fZ2m37NwbYhn941p8uqBAXb4vFOQSiXleAhFODKpXnNHdfx5YY9PlrunW+D8wL
+	vEwZkBCyd8lmQ01A2CwyVwbDSyE6N/Rh57DD4PR+76HOBMUCuKSPeH5u+JBbLTai
+	PurKKwBj1qEXACUq5IkenSQnSzNFKN/AAhY3DKL4qRWdF27MlDIWUCWAWVOZSBjh
+	ZJ6Cxw/SB+LQiDBsvzcA==
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wnqwhs69s-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 05 Mar 2024 10:53:46 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 425ArjiL012602
+	Tue, 05 Mar 2024 10:54:38 +0000 (GMT)
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 425AsbpL025647
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 5 Mar 2024 10:53:45 GMT
-Received: from [10.216.9.163] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+	Tue, 5 Mar 2024 10:54:37 GMT
+Received: from [10.214.66.81] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 5 Mar
- 2024 02:53:36 -0800
-Message-ID: <9d878f69-c9d1-1ee4-f80e-1d8f16c6920e@quicinc.com>
-Date: Tue, 5 Mar 2024 16:23:21 +0530
+ 2024 02:54:35 -0800
+Message-ID: <6670e21a-46d7-db1f-3830-73e97786cde8@quicinc.com>
+Date: Tue, 5 Mar 2024 16:24:32 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.13.1
-Subject: Re: [PATCH v8 3/7] PCI: qcom: Add ICC bandwidth vote for CPU to PCIe
- path
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v12 4/9] firmware: qcom: scm: Rework dload mode
+ availability check
 Content-Language: en-US
-To: Manivannan Sadhasivam <mani@kernel.org>
-CC: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Rob Herring
-	<robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Rob Herring
-	<robh+dt@kernel.org>,
-        Johan Hovold <johan+linaro@kernel.org>,
-        Brian Masney
-	<bmasney@redhat.com>, Georgi Djakov <djakov@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <vireshk@kernel.org>, <quic_vbadigan@quicinc.com>,
-        <quic_skananth@quicinc.com>, <quic_nitegupt@quicinc.com>,
-        <quic_parass@quicinc.com>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-References: <20240302-opp_support-v8-0-158285b86b10@quicinc.com>
- <20240302-opp_support-v8-3-158285b86b10@quicinc.com>
- <20240304174111.GB31079@thinkpad>
-From: Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
-In-Reply-To: <20240304174111.GB31079@thinkpad>
+To: Bjorn Andersson <andersson@kernel.org>
+CC: <konrad.dybcio@linaro.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linus.walleij@linaro.org>,
+        <linux-gpio@vger.kernel.org>, Elliot Berman <quic_eberman@quicinc.com>
+References: <20240227155308.18395-1-quic_mojha@quicinc.com>
+ <20240227155308.18395-5-quic_mojha@quicinc.com>
+ <bmwswdvzqldse4dgbcev7hcyktkzffur3pcs6ogwnekxrklgiu@hridh2l2hhgk>
+From: Mukesh Ojha <quic_mojha@quicinc.com>
+In-Reply-To: <bmwswdvzqldse4dgbcev7hcyktkzffur3pcs6ogwnekxrklgiu@hridh2l2hhgk>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
 X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+ nasanex01c.na.qualcomm.com (10.45.79.139)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: VDkcFMikw_XkKE8PvWULLtmg61hONHIK
-X-Proofpoint-ORIG-GUID: VDkcFMikw_XkKE8PvWULLtmg61hONHIK
+X-Proofpoint-GUID: NNLZd221BDqmqAjvKT-TjdBnd5JPvuFh
+X-Proofpoint-ORIG-GUID: NNLZd221BDqmqAjvKT-TjdBnd5JPvuFh
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-03-05_08,2024-03-04_01,2023-05-22_02
@@ -115,135 +96,73 @@ X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamsco
 
 
 
-On 3/4/2024 11:11 PM, Manivannan Sadhasivam wrote:
-> On Sat, Mar 02, 2024 at 09:29:57AM +0530, Krishna chaitanya chundru wrote:
->> To access PCIe registers, PCIe BAR space, config space the CPU-PCIe
->> ICC (interconnect consumers) path should be voted otherwise it may
->> lead to NoC (Network on chip) timeout. We are surviving because of
->> other driver vote for this path.
+On 3/3/2024 12:46 AM, Bjorn Andersson wrote:
+> On Tue, Feb 27, 2024 at 09:23:03PM +0530, Mukesh Ojha wrote:
+>> QCOM_SCM_BOOT_SET_DLOAD_MODE was only valid for very older
+>> target and firmware and for recent targets there is dload
+>> mode tcsr registers available to set the download mode.
 >>
->> As there is less access on this path compared to PCIe to mem path
->> add minimum vote i.e 1KBps bandwidth always.
 > 
-> Please add the info that 1KBps is what shared by the HW team.
+> I presume this implies that it will always return false, so what's the
+> actual problem with that? Presumably you want this because it takes
+> unnecessary time to make that call, if so please say so.
+
+Correct, will add in commit description.
+
+Also, __qcom_scm_is_call_available() usage legacy mode of setting DLOAD 
+mode setting via command which is deprecated long back from Trust zone 
+firmware also it takes or wait statically global mutex lock at the lower 
+level which unnecessary adds time which is of no use.
 > 
-Ack to all the comments
+> 
+> Content of the patch looks good.
+
+Thanks.
+
+-Mukesh
+
+> 
+> Regards,
+> Bjorn
+> 
+>> So, it is better to keep it as fallback check instead of
+>> checking its availability and failing it always.
 >>
->> When suspending, disable this path after register space access
->> is done.
->>
->> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
->> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+>> Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
+>> Reviewed-by: Elliot Berman <quic_eberman@quicinc.com>
 >> ---
->>   drivers/pci/controller/dwc/pcie-qcom.c | 38 ++++++++++++++++++++++++++++++++--
->>   1 file changed, 36 insertions(+), 2 deletions(-)
+>>   drivers/firmware/qcom/qcom_scm.c | 12 +++++-------
+>>   1 file changed, 5 insertions(+), 7 deletions(-)
 >>
->> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
->> index 10f2d0bb86be..a0266bfe71f1 100644
->> --- a/drivers/pci/controller/dwc/pcie-qcom.c
->> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
->> @@ -240,6 +240,7 @@ struct qcom_pcie {
->>   	struct phy *phy;
->>   	struct gpio_desc *reset;
->>   	struct icc_path *icc_mem;
->> +	struct icc_path *icc_cpu;
->>   	const struct qcom_pcie_cfg *cfg;
->>   	struct dentry *debugfs;
->>   	bool suspended;
->> @@ -1372,6 +1373,9 @@ static int qcom_pcie_icc_init(struct qcom_pcie *pcie)
->>   	if (IS_ERR(pcie->icc_mem))
->>   		return PTR_ERR(pcie->icc_mem);
+>> diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
+>> index bd6bfdf2d828..3fd89cddba3b 100644
+>> --- a/drivers/firmware/qcom/qcom_scm.c
+>> +++ b/drivers/firmware/qcom/qcom_scm.c
+>> @@ -540,18 +540,16 @@ static int __qcom_scm_set_dload_mode(struct device *dev, bool enable)
+>>   static void qcom_scm_set_download_mode(bool enable)
+>>   {
+>>   	u32 val = enable ? QCOM_DLOAD_FULLDUMP : QCOM_DLOAD_NODUMP;
+>> -	bool avail;
+>>   	int ret = 0;
 >>   
->> +	pcie->icc_cpu = devm_of_icc_get(pci->dev, "cpu-pcie");
->> +	if (IS_ERR(pcie->icc_cpu))
->> +		return PTR_ERR(pcie->icc_cpu);
->>   	/*
->>   	 * Some Qualcomm platforms require interconnect bandwidth constraints
->>   	 * to be set before enabling interconnect clocks.
->> @@ -1381,7 +1385,19 @@ static int qcom_pcie_icc_init(struct qcom_pcie *pcie)
->>   	 */
->>   	ret = icc_set_bw(pcie->icc_mem, 0, QCOM_PCIE_LINK_SPEED_TO_BW(1));
->>   	if (ret) {
->> -		dev_err(pci->dev, "failed to set interconnect bandwidth: %d\n",
->> +		dev_err(pci->dev, "failed to set interconnect bandwidth for pcie-mem: %d\n",
-> 
-> "PCIe-MEM"
-> 
->> +			ret);
->> +		return ret;
->> +	}
->> +
->> +	/*
->> +	 * The config space, BAR space and registers goes through cpu-pcie path
->> +	 * Set peak bandwidth to 1KBps as recommended by HW team for this path
->> +	 * all the time.
-> 
-> How about,
-> 
-> 	"Since the CPU-PCIe path is only used for activities like register
-> 	access, Config/BAR space access, HW team has recommended to use a
-> 	minimal bandwidth of 1KBps just to keep the link active."
-> 
->> +	 */
->> +	ret = icc_set_bw(pcie->icc_cpu, 0, kBps_to_icc(1));
->> +	if (ret) {
->> +		dev_err(pci->dev, "failed to set interconnect bandwidth for cpu-pcie: %d\n",
->>   			ret);
->>   		return ret;
->>   	}
->> @@ -1573,7 +1589,7 @@ static int qcom_pcie_suspend_noirq(struct device *dev)
->>   	 */
->>   	ret = icc_set_bw(pcie->icc_mem, 0, kBps_to_icc(1));
->>   	if (ret) {
->> -		dev_err(dev, "Failed to set interconnect bandwidth: %d\n", ret);
->> +		dev_err(dev, "Failed to set interconnect bandwidth for pcie-mem: %d\n", ret);
-> 
-> "PCIe-MEM"
-> 
->>   		return ret;
->>   	}
->>   
->> @@ -1597,6 +1613,18 @@ static int qcom_pcie_suspend_noirq(struct device *dev)
->>   		pcie->suspended = true;
->>   	}
->>   
->> +	/* Remove CPU path vote after all the register access is done */
-> 
-> "Remove the vote for CPU-PCIe path now, since at this point onwards, no register
-> access will be done."
-> 
->> +	ret = icc_disable(pcie->icc_cpu);
->> +	if (ret) {
->> +		dev_err(dev, "failed to disable icc path of cpu-pcie: %d\n", ret);
-> 
-> "CPU-PCIe"
-> 
->> +		if (pcie->suspended) {
->> +			qcom_pcie_host_init(&pcie->pci->pp);
-> 
-> Interesting. So if icc_disable() fails, can the IP continue to function?
->
-As the ICC already enable before icc_disable() fails, the IP should work.
-  - Krishna Chaitanya.
->> +			pcie->suspended = false;
->> +		}
->> +		qcom_pcie_icc_update(pcie);
->> +		return ret;
->> +	}
->> +
->>   	return 0;
->>   }
->>   
->> @@ -1605,6 +1633,12 @@ static int qcom_pcie_resume_noirq(struct device *dev)
->>   	struct qcom_pcie *pcie = dev_get_drvdata(dev);
->>   	int ret;
->>   
->> +	ret = icc_enable(pcie->icc_cpu);
->> +	if (ret) {
->> +		dev_err(dev, "failed to enable icc path of cpu-pcie: %d\n", ret);
-> 
-> "CPU-PCIe"
-> 
-> - Mani
-> 
+>> -	avail = __qcom_scm_is_call_available(__scm->dev,
+>> -					     QCOM_SCM_SVC_BOOT,
+>> -					     QCOM_SCM_BOOT_SET_DLOAD_MODE);
+>> -	if (avail) {
+>> -		ret = __qcom_scm_set_dload_mode(__scm->dev, enable);
+>> -	} else if (__scm->dload_mode_addr) {
+>> +	if (__scm->dload_mode_addr) {
+>>   		ret = qcom_scm_io_rmw(__scm->dload_mode_addr,
+>>   				      QCOM_DLOAD_MASK,
+>>   				      FIELD_PREP(QCOM_DLOAD_MASK, val));
+>> +	} else if (__qcom_scm_is_call_available(__scm->dev,
+>> +						QCOM_SCM_SVC_BOOT,
+>> +						QCOM_SCM_BOOT_SET_DLOAD_MODE)) {
+>> +		ret = __qcom_scm_set_dload_mode(__scm->dev, enable);
+>>   	} else {
+>>   		dev_err(__scm->dev,
+>>   			"No available mechanism for setting download mode\n");
+>> -- 
+>> 2.43.0.254.ga26002b62827
+>>
 
