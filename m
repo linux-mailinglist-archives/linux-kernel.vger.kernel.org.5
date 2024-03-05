@@ -1,110 +1,172 @@
-Return-Path: <linux-kernel+bounces-92899-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92894-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCBED8727BD
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 20:40:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA7848727B1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 20:39:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97E4A28E3CF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:40:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 621CBB292C5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:39:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 766BF12AAFE;
-	Tue,  5 Mar 2024 19:39:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A03086167A;
+	Tue,  5 Mar 2024 19:38:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="L5iOEki0"
-Received: from out203-205-221-245.mail.qq.com (out203-205-221-245.mail.qq.com [203.205.221.245])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="FRcoz8Mb"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E7F912AAC2
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 19:39:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.245
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8330C8563F
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 19:38:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709667560; cv=none; b=BDVNcvKpTmJkzWA0zgfPr7to1mPUtcyCAvhKF+gUIPnpRE8TaEXIliv7B7Lmf4Un6Ruqt/hI9SAdEgUqExsf7A4BA2ypGLIgQug/Mjdf3EOHRmoI6dwReGTeY5ikSLaGha5tDagUHjnJn3xcl+cOevfJk/NXWj/YldKSj/rJew0=
+	t=1709667532; cv=none; b=V+LFEEztmFB2CgP0V16FBxI/E5kll04dXWrLJ2Nj0GYoL0u1UJS8EXT+G32iWTGQ3t7LThqXyxTa1O44iOoGj83YPvqH9kDGpGnU6V/XxZUZafCvbGvuORMxCcG78HxLYiwAQr3YLQ7y1wOGiUweRmMbYETO6yip1oL3BIuhptQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709667560; c=relaxed/simple;
-	bh=zbLGPCosxyiyPvcOeTiYkPlr94hbstxP2Hhj63j/SKE=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=MPZCUuEHgJ6UxBj7nNTpawZy8ZVtUX/jCJZtWD00i/hxrR5wlPT7z9TpoecyWxPwsVkpMzsQiGaz07TsemjUY43MApZFSsxD9Yr8wZhxDVQopf8g9meWThnHosg4FExZZsPmQvbhwkZO7eU1pVTjq9Q/gAtYi5bHPhCS4yTBkEA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name; spf=none smtp.mailfrom=cyyself.name; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=L5iOEki0; arc=none smtp.client-ip=203.205.221.245
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cyyself.name
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cyyself.name
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1709667550; bh=vpfgwixO8WjqhB/6stnV1JiUyPCqfxYij9zHMp1QwAM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=L5iOEki0/Vw7zzMQskadGa90kyC3VahLZNwWk9SCknaaAKHMJxBtoRh6ceJh2uHii
-	 7run6rXbGwm7KRk+1PLSIgG6x7fU7VJX8qulWfOW9iBtDVQV5rt3OTaAfzgdL86M4K
-	 TKVnTZFju0aUDm+EoAOpvSZGlpl5fF8lr8NjBuyk=
-Received: from cyy-pc.lan ([240e:379:2267:e200:bd8:e8f9:fb59:de48])
-	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
-	id 9B6B9246; Wed, 06 Mar 2024 03:38:54 +0800
-X-QQ-mid: xmsmtpt1709667548tsn8fl733
-Message-ID: <tencent_45B4891DF371D3632042AA1BC5F8B6042509@qq.com>
-X-QQ-XMAILINFO: Nq1uWKlIb9DMHn+IEp+nCFc4tIpsAONPQpmFByy0wSlIjTin+PQGW/T5EUAqaD
-	 gBM+WEyXHZVL35R+I7Ms64Jqt5JB9ANcQKLf85RT6ffCXq4dN8qRsuw/N/HOrnaHlpaZRBWRxxgJ
-	 H3cd55o1H2QlGRnhO+rwHusMM2myNLF381LQMWPiRpeY7J0AhD/ZuUPntQirN+RlfY2+51HKojjE
-	 B7U2ztdR7NhnxHNEspzD5GSDrlJDgLF97hG0MsGgKh92YyHEA5SvORUqBR+/hFjqPlq1+CKpGqKG
-	 Zsm7Ao8Mr/mB1rLc3gS23IMQrjf4zoYiUarKzJ2uBbejS7j5H+5OI8whWfBJagxl/LVGIG4LIaFZ
-	 RMiBdZ4rD9kmeMIupjASOiebkNEE2f0xvqn6hOmZPqHNNrbNE72Ykoqzo2di9Po7TVOUlMmPF9TC
-	 4DRJMx5so6Qn4ZhW8d3vjRidjm3Qz2eW9v5UMr/MhtzgSNZmib+s8j1Lm7xXatTV3Jxsu+IZJLDk
-	 MCfNHK4mq0hMoWWTkH1QXIYsA3DgWtARIZtENaCMPAWOUdpB7Tcy+U0ntXbgwI9zeioC7InIL8fM
-	 Ynk+7Cf5q4JD+bmNAdKAkad4FyhocZWcSeEu8EOOVlSEmQyOvOQH/JcitqF9gS0+sIplxtLTrX5l
-	 4CVAhrW8xr6t25tYz16Voogx2+OejjGDCnbXVBNit/OYCJL+DpgJxAtSGaW8/dEkeWIGFBDvvtD4
-	 UnvuvCj/YdknlIbOZWduBsx3+4fG9fEg/xakFypS++Nqnx5+s00jW1EvOHhQX+ULc5im3ZVgdcPm
-	 TNPsXCIZKZyDc8Qa4fuUO4X60a/ElEAZh66jE6Z0Iba2RvT+G+XLKJOx7QaVl3StQFeFHsi69Cxw
-	 RO7A7f4sFdn0dDwi6F4CS8NnX2qDTAgapMk2HmLHcpa7zujRDKVXPcPekCkiQ3P0PMtbIoF2L/TA
-	 8gGjD0Lxap01JlHmQMTsa2jhullt3GJJG3qc42lq6G1oJs/UJ7wOlUOrKKq/O8RbquEp2iwLW/8v
-	 Tco09Mg2PP3M0bwNmBLOzQxOjWYWns/wJFxxXCQ5VS/pC1pcJO
-X-QQ-XMRINFO: NS+P29fieYNw95Bth2bWPxk=
-From: Yangyu Chen <cyy@cyyself.name>
-To: linux-riscv@lists.infradead.org
-Cc: Conor Dooley <conor@kernel.org>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Guo Ren <guoren@kernel.org>,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Yangyu Chen <cyy@cyyself.name>
-Subject: [PATCH v4 7/7] riscv: config: enable ARCH_CANAAN in defconfig
-Date: Wed,  6 Mar 2024 03:38:31 +0800
-X-OQ-MSGID: <20240305193831.1084556-7-cyy@cyyself.name>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <tencent_587730262984A011834F42D0563BC6B10405@qq.com>
-References: <tencent_587730262984A011834F42D0563BC6B10405@qq.com>
+	s=arc-20240116; t=1709667532; c=relaxed/simple;
+	bh=dbu7jPJNusoAIuT8pNXSfufXvY1iYoRgBC5JcoUfIfk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NwQ0N66lm4QgssVdgh0xQKR5NlZB0MwRwg4F7EDawC4G1bNKayUwp+Ykv8ghYz77XpOge9FDjvwmFInBu/oeke6RohmvBve6Nt2B8j6QAC/hRr+kpVyQCOoiCuyv/heZae+7fKC5W9o2iHbLAjJdChXUDvCUjrIWbK5UxoC6PRU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FRcoz8Mb; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a45b25f6f84so38478266b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 11:38:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709667529; x=1710272329; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dbu7jPJNusoAIuT8pNXSfufXvY1iYoRgBC5JcoUfIfk=;
+        b=FRcoz8MbQeQDcV4GpXollhLmuyqntrRmwucMFDu5EmYMZ8nbOuOfvmIlvlgmVq1Qf4
+         c8lJN6BtQ/2TfFGDTo4HPiEpJzTWViGGaRilIyIcv/YXc0UkVYjdNrq+GnwgnSNZswFB
+         Pwg6nffta5e0uvgM3W0mPp9zxsYyvJlniRkpeGoe5zpcYBAQopGXC4Z+BTDR8JLdoEOD
+         V88jb3Ko2M9as9eI9Qr0iuz9SzXWQw5AjNC7hFnkfWYJw4EM1fEvnQS2lXdYIEDXZQnA
+         nY7tNeKRoWpelHmLrOxuSUqt3/up1X9b9cwQdhDzb5wYSPQ3D/F4hmnXwL7TSHyC3s1t
+         oqmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709667529; x=1710272329;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dbu7jPJNusoAIuT8pNXSfufXvY1iYoRgBC5JcoUfIfk=;
+        b=aLnDAuexCs3cgVKkG7ZAcK17MLEv755vOukCM6mWFFIs4JvVvdsdJriGjaOfht4krg
+         0OSnUkLHU2H8eigPpM8Dmswb4JijcVl+j3pEPsodXeItTDHQtlok9hGIE/LwIaDcZwPH
+         4fZuPWT5VDrQUTpGoFtPDpXZbWG3Q4HcH2AO6JWdPpW6/2YzFbht8CKoxvAmuSzcP1Uc
+         SDx3qwQ/Vv0okhJI/Pfzbt6PTHa/yVWCTCL0XjnLq5uXJmjqxg9lsT7SAGjnOMtfwuWd
+         rRb5tV2ryboX7ZID+fI5QcrEbk4wMoM5aWPsQ1o22ZrWy+9j34vYTBuLKXElbnmyHWqf
+         U5KQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXGMxBGk7QOFjDsQ5/WJntPYtww2iR28wy5Ywlvi/jK8eqfkuLsQTPWRVH8WRdQp++YMrIL6cJqbuQX5JGV8x6o6e8S3vU0E0/SzVP+
+X-Gm-Message-State: AOJu0Yzn8Z+zWcORyh8k/khXjgEf3R996LmjfwQHTZSNGSnPpAUEyFUM
+	5taqd1fapAKwpzc41RQy9keHWZ2Pzng6Vt++43QIiATQSH8POF9eqNpPokZQNZYUzNGMrUWE7Xz
+	Z/W1zNuZeUYXC765rOkJrtz56qCDJMi5/+vRj
+X-Google-Smtp-Source: AGHT+IE9+/I3bSukMGSV69NWucyK49DrCDskm5u3bRNu62YrXsb5GYolXDQb6+2mnF70pbKLSkXCgPSxIq5NsfN3srs=
+X-Received: by 2002:a17:906:b790:b0:a45:b36c:55c7 with SMTP id
+ dt16-20020a170906b79000b00a45b36c55c7mr421516ejb.63.1709667528752; Tue, 05
+ Mar 2024 11:38:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240305020153.2787423-1-almasrymina@google.com> <6208950d-6453-e797-7fc3-1dcf15b49dbe@huawei.com>
+In-Reply-To: <6208950d-6453-e797-7fc3-1dcf15b49dbe@huawei.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Tue, 5 Mar 2024 11:38:37 -0800
+Message-ID: <CAHS8izMwTRyqUS0iRtErfAqDVsXRia5Ajx9PRK3vcfo8utJoUA@mail.gmail.com>
+Subject: Re: [RFC PATCH net-next v6 00/15] Device Memory TCP
+To: Yunsheng Lin <linyunsheng@huawei.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>, 
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, David Ahern <dsahern@kernel.org>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, 
+	Shailend Chand <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
+	Shakeel Butt <shakeelb@google.com>, Jeroen de Borst <jeroendb@google.com>, 
+	Praveen Kaligineedi <pkaligineedi@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Since K230 has been supported, allow ARCH_CANAAN to be selected to build dt
-and drivers for it in defconfig.
+On Tue, Mar 5, 2024 at 4:54=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.com=
+> wrote:
+>
+> On 2024/3/5 10:01, Mina Almasry wrote:
+>
+> ...
+>
+> >
+> > Perf - page-pool benchmark:
+> > ---------------------------
+> >
+> > bench_page_pool_simple.ko tests with and without these changes:
+> > https://pastebin.com/raw/ncHDwAbn
+> >
+> > AFAIK the number that really matters in the perf tests is the
+> > 'tasklet_page_pool01_fast_path Per elem'. This one measures at about 8
+> > cycles without the changes but there is some 1 cycle noise in some
+> > results.
+> >
+> > With the patches this regresses to 9 cycles with the changes but there
+> > is 1 cycle noise occasionally running this test repeatedly.
+> >
+> > Lastly I tried disable the static_branch_unlikely() in
+> > netmem_is_net_iov() check. To my surprise disabling the
+> > static_branch_unlikely() check reduces the fast path back to 8 cycles,
+> > but the 1 cycle noise remains.
+> >
+>
+> The last sentence seems to be suggesting the above 1 ns regresses is caus=
+ed
+> by the static_branch_unlikely() checking?
 
-Signed-off-by: Yangyu Chen <cyy@cyyself.name>
----
- arch/riscv/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+Note it's not a 1ns regression, it's looks like maybe a 1 cycle
+regression (slightly less than 1ns if I'm reading the output of the
+test correctly):
 
-diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
-index 89a009a580fe..f89df7ddb543 100644
---- a/arch/riscv/configs/defconfig
-+++ b/arch/riscv/configs/defconfig
-@@ -33,6 +33,7 @@ CONFIG_SOC_STARFIVE=y
- CONFIG_ARCH_SUNXI=y
- CONFIG_ARCH_THEAD=y
- CONFIG_SOC_VIRT=y
-+CONFIG_ARCH_CANAAN=y
- CONFIG_SMP=y
- CONFIG_HOTPLUG_CPU=y
- CONFIG_PM=y
--- 
-2.43.0
+# clean net-next
+time_bench: Type:tasklet_page_pool01_fast_path Per elem: 8 cycles(tsc)
+2.993 ns (step:0)
 
+# with patches
+time_bench: Type:tasklet_page_pool01_fast_path Per elem: 9 cycles(tsc)
+3.679 ns (step:0)
+
+# with patches and with diff that disables static branching:
+time_bench: Type:tasklet_page_pool01_fast_path Per elem: 8 cycles(tsc)
+3.248 ns (step:0)
+
+I do see noise in the test results between run and run, and any
+regression (if any) is slightly obfuscated by the noise, so it's a bit
+hard to make confident statements. So far it looks like a ~0.25ns
+regression without static branch and about ~0.65ns with static branch.
+
+Honestly when I saw all 3 results were within some noise I did not
+investigate more, but if this looks concerning to you I can dig
+further. I likely need to gather a few test runs to filter out the
+noise and maybe investigate the assembly my compiler is generating to
+maybe narrow down what changes there.
+
+--=20
+Thanks,
+Mina
 
