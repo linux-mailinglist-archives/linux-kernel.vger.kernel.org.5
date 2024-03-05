@@ -1,316 +1,346 @@
-Return-Path: <linux-kernel+bounces-91996-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91997-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FC6B871982
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:23:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DAEC871986
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:24:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 461BC2822B1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:23:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E85F128193D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:24:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACACA52F97;
-	Tue,  5 Mar 2024 09:23:26 +0000 (UTC)
-Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7FDD52F81;
+	Tue,  5 Mar 2024 09:24:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IHImajwr"
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16EA44F1F5;
-	Tue,  5 Mar 2024 09:23:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AFB250272;
+	Tue,  5 Mar 2024 09:24:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709630605; cv=none; b=On7JpI5YVpNKc1IDw/izFd6bqpQPuzFBwBZXhynUHVHK1fwzfU/1EuXxZ/1qZJfyTQ/sEi2cQC4MHEg2vUTlMdDS21qkLe3i+OIqmyCGMlaEUeQrTjinD77wdq6+FFOe1xl/iAR9IxaNvoOVXr+49vxKybdtzBjc/1Sr5ZXS/Yg=
+	t=1709630684; cv=none; b=u8lauUEldPa7q61MADobxRanFGB116TRX/58ssU39g8C5Z85Fn3IMXS2MtRxIGehd2/yE+4kHEZBq9oAFTfLIYKIAwGh9NDWdz+Zv6wNObp5VQwTGm7yqdbVC4hCpdDvKvE72JwhDuimhvKT1/u7SuC7QKNAP2Km1RBuUFWHVRs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709630605; c=relaxed/simple;
-	bh=l8xILxIP+aGWbSeHaqRzcIu8VgcP1j0Q7WU+Qn8aVUU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UdygT9t5oiY7oQHrnBl1PMb9dUMBr/avHKzXnGOAytJpd9BRi5etYl+73p8uwwqvAv9RfQ7sP9P69haXcCWod4I4uLlC/JztuvxpH95DphWXDezYzsJXwJ5kAzHDGeumgeTD1CTZMDcQ9JGdWfOJUMe9CtsXYUg73JaYSxzWzWY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.160.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	s=arc-20240116; t=1709630684; c=relaxed/simple;
+	bh=tPfQYkjbgATtz+kEhN3abAcfDDsv0QHzHdZUDzvbn1s=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=NTneupFy0tnApcUlJjJ+GIGP6W5ZY42BKLYCCShdXY3khDgWs1PzG9kb128r1y0UBnG0KrX/Ty5UjHMVzBm/jyd7+e3s/84YblYOjFfqm4TDDjyI5WOBqBxRczRVw/if4n8GmRr9oHRX+kq9nefZ4KOphw/NY5OhPVMzzzx5QRw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IHImajwr; arc=none smtp.client-ip=209.85.210.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-21eab2bd67bso267641fac.0;
-        Tue, 05 Mar 2024 01:23:23 -0800 (PST)
+Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6e4b34f2455so2961472a34.2;
+        Tue, 05 Mar 2024 01:24:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709630682; x=1710235482; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to:date
+         :subject:cc:to:from:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2n6XxnRJcK3S7HaVQoAKao47crHz+00Pci1WifCRN34=;
+        b=IHImajwr3tDZAeDJSS59h9INfwOrvNmxSrX0JJKXrkk4EZFNJC+VVRvYyM/C15B+CV
+         DK2DiTy7J88ETFUMaitJx9A8EPWX9MoKx7RxclO+5RPfhadT7T2PUL7L58TByZh/h0nc
+         rB0iB4gmwUM75le4UFJPnn0eq5TTAOOkF9uu0tK7Vm3/UWIvYO5Qk5THTg5Aftgamq79
+         uZUOOG6v/ZJjOMFFpC+mWcgI0VsrySNkpJufNTIdPG7R166Lc3R9bKt5T0Np81UIH4mG
+         yj1kU5GjNe5bru0F65QzIYZmRUDJmrP/4K9SDNiCvD30MRmOPmwqDu6OFPVDAhnVHBXX
+         clNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709630603; x=1710235403;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gQCTBTW7IfJ5vlMZrr2LXR2j09n4mGKlX0Dyj4r0c1E=;
-        b=gh8nS5dxTmqamU6NsDIXMkaAiIoUCTfQR9MY9FoArVJ2YyUwlxEmknjLlUWz034jD5
-         TVV4ylTswxdKQTDQrRy6YHcqykkDsQCHRsDsQ6ttNbxDUGgnaQy0xrDafVvVdhIU9x5O
-         +2iv7ZD4lbmqwrq4ZQDNq49Irjgd8YnaaaCXW8J2wfPsZgKh7I7iX4v51+zSLURkGMNA
-         q9NQPVwuh9CI+cDZa4h89piUNTNA3r29I5sIAPEafXWdCStW9rF5yjvzYvt2pEfQxZ3d
-         lcn/XivFV4VufYywPS3sKDYys6zZg2eBnxCPILRCCKJQlXeqg+Ms5VoouPYALWeonh8J
-         sutA==
-X-Forwarded-Encrypted: i=1; AJvYcCWIbMqO3Wz9wo9xsOhIV4BP7HZ+VSVJMXUEzcu13m4Y9BY7+eaLCNUOWe0ah1e9P9FG1H12xGtcgZ2X8c75DQ04voQx8WUR1/WXLKVXbx/SMvPESXYL2n8yZzZUwJnuKsRgBDxnGl375Z4smn/SG9bSkGAXaqEWGmXcbaEfQh8MeJTl3k5j4Htec9acR4731hmN4Vd2lMzrLYUxzDcs
-X-Gm-Message-State: AOJu0Yz2IpIKMV1vELF5vyxU9kODftYz7V0xo88L7/fFOO4neTxBCRj4
-	g0tZXQH8+LhgmXXox155dUV1GxAdz/Xprpv3JmXQLrkQvaaF/tF3UyDhogNJ/+EoIQTus7uhTEC
-	Qx0TjMATM2kc3w+hH9USFUmA1mQs=
-X-Google-Smtp-Source: AGHT+IHqGzKm27BRW4GE3MVzZnFqIdO0adC084tGWtqBCO3c4qtsqa2XTbAyQOgt4xCT+eAL7GOz3wowkjku+qGIf6g=
-X-Received: by 2002:a05:6871:4393:b0:220:873d:db8b with SMTP id
- lv19-20020a056871439300b00220873ddb8bmr13217962oab.4.1709630603153; Tue, 05
- Mar 2024 01:23:23 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709630682; x=1710235482;
+        h=content-transfer-encoding:mime-version:references:in-reply-to:date
+         :subject:cc:to:from:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=2n6XxnRJcK3S7HaVQoAKao47crHz+00Pci1WifCRN34=;
+        b=OrG1f2U8Io9kzJ0nFIMb/zTBaFIZOdsnwp4qgWV6co2+rD9H2EzxU8B1wgxDSNmeQM
+         p2nIAaCgkIl0ziCT3IeHkyMToUQgph5h/FuyyARsP3ZzzhWKJ9bAeIfP7CEqghYTUpSH
+         trCshXOHLUeR7ClaF6f9VMK8D5VyQD0lyXxWG3BkqqvXTHJWxZ8zZJiDR1fasTfCNZLm
+         LAxhOgeTkUhGaAo+Z3Zd6UDi7ZxGbYurNFI71IVXd25Ydr+HhwIoEljgPCeRYJC4TNWJ
+         HnYLFhkwJLBcjS+BOmjOOtG68wEuF0WgFEXlJC0G4DPELknFlw5jucNbQrNv6P7WjnJd
+         HMvA==
+X-Forwarded-Encrypted: i=1; AJvYcCXzUmNTMtVP+nOAVnGZCSP15HPcv402sRpqtHKrbr7R6YB6bcmhOMC7umQjmmAYCI31V9vulGlbiKI88v7ecgdnFE9UKUgnKQ2HsXa7LJ8XVoQBbu16Jll1TqijSegbZpqVahXg4qMK
+X-Gm-Message-State: AOJu0YxG9YgOC1L/COTL4e2TEwQ1qwIVFQbse64ew1YTN2yVue6wX4lc
+	rDVGBw0FPqGa32r5xf1UmLAxs9teX6epgw8NoXvtph6HiS9pPTnn
+X-Google-Smtp-Source: AGHT+IEf3Th5yXrUurmy310rbfGfsm6zvHyKT8USnhxeMIOTIZ0B8RtQzE21FA69Y+hhaHydWopuag==
+X-Received: by 2002:a9d:6944:0:b0:6e4:fa1a:dae2 with SMTP id p4-20020a9d6944000000b006e4fa1adae2mr516840oto.2.1709630682163;
+        Tue, 05 Mar 2024 01:24:42 -0800 (PST)
+Received: from localhost.localdomain ([2402:3a80:863:befc:ec5c:8cb:6f1e:1f69])
+        by smtp.gmail.com with ESMTPSA id f4-20020a63de04000000b005dc4ce8d2a4sm8717493pgg.58.2024.03.05.01.24.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Mar 2024 01:24:41 -0800 (PST)
+Message-ID: <65e6e4d9.630a0220.8d898.19f4@mx.google.com>
+X-Google-Original-Message-ID: <d72d1ae5-0378-4bac-8b77-0bb69f55accd@gmx.net> (raw)
+From: pratikmanvar09@gmail.com
+To: wahrenst@gmx.net
+Cc: festevam@gmail.com,
+	jun.li@nxp.com,
+	kernel@pengutronix.de,
+	linux-arm-kernel@lists.infradead.org,
+	linux-imx@nxp.com,
+	linux-kernel@vger.kernel.org,
+	linux-pwm@vger.kernel.org,
+	lkp@intel.com,
+	oe-kbuild-all@lists.linux.dev,
+	pratik.manvar@ifm.com,
+	pratikmanvar09@gmail.com,
+	s.hauer@pengutronix.de,
+	shawnguo@kernel.org,
+	thierry.reding@gmail.com,
+	u.kleine-koenig@pengutronix.de,
+	xiaoning.wang@nxp.com
+Subject: Re: [PATCH v2] pwm: imx27: workaround of the pwm output bug
+Date: Tue,  5 Mar 2024 14:54:28 +0530
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <65bf307d.170a0220.4d544.f32b@mx.google.com>
+References: <d72d1ae5-0378-4bac-8b77-0bb69f55accd@gmx.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAJZ5v0grDNJkEcgw+34SBmNFL7qhSTz8ydC7BSkM7DiCatkKSA@mail.gmail.com>
- <20240304155138.GA482969@bhelgaas> <CAJZ5v0jS_x7=joXkHuuqQhO-FqkhGi44o-Nq-1FGhPQ5-1VhnQ@mail.gmail.com>
- <CAJZ5v0idOkeod9-RmnNGCwMGG+9nYi8eJSBpQYWJnv=N+eVoWg@mail.gmail.com>
- <CAJZ5v0jJEo5p4Wr_bZjHHOfQG4WomX9pFtBwFnU6eMJRoCctOA@mail.gmail.com>
- <CAJZ5v0izNQ=2oaFff3WBQUm2AHZ5XnrYHq3pz0_Yx685QUUfMA@mail.gmail.com> <a03039a96bed43568564cfc2832d61bf@realtek.com>
-In-Reply-To: <a03039a96bed43568564cfc2832d61bf@realtek.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Tue, 5 Mar 2024 10:23:11 +0100
-Message-ID: <CAJZ5v0iNdSo7B-1jHBO9dFmmjH=oG4G=V-pDeqL6+qrtLzatqw@mail.gmail.com>
-Subject: Re: [PATCH v3] driver core: Cancel scheduled pm_runtime_idle() on
- device removal
-To: Ricky WU <ricky_wu@realtek.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Bjorn Helgaas <helgaas@kernel.org>, 
-	Kai-Heng Feng <kai.heng.feng@canonical.com>, 
-	"gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "bhelgaas@google.com" <bhelgaas@google.com>, 
-	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Kees Cook <keescook@chromium.org>, 
-	Tony Luck <tony.luck@intel.com>, "Guilherme G. Piccoli" <gpiccoli@igalia.com>, 
-	"linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>, 
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 5, 2024 at 10:20=E2=80=AFAM Ricky WU <ricky_wu@realtek.com> wro=
-te:
->
-> > On Mon, Mar 4, 2024 at 7:10=E2=80=AFPM Rafael J. Wysocki <rafael@kernel=
-org>
-> > wrote:
-> > >
-> > > On Mon, Mar 4, 2024 at 6:00=E2=80=AFPM Rafael J. Wysocki <rafael@kern=
-el.org>
-> > wrote:
-> > > >
-> > > > On Mon, Mar 4, 2024 at 5:41=E2=80=AFPM Rafael J. Wysocki <rafael@ke=
-rnel.org>
-> > wrote:
-> > > > >
-> > > > > On Mon, Mar 4, 2024 at 4:51=E2=80=AFPM Bjorn Helgaas <helgaas@ker=
-nel.org>
-> > wrote:
-> > > > > >
-> > > > > > On Mon, Mar 04, 2024 at 03:38:38PM +0100, Rafael J. Wysocki wro=
-te:
-> > > > > > > On Thu, Feb 29, 2024 at 7:23=E2=80=AFAM Kai-Heng Feng
-> > > > > > > <kai.heng.feng@canonical.com> wrote:
-> > > > > > > >
-> > > > > > > > When inserting an SD7.0 card to Realtek card reader, the ca=
-rd
-> > reader
-> > > > > > > > unplugs itself and morph into a NVMe device. The slot Link =
-down on
-> > hot
-> > > > > > > > unplugged can cause the following error:
-> > > > > > > >
-> > > > > > > > pcieport 0000:00:1c.0: pciehp: Slot(8): Link Down
-> > > > > > > > BUG: unable to handle page fault for address: ffffb24d403e5=
-010
-> > > > > > > > PGD 100000067 P4D 100000067 PUD 1001fe067 PMD 100d97067
-> > PTE 0
-> > > > > > > > Oops: 0000 [#1] PREEMPT SMP PTI
-> > > > > > > > CPU: 3 PID: 534 Comm: kworker/3:10 Not tainted 6.4.0 #6
-> > > > > > > > Hardware name: To Be Filled By O.E.M. To Be Filled By
-> > O.E.M./H370M Pro4, BIOS P3.40 10/25/2018
-> > > > > > > > Workqueue: pm pm_runtime_work
-> > > > > > > > RIP: 0010:ioread32+0x2e/0x70
-> > > > > > > ...
-> > > > > > > > Call Trace:
-> > > > > > > >  <TASK>
-> > > > > > > >  ? show_regs+0x68/0x70
-> > > > > > > >  ? __die_body+0x20/0x70
-> > > > > > > >  ? __die+0x2b/0x40
-> > > > > > > >  ? page_fault_oops+0x160/0x480
-> > > > > > > >  ? search_bpf_extables+0x63/0x90
-> > > > > > > >  ? ioread32+0x2e/0x70
-> > > > > > > >  ? search_exception_tables+0x5f/0x70
-> > > > > > > >  ? kernelmode_fixup_or_oops+0xa2/0x120
-> > > > > > > >  ? __bad_area_nosemaphore+0x179/0x230
-> > > > > > > >  ? bad_area_nosemaphore+0x16/0x20
-> > > > > > > >  ? do_kern_addr_fault+0x8b/0xa0
-> > > > > > > >  ? exc_page_fault+0xe5/0x180
-> > > > > > > >  ? asm_exc_page_fault+0x27/0x30
-> > > > > > > >  ? ioread32+0x2e/0x70
-> > > > > > > >  ? rtsx_pci_write_register+0x5b/0x90 [rtsx_pci]
-> > > > > > > >  rtsx_set_l1off_sub+0x1c/0x30 [rtsx_pci]
-> > > > > > > >  rts5261_set_l1off_cfg_sub_d0+0x36/0x40 [rtsx_pci]
-> > > > > > > >  rtsx_pci_runtime_idle+0xc7/0x160 [rtsx_pci]
-> > > > > > > >  ? __pfx_pci_pm_runtime_idle+0x10/0x10
-> > > > > > > >  pci_pm_runtime_idle+0x34/0x70
-> > > > > > > >  rpm_idle+0xc4/0x2b0
-> > > > > > > >  pm_runtime_work+0x93/0xc0
-> > > > > > > >  process_one_work+0x21a/0x430
-> > > > > > > >  worker_thread+0x4a/0x3c0
-> > > > > > > ...
-> > > > > >
-> > > > > > > > This happens because scheduled pm_runtime_idle() is not
-> > cancelled.
-> > > > > > >
-> > > > > > > But rpm_resume() changes dev->power.request to RPM_REQ_NONE
-> > and if
-> > > > > > > pm_runtime_work() sees this, it will not run rpm_idle().
-> > > > > > >
-> > > > > > > However, rpm_resume() doesn't deactivate the autosuspend time=
-r if
-> > it
-> > > > > > > is running (see the comment in rpm_resume() regarding this), =
-so it
-> > may
-> > > > > > > queue up a runtime PM work later.
-> > > > > > >
-> > > > > > > If this is not desirable, you need to stop the autosuspend ti=
-mer
-> > > > > > > explicitly in addition to calling pm_runtime_get_sync().
-> > > > > >
-> > > > > > I don't quite follow all this.  I think the race is between
-> > > > > > rtsx_pci_remove() (not resume) and rtsx_pci_runtime_idle().
-> > > > >
-> > > > > I think so too and the latter is not expected to run.
-> > > > >
-> > > > > >   rtsx_pci_remove()
-> > > > > >   {
-> > > > > >     pm_runtime_get_sync()
-> > > > > >     pm_runtime_forbid()
-> > > > > >     ...
-> > > > > >
-> > > > > > If this is an rtsx bug, what exactly should be added to
-> > > > > > rtsx_pci_remove()?
-> > > > > >
-> > > > > > Is there ever a case where we want any runtime PM work to happe=
-n
-> > > > > > during or after a driver .remove()?  If not, maybe the driver c=
-ore
-> > > > > > should prevent that, which I think is basically what this patch=
- does.
-> > > > >
-> > > > > No, it is not, because it doesn't actually prevent the race from
-> > > > > occurring, it just narrows the window quite a bit.
-> > > > >
-> > > > > It would be better to call pm_runtime_dont_use_autosuspend() inst=
-ead
-> > > > > of pm_runtime_barrier().
-> > > > >
-> > > > > > If this is an rtsx driver bug, I'm concerned there may be many =
-other
-> > > > > > drivers with a similar issue.  rtsx exercises this path more th=
-an most
-> > > > > > because the device switches between card reader and NVMe SSD us=
-ing
-> > > > > > hotplug add/remove based on whether an SD card is inserted (see=
- [1]).
-> > > > >
-> > > > > This is a valid concern, so it is mostly a matter of where to dis=
-able
-> > > > > autosuspend.
-> > > > >
-> > > > > It may be the driver core in principle, but note that it calls
-> > > > > ->remove() after invoking pm_runtime_put_sync(), so why would it
-> > > > > disable autosuspend when it allows runtime PM to race with device
-> > > > > removal in general?
-> > > > >
-> > > > > Another way might be to add a pm_runtime_dont_use_autosuspend()
-> > call
-> > > > > at the beginning of pci_device_remove().
-> > > > >
-> > > > > Or just remove the optimization in question from rpm_resume() whi=
-ch is
-> > > > > quite confusing and causes people to make assumptions that lead t=
-o
-> > > > > incorrect behavior in this particular case.
-> > > >
-> > > > Well, scratch this.
-> > > >
-> > > > If rpm_idle() is already running at the time rpm_resume() is called=
-,
-> > > > the latter may return right away without waiting, which is incorrec=
-t.
-> > > >
-> > > > rpm_resume() needs to wait for the "idle" callback to complete, so
-> > > > this (again, modulo GMail-induced whitespace mangling) should help:
-> > > >
-> > > > ---
-> > > >  drivers/base/power/runtime.c |    6 ++++--
-> > > >  1 file changed, 4 insertions(+), 2 deletions(-)
-> > > >
-> > > > Index: linux-pm/drivers/base/power/runtime.c
-> > > >
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > =3D=3D=3D
-> > > > --- linux-pm.orig/drivers/base/power/runtime.c
-> > > > +++ linux-pm/drivers/base/power/runtime.c
-> > > > @@ -798,7 +798,8 @@ static int rpm_resume(struct device *dev
-> > > >      }
-> > > >
-> > > >      if (dev->power.runtime_status =3D=3D RPM_RESUMING ||
-> > > > -        dev->power.runtime_status =3D=3D RPM_SUSPENDING) {
-> > > > +        dev->power.runtime_status =3D=3D RPM_SUSPENDING ||
-> > > > +        dev->power.idle_notification) {
-> > > >          DEFINE_WAIT(wait);
-> > > >
-> > > >          if (rpmflags & (RPM_ASYNC | RPM_NOWAIT)) {
-> > > > @@ -826,7 +827,8 @@ static int rpm_resume(struct device *dev
-> > > >              prepare_to_wait(&dev->power.wait_queue, &wait,
-> > > >                      TASK_UNINTERRUPTIBLE);
-> > > >              if (dev->power.runtime_status !=3D RPM_RESUMING &&
-> > > > -                dev->power.runtime_status !=3D RPM_SUSPENDING)
-> > > > +                dev->power.runtime_status !=3D RPM_SUSPENDING &&
-> > > > +                !dev->power.idle_notification)
-> > > >                  break;
-> > > >
-> > > >              spin_unlock_irq(&dev->power.lock);
-> > >
-> > > Well, not really.
-> > >
-> > > The problem is that rtsx_pci_runtime_idle() is not expected to be
-> > > running after pm_runtime_get_sync(), but the latter doesn't really
-> > > guarantee that.  It only guarantees that the suspend/resume callbacks
-> > > will not be running after it returns.
-> > >
-> > > As I said above, if the ->runtime_idle() callback is already running
-> > > when pm_runtime_get_sync() runs, the latter will notice that the
-> > > status is RPM_ACTIVE and will return right away without waiting for
-> > > the former to complete.  In fact, it cannot wait for it to complete,
-> > > because it may be called from a ->runtime_idle() callback itself (it
-> > > arguably does not make much sense to do that, but it is not strictly
-> > > forbidden).
-> > >
-> > > So whoever is providing a ->runtime_idle() callback, they need to
-> > > protect it from running in parallel with whatever code runs after
-> > > pm_runtime_get_sync().  Note that ->runtime_idle() will not start
-> > > after pm_runtime_get_sync(), but it may continue running then if it
-> > > has started earlier already.
-> > >
-> > > Calling pm_runtime_barrier() after pm_runtime_get_sync() (not before
-> > > it) should suffice, but once the runtime PM usage counter is dropped,
-> > > rpm_idle() may run again, so this is only effective until the usage
-> > > counter is greater than 1.  This means that
-> > > __device_release_driver(() is not the right place to call it, because
-> > > the usage counter is dropped before calling device_remove() in that
-> > > case.
-> > >
-> > > The PCI bus type can prevent the race between driver-provided
-> > > ->runtime_idle() and ->remove() from occurring by adding a
-> > > pm_runtime_probe() call in the following way:
-> >
-> > s/pm_runtime_probe/pm_runtime_barrier/ (sorry)
-> >
-> > The patchlet below is correct, though.
-> >
->
-> I tested this patch it work and well...
-> Tested-by: Ricky Wu <ricky_wu@realtek.com>
-
-Thank you!
-
-I will resend it with a proper changelog.
+Hi Stefan,=0D
+=0D
+Sorry for the abysmal delay.=0D
+Thanks for your review and suggestions.=0D
+=0D
+>Hi Pratik,=0D
+>=0D
+>Am 04.02.24 um 07:36 schrieb pratikmanvar09@gmail.com:=0D
+>> Hi Stefan,=0D
+>>=0D
+>> Thanks for your review.=0D
+>> Please see my reply below inline.=0D
+>>=0D
+>>>> From: Clark Wang <xiaoning.wang@nxp.com>=0D
+>>>>=0D
+>>>> This fixes the pwm output bug when decrease the duty cycle.=0D
+>>>> This is a limited workaround for the PWM IP issue TKT0577206.=0D
+>>> this looks like a patch from the vendor tree.=0D
+>> [Pratik]: Yes, this is the patch from NXP. Please see original link of t=
+he patch https://github.com/nxp-imx/linux-imx/commit/16181cc4eee61d87cbaba0=
+e5a479990507816317=0D
+>>=0D
+>>> Could you please provide a link to the origin or at least to the=0D
+>>> document which describes TKT0577206?=0D
+>> [Pratik]: Please refer i.MX8MN errata #ERR051198 in https://www.nxp.com/=
+docs/en/errata/IMX8MN_0N14Y.pdf.=0D
+>Thanks, i think this ERR... reference is better than TKT... because it's=0D
+>links to the errata documents and other Freescale/NXP drivers use them=0D
+>too. So having this code in a comment would be great.=0D
+Sure, I will mention this #ERR051198 code in commit message.=0D
+>>=0D
+>>> As a i.MX6ULL user i couldn't find this issue in the chip errata. So ar=
+e=0D
+>>> you sure that every PWM IP handled by this driver is affected?=0D
+>> [Pratik]: Yes, looks like this issue is on all platforms which uses this=
+ PWM IP.=0D
+>>=0D
+>>>> Root cause:=0D
+>>>> When the SAR FIFO is empty, the new write value will be directly appli=
+ed=0D
+>>>> to SAR even the current period is not over.=0D
+>>>> If the new SAR value is less than the old one, and the counter is=0D
+>>>> greater than the new SAR value, the current period will not filp the=0D
+>>> s/filp/flip/ ?=0D
+>>>> level. This will result in a pulse with a duty cycle of 100%.=0D
+>>>>=0D
+>>>> Workaround:=0D
+>>>> Add an old value SAR write before updating the new duty cycle to SAR.=
+=0D
+>>>> This will keep the new value is always in a not empty fifo, and can be=
+=0D
+>>>> wait to update after a period finished.=0D
+>>>>=0D
+>>>> Limitation:=0D
+>>>> This workaround can only solve this issue when the PWM period is longe=
+r=0D
+>>>> than 2us(or <500KHz).=0D
+>>>>=0D
+>>>> Reviewed-by: Jun Li <jun.li@nxp.com>=0D
+>>>> Signed-off-by: Clark Wang <xiaoning.wang@nxp.com>=0D
+>>>> Link: https://github.com/nxp-imx/linux-imx/commit/16181cc4eee61d87cbab=
+a0e5a479990507816317=0D
+>>>> Tested-by: Pratik Manvar <pratik.manvar@ifm.com>=0D
+>>>> ---=0D
+>>>>    V1 -> V2: fix sparse warnings reported-by: kernel test robot <lkp@i=
+ntel.com>=0D
+>>>>              Closes: https://lore.kernel.org/oe-kbuild-all/20231230090=
+7.RGtYsKxb-lkp@intel.com/=0D
+>>>>=0D
+>>>>    drivers/pwm/pwm-imx27.c | 67 ++++++++++++++++++++++++++++++++++++++=
+---=0D
+>>>>    1 file changed, 62 insertions(+), 5 deletions(-)=0D
+>>>>=0D
+>>>> diff --git a/drivers/pwm/pwm-imx27.c b/drivers/pwm/pwm-imx27.c=0D
+>>>> index 7d9bc43f12b0..1e500a5bf564 100644=0D
+>>>> --- a/drivers/pwm/pwm-imx27.c=0D
+>>>> +++ b/drivers/pwm/pwm-imx27.c=0D
+>>>> @@ -21,11 +21,13 @@=0D
+>>>>    #include <linux/platform_device.h>=0D
+>>>>    #include <linux/pwm.h>=0D
+>>>>    #include <linux/slab.h>=0D
+>>>> +#include <linux/spinlock.h>=0D
+>>>>=0D
+>>>>    #define MX3_PWMCR			0x00    /* PWM Control Register */=0D
+>>>>    #define MX3_PWMSR			0x04    /* PWM Status Register */=0D
+>>>>    #define MX3_PWMSAR			0x0C    /* PWM Sample Register */=0D
+>>>>    #define MX3_PWMPR			0x10    /* PWM Period Register */=0D
+>>>> +#define MX3_PWMCNR			0x14    /* PWM Counter Register */=0D
+>>>>=0D
+>>>>    #define MX3_PWMCR_FWM			GENMASK(27, 26)=0D
+>>>>    #define MX3_PWMCR_STOPEN		BIT(25)=0D
+>>>> @@ -91,6 +93,7 @@ struct pwm_imx27_chip {=0D
+>>>>    	 * value to return in that case.=0D
+>>>>    	 */=0D
+>>>>    	unsigned int duty_cycle;=0D
+>>>> +	spinlock_t lock;=0D
+>>>>    };=0D
+>>>>=0D
+>>>>    #define to_pwm_imx27_chip(chip)	container_of(chip, struct pwm_imx27=
+_chip, chip)=0D
+>>>> @@ -203,10 +206,10 @@ static void pwm_imx27_wait_fifo_slot(struct pwm_=
+chip *chip,=0D
+>>>>=0D
+>>>>    	sr =3D readl(imx->mmio_base + MX3_PWMSR);=0D
+>>>>    	fifoav =3D FIELD_GET(MX3_PWMSR_FIFOAV, sr);=0D
+>>>> -	if (fifoav =3D=3D MX3_PWMSR_FIFOAV_4WORDS) {=0D
+>>>> +	if (fifoav >=3D MX3_PWMSR_FIFOAV_3WORDS) {=0D
+>>>>    		period_ms =3D DIV_ROUND_UP_ULL(pwm_get_period(pwm),=0D
+>>>>    					 NSEC_PER_MSEC);=0D
+>>>> -		msleep(period_ms);=0D
+>>>> +		msleep(period_ms * (fifoav - 2));=0D
+>>> This touches a different workaround ("pwm: imx: Avoid sample FIFO=0D
+>>> overflow for i.MX PWM version2") without any explanation.=0D
+>> [Pratik]: Sure, I will look into this. Thanks!=0D
+>>>>    		sr =3D readl(imx->mmio_base + MX3_PWMSR);=0D
+>>>>    		if (fifoav =3D=3D FIELD_GET(MX3_PWMSR_FIFOAV, sr))=0D
+>>>> @@ -217,13 +220,15 @@ static void pwm_imx27_wait_fifo_slot(struct pwm_=
+chip *chip,=0D
+>>>>    static int pwm_imx27_apply(struct pwm_chip *chip, struct pwm_device=
+ *pwm,=0D
+>>>>    			   const struct pwm_state *state)=0D
+>>>>    {=0D
+>>>> -	unsigned long period_cycles, duty_cycles, prescale;=0D
+>>>> +	unsigned long period_cycles, duty_cycles, prescale, counter_check, f=
+lags;=0D
+>>>>    	struct pwm_imx27_chip *imx =3D to_pwm_imx27_chip(chip);=0D
+>>>> +	void __iomem *reg_sar =3D imx->mmio_base + MX3_PWMSAR;=0D
+>>>> +	__force u32 sar_last, sar_current;=0D
+>>>>    	struct pwm_state cstate;=0D
+>>>>    	unsigned long long c;=0D
+>>>>    	unsigned long long clkrate;=0D
+>>>>    	int ret;=0D
+>>>> -	u32 cr;=0D
+>>>> +	u32 cr, timeout =3D 1000;=0D
+>>>>=0D
+>>>>    	pwm_get_state(pwm, &cstate);=0D
+>>>>=0D
+>>>> @@ -264,7 +269,57 @@ static int pwm_imx27_apply(struct pwm_chip *chip,=
+ struct pwm_device *pwm,=0D
+>>>>    		pwm_imx27_sw_reset(chip);=0D
+>>>>    	}=0D
+>>>>=0D
+>>>> -	writel(duty_cycles, imx->mmio_base + MX3_PWMSAR);=0D
+>>>> +	/*=0D
+>>>> +	 * This is a limited workaround. When the SAR FIFO is empty, the new=
+=0D
+>>>> +	 * write value will be directly applied to SAR even the current peri=
+od=0D
+>>>> +	 * is not over.=0D
+>>>> +	 * If the new SAR value is less than the old one, and the counter is=
+=0D
+>>>> +	 * greater than the new SAR value, the current period will not filp=
+=0D
+>>> The same typo as in the commit message.=0D
+>>>> +	 * the level. This will result in a pulse with a duty cycle of 100%.=
+=0D
+>>>> +	 * So, writing the current value of the SAR to SAR here before updat=
+ing=0D
+>>>> +	 * the new SAR value can avoid this issue.=0D
+>>>> +	 *=0D
+>>>> +	 * Add a spin lock and turn off the interrupt to ensure that the=0D
+>>>> +	 * real-time performance can be guaranteed as much as possible when=
+=0D
+>>>> +	 * operating the following operations.=0D
+>>>> +	 *=0D
+>>>> +	 * 1. Add a threshold of 1.5us. If the time T between the read curre=
+nt=0D
+>>>> +	 * count value CNR and the end of the cycle is less than 1.5us, wait=
+=0D
+>>>> +	 * for T to be longer than 1.5us before updating the SAR register.=0D
+>>>> +	 * This is to avoid the situation that when the first SAR is written=
+,=0D
+>>>> +	 * the current cycle just ends and the SAR FIFO that just be written=
+=0D
+>>>> +	 * is emptied again.=0D
+>>>> +	 *=0D
+>>>> +	 * 2. Use __raw_writel() to minimize the interval between two writes=
+ to=0D
+>>>> +	 * the SAR register to increase the fastest pwm frequency supported.=
+=0D
+>>>> +	 *=0D
+>>>> +	 * When the PWM period is longer than 2us(or <500KHz), this workarou=
+nd=0D
+>>>> +	 * can solve this problem.=0D
+>>>> +	 */=0D
+>>>> +	if (duty_cycles < imx->duty_cycle) {=0D
+>>>> +		c =3D clkrate * 1500;=0D
+>>>> +		do_div(c, NSEC_PER_SEC);=0D
+>>>> +		counter_check =3D c;=0D
+>>>> +		sar_last =3D (__force u32) cpu_to_le32(imx->duty_cycle);=0D
+>>>> +		sar_current =3D (__force u32) cpu_to_le32(duty_cycles);=0D
+>>>> +=0D
+>>>> +		spin_lock_irqsave(&imx->lock, flags);=0D
+>>>> +		if (state->period >=3D 2000) {=0D
+>>>> +			while ((period_cycles -=0D
+>>>> +				readl_relaxed(imx->mmio_base + MX3_PWMCNR))=0D
+>>>> +				< counter_check) {=0D
+>>>> +				if (!--timeout)=0D
+>>>> +					break;=0D
+>>>> +			};=0D
+>>>> +		}=0D
+>>>> +		if (!(MX3_PWMSR_FIFOAV &=0D
+>>>> +		      readl_relaxed(imx->mmio_base + MX3_PWMSR)))=0D
+>>>> +			__raw_writel(sar_last, reg_sar);=0D
+>>>> +		__raw_writel(sar_current, reg_sar);=0D
+>>>> +		spin_unlock_irqrestore(&imx->lock, flags);=0D
+>>>> +	} else=0D
+>>>> +		writel(duty_cycles, imx->mmio_base + MX3_PWMSAR);=0D
+>>>> +=0D
+>>> This is hard to believe that checkpatch.pl is fine with this patch.=0D
+>>> Please use it before submission.=0D
+>> [Pratik]: I used the checkpatch.pl in this patch and that runs without a=
+ny warnings/errors!=0D
+>Okay, AFAIR the coding style suggests braces for the else case.=0D
+>>=0D
+>>>>    	writel(period_cycles, imx->mmio_base + MX3_PWMPR);=0D
+>>>>=0D
+>>>>    	/*=0D
+>>>> @@ -324,6 +379,8 @@ static int pwm_imx27_probe(struct platform_device =
+*pdev)=0D
+>>>>    		return dev_err_probe(&pdev->dev, PTR_ERR(imx->clk_per),=0D
+>>>>    				     "failed to get peripheral clock\n");=0D
+>>>>=0D
+>>>> +	spin_lock_init(&imx->lock);=0D
+>>>> +	imx->duty_cycle =3D 0;=0D
+>>> This line looks unrelated and unnecessary.=0D
+>> [Pratik]: Right. I will remove this line in next patch version.=0D
+>Could you also please look at Uwe's comments [1]?=0D
+>=0D
+>Thanks=0D
+>=0D
+>[1] -=0D
+>https://lore.kernel.org/all/20211220105555.zwq22vip7onafrck@pengutronix.de=
+/=0D
+Actually, I did not get much time to work on this. But, I will look into th=
+is now.=0D
+>>=0D
+>>> Best regards=0D
+>>>>    	imx->chip.ops =3D &pwm_imx27_ops;=0D
+>>>>    	imx->chip.dev =3D &pdev->dev;=0D
+>>>>    	imx->chip.npwm =3D 1;=0D
+=0D
+Thanks & Regards,=0D
+Pratik Manvar=
 
