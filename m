@@ -1,129 +1,88 @@
-Return-Path: <linux-kernel+bounces-92910-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92912-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02745872805
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 20:54:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7818E87280C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 20:55:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 959A31F230E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:54:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 338E228D2E0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:55:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB74E86644;
-	Tue,  5 Mar 2024 19:54:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0CC786654;
+	Tue,  5 Mar 2024 19:54:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="VEu5tKE3"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lxte8lc0"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD1015C601
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 19:54:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E28BA5C601;
+	Tue,  5 Mar 2024 19:54:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709668450; cv=none; b=Xgapf0K/zl1MK1NIVpnIObg+sCAEIUk6NrDaf4BTKxbRd7Bh6EXweBFIcSaLGjDJct2PqcCt77HnFSxmgH9Hflfhb/BHbq9Z7o4jCPUaP865B3kQ8AS+bzpOud8DlFIodohecv/dy+VLte3+X1vpxpQuYY18G7oJIUs4PfDDI4I=
+	t=1709668493; cv=none; b=hHtEWrX+KwtMI1ZKeWdFrQdY10nllAoe/LkQQooNyHiw4jXn6/J30/Prb6EnlC/ZPjbqQipXBFNiuAHe59BkbMKvoYtEMGGBXYN0wIpWMSj7SXe1t2nGUomyv9zkxC6CZ2Kfp8fav/mL1vslYLiI3ILY6JheeHAX6unT+Clz1hI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709668450; c=relaxed/simple;
-	bh=Thh+og9vWfifMZ7QUJajbgXYm3QoY+CJHcawNAefhMM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VWTeVDWQ5l9l5bdqyu+THooocOb2MigVqbysPUu3HBUFJRyxGpq8iChSjKhfEP/Jy8DhEPyIXbGdzt0Q5cf0GIgMmIzeP3vnsS3xD+7Ny8i5j4q7ITZhKHwKFMp2yc6tyafq3+EgXWSWwNo57VRRhmmjZVXcv2Vr7ybfELrxdTg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=VEu5tKE3; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e5a232fe80so100439b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 11:54:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1709668448; x=1710273248; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8OJiIuppva2X62G3XuKOpZ18Of2oWMu+/RVVvODtp4M=;
-        b=VEu5tKE3ZGEMGDvffumPkT0uy9dQ8tGrLGc5mS3ynHiKSCM4jxVM5Mk1gHagvtd+va
-         4Iwg26a4/Jq7rwllJwhLNbUP9PnQmbrV8ntmuSzHQaslvio2ZDd3/Xg2cJSCUEe9CPxH
-         Qc2vmlAQcaToA8ldYp9nPwe1NLKlztG9Emee4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709668448; x=1710273248;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8OJiIuppva2X62G3XuKOpZ18Of2oWMu+/RVVvODtp4M=;
-        b=duNri6UGNgZc1u239TzXnOTEkgC92Y1SBsLA7B5wolJcctzFjxbklmtgb6giA3btAp
-         OZpiwqOGkWS34RPdD2F4hdZT4xzKjwVdw+IzW4kFeSMPpai9gwugQ81IQQGEI0Dwivua
-         Zd4oaVXVvvzdisGATYdKKV4Eir7oH4B9MC+ER1olt7yf4diSQnWqK1frtP3YzZerI4XL
-         AxpEniiNchHTqGp1h87jtvd5ymwyveZVhaGsC1cARRXJWquWaMcnkOZBGVoqhudwYBdf
-         ZLM1/ekfk8LYPq/X43FjfGwPZw1j/F0WMJ1//b21SZjb3JNpp2W2nZnGs2qg36b6Dypo
-         whHQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVjmrcKXsaLWdGZw38K3JITuLydaTSomhlM0xPibd+/s+kgv5KYY5JdGjQShbZSGdJeccycm3TVz4T7pIP4qVaZBtRN0md47HO5H7nv
-X-Gm-Message-State: AOJu0YxaCR6HmDk37aqHjk2QW1B4bKI9CEZ3oiveq9btOOIHpqGX0+Zl
-	QbEhzicA1wQZJIF/tkku/udE7o261SUKxoFCRyZfTgZQr9WwEV6dXkDCNJ9jUA==
-X-Google-Smtp-Source: AGHT+IEPSGoV+PaXRY7JI9uSPnapXCs52p1ILPTe+H1wv+UxrhqJWz+AChv6CTzYH5Lp5odgHWXRGQ==
-X-Received: by 2002:a05:6a00:8cc:b0:6e6:1df9:af92 with SMTP id s12-20020a056a0008cc00b006e61df9af92mr4909513pfu.14.1709668447845;
-        Tue, 05 Mar 2024 11:54:07 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id h5-20020aa786c5000000b006e52ce4ee2fsm9391340pfo.20.2024.03.05.11.54.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 11:54:07 -0800 (PST)
-Date: Tue, 5 Mar 2024 11:54:06 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: linux-kselftest@vger.kernel.org, David Airlie <airlied@gmail.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	=?iso-8859-1?Q?Ma=EDra?= Canal <mcanal@igalia.com>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	Daniel Diaz <daniel.diaz@linaro.org>,
-	David Gow <davidgow@google.com>,
-	Arthur Grillo <arthurgrillo@riseup.net>,
-	Brendan Higgins <brendan.higgins@linux.dev>,
-	Naresh Kamboju <naresh.kamboju@linaro.org>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Maxime Ripard <mripard@kernel.org>,
-	Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-	loongarch@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	kunit-dev@googlegroups.com, linux-arch@vger.kernel.org
-Subject: Re: [RFC PATCH 1/5] bug: Core support for suppressing warning
- backtraces
-Message-ID: <202403051149.547235C794@keescook>
-References: <20240305184033.425294-1-linux@roeck-us.net>
- <20240305184033.425294-2-linux@roeck-us.net>
+	s=arc-20240116; t=1709668493; c=relaxed/simple;
+	bh=gntd/YhRPEAN2+Z16W3V+ZZ+Frwia39/RWn+d6a3EcQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=oLrl8kpG0jsprV1gTz3dmPoIIySKSXMRXvQXiVmKEzRyf2i/XjZs/2F/III+O03kX7S2Es6vq+z/pirBl5h0mJKTOhtMSo8WUerbQdwoZzlKCRc2Nd2BkbAT47UhA6NRJEkX5uquVlp3D0p8B+9thT2cszu9GIJK4NI6ccypTjQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lxte8lc0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A71B3C433F1;
+	Tue,  5 Mar 2024 19:54:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709668492;
+	bh=gntd/YhRPEAN2+Z16W3V+ZZ+Frwia39/RWn+d6a3EcQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=lxte8lc0Jppw6kKqg7dMmphrkb66r7fSWpzIBGQScH3qVouaLwS9X4lbSspmbLj7X
+	 FYpmoJT1SaeEwQCxuNe9cEtjaXBc3KJ12P+rNHpsoDWNOHfypEvo5zJZCY5DhZty+H
+	 /6BbaHVMHH3mYQWxEwwQuWGX8Ek+ePmHxIi5LXldaVKLpeLR5AHYtH/j6YnkYBuB/V
+	 lySQnFe27R/KHt23pqZGICCc+/5U0VAR+OyZ2A6/GQ2uPbaQL22Wficrc1Bkf7YvUt
+	 URX19gVDZ8l8b2a079SeXZwNaXzRPBe/8IUY2BaJl777Rei3mgUexeIEzzHfw0Wm/C
+	 Gqez787JWGetw==
+Date: Tue, 5 Mar 2024 11:54:50 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Larysa Zaremba <larysa.zaremba@intel.com>
+Cc: Jiri Pirko <jiri@resnulli.us>, <intel-wired-lan@lists.osuosl.org>,
+ <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Mateusz Pacuszka
+ <mateuszx.pacuszka@intel.com>, Tony Nguyen <anthony.l.nguyen@intel.com>,
+ Lukasz Plachno <lukasz.plachno@intel.com>, Jakub Buchocki
+ <jakubx.buchocki@intel.com>, Pawel Kaminski <pawel.kaminski@intel.com>,
+ Przemek Kitszel <przemyslaw.kitszel@intel.com>, Michal Swiatkowski
+ <michal.swiatkowski@linux.intel.com>, Mateusz Polchlopek
+ <mateusz.polchlopek@intel.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, "Pawel
+ Chmielewski" <pawel.chmielewski@intel.com>, Jesse Brandeburg
+ <jesse.brandeburg@intel.com>
+Subject: Re: [PATCH iwl-net 0/5] ice: LLDP support for VFs
+Message-ID: <20240305115450.577c161e@kernel.org>
+In-Reply-To: <ZeJ3u2x3Ihs8WQJn@lzaremba-mobl.ger.corp.intel.com>
+References: <20240228155957.408036-1-larysa.zaremba@intel.com>
+	<20240228084745.2c0fef0e@kernel.org>
+	<ZeBMRXUjVSwUHxU-@nanopsycho>
+	<20240229072813.5d7614c3@kernel.org>
+	<ZeDb8Dr8mBvov9fc@lzaremba-mobl.ger.corp.intel.com>
+	<20240301090836.185e3b79@kernel.org>
+	<ZeJ3u2x3Ihs8WQJn@lzaremba-mobl.ger.corp.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240305184033.425294-2-linux@roeck-us.net>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Mar 05, 2024 at 10:40:29AM -0800, Guenter Roeck wrote:
-> [...]
->  	warning = (bug->flags & BUGFLAG_WARNING) != 0;
->  	once = (bug->flags & BUGFLAG_ONCE) != 0;
->  	done = (bug->flags & BUGFLAG_DONE) != 0;
->  
-> +	if (warning && IS_SUPPRESSED_WARNING(function))
-> +		return BUG_TRAP_TYPE_WARN;
-> +
+On Sat, 2 Mar 2024 01:50:03 +0100 Larysa Zaremba wrote:
+> For RX: match on Ethertype and mirror, every trusted VF should be able to scan 
+> neighbors.
+> 
+> For TX this is more complicated and is done not through eswitch, but through 
+> modifying security options, so do not think this would work with tc. So private 
+> flags are the best option? Our requirements say only a single VSI can transmit 
+> LLDP.
 
-I had to re-read __report_bug() more carefully, but yes, this works --
-it's basically leaving early, like "once" does.
-
-This looks like a reasonable approach!
-
-Something very similar to this is checking that a warning happens. i.e.
-you talk about drm selftests checking function return values, but I've
-got a bunch of tests (LKDTM) that live outside of KUnit because I haven't
-had a clean way to check for specific warnings/bugs. I feel like future
-changes built on top of this series could add counters or something that
-KUnit could examine. E.g. I did this manually for some fortify tests:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/commit/?h=for-next/hardening&id=4ce615e798a752d4431fcc52960478906dec2f0e
-
--Kees
-
--- 
-Kees Cook
+It is doable theoretically, tho, right? Driver can detect that all
+eswitch VF/PF ports but one have a "drop LLDP" rule and update the
+security option correctly?
 
