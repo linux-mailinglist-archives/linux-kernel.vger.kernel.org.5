@@ -1,131 +1,110 @@
-Return-Path: <linux-kernel+bounces-91451-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91452-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 397D08711A9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 01:27:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1AE48711AB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 01:27:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9C6C2825C2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 00:26:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A36A51F213CF
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 00:27:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47A841FB4;
-	Tue,  5 Mar 2024 00:26:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="FrAXEqr1"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CBEE79D3;
+	Tue,  5 Mar 2024 00:26:58 +0000 (UTC)
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00A8A10E4;
-	Tue,  5 Mar 2024 00:26:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6467610B;
+	Tue,  5 Mar 2024 00:26:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709598407; cv=none; b=Akv8V+9xILZ1MKChGNRFk4VqCbUBgRnpjsOzwMKSQaThitccmHEtxbFkaiv2uvn76dp56SUqExjwC01ezydmQ6RWUBmHa74fSmAn71Wlbd4bxbGxxigPA20PUnrlbG8oPLwjl93pFbTrFK7RxObovH0RcHD12Fbhl5R3XeSrefA=
+	t=1709598418; cv=none; b=empGyCVo+FkeOzubyl0Jca1/jbhx2zbWc7PzcxRPf17QDDUKiFruMz3o43xpzJZHCnmxkoxKtggGlaGg4rkjJ7NIGzUJQ8UeB29oBEbybSSxVCtNXh8jN1NX5znoqh1KyfSAUBPU8uyA1NCUcCaR2G1NCzRr/pSR4RFCfnlPqYg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709598407; c=relaxed/simple;
-	bh=krO1kIHKX/xI7ueJfFd6M5pkrZWuBiDhL+7b5CCcB2k=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=o5AVCEeD9G7XfD0SDbqQxMkAUV35D5ljUjKVUFlsaDV+H9wLhlrd6sNMPZ+HBTDPtG9JSqUTud5oAwfGUO1EgUhaICbKkIX9tOo7LgMk5fhb1cH2EaOsnkie9IFxM+azwlWP+UVKJqHH0DpTDn1kZhnHV4sURWYq5YLRBmdz6kQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=FrAXEqr1; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1709598403;
-	bh=8JmmGRblLviPY3vGl6YRexBFOxlOArzv6ntkM8GxRqc=;
-	h=Date:From:To:Cc:Subject:From;
-	b=FrAXEqr1y3lgVK8CRgIMB8SgzBwMWHgRHFOlbs/aqI3dbXyRoovqzQVwlpc9PsoVU
-	 EJKT0fXE86FUfkW21w8YXrCjU/2lwOaPhX5blmggR1lx9w6PJMPhng0PonqXj9GD5E
-	 EmcNThUxuCe31glvD74s68nzTlOzbTykRSOJh+DIMZq+pVWwsx+jbCXEPlyamzT6WH
-	 8yk2sMMnhcsnLsy45R2X/jlmEbrYwhJh1IJTWDQZJyxkTRPVeH83VvM6EIDLV25JFG
-	 wt5n8ho76YG0D2N838r1ZrKxf7TxftwMiahfhE3VuDlcW5Jl5ZB659L9Xs1Nt3gVp3
-	 5JRviHuy7Dj4Q==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TpbwL0Y5Cz4wc8;
-	Tue,  5 Mar 2024 11:26:42 +1100 (AEDT)
-Date: Tue, 5 Mar 2024 11:26:41 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: David Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc: Networking <netdev@vger.kernel.org>, Alex Elder <elder@linaro.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>, "Rafael J. Wysocki"
- <rafael.j.wysocki@intel.com>, Sakari Ailus <sakari.ailus@linux.intel.com>
-Subject: linux-next: manual merge of the net-next tree with the pm tree
-Message-ID: <20240305112641.6248c6fd@canb.auug.org.au>
+	s=arc-20240116; t=1709598418; c=relaxed/simple;
+	bh=I/fv5QjfcioRRSvSneTM+YmY+iE+AQw5ADJfDWecOEc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mJkipVZbtBeM5LaS7skFXVYgQ7HRgF7oPWm1Ldlfqf5okrGwsiPR4gOJhLkIqo5GTVOW1H+FIgjHEKZQFEsn7t0xHd6Cgd3EJhJup4f0KKr+PGcaYjTjw67il8vKAcDx77h22oey+d5A+6Hnm8LxC+QmtIBsOjlC65lJOkciJpI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1dc9222b337so50674315ad.2;
+        Mon, 04 Mar 2024 16:26:56 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709598416; x=1710203216;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4vaTAt59v6hDHMmG33vSBdoXtjWvwKkVZnRYvNr3jeI=;
+        b=O5b2dW7O34e8v8/0lfD6zSviNVlNiFRoUY787x5WhE5HKD5iL4Q4cyPB9OuHDqR3jk
+         iftD5WwUL7vvOLSSc1n4wd3flO6jGYRNeIX4PIu4oDPTv0KGJDblRBmVZJBMq3Llz1gc
+         l9iKudufJmdf4P2l1z1/+FLm98r5MlSbqgHiYEQOSdoHag+2FChxVvmS7WKWBeKFHbWv
+         QvpzIwx/ngGrkbpaXd15wwvaDFyLXVICOiV8RKM6NN3ur5BBVeB8GOzuWIhgdc021m0C
+         kgcwdviH4oyOera9xrPC2SB4WKteXKV9ZvUJ9Ex406hgdwGden8R2UVbUIsOomcam0rI
+         GGQg==
+X-Forwarded-Encrypted: i=1; AJvYcCVOnXeH+xoY9beof323mBTPFyHM05wGiwrUB0dr0xz7Rjr2dWYpQxopZlr7W6A+HnJXH8b830FLd8VtBjchdOUCw+JlM592ISkqC2E+sFfs5/8opX3fO8FRi45rLHwsne6VlvTnLR2VyW1k
+X-Gm-Message-State: AOJu0YywuF+O/kOfPOrjxKUnsRl3hc7HuuRoOYvUF5eqTyqTXhv/iaZn
+	izEZu6NHLffz8a9bCFYVgvM/MDn6gFQjW1HNGi0QoG3/ocOni80D
+X-Google-Smtp-Source: AGHT+IH/HzcC8hXY5G/8U2V3qKMMaRE7IT9QPLDcKWvYWsE8385LzOpr7tcmDHfDgo/jbVNyIvIVzA==
+X-Received: by 2002:a17:902:e744:b0:1dc:d722:4c08 with SMTP id p4-20020a170902e74400b001dcd7224c08mr533863plf.5.1709598415935;
+        Mon, 04 Mar 2024 16:26:55 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
+        by smtp.gmail.com with ESMTPSA id j12-20020a170902c3cc00b001dca9a6fdf1sm9141431plj.183.2024.03.04.16.26.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Mar 2024 16:26:54 -0800 (PST)
+Date: Tue, 5 Mar 2024 00:26:50 +0000
+From: Wei Liu <wei.liu@kernel.org>
+To: Saurabh Singh Sengar <ssengar@linux.microsoft.com>
+Cc: Wei Liu <wei.liu@kernel.org>, kys@microsoft.com, haiyangz@microsoft.com,
+	decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
+	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+	hpa@zytor.com, dwmw@amazon.co.uk, peterz@infradead.org,
+	linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+	ssengar@microsoft.com, mhklinux@outlook.com
+Subject: Re: [PATCH v3] x86/hyperv: Use per cpu initial stack for vtl context
+Message-ID: <ZeZmysa1x4dogjQs@liuwe-devbox-debian-v2>
+References: <1709452896-13342-1-git-send-email-ssengar@linux.microsoft.com>
+ <ZeVpG07p9ayjk7yb@liuwe-devbox-debian-v2>
+ <20240304070817.GA501@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/PtrpKQJkd6+R8z.2d0yv6Mo";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240304070817.GA501@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 
---Sig_/PtrpKQJkd6+R8z.2d0yv6Mo
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sun, Mar 03, 2024 at 11:08:17PM -0800, Saurabh Singh Sengar wrote:
+> On Mon, Mar 04, 2024 at 06:24:27AM +0000, Wei Liu wrote:
+> > On Sun, Mar 03, 2024 at 12:01:36AM -0800, Saurabh Sengar wrote:
+> > > Currently, the secondary CPUs in Hyper-V VTL context lack support for
+> > > parallel startup. Therefore, relying on the single initial_stack fetched
+> > > from the current task structure suffices for all vCPUs.
+> > > 
+> > > However, common initial_stack risks stack corruption when parallel startup
+> > > is enabled. In order to facilitate parallel startup, use the initial_stack
+> > > from the per CPU idle thread instead of the current task.
+> > > 
+> > > Fixes: 18415f33e2ac ("cpu/hotplug: Allow "parallel" bringup up to CPUHP_BP_KICK_AP_STATE")
+> > 
+> > I don't think this patch is buggy. Instead, it exposes an assumption in
+> > the VTL code. So this either should be dropped or point to the patch
+> > which introduces the assumption.
+> > 
+> > Let me know what you would prefer.
+> 
+> The VTL code will crash if this fix is not present post above mentioned patch:
+> 18415f33e2ac ("cpu/hotplug: Allow "parallel" bringup up to CPUHP_BP_KICK_AP_STATE").
+> So I would prefer a fixes which added the assumption in VTL:
+> 
+> Fixes: 3be1bc2fe9d2 ("x86/hyperv: VTL support for Hyper-V")
+> 
+> Please let me know if you need V4 for it.
 
-Hi all,
+No need to repost. I can change the commit message.
 
-Today's linux-next merge of the net-next tree got a conflict in:
-
-  drivers/net/ipa/ipa_smp2p.c
-
-between commit:
-
-  c0ef3df8dbae ("PM: runtime: Simplify pm_runtime_get_if_active() usage")
-
-from the pm tree and commit:
-
-  5245f4fd28d1 ("net: ipa: don't save the platform device")
-
-from the net-next tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/net/ipa/ipa_smp2p.c
-index cbf3d4761ce3,aeccce9fab72..000000000000
---- a/drivers/net/ipa/ipa_smp2p.c
-+++ b/drivers/net/ipa/ipa_smp2p.c
-@@@ -91,8 -90,7 +90,7 @@@ static void ipa_smp2p_notify(struct ipa
-  	if (smp2p->notified)
-  		return;
- =20
-- 	dev =3D &smp2p->ipa->pdev->dev;
-- 	smp2p->power_on =3D pm_runtime_get_if_active(dev) > 0;
- -	smp2p->power_on =3D pm_runtime_get_if_active(smp2p->ipa->dev, true) > 0;
-++	smp2p->power_on =3D pm_runtime_get_if_active(smp2p->ipa->dev) > 0;
- =20
-  	/* Signal whether the IPA power is enabled */
-  	mask =3D BIT(smp2p->enabled_bit);
-
---Sig_/PtrpKQJkd6+R8z.2d0yv6Mo
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXmZsEACgkQAVBC80lX
-0GwcJAf+MoMxPVMBLY5erdgoXg5CFIShShkpA/chIJDy+ImTgnd+nOBIUQjP9EdW
-jJNjU1Xq6cZDeJ2I8k3O0haW041BgGVQkvcstwmYxt5/YwNuo7KvZdCzioWpgTRz
-qv825HrFgYJQANqcTKdQvAhz7A943WjWjU2ByorbGFKyhyBASLZRCT1swQriDMzq
-8dND96qPyqXdwImNgQSPN/eFJqHDl5ljfwKYgd6xBQOhAx+o2BP74XrHKjNPVXI8
-CdNT/ePNfmh6VNmiTcaoCYBdYcSQsbhztrbEiXokIC6d+HXsYbfB60ipcfF1PIDD
-YQQz40PTkEc/zz17cA0CgTPrnmUbjg==
-=9lTA
------END PGP SIGNATURE-----
-
---Sig_/PtrpKQJkd6+R8z.2d0yv6Mo--
+Thanks,
+Wei.
 
