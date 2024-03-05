@@ -1,268 +1,183 @@
-Return-Path: <linux-kernel+bounces-91782-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91781-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F092F871683
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:15:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C33E871680
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:15:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6D417B21895
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:15:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE0C8282E0C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:15:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9937A7E583;
-	Tue,  5 Mar 2024 07:14:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC17A7E78B;
+	Tue,  5 Mar 2024 07:14:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="3xnEyCNc"
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BLolHZHW"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E974F7D41B
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 07:14:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 379947D3FE
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 07:14:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709622895; cv=none; b=a/thNkS5oRLI1/ijSuBILN9cvUGEdWlmPBC0WilePTRj+O/Psbc7kPYk/wQnialLXXDJAVJFHFIaYVNVpPkIDrxVm+yQKOToQRGLeiLXq+OcQwj7+r4n6kfoljIQ3VZUXUwhlc8UdoJQhLUrptL4hTipjGDuB9cFs5rDh18kwbQ=
+	t=1709622873; cv=none; b=U26GqW5XfG5nhqoRJBoA4Sk9vaM650ZbPJL3V2oJJ3/A6pWf8TL/Du2IU5EnTw6fzsCp/YdgBZqdN6xuoi3RDdnnu4jP/IC7e0hj8/UfcU5ZzpZ3iPdQ+LNjg7H0MYDSHJ828HK4R1KC5Dudz0Ew9gJFDgQjbM1YjUauOHZYnmE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709622895; c=relaxed/simple;
-	bh=y6zaOZvJ4cIVJ2qepjnDrcV6r6n/r5jEVFp4o5JpDlg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rx6wkrrZOlepq23Gs0yXHbH6d7tve+BceXh4g729RiiR84fRPXBhJo4BKctWp2as2glr/iLpccjjJyuMw0uDQtzBJLsTUrpLiBz+jm/hlHvmMFhwDJu1JrvMg9w3G2i7OgX2Mc7FogPXZI1LbZN/pW7s6aAgpjwsh1/2Lx4YZ5I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3xnEyCNc; arc=none smtp.client-ip=209.85.160.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-42ee0c326e8so192571cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 23:14:53 -0800 (PST)
+	s=arc-20240116; t=1709622873; c=relaxed/simple;
+	bh=8zx9t+nH72OZA2vYjFxrFWKNuMr2mmTTLimbqw0qty4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JWiTLDCZl28e3Rrzn+hdjbv/6UQUMvn+hRifakK7FBOzQKfrOQKsn8RAJPHCcW3mMIyeL4E74Yh3SSd61MZAr24tC8x/wbWXS9tKwgeVEcaqBdI1BjKvczKltKhDfBz28vJYR+RWr7fQU4A1JRlWgHqnEzsqaLiw/UnW02QcF8g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BLolHZHW; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-512e4f4e463so5782073e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 23:14:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709622893; x=1710227693; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gZ6lNE1/SlOo2Yjm5/u+OE6lkumtZM5XSJ/KqzGtJ3Q=;
-        b=3xnEyCNcWJdP9DBGCyKMyXRkWAta2A7CR4YbXMJtqFYtXj4AbHlzTF5Tn8dlgDjT95
-         uVAnjebeVBOiWclGVltKar/0R+bkxlChJt6hUxvLDnZ7EKdS/3UIBSKYMjbzjl05ZB28
-         FwlWiJgLinGOtx3NQPaeIH26RDfZKVLQMAoSUf52Og0PwL/Ztrh7V7lm9hZaly4lADVF
-         rBUdIXvUu7bcGCLu+uL0pun0GspLW0iIjyBEU2vWGZNbQKf8iyc5DZT680JFPYHPIxV+
-         LJODNuGLqJndvM2ChUMy1WqQ3W2DGvRCZZqkKPR12iJzJpPfRxwuFniVlaKtrHcrD2Dt
-         ssfg==
+        d=linaro.org; s=google; t=1709622869; x=1710227669; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PJOEpSfM7W5q1u08Hp4JeXt1WjIFUvsNQIjWvP89284=;
+        b=BLolHZHWYNhorfoV5ZgAittAmfqmJfkF80mKtJcEmRufKHkTqsRFDFgnhveNvbTr3J
+         8mVHmuwTrnPA3xKyexCVSlrHnikSTJ841oA+MYAfiJuZgkq46eriwcYdAUEgOFalueRX
+         283Fd5rinOmQg26MNeHfxw3LDR/7ep4/f+dSymzeNMjuYHIO7DVJGjJZgd5eJmkF4/JV
+         S56nJcCXlwtWGd3x9Rip3yAyIFKRJ7hSyLpDF5VxAiioqfLUeM+n1VIRcBv+0ElPAQjU
+         dyrJ8g1Sf/gaeZw6AMYv4ZKJEw8qlzYLGEFUCWgb+XNyWgtiWw9AGeHNqXhee9njDlkW
+         76lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709622893; x=1710227693;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gZ6lNE1/SlOo2Yjm5/u+OE6lkumtZM5XSJ/KqzGtJ3Q=;
-        b=bXq37xgNmNVGESTXc77B1FIlJbSjcpjghjToy72eFRusqKWsmlqLqdfBBYFgiXbomE
-         8BsEF4WTVG0L+H/EvIn+w1dtQOunMW9XW2A37X6l6zo1jyuXhyiVROFiKYXEoneXqpbv
-         gw8hxuuwDedDZNUpwOg8cGC3z/kp00zK3Nj72lRViRD8sFOjq0dt8+/fc8wRRF7Lm8R1
-         X4b2GT5Gi2zS1phaPAJ3BYkx60ItwYXc230j8FRIozz64ZUPNOBw1tu4TYBMRKu/REjj
-         wUXlyJeWoDT0uVeCU0p4Mv0roGcpWWCXxg4lwQn0AMaUczTD6nBbrjBWnDiv20BkJ9NT
-         ddVw==
-X-Forwarded-Encrypted: i=1; AJvYcCUhnRZuKU4kR0VSy3YTgpLulFDawUdFVonGKzwRknYaZF9gHWPPX01LDhSkhFeF523DSQtZNTR3Bs9m9j5pQeVMVqgI5DaTvJHwzzhW
-X-Gm-Message-State: AOJu0YxPN+XncXDQW8kZj4h0QjvLVik7uzCLgifxV8NboJLqna4nJ+q8
-	aErqgwVRHQeZy5UZGb333m0KymNX38ZlGHx1sr9BdruILFn/tJcUx0cjn9WmspaQvqg0gJfEpuL
-	wokK+AeIOgn2/41CQLvAoOUS2Zf3dBpGJ0BN9
-X-Google-Smtp-Source: AGHT+IEFOU5j+ArF55fdfXdcl8hFaVcAq2CRoTSvDHrwXdk+TBzUqq588pPOFFn7BNfYvwZzsxzAIGsV46EFXvApyc0=
-X-Received: by 2002:ac8:5c85:0:b0:42e:fa0e:2592 with SMTP id
- r5-20020ac85c85000000b0042efa0e2592mr103522qta.12.1709622892609; Mon, 04 Mar
- 2024 23:14:52 -0800 (PST)
+        d=1e100.net; s=20230601; t=1709622869; x=1710227669;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PJOEpSfM7W5q1u08Hp4JeXt1WjIFUvsNQIjWvP89284=;
+        b=bQRKzThjlbDMJ+uMcR1PQRXprtzOFBvrUliAlz0ZobooToxa2RqM64lvms2T+gscOg
+         Uc4mV7pWwOQP8jdggwWsn9QTpsarTnbb64mVU71uprr70E6mPLSxsgBufQW/YBRk7HTy
+         IyPUpx6gLaKpJC1Mi1NobMJfddLzvOOeTG/SVU6rLwRfQvnwSwroFoc6EF/NhtIodomL
+         6WW4q/JSzj4tV1sPnGkvVdV46P4zaisr7aBw8L/KsilpXX0N+WU+t99sFqhrERFIhwHC
+         gWrtsfDWNrIPFbpnuhHgp+EJqBVwmPH3eJIABeVWcd4/Pw2q6aR+XkSiuT6ljjLw/NEd
+         LY+Q==
+X-Forwarded-Encrypted: i=1; AJvYcCV6CenJa2gM2DBnvpZT7so4/wWrAvIxTq6GTVWK2gY2hQS6oeremvUzzEQNgkMYBrc8iU92nEfuzwn2KGGSqmur7Iey3w5/7/8cbLCg
+X-Gm-Message-State: AOJu0YwIRbF2eBQH7Ah5Np2oUPuaFmiEwz4eDch+3e4AkJfmnGaUuPbl
+	JK5Z/d5Oic6EHlqz9z7quYLp8IArv+qvlBlnj0gzKbK5SvkuHKksCgfwyysBbi4=
+X-Google-Smtp-Source: AGHT+IHp7CcumrNQVRnYzlCRiXUg8lu+RHMCE8Y1XizPlq7rAPckHF7i1dAaJAU1OL50XXyaeagM+A==
+X-Received: by 2002:a05:6512:282c:b0:513:5217:6201 with SMTP id cf44-20020a056512282c00b0051352176201mr823592lfb.59.1709622869242;
+        Mon, 04 Mar 2024 23:14:29 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id p5-20020a1709060dc500b00a4537466591sm2234731eji.32.2024.03.04.23.14.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Mar 2024 23:14:28 -0800 (PST)
+Message-ID: <58cdfa7c-5483-4193-a5de-bb5fa72de637@linaro.org>
+Date: Tue, 5 Mar 2024 08:14:26 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240220111044.133776-1-herve.codina@bootlin.com>
- <20240220111044.133776-3-herve.codina@bootlin.com> <CAGETcx_xkVJn1NvCmztAv13N-7ZGqZ+KfkFg-Xn__skEBiYtHw@mail.gmail.com>
- <20240221095137.616d2aaa@bootlin.com>
-In-Reply-To: <20240221095137.616d2aaa@bootlin.com>
-From: Saravana Kannan <saravanak@google.com>
-Date: Mon, 4 Mar 2024 23:14:13 -0800
-Message-ID: <CAGETcx9eFuqwJTSrGz9Or8nfHCN3=kNO5KpXwdUxQ4Z7FxHZug@mail.gmail.com>
-Subject: Re: [PATCH 2/2] of: property: fw_devlink: Fix links to supplier when
- created from phandles
-To: Herve Codina <herve.codina@bootlin.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>, 
-	Shawn Guo <shawnguo@kernel.org>, Wolfram Sang <wsa@kernel.org>, Mark Brown <broonie@kernel.org>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org, Luca Ceresoli <luca.ceresoli@bootlin.com>, 
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, stable@vger.kernel.org, 
-	Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/2] dt-bindindgs: clock: support NXP i.MX95 BLK CTL
+ module
+Content-Language: en-US
+To: Peng Fan <peng.fan@nxp.com>, Rob Herring <robh@kernel.org>,
+ "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc: Abel Vesa <abelvesa@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>,
+ "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+ "imx@lists.linux.dev" <imx@lists.linux.dev>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20240228-imx95-blk-ctl-v3-0-40ceba01a211@nxp.com>
+ <20240228-imx95-blk-ctl-v3-1-40ceba01a211@nxp.com>
+ <20240304143916.GA181628-robh@kernel.org>
+ <DU0PR04MB941740A36E953A0E1AD690EC88222@DU0PR04MB9417.eurprd04.prod.outlook.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <DU0PR04MB941740A36E953A0E1AD690EC88222@DU0PR04MB9417.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 21, 2024 at 12:51=E2=80=AFAM Herve Codina <herve.codina@bootlin=
-com> wrote:
->
-> Hi Saravana,
->
-> On Tue, 20 Feb 2024 18:40:40 -0800
-> Saravana Kannan <saravanak@google.com> wrote:
->
-> > On Tue, Feb 20, 2024 at 3:10=E2=80=AFAM Herve Codina <herve.codina@boot=
-lin.com> wrote:
-> > >
-> > > Since commit 1a50d9403fb9 ("treewide: Fix probing of devices in DT
-> > > overlays"), when using device-tree overlays, the FWNODE_FLAG_NOT_DEVI=
-CE
-> > > is set on each overlay nodes. This flag is cleared when a struct devi=
-ce
-> > > is actually created for the DT node.
-> > > Also, when a device is created, the device DT node is parsed for know=
-n
-> > > phandle and devlinks consumer/supplier links are created between the
-> > > device (consumer) and the devices referenced by phandles (suppliers).
-> > > As these supplier device can have a struct device not already created=
-,
-> > > the FWNODE_FLAG_NOT_DEVICE can be set for suppliers and leads the
-> > > devlink supplier point to the device's parent instead of the device
-> > > itself.
-> > >
-> > > Avoid this situation clearing the supplier FWNODE_FLAG_NOT_DEVICE jus=
-t
-> > > before the devlink creation if a device is supposed to be created and
-> > > handled later in the process.
-> > >
-> > > Fixes: 1a50d9403fb9 ("treewide: Fix probing of devices in DT overlays=
-")
-> > > Cc: <stable@vger.kernel.org>
-> > > Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> > > ---
-> > >  drivers/of/property.c | 16 +++++++++++++++-
-> > >  1 file changed, 15 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/of/property.c b/drivers/of/property.c
-> > > index 641a40cf5cf3..ff5cac477dbe 100644
-> > > --- a/drivers/of/property.c
-> > > +++ b/drivers/of/property.c
-> > > @@ -1097,6 +1097,7 @@ static void of_link_to_phandle(struct device_no=
-de *con_np,
-> > >                               struct device_node *sup_np)
-> > >  {
-> > >         struct device_node *tmp_np =3D of_node_get(sup_np);
-> > > +       struct fwnode_handle *sup_fwnode;
-> > >
-> > >         /* Check that sup_np and its ancestors are available. */
-> > >         while (tmp_np) {
-> > > @@ -1113,7 +1114,20 @@ static void of_link_to_phandle(struct device_n=
-ode *con_np,
-> > >                 tmp_np =3D of_get_next_parent(tmp_np);
-> > >         }
-> > >
-> > > -       fwnode_link_add(of_fwnode_handle(con_np), of_fwnode_handle(su=
-p_np));
-> > > +       /*
-> > > +        * In case of overlays, the fwnode are added with FWNODE_FLAG=
-_NOT_DEVICE
-> > > +        * flag set. A node can have a phandle that references an oth=
-er node
-> > > +        * added by the overlay.
-> > > +        * Clear the supplier's FWNODE_FLAG_NOT_DEVICE so that fw_dev=
-link links
-> > > +        * to this supplier instead of linking to its parent.
-> > > +        */
-> > > +       sup_fwnode =3D of_fwnode_handle(sup_np);
-> > > +       if (sup_fwnode->flags & FWNODE_FLAG_NOT_DEVICE) {
-> > > +               if (of_property_present(sup_np, "compatible") &&
-> > > +                   of_device_is_available(sup_np))
-> > > +                       sup_fwnode->flags &=3D ~FWNODE_FLAG_NOT_DEVIC=
-E;
-> > > +       }
-> > > +       fwnode_link_add(of_fwnode_handle(con_np), sup_fwnode);
-> >
-> > Nack.
-> >
-> > of_link_to_phandle() doesn't care about any of the fwnode flags. It
-> > just creates links between the consumer and supplier nodes. Don't add
-> > more intelligence into it please. Also, "compatible" doesn't really
-> > guarantee device creation and you can have devices created out of
-> > nodes with no compatible property. I finally managed to get away from
-> > looking for the "compatible" property. So, let's not add back a
-> > dependency on that property please.
-> >
-> > Can you please give a real example where you are hitting this? I have
-> > some thoughts on solutions, but I want to understand the issue fully
-> > before I make suggestions.
-> >
->
-> I detected the issue with this overlay:
-> --- 8< ---
-> &{/}
-> {
->         reg_dock_sys_3v3: regulator-dock-sys-3v3 {
->                 compatible =3D "regulator-fixed";
->                 regulator-name =3D "DOCK_SYS_3V3";
->                 regulator-min-microvolt =3D <3300000>;
->                 regulator-max-microvolt =3D <3300000>;
->                 gpios =3D <&tca6424_dock_1 5 GPIO_ACTIVE_HIGH>; // DOCK_S=
-YS3V3_EN
->                 enable-active-high;
->                 regulator-always-on;
->         };
-> };
->
-> &i2c5 {
->         tca6424_dock_1: gpio@22 {
->                 compatible =3D "ti,tca6424";
->                 reg =3D <0x22>;
->                 gpio-controller;
->                 #gpio-cells =3D <2>;
->                 interrupt-parent =3D <&gpio4>;
->                 interrupts =3D <1 IRQ_TYPE_EDGE_FALLING>;
->                 interrupt-controller;
->                 #interrupt-cells =3D <2>;
->                 vcc-supply =3D <&reg_dock_ctrl_3v3>;
->         };
-> };
-> --- 8< ---
->
-> The regulator uses a gpio.
-> The supplier for the regulator was not the gpio chip (gpio@22) but the i2=
-c bus.
+On 05/03/2024 05:13, Peng Fan wrote:
+>>> +
+>>> +examples:
+>>> +  # Clock Control Module node:
+>>> +  - |
+>>> +    #include <dt-bindings/clock/nxp,imx95-clock.h>
+>>> +
+>>> +    syscon@4c410000 {
+>>
+>> clock-controller@...
+> 
+> But this is a syscon, using clock-controller will trigger dt
+> check warning.
 
-Thanks for the example. Let me think about this a bit on how we could
-fix this and get back to you.
+Which warning?
 
-Please do ping me if I don't get back in a week or two.
+>>
+>> As that is the main feature/function.
+>>
+>>> +      compatible = "nxp,imx95-vpumix-csr", "syscon";
+>>> +      reg = <0x4c410000 0x10000>;
+>>> +      #clock-cells = <1>;
+>>
+>> Please make the example as full as possible. For example, add mux-controller
+>> node. Do some of the blocks not have mux ctrl?
+> 
+> Yes. The blk ctrl is not just for clock, some registers has mux ctrl,
+> such as Pixel_link_sel.
 
--Saravana
+Then mux-controller should not be allowed for them.
 
->
-> I first tried to clear always the flag in of_link_to_phandle() without an=
-y check
-> to a "compatible" string and in that case, I broke pinctrl.
->
-> All devices were waiting for the pinctrl they used (child of pinctrl devi=
-ce
-> node) even if the pinctrl driver was bound to the device.
->
-> For pinctrl, the DT structure looks like the following:
-> --- 8< ---
-> {
->         ...
->         pinctrl@1234 {
->                 reg =3D <1234>;
->                 compatible =3D "vendor,chip";
->
->                 pinctrl_some_device: grp {
->                         fsl,pins =3D < ... >;
->                 };
->         };
->
->         some_device@4567 {
->                 compablile =3D "foo,bar";
->                 reg =3D <4567>;
->                 pinctrl-names =3D "default";
->                 pinctrl-0 =3D <&pinctrl_some_device>;
->                 ...
->         };
-> };
-> --- 8< ---
->
-> In that case the link related to pinctrl for some_device needs to be to t=
-he
-> 'pinctrl_some_device' node parent (i.e. the pinctrl@1234 node).
->
->
-> Best regards,
-> Herv=C3=A9
+Best regards,
+Krzysztof
+
 
