@@ -1,153 +1,323 @@
-Return-Path: <linux-kernel+bounces-91759-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91763-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A030871629
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:02:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BED4A871638
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:07:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8CCA91C21EE2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:02:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 38B41B23E0D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:07:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8A937C6C0;
-	Tue,  5 Mar 2024 07:02:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3CF37E105;
+	Tue,  5 Mar 2024 07:06:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OpAEBn9y"
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MFqJrOsv"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 556D545005
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 07:02:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 117895FDCB
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 07:06:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709622132; cv=none; b=IE/q/7l9D2U20S1zRYlBh3YSS9IBzmB9dzdqr0sKLvvEhLuVWb1MBYklmvNR80h9CHCnHYExjFz3cH4P6Mu6p/WO0RzzEvSMHGsyQyuYcx78BfSxQSGZqqomfoA5v1ClHvdMwner8bHdE5KeaybQhlW+y4MFU1gPK/4Kg6PNzKA=
+	t=1709622410; cv=none; b=T78b2mdBe8HqtfQ1etHApqx5+qVDOl0PsonJFRIdcr9vyOhLJMUpwoa/+hdQh9/aSRM53HCc/LPOCMHGrdDhSD80DP2Z97AMOmb/gVcRvJqS1bjfE/KzXDm30DfGd9RXPbzJimOmMHokuf8gH6WYTDHpl0vLhuoHlTdSEQvWxqc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709622132; c=relaxed/simple;
-	bh=1kyYdsDkAP6TGaLjxGuPa5Gb0wu87h1MGzMU7RSPYFk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=U879UXYmVo7iDNcTmccjAlygwXhdTKAHslRyb1gq1b7gdRtur8GWQr/FWwZolnMdIMiUEvtoGpriUHrvox1TkwkCTG7rL+2vLB8/J6PbRePkh0Dtj0UT7QE1dH93SE8Ix0dr36NiM3FtyE7Kr2/U1UDqWlpKptWEt7JJ+9RhqUc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OpAEBn9y; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a449c5411e1so485450366b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 23:02:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709622129; x=1710226929; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=SstHDqzCw0+nfzxAgqKGI1L56sOy1jDIi6jQlSBPYww=;
-        b=OpAEBn9ylIrpmXHFMXm16ojfdLANAkmap/a9PuKEOMNW2VYz3RMvj9NJujPq/HFViT
-         T481RoLup3cXkqM1nHdVU7VPAvXy4OgDfGATTQMIukGZFojCFDIQxfkUzHae5NAVkpy9
-         p9hFJVTM9HqV1/rMETk2kmG+Wap4UgRFf8QkgrQpCbeiuO64ZTeZUduAK6ycUb/bcrmM
-         bu6q2FxY5v3biAuNv4t6YaNYkL4DoAnzzpWHv2ADe5RaTZCcmjXPyjr+kCl4STufxDgK
-         96+Ime1CTqj71tFuGK6SyQaum1RB5xB3peW8RFBmJGYXOJ2gEjh5DT03GckT55Z6sQls
-         TmFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709622129; x=1710226929;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SstHDqzCw0+nfzxAgqKGI1L56sOy1jDIi6jQlSBPYww=;
-        b=Ynf+jHuRwbQERiy/oW08vlDxYYEalMmaEllY7wkQd6WEQTYaES63Uut+o2jEChO9/N
-         innCD2pmmJH2kdPC90yI4uw8Z/9bvV9iuCF0ss2VSxBEwkGl6HL2hxuySu6BoJtnooZk
-         +8NHjTkhaoayRm66YlhAcgzEqbOVD1mbmdk/SIH9rzfeS1OlTrq1sZbVD09B8X0WT2+G
-         RjcbhsfIwh7+zVwcHO4aZWgENYvnqjruxwQtdj2K6p6Z/TeOng7Qy784OAz2Nz3Kppli
-         Z+CBYcNHCCyqqwJ92csGovVHDDHC02Zjhpj5jKYxgGfu/3WGTTuW9iC6+ZEan1oTcehV
-         +aww==
-X-Forwarded-Encrypted: i=1; AJvYcCXWj/Efik2mgO+1J5wX70t9ykePT363Bj5WQ+RbPEZJeIxZ4rPuDCwhYZU2I6gQdGOETCemaL7aWLzoLFYO456r/FZsNjGSm6rmqeXP
-X-Gm-Message-State: AOJu0Yxc4AHh8+jPD1Iy7X+IZQwPrau4xsiNde2p9J6PYtSvKhG/sKkG
-	NkpQSXfda1d4jW3iMdYA4jhh7Uq74HuBYxESUbENsWWLIFRBBZ+siUp1A26ai6U=
-X-Google-Smtp-Source: AGHT+IGuKSHSvTXHU/zbk57JkXkIoGlfnh5Xlplpn5+UdlZuaAtOAeOwB5i8lHX0C9xf2Fi01i8wAA==
-X-Received: by 2002:a17:906:2b56:b0:a45:6c62:1b96 with SMTP id b22-20020a1709062b5600b00a456c621b96mr2336346ejg.61.1709622128627;
-        Mon, 04 Mar 2024 23:02:08 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id h20-20020a170906591400b00a3d5efc65e0sm5692735ejq.91.2024.03.04.23.02.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Mar 2024 23:02:08 -0800 (PST)
-Message-ID: <c9950c7b-9157-40dc-9c5f-fbbecb7a2768@linaro.org>
-Date: Tue, 5 Mar 2024 08:02:06 +0100
+	s=arc-20240116; t=1709622410; c=relaxed/simple;
+	bh=PoNSfWj1z0BMexJjXoGQjSgV91DZCSlbJC5F9lvgRNs=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=l0bbklpYcRxtu2shlW3DymdhtbkzsYyNuzmZchTfF0PjFBLmnQBIx45XeL5Wh3NsqoOX04mPx/zU2jfrhx6dHgAdk2KLTe2vhQ9ZvneaNC4yKZJREhpIQ240ZMy/VQMCKY7paB1bx1q5ftCfnpkCkqcoeHAzrFE2KJizZdPtos4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MFqJrOsv; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709622408; x=1741158408;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=PoNSfWj1z0BMexJjXoGQjSgV91DZCSlbJC5F9lvgRNs=;
+  b=MFqJrOsv4E1+IPtqND7JQZC/bLj+R2Mn2abFVhCFQZ1dRiubd5fXE0zt
+   p5S8rGc6U7SagHxfeHMWPNFiTUk+6+CCtaiwl5WEpBzEHvNwfL53+n16d
+   cwzuoUtBSs/qA/jZgO5o3KAcEBhnVZlR+EyxPodRGaqEayjS4tXzQnd4X
+   equG0ce9iLiWM0UlckelaSUht1BIyKYQwODjBvN3/GPQNSXVlbP5duAJQ
+   20L+CRLnFPjBbzFLrbX93cXC1Eousy45F0j8UkM6PYmwk2T/NmUntx0SD
+   JRr7dJqhbty8M4NmtjI2LwdmInGNL7/2DZWMoJdBUalnNRZPNOU+6ctR5
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="7975444"
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="7975444"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 23:06:45 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="9854214"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 23:06:43 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Byungchul Park <byungchul@sk.com>
+Cc: <akpm@linux-foundation.org>,  <linux-kernel@vger.kernel.org>,
+  <linux-mm@kvack.org>,  <kernel_team@skhynix.com>,  <yuzhao@google.com>,
+  <hannes@cmpxchg.org>
+Subject: Re: [PATCH v6] mm, vmscan: retry kswapd's priority loop with
+ cache_trim_mode off on failure
+In-Reply-To: <20240305065846.GA37850@system.software.com> (Byungchul Park's
+	message of "Tue, 5 Mar 2024 15:58:46 +0900")
+References: <20240304033611.GD13332@system.software.com>
+	<20240304082118.20499-1-byungchul@sk.com>
+	<87zfvda1f8.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<20240305023708.GA60719@system.software.com>
+	<20240305024345.GB60719@system.software.com>
+	<20240305040930.GA21107@system.software.com>
+	<87le6x9p6u.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<20240305065846.GA37850@system.software.com>
+Date: Tue, 05 Mar 2024 15:04:48 +0800
+Message-ID: <87cys99n1r.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: linux-next: duplicate patches in the samsung-krzk tree
-To: Stephen Rothwell <sfr@canb.auug.org.au>, Olof Johansson <olof@lixom.net>,
- Arnd Bergmann <arnd@arndb.de>
-Cc: ARM <linux-arm-kernel@lists.infradead.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20240305100340.6abe706c@canb.auug.org.au>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240305100340.6abe706c@canb.auug.org.au>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ascii
 
-On 05/03/2024 00:03, Stephen Rothwell wrote:
-> Hi all,
-> 
-> The following commits are also in the arm-soc tree as different
-> commits (but the same patches):
-> 
->   213b755e42e2 ("ARM: defconfig: enable STMicroelectronics accelerometer and gyro for Exynos")
->   5fb1252944fc ("ARM: dts: samsung: exynos4412: decrease memory to account for unusable region")
->   b43b68935124 ("ARM: dts: samsung: exynos4412: decrease memory to account for unusable region")
-> 
-> These last two are also identical to each other.
+Byungchul Park <byungchul@sk.com> writes:
 
-arm-soc is my upstream, so that's expected. I'll drop them from my tree.
+> On Tue, Mar 05, 2024 at 02:18:33PM +0800, Huang, Ying wrote:
+>> Byungchul Park <byungchul@sk.com> writes:
+>> 
+>> > On Tue, Mar 05, 2024 at 11:43:45AM +0900, Byungchul Park wrote:
+>> >> On Tue, Mar 05, 2024 at 11:37:08AM +0900, Byungchul Park wrote:
+>> >> > On Tue, Mar 05, 2024 at 09:54:19AM +0800, Huang, Ying wrote:
+>> >> > > Byungchul Park <byungchul@sk.com> writes:
+>> >> > > 
+>> >> > > > Changes from v5:
+>> >> > > > 	1. Make it retry the kswapd's scan priority loop with
+>> >> > > > 	   cache_trim_mode off *only if* the mode didn't work in the
+>> >> > > > 	   previous loop. (feedbacked by Huang Ying)
+>> >> > > > 	2. Take into account 'break's from the priority loop when making
+>> >> > > > 	   the decision whether to retry. (feedbacked by Huang Ying)
+>> >> > > > 	3. Update the test result in the commit message.
+>> >> > > >
+>> >> > > > Changes from v4:
+>> >> > > > 	1. Make other scans start with may_cache_trim_mode = 1.
+>> >> > > >
+>> >> > > > Changes from v3:
+>> >> > > > 	1. Update the test result in the commit message with v4.
+>> >> > > > 	2. Retry the whole priority loop with cache_trim_mode off again,
+>> >> > > > 	   rather than forcing the mode off at the highest priority,
+>> >> > > > 	   when the mode doesn't work. (feedbacked by Johannes Weiner)
+>> >> > > >
+>> >> > > > Changes from v2:
+>> >> > > > 	1. Change the condition to stop cache_trim_mode.
+>> >> > > >
+>> >> > > > 	   From - Stop it if it's at high scan priorities, 0 or 1.
+>> >> > > > 	   To   - Stop it if it's at high scan priorities, 0 or 1, and
+>> >> > > > 	          the mode didn't work in the previous turn.
+>> >> > > >
+>> >> > > > 	   (feedbacked by Huang Ying)
+>> >> > > >
+>> >> > > > 	2. Change the test result in the commit message after testing
+>> >> > > > 	   with the new logic.
+>> >> > > >
+>> >> > > > Changes from v1:
+>> >> > > > 	1. Add a comment describing why this change is necessary in code
+>> >> > > > 	   and rewrite the commit message with how to reproduce and what
+>> >> > > > 	   the result is using vmstat. (feedbacked by Andrew Morton and
+>> >> > > > 	   Yu Zhao)
+>> >> > > > 	2. Change the condition to avoid cache_trim_mode from
+>> >> > > > 	   'sc->priority != 1' to 'sc->priority > 1' to reflect cases
+>> >> > > > 	   where the priority goes to zero all the way. (feedbacked by
+>> >> > > > 	   Yu Zhao)
+>> >> > > >
+>> >> > > > --->8---
+>> >> > > > From f811ee583158fd53d0e94d32ce5948fac4b17cfe Mon Sep 17 00:00:00 2001
+>> >> > > > From: Byungchul Park <byungchul@sk.com>
+>> >> > > > Date: Mon, 4 Mar 2024 15:27:37 +0900
+>> >> > > > Subject: [PATCH v6] mm, vmscan: retry kswapd's priority loop with cache_trim_mode off on failure
+>> >> > > >
+>> >> > > > With cache_trim_mode on, reclaim logic doesn't bother reclaiming anon
+>> >> > > > pages.  However, it should be more careful to use the mode because it's
+>> >> > > > going to prevent anon pages from being reclaimed even if there are a
+>> >> > > > huge number of anon pages that are cold and should be reclaimed.  Even
+>> >> > > > worse, that leads kswapd_failures to reach MAX_RECLAIM_RETRIES and
+>> >> > > > stopping kswapd from functioning until direct reclaim eventually works
+>> >> > > > to resume kswapd.
+>> >> > > >
+>> >> > > > So kswapd needs to retry its scan priority loop with cache_trim_mode
+>> >> > > > off again if the mode doesn't work for reclaim.
+>> >> > > >
+>> >> > > > The problematic behavior can be reproduced by:
+>> >> > > >
+>> >> > > >    CONFIG_NUMA_BALANCING enabled
+>> >> > > >    sysctl_numa_balancing_mode set to NUMA_BALANCING_MEMORY_TIERING
+>> >> > > >    numa node0 (8GB local memory, 16 CPUs)
+>> >> > > >    numa node1 (8GB slow tier memory, no CPUs)
+>> >> > > >
+>> >> > > >    Sequence:
+>> >> > > >
+>> >> > > >    1) echo 3 > /proc/sys/vm/drop_caches
+>> >> > > >    2) To emulate the system with full of cold memory in local DRAM, run
+>> >> > > >       the following dummy program and never touch the region:
+>> >> > > >
+>> >> > > >          mmap(0, 8 * 1024 * 1024 * 1024, PROT_READ | PROT_WRITE,
+>> >> > > >               MAP_ANONYMOUS | MAP_PRIVATE | MAP_POPULATE, -1, 0);
+>> >> > > >
+>> >> > > >    3) Run any memory intensive work e.g. XSBench.
+>> >> > > >    4) Check if numa balancing is working e.i. promotion/demotion.
+>> >> > > >    5) Iterate 1) ~ 4) until numa balancing stops.
+>> >> > > >
+>> >> > > > With this, you could see that promotion/demotion are not working because
+>> >> > > > kswapd has stopped due to ->kswapd_failures >= MAX_RECLAIM_RETRIES.
+>> >> > > >
+>> >> > > > Interesting vmstat delta's differences between before and after are like:
+>> >> > > >
+>> >> > > >    +-----------------------+-------------------------------+
+>> >> > > >    | interesting vmstat    | before        | after         |
+>> >> > > >    +-----------------------+-------------------------------+
+>> >> > > >    | nr_inactive_anon      | 321935        | 1664772       |
+>> >> > > >    | nr_active_anon        | 1780700       | 437834        |
+>> >> > > >    | nr_inactive_file      | 30425         | 40882         |
+>> >> > > >    | nr_active_file        | 14961         | 3012          |
+>> >> > > >    | pgpromote_success     | 356           | 1293122       |
+>> >> > > >    | pgpromote_candidate   | 21953245      | 1824148       |
+>> >> > > >    | pgactivate            | 1844523       | 3311907       |
+>> >> > > >    | pgdeactivate          | 50634         | 1554069       |
+>> >> > > >    | pgfault               | 31100294      | 6518806       |
+>> >> > > >    | pgdemote_kswapd       | 30856         | 2230821       |
+>> >> > > >    | pgscan_kswapd         | 1861981       | 7667629       |
+>> >> > > >    | pgscan_anon           | 1822930       | 7610583       |
+>> >> > > >    | pgscan_file           | 39051         | 57046         |
+>> >> > > >    | pgsteal_anon          | 386           | 2192033       |
+>> >> > > >    | pgsteal_file          | 30470         | 38788         |
+>> >> > > >    | pageoutrun            | 30            | 412           |
+>> >> > > >    | numa_hint_faults      | 27418279      | 2875955       |
+>> >> > > >    | numa_pages_migrated   | 356           | 1293122       |
+>> >> > > >    +-----------------------+-------------------------------+
+>> >> > > >
+>> >> > > > Signed-off-by: Byungchul Park <byungchul@sk.com>
+>> >> > > > ---
+>> >> > > >  mm/vmscan.c | 21 ++++++++++++++++++++-
+>> >> > > >  1 file changed, 20 insertions(+), 1 deletion(-)
+>> >> > > >
+>> >> > > > diff --git a/mm/vmscan.c b/mm/vmscan.c
+>> >> > > > index bba207f41b14..6fe45eca7766 100644
+>> >> > > > --- a/mm/vmscan.c
+>> >> > > > +++ b/mm/vmscan.c
+>> >> > > > @@ -108,6 +108,12 @@ struct scan_control {
+>> >> > > >  	/* Can folios be swapped as part of reclaim? */
+>> >> > > >  	unsigned int may_swap:1;
+>> >> > > >  
+>> >> > > > +	/* Not allow cache_trim_mode to be turned on as part of reclaim? */
+>> >> > > > +	unsigned int no_cache_trim_mode:1;
+>> >> > > > +
+>> >> > > > +	/* Has cache_trim_mode failed at least once? */
+>> >> > > > +	unsigned int cache_trim_mode_failed:1;
+>> >> > > > +
+>> >> > > >  	/* Proactive reclaim invoked by userspace through memory.reclaim */
+>> >> > > >  	unsigned int proactive:1;
+>> >> > > >  
+>> >> > > > @@ -2268,7 +2274,8 @@ static void prepare_scan_control(pg_data_t *pgdat, struct scan_control *sc)
+>> >> > > >  	 * anonymous pages.
+>> >> > > >  	 */
+>> >> > > >  	file = lruvec_page_state(target_lruvec, NR_INACTIVE_FILE);
+>> >> > > > -	if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE))
+>> >> > > > +	if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE) &&
+>> >> > > > +	    !sc->no_cache_trim_mode)
+>> >> > > >  		sc->cache_trim_mode = 1;
+>> >> > > >  	else
+>> >> > > >  		sc->cache_trim_mode = 0;
+>> >> > > > @@ -5967,6 +5974,8 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+>> >> > > >  	 */
+>> >> > > >  	if (reclaimable)
+>> >> > > >  		pgdat->kswapd_failures = 0;
+>> >> > > > +	else if (sc->cache_trim_mode)
+>> >> > > > +		sc->cache_trim_mode_failed = 1;
+>> >> > > >  }
+>> >> > > >  
+>> >> > > >  /*
+>> >> > > > @@ -6898,6 +6907,16 @@ static int balance_pgdat(pg_data_t *pgdat, int order, int highest_zoneidx)
+>> >> > > >  			sc.priority--;
+>> >> > > >  	} while (sc.priority >= 1);
+>> >> > > >  
+>> >> > > > +	/*
+>> >> > > > +	 * Restart only if it went through the priority loop all the way,
+>> >> > > > +	 * but cache_trim_mode didn't work.
+>> >> > > > +	 */
+>> >> > > > +	if (!sc.nr_reclaimed && sc.priority < 1 &&
+>> >> > > > +	    !sc.no_cache_trim_mode && sc.cache_trim_mode_failed) {
+>> >> > > 
+>> >> > > Can we just use sc.cache_trim_mode (instead of
+>> >> > > sc.cache_trim_mode_failed) here?  That is, if cache_trim_mode is enabled
+>> >> > 
+>> >> > As Johannes mentioned, within a priority scan, all the numa nodes are
+>> >> > scanned each with its own value of cache_trim_mode. So we cannot use
+>> >> > cache_trim_mode for that purpose.
+>> >> 
+>> >> Ah, okay. Confining to kswapd, that might make sense. I will apply it if
+>> >> there's no objection to it. Thanks.
+>> >
+>> > I didn't want to introduce two additional flags either, but it was
+>> > possible to make it do exactly what we want it to do thanks to the flags.
+>> > I'd like to keep this version if possible unless there are any other
+>> > objections on it.
+>> 
+>> Sorry, I'm confused.  Whether does "cache_trim_mode == 1" do the trick?
+>> If so, why not?  If not, why?
+>
+> kswapd might happen to go through:
+>
+> priority 12(== DEF_PRIORITY) + cache_trim_mode on -> fail
+> priority 11 + cache_trim_mode on -> fail
+> priority 10 + cache_trim_mode on -> fail
+> priority 9 + cache_trim_mode on -> fail
+> priority 8 + cache_trim_mode on -> fail
+> priority 7 + cache_trim_mode on -> fail
+> priority 6 + cache_trim_mode on -> fail
+> priority 5 + cache_trim_mode on -> fail
+> priority 4 + cache_trim_mode on -> fail
+> priority 3 + cache_trim_mode on -> fail
+> priority 2 + cache_trim_mode on -> fail
+> priority 1 + cache_trim_mode off -> fail
+>
+> I'd like to retry even in this case. 
 
-Best regards,
-Krzysztof
+I don't think that we should retry in this case.  If the following case
+fails,
 
+> priority 1 + cache_trim_mode off -> fail
+
+Why will we succeed after retrying?
+
+--
+Best Regards,
+Huang, Ying
+
+> Am I missing something?
+>
+> 	Byungchul
+>
+>> --
+>> Best Regards,
+>> Huang, Ying
+>> 
+>> > 	Byungchul
+>> >
+>> >> 	Byungchul
+>> >> > 
+>> >> > 	Byungchul
+>> >> > 
+>> >> > > for priority == 1 and failed to reclaim, we will restart.  If this
+>> >> > > works, we can avoid to add another flag.
+>> >> > > 
+>> >> > > > +		sc.no_cache_trim_mode = 1;
+>> >> > > > +		goto restart;
+>> >> > > > +	}
+>> >> > > > +
+>> >> > > >  	if (!sc.nr_reclaimed)
+>> >> > > >  		pgdat->kswapd_failures++;
+>> >> > > 
+>> >> > > --
+>> >> > > Best Regards,
+>> >> > > Huang, Ying
 
