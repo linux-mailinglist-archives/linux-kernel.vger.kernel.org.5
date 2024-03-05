@@ -1,108 +1,102 @@
-Return-Path: <linux-kernel+bounces-93086-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93094-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D3C1872AEB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 00:17:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AAF8872B00
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Mar 2024 00:27:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 318F71C2343F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 23:17:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ACE311C243DC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 23:27:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6494C12B17E;
-	Tue,  5 Mar 2024 23:17:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB83E12D216;
+	Tue,  5 Mar 2024 23:26:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vba43/zp"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b="y32wMJa5"
+Received: from ahti.lucaweiss.eu (ahti.lucaweiss.eu [128.199.32.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77C7912CDBD;
-	Tue,  5 Mar 2024 23:17:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A19BB12D212;
+	Tue,  5 Mar 2024 23:26:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=128.199.32.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709680653; cv=none; b=mVwphZfrVGYf/arV0gvjJ6AAU/MIrXWKYTr625Cgy26ORD32rHM9ZkDMm/UGLPYtBiwudJpXiil+LMWVkKGu3WNdriGDt4M4u+eC9RblEcYwZR55W3eKwYO8XIFrOWuPbb52FBDCe/d/AlAQ53yHP5bxX0wWf4jzfVnGStTZQMw=
+	t=1709681208; cv=none; b=pE16pjN00peaiYd+e3kj8mUsECa/LPyeVNY5ZLnLpsvodRvzOAJje7lBOly3zMyHscQnJTsNycRAuUe0EgSG+Y25HkaPy+oNvjAzC7G/83mbcCLDpBvUyOg3Ob/Csm5q92qVHDCzwavv/ehMxQ+BmadDnHilRahQq1j3I6C0RPI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709680653; c=relaxed/simple;
-	bh=hAQXXtEpci5/rqG5hNT3/xrRrrFzIAMrqiDRFDsqivc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nTS4hTgOnjVgIl1rnZ9IJ8xI6Dihqq6YKCtGoJcldbxwsJoMOEFgv7Me5jN0FWSpXlZ8tS/6XrtoP+ixl8KtdTiK+Y4wahBbjNC4Uw2ARLIkhFf46q32Z6hOyYt6kiQK/NMXwWNC9C3FR4AboxmbMBZrrU7YGL6Mt8qjEJ+TeVg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vba43/zp; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1dc0e5b223eso53731465ad.1;
-        Tue, 05 Mar 2024 15:17:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709680651; x=1710285451; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6kAiofd41xTmLhHdy9IDUcWKAST66CzURKTeO5duD9w=;
-        b=Vba43/zpKCp1jINc/8A7xHYaBAkzRfWIlzmws84Sgc5htoe+P9QhdBW34Gnrh2x9u8
-         3rSblgcfAjDwPvG3O3QI8p7aNz29tXr4y7swxiArD9wQC2YERgZJGDEzHrVYpLmFCG5f
-         OzfIQagXP781XX7WSb/36XIJhOlu9eSCjfuS3S5eJ4ausDptCRDvxLMZWh1cvd+aRfSr
-         S3AX9GrdQGK2c4A3PlWi06m6ME43hPeV2NVNBPHYiL5X8PYKCsBOJ61QFiA7oWI8tL4y
-         3yDlBByUjpJoqQYdC/mULd8qHNJJpgdN9sz+wU+Ut5OghqJd7V88HGwi4ivnT+hwq1U1
-         hKtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709680651; x=1710285451;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6kAiofd41xTmLhHdy9IDUcWKAST66CzURKTeO5duD9w=;
-        b=U3AzeVw1OUePZIiO6Mx3tNiTF5SR7K41hZ3nYgKMTTuHGrG9ocU08GoodHtGYZv8Jk
-         IdW1OIdmgRSyNC2VPzXn1oKiz8zHqiQGcbH4MpMGs5X6vE4VuERNJzywcix9aWwOpKKk
-         LJeJHjOsbKwSugTPBpM8sZmOd8sGghqLQp1pjcYMVNdEA3yiR83v2eJe7yk7A1PV5rp8
-         ZVQPSU6uaoPH7f/IFj9bX6/uDC2xm6ts359u4w3p7t8SBKSL+FsvoB+F/jMwQ3ZV2lKq
-         /o/C3tx2vSEHv45Lvfyv6DfFjYDJvgkdvvlnGdqRnM7Wsl4BIE5gzOMWkL+puAXl6ayh
-         2qxQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWcOR/T+0pk8DvubYIWXBOXwcgQ7rVUPOO+CtJFwn4Kb04aiEB8Bntogd02x4qRydb/QPVu8+HGFD3Va6DatE0Sf0U/qq3npqycRfE=
-X-Gm-Message-State: AOJu0YyQjNahJbF8pxaOMpTIWP2pAx2KXGImkMAz/WzqzZS6QdjLbZNT
-	hZa9S8c145Ll3oQB7msaHt1Ohi/vWzOVMV9krRTZIhGENDyjpG8mwddW/OQf
-X-Google-Smtp-Source: AGHT+IGrKGFiKrQ8r1cAOMn/ooa6FZcEMzzBWBIuR2cO1XKgo/Q3HxKH8XvehN0XSAghUngAwYmFCQ==
-X-Received: by 2002:a17:902:eec3:b0:1db:f389:2deb with SMTP id h3-20020a170902eec300b001dbf3892debmr2970443plb.17.1709680648399;
-        Tue, 05 Mar 2024 15:17:28 -0800 (PST)
-Received: from google.com ([2620:15c:9d:2:b1d1:58b4:d9ca:da78])
-        by smtp.gmail.com with ESMTPSA id jb5-20020a170903258500b001dcc29b985csm11133635plb.134.2024.03.05.15.17.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 15:17:28 -0800 (PST)
-Date: Tue, 5 Mar 2024 15:17:25 -0800
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Jonathan Denose <jdenose@chromium.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, jefferymiller@google.com,
-	Jonathan Denose <jdenose@google.com>,
-	Raul Rangel <rrangel@chromium.org>, linux-input@vger.kernel.org
-Subject: Re: [PATCH] Input: psmouse - add resync_on_resume dmi check
-Message-ID: <ZeeoBeUwz0__lVLM@google.com>
-References: <20231102075243.1.Idb37ff8043a29f607beab6440c32b9ae52525825@changeid>
- <ZcKs589qYxviC1J4@google.com>
- <CALNJtpV0KsOusPQeGv8bQ3jKy2sUj+k=mPHc172f+vMaTDYPfg@mail.gmail.com>
- <ZcZ2oG1Rls-oR593@google.com>
- <CALNJtpWNbSZdpxky9hTiSRsaGgLDUnM66QGEy213d3Lhra0hsw@mail.gmail.com>
- <ZeDLq9gPs5InBmdK@google.com>
- <CALNJtpWwhen2H9OT1-rZ4bt+huwXPOPz6qVDJ5g+emE1wRSLsw@mail.gmail.com>
- <ZedotW8Yu6tJ2yYL@google.com>
- <CALNJtpWHxk8yWVSbX56JC3KThCZxFpUQMkikE9kc7hrawPdH4g@mail.gmail.com>
+	s=arc-20240116; t=1709681208; c=relaxed/simple;
+	bh=kuZaB03DpO/M0ReYTwe+GiUjcMrdotBb+a00+AMdUDA=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=EQh6ZKv3b6dOa7oiANjibuugFdCMaLhGUxA4FFYVin8yjNuPDhlLicruWMi4wMEromFBm83z8U55nfqYBg4kIappLoUp9Y8yFnlKQHnUdHub+QJ2WLotd3uiGh4zu8BDQJatFmmNmPhjQoenbFc8E5JcELbgG7Ns7DJYSwICZ98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz; spf=pass smtp.mailfrom=z3ntu.xyz; dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b=y32wMJa5; arc=none smtp.client-ip=128.199.32.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=z3ntu.xyz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=s1;
+	t=1709680705; bh=kuZaB03DpO/M0ReYTwe+GiUjcMrdotBb+a00+AMdUDA=;
+	h=From:Subject:Date:To:Cc;
+	b=y32wMJa52kYZ5d1jZ3Mmn9LdKYsXHTJDUuELBLG16fYRuTXMd9lLMCqPlPSb4e79X
+	 qD7iuKSjmEUWGOsNoTm8gOc5fA8+ZV/NAzqNeZlC4DosqFN5ENl2cN9rjx0dcFTZ7U
+	 TSJrkzbuXiIBX6tnXj8TCrERa6PfF7r/QhoWCBLc=
+From: Luca Weiss <luca@z3ntu.xyz>
+Subject: [PATCH 0/5] Some devicetree cleanup for MSM8974 Sony Xperia Z2
+ Tablet
+Date: Wed, 06 Mar 2024 00:18:03 +0100
+Message-Id: <20240306-castor-changes-v1-0-2286eaf85fff@z3ntu.xyz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALNJtpWHxk8yWVSbX56JC3KThCZxFpUQMkikE9kc7hrawPdH4g@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIACuo52UC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDYwNT3eTE4pL8Il2IZLFuUrKZuYVpUqKFiamFElBTQVFqWmYF2MDo2Np
+ aAMNN8Y1gAAAA
+To: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
+ Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Andy Gross <andy.gross@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Luca Weiss <luca@z3ntu.xyz>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=863; i=luca@z3ntu.xyz;
+ h=from:subject:message-id; bh=kuZaB03DpO/M0ReYTwe+GiUjcMrdotBb+a00+AMdUDA=;
+ b=owEBbQKS/ZANAwAIAXLYQ7idTddWAcsmYgBl56gxikXmUPUf+VkVYvLXOo+r+s3JnHnUA/zuk
+ AETO3UoT96JAjMEAAEIAB0WIQQ5utIvCCzakboVj/py2EO4nU3XVgUCZeeoMQAKCRBy2EO4nU3X
+ ViJ2EADJx5FNEhqpKKbzxlJBRgjsPO9oQlI4m1C5C3uGAcroEWtsH4WtYNZKOiTY3r/UfweiLnV
+ iLjE3mKjtHfRHFcrEdERH6o+Oo71t+kLldjgap7MXMLEDXPCVO/apOJGspfQxeNoco6DcNdviDe
+ PrSPjf7e+ZwSyGM90HGRZ2R6AznvjPrYE70mNXuTWDswUHUuHtlcWyIzZWPRFCBRui9qZk7PhVR
+ VeDUTDqWmLZHSM3gWX3S0GPEAeLkqFuO7kA3JfRCeSso2bOjBuAi0FjnGPxqmoXA5fZeQVA1qpE
+ OjVCJVWBEhbDLAMMN2O6NF2feNcBYK4kYmEE3Dm75DxdynfmTyomAlfRaX484C5I+S+JteVd5gz
+ MmOUnu39mTRG+aNduAud+1x9LBzuXsehKkemXzXO/fC0EomqNXj1ktUihw15XuT6+2l8nAejl4h
+ F1VE29x+nVijglHa42ulZeixJ+RBQX2GnG9pvJkpaJFXmT6ofwtxw32YrvdpyWiDnlLc0ur6MIx
+ T4vVPMw8RZebORA3OGsKcVf+xNLnE2XE2jVx7uSQG3GS2JyrGblMry216yGB9EvEAZpLSbis2/L
+ KFiyPIB/pKQpfr1/WAFXmCf6ml4EL/K7GAE0EkjrxpfJFAWsHXBOVgICqnhfihXAW7pBy3qzxt0
+ bTbWsn+ES2Ademw==
+X-Developer-Key: i=luca@z3ntu.xyz; a=openpgp;
+ fpr=BD04DA24C971B8D587B2B8D7FAF69CF6CD2D02CD
 
-On Tue, Mar 05, 2024 at 03:48:29PM -0600, Jonathan Denose wrote:
-> Thanks for this.
-> 
-> I tried the patch and unfortunately the issue still occurs. Attached
-> are the dmesg logs.
+The sony-castor dts has been around for a while, clean up some things to
+prepare for further changes including the introduction of the
+shinano-based Sony Xperia Z3.
 
-So this is without going through suspend/resume, but straight up boot?
-Could you please post the whole dmesg, not only data from 8042?
+Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+---
+Luca Weiss (5):
+      ARM: dts: qcom: msm8974pro-castor: Clean up formatting
+      ARM: dts: qcom: msm8974pro-castor: Add mmc aliases
+      ARM: dts: qcom: msm8974pro-castor: Remove camera button definitions
+      ARM: dts: qcom: msm8974pro-castor: Add debounce-interval for keys
+      ARM: dts: qcom: msm8974pro-castor: Rename wifi node name
 
-Thanks.
+ .../qcom-msm8974pro-sony-xperia-shinano-castor.dts | 83 +++++++++-------------
+ 1 file changed, 32 insertions(+), 51 deletions(-)
+---
+base-commit: 2e397253aae928c6d318beb18c05bc2236f69a8a
+change-id: 20240305-castor-changes-bc6785ba8458
 
+Best regards,
 -- 
-Dmitry
+Luca Weiss <luca@z3ntu.xyz>
+
 
