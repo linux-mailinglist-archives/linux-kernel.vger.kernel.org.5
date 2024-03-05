@@ -1,93 +1,256 @@
-Return-Path: <linux-kernel+bounces-93036-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93037-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2E638729F8
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 23:10:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7F588729FD
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 23:12:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 522121F2AF66
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 22:10:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5ED41283E91
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 22:12:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E34E512D205;
-	Tue,  5 Mar 2024 22:10:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EE6812D1FD;
+	Tue,  5 Mar 2024 22:12:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="az7C5Nbt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f1m5VrYC"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1E7812BEAE;
-	Tue,  5 Mar 2024 22:10:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7815B17BBF;
+	Tue,  5 Mar 2024 22:12:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709676607; cv=none; b=gVIDA/nCHeziK5euY5XLrvrqdUQCaJqW0rc5OczGJNzUodGYT12knL3oR6WgX19aFyN74kEZrB8fHGzNPkAmqin2Z3Y5mQfMjrtZBaOhucdoMt2LyRX1ai0WiOBwYTRdnV46u7jLSrPxXV9vsWTcpvHG9q5V1GnSClao02QNTi8=
+	t=1709676755; cv=none; b=ohY+rSn2bBWQpKVq/DIjZ6AodWw162u9HJ4fdMmrnlT691ngnIyQ9OdHcZaMx7+PJepoz7gOA7MJp5K+tJlFuE+fylNyZs0Met6dCAZjTI9zzF/H3vOKwj7TM0pmHBBU+uUxjREs55zhJ4ATbevpyDyZ2MARXcmfWXmUGR7Epps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709676607; c=relaxed/simple;
-	bh=WDxMUNOyXV2FFp94ZE1OPJHosybU6j2MV9abgvJyXmQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R6hQ2vZJWlnWu/difVF3nE4JSZwvh1FUmXXC2E9+xhxtz1A5NktaUmHpzOXYCnSMq21+9zIpqBCrtXTwaxs0vC522kHK4Jg8Ac6ZZUXV+fA6FxnBI7WLp6c9NmdSWA2DIN3NxdQOwWrGzzVxCFpZ/KbqunhthIZmbcRLTVBwNJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=az7C5Nbt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E995DC433F1;
-	Tue,  5 Mar 2024 22:10:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1709676606;
-	bh=WDxMUNOyXV2FFp94ZE1OPJHosybU6j2MV9abgvJyXmQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=az7C5NbtIzHvbFY1k6RzXtyMA4G2ovT4iIuq2qGGFKzfSb8A466Xms9g9gAM91/Sd
-	 og+XcB2nHMHjZhAznjVov+MTzwoi9/bBPr2aPvdlImEjJpCzSsmqS81OJZpHu4k18B
-	 oVVNfNT/qh/v7X42qVgXBHRy8hmrEfNVHcSb+ZCs=
-Date: Tue, 5 Mar 2024 22:10:02 +0000
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Wayne Chang <waynec@nvidia.com>
-Cc: jonathanh@nvidia.com, thierry.reding@gmail.com, jckuo@nvidia.com,
-	vkoul@kernel.org, kishon@kernel.org, linux-phy@lists.infradead.org,
-	linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-usb@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH 2/2] usb: gadget: tegra-xudc: Fix USB3 PHY retrieval logic
-Message-ID: <2024030542-broker-promptly-de99@gregkh>
-References: <20240305161122.1254099-1-waynec@nvidia.com>
- <20240305161122.1254099-3-waynec@nvidia.com>
+	s=arc-20240116; t=1709676755; c=relaxed/simple;
+	bh=V86iOJugE3FTlxMwknhidf2Vlg+oyA0yfcu8FM8Gnp8=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=gVVS9wTUf18Lf1X2z3QdkbIppgm0tsSE0tjmQQV1Kphh9SUz3aWwpzO8mZIAEQ9lHU9Nq5K2HlcmDovql02e3yGCrrH78/PvbQjQ7LRcgmiu6MgB/jUMa7NrW9WLjn0m6xy0FeTUW5L4YMpwUYBJUCruofE4l0RRYol2OxiGIkQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f1m5VrYC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C39DAC433F1;
+	Tue,  5 Mar 2024 22:12:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709676755;
+	bh=V86iOJugE3FTlxMwknhidf2Vlg+oyA0yfcu8FM8Gnp8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=f1m5VrYC4ZjpWkw/oNbiG8/4oV0qzFuGBv9NwH7pBLoVEGyjEHoE2mwMkyBwAMlQa
+	 ucEZuBOCHOoMOTAsCzMLqcK4C5HIy8OwRfl45LK2yMCtPnvK8glNGl74F64GAyVp/F
+	 FSj6y5z9u1exznmtGee734X1n3eBolxer5+hZQqfAea71qLAAlSl+In6MM7Bw2hd49
+	 cmhpQnPd+nC6D0X0E7ivseq0uo4voQyvV1t0cH8LmrtYmhF7pvAxZPb34Gq60fsWMI
+	 c/3TmQSjDUuiRndrGA6N5nWmrWrL23RT9tuC9qSX87v0cdmB3Aco9wPHpSD50XZDCW
+	 lrp3qx5sKwjQQ==
+Date: Tue, 5 Mar 2024 16:12:33 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] PCI/sysfs: Demacrofy pci_dev_resource_resize_attr(n)
+ functions
+Message-ID: <20240305221233.GA554011@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240305161122.1254099-3-waynec@nvidia.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240222114607.1837-1-ilpo.jarvinen@linux.intel.com>
 
-On Wed, Mar 06, 2024 at 12:11:22AM +0800, Wayne Chang wrote:
-> This commit resolves an issue in the tegra-xudc USB gadget driver that
-> incorrectly fetched USB3 PHY instances. The problem stemmed from the
-> assumption of a one-to-one correspondence between USB2 and USB3 PHY
-> names and their association with physical USB ports in the device tree.
+On Thu, Feb 22, 2024 at 01:46:06PM +0200, Ilpo Järvinen wrote:
+> pci_dev_resource_resize_attr(n) macro is invoked for six resources,
+> creating a large footprint function for each resource.
 > 
-> Previously, the driver associated USB3 PHY names directly with the USB3
-> instance number, leading to mismatches when mapping the physical USB
-> ports. For instance, if using USB3-1 PHY, the driver expect the
-> corresponding PHY name as 'usb3-1'. However, the physical USB ports in
-> the device tree were designated as USB2-0 and USB3-0 as we only have
-> one device controller, causing a misalignment.
+> Rework the macro to only create a function that calls a helper function
+> so the compiler can decide if it warrants to inline the function or
+> not.
 > 
-> This commit rectifies the issue by adjusting the PHY naming logic.
-> Now, the driver correctly correlates the USB2 and USB3 PHY instances,
-> allowing the USB2-0 and USB3-1 PHYs to form a physical USB port pair
-> while accurately reflecting their configuration in the device tree by
-> naming them USB2-0 and USB3-0, respectively.
+> With x86_64 defconfig, this saves roughly 2.5kB:
 > 
-> The change ensures that the PHY and PHY names align appropriately,
-> resolving the mismatch between physical USB ports and their associated
-> names in the device tree.
+> $ scripts/bloat-o-meter drivers/pci/pci-sysfs.o{.old,.new}
+> add/remove: 1/0 grow/shrink: 0/6 up/down: 512/-2934 (-2422)
+> Function                                     old     new   delta
+> __resource_resize_store                        -     512    +512
+> resource5_resize_store                       503      14    -489
+> resource4_resize_store                       503      14    -489
+> resource3_resize_store                       503      14    -489
+> resource2_resize_store                       503      14    -489
+> resource1_resize_store                       503      14    -489
+> resource0_resize_store                       500      11    -489
+> Total: Before=13399, After=10977, chg -18.08%
 > 
-> Fixes: b4e19931c98a ("usb: gadget: tegra-xudc: Support multiple device modes")
-> Cc: stable@vger.kernel.org
+> (The compiler seemingly chose to still inline __resource_resize_show()
+> which is fine, those functions are not very complex/large.)
+> 
+> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
-You mark patch 2/2 for stable, but not patch 1/2?  That's not going to
-work well, is it?  :(
+Applied to pci/sysfs for v6.9, thanks!
 
-thanks,
-
-greg k-h
+> ---
+>  drivers/pci/pci-sysfs.c | 138 +++++++++++++++++++++-------------------
+>  1 file changed, 74 insertions(+), 64 deletions(-)
+> 
+> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> index 2321fdfefd7d..613c5fc4f0a2 100644
+> --- a/drivers/pci/pci-sysfs.c
+> +++ b/drivers/pci/pci-sysfs.c
+> @@ -1410,79 +1410,89 @@ static const struct attribute_group pci_dev_reset_attr_group = {
+>  	.is_visible = pci_dev_reset_attr_is_visible,
+>  };
+>  
+> +static ssize_t __resource_resize_show(struct device *dev, int n, char *buf)
+> +{
+> +	struct pci_dev *pdev = to_pci_dev(dev);
+> +	ssize_t ret;
+> +
+> +	pci_config_pm_runtime_get(pdev);
+> +
+> +	ret = sysfs_emit(buf, "%016llx\n",
+> +			 (u64)pci_rebar_get_possible_sizes(pdev, n));
+> +
+> +	pci_config_pm_runtime_put(pdev);
+> +
+> +	return ret;
+> +}
+> +
+> +static ssize_t __resource_resize_store(struct device *dev, int n,
+> +				       const char *buf, size_t count)
+> +{
+> +	struct pci_dev *pdev = to_pci_dev(dev);
+> +	unsigned long size, flags;
+> +	int ret, i;
+> +	u16 cmd;
+> +
+> +	if (kstrtoul(buf, 0, &size) < 0)
+> +		return -EINVAL;
+> +
+> +	device_lock(dev);
+> +	if (dev->driver) {
+> +		ret = -EBUSY;
+> +		goto unlock;
+> +	}
+> +
+> +	pci_config_pm_runtime_get(pdev);
+> +
+> +	if ((pdev->class >> 8) == PCI_CLASS_DISPLAY_VGA) {
+> +		ret = aperture_remove_conflicting_pci_devices(pdev,
+> +						"resourceN_resize");
+> +		if (ret)
+> +			goto pm_put;
+> +	}
+> +
+> +	pci_read_config_word(pdev, PCI_COMMAND, &cmd);
+> +	pci_write_config_word(pdev, PCI_COMMAND,
+> +			      cmd & ~PCI_COMMAND_MEMORY);
+> +
+> +	flags = pci_resource_flags(pdev, n);
+> +
+> +	pci_remove_resource_files(pdev);
+> +
+> +	for (i = 0; i < PCI_STD_NUM_BARS; i++) {
+> +		if (pci_resource_len(pdev, i) &&
+> +		    pci_resource_flags(pdev, i) == flags)
+> +			pci_release_resource(pdev, i);
+> +	}
+> +
+> +	ret = pci_resize_resource(pdev, n, size);
+> +
+> +	pci_assign_unassigned_bus_resources(pdev->bus);
+> +
+> +	if (pci_create_resource_files(pdev))
+> +		pci_warn(pdev, "Failed to recreate resource files after BAR resizing\n");
+> +
+> +	pci_write_config_word(pdev, PCI_COMMAND, cmd);
+> +pm_put:
+> +	pci_config_pm_runtime_put(pdev);
+> +unlock:
+> +	device_unlock(dev);
+> +
+> +	return ret ? ret : count;
+> +}
+> +
+>  #define pci_dev_resource_resize_attr(n)					\
+>  static ssize_t resource##n##_resize_show(struct device *dev,		\
+>  					 struct device_attribute *attr,	\
+> -					 char * buf)			\
+> +					 char *buf)			\
+>  {									\
+> -	struct pci_dev *pdev = to_pci_dev(dev);				\
+> -	ssize_t ret;							\
+> -									\
+> -	pci_config_pm_runtime_get(pdev);				\
+> -									\
+> -	ret = sysfs_emit(buf, "%016llx\n",				\
+> -			 (u64)pci_rebar_get_possible_sizes(pdev, n));	\
+> -									\
+> -	pci_config_pm_runtime_put(pdev);				\
+> -									\
+> -	return ret;							\
+> +	return __resource_resize_show(dev, n, buf);			\
+>  }									\
+> -									\
+>  static ssize_t resource##n##_resize_store(struct device *dev,		\
+>  					  struct device_attribute *attr,\
+>  					  const char *buf, size_t count)\
+>  {									\
+> -	struct pci_dev *pdev = to_pci_dev(dev);				\
+> -	unsigned long size, flags;					\
+> -	int ret, i;							\
+> -	u16 cmd;							\
+> -									\
+> -	if (kstrtoul(buf, 0, &size) < 0)				\
+> -		return -EINVAL;						\
+> -									\
+> -	device_lock(dev);						\
+> -	if (dev->driver) {						\
+> -		ret = -EBUSY;						\
+> -		goto unlock;						\
+> -	}								\
+> -									\
+> -	pci_config_pm_runtime_get(pdev);				\
+> -									\
+> -	if ((pdev->class >> 8) == PCI_CLASS_DISPLAY_VGA) {		\
+> -		ret = aperture_remove_conflicting_pci_devices(pdev,	\
+> -						"resourceN_resize");	\
+> -		if (ret)						\
+> -			goto pm_put;					\
+> -	}								\
+> -									\
+> -	pci_read_config_word(pdev, PCI_COMMAND, &cmd);			\
+> -	pci_write_config_word(pdev, PCI_COMMAND,			\
+> -			      cmd & ~PCI_COMMAND_MEMORY);		\
+> -									\
+> -	flags = pci_resource_flags(pdev, n);				\
+> -									\
+> -	pci_remove_resource_files(pdev);				\
+> -									\
+> -	for (i = 0; i < PCI_STD_NUM_BARS; i++) {			\
+> -		if (pci_resource_len(pdev, i) &&			\
+> -		    pci_resource_flags(pdev, i) == flags)		\
+> -			pci_release_resource(pdev, i);			\
+> -	}								\
+> -									\
+> -	ret = pci_resize_resource(pdev, n, size);			\
+> -									\
+> -	pci_assign_unassigned_bus_resources(pdev->bus);			\
+> -									\
+> -	if (pci_create_resource_files(pdev))				\
+> -		pci_warn(pdev, "Failed to recreate resource files after BAR resizing\n");\
+> -									\
+> -	pci_write_config_word(pdev, PCI_COMMAND, cmd);			\
+> -pm_put:									\
+> -	pci_config_pm_runtime_put(pdev);				\
+> -unlock:									\
+> -	device_unlock(dev);						\
+> -									\
+> -	return ret ? ret : count;					\
+> +	return __resource_resize_store(dev, n, buf, count);		\
+>  }									\
+>  static DEVICE_ATTR_RW(resource##n##_resize)
+>  
+> -- 
+> 2.39.2
+> 
 
