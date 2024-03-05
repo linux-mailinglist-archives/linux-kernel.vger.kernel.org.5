@@ -1,91 +1,101 @@
-Return-Path: <linux-kernel+bounces-91626-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91627-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C34A87145F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 04:40:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C5F9871463
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 04:42:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0CCB81F2290E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 03:40:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E20391F225AB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 03:42:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D1E13CF7C;
-	Tue,  5 Mar 2024 03:40:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 430053B193;
+	Tue,  5 Mar 2024 03:42:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dD4Kbivh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GAVjS41u"
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9460D2942A;
-	Tue,  5 Mar 2024 03:40:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B4F41E4A2;
+	Tue,  5 Mar 2024 03:42:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709610026; cv=none; b=h5ypQl8iU9v7XIOiPv6x92bZo2at/X7EihcymPGxh9Jx9Ts1GEODS3I4tBPpA41wG83V88oXJdEIKTG1yavnsPmnFghw0xdWeA5UWhj9t7FgzxcJCfgVEXgj6F6cZrXwvsAwNZTPpqBKvrtVdl16Rh6jGxl/VRX3dIjb7jBdIb4=
+	t=1709610161; cv=none; b=R6iZTMIWEcSD6AbVfdRfXdCuMuoh0JCpLP5ur26xfJLPfAdxekeoo0NoCmeEXQEK9yqcB5+OXR0Mewf7peEosQiKnW255l3gUdJ6QnjHaLQfB66bNi3Gf9VNywvL25rCMEvJZ7fTba29F3ZXtB9neHrJ8hGR1e8kq5S8VnAfNeY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709610026; c=relaxed/simple;
-	bh=H1PtRc/W4yf4gSpezrRjDoToPdrnhuGKWGPR9ZfJU7w=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=YpHWK2fKBSrEQeD44HdD975IVV3wpcDMkI2JtojKBJ/0h4/TQjBDDyVhVmX7gCrVHKS9roqwP1zkTRyh6aY/XBsqLLNXGD0r6A3+xGvj0rOuU8f60iX5vVaDxodge38TX8NP/JPZLgsj4tLUDe4K8hCOhrBDcr2emNIb7RtXlvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dD4Kbivh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 224ACC43390;
-	Tue,  5 Mar 2024 03:40:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709610026;
-	bh=H1PtRc/W4yf4gSpezrRjDoToPdrnhuGKWGPR9ZfJU7w=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=dD4KbivhfYEns/iGMSGMIeJG8SiGnvNneFKmq3Wjrp5vvTbswdtmAgu13CcO2oGhV
-	 FiiLJBH1oDava2YtDN3hl/RPkdJe39eSXHPICCtSyJ05OzJcmI/ZQNM+PhJu+GjYxb
-	 c7TCkS7aK17Ti0bJBhQMGLBkWcr6GIwA2zcbVUZk+2uVN1Ku7RGVbTFGHP6dTxTI18
-	 Isq2MkzesbM6Ficul6Ju0uayhBijsCYhW7aOsXCDkV6JdFr4FyH8SzqAsw+Kmfdwwt
-	 EzG2ELcBXf/eh9HMfbEEVGQvE6/ZKc/eKc37FTgjfJceL5Wyb3hXgt7sicTytdjO1J
-	 LOS4xbdq98D5w==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0720EC595C4;
-	Tue,  5 Mar 2024 03:40:26 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1709610161; c=relaxed/simple;
+	bh=RwRBAEByzfgNvSIoEkSYsQAPUWr2a9oJKDmQl400sLA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JLNu0d3cxvl5twM1OOB40FvFs1MAkzS/wPs1RZvUKOMUtQ1OFuHpLlVQ8XUQFPMGRDuMVwOBda55J4rxB5Y6icnVyxgsyuFg3wgA5uCfpKtXm0wRhE20J/7NA3H7CqSqGG2yKtK4JRiMwo53EYAtxPwb+hTMRoZ0wnVZDWRA8aA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GAVjS41u; arc=none smtp.client-ip=209.85.128.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-607e54b6cf5so35648937b3.0;
+        Mon, 04 Mar 2024 19:42:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709610159; x=1710214959; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=RwRBAEByzfgNvSIoEkSYsQAPUWr2a9oJKDmQl400sLA=;
+        b=GAVjS41uVQFWRIpgJ15jH2BflUHxBxZ786xnEi7TjhUOjnAt4esI33YPRF8GjUnmx3
+         fR5KyM5d4gIxctnzVec1FgSR3j3UqTJ6oh/gOCLE1b3rX5XB07+EATNyfBQq/Rta29fZ
+         OsDgULl8GRg8NpedO+36VCuxXb5l+pJL+G00enzdS9Yhmhn3oDzjMv7mD6mkYeAumnqW
+         Rm8A4uDdRn56Qj6nxSuboD457H400irOcytDqdolB0BjSr3UkypLHIkSeI64tqj08DaR
+         gjcYgczBozABHbGKwLBc9H1mp13hV5VocF/9N/PoDSb9W/dwQmqtuwgOFaC5Xc0JY46t
+         lp4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709610159; x=1710214959;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RwRBAEByzfgNvSIoEkSYsQAPUWr2a9oJKDmQl400sLA=;
+        b=VIRw5QtBWHxlApFyXxyWEHBG/NMhcqgnnosKoloz1dCYVO9b5JQck+mvkVMCN83113
+         z40juaDQy0B3f+j3dfKXT5Ka+puzQktRLdl6aFQLhkf4ZcE3q3Qi48K+J3Var2tPrUS3
+         moVBi3Ke4ONvE0X2e/xjSZkYkiv7sjgEiwZvOzmWuSmLtJRBMb+zctbjUrSMAVyRdm6n
+         zzTSvopa4XVq93zY04DC5uu3W4jwr6tDOu8NQ++m2iwGYqCQSUhkMYyhXI5eS4C7osni
+         oENn1/EckUdWWP8v2vNMKShwMZxZaxprlyPNZNYOMz8NhN+tMGTXbM1g8grCVwCt1LNN
+         TH3w==
+X-Forwarded-Encrypted: i=1; AJvYcCVQshNjLEVl5HxOcH4FaCKeIzFwuBMOVg32fPMD/GuiYO2oKC/GjZEWU6Iy895RY1uRE09mH4S6S7VHNytiQLVc5cJFQdSH3obPq/GCZT2yyq74cacfaUFunThKpPJzsY36chfvOeyN5+5bHnxMNG/A/3XvFA2m9w5Zh+Rjhwft
+X-Gm-Message-State: AOJu0YwhMbjxZpCl+BXTt0FhAkGjU+Uak9Ztz6C9NW6xttz9j7J65oFG
+	A2HK18vs7rRXQucdVEXuirdaM9ewKWLB/6frdAzr0mPLy2KTfi/4W9cmQBoqCSFe5KQHVVbOYTp
+	7BQeK8guMzO/rcXE8M0N28G3FZXc=
+X-Google-Smtp-Source: AGHT+IER45kqclRcXl4fWTfOH2b6RQ9iRuXolGj6iEgJsDljotli7ZMu3Qshsdrtu/apb/P821DTmoI1JanZrWwNpE8=
+X-Received: by 2002:a0d:f407:0:b0:609:8cec:36a4 with SMTP id
+ d7-20020a0df407000000b006098cec36a4mr966597ywf.19.1709610159049; Mon, 04 Mar
+ 2024 19:42:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] selftests: net: Correct couple of spelling mistakes
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170961002602.3516.15535602203159521376.git-patchwork-notify@kernel.org>
-Date: Tue, 05 Mar 2024 03:40:26 +0000
-References: <20240228120701.422264-1-pvkumar5749404@gmail.com>
-In-Reply-To: <20240228120701.422264-1-pvkumar5749404@gmail.com>
-To: prabhav kumar <pvkumar5749404@gmail.com>
-Cc: shuah@kernel.org, netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, petrm@nvidia.com, idosch@nvidia.com
+References: <20240212020403.1639030-1-hayatake396@gmail.com> <CYYPR11MB8429FCD568EE2AF90AEE2CABBD5E2@CYYPR11MB8429.namprd11.prod.outlook.com>
+In-Reply-To: <CYYPR11MB8429FCD568EE2AF90AEE2CABBD5E2@CYYPR11MB8429.namprd11.prod.outlook.com>
+From: Takeru Hayasaka <hayatake396@gmail.com>
+Date: Tue, 5 Mar 2024 12:42:28 +0900
+Message-ID: <CADFiAc++edOb7-O6yCUgpAaonZ1sQdkrwwH8432D=e40g1CwoQ@mail.gmail.com>
+Subject: Re: [Intel-wired-lan] [PATCH net-next v8 1/2] ethtool: Add GTP RSS
+ hash options to ethtool.h
+To: "Pucha, HimasekharX Reddy" <himasekharx.reddy.pucha@intel.com>
+Cc: "Brandeburg, Jesse" <jesse.brandeburg@intel.com>, 
+	"Nguyen, Anthony L" <anthony.l.nguyen@intel.com>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Jonathan Corbet <corbet@lwn.net>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, 
+	"vladimir.oltean@nxp.com" <vladimir.oltean@nxp.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"laforge@gnumonks.org" <laforge@gnumonks.org>, Marcin Szycik <marcin.szycik@linux.intel.com>, 
+	"intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>, 
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
+	"mailhol.vincent@wanadoo.fr" <mailhol.vincent@wanadoo.fr>
+Content-Type: text/plain; charset="UTF-8"
 
-Hello:
+Hi Himasekhar Reddy-san
 
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+> Functionality wise its working fine. But the ethtool part (tab complete doesn't show GTP)
 
-On Wed, 28 Feb 2024 17:37:01 +0530 you wrote:
-> Changes :
-> 	- "excercise" is corrected to "exercise" in drivers/net/mlxsw/spectrum-2/tc_flower.sh
-> 	- "mutliple" is corrected to "multiple" in drivers/net/netdevsim/ethtool-fec.sh
-> 
-> Signed-off-by: Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
-> ---
->  .../testing/selftests/drivers/net/mlxsw/spectrum-2/tc_flower.sh | 2 +-
->  tools/testing/selftests/drivers/net/netdevsim/ethtool-fec.sh    | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+I forgot to add the tab completion feature! Thank you for the good
+points. I've added it again in this version's patch.
+https://lore.kernel.org/all/20240305033555.524741-1-hayatake396@gmail.com/
 
-Here is the summary with links:
-  - [net-next] selftests: net: Correct couple of spelling mistakes
-    https://git.kernel.org/netdev/net-next/c/fb0f02308126
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Takeru
 
