@@ -1,172 +1,188 @@
-Return-Path: <linux-kernel+bounces-92837-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3510A8726AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:37:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE8B88726C5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:40:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9B141F26203
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:37:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 40C7FB24799
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:40:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C43CD18EBB;
-	Tue,  5 Mar 2024 18:37:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B95E1AAC4;
+	Tue,  5 Mar 2024 18:40:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="XV+ArbRJ";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="qrJhhHxr";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="XV+ArbRJ";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="qrJhhHxr"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HfyqydVR"
+Received: from mail-il1-f182.google.com (mail-il1-f182.google.com [209.85.166.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DD951B970
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 18:37:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D866217BCF;
+	Tue,  5 Mar 2024 18:40:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709663848; cv=none; b=BQHB20nML7IYt3Aqun0HCWyNSCrCoEfUbAcZlJS+W7Nk+/4V1xU/EzCxteTh27feuXglxIeYjI+wq8MpYXOzm/kxZrx0757PVoi5ONPeqQTrl4gqP5DyzhxptdCvOwqbGO+w4r8adMuAvRtkWkRtf0R0qSeuLRBgdY4r+gGpBhU=
+	t=1709664043; cv=none; b=VdtjLalW5LRo6HhV4oorjCodhwMqjAqvNAYc6kJQgYNUWM+pr3xjGyZtR+vUCaWOuBeGBe6QB+j4LHMiaY5740XflbY4VkAqis7FFJB03cAz3SVt3x8e/2qLmyaaTHJ1s1K+kJeLVk5pTQqVOE9Szl9dTvkmZQgq5PVtggBoAfg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709663848; c=relaxed/simple;
-	bh=9OySdeXPCzc3gRHog0GdvR7NNwErq2G2bqBBT24iHOE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jAQPGmZZQ4xh8MOuLTUS5QzXPuOum1wM2qIn/q1flLmFIM3/qZwLbQ7hLXvhB1bztGoo7GFijboDfDzvSaM65on0NEl2XFk7OuenLuQJyx+svUby0kbIf+51Vf0kgpqxw6yGHPRvndbJW6c4H5zeQ2SMtBps8G+YabFolzlFc+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=XV+ArbRJ; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=qrJhhHxr; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=XV+ArbRJ; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=qrJhhHxr; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 6D26234223;
-	Tue,  5 Mar 2024 18:37:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1709663844; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Z/AQ6pirkN4uHRKwxtCgG5gCDyF8KgCXmMPpvZw4+pU=;
-	b=XV+ArbRJXUOWtR6OfvB4u7DvQNaO8+7zDKrpyetpDLG4gdk33GX6rE6QSKw2h9t6X9mGpi
-	zE/cky+VLfKTfBMsZCXUix2UgwqEASGIM4/8/Lrki6hAg9gp8zTNa28wU0oX56U/vmCx13
-	OXt8i9DOzixTQZ2ltUJvOEeEjUv7XP8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1709663844;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Z/AQ6pirkN4uHRKwxtCgG5gCDyF8KgCXmMPpvZw4+pU=;
-	b=qrJhhHxrC/qmN+c+dhv29YRG3+bT9w+zX5p8issNop68XbZbStpkwKDPXptA/0yUB5U/UG
-	DCpz1A4JH241bnDg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1709663844; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Z/AQ6pirkN4uHRKwxtCgG5gCDyF8KgCXmMPpvZw4+pU=;
-	b=XV+ArbRJXUOWtR6OfvB4u7DvQNaO8+7zDKrpyetpDLG4gdk33GX6rE6QSKw2h9t6X9mGpi
-	zE/cky+VLfKTfBMsZCXUix2UgwqEASGIM4/8/Lrki6hAg9gp8zTNa28wU0oX56U/vmCx13
-	OXt8i9DOzixTQZ2ltUJvOEeEjUv7XP8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1709663844;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Z/AQ6pirkN4uHRKwxtCgG5gCDyF8KgCXmMPpvZw4+pU=;
-	b=qrJhhHxrC/qmN+c+dhv29YRG3+bT9w+zX5p8issNop68XbZbStpkwKDPXptA/0yUB5U/UG
-	DCpz1A4JH241bnDg==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id C255413A5D;
-	Tue,  5 Mar 2024 18:37:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id TPZbLGNm52VDAQAAn2gu4w
-	(envelope-from <osalvador@suse.de>); Tue, 05 Mar 2024 18:37:23 +0000
-Date: Tue, 5 Mar 2024 19:38:42 +0100
-From: Oscar Salvador <osalvador@suse.de>
-To: Marco Elver <elver@google.com>
-Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
-	lkp@intel.com, Linux Memory Management List <linux-mm@kvack.org>,
+	s=arc-20240116; t=1709664043; c=relaxed/simple;
+	bh=TN+Scyoyp6dZQCpBaMNsM7bVZM+1hGi8d1AI3QjHzcw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=s5szxRRv1SMyNmRlXY65MO5qyDJ9kHJNXau5WUqZJ66zUtwGywel69S/CvD1SB+9yGgeUxsUtRS0rToRbc5y8+qTQnU8ObtUENJeeCUiRRT5fFwa6Tbj37z1pjhTdevvlBmfn+zi8DQKyZRr6VscRFJXvIOogIcZGhMrMqtwa9k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HfyqydVR; arc=none smtp.client-ip=209.85.166.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f182.google.com with SMTP id e9e14a558f8ab-36576b35951so4727535ab.3;
+        Tue, 05 Mar 2024 10:40:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709664040; x=1710268840; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=YQLzgqGcJCQTSOmHQSBuR9Qy4cscbXhB7FIpF8lqDFg=;
+        b=HfyqydVRmlPuH9QySqIE9XLmpN0yrqVr3s6QfpXQQfEEKSmoBfXLBYEoEDXKTS8ilo
+         YekL/diSRMHdbZJhlL6ZdTuAhju3shLmI1tk2e+UXA6h1XopcKyZxb/ICqlw6jSCkPl6
+         0vxld/Qt4H/OhWWqwGRVvoIEXxQBUqelL4lsoVSLSmLB7PzWFtJcZU5DlnKvZpsHWnEK
+         9bygaUsG9b2H4U1YIZEY+r0a2o8K1VffznbmgE1dYuO74NDZeTg7njZNFyVJBzWx0d7K
+         3JvJdqJGkBQ1C2Por/Pf7jWC5DlQykYO3WcaFZWgKci3O6arSL5MAWmOQMJq94mVM27+
+         hiOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709664040; x=1710268840;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YQLzgqGcJCQTSOmHQSBuR9Qy4cscbXhB7FIpF8lqDFg=;
+        b=LGs+hNVbIo9hpMmPrUnyxTdOgD9guTrM7lZMY09gNTJxV3spJZSWL9qYxfu7VJ5V24
+         VdjqTLjPA4ep+L5b9ygS0VfByuNU446TddcikoNZiNt6pcZSxhnnuPmzmtmcH0UkisBf
+         IF/IaYqiyq+XNQfK4Y1i+OqrRYG+L7x1Ew5UzxT3ubJ6Eyz64bXUc2ag2ChgG6NzZ+Cs
+         3UbDYVIefaNh0cLb7jXFAQy43/KG7ChptHkkXpxG01IMVJPUkAdrPTw2MQosehyJoPvj
+         c5gOJGkERu4MYQPStET0Os/Yj90b1SEH586QXmfSecMjNY5Lrt0chhHG2raUCrPqWAVA
+         UFsg==
+X-Forwarded-Encrypted: i=1; AJvYcCUCOJyCsQpr/+vJHWuji6pprTQWKXNnlAa+DDU29VlMe1cIjKVTRPVSkhQIfznlKPDEXh02eTQa5Uq9mKWt0lXHnMLAdHJQCPOufkGV4/5a9Ltm1QTqubBOChEci966jA0+TJvdSW7elg==
+X-Gm-Message-State: AOJu0Yzi7DCZGUfXxB9mZhlpSaWHDatj32JxVNB4Ov9cMLipGVO9s79W
+	D+ub6bzWuukwaqKRhgQ7ZqoWNGi+4c8hbHkimj9HfO7hLd0k4iANnIhBJMSi
+X-Google-Smtp-Source: AGHT+IHLOs8AkdboH9ufe3uVfCMuBj2myZQffsOSLGEYtVubGujAxHdd/KSSUYo1ed4iTaJle6dOCA==
+X-Received: by 2002:a05:6e02:1564:b0:366:140:801 with SMTP id k4-20020a056e02156400b0036601400801mr1621302ilu.20.1709664040035;
+        Tue, 05 Mar 2024 10:40:40 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id f17-20020a63e311000000b005dc4da2121fsm9444697pgh.6.2024.03.05.10.40.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Mar 2024 10:40:38 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
+To: linux-kselftest@vger.kernel.org
+Cc: David Airlie <airlied@gmail.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	=?UTF-8?q?Ma=C3=ADra=20Canal?= <mcanal@igalia.com>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Kees Cook <keescook@chromium.org>,
+	Daniel Diaz <daniel.diaz@linaro.org>,
+	David Gow <davidgow@google.com>,
+	Arthur Grillo <arthurgrillo@riseup.net>,
+	Brendan Higgins <brendan.higgins@linux.dev>,
+	Naresh Kamboju <naresh.kamboju@linaro.org>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Alexander Potapenko <glider@google.com>,
-	Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org
-Subject: Re: [linux-next:master] [mm,page_owner] 4bedfb314b:
- BUG:KASAN:null-ptr-deref_in_init_page_owner
-Message-ID: <Zedmst0pEtGuY6B6@localhost.localdomain>
-References: <202403051032.e2f865a-lkp@intel.com>
- <ZeblmHyVlxl_6HGC@localhost.localdomain>
- <CANpmjNMOazCrzJr+Ckx0vM73P86dPM_0qbcv=Nu44jUtPERD+A@mail.gmail.com>
- <ZedlIv2ECH08KJcM@localhost.localdomain>
+	Maxime Ripard <mripard@kernel.org>,
+	=?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	kunit-dev@googlegroups.com,
+	linux-arch@vger.kernel.org,
+	Guenter Roeck <linux@roeck-us.net>
+Subject: [RFC PATCH 0/5] Add support for suppressing warning backtraces
+Date: Tue,  5 Mar 2024 10:40:28 -0800
+Message-Id: <20240305184033.425294-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZedlIv2ECH08KJcM@localhost.localdomain>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-1.88 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 RCPT_COUNT_SEVEN(0.00)[11];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[intel.com,lists.linux.dev,kvack.org,linux-foundation.org,suse.cz,gmail.com,google.com,suse.com,vger.kernel.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-1.78)[93.69%]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -1.88
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 05, 2024 at 07:32:02PM +0100, Oscar Salvador wrote:
-> On Tue, Mar 05, 2024 at 02:02:35PM +0100, Marco Elver wrote:
-> > On Tue, 5 Mar 2024 at 10:26, Oscar Salvador <osalvador@suse.de> wrote:
-> > > Marco, could it be that stackdepot was too overloaded, that by the time
-> > > page_owner gets initialized, there are no more space for its stacks, and
-> > > hence return 0-handles?.
-> > 
-> > That's possible. But it's unclear to me what exactly happens. Are you
-> > able to reproduce the issue? (I haven't been able to because the
-> > config enables CFI which seems to cause other issues for me,
-> > presumably toolchain related. :-/ )
-> 
-> I am out of luck here, I cannot reproduce the issue.
-> I set up the environment just as [1] says, building the kernel with
-> their config and launching bin/lkp just as [1] states, but it
-> boots fine here.
+Some unit tests intentionally trigger warning backtraces by passing bad
+parameters to kernel API functions. Such unit tests typically check the
+return value from such calls, not the existence of the warning backtrace.
 
-But they point out to 
+Such intentionally generated warning backtraces are neither desirable
+nor useful for a number of reasons.
+- They can result in overlooked real problems.
+- A warning that suddenly starts to show up in unit tests needs to be
+  investigated and has to be marked to be ignored, for example by
+  adjusting filter scripts. Such filters are ad-hoc because there is
+  no real standard format for warnings. On top of that, such filter
+  scripts would require constant maintenance.
 
-commit 4bedfb314bdd85c1662ecc46fa25b33b998f994d (HEAD, bisection)
-Author: Oscar Salvador <osalvador@suse.de>
-Date:   Thu Feb 15 22:59:03 2024 +0100
+One option to address problem would be to add messages such as "expected
+warning backtraces start / end here" to the kernel log.  However, that
+would again require filter scripts, it might result in missing real
+problematic warning backtraces triggered while the test is running, and
+the irrelevant backtrace(s) would still clog the kernel log.
 
-    mm,page_owner: maintain own list of stack_records structs
+Solve the problem by providing a means to identify and suppress specific
+warning backtraces while executing test code. Support suppressing multiple
+backtraces while at the same time limiting changes to generic code to the
+absolute minimum. Architecture specific changes are kept at minimum by
+retaining function names only if both CONFIG_DEBUG_BUGVERBOSE and
+CONFIG_KUNIT are enabled.
 
-which the only thing it does is to retrieve the stack_record for
-{dummy,failure}.handle and increment their refcount and link them.
-I am pretty sure the problem comes from either dummy_handle or
-failure_handle being 0 and the stack_record we get is NULL.
+The first patch of the series introduces the necessary infrastructure.
+The second patch marks the warning message in drm_calc_scale() in the DRM
+subsystem as intentional where warranted. This patch is intended to serve
+as an example for the use of the functionality introduced with this series.
+The last three patches in the series introduce the necessary architecture
+specific changes for x86, arm64, and loongarch.
 
-I will come up with a patch to guard this scenario, although I did not
-think this could happen at this early stage (stack_records returning
-NULL).
- 
+This series is based on the RFC patch and subsequent discussion at
+https://patchwork.kernel.org/project/linux-kselftest/patch/02546e59-1afe-4b08-ba81-d94f3b691c9a@moroto.mountain/
+and offers a more comprehensive solution of the problem discussed there.
 
--- 
-Oscar Salvador
-SUSE Labs
+Checkpatch note:
+  Remaining checkpatch errors and warnings were deliberately ignored.
+  Some are triggered by matching coding style or by comments interpreted
+  as code, others by assembler macros which are disliked by checkpatch.
+  Suggestions for improvements are welcome.
+
+Some questions:
+
+- Is the general approach promising ? If not, are there other possible
+  solutions ?
+- Function pointers are only added to the __bug_table section if both
+  CONFIG_KUNIT and CONFIG_DEBUG_BUGVERBOSE are enabled. This avoids image
+  size increases if CONFIG_KUNIT=n. Downside is slightly more complex
+  architecture specific assembler code. If function pointers were always
+  added to the __bug_table section, vmlinux image size would increase by
+  approximately 0.6-0.7%. Is the increased complexity in assembler code
+  worth the reduced image size ? I think so, but I would like to hear
+  other opinions.
+- There are additional possibilities associated with storing the bug
+  function name in the __bug_table section. It could be independent of
+  KUNIT, it could be a configuration flag, and/or it could be used to
+  display the name of the offending function in BUG/WARN messages.
+  Is any of those of interest ?
+
+----------------------------------------------------------------
+Guenter Roeck (5):
+      bug: Core support for suppressing warning backtraces
+      drm: Suppress intentional warning backtraces in scaling unit tests
+      x86: Add support for suppressing warning tracebacks
+      arm64: Add support for suppressing warning tracebacks
+      loongarch: Add support for suppressing warning tracebacks
+
+ arch/arm64/include/asm/asm-bug.h      | 29 +++++++++++++-------
+ arch/arm64/include/asm/bug.h          |  8 +++++-
+ arch/loongarch/include/asm/bug.h      | 38 ++++++++++++++++++--------
+ arch/x86/include/asm/bug.h            | 21 +++++++++++----
+ drivers/gpu/drm/tests/drm_rect_test.c |  6 +++++
+ include/asm-generic/bug.h             | 16 ++++++++---
+ include/kunit/bug.h                   | 51 +++++++++++++++++++++++++++++++++++
+ include/linux/bug.h                   | 13 +++++++++
+ lib/bug.c                             | 51 ++++++++++++++++++++++++++++++++---
+ lib/kunit/Makefile                    |  6 +++--
+ lib/kunit/bug.c                       | 40 +++++++++++++++++++++++++++
+ 11 files changed, 243 insertions(+), 36 deletions(-)
+ create mode 100644 include/kunit/bug.h
+ create mode 100644 lib/kunit/bug.c
 
