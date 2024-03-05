@@ -1,80 +1,139 @@
-Return-Path: <linux-kernel+bounces-92416-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92419-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 100F3871FDF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:17:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75AD8871FE7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:17:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 94709B2333B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:17:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A83E11C2480F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:17:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C718186644;
-	Tue,  5 Mar 2024 13:16:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B01DB85939;
+	Tue,  5 Mar 2024 13:17:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="kStBfToD"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CDrfowPh"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC6DA86625;
-	Tue,  5 Mar 2024 13:16:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EA4085C51;
+	Tue,  5 Mar 2024 13:17:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709644579; cv=none; b=gz0OGx8DtzPntBfMVyTSVx1QQCLLOtkyY7Zldr+m1ixDddO1Zgrm63/8faEwt3fgvNdYA8p15Mi+o/DZcBWr3BslphDF4yuINXABC4PvX1ocWPJh5i0b23RQuv56O95gcNed3JPq+59Xge5YppgCx7MIlRcrQ2LWf8aBFuqurOw=
+	t=1709644646; cv=none; b=QF5Bw8CQmiUMfr96onivh8SXBfYdGNcVSlCsQ85xfgahfZVV1LPQQfUO3EintTPy12hBPWEdSX5URuGvB/kYxkuG00SZP1WfEnrARPuQZG+Mq49Ocy/7DW8s7dEnRRW4oU0bG/wFWR10ykUr8cQJP8zJ2bPrejr2RuFBSqjKZS4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709644579; c=relaxed/simple;
-	bh=5sElae9tQ+FI4lIl70w7P9zchWqrOrXz+Biq7MEh7cw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Va7KjgQlOZGPpv4jDXIeq7RNS6WQU05CcO8zQL8pyh87+KVWz3Ntd2s3nHuEALVgg6iaI1ikmETavFBaTZwbI1a0A8q33xyWEkNkXTr366qkXj6qlZgjDuM2370kpxkRCCVokQJeCP050n50ygDM3ksywL+zGBA8itIGJPy1qZ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=kStBfToD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6AC3C433C7;
-	Tue,  5 Mar 2024 13:16:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1709644578;
-	bh=5sElae9tQ+FI4lIl70w7P9zchWqrOrXz+Biq7MEh7cw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kStBfToDIR1Mgg2FIJStala23fjYmg+oFH240bxJQrv+9J76hPm/qRD6Chica7QE9
-	 0satWFmaWY7FYr+hsdyyODGHETMmDHImibhRa3H7J6WPti/znSV1Gu3s1JOyF0RwYY
-	 L7BwZ3P28xzb7apy5yI04YNx4fR4Y4gxOFsoV9Yc=
-Date: Tue, 5 Mar 2024 13:16:14 +0000
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Chengming Zhou <chengming.zhou@linux.dev>
-Cc: rui.silva@linaro.org, linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org, vbabka@suse.cz,
-	roman.gushchin@linux.dev, Xiongwei.Song@windriver.com
-Subject: Re: [PATCH] usb: isp1760: remove SLAB_MEM_SPREAD flag usage
-Message-ID: <2024030555-turbojet-headscarf-e26e@gregkh>
-References: <20240224135256.830413-1-chengming.zhou@linux.dev>
- <e7f00fbe-a676-4d47-b1bb-cc69cc391172@linux.dev>
+	s=arc-20240116; t=1709644646; c=relaxed/simple;
+	bh=XSZ000gYNJaQ6X4mzMWtTyUdxiMvcu9oyrTQhZJdmaA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DyIY2R89I+NF8s61k6YILfQ9iLcGEYcs4nPq0/NxqGj4dJNVQ8+pwa/BXZiaF0jp4fGowddtPGKLH1pZ11ieBfL2zr3aSjnaFA8SvJMcFT6abW1ffDYq3SkF5VePAGYkvLaLNFCcNeob0ApXvCswAHzGIglP53fuClOyZZ365qg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CDrfowPh; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709644644; x=1741180644;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=XSZ000gYNJaQ6X4mzMWtTyUdxiMvcu9oyrTQhZJdmaA=;
+  b=CDrfowPh2NFiEloMzyVqnl41cQAGHWBeozeMHMk5vEQRtVaIxzGLPKxr
+   b/4K0FxQkewuaS++03LgoASaXbtbBmIcjLM2ux/d69Xpb4Z7VXGhr4NZS
+   7T4W7Y1HPrrvSbN0Dioq8MvZEplWC2aDLR5/A85LVzsTPQgK4+PlR0Qim
+   InM3h3F+E9qToyo+ZI4nP79TLRhkGtV/eLRdFlxvHCoL5fiA39hVjnm42
+   1F2dmH/ZSeMRB5e+uCnig84WcC7ssX8+m2ttgHv4t1LSDxQnqaWIqWt2G
+   LylROoH+fims+LliAesUeWtZW4ATM51sQAo2PDjnzkjBJIBuYlM54adev
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="4777365"
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="4777365"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 05:17:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="14051402"
+Received: from peizhenz-mobl2.ccr.corp.intel.com (HELO [10.124.242.47]) ([10.124.242.47])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 05:17:19 -0800
+Message-ID: <891c98f2-9300-4393-b3d1-ac975892bcb8@linux.intel.com>
+Date: Tue, 5 Mar 2024 21:17:16 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e7f00fbe-a676-4d47-b1bb-cc69cc391172@linux.dev>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 05/21] KVM: x86/mmu: Add Suppress VE bit to EPT
+ shadow_mmio_mask/shadow_present_mask
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, seanjc@google.com,
+ michael.roth@amd.com, isaku.yamahata@intel.com, thomas.lendacky@amd.com
+References: <20240227232100.478238-1-pbonzini@redhat.com>
+ <20240227232100.478238-6-pbonzini@redhat.com>
+From: Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <20240227232100.478238-6-pbonzini@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Feb 26, 2024 at 11:02:24AM +0800, Chengming Zhou wrote:
-> On 2024/2/24 21:52, chengming.zhou@linux.dev wrote:
-> > From: Chengming Zhou <zhouchengming@bytedance.com>
-> > 
-> > The SLAB_MEM_SPREAD flag is already a no-op as of 6.8-rc1, remove
-> > its usage so we can delete it from slab. No functional change.
-> 
-> Update changelog to make it clearer:
-> 
-> The SLAB_MEM_SPREAD flag used to be implemented in SLAB, which was
-> removed as of v6.8-rc1, so it became a dead flag since the commit
-> 16a1d968358a ("mm/slab: remove mm/slab.c and slab_def.h"). And the
-> series[1] went on to mark it obsolete to avoid confusion for users.
-> Here we can just remove all its users, which has no functional change.
 
-Please submit a version 2 with this updated changelog.
 
-thanks,
+On 2/28/2024 7:20 AM, Paolo Bonzini wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
+>
+> To make use of the same value of shadow_mmio_mask and shadow_present_mask
+> for TDX and VMX, add Suppress-VE bit to shadow_mmio_mask and
+> shadow_present_mask so that they can be common for both VMX and TDX.
+>
+> TDX will require shadow_mmio_mask and shadow_present_mask to include
+> VMX_SUPPRESS_VE for shared GPA so that EPT violation is triggered for
+> shared GPA.  For VMX, VMX_SUPPRESS_VE doesn't matter for MMIO because the
+> spte value is defined so as to cause EPT misconfig.
+>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> Message-Id: <97cc616b3563cd8277be91aaeb3e14bce23c3649.1705965635.git.isaku.yamahata@intel.com>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 
-greg k-h
+Reviewed-by: Binbin Wu <binbin.wu@linux.intel.com>
+
+> ---
+>   arch/x86/include/asm/vmx.h | 1 +
+>   arch/x86/kvm/mmu/spte.c    | 6 ++++--
+>   2 files changed, 5 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/x86/include/asm/vmx.h b/arch/x86/include/asm/vmx.h
+> index 0e73616b82f3..76ed39541a52 100644
+> --- a/arch/x86/include/asm/vmx.h
+> +++ b/arch/x86/include/asm/vmx.h
+> @@ -513,6 +513,7 @@ enum vmcs_field {
+>   #define VMX_EPT_IPAT_BIT    			(1ull << 6)
+>   #define VMX_EPT_ACCESS_BIT			(1ull << 8)
+>   #define VMX_EPT_DIRTY_BIT			(1ull << 9)
+> +#define VMX_EPT_SUPPRESS_VE_BIT			(1ull << 63)
+>   #define VMX_EPT_RWX_MASK                        (VMX_EPT_READABLE_MASK |       \
+>   						 VMX_EPT_WRITABLE_MASK |       \
+>   						 VMX_EPT_EXECUTABLE_MASK)
+> diff --git a/arch/x86/kvm/mmu/spte.c b/arch/x86/kvm/mmu/spte.c
+> index 4a599130e9c9..02a466de2991 100644
+> --- a/arch/x86/kvm/mmu/spte.c
+> +++ b/arch/x86/kvm/mmu/spte.c
+> @@ -429,7 +429,9 @@ void kvm_mmu_set_ept_masks(bool has_ad_bits, bool has_exec_only)
+>   	shadow_dirty_mask	= has_ad_bits ? VMX_EPT_DIRTY_BIT : 0ull;
+>   	shadow_nx_mask		= 0ull;
+>   	shadow_x_mask		= VMX_EPT_EXECUTABLE_MASK;
+> -	shadow_present_mask	= has_exec_only ? 0ull : VMX_EPT_READABLE_MASK;
+> +	/* VMX_EPT_SUPPRESS_VE_BIT is needed for W or X violation. */
+> +	shadow_present_mask	=
+> +		(has_exec_only ? 0ull : VMX_EPT_READABLE_MASK) | VMX_EPT_SUPPRESS_VE_BIT;
+>   	/*
+>   	 * EPT overrides the host MTRRs, and so KVM must program the desired
+>   	 * memtype directly into the SPTEs.  Note, this mask is just the mask
+> @@ -446,7 +448,7 @@ void kvm_mmu_set_ept_masks(bool has_ad_bits, bool has_exec_only)
+>   	 * of an EPT paging-structure entry is 110b (write/execute).
+>   	 */
+>   	kvm_mmu_set_mmio_spte_mask(VMX_EPT_MISCONFIG_WX_VALUE,
+> -				   VMX_EPT_RWX_MASK, 0);
+> +				   VMX_EPT_RWX_MASK | VMX_EPT_SUPPRESS_VE_BIT, 0);
+>   }
+>   EXPORT_SYMBOL_GPL(kvm_mmu_set_ept_masks);
+>   
+
 
