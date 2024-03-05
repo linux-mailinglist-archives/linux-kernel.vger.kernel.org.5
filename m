@@ -1,229 +1,135 @@
-Return-Path: <linux-kernel+bounces-92669-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92670-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FA1A8723F2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:19:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C98C8723F7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:21:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A3671C24C38
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:19:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE58D1C21D22
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:21:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD5D212839B;
-	Tue,  5 Mar 2024 16:19:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C790A12839B;
+	Tue,  5 Mar 2024 16:21:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IJ4qkZCa"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Y8BkPL6G"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 498A4128382
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 16:18:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3FE5128824
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 16:21:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709655540; cv=none; b=SL/tIvT7AyjnXB1vhe3AzeLWZAnpxG7fYAVUDJBLR9bTj74kcOWSPyHWBZHwX2sfCmmc+aCAiVNarDFAGLmMd3Y2VXjBUF5WG8pdVEB8jQUtQy9Z/iq4k1xXPkBZ6SyR+BoioM+D7OAD+FjT5wsi0P8Ff6j6S6HctCZj6KX3cSY=
+	t=1709655698; cv=none; b=FTKxn+SbNVPi/Io2onFM2oFwEnJ1XTmkGOQNLBtNxIgAcgMFX/jxoheHqYNepBc8wtXANeMcuNpiVKaRy00GKEsbUx6Ob7OkuK92KgG5oh8rnL6WqkhQvdcPdnQ+TdZOUZT3pO1jdEC5hEnW8+xQJLEeLuWyKFdTg2gHhaZXlqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709655540; c=relaxed/simple;
-	bh=Pa0fMVUTeiUhUY2VLkFLVyMrIu9XCbjjrHzKX5ueVOA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=lgEd7HgvOquWBgEAPCNE+pA87X0buW0rSAUPIwFB8Ixey+hJdgZ6CZyy8dQhBmiIdI/BC8popNpGZntPsbCqgaiXk3NvdbUYsS1q35xt2kAf0ZrMUCDZPKrqn4/YrMUERn9FuNIgFMOKy2PsTj8NxmUmsPXy8IodxlymkFIw20A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IJ4qkZCa; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+	s=arc-20240116; t=1709655698; c=relaxed/simple;
+	bh=3sM/hDXUkFkmLR5h1bxbxTNiZ0cXYZTzkJ/LYUAF0fA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OHyYLmaMY8mcc2Hq2wXZsAAwsaCYY4v0KECPHQG7LKh0ClX4OQUNv7pArOKCNlHqPNlmNGPih24FDMx8MncB5ij+nVSAqfVqH0dN6oglIQCwTR5FgorxBVo6rgWuWt3Re3wOw+QvEQLlr7POo//Lz1A7GbMO90Ruok3Ah37K/A4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Y8BkPL6G; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709655538; x=1741191538;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=Pa0fMVUTeiUhUY2VLkFLVyMrIu9XCbjjrHzKX5ueVOA=;
-  b=IJ4qkZCaz63pUg99SXEYb9CtFb57zDlSpMwtAd1D8r038svN8TWKdQcj
-   WE0zIUQFnkPoavC67+nwbWngEf7nUBBtsZ93dYKIaK7VhiFPC56hDvBAR
-   CiSmgkkZQdSl4IfEHP/J8hbqBy4yNkuchphDAv+bF2FtzqhNGh4PjqeuS
-   u2hzu6sHOgEX9pfo7IPC1Qv2B7GcW8zgOHb1ZxTH4E9zYXd/7vCCArS3K
-   N4wNcPVmEPfrip8QdHW0DAPdsK9scaokBPcAxvxC6CUAfb5BeSvyBB7bN
-   ZDvfsBZPpq0PB07DrQ288syLF1GckAt6HFAFRoTQeEkBz4IM8Ux3nnGq6
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="7161281"
+  t=1709655694; x=1741191694;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=3sM/hDXUkFkmLR5h1bxbxTNiZ0cXYZTzkJ/LYUAF0fA=;
+  b=Y8BkPL6GPTNx8nsKe3p++d9C46RvUhMaXCA5u1YAxXocQj4kiUcrfZty
+   GKxFedQwS5XyzKP6GGgZhkJrPU0e9FZf1lb6UUEP8cVNTuCErWz+BAeAG
+   KIJ/elH9eRFLo7lBkhyawqhegERYF96ynWX7KhFIIQBNylEo8+H0tXOVu
+   Wrmnfg4OFTjvhNt9rrxBZvoD0vLZ8Q1ybovXiM6bKU70NLrgoHg2Nnp0D
+   83ooI8z4sOGvoyRnLcG/buRrirOA8vqsUnTXDwrqjdmMNz+Q1Fzxa2nS4
+   7RIodFPgwwwnym+G34DeHcYAmBoehyOd2euHLOSw39u40hsrW7lk/Byf6
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="4343720"
 X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
-   d="scan'208";a="7161281"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 08:18:57 -0800
+   d="scan'208";a="4343720"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 08:21:33 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
-   d="scan'208";a="9533104"
-Received: from omakhlou-mobl4.amr.corp.intel.com (HELO localhost) ([10.252.51.143])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 08:18:52 -0800
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Alvin =?utf-8?Q?=C5=A0ipraga?= <alvin@pqrs.dk>, Andrzej Hajda
- <andrzej.hajda@intel.com>,
- Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss
- <rfoss@kernel.org>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
- Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec
- <jernej.skrabec@gmail.com>, David Airlie <airlied@gmail.com>, Daniel
- Vetter <daniel@ffwll.ch>, Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, Alvin
- =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>
-Subject: Re: [PATCH v3 2/2] drm/bridge: adv7511: get edid in hpd_work to
- update CEC phys address
-In-Reply-To: <20240219-adv7511-cec-edid-v3-2-445aed2f1cd7@bang-olufsen.dk>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20240219-adv7511-cec-edid-v3-0-445aed2f1cd7@bang-olufsen.dk>
- <20240219-adv7511-cec-edid-v3-2-445aed2f1cd7@bang-olufsen.dk>
-Date: Tue, 05 Mar 2024 18:18:50 +0200
-Message-ID: <87cys81wk5.fsf@intel.com>
+   d="scan'208";a="9391029"
+Received: from mecastro-mobl1.amr.corp.intel.com (HELO [10.212.136.86]) ([10.212.136.86])
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 08:21:33 -0800
+Message-ID: <14750023-e5fb-45f7-9c28-9510ce5a5994@intel.com>
+Date: Tue, 5 Mar 2024 08:21:32 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/1] x86/rtc: Remove unused intel-mid.h
+Content-Language: en-US
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ =?UTF-8?Q?Mateusz_Jo=C5=84czyk?= <mat.jonczyk@o2.pl>,
+ Mario Limonciello <mario.limonciello@amd.com>, linux-kernel@vger.kernel.org
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+References: <20240305161024.1364098-1-andriy.shevchenko@linux.intel.com>
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <20240305161024.1364098-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, 19 Feb 2024, Alvin =C5=A0ipraga <alvin@pqrs.dk> wrote:
-> From: Alvin =C5=A0ipraga <alsi@bang-olufsen.dk>
->
-> The adv7511 driver is solely responsible for setting the physical
-> address of its CEC adapter. To do this, it must read the EDID. However,
-> EDID is only read when either the drm_bridge_funcs :: get_edid or
-> drm_connector_helper_funcs :: get_modes ops are called. Without loss of
-> generality, it cannot be assumed that these ops are called when a sink
-> gets attached. Therefore there exist scenarios in which the CEC physical
-> address will be invalid (f.f.f.f), rendering the CEC adapter inoperable.
->
-> Address this problem by always fetching the EDID in the HPD work when we
-> detect a connection. The CEC physical address is set in the process.
-> This is done by moving the EDID DRM helper into an internal helper
-> function so that it can be cleanly called from an earlier section of
-> the code. The EDID getter has not changed in practice.
->
-> Reviewed-by: Robert Foss <rfoss@kernel.org>
-> Signed-off-by: Alvin =C5=A0ipraga <alsi@bang-olufsen.dk>
-> ---
->  drivers/gpu/drm/bridge/adv7511/adv7511_drv.c | 73 ++++++++++++++++++----=
-------
->  1 file changed, 47 insertions(+), 26 deletions(-)
->
-> diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c b/drivers/gpu/d=
-rm/bridge/adv7511/adv7511_drv.c
-> index 5ffc5904bd59..d823b372ff43 100644
-> --- a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
-> +++ b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
-> @@ -542,6 +542,36 @@ static int adv7511_get_edid_block(void *data, u8 *bu=
-f, unsigned int block,
->  	return 0;
->  }
->=20=20
-> +static struct edid *__adv7511_get_edid(struct adv7511 *adv7511,
-> +				       struct drm_connector *connector)
-> +{
-> +	struct edid *edid;
-> +
-> +	/* Reading the EDID only works if the device is powered */
-> +	if (!adv7511->powered) {
-> +		unsigned int edid_i2c_addr =3D
-> +					(adv7511->i2c_edid->addr << 1);
-> +
-> +		__adv7511_power_on(adv7511);
-> +
-> +		/* Reset the EDID_I2C_ADDR register as it might be cleared */
-> +		regmap_write(adv7511->regmap, ADV7511_REG_EDID_I2C_ADDR,
-> +			     edid_i2c_addr);
-> +	}
-> +
-> +	edid =3D drm_do_get_edid(connector, adv7511_get_edid_block, adv7511);
-> +
-> +	if (!adv7511->powered)
-> +		__adv7511_power_off(adv7511);
-> +
-> +	adv7511_set_config_csc(adv7511, connector, adv7511->rgb,
-> +			       drm_detect_hdmi_monitor(edid));
-> +
-> +	cec_s_phys_addr_from_edid(adv7511->cec_adap, edid);
+On 3/5/24 08:10, Andy Shevchenko wrote:
+> intel-mid.h is providing some core parts of the South Complex PM,
+> which are usually are not used by individual drivers. In particular,
+> this driver doesn't use it, so simply remove the unused header.
 
-It really would be better to do drm_edid_read_custom(),
-drm_edid_connector_update(), and cec_s_phys_addr() with the physical
-address from connector->display_info.source_physical_address initialized
-by drm_edid_connector_update().
+Indeed.  intel-mid.h provides a pretty small amount of stuff and it's
+included in quite a few random-looking spots.  There's also gunk that's
+only compiled in if CONFIG_X86_INTEL_MID=y so if anyone _did_ somehow
+use any of those functions in generic code, they'd probably be creating
+compile problems.
 
-The point is, cec_s_phys_addr_from_edid() has its own duplicate EDID
-parsing, which is slightly different from drm_edid_connector_update()
-and of course redundant.
-
-
-BR,
-Jani.
-
-
-> +
-> +	return edid;
-> +}
-> +
->  /* ---------------------------------------------------------------------=
---------
->   * Hotplug handling
->   */
-> @@ -595,8 +625,23 @@ static void adv7511_hpd_work(struct work_struct *wor=
-k)
->  		adv7511->connector.status =3D status;
->=20=20
->  		if (adv7511->connector.dev) {
-> -			if (status =3D=3D connector_status_disconnected)
-> +			if (status =3D=3D connector_status_disconnected) {
->  				cec_phys_addr_invalidate(adv7511->cec_adap);
-> +			} else {
-> +				struct edid *edid;
-> +
-> +				/*
-> +				 * Get the updated EDID so that the CEC
-> +				 * subsystem gets informed of any change in CEC
-> +				 * address. The helper returns a newly allocated
-> +				 * edid structure, so free it to prevent
-> +				 * leakage.
-> +				 */
-> +				edid =3D __adv7511_get_edid(adv7511,
-> +							  &adv7511->connector);
-> +				kfree(edid);
-> +			}
-> +
->  			drm_kms_helper_hotplug_event(adv7511->connector.dev);
->  		} else {
->  			drm_bridge_hpd_notify(&adv7511->bridge, status);
-> @@ -611,31 +656,7 @@ static void adv7511_hpd_work(struct work_struct *wor=
-k)
->  static struct edid *adv7511_get_edid(struct adv7511 *adv7511,
->  				     struct drm_connector *connector)
->  {
-> -	struct edid *edid;
-> -
-> -	/* Reading the EDID only works if the device is powered */
-> -	if (!adv7511->powered) {
-> -		unsigned int edid_i2c_addr =3D
-> -					(adv7511->i2c_edid->addr << 1);
-> -
-> -		__adv7511_power_on(adv7511);
-> -
-> -		/* Reset the EDID_I2C_ADDR register as it might be cleared */
-> -		regmap_write(adv7511->regmap, ADV7511_REG_EDID_I2C_ADDR,
-> -			     edid_i2c_addr);
-> -	}
-> -
-> -	edid =3D drm_do_get_edid(connector, adv7511_get_edid_block, adv7511);
-> -
-> -	if (!adv7511->powered)
-> -		__adv7511_power_off(adv7511);
-> -
-> -	adv7511_set_config_csc(adv7511, connector, adv7511->rgb,
-> -			       drm_detect_hdmi_monitor(edid));
-> -
-> -	cec_s_phys_addr_from_edid(adv7511->cec_adap, edid);
-> -
-> -	return edid;
-> +	return __adv7511_get_edid(adv7511, connector);
->  }
->=20=20
->  static int adv7511_get_modes(struct adv7511 *adv7511,
-
---=20
-Jani Nikula, Intel
+Any chance you'd like to look a _bit_ more widely and just clean up all
+of the unnecessary intel-mid.h #includes that are scattered around?
 
