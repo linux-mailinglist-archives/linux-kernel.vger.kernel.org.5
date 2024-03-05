@@ -1,130 +1,242 @@
-Return-Path: <linux-kernel+bounces-92470-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92471-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E689B8720D1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:51:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72C068720D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:52:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2261282CB9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:51:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 969171C21E9F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:52:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B06AA8612C;
-	Tue,  5 Mar 2024 13:51:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94D4E8612E;
+	Tue,  5 Mar 2024 13:52:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LPBEgT0z"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OYj3mnjj"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E21A6762DF;
-	Tue,  5 Mar 2024 13:51:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EF1A762DF
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 13:52:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709646698; cv=none; b=j/8Po7ZYtbhq+FPh3SGHJsWAkthBrH6R29m6vKhjGXagflltT++ZZ180c6KMmybkuCBrg0c65yGB6MAdeBZyO0QPKOOCK1jhEyeEk+qgTKB6OnuS6n4dlRYUC1fgOaaIVrTE/vbOC4Suf2DPiOOTHaodzC2hVaaKMBbOmzOXXhQ=
+	t=1709646722; cv=none; b=hdcezGdLmnSSeKjJOogLLSV4Xj9Jbau6RgYLnMPCrwApZawRxuh/kF82gaOdd7q3HboSwQVnHhPMWvdp72HT3e2jheDNoajTAkmz5iDEkJiXGcFjrpen2+LEgi48t6wVocrgRS3d5vCX/oPnOtgm3+LeFGncCXIRoe8ogBEIZyk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709646698; c=relaxed/simple;
-	bh=fCj5iwo9v14uEMpRZ3mkoCxKtCZRsdCnJwUBfQ0/Fdc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uhYK73Rzt0p+ig/0LcuMOr4cUIG41yv+X91cmXry3HhbGB0PyYe/saRS+DWjaeLeWuAqioRIwXGFB7DDk9Yz52uucSX8RQp1pYO1efxCWvYG42Z6RcnYx5toFS+OjC9lt1bx8W2cPJ6+eI7DtBLD8PZBiQByx+8B5NVu/J3rdXg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LPBEgT0z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 572A2C433C7;
-	Tue,  5 Mar 2024 13:51:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709646697;
-	bh=fCj5iwo9v14uEMpRZ3mkoCxKtCZRsdCnJwUBfQ0/Fdc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LPBEgT0zgzdMuuwlu9frzkuCZxVHaxx3EMz8btKj4RBSKZyvpEbHv/rza82HdbSew
-	 GU49teZaKaKhLZj4AVjYuWvbLFMc+EFWau1wJq3xKehyLcJjbGl3RUSOF8FlliWiDC
-	 GtNAkQlUsGWQbKbjIEjQTWy2okoPsnCg5Xi/GILvxhSpq6nFRYXHOp7Il99gaCpwas
-	 lsu6Cp2GIcxMxROEzAmqBihJO8/sHP4PRQmGBGpqPLC0O5+gy7EUf2f56NJOPLw+3d
-	 wv/JfOIEwcU71TqnImYTfc3NYIuKKSR/mjLvqw0yZnRM83gCpVkbNOei2LA42Isp00
-	 LX8OtVHikO9SQ==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rhVCq-000000000Ek-2aI6;
-	Tue, 05 Mar 2024 14:51:44 +0100
-Date: Tue, 5 Mar 2024 14:51:44 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Cc: LKML <linux-kernel@vger.kernel.org>, Vinod Koul <vinod.koul@linaro.org>,
-	Bjorn Andersson <quic_bjorande@quicinc.com>,
-	Abhinav Kumar <quic_abhinavk@quicinc.com>
-Subject: Re: Lenovo ThinkPad X13s regerssions (was Re: Linux regressions
- report for mainline [2024-02-25])
-Message-ID: <ZecjcApvdZSGRysT@hovoldconsulting.com>
-References: <170886726066.1516351.14377022830495300698@leemhuis.info>
- <Zd23ZKlNnDKPaU9I@hovoldconsulting.com>
- <83c6019f-9c6f-4ad1-87d5-e4f1bdaca93c@leemhuis.info>
+	s=arc-20240116; t=1709646722; c=relaxed/simple;
+	bh=xY2WUJurgVHEpDGkm1zAJ6SPaQq6x1poT9czjNrh8z0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pswj4bnVY73Zgij5QtorVAUbfs3MkmOji2/GJ0kpVXK5PWQAWTp8CZ2MVuMMRmvNAgRZm65pGwNXkLPNfhkWE02lZUsvpTnh2YrgXbtj0BnK2k8kFDkaDnCoQneAUK/H/IJcV1uZl3SKgrqop5Tjs8bOJGU9n1dFq+3IoX3ZpJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OYj3mnjj; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709646719;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=HuPJFjAWsKypg8ZeoyYOV15NoGLVMPS18P+BxsXUyRk=;
+	b=OYj3mnjjTt/MEcbI/fhO+wB+D2cCvFsH9/HQAZnYPitt+H5W9W4Q+ImVh2/ZGjMZ4XqLhS
+	hD4pc5XQewaAfswwWMFSt8kb3RQ7ZIY4To2X0kYdBh3wByYFHfQZkXTdVI1UuE65kGludy
+	pXldZGoq07DZe+FeZdjSfBQggrjDZ/w=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-221-Jg5EqMjiNLyiWk3H3lZmLg-1; Tue, 05 Mar 2024 08:51:58 -0500
+X-MC-Unique: Jg5EqMjiNLyiWk3H3lZmLg-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-40e4478a3afso29227345e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 05:51:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709646717; x=1710251517;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HuPJFjAWsKypg8ZeoyYOV15NoGLVMPS18P+BxsXUyRk=;
+        b=BSDBT5O+fyOrxG6EgF3sEFAjZlKWdN33QZy88vrpUjVNjqDccsK66/b7XZxSqxcyCF
+         CYaQhkic5fp9UJhPXRETNJEaZ+e3oUt/vojKJRFTcegmSGknC67pA81S73m2JcdQZd5j
+         0+2FEMzeIWGoVe6m3u1ka1DjzfK6z2a1bxZ8uYEwd3qpH9ir3zAm6zsoxRiwb7cWYcXJ
+         YCnE6TS8bmKKOMY22rwZUOWqpVLV+8LdB/5EUHy3PWNakM39UnrErq/Ie7epEB4TN3KI
+         X+BnzSOGDVBx1lW5bL2KKEEb3v/J8m4jw9bXJe8pG4Ja/or5i48wJV5sdVtaE343JYbg
+         c1Hw==
+X-Forwarded-Encrypted: i=1; AJvYcCXhNwiHaSlotXAXSDz/g4Z6QzB1MJE+xeyfN7h+im1A5Pz73xMREfD7Vk2H1NbkWJLSCokS3gdmKIfNd9D1iBV06q52HK1agpjWHtKf
+X-Gm-Message-State: AOJu0Yw96dl+bAXQHe11egspk5qiGlKF32ccRBdh5wpz4C9ymZVMyU4O
+	L0dOk67NxWvtx+nvG6spHVnKDIHeivtq2WWWk5WiExU0yAwOzM3fHghfjP9sJTE8iupC8BRbl4g
+	FjKMt0dmuGF0dtlsZlRj+OTDT1S6Z2r2Ee41sZQrdMtI2PIW6pWAoFTUmrv9tzQ==
+X-Received: by 2002:a05:600c:3111:b0:412:f09d:67ef with SMTP id g17-20020a05600c311100b00412f09d67efmr180232wmo.10.1709646716857;
+        Tue, 05 Mar 2024 05:51:56 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGT+v94cNlPuRn9BCoWkkRgnChsa4Zxxoh4qGBCqYAJX2s5n9hG4uCCziRT82Hx/7k/SRmDOA==
+X-Received: by 2002:a05:600c:3111:b0:412:f09d:67ef with SMTP id g17-20020a05600c311100b00412f09d67efmr180212wmo.10.1709646716359;
+        Tue, 05 Mar 2024 05:51:56 -0800 (PST)
+Received: from toolbox.fritz.box ([2001:9e8:898a:6d00:3d3a:c29e:3324:fc0e])
+        by smtp.gmail.com with ESMTPSA id n6-20020a05600c500600b00412ee8e2f2asm1519587wmr.9.2024.03.05.05.51.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Mar 2024 05:51:56 -0800 (PST)
+From: Sebastian Wick <sebastian.wick@redhat.com>
+To: 
+Cc: Harry Wentland <harry.wentland@amd.com>,
+	=?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>,
+	Pekka Paalanen <pekka.paalanen@collabora.com>,
+	Xaver Hugl <xaver.hugl@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] drm/drm_connector: Document Colorspace property variants
+Date: Tue,  5 Mar 2024 14:51:49 +0100
+Message-ID: <20240305135155.231687-1-sebastian.wick@redhat.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <83c6019f-9c6f-4ad1-87d5-e4f1bdaca93c@leemhuis.info>
+Content-Transfer-Encoding: 8bit
 
-[ +CC: Vinod, Bjorn, Abhinav ]
+The initial idea of the Colorspace prop was that this maps 1:1 to
+InfoFrames/SDP but KMS does not give user space enough information nor
+control over the output format to figure out which variants can be used
+for a given KMS commit. At the same time, properties like Broadcast RGB
+expect full range quantization range being produced by user space from
+the CRTC and drivers to convert to the range expected by the sink for
+the chosen output format, mode, InfoFrames, etc.
 
-On Tue, Mar 05, 2024 at 10:33:39AM +0100, Linux regression tracking (Thorsten Leemhuis) wrote:
-> [dropping Linus from CC, we can add him back later when needed]
-> 
-> On 27.02.24 11:20, Johan Hovold wrote:
-> > On Sun, Feb 25, 2024 at 01:21:46PM +0000, Regzbot (on behalf of Thorsten Leemhuis) wrote:
-> > 
-> >> Johan Hovold also deals with multiple issues affecting Lenovo ThinkPad
-> >> X13s, but he send out patch series to fix some or all of those[1], so
-> >> with a bit of luck those issues will soon be fixed as well.
-> >> https://lore.kernel.org/lkml/ZctVmLK4zTwcpW3A@hovoldconsulting.com/
-> 
-> As 6.8 final might be just five days away, could you please help me out
-> with a short status update wrt. unresolved regressions from your side if
-> you have a minute? It's easy to get lost in all those issues. :-/ :-D
+This change documents the reality of the Colorspace property. The
+Default variant unfortunately is very much driver specific and not
+reflected by the EDID. The BT2020 variants are in active use by generic
+compositors which have expectations from the driver about the
+conversions it has to do when selecting certain output formats.
 
-Heh. Indeed. It's been a rough cycle. :)
+Everything else is also marked as undefined. Coming up with valid
+behavior that makes it usable from user space and consistent with other
+KMS properties for those variants is left as an exercise for whoever
+wants to use them.
 
-> >> [1]
-> >> https://lore.kernel.org/lkml/20240217150228.5788-1-johan+linaro@kernel.org/
-> > 
-> > This series addresses a use-after-free in the PMIC glink driver caused
-> > by DRM bridge changes in rc1 and which can result in the internal
-> > display not showing up on boot.
-> > 
-> > The DRM/SoC fixes here have now been merged to drm-misc for 6.8.
-> 
-> What about the others from that series? Can they wait till 6.9? Or are
-> they on track for 6.8?
+v2:
+ * Talk about "pixel operation properties" that user space configures
+ * Mention that user space is responsible for checking the EDID for sink
+   support
+ * Make it clear that drivers can choose between RGB and YCbCr on their
+   own
 
-Vinod, the PHY maintainer, just told me he will try to get them into
-6.8.
+Signed-off-by: Sebastian Wick <sebastian.wick@redhat.com>
+---
+ drivers/gpu/drm/drm_connector.c | 79 +++++++++++++++++++++++++--------
+ include/drm/drm_connector.h     |  8 ----
+ 2 files changed, 61 insertions(+), 26 deletions(-)
 
-> > But also with these fixes, there are still a couple of regressions
-> > related to the Qualcomm DRM runtime PM rework in 6.8-rc1. I'll send
-> > separate reports to track those.
-> 
-> Any decision yet if they are going to be reverted for now?
->
-> Am I right assuming those would fix
-> https://lore.kernel.org/lkml/Zd3kvD02Qvsh2Sid@hovoldconsulting.com/
-> which did not get even a single reply?
+diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
+index b0516505f7ae..65cdcc7d22db 100644
+--- a/drivers/gpu/drm/drm_connector.c
++++ b/drivers/gpu/drm/drm_connector.c
+@@ -2147,24 +2147,67 @@ EXPORT_SYMBOL(drm_mode_create_aspect_ratio_property);
+  * DOC: standard connector properties
+  *
+  * Colorspace:
+- *     This property helps select a suitable colorspace based on the sink
+- *     capability. Modern sink devices support wider gamut like BT2020.
+- *     This helps switch to BT2020 mode if the BT2020 encoded video stream
+- *     is being played by the user, same for any other colorspace. Thereby
+- *     giving a good visual experience to users.
+- *
+- *     The expectation from userspace is that it should parse the EDID
+- *     and get supported colorspaces. Use this property and switch to the
+- *     one supported. Sink supported colorspaces should be retrieved by
+- *     userspace from EDID and driver will not explicitly expose them.
+- *
+- *     Basically the expectation from userspace is:
+- *      - Set up CRTC DEGAMMA/CTM/GAMMA to convert to some sink
+- *        colorspace
+- *      - Set this new property to let the sink know what it
+- *        converted the CRTC output to.
+- *      - This property is just to inform sink what colorspace
+- *        source is trying to drive.
++ *	This property is used to inform the driver about the color encoding
++ *	user space configured the pixel operation properties to produce.
++ *	The variants set the colorimetry, transfer characteristics, and which
++ *	YCbCr conversion should be used when necessary.
++ *	The transfer characteristics from HDR_OUTPUT_METADATA takes precedence
++ *	over this property.
++ *	User space always configures the pixel operation properties to produce
++ *	full quantization range data (see the Broadcast RGB property).
++ *
++ *	Drivers inform the sink about what colorimetry, transfer
++ *	characteristics, YCbCr conversion, and quantization range to expect
++ *	(this can depend on the output mode, output format and other
++ *	properties). Drivers also convert the user space provided data to what
++ *	the sink expects.
++ *
++ *	User space has to check if the sink supports all of the possible
++ *	colorimetries that the driver is allowed to pick by parsing the EDID.
++ *
++ *	For historical reasons this property exposes a number of variants which
++ *	result in undefined behavior.
++ *
++ *	Default:
++ *		The behavior is driver-specific.
++ *	BT2020_RGB:
++ *	BT2020_YCC:
++ *		User space configures the pixel operation properties to produce
++ *		RGB content with Rec. ITU-R BT.2020 colorimetry, Rec.
++ *		ITU-R BT.2020 (Table 4, RGB) transfer characteristics and full
++ *		quantization range.
++ *		User space can use the HDR_OUTPUT_METADATA property to set the
++ *		transfer characteristics to PQ (Rec. ITU-R BT.2100 Table 4) or
++ *		HLG (Rec. ITU-R BT.2100 Table 5) in which case, user space
++ *		configures pixel operation properties to produce content with
++ *		the respective transfer characteristics.
++ *		User space has to make sure the sink supports Rec.
++ *		ITU-R BT.2020 R'G'B' and Rec. ITU-R BT.2020 Y'C'BC'R
++ *		colorimetry.
++ *		Drivers can configure the sink to use an RGB format, tell the
++ *		sink to expect Rec. ITU-R BT.2020 R'G'B' colorimetry and convert
++ *		to the appropriate quantization range.
++ *		Drivers can configure the sink to use a YCbCr format, tell the
++ *		sink to expect Rec. ITU-R BT.2020 Y'C'BC'R colorimetry, convert
++ *		to YCbCr using the Rec. ITU-R BT.2020 non-constant luminance
++ *		conversion matrix and convert to the appropriate quantization
++ *		range.
++ *		The variants BT2020_RGB and BT2020_YCC are equivalent and the
++ *		driver chooses between RGB and YCbCr on its own.
++ *	SMPTE_170M_YCC:
++ *	BT709_YCC:
++ *	XVYCC_601:
++ *	XVYCC_709:
++ *	SYCC_601:
++ *	opYCC_601:
++ *	opRGB:
++ *	BT2020_CYCC:
++ *	DCI-P3_RGB_D65:
++ *	DCI-P3_RGB_Theater:
++ *	RGB_WIDE_FIXED:
++ *	RGB_WIDE_FLOAT:
++ *	BT601_YCC:
++ *		The behavior is undefined.
+  *
+  * Because between HDMI and DP have different colorspaces,
+  * drm_mode_create_hdmi_colorspace_property() is used for HDMI connector and
+diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
+index fe88d7fc6b8f..02c42b01a3a7 100644
+--- a/include/drm/drm_connector.h
++++ b/include/drm/drm_connector.h
+@@ -437,14 +437,6 @@ enum drm_privacy_screen_status {
+  *
+  * DP definitions come from the DP v2.0 spec
+  * HDMI definitions come from the CTA-861-H spec
+- *
+- * A note on YCC and RGB variants:
+- *
+- * Since userspace is not aware of the encoding on the wire
+- * (RGB or YCbCr), drivers are free to pick the appropriate
+- * variant, regardless of what userspace selects. E.g., if
+- * BT2020_RGB is selected by userspace a driver will pick
+- * BT2020_YCC if the encoding on the wire is YUV444 or YUV420.
+   *
+  * @DRM_MODE_COLORIMETRY_DEFAULT:
+  *   Driver specific behavior.
+-- 
+2.44.0
 
-That was the hope, but I've managed to trigger a reset on disconnect
-once also with the runtime PM series reverted.
-
-One of the patches from that series has already been reverted (to fix
-the VT console hotplug regression) and there is some indication that
-that was sufficient to address the issue with hotplug not being detected
-in X/Wayland too. I'm waiting for confirmation from some users that have
-not been able to use their external displays at all since 6.8-rc1, but
-it does seem to fix the X/Wayland issues I could reproduce here.
-
-But either way, the reset on disconnect is still there, and have since
-been reproduced by Bjorn also on another Qualcomm platform without a
-hypervisor so that we've now got a call stack. I've heard that Abhinav
-is looking into that, but I don't know if there's any chance to have a
-fix ready this week.
-
-Johan
 
