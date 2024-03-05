@@ -1,113 +1,78 @@
-Return-Path: <linux-kernel+bounces-93008-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-93009-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5EC3872959
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 22:23:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5AD287295D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 22:25:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 56F811F2448B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 21:23:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D70B01C2234E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 21:25:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85A1312BEA3;
-	Tue,  5 Mar 2024 21:23:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AF9812AAFB;
+	Tue,  5 Mar 2024 21:25:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WOB8SWF+"
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o+u7+Uip"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23BCB12A153
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 21:23:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50D7B26AD0;
+	Tue,  5 Mar 2024 21:25:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709673806; cv=none; b=p/d9bG/Rhrkb+XLmN2Iy7Ew3ADb01yq92SGDM1s2Ha4gFz8BKs/nilYOPgdsbPIDusIiwP7J5khCzJn0snpfWf2+aYYJjW/0/41rJ5vcxRyVRXWsBoTsldUv9WmoCDWt837l9XEs5v/H39wJHw/hemqdOe6vecmyhYivcrltWQQ=
+	t=1709673919; cv=none; b=RFEVFLLg+TvnnmW1ixfd3WcmzeP38u+u1ddkaomJmTF/KbPXjoHqQV5x3olmvANWkIh4AV/jkjXvalDo6oEHSvz+4gon8bP7Hyy0tdBWpj4MBPiIxPB9BwkEG1/t6Wzsw7rad07iW9WS2XFiiq3lhAk8B/IoMCgq4XNLJsbY3gs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709673806; c=relaxed/simple;
-	bh=+sYqzS7S/emEX62cjyaYV4mxk/5PcBUF1vVXL8oH5qs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tebA42N1g//O2XKqSAV4ShrQOB60DlR7OBQybHfJud2MI+4SKJRn9zS1WCvZT3cMNqtNTtqJ2wvTHdJ6X0MxyT1pk3s3ltgWUywcw4c/5sTT8VED/7kM5NhP5Mbs5tnEADedSaYUtgYiS8SLeqK8rG8AuiI49tz3R+LaLXlmgi8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WOB8SWF+; arc=none smtp.client-ip=209.85.208.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d29aad15a5so78856401fa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 13:23:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709673803; x=1710278603; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yAzL8mGHJidCO1zLUY5C0p3Ij1T1ldDFSZfozw6PSaI=;
-        b=WOB8SWF+1cFzp6WqmgoClYw2Y8HsasUHUNVWzyL9YuoKkliO2UiphOuPzWLR/OLO5o
-         5UtmysfrMT3C8C9FLfIybH5Fpoc7prwPqV6LEfK7xoL8K2lOBFIT5KFZTpZsC7uJh20A
-         P5dYgzTJWJUvHEH0EydNLUi+HU9g2ZkhjzuF7piBSByNDUvvK4R2IoiN3y6u1SZENytG
-         9yofIKXCPmYRycmYudlyEKOJMzK7B3fvgJjBrmRwZl8/uitK8IpMcm1ztjgLC4ZHSaaB
-         0mNp4J8q6kxGMkwt9Llz9Ejae6Z1RQuG77dsAAMBQpKqfwA3I0vjy/hXqQEUUhuXG1x2
-         bgNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709673803; x=1710278603;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yAzL8mGHJidCO1zLUY5C0p3Ij1T1ldDFSZfozw6PSaI=;
-        b=jK9EZuBpwoqGYEWGNlUWZCfLpXb6JYqSMWJIaJZxmaH60oHb8hzR5SLvL3OJSmAVyJ
-         iCrroUKrXBVabPx9Ys8jhBjjdPdYF6wZBVp1fufK/G/AYZZlTTgep60uXmRuL0s1Q+ay
-         VfiTKO0STZtzvPjNuc07k6FR98PRHtUUMFaGMDju9Vcf110PlK89+M2KJzCo8ryCLPSA
-         rU1ny8TUuGTFOTZSbFCXXsI6wGc/Ylhvcj+GxxxURs63U8SpISglT7YQtTYSfPWB6254
-         FgEx5zu9C+ECTt5Mm7Vez3sfrJGtFJjmAkLyN9FzpYfGaJ2mHRLEthz/fRTzGi/7QYEX
-         SHCQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVT+uenMHVJlbwk4CcN/pV07MGWnzdTDF6qrnYJAapd6s881rU7DUs+Of+jeD53TwS5/IpGHcJgNKvV9ZHrywVIBdh0vhMRu7ahAfdP
-X-Gm-Message-State: AOJu0YzRedhqiseE7Xps20STeTi+qdiw5DM+tzLsINgwzJv6edXP7slL
-	ZxovssK5JrNkSm+zPJ2B+iShXT7mZ+3BL871h+tT+4lIX62F+HUjkkSoqAGmqhhp3BZQMAtopKQ
-	VU21O3A==
-X-Google-Smtp-Source: AGHT+IEFyN9DKvKwqLB6pX1c6+uDTipw2rDoJN2LgnZsNQN4gdBtSi0xVYlhK/bRXcoWDQgIDlyffQ==
-X-Received: by 2002:ac2:5f05:0:b0:513:4766:2713 with SMTP id 5-20020ac25f05000000b0051347662713mr1866058lfq.59.1709673803199;
-        Tue, 05 Mar 2024 13:23:23 -0800 (PST)
-Received: from [172.30.204.154] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id b5-20020ac24105000000b00512e594e235sm2331651lfi.242.2024.03.05.13.23.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Mar 2024 13:23:22 -0800 (PST)
-Message-ID: <0a28b69d-e55a-4e54-8d2f-e92b06baf71c@linaro.org>
-Date: Tue, 5 Mar 2024 22:23:21 +0100
+	s=arc-20240116; t=1709673919; c=relaxed/simple;
+	bh=KoWPYjz9mQHxw1FLKmnfDuBzXbSrn5K2dOrc5yDuI6U=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=a9GwSjmVLRrTwfjeE2ywpKqhM5DSH7kP89FE3FsXZz2l+a/l6EDwq9hVujP8BJAXHLDPqUKa/f/DbYl8hiHlURx3CkH4YePh4Qyy8XB0V4nEqFwbqajfH+huw7WWQeff8atzSY5er7eHye0q6Zh+QiWsdoMHT5FudWepS3z72II=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o+u7+Uip; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 31356C433F1;
+	Tue,  5 Mar 2024 21:25:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709673919;
+	bh=KoWPYjz9mQHxw1FLKmnfDuBzXbSrn5K2dOrc5yDuI6U=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=o+u7+UipsPozteiEOgLhWYUa3aySdwPkR4xU0M7rx4jaITct1sEOb2cnrHxL8rJFH
+	 N9HQyqZgXzAnQUfEAV1qpVeR4vP5/5HtFozEE5E9rTdh6hXtRVqD8wsG4h6BRKlvhK
+	 Kef7/8aSMFTmqBACqIJUjodUj3vhwPF62EkqK8mfBHPNcfog5I5LPzYpMbVqjAIHl6
+	 PoXKX7OwOgPUvjs/vsf51UJVZeSN0JFjS+izjh9I4DmNRVF5QAa3j5b1Nii7qMlJEa
+	 BIr4+ZCGHnZUpagIzJ9yQSOJujaIVwqM5hedcdeAGKWswwlps5GphJ+cEoKRD23gjO
+	 aFB1/Si4mok1w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1E3A0C04D3F;
+	Tue,  5 Mar 2024 21:25:19 +0000 (UTC)
+Subject: Re: [GIT PULL] integrity: subsystem update for v6.8-rcX
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <987924a8c1e3e4e99a483e432f1418518af0b7aa.camel@linux.ibm.com>
+References: <987924a8c1e3e4e99a483e432f1418518af0b7aa.camel@linux.ibm.com>
+X-PR-Tracked-List-Id: <linux-integrity.vger.kernel.org>
+X-PR-Tracked-Message-Id: <987924a8c1e3e4e99a483e432f1418518af0b7aa.camel@linux.ibm.com>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git/ tags/integrity-v6.8-fix
+X-PR-Tracked-Commit-Id: 85445b96429057d87446bcb24ec0cac9ea9c7fdf
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 29cd507cbec282e13dcf8f38072a100af96b2bb7
+Message-Id: <170967391910.2988.6821418488336748407.pr-tracker-bot@kernel.org>
+Date: Tue, 05 Mar 2024 21:25:19 +0000
+To: Mimi Zohar <zohar@linux.ibm.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-integrity <linux-integrity@vger.kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>, Roberto Sassu <roberto.sassu@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: qcom: qcs6490-rb3gen2: Name the regulators
-Content-Language: en-US
-To: Bjorn Andersson <quic_bjorande@quicinc.com>,
- Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240227-rb3gen2-regulator-names-v1-1-63ceb845dcc8@quicinc.com>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20240227-rb3gen2-regulator-names-v1-1-63ceb845dcc8@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
+The pull request you sent on Tue, 05 Mar 2024 07:15:15 -0500:
 
+> https://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git/ tags/integrity-v6.8-fix
 
-On 2/27/24 18:39, Bjorn Andersson wrote:
-> Without explicitly specifying names for the regualtors they are named
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/29cd507cbec282e13dcf8f38072a100af96b2bb7
 
-regulators
+Thank you!
 
-> based on the DeviceTree node name. This results in multiple regulators
-> with the same name, making debug prints and regulator_summary inpossible
-
-impossible
-
-> to reason about.
-> 
-> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-> ---
-
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-
-Konrad
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
