@@ -1,114 +1,93 @@
-Return-Path: <linux-kernel+bounces-92110-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92111-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F002871B47
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:32:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D15F0871B49
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:32:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 150A91F216AC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:32:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 882001F222C0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:32:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB91A57322;
-	Tue,  5 Mar 2024 10:17:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="0A7eN71r"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE9A858218;
+	Tue,  5 Mar 2024 10:17:49 +0000 (UTC)
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9024453E03
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 10:17:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 877E458127
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 10:17:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709633836; cv=none; b=ZGqL7vXvRIOzlNzirP8CsIwivXizXd4FJmrG2LXtFEReOhIgtSpeb75cS/90J40alLvp9KYdgEwRpTbsNKJmP1WWMclzbp7kiGMIhMA2hhtO1iZ2xBdXm7hkM8rY8z3b4KJd9JOV9MaWQhchlEH3+3b55Exhpsfn+0lH+3EcbaA=
+	t=1709633869; cv=none; b=dpriSfL4ATrpToauEdo7dHWalmW2oPRqsP1deXZFJPSXfMeQ/1Fv6nczSoB8g8Qk0J9FlV6QSL5cbKHTQZY3NbKrhiBgwKFaAnfnf/zTz+1XwDfzQf3Sf2FFn6H34AVLF8h6e7x9FV44yz7zJcpjhFJc+bwQnAz4EJINdKNREdU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709633836; c=relaxed/simple;
-	bh=b7UcicYM6WU8vJRmKmFjap9G0GMKJpkN4ML3k9zwggk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=X/mhY0Y5+TWaO0SAMM0phk21ryTwuyKQ3XDmOMr2tOu2IefxIq6ln9CXtHVOOhxoS+qyTHAFsHUIX5lRe6h5twOlVtRO0LRRrOuLvfOvYM5HkK8sQ1UwLOzN3/NMHDQlInKsvwstts+cVQJQgG/zrWWUl/JmdJcMD3gmrAgpri8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=0A7eN71r; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1709633832;
-	bh=b7UcicYM6WU8vJRmKmFjap9G0GMKJpkN4ML3k9zwggk=;
-	h=From:To:Cc:Subject:Date:From;
-	b=0A7eN71rp+UmAoxwyim+zhX2GcJKHy8D8BNGiyNBc65PzZfcTxY5pqLL8kkAoXbLN
-	 Ndxdhbdls9ML9rNipM2Gu4y0L2/KUkrrxrceTJR/K4B6IZ29HS72Xwx0kg3EFMTshT
-	 MRvsb5kRVD9H/iajJmDV0qoxOoT/Skrnld2+O9fwdlCaiggS43sBQvEsRJymkZLnQe
-	 h5FI1Z7hXI6Q6CFsmRe6UzndZrfTJxc7jZZpOQ5uMTXoNsOI6QsM3/mRKECSfVHmQp
-	 a5W6gFtsseZeVLiGi4UbvwTm2b0Jd4uualf50P+9fjudEFYfDpfn+qImzinYZEusNf
-	 JfzUsx+AgwJzw==
-Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: vignesh)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 4F7833781FEF;
-	Tue,  5 Mar 2024 10:17:08 +0000 (UTC)
-From: Vignesh Raman <vignesh.raman@collabora.com>
-To: dri-devel@lists.freedesktop.org
-Cc: daniels@collabora.com,
-	helen.koike@collabora.com,
-	airlied@gmail.com,
-	daniel@ffwll.ch,
-	david.heidelberg@collabora.com,
-	sergi.blanch.torne@collabora.com,
-	guilherme.gallo@collabora.com,
-	robdclark@gmail.com,
-	jani.nikula@linux.intel.com,
-	joonas.lahtinen@linux.intel.com,
-	rodrigo.vivi@intel.com,
-	tvrtko.ursulin@linux.intel.com,
-	intel-gfx@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/ci: update device type for volteer devices
-Date: Tue,  5 Mar 2024 15:46:26 +0530
-Message-Id: <20240305101626.36357-1-vignesh.raman@collabora.com>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1709633869; c=relaxed/simple;
+	bh=b43DucxfSrZNmb7coHs1dYCGziXHL65Zh3a/pU2ENRA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=E1oT08GFtOp6wXzeqhFv1LQ7x88POdi3RFHGh8ev8YH36G1AQKPb0sBF13nDp9zj/qfz1m0K1klp2D14L5Xi3T+uEv51a6zo9CcOZehOVh1BExDR1fLvd2jjm6NwkOHvlHOKpxtSvlWQ48AGUQVV4N247zbz4OOXK+NoHnDYvFE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
+Received: from fsav114.sakura.ne.jp (fsav114.sakura.ne.jp [27.133.134.241])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 425AHZ4Z080546;
+	Tue, 5 Mar 2024 19:17:35 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav114.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav114.sakura.ne.jp);
+ Tue, 05 Mar 2024 19:17:35 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav114.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 425AHZg5080543
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Tue, 5 Mar 2024 19:17:35 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <1fec6a8b-7083-4b08-858a-0793f996ed52@I-love.SAKURA.ne.jp>
+Date: Tue, 5 Mar 2024 19:17:35 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [syzbot] [hardening?] [mm?] BUG: bad usercopy in fpa_set
+Content-Language: en-US
+To: syzbot <syzbot+cb76c2983557a07cdb14@syzkaller.appspotmail.com>,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <0000000000004cf5c205faf1c7f3@google.com>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <0000000000004cf5c205faf1c7f3@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Volteer devices in the collabora lab are categorized under the
-asus-cx9400-volteer device type. The majority of these units
-has an Intel Core i5-1130G7 CPU, while some of them have a
-Intel Core i7-1160G7 CPU instead. So due to this difference,
-new device type template is added for the Intel Core i5-1130G7
-and i7-1160G7 variants of the Acer Chromebook Spin 514 (CP514-2H)
-volteer Chromebooks. So update the same in drm-ci.
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 
-https://gitlab.collabora.com/lava/lava/-/merge_requests/149
-
-Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
----
- drivers/gpu/drm/ci/test.yml | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/gpu/drm/ci/test.yml b/drivers/gpu/drm/ci/test.yml
-index 0857773e5c5f..8bc63912fddb 100644
---- a/drivers/gpu/drm/ci/test.yml
-+++ b/drivers/gpu/drm/ci/test.yml
-@@ -252,11 +252,11 @@ i915:cml:
- i915:tgl:
-   extends:
-     - .i915
--  parallel: 8
-+  parallel: 5
-   variables:
--    DEVICE_TYPE: asus-cx9400-volteer
-+    DEVICE_TYPE: acer-cp514-2h-1130g7-volteer
-     GPU_VERSION: tgl
--    RUNNER_TAG: mesa-ci-x86-64-lava-asus-cx9400-volteer
-+    RUNNER_TAG: mesa-ci-x86-64-lava-acer-cp514-2h-1130g7-volteer
+diff --git a/arch/arm/kernel/ptrace.c b/arch/arm/kernel/ptrace.c
+index c421a899fc84..29b28961637c 100644
+--- a/arch/arm/kernel/ptrace.c
++++ b/arch/arm/kernel/ptrace.c
+@@ -573,8 +573,10 @@ static int fpa_get(struct task_struct *target,
+ 		   const struct user_regset *regset,
+ 		   struct membuf to)
+ {
+-	return membuf_write(&to, &task_thread_info(target)->fpstate,
+-				 sizeof(struct user_fp));
++	struct thread_info *thread = task_thread_info(target);
++
++	return membuf_write(&to, &thread->fpstate,
++				 sizeof(thread->fpstate));
+ }
  
- .amdgpu:
-   extends:
--- 
-2.40.1
+ static int fpa_set(struct task_struct *target,
+@@ -586,7 +588,7 @@ static int fpa_set(struct task_struct *target,
+ 
+ 	return user_regset_copyin(&pos, &count, &kbuf, &ubuf,
+ 		&thread->fpstate,
+-		0, sizeof(struct user_fp));
++		0, sizeof(thread->fpstate));
+ }
+ 
+ #ifdef CONFIG_VFP
 
 
