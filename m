@@ -1,154 +1,249 @@
-Return-Path: <linux-kernel+bounces-92188-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92189-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6ADA871C6E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:58:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCB75871C72
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:59:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52AE31F25B11
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:58:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D14C285659
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 10:59:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA32F5CDC5;
-	Tue,  5 Mar 2024 10:53:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFC435D460;
+	Tue,  5 Mar 2024 10:53:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="KvjwfHYP"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="fPR76suc"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8740B548E0;
-	Tue,  5 Mar 2024 10:53:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 112F058AD0;
+	Tue,  5 Mar 2024 10:53:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709636022; cv=none; b=eCW8tTv6lmk5QekYsLTSNKtU8rQFqgdLyyRFXK5P+2rYIjvVPhgqdEZdqjpD+uMNm741+LIzennOLRbK6i7NdMxAopxi0KYe4N6Rw8jQnPZBJM59tfmrWZsCkDQIEGlXm4c39QwmD1NasqpXZ2HejDwsNhme+r/9po85/96WORE=
+	t=1709636036; cv=none; b=rcTvzYkq9C5ko1tfJYWoeIQManIDZHEBV3WC+jtPimI3XRTWt1x1o0O8Dwe4gMOqDREXiC3ItWzHtbJd+5+FTzhBHsZpGhFUMXUVeLwf+5SETH2v2hNYCyiqpDbIG8GJeHaudXLo90mjJ0Ffq4SOIYKUpVb7yq1rv9+BGlfyjZo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709636022; c=relaxed/simple;
-	bh=+EDeY2yT2n/cIzmd+Fwdxy+Nb2MpMS4znvqdlwWBR9E=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=vBdJ56HZ8BvsBfWJxDaXIP1dgczhpmLtC8Y0BdHKwres1lT+Sp8Ct0ZEKq7iQ9qucgh0yYLx09mV5PJ7/30ohcxRBXY6AuddXEnxGIeJx6bnLPxQ49zndK8e1KljPmOPDDtjbXYYn3mK7zWsteuN0jPc1o3wcsICSUFq7UXvhyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=KvjwfHYP; arc=none smtp.client-ip=205.220.168.131
+	s=arc-20240116; t=1709636036; c=relaxed/simple;
+	bh=i4uWsuRa5/4DJKP1MupYCLB+thuPY6zku9TxPsa/2Pc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=lLjKQqeH6RVLmrjMboENkmGY5DO/b07nh23THuQNiD6/lNWO5jcd7Y6hoDGGHEIuRU0yTEATBBBJynhPTn9Mp2A13T8lJ7CCkzuc1s9+rtkCAb27ZUJGUZT293KJBJOwT47ex0X5ZtEZsJDMKqw2auYvqOaw5rjib3pvh+mXW+g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=fPR76suc; arc=none smtp.client-ip=205.220.180.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4258cUul014068;
-	Tue, 5 Mar 2024 10:53:23 GMT
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4252EW5Y011488;
+	Tue, 5 Mar 2024 10:53:46 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=qcppdkim1; bh=xiVexQtak33mp1KuoCuep
-	OlA2edRPR1tpbMxzI9BHVY=; b=KvjwfHYPrmlHqli1tRWm2GhLJEdakPWXjivsE
-	s427SYHZQ34BHDEjEZm5mCGI8GlvQvzkEb1C+srNBsR71fioWZylU1ve03x91M9h
-	Rq/gt0XeQB8UK9nlevn5SsVBd093VJT2OJK7k5lzNXZNoHoMEaonPb6+j6fRQgYZ
-	ki41oI46rgUTv2yYrrvAXm/Mecof47hWXSpEp0PP2NTeT58GvRqo2XaRKcWB1Vhi
-	ZFP2CeiiX88a60XZQ5tKkO7hjHVg4f17dKUaAGqt33SxKtmaFIbD6Yn0uh9IFKzA
-	AMsZKKRiy49Ua6wilU6IWKLHb+RTs9wQu1e0fliAPtmw1Z5gw==
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=pXnI3OiNTCdkH18BMDZXDRzlbP1Jbh2GqRwo9zrrAI8=; b=fP
+	R76sucuzdB9nmQ8UtkSEKTdzxaCmdZVyT6ojBarfo/IbeXh1YOU3KZMNUr3APNWn
+	cEDIgdcqts/3W2WRdZpKCpM/z+VrdgJ74XwkhGjx7Jjfq8SVKOlVnQ9V2MhixXY7
+	Z3lrgv8BOavhp168HkA0KwtW4EQfjpneY7hn1qUhu2CJBorCz1XICUl4FO8CbMzP
+	fCciNz96osmwdSzBq04d6NujzQ+JM9ivoHxOJl67BbNeLPm6/YLdjyX1NalZTps9
+	7dxOjKLEonXpoM1a7EZQPMBY6A8D1mrj2NeBOPsjzscj9Kefr9EcTf5DKscViMR/
+	MeW5vnlzMu8i9L5pyO3A==
 Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wp028892c-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wnqwhs680-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 05 Mar 2024 10:53:23 +0000 (GMT)
+	Tue, 05 Mar 2024 10:53:46 +0000 (GMT)
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 425ArMGH012399
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 425ArjiL012602
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 5 Mar 2024 10:53:22 GMT
-Received: from hu-pkondeti-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 5 Mar 2024 02:53:14 -0800
-Date: Tue, 5 Mar 2024 16:23:12 +0530
-From: Pavan Kondeti <quic_pkondeti@quicinc.com>
-To: Elliot Berman <quic_eberman@quicinc.com>
-CC: Alex Elder <elder@linaro.org>,
-        Srinivas Kandagatla
-	<srinivas.kandagatla@linaro.org>,
-        Murali Nalajal <quic_mnalajal@quicinc.com>,
-        Trilok Soni <quic_tsoni@quicinc.com>,
-        Srivatsa Vaddagiri
-	<quic_svaddagi@quicinc.com>,
-        Carl van Schaik <quic_cvanscha@quicinc.com>,
-        Philip Derrin <quic_pderrin@quicinc.com>,
-        Prakruthi Deepak Heragu
-	<quic_pheragu@quicinc.com>,
-        Jonathan Corbet <corbet@lwn.net>, Rob Herring
-	<robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Bjorn Andersson
-	<andersson@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        "Fuad
- Tabba" <tabba@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "Andrew
- Morton" <akpm@linux-foundation.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-mm@kvack.org>
-Subject: Re: [PATCH v17 01/35] docs: gunyah: Introduce Gunyah Hypervisor
-Message-ID: <6f98238d-25d9-4120-810a-4b8b19c1ef5d@quicinc.com>
-References: <20240222-gunyah-v17-0-1e9da6763d38@quicinc.com>
- <20240222-gunyah-v17-1-1e9da6763d38@quicinc.com>
+	Tue, 5 Mar 2024 10:53:45 GMT
+Received: from [10.216.9.163] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 5 Mar
+ 2024 02:53:36 -0800
+Message-ID: <9d878f69-c9d1-1ee4-f80e-1d8f16c6920e@quicinc.com>
+Date: Tue, 5 Mar 2024 16:23:21 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240222-gunyah-v17-1-1e9da6763d38@quicinc.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH v8 3/7] PCI: qcom: Add ICC bandwidth vote for CPU to PCIe
+ path
+Content-Language: en-US
+To: Manivannan Sadhasivam <mani@kernel.org>
+CC: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Rob Herring
+	<robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Rob Herring
+	<robh+dt@kernel.org>,
+        Johan Hovold <johan+linaro@kernel.org>,
+        Brian Masney
+	<bmasney@redhat.com>, Georgi Djakov <djakov@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <vireshk@kernel.org>, <quic_vbadigan@quicinc.com>,
+        <quic_skananth@quicinc.com>, <quic_nitegupt@quicinc.com>,
+        <quic_parass@quicinc.com>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+References: <20240302-opp_support-v8-0-158285b86b10@quicinc.com>
+ <20240302-opp_support-v8-3-158285b86b10@quicinc.com>
+ <20240304174111.GB31079@thinkpad>
+From: Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
+In-Reply-To: <20240304174111.GB31079@thinkpad>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: WVHQJJ_TVjtAPqZKVZkx35bx7TCdrEtx
-X-Proofpoint-ORIG-GUID: WVHQJJ_TVjtAPqZKVZkx35bx7TCdrEtx
+X-Proofpoint-GUID: VDkcFMikw_XkKE8PvWULLtmg61hONHIK
+X-Proofpoint-ORIG-GUID: VDkcFMikw_XkKE8PvWULLtmg61hONHIK
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-03-05_08,2024-03-04_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- lowpriorityscore=0 mlxlogscore=248 suspectscore=0 phishscore=0 spamscore=0
- malwarescore=0 mlxscore=0 clxscore=1011 bulkscore=0 impostorscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 phishscore=0
+ clxscore=1015 lowpriorityscore=0 adultscore=0 malwarescore=0
+ priorityscore=1501 bulkscore=0 impostorscore=0 mlxlogscore=999
+ suspectscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2402120000 definitions=main-2403050087
 
-On Thu, Feb 22, 2024 at 03:16:24PM -0800, Elliot Berman wrote:
-> Gunyah is an open-source Type-1 hypervisor developed by Qualcomm. It
-> does not depend on any lower-privileged OS/kernel code for its core
-> functionality. This increases its security and can support a smaller
-> trusted computing based when compared to Type-2 hypervisors.
 
-%s/based/base
 
+On 3/4/2024 11:11 PM, Manivannan Sadhasivam wrote:
+> On Sat, Mar 02, 2024 at 09:29:57AM +0530, Krishna chaitanya chundru wrote:
+>> To access PCIe registers, PCIe BAR space, config space the CPU-PCIe
+>> ICC (interconnect consumers) path should be voted otherwise it may
+>> lead to NoC (Network on chip) timeout. We are surviving because of
+>> other driver vote for this path.
+>>
+>> As there is less access on this path compared to PCIe to mem path
+>> add minimum vote i.e 1KBps bandwidth always.
 > 
-> Add documentation describing the Gunyah hypervisor and the main
-> components of the Gunyah hypervisor which are of interest to Linux
-> virtualization development.
+> Please add the info that 1KBps is what shared by the HW team.
 > 
-> Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
-> +- Virtual platform:
-> +
-> +  Architectural devices such as interrupt controllers and CPU timers are
-> +  directly provided by the hypervisor as well as core virtual platform devices
-> +  and system APIs such as ARM PSCI.
-> +
-> +- Device Virtualization:
-> +
-> +  Para-virtualization of devices is supported using inter-VM communication and
-> +  virtio transport support. Select stage 2 faults by virtual machines that use
-
-%s/Select/Selected
-
-> +  proxy-scheduled vCPUs can be handled directly by Linux to provide Type-2
-> +  hypervisor style on-demand paging and/or device emulation.
-> +
-
-
-The doc patch looks good to me.
-
-Thanks,
-Pavan
+Ack to all the comments
+>>
+>> When suspending, disable this path after register space access
+>> is done.
+>>
+>> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+>> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+>> ---
+>>   drivers/pci/controller/dwc/pcie-qcom.c | 38 ++++++++++++++++++++++++++++++++--
+>>   1 file changed, 36 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+>> index 10f2d0bb86be..a0266bfe71f1 100644
+>> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+>> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+>> @@ -240,6 +240,7 @@ struct qcom_pcie {
+>>   	struct phy *phy;
+>>   	struct gpio_desc *reset;
+>>   	struct icc_path *icc_mem;
+>> +	struct icc_path *icc_cpu;
+>>   	const struct qcom_pcie_cfg *cfg;
+>>   	struct dentry *debugfs;
+>>   	bool suspended;
+>> @@ -1372,6 +1373,9 @@ static int qcom_pcie_icc_init(struct qcom_pcie *pcie)
+>>   	if (IS_ERR(pcie->icc_mem))
+>>   		return PTR_ERR(pcie->icc_mem);
+>>   
+>> +	pcie->icc_cpu = devm_of_icc_get(pci->dev, "cpu-pcie");
+>> +	if (IS_ERR(pcie->icc_cpu))
+>> +		return PTR_ERR(pcie->icc_cpu);
+>>   	/*
+>>   	 * Some Qualcomm platforms require interconnect bandwidth constraints
+>>   	 * to be set before enabling interconnect clocks.
+>> @@ -1381,7 +1385,19 @@ static int qcom_pcie_icc_init(struct qcom_pcie *pcie)
+>>   	 */
+>>   	ret = icc_set_bw(pcie->icc_mem, 0, QCOM_PCIE_LINK_SPEED_TO_BW(1));
+>>   	if (ret) {
+>> -		dev_err(pci->dev, "failed to set interconnect bandwidth: %d\n",
+>> +		dev_err(pci->dev, "failed to set interconnect bandwidth for pcie-mem: %d\n",
+> 
+> "PCIe-MEM"
+> 
+>> +			ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	/*
+>> +	 * The config space, BAR space and registers goes through cpu-pcie path
+>> +	 * Set peak bandwidth to 1KBps as recommended by HW team for this path
+>> +	 * all the time.
+> 
+> How about,
+> 
+> 	"Since the CPU-PCIe path is only used for activities like register
+> 	access, Config/BAR space access, HW team has recommended to use a
+> 	minimal bandwidth of 1KBps just to keep the link active."
+> 
+>> +	 */
+>> +	ret = icc_set_bw(pcie->icc_cpu, 0, kBps_to_icc(1));
+>> +	if (ret) {
+>> +		dev_err(pci->dev, "failed to set interconnect bandwidth for cpu-pcie: %d\n",
+>>   			ret);
+>>   		return ret;
+>>   	}
+>> @@ -1573,7 +1589,7 @@ static int qcom_pcie_suspend_noirq(struct device *dev)
+>>   	 */
+>>   	ret = icc_set_bw(pcie->icc_mem, 0, kBps_to_icc(1));
+>>   	if (ret) {
+>> -		dev_err(dev, "Failed to set interconnect bandwidth: %d\n", ret);
+>> +		dev_err(dev, "Failed to set interconnect bandwidth for pcie-mem: %d\n", ret);
+> 
+> "PCIe-MEM"
+> 
+>>   		return ret;
+>>   	}
+>>   
+>> @@ -1597,6 +1613,18 @@ static int qcom_pcie_suspend_noirq(struct device *dev)
+>>   		pcie->suspended = true;
+>>   	}
+>>   
+>> +	/* Remove CPU path vote after all the register access is done */
+> 
+> "Remove the vote for CPU-PCIe path now, since at this point onwards, no register
+> access will be done."
+> 
+>> +	ret = icc_disable(pcie->icc_cpu);
+>> +	if (ret) {
+>> +		dev_err(dev, "failed to disable icc path of cpu-pcie: %d\n", ret);
+> 
+> "CPU-PCIe"
+> 
+>> +		if (pcie->suspended) {
+>> +			qcom_pcie_host_init(&pcie->pci->pp);
+> 
+> Interesting. So if icc_disable() fails, can the IP continue to function?
+>
+As the ICC already enable before icc_disable() fails, the IP should work.
+  - Krishna Chaitanya.
+>> +			pcie->suspended = false;
+>> +		}
+>> +		qcom_pcie_icc_update(pcie);
+>> +		return ret;
+>> +	}
+>> +
+>>   	return 0;
+>>   }
+>>   
+>> @@ -1605,6 +1633,12 @@ static int qcom_pcie_resume_noirq(struct device *dev)
+>>   	struct qcom_pcie *pcie = dev_get_drvdata(dev);
+>>   	int ret;
+>>   
+>> +	ret = icc_enable(pcie->icc_cpu);
+>> +	if (ret) {
+>> +		dev_err(dev, "failed to enable icc path of cpu-pcie: %d\n", ret);
+> 
+> "CPU-PCIe"
+> 
+> - Mani
+> 
 
