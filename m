@@ -1,108 +1,136 @@
-Return-Path: <linux-kernel+bounces-92813-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92814-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FA3A87265B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:14:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED76087265F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 19:14:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF50828B079
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:14:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8CDFF1F27B8F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:14:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCF8318AE0;
-	Tue,  5 Mar 2024 18:14:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED9CE1AAB9;
+	Tue,  5 Mar 2024 18:14:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="TIDrRuHA"
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PIgPdnMI"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B78F17C98
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 18:14:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35B8017BD4;
+	Tue,  5 Mar 2024 18:14:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709662459; cv=none; b=aTUlYVfcdhs01ovQEbT/O8etQppxCyKIFv2ddENQJ/2akLU+kqaQvQLGNg8ZZpXw5uIEZElGoF/CQb06pVjbjP9rO0dqzzHnSqbiBLFbxuNgcCoTaQqIvzih7oWUymlDQpP7BL4NQsx7ma0kaSBCa8dOqSgVyG7vmT+7IG/m2ss=
+	t=1709662467; cv=none; b=kiXeLYAhEXEw8sjiCOO5dRra2MgmBcs7Qb83DRRDlBFIV8jAzq6v2bO4bqZDITA5y2nUwD5BOuKj0zb+psGLa6OT9xXKAsrPoCLfKMzqUoThx0iyTdoDS+4RbwQLxCeiijrBICEccsJwGGUin9m6MqPQj68diuayQxxycjd5/S8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709662459; c=relaxed/simple;
-	bh=CLb6htEM8BQ4wkYj4Mfxot1eztyH01EK5KTKnTSNh54=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=bgpYl9lzznCBnBLWuGCbT8FACEgPl8XpMS+UZ/96+KK+JgyCPFxzY0nW2jNQr3G1x4UsWVxvY08Aza9c2X4C1jUqALuqbXzQrQKjRZodyqSig9nqLJibU8fu4kJZY3lueqAzpHJillf9MctT8ZRDcOaw4SO/ISA/HUg2Drn3EbE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=TIDrRuHA; arc=none smtp.client-ip=95.215.58.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <6764b9c5-b61a-4f20-a41a-125d5015a3e6@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1709662455;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4mCLjnlt6q90qUCq4m5luMROvGFxl/z1bFGYicutzgw=;
-	b=TIDrRuHAB3Fwdib4sKxYLlkNs/TwItDMIceZL4vZyE4Carkes4zEYbdAlyJQ4dcCUxPpyF
-	6rbx5Zlju5IHwZLJLPCTrfuGz8914F21k9UnY4jBL9g2kqJvjQCD3ROpdK7tcPjKdbpgRy
-	reYNOMlidxSNyyW8Jc7aInmHfsV4vK8=
-Date: Tue, 5 Mar 2024 13:14:09 -0500
+	s=arc-20240116; t=1709662467; c=relaxed/simple;
+	bh=mnwUYin+wWG/5bm2UhgbjUnJX5XJYCmfDtF0BnRjVFQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=LyanE5FAILFCUECoH6M+o/T08npHOFgrMneQzBEOvK2Qs1+1DaDQ12wAt9pzezVx9eLgmSuaLB3wkwklUuNzAN9+WOAE5FpwYfmcn1gcNqZkonYgh9hBlRBg3tH6pCzcBFcFPcft77NouHYUImZB7MZqTQ8vxHTHaABwsPWlr5o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PIgPdnMI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E5B5C433F1;
+	Tue,  5 Mar 2024 18:14:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709662466;
+	bh=mnwUYin+wWG/5bm2UhgbjUnJX5XJYCmfDtF0BnRjVFQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=PIgPdnMIq+XljxNgkyHces7Cj6VHkEC9Q2shkEPwWWaHNM+2f+0AYrTWGi0dMKAv9
+	 g8bAsC9RauqJJxtQWadwW2+Ev78wqIs/RnjP7cVwZfVxq26Zffs9NhmbARrCo1wRfQ
+	 5dwWpxmw7sq51EnjeVhdTg9xEdxpKlA70wVNDLpin6ZuWqv3fkjWLokT7bRKp+aHy0
+	 jG0q71N/pK+55qXcM2HiLZKJt9bHFeyptoKD8cloob6aYFbfWcWIgacQLQbXGGVBAk
+	 Jw4A9RxRlDBb2Odf32fTUUdyoGHiTb7ovWCcbphkXUIEcRDljf2QZIf/dYuJCYaHes
+	 RSd1W9LJhxJ6Q==
+Date: Tue, 5 Mar 2024 12:14:25 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Linux PCI <linux-pci@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Linux PM <linux-pm@vger.kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Ricky Wu <ricky_wu@realtek.com>,
+	Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: Re: [PATCH v1] PM: runtime: PCI: Drain runtime-idle callbacks before
+ driver removal
+Message-ID: <20240305181425.GA541296@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RESEND2 PATCH net v4 2/2] soc: fsl: qbman: Use raw spinlock for
- cgr_lock
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Sean Anderson <sean.anderson@linux.dev>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>,
- "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Cc: Vladimir Oltean <vladimir.oltean@nxp.com>, Roy Pledge
- <roy.pledge@nxp.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "stable@vger.kernel.org" <stable@vger.kernel.org>,
- Li Yang <leoyang.li@nxp.com>, Scott Wood <oss@buserror.net>,
- Claudiu Manoil <claudiu.manoil@nxp.com>,
- Camelia Groza <camelia.groza@nxp.com>,
- Steffen Trumtrar <s.trumtrar@pengutronix.de>,
- "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-References: <20240222170749.2607485-1-sean.anderson@linux.dev>
- <20240222170749.2607485-2-sean.anderson@linux.dev>
- <53b401d7-934c-4937-ab83-6732af47668d@csgroup.eu>
- <34da1e7b-029e-410b-8735-a10d6d267e2b@linux.dev>
-In-Reply-To: <34da1e7b-029e-410b-8735-a10d6d267e2b@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5761426.DvuYhMxLoT@kreacher>
 
-Hi,
-
-On 2/23/24 11:02, Sean Anderson wrote:
-> On 2/23/24 00:38, Christophe Leroy wrote:
->> Le 22/02/2024 à 18:07, Sean Anderson a écrit :
->>> [Vous ne recevez pas souvent de courriers de sean.anderson@linux.dev. Découvrez pourquoi ceci est important à https://aka.ms/LearnAboutSenderIdentification ]
->>> 
->>> cgr_lock may be locked with interrupts already disabled by
->>> smp_call_function_single. As such, we must use a raw spinlock to avoid
->>> problems on PREEMPT_RT kernels. Although this bug has existed for a
->>> while, it was not apparent until commit ef2a8d5478b9 ("net: dpaa: Adjust
->>> queue depth on rate change") which invokes smp_call_function_single via
->>> qman_update_cgr_safe every time a link goes up or down.
->> 
->> Why a raw spinlock to avoid problems on PREEMPT_RT, can you elaborate ?
+On Tue, Mar 05, 2024 at 11:45:38AM +0100, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > 
-> smp_call_function always runs its callback in hard IRQ context, even on
-> PREEMPT_RT, where spinlocks can sleep. So we need to use raw spinlocks
-> to ensure we aren't waiting on a sleeping task. See the first bug report
-> for more discussion.
+> A race condition between the .runtime_idle() callback and the .remove()
+> callback in the rtsx_pcr PCI driver leads to a kernel crash due to an
+> unhandled page fault [1].
 > 
-> In the longer term it would be better to switch to some other
-> abstraction.
+> The problem is that rtsx_pci_runtime_idle() is not expected to be
+> running after pm_runtime_get_sync() has been called, but the latter
+> doesn't really guarantee that.  It only guarantees that the suspend
+> and resume callbacks will not be running when it returns.
+> 
+> However, if a .runtime_idle() callback is already running when
+> pm_runtime_get_sync() is called, the latter will notice that the
+> runtime PM status of the device is RPM_ACTIVE and it will return right
+> away without waiting for the former to complete.  In fact, it cannot
+> wait for .runtime_idle() to complete because it may be called from that
+> callback (it arguably does not make much sense to do that, but it is not
+> strictly prohibited).
+> 
+> Thus in general, whoever is providing a .runtime_idle() callback, they
+> need to protect it from running in parallel with whatever code runs
+> after pm_runtime_get_sync().  [Note that .runtime_idle() will not start
+> after pm_runtime_get_sync() has returned, but it may continue running
+> then if it has started earlier already.]
+> 
+> One way to address that race condition is to call pm_runtime_barrier()
+> after pm_runtime_get_sync() (not before it, because a nonzero value of
+> the runtime PM usage counter is necessary to prevent runtime PM
+> callbacks from being invoked) to wait for the runtime-idle callback to
+> complete should it be running at that point.  A suitable place for
+> doing that is in pci_device_remove() which calls pm_runtime_get_sync()
+> before removing the driver, so it may as well call pm_runtime_barrier()
+> subsequently, which will prevent the race in question from occurring,
+> not just in the rtsx_pcr driver, but in any PCI drivers providing
+> runtime-idle callbacks.
+> 
+> Link: https://lore.kernel.org/lkml/20240229062201.49500-1-kai.heng.feng@canonical.com/ # [1]
+> Reported-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> Tested-by: Ricky Wu <ricky_wu@realtek.com>
+> Cc: All applicable <stable@vger.kernel.org>
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Does this make sense to you?
+Applied with Kai-Feng's ack to pci/pm for v6.9, thank you very much!
 
---Sean
-
+> ---
+>  drivers/pci/pci-driver.c |    7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> Index: linux-pm/drivers/pci/pci-driver.c
+> ===================================================================
+> --- linux-pm.orig/drivers/pci/pci-driver.c
+> +++ linux-pm/drivers/pci/pci-driver.c
+> @@ -473,6 +473,13 @@ static void pci_device_remove(struct dev
+>  
+>  	if (drv->remove) {
+>  		pm_runtime_get_sync(dev);
+> +		/*
+> +		 * If the driver provides a .runtime_idle() callback and it has
+> +		 * started to run already, it may continue to run in parallel
+> +		 * with the code below, so wait until all of the runtime PM
+> +		 * activity has completed.
+> +		 */
+> +		pm_runtime_barrier(dev);
+>  		drv->remove(pci_dev);
+>  		pm_runtime_put_noidle(dev);
+>  	}
+> 
+> 
+> 
 
