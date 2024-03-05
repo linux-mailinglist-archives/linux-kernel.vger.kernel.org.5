@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-91625-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91626-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED92087145E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 04:40:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C34A87145F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 04:40:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B7901F228D7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 03:40:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0CCB81F2290E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 03:40:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D0EA3CF75;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D1E13CF7C;
 	Tue,  5 Mar 2024 03:40:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ETB847Qa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dD4Kbivh"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9232E1C01;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9460D2942A;
 	Tue,  5 Mar 2024 03:40:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709610026; cv=none; b=nq+1FdstRBIMYkRkgvnoEGca1FfvI3BgnOOjsXs9+hzCEKezNLCWYpzLEdeTuKmDK2sZvRjdv+gOKJHZvZufWb0EiPz+1yemAUVWXAH8GxQNw01PvqNe4WWIqf2yUsVmrJgKo5r57iHP/NLlbX9XoTXfp4y60MJ7SM+dROC/FN8=
+	t=1709610026; cv=none; b=h5ypQl8iU9v7XIOiPv6x92bZo2at/X7EihcymPGxh9Jx9Ts1GEODS3I4tBPpA41wG83V88oXJdEIKTG1yavnsPmnFghw0xdWeA5UWhj9t7FgzxcJCfgVEXgj6F6cZrXwvsAwNZTPpqBKvrtVdl16Rh6jGxl/VRX3dIjb7jBdIb4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1709610026; c=relaxed/simple;
-	bh=YO8QxpFJ+gMX1HZDCAHPq7q2GCIHmf23VqVGjI52XVQ=;
+	bh=H1PtRc/W4yf4gSpezrRjDoToPdrnhuGKWGPR9ZfJU7w=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=sjnr1NP5+fgw9ytlDQ3NDPx99gHig0OtIvMUBBHQuS+ZtQS67xtUm9+LQ+6N4WohLNw53+fi7B5a8OYuDfkQnQoLlsBjalbQS+rS/XE0zCaxsRa3yMjGAGgerRDUfoPwTuwCQfzG/tegNgcMlnx2uhpOcgadkYpoMBxvUssZXsM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ETB847Qa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 2ADA1C433F1;
+	 In-Reply-To:To:Cc; b=YpHWK2fKBSrEQeD44HdD975IVV3wpcDMkI2JtojKBJ/0h4/TQjBDDyVhVmX7gCrVHKS9roqwP1zkTRyh6aY/XBsqLLNXGD0r6A3+xGvj0rOuU8f60iX5vVaDxodge38TX8NP/JPZLgsj4tLUDe4K8hCOhrBDcr2emNIb7RtXlvk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dD4Kbivh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 224ACC43390;
 	Tue,  5 Mar 2024 03:40:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1709610026;
-	bh=YO8QxpFJ+gMX1HZDCAHPq7q2GCIHmf23VqVGjI52XVQ=;
+	bh=H1PtRc/W4yf4gSpezrRjDoToPdrnhuGKWGPR9ZfJU7w=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=ETB847Qa9Mibxjue5i90N02fDIwQyY/FKqZFqF9YEgUrfabZe71eln/pens4Op0DC
-	 pwaq9vp+CALSGc52552UY5Lsp8HATaRN5KuTUDcK8epC+gJQiAvfjwxrqK7A2y2CG1
-	 h4gmz7fXqFLmYIyLd8OfpOVZ0bEmLNpGtWBCFkcd5bFgfjpbMLbEP3lPyrC49tFsmd
-	 0XFwZc5kRzTUchX/+ZdS45rQPar/GoZ8feSfjLEMLIXRVO3H/RfMPUyK5NRAa3tFVu
-	 9rubtZeJx+99+QLDPKLcatBmyOFoa+hXNTHqdPMhFI3pp4Ln74ujjLl7Tp11p1RYX1
-	 foV8RAghV6gMg==
+	b=dD4KbivhfYEns/iGMSGMIeJG8SiGnvNneFKmq3Wjrp5vvTbswdtmAgu13CcO2oGhV
+	 FiiLJBH1oDava2YtDN3hl/RPkdJe39eSXHPICCtSyJ05OzJcmI/ZQNM+PhJu+GjYxb
+	 c7TCkS7aK17Ti0bJBhQMGLBkWcr6GIwA2zcbVUZk+2uVN1Ku7RGVbTFGHP6dTxTI18
+	 Isq2MkzesbM6Ficul6Ju0uayhBijsCYhW7aOsXCDkV6JdFr4FyH8SzqAsw+Kmfdwwt
+	 EzG2ELcBXf/eh9HMfbEEVGQvE6/ZKc/eKc37FTgjfJceL5Wyb3hXgt7sicTytdjO1J
+	 LOS4xbdq98D5w==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0F55FD9A4B5;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0720EC595C4;
 	Tue,  5 Mar 2024 03:40:26 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -51,40 +51,36 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] selftests/tc-testing: require an up to date iproute2
- for blockcast tests
+Subject: Re: [PATCH net-next] selftests: net: Correct couple of spelling mistakes
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <170961002605.3516.18175318406387875689.git-patchwork-notify@kernel.org>
+ <170961002602.3516.15535602203159521376.git-patchwork-notify@kernel.org>
 Date: Tue, 05 Mar 2024 03:40:26 +0000
-References: <20240229143825.1373550-1-pctammela@mojatatu.com>
-In-Reply-To: <20240229143825.1373550-1-pctammela@mojatatu.com>
-To: Pedro Tammela <pctammela@mojatatu.com>
-Cc: netdev@vger.kernel.org, jhs@mojatatu.com, xiyou.wangcong@gmail.com,
- jiri@resnulli.us, shuah@kernel.org, pabeni@redhat.com, kuba@kernel.org,
- victor@mojatatu.com, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, lkft@linaro.org, naresh.kamboju@linaro.org
+References: <20240228120701.422264-1-pvkumar5749404@gmail.com>
+In-Reply-To: <20240228120701.422264-1-pvkumar5749404@gmail.com>
+To: prabhav kumar <pvkumar5749404@gmail.com>
+Cc: shuah@kernel.org, netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org, petrm@nvidia.com, idosch@nvidia.com
 
 Hello:
 
 This patch was applied to netdev/net-next.git (main)
 by Jakub Kicinski <kuba@kernel.org>:
 
-On Thu, 29 Feb 2024 11:38:25 -0300 you wrote:
-> Add the dependsOn test check for all the mirred blockcast tests.
-> It will prevent the issue reported by LKFT which happens when an older
-> iproute2 is used to run the current tdc.
+On Wed, 28 Feb 2024 17:37:01 +0530 you wrote:
+> Changes :
+> 	- "excercise" is corrected to "exercise" in drivers/net/mlxsw/spectrum-2/tc_flower.sh
+> 	- "mutliple" is corrected to "multiple" in drivers/net/netdevsim/ethtool-fec.sh
 > 
-> Tests are skipped if the dependsOn check fails.
-> 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
-> 
-> [...]
+> Signed-off-by: Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
+> ---
+>  .../testing/selftests/drivers/net/mlxsw/spectrum-2/tc_flower.sh | 2 +-
+>  tools/testing/selftests/drivers/net/netdevsim/ethtool-fec.sh    | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 
 Here is the summary with links:
-  - [net-next] selftests/tc-testing: require an up to date iproute2 for blockcast tests
-    https://git.kernel.org/netdev/net-next/c/dcfaf1f758ee
+  - [net-next] selftests: net: Correct couple of spelling mistakes
+    https://git.kernel.org/netdev/net-next/c/fb0f02308126
 
 You are awesome, thank you!
 -- 
