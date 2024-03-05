@@ -1,76 +1,76 @@
-Return-Path: <linux-kernel+bounces-92262-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92263-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0587E871DA4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:28:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DDAFD871DA8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:28:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21D351C23314
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:28:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06D451C2348F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 11:28:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F4C85B674;
-	Tue,  5 Mar 2024 11:25:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E77DA5BADE;
+	Tue,  5 Mar 2024 11:25:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="YTaQZ8h/"
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="JjfciFPR"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0026B56758;
-	Tue,  5 Mar 2024 11:25:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 952FB5B681;
+	Tue,  5 Mar 2024 11:25:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709637935; cv=none; b=lBt6S1cs+FrTrsnZD8EFcTSTSRtNJvVoPXwR2PFdTktj6iVBXNJQNY8RQoPak0gR2ivN/myLz+PopxPTazow9UfK4T3zz31jkz5x/Bbq7NR99lxhqhcnRkmVked3NG86cx8Z55cuEiLsEf7Z/H8TKCgNj89Y7d+C8Iw7KFSqiiI=
+	t=1709637939; cv=none; b=WNw05FE8mPLo8BwU3gRW2oIcbZoTwiKR1rnOs/vZSpozcdB92XYDxuXLclfNfLB2ivdrgSflH6yUwBz/xcBtOsfUezs9y6PSgsdnpToYHaMpvtZguNnlvltjbtJvlKfVuXKNbMNkOiZ5rfwx/t75Gwi9/+2jnPEjftin3n/JKhg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709637935; c=relaxed/simple;
-	bh=WGIFWYFh3hQ9VXnIJFPQZwA2uJuy2dcs4lEb7YsAaFs=;
+	s=arc-20240116; t=1709637939; c=relaxed/simple;
+	bh=5jdxcdryUPQt50XcmDbhimc56nx8adUKkG1k2JFyqX0=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=lWL5zXUIIw/RCP1oWOcA/0QUg32fgfWeTZTOQVCG+cTPTREJfB7KuYIWxHQGIYQTHD5WSivgvQzho9I9Nntq/Isjo/vgIrmNimpHlq+WLfAOhP+u3SAfNSjO8kqIxYT5lscgFeb7a78FBDowg2rhs1ofIuqlt8x6L7okrjvxXsw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=YTaQZ8h/; arc=none smtp.client-ip=209.85.210.182
+	 In-Reply-To:To:Cc; b=GVBAg+bZuo9X1w/Pu0KuQqnJ5WsyHeoi7Lnr/mAJhYAxPVoEbKoJmZ2Y17jgwbnitYlrFtl7YSXCZxBPs9GMEOrXU/iHpWEaKSz7FHwasDyeVsYcMkyXPB4jBTI6Qehh1ZmFKVyxoNEx5nPPvgu9FmFe5z24UONheis+hLBGato=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=JjfciFPR; arc=none smtp.client-ip=209.85.214.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e5eb3dd2f8so2032203b3a.2;
-        Tue, 05 Mar 2024 03:25:33 -0800 (PST)
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1dd01ea35b5so15698485ad.0;
+        Tue, 05 Mar 2024 03:25:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709637933; x=1710242733;
+        d=1e100.net; s=20230601; t=1709637937; x=1710242737;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:dkim-signature:from:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=DrnOmqUduKVY9054SARMGgmju4czNVg1PR7unBKC3kc=;
-        b=Ob8gJ5jlMw0+vNnAgvfkAOngZ65ChFVajuyNM3MeugsRJj7xvhhTDXMVGBn8LbZ9D7
-         3+pkj5orhJ+XWSTqtw+wDpl5wsK9mdhJRAS4qWgQA6sz6/dMzeI3GyBGJMW0QfuIBNTw
-         njNS7BdP0vq/bJAJkeDZIvRjMuZ2xjWVACuLRgZkY4VTB4tbJqf6RNtOoHUDQAl3WJXU
-         4b4NoCEoEDLA+3C/0OCqHlprGKICDK5zPWmb4a+aIvVwtnmneVHqXZQufUvHdmdF2w/1
-         nwhstYAyQJRKfb1tChckZjaUPACkWmJLAtvRGhavlXHJln9YFNknudLmjTilBMraU6Xo
-         qG1g==
-X-Forwarded-Encrypted: i=1; AJvYcCUjas7whmzOqiw2x9Px5JXWZCuMkrTkGGOq6sEs9p+F0Yub/WiT155R5YoUQyVF41QNmELrV+JfFdckwAEPqXi9tl689IJP2GWSWFe0
-X-Gm-Message-State: AOJu0YzEpskQQYHkdTrvXvGL7fBEfJSKwfYcvrju5DZyNEzE2wHVbftJ
-	KstgLBqbqDNtUXXFoBn1BwS04d8XnWtA28KJ7VSWDAhYlRuhLnS9hM3QRo4cCLAO3Q==
-X-Google-Smtp-Source: AGHT+IFIJmVBoT+yA2CUePnH6wIFVqf0RfgtXJnODic5dsn7mvbhUl/zcLllowmj0IICA8AdqXJBOw==
-X-Received: by 2002:aa7:88c1:0:b0:6e5:5425:d914 with SMTP id k1-20020aa788c1000000b006e55425d914mr12434691pff.2.1709637933258;
-        Tue, 05 Mar 2024 03:25:33 -0800 (PST)
+        bh=rmH0p0BoItGRwrFW9LqJ5pvEbDOip4sy5bdoMO6KgV8=;
+        b=bXB+u61+8WVR8tC6eEmcA8ywYeJnwTIP10XIqY24205BdVVGYIMe8EG1GIkE+5A7fi
+         X9HSkIm7kV3E4lKeb6JHkVzmwqhiYim6iZYNw79vcsk95Qna7cNJa+Dj9aGw296XohXX
+         3c2qDd65reT9VrjV7cg+K/z1CCkXZcRCY/Mmalnw3IneKwws0nWPzEwLy64ng45gDUwR
+         4rSULmnd86zOtsJitMsRpSx5Yl9V2/q+FCk+FgU7+AEtuupS4eTMReNF0/PTLRGeuT6P
+         vRbVAly2cz0/JZdkZt3Uog2B71q+syN+WlOL+yx/ZHJySCbOfSHc40vTDLhXrneXWSYR
+         ty1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWRPU3Npa5kA0K0TFsGtsXO7vm5c3T4r2aFGp1fxzyWs3rF0tFT2d/nU9X7tb/MoOQIILqVEKFMcQ3ux+VKy1Key0WOfVLnp/sJurNE
+X-Gm-Message-State: AOJu0Yxxn3fv0zHY9eB/FDn/cZDovPGcWXpaGu2K2fMIg3enUOypCEIg
+	udDtvdve9jH02yxbjsOMgUl+ZqIylav34vwffugsMKaUzehykbyU/LjEa1I8NNr8Qg==
+X-Google-Smtp-Source: AGHT+IF2sYYr1hfNWL9HIGyRf+fqwHUBIuXhHwSjLYG+ifOjEx61TPyHKBOt8ZUL6DGDWQc5ZCrVpA==
+X-Received: by 2002:a17:902:778f:b0:1db:3618:fed5 with SMTP id o15-20020a170902778f00b001db3618fed5mr1161034pll.53.1709637936991;
+        Tue, 05 Mar 2024 03:25:36 -0800 (PST)
 Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id i37-20020a631325000000b005dc36761ad1sm8200256pgl.33.2024.03.05.03.25.32
+        by smtp.gmail.com with ESMTPSA id n18-20020a170902d2d200b001dca3951a39sm10289044plc.81.2024.03.05.03.25.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 03:25:32 -0800 (PST)
+        Tue, 05 Mar 2024 03:25:36 -0800 (PST)
 From: "Ricardo B. Marliere" <ricardo@marliere.net>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1709637931;
+	s=2024; t=1709637934;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=DrnOmqUduKVY9054SARMGgmju4czNVg1PR7unBKC3kc=;
-	b=YTaQZ8h/Vb/fXGX8im75NlizIO9ffQMZtKZjnokc8kyip/LVx8veYTs1MaW89ALt8V8sEp
-	zx0Xe2Y4fcT8QumoUa3FprwVeP87a+PQPjafBap+us+ZvsYosTaQbKdUJxC7N6Zm5AQZ77
-	Y8YiL25d1SmM4cBEUOSv7nHFAAJqB/ScDH/2rKcf3ad4otLBBYPr7FAYB+0YjyzHWxTNSr
-	JctXmTCWEIYVs3icGC0H4sXYuWXPdeKtNiGPMbcGpmmO0/UNNTVjrWGTS4qSsfVrlu0e2d
-	wdvaUuT82yjp+Vhl3h+KKd+XySb6Az90DMT/KTcRxe/3/NJY5A0GXErTwoPH2A==
+	bh=rmH0p0BoItGRwrFW9LqJ5pvEbDOip4sy5bdoMO6KgV8=;
+	b=JjfciFPRYjm9xl6rUiLde6eaS+uxsTdCum7mWTAyJUKVoOx+5nsuD31VVH7enmpiWpdCLt
+	zWmXhFhUov0FGG0zG9KoN2K1ig62Gj+ET6Z0K55PtD66eWeoB1igyldBVw1N5FhEXK+3AL
+	0MR6AHn72RqxlswLRhRVvtgVUggT+j5mmP+Y5EQ2+vNSIahCuS55G+PP1iU5z+UcT0vR3y
+	fcdgK2gPfE1dN51qu9CN+WZOedJpJrwHc9ek0yWcJIHYLmzNSfL1alCUsp4ZTsKfD8Qbio
+	2ZBjMTV1akhwpBeJyP3bPEeOQ++7zSR11w8kkTqH6n8bfwyUcyOBa3WaRXK0vg==
 Authentication-Results: ORIGINATING;
 	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Tue, 05 Mar 2024 08:25:19 -0300
-Subject: [PATCH 1/6] s390: zcrypt: make zcrypt_class constant
+Date: Tue, 05 Mar 2024 08:25:20 -0300
+Subject: [PATCH 2/6] s390: vmur: make vmur_class constant
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,7 +79,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240305-class_cleanup-s390-v1-1-c4ff1ec49ffd@marliere.net>
+Message-Id: <20240305-class_cleanup-s390-v1-2-c4ff1ec49ffd@marliere.net>
 References: <20240305-class_cleanup-s390-v1-0-c4ff1ec49ffd@marliere.net>
 In-Reply-To: <20240305-class_cleanup-s390-v1-0-c4ff1ec49ffd@marliere.net>
 To: Harald Freudenberger <freude@linux.ibm.com>, 
@@ -90,26 +90,26 @@ To: Harald Freudenberger <freude@linux.ibm.com>,
 Cc: linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org, 
  "Ricardo B. Marliere" <ricardo@marliere.net>, 
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4118; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=WGIFWYFh3hQ9VXnIJFPQZwA2uJuy2dcs4lEb7YsAaFs=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl5wEgURe+g1tpepus6BzVvP0vk980i/IPWroJI
- /59/F/MGSeJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZecBIAAKCRDJC4p8Y4ZY
- pogPEACmO8SwFAnU9wgtOI41rvLzi7JyoS05P4lm/jj4lLxAXflnBrnaP8JNAxjMlk0RXAZfm5C
- vOP/xbV/3LPfLKsB3OKbToIBBtsGPHkpKJPUROzM0YnwZl0fGWjox+y2SqBg8VjKlnTMtEw6tsy
- A0/Gx6ZtWQgO9Q6v0dC2Jsx+Aq/dxhpXZ3oiACwCHZxAxDl8MwgL8RDIoUjEty+vkEDmteadAZR
- KflNPnXrhAWy4RobwDHBAqjOXRlzjUNCJi/Fnpt31FcO7N8ffoIR7NyU2/3S5OyaRnDnvjpePHH
- wZNTqZKe9/SW5pgRF/VRl0v3SZv/yZiOSmwxU65ZD9RUMEfGmuT1Q1LGYLzS26kwbMvkj3hcsqh
- 4ndSJIGFAceQewVfCd/X14p5lKmgXVqAwd6x+jh2qrrgFUrJ8EkmM74YrBNz2oIU975U47xs1Gx
- rWjLPcTf165B7R4tyxz6zllhGseEPStyo/egzD59BN8SVzQtdieAN2B7L24niXmWGYVt6nLZBO1
- RHQooqtjYrVs83DQv5GNRAzMia6UcaCBkWtLBWARj0bN63esCldbtSQi1nTcMvYjZ4c4CjpXbZ6
- Sydfhv8zFnoTW91a4Ab6c8DSIswcR1stpmwUAutB4EHPjPC5k6/OBcxHQ5YMV/K/zSRfTS90/Fc
- jSWA0BeBaz4/TUQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2737; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=5jdxcdryUPQt50XcmDbhimc56nx8adUKkG1k2JFyqX0=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl5wEgWrJwe+gjxP9WvDL+0ojvNtDA64mICySo7
+ xSYP/EzlK6JAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZecBIAAKCRDJC4p8Y4ZY
+ pg22EACyi6UUes77n6E4fr2mkom2tqDEec1RkKwNUURuzC4HBDC6Geb3LR9o0307UelSisCzwkv
+ XPGY3Cn4jBPel+R925mDpqfDDBx0vj7rmxFVRr4GeirkLBHj9i3qngbRAzgE0y9s8YGE5nieBaa
+ 7JoqhNk296IITWhGqL3OrIsWGizyjoF3hkS5cfyy6LneSAfn4T5COeViP8rlkSEuGDsQIKm7DTH
+ sT5SGVSPlqjtCSGNEQ3BjOANmjNerBEsZNvD6SwcKl6CljkoYAonuktWsHVfvNnIBOl5foEKfU2
+ /5ITAFjXftwq6tbLVmFCK5tj+t0bzrhkkn1oDWbYL7FkphTO38gtIwUXPojXFS5NXKOW9xIMbYB
+ 58xkCvBkIUL5MeA1NKPIbG1PpNyomTtjsviS7LfIe0zKP/3w4wcyqg7U0yhuSXAx29fRIrXTVzD
+ h/gbrrJSE3RS4E2OydAGUq28zXZanaWvYRtKZZEz24veioYuUlhvGbm/eq2vFTHmiYULhFxMGfN
+ FRTyQNH6nZnZNp/e2WUwbWM7UD+0fdN5m7rgpOrKEoT/cb4TcWKZyRjl444+4cEAdbuf9QGtiiw
+ C5gKUGFpUKW5v5hwjtcotep/ik5RhMRKRa1qwIPZswysZhAl5hbPgtQxPohpVP86aeJdK2Y7Eio
+ XBYLX2tKaCTIX5g==
 X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
  fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
 Since commit 43a7206b0963 ("driver core: class: make class_register() take
 a const *"), the driver core allows for struct class to be in read-only
-memory, so move the zcrypt_class structure to be declared at build time
+memory, so move the vmur_class structure to be declared at build time
 placing it into read-only memory, instead of having to be dynamically
 allocated at boot time.
 
@@ -117,111 +117,74 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
 ---
- drivers/s390/crypto/zcrypt_api.c | 33 +++++++++++++++++----------------
- 1 file changed, 17 insertions(+), 16 deletions(-)
+ drivers/s390/char/vmur.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/s390/crypto/zcrypt_api.c b/drivers/s390/crypto/zcrypt_api.c
-index e8742757085b..d0358bb6ccf2 100644
---- a/drivers/s390/crypto/zcrypt_api.c
-+++ b/drivers/s390/crypto/zcrypt_api.c
-@@ -116,7 +116,11 @@ EXPORT_SYMBOL(zcrypt_msgtype);
+diff --git a/drivers/s390/char/vmur.c b/drivers/s390/char/vmur.c
+index 1d17a83569ce..47bfb50f8eb1 100644
+--- a/drivers/s390/char/vmur.c
++++ b/drivers/s390/char/vmur.c
+@@ -48,7 +48,9 @@ MODULE_DESCRIPTION("s390 z/VM virtual unit record device driver");
+ MODULE_LICENSE("GPL");
  
- struct zcdn_device;
- 
--static struct class *zcrypt_class;
-+static void zcdn_device_release(struct device *dev);
-+static const struct class zcrypt_class = {
-+	.name = ZCRYPT_NAME,
-+	.dev_release = zcdn_device_release,
+ static dev_t ur_first_dev_maj_min;
+-static struct class *vmur_class;
++static const struct class vmur_class = {
++	.name = "vmur",
 +};
- static dev_t zcrypt_devt;
- static struct cdev zcrypt_cdev;
+ static struct debug_info *vmur_dbf;
  
-@@ -139,7 +143,7 @@ static int zcdn_destroy(const char *name);
-  */
- static inline struct zcdn_device *find_zcdndev_by_name(const char *name)
- {
--	struct device *dev = class_find_device_by_name(zcrypt_class, name);
-+	struct device *dev = class_find_device_by_name(&zcrypt_class, name);
- 
- 	return dev ? to_zcdn_dev(dev) : NULL;
- }
-@@ -151,7 +155,7 @@ static inline struct zcdn_device *find_zcdndev_by_name(const char *name)
-  */
- static inline struct zcdn_device *find_zcdndev_by_devt(dev_t devt)
- {
--	struct device *dev = class_find_device_by_devt(zcrypt_class, devt);
-+	struct device *dev = class_find_device_by_devt(&zcrypt_class, devt);
- 
- 	return dev ? to_zcdn_dev(dev) : NULL;
- }
-@@ -405,7 +409,7 @@ static int zcdn_create(const char *name)
- 		goto unlockout;
+ /* We put the device's record length (for writes) in the driver_info field */
+@@ -912,7 +914,7 @@ static int ur_set_online(struct ccw_device *cdev)
+ 		goto fail_free_cdev;
  	}
- 	zcdndev->device.release = zcdn_device_release;
--	zcdndev->device.class = zcrypt_class;
-+	zcdndev->device.class = &zcrypt_class;
- 	zcdndev->device.devt = devt;
- 	zcdndev->device.groups = zcdn_dev_attr_groups;
- 	if (name[0])
-@@ -2067,12 +2071,9 @@ static int __init zcdn_init(void)
- 	int rc;
  
- 	/* create a new class 'zcrypt' */
--	zcrypt_class = class_create(ZCRYPT_NAME);
--	if (IS_ERR(zcrypt_class)) {
--		rc = PTR_ERR(zcrypt_class);
-+	rc = class_register(&zcrypt_class);
+-	urd->device = device_create(vmur_class, &cdev->dev,
++	urd->device = device_create(&vmur_class, &cdev->dev,
+ 				    urd->char_device->dev, NULL, "%s", node_id);
+ 	if (IS_ERR(urd->device)) {
+ 		rc = PTR_ERR(urd->device);
+@@ -958,7 +960,7 @@ static int ur_set_offline_force(struct ccw_device *cdev, int force)
+ 		/* Work not run yet - need to release reference here */
+ 		urdev_put(urd);
+ 	}
+-	device_destroy(vmur_class, urd->char_device->dev);
++	device_destroy(&vmur_class, urd->char_device->dev);
+ 	cdev_del(urd->char_device);
+ 	urd->char_device = NULL;
+ 	rc = 0;
+@@ -1022,11 +1024,9 @@ static int __init ur_init(void)
+ 
+ 	debug_set_level(vmur_dbf, 6);
+ 
+-	vmur_class = class_create("vmur");
+-	if (IS_ERR(vmur_class)) {
+-		rc = PTR_ERR(vmur_class);
++	rc = class_register(&vmur_class);
 +	if (rc)
- 		goto out_class_create_failed;
+ 		goto fail_free_dbf;
 -	}
--	zcrypt_class->dev_release = zcdn_device_release;
  
- 	/* alloc device minor range */
- 	rc = alloc_chrdev_region(&zcrypt_devt,
-@@ -2088,35 +2089,35 @@ static int __init zcdn_init(void)
- 		goto out_cdev_add_failed;
- 
- 	/* need some class specific sysfs attributes */
--	rc = class_create_file(zcrypt_class, &class_attr_zcdn_create);
-+	rc = class_create_file(&zcrypt_class, &class_attr_zcdn_create);
+ 	rc = ccw_driver_register(&ur_driver);
  	if (rc)
- 		goto out_class_create_file_1_failed;
--	rc = class_create_file(zcrypt_class, &class_attr_zcdn_destroy);
-+	rc = class_create_file(&zcrypt_class, &class_attr_zcdn_destroy);
- 	if (rc)
- 		goto out_class_create_file_2_failed;
- 
- 	return 0;
- 
- out_class_create_file_2_failed:
--	class_remove_file(zcrypt_class, &class_attr_zcdn_create);
-+	class_remove_file(&zcrypt_class, &class_attr_zcdn_create);
- out_class_create_file_1_failed:
- 	cdev_del(&zcrypt_cdev);
- out_cdev_add_failed:
- 	unregister_chrdev_region(zcrypt_devt, ZCRYPT_MAX_MINOR_NODES);
- out_alloc_chrdev_failed:
--	class_destroy(zcrypt_class);
-+	class_unregister(&zcrypt_class);
- out_class_create_failed:
+@@ -1046,7 +1046,7 @@ static int __init ur_init(void)
+ fail_unregister_driver:
+ 	ccw_driver_unregister(&ur_driver);
+ fail_class_destroy:
+-	class_destroy(vmur_class);
++	class_unregister(&vmur_class);
+ fail_free_dbf:
+ 	debug_unregister(vmur_dbf);
  	return rc;
- }
- 
- static void zcdn_exit(void)
+@@ -1056,7 +1056,7 @@ static void __exit ur_exit(void)
  {
--	class_remove_file(zcrypt_class, &class_attr_zcdn_create);
--	class_remove_file(zcrypt_class, &class_attr_zcdn_destroy);
-+	class_remove_file(&zcrypt_class, &class_attr_zcdn_create);
-+	class_remove_file(&zcrypt_class, &class_attr_zcdn_destroy);
- 	zcdn_destroy_all();
- 	cdev_del(&zcrypt_cdev);
- 	unregister_chrdev_region(zcrypt_devt, ZCRYPT_MAX_MINOR_NODES);
--	class_destroy(zcrypt_class);
-+	class_unregister(&zcrypt_class);
+ 	unregister_chrdev_region(ur_first_dev_maj_min, NUM_MINORS);
+ 	ccw_driver_unregister(&ur_driver);
+-	class_destroy(vmur_class);
++	class_unregister(&vmur_class);
+ 	debug_unregister(vmur_dbf);
+ 	pr_info("%s unloaded.\n", ur_banner);
  }
- 
- /*
 
 -- 
 2.43.0
