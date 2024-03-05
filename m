@@ -1,127 +1,133 @@
-Return-Path: <linux-kernel+bounces-91445-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91450-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 768DF871195
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 01:20:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 833478711A6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 01:26:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2CF111F21D41
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 00:20:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 803A3B21FC5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 00:26:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ECFF20EB;
-	Tue,  5 Mar 2024 00:20:09 +0000 (UTC)
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 047861391;
+	Tue,  5 Mar 2024 00:26:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f5FM0iLZ"
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4CB338F;
-	Tue,  5 Mar 2024 00:20:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFC7A10E4;
+	Tue,  5 Mar 2024 00:26:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709598009; cv=none; b=dmtf132D2qTG54L2rbJ1MWcKAcfIFN+rRH9jRcfMefnAQ1QbGA9UrmpFpVKxhYfMgHXPocxsF3GFwHFLsRrw/ncQCDHfRbRz/94raECYTQDAXpslzQb9ZozgRwdPSS9Q56Jb1rxGj1g02k79o0NLZVE5dDwcR/FVLb2p68mn42s=
+	t=1709598362; cv=none; b=BSAXENNz7pYdpcIy8eKJcufteAM9w6+c0LUzilmRt67isSoDb8fDe4QJDDjesTF5MsYOcO10vSVm28zbBfSFmev0tdArUrRt8lq9QzsUb6keEXf17AmFQ77SnJ/mZbjAqMXg1crSsKTYi3SxkuSJfU85sSbiBGn89UlOzE5HEwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709598009; c=relaxed/simple;
-	bh=n2iJRsp0wDisq9D8A56Nk0XQND53SVEzey0fC0b0eoA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TfyIH01cLm9EnldVxllm24xxqtzdl/FJV0C1WdP71Lgyj9wdSCustdc1UYZZIMs1xfGFT4Hlm5udhfx9K64mRqrPB23BtQa0Y2wTtpD/imqUKhLbwjajjOVPh80Ht3r4tiinLH86FUYt5Srw1lpBhP6cQIMNE/eyF2lBtfGhlVU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=acm.org
+	s=arc-20240116; t=1709598362; c=relaxed/simple;
+	bh=Vic1yyYZkTyBkcHMN/DlotFLffO5adzTXya6pqwwL2Q=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=t5hl7z9WtrVYOne6Jm2mKf4uoPYsdRc+RnEySX8Kg9c3HwrW50Nd32aPlAPOFF+8HRUGexsP6yyCfxGfRrzZpyw5VEoalJmrG2aTDEgWTNHNvnAEJN3N2q8OCMaN5X16u6sYRDTvV0+HpSgeAUUd5oqYBaGace6HMzGhuuPC0MU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f5FM0iLZ; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d944e8f367so34723125ad.0;
-        Mon, 04 Mar 2024 16:20:07 -0800 (PST)
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1dc13fb0133so37902165ad.3;
+        Mon, 04 Mar 2024 16:26:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709598360; x=1710203160; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=apgfPOyBm8fjbNIlIAw478BrY43o1tnAskOyysD67Fs=;
+        b=f5FM0iLZMtFLWqAXPmIYuqfgTfYvkxU8c2SuIuRe3oooH5rvzDqHERIqfsgMRKoUvQ
+         Y20Qt1W1IDXa3tVR0mYYtucGqYA9Rk87vdEnuYtzcNrGlOQ2yV1uHak+emlouhiTSHnc
+         pGMWbrn5CLTZr6RLwPzYYsbkQ5kWPkLR0nsmr69am2mils40r5mJjNISJdG3oq62ec2A
+         3O9QolBPLETtG5WRX+jMhlkDr+qY/awh7K9auB5cwPv1ML48BgSpUxdA0Lm0yZosskm5
+         n/MgrtsMxKmHoo5bUaAEdIyDLvE/CMDYbzQKlGjJgYsDTkn4yj3z13756/T1Ii2/fjxq
+         DoRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709598007; x=1710202807;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cThLIQ7kVxrLe0hSQIUMvSBEyZArR8R8aoZjQ4ZGD9Y=;
-        b=was2wiNeEz3ikHkDbBksGf5yMmRdYmVqVM4mu7xJlO4oPr6IefrML0XBo3xdlJ8hD/
-         lFTMEU3VQV+fKnr+MDM3Ne4aWsf7O1s6TfH8A4jKZzHr/ZDSDKH2zpr9emaFNqkNUxe2
-         fTFIBa6SuCPQ8ZDxBtds1LuOACLJZeeqMxNKL8d9KkY1AwYkgNkVxDB1H1MO5snhknb7
-         zGwoUtCcvXFt3G0WGoPRZ6P25fnNZ4TGp4GG4SEUtGJZxi58fAryhDEf5QctkvFuklxY
-         LYRJCp9TdjfvV1t71viqA96ZSc9NuJpKxbPnd/S3VSY4P1OAwUy8n13H9OdiucA2l3Dx
-         Y03Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWo5yZ2rqTsNvmWjDrXOE3bp+6qWFBFUTDTKCLUG6dJlKUyKPPodDg6g1fcFEfFnpMM106QVBNdsDFPnBTdB5EVLf3xhNZszHhjCXhQHaeyqRyGRpjCBGLb6izavl/+fj4i7clEkrYqhulxSvJVSsr3+W9shsUYR0N4SoJBZGZBAzpluy9JT06UJ9n2ucHlCQKMRXhJjBRajvSGMyNl
-X-Gm-Message-State: AOJu0YxWKbf4rfs9qmSbZJ8rwm7NLQwvIB/HkbPYbpK4ApFE1eLM3c5+
-	I0raVJn8zAHcuJTOlSObgFuoY7k5P2/tacZqqlfsly/2sVb0/MzVKslNXvLk
-X-Google-Smtp-Source: AGHT+IGBK4qsXJ6u6xsgg6YtuRQ4ARl1MW9KjGEbxUYd3grb5H4MLJb1AFN9dYWTVfSXWKh/RmLRuw==
-X-Received: by 2002:a17:902:d50b:b0:1dc:d773:ac with SMTP id b11-20020a170902d50b00b001dcd77300acmr381569plg.7.1709598006843;
-        Mon, 04 Mar 2024 16:20:06 -0800 (PST)
-Received: from ?IPV6:2620:0:1000:8411:9ba8:35e8:4ec5:44d1? ([2620:0:1000:8411:9ba8:35e8:4ec5:44d1])
-        by smtp.gmail.com with ESMTPSA id b6-20020a170902d50600b001dd0d07b3d8sm3298602plg.201.2024.03.04.16.20.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Mar 2024 16:20:06 -0800 (PST)
-Message-ID: <86f0af00-8765-4481-9245-1819fb2c6379@acm.org>
-Date: Mon, 4 Mar 2024 16:20:03 -0800
+        d=1e100.net; s=20230601; t=1709598360; x=1710203160;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=apgfPOyBm8fjbNIlIAw478BrY43o1tnAskOyysD67Fs=;
+        b=m+OlDuOMU69Bhkhjm8R8gcpKUEkICYm3tPX8x1OYSoX5goosst81jjZn5B+t2YRfsB
+         b3+V2z/fqWdu+RaklY7iLOxuzSzF9vT+he/MsDDxvT8I4uLgkW3RprAof1Mcz0TLW325
+         QjvMie4+G+xa0CA6RrgfXujYPIpalF/CMApRzisiOspdOgx8Z4iBj57BIsJCBcBYfzEd
+         3UTq2bsKPdjYjVyFAh48cLIH7KRQG3ukjH3RAmvjJy3tRnIzISsrnH/9see93ZDJljGc
+         Layxq5zk5e0MnQibLKQ97NDHiXjg+OVjKvP7CSeS3xdG9vNlSjyaAqTEfQaJ8WnuSb8j
+         2AxA==
+X-Forwarded-Encrypted: i=1; AJvYcCVpshuTl4l8jwWt4OxAWil3Cm5inYBqcoBZeXwrT+yJuwVhqvZJ4umWvv/buylcVXfdVEH3sNu1fqLWbcYf+tWLdTxMw3cnaSGmAaZXH4DgabTByz2c6VzxhS0IhhV720nOO+jI4Iy/TvZj/w==
+X-Gm-Message-State: AOJu0YwjZpgybyE0W6/clV/A8Z5KN6Fso4SD3oe90GkEqT2F9wCOF2Iu
+	EcPPh+NZ0EVmqO51g3KjE7CkNDRqnNWECQb1RTwwyzm8WXIxv6asqM+GrDNb
+X-Google-Smtp-Source: AGHT+IH8VISteBQwVu/ywVhok1br8asTz3CWnUenMckIjlocnVPMmLNsv+ZYwZwB+41xt68s6nRvRg==
+X-Received: by 2002:a17:903:1104:b0:1dc:1c81:1b19 with SMTP id n4-20020a170903110400b001dc1c811b19mr404186plh.3.1709598359824;
+        Mon, 04 Mar 2024 16:25:59 -0800 (PST)
+Received: from rigel.home.arpa ([220.235.35.85])
+        by smtp.gmail.com with ESMTPSA id mm12-20020a1709030a0c00b001dc96d1a662sm9131940plb.197.2024.03.04.16.25.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Mar 2024 16:25:59 -0800 (PST)
+From: Kent Gibson <warthog618@gmail.com>
+To: linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-gpio@vger.kernel.org,
+	bartosz.golaszewski@linaro.org,
+	andriy.shevchenko@linux.intel.com,
+	christophe.leroy@csgroup.eu,
+	shuah@kernel.org,
+	bamv2005@gmail.com
+Cc: Kent Gibson <warthog618@gmail.com>,
+	Pengfei Xu <pengfei.xu@intel.com>,
+	Yi Lai <yi1.lai@intel.com>
+Subject: [PATCH] selftest: gpio: remove obsolete gpio-mockup test
+Date: Tue,  5 Mar 2024 08:21:24 +0800
+Message-Id: <20240305002124.7552-1-warthog618@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 0/2] Introduce per-task io utilization boost
-Content-Language: en-US
-To: Christian Loehle <christian.loehle@arm.com>, linux-kernel@vger.kernel.org
-Cc: peterz@infradead.org, juri.lelli@redhat.com, mingo@redhat.com,
- rafael@kernel.org, dietmar.eggemann@arm.com, vschneid@redhat.com,
- vincent.guittot@linaro.org, Johannes.Thumshirn@wdc.com,
- adrian.hunter@intel.com, ulf.hansson@linaro.org, andres@anarazel.de,
- asml.silence@gmail.com, linux-pm@vger.kernel.org,
- linux-block@vger.kernel.org, io-uring@vger.kernel.org,
- Qais Yousef <qyousef@layalina.io>
-References: <20240304201625.100619-1-christian.loehle@arm.com>
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20240304201625.100619-1-christian.loehle@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 3/4/24 12:16, Christian Loehle wrote:
-> Pixel 6 ufs Android 14 (7 runs for because device showed some variance)
-> [6605, 6622, 6633, 6652, 6690, 6697, 6754] sugov mainline
-> [7141, 7173, 7198, 7220, 7280, 7427, 7452] per-task tracking
-> [2390, 2392, 2406, 2437, 2464, 2487, 2813] sugov no iowait boost
-> [7812, 7837, 7837, 7851, 7900, 7959, 7980] performance governor
+With the removal of the ARCH_NR_GPIOS, the number of available GPIOs
+is effectively unlimited, causing the gpio-mockup module load failure
+test that overflowed the number of GPIOs to unexpectedly succeed, and
+so fail.
 
-Variance of performance results for Pixel devices can be reduced greatly
-by disabling devfreq scaling, e.g. as follows (this may cause thermal
-issues if the system load is high enough):
+The test is no longer relevant so remove it.
+Promote the "no lines defined" test so there is still one load
+failure test in the basic set.
 
-      for d in $(adb shell echo /sys/class/devfreq/*); do
-	adb shell "cat $d/available_frequencies |
-		tr ' ' '\n' |
-		sort -n |
-		case $devfreq in
-			min) head -n1;;
-			max) tail -n1;;
-		esac > $d/min_freq"
-     done
+Fixes: 7b61212f2a07 ("gpiolib: Get rid of ARCH_NR_GPIOS")
+Reported-by: Pengfei Xu <pengfei.xu@intel.com>
+Reported-by: Yi Lai <yi1.lai@intel.com>
+Closes: https://lore.kernel.org/linux-gpio/ZC6OHBjdwBdT4sSb@xpf.sh.intel.com/
+Signed-off-by: Kent Gibson <warthog618@gmail.com>
+---
+ tools/testing/selftests/gpio/gpio-mockup.sh | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-> Showcasing some different IO scenarios, again all random read,
-> median out of 5 runs, all on rk3399 with NVMe.
-> e.g. io_uring6x4 means 6 threads with 4 iodepth each, results can be
-> obtained using:
-> fio --minimal --time_based --name=test --filename=/dev/nvme0n1 --runtime=30 --rw=randread --bs=4k --ioengine=io_uring --iodepth=4 --numjobs=6 --group_reporting | cut -d \; -f 8
+diff --git a/tools/testing/selftests/gpio/gpio-mockup.sh b/tools/testing/selftests/gpio/gpio-mockup.sh
+index 0d6c5f7f95d2..fc2dd4c24d06 100755
+--- a/tools/testing/selftests/gpio/gpio-mockup.sh
++++ b/tools/testing/selftests/gpio/gpio-mockup.sh
+@@ -377,13 +377,10 @@ if [ "$full_test" ]; then
+ 	insmod_test "0,32,32,44,-1,22,-1,31" 32 12 22 31
+ fi
+ echo "2.  Module load error tests"
+-echo "2.1 gpio overflow"
+-# Currently: The max number of gpio(1024) is defined in arm architecture.
+-insmod_test "-1,1024"
++echo "2.1 no lines defined"
++insmod_test "0,0"
+ if [ "$full_test" ]; then
+-	echo "2.2 no lines defined"
+-	insmod_test "0,0"
+-	echo "2.3 ignore range overlap"
++	echo "2.2 ignore range overlap"
+ 	insmod_test "0,32,0,1" 32
+ 	insmod_test "0,32,1,5" 32
+ 	insmod_test "0,32,30,35" 32
+-- 
+2.39.2
 
-So buffered I/O was used during this test? Shouldn't direct I/O be used
-for this kind of tests (--buffered=0)? Additionally, which I/O scheduler
-was configured? I recommend --ioscheduler=none for this kind of tests.
-
-> - Higher cap is not always beneficial, we might place the task away
-> from the CPU where the interrupt handler is running, making it run
-> on an unboosted CPU which may have a bigger impact than the difference
-> between the CPU's capacity the task moved to. (Of course the boost will
-> then be reverted again, but a ping-pong every interval is possible).
-
-In the above I see "the interrupt handler". Does this mean that the NVMe
-controller in the test setup only supports one completion interrupt for
-all completion queues instead of one completion interrupt per completion
-queue? There are already Android phones and developer boards available
-that support the latter, namely the boards equipped with a UFSHCI 4.0 
-controller.
-
-Thanks,
-
-Bart.
 
