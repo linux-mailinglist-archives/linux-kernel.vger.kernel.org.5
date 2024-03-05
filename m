@@ -1,278 +1,135 @@
-Return-Path: <linux-kernel+bounces-92624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92626-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BD61872306
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:41:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0600C87230A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 16:42:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7451287C3A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:41:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7854D28403C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 15:42:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3ADB12882E;
-	Tue,  5 Mar 2024 15:40:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70B95127B47;
+	Tue,  5 Mar 2024 15:42:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="l7B3LSMF"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="UFNvY0RQ"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AA0C1272DE;
-	Tue,  5 Mar 2024 15:40:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FB86127B45
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 15:42:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709653215; cv=none; b=qPHYZoe58JMxLh52Trnv3FsRr0mmd0WpVVWJLTUODmSQZT/99HvBESNnAXc9UTrtIx47YFmqDImQUVVEJ2iek1FEH2vtaqmBcz35M4BbwZTwsULhwuIbIeOMccJB+w3UmimrfRuHESAtlvwI/EeFnUnwWin3kTpS7uvKuBOKQOw=
+	t=1709653332; cv=none; b=uIAzTRq8yO3Dlwx+BLojlgbyCjnofTGMslPJs5FmPQkHjPy+us2RlktmdsDXkmBnulKhlQJUkjvGsYDN+jLBkj2BCjUos0BsPm6CJV0j7/CpyyP4ZqfDbc+Js6Q8kzAe6fCs2gAH3aSonkKaLaErtpnZdOEhyDD3/UD68Vx9HxE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709653215; c=relaxed/simple;
-	bh=HQ8LElIrX/sLoGmlzmqY66LOagmGK5gMS7TguVW+4Jc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=ABpJ+bqunBTmoVZPU2BrABXIoMgPPhacQoSGD+hl/oXNI176zXjQvK7qklWHDrKrt25Pr2j2c01uKtKPymGAFofY0XAlLJE28Pl+vTvnGevmu2BCiEBSrbbfPXt3TpePXOZldOBRlxeGoY2URa7jyisy/W6NX8B0hh3B3k9uPCo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=l7B3LSMF; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 425EgpvG030820;
-	Tue, 5 Mar 2024 15:40:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=mUhQ9NC4uDpSL805AO4NNumQdKUkJS0ItnGbPImrg5k=; b=l7
-	B3LSMF//ly4WIKMhNJlpVYVWjJCFdWZ3MWMZzr1nLU1sJU0sp8BKvodvuOapnbqS
-	leZx/o03alqJDu4mcMg1TyAbSrL+CrEEluo/nJSGxh5ECtBtshaeo7CgxJw2m/Yp
-	N1dLQT6rb2Tmtiv1WvkecbTmLvs2XB90/oz84Qu8MeG3gGxYbC3JYRcWp+jzH2f7
-	OSbjQTK3WqsGpEi+TcEOleqyD70Ne9FITmpYv329fguT57LyVm73FvRPFsB88851
-	mWEgpnjH5kC7XRGQQ19mhi3kKQwIJr48/cJNjqVPXLhBt4B7Jf2VVb6ByiDTK9eG
-	rqjeQm+pNWlDk1U8ua3Q==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wnucrsd3m-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 05 Mar 2024 15:40:06 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 425Fe57Y028651
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 5 Mar 2024 15:40:05 GMT
-Received: from [10.216.49.73] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 5 Mar
- 2024 07:40:00 -0800
-Message-ID: <f329cf0c-6fce-43ae-bff8-ceb02a246068@quicinc.com>
-Date: Tue, 5 Mar 2024 21:09:57 +0530
+	s=arc-20240116; t=1709653332; c=relaxed/simple;
+	bh=fB1DZM3hyKMkr+cgEeOlzUeRSDbIJulihStcsm6Ps2Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MCpCUoHaZu52azi9N5Np/Q92l7t1F5oHFs9B7m5eFQ3GWn/KNnFHsN2UHNcc50s5Y8mw+HjLe1bVLjJ3NVaSeJ2uygpu1gz5dBu7I5HWE+9fWVs4IguA2nckN4JlADABDEapxb1gY0+zUnBjlDrgSxLMioUhvAocxMoSLpUxqmo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=UFNvY0RQ; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-565c6cf4819so11452601a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 07:42:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1709653329; x=1710258129; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=LBsxvGzWoDwoJ41jqX/ShHQbcTmlaY2LZ0kAFV1BWaI=;
+        b=UFNvY0RQlY1oYXpUL2kUeB24Oohf4kWRkwlxSUclqLHQ2TVTirxCXkQmb/co38yRJL
+         fb2f+PMTWRmgLGmQk4gmCjD7Zh1ECrm1sQWYWJmneFy14i5jBkpZy/ylVyLdu1XjsVv5
+         ob5ImZCY5BzOmFhOmTmbdITWolzU7bpmbGmzTE8IG1XcVJzZQBqOgC1X0PVux2Rq/dO4
+         5d8Ryk8hkmbGrr0xt0XvpXAhdi+HmwegRGcpEMsREZWCnsaK5M0hR6n85tc3npKIaMfE
+         R+db7L5w8gaGxF72g2tugztG4pABZ0ND6dqQjt7cDH9T/2WPjMEnVYQF+QFqUuFgFKPH
+         pZZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709653329; x=1710258129;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LBsxvGzWoDwoJ41jqX/ShHQbcTmlaY2LZ0kAFV1BWaI=;
+        b=BlNivaTPG4xsOkQPi/i5CU4XFIxkOZ6N8Y96IacPgz+1xwR1OmOMDYnHTXnqeISdpY
+         X7xDMw9hqoV8u3yrrA35SqO4qR/rm3VwJX62QG1qscXhgbRbooKYlnTsndmTIvn3aWGV
+         bucaNfkC89QpU4kIx3QJM8UEJ0XHUX1UvvzMpL2SpZdeYvXSyrAioIH1a8NeDn9GcJrd
+         8HSFPdLcD9x2W3fsVlkXaBn2ekYUm/yP9xRix5S3PafybK5Vd5JF6r8Xi7v40YL8NWRP
+         Wr741/TU0Of4TEB5i6ytgH5LCjFpF+ICrgRctNzFktG3+LntMrPgV8MnnCu3vMugN/2V
+         TlTg==
+X-Forwarded-Encrypted: i=1; AJvYcCXqe1I3c+PC21L+Rp1VEX8dVFldVt6ZbKUT7kFPL+mW5ElzEbNtEYo1Vk9tWA4t/O21B10JzJXPr6cfFT2Kh+qKQbYt5PtOo8FgrsVp
+X-Gm-Message-State: AOJu0YyEcLT1aqUWzUW8H2wASjMLvavcTkZ7CZ3Q7g3zZgdXMo4Wk7I6
+	6Zkavqxu9GuUcv/woksoBlKnY3/38LoQbibHbZElDE72pnv2a6PjyNNU0pl4fYI=
+X-Google-Smtp-Source: AGHT+IHA5gjV1ahoo841/Xb4YPzyqeDd/CE9X/Xtf1e/NIbsUzDp7lLo2vFOuduvDMemVXxOk/lyTA==
+X-Received: by 2002:a17:906:6b9a:b0:a45:1746:ff09 with SMTP id l26-20020a1709066b9a00b00a451746ff09mr3636877ejr.14.1709653328569;
+        Tue, 05 Mar 2024 07:42:08 -0800 (PST)
+Received: from u94a (2001-b011-fa04-520b-b2dc-efff-fee8-7e7a.dynamic-ip6.hinet.net. [2001:b011:fa04:520b:b2dc:efff:fee8:7e7a])
+        by smtp.gmail.com with ESMTPSA id z20-20020a170906271400b00a441cb52bfcsm6181709ejc.165.2024.03.05.07.42.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Mar 2024 07:42:08 -0800 (PST)
+Date: Tue, 5 Mar 2024 23:41:52 +0800
+From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+To: linux-cve-announce@vger.kernel.org, cve@kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	linux-kernel@vger.kernel.org
+Subject: Re: CVE-2023-52462: bpf: fix check for attempt to corrupt spilled
+ pointer
+Message-ID: <zbmamyicnciykxaepg53jnq6qnkbl6xdsymukrjbmblgvcfw5f@o7xd2v4hjofd>
+References: <2024022335-CVE-2023-52462-b663@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v15 7/9] usb: dwc3: qcom: Refactor IRQ handling in glue
- driver
-To: Johan Hovold <johan@kernel.org>
-CC: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring
-	<robh+dt@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Wesley Cheng
-	<quic_wcheng@quicinc.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        "Greg
- Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Felipe Balbi
-	<balbi@kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_ppratap@quicinc.com>,
-        <quic_jackp@quicinc.com>
-References: <20240216005756.762712-1-quic_kriskura@quicinc.com>
- <20240216005756.762712-8-quic_kriskura@quicinc.com>
- <ZeHd5Hh3-cDByLd-@hovoldconsulting.com>
-Content-Language: en-US
-From: Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-In-Reply-To: <ZeHd5Hh3-cDByLd-@hovoldconsulting.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: NkQBllxYU4f3h0JeqWq_DvvFR9T3N06G
-X-Proofpoint-ORIG-GUID: NkQBllxYU4f3h0JeqWq_DvvFR9T3N06G
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-05_12,2024-03-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
- spamscore=0 adultscore=0 mlxscore=0 phishscore=0 priorityscore=1501
- malwarescore=0 impostorscore=0 mlxlogscore=999 lowpriorityscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2403050125
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2024022335-CVE-2023-52462-b663@gregkh>
 
+On Fri, Feb 23, 2024 at 03:47:35PM +0100, Greg Kroah-Hartman wrote:
+> Description
+> ===========
+> 
+> In the Linux kernel, the following vulnerability has been resolved:
+> 
+> bpf: fix check for attempt to corrupt spilled pointer
+> 
+> When register is spilled onto a stack as a 1/2/4-byte register, we set
+> slot_type[BPF_REG_SIZE - 1] (plus potentially few more below it,
+> depending on actual spill size). So to check if some stack slot has
+> spilled register we need to consult slot_type[7], not slot_type[0].
+> 
+> To avoid the need to remember and double-check this in the future, just
+> use is_spilled_reg() helper.
+> 
+> The Linux kernel CVE team has assigned CVE-2023-52462 to this issue.
+> 
+> 
+> Affected and fixed versions
+> ===========================
+> 
+> 	Issue introduced in 5.10.163 with commit cdd73a5ed084 and fixed in 5.10.209 with commit 2757f17972d8
+> 	Issue introduced in 5.15.86 with commit 07c286c10a9c and fixed in 5.15.148 with commit 67e6707f0735
+> 	Issue introduced in 5.16 with commit 27113c59b6d0 and fixed in 6.1.75 with commit fc3e3c50a0a4
+> 	Issue introduced in 5.16 with commit 27113c59b6d0 and fixed in 6.6.14 with commit 8dc15b067059
+> 	Issue introduced in 5.16 with commit 27113c59b6d0 and fixed in 6.7.2 with commit 40617d45ea05
+> 	Issue introduced in 5.16 with commit 27113c59b6d0 and fixed in 6.8-rc1 with commit ab125ed3ec1c
 
+While commit 27113c59b6d0 ("bpf: Check the other end of slot_type for
+STACK_SPILL") is referenced in the Fixes tag, and made the switch to use
+slot_type[7] instead of slot_type[0]. This shouldn't cause any issue
+because its commit message stated that
 
-On 3/1/2024 7:23 PM, Johan Hovold wrote:
+  ... Verifier currently only saves the reg state if the whole 8 bytes
+  are spilled to the stack, so checking the slot_type[7] is the same as
+  checking slot_type[0].
 
-[...]
+It is the next commit in the series, commit 354e8f1970f8 ("bpf: Support
+<8-byte scalar spill and refill"), that rendered checking slot_type[0]
+problematic.
 
->> +
->>   struct dwc3_acpi_pdata {
->>   	u32			qscratch_base_offset;
->>   	u32			qscratch_base_size;
->>   	u32			dwc3_core_base_size;
->> -	int			qusb2_phy_irq_index;
->> -	int			dp_hs_phy_irq_index;
->> -	int			dm_hs_phy_irq_index;
->> -	int			ss_phy_irq_index;
->> +	/*
->> +	 * The phy_irq_index corresponds to ACPI indexes of (in order)
->> +	 * DP/DM/SS/QUSB2 IRQ's respectively.
->> +	 */
->> +	int			phy_irq_index[NUM_PHY_IRQ];
->>   	bool			is_urs;
->>   };
-> 
-> I asked you to add a port structure and get rid of the PHY indexes in
-> v13, and so you did for the diver data below, but you still have an
-> array of indexes here for the ACPI data.
-> 
-> I don't think ever got around to actually reviewing the ACPI hack (and
-> maybe I was hoping that we'd be able to drop ACPI support before merging
-> multi-port support), but removing these fields and replacing them with
-> an array is a step in the wrong direction (e.g. making the code harder
-> to read).
-> 
-> Why can't you just add a helper function which returns one of these
-> fields based on the interrupt name string?
+So I believe the issue is introduced with commit 354e8f1970f8 rather
+than 27113c59b6d0. That said kernel releases seems to either contain
+both or none of them at all, so in pratice the difference probably
+doesn't matter too much.
 
-I think since [1] has been accepted, this comment has been taken care of.
-
-> 
->> +struct dwc3_qcom_port {
->> +	int			dp_hs_phy_irq;
->> +	int			dm_hs_phy_irq;
->> +	int			ss_phy_irq;
->> +};
-> 
-> And as I've explicitly said before, you should include hs_phy_irq here.
-> 
-> It's a port interrupt and special casing just this one make no sense at
-> all even if there are no multi-port controller that use it.
-> 
-
-Okay. Will add it to port structure.
-I only kept it outside because there are no real devices which has 
-multiple ports and qusb2_phy_irq in them.
-
->> +
->>   struct dwc3_qcom {
->>   	struct device		*dev;
->>   	void __iomem		*qscratch_base;
->> @@ -74,9 +90,7 @@ struct dwc3_qcom {
->>   	struct reset_control	*resets;
->>   
->>   	int			qusb2_phy_irq;
->> -	int			dp_hs_phy_irq;
->> -	int			dm_hs_phy_irq;
->> -	int			ss_phy_irq;
->> +	struct dwc3_qcom_port	port_info[DWC3_MAX_PORTS];
-> 
-> Just name the array 'ports' as I already suggested. It's more succinct
-> and makes the code that uses it easier to read.
-> 
->>   	enum usb_device_speed	usb2_speed;
->>   
->>   	struct extcon_dev	*edev;
->> @@ -91,6 +105,7 @@ struct dwc3_qcom {
->>   	bool			pm_suspended;
->>   	struct icc_path		*icc_path_ddr;
->>   	struct icc_path		*icc_path_apps;
->> +	u8			num_ports;
-> 
-> Any reason not to keep this one closer to the ports array?
-> 
->>   };
->   
-
-[...]
-
->> -	irq = dwc3_qcom_get_irq(pdev, "ss_phy_irq",
->> -				pdata ? pdata->ss_phy_irq_index : -1);
->> -	if (irq > 0) {
->> -		ret = dwc3_qcom_request_irq(qcom, irq, "ss_phy_irq");
->> -		if (ret)
->> -			return ret;
->> -		qcom->ss_phy_irq = irq;
->> +	for (i = 0; i < irq_count; i++) {
->> +		irq_index = dwc3_qcom_get_irq_index(irq_names[i]);
->> +		if (irq_index == -1) {
->> +			dev_err(&pdev->dev, "Unknown interrupt-name \"%s\" found\n", irq_names[i]);
-> 
-> This is now spamming the logs with errors like
-> 
-> 	dwc3-qcom a6f8800.usb: Unknown interrupt-name "pwr_event" found
-> 
-> which is clearly just broken.
-> 
->> +			continue;
->> +		}
->> +		port_index = dwc3_qcom_get_port_index(irq_names[i], irq_index);
->> +		if (port_index == -1) {
->> +			dev_err(&pdev->dev, "Invalid interrupt-name suffix \"%s\"\n", irq_names[i]);
->> +			continue;
->> +		}
->> +
->> +		acpi_index = dwc3_qcom_get_acpi_index(qcom, irq_index, port_index);
->> +
->> +		irq = dwc3_qcom_get_irq(pdev, irq_names[i], acpi_index);
->> +		if (irq > 0) {
->> +			ret = dwc3_qcom_request_irq(qcom, irq, irq_names[i]);
->> +			if (ret)
->> +				return ret;
->> +
->> +			switch (irq_index) {
->> +			case DP_HS_PHY_IRQ_INDEX:
->> +				qcom->port_info[port_index - 1].dp_hs_phy_irq = irq;
->> +				break;
->> +			case DM_HS_PHY_IRQ_INDEX:
->> +				qcom->port_info[port_index - 1].dm_hs_phy_irq = irq;
->> +				break;
->> +			case SS_PHY_IRQ_INDEX:
->> +				qcom->port_info[port_index - 1].ss_phy_irq = irq;
->> +				break;
->> +			case QUSB2_PHY_IRQ_INDEX:
->> +				qcom->qusb2_phy_irq = irq;
->> +				break;
->> +			}
->> +
->> +			if (qcom->num_ports < port_index)
->> +				qcom->num_ports = port_index;
->> +		}
->>   	}
-> 
-> Why don't you add a port helper for fetching the interrupts instead?
-> 
-> There are multiple ways that you can use to determine if this is a
-> multiport controller or not; you can use OF match data, or simply look
-> at one of the interrupts that would always be there for a multiport
-> (or single port) controller (e.g. "dp_hs_phy_1").
-> 
-> You can even determine the number of ports first by parsing the
-> interrupts names and looking for the highest port number.
-> 
-> Then you can iterate over the ports and parse the interrupts for each
-> port in turn, which should allow for a much cleaner and less
-> error-prone implementation.
-> 
-
-With [1] merged, I think I can use your suggestion of going through and 
-checking if dp_hs_phy_X is present or not and if present, it is 
-multiport and go through dp_hs_phy_{1/2/3/4} to see the num of ports 
-present.
-
-That must simplify the code and make it clean as well.
-
-[1]: 
-https://lore.kernel.org/all/20240305093216.3814787-1-quic_kriskura@quicinc.com/
-
-Regards,
-Krishna,
+> [snip]
 
