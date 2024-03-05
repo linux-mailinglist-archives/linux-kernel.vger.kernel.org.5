@@ -1,186 +1,255 @@
-Return-Path: <linux-kernel+bounces-92356-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92372-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 705C6871F08
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:22:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D47E8871F2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:29:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 21BA628763B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:22:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D0732B251B0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 12:28:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBFE75B660;
-	Tue,  5 Mar 2024 12:21:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8012B5C610;
+	Tue,  5 Mar 2024 12:27:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="YgK6NkcV"
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="oE42kTPs"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8383C5A7BF;
-	Tue,  5 Mar 2024 12:21:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F02CD5BAF0
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 12:27:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709641291; cv=none; b=AQ6UYvHYU1yQ29T/5Ai6cuadjhDanItvaWSf20XXrhEfOL0DWx5+XerFoyPnqc/eF/ZyIAV0m6LiucFtKQrMrNP39IyHif4+4xdM8/5woQXlgh4YLmKyB7pIbl7CVxWjE1RRQy/0rvlMLJ7dwrbOsylmT4ZldxCixW1uHAthK5A=
+	t=1709641657; cv=none; b=TCkXm6mC1ILXiMfBkhRklt15sUPSSzmSo0z1uiARUIjJMindbll2StpC+sV3SpZ9RE8O+cD3lhU7K2HLfDhZbBhLUfc8piHS+xUUi4uGSFJrfqS6F1ECcHRLDLLFITyWO1tpQmFu/+xa2Kuvs5DoquOutqmSil3496+cOl4Qz8g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709641291; c=relaxed/simple;
-	bh=zA1QI3pTmF4PVrGfMGQ4T6AJuBZkkUOxdUv7rVLqvq8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=nz7kYky820fdOILkwplylmQZQEPVjALFx5LnVgQRREigF+HI0r3cB9MUyg0cOtcWT5k49u7n/3IN99pEjtrpixDgmlYYzFjw8C/ZktHVeafr2I/ys+vyJUBXqzCv1gdrXEwWWQ5WfdTrlcdrDoj1kWITc6RJDQAI1e1/IqnBsv4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=YgK6NkcV; arc=none smtp.client-ip=209.85.215.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5cddc5455aeso4594423a12.1;
-        Tue, 05 Mar 2024 04:21:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709641289; x=1710246089;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:dkim-signature:from:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SEx+zb9TSgK4yB6p6tHYNUfZEDI6oNw+ZcHBjx9ShfU=;
-        b=RHwX4XeTzRqIcVDP0sPxA97P9Ic5w7V54Mn8E09KDaANsj/VogTaqWz7st6k+LcbUR
-         RHI1M6stmE7hcQEZOvjeA68717rxWOtTSK8NZwu93UUnJP/uAU0xCOl5F12753hkhG+g
-         oXYhl6M+QExS7/bHEhnL1iEMpW0y8DwnE3vEWmZ/6OHAjuj/J7LLi/mA/xfoqJY1ffuc
-         lCCyLYxe8ByPEZj5w9rpZK/CbUmZBVlTRw4sz8GNXM/a4X9nPE22vY/mLKW9K8vhK6Ch
-         W67Ql98EuBKHkiyM3P55WjEQP1jx0bkgCckMFC+fNGO7/IzlqoeNyRRkYf+8PLpHDy8b
-         br7A==
-X-Forwarded-Encrypted: i=1; AJvYcCWXs82xVYHmp2/rczeBddjTQskHqk3OoqnH4DEEBK7Y5Nc1kJFqZKyn0Lbo7haY0VfmezYfpNa/i+wGf0LuuCfRCcIo43vFp7GjwBZgNy/hOBfuyCWpjZB9V78FCR9VssKTT3THRsBFrUc=
-X-Gm-Message-State: AOJu0Yz3Z8Y2i7DkKpf5sODPIJXBl8qIGI4NzHfqx6BZmtsBc/GMxJ9p
-	iakhNyzc9wEdbG7eF8Z+4CAq33mXahxXPNxZgJ+EitP9XQxKX1kA
-X-Google-Smtp-Source: AGHT+IGmOCmr/nPchd/IbKo+mLmdiGP2sn/dFWTak1HHJNlB1jMqv56PTesOXkry/3ewNFEhPLEIng==
-X-Received: by 2002:a17:902:da86:b0:1dd:2bc2:ed25 with SMTP id j6-20020a170902da8600b001dd2bc2ed25mr1645988plx.42.1709641288888;
-        Tue, 05 Mar 2024 04:21:28 -0800 (PST)
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id 4-20020a170902e9c400b001d7252fef6bsm10369231plk.299.2024.03.05.04.21.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Mar 2024 04:21:28 -0800 (PST)
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1709641287;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SEx+zb9TSgK4yB6p6tHYNUfZEDI6oNw+ZcHBjx9ShfU=;
-	b=YgK6NkcV2HDpRzMn7ctoup6zYb4x8csJ7THtUKcJzzjJ8RcVsmDRAsPh4Yfvkh2QaPSsaE
-	JzOn9WH/glkdghz21tc3GPWUrUDeE7BnH2ybn4ms06a+w72XsjUDASvRLOFLWL+rBPg9ef
-	fh+GPzYNlr3V+Kl7meY8aFAlHLT3PrDL8yPha+WydzDgR8udWGjKKBvVsABH45S0HIts00
-	m6unjkmPUmZbjwEqDDOro6CmzU3Rso4OEfHdrv0WfT9loTGwFFs4J+EM4O6PhKpTylotpa
-	qLFXuvR0MWsh/pmh7Zl048oqbcMUfKrzja8mzI0FWCoq/M7E5Gq0UxYlMJ+c/Q==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Tue, 05 Mar 2024 09:21:18 -0300
-Subject: [PATCH 2/2] video: backlight: lcd: make lcd_class constant
+	s=arc-20240116; t=1709641657; c=relaxed/simple;
+	bh=8Rd/lNxfbF55r0swiBWQPYT42RoKXJM4lUE23H+2YPI=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=C8PyyJc+CujxdjGOGGpnR7QGMCY8YnQtoqnO23NzqGDPNzmkCUPis9/1Z3dU21eBz6K5YxzPTxzf/yk1QSD0WYHGPe2IfMcdj5YueCf+LoPB+hOPdD5pZHSrSzvFyGY5d1qRieIcHcJj6qpo/vQEoLEy/Xxjz0btxrtZO/j5Ki0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=oE42kTPs; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709641656; x=1741177656;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=8Rd/lNxfbF55r0swiBWQPYT42RoKXJM4lUE23H+2YPI=;
+  b=oE42kTPs5G5PKfRNQrbTwcavcPi01vpSdth+7ndkb5HFtWamiPS9Inux
+   pPdHaf9wbXndJSbWW3X3EAER5bQaz0s7Owe15O4cScPcZnITY5fPieASs
+   dEnL6KdvosU0YonXFr5DWCkOHHPSYJByKQnn9HXJFA9NHj3B3VRqsiOLX
+   1ElenXBW535RJT4dAVcaK16rjNfNxo3/IdE0i1MtrdBRCDveEepFnyXpP
+   9sVGe1JQLbWp7jvwivMA9VHOZc9llMHehxiLophbr0r7u098TsW7pwbWu
+   ppkQvpL0q29sE8p9wQ+VWdFKDcoxS7Gll7p4nTrkDi0sISSOeVr/IIp51
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="21648482"
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="21648482"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2024 04:27:35 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="9330122"
+Received: from allen-box.sh.intel.com ([10.239.159.127])
+  by orviesa010.jf.intel.com with ESMTP; 05 Mar 2024 04:27:34 -0800
+From: Lu Baolu <baolu.lu@linux.intel.com>
+To: Joerg Roedel <joro@8bytes.org>
+Cc: Ethan Zhao <haifeng.zhao@linux.intel.com>,
+	Eric Badger <ebadger@purestorage.com>,
+	iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 5/8] iommu/vt-d: Fix NULL domain on device release
+Date: Tue,  5 Mar 2024 20:21:18 +0800
+Message-Id: <20240305122121.211482-6-baolu.lu@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240305122121.211482-1-baolu.lu@linux.intel.com>
+References: <20240305122121.211482-1-baolu.lu@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240305-class_cleanup-backlight-v1-2-c0e15cc25be1@marliere.net>
-References: <20240305-class_cleanup-backlight-v1-0-c0e15cc25be1@marliere.net>
-In-Reply-To: <20240305-class_cleanup-backlight-v1-0-c0e15cc25be1@marliere.net>
-To: Lee Jones <lee@kernel.org>, 
- Daniel Thompson <daniel.thompson@linaro.org>, 
- Jingoo Han <jingoohan1@gmail.com>, Helge Deller <deller@gmx.de>
-Cc: dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, "Ricardo B. Marliere" <ricardo@marliere.net>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2445; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=zA1QI3pTmF4PVrGfMGQ4T6AJuBZkkUOxdUv7rVLqvq8=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl5w4+iSyNLDZC3tRX7TPpVThd4AQXUWdlE0ijV
- xMPTkgRv36JAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZecOPgAKCRDJC4p8Y4ZY
- pobYD/4jQPHj7hJi/so8GQHNZhM9h2mU0OKK45lxlhm1Q3dv8hDKlVyL9rq7nXJl4ST4ztys0VI
- trz7QE3BfAjjJqPjqFyxGRXNNGG9DCAjc5iYeMao8xiYOIDrXQWikf81wWNtJJ2jPWmBVIfQgQ3
- qksMZFWx5vVy7oITR3JGVurioxGUV8/MkG7CbiaLqyboIRMseZ5K+I9PIK1QIQ+u26knlbcsIEC
- WC0fckurcLyEnqXEd+ILPgiXzMpm6RpdvZQB058YL9sSkgkFEzg53EtaoeyM2f4yyLv4p/j9tUG
- sybiXdf+j9AXLbKebqkgrJ1oy3k+2F/9CpqO3GfOOfDTqhkheUhALj1B6cpiuMdyxuQe9KoLeAU
- VPXSNHC+Hz4hx2irj88cHO2aYFFRQXIUSYO4Di4Q0b4xYNTGMnV5M8iDAQ1WMFRYVpRMJoD4vcl
- 7j3OyKLoRjiF2tUzyc7cK3UsOEEvmv5qD+u45T6y+Gv1nZ6KKfytun2qzJYjm/w7m5wIFjH/EER
- uf6f/GhL3OcKs/MLSRkBETzFm4hPdZJrc9fmZCfV+Pes0dEfGYYlvEIrQRL4bL/SNeZ33AN3OVp
- Ti8gaoYCLznvyG71OlDEdm9Sor7/Tr0kwK8fA1Sco+2c1XHKdYjlrv2ko835i16JDo5RFgu6F+8
- CCmkHoOql2/vOgw==
-X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
+Content-Transfer-Encoding: 8bit
 
-Since commit 43a7206b0963 ("driver core: class: make class_register() take
-a const *"), the driver core allows for struct class to be in read-only
-memory, so move the lcd_class structure to be declared at build time
-placing it into read-only memory, instead of having to be dynamically
-allocated at boot time.
+In the kdump kernel, the IOMMU operates in deferred_attach mode. In this
+mode, info->domain may not yet be assigned by the time the release_device
+function is called. It leads to the following crash in the crash kernel:
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+    BUG: kernel NULL pointer dereference, address: 000000000000003c
+    ...
+    RIP: 0010:do_raw_spin_lock+0xa/0xa0
+    ...
+    _raw_spin_lock_irqsave+0x1b/0x30
+    intel_iommu_release_device+0x96/0x170
+    iommu_deinit_device+0x39/0xf0
+    __iommu_group_remove_device+0xa0/0xd0
+    iommu_bus_notifier+0x55/0xb0
+    notifier_call_chain+0x5a/0xd0
+    blocking_notifier_call_chain+0x41/0x60
+    bus_notify+0x34/0x50
+    device_del+0x269/0x3d0
+    pci_remove_bus_device+0x77/0x100
+    p2sb_bar+0xae/0x1d0
+    ...
+    i801_probe+0x423/0x740
+
+Use the release_domain mechanism to fix it. The scalable mode context
+entry which is not part of release domain should be cleared in
+release_device().
+
+Fixes: 586081d3f6b1 ("iommu/vt-d: Remove DEFER_DEVICE_DOMAIN_INFO")
+Reported-by: Eric Badger <ebadger@purestorage.com>
+Closes: https://lore.kernel.org/r/20240113181713.1817855-1-ebadger@purestorage.com
+Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+Link: https://lore.kernel.org/r/20240305013305.204605-3-baolu.lu@linux.intel.com
 ---
- drivers/video/backlight/lcd.c | 23 +++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
+ drivers/iommu/intel/pasid.h |  1 +
+ drivers/iommu/intel/iommu.c | 31 ++++--------------
+ drivers/iommu/intel/pasid.c | 64 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 71 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/video/backlight/lcd.c b/drivers/video/backlight/lcd.c
-index 77c5cb2a44e2..ba4771cbd781 100644
---- a/drivers/video/backlight/lcd.c
-+++ b/drivers/video/backlight/lcd.c
-@@ -159,8 +159,6 @@ static ssize_t max_contrast_show(struct device *dev,
+diff --git a/drivers/iommu/intel/pasid.h b/drivers/iommu/intel/pasid.h
+index 487ede039bdd..42fda97fd851 100644
+--- a/drivers/iommu/intel/pasid.h
++++ b/drivers/iommu/intel/pasid.h
+@@ -318,4 +318,5 @@ void intel_pasid_tear_down_entry(struct intel_iommu *iommu,
+ 				 bool fault_ignore);
+ void intel_pasid_setup_page_snoop_control(struct intel_iommu *iommu,
+ 					  struct device *dev, u32 pasid);
++void intel_pasid_teardown_sm_context(struct device *dev);
+ #endif /* __INTEL_PASID_H */
+diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+index cc3994efd362..f74d42d3258f 100644
+--- a/drivers/iommu/intel/iommu.c
++++ b/drivers/iommu/intel/iommu.c
+@@ -3869,30 +3869,6 @@ static void domain_context_clear(struct device_domain_info *info)
+ 			       &domain_context_clear_one_cb, info);
  }
- static DEVICE_ATTR_RO(max_contrast);
  
--static struct class *lcd_class;
+-static void dmar_remove_one_dev_info(struct device *dev)
+-{
+-	struct device_domain_info *info = dev_iommu_priv_get(dev);
+-	struct dmar_domain *domain = info->domain;
+-	struct intel_iommu *iommu = info->iommu;
+-	unsigned long flags;
 -
- static void lcd_device_release(struct device *dev)
- {
- 	struct lcd_device *ld = to_lcd_device(dev);
-@@ -175,6 +173,11 @@ static struct attribute *lcd_device_attrs[] = {
- };
- ATTRIBUTE_GROUPS(lcd_device);
- 
-+static const struct class lcd_class = {
-+	.name = "lcd",
-+	.dev_groups = lcd_device_groups,
-+};
+-	if (!dev_is_real_dma_subdevice(info->dev)) {
+-		if (dev_is_pci(info->dev) && sm_supported(iommu))
+-			intel_pasid_tear_down_entry(iommu, info->dev,
+-					IOMMU_NO_PASID, false);
+-
+-		iommu_disable_pci_caps(info);
+-		domain_context_clear(info);
+-	}
+-
+-	spin_lock_irqsave(&domain->lock, flags);
+-	list_del(&info->link);
+-	spin_unlock_irqrestore(&domain->lock, flags);
+-
+-	domain_detach_iommu(domain, iommu);
+-	info->domain = NULL;
+-}
+-
+ /*
+  * Clear the page table pointer in context or pasid table entries so that
+  * all DMA requests without PASID from the device are blocked. If the page
+@@ -4431,7 +4407,11 @@ static void intel_iommu_release_device(struct device *dev)
+ 	mutex_lock(&iommu->iopf_lock);
+ 	device_rbtree_remove(info);
+ 	mutex_unlock(&iommu->iopf_lock);
+-	dmar_remove_one_dev_info(dev);
 +
- /**
-  * lcd_device_register - register a new object of lcd_device class.
-  * @name: the name of the new object(must be the same as the name of the
-@@ -202,7 +205,7 @@ struct lcd_device *lcd_device_register(const char *name, struct device *parent,
- 	mutex_init(&new_ld->ops_lock);
- 	mutex_init(&new_ld->update_lock);
- 
--	new_ld->dev.class = lcd_class;
-+	new_ld->dev.class = &lcd_class;
- 	new_ld->dev.parent = parent;
- 	new_ld->dev.release = lcd_device_release;
- 	dev_set_name(&new_ld->dev, "%s", name);
-@@ -318,19 +321,19 @@ EXPORT_SYMBOL(devm_lcd_device_unregister);
- 
- static void __exit lcd_class_exit(void)
- {
--	class_destroy(lcd_class);
-+	class_unregister(&lcd_class);
- }
- 
- static int __init lcd_class_init(void)
- {
--	lcd_class = class_create("lcd");
--	if (IS_ERR(lcd_class)) {
--		pr_warn("Unable to create backlight class; errno = %ld\n",
--			PTR_ERR(lcd_class));
--		return PTR_ERR(lcd_class);
-+	int ret;
++	if (sm_supported(iommu) && !dev_is_real_dma_subdevice(dev) &&
++	    !context_copied(iommu, info->bus, info->devfn))
++		intel_pasid_teardown_sm_context(dev);
 +
-+	ret = class_register(&lcd_class);
-+	if (ret) {
-+		pr_warn("Unable to create backlight class; errno = %d\n", ret);
-+		return ret;
- 	}
+ 	intel_pasid_free_table(dev);
+ 	intel_iommu_debugfs_remove_dev(info);
+ 	kfree(info);
+@@ -4922,6 +4902,7 @@ static const struct iommu_dirty_ops intel_dirty_ops = {
  
--	lcd_class->dev_groups = lcd_device_groups;
+ const struct iommu_ops intel_iommu_ops = {
+ 	.blocked_domain		= &blocking_domain,
++	.release_domain		= &blocking_domain,
+ 	.capable		= intel_iommu_capable,
+ 	.hw_info		= intel_iommu_hw_info,
+ 	.domain_alloc		= intel_iommu_domain_alloc,
+diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
+index 746c7abe2237..a51e895d9a17 100644
+--- a/drivers/iommu/intel/pasid.c
++++ b/drivers/iommu/intel/pasid.c
+@@ -670,3 +670,67 @@ int intel_pasid_setup_nested(struct intel_iommu *iommu, struct device *dev,
+ 
  	return 0;
  }
- 
-
++
++/*
++ * Interfaces to setup or teardown a pasid table to the scalable-mode
++ * context table entry:
++ */
++
++static void device_pasid_table_teardown(struct device *dev, u8 bus, u8 devfn)
++{
++	struct device_domain_info *info = dev_iommu_priv_get(dev);
++	struct intel_iommu *iommu = info->iommu;
++	struct context_entry *context;
++
++	spin_lock(&iommu->lock);
++	context = iommu_context_addr(iommu, bus, devfn, false);
++	if (!context) {
++		spin_unlock(&iommu->lock);
++		return;
++	}
++
++	context_clear_entry(context);
++	__iommu_flush_cache(iommu, context, sizeof(*context));
++	spin_unlock(&iommu->lock);
++
++	/*
++	 * Cache invalidation for changes to a scalable-mode context table
++	 * entry.
++	 *
++	 * Section 6.5.3.3 of the VT-d spec:
++	 * - Device-selective context-cache invalidation;
++	 * - Domain-selective PASID-cache invalidation to affected domains
++	 *   (can be skipped if all PASID entries were not-present);
++	 * - Domain-selective IOTLB invalidation to affected domains;
++	 * - Global Device-TLB invalidation to affected functions.
++	 *
++	 * The iommu has been parked in the blocking state. All domains have
++	 * been detached from the device or PASID. The PASID and IOTLB caches
++	 * have been invalidated during the domain detach path.
++	 */
++	iommu->flush.flush_context(iommu, 0, PCI_DEVID(bus, devfn),
++				   DMA_CCMD_MASK_NOBIT, DMA_CCMD_DEVICE_INVL);
++	devtlb_invalidation_with_pasid(iommu, dev, IOMMU_NO_PASID);
++}
++
++static int pci_pasid_table_teardown(struct pci_dev *pdev, u16 alias, void *data)
++{
++	struct device *dev = data;
++
++	if (dev == &pdev->dev)
++		device_pasid_table_teardown(dev, PCI_BUS_NUM(alias), alias & 0xff);
++
++	return 0;
++}
++
++void intel_pasid_teardown_sm_context(struct device *dev)
++{
++	struct device_domain_info *info = dev_iommu_priv_get(dev);
++
++	if (!dev_is_pci(dev)) {
++		device_pasid_table_teardown(dev, info->bus, info->devfn);
++		return;
++	}
++
++	pci_for_each_dma_alias(to_pci_dev(dev), pci_pasid_table_teardown, dev);
++}
 -- 
-2.43.0
+2.34.1
 
 
