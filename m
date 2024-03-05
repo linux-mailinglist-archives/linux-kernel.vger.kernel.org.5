@@ -1,145 +1,148 @@
-Return-Path: <linux-kernel+bounces-91486-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91487-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C862F87123F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 02:15:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6D28871240
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 02:16:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6959DB21369
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 01:15:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 872FC1F25BF5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 01:16:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A749125DC;
-	Tue,  5 Mar 2024 01:15:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9891B125C9;
+	Tue,  5 Mar 2024 01:15:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fJTNe2Gu"
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="oGrzNwVG"
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75F58111A5;
-	Tue,  5 Mar 2024 01:15:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29799111A5;
+	Tue,  5 Mar 2024 01:15:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709601344; cv=none; b=sQlH6YiaOdP/sEjnk7Zx6/mDjBbrYiiI2LwlRXNPnLYDE9MshLQIbhm4mZhzt/5YYMegCGO0e3c9734p1znWda5CHEVrlEcOVVuooeAyDu4gBVzeJ3aLeV3ultTLpSfcSDBJjRGX1Pm5Vz8WbKDPzWCvHCMV2hgiLZ3fNl4CJl4=
+	t=1709601356; cv=none; b=obJb5O7VNy15jz3Qm48BkgTVcWxqvY1jzsB32qfTr6Z3tgrSXwmG9zZVkZ5ritt5IBqGHDDQ1ROIBzw89HV6Yk2txqD9ewgd24l0fGzmas5t850jBoxtite1hvqAYif5dh4YqogYSR6jjBeqCrysMkvxcpWnJ+Gd8i57+ID5CwA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709601344; c=relaxed/simple;
-	bh=rNYrYnUDeiQThIlOLf7GZzdLyTpjLYQxAmN0MpVAUGQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KzJvpzv/V3rHtGj2aJUC6OPGR1L5Aa17Wxrgpl/ZMcst+GoMTNPqs4Mmy+TfAWh9kjtmfD6+i3NQz4u76I/fIvsd89qVBg7FegnlYzPdeMqBus8kRgKwHeG59GZ3oQofNqVQXmXPSzZnipIafapQ5o0I1h+DR4X5Z9CTQUUcryA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fJTNe2Gu; arc=none smtp.client-ip=209.85.215.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5e4b775e1d6so1658487a12.1;
-        Mon, 04 Mar 2024 17:15:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709601342; x=1710206142; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=a97puSPee8NDveftoKysQGZs9RYm6VyTGxwyRsunH+Y=;
-        b=fJTNe2Gub27MurvKcTXhyF1QFNQQodU+fu9T+cxVNmcVr0ZGwHN7vKgI3GZFs3QPRn
-         8gzFd0Wqw/A63jkpXVCHU0Pg1rA/WSzlCDder89OAXwz2wcdbIPym6HrfDhhEjg4j4dD
-         QDGzlnBhxSt41ocP3TceN5KDiCTFiuMsZPLyIMk1wB7e/8hW154+/sS50f80vVT+LYlw
-         AewTiOr13/hnOBqaOV3AF0Q+ZwYVap/B2smBMULkS1VstT3uSiSP4NSY2o9SKeq0Gcki
-         djHloygETtD9KTvOB3ftF2K46/mQgRkoec/+lwTyW5Sr9kIQS4kADiK5dyV3sD7CLiYI
-         2cOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709601342; x=1710206142;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a97puSPee8NDveftoKysQGZs9RYm6VyTGxwyRsunH+Y=;
-        b=B+7Kzc6de6fBRAi8ZB75AA6xY64fhK37XsJFX4yvmn1KLpLNE1AN48AAUNZ1SZUw+o
-         vb62cxbmCTQv99SIbstBrJZ9ucjeDZjT1fD1B2h0nu97BaedD8ZI/9VuqRDf2wo9iZJL
-         WPok+0uxyooYiUMbRJ0lYcyEBr/YioMrQZ0lN42YYK9QTUpJLwYCInf6EVshmkvI6AUk
-         mLS2jf8xg5FfEAUiEaQVXpM3eiTlUu+PMbPM7LC2Kq9nNx4jAOyCPTyYL97ykT2JKunL
-         fsFmr2JP73lR2iQgdIm1gpnIRWhIh75Yvq2OA5o3o0+EGMv/Os3TJBZI6C+N2eRQxOWB
-         ERAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUQj8bJcdax/i8Lhwc3BJA3cDpKybJlGu0Iko26B4fVGXOIiT57zSBcGKUjo9I5roC2O/CyjAMFYZySzD+/LX6dfNgzOz5U1bo4QSTMdGxUbyQbrCQL+OC/eIm+N/N5kPTrUoEqGXj0qnk=
-X-Gm-Message-State: AOJu0Yz9jI6X7P6ux6hUQwfdn+qsVSqtEJbYIqXlOM3xzXQBH5jQ11Dr
-	ypIvjdti8L9PRnab/+ND/KlPzqr+1CI9OITlIHWDUsjwNaWzH1bl
-X-Google-Smtp-Source: AGHT+IGf/n6nOjCwoUrmBtzH0Ck54FjovaK9aQfF83w1GFO/2lpWpRKOz6N0/J/WgsAWRf4Tx45MzQ==
-X-Received: by 2002:a17:90a:9601:b0:29b:9e1:2fb0 with SMTP id v1-20020a17090a960100b0029b09e12fb0mr1416148pjo.0.1709601342390;
-        Mon, 04 Mar 2024 17:15:42 -0800 (PST)
-Received: from google.com ([2620:15c:9d:2:a5d5:fe74:fba8:86b5])
-        by smtp.gmail.com with ESMTPSA id p4-20020a17090b010400b0029af35db43csm8520610pjz.43.2024.03.04.17.15.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 17:15:42 -0800 (PST)
-Date: Mon, 4 Mar 2024 17:15:39 -0800
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>,
-	Javier Carrasco <javier.carrasco@wolfvision.net>,
-	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-	regressions@lists.linux.dev, Henrik Rydberg <rydberg@euromail.se>,
-	John Horan <knasher@gmail.com>
-Subject: Re: [REGRESSION] Missing bcm5974 touchpad on Macbooks
-Message-ID: <ZeZyO7RUGyC8BRKP@google.com>
-References: <87sf161jjc.wl-tiwai@suse.de>
- <6ef6c5bf-e6e5-4711-81c6-6ae41de2e61e@wolfvision.net>
- <874jdm17yt.wl-tiwai@suse.de>
- <449417ca-aae1-4868-a96f-a99ac5d187d6@gmail.com>
+	s=arc-20240116; t=1709601356; c=relaxed/simple;
+	bh=VSnMIxwiLgIVNBm+HqRXuCM3mAW7fERVj+EaPcKobwg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CNt0vW1jp3hY4tcYAyYNsMOYISeuQuPz5rKcSe4YOsntpHB2jOYyNU+NhZTNkGkSOwGw+mlJX5sVGTYMRtGJzkJNgW07jUfvoHUPj67IV2iA9igcvCaEXQPN4SjWWXU2ljvXbKt9uq0ojwnzTfGzrfEOw5MCWrCcRWMq3yKuZow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=oGrzNwVG; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1709601351;
+	bh=VSnMIxwiLgIVNBm+HqRXuCM3mAW7fERVj+EaPcKobwg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=oGrzNwVGPUOxVrBhAOadX0/lmwNQUX6R+x5yBg9PpHSU2iR9Rz4LsLxskClmzXG/w
+	 hWQE5YogxPzV5kN96xrfSbCoSWdwQldymfh3RDzRCfXbMjz2BIXnctEWzpt2UWU4eJ
+	 eBTn9YAl52SpyilqAwucYKd4+KjYlLJk5/UpDGHzT7FaDJm46OZlWTuF9M5yQW0yI5
+	 GwCgAzh+10mdm7MwaXmUTZdH4SQmpO60RDYZgolpZxzQlspLxhqh9lRXZQJl13rJtf
+	 JLrRxPFSKQdBi7gt3crn2Lv9PSjTH3c9ARWpc6Ob1ZbuANKY/AYOnwNLKpuTm9qN7N
+	 tDGz6xsgXkWJw==
+Received: from [IPV6:2606:6d00:100:4000:cacb:9855:de1f:ded2] (unknown [IPv6:2606:6d00:100:4000:cacb:9855:de1f:ded2])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4Tpd135BJwzft5;
+	Mon,  4 Mar 2024 20:15:51 -0500 (EST)
+Message-ID: <469d31a7-f358-4547-bb17-0979b3515924@efficios.com>
+Date: Mon, 4 Mar 2024 20:15:57 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <449417ca-aae1-4868-a96f-a99ac5d187d6@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] tracing: Have trace_marker writes be just half of
+ TRACE_SEQ_SIZE
+Content-Language: en-US
+To: Steven Rostedt <rostedt@goodmis.org>, LKML
+ <linux-kernel@vger.kernel.org>,
+ Linux Trace Kernel <linux-trace-kernel@vger.kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Sachin Sant <sachinp@linux.ibm.com>
+References: <20240304192710.4c99677c@gandalf.local.home>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <20240304192710.4c99677c@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 04, 2024 at 09:21:19PM +0100, Javier Carrasco wrote:
+On 2024-03-04 19:27, Steven Rostedt wrote:
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 > 
-> There is indeed an interrupt endpoint with address 0x81, but the driver
-> defines bInterfaceProtocol = 2 (Mouse), and the endpoint in that
-> interface is 0x84:
-> 
-> #define BCM5974_DEVICE(prod) {					\
-> 	.match_flags = (USB_DEVICE_ID_MATCH_DEVICE |		\
-> 			USB_DEVICE_ID_MATCH_INT_CLASS |		\
-> 			USB_DEVICE_ID_MATCH_INT_PROTOCOL),	\
-> 	.idVendor = USB_VENDOR_ID_APPLE,			\
-> 	.idProduct = (prod),					\
-> 	.bInterfaceClass = USB_INTERFACE_CLASS_HID,		\
-> 	.bInterfaceProtocol = USB_INTERFACE_PROTOCOL_MOUSE	\
-> }
-> 
-> where USB_INTERFACE_PROTOCOL_MOUSE = 2.
-> 
-> 
-> My interpretation is that the driver is checking if the endpoint with
-> address 0x81 form the interface with bInterfaceProtocol = 2 (that is the
-> last interface of the list, the one with bInterfaceNumber = 2), but it
-> is not found, because its only endpoint has a different address (0x84).
-> 
-> Interestingly, 0x84 is the address given to the endpoint of the button
-> interface. The button interface should not be relevant for Macbook 5,1
-> (TYPE 2 in the driver), according to 43f482b48d03 ("Input: bcm5974 -
-> only setup button urb for TYPE1 devices").
-> 
-> If that is true, does anyone know why bInterfaceProtocol is always set
-> to USB_INTERFACE_PROTOCOL_MOUSE, and why the driver works anyway with
-> bEndpointAddress = 0x81 for the trackpad? The urb setup for 0x84 is only
-> executed for TYPE 1 devices, and the mouse interface does not have an
-> endpoint with address 0x81. Or am I missing something?
+> Since the size of trace_seq's buffer is the max an event can output, have
+> the trace_marker be half of the entire TRACE_SEQ_SIZE, which is 4K. That
+> will keep writes that has meta data written from being dropped (but
+> reported), because the total output of the print event is greater than
+> what the trace_seq can hold.
 
-The driver is naughty, it binds to the 3rd interface (bInterfaceNumber
-2) but actually pokes into the 2nd interface with endpoint 0x84 without
-actually claiming it. Your check expects that the endpoint belongs to
-the interface that the driver binds to and thus fails.
+Defining the trace_mark limit in terms of "TRACE_SEQ_SIZE / 2"
+seems backwards. It's basically using a define of the maximum
+buffer size for the pretty-printing output and defining the maximum
+input size of a system call to half of that.
+
+I'd rather see, in a header file shared between tracing mark
+write implementation and output implementation:
+
+#define TRACING_MARK_MAX_SIZE	4096
+
+and then a static validation that this input fits within your
+pretty printing output in the output implementation file:
+
+BUILD_BUG_ON(TRACING_MARK_MAX_SIZE + sizeof(meta data stuff...) > TRACE_SEQ_SIZE);
+
+This way we clearly document that the tracing mark write
+input limit is 4kB, rather than something derived from
+the size of an output buffer.
+
+Thanks,
+
+Mathieu
 
 > 
-> We could revert the patch in question, but I see no reason why checking
-> an expected interrupt endpoint should cause trouble. It looks like there
-> is something fishy going on.
-
-Yes, the driver needs to claim both interfaces and when checking use the
-right one. I will revert the patch for now given that it causes
-regression and we can try fixing it again.
-
-Thanks.
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> ---
+>   kernel/trace/trace.c | 16 +++++++++++-----
+>   1 file changed, 11 insertions(+), 5 deletions(-)
+> 
+> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+> index 8198bfc54b58..d68544aef65f 100644
+> --- a/kernel/trace/trace.c
+> +++ b/kernel/trace/trace.c
+> @@ -7320,6 +7320,17 @@ tracing_mark_write(struct file *filp, const char __user *ubuf,
+>   	if ((ssize_t)cnt < 0)
+>   		return -EINVAL;
+>   
+> +	/*
+> +	 * TRACE_SEQ_SIZE is the total size of trace_seq buffer used
+> +	 * for output. As the print event outputs more than just
+> +	 * the string written, keep it smaller than the trace_seq
+> +	 * as it could drop the event if the extra data makes it bigger
+> +	 * than what the trace_seq can hold. Half he TRACE_SEQ_SIZE
+> +	 * is more than enough.
+> +	 */
+> +	if (cnt > TRACE_SEQ_SIZE / 2)
+> +		cnt = TRACE_SEQ_SIZE / 2;
+> +
+>   	meta_size = sizeof(*entry) + 2;  /* add '\0' and possible '\n' */
+>    again:
+>   	size = cnt + meta_size;
+> @@ -7328,11 +7339,6 @@ tracing_mark_write(struct file *filp, const char __user *ubuf,
+>   	if (cnt < FAULTED_SIZE)
+>   		size += FAULTED_SIZE - cnt;
+>   
+> -	if (size > TRACE_SEQ_BUFFER_SIZE) {
+> -		cnt -= size - TRACE_SEQ_BUFFER_SIZE;
+> -		goto again;
+> -	}
+> -
+>   	buffer = tr->array_buffer.buffer;
+>   	event = __trace_buffer_lock_reserve(buffer, TRACE_PRINT, size,
+>   					    tracing_gen_ctx());
 
 -- 
-Dmitry
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
 
