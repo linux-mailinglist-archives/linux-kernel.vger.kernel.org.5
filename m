@@ -1,96 +1,114 @@
-Return-Path: <linux-kernel+bounces-91435-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91438-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B71E7871175
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 01:12:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07DBD87117D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 01:16:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E97871C21680
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 00:11:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B79FC284B74
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 00:16:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 563157FD;
-	Tue,  5 Mar 2024 00:11:55 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 827BA20EB;
+	Tue,  5 Mar 2024 00:16:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="b71JBGCz"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF8BA1C01;
-	Tue,  5 Mar 2024 00:11:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D6F010E4;
+	Tue,  5 Mar 2024 00:16:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709597514; cv=none; b=Dur7ch3z+nnrj21SGV32ghSQoxxZ0xjBu2YKm7OgI2cYVrL96IfK6W+Q/6hUOYmgTtqZ2bfVWTsyR7nGajJ7anEQBV+/ECcNzxgtp0MvQ9O+kfhOOPE/2+mWTKuG3jWczUA8OiooA1uJtA272yAUG0vR8Fs/o754JoHnEBqjf+0=
+	t=1709597799; cv=none; b=siwnRhe8WEFlAlGw06WIiTV2yOaZzAPuu7L4PhYpPn87NerOxtS2x//HWtXlBW52sc8Wd4wfCPCoZXOSLkPUtfT58bbFkJIUh039Mi5sWxLT8BQX3wgC3LJuCk6Ra+Nrryu0a8Uc1ZkofOY3UEpoO4Ry53E1Mh8MqNtbJ5iTw7o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709597514; c=relaxed/simple;
-	bh=i7v3W3Y5vvzGtyiJyPI0LclovnO1BrI5PFScP7n9qrg=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=ZJ/rIoO7di1ipJR4OeAcJt6EghridyFlHd+7a+MQ/JKji8XVyywDpfwRtTzIE8rUD7J2C1jw9w9PrCK+4KsdFp3b8z7dxhpvUo03hKjssWLkelD/zmDDPsJ3bS0kpEvUIV7M3wPHFrc+Ds63j3mwgCgMdIEkwvpm+7lKIf5b7gk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB2FAC433C7;
-	Tue,  5 Mar 2024 00:11:53 +0000 (UTC)
-Date: Mon, 4 Mar 2024 19:13:42 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Linus Torvalds
- <torvalds@linux-foundation.org>, Sachin Sant <sachinp@linux.ibm.com>
-Subject: [PATCH] tracing: Limit trace_seq size to just 8K and not depend on
- architecture PAGE_SIZE
-Message-ID: <20240304191342.56fb1087@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1709597799; c=relaxed/simple;
+	bh=9g4elZyS7t+ZdtDfIMwy46fPX3MhNp6jb87re7cBkKY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=LjzjQHP/6mOJRSeiG6JEU+mH8xi1Im0/EiWWRptF4vk8s1F7sboW/2yNT5x/QO7ZvVQDrzlO3jKVKjPIsYX1ba9yuEbS6/IXIjpBKt5Tz8JpMjvBmBaH92csxv68Xog/ZARh9RKYrrAf6H1EwT7G/DoyLwMxiv8ycCZM7+kVI38=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=b71JBGCz; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1709597795;
+	bh=4sEqwP8v2Pe+YO/5GaRVCftFMQfgnoX7jzUKfZAJ9Zg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=b71JBGCzpgdhYRkGYZIXDPW7VuYDER5Ug8EuABtZ3hSAWXDjOtMV1ZGdVwuElz9pN
+	 esAzVBM1C5LZwgA2nTDKYmsm8m2PcJD9+WouN4ilLOrCgOkz27xjnOo4sUysKCjaa0
+	 87taZOhn874p0phkRI0RiFePSuTty/+4O606RTw8WOCwSZV/+CDQSdWCKOoqjg1iEt
+	 pcnqvN6GMy0CwvHVFLTQz2gfisDvIcJyojJhnscUP+dxVZ0ZmSbx0ZIEvLxIWINM5n
+	 dAG02POouS90xl8n8FHtzeYz7Bt/CRQPtKjEEOKCMLW9JL3lbajvAeIK5Wbgadz6J5
+	 6UnjgY+XWB4sg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tpbhf6tZWz4wcF;
+	Tue,  5 Mar 2024 11:16:34 +1100 (AEDT)
+Date: Tue, 5 Mar 2024 11:16:34 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Lee Jones <lee@kernel.org>
+Cc: Duje =?UTF-8?B?TWloYW5vdmnEhw==?= <duje.mihanovic@skole.hr>, Linux
+ Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the backlight tree
+Message-ID: <20240305111634.57e84398@canb.auug.org.au>
+In-Reply-To: <20240226132828.7524baec@canb.auug.org.au>
+References: <20240226132828.7524baec@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/IPQcpFq//f6HOfV8vnIEoT6";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+
+--Sig_/IPQcpFq//f6HOfV8vnIEoT6
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Hi all,
 
-The trace_seq buffer is used to print out entire events. It's typically
-set to PAGE_SIZE * 2 as there's some events that can be quite large.
+On Mon, 26 Feb 2024 13:28:28 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> After merging the backlight tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+>=20
+> drivers/video/backlight/ktd2801-backlight.c:8:10: fatal error: linux/leds=
+-expresswire.h: No such file or directory
+>     8 | #include <linux/leds-expresswire.h>
+>       |          ^~~~~~~~~~~~~~~~~~~~~~~~~~
+>=20
+> Caused by commit
+>=20
+>   48749e2f14e3 ("backlight: Add Kinetic KTD2801 backlight support")
+>=20
+> I have used the backlight tree from next-20240223 for today.
 
-As a side effect, writes to trace_marker is limited by both the size of the
-trace_seq buffer as well as the ring buffer's sub-buffer size (which is a
-power of PAGE_SIZE). By limiting the trace_seq size, it also limits the
-size of the largest string written to trace_marker.
+I am still getting this failure.
 
-trace_seq does not need to be dependent on PAGE_SIZE like the ring buffer
-sub-buffers need to be. Hard code it to 8K which is PAGE_SIZE * 2 on most
-architectures. This will also limit the size of trace_marker on those
-architectures with greater than 4K PAGE_SIZE.
+--=20
+Cheers,
+Stephen Rothwell
 
-Link: https://lore.kernel.org/all/20240302111244.3a1674be@gandalf.local.home/
+--Sig_/IPQcpFq//f6HOfV8vnIEoT6
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- include/linux/trace_seq.h | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/include/linux/trace_seq.h b/include/linux/trace_seq.h
-index 9ec229dfddaa..1ef95c0287f0 100644
---- a/include/linux/trace_seq.h
-+++ b/include/linux/trace_seq.h
-@@ -9,9 +9,15 @@
- /*
-  * Trace sequences are used to allow a function to call several other functions
-  * to create a string of data to use.
-+ *
-+ * Have the trace seq to be 8K which is typically PAGE_SIZE * 2 on
-+ * most architectures. The TRACE_SEQ_BUFFER_SIZE (which is
-+ * TRACE_SEQ_SIZE minus the other fields of trace_seq), is the
-+ * max size the output of a trace event may be.
-  */
- 
--#define TRACE_SEQ_BUFFER_SIZE	(PAGE_SIZE * 2 - \
-+#define TRACE_SEQ_SIZE		8192
-+#define TRACE_SEQ_BUFFER_SIZE	(TRACE_SEQ_SIZE - \
- 	(sizeof(struct seq_buf) + sizeof(size_t) + sizeof(int)))
- 
- struct trace_seq {
--- 
-2.43.0
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXmZGIACgkQAVBC80lX
+0Gwfswf/X8SSkHsb1g7gPrn3/LI8fF+pdVdsaUxh7R7A8OWcUtj2dogu+aB6SqH+
+840ES5lrTb/puJXtwq0yEj1luMjuTWwrogs4iImU4Ka3tmCEX/zKtOu8Dc92sNVV
+D5/TiUbC+wXCwBd31FHwIcWvW+iq75N/cVVoSETusviV6PqC+HOXeBN8XtHyHMT/
+/abgnkv4UBWwRJLf1Esh6gpRCff8DOtm9JFN3PzTre1Mmw8E9ABRvIGVz6HEDBEp
+6UEj5ieHygftXCLhgfHOGmjedKrx1iFRV8uhj6SvBlkI13YTGMEVMJwqEKHO+xDl
+nV1aECWfVAHrGdYOMXSNF9EOlgIVFw==
+=fBKv
+-----END PGP SIGNATURE-----
 
+--Sig_/IPQcpFq//f6HOfV8vnIEoT6--
 
