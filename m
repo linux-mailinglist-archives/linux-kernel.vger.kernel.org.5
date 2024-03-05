@@ -1,146 +1,135 @@
-Return-Path: <linux-kernel+bounces-91609-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91610-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C9D2871435
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 04:25:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6586871436
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 04:25:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 022F21F233BF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 03:25:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 814601F22FD8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 03:25:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53A8529D08;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1CBD38385;
 	Tue,  5 Mar 2024 03:25:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JCR3sWbx"
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="K6KKfWDG"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 056E12F44
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 03:25:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A19FF1E4A2
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 03:25:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709609122; cv=none; b=K61xK7l4tjq1aMffVhJeKOeEwDlpZB6iof3LrecHqYvjpeMCp0+eDm1HVyo4sk0rIheBHW5fPPpOIZ44dwNIxnZIhDaOUd2Eo3dyRZG0qo6O1d1wuQ29rFFWRaiEZqIIaQRM6hr4vN6CO294KAMVtbTuyBf36RANpKpkWp+xNMU=
+	t=1709609123; cv=none; b=BnPXonXIr9gLnD4rZ27CHsAQ2JANIMqPdvCR8P5vzNkBAVr1ESKN9ON9S3J2aPMUuXHzsDhInWiJvfnqYSmO7b50tT6qX3iNHf67vkYdTxF5e+IZ/d9WXMXrYDJKG40LMgYxRiAQCw5TV3mZIPIIBZ9E5unlftBdVmZzQV4lXrA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709609122; c=relaxed/simple;
-	bh=o4YaCqksKqFYoqSktiTk2QSjD3WdyyaqkHgxXL+uZgQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cNIQ/FF055pqmsmIIM567RpxsGBF10a5FPUnQ17C8swgHHfDGZNFxPFrWdlx5ZwpFhRFyZcBqbamieyACcAWEs7XugGJ5gV/HMXPpGUvh9FJB9ci6mH/aGXrXbrPJY0nIy9OulGbLOAw4Cg1xxruy7Dah8MbkTA63h6ESJ+9Hws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JCR3sWbx; arc=none smtp.client-ip=91.218.175.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <632e7fa2-1c46-4b78-a407-9e6b9c410ea4@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1709609117;
+	s=arc-20240116; t=1709609123; c=relaxed/simple;
+	bh=6gaG3vKE9K4IwIi1DYqnKh0f6u04wOJtCoeYP4lkSJs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tUjiVtVxH9xbo2OHqJc0xfYdbF+h0Ubh5eJGY1/iLT4oSEWGTbrqig/tXdEZUCZC7AhV5o+KgMhaa6/FEG/qsDyfAGlIKKBPThW1YUeSBDQg8Jpw81OHx9GXx1KvgoiX/FYpwJYa1b544J0OmzTCSfbSM5vcVblWPjhKd8/fj8s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=K6KKfWDG; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709609120;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=cRrL6EqVu6yE6KYElhVy5I/FMc5x+oybPMPkGTsdsZs=;
-	b=JCR3sWbxa4Mfxla52f+nQyNHwsddGamu6M14Ar54Fsqsf4i1XkDu1JahuGuov03wdckqL7
-	UJaYi+Fgj1VRT0TBJGBHIkD26Gns1fR20vAOltgOWFRdp2B2p/rFJRtz/8t7bhqQpReOP5
-	wZQPWVIusT97e+6+tJq3xdwLNif78Ig=
-Date: Tue, 5 Mar 2024 11:24:44 +0800
+	bh=eXTTezTItt5z2XMw6Q17X/iZd/LoWGe+NHrzVPyEt0Q=;
+	b=K6KKfWDGkKObITOikS/Ah9Kfh6yBUb3ZhIW0v7QAhLuEYrAgS3IvnwjM1YClzkLS2su/S7
+	cDe9chR/WXmss0pVMIJ5eBz/81qC1wAjxphW3a6gnAHZBekd+cXpu0EE+pnCRE+JEuv0KP
+	/H2bz1QdxGHzZbMmFm0RGGRQk4qBEjk=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-624-9CmTsiJaNvWM6H8dh_CMdA-1; Mon, 04 Mar 2024 22:25:18 -0500
+X-MC-Unique: 9CmTsiJaNvWM6H8dh_CMdA-1
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1dc2d4c7310so10424205ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Mar 2024 19:25:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709609118; x=1710213918;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eXTTezTItt5z2XMw6Q17X/iZd/LoWGe+NHrzVPyEt0Q=;
+        b=NjNpYyYUnxdpDNstE4DNsx1aFR235BNVVNfJqNuZgEfY4+VTW+lrVDvnGpkSaUWR7l
+         Sbh5Hfye6RtwEbnqunLV1XHRyzzMCd33owrgJ10BF5JapAOHx2nN+RRRqoGh2b6Iwype
+         ySq8WUCZKrRHPotqgjQbIhA72cmajShH16X05rM7frwYmwFiPkK2LNhMN0YsHIrlvQG2
+         WdOv3CSjTWzKjH7/42uZjiwIrIyzpnnemw33V4fL386WX3Kh/oV7B4pIy0c5ynaOD5CW
+         PWhGXh1xivArkZMK8DuCTpeGMcGewJudLtqZos01Pa7MA6udRi+9F9vZjgYkKS0ADymG
+         OfJA==
+X-Forwarded-Encrypted: i=1; AJvYcCUxORy3RJMiUrqqh8INmvcDwOD1upBhWPBOIODwYczlRYP3PLV231AuvcEecjwslgZuk8tsY3o3w3p6h7Etq7p4bHHHu+qJf2BRL5f2
+X-Gm-Message-State: AOJu0YzqwrmfkJqGSS96RlexxSy73CkWXXNJVIx5YulxNX+Ve2llsEsy
+	8Bnsz+Xk5z/kOyGY9u2MV76qqgvcoJnch0w/fut1/cUEDQaRwpx73kBVbNlCvbKGIrrrtO1TOaD
+	hPB4xp+zKrcE+Tp7rzlhMV3wqzaiyF2amcHpzyfPMUO2vzL7jpMCkiYCywg+iQg==
+X-Received: by 2002:a17:902:c246:b0:1db:94a9:f9f0 with SMTP id 6-20020a170902c24600b001db94a9f9f0mr11472354plg.2.1709609117816;
+        Mon, 04 Mar 2024 19:25:17 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGIT6J3aH98CJa99vypNuCkuIr31GHtAWR9nzM3gesoAnf9BMJ50CuNlEcikNQPLHQwQIsAoQ==
+X-Received: by 2002:a17:902:c246:b0:1db:94a9:f9f0 with SMTP id 6-20020a170902c24600b001db94a9f9f0mr11472335plg.2.1709609117503;
+        Mon, 04 Mar 2024 19:25:17 -0800 (PST)
+Received: from x1n ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id p1-20020a170902e74100b001dd0a41447fsm3620111plf.233.2024.03.04.19.25.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Mar 2024 19:25:17 -0800 (PST)
+Date: Tue, 5 Mar 2024 11:25:08 +0800
+From: Peter Xu <peterx@redhat.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, Yang Shi <shy828301@gmail.com>,
+	"Kirill A . Shutemov" <kirill@shutemov.name>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>
+Subject: Re: [PATCH v2 4/7] mm/x86: Drop two unnecessary pud_leaf()
+ definitions
+Message-ID: <ZeaQlORIX26dRQuF@x1n>
+References: <20240229084258.599774-1-peterx@redhat.com>
+ <20240229084258.599774-5-peterx@redhat.com>
+ <20240304130334.GR9179@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v6 5/8] padata: downgrade padata_do_multithreaded to
- serial execution for non-SMP
-Content-Language: en-US
-To: Daniel Jordan <daniel.m.jordan@oracle.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- David Hildenbrand <david@redhat.com>, David Rientjes <rientjes@google.com>,
- Muchun Song <muchun.song@linux.dev>, Tim Chen <tim.c.chen@linux.intel.com>,
- Steffen Klassert <steffen.klassert@secunet.com>,
- Jane Chu <jane.chu@oracle.com>, "Paul E . McKenney" <paulmck@kernel.org>,
- Randy Dunlap <rdunlap@infradead.org>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, ligang.bdlg@bytedance.com
-References: <20240222140422.393911-1-gang.li@linux.dev>
- <20240222140422.393911-6-gang.li@linux.dev>
- <e44cv3c7lafc2a5p4wkhxjaipq4hgclzuceignzzp37kl4l2pj@t7bgio7s7p4q>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Gang Li <gang.li@linux.dev>
-In-Reply-To: <e44cv3c7lafc2a5p4wkhxjaipq4hgclzuceignzzp37kl4l2pj@t7bgio7s7p4q>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240304130334.GR9179@nvidia.com>
 
-On 2024/2/28 05:26, Daniel Jordan wrote:
-> On Thu, Feb 22, 2024 at 10:04:18PM +0800, Gang Li wrote:
->> hugetlb parallelization depends on PADATA, and PADATA depends on SMP.
->>
->> PADATA consists of two distinct functionality: One part is
->> padata_do_multithreaded which disregards order and simply divides
->> tasks into several groups for parallel execution. Hugetlb
->> init parallelization depends on padata_do_multithreaded.
->>
->> The other part is composed of a set of APIs that, while handling data in
->> an out-of-order parallel manner, can eventually return the data with
->> ordered sequence. Currently Only `crypto/pcrypt.c` use them.
->>
->> All users of PADATA of non-SMP case currently only use
->> padata_do_multithreaded. It is easy to implement a serial one in
->> include/linux/padata.h. And it is not necessary to implement another
->> functionality unless the only user of crypto/pcrypt.c does not depend on
->> SMP in the future.
->>
->> Signed-off-by: Gang Li <ligang.bdlg@bytedance.com>
->> Tested-by: Paul E. McKenney <paulmck@kernel.org>
->> ---
->>   include/linux/padata.h | 12 ++++++++----
->>   1 file changed, 8 insertions(+), 4 deletions(-)
->>
->> diff --git a/include/linux/padata.h b/include/linux/padata.h
->> index 8f418711351bc..0146daf344306 100644
->> --- a/include/linux/padata.h
->> +++ b/include/linux/padata.h
->> @@ -180,10 +180,6 @@ struct padata_instance {
->>   
->>   #ifdef CONFIG_PADATA
->>   extern void __init padata_init(void);
->> -#else
->> -static inline void __init padata_init(void) {}
->> -#endif
->> -
->>   extern struct padata_instance *padata_alloc(const char *name);
->>   extern void padata_free(struct padata_instance *pinst);
->>   extern struct padata_shell *padata_alloc_shell(struct padata_instance *pinst);
->> @@ -194,4 +190,12 @@ extern void padata_do_serial(struct padata_priv *padata);
->>   extern void __init padata_do_multithreaded(struct padata_mt_job *job);
->>   extern int padata_set_cpumask(struct padata_instance *pinst, int cpumask_type,
->>   			      cpumask_var_t cpumask);
->> +#else
->> +static inline void __init padata_init(void) {}
->> +static inline void __init padata_do_multithreaded(struct padata_mt_job *job)
->> +{
+On Mon, Mar 04, 2024 at 09:03:34AM -0400, Jason Gunthorpe wrote:
+> On Thu, Feb 29, 2024 at 04:42:55PM +0800, peterx@redhat.com wrote:
+> > From: Peter Xu <peterx@redhat.com>
+> > 
+> > pud_leaf() has a fallback macro defined in include/linux/pgtable.h already.
+> > Drop the extra two for x86.
+> > 
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: Ingo Molnar <mingo@redhat.com>
+> > Cc: Borislav Petkov <bp@alien8.de>
+> > Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> > Cc: x86@kernel.org
+> > Signed-off-by: Peter Xu <peterx@redhat.com>
+> > ---
+> >  arch/x86/include/asm/pgtable.h      | 1 -
+> >  include/asm-generic/pgtable-nopmd.h | 1 -
+> >  2 files changed, 2 deletions(-)
 > 
-> An early return here for zero-sized jobs is consistent with the
-> CONFIG_PADATA version and avoids hugetlb_pages_alloc_boot taking a lock
-> and flushing the tlb when there's no work to do.
-
-That's reasonable, thanks!
-
-Since it's single-threaded, the lock isn't contested, but tlb does need
-to be treated with caution.
-
+> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 > 
-> With that,
+> > @@ -31,7 +31,6 @@ static inline int pud_none(pud_t pud)		{ return 0; }
+> >  static inline int pud_bad(pud_t pud)		{ return 0; }
+> >  static inline int pud_present(pud_t pud)	{ return 1; }
+> >  static inline int pud_user(pud_t pud)		{ return 0; }
+> > -static inline int pud_leaf(pud_t pud)		{ return 0; }
 > 
-> Acked-by: Daniel Jordan <daniel.m.jordan@oracle.com>
-> 
+> It would be nice to have a final patch making the signatures
+> consistent on all the arch inlines, it should return bool not int.
 
-And thanks again.
+Makes sense, will do, thanks.
 
->> +	job->thread_fn(job->start, job->start + job->size, job->fn_arg);
->> +}
->> +#endif
->> +
->>   #endif
->> -- 
->> 2.20.1
->>
+-- 
+Peter Xu
+
 
