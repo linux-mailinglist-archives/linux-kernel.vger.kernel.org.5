@@ -1,48 +1,75 @@
-Return-Path: <linux-kernel+bounces-92411-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92413-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C528871FD6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:15:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 557FA871FD9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 14:16:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D8DD1C2025B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:15:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87F581C22364
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 13:16:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 905068593F;
-	Tue,  5 Mar 2024 13:15:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B0E585C62;
+	Tue,  5 Mar 2024 13:16:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VPV8xyeM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="YNVtc2Ut"
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAAAB8564E;
-	Tue,  5 Mar 2024 13:15:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45CD355E77
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 13:16:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709644539; cv=none; b=i97qzP5dtdmk1d9sl0lg2RYC+YOF9Pc8Eixm6L/Ll8pa9ay8fcSL/hx1lWIoAtIOD36ChxWrwWFlP2fDJQm8GYhO4SGeVuTTgN3CRAlxgALbbpGc0u53tM1cRcUuyFw/yQTcj+rluWsa/G4IUrL9QF6QOdnnFo9UJD6RJs47KfU=
+	t=1709644569; cv=none; b=DAcf7RLhXTD1CR8bPjBVrd7hA/l15mShmlK9UV9zi53m+rIUkUnWPIPQ64HcmxONnqrA5PJsTHVsjngU9i26vG8ymr3QfmEr+hUUY4Qer7v3QecOZ27KiJpUZQppjlx45L1hfqtndM9I9rCKSq64tfFFfV0BhlvJsHYJ+HLrv8g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709644539; c=relaxed/simple;
-	bh=8tP3wCMPCsdXXn25KkEtrRY7OMIA16TK2ToN5XCATSo=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=aNP0e+rd0dFnWVq7cHtddDypZa1gYh4c4+CPo76Lh9Oq9J74siW1mVfl6jiYN1MLtMjo0JVmaNScaazJGx5WQBAZwcJhco+LX/ykKIAafCuLunRwNN+EMdGQafnpCkJiwh9U8sTjKZmaW+Yx8aBxiHFn8VgF3BPuej6g827AMWo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VPV8xyeM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81F97C433C7;
-	Tue,  5 Mar 2024 13:15:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709644539;
-	bh=8tP3wCMPCsdXXn25KkEtrRY7OMIA16TK2ToN5XCATSo=;
-	h=From:Date:Subject:To:Cc:From;
-	b=VPV8xyeMLMmIJGduUhWpn0Mjz7d7p2Y9WUfVmCMQ4a5IMCg0lPiWt+CzAZFQFBKpV
-	 oWcznsV5IpOMUOokrRVEd6M0VWyDXHd7ZLzvE81RMx5fqToOvQIty/BbuTA1xWUalc
-	 LatrrogV+LrdWXkF/2FNRfOh4h9NVhw1qhKNdMxhrZWpFEN5NKHrAPIlRHgAkngbjU
-	 ZTYWblkbap5PZGWQchlOJFV87x9OzSUq0As/ChIp8hgQCfSFX2ypBF878Y5w71qIwx
-	 9zqORrlaQ4uQkaf+SMpi7CCHyMEtaXjttAqdjjcFnpmDctaXTqyBcEW9iuyMFERbNz
-	 d7FESp1WvxytA==
-From: Roger Quadros <rogerq@kernel.org>
-Date: Tue, 05 Mar 2024 15:15:32 +0200
-Subject: [PATCH v2] arm64: dts: ti: beagleplay: Fix Ethernet PHY RESET
- GPIOs
+	s=arc-20240116; t=1709644569; c=relaxed/simple;
+	bh=8XNq4Q5n6PPg3j924WkY2krkAvgW/p/prb34aDD/L0g=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=oSFe1h3WnhzQ0zKxeALx/RvNNBXmnSdLn1rKnLeZS245dYkNWupSQ6BZEiDn3RtrxQPG15s24E6DmOSn3iuQiTUsNcFurqnmOtN62s+xzjOb61NlYmvQCS/omjgsxe8ygZImJS7X5naEZ4YCGmreZaxYs9JEKGGuIfLgReO3GqA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=YNVtc2Ut; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e63e9abf6aso433219b3a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 05:16:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709644567; x=1710249367;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:dkim-signature:from:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=IlVgX44R65PkQMZQ9beF+VlRKBmaGhNPco+GYuCp2vI=;
+        b=ARWn4Oeete/J8IxFk75ajtw0nd2STcxqlgzZ6ZSdmtTZ0EOdFYv+xSJIpmCKKQzNxd
+         j9LAovYV9JvUc2SVTROSxAbwyYTjFD4zHk6hQXkh6LrV1mPw9pGYfFRSw8v46kyY+CQY
+         DdIORSDQ5rF/j+W5+thZM8ixjpxUV0F6ERmJYCzv/bxpfqtZOGjyw4jWYVnTmlQTydXE
+         8mqrsRu//HBUR2Ms/P5ACjOlq0KM8QWcgNtbMAHltILramgNIzIJil3G26dAH2wNGIjV
+         CISfjKUjZSs9KcShuJhphUyObJI5iNwDmk+LuaswmXUSdsph8AqIvh+21YeGStMMPGJL
+         VvEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWnaHfLAfPoRFr48AB1kdbZh4HJ+OkXgm8zCMLKvaHuSmySzae833cUrh3jJ7PvngKcgwOTa9x0aXEEyybOYLu2JVPFj//aiGg3Q6+p
+X-Gm-Message-State: AOJu0YxbJKMd5izhyzznv1hSPJ+499r79wYxdjL3kOjoiXOV6xGyL2WA
+	KYgBfwNuhZmCUfAPJ5a1CFHIYk1M2/pB5UAKf0+XZ3Nuh+ruNLqO
+X-Google-Smtp-Source: AGHT+IEYoKkZLHyXa2G+6BzBxGBU+sy/JkPIG76Xwt7x3+dLYKcpYdRDHPgMRFY4V7tWdPsVDWRSkA==
+X-Received: by 2002:a05:6a00:238f:b0:6e6:27d5:4182 with SMTP id f15-20020a056a00238f00b006e627d54182mr5235576pfc.9.1709644567518;
+        Tue, 05 Mar 2024 05:16:07 -0800 (PST)
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id x7-20020a626307000000b006e624f5c866sm3504674pfb.145.2024.03.05.05.16.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Mar 2024 05:16:07 -0800 (PST)
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2024; t=1709644565;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=IlVgX44R65PkQMZQ9beF+VlRKBmaGhNPco+GYuCp2vI=;
+	b=YNVtc2UtO7pVpo3uW0AxjiN0Alhbu3UO0QMI/Gv3xagVMJdPVSPO19PY2MQfTbvUdM4fEO
+	+glmj5naNaI7XrvtTX6SAeZVjCQyyPXekYm59ujGt8DfEaurumImSa6j8gbogeSxwwsnWA
+	UCOKKW49gv6fIbeqZvdxwI9JtYQ35Kp7xrCnUFjBwOuSonZaGlWtHjhQmvG2bCCRu4XYA2
+	cb6b1Hgcth29N2MQ9PCY+IcieSqJwMpnzSxCD/1vUXfSSoPDPgLYghCnTAS0nbj0gcy+1o
+	6txeqFTWgl9+fLiEv6Y0lBJBYaOq75f7zW4U+HHyphLayw/zKE6WF2oht2+UGg==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+Subject: [PATCH 0/3] nvme: constify struct class usage
+Date: Tue, 05 Mar 2024 10:15:55 -0300
+Message-Id: <20240305-class_cleanup-nvme-v1-0-c707fc997774@marliere.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,109 +78,54 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240305-b4-for-v6-9-am65-beagleplay-ethernet-reset-v2-1-2bf463a7bf13@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAPMa52UC/52NSwqDMBRFtyIZ9xXz8TvqPoqDpL5oqDXyIqEi7
- r3RJXRy4dwL9+wsIDkMrM12RhhdcH5OIG4Ze416HhBcn5iJXKhciAaMAusJYgkN6E9ZgEE9TLh
- MegNcR6QZVyAMKfOmtqJS1lhesHS4EFr3vWTPLvHowuppu9yRn+1fmsiBg5GojJSyqk3/eJ/zd
- Pc0sO44jh8eEEt05QAAAA==
-To: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>, 
- Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: srk@ti.com, s-vadapalli@ti.com, r-gunasekaran@ti.com, 
- linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Roger Quadros <rogerq@kernel.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3114; i=rogerq@kernel.org;
- h=from:subject:message-id; bh=8tP3wCMPCsdXXn25KkEtrRY7OMIA16TK2ToN5XCATSo=;
- b=owEBbQKS/ZANAwAIAdJaa9O+djCTAcsmYgBl5xr4Y1Wf/CKyiKt/McPopCDoLfwA/bR7/olM2
- +1LbVG2fc+JAjMEAAEIAB0WIQRBIWXUTJ9SeA+rEFjSWmvTvnYwkwUCZeca+AAKCRDSWmvTvnYw
- k0jdD/9XyfwFTOU65Lg7qS2xN+1cjifVs6TkQ3yi+Oruu59Zb1BlglUJOYq2iEyShQHQNjJax0j
- EUGW6IyXydOsH+SpkQFY2zTI6npW8z0XLKrDGRmX976iaUV3/6WpBfO4wsGhMIS22kKApeoRn3H
- Zy09tVPOFVMla73kvnDbHbitV3NY1/S4azLaWdxeRorXr91OTP+GBj0j6rJ9xmYu7ywHv37Xbrl
- XEjMPt+AQoWNIV25mOpOY12gTpmZUhn/4WPUS6yfwQWOIjjN772t2Vyi+zU+kz42RGNcc4NfMSA
- TvOxhscyjD4T+KwNfieu6+WDdIxI8bHbdi3TKweDjmgwR8/yDTGZYUaPTRQIwpbAI9jrvC3/otO
- ulBetqJEJlhEETI4rSP6n2EtJBfJcxUg1xqtr+Ksq5gaLU8lYaRob8pgxuh9SF0a9zPnk32OCNa
- JKHhHGHmrlKHFnDQ1bh05DFUx/295HxnDVJcb/gXLPbszdXC/h8nO2M6No9NyzLCOL6TJh0/DdC
- 2St4CCyXMDYkyu0Zz1zEw4kswTQQhOJwYrhL/xk65girmWLSqcig6j1GRlFpCHQs+fcJMx2sbeh
- 80v8nAmkoZ/cmEilX2AlzfY2VJRa6HGSvxxuCcCGnP+32UW7uIkDiG8k+1RdnFP5TbUIE0diTmq
- zOExkrlyZeocAwQ==
-X-Developer-Key: i=rogerq@kernel.org; a=openpgp;
- fpr=412165D44C9F52780FAB1058D25A6BD3BE763093
+X-B4-Tracking: v=1; b=H4sIAAsb52UC/x3MQQqAIBBA0avErBPUCqKrRIRNYw2UhUMRhHdPW
+ r7F/y8IRSaBrngh0s3CR8gwZQG4urCQ4jkbrLa1rnSjcHMiI27kwnWqcO+k0BhP84TV1FrI4Rn
+ J8/NP+yGlDzF/c0tkAAAA
+To: Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>, 
+ Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>, 
+ James Smart <james.smart@broadcom.com>, Chaitanya Kulkarni <kch@nvidia.com>
+Cc: linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Ricardo B. Marliere" <ricardo@marliere.net>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=883; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=8XNq4Q5n6PPg3j924WkY2krkAvgW/p/prb34aDD/L0g=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl5xsR+QBdfjwxESwx+GwAh/Mhmi9UlsDoNCQyv
+ iscKwq6RfSJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZecbEQAKCRDJC4p8Y4ZY
+ phgfD/0TpHpD3XBqsjJO0k5Vtvt/kA3emstwrh+ablwvZDNxMk25pHr+hqfZl3YJhbE9B5Yu1l1
+ KjxEScP/7EAGaPiDDcemeD0rLSUnnVKRPeBd0bRngWOwCCL6fdW6jgM13dnsNUhkY/ZU34SjVdH
+ yKofPj1Qzlp9RES9KFqGqeyFIGL90V9buRT9iLdEYp5904LwM95CwwAEg+91wIV522q19pTpyW/
+ uSBA5zEikf9ZaJ/mI9WXjdUUPc1gRRwtiEMRmTNd63rfTCHqbymzcEiPAJEcaQG6QB78uPssEGN
+ 9VcaigIBCa9pQXtc1Tgn9Wh3UiRBDdHWXGj/gf1eTy5h5EVtXZw0+p5MX6HjgQgWyNUncVbdDJ/
+ kMjv5c9YgrSA845rxLiXBdUCDFYhg4NFk12q0ohu1JUQaHa/hMXywLL5SBODnkFJV0qTMUIKQSM
+ BKEAbQ1vPgE051XGtEZBRyD8INPoNPwhSBfjZ0xkPSHgjvBxB5ubERtHzN/s7Xw9O3RZCiKRdFH
+ Kf5bqrbwM8W35G1rL4+tfJLx0tcrhq/Sz7VZ3fk7waXICikdvSOwtwqZ0YvbtsbPSTS2IMOZiN2
+ pgKGkNNpW3Xn/fE03Hoy/zPnWTdMb2VbuQhdsEpInVQ89rP5LHE7a7fQKPNUx3iAcnP04XuqSQj
+ 5i6aCqUw5JtGe2w==
+X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
+ fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
-The RESET GPIO pinmux should be part of MDIO bus node
-so that they can be in the right state before the PHY
-can be probed via MDIO bus scan.
+This is a simple and straight forward cleanup series that aims to make the
+class structures in nvme constant. This has been possible since 2023 [1].
 
-The GPIO pin should be setup with PIN_INPUT so that
-input circuitry is enabled in case software wants to
-check pin status. Without this, incorrect status is shown
-in /sys/kernel/debug/gpio.
+[1]: https://lore.kernel.org/all/2023040248-customary-release-4aec@gregkh/
 
-Add GPIO reset for the Gigabit Ethernet PHY. As per
-RTL8211F datasheet, reset assert width is 10ms and
-PHY registers can be access accessed after 50ms of
-reset deassert.
-
-Fixes: f5a731f0787f ("arm64: dts: ti: Add k3-am625-beagleplay")
-Signed-off-by: Roger Quadros <rogerq@kernel.org>
+Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
 ---
-Changes in v2:
-- Fix Subject to "arm64"
-- Enable PIN_INPUT for SPE_RESET to fix GPIO status.
-- Add Fixes tag.
-- Link to v1: https://lore.kernel.org/r/20240229-b4-for-v6-9-am65-beagleplay-ethernet-reset-v1-1-b3e4b33378bd@kernel.org
----
- arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+Ricardo B. Marliere (3):
+      nvme: core: constify struct class usage
+      nvme: fabrics: make nvmf_class constant
+      nvme: fcloop: make fcloop_class constant
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
-index a34e0df2ab86..8ab838f1697c 100644
---- a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
-@@ -292,6 +292,8 @@ mdio0_pins_default: mdio0-default-pins {
- 		pinctrl-single,pins = <
- 			AM62X_IOPAD(0x0160, PIN_OUTPUT, 0) /* (AD24) MDIO0_MDC */
- 			AM62X_IOPAD(0x015c, PIN_INPUT, 0) /* (AB22) MDIO0_MDIO */
-+			AM62X_IOPAD(0x003c, PIN_INPUT, 7) /* (M25) GPMC0_AD0.GPIO0_15 */
-+			AM62X_IOPAD(0x018c, PIN_INPUT, 7) /* (AC21) RGMII2_RD2.GPIO1_5 */
- 		>;
- 	};
- 
-@@ -383,7 +385,6 @@ AM62X_IOPAD(0x017c, PIN_INPUT, 1) /* (AD22) RGMII2_RX_CTL.RMII2_RX_ER */
- 			AM62X_IOPAD(0x016c, PIN_INPUT, 1) /* (Y18) RGMII2_TD0.RMII2_TXD0 */
- 			AM62X_IOPAD(0x0170, PIN_INPUT, 1) /* (AA18) RGMII2_TD1.RMII2_TXD1 */
- 			AM62X_IOPAD(0x0164, PIN_INPUT, 1) /* (AA19) RGMII2_TX_CTL.RMII2_TX_EN */
--			AM62X_IOPAD(0x018c, PIN_OUTPUT, 7) /* (AC21) RGMII2_RD2.GPIO1_5 */
- 			AM62X_IOPAD(0x0190, PIN_INPUT, 7) /* (AE22) RGMII2_RD3.GPIO1_6 */
- 			AM62X_IOPAD(0x01f0, PIN_OUTPUT, 5) /* (A18) EXT_REFCLK1.CLKOUT0 */
- 		>;
-@@ -597,6 +598,9 @@ &cpsw3g_mdio {
- 
- 	cpsw3g_phy0: ethernet-phy@0 {
- 		reg = <0>;
-+		reset-gpios = <&main_gpio0 15 GPIO_ACTIVE_LOW>;
-+		reset-assert-us = <10000>;
-+		reset-deassert-us = <50000>;
- 	};
- 
- 	cpsw3g_phy1: ethernet-phy@1 {
-@@ -615,7 +619,7 @@ &main_gpio0 {
- 		"USR0", "USR1", "USR2", "USR3", "", "", "USR4",	/* 3-9 */
- 		"EEPROM_WP",					/* 10 */
- 		"CSI2_CAMERA_GPIO1", "CSI2_CAMERA_GPIO2",	/* 11-12 */
--		"CC1352P7_BOOT", "CC1352P7_RSTN", "", "", "",	/* 13-17 */
-+		"CC1352P7_BOOT", "CC1352P7_RSTN", "GBE_RSTN", "", "",	/* 13-17 */
- 		"USR_BUTTON", "", "", "", "", "", "", "", "",	/* 18-26 */
- 		"", "", "", "", "", "", "", "", "", "HDMI_INT",	/* 27-36 */
- 		"", "VDD_WLAN_EN", "", "", "WL_IRQ", "GBE_INTN",/* 37-42 */
-
+ drivers/nvme/host/core.c     | 53 +++++++++++++++++++++++---------------------
+ drivers/nvme/host/fabrics.c  | 20 +++++++++--------
+ drivers/nvme/target/fcloop.c | 17 +++++++-------
+ 3 files changed, 48 insertions(+), 42 deletions(-)
 ---
-base-commit: bbef42084cc170cbfc035bf784f2ff055c939d7e
-change-id: 20240229-b4-for-v6-9-am65-beagleplay-ethernet-reset-098f274fbf15
+base-commit: 7e90b5c295ec1e47c8ad865429f046970c549a66
+change-id: 20240305-class_cleanup-nvme-c11fedbc3b82
 
 Best regards,
 -- 
-Roger Quadros <rogerq@kernel.org>
+Ricardo B. Marliere <ricardo@marliere.net>
 
 
