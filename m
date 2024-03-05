@@ -1,160 +1,251 @@
-Return-Path: <linux-kernel+bounces-91516-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91518-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13FD3871283
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 02:52:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28860871286
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 02:56:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD0901F23B2E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 01:52:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D243528510A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 01:56:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D67C18026;
-	Tue,  5 Mar 2024 01:52:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89D4C17C95;
+	Tue,  5 Mar 2024 01:56:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nSzLJu53"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dWkJhmcx"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52E162F43;
-	Tue,  5 Mar 2024 01:52:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42E5C18021
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 01:56:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709603566; cv=none; b=fiyyAG7Gyqizo9cc8QXKhnTqmC9Qj59eS9jGDrdoiK3y3+YbT5HkqxboGdQx45Vv2Nv5EBukpa1Y6vK8Gby+xq1uduV2JAk2LN2M5BTVX+DEyv1hP2gvyhnMSnf1lnhxF9VKsOks9xr66+ixYY9OhXdkNkEWg+FLYSKcmDhObHU=
+	t=1709603778; cv=none; b=r9mY0EJ7P+XsZP7nDDEEdi48juiduUCQ3hFWunMMnx/WEtZAHgBX89d0mAwk/J4blm6Ujpg4UCy71/Ghp911QAW0+CzTBO/AL40ZGgAp2mCKoOGyENv3uKxWO+S+H5lS/pyeFTYMkhGzly4WezEH4zHx9DkpkefXTKn2ijfRinw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709603566; c=relaxed/simple;
-	bh=GRusyfa8TF2Nxs4bQB9i2a/gKinpT0tnMyNb3mj5cYE=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:From:To:Cc:
-	 References:In-Reply-To; b=EQGXcWBwrLlj5jHMPssAc/2tCAX5WQYRy3DwATWg2T9PFF7nsiEDnoDW1VKzkI3pkNoXg0bn+jEKx8t/hDgagvRQfdZRRvCGoo/BrnAQSLwjD5vVWNggRxXDM2b1wRmDlZUGONSapA0NxlqC8EhN/1TlfCRQ0a0Yz89shS9cKlM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nSzLJu53; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2BEDC433F1;
-	Tue,  5 Mar 2024 01:52:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709603566;
-	bh=GRusyfa8TF2Nxs4bQB9i2a/gKinpT0tnMyNb3mj5cYE=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=nSzLJu53wk1f1qMdYraehDndWs5Mo7yDzC6+kuwoc2efv4CimLQg4plE4s9+yR4gb
-	 jTpE1cOz9iKYGdYFkDi1JdfOObk2dJ4OwfIYNsQzkpk7sdzVrwUYNzaZD4CA301ShZ
-	 05MzEAFbN3DeADUIRitKnOvf8Hg5zw4Ax3zkCL9pmKZqWX92h7RT122GoQ8vJY3YyL
-	 C/73Y1D7B+lk5vHgm1Z8IK8SnTidEQJprV46M/7RQsq8i4/DjzBIOPHWuA7MCWD7gq
-	 aVAXBuf08xk+mlp+IzF4QrMVsZ2SkR7FMMbAwmV+x8zakfguT/xcQQ4TwW7GnPiifb
-	 tPhSJOgArc0Ag==
+	s=arc-20240116; t=1709603778; c=relaxed/simple;
+	bh=zt0N50zHKPJXVNvVG81euXstggimzNKVFAU/zxBLFJ8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=R2r3zLz5U28B6sL2FNubJDPusey5MNUpNGnNf/Rps67uxA1tlQhZwqobOrPCelgznZMr+iMg+wyhX4BRwRAw+PXTjnsHfBILo3sCLcRvnOimuNOCrZkcaJQFnOLNqAryxTDJdPS44OGqg4yALdiLh1zlW8bPZZVqnHQ0j3S44uM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dWkJhmcx; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709603776; x=1741139776;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=zt0N50zHKPJXVNvVG81euXstggimzNKVFAU/zxBLFJ8=;
+  b=dWkJhmcxVKUW+oj2hAZ1EGqUDU8GGFv6mASwxXnqJAbmPGhbC8/JVMWT
+   hEualTYlt6JsU1Wf3n1BtfnfzfhaNL2Dwub0wPUvSkU15eoOPH0lyQ12X
+   aQRCaLypCKsSryswttyKPSXKO++yvW+jTHvqu0wf/RjUEWZS/TaKSmH4L
+   AOhXfRhHgntC2la/QdN69ZESkWsXCCIlz7Q08i1Twlp66wdMFMCn4P6Sg
+   4k6A7ph0GmUdHOFmUM/jJ2xts8Jyyerolrj6/siriUefQ0WQpDQClF5MJ
+   LGzjmo/Gt2AV63xBVeMLD8wfw4Pqu+zG/ReqP0v3z320ZwwX3hhB171+E
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="14773926"
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="14773926"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 17:56:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
+   d="scan'208";a="9377584"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 17:56:13 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Byungchul Park <byungchul@sk.com>
+Cc: <akpm@linux-foundation.org>,  <linux-kernel@vger.kernel.org>,
+  <linux-mm@kvack.org>,  <kernel_team@skhynix.com>,  <yuzhao@google.com>,
+  <hannes@cmpxchg.org>
+Subject: Re: [PATCH v6] mm, vmscan: retry kswapd's priority loop with
+ cache_trim_mode off on failure
+In-Reply-To: <20240304082118.20499-1-byungchul@sk.com> (Byungchul Park's
+	message of "Mon, 4 Mar 2024 17:21:18 +0900")
+References: <20240304033611.GD13332@system.software.com>
+	<20240304082118.20499-1-byungchul@sk.com>
+Date: Tue, 05 Mar 2024 09:54:19 +0800
+Message-ID: <87zfvda1f8.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 05 Mar 2024 03:52:41 +0200
-Message-Id: <CZLFVTVPBFB4.3IIZULN3LKZGI@kernel.org>
-Subject: Re: [PATCH] Documentation: tpm_tis
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Randy Dunlap" <rdunlap@infradead.org>, <linux-doc@vger.kernel.org>
-Cc: "Jonathan Corbet" <corbet@lwn.net>, "Daniel P . Smith"
- <dpsmith@apertussolutions.com>, "Lino Sanfilippo"
- <l.sanfilippo@kunbus.com>, "Jason Gunthorpe" <jgg@ziepe.ca>, "Peter Huewe"
- <peterhuewe@gmx.de>, "James Bottomley"
- <James.Bottomley@HansenPartnership.com>, "Alexander Steffen"
- <Alexander.Steffen@infineon.com>, <keyrings@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-integrity@vger.kernel.org>
-X-Mailer: aerc 0.17.0
-References: <20240304212734.43213-1-jarkko@kernel.org>
- <aed28265-d677-491a-a045-24b351854b24@infradead.org>
-In-Reply-To: <aed28265-d677-491a-a045-24b351854b24@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ascii
 
-On Tue Mar 5, 2024 at 12:53 AM EET, Randy Dunlap wrote:
->
->
-> On 3/4/24 13:27, Jarkko Sakkinen wrote:
-> > Based recent discussions on LKML, provide preliminary bits of tpm_tis_c=
-ore
-> > dependent drivers. Includes only bare essentials but can be extended la=
-ter
-> > on case by case. This way some people may even want to read it later on=
-.
-> >=20
-> > Cc: Jonathan Corbet <corbet@lwn.net>
-> > CC: Daniel P. Smith <dpsmith@apertussolutions.com>
-> > Cc: Lino Sanfilippo <l.sanfilippo@kunbus.com>
-> > Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> > Cc: Peter Huewe <peterhuewe@gmx.de>
-> > Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
-> > Cc: Alexander Steffen <Alexander.Steffen@infineon.com>
-> > Cc: keyrings@vger.kernel.org
-> > Cc: linux-doc@vger.kernel.org
-> > Cc: linux-kernel@vger.kernel.org
-> > Cc: linux-integrity@vger.kernel.org
-> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > ---
-> >  Documentation/security/tpm/index.rst   |  1 +
-> >  Documentation/security/tpm/tpm_tis.rst | 30 ++++++++++++++++++++++++++
-> >  2 files changed, 31 insertions(+)
-> >  create mode 100644 Documentation/security/tpm/tpm_tis.rst
-> >=20
->
-> > diff --git a/Documentation/security/tpm/tpm_tis.rst b/Documentation/sec=
-urity/tpm/tpm_tis.rst
-> > new file mode 100644
-> > index 000000000000..3cec0216a169
-> > --- /dev/null
-> > +++ b/Documentation/security/tpm/tpm_tis.rst
-> > @@ -0,0 +1,30 @@
-> > +.. SPDX-License-Identifier: GPL-2.0
-> > +
-> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
-> > +TPM FIFO interface Driver
-> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
-> > +
-> > +FIFO (First-In-First-Out) is the name of the hardware interface used b=
-y the
-> > +`tpm_tis_core` dependent drivers. The prefix "tis" is named after TPM
-> > +Interface Specification, which is the hardware interface specification=
- for
-> > +TPM 1.x chips.
-> > +
-> > +Communication is based on a 5 KiB buffer shared by the TPM chip throug=
-h a
-> > +hardware bus or memory map. The buffer is further split to five equal =
-size
-> > +buffers, which provide equivalent sets of registers for communication
-> > +between CPU and TPM. The communication end points are called *localiti=
-es*
-> > +in the TCG terminology.
-> > +
-> > +When a kernel wants to send a commands to the TPM chip, it first reser=
-ves
-> > +locality 0 by setting `requestUse` bit in `TPM_ACCESS` register. The b=
-it is
-> > +cleared by the chip when the access is granted. Once completed its
-> > +communication, it sets `activeLocity` bit in the same register.
->
->       Is that              activeLocality ?
+Byungchul Park <byungchul@sk.com> writes:
 
-Yes.
-
+> Changes from v5:
+> 	1. Make it retry the kswapd's scan priority loop with
+> 	   cache_trim_mode off *only if* the mode didn't work in the
+> 	   previous loop. (feedbacked by Huang Ying)
+> 	2. Take into account 'break's from the priority loop when making
+> 	   the decision whether to retry. (feedbacked by Huang Ying)
+> 	3. Update the test result in the commit message.
 >
-> > +
-> > +Pending localities are served in order by the chip descending orderm a=
-nd
-> > +one at a time:
-> > +
-> > +- Locality 0 has the lowest priority.
-> > +- Locality 5 has the highest priotiy.
+> Changes from v4:
+> 	1. Make other scans start with may_cache_trim_mode = 1.
 >
->                                 priority.
+> Changes from v3:
+> 	1. Update the test result in the commit message with v4.
+> 	2. Retry the whole priority loop with cache_trim_mode off again,
+> 	   rather than forcing the mode off at the highest priority,
+> 	   when the mode doesn't work. (feedbacked by Johannes Weiner)
 >
-> > +
-> > +Further information on purpose and meaning of the localities can be fo=
-und
-> > +from section 3.2 of TCG PC Client Platform TPM Profile Specification.
+> Changes from v2:
+> 	1. Change the condition to stop cache_trim_mode.
+>
+> 	   From - Stop it if it's at high scan priorities, 0 or 1.
+> 	   To   - Stop it if it's at high scan priorities, 0 or 1, and
+> 	          the mode didn't work in the previous turn.
+>
+> 	   (feedbacked by Huang Ying)
+>
+> 	2. Change the test result in the commit message after testing
+> 	   with the new logic.
+>
+> Changes from v1:
+> 	1. Add a comment describing why this change is necessary in code
+> 	   and rewrite the commit message with how to reproduce and what
+> 	   the result is using vmstat. (feedbacked by Andrew Morton and
+> 	   Yu Zhao)
+> 	2. Change the condition to avoid cache_trim_mode from
+> 	   'sc->priority != 1' to 'sc->priority > 1' to reflect cases
+> 	   where the priority goes to zero all the way. (feedbacked by
+> 	   Yu Zhao)
+>
+> --->8---
+> From f811ee583158fd53d0e94d32ce5948fac4b17cfe Mon Sep 17 00:00:00 2001
+> From: Byungchul Park <byungchul@sk.com>
+> Date: Mon, 4 Mar 2024 15:27:37 +0900
+> Subject: [PATCH v6] mm, vmscan: retry kswapd's priority loop with cache_trim_mode off on failure
+>
+> With cache_trim_mode on, reclaim logic doesn't bother reclaiming anon
+> pages.  However, it should be more careful to use the mode because it's
+> going to prevent anon pages from being reclaimed even if there are a
+> huge number of anon pages that are cold and should be reclaimed.  Even
+> worse, that leads kswapd_failures to reach MAX_RECLAIM_RETRIES and
+> stopping kswapd from functioning until direct reclaim eventually works
+> to resume kswapd.
+>
+> So kswapd needs to retry its scan priority loop with cache_trim_mode
+> off again if the mode doesn't work for reclaim.
+>
+> The problematic behavior can be reproduced by:
+>
+>    CONFIG_NUMA_BALANCING enabled
+>    sysctl_numa_balancing_mode set to NUMA_BALANCING_MEMORY_TIERING
+>    numa node0 (8GB local memory, 16 CPUs)
+>    numa node1 (8GB slow tier memory, no CPUs)
+>
+>    Sequence:
+>
+>    1) echo 3 > /proc/sys/vm/drop_caches
+>    2) To emulate the system with full of cold memory in local DRAM, run
+>       the following dummy program and never touch the region:
+>
+>          mmap(0, 8 * 1024 * 1024 * 1024, PROT_READ | PROT_WRITE,
+>               MAP_ANONYMOUS | MAP_PRIVATE | MAP_POPULATE, -1, 0);
+>
+>    3) Run any memory intensive work e.g. XSBench.
+>    4) Check if numa balancing is working e.i. promotion/demotion.
+>    5) Iterate 1) ~ 4) until numa balancing stops.
+>
+> With this, you could see that promotion/demotion are not working because
+> kswapd has stopped due to ->kswapd_failures >= MAX_RECLAIM_RETRIES.
+>
+> Interesting vmstat delta's differences between before and after are like:
+>
+>    +-----------------------+-------------------------------+
+>    | interesting vmstat    | before        | after         |
+>    +-----------------------+-------------------------------+
+>    | nr_inactive_anon      | 321935        | 1664772       |
+>    | nr_active_anon        | 1780700       | 437834        |
+>    | nr_inactive_file      | 30425         | 40882         |
+>    | nr_active_file        | 14961         | 3012          |
+>    | pgpromote_success     | 356           | 1293122       |
+>    | pgpromote_candidate   | 21953245      | 1824148       |
+>    | pgactivate            | 1844523       | 3311907       |
+>    | pgdeactivate          | 50634         | 1554069       |
+>    | pgfault               | 31100294      | 6518806       |
+>    | pgdemote_kswapd       | 30856         | 2230821       |
+>    | pgscan_kswapd         | 1861981       | 7667629       |
+>    | pgscan_anon           | 1822930       | 7610583       |
+>    | pgscan_file           | 39051         | 57046         |
+>    | pgsteal_anon          | 386           | 2192033       |
+>    | pgsteal_file          | 30470         | 38788         |
+>    | pageoutrun            | 30            | 412           |
+>    | numa_hint_faults      | 27418279      | 2875955       |
+>    | numa_pages_migrated   | 356           | 1293122       |
+>    +-----------------------+-------------------------------+
+>
+> Signed-off-by: Byungchul Park <byungchul@sk.com>
+> ---
+>  mm/vmscan.c | 21 ++++++++++++++++++++-
+>  1 file changed, 20 insertions(+), 1 deletion(-)
+>
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index bba207f41b14..6fe45eca7766 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -108,6 +108,12 @@ struct scan_control {
+>  	/* Can folios be swapped as part of reclaim? */
+>  	unsigned int may_swap:1;
+>  
+> +	/* Not allow cache_trim_mode to be turned on as part of reclaim? */
+> +	unsigned int no_cache_trim_mode:1;
+> +
+> +	/* Has cache_trim_mode failed at least once? */
+> +	unsigned int cache_trim_mode_failed:1;
+> +
+>  	/* Proactive reclaim invoked by userspace through memory.reclaim */
+>  	unsigned int proactive:1;
+>  
+> @@ -2268,7 +2274,8 @@ static void prepare_scan_control(pg_data_t *pgdat, struct scan_control *sc)
+>  	 * anonymous pages.
+>  	 */
+>  	file = lruvec_page_state(target_lruvec, NR_INACTIVE_FILE);
+> -	if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE))
+> +	if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE) &&
+> +	    !sc->no_cache_trim_mode)
+>  		sc->cache_trim_mode = 1;
+>  	else
+>  		sc->cache_trim_mode = 0;
+> @@ -5967,6 +5974,8 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+>  	 */
+>  	if (reclaimable)
+>  		pgdat->kswapd_failures = 0;
+> +	else if (sc->cache_trim_mode)
+> +		sc->cache_trim_mode_failed = 1;
+>  }
+>  
+>  /*
+> @@ -6898,6 +6907,16 @@ static int balance_pgdat(pg_data_t *pgdat, int order, int highest_zoneidx)
+>  			sc.priority--;
+>  	} while (sc.priority >= 1);
+>  
+> +	/*
+> +	 * Restart only if it went through the priority loop all the way,
+> +	 * but cache_trim_mode didn't work.
+> +	 */
+> +	if (!sc.nr_reclaimed && sc.priority < 1 &&
+> +	    !sc.no_cache_trim_mode && sc.cache_trim_mode_failed) {
 
-Thanks for the remarks. Too many typos but at least I think the story is
-is understandable and describes pretty well key elements of tpm_tis_core.
+Can we just use sc.cache_trim_mode (instead of
+sc.cache_trim_mode_failed) here?  That is, if cache_trim_mode is enabled
+for priority == 1 and failed to reclaim, we will restart.  If this
+works, we can avoid to add another flag.
 
-BR, Jarkko
+> +		sc.no_cache_trim_mode = 1;
+> +		goto restart;
+> +	}
+> +
+>  	if (!sc.nr_reclaimed)
+>  		pgdat->kswapd_failures++;
+
+--
+Best Regards,
+Huang, Ying
 
