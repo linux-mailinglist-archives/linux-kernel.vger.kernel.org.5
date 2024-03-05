@@ -1,286 +1,185 @@
-Return-Path: <linux-kernel+bounces-91732-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91733-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EC928715C7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:20:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E9A18715C9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 07:21:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F21BBB22244
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 06:20:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B4B92B23538
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 06:20:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85CF77BAF5;
-	Tue,  5 Mar 2024 06:20:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67E3F7D3F6;
+	Tue,  5 Mar 2024 06:20:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kUG79qXL"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linumiz.com header.i=@linumiz.com header.b="aA6RsbfO"
+Received: from omta34.uswest2.a.cloudfilter.net (omta34.uswest2.a.cloudfilter.net [35.89.44.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E67629437
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 06:20:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 340647E10D
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 06:20:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709619632; cv=none; b=CVhos87/jt1o8do/bbHj6Z5s83kxKTJmdS1u22mVE9s7MyaGoLbEDy1M6WTWqkzL/Jir37RIW8IoLGNh8uGrTisnZ9rA0fFSDhlw8bcFRyob6JMyTIB1Hf73XNyQ2iecFE65tVpIuU7C6RHRtfO4BzA7rqJDBBRTN8OH8pQVyXE=
+	t=1709619639; cv=none; b=s8gP+Q4jz5Xogpjhxe9BOlWYmmyL/ivbe6IQOJrFOTnfAKvUM4ChGmb7W/p5+kPYtTJXpOfw3tyhbPxoyGNpsDNfOo8zxReaZzP7BMQrrgoOiirb+Mczl/dfswBG5+AHVjv26xsu2CXsdS0muDHGxn0hcGto8pyrwfvWIC2q7jk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709619632; c=relaxed/simple;
-	bh=nJA2Y2+scX96sVDQPeaj67KQKwZvj4xEtZsMqHCKQTQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=mLQnHQ2mClMb15JolYRbPY6P4LEztMTuIeA8y9a3g+VetTzZoSbu7bwEFbztabPij0J5/fni58ncODCfiKMeUDE7BMTc2+aghkvXpf6H1SdlTinlS0sWzyfq9nzL1nfvtvU9/CakY93aU9H3jQmMfMJjxh84qt2Bt/OS+eG+BbY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kUG79qXL; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709619631; x=1741155631;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=nJA2Y2+scX96sVDQPeaj67KQKwZvj4xEtZsMqHCKQTQ=;
-  b=kUG79qXLCkr45v+aFerSDInA+4wuXqoxCkyNB1aCIB8HSsn5KsQ3y3gz
-   PwWnDoKKIZYDsY/b2x3Z8hn+9m4EaiT0XsoZKsAPZJYPXcRhXHq7kPlhv
-   jmd8Z/SOAnSzAWCTfmgbNyFXriAPgQAh1w2B0EzESmPej0ySNrXSlGu5Y
-   jLKbvNSKJp5EzjQ3+ll6Lh6L/AbINrQ25fBjK4H1ptt7Xp3QfX+R6SsKP
-   xnLA1Z21j0Di+moMkW0z1akJiJ+egeKAh7G/w9106Idq/fTFEWnHFZj0X
-   pHcmQbW+MNqvOMpFbCrT8Z+vXOvCeTvDVouhwg5zdnpOSZbjBeDPgSts8
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11003"; a="21606306"
-X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
-   d="scan'208";a="21606306"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 22:20:30 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,205,1705392000"; 
-   d="scan'208";a="13951031"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2024 22:20:28 -0800
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Byungchul Park <byungchul@sk.com>
-Cc: <akpm@linux-foundation.org>,  <linux-kernel@vger.kernel.org>,
-  <linux-mm@kvack.org>,  <kernel_team@skhynix.com>,  <yuzhao@google.com>,
-  <hannes@cmpxchg.org>
-Subject: Re: [PATCH v6] mm, vmscan: retry kswapd's priority loop with
- cache_trim_mode off on failure
-In-Reply-To: <20240305040930.GA21107@system.software.com> (Byungchul Park's
-	message of "Tue, 5 Mar 2024 13:09:30 +0900")
-References: <20240304033611.GD13332@system.software.com>
-	<20240304082118.20499-1-byungchul@sk.com>
-	<87zfvda1f8.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<20240305023708.GA60719@system.software.com>
-	<20240305024345.GB60719@system.software.com>
-	<20240305040930.GA21107@system.software.com>
-Date: Tue, 05 Mar 2024 14:18:33 +0800
-Message-ID: <87le6x9p6u.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1709619639; c=relaxed/simple;
+	bh=RDc2FgK9KBEAoEybt2cK76Njw4wXKy3QNd6y2peeaIE=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=NcJvOhQEzQts8MwZmZN3T98rnWbO4KLNohcCDfX0F8Ces7qyEAYk01pkVwqKQrKP2yrOUU7AO4jkYnXCzsGhZ8Jdw4F6GxD45/4ZSwPAyBfl7eSkV9pcGU6/1phLC7He66YH9uTZCOQZfpp3pkLvLefBLFH6CH9Mt5LGKHwwB6w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linumiz.com; spf=pass smtp.mailfrom=linumiz.com; dkim=pass (2048-bit key) header.d=linumiz.com header.i=@linumiz.com header.b=aA6RsbfO; arc=none smtp.client-ip=35.89.44.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linumiz.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linumiz.com
+Received: from eig-obgw-5005a.ext.cloudfilter.net ([10.0.29.234])
+	by cmsmtp with ESMTPS
+	id hG5Brbv0fHXmAhOAFrBiW3; Tue, 05 Mar 2024 06:20:35 +0000
+Received: from md-in-79.webhostbox.net ([43.225.55.182])
+	by cmsmtp with ESMTPS
+	id hOABrNOukREFhhOADrdcqU; Tue, 05 Mar 2024 06:20:34 +0000
+X-Authority-Analysis: v=2.4 cv=cuKdkU4i c=1 sm=1 tr=0 ts=65e6b9b2
+ a=LfuyaZh/8e9VOkaVZk0aRw==:117 a=kofhyyBXuK/oEhdxNjf66Q==:17
+ a=IkcTkHD0fZMA:10 a=K6JAEmCyrfEA:10 a=oz0wMknONp8A:10 a=hD80L64hAAAA:8
+ a=7CQSdrXTAAAA:8 a=VwQbUJbxAAAA:8 a=LywAyCD41A-1GUSnf9cA:9 a=QEXdDO2ut3YA:10
+ a=a-qgeE7W1pNrGK8U0ZQC:22 a=AjGcO6oz07-iQ99wixmX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=linumiz.com
+	; s=default; h=Content-Transfer-Encoding:Content-Type:Subject:From:Cc:To:
+	MIME-Version:Date:Message-ID:Sender:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=VUyE2CiKhsfUXFjkUTpgRFfJaUNoDyxfOrTQvJ6ukKc=; b=aA6RsbfOajw6u/Q+b719qtWWve
+	j7DzUOMiahS7+wiMZ7GxnrG29K1nooZD+tey/3ozbFNmEBcQmrSdr8YuYU7IYjJB8wUxu1nzQwXmL
+	JPsmY5BV4oyO9hrwgrMHRU1Q+S4GPRGON6J38cljVnzOvADNlBYz0fOakGwW7yEsQuLxF4wWDT84v
+	wY6EUo16Skc3dZ6/Z5cZxWJi4TY8+xpV19ZU2nsRHAq2NPFa1bUHfwBeDRo/9heAfVZwac3Uc0Kz1
+	3lCZshjuo8b38286ANAl5QuWzvWprMlV8XuEJTVnBW9Z0kdk5PqghafQrMFAkqAcGUQcv0H6MleFl
+	kFokNYkA==;
+Received: from [122.165.245.213] (port=54194 helo=[192.168.1.21])
+	by md-in-79.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <karthikeyan@linumiz.com>)
+	id 1rhOAA-002kMF-03;
+	Tue, 05 Mar 2024 11:50:30 +0530
+Message-ID: <1553a526-6f28-4a68-88a8-f35bd22d9894@linumiz.com>
+Date: Tue, 5 Mar 2024 11:50:03 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: vkoul@kernel.org, bumyong.lee@samsung.com
+Cc: dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+ parthiban@linumiz.com, saravanan@linumiz.com
+From: karthikeyan <karthikeyan@linumiz.com>
+Subject: dmaengine: CPU stalls while loading bluetooth module
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - md-in-79.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - linumiz.com
+X-BWhitelist: no
+X-Source-IP: 122.165.245.213
+X-Source-L: No
+X-Exim-ID: 1rhOAA-002kMF-03
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.1.21]) [122.165.245.213]:54194
+X-Source-Auth: karthikeyan@linumiz.com
+X-Email-Count: 1
+X-Org: HG=dishared_whb_net_legacy;ORG=directi;
+X-Source-Cap: bGludW1jbWM7aG9zdGdhdG9yO21kLWluLTc5LndlYmhvc3Rib3gubmV0
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfMgiBHd5wB21jxDOc9zZheDjDd7uayCDtvdwxCwuKhE8e0ST4xDRgPivRjxjTeqYFbWNKGSZRIHUQxbComS1LxSEaFr/TuABJSolynMihgNt4q1CKIUg
+ wH5gkBk4XeJCJsLDbBtOkn0jigD7p3z1KzR7rZhhuS/elwLoxASLLuAXnwShc2mRXb/3dXUapmMtqZhJFFnITjceDS13cfc7nD1cSv6HhYX+xh3zWmfQPxt9
 
-Byungchul Park <byungchul@sk.com> writes:
+Hi all,
 
-> On Tue, Mar 05, 2024 at 11:43:45AM +0900, Byungchul Park wrote:
->> On Tue, Mar 05, 2024 at 11:37:08AM +0900, Byungchul Park wrote:
->> > On Tue, Mar 05, 2024 at 09:54:19AM +0800, Huang, Ying wrote:
->> > > Byungchul Park <byungchul@sk.com> writes:
->> > > 
->> > > > Changes from v5:
->> > > > 	1. Make it retry the kswapd's scan priority loop with
->> > > > 	   cache_trim_mode off *only if* the mode didn't work in the
->> > > > 	   previous loop. (feedbacked by Huang Ying)
->> > > > 	2. Take into account 'break's from the priority loop when making
->> > > > 	   the decision whether to retry. (feedbacked by Huang Ying)
->> > > > 	3. Update the test result in the commit message.
->> > > >
->> > > > Changes from v4:
->> > > > 	1. Make other scans start with may_cache_trim_mode = 1.
->> > > >
->> > > > Changes from v3:
->> > > > 	1. Update the test result in the commit message with v4.
->> > > > 	2. Retry the whole priority loop with cache_trim_mode off again,
->> > > > 	   rather than forcing the mode off at the highest priority,
->> > > > 	   when the mode doesn't work. (feedbacked by Johannes Weiner)
->> > > >
->> > > > Changes from v2:
->> > > > 	1. Change the condition to stop cache_trim_mode.
->> > > >
->> > > > 	   From - Stop it if it's at high scan priorities, 0 or 1.
->> > > > 	   To   - Stop it if it's at high scan priorities, 0 or 1, and
->> > > > 	          the mode didn't work in the previous turn.
->> > > >
->> > > > 	   (feedbacked by Huang Ying)
->> > > >
->> > > > 	2. Change the test result in the commit message after testing
->> > > > 	   with the new logic.
->> > > >
->> > > > Changes from v1:
->> > > > 	1. Add a comment describing why this change is necessary in code
->> > > > 	   and rewrite the commit message with how to reproduce and what
->> > > > 	   the result is using vmstat. (feedbacked by Andrew Morton and
->> > > > 	   Yu Zhao)
->> > > > 	2. Change the condition to avoid cache_trim_mode from
->> > > > 	   'sc->priority != 1' to 'sc->priority > 1' to reflect cases
->> > > > 	   where the priority goes to zero all the way. (feedbacked by
->> > > > 	   Yu Zhao)
->> > > >
->> > > > --->8---
->> > > > From f811ee583158fd53d0e94d32ce5948fac4b17cfe Mon Sep 17 00:00:00 2001
->> > > > From: Byungchul Park <byungchul@sk.com>
->> > > > Date: Mon, 4 Mar 2024 15:27:37 +0900
->> > > > Subject: [PATCH v6] mm, vmscan: retry kswapd's priority loop with cache_trim_mode off on failure
->> > > >
->> > > > With cache_trim_mode on, reclaim logic doesn't bother reclaiming anon
->> > > > pages.  However, it should be more careful to use the mode because it's
->> > > > going to prevent anon pages from being reclaimed even if there are a
->> > > > huge number of anon pages that are cold and should be reclaimed.  Even
->> > > > worse, that leads kswapd_failures to reach MAX_RECLAIM_RETRIES and
->> > > > stopping kswapd from functioning until direct reclaim eventually works
->> > > > to resume kswapd.
->> > > >
->> > > > So kswapd needs to retry its scan priority loop with cache_trim_mode
->> > > > off again if the mode doesn't work for reclaim.
->> > > >
->> > > > The problematic behavior can be reproduced by:
->> > > >
->> > > >    CONFIG_NUMA_BALANCING enabled
->> > > >    sysctl_numa_balancing_mode set to NUMA_BALANCING_MEMORY_TIERING
->> > > >    numa node0 (8GB local memory, 16 CPUs)
->> > > >    numa node1 (8GB slow tier memory, no CPUs)
->> > > >
->> > > >    Sequence:
->> > > >
->> > > >    1) echo 3 > /proc/sys/vm/drop_caches
->> > > >    2) To emulate the system with full of cold memory in local DRAM, run
->> > > >       the following dummy program and never touch the region:
->> > > >
->> > > >          mmap(0, 8 * 1024 * 1024 * 1024, PROT_READ | PROT_WRITE,
->> > > >               MAP_ANONYMOUS | MAP_PRIVATE | MAP_POPULATE, -1, 0);
->> > > >
->> > > >    3) Run any memory intensive work e.g. XSBench.
->> > > >    4) Check if numa balancing is working e.i. promotion/demotion.
->> > > >    5) Iterate 1) ~ 4) until numa balancing stops.
->> > > >
->> > > > With this, you could see that promotion/demotion are not working because
->> > > > kswapd has stopped due to ->kswapd_failures >= MAX_RECLAIM_RETRIES.
->> > > >
->> > > > Interesting vmstat delta's differences between before and after are like:
->> > > >
->> > > >    +-----------------------+-------------------------------+
->> > > >    | interesting vmstat    | before        | after         |
->> > > >    +-----------------------+-------------------------------+
->> > > >    | nr_inactive_anon      | 321935        | 1664772       |
->> > > >    | nr_active_anon        | 1780700       | 437834        |
->> > > >    | nr_inactive_file      | 30425         | 40882         |
->> > > >    | nr_active_file        | 14961         | 3012          |
->> > > >    | pgpromote_success     | 356           | 1293122       |
->> > > >    | pgpromote_candidate   | 21953245      | 1824148       |
->> > > >    | pgactivate            | 1844523       | 3311907       |
->> > > >    | pgdeactivate          | 50634         | 1554069       |
->> > > >    | pgfault               | 31100294      | 6518806       |
->> > > >    | pgdemote_kswapd       | 30856         | 2230821       |
->> > > >    | pgscan_kswapd         | 1861981       | 7667629       |
->> > > >    | pgscan_anon           | 1822930       | 7610583       |
->> > > >    | pgscan_file           | 39051         | 57046         |
->> > > >    | pgsteal_anon          | 386           | 2192033       |
->> > > >    | pgsteal_file          | 30470         | 38788         |
->> > > >    | pageoutrun            | 30            | 412           |
->> > > >    | numa_hint_faults      | 27418279      | 2875955       |
->> > > >    | numa_pages_migrated   | 356           | 1293122       |
->> > > >    +-----------------------+-------------------------------+
->> > > >
->> > > > Signed-off-by: Byungchul Park <byungchul@sk.com>
->> > > > ---
->> > > >  mm/vmscan.c | 21 ++++++++++++++++++++-
->> > > >  1 file changed, 20 insertions(+), 1 deletion(-)
->> > > >
->> > > > diff --git a/mm/vmscan.c b/mm/vmscan.c
->> > > > index bba207f41b14..6fe45eca7766 100644
->> > > > --- a/mm/vmscan.c
->> > > > +++ b/mm/vmscan.c
->> > > > @@ -108,6 +108,12 @@ struct scan_control {
->> > > >  	/* Can folios be swapped as part of reclaim? */
->> > > >  	unsigned int may_swap:1;
->> > > >  
->> > > > +	/* Not allow cache_trim_mode to be turned on as part of reclaim? */
->> > > > +	unsigned int no_cache_trim_mode:1;
->> > > > +
->> > > > +	/* Has cache_trim_mode failed at least once? */
->> > > > +	unsigned int cache_trim_mode_failed:1;
->> > > > +
->> > > >  	/* Proactive reclaim invoked by userspace through memory.reclaim */
->> > > >  	unsigned int proactive:1;
->> > > >  
->> > > > @@ -2268,7 +2274,8 @@ static void prepare_scan_control(pg_data_t *pgdat, struct scan_control *sc)
->> > > >  	 * anonymous pages.
->> > > >  	 */
->> > > >  	file = lruvec_page_state(target_lruvec, NR_INACTIVE_FILE);
->> > > > -	if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE))
->> > > > +	if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE) &&
->> > > > +	    !sc->no_cache_trim_mode)
->> > > >  		sc->cache_trim_mode = 1;
->> > > >  	else
->> > > >  		sc->cache_trim_mode = 0;
->> > > > @@ -5967,6 +5974,8 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
->> > > >  	 */
->> > > >  	if (reclaimable)
->> > > >  		pgdat->kswapd_failures = 0;
->> > > > +	else if (sc->cache_trim_mode)
->> > > > +		sc->cache_trim_mode_failed = 1;
->> > > >  }
->> > > >  
->> > > >  /*
->> > > > @@ -6898,6 +6907,16 @@ static int balance_pgdat(pg_data_t *pgdat, int order, int highest_zoneidx)
->> > > >  			sc.priority--;
->> > > >  	} while (sc.priority >= 1);
->> > > >  
->> > > > +	/*
->> > > > +	 * Restart only if it went through the priority loop all the way,
->> > > > +	 * but cache_trim_mode didn't work.
->> > > > +	 */
->> > > > +	if (!sc.nr_reclaimed && sc.priority < 1 &&
->> > > > +	    !sc.no_cache_trim_mode && sc.cache_trim_mode_failed) {
->> > > 
->> > > Can we just use sc.cache_trim_mode (instead of
->> > > sc.cache_trim_mode_failed) here?  That is, if cache_trim_mode is enabled
->> > 
->> > As Johannes mentioned, within a priority scan, all the numa nodes are
->> > scanned each with its own value of cache_trim_mode. So we cannot use
->> > cache_trim_mode for that purpose.
->> 
->> Ah, okay. Confining to kswapd, that might make sense. I will apply it if
->> there's no objection to it. Thanks.
->
-> I didn't want to introduce two additional flags either, but it was
-> possible to make it do exactly what we want it to do thanks to the flags.
-> I'd like to keep this version if possible unless there are any other
-> objections on it.
+we have encountered CPU stalls in mainline kernel while loading the 
+bluetooth module. We have custom board based on rockchip rv1109 soc
+and there is bluetooth chipset of relatek 8821cs. CPU is stalls  while 
+realtek 8821cs module.
 
-Sorry, I'm confused.  Whether does "cache_trim_mode == 1" do the trick?
-If so, why not?  If not, why?
+Bug/Regression:
+In current mainline, we found CPU is stalls when we load bluetooth 
+module. git bisect shows commit 22a9d9585812440211b0b34a6bc02ade62314be4 
+as a bad, which produce CPU stalls.
 
---
-Best Regards,
-Huang, Ying
+git show 22a9d9585812440211b0b34a6bc02ade62314be4
+commit 22a9d9585812440211b0b34a6bc02ade62314be4
+Author: Bumyong Lee <bumyong.lee@samsung.com>
+Date:   Tue Dec 19 14:50:26 2023 +0900
 
-> 	Byungchul
->
->> 	Byungchul
->> > 
->> > 	Byungchul
->> > 
->> > > for priority == 1 and failed to reclaim, we will restart.  If this
->> > > works, we can avoid to add another flag.
->> > > 
->> > > > +		sc.no_cache_trim_mode = 1;
->> > > > +		goto restart;
->> > > > +	}
->> > > > +
->> > > >  	if (!sc.nr_reclaimed)
->> > > >  		pgdat->kswapd_failures++;
->> > > 
->> > > --
->> > > Best Regards,
->> > > Huang, Ying
+     dmaengine: pl330: issue_pending waits until WFP state
+
+     According to DMA-330 errata notice[1] 71930, DMAKILL
+     cannot clear internal signal, named pipeline_req_active.
+     it makes that pl330 would wait forever in WFP state
+     although dma already send dma request if pl330 gets
+     dma request before entering WFP state.
+
+     The errata suggests that polling until entering WFP state
+     as workaround and then peripherals allows to issue dma request.
+
+     [1]: https://developer.arm.com/documentation/genc008428/latest
+
+     Signed-off-by: Bumyong Lee <bumyong.lee@samsung.com>
+     Link: 
+https://lore.kernel.org/r/20231219055026.118695-1-bumyong.lee@samsung.com
+     Signed-off-by: Vinod Koul <vkoul@kernel.org>
+
+diff --git a/drivers/dma/pl330.c b/drivers/dma/pl330.c
+index 3cf0b38387ae..c29744bfdf2c 100644
+--- a/drivers/dma/pl330.c
++++ b/drivers/dma/pl330.c
+@@ -1053,6 +1053,9 @@ static bool _trigger(struct pl330_thread *thrd)
+
+         thrd->req_running = idx;
+
++       if (desc->rqtype == DMA_MEM_TO_DEV || desc->rqtype == 
+DMA_DEV_TO_MEM)
++               UNTIL(thrd, PL330_STATE_WFP);
++
+         return true;
+  }
+
+By reverting this commit, we have success in loading of bluetooth module.
+
+
+Output of CPU stalls:
+# modprobe hci_uart
+[   27.024749] Bluetooth: HCI UART driver ver 2.3
+[   27.025284] Bluetooth: HCI UART protocol Three-wire (H5) registered
+# [   28.125338] dwmmc_rockchip ffc70000.mmc: Unexpected interrupt latency
+[   33.245339] dwmmc_rockchip ffc50000.mmc: Unexpected interrupt latency
+[  326.195321] rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
+[  326.195880] rcu:     0-...0: (3 ticks this GP) idle=e5f4/1/0x40000000 
+softirq=551/552 fqs=420
+[  326.196621] rcu:              hardirqs   softirqs   csw/system
+[  326.197115] rcu:      number:        0          0            0
+[  326.197612] rcu:     cputime:        0          0            0   ==> 
+10500(ms)
+[  326.198231] rcu:     (detected by 1, t=2105 jiffies, g=-455, q=17 
+ncpus=2)
+[  326.198823] Sending NMI from CPU 1 to CPUs 0:
+
+Expected Output:
+# modprobe hci_uart
+[   30.690321] Bluetooth: HCI UART driver ver 2.3
+[   30.690852] Bluetooth: HCI UART protocol Three-wire (H5) registered
+# [   31.453586] Bluetooth: hci0: RTL: examining hci_ver=08 hci_rev=000c 
+lmp_ver=08 lmp_subver=8821
+[   31.458061] Bluetooth: hci0: RTL: rom_version status=0 version=1
+[   31.458608] Bluetooth: hci0: RTL: loading rtl_bt/rtl8821cs_fw.bin
+[   31.465029] Bluetooth: hci0: RTL: loading rtl_bt/rtl8821cs_config.bin
+[   31.483926] Bluetooth: hci0: RTL: cfg_sz 25, total sz 36953
+[   32.213105] Bluetooth: hci0: RTL: fw version 0x75b8f098
+[   32.274216] Bluetooth: MGMT ver 1.22
+[   32.285376] NET: Registered PF_ALG protocol family
+
+Thanks,
+Karthikeyan K
 
