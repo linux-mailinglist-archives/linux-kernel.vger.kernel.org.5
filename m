@@ -1,194 +1,198 @@
-Return-Path: <linux-kernel+bounces-91919-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-91920-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FE09871866
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:41:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54C2D871875
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 09:42:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 950791C21524
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:41:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7781D1C21D88
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 08:42:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BA234E1B5;
-	Tue,  5 Mar 2024 08:41:22 +0000 (UTC)
-Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A30C74F5FB;
+	Tue,  5 Mar 2024 08:42:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="nFCUr8mh";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="MeGRT64E"
+Received: from wfout6-smtp.messagingengine.com (wfout6-smtp.messagingengine.com [64.147.123.149])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EB934CB4E
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 08:41:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C555C2E40B;
+	Tue,  5 Mar 2024 08:42:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.149
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709628081; cv=none; b=sHJUTg3zXCROZL1m1WDbBrQlkXbwAFIPggNbY7JFBxix9awNqQig9pb/GYaqHrSGriAlHHPgXDqwd89bmo2g3N36g6BasKiw+n4ftYnunF3xImEJNMrEvXBSNIRj4MrAIjrTjbYSzrmBPBLwdVZQywFEgCpZeW3/nUaTTawjDJo=
+	t=1709628140; cv=none; b=IuDCgWE0ElNh4fAngvLvjgvKNuMF3zcxJrwP62yhKRmbcuLk1t2PN4oYWRondMDEhpcCH0TCtZcCEAFthcY4gPx5lTV4KVbaxmoCloCIWQFnK/F2qIOxovHYLm80BP6aQWne3RsubB6Fz8RzAxpUBpGmmuttloD9JR9aXARK3qk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709628081; c=relaxed/simple;
-	bh=2znXFaF//SaJcovGyGPFspM4bfUvaHsa8lPoVZdXktM=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cS2kepjqjiRVRvMhmjfXOC+Eu+RmtEppCM22hB3Qa7gJFpi2LaQgZEP+VsozrMJ3AaWKY3Os2+V8WRZpRPImULMz7aEmXDC+8sr0Xg0zu0EMxVhmMUGJBoPYD9VWgQG3VwEeKgtDKOuD4PtB/NYn7ut8MJo/MBMfnKPCFBGBL7s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
-Received: from dlp.unisoc.com ([10.29.3.86])
-	by SHSQR01.spreadtrum.com with ESMTP id 4258ebCn003187;
-	Tue, 5 Mar 2024 16:40:37 +0800 (+08)
-	(envelope-from Xiuhong.Wang@unisoc.com)
-Received: from SHDLP.spreadtrum.com (bjmbx01.spreadtrum.com [10.0.64.7])
-	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4Tpps52xwVz2Knj5p;
-	Tue,  5 Mar 2024 16:39:37 +0800 (CST)
-Received: from tj10379pcu.spreadtrum.com (10.5.32.15) by
- BJMBX01.spreadtrum.com (10.0.64.7) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Tue, 5 Mar 2024 16:40:35 +0800
-From: Xiuhong Wang <xiuhong.wang@unisoc.com>
-To: <jaegeuk@kernel.org>, <chao@kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>
-CC: <hongyu.jin.cn@gmail.com>, <niuzhiguo84@gmail.com>, <ke.wang@unisoc.com>,
-        <xiuhong.wang.cn@gmail.com>
-Subject: [PATCH 2/2] f2fs: compress: fix reserve_cblocks counting error when out of space
-Date: Tue, 5 Mar 2024 16:40:23 +0800
-Message-ID: <20240305084023.3686070-2-xiuhong.wang@unisoc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240305084023.3686070-1-xiuhong.wang@unisoc.com>
-References: <20240305084023.3686070-1-xiuhong.wang@unisoc.com>
+	s=arc-20240116; t=1709628140; c=relaxed/simple;
+	bh=NmJCAuRJ199Nz8coLDr4s+3BbQ9AxZ5w+P+Jx63NVw4=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=KKQ27b7rQWyv1YzcEjRRSKF6uIk9CsJMtCEOwknbNukNVyrM1TulLEWP42KquIABrfI7Xav2nPz1uy6eG/99XGdLDJny/KzmRSVmEC+C18PkeUKPVz84vtmGPpBcBj4I9WcuXUXy8jeOv6T5CYR9Nq/BoKEOwHw8tLXOFt6JpEQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=nFCUr8mh; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=MeGRT64E; arc=none smtp.client-ip=64.147.123.149
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.west.internal (Postfix) with ESMTP id 1AD091C0009F;
+	Tue,  5 Mar 2024 03:42:16 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Tue, 05 Mar 2024 03:42:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1709628135; x=1709714535; bh=QeA3EPMJnw
+	t6NmNxY9VsOPm58VedM11auwf8kvd3l10=; b=nFCUr8mh4qirfdLiF7rJ3ln4Ee
+	ac3TZcBsBjTwt2v0sdIiovpLKYKyf84Jxe23adpiNL58TY/A6Un5jj6iESmOfBN+
+	NH3EgOLGaP2DQpO5LGujPp+1ACooTgAvYIJALYP/zB1DPOPdMHqcSl6pneGLIuSd
+	0k9KzYIWTlZUxiE5d/Z/VfhGrlYPtpIrvzzKaxh55J1YvHGR53svoOQw5rECchxc
+	E9ikW19OkQ636itot1R2TSnpEFaS+eT+JgKKFsBgMEmk8BlUWkauiXR3Ls5Vvsp5
+	YZii5Qv8k/VvvLOAqjcoX8BsdOlRwRXYH9ceE7QjJGsmut+vnb/zrjODKYag==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1709628135; x=1709714535; bh=QeA3EPMJnwt6NmNxY9VsOPm58Ved
+	M11auwf8kvd3l10=; b=MeGRT64EA+QDDWf22wqOrRSkQjCcngCXPFXQcuj7sKlb
+	fsKykmy6Wo/2udr6Dj45/3j5m0Am1YNFMh5ogK0TGmfT3J3p1lUk5UkjwIxfJ/Ci
+	Pk+CIVw/J74yah5SJbYvq+QLaOyKzQH6iNNSmcFd0y5fFCKb9E+Yfzt3yz+45LdK
+	9sFUcb6Fxl0Wjzf+1CiXDA/ghzeaVvr1VBLLs58vNnkiklddooZ4bWdiOUY+GqIR
+	hy0uslWehpOhOdN1+n7zG5X3CplnE4+mdGGx1Yzro47d/GdIV8wduDcs4mOaIpqy
+	CGRzWIXTXwbBC9s0rVJ0cHgCt/kyzi8t44pW07QIUA==
+X-ME-Sender: <xms:59rmZebHuiNKE7gBn9g7Zws1CrVENXbBVlU7KpglFLP7T_XtZaHvBg>
+    <xme:59rmZRbdHQpICUlzFZ9DMOnUcwCIgRZrUGHMk8EmzSdzq9snWlaZ46aLWKLTaTvHK
+    Cg5wi_afUGNXBIHc_8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrheekgdduvddtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:59rmZY8-Af8ZUR5f35jgIeJGVWX966qCxdxdr_0n3EPth7aYYPYY2Q>
+    <xmx:59rmZQqJc6RxhGOktKKAE7ByIoMRz8lUdJERuu3D_WLY5uFdFRGIxA>
+    <xmx:59rmZZoZzA-bUCffCtvffkklND4SVShkax7NIxvDvebcxKbcpR8E8A>
+    <xmx:59rmZdfoSPIHkIwIoZkPmTYx3CVSLM8Fpjgeg_PGly9T-_ds2f3zKnQLvGs>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 5045FB6008D; Tue,  5 Mar 2024 03:42:15 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-208-g3f1d79aedb-fm-20240301.002-g3f1d79ae
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-Id: <a2d926be-695a-484b-b2b5-098da47e372e@app.fastmail.com>
+In-Reply-To: <20240305020153.2787423-13-almasrymina@google.com>
+References: <20240305020153.2787423-1-almasrymina@google.com>
+ <20240305020153.2787423-13-almasrymina@google.com>
+Date: Tue, 05 Mar 2024 09:41:55 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Mina Almasry" <almasrymina@google.com>, Netdev <netdev@vger.kernel.org>,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, Linux-Arch <linux-arch@vger.kernel.org>,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org
+Cc: "David S . Miller" <davem@davemloft.net>,
+ "Eric Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
+ "Paolo Abeni" <pabeni@redhat.com>, "Jonathan Corbet" <corbet@lwn.net>,
+ "Richard Henderson" <richard.henderson@linaro.org>,
+ "Ivan Kokshaysky" <ink@jurassic.park.msu.ru>,
+ "Matt Turner" <mattst88@gmail.com>,
+ "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+ "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
+ "Helge Deller" <deller@gmx.de>, "Andreas Larsson" <andreas@gaisler.com>,
+ "Jesper Dangaard Brouer" <hawk@kernel.org>,
+ "Ilias Apalodimas" <ilias.apalodimas@linaro.org>,
+ "Steven Rostedt" <rostedt@goodmis.org>,
+ "Masami Hiramatsu" <mhiramat@kernel.org>,
+ "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>,
+ "Alexei Starovoitov" <ast@kernel.org>,
+ "Daniel Borkmann" <daniel@iogearbox.net>,
+ "Andrii Nakryiko" <andrii@kernel.org>,
+ "Martin KaFai Lau" <martin.lau@linux.dev>,
+ "Eduard Zingerman" <eddyz87@gmail.com>, "Song Liu" <song@kernel.org>,
+ "Yonghong Song" <yonghong.song@linux.dev>,
+ "John Fastabend" <john.fastabend@gmail.com>,
+ "KP Singh" <kpsingh@kernel.org>, "Stanislav Fomichev" <sdf@google.com>,
+ "Hao Luo" <haoluo@google.com>, "Jiri Olsa" <jolsa@kernel.org>,
+ "David Ahern" <dsahern@kernel.org>,
+ "Willem de Bruijn" <willemdebruijn.kernel@gmail.com>,
+ shuah <shuah@kernel.org>, "Sumit Semwal" <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ "Pavel Begunkov" <asml.silence@gmail.com>, "David Wei" <dw@davidwei.uk>,
+ "Jason Gunthorpe" <jgg@ziepe.ca>,
+ "Yunsheng Lin" <linyunsheng@huawei.com>,
+ "Shailend Chand" <shailend@google.com>,
+ "Harshitha Ramamurthy" <hramamurthy@google.com>,
+ "Shakeel Butt" <shakeelb@google.com>,
+ "Jeroen de Borst" <jeroendb@google.com>,
+ "Praveen Kaligineedi" <pkaligineedi@google.com>,
+ "Willem de Bruijn" <willemb@google.com>,
+ "Kaiyuan Zhang" <kaiyuanz@google.com>
+Subject: Re: [RFC PATCH net-next v6 12/15] tcp: RX path for devmem TCP
 Content-Type: text/plain
-X-ClientProxiedBy: SHCAS01.spreadtrum.com (10.0.1.201) To
- BJMBX01.spreadtrum.com (10.0.64.7)
-X-MAIL:SHSQR01.spreadtrum.com 4258ebCn003187
 
-When a file only needs one direct_node, performing the following
-operations will cause the file to be unrepairable:
+On Tue, Mar 5, 2024, at 03:01, Mina Almasry wrote:
+> --- a/arch/alpha/include/uapi/asm/socket.h
+> +++ b/arch/alpha/include/uapi/asm/socket.h
+>  #define SO_PEERPIDFD		77
+> +#define SO_DEVMEM_LINEAR	79
+> +#define SO_DEVMEM_DMABUF	80
+> --- a/arch/mips/include/uapi/asm/socket.h
+> +++ b/arch/mips/include/uapi/asm/socket.h
+>  #define SO_PEERPIDFD		77
+> +#define SO_DEVMEM_LINEAR	79
+> +#define SO_DEVMEM_DMABUF	80
+> --- a/arch/parisc/include/uapi/asm/socket.h
+> +++ b/arch/parisc/include/uapi/asm/socket.h
+>  #define SO_PEERPIDFD		0x404B
+> +#define SO_DEVMEM_LINEAR	98
+> +#define SO_DEVMEM_DMABUF	99
+> --- a/arch/sparc/include/uapi/asm/socket.h
+> +++ b/arch/sparc/include/uapi/asm/socket.h
+>  #define SO_PEERPIDFD             0x0056
+> +#define SO_DEVMEM_LINEAR         0x0058
+> +#define SO_DEVMEM_DMABUF         0x0059
+> --- a/include/uapi/asm-generic/socket.h
+> +++ b/include/uapi/asm-generic/socket.h
+> @@ -135,6 +135,11 @@
+>  #define SO_PEERPIDFD		77
+> +#define SO_DEVMEM_LINEAR	98
+> +#define SO_DEVMEM_DMABUF	99
 
-unisoc # ./f2fs_io compress test.apk
-unisoc #df -h | grep dm-48
-/dev/block/dm-48 112G 112G 1.2M 100% /data
+These look inconsistent. I can see how you picked the
+alpha and mips numbers, but how did you come up with
+the generic and parisc ones? Can you follow the existing
+scheme instead?
 
-unisoc # ./f2fs_io release_cblocks test.apk
-924
-unisoc # df -h | grep dm-48
-/dev/block/dm-48 112G 112G 4.8M 100% /data
+> diff --git a/include/uapi/linux/uio.h b/include/uapi/linux/uio.h
+> index 059b1a9147f4..ad92e37699da 100644
+> --- a/include/uapi/linux/uio.h
+> +++ b/include/uapi/linux/uio.h
+> @@ -20,6 +20,16 @@ struct iovec
+>  	__kernel_size_t iov_len; /* Must be size_t (1003.1g) */
+>  };
+> 
+> +struct dmabuf_cmsg {
+> +	__u64 frag_offset;	/* offset into the dmabuf where the frag starts.
+> +				 */
+> +	__u32 frag_size;	/* size of the frag. */
+> +	__u32 frag_token;	/* token representing this frag for
+> +				 * DEVMEM_DONTNEED.
+> +				 */
+> +	__u32  dmabuf_id;	/* dmabuf id this frag belongs to. */
+> +};
 
-unisoc # dd if=/dev/random of=file4 bs=1M count=3
-3145728 bytes (3.0 M) copied, 0.025 s, 120 M/s
-unisoc # df -h | grep dm-48
-/dev/block/dm-48 112G 112G 1.8M 100% /data
+This structure requires a special compat handler to run
+x86-32 binaries on x86-64 because of the different alignment
+requirements. Any uapi-visible structures should be defined
+to avoid this and just have no holes in them. Maybe extend
+one of the __u32 members to __u64 or add another 32-bit padding field?
 
-unisoc # ./f2fs_io reserve_cblocks test.apk
-F2FS_IOC_RESERVE_COMPRESS_BLOCKS failed: No space left on device
-
-adb reboot
-unisoc # df -h  | grep dm-48
-/dev/block/dm-48             112G 112G   11M 100% /data
-unisoc # ./f2fs_io reserve_cblocks test.apk
-0
-
-This is because the file has only one direct_node. After returning
-to -ENOSPC, reserved_blocks += ret will not be executed. As a result,
-the reserved_blocks at this time is still 0, which is not the real
-number of reserved blocks. Therefore, fsck cannot be set to repair
-the file.
-
-After this patch, the fsck flag will be set to fix this problem.
-
-unisoc # df -h | grep dm-48
-/dev/block/dm-48             112G 112G  1.8M 100% /data
-unisoc # ./f2fs_io reserve_cblocks test.apk
-F2FS_IOC_RESERVE_COMPRESS_BLOCKS failed: No space left on device
-
-adb reboot then fsck will be executed
-unisoc # df -h  | grep dm-48
-/dev/block/dm-48             112G 112G   11M 100% /data
-unisoc # ./f2fs_io reserve_cblocks test.apk
-924
-
-Fixes: c75488fb4d82 ("f2fs: introduce F2FS_IOC_RESERVE_COMPRESS_BLOCKS")
-Signed-off-by: Xiuhong Wang <xiuhong.wang@unisoc.com>
-Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
----
- fs/f2fs/file.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
-
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index 572d7bd4d161..97a7233c7ea7 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -3624,10 +3624,10 @@ static int f2fs_release_compress_blocks(struct file *filp, unsigned long arg)
- 	return ret;
- }
- 
--static int reserve_compress_blocks(struct dnode_of_data *dn, pgoff_t count)
-+static int reserve_compress_blocks(struct dnode_of_data *dn, pgoff_t count,
-+		unsigned int *reserved_blocks)
- {
- 	struct f2fs_sb_info *sbi = F2FS_I_SB(dn->inode);
--	unsigned int reserved_blocks = 0;
- 	int cluster_size = F2FS_I(dn->inode)->i_cluster_size;
- 	block_t blkaddr;
- 	int i;
-@@ -3691,12 +3691,12 @@ static int reserve_compress_blocks(struct dnode_of_data *dn, pgoff_t count)
- 
- 		f2fs_i_compr_blocks_update(dn->inode, compr_blocks, true);
- 
--		reserved_blocks += reserved;
-+		*reserved_blocks += reserved;
- next:
- 		count -= cluster_size;
- 	}
- 
--	return reserved_blocks;
-+	return 0;
- }
- 
- static int f2fs_reserve_compress_blocks(struct file *filp, unsigned long arg)
-@@ -3740,6 +3740,7 @@ static int f2fs_reserve_compress_blocks(struct file *filp, unsigned long arg)
- 	while (page_idx < last_idx) {
- 		struct dnode_of_data dn;
- 		pgoff_t end_offset, count;
-+		unsigned int tmp_reserved_blocks;
- 
- 		set_new_dnode(&dn, inode, NULL, NULL, 0);
- 		ret = f2fs_get_dnode_of_data(&dn, page_idx, LOOKUP_NODE);
-@@ -3757,7 +3758,8 @@ static int f2fs_reserve_compress_blocks(struct file *filp, unsigned long arg)
- 		count = min(end_offset - dn.ofs_in_node, last_idx - page_idx);
- 		count = round_up(count, F2FS_I(inode)->i_cluster_size);
- 
--		ret = reserve_compress_blocks(&dn, count);
-+		ret = reserve_compress_blocks(&dn, count, &tmp_reserved_blocks);
-+		reserved_blocks += tmp_reserved_blocks;
- 
- 		f2fs_put_dnode(&dn);
- 
-@@ -3765,13 +3767,12 @@ static int f2fs_reserve_compress_blocks(struct file *filp, unsigned long arg)
- 			break;
- 
- 		page_idx += count;
--		reserved_blocks += ret;
- 	}
- 
- 	filemap_invalidate_unlock(inode->i_mapping);
- 	f2fs_up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
- 
--	if (ret >= 0) {
-+	if (!ret) {
- 		clear_inode_flag(inode, FI_COMPRESS_RELEASED);
- 		inode_set_ctime_current(inode);
- 		f2fs_mark_inode_dirty_sync(inode, true);
-@@ -3780,7 +3781,7 @@ static int f2fs_reserve_compress_blocks(struct file *filp, unsigned long arg)
- 	inode_unlock(inode);
- 	mnt_drop_write_file(filp);
- 
--	if (ret >= 0) {
-+	if (!ret) {
- 		ret = put_user(reserved_blocks, (u64 __user *)arg);
- 	} else if (reserved_blocks &&
- 			atomic_read(&F2FS_I(inode)->i_compr_blocks)) {
--- 
-2.25.1
-
+       Arnd
 
