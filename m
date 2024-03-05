@@ -1,133 +1,142 @@
-Return-Path: <linux-kernel+bounces-92751-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-92753-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10364872584
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:18:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 087AE872589
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 18:19:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4264C1C21CBC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:18:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A0791C23398
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Mar 2024 17:19:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CE075256;
-	Tue,  5 Mar 2024 17:18:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7580514AB3;
+	Tue,  5 Mar 2024 17:19:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="YhMrLrNY";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Z34JRypL"
-Received: from fout6-smtp.messagingengine.com (fout6-smtp.messagingengine.com [103.168.172.149])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="w61Gq8SY"
+Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F4A913FE0
-	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 17:18:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44A2D14016
+	for <linux-kernel@vger.kernel.org>; Tue,  5 Mar 2024 17:19:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709659091; cv=none; b=iXWAS5IA35w4RKu1dEKfA1VdsStoTzBUy4AuoDLoZh/zGqEIr/R1oaVje2HqUULqV7QWrviOKV+knnJhl4lrMS2ol4LT9jyAqcDTro553YGogTK0vjBafdECS+I7gUJ3EoAa8w3IylagR0qWxiQVl5EBGXST+VO4ZO9JY4ofvhw=
+	t=1709659156; cv=none; b=gHFwO7YK6o683ZpW1qMv42684FqClc/mDtbzCnXTdTd4FO+McQ2WTfPhyezZBV/pbi55jzw8yxG7G+lda6/QqctP0CI0n91G1LF4PMCndEuB+jQUXWPSnWGUeTzyCbwOK2NV/DoPY2okidskYQV9l3rU7iIs5+koDldm3/l4d7U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709659091; c=relaxed/simple;
-	bh=qKGXNp6adDAyRl3esXjlOtVPpPC6y+p2J82LI4SlQi0=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=Kb+6AWIbjQepq0RXfb0WUeDBXch4gj26k7v+J7vXD1g7cTHkm45JAXBxOJ8V7NnlhGeVHm4t1wNUFPD82xsKR7GyH65V54Pvzq4qfE2pfCkWGqah6T4bO3pdoVlwUkZ9Xn8q1BXN4U5cw76MAK3NGRS606d0Hbwdfr9rPNBJ1Lk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=YhMrLrNY; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Z34JRypL; arc=none smtp.client-ip=103.168.172.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfout.nyi.internal (Postfix) with ESMTP id 18D1713800CB;
-	Tue,  5 Mar 2024 12:18:08 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 05 Mar 2024 12:18:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1709659088; x=1709745488; bh=w++g7aHIMZ
-	Ldmtuh1Wj3Mc3nyL1x07JT54IB2NOuQNQ=; b=YhMrLrNYorhuGEkGQr9tWJ9KPE
-	t7WrHITfCKs4clrG6zHpekssVU8lxQjqWKWOSjTChoDS+a+zWfFtSs6bgpHlWkqF
-	ufJb+CyIfkxJNnwOIsBmCxooyLnxijKcgH4Zo1UOm1MPlxlyUzzsVSOadgFwBstl
-	vwW14xZepbTV5twjB3rtLECUZaxZ9y7WV+ihjWoHDFYXvF9FMaKtlWDSFIpJpuWt
-	c+sLzTsalZH5Yx3P0UHb3TVolfpyaEkAqw2x9aBKymYhd73q15WRt6lp7ox1xtea
-	M7/0wHY/qcf3Gm3OxVeMiX08Cg1JmiCz0I34wyeOnD1UWY+yQan/DW6Y2lxg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1709659088; x=1709745488; bh=w++g7aHIMZLdmtuh1Wj3Mc3nyL1x
-	07JT54IB2NOuQNQ=; b=Z34JRypLDsegQrtgLXZBgyxel8X7gvZbeO2+P4hix7BT
-	JfHou4jGIXSaq+Na/wGGqnkCYmmyIR8dFw83jssLtb3T2swTrNQi08qmiBowTxoe
-	vn0NfFkiSFJNHzSiXPZcK5g6WfmQhrf8OIZ/KJoP72RqCumCzbQ+l/noSJGS5M3a
-	J3XR4NMdR3LcRQjpJC66QebO+Y6VsstqUlhXus1Um11oW//jJkAbEtLN2mujNtsg
-	Ph+/trG3PDP3XHn/TZVvuW0gnOOYeWOXF9ntHirxTwxdER7fCBaXP7gm8zRETaW2
-	f2K+LAICQ59gBTwdMgTnVCoF6my7OclO0ttAQU2Ekg==
-X-ME-Sender: <xms:z1PnZdp5YVu_CuJz3EqX36F4XuXenEKDlZXjgaAcowaGvC7FecvlxA>
-    <xme:z1PnZfrZ6CROLlQEcPnTGereJ-TUn3H5__vqsuGmLf9SAaYx95Dt-EIQsDOF9XU5O
-    2Bmm33tSfK2snZtB98>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrheelgdelgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
-    hnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:z1PnZaPD06A7SQcGPuSQndNBATC4ir9uD_XJXyUisDAFsGiyIK_U6w>
-    <xmx:z1PnZY4qFrXrm29xPqn5Rbjj7AzcfZ_qnJ-cNMQI1w2uyLfK3oROsw>
-    <xmx:z1PnZc5215_vF_8j7aQv7C9PU9ZgzuPK2UK3tuWZUBQMnglXI5zntg>
-    <xmx:0FPnZZsJ6ZhI_CZMyp0rWJ_SPVMxtwSC0eAwNdDl-PlT8EtabC1BeA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 512B6B60093; Tue,  5 Mar 2024 12:18:07 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-208-g3f1d79aedb-fm-20240301.002-g3f1d79ae
+	s=arc-20240116; t=1709659156; c=relaxed/simple;
+	bh=35W0xkiyIW+h4I7uaqpD3yZaGe3eGIyUIL9pgPlFMFg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=neiiCQQM7IQVvRZK7x1FgOK96gO4qv2asx0EUf+9l5Gl+0/Tq81bS8U0crDwaRmm/D0V5VwyjoLNnEARTyXUJYrFGYLLr9+QaSBGw2Ryyc1lFXi17xr4wV1ivc17OmkrCZv3kQd+r9+LxPrGAumtKkteXVZqBhwWHu2NKqYGof8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=w61Gq8SY; arc=none smtp.client-ip=209.85.161.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-595aa5b1fe0so582977eaf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Mar 2024 09:19:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709659154; x=1710263954; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+QaobAGWVH6S5E9EJzoRHvFL79d1fgtq8p8ecN7tgGg=;
+        b=w61Gq8SYwekNV3s7e1/U1haKUng++zjWK9U/CFAjZ6iILsVw52wGQ7YQjzGkPI7uzY
+         JyMuscZvh7bWn6FI0b3IZoSBJyf5f/H2XqXAN3s1TBA19zA+/pT4RGcI1hoR0/ZUuFT1
+         DH1ydMs0wyalk+3hoEaYfGOX0W7g4u41+R0mQE8ydTzJRqCmoORd9k9Ck5Iv/SPwn+T7
+         +7ZPMNPOtwyCMvgoyQGIKUqt53fkwrwvmEXSfVdG2UAWwlIgjzHsjymx2gg/pL4VRwcl
+         V1NDhZnpXPut5+E3E6mmM0+oKs7Y7SQFra6Jk/MTuLnQH1HVFUhjhf7eIL9vHlTe0S0a
+         wmaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709659154; x=1710263954;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+QaobAGWVH6S5E9EJzoRHvFL79d1fgtq8p8ecN7tgGg=;
+        b=mq2dw03hI5popsDuOfBFbFZFetQAUf+87mPV4RlM74a4+p1zY1xqkWLtynU2uWU78G
+         5YdNSojjJWf9RW+aWGIn/XVoLj9liMt/qQxvHi5AX6/+f1EOA5m1TbLT6SYZQml8tMA4
+         79KiwSbxQycjJfMuixkWdhcXzn/K1Nr/nG5x49X8OFxtLUSMR1UUTQTGtMTK2PrHe0hk
+         kzMwOrXagMant6jRP6PVqjNiSoxtYYUMbanDuIkN1CodDYP/g3K4n9+/TTps2W+TeL1+
+         R/tan1lHPf1/i2Zuts34SCdK0SHoCt5yXfUaCNzwdFttbP0kcpJx/I3n5QvHeg7L0YOI
+         Q04A==
+X-Forwarded-Encrypted: i=1; AJvYcCV2gG/6fl7Q/azzkGLcKiutZdtX93R6jAA1Ucmqv3S8Vpwhx4xrxQtMTuVM7MhY6vd1Smr6MKXsndO1qSbBwKVsSz8BuFcq5K2kVUZk
+X-Gm-Message-State: AOJu0YxVVF8z9oeslb4C1JHGrKUSUFdNbmkltqc1VaJJGAP83ET1Yzfu
+	lthP3SKVXMiw8yg74S9VAmdCK/nOm8JRmcLRb7Q8NNITiNKLJGenhBhTBOOB8qQqyj8qjNS5Rtt
+	BS7j7CQlngOQvBWyNQWNnvZrGD4A3pwOJJ5QF
+X-Google-Smtp-Source: AGHT+IEFsxok2qYjPGM8WG7zzaRYUAHjkHuadWtw7qIkVbdF0GYy27xbG5BOekp2bznsc7bcEKBI8II7uSjtyoF/Gzc=
+X-Received: by 2002:a05:6359:4103:b0:17a:d4c0:d59f with SMTP id
+ kh3-20020a056359410300b0017ad4c0d59fmr2914394rwc.4.1709659153881; Tue, 05 Mar
+ 2024 09:19:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <4de9e676-74e7-4bd0-b821-4e3270487dbb@app.fastmail.com>
-In-Reply-To: <ZedSJcBGj89-XQWY@smile.fi.intel.com>
-References: <20240219195807.517742-1-sakari.ailus@linux.intel.com>
- <20240219195807.517742-3-sakari.ailus@linux.intel.com>
- <ZedSJcBGj89-XQWY@smile.fi.intel.com>
-Date: Tue, 05 Mar 2024 18:17:46 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Andy Shevchenko" <andriy.shevchenko@intel.com>,
- "Sakari Ailus" <sakari.ailus@linux.intel.com>
-Cc: linux-kernel@vger.kernel.org, "Hans de Goede" <hdegoede@redhat.com>,
- "Tomas Winkler" <tomas.winkler@intel.com>,
- "Wentong Wu" <wentong.wu@intel.com>,
- "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v2 2/3] mei: vsc: Don't use sleeping condition in
- wait_event_timeout()
-Content-Type: text/plain
+References: <20240112055251.36101-1-vannapurve@google.com> <20240112055251.36101-2-vannapurve@google.com>
+ <etvf2mon464whscbxqktdd7bputnqmmwmoeg7ssixsk4kljfek@4wngbgzbbmck>
+ <CAGtprH-95FEUzpc-yxQMo87gpqgMxyz9W8tiWtu_ZHhMW-jjuA@mail.gmail.com> <8a6dabdf-dc11-4989-b6b4-b49871ff9ca6@amazon.com>
+In-Reply-To: <8a6dabdf-dc11-4989-b6b4-b49871ff9ca6@amazon.com>
+From: Vishal Annapurve <vannapurve@google.com>
+Date: Tue, 5 Mar 2024 09:19:00 -0800
+Message-ID: <CAGtprH8LOgvtO_rjFzASbp240P=yBvODCBU22sN_+uhdumueiQ@mail.gmail.com>
+Subject: Re: [RFC V1 1/5] swiotlb: Support allocating DMA memory from SWIOTLB
+To: Alexander Graf <graf@amazon.com>
+Cc: "Kirill A. Shutemov" <kirill@shutemov.name>, x86@kernel.org, linux-kernel@vger.kernel.org, 
+	pbonzini@redhat.com, rientjes@google.com, seanjc@google.com, 
+	erdemaktas@google.com, ackerleytng@google.com, jxgao@google.com, 
+	sagis@google.com, oupton@google.com, peterx@redhat.com, vkuznets@redhat.com, 
+	dmatlack@google.com, pgonda@google.com, michael.roth@amd.com, 
+	thomas.lendacky@amd.com, dave.hansen@linux.intel.com, 
+	linux-coco@lists.linux.dev, chao.p.peng@linux.intel.com, 
+	isaku.yamahata@gmail.com, andrew.jones@linux.dev, corbet@lwn.net, hch@lst.de, 
+	m.szyprowski@samsung.com, rostedt@goodmis.org, iommu@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 5, 2024, at 18:11, Andy Shevchenko wrote:
-> On Mon, Feb 19, 2024 at 09:58:06PM +0200, Sakari Ailus wrote:
->> vsc_tp_wakeup_request() called wait_event_timeout() with
->> gpiod_get_value_cansleep() which may sleep, and does so as the
->> implementation is that of gpio-ljca.
->> 
->> Move the GPIO state check outside the call.
+On Thu, Feb 15, 2024 at 3:14=E2=80=AFPM Alexander Graf <graf@amazon.com> wr=
+ote:
+> > ...
+> > The issue with aligning the pool areas to hugepages is that hugepage
+> > allocation at runtime is not guaranteed. Guaranteeing the hugepage
+> > allocation might need calculating the upper bound in advance, which
+> > defeats the purpose of enabling dynamic SWIOTLB. I am open to
+> > suggestions here.
 >
-> ...
 >
->> +#define VSC_TP_WAIT_FW_POLL_TIMEOUT		(2 * HZ)
->> +#define VSC_TP_WAIT_FW_POLL_DELAY_US		(20 * USEC_PER_MSEC)
->
-> ...
->
->>  	ret = wait_event_timeout(tp->xfer_wait,
->> -				 atomic_read(&tp->assert_cnt) &&
->> -				 gpiod_get_value_cansleep(tp->wakeuphost),
->> -				 VSC_TP_WAIT_FW_ASSERTED_TIMEOUT);
->> +				 atomic_read(&tp->assert_cnt),
->> +				 VSC_TP_WAIT_FW_POLL_TIMEOUT);
->
-> First of all, there is an API for such cases (wait_woken_up() IIRC).
+> You could allocate a max bound at boot using CMA and then only fill into
+> the CMA area when SWIOTLB size requirements increase? The CMA region
+> will allow movable allocations as long as you don't require the CMA space=
+.
 
-I think wait_for_completion_timeout() would be the obvious
-replacement if the wait_event is no longer waiting for the
-gpio but only for the irq handler to complete.
+Thanks Alex for the inputs, I wanted to understand CMA better before
+responding here.
 
-     Arnd
+I am trying to get the following requirements satisfied:
+1) SWIOTLB pools are aligned to hugepage sizes.
+2) SWIOTLB pool areas can be scaled up dynamically on demand to avoid
+pre-allocating large memory ranges.
+
+Using CMA to back SWIOTLB pools for CoCo VMs as per this suggestion would n=
+eed:
+1) Pre-configuring CMA areas with a certain amount at boot either with,
+   - command line argument to the kernel (tedious to specify with
+different memory shapes) or
+   - kernel init time hook called by architecture specific code to
+setup CMA areas according to the amount of memory available (Possibly
+a percentage of memory as done for SWIOTLB configuration)
+2) SWIOTLB pool dynamic allocation logic can first scan for CMA areas
+to find the hugepage aligned ranges,  and if not found, can fall back
+to allocate the ranges using buddy allocator (which should ideally
+happen after depleting the CMA area).
+3) SWIOTLB pool regions would need to be allocatable from >4G ranges as wel=
+l.
+
+Setting up a suitable percentage of memory for CMA area in case of
+CoCo VMs will allow larger SWIOTLB pool area additions, this should
+help alleviate Michael Kelley's concern about spin lock contention due
+to smaller pool areas. This will need some analysis of shared memory
+usage with current devices in use with CoCo VMs, especially GPUs which
+might need large amounts of shared memory.
+
+>
+>
+> Alex
 
